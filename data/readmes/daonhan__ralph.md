@@ -1,0 +1,936 @@
+# Ralph — Autonomous Coding-Agent Loop
+
+[![@daonhan/ralph](https://img.shields.io/npm/v/@daonhan/ralph?label=%40daonhan%2Fralph)](https://www.npmjs.com/package/@daonhan/ralph)
+[![@daonhan/ralph-core](https://img.shields.io/npm/v/@daonhan/ralph-core?label=%40daonhan%2Fralph-core)](https://www.npmjs.com/package/@daonhan/ralph-core)
+[![CI](https://github.com/daonhan/ralph/actions/workflows/ci.yml/badge.svg)](https://github.com/daonhan/ralph/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
+Ralph drives Claude Code by default, or Codex when selected with
+`--agent codex`, against a target repository in an iterating implementer →
+reviewer pipeline isolated inside a custom Docker image.
+
+> ⚠️ **Security:** Ralph runs the selected agent without interactive approval inside the sandbox (`--permission-mode bypassPermissions` for Claude; `--dangerously-bypass-approvals-and-sandbox` for Codex) and, **by default, bind-mounts the host Docker socket — granting root-equivalent access to the host Docker daemon.** Point it only at repositories, plans, and GitHub issues you trust. Disable the socket mount with `RALPH_DOCKER_SOCK=0`. See **[SECURITY.md](./SECURITY.md)** for the full threat model.
+
+> **New here?** Start with **[QUICKSTART.md](./QUICKSTART.md)** (zero-to-first-loop). Hacking on Ralph itself → **[CONTRIBUTING.md](./CONTRIBUTING.md)**. Internals → **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**. Background / design walkthrough → **[The Ralph AFK Stack, Explained](https://daonhan.substack.com/p/the-ralph-afk-stack-explained)** (Substack).
+
+- **[`@daonhan/ralph-core`](./packages/core)** — library: iteration loop, docker runner, template renderer, stage registry. Importable from any Node project.
+- **[`@daonhan/ralph`](./apps/cli)** — CLI: exposes `ralph-afk` and `ralph-ghafk` bin entries. Depends on `@daonhan/ralph-core`.
+
+Two AFK entry points (both installed globally after `npm i -g @daonhan/ralph`):
+
+- **`ralph-afk`** — plan/PRD-driven loop. Hand it a plan + PRD string; iterates until the agent emits the sentinel `<promise>NO MORE TASKS</promise>` on a line of its own.
+- **`ralph-ghafk`** — GitHub-issue-driven loop. Pulls open issues with `gh issue list` and lets the agent pick the next AFK task.
+
+Convenience shims live at [`apps/cli/scripts/afk.sh`](./apps/cli/scripts/afk.sh) and [`apps/cli/scripts/ghafk.sh`](./apps/cli/scripts/ghafk.sh) — thin wrappers that fall back to `npx @daonhan/ralph` if not installed.
+
+Agent playbooks: [`packages/core/templates/prompt.md`](./packages/core/templates/prompt.md) (for `ralph-afk`) and [`packages/core/templates/ghprompt.md`](./packages/core/templates/ghprompt.md) (for `ralph-ghafk`). Reviewer instructions: [`packages/core/templates/review.md`](./packages/core/templates/review.md). All three ship inside `@daonhan/ralph-core`.
+
+---
+
+## Architecture (AFK loops)
+
+```
+ralph-afk / ralph-ghafk               (bin entries from @daonhan/ralph, on PATH after `npm i -g`)
+   │
+   ▼
+@daonhan/ralph (CLI, apps/cli)        bin: ralph-afk, ralph-ghafk; scripts: afk.sh, ghafk.sh shims
+   │ imports
+   ▼
+@daonhan/ralph-core (packages/core)
+   ├── runAfk / runGhAfk              (env-driven entry: argv → runLoop)
+   ├── runLoop                        (drives stage chain per iteration; checks sentinel)
+   ├── render                         (renderer: @include / @spill / !? / !`cmd` / {{ INPUTS }})
+   ├── stages                         (stage registry: implementer, ghafkImplementer, reviewer)
+   └── runner                         (docker run → NDJSON stream → live print → final result)
+   │
+   ▼
+docker run ralph-sandbox <selected-agent> …
+```
+
+Each iteration runs the stage chain `[implementer, reviewer]`. The implementer is the "gate": if it emits `<promise>NO MORE TASKS</promise>`, the loop exits before the reviewer runs.
+
+Prompt templates expand six tag forms before each stage runs, in order — `@include:` (inline a file, no shell), `@spill[?]:` (run a command, write its output to a side file the agent `Read`s), `` !?`cmd|||fallback` `` (try-shell), `` !`cmd` `` (host shell), `{{ INPUTS }}` (the entry CLI's input arg — the plan/PRD string for `ralph-afk`, empty for `ralph-ghafk`), and `{{ HISTORY }}` (the last few stage outcomes from `.ralph/history/`, injected into the implementer prompt). Full semantics under [Change the template syntax](#change-the-template-syntax); the runtime model lives in [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
+
+---
+
+## Repo layout
+
+```
+ralph/
+├── package.json                 monorepo root (private, shared devDeps, pnpm scripts)
+├── pnpm-workspace.yaml
+├── tsconfig.base.json           shared TS compiler options
+├── .npmrc                       link-workspace-packages, prefer-workspace-packages
+├── .dockerignore                shrinks build context (consumed at repo root)
+├── apps/
+│   └── cli/                     @daonhan/ralph
+│       ├── package.json
+│       ├── bin/
+│       │   ├── ralph-afk.js
+│       │   └── ralph-ghafk.js
+│       └── scripts/             optional bash shims (ship in npm tarball)
+│           ├── afk.sh
+│           └── ghafk.sh
+├── packages/
+│   └── core/                    @daonhan/ralph-core
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── src/                 main.ts, gh-main.ts, loop.ts, runner.ts, render.ts, stages.ts, index.ts, cli-help.ts, retry.ts, keepalive.ts, detach.ts, notify.ts + __tests__/
+│       └── templates/           afk.md, ghafk.md, review.md, prompt.md, ghprompt.md, CHANGELOG.md, Dockerfile (builds ralph-sandbox image)
+└── (playbooks live in packages/core/templates/ alongside the prompt templates)
+```
+
+At runtime, the host workspace gets a `.ralph-tmp/` directory containing the per-iteration prompt files and `logs/*.ndjson`, plus a `.ralph/history/` directory holding one Markdown history file and one `.jsonl` event log per run. Both are gitignored (`.ralph/history/` via its own `.gitignore`).
+
+---
+
+## Prerequisites
+
+- **Docker** — Docker Desktop (Windows/macOS) or Docker Engine (Linux). The orchestrator shells out to `docker build` / `docker run`.
+- **Node.js 20+** + **npm 9+** (or `pnpm`/`yarn`). For Windows: native nvm-for-windows, nvm-windows, directly from nodejs.org, or Node inside WSL. For macOS/Linux: nvm, asdf, or a distro package.
+- **`gh`** authenticated (only required for `ralph-ghafk`): `gh auth login` once.
+- **A git identity on the host** — `git config --global user.name "…"` and `git config --global user.email "…"`. Ralph passes them into the sandbox, which has no `~/.gitconfig` of its own, so commits the agent makes are authored by you. A repo-local identity set inside the workspace still wins, as it does for git itself. Without either, Ralph warns once per run and the agent may invent an author.
+- **Claude Code or Codex** authentication for the provider you select. See "First-run setup" below.
+- **(Windows, optional but recommended)** `bash.exe` on PATH — comes free with [Git for Windows](https://git-scm.com/download/win). The renderer prefers it over `cmd.exe` because POSIX redirects + utilities (`git log`, `gh issue list`) are smoother. If absent, the renderer falls back to `cmd.exe` and uses the built-in try-shell tag (`!?\`cmd|||fallback\``) so commands that fail return their fallback string cleanly — no broken render.
+
+### Supported shells / OS combinations
+
+| Where you invoke `ralph-afk` | Claude | Codex | Notes                                                                             |
+| ---------------------------- | ------ | ----- | --------------------------------------------------------------------------------- |
+| Linux native (Ubuntu, etc.)  | ✓      | ✓     | `/bin/bash` is used for shell tags.                                               |
+| macOS native                 | ✓      | ✓     | `/bin/bash` is used.                                                              |
+| Windows PowerShell / cmd     | ✓      | ✓     | Native Windows is supported for both providers.                                   |
+| Windows + WSL bash           | ✓      | ✓     | Install Ralph, the selected host CLI, and credentials inside the same WSL distro. |
+| Windows + Git Bash           | ✓      | ✓     | Native Git Bash and its Windows home are supported for both providers.            |
+
+### Windows + WSL: credentials
+
+Credentials live on the **host** at `~/.claude` or `~/.codex` (for the selected provider) and `~/.config/gh`, then get bind-mounted into the container. The path resolves per the shell that launches `ralph-afk`:
+
+| Launch from              | `$HOME` is                        | Mounted into container                                              |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------- |
+| Windows PowerShell / cmd | `C:\Users\<name>`                 | The selected provider's credential store under this home is mounted |
+| WSL bash                 | `/home/<linuxname>`               | The selected provider's credential store under this home is mounted |
+| Linux / macOS            | `/home/<name>` or `/Users/<name>` | The selected provider's credential store under this home is mounted |
+
+Codex works from native Windows shells and WSL alike: Ralph mounts `~/.codex`
+read-only at `/mnt/codex-creds` and copies `auth.json` (plus `config.toml` and
+`AGENTS.md` when present) into a container-local `CODEX_HOME` before each
+stage, so the credential home never sits on an NTFS-backed bind mount. Log in
+with the host Codex CLI (`codex login`) from the same shell environment that
+launches Ralph.
+
+If you already logged in via PowerShell `claude.exe` and want WSL to use those creds too:
+
+```bash
+# WSL bash — replace <WINUSER>
+mkdir -p ~/.claude
+cp -r /mnt/c/Users/<WINUSER>/.claude/. ~/.claude/
+cp /mnt/c/Users/<WINUSER>/.claude.json ~/.claude.json 2>/dev/null || true
+mkdir -p ~/.config/gh
+# gh on native Windows stores config in AppData/Roaming/GitHub CLI; fall back to .config/gh
+cp -r "/mnt/c/Users/<WINUSER>/AppData/Roaming/GitHub CLI/." ~/.config/gh/ 2>/dev/null || \
+cp -r /mnt/c/Users/<WINUSER>/.config/gh/. ~/.config/gh/ 2>/dev/null || true
+```
+
+- Launching Claude from PowerShell after a global install — just call the bin directly:
+  ```powershell
+  ralph-afk "<plan-and-prd>" 3
+  ```
+- Or from inside WSL bash:
+  ```bash
+  ralph-afk "<plan-and-prd>" 3
+  ```
+
+---
+
+## Choose the coding agent
+
+Claude remains the default:
+
+```bash
+ralph-afk "./docs/plans/x.md ./docs/prd/x.md" 5
+```
+
+Select Codex per invocation:
+
+```bash
+ralph-afk --agent codex "./docs/plans/x.md ./docs/prd/x.md" 5
+ralph-ghafk --agent codex 5
+```
+
+For automation, `RALPH_AGENT=codex` is the fallback when `--agent` is absent.
+The explicit flag always wins.
+
+Codex ignores `~/.codex/config.toml` by default while still reusing its login.
+Pass `--codex-user-config` to load that configuration intentionally. This may
+start configured MCP servers and hooks, so their commands and paths must work
+inside the Linux sandbox.
+
+### Model and effort
+
+Ralph resolves a model and a reasoning effort independently for each attempt.
+Flag and environment precedence is fixed for the run; provider defaults and
+host configuration are read when the attempt begins. For each field the first
+source that is set wins (blank or whitespace-only counts as unset):
+
+1. `--model <name>` / `--effort <level>`
+2. `RALPH_CLAUDE_MODEL` / `RALPH_CLAUDE_EFFORT`, or `RALPH_CODEX_MODEL` /
+   `RALPH_CODEX_EFFORT` for Codex
+3. `RALPH_MODEL` / `RALPH_EFFORT`, which apply to whichever agent runs
+4. the agent's own default, below
+
+The per-agent variable names are derived from the agent's name, so both agents
+can be configured at once and switching agents never sends one the other's
+model.
+
+| Agent                        | Model default                                                                  | Effort default                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| Claude                       | the model pinned by host `~/.claude/settings.json`, then `claude-opus-5-5[1m]` | none: no `--effort` is sent, so the container CLI applies the host settings' `effortLevel` |
+| Codex, isolated              | `gpt-6-sol`                                                                    | `high`, whatever the model                                                                 |
+| Codex, `--codex-user-config` | `~/.codex/config.toml`                                                         | `~/.codex/config.toml`                                                                     |
+
+Before every implementer or reviewer attempt, Ralph writes the configuration
+for that attempt to stderr. The first line appears immediately after the stage
+banner:
+
+```text
+== iteration 2/5 · reviewer (stage 2/2) ==
+attempt 1 · codex · configured model=gpt-6-sol (Ralph default) · effort=high (Ralph default)
+```
+
+Retries print another line (`attempt 2`, and so on), with numbering restarting
+at 1 for each stage. The line is emitted before template rendering, so a render
+failure that consumes an attempt is still visible. A stage skipped because the
+gate did not move HEAD keeps its existing skip message and prints no attempt
+configuration. Because the line goes to stderr it is also captured by
+`--detach` logs. It is always plain text (no ANSI, including on a TTY), with
+control characters escaped for display so a configured value cannot inject
+another terminal line or escape sequence. The escaping is display-only and
+does not change the value passed to the provider.
+
+`configured` is deliberate: this is the value Ralph requested, not proof of
+the model or reasoning mode the backend actually used. When Ralph intentionally
+omits a switch, the line says `provider-managed` rather than guessing a value;
+examples are untuned Claude effort, Claude model selection under third-party
+routing, and untuned Codex fields inherited with `--codex-user-config`.
+
+For Claude the host settings are read as `env.ANTHROPIC_MODEL`, else the `model`
+key `/model` stored (its "(default)" entry stores no model). Ralph passes
+`--model` rather than letting the container choose, because the sandbox image's
+CLI is frozen at image build time and its built-in default can lag the host's
+(the per-stage `claude update` refreshes the CLI, but not under
+`RALPH_CLAUDE_UPDATE=0` or offline — see "Troubleshooting").
+The exception is third-party routing: when the host settings enable
+`CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX`, or
+`CLAUDE_CODE_USE_FOUNDRY`, model IDs are provider-specific, so Ralph sends no
+`--model` and the container CLI resolves as before. An effort, when set, is
+still sent there: `--effort <level>` is a CLI setting, not a model ID.
+
+Codex sends its effort as `-c model_reasoning_effort="<level>"`. Isolated Codex
+keeps Ralph's `high` default even when a model is named — naming a model no
+longer silently drops the effort to the Codex CLI's own (a behavior change; see
+"Troubleshooting"). With `--codex-user-config` the file supplies both unless a
+flag or variable overrides it. An explicit invalid model or incompatible effort
+fails in Codex; Ralph never retries with another model or a lower effort.
+
+Effort levels are allowlisted per agent: Claude takes
+`low|medium|high|xhigh|max` — `ultracode` is left out deliberately, since it
+starts workflow orchestration an unattended stage cannot steer — and Codex adds
+`none`, `minimal`, and `ultra`. `RALPH_EFFORT` is agent-agnostic, so it accepts only a
+level every agent accepts (currently `low|medium|high|xhigh|max`); a
+provider-only level such as `ultra` goes in `RALPH_CODEX_EFFORT`. An unknown level ends
+the run before any container starts, with `run.ended` `reason: "error"` in the
+event log and exit `1`. `--print-config` never fails on one: it prints the level
+with an `invalid: allowed …` suffix.
+
+Ultra is model-, client-, and account-dependent. Ralph selects the mode but does
+not treat allowlist acceptance or `--print-config` output as proof that a chosen
+model is entitled to run it. The Codex 0.156.1 bundled catalog reported this
+snapshot on 2026-09-23:
+
+| Model ID        | Advertised effort values                         |
+| --------------- | ------------------------------------------------ |
+| `gpt-6-astra`   | `low`, `medium`, `high`, `xhigh`, `max`, `ultra` |
+| `gpt-6-sol`     | `low`, `medium`, `high`, `xhigh`, `max`, `ultra` |
+| `gpt-6-luna`    | `low`, `medium`, `high`, `xhigh`, `max`          |
+| `gpt-5.6-sol`   | `low`, `medium`, `high`, `xhigh`, `max`, `ultra` |
+| `gpt-5.6-terra` | `low`, `medium`, `high`, `xhigh`, `max`, `ultra` |
+| `gpt-5.6-luna`  | `low`, `medium`, `high`, `xhigh`, `max`          |
+
+This table is informational, not a permanent registry or an access guarantee;
+newer clients may change it, and custom or stale images may need a newer Codex
+version. Ralph still accepts `none` and `minimal` for compatible models even
+though those values were absent from this modern-model snapshot. Codex owns the
+current compatibility error.
+
+[OpenAI's model guide](https://learn.chatgpt.com/docs/models) describes Ultra as
+maximum reasoning with automatic delegation, which can increase time and token
+usage. For the local CLI, the
+[subagent guide](https://learn.chatgpt.com/docs/agent-configuration/subagents#reasoning-effort-model_reasoning_effort)
+qualifies delegation: current clients delegate after a direct request or an
+applicable project or skill instruction. Selecting Ultra through Ralph does not
+promise proactive delegation, and Ralph neither requires nor counts child
+agents; its outer implementer/reviewer stages stay unchanged.
+
+PowerShell examples for a one-run selection and a Codex-only environment pin:
+
+```powershell
+ralph-afk --agent codex --model gpt-6-sol --effort ultra --print-config
+ralph-afk --agent codex --model gpt-6-sol --effort ultra "docs/plan.md" 3
+ralph-afk --agent codex --model gpt-6-luna --effort max "docs/plan.md" 3
+ralph-afk --model claude-opus-5-5 --effort xhigh "docs/plan.md" 3
+$env:RALPH_CODEX_EFFORT = "ultra"
+ralph-ghafk --agent codex --print-config
+Remove-Item Env:RALPH_CODEX_EFFORT
+```
+
+`ralph-afk --print-config` shows the initial `model` and `reasoning` resolution
+and names the flag or variable each came from; `run.started` in the run event
+log records that same run-start description. The attempt line is the record to
+consult for a particular stage attempt: Ralph takes a fresh provider
+snapshot for each one, so a host Claude setting changed between retries is
+observed by the next attempt. Display and provider arguments use the same
+snapshot within an attempt.
+
+## First-run setup
+
+### 1. Get the image
+
+The orchestrator resolves the image in three steps on each run:
+
+1. `docker image inspect $RALPH_IMAGE` — short-circuits if the image is already on the host (a floating tag like `:latest` is re-pulled anyway, so a republished sandbox isn't pinned to a stale local copy).
+2. Otherwise `docker pull $RALPH_IMAGE` — defaults to `docker.io/daonhan/ralph-sandbox:latest`.
+3. If pull fails AND `$RALPH_DOCKER_CONTEXT/Dockerfile` exists, falls back to `docker build -t $RALPH_IMAGE $RALPH_DOCKER_CONTEXT`.
+
+For most users step 2 is enough — no local Dockerfile needed. To prime the cache:
+
+```bash
+docker pull docker.io/daonhan/ralph-sandbox:latest
+```
+
+Build locally (offline, custom changes):
+
+```bash
+cd ralph
+docker build -t docker.io/daonhan/ralph-sandbox:latest -f packages/core/templates/Dockerfile .
+```
+
+The image bundles Node 22, Debian Bookworm Python 3.11 as `python` and `python3`,
+`python -m venv`, `uv`/`uvx` 0.11.28, .NET SDK 10, `gh`, `jq`, `git`, Claude Code,
+and the pinned Codex CLI. Basic Python repositories need no extra runtime install. Create a
+project-local virtual environment (for example, `.venv`) or use uv-managed
+isolation; do not install project dependencies globally into the Debian system
+Python.
+
+This release provides one baked system Python and does not select versions from
+`.python-version`, `.tool-versions`, `.mise.toml`, `pyproject.toml`, or similar
+manifests. Repositories pinned to another Python version need a custom
+`RALPH_IMAGE` until future version-detection support is added.
+
+The Claude Code CLI baked into the image is likewise a build-time snapshot, but
+Claude Code releases roughly daily, so every Claude stage runs `claude update`
+before its own command and caches the result in the host-wide `ralph-claude-home`
+Docker volume; `RALPH_CLAUDE_UPDATE=0` runs the image's copy as shipped. See
+"Troubleshooting" for the cost and cleanup.
+
+The Codex CLI works the same way, for a sharper reason: a stale Codex is not
+merely old — the server rejects models it predates with HTTP 400, which fails
+every stage of a run. Every Codex stage runs `codex update` first and caches the
+result in the host-wide `ralph-codex-cli` volume, so `ARG CODEX_VERSION` is the
+floor the sandbox starts from rather than the version that runs;
+`RALPH_CODEX_UPDATE=0` runs the image's pinned copy as shipped.
+
+#### Publishing a new image (maintainers)
+
+The repo ships a GitHub Actions workflow at [`.github/workflows/publish-image.yml`](./.github/workflows/publish-image.yml) that builds + pushes `linux/amd64` images to Docker Hub.
+
+The Python runtime and tooling addition is a `ralph-sandbox` image release only;
+it does not bump `@daonhan/ralph-core` or `@daonhan/ralph`.
+
+Triggers:
+
+- **`workflow_dispatch`** — manual run from the Actions tab; pick the tag and whether to also push `:latest`.
+- **Git tag `ralph-sandbox-v*`** — pushing a tag like `ralph-sandbox-v0.1.3` (cut by release-please) publishes `:v0.1.3` plus `:latest`, and enriches the matching GitHub Release with the image digest, an SBOM, and a keyless cosign attestation.
+- **Git tag `image-v*`** — legacy compatibility shim; publishes `:vX.Y.Z` plus `:latest` but does **not** enrich a GitHub Release. Slated for removal after one release cycle through the new path.
+
+Required repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (a Docker Hub access token with `Read & Write` scope on the `daonhan/ralph-sandbox` repository).
+
+### 2. Authenticate (one-off)
+
+The image is stateless. Provider credentials live on the **host** at `~/.claude` or `~/.codex`. If you use `ralph-ghafk`, its provider-independent GitHub CLI credentials live at `~/.config/gh`. The orchestrator mounts only the selected provider's credentials, plus GitHub CLI credentials when present, into each container.
+
+> **Same-shell rule.** `ralph-afk` / `ralph-ghafk` read `$HOME` of the shell that launched them. Auth from the same shell context you intend to run the bins in. PowerShell host (`C:\Users\<you>\.config\gh\`) and WSL host (`\\wsl$\Ubuntu\home\<you>\.config\gh\`) are separate stores — don't mix. Native PowerShell and Git Bash homes are valid for both providers.
+
+Choose one provider login path below. Claude and Codex authentication are
+mutually exclusive; GitHub authentication is provider-independent and required
+only for `ralph-ghafk`.
+
+#### Claude login
+
+##### Linux / macOS / WSL bash
+
+```bash
+mkdir -p ~/.claude
+touch ~/.claude.json
+
+docker run -it --rm \
+  -v "$HOME/.claude:/home/agent/.claude" \
+  -v "$HOME/.claude.json:/home/agent/.claude.json" \
+  docker.io/daonhan/ralph-sandbox:latest bash
+```
+
+##### Windows PowerShell
+
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.claude" | Out-Null
+if (-not (Test-Path "$HOME\.claude.json")) { New-Item -ItemType File "$HOME\.claude.json" | Out-Null }
+
+docker run -it --rm `
+  -v "${HOME}\.claude:/home/agent/.claude" `
+  -v "${HOME}\.claude.json:/home/agent/.claude.json" `
+  docker.io/daonhan/ralph-sandbox:latest bash
+```
+
+##### Inside the container
+
+```bash
+claude /login         # browser flow; Claude only
+exit
+```
+
+#### Codex login
+
+Use this path instead when you select Codex. Install the host CLI version
+pinned in Ralph's sandbox from the same shell environment that will launch
+Ralph:
+
+```bash
+npm install --global @openai/codex@0.156.1
+codex --version
+```
+
+Codex credentials must be file-backed because a host OS keyring is not
+available inside Docker. Create `~/.codex/config.toml` if needed and set:
+
+```toml
+cli_auth_credentials_store = "file"
+```
+
+Then authenticate in that same shell:
+
+```bash
+codex login
+codex login status
+```
+
+Ralph mounts `~/.codex` read-only at `/mnt/codex-creds` and copies `auth.json`
+(plus `config.toml` and `AGENTS.md` when present) into a container-local
+`CODEX_HOME=/home/agent/.codex` before each stage. Codex therefore never writes
+to the host credential store: an OAuth token refreshed inside the container is
+not written back, and the host CLI re-refreshes on its next use. Ralph runs
+Codex with `--ephemeral`, so stage session transcripts are not persisted
+either.
+
+#### GitHub login (`ralph-ghafk` only)
+
+Skip this section when you use only `ralph-afk`. For `ralph-ghafk`, authenticate
+GitHub regardless of whether you selected Claude or Codex. Ralph renders issue
+data with the host `gh` command, then mounts the same configuration read-only at
+`/home/agent/.config/gh` for the stage.
+
+##### Linux / macOS / WSL bash
+
+```bash
+export GH_CONFIG_DIR="$HOME/.config/gh"
+mkdir -p "$GH_CONFIG_DIR"
+gh auth login
+gh auth status
+```
+
+##### Windows PowerShell
+
+```powershell
+$env:GH_CONFIG_DIR = "$HOME\.config\gh"
+New-Item -ItemType Directory -Force $env:GH_CONFIG_DIR | Out-Null
+gh auth login
+gh auth status
+```
+
+Native Windows `gh` otherwise defaults to its AppData directory, which Ralph
+does not mount. Keep `GH_CONFIG_DIR` set when you invoke `ralph-ghafk` from this
+PowerShell session; set it again before the invocation if you open a new one.
+On Linux, macOS, and WSL, keep the exported `GH_CONFIG_DIR` in the same shell for
+`gh auth status` and `ralph-ghafk`; export it again in a new shell before either
+command. This pins `gh` to the configuration directory Ralph mounts even when
+`XDG_CONFIG_HOME` differs.
+
+For `gh auth login` pick: `GitHub.com` → `HTTPS` → `Y` (authenticate Git) →
+`Login with web browser`. Copy the one-time code, open
+`https://github.com/login/device` in the host browser, paste it, and approve.
+
+#### Verify back on the host
+
+Verify the credentials for the provider you selected.
+
+##### Claude credentials
+
+Linux / macOS / WSL:
+
+```bash
+ls -la ~/.claude/.credentials.json ~/.claude.json
+```
+
+PowerShell:
+
+```powershell
+Get-ChildItem "$HOME\.claude\.credentials.json","$HOME\.claude.json"
+```
+
+##### Codex credentials
+
+```bash
+codex login status
+```
+
+Because `cli_auth_credentials_store = "file"`, verify that a successful login
+also created the credential file without printing its reusable secret.
+
+```bash
+ls -la ~/.codex/auth.json
+```
+
+##### GitHub credentials (`ralph-ghafk` only)
+
+Linux / macOS / WSL:
+
+```bash
+export GH_CONFIG_DIR="$HOME/.config/gh"
+gh auth status
+```
+
+PowerShell:
+
+```powershell
+$env:GH_CONFIG_DIR = "$HOME\.config\gh"
+gh auth status
+```
+
+Run the matching command from the same shell context as Ralph. On PowerShell,
+keep `GH_CONFIG_DIR` set for the subsequent `ralph-ghafk` invocation. These
+commands verify the active GitHub account without displaying the reusable
+credential stored in `hosts.yml`.
+
+#### Re-login / token expired
+
+Re-run `claude /login` inside the container, `codex login` from the matching host
+shell, or the host `gh auth login` flow above as appropriate. Provider login
+updates the selected provider's writable host store; host GitHub login updates
+`~/.config/gh`, which Ralph later mounts read-only.
+
+---
+
+## `ralph-afk` — plan/PRD loop
+
+### Usage
+
+```bash
+ralph-afk "<plan-and-prd>" <iterations>
+```
+
+(Or via the shim: `./node_modules/@daonhan/ralph/scripts/afk.sh "<plan-and-prd>" <iterations>`.)
+
+Also supports:
+
+- `ralph-afk --help` (or `-h`) — usage, flags, env vars.
+- `ralph-afk --version` (or `-V`) — print bin + core version and exit.
+- `ralph-afk --print-config` — print resolved workspace / docker context / image / docker-socket status / history dir and exit. Use for diagnostics before launching a real loop.
+
+- `<plan-and-prd>` — a single string forwarded verbatim as `{{ INPUTS }}` in the template. Conventionally paths to plan and PRD files.
+- `<iterations>` — max loop iterations. Exits early if implementer emits the sentinel.
+
+### Example
+
+```bash
+ralph-afk "./docs/plans/inventory.md ./docs/prd/PRD-Inventory.md" 10
+```
+
+From PowerShell on Windows:
+
+```powershell
+wsl bash -c "ralph-afk './docs/plans/inventory.md ./docs/prd/PRD-Inventory.md' 10"
+```
+
+### What happens per iteration
+
+1. **Render template** `packages/core/templates/afk.md`:
+   - `` !?`git log -n 5 …|||No commits found` `` → recent commits (try-shell)
+   - `{{ INPUTS }}` → the plan/PRD string
+   - `@include:prompt.md` → the agent playbook (inlined by the Node renderer, no shell)
+2. **Implementer stage** (gate) — `docker run ralph-sandbox <selected-agent> …` with the rendered prompt streamed in via a tempfile under `.ralph-tmp/` (avoids Windows 32 KB argv limit); a Claude stage runs `claude update` and a Codex stage runs `codex update` before its own command (see "Troubleshooting"). Provider events are normalized and rendered live; the terminal completion is captured.
+3. **Sentinel check** — if the completion carries `<promise>NO MORE TASKS</promise>` on a line of its own, the loop skips the reviewer and exits 0; a mention inside prose does not stop the run.
+4. **Reviewer stage** — runs `packages/core/templates/review.md`. Reads the HEAD commit (the `git show --stat` summary inline, the full patch spilled to `.ralph-tmp/spill-…/head.diff` via `@spill?:head.diff`), then either commits a `fix(review): …` patch or emits `<review>OK</review>` / `<review>SKIP</review>` and stops. Single pass; never amends the implementer's commit. It runs only when the implementer stage moved HEAD; otherwise the loop records a `skipped` history entry and starts no container.
+5. **Run summary** — every non-signal exit (sentinel, iteration cap, failed stage) prints one stdout line with the reason, iterations completed, stages run and skipped, cost, tokens and wall time — e.g. `● Ralph ended · cap · 3/3 iterations · 5 stages (1 skipped) · $4.12 · 118.3k in / 9.6k out · 42m10s` — and the run's history file ends with a footer carrying the same totals: `--- ended · 3/3 iterations · cap · 5 stages (1 skipped) · $4.12 · 118.3k in / 9.6k out · 42m10s`.
+
+---
+
+## `ralph-ghafk` — GitHub-issue loop
+
+### Usage
+
+```bash
+export GH_CONFIG_DIR="$HOME/.config/gh"
+ralph-ghafk <iterations>
+```
+
+No plan/PRD arg — context comes from open GitHub issues.
+
+### What happens per iteration
+
+1. **Render template** `packages/core/templates/ghafk.md`:
+   - `` !?`git log -n 5 …|||No commits found` `` → recent commits (try-shell)
+   - `` !?`gh issue list --state open --limit 50 --json number,title,labels|||{"error":"GitHub issue query failed"}` `` → a lean inline index of open issues (number / title / labels)
+   - `` @spill?:issues.json=`gh issue list … --json number,title,body,labels,comments|||{"error":"GitHub issue query failed"}` `` → full issue bodies + comments written to `.ralph-tmp/spill-…/issues.json`; the agent `Read`s that file before picking a task
+   - `@include:ghprompt.md` → the agent playbook (inlined by the Node renderer, no shell)
+2. **ghafk-implementer stage** (gate) — agent picks one open AFK issue, implements it, commits, closes / comments on the issue.
+3. **Sentinel check** — same as `ralph-afk`.
+4. **Reviewer stage** — same as `ralph-afk`.
+5. **Run summary** — same as `ralph-afk`.
+
+Current issue labels, body, and comments take precedence over prior iteration history. The agent follows the target repository's label conventions (including `ready-for-agent` where used) and reads current bodies/comments before deciding a candidate is completed or ineligible. Closing an issue requires evidence for its current acceptance criteria, including any required platform verification; a prior history summary is insufficient.
+
+Both issue queries report failures as an error object. Missing, malformed, failed, or disagreeing views require a fresh `gh` lookup. If the agent cannot establish the current queue, it reports **Blocked** without the no-more-tasks sentinel. The initial 50-issue limit does not prove the full queue is exhausted; the agent must check the remaining issues before declaring no more tasks.
+
+---
+
+## Running AFK
+
+Both bins are designed to chew through long runs unattended. Five AFK flags wire that up, and two more tune the selected agent:
+
+| Flag                | Default                                                 | What it does                                                             |
+| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `--no-keep-alive`   | off (wake-lock acquired)                                | Skip the OS wake-lock for the loop's lifetime.                           |
+| `--max-retries <N>` | `3`                                                     | Per-stage retry budget on transient failures. `0` restores fail-fast.    |
+| `--detach`          | off                                                     | Fork the loop into a background process, print pid + log path, and exit. |
+| `--log <path>`      | `<workspace>/.ralph-tmp/logs/detached-<parent-pid>.log` | Override the detached log target. Only meaningful with `--detach`.       |
+| `--notify`          | off                                                     | OS toast + terminal bell on loop completion or unrecoverable failure.    |
+| `--model <name>`    | agent default (see "Model and effort")                  | Model for the selected agent; outranks the model env vars.               |
+| `--effort <level>`  | agent default (see "Model and effort")                  | Reasoning effort for the selected agent; outranks the effort env vars.   |
+
+Canonical overnight recipe:
+
+```bash
+ralph-afk --detach --notify "<plan-and-prd>" 50
+```
+
+This forks into the background, holds an OS wake-lock so the host doesn't sleep, retries transient stage failures up to 3× with exponential backoff (`5s / 30s / 2m`), and raises a toast + bell when the run finishes (sentinel hit or iteration cap reached) or fails (signal, uncaught exception). Tail the log from any shell:
+
+```bash
+tail -f <workspace>/.ralph-tmp/logs/detached-*.log
+```
+
+Each run also writes an append-only event log beside its Markdown history, with the same base name: `<workspace>/.ralph/history/<yyyy-MM-dd-HHmmss>-<bin>[-<branch>].jsonl`. It opens before image setup and gets a heartbeat every 30 s, so a script can tell from the file alone whether a run is still resolving its image, running, finished or dead, how long its stage and agent have been silent, and how it ended. The newest 20 logs that weren't refused are kept, plus the newest refused one. Schema, liveness rules and a PowerShell reader: [docs/ARCHITECTURE.md § Run event log](./docs/ARCHITECTURE.md#run-event-log).
+
+**One run per workspace.** A launch starts nothing and exits `75` while another run in the same workspace is live (`[refused] another ralph run is live in this workspace: …`) or a killed run's container is still running (`[refused] run <runId> still has a running container …`, followed by the `docker rm -f` command that clears it). A script should retry after a jittered wait.
+
+| Exit          | Meaning                                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `0`           | `no-more-tasks` (sentinel) or the iteration cap                                                                       |
+| `1`           | The last iteration's stage failed after its retries, or an unexpected error; the log's `run.ended.reason` tells which |
+| `75`          | Refused: another run of this workspace is live, or a killed run's container is still running                          |
+| `130` / `143` | `Ctrl+C` (SIGINT) / SIGTERM                                                                                           |
+
+With `--detach` the parent exits `0` at once; the codes belong to the background process, whose refusal lands in the detached log and the `.jsonl`.
+
+Full per-OS notes (wake-lock mechanism, BurntToast install, WSL2 caveat, etc.) live in [`docs/keep-alive.md`](./docs/keep-alive.md).
+
+---
+
+## Consuming the package in another repo
+
+### Global install (recommended — run from anywhere)
+
+```bash
+npm i -g @daonhan/ralph
+```
+
+After install, both bins are on your `$PATH`:
+
+```bash
+cd /path/to/some/workspace
+ralph-afk "<plan-and-prd>" 5
+ralph-ghafk 5
+```
+
+The bundled Dockerfile (shipped inside `@daonhan/ralph-core`) is the default `RALPH_DOCKER_CONTEXT`, so the `docker build` fallback works even when you invoke from a workspace that has no `Dockerfile` of its own.
+
+### Per-repo install
+
+```bash
+# in your workspace repo
+npm i -D @daonhan/ralph         # or: pnpm add -D @daonhan/ralph
+./node_modules/.bin/ralph-afk "<plan-and-prd>" 5
+```
+
+### Bootstrap on demand (no install)
+
+```bash
+npx -y @daonhan/ralph ralph-afk "<plan-and-prd>" 5
+```
+
+### Environment variables
+
+| Variable                     | Default                                                  | Purpose                                                                                                                                                                                                                                                                                                    |
+| ---------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RALPH_WORKSPACE`            | `process.cwd()`                                          | Host path bind-mounted at `/home/agent/workspace`. Also where `.ralph-tmp/` is written.                                                                                                                                                                                                                    |
+| `RALPH_DOCKER_CONTEXT`       | bundled `@daonhan/ralph-core` dir                        | Build context for the `docker build` fallback. Only consulted if `docker pull` fails. Must contain `Dockerfile`. Defaults to the npm-installed core dir, which ships `Dockerfile`.                                                                                                                         |
+| `RALPH_IMAGE`                | `docker.io/daonhan/ralph-sandbox:latest`                 | Full image reference. `ensureImage` does `inspect` → `pull` → `build` (fallback).                                                                                                                                                                                                                          |
+| `RALPH_IMAGE_TAG`            | _(legacy)_                                               | Deprecated alias for `RALPH_IMAGE`. Honored if `RALPH_IMAGE` unset.                                                                                                                                                                                                                                        |
+| `RALPH_AGENT`                | `claude`                                                 | Agent fallback when `--agent` is absent: `claude` or `codex`.                                                                                                                                                                                                                                              |
+| `RALPH_RESULT_GRACE_MS`      | `30000`                                                  | Milliseconds to wait after the provider completion event before force-killing a docker child that fails to exit on its own. `0` disables the timer (original wait-forever behavior). Invalid values (non-finite, negative) fall back to the default.                                                       |
+| `RALPH_DOCKER_SOCK`          | _(on if a socket is found)_                              | Set to `0` to disable bind-mounting the host Docker socket into the sandbox. Mounted by default so Testcontainers inside the container can spawn sibling containers — this grants the sandbox **root-equivalent access to the host Docker daemon**. Disable when running untrusted prompts.                |
+| `RALPH_DOCKER_SOCK_PATH`     | _(auto-detected)_                                        | Explicit host `docker.sock` path. Auto-detection (when unset) tries `DOCKER_HOST` (`unix://` only), then `/var/run/docker.sock`, Docker Desktop, Colima, Rancher Desktop, and rootless Docker/Podman socket locations.                                                                                     |
+| `RALPH_ISOLATE_NODE_MODULES` | _(on except Linux)_                                      | `0` shares the bind-mounted host `node_modules/` with the sandbox; `1` isolates on Linux too. Otherwise the sandbox gets container-local `node_modules` volumes at every package directory plus a shared package-manager store volume, so an install inside the container never rewrites the host tree.    |
+| `RALPH_CLAUDE_UPDATE`        | _(on)_                                                   | `0` skips the `claude update` every Claude stage runs before its own command **and** the `ralph-claude-home` volume mount that caches the updated CLI across containers, so the stage runs the image's baked CLI. Any other value keeps both. Ignored for `--agent codex`.                                 |
+| `RALPH_CODEX_UPDATE`         | _(on)_                                                   | `0` skips the `codex update` every Codex stage runs before its own command **and** the `ralph-codex-cli` volume mount that caches the updated CLI across containers, so the stage runs the image's pinned CLI. Any other value keeps both. Ignored for `--agent claude`.                                   |
+| `RALPH_MODEL`                | Claude `claude-opus-5-5[1m]`; isolated Codex `gpt-6-sol` | Model for whichever agent runs; outranked by `--model` and `RALPH_<AGENT>_MODEL`. Claude falls back to the model pinned in host `~/.claude/settings.json`, then Ralph's own default — except under third-party routing (`CLAUDE_CODE_USE_BEDROCK`/`_VERTEX`/`_FOUNDRY`), where the container CLI resolves. |
+| `RALPH_EFFORT`               | Claude: the CLI's own; isolated Codex `high`             | Reasoning effort for whichever agent runs; outranked by `--effort` and `RALPH_<AGENT>_EFFORT`. Only a level every agent accepts (`low\|medium\|high\|xhigh\|max`) is allowed — a provider-only level goes in that provider's variable. An unknown level ends the run before any container starts.          |
+| `RALPH_CLAUDE_MODEL`         | _(unset)_                                                | Model for Claude runs. Outranks `RALPH_MODEL`, so both agents can be pinned at once and switching agents never sends one the other's model.                                                                                                                                                                |
+| `RALPH_CODEX_MODEL`          | _(unset)_                                                | Model for Codex runs. Outranks `RALPH_MODEL`.                                                                                                                                                                                                                                                              |
+| `RALPH_CLAUDE_EFFORT`        | _(unset)_                                                | Reasoning effort for Claude runs: `low\|medium\|high\|xhigh\|max`. Outranks `RALPH_EFFORT`. With none set Ralph sends no `--effort` and the container CLI applies the host settings' `effortLevel`.                                                                                                        |
+| `RALPH_CODEX_EFFORT`         | _(unset)_                                                | Reasoning effort for Codex runs: `none\|minimal\|low\|medium\|high\|xhigh\|max\|ultra`. Outranks `RALPH_EFFORT`, and is the only environment-variable route to a Codex-only level; actual support depends on the model, client, and account.                                                               |
+| `DOCKER_HOST`                | _(unset)_                                                | A `unix:///…` value is parsed for the docker-socket bind-mount; `tcp://` / `npipe://` / `ssh://` are not bind-mountable.                                                                                                                                                                                   |
+| `XDG_RUNTIME_DIR`            | _(unset)_                                                | Searched for rootless Docker/Podman sockets during auto-detection.                                                                                                                                                                                                                                         |
+| `NO_COLOR` / `TERM=dumb`     | _(unset)_                                                | Disable ANSI color in Ralph's own output. Color is also auto-disabled when stdout/stderr is not a TTY, so piping to a file stays clean.                                                                                                                                                                    |
+
+---
+
+## Local development (this monorepo)
+
+Full contributor guide — dev loop, tests, adding a stage, releasing — lives in **[CONTRIBUTING.md](./CONTRIBUTING.md)**. The essentials:
+
+```bash
+pnpm install                          # links workspace, hoists devDeps
+pnpm -r build                         # compiles packages/core/dist
+pnpm -r typecheck                     # no-emit type check
+pnpm -r test                          # packages/core runs `vitest run` (apps/cli has no tests)
+pnpm test                             # root: `node --test` over scripts/*.test.mjs
+```
+
+prek runs `lint-staged` (`prettier --ignore-unknown --write` on staged files) then `pnpm typecheck` before commits, and the full validation sequence before pushes that change runtime behavior. See [hook installation and docs-only push handling](./CONTRIBUTING.md#pre-push-hook-with-prek).
+
+### Build artifacts
+
+- `packages/core/dist/` — compiled `.js` + `.d.ts`. Required for both `pnpm pack` and `pnpm publish`.
+- `apps/cli` has no build step — bin shims are hand-written JS.
+
+### Pack tarballs (smoke-test before publish)
+
+```bash
+(cd packages/core && pnpm pack --pack-destination /tmp)
+(cd apps/cli      && pnpm pack --pack-destination /tmp)
+
+# Install both in a throwaway repo to verify the published artifacts work
+mkdir /tmp/ralph-test && cd /tmp/ralph-test
+npm init -y
+npm i -D /tmp/daonhan-ralph-core-*.tgz /tmp/daonhan-ralph-*.tgz
+./node_modules/.bin/ralph-afk           # → prints usage
+```
+
+### Global install from local checkout (dev shortcut)
+
+`pnpm link --global` is brittle inside this workspace (pnpm 9 rewrites the dependent's manifest). Use the pack-then-install path instead:
+
+```bash
+pnpm -r build
+(cd packages/core && pnpm pack --pack-destination /tmp/ralph-packs)
+(cd apps/cli      && pnpm pack --pack-destination /tmp/ralph-packs)
+npm i -g /tmp/ralph-packs/daonhan-ralph-core-*.tgz \
+         /tmp/ralph-packs/daonhan-ralph-*.tgz
+ralph-afk          # → Usage: ralph-afk <plan-and-prd> <iterations>
+```
+
+Re-run after each source change. To uninstall: `npm uninstall -g @daonhan/ralph @daonhan/ralph-core`.
+
+### Publish
+
+Publishing is **automated** — you don't run `pnpm publish` by hand. Land work on `main` with [Conventional Commits](./RELEASING.md#3-conventional-commit-guide); [release-please](./.github/workflows/release-please.yml) opens one Release PR per component, and **merging that PR** cuts the component tag (`ralph-core-v*` / `ralph-v*` / `ralph-sandbox-v*`) that triggers [`publish-npm.yml`](./.github/workflows/publish-npm.yml) / [`publish-image.yml`](./.github/workflows/publish-image.yml). See **[RELEASING.md](./RELEASING.md)** for the full flow, required secrets, version policy, and rollback runbook.
+
+Escape hatch (only if the pipeline is unavailable):
+
+```bash
+pnpm -r publish --access public   # topological order; workspace:^ rewritten to semver
+```
+
+### Use a local checkout in another repo (no publish)
+
+Use the pack-then-install path above. It exposes `ralph-afk` / `ralph-ghafk` globally; no per-workspace step needed.
+
+---
+
+## Customizing the pipeline
+
+### Add a stage
+
+1. Add an entry to `STAGES` in `packages/core/src/stages.ts`:
+   ```ts
+   linter: { name: "linter", template: "lint.md", permissionMode: "bypassPermissions" } satisfies Stage,
+   ```
+2. Create `packages/core/templates/lint.md` using the same `` !`cmd` `` + `{{ INPUTS }}` syntax.
+3. Wire it into the chain in `main.ts` / `gh-main.ts`:
+   ```ts
+   stages: [STAGES.implementer, STAGES.linter, STAGES.reviewer],
+   ```
+4. `pnpm -r build` and republish.
+
+Only the first stage is the gate (sentinel-checked). Later stages run only when the gate stage moved HEAD; otherwise the loop records a `skipped` history entry for each and starts no container. Ralph runs the selected provider without interactive approval (`permissionMode: "bypassPermissions"` for Claude; `--dangerously-bypass-approvals-and-sandbox` for Codex). With the Docker socket disabled, persistent host-write exposure still includes the workspace mount and, for Claude, the read-write credential store (Codex credentials are mounted read-only); GitHub CLI config is read-only.
+
+### Change the template syntax
+
+Renderer is in `packages/core/src/render.ts`. Tags supported today:
+
+- `` !`<shell cmd>` `` — executed via `bash` (Linux/macOS/WSL/Git Bash) or `cmd.exe` (Windows native fallback) with `cwd = workspaceDir`. stdout (trailing newline trimmed) replaces the tag. Failures throw and abort the iteration.
+- `` !?`<shell cmd>|||<fallback>` `` — try-shell. Same as `!` but stderr is suppressed and a non-zero exit returns the literal fallback string. Use this for cross-platform safety — avoids depending on shell-specific `2>/dev/null || echo "…"` idioms.
+- `` @spill[?]:<name>=`<shell cmd>[|||<fallback>]` `` — run `<cmd>` and write its **stdout to a file** `<name>` in the per-stage spill dir (`.ralph-tmp/spill-…/`), substituting the container-relative path `./.ralph-tmp/spill-…/<name>` into the prompt for the agent to `Read`. The `?` form suppresses stderr and writes `<fallback>` on non-zero exit; `<name>` must be a plain filename (no path separators, no `..`). Use for large outputs that would bloat the prompt — `review.md` spills the full HEAD patch, `ghafk.md` the full issue bodies.
+- `@include:<rel-or-abs-path>` — inline a file (via Node `readFileSync`). Path resolved against the template's own directory when relative. No shell. Use this for bundled playbooks, not for live shell output.
+- `{{ INPUTS }}` — replaced with the `inputs` field passed into `runLoop`.
+- `{{ HISTORY }}` — replaced with the last ten stage entries from `<workspace>/.ralph/history/` (non-empty only for the implementer stage). Substituted last, alongside `{{ INPUTS }}`; carries prior agent output verbatim (same trust rule — never shelled).
+
+Tags expand in a fixed order: `@include` → `@spill` → `!?` → `!` → `{{ INPUTS }}` → `{{ HISTORY }}`.
+
+Only trusted template source (including included playbooks) supplies executable tags. Command output, fallback strings, and inserted spill paths are kept separate from that source and never scanned for later tags or variable substitutions. After the documented newline trimming, command output stays verbatim: an issue title containing `` !`cmd` `` or `{{ HISTORY }}` remains text.
+
+On Windows, the renderer prefers `bash.exe` (Git for Windows / WSL passthrough) over `cmd.exe`. The `!?` tag makes commands tolerant either way.
+
+### Override the image
+
+Set `RALPH_IMAGE=registry.example.com/my-image:tag` before invoking the shim, or edit the default in `packages/core/src/runner.ts`. The runner does `inspect` → `pull` → `build` against whatever ref is set; legacy `RALPH_IMAGE_TAG` still works for backward compatibility.
+
+### Change feedback loops or task priority
+
+The agent playbooks are self-contained: `packages/core/templates/prompt.md` (plan/PRD source + progress recording, for `ralph-afk`) and `ghprompt.md` (issue triage + close/comment, for `ralph-ghafk`). Each carries its own task-priority ladder, feedback loops, commit rules, and final rules. `afk.md` / `ghafk.md` each `@include` their respective playbook. Both playbooks also read the injected `{{ HISTORY }}` block before task selection (so a prior `failed` approach is not blindly retried) and end each turn with a short **Done / Blocked / Next** summary that is recorded to `.ralph/history/` and shown to the next iteration. Edit the playbook for a loop to change its task priority or feedback loops.
+
+### Shipped skills
+
+Ralph ships one [Agent Skill](https://code.claude.com/docs/en/skills) of its own, `ralph-tdd` (`packages/core/templates/skills/ralph-tdd/`, adapted from [mattpocock/skills](https://github.com/mattpocock/skills), MIT): test-driven implementation for an unattended iteration — one failing test, the minimum code to make it pass, one vertical slice at a time, tests at seams named up front and listed in the commit body. Both implementer playbooks tell the agent to use it for backend and library code and to implement frontend UI code directly.
+
+It travels with the package, so it works on any host regardless of what you have installed (on Windows in particular, `~/.claude/skills` entries are usually junctions the container cannot follow). Every stage mounts the whole `templates/skills` directory **read-only** — Claude at `/home/agent/ralph-skills/.claude/skills`, with `--add-dir /home/agent/ralph-skills` added to the argv; Codex at `/home/agent/.agents/skills`, which it scans on its own. Both are container-local paths, so nothing is written to your home directory or your repo. The skill body is not pasted into the prompt: the agent sees the name and description and reads `SKILL.md` only when it uses it.
+
+To add another, drop a directory with a `SKILL.md` beside `ralph-tdd/`, name it `ralph-<topic>` (matching the frontmatter `name`), reference it from a playbook, and republish — no runner or adapter change. Details: [CONTRIBUTING.md](./CONTRIBUTING.md) "Adding a shipped skill".
+
+---
+
+## Stopping a run
+
+- **Natural stop:** implementer emits `<promise>NO MORE TASKS</promise>` on a line of its own.
+- **Manual stop:** `Ctrl+C`. `runLoop` installs `SIGINT` / `SIGTERM` handlers that abort the active stage (via `AbortController`, killing the docker child and removing its container), record `run.ended aborted` in the run log, release the OS wake-lock, fire the `--notify` toast if enabled, and exit `130` (SIGINT) / `143` (SIGTERM). Tempfiles under `.ralph-tmp/.run-*.md` and the per-stage `spill-*/` dir are removed by the `finally` block in `runner.ts`; a hard `SIGKILL` may leave them — safe to delete, gitignored.
+
+---
+
+## Troubleshooting
+
+- **`Cannot find module '@daonhan/ralph-core'`** — `@daonhan/ralph` was installed but its dep didn't resolve. Re-run `npm install` (or `pnpm install`) in the workspace, or use `npx -y @daonhan/ralph` to let npx fetch a clean copy.
+- **`@esbuild/win32-x64 package is present but this platform needs @esbuild/linux-x64`** — `node_modules/` installed from the wrong OS. Delete `node_modules/` + lockfile and reinstall under WSL.
+- **`[warning] sandbox install rewrote the host node_modules`** — an agent inside the sandbox ran an install into the bind-mounted `node_modules/`, leaving a Linux tree behind: a pnpm store path under `/home/agent/`, Linux symlinks, and usually a stray `.pnpm-store/` at the workspace root. Both are gitignored, so `git status` still looks clean while every host command (`pnpm`, `tsc`, `vitest`, the pre-commit hook) fails. The run's history footer carries ` · warning: sandbox-install` too, so a finished run can be diagnosed after the fact. Container-local `node_modules` volumes ([#128](https://github.com/daonhan/ralph/issues/128)) prevent the rewrite by default everywhere but Linux — see the next entry — so this is a Linux-host or `RALPH_ISOLATE_NODE_MODULES=0` symptom. Reinstall on the host before running anything there:
+  ```powershell
+  Remove-Item -Recurse -Force node_modules, .pnpm-store -ErrorAction SilentlyContinue; pnpm install
+  ```
+  ```bash
+  rm -rf node_modules .pnpm-store && pnpm install
+  ```
+- **An empty `node_modules/` appears on the host, or an install run inside the sandbox is missing there** — expected. The sandbox mounts its own container-local `node_modules` over every package directory of the workspace (the root plus each nested `package.json`, up to four levels down), plus one shared package-manager store volume, so an install inside the container cannot rewrite the host tree. It is **on by default on Windows and macOS, off on Linux**, where one tree can serve host and container alike; `RALPH_ISOLATE_NODE_MODULES=0` shares the host tree again and `RALPH_ISOLATE_NODE_MODULES=1` isolates on Linux too. `ralph-afk --print-config` prints which is in effect. The first install per workspace is cold — nothing is copied in from the host — and is then cached in the volume for later runs. Docker creates each mountpoint, so an empty `node_modules/` directory may show up on the host; it is gitignored, stays empty, and is safe to delete. The volumes outlive the run — list and remove them with:
+  ```bash
+  docker volume ls --filter label=ralph.kind=node-modules --format '{{.Name}}  {{.Label "ralph.workspace"}}  {{.Label "ralph.path"}}'
+  docker volume rm <name>…
+  ```
+  The shared store volume is `ralph-pm-store` (label `ralph.kind=pm-store`). They are named volumes, so a plain `docker volume prune` skips them (it removes only anonymous ones); `docker volume prune -a` clears them along with every other unused volume. The only cost is a cold install on the next run.
+- **`docker  Checking for updates to latest version...` / `docker  Claude Code is up to date (2.1.267)` before every Claude stage** — expected. The Claude Code CLI baked into the image is a build-time snapshot while Claude Code releases roughly daily, so each Claude stage runs `claude update` before its own command (the report goes to stderr; stdout stays reserved for the stream-json Ralph decodes). The updated CLI lives in the named volume `ralph-claude-home`, mounted at `/home/agent/.local` and shared by every workspace and both bins on the host, so the first stage on a host pays one download (~200 MB, ~20–35 s) and every later stage costs a version check (~2 s). If the update fails (offline, registry down) the stage runs with whatever version is installed; two loops running at once on one host share the volume, and a concurrent update is a benign race. `RALPH_CLAUDE_UPDATE=0` disables both the update and the volume mount, so the stage runs the image's copy directly (the mount is dropped too — a stale volume would otherwise shadow a fresher image); `ralph-afk --print-config` shows a `claude update` row with what is in effect. Codex has its own equivalent (next bullet). The volume outlives the run (label `ralph.kind=claude-home`, so it appears in `docker volume ls --filter label=ralph.kind`); remove it with `docker volume rm ralph-claude-home` — the only cost is one download on the next run.
+- **`docker  …` Codex update chatter before every Codex stage** — expected, and load-bearing: the server rejects models the CLI predates (`The 'gpt-6-astra' model requires a newer version of Codex`, HTTP 400), which fails every stage of a run, so each Codex stage runs `codex update` before its own command (the report goes to stderr; stdout stays reserved for the JSONL Ralph decodes). The image installs Codex under the agent-owned npm prefix `/home/agent/.npm-global`, and Ralph mounts the named volume `ralph-codex-cli` there so the update persists across containers — which makes `ARG CODEX_VERSION` the floor the sandbox starts from, not the version that runs. If the update fails (offline, registry down) the stage runs with whatever version is installed. `RALPH_CODEX_UPDATE=0` disables both the update and the volume mount (a stale volume would otherwise shadow a fresher image); `ralph-afk --print-config` shows a `codex update` row with what is in effect. Claude is unaffected. The volume outlives the run (label `ralph.kind=codex-cli`, so it appears in `docker volume ls --filter label=ralph.kind`); remove it with `docker volume rm ralph-codex-cli`.
+- **Codex update fails with `EACCES` under `/usr/local/lib/node_modules/@openai/codex`** — the selected image still has the old root-owned Codex installation. Current images install it under the agent-owned `/home/agent/.npm-global` prefix. Check `ralph-ghafk --print-config` and the workspace's `.ralph/host.env` for a custom image such as `ralph-sandbox:pg17`: Ralph reuses that local tag, and upgrading the npm packages or pulling the base image does not rebuild it. Rebuild with `docker build --pull --tag ralph-sandbox:pg17 "D:\Workspaces\ralph\images\pg17"` (adjust the checkout path); see [the pg17 refresh and verification steps](./images/pg17/README.md#refreshing-an-existing-image). Updates are best-effort, so this error lets the stage continue with its old CLI. `RALPH_CODEX_UPDATE=0` is only a temporary bypass, not an upgrade.
+- **`no git identity — git user.name/user.email are unset for this workspace`** — Ralph found no git identity to hand the sandbox, and the container never sees your `~/.gitconfig`. Commits the agent makes will be attributed to an author it invents. Set one on the host and rerun:
+  ```bash
+  git config --global user.name "Your Name"
+  git config --global user.email "you@example.com"
+  ```
+  A repo-local `user.name` / `user.email` inside the workspace takes precedence, matching git's own resolution — set one there instead when a repo needs its own identity. Commits already made with a fabricated author keep it; `git commit --amend --reset-author` fixes the last one.
+- **`Not logged in · Please run /login`** — Claude credentials are missing inside the container. Run the interactive `docker run … claude /login` step from "First-run setup".
+- **Codex reports that login is missing** — ensure `cli_auth_credentials_store = "file"`, run `codex login` from the same shell environment as Ralph (per the same-shell rule), and confirm `codex login status` succeeds and `~/.codex/auth.json` exists in that environment's home.
+- **Codex fails with `Operation not permitted (os error 1)` / `EPERM` at startup** — the container's `CODEX_HOME` is sitting on a Windows bind mount, which cannot host the unix socket and symlinks Codex creates at startup. Current Ralph avoids this by copying credentials into a container-local `CODEX_HOME`; upgrade `@daonhan/ralph` if you see this.
+- **Codex config, MCP servers, or hooks are missing** — isolated Codex intentionally ignores `~/.codex/config.toml`; opt in with `--codex-user-config` and ensure configured commands and paths work inside Linux Docker.
+- **An explicit Codex model or effort fails** — fix or remove the model/effort you set (`--model`, `--effort`, or their Codex/generic environment variables). Ralph does not silently fall back to `gpt-6-sol`, another model, or a lower effort after Codex rejects a model/effort combination. Ultra can require a newer client in a stale/custom image even when Ralph accepts the token.
+- **`API Error: 400 Claude Code <version> does not support this model; version 2.1.280 or newer is required`, or Codex `The '<model>' model requires a newer version of Codex`** — the CLI that ran predates the model: Claude Code older than 2.1.280 cannot run `claude-opus-5-5` (Ralph's Claude default), and a Codex client older than the image's pinned 0.156.1 may not know `gpt-6-sol` (Ralph's isolated Codex default) or `gpt-6-luna`. The per-stage update normally prevents this; the fix depends on why it did not run:
+  - the update failed (offline, registry down), so the stage ran the copy cached in the `ralph-claude-home` / `ralph-codex-cli` volume → retry once the registry answers, or first pull a current image with `docker pull docker.io/daonhan/ralph-sandbox:latest` (or rebuild a custom image with `docker build --pull`), then remove the volume (`docker volume rm ralph-claude-home` / `docker volume rm ralph-codex-cli`; refused while a run is using it) so the next run re-seeds it from that current image — the only cost is one download;
+  - `RALPH_CLAUDE_UPDATE=0` / `RALPH_CODEX_UPDATE=0` runs the image's baked CLI → `docker pull docker.io/daonhan/ralph-sandbox:latest`;
+  - a locally tagged image (for example `ralph-sandbox:pg17`) is never re-pulled → rebuild it with `docker build --pull`, then remove the volume as above;
+  - or name an older model explicitly: `--model "claude-opus-5[1m]"`, or `--agent codex --model gpt-5.6-sol`.
+- **A pinned Codex model now runs at `high` reasoning** — behavior change. Isolated Codex used to drop to the Codex CLI's own reasoning effort as soon as a model was named; it now keeps Ralph's `high` default, because model and effort resolve independently. That can make a run more expensive than the same command used to be. Pick the level explicitly with `--effort <level>` or `RALPH_CODEX_EFFORT=<level>`.
+- **The Claude stage fails on the model itself** (unknown model, or one your plan cannot use) — Ralph sent its own default because no model was set (`--model`, `RALPH_CLAUDE_MODEL`, `RALPH_MODEL`) and your host `~/.claude/settings.json` pinned none. Run `ralph-afk --print-config` to see the model and where it came from, then set `--model <model you have access to>` or pick an explicit (non-"(default)") entry in `/model`.
+- **`RALPH_EFFORT=… is not an effort level every agent accepts`** — the run ended before any container started, with `run.ended` `reason: "error"` in the event log and exit `1`. `RALPH_EFFORT` is agent-agnostic, so it takes only a level every agent accepts (`low|medium|high|xhigh|max`); a provider-only level such as Codex's `none`, `minimal`, or `ultra` goes in `RALPH_CODEX_EFFORT`. `ralph-afk --print-config` shows a rejected level with an `invalid: allowed …` suffix instead of failing.
+- **`gh issue list` fails with `not a git repository`** — the workspace has no `.git`, so `gh` cannot detect the target repo. The `ghafk.md` template supplies `{"error":"GitHub issue query failed"}` rather than an empty queue. The agent must retry a fresh lookup and report **Blocked** without the no-more-tasks sentinel if the queue remains unavailable. Run Ralph from the intended Git checkout and verify its GitHub remote and `gh auth status`.
+- **`MSB3248` during `dotnet build` / `dotnet test`** — virtiofs/9p quirk on Windows-mounted source. The agent retries automatically per the recipe in `packages/core/templates/prompt.md`; manual repro:
+  ```bash
+  dotnet test <path-to-test-csproj> \
+    -m:1 \
+    /p:UseSharedCompilation=false \
+    /p:BuildInParallel=false \
+    /p:BaseIntermediateOutputPath=/tmp/ralph-obj/<name>/ \
+    /p:BaseOutputPath=/tmp/ralph-bin/<name>/
+  ```
+- **`docker run` exit 1 with no selected-agent output** — image stale. Force refresh:
+  ```bash
+  docker rmi docker.io/daonhan/ralph-sandbox:latest
+  docker pull docker.io/daonhan/ralph-sandbox:latest
+  ```
+- **`docker pull failed … and no Dockerfile at …`** — the default image ref isn't reachable (offline, registry down, or you set a custom `$RALPH_IMAGE` that doesn't exist) AND no Dockerfile is at `$RALPH_DOCKER_CONTEXT`. Fix one of: connectivity, `RALPH_IMAGE`, or place a Dockerfile at `$RALPH_DOCKER_CONTEXT`.
+- **`pull access denied … repository does not exist`** — `$RALPH_IMAGE` points at a private repo or a typo. Either `docker login`, switch to a public image, or unset `RALPH_IMAGE` to use the default.
+- **Loop hangs after a stage's final assistant message (no next iteration, no error)** — the selected CLI inside the sandbox emitted its completion event but failed to exit. After `RALPH_RESULT_GRACE_MS` (default 30000ms), the runner kills the lingering docker child, removes its container, keeps the captured completion, and continues the loop. Bump or disable the timer via the environment when diagnosing. To inspect or stop the container manually before the timer expires:
+  ```bash
+  docker ps --filter ancestor=docker.io/daonhan/ralph-sandbox:latest
+  docker kill <container-id>
+  ```
+  The sandbox runs with `--rm`, so the container is removed after it exits.
+
+---
+
+## Files in this folder
+
+| File / dir                                                                       | Purpose                                                                                                                                                                      |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`apps/cli/scripts/afk.sh`](./apps/cli/scripts/afk.sh)                           | Optional shim — plan/PRD loop. Falls back to `npx @daonhan/ralph ralph-afk`. Shipped in the npm tarball.                                                                     |
+| [`apps/cli/scripts/ghafk.sh`](./apps/cli/scripts/ghafk.sh)                       | Optional shim — GitHub-issue loop. Calls `ralph-ghafk`.                                                                                                                      |
+| [`packages/core/templates/prompt.md`](./packages/core/templates/prompt.md)       | Agent playbook for `ralph-afk`. Shipped in core tarball.                                                                                                                     |
+| [`packages/core/templates/ghprompt.md`](./packages/core/templates/ghprompt.md)   | Agent playbook for `ralph-ghafk`. Shipped in core tarball.                                                                                                                   |
+| [`packages/core/templates/Dockerfile`](./packages/core/templates/Dockerfile)     | Builds `ralph-sandbox` image: Node 22 + Python 3.11/venv + `uv`/`uvx` + .NET SDK 10 + `gh` + Claude Code + pinned Codex CLI. Shipped in `@daonhan/ralph-core` tarball.       |
+| [`.dockerignore`](./.dockerignore)                                               | Shrinks build context (consumed at repo root for CI builds).                                                                                                                 |
+| [`package.json`](./package.json)                                                 | Monorepo root (private). Shared devDeps + pnpm workspace scripts.                                                                                                            |
+| [`pnpm-workspace.yaml`](./pnpm-workspace.yaml)                                   | Declares `apps/*` and `packages/*` as workspace members.                                                                                                                     |
+| [`tsconfig.base.json`](./tsconfig.base.json)                                     | Shared TS compiler options inherited by every package.                                                                                                                       |
+| [`apps/cli/`](./apps/cli)                                                        | `@daonhan/ralph` — CLI bin entries (`ralph-afk`, `ralph-ghafk`).                                                                                                             |
+| [`packages/core/src/main.ts`](./packages/core/src/main.ts)                       | Exports `runAfk(argv)`.                                                                                                                                                      |
+| [`packages/core/src/gh-main.ts`](./packages/core/src/gh-main.ts)                 | Exports `runGhAfk(argv)`.                                                                                                                                                    |
+| [`packages/core/src/loop.ts`](./packages/core/src/loop.ts)                       | Iteration driver. Runs stage chain; first stage is the gate.                                                                                                                 |
+| [`packages/core/src/render.ts`](./packages/core/src/render.ts)                   | Template renderer (`` !`cmd` `` + `{{ INPUTS }}`).                                                                                                                           |
+| [`packages/core/src/runner.ts`](./packages/core/src/runner.ts)                   | `docker run` wrapper + NDJSON stream + credential mounts. Image lookup: inspect → pull → build. Reads `RALPH_IMAGE`.                                                         |
+| [`.github/workflows/publish-image.yml`](./.github/workflows/publish-image.yml)   | CI: build + push `linux/amd64` `ralph-sandbox` to Docker Hub on `workflow_dispatch`, `ralph-sandbox-v*` tag (release-please primary), or legacy `image-v*` tag.              |
+| [`.github/workflows/publish-npm.yml`](./.github/workflows/publish-npm.yml)       | CI: publish `@daonhan/ralph-core` / `@daonhan/ralph` to npm on `ralph-core-v*` / `ralph-v*` tags; enriches the GitHub Release with the `.tgz`, SBOM, and cosign attestation. |
+| [`.github/workflows/release-please.yml`](./.github/workflows/release-please.yml) | CI: on push to `main`, opens a per-component Release PR; merging it cuts the tag that triggers the publish workflows.                                                        |
+| [`RELEASING.md`](./RELEASING.md)                                                 | Single source of truth for releasing all three components (npm packages + image): release-please flow, version policy, secrets, rollback runbook.                            |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md)                                           | Maintainer / contributor guide: dev loop, tests, adding a stage, release pipeline.                                                                                           |
+| [`QUICKSTART.md`](./QUICKSTART.md)                                               | Zero-to-first-loop getting-started guide for new users.                                                                                                                      |
+| [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)                                 | Internals / runtime data-flow reference for library extenders and core contributors.                                                                                         |
+| [`packages/core/src/cli-help.ts`](./packages/core/src/cli-help.ts)               | Flag parsing (`parseFlags`); `--help` / `--version` / `--print-config` output.                                                                                               |
+| [`packages/core/src/retry.ts`](./packages/core/src/retry.ts)                     | `withRetries` — per-stage retry with exponential backoff (default 3).                                                                                                        |
+| [`packages/core/src/keepalive.ts`](./packages/core/src/keepalive.ts)             | OS wake-lock acquire/release for the loop's lifetime (`--no-keep-alive` to skip).                                                                                            |
+| [`packages/core/src/detach.ts`](./packages/core/src/detach.ts)                   | `--detach` fork-and-exit into a background process.                                                                                                                          |
+| [`packages/core/src/notify.ts`](./packages/core/src/notify.ts)                   | `--notify` OS toast + terminal bell on loop terminal events.                                                                                                                 |
+| [`packages/core/src/stages.ts`](./packages/core/src/stages.ts)                   | Stage registry — `implementer`, `ghafkImplementer`, `reviewer`.                                                                                                              |
+| [`packages/core/src/index.ts`](./packages/core/src/index.ts)                     | Barrel re-export — `runAfk`, `runGhAfk`, `runLoop`, `STAGES`, `renderTemplate`, …                                                                                            |
+| [`packages/core/templates/afk.md`](./packages/core/templates/afk.md)             | `ralph-afk` prompt template.                                                                                                                                                 |
+| [`packages/core/templates/ghafk.md`](./packages/core/templates/ghafk.md)         | `ralph-ghafk` prompt template.                                                                                                                                               |
+| [`packages/core/templates/review.md`](./packages/core/templates/review.md)       | Reviewer prompt template.                                                                                                                                                    |
+
+---
+
+## License
+
+[MIT](./LICENSE) (c) Paul Nguyen.

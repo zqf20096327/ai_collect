@@ -1,0 +1,483 @@
+# Awesome Traffic Prediction
+
+Chinese version: [README.zh.md](./README.zh.md)
+
+![](https://img.shields.io/badge/dataset-v0.3-green)![](https://img.shields.io/badge/paper-v1.1-orange)
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+
+This repository contains useful resources for traffic prediction, including popular papers, datasets, tutorials, toolkits, and other helpful repositories.
+
+## Visual Highlights
+
+Latest monthly title-term word cloud:
+
+![Monthly Paper Word Cloud](updates/wordcloud/monthly-paper-wordcloud-latest.png)
+
+Latest Top-K term frequency chart:
+
+![Monthly Top Terms](updates/wordcloud/monthly-paper-wordcloud-topk-latest.png)
+
+Yearly hotspot comparison:
+
+![Yearly Hotspot Trend](updates/hotspots/yearly-hotspots-trend.png)
+
+Yearly theme trend lines:
+
+![Yearly Theme Trends](updates/hotspots/yearly-theme-trends.png)
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [0x00 Papers](#0x00-papers)
+  - [Reviews](#reviews)
+  - [Deep Learning Based Traffic Prediction Methods](#deep-learning-based-traffic-prediction-methods)
+  - [Curated Digest (Recent Years)](#curated-digest-recent-years)
+  - [Statistic Based Traffic Prediction Methods](#statistic-based-traffic-prediction-methods)
+  - [Time Series Forecasting](#time-series-forecasting)
+  - [Temporal Network Embedding](#temporal-network-embedding)
+- [0x01 Tutorial](#0x01-tutorial)
+  - [Textbook](#textbook)
+  - [Blogs](#blogs)
+- [0x02 DataSource](#0x02-datasource)
+  - [Datasets](#datasets)
+  - [Trajectory](#trajectory)
+  - [ETA](#eta)
+  - [Website](#website)
+- [0x03 Toolkits](#0x03-toolkits)
+- [0x04 Conferences & Journals](#0x04-conferences--journals)
+- [0x05 Research Group](#0x05-research-group)
+  - [Company](#company)
+  - [College](#college)
+- [0x06 Related Repositories](#0x06-related-repositories)
+- [0x07 Benchmark & Evaluation](#0x07-benchmark--evaluation)
+  - [Benchmark Matrix](#benchmark-matrix)
+  - [Auto Trend Visuals](#auto-trend-visuals)
+- [Contribution](#contribution)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## 0x00 Papers
+
+### Reviews
+
+1. [TITS 2015] Traffic Flow Prediction With Big Data: A Deep Learning Approach [[paper]](https://bookdown.org/amanas/traficomadrid/docs/Traffic%20flow%20prediction%20with%20big%20data%20-%20A%20deep%20learning%20approach.pdf)
+2. [KDD 2020] Deep Learning for Spatio-Temporal Data Mining: A Survey [[paper]](https://ieeexplore.ieee.org/abstract/document/9204396/)
+3. [Information Fusion 2020] Urban flow prediction from spatiotemporal data using machine learning: A survey [[paper]](https://www.sciencedirect.com/science/article/pii/S1566253519303094)
+4. [Arxiv 2020] Deep Learning on Traffic Prediction: Methods, Analysis and Future Directions [[paper]](https://arxiv.org/abs/2004.08555)
+5. [Arxiv 2021] Graph Neural Network for Traffic Forecasting:  A Survey [[paper]](https://arxiv.org/abs/2101.11174)
+6. [Applied Intelligence 2022] Spatial-temporal graph neural network for traffic forecasting: An overview and open research issues [[paper]](https://link.springer.com/content/pdf/10.1007/s10489-021-02587-w.pdf)
+
+### Deep Learning Based Traffic Prediction Methods
+
+#### 2015
+
+1. [NIPS 2015] Convolutional LSTM Network: A Machine Learning Approach for Precipitation Nowcasting [[paper]](https://papers.nips.cc/paper/2015/file/07563a3fe3bbe7e3ba84431ad9d055af-Paper.pdf)
+
+#### 2016
+
+1. [Sigspatial 2016] DNN-Based Prediction Model for Spatio-Temporal Data [[paper]](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/09/DeepST-SIGSPATIAL2016.pdf) [[code]](https://arxiv.org/pdf/1610.00081.pdf)
+
+#### 2017
+
+1. [AAAI 2017] Deep Spatio-Temporal Residual Networks for Citywide Crowd Flows Prediction [[paper]](https://arxiv.org/pdf/1610.00081.pdf)
+2. [ISPRS 2017] Road2Vec: Measuring Traffic Interactions in Urban Road System from Massive Travel Routes [[paper]](https://www.mdpi.com/2220-9964/6/11/321)
+3. [Arxiv 2017] DeepTransport: Learning Spatial-Temporal Dependency for Traffic Condition Forecasting [[paper]](https://arxiv.org/pdf/1709.09585.pdf)
+
+#### 2018
+
+1. [TITS 2019] T-GCN: A Temporal Graph Convolutional Network for Traffic Prediction [[paper]](https://arxiv.org/pdf/1811.05320v3.pdf) [[code]](https://github.com/lehaifeng/T-GCN)
+2. [TITS 2018] Missing Value Imputation for Traffic-Related Time Series Data Based on a Multi-View Learning Method [[paper]](https://ieeexplore.ieee.org/abstract/document/8478191)
+3. [IJCAI 2018] Spatio-Temporal Graph Convolutional Networks: A Deep Learning Framework for Traffic Forecasting [[paper]](https://www.ijcai.org/Proceedings/2018/0505.pdf) [[code]](https://paperswithcode.com/paper/spatio-temporal-graph-convolutional-networks) [[review]](https://openreview.net/forum?id=SkNeyVzOWB)
+4. [IJCAI 2018] LC-RNN: A Deep Learning Model for Traffic Speed Prediction [[paper]](https://www.ijcai.org/Proceedings/2018/482)
+5. [IJCAI 2018] GeoMAN: Multi-level Attention Networks for Geo-sensory Time Series Prediction [[paper]](https://www.ijcai.org/Proceedings/2018/0476.pdf)
+6. [ICLR 2018] Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic Forecasting [[paper]](https://arxiv.org/abs/1707.01926) [[code-official-tf]](https://github.com/liyaguang/DCRNN) [[code-pytorch]](https://github.com/xlwang233/pytorch-DCRNN) [[review]](https://openreview.net/forum?id=SJiHXGWAZ) [[data]](https://drive.google.com/drive/folders/10FOTa6HXPqX8Pf5WRoRwcFnW9BrNZEIX?usp=drive_open)
+7. [KDD 2018] Hetero-ConvLSTM: A Deep Learning Approach to Traffic Accident Prediction on Heterogeneous Spatio-Temporal Data [[paper]](https://www.kdd.org/kdd2018/accepted-papers/view/hetero-convlstm-a-deep-learning-approach-to-traffic-accident-prediction-on-)
+8. [CS224W 2018] Efficient Traffic Forecasting With Graph Embedding [[paper]](http://snap.stanford.edu/class/cs224w-2018/reports/CS224W-2018-42.pdf) [[code]](https://github.com/syin3/cs224w-traffic)
+9. [CVPR 2018] Social GAN: Socially Acceptable Trajectories with Generative Adversarial Networks [[paper]](https://arxiv.org/abs/1803.10892) [[paper-ieee]](https://ieeexplore.ieee.org/document/8578338) [[code]](https://github.com/agrimgupta92/sgan)
+10. [AAAI 2018] Deep Multi-View Spatial-Temporal Network for Taxi Demand Prediction [[paper]](https://ojs.aaai.org/index.php/AAAI/article/view/11836) [[code]](https://github.com/huaxiuyao/DMVST-Net) [[data]](https://outreach.didichuxing.com/appEn-vue/Personal)
+11. ...
+
+#### 2019
+
+1. [TITS 2019] TrafficGAN: Network-Scale Deep Traffic Prediction With Generative Adversarial Nets [[paper]](https://ieeexplore.ieee.org/document/8935152)
+2. [TITS 2019] Contextualized Spatial–Temporal Network for Taxi Origin-Destination Demand Prediction [[paper]](https://ieeexplore.ieee.org/abstract/document/8720246) [[code]](https://github.com/liulingbo918/CSTN)
+3. [TITS 2019] Deep Spatial-Temporal 3D Convolutional Neural Networks for Traffic Data Forecasting [[paper]](https://ieeexplore.ieee.org/document/8684259)
+4. [IJCAI 2019] Graph WaveNet for Deep Spatial-Temporal Graph Modeling [[paper]](https://www.ijcai.org/Proceedings/2019/0264.pdf) [[code]](https://github.com/nnzhan/Graph-WaveNet)
+5. [IJCAI 2019] GSTNet: Global Spatial-Temporal Network for Traffic Flow Prediction [[paper]](https://www.aminer.cn/pub/5d4d46fb3a55acff992fdb8a/gstnet-global-spatial-temporal-network-for-traffic-flow-prediction?s=social)
+6. [AAAI 2019] Revisiting Spatial-Temporal Similarity: A Deep Learning Framework for Traffic Prediction [[paper]](https://arxiv.org/pdf/1803.01254v2.pdf) [[code]](https://github.com/tangxianfeng/STDN)
+7. [AAAI 2019] DeepSTN+: Context-aware Spatial-Temporal Neural Network for Crowd Flow Prediction in Metropolis [[paper]](https://ojs.aaai.org//index.php/AAAI/article/view/3892) [[code]](https://github.com/FIBLAB/DeepSTN)
+8. [AAAI 2019] Attention Based Spatial-Temporal Graph Convolutional Networks for Traffic Flow Forecasting [[paper]](https://aaai.org/ojs/index.php/AAAI/article/view/3881) [[code-pytorch]](https://github.com/guoshnBJTU/ASTGCN-r-pytorch)
+9. [AAAI 2019] Multi-Range Attentive Bicomponent Graph Convolutional NetworkforTraicForecasting [[paper]](https://arxiv.org/abs/1911.12093)
+10. [WWWC 2019] Learning from Multiple Cities: A Meta-Learning Approach for Spatial-Temporal Prediction [[paper]](https://dl.acm.org/doi/abs/10.1145/3308558.3313577)
+11. [IWPHM 2019] Spatio-Temporal Clustering of Traffic Data with Deep Embedded Clustering [[paper]](https://dl.acm.org/doi/abs/10.1145/3356995.3364537)
+12. [ICCV 2019] STGAT: Modeling Spatial-Temporal Interactions for Human Trajectory Prediction [[paper]](https://openaccess.thecvf.com/content_ICCV_2019/html/Huang_STGAT_Modeling_Spatial-Temporal_Interactions_for_Human_Trajectory_Prediction_ICCV_2019_paper.html) [[code]](https://github.com/huang-xx/STGAT)
+13. [KDD 2019] Urban Traffic Prediction from Spatio-Temporal Data Using Deep Meta Learning [[paper]](https://dl.acm.org/doi/abs/10.1145/3292500.3330884)[[code]](https://github.com/panzheyi/ST-MetaNet)
+14. [ICIKM 2019] Matrix Factorization for Spatio-Temporal Neural Networks with Applications to Urban Flow Prediction [[paper]](https://dl.acm.org/doi/abs/10.1145/3357384.3357832)
+15. [TKDE 2019] Flow prediction in spatio-temporal networks based on multitask deep learning [[paper]](https://ieeexplore.ieee.org/document/8606218)
+16. [IJGIS 2019] Traffic speed prediction for intelligent transportation system based on a deep feature fusion model [[paper]](https://www.tandfonline.com/doi/abs/10.1080/15472450.2019.1583965?journalCode=gits20)
+17. [Access 2019] Spatial-Temporal Graph Attention Networks: A Deep Learning Approach for Traffic Forecasting [[paper]](https://ieeexplore.ieee.org/document/8903252)
+18. [Arxiv 2019] Forecaster: A graph transformer for forecasting spatial and time dependent data [[paper]](https://arxiv.org/abs/1909.04019)
+19. [Arxiv 2019] Temporal fusion transformers for interpretable multi-horizon time series forecasting [[paper]](https://arxiv.org/abs/1912.09363)
+20. ……
+
+#### 2020
+
+1. [Arxiv 2020] Spatial-Temporal Transformer Networks for Traffic Flow Forecasting [[paper]](https://arxiv.org/abs/2001.02908) [[code-not-official]](https://github.com/wubin5/STTN)
+2. [Arxiv 2020] Transfer Learning with Graph Neural Networks for Short-Term Highway Traffic Forecasting [[paper]](https://arxiv.org/abs/2004.08038) [[code]](https://github.com/tanwimallick/TL-DCRNN)
+3. [Arxiv 2020] Bayesian Spatio-Temporal Graph Convolutional Network for Traffic Forecasting [[paper]](https://www.researchgate.net/publication/344678512_Bayesian_Spatio-Temporal_Graph_Convolutional_Network_for_Traffic_Forecasting)
+4. [TGIS 2020] Traffic transformer: Capturing the continuity and periodicity of time series for traffic forecasting [[paper]](https://onlinelibrary.wiley.com/doi/abs/10.1111/tgis.12644)
+5. [ICTON 2020] Traffic Prediction in Optical Networks Using Graph Convolutional Generative Adversarial Networks [[paper]](https://ieeexplore.ieee.org/document/9203477)
+6. [AAAI 2020] Spatio-Temporal Graph Structure Learning for Traffic Forecasting [[paper]](https://ojs.aaai.org//index.php/AAAI/article/view/5470) [[SOTA]](https://paperswithcode.com/paper/spatio-temporal-graph-structure-learning-for)
+7. [AAAI 2020] Learning Geo-Contextual Embeddings for Commuting Flow Prediction [[paper]](https://ojs.aaai.org//index.php/AAAI/article/view/5425)
+8. [AAAI 2020] Spatial-Temporal Synchronous Graph Convolutional Networks: A New Framework for Spatial-Temporal Network Data Forecasting [[paper]](https://ojs.aaai.org/index.php/AAAI/article/view/5438) [[code]](https://github.com/Davidham3/STSGCN)
+9. [Access 2020] STGAT: Spatial-Temporal Graph Attention Networks for Traffic Flow Forecasting [[paper]](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=9146162)
+10. [Sensor 2020] City-Wide Traffic Flow Forecasting Using a Deep Convolutional Neural Network [[paper]](https://www.mdpi.com/1424-8220/20/2/421)
+11. [Mobile Computing 2020] BuildSenSys: Reusing Building Sensing Data for Traffic Prediction with Cross-domain Learning [[paper]](https://ieeexplore.ieee.org/abstract/document/9018140)
+12. [TKDE 2020] Spatio-Temporal Meta Learning for Urban Traffic Prediction [[paper]](https://ieeexplore.ieee.org/document/9096591)
+13. [WC 2020] What is the Human Mobility in a New City: Transfer Mobility Knowledge Across Cities [[paper]](http://urban-computing.com/pdf/www1208tianfu.pdf)
+14. [TITS 2020] Traffic Graph Convolutional Recurrent Neural Network: A Deep Learning Framework for Network-Scale Traffic Learning and Forecasting [[paper]](https://ieeexplore.ieee.org/document/8917706) [[code]](https://github.com/zhiyongc/Graph_Convolutional_LSTM)
+15. [NeurIPS 2020] Adaptive Graph Convolutional Recurrent Network for Traffic Forecasting [[paper]](https://arxiv.org/abs/2007.02842) [[code]](https://github.com/LeiBAI/AGCRN)
+16. [AAAI 2020] GMAN: A Graph Multi-Attention Network for Traffic Prediction [[paper]](https://arxiv.org/abs/1911.08415) [[code]](https://github.com/zhengchuanpan/GMAN)
+17. [KDD 2020] ConSTGAT: Contextual Spatial-Temporal Graph Attention Network for Travel Time Estimation at Baidu Maps [[paper]](https://www.kdd.org/kdd2020/accepted-papers/view/constgat-contextual-spatial-temporal-graph-attention-network-for-travel-tim)
+18. [KDD 2020] Preserving Dynamic Attention for Long-Term Spatial-Temporal Prediction [[paper]](https://arxiv.org/abs/2006.08849)
+19. [TITS 2020] Temporal Multi-Graph Convolutional Network for Traffic Flow Prediction [[paper]](https://ieeexplore.ieee.org/document/9098104)
+20. [TITS 2020] A Spatial-Temporal Attention Approach for Traffic Prediction [[paper]](https://www.researchgate.net/publication/340567373_A_Spatial-Temporal_Attention_Approach_for_Traffic_Prediction)
+21. [TITS 2020] Traffic Flow Imputation Using Parallel Data and Generative Adversarial Networks [[paper]](https://ieeexplore.ieee.org/document/8699108)
+22. [WWW 2020] Traffic Flow Prediction via Spatial Temporal Graph Neural Network [[paper]](https://dl.acm.org/doi/abs/10.1145/3366423.3380186)
+23. [IJGIS 2020] Graph attention temporal convolutional network for traffic speed forecasting on road networks [[paper]](https://www.tandfonline.com/doi/abs/10.1080/21680566.2020.1822765?journalCode=ttrb20)
+24. [Arxiv 2020] ST-GRAT: A Novel Spatio-temporal Graph Attention Network for Accurately Forecasting Dynamically Changing Road Speed [[paper]](https://arxiv.org/abs/1911.13181)
+25. [IF 2020] Spatial Temporal Incidence Dynamic Graph Neural Networks for Traffic Flow Forecasting [[paper]](https://www.sciencedirect.com/science/article/abs/pii/S0020025520300451?via%3Dihub)
+26. [ICDM 2020] TSSRGCN: Temporal Spectral Spatial Retrieval Graph Convolutional Network  for Traffic Flow Forecasting [[paper]](https://ieeexplore.ieee.org/document/9338393)
+27. ……
+
+#### 2021
+
+1. [Arxiv 2020] Spatial-Temporal Fusion Graph Neural Networks for Traffic Flow Forecasting [[paper]](https://arxiv.org/abs/2012.09641) [[code]](https://github.com/MengzhangLI/STFGNN)
+2. [TITS 2021] Spatial‐temporal attention wavenet: A deep learning framework for traffic prediction considering spatial‐temporal dependencies [[paper]](https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/itr2.12044) [[code]](https://paperswithcode.com/paper/spatial-temporal-attention-wavenet-a-deep#code)
+3. [Arxiv 2021] Time Series is a Special Sequence: Forecasting with Sample Convolution and Interaction [[paper]](https://arxiv.org/pdf/2106.09305v2.pdf) [[code]](https://paperswithcode.com/paper/time-series-is-a-special-sequence-forecasting#code)
+4. [KDD 2021] Dynamic Graph Convolutional Recurrent Network for Traffic Prediction: Benchmark and Solution [[paper]](https://dl.acm.org/doi/10.1145/3532611) [[code]](https://github.com/tsinghua-fib-lab/Traffic-Benchmark)
+5. [KDD 2021] Dynamic and Multi-faceted Spatio-temporal Deep Learning for Traffic Speed Forecasting [[paper]](https://dl.acm.org/doi/abs/10.1145/3447548.3467275)
+6. [AAAI 2021] TS2Vec: Towards Universal Representation of Time Series [[paper]](https://www.aaai.org/AAAI22Papers/AAAI-8809.YueZ.pdf)
+7. [Arxiv 2021] Spatio-temporal joint graph convolutional networks for traffic forecasting [[paper]](https://arxiv.org/abs/2111.13684)
+8. [PAKDD 2021] SST-GNN: Simplified Spatio-temporal Traffic forecasting model using Graph Neural Network [[paper]](https://arxiv.org/abs/2104.00055)
+9. [IJCNN 2021] Unified Spatio-Temporal Modeling for Traffic Forecasting using Graph Neural Network [[paper]](https://arxiv.org/abs/2104.12518)
+10. ……
+
+#### 2022
+
+1. [TITS 2022] 2F-TP:Learning Flexible Spatiotemporal Dependency for Flexible Traffic Prediction. [[paper]](https://ieeexplore.ieee.org/abstract/document/9703274/)
+2. [Arxiv 2022] Pre-training Enhanced Spatial-temporal Graph Neural Network
+   for Multivariate Time Series Forecasting [[paper]](https://arxiv.org/pdf/2206.09113.pdf)
+3. [Arxiv 2022] A Lightweight and Accurate Spatial-Temporal Transformer for Traffic Forecasting [[paper]](https://arxiv.org/pdf/2201.00008.pdf)
+
+#### 2023
+
+1. [Arxiv 2023] Adaptive Graph Convolution Networks for Traffic Flow Forecasting [[paper]](https://arxiv.org/abs/2307.05517) [[code]](https://github.com/zhengdaoli/AGC-net)
+2. [ICDE 2023] Dynamic Hypergraph Structure Learning for Traffic Flow Forecasting [[paper]](https://arxiv.org/abs/2309.12028)
+
+#### 2024
+
+1. [Arxiv 2024] UniST: A Prompt-Empowered Universal Model for Urban Spatio-Temporal Prediction [[paper]](https://arxiv.org/abs/2402.11838)
+2. [Arxiv 2024] COOL: A Conjoint Perspective on Spatio-Temporal Graph Neural Network for Traffic Forecasting [[paper]](https://arxiv.org/abs/2403.01091)
+3. [Complex & Intelligent Systems 2024] Generalized spatial–temporal regression graph convolutional transformer for traffic forecasting [[paper]](https://link.springer.com/article/10.1007/s40747-024-01578-x)
+4. [ISPRS IJGI 2024] Traffic Flow Prediction Based on Federated Learning and Spatio-Temporal Graph Neural Networks [[paper]](https://www.mdpi.com/2220-9964/13/6/210)
+
+<!-- START AUTO RECENT PAPERS -->
+#### 2025
+
+1. [Arxiv 2025] GraphSparseNet: a Novel Method for Large Scale Trafffic Flow Prediction [[paper]](https://arxiv.org/abs/2502.19823)
+2. [Arxiv 2025] Embedding spatial context in urban traffic forecasting with contrastive pre-training [[paper]](https://arxiv.org/abs/2503.14980) [[code]](https://github.com/mattchrlw/forecasting-on-new-roads)
+3. [Sensors 2025] An Adaptive Spatio-Temporal Traffic Flow Prediction Using Self-Attention and Multi-Graph Networks [[paper]](https://www.mdpi.com/1424-8220/25/1/282)
+4. [Neural Computing and Applications 2025] Short-term multi-step-ahead sector-based traffic flow prediction based on the attention-enhanced graph convolutional LSTM network (AGC-LSTM) [[paper]](https://link.springer.com/article/10.1007/s00521-024-09827-3)
+
+#### 2026
+
+1. [Neural Networks 2026] Adaptive dynamic spatial-temporal graph convolutional neural network for traffic flow prediction [[paper]](https://www.sciencedirect.com/science/article/abs/pii/S0893608025014108)
+2. [Electronics 2026] Dynamic Graph Information Bottleneck for Traffic Prediction [[paper]](https://doi.org/10.3390/electronics15030623)
+3. [Scientific Reports 2026] 6G conditioned spatiotemporal graph neural networks for real time traffic flow prediction [[paper]](https://doi.org/10.1038/s41598-025-32795-0)
+4. [Arxiv 2026] PIMCST: Physics-Informed Multi-Phase Consensus and Spatio-Temporal Few-Shot Learning for Traffic Flow Forecasting [[paper]](https://doi.org/10.48550/arxiv.2602.01936)
+5. [Expert Systems with Applications 2026] HySRD-Net: Hybrid spectral residual diffusion on spatio-temporal graphs for probabilistic traffic forecasting [[paper]](https://doi.org/10.1016/j.eswa.2026.131214)
+6. [PLoS ONE 2026] Feature-enhanced iTransformer: A two-stage framework for high-accuracy long-horizon traffic flow forecasting [[paper]](https://doi.org/10.1371/journal.pone.0340389)
+7. [IET Intelligent Transport Systems 2026] A Novel Attention-Weighted VMD-LSSVM Model for High-Accuracy Short-Term Traffic Prediction [[paper]](https://doi.org/10.1049/itr2.70144)
+8. [Electronics 2026] Multi-Scale Graph-Decoupling Spatial-Temporal Network for Traffic Flow Forecasting in Complex Urban Environments [[paper]](https://doi.org/10.3390/electronics15030495)
+9. [Systems 2026] PDR-STGCN: An Enhanced STGCN with Multi-Scale Periodic Fusion and a Dynamic Relational Graph for Traffic Forecasting [[paper]](https://doi.org/10.3390/systems14010102)
+10. [Lecture Notes in Computer Science 2026] STVMamba: A Spatio-Temporal-Variable Modeling Network with Selective State Space Mechanism for Long-Horizon Traffic Forecasting [[paper]](https://doi.org/10.1007/978-981-95-5761-5_18)
+11. [Electronics 2026] TSAformer: A Traffic Flow Prediction Model Based on Cross-Dimensional Dependency Capture [[paper]](https://doi.org/10.3390/electronics15010231)
+<!-- END AUTO RECENT PAPERS -->
+
+### Curated Digest (Recent Years)
+
+This digest reorganizes recent traffic flow forecasting papers by task and method tags for faster navigation.
+Method tags are lightweight manual labels for quick indexing.
+
+<!-- START AUTO CURATED DIGEST TABLE -->
+| Year | Paper | Task | Method Tags | Code | Note |
+| --- | --- | --- | --- | --- | --- |
+| 2024 | [UniST](https://arxiv.org/abs/2402.11838) | Urban spatio-temporal prediction | Prompting, Foundation Model | N/A | Universal/prompt-based perspective |
+| 2024 | [COOL](https://arxiv.org/abs/2403.01091) | Traffic forecasting | STGNN, Graph Modeling | N/A | Conjoint STGNN perspective |
+| 2024 | [GSTRGCT](https://link.springer.com/article/10.1007/s40747-024-01578-x) | Traffic forecasting | Transformer, GCN | N/A | Regression + graph transformer design |
+| 2024 | [FL + STGNN](https://www.mdpi.com/2220-9964/13/6/210) | Traffic flow prediction | Federated Learning, STGNN | N/A | Privacy-aware distributed training setting |
+| 2025 | [GraphSparseNet](https://arxiv.org/abs/2502.19823) | Large-scale traffic flow prediction | Graph Sparsification, Efficiency | N/A | Focus on scalability |
+| 2025 | [Contrastive Pre-training](https://arxiv.org/abs/2503.14980) | Urban traffic forecasting | Contrastive Learning, Transfer | [code](https://github.com/mattchrlw/forecasting-on-new-roads) | Better generalization to new roads |
+| 2025 | [ASTAM + Multi-Graph](https://www.mdpi.com/1424-8220/25/1/282) | Traffic flow prediction | Self-Attention, Multi-Graph | N/A | Adaptive spatio-temporal modeling |
+| 2026 | [AD-STGCN](https://www.sciencedirect.com/science/article/abs/pii/S0893608025014108) | Traffic flow prediction | Dynamic Graph, STGCN | N/A | Adaptive dynamic spatial-temporal graph |
+| 2026 | [Dynamic Graph Information Bottleneck](https://doi.org/10.3390/electronics15030623) | Traffic prediction | Information Bottleneck, Dynamic Graph | N/A | Representation compression with graph dynamics |
+| 2026 | [PIMCST](https://doi.org/10.48550/arxiv.2602.01936) | Traffic flow forecasting | Physics-Informed Learning, Few-shot | N/A | Few-shot transfer-oriented design |
+| 2026 | [HySRD-Net](https://doi.org/10.1016/j.eswa.2026.131214) | Probabilistic traffic forecasting | Probabilistic Forecasting, Graph Diffusion | N/A | Uncertainty-aware forecasting |
+| 2026 | [Feature-enhanced iTransformer](https://doi.org/10.1371/journal.pone.0340389) | Long-horizon traffic flow forecasting | Transformer, Long-Horizon | N/A | Two-stage long-horizon framework |
+<!-- END AUTO CURATED DIGEST TABLE -->
+
+
+### Statistic Based Traffic Prediction Methods
+
+#### 2018
+
+1. [TITS 2018] Probabilistic Data Fusion for Short-Term Traffic Prediction With Semiparametric Density Ratio Model [[paper]](https://ieeexplore.ieee.org/document/8479367)
+
+#### 2019
+
+1. [TRPET 2019] A generalized Bayesian traffic model [[paper]](https://www.sciencedirect.com/science/article/pii/S0968090X18318199)
+
+### Time Series Forecasting
+
+1. [ICLR 2019] Context-aware Forecasting for Multivariate Stationary Time-series [[paper]](https://openreview.net/pdf?id=B1xHUiC5tm)
+2. [Arxiv 2020] Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting [[paper]](https://arxiv.org/pdf/2012.07436.pdf) [[code]](https://github.com/zhouhaoyi/Informer2020)
+
+### Temporal Network Embedding
+
+#### 2021
+
+1. [KDD 2021] [Discrete-time Temporal Network Embedding via Implicit Hierarchical Learning in Hyperbolic Space](https://dl.acm.org/doi/abs/10.1145/3447548.3467422)
+
+## 0x01 Tutorial
+
+### Textbook
+
+1. [Urban Computing](https://mitpress.mit.edu/books/urban-computing)
+2. [Traffic Flow Dynamics: Data, Models and Simulation](https://link.springer.com/book/10.1007/978-3-642-32460-4)
+3. [Transportation Network Analysis](https://link.springer.com/book/10.1007/978-1-4419-6142-6)
+4. [Fundamentals of Transportation and Traffic Operations](https://www.elsevier.com/books/fundamentals-of-transportation-and-traffic-operations/garber/978-0-08-102671-7)
+5. ……
+
+### Blogs
+
+1. [Traffic prediction with advanced Graph Neural Networks](https://deepmind.com/blog/article/traffic-prediction-with-advanced-graph-neural-networks)
+2. [LibCity Documentation (Quick Start)](https://libcity.ai/quick_start.html)
+3. [LibCity Tutorials](https://libcity.ai/tutorials.html)
+4. [DCRNN Official Repository](https://github.com/liyaguang/DCRNN)
+5. [Traffic-Benchmark (KDD 2021)](https://github.com/tsinghua-fib-lab/Traffic-Benchmark)
+6. [PyTorch Geometric Temporal Documentation](https://pytorch-geometric-temporal.readthedocs.io/en/latest/)
+7. ……
+
+## 0x02 DataSource
+
+### Datasets
+
+#### Traffic Dataset in Non-China Region
+
+1. [Cityscapes](https://www.cityscapes-dataset.com/login/)
+
+2. [New York City](https://www.kaggle.com/c/nyc-taxi-trip-duration/overview)
+
+3. [NYC Bike](https://www.citibikenyc.com/system-data)
+
+4. [NYC Taxi](https://www.kaggle.com/c/nyc-taxi-trip-duration)
+
+5. [Train Station Dataset](http://www.ee.cuhk.edu.hk/~xgwang/grandcentral.html)
+
+6. [Apolloscape](http://apolloscape.auto/trajectory.html)
+  
+   The trajectory dataset includes camera images, LiDAR point clouds, and manually annotated trajectories collected in Beijing under varying lighting and traffic conditions.
+
+7. [data.world.traffic](https://data.world/datasets/traffic)
+
+8. [PEMS-SF Dataset From UCI](https://archive.ics.uci.edu/ml/datasets/PEMS-SF)
+  
+   Each attribute describes detector occupancy at a station for a given timestamp (0-1). Station IDs are listed in the stations_list file; location metadata (GPS, freeway, direction) is available from PeMS.
+
+9. [Seattle Inductive Loop Detector Dataset](https://github.com/zhiyongc/Seattle-Loop-Data)
+
+10. [Road location and traffic data](https://www.data.qld.gov.au/dataset/road-location-and-traffic-data)
+
+11. [INRIX – Driving Intelligence](https://datarade.ai/data-providers/inrix/profile)
+    
+    Charged Data
+
+12. [Los Angeles (METR-LA)](datasets/METR.md)
+
+13. ……
+
+#### Traffic Dataset in China
+
+1. [Baidu Open Data](https://ai.baidu.com/broad/download?dataset=traffic)
+
+2. [DiDi Gaia Initiative](https://outreach.didichuxing.com/)
+  
+   An anonymized road condition dataset for Xi'an, including road network topology, road attributes, and historical/real-time traffic flow.
+
+3. [HZJTD](http://www.hzjtydzs.com/index2.html)
+
+   Data collected by the Hangzhou Comprehensive Transportation Research Center, including traffic conditions, speed, and congestion indices on 202 roads in the urban area.
+
+#### Commute flow
+
+1. [Longitudinal Employer-Household Dynamics](https://lehd.ces.census.gov/data/)
+2. ……
+
+#### Point of Interest/Land use
+
+1. [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page)
+   
+   provide landuse data organized in .csv format, including more than 70 fields managed by city insititution.
+
+2. ……
+
+### Trajectory
+
+### ETA
+
+1. [Shenzhen ride-hailing trajectory dataset (SIGSPATIAL 2021 GISCUP ETA)](https://outreach.didichuxing.com/app-vue/DatasetProjectDetail?id=1028)
+
+### Website
+
+1. [Welcome to PeMS](http://pems.dot.ca.gov)
+2. ……
+
+## 0x03 Toolkits
+
+1. [Open Source Routing Machine](http://project-osrm.org)
+2. [PyG Temporal](https://pytorch-geometric-temporal.readthedocs.io/en/latest/)
+3. [LibCity](https://libcity.ai)
+4. [OpenSTL](https://github.com/chengtan9907/OpenSTL)
+5. [Traffic-Benchmark](https://github.com/tsinghua-fib-lab/Traffic-Benchmark)
+6. [UrbanPy](https://github.com/EL-BID/urbanpy)
+
+## 0x04 Conferences & Journals
+
+1. ACM SIGSPATIAL SpatialDI
+2. [IEEE Transactions on Intelligent Transportation Systems](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6979)
+3. [Association for the Advancement of Artificial Intelligence](https://www.aaai.org)
+
+## 0x05 Research Group
+
+### Company
+
+1. http://urban-computing.com/yuzheng
+2. [DeepMind](https://deepmind.com/about/deepmind-for-google)
+3. [Waymo Research](https://waymo.com/research/)
+4. [Baidu Apollo](https://apollo.auto/)
+5. ……
+
+### College
+
+1. [Beijing Jiaotong University - Dr. Huaiyu Wan's group](http://faculty.bjtu.edu.cn/8793/)
+   
+   Research Interest: Data mining and information extraction. e.g. Spatio-temporal data mining, social network mining, text information extraction and application of knowledge graph.
+2. [Tsinghua University - Future Intelligence Lab (FIB)](https://fi.ee.tsinghua.edu.cn/)
+   
+   Focus: urban science, spatio-temporal modeling, and large-scale AI systems.
+3. [Tongji University - ITS Research Center (Prof. Xiaoguang Yang)](https://itscenter.tongji.edu.cn/)
+   
+   Focus: traffic system engineering, traffic control, public transportation systems, and ITS.
+4. [Tongji University - STEP Lab (Prof. Yuchuan Du)](https://steps.tongji.edu.cn/)
+   
+   Focus: traffic sensing, transport infrastructure intelligence, and AI for transportation systems.
+5. [Central South University - Institute of Intelligent Measurement, Control and Information Technology](https://stte.csu.edu.cn/info/1031/5767.htm)
+   
+   Focus: sensing, diagnosis, and intelligent collaboration for transportation systems.
+6. [Central South University - Institute of Intelligent Simulation and Decision for Integrated Transport](https://stte.csu.edu.cn/info/1031/5764.htm)
+   
+   Focus: transport optimization, simulation, and data-driven decision support.
+7. [Southwest Jiaotong University - Intelligent Design Lab for Complex Transportation Systems](https://idctslab.swjtu.edu.cn/)
+   
+   Focus: data-driven and AI-based methods for complex transportation system design.
+8. [UC Berkeley - Institute of Transportation Studies (ITS)](https://its.berkeley.edu/)
+   
+   Focus: transportation systems analysis, ITS, traffic operations, and mobility research.
+9. [UC Berkeley - PATH](https://its.berkeley.edu/research-centers/path)
+   
+   Focus: intelligent transportation systems, connected/autonomous mobility, and corridor management.
+10. [MIT - Senseable City Lab](https://senseable.mit.edu/)
+    
+    Focus: data-driven urban science, mobility analytics, and real-time city sensing.
+11. [UCL - Centre for Advanced Spatial Analysis (CASA)](https://www.ucl.ac.uk/casa)
+    
+    Focus: urban analytics, spatial-temporal modeling, and computational city science.
+12. [NTU Singapore - Transport Research Centre (TRC)](https://www.ntu.edu.sg/trc)
+    
+    Focus: land transport systems, public transport, and data-driven mobility research.
+
+## 0x06 Related Repositories
+
+1. [paper with code](https://paperswithcode.com/task/traffic-prediction)
+
+2. https://github.com/topics/traffic-prediction
+
+3. [Awesome-Trajectory-Prediction](https://github.com/xuehaouwa/Awesome-Trajectory-Prediction)
+
+4. [traffic_prediction](https://github.com/aprbw/traffic_prediction)
+
+5. [transdim](https://github.com/xinychen/transdim)
+   
+   This project aim at provide accurate and efficient solution for spatio-temporal data prediction.
+
+6. [Urban Data Party](https://www.udparty.com/index.php/lists/cases?page=0&keyword=交通)
+
+7. [Multivariate Time Series Forecasting](https://paperswithcode.com/task/multivariate-time-series-forecasting/latest)
+
+8. [deep-learning-time-series](https://github.com/Alro10/deep-learning-time-series)
+
+9. [GNN paper](https://github.com/thunlp/GNNPapers#traffic-network)
+
+10. [Discovering millions of datasets on the web](https://blog.google/products/search/discovering-millions-datasets-web/)
+
+11. [LibCity](https://libcity.ai)
+    An open-source research platform for intergrating several algorithms, data, and evalution metrics for traffic prediction.
+
+12. [GNN4Traffic](https://github.com/jwwthu/GNN4Traffic)
+
+13. [Traffic trajectory data/tools/papers collection](https://zhuanlan.zhihu.com/p/119425995)
+
+14. [AGC-net](https://github.com/zhengdaoli/AGC-net)
+
+15. [Forecasting on New Roads](https://github.com/mattchrlw/forecasting-on-new-roads)
+
+16. ……
+
+## 0x07 Benchmark & Evaluation
+
+1. Task definition: Focus on short-term traffic flow/speed forecasting, typically evaluated with multi-horizon predictions (15/30/60 minutes).
+2. Common datasets: METR-LA and PEMS-BAY are the most widely used public benchmarks. Recommend documenting time granularity, sampling interval, missing rate, and spatial coverage.
+3. Common metrics: MAE, RMSE, MAPE. Recommend reporting metrics across multiple horizons, not a single step.
+4. Splits: Use chronological train/val/test splits to avoid leakage from random splits.
+5. Reproducibility: Provide random seeds, hardware details, training time, and parameter counts.
+
+### Benchmark Matrix
+
+| Dataset | Region | Signal | Nodes/Sensors | Interval | Common Horizons | Metrics | Split |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| METR-LA | Los Angeles, US | Traffic speed | 207 sensors | 5 min | 15/30/60 min | MAE, RMSE, MAPE | Chronological |
+| PEMS-BAY | Bay Area, US | Traffic speed | 325 sensors | 5 min | 15/30/60 min | MAE, RMSE, MAPE | Chronological |
+| NYC-Bike | New York, US | Bike demand/trips | Station graph | Varies by paper | 30/60 min (common) | MAE, RMSE, MAPE | Chronological |
+| NYC-Taxi | New York, US | Taxi demand/OD | Zone graph or grid | Varies by paper | 30/60 min (common) | MAE, RMSE, MAPE | Chronological |
+
+Use consistent metric definitions and masking policies when comparing papers.
+
+### Auto Trend Visuals
+
+- Monthly candidates: `updates/monthly-paper-candidates.md`
+- Word cloud and top terms: `updates/wordcloud/`
+- Yearly hotspots and theme trends: `updates/hotspots/`
+- Pipeline: `.github/workflows/monthly-paper-search.yml` (opens a PR for review when artifacts change)
+
+## Contribution
+
+To make contributions on this repo, visit [here](./CONTRIBUTION.md)
+
+<!-- links -->
+
+[forks-shield]: https://img.shields.io/github/forks/Coolgiserz/Awesome-Traffic-Prediction.svg?style=flat-square
+[forks-url]: https://github.com/Coolgiserz/Awesome-Traffic-Prediction/network/members
+[stars-shield]: https://img.shields.io/github/stars/Coolgiserz/Awesome-Traffic-Prediction.svg?style=flat-square
+[stars-url]: https://github.com/Coolgiserz/Awesome-Traffic-Prediction/stargazers

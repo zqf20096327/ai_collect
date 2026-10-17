@@ -1,0 +1,132 @@
+```
+
+    ███████    ██████   ██████   █████████     █████████    █████████    █████████  ██████████
+  ███░░░░░███ ░░██████ ██████   ███░░░░░███   ███░░░░░███  ███░░░░░███  ███░░░░░███░░███░░░░░█
+ ███     ░░███ ░███░█████░███  ░███    ░███  ███     ░░░  ░███    ░███ ░███    ░░░  ░███  █ ░
+░███      ░███ ░███░░███ ░███  ░███████████ ░███          ░███████████ ░░█████████  ░██████
+░███      ░███ ░███ ░░░  ░███  ░███░░░░░███ ░███          ░███░░░░░███  ░░░░░░░░███ ░███░░█
+░░███     ███  ░███      ░███  ░███    ░███ ░░███     ███ ░███    ░███  ███    ░███ ░███ ░   █
+ ░░░███████░   █████     █████ █████   █████ ░░█████████  █████   █████░░█████████  ██████████
+   ░░░░░░░    ░░░░░     ░░░░░ ░░░░░   ░░░░░   ░░░░░░░░░  ░░░░░   ░░░░░  ░░░░░░░░░  ░░░░░░░░░░
+```
+
+In other words, my dotfiles.
+
+<!--toc:start-->
+
+- [Features](#features)
+- [Software Included](#software-included)
+- [Prerequisites](#prerequisites)
+- [Install Instructions](#install-instructions)
+- [Post-install](#post-install)
+    - [System Settings](#system-settings)
+- [Helium](#helium)
+    - [After that?](#after-that)
+- [Philosophy](#philosophy)
+- [Troubleshooting](#troubleshooting)
+- [Screenshots](#screenshots)
+
+<!--toc:end-->
+
+# Features
+
+- ⚡***BLAZINGLY FAST*** ⚡
+- Pure enjoyment and efficiency
+- Theme-switching and menu system (Like Omarchy!)
+
+> [!warning]
+> This setup is even more opinionated than Omarchy! Don't use this setup blindly!
+
+# Software Included
+
+- Editor: [Neovim](https://neovim.io)
+- Bar: [SketchyBar](https://felixkratz.github.io/SketchyBar)
+- Browser: [Helium Browser](https://helium.computer)
+- Terminal Emulator: [Ghostty](https://ghostty.org), and [Kitty](https://sw.kovidgoyal.net/kitty) for menus
+- Music Player: [rmpc](https://github.com/mierak/rmpc)
+- Git UI: [lazygit](https://github.com/jesseduffield/lazygit)
+- Fuzzy Picker: [fzf](https://junegunn.github.io/fzf)
+- File Manager: [yazi](https://yazi-rs.github.io)
+- Package Manager: [HomeBrew](https://brew.sh)
+- Window Manager: [AeroSpace](https://nikitabobko.github.io/AeroSpace/guide)
+- Keyboard Manager(s): [Karabiner Elements](karabiner-elements.pqrs.org) and [skhd.zig](github.com/jackielii/skhd.zig)
+- AI CLI: [opencode](https://opencode.ai)
+- Prompt: [starship](https://starship.rs)
+- Shell: [zsh](https://github.com/zsh-users/zsh) and [zgenom](github.com/jandamm/zgenom)
+- Terminal multiplexer and manager: [tmux](https://github.com/tmux/tmux) and [sesh](github.com/joshmedeski/sesh)
+- Eye candy around windows: [JankyBorders](https://github.com/FelixKratz/JankyBorders)
+
+# Prerequisites
+
+- MacOS 26.4 or later
+
+# Install Instructions
+
+```bash
+curl https://raw.githubusercontent.com/matt-dong-123/dotfiles/refs/heads/main/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+or YOLO:
+
+```bash
+curl https://matt-dong-123.github.io/install/ | bash
+```
+
+Paste this into your terminal, and follow the steps of the install
+script.
+
+# Post-install
+
+> [!important]
+> Remember to grant the correct permissions (e.g. accessibility)
+
+## System Settings
+
+- Go to Display > Select "More Space"
+- Go to Battery > Charging (info) > Slide to 80%
+- Go to Menu Bar > Automatically hide and show the menu bar > Always
+
+# Helium
+
+0. Install the following addons:
+    - Vimium C
+    - Dark Reader
+    - Return YouTube Dislike
+    - SponsorBlock
+    - Stylus
+    - iCloud Passwords
+    - Better AOTY (I know)
+1. For each of the extensions given, find the "Import" or "Restore"
+   button, and choose the corresponding file in ~/.config/helium
+2. Browser Layout: Compact, Minimal address bar, Zen mode
+3. Go to helium://flags and enable Parallel Downloading
+
+## After that?
+
+Pick your favorite theme with rcmd-t (or access through the menu with opt-cmd-spc). Enjoy!
+
+# Philosophy
+
+This dotfiles repo has the same philosophy as Omarchy. It's extremely opiniated, even more so than Omarchy, and it has a lot of "proprietary bloat", so it's probably not for you. However, reading this repo through, copying the code, making PRs and improving the codebase are all encouraged!
+
+# Troubleshooting
+
+- **Q: When I use fzf-git, why don't some keybinds work (e.g. C-g C-l)?**
+- A: Press C-g _C-a_ C-l. tmux is a bit annoying.
+
+- **Q: When I conventional-commit using lazygit, why does it error/cut off?**
+- A: You probably used special characters. I tried to do my best in avoiding them, but at the moment escaping them with backslashes seems like the only way.
+
+- **Q: Why does my skhd bindings stop working after an upgrade?**
+- A: [fix](https://github.com/jackielii/skhd.zig/blob/main/docs/UPGRADING.md#if-keys-stop-working-after-brew-upgrade-macos-tahoe)
+
+# Screenshots
+
+![Neovim](./.img/neovim.png)
+![Lazygit](./.img/lazygit.png)
+![Ghostty](./.img/ghostty.png)
+![Yazi](./.img/yazi.png)
+![Brew](./.img/brew.png)
+![Theme switching](https://github.com/user-attachments/assets/ee54cd5a-f0c6-4bfa-8347-530d1a9ed99c)

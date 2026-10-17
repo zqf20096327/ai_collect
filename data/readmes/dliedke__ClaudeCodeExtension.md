@@ -1,0 +1,1000 @@
+﻿# Claude Code Extension for Visual Studio
+
+Please also check [Claude Code Studio from wluisdev](https://marketplace.visualstudio.com/items?itemName=wluisdev.ClaudeCodeStudio)
+
+Native or terminal inside Visual Studio for **Claude Code, OpenAI Codex, Cursor Agent, Open Code, Devin, PI, Google Antigravity, Reasonix, Qwen Code, and Grok** — with multi-line prompts, file attachments, and an integrated diff viewer.
+
+<center>
+<img src="https://raw.githubusercontent.com/dliedke/ClaudeCodeExtension/master/docs/images/extension-screenshot.png" alt="Claude Code Extension Screenshot" width=900 />
+</center>
+
+Enjoying the extension? [Buy me a coffee](https://www.buymeacoffee.com/dliedke) — every cup helps keep it free. Companies can use the extension for free too. Bug reports, suggestions, and pull requests are welcome on [GitHub](https://github.com/dliedke/ClaudeCodeExtension).
+
+[Mentioned in Awesome Codex CLI](https://github.com/RoggeOhta/awesome-codex-cli)
+
+## Features
+
+- **Embedded AI terminal** — Run any supported AI coding agent inside a Visual Studio tool window. Auto-detects the solution directory; restarts when you switch solutions. Optionally use Windows Terminal instead of Command Prompt for better emoji/Unicode rendering.
+- **Native mode (default for new installs)** — Show the conversation as a chat in its own document tab instead of an embedded terminal: answers arrive as formatted text, file edits open into a colored diff, and each turn ends with how long it took, what it cost, and (for Claude Code) your status line if you have one. The tab has its own message box with image paste and file attachments, plus agent, model, effort and permission selectors you can change mid-conversation. Turn off via *⚙ → Settings... → Terminal* to use the embedded terminal instead; Reasonix and any agent that can't run this way keep using the terminal.
+- **Multi-line prompts** — Press **Enter** to send, **Shift+Enter** or **Ctrl+Enter** for a new line. To send with Ctrl+Enter instead, or to use a Send button, change the send key in *⚙ → Settings... → Prompt*.
+- **File and image attachments** — Paste images with **Ctrl+V**, drag & drop files onto the prompt area, or use the 📎 menu (attach a file, insert the editor selection or the active file's path). Any file type is accepted (no limit). Text content like Excel cells pastes as text, not as an image.
+- **Editor selection → prompt** — Click 📋 or right-click selected code → *Send Selection to Claude Code* to insert a formatted snippet (file path + line numbers + syntax-highlighted code fence) into the prompt. Turn on *Send selection as reference only* in *⚙ → Settings... → Prompt* to insert just the file path and line numbers.
+- **Integrated diff viewer** — For Git projects, the 📊 view shows uncommitted changes in a dedicated tab with search, double-click-to-open, and double-click-line-to-navigate. Optionally auto-opens when you send a prompt, and can track agent changes for per-file Keep/Undo review.
+- **Prompt history** — Last 50 prompts saved (with attached files). Browse with **Ctrl+Up / Ctrl+Down**; clear via right-click.
+- **Claude Code and Codex session history** — 📜 toolbar button lists past sessions for the current workspace; view, rename, delete, or resume any session, including the most recent one. Works on Windows and WSL.
+- **Claude usage in VS** — 📊 button (when Claude is active) opens the claude.ai usage page inside a dockable tab. Inline session/weekly progress bars below the prompt update automatically and adapt to the active theme.
+- **Custom commands (⚡)** — Save slash commands or canned prompts and dispatch them to the active agent in one click. Configure via *⚙ → Configure Custom Commands...*.
+- **"@" file picker** — Type **@** in the prompt box (or the native mode chat composer) to search your solution's files and folders and insert one with the keyboard; keep typing to filter, arrow keys + Enter to insert, pick a folder to drill in. File types and skipped folders are configurable in Settings → Prompt.
+- **"/" command picker** — Claude Code only: type **/** at the start of a prompt (in the prompt box or the native chat composer) to list the built-in commands, your custom commands and skills, with their descriptions.
+- **On Agent Finish** — Optionally play a sound, show a notification (with duration, plus token count for Claude Code), and run an action (build/rebuild, run, tests, a script, or a follow-up command) when the agent goes idle. Configured per solution. Configure via *⚙ → Settings...*.
+- **Pull before sending** — Runs `git pull` in the solution’s repository before your first prompt, so the agent never edits a file that is already out of date on the remote. Conflicts from that pull are handed to the agent to resolve. On by default; turn it off via *⚙ → Settings... → Automation*.
+- **TFVC checkout** — In TFVC-bound solutions, Claude Code in native mode has read-only files checked out through Visual Studio before it edits them. On by default; turn it off via *⚙ → Settings... → Automation*.
+- **Auto-send build and runtime errors** — Optionally send build errors (with warnings for context) to the active agent automatically whenever a Visual Studio build finishes with errors, so it can fix them. While debugging, unhandled exceptions can be sent the same way, with their stack trace. Opt-in via *⚙ → Settings... → Automation*.
+- **Generate Commit Message** — Toolbar/menu action that asks the active agent to write a commit message from the current changes and fills it into the Git Changes window. Requires native mode; falls back to the clipboard if the commit message box can't be found. A sibling action, **Generate Commit Message, Commit and Push**, does the same then immediately stages, commits and pushes all changes.
+- **Recommend AI Model** — Claude Code only: asks Opus (Extra High) which model and effort suit the prompt you typed, then lets you adjust and apply them.
+- **GitHub Issues** — Lists the repository's GitHub issues and fixes each one in its own branch, worktree and chat tab, then commits, merges and replies on the issue. Requires native mode; uses the GitHub CLI (`gh`) for private repositories, replies and closing.
+- **Model selection** — 🤖 button to switch models: for Claude, Fable / Opus / Sonnet / Haiku / Opus Plan plus an effort level; for Codex, its reported models plus a reasoning level (Model default / Low / Medium / High / Extra High / Max / Ultra); for Devin, a searchable picker with favorites and per-model prices; for every other agent, the models it reports itself, with *Refresh Models* to re-read them and *Choose in the Agent...* to fall back to its own picker.
+- **Detach / attach terminal** — Pop the terminal into a separate VS tab and bring it back at any time. State persists across sessions.
+- **Theme aware** — Follows VS dark/light theme automatically, or force dark, light, or a custom background color via *⚙ → Settings → Theme*. Prompt zoom is persisted across sessions, and native chat zoom (Ctrl+Scroll, Ctrl+0 resets it) is too; set the terminal's console font and size via *⚙ → Settings → Terminal* (Ctrl+Scroll zoom applies for the current session).
+- **Persistent settings** — Layout, provider choice, model, flags, and font sizes all saved to `%LocalAppData%\ClaudeCodeExtension\claudecode-settings.json`.
+
+## Native Mode
+
+The default chat experience for new installs — turn it off via *⚙ → Settings... → Terminal → Use native mode* to go back to the embedded terminal. Lost the chat tab? *💬 Show Chat* in the panel or *View → Other Windows → Claude Code Chat* brings it back.
+
+<!-- Images are served from this repository's raw URLs, which the VS Marketplace can also reach — the
+     overview is rendered from this file with no repo context, so relative paths would not resolve there.
+     The links go live once docs/images/ is pushed to master. -->
+
+**Questions answered in the chat** — the agent's multiple-choice questions become clickable cards, each with a free-text answer of your own.
+
+<img src="https://raw.githubusercontent.com/dliedke/ClaudeCodeExtension/master/docs/images/native-mode-question.png" alt="Native mode: answering an agent question in the chat" width="900" />
+
+**Plan review** — in plan mode the agent proposes a plan first; approve it (optionally on a different model) or send it back for changes without leaving the transcript.
+
+<img src="https://raw.githubusercontent.com/dliedke/ClaudeCodeExtension/master/docs/images/native-mode-plan.png" alt="Native mode: reviewing and approving a plan" width="900" />
+
+**Real diffs for file edits** — every edit opens into a colored diff with a line count, so you can see what changed without switching tabs.
+
+<img src="https://raw.githubusercontent.com/dliedke/ClaudeCodeExtension/master/docs/images/native-mode-diff.png" alt="Native mode: a file edit shown as a colored diff" width="900" />
+
+**Parallel chats and session buttons** — ✚ opens another chat tab with its own agent, model and permission selectors; ✎ renames the session, 🎨 changes its color and ↻ clears the conversation.
+
+**Permission prompts and tool cards** — the caret beside Allow offers *Allow for the rest of this session*, and a tool card's ↗ icon opens the file it touched in the editor.
+
+## Supported AI Providers
+
+By default only **Claude Code** is shown in the agent picker — use *⚙ → Configure Visible Code Agents...* to opt in to the others. The active agent always remains visible.
+
+| Provider | Platform | Command | Subscription / Notes |
+|----------|----------|---------|----------------------|
+| Claude Code | Windows / WSL | `claude` | Claude Pro or higher. [Setup docs](https://docs.claude.com/en/docs/claude-code/setup) |
+| OpenAI Codex | Windows / WSL | `codex` | ChatGPT Plus or higher. Optional `--ask-for-approval never` toggle |
+| Cursor Agent | Windows / WSL | `agent` / `cursor-agent` | Cursor account. Optional `--yolo` toggle |
+| Open Code | Windows | `opencode` | Node.js 14+; provider configured via `Ctrl+P` → "connect providers" |
+| Devin | Windows / WSL | `devin` | Devin account. Optional `--permission-mode dangerous` toggle. Native install from Windows Terminal: `irm https://static.devin.ai/cli/setup.ps1 \| iex` |
+| PI | Windows | `pi` | Node.js + Git for Windows |
+| Google Antigravity | Windows | `agy` | Google account. Optional `--dangerously-skip-permissions` toggle |
+| Reasonix | Windows | `reasonix` | DeepSeek API key (`DEEPSEEK_API_KEY`). Install with `npm i -g reasonix` |
+| Qwen Code | Windows | `qwen` | Node.js 22+; Coding Plan or API key via `/auth`. Optional `--yolo` toggle |
+| Grok | Windows | `grok` | grok.com account (`grok login`). Optional `--always-approve` toggle |
+
+If a provider isn't installed, the extension shows the install command automatically when you select it. The **Update Agent** entry in the ⚙ menu runs the right update command for the active provider (e.g. `claude update`, `npm install -g @openai/codex@latest`, `cursor-agent update`).
+
+## System Requirements
+
+- Visual Studio 2022 or 2026 (x64 or ARM64)
+- Windows 11
+- Plus whatever the chosen AI provider needs (see table above)
+
+## Installation
+
+1. Download the latest VSIX from this page or search for "Claude Code Extension" inside Visual Studio's **Manage Extensions...** menu
+2. Double-click the VSIX file to install or install inside Visual Studio, then restart Visual Studio
+3. First time only: Open the tool window via **View → Other Windows → Claude Code Extension**
+
+> If the terminal opens in a separate window instead of inside the extension panel, open Windows Settings → search "Terminal settings" → set **Terminal** to **Windows Console Host**.
+
+**Optional — Windows Terminal**: For better emoji and Unicode rendering, install Windows Terminal from an elevated Command Prompt:
+```
+winget install --id Microsoft.WindowsTerminal -e
+```
+Then choose it via *⚙ → Set Terminal Type...*.
+
+## Quick Start
+
+1. Click ⚙ → pick your AI provider (use *Configure Visible Code Agents...* if it isn't listed)
+2. If using Open Code, run `Ctrl+P` → "connect providers" once to authenticate
+3. Pick a model via the 🤖 button
+4. Type a prompt, press **Enter** to send. Attach files with Ctrl+V, drag-and-drop, or 📎
+5. Watch the agent work in the embedded terminal. For Git projects, open 📊 to see live diffs
+
+## Settings & Menus
+
+**⚙ Settings menu** (gear button, top-right):
+- Pick an AI provider, *Configure Visible Code Agents...*
+- Provider-specific flags: Claude *Skip Permissions* and *Start in Plan Mode*, Codex *Approval Never*, Cursor *Yolo Mode*, Devin *Dangerous Mode*, Antigravity *Skip Permissions*, Qwen Code *Yolo Mode*, Grok *Always Approve*
+- *Hide Prompt Input Box*, *Configure Custom Commands...*, *Settings...*, About
+- *Settings...* opens the consolidated dialog with tabs for On Agent Finish, Prompt (send key, large prompts, clipboard, font size, @ file picker), Automation (auto-open Changes, track agent changes for review, pull before sending, TFVC checkout, auto-send build and runtime errors, Install Caveman, Install latest OpenPets), Layout (prompt panel position, prompt box, usage bars), Terminal (native mode, terminal type, encoding, fonts), Theme, Toolbar, CLI Paths (including extra launch arguments), and Backup (save/load all settings to a file)
+
+**☰ Tools dropdown**: Holds *Update Code Agent*, *Restart Code Agent*, *Detach/Attach Terminal*, *View Code Changes*, *Session History*, *Show Usage*, *Set Working Directory...*, *Send Build Errors to Agent*, *Generate Commit Message*, *Generate Commit Message, Commit and Push*, *Recommend AI Model*, and *GitHub Issues*. Promote any of these to one-click toolbar buttons — and reorder them by dragging — via *⚙ → Settings... → Toolbar*; promoted features leave the dropdown, which hides once they all become buttons.
+
+**🤖 Model menu**: For Claude — Fable / Opus / Sonnet / Haiku / Opus Plan, effort level for Opus (Auto / Low / Medium / High / Max), Change Account, Set Language. For every other agent — its own models (grouped into submenus when the list is long), *Refresh Models*, and *Choose in the Agent...*.
+
+**On Agent Finish**: Configure via *⚙ → Settings... → On Agent Finish* tab. For scripts, enable *Close script window when it finishes* to auto-close the script console. For *Run (F5)* and *Run without debugging (Ctrl+F5)*, use *Clean solution before running* and *Rebuild solution before running* to control whether the solution is prepared before launch.
+
+**Custom commands (⚡)**: Once you've added a command via *Configure Custom Commands...*, the ⚡ toolbar button appears. Clicking an entry sends the saved text verbatim to the active agent — useful for slash commands or canned prompts.
+
+### Recipe — Codex review of uncommitted code, dispatched from Claude Code
+
+This binds a Claude Code skill that shells out to OpenAI Codex to audit pending changes for bugs, security issues, performance problems, and code quality.
+
+1. **Install Codex CLI** (if needed):
+   ```bash
+   npm install -g @openai/codex
+   codex login
+   ```
+2. **Create the skill from inside Claude Code** — paste this prompt into a Claude Code session:
+   > Create a Claude Code user skill called `codex-review` at `~/.claude/skills/codex-review/SKILL.md`. The skill runs `codex review --uncommitted` against the current repo's uncommitted changes. Preconditions: verify git repo, verify uncommitted changes exist, skip non-meaningful diffs (config/lockfiles/whitespace), and verify `codex` is on PATH. Ask Codex for bugs, OWASP Top 10 issues, performance problems, and code quality findings — each with file:line, severity, why it matters, and a concrete fix. Codex is the reviewer; Claude relays the output verbatim. After creating the file, run `/reload-plugins`.
+3. **Bind it as a custom command**: ⚙ → *Configure Custom Commands...* → Add... → Name: `Codex Review`, Command: `/codex-review`.
+4. **Use it**: ⚡ → *Codex Review*. Claude runs the skill, Codex audits your diff, findings appear inline.
+
+## Contributing
+
+Pull requests are welcome. Issues can also be fixed, so feel free to pick one up.
+
+- Use a high-quality AI model for coding, such as Claude Opus with High effort.
+- Test your changes carefully in Visual Studio (F5 experimental instance).
+- Run all unit tests with `test.cmd` and make sure they pass before submitting.
+- Bump the version by one major number (e.g. 236.0 → 237.0) in `Properties/AssemblyInfo.cs` and `source.extension.vsixmanifest`, and add a short `### Version X.0` entry at the top of Version History in this README. See `CLAUDE.md` for details.
+- The developer reviews the PR and publishes the new version to the Marketplace.
+
+## Known Issues
+
+- I know it is a pain, but sometimes in plan mode when there is an AI question after a lot of text, the keyboard does not work to select answer.
+After some time it will work again. Very hard to fix issue even with advanced models like Fable 5. Probably related to Claude Code CLI itself.
+https://github.com/anthropics/claude-code/issues/63504
+https://github.com/anthropics/claude-code/issues/41501
+Use native mode to avoid this issue.
+
+## Version History
+
+### Version 242.0
+- Native mode: tool calls that describe themselves, such as Claude Code's shell commands, now show that short description in the collapsed card instead of the raw command, and in the title of the permission prompt.
+- Native mode: resuming a conversation from Session History opened in a second or later chat tab now resumes it in that tab instead of the first one.
+- Native mode: a resumed Claude Code conversation shows its earlier tool calls as the same cards the live chat shows, with their results; the oldest ones in a very long conversation are listed in brief.
+- Native mode: replies stream smoothly instead of in bursts, even when they get long.
+- Native mode: formatting such as headings, lists, tables and code blocks now appears while the reply is being written, not only once it is finished.
+- Thanks to [@gh61](https://github.com/Gh61) for contributing these improvements (#194, #195, #196, #197, #198).
+
+### Version 241.0
+- Native mode: switching Claude Code between Plan, Auto, Accept edits, Manual and Skip permissions mid-response no longer stops the agent — the running turn continues under the new mode (#193).
+- Leaving Plan mode while the agent is still planning waits until the plan is approved or the response ends, so the agent never starts changing files from an unapproved plan.
+
+### Version 240.0
+- *Fix with Agent* in the GitHub Issues window now asks which model and effort the fix runs with, preselected to your current choice; the pick applies to that issue's chat only.
+- With Claude Code, the same dialog offers 💡 Recommend to suggest the model and effort that suit the issue.
+
+### Version 239.0
+- Images in the GitHub Issues window now load without any risk of briefly freezing Visual Studio.
+- Hovering an image in the GitHub Issues window shows a larger preview; clicking it still opens the image in the browser.
+
+### Version 238.0
+- New **GitHub Issues** (🐞) action in the ☰ Tools menu lists the repository's issues; *Fix with Agent* opens a chat tab that works on the issue in its own branch and worktree, so several fixes can run side by side. Requires native mode.
+- From the same window, commit and push the fix branch, merge it into main/master/dev once tested, and post a reply on the issue and close it; the branch and worktree are cleaned up afterwards.
+- Each issue shows where its fix stands — Fixing, Fixed, Committed, Pushed or Merged — and the window refreshes on its own when that changes, keeping a just-closed issue visible with its final comments.
+- Issue descriptions and comments show formatted text and their screenshots, scaled to fit the window; click an image to open it full size.
+
+### Version 237.0
+- **Native mode code blocks** have a copy button in the top-right corner that copies just the code.
+
+### Version 236.0
+- **Native mode usage button**: plan limit labels such as *Current session* no longer get covered by long status text like "Starts with your first message"; the popup widens to fit.
+- **Native mode usage button** shows "Refreshing…" while it fetches your latest plan limits, then the time they were updated.
+
+### Version 235.0
+- **Native mode usage button** next to the composer's selectors shows the chat's context window use and your plan limits; *See detailed breakdown* opens the Claude Usage tab.
+
+### Version 234.0
+- **Pull from git before the first prompt** now also pulls when you open another solution in the same Visual Studio session; before, the first prompt there could go out without a pull.
+
+### Version 233.0
+- **Install latest OpenPets** in *⚙ → Settings... → Automation* downloads the newest OpenPets release for Windows, shows the download progress, and starts its installer.
+
+### Version 232.0
+- **Devin model picker** shows a cost bar and the input, cached input and output price per million tokens for each model; picking a price moves the bar, and the model you are using is marked on it.
+
+### Version 230.0
+- **Claude Usage tab** no longer paints over the pane docked next to it (for example the Terminal below it) after the layout changes; it now snaps back to its own area automatically.
+
+### Version 229.0
+- **Status line in native chat**: if you set up a Claude Code status line, its output now appears under the summary after each Claude turn in native mode, for Claude Code on Windows and in WSL; nothing extra is shown when none is configured (issue #188).
+
+### Version 228.0
+- **"/" command picker**: typing "/" in the prompt box of a Claude chat lists the built-in commands, your custom commands and skills with their descriptions, like the terminal does; PageUp/PageDown scroll the list faster.
+- **/compact** in the native chat now reports how much context was freed instead of repeating the previous answer.
+- **/color** in the native chat now also changes the color of the chat header, and **/clear** clears the chat like the Clear Chat button.
+
+### Version 227.0
+- **Send button** now appears in the corner of the prompt box (terminal and native chat) when "Button only" send mode is selected, and changing the send key in Settings takes effect in open chats right away.
+
+### Version 226.0
+- **Install Caveman** now has separate *Windows* and *WSL* buttons, so you can install the skill for either one regardless of which agent is running; the Settings note explains that each keeps its own skills.
+
+### Version 225.0
+- **Install Caveman** moved to *⚙ → Settings... → Automation* and now opens a command prompt that installs the Caveman skill for you, then reloads the agent (terminal or native chat) when you close it.
+
+### Version 224.0
+- **Show Usage** for Devin now works in native mode: it posts your ACU usage (used, limit and percent) in the chat, and typing `/usage` there does the same.
+- In terminal mode, **Show Usage** for Devin now runs `/usage` in the terminal instead of opening the web page.
+
+### Version 223.0
+- On Agent Finish now has its own first tab in *⚙ → Settings...* with all of its options, instead of a separate window.
+- A solution that has never been configured always starts with On Agent Finish turned off.
+- The Usage tab is gone: its usage bar options now sit on the Layout tab.
+
+### Version 222.0
+- On Agent Finish is now set per solution only; there are no more global defaults that apply to every solution. A solution without its own settings has it off, and the first time you open On Agent Finish in a solution your previous settings are pre-filled.
+- The Settings window's long Behavior tab is split into two shorter tabs: Prompt (send key, prompt sending, font size, "@" file picker) and Automation (Changes, git, build and runtime errors, On Agent Finish).
+- The Settings window is a little wider so every tab still fits on one row.
+
+### Version 221.0
+- The usage bars no longer keep showing your previous account after you switch Claude Code to another account (for example with /logout and /login in the terminal).
+- The Claude Usage page is signed out when the account changes, and a notice with an "Open Claude Usage" link asks you to sign in there with the new account.
+
+### Version 220.0
+- Generate Commit Message (including Commit and Push) no longer credits the AI: the chat shows the cleaned message, and more forms of AI attribution are removed from the commit.
+
+### Version 219.0
+- Fixed "Update Agent" for Devin (native) failing with a "file in use" error; the update now retries automatically.
+
+### Version 218.0
+- New *Track agent changes for review (Keep/Undo)* setting (off by default, issue #183): the Changes view lists only the files the agent changed since you last reviewed them, across prompts and chat tabs, in both terminal and native mode.
+- Keep or Undo each file, or use Keep All / Undo All; Undo also removes files the agent created and restores files it deleted.
+- A scope switch in the Changes view toggles between "Pending review" and "All uncommitted (git)".
+- Compare opens a pending file in Visual Studio's diff window, before the agent on the left and now on the right.
+- Undo warns when a file has unsaved changes in the editor, and afterwards the editor shows the restored file, so a later save can no longer bring the agent's change back.
+- With *Auto-open Changes on Send* on, the Changes view comes back to the front when the agent finishes and files are pending review.
+- After an Undo, your next prompt tells the agent which files you reverted, so it doesn't treat them as an accident and reapply its changes.
+- Fixed native chat replies being split around a "Switched to..." notice when the permission mode or model is changed while the agent is still answering.
+- Thanks to [@osjimenez](https://github.com/osjimenez) for the idea, testing and work on this feature (#183).
+
+### Version 217.0
+- Added Grok (Grok Build) as a supported AI agent, both in the embedded terminal and in native chat mode; install it with `irm https://x.ai/cli/install.ps1 | iex`, sign in with `grok login`, then enable it via "Configure Visible Code Agents...".
+- New *Grok: Always Approve* toggle in the agent menu approves every Grok action automatically (off by default).
+- Cursor Agent is no longer reported as installed when only Grok Build's own helper is on the PATH.
+
+### Version 216.0
+- Added Qwen Code as a supported AI agent, both in the embedded terminal and in native chat mode; install it with `npm install -g @qwen-code/qwen-code@latest`, then enable it via "Configure Visible Code Agents...".
+- New *Qwen Code: Yolo Mode* toggle in the agent menu approves every Qwen Code action automatically (off by default).
+
+### Version 215.0
+- Claude Code model menus and *Recommend AI Model* no longer offer Fable when the Claude usage page shows a zero usage-credits balance, since Fable requires credits; if the balance cannot be read, Fable stays available.
+
+### Version 214.0
+- Inline usage bars now keep updating on accounts that show only a spend limit (such as usage-based Enterprise seats); the weekly row is hidden when there is no weekly limit (#182).
+- When usage could not be refreshed for a while, the inline bars now say when they were last updated instead of showing old numbers as current.
+
+### Version 213.0
+- New *Recommend AI Model* (💡) action for Claude Code: type your prompt, click it, and Opus at Extra High effort suggests the model and effort that fit the task. Adjust the suggestion if you like, then *Apply* switches to it without sending the prompt.
+- Available in the ☰ Tools menu; promote it to a one-click toolbar button via *⚙ → Settings... → Toolbar*.
+
+### Version 212.0
+- Plan mode now sticks: approving a plan no longer switches your saved mode to Accept edits, so Restart and new chats start in plan mode again (#181).
+- Terminal mode gets a *Claude Code: Start in Plan Mode* option in the agent menu, so every Claude Code start, Restart included, begins in plan mode.
+
+### Version 211.0
+- Custom commands can now be cloned: select one in *Configure Custom Commands...* and click *Clone...* to start a new command from a copy of it.
+- New *Backup* tab in *⚙ → Settings...* saves the entire extension configuration (all settings, custom commands, On Agent Finish including per-solution overrides, and more) to a file and loads it back, e.g. to move your setup to another machine.
+
+### Version 210.0
+- "Generate Commit Message, Commit and Push" no longer shows a confirmation dialog after a successful push; errors are still reported.
+
+### Version 209.0
+- Multi-line prompts sent to Claude Code no longer get split into separate messages or held back waiting for Enter, so long prompts submit reliably as a single message.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for the contribution (#180).
+
+### Version 208.0
+- Fixed prompts sometimes staying in the terminal input line without being submitted, especially right after a long agent response, so you no longer have to press Enter yourself.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for the contribution (#178).
+
+### Version 207.0
+- The Native mode chat's 📎 button now opens a menu with "Attach a file...", "Insert editor selection" and "Insert active file path", so these are reachable when the chat is in its own tab (issue #174).
+
+### Version 206.0
+- Fixed the working directory not updating when switching directly from one open folder to another (File > Open > Folder), so the panel and agent now follow the newly opened folder instead of staying on the previous one.
+
+### Version 205.0
+- New "Generate Commit Message, Commit and Push" toolbar/menu action: drafts the commit message like Generate Commit Message, fills it into the Git Changes window, then immediately stages, commits and pushes every change.
+- Both commit actions can be promoted to their own toolbar button independently via *⚙ → Settings... → Toolbar*, and both are available as "On Agent Finish" follow-up presets, which now show which one is selected.
+- Generated commit messages no longer credit the AI as a co-author, and the Git Changes message box is cleared once Commit and Push finishes.
+
+### Version 204.0
+- Claude Code in Native mode now checks files out of TFVC (Azure DevOps / Team Foundation Server) through Visual Studio before editing them, instead of fighting the read-only flag.
+- If a checkout fails, for example because someone else has the file locked, the edit is blocked and Claude asks you. Turn it off in *⚙ → Settings... → Behavior*.
+
+### Version 203.0
+- Fixed "Send Selection to Claude Code" so it reaches the conversation when Native mode's chat has its own tab, instead of being lost behind the "Show Chat" button.
+
+### Version 202.0
+- The "@" file picker now reaches every file in large projects: it skips anything your .gitignore excludes and indexes far more files than before (issue #174).
+- In Unity projects the picker leaves out the Library, Temp and Logs folders and the .meta files next to each asset.
+- New Settings → Behavior → "@ file picker" options to list only certain file types (e.g. ".cs, .lua") and to skip folders you never want to mention.
+
+### Version 201.0
+- The terminal font keeps its size across several display changes in a row, such as Remote Desktop reconnects at different scalings, instead of growing slightly larger each time.
+- After a display change the terminal now uses the full width and height of the panel and no longer hides its last columns past the right edge.
+- The agent's prompt stays in view after a display change that widens the terminal, instead of the panel showing empty lines.
+- Native mode chat: press Ctrl+0 to reset the conversation zoom back to 100% after zooming with Ctrl+Scroll.
+- Thanks to [@metman-oss](https://github.com/metman-oss) for the display-change repair contribution (#173).
+- Thanks to [@karpach-relativity](https://github.com/karpach-relativity) for the native chat zoom-reset contribution (#172).
+
+### Version 200.0
+- Native mode: parallel chat tabs now show the same toolbar buttons as the main chat tab, instead of just the Tools menu.
+- Native mode: closing the main chat tab no longer reopens it by itself when the agent has a question or permission prompt — it waits quietly until you click *💬 Show Chat*.
+- Native mode: if you close the main chat tab while another chat tab is still open, *💬 Show Chat* now brings that other tab forward instead of reopening the one you just closed.
+
+### Version 199.0
+- Native mode: the agent (Claude Code, Codex, Cursor Agent, etc.) selector now works in every parallel chat tab, not just the first one — each tab switches and keeps its own agent independently (issue #171).
+
+### Version 198.0
+- Renaming a Claude Code session in Session History or the chat tab now also names it in Claude Code itself, so the new name shows in its own resume list (issue #170).
+- Claude Code sessions from native mode now appear in Claude Code's own resume list, and names given to a session in Claude Code now show up in Session History and the chat tab.
+
+### Version 197.0
+- Open Code support is back: pick it from the agent menu to run it in the terminal or in native mode, with model selection, custom CLI path and extra launch arguments like the other agents.
+
+### Version 196.0
+- Native mode: the chat can always be brought back if its tab goes missing (issue #168) — use the new *💬 Show Chat* button in the panel, or *View → Other Windows → Claude Code Chat*, which you can also bind to a keyboard shortcut.
+- Native mode: closing the chat tab now simply closes it instead of moving the chat into the panel; the conversation keeps going, and *💬 Show Chat* reopens it. It also reopens by itself when you send a prompt from the panel or the agent asks you something.
+- Native mode: a chat tab that Visual Studio hid when debugging started or stopped now reappears on its own, and reopening the panel brings a hidden chat tab back too.
+
+### Version 195.0
+- Fixed native mode for Devin falling back to the embedded terminal on launch whenever a Sonnet/Opus effort-level model (e.g. "Claude Sonnet 5 High") was selected — the pick now applies correctly instead of being reported as unavailable.
+
+### Version 194.0
+- In native mode, a message typed to Devin while it is working now reaches it straight away and redirects what it is doing, instead of waiting for the current answer to finish.
+
+### Version 193.0
+- "Pull from git before the first prompt" now also fires when the first message of a session is sent from a custom command, not just when typed into the prompt box.
+
+### Version 192.0
+- The "agent finished" notice and the terminal-repair notice no longer replace each other, so the one you came back to act on is still there.
+- The terminal keeps its size and font when Visual Studio cannot report the display scaling for a moment, instead of treating it as a display change.
+
+### Version 191.0
+- The terminal keeps its text size and its earlier output when the display changes: a Remote Desktop reconnect at a different resolution, a monitor switch or a scaling change no longer leaves the font oversized and the output cut off at the right edge.
+- After such a change the agent also redraws in the right place, instead of scrolling to a spot outside the visible area every time it updates.
+- The terminal fills the whole panel again after the change instead of painting only a few rows at the top and leaving the rest blank, which is what made scrolling look scrambled after a Remote Desktop reconnect.
+- If the terminal still cannot be brought back to the right size, a notification now says so and offers to restart it.
+- Thanks to [@metman-oss](https://github.com/metman-oss) for the contribution (#166).
+ 
+### Version 190.0
+- Codex and Cursor Agent now switch model mid-conversation without restarting the chat, matching how effort already worked — Claude Code already had this.
+
+### Version 189.0
+- Native mode's permission selector gains a *Manual mode* option that asks before every action, even file edits, for anyone who wants full control over each step.
+- *Ask permission* is renamed to *Accept edits* to describe what it actually does — file writes go through automatically while riskier actions still prompt.
+
+### Version 188.0
+- Native mode's permission selector gains an *Auto* option alongside Plan mode, Ask permission, and Skip permissions, letting Claude Code decide per action whether to prompt. Thanks to [@karpach-relativity](https://github.com/karpach-relativity) for the contribution (#165).
+- Turning on *Claude Code: Skip Permissions* from the agent menu now clears the other permission modes, so the selector always names the mode the agent is actually running in.
+
+### Version 187.0
+- Native mode plan cards get an *Approve and skip permissions* button, plus a **▾** menu to approve on a different model (Opus, Sonnet, Haiku) with or without skipping permissions — the agent keeps working without being interrupted.
+
+### Version 186.0
+- Open Code support removed. If it was your selected agent, the extension falls back to Claude Code.
+
+### Version 185.0
+- New *⚙ → Settings... → Behavior → Git* option, on by default, that pulls from git before the first prompt you send for a solution, so the agent never starts editing code that is already out of date on the remote.
+- If that pull ends in conflicts, the conflicted files are described to the agent along with your prompt and it is asked to resolve them before doing what you asked.
+
+### Version 184.0
+- New *⚙ → Settings... → Theme → Native Color Schema* option to choose the default color for native mode sessions; it is remembered across Visual Studio restarts, and a color picked for a single session still takes priority.
+
+### Version 183.0
+- Native mode: the Edit/Write/MultiEdit permission prompt now shows the colored diff up front, the same way it renders after you click Allow, instead of raw JSON (issue #160).
+
+### Version 182.0
+- Long tooltips in the Settings dialog now wrap instead of running off the screen and being cut off mid-sentence. Thanks to [@rbuss93](https://github.com/rbuss93) for the contribution (issue #156).
+- New *⚙ → Settings... → Toolbar → Alignment* option to push the toolbar buttons back to the right edge of the row, the way they sat before; left-aligned stays the default. Thanks to [@rbuss93](https://github.com/rbuss93) for the contribution (issue #158).
+
+### Version 181.0
+- Native mode: fixed replies sometimes not appearing — the chat showed "Done in X seconds" with no answer while the terminal worked.
+- Native mode: if Claude Code is not installed, you are signed out, or the agent stops unexpectedly, the chat now says so and tells you how to fix it, instead of staying silent or falling back to the terminal.
+- Native mode: links in status notices and error messages, such as the "what's new" changelog link, can now be clicked.
+- Terminal mode: the Command Prompt terminal now always has a scrollbar and full scrollback, even when the Windows console defaults leave no scrollback.
+
+### Version 180.0
+Security fix for Antigravity in native mode: text in a prompt, such as build errors or exception messages from the opened code, can no longer be read as extra command-line options that turn off permission prompts.
+
+### Version 179.0
+Native mode is now the default chat experience for new installs, replacing the embedded terminal as the first thing you see; switch back to the terminal any time via *⚙ → Settings... → Terminal → Use native mode*. Existing installs keep whatever they already had configured.
+
+### Version 178.0
+Switching Claude's model or effort level in native mode now applies instantly on the running conversation instead of restarting it, so replies keep going and previous cost savings from prompt caching are no longer thrown away. If a live switch isn't possible, the previous restart behavior is still used as a fallback.
+
+### Version 177.0
+In native mode, closing the chat's document tab now docks the conversation back into the extension panel instead of losing it. Reopening the extension panel after it has been closed brings the chat back out into its own tab, so closing everything and reopening the panel from View → Other Windows lands you back on the usual layout (usage bars in the panel, chat in its own tab) rather than a panel showing only the usage bars. The ⧉ dock/undock command is available again in native mode from the ☰ Tools menu, so you can move the chat between its own tab and the panel yourself. The extension panel's toolbar is now a single strip that scrolls all of its buttons with the ◀ ▶ arrows on a narrow window, instead of leaving a wide gap in the middle.
+
+### Version 176.0
+A "New chat" opened from a parallel native mode tab now matches the agent and model that tab was actually running, instead of sometimes opening a different one. Picking a Claude model in native mode now sticks even if Visual Studio doesn't shut down cleanly afterward, instead of reverting to Fable. Native mode's chat toolbar also gets a File Attach icon (📎), matching the terminal toolbar's.
+
+### Version 175.0
+Toolbar icons are now centered inside their buttons instead of sitting low against the bottom edge, where they looked clipped. Applies to the panel toolbar and to native mode's chat toolbar.
+
+### Version 174.0
+Native mode's chat toolbar now adapts when the window is narrow instead of being cut off: the Agent/Model/Effort/Permissions names shorten, the session buttons (↻✚✎🎨) fold into a single ⋯ menu, and if it still doesn't fit the whole row scrolls with the ◀/▶ arrows. Full labels come back as soon as there's room again.
+
+### Version 173.0
+Native mode's composer toolbar now sits flush against its own buttons instead of leaving stray gaps: the mirrored icon buttons (🔄📄📁⚡☰⚙ etc.) no longer leave a gap next to the Agent/Model/Effort/Permissions selectors, the space below the toolbar (before the message box) is tighter, and the ◀/▶ scroll arrows that appear when the toolbar doesn't fit no longer leave a gap behind when hidden.
+
+### Version 172.0
+Fixed Set Working Directory not actually returning to the project's own folder when cleared — a leftover custom directory from before per-solution overrides existed (or set once with no solution open) could keep silently overriding solutions that never set their own.
+
+In native mode, recalling a prompt with Ctrl+Up/Ctrl+Down now leaves the cursor at the end of the text instead of the start, so you can keep typing or trim the last few words without moving the caret first (issue #152).
+
+### Version 171.0
+Fixed the ☰ Tools menu in native mode's chat tab showing up empty instead of listing the features you haven't promoted to the toolbar.
+
+Fixed changing or clearing the Set Working Directory path in native mode not taking effect properly.
+
+The Settings → Toolbar tab no longer offers "Detach / Attach Terminal" while native mode is active, since it has nothing to do there.
+
+### Version 170.0
+Native mode's chat tab now carries its own ⚙ Settings, ☰ Tools and ⚡ Custom Commands buttons, plus whatever you've promoted to the toolbar (View Changes, Session History, Show Usage, etc.) — mirrors of the same buttons and menus the panel has, so you rarely need to switch back to it. The panel's prompt box auto-collapses once the chat has moved to its own tab (toggle this with the new "Hide prompt box while the native chat is in its own tab" setting). The Agent/Model/Effort/Permissions selectors are also now reachable no matter which of these panel states you're in, and ↻'s tooltip now says it restarts the agent, addressing issue #151.
+
+Follow-up polish on the above: the panel no longer shows its own copy of a button once the chat tab has its mirror of it — the panel now shows only ⧉ once the chat has left for its own tab, so the two windows don't duplicate every control (a timing bug meant this didn't always take effect right away; fixed by refreshing the panel's toolbar the moment the chat actually moves in or out of its tab). The ☰ Tools mirror hides itself when there's nothing to put in it, same as the panel's own ☰. The Send button was removed from the chat composer (Enter already sends), and its action row (restart, selectors, ⚙/☰/⚡) now sits above the prompt box instead of underneath it.
+
+Further follow-up: the composer's 📎 attach button was removed too — Ctrl+V paste and drag-and-drop already attach files, so it was redundant. And the action row now scrolls horizontally (drag the scrollbar, or just scroll the mouse wheel over it) when a customized toolbar plus every selector and mirrored button doesn't fit the tab's width.
+
+One more round of follow-up: the ⧉ button that pops the chat back into its own tab no longer shows up at all while native mode is active — a lone floating icon in an otherwise near-empty panel was more confusing than useful, and the chat tab already reopens on its own every time a native session (re)starts, so nothing is lost besides a manual "reopen now" button between restarts (closing the tab still keeps your conversation, it just stays docked in the panel until then). And the action row's horizontal scrolling no longer uses a scrollbar — small ◀/▶ arrow buttons appear at either end only when there's more to scroll to in that direction, replacing the scrollbar track entirely. (Fixed right after: the arrows used to shrink/grow the toolbar's own width as they appeared and disappeared — now they reserve their space at all times, so only the buttons underneath scroll and the toolbar's size stays fixed.)
+
+One more fix: the session actions and the Agent/Model/Effort/Permissions selectors were scrolling out of view along with the mirrored ⚙/☰/⚡ buttons whenever the row didn't fit, with the ◀ arrow sitting at the very start of the whole row instead of next to what it scrolls. Now only the mirrored config buttons scroll — the session actions and selectors always stay fully visible, and the ◀/▶ arrows sit directly on either side of just the scrollable section.
+
+Fixed the ⚙ Settings button disappearing from the terminal panel's own toolbar in narrow docked windows — with several buttons promoted it could silently render past the edge of the tool window with no scrollbar or arrows to reveal it. The panel's toolbar now scrolls the same way the chat tab's action row does: your promoted buttons scroll via ◀/▶ arrows, while ☰ Tools, ⚡ Custom Commands, 🤖 Model and ⚙ Settings always stay visible since there's nowhere else to reach them from. Also fixed the ⚡ Custom Commands mirror in the chat tab's composer bar showing up even when no custom commands were configured — it now hides in that case, matching the panel's own ⚡ button.
+
+Fixed ⚡ Custom Commands showing up by itself in the panel's toolbar in native mode, even while the chat was detached to its own tab (where it should be hidden entirely, in favor of its mirror in the chat tab). Also fixed an oversized, misplaced gap that could appear in the classic terminal panel's toolbar between your promoted buttons and the always-visible ☰/⚡/🤖/⚙ group — the buttons now sit flush together as before.
+
+Fixed an empty strip of wasted space that remained between the panel's title bar and the usage bars in native mode once the chat moved to its own tab — the now-empty button and checkbox rows were still reserving their height, and are now collapsed entirely. Also fixed the ◀/▶ scroll arrows never appearing in the classic terminal panel's toolbar, which left promoted buttons (and sometimes ⚙ itself) unreachable in a narrow docked window. The toolbar row is now laid out so the always-visible ☰/⚡/🤖/⚙ group can never be pushed off screen and the scrollable section gets exactly the width that's actually left over, and both arrows now appear together as soon as the row can scroll, with the direction you've already reached the end of greyed out instead of vanishing.
+
+Fixed the ⚙ Settings/Agent button vanishing for good from the terminal panel's toolbar. Once the native chat had been opened in its own tab, the panel's ⚙ and 📎 buttons were hidden and never restored — so turning native mode back off left you in classic terminal mode with no way to reach settings or the agent menu at all. Both now come back as soon as the chat is no longer in its own tab, along with ⚡ Custom Commands and the ▶ Send button when your settings call for them.
+
+Native mode now falls back to the embedded terminal when the agent won't run on the model you selected — for example a Devin model your account no longer offers. Previously the chat started anyway on the agent's own default model while still showing the model you picked, and native mode is the one place you can't correct it, since the 🤖 model menu is hidden there. You now get a message naming the agent and the model, and land in the terminal where 🤖 is available and the CLI lists the models it does accept. The same applies when you switch model mid-conversation. An agent that simply has no model picker is unaffected and keeps starting on its default.
+
+Follow-up to the above: whenever native mode gives up and hands the panel back to the embedded terminal, the panel's toolbar — the ⚙ Settings/Agent button in particular — is now guaranteed to come back with it. Rolling back to the terminal isn't much help if the button you need in order to pick a different model, switch provider or turn native mode off isn't on screen; and if tearing the half-started session down threw on its way out, the old code could leave you with neither the chat nor the terminal. Every fallback now runs through a single path that restores the controls first and shows its explanation second.
+
+Fixed a panel that came back empty — terminal only, with no prompt box, no toolbar and no ⚙ — and stayed that way across restarts. The size of the prompt area is remembered between sessions, and while native mode has the chat in its own tab that area is deliberately collapsed; its collapsed height was being saved as if you had dragged the divider there, so every later launch restored a prompt area a few pixels tall. The collapsed size is no longer saved, and a bad value already stored is repaired on load, so the panel comes back the size you left it.
+
+### Version 169.0
+Fixed native mode losing access to the model/effort/permission selectors when "Hide prompt input box" was turned on and the chat wasn't detached to its own tab.
+
+### Version 168.0
+The Devin model picker now has favorites: click the star next to any model to pin it, and it jumps to a "Favorites" section at the top of the list, right under Adaptive.
+
+Favorites replace the automatic "recently used" list in both the picker and the model menu — nothing is remembered unless you star it, and your picks are saved for next session.
+
+### Version 167.0
+Devin's model menu now opens a searchable picker, like the one in Devin Desktop: type to find any of Devin's models, with Adaptive pinned on top and a side panel showing each model's context window, cost tier and per-million prices.
+
+The menu itself now lists the model in use plus the ones you picked recently, so switching between your usual models no longer means walking through submenus. Works in both the terminal and native mode, for Devin (native) and Devin (WSL).
+
+### Version 166.0
+Native mode's tool cards (Read, Edit, Write, MultiEdit, NotebookEdit and more) now show a small ↗ icon on the collapsed row when they touched a file in your project — click it to jump straight to that file in the editor. Works across every provider (Claude Code, Codex, Cursor Agent, Devin, OpenCode, PI, Reasonix), including WSL-based ones, and tells you when a file can't be found instead of doing nothing.
+
+### Version 165.0
+Native mode's parallel chat tabs now have their own model, effort/reasoning and permission (or plan mode) selectors, independent of the panel and of every other open tab — run Opus in one tab and Sonnet in another, or leave one tab asking for permission while another skips prompts.
+
+Fixed "Clear Chat" inside a parallel tab clearing the panel's own conversation instead of that tab's.
+
+Fixed a chat tab's custom title and color disappearing the moment a model, effort or permission switch completed, for the panel's own chat and every parallel tab alike — the running agent can hand back a different internal session id after such a switch, which used to disconnect the saved name/color from the tab until (sometimes) a later message reconnected it by luck.
+
+### Version 163.0
+Native mode: moving the permission selector straight from "Skip permissions" back to "Ask permission" now takes effect instead of doing nothing — the earlier workaround of going via "Plan mode" first is no longer needed.
+
+Native mode: tool approvals gained an "Allow for the rest of this session" choice, reached from a small caret next to the Allow button. Once picked, later requests for that same tool are approved automatically until you start a new chat or switch model.
+
+Native mode now posts a one-line "Claude Code updated to vX" note with a changelog link when the CLI has updated itself since you last used it, mirroring the terminal greeting. The welcome card also notes that a native-mode chat runs locally in Visual Studio and is not published to claude.ai.
+
+### Version 162.0
+The terminal now corrects itself if a command running inside it (PowerShell, a `chcp`, some .NET CLI tools) switches its text encoding, instead of staying garbled until you restart it. Turn this off under Settings → Terminal → Encoding if a workflow needs the console left on the encoding it switched to.
+
+Fixed a rare case where the terminal's cleanup left a leftover, empty registry entry behind, which could stop later cleanups from removing it.
+
+### Version 161.0
+The model menu now lists Devin's real models, read from your own Devin account instead of a hand-maintained list, and the picked model is applied when Devin starts as well as live in a running session. Each Devin entry shows its context window, cost tier, and New/Beta marker.
+
+Removed the "Configure Devin Models..." dialog — the list is discovered automatically and refreshed from the model menu's "Refresh Models".
+
+Every agent's model list is now re-read once each time Visual Studio starts, so a model added or removed by a CLI update shows up without waiting a day or refreshing by hand.
+
+### Version 160.0
+In native mode, permission approvals and question prompts raised by a parallel chat tab now appear in that tab (and bring it to the front) instead of on the first tab, so the tab that is waiting for you is the one that shows the prompt.
+
+Added a per-provider "Extra launch arguments" box under Settings → CLI Paths: text entered there is appended to the agent's command line when it starts, in both the embedded terminal and native mode, for passing flags the extension does not expose (for example `--chrome` to enable Claude in Chrome).
+
+### Version 159.0
+The inline usage bars now refresh on their own right after Visual Studio starts, without needing the Claude Usage tab to be opened or brought to the front first.
+
+Fixed the usage bars staying stuck on the previous session's numbers for the whole session when the Claude Usage tab was restored behind another tab.
+
+### Version 158.0
+The Claude Usage panel now returns to the usage bars on its own after an account change: use Switch Account, log out of claude.ai inside the panel, and sign back in with a different account, and the new account's usage loads automatically instead of leaving you on the claude.ai home page until you press Refresh.
+
+Also fixed the panel sometimes showing the full claude.ai page layout instead of the focused usage bars after switching accounts.
+
+### Version 157.0
+Fixed Switch Account in the Claude Usage panel: "Log out" used to appear to just refresh instead of signing out, because the panel's own safety redirect (which snaps the embedded page back to the usage view after login) fired immediately on the transient page claude.ai's sign-out flow passes through, aborting the log-out request mid-flight. That redirect now waits a short beat and re-checks the page before acting, so a genuine login still snaps back to the usage view automatically while a sign-out in progress is left alone.
+
+Also fixed switching to a different account and logging back in leaving the panel stuck on the full claude.ai chat UI instead of returning to the usage view — Refresh now explicitly navigates back to the usage page when it isn't already there, instead of just reloading whatever page Switch Account left behind.
+
+### Version 156.0
+Fixed multiple-choice questions never appearing when "Skip permissions" was on — Claude reported the question tool as unavailable for the session and answered in plain text instead. Questions and plan approvals now show up as clickable cards in every permission mode.
+
+### Version 155.0
+Auto-refresh now updates the Claude Usage bars every 1 minute instead of 2.
+
+Fixed the bars still only updating when the Claude Usage tab was the active tab, even after the v154.0 fix — the background refresh was checking a visibility signal that Visual Studio also reports as "visible" for a tab sitting open but unfocused behind another tab, so it kept skipping the refresh. It now checks whether the tab is actually in front (issue #111).
+
+### Version 154.0
+Fixed the Claude Usage bars only updating when the Claude Usage tab itself was opened — the previous background-refresh timer was only (re)started from a tab-visibility notification that Visual Studio doesn't reliably raise for every way a sibling tab in the same dock group can become active, so a missed notification could leave the bars frozen for the rest of the session. The refresh timer now runs continuously once usage bars are enabled instead (issue #111).
+
+Refresh also now disables the HTTP cache on the usage scraper's WebView2, so clicking Refresh (or the automatic reload) always pulls a live response instead of a stale one served from claude.ai's own client-side cache, and rebuilds the WebView2 if it had already died instead of silently doing nothing.
+
+Fixed the embedded terminal going blank and unresponsive after entering Debug mode (F5) in some layouts — the terminal surface is a foreign window joined to its panel via SetParent, which Visual Studio's own frame-visibility tracking knows nothing about, so it could be silently orphaned by the same debug-layout change that issue #130/#141 already guard the panel's own visibility against. The existing debug-mode restore pass now also repairs that link (issue #142).
+
+### Version 153.0
+Claude Usage now refreshes automatically while its Visual Studio tab is unfocused, so the usage bars stay current without pressing Refresh.
+
+### Version 152.0
+Fixed the Claude Usage panel wrongly showing "WebView2 runtime is required" when another Visual Studio instance already had it open — it now falls back automatically so both instances can display the usage page at the same time.
+
+### Version 151.0
+Fixed the panel sliding itself open on every debug step when it is auto-hidden (collapsed to the side) or left behind another tab — a panel you parked out of the way now stays out of the way for the whole debug session (issue #141).
+
+The panel is still brought back if Visual Studio itself hides it when debugging starts, and a panel you closed is no longer reopened by starting a debug session.
+
+### Version 150.0 - NeilN1 contribution
+Fixed Windows Terminal launches still failing with "The system cannot find the path specified" when the launch chain contains a non-ASCII path — Windows Terminal starts its console in the OEM code page, so a UTF-8 character (like a typographic apostrophe) decoded as mojibake before the script's own `chcp 65001` line could take effect (issue #138).
+
+### Version 149.0
+Fixed switching agent in native mode — most often after using Devin — leaving the previous agent running behind the new chat, so its replies and errors appeared in the wrong conversation and restarting the session did not clear them.
+
+Switching agent again while one is still starting no longer breaks the chat: the switches are applied one at a time, and only the agent you picked last is started.
+
+When a Codex or Cursor Agent turn fails to start, the chat now shows what the agent itself reported instead of only "Agent process closed its input pipe".
+
+### Version 148.0
+The Claude model menu now offers **Fable** in place of **Best**, selecting Claude Fable directly for the most demanding tasks. Available in both the terminal and the native chat.
+
+### Version 147.0
+Fixed Windows Terminal still failing to start with "The system cannot find the file specified" when the Windows user name contains a typographic apostrophe or other non-ASCII character (issue #138).
+
+Ctrl+Up/Down prompt history now fills the chat tab you are typing in — in a second or later chat tab the recalled prompt went into the panel's prompt box instead.
+
+### Version 146.0
+Fixed Windows Terminal failing to launch with "The system cannot find the file specified" when the workspace or user profile path contains an apostrophe (issue #138). wt.exe is normally an App Execution Alias, and launching it via a raw CreateProcess call could fail to resolve the alias in that case; the launch now retries through ShellExecute, which resolves it reliably.
+
+### Version 145.0
+The effort level you select now survives a restart of the code agent — previously the new session quietly started at the CLI's own level while the slider still showed the previous selection.
+
+### Version 144.0
+Native mode tables now render full grid lines around every cell (header and data rows), instead of just an underline below the header.
+
+### Version 143.0
+Fixed closing one Visual Studio instance sometimes killing the Claude terminal in other open instances when using Windows Terminal (issue #135).
+
+### Version 142.0
+The Claude Usage window no longer pops into view while the inline usage bars refresh in the background — the scraper now runs in its own hidden window instead of briefly showing the tab on every refresh (issue #133). Thanks to [@metman-oss](https://github.com/metman-oss) for the contribution.
+
+### Version 141.0
+Devin (native or WSL) now queues follow-up messages sent while it's still replying, instead of the message racing the one already in progress.
+Fixed the Claude Usage window going blank, and the inline usage bars getting stuck after their first update, once the window had been auto-hidden in the background (issue #131).
+
+### Version 140.0
+"On Agent Finish"'s follow-up field now offers a "Generate Commit Message" preset alongside the "no AI credit" one — picking it runs the same Generate Commit Message action instead of sending literal text to the agent.
+
+### Version 139.0
+Session History now supports Devin (native or WSL), including viewing, resuming any session or the latest one, and restoring earlier messages in native mode.
+
+### Version 138.0
+Restored the highlighted feature and menu names in the README so the Marketplace page reads as before.
+
+### Version 137.0
+Listed Generate Commit Message among the Features, and tidied up the repository's internal documentation files.
+
+### Version 136.0
+Fixed Generate Commit Message playing the "On Agent Finish" sound or running its action after the AI wrote the commit message.
+
+### Version 135.0
+Fixed native mode chat occasionally rendering streamed replies with the first few characters of a line missing.
+
+### Version 134.0
+Added a Generate Commit Message toolbar button that asks the agent to write a commit message from the current changes and fills it into the Git Changes window, ready to review alongside the diff. Requires native mode; falls back to copying the message to the clipboard if the Git Changes commit box can't be found.
+
+### Version 133.0
+Fixed restored Codex sessions opening without their earlier messages in native mode, including older interrupted conversations.
+
+### Version 132.0
+Session History now supports Codex on Windows and WSL, including viewing, renaming, deleting, resuming any thread or the latest one, and restoring earlier messages in native mode.
+
+### Version 131.0
+The Claude Code panel and any tabs it created (detached terminal, native mode chat tabs) now stay visible while you debug your project, instead of getting hidden by Visual Studio's own layout behavior (issue #130).
+
+### Version 130.0
+"Send Selection to Claude Code" now also appears in the XAML editor's right-click menu, not just standard code editors (issue #127).
+The 📎 attach menu has a new "Insert Active File Path" entry that drops a reference to the file open in the active editor tab into the prompt, similar to GitHub Copilot's "Active Document" context (issue #127).
+Automated sends — auto-sent build/runtime errors, custom commands, and "On Agent Finish" follow-ups — now go to whichever parallel chat tab you last had focused, instead of always the first session.
+
+### Version 128.0
+Exported session transcripts now always start with the session's name, so the file can be pasted straight into a GitHub issue as its details.
+
+### Version 127.0
+Each parallel chat session now shows its own name above the conversation and in its document tab title, so open chats are told apart from the tab strip alone.
+Attachments and pasted images now stay in the chat tab they were added to, instead of always going to the first session.
+
+### Version 126.0
+Native mode now supports true parallel chat sessions: click the ✚ button to open a new independent session in its own document tab. Each session runs its own agent process, has its own transcript, and can be closed independently. The ↻ button clears the current conversation and starts fresh. Switch between sessions by clicking tabs; all sessions remain active and processing in parallel.
+
+### Version 125.0
+Pressing Esc in the native mode chat box now stops the agent's turn, same as the Stop button.
+Native mode sessions can now be renamed from the chat tab; the name shows above the conversation and in Session History.
+Each native mode session can now have its own accent color, replacing the default blue across the whole conversation (message bubbles, welcome banner, session name); pick it from the composer's palette button, no rename required.
+
+### Version 124.0
+Reasonix now always runs in the embedded terminal, even with native mode turned on.
+The Reasonix model menu now lists the models actually configured on your machine, read from Reasonix itself, instead of a fixed list that could not be used.
+
+### Version 121.0
+Native mode now records why an agent failed to start when the chat falls back to the terminal, including the message the CLI itself printed.
+
+### Version 120.0
+Fixed Reasonix native mode still opening the terminal on later launches, once a leftover Reasonix process from an earlier attempt had already been holding onto the workspace.
+
+### Version 119.0
+Added diagnostic logging for native mode start failures, to help pin down why a provider sometimes still opens the terminal with native mode on.
+
+### Version 118.0
+Fixed native mode (chat tab) not being used when switching AI provider from the ⚙ menu — it now behaves the same as switching on startup or restart, instead of silently dropping to the terminal.
+
+### Version 117.0
+Fixed the Settings window sometimes opening with the Terminal tab scrolled to the middle instead of the top.
+
+### Version 116.0
+Fixed Reasonix (native) getting stuck on first launch behind its one-time "Allow anonymous CLI usage statistics?" console prompt — it is now answered automatically so the agent starts normally.
+
+### Version 115.0
+"Update Agent" now works in native mode too: it opens a console window running the CLI's own updater, and once you close that window the agent automatically restarts and resumes your conversation. Fixed the update failing with "Access is denied" on machines where Visual Studio is not running as Administrator, and fixed Devin (native)'s updater being flagged by Windows Defender.
+
+### Version 114.0
+The Codex welcome card in native mode now shows the model currently selected by the extension and the signed-in ChatGPT account, matching the information already shown for Claude Code. Account detection works for both native Windows and WSL Codex installations, supports API-key authentication, runs in the background, and never reads or exposes the stored access tokens. Codex now also has a reasoning-level selector in both terminal and native chat modes, with Model default, Low, Medium, High, Extra High, Max, and Ultra options. Native chat applies the new level to the next turn without losing the conversation; terminal mode offers to restart Codex so the saved level takes effect. Codex native chat also keeps the composer available during a turn for both Windows and WSL providers: follow-up messages are queued in order, show their queued count in the activity footer, and run automatically on the same thread when the current response finishes. Codex turn footers and Agent Finish notifications now split the CLI's large token figure into processed, cached input, and output counts, making resumed short replies easier to interpret. Claude Code native chat now also honors "Play a different sound when the agent asks a question" for questions, plan reviews, and tool approvals.
+
+### Version 113.0
+Fixed Change Account in native mode: it now opens claude.ai first so you can consciously sign into the desired account before the sign-in step runs, that step now opens in a visible console window, and it switches the WSL account instead of a Windows one the running WSL session never uses. New chats show which account is signed in for WSL too, and that no longer gets stuck blank after a sign-in that was still finishing. Switching agents in the native chat tab now tells you when the switch fails instead of silently leaving the old conversation in place. Fixed Claude Code, Codex, Cursor Agent, Open Code and PI sometimes being reported as "not installed" when they were actually on PATH — a CLI installed while Visual Studio was already running is now detected without needing a restart (issue #124).
+
+### Version 112.0
+Fixed the terminal not letting you scroll up to see earlier output while the agent is generating, and reduced garbled/overlapping text during long sessions (issues #118, #119). The "Edit Custom Command" popup is now bigger and resizable (issue #123). Native mode no longer drops the current conversation when Visual Studio reloads the same project, and it now shows which Claude Code account is signed in when resuming a chat; switching accounts also works reliably instead of silently keeping the old one.
+
+### Version 111.0
+Every agent now has a model picker, in the chat tab and in the terminal's model (🤖) menu — the list comes from the agent itself, with Refresh Models to update it. Reasonix, which publishes no list, gets a Configure Models... editor like Devin's.
+
+### Version 110.0
+Fixed the mouse pointer disappearing after sending a prompt to the terminal, and it no longer jumps away from where you left it.
+
+### Version 109.0
+Chat tab links are now brighter in dark theme, so file and web references stay easy to read against a dark background.
+
+### Version 108.0
+File and web links in the chat tab now work even when the agent wraps the citation in a code snippet, instead of only when it's plain text.
+
+### Version 107.0
+Links in the chat tab are now clickable: web addresses open in your browser, and file references jump straight to that file and line in the editor, even when the agent writes them as plain text instead of a formatted link.
+Text selection in the chat tab now uses a softer accent colour instead of the harsher default highlight.
+
+### Version 106.0
+Session history no longer counts or previews CLI-injected caveat/skill text as if it were a real prompt. Thanks to [@wluisdev](https://github.com/wluisdev) for the contribution (issue #120).
+Sessions that only contain a typed slash command (like `/effort medium`), with no real conversation, no longer show up in the session history list.
+
+### Version 105.0
+Updated extension description
+
+### Version 104.0
+Updated extension description
+
+### Version 103.0
+Native mode now in beta phase
+
+### Version 102.0
+- The model picked for Devin now really applies in native mode chat — it used to be only a caption while the agent answered on its own default model.
+- Switching the Devin model in the chat takes effect immediately, without restarting the conversation.
+- Picking a model Devin no longer offers now says so in the chat instead of silently running another one.
+
+### Version 101.0
+- Fixed the native mode composer placeholder so it reads **Ctrl+Up/Down for prompt history** instead of a rendered-as-1 arrow glyph.
+
+### Version 100.0
+- Updated the remaining native mode hints and documentation to match the **Ctrl+Up / Ctrl+Down** prompt history shortcut, including the welcome card tips and the placeholder text.
+
+### Version 98.0
+- Refreshed the default Devin model list to the current lineup: Claude Opus 5 High, Claude Sonnet 5 High, Claude Opus 4.6 Thinking, GPT-5.5 High Thinking, Gemini 3.1 Pro High Thinking, and SWE-1.6.
+- The agent (⚙) menu now shows **Configure Devin Models...** while Devin is active, so you can add, edit, remove, or reorder Devin models from the same menu.
+- Native mode chat now cycles prompt history with **Ctrl+Up** and **Ctrl+Down**, matching the terminal panel prompt box.
+- Switching the Devin model in native mode now asks whether to restart the chat so the new model takes effect immediately.
+
+### Version 97.0
+- Attached images now show a thumbnail on their chip, with a larger, sharp preview when you hover over it — in the native mode chat composer and in the terminal panel alike.
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+
+### Version 95.0
+- Fixed native mode's Antigravity chat not seeing the open project — it now correctly points the agent at your solution folder instead of reporting no active workspace.
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+
+### Version 94.0
+- Fixed an issue where the embedded Windows Terminal font could grow runaway-large for a few seconds after load; a safety limit now prevents it.
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Native mode's chat now shows an animated indicator on tool calls that are still running, including subagent tasks, instead of a static marker.
+
+### Version 93.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- The **@** file/folder picker now also works in native mode's chat composer, not just the terminal-mode prompt box.
+
+### Version 92.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Native mode now shows which Claude account is signed in, both on the welcome screen and after using **Change Account**.
+
+### Version 91.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Added **Change Account** to the ⚙ menu in native mode: opens claude.ai in your browser to switch accounts, then resumes the conversation.
+
+### Version 90.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Maintenance release over 89.0, with no functional changes.
+
+### Version 89.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Accented and non-English characters in a chat prompt now reach the agent intact. Codex in particular rejected them and ended the turn with "exited with code 1"; every agent was affected.
+- When an agent does fail to finish a turn, the chat now shows what it reported instead of only its exit code.
+- In a Claude Code chat, typing /plan turns on plan mode, and /model or /effort opens the matching picker — without leaving the prompt box.
+- /btw now works in the chat: it asks a quick side question with the full conversation as context, answered without touching the work in progress.
+- Resuming a session from Session History now shows the earlier conversation in the chat instead of opening it blank.
+- The agent list in the ⚙ menu is hidden in native mode, where the chat's own Agent selector switches agents.
+- Toolbar controls that only work through the terminal — Update Code Agent and the model menu — are now hidden in native mode, where the chat's own selectors replace them.
+- Send Build Errors to Agent, and the auto-send of build and runtime errors, now work in native mode instead of reporting that no agent is running.
+- The chat effort slider now applies the level only when you close it, so picking a level no longer restarts the agent once per level you pass through and no longer freezes the chat.
+- The effort popup names the level under the slider while you move it, before it is applied.
+
+### Version 88.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Changing the model, effort level, permission mode or plan mode twice in a row in the chat no longer reports "The agent process exited unexpectedly" and no longer ends the conversation.
+- The chosen effort level now survives a model, permission or plan mode change instead of quietly falling back to the default.
+- Dragging the chat effort slider applies only the level it is released on, instead of every level it passes over.
+- A new chat now opens with a welcome card showing the agent and its version, the model, effort and permission mode in use, the folder it is working in, and a few tips. It disappears with your first message.
+
+### Version 87.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+- Chat answers are now formatted: headings, lists, tables, emphasis and code blocks instead of a single block of plain text.
+- Tool cards say what the agent did at a glance — the file it read, the command it ran, how many lines changed — and file edits open into a colored diff.
+- Ctrl+V in the chat pastes an image from the clipboard as an attachment.
+- The chat font and size can be chosen in Settings → Terminal, with every installed font available, and the Ctrl+Scroll zoom is remembered between sessions.
+- Pressing Ctrl+Up/Down in the chat message box browses prompt history.
+- While the agent works the chat shows a spinner with a changing caption, the elapsed time and the tokens used so far, and each turn ends with a line saying how long it took.
+- Turning native mode on keeps the terminal type on Command Prompt and drops the agent-finish idle wait to one second, since the agent reports when it is done.
+
+### Version 86.0
+- Native mode still in alpha phase. It will be improved and stabilized in next releases. Please do not use for real work yet.
+
+### Version 85.0
+- The chat tab now answers Claude Code's multiple-choice questions with clickable option cards, and each question also takes a free-text answer of your own.
+- Plan mode is available in the chat tab's permission selector: the agent proposes a plan first, and you approve or send it back for changes from the transcript.
+- Effort in the chat tab is now the same slider used elsewhere in the extension, and the agent, model and permission dropdowns follow the current theme.
+- The agent selector now tells apart the Windows and WSL versions of the same agent.
+- New chat button, a blinking cursor in the message box, a drag handle to resize it, and Ctrl+Scroll to zoom the whole conversation. The size and zoom are remembered.
+- While the chat is in its own tab, the panel no longer shows an empty terminal area — the message box gets that space.
+
+### Version 84.0
+- Native mode now opens the conversation in its own document tab, next to your files, instead of the narrow side panel.
+- The chat tab has its own message box, so you can type, attach files and drop files straight into it.
+- The chat tab also has agent, model, effort and permission selectors: change any of them mid-conversation and the switch is applied right away, with a note in the transcript marking where it happened. With Claude Code the conversation carries over.
+- While native mode is on, *Detach* moves the chat between its tab and the panel.
+
+### Version 83.0
+- Fixed native mode showing an empty panel when the terminal had been detached to a separate tab: the chat now takes that space back, and the detached tab returns as soon as native mode is turned off.
+- The *Detach Terminal to Separate Tab* command is hidden while native mode is on, since there is no terminal to detach.
+
+### Version 82.0
+- New optional native mode: the panel shows the conversation with the agent as a chat, with no embedded terminal — answers stream in as they arrive, thinking and tool steps appear as collapsible cards, and each turn ends with its token count and cost. Turn it on in Settings; it works with every supported agent, and any agent that can't run this way silently keeps using the terminal.
+- In native mode the "On Agent Finish" notification and action now fire when the agent itself reports the turn is over, instead of guessing from the terminal screen, so they no longer fire late or not at all. Auto-send of build and runtime errors, custom commands and follow-up messages all go through the same channel.
+
+### Version 80.0
+- Fixed the "On Agent Finish" notification and action sometimes not firing: it now also works for prompts typed directly into the terminal (not only ones sent from the prompt box), no longer gives up on long agent turns that run past 30 minutes, and no longer stays silent when the agent's final answer happens to contain the phrase "to navigate".
+
+### Version 79.0
+- Fixed the terminal opening with larger text after upgrading from an older version, which made long lists (like the session picker) overflow so the selected row scrolled out of view and couldn't be seen while navigating with the arrow keys. Your previous zoom is now carried over to the Console font size setting so the terminal keeps opening at the smaller size you had (issue #115).
+
+### Version 78.0
+- Ctrl+Scroll zoom in the Command Prompt terminal is now remembered: the size you settle on becomes the Console font size setting, so the next session opens at that size without any manual step. In Windows Terminal the zoom still applies only to the current session — use Settings > Terminal > Console font size there.
+
+### Version 77.0
+- Fixed the new Session History sort selector's drop-down being unreadable in dark mode (light text on a white popup); it now follows the current theme.
+
+### Version 76.0
+- Added an opt-in "Auto-send runtime errors to the agent" setting (Settings > Behavior): while debugging, when the app hits an unhandled runtime exception, the exception and its stack trace are sent to the active agent so it can fix it.
+- Added a sort selector to the Session History window (last modified, oldest, most tokens, most messages, or title) so you can reliably find a session to resume; your choice is remembered (issue #114).
+
+### Version 75.0
+- Fixed the extension failing with "Error sending prompt: Method not found: ...JToken.ToString..." when submitting a prompt or opening the Settings dialog on version 74 (issue #112).
+
+### Version 74.0
+- Added a **Console font size** setting (⚙ → Settings... → Terminal) to set the embedded terminal's text size directly, for both Command Prompt and Windows Terminal.
+- The terminal no longer auto-zooms at startup, and Ctrl+Scroll zoom now applies only for the current session — use the new Console font size setting for a size that persists across restarts.
+- Fixed Ctrl+Scroll zoom in the Command Prompt terminal occasionally freezing or running away during fast scrolling.
+- Fixed the terminal sometimes not accepting keyboard input at the very start of a session until it was clicked twice.
+
+### Version 73.0
+- Fixed the Claude Usage panel cutting off content (like usage credits, balance, and buy-credits) instead of letting you scroll down to it.
+
+### Version 72.0
+- Fixed the agent's input box flooding with thousands of repeated pasted-text blocks on Windows 10 right after sending a prompt (issue #83).
+
+### Version 71.0
+- Fixed messages sent to the agent getting prefixed with a growing block of blank lines that accumulated in the agent's input box over a session (issue #108).
+
+### Version 70.0
+- Fixed the v69.0 launch-script fix itself breaking terminal startup on some machines ("'chcp' is not recognized") — the temp launch script is now written without a UTF-8 byte-order mark, which `cmd.exe` couldn't parse (issue #107).
+
+### Version 69.0
+- Fixed the terminal failing to launch ("The system cannot find the file specified") when the solution/workspace folder path contains " - ", such as `MS-059 - ZZZZ-EC16` (issue #106).
+
+### Version 68.0
+- Added a **Send Build Errors to Agent** toolbar button that sends the current build errors to the agent on demand, even when auto-send is turned off. Promote it to a one-click button (or find it in the ☰ Tools dropdown) via *⚙ → Settings... → Toolbar*.
+- Fixed build-error prompts getting stuck mid-paste in the agent terminal ("Pasting..." never completing) when there were several errors — they're now delivered as a file reference instead of a raw paste.
+- Fixed the **Send Build Errors to Agent** button silently doing nothing under the Windows Terminal terminal type (it worked fine under Command Prompt).
+- Fixed **On Agent Finish** not triggering after a build-error send (button or auto-send) — it now arms the same as after a normal prompt.
+- Renamed the **View Changes** button/menu item to **View Code Changes** for clarity.
+
+### Version 67.0
+- Fix issues.
+
+### Version 66.0
+- **More reliable sending for Devin**: fixed an intermittent issue where the prompt would appear typed into Devin's session but Enter wouldn't submit it. The terminal now waits a bit longer for Devin's interface to catch up before pressing Enter.
+
+### Version 65.0
+- **Auto-send build errors to the agent**: an opt-in setting that, whenever a Visual Studio build finishes with errors, automatically sends the errors (plus warnings for context) to the active agent so it can fix them. Enable it via *⚙ → Settings... → Behavior*.
+
+### Version 64.0
+- The Settings console font list now shows only monospaced fonts, preventing the jumbled terminal text that appears when a proportional font is picked (issue #105). A "Show all fonts" option is available for anyone who needs a font the filter leaves out, and the picker warns whenever the selected font is not monospaced.
+
+### Version 63.0
+- The extension now detects when Windows "legacy console" mode is enabled, which prevented the terminal from ever attaching to the panel, and offers to fix it with one click (no administrator rights needed) followed by a Visual Studio restart (issue #104).
+
+### Version 62.0
+- The tool window title no longer shows a model name for Claude Code and Devin — it now shows just the agent name, since the model can be changed from inside the terminal at any time.
+- The model menu no longer marks any model as selected for Claude Code and Devin; picking one still switches the model in the running agent.
+
+### Version 61.0
+- The model (🤖) button now also appears for Codex, Cursor Agent, PI, Antigravity, Reasonix, and Open Code — clicking it opens the agent's own model picker so you can switch models without leaving the terminal.
+
+### Version 60.0
+- Fixed the model menu showing Claude-only options **Best** and **Opus Plan** while Devin was the active agent — these picks now appear for Claude Code only.
+
+### Version 59.0
+- Improved the long-standing "keyboard stops working when the agent asks a question" problem after very long answers (e.g. plan mode) — the extension no longer bombards the busy agent with focus changes and console reads that amplified the lock-ups (issue #89).
+- When the agent's terminal is genuinely frozen catching up on a huge response, a notification now explains that typing and clicks will recover by themselves in a moment, instead of leaving the keyboard silently dead. Note: the remaining pause after very long answers comes from the Claude Code CLI itself and clears on its own.
+
+### Version 58.0
+- Fixed the **@ file/folder picker** cutting off long file paths with no way to see the rest — the popup now scrolls horizontally and shows the full path in a tooltip on hover (issue #103).
+
+### Version 57.0
+- Fixed the hidden prompt input box leaving a blank gap where the box used to be after switching to another window (like Solution Explorer) and back (issue #101). Hiding the box also no longer overwrites the saved prompt/terminal split size, so it comes back at its previous height when re-enabled.
+
+### Version 56.0
+- **Terminal-only mode**: hide the prompt input box to give the terminal more vertical space, while keeping the Send/Attach, Restart, Model, and ⚙ buttons reachable to turn it back on. Toggle from *⚙ → Hide Prompt Input Box* or *⚙ → Settings → Layout* (issue #101).
+
+### Version 55.0
+- Fixed **On Agent Finish** firing prematurely while Claude Code was still waiting on its own background agents to finish — the completion notification now holds until the whole turn, background agents included, is actually done.
+
+### Version 54.0
+- Fixed **Claude Usage** showing outdated numbers and no longer trimming to just the usage bars after a recent Claude.ai layout change — the session and weekly percentages now read correctly again, and the view works regardless of your account's display language.
+
+### Version 53.0
+- **Working directory** can now be set per solution — switching between solutions no longer carries over a custom working directory from a different one (issue #100).
+- Fixed selecting and copying text from the agent's replies under **Windows Terminal** — the selection assist now engages instantly instead of racing a busy Visual Studio, and right-click now copies the selection and pastes when nothing is selected, matching Command Prompt (issue #99).
+- Removed the **TUI Fullscreen** menu option — Claude Code now always launches in its classic (non-fullscreen) terminal renderer.
+
+### Version 52.0
+- **On Agent Finish** can now play a distinct sound when the agent stops and waits for your answer (a yes/no or selection prompt) instead of finishing — so you can tell "the agent needs me" apart from "the agent is done" without looking. Opt-in from the **On Agent Finish** settings.
+
+### Version 51.0
+- Fixed **Ctrl+Scroll** (zoom) not working in other apps while the extension's terminal panel occupied the same screen area — the extension no longer hijacks the gesture unless Visual Studio is actually the foreground window.
+
+### Version 50.0
+- Fixed the **On Agent Finish** dialog showing an unwanted scrollbar after the new follow-up field was added.
+- Fixed **On Agent Finish** sometimes watching the wrong terminal's console under **Windows Terminal** when more than one agent terminal was running at once, so completion detection now reliably tracks the terminal you're actually using.
+- The **On Agent Finish** follow-up field now has a **Preset** picker with ready-to-use texts, including one that asks the agent to commit and push while keeping only the human author and no AI references in the commit.
+- Notification buttons for "send to agent" actions and follow-ups now show much more of the command text instead of cutting it off after a couple of words.
+
+### Version 49.0
+- New installs now come with a **Commit & Push** custom command pre-added to the toolbar dropdown, ready to send to the agent.
+- **On Agent Finish** actions can now have a follow-up: after the action succeeds (e.g. Build solution), optionally also send a message to the agent (e.g. "Commit and push the changes"). When "Ask before running the action" is on, the follow-up gets its own confirmation notification instead of running silently.
+
+### Version 48.0
+- **Session History** now has a **View** button (also on the right-click menu) that opens the selected conversation as readable text in your default editor, so you can skim a past session before resuming it.
+
+### Version 47.0
+- Updating the **PI** or **Antigravity** CLI from the model menu now exits the agent with its `/quit` command before running the update, for a cleaner and more reliable handoff.
+- **Session History** now finds your transcripts even when `CLAUDE_CONFIG_DIR` is pointed directly at the `projects` folder instead of the `.claude` root.
+
+### Version 46.0
+- The Claude Code model menu now offers two more picks alongside Opus/Sonnet/Haiku: **Best** (Fable 5 where available, otherwise the latest Opus) and **Opus Plan** (Opus while planning, Sonnet during execution).
+- Fixed the keyboard occasionally not reaching the terminal when the agent asks a question — clicking into the terminal now reliably keeps focus there while you type your answer, even if you pause before replying.
+- **On Agent Finish** no longer stays silent when the agent ends its turn with a question in its reply (e.g. "Do you want me to also update the tests?") — the finish notification now fires for those turns instead of mistaking the finished reply for a prompt still waiting on you.
+
+### Version 45.0
+- **Session History** now honors a relocated Claude Code data folder — if you set the `CLAUDE_CONFIG_DIR` environment variable (e.g. to another drive), it lists and resumes sessions from there instead of the default `~/.claude` location.
+
+### Version 44.0
+- Added a **Console font** picker (*⚙ → Settings... → Terminal*) — search your installed fonts with a live preview and choose one that renders your language's characters (Chinese, Japanese, Korean, etc.) instead of the default Cascadia Mono. Applies to both Command Prompt and Windows Terminal.
+
+### Version 43.0
+- The **Max** and **Ultracode** effort levels now apply to the current session only and are no longer remembered between Visual Studio restarts — the next launch starts from your last durable level (Low, Medium, High, or Extra High), matching how Claude Code treats these levels.
+
+### Version 42.0
+- The **Effort** setting for **Claude Code** (native and WSL) is now a slider in the model (🤖) menu — drag between Low, Medium, High, Extra High, Max, and Ultracode instead of picking from a list, with the current level shown above it. Ultracode needs dynamic workflows enabled (see `/config`).
+
+### Version 41.0
+- **On Agent Finish** now works reliably with **Windows Terminal**, including full-screen agents like **Devin** — it reads the terminal's console buffer directly instead of relying on the previous accessibility-based reading, which often never detected completion. Enable it as usual via *⚙ → Settings... → On Agent Finish...*.
+
+### Version 40.0
+- Fixed the **Devin** model menu showing the model list repeated many times — the saved model list grew on every Visual Studio start. Existing duplicated lists are cleaned up automatically.
+- Fixed **View Changes**, **Session History**, and **Show Usage** disappearing entirely (from both the ☰ Tools menu and the toolbar) when they didn't apply to the current agent or folder — they are now always available, and clicking one when it isn't applicable explains why (View Changes needs a Git repository; Session History is Claude Code only; Show Usage is Claude Code and Devin only) (issue #97).
+
+### Version 39.0
+- Fixed **Update Code Agent** for **Devin (native)** — it now actually updates the CLI to the latest version. The previous `devin update` command only printed instructions, and the installer was blocked while Devin was still running ("Access is denied"); the update now stops any running Devin first so it completes.
+- **On Agent Finish** is now available with **Windows Terminal** (experimental) — previously it worked only with Command Prompt. Enable it as usual via *⚙ → Settings... → On Agent Finish...*; a note in Settings flags the Windows Terminal support as experimental.
+
+### Version 38.0
+- Added **Devin** as a native Windows AI agent — the Windows-native Devin CLI alongside the existing Devin (WSL). Install it from Windows Terminal with `irm https://static.devin.ai/cli/setup.ps1 | iex`, then enable it from the agent menu via "Configure Visible Code Agents...". Once installed it runs in both Windows Terminal and the regular Command Prompt, it honors the Dangerous Mode toggle, and Show Usage opens the Devin usage page.
+- **Configurable Devin models** — the model (🤖) menu now lets you choose from a user-editable list of Devin models, and a new "Configure Models..." entry lets you add, edit, remove, and reorder them. Seeded with SWE-1.6, Claude Opus 4.6 Thinking, Claude Opus 4.8 High, GPT-5.5 High Thinking, and Gemini 3.1 Pro High Thinking. Both Devin (native) and Devin (WSL) share the list.
+- Renamed the former "Windsurf" provider to **Devin** throughout the extension to match the CLI's branding; the WSL provider is now listed as "Devin (WSL)". Existing selections continue to work.
+
+### Version 37.0
+- Fixed mouse-wheel scrolling in Claude Code's "TUI Fullscreen" mode scrolling the agent even when another window (such as Notepad) was layered over the terminal area — the wheel now only scrolls the agent while the terminal is focused.
+
+### Version 36.0
+- Restored mouse-wheel scrolling in Claude Code's "TUI Fullscreen" mode — scrolling the wheel over the terminal now moves smoothly through the conversation one line at a time, instead of doing nothing. For native Claude Code, Page Up/Page Down are set to scroll one line and Shift+Page Up/Page Down keep the half-page jump (issue #96).
+
+### Version 35.0
+- Added the ability to rename past sessions in the Session History window — right-click a session (or select it and press F2), or use the new "Rename" button, to give it a custom title. Renamed sessions stand out with their own highlighted layout, and custom titles persist across Visual Studio restarts; clear the title to restore the auto-generated preview (issue #95).
+- Added a filter box and a "Renamed only" toggle to the Session History window so you can quickly find a session by title, preview text, or date. The "Renamed only" choice is remembered across restarts, and the window layout was tidied up for less clutter.
+
+### Version 34.0
+- Fixed "On Agent Finish" sometimes notifying that the agent had finished while it was still working, after clicking inside the terminal — selecting or clicking text in the Command Prompt freezes the screen, which was misread as the agent going idle (issue #94).
+- Raised the default idle time before a turn is detected as finished from 3 to 5 seconds.
+
+### Version 33.0
+- Added Reasonix (DeepSeek-native coding agent) as a supported AI agent. Install it with `npm i -g reasonix`, then enable it from the agent menu via "Configure Visible Code Agents..." (issue #93).
+
+### Version 32.0
+- Fixed the agent terminal being flooded with "[Pasted text +N lines]" blocks on startup and on every setting change when "TUI Fullscreen" was enabled — fullscreen rendering now keeps its flicker-free drawing without taking over the mouse, which was the source of the flood (issue #92).
+
+### Version 31.0
+- Added a "TUI Fullscreen" option to the Claude Code model menu to switch the agent between fullscreen (flicker-free) and classic terminal rendering on demand.
+
+### Version 30.0
+- Fixed the agent terminal gradually stopping accepting keyboard input while "On Agent Finish" was enabled with the Command Prompt terminal — the background check that watches for the agent finishing no longer bounces keyboard focus out of the terminal or prompt, so typing keeps landing throughout a turn.
+
+### Version 29.0
+- Fixed right-clicking elsewhere in Visual Studio sometimes failing to show the context menu and instead pasting the clipboard into the agent terminal (issue #90). The extension no longer intercepts the right mouse button at all — paste into the agent through the prompt box (Ctrl+V, then Send), which works the same in every terminal mode.
+- Fixed Visual Studio hanging when an agent finished while the Settings dialog was open with "On Agent Finish" enabled — the finish notification and action now wait until the dialog is closed.
+
+### Version 28.0
+- Fixed keyboard and mouse input dropping out in the agent terminal while the agent was working — typing, arrow keys, and clicks stopped landing for a while and then recovered on their own. Terminal focus no longer merges an unrelated window's input queue, so input stays responsive even while the agent is busy.
+- Clicking into the terminal or the prompt box no longer pulls focus back and forth for several seconds afterward, so focus settles immediately on whichever one you clicked.
+
+### Version 27.0
+- NOTE: this is a big release, for both trying to fix the terrible input issue in console and new features.
+- Please be patience and report any issues you find! Also if you don't like the extension, please just do not use and do not give bad review.
+- Features/Fixes:
+- You can now promote frequently used features — Update Code Agent, Detach/Attach Terminal, Restart Code Agent, View Changes, Session History, Show Usage, and Set Working Directory — to one-click toolbar buttons from the new "Toolbar" tab in Settings, where you can also reorder them; features you don't promote stay in a compact Tools (☰) dropdown that hides when empty.
+- Fixed "On Agent Finish" 

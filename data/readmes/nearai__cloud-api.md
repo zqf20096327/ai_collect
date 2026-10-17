@@ -1,0 +1,197 @@
+# NEAR AI Cloud API
+
+A Rust-based cloud API for AI model inference, conversation management, and organization administration. Part of the NEAR AI platform alongside the Chat API.
+
+## Quick Start
+
+### Prerequisites
+
+- **Rust** (latest stable version)
+- **Docker & Docker Compose** (for local development)
+- **PostgreSQL** (for production or local testing without Docker)
+
+### Development Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd cloud-api
+   ```
+
+2. **Start services with Docker Compose**:
+   ```bash
+   docker-compose up -d
+   ```
+
+   This starts:
+   - PostgreSQL database on port 5432
+   - NEAR AI Cloud API on port 3000
+
+3. **Run without Docker**:
+   ```bash
+   make dev
+   ```
+
+   This automatically:
+   - Runs all database migrations
+   - Seeds the database with development data
+   - Starts the API server on http://localhost:3000
+
+For an end-to-end walkthrough — mock auth, creating an org/workspace/API key,
+and exercising chat completions with `curl` — see
+[`docs/local-development.md`](docs/local-development.md).
+
+## Testing
+
+### Prerequisites for Testing
+
+- PostgreSQL database running
+- The PostgreSQL user must be able to create the dedicated test database
+- [`cargo-nextest`](https://nexte.st/docs/installation/pre-built-binaries/) 0.9.98 or newer (`cargo install cargo-nextest --locked`)
+- Database must be accessible with the credentials specified in test configuration
+
+### Run Tests
+
+```bash
+# Run unit tests only
+make test-unit
+
+# Run integration/e2e tests only (requires database)
+make test-integration
+
+# Run both unit and integration tests
+make test
+```
+
+### Test Database Setup
+
+Tests use the same environment variables as the main application (from `env.example`).
+If environment variables are not set, tests use sensible defaults for local testing.
+The nextest setup script creates and migrates `TEST_DATABASE_NAME` once before the
+E2E processes start.
+
+#### Option 1: Using Docker (Recommended)
+```bash
+# Start test database
+docker run --name test-postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=platform_api \
+  -p 5432:5432 \
+  -d postgres:latest
+
+# Run tests with default values (or override with env vars)
+make test-integration
+
+# Or with custom database settings
+DATABASE_HOST=localhost \
+DATABASE_PORT=5432 \
+DATABASE_NAME=platform_api \
+TEST_DATABASE_NAME=platform_api_e2e \
+DATABASE_USERNAME=postgres \
+DATABASE_PASSWORD=postgres \
+make test-integration
+```
+
+#### Option 2: Using existing PostgreSQL
+Set these environment variables before running tests:
+```bash
+export DATABASE_HOST=localhost
+export DATABASE_PORT=5432
+export DATABASE_NAME=platform_api  # Database-crate integration tests
+export TEST_DATABASE_NAME=platform_api_e2e  # Use a dedicated test database
+export DATABASE_USERNAME=your_username
+export DATABASE_PASSWORD=your_password
+export DATABASE_TLS_ENABLED=false
+```
+
+`make test-integration` maps these connection values to the `PG*` variables
+used by database-crate integration tests. Explicit `PGHOST`, `PGPORT`,
+`PGDATABASE`, `PGUSER`, and `PGPASSWORD` values take precedence.
+
+#### Option 3: Using .env file
+Copy `env.example` to `.env` and configure your test database:
+```bash
+cp env.example .env
+# Edit .env with your database credentials
+make test-integration
+```
+
+The E2E helpers load `.env`; for non-default database-crate credentials, also
+export the variables shown in Option 2 before running the Make target.
+
+### vLLM Integration Tests
+
+The vLLM integration tests require a running vLLM instance. Configure using environment variables:
+
+```bash
+# Configure vLLM endpoint
+export VLLM_BASE_URL=http://localhost:8002
+export VLLM_API_KEY=your_vllm_api_key_here  # Optional
+export VLLM_TEST_TIMEOUT_SECS=30  # Optional
+
+# Run vLLM integration tests
+cargo nextest run --test integration_tests
+```
+
+If not set, tests will use default values but may fail if vLLM is not running at the default URL.
+
+## Configuration
+
+The application uses YAML configuration files located in the `config/` directory.
+
+## Security
+
+This project uses [cargo-audit](https://github.com/RustSec/cargo-audit) to check for security vulnerabilities in dependencies. The audit runs automatically:
+
+- On every push/PR that modifies `Cargo.toml` or `Cargo.lock`
+- Daily at midnight UTC to catch newly published advisories
+
+Failed audits will block PRs. To run locally:
+
+```bash
+cargo install cargo-audit
+cargo audit
+```
+
+Known advisories without available fixes are documented and ignored in `.cargo/audit.toml`.
+
+### Dependabot
+
+[Dependabot](https://docs.github.com/en/code-security/dependabot) is enabled to automatically create PRs for:
+
+- **Cargo dependencies**: Weekly updates for Rust crates
+- **GitHub Actions**: Weekly updates for workflow actions
+
+## Contributing
+
+Before committing code:
+
+Run all checks with a single command:
+
+```bash
+make preflight
+```
+
+This runs:
+- Clippy linter (strict mode with `-D warnings`)
+- Code formatting check and fix
+- Unit tests
+- Full build
+
+Once all checks pass, you're ready to commit!
+
+
+## API Documentation
+
+For Jev and self-hosted decision models, see [System One integration](docs/jev-systemone.md).
+
+Interactive API documentation is available when running the server:
+
+- **Scalar UI**: `http://localhost:3000/docs` - Modern, beautiful API documentation with interactive playground
+- **OpenAPI Spec**: `http://localhost:3000/api-docs/openapi.json` - Machine-readable OpenAPI specification
+
+The documentation is generated from Rust code using [utoipa](https://github.com/juhaku/utoipa) and served via Scalar for an enhanced developer experience.
+
+## License 
+
+Licensed under the [PolyForm Strict License 1.0.0](LICENSE).

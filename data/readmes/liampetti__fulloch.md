@@ -1,0 +1,200 @@
+# Fulloch
+
+[![GitHub Release][releases-shield]][releases] [![License][license-shield]](LICENSE) [![hacs][hacs-shield]][hacs]
+
+<p align="center">
+  <img src="fulloch.png" alt="Fulloch Logo" width="200">
+</p>
+
+_The **Ful**ly **Loc**al **H**ome Voice Assistant, a private voice layer for your notes, your home, and the web._
+
+Fulloch is your privacy-focused local voice assistant running on your own PC or Mac. Ask questions, capture thoughts, and search your **[Obsidian](https://github.com/obsidianmd/obsidian-releases)** vault by voice. Control your home via **[Home Assistant](https://github.com/home-assistant)**. Pull live answers from the web with **[SearXNG](https://github.com/searxng/searxng)**. The local stack keeps speech, language processing, notes, facts, and conversation history on your machine; optional web search, Spotify, and remote language models contact their configured services.
+
+[Click here to see the satellite companion project](https://github.com/liampetti/fulloch-satellite) for running multiple ESP32-S3 satellites around your home.
+
+## Features
+
+- **Private, local by default** - speech, language processing, notes, facts, and conversation history stay on your machine; web search, Spotify, and remote language models are explicit opt-ins
+- **Natural voice conversations** - use the browser dashboard or connected satellites; Fulloch keeps conversational context, supports follow-up turns, and lets you barge in with the wakeword
+- **Your voice, your way** - GPU and CPU stacks support voice cloning; ask it to whisper or speak quietly for per-turn reduced-volume delivery
+- **Obsidian notes and memory** - read, write, append, and semantically search your vault by voice; remembered facts persist across restarts
+- **Smart-home control** - control Home Assistant lights, locks, covers, climate, media, calendars, todos, weather, and more in natural language
+- **Music and reminders** - find music with Spotify and play it through Home Assistant; create calendar reminders that Fulloch announces at the right time
+- **Live answers** - get concise, source-aware summaries from self-hosted SearXNG web search, with the option to save results to your vault
+- **Deliberate research and planning** - queue deeper background investigations for comparisons, academic literature, travel, and finance; research prefers Semantic Scholar and falls back to arXiv and OpenAlex, while optional SerpApi-backed travel and finance tools provide bounded, read-only results
+- **Home Assistant automation** - use the HACS integration for status, mic control, proactive speech, chat, and scheduled deliberate-thinking tasks
+
+> **Higgs TTS 3:** The optional Higgs GPU backend is available only under Boson AI's Research and Non-Commercial License, not Fulloch's MIT license. It requires explicit consent for every voice reference. See [Model Sources and Licenses](MODELS.md#higgs-tts-3-license).
+
+> **Pocket TTS PyTorch:** The experimental GPU streaming option uses Kyutai's official gated model. Accept its Hugging Face terms before selecting it. If the download is denied, the wizard prompts for a Hugging Face read token, saves it in `data/credentials.json`, and retries. See [Model Sources and Licenses](MODELS.md#hugging-face-access).
+
+> **openWakeWord feature extractors:** The optional wakeword gate includes unmodified pre-trained feature extractor models from openWakeWord v0.5.1 under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/), not Fulloch's MIT license. See [Model Sources and Licenses](MODELS.md#wakeword).
+
+## Quick installation
+
+The default stack runs on **CPU (mac/linux/windows)**. Audio runs through the browser dashboard. Choose regex-only commands, Laya semantic commands, or an off-box OpenAI-compatible language model in the wizard (e.g. Ollama / LM Studio / another machine on your LAN). The dashboard avatar swaps to Parloch, the **Par**tially-**loc**al **h**ome voice assistant, when the LLM is running off-device.
+
+Install Docker Desktop (or Docker Engine) first. The first run downloads the selected speech models, so it needs an internet connection, several GB of free disk, and enough Docker memory for the wizard's displayed estimate. For the GPU image, install a current NVIDIA driver and NVIDIA Container Toolkit, then confirm `docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi` works before launching Fulloch.
+
+### CPU (mac/linux/windows)
+
+```bash
+docker run -d \
+  --name fulloch-ai \
+  --restart unless-stopped \
+  --log-opt max-size=10m \
+  --log-opt max-file=5 \
+  -p 8765:8765 \
+  -p 8766:8766 \
+  -e DASHBOARD_HOST=0.0.0.0 \
+  -v fulloch-data:/app/data:rw \
+  ghcr.io/liampetti/fulloch:cpu
+```
+
+The named volume is repaired automatically on first boot and receives the bundled starter voice references. If you prefer a bind mount, use an existing writable directory such as `-v "$PWD/data:/app/data:rw"`; see [data-directory permissions](TECHNICAL_DETAILS.md#docker-data-directory-permissions) if startup reports a permission error. Open the HTTPS URL shown in `docker logs fulloch-ai` in a browser to continue the setup wizard. A self-signed certificate warning is expected on first visit; accept it to enable browser microphone access. The dashboard is LAN-visible with this command, so set a dashboard password in the wizard before using it beyond a trusted network.
+
+Add `-v /path/to/your/ObsidianVault:/vault:rw` before the image name to expose an Obsidian vault.
+
+### GPU (Linux/Windows + NVIDIA)
+
+Swap `:cpu` for `:latest` (the CUDA image with Qwen3-TTS voice cloning and the on-GPU 9B SLM) and add `--gpus all`:
+
+```bash
+docker run -d \
+  --name fulloch-ai \
+  --restart unless-stopped \
+  --log-opt max-size=10m \
+  --log-opt max-file=5 \
+  --gpus all \
+  -p 8765:8765 \
+  -p 8766:8766 \
+  -e DASHBOARD_HOST=0.0.0.0 \
+  -v fulloch-data:/app/data:rw \
+  ghcr.io/liampetti/fulloch:latest
+```
+
+### OpenAI Endpoint
+
+<img src="parloch.png" alt="Fulloch being Parloch" width="180" align="right">
+
+The moment you point the language model at an OpenAI-compatible endpoint, the avatar and favicon swap to a travelling version of the character (Let's call him *Parloch*: The **Par**tially **loc**al **h**ome voice assistant), and the tagline reads *"language model is off-device."* Pick a local model again (**None** or the GPU 9B) and Fulloch comes home. It triggers as soon as a remote endpoint is *configured*, even if it is on your home network.
+
+### Recovering Or Reconfiguring
+
+Use **Settings** for normal changes: voices, model backends, language-model mode, Home Assistant, Search, and dashboard preferences. Model changes need a restart; if their weights are missing, the restart returns to the wizard to download them. The **Re-run setup wizard** action makes a backup under `data/backups/`; use it to choose a different stack, not to edit a custom model path or advanced remote-LLM settings. To repair a failed download, re-run setup and select the same stack; incomplete model caches are detected and downloaded again.
+
+Advanced options not shown in Settings are documented in `data/config.example.yml`: Spotify OAuth, native satellite tokens, and external-LLM timeouts. Keep those files under the persistent `data` volume.
+
+## Model options
+
+Choose a model for each part of the stack during setup or in **Settings**. CPU options work in the `:cpu` image; GPU options require the CUDA image. Download sources and licence details are in [MODELS.md](MODELS.md).
+
+| Component | CPU options | GPU options |
+| -- | -- | -- |
+| Speech recognition (ASR) | Qwen3-ASR ONNX 1.7B or 0.6B; Parakeet TDT v3 ONNX 0.6B; Moonshine Base or Tiny | Qwen3-ASR PyTorch 1.7B or 0.6B; Qwen3-ASR GGUF 1.7B or 0.6B; NVIDIA Parakeet TDT 0.6B; Orukeet 0.6B |
+| Text to speech (TTS) | Kokoro 82M; Pocket TTS ONNX voice cloning | Qwen3-TTS PyTorch 1.7B or 0.6B; Qwen3-TTS GGUF 1.7B or 0.6B; Pocket TTS PyTorch or GGUF; Audio8; Higgs TTS 3; Breeze TTS 2 |
+| Language and command routing | Regex-only commands; Laya semantic commands; an external OpenAI-compatible endpoint | Local Qwen3.5 9B MTP, Gemma 4 12B, Ornith 1.5 9B, NeoHorse 1 9B, or a custom GGUF; an external OpenAI-compatible endpoint |
+
+The optional **Hey Atticus** wakeword gate uses the bundled openWakeWord classifier; without it, wakeword detection uses ASR.
+
+### Obsidian Integration
+Connect your Obsidian vault so Fulloch reads, writes, appends, and searches your notes by voice.
+
+Just add your vault's directory as a volume when launching Docker container `-v /Users/you/Documents/MyVault:/vault:rw`
+
+The Obsidian wizard's "Auto-detect" scans the container filesystem for a vault, so it'll find `/vault` (or wherever you mounted it) without further config.
+
+The plugin is optional: the folder link alone supports reading, writing, appending, and searching notes. Install the separate plugin for live active-note and selection context, editor actions, and automatic note navigation; Docker installations with different host and container paths cannot yet navigate back to a written note automatically. See the [Obsidian setup details](TECHNICAL_DETAILS.md#obsidian-integration).
+
+## Home Assistant Integration
+
+When Fulloch runs in Docker, enter Home Assistant's LAN address, for example `http://192.168.1.50:8123`. `localhost` refers to the Fulloch container, not Home Assistant.
+
+A HACS-installable integration for status sensors, mic control, proactive speech, and automation triggers.
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=liampetti&repository=fulloch&category=Integration)
+
+| Entity | Description |
+| -- | -- |
+| `sensor.fulloch_status` | `idle` / `thinking` / `speaking` |
+| `sensor.fulloch_last_utterance` | Last thing the user said |
+| `sensor.fulloch_last_response` | Last thing Fulloch said (`full_text` attribute has the full string) |
+| `sensor.fulloch_thinking_task` | Active deliberate-thinking task and status |
+| `switch.fulloch_mic` | Mute / unmute the microphone |
+| `text.fulloch_speak` | Submit text → Fulloch speaks it |
+| `text.fulloch_chat` | Submit a query → full agent loop |
+
+| Action | Field | Description |
+| -- | -- | -- |
+| `fulloch.speak` | `text` | Speak a message |
+| `fulloch.chat` | `text` | Run a full agent query and speak the result |
+| `fulloch.mic` | `enabled` | Turn the mic on or off |
+| `fulloch.run_thinking_task` | `task` | Queue a deeper background investigation |
+| `fulloch.cancel_thinking_task` | `job_id` | Cancel a queued or active investigation |
+| `fulloch.get_thinking_task_status` | `job_id` | Retrieve an investigation's current status |
+
+| Event | When |
+| -- | -- |
+| `fulloch_wakeword_detected` | Voice turn starts |
+| `fulloch_turn_ended` | Fulloch finishes speaking |
+
+## Instant Commands
+
+Common commands take a regex fast-path that skips the language model entirely, for an instant response. Compound requests (*"… and …"*), vague references (*"turn it off"*), or conversation, falls through to the full agent.
+
+| Say | Does |
+| -- | -- |
+| *"turn on/off the fan"* | on / off |
+| *"toggle the porch light"* | toggle |
+| *"set the kitchen lights to 60 percent"* | brightness |
+| *"dim / brighten the lights"* | dim (30%) / brighten (100%) |
+| *"make the lamp blue"* | colour |
+| *"turn the volume up / down"* | volume |
+| *"lock / unlock the front door"* | lock / unlock |
+| *"open / close the blinds"* | covers |
+| *"play the Beatles"* | music search & play |
+| *"stop"* · *"skip"* · *"resume"* | media control |
+| *"set a timer for 5 minutes"* · *"list my timers"* | timers |
+| *"what time is it"* | time |
+| *"think about …"* · *"summarise your thinking"* | thinking mode |
+
+### Laya semantic commands
+
+Laya is a local CPU-only option between the regex fast-path and a full language model. Regex commands still run first; after a miss, Laya can recognise common command phrasing and select only from Fulloch's supported action schemas, using locally validated values and Home Assistant aliases.
+
+It does not provide free-form conversation or generate arbitrary tool arguments. Choose **CPU semantic commands** in the setup wizard when you want more flexible command phrasing without running a full LLM.
+
+## Reporting a Problem
+
+Submit a [Bug Report](https://github.com/liampetti/fulloch/issues/new?labels=bug) or a [Feature Request](https://github.com/liampetti/fulloch/issues/new?labels=enhancement).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add tools and submit changes.
+
+## Credits
+
+Model download sources and licensing notes are listed in [MODELS.md](MODELS.md).
+
+Voices in `data/voices/`:
+- **`atticus` / `tulloch`** - generated with [Qwen3-TTS-12Hz-1.7B-VoiceDesign](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign) (Apache-2.0) from text descriptions; synthetic, not clones of real people
+- **`cori`** - sample from [Piper](https://github.com/rhasspy/piper) `en_GB/cori/high` by Bryce Beattie, trained on LibriVox recordings (MIT / public domain)
+- **`All Kokoro voices`** - generated with [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0)
+
+Pocket TTS uses a selected `data/voices/<name>.wav` reference for one-shot cloning; use only voices you have permission to reproduce. The experimental official PyTorch backend streams PCM as it generates; the GGUF and ONNX options use independent conversions.
+
+## Development Disclosure
+
+This project was developed with assistance from AI coding tools. Generated contributions are reviewed, tested, and maintained by the project author.
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+***
+
+[releases-shield]: https://img.shields.io/github/release/liampetti/fulloch.svg?style=for-the-badge
+[releases]: https://github.com/liampetti/fulloch/releases
+[license-shield]: https://img.shields.io/github/license/liampetti/fulloch.svg?style=for-the-badge
+[hacs]: https://github.com/hacs/integration
+[hacs-shield]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge

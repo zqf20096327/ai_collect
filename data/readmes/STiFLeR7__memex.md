@@ -1,0 +1,486 @@
+# memex: trusted engineering context for agentic software engineering
+
+<!-- mcp-name: io.github.STiFLeR7/memex -->
+
+> Keeps your AI coding agents' engineering context current as the code changes.
+> memex builds a bitemporal knowledge graph of your repository (modules,
+> symbols, decisions, problems, evidence, and code evolution). In v1 it also
+> hooks into Claude Code and Codex: each session starts with the right context,
+> each edit is checked against the current code, and the agent is told exactly
+> what changed.
+
+**[memex.stifler.in](https://memex.stifler.in)**
+
+A daemon, hook service and MCP server that turn commits and file changes into
+structured engineering knowledge and deliver it to agents with freshness and
+provenance preserved, without making memex a source of personal memory or raw
+session state.
+
+[![Website](https://img.shields.io/badge/website-memex.stifler.in-2D6AFF)](https://memex.stifler.in)
+[![PyPI](https://img.shields.io/pypi/v/memex-mcp?v=1.0.2)](https://pypi.org/project/memex-mcp/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/memex-mcp)](https://pypistats.org/packages/memex-mcp)
+[![npm](https://img.shields.io/npm/v/stifler-memex-mcp?v=1.0.2)](https://www.npmjs.com/package/stifler-memex-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/stifler-memex-mcp)](https://www.npmjs.com/package/stifler-memex-mcp)
+[![Claude Code marketplace](https://img.shields.io/badge/Claude%20Code-marketplace-7c3aed)](https://github.com/STiFLeR7/claude-plugins)
+[![memex MCP server](https://glama.ai/mcp/servers/STiFLeR7/memex/badges/score.svg)](https://glama.ai/mcp/servers/STiFLeR7/memex)
+[![GitHub stars](https://img.shields.io/github/stars/STiFLeR7/memex?style=flat)](https://github.com/STiFLeR7/memex/stargazers)
+[![Tests](https://github.com/STiFLeR7/memex/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/STiFLeR7/memex/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/STiFLeR7/memex/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/STiFLeR7/memex/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/STiFLeR7/memex/badge)](https://securityscorecards.dev/viewer/?uri=github.com/STiFLeR7/memex)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+[![Memex on AI Agents Listing](https://aiagentslisting.com/memex/badge.svg?claim=1af930b83c7adc182c0f2c52cb300afb)](https://aiagentslisting.com/mcp/memex)
+
+## Where memex lives
+
+| | |
+|---|---|
+| Website | [memex.stifler.in](https://memex.stifler.in) |
+| Source | [github.com/STiFLeR7/memex](https://github.com/STiFLeR7/memex) |
+| Python package | [`memex-mcp` on PyPI](https://pypi.org/project/memex-mcp/) |
+| Node package | [`stifler-memex-mcp` on npm](https://www.npmjs.com/package/stifler-memex-mcp) |
+| MCP Registry | [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io/), listed as `io.github.STiFLeR7/memex` |
+| Claude Code plugin | [STiFLeR7/claude-plugins](https://github.com/STiFLeR7/claude-plugins) |
+| Directories | [Glama](https://glama.ai/mcp/servers/STiFLeR7/memex) · [AI Agents Listing](https://aiagentslisting.com/mcp/memex) |
+
+Evaluation record in [BENCHMARK.md](BENCHMARK.md), release history in
+[CHANGELOG.md](CHANGELOG.md), reporting process in [SECURITY.md](SECURITY.md),
+and how to work on it in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+https://github.com/user-attachments/assets/b14e3185-ea36-4ae5-bd18-2d34e6bf7be4
+
+*memex v1 in 60 seconds. If the player does not load, [download the video](https://raw.githubusercontent.com/STiFLeR7/memex/master/assets/memex-v1.mp4).*
+
+## Live context (v1)
+
+Coding agents work from a snapshot of the code. A teammate pushes, another
+agent edits a file, a branch moves, and the agent keeps acting on what it read
+earlier. v1 keeps that snapshot current, inside Claude Code and Codex:
+
+| When | What memex does |
+|---|---|
+| **Session start** | Delivers a bounded working set for the task, and confirms delivery from the client's own session record |
+| **Before each edit** | Checks whether the context the edit rests on still holds. If not, the edit is held, the agent gets a scoped correction, and it revises |
+| **On resume** | If the code changed while the session was away, names the files to re-read |
+| **Parallel agents** | Gives each linked worktree its own view, so agents side by side each see their own code |
+| **Trying it out** | `memex v1 mode shadow` records what would be corrected without changing anything; hooks fail open; `memex v1 rollback` stops memex at once |
+
+```bash
+uv tool install memex-mcp          # installs the `memex` command
+cd your-repo
+memex v1 doctor                    # what is set up, what is missing, what to do next
+memex v1 install claude            # hooks in .claude/settings.json; global settings untouched
+memex v1 install codex --neo4j-uri bolt://localhost:7687   # optional, for Codex
+```
+
+memex needs a Neo4j 5 server you already run (Docker is not required). Hooks go
+only into the checkout's own project configuration, and memex never asks for or
+stores your client credentials. Full guide, host recipes and rollback:
+[docs/v1/25_ONBOARDING.md](docs/v1/25_ONBOARDING.md).
+
+```mermaid
+flowchart LR
+    A[Your repository<br/>files + git] --> B[memex watcher<br/>tree-sitter + Gemini]
+    B --> C[Neo4j graph<br/>bitemporal facts]
+    C --> D[memex core<br/>ContextPacket selection]
+    D --> H[Hook service<br/>session start · edit checks · resume notice]
+    D --> E[Hermes MemoryProvider<br/>automatic read-only prefetch]
+    D --> F[MCP tools<br/>explicit lookup]
+    H --> G[Claude Code / Codex]
+    E --> G
+    F --> G
+
+    style B fill:#cfe8ff,stroke:#0066cc,color:#000
+    style C fill:#fff4cf,stroke:#cc9900,color:#000
+    style H fill:#d4f5d4,stroke:#2d8f2d,color:#000
+```
+
+## Install
+
+### Via Claude Code marketplace
+
+```
+/plugin marketplace add STiFLeR7/claude-plugins
+/plugin install memex-mcp@stifler-marketplace
+```
+
+Restart your Claude Code session.
+
+The first start after installing or upgrading downloads memex's Python
+dependencies (about 40 seconds), which can exceed Claude Code's MCP connect
+timeout once. Warm it up first, then restart:
+
+```bash
+npx -y stifler-memex-mcp --help     # one-time download; later starts take a few seconds
+```
+
+If Claude Code still shows a connection timeout, open `/mcp` and reconnect
+`memex`. If a tool says memex cannot reach Neo4j, start Neo4j (for example
+`docker start memex-neo4j`); the tools recover without a restart.
+
+### Manual
+
+```bash
+docker compose -f docker/docker-compose.yml up -d
+cat > .env <<EOF
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=memex-local
+GEMINI_API_KEY=your-key-here
+EOF
+npx stifler-memex-mcp init --repo .
+npx stifler-memex-mcp watch --repo .
+npx stifler-memex-mcp serve --repo .
+```
+
+### Hermes integration
+
+The Hermes integration is read-only. Hermes retains personal memory, raw
+session state, and execution state. memex supplies repository engineering
+context through a bounded `ContextPacket`; it does not ingest Hermes
+`state.db`, transcripts, prompts, or tool results.
+
+Add the memex provider to Hermes' profile configuration:
+
+```yaml
+memory:
+  provider: memex
+plugins:
+  memex:
+    repo_path: /absolute/path/to/repository
+    prefetch_timeout_seconds: 7
+    max_items: 8
+    max_chars: 12000
+```
+
+If Hermes is not installed, use the same context selector through the MCP
+`get_engineering_context` tool. Both paths share the protocol-neutral memex
+core and fail open when retrieval is unavailable.
+
+| Channel | Command |
+|---|---|
+| Claude Code marketplace | `/plugin install memex-mcp@stifler-marketplace` |
+| npx (no install) | `npx stifler-memex-mcp <cmd>` |
+| uv | `uv add memex-mcp` |
+| pip | `pip install memex-mcp` |
+| source | `git clone github.com/STiFLeR7/memex && uv sync` |
+
+### Self-hosted team deployment
+
+For a shared team setup (one Neo4j + one memex-server, auth on by default, Neo4j's
+ports never exposed to the host):
+
+```bash
+bash docker/bootstrap-team-env.sh
+docker compose -f docker/docker-compose.team.yml up -d
+```
+
+See [`docker/TEAM-DEPLOY.md`](docker/TEAM-DEPLOY.md) for the full flow, capturing the
+initial admin key, and the `down -v` footgun to avoid.
+
+## At a glance
+
+| Property | Value |
+|---|---|
+| Output | A Neo4j graph populated continuously from your repo |
+| Storage | Neo4j via [Graphiti](https://github.com/getzep/graphiti). Bitemporal: every edge has `created_at` and optional `expired_at` |
+| Context | Bounded, ranked, provenance-aware `ContextPacket` |
+| Live context (v1) | Session-start working set, edit checks with scoped corrections, resume change notice, per-worktree views (Claude Code and Codex hooks) |
+| Integrations | Hermes MemoryProvider, MCP resources/tools, Claude Code, Cursor, Codex, Gemini CLI |
+| Failure mode | Fail-open; agent execution continues without memex |
+| Granularity | Scales from 50 to 5000+ modules via hierarchical Leiden clusters |
+| Synthesis | Gemini Flash distills commits into `Decision` nodes; Pro for grounded synthesis |
+| Confidence | Computed at query time. Two-regime decay (validated half-life ~139d, unvalidated stale at 30d) |
+| Write governance | Per-node-type ACL, intent-confirmation on agent writes, explicit `corroborates` / `supersedes` semantics |
+| Goal 10 evidence | 8/8 valid paired runs, 0 treatment failures, 0 treatment regressions |
+
+## The lifecycle
+
+```mermaid
+flowchart TD
+    Init[memex init<br/>extract baseline] --> Watch[memex watch<br/>daemon + git hooks]
+    Watch -->|commit| Extract[tree-sitter extract<br/>symbols, imports, lockfile]
+    Extract --> Synth[Gemini Flash<br/>diff → Decision nodes]
+    Synth --> Write[Graphiti add_episode<br/>+ post-hoc bitemporal SET]
+    Write --> Decay[Scheduler<br/>nightly confidence decay]
+    Decay -->|stale edges| Archive[expired_at = now]
+
+    Serve[memex serve<br/>MCP stdio/HTTP] -.->|reads| Write
+    Agent[AI agent] -->|14 MCP tools| Serve
+    Serve -->|record_decision / record_problem| Write
+
+    Cluster[memex cluster<br/>Leiden over hybrid edges] -.->|every N commits| Write
+
+    style Init fill:#e8f4ff,color:#000
+    style Watch fill:#fff4cf,color:#000
+    style Synth fill:#ffe0cc,color:#000
+    style Serve fill:#d4f5d4,color:#000
+```
+
+## MCP tools
+
+14 tools: eight read, four write, two analytic.
+
+### Read
+
+| Tool | When |
+|---|---|
+| `get_project_context` | Session start. Returns a cluster-level briefing under 1500 tokens regardless of repo size |
+| `get_symbol_context` | Before editing a function or class. Returns callers, callees, linked decisions |
+| `get_recent_decisions` | Last N days of architectural decisions, optionally module-scoped |
+| `get_open_problems` | Active bugs and tech debt, sorted by severity |
+| `search_context` | Hybrid search: semantic × keyword × graph traversal × RRF merge |
+| `get_stale_context` | Edges whose composite confidence dropped below threshold |
+| `explain_change` | Given a commit SHA, cross-references the diff with linked Decision/Problem nodes and asks Gemini Pro for a grounded explanation |
+| `predict_impact` | Given a file path, returns a ranked list of modules likely affected based on graph coupling (no LLM call) |
+
+### Write
+
+| Tool | When |
+|---|---|
+| `record_decision` | After making a technical choice. Supports `corroborates` (reinforce) and `supersedes` (replace) |
+| `record_problem` | When discovering a bug or piece of tech debt |
+| `resolve_problem` | When a tracked problem is fixed |
+| `invalidate_edge` | When a stored fact is no longer true |
+
+## Bitemporal confidence
+
+Confidence is **not** a stored number that mutates. It is computed at query time from `base_confidence`, validation status, time since last reinforcement, and access count.
+
+```mermaid
+flowchart LR
+    Edge[Edge created<br/>base_confidence] --> Q{Validated by<br/>a human?}
+    Q -->|yes| Slow[Slow regime<br/>half-life ~139d]
+    Q -->|no| Fast[Fast regime<br/>stale at exactly 30d]
+    Slow --> Score[Composite score<br/>conf × recency × rehearsal]
+    Fast --> Score
+    Score -->|below floor| Stale[get_stale_context surfaces it]
+    Score -->|access| Bump[last_reinforced_at updated]
+    Bump --> Score
+
+    style Slow fill:#d4f5d4,color:#000
+    style Fast fill:#ffd4d4,color:#000
+```
+
+| Property | Value |
+|---|---|
+| Validated half-life | ~139 days |
+| Unvalidated stale threshold | 30 days (composite < 0.3) |
+| Recency τ | 90 days (exponential decay) |
+| Composite formula | `conf × recency × (1 + rehearsal_w × log(1 + access_count))` |
+| Conflict similarity threshold | 0.4 (below this + overlapping validity = conflict) |
+| Intent-confirmation threshold | 0.85 (MCP write similarity check) |
+
+## Hierarchical clusters
+
+`memex cluster` runs hierarchical Leiden over a hybrid edge graph:
+
+| Edge type | Weight |
+|---|---|
+| Directory co-location | 1.0 |
+| Module imports | 2.0 |
+| Symbol calls | `log(1 + calls)` |
+
+| Property | Value |
+|---|---|
+| Algorithm | `graspologic.partition.hierarchical_leiden` with fixed seed |
+| Naming | TF-IDF top-3 over module docstrings + symbol names, parent-dir fallback |
+| ID pinning | Jaccard ≥ 0.5 across reruns (cluster names stay stable through renames) |
+| User overrides | `.memex/clusters.yaml`, where any assignment can be locked |
+| Context budget | `get_project_context` stays under 1500 tokens whether your repo has 50 or 5000 modules |
+
+## Measure Your Savings
+
+memex tracks token reduction metrics and human review actions locally in a SQLite database (`~/.config/memex/telemetry.db`). 
+
+You can query your savings at any time using the CLI:
+```bash
+memex stats
+```
+
+Or view the raw JSON payload:
+```bash
+memex stats --json
+```
+
+Or target a specific repository scope:
+```bash
+memex stats --repo /path/to/repo
+```
+
+This returns an aggregation of:
+- **Period Summaries**: Calls, tokens returned, naive tokens (size of files requested), tokens saved, and token reduction percentage across `today`, `last 7 days`, `last 30 days`, and `lifetime`.
+- **Top Tools**: The most valuable tools sorted by total tokens saved.
+- **Agent Clients**: Active agents (Claude Code, Gemini CLI, Cursor, Codex) and their token saving distribution.
+- **Validation Health**: Total validated, unvalidated, and corroborated nodes, along with the elapsed days since the last review.
+
+The same statistics are exposed via the HTTP MCP transport:
+```http
+GET /stats?repo=/path/to/repo
+Authorization: Bearer <your-key>
+```
+
+## Connect your agent
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+Marketplace install above does this for you. Manual wiring in `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "memex": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "stifler-memex-mcp", "serve", "--repo", "."]
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "memex": {
+      "command": "npx",
+      "args": ["-y", "stifler-memex-mcp", "serve", "--repo", "."]
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>Gemini CLI</b></summary>
+
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "memex": {
+      "command": "npx",
+      "args": ["-y", "stifler-memex-mcp", "serve", "--repo", "."]
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>Codex</b></summary>
+
+Add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.memex]
+command = "npx"
+args = ["-y", "stifler-memex-mcp", "serve", "--repo", "."]
+```
+</details>
+
+<details>
+<summary><b>Anthropic memory tool (memory_20250818)</b></summary>
+
+memex can back Claude's native memory tool: agents read from a per-session graph projection plus a writable scratch zone.
+
+```bash
+memex memory-tool serve --repo .                     # in-process
+memex memory-tool serve --repo . --transport http    # FastAPI on :7464
+```
+
+```python
+from memex.memory_tool import MemexAsyncMemoryTool
+memory_tool = MemexAsyncMemoryTool(repo_root=".")
+client.beta.messages.run_tools(..., tools=[memory_tool])
+```
+</details>
+
+## Operating principles
+
+| # | Principle | The bet |
+|---|---|---|
+| 1 | Bitemporal, never destructive | Edges are expired, not deleted. `WHERE r.expired_at IS NULL` filters live state |
+| 2 | Confidence is computed, not stored | Mutating a number invites silent drift. Recompute every read |
+| 3 | Two regimes for decay | Validated facts decay slowly; unvalidated facts must earn their place by being accessed |
+| 4 | Human in the loop | `memex review` queues lowest-confidence Decision nodes for explicit validation |
+| 5 | Write governance | Per-node-type ACL. `Decision.policy = open`, `Module.policy = locked`. Intent-confirmation on similar-content writes |
+| 6 | Tokens are budgeted | `get_project_context` stays under 1500 tokens at any repo size via Leiden clusters |
+| 7 | Synthesis only on commits | The watcher batches by debounce window. Gemini Flash is not in the hot path of a tool call |
+| 8 | Pro for synthesis, Flash for extraction | `explain_change` uses Pro because grounding matters. Everything else uses Flash |
+| 9 | Multi-repo aware | One watcher + one MCP server can manage hundreds of repos. `--repo` switches scope |
+| 10 | Local-first | Neo4j runs in your Docker. Gemini is the only outbound call, and only on commits |
+
+## When to use memex
+
+| Use it when | Skip it when |
+|---|---|
+| Multi-week or multi-month project | One-shot script, throwaway prototype |
+| You work across multiple agents (Claude, Cursor, Codex) and want shared context | You only ever pair with one agent on one task |
+| Architectural decisions are made over time and need to be remembered | The whole project fits in a single 200k-token context window |
+| You want to query "what did we decide about X" from any session | Your repo is already small enough to paste into the prompt |
+| Multiple developers using AI agents on the same codebase | Solo work where you never `/clear` |
+
+## Project structure
+
+```
+memex/
+├── memex/
+│   ├── extractor/        tree-sitter + lockfile parsers
+│   ├── graph/            Neo4j writes, confidence, archive, cluster engine
+│   ├── synthesizer/      Gemini Flash → Decision nodes
+│   ├── mcp_server/       14 MCP tools (read + write + analytic)
+│   ├── memory_tool/      Anthropic memory_20250818 adapter
+│   ├── watcher/          daemon + git hooks
+│   └── cli.py            init / watch / serve / review / graph / cluster
+├── tests/                unit, integration, and objective evaluation suites
+├── docker/               Neo4j compose
+├── npm/                  npx wrapper (publishes as stifler-memex-mcp)
+└── Dockerfile            introspection-only image for MCP directory sandboxes
+```
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `memex init` | Extract baseline graph state, run first cluster pass |
+| `memex watch` | Daemon that listens for file + git events and writes to Neo4j |
+| `memex serve` | Run the MCP server (stdio, HTTP, or both) |
+| `memex review` | TUI that walks lowest-confidence decisions for human validation |
+| `memex graph --output graph.html` | Self-contained D3 force layout with cluster overlays |
+| `memex cluster [--rerun] [--dry-run]` | Run Leiden over the hybrid edge graph; pin cluster IDs by Jaccard ≥ 0.5 |
+| `memex memory-tool serve` | Back Anthropic's `memory_20250818` tool with a graph projection |
+| `memex stats [--json] [--repo <path>]` | Show context token savings and telemetry stats |
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
+
+## Author
+
+Hill Patel ([@STiFLeR7](https://github.com/STiFLeR7))
+
+## Core Contributors & Maintainers
+
+- Hill Patel ([@STiFLeR7](https://github.com/STiFLeR7)), architect and maintainer
+- Nirvaan Lagishetty ([@Nirvaan05](https://github.com/Nirvaan05)), lead contributor and maintainer
+
+## Contributing
+
+Open an issue or PR. `uv sync --all-extras` installs the development toolchain.
+Run `uv run pytest -m "not integration"` for the offline suite and `uv run ruff
+check .` before opening a PR. Version bumps must update `pyproject.toml`,
+`npm/package.json`, `server.json`, and the team Docker image tag together.
+
+Release history is in [`CHANGELOG.md`](CHANGELOG.md). The v1 design and
+evaluation records are under [`docs/v1/`](docs/v1/), and the v0.9 architecture
+under [`docs/architecture/v0.9/`](docs/architecture/v0.9/).
+
+> *Vannevar Bush, 1945:* "Consider a future device for individual use, which is a sort of mechanized private file and library. It needs a name, and to coin one at random, **memex** will do."

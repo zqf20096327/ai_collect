@@ -1,0 +1,309 @@
+![Operator! logo](docs/assets/img/operator_logo.svg)
+
+# Operator!
+[![GitHub Tag](https://img.shields.io/github/v/tag/untra/operator)](https://github.com/untra/operator/releases) [![codecov](https://codecov.io/gh/untra/operator/branch/main/graph/badge.svg)](https://codecov.io/gh/untra/operator)
+
+**_This Project is currently in ALPHA, is free to use, and officially promises nothing yet!_**
+
+* **Session Management** [![tmux](https://img.shields.io/badge/tmux-1BB91F?logo=tmux&logoColor=white)](https://operator.untra.io/getting-started/sessions/tmux/) [![cmux](https://img.shields.io/badge/cmux-333333)](https://operator.untra.io/getting-started/sessions/cmux/) [![Zellij](https://img.shields.io/badge/Zellij-E8590C)](https://operator.untra.io/getting-started/sessions/zellij/) [![VS Code Terminals](https://img.shields.io/badge/VS_Code_Terminals-007ACC)](https://operator.untra.io/getting-started/sessions/vscode-terminals/)
+
+* **IDE** [![VS Code](https://img.shields.io/badge/VS_Code-007ACC)](https://operator.untra.io/getting-started/ides/vscode/) [![Zed](https://img.shields.io/badge/Zed-084CCF?logo=zedindustries&logoColor=white)](https://operator.untra.io/getting-started/ides/zed/)
+
+* **Kanban Provider** [![Operator](https://img.shields.io/badge/Operator-C8613F)](https://operator.untra.io/getting-started/kanban/operator/) [![Jira](https://img.shields.io/badge/Jira-0052CC?logo=jira&logoColor=white)](https://operator.untra.io/getting-started/kanban/jira/) [![Linear](https://img.shields.io/badge/Linear-5E6AD2?logo=linear&logoColor=white)](https://operator.untra.io/getting-started/kanban/linear/) [![GitHub Projects](https://img.shields.io/badge/GitHub_Projects-181717?logo=github&logoColor=white)](https://operator.untra.io/getting-started/kanban/github/)
+
+* **LLM Tool** [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=white)](https://operator.untra.io/getting-started/agents/claude/) [![Codex](https://img.shields.io/badge/Codex-000000?logo=openai&logoColor=white)](https://operator.untra.io/getting-started/agents/codex/) [![Gemini CLI](https://img.shields.io/badge/Gemini_CLI-8E75B2?logo=googlegemini&logoColor=white)](https://operator.untra.io/getting-started/agents/gemini-cli/) [![Grok](https://img.shields.io/badge/Grok-000000)](https://operator.untra.io/getting-started/agents/grok/)
+
+* **Model Provider** [![Anthropic](https://img.shields.io/badge/Anthropic-D97757?logo=anthropic&logoColor=white)](https://operator.untra.io/getting-started/model-servers/anthropic/) [![OpenAI](https://img.shields.io/badge/OpenAI-000000?logo=openai&logoColor=white)](https://operator.untra.io/getting-started/model-servers/openai/) [![Google](https://img.shields.io/badge/Google-4285F4?logo=google&logoColor=white)](https://operator.untra.io/getting-started/model-servers/google/) [![xAI](https://img.shields.io/badge/xAI-000000)](https://operator.untra.io/getting-started/model-servers/xai/) [![OpenRouter](https://img.shields.io/badge/OpenRouter-94A3B8?logo=openrouter&logoColor=white)](https://operator.untra.io/getting-started/model-servers/openrouter/) [![Ollama](https://img.shields.io/badge/Ollama-000000?logo=ollama&logoColor=white)](https://operator.untra.io/getting-started/model-servers/ollama/)
+
+
+* **Git Version Control** [![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://operator.untra.io/getting-started/git/github/) [![GitLab](https://img.shields.io/badge/GitLab-FC6D26?logo=gitlab&logoColor=white)](https://operator.untra.io/getting-started/git/gitlab/)
+
+* **Platform** [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://operator.untra.io/getting-started/platforms/docker/) [![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)](https://operator.untra.io/getting-started/platforms/kubernetes/)
+
+* **Remote Targets** (Premium) [![Coder](https://img.shields.io/badge/Coder-7C71FF?logo=coder&logoColor=white)](https://operator.untra.io/getting-started/remote-targets/coder/)
+
+* **Workflow Export Format** [![Claude Workflow](https://img.shields.io/badge/Claude_Workflow-D97757?logo=claude&logoColor=white)](https://operator.untra.io/getting-started/workflows/claude/) [![AGNT Workflow](https://img.shields.io/badge/AGNT_Workflow-6E56CF)](https://operator.untra.io/getting-started/workflows/agnt/)
+
+* **Notification Channel** [![Operating System](https://img.shields.io/badge/Operating_System-333333)](https://operator.untra.io/getting-started/notifications/os/) [![Webhooks](https://img.shields.io/badge/Webhooks-2088FF?logo=webhook&logoColor=white)](https://operator.untra.io/getting-started/notifications/webhooks/)
+
+An orchestration tool for [**AI-assisted**](https://operator.untra.io/getting-started/agents/) [_kanban-shaped_](https://operator.untra.io/getting-started/kanban/) [git-versioned](https://operator.untra.io/getting-started/git/) software development.
+
+<a href="https://marketplace.visualstudio.com/items?itemName=untra.operator-terminals" target="_blank" class="button">Install <b>Operator! Terminals</b> extension from Visual Studio Code Marketplace</a>
+
+**Operator** is for you if:
+
+- you do work assigned from tickets on a kanban board - [_Operator's own_](https://operator.untra.io/getting-started/kanban/operator/), or synced in from [_Jira Cloud_](https://operator.untra.io/getting-started/kanban/jira/), [_Linear_](https://operator.untra.io/getting-started/kanban/linear/), or [_GitHub Projects_](https://operator.untra.io/getting-started/kanban/github/)
+- you use LLM assisted coding agent tools to accomplish work, such as [_Claude Code_](https://operator.untra.io/getting-started/agents/claude/), [_OpenAI Codex_](https://operator.untra.io/getting-started/agents/codex/), or [_Google Gemini CLI_](https://operator.untra.io/getting-started/agents/gemini-cli/)
+- you reach many models through a provider like [_OpenRouter_](https://operator.untra.io/getting-started/model-servers/openrouter/) or a local [_Ollama_](https://operator.untra.io/getting-started/model-servers/ollama/) server
+- your work is version controlled with a git repository provider like [_GitHub_](https://operator.untra.io/getting-started/git/github/) or [_GitLab_](https://operator.untra.io/getting-started/git/gitlab/)
+
+- you are drowning in the AI software development soup.
+
+and you are ready to start seriously automating your work.
+
+## Overview
+
+`operator` is a TUI (terminal user interface) application that uses session wrappers ([tmux](https://operator.untra.io/getting-started/sessions/tmux/), [cmux](https://operator.untra.io/getting-started/sessions/cmux/), or [Zellij](https://operator.untra.io/getting-started/sessions/zellij/)) to manage multiple AI coding agents across multi-project workspaces of many codebases. It is designed to be ticket-first, launching LLM coding agents keyed off from markdown stories from a ticketing provider. It provides:
+
+- **Queue Management**: ticket queue with priority-based work assignment, launchable from a dashboard
+- **Agent Orchestration**: Launch, monitor, pause/resume LLM coding agents against kanban shaped work tickets, and track the ticket progress as it goes through your defined work implementation steps
+- **Notifications**: macOS and linux notifications for agent events, keeping you the human in the loop. 
+- **Dashboard**: Real-time view of queue, active agents, completed work, and waiting instances seeking feedback or human review
+
+Operator is designed to facilitate work from markdown tickets, tackling tasks across multiple code repositories by semi-autonomous agents. Operator should be started from the root of your collective work projects repository (eg, `~/Documents`), so that it may start feature or fix work in the right part of the codebase.
+
+When started for the first time, Operator will setup configuration to consume and process work tickets, and identify local projects by scanning for LLM tool marker files (`CLAUDE.md`, `CODEX.md`, `GEMINI.md`) and git repositories.
+
+Operator comes with a separate web component, unneeded to do work but purpose built to give you a developer portal to expand their workflows and administrate Operator with ease.
+
+Operator starts and runs it's own REST API, which can be reached by outside clients, including by the `opr8r` wrapper client. This is included to communicate with Operator api hosts outside of where it's hosted.
+
+## Usage
+
+```bash
+# Launch dashboard
+operator
+
+# Quick commands (without entering TUI)
+operator queue              # Show queue status
+operator launch <ticket>    # Launch agent for ticket (with confirmation)
+operator create             # Create a new work ticket
+operator agents             # List active agents
+operator pause              # Pause queue processing
+operator resume             # Resume queue processing
+operator stalled            # Show stalled agents awaiting input
+operator alert              # Create investigation from external alert
+operator docs               # Generate documentation from source-of-truth files
+operator api                # Start the REST API server
+operator setup              # Initialize operator workspace
+```
+
+## Installation
+
+Download the latest release for your platform:
+
+```bash
+# macOS Apple Silicon
+curl -L https://github.com/untra/operator/releases/latest/download/operator-macos-arm64 -o operator
+chmod +x operator
+sudo mv operator /usr/local/bin/
+
+# Linux x86_64
+curl -L https://github.com/untra/operator/releases/latest/download/operator-linux-x86_64 -o operator
+chmod +x operator
+sudo mv operator /usr/local/bin/
+
+# Linux ARM64
+curl -L https://github.com/untra/operator/releases/latest/download/operator-linux-arm64 -o operator
+chmod +x operator
+sudo mv operator /usr/local/bin/
+```
+
+```powershell
+# Windows (PowerShell) - use operator-windows-arm64.exe on ARM64
+Invoke-WebRequest -Uri "https://github.com/untra/operator/releases/latest/download/operator-windows-x86_64.exe" -OutFile "operator.exe"
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/untra/operator.git
+cd operator
+make build                                  # cargo build --release
+sudo cp target/release/operator /usr/local/bin/
+```
+
+## Configuration
+
+Workspace configuration lives in `.tickets/operator/config.toml` (created by `operator setup`). An optional global override can be placed at `~/.config/operator/config.toml`.
+
+```toml
+[agents]
+max_parallel = 5          # Maximum concurrent agents
+cores_reserved = 1        # Cores to keep free (actual max = cores - reserved)
+health_check_interval = 30
+
+[notifications]
+enabled = true
+
+[notifications.os]
+enabled = true
+sound = false
+events = []               # Empty = all events
+
+[queue]
+auto_assign = true        # Automatically assign work when agents free
+priority_order = ["INV", "FIX", "FEAT", "SPIKE"]
+poll_interval_ms = 1000
+
+[paths]
+tickets = ".tickets"      # Relative to cwd
+projects = "."            # cwd is projects root
+state = ".tickets/operator"
+
+[ui]
+refresh_rate_ms = 250
+completed_history_hours = 24
+summary_max_length = 40
+
+[launch]
+confirm_autonomous = true
+confirm_paired = true
+launch_delay_ms = 2000
+
+[sessions]
+wrapper = "tmux"          # "tmux", "cmux", or "zellij"
+```
+
+## Ticket Priority
+
+Work is assigned in priority order (not strict FIFO):
+
+1. **INV** (Investigation) - Failures need immediate attention
+2. **FIX** - Bug fixes and follow-up work
+3. **FEAT** - New features
+4. **SPIKE** - Research (requires human pairing)
+
+Within each priority level, tickets are processed FIFO by timestamp.
+
+## Agent Types
+
+| Type | Mode | Parallelism | Human Required |
+|------|------|-------------|----------------|
+| Investigation | Paired | Single | Yes (urgent) |
+| Spike | Paired | Single | Yes |
+| Fix | Autonomous | Parallel OK | No (launch confirm only) |
+| Feature | Autonomous | Parallel OK | No (launch confirm only) |
+
+## Dashboard Layout
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ operator v0.1.28                      ▶ RUNNING   5/7       │
+├──────────┬────────────┬──────────────────┬───────────────────┤
+│ STATUS   │ QUEUE (12) │ IN PROGRESS (5)  │ DONE (8)          │
+├──────────┼────────────┼──────────────────┼───────────────────┤
+│ ▾ Config │ INV-003 ‼️ │ A▶ backend       │ ✓ FEAT-040 12:30  │
+│   ✓ dir  │ FIX-089    │   FEAT-042  5m   │ ✓ FIX-088  12:15  │
+│   ✓ cfg  │ FIX-090    │ A▶ frontend      │ ✓ FEAT-041 11:45  │
+│   ✓ tkts │ FEAT-043   │   FIX-091  3m    │ ✓ FIX-087  11:30  │
+│ ▾ Conns  │ FEAT-044   │ C⏸ api           │                   │
+│   ✓ API  │ FEAT-045   │   SPIKE-015 12m  │                   │
+│   ✓ Web  │            │   Awaiting input │                   │
+│   tmux   │            │ A▶ admin         │                   │
+│ ▸ Kanban │            │   FEAT-047  1m   │                   │
+│ ▸ LLM    │            │ A▶ infra         │                   │
+│ ▸ Git    │            │   FIX-092  8m    │                   │
+├──────────┴────────────┴──────────────────┴───────────────────┤
+│ [Q]ueue [L]aunch [P]ause [R]esume [A]gents [?]Help [q]uit   │
+└──────────────────────────────────────────────────────────────┘
+```
+
+## Keyboard Shortcuts
+
+See [Keyboard Shortcuts Reference](https://operator.untra.io/shortcuts/) for the full list, auto-generated from [`src/ui/keybindings.rs`](src/ui/keybindings.rs). Press `?` in the TUI to view shortcuts in-app.
+
+## Integration Points
+
+### LLM Agent Launch
+
+Agents are launched in terminal sessions with the appropriate project folder and an initial prompt derived from the ticket.
+
+### Third-Party Integrations
+
+Investigations can be triggered externally:
+- Webhook endpoint for alerting systems
+- File watch for alert drop files
+- CLI for manual urgent tickets
+
+```bash
+# Create urgent investigation from external alert
+operator alert --source pagerduty --message "500 errors in backend" --severity S1
+```
+
+## LLM CLI Tool Integration
+
+Operator launches LLM agents via CLI tools in terminal sessions. Each tool is configured via a JSON definition in `src/llm/tools/`.
+
+### Supported Tools
+
+| Tool | Detection | Models | Session Flag |
+|------|-----------|--------|--------------|
+| `claude` | `claude --version` | opus, sonnet, haiku | `--session-id` |
+| `codex` | `codex --version` | gpt-4o, o1, o3 | `--resume` |
+| `gemini` | `gemini --version` | pro, flash, ultra | `--resume` |
+| `grok` | `grok --version` | grok-4 | `--session-id` |
+
+### How Operator Calls LLM Tools
+
+Each tool has a JSON config in `src/llm/tools/` that defines argument mappings and a command template. Operator constructs the launch command from this config:
+
+- **Prompt file**: Prompts are written to `.tickets/operator/prompts/<uuid>.txt` to avoid shell escaping issues with multiline prompts
+- **Session ID**: A UUID v4 is generated per launch, enabling session resumption
+- **Model aliases**: Operator uses short aliases (e.g., "opus", "sonnet") that resolve to latest model versions
+
+### Adding Support for New LLM Tools
+
+Create a new JSON tool config following the schema in `src/llm/tools/tool_config.schema.json`. The config defines:
+
+- Tool binary name and version detection command
+- Model aliases and argument mappings
+- Command template with placeholder variables
+- Capability flags (sessions, headless, permission modes)
+
+**Requirements for the LLM tool:**
+- Must be installable as a CLI binary
+- Must accept prompt via flag (not just stdin)
+- Must support model selection
+- Should support session/conversation ID for continuity
+- Should run interactively in a terminal (for session wrapper integration)
+
+## Model Servers
+
+Operator's agent-launch hierarchy has three layers:
+
+```
+┌─ llm_tools ─────────┐   ┌─ model_servers ──────┐
+│ claude  (detected)  │   │ anthropic-api (impl.)│
+│ codex   (detected)  │   │ openai-api    (impl.)│
+│ gemini  (detected)  │   │ google-api    (impl.)│
+│                     │   │ ollama-local  (user) │
+└─────────────────────┘   └──────────────────────┘
+            ▲                        ▲
+            │                        │
+            └───── delegators ───────┘
+   name, llm_tool, model, model_server (optional)
+```
+
+- **`llm_tools`** are the agentic coding-agent CLIs (claude/codex/gemini). They're detected on PATH and drive the session.
+- **`model_servers`** name the host that serves the model weights. Implicit builtins (`anthropic-api`, `openai-api`, `google-api`) exist without declaration. Users can declare additional servers for ollama, lmstudio, vllm, or any OpenAI-compatible endpoint.
+- **`delegators`** are named `(llm_tool, model, model_server?)` triples used to launch a ticket. When `model_server` is omitted, the llm_tool's implicit vendor default is used.
+
+Example `operator.toml`:
+
+```toml
+[[model_servers]]
+name = "ollama-local"
+kind = "ollama"
+base_url = "http://localhost:11434"
+
+[[delegators]]
+name = "codex-local-qwen"
+llm_tool = "codex"
+model = "qwen2.5-coder"
+model_server = "ollama-local"
+```
+
+Ad-hoc launch flags:
+
+```bash
+# Named delegator (recommended)
+operator launch --delegator codex-local-qwen
+
+# Ad-hoc override
+operator launch --llm-tool codex --model qwen2.5-coder --model-server ollama-local
+```
+
+**Protocol compatibility.** Codex speaks the OpenAI API - pairing with ollama requires no bridge. Claude and Gemini use their own vendor protocols and require a translating proxy (e.g. `claude-code-router`, `litellm-proxy`) between the CLI and ollama; declare the bridge URL as your `model_server.base_url`.
+
+Current release ships the infrastructure - ollama detection and automatic env-var injection on spawn land in the next release. See `docs/getting-started/model-servers/` for the full walkthrough.

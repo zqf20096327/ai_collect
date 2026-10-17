@@ -1,0 +1,258 @@
+<p align="center">
+    <picture>
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/logo_light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo_dark.png">
+    <img alt="CoolPrompt Logo" width="40%" height="40%">
+    </picture>
+</p>
+
+[![Release Notes](https://img.shields.io/github/release/CTLab-ITMO/CoolPrompt?style=flat-square)](https://github.com/CTLab-ITMO/CoolPrompt/releases)
+[![PyPI - License](https://img.shields.io/github/license/CTLab-ITMO/CoolPrompt?style=BadgeStyleOptions.DEFAULT&logo=opensourceinitiative&logoColor=white&color=blue)](https://opensource.org/license/apache-2-0)
+[![PyPI Downloads](https://static.pepy.tech/badge/coolprompt)](https://pepy.tech/projects/coolprompt)
+[![GitHub star chart](https://img.shields.io/github/stars/CTLab-ITMO/CoolPrompt?style=flat-square)](https://star-history.com/#CTLab-ITMO/CoolPrompt)
+[![Open Issues](https://img.shields.io/github/issues-raw/CTLab-ITMO/CoolPrompt?style=flat-square)](https://github.com/CTLab-ITMO/CoolPrompt/issues)
+[![Contributions welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg?)](https://github.com/CTLab-ITMO/CoolPrompt/pulls)
+[![ITMO](https://raw.githubusercontent.com/aimclub/open-source-ops/43bb283758b43d75ec1df0a6bb4ae3eb20066323/badges/ITMO_badge.svg)](https://itmo.ru/)
+[![Telegram Channel](https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/+0kMcymeAQrczN2Fi)
+
+CoolPrompt is a framework for automatic prompt creation and optimization.
+
+### Join our [telegram](https://t.me/+0kMcymeAQrczN2Fi) channel to be in touch.
+
+## Practical cases
+
+- Automatic prompt engineering for solving tasks using LLM
+- (Semi-)automatic generation of markup for fine-tuning
+- Formalization of response quality assessment using LLM
+- Prompt for AI Agentic Pipelines
+- Etc.
+
+## Core features
+
+- **Optimize prompts** with our APO methods:
+    - HyPER / HyPER Light
+    - RE-GPS
+    - RIDER
+    - BRAVE
+    - SAPO
+    - PromptCompressor
+    - *(legacy/deprecated)*: ReflectivePrompt, DistillPrompt
+- **LLM-Agnostic Choice:** work with your custom llm (from open-sourced to proprietary) using [supported Langchain LLMs](https://python.langchain.com/docs/integrations/llms/)
+- **Develop own custom APO method in one library**
+- **Generate synthetic evaluation data** when no input dataset is provided 
+- **Evaluate a quality** of prompts incorporating multiple metrics for both classification and generation tasks
+- **Evaluate costs** of optimization processes by a number of tokens/calls and a price.
+- **Automatic task detecting** for scenarios without explicit user-defined task specifications
+
+<p align="center">
+    <picture>
+    <source srcset="docs/images/coolprompt_2.png">
+    <img alt="CoolPrompt Scheme" width="100%" height="100%">
+    </picture>
+</p>
+
+## APO methods comparison
+
+CoolPrompt provides several automatic prompt optimization methods with different
+trade-offs in data requirements, runtime, expected quality, and API cost. The
+levels below are qualitative and task-dependent: they are intended as a quick
+guide for choosing a method before running a benchmark.
+
+Compared metrics:
+- **Data** - whether dataset is required for the method to run.
+- **Runtime** - relative wall-clock time of one optimization run.
+- **Performance** - expected ability to improve task quality compared with the initial prompt.
+- **Cost** - relative compute/API cost: LLM calls, evaluation calls, token usage, and extra scoring overhead.
+
+| Method | Data | Runtime ↓ | Performance ↑ | Cost ↓ |
+|---|---:|---:|---:|---:|
+| `hyper_light` | None | Low | Medium | Low |
+| `hyper` | Required | Medium | High | Medium |
+| `regps` | Required | High | Very High | High |
+| `rider` | Required | Very High | Very High | Very High |
+| `brave` | Required | High | Very High | Budget-controlled |
+| `sapo` | Required | High | Very High | High |
+| `compress` | None | Low | Medium | Low |
+| `reflective` | Required | High | High | High |
+| `distill` | Required | High | High | High |
+
+## Quick install
+- Install with pip:
+```bash
+pip install coolprompt
+```
+
+- Install with git:
+```bash
+git clone https://github.com/CTLab-ITMO/CoolPrompt.git
+cd CoolPrompt
+
+pip install -e .
+```
+
+## Quick start
+
+Set your OpenAI API key before running. The default model is `gpt-4o-mini` via the OpenAI API (`OPENAI_API_KEY` environment variable)
+
+```python
+from coolprompt.assistant import PromptTuner
+
+prompt_tuner = PromptTuner()
+
+prompt_tuner.run('Write an essay about autumn')
+
+print(prompt_tuner.final_prompt)
+
+# You are an expert writer and seasonal observer tasked with composing a rich,
+# well-structured, and vividly descriptive essay on the theme of autumn...
+```
+
+<p align="center">
+    <img src="docs/images/demo.gif" alt="CoolPrompt full optimization demo" width="100%">
+</p>
+
+Run the data-driven BRAVE optimizer by selecting it as the method:
+
+```python
+final_prompt = prompt_tuner.run(
+    "Classify the sentiment of the text: {text}",
+    task="classification",
+    dataset=["Great product", "Very disappointing"],
+    target=["positive", "negative"],
+    method="brave",
+    problem_description="Classify product-review sentiment.",
+    max_steps=20,
+    initial_budget_tokens=50_000,
+)
+```
+
+### Automatic APO method selection
+
+Use `method="auto"` to select an optimizer from experiment metadata. The
+selector profiles the task with the system model, retrieves up to three similar
+benchmark datasets, and ranks configurations by quality, cost, and runtime.
+The selected method is available in `prompt_tuner.meta_selection` and is added
+to telemetry exports.
+
+```python
+final_prompt = prompt_tuner.run(
+    "Classify the sentiment of the text: {text}",
+    task="classification",
+    dataset=["Great product", "Very disappointing"],
+    target=["positive", "negative"],
+    method="auto",
+    problem_description="Classify product-review sentiment.",
+    meta_dataset_name="my_product_reviews",  # optional
+)
+```
+
+The bundled metadata contains SAPO, RIDER, and HyPER results. A SAPO
+recommendation is executed directly with the built-in segment-based optimizer. Pass
+`meta_classifier_path="/path/to/metadata.csv"` to use a custom CSV. Without
+`dataset` and `target`, `method="auto"` uses `hyper_light`.
+
+Run SAPO directly when you want contrastive, segment-level prompt refinement:
+
+```python
+final_prompt = prompt_tuner.run(
+    "Summarize the article concisely.",
+    task="generation",
+    dataset=["Article one", "Article two"],
+    target=["Summary one", "Summary two"],
+    method="sapo",
+    validation_size=0.5,
+    n_iterations=3,
+    n_candidates=4,
+)
+```
+
+## Examples
+
+See more examples in [notebooks](https://github.com/CTLab-ITMO/CoolPrompt/blob/master/notebooks/examples/) to familiarize yourself with our framework
+
+
+## About project
+- The framework is developed by Computer Technologies Lab (CT-Lab) of ITMO University.
+- <a href="https://github.com/CTLab-ITMO/CoolPrompt/blob/master/docs/API.md">API Reference</a>
+
+## Contributing
+- We welcome and value any contributions and collaborations, so please contact us. For new code check out <a href="https://github.com/CTLab-ITMO/CoolPrompt/blob/master/docs/CONTRIBUTING.md">CONTRIBUTING.md</a>.
+
+## Reference
+For technical details and full experimental results, please check our papers + citations inside.
+
+<details close>
+    <summary><a href="https://doi.org/10.1145/3803437.3807393"><b>RIDER</b></a></summary>
+    
+    @inproceedings{dragomirov2026rider,
+      author = {Dragomirov, Daglar and Kulin, Nikita and Muravyov, Sergey and Makarov, Ilya and Sukhorukov, Daniil and Mozikov, Mikhail},
+      title = {RIDER: Evolutionary Prompt Optimization with Adaptive Operator Selection for Software Engineering},
+      booktitle = {Companion Proceedings of the 34th ACM Joint European Software Engineering Conference and Symposium on the Foundations of Software Engineering},
+      series = {FSE Companion '26},
+      year = {2026},
+      doi = {10.1145/3803437.3807393}
+    }
+    
+</details>
+
+<details close>
+    <summary><a href="https://ieeexplore.ieee.org/abstract/document/11506566"><b>RE-GPS</b></a></summary>
+    
+    @inproceedings{kulin2026re,
+      title={RE-GPS: Reflective Evolutionary Gradient Prompting System for Large Language Models},
+      author={Kulin, Nikita and Zhuravlev, Viktor and Khairullin, Artur and Muravyov, Sergey},
+      booktitle={2026 39th Conference of Open Innovations Association (FRUCT)},
+      pages={157--163},
+      year={2026},
+      organization={IEEE}
+    }
+    
+</details>
+
+<details close>
+    <summary><a href="https://www.fruct.org/files/publications/volume-38/fruct38/Kul.pdf"><b>CoolPrompt</b></a></summary>
+    
+    @INPROCEEDINGS{11239071,
+      author={Kulin, Nikita and Zhuravlev, Viktor and Khairullin, Artur and Sitkina, Alena and Muravyov, Sergey},
+      booktitle={2025 38th Conference of Open Innovations Association (FRUCT)}, 
+      title={CoolPrompt: Automatic Prompt Optimization Framework for Large Language Models}, 
+      year={2025},
+      volume={},
+      number={},
+      pages={158-166},
+      keywords={Technological innovation;Systematics;Large language models;Pipelines;Manuals;Prediction algorithms;Libraries;Prompt engineering;Optimization;Synthetic data},
+      doi={10.23919/FRUCT67853.2025.11239071}
+    }
+    
+</details>
+
+<details close>
+    <summary><a href="https://ntv.ifmo.ru/file/article/23927.pdf"><b>ReflectivePrompt</b></a></summary>
+    
+    @misc{zhuravlev2025reflectivepromptreflectiveevolutionautoprompting,
+          title={ReflectivePrompt: Reflective evolution in autoprompting algorithms}, 
+          author={Viktor N. Zhuravlev and Artur R. Khairullin and Ernest A. Dyagin and Alena N. Sitkina and Nikita I. Kulin},
+          year={2025},
+          eprint={2508.18870},
+          archivePrefix={arXiv},
+          primaryClass={cs.CL},
+          url={https://arxiv.org/abs/2508.18870}, 
+    }
+    
+</details>
+
+<details close>
+    <summary><a href="https://arxiv.org/pdf/2508.18992"><b>DistillPrompt</b></a></summary>
+    
+    @misc{dyagin2025automaticpromptoptimizationprompt,
+          title={Automatic Prompt Optimization with Prompt Distillation},
+          author={Ernest A. Dyagin and Nikita I. Kulin and Artur R. Khairullin and Viktor N. Zhuravlev and Alena N. Sitkina},
+          year={2025},
+          eprint={2508.18992},
+          archivePrefix={arXiv},
+          primaryClass={cs.CL},
+          url={https://arxiv.org/abs/2508.18992}, 
+    }
+    
+</details>
+

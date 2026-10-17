@@ -1,0 +1,174 @@
+# 影刀 xbot AI Agent 开发指南
+
+> 面向影刀 xbot / 编码版、RPA 自动化和 AI 编程 Agent 的中文开发知识库。
+
+[![GitHub stars](https://img.shields.io/github/stars/apexcheng/yingdao-xbot-ai-agent?style=social)](https://github.com/apexcheng/yingdao-xbot-ai-agent/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/apexcheng/yingdao-xbot-ai-agent?style=social)](https://github.com/apexcheng/yingdao-xbot-ai-agent/network/members)
+[![AI Agent](https://img.shields.io/badge/AI-Agent-blue)](AGENTS.md)
+[![RPA](https://img.shields.io/badge/RPA-Automation-green)](xbot-api-docs/docs/browser.md)
+[![xbot](https://img.shields.io/badge/xbot-Yingdao-orange)](llms.txt)
+
+## 关于这个项目
+
+这是我在实际开发和维护影刀自动化项目时，为个人 AI 辅助开发流程持续整理的知识库。它首先服务于我自己的项目，同时公开出来，希望给同样使用 Codex、Claude Code、Cursor 等工具开发影刀编码版的开发者一些参考。
+
+本仓库不是影刀官方文档，也不追求覆盖所有 API。其中的内容主要来自个人项目中的真实调用、源码核验和可复现问题。开发时按正式事实页使用影刀 API 与市场指令；若项目安装版本缺少文档中的入口，请检查更新状态，并反馈尚未发布或文档需要修订的情况。
+
+这个仓库解决的是“如何开发、维护和排查影刀项目”，不是“AI Agent 应该如何操作电脑或选择宿主工具”。用于访问 Windows / macOS、执行代码、连接设备或编排外部能力的 ChatGPT、Codex、Claude Code 等宿主侧插件、MCP、DevSpace、Computer Use 和工具路由不属于本项目维护范围；只有与影刀自身直接相关的 CLI、API、项目格式和运行机制属于本知识库。
+
+## 为什么整理这个知识库
+
+通用代码模型通常熟悉 Python、Selenium、Playwright、pandas 或 openpyxl，但并不天然了解影刀项目中的：
+
+- xbot 对象、元素库、图像库和资源文件的真实用法。
+- 浏览器、Excel / WPS、Windows 自动化之间的 API 边界。
+- 市场指令在可视化界面和编码版中的参数映射。
+- 影刀真实项目目录、`package.json` 和同步流程的关系。
+- 哪些结论已验证，哪些仍需要在当前环境运行确认。
+
+这个仓库的目标不是让 AI “记住更多文档”，而是让它在不确定时能找到正确入口，少猜 API，少复制过时经验。
+
+## 仓库包含什么
+
+### AI Agent 开发规则
+
+- [AGENTS.md](AGENTS.md)：知识库自身的维护规则；真实项目的常驻开发规则见 [project-template/AGENTS.md](project-template/AGENTS.md)。
+- [llms.txt](llms.txt)：给 AI Agent 使用的精简文档导航。
+- [project-template](project-template/)：可复制到真实影刀项目的 base 骨架、Claude 入口和四个 Skill（`code-quality`、`xbot-tools`、`rpa-practices`、`spreadsheet-operations`）。
+
+### Skills 与完整开发经验
+
+- [代码质量 Skill](project-template/.agents/skills/code-quality/SKILL.md)：一致性、简化、审查。
+- [影刀工具 Skill](project-template/.agents/skills/xbot-tools/SKILL.md)：CLI、项目创建、同步、发布、项目诊断。
+- [开发经验 Skill](project-template/.agents/skills/rpa-practices/SKILL.md)：网页、钉钉通知、跨轮状态及通用排错。
+- [表格操作 Skill](project-template/.agents/skills/spreadsheet-operations/SKILL.md)：Excel/CSV 用 WPS 打开、更新、保存和关闭。
+
+- [影刀编码版编程风格详解](project-template/.agents/skills/code-quality/references/coding-style.md)
+- [最小 base 骨架](project-template/.agents/skills/xbot-tools/references/base-project-skeleton.md)
+- [网页自动化实践](project-template/.agents/skills/rpa-practices/references/web.md)
+- [钉钉通知实践](project-template/.agents/skills/rpa-practices/references/dingtalk.md)
+- [项目参考案例库](reference-projects/README.md)：抖音经营报表和库存监控的本地冻结源码案例。
+- [抖音经营报表真实案例（内置源码快照）](reference-projects/douyin-operating-report/README.md)
+- [影刀编码版通用排错](project-template/.agents/skills/rpa-practices/references/troubleshooting.md)
+
+### xbot API 与自动化文档
+
+- [基础对象、元素库与资源](xbot-api-docs/docs/package.md)
+- [浏览器与网页元素](xbot-api-docs/docs/browser.md)
+- [Excel / WPS 工作簿与数据读写](xbot-api-docs/docs/excel.md)
+- [Windows 窗口、键盘与鼠标](xbot-api-docs/docs/win32.md)
+- [影刀日志](xbot-api-docs/docs/logging.md)
+- [通知与对话框](xbot-api-docs/docs/notification.md)
+- [压缩与解压](xbot-api-docs/docs/xzip.md)
+- [iframe2 扩展](xbot-api-docs/docs/iframe2-extension.md)
+
+### 市场指令事实
+
+[市场指令索引](xbot-api-docs/docs/extension-instructions.md) 用于查找各指令的正式调用事实页，目前包括：
+
+- 钉钉 AI 表格，以及增强工具中的钉钉机器人消息。
+- Excel 扩展操作、离线 OCR、广告处理和网页增强。
+- C-ERP 开发项目内 Python 报表下载模块、ERP 订单查询与字段翻译。
+- 登录扩展、iframe 和其他已核验扩展能力。
+
+## 快速开始
+
+### 1. 克隆知识库
+
+```bash
+git clone https://github.com/apexcheng/yingdao-xbot-ai-agent.git
+```
+
+### 2. 确认真实影刀项目
+
+本仓库只保存知识，不是实际运行的影刀应用。请确认真实项目根目录中存在 `package.json`，再让 AI Agent 进入该目录修改业务代码。
+
+### 3. 复制 base 项目模板
+
+将 `project-template/` 中缺失的文件复制到已存在 `package.json` 的真实项目根目录。同名文件先保留，再按需最小合并，不覆盖已有业务入口、配置、`.gitignore` 或规则：
+
+```text
+AGENTS.md
+config.py
+run.py
+.gitignore
+.agents/skills/code-quality/
+.agents/skills/xbot-tools/
+.agents/skills/rpa-practices/
+.agents/skills/spreadsheet-operations/
+.claude/CLAUDE.md
+.claude/skills/code-quality/
+.claude/skills/xbot-tools/
+.claude/skills/rpa-practices/
+.claude/skills/spreadsheet-operations/
+```
+
+模板默认由 `config.py` 管理必要配置。`code-quality` 提供代码简化与审查，`spreadsheet-operations` 负责 WPS 表格操作，`rpa-practices` 提供 Web、日志和流程组合经验；`xbot-tools` 负责 CLI、项目诊断及发布，其 `scripts/sync_codeflows.py` 只处理新增 / 删除 Code Flow，`scripts/publish_app.py` 负责保存、同步、发布与版本校验。使用 CLI 时需本机已安装影刀 CLI。骨架见 [最小 base 骨架](project-template/.agents/skills/xbot-tools/references/base-project-skeleton.md)。
+
+### 4. 告诉 AI Agent 两个目录
+
+```text
+知识库目录：<本仓库的本地路径>
+真实项目目录：<影刀项目路径>
+
+先读取真实项目中的 AGENTS.md，再检查现有代码。
+只修改当前需求相关内容；无法确认 xbot API 或市场指令时，按知识库 llms.txt 查找事实页。
+```
+
+## 影刀同步
+
+同步的触发条件、执行命令和验证边界统一见 [真实项目的同步规则](project-template/AGENTS.md#验证与同步)，操作步骤见 [影刀工具 Skill](project-template/.agents/skills/xbot-tools/SKILL.md)。
+
+要将知识库最新的 `AGENTS.md`、Skills 和 Claude/Codex 规则同步到本机全部账号、全部影刀项目，在知识库根目录运行：
+
+```bash
+python scripts/sync_agent_rules.py
+```
+
+脚本自动扫描 `%LOCALAPPDATA%/ShadowBot/users/*/apps/*/xbot_robot` 下有 `package.json` 的项目（包括 `_Release` 目录）；只同步 Agent 规则文件并清理已淘汰的旧 Skill，不修改业务代码。重复运行只更新有差异的文件，完成后会校验并显示成功、跳过和失败数量。
+
+## 开发与维护风格
+
+这是一个个人持续维护的实用型知识库，优先保留长期、稳定、能反复帮助真实项目的内容：
+
+- 业务流程优先直接、可读，不追求复杂架构。
+- API 结论需要有当前版本源码、真实调用或可追溯代码作为依据。
+- 项目专用的页面字段、业务口径和临时 workaround 不上升为公共规则。
+- 文档尽量链接到唯一事实页，不为了“看起来完整”重复同一段内容。
+
+如果你发现文档与当前版本不一致，欢迎提交 Issue 或 Pull Request。贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，并确保账号、Token、Webhook、客户数据和本机路径已脱敏。
+
+## 目录结构
+
+```text
+AGENTS.md                    # Agent 常驻核心约束
+llms.txt                     # AI / LLM 文档索引
+README.md                    # 项目介绍与使用入口
+CONTRIBUTING.md              # 事实证据、内容边界与脱敏规则
+project-template/            # 真实影刀项目 base 模板与 4 个 Skill
+  .agents/skills/
+    code-quality/            # 代码规范、简化与审查；详细编程风格
+    xbot-tools/              # CLI、项目生命周期、诊断、脚本与项目骨架
+    rpa-practices/           # Web、日志、钉钉、跨轮状态、排错
+    spreadsheet-operations/  # WPS 表格操作规范
+reference-projects/          # 真实项目参考案例：固定 Git commit 或脱敏冻结源码
+xbot-api-docs/
+  AGENTS.md                  # API 文档维护边界
+  docs/                      # xbot API 和市场指令事实页
+```
+
+## 搜索关键词
+
+影刀、影刀编码版、影刀 xbot、影刀 API、影刀 RPA、浏览器自动化、Excel 自动化、WPS 自动化、Windows 自动化、钉钉 AI 表格、市场指令、AI Agent、Codex、Claude Code、Cursor、Yingdao、xbot API、RPA automation、Python automation。
+
+## 联系作者
+
+如果你在使用过程中遇到问题，或有影刀 RPA、AI 编码相关的交流需求：
+
+- QQ：`1677880403`
+- 邮箱：`apexc@qq.com`
+- 技术问题 / Bug：请优先提交 GitHub Issue
+
+## 许可证
+
+本项目采用 [MIT License](LICENSE)。

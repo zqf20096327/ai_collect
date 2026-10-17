@@ -1,0 +1,469 @@
+<p align="center">
+<img width="238" alt="llcat" src="https://github.com/user-attachments/assets/c161862d-8a8e-4753-a6eb-8a3b67f760b0" />
+<br/> <strong>/usr/bin/cat for LLMs</strong>
+<br/> <a href=https://pypi.org/project/llcat><img src=https://badge.fury.io/py/llcat.svg/></a> <img src=https://img.shields.io/badge/License-MIT-yellow.svg /> <a href=https://pepy.tech/projects/llcat><img src=https://static.pepy.tech/badge/llcat/week></a>
+</p>
+<hr>
+
+Ever need to test if an inference endpoint is working or want to one-shot a model on a server? 
+
+Maybe you want to cycle through keys or models or benchmark a bank of IPs. Perhaps you want to orchestrate `N` queries across `M` models running on `P` servers and want to run the job in parallel without leaving any leaky state behind.
+
+Existing tools require you to pick from a provider boutique and a small list of models shipped with the software then swap around credentials like you're Indiana Jones with a bag of sand.
+
+
+
+**llcat** is a solution to these problems: a general-purpose CLI-based OpenAI-compatible `/chat/completions` caller. It also works with Ollama, OpenRouter, sglang, vllm, llama.cpp and more. 
+
+It has a rich syntax and supports a sophisticated set of features while keeping simple things easy. 
+
+**llcat** is flexible. Look at how it can do agentic coding in just a single command.
+
+https://github.com/user-attachments/assets/a23dab58-e7d6-40aa-b595-5e9c895b073e
+
+
+> ### Example: Model List
+> Here's a screenshot from adding a custom model provider to [goose](https://goose-docs.ai/). It asks you to manually supply the models as a comma separate list. What a pain!
+> 
+> Not a pain with `llcat`! It's easy!
+>
+> <img width="709" alt="model-example" src="https://github.com/user-attachments/assets/61614548-32dd-42f0-9ea9-c007cf632d52" />
+>
+> Copy and paste this. Go ahead!
+>
+> ```shell
+> uvx llcat api.concentrate.ai -m | tr '\n' ','
+> ```
+
+
+Think of `llcat` like cURL or cat for LLMs: a stateless, transparent, explicit, low-level, composable tool for scripting and glue.
+
+Conversations, which are regular JSON files, keys, servers and other configurations are explicitly specified each execution as command line arguments. There's a `--curlify` option as well. 
+
+This makes building things with llcat direct.
+
+For instance, let's say I have a list of authentication tokens in some file, `credentials.txt`:
+
+```shell
+sk-or-v1-e1e5...
+sk-or-v1-ej24...
+sk-or-v1-ff24...
+```
+Here's how you do that with llcat:
+
+Method 1:
+```shell
+llcat -k @credentials.txt:0
+llcat -k @credentials.txt:1
+llcat -k @credentials.txt:2
+```
+Method 2:
+```shell
+llcat -k sk-or-v1-e1e5...
+llcat -k sk-or-v1-ej24...
+llcat -k sk-or-v1-ff24...
+```
+
+You can do the same pattern with models, system prompts, queries, and servers. For instance:
+
+```shell
+llcat --save invocation.json \
+      -k "@~/credentials.txt:12" \
+      -u "@settings.json:.[3].host" \
+      -s "@system_prompts:8" \
+      -m "@settings.json:.[3].model" \
+         "@query.txt:12" > output.txt
+```
+
+**Wait wait wait, is that jq?**
+
+Yes! You can use normal strings (ex: `"abc"`), files (ex: `@abc.txt`) with line numbers (ex: `@abc.txt:1`) and even `jq` syntax (ex: `@abc.json:.server[0].url`). This makes parallel distributed execution painless.
+
+Here's a JSON pattern you might particularly like:
+
+```shell
+llcat -k @~/secrets.json:.openrouter
+```
+
+Also note that opening parameter `--save invocation.json`. If you open `invocation.json` you would see:
+
+```json
+{
+  "server_url": "@settings.json:.[3].host",
+  "server_key": "@~/credentials.txt:12",
+  "model": "@settings.json:.[3].model",
+  "system": "@system_prompts:8",
+  "user_prompt": [
+    "@query.txt:12"
+  ]
+}
+```
+
+So to re-invoke this set of parameters you can just do
+
+```shell
+llcat @invocation.json { ... parameters you want to override ... }
+```
+
+There's that `@` again, this time providing completely portable invocations as JSON.
+
+---
+
+### Simple Examples
+
+List the models on [OpenRouter](https://openrouter.ai):
+
+`uvx llcat openrouter.ai/api -m`
+
+What about just the qwen ones?
+
+`uvx llcat openrouter.ai/api -m '*qwen3*'`
+
+What about their capabilities in JSON?
+
+`uvx llcat openrouter.ai/api -m '*qwen3*' --info | jq .`
+
+Sure. What about a different protocol, say ollama?
+
+`uvx llcat localhost:11434 -m '*qwen3*' --info | jq .`
+
+All the abstraction without those pesky leaks.
+
+There's also support for schemas, dry-runs, expressing the calls as raw curls, adding body parameters (such as top_p or temperature), custom timeouts, and customizing thinking or streaming. 
+
+The basic CLI parameters are compatible with [Simon Willison's llm](https://github.com/simonw/llm) which makes the transition a drop-in replacement. It's also faster than llm. Time it yourself. You'll see...
+
+There's even an included tool for sanely manipulating the JSONs of the conversations for context engineering.
+
+**llcat** is part of the [DAY50](https://day50.dev) suite of open-source tools built for a future where AI workloads are split across devices, private servers, and cloud APIs prioritizing predictability, compatibility, coherency, transparency and functionality.
+
+## Examples
+
+Here's some examples of how to use **llcat** as a building block for many common use-cases:
+
+ * [Transferrable Conversations](#example-transferrable-conversations)
+ * [Stateful Interaction](#example-adding-state)
+ * [Interactive Chat](#example-interactive-chat)
+ * [Structured Output](#example-structured-output)
+ * [Evals](#example-evals)
+ * [Tool Calling](#example-tool-calling)
+ * [Agentic Coding](#example-agentic-coding)
+
+## Example: Transferrable Conversations
+
+Because conversations, models and servers are decoupled, you can mix and match them at any time.
+
+Here's one conversation, hopping across models and servers.
+
+Start a chat with Deepseek:
+```
+$ llcat -u https://openrouter.ai/api \
+        -m deepseek/deepseek-r1-0528:free \
+        -c /tmp/convo.txt \
+        -k "$(cat openrouter.key)" \
+        "What is the capital of France?"
+```
+
+Continue it with Qwen using [MAS format](https://day50.dev/mas.html) and using the `@` syntax for including the key by file:
+```
+$ llcat -u "https://openrouter.ai/api#m=qwen/qwen3-4b:free"
+        -c /tmp/convo.txt \
+        -k @openrouter.key \
+        "And what about Canada?"
+```
+
+And finish on the local network. As a convenience, we're going to skip the `-u` and drop the schema. `llcat` is smart enough to figure it out.
+```
+$ llcat 192.168.1.21:8080 \
+        -c /tmp/convo.txt \
+        "And what about Japan?"
+```
+
+Since the conversation goes to the filesystem as JSON you can use things like `inotify` or `fuse` and push it off to a vector search backend or modify the context window between calls.
+ 
+## Example: Adding State
+
+**llcat's** explicit syntax means lots of things are within reach.
+
+For instance wrappers can be made custom to your workflow. 
+
+Here's a way [to store state](https://github.com/day50-dev/llcat/blob/main/examples/state.sh) with environment variables to make invocation more convenient:
+
+```shell
+llf()        { llc "$@" 2> >(jq . >&2) | examples/spinner sd }
+llc()        { llcat -m "$LLC_MODEL" -u "$LLC_SERVER" -k "$LLC_KEY" "$@" }
+llc-model()  { LLC_MODEL=$(llcat -m  -u "$LLC_SERVER" -k "$LLC_KEY" | fzf) }
+llc-server() { LLC_SERVER=$1 }
+llc-key()    { LLC_KEY=$1 }
+```
+
+And now you can do things like this:
+```shell
+$ llc-server http://192.168.1.21:8080
+$ llc "write a diss track where the knapsack problem hates on the towers of hanoi"
+```
+
+And what's that `llf` at the top? That uses `jq` to pretty print the errors and `streamdown` to pretty print the output along with a program to display a spinner while you wait.
+
+There's no configuration files to parse or implicit states to manage.
+
+## Example: Interactive Chat
+
+A conversation interface is [also quick](https://github.com/day50-dev/llcat/blob/main/examples/conversation.sh):
+
+```shell
+#!/usr/bin/env bash
+
+# We pick a file for the conversation or allow a user to pass it in with a CONV environment variable
+conv=${CONV:-$(mktemp)}
+echo -e "  Using: $conv\n"
+
+# Show the previous conversation if there is any, stylize it with streamdown
+jq -r '.[] | "\n**\(.role)**: \(.content)"' $conv | sd
+
+# Read prompts in a loop
+while read -E -p "  >> " query; do
+
+    # Take the command line arguments of the shell script, pass them to llcat
+    llcat -c $conv "$@" "$query" |& sd
+    echo
+done
+```
+So now instead of
+
+`llcat -u http://myserver -k mykey -m model`
+
+Our conversation loop can be invoked like
+
+`conversation.sh -u http://myserver -k mykey -m model`
+
+Adding additional features is trivial.
+
+## Example: Structured Output
+
+Using the schema feature you can pass json in to enforce a schema. Try something like
+
+```shell
+$ llcat -u http://localhost:11434 -sc @examples/schema.json "give me a person"
+```
+
+
+## Example: Evals
+
+Running the same thing on multiple models and assessing the outcome is straight forward. Here we're using [ollama](https://ollama.com)
+
+```shell
+pre="llcat -u http://localhost:11434"
+for model in $($pre -m); do
+   $pre -m $model "translate 国際化がサポートされています。to english" > ${model}.outcome
+done
+```
+
+You can use patterns like that also for testing tool calling completion. [Here's a bigger example: a humor eval to see if models know a funny joke when they see one](https://github.com/kristopolous/humor-evals)
+
+If an error happens contacting the server, you get the request, response, and a non-zero exit.
+
+Try this to see what that looks like
+
+`uvx llcat -u fakecomputer`
+
+## Example: Tool calling
+The examples directory contains this [music playing tool](https://github.com/day50-dev/llcat/blob/main/examples/tool_program.py) listing the contents of [this album](https://elektrobopacek.bandcamp.com/album/untitled): 
+
+```shell
+$ llcat -l json -u http://127.1:8080 -tf tool_file.json -tp tool_program.py "what mp3s do i have in my ~/mp3 directory"
+{"level": "debug", "class": "toolcall", "message": "request", "obj": {"id": "iwCGjcRic8GAFB2jUvBUOeF9NNrldfxz", "type": "function", "function": {"name": "list_mp3s", "arguments": {"path":"~/mp3"}}}}
+{"level": "debug", "class": "toolcall", "message": "result", "obj": ["Elektrobopacek - Towards the final Battle.mp3", "Elektrobopacek - Escape the Labyrinth.mp3", "Elektrobopacek - Journey to the misty Lands.mp3", "Elektrobopacek - Mistral Forte.mp3", "Elektrobopacek - Leaving Spaceport X-19.mp3", "Elektrobopacek - Dracula Rising.mp3"]}
+Here are the MP3 files in your `~/mp3` directory:
+
+1. **Elektrobopacek - Towards the final Battle.mp3**
+2. **Elektrobopacek - Escape the Labyrinth.mp3**
+3. **Elektrobopacek - Journey to the misty Lands.mp3**
+4. **Elektrobopacek - Mistral Forte.mp3**
+5. **Elektrobopacek - Leaving Spaceport X-19.mp3**
+6. **Elektrobopacek - Dracula Rising.mp3**
+
+Would you like to play any of these? Just share the filename, and I can play it for you! 🎵
+```
+
+In this example you can see how nothing is hidden so if the model makes a mistake it is immediately identifiable. 
+
+The debug objects are either JSON objects (with -l json) which are sent to `stderr` so routing it separately is trivial or markdown objects (by default and with -l md) so you can stream them through whatever markdown renderer you are using
+
+## Example: Agentic Coding
+Using the examples above we can conbine them and get an agentic harness on the cheap:
+
+```shell
+$ examples/conversation.sh \
+    -s "you are an agentic coder." \
+    -u 'localhost:11434#m=qwen3.8' \
+    -mf examples/agent-mcp/mcp.json
+
+  Using: /tmp/tmp.AZHfLtoGbZ
+
+  >> let's make towers of hanoi in perl
+  ...
+```
+
+And there's a coding agent... really ...
+
+## MCP
+
+### MCPFile
+This file is what you usually need to make for an mcp server definition:
+
+```json
+{
+  "mcpServers": {
+    "<some_server>": {
+      "command": "<some_command>",
+      "args": ["<some>", "<args>"]
+    }
+    ...
+  }
+}
+```
+
+There's a basic extension on MCP here. You can explicity disable an MCP server by adding a flag `"disabled": true` like so:
+
+```json
+{
+  "mcpServers": {
+    "<some_server>": {
+      "command": "<some_command>",
+      "disabled": true,
+      "args": ["<some>", "<args>"]
+    }
+    ...
+  }
+}
+```
+
+You can also set this in a tool function definition, for instance:
+
+```json
+  {
+    "type": "function",
+    "disabled" true,    << right here!
+    "function": {
+      "name": "list_mp3s",
+      "description": "List all MP3 files in the music library",
+      "parameters": {
+        ...
+      }
+    }
+  },
+```
+
+
+### MCPCat
+MCP can be simple with simple tools. There's one included here. `mcpcat` is a 22 line Bash script. 
+
+Here is an example of it in use:
+
+```shell
+$ mcpcat init list | \
+  uv run python -m my-server | \
+  jq .
+```
+
+Let's say there's a calculator mcp, you can do something like
+
+```shell
+$ mcpcat init call calculate '{"expression":"2+2"}' | \
+   uv run python -m mcp_server_calculator \
+   jq .
+```
+
+The beauty here is you can see the Emperor's new clothes up close. Simply omit the pipe.
+
+```shell
+$ mcpcat init call calculate '{"expression":"2+2"}'
+{"jsonrpc":"2.0","id":4,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"mcpcat","version":"1.0"}}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"calculate","arguments":{"expression":"2+2"}}}
+```
+
+That's all the STDIO Transport is. 
+
+There's ways of doing the network transports with this script as well. All you need is the appropriate network tools and compose away.
+
+## Usage
+
+Now it's your turn. 
+
+```
+usage: llcat [-h] [-su [@]SERVERURL] [-sk [@]SERVERKEY] [-to TIMEOUT]
+             [-pr PROTO] [-m [[@]MODEL]] [-s [@]SYSTEM] [-a ATTACH]
+             [-c CONVERSATION] [-cr CONVERSATIONRO] [-eb [@]EXTRABODY]
+             [-sc [@]SCHEMA] [-mf MCP] [-tp TOOL_PROGRAM] [-tf TOOL_FILE]
+             [-l {md,json}] [-ps] [-bq BE_QUIET] [-mt] [-nt] [-ns] [-nw]
+             [-f] [--curlify] [--raw] [--dry] [--version] [--info [INFO]]
+             [--save SAVE] [[@]user_prompt ...]
+
+llcat is /usr/bin/cat for LLMs. 
+
+        🐱 Me-wow! 
+
+https://github.com/day50-dev/llcat
+
+Options with a [@] prefix can either be strings or paths to a file, curl style, @/like/this
+They can also have line numbers @/like/this:0 or jq syntax @/like/this:.[0].field
+
+positional arguments:
+  [@]user_prompt        your prompt. If you omit the server_url, the first
+                        argument will be the server
+
+options:
+  -h, --help            show this help message and exit
+  -su [@]SERVERURL, -u [@]SERVERURL, --server_url [@]SERVERURL
+                        server URL (e.g., http://::1:8080). Also supports MAS
+                        format
+  -sk [@]SERVERKEY, -k [@]SERVERKEY, --server_key [@]SERVERKEY
+                        server API key for authorization
+  -to TIMEOUT, --timeout TIMEOUT
+                        timeout in seconds for the read
+  -pr PROTO, --proto PROTO
+                        protocol to use (ollama, llama.cpp, openai, auto)
+  -m [[@]MODEL], --model [[@]MODEL]
+                        model to use (or list models if no value)
+  -s [@]SYSTEM, --system [@]SYSTEM
+                        system prompt
+  -a ATTACH, --attach ATTACH
+                        attach file(s)
+  -c CONVERSATION, --conversation CONVERSATION
+                        conversation history file (r/w)
+  -cr CONVERSATIONRO, --conversationro CONVERSATIONRO
+                        the readonly conversation input (ro)
+  -eb [@]EXTRABODY, --extra_body [@]EXTRABODY
+                        JSON to add to the body, such as max_tokens or
+                        temperature
+  -sc [@]SCHEMA, --schema [@]SCHEMA
+                        set a schema to force structured output
+  -mf MCP, --mcp MCP    MCP file to use
+  -tp TOOL_PROGRAM, --tool_program TOOL_PROGRAM
+                        program to execute tool calls
+  -tf TOOL_FILE, --tool_file TOOL_FILE
+                        JSON file with tool definitions
+  -l {md,json}, --logstyle {md,json}
+                        logging style
+  -ps, --ps             currently running model (if supported)
+  -bq BE_QUIET, --be_quiet BE_QUIET
+                        make it shutup about things
+  -mt, --md_tools       make tool call output markdown
+  -nt, --no_think       disable thinking
+  -ns, --no_stream      disable streaming
+  -nw, --no_wrap        do not wrap inputs in <xml-like-syntax>
+  -f, --force           disable SSL verification
+  --curlify             write curl equivalents of calls to stdout
+  --raw                 raw responses
+  --dry                 dry run
+  --version             show program's version number and exit
+  --info [INFO]         get the info for a model
+  --save SAVE           save an invocation to a reusable JSON file. Supply it
+                        as a bare @argument to reuse
+```
+
+We're excited to see what you build.
+
+Brought to you by **DA`/50**: Make the future obvious.

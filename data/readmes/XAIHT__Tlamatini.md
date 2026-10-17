@@ -1,0 +1,696 @@
+<!--
+═══════════════════════════════════════════════════════════════════
+  ✦  T L A M A T I N I  ✦   —   "one who knows"
+  Created by  Angela López Mendoza   ·   @angelahack1
+  Developer · Architect · Creator of Tlamatini
+  Tlamatini Author Banner — do not remove (Angela's name is kept in every build)
+═══════════════════════════════════════════════════════════════════
+-->
+<p align="center">
+  <img src="Tlamatini.jpg" alt="Tlamatini" width="180" height="180" />
+</p>
+
+<h1 align="center">Tlamatini</h1>
+
+<p align="center">
+  <b>The local-first AI developer assistant with a visual workflow designer — and the reach to touch hardware, 3D engines, and any external tool.</b><br/>
+  <i>"one who knows" — she doesn't just edit code. She flashes your board, drives your engine, and orchestrates whole agent workflows on a canvas. On your machine.</i>
+</p>
+
+<p align="center">
+  <b>⚠️ Ollama Pro or higher is required for the complete Tlamatini experience.</b><br/>
+  <b>Tlamatini is free and open-source</b>; an Ollama subscription is purchased directly from Ollama. We are <b>not sponsored by, affiliated with, or paid by Ollama</b>. Tlamatini was engineered around Ollama's cloud-model interface, capacity, and tool-calling characteristics, so <b>at least the Pro plan</b> is part of the intended system requirements—not a promotion.
+</p>
+
+<p align="center">
+  <a href="https://discord.gg/WFQsrskgc"><img src="https://img.shields.io/badge/DISCORD-JOIN%20US-5865F2?style=for-the-badge&labelColor=2D2D2D&logo=discord&logoColor=white" alt="Join our Discord"/></a>
+  <a href="https://github.com/XAIHT/Tlamatini/releases"><img src="https://img.shields.io/badge/VERSION-v1.83.0-1E90FF?style=for-the-badge&labelColor=2D2D2D" alt="Version v1.83.0"/></a>
+  <a href="https://www.python.org/downloads/release/python-31210/"><img src="https://img.shields.io/badge/PYTHON-3.12.10-3776AB?style=for-the-badge&labelColor=2D2D2D&logo=python&logoColor=white" alt="Python"/></a>
+  <a href="#installation"><img src="https://img.shields.io/badge/PLATFORM-WIN%2010%20%7C%2011-0078D6?style=for-the-badge&labelColor=2D2D2D&logo=windows&logoColor=white" alt="Platform"/></a>
+  <a href="#-the-full-capability-list"><img src="https://img.shields.io/badge/AGENT%20TYPES-89-8A2BE2?style=for-the-badge&labelColor=2D2D2D" alt="89 agent types"/></a>
+  <a href="#-the-full-capability-list"><img src="https://img.shields.io/badge/MULTI--TURN%20TOOLS-109-16A34A?style=for-the-badge&labelColor=2D2D2D" alt="109 built-in Multi-Turn tools"/></a>
+  <a href="https://github.com/XAIHT/Tlamatini/blob/main/LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-1E90FF?style=for-the-badge&labelColor=2D2D2D" alt="License"/></a>
+</p>
+
+<p align="center">
+  <a href="https://xaiht.org">🌐 Website</a> ·
+  <a href="https://www.youtube.com/watch?v=4MyRXBahHuU&t=41s">▶️ One-minute teaser</a> ·
+  <a href="https://github.com/XAIHT/Tlamatini/blob/main/BookOfTlamatini.md">📖 Full docs</a> ·
+  <a href="https://discord.gg/WFQsrskgc">💬 Discord</a>
+</p>
+
+<p align="center">
+  <b>💬 <a href="https://discord.gg/WFQsrskgc">Join the Tlamatini community on Discord</a></b> — get help, show what you build, report bugs, and shape the roadmap.
+</p>
+
+---
+
+## Table of contents
+
+1. [What is Tlamatini](#what-is-tlamatini)
+2. [How it works](#how-it-works)
+3. [Get started in five steps](#-get-started--5-steps-to-a-cloud-powered-tlamatini)
+4. [Speak a prompt from the chat](#speak-a-prompt-from-the-chat)
+5. [Drop a message from the chat](#drop-a-message-from-the-chat)
+6. [Drop a file on any page](#drop-a-file-on-any-page)
+7. [Compact mode — fit every request to your model](#compact-mode--fit-every-request-to-your-model)
+8. [Self-modify — her self-knowledge, on or off](#self-modify--her-self-knowledge-on-or-off)
+9. [Model Brain — every model tuned for you](#model-brain--every-model-tuned-for-you)
+10. [About → Usage](#about--usage--2026-10-10-shipped-in-v1780)
+11. [Newest changes](#newest-changes--v1830)
+12. [Current version](#current-version--v1830)
+13. [The full capability list](#-the-full-capability-list)
+14. [Enable Tlamatini as a Blue-hat agent](#enable-tlamatini-as-a-blue-hat-agent)
+15. [Installation](#installation)
+16. [Tech stack](#tech-stack)
+17. [Avatar animation, assets, and visible tests](#avatar-animation-assets-and-visible-tests)
+18. [Contributing](#contributing)
+19. [License](#license)
+
+---
+
+## What is Tlamatini
+
+Tlamatini is a **local-first AI development and automation environment** for Windows. It combines a conversational assistant, whole-project code operations, **in-canvas PDF reading with whole-document context**, a visual workflow designer, **89 specialized agent types**, **109 built-in Multi-Turn tools**, hardware and firmware control, Unreal Engine and Blender automation, security tooling, and a universal External-MCP client in one application.
+
+“Local-first” describes **where control lives**: the application, workflow canvas, database, configuration, credentials, agent code, project access, and small embedding model run under your control on your machine. It does **not** mean that Tlamatini was designed as a local-model-only assistant. Its complete reasoning and orchestration experience was designed and coded primarily around the larger **cloud models exposed through Ollama**.
+
+## How it works
+
+Tlamatini has three cooperating layers:
+
+1. **Local control plane** — the Django application, chat interface, SQLite database, visual workflow designer, agent programs, permissions, files, tools, and hardware connections remain on your computer.
+2. **Local retrieval** — `nomic-embed-text` builds embeddings locally so Tlamatini can retrieve relevant project context efficiently.
+3. **Ollama cloud reasoning** — configured `:cloud` models perform the demanding chat, tool-calling, coding, long-context, vision, planning, and Multi-Turn reasoning that coordinates Tlamatini's agents. Ollama keeps the same local API experience while offloading these larger models to its cloud service.
+
+> [!IMPORTANT]
+> **To use Tlamatini with its complete intended functionality, an active Ollama Pro plan—or a higher Ollama plan such as Max—is mandatory.** A free Ollama account or local-only model may be enough to launch the application or experiment with limited requests, but it is **not the supported baseline for Tlamatini's full workloads**. Multi-Turn orchestration, long agent runs, parallel vision calls, repeated tool decisions, and large project contexts can consume cloud usage and concurrency rapidly. Tlamatini therefore treats **Pro as the minimum system tier**.
+
+> [!NOTE]
+> **This is an independent technical recommendation, not an advertisement.** XAIHT/Tlamatini is not sponsored, endorsed, funded, or compensated by Ollama, and receives no referral fee or commission. Your Ollama subscription is a separate purchase made directly from [Ollama](https://ollama.com). We specify Pro only because Tlamatini's architecture was built around Ollama cloud models and needs their practical capacity to operate as designed.
+
+Ollama currently advertises Pro at **$20/month or $200/year**, with greater cloud usage and concurrency than the free account; Max also satisfies Tlamatini's requirement. Pricing and limits belong to Ollama and may change, so verify them on [Ollama's official site](https://ollama.com) before subscribing. Ollama's official cloud documentation explains that cloud models are offloaded to Ollama's service while remaining accessible through the familiar local Ollama API: [Ollama cloud-model documentation](https://docs.ollama.com/cloud).
+
+## 🚀 Get Started — 5 steps to a cloud-powered Tlamatini
+
+**Tlamatini itself is free**, but a complete installation assumes **Ollama Pro or higher** as an operating requirement. Subscribe directly with Ollama, sign in through the Ollama CLI, and Tlamatini can coordinate **89 agent types and 109 built-in Multi-Turn tools** from your machine using the cloud-model capacity around which it was designed. XAIHT receives no payment or benefit from that subscription.
+
+### 1 · Install Tlamatini
+
+Pick **one** of two paths. **Tlamatini itself is free** — you never pay us; the only cost is Ollama (Step 3).
+
+#### 🟢 Option A — Release installer (recommended · no Python needed)
+
+Best for most people. The installer bundles its own **Python 3.12.10** and every dependency, so you install nothing else.
+
+1. Open the **[Releases page](https://github.com/XAIHT/Tlamatini/releases)** and download the latest installer (`.exe`).
+2. Run it and follow the wizard. Since v1.82.0 it prepares a checked recovery copy before changing anything, keeps any error on screen with **Retry** and **Change folder**, and writes its log to `%LOCALAPPDATA%\Tlamatini\SetupLogs` (see the [setup guide](docs/setup-wizards.md)).
+3. Launch **Tlamatini** from the Start-menu shortcut.
+4. Your browser opens at **`http://127.0.0.1:8000/`** — log in with **user / changeme**. *(`8000` is the default port; if it's taken or Windows has reserved it, set `django_port` in `config.json` — see the port note below.)*
+
+> 🔄 Updating later is one click: **About ▸ Check for updates** inside the app — it keeps your config, database, keys, templates, external-MCP catalog, and existing `Uninstaller.exe`.
+
+#### 🔵 Option B — From source (for developers)
+
+Best if you want to read, modify, or contribute to the code. Requires **Python 3.12.10** and **git** already installed.
+
+```bash
+git clone https://github.com/XAIHT/Tlamatini.git
+cd Tlamatini
+python -m venv venv && venv\Scripts\activate
+pip install -r requirements.txt
+python Tlamatini/manage.py migrate
+python Tlamatini/manage.py runserver --noreload
+# then open http://127.0.0.1:8000/   (default login: user / changeme)
+```
+
+> **`--noreload` is optional (since 2026-07-11):** plain `python Tlamatini/manage.py runserver` now boots clean and auto-reloads on code edits. It used to double-start the MCP helper ports `:8765` / `:50051` and crash with `WinError 10048`; fixed by a reloader-aware gate in `agent/apps.py`.
+
+<details>
+<summary><b>🔌 Port 8000 already taken? Tlamatini won't start? (<code>WinError 10013</code>) — change one line</b></summary>
+
+<br>
+
+**`8000` is only the default.** Since **v1.40.1** the web port lives in your **`config.json`**:
+
+```jsonc
+"django_port": 8000     // ← put any free port here, e.g. 9000
+```
+
+Restart Tlamatini and she comes up on the new port — **no rebuild, no code edit**. Every launch path follows it: the desktop shortcut, double-clicking a `.flw` file, the browser that auto-opens, and `runserver` / `startserver` from source.
+
+**Why you might need this.** If Windows (usually **Hyper-V / WSL / Docker**) has *reserved* port 8000, Tlamatini cannot bind it and dies at startup with:
+
+> `WinError 10013` — *an attempt was made to access a socket in a way forbidden by its access permissions*
+
+To confirm that's what happened, list the ports Windows has reserved:
+
+```powershell
+netsh interface ipv4 show excludedportrange protocol=tcp
+```
+
+If `8000` falls inside one of those ranges, pick a port outside them (9000 is a common safe choice).
+
+**Good to know**
+- A port passed on the command line still wins: `python Tlamatini/manage.py runserver 9100`.
+- It's **fail-safe** — if you typo the value, Tlamatini falls back to 8000 and still starts (she prints a `--- [PORT] …` line explaining why).
+- Where's `config.json`? Next to `Tlamatini.exe` in an installed build; at `Tlamatini/agent/config.json` from source.
+- If you also run the **TeleTlamatini** Telegram bridge, point its `tlamatini.base_url` at the same port.
+
+</details>
+
+### 2 · Install Ollama
+
+Install **[Ollama](https://ollama.com/download)** for Windows. Ollama serves the embedding, reasoning and Ollama vision models. Local faster-whisper speech and direct cloud speech/Claude models use their own backends; see [model configuration](docs/model_configuration.md).
+
+### 3 · Activate Ollama Pro or higher — required for complete operation
+
+Go to **[ollama.com](https://ollama.com)**, sign in, and activate **at least Ollama Pro**. Ollama currently lists Pro at **$20/month or $200/year** and describes it as providing substantially more cloud usage plus concurrent cloud-model capacity; **Ollama Max also satisfies this requirement**. Check Ollama's site for current pricing and limits.
+
+Ollama may provide limited cloud access with a free account, but **Tlamatini does not treat the free allowance as a fully functional production configuration**. Its Multi-Turn loops can make many model calls during one task, and its vision and orchestration paths may use multiple cloud models in parallel. Pro is therefore the minimum intended capacity tier, not an optional donation or affiliate offer.
+
+> **Independence disclosure:** Tlamatini/XAIHT is **not sponsored by, affiliated with, endorsed by, or compensated by Ollama**. There is no referral relationship. You pay Ollama directly; this README names Pro solely because Tlamatini was engineered around Ollama's cloud-model behavior and capacity.
+
+After subscribing, connect the Ollama installation on your machine to your Ollama account:
+
+```bash
+ollama signin
+```
+
+### 4 · Download the models
+
+Pull the small local embedding model, plus the cloud chat models Tlamatini will use:
+
+```bash
+# Local embedding model (small, runs on your own GPU/CPU)
+ollama pull nomic-embed-text
+
+# Cloud models — use a signed-in Pro-or-higher account for full Tlamatini operation
+ollama pull glm-5.3:cloud
+ollama pull mistral-large-3:675b-cloud
+ollama pull gemma4:cloud
+```
+
+Choose models compatible with each role: vision observers need image support, orchestration needs tool support, and Talker needs Orpheus audio tokens. The names above match the current application defaults; catalog membership alone does not prove compatibility or provider access.
+
+### 5 · Point Tlamatini at the models
+
+In the Tlamatini navbar, open the **Config** menu:
+
+<p align="center"><img src="Tlamatini/agent/images/MenuConfig.jpg" alt="Config menu — Models, URLs, Access Keys Wizard" width="420"/></p>
+
+**a) Config ▸ Models** — configure 38 settings across Core, Vision, Speech, Workflows, Documents, and Monitoring & messaging. Search for any model-backed agent, including Talker and Whisperer. Ollama choices use catalog suggestions; local speech models and cloud-provider IDs use their own names. Click **Save**: an **Auto-tuning** dialog then shows the Model Brain tuning every configured model and where each value came from (see [Model Brain](#model-brain--every-model-tuned-for-you)). Then reconnect chat; restart running agents when needed. Templates marked `@config` follow these settings, while explicit agent overrides remain available. See [all 38 keys, defaults and override rules](docs/model_configuration.md).
+
+Save preserves unrelated configuration and does not download models. Local speech and provider IDs are separate from Ollama tags. Whisperer cloud credentials and recording controls remain in its agent configuration; Video-Analyzer audio uses its own local model. Old workflows with literal model tags keep those overrides—set them to `"@config"` to follow global choices. Source and frozen builds use the same registry; [runtime verification](docs/model-configuration-verification.md) covers both.
+
+The current dialog has six category tabs, searchable fields and dedicated engine/voice selectors. [Open the complete Models guide](docs/model_configuration.md#use-the-dialog).
+
+**b) Config ▸ Access Keys Wizard** — whether you need an **Ollama token** depends on *where* Ollama runs:
+
+> - 🖥️ **Ollama on your own machine (localhost)?** Leave the token **blank** — a local Ollama needs no auth.
+> - ☁️ **Ollama on a remote server (e.g. [Vast.ai](https://vast.ai))?** Paste the **Ollama token** so Tlamatini can reach it.
+
+Add any cloud-CLI keys here too — plus the messaging keys, the Kali server URL, and the **OPTIONAL** ProjectDiscovery Cloud (PDCP) key under **"Security Recon (ProjectDiscovery)"**. Blank fields keep what's already configured; click **Save**:
+
+<p align="center"><img src="Tlamatini/agent/images/ACPXKeysConfigureWizard.jpg" alt="Access Keys Wizard" width="640"/></p>
+
+Done — tick **Multi-Turn** in the chat toolbar and put Tlamatini to work.
+
+---
+
+## Speak a prompt from the chat
+
+**Mic**, immediately beside **Send**, starts direct Whisperer dictation.
+Click it, wait for **Listening**, and speak. The chat shows the real input level,
+elapsed recording time and silence countdown. When the configured silence
+window expires (shipped default: **3.5 seconds**), recording stops, Whisperer
+transcribes, and the words join any existing draft. **Config ▸ Mic**, the last
+Config entry, lets you choose **Send automatically** (the default) or **Keep in
+the chat input** to review, correct and press Send yourself.
+
+Click the microphone again or press **Escape** to cancel. Empty audio and failed
+recognition do not send a prompt. Your selected chat modes stay as they are;
+the button does not enable Multi-Turn, ACPX or other switches. After a successful
+send, the avatar acknowledges processing through its browser voice, respecting
+Silent mode and voice settings.
+
+The microphone belongs to the **computer running Tlamatini**, even when you open
+chat from another device. The chat is the recording indicator; dictation opens
+no extra console and does not move foreground focus. Config ▸ Models ▸ Speech
+selects the recognition engine/model. **Config ▸ Mic** controls the host input,
+software gain, silence timing, recording limit and sensitivity, plus language,
+translation, sample rate, channels and local decoding options. Its system-style
+dialog saves preferences in this browser for the next recording; unset values
+inherit Whisperer's configuration. First model loading can take longer.
+
+The **VOICE COMMANDS** catalog cards remain available as guided, model-mediated
+workflows. They are distinct from this direct button. See the
+[complete microphone guide](docs/chat-microphone-design.md) for configuration,
+cancellation, privacy, diagnostics and measured validation.
+
+## Drop a message from the chat
+
+Every message card has two buttons in its header: **Copy** and **Drop**. Drop
+works on **your** messages and on **Tlamatini's** answers.
+
+Press **Drop** and a confirmation tells you what will happen: she forgets that
+message, it disappears from the chat, and from your next message on she answers
+as if it had never existed. The messages before and after it stay exactly as
+they are, and nothing reconnects. **Cancel** is selected by default, so pressing
+Enter never deletes anything; press the red **Drop** to confirm, or Escape to
+back out. A dropped message does not come back after a page reload.
+
+Good to know:
+
+- Dropping only her answer leaves your question, so she may treat it as not
+  answered yet; drop both to erase the whole exchange.
+- Status lines such as "I'm working on your request…" were never saved, so
+  dropping one only clears your screen.
+- You cannot drop while she is still answering — wait for the answer first.
+- If her **memory tool** (External ▸ MCPs ▸ memory) is switched on and she saved
+  a note from that message there, the note is separate from the chat and stays;
+  ask her to forget it too.
+
+This shipped in v1.73.0, published on GitHub on 2026-09-30. It was
+checked by 82 automated tests and a visible browser test (30 of 30 checks). How
+it works: [the Drop contract](docs/claude/recent-fixes.md).
+
+## Drop a file on any page
+
+Drag a file from Windows Explorer onto **any** Tlamatini page — the chat, the Agentic
+Control Panel, the Prompt Flow Panel, the welcome and login pages, even the admin pages
+and the PDF viewer — and she looks inside it to see what it really is, then does the
+right thing for that kind. The file name is only a hint; its bytes decide.
+
+| You drop | What happens |
+|---|---|
+| An **MCP `.json`** (Claude Desktop, VS Code, Zed, opencode … any common shape, even a UTF-16 file from PowerShell) | A confirmation lists the servers and warns that they can start programs on this computer; then they join the **External ▸ MCPs** catalog and she offers to open it. Works on every page. |
+| A **`.flw`** flow | Loads onto the Agentic Control Panel canvas, or opens that panel in a new tab. |
+| A **`.fpmt`** prompt flow | Loads in the Prompt Flow Panel (asking first if you have unsaved work), or opens it in a new tab. |
+| An **image** | Attached to your message: saved in her `Temp` folder, with its path put in your message. |
+| A **PDF, Markdown, code or plain JSON** file | Opens in the chat canvas. |
+| A **folder, zip or program** | Explained in plain words — nothing opens. To give her a whole folder, use **Context ▸ Set directory as context**. |
+
+Good to know:
+
+- While you drag, a small overlay tells you what will happen **on that page**.
+- A dropped file never opens as raw text by mistake and never makes the browser leave
+  the page. Text you drag (an agent name, a palette item) is not touched.
+- An MCP import is never silent: you always see the list and confirm first.
+- Up to 25 files at a time. Browsers do not reveal a folder's path, which is why a
+  folder cannot be dropped.
+
+This shipped in v1.83.0. It was checked by 138 router checks, 22 new automated tests
+and a visible browser run of 58 checks with 24 photographs. How it works:
+[the router contract](docs/claude/frontend.md).
+
+## Compact mode — fit every request to your model
+
+Tlamatini normally sends the model her whole prompt plus every tool you have
+switched on, which is easily more than 100K tokens. A small model cannot read
+that much: Ollama quietly keeps only the end of the request, and the answer
+comes from a fragment. **Compact mode**, a box in the chat toolbar, prevents
+that.
+
+- **Tick Compact mode** and Tlamatini really unticks every row in
+  **Config ▸ Configure MCPs**, **Config ▸ Configure Agents** and **ACPX-Skills**
+  (every MCP, tool, agent and skill) except **System-Metrics**,
+  **Files-Search** and **Current-Time**, and pauses the External MCPs. Then
+  tick back, one by one, only what you need: for example, untick
+  System-Metrics and tick ESPHomer. Each request carries exactly the rows you
+  ticked.
+- **Untick Compact mode** and every row is ticked again, and the External MCPs
+  you had active come back.
+- **A small model locks it ON.** If the model you chose cannot hold everything
+  you have activated, the box ticks itself, greys out and shows
+  **Compact mode 🔒**. Clicking it explains why, and the server refuses to
+  untick it. A short dialog tells you, once per model, what is sent now and how
+  to add more. Choose a bigger model and the box unlocks; Compact mode stays ON
+  with your picks until you untick it.
+- **Your choices apply at once.** A saved Configure dialog takes effect on your
+  next question, with no restart. Ticking an agent also ticks the chat tool that
+  runs it (ticking PDFer ticks Chat-Agent-PDFer), and your agent choices
+  survive a restart.
+- **Every row shows its price.** In the Configure dialogs each row shows about
+  how many tokens it adds to every request, and a line under the list says
+  whether your current selection still fits the model: green, amber, or red
+  "does NOT fit".
+- **The gauge tells the truth.** The ring beside the message box is labelled
+  **CONTEXT-WINDOW**. It can pass 100% (**OVER**), and a request that Ollama
+  cut shows `CUT · read X of ≈Y tokens`. An answer that came from a cut request
+  carries a **CONTEXT-WINDOW exceeded** warning, so you know it was answered
+  from only part of what was sent.
+
+There is no separate ACPX lock or toolbar badge any more: ACPX tools follow the
+rows you tick (and the toolbar's ACPX box). `context_compact_mode` in
+`config.json` (`auto`, `always` or `never`) overrides the automatic lock, and an
+explicit value is obeyed exactly.
+
+This shipped in v1.75.0 (tagged and published on GitHub
+on 2026-10-03). A visible browser test passed 57 of 57 checks. How
+it works: [Compact mode](docs/claude/architecture.md).
+
+## Self-modify — her self-knowledge, on or off
+
+Tlamatini can carry a description of herself (`Tlamatini.md`: her architecture,
+modes, ports and pages) so that she can read, change and rebuild her own
+source. That description costs about **28.9K tokens on every request**. The
+**Self-modify** box, right after Compact mode in the chat toolbar, decides
+whether it is sent.
+
+- **Who sees the box.** A source (developer) run always has it: dev mode always
+  behaves like a `--self-modify` build. A frozen build has it only when it was
+  built with `build.py --self-modify`. Any other build does not show the box at
+  all.
+- **ON** (the default) sends her self-knowledge exactly as before.
+- **OFF** leaves it out and puts one line in its place, telling her not to read,
+  edit or rebuild her own code until the box is ticked again. That saves about
+  28.9K tokens per request.
+- **Locked OFF on a small model.** If the model you chose cannot hold her
+  self-knowledge, the box shows unticked, greyed, **Self-modify 🔒**. Clicking
+  it explains why, and the server refuses to tick it. Your choice is kept:
+  choose a bigger model and the box unlocks by itself.
+
+This landed on `main` on 2026-10-03 (commit `70aeeb87`, right after the
+v1.75.0 tag) and ships in v1.76.0 (tagged 2026-10-08). It was
+checked by 473 unit tests and a visible
+browser test (28 of 28 checks). How it works:
+[the Self-modify switch](docs/claude/architecture.md).
+
+## Model Brain — every model tuned for you
+
+Every model has its own best settings: how much randomness to use, how hard to
+avoid repeating itself, whether and how hard to think, and how much text it can
+really read. Tlamatini used to give every model the same fixed values. The
+**Model Brain** now sets them for each model, from formal sources.
+
+- **Where the values come from, in order:** your own overrides in
+  `config.json`; Tlamatini's built-in profiles, each one taken from the
+  vendor's model card or Hugging Face `generation_config.json` (GLM-5,
+  DeepSeek-V4, MiniMax-M3, Gemma 4, Qwen 3.5, Qwen 2.5, gpt-oss, Kimi,
+  Mistral Large 3 and Nemotron 3); a profile she learns once, in the
+  background, for a model she does not know yet (kept under
+  `%LOCALAPPDATA%\Tlamatini\model_brain`, so it survives updates); what Ollama
+  publishes for the model; and finally the model's own defaults. The context
+  size is never set above what the model can really read.
+- **You see it work.** In **Config ▸ Models**, **Save** opens an
+  **Auto-tuning** dialog: every configured model is tuned in front of you,
+  with the source of each value.
+- **Thinking models keep their train of thought.** Inside one answer, between
+  tool calls, the model gets its own earlier reasoning back, as its maker
+  requires, instead of starting over at every step. The context gauge counts
+  that reasoning too.
+- **No stall clocks that throw work away.** The stall clocks that gave up on a "slow"
+  model and started again from scratch are gone: a timer cannot tell a dead
+  call from a model that is still thinking.
+- **You stay in charge.** `"model_brain": "off"` in `config.json` brings back
+  the old fixed settings exactly, and `model_brain_overrides` sets any value
+  for any model (by full name, base name or `re:<pattern>`); a value you set
+  always wins.
+
+This ships in v1.76.0 (2026-10-08). It was checked by unit tests and a visible
+browser test (25 of 25 checks in a source run). How it works:
+[the Model Brain](docs/claude/architecture.md).
+
+## About → Usage — 2026-10-10, shipped in `v1.78.0`
+
+The new **ABOUT USAGE** dialog stays available during an answer. It reads actual
+Ollama credits, allowance, usage and refill weeks/date; presents rolling cloud
+token/request charts; and separates per-user recorded chat/model statistics.
+It uses the shared dialog theme, normal fonts, at most two decimal places and
+less than 60% of the browser client area. Missing fields are explained, never
+invented. Monthly, legacy-limit and purchased-only layouts follow the response.
+The cloud API does not expose the website’s full per-model breakdown.
+
+It ships in the published `v1.78.0` release, with its outage recovery: a brief
+Ollama failure is retried after 15 s and Refresh rechecks a refused connection. See the
+[Usage guide and evidence](docs/usage-dashboard.md).
+
+## Newest changes — v1.83.0
+
+**v1.83.0, 2026-10-14 — one smart listener for every file you drop.** Dropping an MCP `.json` used to report an error on the chat, open as plain text on the canvas, and make the browser leave the page everywhere else. Now one listener on every page looks inside each dropped file and sends it where it belongs: an MCP `.json` is imported (after you confirm), a `.flw` or `.fpmt` flow opens in its editor, an image is attached to your message, a PDF, Markdown, code or plain JSON file opens in the canvas, and anything else is explained in plain words. See [Drop a file on any page](#drop-a-file-on-any-page).
+
+**v1.83.0, 2026-10-13 — her portrait shrinks with the message box.** Dragging the divider above the message box down now shrinks her docked portrait too, down to a 120 px square, and dragging up gives it back. Before, a wide portrait kept the box from shrinking. The keyboard (arrows, Shift+arrows, Home, End, Escape) works on it as before.
+
+**v1.83.0, 2026-10-12 — a wrongly worded request is not a fatal error.** When Tlamatini asks Image-Interpreter or Video-Analyzer for a setting that does not exist, the request is refused before anything runs and she corrects it on her next try; the red **Fatal analysis errors** dialog and its sound are kept for real failures.
+
+**v1.82.0, 2026-10-12 — installing and uninstalling that can recover.** The Installer and the Uninstaller now share one window. Before changing any file it prepares and checks a recovery copy, and if the work is interrupted the next run puts things back first. Errors stay on screen with **Retry** and **Change folder**; a locked file is named together with the program holding it (Tlamatini never closes that program for you); and every run writes a log you can read in `%LOCALAPPDATA%\Tlamatini\SetupLogs`. Your `agents/` and the folders that hold your own files are kept exactly as before. **About ▸ Check for updates** keeps the uninstaller you already have; a new Installer brings the new one. See the [setup guide](docs/setup-wizards.md).
+
+**v1.82.0, 2026-10-11 — Markdown files open as a page.** Open or drop a `.md` file and the canvas shows it rendered — headings, tables, task lists, highlighted code — with a **Source** view one click away. **Choose folder** lets its relative pictures and links appear. Copy, **Use as context** and Save always use the original Markdown, never the rendered text, and nothing is fetched from the internet to render it. See [Markdown canvas](docs/markdown-canvas.md).
+
+**v1.80.0, 2026-10-11 — one look for every page.** The chat, both panels, the login and welcome pages, the PDF viewer and the admin pages share one dark slate-and-teal style. Every divider you can drag looks and behaves the same, with the mouse or the keyboard (arrows, Shift+arrows, Home, End, Escape); every resizable dialog can be resized from any edge or corner; and a dialog no longer hides under the menu when you zoom in.
+
+**v1.79.0, 2026-10-11 — Video-Analyzer takes a link.** Give Video-Analyzer a YouTube (or other site) link and it downloads the video itself, then transcribes or summarizes it. It keeps its own downloader up to date, and when a download fails it says why (the video is unavailable, a login is required, the network failed, …). Tlamatini no longer installs a downloader by hand.
+
+**v1.78.0, 2026-10-10 — About ▸ Usage.** A new **About ▸ Usage** dialog shows your Ollama cloud credits (balance, monthly usage, allowance and when they refill), your own chat activity and your models, even while Tlamatini is answering. If Ollama starts late or briefly fails, it tries again after 15 seconds, and **Refresh** checks again at once. See the [Usage guide](docs/usage-dashboard.md).
+
+**v1.78.0, 2026-10-10 — more room to write.** Undock her avatar and you can drag the message box down to just its buttons; dock her again and her portrait gets its room back. The divider also works from the keyboard (arrows, Shift+arrows, Home, End, double-click), a small window scrolls the box instead of cutting it off, and dialogs always stay inside the window.
+
+**v1.78.0, 2026-10-10 — several images at once.** Image-Interpreter accepts a comma-separated list of images and analyzes each one; repeated paths are skipped, and an entry it cannot find is reported in its log. Tlamatini made this change to her own agent.
+
+**v1.77.0, 2026-10-09 — she talks to you in the first person.** Every fixed message Tlamatini puts in the chat — and her avatar reads aloud — now sounds like her and uses your name: *"I'm ready, Angela! You can start chatting with me now."*, *"I'm working on your request, Angela. Please wait a moment."*, *"I've cleared our chat history, Angela, and I'm connected again."* She uses your first name, or your username when no first name is set.
+
+**v1.77.0, 2026-10-09 — the uninstaller keeps your Templates.** Uninstalling used to erase `Templates/`, where STM32er, ESP32er, Arduiner, ESPHomer, Unrealer and LaTeXer save the projects they create — your own code. Now `application`, `applications`, `content_generated`, `context_files`, `doc_generated` and `Templates` are kept whenever they hold a file, `agents/` is always kept, and `Temp/` (scratch) is always erased. Only an `Uninstaller.exe` from a new Installer has the fix: **About ▸ Check for updates** keeps the uninstaller you already have.
+
+**v1.76.0, 2026-10-08 — the Model Brain.** Every model Tlamatini uses now gets its own settings, taken from formal sources, and **Config ▸ Models ▸ Save** shows the tuning live in a new **Auto-tuning** dialog. Thinking models keep their own reasoning between tool calls inside one answer, and the stall clocks that threw finished work away are gone. See [Model Brain](#model-brain--every-model-tuned-for-you). The `v1.76.0` tag was pushed on 2026-10-08, one commit before the Model Brain commit itself (`72799950`), so build from `main` (it reports 1.76.0) to get everything in this list. It was published on GitHub on 2026-10-09, and **About ▸ Check for updates** delivered it until v1.77.0 was published the same day.
+
+**v1.76.0, 2026-10-08 — a coloured console.** The console window paints each line by its level: errors red, fatal errors white on red, warnings yellow, debug grey, successes green. `tlamatini.log` stays plain text. At startup she also logs which program draws the window: the classic console, or Windows Terminal (the default on Windows 11). `"console_colors": false` in `config.json` turns the colours off, and so does the standard `NO_COLOR` environment variable.
+
+**v1.76.0, 2026-10-08 — a refused PDF says why.** When two different accounts sign in from the same browser, the second sign-in replaces the session of every open tab, while an open chat keeps its first account. Loading a PDF from such a tab used to fail with only "This PDF context is unavailable", and the header stayed on "pending context". Now the message names the cause and the fix (reload the page with F5), the header comes back, and the progress dialog marks the step that failed as **Failed**.
+
+**v1.76.0, 2026-10-08 — two chat pages on two models no longer fight.** With one page on one model and another page on a different model, each page's "fits / does not fit" verdict made the other page measure again, forever: one evening on Angela's install wrote 61,779 log lines. A verdict now only updates the boxes; it never starts another measurement. On a test with two idle pages, the re-sends fell from 1,081 in one minute to none.
+
+**v1.76.0, 2026-10-07/08 — LaTeXer, Mover and the document agents tell the truth.** LaTeXer reports a PDF only when the file really exists, flags a PDF whose text sticks out past the margin, and, when it had to cut a large part of a broken document to produce any PDF at all, saves it as `<name>.DEGRADED.pdf` instead of the name you asked for; for a large document it repairs only the region around the compiler's error. Mover no longer erases a destination folder to copy into it, and reports what it could not move. Document and capture agents keep a finished file even when Windows Controlled Folder Access blocks the folder, and the security whitelist script now lets every Tlamatini install's Python save files past it.
+
+**v1.76.0, 2026-10-03/05 — smaller fixes.** At most four stop sequences per Ollama request (Ollama's cloud refuses five or more), and a failed chat-history summary can no longer fail the answer; the Files-Search and System-Metrics helpers can no longer hold the chat back (a slow answer or your Cancel makes them skip their context); the uninstaller finishes cleanly when Windows still holds `Uninstaller.exe`; and File-Creator can **append** to a file instead of overwriting it. The Prompt Flow Panel's static comments, the separate **User Input** step, the resizable **Run output** and Windows opening of `.flw` / `.fpmt` files (all 2026-10-03/04) are described below.
+
+**v1.76.0, 2026-10-03 — the Self-modify switch.** A new **Self-modify** box in the chat toolbar turns her self-knowledge (about 28.9K tokens per request) on or off. It appears only where self-modify is possible (always from source; in a frozen build only with `--self-modify`), it is ON by default, and it locks OFF when the chosen model cannot hold it. See [Self-modify](#self-modify--her-self-knowledge-on-or-off). It landed on `main` right after the v1.75.0 tag (commit `70aeeb87`) and ships in v1.76.0; Angela's own v1.75.0 install, built from `main` just before v1.75.0 was published on 2026-10-03, already has the switch.
+
+**v1.75.0, 2026-10-02 — Compact mode became a switch you drive.** Compact mode is now a real toolbar box. Ticking it unticks every Configure row except System-Metrics, Files-Search and Current-Time, so you tick back only what you need; unticking it ticks every row again. A small model locks it ON (🔒). Saved rows apply at once with no restart, every row shows its token price, the gauge is labelled CONTEXT-WINDOW and says when a request was cut, and an answer from a cut request carries a warning. The toolbar badge and the ACPX lock of v1.74.0 are gone: ACPX follows the rows you tick. See [Compact mode](#compact-mode--fit-every-request-to-your-model). Tagged and published as v1.75.0 on 2026-10-03.
+
+**v1.74.0, 2026-10-01 — small models work properly: Compact mode.** If the model you choose is too small to read everything Tlamatini normally sends, she no longer sends it anyway (the model used to silently lose most of it and answer the wrong question). She switches to **Compact mode** for that model: the live CPU/memory/disk metrics, file search and the current time keep working, while agents, ACPX and external MCPs pause until you pick a bigger model. A short dialog tells you exactly what is on and what is paused, a small badge stays beside the toolbar, and a big model (for example a 256K-token cloud model) still gets the complete context. Answer tables are also always readable now — text that would be invisible on its background is recoloured. v1.74.0 was published on GitHub on 2026-10-01 and was the latest published release until v1.75.0 was published on 2026-10-03. *(Since v1.75.0 (2026-10-02) the badge is gone and Compact mode is a toolbar switch: in Compact mode you can tick agents, ACPX tools and MCPs back one by one — see the entry above.)*
+
+**v1.73.1, 2026-10-01 — Config ▸ Models lists the models of the Ollama you configured.** If Tlamatini points at another Ollama server (for example a rented GPU) with its own token, Config ▸ Models now asks THAT server, with that token, for its models — they are no longer marked red and refused because your browser looked at a different Ollama.
+
+**v1.73.0, 2026-09-30 — drop any message.** Each chat card now has a **Drop** button beside **Copy**, for your messages and hers. After you confirm, she forgets that one message and answers as if it had never existed, while everything before and after it stays. See [Drop a message from the chat](#drop-a-message-from-the-chat). v1.73.0 was published on GitHub on 2026-09-30 and was the latest release until v1.74.0 was published on 2026-10-01.
+
+**v1.72.4, 2026-09-29 — a web page can no longer lose its text in silence.** Crawler and Googler read a page's words by skipping scripts, styles and similar blocks. If one of those blocks never closed — a page that leaves out the optional `</head>`, a stray `<svg/>`, a cut-off download — everything after it was thrown away, so a page could come back with zero text and nobody was told. Both agents now keep track of open blocks properly, and a second, plain reading of the page replaces any result that kept less than a quarter of the page's text, with a WARNING in `tlamatini.log` saying so. v1.72.4 was published on GitHub on 2026-09-29, and v1.73.0 carries it.
+
+**v1.72.3, 2026-09-29 — her lips move.** The chat avatar's mouth used to stay a faint, half-open blur while she spoke. Now it opens and closes clearly with the words, and it can never open wider than her own open-mouth portrait, so she moves more without gaping. A small refinement of Tlamatini's general instructions came with it. Tagged without a GitHub release of its own; v1.72.4 carries it.
+
+**v1.72.2, 2026-09-29 — Googler and Crawler never hang and never pass off a refusal as an answer.** One time limit bounds every search and every crawl, and a slow site is abandoned instead of waited on. A CAPTCHA, a "verify you are human" page or a rate limit is reported as blocked instead of being read as content, and when nothing could be read the model is told so in plain words instead of receiving silence. Crawler now reads exactly the page you give it by default. Tagged without a GitHub release of its own; v1.72.4 carries it.
+
+**v1.72.1, 2026-09-28 — the context gauge is now real.** The ring beside the message box used to estimate tokens by counting characters. It now shows Ollama's own count for the exact request that was sent (`N tokens REAL`), and the limit it is measured against comes from Ollama too. Between questions it shows what your *next* question will cost, and it recalculates the moment anything changes: opening the page, **Clear history**, clearing or loading a context, an answer finishing, or switching Multi-Turn, ACPX or Step-by-Step. It is exact in both modes: a one-shot question adds only its own words, and a Multi-Turn question adds its words plus the planner's plan, which is measured separately. It counts only Tlamatini's main chat, for each connected user separately. Two savings came with it: your question is no longer sent to the model twice, and a one-shot question no longer carries the line "No system context required for this question." (about 11 tokens on every one). Proven in a visible lab: 60 of 60 checks, every number on the ring equal to Ollama's own count in `tlamatini.log`. Showing the real count between questions costs one small real request each time the state changes; `context_gauge_probe_enable: false` turns it off. v1.72.1 was published on GitHub on 2026-09-28, and v1.72.4 carries it. [How the gauge works](docs/claude/architecture.md#the-real-context-gauge--ollamas-own-numbers-2026-09-28).
+
+**v1.72.0, 2026-09-27:** direct voice prompts now start from the microphone beside Send. Whisperer captures without waiting for an Ollama tool decision, stops on silence, transcribes and either submits through the existing chat or leaves an editable draft, as selected in the new Config ▸ Mic dialog. Recording status stays in chat; internal worker diagnostics use the main console/log. This adds no agent type or tool. v1.72.0 was published on GitHub on 2026-09-28, and v1.72.4 carries it.
+
+The same dependency audit covers all 89 agents and 743 Python files: missing direct declarations are now present, with ESPHome's incompatible private runtime kept in its own manifest. See [dependency coverage](docs/dependency-coverage-audit.md).
+
+**Carried from the published v1.70.0 release:** a Prompt Flow Panel, a tidier menu bar, and a canvas you can edit. **Source refactor, 2026-10-03/04:** the former executable User Commentary is now User Input, and User Commentary is a static note. New diagrams use version 2; version 1 files/drafts migrate automatically without changing reply behavior. Committed to `main` on 2026-10-04. The [October 4 release-validation record](docs/changes/2026-10-04-release-validation.md) tracks the subsequent local frozen builds, actual installation, runtime checks and remaining limitations.
+
+- **Prompt Flow Panel — draw a conversation, then press Play.** Open **Panels ▸ Prompt Flow Panel**. Drag operations onto a canvas and connect them: **Prompt** (ask Tlamatini something, optionally with Multi-Turn and ACPX), **Programmed Prompt** (the same, after a delay or at a set time), **Decision** (take the Yes or No branch depending on the last answer, or ask you), **Feed embeddings** / **Flush embeddings** (give that run extra reference text, or take it away), **Clean History**, and **User Input** (stop and ask you something, using the notched figure). Add independent **User Commentary** speech bubbles for static review notes: double-click to write, format selected passages with a floating toolbar (mixed fonts, sizes, colors, bold, italic and underline), and resize from any edge or corner; the bubbles grow to contain their text without internal scrollbars. Comments save with the flow and never execute. In executable operation text, write `{{last_output}}` to pass the previous answer forward; it stays literal inside a static comment. **Validate**, then **Play** — the running step lights up, and **Pause** / **Stop** work mid-flow. Each run has its own conversation and embeddings, so it never disturbs your chat. Save your diagram as a **`.fpmt`** file; opening one never runs it. Try **File ▸ Open example**, or open [docs/examples/prompting-kickoff.fpmt](docs/examples/prompting-kickoff.fpmt). Full guide: [docs/prompting-flow-designer.md](docs/prompting-flow-designer.md). Since v1.76.0 it also adds [Windows opening and association management](docs/windows-flow-files.md) for both `.flw` and `.fpmt`, including main-chat opening and returning through login to the right editor.
+- **Make room for the canvas or the results.** Drag the divider above **Run output** between 5% and 95% of the available canvas/output height. Both panes scroll independently without changing text size, figures or canvas zoom. Keyboard resizing, collapse/reopen and your saved layout work together.
+- **The menu bar was reorganized.** A new **Panels** menu opens the **Agentic Control Panel**, the **Prompt Flow Panel** and, for staff, the **Admin Panel**. **Configure MCPs** and **Configure Agents** moved into **Config**, next to Models, URLs and the Access Keys Wizard. The separate MCPs, Agents and Admin menus are gone. Panels stays usable while Tlamatini is busy answering you.
+- **The Agentic Control Panel became a real editor.** A toolbar gives you **Undo/Redo**, **Configure**, **Duplicate** (copies agents *with* their settings and the connections between them), **Delete**, a **Starters** locator, **Flow settings** (dot grid, zoom) and **zoom −/+/Fit**. A search box filters the 89 agents by name, an empty canvas offers **Try an example**, **Help** explains every gesture, and a `•` in the tab title tells you there are unsaved changes. Editing locks while a flow is running — stop it to edit.
+
+**Video-Analyzer now transcribes video audio tracks and builds detailed summaries.** Choose `analysis_type: transcription` for timestamped speech from selected audio tracks, or `analysis_type: summary` to combine that speech with sampled visual evidence: scenes, actions, on-screen text, slides, facts, decisions and action items. Reports retain timestamps, coverage limits and partial failures. The existing `robotics` mode remains the default, and Parametrizer, workflow controls and MCP tools expose the new modes. See the [Video-Analyzer contract](Tlamatini/agent/agents/video_analyzer/README.md).
+
+**Carried PDF canvas and document context:**
+
+**Open a PDF straight in Tlamatini's canvas — and then hand her the whole document.**
+
+Until now the canvas held code and text. Now you can press **Open**, pick a **PDF**, and it appears right there beside the chat: every page, with text you can select, page navigation, zoom, fit-to-width, rotation, behaving the way you expect a PDF reader to behave. A password-protected file asks for its password inside the viewer. The buttons you already know keep working on it — **Copy** lifts the text out of every page, **Save As** hands you the original file back untouched, **Reopen** swaps in a different one, **Clear canvas** puts it away.
+
+Opening a PDF sends nothing anywhere. The viewer reads the file in pieces directly from your disk as you scroll, so there is **no size limit and no page limit** on Tlamatini's side — a sparse 256 MB file and a jump to page 10,001 are both in the test suite. Nothing is uploaded, and **no AI model is called, simply because you opened something**.
+
+**Then there is the part that matters: _Use as context_.** Press it and Tlamatini takes in the *whole* document — not a snippet — and can answer questions about it for the rest of the conversation. A dialog appears first, and it asks you exactly one question: **Process images?**
+
+- **Left unticked — which is how it starts, every single time —** she reads the selectable text only. Fast, private, and it needs no vision model configured at all.
+- **Ticked**, she also renders every page as a picture and pulls out every embedded image, then looks at each one with her **Image-Interpreter** — the same two-models-and-a-referee vision pipeline she already uses on screenshots — so she can read scans, charts, tables and diagrams that have no text layer at all.
+
+**Nothing starts until you press Continue.** While it runs you get four honest progress rows — bytes uploaded, pages extracted, images analysed, context loaded — a real elapsed clock, and a **Cancel** that actually stops the work instead of just hiding the window. The last row stays indeterminate rather than inventing a percentage nobody could know. If some images fail to analyse, **she tells you they failed** instead of quietly claiming they all succeeded. And if you hand her a scan with no text layer while Process images is unticked, she says so and suggests ticking it, rather than loading an empty document and pretending she read it.
+
+Your file stays yours: it is processed by the Tlamatini server on your own machine, and a **PDF password is used to open the document and is never written to disk, never into the context text, and never into the log.**
+
+The viewer is Mozilla's **PDF.js 6.3.289**, vendored into the repository under its unmodified Apache-2.0 licence so it runs with **no npm install and no CDN at runtime** — reproduce the exact bundle with `python scripts/vendor_pdfjs.py`, which verifies SHA-512 before unpacking. Extraction reuses the **PyMuPDF** Tlamatini already shipped, so the whole feature added **no new Python dependency**. It arrives with its own test suite driving real Chromium against the real application markup — first/middle/last pages, zoom, rotation, resize, original-byte saves, scanned and password-protected files, progress, cancellation and retry — and those tests refuse to let the page fetch a single asset from the internet. Full contract: [PDF canvas and document context](docs/pdf-canvas.md).
+
+---
+
+**Carried from the v1.60.0 tag — the whole chain of visual agents got better at once.** Tlamatini's document family now has three members instead of two: **PPTXer** joins PDFer and LaTeXer and builds real, editable PowerPoint decks from an answer, a Markdown outline or JSON — with 36 named looks, 17 font pairings, and, most importantly, text that is *measured* before it is placed, so a long paragraph continues onto a new slide instead of being quietly cut off. **PDFer** gained **24** explicit visual identities in five families — playful, cyberpunk, cosmic, electronics, and Tlamatini's own — on top of the 20 designs it already chooses from the content itself. **LaTeXer** gained **30** signature styles in six families; ask for the list with `list_styles` and it answers without needing LaTeX installed at all.
+
+The agents that touch your desktop were tightened in the same pass. **Mouser** now works in coordinates you state explicitly — the physical screen, a window, or a screenshot — instead of leaving anyone to guess which space a number belongs to; **Keyboarder** binds every keystroke to a window it has verified is really in front; and **Shoter** publishes the exact rectangle it captured, so a click worked out from a screenshot lands where the picture said it would. One honesty rule runs through all three: **`input_sent` means the click or keystroke was delivered, not that the application accepted it** — so a failed or interrupted step must be looked at before it is replayed. **FlowCreator** now chooses from all 89 installed agents and validates the flow it drew before publishing it.
+
+**Carried from the v1.51.9 tag in the same line — the sampler repair and VOICE COMMANDS.**
+
+**One number was emptying her answers.** If Tlamatini ever replied *"The tool-calling model returned an empty final response"* after a long silence, this was why. The setting that controls how strongly the model avoids repeating itself — `ollama_repeat_penalty` — shipped at **1.9**, roughly double the highest value any documentation endorses. Today's models are *reasoning* models: they think privately before they answer. Pushed that hard, they never stop thinking. Measured on a real request: **196,003 characters of internal reasoning over 287 seconds**, and in one case **3.1 million characters over 51 minutes** — every time producing a completely empty answer. The penalty now ships at **1.2**, the strongest value the documentation actually supports, and in testing that took failures on the flagship model from **seven runs in eight down to one**.
+
+Two companions ship with it. **`ollama_repeat_last_n`** decides how far back that penalty looks; it was never actually being sent to Ollama at all, so setting it did nothing. It is now wired and ships at **256** — worth it, because it made the same model six times faster at the median. And **`ollama_num_ctx`** now reads **1,048,576**, the real context window, instead of a number that described nothing. That one is honesty rather than capability: on a cloud model the server enforces its own limit anyway, and it does so cleanly — go over it and you get a clear error naming both sizes, never a silently truncated conversation. Verified along the way: she still reliably finds a single fact buried inside a **660,000-token** prompt.
+
+Every one of these values was measured on the real workload rather than chosen by taste, and the numbers live in the commit messages so nobody reverts them on a hunch. One honest gap remains: the library Tlamatini uses to talk to Ollama discards the model's private reasoning entirely, which is why a runaway shows up as an empty reply instead of *"still thinking"*. Fixing that is separate work.
+
+**Speak, and she does it — the catalog now opens with VOICE COMMANDS.** The Catalog of Prompts has a new first section, **VOICE COMMANDS**, sitting ahead of *Getting Started* because speaking is the shortest way there is to use Tlamatini: you talk, she does it. The microphone becomes the keyboard — Whisperer writes down what you said, and **the words you spoke become the prompt she then carries out**.
+
+Two cards. **#121 YOUR FIRST VOICE COMMAND** is a guided rehearsal that goes one step at a time and waits for you between steps: it checks that the machine can actually hear you, shows you the transcript, and lets you try a harmless spoken instruction before anything real happens. **#122 SPEAK YOUR PROMPT** is the real thing, and it is Angela's own sentence — *"Tlamatini, using Whisperer record my voice till I finish to tell you a prompt, then use the text extracted as a prompt and invoke it, go!."* Click it and Tlamatini arms **Multi-Turn, Exec report and ACPX** for you, because nobody can know in advance what you are about to ask for; her whole tool surface has to be in her hands by the time the transcript arrives.
+
+This is only possible because of the sound gate below. Before it, a spoken prompt was chopped off at a fixed thirty seconds. Two promises come with it: she **reads the transcript back to you before she acts on it**, and if she did not hear you she **says so and stops** rather than inventing a plausible instruction. A spoken instruction is enough to start work; anything irreversible — deleting, messaging a real person, spending money — she still asks you to confirm in writing.
+
+---
+
+## Previous release — carried by the v1.51.7 tag
+
+**Whisperer now listens instead of counting seconds.** Ask Tlamatini to take dictation and she used to record a flat thirty seconds — cutting you off in the middle of a sentence, or leaving you listening to an empty room after you had finished. Now she simply **waits for you to stop talking**: the recording stays open while you are speaking and ends on its own after **three and a half seconds of silence**. Say a length and she still honours it exactly — *"record 45 seconds"* records 45 — the gate only steps in when you did not name one.
+
+The console window she opens while recording shows what is happening: the familiar REC meter gains a second bar that fills up as the room stays quiet and empties the instant you speak again, turning amber and then red just before it stops, and the final line tells you why it stopped and how much it captured. Everything is adjustable in `config.yaml` — the silence window (`silence_timeout_seconds`, default 3.5), a ceiling so a noisy room cannot record forever (`max_record_seconds`, default 300), and a manual loudness threshold if your room needs one. One honesty note: if a sound driver refuses the live audio stream the gate cannot run at all, so Whisperer records a fixed length and **says so** rather than pretending it listened.
+
+**Tlamatini's avatar has a real mouth.** Her portrait used to change on a fixed 150-millisecond timer whether she was speaking or not. Now the picture is blended live from her four portraits and her mouth follows the actual words as they are spoken, so her face moves with the sentence instead of flapping through it. It runs on plain 2-D canvas — no graphics card and no extra model.
+
+**Clicking the console no longer freezes Tlamatini.** Windows consoles ship with **QuickEdit Mode ON**, so clicking or dragging inside the window — to copy a line of the log, or just to bring the window to the front — put the console into selection mode and **froze every write to it**. Because Tlamatini wrote the console *before* `tlamatini.log`, that one click also stopped the log file growing and, thread by thread, stopped the whole application. It looked exactly like a crash, and people reported it as one.
+
+Two fixes ship together. The console is now written on its **own background thread** through a bounded queue, so a paused window can no longer slow the core down — the log file is written **first**, on the caller's own thread, and keeps growing throughout. And a frozen build now starts with **QuickEdit disabled**, so a click cannot start a selection at all and the window simply keeps scrolling. To copy text from the console, use **right-click ▸ Mark**; if you would rather have drag-to-select back, set `"console_quick_edit": true` in `config.json` — the background-thread shield still protects you either way. **Ctrl+C is untouched and explicitly protected:** it lives in the same Windows setting as QuickEdit, so Tlamatini forces it on, reads the setting back, and rolls the whole change back rather than risk a console you cannot interrupt.
+
+**Enter is now the default on the welcome page.** After logging in you land on a page with two buttons — *Go to Chat* and *Logout*. Everybody is going to the chat, so **just press Enter** and you are there; nothing has to be clicked or tabbed first. If you Tab to *Logout* and press Enter you still log out — the shortcut steps aside whenever the browser already has a button in focus.
+
+---
+
+## Current version — v1.83.0
+
+**Latest version — `v1.83.0` (tagged 2026-10-14):** annotated tag `v1.83.0`, pushed — *"Release v1.83.0 A smart file-drop router for every page: each dropped file is recognised by its bytes and sent to its own mechanism, so an MCP .json imports everywhere and never errors, opens as text or navigates away."* It brings the page-wide file-drop router, a docked portrait that follows both composer dividers, and a fix so a wrongly worded image/video request is no longer a fatal error (see [Newest changes](#newest-changes--v1830)). It was **published on GitHub on 2026-10-14** ("Tlamatini Release v1.83.0 Win11x64", marked Latest), so **About ▸ Check for updates** delivers v1.83.0.
+
+It carries **`v1.82.0`** (tagged 2026-10-12, commit `880a335e`) — the new Installer/Uninstaller window and the Markdown canvas — which was published on 2026-10-12 and was the latest release until v1.83.0. There is no v1.81.0.
+
+It carries **`v1.80.0`** (tagged 2026-10-11, commit `82099963`) — one look for every page — and **`v1.79.0`** (tagged 2026-10-11, commit `5f549868`) — Video-Analyzer reads web links. Neither was published on its own; both reach you through v1.82.0 and v1.83.0.
+
+It carries **`v1.78.0`** (tagged 2026-10-10): annotated tag `v1.78.0`, pushed — *"Release v1.78.0 Implementing the About -> Usage dialog."* It brings the **About ▸ Usage** dialog, a message box that shrinks when her avatar is undocked, and Image-Interpreter's comma-separated image list (see [Newest changes](#newest-changes--v1830)). The tag points to `0e6fc72d`; the Usage commit `7460a147` and the message-box commit `113eddc4` landed on `main` right after it, so a build of `main` made before the v1.79.0 tag (it reported `1.78.0`) carried all of it. It was **published on GitHub on 2026-10-10** (marked Latest), so **About ▸ Check for updates** delivered v1.78.0 until v1.82.0 was published on 2026-10-12, and the published zip was built from `main` at `113eddc4`. (Its title on GitHub still reads "Tlamatini Release v1.77.0 Win11x64"; the tag and the download are v1.78.0.)
+
+It carries **`v1.77.0`** (tagged 2026-10-09): annotated tag `v1.77.0` at `052bfe0f`, pushed — *"Release v1.77.0 Making Tlamatini speak every fixed chat line in the first person and to the user by name, with the word matchers, the avatar and the Telegram bridge updated to recognise both the new and the old wording."* Every fixed message she puts in the chat — and her avatar reads aloud — now speaks in the first person and uses your name, and the uninstaller keeps your `Templates/` and the other folders that hold your files (see [Newest changes](#newest-changes--v1830)). A build of `main` reported `1.77.0` until the v1.78.0 tag. It was **published on GitHub on 2026-10-09** (marked Latest), so **About ▸ Check for updates** delivered v1.77.0 until v1.78.0 was published on 2026-10-10.
+
+It carries **`v1.76.0`** (tagged 2026-10-08): annotated tag `v1.76.0` — *"Release v1.76.0 Implementin the Model Brain tunning system (comes into action everytime user config any model."* It names the **Model Brain**: every model Tlamatini uses is now tuned with its own settings from formal sources, and **Config ▸ Models ▸ Save** shows the tuning live (see [Model Brain](#model-brain--every-model-tuned-for-you)). The tag points to `953ad2d8`; the Model Brain commit `72799950`, which also brings the coloured console, the PDF message that explains a refusal, the fix for two chat pages on two models and File-Creator's `append`, landed on `main` one commit later. A build of `main` made before the v1.77.0 tag reported `1.76.0` and carried all of it. The tag is pushed and is never moved. It was **published on GitHub on 2026-10-09** ("Tlamatini Release v1.76.0 Win11x64", marked Latest; checked with `gh release list` the same day), so **About ▸ Check for updates** delivered v1.76.0 until v1.77.0 was published on 2026-10-09. Everything else since v1.75.0 is listed in [Newest changes](#newest-changes--v1830).
+
+It carries **`v1.75.0`** (tagged and published 2026-10-03): annotated tag `v1.75.0` points to `f7eb53ff` — *"Release v1.75.0 Making Compact mode a real checkbox: it unticks the real Configure rows, locks ON for a small model, prices every row, and warns when a request is cut."* Compact mode is now a box in the chat toolbar that you drive: ticking it unticks every Configure row except System-Metrics, Files-Search and Current-Time so you tick back only what you need, a model too small to hold everything you activated locks it ON (🔒), saved rows apply at once with no restart, every row shows its token price, and an answer from a cut request carries a CONTEXT-WINDOW warning (see [Compact mode](#compact-mode--fit-every-request-to-your-model)). It was **published on GitHub on 2026-10-03** ("Tlamatini Release v1.75.0 Win11x64", marked Latest; checked with `gh release list` the same day), so **About ▸ Check for updates** delivered v1.75.0 until v1.76.0 was published on 2026-10-09. Angela's own v1.75.0 install, built from `main` that morning just before the release went up, already carries the Self-modify switch (migration 0212) and the four-stop-sequence fix; the annotated tag itself still points to `f7eb53ff`. It carries **`v1.74.0`** (tag at `c1fadb90`, tagged 2026-10-01) — *"Release v1.74.0 Making every request fit the model it is sent to: Compact mode for small models, the complete context for big ones, and readable answer tables."* In v1.74.0 a model too small to read everything Tlamatini sends got Compact mode (live metrics, file search and the current time kept working; agents, ACPX and external MCPs paused; a dialog and a badge said so), a big model still gets the complete context, and answer tables are always readable. It carries **`v1.73.1`** (`757b0edc`, a tag with no published release) — Config ▸ Models lists the models of the Ollama server you configured, with its token — which stands on **`v1.73.0`** (tag at `606470bb`, published 2026-09-30) — *"Release v1.73.0 Implemented the Drop button, which erases one message from the chat AND from the history the model reads."* Every chat card, yours and hers, has a **Drop** button beside Copy; after a themed confirmation (Cancel focused, Escape and ✕ cancel) that one message is deleted, so from your next question on she answers as if it had never existed while the messages before and after it stay untouched — no reconnect, refused while she is still answering, and a note in the `memory` External MCP is NOT erased (see [Drop a message from the chat](#drop-a-message-from-the-chat)). It was the latest *published* release ("Tlamatini Release v1.73.0 Win11x64", marked Latest; checked with `gh release list` on 2026-09-30) until v1.74.0 was published on 2026-10-01. It carries **`v1.72.4`** (`323c1051`, published 2026-09-29) — Crawler and Googler read a page's text with a stack of open tags instead of a counter, so a void element, an omitted `</head>` or a stray `<svg/>` can no longer swallow the rest of the page, and a plain-text safety net replaces any parse that kept less than a quarter of the page's text — and logs a WARNING saying so. That in turn carries two tags with no published release of their own: **`v1.72.3`** (`87db1df8`) — the chat avatar's lips now open and close clearly while she speaks, never wider than her own open-mouth portrait, plus a small refinement of the general prompt — and **`v1.72.2`** (`524a67ff`) — Googler and Crawler became block- and hang-proof: one deadline bounds every run, a CAPTCHA, bot wall or rate limit is reported as `blocked` instead of being read as content, and a search or crawl that read nothing says so plainly instead of returning silence. Those stand on **`v1.72.1`** (`df709d78`, published 2026-09-28): the REAL context gauge — the ring beside the message box shows Ollama's own token count for the exact request (`N tokens REAL`), exact in both one-shot and Multi-Turn — plus the removal of the one-shot System-Metrics "No system context required for this question." line. It follows `v1.72.0` (tag at `e3668a47`, published 2026-09-28): the direct chat microphone and the **Config ▸ Mic** settings. `v1.71.0` (`512973fb`) predates the microphone and has no published release. Runtime version comes from the resolver; feature availability also depends on build contents. Right after the `v1.75.0` tag, commit `70aeeb87` on `main` (2026-10-03) added the **Self-modify** switch, which ships in `v1.76.0`; see [Self-modify](#self-modify--her-self-knowledge-on-or-off) and [Newest changes](#newest-changes--v1830).
+
+
+Before them came **`v1.70.0`** — the Prompt Flow Panel release: a new **Prompt Flow Panel** where you draw a chain of prompts as a diagram, save it as a `.fpmt` file and play it; a reorganized chat menu bar (**Panels** and **Config**); an editor toolbar for the **Agentic Control Panel** (undo/redo, duplicate, zoom, agent search and help); and one shared set of canvas mechanics, so both panels connect, drag, select and zoom the same way. It carries the preceding **`v1.65.4`** release ("Tlamatini Release v1.65.4 Win11x64", annotated 2026-09-21 at commit `b09c4ff`) and its context-meter line: the context meter itself (`v1.65.0`), the Context Governor that measures the real request and never binds zero tools (`v1.65.2`), a LaTeXer repair for a leading brace being swallowed as an optional argument (`v1.65.3`), and the improved context gauge (`v1.65.4`). It also carries the Video-Analyzer audio-track transcription and detailed audiovisual summaries of `v1.64.0`, alongside the PDF canvas, whole-document context and visual-agent capabilities described above.
+
+Runtime identity always comes from Git/build metadata — `agent/version.py::get_version()` and `GET /agent/version/` resolve the number from the annotated tag at build time, and the release folder `dist/Tlamatini_Release_v1.83.0/` is named from the same source — never from this prose. Tlamatini's version string deliberately never carries a `.devN`, `+gSHA` or `.dirty` suffix; it always reports the base tag (`VERSIONING.md`). The preceding tags in this line are **`v1.82.0`** (2026-10-12, commit `880a335e`, published 2026-10-12), **`v1.80.0`** (2026-10-11, commit `82099963`), **`v1.79.0`** (2026-10-11, commit `5f549868`), **`v1.78.0`** (2026-10-10, commit `0e6fc72d`, published 2026-10-10), **`v1.77.0`** (2026-10-09, commit `052bfe0f`, published 2026-10-09), **`v1.76.0`** (2026-10-08, commit `953ad2d8`, published 2026-10-09), **`v1.75.0`** (2026-10-03, commit `f7eb53ff`, published 2026-10-03), **`v1.74.0`** (2026-10-01, commit `c1fadb90`, published 2026-10-01), **`v1.73.1`** (2026-10-01, commit `757b0edc`), **`v1.73.0`** (2026-09-30, commit `606470bb`), **`v1.72.4`** (2026-09-29, commit `323c1051`), **`v1.72.3`** (2026-09-29, commit `87db1df8`), **`v1.72.2`** (2026-09-29, commit `524a67ff`), **`v1.72.1`** (2026-09-28, commit `df709d78`), **`v1.72.0`** (2026-09-27, commit `e3668a47`), **`v1.71.0`** (2026-09-27, commit `512973fb`), **`v1.70.0`** (tagged 2026-09-26, commit `cf62bd8c`), **`v1.65.4`** (2026-09-21), **`v1.65.3`**, **`v1.65.2`** and **`v1.65.0`** (all 2026-09-20), then **`v1.64.0`** (2026-09-19), **`v1.62.2`**, **`v1.62.0`**, **`v1.61.0`** (2026-09-16) and **`v1.60.0`** (2026-09-15, commit `cef3995`, "Entire chain of visual agents really enhanced!"). A **`v1.65.5`** tag also exists in the repository with no published release attached; `v1.70.0` supersedes it. No `v1.81.0` tag exists; the number was skipped.
+
+The preceding **`v1.60.0`** tag, created 2026-09-15 at commit **`cef3995`** ("Release v1.60.0 Entire chain of visual agents really enhanced!."), carries the visual-agent work described above. It reached you through three earlier tags in the same line — **`v1.52.0`** (the new PPTXer agent), **`v1.52.2`** (PDFer's and PPTXer's style collections) and **`v1.52.3`** (LaTeXer's) — before `v1.60.0` gathered them together with the desktop-control and flow-contract tightening.
+
+The **`v1.51.9`** tag before them carried the sampler repair and the VOICE COMMANDS catalog section, both described above, alongside an uninstaller that now refuses to run while Tlamatini is still up and never deletes your own content, and a fix for `chat_agent_run_wait`, which used to burn its entire timeout instead of returning the moment the run finished.
+
+The previous **`v1.51.7`** tag carried Whisperer's sound gate and the avatar's talking mouth. Under the gate, `record_seconds` became the mode switch — `0`, the new default, means *"no duration was given, so listen until the speaker stops"*, the same idiom `sample_rate: 0` already used for the native sample rate — and the recording's reported length is now what was actually captured rather than what was requested. The gate itself measures one audio block every twenty milliseconds from inside the sound callback, tracking the room continuously so that somebody who starts talking immediately is still heard; coverage for the agent grew from 41 to **69 tests**.
+
+The earlier `v1.51.5` tag closed out the work that the `v1.51.3` line had left trailing behind it — the Windows launcher repair at `00ecdc9`, the documentation refresh at `5f96a2f`, the console shield plus welcome-page keyboard default at `c8cf369`, and the documentation reconciliations at `0d2c09c` and `d8f21f3` — all of which are now carried by a tag rather than sitting after one. Runtime identity still comes from Git/build metadata (`agent/version.py::get_version()`, `GET /agent/version/`), never from this prose.
+
+The launcher repair now carried by this tag centralizes Windows process startup in `agent/win_shim.py`. Frozen `.exe` launchers, `.cmd`/`.bat` wrappers, Python entry points, and ordinary executables now receive the correct direct-or-shell invocation, quoting, hidden-window flags, and environment handling across ACPX and runtime provisioning. The same commit carries 404 focused shim tests in `agent/test_win_shim.py`, extends ACPX coverage from 92 to **126 tests**, and keeps the standalone `tlamatini_acpx.py` and MCP server behavior aligned with the in-app runtime.
+
+The shared `v1.51.2`/`v1.51.3` tag commit makes **ACPX tell the truth about its peers**. A multi-CLI research relay had collapsed while `acp_doctor` reported every external agent healthy — because the doctor only ran `<cmd> --version`, and a CLI with a dead API key, an invalid config file or an empty credit balance still prints its version and exits 0. Worse, a child that answered *"the web search was blocked — permission wasn't granted"* also exited 0, so the tool returned `ok: true` and the Exec Report row went green over work that never happened. Three repairs: a new stdlib-only `agent/acpx/child_health.py` holds the single definition of "did this child deliver?" with a closed non-delivery vocabulary (`PERMISSION_BLOCKED`, `AUTH_FAILED`, `CONFIG_INVALID`, `NO_CREDIT`, `USAGE_LIMIT`, `UPSTREAM_ERROR`, `NO_OUTPUT`, `WORKSPACE_NOT_TRUSTED`, `CHILD_ERROR`); `acp_doctor(deep=True)` sends a real one-line prompt down each agent's real transport and names the failure (opt-in, because it spends model quota, and cached for ten minutes); and `acp_spawn` / `acp_send` now return `ok: false` with that named code when a child produced nothing usable, while preserving the session id and transcript path so the caller can still investigate and clean up. A long, real answer is never reclassified as a failure, and a short correct answer is never mistaken for silence. Alongside them, `config.json` gained the ability to retune an agent's `args`, `transport`, `prompt_arg_flag`, `prompt_subcommand_args`, drain budgets and `spawn_returns_immediately` — not just `command` and `env` — so repairing a misconfigured peer is now a text edit instead of a rebuild. `agent/acpx/tests.py` grew from 65 to 92 tests in that commit.
+
+The original **PDFer nuance / typography / layout overhaul** landed after the `v1.51.0` tag and is carried by `v1.51.1` and later. That 2026-09-06 change introduced ten flat sibling modules, twenty content themes, a 38-role palette, host TrueType font selection, measured table widths and post-render audits. The **2026-09-15 source update** adds 24 independent visual styles and two more siblings, `pdfer_styles.py` and `pdfer_artwork.py`, plus cover, contrast, footer and table-wrap repairs. Its verification covered 130 passing PDFer tests and 24 two-page style samples with clean audits. These are dated development results, not a claim about a particular installed build. Gallery PDFs, PNGs and the atlas are regenerable ignored outputs; see the [PDFer guide](Tlamatini/agent/agents/pdfer/STYLES.md).
+
+`v1.51.1` also fixes program/snippet persistence collisions. Migration 0199 deduplicates conflicting names, and the runtime/view/parser path now preserves stable program identity instead of letting `load_x_in_canvas` choose or overwrite the wrong row.
+
+## Earlier carried releases — v1.50.6 and before
+
+`v1.50.6` resolves to commit `6e4ffa73`; runtime identity still comes from Git/build metadata rather than this prose. Its public-release path no longer requires a machine-local `.private_targets.json` on a pristine clone: a target-independent privacy preflight distinguishes a genuinely clean tree from a maintainer tree that still contains private evidence, fails toward refusal when probes are unreadable or private material is detected, keeps the tracked `private_targets.example.json` template inert, and never introduces a runtime dependency on either targets-file spelling. The 26-test `agent.test_public_release_targets` suite pins fresh-clone builds, runtime independence, structural-only verification, secret restoration, and PII-safe refusal behavior.
+
+`v1.50.5` fixes the Windows Ctrl+C shutdown deadlock. The signal handler now performs only a re-entry-guarded Event set; a boot-created daemon worker performs best-effort cleanup, a watchdog guarantees exit after the grace period, and a second Ctrl+C hard-exits immediately. Source-contract tests and a visible end-to-end console test prove that the real Django/Daphne process terminates instead of stacking nested signal handlers. The same release adds `PromptDesigner.jpg` as a tracked design-reference capture; it is repository artwork, not a claim that a separate Prompt Designer runtime is already wired into Tlamatini.
+
+The carried `v1.50.4` runtime fix keeps optional Transformers and its transitively imported Torch stack out of the frozen Django process while preserving Torch in the carried Python used by Talker. `v1.50.3` corrects Bing redirect decoding and Mojeek self-result filtering in Googler. The `v1.50.0` security-harnessing arsenal remains fully carried: the administrator-operated `security/` toolkit supplies ten host-monitor families, detect-only/armed/watch/aggressive modes, path-aware process protection, bounded IP/process response, persistent enablement, and a non-destructive visible regression harness. The v1.49.1 foundation remains the active surface: **NetSpeed-Calculator** as workflow agent 88 and wrapped launcher 66; WAL-safe database copy/hot-swap; structured and resilient Googler discovery; guarded External-MCP onboarding; Deep Internet Research prompt 118; Ollama Pro-or-higher guidance; and private-contact synchronization that keeps public builds empty of contact PII.
+
+NetSpeed-Calculator measures download, upload, latency, jitter, packet loss, and bufferbloat against several keyless providers. It discards TCP slow start, samples throughput as `d(bytes)/dt`, rejects outliers, publishes Student-t confidence intervals, and fuses providers with fixed- or random-effects meta-analysis plus Cochran's Q/I². Its `full`, `download`, and `upload` actions consume real bandwidth; `validate` only checks provider reachability, while `providers` lists the catalog. A full run commonly transfers about 100-200 MB, so the wrapped tool is in Ask-Execs tier D and must not be repeated casually.
+
+Database copies no longer treat a bare WAL-mode `db.sqlite3` file as complete. `agent/sqlite_copy.py::consistent_copy()` reads through the live WAL with SQLite's online backup API, converts the destination to a self-contained DELETE-journal database, and requires `PRAGMA quick_check` before success. Backup DB and Set DB both use that path; pre-Django hot-swap archives the outgoing database with its `-wal`/`-shm`/`-journal` sidecars, clears stale destination sidecars, and only then promotes the staged copy.
+
+Googler's visual/pool agent now compiles structured search fields into valid Google syntax instead of making operators a fragile hand-written exercise. Presets cover books, public/open books, papers, manuals, documents, slides, sheets, and directory listings; aliases expand classes such as `ebook`, `docs`, `code`, and `data`; multiple sites or file types become parenthesized uppercase-`OR` groups; and exact phrases, exclusions, proximity, ranges, dates, title/URL/text/anchor filters, and discovery operators are normalized mechanically. Explicit fields always override preset defaults. For PDF/EPUB/file hunts, use `content_mode: links_only`: Googler's deliverable is the indexed URL list, which Apirer can download and File-Extractor/File-Interpreter can read. The direct Multi-Turn `googler` tool accepts equivalent operators inside its query string, while the structured fields belong to the visual/pool agent. Googler finds only publicly indexed URLs; she does not bypass access controls, and the user remains responsible for copyright, licensing, authorization, and use.
+
+Search execution is built to be **block- and hang-proof** rather than a brittle Google-then-one-fallback path. It was rebuilt on 2026-09-28, after live measurements showed Google, DuckDuckGo, Mojeek, Startpage and Ecosia refusing a flagged home IP while Bing answered with off-topic pages, and the chat's search tool spent about 39 seconds per call to return "No search results found". ONE wall-clock deadline (`deadline_seconds`, default 120) bounds the whole run, and every network call is bounded, so a stalled engine can never hold it. **Tier 0** asks six server-rendered routes over plain HTTP in parallel (DuckDuckGo HTML/Lite, Bing, Mojeek, Brave, Yahoo). **Tier 1** opens a real installed Chrome with a persistent profile (`%LOCALAPPDATA%\Tlamatini\googler\chrome-profile`) — `window_mode: visible` (the default while `headless: false`), `offscreen`, or `headless` — falls back to bundled Chromium, and walks eight direct-results routes (Google, Brave, Bing, DuckDuckGo HTML/Lite, Yahoo, Mojeek, Startpage). **Tier 2** answers from open knowledge sources (Wikipedia, arXiv, OpenAlex, Hacker News, GitHub, Internet Archive, Project Gutenberg) and says so. A relevance guard rejects poisoned answers (an engine that replies off-topic), a refusal classifier names CAPTCHA / anomaly / rate-limit walls, and a shared health ledger (`<app>/Temp/googler_engine_health.json`) rests refusing engines on a rising cooldown ladder instead of hammering them, so the next search starts with the route that answered last. `search_status` is always truthful: ok, no_matches, blocked, unreachable or timeout. Googler never solves a CAPTCHA itself; with `captcha_wait_seconds: N` and a visible window, a person may solve one. `site:` and `filetype:` carry broadly, but advanced `before:`/`after:`/`AROUND()`/numeric-range semantics are Google-specific, so a fallback may intentionally return broader candidates; pin `engines: [google]` when exact full-vocabulary behavior matters (an explicit list skips Tier 0 and Tier 2). The chat's direct `googler` tool runs this same agent as a child process with its own shorter deadline (`googler_chat_deadline_seconds`, default 60) and an off-screen window (`googler_chat_window_mode`); the user's Cancel stops it, and a refusal comes back as `Error: WEB SEARCH BLOCKED` naming the engines, never as an empty "no results".
+
+The new `adding-external-mcp` skill turns External-MCP setup into one guarded sequence: classify transport, write/import a secret-separated catalog entry, run MCP Doctor, activate only on operator intent, wait for healthy tools, inspect status/list output, then call the remote tool. The Deep Internet Research card is appended as prompt 118 in Getting Started and requests Multi-Turn plus Exec Report for a long, link-rich search that may use Sequential Thinking, Memory, MCPs, and agents.
+
+The previous annotated release, `v1.48.17` (2026-08-16), remains fully carried. Its same-day lineage is **`v1.48.15`** (encoding-safe Grepper + the closed Exec-Report status vocabulary), **`v1.48.16`** (themed pop-ups + a post-build frozen-bundle proof), and **`v1.48.17`** (Escape dismissal standardization and the sealed updater). Grepper recognizes BOM-marked UTF-8/16/32 before cp1252/Latin-1 fallbacks, so valid Windows text is searchable while genuine binaries remain skipped.
+
+Exec-Report status handling now uses a closed, source-guarded vocabulary with five disjoint classes: completed diagnostics, intact completed work, degraded work, work not done, and agent errors. Degraded deliverables such as inaudible token-only speech or a compromised PDF are red rather than falsely clean; named completions are auditable greens; an unknown token still fails open but is identified by rule `R8b`. The repository-wide guard scans every pool-agent `status:` literal so a newly invented token fails during tests instead of silently defaulting green. Kuberneter now reports numeric `returncode`, explicit `success`, and a real `ok`/`failed` status token, preventing a failed `kubectl` call from being painted green.
+
+Updater coverage protects the separately built `Uninstaller.exe` during self-update and keeps the preserve-list parser from being confused by comments. Public release builders forcibly clear inherited private External-MCP catalog and contact opt-ins; only the explicit keyed/private builder can bundle private state, and it first merges same-machine contact sources into gitignored `contacts.private.json` without putting PII into a public build or self-modify snapshot. Drift-proof tests derive supervisor counts and prompt rules from source. The current source inventory is reported in the [PDF dossier](tlamatini_app_summary.pdf) and [PowerPoint dossier](Tlamatini_eXtended_Artificial_Intelligence_Humanly_Tempered.pptx), with physical/effective lines by language, binary-asset counts and the complete tracked file tree. The live surface contains **89 workflow agents**, **67 wrapped chat agents**, **109 Multi-Turn tools** (**20 core + 67 wrapped + 12 ACPX/Skill + 10 External-MCP supervisors**), **56 application JavaScript modules**, **29 runtime skills**, and **213 migrations**. The `v1.48.14` private MCP runtimes, inactive Memory/Sequential-Thinking defaults, public/private catalog separation, and lossless diagram restoration remain carried.
+
+Dialog behaviour is now uniform on both pages: **Escape dismisses every dialog and means exactly what the titlebar ✕ means**, while an outside click still never dismisses anything — so a guarded prompt cannot be lost to a stray click, and no dialog can trap you either. A single dispatcher finds the topmost dialog and activates *that dialog's own* dismiss control, so an Ask-Execs permission prompt still answers **Deny**, a confirmation still resolves to "no", scroll locks are still released, and a sealed update step still refuses to close. The last native browser pop-ups are gone: `alert()` / `confirm()` inside the contacts book and the External-MCP dialog were replaced by themed `tlmAlert` / `tlmConfirm` panels that match the app instead of showing OS chrome over it.
+
+The build now also proves what it ships. Several modules reach the frozen app only through fail-open imports, which cannot report their own absence — the app would boot perfectly and silently lose the capability. After PyInstaller succeeds, `build.py` opens the archive it just produced and verifies that the runtime provisioner, the External-MCP defaults and client, the verdict engine, the path guard, the self-update module, and the version resolver are all really inside it, aborting the build if any is missing.
+
+---
+
+## 💎 The jewels — what nothing else can do
+
+Claude Code, Codex, Cursor, Gemini — they edit text files. Tlamatini does that **and** reaches into the physical and creative world, then lets you *wire it all together visually*:
+
+| | Capability | Why it's rare |
+|---|---|---|
+| 🎮 | **Unreal Engine control** | Drive the engine/editor from chat — no other coding agent touches it. |
+| 🎬 | **Blender control** | Scene, object, render, and code execution over the official Blender MCP socket. |
+| 🔌 | **Universal External-MCP handling** | Connect to **any** external MCP server (stdio · streamable-http · sse · websocket), up to 5 at once, and use its tools instantly. One client for the whole MCP ecosystem. |
+| 🛠️ | **Modify entire software projects** | Read, grep, refactor, edit, and rebuild whole codebases — not just single files — with hybrid RAG grounding. |
+| 🛡️ | **Security assessments** | Authorized Kali Linux / pentest runbooks + code security-audit skills, driven from chat. |
+| 🦠 | **Blue-hat Windows toolkit** | A path-independent, administrator-operated enablement and ten-family monitor/response toolkit with detect-only baselining, armed/watch modes, self-path protection, persistent IP blocking, visible regression proof, and explicit Windows-exception tradeoffs. |
+| 📟 | **STM32 · ESP32 · Arduino firmware** | Scaffold → build → **flash a real connected board** → read serial, with a safety preflight that refuses mis-targeted firmware. |
+| 🧩 | **A VISUAL WORKFLOW DESIGNER** | **89 drag-and-drop agent types** on a canvas you wire into runnable, savable `.flw` flows. *No other coding agent — Claude Code, Codex, none of them — gives you this.* This is the crown jewel. |
+
+> **The headline no competitor can copy:** Tlamatini is the only local-first AI dev assistant where you *design the agent workflow visually*, then have it flash firmware, drive Unreal/Blender, run security tools, and command any external MCP — all from one machine.
+
+---
+
+## 🔒 And it's yours alone
+
+Tlamatini's application, database, workflows, agent code, credentials, and embedding model remain under your control on your machine. **Its intended chat, planning, vision, and tool-calling configuration uses Ollama cloud models**, so the prompts and context sent to those configured models are processed through Ollama's cloud service. Direct Claude API use, external coding-agent CLIs, remote MCP servers, and other third-party integrations remain separately configurable. Review each provider's privacy terms and decide what project material you authorize Tlamatini to send outside your machine.
+
+## ⚠️ CLEAR DISCLAIMER — USER CONTROL, JURISDICTION, AND RESPONSIBILITY FOR AGENTS
+
+Every agent in `Tlamatini/agent/agents/` is intentionally provided as a **plain-Python program** so its operating code can be read, audited, edited, restricted, or disabled by the user. This transparency is a user-control mechanism, **not a warranty that an agent is secure or suitable for a particular environment**. The agents do not have independent authority or jurisdiction: the user alone decides whether, where, how, and with which permissions they run.
+
+When you enable, configure, modify, chain, or execute an agent, **that agent and its execution are under your control and your jurisdiction**. You are solely responsible for reviewing its code and configuration; protecting and limiting its secrets, credentials, and permissions; selecting and authorizing every file, folder, network target, browser, shell, API, external MCP server, machine, hardware device, and downstream system it can access; supervising its output; and complying with every law, policy, license, contract, and authorization that applies to your use.
+
+**BY RUNNING AN AGENT, YOU ACCEPT RESPONSIBILITY FOR ITS ACTIONS AND CONSEQUENCES. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, ANY SECURITY BREACH, DATA EXPOSURE OR LOSS, UNAUTHORIZED ACTION, CREDENTIAL LEAK, UNSAFE AUTOMATION, POLICY OR LEGAL VIOLATION, SYSTEM COMPROMISE, DEVICE DAMAGE, FINANCIAL LOSS, OR OTHER HARM ARISING FROM YOUR USE, CONFIGURATION, MODIFICATION, OR EXECUTION OF AN AGENT OR AGENT WORKFLOW IS THE RESPONSIBILITY OF THE USER WHO RUNS IT.** Tlamatini's orchestration, documentation, examples, and guardrails do not authorize access to third-party systems and cannot replace the user's own security review, permission controls, monitoring, or legal compliance.
+
+---
+
+## 📋 The full capability list
+
+Everything Tlamatini can do, grouped:
+
+**🧩 Orchestration & design**
+- **Visual Workflow Designer (ACP)** — 89 drag-and-drop agent types wired into runnable flows; save/load `.flw` files; Flow Compiler validates the canvas into `config.yaml`. An editor toolbar adds undo/redo, configure, duplicate-with-settings, delete, zoom/fit and an agent search box. Open it from **Panels ▸ Agentic Control Panel**.
+- **Prompt Flow Panel** — design a chain of prompts, decisions, embeddings and user questions on a canvas, save it as a `.fpmt` file, and play it against your own models; each run keeps its own conversation and embeddings. **User Input** collects runtime replies; static **User Commentary** bubbles support a floating rich-text toolbar, mixed styles within a note, all-border resizing and complete text containment without scrollbars. A horizontal divider gives Run output 5–95% of the canvas/output space while both panes scroll independently. Open it from **Panels ▸ Prompt Flow Panel**.
+- **Multi-Turn orchestration** — a tool-calling loop with **109 built-in tools** and a global execution planner; **Step-by-Step** mode paces hands-on setup one action at a time; **self-healing model steps** mean a network/model hiccup never freezes her — she retries under a watchdog, finishes gracefully from work already done, and always tells you what happened.
+- **FlowCreator / FlowHypervisor** — let an LLM design a flow; a watchdog monitors flow health. FlowCreator is now also **callable from chat** (`chat_agent_flowcreator`): describe a flow in plain words and it writes a real, canvas-loadable `.flw` file to disk.
+- **Parametrizer / Gatewayer / Gateway-Relayer / Node Manager** — chain agent outputs into the next agent's config; trigger flows from webhooks, folder-drops, or GitHub/GitLab.
+- **ACPX** — spawn external coding-agent CLIs (Claude Code, Codex, Cursor, Gemini, Qwen, and more) as tools and relay between them.
+
+**📟 Firmware & hardware**
+- **STM32er** — zero-config STM32 build/flash/observe across the whole ST 32-bit line (Blue Pill → F7/G/L/H7/U5/WB) via a dual backend (PlatformIO `ststm32` + the STM32F407VG template MCP), with a critical-mission safety preflight.
+- **ESP32er** — direct PlatformIO build/flash/monitor, zero-config bootstrap. Ships **ESP32TemplateProject**: `create_project` copies a complete blink-and-print firmware and stamps in your board, so a scaffolded project compiles immediately.
+- **Arduiner** — direct `arduino-cli`, auto-installs binary + core, build/upload.
+- **ESPHomer** — ESPHome smart-home device configs (YAML, no C++), zero-config. Ships **ESPHomeTemplateProject**: `scaffold_template` copies two worked devices, a shared package, and a gitignored secrets pattern.
+
+**🎬 3D & creative engines**
+- **Unrealer** — Unreal Engine control from chat.
+- **Blenderer** — Blender scene/object/render/code over the official MCP socket.
+
+**🛠️ Code & projects**
+- **PDFer** — the **document composer**: turn an answer, Markdown, HTML, plain text, images or existing PDFs into one document with a cover, tables, page numbers and an optional table of contents. **24 selectable visual styles** span cute clouds and nursery pastels, cyberpunk skylines, cosmic nebulae, circuit boards, and Aztec-inspired or extraterrestrial Tlamatini artwork. Set `style: kawaii_cloud`, `style: cyberpunk` or `style: tlamatini_celestial`; use `mode: styles` to list the complete catalog without creating a PDF. The **20 content themes** remain independent: `nuance` describes the document's purpose, while `style` chooses its appearance; `style: auto` keeps the original automatic design. A single `predominant_color` recolors the palette. Original vector art stays sharp in print and respects the content's decoration ceiling, including no ornament for legal, clinical and financial documents. The atelier renderer measures text and table widths, gives cover text an opaque reading area, and flows long titles onto later pages. Its default layout audit reopens the finished file to check overlaps, off-sheet text, blank pages and contrast; read `layout_clean` and the findings before calling a document verified. Modes: `auto`, `markdown`, `html`, `text`, `images`, `mixed`, `merge`, `info`, `validate`, `styles`. Styles apply to atelier text/HTML/mixed composition; legacy CSS, image-only pages and existing merged PDFs keep their own layouts. No new runtime dependencies or font downloads. PDFs land in **Documents/TlamatiniPDF** under collision-safe names. [All styles, examples, result fields and verification](Tlamatini/agent/agents/pdfer/STYLES.md).
+- **PPTXer** — the **deck builder**: turn an answer, Markdown, an outline, or a JSON deck spec into an editable PowerPoint with covers, cards, tables, charts, diagrams, images, video, and audio. Choose from **36 named treatments**: 24 automatic content treatments plus **12 explicit visual styles**, including Swiss Editorial, Midnight Luxe, Botanical, Blueprint, Bauhaus, and Sunset Coral. Set `nuance: blueprint` or leave it empty for automatic classification; brand colors, background, density, and fonts remain configurable across **17 font pairings**. Installed-font measurement and continuation slides keep long content complete, including the 256-character stress cases. Saved geometry, text bounds, and rendered contrast are audited, with native PowerPoint evidence identified by `ground_truth`; review `created_with_findings` results. Creation uses the bundled libraries; native verification uses installed PowerPoint. Default output is `Documents/TlamatiniPPTX`. [All styles, usage, verification results, and reproducible tests](Tlamatini/agent/agents/pptxer/STYLES.md).
+
+- **LaTeXer** — the **LaTeX typesetter**, and the typesetting sibling of PDFer: PDFer *composes* a PDF out of Markdown, HTML and pictures; LaTeXer *typesets* one from real `.tex` source — proper mathematics, a real bibliography, numbered cross-references, an index. Hand it a whole folder of `.tex` files and it finds the master document itself, follows every `\input`, runs `biber`/`bibtex` and `makeindex`, and keeps re-running the compiler until the cross-references settle — then it turns the famously unreadable LaTeX log into a short list of real errors. You can also hand it a bare fragment (even just `$E = mc^2$`) and it wraps it in a proper preamble for you. Eight built-in templates (article, report, book, beamer, letter, cv, homework, spanish-article), plus authoring actions to create, edit, read, list, lint and inspect `.tex` files. PDFs land in **Documents/TlamatiniLaTeX**.
+
+**Now with 30 signature styles:** candy and baby pastels, neon cyberpunk, orbital atlases and nebulae, circuit boards and oscilloscopes, jade temples and extraterrestrial Tlamatini codices. Each combines original vector artwork, coordinated reading pages, tables, code and mathematical typography. The eight templates still choose structure; `style` chooses appearance. Use `action: list_styles` to explore the collection without installing TeX.
+
+  For a finished PDF, use `action: scaffold_compile`, `template: article`, `style: tlamatini_celestial`, a `title` and LaTeX `content`. Choose `style_mode: print` for white paper, `style_decoration: restrained` for quieter artwork, `style_cover: false` for a compact title, or a six-digit `predominant_color` such as `#238D87`. Leaving `style` empty preserves the original output. Existing complete sources keep their own preamble; styles apply to new scaffolds and bare fragments.
+
+  [Browse all 30 styles, examples, controls and verification instructions](Tlamatini/agent/agents/latexer/STYLES.md).
+
+  > ### ⚠️ Compiling PDFs needs a TeX distribution — **MiKTeX** is recommended
+  >
+  > Tlamatini does **not** ship a TeX distribution: a full one is several gigabytes, and the whole release is kept small on purpose. Install **MiKTeX** from **https://miktex.org/download** to enable local PDF compilation. Style discovery and source authoring do not need a compiler.
+  >
+  > **Why MiKTeX specifically?** Because when a document asks for a LaTeX package you have never installed, **MiKTeX downloads and installs it by itself, in the middle of the build** — so the document still comes out. This also supplies the TikZ and typography packages used by styled documents when package installation is available. TeX Live and MacTeX are detected and used if you already have one, but neither can do that, so you would have to hunt down missing packages yourself. **MiKTeX is the recommended choice.**
+  >
+  > No LaTeX installed? Compilation refuses with an installation hint; `action: list_styles` still returns the catalogue without probing an engine. Ask it to run `action: validate` to see exactly what it found, or `action: install` and it will download and launch the official **MiKTeX** installer for you.
+- **Editor / Grepper / Globber** — surgical find-and-replace, regex content search, and filename glob (Claude-

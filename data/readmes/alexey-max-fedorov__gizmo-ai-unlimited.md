@@ -1,0 +1,64 @@
+<p align="center">
+  <a href="https://gizmo.best/get"><img src="https://img.shields.io/badge/Chrome-Install-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" height="50" alt="Install on Chrome"></a>
+  &nbsp;&nbsp;
+  <a href="https://gizmo.best/get"><img src="https://img.shields.io/badge/Edge-Install-0078D7?style=for-the-badge&logo=microsoftedge&logoColor=white" height="50" alt="Install on Edge"></a>
+  &nbsp;&nbsp;
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/gizmo-ai-unlimited/?utm_source=github-readme"><img src="https://img.shields.io/badge/Firefox-Install-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white" height="50" alt="Install on Firefox"></a>
+</p>
+
+# Gizmo AI Unlimited
+
+Unlocks unlimited hearts and hints on Gizmo AI quizzes and removes the client-side Magic Import cooldown on [app.gizmo.ai](https://app.gizmo.ai/).
+
+> [!WARNING]
+> ## Disclaimer
+> This is a **security research project** and **proof of concept**, documented at [hackany.app](https://hackany.app). It is not a consumer product. By using this software you assume all liability. See [gizmo.best/liability](https://gizmo.best/liability) for full details.
+
+
+
+
+## How it works
+
+Two pieces in this repo:
+
+1. **Patcher (`patcher/`)** — a Node CLI run every 2 hours by a GitHub Action. It fetches the live Gizmo JavaScript bundle, applies structured regex patch rules, and commits `patcher/dist/patches.json` (the rules + hash) and `patcher/dist/entry.min.js` (a verification copy) to `main`.
+2. **Browser extension (`src/`)** — a Plasmo MV3 extension. On `app.gizmo.ai` a packaged MAIN-world content script lets Gizmo load its own bundle, then forces in-memory subscription and import-cooldown reads to the unlocked result. It does not fetch or execute remote code.
+
+## Install
+
+- **Chrome / Edge / Brave:** Load unpacked from `build/chrome-mv3-prod/` after running `pnpm build`.
+- **Firefox:** `about:debugging` → "Load Temporary Add-on" → pick `build/firefox-mv3-prod/manifest.json` after `pnpm build:firefox`.
+
+## Build
+
+See `.claude/build.md`.
+
+## Privacy
+
+See `PRIVACY_POLICY.md`. The extension does not fetch remote code and does not collect or transmit personal data.
+
+## License
+
+See `LICENSE.txt`.
+
+## FAQ
+
+**What is Gizmo AI Unlimited?**
+Gizmo AI Unlimited is a free, open-source browser extension for Chrome, Edge, Brave, and Firefox that unlocks unlimited hearts and hints on Gizmo AI quizzes and removes Magic Import's client-side cooldown on [app.gizmo.ai](https://app.gizmo.ai/), so you can study without interruption.
+
+**Does unlimited Magic Import bypass server-side limits?**
+No. It removes Magic Import's client-side cooldown only; it does not modify or bypass Gizmo's server-side enforcement.
+
+**Does it stay up to date automatically?**
+Yes. A GitHub Action re-patches the Gizmo JavaScript bundle every 2 hours. Whenever Gizmo pushes an update to their app, the extension self-heals without any action on your part.
+
+**Is it safe to use?**
+The extension only activates on `app.gizmo.ai` pages. It collects no personal data and makes no outbound network requests except to load the patched bundle from this public GitHub repository. See `PRIVACY_POLICY.md` for the full details.
+
+**Which browsers are supported?**
+Chrome, Edge, Brave, and Firefox. Firefox is on Mozilla Add-ons. The Chrome Web Store and Microsoft Edge Add-ons listings are temporarily unavailable — Chrome and Edge installs go through [gizmo.best/get](https://gizmo.best/get) (manual install of the v2.2.0 release).
+
+**Is it free?**
+Yes — completely free and open source.
+
+

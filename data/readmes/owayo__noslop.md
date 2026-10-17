@@ -1,0 +1,279 @@
+<p align="center">
+  <img src="docs/images/app.png" width="128" alt="noslop">
+</p>
+
+<h1 align="center">noslop</h1>
+
+<p align="center">
+  日本語の文章、コードのコメント・静的な文言から「AI 臭さ」を機械的に拾う Rust 製の Linter
+</p>
+
+<!-- standard:badges:start -->
+<h3 align="center">対応プラットフォーム</h3>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&amp;logoColor=black" alt="Linux">
+  <img src="https://img.shields.io/badge/macOS-000000?logo=apple&amp;logoColor=white" alt="macOS">
+  <img src="https://img.shields.io/badge/Windows-0078D6" alt="Windows">
+</p>
+
+<p align="center">
+  <a href="https://github.com/owayo/noslop/actions/workflows/ci.yml"><img src="https://github.com/owayo/noslop/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/owayo/noslop/releases/latest"><img src="https://img.shields.io/github/v/release/owayo/noslop" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/owayo/noslop" alt="License"></a>
+</p>
+<!-- standard:badges:end -->
+
+---
+
+noslop は、日本語の文書やコード内のコメント・静的な文字列・JSX/HTML の文言を対象に、LLM が書いた文章に出やすい癖を決まった規則で指摘する Linter です。`と言えるでしょう` のような定型句、`〜ではなく` の対比の繰り返し、文の長さがそろいすぎた単調なリズム、見出しと太字だけで組んだ教科書的な構成を検出します。
+
+noslop は「この文章は AI が書いた」と判定する道具ではありません。書き手は自分の文章の癖に気づきにくく、長い文書を目で追うと必ず見落としが出ます。noslop は疑わしい箇所を並べるところまでを受け持ち、直すか残すかは書き手が文脈で決めます。残すと決めた箇所には、理由を添えた抑制コメントを書けます。
+
+文字種と語句のパターン、文長の統計で判定し、品詞で数えるルール（「の」の連鎖・連続漢字・実験的な名詞句の列挙）は、形態素解析の辞書で判定します。辞書を同梱した単一のバイナリで動き、起動も速く、大きなリポジトリでもファイルを並列に処理します。
+
+## 機能
+
+- **辞書を同梱**: 形態素解析器 [hasami](https://github.com/owayo/hasami) の IPAdic の辞書をバイナリに同梱し、「の」の連鎖（P16）と連続漢字（P15）を品詞で判定する。インストールも設定も要らない（[形態素解析の辞書](docs/dictionaries.md#形態素解析の辞書)）
+- **校正済みの閾値**: 人間とモデル 7 種の文書で誤検知率を確かめた語句と閾値だけを既定で有効にする。未校正のものは実験的ルールとして明示的に有効にしたときだけ動く
+- **2 つのレーン**: AI 臭さ（`slop`）と読みやすさ（`readability`）の指摘を分けて出す。文書全体の点数は出さず、指摘とその件数だけを並べる
+- **Markdown を理解する**: コードブロック・インラインコード・URL・文書の先頭の front matter（YAML の `---`・TOML の `+++`）を除き、見出し・リスト・表・引用を区別して解析する。HTML ブロックの本文も、タグと表示属性を除いて検査する（`script`・`style`・`pre`・`code`・`template`・`textarea`・コメント・`hidden` の要素は除く）。文書の途中の `---` は区切り線か見出しの下線として読み、本文を捨てない
+- **コードの文言も読む**: コードのファイルは、tree-sitter で取り出したコメント、日本語の静的な文字列、JSX/HTML の本文・表示属性を検査する。補間や別々のボタン名は独立した断片として扱い、指摘は元のファイルの行・列で示す（[コードのコメントと静的な文言](docs/code-comments.md#コードのコメント)）
+- **括弧を考慮した文分割**: 形態素解析器 [hasami](https://github.com/owayo/hasami) の辞書を使わない文分割を使う。「」や（）の内側の句点では文を切らず、閉じ忘れた括弧があっても後続の文を巻き込まない。`Yahoo!ニュース` のように文末記号を含む語の途中でも切らない
+- **判断を記録できる**: `<!-- noslop-disable-next-line P01 -- 引用のため -->` のように、残す理由を文書に書ける
+- **CI 向けの出力**: text（色付き）・JSON（安定したスキーマ）・GitHub Actions の注釈に対応する。既定ではジョブを落とさない
+- **AI エージェントに渡せる**: 直す箇所をルールごとにまとめた改稿指示を、Markdown・JSON・TOON（同じ内容を少ないトークンで表す形式）で出せる。MCP サーバー（`noslop mcp`）、Claude Code のフック（`noslop hook claude-code`。書いた直後、gws で Google ドキュメント・スプレッドシートに書き込む前、応答を終えたとき）、claw-hooks から呼ぶ入口（`noslop hook command` など）、スキル（`noslop skill-install`）で、書いた AI 自身に見直させる。gws の書き込み前に読める値とコマンドの形は[連携方法](docs/integrations.md#gws-の書き込み-pretooluse)にまとめた
+- **文体の混在を見直す**: 実験的な R20 を `--enable-rules R20` で有効にすると、全文が対象の文書で、本文全体のです・ます調と言い切りの混在を確認できる。引用・会話・独立した断片を除き、部分差分では判定を実行しない
+- **短い決め台詞の反復を見直す**: 実験的な R21 を `--enable-rules R21` で有効にすると、見出しと短い一文段落で読点を挟む型の反復を情報として示す。単発・因果・手順などを除く。作者を判別する根拠にはならないため、既定では無効（[検出条件と測定結果](docs/rules.md#r21)）
+- **変更した箇所だけを見直す**: `noslop check --git-diff` で、コミットしていない変更に重なる指摘を JSON・TOON などで取り出せる（[変更した箇所の検査](docs/cli-reference.md#変更した箇所の検査)）
+- **改稿を比べる**: `noslop diff` で、改稿で新しく出た指摘・消えた数字や固有名詞・文書全体に一律に当てた直しを確かめる
+- **手元のコーパスで校正できる**: `noslop calibrate` で、人の文書と生成文書からルールごとの誤検知率・検出率を測り、閾値を選ぶ
+
+文言を読めるコードの言語（拡張子と設定は [コードのコメントと静的な文言](docs/code-comments.md#コードのコメント) にあります）:
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Rust-000000?logo=rust&amp;logoColor=white" alt="Rust">
+  <img src="https://img.shields.io/badge/C-A8B9CC?logo=c&amp;logoColor=white" alt="C">
+  <img src="https://img.shields.io/badge/C++-00599C?logo=cplusplus&amp;logoColor=white" alt="C++">
+  <img src="https://img.shields.io/badge/Python-3776AB?logo=python&amp;logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&amp;logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&amp;logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/TSX-61DAFB?logo=react&amp;logoColor=black" alt="TSX">
+  <img src="https://img.shields.io/badge/Go-00ADD8?logo=go&amp;logoColor=white" alt="Go">
+  <img src="https://img.shields.io/badge/PHP-777BB4?logo=php&amp;logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/Java-ED8B00?logo=openjdk&amp;logoColor=white" alt="Java">
+  <img src="https://img.shields.io/badge/Kotlin-7F52FF?logo=kotlin&amp;logoColor=white" alt="Kotlin">
+  <img src="https://img.shields.io/badge/Swift-F05138?logo=swift&amp;logoColor=white" alt="Swift">
+  <img src="https://img.shields.io/badge/C%23-512BD4?logo=dotnet&amp;logoColor=white" alt="C#">
+  <img src="https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&amp;logoColor=white" alt="Bash">
+  <img src="https://img.shields.io/badge/Ruby-CC342D?logo=ruby&amp;logoColor=white" alt="Ruby">
+  <img src="https://img.shields.io/badge/Lua-2C2D72?logo=lua&amp;logoColor=white" alt="Lua">
+  <img src="https://img.shields.io/badge/HTML-E34F26?logo=html5&amp;logoColor=white" alt="HTML">
+  <img src="https://img.shields.io/badge/CSS-663399?logo=css&amp;logoColor=white" alt="CSS">
+  <img src="https://img.shields.io/badge/YAML-CB171E?logo=yaml&amp;logoColor=white" alt="YAML">
+  <img src="https://img.shields.io/badge/TOML-9C4121?logo=toml&amp;logoColor=white" alt="TOML">
+</p>
+
+## AI エージェントのフックによる修正例
+
+Claude Code が書いたコードのコメントを noslop のフックで検査し、指摘を受けた Claude Code が文章を修正している様子です。
+
+![noslop のフックによる 5 件の指摘を受け、Claude Code がコメントの予告文や強調表現を書き直している画面](docs/images/hook.png)
+
+応答を終えたときのフック（Stop）は、コミットしていない変更に重なる指摘を返します。次の画面では、Claude Code が 2 件の指摘を文脈で見直し、言い換えにすぎない対比を肯定文に書き換えています。読み手の誤解を正す対比は、理由を添えて残しています。
+
+![応答を終えたときの noslop のフックによる 2 件の指摘を受け、Claude Code が対比の 1 件を書き換え、もう 1 件を残している画面](docs/images/stop-hook.png)
+
+設定手順は [AI エージェントへの導入](docs/agent-setup.md) を参照してください。
+
+## 動作環境
+
+- **OS**: macOS、Linux、Windows
+- **Rust**: 1.98 以上（ソースからビルドする場合）
+
+## インストール
+
+<!-- standard:install:start -->
+### Homebrew (macOS/Linux)
+
+```bash
+brew install owayo/noslop/noslop
+```
+
+### winget (Windows)
+
+```powershell
+winget install owayo.noslop
+```
+
+### Cargo
+
+Rust 1.98 以上が必要です。
+
+```bash
+cargo install --git https://github.com/owayo/noslop --locked --no-default-features noslop
+```
+
+Cargo から直接入れる版は辞書を同梱しません。辞書を同梱した版は Homebrew・winget・GitHub Releases、またはソースから `make install` で入れられます。辞書本体は Git に置かず、ビルド前に固定した版と SHA-256 で取得・照合します。
+
+### GitHub Releases から
+
+[Releases](https://github.com/owayo/noslop/releases/latest) から自分の環境のアーカイブを取得して展開し、`noslop` を `PATH` の通った場所に置きます。各リリースには、取得したファイルを確かめるための `SHA256SUMS` も添付しています。
+
+| プラットフォーム | ファイル |
+|---|---|
+| Linux (x86_64) | `noslop-x86_64-unknown-linux-gnu.tar.gz` |
+| Linux (ARM64) | `noslop-aarch64-unknown-linux-gnu.tar.gz` |
+| macOS (Intel) | `noslop-x86_64-apple-darwin.tar.gz` |
+| macOS (Apple Silicon) | `noslop-aarch64-apple-darwin.tar.gz` |
+| Windows (x86_64) | `noslop-x86_64-pc-windows-msvc.zip` |
+
+macOS でブラウザから取得した場合は、実行の前に隔離属性を外します: `xattr -d com.apple.quarantine noslop`。
+
+### ソースから
+
+[mise](https://mise.jdx.dev/) が必要です (Rust のツールチェーンは `mise.toml` で固定しています)。
+
+```bash
+git clone https://github.com/owayo/noslop.git
+cd noslop
+make install
+```
+
+`make install` は `/usr/local/bin` に入れます。場所を変えるときは `INSTALL_PATH` を指定します (例: `make install INSTALL_PATH="$HOME/.local/bin"`)。
+<!-- standard:install:end -->
+
+アーカイブには `LICENSE` と `THIRD_PARTY_NOTICES.md` も含まれます。Homebrew と winget での更新、スキルの導入先、ソースから入れる場合の指定は [インストールの補足](docs/installation.md) を参照してください。
+
+ソースからの導入では、Claude Code と Codex CLI のスキルも `~/.claude/skills/noslop/` と `~/.codex/skills/noslop/` に入ります。`make uninstall` はスキルを残します。
+
+### 辞書のダウンロード（推奨）
+
+インストール後は、同梱の IPAdic より語彙の多い辞書を取得することを推奨します。
+
+```bash
+noslop dict download
+```
+
+名前を省くと、hasami が推奨する `ipadic-neologd-sudachi`（IPAdic + NEologd + SudachiDict）を取得します。辞書を指定しない既定の `auto` では、次の実行から取得した辞書を使います。取得状況と使う辞書は `noslop dict list` で確認できます。
+
+辞書の選び方や、同梱の辞書で校正した条件に合わせる設定は [形態素解析の辞書](docs/dictionaries.md) を参照してください。
+
+## 使い方
+
+文書の意味や目的に沿った読みやすさは`noslop review`で18観点から確認できます。目的・読者・必要情報を指定して依頼を作り、判定器や編集者が返した引用を原文と照合します。要点の順序、論理、曖昧さ、用語の定義などを確認候補として扱います。[文章レビュー](docs/review.md)にCLIとMCPの使い方をまとめています。
+
+```bash
+noslop review guide.md --purpose "初回の申込みを完了する" --audience "初めて使う人"
+noslop check guide.md
+```
+
+S11は列挙の予告と実際の項目数、S12はMarkdown上で本文のない節を検査します。どちらも標準の読みやすさのルールとして、既定で「情報」の指摘を出します。
+
+ファイルを指定して検査します。ディレクトリを渡すと、その配下の Markdown とテキストをまとめて検査します（`.gitignore`・`.ignore`・`.noslopignore` を尊重します）。
+
+```bash
+noslop check README.md
+noslop check docs --genre tech
+```
+
+改稿指示を AI や編集者に渡すなら `--report brief` を使います。JSON・TOON でも出せます。
+
+```bash
+noslop check README.md --report brief
+noslop check README.md --report brief --format toon
+```
+
+改稿後は、指摘の変化に加えて、数字や固有名詞の消失、文書全体に一律に当てた直しを確認できます。
+辞書があれば、品詞が固有名詞の語を長さにかかわらず拾います。辞書なしでは、数字・日付・英字の語・4文字以上のカタカナ語・「」『』で囲んだ語・URLを比べます。辞書が拾わない名前もあるので、結果が空でも情報がすべて残っているとは限りません。
+
+```bash
+noslop diff draft-v1.md draft-v2.md
+noslop explain R01
+```
+
+既定では指摘があっても終了コードは 0 です。指摘で CI を止める場合だけ `--fail-on warning` などを付けます。引数・設定・入出力の誤りは終了コード 2 です。フックの終了コードは呼び出す側の約束に合わせています。
+
+| 調べたいこと | 文書 |
+|---|---|
+| 全コマンド・オプション・終了コード | [CLI リファレンス](docs/cli-reference.md) |
+| ルールの ID・レーン・状態 | [ルール一覧](docs/rule-catalog.md)・[各ルールの説明](docs/rules.md) |
+| コードの対応言語・コメントと静的な文言の取り出し方 | [コードのコメントと静的な文言](docs/code-comments.md) |
+| text・JSON・TOON・GitHub 注釈・改稿指示の例 | [出力形式](docs/output.md) |
+| CI に組み込む例 | [GitHub Actions で使う](docs/github-actions.md) |
+| スキル・MCP・フックの導入 | [AI エージェントへの導入](docs/agent-setup.md)・[連携の仕様](docs/integrations.md) |
+| 改稿の確認事項と、点数を出さない理由 | [改稿の比較と指摘の読み方](docs/revision.md) |
+| 辞書の取得・選択・辞書なしの動作 | [形態素解析の辞書](docs/dictionaries.md) |
+| 校正の根拠と測り直しの手順 | [校正の考え方](docs/calibration-background.md)・[校正手順](docs/calibration.md) |
+
+## 設定
+
+ユーザーの設定は `~/.config/noslop/config.toml`、プロジェクトの設定は `noslop.toml`（または `.noslop.toml`）に置きます。既定値 → ユーザーの設定 → プロジェクトの設定 → CLI の順に、書いた項目を上書きします。
+
+設定ファイルのひな形は `noslop init` で作れます。
+
+```bash
+noslop init --user   # ~/.config/noslop/config.toml のひな形を作る (ディレクトリがなければ作る)
+noslop init          # カレントディレクトリに noslop.toml のひな形を作る
+```
+
+ひな形は項目をすべてコメントにしてあり、そのままでは何も設定しません。項目ごとの説明もコメントで添えてあるので、変えたい項目だけ行頭の `#` を外して書き換えます。ファイルがすでにあるときは上書きせずに止まります。上書きするには `--force` を付けます。
+
+ジャンルと辞書を指定するなら、次のように書きます。
+
+```toml
+genre = "tech"
+
+[morphology]
+dictionary = "bundled"
+```
+
+`bundled` は、品詞で数えるルールを元の校正と同じ同梱の IPAdic で判定する指定です。既定の `auto` は、取得済みの配布辞書があればそちらを先に選びます。
+
+重ね方・独自ルール・抑制コメント・ジャンルは [設定と抑制コメント](docs/configuration.md) に、全項目は [設定の例](examples/noslop.toml) にあります。
+
+## 開発
+
+<!-- standard:dev:start -->
+[mise](https://mise.jdx.dev/) が必要です。ツールの版は `mise.toml` で固定しています。
+
+```bash
+make setup   # ツールチェーン (mise)・依存・同梱辞書を取得する
+make ci      # CI と同じ検査 (書き換えない)
+```
+
+| コマンド | 説明 |
+|---|---|
+| `make setup` | ツールチェーン (mise)・依存・同梱辞書を取得する |
+| `make build` | デバッグ版をビルドする |
+| `make release` | リリース版をビルドする |
+| `make run` | デバッグ版を実行する (引数は ARGS="...") |
+| `make test` | テストを実行する |
+| `make lint` | clippy を警告ゼロで通す |
+| `make fmt` | コードを整形する (書き換える) |
+| `make fmt-check` | 整形済みかを確かめる (書き換えない) |
+| `make check` | 整形と静的検査 (書き換えない) |
+| `make ci` | CI と同じ検査 (書き換えない) |
+| `make install` | リリース版を INSTALL_PATH (既定 /usr/local/bin) に入れる |
+| `make uninstall` | INSTALL_PATH から取り除く |
+| `make clean` | ビルド成果物を消す |
+| `make dict-bundled` | 固定情報に合う同梱辞書を準備する (取得済みなら照合だけ) |
+| `make dict-bundled-update` | 同梱辞書の固定情報と表示を、依存の hasami のリリースに更新する |
+| `make hasami-update` | 依存の hasami を TAG の版 (省くと最新のリリース) に上げ、同梱の辞書も同じリリースにそろえる |
+
+`make` でターゲットの一覧を表示します。リリースは GitHub Actions で行います (**Actions → Release → Run workflow**)。
+<!-- standard:dev:end -->
+
+辞書を同梱しないビルドのテスト、ルール一覧の再生成、辞書目録の検証、リリースの仕組みとロードマップは [開発とリリース](docs/development.md) を参照してください。
+
+## ライセンス
+
+<!-- standard:license:start -->
+[MIT](LICENSE)
+<!-- standard:license:end -->
+
+noslop のルール体系・語句カタログ・閾値の一部は、MIT ライセンスで公開されている日本語の文章作法プロジェクトに由来します。著作権表示とライセンス全文は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) にあります。
+
+文分割には、日本語の形態素解析器 [hasami](https://github.com/owayo/hasami)（MIT）の辞書を使わない文分割を使っています。hasami が組み込む例外表（文末記号を含む語の一覧）は、SudachiDict などの辞書データから抽出しています。出典と著作権表示は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) にあります。
+
+既定のバイナリ（feature `bundled-dict`）には、hasami が mecab-ipadic から作った形態素解析の辞書を同梱しています。mecab-ipadic のライセンス（NAIST-2003）の条文は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) に、辞書の出所は [dict/README.md](dict/README.md) にあります。

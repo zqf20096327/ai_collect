@@ -1,0 +1,87 @@
+<div align="left">
+  <a href="https://terrytangyuan.github.io/cv.html"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/cv.svg" alt="Curriculum Vitae"></a>
+  <a href="https://terrytangyuan.github.io/about"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/followers.svg" alt="Followers"></a>
+  <a href="https://www.linkedin.com/in/terrytangyuan"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/linkedin.svg" alt="LinkedIn"></a>
+  <a href="https://bsky.app/profile/terrytangyuan.xyz"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/bluesky.svg" alt="Bluesky"></a>
+  <a href="https://x.com/TerryTangYuan"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/twitter.svg" alt="Twitter"></a>
+  <a href="https://fosstodon.org/@terrytangyuan"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/mastodon.svg" alt="Mastodon"></a>
+  <a href="https://substack.com/@terrytangyuan"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/substack.svg" alt="Substack"></a>
+  <a href="https://github.com/sponsors/terrytangyuan"><img src="https://raw.githubusercontent.com/terrytangyuan/terrytangyuan/master/imgs/sponsors.svg" alt="Sponsors"></a>
+</div>
+
+# Public Talks
+
+This repository contains the slides, videos, and supporting files for my public talks on various conferences, meetups, and classes.
+
+If you'd like to invite me to speak at an event you are organizing, feel free to reach out.
+
+## Quick Summary
+
+Delivered keynotes to audiences of up to 9,000+ attendees, regular presentations, panels, podcasts, and university lectures at major venues including KubeCon (North America, Europe, China), Open Data Science Conference, PlatformCon, PyData Global, IBM TechXchange, Red Hat Summit, ArgoCon, SciPy, Cloud Native AI Day, and Purdue University. Served in roles ranging from keynote speaker and lecturer to panel moderator and participant. 
+
+## List (in chronological order)
+
+### Keynotes
+
+<br/>
+
+| Title | Venue | Role | Date | Location |
+| ----- | ----- | ------ | ---- | -------|
+| [Anchoring Trust in the Age of AI: Identities Across Humans, Machines, and Models](talks/kubecon-na-2025#keynote-anchoring-trust-in-the-age-of-ai-identities-across-humans-machines-and-models) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Sponsored Keynote Speaker | Nov 11th, 2025 | Atlanta |
+| [Welcome + Opening Remarks](talks/kubecon-na-2025#keynote-welcome--opening-remarks-kubecon-north-america) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Invited Keynote Speaker | Nov 11th, 2025 | Atlanta |
+| [Advancing Cloud Native AI Innovation Through Open Collaboration](talks/cloud-native-ai-day-2024-keynote-advancing-cloud-native-ai-innovation-through-open-collaboration) | [Cloud Native & Kubernetes AI Day North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/cloud-native-kubernetes-ai-day/) | Sponsored Keynote Speaker | Nov 12th, 2024 | Salt Lake City |
+| [Building for the Road Ahead: An Ode to Maintainers, the Life Blood of Our Ecosystem](talks/kubecon-na-2022-keynote-fireside-chat) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Invited Keynote Speaker | Oct 26th, 2022 | Detroit |
+| [When Machine Learning Toolkit for Kubernetes Meets PaddlePaddle](talks/when-machine-learning-toolkit-for-kubernetes-meets-paddlepaddle-wave-summit-2021) | [Wave Summit](https://www.wavesummit.com.cn/) | Invited Keynote Speaker | Dec 12th, 2021 | Virtual |
+
+
+
+### Other Sessions
+
+<br/>
+
+| Title | Venue | Role | Date | Location |
+| ----- | ----- | ------ | ---- | -------|
+| [[Upcoming] Explore TAG Workloads Foundation: Core Runtime, Batch Scheduling, and Moar](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/program/schedule/?id=1289723) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 12th, 2026 | Salt Lake City |
+| [[Upcoming] Welcome + Opening Remarks](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/cncf-hosted-co-located-schedule/?id=1312036) | [Cloud Native AI + Inference Day](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/cloud-native-ai-inference-day/) | Speaker and Program Chair | Nov 9th, 2026 | Salt Lake City |
+| [Building for the Road Ahead: Transferable Lessons from the Front Lines of Open Source Maintenance](talks/scipy2026) | [SciPy Conference](https://www.scipy2026.scipy.org/) | Speaker | July 16th, 2026 | Minneapolis |
+| [Cloud Native AI + Kubeflow Day: Welcome + Opening Remarks](talks/kubecon-europe-2026#cloud-native-ai--kubeflow-day-welcome--opening-remarks-welcome--opening-remarks) | [Cloud Native AI + Kubeflow Day Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/co-located-events/cloud-native-ai-kubeflow-day/) | Speaker and Program Chair | March 23rd, 2026 | Amsterdam |
+| [Project Lightning Talk: Evolving KServe: The Unified Model Inference Platform for Both Predictive and Generative AI](talks/kubecon-europe-2026#project-lightning-talk-evolving-kserve-the-unified-model-inference-platform-for-both-predictive-and-generative-ai) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Speaker | March 23rd, 2026 | Amsterdam |
+| [Explore TAG Workloads Foundation: Advancing Cloud Native Execution From Core Runtime To Applications](talks/kubecon-europe-2026#explore-tag-workloads-foundation-advancing-cloud-native-execution-from-core-runtime-to-applications) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Speaker | March 25th, 2026 | Amsterdam |
+| [Advancing Kubernetes AI Conformance: Current State and Roadmap](talks/kubecon-europe-2026#advancing-kubernetes-ai-conformance-current-state-and-roadmap) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Speaker | March 26th, 2026 | Amsterdam |
+| [Navigating the Rapid Evolution of Large Model Inference: Where does Kubernetes Fit?](talks/kubecon-na-2025#navigating-the-rapid-evolution-of-large-model-inference-where-does-kubernetes-fit) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 12th, 2025 | Atlanta |
+| [Introducing TAG Workloads Foundation: Advancing the Core of Cloud Native Execution](talks/kubecon-na-2025#introducing-tag-workloads-foundation-advancing-the-core-of-cloud-native-execution) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 11th, 2025 | Atlanta |
+| [KServe Next: Advancing Generative AI Model Serving](talks/kubecon-na-2025#kserve-next-advancing-generative-ai-model-serving) | [Cloud Native & Kubernetes AI Day North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/cloud-native-kubernetes-ai-day/) | Speaker | Nov 10th, 2025 | Atlanta |
+| [Cloud Native & Kubernetes AI Day: Closing Remarks](talks/kubecon-na-2025#cloud-native--kubernetes-ai-day-closing-remarks) | [Cloud Native & Kubernetes AI Day North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/co-located-events/cloud-native-kubernetes-ai-day/) | Speaker and Program Chair | Nov 10th, 2025 | Atlanta |
+| [KServe Deep Dive: Evolving Model Serving for the Generative AI Era](talks/kserve-deep-dive-ibm-techxchange-2025) | [IBM TechXchange](https://www.ibm.com/community/ibm-techxchange-conference/) | Invited Speaker | Oct 6th, 2025 | Orlando |
+| [Embracing Partnership and Open Collaboration in the Cloud-Native and AI Model Serving Communities](talks/red-hat-summit-2025) | [Red Hat Summit](https://www.redhat.com/en/summit) | Panel Moderator | May 20th, 2025 | Boston |
+| [Kubeflow Ecosystem: What’s Next for Cloud Native AI/ML and LLMOps](talks/kubecon-europe-2025#kubeflow-ecosystem-whats-next-for-cloud-native-aiml-and-llmops) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Speaker | April 3rd, 2025 | London |
+| [Advancements in AI/ML Inference Workloads on Kubernetes From WG Serving and Ecosystem Projects](talks/kubecon-europe-2025#advancements-in-aiml-inference-workloads-on-kubernetes-from-wg-serving-and-ecosystem-projects) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Speaker | April 2nd, 2025 | London |
+| [Panel: Engaging the Kubeflow Community: Building an Enterprise-Ready AI/ML Platform](talks/kubecon-europe-2025#panel-engaging-the-kubeflow-community-building-an-enterprise-ready-aiml-platform) | [Cloud Native & Kubernetes AI Day Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/co-located-events/cloud-native-kubernetes-ai-day/) | Panelist | April 1st, 2025 | London |
+| [Cloud Native & Kubernetes AI Day Welcome + Opening Remarks](talks/kubecon-europe-2025#cloud-native--kubernetes-ai-day-europe-welcome--opening-remarks) | [Cloud Native & Kubernetes AI Day Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/co-located-events/cloud-native-kubernetes-ai-day/) | Speaker and Program Chair | April 1st, 2025 | London |
+| [WG Serving: Accelerating AI/ML Inference Workloads on Kubernetes](talks/kubecon-na-2024-wg-serving) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 15th, 2024 | Salt Lake City |
+| [Unlocking Potential of Large Models in Production](talks/kubecon-na-2024-unlocking-potential-of-large-models-in-production) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 14th, 2024 | Salt Lake City |
+| [Kubernetes Working Group Serving](https://kubernetespodcast.com/episode/240-wg-serving/) | [Kubernetes Podcast from Google](https://kubernetespodcast.com/) | Invited Speaker | Oct 31st, 2024 | Virtual |
+| [KServe Essentials: Building a Production-Ready Cloud-Native Model Serving Platform](talks/kserve-essentials-ibm-techxchange-2024) | [IBM TechXchange](https://www.ibm.com/community/ibm-techxchange-conference/) | Invited Speaker | Oct 21st, 2024 | Las Vegas |
+| [Engineering Cloud Native AI Platform](talks/platform-con-2024-engineering-cloud-native-ai-platform) | [PlatformCon](https://platformcon.com/) | Speaker | June 10th, 2024 | Virtual |
+| [Highly Scalable Inference Platform for Models of Any Size](talks/odsc-2024-highly-scalable-inference-platform) | [Open Data Science Conference](https://odsc.com/boston/) | Speaker | April 24th, 2024 | Boston |
+| [Production-Ready AI Platform on Kubernetes](talks/kubecon-europe-2024-production-ai-platform-on-k8s) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | March 22nd, 2024 | Paris |
+| [Cloud Native AI Day: Welcome + Opening Remarks](talks/kubecon-europe-2024-cloud-native-ai-day) | [Cloud Native AI Day Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | March 19th, 2024 | Paris |
+| [Beyond Prototypes: Production-Ready ML Systems with Metaflow and Argo](talks/kubecon-na-2023-metaflow-argo) | [KubeCon North America](https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america/) | Speaker | Nov 7th, 2023 | Chicago |
+| [Automating Map-building Pipelines for Safe Autonomous Driving with Argo Workflows at TuSimple](talks/argocon-autonomous-driving-tusimple-2022) | [ArgoCon](https://events.linuxfoundation.org/argocon/) | Speaker | Sep 20th, 2022 | Mountain View |
+| [Managing Thousands of Automatic Machine Learning Experiments With Argo and Katib](talks/argocon-automl-experiments-2022) | [ArgoCon](https://events.linuxfoundation.org/argocon/) | Speaker | Sep 20th, 2022 | Mountain View |
+| [Data Science in the Cloud-Native Era](talks/data-science-in-the-cloud-native-era-odsc-2022) | [Open Data Science Conference](https://odsc.com/boston/) | Invited Speaker | April 19th, 2022 | Boston |
+| [Unveil The Secret Ingredients for Argo CD at Enterprise Scale](talks/unveil-the-secret-ingredients-for-argo-cd-at-enterprise-scale-kubecon-china-2021) | [KubeCon China](https://www.lfasiallc.com/kubecon-cloudnativecon-open-source-summit-china/) | Invited Speaker | Dec 9th, 2021 | Virtual |
+| [Bridging into Python Ecosystem with Cloud-Native Distributed Machine Learning Pipelines](talks/bridging-into-python-ecosystem-with-cloud-native-distributed-machine-learning-pipelines-argocon-2021) | [ArgoCon](https://argoproj.github.io/argocon21/) | Speaker | Dec 8th, 2021 | Virtual |
+| [Towards Cloud-Native Distributed Machine Learning Pipelines at Scale](talks/towards-cloud-native-distributed-machine-learning-pipelines-at-scale-pydata-global-2021) | [PyData Global](https://pydata.org/global2021/) | Speaker | Oct 29th, 2021 | Virtual |
+| [Introducing Couler: Unified Interface for Constructing and Managing Workflows](talks/introducing-couler-unified-interface-for-constructing-and-managing-workflows-argo-workflows-community-meeting) | [Argo Workflows Community Meeting](https://argoproj.github.io/) | Invited Speaker | Sep 16th, 2020 | Virtual |
+| [Large Scale Distributed Deep Learning with Kubernetes Operators](talks/large-scale-distributed-deep-learning-with-kubernetes-operators-kubecon-europe-2019) | [KubeCon Europe](https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/) | Invited Panelist and Speaker | May 22nd, 2019 | Barcelona |
+| [Considerations for Large Scale Analytics in Production](talks/considerations-for-large-scale-analytics-in-production-purdue) | [School of Management, Purdue University](https://www.purdue.edu/) | Invited Lecturer | Nov 28th, 2018 | West Lafayette |
+| [TensorFlow Overview - Why Should Statisticians Care?](talks/tensorflow-overview-why-should-statisticians-care-purdue) | [Department of Statistics, Purdue University](https://www.purdue.edu/) | Invited Lecturer | Oct 18th, 2017 | West Lafayette |
+| [Introduction to TensorFlow](talks/introduction-to-tensorflow-asa-conference) | [American Statistical Association Conference](https://www.amstat.org/) | Invited Speaker | Mar 3rd, 2017 | Chicago |
+
+
+### Short Videos
+
+* [Why is open, transparent data important to LLMs? - Red Hat](https://youtu.be/ZlRrD-lXOzI?si=jA7buNBilEZdqWlU)
+* [The Power of Community | IBM TechXchange Community Day Kickoff](https://youtu.be/Q0E8ZNMk1Ac?si=SVoBwI2_q5XT3EVH)
+* [Using llm-d to Serve Large Models - Red Hat Community](https://youtu.be/qwhhNFvX928?si=uJLRTDdKGJaIjINL)

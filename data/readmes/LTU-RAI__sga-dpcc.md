@@ -1,0 +1,311 @@
+<div align="center">
+  
+# *Have We Scene It All?*
+## Scene Graph-Aware Deep Point Cloud Compression
+
+[![arXiv](https://img.shields.io/badge/Arxiv-2510.08512-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2510.08512)
+[![DOI:10.1109/LRA.2025.3623045](https://img.shields.io/badge/IEEE-10.1109/LRA.2025.3623045-00629B.svg)](https://doi.org/10.1109/LRA.2025.3623045)
+  <a href="https://www.youtube.com/watch?v=MFKrhtmc3Tw"><img src="https://badges.aleen42.com/src/youtube.svg" alt="YouTube" /></a>
+  
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/) ![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
+
+[**Nikolaos Stathoulopoulos**](https://github.com/nstathou) · [**Christoforos Kanellakis**](https://github.com/christoforoskanel) · [**George Nikolakopoulos**](https://github.com/geonikolak) 
+
+</div>
+
+<p align=center> <img src="./figures/dpcc-concept.drawio.png" width="75%" height="75%"/> </p>
+
+## 💡 Introduction
+
+**Abstract:** Efficient transmission of 3D point cloud data is critical for advanced perception in centralized and decentralized multi-agent robotic systems, especially nowadays with the growing reliance on edge and cloud-based processing. However, the large and complex nature of point clouds creates challenges under bandwidth constraints and intermittent connectivity, often degrading system performance. We propose a deep compression framework based on semantic scene graphs. The method decomposes point clouds into semantically coherent patches and encodes them into compact latent representations with semantic-aware encoders conditioned by Feature-wise Linear Modulation (FiLM). A folding-based decoder, guided by latent features and graph node attributes, enables structurally accurate reconstruction. Experiments on the SemanticKITTI and nuScenes datasets show that the framework achieves state-of-the-art compression rates, reducing data size by up to 98% while preserving both structural and semantic fidelity. In addition, it supports downstream applications such as multi-robot pose graph optimization and map merging, achieving trajectory accuracy and map alignment comparable to those obtained with raw LiDAR scans. 
+
+<img src="./figures/original.gif" width="49%" height="50%"/> <img src="./figures/decompressed.gif" width="49%" height="50%"/>    
+
+---
+
+## 📋 Table of Contents
+
+- [💡 Introduction](#-introduction)
+- [🚀 Setup](#-setup) — [Prerequisites](#prerequisites) • [Installation](#installation) • [Environment Setup](#environment-setup) • [Dataset Setup](#dataset-setup) • [Configuration](#configuration)
+- [📦 Pre-trained Weights](#-pre-trained-weights)
+- [🏋️ Train](#-train) — [Generate Semantic Scene Graphs](#step-1-generate-semantic-scene-graphs) • [Train the Autoencoder](#step-2-train-the-autoencoder)
+- [⚙️ Test](#-test) — [Running Inference](#running-inference) • [Encode-Only Workflow](#encode-only-workflow) • [Decode-Only Workflow](#decode-only-workflow)
+- [📝 Citation](#-citation)
+
+---
+
+## 🚀 Setup
+
+Tested with Python 3.8, should work with newer versions as long as you get the correct versions of PyTorch, torch-geometric, and Open3D.
+
+### Prerequisites
+
+- Python 3.8 or higher
+- CUDA-compatible GPU (recommended for training)
+
+### Installation
+
+1. Clone the repository to your desired working directory:
+
+```bash
+git clone https://github.com/LTU-RAI/sga-dpcc.git
+cd sga-dpcc
+```
+
+### Environment Setup
+
+Using a virtual environment is strongly recommended. You can use any virtual environment manager you prefer.
+
+#### Using Conda (Recommended)
+
+```bash
+conda create -n sga-dpcc python=3.8
+conda activate sga-dpcc
+pip install -r requirements.txt
+```
+
+#### Using pip with venv
+
+```bash
+python -m venv sga-dpcc-env
+source sga-dpcc-env/bin/activate  
+pip install -r requirements.txt
+```
+
+### Dataset Setup
+
+1. Download the SemanticKITTI dataset from the [official website](https://semantic-kitti.org/dataset.html)
+2. Extract the dataset to your desired directory
+3. Ensure the dataset follows this directory structure:
+
+```
+path_to_dataset/
+SemanticKitti/
+├── semantic-kitti.yaml
+├── calib.txt
+└── sequences/
+    ├── 00/
+    │   ├── poses/          # 4x4 transformation matrix
+    │   │   └── 00.txt
+    │   ├── velodyne/       # Point cloud files
+    │   │   ├── 000000.bin
+    │   │   └── ...
+    │   └── labels/         # Semantic labels
+    │       ├── 000000.label
+    │       └── ...
+    ├── 01/
+    │   └── ...
+    └── ...
+```
+
+**Note:** Additional data structures (semantic scene graphs, etc.) will be generated in a later step during the training setup — see the **[Train](#train)** section below.
+
+
+### Configuration
+
+1. **Main Configuration**: Update `config/config-latest.yaml`
+   - Modify all file paths to point to your corresponding directories
+   - Set the correct path to your SemanticKITTI dataset
+   - Adjust output directories as needed
+
+2. **Autoencoder Configuration**: The `config/autoencoder.yaml` file controls:
+   - Parameters for all compression layers
+   - Training and testing hyperparameters
+   - Model architecture settings
+
+**Important Note**: In `config-latest.yaml`, the layer classes are defined based on SemanticKITTI label classes. Please note that layers 3 and 4 are reversed compared to the paper.
+
+---
+
+## 📦 Pre-trained Weights
+
+1. Download the pre-trained weights from [Google Drive](https://drive.google.com/drive/folders/1uqyPaKKuTkqtskoj9h4XdJt-PfJAE5Mm?usp=drive_link)
+2. Extract and place them in the `weights/checkpoints/` directory
+3. Ensure the directory structure matches the existing checkpoint folders
+
+---
+
+## 🏋️‍♂️ Train
+
+If you wish to just test with the pretrained weights, skip to **[Test](#test)** section.
+
+### Step 1: Generate Semantic Scene Graphs
+
+Before training, generate the semantic scene graph (SSG) for each scan that contains the point patches for each layer.
+
+```bash
+python modules/GenSSG.py --ssg_config /path/to/config-latest.yaml
+```
+
+**Arguments:**
+- `--ssg_config` - Path to your main config YAML file (required; defaults to built-in path)
+
+This generates `.pickle` files in a `graph/` subdirectory for each sequence, corresponding to each scan's SSG.
+
+### Step 2: Train the Autoencoder
+
+Train layer-specific autoencoders using the generated SSGs and point cloud patches.
+
+```bash
+python train/train.py --layer 1 --num_epochs 100 --batch_size 8
+```
+
+**Key Arguments:**
+- `--layer` (required) - Layer to train: `1`, `2`, `3`, or `4`
+- `--batch_size` - Batch size (default: 8)
+- `--num_epochs` - Number of training epochs (default: 100)
+- `--num_workers` - Workers for data loading (default: 8)
+- `--lr` - Learning rate (default: 5e-4)
+- `--weight_decay` - Weight decay for optimizer (default: 1e-6)
+- `--max_range` - Max point cloud range in meters (default: 50.0)
+- `--config_path` - Path to main config YAML
+- `--root` - Root directory of SemanticKITTI dataset
+- `--save_path` - Directory to save checkpoints
+- `--device` - Device for training: `cuda` or `cpu` (default: auto-detected)
+- `--cuda_visible_devices` - Comma-separated GPU IDs (e.g., `0,1,2,3`, default: `0`)
+- `--checkpoint` - Resume from checkpoint (path fragment, e.g., `20250105-12`)
+
+**Example: Train layer 1 with custom paths**
+
+```bash
+python train/train.py \
+  --layer 1 \
+  --num_epochs 100 \
+  --batch_size 16 \
+  --config_path /home/user/config-latest.yaml \
+  --root /home/user/SemanticKitti \
+  --save_path /home/user/checkpoints
+```
+
+**Multi-GPU Training**
+
+For distributed training across multiple GPUs, use `torchrun`:
+
+```bash
+torchrun --nproc_per_node=4 train/train.py --layer 1 --num_epochs 100 --cuda_visible_devices 0,1,2,3
+```
+
+The script automatically detects and handles distributed setup. Checkpoints are saved with a timestamp in `{save_path}/{YYYYMMDD-HH}/autoencoder_layer_{layer}.torch`.
+
+## ⚙️ Test
+
+### Running Inference
+
+The `test/predict.py` script performs point cloud compression inference using the pre-trained autoencoder models. It encodes point clouds into compact semantic scene graphs + the latents and reconstructs them, computing compression metrics.
+
+### Basic Usage
+
+```bash
+cd test
+python predict.py
+```
+
+This runs inference with default parameters on sequence `00`, scan `000000`.
+
+### Command-line Arguments
+
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `--root` | str | `~/Documents/datasets_2/SemanticKitti` | Root directory of SemanticKITTI dataset |
+| `--config_path` | str | `~/python_projects/sga-dpcc/config/config-latest.yaml` | Path to main configuration file |
+| `--selected_layers` | int(s) | `1 2 3 4` | Layer indices to process (space-separated) |
+| `--max_range` | float | `50.0` | Maximum range for point cloud (meters) |
+| `--device` | str | `cuda` or `cpu` | Device for inference (`cuda` or `cpu`) |
+| `--sequence` | str | `00` | Sequence number from dataset (e.g., `06`) |
+| `--scan_id` | str | `000000` | Scan ID to process (e.g., `000100`) |
+
+**Note:** Latent dimensions are automatically loaded from `config/autoencoder.yaml` based on selected layers.
+
+### Example Commands
+
+Process a specific sequence and scan:
+```bash
+python predict.py --sequence 06 --scan_id 000500
+```
+
+Use only layers 3 and 4:
+```bash
+python predict.py --selected_layers 3 4
+```
+
+Run on CPU:
+```bash
+python predict.py --device cpu
+```
+
+### Output
+
+The script generates:
+- **predicted.pcd** - Reconstructed point cloud with semantic colors
+- **gt.pcd** - Ground truth point cloud for comparison
+- **Console metrics:**
+  - Compressed size (MB)
+  - Original size (MB)
+  - Number of reconstructed points
+  - Bits per point (BPP)
+  - Compression ratio
+  - Size reduction percentage
+  - Chamfer distance (reconstructed vs. ground truth)
+
+#### Visualizing Results
+
+You can visualize the `.pcd` files using PCL tools or other point cloud viewers:
+
+```bash
+# Using PCL Viewer (if installed)
+pcl_viewer predicted.pcd
+
+# Using Open3D (Python)
+python -c "import open3d as o3d; o3d.visualization.draw_geometries([o3d.io.read_point_cloud('predicted.pcd')])"
+```
+
+### Encode-Only Workflow
+
+For transmitting compressed data, use `test/encode.py` to encode a scan and save the compressed SSG with latents:
+
+```bash
+cd test
+python encode.py --sequence 06 --scan_id 000500
+```
+
+This creates `06_000500.pkl` (compressed semantic scene graph with latent representations).
+
+**Key Options:**
+- `--output_bytes` - Custom output path for encoded bytes (defaults to `{sequence}_{scan_id}.pkl`)
+
+### Decode-Only Workflow
+
+Reconstruct a point cloud from previously encoded bytes using `test/decode.py`:
+
+```bash
+cd test
+python decode.py --sequence 06 --scan_id 000500 --input_bytes 06_000500.pkl
+```
+
+This reads the encoded SSG and reconstructs `06_000500.pcd`.
+
+**Key Options:**
+- `--input_bytes` - Path to encoded bytes (defaults to `{sequence}_{scan_id}.pkl`)
+- `--output_pcd` - Custom output path for PCD (defaults to `{sequence}_{scan_id}.pcd`)
+- `--skip_gt` - Skip loading ground truth (for decoding without access to original dataset)
+- `--compute_chamfer` - Compute Chamfer distance metric (requires ground truth)
+
+---
+
+## 📝 Citation
+
+If you found this work useful, please cite the following publication:
+
+```bibtex
+@article{stathoulopoulos2025sgadpcc,
+  author={Stathoulopoulos, Nikolaos and Kanellakis, Christoforos and Nikolakopoulos, George},
+  journal={IEEE Robotics and Automation Letters}, 
+  title={{Have We Scene It All? Scene Graph-Aware Deep Point Cloud Compression}}, 
+  year={2025},
+  volume={10},
+  number={12},
+  pages={12477-12484},
+  doi={10.1109/LRA.2025.3623045}
+}
+
+```

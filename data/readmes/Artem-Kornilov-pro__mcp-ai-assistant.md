@@ -1,0 +1,526 @@
+﻿# 🤖 MCP AI Assistant
+
+[![CI](https://github.com/Artem-Kornilov-pro/mcp-ai-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Artem-Kornilov-pro/mcp-ai-assistant/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+🇷🇺 Русский | [🇬🇧 English](README.en.md)
+
+**Dockerized MCP-сервер со 134 инструментами (файлы, GitHub, Google Sheets, погода, изображения, QR/штрихкоды, математика, валюты и др.), доступный по HTTP или stdio — подключается из Claude Desktop, Claude Code, Cursor или любого другого MCP-клиента.**
+
+---
+
+## 🎯 Что это?
+
+MCP AI Assistant — это библиотека готовых MCP-инструментов, упакованная в один Docker-образ. Внутри — 24 тематических сервера (файловая система, GitHub, погода, изображения, QR-коды, математика, валюты и т.д.), которые можно подключить целиком или частично к любому MCP-совместимому клиенту через обычный сетевой запрос, без установки Python или самого проекта.
+
+Проект построен на **Model Context Protocol (MCP)** — открытом стандарте для подключения AI-моделей к внешним инструментам. Помимо самого MCP-сервера, в `examples/terminal_chat.py` есть готовый пример клиента — терминальный AI-ассистент, который использует эти же инструменты напрямую через диалог на естественном языке.
+
+---
+
+## 🧠 Как это работает
+
+```
+MCP-клиент → HTTP / stdio → MCP-гейтвей (src/gateway.py) → выбранные servers/*.py → внешний сервис
+(Claude Desktop,                                                  ├── Файловая система
+ Claude Code, Cursor,                                              ├── GitHub / Google Sheets API
+ ваше приложение...)                                               └── погода, валюты, QR и т.д.
+```
+
+1. При старте контейнера переменная `MCP_SERVERS` определяет, какие домены инструментов включить (по умолчанию — все 24)
+2. `src/gateway.py` монтирует выбранные `servers/*.py` в один MCP-эндпоинт
+3. Любой MCP-клиент подключается по HTTP (или stdio) и видит список доступных инструментов
+4. Клиент вызывает инструмент напрямую — без LLM в середине, если он не нужен вашему приложению
+
+---
+
+## 🛠 Возможности (140 инструментов)
+
+<details>
+<summary><strong>📁 Файловая система (4)</strong></summary>
+
+- **read_file** — чтение любого файла в рабочей директории
+- **write_file** — создание или перезапись файла
+- **list_directory** — список файлов и папок
+- **search_files** — рекурсивный поиск по маске (например, `*.py`)
+- 🔒 **Sandbox-безопасность** — нельзя выйти за пределы `WORKSPACE_DIR`
+</details>
+
+<details>
+<summary><strong>🐙 GitHub (17)</strong></summary>
+
+- **Репозитории**: list_repos, get_repo_info, create_repo
+- **Файлы**: get_file, list_directory, create_or_update_file (с коммитом)
+- **Issues**: create_issue, list_issues, update_issue (включая закрытие)
+- **Pull Requests**: create_pull_request, list_pull_requests, merge_pull_request (merge/squash/rebase)
+- **Ветки**: list_branches, create_branch
+- **Коммиты**: list_commits
+- **Поиск**: search_code, search_repos
+</details>
+
+<details>
+<summary><strong>📊 Google Sheets (3)</strong></summary>
+
+- **create_sheet** — создание таблицы в вашем Google-аккаунте
+- **read_sheet** — чтение данных по ID с указанием диапазона
+- **write_sheet** — запись значений в ячейки
+- 🔑 Авторизация через личный OAuth-токен
+</details>
+
+<details>
+<summary><strong>🌤 Погода (8)</strong></summary>
+
+- **get_weather** — текущая погода: температура, ветер, влажность
+- **get_temperature** — температура в °C с ощущением
+- **get_forecast** — прогноз на 1-3 дня в °C
+- **get_wind** — скорость и направление ветра
+- **get_humidity** — влажность в процентах
+- **get_astronomy** — рассвет, закат, фаза луны
+- **get_weather_ascii** — визуальный ASCII-чарт погоды
+- **compare_weather** — сравнение погоды двух городов
+- 🌍 API wttr.in — без токена, без регистрации
+</details>
+
+<details>
+<summary><strong>📅 Дата и время (8)</strong></summary>
+
+- **get_current_time** — дата, время, день недели, неделя года
+- **calculate_date** — прибавить/вычесть дни от даты
+- **days_between** — разница в днях между датами
+- **get_day_of_week** — день недели для даты
+- **get_week_number** — номер недели по ISO
+- **format_date_ru** — формат "12 июня 2026 года"
+- **days_until** — сколько дней осталось/прошло
+- **is_weekend** — проверка на выходной
+</details>
+
+<details>
+<summary><strong>🗄 SQLite (3)</strong></summary>
+
+- **execute_query** — выполнить SELECT-запрос
+- **execute_statement** — выполнить INSERT/UPDATE/DELETE/CREATE
+- **list_tables** — список всех таблиц в базе
+- 💾 База хранится в `WORKSPACE_DIR/assistant.db`
+</details>
+
+<details>
+<summary><strong>📊 Excel (4)</strong></summary>
+
+- **read_excel** — чтение данных из .xlsx файла с указанием листа
+- **write_excel** — запись данных в .xlsx (создание нового или дополнение существующего)
+- **list_sheets** — список всех листов в Excel-файле
+- **csv_to_excel** — конвертация CSV в формат Excel
+</details>
+
+<details>
+<summary><strong>📋 CSV (3)</strong></summary>
+
+- **read_csv** — чтение CSV-файла с настраиваемым лимитом строк
+- **write_csv** — запись данных в CSV-файл
+- **csv_to_json** — конвертация CSV в JSON-массив объектов
+</details>
+
+<details>
+<summary><strong>📄 PDF (3)</strong></summary>
+
+- **read_pdf** — извлечение текста из PDF (PyMuPDF, полный Unicode)
+- **pdf_info** — метаданные: количество страниц, размер, автор, заголовок
+- **create_pdf** — создание PDF с поддержкой кириллицы (Arial/DejaVu)
+- 🔤 Полная поддержка русского текста при создании и чтении
+</details>
+
+<details>
+<summary><strong>🗜 Архив (3)</strong></summary>
+
+- **zip_files** — упаковка одного или нескольких файлов в ZIP-архив
+- **unzip_file** — распаковка ZIP-архива в директорию
+- **list_archive** — список файлов в архиве с их размерами
+</details>
+
+<details>
+<summary><strong>🔤 Текст (5)</strong></summary>
+
+- **hash_text** — хеш строки (md5/sha1/sha256)
+- **encode_base64** / **decode_base64** — кодирование и декодирование base64
+- **generate_uuid** — генерация случайного UUID4
+- **word_count** — подсчёт слов, символов и строк в тексте
+</details>
+
+<details>
+<summary><strong>🎲 Случайные числа (5)</strong></summary>
+
+- **random_int** — случайное целое число в диапазоне
+- **random_float** — случайное число с плавающей точкой в диапазоне
+- **random_choice** — случайный элемент из списка
+- **shuffle_list** — перемешать список
+- **random_sample** — N уникальных случайных элементов из списка
+</details>
+
+<details>
+<summary><strong>🔢 Математика (5)</strong></summary>
+
+- **is_prime** — проверка числа на простоту
+- **gcd** — наибольший общий делитель
+- **lcm** — наименьшее общее кратное
+- **factorial** — факториал числа
+- **fibonacci** — n-е число Фибоначчи
+</details>
+
+<details>
+<summary><strong>📐 Линейная алгебра (8)</strong></summary>
+
+- **vector_add** / **vector_subtract** — покомпонентные операции над векторами
+- **vector_dot** — скалярное произведение векторов
+- **vector_norm** — норма (длина) вектора
+- **matrix_multiply** — произведение матриц
+- **matrix_transpose** — транспонирование матрицы
+- **matrix_determinant** — определитель квадратной матрицы
+- **matrix_inverse** — обратная матрица
+- 🧮 На базе NumPy
+</details>
+
+<details>
+<summary><strong>✅ Валидация текста (5)</strong></summary>
+
+- **validate_email** / **validate_url** — проверка формата email и URL
+- **extract_emails** / **extract_urls** — извлечение email/URL из текста
+- **slugify** — преобразование текста в URL-safe slug
+</details>
+
+<details>
+<summary><strong>🖼 Изображения (7)</strong></summary>
+
+- **get_image_info** — размеры, формат, режим цвета, размер файла
+- **resize_image** — изменение размера изображения
+- **crop_image** — обрезка по координатам
+- **rotate_image** — поворот на заданный угол
+- **convert_format** — конвертация формата (по расширению выходного файла)
+- **create_thumbnail** — миниатюра с сохранением пропорций
+- **add_watermark** — текстовый водяной знак
+- 🎨 На базе Pillow
+</details>
+
+<details>
+<summary><strong>📈 Графики (10)</strong></summary>
+
+- **plot_line** / **plot_scatter** / **plot_area** — линейный график, диаграмма рассеяния, график с заливкой
+- **plot_bar** / **plot_stacked_bar** — столбчатая и накопительная столбчатая диаграммы
+- **plot_pie** — круговая диаграмма
+- **plot_histogram** — гистограмма
+- **plot_boxplot** — box plot для одного или нескольких наборов данных
+- **plot_multi_line** — несколько линий на одном графике
+- **plot_from_csv** — построение графика прямо из CSV-файла рабочей директории
+- 📊 На базе Matplotlib
+</details>
+
+<details>
+<summary><strong>🔲 QR-коды (10)</strong></summary>
+
+- **generate_qr_code** — базовый QR-код из текста или ссылки
+- **generate_qr_code_colored** — QR-код с настраиваемыми цветами
+- **generate_qr_with_logo** — QR-код с логотипом по центру
+- **generate_wifi_qr** — QR-код для подключения к Wi-Fi
+- **generate_vcard_qr** — QR-код визитки (vCard)
+- **generate_sms_qr** — QR-код для отправки SMS
+- **generate_email_qr** — QR-код для письма (mailto)
+- **generate_geo_qr** — QR-код геолокации
+- **batch_generate_qr** — пакетная генерация нескольких QR-кодов
+- **read_qr_code** — распознавание и декодирование QR-кода с изображения
+- 📷 Генерация на qrcode, распознавание на OpenCV (без системных зависимостей)
+</details>
+
+<details>
+<summary><strong>📊 Штрихкоды (4)</strong></summary>
+
+- **generate_barcode** — линейный штрихкод (Code128, EAN13, EAN8, UPC, Code39, ISBN и др.)
+- **list_barcode_types** — список поддерживаемых типов штрихкодов
+- **batch_generate_barcode** — пакетная генерация нескольких штрихкодов
+- **read_barcode** — распознавание и декодирование штрихкода с изображения
+- 🏷 Генерация на python-barcode, распознавание на pyzbar (требует системную библиотеку libzbar)
+</details>
+
+<details>
+<summary><strong>🌐 Перевод (2)</strong></summary>
+
+- **translate_text** — перевод текста через MyMemory API (без ключа), с автоопределением исходного языка
+- **detect_language** — определение языка текста офлайн через langdetect
+</details>
+
+<details>
+<summary><strong>🧮 Уравнения и неравенства (5)</strong></summary>
+
+- **solve_equation** — решение произвольного уравнения (например, `"x**2 - 5*x + 6 = 0"`)
+- **solve_quadratic** — решение квадратного уравнения ax²+bx+c=0 с дискриминантом, включая комплексные корни
+- **solve_linear_system** — решение системы линейных уравнений
+- **solve_inequality** — решение неравенства (например, `"x**2 - 4 > 0"`)
+- **simplify_expression** — упрощение символьного выражения
+- 🧠 На базе SymPy
+</details>
+
+<details>
+<summary><strong>💱 Валюты (3)</strong></summary>
+
+- **convert_currency** — конвертация суммы из одной валюты в другую по актуальному курсу
+- **get_exchange_rate** — текущий курс между двумя валютами
+- **list_currencies** — список поддерживаемых кодов валют (~166, включая RUB)
+- 💰 API exchangerate-api.com — без токена, без регистрации
+</details>
+
+<details>
+<summary><strong>📐 Единицы измерения (5)</strong></summary>
+
+- **convert_length** — длина (метры, километры, мили, футы, дюймы и др.)
+- **convert_weight** — вес (граммы, килограммы, фунты, унции и др.)
+- **convert_temperature** — температура (Цельсий, Фаренгейт, Кельвин)
+- **convert_volume** — объём (литры, галлоны, кварты, чашки и др.)
+- **convert_area** — площадь (кв. метры, гектары, акры и др.)
+</details>
+
+<details>
+<summary><strong>🎉 Праздники (4)</strong></summary>
+
+- **get_public_holidays** — список праздников страны за год
+- **is_public_holiday** — проверка, является ли конкретная дата праздником
+- **get_next_holidays** — ближайшие предстоящие праздники
+- **list_holiday_countries** — список поддерживаемых стран (~205, включая RU)
+- 🎊 API date.nager.at — без токена, без регистрации
+</details>
+
+<details>
+<summary><strong>🎨 Цвет (6)</strong></summary>
+
+- **hex_to_rgb** / **rgb_to_hex** — конвертация HEX ↔ RGB
+- **hex_to_hsl** — конвертация HEX → HSL
+- **get_contrast_color** — чёрный или белый текст для читаемости на фоне (по WCAG)
+- **lighten_color** / **darken_color** — осветление/затемнение цвета на процент
+</details>
+
+---
+
+## 📸 Демонстрация
+
+Скриншоты ниже — из терминального примера клиента (`examples/terminal_chat.py`).
+
+![](screenshots/01-help.png)
+
+![](screenshots/02-tools.png)
+
+![](screenshots/03-list-directory.png)
+
+![](screenshots/04-read-file.png)
+
+![](screenshots/05-search-files.png)
+
+![](screenshots/06-create-file.png)
+
+![](screenshots/07-security.png)
+---
+
+## 🚀 Быстрый старт
+
+### Требования
+- Docker и Docker Compose (рекомендуемый способ)
+- Или Python 3.12+ для запуска без контейнера
+- GitHub Personal Access Token и Google OAuth Access Token — только если используете домены `github`/`google_sheets`
+- Yandex Cloud API ключ — только для примера с терминальным чатом (`examples/terminal_chat.py`)
+
+### Docker (рекомендуется)
+
+```bash
+git clone https://github.com/Artem-Kornilov-pro/mcp-ai-assistant.git
+cd mcp-ai-assistant
+cp .env.example .env   # нужен только доменам, которым требуются токены (github, google_sheets)
+docker compose up --build
+```
+
+Сервер поднимется на `http://localhost:8000/mcp` (транспорт Streamable HTTP). По умолчанию доступны все 24 домена и 134 инструмента.
+
+#### Выбор доменов инструментов
+
+Какие домены включены, определяет переменная `MCP_SERVERS` (список ключей через запятую; по умолчанию или при `all` — включены все):
+
+```bash
+MCP_SERVERS=weather,currency,qr docker compose up --build
+```
+
+Доступные ключи: `filesystem`, `github`, `google_sheets`, `weather`, `datetime`, `sqlite`, `excel`, `csv`, `pdf`, `archive`, `text`, `random`, `math`, `linalg`, `validate`, `image`, `chart`, `qr`, `barcode`, `translate`, `equation`, `currency`, `units`, `holidays`, `color`.
+
+#### Авторизация (опционально)
+
+Если контейнер доступен не только с localhost, задайте `MCP_API_KEY` — тогда все HTTP-запросы к `/mcp` без заголовка `Authorization: Bearer <MCP_API_KEY>` будут отклонены с 401. Без этой переменной сервер работает как раньше, без авторизации (удобно для локальной разработки).
+
+```bash
+MCP_API_KEY=your-secret-key docker compose up --build
+```
+
+#### Подключение MCP-клиента
+
+- **Claude Desktop / Claude Code / Cursor и другие MCP-клиенты**: укажите HTTP-эндпоинт `http://localhost:8000/mcp` в конфигурации MCP-серверов клиента.
+- **Напрямую (без Docker, для локальной интеграции по stdio)**: `MCP_TRANSPORT=stdio python -m src.gateway` — подходит для конфигов вида `"command": "python", "args": ["-m", "src.gateway"]`.
+
+### Без Docker
+
+```bash
+make install
+make run                 # эквивалент MCP_TRANSPORT=http PORT=8000 MCP_SERVERS=all
+```
+
+### Пример клиента: терминальный чат
+
+`examples/terminal_chat.py` — самостоятельный терминальный AI-ассистент (Yandex Cloud/DeepSeek), который вызывает инструменты из `servers/*.py` напрямую по естественноязыковому диалогу, без MCP-транспорта. Демонстрирует, как использовать эту библиотеку инструментов внутри своего приложения.
+
+```bash
+make install
+cp .env.example .env     # заполните YANDEX_CLOUD_API_KEY и YANDEX_CLOUD_FOLDER_ID
+make run-chat
+```
+
+---
+
+## 🏗 Архитектура проекта
+
+```
+mcp-ai-assistant/
+├── src/
+│   ├── __init__.py          # Пакет
+│   ├── config.py            # Загрузка конфигурации из .env
+│   ├── llm.py               # LLM-клиент (Yandex Cloud / DeepSeek)
+│   ├── mcp_manager.py       # Прямой вызов инструментов (используется примером-чатом)
+│   └── gateway.py           # MCP-гейтвей: реестр доменов, монтирование, HTTP/stdio-сервер
+├── servers/
+│   ├── __init__.py
+│   ├── filesystem.py        # Файловая система (4)
+│   ├── github.py            # GitHub API (17)
+│   ├── google_sheets.py     # Google Sheets (3)
+│   ├── weather.py           # Погода wttr.in (8)
+│   ├── datetime_tools.py    # Дата и время (8)
+│   ├── sqlite_server.py     # Локальная SQLite БД (3)
+│   ├── excel_server.py      # Excel (4)
+│   ├── csv_server.py        # CSV (3)
+│   ├── pdf_server.py        # PDF (3)
+│   ├── archive_server.py    # ZIP-архивы (3)
+│   ├── text_server.py       # Текстовые утилиты (5)
+│   ├── random_server.py     # Случайные числа (5)
+│   ├── math_server.py       # Математика (5)
+│   ├── linalg_server.py     # Линейная алгебра (8)
+│   ├── validate_server.py   # Валидация текста (5)
+│   ├── image_server.py      # Изображения (7)
+│   ├── chart_server.py      # Графики (10)
+│   ├── qr_server.py         # QR-коды (10)
+│   ├── barcode_server.py    # Штрихкоды (4)
+│   ├── translate_server.py  # Перевод (2)
+│   ├── equation_server.py   # Уравнения и неравенства (5)
+│   ├── currency_server.py   # Валюты (3)
+│   ├── units_server.py      # Единицы измерения (5)
+│   ├── holidays_server.py   # Праздники (4)
+│   └── color_server.py      # Цвет (6)
+├── examples/
+│   └── terminal_chat.py     # Пример клиента: терминальный AI-ассистент
+├── tests/
+│   └── unit/                # По одному файлу тестов на каждый модуль выше + test_gateway.py
+├── screenshots/             # Скриншоты работы (пример-чат)
+├── .github/workflows/
+│   └── ci.yml               # CI/CD: ruff + pytest + mypy + docker build
+├── workspace/                # Рабочая директория (файлы, БД)
+├── Dockerfile
+├── docker-compose.yml
+├── pyproject.toml
+├── Makefile
+├── LICENSE
+├── README.md
+└── README.en.md
+```
+
+---
+
+## 🧪 Тестирование и качество кода
+
+```bash
+make test         # pytest с покрытием (325+ тестов)
+make lint         # ruff check + format check
+make type-check   # mypy strict mode
+make docker-build # сборка Docker-образа
+```
+
+**CI/CD**: GitHub Actions автоматически проверяет каждый PR и push в master:
+- ✅ Ruff — линтер
+- ✅ Pytest — юнит-тесты с coverage
+- ✅ Mypy — строгая типизация
+- ✅ Docker build — образ должен собираться
+
+---
+
+## 🔧 Технологический стек
+
+| Категория | Технология |
+|-----------|-----------|
+| Язык | Python 3.12 |
+| MCP-сервер | FastMCP (HTTP / stdio транспорт) |
+| Контейнеризация | Docker, Docker Compose |
+| LLM (пример-чат) | Yandex Cloud / DeepSeek (OpenAI-совместимый API) |
+| HTTP | httpx (асинхронный) |
+| Конфигурация | python-dotenv, Pydantic |
+| Линейная алгебра | NumPy |
+| Изображения | Pillow |
+| Графики | Matplotlib |
+| QR-коды | qrcode, OpenCV |
+| Штрихкоды | python-barcode, pyzbar |
+| Перевод | MyMemory API, langdetect |
+| Уравнения и неравенства | SymPy |
+| Валюты | exchangerate-api.com |
+| Единицы измерения | стандартная библиотека |
+| Праздники | date.nager.at |
+| Цвет | стандартная библиотека |
+| Тестирование | pytest, pytest-cov, pytest-asyncio |
+| Линтер | ruff |
+| Типизация | mypy (strict mode) |
+| CI/CD | GitHub Actions |
+
+---
+
+## 📋 Примеры использования
+
+### Вызов инструмента напрямую (MCP-клиент)
+
+После подключения к `http://localhost:8000/mcp` инструменты доступны под именами `<домен>_<название>`, например `weather_get_weather`, `currency_convert_currency`, `qr_generate_qr_code` — так, как они появляются в списке `tools/list`.
+
+### Через пример-чат на естественном языке (`examples/terminal_chat.py`)
+
+```text
+# Файлы
+"покажи содержимое корневой папки workspace"
+"найди все Python файлы в src/"
+"создай файл notes.md с текстом ..."
+
+# GitHub
+"покажи список моих репозиториев на GitHub"
+"создай issue в user/repo с заголовком 'Баг'"
+"создай PR из ветки feature в main"
+
+# Google Sheets
+"создай таблицу 'Мои заметки'"
+"запиши в <ID> в ячейку A1 значение 'Привет'"
+"прочитай таблицу <ID>"
+```
+
+---
+
+## 🔮 Планы развития
+
+- [x] Dockerized MCP-сервер с выбором доменов инструментов (`MCP_SERVERS`)
+- [ ] Публикация образа в GitHub Container Registry при релизных тегах
+- [ ] MCP-сервер для Telegram (отправка сообщений)
+- [ ] MCP-сервер для работы с браузером (Playwright)
+- [ ] RAG (Retrieval-Augmented Generation) для работы с документами
+
+---
+
+## 📄 Лицензия
+
+MIT — используйте, модифицируйте, распространяйте.
+
+---
+
+## 👤 Автор
+
+**Artem Kornilov** — [GitHub](https://github.com/Artem-Kornilov-pro)

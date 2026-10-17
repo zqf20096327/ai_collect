@@ -1,0 +1,390 @@
+<div align="center"><sub>
+English | <a href="docs/cn/README.md">简体中文</a>
+</sub></div>
+
+<h1 align="center">AgentLoom</h1>
+
+<p align="center">
+  <strong>Build and run multi-agent applications from YAML.</strong>
+</p>
+
+<p align="center">
+  Typed Workers, permissioned edits, resumable Runs, explicit Goal completion, and review-gated memory share one runtime truth.
+</p>
+
+<p align="center">
+  <a href="https://github.com/linora-u/AgentLoom/actions/workflows/tests.yml"><img alt="tests" src="https://github.com/linora-u/AgentLoom/actions/workflows/tests.yml/badge.svg"></a>
+  <a href="https://www.python.org/downloads/"><img alt="python >=3.12" src="https://img.shields.io/badge/python-%3E%3D3.12-3776AB?logo=python&logoColor=white"></a>
+  <img alt="version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-007EC6">
+</p>
+
+AgentLoom treats a multi-agent system as an **Application with an execution
+contract**. YAML defines the Supervisor, typed Workers, models, tools, Skills,
+Hooks, permissions, and runtime policy. Run Applications through the CLI or
+Python API and inspect structured execution evidence.
+
+## Why AgentLoom
+
+### Workers become typed tools
+
+A Supervisor explicitly selects Workers through `worker_agents`; each selected
+Worker becomes a callable tool named and described by that Worker. Simple Workers
+use an empty Tool argument object and text output; each Worker's task comes from its YAML. Complex Workers declare
+Draft 2020-12 `input_schema` and `output_schema`, which runtimes validate as
+executable contracts rather than prompt conventions.
+
+### Runs produce evidence, not terminal guesses
+
+Every allocated Run receives an immutable `run_id`, manifest, and versioned
+lifecycle events, with bounded file logs when enabled plus audit records and
+artifacts. A logical `task_id` survives resume. The CLI JSON/JSONL and
+Python API read the same canonical state. Preflight rejection occurs before a
+Run or its storage is allocated.
+
+### Long-running work has an explicit owner
+
+Goal Mode keeps one root Supervisor objective active across continuation
+segments and Worker delegation. Only that Supervisor can mark the Goal complete
+with evidence. Checkpointing preserves the Goal and completed work across
+interruptions and resume.
+
+### Memory has review boundaries
+
+[Self-Learning v6](docs/en/self_learning.md) stores searchable history and
+  evidence-gated memory separately. Fact and experience candidates pass
+  evidence gates and the configured scope-approval policy; promotion to Project
+  scope is always initiated by a person.
+
+### Extensions do not silently gain authority
+
+Skills are model-context packages loaded on demand. Hooks are separately and
+explicitly authorized runtime code. Built-in tool metadata is discoverable
+without importing implementations, while actual tool, file, Shell, and MCP
+access remains governed by Agent configuration and permissions.
+
+## Quick start
+
+The source installer uses uv to create an isolated Python environment with locked
+dependencies and installs the `agentloom` and `loom` commands for this checkout:
+
+```bash
+git clone https://github.com/linora-u/AgentLoom.git
+cd AgentLoom
+./install
+```
+
+It currently supports macOS and Linux shells and requires Git and Bash. It
+installs missing `uv` through its official installer, then places the environment
+in this checkout's `.venv` and the launchers/install records in `.agentloom`.
+The project pins its managed Python version in `.python-version`; `./install`
+uses that version even when another Python is available on PATH.
+No environment activation is needed. Set `AGENTLOOM_INSTALL_DIR=/path/to/install`
+for a custom installation with its environment in `/path/to/install/venv`.
+Open a new terminal and verify it:
+
+```bash
+agentloom --help
+loom --help
+```
+
+The source installer defaults to `smol` plus professional `code` tools. For Pi
+without smol, use `./install --runtime pi` with Node 22.19+ and npm available;
+it automatically downloads the pinned SDK and builds AgentLoom's bridge. See
+[runtime installation profiles](docs/en/runtime_installation.md) for locked
+checkout/release commands and clean Application verification.
+
+Create the local model configuration:
+
+```bash
+cp config/model.example.yaml config/model.yaml
+```
+
+```yaml
+model:
+  default_model_type: powerful
+  powerful:
+    model: "openai/<model-id>"
+    api_key: "<api-key>"
+    base_url: "https://<openai-compatible-endpoint>"  # optional for OpenAI
+    tool_choice: "auto"
+  fast:
+    model: "openai/<fast-model-id>"
+    api_key: "<api-key>"
+    base_url: "https://<openai-compatible-endpoint>"
+    tool_choice: "auto"
+```
+
+`config/model.yaml` is ignored by Git and provides the project's model catalog.
+Applications can also define their own catalog in `config/model.yaml` under the
+Application directory. Select models in the Agent YAML with `model_type`.
+
+## Define an Application
+
+An Application keeps its Supervisor, Workers, prompts, optional tools, and
+outputs together:
+
+```text
+applications/release_review/
+├── workflows/
+│   ├── release_review_agent.yaml
+│   └── worker_agents/
+│       ├── api_reviewer.yaml
+│       └── test_reviewer.yaml
+├── config/system.yaml          # optional Application overlay
+├── skills/                     # optional private Skills
+└── sysprompt/                  # optional prompt templates
+```
+
+Backend-specific execution settings belong only in `runtime_options`. Historical top-level smol fields are silently ignored without conversion or rejection.
+
+A Supervisor references Worker definitions:
+
+```yaml
+name: "release_review"
+agent_runtime: "smolagents"
+description: "Review an API release and its test evidence."
+model_type: "powerful"
+
+worker_agents:
+  - path: "workflows/worker_agents/api_reviewer.yaml"
+  - path: "workflows/worker_agents/test_reviewer.yaml"
+
+task: |
+  Ask both Workers for evidence, reconcile conflicts, and return one release decision.
+
+tools: []
+runtime_options:
+  max_steps: 12
+goal:
+  enabled: true
+```
+
+Each Worker has its own YAML task. Without `input_schema`, its Tool takes no
+arguments. Declare schemas when the Supervisor passes typed call data or needs
+structured output:
+
+```yaml
+name: "api_reviewer"
+agent_runtime: "smolagents"
+description: "Review API compatibility risks."
+model_type: "fast"
+
+input_schema:
+  type: object
+  properties:
+    request:
+      type: string
+      description: "Release scope and API diff."
+  required: [request]
+  additionalProperties: false
+
+output_schema:
+  type: object
+  properties:
+    decision:
+      type: string
+      enum: [compatible, incompatible]
+    findings:
+      type: array
+      items:
+        type: string
+  required: [decision, findings]
+  additionalProperties: false
+
+task: |
+  Review the request, cite evidence, and return prioritized findings.
+
+tools: []
+worker_agents: []
+runtime_options:
+  max_steps: 8
+```
+
+Run the Supervisor directly:
+
+```bash
+uv run --locked --extra smol --extra code loom run applications/release_review/workflows/release_review_agent.yaml
+```
+
+Or ask a Skill-aware coding assistant to read
+[`agentloom-framework-skill/SKILL.md`](agentloom-framework-skill/SKILL.md), create
+the files, validate them, run the Application, and inspect `.agentloom` evidence.
+
+## Persistent Worker queues
+
+The optional `durable` extra uses DBOS 3.2.0 for persistent queues, admission,
+retries, and recovery. Its default storage is a local SQLite file. Declare each
+Worker's shared queue capacity in the Application's `config/system.yaml`:
+
+```yaml
+worker_execution:
+  workers:
+    workflows/research.yaml:
+      concurrency: 4
+```
+
+Submit through an Application Run, using a stable namespace root and an explicit
+business revision:
+
+```python
+from agentloom.app import Application
+from agentloom.execution.concurrency import WorkItem
+
+with Application.open(application, project_root=project_root) as app:
+    with app.durable(root=namespace_root) as execution:
+        handles = execution.worker("workflows/research.yaml").submit_many(
+            [WorkItem("research-1", {"query": "Investigate the release."})],
+            revision="1",
+        )
+```
+
+Start one dedicated consumer for that namespace. Other processes can submit to
+the same queues; they share the declared capacities. Finite `worker.map()` calls
+retain their separate per-call limits.
+
+```bash
+uv run --locked --extra durable loom durable serve APPLICATION \
+  --worker workflows/research.yaml --root NAMESPACE_ROOT
+```
+
+An existing task with different immutable input is rejected. Each invocation
+runs a complete Application under macOS launchd, and resource exit is checked
+before replacement. Generic execution requires explicit host authorization to
+replay work; applications that commit business side effects can supply a trusted
+host with completion receipts. The current OS adapter supports macOS; Linux and
+actual PostgreSQL or multi-host execution have not been validated. See the
+[execution contract](docs/specs/durable-worker-open-source-engine-integration-v2.md).
+
+## Runtime model
+
+<p align="center">
+  <img alt="AgentLoom runtime architecture" src="docs/assets/agentloom-runtime-architecture.svg">
+</p>
+
+The Python runtime owns model routing, Worker-tool generation, concurrency,
+permissions, Hooks, checkpoints, and evidence. Deterministic preprocessing,
+validation, caching, and output writing remain ordinary Python code.
+
+Runtime storage separates attempts from recoverable tasks:
+
+```text
+.agentloom/
+├── runs/<application_id>/<run_id>/
+│   ├── manifest.json
+│   ├── logs/runtime.log
+│   ├── audit/
+│   └── artifacts/
+├── checkpoints/<application_id>/<task_id>/
+│   ├── checkpoint.json
+│   ├── workers/<worker>/calls/<index>/checkpoint.json
+│   ├── todos.json
+│   ├── goal.json
+│   ├── context_store/
+│   └── file-history/
+└── workspaces/agents/<application_id>/<agent_path>/
+    ├── insights.md
+    └── tasks/<task_id>/{context.md,trace.md}
+```
+
+Goal, Todo, context-store, file-history, and Recall files appear only when the
+corresponding feature is configured or used.
+
+## Run and integrate
+
+Run the included code-review Application without creating a new Application:
+
+```bash
+uv run --locked --extra smol --extra code loom run applications/ai_quality_analysis/workflows/code_review_agent.yaml
+```
+
+Use machine-readable lifecycle events when another program owns execution:
+
+```bash
+uv run --locked --extra smol --extra code loom run applications/ai_quality_analysis/workflows/code_review_agent.yaml --output-format json
+uv run --locked --extra smol --extra code loom run applications/ai_quality_analysis/workflows/code_review_agent.yaml --output-format jsonl
+```
+
+For programmatic execution, `execute_app()` returns an `ApplicationRunResult`
+with output, timestamps, structured Goal state, and a `RunInfo` receipt:
+
+```python
+from agentloom.app.runner import execute_app
+
+result = execute_app("applications/release_review/workflows/release_review_agent.yaml")
+print(result.output, result.run.run_id)
+```
+
+Framework source lives directly in `src/app/`, `src/execution/`,
+`src/integrations/`, and the other responsibility modules. Installation maps `src/`
+to the Python package name `agentloom`: the import above loads
+`src/app/runner.py`. There is no extra `agentloom` source directory.
+Use `uv sync --managed-python --locked --all-groups --extra smol --extra code` to install the checkout before
+calling Python APIs. The old `src.*` imports and module commands are removed;
+supported commands are `agentloom`, `loom`, and `python -m agentloom`. See the
+[architecture and migration map](docs/specs/architecture-migration-inventory.md)
+for module ownership and migration details.
+
+Post-allocation failures carry the same receipt; preflight rejection emits
+`run.rejected` before storage exists. See
+[Structured Run API](docs/en/run_observability.md).
+
+For finite parallel work, use `app.worker(path).map(items)`. For persistent
+tasks, install the `durable` extra and submit through the public DBOS adapter:
+
+```python
+from agentloom.app import Application
+
+with Application.open("applications/release_review", project_root=".") as app:
+    with app.durable(root=".agentloom/release-review-queue") as execution:
+        handles = execution.worker("workflows/research.yaml").submit_many(items, revision="1")
+```
+
+Consume the same namespace with
+`loom durable serve applications/release_review --worker workflows/research.yaml --root .agentloom/release-review-queue`.
+DBOS 3.2.0 owns queues and recovery; SQLite is the default. Each invocation
+runs under macOS launchd. Linux durable execution and remote database operation
+have not been validated. See the [execution specification](docs/specs/durable-worker-open-source-engine-integration-v2.md)
+and [full-day acceptance](docs/reviews/durable-worker-dbos-news-acceptance-20261014.md).
+
+Durable schedules use the same Application contract and Run lifecycle. Their
+automatic firing is handled by an explicit foreground service:
+
+```bash
+agentloom schedules --project /path/to/project serve
+```
+
+## Example Applications
+
+| Application | Demonstrates |
+|---|---|
+| `ai_quality_analysis` | Twelve specialized Workers coordinated into staged code review |
+| `repo_map` | Deterministic preprocessing, bottom-up Agent analysis, batching, and progress persistence |
+| `goal_mode_validation` | Explicit Goal completion, continuation, and checkpoint resume |
+| `self_learning_smoke` | Session history, memory proposals, evidence, and review boundaries |
+
+## Documentation
+
+| Document | Covers |
+|---|---|
+| [Configuration Overview](docs/en/config-overview.md) | Configuration layers, merging, and isolation |
+| [Agent Configuration](docs/en/agent_config.md) | Supervisor and Worker YAML fields |
+| [Tool Catalog](docs/en/tool_catalog.md) | Lazy implementation loading, toolsets, metadata, and extension rules |
+| [Skills](docs/en/skills_config.md) | Discovery, on-demand activation, and permission boundaries |
+| [Hooks](docs/en/hooks.md) | Explicit authorization, events, transforms, and failure semantics |
+| [Goal Mode](docs/en/goal_mode.md) | Continuation, completion ownership, resume, and schedules |
+| [Checkpoint and Runtime Storage](docs/en/checkpoint.md) | Run/task identity, evidence, recovery, and retention |
+| [Self-Learning v6](docs/en/self_learning.md) | History, candidates, review, approval, and promotion |
+| [Structured Run API](docs/en/run_observability.md) | Python receipts, typed failures, JSON, and JSONL |
+
+## Development and support
+
+```bash
+# Framework
+uv run --locked --extra smol --extra code pytest tests -q
+```
+
+- Issues: [github.com/linora-u/AgentLoom/issues](https://github.com/linora-u/AgentLoom/issues)
+- Contact: [raine_walker@163.com](mailto:raine_walker@163.com?subject=AgentLoom%20Collaboration)
+
+If AgentLoom helps your project, consider starring the repository or
+contributing a focused Application, fix, or validation case.

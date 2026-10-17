@@ -1,0 +1,114 @@
+<h1 align="center">OverHAuL</h1>
+
+<div align="center">
+
+Improve your code security one harness at a time.
+
+<p>
+<a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed." /></a>
+<a href="https://pergamos.lib.uoa.gr/uoa/dl/object/5300250"><img src="https://img.shields.io/badge/uoadl-5300250-blue" alt="uoadl:5300250" /></a>
+<img
+src="https://img.shields.io/badge/Python-%3E%3D%0A3.10-3776AB.svg?logo=python&amp;logoColor=white"
+alt="python" /> 
+<img
+src="https://img.shields.io/github/license/kchousos/overhaul"
+alt="GitHub License" /> 
+<a href="https://kchousos.github.io/OverHAuL"><img alt="Static Badge" src="https://img.shields.io/badge/Docs-click_here-white"></a>
+<!-- <img -->
+<!-- src="https://img.shields.io/github/actions/workflow/status/kchousos/overhaul/tests.yml?label=tests" -->
+<!-- alt="GitHub Actions Workflow Status" />  -->
+<!-- <img -->
+<!-- src="https://img.shields.io/coverallsCoverage/github/kchousos/OverHAuL?branch=master" -->
+<!-- alt="Coveralls" /> -->
+<!-- <a href="https://docs.astral.sh/ruff/"> -->
+<!-- <img src="https://img.shields.io/badge/code%20formatter-ruff-d7ff64" -->
+<!-- alt="code formatter: ruff" /></a>  -->
+<!-- <a href="http://mypy-lang.org/"><img -->
+<!-- src="https://img.shields.io/badge/type%20check-mypy-blue" -->
+<!-- alt="type check: mypy" /></a> -->
+</p>
+
+</div>
+
+**OverHAuL** (*Harness Automation with LLMs*) is a system for automatically generating libFuzzer-compatible harnesses for C projects using ReAct-style LLM agents. It iteratively builds harnesses tailored for effective fuzzing through tool-assisted reasoning — all without manual intervention. OverHAuL's goal is to make fuzzing accessible and immediate, reducing friction and accelerating the path to safer software.
+
+<img width="4762" height="3093" alt="image" src="https://github.com/user-attachments/assets/a19e0204-b8c2-4d16-8774-b017c0fb3834" />
+
+
+## Installation
+
+### Dependencies
+
+- Python >=3.10
+
+### Installation Steps
+
+1. Clone the repository and cd into it:
+
+    ```bash
+    git clone https://github.com/kchousos/overhaul.git;
+    cd overhaul
+    ```
+
+2. Create a virtual environment (optional):
+
+    ```bash
+    python3.10 -m venv .venv;
+    source .venv/bin/activate # for bash
+    ```
+
+3. Install the project:
+
+    ```bash
+    pip install .
+    ```
+
+## Usage
+
+1. Add an OpenAI API key in `.env`, such as:
+
+    ```bash
+    # cat .env
+    OPENAI_API_KEY=<API-key-here>
+    ```
+    
+    Or export it as an environment variable:
+
+    ```bash
+    export OPENAI_API_KEY=<API-key-here>
+    ```
+
+2. Execute the main script:
+
+    ```bash
+    overhaul <repo-link>
+    ```
+
+The cloned repo with the newly generated harness can be found in the `output/` directory.
+
+### Command-Line Options
+
+```
+$ overhaul --help
+usage: overhaul [-h] [-c COMMIT] [-m MODEL] [-f FILES [FILES ...]] [-o OUTPUT_DIR] repo
+
+Generate fuzzing harnesses for C/C++ projects
+
+positional arguments:
+  repo                  Link of a project's git repo, for which to generate a harness.
+
+options:
+  -h, --help            show this help message and exit
+  -c COMMIT, --commit COMMIT
+                        A specific commit of the project to check out
+  -m MODEL, --model MODEL
+                        LLM model to be used. Available: o3-mini, o3, gpt-4o, gpt-4o-mini, gpt-4.1, gpt-4.1-mini
+  -f FILES [FILES ...], --files FILES [FILES ...]
+                        File patterns to include in analysis (e.g. *.c *.h)
+  -o OUTPUT_DIR, --output-dir OUTPUT_DIR
+                        Directory to clone the project into. Defaults to output
+```
+
+## Acknowledgments
+
+This project was developed as part of my BSc Thesis, under the supervision of Prof. [Thanassis Avgerinos](https://cgi.di.uoa.gr/~thanassis/). The thesis is [hosted online](https://kchousos.github.io/BSc-Thesis/).

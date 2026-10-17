@@ -1,0 +1,1632 @@
+<div align="center">
+
+# ✂️ ClipMint
+
+### Turn any long video into Shorts, Reels and TikToks — on your own PC
+
+A free, open-source AI clip generator for podcasts, interviews, vlogs,
+tutorials, gaming videos and stream VODs. It works out what kind of video it is, finds the moments
+worth posting, cuts them to 9:16, burns in word-by-word captions, cuts the dead
+air, and writes the title, captions and hashtags for **YouTube Shorts,
+Instagram Reels and TikTok**. Every clip tells you why it ranked where it did.
+
+No subscription, no per-clip credits, no watermark, and your video is never
+uploaded unless you press Upload — transcription runs on your PC, and only the
+transcript text goes to the AI that ranks it. When you do press Upload, a clip
+goes straight to your YouTube channel, now or on a schedule.
+
+A free alternative to Opus Clip, Klap and Vizard —
+**[see how it compares](docs/compare.md)**, including where they do more.
+
+
+[![Download](https://img.shields.io/badge/⬇_Download_for_Windows-224_MB-ff0033?style=for-the-badge)](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint.exe)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+
+[![Download for Mac](https://img.shields.io/badge/⬇_Download_for_Mac-BETA_·_Apple_Silicon-f59e0b?style=for-the-badge)](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint-macOS-arm64.zip)
+
+**The Mac build is a beta and has never been run on a Mac** — I don't own one.
+It is built and checked by GitHub's macOS runners, not by me. It may not start
+at all. [Tell me what happens](https://github.com/kleZ799/clipmint/issues/new)
+and I'll fix it. Windows is the tested build.
+
+[![Download for Linux](https://img.shields.io/badge/⬇_Download_for_Linux-x86--64-3b82f6?style=for-the-badge)](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint-linux-x86_64)
+
+**The Linux build has not been tested on a real Linux desktop.** It is built
+and run under WSL here, and every published build is started by the release
+workflow and asked for its interface before the release exists — so it does
+start, it does serve, and its ffmpeg does work. Nobody has yet sat at a
+desktop distribution and made clips with it.
+[Tell me what happens](https://github.com/kleZ799/clipmint/issues/new) and I'll fix it. It opens in your
+browser rather than in a window of its own.
+
+<!-- These read GitHub live, so a new release renames them on its own and
+     there is no version number in this file to go stale. -->
+[![Latest version](https://img.shields.io/github/v/release/kleZ799/clipmint?style=flat-square&label=latest%20build&color=ff0033)](https://github.com/kleZ799/clipmint/releases/latest)
+[![Released](https://img.shields.io/github/release-date/kleZ799/clipmint?style=flat-square&label=released&color=555)](https://github.com/kleZ799/clipmint/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/kleZ799/clipmint/total?style=flat-square&label=downloads&color=555)](https://github.com/kleZ799/clipmint/releases)
+
+**Built by [Parth Bhadana](https://github.com/kleZ799)**
+&nbsp;·&nbsp; [Website](https://klez799.github.io/clipmint/)
+&nbsp;·&nbsp; [YouTube](https://www.youtube.com/@ParthBhadana799)
+&nbsp;·&nbsp; [GitHub](https://github.com/kleZ799)
+&nbsp;·&nbsp; [LinkedIn](https://www.linkedin.com/in/parth-bhadana-530014202/)
+&nbsp;·&nbsp; [Discord](https://discord.gg/jnMrGbBz3m)
+&nbsp;·&nbsp; [Buy me a coffee](https://buymeacoffee.com/parthbhadana)
+
+**Engineer or hiring?** [The five-minute engineering case study](docs/case-study.md):
+the architecture, the hard problems, and the numbers.
+
+**No Python. No ffmpeg. Nothing to install.** Double-click and go.
+
+**[All downloads and setup steps ↓](#download)**
+
+<!-- GitHub will not play a video committed to the repo inside a README, so the
+     poster links to the site, where the same file plays in place. -->
+<a href="https://klez799.github.io/clipmint/#showcase"><img src="assets/showcase/clipmint-showcase-play.jpg" alt="Watch the 58-second tour of ClipMint: a podcast, vlog, tutorial, interview or stream goes in, and ranked Shorts come out, titled and scheduled to YouTube" width="880"></a>
+
+**[▶ Watch the 58-second tour](https://klez799.github.io/clipmint/#showcase)** · [or the mp4](assets/showcase/clipmint-showcase.mp4)
+
+<img src="assets/screenshots/01-create.png" alt="The create screen: a prompt typed like a message, give me 2 funny ones and 2 where I ask chat a question, around 30 sec each, 720p is fine, answered underneath with I'll make 4 clips: 2 funny ones and 2 where you ask chat a question, about 30 seconds each in 720p; Stream or gaming chosen, and the live 9:16 preview listing both groups" width="880">
+
+<img src="assets/screenshots/00-welcome.png" alt="The launch card: what the app is, who made it, links to the channel, repo, Discord and email, and a donate button" width="640">
+
+</div>
+
+**At a glance**
+
+| | |
+|---|---|
+| **Finds the moments** | Ranks every moment by the rules for its kind of video, then looks at the best ones the way a stranger scrolling past would |
+| **Frames them** | Webcam over gameplay, a crop that follows your face (or whoever is talking, when two people share the shot), or plain centre crop, at the source's real quality |
+| **Captions them** | Burned in, a few words at a time, the spoken word lit up. Four styles, ten fonts, any colour, top to bottom; fix a misheard word afterwards |
+| **Edits them** | Cuts quiet pauses and "um"s, punches in on emphasis, adds emoji, stock B-roll and your logo if you want. Framed wrong? Drag the frame, or move the captions, yourself |
+| **Explains them** | A score split into Hook, Moment, Look, Energy and Pace, with the reason each clip ranked where it did |
+| **Packages them** | Ranked titles, descriptions and tags for Shorts, captions for Reels and TikTok, all editable |
+| **Posts them** | Straight to your YouTube channel, one clip or a whole run, now or on a schedule |
+| **Learns from them** | Reads how each posted clip did, tells you what is working on your channel, and tunes the ranking when the evidence is strong |
+| **Stays on your PC** | Free, no account, no watermark; it runs on your GPU if you have one |
+
+---
+
+## What it does
+
+### Describe the layout. Don't configure it.
+
+Type *"webcam at the top, vertical for Shorts, 5 clips"* and the frame updates as
+you type. Want one exact moment instead? Say *"cut 14:45 to 15:30"* and it skips
+the ranking entirely. The chips are shortcuts for phrases it already understands.
+
+### Streams, vlogs, podcasts, tutorials — it knows which
+
+A stream, a vlog, a podcast and a tutorial are good for different reasons, so
+they are not ranked by the same rules. The app works out which one it is looking
+at, from the start, middle and end of what is said plus the video's own title
+and description, and picks the moments that kind of video is known for:
+
+- **Stream or gaming:** your reaction to the game, never a stretch of game
+  narration with you nowhere in it.
+- **Vlog:** the payoff of what happened, a plan falling apart, a first time.
+- **Podcast or interview:** the hot take, the confession, the argument while
+  it is still heated, opened on the answer rather than the question.
+- **Tutorial:** one complete tip, or a common mistake and its fix.
+
+Or tell it: **Kind of video** under the prompt, or just *"my vlog"* in it. A
+vlog or podcast is framed on the face from the start.
+
+### It keeps going when the AI provider does not
+
+Ranking a long VOD is a dozen calls to one company's servers, and free tiers get
+busy. A real run reached chunk 9 of 12 and started getting `503 UNAVAILABLE`,
+with an 11.9 GB download and a 29-minute transcription already paid for.
+
+Retrying Google does not fix Google being busy. So there is a fallback ladder:
+**Gemini → Groq → OpenAI**, free before paid, switching on a spent quota *or* on
+the retry budget running out. A [free Groq key](https://console.groq.com) takes a
+minute and no card, and is the single best insurance for a long run.
+
+### It speaks your language — and hears the right one
+
+The interface ships in English, Hindi, Spanish, Portuguese, French, German and
+Japanese, switchable in Settings. A fresh install is always English, and the
+browser's locale is deliberately ignored — a machine set to another language
+should not hand a first-run user an interface nobody chose.
+
+Separately, the *spoken* language of the video is pinned to English by default
+and changeable per run. Those are two different settings on purpose: you might
+run an English interface over a Hindi stream.
+
+Hindi speech is captioned in Hinglish (*"bhai ye game kya hai"*), the Roman
+script Hindi Shorts are actually read in, not the Devanagari the speech
+recogniser writes.
+
+### It watches the whole VOD so you don't have to
+
+Transcribes the audio locally with faster-whisper, then ranks every moment for
+what actually travels: hooks, revelations, opinion bombs, story peaks. You get
+told which stage it's on, because a three-hour VOD is not a two-second wait.
+
+<img src="assets/screenshots/02-progress.png" alt="A run on its last stage, Captions and edits, at 8 of 10, with the log open showing each clip listened to and then captioned, cut and punched in" width="880">
+
+### How long a run takes
+
+**Roughly: double the video, double the wait.** Three of the four stages read
+the source end to end, so they scale straight off its length. Only rendering
+doesn't — that goes by how many clips you asked for, not how long the video was.
+
+Per **hour of source video**, measured here on an RTX 5060 laptop with the
+`small` Whisper model:
+
+| Stage | Per hour of source | What moves it |
+|---|---|---|
+| Fetching the video | 1.6 GB to download — 9 min on 25 Mbps, 2 min on 100 Mbps | your connection |
+| Transcribing | **2.4 min** on an NVIDIA GPU, **8.7 min** on the CPU | GPU vs CPU, and the model |
+| Finding the moments | a few minutes, growing with the transcript | your AI provider that day |
+| Rendering | — *(scales with clip count, not length)* | about 12s per 30s clip |
+| Captions and edits | — *(scales with clip count, not length)* | one short Whisper pass and one encode per clip |
+
+So on a 100 Mbps line with GPU transcription, asking for 10 clips:
+
+| Source video | Roughly |
+|---|---|
+| 1 hour | ~8 minutes |
+| 2 hours | ~14 minutes |
+| 4 hours | ~26 minutes |
+
+A four-hour stream is not four times a one-hour one — the render is a fixed
+cost either way — but it is close enough that you should expect a long VOD to
+take a while. The same video is only fetched and transcribed once, so a second
+run over it skips straight to the ranking.
+
+On the CPU, transcription becomes the whole story: that 4-hour stream goes
+from about 26 minutes to about 50, and nearly all of the difference is the
+transcribe stage. If you have an NVIDIA card, the **Processor** box is worth a
+look before you start a long one.
+
+Those totals were measured before clips were captioned and edited. That pass
+listens to each finished clip again and encodes it once more, so it adds about
+the render time again on a CPU and very little on an NVIDIA GPU. It hasn't
+been re-measured on this laptop yet. Turn captions and the edit off under
+**Render** and a run takes exactly as long as the tables say.
+
+### Pause it when you need your machine back
+
+Rendering takes every core it can get. If that makes the PC unusable, **Pause**
+suspends the work where it stands — ffmpeg is stopped, not asked politely to
+finish the current clip — and the CPU comes back immediately. Resume picks up
+where it left off; nothing is lost and nothing is re-done. It holds
+transcription and face tracking too, on the CPU or the GPU.
+
+### Use the GPU — or don't
+
+**Processor**, right under the live preview on the Create page, decides what
+does the heavy work: **Automatic** (the
+fastest thing this computer really has), **GPU**, or **CPU only**.
+
+On Automatic, video is encoded on the graphics chip — NVIDIA, Intel, AMD or a
+Mac's — which roughly halves render time, and transcription uses an NVIDIA GPU
+when NVIDIA's CUDA libraries are there. Each is tested before it is used, so a
+driver that claims more than it can do falls back to the CPU instead of
+failing, and the panel says in plain words what is being used and why. If a
+graphics driver keeps misbehaving, **CPU only** never touches it. The choice
+applies from the next clip, even on a paused run.
+
+<img src="assets/screenshots/06-processor.png" alt="The Processor box under the live preview: Automatic selected, video encoding on the NVIDIA GPU (NVENC), transcription on the NVIDIA GPU (CUDA)" width="880">
+
+### Your clips folder is readable
+
+Runs are filed under the **title of the video they came from**, with the date,
+not a random id. Downloaded sources are named after the video too, with its
+YouTube id in brackets so two videos with the same title stay apart.
+
+The app also leaves a short note in that folder explaining what each part is,
+which files are safe to delete, and which one to leave alone — because the big
+downloads are the thing worth clearing out, and the manifest is the thing worth
+keeping.
+
+### Light or dark, your choice
+
+The app was dark only. There is a switch in the top bar now, next to Settings:
+a sun on the dark theme, a moon on the light one, showing where it will take
+you rather than where you are.
+
+It is remembered per machine, so the laptop and the desktop can disagree. A
+machine that has never been told follows the system, and keeps following it —
+so a Mac or a PC that switches itself to light at sunset takes the app along,
+until you press the button once and make the choice yours.
+
+### No windows flashing at you
+
+ffmpeg is a console program, and a windowed app starting one makes Windows open
+a console for it. A long render used to mean dozens of black windows blinking
+open and shut. They are hidden now. If you saw those and wondered what they
+were: that was the video tool doing the cutting, and hiding it was overdue.
+
+### It updates itself
+
+The app is one .exe people download once, so a fix that ships is a fix that has
+to reach them. It asks GitHub for the newest release at launch, again every
+half hour while it is open, and whenever you come back to the window — so a
+build published at noon reaches someone who started work at nine, without
+restarting anything.
+
+When there is one, a banner offers it. The download is checked against the
+SHA-256 GitHub publishes for that file, the running exe is replaced in place,
+and the app reopens on the new version. Same folder, same filename, and the
+build it replaced is deleted rather than left sitting on your disk. Nothing is
+touched until the checksum matches, so a failed download leaves the working
+app exactly as it was.
+
+There is a **Check for updates** button in the top bar and in the sidebar, and
+the version you are running is shown in all three places, for when something
+has gone wrong and you need to say which build you are on.
+
+The mac app checks on the same schedule but stops at telling you: it is a
+bundle of hundreds of files signed as one unit, and replacing that under a
+running process leaves a signature that no longer matches its contents — the
+app macOS then refuses to open being the one the update was meant to deliver.
+So it says a version is out, and you download it.
+
+The Linux build updates itself exactly as Windows does — more easily, in
+fact. Linux will replace a running binary outright, because the kernel is
+holding the file rather than the name; Windows insists on the rename first.
+It is done the same way on both anyway, so that the path which runs on
+every update is the path that gets exercised.
+
+> Builds before v1.5.0 were compiled before any of this existed and cannot be
+> told about new versions. Those need one manual download — the last one.
+
+### It tells you when it's finished
+
+A long VOD is tens of minutes of work. Nobody watches that, so the window ends
+up behind a game or minimised — and until now the only way to learn the clips
+existed was to go back and look, which meant a run that finished at 2am was
+found at nine.
+
+When a run ends and you are not looking at the app, it raises a desktop
+notification: a toast on Windows, Notification Centre on a Mac, and whatever
+your desktop uses on Linux. When you *are* looking at it, it stays quiet,
+because a notification for something already on your screen is just noise. It
+knows which by asking the page every twenty seconds whether it is actually on
+screen — and a window that has been closed stops answering, which is the same
+answer.
+
+Failed runs say so too, and name what went wrong.
+
+### It picks what a stranger would watch
+
+A new Short is shown first to a handful of people who have never heard of you.
+If they swipe, it stops there. So the ranking asks one question of every
+moment: would a stranger, with no idea who you are or what happened earlier,
+stay for it?
+
+- **The payoff has to be on screen.** On a stream, a clutch, a physics
+  disaster, a famous story twist or a game's own joke with your comeback ranks
+  above a reaction to something the clip never shows. Rage with no visible
+  cause, swearing on its own and chat talk are pushed down. Measured on a real
+  channel, the first kind reached about a thousand viewers each and the second
+  kind about eight.
+- **It looks before it cuts.** Every candidate's opening is checked straight
+  from the video for black screens, dark rooms and frozen frames, and how much
+  the picture moves is weighed in. Then the best ~20 candidates are shown to a
+  vision model as a stranger would meet them: the first instant, a second and
+  a half in, the payoff and the end. Menus, loading screens and stream
+  dashboards drop to the bottom before anything is rendered.
+- **It reads the chat.** A YouTube stream keeps a replay of its live chat, and
+  that is the one test audience a stream ever gets: a few hundred people
+  typing "WHAT" at the same second. The app fetches it while the video
+  transcribes and finds the bursts, measured against how busy that chat
+  usually is at that point in the stream, so a packed finale doesn't drown out
+  a big moment in a quiet first half. Hellos, goodbyes and "just subbed"
+  floods don't count, and neither does chat answering you: when you say
+  *"everybody type W"*, the flood that follows is set aside, because it's your
+  request, not a moment. The bursts are marked in the transcript the AI ranks,
+  so it finds moments the words never mention, like a clutch played in
+  silence or a jump scare answered with a gasp. Every candidate is also
+  scored on how hard chat reacted to it. A stream with no chat replay, or a
+  chat too quiet to mean anything, is ranked exactly as before.
+- **No near-duplicates.** Two clips that share more than a quarter of their
+  footage are one clip.
+
+### Clips come back ranked — and say why
+
+Each card carries its score, the exact span it was cut from, and the reason
+behind the score. The score is split into five bars: **Hook** (how hard the
+first line stops a scroll), **Moment** (how strong the moment is overall),
+**Look** (how the frames came across to the vision check), **Energy** (how
+loud its peak is against the rest of the video) and **Pace** (how quickly the
+talking starts). A stream whose chat could be read gets a sixth, **Chat**:
+how hard the live audience reacted, against its usual pace, and a note saying
+so when chat went off. Under the bars is the model's own sentence
+on why the moment works. "Strong moment, weak hook" means post it with a
+better cover line, not skip it. Open **Boost** on any clip to see the numbers
+and a grade: Top pick, Strong, Worth a look or Long shot. The library can sort
+each run by its strongest hook or its most energy as well as by rank.
+
+<img src="assets/screenshots/03-clips.png" alt="Finished clips in a grid, each with its rank and a score coloured by grade, burned-in captions on the thumbnail, the Hook, Moment, Energy and Pace bars, and the reason it ranked" width="880">
+
+### Captions, jump cuts and punch-ins, done for you
+
+Most Shorts are watched on mute, so every clip comes back with **captions
+burned in**, a few words at a time, with the word being said lit up as it is
+said. There are four looks: **Bold**, **Punch**, **Clean** and **Comic**. Each
+uses its own typeface, shipped with the app so it looks the same on every PC.
+Any style can be drawn in one of **ten fonts** instead (Montserrat, Anton,
+Bebas Neue, Poppins, Archivo Black, Lilita One, Luckiest Guy, Bangers,
+Permanent Marker or Bungee), with the **spoken word and the rest of the line in
+any colour**, placed **at the top, in the middle or at the bottom**. The live
+preview shows all of it before you render.
+Left on Auto, on the webcam-over-gameplay layout the captions sit on the seam between the
+two panels, where they cover neither your face nor the game.
+
+Each clip's **hook line** goes across the top for its first couple of
+seconds, on a dark box in the same typeface: one short line that tells a
+stranger what they are about to see before the moment arrives. When the clip
+opens on a replay of its loudest moment, the line is on that too, so it is up
+from the very first frame.
+
+The same pass does the edit an editor would do next:
+
+- **Dead air goes.** Quiet pauses and "um"s are cut. A pause with sound in it
+  stays: a laugh, or the game going off while you are silent. So does the
+  quiet beat right before the clip's loudest moment, because that is the
+  build-up, not a gap.
+- **Punch-ins** zoom in on the lines said with emphasis. On a face-cam clip,
+  jump cuts alternate between two framings, so a cut reads as a new angle
+  rather than a stumble.
+- **Emoji pops** (off by default) on words like "insane", "money" or "no way".
+- **B-roll** (off by default) puts two or three seconds of stock footage over
+  lines that name something you can film, like "I moved to Tokyo". It needs a
+  free [Pexels](https://www.pexels.com/api/) key in Settings, and it never
+  runs on a stream, where the gameplay is the picture.
+
+<img src="assets/screenshots/12-edit.png" alt="The Edit box under Render: Comic captions and Keep the pauses tagged set by your words because the prompt says so, then the Font row with Luckiest Guy chosen, green picked for the spoken word, Placement set to Middle, punch-ins ticked, emoji and B-roll off" width="880">
+
+**Whisper got a name wrong?** Open the clip and press **Captions**. Type the
+line as it should read and burn it in again. Words you keep stay exactly where
+they were said, and the pause cuts still follow what was actually said, so
+only the text on screen changes.
+
+<img src="assets/screenshots/13-captions.png" alt="The clip player with the Fix the captions panel open: the clip's words in a text box, Reset and Burn in again" width="880">
+
+**Your logo**, uploaded once in Settings, goes in the corner of every clip,
+small and slightly see-through, in whichever corner you pick. A clip that
+gets reposted or screen-recorded still carries your name.
+
+<img src="assets/screenshots/14-logo-and-broll.png" alt="Settings: Your logo with its thumbnail, Upload and Remove and the corner picker, then B-roll with the Pexels key saved" width="880">
+
+Pick them under **Render**, or say them in the prompt: *"comic captions, keep
+the pauses, add emoji"*. The words win over the switches, and the switches
+show it. Each clip is listened to again for word timings, a Whisper pass over
+seconds rather than hours, so this adds roughly the render time again on a
+CPU and very little on an NVIDIA GPU.
+
+The full guide, covering every style, every phrase the prompt understands, and
+what to do when a caption is wrong, is in
+[docs/captions-and-editing.md](docs/captions-and-editing.md).
+
+### The title knows what is on screen
+
+Every clip comes back with a title, a description, tags and an on-screen hook.
+Before any of it is written, the app looks at frames from the clip and works
+out what it actually is — which game, or whether it is a podcast, a story told
+to camera, a tutorial — so the Firewatch clip from a stream titled after The
+Finals is filed under Firewatch. A game is only named when something on screen
+or in the clip confirms it. When the app can only guess, the title says "this
+horror game" rather than a name that might be wrong, and **What's in this
+clip** lets you type the real one.
+
+### Packaged for YouTube Shorts, Instagram Reels and TikTok
+
+One clip gets posted to three apps, and they don't reward the same packaging, so
+**Boost** has a tab for each:
+
+- **YouTube Shorts:** five titles on different angles — the search phrase, the
+  curiosity gap, the reaction, the exact detail, the stakes — plus two
+  descriptions, all ranked by score, and scored tags to tap in and out.
+- **Instagram Reels:** two captions with the hook and keywords inside the first
+  125 characters, where Instagram cuts to "more", one written for search and one
+  written to be sent to a friend. Plus hashtags, cover text for the 3:4 grid, and
+  alt text.
+- **TikTok:** a caption built around what people search, and hashtags without
+  the `#fyp` filler.
+
+Every option is scored by the AI and checked again by the app, which counts
+things a model gets wrong: length, whether the subject is named where people will
+see it, and hashtags that don't belong on that app. All of it is editable.
+**Save changes** keeps your wording, and the mp4 on your PC is renamed to match
+the new title, so what is in the folder is always what goes into YouTube's title
+box.
+
+<img src="assets/screenshots/05-boost.png" alt="Boost on the top clip: a Top pick scorecard with its reason, the four bars with their numbers, three notes and what the edit did, then what the clip is filed under and five ranked title options" width="880">
+
+<img src="assets/screenshots/07-reels.png" alt="Boost on the same clip, on the Instagram Reels tab: the caption with its character count and ranked caption options" width="880">
+
+### Post it to your channel, now or on a schedule
+
+Connect your YouTube channel once in **Settings**, and the YouTube tab in
+**Boost** gets an **Upload to YouTube** button. It sends the clip with the
+title, description and tags exactly as they are in the boxes, as public,
+unlisted, private, or **scheduled** for a time you pick, with a category and
+the made-for-kids answer. A progress bar follows it, and when it lands the clip
+shows **Open in Studio**.
+
+A whole run at once? **Upload all**, beside **Rewrite titles**, lists every
+clip with the title, description and tags it will go up with. Edit any of them,
+untick the ones to skip, and pick a first publish time and a gap (every 3 hours
+up to every 2 days). Each clip shows its own publish time before anything is
+sent, and then they upload one after another while you carry on.
+
+A title the model never wrote does not go up. When the AI provider runs out
+of quota or doesn't answer, a clip falls back to its own first spoken line,
+which on a stream can be *"Holy shit | Dying Light"*. Those clips start
+unticked with a note, and neither upload button sends one until you use
+**Rewrite titles** or type your own. Titles are the last thing a run asks the
+AI for, so on a long stream they are the step most likely to meet a free
+tier's daily limit. A second provider's key in Settings covers that.
+
+<img src="assets/screenshots/11-upload-all.png" alt="Upload all on a run: scheduled, the first at 9 AM and then one a day, and each clip listed with its publish time and title, ready to edit" width="880">
+
+<img src="assets/screenshots/09-youtube-upload.png" alt="Boost scrolled to Post it to your channel: going to Parth Bhadana, who can see it, the category, the made-for-kids question, and the Upload to YouTube button" width="880">
+
+It goes through **YouTube's official API**. You sign in on Google's own page,
+ClipMint never sees your password, and the permission it gets can upload but
+can't delete or change anything. **Disconnect** hands the permission back. No
+bot clicks around YouTube Studio, which would break YouTube's terms and put
+your channel at risk.
+
+<img src="assets/screenshots/10-post-to-channel.png" alt="Settings, Post to your channel: connected to the Parth Bhadana channel, a Disconnect button, and links to YouTube's Terms of Service, Google's Privacy Policy and ClipMint's own" width="880">
+
+When you connect, Google shows *"Google hasn't verified this app"* until its
+review of ClipMint is done: click **Advanced → Go to ClipMint**. While that
+review is pending, YouTube *can* keep an upload private. It doesn't always, and
+the app tells you straight away when it does.
+
+[docs/youtube-upload.md](docs/youtube-upload.md) walks through the Google setup
+and the review, and the
+[privacy policy](https://klez799.github.io/clipmint/privacy.html) says what is
+stored and where: on your PC, and nowhere else.
+
+### See how your Shorts did, and learn from it
+
+With your channel connected, the library opens with **How your Shorts did**.
+ClipMint reads the views, likes and comments of every clip that's on your
+channel, including ones you uploaded yourself, which it finds by title. Then it
+says what the numbers show:
+
+<img src="assets/screenshots/16-performance.png" alt="How your Shorts did: 26 clips on YouTube with a median of 7 views, a finding marked Looks real that clips with a title the AI actually wrote got a median of 42.5 views against 3.5 for the rest, a line listing what has no clear link yet, and a note that the ranking is unchanged" width="880">
+
+- **Every pattern is tested against chance.** With a few dozen Shorts, most
+  differences are noise, and the panel says so: a finding is marked **Looks
+  real** only when shuffling the views at random almost never produces one as
+  strong. Everything else is listed as *no clear link yet*.
+- **Only clips at least two days old count.** A Short gets most of its views in
+  its first days, and yesterday's hasn't had them yet.
+- **The ranking learns, carefully.** When the loudness, reaction words, motion,
+  build-up or chat of a clip really does go with views on your channel, that
+  signal counts for more in the next run. It never moves by more than 40%, and
+  only once there are a dozen clips to go on. Until then, the ranking stays as
+  it is, and the panel tells you why.
+- **Every card shows its views**, and **Most views** sorts a run by them.
+
+On the channel this was built with, the one thing that held up was the titles.
+Clips whose title the AI actually wrote got **ten times** the views of clips
+where it had fallen back to the first thing said. That held within the same
+week's uploads too, so it wasn't just older Shorts doing better. None of the
+ranking scores tracked views yet, so nothing was tuned.
+
+It uses the same YouTube connection as uploading, with no new permission. It
+checks by itself at most every six hours, or when you press **Check now**. The
+numbers stay on your PC and are deleted after 30 days without a refresh, as
+YouTube's rules require. Disconnecting deletes them straight away.
+
+### Written from a playbook that keeps up with the algorithms
+
+The packaging is written by an AI working as a social media strategist, from a
+**growth playbook**: what YouTube Shorts, Instagram Reels and TikTok measure
+right now (swipe-aways and replays, sends and saves, search) and what to do
+about it. The playbook is a plain Markdown file,
+[`assets/playbook/short-form-algorithms.md`](assets/playbook/short-form-algorithms.md).
+When a platform changes how it ranks videos, that file is updated here, and
+every copy of the app picks up the new version within a day, without a new
+download. Keep your own notes instead by putting a `playbook.md` in the app's
+settings folder.
+
+### You can see it working
+
+A long video used to sit at 0% for ten minutes with nothing to look at. Now
+every stage reports itself:
+
+- **Fetching** shows how much of the video has arrived, how fast it is coming
+  and how long that leaves — "42% of 1.2GB at 8.4MB/s, 1m21s left".
+- **Transcribing** counts through the audio — "42% — 14m21s of 34m12s" — which
+  is the longest stage and used to be the most silent.
+- **Ranking**, **Rendering** and **Captions** count their chunks and clips.
+- Each stage animates while it is the live one, and the header shows **time so
+  far and about how long is left**, worked out from how long this run has
+  actually taken rather than a guess baked in months ago.
+
+### If the app closes mid-run, carry on
+
+Close the app, lose power, or have it crash halfway through a two-hour VOD,
+and the next launch offers the run back: **"A run didn't finish… Resume"**.
+Carrying on skips everything already done — the download, the transcript, and
+the ranking chunk by chunk — so it picks up near where it stopped instead of
+starting the whole thing again.
+
+That now includes the ranking. A resumed run used to ask the AI about every
+part of the video again, because a transcript read back from disk reports its
+length a few seconds differently from a fresh one. Chunks already ranked are
+kept now, so carrying on a long VOD doesn't spend your API allowance twice.
+
+### When YouTube asks if you're a bot
+
+Sometimes YouTube stops a download and says *"Sign in to confirm you're not a
+bot"* — more often on a VPN, a shared connection, or after a lot of downloads.
+It isn't a broken link, and it no longer ends the run.
+
+ClipMint first asks again as YouTube's TV app, a phone app and the embedded
+player, which YouTube refuses separately — that alone usually gets through, with
+nothing for you to set up. Only if none of those work does it use the YouTube
+sign-in from a browser on your computer, which is exactly what YouTube is asking
+for. Once something works, the rest of that run uses it straight away.
+
+If it still stops, open **Settings → YouTube sign-in**:
+
+<img src="assets/screenshots/08-youtube-signin.png" alt="Settings, YouTube sign-in section: the fallback set to Work it out, no browser on this PC able to sign in yet, and the note that cookies stay on the computer" width="880">
+
+- **Work it out** (the default) uses any browser that's signed in to YouTube.
+  It lists what it found, and says plainly why a browser can't be used.
+- **Cookies from a browser** — pick one. On Windows, **Firefox** is the one that
+  works: Chrome and Edge lock their cookies so no other program can read them.
+  On a Mac, Safari needs ClipMint allowed under *Full Disk Access*.
+- **A cookies.txt file** — export one with a browser extension and point at it,
+  or skip the settings entirely: **drop the file into
+  `%APPDATA%\ClipMint\`** (or your clips folder) and it's picked up on its own.
+  The app works from its own copy, so your export is never changed.
+- **Never use cookies** — if you'd rather it didn't.
+
+Cookies never leave your computer; they go to YouTube, where they came from.
+YouTube does see which account the downloads belong to, so if that matters,
+sign a spare account in to one browser and use that.
+
+### When something fails, it tries again
+
+A download that times out, a transcription that runs out of memory once, a
+clip whose render trips over a locked file: each stage tries again by itself,
+up to three times, before a run gives up. If it still fails, **Try again**
+picks up where it stopped — nothing already downloaded, transcribed or ranked
+is done twice — and a run that finished with a clip missing offers **Retry
+failed clips**, which renders just those. Errors that trying again cannot fix,
+like a wrong API key, fail straight away so you are not kept waiting for them.
+
+Asking for **best** quality when a lower-quality copy is already downloaded
+makes the app try for a better one. If YouTube won't serve it, the run now
+carries on with the copy you have — along with its transcript — instead of
+failing and throwing all of it away.
+
+### When a render fails, it says what failed
+
+Open **Show the log** and a failed clip tells you what went wrong in the words
+of the tool that failed — the video encoder's own complaint about your file,
+not a number. Errors like a full disk are spelled out in English.
+
+It cannot rescue a clip that will not render. It can hand you something worth
+pasting into an [issue](https://github.com/kleZ799/clipmint/issues/new),
+which is the difference between a bug that gets fixed and one that does not.
+
+### Fix any cut without re-running anything
+
+Click a clip and it opens in a player. Move the in and out points, mute it, save
+it, or throw it away. Trimming re-cuts straight from the downloaded source, so
+the span can **grow** as well as shrink — something you cannot do by trimming the
+rendered file. The new span is captioned and edited the same way the run was.
+
+To change only the words on screen, press **Captions** in the player instead
+(or **C**): type the line as it should read and it is burned in again, on the
+same span, with the same cuts.
+
+**Framed wrong? Move it.** Press **Frame** (or **R**) and the whole source
+picture opens with the part the Short shows marked on it. Drag the box to
+where it should be, and a slider under it moves the captions up or down, with a
+line on the clip showing where they will land. It renders again from the
+source in a few seconds, and stays put through any later trim or caption fix.
+**Back to automatic** undoes it.
+
+- **Face-following and gameplay-only clips:** the box is the whole picture.
+- **Webcam-over-gameplay clips:** your webcam is still found for you, shown
+  shaded, and the box is the game underneath it, for when the action is off to
+  one side.
+
+<img src="assets/screenshots/15-frame.png" alt="The clip player with the Frame panel open: the whole source picture with the part the Short shows boxed in red and the rest dimmed, the webcam marked as found automatically, a slider for which moment to look at, a Captions slider, and a dashed line on the clip showing where the captions will land" width="880">
+
+<img src="assets/screenshots/04-player-trim.png" alt="The clip player, its burned-in caption and emoji on screen, with the trim panel open showing in and out handles" width="880">
+
+---
+
+<!-- Old release notes link to #get-it, this section's name before it was Download. -->
+<a name="get-it"></a>
+
+## Download
+
+Every link fetches the newest release. Nothing else to install: no Python, no ffmpeg.
+
+| Platform | Download | Size | Status |
+|---|---|---|---|
+| **Windows** | [**⬇ ClipMint.exe**](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint.exe) | 224 MB | Tested. Updates itself. |
+| **macOS**, Apple Silicon (M1 or later) | [**⬇ ClipMint-macOS-arm64.zip**](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint-macOS-arm64.zip) | 167 MB | **Beta.** Never run on a Mac. |
+| **Linux**, x86-64 | [**⬇ ClipMint-linux-x86_64**](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint-linux-x86_64) | 280 MB | **Untested** on a desktop. Updates itself. |
+
+Older versions and release notes are on the [releases page](https://github.com/kleZ799/clipmint/releases).
+Setup for each platform follows below.
+
+> ### ⚠️ Read this before you download the Mac build
+>
+> **It has never been run on a Mac.** I develop on Windows and don't own one.
+> The Mac app is built and verified by GitHub's macOS runners — the build is
+> signed, its version is checked, and the bundled ffmpeg is confirmed to run —
+> but no human has ever double-clicked it.
+>
+> So: it might not start. If it doesn't, that is a bug in this project, not
+> something you did wrong, and I want to hear about it —
+> [open an issue](https://github.com/kleZ799/clipmint/issues/new) with
+> what you saw and the contents of `~/Movies/ClipMint/app.log` if that
+> file exists. That is how this stops being a beta.
+>
+> **Windows is the tested build.** If you have both machines, use that one.
+
+Double-click it. On first run it asks for a [free Gemini API key](https://aistudio.google.com/apikey), which is stored only on your machine.
+
+**On Windows and Linux, this is the only time you download by hand.** From v1.5.0 the app
+updates itself: it notices new releases, checks them, and replaces itself in
+place.
+
+**On a Mac**, unzip the download and drag the app to Applications. Apple
+Silicon only — an M1 or later; there is no Intel build. It is the same app
+doing the same work, with two differences worth knowing before you start:
+macOS will not open it on the first try (below), and it tells you about new
+versions rather than installing them, so an update means downloading it again.
+
+<details>
+<summary><b>Using it on a Mac — the whole thing, step by step</b></summary>
+
+**Expect step 4 to fail.** That is normal, it happens to every unsigned app,
+and it is not the beta part.
+
+**1. Download.** Take `ClipMint-macOS-arm64.zip` from the
+[latest release](https://github.com/kleZ799/clipmint/releases/latest).
+Apple Silicon only — an M1 or later. There is no Intel build.
+
+**2. Unzip.** Double-click the zip. You get a `ClipMint` folder with
+the app in it and `READ ME FIRST.txt` beside it — the same steps as these,
+for when you come back to this in six months and the tab is long closed.
+
+**3. Drag it to Applications.** It runs from anywhere, but Applications is
+where updates and Spotlight expect it.
+
+**4. Double-click it, and let macOS refuse.** It says the app is damaged, or
+that Apple cannot check it for malware. Nothing is damaged.
+
+**5. Allow it, once.** **System Settings → Privacy & Security**, scroll down
+to the line about ClipMint being blocked, click **Open Anyway**, confirm.
+It opens normally every time after this. (Right-click → Open, the old shortcut
+for this, stopped working in macOS 15.)
+
+**6. Wait for the first start.** It unpacks and loads the transcription models
+before the window appears — the first launch after a reboot is the slowest.
+There is no browser and no address bar; it is its own window.
+
+**7. Paste a Gemini key.** It asks on first run.
+[Get a free one](https://aistudio.google.com/apikey). It is stored only on your
+machine, at `~/Library/Application Support/ClipMint/settings.json`.
+
+**8. Give it a video.** Paste a YouTube URL, or drag a file straight into the
+window. Paste a *channel* URL and it lists recent videos to pick from.
+
+**9. Describe the layout in words** — "webcam bottom left, gameplay above it",
+"just the speaker, filling the frame" — pick how many clips you want and how
+long, and start it. Everything from here runs on your Mac: it downloads,
+transcribes, ranks the moments, and cuts them to 9:16.
+
+**10. Find the clips.** They land in `~/Movies/ClipMint/shorts/`, in a
+folder named after the video, and the app's **Reveal** button opens Finder
+right on them. Sources and transcripts go to `~/Movies/ClipMint/output/`.
+
+**11. Updating.** The app tells you when a new version is out but cannot
+install it — download the new zip and replace the app in Applications.
+
+### What is different from the Windows build
+
+- **Transcribing runs on the CPU**, and it is the slow step. There is no CUDA
+  on a Mac, and the transcription engine has no Metal backend, so an M-series
+  CPU is doing all of it. It works; a long VOD takes a while.
+- **Files live in mac places** — `~/Movies/ClipMint` for output,
+  `~/Library/Application Support/ClipMint` for settings — instead of
+  `Videos` and `%APPDATA%`.
+- **No self-update**, as above.
+- Everything else is the same app: same ranking, same layouts, same editing,
+  same pause button, and ffmpeg is bundled so there is nothing to install.
+
+### If it doesn't open, or opens and does nothing
+
+That part *is* the beta, and it is worth reporting. Three things help:
+
+- A screenshot, if a window opened at all. The bottom-right corner of every
+  screen says which version and platform you are on.
+- `~/Movies/ClipMint/app.log` — the app writes startup errors here,
+  including ones it has no window to show you in.
+- Running it from Terminal, so errors print where you can see them:
+
+  ```bash
+  /Applications/ClipMint.app/Contents/MacOS/ClipMint
+  ```
+
+[Open an issue](https://github.com/kleZ799/clipmint/issues/new) with
+either of those and your macOS version. I have no Mac to reproduce it on, so a
+paste of the actual error is the whole difference between fixed and not.
+
+**Why macOS blocks it at all.** The app is signed, but not by Apple —
+notarising costs $99 a year and this is free software. Gatekeeper is reporting
+a missing Apple signature, not a finding about the file. What you can check
+instead: every line here is public, the app is built from this repository by
+GitHub's own runners with a
+[readable build log](https://github.com/kleZ799/clipmint/actions), and
+each release publishes a SHA-256 for the file.
+
+</details>
+
+**On Linux**, make the download executable and run it. It is the same app doing
+the same work, with two differences worth knowing first: it opens in your
+browser instead of a window of its own, and it needs glibc 2.35 or newer.
+
+<details>
+<summary><b>Using it on Linux — the whole thing, step by step</b></summary>
+
+**Nobody has run this on a desktop distribution yet.** It is built and
+exercised under WSL, and the release workflow starts every published build
+and fetches the interface out of it — which proves it unpacks, imports,
+binds a port and serves. It does not prove a full render works on Fedora, or
+that your file manager opens where it should. If something is wrong, that is
+a bug here rather than something you did: [say so](https://github.com/kleZ799/clipmint/issues/new),
+with a screenshot if you can; its bottom-right corner names the version.
+
+**1. Download.** Take `ClipMint-linux-x86_64` from the
+[latest release](https://github.com/kleZ799/clipmint/releases/latest). x86-64 only — there is no ARM build.
+
+`ClipMint-linux-README.txt` is published beside it and says everything
+below. A separate file rather than an archive around the binary, because the
+updater downloads that binary and swaps it into place — putting it in a
+tarball would mean teaching the update path to unwrap one on every release, to
+solve what a second file solves for nothing.
+
+**2. Make it executable, and run it.** A download arrives without the execute
+bit. That is normal and not something you did:
+
+```bash
+chmod +x ClipMint-linux-x86_64
+./ClipMint-linux-x86_64
+```
+
+**3. Wait for the first start.** It unpacks itself into `/tmp` and loads the
+transcription models before anything appears. Every launch unpacks again —
+that is the price of being one file that can replace itself.
+
+**4. It opens your browser.** Not a tab you have to go and find: it opens on
+its own, at a `127.0.0.1` address that exists only on your machine. If nothing
+opens — a server with no desktop, an SSH session — the address is printed in
+the terminal and works from any browser on that machine.
+
+**5. Paste a Gemini key.** It asks on first run.
+[Get a free one](https://aistudio.google.com/apikey). It is stored at
+`~/.config/ClipMint/settings.json` and goes nowhere else.
+
+**6. Give it a video.** Paste a YouTube URL, or drag a file straight in. Paste
+a *channel* URL and it lists recent videos to pick from.
+
+**7. Find the clips.** They land in `~/Videos/ClipMint/shorts/`, in a
+folder named after the video, and **Reveal** opens your file manager on them.
+Sources and transcripts go to `~/Videos/ClipMint/output/`.
+
+**8. Updating.** It notices new releases, checks them, and replaces itself in
+place — the same as Windows. The download above is the only one you do by hand.
+
+### What is different from the Windows build
+
+- **It runs in your browser rather than in a window of its own.** pywebview's
+  Linux backend is WebKit2GTK, and WebKit2GTK cannot be bundled and carried:
+  its typelibs and two hundred shared libraries would all have to come along,
+  and even then WebKit renders pages in a separate process it locates by a path
+  compiled into the library when *your* distribution built it. A window that
+  comes up blank is worse than no window, so the app opens something that
+  works. Run it from source with `python3-gi` and `gir1.2-webkit2-4.1`
+  installed and you get a real window, because there it uses your system's own.
+- **Transcribing runs on the CPU.** The pip CUDA libraries unpack somewhere the
+  dynamic linker was never told about, and a process cannot add to its own
+  library path once it has started — so bundling them would ship two gigabytes
+  that nothing is able to load. Windows can register those directories at
+  runtime, which is the whole reason it gets the GPU and this does not.
+- **Files live in Linux places** — `~/Videos/ClipMint` for output,
+  `~/.config/ClipMint` for settings, instead of `Videos` and `%APPDATA%`.
+- **Finished-run notifications need `notify-send`.** Most desktops have it
+  already, as part of `libnotify-bin`; KDE's `kdialog` is used instead when
+  that is what is installed. With neither, the app says so in its log and
+  carries on — Windows and macOS both have a notifier that is always there,
+  and Linux is the one platform where that cannot be assumed.
+- Everything else is the same app: same ranking, same layouts, same editing,
+  same pause button. ffmpeg is bundled and statically linked, so it does not
+  care what your distribution ships or whether it ships one at all.
+
+### What it needs
+
+glibc 2.35 or newer — Ubuntu 22.04, Debian 12, Fedora 36, and anything after
+them. No Python and no ffmpeg: both are inside.
+
+One library, and only one: `libGL.so.1`, which OpenCV wants for the face
+tracking. Every desktop already has it, so on a normal installation there is
+nothing to do. On a headless box — a server you are running this on over SSH —
+`sudo apt install libgl1` (or `dnf install mesa-libGL`) is the whole fix. It is
+not bundled because a graphics library belongs to the machine's own driver
+stack; shipping one would be shipping the wrong one.
+
+Without it the app still starts, serves and downloads. It fails at the point it
+first looks for a face, which is a confusing place to find out, so it is worth
+installing up front if you are not on a desktop.
+
+That floor is chosen rather than inherited. The release builds inside an Ubuntu
+22.04 container and refuses to publish a build that asks for more, because
+PyInstaller does not bundle libc — it links against whatever the build machine
+had, and glibc only promises to work forwards.
+
+</details>
+
+<details>
+<summary>Windows says it isn't safe — is it?</summary>
+
+Windows shows **"Windows protected your PC"** because the exe is not
+code-signed. Certificates cost a few hundred dollars a year and this is free
+software; SmartScreen is reporting the missing signature, not a finding about
+the file. It says the same about most independent software on release day.
+
+What you can check instead of taking that on trust:
+
+- **Every line is public**, and the exe is built from this repository by
+  GitHub's own runners — the [build log](https://github.com/kleZ799/clipmint/actions)
+  is readable by anyone.
+- **Each release publishes a SHA-256** for the exe, and the app verifies it
+  when updating itself.
+- **It works with the network off.** Transcribing and ranking run on your
+  machine. It contacts YouTube to fetch a video, your AI provider to rank
+  moments, and GitHub to check for updates. Your video never leaves the PC.
+
+To run it: **More info → Run anyway**.
+
+</details>
+
+<details>
+<summary>First-run details</summary>
+
+- **Windows will warn you.** The exe isn't code-signed, so SmartScreen shows *"Windows protected your PC"*. Click **More info → Run anyway**. On a Mac it is Gatekeeper instead — see above.
+- **First launch is slow.** It's a single file that unpacks itself each time. The mac app is a normal bundle and starts faster.
+- **Where things go.** The key lives at `%APPDATA%\ClipMint\settings.json`; clips go to `%USERPROFILE%\Videos\ClipMint`, changeable in Settings. On a Mac: `~/Library/Application Support/ClipMint/settings.json` and `~/Movies/ClipMint`.
+- **ffmpeg is bundled**, so there is nothing else to install — on both platforms.
+- **The downloadable .exe transcribes on the CPU.** The CUDA runtime is 2GB, and a single-file exe re-unpacks its whole payload on every launch — so bundling it would cost every user a slow start for something only NVIDIA owners can use. If you have an NVIDIA card and want the ~5x faster transcription, build the one-folder version from source: `pip install -r requirements-nvidia.txt` then `python build_exe.py` (CUDA is the default there; `--no-cuda` opts out).
+
+</details>
+
+Everything below is for running from source, which you only need if you want to
+change how it works.
+
+> 📚 **Want to understand the internals?** [HOW_IT_WORKS.md](HOW_IT_WORKS.md) is a
+> study companion to this repo — the pipeline stage by stage, the ranking prompts,
+> the three renderers, the job runner, the frontend, and why each is built the way
+> it is. Written to be read end-to-end.
+>
+> 🎓 **Preparing to explain this to someone?** [CONCEPTS.md](CONCEPTS.md) covers the
+> ideas rather than the files — the AI/ML and computer-science concepts this project
+> actually uses, each anchored to a real decision in the code, plus the questions an
+> interviewer is likely to ask about it.
+
+---
+
+## What I built
+
+This began as a fork of [Anil-matcha/AI-Youtube-Shorts-Generator](https://github.com/Anil-matcha/AI-Youtube-Shorts-Generator) (MIT), a
+command-line script that crops talking-head videos. That origin is why GitHub
+lists its authors as contributors here — their commits are genuinely in this
+repo's history, and the licence keeps them credited.
+
+Rather than assert a boundary, here is the measured one. `git blame` over every
+text file in the current tree, 25,072 lines (re-measured at v1.12.0):
+
+| | Lines | Share |
+|---|---:|---:|
+| **Parth Bhadana** | **23,659** | **94.4%** |
+| Anil Matcha (base) | 1,097 | 4.4% |
+| Arael Espinosa | 194 | 0.8% |
+| LathissKhumar | 122 | 0.5% |
+
+Code only, excluding documentation: **93.7%** mine. Since the fork point
+(`c30376e`, 29 Jul 2026): **198 commits**, **+23,648 / −429 lines**, and
+**64 of the 85 files** now in the repo did not exist before.
+
+Run `git blame` yourself — that is rather the point of quoting a number instead
+of a claim.
+
+The boundary is easy to draw. **Upstream gave a CLI that face-crops a single
+speaker. Everything that makes this a stream tool, and everything that makes it
+an application, is mine:**
+
+**The application** — none of this existed upstream
+- A **desktop app**: a FastAPI server on a free port, run from a background thread, behind a native WebView2 window. No browser, no address bar, no terminal.
+- A **job runner** — queued work, one CPU-bound job at a time, progress streamed to the browser over SSE.
+- A **clip editor** — re-cut, mute, save or delete a finished clip without re-running the pipeline, and fix a misheard word in its captions.
+- **The edit after the cut** — burned-in word-by-word captions in four styles, ten fonts and any colours, pause and filler cuts that listen before they cut, punch-ins on emphasis, emoji, Pexels B-roll and a channel logo, in one encode per clip.
+- **A scorecard per clip** — the rank split into Hook, Moment, Look, Energy and Pace, with the model's reason, so "why is this #1" has an answer.
+- **Stages that retry themselves**, and a Try again that resumes a failed run from its caches.
+- The **interface**, built on YouTube's own layout so the audience already knows how to use it.
+- A **single-file Windows build** with ffmpeg bundled, so a non-technical user installs nothing.
+
+**The stream intelligence** — upstream ranks any talking-head video; this one understands streams
+- **`local/gaming_layout.py`** — the entire webcam-over-gameplay renderer: the overlay located from twenty frames across eight minutes (the face the samples agree on, the border that persists), a crop fitted inside it, single-pass ffmpeg `vstack`.
+- **`vision.py`** — frames from every clip shown to a vision model, so a variety stream's clips are filed under the game actually on screen, and a game is named only when something confirms it.
+- **Ranked packaging for three apps** — five titles and two descriptions per clip for YouTube Shorts, two captions with cover and alt text for Instagram Reels, and a TikTok caption, each scored on a rubric and checked in code, written from a growth playbook that updates without a release.
+- **Kinds of video** — a stream, a vlog, a podcast and a tutorial each ranked by their own rules, detected from the video or chosen by the user.
+- **A planned camera path** for full-frame face cams — dead zone, zero-lag easing, cuts kept as cuts — instead of a crop chasing a jittery detector.
+- **`faces.py` and `accel.py`** — YuNet face detection with Haar underneath, and a Processor setting that test-encodes each GPU encoder before trusting it and checks for CUDA's libraries before starting on the GPU.
+- **`STREAM_VIRALITY_CRITERIA`** — a ranking prompt that separates streamer speech from game narration on one mixed track, and refuses any clip without the streamer in it.
+- **Natural-language layout parsing** — "webcam top, 5 clips" or "cut 14:45 to 15:30" resolves to a render spec, with an exact-span path that skips transcription and ranking entirely.
+
+**The bugs that made it actually work**
+- **Chunk timestamp rebasing** — long videos returned *zero* highlights before this; every chunk past the first had its timestamps clamped away.
+- **High-resolution clipper fixes** — non-contiguous OpenCV slices, Windows file-handle races, downscaled Haar detection.
+- **Gemini support** — provider dispatch, a token budget that survives the model's internal reasoning, and 429 backoff that reads the server's own retry hint.
+- **`opencv-python<5` pin** — 5.x removed `CascadeClassifier`, which the face tracking depends on.
+
+---
+
+## The problem this solves
+
+I stream story games and post Shorts. The math of that is brutal: a 35-minute session has maybe five clippable moments in it, and finding them means scrubbing the whole VOD twice.
+
+Worse, every off-the-shelf clipper fails on stream footage for the same two reasons:
+
+1. **They crop to the wrong thing.** Auto-croppers slide a vertical window around hunting for a face. On a stream, the biggest face on screen is usually a *game character* — so the clip ends up centred on a cutscene with my commentary playing over it from off-frame.
+2. **They can't tell me from the game.** A story game's audio is narration, dialogue, and score, all mixed onto the same track as my mic. Generic highlight detection happily hands back 45 seconds of beautifully-written game narration with zero streamer in it. That's not my content. That's the studio's.
+
+This fixes both.
+
+---
+
+## The layout that actually works
+
+Every clip renders as **webcam over gameplay**, because that's the format that survives a vertical crop:
+
+```
+┌──────────────────────┐
+│                      │
+│       WEBCAM         │   42% — auto-located, cropped to
+│    (your reaction)   │        head-and-shoulders
+│                      │
+├──────────────────────┤
+│                      │
+│                      │
+│      GAMEPLAY        │   58% — centre crop, nudged away
+│                      │        from the webcam corner
+│                      │
+│                      │
+└──────────────────────┘
+        1080 × 1920
+```
+
+The webcam isn't a hardcoded rectangle. Each clip gets its overlay **located from scratch**, using the one thing that tells an overlay from a game — it doesn't move:
+
+- Sample ~20 frames: six inside the clip, the rest from the minutes around it, so the game underneath changes completely while the overlay stays put
+- Faces are found with **YuNet**, a small learned detector that ships inside the app — it catches turned heads, dim rooms and headsets that the old detector missed
+- The streamer is the face that **keeps turning up in the same place** — a face in the game shows up once and is outvoted
+- The overlay's **border** is an edge that is there in every sample, with moving game outside it and a still room inside
+- Crop head-and-shoulders **inside that border**, at the panel's own shape — no gameplay and no letterbox bars in the webcam panel
+
+Then the whole thing renders in **one ffmpeg pass** — crop, crop, scale, `vstack`. No per-frame Python. Clips render in seconds instead of minutes.
+
+If the face fills the frame, there is no overlay — it's a podcast or a just-chatting segment — and that clip gets the face-following crop instead, which holds still until you actually move and then eases after you. If no face turns up anywhere, it falls back to a centre crop and says so in the log rather than silently shipping garbage.
+
+**Two people in one shot, and a vertical crop only fits one.** The crop used to take the biggest face, which on a podcast is whoever sits nearer the camera — so it stayed on them through every line the other person said. Now it watches each person's mouth, frame against frame, and frames whoever is talking, cutting to the other person when they take over the way an editor would. No shot is shorter than two seconds, so a laugh or a nod doesn't flick the frame across the table. Tested on two episodes of a two-person podcast, cut into 30-second clips the way the app cuts them: it framed the speaker **86%** and **96%** of the time, against **73%** and **10%** for the biggest face. On one person, or a show that cuts between separate cameras, nothing changes.
+
+---
+
+## How a VOD becomes Shorts
+
+```mermaid
+flowchart LR
+    A[VOD<br/>URL or local file] --> B[yt-dlp<br/>cached by video id]
+    B --> C[faster-whisper<br/>cached as .srt]
+    C --> D{over 30 min?}
+    D -->|yes| E[chunk: 20 min<br/>60s overlap]
+    D -->|no| F[LLM ranking<br/>stream-aware prompt]
+    E --> F
+    B --> J[loudness envelope<br/>spikes, silences, peaks]
+    J --> F
+    F --> G[snap to sentences<br/>hook first, length enforced]
+    G --> M[picture: dark, still<br/>or moving openings]
+    M --> K[dedupe<br/>drop >25% overlap]
+    K --> Q[vision judge<br/>the stranger test]
+    Q --> V[vision: 4 frames per clip<br/>what is on screen]
+    V --> S[5 ranked titles, tags<br/>filed under the real game]
+    S --> H[ffmpeg vstack<br/>webcam over gameplay]
+    H --> X[listen again: word timings<br/>captions, cuts, punch-ins]
+    X --> I[hook cold open<br/>-14 LUFS]
+    I --> L[titled mp4s<br/>1080×1920]
+```
+
+Four stages and an edit pass, and **every expensive one is cached.**
+
+### 1. Get the file
+
+Already have the VOD on disk? Pass the path — it's used as-is, nothing downloads. Otherwise yt-dlp grabs it as `source_<videoid>.mp4`, and if that id is already in `output/` it gets reused. Reruns don't re-download.
+
+### 2. Transcribe
+
+faster-whisper, on your CPU (`int8`) or GPU (`float16`) — auto-detected. The transcript is cached beside the video as an `.srt`, validated by modification time.
+
+**The spoken language is pinned to English by default**, changeable per run in the Render panel, with an explicit `auto` for genuinely mixed sources. This matters more than it sounds: left on auto-detect, whisper drifts on game audio and music beds and starts emitting fluent nonsense in a language nobody spoke. One 3h47m English stream came back with 703 of its 1097 cues in hallucinated Korean — and one of those cues became a clip title.
+
+**GPU detection asks CTranslate2, not torch.** faster-whisper runs on CTranslate2; torch is not installed and is explicitly excluded from the build, so probing `torch.cuda.is_available()` silently sent every machine down the CPU path. If you have an NVIDIA card, `pip install -r requirements-nvidia.txt` — the packaged one-folder build already ships them. On Linux the libraries also have to be on `LD_LIBRARY_PATH` before Python starts; that file shows how. Measured on an RTX 5060 (8GB): 900s of audio with the `small` model, **104.2s on CPU → 20.8s on CUDA**.
+
+**This is the slowest step in the pipeline and you pay it exactly once per VOD.** Every re-rank and re-render after that is free.
+
+### 3. Rank the highlights
+
+First it settles what kind of video this is — **stream, vlog, podcast, tutorial
+or other** — from the Kind of video picker, the prompt's own words, or a quick
+read of the start, middle and end of the transcript plus the listing. Each kind
+has its own rules for what counts as a good moment. The rest of this section is
+the stream rules, which are the most specialised.
+
+The model is told, explicitly, that it's reading a single mixed audio track with no speaker labels, and taught to separate the two voices by register:
+
+> **Game narration** reads like written prose — literary, past tense, polished, no filler words, never addresses anyone.
+>
+> **The streamer** sounds spoken — reactions, false starts, laughter, swearing, questions, talking to chat.
+
+And then the hard rule: **every highlight must contain the streamer's own speech.** A story beat only counts when you react to it, talk over it, or respond after it.
+
+Ranking prioritises, in order: a visible payoff with your reaction on top → famous story beats → the game's own joke, answered → fails with a visible cause → hot takes → sincerity. Reactions to something the clip never shows, rage with no visible cause, chat talk, menus and loading screens are demoted, and every clip has to say what a viewer should *see* at its payoff. Clips start *on* the hook rather than the run-up — a Short is judged in its first second, so the opening line has to earn the watch by itself. Every kind of video also gets the **stranger test**: would someone who has never heard of you, with no idea what happened earlier, stay for it? A brief like *"only the rage moments"* narrows which moments are looked for, never that bar.
+
+**But a transcript cannot hear anything.** The model reads words on a page; it
+never meets the scream, the laugh, or the half-second of silence before the
+punchline, and two moments that read identically can be worlds apart in the
+audio. So the source's loudness is measured too — once per run, streamed
+through ffmpeg into one number per quarter-second — and four measured signals
+are folded into the rank alongside the model's opinion:
+
+| Signal | What it catches |
+|---|---|
+| **Audio spike** | The peak of the clip against the video's *own* baseline, so one loud scene can't make every span look like a hook |
+| **Trigger phrases** | A short fixed list — *no way*, *wait for it*, *I can't believe* — weighted by how hard each lands, and counted double in the opening line |
+| **Silence-to-peak** | A quiet beat right before the spike. Build-up → payoff reads as a moment; a flat loud run-up reads as noise |
+| **Dialogue density** | Words per second in the first two seconds. Below the floor is dead air, which is the single most reliable way to lose a viewer |
+| **Chat velocity** | On a stream with a chat replay: the biggest burst of messages during the clip or up to 12 seconds after it, against how busy chat was in the ten minutes around it. Shouting, stretched letters, *"no way"* and 💀 count in full, plain conversation for less, and hellos, goodbyes and sub-talk not at all |
+
+The chat does a second job before any of that. Its biggest bursts go into the
+transcript the model reads as marker lines, *"CHAT SPIKE: 5.5x its usual
+pace"*, with a note that chat reacts a few seconds *after* the thing that
+caused it. That is how the ranker finds a moment the words never mention.
+
+**Nor can it see.** So the picture is measured as well, straight from the
+source with ffmpeg as 48×27 grey frames: the opening second and a half
+properly, the rest from keyframes only, which costs about half a second per
+candidate even on a 1440p60 VOD. A black, dark or frozen opening is a penalty
+like dead air, and how much the picture moves joins the signals above, ranked
+against the other candidates from the same video. Brightness is judged by the
+share of lit pixels rather than the average, because a dark room with a bright
+webcam box and a black death screen with white text both average about the
+same.
+
+How much those move a rank is scaled by how much of them was actually
+measurable, so a video with no readable audio leans on the model rather than on
+one keyword list. Every clip keeps its own numbers in `job.json` beside it —
+the model's score, the measured one, each sub-signal — so once clips are on
+YouTube, the weights are checked against how they actually did (see
+[How your Shorts did](#see-how-your-shorts-did-and-learn-from-it)) instead of
+being trusted forever.
+
+**Then the span is snapped to something real.** Ask for 30-second clips and a
+model hands back 19s, 24s, 47s: it is estimating durations from timestamps it
+half remembers while also writing JSON. Length is arithmetic, so it is done in
+code — the span is walked out to whole transcript segments until it lands in
+the band you asked for, aiming near the middle when the model stopped short and
+keeping as much of the payoff as fits when it ran long. Snapping to sentence
+boundaries is what stops that from cutting mid-word. The opening is placed the
+same way: by finding the model's quoted hook line in the transcript rather than
+trusting the timestamp it paired with it, which routinely lands seconds early on
+the throat-clear before it.
+
+Long VODs get chunked into 20-minute windows with 60s of overlap, each rebased to zero and offset back afterward. Anything sharing more than a quarter of its footage (or six seconds) with a higher-scoring pick is dropped, so you never get two near-identical clips.
+
+**Then it looks before it cuts.** The best candidates — twice as many as you
+asked for, at most 24 — are shown to a vision model as four frames each: the
+first instant, 1.5 seconds in, the payoff and the end, with the ranker's own
+claim about what should be on screen. It scores the first second, whether the
+payoff is visible, and whether the clip stands alone, and it can mark a clip
+as one a stranger would swipe past — but only for something the frames show:
+a black or loading screen, a menu, a dashboard, nothing happening. That look is
+35% of the final rank, less on a podcast, where what is said carries the clip.
+Tuned on a real stream: a first version that judged more freely cut the story
+twist that had reached 1,500 viewers when posted by hand, because four stills
+cannot show a scene landing.
+
+Every clip comes back with a score, a title, and a one-line reason it should work.
+
+### 4. Render
+
+Before anything renders, four frames from each chosen clip are shown to a vision model, which says what the clip actually is — which game, or whether it is a podcast or a story told to camera. The packaging is written for that: five ranked titles, two ranked descriptions and scored tags for YouTube Shorts, then Reels captions, cover and alt text and a TikTok caption, all from the growth playbook.
+
+Cut and stack in one ffmpeg pass, straight to 1080×1920 h264 with `+faststart`. Upload-ready for Shorts, Reels, and TikTok with no server-side re-encode. The webcam panel is cropped inside your overlay's own border, found from the minutes around each clip; a clip whose camera fills the whole frame gets the face-following crop instead.
+
+Two things happen on the way out. Audio is normalised to **-14 LUFS**, the
+target all three platforms mix toward — a Short that plays quieter than the one
+before it in the feed reads as lower production value before a word of it is
+heard. And a clip whose loudest moment lands late opens with **a second of that
+moment first**, then plays in full: the payoff arrives before the viewer has
+decided whether to stay. It skips itself when the peak is already at the front,
+where a replay would just be a stutter, and the length it adds is reserved
+before the cut is chosen — so 30-second clips are still 30 seconds with it on.
+Turn it off with the switch in the Render panel, or by writing *no hook repeat*
+in the prompt.
+
+### 5. Edit
+
+Between the render and the cold open, each clip is listened to again, this
+time for the timing of every word. That is a Whisper pass over a clip rather
+than over the whole video. It drives four things, all in one more ffmpeg
+encode:
+
+- **Captions**, burned in with libass: a few words at a time, with the spoken
+  word lit up, in one of four styles whose fonts ship with the app, in the
+  font, colours and place you chose over it. Hindi is
+  written in Hinglish, word for word, so the timing is untouched.
+- **Pause cuts.** A gap between words is cut only if the clip's own loudness
+  says it is quiet, so a laugh or the game going off stays. So does the quiet
+  run-up to the clip's loudest moment. The cold open is moved to match.
+- **Punch-ins** on trigger phrases, exclamations and the loudest words, plus
+  emoji, B-roll and your logo when they're on.
+- **The words themselves** are kept with the clip, so a misheard name can be
+  fixed later without listening again.
+
+Every piece fails soft: a clip that can't be edited keeps its plain render.
+
+---
+
+## Quickstart
+
+**Prerequisites:** Python 3.10+, `ffmpeg` on your PATH, and a [free Gemini API key](https://aistudio.google.com/apikey).
+
+```bash
+git clone https://github.com/kleZ799/clipmint.git
+cd clipmint
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements-local.txt
+```
+
+On macOS or Linux, activate with `source venv/bin/activate` instead. That is the
+command-line tool; for the app itself, use your platform's file below.
+
+### Which requirements file
+
+| You want | Install |
+|---|---|
+| The app from source, on **Windows** | `requirements-windows.txt` |
+| The app from source, on **macOS** | `requirements-mac.txt` |
+| The app from source, on **Linux** | `requirements-linux.txt` |
+| Transcription on an **NVIDIA GPU** (Windows, Linux) | add `requirements-nvidia.txt` |
+| To **build** the app with PyInstaller | add `requirements-build.txt` |
+| The command-line tool only, `--mode local` | `requirements-local.txt` |
+| The command-line tool only, `--mode api` | `requirements.txt` |
+
+Add-ons go on the same line: `pip install -r requirements-windows.txt -r requirements-nvidia.txt`.
+Each platform file also lists, at the top, what pip cannot install for you:
+ffmpeg everywhere, the WebView2 runtime on older Windows 10, GTK and WebKit for a
+native window on Linux, and `libGL` on a Linux server with no desktop.
+
+Copy `.env.example` to `.env` and fill it in:
+
+```ini
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=your_key_here
+GEMINI_MODEL=gemini-3.6-flash
+LOCAL_WHISPER_MODEL=base
+LOCAL_WHISPER_DEVICE=auto
+LOCAL_OUTPUT_DIR=output
+LOCAL_OUTPUT_RESOLUTION=1080x1920
+```
+
+Then point it at a VOD:
+
+```bash
+python main.py "https://www.youtube.com/watch?v=YOUR_VOD" --mode local --num-clips 5 --format 1080 --output-json result.json
+```
+
+Or run it against a file you already have:
+
+```bash
+python main.py "D:/streams/session-14.mp4" --mode local --num-clips 5
+```
+
+Clips land in `output/` as `short_01.mp4` … `short_05.mp4`, alongside a `result.json` holding the full transcript, every candidate considered, and the winning picks.
+
+---
+
+## Using it
+
+**Running from source:**
+
+```bash
+pip install -r requirements-windows.txt     # or requirements-mac.txt / requirements-linux.txt
+python desktop.py
+```
+
+Prefer it in a browser instead? `python -m webapp` serves it at http://127.0.0.1:8000.
+
+**Building the executable yourself:**
+
+```bash
+pip install -r requirements-windows.txt -r requirements-build.txt
+python build_exe.py --onefile --clean
+```
+
+Put `ffmpeg.exe` and `ffprobe.exe` in a `./bin` folder first and they get bundled,
+which is how the published build needs nothing installed. That's what makes it
+about 224 MB, of which ffmpeg is roughly 67 MB; without them ffmpeg has to be
+on the user's PATH. The YuNet face model in `assets/models`, the growth playbook
+in `assets/playbook`, and the caption fonts and emoji in `assets/fonts` and
+`assets/emoji` are bundled either way. Drop
+`--onefile` for a folder build that starts faster but has to be zipped to share.
+
+On a Mac the same command without `--onefile` produces `dist/ClipMint.app`:
+the icon is rendered from `assets/icon.png`, the version is written into
+Info.plist, and the bundle is signed ad-hoc so Apple Silicon will run it at all.
+Put static `ffmpeg` and `ffprobe` binaries in `./bin` — a Homebrew ffmpeg links
+against dylibs in `/opt/homebrew` and would only work on your own machine.
+PyInstaller cannot cross-compile, so the published mac build is made on a macOS
+runner by [the release workflow](.github/workflows/release.yml), which is also
+where those two download URLs live.
+
+The release builds install with `-c constraints.txt`, which pins every package
+to the version the last good release shipped; add it to your own `pip install`
+to build exactly what the downloads contain. Without it pip takes the newest
+version each requirement allows — that is how v1.24.1 picked up PyAV 19 and
+failed every transcription.
+
+On Linux the same `--onefile` command produces `dist/ClipMint`, with no
+extension. Put static `ffmpeg` and `ffprobe` in `./bin` — a distribution's own
+ffmpeg links against that distribution's libraries and would only run on your
+own machine, the same trap as Homebrew on a Mac. No webview backend is bundled,
+so the built app opens a browser; `python desktop.py` from source with
+`python3-gi` installed opens a real window instead.
+
+Whichever glibc you build against becomes the oldest one your build will run
+on — and the binary will not tell you which that is. `objdump` on a one-file
+build reports what the bootloader needs, which is nothing much; the libraries
+that set the real floor are compressed inside it and invisible until it runs.
+Measured on Ubuntu 26.04, the bootloader claimed 2.14 while the payload wanted
+2.43. So the release workflow builds inside an Ubuntu 22.04 container and reads
+the floor off the unpacked payload while a copy of the app is running, that
+being the only moment the payload exists.
+
+**Drop a file or paste a link.** Drag a VOD straight in, or paste a YouTube URL. Paste a *channel* link and it lists the 12 most recent videos as a grid to pick from.
+
+**Clips come out at the source's real quality.** The renderer measures the crop it's actually going to take and picks the highest standard size that crop genuinely supports — a stacked 1440p stream renders at 1440×2560 rather than being flattened to 1080p. It won't upscale past what the footage holds, because inventing pixels only grows the file.
+
+**Say what you want, like a message.** Type into **What to make** the way you'd
+text a friend who edits for you: *"give me 2 funny ones and 2 where I ask chat a
+question, around 30 sec each, 720p is fine"*. Misspelled, in Hinglish, several
+requests in one sentence: your AI model reads it, works out every setting it
+implies (how many clips, how long, what kind of video, quality, framing,
+captions, the edit) and answers under the box with what it's going to make:
+
+> ✦ I'll make 4 clips: 2 funny ones and 2 that ask a question, about 30 seconds each, in 720p.
+
+A mixed request really is mixed: each moment the ranker finds is tagged with
+the group it fits, and each group's count is filled from its own moments, so
+"2 funny, 2 questions" can't come back as four funny clips. A group the video
+can't fill hands its places to the best of the rest.
+
+The live preview redraws as you type — the real frame shape, the real webcam
+panel height — so you can see your words land before spending a single second
+of render time. These short phrases work instantly, even with no AI key:
+
+| Type this | You get |
+|---|---|
+| `30 second clips` | the length every clip is cut to — enforced in code, not requested of the model |
+| `no hook repeat` | turn off the cold open that puts the payoff first |
+| `webcam at the top` | the stacked layout |
+| `my webcam is bottom right` | which corner to hunt for your overlay |
+| `square, bigger webcam` | 1:1, panel at 55% |
+| `gameplay only, no webcam` | plain centre crop |
+| `follow my face` | face-tracking crop |
+| `3 clips` | how many to make |
+| `cut 14:45 to 15:30` | **exact span, no AI ranking** |
+| `my vlog` / `podcast` / `tutorial` | what kind of video it is: decides what counts as a good moment, and frames a vlog or podcast on the face |
+| `comic captions` / `no captions` | the caption style — bold, punch, clean or comic — or none |
+| `keep the pauses` / `cut the pauses` | whether quiet pauses and "um"s are cut |
+| `no zooms` | no punch-ins |
+| `add emoji` / `add b-roll` | turn on emoji pops or stock B-roll |
+| `no logo` | leave your logo off this run |
+| `720p` / `1080p` / `best quality` | the download and render quality |
+
+Combine them freely — `cut 14:45 to 15:30, gameplay only, square` does all three.
+
+Under the prompt, **Shape** and **Kind of video** do the same jobs with a click, and a click beats the words.
+The **Edit** box under Render works the other way round: when the prompt names a
+caption style or an edit, the words win, and the box shows it with a *set by
+your words* tag.
+
+While you type, the preview uses a keyword pass that runs in about 70ms and costs no quota. About a second after you stop, the model reads the whole thing; its answer is cached, so starting the run doesn't ask again. Where both read the same setting, your literal words win.
+
+### Naming an exact span
+
+Give it a timecode and it **skips transcription and ranking entirely** and cuts exactly what you asked for. `14:45 to 15:30`, `1:30-2:45`, `00:14:45 - 00:15:28`, `885s to 928s`, or several at once with `14:45-15:30 and 24:55-25:40`.
+
+This is the fast path: no Whisper, no LLM, straight to ffmpeg. Seconds instead of minutes, and it costs nothing. Use it when you already know where the moment is — which, after you've watched your own stream, is most of the time.
+
+Jobs run one at a time on a background worker, because Whisper and ffmpeg are both CPU-bound and racing them makes both slower. Progress streams live with the pipeline log.
+
+> Everything runs on your machine and binds to localhost only. Your VODs are never uploaded anywhere. What leaves is the transcript text and a few still frames from each clip, sent to the AI provider you chose, and, only if you turn on B-roll, a few search words sent to Pexels. See [PRIVACY.md](PRIVACY.md).
+>
+> If you serve it to your network with `python -m webapp --host 0.0.0.0`, note there's no authentication and every job spends **your** API quota and **your** CPU.
+
+---
+
+## The workflow I actually use
+
+Ranking and rendering are separate on purpose, because they fail for different reasons and cost different amounts.
+
+**First pass** — transcribe, rank, render. Slow, once per VOD.
+
+**Then read the picks.** They're plain JSON with timestamps. Nudge a start time back three seconds, drop the one that didn't land, retitle the good ones.
+
+**Re-render from the edited list** — with no LLM calls at all. On Gemini's free tier this matters: re-ranking a long VOD burns quota, and once you've hand-picked five timestamps, re-ranking is pure waste. The rate-limit handler parses the `retry in Xs` hint out of a 429 and honours it rather than dropping the whole run — but the best fix is not making the call.
+
+One trick worth stealing: **transcribe from the 720p download, render from a 1440p one.** Whisper doesn't care about resolution and CPU transcription is the bottleneck, so you get cheap transcription and a sharp render out of the same session.
+
+---
+
+## Tuning
+
+The knobs that change output quality most, in order:
+
+| Knob | Where | What it does |
+|---|---|---|
+| Kind of video | The picker under the prompt, or `--kind` on the CLI | Stream, vlog, podcast, tutorial or other. **The single biggest lever** — each kind is ranked by its own rules. Leave it on *Work it out* and the app decides |
+| `CRITERIA_BY_KIND` | `shorts_generator/highlights.py` | The rules each kind of video is ranked by. Edit one to change what the app thinks is worth clipping in that kind of video |
+| Growth playbook | `assets/playbook/short-form-algorithms.md`, or your own `playbook.md` in the settings folder | What the packaging writer knows about how Shorts, Reels and TikTok rank videos. Raise the `reviewed:` date when you change it |
+| `DESCRIPTION_OPTIONS` / `CAPTION_OPTIONS` | `shorts_generator/seo.py` | Descriptions and Reels captions written per clip to choose from, `2` each |
+| `corner` | `local/gaming_layout.py` | Which corner your webcam overlay sits in. `bottom-left` by default |
+| `CAM_PANEL_FRACTION` | `local/gaming_layout.py` | Webcam panel height, `0.42` by default |
+| `FACE_CONTEXT_MULTIPLE` | `local/gaming_layout.py` | Webcam zoom. Lower is tighter on your face |
+| `MAX_CLIP_SECONDS` | `shorts_generator/highlights.py` | Hard reject above 90s. The prompt separately targets 18–35s, because the completion bar gets stricter the longer a clip runs |
+| `MODEL_WEIGHT` | `shorts_generator/signals.py` | How much of the rank is the model's opinion versus the measured audio. `0.62` by default — lower it if the ranking keeps picking moments that read well and land flat |
+| `TRIGGER_PHRASES` | `shorts_generator/signals.py` | The reaction phrases that score as a hook, weighted. Add the ones **you** actually say |
+| `SPIKE_RATIO` / `REACTION_LAG` | `shorts_generator/chat.py` | How far over its usual pace chat has to jump to count as a reaction (`2×`), and how long after a moment its reaction is still counted (`12s`) |
+| `MIN_MESSAGES` / `MIN_PER_MINUTE` | `shorts_generator/chat.py` | How busy a chat has to be before it is used at all: `150` messages and `3` a minute. Below that, a burst is three people saying hello at once |
+| `TARGET_BY_KIND` | `shorts_generator/boundaries.py` | Clip length per content type, when the prompt names no length of its own |
+| `REPLAY_SECONDS` | `shorts_generator/hook_open.py` | How long the hook cold open runs, `1.9s` by default |
+| `PRESETS` | `shorts_generator/captions.py` | The four caption styles: font, size, colours, words per line. Add a fifth by adding an entry and its font to `assets/fonts` |
+| `FONTS` / `HIGHLIGHTS` | `shorts_generator/captions.py` | The fonts any style can be swapped to, and the colour swatches offered. A new font needs its file in `assets/fonts` and its widths measured from a libass render, not from the font file |
+| `_GAP` / `_QUIET_SHARE` | `shorts_generator/autoedit.py` | How long a pause has to be before it is cut (`0.55s`, `0.9s` on a stream), and how quiet it has to be (under `30%` of speech level) |
+| `_PUNCH_ZOOM` | `shorts_generator/autoedit.py` | How far a punch-in zooms, `1.14×` |
+| `EMOJI_WORDS` | `shorts_generator/autoedit.py` | Which words pop which emoji. English only |
+| `SIZE` / `OPACITY` | `shorts_generator/brand.py` | Your logo's size (`16%` of the frame's shorter side) and how solid it is (`0.85`) |
+| `MAX_PER_CLIP` | `shorts_generator/broll.py` | Most B-roll cutaways per clip, `2` |
+| `CONTEXT_SECONDS` | `local/gaming_layout.py` | How far either side of a clip to look when locating your webcam overlay, `240s` by default. Lower it if your layout changes often mid-stream |
+| `DEAD_ZONE` / `EASE_SECONDS` | `local/clipper.py` | Face-follow: how far you can move before the frame follows (`12%` of it), and how gently it eases after you (`0.45s`) |
+| `SWITCH_MARGIN` / `MIN_SHOT_SECONDS` | `local/speaker.py` | Two people in shot: how much more one has to be talking before the frame cuts to them (`1.15×`), and the shortest a shot may be (`2s`). Raise either for fewer cuts |
+| `FRAMES_PER_CLIP` | `shorts_generator/vision.py` | Frames shown to the vision model per clip, `4` by default |
+| `TITLE_OPTIONS` | `shorts_generator/seo.py` | Titles written per clip for you to choose from, `5` by default |
+| `STAGE_ATTEMPTS` / `CLIP_ATTEMPTS` | `webapp/jobs.py` | How many times a stage, or one clip's render, is tried before a run gives up, `3` each |
+| Processor | Under the live preview, or `PROCESSOR` in `.env` | `auto` (default), `gpu` or `cpu` — what encodes video and runs transcription. `LOCAL_WHISPER_DEVICE`, if set, still pins transcription |
+| `SCORE_THRESHOLD` | `shorts_generator/faces.py` | How sure YuNet must be to count a face, `0.7`. Raise it if a crop keeps catching faces in the game |
+| Provider | Settings | Gemini, Groq or OpenAI. Add a **free Groq key** as a fallback so a busy Gemini cannot end a run |
+| `LOCAL_WHISPER_MODEL` | `.env` | `base` is plenty for ranking. `small` reads better and hallucinates less — and on a GPU it is *faster* than `base`, so use it if you have one |
+| Spoken language | Render panel | English by default. Pinning it is the fix for whisper inventing text in another language |
+| Interface language | Settings | English, Hindi, Spanish, Portuguese, French, German, Japanese |
+| Captions and the edit | Render panel, or the prompt | Caption style, font, colours and placement, pause cuts, punch-ins, emoji, B-roll and your logo, per run. Remembered per machine |
+
+---
+
+## Two modes
+
+| | `--mode local` | `--mode api` |
+|---|---|---|
+| **Download** | yt-dlp | MuAPI |
+| **Transcription** | faster-whisper, on your machine | MuAPI Whisper |
+| **Ranking** | Gemini or OpenAI, your key | MuAPI |
+| **Cropping** | ffmpeg + OpenCV, your machine | MuAPI auto-crop |
+| **VODs leave your machine?** | Only the transcript text | Yes, the whole video |
+| **Cost** | Free tier covers a lot | Per-call |
+
+Local mode is what this repo is built around. API mode is inherited from upstream and still works if you'd rather not run anything locally.
+
+---
+
+## Under the hood
+
+### The app
+
+```mermaid
+flowchart TB
+    W[WebView2 window<br/>no browser, no address bar] -->|http| S[FastAPI<br/>127.0.0.1, free port]
+    S -->|enqueue, return now| Q[Job queue<br/>one worker thread]
+    Q --> P[pipeline<br/>download - transcribe - rank - render]
+    P -.->|stdout parsed into stages| Q
+    Q -.->|SSE, one event per change| W
+    S --> E[clip editing<br/>trim / fix captions / mute / save / delete]
+```
+
+**Requests never block on the pipeline.** Transcribing alone outlives any sensible
+HTTP timeout, so `POST /api/jobs` only ever enqueues and returns an id; the
+browser follows along over server-sent events. Jobs run **one at a time on a
+single worker thread** on purpose — Whisper and ffmpeg are both CPU-bound, and
+running two at once makes both slower than running them in sequence.
+
+**Progress is derived, not guessed.** The pipeline already narrates itself to
+stdout, so the runner captures it line by line, maps prefixes like `[transcribe]`
+or `[stack] 2/5` onto stages, and gives each stage a band of the bar. A render
+that reports `3/5` moves the bar to the right place inside the render band
+without the pipeline knowing a UI exists.
+
+**Updating replaces the running exe with itself.** Windows will not let a
+running .exe be overwritten, but it will let it be *renamed* — so the running
+file is moved aside, the verified download takes its name, and the app
+relaunches from the same path. The rename happens only after the SHA-256
+matches, so a bad download never becomes the thing that runs; if the second
+move fails the original is put straight back. The replaced build cannot be
+deleted immediately — the process that was running it is still shutting down
+and still holding it open — so cleanup retries in the background until the
+handover completes.
+
+The page never handles a download URL. It asks the server to install *the*
+update, and the server resolves what that means from the repository compiled
+into the build, so nothing rendered in the window can aim the updater at a file
+of its choosing.
+
+**Editing re-cuts from the source, not the render.** Trimming a clip re-runs the
+renderer over the original download with new timestamps, which is why the span
+can grow as well as shrink — trimming the rendered file could only ever remove.
+Clip filenames are resolved against the job's own directory and rejected if they
+escape it. Fixing captions takes the same road: the corrected text is laid back
+onto the word timings the clip was captioned from, and the clip is rendered
+again from the source with the same edit.
+
+**Uploading is OAuth plus a resumable upload.** Connect opens Google's consent
+page in the real browser (Google refuses sign-ins inside embedded webviews),
+with a PKCE challenge, and Google redirects back to the app's own loopback
+server. The clip then goes up in 8 MB chunks. After a dropped connection the app
+asks YouTube how much arrived and carries on from there, instead of starting a
+200 MB file again. ClipMint's Google client is written into release builds from
+a GitHub secret, because YouTube's policies forbid credentials in open-source
+code.
+
+### The engine
+
+Both modes share one highlight engine. They agree on a single transcript shape:
+
+```python
+{"duration": 2130.0, "segments": [{"start": 12.4, "end": 15.1, "text": "..."}]}
+```
+
+Whichever transcriber ran, `highlights.py` can't tell the difference. The LLM is injected the same way — `get_highlights(transcript, llm_fn=...)` takes *the function that calls a model* as an argument, so swapping Gemini for OpenAI for MuAPI touches one line, and the ranking logic stays a single copy that can't drift.
+
+```
+shorts_generator/
+├── pipeline.py            # orchestrator — picks local vs api
+├── highlights.py          # the brain: prompts, chunking, dedupe
+├── signals.py             # loudness envelope + trigger phrases → measured hook score
+├── chat.py                # a stream's chat replay → when the audience reacted
+├── boundaries.py          # snap spans to sentences; enforce the length asked for
+├── hook_open.py           # the cold open that puts a late payoff first
+├── framing.py             # where the crop window sits, and moving it by hand
+├── performance.py         # what the channel's view counts say, tested against chance
+├── words.py               # word timings for a finished clip
+├── autoedit.py            # pause cuts, punch-ins, emoji, B-roll, logo — one encode
+├── captions.py            # burned-in captions: four styles, ten fonts, fixable afterwards
+├── broll.py               # where stock footage fits, and fetching it from Pexels
+├── brand.py               # the channel's logo
+├── scorecard.py           # a clip's score split into Hook / Moment / Energy / Pace
+├── content_kinds.py       # stream / vlog / podcast / tutorial / other
+├── vision.py              # what each clip shows, from its frames
+├── seo.py                 # Shorts, Reels and TikTok packaging, all ranked
+├── playbook.py            # the growth playbook: bundled, fetched daily, overridable
+└── local/
+    ├── downloader.py      # yt-dlp + download cache
+    ├── transcriber.py     # faster-whisper + .srt cache
+    ├── llm.py             # Gemini / Groq / OpenAI, text and vision, with backoff
+    ├── clipper.py         # face-following crop on a planned camera path
+    ├── speaker.py         # with two people in shot, which one is talking
+    └── gaming_layout.py   # webcam-over-gameplay stack (streams)
+```
+
+`highlights.py` is still the only place that talks to a model about ranking.
+What changed is that its answer is no longer the last word: `finalize()` runs
+the model's candidates through `boundaries.refine()` and then `signals.rescore()`
+before deduping, so the spans that reach the renderer are ones snapped to real
+sentence boundaries and ranked partly on what the audio did.
+
+## Staying in sync with upstream
+
+This repo is standalone, but it keeps a link back to the project it grew out of, so upstream fixes can be pulled in whenever they're worth having.
+
+One-time setup after cloning:
+
+```bash
+git remote add upstream https://github.com/Anil-matcha/AI-Youtube-Shorts-Generator.git
+```
+
+Then, whenever you want upstream's changes:
+
+```bash
+git fetch upstream
+git merge upstream/main
+```
+
+Conflicts, when they happen, land almost entirely in `highlights.py` — upstream edits the generic virality prompt while this repo runs the stream-aware one. **Keep `CRITERIA_BY_KIND` routing each kind to its own criteria** and take upstream's changes everywhere else. `local/gaming_layout.py` doesn't exist upstream, so it never conflicts.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE). Upstream work © Anil Chandra Naidu Matcha; modifications © Parth Bhadana.
+
+The published `ClipMint.exe` also carries ffmpeg and ffprobe (the
+[gyan.dev](https://www.gyan.dev/ffmpeg/builds/) essentials build), which are licensed under the
+GPL v3 — not MIT. That covers the bundled binaries only; this repository's own
+source stays MIT, and building from source pulls in no ffmpeg at all.
+
+---
+
+## Credits
+
+**[Anil Chandra Naidu Matcha](https://github.com/Anil-matcha)** — the original
+project this forks. The CLI pipeline and the highlight-ranking idea are his, and
+1,175 of his lines survive here. Worth being precise about where: the largest
+blocks are in `highlights.py`, `local/clipper.py`, `pipeline.py` and `muapi.py`.
+
+**[Arael Espinosa](https://github.com/cl8dep)** — *"add gemini local llm and
+local caches"*. 87 lines in `local/transcriber.py`, 65 in `local/downloader.py`,
+29 in `local/llm.py`. That commit is the seed of local mode: the Gemini path
+this app still runs on, and the one the Groq fallback was later built beside.
+
+**LathissKhumar** — two commits hardening local mode: 77 lines making the
+highlight JSON parsing survive bad model output, plus the VAD-off default and a
+CUDA fallback in `local/transcriber.py`. The VAD default is still what ships.
+
+Their work is in this repository because it earned its place, and the MIT
+licence keeps their names on it. Everything else — the desktop application, the
+stream-aware ranking, the renderers, the job runner, the interface, the
+packaging — is mine.
+
+**The footage in the screenshots** is from *Big Buck Bunny* and a cycling
+sample, as bundled with scikit-video. *Big Buck Bunny* is © 2008 Blender
+Foundation, [peach.blender.org](https://peach.blender.org/), used under
+CC-BY 3.0. The clips were cut, captioned and edited by ClipMint itself; the
+words on them were written for the demo.
+
+---
+
+## Author
+
+**Parth Bhadana**
+
+[YouTube](https://www.youtube.com/@ParthBhadana799) &middot; [GitHub](https://github.com/kleZ799) &middot; [LinkedIn](https://www.linkedin.com/in/parth-bhadana-530014202/) &middot; [Discord](https://discord.gg/jnMrGbBz3m) &middot; [Buy me a coffee](https://buymeacoffee.com/parthbhadana)
+
+ClipMint is free, and stays free. If it saves you time,
+[buy me a coffee](https://buymeacoffee.com/parthbhadana) — it pays for the hours that keep it working.
+
+Built and maintained by me. If you use it, fork it, or ship anything based on
+it, the MIT licence asks one thing in return: keep the copyright notice.
+
+How it's built, what was hard and what I'd change is in the
+[engineering case study](docs/case-study.md). I'm open to software engineering
+roles and collaborations: [parthbhadana57@gmail.com](mailto:parthbhadana57@gmail.com).
+
+Repository: <https://github.com/kleZ799/clipmint>

@@ -1,0 +1,544 @@
+# Aura LLM Gateway
+
+[![CI](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/ci.yml)
+[![Python SDK](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/python-sdk.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/python-sdk.yml)
+[![TypeScript SDK](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/sdk-typescript.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/sdk-typescript.yml)
+[![Helm Chart](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/helm-chart.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/helm-chart.yml)
+[![Security](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/security.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/security.yml)
+[![Release](https://img.shields.io/github/v/release/UmaiTech/aura-llm-gateway?include_prereleases&label=release)](https://github.com/UmaiTech/aura-llm-gateway/releases)
+[![PyPI](https://img.shields.io/pypi/v/aura-llm?label=pypi%3A%20aura-llm)](https://pypi.org/project/aura-llm/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/aura-llm?label=pypi%20downloads)](https://pypi.org/project/aura-llm/)
+[![npm](https://img.shields.io/npm/v/aura-llm?logo=npm&label=npm%3A%20aura-llm)](https://www.npmjs.com/package/aura-llm)
+[![npm downloads](https://img.shields.io/npm/dm/aura-llm?logo=npm&label=npm%20downloads)](https://www.npmjs.com/package/aura-llm)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fumaitech%2Faura--llm--gateway-2496ED?logo=docker&logoColor=white)](https://github.com/UmaiTech/aura-llm-gateway/pkgs/container/aura-llm-gateway)
+[![Helm](https://img.shields.io/badge/helm-ghcr.io%2Fumaitech%2Fcharts%2Faura--llm--gateway-0F1689?logo=helm&logoColor=white)](https://github.com/UmaiTech/aura-llm-gateway/pkgs/container/charts%2Faura-llm-gateway)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/rust-1.91%2B-orange.svg?logo=rust)](https://www.rust-lang.org)
+[![GitHub last commit](https://img.shields.io/github/last-commit/UmaiTech/aura-llm-gateway)](https://github.com/UmaiTech/aura-llm-gateway/commits/main)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/UmaiTech/aura-llm-gateway/pulls)
+
+<p align="center">
+  <img src="assets/logo-horizontal.svg" alt="Aura LLM Gateway" height="140"/>
+</p>
+
+A high-performance, production-ready LLM proxy gateway built in Rust that implements the [Open Responses API](https://www.openresponses.org/specification) specification for agentic workflows.
+
+> [!WARNING]
+> **Pre-1.0 software.** Aura is under active development. Public APIs, the
+> database schema, and the configuration format may still change between
+> minor releases (`0.x` → `0.y`) without a formal deprecation cycle. Pin to
+> exact versions in production and review the [CHANGELOG](CHANGELOG.md)
+> before upgrading. The API will stabilize at `1.0`.
+
+## Overview
+
+Aura LLM Gateway provides a unified interface to multiple LLM providers (OpenAI, Anthropic, Google, Mistral, Together AI, Fireworks AI, Ollama, HuggingFace TGI, AWS Bedrock) with built-in load balancing, cost tracking, caching, and observability. It's designed for production deployments requiring high throughput, low latency, and enterprise-grade reliability.
+
+## Why Aura?
+
+The LLM-gateway shelf is full — and most of them are good. The difference is that Aura
+is **agentic-native**: every provider sits behind one [Open Responses API](https://www.openresponses.org/specification)
+contract, so tool calls, reasoning items, and the response lifecycle work the same way
+across providers instead of being flattened into chat-completions and bolted back on.
+
+| Gateway | Language | Open source | Strength | Gap for agents |
+|---------|----------|-------------|----------|----------------|
+| **Aura** | **Rust** | **MIT** | **Agentic-native (Open Responses API), multi-tenant by design, self-hostable** | **Earlier-stage; 7 providers** |
+| LiteLLM | Python | Yes | 100+ providers, simple router, easy self-host | Chat-completions-shaped; agentic metadata bolted on |
+| Portkey | Node / TS | Apache 2.0 | Guardrails, semantic cache, prompt management | Cloud-first; self-host is second-class |
+| Helicone | Rust | Yes | Observability-first, edge-friendly | Started as analytics; agentic primitives surface-level |
+| OpenRouter | Closed | No | 290+ models, passthrough pricing, one URL | Hosted only — they bill you, not the provider |
+| Bifrost | Go | Apache 2.0 | ~11 µs overhead at 5k RPS, 1000+ models | OpenAI-shaped wire format; agents on top, not native |
+
+**Reach for Aura when** you're building agentic workflows, want the latency budget of a
+single static Rust binary on every request, and need to self-host with real multi-tenancy
+(Organization → Team → Project → End-User). A deeper write-up of the landscape and the
+design decisions behind Aura is in [*Building Aura: An Agentic LLM Gateway in Rust*](https://www.umai-tech.com/blog/building-aura-an-agentic-llm-gateway-in-rust).
+
+### Key Features
+
+- **9 LLM providers** behind one Open Responses API — OpenAI, Anthropic (Claude), Google (Gemini), Mistral, Together AI, Fireworks AI, Ollama, HuggingFace TGI, AWS Bedrock
+- **Prompt compression** — TOON, AISP, YAML, JSON strategies, 40–60% token savings on uniform arrays and nested objects
+- **Smart routing & failover** — 8 strategies (round-robin, weighted, region-aware, cost-optimized) + circuit breaker
+- **Cost tracking** — per-request USD on every response, with input/output/cached/reasoning token breakdown
+- **Response validation** — logprobs, self-consistency, best-of-N, confidence thresholds to reduce hallucinations
+- **Encrypted credentials** — AES-256-GCM envelope encryption for provider API keys
+- **Multi-tenancy** — Organization → Team → Project → End-User hierarchy with scoped API keys
+- **API key authentication** — bearer tokens, scopes, per-key rate limits
+- **Response caching** — Redis-backed, SHA-256 keys, TTL configurable
+- **Rate limiting** — per-key token bucket, monthly token budgets, retry-aware headers
+- **Observability** — Prometheus `/metrics`, structured tracing, OpenAPI/Swagger
+- **Streaming** — SSE with semantic Open Responses events end-to-end
+- **High performance** — Rust + Axum + Tokio, single static binary, sub-10ms gateway overhead
+
+## Architecture
+
+```
+aura-llm-gateway/
+├── crates/
+│   ├── aura-types/      # Shared type definitions (Open Responses API types)
+│   ├── aura-db/         # Database models and queries (SQLx)
+│   ├── aura-core/       # Core business logic (providers, routing, caching, compression)
+│   └── aura-proxy/      # Main server binary (Axum routes, middleware)
+├── sdks/
+│   └── python/          # Python SDK (aura-llm on PyPI)
+├── apps/
+│   ├── admin/           # Admin dashboard (React)
+│   ├── chat/            # Chat playground (React, deployed at /playground)
+│   └── landing/         # Marketing landing + docs site (aura-llm.dev)
+├── deploy/
+│   └── charts/          # Helm chart for Kubernetes deployment
+├── migrations/          # SQLx database migrations
+└── docs/                # Contributor/operator docs (user docs live at docs.aura-llm.dev)
+```
+
+See [docs/architecture/overview.md](docs/architecture/overview.md) for detailed architecture diagrams.
+
+## Quick Start
+
+### Prerequisites
+
+- Rust 1.91+ (2021 edition) — required by transitive AWS SDK dependencies
+- PostgreSQL 14+ (optional, for persistence)
+- Redis 7+ (optional, for caching/rate limiting)
+- Docker & Docker Compose (optional, for containerized deployment)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/umaitech/aura-llm-gateway.git
+cd aura-llm-gateway
+
+# Build the project (this also installs git hooks automatically)
+cargo build --release
+
+# Run tests
+cargo test --workspace
+
+# Run the server
+./target/release/aura-proxy
+```
+
+**Note:** The first `cargo build` automatically installs git hooks (via cargo-husky) that run:
+- **Pre-commit**: Formatting and linting checks (lightweight - libs only)
+- **Pre-push**: All tests
+
+To skip hooks temporarily: `git commit --no-verify`
+
+### Troubleshooting
+
+**Pre-commit hook failing with build errors?**
+```bash
+# Clean and retry
+cargo clean
+git commit -m "your message"
+
+# Or skip the hook temporarily
+git commit --no-verify -m "your message"
+```
+
+**GitHub OAuth fails on Vercel preview URLs with `error=state_mismatch`?**
+
+That is a current known limitation. Preview deploys keep `BETTER_AUTH_URL` pinned to
+`https://playground.aura-llm.dev`, while the GitHub OAuth app only allows the production
+callback URL. The callback returns to production instead of the preview host, so the
+preview state cookie no longer matches.
+
+For now:
+
+- use preview deploys for non-authenticated checks
+- test the real GitHub sign-in flow on `https://playground.aura-llm.dev` after merging to `main`
+
+### Configuration
+
+Configuration can be provided via environment variables, YAML files, or both. Environment variables always take precedence over file configuration.
+
+#### Environment Variables
+
+```bash
+# Server
+export AURA_HOST=0.0.0.0
+export AURA_PORT=8080
+
+# Database (required for auth and persistence)
+export DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5433/aura
+
+# Master encryption key for provider credentials (required)
+export AURA_MASTER_KEY=$(openssl rand -hex 32)
+
+# Provider API Keys (at least one required)
+export OPENAI_API_KEY=sk-...
+export ANTHROPIC_API_KEY=sk-ant-...
+export GOOGLE_API_KEY=...
+export TOGETHER_API_KEY=...
+
+# Optional - Redis for caching/rate limiting
+export REDIS_URL=redis://localhost:6379
+
+# Optional - Logging & Admin
+export RUST_LOG=info,aura_proxy=debug
+export AURA_ADMIN_KEY=your-admin-key
+```
+
+#### Set Up Database and Authentication
+
+```bash
+# Start PostgreSQL
+docker-compose up -d postgres
+
+# Run migrations
+make db-migrate
+
+# Create an API key for making requests
+./scripts/create_api_key.sh "my-first-key"
+# Save the generated API key - you'll need it for authentication
+```
+
+#### YAML Configuration (Kubernetes/Helm)
+
+For production deployments, use a YAML config file with secrets injected via environment variables:
+
+```yaml
+# config.yaml
+server:
+  host: "0.0.0.0"
+  port: 8080
+
+logging:
+  level: "info"
+
+# API keys injected via env vars from K8s Secrets
+providers: {}
+```
+
+See [`config.example.yaml`](config.example.yaml) for a full example with all options documented.
+
+#### Helm Chart (Kubernetes)
+
+Deploy to any Kubernetes cluster with the official Helm chart:
+
+```bash
+helm install aura oci://ghcr.io/umaitech/charts/aura-llm-gateway \
+  --version 0.1.0 \
+  --namespace aura --create-namespace \
+  --set secrets.inline.auraMasterKey="$(openssl rand -hex 32)" \
+  --set secrets.inline.openaiApiKey="sk-..."
+```
+
+Full chart documentation: [`deploy/charts/aura-llm-gateway/README.md`](deploy/charts/aura-llm-gateway/README.md).
+
+## Development
+
+### Using the Makefile
+
+The project includes a comprehensive Makefile for common development tasks:
+
+```bash
+# Show all available commands
+make help
+
+# Run development server with auto-reload
+make dev
+
+# Run all CI checks locally (fmt, lint, test, build)
+make ci
+
+# Run tests
+make test
+
+# Run tests with coverage
+make test-coverage
+
+# Format and lint code
+make fmt
+make lint
+
+# Build release binary
+make release
+
+# Clean build artifacts
+make clean
+
+# Install development tools
+make install
+```
+
+### Manual Commands
+
+If you prefer using cargo directly:
+
+```bash
+# Build all crates
+cargo build
+
+# Build optimized release binary
+cargo build --release
+
+# Run specific crate
+cargo run -p aura-proxy
+
+# Run with debug logging
+RUST_LOG=debug cargo run -p aura-proxy
+```
+
+### Testing
+
+```bash
+# Run all tests
+make test
+# or: cargo test
+
+# Test specific crate
+cargo test -p aura-core
+
+# Generate coverage report
+make test-coverage
+
+# Show test output
+cargo test -- --nocapture
+```
+
+### Code Quality
+
+```bash
+# Run all checks (like CI)
+make check
+
+# Lint all crates
+make lint
+# or: cargo clippy --workspace
+
+# Auto-fix lint issues
+make lint-fix
+
+# Format code
+make fmt
+
+# Check formatting
+make fmt-check
+```
+
+### Docker
+
+For containerized development and deployment:
+
+```bash
+# Start only dependencies (for local development with cargo run)
+make docker-deps
+# or: docker compose up postgres redis -d
+
+# Start all services (PostgreSQL, Redis, and the gateway)
+make docker-compose-up
+
+# View logs
+make docker-compose-logs
+
+# Stop all services
+make docker-compose-down
+
+# Build Docker image only
+make docker-build
+```
+
+The `docker-compose.yml` includes:
+- **aura-proxy**: The LLM gateway service
+- **postgres**: PostgreSQL 16 database for persistence
+- **redis**: Redis 7 for caching and rate limiting
+
+## Project status
+
+Aura is pre-1.0 but actively used. Current line:
+
+- **Shipping** — 9 providers, smart routing, prompt compression, multi-tenancy, cost tracking, encrypted credentials, response caching, rate limiting, Prometheus metrics, Python SDK on PyPI, TypeScript SDK on npm, Helm chart for k8s deploys
+- **In progress** — OpenTelemetry tracing, HF classic Inference API, additional Bedrock model families (Llama/Mistral/Titan), Mistral FIM completions
+- **Considering** — webhook callbacks, semantic caching, A/B traffic splitting between models, hard budget caps
+
+For the live roadmap with version-anchored detail, see **[roadmap.aura-llm.dev](https://roadmap.aura-llm.dev)**.
+
+Historical PR-by-PR detail lives in [`docs/internal/implementation-plan.md`](docs/internal/implementation-plan.md).
+
+## Chat UI
+
+A modern chat interface is included for testing and demonstrating the gateway:
+
+```bash
+cd apps/chat
+npm install
+npm run dev
+```
+
+Features:
+- Multi-model support (OpenAI, Anthropic, Google)
+- Streaming responses with real-time updates
+- Conversation history with localStorage persistence
+- Agent mode with built-in tools (web search, calculator, etc.)
+- Dark/light mode
+
+See [apps/chat/README.md](apps/chat/README.md) for detailed documentation.
+
+## SDKs
+
+Official client SDKs for the Aura LLM Gateway:
+
+### Python SDK
+
+[![PyPI](https://img.shields.io/pypi/v/aura-llm)](https://pypi.org/project/aura-llm/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/aura-llm?label=downloads)](https://pypi.org/project/aura-llm/)
+[![Python](https://img.shields.io/pypi/pyversions/aura-llm)](https://pypi.org/project/aura-llm/)
+
+```bash
+# Install with uv (recommended)
+uv add aura-llm
+
+# Or with pip
+pip install aura-llm
+```
+
+```python
+from aura import AuraClient
+
+client = AuraClient(base_url="http://localhost:8080")
+
+# Simple completion
+response = client.responses.create(
+    model="gpt-5.4-mini",
+    input="What is the capital of France?"
+)
+print(response.output_text)
+
+# Streaming
+for event in client.responses.create(
+    model="gpt-5.4-mini",
+    input="Tell me a story",
+    stream=True
+):
+    if event.type == "response.output_text.delta":
+        print(event.delta, end="")
+```
+
+Features:
+- Sync and async clients (`AuraClient`, `AsyncAuraClient`)
+- Full streaming support with typed events
+- Conversation threading via `previous_response_id`
+- Tool/function calling support
+- Comprehensive error handling
+
+See [sdks/python/README.md](sdks/python/README.md) for full documentation.
+
+### TypeScript SDK
+
+[![npm](https://img.shields.io/npm/v/aura-llm?label=npm%3A%20aura-llm)](https://www.npmjs.com/package/aura-llm)
+[![npm downloads](https://img.shields.io/npm/dm/aura-llm?label=downloads)](https://www.npmjs.com/package/aura-llm)
+[![TypeScript SDK](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/sdk-typescript.yml/badge.svg)](https://github.com/UmaiTech/aura-llm-gateway/actions/workflows/sdk-typescript.yml)
+
+Universal (Node 20+, browsers, Deno, Bun, Vercel Edge, Cloudflare Workers) —
+built on the global `fetch` and Web Streams, with no Node-only dependencies.
+
+```bash
+npm install aura-llm
+# or: pnpm add aura-llm / yarn add aura-llm / bun add aura-llm
+```
+
+```ts
+import { AuraClient, outputText } from 'aura-llm'
+
+const client = new AuraClient({ baseUrl: 'http://localhost:8080' })
+
+// Simple completion
+const response = await client.responses.create({
+  model: 'gpt-5.4-mini',
+  input: 'What is the capital of France?',
+})
+console.log(outputText(response))
+
+// Streaming
+const stream = await client.responses.create({
+  model: 'gpt-5.4-mini',
+  input: 'Tell me a story',
+  stream: true,
+})
+for await (const event of stream) {
+  if (event.type === 'response.output_text.delta') {
+    process.stdout.write(event.delta)
+  }
+}
+```
+
+Features:
+- Single async client — every call returns a `Promise`
+- Streaming as a back-pressured `AsyncIterable<StreamEvent>`
+- Conversation threading via `previous_response_id`
+- Tool/function calling support
+- Typed error hierarchy you can `instanceof`
+
+See [sdks/typescript/README.md](sdks/typescript/README.md) for full documentation.
+
+## Tech Stack
+
+- **Language**: Rust (2021 edition)
+- **Web Framework**: Axum
+- **Database**: PostgreSQL (SQLx), Redis
+- **Async Runtime**: Tokio
+- **Serialization**: Serde
+- **Error Handling**: thiserror, anyhow
+- **Logging**: tracing
+- **HTTP Client**: reqwest
+
+## Contributing
+
+We welcome contributions! Please read these documents before getting started:
+
+- [CONTRIBUTING.md](.github/CONTRIBUTING.md) — development setup, commit conventions, PR process
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — community standards (Contributor Covenant 2.1)
+- [CLAUDE.md](CLAUDE.md) — project conventions and architecture notes
+
+### Good first contributions
+
+New here? Start with issues labeled
+[good first issue](https://github.com/UmaiTech/aura-llm-gateway/labels/good%20first%20issue)
+or [help wanted](https://github.com/UmaiTech/aura-llm-gateway/labels/help%20wanted).
+Pick one scoped issue, mention it in your PR, and include the checks you ran.
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for automated changelog generation and semantic versioning.
+
+Example commit messages:
+```bash
+feat(provider): add OpenAI adapter
+fix(auth): resolve API key validation issue
+docs: update installation instructions
+```
+
+## Security
+
+If you believe you have found a security issue, please **do not** open a public
+GitHub issue. See [SECURITY.md](SECURITY.md) for our reporting process and
+disclosure policy.
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for the full text. By contributing to
+this project you agree that your contributions will be licensed under the
+same terms.
+
+## Links
+
+### Live sites
+- [aura-llm.dev](https://aura-llm.dev) — marketing landing
+- [docs.aura-llm.dev](https://docs.aura-llm.dev) — full user documentation
+- [roadmap.aura-llm.dev](https://roadmap.aura-llm.dev) — current and planned work
+- [playground.aura-llm.dev](https://playground.aura-llm.dev) — interactive chat playground
+
+### Reference
+- [Open Responses API Specification](https://www.openresponses.org/specification)
+- [Python SDK on PyPI](https://pypi.org/project/aura-llm/)
+- [Helm chart](deploy/charts/aura-llm-gateway/README.md)
+- [Docker image (GHCR)](https://github.com/UmaiTech/aura-llm-gateway/pkgs/container/aura-llm-gateway)
+
+### Repository docs
+- [Contributor docs index](docs/README.md)
+- [Architecture](docs/architecture/overview.md)
+- [Provider mapping](docs/architecture/provider-mapping.md)
+- [Deployment with Helm](docs/deployment/helm.md)
+- [Deployment with Docker](docs/deployment/docker.md)
+- [Implementation plan (historical)](docs/internal/implementation-plan.md)

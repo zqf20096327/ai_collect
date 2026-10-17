@@ -1,0 +1,251 @@
+<p align="center">
+  <a href="https://github.com/Someblueman/hydra">
+    <img width="300" height="200" src="assets/hydra.png" alt="Hydra Logo">
+  </a>
+</p>
+
+# Hydra
+
+**Native mission control for coding agents, worktrees, and remote fleets.**
+
+Hydra coordinates coding agents across local projects and remote SSH hosts. Give
+each task its own branch, working directory, and terminal session, monitor work
+from the native TUI, and bring changes together through review and verification.
+
+It runs on macOS and Linux without a daemon, database, or cloud account. Git holds
+your code, tmux keeps sessions running, and SSH connects your hosts. You can also
+use ordinary shell sessions alongside agents.
+
+[![CI](https://github.com/Someblueman/hydra/workflows/CI/badge.svg)](https://github.com/Someblueman/hydra/actions)
+[![Release](https://img.shields.io/github/v/release/Someblueman/hydra)](https://github.com/Someblueman/hydra/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+![Hydra: native mission control, real agent output, and remote fleet attach](assets/demos/quick-tour.gif)
+
+[Demo transcript and recording instructions](assets/demos/README.md)
+
+**v2.8.0** makes the agentic journey work end to end in the installed app: an
+agent plans with you in Hydra, the plan carries its own worker instructions so
+nothing is committed to your checkout, you approve it with one key, and the run
+reports back into the same conversation. Runs, headless workers, results and
+failed checks are presented directly, with the diff, each requirement's check,
+model and token use. Agent output keeps its colours and Unicode, attached agents
+can always be left, and a head whose terminal is gone can be restarted in place.
+Install the
+[latest release](https://github.com/Someblueman/hydra/releases/latest) and see the
+[changelog](CHANGELOG.md) for features and upgrade notes. Next work is tracked in
+[the roadmap](docs/ROADMAP.md#next-target-guided-remote-onboarding)
+and [usability testing](docs/USABILITY-TESTING.md).
+
+## What you can do
+
+- **Lead from native mission control.** Browse heads, inspect activity and changes,
+  and launch actions from the native C TUI. The shell TUI provides a fallback.
+- **Run coding agents across your fleet.** Select agent profiles and task prompts,
+  bootstrap trusted SSH hosts, launch remote heads and workflows, and attach to
+  their sessions. Inspect host-qualified heads in the native fleet view.
+- **Work in parallel.** Create isolated heads with named agent profiles, task
+  prompts, and terminal layouts. Switch between them without changing directories
+  or disturbing another task's working tree.
+- **See what is happening.** Inspect sessions from native mission control, a tmux
+  dashboard, or the CLI. Query structured state and retain lifecycle history.
+- **Coordinate work.** Run finite workflows with named inputs, sealed outputs,
+  durable approval waits and bounded retries. Exchange messages, declare file
+  scopes, and detect collisions between heads.
+- **Deliver an objective.** Let an agent propose a local plan, inspect its compiled
+  scope, and run it with independent checks of the final code or report.
+- **Review and integrate.** Inspect diffs and provenance, run verification gates,
+  and use guarded integration commands to assemble changes.
+
+Hydra coordinates processes and records evidence. Agent activity does not imply
+that a task is complete or that its changes are correct.
+
+## Installation
+
+You need Git, Make, and a C99 compiler. Interactive heads need tmux 3.0 or newer;
+headless execution and installation work without it. Fleet additionally needs
+`pkg-config` and JSON-C development files (`brew install json-c pkg-config` on
+macOS, or `apt install libjson-c-dev pkg-config` on Ubuntu). The installer builds
+the native TUI; build the fleet coordinator before installing.
+
+```sh
+git clone https://github.com/Someblueman/hydra.git
+cd hydra
+make build-fleet
+PREFIX="$HOME/.local" ./install.sh
+export PATH="$HOME/.local/bin:$PATH"
+hydra version
+hydra doctor
+```
+
+Add `$HOME/.local/bin` to your shell's `PATH` to keep the command available in new
+terminals. You can also run `bin/hydra` directly from a checkout without installing.
+Headless agents: **Antigravity (`agy`), Cursor Agent, OpenCode, Claude Code,
+Codex, and Pi**. See [agent profiles and inputs](docs/USAGE.md#agent-profiles-and-inputs) for interactive
+launch support, executable names, capabilities, and live qualification limits.
+Cursor requires `cursor-agent`. Cursor local/remote and Antigravity remote live
+qualification await sign-in; Claude remote qualification remains deferred.
+
+GitHub CLI, `fzf`, and coding agents are optional integrations. For a compiler-free
+local installation, skip `make build-fleet` and set `HYDRA_INSTALL_TUI=never` when
+running the installer.
+
+Upgrading from 1.9? Review the compatibility and backup notes in
+[Contracts](docs/CONTRACTS.md) before upgrading.
+
+## Start a task
+
+From a Git repository with an initial commit:
+
+```sh
+hydra init --no-agent --trust
+HYDRA_NO_SWITCH=1 hydra spawn feature/search --no-agent
+hydra list
+hydra switch feature/search
+```
+
+A *head* is a branch with its own worktree and tmux session. `spawn` normally
+prints where the head lives and stays in your terminal; `hydra spawn <branch> --attach`
+attaches immediately and `HYDRA_NO_SWITCH=1` always keeps you where you are.
+`switch` attaches to the named session. Detach with `Ctrl-b`, then `d`, to return to your original terminal.
+`init --trust` accepts the current repository-controlled Hydra configuration;
+review existing configuration before accepting it.
+
+To use a coding agent, select an installed profile explicitly:
+
+```sh
+hydra agent list
+hydra spawn feature/tests --profile codex --prompt "Add tests for search"
+```
+
+Agents run in the head's worktree. Choose `--no-agent` whenever you want a regular
+shell. [Agent profiles and inputs](docs/USAGE.md#agent-profiles-and-inputs) describes selection and setup.
+
+## Inspect and finish
+
+```sh
+hydra tui                         # native mission control, with basic fallback
+hydra diff feature/search --stat
+hydra exec --branch feature/search -- make test # use your project's test command
+hydra review feature/search --json
+```
+
+To steer an agent, queue an inbox message with `hydra send feature/search "Review
+the failing test"`; read it with `hydra recv --peek` inside that head. A queued
+message is not evidence of consumption or completion.
+
+Use `hydra tui --basic` for the shell interface. In the native control centre,
+`Tab` moves between tabs (or workspace panes), arrows select, `Enter` opens and
+`Esc` steps back. `n` starts a task, `a` talks to the selected agent, `x` removes
+heads after an in-app confirmation, `:` opens actions, `?` shows help and `q` exits.
+
+After reviewing and preserving the work you need, stop the head from your original
+terminal:
+
+```sh
+hydra kill feature/search
+```
+
+Stopping a head removes its session and worktree and retains lifecycle history.
+Its Git branch remains available. See [workflows](docs/workflows.md) for review,
+recovery, and landing changes.
+
+## Manage a fleet
+
+Register trusted SSH hosts, bootstrap a pinned Hydra package, and coordinate work
+across their existing repositories. Fleet supports remote agent-backed heads,
+workflow execution and cancellation, interactive attach, and explicit transfers of
+configuration and workflow history.
+
+```sh
+hydra remote add build ubuntu@build-host
+# Bootstrap a matching package as described in the fleet setup guide.
+hydra fleet list --json
+hydra fleet spawn build --project /srv/project -- feature/search --profile codex \
+  --prompt "Implement search and run the project tests"
+hydra fleet tui
+```
+
+The native fleet view shows heads by host and supports attach and confirmed
+interrupts. Agent executables and repositories live on the host that runs the work.
+See [fleet setup](docs/FLEET.md) for pinned bootstrap, host requirements, remote
+workflows, and recovery behavior.
+
+## Plan an objective
+
+The optional native helper supports `hydra workflow plan`: discover the JSON
+schema, validate an agent-authored proposal, compile and review an immutable
+DAG, then execute it with an exact acceptance digest. Retrieve the final
+verified artifacts with `hydra workflow plan result <run-id>`. Schema-2 plans
+require bound validation, hand off collected Git commits, and support bounded
+candidate repair.
+Use `hydra workflow replay <run-id>` to check recorded scheduling choices.
+Planning does not call a model itself; an ordinary agent authors the proposal
+through the CLI. Plans carry their own inline agent prompts and proposal assets,
+bound by the acceptance digest, so planning never commits to your checkout. See the
+the [planning examples](examples/planning/README.md).
+
+## Documentation
+
+| Topic | Guide |
+| --- | --- |
+| Commands, layouts, hooks, configuration, and TUI keys | [Usage](docs/USAGE.md) |
+| Remote hosts, bootstrap, and fleet operations | [Fleet](docs/FLEET.md) |
+| Agent profiles and prompts | [Usage: agent profiles and inputs](docs/USAGE.md#agent-profiles-and-inputs) |
+| Workflows and guarded integration | [Workflows](docs/workflows.md) |
+| Agent-authored objectives and staged plans | [Workflows](docs/workflows.md) |
+| State, trust, and public interfaces | [Contracts](docs/CONTRACTS.md) |
+| Releases and upcoming work | [Changelog](CHANGELOG.md) · [Roadmap](docs/ROADMAP.md) |
+
+## Development
+
+The CLI and lifecycle orchestration use POSIX shell; optional native helpers use C.
+Source qualification needs GNU Make, ShellCheck, dash, Git, tmux, and a C compiler.
+The fleet build additionally needs pkg-config and JSON-C development files.
+
+Fleet C code is grouped under `src/fleet/{agent,auth,plan,task,workflow,transport,support}`.
+Domain headers expose their own contracts; support headers cover bounded files,
+JSON and subprocess capture. The native TUI lives in `src/tui/`, with independently
+compiled model, adapter, process, selection, rendering, input and terminal modules.
+Workspace views include A/B/C layouts, attached tmux clients, draft validation,
+exact-digest execution and selected-run evidence. Statistics and graph rendering
+use the reusable `src/termviz/` components; see its [standalone library guide](src/termviz/STANDALONE.md).
+
+Testing requires a C99 compiler, JSON-C development files and pkg-config in
+addition to Git, tmux, dash and ShellCheck. Python is not required; Make builds
+the native test fixtures and example programs.
+
+```sh
+make lint       # ShellCheck and shell syntax
+make test-all   # Complete acceptance suite, including native and PTY checks
+make sanitize   # All native sanitizer checks
+make sanitize-fleet # Focused fleet, agent and planning sanitizer checks
+make help       # Build, package, and focused test targets
+```
+
+Fleet acceptance runs four independent cases at a time after building shared
+fixtures. Use `make test-fleet TEST_JOBS=1` for a serial run or set `TEST_JOBS`
+to another worker count. Case timings appear in the console; complete output
+is retained in `build/test-logs/` (under the selected `BUILD_DIR` for sanitizer
+builds). Failed cases print their output and fail the target.
+CI splits the same case list between `FLEET_SHARD=odd` and `FLEET_SHARD=even`,
+with two workers per runner to limit process contention;
+the default `FLEET_SHARD=all` retains the complete local suite.
+
+Contributions should include checks appropriate to their scope. Versions are
+chosen at release time from compatibility impact and documented in the changelog.
+
+## Uninstall
+
+Use the same prefix as installation:
+
+```sh
+PREFIX="$HOME/.local" ./uninstall.sh
+```
+
+The uninstaller prompts about removing user data. See `./uninstall.sh --help` for
+options before choosing a non-interactive purge.
+
+## License
+
+[MIT](LICENSE)

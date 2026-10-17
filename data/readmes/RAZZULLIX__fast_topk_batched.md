@@ -1,0 +1,75 @@
+# Fast TopK
+
+High-performance batched Top-K selection for CPU inference. Optimized for LLM sampling workloads.
+
+## Performance
+
+**Up to 80x faster than PyTorch CPU, competitive with CUDA for small batches.**
+
+### Benchmarks
+
+![Latency Comparison](https://github.com/user-attachments/assets/eea97d33-92a0-4141-9370-c2a4b0dea28b)
+
+![Throughput Chart](https://github.com/user-attachments/assets/8cbd093a-f9f6-49a3-ac35-d35ec4bc2532)
+
+![Benchmark Results](https://github.com/user-attachments/assets/c692e282-a01b-4b02-81fc-01b093b91a35)
+
+| Implementation | Batch=1, Vocab=128K | Batch=64, Vocab=128K |
+|----------------|---------------------|----------------------|
+| Fast TopK      | 0.057 ms           | 2.10 ms              |
+| PyTorch CPU    | 0.777 ms           | 7.16 ms              |
+| PyTorch CUDA   | 0.086 ms           | 0.375 ms             |
+
+## Installation
+
+**Build from source:**
+Windows
+```bash
+gcc -shared -O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -finline-functions -fomit-frame-pointer -static -static-libgcc fast_topk_batched.c -o fast_topk_batched.dll -lwinmm
+```
+
+Linux/macOS
+```bash
+gcc -shared -fPIC -O3 -march=native -mtune=native -flto -ffast-math -funroll-loops -finline-functions -fomit-frame-pointer fast_topk_batched.c -o libfast_topk.so
+```
+
+## Usage
+
+```python
+import ctypes
+import numpy as np
+
+lib = ctypes.CDLL('./libfast_topk.so')
+lib.fast_topk_batched.argtypes = [
+    ctypes.POINTER(ctypes.c_float),
+    ctypes.c_int, ctypes.c_int, ctypes.c_int,
+    ctypes.POINTER(ctypes.c_int)
+]
+
+# batch_size=16, vocab_size=128000, k=50
+logits = np.random.randn(16, 128000).astype(np.float32)
+indices = np.zeros(16 * 50, dtype=np.int32)
+
+lib.fast_topk_batched(
+    logits.ctypes.data_as(ctypes.POINTER(ctypes.c_float)),
+    16, 128000, 50,
+    indices.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
+)
+
+indices = indices.reshape(16, 50)  # Top-50 indices per sequence
+```
+
+## How It Works
+
+- Adaptive sampling + min-heap tracking
+- AVX2 SIMD for 8-wide parallel comparisons
+- Cache-optimized block scanning
+- Fast paths for sorted/constant inputs
+
+## Files
+
+- `fast_topk_batched.c` - Main implementation
+
+## License
+
+MIT

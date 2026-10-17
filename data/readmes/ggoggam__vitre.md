@@ -1,0 +1,662 @@
+# Vitre
+
+**WebView automation for Kotlin Multiplatform.** Describe what you want done to a page as a list of
+steps, then run it inside an embedded WebView on Android, iOS and the desktop: from your app, from
+a test, or from an LLM agent over the Model Context Protocol or Koog.
+
+![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?logo=kotlin&logoColor=white)
+![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Desktop-brightgreen)
+![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-4285F4)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+```kotlin
+val workflow = workflow("hn-top-story", "Hacker News top story") {
+    navigate("https://news.ycombinator.com/")
+    waitFor(".titleline > a", timeoutMs = 15_000)
+    extract(".titleline > a", into = "headline")
+    extract(".titleline > a", into = "url", from = Source.Attribute("href"))
+}
+
+WorkflowEngine(controller).run(workflow).collect { event ->
+    if (event is WorkflowEvent.Completed) println(event.variables["headline"])
+}
+```
+
+The same vocabulary is available four ways: as the Kotlin DSL above, as a Compose composable you
+drop into a screen, and, for an agent that has never seen the page, as MCP tools or as Koog tools.
+Those last two are two deliveries of one set of semantics rather than two implementations of them.
+
+The block is a builder rather than a script. It runs once, up front, to assemble the step list that
+`WorkflowEngine` then walks, so ordinary Kotlin `if` inside it chooses what the workflow *contains*.
+When the decision belongs to the run instead — an element that is only sometimes there, a value an
+earlier step extracted — `runIf` appends a step the engine evaluates against the page. The
+`WorkflowStep` constructors remain public and equivalent; they are what `vitre-mcp` uses, since
+an agent's steps arrive as JSON rather than as Kotlin.
+
+## Why
+
+Mobile apps already embed WebViews, and everything people want to do with them (read a page, fill a
+form, talk to the page's own script, scrape a table, run four sites at once) ends up as one-off
+`evaluateJavascript` calls glued to a callback. Those calls race each other, they race the UI, and
+none of it is shared between Android, iOS and the desktop.
+
+Vitre makes the page something you can drive: one ordering guarantee, one step vocabulary, one
+codebase for every platform, and a snapshot format an agent can read.
+
+- The steps are declarative: `Navigate`, `LoadHtml`, `WaitFor`, `Click`, `Input`, `Extract`,
+  `ExtractRows`, `Snapshot`, `EvaluateJs`, `PostMessage`, `AwaitMessage`, `If` for the branches
+  the page decides rather than the builder, and `ForEach` to visit every page an earlier step
+  found — search results in, one product page each out.
+- Elements are addressed three ways: CSS, XPath, and handles issued by a page snapshot.
+- `evaluateJs` returns a script's result JSON-encoded on every platform, so
+  `controller.evaluate<Boolean>(…)` decodes it instead of comparing it against `"true"`.
+- `postMessage` works in both directions, with an inbox so a message that arrives before you wait
+  for it is not lost. Payloads are typed on both ends: `bridge.request<Ack, Token>(…)` for a round
+  trip, `decodePayload<Token>(…)` for a workflow's.
+- `controller.cookies` reads, writes and clears the WebView's cookie jar, including the `HttpOnly`
+  cookie the site keeps its session in and `document.cookie` cannot see, with
+  host/path/`Secure`/`SameSite` scoping applied the way a request would apply it. Android and iOS
+  have this today; the desktop reports `null` until CEF's two jars are reconciled.
+- A lane pool drives up to four sites at once: one WebView per lane, borrowed by whichever
+  workflow needs a page next, so six workflows on a two-lane device run three deep instead of
+  losing four, and a workflow that fans out spreads its pages over every lane.
+- `vitre-mcp` exposes the whole vocabulary as MCP tools over an in-process transport, and
+  `vitre-koog` exposes it as native [Koog](https://github.com/JetBrains/koog) tools with a plugin
+  that holds the page for the length of an agent run. Both read one set of semantics out of
+  `vitre-agent`, so neither can drift into telling a model something the other does not.
+- Every platform call is confined to the WebView thread and totally ordered, so the engine, your UI,
+  and an agent can drive the same page without special-casing each other.
+
+> **Web is out of scope as a target.** Browser CORS rules make a general-purpose web automation
+> framework impractical there; see [docs/PLAN.md](docs/PLAN.md).
+
+## What it looks like
+
+The sample gallery on Android. The same screens run on iOS and the desktop from the same
+`composeApp`; past 720dp wide the list and the runner sit side by side instead of taking turns.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/gallery.png" alt="The Vitre gallery index" width="420"></td>
+<td width="50%"><img src="docs/images/workflow-run.png" alt="A completed workflow and its step trace" width="420"></td>
+</tr>
+<tr>
+<td width="50%"><b>The index.</b> The agent chat, the parallel-lane scenarios, then one card per single-page workflow.</td>
+<td width="50%"><b>A workflow, run.</b> The page on top, every step underneath with what it actually did. Steps 4 and 5 address elements by the handles <code>Snapshot</code> issued, not by selectors.</td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/price-scout.png" alt="Price scout comparing four shops by delivered price" width="420"></td>
+<td width="50%"><img src="docs/images/agent-chat.png" alt="The agent chat showing an MCP tool result and the answer derived from it" width="420"></td>
+</tr>
+<tr>
+<td width="50%"><b>Price scout.</b> An example workflow to retrieve info from third-party websites.</td>
+<td width="50%"><b>Agent chat.</b> A mocked model over a real MCP server: each action on the page is a <code>tools/call</code>, shown with the JSON that came back rather than hidden behind the answer.</td>
+</tr>
+</table>
+
+What each entry demonstrates is spelled out in
+[What's in the sample gallery](#whats-in-the-sample-gallery); to run it yourself, see
+[Running the sample](#running-the-sample).
+
+## Requirements
+
+| | |
+|---|---|
+| Kotlin | 2.3.10 (Multiplatform) |
+| Android | minSdk 24, compileSdk 36 |
+| iOS | 15.0+ (`WKWebView`) |
+| Desktop | JVM 17+ on macOS, Linux and Windows (Chromium via [KCEF](https://github.com/DATL4G/KCEF)) |
+| UI layer | Compose Multiplatform, optional; `vitre-core` has no Compose dependency |
+
+## Installation
+
+Published to Maven Central, so `mavenCentral()` in your repositories is all the setup there is:
+
+```kotlin
+// build.gradle.kts
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("dev.ggoggam.vitre:vitre-core:0.2.0")
+            implementation("dev.ggoggam.vitre:vitre-compose:0.2.0") // optional
+            implementation("dev.ggoggam.vitre:vitre-mcp:0.2.0")     // optional
+            implementation("dev.ggoggam.vitre:vitre-koog:0.2.0")    // optional
+        }
+    }
+}
+```
+
+Or consume it as a source dependency: clone the repo next to your project, add
+`includeBuild("../vitre")` to `settings.gradle.kts` and drop the versions above. If you vendor the
+sources instead, add the modules directly with `include(":vitre-core")`.
+
+## Quick start
+
+Mount a WebView, take its controller, run a workflow against it:
+
+```kotlin
+@Composable
+fun Screen() {
+    val state = rememberVitreWebViewState("https://example.com")
+    val controller = state.controller
+
+    LaunchedEffect(controller) {
+        val page = controller ?: return@LaunchedEffect
+        WorkflowEngine(page).run(SampleWorkflows.ExampleDotComTitle).collect { event ->
+            when (event) {
+                is WorkflowEvent.StepStarted -> log("→ ${event.step}")
+                is WorkflowEvent.Completed -> log(event.variables["title"])
+                is WorkflowEvent.Failed -> log("step ${event.stepIndex}: ${event.message}")
+                else -> Unit
+            }
+        }
+    }
+
+    VitreWebView(state = state, modifier = Modifier.fillMaxSize())
+}
+```
+
+`state.controller` is null before the WebView mounts and null again after it leaves the composition,
+so an effect keyed on it starts when the page arrives and tears down when it goes away, and nothing
+runs against a dead WebView.
+
+## Example use cases
+
+### 1. Read a page your app doesn't own
+
+The smallest thing worth doing: navigate, wait for the element that means the page is ready, read
+what you came for. Text is `textContent`; `href` is genuinely an attribute, so it is read as one.
+
+```kotlin
+workflow("hn-top-story", "Hacker News top story") {
+    navigate("https://news.ycombinator.com/")
+    waitFor(".titleline > a", timeoutMs = 15_000)
+    extract(".titleline > a", into = "headline")
+    extract(".titleline > a", into = "url", from = Source.Attribute("href"))
+}
+```
+
+### 2. Pull a whole table out in one step
+
+`ExtractRows` returns one JSON record per matching row, with each column resolved within that row.
+That scoping is the point: a row missing a price yields an empty string in that record instead of
+shifting every later record onto the wrong product.
+
+```kotlin
+extractRows(rows = xpath("//li[@data-sku]"), into = "results", limit = 10) {
+    // "." is the row itself — read its own attribute.
+    column("sku", xpath("."), from = Source.Attribute("data-sku"))
+    column("price", xpath(".//span[@class='price']"))
+    // Matched on the text a human reads, not on a class hook.
+    column("stock", xpath(".//*[normalize-space()='In stock']"))
+    // Up to the row and back down — CSS has no parent combinator.
+    column("seller", xpath(".//span[@class='price']/ancestor::li[1]//span[@class='seller']"))
+}
+```
+
+### 3. Then go into each result
+
+A search page names the products; the answers are one page further in, and there is one per row.
+`forEach` runs its body once per element of the array `ExtractRows` left behind, binding each as
+`product`, so `template("{product.url}")` is the address that row carried. Items run on lanes
+borrowed from the engine's `LaneSource` — one after another on a single WebView, several at once
+on a pool — and each leaves what it extracted in `details`, in row order, with a failing item
+recorded rather than fatal.
+
+```kotlin
+forEach(over = "results", item = "product", into = "details", limit = 4) {
+    navigate(template("{product.url}"))
+    waitFor("#productTitle", timeoutMs = 25_000)
+    extract("#productTitle", into = "title")
+    extract("#availability", into = "availability")
+}
+// Afterwards:
+val details = completed.decode<List<FanOutResult>>("details")
+```
+
+A fan-out is a page barrier: the workflow gives its lane back before the first item starts and
+borrows a fresh one afterwards, so the step after a `forEach` starts on a blank page with the
+variables intact. That is what makes a pool of any size safe from a parent holding the lane its
+children are waiting for — see [PARALLEL-LANES.md](docs/PARALLEL-LANES.md).
+
+### 4. Talk to a page you do own (hybrid apps)
+
+If the page is yours, the bridge beats scraping it. `PostMessage` sends a
+`MessageEvent('vitre')` into the page; `AwaitMessage` waits for `window.vitre.postMessage`
+coming back. The inbox buffers, so a handler that posts synchronously on click is still matched by
+an `AwaitMessage` that starts afterwards, which is the case that silently loses messages elsewhere.
+
+```kotlin
+@Serializable data class Ack(val seen: Boolean)
+@Serializable data class Token(val value: String, val expiresAt: Long)
+
+loadHtml(html = checkoutHtml, baseUrl = "https://app.example.com")
+waitFor("#pay")
+click("#pay")
+awaitMessage(type = "payment-token", into = "token", timeoutMs = 5_000)
+postMessage(type = "ack", payload = Ack(seen = true), id = "ack-1")
+```
+
+`click` requires exactly one connected, enabled target with visible layout and rejects hidden or
+inert targets. Validation and dispatch run in one JavaScript turn. It dispatches a synthetic DOM
+click; it does not scroll, check viewport intersection or occlusion, create trusted user input, or prove the site's operation
+completed. Use `waitFor`, extraction, or a bridge acknowledgement to verify the result.
+
+`WorkflowEvent.Failed.kind` and `PageDriverException.kind` distinguish `ActionRejected` (validation
+stopped dispatch), `OutcomeUnknown` (the script may already have taken effect), and general `Failure`.
+Inspect state before retrying an unknown outcome. Scripts are never automatically replayed.
+
+Payloads are classes rather than hand-typed envelope strings. `id` and `type` stay arguments because
+they are protocol. The reply arrives in a variable, and the typing picks up again where the values
+are:
+
+```kotlin
+if (event is WorkflowEvent.Completed) use(event.decodePayload<Token>("token"))
+```
+
+The split is deliberate. A workflow block is a builder: it runs once to assemble the step list, and
+the steps run later, so there is no point in the block at which a reply could be returned to it.
+When you want a round trip as one expression, you want the host API rather than a workflow.
+`request` posts, correlates the answer by `replyTo`, and gives it back typed:
+
+```kotlin
+val token: Token = controller.bridge.request<Ack, Token>("issue-token", Ack(seen = true))
+```
+
+Post-then-await does not race here either: the inbox buffers the reply from a page handler that
+answers synchronously, which is the normal case, until the wait starts.
+
+The same applies to a script's own result. `evaluateJs` hands back the JSON encoding of what the
+expression produced, the one contract every platform was made to agree on, so a value read out of a
+page can be decoded rather than string-matched:
+
+```kotlin
+val ready: Boolean = controller.evaluate("document.readyState==='complete'")
+val rows: List<Product> = controller.evaluate("Array.from(document.querySelectorAll('li')).map(toRow)")
+```
+
+### 5. Handle the page that is only sometimes there
+
+A cookie banner, an interstitial, a login form that appears when the session lapsed. `waitFor` is
+the wrong tool for all of them — it fails the run when the thing legitimately is not there — and a
+Kotlin `if` in the builder cannot help, because it has already finished running by the time the page
+loads.
+
+`runIf` appends a `WorkflowStep.If` the engine evaluates in place. Conditions are values, not JS
+strings, so a failure can name what went wrong: `exists`, `variableEquals`, `variableMatches`,
+`jsTruthy`, combined with `and` / `or` / `not`.
+
+```kotlin
+navigate("https://shop.example.com/cart")
+
+// Neither outcome is a failure. The banner is dismissed if it is there, and skipped if it is not.
+runIf(exists("#cookie-banner")) {
+    click("#cookie-banner .accept")
+}
+
+extract("#checkout-status", into = "status")
+
+// Branching on a value the run itself produced — nothing at build time knows what this says.
+runIf(variableMatches("status", "session expired"), otherwise = { click("#pay") }) {
+    click("#sign-in")
+    input("#password", secret)
+    waitFor("#checkout-status")
+}
+```
+
+Branches nest, and step numbering nests with them: a failure inside one reports a `StepPath` like
+`3.then.1` rather than a flat index that would point at the `If` — the one step that did not fail.
+`Exists` is deliberately the one condition where a missing element is an answer instead of an error,
+including for a stale snapshot handle, which every other step rejects outright.
+
+### 6. Search four sites at once
+
+One WebView per lane, each loading its site as a top-level document, which is what keeps sessions
+first-party and `X-Frame-Options` out of the picture. Hand the pool every workflow and it drains
+them across however many lanes the device could carry.
+
+```kotlin
+var pool by remember { mutableStateOf<FramePool?>(null) }
+
+VitreFrameHost(
+    laneCount = 4,
+    policy = InterceptionPolicy(permissiveCors = true, handlers = shopFixtures),
+    onPoolReady = { pool = it },
+)
+
+// Six workflows on a two-lane device run three deep — nothing is dropped.
+pool?.run(shops.map { it.workflow(query) })?.collect { (taskIndex, laneId, _, event) ->
+    if (event is WorkflowEvent.Completed) merge(event.variables["results"])
+}
+```
+
+The sample's Price scout does exactly this: four synthetic shops at four distinct origins, merged
+and ranked by delivered price, which for most of the catalogue is a different shop from the cheapest
+sticker price.
+
+For work that must survive an observer disconnecting, submit it once to a host-owned
+[`WorkflowQueue`](docs/WORKFLOW-JOBS.md). Its job handles expose hot state: another collector
+observes the same execution. Admission is bounded, and deadlines include time spent waiting.
+
+```kotlin
+val queue = WorkflowQueue(hostScope, readyPool, capacity = 32)
+val job = queue.submit(shop.workflow(query), timeoutMs = 60_000)
+hostJobs[job.id] = job // retain the handle for your UI or agent session
+
+when (val state = job.await()) {
+    is WorkflowJobState.Completed -> merge(state.result.variables["results"])
+    is WorkflowJobState.Failed -> log(state.message)
+    is WorkflowJobState.Cancelled -> log("cancelled: ${state.reason}")
+    else -> Unit
+}
+// When the host shuts down: queue.closeAndJoin()
+```
+
+### 7. Offline, deterministic page tests
+
+A `RequestHandler` answers requests from memory, so a test drives a real WebView against a real
+origin with no network and no flake. This is how the parallel-lane demo stays a usable smoke test.
+
+```kotlin
+val fixtures = RequestHandler { request ->
+    when (request.host) {
+        "shop-a.test" -> InterceptedResponse(body = shopAHtml.encodeToByteArray())
+        else -> null // fall through to the network
+    }
+}
+
+VitreFrameHost(policy = InterceptionPolicy(handlers = listOf(fixtures)), …)
+```
+
+Handlers are the one part of interception that is on by default, and the only part a fixture needs:
+a default-constructed `InterceptionPolicy` answers from them and otherwise leaves the network
+alone, so a lane pointed at a real site gets the document the browser would have fetched rather
+than one this library refetched. `InterceptionPolicy.AUTOMATION` opts into the rest — CORS and CSP
+relaxation, the network tap, documents and data taken off the network — for a pool driving sites
+the app deliberately automates.
+
+Interception is real on Android and the desktop, which both let an application answer a request
+outright: `shouldInterceptRequest` on one, CEF's resource pipeline on the other. iOS is the
+exception, since `WKURLSchemeHandler` refuses to register for `https`, so fixtures there are served
+from a private scheme and nothing can rewrite a response header. The failure modes, and why the
+default reversed, are spelled out in [docs/PARALLEL-LANES.md](docs/PARALLEL-LANES.md).
+
+### 8. Let an agent drive the page
+
+`Snapshot` answers the question a hand-written workflow never has to ask: what is on this page? It
+returns the interactive and text-bearing elements as an indented outline with a handle each, the
+same information as the HTML at roughly a third of the tokens.
+
+```
+Vitre fixture — https://fixture.vitre.test/
+heading "Vitre fixture" [ref=e1]
+textbox value="typed by handle" [ref=e3]
+button "Send pong to native" [ref=e4]
+```
+
+Refs in this example are abbreviated. Actual refs include a document namespace: copy them verbatim
+from the snapshot and treat them as opaque. Passwords, one-time codes and card autocomplete values
+are redacted; other form values are bounded. Hosts can configure additional subtree redaction using
+`SnapshotPolicy` on `WorkflowEngine`, `PageDriver`, or `McpServer`.
+
+Hosts can disable tool operations or suspend them for user approval with `PageAccessPolicy`.
+MCP and Koog expose `capabilities` to report enabled operations and limitations. See
+[host action authorization](docs/ACTION-POLICY.md) for examples and the enforcement boundary.
+
+From there the agent uses the returned refs (shown abbreviated below):
+
+```kotlin
+snapshot(into = "page")
+input(handle("e3"), text = "typed by handle")
+click(handle("e4"))
+extract(handle("e5"), into = "status")
+```
+
+`vitre-mcp` puts that behind an MCP server: `snapshot`, `navigate`, `click`, `type`,
+`wait_for`, `extract`, `extract_rows`, `evaluate`, `send_message`, `await_message`, plus
+`acquire_lease` / `release_lease` for holding a page across several calls. The host registers its
+WebViews and the server drives exactly those:
+
+```kotlin
+val sessions = WebViewSessions().apply { register("main", controller, "the shopping tab") }
+val server = McpServer(sessions, scope)
+val transport = InProcessMcpTransport(server)
+```
+
+It ships an in-process transport only, on purpose: a loopback socket would expose page automation to
+anything on the device that can reach the port, and on a WebView signed into the user's accounts
+that leaks the session, not merely the automation. See [docs/MCP.md](docs/MCP.md).
+
+### 9. Give a Koog agent the same page
+
+If the agent is written with [Koog](https://github.com/JetBrains/koog), `vitre-koog` hands it the
+same thirteen tools as Kotlin objects, with typed arguments, no server, and the same names, so a
+system prompt written for one adapter works against the other:
+
+```kotlin
+val driver = PageDriver(sessions, scope)
+
+val agent = AIAgent(
+    promptExecutor = executor,
+    llmModel = OpenAIModels.Chat.GPT4_1,
+    systemPrompt = PageToolDocs.INSTRUCTIONS,
+    toolRegistry = ToolRegistry { vitreWebView(driver) },
+)
+```
+
+A host that already runs the MCP server can bridge that instead. `vitreMcpToolRegistry(server)`
+reads `tools/list` and translates the schemas, so there is one description of the toolset rather
+than two. Point the typed tools at `server.driver` if you want both against one lease registry.
+
+The plugin is `VitrePageLease`. Ordering already stops two callers corrupting each other's
+individual steps, but it cannot make a sequence indivisible, and an agent is nothing but sequences.
+A user tapping "next page" between the agent's `wait_for` and its `extract` yields a price read off
+the wrong page, with every operation correctly serialised. `acquire_lease` fixes that, at the cost
+of requiring the model to remember to use it. The plugin takes the lease itself, for the length of
+the run, and the model never sees it:
+
+```kotlin
+val agent = AIAgent(
+    promptExecutor = executor,
+    llmModel = OpenAIModels.Chat.GPT4_1,
+    systemPrompt = PageToolDocs.INSTRUCTIONS,
+    // Lease tools off: the run already holds the page, and a model that asks for it again is
+    // queueing behind itself until its own lease expires.
+    toolRegistry = ToolRegistry { vitreWebView(driver, includeLeaseTools = false) },
+) {
+    install(VitrePageLease) { driver = pageDriver; ttlMs = 120_000 }
+}
+```
+
+The lease is bounded by a TTL, because the page is held while the agent waits on an LLM, and a
+WebView the user can see is a UI that has stopped responding to its own app. See
+[docs/KOOG.md](docs/KOOG.md).
+
+## Locators
+
+Every element-addressing step takes a `Locator`: `css("#results .item")`, `xpath("//li[@data-sku]")`
+or `handle("e7")`. A bare string still means CSS.
+
+| | Use it for |
+|---|---|
+| `css(…)` | The common case. Short, familiar, fast. |
+| `xpath(…)` | Matching on visible text, walking *up* the tree with `ancestor::`, selecting an attribute as a node, positional predicates, `count()`. |
+| `handle(…)` | Addressing an element a `Snapshot` already found; the agent's locator. |
+
+Neither CSS nor XPath pierces shadow DOM; that is the page's doing, not the query language's.
+
+A handle is the third kind and behaves differently by design: the other two describe how to search,
+a handle names an element. It is issued by the page, dies with the document that issued it, and is
+never recycled, so a handle from the previous page fails loudly instead of resolving against a
+same-shaped element on the new one.
+
+## Threading
+
+A WebView owns a thread, the platform main thread, and that is not negotiable: `WKWebView` is UIKit,
+and an Android `WebView` must be used on the thread that built it. So callers do not synchronise
+with each other, they queue. One object, `WebViewSerializer`, confines every platform call to that
+thread and totally orders them, which is what lets the workflow engine, the UI, and an agent drive
+the same page without special-casing each other. The engine itself runs on `Dispatchers.Default` and
+never sees the WebView thread.
+
+See [docs/CONCURRENCY.md](docs/CONCURRENCY.md) for the model and the bugs it fixed.
+
+## Modules
+
+| Module | Purpose |
+|---|---|
+| `vitre-core` | Pure KMP library: workflow DSL, engine, bridge protocol, `WebViewController` actuals, lane pool, network interception. |
+| `vitre-compose` | Compose Multiplatform layer: `VitreWebView` and `VitreFrameHost`. |
+| `vitre-agent` | What every agent adapter shares: `PageDriver`, the session registry, leases, and the prose each tool is described to a model with. |
+| `vitre-mcp` | MCP server over one or more WebViews: JSON-RPC, tool schemas, transport. |
+| `vitre-koog` | Koog tools over the same WebViews, plus a bridge for an MCP server you already run and a plugin that leases the page for an agent run. |
+| `sample/composeApp` | Shared sample UI: a workflow gallery demonstrating the library. |
+| `sample/androidApp` | Sample Android launcher hosting `composeApp`. |
+| `sample/iosApp` | Sample iOS Xcode project hosting `composeApp` via the KMP framework. |
+| `sample/desktopApp` | Sample desktop launcher hosting `composeApp`, with the KCEF startup gate. |
+
+## Building
+
+```bash
+mise install            # ktlint (mise.toml) + the android CLI (mise.local.toml)
+mise run test           # library + sample allTests
+mise run test:android   # the on-device Koog agent test (needs a device or emulator)
+mise run build          # library artifacts + Android sample APK + iOS debug framework
+mise run lint           # ktlint
+mise run fmt            # ktlint --format
+```
+
+A JDK is not declared in `mise.toml`. Gradle uses whatever JDK is on your machine, and the
+toolchain is resolved via foojay. CI installs its own from `mise.ci.toml`. `mise run wrapper`
+regenerates the Gradle wrapper and is the one task that needs a system `gradle`; you only need it
+when bumping Gradle.
+
+### Running the sample
+
+```bash
+mise run dev:android    # build + install + launch on a phone, or boot an AVD
+mise run dev:ios        # build + install + launch on a simulator
+mise run dev:desktop    # build + launch the desktop window
+```
+
+All three build and launch in one step, so none of them needs Android Studio or Xcode open.
+`dev:android` prefers a plugged-in device over an emulator and boots the first AVD if nothing is
+attached; `dev:ios` reuses a booted simulator, or set `VITRE_SIM` to pick one by name. They
+live in `mise.local.toml` (dev only, and CI never runs them). `mise run android:install` is the
+plain fallback: `gradlew installDebug` onto whatever adb already sees, without the android CLI.
+
+You can also open `sample/iosApp/iosApp.xcodeproj` in Xcode and hit Run, since the target's "Compile
+Kotlin Framework" phase builds the KMP framework first either way.
+
+`dev:desktop` is the odd one out on first run: unlike a WebView, Chromium is not already on the
+machine, so KCEF downloads and unpacks a bundle of a few hundred megabytes into
+`~/.vitre/kcef-bundle` before the gallery appears. The sample shows that as a progress screen
+and it happens once per machine; later launches go straight to the window.
+
+### What's in the sample gallery
+
+The gallery opens on the agent chat: a WebView with a conversation under it, where every action on
+the page arrives as an MCP tool call and the calls and their results are shown rather than hidden
+behind the answer. The model is mocked, with no LLM API and no key, but nothing downstream of it is.
+Each turn issues a real `tools/call` over JSON-RPC and the answer is computed from what came back.
+One scripted exchange guesses a CSS selector that does not match, so the transcript shows a tool
+failure arriving as an `isError` result the model reads and corrects, rather than as an exception
+that ends the run.
+
+Below it are two parallel-lane scenarios: Price scout (four synthetic cross-origin shops, ranked
+by delivered price) and Live pages probe (four real sites, reporting from inside each, including
+whether a cross-origin `fetch` got through).
+
+Then the single-page workflows. Two of them drive a page the sample ships, loaded straight into the
+WebView with no network. Those are the only ones that can demonstrate the bridge at all, since
+`AwaitMessage` waits for `window.vitre.postMessage` and no third-party site will ever call it, and
+they double as the smoke test: a failure means the library broke rather than that a website was
+redesigned. The rest hit the live web to show the same steps against real pages, and are the ones
+that will eventually rot. Among them, "Amazon search → product pages" is the fan-out: it searches,
+then visits the first four results one after another on the gallery's single WebView, and the
+`For each` row in the timeline counts the product pages as they land.
+
+### Releasing
+
+`VERSION_NAME` in `gradle.properties` is the released version, and the only place it is written
+down. Changing it on `main` is the release, so a release is a reviewable pull request like anything
+else, and what reaches Maven Central is the value someone approved:
+
+```diff
+ # gradle.properties
+-VERSION_NAME=0.1.0
++VERSION_NAME=0.2.0
+```
+
+Merging that fires [`.github/workflows/release.yml`](.github/workflows/release.yml), which runs the
+full CI suite against the merge commit, publishes all five library modules to Maven Central as one
+atomic deployment and releases it, with no button to press afterwards. Only then does it tag the
+commit `v0.2.0` and open a GitHub release for it, with notes generated from the pull requests merged
+since the last one. The tag records a release that happened rather than causing one; pushing one by
+hand publishes nothing.
+
+A version with a prerelease component (`0.3.0-rc.1`, `1.0.0-beta.2`) publishes to Maven Central
+like any other, but its GitHub release is flagged so it does not show up as *Latest*.
+
+`gradle.properties` also holds Kotlin, Gradle, Android and POM settings, so most edits to it are not
+releases. The workflow diffs `VERSION_NAME` against the previous commit and exits quietly when it
+has not moved. It refuses outright, before Gradle starts, on a malformed version, on the
+`0.0.0-LOCAL` placeholder, and on any version already tagged, because a Maven Central version can be
+superseded but never withdrawn.
+
+It publishes from macOS because the iOS targets need it: Kotlin/Native only builds Apple klibs on a
+Mac, and on Linux they are skipped silently rather than reported, which would ship module metadata
+advertising variants that are not there.
+
+Publishing needs four secrets on the repository's `maven-central` environment: a
+[Central Portal](https://central.sonatype.com/) user token for the verified `dev.ggoggam` namespace,
+and a GPG key to sign with.
+
+| Secret | What it is |
+|---|---|
+| `MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_PASSWORD` | Central Portal user token, from Account → Generate User Token. Not the portal login. |
+| `SIGNING_IN_MEMORY_KEY` | The armoured private key: `gpg --armor --export-secret-keys <key-id>`, newlines included. |
+| `SIGNING_IN_MEMORY_KEY_PASSWORD` | That key's passphrase. |
+| `SIGNING_IN_MEMORY_KEY_ID` | Only needed if the exported ring holds more than one key; leave unset otherwise. |
+
+The public half has to be on a keyserver Central checks (`gpg --keyserver keyserver.ubuntu.com
+--send-keys <key-id>`), or validation rejects every signature.
+
+To try the modules from another project without releasing anything, `mise run publish:local` puts
+them in `~/.m2` at whatever `VERSION_NAME` currently says.
+
+## Documentation
+
+| Doc | What's in it |
+|---|---|
+| [docs/PLAN.md](docs/PLAN.md) | Architecture, module layout, bridge design, the TDD use-case matrix. |
+| [docs/CONCURRENCY.md](docs/CONCURRENCY.md) | The threading model, the bugs it fixed, how MCP slots in on top. |
+| [docs/PARALLEL-LANES.md](docs/PARALLEL-LANES.md) | Lanes, interception, CORS, the traffic tap, platform differences. |
+| [docs/MCP.md](docs/MCP.md) | Tool list, handle lifetime, leases, protocol and transport decisions. |
+| [docs/KOOG.md](docs/KOOG.md) | The Koog tools, the MCP bridge, the lease plugin, and why the semantics sit under both adapters. |
+| [docs/ASYNC-BRIDGE.md](docs/ASYNC-BRIDGE.md) | The `postMessage` bridge protocol end to end. |
+
+## Contributing
+
+Issues and pull requests are welcome.
+
+```bash
+mise install
+mise run fmt:check      # ktlint, same check CI runs
+mise run test
+```
+
+The repo uses [prek](https://github.com/j178/prek) pre-commit hooks (`mise run pre-commit`), and
+ktlint with the official Kotlin code style. A few conventions worth knowing before you send a patch:
+
+- Comments explain *why*. Much of this codebase's value is in the reasoning recorded next to
+  non-obvious decisions: platform seams, ordering guarantees, failure modes. Keep that up.
+- Tests come first for anything in `vitre-core`. The engine, bridge and pool are covered by
+  `commonTest` against a fake controller; a behaviour change should show up there before it shows up
+  in a WebView.
+- Both platforms or neither. If a change can only work on one, say so where a caller will read it,
+  the way interception does.
+
+## License
+
+[MIT](LICENSE) © 2026 Joon Kwon

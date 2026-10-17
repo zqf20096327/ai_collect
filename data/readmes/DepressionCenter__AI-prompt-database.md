@@ -1,0 +1,162 @@
+<!--
+This file is part of AI Prompt Database
+README.md
+Author(s): Gabriel Mongefranco.
+Created: 2024-04-15
+Last Modified: 2026-09-16
+Summary: Provides an overview of the AI Prompt Database repository, in Markdown format.
+Notes: See README file for documentation and full license information.
+
+Copyright © 2023-2026 The Regents of the University of Michigan
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+
+-->
+![Depression Center Logo](https://github.com/DepressionCenter/.github/blob/main/images/EFDCLogo_375w.png "depressioncenter.org")
+
+# AI Prompt Database™
+
+## Description
+AI Prompt Database™ is an open-source library of reusable generative AI prompt examples for UMGPT, Maizey, ChatGPT, Gemini, Claude, and other assistants. It organizes practical prompts for research, clinical work, education, data analysis, business productivity, and web development.
+
+Browse a category, copy a prompt template, and adapt it to your task. Researchers, educators, clinicians, analysts, and developers can contribute tested examples so others can reproduce useful AI workflows.
+
+
+
+## Quick Start Guide
+* Navigate to the directory of your choice. Each directory represents a topic or category.
+* Copy the code under the Template section, and paste it into your AI prompt ( e.g. <a href="https://umgpt.umich.edu/" target="_blank"><strong>UMGPT</strong></a> ).  
+
+### Prompt Categories
+<table border="0" width="98%" style="width: 98%;">
+  <tbody>
+    <tr>
+      <td width="32%">
+        <h4><a href="/business/">Business</a></h4>
+        <p>Prompts to help with productivity and business functions, such as gathering vendor info, providing feedback on SBARs, etc.</p>
+      </td>
+      <td width="32%">
+        <h4><a href="/clinical/">Clinical</a></h4>
+        <p>Prompts that could be useful to clinical staff, such as translating, writing patient educaiton materials, or summarizing research.</p>
+      </td>
+      <td width="32%">
+        <h4><a href="/data-analysis/">Data Analysis</a></h4>
+        <p>Tidbits for common data analysis and dashboard development tasks. Prompt, code, and relax!</p>
+      </td>
+    </tr>
+    <tr>
+      <td width="32%">
+        <h4><a href="/education/">Education</a></h4>
+        <p>If you teach or create educational materials, these prompts are for you!</p>
+      </td>
+      <td width="32%">
+        <h4><a href="/research/">Research</a></h4>
+        <p>Helpful prompts for study coordinators and principal investigators, such as generating study consents that are inclusive and equitable.</p>
+      </td>
+      <td width="32%">
+        <h4><a href="web-development">Web Development</a></h4>
+        <p>Painless web development! Prompts to save you time when creating and formatting web pages, such as applying U-M templates.</p>
+      </td>
+    </tr>
+    <tr>
+      <td width="32%">
+        <h4><a href="/just-for-fun/">Just for Fun!</a></h4>
+        <p>Fun prompts to make those coffee-filled Monday mornings feel more like a Friday!</p>
+      </td>
+      <td width="32%">
+        <h4><a href="#contact">Add your own!</a></h4>
+        <p>Contact us to add more categories and prompts, or send us a pull request.</p>
+      </td>
+      <td width="32%">
+        <h4><a href="#"></a></h4>
+        <p></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br />
+
+
+
+## Contributing
+* Please contribute your examples to this repo, for the benefit of everyone at the University of Michigan and Michigan Medicine. Chances are, someone maybe trying to solve the same problem, and your prompt may spark new ideas!
+* To contribute, simply make a copy of the [template](_template.md) and edit it. Then, either [email us](#contact), or send us a pull request. Be sure to specifiy the folder where your example should go.
+
+
+## Documentation
+* Each individual file has its own documentation and examples.
+* Repository guides, templates, and agent skills live in the [`/docs`](./docs) folder and the [skills index](SKILLS.md).
+* For other U-M Generative AI documentation, visit the [GenAI site](https://genai.umich.edu/) or the [Depression Center's knowledge base](https://michmed.org/efdc-kb).
+
+## Additional Resources
+* Depression Center - [Tips for Using U-M Generative AI Tools](https://teamdynamix.umich.edu/TDClient/210/DepressionCenter/KB/ArticleDet?ID=10725)
+* U-M ITS - [Prompt Literacy in Academics](https://genai.umich.edu/resources/prompt-literacy)
+* @devisasari - [Awesome GPT Store](https://github.com/devisasari/awesome-gpt-store)
+* Anthropic - [Prompt Library](https://docs.anthropic.com/claude/prompt-library)
+
+
+
+## About the Team
+The Mobile Technologies Core provides investigators across the University of Michigan the support and guidance needed to utilize mobile technologies and digital mental health measures in their studies. Experienced faculty and staff offer hands-on consultative services to researchers throughout the University – regardless of specialty or research focus.
+
+
+
+## Contact
+To get in touch, contact the individual developers in the check-in history.
+
+If you need assistance identifying a contact person, email the EFDC's Mobile Technologies Core at: efdc-mobiletech@umich.edu.
+
+
+
+## Credits
+#### Contributors:
++ Eisenberg Family Depression Center [(@DepressionCenter)](https://github.com/DepressionCenter/)
++ Gabriel Mongefranco [(@gabrielmongefranco)](https://github.com/gabrielmongefranco)
+
+
+
+#### This work is based in part on the following projects, libraries and/or studies:
++ None, unless noted in each specific example.
+
+
+
+## License
+### Copyright Notice
+AI Prompt Database™, AI-prompt-database™, and AI Prompts Database™ are a trademark of The Regents of the University of Michigan.
+Copyright © 2023-2026 The Regents of the University of Michigan
+
+
+### Software and Library License
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/gpl-3.0-standalone.html>.
+
+
+### Documentation License
+Permission is granted to copy, distribute and/or modify this document 
+under the terms of the GNU Free Documentation License, Version 1.3 
+or any later version published by the Free Software Foundation; 
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. 
+You should have received a copy of the license included in the section entitled "GNU 
+Free Documentation License". If not, see <https://www.gnu.org/licenses/fdl-1.3-standalone.html>
+
+
+
+## Citation
+If you find this repository, code or paper useful for your research, please cite it.
+* v0: [https://doi.org/10.6084/m9.figshare.25669170](https://doi.org/10.6084/m9.figshare.25669170)
+* v1.0+: [https://doi.org/10.5281/zenodo.15242741](https://doi.org/10.5281/zenodo.15242741)
+
+----
+
+Copyright © 2023-2026 The Regents of the University of Michigan

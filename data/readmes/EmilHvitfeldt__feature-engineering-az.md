@@ -1,0 +1,39 @@
+
+# Feature Engineering A-Z
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This repository contains the source material for the book "Feature Engineering A-Z". The rendered book can be found at https://feaz-book.com/
+
+## Installation
+
+This book shows examples in both R and Python, with [renv](https://rstudio.github.io/renv/index.html) being used to manage R dependencies and [uv](https://docs.astral.sh/uv/) being used to manage Python dependencies.
+
+You do this by calling `renv::restore()` from R, and `uv sync` from the terminal. The latter creates a virtual environment in `.venv/`.
+
+The book is rendered using [Quarto](https://quarto.org/). For this to work smoothly, the environment variable `RETICULATE_PYTHON` should point at `.venv/bin/python`, which is specified in [.Renviron](.Renviron).
+
+## AI Skills
+
+I'm going to try something new,
+which is to write some custom AI skills that lets you use the information in this book with your AI agent of choice.
+
+### Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| [Ask FEAZ](https://github.com/EmilHvitfeldt/feature-engineering-az/blob/main/ai-skills/ask-feaz.md) | Ask questions about feature engineering methods |
+| [Workflow Builder](https://github.com/EmilHvitfeldt/feature-engineering-az/blob/main/ai-skills/workflow-builder.md) | Design a feature engineering pipeline for your data |
+
+Browse all skills in the [ai-skills folder](https://github.com/EmilHvitfeldt/feature-engineering-az/tree/main/ai-skills).
+
+## AI Was not Used to Create Content
+
+AI tools were not used to generate any of the definitions, descriptions, discussions, references, or other textual materials.
+All prose and code is hand crafted.
+
+AI tools were used for:
+
+- Copy editing/spelling/grammar (e.g., Grammarly)
+- Creation of AI skills

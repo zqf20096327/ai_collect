@@ -1,0 +1,166 @@
+# Hinterview
+
+Practice system design interviews with guided questions, AI feedback, a shared diagram playground, and local-first progress tracking.
+
+Support this project: [PayPal QR](./screenshots/paypal.jpeg)
+
+## ✨ What It Is
+
+Hinterview is a desktop + web app for practicing:
+- `HLD`
+- `LLD`
+- or both on the same problem
+
+It gives you:
+- staged interview questions
+- AI hints and scoring
+- a common canvas/playground
+- learning review
+- custom question generation
+
+## 🧩 Main Features
+
+### Interview Flow
+- Shared question library
+- Search and filters
+- Difficulty sorting
+- Stage locking and ordered progression
+- Retry and redo support
+- Shared stages across HLD and LLD where relevant
+
+### AI Support
+- Multiple AI providers
+- Encrypted local API key storage
+- Hint, answer, and evaluation actions
+- Score out of `10.00`
+- Pass threshold at `8.00`
+
+### Playground
+- Text boxes
+- Rectangle, circle, cylinder, diamond
+- Arrows
+- Move, resize, rotate, group select
+- Per-stage containers inside one shared canvas
+- Autosave and restore
+
+### Learning
+- Recent attempts
+- Learning themes
+- Recommendations
+- Personal notes
+
+### Custom Content
+- Create a full custom question
+- Beautify with AI
+- Add custom stages to existing questions
+- Suggest the next stage with AI
+
+### App Experience
+- Dark mode
+- Desktop + web support
+- Local SQLite persistence
+- Migration ledger
+- Error boundary and retry states
+
+## 🖼️ Screenshots
+
+### Product Gallery
+
+#### Question Library
+
+<img src="./screenshots/library.png" alt="Question library" width="960" />
+
+#### My Learnings
+
+<img src="./screenshots/question-detail.png" alt="Question detail" width="960" />
+
+#### Question Detail
+
+<img src="./screenshots/playground-evaluation.png" alt="Playground and evaluation" width="960" />
+
+#### Shared Question Flow
+
+<img src="./screenshots/shared-question-flow.png" alt="Shared question flow" width="960" />
+
+#### Playground
+
+<img src="./screenshots/my-learning.png" alt="My learning" width="960" />
+
+#### Learning Themes and Notes
+
+<img src="./screenshots/learning-themes-notes.png" alt="Learning themes and notes" width="960" />
+
+#### Create a new question
+
+<img src="./screenshots/settings-agent-profiles.png" alt="Settings and agent profiles" width="960" />
+
+#### Custom Question Flow
+
+<img src="./screenshots/custom-question-flow.png" alt="Custom question flow" width="960" />
+
+#### LIGHT Mode
+
+<img src="./screenshots/dark-mode.png" alt="Dark mode" width="960" />
+
+#### Ask AI
+
+<img src="./screenshots/ask-ai.png" alt="Dark mode" width="960" />
+
+## 🏗️ Workspace
+
+- `apps/renderer` → React + Vite UI
+- `apps/server` → Express + SQLite API
+- `apps/desktop` → Electron shell
+- `packages/shared` → shared schemas and seeded questions
+- `codex` → PRD, milestones, release docs
+
+## 🚀 Run It
+
+Install:
+
+```bash
+npm install
+```
+
+Web:
+
+```bash
+npm run dev:web
+```
+
+Desktop:
+
+```bash
+npm run dev
+```
+
+Build:
+
+```bash
+npm run build
+```
+
+Tests:
+
+```bash
+npm run test
+```
+
+Release checks:
+
+```bash
+npm run release:check
+```
+
+## 💾 Persistence
+
+- SQLite DB: `.data/hinterview.sqlite`
+- Secret key: `.data/secret.key`
+- API keys are encrypted at rest
+- Some renderer cache is also kept in local storage
+
+## 📚 Docs
+
+- [PRD](./codex/PRD.md)
+- [Milestones](./codex/milestones.md)
+- [Release checklist](./codex/release-checklist.md)

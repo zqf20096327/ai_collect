@@ -1,0 +1,375 @@
+# AgentBridge
+
+[![CI](https://github.com/0sparsh2/agent-framework-connector/actions/workflows/ci.yml/badge.svg)](https://github.com/0sparsh2/agent-framework-connector/actions/workflows/ci.yml)
+
+AgentBridge is a Python SDK for defining an agent once and running it across multiple agent frameworks.
+
+The first wedge is migration: teams can prototype in a high-level framework, validate tool and prompt behavior through a stable interface, then move toward a more durable production runtime without rewriting the application layer.
+
+> AG-UI standardizes agent-to-frontend interaction. LiteLLM standardizes model-provider access. AgentBridge standardizes app-to-agent-framework compatibility.
+
+Documentation site target: [Read the Docs](https://agentbridge.readthedocs.io/en/latest/). The same source docs remain readable directly in this repository under [docs](docs/index.md).
+
+## What This Repo Contains
+
+- A framework-neutral `AgentSpec` for instructions, model strings, tools, metadata, and backend options.
+- Normalized `RunInput`, `RunResult`, and `AgentEvent` types.
+- A `BackendAdapter` interface for adding or replacing agent runtimes.
+- Built-in `mock`, `pydantic_ai`, and `langgraph` adapters.
+- A lightweight plugin system so heavy adapters can live outside the core package.
+- Static JSON/YAML manifests for CLI-driven validation, comparison, and demos.
+- AG-UI-shaped event conversion for frontend protocol compatibility.
+- Documentation for requirements, research, architecture, version policy, capabilities, and plugin authoring.
+
+AgentBridge is not trying to hide every framework-specific strength behind a tiny wrapper. The long-term design is capability-aware: common features stay in the core API, advanced features are declared through backend capabilities, and native framework objects remain available as escape hatches.
+
+User code chooses a `framework` such as `langgraph` or `pydantic_ai`. Internally, AgentBridge resolves that framework to a backend adapter. Framework-specific nuance grows through capability metadata, extension namespaces, and raw native escape hatches.
+
+## Status
+
+This is an MVP foundation, not a production-stable release. The repo is useful today for exploring the abstraction, writing adapter contracts, testing migration stories, and validating whether a shared app-to-agent layer is worth pursuing.
+
+Current backend status:
+
+| Backend | Package Path | Status | Notes |
+| --- | --- | --- | --- |
+| `mock` | Core | Verified | Deterministic backend for tests, docs, and no-key demos. |
+| `langgraph` | Core optional extra | Verified locally | Executes a minimal graph, supports deterministic structured output, reports checkpoint interrupts, resumes compiled checkpointed runs, and exposes graph run diagnostics. |
+| `pydantic_ai` | Core optional extra | Verified locally | Uses `pydantic-ai-slim`; offline tests use Pydantic AI test utilities. |
+| `crewai` | External plugin scaffold | Blocked | Lives in `plugins/agentbridge-crewai` because current dependency resolution is not core-friendly. |
+| `openai_agents` | External plugin | Partial | Maps AgentSpec/ToolSpec to OpenAI Agents SDK Agent/Runner on the compatible `0.20.x` line with structured output, handoff/guardrail/MCP/Runner option pass-through, approval interruption diagnostics, app-owned approval stores, backend-neutral `ApprovalQueue` resume payload helpers, and guardrail result summaries; latest `0.22.x` is blocked by an `openai` dependency major-version conflict. |
+| `strands` | External plugin | Partial | Maps AgentSpec/ToolSpec to Strands Agent/tools on `strands-agents==1.55.1`; native Agent options, MCP client/tool-provider pass-through with a local MCP stdio fixture, native intervention/guardrail trace fixture coverage, hook/intervention/guardrail lifecycle event normalization, run diagnostics, tracing summaries, and structured deployment metadata are covered; live AWS deployment remains extension-level. |
+| `langchain` | External plugin | Partial | Maps AgentSpec/ToolSpec to direct LangChain `create_agent`/`StructuredTool` on `langchain==1.4.0`; structured output, richer stream events, run diagnostics, native retriever/checkpointer/store examples, LangSmith tracing context, Langfuse callback integration, and provider/native-model routes are covered. |
+| `deepagents` | External plugin | Contract tested | Maps AgentSpec/ToolSpec to `deepagents>=0.7,<1`; preserves filesystem and sandbox backends, skills, memory, subagents, permissions, HITL, persistence, structured output, streaming, and native options without adding the heavy dependency to core. |
+| `google_adk` | External plugin | Partial | Maps AgentSpec/ToolSpec to ADK Agent/FunctionTool/Runner on `google-adk==2.9.0`; structured output, run diagnostics, opt-in session/memory/artifact service snapshots, eval runner bindings, and structured deployment metadata are contract-tested, while eval execution and deployment publishing remain extension-level. |
+| `agentcore` | External plugin | Contract verified | Invokes deployed Amazon Bedrock AgentCore Runtime and preserves Memory, Gateway, Identity, observability, A2A, and AG-UI bindings through `plugins/agentbridge-agentcore`. |
+
+Adopted package versions are tracked in [docs/version_policy.md](docs/version_policy.md).
+
+## Installation
+
+For local development:
+
+```bash
+git clone https://github.com/0sparsh2/agent-framework-connector.git
+cd agent-framework-connector
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+Install optional real framework adapters as needed:
+
+```bash
+pip install -e ".[langgraph]"
+pip install -e ".[pydantic-ai]"
+pip install -e ".[all]"
+```
+
+The core package intentionally keeps heavyweight or fragile frameworks out of the default dependency path.
+
+## SDK Quickstart
+
+```python
+from agentbridge import AgentSpec, ToolSpec, run_agent
+
+
+def check_order(order_id: str) -> str:
+    """Return the refund status for an order."""
+    return f"Order {order_id} is eligible for a refund."
+
+
+agent = AgentSpec(
+    name="refund_agent",
+    instructions="Decide whether a customer is eligible for a refund.",
+    model="openai/gpt-5",
+    tools=[ToolSpec.from_function(check_order)],
+)
+
+result = run_agent(
+    agent,
+    framework="mock",
+    input="Customer says order A123 was double charged.",
+)
+
+print(result.output)
+print(result.backend)
+```
+
+The same `AgentSpec` can be sent to another framework once that framework adapter's optional dependency is installed:
+
+```python
+result = run_agent(agent, framework="langgraph", input="Check refund eligibility.")
+```
+
+`framework=` is the user-facing way to choose the runtime. `backend=` remains supported as a lower-level adapter alias for compatibility.
+
+Model routing follows LiteLLM-style model strings such as `openai/gpt-5`, `anthropic/claude-sonnet`, or `google/gemini`. Reports and examples also track local models, OpenRouter, NVIDIA NIM, and custom OpenAI-compatible gateways through model strings plus backend-native endpoint settings. See [docs/model_routing.md](docs/model_routing.md) and [examples/model_routes.py](examples/model_routes.py). AgentBridge does not build a custom model-provider abstraction in v0.
+
+Framework-specific knobs live in extension namespaces instead of the portable `AgentSpec` core. See [examples/framework_extensions.py](examples/framework_extensions.py) for cross-framework extension config, [examples/langchain_native_memory_retriever.py](examples/langchain_native_memory_retriever.py) for native LangChain retriever/checkpointer/store objects, [examples/deep_scenario_report.py](examples/deep_scenario_report.py) for a report-shaped migration/model-routing example, [examples/openai_agents_approval_report.py](examples/openai_agents_approval_report.py) for approval queue/resume shape, [examples/crewai_prototype_report.py](examples/crewai_prototype_report.py) for CrewAI role/task/crew migration shape, [examples/strands_agentcore_report.py](examples/strands_agentcore_report.py) for a Strands/AgentCore production-path report, [examples/google_adk_enterprise_report.py](examples/google_adk_enterprise_report.py) for a Google ADK enterprise services/eval/deployment report, and [examples/pydantic_validation_report.py](examples/pydantic_validation_report.py) for a typed-output validation report with normalized output comparison.
+
+Run [examples/scenario_report_suite.py](examples/scenario_report_suite.py) to generate one aggregate JSON index for the deep scenario reports and backend availability in your current environment.
+Use [examples/credentialed_smoke_matrix.py](examples/credentialed_smoke_matrix.py) to inspect the double-gated environment variables for optional hosted, local, OpenRouter, NVIDIA NIM, and custom gateway smoke paths without contacting providers by default.
+Use [examples/live_model_smoke.py](examples/live_model_smoke.py) for an explicit NVIDIA NIM live check after setting `AGENTBRIDGE_RUN_CREDENTIAL_SMOKE=1`, `NVIDIA_NIM_API_KEY`, `NVIDIA_NIM_API_BASE` or `NVIDIA_NIM_BASE_URL`, and `NVIDIA_MODEL`.
+
+## Streaming Quickstart
+
+```python
+from agentbridge import AgentSpec, stream_agent
+
+agent = AgentSpec(
+    name="research_agent",
+    instructions="Research the user request and explain the result clearly.",
+    model="openai/gpt-5",
+)
+
+for event in stream_agent(agent, framework="mock", input="Summarize AgentBridge"):
+    print(event.type, event.data)
+```
+
+For independent inputs, use the same compiled backend through the batch helpers:
+
+```python
+from agentbridge import batch_agent
+
+results = batch_agent(
+    agent,
+    backend="langchain",
+    inputs=["Summarize refund policy", "Summarize cancellation policy"],
+)
+```
+
+`AgentEvent` objects normalize message, tool-call, tool-result, error, and completion events. They can also be converted into AG-UI-shaped dictionaries:
+
+```python
+from agentbridge.agui import to_agui_event
+
+agui_event = to_agui_event(event)
+```
+
+## Structured Output
+
+SDK users can attach a Pydantic model as `output_type`. Backends that support structured output, such as `pydantic_ai`, can use it natively.
+
+```python
+from pydantic import BaseModel
+from agentbridge import AgentSpec
+
+
+class RefundDecision(BaseModel):
+    eligible: bool
+    reason: str
+
+
+agent = AgentSpec(
+    name="refund_decision_agent",
+    instructions="Return a refund decision.",
+    model="openai/gpt-5",
+    output_type=RefundDecision,
+)
+```
+
+AgentBridge derives a serializable `output_schema` from Pydantic models. Static manifests can declare `output_schema` directly; validation and comparison commands then require the `structured_output` capability automatically.
+
+## Manifest Quickstart
+
+AgentBridge also supports static manifests for CLI usage:
+
+```yaml
+name: refund_agent
+instructions: Decide whether a customer is eligible for a refund.
+model: openai/gpt-5
+tools:
+  - name: check_order
+    description: Return refund eligibility for an order.
+metadata:
+  owner: support
+```
+
+Run a manifest without requiring API keys:
+
+```bash
+agentbridge run \
+  --manifest examples/refund_agent.yaml \
+  --backend mock \
+  --input "Customer says order A123 was double charged" \
+  --json
+```
+
+Validate a migration target before running:
+
+```bash
+agentbridge validate \
+  --manifest examples/refund_agent.yaml \
+  --backend mock \
+  --backend langgraph \
+  --json
+```
+
+Static manifests do not deserialize arbitrary Python functions. Tool names resolve through an explicit tool registry, which keeps CLI workflows safe and predictable.
+
+## CLI
+
+```bash
+agentbridge list-backends
+agentbridge inspect-backend langgraph --json
+agentbridge run --manifest examples/refund_agent.yaml --backend mock --input "Customer was double charged" --json
+agentbridge run --manifest examples/refund_agent.yaml --backend mock --tool-registry my_app.tools:build_registry --input "Customer was double charged"
+agentbridge compare --manifest examples/refund_agent.yaml --backend mock --backend langgraph --json
+agentbridge validate --manifest examples/refund_agent.yaml --backend mock --backend langgraph --json
+agentbridge capability-matrix --markdown
+agentbridge coverage-report --backend langgraph --markdown
+agentbridge conformance --backend mock --json
+agentbridge conformance --all
+agentbridge extensions --json
+agentbridge versions --json
+agentbridge framework-report --markdown
+agentbridge plugins --json
+agentbridge scaffold-plugin plugins/agentbridge-google-adk --backend google_adk
+agentbridge extensions strands --json
+```
+
+See [docs/cli.md](docs/cli.md) for command details.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    app["User App"] --> spec["AgentSpec"]
+    spec --> registry["Adapter Registry"]
+    registry --> adapter["BackendAdapter"]
+    adapter --> native["Native Framework Runtime"]
+    native --> result["RunResult"]
+    native --> events["AgentEvent Stream"]
+    events --> agui["AG-UI-shaped Events"]
+```
+
+Execution follows a simple path:
+
+```mermaid
+sequenceDiagram
+    participant UserCode
+    participant AgentBridge
+    participant Registry
+    participant Adapter
+    participant Backend
+
+    UserCode->>AgentBridge: run_agent(spec, backend, input)
+    AgentBridge->>Registry: get_adapter(backend)
+    Registry-->>AgentBridge: BackendAdapter
+    AgentBridge->>Adapter: compile(spec)
+    Adapter-->>AgentBridge: compiled backend object
+    AgentBridge->>Adapter: run(compiled, RunInput)
+    Adapter->>Backend: execute native runtime
+    Backend-->>Adapter: native result/events
+    Adapter-->>UserCode: RunResult
+```
+
+Deeper diagrams and design notes are in [docs/architecture.md](docs/architecture.md) and [docs/design.md](docs/design.md).
+
+## Adapter Plugins
+
+Heavy, blocked, or experimental adapters should live outside the core package. AgentBridge discovers adapters from:
+
+- Python entry points in the `agentbridge.adapters` group.
+- Comma-separated module names in `AGENTBRIDGE_ADAPTER_PLUGINS`.
+
+Minimal plugin example:
+
+```python
+from agentbridge.adapters import BackendAdapter
+
+
+class Adapter(BackendAdapter):
+    backend_name = "custom"
+```
+
+Published packages should register the adapter in `pyproject.toml`:
+
+```toml
+[project.entry-points."agentbridge.adapters"]
+custom = "my_package.adapter:Adapter"
+```
+
+See [docs/plugin_authoring.md](docs/plugin_authoring.md) for the full plugin contract, [plugins/agentbridge-crewai](plugins/agentbridge-crewai) for the CrewAI scaffold, and [plugins/agentbridge-deepagents](plugins/agentbridge-deepagents) for the Deep Agents adapter.
+
+To create a new adapter plugin skeleton:
+
+```bash
+agentbridge scaffold-plugin plugins/agentbridge-google-adk --backend google_adk
+```
+
+The generated package includes `pyproject.toml`, an adapter class, a README, and a starter test.
+
+Adapter authors can run a lightweight contract check:
+
+```bash
+agentbridge conformance --backend custom
+```
+
+## Documentation Map
+
+- [docs/index.md](docs/index.md): Documentation navigation.
+- [docs/vision.md](docs/vision.md): Final target, product goals, plugin families, and long-term ecosystem map.
+- [docs/requirements.md](docs/requirements.md): Product requirements, target users, non-goals, and success criteria.
+- [docs/research.md](docs/research.md): Research notes comparing AG-UI, LiteLLM, LangGraph, CrewAI, and Pydantic AI.
+- [docs/architecture.md](docs/architecture.md): SDK architecture, adapter model, data flow, and diagrams.
+- [docs/diagrams.md](docs/diagrams.md): Visual system maps for the product, migration flow, capability layers, plugin boundary, and status graduation.
+- [docs/design.md](docs/design.md): Design decisions, tradeoffs, and extension principles.
+- [docs/adapters.md](docs/adapters.md): Adapter support matrix and framework-specific notes.
+- [docs/capability_coverage.md](docs/capability_coverage.md): Long-term feature coverage strategy.
+- [docs/framework_support.md](docs/framework_support.md): Generated framework manifests, verification lanes, and next implementation slices.
+- [docs/scenario_reports.md](docs/scenario_reports.md): Deep framework-nuance reports, migration comparisons, normalized outputs, and model routing targets.
+- [docs/model_routing.md](docs/model_routing.md): Hosted, local, OpenAI-compatible, and offline model route policy.
+- [docs/conformance.md](docs/conformance.md): Adapter contract checks and offline plugin model rules.
+- [docs/plugin_authoring.md](docs/plugin_authoring.md): External adapter plugin guide.
+- [docs/version_policy.md](docs/version_policy.md): Adopted and verified dependency versions.
+- [docs/roadmap.md](docs/roadmap.md): v0, v0.1, and v1 milestones.
+- [docs/articles/index.md](docs/articles/index.md): Shareable posts on why AgentBridge exists and how the compatibility layer works.
+
+## Project Layout
+
+```text
+agentbridge/                 Core SDK package
+agentbridge/adapters/        Built-in adapter interface and implementations
+docs/                        Requirements, architecture, research, and design docs
+examples/                    Runnable examples and manifests
+plugins/agentbridge-crewai/  External CrewAI adapter scaffold
+plugins/agentbridge-deepagents/ External LangChain Deep Agents adapter
+plugins/agentbridge-*/       External adapter plugins for heavier framework integrations
+tests/                       Unit and adapter contract tests
+.github/                     CI, issue templates, and PR template
+```
+
+## Development Workflow
+
+```bash
+pip install -e ".[dev]"
+pytest
+agentbridge list-backends
+agentbridge versions --json
+```
+
+Before opening a pull request:
+
+```bash
+pytest
+git status --short
+```
+
+Please keep adapter version changes paired with updates to [docs/version_policy.md](docs/version_policy.md), and add or update tests for any capability marked as fully supported.
+
+## Roadmap
+
+Near-term work is tracked in GitHub Issues. Current priorities include:
+
+- Add deeper native fixtures for OpenAI Agents SDK resume execution, Strands live AgentCore/AWS deployment, broader LangChain Runnable fixtures, and Google ADK eval execution/deployment publishing.
+- Turn the CrewAI scaffold into a separately verified plugin package in a dependency-compatible environment.
+- Keep conformance, version policy, and capability coverage synchronized as each framework-specific nuance graduates from extension metadata to tested behavior.
+- Continue expanding AgentCore service-specific contracts and researching additional adapter targets such as smolagents, AutoGen/AG2, and LlamaIndex Workflows.
+
+See [docs/roadmap.md](docs/roadmap.md) for milestone-level planning.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

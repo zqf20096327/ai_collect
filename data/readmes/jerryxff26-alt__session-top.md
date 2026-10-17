@@ -1,0 +1,166 @@
+# session-top
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev/)
+
+htop for your agent sessions.
+
+You know your usage dropped 12%.
+Now find out why.
+
+```
+5h      ██████░░░░ 61%
+Weekly  ████████░░ 84%
+
+🔥 Top quota consumers
+
+OAuth bug        8.2%
+Database         3.1%
+README           0.3%
+```
+
+session-top makes coding-agent usage observable and explainable.
+
+**v0.0.4** reads **Codex CLI** rollouts only. The name is about sessions, not a single vendor.
+
+Quick start: see [Install](#install) below.
+
+## Install
+
+From source (Go 1.24+):
+
+```
+git clone https://github.com/jerryxff26-alt/session-top.git
+cd session-top
+make
+./session-top
+```
+
+Or:
+
+```
+go install github.com/jerryxff26-alt/session-top/cmd/session-top@v0.0.4
+session-top
+```
+
+## Repository layout
+
+```
+cmd/session-top                         CLI entrypoint
+internal/cli                            command dispatch
+internal/codex                          discover and parse ~/.codex rollout JSONL
+internal/usage                          OFFICIAL / OBSERVED / INFERRED analysis
+internal/tui                            terminal rendering
+testdata                                fixture Codex home for tests
+docs/distill.md                         distillation design
+skills/dont-let-your-token-die          orchestrator skill (copy into Codex/Grok)
+```
+
+## Usage
+
+```
+session-top [--json]              # 5h / weekly overview, today, top consumers
+session-top why [--json]          # potential causes for a recent quota drop
+session-top sessions [--json]     # rank sessions by inferred quota Δ
+session-top session <id>          # turn timeline for one session
+session-top watch                 # live-refreshing view
+session-top distill               # bounded project digest; optional Jev archive preview/apply
+```
+
+Codex data is read from `~/.codex/sessions/**/rollout-*.jsonl` and `~/.codex/archived_sessions/**/rollout-*.jsonl` (active sessions preferred when the same file exists in both). Override the Codex home directory with `CODEX_HOME`.
+
+## Skill: dont-let-your-token-die
+
+English name for “don't let your token die”. It is an **orchestrator**, not a dump of one project's chats.
+
+- **CLI is the engine** (`session-top distill`): local by default, with bounded user/assistant/tool context, coverage counts, corrections, observed mix, and session ids.
+- **Jev is optional ranking** (`--jev`): sends only bounded, redacted digest context to TypeSafe and returns structured reuse/evidence/correction scores. `JEV_API_KEY` is preferred; `TYPESAFE_API_KEY` is accepted.
+- **Low-value archive is preview-first** (`--archive-low`): only complete, review-free sessions at least 7 days old with `low`/`none` priority and all three value scores below `0.35` become candidates. Recent, incomplete, valuable, review-required, and current `CODEX_THREAD_ID` sessions are protected.
+- **State changes require `--apply`**: candidates are archived with Codex's native `codex archive`; archive is reversible with `codex unarchive` and is not deletion.
+- **Skill is the conversation**: clarify **project (`cwd`)**, then **time range**, then **what to keep**, then run the CLI. Never `cat` raw rollout JSONL. Never auto-install a generated skill.
+- **Value**: a short skill a *later* session can load (do / don't, repo facts), so the next run spends fewer tokens — not a weekly recap.
+
+### Install
+
+The repo keeps **one** copy: `skills/dont-let-your-token-die/`. Copy it into the agent you use:
+
+```
+# Codex (this repo)
+mkdir -p .codex/skills
+cp -R skills/dont-let-your-token-die .codex/skills/
+
+# Codex (user-wide)
+mkdir -p ~/.codex/skills
+cp -R skills/dont-let-your-token-die ~/.codex/skills/
+
+# Grok Build (user-wide)
+mkdir -p ~/.grok/skills
+cp -R skills/dont-let-your-token-die ~/.grok/skills/
+```
+
+Invoke: Codex `$dont-let-your-token-die` · Grok `/dont-let-your-token-die`
+
+`session-top` must be on `PATH` (or `make` in this repo). Distill does not call a model unless `--jev` is explicit.
+
+### Example
+
+```
+session-top distill --cwd /path/to/project --from 2026-09-16 --to 2026-09-16
+session-top distill --cwd /path/to/project --session <id> --jev --json
+session-top distill --cwd /path/to/project --since 30d --jev --archive-low --json          # preview
+session-top distill --cwd /path/to/project --since 30d --jev --archive-low --apply --json  # execute
+```
+
+A product skill for that project is a **draft you copy by hand** after review. session-top will not write into `~/.codex/skills` or `~/.grok/skills` for you.
+
+## What the numbers mean
+
+OpenAI does not publish a formula that maps tokens × model × reasoning × cache × tools onto quota percent. session-top never invents one.
+
+| Class | Meaning |
+| --- | --- |
+| **OFFICIAL** | Quota % and reset times the agent stored from the provider (`rate_limits`), plus `plan_type` / `credits` when present |
+| **OBSERVED** | Tokens (including cached vs uncached input when recorded), turns, models, tool calls, compactions from local session events |
+| **INFERRED** | Quota Δ between consecutive official snapshots, attributed only when a single session was active |
+
+If two sessions overlap an interval, that Δ is **Attribution: ambiguous** — listed, not guessed.
+
+Some Codex modes (historically `codex exec`) record `rate_limits: null`. OBSERVED still works; OFFICIAL / INFERRED quota is omitted or marked unknown.
+
+## session-top does NOT
+
+- bypass Codex (or other agent) limits
+- predict a provider's private quota formula
+- intercept prompts
+- upload conversations by default (`--jev` explicitly sends bounded, redacted excerpts to TypeSafe)
+- send telemetry
+- delete sessions (`--archive-low --apply` only performs reversible Codex-native archive)
+- require an API key for local commands (`--jev` requires `JEV_API_KEY` or `TYPESAFE_API_KEY`)
+
+**100% local by default.** `--jev` is the opt-in network path.
+
+## Compare
+
+Live process monitors (for example **abtop**) show what agents are doing *right now* — CPU, running processes, live turn activity.
+
+Live account-quota CLIs (for example **codex-cli-usage** / **codex-limits**) answer “how much quota is left *now*” via Codex auth / app-server.
+
+**session-top** is a **quota autopsy**: it explains *why* official Codex rate-limit % moved across local rollout history, using OFFICIAL snapshots, OBSERVED token mix (including cached vs uncached when present), and INFERRED attribution. It does not replace live monitors or live account-quota dashboards.
+
+## Scope (v0.0.4)
+
+Supports Codex CLI rollouts on macOS and Linux, including **archived sessions** under `~/.codex/archived_sessions`.
+
+Current release tag is **v0.0.4**.
+
+`--json` is available on overview / why / sessions (and distill), matching distill's machine-readable style.
+
+Not in v0.0.4: other agents, Windows, Codex Desktop / VS Code / Cursor, roast reports, anomaly detection, multi-machine, historical trends.
+
+## Design
+
+Project-scoped distillation: [docs/distill.md](docs/distill.md). Extract CLI and orchestrator skill are in-tree; autopsy/why stay 100% local.
+
+## License
+
+MIT

@@ -1,0 +1,133 @@
+<h1 align="center">
+  LeanExplore
+</h1>
+
+<h3 align="center">
+  A search engine for Lean 4 declarations
+</h3>
+
+<p align="center">
+  <a href="https://pypi.org/project/lean-explore/">
+    <img src="https://img.shields.io/pypi/v/lean-explore.svg" alt="PyPI version" />
+  </a>
+  <a href="https://github.com/justincasher/lean-explore/blob/main/LeanExplore.pdf">
+    <img src="https://img.shields.io/badge/Paper-PDF-blue.svg" alt="Read the Paper" />
+  </a>
+  <a href="https://github.com/justincasher/lean-explore/commits/main">
+    <img src="https://img.shields.io/github/last-commit/justincasher/lean-explore" alt="last update" />
+  </a>
+  <a href="https://github.com/justincasher/lean-explore/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/justincasher/lean-explore.svg" alt="license" />
+  </a>
+</p>
+
+A search engine for Lean 4 declarations. This project provides tools and resources for exploring the Lean 4 ecosystem.
+
+The current indexed projects include:
+
+* Batteries
+* CSLib
+* FLT (Fermat's Last Theorem)
+* FormalConjectures
+* Init
+* Lean
+* Mathlib
+* PhysLean
+* Std
+
+## Installation
+
+The base package connects to the remote API and does not require heavy ML dependencies:
+
+```bash
+pip install lean-explore
+```
+
+To run the **local** search backend (which uses on-device embedding and reranking models), install the extra ML dependencies:
+
+```bash
+pip install lean-explore[local]
+```
+
+Then fetch the data files and start the local MCP server:
+
+```bash
+lean-explore data fetch
+lean-explore mcp serve --backend local
+```
+
+## Claude Code and Codex plugin
+
+The repository includes a plugin for both Claude Code and Codex. It connects to
+the hosted MCP server, so it does not need a Python install, a local search
+index, account, API key, or browser authorization. The tools are available as
+soon as the plugin is installed.
+
+The hosted endpoint allows 30 POST requests per client IP in any 60-second
+window. Protocol initialization and tool-discovery requests count toward the
+limit, and clients sharing a public IP share the same budget.
+
+Agents should begin with the token-efficient `search_summary` tool, then use
+the per-field retrieval tools for the declarations they need. The older
+full-result `search` MCP tool is deprecated and remains only for compatibility.
+All LeanExplore MCP tools are read-only and cannot modify Lean packages or
+external systems.
+
+In Claude Code:
+
+```text
+/plugin marketplace add justincasher/lean-explore
+/plugin install lean-explore@lean-explore
+/reload-plugins
+```
+
+In Codex:
+
+```bash
+codex plugin marketplace add https://github.com/justincasher/lean-explore
+codex plugin add lean-explore@lean-explore
+```
+
+Start a new Codex session after installation so the MCP tools are loaded.
+
+## Documentation
+
+Full docs live in the [`docs/`](docs/README.md) folder, or at [https://www.leanexplore.com/docs](https://www.leanexplore.com/docs).
+
+| Page | Description |
+|---|---|
+| [Getting Started](docs/getting-started.md) | Install and run your first search. |
+| [CLI Reference](docs/cli.md) | Every `lean-explore` command and flag. |
+| [MCP Server](docs/mcp-server.md) | Wire LeanExplore into Claude, Cursor, or any MCP client. |
+| [API Client](docs/api-client.md) | Use `ApiClient` from Python. |
+| [Local Search Backend](docs/local-backend.md) | How hybrid BM25 + FAISS + reranking works. |
+| [Configuration](docs/configuration.md) | Environment variables and data layout. |
+| [Data Models](docs/data-models.md) | `SearchResult`, `SearchResponse`, and related types. |
+| [Extraction Pipeline](docs/extraction-pipeline.md) | Rebuild the dataset from Lean source (contributors). |
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on code style, testing, and development setup.
+
+## Cite
+
+If you use LeanExplore in your research or work, please cite it as follows:
+
+**General Citation:**
+
+Justin Asher. (2025). *LeanExplore: A search engine for Lean 4 declarations*. [https://arxiv.org/abs/2506.11085](https://arxiv.org/abs/2506.11085)
+
+**BibTeX Entry:**
+
+```bibtex
+@software{Asher_LeanExplore_2025,
+  author = {Asher, Justin},
+  title = {{LeanExplore: A search engine for Lean 4 declarations}},
+  year = {2025},
+  url = {https://arxiv.org/abs/2506.11085}
+}
+```
+
+## License
+
+This code is distributed under an Apache License (see [LICENSE](LICENSE)).

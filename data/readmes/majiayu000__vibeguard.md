@@ -1,0 +1,106 @@
+# VibeGuard
+
+A Rust CLI for coding-agent rules, native hooks, and installation diagnostics.
+
+[Website](https://majiayu000.github.io/vibeguard/) · [中文](docs/README_CN.md) · [Runtime contract](docs/runtime-contract.md) · [Rule reference](docs/rule-reference.md) · [Contributing](CONTRIBUTING.md)
+
+V2 embeds 75 scoped review topics for explicit lookup. Installation does not inject rules or lookup instructions into the host's prompt. The library covers scope, facts, errors, security, workflow, Rust, Python, Go, and TypeScript.
+
+Native Bash hooks reject a small set of destructive command spellings and record the latest observed outcome. An optional Git pre-push hook checks actual commit ancestry. The host owns permissions, sandboxing, tool execution, and the agent loop.
+
+DeepSeek Harness users can load the [DSH Bash adapter](plugins/dsh/README.md). It calls this Rust runtime, routes policy blocks through DSH's native approval, and fails closed when the pre-call runtime fails.
+
+## Install from a release archive
+
+Download the archive for your OS and CPU from [Releases](https://github.com/majiayu000/vibeguard/releases), extract it, and open a terminal in the extracted directory. macOS, Linux and WSL are supported; choose a Linux archive for WSL. No Rust toolchain or source checkout is required for this path. Run:
+
+```bash
+./vibeguard-runtime install codex --dry-run
+./vibeguard-runtime install codex
+# Or select Claude Code:
+./vibeguard-runtime install claude
+# Or select Grok:
+./vibeguard-runtime install grok
+```
+
+The archive contains the executable, this README and LICENSE. `install --dry-run` validates current inputs and shows planned file changes, hook commands and persistent setup locks without writing files. It preserves unrelated handlers and user guidance; a disabled host remains disabled. Preview does not prove write access or active protection. Installation copies the executable to `~/.vibeguard/bin/vibeguard-runtime`. Restart the selected host and review its native hook trust settings. Check or remove that integration with:
+
+```bash
+~/.vibeguard/bin/vibeguard-runtime status codex
+~/.vibeguard/bin/vibeguard-runtime uninstall codex
+```
+
+Use `claude` or `grok` instead of `codex` for those hosts. Uninstall retains the shared executable. Earlier release assets follow their own version's instructions.
+
+## Build and install from source
+
+Source builds require Git and the Rust toolchain pinned in `rust-toolchain.toml`. Native installation supports macOS, Linux, and WSL. Native Windows installation is not implemented; the portable CLI and JSON protocol are tested in Windows CI.
+
+```bash
+git clone https://github.com/majiayu000/vibeguard.git
+cd vibeguard
+bash setup.sh --help
+bash setup.sh install codex --dry-run
+bash setup.sh install codex
+# Or select Claude Code:
+bash setup.sh install claude
+# Or select Grok:
+bash setup.sh install grok
+```
+
+`setup.sh` builds the checked-out source and forwards arguments. Without arguments it prints help; it does not install automatically. Install copies the binary to `~/.vibeguard/bin/vibeguard-runtime` and registers the selected integration. Installation removes an existing owned `vibeguard-core` block while preserving surrounding user instructions; it does not create an instruction file. Restart the host and review its native hook trust settings.
+
+```bash
+~/.vibeguard/bin/vibeguard-runtime rules
+~/.vibeguard/bin/vibeguard-runtime rules RS-01
+~/.vibeguard/bin/vibeguard-runtime rules typescript
+~/.vibeguard/bin/vibeguard-runtime rules --search 'Promise'
+~/.vibeguard/bin/vibeguard-runtime status codex
+~/.vibeguard/bin/vibeguard-runtime uninstall codex
+```
+
+Categories: `common`, `rust`, `python`, `golang`, `typescript`. `rules --json` exports the catalog; `rules --core` prints the compact reference. Rule lookup is optional and is not a task-start requirement.
+
+Keep shared engineering guidance in the rule library, personal preferences in native host instructions, and project facts in repository instructions. Reuse relevant guidance already in the current context or handoff summary; consult its source again when details are missing, the source has changed, or inspection is requested. A separate contract file need not be read at every follow-up. VibeGuard does not rewrite surrounding user-owned guidance.
+
+Grok installation writes `$GROK_HOME/hooks/vibeguard.json` (default `~/.grok`). It supports native shell pre-use, result and failure events without creating default instruction files. Grok's imported Claude hooks also work with the updated shared binary; observations go to `grok.json`, not `claude.json`. No Python adapter or change to `compat.claude.hooks` is required. Both registrations may evaluate a Grok event when installed together; each uses the same policy and latest observation. Status checks the native registration, not imported hooks or effective managed policy. See the [protocol contract](docs/runtime-contract.md).
+
+`rules --search 'cancellation errors'` finds rules containing every whitespace-separated term in their ID, title, source or body, ignoring case. It returns up to ten IDs, sources and titles, preferring title matches. Read a selected rule with `rules ID`. Empty queries and searches with no matches report an error; search does not change hook policy or inject instructions.
+
+Git protection is explicit: `~/.vibeguard/bin/vibeguard-runtime install git --repo /absolute/path/to/repository`. It refuses to replace a user-managed pre-push hook. Use `status git` or `uninstall git` with the same `--repo`.
+
+## What is enforced
+
+| Surface | Behavior |
+|---|---|
+| Bash PreToolUse | Recognizes bulk `git checkout/restore .`, forced `git clean` except dry runs, and selected recursive forced deletion of root, home, or system paths. |
+| Bash results | Records only the latest reported outcome, optional exit code, timestamp, cwd, and tool-use ID. No raw command or output. |
+| Git pre-push | Rejects remote ref deletion and existing tag replacement. Branches require direct commit targets and fast-forward updates; other existing refs require commit ancestry after peeling tags. Missing required objects are an explicit error. See the [runtime contract](docs/runtime-contract.md). |
+| Rule library | Advice with scope and exceptions. Severity is not an automatic blocking level. |
+
+The Bash classifier is not a complete shell parser or a sandbox. Alternate commands, scripts, substitutions, other tools, and disabled or untrusted hooks can bypass it. Git hooks are also bypassable. Use host permissions and repository protection for access control.
+
+`status` reports registration, required executable mode bits, local host hook settings, and the last observation. Prompt text is not an installation-health requirement. It cannot prove host trust, ACL access, mount execution policy, or complete coverage. A reported zero exit code does not certify that tests ran or that the current tree is verified.
+
+For a worked rule lookup, incomplete host status, and version-specific command
+questions, see the [website task guide and FAQ](https://majiayu000.github.io/vibeguard/#faq).
+
+## Breaking v2 changes
+
+Removed the app-server proxy, package-manager rewriting, semantic grep scanners, Stop/test-keyword gates, profiles, learning/scoring systems, workflow routing, and duplicate scripts. The Rust runtime remains: each hook invocation starts, processes one event, and exits.
+
+There are no old command aliases, rule-ID aliases, data migration, or general automatic v1 cleanup. For an existing v1 installation, follow that version's uninstall instructions first. V2 normally owns only its exact hook command and existing `vibeguard-core` Markdown block. Install and uninstall remove that block without adding replacement guidance. Status no longer reports `core_present`. Uninstall removes the selected integration and observation, but leaves the shared binary for other integrations and direct use.
+
+Claude install/reinstall specifically removes retired `skills-loader.sh` command handlers, including manually added duplicates. It recognizes simple calls through known VibeGuard installed/release paths (optionally through `bash` or `sh`) and the old `.vibeguard/run-hook.sh skills-loader.sh` wrapper. Same-name scripts in arbitrary paths are preserved. Other handlers and group fields are preserved; only groups emptied by removal are dropped. `--dry-run` reports the removal count without writing. This does not scan skills or delete legacy files; `status` remains read-only. See the [installation contract](docs/runtime-contract.md#installation) for the matching boundary.
+
+`status`, `install`, and `uninstall` include a read-only `legacy` inventory. It lists known v1 hook commands, `<!-- vibeguard-start -->` regions, v1 files under `~/.vibeguard`, launchd and systemd unit files, and the account crontab when the selected home is this account's home. `--repo` adds that repository's root instruction files and its `pre-commit` and `pre-push` hooks. A different `--home` leaves the account crontab unread. `owned` and `suspected` record presence; they do not show that those commands ran. The inventory leaves every reported file in place.
+
+Back up the reported files, then uninstall v1 with its own command: `bash setup.sh --clean` in the v1 source checkout, or `bash ~/.vibeguard/dist/current/setup.sh --clean` for a release snapshot. Deleting the checkout leaves hooks and scheduler entries behind. Install v2 from source with `bash setup.sh install codex`, or from an extracted release archive with `./vibeguard-runtime install codex`. Restart the host and read `status`.
+
+The optional [Codex plugin](plugins/vibeguard/README.md) provides one explicit help skill. It does not install the runtime or hooks.
+
+## Evidence and development
+
+Run `bash scripts/local-contract-check.sh` for the local gate. Tests use temporary homes and repositories, including execution of generated hook commands. See the [evaluation protocol](eval/README.md): code tests do not establish an Astra/Fable productivity improvement.
+
+The [reconstruction design](plan/2026-09-17-frontier-model-reconstruction.md) and [125-rule audit](plan/2026-09-17-rule-by-rule-audit.md) explain decisions and official sources. See [directory ownership](docs/directory-map.md) and [tagged releases](https://github.com/majiayu000/vibeguard/releases).

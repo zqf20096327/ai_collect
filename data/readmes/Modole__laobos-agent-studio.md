@@ -1,0 +1,253 @@
+# 劳博士
+
+> [!IMPORTANT]
+> 本仓库采用“源代码开放（source-available）、仅限非商业用途”的方式发布。它不属于 OSI 认证的开源软件；商业使用必须事先取得单独授权。完整条款见 [LICENSE](LICENSE)。
+
+劳博士的 Agent 主引擎已经替换为 DeepSeek Harness（DSH）。开发服务与 Electron 桌面端都直接启动官方 DSH Web UI，不再经过 Pi Bridge；原 Vinext 界面和 Pi Bridge 源码仅作为兼容层保留。
+
+## 当前主链路
+
+```text
+DSH 官方 Web UI
+      │  loopback HTTP
+      ▼
+DeepSeek Harness 0.1.0-rc.8
+      ├─ Agent presets（标准 / PTC / 极简 / 创造 / 性能实验）
+      ├─ Sandbox + Approval + Permission presets
+      ├─ Plan 模式安全联动
+      └─ 劳博士项目资源插件（知识库 / Skills / MCP）
+```
+
+DSH 只监听本机回环地址。Electron 使用随机端口启动运行时，渲染进程保持 `sandbox: true`、`nodeIntegration: false`，并拒绝网页权限请求。
+
+本公开客户端不包含云端登录、账号渠道或私有授权服务；模型与网络搜索继续使用 DSH 自带的本地配置。
+
+## 开发启动
+
+```bash
+npm install
+npm run dev
+```
+
+默认工作区是 `pi-client` 的上级项目目录。也可以显式指定工作区或让 DSH 选择随机端口：
+
+```bash
+npm run dev -- --workspace /absolute/path/to/project --port 0
+```
+
+Electron 开发模式：
+
+```bash
+npm run desktop:dev
+```
+
+开发版使用“劳博士（开发版）”窗口标题和独立的应用数据目录，因此可以与已安装的正式版同时运行，不会因 Electron 单实例锁而误唤起旧安装版。macOS 开发数据位于 `~/Library/Application Support/劳博士 Dev`。
+
+## 桌面安装包
+
+公开发布提供两个原生安装包：macOS Apple 芯片版（DMG）与 Windows x64 版（NSIS EXE）。两者都由 GitHub Actions 在对应系统的原生 Runner 上构建，避免原生模块交叉编译导致不兼容。打包校验会通过安装版 Electron 实际启动 ripgrep，防止 `app.asar` 虚拟路径被误传给子进程；Windows 同时覆盖 Pageant 辅助程序，Linux 运行时补丁覆盖 Landlock 启动器。
+
+```bash
+# macOS Apple Silicon
+npm run desktop:installer -- --mac dmg --arm64
+
+# Windows x64
+npm run desktop:installer -- --win nsis --x64
+```
+
+当前公开构建未配置 Apple Developer ID 或 Windows Authenticode 证书，因此首次安装会出现系统的“未知开发者/未知发布者”安全提示；发布页同时提供 SHA-256 校验值用于核对文件完整性。签名证书和密码只允许通过 CI Secret 注入，禁止提交到仓库。
+
+公开仓库的自动更新与源码 Release 使用同一个 GitHub 仓库。版本号以 `package.json` 为唯一来源，发布标签必须严格等于 `v<version>`。推送版本标签后，GitHub Actions 会分别在 macOS 和 Windows 原生 Runner 生成：
+
+- macOS：DMG、自动更新 ZIP、两类 blockmap 与 `latest-mac.yml`
+- Windows：NSIS 安装器、blockmap 与 `latest.yml`
+- 汇总资产：`SHA256SUMS`
+
+没有配置签名 Secret 时，流水线仍会生成可测试的社区构建：macOS 使用固定要求的稳定 ad-hoc 签名，保证相邻社区版本可以验证更新包；Windows 生成未签名安装器。配置 `MAC_CSC_LINK`、`MAC_CSC_KEY_PASSWORD`、Apple 公证凭据以及 `WIN_CSC_LINK`、`WIN_CSC_KEY_PASSWORD` 后，同一流水线会自动切换到正式签名。手动运行工作流只生成构建产物，不会发布 Release；只有推送匹配版本号的 `v*` 标签才会发布并成为应用内更新源。
+
+本机生成 macOS 测试安装包与更新包：
+
+```bash
+npm run release:mac:test
+```
+
+常用诊断：
+
+```bash
+npm run dump-config
+npm run test:dsh
+npm test
+npm run lint
+```
+
+## 五种 Agent 模式
+
+项目直接使用 DSH 官方 presets：
+
+| preset | 界面名称 | 适用场景 |
+| --- | --- | --- |
+| `standard` | 标准模式 | 通用 Agent 工作 |
+| `code` | PTC 模式 | 代码与工具密集任务 |
+| `minimal` | 极简模式 | 更少上下文与更轻执行 |
+| `cordis` | 创造模式 | Cordis / 创造型工作流 |
+| `performance` | 性能模式（实验） | 首轮对齐官方 Minimal，之后保留精简常驻工具并按需解锁完整能力；V4 Pro 建议使用 max 推理等级 |
+
+模式选择、会话、模型配置和运行状态均由 DSH 官方 UI 管理。
+
+性能模式作为劳博士只读系统 preset 随软件安装，不覆盖官方极简模式。macOS/Linux 使用官方持久 Bash；Windows 通过 `@laobos/dsh-shell` 优先选择持久 WSL Bash，然后降级到持久 Git Bash，最后使用 PowerShell 兼容模式。Shell 后端只在命令尚未开始时故障转移，避免重复执行可能已经产生副作用的命令。
+
+## 安全审批
+
+`config/laobos.cordis.patch.yml` 提供三档权限预设：
+
+| preset | 沙箱 | 审批策略 |
+| --- | --- | --- |
+| `read-only` | 只读 | 越权操作询问 |
+| `workspace-write` | 工作区可写 | 敏感操作询问（默认） |
+| `danger-full-access` | 完全访问 | 不询问，仅限可信环境 |
+
+进入 Plan 模式会强制切换到 `read-only`；退出 Plan 后恢复进入前的权限。状态来自 DSH 会话事件，因此恢复会话或重启后仍可正确联动。
+
+## Pi 数据迁移
+
+首次启动时，如果发现 `~/.pi/agent` 且 DSH 尚无迁移 manifest，会自动迁移，并保留原 Pi 数据不动。迁移内容包括：
+
+- Provider 配置与 API Key（写入 DSH 凭据文件，不打印明文）
+- 默认模型与推理级别
+- SYSTEM、MEMORY、Skills 与附件
+- Pi JSONL 历史会话到 DSH 原生会话
+- 原知识库与工作流 SQLite 快照
+
+手动预检和执行：
+
+```bash
+npm run migrate:pi
+npm run migrate:pi -- --apply
+```
+
+已有 DSH 配置默认不会覆盖；只有显式追加 `--force` 才覆盖同名配置。
+
+macOS 默认数据目录：
+
+```text
+~/Library/Application Support/劳博士/dsh
+```
+
+可通过 `LAOBOS_DSH_HOME` 指定其他目录，通过 `LAOBOS_WORKSPACE` 指定默认工作区。
+
+## 项目侧栏与资源管理
+
+`@laobos/dsh-system-tools` 作为 DSH 插件运行。官方会话栏保持在左侧；项目导航固定在最右侧，与中间工作区组成三列布局。右栏折叠时保留 56px 图标轨道，展开宽度默认为 224px，并可在 200–300px 之间拖动调整。点击“对话、知识库、Skills、MCP、设置”都会复用中间工作区进行独立页面切换；设置页包含系统提示词编辑，以及可直达模型、Agent 预设、安全审批、插件分区的 DSH 系统设置入口；原左侧设置入口已迁移到右栏底部。
+
+- 本地 SQLite + FTS 全文检索，支持自然问句拆词、标题加权和相邻片段扩展
+- Agent 可按需自动创建、读取和更新知识；删除经过 DSH 审批，暂停的知识库不会被全局搜索访问
+- Agent 默认把知识写入当前工作区；只有明确的跨项目知识才进入全局作用域
+- 知识库页面保持轻量插件形态，支持召回测试、资料编辑、重新索引、启停和删除
+- Skills 以名称、简介、范围、状态和实际文件位置的管理表展示；默认管理 DSH 原生目录，可按需查看 `.agents/skills` 兼容内容，并支持一键复制位置、启停、删除和 DSH 热更新
+- MCP 支持 stdio 与 streamable HTTP，以 Server、连接方式、连接目标、工具数量和连接状态的管理表展示；可启停、重连和删除，密钥只以遮罩返回界面
+- 插件市场源码内置于 `packages/laobos-market`，可在“设置 > 插件市场”搜索、安装和管理带有 `dsh-plugin` topic 的插件；代理地址和上传账号默认留空，由使用者自行配置
+- 管理页支持右栏折叠按钮、再次点击当前菜单项、页面“收起”按钮和 Esc 快速返回对话；未保存的 Skills/MCP 修改会先确认
+- 设置中的“系统提示词”默认展示可编辑的“劳博士”身份，以 `order: 39` 注册在 preset persona 与旧迁移指令之后、工具说明之前；用户修改姓名或角色后会覆盖冲突设定，不会保留旧名称作为别名
+- 实体插件清单统一使用 DSH 官方“设置 > Plugins”页面，不占用项目主侧栏
+- HTTP 管理接口只接受本机请求并校验 Origin
+
+数据位于 DSH Home 的 `data/system-tools.db`。
+
+第三方插件可以向项目侧栏动态注册集成页面，并为导航与面包屑声明自己的 SVG 图标：
+
+```js
+function IntegrationIcon({ size = 16, className }) {
+  return h("svg", {
+    className,
+    width: size,
+    height: size,
+    viewBox: "0 0 16 16",
+    fill: "none",
+    stroke: "currentColor",
+  }, h("path", { d: "M3 8h10M8 3v10" }));
+}
+
+IntegrationPage.projectIntegrationIcon = IntegrationIcon;
+ctx.slots.inject("laobos.project.integration", () => ctx.slots.register({
+  name: "laobos.project.integration",
+  id: "example-integration",
+  order: 10,
+  label: () => "示例集成",
+}, IntegrationPage));
+```
+
+未声明 `projectIntegrationIcon` 时，侧栏使用通用插件图标；插件无需修改宿主中的 ID 映射。
+
+## 桌面增强与插件
+
+桌面版把右侧项目栏分成“对话 / 工作台 / 集成管理”三组，并把高权限能力收敛到 Electron 主进程。网页侧只能调用经过校验的最小化 preload API，文件路径会做工作区边界、真实路径和符号链接检查。
+
+- 会话：编辑上一轮并从稳定边界创建分支、重试上一轮、导出带内嵌资源的离线 HTML、重命名和可恢复删除；已完成操作可折叠，回合末尾汇总本轮编辑文件和代码增删行数
+- 右键菜单：工作区可打开文件管理器、Git 审查和终端；会话可打开、编辑、重试、导出、重命名和删除
+- 文件工作台：目录浏览、创建、重命名、删除、文本/图片/PDF/音视频预览和系统文件管理器定位；文本文件使用 CodeMirror 编辑器与常用语言高亮
+- 版本中心：使用多文件目录树浏览 staged/unstaged diff、未跟踪文件和提交历史，并支持初始化、暂存、提交、分支管理、恢复与远端同步；Windows 安装包内置固定校验的 MinGit，不依赖图形进程的 `PATH`
+- 文件上传：支持选择、粘贴和桌面拖放；支持视觉的模型使用原生图片通道，不支持视觉时图片会作为普通受管文件交给 Agent
+- 上传路径：在“设置 > 文件上传”中选择“默认”或“工作区内”；默认写入 DSH Home 的 `uploads/v1`，后者使用当前工作区的 `update` 文件夹
+- 剪贴板：桌面端通过受约束的主进程 IPC 写入，浏览器 API 仍作为回退，并在失败时提供明确反馈
+- 终端插件：基于 `node-pty` 与 xterm；提供终端内搜索和链接识别，每个标签使用独立的稳定命名 tmux 会话，打开或重连时自动回到当前工作区，未安装 tmux 时明确提示并回退到登录 Shell
+- 浏览器插件：使用隔离的 `WebContentsView` 预览 HTTP(S) 地址，支持页面元素点选和脱敏上下文注入
+- SSH 插件：终端、SFTP 和 Agent 远程工具共用主进程连接服务；支持 OpenSSH 配置导入、默认身份文件、SSH Agent 与 ProxyJump，密码和私钥使用系统 `safeStorage` 加密，主机密钥采用 TOFU 校验，发生变更时阻止连接
+- 应用管理插件：登记、探测、启动、停止和查看日志；进程始终以 `shell: false` 启动，“移出管理”不会删除项目文件
+- Shell 与 WSL：自动检测 Windows 的 WSL、Linux 发行版、Git Bash 与 PowerShell；设置页提供需 UAC 确认的 WSL/Ubuntu 安装、分阶段进度、重启恢复和可编辑的标准模式诊断对话
+- 软件更新：设置页可检查、下载并安装公开 GitHub Release；下载状态可恢复，应用退出时会等待本地运行时安全关闭
+- 插件恢复：市场安装前校验 Host/Client 入口和模块 ID；用户插件导致启动失败时会自动隔离并以安全模式重启
+- 插件导出：`plugin_package_export` 可在工作区内检查并导出符合规范的 `.tar.gz`，只生成本地文件，不上传或发布
+
+模型菜单提供独立的上下文窗口开关，可在 `200K` 与 `1M` 间切换；设置保存在本机，不依赖登录状态。普通浏览器运行 DSH 时，平台桥会按能力降级复用工作区、Git、终端、SSH 和应用管理接口。
+
+删除的会话会先归档，再移动到 DSH Home 下的劳博士回收站；不会直接永久擦除。Terminal、BrowserOps、SSH 和应用管理均为独立 DSH 客户端插件，配置位于 `config/laobos.cordis.patch.yml`。修改终端或 SSH 的 JSX 源码后，可单独重建浏览器插件：
+
+```bash
+npm run build:desktop-plugins
+```
+
+## 兼容入口
+
+旧代码没有删除，但不再是默认 Agent 引擎：
+
+```bash
+npm run site:dev             # 原 Vinext 管理界面
+npm run pi:bridge            # 原 Pi Bridge
+npm run pi:dev               # 原 Pi Bridge + Vinext 全量开发
+```
+
+## 桌面打包
+
+```bash
+npm run desktop:package
+npm run desktop:make
+```
+
+桌面包会携带 DSH 及其运行依赖，不再打包或查找 Pi 二进制。macOS 签名身份可通过 `LAOBOS_CODESIGN_IDENTITY` 设置；未设置时使用临时签名。
+
+## 发布与隐私检查
+
+用户创建的 API Key、工作区选择、会话、知识库、工作流数据和 SSH 配置均属于本机运行数据，不是本仓库源码的一部分。桌面版数据默认保存在系统的应用数据目录；开发模式的 `.dsh`、`.pi`、数据库、JSONL、SSH 凭据和环境变量文件已加入 `.gitignore`。
+
+公开提交前请执行：
+
+```bash
+npm run audit:public
+```
+
+该检查会扫描所有待提交源码，阻止常见真实密钥、私钥块、本机绝对路径，以及数据库、会话和 SSH 配置等高风险文件进入版本库。它不能替代密钥轮换；如果密钥曾被提交到任何远端，应立即撤销并重新生成。
+
+## 贡献
+
+提交 Issue 或代码前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。安全问题请遵循 [SECURITY.md](SECURITY.md)，不要在公开 Issue 中披露漏洞或凭据。
+
+## 许可与非商业声明
+
+本项目自有代码和自有资源采用 [PolyForm Noncommercial License 1.0.0](LICENSE)：
+
+- 允许符合许可定义的个人学习、研究、实验和非商业组织使用。
+- 允许在许可范围内修改和再分发，但必须保留许可条款及 Required Notice。
+- 任何商业使用、预期商业应用或商业分发均须另行取得书面授权。
+- “劳博士”名称、Logo 和其他品牌标识不因源码许可而授予商标权。
+
+第三方组件以及内置插件市场继续适用各自的许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。如本说明与 LICENSE 冲突，以 LICENSE 原文为准。

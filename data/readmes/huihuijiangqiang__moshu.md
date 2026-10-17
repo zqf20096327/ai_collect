@@ -1,0 +1,417 @@
+# 墨枢 · Moshu
+
+> 面向长篇网文作者的 AI 创作工作台：把章纲、设定、正文和一致性证据放在同一个作品空间里。
+
+**在线体验：** [https://ms.moshu-novel.com/](https://ms.moshu-novel.com/)
+
+墨枢的重点不是只生成一段文字，而是让长篇创作可以持续推进：按章节生成和采纳正文，用可追溯的设定、时间线与证据维持前后文一致，在作者确认前标出冲突和待处理线索。
+
+![墨枢长篇小说创作工作台](docs/assets/moshu-overview.png)
+
+## 使用说明
+
+### 适合谁
+
+墨枢面向需要长期连载、反复修改设定、与 AI 协作写作的作者。它把一次性“生成一段文字”变成可回看、可修订、可继续推进的创作流程，适合网文开书、日常连载和长篇改编准备。
+
+### 从灵感到成稿
+
+1. **创建作品**：填写一句话灵感，选择题材和写作模板，补充目标平台、读者人群与预期篇幅。
+2. **明确方向**：在作品定位中记录核心卖点、主角困境、首个兑现点和长线承诺，后续可以随时调整。
+3. **搭建骨架**：维护卷纲、章纲和章节场景卡片，把每章的 POV、地点、目标、阻力、转折和钩子写清楚。
+4. **建立设定**：在设定库持续维护人物、地点、势力、物品、伏笔和时间线；设定可以随着创作反复修改。
+5. **进入写作台**：选择章节，查看本章计划和相关设定，让 AI 生成候选正文或自己直接编辑。AI 草稿需要作者确认后才会进入正文。
+6. **检查并导出**：用一致性守卫处理时间线、人物和设定冲突，用自然化审查检查文字节奏，最后从导出页导出正文、设定、大纲和自查报告。
+
+### 页面怎么分工
+
+| 你要做的事 | 进入页面 |
+| --- | --- |
+| 浏览作品、创建新书 | 作品库、创建作品 |
+| 规划定位、卷纲、章纲和场景 | 大纲 |
+| 管理人物、地点、势力、物品和伏笔 | 设定库 |
+| 修改故事事实和时间锚点 | 时间线 |
+| 写正文、生成候选、采纳 AI 草稿 | 写作台 |
+| 处理冲突和待确认问题 | 一致性守卫 |
+| 调整作者风格和自然化规则 | 风格、自然化审查 |
+| 准备漫剧改编的集、场景和镜头 | 漫剧分镜 |
+| 导出作品和检查报告 | 导出 |
+
+### 在线体验和本地演示
+
+- 在线体验：[https://ms.moshu-novel.com/](https://ms.moshu-novel.com/)
+- 在线地址连接真实服务；如果只想查看无后端演示，可在前端构建时显式设置 `VITE_USE_MOCK=true`，演示数据只保存在当前浏览器。
+- 想从头体验时，先创建一部新作品；想快速查看完整流程，可以直接打开作品库中的示例作品。
+- 正式写作前建议先完成作品定位、至少一卷章纲和主要人物设定，再开始连续生成章节。
+
+## 功能概览
+
+- **写作台**：章节正文、章纲、AI 草稿和作者风格集中在一个工作区。
+- **结构规划**：定位和章纲可以持续修改，不会被锁在一次性向导里。
+- **作品记忆**：人物、地点、势力、物品、伏笔和时间线按作品隔离保存。
+- **一致性守卫**：展示冲突两端的来源，作者可以回到正文或时间线处理。
+- **自然化审查**：按整章或选区检查模板化衔接、句式节奏和修饰堆叠，并逐条确认修改。
+- **漫剧分镜**：管理改编版本、集、场景、镜头和人物视觉档案；人物支持生成或上传全身设定图，统一经过私有素材审阅后复用，暂不生成视频。
+
+## 系统截图
+
+以下截图来自本地审核环境，展示作品库、写作台、设定库、一致性守卫、拆书分析和用量页面的实际界面。
+
+| 作品库 | 写作台 |
+| --- | --- |
+| ![作品库](docs/assets/screenshots/shelf.png) | ![写作台](docs/assets/screenshots/writer.png) |
+
+| 设定库 | 一致性守卫 |
+| --- | --- |
+| ![设定库](docs/assets/screenshots/codex.png) | ![一致性守卫](docs/assets/screenshots/guard.png) |
+
+| 拆书分析 | 用量与计费 |
+| --- | --- |
+| ![拆书分析](docs/assets/screenshots/deconstruct.png) | ![用量与计费](docs/assets/screenshots/usage.png) |
+
+## 技术实现
+
+当前仓库包含 Vue 3 写作前端、FastAPI API、PostgreSQL/pgvector、Redis 与 Celery 异步任务，以及架构、计费和实现文档。后端当前 migration head 为 `045_character_full_body`。
+
+### 长篇一致性保障
+
+- 章节可保存作者确认的结构化时间范围，生成时同时注入本章和上一章时间锚点，减少日期回退。
+- 作品定位保存目标平台、核心卖点、主角困境、首个兑现点和长线承诺的不可变版本，章节场景卡片把 POV、地点、目标、阻力、转折和钩子绑定到具体章节；两者由同一装配链进入预览和真实生成。
+- AI 输出先进入候选草稿；上游 SSE 未收到完整结束标记时，草稿会标记为 `failed`，返回 `STREAM_INTERRUPTED`，不会进入正文。
+- 百万字长篇通过 `POST /generate/long-plan` 拆成 800～32,000 字的有序生成段；每段保存来源修订、上下文清单、状态和错误码，支持中断后从第一个未完成段恢复，已采纳段不会被重写。
+- 写作台 AI 面板的“长篇”页可创建计划、排队下一段、轮询 Celery worker 状态并把已完成段合并为候选；任务使用现有积分预留、断点 checkpoint、段级质量门禁和候选审阅链路。
+- 章纲、势力博弈和伏笔可以作为剧情线/节拍写入持久化账本，段级校验在合并前检查长度、必需事实和边界重复，避免错误内容直接进入正文。
+- `GET /generate/models` 提供火山 Coding Plan 的模型目录；`server/scripts/compare_generation_models.py --run` 使用本机环境变量做短样本对比，结果仅写入被 Git 忽略的 `server/.local/model-comparisons/`。
+- Guard 优先使用确定性规则，对抽取器提供的结构化账目执行现金/库存、计件工资和资源数量校验；LLM 只负责抽取和补充软性问题，不负责最终算术结论。
+- 设定库使用 PostgreSQL/pgvector 检索。平台模型默认按 256k 窗口计算，扣除实际输出预留与 16k 安全余量后，上下文材料最多使用 208k token；智能档按作品可用资料在 64k、128k、208k 间弹性扩展，快速、标准、深度档也可显式选择。
+- 检索按人物、地点、物品、伏笔和场景拆分意图，精确名称/别名与向量结果共用一个总配额；当前章、未来章、近场重复、旧正文 revision 和陈旧章节摘要不会进入远距证据。
+- 常驻设定、相关设定、摘要和最近正文按完整条目、段落或句子边界装配，空余预算可借给其他层；历史正文使用不可信引用边界，不能覆盖系统规则或作者当前指令。
+- 正文、RAG、章纲、作品元数据、风格档和对话历史统一放入转义后的低信任数据边界，伪造结束标签或 system/developer 消息不能提升优先级；规划助手只产出严格白名单提案，仍需参数校验、权限复查和作者逐项批准。
+- 生成候选附带非阻断的规划覆盖报告，区分“规划已进入提示词”和“候选中找到字面证据”；语义兑现仍由作者判断。
+- `server/scripts/evaluate_long_novel.py` 可读取不入库的私有长篇 checkpoint，统计完成度、摘要/事实/向量覆盖、表层声口漂移和 token；检索与冲突召回只在提供人工 gold 时计算。
+
+## 仓库结构
+
+```text
+.
+├── app/       Vue 3 + TypeScript + Tiptap 前端
+├── server/    FastAPI + SQLAlchemy 后端与一致性任务
+├── docs/      架构与产品技术文档
+├── _ds/       设计系统资源
+└── LICENSE    项目使用许可
+```
+
+## 前端启动
+
+```bash
+cd app
+cp .env.example .env
+npm install
+npm run dev
+```
+
+默认通过 `/api` 连接真实后端。没有后端时可将 `VITE_USE_MOCK=true` 作为显式演示开关；测试和类型检查命令：
+
+```bash
+npm test
+npm run typecheck
+```
+
+## 后端启动
+
+后端要求 Python 3.12+，详细准备步骤见 `server/README.md`。
+
+```bash
+cd server
+uv venv
+uv pip install -e ".[dev]"
+cp .env.example .env
+uvicorn main:app --reload --port 8000
+```
+
+### 首次管理员引导
+
+全新数据库首次部署时，可在仅 API 进程可见的环境变量中临时设置
+`BOOTSTRAP_TOKEN`（至少 16 个字符），调用 `POST /auth/bootstrap` 创建唯一的
+`super_admin` 和 `studio` 账户。接口只在用户表为空时可用，使用常时比较校验令牌，
+成功后应立即从运行环境移除该变量；审计记录不会保存令牌内容。已有用户的实例不会
+接受该入口，后续管理员仍通过系统后台和审计流程维护。
+
+公网部署前必须替换 `JWT_SECRET_KEY` 和独立的 `CREDENTIAL_ENCRYPTION_KEY`。当
+`PUBLIC_APP_URL` 或 `CORS_ORIGINS` 使用公网域名时，API 会在启动阶段拒绝示例密钥；
+localhost 本地开发不触发这项检查。可使用 `openssl rand -base64 48` 分别生成两份不同的密钥，
+不要把真实值提交到 Git。通过 Tunnel 对外开放时也要配置实际访问域名；这项检查无法自动判断
+外部代理是否把 localhost 服务开放到公网。已有用户模型凭据时，更换加密密钥前需迁移凭据，
+直接替换会导致旧凭据无法解密；更换 JWT 密钥会使现有登录令牌失效。
+
+### 配置自己的大模型调用地址
+
+墨枢使用 OpenAI 兼容协议调用文本模型。请根据使用场景选择一种配置方式，API
+key 只保存在本机环境变量或账户加密配置中，不要写入 Git、README、Dockerfile 或
+前端代码。
+
+#### 部署者配置平台默认网关
+
+复制 `server/.env.example` 为 `server/.env`，填写三档网关（不需要三档时可以让它们
+指向同一个服务）：
+
+```dotenv
+MODEL_GATEWAY_MAIN_URL=https://api.example.com/v1/chat/completions
+MODEL_GATEWAY_MAIN_KEY=your-api-key
+MODEL_GATEWAY_CHEAP_URL=https://api.example.com/v1/chat/completions
+MODEL_GATEWAY_CHEAP_KEY=your-api-key
+MODEL_GATEWAY_PREMIUM_URL=https://api.example.com/v1/chat/completions
+MODEL_GATEWAY_PREMIUM_KEY=your-api-key
+
+# 生成和一致性分析使用的模型名
+GENERATION_GATEWAY_TIER=main
+GENERATION_MODEL=your-text-model
+GENERATION_CONTEXT_WINDOW_TOKENS=256000
+GENERATION_MAX_OUTPUT_TOKENS=32000
+GENERATION_CONTEXT_SAFETY_MARGIN_TOKENS=16000
+CONSISTENCY_GATEWAY_TIER=main
+CONSISTENCY_SUMMARY_MODEL=your-text-model
+CONSISTENCY_EXTRACTION_MODEL=your-text-model
+
+# 可选：漫剧分镜图片。未设单独地址和 key 时尝试沿用 MAIN 网关。
+IMAGE_GATEWAY_URL=https://image.example.com/v1
+IMAGE_GATEWAY_KEY=your-image-api-key
+IMAGE_GATEWAY_MODEL=gpt-image-2
+# 管理员核算上游成本后设置每张图片的固定积分；0 表示关闭付费出图。
+IMAGE_GENERATION_CREDITS=23
+```
+
+网关地址应直接对应 `POST /chat/completions`，支持 `stream: true` 的 SSE 返回，
+并返回 OpenAI 风格的 `choices[].delta.content`；服务端会发送 Bearer 鉴权。若网关
+只提供 `/v1` 根地址，请在这里补上 `/chat/completions`。重启 API、worker 和
+dispatcher 后配置生效：
+
+```bash
+docker compose up -d --build api worker dispatcher beat
+curl http://localhost:8000/health/ready
+```
+
+漫剧分镜页可为单个镜头和人物全身设定图先预览提示词和积分，再确认生成，也可上传已有立绘。出场人物必须有已锁定且包含外观锚点的视觉档案；任务排队、生成和失败状态会回到对应资产，失败或取消排队任务会返还预留积分。生成图和上传图先存为私有草稿，人工确认后才能进入制作包。图片由 worker 生成，API 和 worker 必须挂载同一持久化素材目录；默认 Compose 已处理。图片网关需支持 OpenAI 兼容 `POST /images/generations` 并返回 `data[0].b64_json`；配置可以填写完整图片端点、`/v1` 等版本化 base URL（例如 `/api/coding/v3`），服务端会在版本化 base URL 后补上 `/images/generations`，不从供应商返回的任意 URL 下载图片。`IMAGE_GENERATION_CREDITS` 是部署者自定的固定价格，示例数字不代表实际上游成本。
+
+密码找回邮件使用 SMTP 配置，不把令牌写入数据库或日志：
+
+```dotenv
+PUBLIC_APP_URL=https://your-domain.example
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USERNAME=mailer@example.com
+SMTP_PASSWORD=provided-outside-git
+SMTP_FROM=墨枢 <mailer@example.com>
+SMTP_USE_TLS=true
+SMTP_TIMEOUT_SECONDS=15
+```
+
+未配置或投递失败时，接口仍返回统一的防枚举响应，但本次令牌会立即作废；管理员页的
+“密码邮件”状态会提示是否已具备投递条件。
+
+#### 用户配置自己的服务（BYOK）
+
+登录后打开全局菜单 **我的模型服务**（路由 `/model-settings`），填写：
+
+- 服务名称：便于识别的名称；
+- 基础地址：例如 `https://api.example.com/v1`，系统会自动拼接
+  `/chat/completions`；也可以直接填写完整聊天端点；
+- 模型名：供应商实际接受的模型 ID；
+- 上下文窗口、最大输出和安全余量：按供应商公开参数填写；未知模型默认保守使用
+  `32768 / 4096 / 2048`，不会根据模型名猜测容量；
+- API key：只在保存或更新时提交，界面只显示脱敏提示。
+
+出于 SSRF 防护，用户自定义地址必须是可解析的公网 `https` 地址，不能包含账号密码、
+query、fragment、`localhost`、内网 IP 或 Docker 服务名。点击“测试连接”前，供应商
+还需要提供可访问的 `GET /models`（返回 401/403 会显示为鉴权失败）。保存后的 key
+使用 `CREDENTIAL_ENCRYPTION_KEY` 加密存储，修改该密钥会使已保存的用户 key 无法解密；
+生产环境应设置一个稳定、独立于 JWT 的随机值：
+
+```dotenv
+CREDENTIAL_ENCRYPTION_KEY=replace-with-a-long-random-secret
+```
+
+启用用户配置后，该用户的章节生成和行内生成优先走自己的服务；未启用或未配置时回退
+到平台默认网关。用户自定义服务的用量会记录到该用户的模型配置台账，平台网关的用量
+仍按平台套餐和积分规则结算。
+
+#### 单独配置 Embedding 服务
+
+设定库的向量检索可以使用独立的 OpenAI 兼容 embedding 端点。填写完整端点或 base
+URL 均可，后者会自动补 `/embeddings`：
+
+```dotenv
+EMBEDDING_GATEWAY_URL=https://embedding.example.com/v1
+EMBEDDING_GATEWAY_KEY=your-embedding-key
+EMBEDDING_MODEL=your-embedding-model
+EMBEDDING_DIMENSIONS=2048
+# 本地 Ollama 低维模型可填写 1024，服务端会零填充到 2048；远程 2048 维网关留空。
+EMBEDDING_SOURCE_DIMENSIONS=
+```
+
+Embedding 响应必须包含与输入数量相同的 `data[].embedding` 数组。当前 PostgreSQL
+schema 使用 `HALFVEC(2048)`；本地 Ollama 的 1024 维向量可以通过
+`EMBEDDING_SOURCE_DIMENSIONS=1024` 自动零填充，切换模型后应执行一次回填，不能把
+不同模型生成的旧向量混在一起检索。系统记录网关、模型和维度组成的向量空间标识，
+切换后自动排除旧空间的向量；设定与正文仍保留，回填完成后恢复语义检索。
+升级前没有模型标识的旧向量也需要回填。
+
+本地低成本部署可以直接启动 Ollama 并拉取中文 embedding 模型：
+
+```bash
+docker compose up -d ollama
+docker compose exec ollama ollama pull qwen3-embedding:0.6b
+```
+
+然后在未跟踪的 `server/.env` 中配置：
+
+```dotenv
+EMBEDDING_GATEWAY_URL=http://ollama:11434/v1
+EMBEDDING_GATEWAY_KEY=local-ollama
+EMBEDDING_MODEL=qwen3-embedding:0.6b
+EMBEDDING_SOURCE_DIMENSIONS=1024
+EMBEDDING_REQUEST_TIMEOUT=120
+```
+
+执行 `docker compose up -d --build api worker dispatcher beat` 应用配置。Ollama 是
+可选服务，平常启动不会下载；端口只绑定本机回环地址，模型缓存在已忽略的
+`.docker-data/ollama`。在设定库执行向量回填，在正文索引执行重建，即可重新检索旧作品。
+本地向量计算不调用外部供应商；正文、摘要和图片仍使用各自配置的模型服务。
+
+## 完整环境启动
+
+准备好仅保存在本机的 `server/.env` 后，可在仓库根目录一次启动迁移、API、前端与异步任务：
+
+```bash
+docker compose up -d --build
+```
+
+- 前端：http://localhost:8080
+- API（本地调试时可在 `MOSHU_DEBUG=true` 后访问文档）：http://localhost:8000
+- 就绪探针：http://localhost:8000/health/ready
+
+本地 Compose 默认将前端发布到回环地址 `127.0.0.1:8080`、PostgreSQL 发布到
+`127.0.0.1:55432`，用于避开 Windows
+常见保留端口；应用容器之间仍使用内部的 `postgres:5432` 和 `redis:6379`。如端口仍被占用，
+可在仓库根目录的未跟踪 `.env` 中覆盖 `MOSHU_FRONTEND_HOST_PORT`、
+`MOSHU_API_HOST_PORT`、`MOSHU_POSTGRES_HOST_PORT`、`MOSHU_REDIS_HOST_PORT`。
+生产环境请通过 `MOSHU_PUBLIC_APP_URL` 设置真实访问地址，
+不要把真实密钥或环境文件提交到 Git。
+
+`migration` 会在 API 和 worker 启动前执行 `alembic upgrade head`。就绪探针同时检查
+PostgreSQL、Redis 与数据库迁移版本；任一项不满足就返回 503。
+worker 和 dispatcher 还会分别执行 Celery 节点级 ping 健康检查；查看
+`docker compose ps` 时必须看到它们为 `healthy`，否则生成、出图或一致性任务可能无法处理，
+Compose 会按 `restart: unless-stopped` 自动拉起失联进程。
+
+首次启动或更新代码后建议显式执行一次迁移，再重建依赖 migration 的服务：
+
+```bash
+docker compose run --rm migration
+docker compose up -d --build api worker dispatcher beat frontend
+```
+
+### 数据目录（Windows）
+
+Compose 默认使用项目下的 `.docker-data` 目录作为开发兜底。部署前建议把数据放到非系统盘，
+在项目根目录创建仅本机使用的 `.env`（不要提交），例如：
+
+```dotenv
+MOSHU_POSTGRES_DATA_DIR=<postgres-data-directory>
+MOSHU_REDIS_DATA_DIR=<redis-data-directory>
+MOSHU_PRODUCTION_ASSET_DATA_DIR=<private-image-directory>
+```
+
+这些目录会以 bind mount 方式挂载，不使用 Docker Desktop 默认 named volume 位置。请按部署主机的操作系统填写实际目录，
+目录需提前创建，并在 Docker Desktop 中共享对应位置。
+
+### 微信与支付宝
+
+服务端支持微信支付 API v3 和支付宝 OpenAPI 的预下单、查单、关单、退款、通知验签和幂等入账。用量页在渠道就绪后显示购买按钮、支付二维码、订单同步与退款入口；管理员负责发布积分商品。
+
+真实收款必须在仅部署机可见的 `server/.env` 中配置商户身份、私钥、公钥或平台证书，以及公网 HTTPS 回调地址。缺少或无法读取这些配置时，接口会返回 `credentials_required` 或 `invalid_configuration`，不会接受未验签回调。示例字段见 `server/.env.example`，任何真实密钥和证书都不得提交 Git。
+
+## 发布版本
+
+仓库提供 PowerShell 一键发布脚本：`scripts/release.ps1`。脚本只从已提交且已同步
+`main` 的 Git 历史生成源码归档，不会打包 `.env`、本机数据卷、测试正文或构建缓存。
+
+先预览发布清单：
+
+```powershell
+.\scripts\release.ps1 -Version v0.1.0-preview
+```
+
+确认无误后创建 GitHub tag、Release 并上传源码 ZIP：
+
+```powershell
+.\scripts\release.ps1 -Version v0.1.0-preview -Publish
+```
+
+发布脚本优先读取 `GITHUB_TOKEN`/`GH_TOKEN`，没有设置时复用 Git 凭据管理器中的 GitHub
+登录信息。`-NotesPath` 可指定自定义 Release notes，`-Draft` 可创建草稿，`-SkipAsset`
+可跳过 ZIP 上传。生成的本地归档位于 `.release-artifacts/`，不会提交 Git。
+
+推送 `v*` 标签后，GitHub Actions 会在 Windows runner 上自动构建统一入口
+`Moshu.exe`，并上传 `Moshu-<版本>-windows.zip` 与 `SHA256SUMS.txt` 到同一个 Release。
+Windows 包包含当前源码和 Compose 配置；EXE 负责一键启动服务，不会携带模型密钥或用户数据。
+
+### Windows 启动器要求
+
+Windows 启动器需要先安装并运行 [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)。
+Docker Desktop 提供运行 PostgreSQL、Redis、API、Worker 和前端所需的 Docker Engine；没有它，
+`Moshu.exe` 无法启动真实服务。首次运行会自动创建用户数据目录，默认位于当前用户的
+`LocalAppData\\Moshu\\data`，也可用 `--data-dir <目录>` 指定其他位置。
+
+双击 `Moshu.exe` 会检查 Docker Desktop、执行数据库迁移、启动 Compose、等待 API 就绪并打开
+`http://127.0.0.1:8080/`。停止服务可运行 `Moshu.exe --stop`。首次使用仍需在发布包的
+`server/.env` 中配置模型网关；启动器只会在缺失时从 `.env.example` 创建本地模板，并自动生成
+JWT 与凭据加密密钥。
+
+## 核心约束
+
+- 一章一文档，章节列表接口不返回正文。
+- 单次生成严格服从所选模型的上下文窗口，并为输出和协议误差保留空间；平台材料上限为 208k token，短篇不会为了填满预算注入低相关内容。
+- AI 流式输出先进入 `aiDraft`，采纳后才成为正文。
+- 正文中的设定引用保存条目 ID，不保存显示名称。
+- MVP 阶段不引入 Yjs；多人协作留到工作室阶段。
+
+## 页面信息架构
+
+页面分为全局层与项目层，项目层路由必须携带 `projectId`，禁止从作品库进入后继续读取上一部作品的数据。
+
+| 层级 | 页面 | 职责 |
+| --- | --- | --- |
+| 全局 | `/` | 浏览、筛选和进入作品，不承载单部作品数据 |
+| 全局 | `/projects/new` | 创建作品，确认骨架后进入该作品写作台 |
+| 全局 | `/usage` | 账户套餐、积分与模型用量 |
+| 项目 | `/projects/:projectId/outline` | 卷纲、章纲、场景卡片、作品定位与节奏规划 |
+| 项目 | `/projects/:projectId/timeline` | 可编辑故事事实、时间锚点和 Guard 冲突落点 |
+| 项目 | `/projects/:projectId/codex` | 当前作品的人物、地点、势力、物品和伏笔设定 |
+| 项目 | `/projects/:projectId/storyboard` | 漫剧改编版本、人物视觉档案、场景与静态分镜稿（暂不生成视频） |
+| 项目 | `/projects/:projectId/write` | 章节选择、正文编辑、AI 生成和引用设定 |
+| 项目 | `/projects/:projectId/guard` | 当前作品的一致性、伏笔和待确认设定处置 |
+| 项目 | `/projects/:projectId/style` | 为当前作品选择或管理作者风格档 |
+| 项目 | `/projects/:projectId/ai-ratio` | 按本章或全书复核文字来源，并逐条处理自然化审查建议 |
+| 项目 | `/projects/:projectId/export` | 导出当前作品正文、设定、大纲和自查报告 |
+
+主要创作流程是：创建或选择作品 → 明确作品定位 → 梳理大纲、场景与设定 → 写作 → 一致性与自然化审查 → 导出。定位、写作、大纲和设定允许反复往返；守卫问题必须能跳回对应正文或时间线。账户用量不属于任何作品。
+
+当前实现状态与后端验收记录见 `server/docs/IMPLEMENTATION_STATUS.md`；架构约束见 `docs/architecture/`。
+
+漫剧分镜在演示模式和真实 API 模式下使用同一套交互。真实 API 将改编版本、集、场景、
+镜头和视觉档案持久化到 PostgreSQL，并按作品权限限制查看、编辑分镜和维护视觉档案。
+当前阶段已支持分镜静态画面生成、人物全身设定图生成/上传、私有素材审阅与制作包校验；实际视频、配音、字幕时间轴或合成任务尚未接入。
+
+正文索引运维接口：`GET /projects/{project_id}/chapter-chunks/status` 查看当前正文版本的
+ready/pending/failed/stale 分块、已完成向量的章节数和排队数；
+`POST /projects/{project_id}/chapter-chunks/reindex` 以异步 outbox 方式批量重建当前正文版本。
+查看需要作品权限，批量重建需要项目管理权限；重建不会改写正文或正文版本历史。
+
+最近一次后端回归记录：`1737 passed, 38 skipped`（未设置集成数据库时）；本轮真实
+PostgreSQL/pgvector 集成回归为 `38 passed`，前端回归为 `215 passed`。测试正文、模型 key、
+`.env` 和 Docker 数据卷均不提交 Git。
+
+## 许可
+
+本项目原创代码、文档和素材采用 [MIT License](LICENSE)。项目所使用的第三方依赖、字体、图标、模型及其他外部资源分别受其各自许可证约束，使用者应遵守相关许可证及适用法律。

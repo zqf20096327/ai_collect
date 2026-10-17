@@ -1,0 +1,145 @@
+<p align="center">
+  <img src="assets/logo.png" alt="HiMe Logo" width="800"/>
+</p>
+
+<p align="center">
+  <b>English</b> | <a href="README.zh.md">简体中文</a>
+</p>
+
+<p align="center">
+  <a href="https://apps.apple.com/app/id6762160735"><img alt="Download on the App Store" src="https://img.shields.io/badge/App_Store-Download-0a84ff?logo=apple"></a>
+  <a href="https://arxiv.org/abs/2607.21019"><img alt="arXiv paper" src="https://img.shields.io/badge/arXiv-2607.21019-b31b1b?logo=arxiv&logoColor=white"></a>
+  <a href="docs/DEVELOPMENT.md"><img alt="Developer docs" src="https://img.shields.io/badge/docs-development-green"></a>
+  <a href="docs/INSTALL.md#im-gateway-setup"><img alt="Telegram Support" src="https://img.shields.io/badge/Telegram-supported-26A5E4?logo=telegram&logoColor=white"></a>
+  <a href="docs/INSTALL.md#im-gateway-setup"><img alt="Feishu Support" src="https://img.shields.io/badge/Feishu-supported-00D6B9?logo=lark&logoColor=white"></a>
+  <a href="docs/INSTALL.md#wechat-weixin-clawbot"><img alt="WeChat Support" src="https://img.shields.io/badge/WeChat-supported-07C160?logo=wechat&logoColor=white"></a>
+  <br/>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: PolyForm Noncommercial 1.0.0" src="https://img.shields.io/badge/license-PolyForm%20NC%201.0.0-blue.svg"></a>
+  <a href="https://github.com/thinkwee/HiMe/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/thinkwee/HiMe/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/thinkwee/HiMe/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/thinkwee/HiMe?display_name=tag&sort=semver"></a>
+  <a href="https://github.com/thinkwee/HiMe/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/thinkwee/HiMe"></a>
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-blue?logo=python&logoColor=white">
+  <img alt="Platform iOS" src="https://img.shields.io/badge/platform-iOS%20%7C%20watchOS-lightgrey?logo=apple">
+  <img alt="Docker" src="https://img.shields.io/badge/docker-ready-2496ED?logo=docker&logoColor=white">
+</p>
+
+---
+
+HiMe (Health Intelligence Management Engine) is a self-hosted, fully local, secure, and open-source one-stop personal health AI agent platform. It understands your wearable health data in real-time and provides you with proactive insights 7/24, and of course, a cute pixel-art cat that serves as your personal health digital twin.
+Download the app at https://apps.apple.com/app/himeapp/id6762160735
+
+> **News** 📢 Our paper is now on arXiv and accepted as an EMNLP 2026 demo paper! 🎉🎉🎉 Check it out at: [**HiMe: A Self-Hosted Personal Health AI Agent Platform**](https://arxiv.org/abs/2607.21019). Give it a read to learn more about the system design and motivation behind HiMe.
+
+## Features
+
+<p align="center">
+  <a href="https://apps.apple.com/app/id6762160735"><img src="assets/hime_app.png" alt="HiMe App — Download on the App Store" width="900"/></a>
+</p>
+
+---
+
+<p align="center">
+  <img src="assets/hime_chat.png" alt="HiMe Chat" width="800"/>
+</p>
+
+---
+
+<p align="center">
+  <img src="assets/hime_panel.png" alt="HiMe Panel" width="800"/>
+</p>
+
+- Real-time wearable data ingestion from Apple Watch + iPhone, including heart rate, HRV, SpO2, sleep stages, workouts, mobility, and 50+ metrics more.
+- iOS and watchOS companion apps for easy syncing of health data and controlling the agent.
+- Native in-app chat — talk to the agent directly inside the iOS app: streaming replies, image sharing, evidence-backed answers, and proactive push (APNs) when the app is closed. No bot binding required.
+  - Multiple conversations: start, rename, archive or delete threads; the pinned **Hime** thread receives every scheduled report and reminder.
+  - See the agent work: each reply is one stable block with a collapsible step list (thinking, data analysis, tool calls) above the streamed answer, a Stop button, and an animated pixel-cat avatar that reflects what the agent is doing.
+  - A self-healing connection with heartbeat and auto-reconnect, so replies show up live instead of only as a notification.
+- Web dashboard with light / dark / system themes and an Agent Monitor that groups every chat and background run into a readable timeline, with full history.
+- Personalised health plan — a quick onboarding goal survey, then the agent designs and schedules your recurring check-ins automatically (redesign anytime from Settings).
+- Autonomous AI analysis with scheduled checks and event triggers, delivered as chart-rich reports.
+- Optional IM gateways — chat over Telegram, Feishu, or WeChat (via the official ClawBot plugin) instead of, or alongside, the in-app chat.
+- Agent-generated personalised pages on demand for repeated workflows or personalised interaction. Generate your app, not learn to use it.
+- Skills system for reusable analysis playbooks.
+- Strong self-hosted privacy posture.
+- **You like the Apple/Whoop Readiness and Health Age features? Just ask your HiMe agent to create one!**
+
+<p align="center">
+<img width="774" height="550" alt="image" src="https://github.com/user-attachments/assets/f9e30341-6d8a-4661-b552-cae8d2621312" />
+</p>
+
+
+
+## Quick Start
+
+Three steps. Total time: ~10 minutes.
+
+### 1. (Optional) Get IM credentials
+
+**Skip this if you'll use the built-in in-app chat** — the iOS app talks to the agent directly, no bot needed. If you'd rather chat over an IM app, HiMe also supports **Telegram**, **Feishu**, or **WeChat**. Pick one and grab the credentials before you start the server (the setup wizard will ask for them).
+
+- **Telegram**: create a bot with [@BotFather](https://t.me/BotFather) → save the token. Send `/start` to [@userinfobot](https://t.me/userinfobot) → save your chat_id.
+- **Feishu**: create a custom app at [open.feishu.cn](https://open.feishu.cn) → grab APP_ID + APP_SECRET. Invite the bot to a group → grab the open_chat_id.
+- **WeChat**: no developer console needed — set `WEIXIN_GATEWAY_ENABLED=true` in `.env`, then run `python -m backend.weixin.qr_login` (or `docker exec -it hime-backend python -m backend.weixin.qr_login`) and scan the QR with WeChat → Settings → Plugins → ClawBot.
+
+Detailed walkthrough: [`docs/INSTALL.md#im-gateway-setup`](docs/INSTALL.md#im-gateway-setup).
+
+### 2. Start the server
+
+```bash
+git clone https://github.com/thinkwee/HiMe.git HiMe
+cd HiMe
+./setup.sh
+```
+
+<p align="center">
+  <img src="assets/hime_wizard.png" alt="HiMe Wizard" width="600"/>
+</p>
+
+Don't worry, just follow the quick start wizard in `setup.sh` and all the steps will be done for you. ~2-5 minutes for first build.
+
+When it's done, the dashboard is at http://localhost:5173 — but you'll do most things through the iOS app.
+
+### 3. Install the iOS app
+
+- **Easy path**: install [HiMe on the App Store](https://apps.apple.com/app/id6762160735). Open Settings → Server URL → enter your host (e.g. `localhost`, your Mac's LAN IP, or `homelab.local`).
+- **Build from source**: see [`docs/INSTALL.md#ios-app`](docs/INSTALL.md#ios-app).
+
+That's it. Open the **Chat** tab in the app and message Hime — or message your IM bot if you set one up — and the agent will reply.
+
+## Update the HiMe
+
+Pull the latest release and restart — your `.env`, `data/`, and `memory/` are preserved:
+
+```bash
+git pull
+./hime.sh restart --rebuild   # Docker mode: rebuilds images
+./hime.sh restart --clean     # Native mode: clears Python/node caches
+```
+
+If a new release adds variables, diff `.env.example` against your `.env` and fill in any missing keys. See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md#5-upgrades-and-backups) for backup guidance.
+
+---
+
+## Documentation
+
+- [`docs/INSTALL.md`](docs/INSTALL.md) — manual setup, native dev install, public deployment, customization.
+- [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — LAN, public-internet, and Compose production patterns.
+- [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) — architecture, adding tools/providers, code style.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — contribution process.
+- [`SECURITY.md`](SECURITY.md) — security disclosure.
+- [`PRIVACY.md`](PRIVACY.md) — privacy policy.
+
+## Status
+
+HiMe is research-grade software for personal use. It is not a medical device and does not provide diagnoses.
+
+## License
+
+HiMe is released under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+## Trademark
+
+"HiMe" and the HiMe logo are trademarks of the HiMe Organisation.

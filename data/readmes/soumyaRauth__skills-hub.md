@@ -1,0 +1,1784 @@
+<div align="center">
+
+<a href="https://soumyarauth.github.io/skills-hub/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.svg">
+    <img alt="Skills Hub: engineering disciplines your agent brings in on its own" src=".github/assets/banner-light.svg" width="100%">
+  </picture>
+</a>
+
+<br>
+
+[![Validate](https://img.shields.io/github/actions/workflow/status/soumyaRauth/skills-hub/validate.yml?branch=main&style=for-the-badge&label=validate&logo=githubactions&logoColor=white)](https://github.com/soumyaRauth/skills-hub/actions/workflows/validate.yml)
+[![Skills](https://img.shields.io/badge/skills-17-ea580c?style=for-the-badge&logo=bookstack&logoColor=white)](#-the-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-1c1917?style=for-the-badge&logo=markdown&logoColor=white)](https://code.claude.com/docs/en/skills)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=for-the-badge&logo=claude&logoColor=white)](integrations/claude-code/README.md)
+[![License: MIT](https://img.shields.io/github/license/soumyaRauth/skills-hub?style=for-the-badge&color=16a34a)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/soumyaRauth/skills-hub?style=for-the-badge&logo=github&color=eab308)](https://github.com/soumyaRauth/skills-hub/stargazers)
+
+**Agent Skills for real engineering work.** Installable with the Skills CLI, and usable with<br>
+Claude Code and other agents that support Agent Skills. No hosted service: markdown, plus one optional MCP server that serves a project's knowledge.
+
+[**🌐 Website**](https://soumyaRauth.github.io/skills-hub/) &nbsp;·&nbsp;
+[**⚡ Install**](#installation) &nbsp;·&nbsp;
+[**🧰 Skills**](#-the-skills) &nbsp;·&nbsp;
+[**🔀 How they compose**](#-how-they-compose) &nbsp;·&nbsp;
+[**🧹 Uninstall**](#uninstalling) &nbsp;·&nbsp;
+[**📖 Ecosystem**](ECOSYSTEM.md)
+
+</div>
+
+<br>
+
+```bash
+# install all eighteen skills; asks which agents, and project or global
+npx skills add soumyaRauth/skills-hub --skill '*'
+
+# uninstall all eighteen, and nothing else
+npx github:soumyaRauth/skills-hub uninstall
+```
+
+One skill only: `npx skills add soumyaRauth/skills-hub --skill impact-map`.
+Claude Code only, or as a plugin: see [Installation](#installation).
+
+> [!IMPORTANT]
+> **Leaving takes one command too.** [Uninstalling](#uninstalling) removes all
+> eighteen skills from every agent, and leaves your other skills alone.
+
+## 🧰 The skills
+
+| | Skill | What it does | When |
+| :-: | --- | --- | --- |
+| 🗺️ | **[impact-map](skills/impact-map/README.md)** | Maps the blast radius of a proposed change: what it affects, why, and how confident the analysis is | *Before* you write the code |
+| ✅ | **[proof-driven-dev](skills/proof-driven-dev/README.md)** | Turns a request into an outcome contract, implements it, and proves each requirement with evidence. You get VERIFIED / REVIEW / BLOCKED, not an essay | *While* you write it |
+| 🛡️ | **[production-guard](skills/production-guard/README.md)** | Validates whether a change is safe to ship: behavior, regressions, failures, security, data integrity, performance, operations | *After* you write it, before you merge |
+| 🌐 | **[practical-localizer](skills/practical-localizer/README.md)** | Localizes an app into natural, context-aware target-language product copy instead of literal translation | *When* you take the product to another language |
+| 🔎 | **[engineering-investigator](skills/engineering-investigator/README.md)** | Investigates a vague complaint by evidence: competing hypotheses, discriminating experiments, and a short conclusion that may be *not our fault* | *When* something is already broken and nobody knows why |
+| 🧭 | **[project-compass](skills/project-compass/README.md)** | Works out what the project is becoming and what you are actually trying to accomplish, then tells you what to do next. Usually that means building what you asked for and saying nothing | *Across* everything, quietly |
+| 📐 | **[standards-compass](skills/standards-compass/README.md)** | Works out which standards, security frameworks, accessibility requirements, privacy obligations and AI governance frameworks actually apply to your software, then audits it against them with evidence | *Whichever* of those you never consciously chose |
+| 📦 | **[dependency-guard](skills/dependency-guard/README.md)** | Decides whether a dependency should come in: whether it is needed at all, whether the package is the one you meant, what it brings with it | *Before* anything is installed |
+| 🤝 | **[api-contract-guard](skills/api-contract-guard/README.md)** | Settles what an API, webhook or event promises: the house conventions, the decisions consumers will build against, breaking or not | *Before* anyone integrates |
+| 🚀 | **[deployment-compatibility](skills/deployment-compatibility/README.md)** | Assesses a project against a specific target server: what it requires, what the server provides, what has to change. Then it verifies what it can | *Before* you deploy it there |
+| 🏛️ | **[architecture-engineer](skills/architecture-engineer/README.md)** | Works out what a system's structure should be, through questions, options and recorded decisions. Then it plans the migration and verifies the result | *Before* the shape is decided, and when it has to change |
+| 🌱 | **[project-kickoff](skills/project-kickoff/README.md)** | Turns an idea into a written spec, a boring stack you already know, and a skeleton whose install, test and run commands actually ran | *Before* there is any code |
+| 🗂️ | **[delivery-planner](skills/delivery-planner/README.md)** | Turns a spec into milestones and vertical-slice tickets, and keeps Jira, Trello, Nextcloud Deck, GitHub, GitLab, Linear or plain files in sync as work moves | *Before* the building starts, and whenever a ticket moves |
+| 🚢 | **[release-engineer](skills/release-engineer/README.md)** | Builds and runs the path to users: PR checks, one artifact, staging on merge, an authorized production promotion, a smoke check, a rollback tried before it is needed | *When* a verified change has to reach users |
+| 📡 | **[observability-baseline](skills/observability-baseline/README.md)** | Puts logs, health checks, error tracking, an uptime check, one alert, a restore-tested backup and a runbook in place, each proven by making it fire | *Before* the first production launch |
+| 📓 | **[project-knowledge](skills/project-knowledge/README.md)** | Writes down how the codebase works (architecture, dated decisions, gotchas) in committed files, keeps it current from each diff, and serves it to the next developer through an MCP server | *Once*, then every few commits on its own |
+| 🔗 | **[skills-pipeline](skills/skills-pipeline/README.md)** | Runs the skills you pick from a numbered menu, in the order you pick, and ends in a ledger with one status per stage | *Only* when you type `/skills-pipeline` |
+| 🏁 | **[delivery-lead](skills/delivery-lead/README.md)** | Takes the next ready ticket and drives it to done (proven, merged, tracker moved), then the next, until the milestone ships or only you can decide | *Only* when you ask it to work through the tickets |
+
+## 🔀 How they compose
+
+They compose, and none requires the others.
+
+```mermaid
+flowchart LR
+    ticket([🎫 ticket]) --> IM[🗺️ impact-map] --> PD[✅ proof-driven-dev] --> PG[🛡️ production-guard] --> ship([🚢 ship])
+    AC[🤝 api-contract-guard] -. interface others deploy against .-> PD
+    DG[📦 dependency-guard] -. brings in a dependency .-> PD
+    PG --> PL[🌐 practical-localizer] --> ship2([🚢 ship in another language])
+    incident([🔥 incident]) --> EI[🔎 engineering-investigator] -- cause --> PD
+    server([🖥️ a named server]) --> DC[🚀 deployment-compatibility] -- remediate · verify --> deploy([📦 deploy])
+    design([💭 a design question]) --> AE[🏛️ architecture-engineer] -- options · decision · migration --> target([🎯 target])
+
+    classDef skill fill:#fff7ed,stroke:#ea580c,color:#7c2d12
+    classDef io fill:#f5f5f4,stroke:#a8a29e,color:#1c1917
+    class IM,PD,PG,PL,EI,DC,AE,AC,DG skill
+    class ticket,ship,ship2,incident,server,deploy,design,target io
+```
+
+| | |
+| --- | --- |
+| 🏛️ **architecture-engineer** | Invited only. It never opens a review uninvited |
+| 🏁 **delivery-lead** | Opt-in only. *"Work through the backlog"* → next ticket → proven → merged → tracker moved → next |
+| 🔗 **skills-pipeline** | Opt-in only. `/skills-pipeline` → pick `1,3,6,7,10` → each runs → ledger |
+| 🧭 **project-compass** | Sits underneath all of it, and answers a different question: given where this project is heading, is this ticket the right next thing at all |
+| 📐 **standards-compass** | Sits underneath it too, and answers another one: what this software should have been measured against all along |
+
+## 🧑‍🚀 From idea to production, alone
+
+The goal: one developer, even a first-timer, takes a project from an idea to a
+monitored production app and works like a team of specialists.
+
+```
+💭 idea ─▶ 🌱 project-kickoff ─▶ 🗂️ delivery-planner ─▶ 🏁 delivery-lead ─┐
+            spec · stack · skeleton   milestones · tickets     next ticket    │
+                                      any tracker                             ▼
+     ┌──────────── per ticket: the disciplines that ticket earns ────────────┐
+     │ 🗺️ impact · 📐 standards · 🤝 contract · 📦 dependency · ✅ proof      │
+     └───────────────────────────────────┬──────────────────────────────────┘
+                                         ▼
+       🛡️ production-guard ─▶ 🚢 release-engineer ─▶ 📡 observability-baseline ─▶ 🌍 users
+```
+
+Tickets live wherever you already keep them (Jira, Trello, Nextcloud Deck,
+GitHub, GitLab, Linear) or in plain files. They move on their own as work
+happens, within the autonomy you set once in `.delivery/config.yml`. Merging to
+the main branch and deploying to production wait for your yes unless you say
+otherwise. The lead stops for a product decision only you can make.
+
+## ✨ You don't call them. They show up
+
+There are no slash commands to remember. The agent sees every installed
+skill's description, and each description says when that skill applies *and
+when it does not*. The agent brings in the ones the request needs, judging
+from the request and from what the repository shows.
+
+| | |
+| --- | --- |
+| 🤖 **Automatic** | *"Add password reset"* is a Standards Compass and ProofBuild request. *"Why does checkout randomly fail?"* is an Engineering Investigator one. You don't have to say so |
+| 🧩 **Composed** | Several skills can share one task. Impact Map maps the surface, Standards Compass names the controls, ProofBuild proves the result, and each hands the rest on in a one-line `HANDOFF` |
+| 🤫 **Quiet** | A button label, a typo, a patch bump: nothing loads. A skill loaded for the last request says nothing on this one unless this one earns it |
+| 👁️ **Visible** | When skills shape the work, one line says which: `⚡ Impact Map · Standards Compass — rename reaches report SQL; export carries personal data` |
+| 🎛️ **Still manual** | Name one (*"use Impact Map first"*) or type `/impact-map`. Type `/skills-pipeline` to pick a sequence of them yourself. *"Skip the standards review"* is honored. A live hazard (a reachable security hole, data loss, money at risk) is still said, once |
+
+This is the agent's judgment steered by the descriptions, not a keyword router,
+and it is measured, not promised. [`evals/activation/`](evals/activation/README.md)
+runs real sessions against the fixtures and checks which skills load, and which
+must not. [ECOSYSTEM.md](ECOSYSTEM.md) explains how the pieces fit, including
+the skills considered and deliberately not added.
+
+> [!TIP]
+> **In Claude Code, also add the short standing instruction** from
+> [integrations/claude-code](integrations/claude-code/README.md). In the
+> activation suite, it is what gets Claude to reach for the skills during
+> implementation work, not only when a request sounds like the skill's own name.
+> The skills alone passed 30 of 38 cases, and with the instruction they passed 37
+> of 38. Neither setup loaded a skill where it should have stayed quiet. The same
+> folder has an optional colored active-skills status line.
+
+## 📚 Meet the skills
+
+Each skill below has a short pitch and its install command. Open **Deep dive** for the problem it solves, a worked example, and what it will not do.
+
+### 🗺️ Impact Map
+
+**A reusable AI engineering skill for understanding the blast radius of software
+changes.**
+
+Impact Map is an [Agent Skill](https://code.claude.com/docs/en/skills) that runs
+*before* implementation. It analyzes a repository and produces an evidence-based
+change impact report: what a proposed change affects, why, how confident the
+analysis is, and what to do next — without touching a single file.
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill impact-map
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
+
+```
+ticket → find the obvious file → change it → discover later what broke
+```
+
+The obvious file is rarely what breaks. What breaks is the raw SQL in a report,
+the string comparison in a nightly job, the fixture that keeps CI green while
+the behavior is wrong, the policy that never learned about the new state.
+
+Generic code search does not help much, because it returns this:
+
+```
+File A
+File B
+File C
+```
+
+— with no explanation of why any of it matters.
+
+#### The solution
+
+Impact Map inserts a read-only analysis step and returns findings that carry
+their reasoning:
+
+```
+ticket → impact map → architecture → dependencies → hidden coupling
+       → tests → risks → implementation plan → coding
+```
+
+Every significant finding is classified and evidenced:
+
+| | Meaning |
+| --- | --- |
+| 🟥 **MUST CHANGE** | Strong evidence this location requires modification. |
+| 🟧 **LIKELY AFFECTED** | Strong relationship; needs confirmation. |
+| 🟨 **NEEDS VERIFICATION** | Plausible relationship; check before implementing. |
+| ⚠️ **HIDDEN COUPLING** | Indirect dependency — raw strings, SQL, config, duplicated logic, fixtures, serialization, co-change history. |
+| ⬜ **OUT OF SCOPE** | Inspected, not materially related. |
+
+Confidence is tracked separately (High / Medium / Low), and a low-confidence
+finding is never promoted to MUST CHANGE. Speculation is never presented as
+fact, and counts are never invented.
+
+
+#### Example
+
+```
+You:  Rename the COMPLETED enrollment status to APPROVED. Deep analysis please.
+
+Agent: I'll map the impact surface before changing anything.
+
+IMPACT MAP
+────────────────────────────────────────
+
+🟥 MUST CHANGE
+
+backend/models/enrollment.py
+  Symbol:       EnrollmentStatus.COMPLETED
+  Evidence:     COMPLETED = "completed" — member name and stored string both
+                carry the old name.
+  Confidence:   High
+
+⚠️ HIDDEN COUPLING
+
+backend/reports/completion_report.py
+  Coupling type: Raw SQL
+  Evidence:      WHERE status = 'completed' — never touches the enum.
+  Confidence:    High
+  Action:        Silently returns zero rows after the rename.
+
+backend/jobs/nightly_sync.py
+  Coupling type: Raw string + direct data access
+  Evidence:      if row["status"] == "completed" — bypasses the service layer.
+  Confidence:    High
+
+RISK
+
+Risk score: 15 / 18 → High
+
+Breadth             3   backend, frontend, jobs, and reporting all in scope
+Coupling opacity    3   raw SQL, a direct-read job, a duplicated UI comparison
+Test coverage       3   no test asserts report or sync behavior for this status
+Reversibility       2   value rename with a backfill of existing rows
+Consumer reach      3   a partner system reads the value; BI consumers are
+                        suspected and not enumerable from this repository
+Area volatility     1   normal churn, except one stale job
+
+Nothing in CI fails if the string-coupled paths are missed.
+```
+
+Findings carry stable ids, so the architecture graph, the risk table, and the
+implementation plan all point back at the same evidence. Say yes to the plan and
+you get a handoff artifact — steps sized to one commit, each naming what it
+resolves, how to verify it, and how to roll it back, with a coverage table
+proving no MUST CHANGE finding was dropped.
+
+Five full worked examples: [simple](skills/impact-map/examples/simple-change.md) ·
+[API](skills/impact-map/examples/api-change.md) ·
+[database](skills/impact-map/examples/database-change.md) ·
+[cross-module](skills/impact-map/examples/cross-module-change.md) ·
+[implementation plan](skills/impact-map/examples/implementation-plan.md)
+
+</details>
+
+**[Full documentation →](skills/impact-map/README.md)**
+
+<br>
+
+### ✅ ProofBuild
+
+**Don't read what the AI did. See whether it actually works.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill proof-driven-dev
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
+
+```
+prompt → code → explanation → you read all of it → you decide whether it works
+```
+
+You ask for password reset. You get working-looking code and a fluent paragraph
+about it. Whether the feature *works* is still your problem, and the only ways
+to find out are reading the diff or shipping it.
+
+The failure is structural, not a matter of the agent trying harder: **"code was
+written" and "the outcome happened" are different claims**, and one is being
+reported as the other.
+
+#### The solution
+
+An outcome contract, written *before* the code, and evidence for every
+requirement in it:
+
+```
+intent → outcome contract → proof plan → implementation
+       → verification → failure analysis → repair → re-verification → result
+```
+
+The contract is numbered and observable — someone outside the codebase could
+tell whether each line holds:
+
+```
+objective: "Users can securely reset their password by email"
+risk: high
+  AUTH-001  A user can request a reset for their email          integration
+  AUTH-003  An unknown email returns the same response          security
+  AUTH-005  A token already used once is rejected on reuse      security
+  AUTH-007  After reset, the old password no longer works       integration
+  AUTH-008  Existing email/password login is unchanged          regression
+```
+
+Five of those eight were never in the request. That is where the defects live.
+
+#### Example
+
+```
+✓ VERIFIED
+
+Password reset
+
+Requirements   8/8
+Tests          47/47
+Regression     pass
+Changed        6 files
+```
+
+That is the whole response for a change touching six files. When a decision is
+genuinely yours, you get the decision instead of the narrative:
+
+```
+⚠ REVIEW REQUIRED
+
+Bulk upload · 13/14 requirements verified
+
+Decision required:
+A duplicate filename inside one upload batch —
+
+  [overwrite]   [reject the duplicate]   [keep both, suffix the name]
+```
+
+Detail is one question away — *show the contract*, *show evidence*, *explain the
+proof for AUTH-005*, *show failed attempts*. What you never get is a green
+checkmark meaning "I wrote some code and it looked right to me."
+
+#### The rule that matters most
+
+When the agent's model of the code and the executed output disagree, the output
+wins:
+
+```
+Reasoning   "the token is invalidated after use — consumeToken() sets used_at"
+Observed    the same token reset the password twice, both returning 200
+
+✗ CONTRADICTION — AUTH-005 is not satisfied
+```
+
+A confident, articulate, wrong claim of success is the most damaging thing an AI
+agent produces. Repair is classified before any code changes and budgeted — three
+attempts, two at high risk, one at critical — so a stubborn failure ends in
+`✗ BLOCKED` with a diagnosis rather than a fourth guess.
+
+Six worked examples: [feature development](skills/proof-driven-dev/examples/feature-development.md) ·
+[bug fix](skills/proof-driven-dev/examples/bug-fix.md) ·
+[refactoring](skills/proof-driven-dev/examples/refactoring.md) ·
+[performance](skills/proof-driven-dev/examples/performance.md) ·
+[security](skills/proof-driven-dev/examples/security.md) ·
+[ambiguous request](skills/proof-driven-dev/examples/ambiguous-request.md)
+
+#### Safety
+
+It runs your project's own checks — its framework, its commands, its
+conventions — and does not install a testing stack you did not ask for. It will
+not `git reset --hard`, `git clean -fd`, check out over your uncommitted work,
+force push, commit or push automatically, drop databases, or touch production,
+unless you explicitly ask for that operation.
+
+</details>
+
+**[Full documentation →](skills/proof-driven-dev/README.md)**
+
+<br>
+
+### 🛡️ Production Guard
+
+**An AI-assisted production-readiness gate for software changes.**
+
+> AI can write the code. Production Guard asks whether the resulting behavior is
+> safe to ship.
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill production-guard
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
+
+```
+code generation ≠ production correctness
+```
+
+A change can pass its tests, compile, look reasonable, satisfy the ticket — and
+still break an existing workflow, expose another tenant's data, corrupt records
+under concurrency, double-charge on retry, time out at real data volumes,
+silently swallow errors, or leave no trace of what it did at 3 AM.
+
+#### The solution
+
+```
+CODE CHANGE → behavior model → regression model → failure model
+            → security / data / performance / operations
+            → execute available validation
+            → PRODUCTION READINESS REPORT
+            → SHIP / CONDITIONAL SHIP / DO NOT SHIP
+```
+
+Two rules make the report worth reading:
+
+**No invented scores.** Never `Code quality: 94%`. Instead, counts of checks
+actually performed, and a verdict derived from explicit rules:
+
+```
+FUNCTIONAL VALIDATION     14/14 passed
+REGRESSION VALIDATION     21/23 passed
+SECURITY                   8/8  passed
+DATA INTEGRITY             5/6  passed
+FAILURE SCENARIOS          6/9  validated
+```
+
+**Executed ≠ analyzed.** Every check is labeled as a command that ran or as
+reasoning, and a failure scenario only gets an observed result when it was
+actually exercised.
+
+| Verdict | Rule |
+| --- | --- |
+| 🟢 **SHIP** | No blockers, no unresolved HIGH findings, all risk-required categories validated |
+| 🟠 **CONDITIONAL SHIP** | No blockers, but a HIGH finding or a required category left unverified |
+| 🔴 **DO NOT SHIP** | At least one BLOCKER |
+
+#### Example
+
+```
+CHANGE    Add bulk deletion to user management.
+VERDICT   🔴 DO NOT SHIP
+BLOCKERS  2   HIGH 2   MEDIUM 1   LOW 1
+
+🔴 #1 Authorization is checked once for the actor, never per target.
+      Evidence:  BulkDeleteController.php:34 authorizes once, then deletes every
+                 id in the request body. The single-delete path checks per record.
+      Risk:      A team admin can delete users outside their team by supplying ids.
+
+🔴 #2 Partial failure leaves the operation half-applied with no record.
+      Evidence:  BulkDeleteService.php:28-41 commits per item inside a loop.
+      Risk:      Failure at item 47 of 100 leaves an arbitrary subset deleted,
+                 with no way to tell which or to safely retry.
+```
+
+Five full worked reports: [payment](skills/production-guard/examples/payment.md) ·
+[bulk operation](skills/production-guard/examples/bulk-operation.md) ·
+[API change](skills/production-guard/examples/api-change.md) ·
+[database migration](skills/production-guard/examples/database-migration.md) ·
+[authentication](skills/production-guard/examples/authentication.md)
+
+One ends in 🟢 SHIP deliberately — a gate that never passes anything is not a
+gate.
+
+#### Safety
+
+Production Guard runs your project's own checks where it can. It will not drop
+databases, reset environments, delete data, destroy containers, rewrite git
+history, force push, deploy, or touch production-like systems. It reads git
+state and never modifies it.
+
+</details>
+
+**[Full documentation →](skills/production-guard/README.md)**
+
+<br>
+
+### 🌐 Practical Localizer
+
+**Make your application speak like a local product — not like a translated
+document.**
+
+> Traditional translation asks: *"what does this sentence translate to?"*
+> Practical Localizer asks: *"what would a real user expect this application to
+> say here?"*
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill practical-localizer
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+#### The problem
+
+A technically correct translation is not necessarily a natural one.
+
+```
+English:   Chair
+Literal:   a dictionary-valid, formal/literary word
+Practical: the borrowed word people actually use for the object
+```
+
+Both are "the translation". Only one sounds like a modern app — and which one
+that is differs by language, product and audience. The same reasoning gives the
+*opposite* answer in a neighbouring language where an ordinary native word is in
+everyday use, which is exactly why no blanket rule works.
+
+And the failure is rarely only stylistic:
+
+```
+"Hello, {{name}}"  →  "হ্যালো"          the placeholder is gone; nothing fails
+t("remove")        →  "delete forever"  the handler was removeMember()
+one concept        →  three target words, one per translation batch
+{count, plural,…}  →  a single fixed form in a locale that needs six
+```
+
+#### The solution
+
+```
+source application → localization architecture → language usage profile
+   → existing terminology → context extraction → translation strategy
+   → natural localization → technical validation → consistency review
+```
+
+Every meaningful term is classified — **TRANSLATE**, **TRANSLITERATE**,
+**PRESERVE** or **ADAPT** — from context, existing project terminology and the
+target locale's software conventions, and every non-trivial decision carries a
+confidence level so the parts a human should check are visible.
+
+Three modes: **analyze** (read-only inventory and plan), **localize** (writes
+locale resources and nothing else), **review** (findings with source, current,
+recommended, reason and confidence).
+
+#### Example
+
+```
+You:  Review the Bengali localization for naturalness and consistency.
+
+Agent: LOCALIZATION REVIEW
+       ────────────────────────────────
+       Target  Bengali (bn-BD)   Reviewed  742 strings
+       High-confidence 18 · Medium 27 · Technical 3
+
+       #1  greeting.hello — BLOCKING TECHNICAL ISSUE
+           Source "Hello, {{name}}" → current "হ্যালো"
+           The interpolation was dropped; the name never renders.
+
+       #2  team.remove — Context / terminology
+           Current মুছে ফেলুন ("erase") → recommended সরিয়ে দিন
+           Rendered in <TeamMemberRow>, handler removeMember(). The member is
+           taken off the team, not deleted. Bengali distinguishes the two;
+           English does not.
+
+       #3  sign in — Terminology inconsistency
+           লগইন (18 occurrences) · প্রবেশ করুন (2 occurrences)
+           Recommend the established project term everywhere.
+```
+
+Five worked language examples: [Bengali](skills/practical-localizer/examples/bengali.md) ·
+[Hindi](skills/practical-localizer/examples/hindi.md) ·
+[Japanese](skills/practical-localizer/examples/japanese.md) ·
+[Arabic](skills/practical-localizer/examples/arabic.md) ·
+[European](skills/practical-localizer/examples/european-language.md)
+
+#### What it will not do
+
+Never claim native authority — "this is the more common software convention",
+not "native speakers say this". Never guess grammatical gender the source hides.
+Never encode "language X always …". Never invent counts or claim a validation it
+did not run. Never touch application source: hardcoded strings, concatenated
+sentences and formatter bugs are reported, not silently refactored.
+
+</details>
+
+**[Full documentation →](skills/practical-localizer/README.md)**
+
+<br>
+
+### 🔎 Engineering Investigator
+
+**Don't ask the agent to find an explanation. Make it find out whether the
+explanation is true.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill engineering-investigator
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Ask a coding agent why the app is slow and it will read the code, find something
+genuinely suspicious, and tell you about it. That is the problem: *finding an
+explanation* and *establishing a cause* are different activities, and one gets
+delivered as the other. The query may have been there for two years, and the
+affected customer may be on hotel wifi.
+
+```
+complaint → normalize the symptom → scope it by contrast → competing hypotheses,
+each with a kill condition → the experiment that eliminates the most → what
+survived, at its real confidence → verify → four lines
+```
+
+#### Example
+
+```
+You:  The portal is unusably slow for one customer. They're threatening to churn.
+
+Agent: Server processing for that account matches every other tenant (p95 210 ms
+       vs 228 ms) and their response sizes are comparable, so the time is not in
+       our processing. Their own network capture shows 6.4 s downloading a
+       1.7 MB response with 173 ms of server time and 310 ms of browser work.
+
+## Result
+
+The application is responding normally for this customer — the time is going
+into transferring data over their connection.
+
+**Cause:** Low throughput on the affected connection (~2 Mbit/s)
+**Confidence:** High
+
+**Why:** Server times match every other tenant, sizes are comparable, and their
+capture shows the time in transfer.
+
+**Action:** Have them test on a different network. Separately, our dashboard
+response is 1.7 MB — worth reducing, because it is what makes a weak connection
+unusable rather than merely slow.
+
+### Client response
+
+"We've looked into the slowness and our systems are responding normally for your
+account… "
+```
+
+Every hypothesis carries a **kill condition**, written before the evidence
+arrives. Experiments are chosen for how many explanations they can eliminate,
+not for how thorough they look. Evidence is typed `FACT` / `INFERENCE` /
+`ASSUMPTION` / `UNKNOWN`, and code inspection never establishes production
+behavior. The leading hypothesis gets attacked before the conclusion is written.
+
+Depth is bought in the investigation state, never in the answer. A finalization
+gate runs before you see anything: it keeps the evidence that *changed* the
+conclusion and deletes the rest — no command counts, no file-by-file tour, no
+`H1…H5` manufactured for a request that arrived with its own answer. Detail is
+one question away, and is read back out of the state rather than re-derived.
+
+Six worked investigations: [client network](skills/engineering-investigator/examples/client-network.md) ·
+[deployment regression](skills/engineering-investigator/examples/deployment-regression.md) ·
+[third-party dependency](skills/engineering-investigator/examples/third-party-dependency.md) ·
+[insufficient evidence](skills/engineering-investigator/examples/insufficient-evidence.md) ·
+[resuming a case](skills/engineering-investigator/examples/resumed-investigation.md) ·
+[a clear feature request](skills/engineering-investigator/examples/implementation-request.md)
+
+#### What it will not do
+
+Never invent a log line, a metric, a trace, a tool, or a customer's network
+conditions — unavailable evidence is reported as unavailable. Never report
+correlation with a deploy as a cause without a comparison that establishes it.
+Never blame a customer, a vendor, or the network without a measurement, and never
+blame the application without one either. Read-only by default: production data,
+configuration, infrastructure and deployments are never touched without explicit
+authorization for that specific action.
+
+</details>
+
+**[Full documentation →](skills/engineering-investigator/README.md)**
+
+<br>
+
+### 🧭 Project Compass
+
+**Your agent knows how to build things. This helps it work out what to build
+next.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-compass
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+One question, asked before every non-trivial request and answered from your
+project rather than from general advice:
+
+> **Given everything I know about this project, what should this developer do
+> next, and why?**
+
+Usually the answer is *the thing you just asked for*, and it builds it and says
+nothing. Occasionally it is not, and on those occasions the answer is worth more
+than the implementation would have been.
+
+```
+ACTIVITY   features added, code refactored, endpoints optimized
+PROGRESS   the target problem solved, a real risk retired, a workflow completed
+```
+
+Those come apart quietly. Nine permission exceptions, each reasonable, are an
+authorization system nobody designed. Five performance changes with no
+measurement are five guesses with deployments attached. And the expensive one:
+
+```
+Add search.        Add export.          Add user groups.
+Add filtering.     Add bulk delete.     Add permissions.
+Add sorting.       Add saved filters.
+```
+
+Eight reasonable requests. Together they say *we are building an administration
+system and nobody has defined the administration workflow* — a sentence no
+single request could produce, and one the person making them cannot see, because
+they see one request at a time.
+
+#### Three modes, and the first one is the default
+
+**Mode A — build it.** The overwhelming majority. No manufactured concerns, no
+*"this looks fine from a project perspective"*. **Mode B — build it, flag one
+thing**, in a paragraph delivered with the work. **Mode C — pause and guide**,
+which is rare and always ends with the offer to build it as asked.
+
+#### Example
+
+```
+You:    Add another status to orders.
+
+Agent:  I'd stop for a moment before adding this status.
+
+        The problem isn't really the new status. There's no defined order
+        lifecycle — pay.js treats paid as final, ship.js doesn't check
+        cancellation, and refund.js will refund a cancelled order. A fifth flag
+        lands in a set of four that already contradict each other.
+
+        What I'd do first: write down the states and which transitions are
+        legal. Ten lines, half an hour. Then the new status goes into that
+        instead of becoming a fifth exception.
+
+        Say the word and I'll just add the flag — you may know something the
+        repository doesn't.
+```
+
+Nothing was refused. The alternative is smaller than the work it replaces, it is
+startable today, and the evidence is three file names you can check in thirty
+seconds.
+
+#### Every finding ends in an action
+
+| Not this | This |
+| --- | --- |
+| "There is no order lifecycle" | "Define the order lifecycle before adding a fifth status" |
+| "There is technical debt" | "Extract the shared permission rule and route the three existing paths through it, before the fourth exception" |
+| "The product direction is unclear" | "Decide what the dashboard is meant to help someone decide, before the next widget" |
+
+When several things could be done, they are ranked by what most improves the
+trajectory — blocking decisions, then broken core workflows, then domain-model
+problems, then boundaries getting expensive, then security and data integrity,
+and only then debt, performance and polish. Technical issues do not
+automatically outrank product and workflow ones.
+
+#### The harder half: knowing when to shut up
+
+An agent that comments on direction four times a week gets uninstalled in week
+two, and the one real observation it would have made in week nine never arrives.
+So Modes B and C fire only when a gap clears **four gates** — three or more
+instances with real locations, a shared *cause* rather than a shared topic, a
+consequence stated in terms of work already asked for, and a next step smaller
+than the work it prevents. Three out of four is a note in the project state, not
+a sentence to you.
+
+On top of that: one intervention per session, maximum, and
+
+> **a dismissed observation is closed permanently.**
+
+Say *"that's intentional"* and it is recorded as a decision with your reason, and
+never raised again. Say *"this is a throwaway prototype"* and that becomes the
+frame every later recommendation is measured against, because you know the goal
+and it does not.
+
+#### What it remembers
+
+```
+.project-compass/
+├── project.md          what this is, who it serves — labeled, dated
+├── direction.md        what it is becoming, the biggest gap, the next step
+├── trajectory.md       dated entries: what changed, and which pattern it fed
+├── decisions.md        settled questions, including "we discussed this, proceed"
+├── open-questions.md   unresolved decisions affecting implementation
+└── blind-spots.md      gaps that cleared the bar, and what closes them
+```
+
+`direction.md` is *"what should I do next?"*, cached — so next week the answer
+costs one file read instead of a second reconstruction of the project. The
+purpose of all of it is better guidance later, not a record of what happened:
+renames, formatting and dependency bumps are never written down, because a
+trajectory that logs everything is a diary and nobody finds a pattern in a diary.
+The repository always outranks the state, and recorded claims are re-verified
+before anything is built on them.
+
+Nine worked sessions: [no intervention](skills/project-compass/examples/no-intervention.md) ·
+[becoming a system](skills/project-compass/examples/becoming-a-system.md) ·
+[feature accumulation](skills/project-compass/examples/feature-accumulation.md) ·
+[sequencing](skills/project-compass/examples/sequencing.md) ·
+[decision debt](skills/project-compass/examples/decision-debt.md) ·
+[a drifting project](skills/project-compass/examples/drifting-project.md) ·
+[what should I do next](skills/project-compass/examples/next-action.md) ·
+[beginner](skills/project-compass/examples/beginner.md) ·
+[senior](skills/project-compass/examples/senior.md)
+
+#### What it will not do
+
+Never invent the project's purpose, users, market, deadlines, metrics, or
+history — when the objective is undocumented, *"there is no documented
+objective"* is the finding. Never block ordinary work: even Mode C ends with the
+offer to build it as asked, because you have context the repository does not.
+Never override a goal you have stated. Never raise a dismissed observation
+again. Never produce a health score, a percentage, or a generic backlog. Most of
+the time it says nothing at all, and its most common spoken answer is *keep
+going*.
+
+</details>
+
+**[Full documentation →](skills/project-compass/README.md)**
+
+<br>
+
+### 📐 Standards Compass
+
+**Which standards actually apply to this software — and does it meet them?**
+
+Standards Compass is an [Agent Skill](https://code.claude.com/docs/en/skills)
+for the question nobody asks until month eight: *are we compliant?* — at which
+point nobody can say what "compliant" would mean for this product.
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill standards-compass
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+The instinct is a checklist. Five hundred requirements produce five hundred
+shallow answers, most of them irrelevant, and a team that now believes standards
+work is theatre. The value is in the two steps a checklist skips:
+
+```
+Which of these applies to this software?
+And what does the code actually show?
+```
+
+So it profiles the project, decides applicability with reasons — including for
+the standards that do **not** apply — gathers evidence, and reports gaps that
+carry their citations:
+
+```
+Applicable
+  ✓ OWASP ASVS 5.0.0        authenticated multi-tenant app, untrusted input
+  ✓ WCAG 2.2                public web UI with interactive workflows
+  ⚠ GDPR                    personal data present; jurisdiction unknown
+  ⚠ PCI DSS v4.x            hosted checkout; scope determined with your acquirer
+  ✕ HIPAA                   no clinical data or healthcare relationship observed
+
+🔴 3 high   🟠 8 medium   🟡 6 unable to verify
+
+Three admin endpoints don't enforce the authorization rule the other eleven
+use, and the export query at src/api/admin/exports.ts:31 has no tenant filter.
+```
+
+Two modes: an **auditor** for software that already exists, and a **guardrail**
+that runs during ordinary development — noticing when a feature touches
+identity, privilege, money, personal data, files or a model, building
+accordingly, and staying silent otherwise.
+
+Three things make it usable rather than alarming:
+
+- **Not found is not failed.** No backup config in the repository means *no
+  backup config was found in the repository*. That is `UNABLE TO VERIFY`, routed
+  to whoever runs the infrastructure — not a failure in a findings list.
+- **Gaps are typed.** Implementation, evidence, process, legal scope, manual
+  verification. A process gap has no code fix, and writing one to close it makes
+  the next audit less accurate.
+- **It never claims compliance.** Not GDPR, not ISO 27001, not WCAG conformance,
+  not PCI. None of those is available from reading a repository, and all of them
+  get quoted to customers.
+
+The registry is designed to be updated without touching the skill — one YAML
+file per standard, 22 of them, each recording its version, status, official
+source, and **when and how it was last verified**. `scripts/validate-registry.sh`
+enforces the schema, including that an official URL sits on the publishing
+body's own domain.
+
+State in `.project-standards/` makes the second assessment cheaper than the
+first, keeps a dismissed finding dismissed, and turns a control that used to
+pass into a **regression** rather than a rediscovery.
+
+</details>
+
+[Read the full guide →](skills/standards-compass/README.md)
+
+<br>
+
+### 📦 Dependency Guard
+
+**Should this dependency come in — and is it the one you think it is?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill dependency-guard
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Most dependencies are never decided. A request's obvious implementation is
+`npm install x`, and that is the whole review. Agents make it worse: they reach
+for a library by reflex, and occasionally name packages that do not exist,
+which is the gap a squatter registers into.
+
+```
+DEPENDENCY  lodash — debounce for the customer search box
+DECISION    USE EXISTING
+WHY         The need is one function. src/lib/timing.js already holds throttle();
+            a 9-line debounce beside it covers this without a new package.
+```
+
+It climbs a ladder first: already in the codebase, the standard library or
+platform, an installed dependency, a few lines of code. Only then does it
+evaluate a package, and there the name is resolved before it is trusted.
+Install scripts and transitive growth are measured from a dry run or the
+lockfile diff. Registry facts it did not read are marked `UNVERIFIED`, never
+supplied from memory. A routine patch bump gets no comment at all.
+
+</details>
+
+[Read the full guide →](skills/dependency-guard/README.md)
+
+<br>
+
+### 🤝 API Contract Guard
+
+**What does this interface promise — and which of those promises can never be
+taken back?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill api-contract-guard
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Code is cheap to change. A promise to someone who deploys on their own schedule
+is not. Before an endpoint, webhook or event ships, this reads how the rest of
+the API already works and writes down the decisions a consumer will build
+against:
+
+```
+CONTRACT  GET /v1/invoices — public, API-key clients
+FOLLOWS   error envelope (src/api/errors.js:3) · cursor pagination, max 100
+          (GET /v1/payments) · integer minor units + currency · ISO-8601 UTC
+DECIDES   order by (created_at, id) so cursors stay stable · status is an open
+          enum · another customer's invoice returns 404, like a missing one
+CHANGE    additive
+```
+
+Changes to an existing contract are labeled additive, behavioral or breaking,
+and the label describes consumers rather than the diff. A breaking change gets a
+migration path in which every step deploys safely. An endpoint whose every
+consumer ships in the same deploy gets nothing.
+
+</details>
+
+[Read the full guide →](skills/api-contract-guard/README.md)
+
+<br>
+
+### 🚀 Deployment Compatibility Engineer
+
+**Does this project fit this server?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill deployment-compatibility
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Every other skill here takes one operand. This one takes two, and the second is
+a machine. Deployment failures are rarely code failures — they are mismatches
+between what a project requires and what an environment provides, and both
+halves are usually available before anyone deploys:
+
+```
+the runtime is a major version behind what the lockfile was built for
+the queue library is installed and no Redis is running
+uploads are written to a local path on an ephemeral filesystem
+the worker process has no supervisor, so it runs once and never again
+a variable lives in .env.example and nowhere on the box
+```
+
+```
+DEPLOYMENT COMPATIBILITY
+TARGET   Ubuntu 24.04 · 4 vCPU · 7.8 GB · Docker 27.1      tier READ-ONLY
+PROJECT  Next.js 15 · Node 22 · PostgreSQL · Redis · 1 worker
+STATE    🔴 BLOCKED
+
+Requirement        Project needs    Target provides           Result
+──────────────────────────────────────────────────────────────────────
+Node               >= 22            20.11.1        MEASURED   BLOCKED
+PostgreSQL         >= 16            16.2           MEASURED   FIT
+Redis              required         not installed  MEASURED   BLOCKED
+Worker process     required         no supervisor  MEASURED   BLOCKED
+uploads/ persists  required         container fs   INFERRED   RISK
+RAM                UNKNOWN          7.8 GB         MEASURED   UNVERIFIED
+```
+
+Ask a capable agent whether an app will run on a server and you get a confident
+yes assembled from a plausible mental model of Ubuntu. This skill is built so
+that answer cannot be produced: **every target fact carries where it came
+from** — `MEASURED`, `SUPPLIED`, `INFERRED`, `UNKNOWN` — and the verdict is
+computed from those provenances. A row that fits on a fact *you* supplied cannot
+produce `READY`; it becomes a numbered condition. A row whose project side is
+`UNKNOWN` is never `FIT`, because not knowing what an app needs is not the same
+as having enough.
+
+So `READY` requires that the server was actually inspected, `READY WITH
+CONDITIONS` is the normal good answer, and `NOT ASSESSED` is a real outcome
+rather than a failure — with no access and no specification, saying so is the
+correct report.
+
+Four worked examples: [a blocked runtime](skills/deployment-compatibility/examples/blocked-runtime.md) ·
+[the honest common case](skills/deployment-compatibility/examples/ready-with-conditions.md) ·
+[no server access at all](skills/deployment-compatibility/examples/no-access.md) ·
+[a deployment that starts and dies](skills/deployment-compatibility/examples/failing-deployment.md)
+
+#### What it will not do
+
+Never promise a deployment will work — no "seamless", no "guaranteed", no "100%
+compatible". Never invent a fact about your server; there is no library of
+typical hosts to fall back on. Never change the target on its own: discovery is
+read-only, and server changes are proposed, classified by impact, and applied
+only on authorization for that specific action. Never weaken a control to get a
+deploy through — no exposed database, no disabled TLS, no development mode on a
+server. And never keep a secret: values are `PRESENT`, `MISSING` or redacted.
+
+</details>
+
+**[Full documentation →](skills/deployment-compatibility/README.md)**
+
+<br>
+
+### 🏛️ Architecture Engineer
+
+**The architecture is not the first answer. It is what is left after the
+reasoning.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill architecture-engineer
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Ask a capable agent to design a system and you get an architecture in the first
+reply — multi-tenant, event-driven, a queue, a cache, three services. Well
+presented, internally consistent, and chosen before anything was known about
+your problem. Nothing in it is wrong. Nothing in it is *earned*.
+
+```
+what is actually required   →  what the system really is today
+        ↓                              ↓
+   the options that fit        the gap between them
+        ↓                              ↓
+   the trade-offs             →  a decision, recorded, with what reverses it
+        ↓
+   the target, the migration, and evidence the result matches
+```
+
+Requirements are graded by how they were established — `STATED`, `OBSERVED`,
+`INFERRED`, `ASSUMED`, `UNKNOWN` — and then one rule does most of the work:
+
+> **A decision resting on an `ASSUMED` or `UNKNOWN` requirement is not a
+> decision. It is an open question with a leading candidate.**
+
+So *"eventually maybe 500,000 users"* gets one question — committed, or hoped
+for? — because the answer changes the design by an order of magnitude of cost.
+And every moving part names the requirement forcing it, or it comes out:
+
+```
+Component        Driving requirement                          Grade
+Queue + worker   R-03 payment confirmation must not be lost   STATED
+Redis cache      —                                            none — removed
+Second service   R-09 unknown scale                           UNKNOWN — deferred
+```
+
+For an existing system, the most useful sentence is usually the gap between
+what the codebase claims and what it does — a `services/` directory is not a
+service architecture, and a `domain/` directory that imports the ORM is not a
+domain model.
+
+Four worked examples: [greenfield discovery](skills/architecture-engineer/examples/greenfield-discovery.md) ·
+[declared vs implemented](skills/architecture-engineer/examples/existing-review.md) ·
+[monolith or services](skills/architecture-engineer/examples/monolith-or-services.md) ·
+[the request that only sounds architectural](skills/architecture-engineer/examples/quiet-feature.md)
+
+#### What it will not do
+
+Never lead with an architecture, invent a requirement, or recommend
+microservices, event sourcing, CQRS or Kubernetes by default — each needs a
+requirement it is the cheapest answer to. Never score options out of ten. Never
+call an architecture best, clean or future-proof. `DISCOVER`, `DESIGN` and
+`REVIEW` write nothing but `.architecture/`; only `MIGRATE` touches your code,
+only when you ask, and only against a plan where every transition state ships.
+
+And it does not volunteer. A large or messy codebase is not an invitation —
+noticing that a project has become something nobody designed is
+[Project Compass](skills/project-compass/README.md)'s job, and it holds the
+interruption budget for it.
+
+</details>
+
+**[Full documentation →](skills/architecture-engineer/README.md)**
+
+<br>
+
+### 🌱 Project Kickoff
+
+**What exactly are we building first, on what, and is the empty repo ready to build in?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-kickoff
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+New projects go wrong before the first feature. The idea is never pinned down,
+or the repository starts with nothing that runs. Agents make it worse: given
+*"an app where members book classes"*, they invent the business's rules, pick
+a stack from a blog post, and generate dozens of files a beginner cannot tell
+apart from decisions.
+
+```
+READY TO BUILD
+
+Spec      docs/spec.md · 8 [you said] · 5 [assumed] · 2 open decisions
+Stack     Python · Django · SQLite (PostgreSQL when deployed)
+Scaffold  install ✓ · lint ✓ · 1/1 tests ✓ · runs ✓ · CI written
+Next      HANDOFF → delivery-planner: milestone 1 = walking skeleton deployed
+```
+
+It asks at most five product questions in one block, and none if you already
+said everything. Technical choices get safe defaults instead of questions. It
+writes `docs/spec.md` with every line labelled `[you said]` or `[assumed]`,
+picks a boring stack you already know, and scaffolds the smallest skeleton:
+one passing test, lint, `.env.example`, README commands and a first CI check.
+The skeleton counts as done only when its install, test and run commands have
+actually been executed. It never scaffolds over existing code, overwrites a
+file without asking, or invents your users, prices or deadlines.
+
+</details>
+
+**[Full documentation →](skills/project-kickoff/README.md)**
+
+<br>
+
+### 🗂️ Delivery Planner
+
+**What is the work, in what order — and does the tracker say what is really true?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill delivery-planner
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+Work cut into layers can't be shown working until the last layer lands, and
+boards drift: cards sit in *To Do* while the code ships, a retried script
+duplicates a ticket, an automation overwrites a column a person just changed.
+
+```
+PLAN     docs/spec.md → 3 milestones · 10 tickets · 2 open decisions
+M1       Walking skeleton deployed        T-001 T-002
+M2       Customers book and cancel        T-003 T-004 T-005 T-006
+BLOCKED  T-006 on D1: can a customer cancel on the day of the appointment?
+TRACKER  jira · via rest · SAL · 10 created · 0 already there
+```
+
+Milestone 1 is always a walking skeleton, deployed. Tickets are vertical slices
+one session can build and prove, with numbered acceptance criteria that become
+ProofBuild's requirements. An undecided business rule blocks its ticket with the
+question instead of being guessed.
+
+It works with Jira, Trello, Nextcloud Deck, GitHub, GitLab or Linear, or with
+plain files in `.delivery/`. It reaches each through an MCP server, the official
+CLI or REST, and says which.
+
+Tickets move at fixed moments, each with a comment carrying its evidence. The
+tracker is read before every write, and a person's change wins. Nothing is
+deleted. Credentials never leave the environment.
+
+</details>
+
+**[Full documentation →](skills/delivery-planner/README.md)**
+
+<br>
+
+### 🚢 Release Engineer
+
+**How does a verified change get to users — repeatably — and back out again?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill release-engineer
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+A change that passes on a laptop is not yet a change users have. Without a
+pipeline, every deploy is a hand-typed ritual: a rebuild on the server, a secret
+pasted into a file, and no way back when the new version answers 503.
+
+```
+RELEASE     staging · ghcr.io/acme/shop@sha256:4be1…c09a  (commit 3f2a91c)
+RAN         ci.yml #41: install ✓ lint ✓ test ✓ (38 passed) build ✓ · deploy-staging ✓
+MIGRATIONS  1 applied (0007_add_order_note — expand only)
+SMOKE       GET https://staging.shop.example/health → 200 in 3 attempts
+ROLLBACK    ./deploy/rollback.sh staging sha256:91d0…7e2b   (tested on staging 2026-09-28)
+```
+
+It builds the minimum: install, lint, test and build on every pull request; one
+artifact built once; staging on merge with a smoke check that rolls back on
+failure; production as an explicit promotion of the digest staging ran. Before
+the first production deploy, the rollback is run on staging, and migrations
+follow expand-then-contract so a rollback stays possible. It never states
+whether a change is safe to ship. A production deploy waits for Production
+Guard's SHIP, or your explicit go-ahead, plus authorization. Secrets are named,
+never handled, and a pipeline nobody has run yet is reported as `WRITTEN, NOT RUN`.
+
+</details>
+
+**[Full documentation →](skills/release-engineer/README.md)**
+
+<br>
+
+### 📡 Observability Baseline
+
+**When this breaks in production, who finds out first — you or a user?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill observability-baseline
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+First launches usually go out with `console.log` and a plan to "check the logs
+if something happens". Then something breaks at night, a user emails in the
+morning, and the logs say `error` with nothing to search for. Nothing was set
+up to tell a human, and nothing that was set up was ever tried.
+
+```
+OBSERVABILITY  bookshelf — first production deploy next week
+LOGS           ADDED       JSON lines with request_id; test request found by id in the host logs
+HEALTH         ADDED       /livez 200, /readyz 503 with the database stopped
+ERRORS         ADDED       test error arrived in the tracker
+UPTIME         MISSING     next: external HTTP check on /readyz
+ALERT          MISSING     needs UPTIME; then stop staging and watch it arrive
+BACKUPS        MISSING     never restored; next: restore into a scratch database
+RUNBOOK        ADDED       docs/runbook.md
+```
+
+The baseline has seven items, sized for one developer: structured logs with
+request ids and no secrets, liveness and readiness endpoints, error tracking,
+an external uptime check, one alert to a channel someone reads, a
+restore-tested backup, and `docs/runbook.md`. Each is marked done only after it
+fires. Stopping staging to test the alert needs your yes, and production is
+never stopped. It says nothing during an incident and adds the missing signal
+afterwards. It never states the ship verdict.
+
+</details>
+
+**[Full documentation →](skills/observability-baseline/README.md)**
+
+<br>
+
+### 📓 Project Knowledge
+
+**Every new developer rebuilds how the codebase works. This writes it down once, and keeps it true.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill project-knowledge
+```
+
+For a team, set the repository up once instead, as files you commit:
+
+```bash
+npx -y github:soumyaRauth/skills-hub knowledge init
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+What a new developer spends the first week on is mostly known already: why
+orders only turn paid on the webhook, which env var makes jobs run inline, which
+refactor was tried and reverted. It lives in someone's head or in a closed PR.
+
+```
+.agents/knowledge/
+  architecture.md     what each part is for, how a request flows, how to run it
+  decisions.md        dated, append-only: what was decided, why, what was rejected
+  gotchas.md          what will bite you, and "don't change X without Y"
+  .learn-state.json   learned as of which commit (committed, shared by every clone)
+```
+
+Each run after the first reads commit messages, then `git diff --stat`, then
+full diffs only for paths that change structure or contracts, so its cost
+follows the diff. `knowledge init` adds a Stop hook that asks for a run every
+few commits (no tokens until it fires) and an MCP server, so a developer who
+clones the repository types `/mcp__project-knowledge__onboard` and starts from
+what is known. It never records a secret value, never commits, and never starts
+a full scan in a repository nobody asked about.
+
+</details>
+
+**[Full documentation →](skills/project-knowledge/README.md)**
+
+<br>
+
+### 🔗 Skills Pipeline
+
+**Every discipline you pick, in the order you pick, and only when you ask.**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill skills-pipeline
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+The other skills choose themselves, one request at a time, and that stays the
+default. Sometimes you want the opposite. A new app, or a feature you care
+about, should go through every discipline you choose, in order, with nothing
+dropped along the way.
+
+```
+/skills-pipeline add team invitations with roles
+
+1. Frame · project-compass          7. Build · proof-driven-dev
+2. Design · architecture-engineer   8. Localize · practical-localizer
+3. Standards · standards-compass    9. Deploy target · deployment-compatibility
+4. Contract · api-contract-guard   10. Ship gate · production-guard
+5. Dependencies · dependency-guard 11. Investigate · engineering-investigator
+6. Impact · impact-map
+
+Sequence? e.g. 1,6,7,10 · all
+```
+
+Reply `1,3,6,7,10` and each skill runs in turn, fed what the earlier ones
+decided. The run stops where you must decide: an undecided business rule, an
+architecture choice, `BLOCKED`, or `DO NOT SHIP`, which goes back to Build once.
+It ends in a ledger with one status per stage. Every verdict in it is the owning
+skill's own. The pipeline adds none. Edit the menu in
+[`references/pipeline.md`](skills/skills-pipeline/references/pipeline.md).
+
+</details>
+
+**[Full documentation →](skills/skills-pipeline/README.md)**
+
+<br>
+
+### 🏁 Delivery Lead
+
+**What is the next ticket — and has it actually reached done?**
+
+```bash
+npx skills add soumyaRauth/skills-hub --skill delivery-lead
+```
+
+<details>
+<summary><b>Deep dive</b>: the problem, an example, and the limits</summary>
+
+A plan and a set of tickets do not build anything. What a team adds is the
+loop: someone takes the next ticket, makes sure it is really finished, moves the
+board, and picks up the one after. Working alone, that loop is where projects
+stall, and where "done" quietly comes to mean "the code was written".
+
+```
+RUN 2026-09-28 · milestone M1 · 4 of 5 tickets
+T-003  Class list page            done         VERIFIED · PR #12 merged
+T-004  Book a class               done         VERIFIED · PR #13 merged
+T-005  Cancel a booking           blocked      REVIEW REQUIRED — refund rule undecided (question below)
+T-006  Staging deploy             done         release-engineer: staging smoke ok
+Tracker  Trello · in sync
+Next     T-007 (ready) · answer the T-005 question to unblock it
+```
+
+It engages only when you ask for the loop. Each ticket gets its own
+`t/<id>-<slug>` branch, and ProofBuild runs on every ticket. The other disciplines
+engage when a ticket earns them. A ticket is done only when it is `VERIFIED`
+and merged. Merges and production deploys follow the `autonomy` settings in
+`.delivery/config.yml` or your yes in the session. A run stops after five
+tickets by default, or at a decision only you can make, and asks one
+compressed question. A new session resumes from the run ledger.
+
+</details>
+
+**[Full documentation →](skills/delivery-lead/README.md)**
+
+<br>
+
+## Installation
+
+```bash
+# every skill; asks which agents, and project or global
+npx skills add soumyaRauth/skills-hub --skill '*'
+
+# every skill, no prompts: add -g for global, leave it out for this project
+npx skills add soumyaRauth/skills-hub --skill '*' -g -y
+
+# every skill, Claude Code only
+npx skills add soumyaRauth/skills-hub --skill '*' -a claude-code --copy
+
+# choose from a list, or name one
+npx skills add soumyaRauth/skills-hub
+npx skills add soumyaRauth/skills-hub --skill impact-map
+```
+
+Without `-g` or `-y` the CLI asks whether to install into the current project
+or globally. `-g` answers globally, into `~/<agent>/skills/`, so the skills are
+there in every project; `-y` skips the prompts, and without `-g` installs into
+the current repository. Prefer
+`--skill '*'` over the CLI's `--all`: `--all` also expands the agent list to
+every agent the CLI supports, not the ones you have, and writes skill
+directories into all of them. For Claude Code only, keep `--copy`. Without it
+the CLI stores the skills in `~/.agents/skills` and links Claude Code to them,
+and Codex, Cursor, Gemini CLI and the other agents that read that folder pick
+them up too.
+
+Claude Code can also install the whole repository as a plugin, which keeps the
+eighteen skills together under one namespace and updates them in one step:
+
+```
+/plugin marketplace add soumyaRauth/skills-hub
+/plugin install skills-hub@skills-hub
+```
+
+Install a skill one way or the other, not both — the same skill installed
+twice shows up twice.
+
+Then work as you normally would. Installed skills are matched by description,
+so the agent brings them in without a slash command. You can also ask for one
+directly:
+
+```
+What's the blast radius of adding an approval step to course completions?
+Before you change anything, map the impact of renaming this status.
+Is this payment flow safe to ship?
+Analyze this app for Bengali localization.
+Review the French locale — I think it reads like a translation.
+What should I work on next?
+What do you think I'm missing here?
+Which standards actually apply to this project?
+Audit this application against the standards that matter.
+```
+
+## Uninstalling
+
+> [!IMPORTANT]
+> **Uninstalling should be as easy as installing. It is your right.** One command
+> removes every Skills Hub skill from every agent it went into, and nothing else.
+> Your other skills stay exactly where they are. The skills are plain files and
+> nothing of theirs runs in the background, so there is nothing else to stop.
+
+```bash
+npx github:soumyaRauth/skills-hub uninstall
+```
+
+`skills-hub` stands for all eighteen skills. The command reads the list from this
+repository and passes it to the Skills CLI's own `npx skills remove`, one name
+per skill, for every agent. It never uses `--skill '*'`, which would remove
+every skill on the machine, including ones that have nothing to do with this
+repository. A skill that is not installed is skipped, so the same command works
+whether you installed one skill or all eighteen, and running it twice is harmless.
+Skills added to this repository later are covered without a new command.
+
+| Option | Does |
+| --- | --- |
+| `--dry-run` | Prints the exact `npx skills remove` command it would run, and removes nothing |
+| `--project` | Removes skills installed into the current repository instead of globally (`-g`) |
+
+Skills are matched by name, so a different skill you installed under one of
+these exact names goes too. Check with `--dry-run` if that could be you.
+
+Installed as a Claude Code plugin instead:
+
+```
+/plugin uninstall skills-hub@skills-hub
+/plugin marketplace remove skills-hub
+```
+
+Nothing is left running, but a few files stay behind, because they are yours
+and not the skills'. Here is where each one lives:
+
+| What | Where | To remove it |
+| --- | --- | --- |
+| Lessons the skills learned | `~/.skills-hub/` | `rm -rf ~/.skills-hub` |
+| Project state | `.project-compass/`, `.project-standards/`, `.proofbuild/`, `.agent-investigation/`, `.deployment-compatibility/`, `.architecture/` in each repository | Delete the folders, or keep them. They are plain notes and still readable without the skills |
+| The standing instruction, if you added it | a line or `@` import in a `CLAUDE.md` | Delete that line |
+| The status line, if you added it | `statusLine` in `~/.claude/settings.json` | Delete that entry |
+| The Stop hook, if you added it | `hooks.Stop` in `~/.claude/settings.json` | Delete that entry |
+
+## Supported agents
+
+These skills are plain Agent Skills markdown. They require **no MCP server, no
+custom CLI, no hosted service, and no proprietary API** — only the repository
+inspection an agent already has.
+
+| Agent | Status |
+| --- | --- |
+| Claude Code | Primary target; installable via the Skills CLI |
+| Other Agent Skills-compatible agents | Expected to work — the skill uses no agent-specific features |
+
+If your agent supports the Agent Skills format and can read files and search a
+repository, it can run these skills.
+
+Everything Claude Code-specific is kept outside the skills:
+
+- a short standing instruction for `CLAUDE.md`, which is recommended,
+  because the activation suite measures a clear difference with it
+- a Stop hook that makes every skill named in the ⚡ line actually load, or be
+  dropped in one line, before the turn ends
+- a status line segment that shows the active skills in color
+- a plugin manifest and a marketplace manifest, so `/plugin install` or
+  `claude --plugin-dir` can load all eighteen at once and `claude plugin eval`
+  can test them
+
+See [integrations/claude-code](integrations/claude-code/README.md).
+
+## Repository structure
+
+<details>
+<summary>Show the tree</summary>
+
+```
+.
+├── skills/
+│   ├── impact-map/
+│   │   ├── SKILL.md              ← the skill itself
+│   │   ├── README.md             ← human documentation
+│   │   ├── references/           ← deeper guidance the agent consults on demand
+│   │   └── examples/             ← four worked impact maps
+│   ├── proof-driven-dev/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← ten proof and verification references
+│   │   ├── examples/             ← six worked proof-driven tasks
+│   │   └── templates/            ← contract, proof plan, report
+│   ├── production-guard/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/
+│   │   └── examples/             ← five worked readiness reports
+│   ├── practical-localizer/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← ten localization references
+│   │   ├── examples/             ← five worked language examples
+│   │   └── templates/            ← glossary, locale profile, review report
+│   ├── engineering-investigator/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← eleven investigation references
+│   │   └── examples/             ← six worked investigations
+│   ├── project-compass/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← thirteen project-guidance references
+│   │   └── examples/             ← nine worked sessions, one of which says nothing
+│   ├── standards-compass/
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   ├── references/           ← eighteen assessment references, plus a template
+│   │   ├── registry/             ← the standards registry: add a file, add a standard
+│   │   └── examples/             ← eight worked assessments, one that refuses to grade
+│   ├── dependency-guard/         ← two references, four examples, one of them silence
+│   ├── api-contract-guard/       ← two references, four examples, one of them silence
+│   ├── deployment-compatibility/ ← six references, four examples, one of them a refusal to assess
+│   ├── architecture-engineer/    ← seven references, four examples, one of them a refusal to engage
+│   ├── project-knowledge/        ← three references, three examples: first run, incremental, onboarding
+│   └── skills-pipeline/          ← the menu, three examples, one of them staying out
+├── ECOSYSTEM.md                  ← how the skills activate, compose, and stay quiet
+├── evals/activation/             ← claude plugin eval suite: which skill loads, and which must not
+├── integrations/claude-code/     ← optional: standing instruction, colored status line, Stop hooks
+├── mcp/project-knowledge/        ← dependency-free MCP server for .agents/knowledge/, and its self-check
+├── .claude-plugin/plugin.json    ← makes the repository loadable as a Claude Code plugin
+├── tests/
+│   ├── fixtures/
+│   │   ├── impact-map/           ← four repositories with hidden coupling to find
+│   │   ├── proof-driven-dev/     ← six runnable projects, green until you break them
+│   │   ├── production-guard/     ← four repositories with real production bugs
+│   │   ├── practical-localizer/  ← six repositories with bad localizations
+│   │   ├── engineering-investigator/  ← five incidents with the evidence to solve them, plus one plain feature request
+│   │   ├── project-compass/      ← six projects with a hidden pattern, plus one healthy project where the right answer is silence
+│   │   ├── standards-compass/    ← five projects to assess, including one where most of the honest answer is "unable to verify"
+│   │   ├── dependency-guard/     ← an installed library that covers the need, an unverified name, SHA-pinned CI
+│   │   ├── api-contract-guard/   ← a public API with a flaw not to copy, and two services that deploy apart
+│   │   ├── deployment-compatibility/  ← a project and the server spec it does not fit, and an image that contradicts its app
+│   │   ├── architecture-engineer/     ← a codebase whose README declares layers its code does not keep
+│   │   └── project-knowledge/    ← a small API whose knowledge lives in comments, a changelog, and a planted .env
+│   ├── longitudinal/             ← multi-step scenarios: behavior that only shows up across sessions and skills
+│   └── README.md                 ← expected findings per fixture
+├── package.json                  ← lets npx run the uninstall and knowledge commands from GitHub; never published
+├── scripts/
+│   ├── skills-hub.mjs            ← npx github:soumyaRauth/skills-hub uninstall | knowledge
+│   ├── knowledge.mjs             ← knowledge init / remove / mcp
+│   ├── validate.sh               ← structure + frontmatter validation, all skills
+│   └── validate-registry.sh      ← standards registry schema, ids, sources, dates
+└── .github/workflows/validate.yml
+```
+
+</details>
+
+## Documentation
+
+- **[Impact Map](skills/impact-map/README.md)** · [SKILL.md](skills/impact-map/SKILL.md)
+- **[ProofBuild](skills/proof-driven-dev/README.md)** · [SKILL.md](skills/proof-driven-dev/SKILL.md)
+- **[Production Guard](skills/production-guard/README.md)** · [SKILL.md](skills/production-guard/SKILL.md)
+- **[Practical Localizer](skills/practical-localizer/README.md)** · [SKILL.md](skills/practical-localizer/SKILL.md)
+- **[Engineering Investigator](skills/engineering-investigator/README.md)** · [SKILL.md](skills/engineering-investigator/SKILL.md)
+- **[Project Compass](skills/project-compass/README.md)** · [SKILL.md](skills/project-compass/SKILL.md)
+- **[Standards Compass](skills/standards-compass/README.md)** · [SKILL.md](skills/standards-compass/SKILL.md)
+- **[Dependency Guard](skills/dependency-guard/README.md)** · [SKILL.md](skills/dependency-guard/SKILL.md)
+- **[API Contract Guard](skills/api-contract-guard/README.md)** · [SKILL.md](skills/api-contract-guard/SKILL.md)
+- **[Deployment Compatibility Engineer](skills/deployment-compatibility/README.md)** · [SKILL.md](skills/deployment-compatibility/SKILL.md)
+- **[Architecture Engineer](skills/architecture-engineer/README.md)** · [SKILL.md](skills/architecture-engineer/SKILL.md)
+- **[How they work together](ECOSYSTEM.md)** — activation, composition, visibility, overrides, and what was not added
+- **[Activation suite](evals/activation/README.md)** — which skill a request should load, and which it must not
+- **[Claude Code integration](integrations/claude-code/README.md)** — optional standing instruction and status line
+- **[Testing](tests/README.md)** — fixtures and expected reasoning behavior
+- **[Contributing](CONTRIBUTING.md)** — how to improve them safely
+- **[Project Knowledge](skills/project-knowledge/README.md)** · [SKILL.md](skills/project-knowledge/SKILL.md)
+
+## Contributing
+
+Improvements to the methodologies, framework guidance, examples, and fixtures
+are all welcome. Two hard rules:
+
+- **Do not make the skills more speculative.** A finding without evidence is
+  worse than no finding — it costs the reader time and teaches them to distrust
+  the report.
+- **No invented numbers.** No fabricated file counts, no quality percentages, no
+  claiming a check ran when it did not.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Run `./scripts/validate.sh` before
+opening a pull request.
+
+## Roadmap
+
+<details>
+<summary>Ideas, not commitments</summary>
+
+**Impact Map**
+
+| Version | Focus | Status |
+| --- | --- | --- |
+| v0.2 | Better monorepo awareness; git history, ownership, and changed-file analysis | shipped |
+| v0.3 | Architecture graph output, dependency visualization, risk scoring | shipped |
+| v0.4 | Tighter implementation-plan handoff | shipped |
+
+**Production Guard**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | Change-aware validation driven by git diff |
+| v0.3 | Assisted test generation for unverified scenarios |
+| v0.4 | CI integration |
+| v0.5 | PR comment and report generation |
+
+**Practical Localizer**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | Richer framework detection; glossary management; more locale profiles |
+| v0.3 | Screenshot-aware localization, UI layout inspection, length analysis |
+| v0.4 | Human review workflow and translation approval metadata |
+| v0.5 | CI localization quality gate |
+
+Possible companions: `localization-guard`, catching localization regressions in
+CI, and `locale-maintainer`, detecting newly added untranslated strings.
+
+**Proof-Driven Development**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | Richer evidence formats; sharper risk classification; project-specific proof strategies |
+| v0.3 | Screenshot-aware verification, browser evidence, stored performance baselines |
+| v0.4 | CI integration; detecting when a previously proven requirement regresses |
+| v0.5 | Reusable project-level proof contracts |
+
+**Project Compass**
+
+| Version | Focus |
+| --- | --- |
+| v0.2 | More crossings; better inherited-history reconstruction from git |
+| v0.3 | Cross-session calibration — learning which recommendations this team acts on |
+| v0.4 | Team-shared project state and direction, reviewable in a pull request |
+
+**All of them**
+
+A further skill, `change-guard`, closing the loop: take an Impact Map and a
+Production Guard report and verify that the implementation actually covered the
+identified surface and resolved the identified risks. Where ProofBuild proves
+the outcome it defined, `change-guard` would check that outcome against a
+*separately* derived surface — a different question, and a useful cross-check.
+
+</details>
+
+## Limitations
+
+These skills are instruction-driven, not static analyzers. None claims
+completeness, and none can prove it.
+
+- Results vary with the agent, the repository, and how the request is phrased
+- Dynamic dispatch, reflection, runtime configuration, and generated clients are
+  where they are weakest
+- They only see this repository — cross-repo consumers and external systems
+  surface as open questions at best
+- Large monorepos need scoping
+- Impact Map does not run anything; Production Guard runs only what the local
+  environment allows, and labels the rest unverified
+- Practical Localizer is not a replacement for a native reviewer. It produces
+  context-aware, evidence-driven localization designed to be more natural than
+  literal translation — not guaranteed native-quality output, and it says where
+  it is unsure
+- Standards Compass reads a repository: production configuration, organizational
+  process, contracts and legal applicability are outside it, and it says so
+  rather than guessing. Its bundled registry ages, and every entry carries the
+  date and method of its last verification
+- Deployment Compatibility Engineer reads a repository and whatever the target
+  lets it read. Behavior under real traffic, real data volume and real
+  concurrency is reproducible from neither; a requirement the repository does
+  not establish stays unknown rather than being estimated; and an external
+  service is reachable or not *from where the check ran*, which is a claim about
+  that place and not about the server. `READY` is deliberately hard to reach,
+  and `NOT ASSESSED` is a real answer rather than a failure
+- Architecture Engineer reasons from the repository and from what you tell it.
+  Business strategy, budget, team skill and roadmap are things you supply — it
+  asks rather than inventing them, and scale requirements cannot be derived from
+  source code at all. Its fitness checks verify structure, never behavior: that
+  a module no longer imports the ORM says nothing about whether the feature
+  still works
+- An absent finding is not proof of absence
+- Automatic activation is the agent's judgment, steered by descriptions. It is
+  not a guarantee. The activation suite measures it on a fixed set of requests
+  and one model at a time, and a skill that should have loaded and did not is
+  still possible. Name it and it loads
+
+Production Guard improves the evidence available before shipping. It does not
+guarantee production safety, and a human owns the release decision.
+
+## License
+
+[MIT](LICENSE)
+
+<div align="center">
+<br>
+<sub>Built for agents that should prove things, not narrate them. <a href="#readme">Back to top ↑</a></sub>
+</div>

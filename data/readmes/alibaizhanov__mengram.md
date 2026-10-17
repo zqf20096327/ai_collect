@@ -1,0 +1,665 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Mengram-a855f7?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cGF0aCBkPSJNNjAgMTYgUTkyIDE2IDk2IDQ4IFExMDAgNzggNzIgODggUTUwIDk2IDM4IDc2IFEyNiA1OCA0NiA0NiBRNjIgMzggNzAgNTIgUTc2IDY0IDYyIDY4IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjIiIGN5PSI2OCIgcj0iOCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+  <img alt="Mengram" src="https://img.shields.io/badge/Mengram-a855f7?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cGF0aCBkPSJNNjAgMTYgUTkyIDE2IDk2IDQ4IFExMDAgNzggNzIgODggUTUwIDk2IDM4IDc2IFEyNiA1OCA0NiA0NiBRNjIgMzggNzAgNTIgUTc2IDY0IDYyIDY4IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNjIiIGN5PSI2OCIgcj0iOCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+</picture>
+
+### Give your AI agents memory that actually learns
+
+[![GitHub stars](https://img.shields.io/github/stars/alibaizhanov/mengram?style=social)](https://github.com/alibaizhanov/mengram/stargazers)
+[![PyPI](https://img.shields.io/pypi/v/mengram-ai)](https://pypi.org/project/mengram-ai/)
+[![npm](https://img.shields.io/npm/v/mengram-ai)](https://www.npmjs.com/package/mengram-ai)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/mengram-ai)](https://pypi.org/project/mengram-ai/)
+[![Last commit](https://img.shields.io/github/last-commit/alibaizhanov/mengram)](https://github.com/alibaizhanov/mengram/commits/main)
+
+**[Website](https://mengram.io)** · **[Get API Key](https://mengram.io/#signup)** · **[Docs](https://mengram.io/docs)** · **[Console](https://mengram.io/dashboard)** · **[Examples](examples/)**
+
+</div>
+
+```bash
+pip install mengram-ai   # or: npm install mengram-ai
+
+mengram try              # see what memory would know about you — local only,
+                         # no account, nothing leaves your machine
+```
+
+```python
+from mengram import Mengram
+m = Mengram(api_key="om-...")           # Free key → mengram.io
+
+m.add([{"role": "user", "content": "I use Python and deploy to Railway"}])
+m.search("tech stack")                  # → facts
+m.ask("what's my tech stack?")          # → synthesized answer + citations
+m.episodes(query="deployment")          # → events
+m.procedures(query="deploy")            # → workflows that evolve from failures
+```
+
+Native multilingual: ask in Russian, Chinese, Spanish, Japanese — Mengram retrieves and answers across 23 languages (Cohere multilingual embeddings + rerank).
+
+---
+
+## Install in one prompt (any AI tool)
+
+Paste this into Claude Desktop, Cursor, Codex, Claude Code, or Windsurf — the agent reads our [setup guide](https://mengram.io/agent-install.txt), installs the SDK, configures the MCP server, and verifies the round-trip end-to-end. **No terminal context-switching.**
+
+```
+Install Mengram for me. Fetch the canonical install guide at
+https://mengram.io/agent-install.txt and follow it precisely.
+My email is YOUR_EMAIL_HERE.
+```
+
+Works in any agent with shell + file-edit + web-fetch tools. Prefer doing it manually? See the [plain-text guide](https://mengram.io/agent-install.txt) — it's structured for human eyes too.
+
+---
+
+## Claude Code — Memory That Survives /clear AND Auto-Compaction
+
+Persistent memory that survives `/clear`, **auto-compaction**, machine switches, and team handoffs — the SessionStart hook fires after every compact and re-injects your context. The summary can be lossy; the memory isn't.
+
+```bash
+# 1. Get a free key at https://mengram.io and save it once
+mkdir -p ~/.mengram && echo '{"api_key": "om-your-key-here"}' > ~/.mengram/config.json
+
+# 2. Install the plugin (hooks + MCP server + skill)
+claude plugin marketplace add alibaizhanov/mengram
+claude plugin install mengram@mengram
+
+# 3. Skip the cold start — import your existing session history
+#    (secrets are redacted on your machine before anything is uploaded)
+mengram import claude-code
+```
+
+What happens:
+
+```
+Session Start  →  Loads your cognitive profile (fires after /clear, compaction, and restarts)
+Every Prompt   →  Searches past sessions for relevant context (auto-recall)
+After Response →  Saves new knowledge in background (auto-save)
+Before a Bash  →  If the command matches a learned workflow with a weak record, asks you first (policy gate, CLI hooks)
+Before compact →  Writes the working state down — last prompts, files edited, last commands, where Claude left off (CLI hooks)
+After compact  →  Puts that state back, verbatim, next to the host's summary — and tells you so in one line
+```
+
+No manual saves. No tool calls. Claude just knows what you worked on yesterday — even after compaction ate the transcript.
+
+Prefer CLI-managed hooks instead of the plugin? `pip install mengram-ai && mengram setup` does the same via `mengram hook install`.
+
+### Same memory in Codex and Cursor
+
+Codex and Cursor fire the same lifecycle events, so the same hooks run there — one memory across all three. `mengram setup` finds them on your machine and installs their hooks; or add them one by one:
+
+```bash
+mengram hook install --codex      # ~/.codex/hooks.json: session context, recall on every prompt, compaction checkpoint, auto-save + task card
+mengram hook install --cursor     # ~/.cursor/hooks.json: session context, compaction checkpoint (back on the next tool call), auto-save
+```
+
+Cursor has no per-prompt context hook (`beforeSubmitPrompt` can only allow or block), so mid-conversation recall there is on request via the MCP tools; session start and compaction are automatic.
+
+Every fact remembers which tool wrote it and when, and recall shows it: `deploys to Fly.io from main  (codex, 2026-09-15)`. Each hook also tells the server which OS and tool it runs under, so a workspace path recorded on your Mac never reaches a Claude Code session on a Linux box, and a Cursor settings fact never reaches Codex — those are left out and counted (`facts_left_out_for_host`).
+
+### Pick a task up where it was left — `mengram resume`
+
+When an agent stops, the hooks write a task card for the repository and branch: files touched, last commands, the last test run and the commit it ran on, plus the agent's draft of the task, what is done and what remains. The next session on that branch — tomorrow, another agent in another worktree of it, another machine — gets it first, and is told when the code has moved since the last check. A session on a branch with no card of its own (a fresh Orca worktree, say) is only told that cards exist, since another branch's card is usually another agent's task; `mengram resume` shows it on request:
+
+```
+$ mengram resume
+[Mengram resume — where this task stands (2 h ago, from claude-code, branch main)]
+Task (agent draft, not confirmed): prepare the Dify example for publication
+Done:
+  - three workflows assembled
+  - save/recall round-trip checked through the API
+Remaining:
+  - import the workflows into Dify and check the model's answers
+Last check: `python3 -m pytest -q tests/test_dify.py` → 4 passed in 0.31s
+  The last check ran on 57cdde9; HEAD is now a1b2c3d (4 commits later). Its result describes the earlier state.
+Files touched: examples/dify-support/workflow.yml
+Sources: session 5d274778 · commit 57cdde9
+```
+
+`mengram resume --open` serves a local page to correct the card, confirm it (confirmed text is never redrafted), pick another task or copy the context for a new session. The card lives in `~/.mengram/resume/` and needs no account; only the draft of task/done/remaining uses a model.
+
+### No account? Keep the memory in a folder
+
+```bash
+pip install mengram-ai
+mengram local init ./memory --provider anthropic --api-key sk-ant-...   # or openai / ollama
+mengram import claude-code --memory ./memory                             # seed it from your Claude Code sessions
+mengram local map --memory ./memory --open                               # one page: who you are, what happened, what it learned
+mengram hook install --memory ./memory                                   # the same four hooks, all local
+mengram server --memory ./memory                                         # MCP for Claude Desktop, Cursor, any client
+```
+
+The folder is the memory: a [memfmt](https://github.com/alibaizhanov/memfmt) tree of Markdown you own — git diffs it, Obsidian draws it, `memfmt validate` checks it. Same procedures-with-outcomes as the cloud: versions, success/fail counts per step, the policy gate, and the regression gate that quarantines a fix that would break another workflow. Only extraction and a failure revision need a model, and that one you bring. Nothing expires and nothing asks for a key. [Docs](https://docs.mengram.io/local-mode).
+
+Local search matches words in Unicode text, including Russian; it does not use embeddings or translate queries. Multiple Mengram sessions coordinate writes with a folder lock and merge independent additions. Conflicting edits require a reload instead of overwriting another session. Each changed file is replaced atomically, but the whole folder is not a single crash-atomic transaction, and external editors do not participate in the lock.
+
+---
+
+## Why Mengram?
+
+Every AI memory tool stores facts. Mengram stores **3 types of memory** — and procedures **evolve when they fail**.
+
+|  | Mengram | claude-mem | Mem0 | Zep | Letta |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Semantic memory (facts, preferences) | **Yes** | Yes | Yes | Yes | Yes |
+| **Episodic memory (events, decisions)** | **Yes** | Partial | No | No | Partial |
+| **Procedural memory (workflows)** | **Yes** | No | No | No | No |
+| **Procedures evolve from failures** | **Yes** | No | No | No | No |
+| **Cognitive Profile** | **Yes** | No | No | No | No |
+| **Native multilingual retrieval (23 languages)** | **Yes** | Partial | No | No | No |
+| **Ask & Citations (synthesized answer)** | **Yes** | No | No | No | No |
+| Multi-user isolation | **Yes** | No | Yes | Yes | No |
+| Knowledge graph | **Yes** | No | Yes | Yes | Yes |
+| Claude Code hooks (auto-save/recall) | **Yes** | **Yes** | No | No | No |
+| MCP server | **Yes** | Yes | Yes | Yes | Yes |
+| LangChain + CrewAI integrations | **Yes** | No | Partial | Partial | Partial |
+| **Import Claude Code history / ChatGPT / Obsidian** | **Yes** | No | No | No | No |
+| Pricing | **Free tier** | Free OSS (+cloud backup) | $19-249/mo | Enterprise | Self-host |
+
+## Get Started in 30 Seconds
+
+**1. Install**
+
+```bash
+pip install mengram-ai
+```
+
+**2. Setup** — one command does everything: account, Claude Code hooks, MCP configs for detected tools (Cursor, Claude Desktop, Windsurf), history import, and a round-trip check
+
+```bash
+mengram setup
+```
+
+Or get a key manually at [mengram.io](https://mengram.io/#signup) and `export MENGRAM_API_KEY=om-...`
+
+**3. Use**
+
+```python
+from mengram import Mengram
+
+m = Mengram(api_key="om-...")
+
+# Add a conversation — auto-extracts facts, events, and workflows
+m.add([
+    {"role": "user", "content": "Deployed to Railway today. Build passed but forgot migrations — DB crashed. Fixed by adding a pre-deploy check."},
+])
+
+# Search across all 3 memory types at once
+results = m.search_all("deployment issues")
+# → {semantic: [...], episodic: [...], procedural: [...]}
+```
+
+<details>
+<summary><b>File Upload (PDF, DOCX, TXT, MD)</b></summary>
+
+```python
+# Upload a PDF — auto-extracts memories using vision AI
+result = m.add_file("meeting-notes.pdf")
+# → {"status": "accepted", "job_id": "job-...", "page_count": 12}
+
+# Poll for completion
+m.job_status(result["job_id"])
+```
+
+```javascript
+// Node.js — pass a file path
+await m.addFile('./report.pdf');
+
+// Browser — pass a File object from <input type="file">
+await m.addFile(fileInput.files[0]);
+```
+
+```bash
+# REST API
+curl -X POST https://mengram.io/v1/add_file \
+  -H "Authorization: Bearer om-..." \
+  -F "file=@meeting-notes.pdf" \
+  -F "user_id=default"
+```
+
+</details>
+
+<details>
+<summary><b>JavaScript / TypeScript</b></summary>
+
+```bash
+npm install mengram-ai
+```
+
+```javascript
+const { MengramClient } = require('mengram-ai');
+const m = new MengramClient('om-...');
+
+await m.add([{ role: 'user', content: 'Fixed OOM by adding Redis cache layer' }]);
+const results = await m.searchAll('database issues');
+// → { semantic: [...], episodic: [...], procedural: [...] }
+```
+
+</details>
+
+<details>
+<summary><b>REST API (curl)</b></summary>
+
+```bash
+# Add memory
+curl -X POST https://mengram.io/v1/add \
+  -H "Authorization: Bearer om-..." \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "I prefer dark mode and vim keybindings"}]}'
+
+# Search all 3 types
+curl -X POST https://mengram.io/v1/search/all \
+  -H "Authorization: Bearer om-..." \
+  -d '{"query": "user preferences"}'
+```
+
+</details>
+
+## 3 Memory Types
+
+### Semantic — facts, preferences, knowledge
+
+```python
+m.search("tech stack")
+# → ["Uses Python 3.12", "Deploys to Railway", "PostgreSQL with pgvector"]
+```
+
+### Episodic — events, decisions, outcomes
+
+```python
+m.episodes(query="deployment")
+# → [{summary: "DB crashed due to missing migrations", outcome: "resolved", date: "2025-05-12"}]
+```
+
+### Procedural — workflows that evolve
+
+```
+Week 1:  "Deploy" → build → push → deploy
+                                         ↓ FAILURE: forgot migrations
+Week 2:  "Deploy" v2 → build → run migrations → push → deploy
+                                                          ↓ FAILURE: OOM
+Week 3:  "Deploy" v3 → build → run migrations → check memory → push → deploy ✅
+```
+
+This happens **automatically** when you report failures:
+
+```python
+m.procedure_feedback(proc_id, success=False,
+                     context="OOM error on step 3", failed_at_step=3)
+# → Procedure evolves to v3 with new step added
+```
+
+Every failure-driven revision records **which assumption turned out false** — not just which step broke — and derives a precondition that travels with the procedure at recall time:
+
+```json
+{
+  "version": 3,
+  "violated_assumption": "the build container had enough memory for a full build",
+  "preconditions": ["check available memory before building"],
+  "success_count": 11, "fail_count": 2
+}
+```
+
+An agent loading v3 doesn't repeat the two mistakes that produced it — and knows what to verify before trusting the workflow.
+
+Or **fully automatic** — just add conversations and Mengram detects failures and evolves procedures:
+
+```python
+m.add([{"role": "user", "content": "Deploy failed again — OOM on the build step"}])
+# → Episode created → linked to "Deploy" procedure → failure detected → v3 created
+```
+
+## Ask Your Memory (RAG built-in)
+
+`m.ask()` returns a synthesized answer with citations — not a raw fact list.
+Mengram embeds your query, retrieves the top relevant facts, and uses
+Cohere Chat to write a grounded answer with native source attribution.
+
+```python
+result = m.ask("what programming languages do I use?")
+
+print(result["answer"])
+# 'You use Python and Rust. Python is your daily language [1] and
+#  Rust is your favorite [2]. You also know Java for enterprise
+#  systems [3].'
+
+for cit in result["citations"]:
+    print(f'  "{cit["text"]}" → {cit["sources"][0]["fact"]}')
+# "Python and Rust" → uses Python daily for backend development
+# "favorite [2]"   → Rust is favorite language
+# "Java"           → specializes in Java/Spring Boot
+```
+
+Multilingual: ask in any of 23 languages, get an answer in the same language with citations linking back to facts in the original language they were stored. Premium feature (Pro / Growth / Business).
+
+## Cognitive Profile
+
+One API call generates a system prompt from all memories:
+
+```python
+profile = m.get_profile()
+# → "You are talking to Ali, a developer in Almaty. Uses Python, PostgreSQL,
+#    and Railway. Recently debugged pgvector deployment. Prefers direct
+#    communication and practical next steps."
+```
+
+Insert into any LLM's system prompt for instant personalization.
+
+## Import Existing Data
+
+Kill the cold-start problem:
+
+```bash
+mengram import chatgpt ~/Downloads/chatgpt-export.zip --cloud   # ChatGPT history
+mengram import obsidian ~/Documents/MyVault --cloud              # Obsidian vault
+mengram import files notes/*.md --cloud                          # Any text/markdown
+```
+
+## Integrations
+
+<table>
+<tr>
+<td width="50%">
+
+**Claude Code** — Auto-memory hooks
+
+```bash
+mengram hook install
+```
+
+5 hooks: profile on start, recall on every prompt, save after responses, a policy gate before workflow-shaped Bash commands, and the outcome of each step written back after it runs.
+
+**The receipt.** Memory that works is invisible, so each hook leaves a line behind and the next session opens with the sum: *"Mengram, last session: recalled memories on 4 prompts · asked before 1 workflow with a weak record · recorded 3 step outcomes (2 ok, 1 failed)"*. Silent when nothing happened. `mengram receipt` shows the last session and the past 7 days.
+
+**Policy gate.** Outcome history changes what the agent may do, not only how results rank. When a `git push`, `deploy`, `migrate`, `kubectl`, `rm -rf` … matches a learned workflow that is `untested`, inherits its record from an earlier version (`61% expected`), or sits below the bar (`58% reliable`, default 70), the hook answers `ask`: you see why, Claude gets the steps on record, nothing runs on the agent's say-so. A proven workflow stays silent. Works against the cloud, or fully offline against a [memfmt](https://github.com/alibaizhanov/memfmt) folder with `MENGRAM_MEMORY_DIR=./memory`. Only workflow-shaped commands trigger a lookup (one search each); `ls` and `cat` never do. Tune with `MENGRAM_POLICY_MIN_RELIABLE=80`, `MENGRAM_POLICY_PATTERN='\bmake\b'`; skip with `mengram hook install --no-policy`. The memory can ask; it never denies.
+
+[Docs](https://mengram.io/docs/claude-code)
+
+</td>
+<td width="50%">
+
+**MCP Server** — Claude Desktop, Cursor, Codex, Windsurf, Cline
+
+```json
+{
+  "mcpServers": {
+    "mengram": {
+      "command": "mengram",
+      "args": ["server", "--cloud"],
+      "env": { "MENGRAM_API_KEY": "om-..." }
+    }
+  }
+}
+```
+
+30 tools for memory management.
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**LangChain** — `pip install langchain-mengram`
+
+```python
+from langchain_mengram import (
+    MengramRetriever,
+    MengramChatMessageHistory,
+)
+
+retriever = MengramRetriever(api_key="om-...")
+docs = retriever.invoke("deployment issues")
+```
+
+</td>
+<td width="50%">
+
+**CrewAI**
+
+```python
+from integrations.crewai import create_mengram_tools
+
+tools = create_mengram_tools(api_key="om-...")
+# → 5 tools: search, remember, profile,
+#   save_workflow, workflow_feedback
+
+agent = Agent(role="Support", tools=tools)
+```
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**OpenClaw**
+
+```bash
+openclaw plugins install openclaw-mengram
+```
+
+Auto-recall before every turn, auto-capture after. 12 tools, slash commands, Graph RAG.
+
+[GitHub](https://github.com/alibaizhanov/openclaw-mengram) · [npm](https://www.npmjs.com/package/openclaw-mengram)
+
+</td>
+<td width="50%">
+
+**CLI** — Full command-line interface
+
+```bash
+mengram search "deployment" --cloud
+mengram profile --cloud
+mengram import chatgpt export.zip --cloud
+mengram hook install
+```
+
+[Docs](https://mengram.io/docs/cli)
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+**Claude Managed Agents** — MCP memory for hosted agents
+
+```json
+{
+  "mcp_servers": [{
+    "type": "url",
+    "name": "mengram",
+    "url": "https://mengram.io/mcp/sse"
+  }]
+}
+```
+
+30 memory tools via MCP. [Docs](https://mengram.io/docs/managed-agents)
+
+</td>
+<td width="50%">
+
+**n8n** — HTTP nodes for any workflow
+
+```
+POST https://mengram.io/v1/add
+POST https://mengram.io/v1/search
+```
+
+No code needed — drag and drop memory into any n8n workflow.
+
+[Docs](https://mengram.io/docs/n8n)
+
+</td>
+</tr>
+</table>
+
+## Multi-User Isolation
+
+One API key, many users — each sees only their own data:
+
+```python
+m.add([...], user_id="alice")
+m.add([...], user_id="bob")
+
+m.search_all("preferences", user_id="alice")  # Only Alice's memories
+m.get_profile(user_id="alice")                 # Alice's cognitive profile
+```
+
+## Async Client
+
+Non-blocking Python client built on httpx:
+
+```python
+from mengram import AsyncMengram
+
+async with AsyncMengram() as m:
+    await m.add([{"role": "user", "content": "I use async/await"}])
+    results = await m.search("async")
+    profile = await m.get_profile()
+```
+
+Install with `pip install mengram-ai[async]`.
+
+## Metadata Filters
+
+Filter search results by metadata:
+
+```python
+results = m.search("config", filters={"agent_id": "support-bot", "app_id": "prod"})
+```
+
+## Webhooks
+
+Get notified when memories change:
+
+```python
+m.create_webhook(
+    url="https://your-app.com/hook",
+    event_types=["memory_add", "memory_update"],
+)
+```
+
+## Agent Templates
+
+Clone, set API key, run in 5 minutes:
+
+| Template | Stack | What it shows |
+|---|---|---|
+| **[DevOps Agent](examples/devops-agent/)** | Python SDK | Procedures that evolve from deployment failures |
+| **[Customer Support](examples/customer-support-agent/)** | CrewAI | Agent with 5 memory tools, remembers returning customers |
+| **[Personal Assistant](examples/personal-assistant/)** | LangChain | Cognitive profile + auto-saving chat history |
+
+```bash
+cd examples/devops-agent && pip install -r requirements.txt
+export MENGRAM_API_KEY=om-...
+python main.py
+```
+
+## Use with AI Agents
+
+Mengram works as a persistent memory backend for autonomous agents. Your agent stores what it learns, and recalls it on the next run — getting smarter over time.
+
+```python
+from mengram import Mengram
+
+m = Mengram(api_key="om-...")
+
+# Agent completes a task → store what happened
+m.add([
+    {"role": "user", "content": "Apply to Acme Corp on Greenhouse"},
+    {"role": "assistant", "content": "Applied successfully. Had to use React Select workaround for dropdowns."},
+])
+# → Extracts: fact ("applied to Acme Corp"), episode ("Greenhouse application"),
+#   procedure ("React Select dropdown workaround")
+
+# Next run → agent recalls what worked before
+context = m.search_all("Greenhouse application tips")
+# → Returns past procedures, failures, and successful strategies
+
+# Report outcome → procedures evolve
+m.procedure_feedback(proc_id, success=False,
+                     context="Dropdown fix stopped working")
+# → Procedure auto-evolves to a new version
+```
+
+Works with any agent framework — CrewAI, LangChain, AutoGPT, custom loops. The agent just calls `add()` after actions and `search()` before decisions.
+
+## Self-Hosted (Ollama)
+
+When running locally with Ollama, use models with **8B+ parameters** and **8K+ context window**. The extraction prompt is ~4,000 tokens — smaller models will hallucinate or mix examples with real data.
+
+| Model | Parameters | Works? |
+|-------|-----------|--------|
+| `llama3.1:8b` | 8B | Yes |
+| `mistral:7b` | 7B | Yes |
+| `gemma2:9b` | 9B | Yes |
+| `llama3.1:70b` | 70B | Best |
+| `phi4-mini:3.8b` | 3.8B | No — context too small |
+
+## API Reference
+
+| Endpoint | Description |
+|---|---|
+| `POST /v1/add` | Add memories (auto-extracts all 3 types) |
+| `POST /v1/add_text` | Add memories from plain text |
+| `POST /v1/add_file` | Upload file (PDF, DOCX, TXT, MD) — vision AI extraction |
+| `POST /v1/search` | Semantic search |
+| `POST /v1/search/all` | Unified search (semantic + episodic + procedural) |
+| `GET /v1/episodes/search` | Search events and decisions |
+| `GET /v1/procedures/search` | Search workflows |
+| `PATCH /v1/procedures/{id}/feedback` | Report outcome — triggers evolution |
+| `GET /v1/procedures/{id}/history` | Version history + evolution log |
+| `GET /v1/profile` | Cognitive Profile |
+| `GET /v1/triggers` | Smart Triggers (reminders, contradictions, patterns) |
+| `POST /v1/agents/run` | Memory agents (Curator, Connector, Digest) |
+| `GET /v1/me` | Account info |
+
+Full interactive docs: **[mengram.io/docs](https://mengram.io/docs)**
+
+### Quota Headers
+
+Every authenticated response includes usage headers:
+
+| Header | Description |
+|--------|-------------|
+| `X-Quota-Add-Used` | Add calls used this month |
+| `X-Quota-Add-Limit` | Add calls allowed this month |
+| `X-Quota-Search-Used` | Search calls used this month |
+| `X-Quota-Search-Limit` | Search calls allowed this month |
+
+SDKs expose this via `.quota`:
+
+```python
+m.search("test")
+print(m.quota)  # {"add": {"used": 5, "limit": 30}, "search": {"used": 12, "limit": 100}}
+```
+
+## Community
+
+- **[GitHub Issues](https://github.com/alibaizhanov/mengram/issues)** — bug reports, feature requests
+- **[GitHub Discussions](https://github.com/alibaizhanov/mengram/discussions)** — show your use case, ask questions
+- **[API Docs](https://mengram.io/docs)** — interactive Swagger UI
+- **[Examples](examples/)** — ready-to-run agent templates
+
+## Star History
+
+<a href="https://star-history.com/#alibaizhanov/mengram&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=alibaizhanov/mengram&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=alibaizhanov/mengram&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=alibaizhanov/mengram&type=Date" />
+  </picture>
+</a>
+
+## License
+
+Apache 2.0 — free for commercial use.
+
+---
+
+<div align="center">
+
+**[Get your free API key](https://mengram.io/#signup)** · Built by **[Ali Baizhanov](https://github.com/alibaizhanov)** · **[mengram.io](https://mengram.io)**
+
+</div>

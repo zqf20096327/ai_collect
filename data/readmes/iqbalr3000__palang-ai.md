@@ -1,0 +1,377 @@
+<div align="center">
+
+<img src="docs/assets/logo.png" alt="Palang AI" width="220" />
+
+### A security gateway for LLM apps, built for Indonesian data.
+
+Mask PII, catch prompt injection and police tool calls, without changing your code.
+
+<p>
+  <a href="https://github.com/iqbalr3000/palang-ai/releases"><img src="https://img.shields.io/github/v/release/iqbalr3000/palang-ai?style=flat-square&color=f59e0b" alt="Latest release" /></a>
+  <a href="https://github.com/iqbalr3000/palang-ai/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/iqbalr3000/palang-ai/ci.yml?branch=main&style=flat-square&label=CI" alt="CI status" /></a>
+  <img src="https://img.shields.io/badge/license-MIT-3b82f6?style=flat-square" alt="License: MIT" />
+  <img src="https://img.shields.io/badge/API-OpenAI--compatible-111827?style=flat-square" alt="OpenAI-compatible" />
+  <img src="https://img.shields.io/badge/runtime-Bun-000000?style=flat-square&logo=bun" alt="Runtime: Bun" />
+</p>
+
+<p>
+  <a href="#features"><b>Features</b></a> &nbsp;·&nbsp;
+  <a href="#quick-start"><b>Quick start</b></a> &nbsp;·&nbsp;
+  <a href="#configuration"><b>Configuration</b></a> &nbsp;·&nbsp;
+  <a href="#evaluation"><b>Evaluation</b></a> &nbsp;·&nbsp;
+  <a href="#known-limitations"><b>Limitations</b></a>
+</p>
+
+<img src="docs/assets/dashboard.png" alt="Palang dashboard: requests, blocks and flags over time, top block reasons and per-guard latency" />
+
+</div>
+
+---
+
+Palang sits between your app and the model and checks everything that passes through. Adopting it
+is a one-line change:
+
+```diff
+- baseURL: "https://api.openai.com/v1",
++ baseURL: "https://palang.your-company.internal/v1",
+```
+
+```text
+Your user sends      →  "NIK saya 3171011506900001, tolong cek statusnya"
+The model receives   →  "NIK saya [NIK_1], tolong cek statusnya"
+Your user gets back  →  "Status untuk 3171011506900001: aktif."
+```
+
+<br />
+
+## Features
+
+| | |
+|---|---|
+| **PII masking** | NIK, NPWP, phone numbers, emails and card numbers are masked before they reach the model and restored in the reply, streaming included. |
+| **Injection detection** | Flags or blocks prompt injection in user and tool messages, in English and Indonesian. |
+| **Tool-call policy** | Allows only the tools you list, with limits on their arguments. |
+| **Leak detection** | Catches your system prompt showing up in the output. |
+| **Observability** | Every request lands in an audit log, a dashboard and Prometheus metrics. |
+
+Every guard can run in `monitor` mode (log only) before you `enforce` it.
+
+### How it works
+
+```mermaid
+flowchart LR
+    A[Your app] -->|OpenAI API| B[Auth + tenant]
+    subgraph Palang
+        B --> C[Input guards<br/>canary · PII mask · injection]
+        C --> D[Upstream]
+        E[Stream processor] --> F[Output guards<br/>canary · PII restore · tool policy]
+    end
+    D -->|masked request| M[(LLM provider)]
+    M -->|stream| E
+    F -->|restored response| A
+    F -.->|async| P[(Audit log)]
+```
+
+PII is masked before the injection scan and restored before the tool policy checks arguments. The
+audit log is written in the background, so it never slows a request down.
+
+<br />
+
+## Quick start
+
+### Try the demo
+
+All you need is Docker:
+
+```sh
+git clone https://github.com/iqbalr3000/palang-ai.git && cd palang-ai
+docker compose -f docker/demo.compose.yml up --build
+```
+
+Open <http://localhost:3000> and sign in with `palang-demo-password`. The dashboard already shows
+a few requests: masked PII, flagged injections, blocked tool calls and a caught canary leak. Send
+your own:
+
+```sh
+curl localhost:8080/v1/chat/completions \
+  -H "Authorization: Bearer plg_demo_key_for_local_testing_only" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"mock-echo","messages":[{"role":"user","content":"NIK saya 3171011506900001"}]}'
+```
+
+The demo's only model is a mock: `mock-echo` repeats your message back, while the "model" only
+ever saw `[NIK_1]`. Its secrets are public, so don't deploy it as is. Stop it with
+`docker compose -f docker/demo.compose.yml down` (add `-v` to delete its data).
+
+### Run it in front of your app
+
+**Requirements:** Docker, [Bun](https://bun.sh) (only for the setup script) and an
+OpenAI-compatible API key.
+
+#### 1. Generate your config
+
+```sh
+git clone https://github.com/iqbalr3000/palang-ai.git && cd palang-ai
+bun run setup
+```
+
+This creates `.env`, with a generated admin token and dashboard password (printed once), and
+`palang.yaml`. Existing files are never overwritten.
+
+#### 2. Point it at your model provider
+
+In `.env`:
+
+```sh
+UPSTREAM_BASE_URL=https://api.openai.com/v1
+UPSTREAM_API_KEY=sk-...
+```
+
+#### 3. Describe your app
+
+In `palang.yaml`, rename the `demo` tenant, list the models your app uses, and start the guards in
+`monitor` mode so nothing is blocked while you learn what your traffic looks like:
+
+```yaml
+tenants:
+  - id: my-app
+    failure_mode: fail_closed
+    upstream:
+      type: openai-compatible
+      base_url: ${UPSTREAM_BASE_URL}
+      api_key: ${UPSTREAM_API_KEY}
+    allowed_models: ["gpt-4o-mini", "gpt-4o"]   # globs work too, e.g. "gpt-4o*"
+    guards:
+      pii-id:                                    # masks in either mode
+        mode: enforce
+        entities: [NIK, NPWP, PHONE_ID, EMAIL, CARD]
+      injection:   { mode: monitor }
+      canary:      { mode: monitor, on_detect: block }
+      tool-policy: { mode: monitor, default: deny, rules: [] }
+```
+
+Every option is documented in [`.env.example`](.env.example) and
+[`palang.example.yaml`](palang.example.yaml).
+
+#### 4. Start Palang
+
+```sh
+docker compose up -d --build
+```
+
+This starts Postgres, runs the migrations, then the gateway on port `8080` and the dashboard on
+<http://localhost:3000>.
+
+#### 5. Connect your app
+
+Sign in to the dashboard with the password from step 1 and create an API key under **API keys**
+(it's shown only once). Then point the OpenAI SDK you already use at Palang:
+
+```ts
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "http://localhost:8080/v1",
+  apiKey: process.env.PALANG_API_KEY,
+});
+
+await client.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "NIK saya 3171011506900001, tolong cek statusnya" }],
+});
+```
+
+Streaming and tool calls work the same way. Each request shows up under **Events**, with every
+guard's decision.
+
+#### 6. Go from monitoring to enforcing
+
+1. **Overview** shows what each guard *would* have blocked; **Events** shows why.
+2. Add your tools to `tool-policy` and tune the injection thresholds.
+3. Switch trusted guards to `mode: enforce` and restart the gateway.
+
+Going to production? Read [**docs/deployment.md**](docs/deployment.md) for the checklist, and the
+[known limitations](#known-limitations) below.
+
+<details>
+<summary>Run from source instead (for development)</summary>
+
+Needs Bun 1.3+, Node.js 22+ and Postgres 16. After steps 1–3:
+
+```sh
+bun install
+bun run db:migrate
+bun run gateway     # app traffic on :8080, admin API on :8081
+bun run dashboard   # http://localhost:3000, in a second terminal
+```
+
+Set `DATABASE_URL` in `.env` to your Postgres. `bun run mock` starts the bundled mock model, which
+the default `UPSTREAM_BASE_URL` points at.
+
+</details>
+
+<br />
+
+## Configuration
+
+| File | Holds | Template |
+|---|---|---|
+| `palang.yaml` | Tenants, providers and guards | [`palang.example.yaml`](palang.example.yaml) |
+| `.env` | Secrets shared by the gateway, dashboard and migrations | [`.env.example`](.env.example) |
+
+<details>
+<summary><b>All guard options</b></summary>
+<br />
+
+```yaml
+guards:
+  pii-id:
+    mode: enforce
+    entities: [NIK, NPWP, PHONE_ID, EMAIL, CARD]
+    mask_new_output_pii: false     # also mask PII the model writes itself
+  injection:
+    mode: monitor
+    flag_threshold: 0.5
+    block_threshold: 0.85
+  tool-policy:
+    mode: enforce
+    default: deny                  # anything not matched is blocked
+    rules:
+      - { tool: "search_*", action: allow }
+      - { tool: "delete_*", action: deny, reason: destructive_tool }
+      - tool: transfer_funds
+        action: allow
+        constraints:               # all must pass
+          - { path: amount, op: lte, value: 1000000 }
+          - { path: currency, op: in, value: [IDR] }
+  canary:
+    mode: enforce
+    on_detect: block               # or flag: strip the token and continue
+```
+
+- `failure_mode: fail_closed` blocks a request when a guard errors; `fail_open` lets it through.
+  `pii-id` always blocks on error, so PII is never sent unmasked.
+- An optional ML classifier improves injection detection but is slow on CPU. Read
+  [decision 0005](docs/decisions/0005-injection-l2-classifier.md) before enabling it.
+
+</details>
+
+<br />
+
+## Use it as a library
+
+Don't need the gateway? The guards run in-process, with no dependencies, on Node 20.3+, Bun, Deno
+and the edge:
+
+```sh
+npm install @palang-ai/guards
+```
+
+```ts
+import { DEFAULT_PII_ID_CONFIG, createPiiIdInputGuard, type GuardContext } from "@palang-ai/guards";
+
+const ctx: GuardContext = {
+  requestId: crypto.randomUUID(),
+  tenantId: "local",
+  model: "gpt-4o-mini",
+  stream: false,
+  messages: [{ role: "user", content: "NIK saya 3171011506900001" }],
+  piiVault: new Map(),
+  signal: new AbortController().signal,
+  metadata: {},
+};
+
+await createPiiIdInputGuard(DEFAULT_PII_ID_CONFIG).check(ctx);
+ctx.messages[0]?.content; // "NIK saya [NIK_1]"
+```
+
+More in [`examples/`](examples/): the OpenAI SDK through the gateway, and mask → restore → tool
+policy in-process.
+
+<br />
+
+## Evaluation
+
+Detection quality is measured, not claimed. `bun run eval` reproduces the report on synthetic
+datasets; results live in [`evals/results/`](evals/results/).
+
+**Prompt injection**, held-out test set, flag threshold 0.5. Recall per slice (192 attacks each for
+formal Indonesian, informal Indonesian and EN-ID code-mixed, 96 English) and false-positive rate on
+ordinary (420) and deliberately attack-like (252) benign text:
+
+| Layer | ID formal | ID informal | EN-ID mixed | English | FPR benign | FPR attack-like |
+|---|---:|---:|---:|---:|---:|---:|
+| Heuristics only | 51.6% | 5.2% | 34.4% | 41.7% | 0.0% | 33.7% |
+| Classifier only | 71.9% | 70.3% | 94.3% | 100% | 9.8% | 50.4% |
+| **Combined** | **88.5%** | 70.3% | 95.3% | 100% | 9.8% | 66.7% |
+
+**PII**, 600 synthetic samples: **95.1% precision** and **99.7% recall** on supported formats (590
+entities, plus 150 look-alike numbers that must not be masked), and **100%** of masked samples
+survive the streaming restore round trip. Plain NPWPs with no "NPWP" label nearby are deliberately
+not masked (0 of 50 in the `unlabeled` slice); see [known limitations](#known-limitations).
+
+**Latency**, on an Apple M1 against a mock model: guard overhead **1.4 ms p95** and added
+time-to-first-token **5.6 ms p95**, well under the 10 ms and 100 ms budgets. Reproduce with
+`bun run bench:gateway` (needs a migrated Postgres at `DATABASE_URL`).
+
+> [!IMPORTANT]
+> The datasets are synthetic and the heuristics were written by the same author as the samples, so
+> treat these numbers as optimistic. Informal Indonesian is the weak spot: the heuristics barely
+> catch slang phrasing they weren't written for, and the classifier also flags some ordinary
+> code-mixed chat. The false-positive rate is too high to block on, which is why `injection` should
+> start in `monitor` mode.
+
+<br />
+
+## Known limitations
+
+- **Audit events can be lost** on a crash or under overload: the queue lives in memory and drops
+  events rather than slowing requests down. `palang_audit_dropped_total` counts the losses.
+- **A streaming block can't recall text already sent.** Output guards hold back a small window,
+  but a block mid-stream ends the response after earlier text reached the client.
+- **The model may paraphrase placeholders**, which makes restore miss them. The eval measures this
+  as `restore_miss`.
+- **Injection detection is weaker in Indonesian** than in English, especially informal Indonesian
+  (slang, abbreviations), and the classifier flags some ordinary EN-ID code-mixed chat. The
+  false-positive rate is too high to block on; keep `injection` in `monitor`.
+- **A plain NPWP is masked only when labeled.** Formatted NPWPs (`01.234.567.8-901.000`) always
+  are; a plain 15- or 16-digit one needs a word like "NPWP" or "tax ID" shortly before it, so a bare
+  number in a pasted table row passes through.
+- **Long numeric IDs can be masked as cards.** Card detection relies on the Luhn check, which
+  about one in ten random 13–19-digit numbers (order IDs, virtual accounts, transfer references)
+  also passes. They're restored in the reply, but the model sees a placeholder.
+- **Dashboard sign-in is rate-limited globally**, not per IP (client IPs can be forged without a
+  trusted proxy). Someone guessing nonstop can lock the real admin out too.
+- **Only OpenAI-compatible providers** are supported.
+- **`logprobs` are dropped** from requests and responses, since they'd expose unguarded output.
+  The legacy `functions`/`function_call` API is rejected with a 400; use `tools`.
+- **Config is read at startup**; changing `palang.yaml` needs a gateway restart.
+
+<br />
+
+## Roadmap
+
+Not yet scheduled, roughly in order:
+
+- **Better Indonesian injection detection**: evaluate multilingual classifiers on informal and
+  code-mixed Indonesian, where the current heuristics and classifier are weakest.
+- **A human-written evaluation set**, so the numbers above stop depending on one author's samples.
+  Contributions of Indonesian attack and benign examples are welcome.
+- **Anthropic Messages API** support, beyond OpenAI-compatible providers.
+- **Policy editing in the dashboard**, backed by the database instead of `palang.yaml`.
+
+<br />
+
+## Security
+
+Found a vulnerability? Please report it privately; see [SECURITY.md](SECURITY.md). Detection misses
+and false positives can go in a regular issue.
+
+<br />
+
+## License
+
+[MIT](LICENSE) © 2026 [@iqbalr3000](https://github.com/iqbalr3000)
+
+The optional classifier model is Apache-2.0 and downloaded separately. `sharp`/libvips, installed
+with the optional `@huggingface/transformers` dependency, is LGPL-3.0-or-later.

@@ -1,0 +1,274 @@
+# LocalEmbeddings
+
+[![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings)
+[![Build Status](https://github.com/elbruno/elbruno.localembeddings/actions/workflows/publish.yml/badge.svg)](https://github.com/elbruno/elbruno.localembeddings/actions/workflows/publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/elbruno/elbruno.localembeddings?style=social)](https://github.com/elbruno/elbruno.localembeddings)
+[![Twitter Follow](https://img.shields.io/twitter/follow/elbruno?style=social)](https://twitter.com/elbruno)
+
+A .NET library for generating text embeddings locally using ONNX Runtime and Microsoft.Extensions.AI abstractions — no external API calls required.
+
+## 🎥 Quick Overview
+
+New to local embeddings? Watch this **[5-minute video](https://www.youtube.com/watch?v=0rRgSQWlVm8)** explaining the main goal of the library.
+
+Want to build RAG applications? Read this **[blog post about 3 RAG approaches in .NET](https://elbruno.com/2026/02/14/%f0%9f%a4%96-building-rag-in-net-with-local-embeddings-3-approaches-zero-cloud-calls/)** with local embeddings and zero cloud calls.
+
+Interested in **image embeddings**? Check out the **[YouTube video](https://www.youtube.com/watch?v=nVTropZJC88)** and **[blog post](https://elbruno.com/2026/02/16/%f0%9f%96%bc%ef%b8%8f-local-image-embeddings-in-net-clip-onnx/)** about local image embeddings with CLIP and ONNX.
+
+## Features
+
+- **Local Embedding Generation** — Run inference entirely on your machine using ONNX Runtime
+- **Multi-Framework** — Targets **.NET 8.0 (LTS)** and **.NET 10.0**
+- **Microsoft.Extensions.AI Integration** — Implements `IEmbeddingGenerator<string, Embedding<float>>`
+- **🦅 Harrier model support** — Microsoft Harrier-OSS-v1 (270M, 640-dim, 94+ languages, instruction-tuned) via `ElBruno.LocalEmbeddings.Harrier`
+- **Google EmbeddingGemma 2** — text-only local ONNX embeddings (768/512/256/128 dimensions) via `ElBruno.LocalEmbeddings.EmbeddingGemma`
+- **Kernel Memory Integration** — Companion package `ElBruno.LocalEmbeddings.KernelMemory` provides a native `ITextEmbeddingGenerator` adapter for [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory)
+- **VectorData Integration** — Companion package `ElBruno.LocalEmbeddings.VectorData` adds DI helpers for `Microsoft.Extensions.VectorData` (`VectorStore` and typed collections)
+- **Blazor Components** — Companion package `ElBruno.LocalEmbeddings.BlazorComponents` provides 9 ready-to-use Razor components: model gallery, similarity meter, semantic search box, embedding explorer, dimension viewer, health badge, and metrics panel
+- **Built-in In-Memory Vector Store** — `ElBruno.LocalEmbeddings.VectorData` includes `InMemoryVectorStore` (no Semantic Kernel connector dependency required)
+- **HuggingFace Model Support** — Use popular sentence transformer models from HuggingFace Hub
+- **Automatic Model Caching** — Models are downloaded once and cached locally
+- **Dependency Injection Support** — First-class `IServiceCollection` integration
+- **Single-String Convenience API** — `GenerateAsync("text")` and `GenerateEmbeddingAsync("text")` — no array wrapping needed
+- **Similarity Helpers** — Cosine similarity, all-pairs `Similarity(...)` matrix, and one-line `FindClosestAsync(...)` semantic search
+- **Thread-Safe & Batched** — Concurrent generation and efficient multi-text processing
+
+## 🆕 What's New
+
+> The last 5 notable additions to the library. Updated with each NuGet release.
+
+| Version | Date | Highlight |
+|---------|------|-----------|
+| **v1.6.4** | 2026-10-07 | **Google EmbeddingGemma 2** — new text-only ONNX companion package with task-aware prompts, multilingual embeddings, and 128/256/512/768 dimensions |
+| **v1.6.3** | 2026-09-28 | **Uncased BERT/MiniLM tokenization** — normalizes accents so accented words map to their expected tokens |
+| **v1.5.9** | 2026-08-02 | **`ElBruno.LocalEmbeddings.BlazorComponents`** — full test coverage (77 xUnit + bUnit tests for all 9 components), `EmbeddingDimensionViewer` PCA demo added to `BlazorDemo`, sample README, fixed auto-release → NuGet publish pipeline |
+| **v1.5.7** | 2026-08-02 | **New package: `ElBruno.LocalEmbeddings.BlazorComponents`** — 9 ready-to-use Razor components: `EmbeddingModelGallery`, `SimilarityMeter`, `SemanticSearchBox`, `EmbeddingExplorer`, `EmbeddingDimensionViewer` (PCA 2-D), `EmbeddingModelSelector`, `EmbeddingHealthBadge`, `EmbeddingMetricsPanel`, `EmbeddingModelStatusCard` |
+| **v1.5.3** | 2026-08-02 | **`ElBruno.LocalEmbeddings.OpenTelemetry`** — OpenTelemetry instrumentation with Activity tracing, metrics (tokens/sec, latency), and configurable exporters for embedding pipelines |
+
+---
+
+## 📦 NuGet Packages
+
+| Package | Version | Downloads | Description |
+|---------|---------|-----------|-------------|
+| [ElBruno.LocalEmbeddings](https://www.nuget.org/packages/ElBruno.LocalEmbeddings) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings) | Core library — ONNX Runtime + Microsoft.Extensions.AI |
+| [ElBruno.LocalEmbeddings.Harrier](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Harrier) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.Harrier.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Harrier) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.Harrier.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Harrier) | Microsoft Harrier-OSS-v1 (270M, 640-dim, 94+ languages) |
+| [ElBruno.LocalEmbeddings.EmbeddingGemma](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.EmbeddingGemma) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.EmbeddingGemma.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.EmbeddingGemma) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.EmbeddingGemma.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.EmbeddingGemma) | Google EmbeddingGemma 2 text embeddings (Q4 ONNX, 128–768 dimensions) |
+| [ElBruno.LocalEmbeddings.ImageEmbeddings](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.ImageEmbeddings.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.ImageEmbeddings.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings) | CLIP-based image embeddings for multimodal search |
+| [ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.ImageEmbeddings.Downloader) | Model downloader for image embeddings |
+| [ElBruno.LocalEmbeddings.KernelMemory](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.KernelMemory) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.KernelMemory.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.KernelMemory) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.KernelMemory.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.KernelMemory) | Microsoft Kernel Memory adapter |
+| [ElBruno.LocalEmbeddings.VectorData](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.VectorData) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.VectorData.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.VectorData) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.VectorData.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.VectorData) | Microsoft.Extensions.VectorData + InMemoryVectorStore |
+| [ElBruno.LocalEmbeddings.Npu](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.Npu.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.Npu.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu) | NPU-accelerated embeddings via DirectML |
+| [ElBruno.LocalEmbeddings.Npu.Intel](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Intel) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.Npu.Intel.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Intel) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.Npu.Intel.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Intel) | Intel Core Ultra NPU via OpenVINO |
+| [ElBruno.LocalEmbeddings.Npu.Qualcomm](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Qualcomm) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.Npu.Qualcomm.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Qualcomm) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.Npu.Qualcomm.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.Npu.Qualcomm) | Qualcomm Snapdragon X NPU via QNN |
+| [ElBruno.LocalEmbeddings.BlazorComponents](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.BlazorComponents) | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.BlazorComponents.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.BlazorComponents) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.BlazorComponents.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings.BlazorComponents) | Blazor UI components — model gallery, similarity meter, semantic search, embedding explorer |
+
+## Installation
+
+```bash
+dotnet add package ElBruno.LocalEmbeddings
+```
+
+For **Harrier model support**, install the companion package:
+
+```bash
+dotnet add package ElBruno.LocalEmbeddings.Harrier
+```
+
+For **Google EmbeddingGemma 2** text embeddings, install:
+
+```bash
+dotnet add package ElBruno.LocalEmbeddings.EmbeddingGemma
+```
+
+For **Kernel Memory** integration, also install:
+
+```bash
+dotnet add package ElBruno.LocalEmbeddings.KernelMemory
+```
+
+For **VectorData** integration, install:
+
+```bash
+dotnet add package ElBruno.LocalEmbeddings.VectorData
+```
+
+## Quick Start
+
+### 1) Generate one embedding
+
+```csharp
+using ElBruno.LocalEmbeddings;
+
+await using var generator = await LocalEmbeddingGenerator.CreateAsync();
+var embedding = await generator.GenerateEmbeddingAsync("Hello, world!");
+Console.WriteLine(embedding.Vector.Length); // 384
+```
+
+### 2) Generate embeddings for multiple texts
+
+```csharp
+var inputs = new[] { "first text", "second text", "third text" };
+var embeddings = await generator.GenerateAsync(inputs);
+Console.WriteLine(embeddings.Count); // 3
+```
+
+### 3) Compare two texts with cosine similarity
+
+```csharp
+using ElBruno.LocalEmbeddings.Extensions;
+
+var pair = await generator.GenerateAsync(["I love coding", "I enjoy programming"]);
+var score = pair[0].CosineSimilarity(pair[1]);
+Console.WriteLine(score);
+```
+
+### 4) Semantic search in one line
+
+```csharp
+var corpus = new[]
+{
+    "Python for data science",
+    "JavaScript for web apps",
+    "Swift for iOS development"
+};
+
+var corpusEmbeddings = await generator.GenerateAsync(corpus);
+var results = await generator.FindClosestAsync(
+    "best language for websites",
+    corpus,
+    corpusEmbeddings,
+    topK: 2,
+    minScore: 0.2f);
+
+foreach (var result in results)
+    Console.WriteLine($"{result.Score:F3} - {result.Text}");
+```
+
+### 5) Using Harrier model (higher quality, multilingual)
+
+```csharp
+using ElBruno.LocalEmbeddings.Harrier;
+
+var generator = await HarrierEmbeddingGenerator.CreateAsync();
+var embedding = await generator.GenerateEmbeddingAsync("Hello, world!");
+Console.WriteLine($"Dimensions: {embedding.Vector.Length}"); // 640
+```
+
+### 6) Using Google EmbeddingGemma 2 (multilingual text embeddings)
+
+```csharp
+using ElBruno.LocalEmbeddings.EmbeddingGemma;
+using ElBruno.LocalEmbeddings.EmbeddingGemma.Options;
+
+await using var generator = await EmbeddingGemmaEmbeddingGenerator.CreateAsync(
+    new EmbeddingGemmaOptions { OutputDimensions = 768 });
+var query = EmbeddingGemmaPrompts.CreateSearchQuery("Which planet is known as the Red Planet?");
+var embedding = await generator.GenerateEmbeddingAsync(query);
+Console.WriteLine($"Dimensions: {embedding.Vector.Length}"); // 768
+```
+
+The first run downloads a pinned Q4 ONNX text model (~166 MiB of external weights) and SentencePiece tokenizer (~4.7 MB). This package currently provides text-only inference; the image, audio, and video modalities are not yet supported. See the [EmbeddingGemma integration guide](docs/embeddinggemma-integration.md).
+
+For custom models and runtime behavior, use the options-based constructor:
+`new LocalEmbeddingGenerator(new LocalEmbeddingsOptions { ... })`.
+
+> **Note:** The synchronous constructor remains available for backward compatibility, but performs blocking initialization when downloads are needed.
+
+Want to go further? Read the [Getting Started guide](docs/getting-started.md) and the other docs in this repo for DI, configuration, VectorData, Kernel Memory, and full RAG examples.
+
+Prefer a containerized dev environment? See the Dev Container section in the [Contributing guide](docs/contributing.md#dev-container-vs-code).
+
+## Samples
+
+All sample applications are located in `src/Samples/`. See the [samples README](src/Samples/README.md) for prerequisites and run instructions.
+
+| Sample | What It Shows |
+| ------ | ------------- |
+| [HelloWorldAltModel](src/Samples/HelloWorldAltModel) | Minimal hello world with `sentence-transformers/all-MiniLM-L12-v2` |
+| [ConsoleApp](src/Samples/ConsoleApp) | All the basics: single/batch embeddings, similarity, semantic search, DI |
+| [HarrierConsoleApp](src/Samples/HarrierConsoleApp) | Harrier embedding model usage and similarity search |
+| [RagChat](src/Samples/RagChat) | Embedding-only semantic search Q&A using shared VectorData `InMemoryVectorStore` (no LLM needed) |
+| [RagOllama](src/Samples/RagOllama) | Full RAG with Ollama + phi4-mini + Kernel Memory |
+| [RagFoundryLocal](src/Samples/RagFoundryLocal) | Full RAG with Foundry Local + phi4-mini |
+| [ImageRagSimple](src/Samples/ImageRagSimple) | Minimal image RAG: index images → search by text |
+| [ImageRagChat](src/Samples/ImageRagChat) | Interactive image RAG chat with text and image-to-image search |
+
+## Configuration
+
+```csharp
+var options = new LocalEmbeddingsOptions
+{
+    ModelName = "sentence-transformers/all-MiniLM-L6-v2",  // HuggingFace model
+    MaxSequenceLength = 512,                                // Max tokens
+    CacheDirectory = null,                                  // Auto-detect per platform
+    EnsureModelDownloaded = true,                           // Download if missing
+    NormalizeEmbeddings = false                              // L2 normalize vectors
+};
+```
+
+See [Configuration docs](docs/configuration.md) for supported models, local model paths, and cache locations.
+
+### Common model options (with model cards)
+
+Estimated download sizes below are approximate and can vary by ONNX variant (fp32/int8) and tokenizer assets.
+
+- [`sentence-transformers/all-MiniLM-L6-v2` (default, ~90–100 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- [`sentence-transformers/all-MiniLM-L12-v2` (~130–140 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)
+- [`sentence-transformers/paraphrase-MiniLM-L6-v2` (~90–100 MB)](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2)
+- [`BAAI/bge-large-en-v1.5` (large, ~1.3 GB)](https://huggingface.co/BAAI/bge-large-en-v1.5)
+- [`intfloat/e5-large-v2` (large, ~1.3 GB)](https://huggingface.co/intfloat/e5-large-v2)
+
+## Documentation
+
+| Topic | Description |
+| ----- | ----------- |
+| [Getting Started](docs/getting-started.md) | Step-by-step guide from hello world to RAG |
+| [API Reference](docs/api-reference.md) | Classes, methods, and extension methods |
+| [Configuration](docs/configuration.md) | Options, supported models, cache locations |
+| [Alternative Models](docs/alternative-models.md) | Non-default free models, local download workflow, and license notes |
+| [Dependency Injection](docs/dependency-injection.md) | All DI overloads and `IConfiguration` binding |
+| [Harrier Integration](docs/harrier-integration.md) | Microsoft Harrier-OSS-v1 local embedding model |
+| [Kernel Memory Integration](docs/kernel-memory-integration.md) | Using local embeddings with Microsoft Kernel Memory |
+| [VectorData Integration](docs/vector-data-integration.md) | Using local embeddings with Microsoft.Extensions.VectorData abstractions |
+| [Blazor Components](docs/blazor-components.md) | 9 ready-to-use Blazor components for embedding-powered web apps |
+| [Contributing](docs/contributing.md) | Build from source, repo structure, guidelines |
+| [Roadmap](docs/plans/roadmap_260213_0803.md) | Planned and completed features/samples with priorities |
+| [Publishing](docs/publishing.md) | NuGet publishing with GitHub Actions + Trusted Publishing |
+| [Changelog](docs/changelog.md) | Versioned summary of notable changes |
+
+Have an idea for a new feature or sample? Please open an issue and share your suggestion.
+
+## Building from Source
+
+```bash
+git clone https://github.com/elbruno/elbruno.localembeddings.git
+cd elbruno.localembeddings
+dotnet build
+dotnet test
+```
+
+## Requirements
+
+- .NET 8.0 SDK (LTS) or .NET 10.0 SDK
+- ONNX Runtime compatible platform (Windows, Linux, macOS)
+
+## 👋 About the Author
+
+Hi! I'm **ElBruno** 🧡, a passionate developer and content creator exploring AI, .NET, and modern development practices.
+
+**Made with ❤️ by [ElBruno](https://github.com/elbruno)**
+
+If you like this project, consider following my work across platforms:
+
+- 📻 **Podcast**: [No Tienen Nombre](https://notienenombre.com) — Spanish-language episodes on AI, development, and tech culture
+- 💻 **Blog**: [ElBruno.com](https://elbruno.com) — Deep dives on embeddings, RAG, .NET, and local AI
+- 📺 **YouTube**: [youtube.com/elbruno](https://www.youtube.com/elbruno) — Demos, tutorials, and live coding
+- 🔗 **LinkedIn**: [@elbruno](https://www.linkedin.com/in/elbruno/) — Professional updates and insights
+- 𝕏 **Twitter**: [@elbruno](https://www.x.com/elbruno/) — Quick tips, releases, and tech news
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

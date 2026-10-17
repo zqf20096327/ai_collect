@@ -1,0 +1,222 @@
+<h1 align="center">
+  <img src="./electron/assets/icon.svg" alt="HippoBuddy" width="40" height="40" style="vertical-align: middle; margin-right: 8px;">
+  HippoBuddy
+</h1>
+
+<p align="center">AI-powered desktop assistant for chat, coding, and office productivity.</p>
+
+<p align="center">
+  简体中文 ｜ <a href="./docs/README.en.md">English</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white" alt="Java 21">
+  <img src="https://img.shields.io/badge/Electron-35-47848F?logo=electron&logoColor=white" alt="Electron">
+  <img src="https://img.shields.io/github/v/release/Puteitous/HippoBuddy?logo=github" alt="Release">
+  <img src="https://img.shields.io/github/stars/Puteitous/HippoBuddy?style=flat&logo=github" alt="Stars">
+  <img src="https://img.shields.io/badge/license-Apache%202.0-555555" alt="License">
+  <img src="https://img.shields.io/badge/platform-Desktop%20%7C%20Web-555555" alt="Platform">
+  <img src="https://img.shields.io/badge/docs-online-5273B7?logo=docusaurus&logoColor=white" alt="Docs">
+  <img src="https://img.shields.io/github/last-commit/Puteitous/HippoBuddy" alt="Last Commit">
+</p>
+
+<p align="center">
+  <img src="./electron/assets/image.png" alt="HippoBuddy 主界面" width="100%">
+</p>
+
+---
+
+## 下载安装
+
+| 平台 | 下载 |
+|---|---|
+| Windows | [HippoBuddy Setup](https://github.com/Puteitous/HippoBuddy/releases/latest) |
+| macOS (Intel) | [HippoBuddy.dmg](https://github.com/Puteitous/HippoBuddy/releases/latest) |
+| macOS (Apple Silicon) | [HippoBuddy-arm64.dmg](https://github.com/Puteitous/HippoBuddy/releases/latest) |
+| Linux (AppImage) | [HippoBuddy.AppImage](https://github.com/Puteitous/HippoBuddy/releases/latest) |
+
+> 📖 官网（含技术文档）：[https://www.hippobuddy.cn/](https://www.hippobuddy.cn/)
+>
+> 🪞 Gitee 镜像仓库：https://gitee.com/putetou/HippoBuddy
+>
+> 🔗 网盘链接：https://pan.baidu.com/s/1L78e0I7N4zaz_yZsVTeW7A?pwd=pfga
+>
+> 💬  交流群（QQ：1102524202）— 问题反馈、功能建议、使用求助、摸鱼心得，欢迎大家交流
+
+---
+
+## 功能概览
+
+| 功能 | 说明 |
+|---|---|
+| **智能对话** | 聊天 / 代码 / 办公三种模式，自由切换 |
+| **AI 编程协助** | 理解项目上下文，生成、修改、重构代码 |
+| **文件操作** | 读、写、编辑、删除，支持 diff 预览与回滚 |
+| **会话管理** | 新建、重命名、删除、分叉讨论 |
+| **Office 读写** | 内置 Word / Excel / PPT / CSV 解析与生成，开箱浏览 |
+| **子代理（Subagent）** | Fork / Cancel / 并行协作的子代理体系 |
+| **智能记忆（Memory）** | 会话记忆提取、巩固与检索，跨会话注入上下文 |
+| **MCP 动态扩展** | 内置 SSE / Stdio 双通道 MCP 客户端，持续接入外部工具 |
+| **Skill 技能系统** | 加载与编排可复用的技能库，按需调用 |
+| **工具箱** | Token 统计、终端、浏览器、实时监控等 |
+| **新手指引** | 首次启动聚光灯导览，快速上手 |
+
+<p align="center">
+  <img src="./electron/assets/image1.png" alt="Chat 与预览面板" width="100%">
+  <br>
+  <em>Chat 面板与预览面板协同工作</em>
+</p>
+
+---
+
+## 为什么选择 HippoBuddy？
+
+与市面上其他 AI Agent 产品（Codex、Claude Code、Copilot、Kimi、Trae Work、WorkBuddy 等）的对比：
+
+| 维度 | HippoBuddy |
+|---|---|
+| **开源免费** | 全部源码开源，Apache 2.0 协议 |
+| **开箱即用** | 无需登录、无需第三方账号，下载即用 |
+| **LLM 行为可视化** | 工具调用与思考过程全透明，实时可见 |
+| **代码编辑** | 完整读/写/编辑，支持 diff 预览与回滚 |
+| **Office 文档** | 内置 PDF / Word / Excel / PPT 等格式浏览 |
+| **文件变更系统** | 文件级与会话级变更追踪，随时回滚 |
+| **上下文与 Token 监控** | 实时 Token 统计、上下文用量、LLM 监控 |
+| **内置工具** | 16+ 种内置工具：终端、浏览器、搜索、代码分析等，支持 MCP 动态扩展 |
+| **性能** | 轻量桌面应用，Java 虚拟线程高并发 |
+| **UI 设计** | 极简精美，专注内容 |
+| **平台** | 桌面端（Windows / macOS / Linux） |
+
+
+---
+
+### 优化方向 / Roadmap
+
+HippoBuddy 正在积极迭代中，核心能力（MCP、子代理、记忆、Office 读写、技能系统）均已落地，后续将逐步打磨以下方向：
+
+- 需要个人 LLM API 密钥及联网搜索工具配置
+- Subagent、MCP、Memory 等能力已初步支持，将持续增强稳定性与易用性
+- 自动化任务流水线、浏览器操控等正在规划中
+- Office 文件的复杂版式编辑，后续将进一步完善
+- 第三方软件集成仍偏少
+- 更偏向个人任务执行与效率提升，非 7×24 在线服务
+
+---
+
+## 🎬 视频介绍
+
+6 分钟快速了解 HippoBuddy：
+
+<p align="center">
+  <a href="https://www.bilibili.com/video/BV13xud6KEXw/">
+    <img src="./assets/bilibili-cover.jpg" alt="HippoBuddy 介绍视频" width="320">
+  </a>
+  <br>
+  <a href="https://www.bilibili.com/video/BV13xud6KEXw/">
+    <img src="https://img.shields.io/badge/Bilibili-%E2%96%B6%20%E7%82%B9%E5%87%BB%E8%A7%82%E7%9C%8B%E4%BB%8B%E7%BB%8D%E8%A7%86%E9%A2%91-FB7299?logo=bilibili&logoColor=white" alt="Bilibili 介绍视频">
+  </a>
+</p>
+
+---
+
+## 快速开始
+
+### 方式一：桌面端（推荐）
+
+下载[安装包](https://github.com/Puteitous/HippoBuddy/releases/latest) -> 安装 -> 启动 -> 开始使用
+
+### 方式二：源码启动
+
+```bash
+# 1. 构建前端（Vite 产物直接输出到 src/main/resources/static）
+cd frontend && npm install && npm run build && cd ..
+
+# 2. 编译并打包 Java 后端（自动包含上一步的前端静态资源）
+mvn package -DskipTests
+
+# 3a. 启动桌面端（Electron）
+cd electron && npm install && npm start
+
+# 3b. 或仅启动 Web 端（不带 Electron）
+mvn exec:java -Dexec.mainClass="com.example.agent.WebApplication"
+```
+
+> **配置说明** — 源码启动时，应用首次运行会自动根据 [`config.yaml.example`](./config.yaml.example) 创建 `config.yaml`，编辑其中的 LLM 配置即可：
+>
+> ```yaml
+> llm:
+>   api_key: ${DEEPSEEK_API_KEY:-your-api-key-here}
+>   model: deepseek-v4-flash
+>   base_url: https://api.deepseek.com
+> ```
+>
+> 支持 **DeepSeek / Claude / GPT / Ollama**。完整配置见 [`config.yaml.example`](./config.yaml.example)。
+
+---
+
+## 技术栈
+
+| 层 | 技术 |
+|---|---|
+| 桌面壳 | **Electron 35** |
+| 前端 | **React 18** + TypeScript + Vite 5 |
+| 状态管理 | Zustand 4 |
+| 代码编辑器 | CodeMirror 6 |
+| 后端 | **Java 21** + 虚拟线程 |
+| 构建 | Maven 3.9 + npm |
+| AI 协议 | OpenAI / Claude / Ollama |
+| 测试 | JUnit 5 + Vitest + Testing Library |
+
+---
+
+## 项目结构
+
+```
+src/main/java/com/example/agent/
+├── WebApplication.java           Web 入口
+├── DesktopApplication.java       桌面端入口
+├── core/                         DI、事件总线、安全拦截
+├── llm/                          LLM 客户端（OpenAI、Claude、Ollama...）
+├── tools/                        内置工具集（16 个，MCP 可扩展）
+├── execute/                      Agent 对话循环
+├── subagent/                     多代理系统
+├── mcp/                          MCP 协议集成
+├── memory/                       长期记忆
+├── context/                      上下文预算与压缩
+├── session/                      会话存储与转录
+├── web/                          HTTP 处理器与 SSE 流式
+│   └── orchestrator/             任务编排（DAG）
+├── application/                  会话应用服务
+├── service/                      Token 估算、标题生成
+├── desktop/                      桌面端工作区上下文
+├── console/                      控制台交互
+├── progress/                     进度与 diff 预览
+├── logging/                      日志与指标采集
+├── prompt/                       Prompt 库与管理
+├── domain/                       规则、技能、内容截断
+└── config/                       配置中心
+```
+
+---
+
+## 项目文档
+
+| 文档标题 | 链接 |
+|---|---|
+| HippoBuddy — 项目介绍 | [docs/intro](https://www.hippobuddy.cn/docs/intro) |
+| 快速开始 | [docs/quick-start](https://www.hippobuddy.cn/docs/quick-start) |
+| HippoBuddy 架构哲学 | [docs/architecture/philosophy](https://www.hippobuddy.cn/docs/architecture/philosophy) |
+| AI Agent 使用心得 | [docs/guides/agent-mindset](https://www.hippobuddy.cn/docs/guides/agent-mindset) |
+| AI 桌面应用，启动时到底在加载什么？ | [docs/guides/startup-loading](https://www.hippobuddy.cn/docs/guides/startup-loading) |
+
+---
+
+## 许可证
+
+[Apache License 2.0](./LICENSE)
+
+---
+
+<p align="center">
+  💬 交流群（QQ：1102524202）— 问题反馈、功能建议、使用求助、摸鱼心得，欢迎大家交流
+</p>

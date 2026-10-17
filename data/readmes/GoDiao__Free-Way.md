@@ -1,0 +1,365 @@
+<h1 align="center">Free-Way</h1>
+
+<p align="center">
+  <strong>Use Claude Code, Codex, OpenCode, Continue, and Cline for free with your own free-tier LLM provider keys.</strong>
+</p>
+
+<p align="center">
+  <strong>Star us&nbsp;→</strong>
+  <a href="https://github.com/GoDiao/Free-Way" title="Star Free-Way on GitHub">
+    <img src="https://img.shields.io/github/stars/GoDiao/Free-Way?style=for-the-badge&logo=github&label=Star&color=4ade80&labelColor=0b0f0d" alt="Star Free-Way on GitHub" height="28" align="absmiddle" />
+  </a>
+  &nbsp;·&nbsp;
+  <a href="https://godiao.github.io/Free-Way/" title="Open the Free-Way project page">
+    <img src="https://img.shields.io/badge/Homepage-Free--Way-4ade80?style=for-the-badge&labelColor=0b0f0d" alt="Free-Way homepage" height="28" align="absmiddle" />
+  </a>
+  &nbsp;·&nbsp;
+  <a href="./docs/agents/" title="Read Free-Way agent setup guides">
+    <img src="https://img.shields.io/badge/Agent%20Guides-Docs-60a5fa?style=for-the-badge&labelColor=0b0f0d" alt="Free-Way agent setup guides" height="28" align="absmiddle" />
+  </a>
+  &nbsp;·&nbsp;
+  <a href="./LICENSE" title="Free-Way is MIT licensed">
+    <img src="https://img.shields.io/badge/License-MIT-f0a500?style=for-the-badge&labelColor=0b0f0d" alt="MIT License" height="28" align="absmiddle" />
+  </a>
+</p>
+
+<p align="center">
+  One localhost gateway for OpenAI- and Anthropic-compatible tools.
+  Bring your own keys. No hosted proxy. No shared key pool.
+  Your tools keep one base URL: <code>http://localhost:8787</code>.
+</p>
+
+<p align="center">
+  <img src="./Assets/routing_map_readme.gif" alt="Free-Way routing map: AI clients connect to localhost:8787, then route across free-tier LLM providers" width="900" />
+</p>
+
+<p align="center">
+  <a href="./README.zh-CN.md">简体中文</a>
+  ·
+  <a href="./CONTRIBUTING.md">Contributing</a>
+  ·
+  <a href="./ROADMAP.md">Roadmap</a>
+  ·
+  <a href="./contribution.md">中文贡献指南</a>
+</p>
+
+## Why Star This
+
+- **One local endpoint for AI tools**: point Claude Code, Continue.dev, OpenCode, or any client that calls local custom base URLs directly at the same gateway
+- **BYOK and local-first**: Free-Way does not host a proxy, pool keys, or sell API access; provider keys stay on your machine
+- **OpenAI + Anthropic compatibility**: use `/v1/chat/completions`, `/v1/models`, and `/v1/messages`
+- **Fallback routing**: when one compatible provider is rate-limited or unavailable, Free-Way can try another route
+- **Tracks changing free-tier routes**: provider quotas, model availability, and compatibility quirks change often; Free-Way is designed to keep absorbing those updates
+- **Provider console included**: configure keys, browse models, refresh catalogs, check health, and test requests from the browser
+
+> Free-Way does not provide free API access. It helps you operate the free-tier/provider keys you already have behind one local API surface.
+
+## Quick Start
+
+### 1. Install and launch
+
+```bash
+npx @godiao/free-way
+```
+
+Or install it globally:
+
+```bash
+npm install -g @godiao/free-way
+freeway
+```
+
+For local development:
+
+```bash
+git clone https://github.com/GoDiao/Free-Way.git
+cd Free-Way
+npm install
+npm run build
+npm start
+```
+
+Default server address:
+
+- `http://localhost:8787`
+
+### 2. Configure provider keys
+
+Open the local console:
+
+- `http://localhost:8787/`
+
+Then configure provider keys in the **API Keys** tab, or provide them with environment variables.
+
+### 3. Point your agent at Free-Way
+
+- OpenAI-compatible clients: `http://localhost:8787/v1`
+- Anthropic-compatible clients: `http://localhost:8787`
+
+Detailed per-agent setup guides are available in [`docs/agents/`](./docs/agents/).
+
+## Supported Providers
+
+Currently wired through `src/providers/index.ts`:
+
+`openrouter`, `groq`, `github`, `cloudflare`, `siliconflow`, `cerebras`, `mistral`, `cohere`, `nvidia`, `llm7`, `kilo`, `zhipu`, `opencode`, `zenmux`
+
+## Mission
+
+Free-Way is a local control plane for free LLM APIs. It normalizes protocol differences, resolves models, checks route availability, and falls back when a provider fails — all from localhost.
+
+The goal is not to wrap one provider. The goal is to offer one gateway layer that can keep absorbing the providers, models, and compatibility quirks that matter across the free-model ecosystem.
+
+## Why this exists
+
+The free-model ecosystem is expanding quickly, but the developer experience is still fragmented:
+
+- provider APIs differ in behavior and response shape
+- model availability changes quickly
+- free tiers appear, move, rate-limit, or disappear
+- clients and coding agents still want one predictable local endpoint
+
+Free-Way compresses that fragmentation into a single local gateway that is easier to operate, easier to integrate, and easier to extend.
+
+## What Free-Way Provides
+
+- **Protocol normalization** — OpenAI and Anthropic compatible endpoints from one server
+- **Fallback routing** — when a provider is rate-limited or unavailable, Free-Way tries another
+- **Model discovery** — fetch available models from supported providers and keep a unified free-tier catalog updated
+- **Runtime API key management** — configure provider keys through the web UI or REST API, no restart required
+- **Health checks** — monitor provider availability and latency from the console
+- **Local web console** — browse providers and models, check health, configure keys, test requests
+- **Works with Claude Code, Continue.dev, OpenCode, and OpenAI/Anthropic-compatible clients that call local custom base URLs directly**
+
+## Coverage philosophy
+
+Free-Way is not positioned as a thin wrapper for one API vendor.
+
+It is an aggregation layer designed to keep up with the free LLM landscape over time. That means tracking useful providers, normalizing compatibility gaps, and making the resulting surface more stable for local tools, scripts, and agent workflows.
+
+The ambition is broad coverage. The implementation stays pragmatic: integrate what matters, keep the gateway reliable, and improve compatibility as the ecosystem shifts.
+
+## Ecosystem references
+
+Free-Way tracks the broader free-model ecosystem through public resource collections, including:
+
+- [awesome-free-llm-apis](https://github.com/mnfst/awesome-free-llm-apis)
+- [free-llm-api-resources](https://github.com/cheahjs/free-llm-api-resources)
+
+These are ecosystem references, not hard dependencies. They help guide ongoing provider coverage and compatibility work.
+
+## Current capabilities
+
+### Compatibility layer
+
+- OpenAI-compatible chat completions
+- OpenAI-compatible model listing
+- Anthropic-compatible messages API bridging
+- Stable non-stream usage normalization across OpenAI-compatible and Anthropic-compatible responses
+- Conservative Anthropic streaming behavior without fake zero-usage placeholders
+
+### Gateway operations
+
+- Provider health checks and status summaries
+- Model catalog refresh and cache fallback
+- Local runtime key management
+- Optional gateway auth with `FREEWAY_API_KEY`
+- Optional outbound proxy support with `HTTP_PROXY`
+
+### Local console
+
+- Browse providers and models
+- Check provider health and latency
+- Configure provider keys
+- Refresh model catalogs
+- Test local requests from the browser
+
+## Configuration
+
+## Configure your agent
+
+Free-Way exposes **both** OpenAI and Anthropic compatible endpoints. Coding agents and LLM clients work best when they can call those custom base URLs directly from your machine.
+
+> Detailed per-agent setup guides are available in [`docs/agents/`](./docs/agents/).
+
+- [OpenRouter Provider Setup](./docs/providers/openrouter.md)
+- [Local endpoint and remote proxy limitations](./docs/agents/local-endpoints-and-remote-proxies.md)
+- [OpenCode setup guide](./docs/agents/opencode.md)
+- [Aider Integration Guide](./docs/agents/aider.md)
+
+### Claude Code
+
+Set the base URL to Free-Way:
+
+```bash
+export ANTHROPIC_BASE_URL=http://localhost:8787
+export ANTHROPIC_API_KEY=<your FREEWAY_API_KEY or any non-empty string>
+```
+
+Then run `claude` normally. Free-Way routes Claude Code's Anthropic API calls to the best available free provider.
+
+### Cursor
+
+Cursor is a known caveat for localhost endpoints. Some Cursor API flows may proxy requests through Cursor's servers before calling the configured API. In that setup, `localhost:8787` refers to Cursor's server environment, not your machine.
+
+Free-Way works best with clients that call custom OpenAI/Anthropic-compatible base URLs directly from your local machine. See [Local endpoint and remote proxy limitations](./docs/agents/local-endpoints-and-remote-proxies.md) for the full explanation and a quick compatibility checklist.
+
+### Continue.dev
+
+In `config.json`:
+
+```json
+{
+  "models": [
+    {
+      "title": "Free-Way",
+      "provider": "openai",
+      "model": "llama-3.3-70b",
+      "apiBase": "http://localhost:8787/v1",
+      "apiKey": "your FREEWAY_API_KEY"
+    }
+  ]
+}
+```
+
+### OpenCode
+
+Set environment variables before running:
+
+```bash
+export OPENAI_BASE_URL=http://localhost:8787/v1
+export OPENAI_API_KEY=<your FREEWAY_API_KEY>
+```
+
+### Any other local-capable OpenAI/Anthropic client
+
+If the client can call local custom base URLs directly, point it to `http://localhost:8787` (Anthropic) or `http://localhost:8787/v1` (OpenAI) and provide your gateway key if configured.
+
+### API key precedence
+
+Effective key precedence is:
+
+1. Runtime key set via UI/API
+2. Environment variable
+3. Persisted `.freeway/config.json`
+
+### Local security model
+
+Free-Way binds to `127.0.0.1` by default. Set `HOST=0.0.0.0` only if you intentionally want LAN access.
+
+Browser CORS is limited to same-machine localhost origins. Management endpoints such as key configuration, model refresh, provider health checks, and usage clearing reject non-local browser origins. If `FREEWAY_API_KEY` is configured, those management endpoints and `/v1/*` API calls must include `Authorization: Bearer <FREEWAY_API_KEY>` or `x-api-key: <FREEWAY_API_KEY>`.
+
+### Common environment variables
+
+| Variable | Purpose |
+|---|---|
+| `FREEWAY_API_KEY` | Optional gateway auth key for clients calling Free-Way |
+| `FREEWAY_PROVIDER_TIMEOUT_MS` | Optional outbound provider request timeout in milliseconds (default: `30000`) |
+| `OPENROUTER_API_KEY` | OpenRouter key |
+| `GROQ_API_KEY` | Groq key |
+| `GITHUB_TOKEN` | GitHub Models token |
+| `CLOUDFLARE_API_KEY` | Cloudflare API key |
+| `CLOUDFLARE_ACCOUNT_ID` | Required for Cloudflare model sync |
+| `SILICONFLOW_API_KEY` | SiliconFlow key |
+| `CEREBRAS_API_KEY` | Cerebras key |
+| `MISTRAL_API_KEY` | Mistral key |
+| `COHERE_API_KEY` | Cohere key |
+| `NVIDIA_API_KEY` | NVIDIA NIM key |
+| `LLM7_API_KEY` | LLM7 key |
+| `KILO_API_KEY` | Kilo key |
+| `ZHIPU_API_KEY` | Zhipu / BigModel key |
+| `OPENCODE_API_KEY` | OpenCode key |
+| `HTTP_PROXY` | Optional global HTTP proxy for outbound provider calls |
+
+## API Examples
+
+### OpenAI-compatible chat completion
+
+```bash
+curl http://localhost:8787/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $FREEWAY_API_KEY" \
+  -d '{
+    "model": "llama-3.3-70b",
+    "messages": [{"role": "user", "content": "Say hello from Free-Way"}],
+    "stream": false
+  }'
+```
+
+### Force a provider explicitly
+
+```json
+{
+  "model": "groq/llama-3.3-70b"
+}
+```
+
+### Anthropic-compatible messages request
+
+```bash
+curl http://localhost:8787/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $FREEWAY_API_KEY" \
+  -d '{
+    "model": "llama-3.3-70b",
+    "max_tokens": 256,
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+### Claude-style local base URL usage
+
+For Anthropic-compatible clients that let you override the base URL, point them at:
+
+- `http://localhost:8787`
+
+Free-Way serves the compatibility routes under that origin.
+
+## HTTP Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/` | Web console |
+| `GET` | `/health` | Service health |
+| `GET` | `/api/catalog` | Provider / model / health summary |
+| `POST` | `/api/health/check/:provider` | Check one provider |
+| `POST` | `/api/health/check-all` | Check all providers |
+| `POST` | `/api/models/refresh` | Refresh provider model lists |
+| `POST` | `/api/config/keys` | Save runtime / persisted keys |
+| `GET` | `/v1/models` | OpenAI-compatible models list |
+| `POST` | `/v1/chat/completions` | OpenAI-compatible chat completions |
+| `POST` | `/v1/messages` | Anthropic-compatible messages |
+
+## Project Structure
+
+```text
+src/
+  index.ts                # Entry point
+  server.ts               # HTTP server + routes + static hosting
+  router.ts               # Provider routing and retry logic
+  providers/              # Provider definitions and model sync orchestration
+  models/                 # Canonical model registry + sync/cache adapters
+  web/                    # Console UI (HTML/CSS/JS)
+  config*.ts              # Runtime + persisted key config
+  health.ts               # Provider health checks and summary
+  anthropic-bridge.ts     # Anthropic <-> OpenAI request/response bridge
+  usage.ts                # Gateway-level usage normalization helpers
+```
+
+## Development
+
+```bash
+npm run dev
+npm run build
+npm start
+npm run test:usage
+```
+
+## Contributing
+
+- English: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 中文： [contribution.md](./contribution.md)
+
+## License
+
+MIT

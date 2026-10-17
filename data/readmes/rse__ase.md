@@ -1,0 +1,592 @@
+
+[![ASE](pages/public/assets/typing-demo.gif)](https://ase.tools)
+
+[![ASE](docs/ase-banner.png)](https://ase.tools)
+
+[![github (author stars)](https://img.shields.io/github/stars/rse?logo=github&label=author%20stars&color=%233377aa)](https://github.com/rse)
+[![github (author followers)](https://img.shields.io/github/followers/rse?label=author%20followers&logo=github&color=%234477aa)](https://github.com/rse)
+<br/>
+[![github (project license)](https://img.shields.io/github/license/rse/ase?logo=github&label=project%20license&color=%233377aa)](https://github.com/rse/ase/blob/master/LICENSE.txt)
+[![github (project release)](https://img.shields.io/github/v/release/rse/ase?logo=github&label=project%20release&color=%233377aa)](https://github.com/rse/ase)
+<br/>
+[![github (project stars)](https://img.shields.io/github/stars/rse/ase?logo=github&label=project%20stars&color=%233377aa)](https://github.com/rse/ase)
+
+About
+-----
+
+**Agentic Software Engineering (ASE)** is the
+opinionated [Open Source](https://github.com/rse/ase/blob/master/LICENSE.txt) companion
+toolkit of [*Dr. Ralf S. Engelschall*](https://ase.tools/#author)
+for fusing the concept of *Agentic AI Coding* and traditional *Software Engineering*
+in the software development tool [Anthropic Claude
+Code](https://claude.com/product/claude-code) — and with reduced support also in the alternative
+tool [GitHub Copilot CLI](https://github.com/features/copilot/cli) or
+[OpenAI Codex CLI](https://github.com/openai/codex).
+
+**ASE** ships with 49 agent skills, agent hooks, agent sub-agents, an
+underlying Model-Context-Protocol (MCP) service and a Command-Line Interface
+(CLI), incorporating reasonable methodology and automation aspects, to
+support the recurring tasks of a *Software Developer* and *Software Architect*.
+
+**ASE** is primarily motivated by the following statement of its primary
+author, [*Dr. Ralf S. Engelschall*](https://ase.tools/#author):
+
+> "Software developers in the industrial Software Engineering context,
+> in their recurring tasks, should leverage pre-manufactured agentic AI
+> skills to boost their daily productivity. Those skills incorporate
+> reasonable methodology and automation aspects while keeping the
+> developers in the driver's seat to ensure stable result quality."
+
+Notices
+-------
+
+> [!NOTE]
+> **TERMINOLOGY**: The discipline of [*Agentic Software Engineering*](docs/agentic-software-engineering.md)
+> in *general* is *Software Engineering*, supported by autonomous *AI
+> Agents* to perform tasks across the software development lifecycle.
+> This **ASE** product in *particular* is also *agentic*, but not
+> strictly based on autonomous agents. Instead, **ASE** focuses on
+> supporting the role of a Software Engineer with *Agentic AI Coding
+> Tools* towards multi-step operations and a plan/task-driven approach,
+> but still strongly focuses on Human-in-the-Loop.
+
+> [!NOTE]
+> **TOOL SUPPORT FOCUS**: The primary focus of **ASE** is on the Agentic AI Coding tool [*Claude
+> Code*](https://code.claude.com). The secondary focus is on the support
+> for [*GitHub Copilot CLI*](https://github.com/features/copilot/cli)
+> (just set environment variable `ASE_TOOL=copilot`) and [*OpenAI Codex
+> CLI*](https://github.com/openai/codex) (just set environment variable
+> `ASE_TOOL=codex`). In the future, additional support could be provided
+> also for alternative tools &mdash; if their agent harness features
+> (especially hooks, interactive user dialog tool, etc.) realistically
+> allow it.
+
+Highlights
+----------
+
+Check out the following scenarios and corresponding **ASE** examples to
+see whether **ASE** is right for you:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+- **Boosted Sessions**:
+  You want to speed up your interactive sessions and at the same time
+  reduce costs by reducing the number of produced LLM output tokens?
+  &rarr; [`/ase-meta-config`](plugin/skills/ase-meta-config/help.md)
+  `set agent.persona engineer` or even
+  [`/ase-meta-config`](plugin/skills/ase-meta-config/help.md)
+  `set agent.persona caveman`
+
+- **Alternative Approach Funnel**:
+  You prefer a plan-driven approach, but the agent harness's
+  Plan Mode is too unstructured and too direct because you want to
+  leverage a funnel of alternative approaches first?
+  &rarr; [`/ase-code-craft`](plugin/skills/ase-code-craft/help.md)
+  `hello: "ase hello" CLI command which prints a nice "Hello World" in red`
+
+- **Named and Persisted Plans**:
+  You prefer a plan-driven approach, but the agent harness's Plan Mode is
+  regularly too weak, because you want named, persisted, cross-session
+  reachable, and strictly structured plans?
+  &rarr; [`/ase-task-edit`](plugin/skills/ase-task-edit/help.md)
+  `hello`
+
+- **Plan Stress-Testing**:
+  You have a task plan, but want to be relentlessly grilled about every
+  essential aspect of it until you and the agent reach a shared
+  understanding and no open decisions remain?
+  &rarr; [`/ase-task-grill`](plugin/skills/ase-task-grill/help.md)
+  `hello`
+
+- **Implementation Drafts**:
+  You prefer a plan-driven approach, but want to draft and review the
+  implementation without later having to rewind artifacts via the version
+  control system or the agent harness's session history?
+  &rarr; [`/ase-task-implement`](plugin/skills/ase-task-implement/help.md)
+  `--draft hello`
+  &rarr; [`/ase-task-integrate`](plugin/skills/ase-task-integrate/help.md)
+  `--draft hello`
+
+- **Project Insights**:
+  You want to get a quick insight into a project by determining
+  the author, the source files with the most churn, and the module
+  structure?
+  &rarr; [`/ase-code-insight`](plugin/skills/ase-code-insight/help.md)
+  `@tool`
+
+- **Code Comprehension**:
+  You want to better comprehend code by finding focused information on
+  What, Why, Analogy, Diagram, Cruxes, and Gotchas?
+  &rarr; [`/ase-code-explain`](plugin/skills/ase-code-explain/help.md)
+  `@tool/src/*.ts`
+
+- **Lexical Code Analysis**:
+  You want to analyze code for potential problems
+  related to a standard set of code quality aspects?
+  &rarr; [`/ase-code-lint`](plugin/skills/ase-code-lint/help.md)
+  `@tool/src/*.ts`
+
+- **Document Shortening**:
+  You want a document cut down to a hard length budget -- sentences
+  tightened first, low-value content dropped next, the rest compressed
+  last -- with every cut reviewed as a whole block before it is applied?
+  &rarr; [`/ase-docs-shorten`](plugin/skills/ase-docs-shorten/help.md)
+  `--chars 4000 @README.md`
+
+- **Document Refinement**:
+  You want the wording of a document refined -- long sentences shortened,
+  nominal constructions turned into verbs, enumerations made parallel,
+  filler words struck -- while content, numbers, and technical terms
+  stay exactly as they are?
+  &rarr; [`/ase-docs-refine`](plugin/skills/ase-docs-refine/help.md)
+  `@README.md`
+
+- **Document Proofreading**:
+  You want your text documents checked and corrected for spelling,
+  punctuation, and grammar errors?
+  &rarr; [`/ase-docs-proofread`](plugin/skills/ase-docs-proofread/help.md)
+  `@README.md`
+
+- **Research Quorum**:
+  You want to research a fact by asking multiple (potentially available)
+  foreign LLMs and methodologically derive a quorum answer?
+  &rarr; [`/ase-meta-quorum`](plugin/skills/ase-meta-quorum/help.md)
+  `What is Agentic Software Engineering?`
+
+- **Logical Code Analysis**:
+  You want to analyze code for potential problems
+  in its logic, semantics, and control flow?
+  &rarr; [`/ase-code-analyze`](plugin/skills/ase-code-analyze/help.md)
+  `@tool/src/*.ts`
+
+- **Automated Change Logs**:
+  You want to get your `CHANGELOG.md` entries
+  automatically derived from your recent Git commits?
+  &rarr; [`/ase-repo-changelog`](plugin/skills/ase-repo-changelog/help.md)
+
+- **Plan Implementation**:
+  You have a named, persisted task plan and now want it implemented as a
+  single, complete change set across your project artifacts?
+  &rarr; [`/ase-task-implement`](plugin/skills/ase-task-implement/help.md)
+  `hello`
+
+- **Change Set Integration**:
+  You have implemented a task plan into a change set and now want it
+  delivered into its target branch, with merge conflicts resolved
+  semantically and the task closed afterwards?
+  &rarr; [`/ase-task-integrate`](plugin/skills/ase-task-integrate/help.md)
+  `hello`
+
+- **Epic Plan Dissection**:
+  You have one large task plan, but want it split domain-wise and
+  logically into cohesive parts, each materialized as its own sub-task
+  plan you can implement separately?
+  &rarr; [`/ase-task-dissect`](plugin/skills/ase-task-dissect/help.md)
+  `hello`
+
+- **Specification Activation**:
+  You want the SpecBook know-how -- format contract, schema, and artifact
+  set -- activated in your session, so you can query and ad-hoc edit your
+  specification in plain conversation?
+  &rarr; [`/ase-spec-activate`](plugin/skills/ase-spec-activate/help.md)
+  `which personas does the specification define?`
+
+- **Specification Editing**:
+  You want your SpecBook-based specification changed straight from a
+  plain description, in one shot and kept conformant to its format
+  contract?
+  &rarr; [`/ase-spec-edit`](plugin/skills/ase-spec-edit/help.md)
+  `-g -v add a Reviewer persona`
+
+- **Artifact Reconciliation**:
+  You want one set of artifacts (e.g. CODE, DOCS) automatically aligned
+  to reflect the current state of another set (e.g. SPEC), one-way
+  or bidirectionally?
+  &rarr; [`/ase-sync-reconcile`](plugin/skills/ase-sync-reconcile/help.md)
+  `-s SPEC -t DOCS`
+
+- **Foreign Source Import**:
+  You want external files, URLs, or pasted text ingested and turned into
+  structured SPEC, CODE, DOCS, or TASK artifacts?
+  &rarr; [`/ase-sync-import`](plugin/skills/ase-sync-import/help.md)
+  `-t SPEC @requirements.txt`
+
+- **Specification Export**:
+  You want your SpecBook-based specification rendered into
+  ready-to-consume files, like a self-contained HTML document or a
+  paginated PDF document?
+  &rarr; [`/ase-sync-export`](plugin/skills/ase-sync-export/help.md)
+  `-o docs/spec.html,docs/spec.pdf`
+
+- **Task Plan Life-Cycle**:
+  You want your named, persisted task plans switched, listed, watched on a board, viewed,
+  status-changed, assigned (with their AI usage accounted), renamed, condensed, rebooted, or
+  deleted right from within the session?
+  &rarr; [`/ase-task-id`](plugin/skills/ase-task-id/help.md),
+  [`/ase-task-list`](plugin/skills/ase-task-list/help.md),
+  [`/ase-task-view`](plugin/skills/ase-task-view/help.md),
+  [`/ase-task-status`](plugin/skills/ase-task-status/help.md),
+  [`/ase-task-assign`](plugin/skills/ase-task-assign/help.md),
+  [`/ase-task-rename`](plugin/skills/ase-task-rename/help.md),
+  [`/ase-task-condense`](plugin/skills/ase-task-condense/help.md),
+  [`/ase-task-reboot`](plugin/skills/ase-task-reboot/help.md),
+  [`/ase-task-delete`](plugin/skills/ase-task-delete/help.md)
+
+- **Direct Skill Usage Help**:
+  You want usage help for skills directly within your agent tool sessions?
+  &rarr; `/ase-xxx-xxx` `--help` or
+  [`/ase-help-skill`](plugin/skills/ase-help-skill/help.md)
+  `root cause`
+
+- **Intent-Based Skill Matching**:
+  You know what you want, but not which skill and which options realize it,
+  and want the fitting `/ase-xxx-xxx` commands generated for you?
+  &rarr; [`/ase-help-intent`](plugin/skills/ase-help-intent/help.md)
+  `split my huge change set into separate commits`
+
+</td>
+<td width="50%" valign="top">
+
+- **Diff Summary**:
+  You want a raw Git diff turned into a concise, human-readable
+  narrative of what changed and why, grouped by intent, and with
+  optional intent-coherence check, risk grading and blast radius?
+  &rarr; [`/ase-repo-diff`](plugin/skills/ase-repo-diff/help.md)
+  `-c -r -b`
+
+- **Change Review**:
+  You want the staged Git changes, a branch, or a commit reviewed the
+  way a human reviewer would on a pull request, with an approve/reject verdict and
+  prioritized, severity-tagged, line-cited findings?
+  &rarr; [`/ase-repo-review`](plugin/skills/ase-repo-review/help.md)
+
+- **Change Set Dissection**:
+  You have one large, mixed change set, but want it split into cohesive
+  parts, each landing in its own Git WorkTree so it can be reviewed and
+  committed atomically?
+  &rarr; [`/ase-repo-dissect`](plugin/skills/ase-repo-dissect/help.md)
+  `-m 4`
+
+- **Branch Merging**:
+  You want a branch, including its still uncommitted changes, merged
+  into a target branch, with merge conflicts resolved semantically and
+  an explicit merged/conflict verdict?
+  &rarr; [`/ase-repo-merge`](plugin/skills/ase-repo-merge/help.md)
+  `-t develop -c feature-x`
+
+- **Conflict Resolution**:
+  You ran into merge conflicts and want them resolved semantically,
+  without losing any change, and with the unresolvable hunks kept
+  as-is and escalated to you?
+  &rarr; [`/ase-repo-resolve`](plugin/skills/ase-repo-resolve/help.md)
+  `--interactive src/`
+
+- **Guided Bug Fixing**:
+  You want a problem or bug resolved through a structured, plan-driven
+  funnel of candidate root causes and fix approaches instead of a direct,
+  unstructured patch?
+  &rarr; [`/ase-code-resolve`](plugin/skills/ase-code-resolve/help.md)
+  `the CLI crashes on an empty config file`
+
+- **Guided Refactoring**:
+  You want the code base refactored through a structured funnel of
+  alternative refactoring approaches, optionally captured as a named,
+  persisted task plan?
+  &rarr; [`/ase-code-refactor`](plugin/skills/ase-code-refactor/help.md)
+  `extract the config loading into a dedicated module`
+
+- **Architecture Analysis**:
+  You want your software architecture reviewed for package cohesion and
+  inter-package coupling to spot structural weak spots?
+  &rarr; [`/ase-arch-analyze`](plugin/skills/ase-arch-analyze/help.md)
+  `@tool/src`
+
+- **Collaborative Brainstorming**:
+  You want to figure out *what* to build before *how*, by diverging on
+  a broad space of ideas and then converging through clustering and
+  scoring into a recommended direction?
+  &rarr; [`/ase-meta-brainstorm`](plugin/skills/ase-meta-brainstorm/help.md)
+  `an offline-first sync layer for the mobile app`
+
+- **Root-Cause Analysis**:
+  You want to understand the reason for a fact with the help of the
+  "Five-Whys" root-cause determination method?
+  &rarr; [`/ase-meta-why`](plugin/skills/ase-meta-why/help.md)
+  `is the Decibel (dB) unit a logarithmic one?`
+
+- **Devil's Advocate Challenge**:
+  You want a thesis or statement relentlessly challenged and criticised,
+  and finally resolved into a balanced Hegelian synthesis?
+  &rarr; [`/ase-meta-diaboli`](plugin/skills/ase-meta-diaboli/help.md)
+  `The Decibel (dB) is an intuitive unit.`
+
+- **Steelman Argument**:
+  You want a thesis or statement charitably strengthened with the
+  strongest possible case, and finally consolidated into a fortification
+  argument?
+  &rarr; [`/ase-meta-steelman`](plugin/skills/ase-meta-steelman/help.md)
+  `ASE is one of the best Anthropic Claude Code CLI add-ons.`
+
+- **Key Point Distillation**:
+  You want a document distilled into a flat, importance-ranked list of
+  its key points, each with a salience rank, a rationale, and a verbatim
+  line-cited evidence snippet?
+  &rarr; [`/ase-docs-distill`](plugin/skills/ase-docs-distill/help.md)
+  `doc/architecture.md`
+
+- **Search Engine Consolidation**:
+  You want to query multiple (potentially available) search engines
+  and derive a consolidated result?
+  &rarr; [`/ase-meta-search`](plugin/skills/ase-meta-search/help.md)
+  `What is Agentic Software Engineering?`
+
+- **ELI5 Topic Explanation**:
+  You want a topic explained in a very simple, child-friendly
+  "Explain Like I'm 5" (ELI5) way, optionally grounded in Web facts?
+  &rarr; [`/ase-meta-eli5`](plugin/skills/ase-meta-eli5/help.md)
+  `Fourier transform`
+
+- **Topic Quote Finding**:
+  You want quotes on a topic, sorted into a 2x2 matrix of attributed
+  vs. anonymous and literal vs. thematic ones?
+  &rarr; [`/ase-meta-quotes`](plugin/skills/ase-meta-quotes/help.md)
+  `software architecture`
+
+- **Foreign LLM Query**:
+  You want to directly query a (potentially available) foreign LLM?
+  &rarr; [`/ase-meta-chat`](plugin/skills/ase-meta-chat/help.md)
+  `gemini What is Agentic Software Engineering?`
+
+- **Package Discovery**:
+  You want to be supported in the discovery of suitable packages
+  for the establishment of your technology stack?
+  &rarr; [`/ase-arch-discover`](plugin/skills/ase-arch-discover/help.md)
+  `reactive UI DOM rendering`
+
+- **Multi-Criteria Decision Matrices**:
+  You want to be supported in the evaluation of alternatives with the
+  methodological help of a weighted multi-criteria decision matrix?
+  &rarr; [`/ase-meta-evaluate`](plugin/skills/ase-meta-evaluate/help.md)
+  `Vue vs. React vs. Angular, focus on TypeScript support and extensibility`
+
+- **Workflow Skill Generation**:
+  You want a recurring multi-step procedure -- sequential steps, parallel
+  actions, sub-agent and skill calls -- turned into its own reusable skill?
+  &rarr; [`/ase-meta-workflow`](plugin/skills/ase-meta-workflow/help.md)
+  `optimizer analyze the code, then resolve each finding in a parallel sub-agent`
+
+- **Commit Message Crafting**:
+  You want a concise commit message crafted from the currently staged
+  Git changes instead of writing it by hand?
+  &rarr; [`/ase-repo-commit`](plugin/skills/ase-repo-commit/help.md)
+
+- **Conceptual Topic Neighborhood**:
+  You want to explore the parent, sibling, and child topics of a concept,
+  optionally grounded in Web facts and navigable in an interactive loop?
+  &rarr; [`/ase-meta-proximity`](plugin/skills/ase-meta-proximity/help.md)
+  `software architecture`
+
+- **Identifier and Name Minting**:
+  You want a UUID, a SHA-1 digest, a constant, variable, function, or class
+  identifier, a path component, or a catchy product name minted from a
+  short description?
+  &rarr; [`/ase-meta-mint`](plugin/skills/ase-meta-mint/help.md)
+  `-t name a background service bridged into the agent tool`
+
+- **Harness Compatibility Self-Test**:
+  You want to check how faithfully your current LLM and its agent harness
+  execute the core interpreter primitives the **ASE** skills rely on?
+  &rarr; [`/ase-meta-compat`](plugin/skills/ase-meta-compat/help.md)
+
+- **Convenient Foreign MCP Server Setup**:
+  You have API keys for popular AI chat services and/or Web search services
+  which ASE could *optionally* leverage in various skills?
+  &rarr; `ase setup mcp activate`
+
+</td>
+</tr>
+</table>
+
+User Setup
+----------
+
+### Prerequisites
+
+- Operating System: macOS, Linux, Windows
+- Agent Tool: [Anthropic Claude Code CLI](https://code.claude.com), [GitHub Copilot CLI](https://github.com/features/copilot/cli), or [OpenAI Codex CLI](https://github.com/openai/codex)
+- Runtime Engine: [Node.js](https://nodejs.org)
+- Optional, for the `pdf` output of `/ase-sync-export` only: a Chromium-class browser, i.e. either a system-wide [Google Chrome](https://www.google.com/chrome) or the Playwright Chromium, fetched once via `npx playwright install chromium`
+
+### Installation
+
+```
+#   install ASE tool into PATH (bootstrapping only)
+npm install -g @rse/ase
+
+#   install ASE plugin into agent tool
+ase setup install [--tool claude|copilot|codex] [--scope user|project|local]
+```
+
+### Updating
+
+```
+#   update ASE tool in PATH and ASE plugin in agent tool
+ase setup update [--tool claude|copilot|codex] [--scope user|project|local]
+```
+
+### Uninstallation
+
+```
+#   uninstall ASE tool from PATH and ASE plugin from agent tool
+ase setup uninstall [--tool claude|copilot|codex] [--scope user|project|local]
+```
+
+### Enabling/Disabling
+
+```
+#   enable/disable ASE plugin in agent tool (without uninstalling it)
+ase setup enable    [--tool claude|copilot|codex] [--scope user|project|local]
+ase setup disable   [--tool claude|copilot|codex] [--scope user|project|local]
+```
+
+### Status
+
+```
+#   report ASE plugin, MCP server, output style, and statusline registrations in agent tool
+ase setup status    [--tool claude|copilot|codex]
+```
+
+The report lists, across *all* scopes at once, the registration scope
+and enabled/disabled state of the *ASE* plugin, the registration scope
+of each currently registered MCP server, the settings files carrying a
+`selected` (*ASE*-owned) or `foreign` (hand-selected) `outputStyle`
+entry, and the settings files carrying an `activated` (*ASE*-owned) or
+`foreign` (hand-crafted) `statusLine` entry. It is read-only, takes no
+`--scope` (reporting every scope is the point), and always exits with
+status 0.
+
+### Output Style
+
+The *ASE* plugin ships the output style `ase:ase-terse`, which lets the agent
+respond tersely, leading with the result and skipping preamble,
+narration, and closing recaps. For `--tool claude`, `ase setup install`
+(and `ase setup update`) selects it by writing `"outputStyle": "ase:ase-terse"`
+into the `settings.json` of the given `--scope`, `ase setup uninstall`
+removes this selection again, and a hand-selected foreign `outputStyle`
+is always preserved. You can switch it at any time via `/config`. For
+`--tool copilot` and `--tool codex`, which have no output style concept,
+the identical style instructions are injected into the session context
+by the *ASE* session-start hook instead.
+
+### Statusline
+
+```
+#   activate/deactivate ASE statusline in agent tool
+ase setup statusline activate   [--tool claude|copilot] [--scope user|project|local] [<line> ...]
+ase setup statusline deactivate [--tool claude|copilot] [--scope user|project|local]
+```
+
+The statusline is only supported for `--tool claude` and `--tool
+copilot`; `codex` has no statusline concept. Each optional `<line>`
+argument is a format template of literal text and `%`-prefixed
+placeholders (e.g. `"%u %p %T"`); without any, a single default line
+`"%m %e %t"` is rendered.
+
+The `--scope` option defaults to `user` (today's global, machine-wide behavior). Use
+`--scope project` to share the plugin registration via the repository, or `--scope
+local` to keep it out of version control and confined to a single repository. `--scope`
+is only supported for `--tool claude`; a non-`user` scope is rejected for `copilot` and
+`codex`, whose CLIs have no scope concept.
+
+Foreign MCP Servers
+-------------------
+
+**ASE** can *optionally* leverage foreign MCP servers in various **ASE**
+skills for improved quality. They can be conveniently managed via `ase
+setup mcp`.
+
+```
+#   check list of MCP servers known to ASE
+ase setup mcp list
+
+#   activate MCP servers in the agent tool
+ase setup mcp activate   [--tool claude|copilot|codex] [--scope user|project|local] [<server>[,...]]
+
+#   deactivate MCP servers in the agent tool
+ase setup mcp deactivate [--tool claude|copilot|codex] [--scope user|project|local] [<server>[,...]]
+```
+
+Each MCP server reads its API key from an environment
+variable `ASE_MCP_KEY_XXX`, where `XXX` is the server id in
+upper-case with dashes replaced by underscores (e.g. the server
+`openai-chatgpt` uses `ASE_MCP_KEY_OPENAI_CHATGPT`). These variables
+are also automatically sourced from `.env` files. A server whose
+key variable is unset or empty is silently skipped on activation.
+The harness-based servers (`anthropic-claude`, `openai-codex` and
+`github-copilot`) require no API key at all -- their variable instead
+carries the harness model identifier (or the special value `default` for
+the default model of the harness).
+
+The following AI services are currently defined:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+- Chat: OpenAI ChatGPT (`openai-chatgpt`)
+- Chat: Google Gemini (`google-gemini`)
+- Chat: DeepSeek (`deepseek`)
+- Chat: xAI Grok (`xai-grok`)
+- Chat: Alibaba Qwen (`alibaba-qwen`)
+- Chat: Z.AI GLM (`zai-glm`)
+- Chat: Anthropic Claude (`anthropic-claude`)
+- Chat: OpenAI Codex (`openai-codex`)
+- Chat: GitHub Copilot (`github-copilot`)
+
+</td>
+<td width="50%" valign="top">
+
+- Search: Brave (`brave`)
+- Search: Perplexity (`perplexity`)
+- Search: Exa (`exa`)
+
+</td>
+</tr>
+</table>
+
+Hint: All API-based MCP servers of type "Chat" support both the native
+API of the LLM vendor and the *OpenRouter* proxy API as an alternative,
+i.e., you can leverage all paid "Chat" AI services by just providing the
+`ASE_MCP_KEY_OPENROUTER` of an *OpenRouter* account. Alternatively,
+the harness-based MCP servers of type "Chat" (`anthropic-claude`,
+`openai-codex` and `github-copilot`) require no API key at all, as they
+bridge to a locally installed AI agent harness CLI (Anthropic Claude
+Code CLI, OpenAI Codex CLI, or GitHub Copilot CLI) which authenticates
+via its own configured credentials.
+
+See Also
+--------
+
+- [SpecBook](https://specbook.tools)(Markdown-based specification)
+- [MCP-to-OpenAI](https://github.com/rse/mcp-to-openai)(gateway between MCP and OpenAI-compatible APIs)
+- [MCP-to-Harness](https://github.com/rse/mcp-to-harness)(bridge between MCP and AI agent harness CLIs)
+- [claudeX](https://github.com/rse/claudex)(convenience wrapper for Anthropic Claude Code CLI)
+- [Bash-Authorize](https://github.com/rse/bash-authorize)(pre-tool-use hook for Bash commands)
+
+Support
+-------
+
+**ASE** is developed in the experience context of industrial Software
+Engineering at the [*msg group*](https://www.msg.group) and in the
+educational context of the *Software Engineering Academy (SEA)*. **ASE**
+development is supported by *msg Research* and *Software Engineering
+Academy (SEA)*.
+
+Copyright & License
+-------------------
+
+Copyright &copy; 2025-2026 [Dr. Ralf S. Engelschall](https://engelschall.com)<br/>
+Licensed under [Apache 2.0](https://spdx.org/licenses/Apache-2.0)
+

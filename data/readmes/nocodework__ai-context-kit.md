@@ -1,0 +1,123 @@
+<div align="center">
+
+**English** · [Polski](README.pl.md)
+
+# ai-context-kit
+
+Build a reusable **context file about you and your company**, once — then drop it into any AI tool so every answer is sharper and on-brand. Two Claude Code skills that interview you, plus plain Markdown templates if you don't use Claude Code.
+
+[![license: MIT](https://img.shields.io/badge/license-MIT-7C3AED.svg)](LICENSE)
+![format: Markdown](https://img.shields.io/badge/format-Markdown-3B82F6)
+![works with](https://img.shields.io/badge/works%20with-ChatGPT%20·%20Claude%20·%20Gemini%20·%20Cursor-22C55E)
+
+<img src="docs/use-everywhere.svg" width="760" alt="One context file, used across ChatGPT, Claude, Gemini, Cursor and CLAUDE.md">
+
+</div>
+
+## Why
+
+An AI assistant is only as good as the context you give it. Most people retype the same facts — who they are, what the company does, who the clients are — into every new chat. Then the answers come back generic, because the model is guessing.
+
+This kit helps you write that context down **once**, as clean Markdown, and reuse it everywhere. It's the boring foundation that makes everything else (proposals, content, client replies, code) come out in your voice instead of a stranger's.
+
+Two pieces, because they change at different speeds:
+
+- **personal-context** — who *you* are: role, background, how you work, how you want AI to help.
+- **company-context** — what the *company* is: offer, clients, personas, positioning, voice, common questions.
+
+## Two ways to build it
+
+**With [Claude Code](https://claude.com/claude-code) (guided interview):** install a skill, run it, answer a short set of questions. The skill probes gaps, suggests what's missing, and writes the file for you.
+
+One command in Claude Code:
+
+```
+/plugin install ai-context-kit --marketplace nocodework/ai-context-kit
+```
+
+On Claude Code older than 2.1.275: `/plugin marketplace add nocodework/ai-context-kit`, then `/plugin install ai-context-kit@ai-context-kit`. Or clone and install by hand:
+
+```bash
+git clone https://github.com/nocodework/ai-context-kit
+cd ai-context-kit && ./install.sh
+```
+
+Then in Claude Code: *"build my personal context"* or *"build our company context"* (the skills interview and write in your language). Output lands as `personal-context.md` / `company-context.md` in the directory where you launched Claude Code. Later, *"refresh my context"* reviews an existing file and updates what's gone stale. To update the skills after a repo change: `git pull && ./install.sh` (or copy `skills/*` into `~/.claude/skills/` by hand).
+
+**Without Claude Code (fill a template):** copy a template and write the answers yourself.
+
+```bash
+curl -O https://raw.githubusercontent.com/nocodework/ai-context-kit/main/templates/company-context.template.md
+```
+
+See [`examples/`](examples) for filled-in samples (English and Polish) to copy the shape from. **Po polsku?** Użyj plików `*.template.pl.md` i [README.pl.md](README.pl.md).
+
+## Use your context in any AI tool
+
+You wrote one Markdown file. Here's where to put it so the AI actually uses it. (Menu names change over time; the idea is always "instructions / knowledge / project files / rules".)
+
+**Universal (works everywhere):** paste the file's contents at the start of a chat, or attach the `.md` as a file. Simple, always works.
+
+**ChatGPT**
+- *Projects:* create a Project → open it → **Instructions** and paste the context, or add the `.md` as a project **file**. Every chat inside that project then uses it.
+- *Custom GPT:* Configure → **Instructions** (paste) or **Knowledge** (upload the `.md`). If the GPT is shared publicly, treat Knowledge as public — users can extract those files, so keep client names and sales know-how in private Projects instead.
+
+**Claude**
+- *Projects:* create a Project → **Project knowledge** → add the `.md` (or paste into the project's custom instructions). Shared by every chat in the project.
+- *Claude Code:* put it in **`CLAUDE.md`** at your repo root (or `~/.claude/CLAUDE.md` for all projects). It's loaded automatically every session — no pasting.
+
+**Gemini**
+- *Gems:* create a Gem → paste the context into the Gem's **instructions**. Or attach the `.md` file in a normal chat.
+
+**Cursor / AI IDEs**
+- Save it as **`.cursor/rules/context.mdc`** with `alwaysApply: true` in its frontmatter — the Markdown body stays as-is. (`.cursorrules` still works but is legacy.)
+
+**Agent CLIs (Codex, Gemini CLI, GitHub Copilot)**
+- Same file, different name: **`AGENTS.md`** at the repo root (read by Codex, Cursor and a growing list of tools), **`GEMINI.md`** for Gemini CLI, **`.github/copilot-instructions.md`** for GitHub Copilot.
+
+**Keep it alive:** store the file in a repo or a note, update it as things change, and re-paste / re-upload the new version. A stale context is worse than none.
+
+## What each context captures
+
+**personal-context** — identity and role, short background and expertise, what you do day to day, how you like to work and decide, your communication style and voice, your goals, and how you want AI to help (formats to use, things to always/never do).
+
+**company-context** — what the company does in one line, the offer and what makes it different, your ideal customer and real client examples, key personas (who buys, who uses, their pains), positioning and messaging, tone of voice (words to use/avoid), the team, and the questions clients ask most often with your answers.
+
+Full field lists live in [`templates/`](templates).
+
+## The whole kit in one picture
+
+<div align="center">
+<img src="docs/context-poster.png" width="560" alt="What AI needs to actually work — the problem, two context files, and how to build them in 15 minutes">
+</div>
+
+## Part of NoCodeWork open source
+
+ai-context-kit is one of a small set of open, self-contained tools we build at [NoCodeWork](https://nocodework.io):
+
+- **[ai-context-kit](https://github.com/nocodework/ai-context-kit)** — give any AI tool durable context about you and your company *(you're here)*
+- **[ai-adoption-kit](https://github.com/nocodework/ai-adoption-kit)** — roll out AI in a company in 90 days: a rollout plan, a process map and an AI policy, built from a short interview (Polish)
+- **[growth-os](https://github.com/nocodework/growth-os)** — an open Growth OS for any AI agent: audit a site's SEO, speed, GEO and competitors, then act
+- **[offline-notes](https://github.com/nocodework/offline-notes)** — a Markdown editor in one HTML file, zero network requests
+- **[offline-whiteboard](https://github.com/nocodework/offline-whiteboard)** — an infinite whiteboard that never phones home
+- **[offline-sketch](https://github.com/nocodework/offline-sketch)** — a pressure-sensitive sketchpad, fully offline
+
+Same idea across all of them: your data stays yours, no lock-in, MIT.
+
+## Contributing
+
+Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and the [roadmap](ROADMAP.md). New here? A few [good first issues](https://github.com/nocodework/ai-context-kit/labels/good%20first%20issue) are open — translating a template or adding a new context type (product, project, brand-voice) is a great place to start. The output is plain Markdown and the skills are plain instructions; nothing to build. Be kind: [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE), by [NoCodeWork](https://nocodework.io). Use it for anything.
+
+---
+
+<div align="center">
+
+<a href="https://nocodework.io"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/nocodework-logo-white.png"><img src="docs/nocodework-logo.png" alt="NoCodeWork" width="150"></picture></a>
+
+Built by <a href="https://nocodework.io">NoCodeWork</a>, where we build automation, AI and apps for companies. **Context beats tools.**
+
+</div>

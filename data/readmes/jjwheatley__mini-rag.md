@@ -1,0 +1,73 @@
+# Mini-RAG
+*Local Retrieval Augmented Generation for your Obsidian notes*
+
+---
+
+## What is Mini-RAG?
+Mini-RAG lets you chat with a locally running LLM, in the context of selected Obsidian notes and folders. When you open a chat with a note or folder, Mini-RAG chunks the content into excerpts, generates vector embeddings for each chunk, and retrieves the most semantically relevant excerpts to include with each query. For the LLM, you can select any locally installed Ollama model (see: Configure Mini-RAG).
+
+## Setting Up Mini-RAG
+### Install Ollama
+If you don't already have Ollama installed, you can download and install Ollama [here](https://ollama.com/download). 
+
+This is necessary because Mini-RAG relies on a locally running instance of Ollama for its responses. This is the same reason that Mini-RAG is currently a desktop-only plugin.
+
+### Configure Mini-RAG
+Open "options" by clicking on the gear icon then navigate to `Community Plugins > Mini-RAG > Options`. Here you can set the:
+- **Ollama URL**: If left unset, Ollama's default URL is used. The model list refreshes automatically when you change this.
+- **Chat Model**: Dropdown list of models installed in your local Ollama setup. Use the refresh button to reload the list.
+- **Temperature**: Higher temperatures give more creative responses; lower values give more focused and consistent ones.
+- **Retrieved chunks (top-K)**: How many note excerpts are injected into each query (1–10). Higher values give the model more context but increase prompt size.
+- **Cache embeddings on disk**: When enabled, note embeddings are saved so that re-opening a note or folder is near-instant instead of re-computing every time. See [Embedding cache](#embedding-cache) for what is stored and the privacy trade-off. Off by default.
+- **Enable context-free chats**: Provides the option to chat with an LLM without the context of a note or folder.
+- **Use a dedicated embedding model**: When enabled, a separate Ollama model is used to generate embeddings instead of the chat model. Recommended if you want higher retrieval quality. If the selected embedding model is not yet installed, the settings panel shows the `ollama pull <model>` command to install it.
+
+
+## Using Mini-RAG
+### Opening a Mini-RAG Chat
+You can open a chat from the right-click context menu, or via the Command Palette (`Ctrl/Cmd+P` → "Mini-RAG: Open chat panel"). You will see the Mini-RAG menu option when you:
+- Right-Click within a note
+- Right-Click a note in the sidebar
+- Right-Click a folder in the sidebar
+- Open a note's triple-dot menu
+
+### Responses
+Responses stream in token-by-token as the model generates them. This is by design, to give a more responsive feel to the behaviour.
+
+### Copying Messages
+Click any chat bubble (yours or the model's) to copy its text to the clipboard.
+
+### Saving Conversations
+To save a Mini-RAG conversation, click the **Save** (disk) icon. If you continue the conversation after saving, click Save again to update the file.
+
+To save under a custom name, click the **chevron** (▾) next to the Save button and choose **Save as…**
+
+### Summarizing
+When a chat has context (opened from a file or folder), a **Summarize** (sparkles) button appears. Click it to ask the model to summarize the context file.
+
+---
+
+## Embedding cache
+
+Generating embeddings for a large folder can take a while. With **Cache embeddings on disk** enabled, Mini-RAG stores the results so that the next time you open the same note or folder, unchanged notes are loaded instantly and only new or edited notes are re-embedded.
+
+The cache is stored per folder under `.obsidian/plugins/mini-rag/cache/`, mirroring your vault's folder structure. Each note's entry is keyed by a hash of its content, the chunking version, and the embedding model — so editing a note, or switching embedding models, automatically re-embeds only what changed. Entries for deleted notes are cleaned up automatically.
+
+**What the cache contains:** the cache files store your note **text** and its **embedding vectors** in plain (unencrypted) JSON. Embedding vectors are not anonymous — much of the original text can be reconstructed from them — so treat the cache as being as sensitive as the notes themselves.
+
+**Keeping the cache private:**
+- **Git** — Mini-RAG writes a `.gitignore` into the cache folder automatically, so the cache is never committed if your vault is a git repository.
+- **Obsidian Sync / iCloud / Dropbox / etc.** — there is no per-file exclusion for the cache. If you sync the `.obsidian` configuration folder (including installed community plugins), the cache will sync with it. If your vault syncs to a location where you would not want note content copied, leave this setting **off** (the default).
+
+## Privacy & Permissions
+
+### Network Usage
+Mini-RAG communicates exclusively with your locally-running Ollama server (default: `http://localhost:11434`). No data is sent to any external server — all requests stay on your machine.
+
+### Clipboard Access
+Mini-RAG writes to the clipboard when you click a **Copy** button (e.g. to copy a chat message, or to copy an `ollama pull` command from the settings panel). It never reads clipboard content.
+
+---
+
+## Author
+For more about the author visit [JJWheatley.com](https://www.jjwheatley.com/)

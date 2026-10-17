@@ -1,0 +1,305 @@
+<div align="center">
+  <img width="500px" src="assets/endgame.png" />
+  <h1>ENDGAME C2 FRAMEWORK</h1>
+  <br/>
+
+  <p><i>ENDGAME is a professional command and control framework built for authorized red team engagements, penetration testing, and educational security research. Designed to simulate realistic adversary techniques, assess detection coverage, and help security teams understand their defensive gaps — with a built-in <strong>AI Console</strong> that turns natural language into executed commands and automatically analyzes every result.</i></p>
+
+  <p><i>Made with AI, thought and directed by a human.</i></p>
+
+  <p>
+    <a href="https://endgamec2framework.com"><b>🌐 endgamec2framework.com</b></a>
+    &nbsp;·&nbsp;
+    <a href="https://endgamec2framework.github.io/endgame/"><b>📄 Documentation</b></a>
+    &nbsp;·&nbsp;
+    <a href="https://endgamec2framework.com/professional.html"><b><span style="color:#ff3c3c">🔴 Professional Edition</span></b></a>
+  </p>
+  <br/>
+
+  <img src="assets/screenshots/kill_chain_graph.png" width="90%" /><br /><br />
+  <img src="assets/screenshots/operator_console.png" width="90%" /><br /><br />
+  <img src="assets/screenshots/agents_graph.png" width="90%" /><br />
+
+</div>
+
+---
+
+### Quick Start
+
+```bash
+git clone https://github.com/endgamec2framework/endgame
+cd endgame
+./install.sh
+```
+
+Re-run `./install.sh` to update — it will pull the latest code and rebuild while preserving certificates and operator profiles.
+
+> Full setup guide: [Documentation → Installation](https://endgamec2framework.github.io/endgame/#install)
+
+---
+
+## 🤖 AI Console — Natural Language Red Teaming
+
+ENDGAME's **AI Console** is a first-class feature that brings an AI co-pilot directly into the operator workflow. It's not a chatbot tacked on the side — it lives in the same panel as your agent terminals, knows the full C2 command set, and has real-time context about the target: hostname, OS, user, privileges, and transport.
+
+### How it works
+
+1. **Right-click any agent** in the Agents table → **Open AI Console**
+2. An `🤖` tab opens in the **bottom console pane** — side by side with your regular terminal tabs
+3. **Describe your objective** in natural language (in any language)
+4. The AI suggests one or more C2 commands, each wrapped in a **▶ Execute** execute card
+5. **Confirm execution** — the task is dispatched to the real agent
+6. The output comes back and the AI **automatically analyzes the result** and proposes the next step
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/endgamec2framework/endgame/gh-pages/screenshots/context_menu_ai_console.png" width="48%" />
+  &nbsp;
+  <img src="https://raw.githubusercontent.com/endgamec2framework/endgame/gh-pages/screenshots/ai_console_integrated.png" width="48%" /><br />
+  <em>Left: right-click menu · Right: AI Console tab open in the console pane (qwen3.6)</em>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/endgamec2framework/endgame/gh-pages/screenshots/ai_console_integrated_result.png" width="90%" /><br />
+  <em>Command executed on a real mTLS agent · AI analyzes output and suggests SHELL tasklist /v for SYSTEM-privilege process enumeration</em>
+</div>
+
+### Key capabilities
+
+| Capability | Detail |
+|---|---|
+| **Integrated into console pane** | Opens as a tab — no floating modal, no context switch |
+| **Full C2 command awareness** | System prompt includes every available command, the agent's OS/arch/privileges, transport, and current task queue |
+| **Streaming responses** | Tokens stream in real time as the model generates them |
+| **Auto-analysis loop** | After every command execution the output is automatically sent back to the AI for interpretation and next-step recommendation |
+| **Multi-session** | Open AI Console for multiple agents simultaneously — each tab maintains independent chat history |
+| **Provider agnostic** | Works with **Ollama** (local, offline) or **Anthropic Claude API** — whichever is configured in the AI tab |
+| **Confirm before execute** | Every suggested command requires an explicit click — the AI never sends tasks autonomously |
+
+### Supported models (Ollama)
+
+Any model available in your Ollama instance works. Recommended for red team context:
+
+- `qwen3.6:latest` — default · fast · good instruction following
+- `qwen3.6:35b-a3b-coding-mxfp8` — larger · stronger code/command reasoning
+- `deepseek-r1:8b` / `deepseek-r1:32b` — reasoning models · good at multi-step attack chains
+- Any Anthropic Claude model via the Claude API
+
+### Connecting to a remote Ollama instance (SSH tunnel)
+
+ENDGAME locates the Ollama server via the `OLLAMA_HOST` environment variable (default `http://localhost:11434`). When Ollama runs on a separate host — e.g. a Kali box with a GPU — tunnel its port to your operator machine over SSH and point `OLLAMA_HOST` at the local forward:
+
+```bash
+# 1. Forward the remote Ollama port (11434) to a local port (11435)
+#    -N: no remote shell · -L: local forward so 127.0.0.1:11435 on your machine reaches Ollama
+ssh -NL 11435:localhost:11434 kali@10.10.10.99
+
+# 2. Point the Ollama CLI and ENDGAME's AI Console at the forwarded port
+export OLLAMA_HOST=http://127.0.0.1:11435
+
+# 3. Verify the tunnel and the installed models
+ollama list
+```
+
+- **`-L 11435:localhost:11434`** opens a *local* forward: connections to `127.0.0.1:11435` on your machine are relayed to `localhost:11434` on the SSH target. This is what makes `ollama list` work from your operator host. Use `-R` instead only for the reverse case — when the *remote* host must reach your local Ollama.
+- `OLLAMA_HOST` is read by both the Ollama CLI and ENDGAME's AI Console, so the same export works for `ollama pull`/`ollama list` and for the in-UI AI tab.
+- The local port (`11435`) is arbitrary — pick any free port and keep it identical in the SSH forward and in `OLLAMA_HOST`.
+- Keep the `ssh` session open for the duration of the engagement; closing it drops the forward.
+
+---
+
+### What's inside
+
+| Component | Summary |
+|---|---|
+| **Server** | Go binary · multi-operator teamserver · SQLite op-log · mTLS API :31337 · DNS canary burn alerts |
+| **Web GUI** | Kill-chain graph (auto-refresh) · agent console · **AI Console** · loot manager · AI assistant · multi-operator · Plugin Marketplace · **BOF Catalog** (58 collections, graphical install/remove) · task queue controls (`tasks [n]` · `tasks-kill <id>`) |
+| **Agent (Go)** | **Windows · Linux · macOS** · 7 transports · full evasion suite · API hashing (PEB walk, 22 fns off IAT) · Kerberos ops · inline PE loader · CONFIG runtime · ~13 MB |
+| **Agent (Nim)** | **Windows · Linux** · 7 transports incl. SMB pipe · indirect syscalls (Hell's Gate) · stack spoofing · NTDLL unhook · API hashing (PEB walk, 22 fns off IAT) · inline PE loader · BOF + .NET CLR · keylogger · SOCKS5 · ISHELL · browser creds · lateral movement · anti-sandbox · ~1 MB |
+| **Agent (Rust)** | **Windows · Linux** (x64) · 7 transports · indirect syscalls (Hell's Gate) · AMSI patch · sleep masking · API hashing · stack spoofing · NTDLL unhook · anti-sandbox · working hours · DNS canary · Kerberos ops · inline PE loader · BOF + .NET CLR · ISHELL · screenwatch · full injection suite · BLOCKDLLS · PEB spoof · ETW patch · browser creds · keylogger · SOCKS5 · lateral movement (8 methods) · ~507 KB |
+| **Agent (C)** | **Windows · Linux** (x64) · 7 transports · EXE + DLL format · API hashing (PEB walk, 35 fns off IAT) · PPID spoof · anti-sandbox · Kerberos ops · inline PE loader · NTDLL unhook · keylogger · SOCKS5 · ISHELL · browser creds · .NET CLR · BOF · lateral movement · ~130 KB |
+| **Agent (C#)** | **Windows** (x64) · HTTP transport · AMSI/ETW patch · NTDLL unhook · sleep masking · PPID spoof · anti-sandbox · working hours · DNS canary · PE header wipe · HWBP clear · Kerberos ops · LSASS dump · token theft/vault · GETSYSTEM · UAC bypass · persistence · keylogger · screenwatch · clipboard monitor · process injection · inline PE exec · SOCKS5 · port forward · reverse SOCKS · port scan · pivot relay · lateral movement (8 methods) · credential harvesting · registry/ADS ops · COM hijack · timestomp · ISHELL · ~13 MB |
+| **Loaders** | C / Go / Nim / Rust / C# (WinHTTP) / shellcode stubs · split into Payload Store + Loader Store tabs |
+| **Site Management** | Operator-only site cloning · same-origin asset proxy/cache · hosted files · optional hidden download iframe for authorized lab delivery |
+| **Reports** | HTML · JSON · CSV · MITRE ATT&CK Navigator layer · AI executive summary · SIEM export (Splunk · Elastic · Sentinel · QRadar · Chronicle · Cortex XDR · Suricata · Sigma) |
+
+#### Site Management / Site Cloner
+
+The **Site Management** section inside the **Stager** tab is available to operators for authorized lab exercises such as GOAD. It can host reusable files with a local URI/host/port/MIME type, clone an HTTP(S) page, rewrite its referenced assets through a same-origin proxy, select a hosted resource as the clone's attack, and optionally inject a hidden iframe that downloads it when the page is opened.
+
+Each site is stored below `data/sites/<slug>/` with a local HTML copy, a private site-files directory, an asset cache, and a JSON manifest. Reusable Host File resources are stored below `data/sites/hosted/` and are served at `/hosted/<id><local-uri>`. The public clone is served from `/site/<slug>/` (and its configured clone URI); site creation, hosting, injection, and deletion remain behind the operator API role.
+
+The configured Local Host/Port are used to generate the delivery URL; DNS, port-forwarding, or a redirector must point that URL to the server's HTTP listener. The current implementation intentionally does not capture keystrokes from cloned login forms.
+
+#### Agent capabilities
+
+| | **Go** (Ekko) | **Nim** | **Rust** | **C** | **C#** (.NET) |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Platform** | Win · Linux · macOS | Win · Linux | Win · Linux | Win · Linux | Win |
+| **Size** | ~13 MB | ~1.2 MB | ~507 KB | ~130 KB | ~13 MB |
+| **Transports** | HTTP · HTTPS · mTLS · DNS · DoH · SMB · TCP | HTTP · HTTPS · mTLS · DNS · DoH · SMB · TCP | HTTP · HTTPS · mTLS · DNS · DoH · SMB · TCP | HTTP · HTTPS · mTLS · DNS · DoH · SMB · TCP | HTTP |
+| **DLL format** | ✓ | ✓ | ✓ | ✓ | ✗ |
+| Shell / file ops / sysinfo | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Upload / Download | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Screenshot | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Screenwatch (live) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Keylogger | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Clipboard monitor | ✓ | ✓ | ✓ | ✓ | ✓ |
+| LSASS dump (MINIDUMP) | ✓ | ✓ | ✓ | ✓ | ✓ MiniDumpWriteDump |
+| LSASS dump (LSASS_DUMP_NT — no MiniDumpWriteDump) | ✓ | ✓ | ✓ | ✓ | ✓ NtReadVirtualMemory |
+| ADCS cert request (ESC1-6 — native certreq) | ✓ | ✓ | ✓ | ✓ | ✓ certreq.exe |
+| DCSYNC (ntdsutil IFM · vssadmin) | ✓ | ✓ | ✓ | ✓ | ✓ ntdsutil + vssadmin |
+| **AMSI patch** | ✓ (VEH / DR0) | ✓ | ✓ xor-ret patch | ✓ | ✓ VEH patch |
+| **ETW blind** | ✓ | ✓ + NtSetInfoProcess | ✓ EtwEventWrite patch | ✓ | ✓ EtwEventWrite patch |
+| **NTDLL unhook** | ✓ | ✓ | ✓ | ✓ | ✓ fresh ntdll copy |
+| **Indirect syscalls** | ✓ Hell's Gate + Halo's Gate | ✓ Hell's Gate + Halo's Gate | ✓ Hell's Gate + Halo's Gate | ✓ Hell's Gate + Halo's Gate | ✓ SSN trampoline (RWX stub) |
+| **Stack spoofing** | ✓ call-preceded RET gadget | ✓ 110-byte spoofed stubs | ✓ 110-byte spoofed stubs | ✓ 110-byte spoofed stubs | ✓ spoofed stubs |
+| **API hashing (IAT removal)** | ✓ DJB2 + PEB walk · 22 fns | ✓ DJB2 + PEB walk · 22 fns | ✓ DJB2 + PEB walk · 21 fns | ✓ DJB2 + PEB walk · 35 fns | ✗ |
+| **Sleep masking** | ✓ Ekko XOR + NOACCESS | ✓ XOR non-exec sections + NtDelayExecution | ✓ XOR + NtDelayExecution | ✓ XOR + NOACCESS | ✓ XOR + NOACCESS |
+| **Anti-sandbox** | ✓ 12-check score model | ✓ CPU/RAM/disk/idle checks (`-d:SandboxChecks`) | ✓ CPU/RAM/disk/username score | ✓ score model | ✓ score model |
+| **CONFIG runtime** | ✓ sleep · jitter · working hours · inject method | ✓ sleep · jitter · working hours | ✓ sleep · jitter | ✓ sleep · jitter · working hours | ✓ sleep · jitter · working hours |
+| **Working hours gating** | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **DNS canary** | ✓ startup burn lookup | ✓ startup burn lookup | ✓ startup burn lookup | ✓ startup burn lookup | ✓ startup burn lookup |
+| PE header wipe | ✓ | ✓ | ✓ | ✓ | ✓ |
+| HWBP clear | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **PPID spoof** | ✓ | ✓ | ✓ | ✓ | ✓ CreateProcessWithLogonW |
+| BLOCKDLLS / PEB spoof | ✓ | ✓ | ✓ | ✓ | ✗ |
+| EDR silence (ETW/hook) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Hook + HWBP detection | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Kerberos** (klist · ptt · purge) | ✓ LSA API | ✓ LSA API | ✓ LSA API | ✓ LSA API | ✓ LSA API |
+| **Inline PE execution** | ✓ full PE64 loader | ✓ full PE64 loader | ✓ full PE64 loader | ✓ full PE64 loader | ✓ reflective loader |
+| **Process injection** | ✓ remote · APC · hijack · fork-and-run (NtCreateSection + pipe capture) · hollow | ✓ remote · APC | ✓ remote · APC · hijack · fork-and-run (NtCreateSection + pipe capture) · hollow | ✓ remote · APC | ✓ remote · APC · hollow |
+| BOF / .NET CLR | ✓ | ✓ BOF + .NET CLR | ✓ BOF + .NET CLR | ✓ BOF + .NET CLR | ✓ .NET CLR |
+| Token theft / impersonation | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Token vault (store · reuse) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| GETSYSTEM / UAC bypass | ✓ | ✓ | ✓ | ✓ | ✓ fodhelper |
+| Persistence | ✓ | ✓ | ✓ | ✓ | ✓ Run key · Task · Startup |
+| **Lateral movement** | ✓ psexec · smbexec · atexec · wmi · dcom · winrm · ssh · runas | ✓ psexec · smbexec · atexec · wmi · dcom · winrm · ssh · runas | ✓ psexec · smbexec · atexec · wmi · dcom · winrm · ssh · runas | ✓ psexec · smbexec · atexec · wmi · dcom · winrm · ssh · runas | ✓ psexec · smbexec · atexec · wmi · dcom · winrm · ssh · runas |
+| SOCKS5 / port forward | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Reverse SOCKS | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Port scan | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Mesh relay pivot** | ✓ HTTP + TCP | ✓ HTTP + TCP | ✓ HTTP + TCP | ✓ HTTP + TCP | ✓ HTTP + TCP |
+| Credential harvesting | ✓ GPP · WiFi · Browser · NTDS | ✓ GPP · WiFi · Browser · NTDS | ✓ WiFi · Browser | ✓ GPP · WiFi · Browser · NTDS | ✓ GPP · WiFi · Browser (DPAPI) · NTDS |
+| Registry ops | ✓ | ✓ | ✓ | ✓ | ✓ |
+| ADS (read · write · list · delete) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| COM hijack | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Timestomp | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Interactive shell (ISHELL) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **MITRE ATT&CK** | 50+ cmds · 12 tactics | evasion · post-ex · lateral | evasion · post-ex · lateral | evasion · post-ex · lateral | evasion · post-ex · lateral · network |
+
+> ✓ = implemented · 🔧 = in progress / planned · — = not available
+
+---
+
+#### Platform support
+
+<a name="platform-support"></a>
+
+| Feature | Windows (all agents) | Linux (Go · Rust · C · Nim) | macOS (Go only) |
+|---|:---:|:---:|:---:|
+| Beacon + beaconing (HTTP/HTTPS/mTLS/TCP/DNS) | ✓ | ✓ | ✓ |
+| Shell / file ops / upload / download | ✓ | ✓ | ✓ |
+| Extended filesystem ops (CP · MV · GREP · MOUNT) | ✓ | ✓ | ✓ |
+| POSIX metadata (CHMOD · CHOWN · CHTIMES) | partial (Go) | ✓ | ✓ |
+| SYSINFO / PS / ENV | ✓ | ✓ | ✓ |
+| Port scan | ✓ | ✓ | ✓ |
+| SOCKS5 / reverse SOCKS / port forward | ✓ | ✓ | ✓ |
+| Mesh relay pivot (HTTP + TCP) | ✓ | ✓ | ✓ |
+| Persistence | ✓ registry/service/schtask | ✓ cron / systemd user | ✓ LaunchAgent |
+| Screenshot | ✓ GDI | ✓ ImageMagick (if X11) | ✓ |
+| Credential harvesting | ✓ Browser · WiFi · GPP · NTDS | ✓ Browser (Linux paths) | ✓ Browser |
+| **Windows-only (evasion)** | | | |
+| AMSI patch / ETW blind | ✓ | — | — |
+| Indirect syscalls (Hell's Gate) | ✓ | — | — |
+| Stack spoofing (110-byte stubs) | ✓ | — | — |
+| API hashing / IAT removal | ✓ | — | — |
+| Sleep masking (XOR + NOACCESS) | ✓ | — | — |
+| NTDLL unhook | ✓ | — | — |
+| PPID spoof / BLOCKDLLS / PEB spoof | ✓ | — | — |
+| Token theft / UAC bypass | ✓ | — | — |
+| Process injection | ✓ | — | — |
+| Inline PE exec / .NET CLR | ✓ | — | — |
+| Keylogger / clipboard monitor | ✓ | — | — |
+| Lateral movement (8 methods) | ✓ | — | — |
+| Kerberos (klist/ptt/purge) | ✓ | — | — |
+
+> **Platform notes:** The extended filesystem commands are now dispatched consistently by all four agents. POSIX metadata operations are implemented on Linux (and by the Go agent on macOS); the C, Nim, and Rust Windows builds return an explicit unsupported result for `CHOWN`/`CHMOD`/`CHTIMES`, while Go provides limited `CHMOD`/`CHTIMES` support. The C Linux build currently supports HTTP/HTTPS beaconing only; DNS, DoH, SMB pipe, and TCP transports remain Windows-only for that agent. DNS transport does not support binary file upload/download in the Go and Rust agents.
+
+**Building for Linux** (from a Linux host — agents are compiled natively):
+
+```bash
+# Go
+GOOS=linux GOARCH=amd64 go build -o agent_linux .
+
+# Rust
+cargo build --release --target x86_64-unknown-linux-gnu
+
+# C
+make -f Makefile.linux AGENT_SERVER_URL=https://<c2>:<port>
+
+# Nim
+./build_linux.sh
+```
+
+---
+
+**Agent transports**: HTTP · HTTPS · mTLS · DNS · DoH · SMB pipe · TCP
+
+**Mesh relay**: agents can register as HTTP or TCP pivots; when an agent loses direct connectivity to the teamserver (≥ 3 consecutive beacon failures), it automatically falls back to any known peer and relays its beacon through that agent's existing transport. The teamserver distributes the peer list in every beacon response so agents always have a current fallback. Unlike fully decentralised P2P overlays (libp2p/DHT), relay paths in ENDGAME are operator-designated and logged — the operator decides which agent acts as pivot, and the relay chain is always explicit and stoppable on demand.
+
+**Evasion**: AMSI (VEH/DR0) · ETW blind · NTDLL unhook · Ekko XOR sleep masking · indirect syscalls (Hell's Gate) · stack spoofing · API hashing (PEB walk) · PPID spoof · anti-sandbox · header wipe · UDRL phantom DLL · BLOCKDLLS · DNS canary burn detection
+
+**Injection**: remote thread · APC early-bird · thread hijack · fork-and-run (NtCreateSection/NtMapViewOfSection + pipe capture) · hollowing
+
+**Post-ex**: screenshot · keylogger · clipboard · LSASS dump (MINIDUMP + LSASS_DUMP_NT) · ADCS cert request (ESC1-6) · DCSYNC · token theft · UAC bypass · persistence
+
+**Network discovery**: ARP (returns MAC, no elevation on Windows) · ICMP ping sweep · TCP probe — selectable per scan
+
+**Lateral movement**: `psexec` · `smbexec` · `atexec` · `wmi` · `dcom` · `winrm` · `ssh`
+
+**MITRE ATT&CK**: 50+ commands mapped across 12 tactics · Navigator layer export · technique matrix in GUI
+
+> See the [full documentation](https://endgamec2framework.github.io/endgame/) for commands, API reference, IOC list, and operator guide.
+
+---
+
+### Architecture notes
+
+ENDGAME implements **controlled mesh relay** rather than a fully decentralised P2P overlay. Relay paths are operator-designated: the operator chooses which agent acts as pivot, and the relay chain is explicit, stoppable on demand, and logged — no dependency on public DHT infrastructure like libp2p that enterprise firewalls routinely block.
+
+**Cross-platform agents**: All four agents now support Windows and Linux. The Go agent additionally supports macOS. Platform-specific features (Windows evasion, AMSI/ETW patching, Hell's Gate syscalls, stack spoofing, token theft, PE injection) are Windows-only and are compiled out on Linux; the Linux build retains the full beacon, shell, file ops, SOCKS5, port scan, persistence, credential harvesting, and pivot functionality. See the [Platform support matrix](#platform-support) below for per-feature detail and the `build_linux.sh` script in each agent directory for Linux compilation.
+
+**DNS canaries**: each payload build embeds a unique per-build canary subdomain. When a sandbox or AV scanner dynamically analyses the binary, the agent's startup DNS lookup resolves `canary.<token>.<c2_domain>` — intercepted by the C2's authoritative DNS server — and the operator receives a real-time burn alert via the events stream. Canaries are tracked per-build in the database and never reused.
+
+**Indirect syscalls + stack spoofing (Nim)**: `syscalls.nim` resolves SSNs at runtime via Hell's Gate (reads `mov eax,SSN` from ntdll stubs) with Halo's Gate fallback for EDR-patched stubs. When both a `syscall;ret` gadget and a `call rel32;ret` gadget are found in ntdll `.text`, the agent upgrades to 110-byte spoofed stubs that plant the gadget address at `[RSP]` before the syscall — making the call-stack visible to EDR appear to originate from within ntdll rather than agent code.
+
+**API hashing (C)**: `api_resolve.c` uses DJB2 hashing and a PEB `InLoadOrderModuleList` walk to resolve 35 sensitive WinAPI functions at runtime. None of these functions appear in the binary's import table.
+
+---
+
+### Screenshots
+
+<div align="center">
+  <img src="assets/screenshots/agent_table.png" width="90%" /><br /><br />
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/endgamec2framework/endgame/gh-pages/screenshots/new_graph_aic_overview.png" width="90%" /><br />
+  <em>Graph view + AI Console — query: "Who are the domain administrators?" · response identifies tywin.lannister, robert.baratheon, petyer.baelish, lord.varys in SEVENKINGDOMS.LOCAL</em>
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/endgamec2framework/endgame/gh-pages/screenshots/ai_console_privesc_autologon.png" width="90%" /><br />
+  <em>🎯 Vector 1: Registry AutoLogon — AI Console docked to the right panel identifies plaintext credentials stored in <code>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon</code> after running SharpUp. No exploit required.</em>
+</div>
+
+---
+
+### Legal Notice
+
+> **This tool is for authorized security testing, educational use, and lab environments only.**
+> Use against systems without explicit written authorization is illegal and strictly prohibited.
+> By using this software you agree to the [Ethical Use Policy](ETHICS.md).
+
+Please do not open issues regarding EDR/AV detection. Default builds include known IOCs — see [IOC documentation](https://endgamec2framework.github.io/endgame/#ioc). Operators should recompile with custom certs, build flags, and malleable profiles for authorized engagements.

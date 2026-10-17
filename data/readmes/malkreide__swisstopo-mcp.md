@@ -1,0 +1,731 @@
+> 🇨🇭 **Part of the [Swiss Public Data MCP Portfolio](https://github.com/malkreide)**
+
+# swisstopo-mcp
+
+![Version](https://img.shields.io/badge/version-0.5.0-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-purple)](https://modelcontextprotocol.io/)
+[![No Auth Required](https://img.shields.io/badge/auth-none%20required-brightgreen)](https://github.com/malkreide/swisstopo-mcp)
+![CI](https://github.com/malkreide/swisstopo-mcp/actions/workflows/ci.yml/badge.svg)
+
+> MCP server for Swiss federal geodata -- maps, elevation, geocoding, cadastral extracts, and downloadable datasets via Swisstopo APIs
+
+[🇩🇪 Deutsche Version](README.de.md)
+
+---
+
+## Overview
+
+`swisstopo-mcp` gives AI assistants access to Switzerland's official geodata infrastructure through 20 tools, all without authentication:
+
+| Source | Data | API |
+|--------|------|-----|
+| **Swisstopo REST API** | 500+ geodata layers (buildings, boundaries, land use) | REST/JSON |
+| **Geocoding** | Official addresses, place names, postal codes | REST/JSON |
+| **Height Service** | Elevation above sea level, elevation profiles | REST/JSON |
+| **STAC Catalog** | Orthophotos, elevation models, 3D buildings | STAC 0.9 |
+| **WMTS** | National maps, aerial images, zoning maps | URL builder |
+| **OEREB Cadastre** | Public-law restrictions, parcels | REST/JSON (cantonal) |
+| **geodienste.ch** | Interkantonale Basisgeodaten (cadastral survey, contaminated sites, hazard maps, …) | OGC API Features / WMS / WFS |
+| **OpenStreetMap** | Points of interest (schools, playgrounds, pharmacies, …) | Overpass API (ODbL) |
+| **OpenPLZ API** | Administrative address level: postal codes → commune (**BFS number**) → district → canton | REST/JSON (BFS + swisstopo OGD) |
+
+**Anchor demo query:** *"Which communes are in the Uster district, and what are their BFS numbers for joining with BFS statistics data?"*
+(The BFS commune number is the official join key to [`swiss-statistics-mcp`](https://github.com/malkreide) and [`zurich-opendata-mcp`](https://github.com/malkreide/zurich-opendata-mcp) — this is what turns a geodata wrapper into a semantic connector at the commune level.)
+[→ More use cases by audience →](EXAMPLES.md)
+
+### Demo
+
+![Demo: Claude using swisstopo_find_commune and swisstopo_lookup_postal_code](docs/assets/demo.svg)
+
+---
+
+## Features
+
+- 🗺️ **20 tools** (REST, Geocoding, Height, STAC, WMTS, OEREB, geodienste.ch, OpenStreetMap/Overpass, OpenPLZ)
+- 🏛️ Resolve the administrative address level (PLZ → commune/**BFS number** → district → canton) via OpenPLZ
+- 🔍 Geocode Swiss addresses and reverse-geocode coordinates
+- 🏔️ Query elevation and compute elevation profiles
+- 📦 Discover and download geodatasets (orthophotos, 3D buildings, historical maps)
+- 🏗️ Identify map features at coordinates across 500+ Swisstopo layers
+- 🔗 Generate shareable map.geo.admin.ch links
+- 📋 Look up cadastral property IDs (EGRID) and retrieve OEREB extracts
+- 🔓 **No API key required** for all tools (OEREB extract needs a supported canton)
+- ☁️ **Dual transport** -- stdio (Claude Desktop) + Streamable HTTP (cloud)
+
+---
+
+## Prerequisites
+
+- Python 3.11+
+- [uv](https://github.com/astral-sh/uv) (recommended) or pip
+
+---
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/malkreide/swisstopo-mcp.git
+cd swisstopo-mcp
+
+# Install
+pip install -e .
+# or with uv:
+uv pip install -e .
+```
+
+Or with `uvx` (no permanent installation):
+
+```bash
+uvx swisstopo-mcp
+```
+
+---
+
+## Quickstart
+
+```bash
+# stdio (for Claude Desktop)
+python -m swisstopo_mcp.server
+
+# Streamable HTTP (port 8000)
+python -m swisstopo_mcp.server --http --port 8000
+```
+
+Try it immediately in Claude Desktop:
+
+> *"Where is Bahnhofstrasse 1, Zurich? Give me the coordinates."*
+> *"What is the elevation at the Uetliberg summit?"*
+> *"What buildings are at coordinates 2683500, 1247500 (LV95)?"*
+
+---
+
+## Configuration
+
+### Claude Desktop
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "swisstopo": {
+      "command": "python",
+      "args": ["-m", "swisstopo_mcp.server"]
+    }
+  }
+}
+```
+
+Or with `uvx`:
+
+```json
+{
+  "mcpServers": {
+    "swisstopo": {
+      "command": "uvx",
+      "args": ["swisstopo-mcp"]
+    }
+  }
+}
+```
+
+**Config file locations:**
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+### Cloud Deployment (SSE for browser access)
+
+For use via **claude.ai in the browser** (e.g. on managed workstations without local software):
+
+**Render.com (recommended):**
+1. Push/fork the repository to GitHub
+2. On [render.com](https://render.com): New Web Service -> connect GitHub repo
+3. Set start command: `python -m swisstopo_mcp.server --http --port 8000`
+4. In claude.ai under Settings -> MCP Servers, add: `https://your-app.onrender.com/sse`
+
+---
+
+## Available Tools
+
+### REST API (Layer & Feature Queries)
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_map_query` | The national map catalogue (api3.geo.admin.ch). One `operation` per call — see the five below |
+| `swisstopo_zoning_at` | Harmonised building zone at a coordinate — one call, no layer lookup (not legally binding) |
+| `swisstopo_municipality_at` | Municipality, canton and official BFS number at a coordinate |
+
+#### `swisstopo_map_query` operations
+
+| `operation` | Answers | Required arguments |
+|-------------|---------|--------------------|
+| `search_layers` | Which layers exist for a keyword? (500+ catalogue) | `query` |
+| `layer_info` | What fields can I query on this layer, and what is its legend? | `layer` |
+| `features_at_point` | What is at this coordinate? | `layers` + a point (`lat`/`lon` **or** `easting`/`northing`) |
+| `features_by_attribute` | Which features carry this value? (e.g. buildings by EGID) | `layer`, `search_field`, `search_text` |
+| `feature_by_id` | Give me this one feature in full, with geometry | `layer`, `feature_id` |
+
+Arguments belonging to a different operation are **rejected, not ignored** — the
+error names the ones the chosen operation accepts. Silently dropping a
+misplaced `search_field` would return a plausible answer to a question nobody
+asked, which is the failure mode the whole envelope design is against.
+
+### Geocoding
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_geocode` | Convert Swiss addresses, place names, or postal codes to coordinates |
+| `swisstopo_reverse_geocode` | Find the nearest address for given coordinates |
+
+### Height Service
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_get_height` | Get elevation above sea level (m a.s.l.) at a coordinate |
+| `swisstopo_elevation_profile` | Compute an elevation profile along a line |
+| `swisstopo_convert_coordinates` | Official WGS84 ↔ LV95 conversion via the swisstopo REFRAME service |
+
+### STAC Catalog (Geodata Downloads)
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_search_geodata` | Search the STAC catalog for downloadable geodatasets |
+| `swisstopo_get_collection` | Get details and download links for a STAC collection |
+
+### WMTS (Map URLs)
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_map_url` | Generate a map.geo.admin.ch URL for browser display |
+
+### OEREB Cadastre
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_get_egrid` | Resolve a cadastral property ID (EGRID) from coordinates |
+| `swisstopo_get_oereb_extract` | Retrieve public-law land-use restrictions (OEREB) for a parcel |
+
+### Consolidated Geodata Façade
+
+One façade over several map/layer sources, kept under the 25-tool budget (see
+[`docs/geodaten-erweiterung-phase1.md`](docs/geodaten-erweiterung-phase1.md)):
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_list_available_layers` | Discover layer keys for `swisstopo_query_geodata` (`strassenverzeichnis`, `oereb-verfuegbarkeit`, `geodienste:<topic>:<canton>`); filters to contract-free geodienste datasets |
+| `swisstopo_query_geodata` | Query a chosen layer by `point` / `bbox` / `commune` — amtliches Strassenverzeichnis, interkantonale geodienste.ch data (OGC API Features), or ÖREB availability |
+| `swisstopo_query_osm_features` | OpenStreetMap POIs (schools, playgrounds, pharmacies, …) around a point via Overpass — separate source, ODbL (© OpenStreetMap contributors) |
+
+### Administrative Address Level (OpenPLZ)
+
+The amtliche address hierarchy **PLZ → commune → district → canton**, served by
+the [OpenPLZ API](https://openplzapi.org) (data: BFS municipal directory +
+swisstopo street directory, Swiss OGD — a **separate source and licence** from
+the swisstopo geodata above). Every commune-bearing response exposes
+`bfs_commune_number` as a named top-level field: the official **join key** to
+BFS statistics (`swiss-statistics-mcp`) and `zurich-opendata-mcp`.
+
+| Tool | Description |
+|------|-------------|
+| `swisstopo_lookup_postal_code` | Resolve a Swiss postal code → locality, commune (+**BFS number**), district, canton |
+| `swisstopo_find_commune` | Resolve a commune both directions (`name` ↔ `bfs_number`) or list all communes of a `canton` / `district`. Accepts canton abbreviation (`ZH`) or key (`1`); resolution happens server-side |
+| `swisstopo_search_address` | Full-text search over Swiss streets and localities, returning commune + BFS number per hit |
+
+### Example Use Cases
+
+| Query | Tool |
+|-------|------|
+| *"Where is Bahnhofstrasse 1, Zurich?"* | `swisstopo_geocode` |
+| *"What is the elevation at the Uetliberg summit?"* | `swisstopo_get_height` |
+| *"What buildings are at coordinates 2683500, 1247500?"* | `swisstopo_map_query` (`operation='features_at_point'`) |
+| *"Find orthophoto datasets for download"* | `swisstopo_search_geodata` |
+| *"Show me a map of Bern at zoom level 10"* | `swisstopo_map_url` |
+| *"What restrictions apply to parcel at Musterstrasse 5?"* | `swisstopo_oereb_at` |
+| *"Which schools are within 500 m of Bederstrasse 109, 8002 Zürich, and which streets lead there?"* | `swisstopo_query_osm_features` + `swisstopo_query_geodata` (`strassenverzeichnis`) |
+| *"Which contaminated-sites data is free for canton ZH?"* | `swisstopo_list_available_layers` + `swisstopo_query_geodata` (`geodienste:kataster_belasteter_standorte:ZH`) |
+| *"Which communes are in the Uster district and what are their BFS numbers?"* | `swisstopo_find_commune` (`district=109`) |
+| *"Which commune and canton does postal code 8001 belong to?"* | `swisstopo_lookup_postal_code` |
+| *"What is the BFS number of Winterthur (to join with BFS statistics)?"* | `swisstopo_find_commune` (`name=Winterthur`) |
+
+---
+
+## Architecture
+
+```
+┌─────────────────┐     ┌──────────────────────────────┐     ┌──────────────────────────┐
+│   Claude / AI   │────▶│  swisstopo-mcp               │────▶│  Swisstopo REST API      │
+│   (MCP Host)    │◀────│  (MCP Server)                │◀────│  api3.geo.admin.ch       │
+└─────────────────┘     │                              │     ├──────────────────────────┤
+                        │  20 Tools                    │────▶│  Geocoding               │
+                        │  Stdio | Streamable HTTP     │◀────│  api3.geo.admin.ch       │
+                        │                              │     ├──────────────────────────┤
+                        │  No authentication required  │────▶│  STAC Catalog            │
+                        │  (all tools; OEREB canton opt) │◀────│  data.geo.admin.ch       │
+                        │                              │     ├──────────────────────────┤
+                        │                              │────▶│  OEREB Cadastre          │
+                        │                              │◀────│  (cantonal endpoints)    │
+                        │                              │     ├──────────────────────────┤
+                        │                              │────▶│  geodienste.ch (OGC API) │
+                        │                              │◀────│  overpass.osm.ch (ODbL)  │
+                        │                              │     ├──────────────────────────┤
+                        │  BFS-Nr = join key to        │────▶│  OpenPLZ API             │
+                        │  swiss-statistics-mcp        │◀────│  openplzapi.org (BFS/OGD)│
+                        └──────────────────────────────┘     └──────────────────────────┘
+```
+
+---
+
+## Project Structure
+
+```
+swisstopo-mcp/
+├── src/swisstopo_mcp/
+│   ├── __init__.py              # Package version
+│   ├── server.py                # MCP server wiring (tool registrations)
+│   ├── api_client.py            # Shared HTTP client (httpx + error handling)
+│   ├── geocoding.py             # swisstopo_geocode, swisstopo_reverse_geocode
+│   ├── rest_api.py              # swisstopo_map_query (5 operations), zoning_at, municipality_at
+│   ├── height.py                # swisstopo_get_height, swisstopo_elevation_profile
+│   ├── stac.py                  # swisstopo_search_geodata, swisstopo_get_collection
+│   ├── wmts.py                  # swisstopo_map_url
+│   ├── oereb.py                 # swisstopo_get_egrid, swisstopo_get_oereb_extract
+│   ├── geodata.py               # swisstopo_query_geodata + swisstopo_list_available_layers (façade)
+│   ├── overpass.py              # swisstopo_query_osm_features (OpenStreetMap / Overpass)
+│   └── openplz.py               # swisstopo_lookup_postal_code, swisstopo_find_commune, swisstopo_search_address (OpenPLZ)
+├── tests/
+│   ├── test_api_client.py
+│   ├── test_geocoding.py
+│   ├── test_height.py
+│   ├── test_oereb.py
+│   ├── test_rest_api.py
+│   ├── test_stac.py
+│   ├── test_wmts.py
+│   ├── test_geodata.py
+│   ├── test_overpass.py
+│   ├── test_openplz.py
+│   └── test_retry.py
+├── .github/workflows/ci.yml     # GitHub Actions (Python 3.11/3.12/3.13)
+├── pyproject.toml
+├── CHANGELOG.md
+├── CONTRIBUTING.md               # Contribution guide (English)
+├── CONTRIBUTING.de.md            # Contribution guide (German)
+├── SECURITY.md                   # Security policy (English)
+├── SECURITY.de.md                # Security policy (German)
+├── LICENSE
+├── README.md                    # This file (English)
+└── README.de.md                 # German version
+```
+
+---
+
+## Security & Limits
+
+The full security policy and posture is documented in [SECURITY.md](SECURITY.md).
+
+### Phase
+
+This server is in **Phase 2.5 — Consolidation of `swiss-geodata-mcp`**
+(see [docs/roadmap.md](docs/roadmap.md), the single authority for phase state).
+
+| Property | Status |
+|---|---|
+| Read tools | 24, all `readOnlyHint: true` / `destructiveHint: false` |
+| Write tools | none — Phase 3, not planned |
+| Transport | stdio (default) and Streamable-HTTP |
+| ISDS classification | [`docs/isds-dsg.md`](docs/isds-dsg.md) — low protection requirement |
+| DSG processing record | not maintained, with reasons — [`docs/isds-dsg.md` §5](docs/isds-dsg.md) |
+| Last audit | `audits/2026-07-27T162602-Z-swisstopo-mcp/` |
+
+A phase advance requires: the phase's roadmap items checked off, a re-run audit
+with no open `critical` findings, and a CHANGELOG entry naming the new phase.
+Phase 3 (write tools) additionally requires re-running the Lethal-Trifecta
+assessment and a security review before any implementation starts.
+
+### Tool budget and aggregation
+
+20 tools against a self-imposed budget of 25. The check's ideal is ≤12, so the
+count still needs an argument, not just a number. Per cluster:
+
+**The five api3 tools are merged** (0.4.1, breaking). `search_layers`,
+`layer_info`, `identify_features`, `find_features` and `get_feature` are now
+`operation` values on `swisstopo_map_query`. They were the textbook
+one-tool-per-REST-endpoint mapping the check names, and they are gone as such.
+
+Earlier releases argued the opposite here, and the argument is worth keeping
+visible because it was not wrong so much as outweighed: merging relocates the
+decision from tool selection into schema navigation, where a model has less
+help, because tool descriptions are what it actually reads. Three things address
+that directly rather than hoping it does not matter:
+
+- **The operations are named for questions, not endpoints.** `identify` and
+  `find` are ESRI vocabulary — they say which MapServer route is called, not
+  what is being asked, and nobody without ArcGIS experience can tell them apart.
+  `features_at_point` and `features_by_attribute` can be picked correctly from
+  the operation list alone.
+- **A misplaced argument is an error, not a silent drop.** With five tools the
+  schema made a wrong pairing impossible. With one tool it does not, so
+  validation does: each operation declares the fields it accepts, and anything
+  else is refused with a message naming the alternatives.
+- **The `note` hints from ARCH-003 still name the next step**, now as
+  operations rather than tool names — an empty attribute search points at
+  `operation='layer_info'` for the valid field names, and so on.
+
+Observability was the other cost, and it is not paid: each operation keeps its
+own log and trace label (`swisstopo_map_query:features_at_point`), so per-operation
+timing and error rates survive the merge.
+
+**The two pairs that stay separate**, both named by the audit:
+
+- `geocode` + `reverse_geocode` do hit the same SearchServer endpoint, so on the
+  API axis this is a 1:1 mapping twice over. They stay separate on the axis that
+  matters for tool selection: "address → coordinates" and "coordinates →
+  address" are different questions with different input types, and collapsing
+  them into one tool with a mode would make the model choose a variant instead
+  of a tool. Sharing an endpoint is an implementation detail of the upstream.
+- `search_geodata` → `get_collection` is a genuine search → detail pair over
+  STAC; see below.
+
+**The naming ambiguity is resolved**, which the audit did not raise but the
+previous version of this section recorded for "the next breaking release" — this
+is it. `swisstopo_search_layers` and `swisstopo_list_available_layers` both said
+"layers" while fronting *different* catalogues. The first is now
+`swisstopo_map_query` with `operation='search_layers'`, which puts the national
+catalogue in the tool name and leaves `list_available_layers` unambiguously the
+consolidated façade.
+
+**Search → detail pairs.** `search_geodata` → `get_collection` is a genuine
+pair: STAC collection metadata is large and callers usually want one of many
+search hits. `get_egrid` → `get_oereb_extract` was the same shape and has been
+collapsed: `swisstopo_oereb_at` answers the actual question in one call and
+resolves the EGRID internally, because the EGRID is an upstream identifier
+rather than something a caller asked for. `get_egrid` remains for callers who
+want the parcel ID itself.
+
+**Genuine aggregation already in place.** `query_geodata` fronts three sources
+behind one tool; `zoning_at` and `municipality_at` each collapse a discovery
+chain that previously took two calls.
+
+**When the next source is added**, the choice is a raise or a consolidation.
+With the api3 five merged there is no obvious consolidation left holding
+headroom, so the next surface growth is a real conversation about the ceiling
+rather than a deferred cleanup. `tests/test_tool_namespace.py::TestToolBudget`
+is where that conversation is forced: raising the budget means editing the
+number there *and* in both READMEs.
+
+### Data sources and licences
+
+Every response carries `source` and `license`. ARE is a different federal
+office from swisstopo, so its licence is asserted rather than inherited.
+
+| Source | Served by | Licence |
+|---|---|---|
+| swisstopo / geo.admin.ch | most tools | Swiss OGD (opendata.swiss) |
+| swisstopo REFRAME (geodesy.geo.admin.ch) | `swisstopo_convert_coordinates` | Swiss OGD (opendata.swiss) |
+| swissBOUNDARIES3D (swisstopo) | `swisstopo_municipality_at` | Swiss OGD (opendata.swiss) |
+| `ch.are.bauzonen` (**ARE**) | `swisstopo_zoning_at` | Swiss OGD — Bundesamt für Raumentwicklung ARE |
+| Cantonal ÖREB cadastre | `swisstopo_get_egrid`, `swisstopo_get_oereb_extract`, `swisstopo_oereb_at`, `swisstopo_query_geodata` | Cantonal ÖREB terms |
+| geodienste.ch (cantons) | `swisstopo_query_geodata` | Free use — attribution required |
+| OpenStreetMap (Overpass) | `swisstopo_query_osm_features` | ODbL — © OpenStreetMap contributors |
+| OpenPLZ (BFS + swisstopo) | `swisstopo_lookup_postal_code`, `swisstopo_find_commune`, `swisstopo_search_address` | Free use — attribution required |
+
+`ch.are.bauzonen` is a federal synthesis for cross-cantonal comparability and
+is **not legally binding** — only the cantonal or communal Nutzungsplanung is.
+That caveat is carried on every `swisstopo_zoning_at` result record.
+
+### Project structure
+
+The tool modules sit flat under `src/swisstopo_mcp/` rather than in a `tools/`
+sub-package. Each module maps to exactly one upstream API family —
+`rest_api.py` → api3 MapServer, `stac.py` → STAC, `oereb.py` → cantonal ÖREB,
+`openplz.py` → OpenPLZ, `overpass.py` → OSM, `coords.py` → REFRAME — which is
+the axis along which this server's code actually varies. A `tools/` level would
+add a directory without adding a distinction.
+
+`server.py` contains tool registrations only; every tool body lives in its
+domain module. Splitting it further is a readability question, not a structural
+one.
+
+### Lethal Trifecta assessment
+
+| Capability | Status | Rationale |
+|---|---|---|
+| Access to private data | ❌ No | Public Open Data only (federal/cantonal geodata) |
+| Exposure to untrusted content | ⚠️ Limited | Reads only from a fixed allow-list of trusted geo.admin / OEREB hosts |
+| External communication (write/send) | ❌ No | Read-only; no mail/webhook/write tools |
+
+Trifecta score: at most 1 of 3 — safe by design.
+
+### Egress
+
+Outbound requests are restricted to an explicit code-layer allow-list and
+redirects are disabled — see [docs/network-egress.md](docs/network-egress.md).
+
+### Container deployment
+
+For containerised HTTP deployments, a hardened `Dockerfile` and Kubernetes
+manifests (non-root, read-only root filesystem, dropped capabilities, egress
+NetworkPolicy) are provided — see [docs/deployment.md](docs/deployment.md).
+
+### MCP Protocol Version
+
+The server speaks **2026-07-28** natively and keeps every older revision
+reachable. Which one you get is decided by how you connect, not by
+configuration — one process serves both eras at once.
+
+| | Modern era | Handshake era |
+|---|---|---|
+| Revisions | `2026-07-28` | `2024-11-05` … `2025-11-25` |
+| Opening exchange | none — every request stands alone | `initialize` + `notifications/initialized` |
+| Protocol version travels in | `params._meta` **and** the `MCP-Protocol-Version` header | the `initialize` params |
+| Session | none | `Mcp-Session-Id`, closed with `DELETE /mcp` |
+| Directory | `server/discover` | the `initialize` result |
+| Server identity | the `io.modelcontextprotocol/serverInfo` stamp in every response's `_meta` | `serverInfo` in the `initialize` result |
+| Gone in this revision | `initialize`, `ping`, `logging/setLevel`, `resources/subscribe` | — |
+
+A 2026-07-28 request is a self-contained POST to `/mcp`:
+
+```http
+POST /mcp
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: swisstopo_map_url
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{
+  "name":"swisstopo_map_url",
+  "arguments":{"params":{"lat":46.9481,"lon":7.4474}},
+  "_meta":{
+    "io.modelcontextprotocol/protocolVersion":"2026-07-28",
+    "io.modelcontextprotocol/clientCapabilities":{}
+  }}}
+```
+
+The `MCP-Protocol-Version` header is what routes the request to the modern
+path; without it the same body lands on the handshake transport. `Mcp-Method`
+and `Mcp-Name` must agree with the body, or the request is rejected with
+`-32020`. All three are in the CORS allow-list so a browser client's preflight
+passes.
+
+What this means in practice:
+
+- **Existing clients are unaffected.** A client asking for `2025-06-18` still
+  gets `2025-06-18`; one asking over `initialize` for `2026-07-28` gets the
+  handshake ceiling `2025-11-25` back. Measured, not assumed —
+  `tests/test_protocol_version.py`.
+- **Both eras expose the same 20 tools.** Nothing is gated on the revision
+  (`tests/test_modern_protocol.py`).
+- **Sticky sessions matter only for the handshake era.** A modern request
+  carries no session, so it can be served by any replica — see
+  [docs/deployment.md](docs/deployment.md).
+
+Neither revision is author-settable: the SDK negotiates the handshake era and
+routes the modern one, and `pyproject.toml` pins `mcp` to the `2.x` major so an
+update cannot move either silently. `tests/test_protocol_version.py` pins both
+ceilings and fails if a Dependabot bump changes one.
+
+**Update policy**
+
+- SDK updates are tested on a feature branch before merge.
+- A change to either protocol ceiling is recorded in
+  [CHANGELOG.md](CHANGELOG.md) under `### Changed`, naming the old and the new
+  version.
+- A protocol change that breaks existing clients triggers a major release.
+
+### Sessions & Authentication
+
+The server is unauthenticated by design — it serves only public open data.
+
+Sessions exist in the handshake era only. There, session IDs are managed
+entirely by the MCP SDK; there is no per-user state, so there is nothing
+user-specific to bind a session to. Idle sessions are reaped after
+`SWISSTOPO_SESSION_IDLE_TIMEOUT` seconds (default 1800) so a client that
+disconnects without sending `DELETE /mcp` does not leak one for the lifetime of
+the process. A 2026-07-28 request opens no session at all, so neither the
+timeout nor the reaper applies to it.
+
+If an authenticated deployment is ever introduced, session IDs must be bound to
+the validated user identity (audit finding SEC-009).
+
+### Error handling
+
+- **Execution errors** (upstream failure, invalid value) are returned as a
+  `ToolResponse` with `is_error: true` and a user-friendly `summary`; unexpected
+  exception text is masked and logged to stderr instead. No upstream body or
+  internal configuration is forwarded: Overpass error pages are classified
+  against a fixed signature table, and an egress refusal returns a fixed message
+  rather than the allow-list (OBS-002).
+- **Protocol errors** (unknown tool, malformed/invalid arguments) come back from
+  the SDK as tool results with the protocol `isError` flag set — *not* as
+  JSON-RPC error objects. Verified against mcp 1.28.1 by runtime probe; an
+  earlier version of this section claimed `-32602` and was wrong. Input
+  validation happens at the Pydantic boundary (SEC-018).
+- **Both flags agree.** A handled execution error sets the protocol
+  `isError` flag *and* the payload field `is_error`, so a client can branch on
+  either. The envelope — including `source` and `license` — survives on the
+  error path (OBS-001).
+
+## MCP Primitives
+
+**Tools** are the surface, and almost all of it: every result is a live,
+parameterised API query rather than a static addressable document.
+
+**One Resource** — `swisstopo://catalogue/layers` — serves the façade layer
+catalogue. It is the one thing here that behaves like a document: deterministic,
+idempotent, and already served with `provenance: "cached"`. `swisstopo_list_available_layers`
+remains for filtered queries; the resource is for a client that wants the
+catalogue itself, addressably.
+
+**Two Prompts** encode the workflows below, including the precedence rule for
+point questions. That rule lives in the tool descriptions and in the server
+instructions too, but a prompt is the one place a model reads it as guidance
+rather than as one of 24 descriptions (audit ARCH-007/ARCH-008):
+
+| Prompt | Arguments |
+|---|---|
+| `swisstopo_feature_lookup` | `ort`, `was` |
+| `swisstopo_geodata_download` | `thema` |
+
+### Tool workflows
+
+Most tools return a thought-complete result in a single call. Two domains use a
+short, documented discovery chain (each tool's description states the next step):
+
+- **Feature query:** all four steps are `swisstopo_map_query` with a different
+  `operation`: `search_layers` (find layer IDs) → `layer_info` (see the queryable
+  fields) → `features_at_point` / `features_by_attribute` → `feature_by_id`
+  (full detail).
+- **Cadastre:** `swisstopo_geocode` → `swisstopo_oereb_at` (one call: coordinates
+  → EGRID → extract). Use `swisstopo_get_egrid` → `swisstopo_get_oereb_extract`
+  only when the parcel ID itself is wanted.
+- **Downloads:** `swisstopo_search_geodata` → `swisstopo_get_collection`.
+
+---
+
+## Response Format
+
+Every tool returns a structured `ToolResponse` (FastMCP emits it as structured
+content with an output schema, plus a JSON text block):
+
+| Field | Meaning |
+|---|---|
+| `summary` | Human-readable Markdown summary |
+| `results` | Machine-readable structured records |
+| `count` | Number of `results` |
+| `match_type` | `exact` / `fuzzy` / `none` (search-style tools) |
+| `source` / `license` | Data attribution (OGD-CH, CC/OGD terms) |
+| `provenance` / `retrieved_at` | How and when the data was obtained |
+| `is_error` | `true` for handled errors |
+
+---
+
+## Known Limitations
+
+- **OEREB tools** require a canton parameter; not all cantons expose the same API format
+- **STAC catalog** uses Swisstopo's v0.9 endpoint; some collections may lack complete metadata
+- **Geocoding** covers Swiss addresses only (no Liechtenstein)
+- **Rate limits** are enforced by Swisstopo; high-frequency usage may be throttled
+
+### Known findings — OpenPLZ live probe (2026-07-20)
+
+The OpenPLZ endpoints were probed live before implementation. Findings baked into
+the tools:
+
+| Endpoint / behaviour | Result | Handling |
+|---|---|---|
+| `/Cantons` | 200, **26** records, `key` = BFS canton number (ZH = `1`) | canton abbreviation resolved from this list |
+| `/Cantons/{key}/Districts\|Communes` | 200 | path param is the **numeric key** |
+| `/Cantons/ZH/Districts` (abbreviation) | **200 + `[]`** — not an error | `ZH`→`1` resolved server-side; empty answer gets an explanatory note |
+| `/Localities?postalCode=8001` | 200, `commune.key = 261` (BFS Zürich) | `bfs_commune_number` surfaced top-level |
+| `/Localities?postalCode=9999` (unknown) | **200 + `[]`** | reported as a note — empty ≠ absent |
+| list endpoints pagination | default `pageSize=10`, **hard max 50** (`100` → HTTP 400) | tools iterate pages via `x-total-count` |
+| raw umlaut in query (`?name=Zürich`) | **HTTP 400** | httpx URL-encodes params automatically |
+| `historicalCode` field | ≠ `key` for communes (historized-directory id) | not used; the join key is the current `key` |
+| bulk dump | none from OpenPLZ (only `/swagger`) | Architecture A (live-API-only) — adequate for a lookup connector |
+
+**The abbreviation-vs-key trap in one line:** an empty OpenPLZ list is almost
+never proof that something *does not exist* — it usually means a wrong path
+parameter (an abbreviation where a numeric key was expected). The tools resolve
+abbreviations server-side and annotate every empty result.
+
+---
+
+## Testing
+
+```bash
+# Unit tests (no network required)
+pytest tests/ -m "not live"
+
+# Integration tests (live API calls)
+pytest tests/ -m "live"
+```
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md)
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+## Security
+
+Read-only, no authentication, public geodata only. See [SECURITY.md](SECURITY.md)
+([Deutsch](SECURITY.de.md)) for the security posture and how to report a
+vulnerability.
+
+---
+
+## License
+
+MIT License -- see [LICENSE](LICENSE)
+
+Data provided by [swisstopo](https://www.swisstopo.admin.ch/) under [Open Government Data](https://opendata.swiss/) terms.
+
+---
+
+## Author
+
+Hayal Oezkan · [malkreide](https://github.com/malkreide)
+
+---
+
+## Credits & Related Projects
+
+- **Swisstopo:** [www.swisstopo.admin.ch](https://www.swisstopo.admin.ch/) -- Swiss Federal Office of Topography
+- **Swisstopo APIs:** [api3.geo.admin.ch](https://api3.geo.admin.ch/) / [data.geo.admin.ch](https://data.geo.admin.ch/)
+- **Protocol:** [Model Context Protocol](https://modelcontextprotocol.io/) -- Anthropic / Linux Foundation
+- **Related:** [zurich-opendata-mcp](https://github.com/malkreide/zurich-opendata-mcp) -- Zurich city open data
+- **Related:** [swiss-transport-mcp](https://github.com/malkreide/swiss-transport-mcp) -- Swiss public transport
+- **Related:** [swiss-cultural-heritage-mcp](https://github.com/malkreide/swiss-cultural-heritage-mcp) -- Swiss cultural heritage
+- **Portfolio:** [Swiss Public Data MCP Portfolio](https://github.com/malkreide)
+
+<!-- mcp-name: io.github.malkreide/swisstopo-mcp -->
+
+<!-- BEGIN GENERATED: install -->
+## Installation
+
+Run via [`uv`](https://docs.astral.sh/uv/)'s `uvx` — no clone or manual install needed. Add to your MCP client config (`mcpServers` for Claude Desktop, Cursor and Windsurf; use a top-level `servers` key for VS Code in `.vscode/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "swisstopo-mcp": {
+      "command": "uvx",
+      "args": [
+        "swisstopo-mcp"
+      ]
+    }
+  }
+}
+```
+<!-- END GENERATED: install -->

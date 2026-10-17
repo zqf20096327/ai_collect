@@ -1,0 +1,101 @@
+<div align="center">
+  
+# DKST Translator AI
+
+Professional local LLM translation workspace designed for consistent style and context preservation.
+
+Main Screen
+![Main Screen](res/1v2.gif)
+
+<!-- Web Login
+<img src="res/web_login.png" alt="Web Login" width="250"> -->
+
+Mobile Screen
+![Web Screen](res/2.gif)
+
+[English](#english) | [한국어](#한국어)
+
+</div>
+
+---
+
+## English
+
+### Overview
+**DKST Translator AI** is a powerful translation tool designed for translating long-form content while maintaining consistent style and context. By leveraging local Large Language Models (LLMs) via OpenAI-compatible APIs or LM Studio, it provides a professional, secure, and highly customizable translation environment.
+
+### Key Features
+- **Customizable Translation Prompts**: Use professional presets or define your own instructions to guide the translation style specifically for your needs.
+- **LLM Temperature Control**: Fine-tune the balance between accuracy and creativity for each translation task.
+- **Proofread After Translation**: Implements a two-step process—initial translation at a low temperature for precision, followed by a post-editing pass for natural phrasing.
+- **Enhanced Context with User Glossary**: Maintain consistency for names and specific terminology (e.g., *Dorothy* → *도로시*, *Alice* → *앨리스*) using a persistent glossary.
+- **Context-Aware Smart Post-Editing**: Intelligently preserves context across different segments of long documents to prevent drift in tone or meaning.
+- **Layout-Preserving PDF Translation**: Open text-based PDFs in the desktop app, preview source and translated pages side by side, translate coordinate-aware heading/body/caption blocks in contextual chunks, and keep the original pages, images, columns, and page count in the saved PDF.
+- **Integrated Web Server**: Access the translation workspace via a browser. Supports custom port configuration, password protection, and SSL/TLS certificates for secure remote access.
+- **On-device LiteRT-LM**: Run a `.litertlm` Gemma model locally on Windows, macOS, Linux, Android, and iOS, with an optional OpenAI-compatible server mode. See [LiteRT-LM integration](docs/LITERT_LM.md).
+
+> PDF translation currently requires selectable text. Image-only/scanned PDFs must be OCR-processed first. The clean-room renderer removes page-level text objects before recomposition and uses opaque local patches only as a compatibility fallback. See [PDF engine architecture](docs/PDF_ENGINE.md).
+
+---
+
+## 한국어
+
+### 소개
+**DKST Translator AI**는 스타일과 문맥을 유지하며 장문의 글을 효과적으로 번역할 수 있도록 설계된 도구입니다. OpenAI 호환 API 또는 LM Studio를 통한 로컬 LLM(대규모 언어 모델)을 활용하여 보안이 보장된 전문적인 맞춤형 번역 환경을 제공합니다.
+
+### 주요 기능
+- **프리셋 및 사용자 정의 프롬프트**: 내장된 전문 프리셋을 사용하거나 직접 정의한 지침을 통해 상황에 맞는 최적의 번역 스타일을 적용할 수 있습니다.
+- **LLM Temperature 조절**: AI 출력의 정확도와 창의성 사이의 균형을 정교하게 조절할 수 있습니다.
+- **초벌 번역 후 교정 (Proofread After Translation)**: 낮은 Temperature로 정확한 초벌 번역을 수행한 후, 사용자가 지정한 설정으로 자연스러운 문장 교정(Post-editing) 과정을 거칩니다.
+- **사용자 사전을 통한 문맥 강화**: 사용자 사전을 활용하여 고유 명사나 특정 전문 용어(예: *Dorothy* → *도로시*, *Alice* → *도리스*)가 전체 문서에서 일관되게 번역되도록 관리합니다.
+- **문맥 인지 스마트 포스트 에디팅**: 장문의 문서 전체에서 문맥을 지능적으로 파악하여 일관된 톤과 의미를 유지하도록 돕습니다.
+- **레이아웃 보존 PDF 번역**: 데스크톱 앱에서 텍스트 기반 PDF를 열고 원문·번역 PDF를 나란히 미리보며, 제목·본문·캡션 좌표 블록을 문맥 청크로 번역하고 원본 페이지·이미지·단·페이지 수를 유지한 PDF를 저장할 수 있습니다.
+- **내장 웹 서버 지원**: 웹 브라우저를 통해 원격으로 접속하여 사용할 수 있습니다. 포트 설정, 접근 비밀번호 및 SSL/TLS 인증서 기능을 지원하여 안전한 접속 환경을 제공합니다.
+- **온디바이스 LiteRT-LM**: Windows, macOS, Linux, Android, iOS에서 `.litertlm` Gemma 모델을 로컬로 실행하고 필요하면 OpenAI 호환 서버로 제공할 수 있습니다. 자세한 내용은 [LiteRT-LM 통합 문서](docs/LITERT_LM.md)를 참고하세요.
+
+> 현재 PDF 번역은 선택 가능한 텍스트가 있는 문서를 대상으로 합니다. 스캔 이미지 PDF는 먼저 OCR 처리가 필요합니다. 클린룸 렌더러는 재조판 전에 페이지 텍스트 객체를 제거하며, 호환되지 않는 PDF에만 불투명 영역 교체를 폴백으로 사용합니다. 자세한 내용은 [PDF 엔진 구조](docs/PDF_ENGINE.md)를 참고하세요.
+
+---
+
+## Development & Build
+
+### Prerequisites
+- [Go](https://go.dev/) (1.25+)
+- [Node.js](https://nodejs.org/) & NPM
+- [Wails v3 CLI](https://v3.wails.io/quick-start/installation/) (`go install github.com/wailsapp/wails/v3/cmd/wails3@latest`)
+- A Unicode TrueType font for translated PDF generation (Noto Sans CJK is recommended on Linux; macOS and Windows use compatible system fonts when available)
+
+### Live Development
+To run in live development mode with hot-reloading:
+```bash
+wails3 dev
+```
+In this mode, the frontend runs on Vite, and calls to Go methods are bridged automatically.
+
+### Production Build
+We provide custom build scripts for each platform to handle advanced signing, naming, and resource injection. **Use these scripts instead of raw `wails3 build` for production releases.**
+
+#### macOS
+```bash
+chmod +x build-macOS.sh
+./build-macOS.sh
+```
+*Generates a signed `DKST Translator AI.app` in `bin/`.*
+
+#### Windows
+```batch
+build-Windows.bat
+```
+*Generates `DKST Translator AI.exe` in `bin/` with embedded version info and icon.*
+
+#### Linux
+```bash
+chmod +x build-Linux.sh
+./build-Linux.sh
+```
+*Handles dependencies and WebKit2GTK versioning automatically.*
+
+---
+
+### Copyright
+Created by DINKIssTyle on 2026. Copyright (C) 2026 DINKI'ssTyle. All rights reserved.

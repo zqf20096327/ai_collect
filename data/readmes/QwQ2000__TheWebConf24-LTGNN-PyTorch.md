@@ -1,0 +1,42 @@
+## LTGNN-PyTorch
+
+This is the Pytorch implementation for our TheWebConf'24 paper "**Linear-Time Graph Neural Networks for Scalable Recommendations**". Please find our paper in
+ACM Digital Library (https://dl.acm.org/doi/10.1145/3589334.3645486) or arXiv (https://arxiv.org/abs/2402.13973).
+
+The [Amazon-Large](https://drive.google.com/file/d/13pYTb6FqdfaDy3WC-Ax-ruK1q9_d0Qub/view?usp=drive_link) dataset is available on Google Drive. If you prefer to build it yourself, please refer to Section 4.1 of our paper for instructions on constructing it directly from the [Amazon Review Data](https://cseweb.ucsd.edu/~jmcauley/datasets/amazon_v2/).
+
+This codebase was adapted from [LightGCN-pytorch](https://github.com/gusye1234/LightGCN-PyTorch). 
+
+For additional technical details and theoretical analysis, including the reduced neighbor sampling variance and the convergence of the forward process to PPNP, please refer to my [master's thesis](https://theses.lib.polyu.edu.hk/handle/200/13533).
+
+## Environment Requirement
+
+`pip install -r requirements.txt`
+
+## Command
+
+` cd code && python main.py --decay=2e-4 --lr=0.0015 --layer=1 --seed=2020 --dataset="yelp2018" --topks="[20]" --recdim=64 --model="ltgnn" --appnp_alpha=0.45 --num_neighbors=15 --device=0`
+
+` cd code && python main.py --decay=2e-4 --lr=0.0015 --layer=1 --seed=2020 --dataset="alibaba-ifashion" --topks="[20]" --recdim=64 --model="ltgnn" --appnp_alpha=0.45 --num_neighbors=15 --device=0`
+
+
+## BibTeX
+If you find **LTGNN** useful in your research, please cite the following in your manuscript:
+
+
+```
+@inproceedings{zhang2024linear,
+  title={Linear-Time Graph Neural Networks for Scalable Recommendations},
+  author={Zhang, Jiahao and Xue, Rui and Fan, Wenqi and Xu, Xin and Li, Qing and Pei, Jian and Liu, Xiaorui},
+  booktitle={Proceedings of the ACM on Web Conference 2024},
+  pages = {3533-3544},
+  year={2024}
+}
+
+@article{zhang2024towards,
+  title={Towards efficient graph neural networks for large-scale recommender systems},
+  author={Zhang, Jiahao},
+  year={2024},
+  publisher={Hong Kong Polytechnic University}
+}
+```

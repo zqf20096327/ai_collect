@@ -1,0 +1,168 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/wild-edge/wildedge-python/devel/docs/wildedge-logo-text.svg" alt="WildEdge" height="72"/>
+</p>
+
+<br/>
+
+[![CI](https://github.com/wild-edge/wildedge-python/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wild-edge/wildedge-python/actions/workflows/ci.yml)
+[![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](https://pypi.org/project/wildedge-sdk/)
+[![Tested on Linux](https://img.shields.io/badge/tested%20on-linux-blue)](https://github.com/wild-edge/wildedge-python/actions/workflows/ci.yml)
+[![Tested on macOS](https://img.shields.io/badge/tested%20on-macOS-blue)](https://github.com/wild-edge/wildedge-python/actions/workflows/ci.yml)
+[![Tested on Windows](https://img.shields.io/badge/tested%20on-windows-blue)](https://github.com/wild-edge/wildedge-python/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/wild-edge/wildedge-python/branch/main/graph/badge.svg)](https://codecov.io/gh/wild-edge/wildedge-python)
+
+ML inference monitoring for Python: on-device and remote models. Tracks latency, tokens, errors, and model metadata with no code changes, plus traces for agent pipelines.
+
+## Install
+
+```bash
+uv add wildedge-sdk
+```
+
+Without a DSN everything is a silent no-op, so dev and CI need no configuration.
+
+## CLI
+
+Drop `wildedge run` in front of your existing command. WildEdge instruments the runtime before your code starts. No SDK calls required in user code.
+
+```bash
+WILDEDGE_DSN="https://<secret>@ingest.wildedge.dev/<key>" \
+wildedge run --integrations timm -- python app.py
+```
+
+Validate your environment before deploying. `--send-test-event` proves the
+whole pipeline end to end by sending one span event and reporting the ingest
+response (exit codes: 0 pass, 1 config failure, 2 connectivity failure):
+
+```bash
+wildedge doctor --integrations all --send-test-event
+```
+
+Useful flags:
+
+| Flag | Description |
+|---|---|
+| `--integrations` | Comma-separated list of integrations to activate (or `all`) |
+| `--hubs` | Hub trackers to activate: `huggingface`, `torchhub` |
+| `--print-startup-report` | Print per-integration status at startup |
+| `--strict-integrations` | Exit (code 121) if a requested integration can't be instrumented |
+| `--strict` | Exit (120 config, 122 internal) instead of running untracked when bootstrap fails |
+| `--attachments` | Enable opt-in raw input/output attachment upload |
+| `--no-propagate` | Don't pass WildEdge env vars to child processes |
+
+## SDK
+
+Use the SDK when you can't wrap the process, or when you want traces and spans
+around your own code. `wildedge run` covers everything else.
+
+```python
+import wildedge
+from openai import OpenAI
+from transformers import pipeline
+
+wildedge.init(integrations=["transformers", "openai"])  # optional under `wildedge run`
+
+local = pipeline("text-generation", model="HuggingFaceTB/SmolLM2-360M-Instruct")
+remote = OpenAI()
+
+with wildedge.trace(run_id="run-1"):
+    with wildedge.span(kind="agent_step", name="draft"):
+        draft = local(prompt)[0]["generated_text"]
+    with wildedge.span(kind="agent_step", name="refine"):
+        remote.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": draft}],
+        )
+```
+
+See [Deployment](https://github.com/wild-edge/wildedge-python/blob/main/docs/deployment.md)
+for client lifecycle and the full contract.
+
+## Supported integrations
+
+**On-device**
+
+| Integration | Example |
+|---|---|
+| `transformers` | [transformers_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/transformers_example.py) |
+| `mlx` | [mlx_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/mlx_example.py) |
+| `timm` | [timm_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/timm_example.py) |
+| `gguf` | [gguf_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/gguf_example.py) |
+| `onnx` | [onnx_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/onnx_example.py) |
+| `ultralytics` | - |
+| `tensorflow` | [tensorflow_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/tensorflow_example.py) |
+| `torch` | [pytorch_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/pytorch_example.py) |
+| `keras` | [keras_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/keras_example.py) |
+
+**Remote models**
+
+| Integration | Example |
+|---|---|
+| `anthropic` | [anthropic_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/anthropic_example.py) |
+| `openai` | [openai_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/openai_example.py) |
+
+Fireworks, Together, Baseten, xAI, Mistral, Groq and other OpenAI-compatible hosts
+work through the `openai` integration — pass their `base_url`. See
+[Providers](https://github.com/wild-edge/wildedge-python/blob/main/docs/providers.md)
+for every recognized endpoint.
+
+Using httpx, requests or urllib directly instead of the `openai` / `anthropic`
+client libraries? Wrap the call in
+[`wildedge.llm_api()`](https://github.com/wild-edge/wildedge-python/blob/main/docs/llm_api.md)
+to get the same events:
+[llm_api_example.py](https://github.com/wild-edge/wildedge-python/blob/main/examples/llm_api_example.py).
+
+**Hub tracking**
+
+Pass `hubs=` to track model download provenance. Hubs are framework-agnostic and can be combined with any integration.
+
+| Hub | Tracks |
+|---|---|
+| `huggingface` | Downloads via `huggingface_hub` |
+| `torchhub` | Downloads via `torch.hub` |
+
+For unsupported frameworks, see [Manual tracking](https://github.com/wild-edge/wildedge-python/blob/main/docs/manual-tracking.md).
+
+## Configuration
+
+| Parameter | Default | Description |
+|---|---|---|
+| `dsn` | - | `https://<secret>@ingest.wildedge.dev/<key>` (or `WILDEDGE_DSN`). If unset, the client is a no-op. |
+| `app_version` | `None` | Your app's version string |
+| `app_identity` | `<project_key>` | Namespace for offline persistence. Set per-app in multi-process workloads (or `WILDEDGE_APP_IDENTITY`) |
+| `enable_offline_persistence` | `true` | Persist unsent events to disk and replay on restart |
+| `sampling_interval_s` | `30.0` | Seconds between background hardware snapshots. Set to `0` or `None` to disable (or `WILDEDGE_SAMPLING_INTERVAL_S`) |
+| `attachments_enabled` | `false` | Opt-in upload of raw inference inputs/outputs (or `WILDEDGE_ATTACHMENTS_ENABLED`). See [Attachments](https://github.com/wild-edge/wildedge-python/blob/main/docs/configuration.md#attachments) |
+
+For advanced options (batching, queue tuning, dead-letter storage, attachments), see [Configuration](https://github.com/wild-edge/wildedge-python/blob/main/docs/configuration.md).
+
+## Projects using this SDK
+
+| Name | Link |
+|---|---|
+| outfitstudio.app | https://outfitstudio.app/ |
+| agntr | [github.com/pmaciolek/agntr](https://github.com/pmaciolek/agntr) |
+| demo-app | [github.com/wild-edge/demo-app](https://github.com/wild-edge/demo-app) |
+| *(your project here)* | - |
+
+Using WildEdge in your project? Open a PR to add it to the list.
+
+## Security & Privacy
+
+By default the SDK transmits only anonymized telemetry, never raw model inputs
+or outputs. The one exception is opt-in [attachments](https://github.com/wild-edge/wildedge-python/blob/main/docs/configuration.md#attachments)
+(`attachments_enabled`), which upload raw bytes you explicitly pass in.
+
+Report security and privacy issues to: support@wildedge.dev
+
+## Links
+
+- [Deployment guide](https://github.com/wild-edge/wildedge-python/blob/main/docs/deployment.md)
+- [Manual tracking](https://github.com/wild-edge/wildedge-python/blob/main/docs/manual-tracking.md)
+- [LLM API tracking](https://github.com/wild-edge/wildedge-python/blob/main/docs/llm_api.md)
+- [Compatibility Matrix](https://github.com/wild-edge/wildedge-python/blob/main/docs/compatibility.md)
+- [Changelog](https://github.com/wild-edge/wildedge-python/blob/main/CHANGELOG.md)
+- [License](https://github.com/wild-edge/wildedge-python/blob/main/LICENSE)
+
+Each GitHub release ships `llms.txt` and `llms-full.txt`: the full
+documentation for that exact version in one file, built for AI assistants.

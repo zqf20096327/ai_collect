@@ -1,0 +1,207 @@
+<p align="center">
+  <img src="./docs/assets/banner.png" alt="EchoVessel — a digital persona engine" width="640">
+</p>
+
+<p align="center">
+  <a href="https://github.com/AlanY1an/echovessel/actions/workflows/ci.yml"><img src="https://github.com/AlanY1an/echovessel/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  &nbsp;·&nbsp;
+  🌐 <a href="./README.zh.md">中文</a>
+</p>
+
+*Some people leave behind memories.  
+Some leave behind a voice.  
+Some stay with us in fragments: a tone, a rhythm, a way of speaking that never fully disappears.*
+
+**EchoVessel** is an open-source engine for building digital personas that can remember, respond, evolve, and stay present across time.
+
+It is designed for people who want to create characters, companions, fictional personas, personal echoes, or consented digital counterparts with:
+
+- identity and style
+- long-term memory
+- relationship evolution
+- voice interaction
+- local-first privacy
+
+EchoVessel is not a generic chatbot.  
+It is a vessel for presence.
+
+---
+
+## Getting Started (v0.0.1)
+
+v0.0.1 is an early-alpha tagged release. It ships a local-first daemon built on the full 5-module stack (memory / voice / channels / proactive / runtime), with a working Web channel (chat + persona-block admin + voice toggle + first-run onboarding) and a working Discord DM channel. Several admin surfaces are intentional placeholders in this release — see **Known Limitations** in [`CHANGELOG.md`](./CHANGELOG.md) for the full list of what's deferred to v0.0.2+. Tested on macOS and Linux; Windows is not yet supported.
+
+### Install (from source)
+
+EchoVessel targets Python **3.11+**. **There is no PyPI release yet** — clone the repo and run from source using [`uv`](https://github.com/astral-sh/uv):
+
+```bash
+git clone https://github.com/AlanY1an/echovessel.git
+cd echovessel
+uv sync --all-extras
+```
+
+`--all-extras` pulls every optional stack in one shot. If you want to keep the install lean, pick only what you use:
+
+```bash
+uv sync --extra embeddings --extra llm --extra voice --extra discord
+```
+
+- `embeddings` — local sentence-transformers embedder
+- `llm` — OpenAI / Anthropic SDKs
+- `voice` — FishAudio TTS SDK
+- `discord` — `discord.py` for the Discord DM channel
+
+All subsequent commands below are run inside the repo with `uv run …`.
+
+### Get the 5-minute architecture tour
+
+Before you run anything, it helps to see how the pieces fit. Three hand-written HTML visualizations live under `docs/` — open them locally in a browser.
+
+- 🗺 [**`docs/architecture.html`**](https://alanyian.com/projects/echovessel/docs/architecture.html) — one-page static anatomy. Module layers, memory L1–L4 stack, message flow, cross-channel SSE, full HTTP surface, iron rules, release timeline.
+- 🧠 [**`docs/memory/layers.html`**](https://alanyian.com/projects/echovessel/docs/memory/layers.html) — simplest possible mental model of memory. One SVG figure, four layers, how they connect, credits to Stanford's Generative Agents paper for the retrieval scoring formula.
+- 🔄 [**`docs/architecture-flow.html`**](https://alanyian.com/projects/echovessel/docs/architecture-flow.html) — runtime "nervous system" companion. Per-turn activation sequence, real story trace, L1–L4 distillation rules (quoting the actual extraction/reflection prompts), retrieval math, policy gates.
+
+If you only have 60 seconds, open the middle one.
+
+### First Launch
+
+EchoVessel reads `~/.echovessel/config.toml` for settings and `./.env` (the current working directory at run-time) for API keys. Create both starter files in one shot:
+
+```bash
+uv run echovessel init
+```
+
+`init` writes `~/.echovessel/config.toml` **and** a commented-out `.env` template in the current directory (0600 perms). The daemon auto-loads `./.env` on `uv run echovessel run`, so keep `.env` in the directory you launch from — typically the project root. Uncomment the keys you need:
+
+```
+OPENAI_API_KEY=sk-...
+FISH_AUDIO_KEY=...              # optional · FishAudio TTS
+ECHOVESSEL_DISCORD_TOKEN=...    # optional · Discord bot token
+```
+
+Edit `~/.echovessel/config.toml` to pick an LLM provider — zero-config works with any OpenAI-compatible endpoint (set `OPENAI_API_KEY`), or switch to `anthropic` + `ANTHROPIC_API_KEY`, or `ollama` (local, no key). See the sample for every option.
+
+**Smoke-test without any API key**: set `[llm].provider = "stub"` in the config to boot the daemon with canned stub replies — useful for verifying the install.
+
+### Run the Daemon
+
+```bash
+uv run echovessel run
+```
+
+First startup downloads the sentence-transformers embedder (~90MB, one-time). Subsequent boots are instant.
+
+Expected log on clean boot:
+```
+schema migration: created table core_block_appends
+voice service: <enabled | disabled> (config.voice.enabled=...)
+proactive scheduler: <enabled | disabled> (config.proactive.enabled=...)
+importer facade: built
+static frontend: mounted from .../channels/web/static
+web channel: serving on http://127.0.0.1:7777 (debounce_ms=2000)
+memory observer: registered
+EchoVessel runtime started | data_dir=... persona=... llm_provider=... channels=...
+local-first disclosure: outbound = only <llm endpoint>; embedder runs locally; no telemetry; logs stay in <data_dir>/logs
+first launch: opened browser at http://127.0.0.1:7777/
+```
+
+That last line means the daemon **auto-opens your default browser** on first run — you should land on the onboarding screen without having to paste the URL yourself.
+
+Data lives in `~/.echovessel/memory.db` (SQLite + sqlite-vec). Logs in `~/.echovessel/logs/`.
+
+### Web Channel
+
+The daemon serves the React UI directly at `http://127.0.0.1:7777/` (host/port configurable under `[channels.web]` in `config.toml`). Open it in a browser — that's it. No `npm`, no separate dev server.
+
+If you want to rebuild the frontend from source (contributors only), the sources live in `src/echovessel/channels/web/frontend/`. Run:
+
+```bash
+cd src/echovessel/channels/web/frontend
+npm install
+npm run build
+```
+
+The hatch build hook copies the output into `src/echovessel/channels/web/static/`, which ships inside the wheel.
+
+### Discord Channel
+
+EchoVessel can talk to you over Discord DMs — text replies plus native OGG Opus voice messages when voice is enabled.
+
+1. Create an application + bot at <https://discord.com/developers/applications>. Under **Bot → Privileged Gateway Intents**, enable **MESSAGE CONTENT INTENT**.
+2. Copy the bot token into `.env`:
+   ```
+   ECHOVESSEL_DISCORD_TOKEN=...
+   ```
+3. In `~/.echovessel/config.toml`:
+   ```toml
+   [channels.discord]
+   enabled = true
+   token_env = "ECHOVESSEL_DISCORD_TOKEN"
+   debounce_ms = 2000
+   # allowed_user_ids = [123456789012345678]   # optional allowlist
+   ```
+4. Invite the bot to your account (OAuth2 URL generator → `bot` scope + DM permissions), then DM it. Incoming messages are debounced (2s default) and dispatched as a single turn.
+5. Voice messages send as native Discord voice bubbles when `[persona].voice_enabled = true` **and** `ffmpeg` is on PATH — the channel converts FishAudio's MP3 output to OGG Opus on the fly. Install with `brew install ffmpeg` (macOS) or `apt install ffmpeg` (Debian/Ubuntu). Without ffmpeg the Discord channel falls back to text.
+6. Everything you DM through Discord also shows up live in the Web chat page at `http://127.0.0.1:7777/`, tagged with a `📱 Discord` pill. Historical Discord messages are pulled in on Web mount via `/api/chat/history`. The same persona memory backs both channels (iron rule D4).
+
+### Voice
+
+EchoVessel uses [FishAudio](https://fish.audio) for TTS. Put `FISH_AUDIO_KEY` in `.env` and pick a `voice_id` under `[persona]` in `config.toml`. Set `[persona].voice_enabled = true` to emit voice alongside text. The Discord voice-message path additionally requires `ffmpeg` (MP3 → OGG Opus conversion).
+
+### Running Tests
+
+```bash
+uv run pytest tests/ -q                # 916 tests across memory / runtime / voice / proactive / channels / import / integration
+uv run ruff check src/ tests/          # lint
+uv run lint-imports                    # layered architecture contracts
+```
+
+### Project Layout
+
+```
+src/echovessel/
+├── core/            — shared types, enums, utilities
+├── memory/          — L1-L4 memory · SQLite + sqlite-vec · observers + migrations
+├── voice/           — TTS + STT + voice cloning (FishAudio + Whisper + stub)
+├── proactive/       — autonomous messaging · policy gates · delivery
+├── channels/        — Channel Protocol + per-channel adapters (web + discord)
+│   ├── web/         — FastAPI routes + SSE + embedded React bundle
+│   │   ├── frontend/ — React 19 + Vite + TS source (contributors)
+│   │   └── static/  — built bundle served by the daemon
+│   └── discord/     — discord.py bot · DM ingestion · OGG Opus voice
+├── import_/         — universal LLM importer pipeline (text → memory)
+├── prompts/         — system prompts for extraction / reflection / interaction
+├── resources/       — bundled config.toml.sample
+└── runtime/         — daemon · turn dispatcher · LLM providers · CLI
+```
+
+### Current Status (v0.0.1)
+
+- ✅ **Daemon**: boots end-to-end, all startup wiring verified in log, 916 tests passing (3 skipped)
+- ✅ **Cross-channel unified timeline**: Web chat page streams live turn events from every channel (Web + Discord today, iMessage-ready) with a `📱 Discord` / `💬 iMessage` source pill. A new `/api/chat/history` endpoint backfills the last 50 messages across channels on mount.
+- ✅ **Memory**: L1–L4 hierarchy, idempotent schema migration, observer hooks, 4/4 MVP eval metrics passing (Over-recall FP Rate 0.08 ≤ 0.15 target)
+- ✅ **Voice**: FishAudio TTS + stub TTS provider · `VoiceService.generate_voice()` facade · per-persona `voice_id` · on-disk MP3 cache
+- ✅ **Proactive**: policy engine · four gates including `no_in_flight_turn` · delivery inherits `persona.voice_enabled`
+- ✅ **Runtime**: streaming turn loop (IncomingTurn + text delta) · atomic persona voice toggle · `SIGHUP` hot reload · memory observer wiring
+- ✅ **Web channel** (production paths): FastAPI + SSE streaming · embedded React 19 bundle · onboarding flow · chat with token streaming · admin → persona core-block editing · admin → voice toggle
+- ✅ **Web channel** (onboarding): both entry paths work — blank-write (fill the 5 persona blocks by hand) and upload-material (paste a bio/journal, LLM drafts the 5 blocks for your review)
+- 🚧 **Web channel** (placeholders this release): admin → events list / thoughts list / voice cloning wizard / config tabs exist but most render section chrome only; a few are fully wired (Persona blocks · Voice toggle · Memory search · Cost breakdown · etc. — see CHANGELOG for the exact map)
+- ✅ **Discord channel**: DM ingestion with debounce · text replies · native OGG Opus voice messages (ffmpeg required)
+- ✅ **Import pipeline** (library only): universal LLM importer · five content-type classification · `self_block` side path · mandatory embed pass — *no HTTP route is exposed yet, so neither the Web SPA nor the CLI can drive a real import in this release*
+- ⚠️ **Platform**: macOS and Linux tested; Windows is not yet supported
+- 🔜 **v0.0.2 targets**: wire `/api/admin/import/*` routes + Web import wizard · Admin events / thoughts list views · live mood / session-boundary SSE feed on the Web chat
+
+---
+
+## Continue reading
+
+Full module-by-module documentation lives under **[`docs/`](./docs/)** (English + 中文). Start at the landing page in your language and follow the cross-links:
+
+- 🇬🇧 [**docs/en/README.md**](./docs/en/README.md) · 🇨🇳 [**docs/zh/README.md**](./docs/zh/README.md)
+
+The module pages cover [memory](./docs/en/memory.md), [voice](./docs/en/voice.md), [channels](./docs/en/channels.md), [proactive](./docs/en/proactive.md), [runtime](./docs/en/runtime.md), and [import](./docs/en/import.md), plus [configuration](./docs/en/configuration.md) and [contributing](./docs/en/contributing.md). The three HTML visualizations above are the fastest way to see the system on one page.
+
+## Name
+
+**EchoVessel** means carrying an echo long enough for it to become presence.

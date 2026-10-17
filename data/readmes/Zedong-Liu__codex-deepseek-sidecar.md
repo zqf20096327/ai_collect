@@ -1,0 +1,165 @@
+# Codex-deepseek-sidecar
+
+[English](README.en.md) | 中文
+
+用一句 prompt，让 Codex 自己启动 DeepSeek sidecar agents 
+
+🔥 **现已支持 Codex、Claude Code 和 OpenCode**
+
+**不需要第三方代理。Flash 默认直连 DeepSeek 官方原生 Responses API；只有 Pro/Beta 还走内置本地代理。🚀**
+
+`codex-deepseek-sidecar` 是一个 Codex skill，让你的主 agent 可以把边界清晰的子任务——长测试、日志分析、大范围代码探索、独立 review、实现尝试——派给更便宜的 DeepSeek 工人 agent。
+
+核心模式很简单：高级 GPT 继续做主脑，负责规划、判断和综合；DeepSeek 工人处理重复、长上下文、token-heavy 的执行工作；所有事情仍然在 Codex harness 里运转。
+
+
+<p align="center">
+  <img src="assets/banner-zh.png" alt="codex-deepseek-sidecar" style="max-width:70%">
+</p>
+
+## 🚀 一句话启动
+
+把这个仓库链接和下面这句话交给 Codex：
+
+```text
+安装并使用 https://github.com/Zedong-Liu/codex-deepseek-sidecar。
+我有 DeepSeek API key；如果本机还没有配置，请向我索取。
+Flash 默认直连官方原生 Responses API；Pro/Beta 需要本地代理时请启动并保持它运行。
+然后为当前仓库启动一个 DeepSeek sidecar，用它处理适合分派的长任务或日志任务。
+```
+
+这才是面向人类的使用方式。你不需要学习 sidecar 参数、session ID、代理命令。这个 skill 是写给 Codex 读和执行的。在一台已有 Codex CLI、Python 3、DeepSeek key 的机器上，Codex 应该能在大约五分钟内完成安装、配置内置代理，并拉起第一个 sidecar。
+
+之后正常用自然语言说就行：
+
+```text
+用一个 DeepSeek sidecar 跑慢测试，你同时检查代码。
+```
+
+```text
+用一个 DeepSeek sidecar 分析这份 CI log，找出真正失败原因。
+```
+
+```text
+你自己判断什么时候把这件事拆给 DeepSeek sidecars。适合长测试、日志分析、大范围探索时就自动分派、组织结果，最后给我一个综合方案。
+```
+
+## ✨ 为什么用户会想用
+
+- 💸 **大幅降低 worker token 成本**：把重复读文件、看日志、跑测试、大范围探索从昂贵 GPT token 迁移到 DeepSeek worker token。很多工作流可以瞄准 **降低 80-90% 的 token 成本**。
+- **不需要第三方代理**：Flash profile 直连 DeepSeek 官方原生 Responses API（`wire_api = "responses"`），凭据通过 Codex 官方的 Keychain-backed `auth.command` 提供；只有 Pro/Beta 仍使用仓库内置的小型 Python 代理桥接。
+- **GPT 仍然做主脑**：昂贵模型负责规划、判断、综合；DeepSeek 负责边界清晰的工人任务。
+- **继续使用 Codex harness**：sidecar 仍然具备 Codex 的文件访问、命令执行、会话保持和结果汇报能力。
+
+## 💸 成本节省估算
+
+以下价格为每 1M tokens 的费用，基于 2026-06-02 查询到的 [OpenAI GPT-5.5 model page](https://developers.openai.com/api/docs/models/gpt-5.5/) 和 [DeepSeek pricing docs](https://api-docs.deepseek.com/quick_start/pricing)。DeepSeek Pro 输入价格使用 cache-miss 价格，属于偏保守的比较。
+
+| 模型 | 最适合的角色 | 输入 | 输出 |
+| ---- | ---- | ----: | ----: |
+| GPT-5.5 | 主大脑：规划、判断、综合结论 | $5.00 | $30.00 |
+| DeepSeek V4 Pro | 强工人：review、调试、实现尝试 | $0.435 | $0.87 |
+| DeepSeek V4 Flash | 快工人：日志、广泛探索、廉价并行 pass | $0.14 | $0.28 |
+
+按 `1M input + 200K output` 粗略计算：
+
+| 路由方式 | 近似成本 | token 成本降低 |
+| ---- | ----: | ----: |
+| 全部使用 GPT-5.5 | $11.00 | baseline |
+| DeepSeek V4 Pro 工人 token | $0.61 | 约 94% |
+| DeepSeek V4 Flash 工人 token | $0.20 | 约 98% |
+
+真实使用里，GPT 仍然会花 token 做协调和审查。这正是方案的设计出发点：把昂贵 token 花在判断力上，把重复性的 token 消耗交给 DeepSeek。对很多 agent 工作流来说，**降低 80-90% 的 token 成本**是现实目标。
+
+## 🧠 Codex 会在背后做什么
+
+当你要求 Codex 使用这个 skill 时，它可以：
+
+- 把仓库安装成 Codex skill。
+- Flash 默认直连官方原生 Responses API；仅在 Pro/Beta 需要时启动内置轻量代理。
+- 一次性配置 Codex profile，避免每次任务重复设置。
+- 为边界清晰的任务启动 DeepSeek sidecar。
+- 跟踪 task ID 和 session，确保后续对话回到正确的 worker。
+- 收集 sidecar 结论，汇总到主回答中。
+
+这些操作细节不应该塞给人类读者。Agent-facing instructions 放在 [SKILL.md](SKILL.md)。
+
+## 🔌 传输层：官方原生 + 内置代理（Pro/Beta 备用）
+
+Flash profile 现在走 DeepSeek 官方推荐的接入方式：Codex 直接使用
+`https://api.deepseek.com/` 的 Responses API，无需任何中间转换。API key 不写入
+`config.toml`，而是由 Codex 官方的 `[model_providers.<id>.auth]` 命令从 macOS
+Keychain 项 `codex-deepseek-official` 读取。DeepSeek 官方文档目前只对
+`deepseek-v4-flash` 开放 Codex 接入（Pro 预计 2026 年 8 月初开放），因此在官方
+开放前，`ds-sidecar-local`（Pro）和 `ds-sidecar-beta` 继续使用内置代理。
+
+内置的 `deepseek-responses-proxy` 刻意保持很小：只用 Python 标准库，默认只监听本地，并针对 Codex 的大请求体设计。它会桥接 function tools；对于 V4 Flash 偶尔以 DSML 文本而非 API `tool_calls` 字段返回的工具调用，代理会在输出给 Codex 前还原为真实结构化调用（流式输出也会先完成此检查），不会把工具调用误显示为最终回答。它还会忽略 Codex 默认附带但 DeepSeek Chat 不支持的 Responses built-in tools；如果请求明确要求某个不支持的 built-in tool，则返回明确的错误。代理只连接官方 `https://api.deepseek.com`，可通过环境变量或私有 key 文件取得凭据；不要把 key 放进仓库、profile 或 prompt。
+
+## 🛠️ 稳定运行与会话
+
+首次使用时把 DeepSeek API key 存进 macOS Keychain 项 `codex-deepseek-official`
+（当前用户；其他平台可用 `DEEPSEEK_API_KEY` / `DEEPSEEK_API_KEY_FILE`），然后运行：
+
+```bash
+scripts/codex-deepseek-subagent --configure
+```
+
+`--configure` 只写 `~/.codex/ds-sidecar-*.config.toml` 这类 sidecar profile，
+不修改 `~/.codex/config.toml` 的顶层 `model` / `model_provider` / 认证键，因此
+不会影响你的 ChatGPT/Codex 登录状态。**不要**直接运行 DeepSeek 官方一键脚本
+（`bash <(curl -fsSL https://cdn.deepseek.com/api-docs/codex-deepseek-setup.sh)`），
+它会改写全局配置并隐藏 ChatGPT 登录会话组；本 skill 在 sidecar profile 里实现了
+同一套官方 provider 配置。Pro/Beta 仍需要本地代理（launchd 服务
+`com.captainliu.deepseek-sidecar-proxy`）：
+
+```bash
+curl -fsS http://127.0.0.1:12359/v1/ready
+```
+
+默认 profile 是稳定 API 上的 DeepSeek V4 Flash，思考强度 `max`。需要更强工人时用
+`--profile ds-sidecar-local`（Pro）；`--effort high|max` 可覆盖思考强度，且保存的
+session 会记住选用的 profile 与强度：
+
+```bash
+# 默认：Flash + max
+scripts/codex-deepseek-subagent --cd "$PWD" "<task>"
+
+# 更便宜/更快的 Flash 回合
+scripts/codex-deepseek-subagent --effort high --cd "$PWD" "<task>"
+
+# 升级到 Pro
+scripts/codex-deepseek-subagent --profile ds-sidecar-local --cd "$PWD" "<task>"
+```
+
+每次执行会打开 Terminal 监视窗口，显示由 wrapper 校验的 model、effort、profile、
+实时输出和 `deepseek >` 后续对话提示。原始 reasoning 不会显示给用户；仅在工具调用
+续接所必需时由代理不透明地保存。`/metrics` 只提供 aggregate cache hit/miss，不泄露
+prompt、工具参数或 key。升级 Codex 后重新运行 `--configure`，它会刷新本地模型元数据。
+
+## 🧩 框架适配
+
+Codex 仍然是主线稳定入口。其他框架适配放在各自安装面里，避免改变 Codex skill 的行为：
+
+- `.opencode/` 包含 OpenCode 适配器和 OpenCode skill。
+- `.claude-plugin/` 加 `skills/claude-deepseek-sidecar/` 包含 Claude Code 适配器。
+
+## 📦 仓库结构
+
+```text
+.
+├── .claude-plugin/
+├── .opencode/
+├── SKILL.md
+├── agents/openai.yaml
+├── skills/claude-deepseek-sidecar/
+├── scripts/codex-deepseek-sidecar
+├── scripts/codex-deepseek-subagent
+├── scripts/codex-deepseek-keychain-token
+├── scripts/deepseek-responses-proxy
+├── scripts/refresh-codex-model-catalog
+└── scripts/terminal-chat
+```
+
+## License
+
+Apache-2.0，见 [LICENSE](LICENSE)。

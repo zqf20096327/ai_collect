@@ -1,0 +1,455 @@
+<p align="center">
+  <img src="docs/logo.svg" alt="AgentsOrg.ai" width="320" />
+</p>
+
+<p align="center">
+  <strong>Open-source AI governance platform for ChatGPT Enterprise</strong><br/>
+  Discover every GPT in your workspace. Score them. Flag risks. Develop your people.
+</p>
+
+<p align="center">
+  <a href="https://agentsorg-demo.fly.dev"><img src="https://img.shields.io/badge/Live_Demo-agentsorg--demo.fly.dev-10b981?logo=fly.io&logoColor=white" alt="Live Demo" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License" /></a>
+  <a href="docker-compose.yml"><img src="https://img.shields.io/badge/deploy-Docker_Compose-2496ED?logo=docker&logoColor=white" alt="Docker" /></a>
+  <a href="https://github.com/ori129/agentsorg/commits/main"><img src="https://img.shields.io/github/last-commit/ori129/agentsorg" alt="Last Commit" /></a>
+  <a href="https://github.com/ori129/agentsorg/stargazers"><img src="https://img.shields.io/github/stars/ori129/agentsorg?style=social" alt="Stars" /></a>
+  <img src="https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/typescript-5.6-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+</p>
+
+---
+
+## What is AgentsOrg.ai?
+
+AgentsOrg.ai connects to the **OpenAI Compliance API** and gives your organization a complete picture of every Custom GPT and Project it has built — scored, risk-flagged, and mapped to business processes.
+
+OpenAI's built-in analytics tells you **how much** people use ChatGPT. AgentsOrg.ai tells you **how good** your GPTs are — and what to do about it.
+
+> **Self-hosted. Your data never leaves your infrastructure.**
+
+**[→ Try the live demo](https://agentsorg-demo.fly.dev)** — no sign-up required.
+
+---
+
+## Features
+
+### 🏠 Home Dashboard
+Prioritized intelligence view for AI leaders. Opens to a set of top **priority actions** (risk, adoption, quality, governance) scored and ranked by impact × effort — each one backed by real GPT data. Alongside it, the **Quality vs. Adoption quadrant** plots every asset so you can instantly spot hidden gems (high quality, low adoption), champions (high quality, high adoption), and retirement candidates.
+
+### 🔍 GPT & Project Registry
+Automatically discovers all Custom GPTs **and Projects** across your ChatGPT Enterprise workspace via the OpenAI Compliance API. Full-text search, filters, asset-type chips, and a slide-out detail panel for every asset.
+
+### 🧠 Semantic Enrichment (9 signals + 3 composite scores per asset)
+An LLM reads each asset's system prompt and extracts 9 enrichment signals:
+
+| Signal | What it captures |
+|--------|-----------------|
+| `risk_level` + `risk_flags` | Data exposure, compliance concerns |
+| `sophistication_score` | Depth of prompt and tooling (1–5) |
+| `prompting_quality_score` | Prompt engineering quality (1–5) |
+| `business_process` | Which workflow this asset automates |
+| `roi_potential_score` | Estimated business value (1–5) |
+| `intended_audience` | Who the asset is built for |
+| `integration_flags` | External systems connected |
+| `output_type` | Document, Analysis, Code, Conversation, etc. |
+| `adoption_friction_score` | How easy it is for others to adopt (1–5) |
+| `purpose_fingerprint` | Single-sentence workflow description — powers demand signal detection |
+
+These feed into 3 composite scores and a quadrant label:
+
+| Composite | What it measures |
+|-----------|-----------------|
+| `quality_score` (0–100) | Design quality — prompt depth, clarity, audience fit |
+| `adoption_score` (0–100) | Usage — conversation volume, active users, recency |
+| `risk_score` (0–100) | Risk exposure — data sensitivity, compliance flags |
+| `quadrant_label` | Champion / Hidden Gem / Scaled Risk / Retirement Candidate |
+
+### 📊 Leader Dashboard
+- **Home** — Opens to an LLM-generated **executive summary** paragraph and 5–10 ranked **priority actions** (each with category, impact, effort, reasoning, and linked assets). The **Quality vs. Adoption quadrant** plots every scored asset — Champion, Hidden Gem, Scaled Risk, or Retirement Candidate. Portfolio health trend chart tracks average quality, adoption, and risk across every sync.
+- **Portfolio** — Tabbed view: all assets with composite scores, ghost assets (zero usage), risk flags, and per-asset score history (the "Journey" tab in the slide-out drawer shows longitudinal quality/adoption/risk trend).
+- **Adoption** — Conversation intelligence: which assets are being used, by whom, and for what purpose. Conversations are attributed back to the originating GPT or Project via the conversation pipeline, giving each asset its own usage fingerprint. Ghost asset detection, drift alerts, knowledge gap signals, per-user adoption insights.
+- **Workflows** — Business process coverage analysis. Shows which workflows are covered by AI assets (with conversation evidence), which have assets built but zero conversation activity (ghost coverage), and which show user demand via conversation topics but have no dedicated asset (intent gaps). Each workflow has LLM-generated reasoning and a priority action.
+- **Build Signals** — Semantic clustering (pgvector + centroid-based algorithm + LLM validation) detects when multiple teams independently build overlapping tools. Each cluster is a proven demand signal. Surfaces the best-candidate asset to certify as an org standard, with estimated wasted hours.
+- **Sync** — Manual sync, auto-sync toggle + schedule, token consumption and cost per run, full sync history log.
+
+### 🎓 Learning & Development
+- **Recognition** — Composite builder scores: quality 35% · adoption 25% · hygiene 25% · volume 15%.
+- **Courses** — LLM-driven course recommendations per builder, grounded in actual KPI gaps. Built-in OpenAI Academy catalog; custom courses via URL.
+- **Workshops** — CRUD for sessions with participant lists, GPT tagging, and time-based quality impact correlation.
+
+### 👤 Employee Portal
+Read-only GPT and Project discovery for non-admin users — search and browse what's available without accessing governance data.
+
+### 🔐 Auth & Security
+- **SSO via OIDC** — connect any OIDC-compatible provider (Okta, Entra ID, Google). Enforcement mode blocks password login for non-admin users; admins retain password access as an emergency fallback.
+- **TOTP MFA** — two-step login: password → 5-minute challenge token → 6-digit authenticator code. Secrets are Fernet-encrypted before storage.
+- **Role-gated analytics** — employees can search and discover GPTs via the Portal; all intelligence views (pipeline analytics, conversation data, clustering, workflow coverage) require `ai-leader` or `system-admin`.
+- **Bearer token restriction** — `Authorization: Bearer` only works for `token_type="api"` tokens. Browser session cookies cannot be extracted and replayed as API tokens.
+- **Encryption key rotation** — `POST /admin/rotate-encryption-key` re-encrypts all stored secrets (API keys, OIDC client secrets) atomically with a new Fernet key.
+- **Security white paper** — `docs/security_controls.md` documents all controls, IDOR mitigations, and the threat model.
+
+### 🎯 Demo Mode
+Run the full pipeline with realistic mock data — no API keys needed. 500 GPTs across 10 departments, fully enriched with scores, rationale, priority actions, and usage signals. One click from the onboarding screen.
+
+---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/ss_onboarding.png" alt="Sign in" /></td>
+    <td><img src="docs/screenshots/ss_home.png" alt="Home Dashboard" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Sign in — self-hosted, your data stays on your infra</em></td>
+    <td align="center"><em>Home — executive summary, priority actions, Quality vs Adoption quadrant</em></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ss_portfolio.png" alt="Portfolio" /></td>
+    <td><img src="docs/screenshots/ss_adoption.png" alt="Adoption" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Portfolio — composite scores, risk flags, ghost asset detection</em></td>
+    <td align="center"><em>Adoption — conversation intelligence: ghost assets, drift alerts, knowledge gaps</em></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ss_workflows.png" alt="Workflows" /></td>
+    <td><img src="docs/screenshots/ss_build_signals.png" alt="Build Signals" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Workflows — covered processes, ghost coverage, and intent gaps with LLM reasoning</em></td>
+    <td align="center"><em>Build Signals — demand clusters: where multiple teams built the same thing independently</em></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ss_recognition.png" alt="Builder Recognition" /></td>
+    <td><img src="docs/screenshots/ss_learning.png" alt="Courses" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Recognition — composite builder scores across your team</em></td>
+    <td align="center"><em>Courses — LLM-driven course recommendations per builder</em></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/ss_journey.png" alt="Journey — per-asset score history" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><em>Journey — longitudinal quality, adoption, and risk trend per asset (drawer tab in Portfolio)</em></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ss_workshops.png" alt="Workshops" /></td>
+    <td><img src="docs/screenshots/ss_sync.png" alt="Sync" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Workshops — sessions with participant lists and GPT tagging</em></td>
+    <td align="center"><em>Sync — manual sync, auto-sync schedule, token cost history</em></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/ss_pipeline_setup.png" alt="Pipeline Setup" /></td>
+    <td><img src="docs/screenshots/ss_users.png" alt="Users" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Pipeline Setup — one-time wizard: API config, filters, categories</em></td>
+    <td align="center"><em>Users — roster management and role assignment</em></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/screenshots/ss_employee.png" alt="Employee Portal" style="max-width:600px" /></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><em>Employee Portal — read-only GPT & Project discovery for the whole org</em></td>
+  </tr>
+</table>
+
+---
+
+## Quick Start
+
+**Prerequisites:** [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/ori129/agentsorg.git
+cd agentsorg
+
+# 2. Create your .env file
+cp .env.example .env
+
+# 3. Generate a Fernet encryption key and paste it into FERNET_KEY= in .env
+make fernet-key
+
+# 4. Start all services (migrations run automatically on first boot)
+make up
+
+# 5. Open the app  (macOS)
+open http://localhost:3000
+# or just visit http://localhost:3000 in your browser
+```
+
+Register with any email → choose **Try Demo** on the onboarding screen to explore with 500 realistic GPTs instantly, or **Connect to Production** to enter your OpenAI credentials and scan your real workspace.
+
+Run `make help` to see all available commands.
+
+---
+
+## How It Works
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌──────────────┐
+│   Frontend      │────▶│   Backend       │────▶│  PostgreSQL  │
+│   React + Vite  │     │   FastAPI       │     │  + pgvector  │
+│   Port 3000     │     │   Port 8000     │     │  Port 5433   │
+└─────────────────┘     └─────────────────┘     └──────────────┘
+                              │
+                  ┌───────────┼─────────────┐
+                  ▼           ▼             ▼
+           OpenAI         OpenAI        OpenAI
+          Compliance     Chat API     Embeddings
+            API         (classify +    (vectors +
+                         enrich)       clustering)
+```
+
+### Pipeline Stages
+
+Three separate pipelines run to produce the full intelligence picture:
+
+**Asset pipeline** (triggered manually or on schedule):
+```
+Fetch → Filter → Classify → Enrich → Embed → Score → Recommendations → Store
+  5%     35%      40–65%    65–72%   75–85%   87%        92%            100%
+```
+
+**Conversation pipeline** (triggered from the Sync page):
+```
+Fetch JSONL → Aggregate → Topic Analysis → User Analysis → Commit → Workflow Intelligence
+     10%         25%           45%              65%          85%           100%
+```
+
+**Clustering pipeline** (async job, user-triggered from Build Signals):
+```
+Load embeddings → Bucket by category → Centroid clustering → LLM validation → Persist
+```
+
+**Incremental processing** — GPTs are content-hashed (SHA-256) on each asset pipeline run. Unchanged GPTs skip classification, enrichment, and embedding, carrying forward their cached results. This avoids redundant API costs on subsequent syncs.
+
+| Stage    | Production                    | Demo                         |
+|----------|-------------------------------|------------------------------|
+| Fetch    | OpenAI Compliance API         | Template-based generator     |
+| Classify | OpenAI Chat model             | Keyword matching             |
+| Enrich   | 9 signals + purpose fingerprint via LLM | Deterministic mock enricher |
+| Embed    | OpenAI Embeddings API         | Deterministic vectors        |
+| Score    | Composite quality/adoption/risk scores | Mock score assessor |
+| Conversations | OpenAI JSONL export | Mock conversation generator |
+| Workflows | LLM workflow coverage analysis | Mock workflow analyzer |
+
+### Maturity Tiers
+
+| Tier | Sophistication | Description |
+|------|---------------|-------------|
+| Production | ≥ 4 | Full system prompts, integrations, tested |
+| Functional | 3 | Useful, room to grow |
+| Experimental | ≤ 2 | Early-stage or abandoned |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, TypeScript, Tailwind CSS, TanStack Query, Vite |
+| Backend | FastAPI, SQLAlchemy 2.0 (async), Alembic, Pydantic v2 |
+| Database | PostgreSQL 16 + pgvector |
+| Auth | Session-based cookies (HttpOnly + SameSite), TOTP MFA, SSO via OIDC (enforced or optional), role-aware (`system-admin`, `ai-leader`, `employee`) |
+| Deployment | Docker Compose (3 services, zero external dependencies) |
+
+---
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `FERNET_KEY` | Encryption key for API credentials stored in DB | **required** — run `make fernet-key` |
+| `POSTGRES_USER` | Database user | `agentsorg` |
+| `POSTGRES_PASSWORD` | Database password | `changeme` |
+| `POSTGRES_DB` | Database name | `agentsorg` |
+| `DATABASE_URL` | Full async connection string | composed from above |
+| `BACKEND_CORS_ORIGINS` | Allowed CORS origins | `http://localhost:3000` |
+| `COOKIE_SECURE` | Set to `false` for local HTTP dev; leave `true` (default) for HTTPS prod | `true` |
+
+---
+
+## API Reference
+
+<details>
+<summary><strong>Auth</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/register` | Register the first admin user |
+| POST | `/api/v1/auth/login` | Password login (blocked for non-admins when SSO is enforced) |
+| POST | `/api/v1/auth/logout` | Revoke session |
+| GET | `/api/v1/auth/me` | Current user |
+| POST | `/api/v1/auth/totp/setup` | Generate TOTP secret + provisioning URI (returns `otpauth://` for authenticator apps) |
+| POST | `/api/v1/auth/totp/enable` | Verify first code and activate MFA |
+| DELETE | `/api/v1/auth/totp` | Disable MFA |
+| POST | `/api/v1/auth/totp/verify-login` | Complete two-step login with TOTP code |
+| GET | `/api/v1/auth/sso` | Get SSO / OIDC provider config |
+| PUT | `/api/v1/auth/sso` | Configure OIDC provider + enforcement setting |
+</details>
+
+<details>
+<summary><strong>Configuration</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/config` | Get configuration |
+| PUT | `/api/v1/config` | Update configuration |
+| POST | `/api/v1/config/test-connection` | Test Compliance API connection |
+| POST | `/api/v1/config/test-openai-connection` | Test OpenAI API connection |
+</details>
+
+<details>
+<summary><strong>Pipeline</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/pipeline/run` | Start asset pipeline |
+| GET | `/api/v1/pipeline/status` | Live progress + stage |
+| GET | `/api/v1/pipeline/summary` | Results summary (includes workflow counts) |
+| GET | `/api/v1/pipeline/gpts` | List all GPTs |
+| GET | `/api/v1/pipeline/history` | Sync history |
+| GET | `/api/v1/pipeline/logs/{id}` | Logs for a sync run |
+| GET | `/api/v1/pipeline/sync-config` | Get auto-sync settings |
+| PATCH | `/api/v1/pipeline/sync-config` | Update auto-sync settings |
+| GET | `/api/v1/pipeline/recommendations` | Latest priority actions + executive summary |
+| GET | `/api/v1/pipeline/trend` | Portfolio health over time (quality/adoption/risk per run) |
+| GET | `/api/v1/pipeline/gpt/{id}/history` | Per-asset score history |
+| GET | `/api/v1/pipeline/workflows` | Workflow coverage analysis (covered/ghost/intent gaps) |
+</details>
+
+<details>
+<summary><strong>Conversations</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/conversations/run` | Start conversation pipeline |
+| GET | `/api/v1/conversations/status` | Live pipeline progress |
+| GET | `/api/v1/conversations/overview` | Adoption summary across all assets |
+| GET | `/api/v1/conversations/asset/{id}/insight` | Per-asset conversation detail |
+| GET | `/api/v1/conversations/user/{email}/insight` | Per-user adoption insight |
+</details>
+
+<details>
+<summary><strong>Categories</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/categories` | List categories |
+| POST | `/api/v1/categories` | Create category |
+| PUT | `/api/v1/categories/{id}` | Update category |
+| DELETE | `/api/v1/categories/{id}` | Delete category |
+| POST | `/api/v1/categories/seed` | Seed default categories |
+</details>
+
+<details>
+<summary><strong>Clustering</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/clustering/run` | Detect standardization opportunities |
+| GET | `/api/v1/clustering/status` | Clustering job status |
+| GET | `/api/v1/clustering/results` | Cluster groups (persisted across restarts) |
+| POST | `/api/v1/clustering/{cluster_id}/action` | Save leader decision for a cluster |
+| GET | `/api/v1/clustering/decisions` | All saved cluster decisions |
+</details>
+
+<details>
+<summary><strong>Learning & Development</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/learning/recognition` | Builder recognition scores |
+| POST | `/api/v1/learning/recommend-org` | Org-wide learning recommendations |
+| POST | `/api/v1/learning/recommend-employee` | Per-employee recommendations |
+| GET | `/api/v1/learning/custom-courses` | List custom courses |
+| POST | `/api/v1/learning/custom-courses/upload` | Add a course by URL |
+| DELETE | `/api/v1/learning/custom-courses/{id}` | Remove a course |
+| GET | `/api/v1/learning/workshops` | List workshops |
+| POST | `/api/v1/learning/workshops` | Create workshop |
+| PUT | `/api/v1/learning/workshops/{id}` | Update workshop |
+| DELETE | `/api/v1/learning/workshops/{id}` | Delete workshop |
+| POST | `/api/v1/learning/workshops/{id}/participants` | Add participant |
+| DELETE | `/api/v1/learning/workshops/{id}/participants/{email}` | Remove participant |
+| POST | `/api/v1/learning/workshops/{id}/tag-gpt` | Tag a GPT to workshop |
+| DELETE | `/api/v1/learning/workshops/{id}/tag-gpt/{gpt_id}` | Untag a GPT |
+| GET | `/api/v1/learning/workshops/{id}/impact` | Time-based quality impact |
+</details>
+
+<details>
+<summary><strong>Users & Admin</strong></summary>
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/users` | List workspace users |
+| POST | `/api/v1/users/import` | Import users from Compliance API |
+| PATCH | `/api/v1/users/{id}/role` | Update user system role |
+| GET | `/api/v1/demo` | Get demo state |
+| PUT | `/api/v1/demo` | Toggle demo mode / set size |
+| POST | `/api/v1/admin/reset` | Full reset — clears GPTs, logs, categories, workshops |
+| POST | `/api/v1/admin/rotate-encryption-key` | Re-encrypt all stored secrets with a new Fernet key |
+</details>
+
+---
+
+## Project Structure
+
+```
+├── backend/
+│   ├── alembic/versions/          # DB migrations (auto-applied on startup)
+│   ├── app/
+│   │   ├── main.py                # FastAPI app entry point
+│   │   ├── models/models.py       # ORM models
+│   │   ├── schemas/schemas.py     # Pydantic request/response models
+│   │   ├── routers/               # One file per domain (pipeline, learning, users…)
+│   │   └── services/
+│   │       ├── pipeline.py        # Orchestrates all pipeline stages
+│   │       ├── semantic_enricher.py   # 9 LLM calls per GPT
+│   │       ├── compliance_api.py  # OpenAI Compliance API client
+│   │       ├── embedder.py        # OpenAI embeddings
+│   │       ├── classifier.py      # OpenAI LLM classifier
+│   │       ├── filter_engine.py   # Visibility / email / shared-user filters
+│   │       └── mock_*/            # Demo mode equivalents (no API calls)
+├── frontend/
+│   └── src/
+│       ├── App.tsx                # Root — Leader / Employee views + onboarding
+│       ├── components/
+│       │   ├── auth/              # Register, Login, Onboarding screens
+│       │   ├── leader/            # Dashboard views (Overview, Sync, Risk, L&D…)
+│       │   ├── employee/          # Read-only GPT portal
+│       │   ├── steps/             # Pipeline setup wizard (Steps 1–4)
+│       │   └── layout/            # Header, Sidebar, DemoBanner
+│       ├── hooks/                 # React Query hooks
+│       └── types/index.ts         # TypeScript interfaces
+├── docs/
+│   ├── erd.mmd                    # Entity-relationship diagram (Mermaid)
+│   ├── security_controls.md       # Security white paper (API key storage, IDOR controls, auth model)
+│   └── screenshots/               # README screenshots (demo data)
+├── docker-compose.yml
+├── Makefile
+└── .env.example
+```
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue first to discuss what you'd like to change.
+
+1. Fork the repo and create a branch: `git checkout -b feat/your-feature`
+2. Make your changes and ensure the app builds: `make up`
+3. Open a pull request with a clear description
+
+Run `make help` to see all available dev commands.
+
+---
+
+## License
+
+Licensed under the **Apache License 2.0** — see [LICENSE](LICENSE) for details.

@@ -1,0 +1,229 @@
+[![openupm](https://img.shields.io/npm/v/dev.polyblank.nyamu?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/dev.polyblank.nyamu/) [![openupm](https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=%24.downloads&suffix=%2Fmonth&url=https%3A%2F%2Fpackage.openupm.com%2Fdownloads%2Fpoint%2Flast-month%2Fdev.polyblank.nyamu)](https://openupm.com/packages/dev.polyblank.nyamu/)
+# Nyamu
+
+**Nyamu** is a minimal MCP server for Unity, designed to give coding agents a way to check script compilation. It is based on the **[Yamu](https://github.com/keijiro/Yamu)** PoC project by [Keijiro Takahashi](https://github.com/keijiro).
+
+Designed by a Human 💖, coded by AI ✨
+
+## Why Nyamu Exists
+
+Hi! My name is Ivan, and I work as a programmer in gamedev. I started this project in September 2025 out of frustration with agentic coding in Unity: back then an LLM would routinely hand me code that didn't even compile. That's where the idea came from — let the agent check script compilation itself. Most other MCP servers still don't solve that task well (see [Similar Projects](#similar-projects)).
+
+In 2026 Unity shipped tooling of its own: the MCP server in the AI Assistant package, and the Unity CLI. Both require Unity 6. The official MCP server doesn't really solve the problem either: it expects the agent to edit scripts through its own dedicated tools, and only then do the compilation checks apply — in my experience, getting an agent to stay in that mode reliably is quite difficult. I haven't tried the Unity CLI yet, but I hope it does the job.
+
+Nyamu, on the other hand, works on Unity 2021.3 and newer — so it's for anyone whose project hasn't moved to Unity 6 yet, and for anyone who just wants a small server that does one thing well.
+
+## Compatibility with Coding Agents and Tools
+
+Test Prompt: 
+```
+Check script compilation with Nyamu MCP tool
+```
+
+| Tool                 | Result | Tool Version               | Nyamu Version | Test Date  | Notes                                            |
+|----------------------|--------|----------------------------|---------------|------------|--------------------------------------------------|
+| Claude Code          | ✅      | 2.0.69                     | 0.1.0         | 2025-12-13 | Excellent compatibility, thoroughly tested       |
+| Zed                  | ✅      | 0.216.1                    | 0.1.0         | 2025-12-13 |                                                  |
+| Rider + AI Assistant | ✅      | 2025.3.0.4 + 253.28294.360 | 0.1.0         | 2025-12-13 |                                                  |
+| OpenCode             | ✅      | 1.0.223                    | 0.1.0         | 2026-01-01 |                                                  |
+| Windsurf             | ✅      | 1.13.5                     | 0.1.0         | 2026-01-02 |                                                  |
+| Gemini CLI           | ✅      | 0.22.5                     | 0.1.0         | 2026-01-04 |                                                  |
+| Rider + Junie        | ❌      | 2025.3.0.4 + 253.549.29    | 0.1.0         | 2025-12-13 | Error in the settings for the nyamu tool         |
+| Codex                | ✅      | 0.124.0                    | 0.1.11        | 2026-04-24 |                                                  |
+
+## Features
+
+### Asset Management
+* `assets_refresh` – Forces Unity to refresh the asset database and returns compilation error information. Shows the last compilation status even if no new compilation occurred during the refresh. This is critical after file operations to ensure Unity detects file system changes (new, deleted, or moved files). Use this single command to both refresh assets and check compilation status.
+
+### Script Compilation
+* `scripts_compile` – Triggers Unity Editor compilation, waits for completion, and returns compilation results, including any errors.
+* `scripts_compile_status` – Returns the current compilation status without triggering a compilation. Includes compilation state, last compile time, and any errors.
+
+### Shader Compilation
+* `shaders_compile_single` – Compiles a single shader by name with fuzzy matching support. Searches for shaders by partial name, handles case-insensitive matching, and returns detailed compilation results with error reporting.
+* `shaders_compile_all` – Compiles all shaders in the Unity project and returns a comprehensive summary with statistics (total, successful, failed), individual shader results, and detailed error information for failed shaders.
+* `shaders_compile_regex` – Compiles shaders matching a regex pattern applied to shader file paths. Returns per-shader results with errors/warnings. Useful for compiling a subset of shaders based on path patterns.
+* `shaders_compile_status` – Returns the current shader compilation status without triggering compilation. Includes compilation state, last compilation type (single/all/regex), last compilation time, and complete results from the previous shader compilation command.
+
+### Testing
+* `tests_run_regex` – Executes Unity Test Runner tests (EditMode and PlayMode) with regex-based filtering. Supports flexible pattern matching for test selection.
+* `tests_run_all` – Runs all Unity tests in the specified mode (EditMode or PlayMode).
+* `tests_run_single` – Runs a single specific Unity test by its full name.
+* `tests_run_status` – Returns the current test execution status without running tests. Includes execution state, last test time, test results, and test run ID.
+* `tests_run_cancel` – Cancels running Unity test execution. Supports cancellation of EditMode tests by GUID or current test run. Note: Tool is only available with NUnit v2 (package: com.unity.ext.nunit)
+
+### Editor Status
+* `editor_status` – Returns the current Unity Editor status: compilation state, test execution state, play mode state (including whether it's paused, entering, or exiting Play Mode), asset refresh state, and how stale the cached state is (`stateAgeSeconds`, `isStateStale`). Works while the Editor is in Play Mode.
+
+### Play Mode Control
+* `editor_enter_play_mode` – Requests Unity to enter Play Mode. Unity applies the change at the end of the current editor frame and then reloads the script domain, so the Nyamu HTTP server is briefly unreachable afterwards. Reports that the request was accepted, not that Play Mode is already running — confirm with `editor_status`.
+* `editor_exit_play_mode` – Requests Unity to exit Play Mode back to Edit Mode. Same domain-reload caveat as above — confirm with `editor_status`.
+
+### Code Execution
+* `code_execute` – Compiles and runs an ad-hoc C# snippet inside the Unity Editor — useful for reflecting over project types, inspecting the current `Selection`/`AssetDatabase`, or testing an idea without entering Play Mode. Runs on the Unity main thread by default, so a blocking snippet freezes the Editor for that duration and cannot be cancelled; set `run_on_main_thread: false` for pure computation/reflection that never freezes the Editor. Each execution permanently loads a small assembly into the Editor process until the next domain reload — a known, bounded cost, not a bug. `Debug.Log`/`Warning`/`Error` output and `Console` stdout/stderr are captured. Always asynchronous on the Unity side; the tool call polls internally and returns the final result, or pass `background: true` to get the `executionId` back immediately instead.
+* `code_execute_status` – Fetches the status/result of a `code_execute` run by `executionId` (or the most recent run if omitted). Use to poll a `background: true` execution or re-check a result after a timed-out `code_execute` call.
+
+### Menu Item Execution
+* `menu_items_execute` – Executes any Unity Editor menu item by its path. Useful for automating Unity Editor operations programmatically.
+
+### Unity Editor Logs
+* `editor_log_path` – Returns the platform-specific path to the Unity Editor log file along with existence status. Useful for verifying log file location before reading.
+* `editor_log_head` – Reads the first N lines from the Unity Editor log file. Supports filtering by log type (error, warning, info) to quickly find specific issues during startup.
+* `editor_log_tail` – Reads the last N lines from the Unity Editor log file. Supports filtering by log type to quickly isolate recent errors or warnings.
+* `editor_log_grep` – Searches Unity Editor log for lines matching a regex pattern. Returns matching lines with optional context lines. Supports case-sensitive/insensitive search and filtering by log type.
+
+## Installation
+
+### 0. Prerequisites
+
+* **Platform**: Windows (the only tested platform)
+* **Unity**: 2021.3.45f2 or later (not a hard requirement—this is simply the version used for testing)
+* **Node.js**: Required to run the intermediate server
+
+### 1. Install the Package
+
+#### Option 1: Unity Package Manager with Git URL (Recommended)
+
+1. Open the Unity Editor
+2. Open **Window → Package Manager**
+3. Click the **+** button in the top-left corner
+4. Select **Add package from git URL...**
+5. Enter the following URL:
+
+   ```
+   https://github.com/polyblank66/Nyamu.git?path=/Nyamu.UnityPackage
+   ```
+6. Click **Add**
+
+Unity will install the Nyamu package directly from the GitHub repository.
+
+<details>
+<summary>Option 2: Install via .unitypackage</summary>
+
+1. Download the latest `.unitypackage` file from the [Releases page](https://github.com/polyblank66/Nyamu/releases)
+2. In the Unity Editor, open **Assets → Import Package → Custom Package...**
+3. Select the downloaded `.unitypackage` file
+4. In the import dialog, make sure all files are selected, then click **Import**
+
+</details>
+
+<details>
+<summary>Option 3: Install via OpenUPM</summary>
+
+Prerequisites: [Node.js v16 or above](https://nodejs.org/en/download/) and [openupm-cli](https://github.com/openupm/openupm-cli#openupm-cli).
+
+```
+# Install openupm-cli
+npm install -g openupm-cli
+
+# Go to your unity project directory
+cd YOUR_UNITY_PROJECT_DIR
+
+# Install package: dev.polyblank.nyamu
+openupm add dev.polyblank.nyamu
+```
+
+</details>
+
+### 2. Add the MCP Server to the AI Agent
+
+When you first open your Unity project with Nyamu installed, it automatically generates a `.nyamu/nyamu.bat` file. This bat file launches the MCP server with the correct configuration.
+
+**Option 1: Manual Setup (Recommended)**
+
+Add the bat file path to your MCP settings. For **Claude Code** (`.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "Nyamu": {
+      "command": "cmd.exe",
+      "args": ["/c", "D:\\code\\YourProject\\.nyamu\\nyamu.bat"],
+      "timeout": 30000
+    }
+  }
+}
+```
+
+Replace `D:\\code\\YourProject` with your actual project path.
+
+**Option 2: Let the AI Agent Configure Itself**
+
+Ask your AI agent to follow the setup instructions. For example, if you're using Gemini CLI:
+
+```
+You're Claude Code Agent. Follow nyamu-mcp-setup.md
+```
+
+The `"You're ---"` statement is important, as some AI agents do not know what they are unless explicitly told.
+
+For detailed setup instructions for different AI agents, see [`nyamu-mcp-setup.md`].
+
+**Note 1**: Restart your AI agent client after adding mcp configuration.
+
+**Note 2**: The bat file automatically updates when you change Nyamu settings (like the server port), so you typically only need to configure this once.
+
+### 3. Add the following instructions to your Coding Agent Memory
+
+```
+# Agent Instructions
++ Prefer `assets_refresh` tool to check scripts compilaion
+```
+
+## Configuration
+
+### Response Character Limits
+
+Nyamu provides configurable character limits for MCP server responses to prevent overwhelming AI agents with excessively long outputs. This is particularly useful when dealing with large compilation errors or test results.
+
+Configuration is stored in `.nyamu/NyamuSettings.json` and can be edited manually or through Unity's Project Settings UI.
+
+**Configuration Location**: Unity → Project Settings → **Nyamu MCP Server**
+
+**Settings**:
+
+* **Response Character Limit** – Maximum number of characters in a complete MCP response (default: 25,000)
+* **Enable Truncation** – When enabled, responses exceeding the limit are truncated
+* **Truncation Message** – Message appended to indicate that the content was cut off
+
+The system automatically calculates the available space for response content by subtracting MCP JSON overhead and truncation message length from the configured limit, ensuring maximum space for meaningful output.
+
+### Play Mode Without Focus
+
+With **Player Settings → Run In Background** disabled, a *playing* Editor that loses window focus
+stops serving Nyamu completely — every tool, `editor_status` included. Requests hang until you click
+the Editor window again, and because `editor_exit_play_mode` is unreachable too, an agent that entered
+Play Mode cannot get itself back out.
+
+Nyamu prevents this by forcing `Application.runInBackground` on while the Editor is playing. This is a
+runtime-only override: `PlayerSettings` is never written, so builds and version control are unaffected.
+
+Turn it off at Unity → Project Settings → **Nyamu MCP Server** → **Keep Play Mode Running Unfocused**
+if you need Unity's real focus-loss behaviour — for example when testing `OnApplicationFocus` or
+`OnApplicationPause`. Expect Nyamu to go unreachable while the Editor is unfocused in Play Mode when
+you do, and to come back as soon as the window is focused.
+
+### Server Port Configuration
+
+Nyamu automatically assigns unique ports to each Unity Editor instance, allowing multiple projects to run simultaneously without conflicts. The generated `.nyamu/nyamu.bat` file includes the correct port configuration automatically.
+
+For special cases where manual port assignment is needed, you can configure it at: Unity → Project Settings → **Nyamu MCP Server** → **Server Port** (default: 17932). 
+
+## Documentation
+
+- **[`AGENT-GUIDE.md`]** - Best practices and workflows for AI coding agents
+- **[`nyamu-mcp-setup.md`]** - Setup instructions for different AI tools
+- **[`NyamuServer-API-Guide.md`]** - HTTP API reference documentation
+
+[`AGENT-GUIDE.md`]: Nyamu.UnityPackage/AGENT-GUIDE.md
+[`nyamu-mcp-setup.md`]: Nyamu.UnityPackage/nyamu-mcp-setup.md
+[`NyamuServer-API-Guide.md`]: Nyamu.UnityPackage/NyamuServer-API-Guide.md
+
+## Similar Projects
+
+- [MCP for Unity](https://github.com/CoplayDev/unity-mcp) by [Coplay](https://github.com/CoplayDev) — a package with many tools for asset manipulation. Code change verification is limited and works only when changes are made through MCP code-manipulation tools. Verification is performed by running the Roslyn Compiler on the modified files only.
+
+- [MCP Unity](https://github.com/CoderGamester/mcp-unity) by [Miguel Tomas](https://github.com/CoderGamester) — another feature-rich package. Recent versions include a `recompile_scripts` tool for code verification, which relies on the Unity Editor compiler. When code changes involve structural modifications (such as adding or deleting files), an Asset Database Refresh is required. With this package, this can be triggered via a menu item called from the coding agent, but the user must configure the agent to do so.
+
+- [Official Unity MCP](https://docs.unity3d.com/Packages/com.unity.ai.assistant@2.17/manual/integration/unity-mcp-overview.html), part of the `com.unity.ai.assistant` package, can be installed on Unity 6 and newer. I haven't tried it in real projects, but judging by the tool set, the agent is expected to call dedicated tools to edit scripts, and only then will code compilation checks in the project work. In my experience, getting an agent to reliably work in that mode is quite difficult.

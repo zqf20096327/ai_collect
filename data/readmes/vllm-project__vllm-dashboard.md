@@ -1,0 +1,291 @@
+# vLLM CI Dashboard
+
+A Next.js dashboard for observing vLLM's Buildkite CI: build status, job runtimes, queue depth, agent capacity, infrastructure cost, and performance benchmark trends.
+
+## FYI
+This repository is 100% vibe-coded and this README is not meant for human to read. Please save your time and just use agents.
+
+## Agent access
+
+Point agents to **[ci.vllm.ai/agents.md](https://ci.vllm.ai/agents.md)** for the
+read-only CLI, compact JSON APIs, OpenAPI contract, and all agent documentation.
+The canonical source is [`public/agents.md`](./public/agents.md). No browser or
+client credentials are needed for dashboard reads.
+
+## Pages
+
+- **Builds** — pass/fail rates, durations, and per-job breakdowns for recent pipeline builds.
+- **Jobs** — job failures, historical run times, and retry counts by job,
+  with pipeline, branch, and time-range filtering. See [retry counting](./docs/jobs-retries.md).
+- **Alerts** — Fast CI observations, analyzed Full CI comparisons, and exact
+  main-branch job failures that remain open until the same job passes again.
+- **Tests** — Test Engine reliability, execution counts, and duration history.
+- **Parity** — NVIDIA test jobs in `.buildkite/test_areas` and how many declare an AMD mirror, overall, per test area, and as a weekly trend.
+- **Queue** — live agent queue depth, waiting builds, and Slack alerts when queues back up.
+- **Cost** — compute hours and dollar cost per queue, derived from AWS on-demand pricing.
+- **Performance** — benchmark trends ingested into the warehouse.
+- **Compare** — release-oriented baseline/candidate image deltas across performance and evaluation metrics.
+- **Force-merges** — how often vLLM PRs are merged while `buildkite/ci/pr` is
+  red: rate windows, daily or weekly rate and merge volume over 7d/30d/90d/1y,
+  top PR authors, and recent force-merged PRs.
+
+## Architecture
+
+- **Frontend / API**: Next.js (App Router) on Vercel.
+- **Warehouse**: Databricks SQL Warehouse — historical CI data is queried via the SQL Statements API.
+- **Operational store**: Postgres (Supabase) — short-term agent and queue-depth samples written by cron jobs.
+- **Sources polled**:
+  - Buildkite GraphQL API (queue depth, running jobs, connected agents, and current wait distribution) — every 5 minutes
+  - Buildkite REST API (main-branch failed-job lifecycle) — every 5 minutes
+  - Databricks warehouse (build/job history) — on dashboard requests with short-lived caching
+  - GitHub API (merged PRs and their `buildkite/ci/pr` status at merge) — hourly
+  - Queue alerting → Slack — every 15 minutes
+- **Alert production**: The separately deployed Python worker lives in
+  [`alerting/`](./alerting). Main CI lifecycle records remain deterministic;
+  automated analysis and authenticated responder updates live in sidecar tables.
+- **Schema migrations**: All Postgres table definitions and migration execution
+  live in the Python [`migrations/`](./migrations) module. Runtime request
+  handlers never create or alter tables.
+- Cron schedules live in `vercel.json`.
+- **Alert reference**: end-to-end docs per alert type —
+  [Fast CI](./alerting/docs/fast-ci.md), [Full CI](./alerting/docs/full-ci.md),
+  [Main CI](./alerting/docs/main-ci.md), and [Infra](./alerting/docs/infra.md)
+  (produced by the alerting worker), plus
+  [Queue wait](./docs/alerts/queue-wait.md) (owned by this app).
+
+The Queue page uses Buildkite's cluster-queue counts directly. Because the
+public queue metrics schema stops at p95, p99 is calculated from the current
+`SCHEDULED` command jobs as `now - runnableAt` using nearest-rank percentiles;
+the same five-minute snapshot feeds the historical chart.
+
+The Queue page opens **Queue details** by default. **Traffic & utilization** at `/queue?view=traffic` starts with **All queues**, with **CUDA** and **ROCm** filters. All queues and CUDA default to waiting-job counts, with a P95 view when readings are available. ROCm shows running jobs against configured limits and GPU counts by family.
+
+Queue filters and limits live in [`queue-capacity.ts`](./src/lib/queue-capacity.ts), including L4 (`gpu_1_queue` and related queues) and GH200 in CUDA. Current summaries use a 20-minute freshness window; history retains partial buckets with coverage and matching capacity denominators. Run `QUEUE_PREVIEW=1 npm run dev` to preview public queue data with one app process. See the [local preview guide](./docs/queue-traffic-preview.md) for setup and metric definitions.
+
+## Local development
+
+```bash
+cp .env.local.example .env.local
+# fill in your own credentials
+npm install
+DATABASE_URL=postgres://... npm run migrate
+# Review the printed target and pending files, then apply them explicitly:
+DATABASE_URL=postgres://... npm run migrate -- \
+  --apply --confirm-target db.example.supabase.co:5432/postgres
+npm run dev
+```
+
+Open http://localhost:3000.
+
+For slow Jobs loads, use the [latency probe and timing guide](./docs/jobs-performance.md)
+to separate CDN caching, backend queries, and browser startup. For slow main
+page (Builds) loads, see the [Builds latency guide](./docs/builds-performance.md).
+
+### Environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_WAREHOUSE_ID` | Databricks SQL Warehouse access |
+| `DATABASE_URL` | Postgres connection string for queue and GPU samples |
+| `GITHUB_TOKEN` or `GH_TOKEN` | GitHub token used to resolve PR and commit authors for builds and raise rate limits for test-area discovery and the Parity page history sampler |
+| `BUILDKITE_API_TOKEN` | Buildkite personal API token; needs `read_suites` for Test Engine, GraphQL API access and `write_builds` for queue promotion, and notification-service scopes only when running the OTel setup script |
+| `BUILDKITE_ORGANIZATION`, `BUILDKITE_TEST_SUITE` | Test Engine organization and suite slug (defaults: `vllm`, `ci-1`) |
+| `BUILDKITE_QUEUE_OPERATOR_TOKEN` | Required to enable queue-job promotion; authorized operators enter it for the current browser tab |
+| `ALERT_OPERATOR_TOKEN` | Required to enable manual Main CI alert resolution, quarantine resolve (`/api/alerts/quarantine/<host>/resolve`), and incident confirm and close (`/api/alerts/incidents/<id>/confirm`, `.../close`); authorized operators enter it for the current browser tab, which sends it as a Bearer token |
+| `ALERT_AGENT_TOKEN` | Required for authenticated agents to append revision-scoped Main CI responder updates and fix PRs through `/api/alerts/main-ci/updates` |
+| `OTEL_INGEST_TOKEN` | Shared Bearer token used by Buildkite's OTel notification service |
+| `OTEL_MAX_REQUEST_BYTES` | Optional OTLP request limit; defaults to 4 MiB |
+| `OTEL_ENDPOINT` | Buildkite notification-service base URL; defaults operationally to `https://ci.vllm.ai/api/otel` |
+| `OTEL_BUILDKITE_OIDC_AUDIENCE`, `OTEL_BUILDKITE_OIDC_ORGANIZATION`, `OTEL_BUILDKITE_OIDC_PIPELINE`, `OTEL_BUILDKITE_OIDC_BRANCH`, `OTEL_BUILDKITE_OIDC_TREATMENT_BRANCH` | Optional restrictions for short-lived Buildkite job tokens; defaults to the production vLLM main pipeline plus API-triggered `khluu/otel` treatment builds |
+| `GPU_REPORT_SECRET` | Required shared Bearer token for GPU and host telemetry ingestion; the endpoint fails closed when unset |
+| `GPU_REPORT_MAX_BYTES` | Optional JSON request limit; defaults to 256 KiB and is capped at 4 MiB |
+| `SLACK_BOT_TOKEN` | Slack bot for queue-depth alerts (`chat:write`, `reactions:write`) |
+| `SLACK_CI_ALERT_CHANNEL` | Optional override for the shared alert channel (Fast CI, Main CI image builds, infra, queue wait); defaults to `C0ANHBE642Y` |
+| `SLACK_CI_NOTIFICATIONS_CHANNEL` | Optional override for the Full CI report channel; defaults to `C0ABTNM9L5U` (`SLACK_CHANNEL_ID` is the legacy fallback) |
+| `CRON_SECRET` | Optional shared secret required by Vercel cron handlers |
+| `WARM_DEFAULTS_BASE_URL` | Optional base URL the `/api/cron/warm-defaults` cache warmer requests; defaults to `https://ci.vllm.ai` |
+
+The web app routes shared Supabase pooler URLs (`*.pooler.supabase.com`) on
+port `5432`, or with no explicit port, to transaction mode on port `6543`.
+Session pooling limits concurrent clients to the backend pool size, which can
+cause telemetry ingestion to return `503` during serverless bursts. The web
+client disables prepared statements and keeps explicit transactions together.
+Direct database URLs and other ports are used as configured. Deploy this change
+to apply it; no Vercel environment edit is required for an existing session URL.
+
+This routing applies only to the web client's `getDb()`. The EC2 alerting worker
+reads its own `DATABASE_URL` from AWS Secrets Manager and needs no configuration
+change for this fix. Its adapter already disables prepared statements and uses
+explicit transactions. Keep migration commands on a direct or session
+connection on port `5432`: the runner needs session advisory locks and session
+settings, and rejects transaction-pooler URLs. See [migrations](./migrations/).
+
+The dashboard assumes a warehouse schema with tables under `vllm_data_warehouse.buildkite.*` (builds, jobs, agent query rules) and `vllm_data_warehouse.default.vllm_perf_data_ingest` for benchmarks. Adapt the queries in `src/app/api/**/route.ts` if your schema differs.
+
+GPU telemetry is written to raw `gpu_snapshots` rows and an incremental
+`gpu_history_5m` rollup used by the 24-hour through 30-day dashboard views.
+The same endpoint accepts optional host metrics, reporter health, and Kubernetes
+node conditions; legacy GPU-only payloads remain valid. Host observations are
+stored in `host_snapshots` and the incremental `host_history_5m` rollup.
+
+The authenticated `POST /api/gpu/report` JSON contract is:
+
+```json
+{
+  "hostname": "dgxb200-09",
+  "gpus": [
+    {
+      "index": 0,
+      "name": "NVIDIA B200",
+      "gpu_util": 42,
+      "mem_used_mb": 1024,
+      "mem_total_mb": 183359,
+      "temperature_c": 61,
+      "power_draw_w": 410,
+      "power_limit_w": 1000
+    }
+  ],
+  "host": {
+    "cpu_util": 12.5,
+    "cpu_count": 160,
+    "ram_used_bytes": 1000000000,
+    "ram_total_bytes": 4000000000,
+    "ram_available_bytes": 2800000000,
+    "disks": [
+      {
+        "mount_point": "/raid0",
+        "device": "/dev/md0",
+        "fstype": "ext4",
+        "role": "workspace",
+        "used_bytes": 900000000,
+        "total_bytes": 1000000000
+      }
+    ]
+  },
+  "reporter_status": "ok",
+  "last_error": null,
+  "node_conditions": {
+    "ready": true,
+    "disk_pressure": false,
+    "memory_pressure": false,
+    "pid_pressure": false,
+    "unschedulable": false
+  }
+}
+```
+
+`host`, `reporter_status`, `last_error`, and `node_conditions` are optional, so
+the existing `{ "hostname", "gpus" }` payload remains valid. Status defaults to
+`ok`. A `degraded` report requires `last_error` and may send an empty `gpus`
+array (for example when `nvidia-smi` fails). A disk needs a mount point or device
+and either the used/total byte pair or an `error`; valid roles are `workspace`,
+`images`, `data`, `system`, and `other`. Hostnames are trimmed and lowercased on
+ingestion.
+
+Run the migration plan and explicit apply command documented in
+[`migrations/`](./migrations) before deploying a version that reads new schema.
+The migration is idempotent and backfills existing GPU snapshots into the
+rollup; schema creation is intentionally kept out of request handlers.
+
+## OpenTelemetry trace ingestion
+
+The dashboard includes an authenticated OTLP/HTTP protobuf receiver at
+`/api/otel/v1/traces`. It stores normalized spans in the operational Postgres
+database so dashboard features can enrich the canonical Databricks build and
+job history without introducing another dashboard.
+
+1. Generate a dedicated random `OTEL_INGEST_TOKEN` with
+   `openssl rand -hex 32` and add it to the Vercel project. Do not reuse a
+   Buildkite or database credential.
+2. Plan and explicitly apply [`migrations/`](./migrations) against the production
+   `DATABASE_URL`.
+3. Deploy the dashboard and verify the authenticated
+   `GET /api/otel/health` endpoint.
+4. Create or reconcile Buildkite's OpenTelemetry notification service:
+
+   ```bash
+   BUILDKITE_API_TOKEN=... \
+   OTEL_INGEST_TOKEN=... \
+   OTEL_ENDPOINT=https://ci.vllm.ai/api/otel \
+   npm run configure:buildkite-otel
+   ```
+
+   `OTEL_ENDPOINT` is the base endpoint. Buildkite appends `/v1/traces`.
+   The API token needs `read_notification_services` and
+   `write_notification_services`, and its owner needs organization admin or
+   Manage Notification Services access.
+
+5. Verify delivery without exposing span data publicly:
+
+   ```bash
+   curl -H "Authorization: Bearer $OTEL_INGEST_TOKEN" \
+     https://ci.vllm.ai/api/otel/health
+   ```
+
+The Vercel receiver accepts OTLP/HTTP protobuf with optional gzip compression;
+it is not a gRPC collector. Buildkite agent v3.100 and newer propagates its
+trace context to job processes, and the vLLM helper continues `TRACEPARENT`
+when it is present. The agent's own span exporter is OTLP/gRPC-only, so adding
+agent-internal checkout, hook, plugin, and artifact spans would still require a
+standard OpenTelemetry Collector in front of this HTTP endpoint.
+
+Detailed job timing does not distribute `OTEL_INGEST_TOKEN` to test code. An
+opted-in trusted main-branch job requests a five-minute Buildkite OIDC token for
+the dashboard audience when it uploads a batch. The receiver verifies the
+Buildkite signature and requires the token's organization, pipeline, branch,
+build number, and globally unique job ID to match every span. The receiver
+accepts normal `main` jobs and API-triggered `khluu/otel` treatment jobs;
+pull-request jobs and AMD mirrors are excluded from the initial pilot.
+
+The vLLM CI helper creates a span for each generated YAML command. When the
+command invokes pytest, its lightweight pytest plugin sends one child span per
+test node ID. The build timeline groups those spans as job → command → test;
+telemetry errors are warnings and never change the test command's exit status.
+
+### GPU activity in build timelines
+
+Jobs with `ci.gpu.samples` spans gain a **GPU** button on their job, command,
+pytest file/function, and individual test rows. The panel reads samples for the
+exact organization, pipeline, build, job ID, and selected time interval. Its
+charts align with the build time axis; **Zoom to interval** expands short tests.
+Each device has separate utilization and used-memory curves, sample mean
+utilization, peak memory in GiB, and sampling coverage. The GPU fleet page is
+independent; its minute-level host snapshots are never substituted for job data.
+
+The companion vLLM `.buildkite/scripts/ci-otel/ci_gpu.py` collector runs beside
+each traced command and polls container-visible NVIDIA devices once per second.
+It sends batches every 30 seconds through the existing job-scoped OIDC receiver,
+then spools its final batch before the normal job-end trace flush. Samples are
+OTLP span events stored in `otel_spans`. Apply migration `0021` (a concurrent
+partial index for sample expiry), deploy this dashboard change, and merge the
+companion collector to begin receiving
+new data. Existing builds cannot be backfilled. The collector starts automatically
+where command tracing is already enabled; set `CI_INFRA_GPU_SAMPLING=0` in the
+job environment to disable it.
+
+This initial collector covers NVIDIA jobs in the existing trusted CI tracing
+rollout. CPU jobs, uninstrumented jobs, and the currently excluded AMD mirrors
+do not gain GPU controls. Device metrics include other processes sharing that
+device and cannot attribute overlapping pytest/xdist tests individually. A
+subsecond test can finish between polls. NVIDIA's utilization is itself a device
+sampling-window measurement, not a per-test kernel profiler. MIG parent-device
+metrics are deliberately unavailable rather than attributed to the job; see
+the [NVIDIA SMI documentation](https://docs.nvidia.com/deploy/nvidia-smi/).
+
+Missing/invalid readings remain unknown, charts break across gaps, and summaries
+are sample means rather than time-weighted estimates over missing data. Collection
+and upload failures do not fail tests. Uploads have a two-second deadline and can
+introduce sampling gaps; failed periodic batches are dropped to bound memory.
+Only the final batch uses the existing best-effort job-end spool. The read API
+returns at most 16,000 sample events and marks truncation; select a shorter command
+or test when a long job exceeds that limit. The existing daily retention cron
+expires GPU sample batches after seven days without deleting command/test spans.
+Samples retain the existing OIDC branch/pipeline restrictions.
+
+## Deployment
+
+Deployed on Vercel. The cron jobs in `vercel.json` require Vercel Cron to be enabled on the project.
+
+## License
+
+No license is currently declared — treat as all-rights-reserved unless a `LICENSE` file is added.

@@ -1,0 +1,391 @@
+# AITracker
+
+<p align="center">
+  <img src="docs/assets/en/01-ai-tools-network.png" alt="AI tool network" width="600" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/estelwalks/aitracker/stargazers"><img src="https://img.shields.io/github/stars/estelwalks/aitracker?style=flat-square&cacheSeconds=3600" alt="GitHub stars" /></a>
+  <a href="https://github.com/estelwalks/aitracker/blob/main/LICENSE"><img src="https://img.shields.io/github/license/estelwalks/aitracker?style=flat-square&cacheSeconds=3600" alt="License" /></a>
+  <a href="https://github.com/estelwalks/aitracker/releases"><img src="https://img.shields.io/github/v/release/estelwalks/aitracker?style=flat-square&cacheSeconds=3600" alt="Latest release" /></a>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> | <a href="docs/README_CN.md">简体中文</a> | <a href="docs/README_JA.md">日本語</a> | <a href="docs/README_KO.md">한국어</a>
+</p>
+
+> **See at a glance how many tokens you use, how much you spend, and which agent tools work best for you.**
+
+AITracker is an **open-source, local-first AI workspace**.
+
+It automatically tracks tokens, costs, and usage trends across AI tools such as Claude Code, Codex, and Cursor; brings Skills and frequently used configurations into one place; distills Skills from real work and usage history; and builds a personal knowledge base and long-term memory. Every AI session can become a reusable capability for the next one.
+
+**Open Source · Local · No Account Required**
+
+> Note: The diagrams are preserved from the source document. Chinese text embedded inside the image files remains unchanged; all Markdown copy in this document is translated into English.
+
+---
+
+## Why AITracker?
+
+The number of AI tools keeps growing.
+
+Claude Code, Codex, Cursor, Cline, Gemini CLI, OpenCode…
+
+As the number of tools increases, so do the questions:
+
+- How much AI am I actually using?
+- Where are my tokens and money going?
+- Which tool or model is the best fit for me?
+- Where are all my Skills and other configurations scattered?
+- Do I have to configure everything again whenever I switch AI tools?
+- Can I reuse a method that worked today the next time I need it?
+- Can AI remember my projects and long-term working experience?
+
+**AITracker brings all of this together in one place.**
+
+From understanding your AI usage, to managing AI capabilities, to distilling Skills and building lasting knowledge and memory, AITracker turns AI from a one-off tool into an evolving system of reusable capabilities.
+
+---
+
+## Quick Start
+
+AITracker is a desktop application built with Electron, TanStack Start, React,
+and TypeScript. Security scanning uses the published
+`@estelwalks/agent-threat-scanner` npm package, so a fresh clone only needs the
+root project dependencies.
+
+### Requirements
+
+- Node.js 24 or later
+- npm 10 or later
+- macOS, Windows, or Linux for the complete desktop experience
+
+```bash
+git clone https://github.com/estelwalks/aitracker.git
+cd aitracker
+npm ci
+npm run dev:desktop
+```
+
+To run the browser development server only, use `npm run dev`.
+
+### Install
+
+You can download the installer of the latest release directly. These links stay
+valid across releases and always resolve to the newest published one: installer
+names carry no version, so the release tag is the only thing that changes.
+
+- macOS (Apple Silicon):
+  [AITracker-macOS-arm64.dmg](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-macOS-arm64.dmg)
+- macOS (Intel):
+  [AITracker-macOS-x64.dmg](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-macOS-x64.dmg)
+- Windows (x64):
+  [AITracker-Windows-x64.exe](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-Windows-x64.exe)
+- Windows (ARM64):
+  [AITracker-Windows-arm64.exe](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-Windows-arm64.exe)
+- Linux (x64, AppImage):
+  [AITracker-Linux-x64.AppImage](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-Linux-x64.AppImage)
+- Linux (x64, Debian/Ubuntu package):
+  [AITracker-Linux-x64.deb](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-Linux-x64.deb)
+- Linux (x64, Fedora/RHEL package):
+  [AITracker-Linux-x64.rpm](https://github.com/estelwalks/aitracker/releases/latest/download/AITracker-Linux-x64.rpm)
+
+Linux is x86_64 only: `.deb` for Debian 12+/Ubuntu 22.04+, `.rpm` for
+Fedora/RHEL 9+, and the AppImage for other x86_64 desktops with FUSE 2
+(`--appimage-extract-and-run` works without it).
+
+In-app updates replace the AppImage in place. A `.deb` or `.rpm` install
+downloads that package and opens it in the system software centre, where you
+confirm the install and enter your password — the app never escalates privileges
+for you. An install that is neither (an unpacked directory, or a release without
+the matching package) is handed over with the command that finishes it.
+
+Each release lists its own `release-metadata.json` and `checksums.txt`, which
+record the exact version and SHA-256 of the files in that release; the Linux
+AppImage is recorded in the companion `release-metadata-linux.json`. For a
+byte-exact build, take the file from the release whose tag you need instead of
+from `latest`.
+
+All releases are listed on the
+[Releases page](https://github.com/estelwalks/aitracker/releases/latest).
+
+The following commands install the official stable release on macOS, Windows,
+or Linux. The package-manager entries become available after the stable release
+and their corresponding distribution metadata have been published.
+
+#### npx (macOS, Windows, and Linux)
+
+With Node.js and npm installed, run:
+
+```bash
+npx --yes @estelwalks/aitracker@latest
+```
+
+This command downloads and opens the desktop installer. `@latest` follows the
+newest stable release, so it never needs editing; pin a version
+(`@estelwalks/aitracker@1.0.3`) when you need to reproduce an exact build. Beta
+builds are published under `@beta`.
+
+On Linux it downloads the AppImage, marks it executable, and starts it. If you
+prefer a system package, use the `.deb` from the
+[Releases page](https://github.com/estelwalks/aitracker/releases/latest) and
+install it with `sudo apt install ./AITracker-Linux-x64.deb` — the launcher
+never elevates privileges on your behalf.
+
+If your npm configuration uses a mirror that does not contain the package, use
+the official npm registry explicitly:
+
+```bash
+npx --yes --registry=https://registry.npmjs.org @estelwalks/aitracker@latest
+```
+
+#### Homebrew (macOS)
+
+Install and upgrade the stable Cask from the project's Tap:
+
+```bash
+brew tap estelwalks/aitracker
+brew install --cask estelwalks/aitracker/aitracker
+brew upgrade --cask estelwalks/aitracker/aitracker
+```
+
+#### WinGet (Windows)
+
+Install and upgrade the stable package from the Microsoft Community Repository:
+
+```powershell
+winget install --id estelwalks.AITracker -e
+winget upgrade --id estelwalks.AITracker -e
+```
+
+### Build and Test
+
+```bash
+npm run build:desktop       # Web app + Electron main/preload bundles
+npm run typecheck           # App and Electron integration
+npm run lint                # App lint rules
+npm run test:all            # Unit, tooling, database, and scanner tests
+npm run check:opensource-hygiene
+```
+
+Platform installers can be produced with `npm run dist:mac`,
+`npm run dist:win:x64`, `npm run dist:win:arm64`, or `npm run dist:linux:x64`.
+Signing and notarization credentials are not stored in this repository.
+
+Linux builds must run on Linux: Electron is not cross-compiled here, and the
+native build dependencies (Tailwind's Oxide engine, lightningcss, and the icon
+renderer) install only the host platform's bindings.
+
+The standalone installer launcher is packaged as `aitracker` and supports macOS
+arm64/x64, Windows x64/arm64 (including Windows on ARM), and Linux x64
+(AppImage, `.deb` and `.rpm`).
+
+---
+
+## Documentation
+
+- [Development Guide](docs/DEVELOPMENT.md) — command matrix, generated-file
+  policy, and repository layout
+- [Release Checklist](docs/RELEASE_CHECKLIST.md) — what a tagged release
+  verifies before it is published
+- [Architecture and business structure](docs/architecture/README.zh-CN.md)
+  (Chinese) — modules, data flow, and the privacy boundaries
+- [Development workflow](docs/DEVELOPMENT_WORKFLOW.zh-CN.md) (Chinese) — the
+  day-to-day develop, test, and release loop
+- [Roadmap](docs/plan/aitracker-后续开发计划.md) (Chinese)
+- [Report analytics design](docs/design/aitracker-报告分析设计.md) (Chinese)
+
+The architecture, plan, and design documents are currently written in Chinese;
+the development guide and the release checklist are in English.
+
+See [PRIVACY.md](PRIVACY.md) for the local-first data-handling model.
+
+---
+
+## 🌟 Core Capabilities
+
+| Capability                   | Description                                                                                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AI Usage Analytics**       | Automatically aggregates tokens, costs, models, projects, and usage trends across AI tools, so you know exactly how much AI you use and where your money goes |
+| **AI Tool Analytics**        | Uses your real usage data to compare the frequency, consumption, and trends of different tools and models, helping you find the AI that suits you best        |
+| **Skills Management**        | Automatically discovers and centrally manages Skills scattered across different AI tools, reducing repeated searching and maintenance                         |
+| **Configuration Management** | Centrally manages commonly used AI configurations such as Rules, with cross-tool reuse being added progressively                                              |
+| **Skills Distillation**      | Extracts reusable experience from real work, historical sessions, and methods that have already been proven to work, gradually turning it into Skills         |
+| **Knowledge Base**           | Continuously organizes project materials, methods, experience, and valuable information into a personal knowledge base                                        |
+| **Long-Term Memory**         | Continuously preserves project context, usage habits, and important experience, so your next AI session does not have to start from scratch                   |
+| **Local First**              | Keeps core data and configurations on your computer whenever possible, with core capabilities available without an account                                    |
+
+---
+
+## Understand Your AI Usage
+
+AITracker automatically collects usage data from AI coding tools on your computer and brings the scattered data together in one Dashboard.
+
+You can view:
+
+- Token usage
+- Input / output / cache tokens
+- Daily, weekly, and monthly costs
+- Usage across different AI tools
+- Usage across different models
+- Project consumption
+- Usage trends
+
+No more guessing how much AI you use.
+
+> **See how much you use, how much you spend, and which tool works best—all at a glance.**
+
+---
+
+## Manage Your AI Capabilities
+
+What is becoming difficult to manage is not just the AI tools themselves, but also the configurations and capabilities scattered across them.
+
+AITracker automatically discovers these configurations and provides a unified management entry point.
+
+You no longer need to remember which directory contains a particular Skill, or reconfigure everything from scratch whenever you switch tools.
+
+---
+
+## Skills Distillation
+
+A truly valuable Skill does not necessarily need to be written from scratch.
+
+AITracker identifies experience worth reusing from your real work, historical sessions, and methods that have already worked, then gradually distills it into Skills.
+
+![](docs/assets/en/02-skills-distillation.png)
+
+Turn “I finally got it working this time” into “I can reuse this directly in the future.”
+
+---
+
+## Reuse Across Tools
+
+A useful Skill should not belong only to Claude Code.
+
+A configuration that works should not force you to start over when you switch to Codex, Cursor, or another tool.
+
+AITracker aims to build a capability layer above different AI tools:
+
+![](docs/assets/en/03-cross-tool-reuse.png)
+
+Manage everything in one place, then continue using it across different AI tools.
+
+---
+
+## Knowledge Base and Long-Term Memory
+
+AI generates a large volume of conversations every day, but only some of them are truly worth keeping.
+
+For example:
+
+- Important background about a project
+- A method that has already been validated
+- A troubleshooting process
+- A useful prompt
+- A Skill
+- A Workflow
+- An important technical decision
+
+AITracker gradually turns this valuable information into a **knowledge base and long-term memory**.
+
+![](docs/assets/en/04-knowledge-base-memory.png)
+
+So AI no longer has to start from zero every time.
+
+---
+
+## Support for More AI Coding Tools
+
+AITracker is designed for multiple AI tools and is gradually adapting to mainstream AI Coding Tools, including:
+
+`Claude Code` · `Codex` · `Cursor` · `Cline` · `Gemini CLI` · `OpenCode` · ...
+
+It currently covers **data collection and recognition scenarios for 36+ AI tools**, with more being added continuously.
+
+---
+
+## Local First
+
+AITracker runs locally by default.
+
+Your AI usage records, analytics data, Skills, Rules, knowledge, and memories are kept on your own computer whenever possible.
+
+![](docs/assets/en/05-local-first.png)
+
+**No account registration is required for the core features.**
+
+Your data belongs to you.
+
+Skills Market listings and exchange-rate data come from the project-operated
+service `ai.trusttools.cn`; when that service is unreachable, the app falls
+back to cached or built-in data instead.
+
+---
+
+## What Is AITracker Trying to Solve?
+
+![](docs/assets/en/07-now-unified-platform.png)
+
+AI tools are becoming more powerful—and more numerous.
+
+But we lack a place that truly belongs to us, where we can **understand, manage, and accumulate these AI capabilities**.
+
+That is what AITracker is trying to build.
+
+> **Understand AI → Manage capabilities → Distill experience → Keep accumulating.**
+
+---
+
+## Contributing
+
+Issues, feature proposals, documentation improvements, and pull requests are
+welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a
+change. For vulnerabilities, follow [SECURITY.md](SECURITY.md) instead of
+opening a public issue.
+
+See [PRIVACY.md](PRIVACY.md) for the local-first data-handling model.
+
+---
+
+## Community
+
+Scan the QR code with WeChat to join the AITracker user group.
+
+<p align="center">
+  <img src="docs/assets/community/wechat-group.jpg" alt="AITracker WeChat group QR code" width="360" />
+</p>
+
+---
+
+## License
+
+AITracker is distributed under a GPL-3.0-based project license with additional
+restrictions. See [LICENSE](LICENSE) for the full project terms.
+
+The scanner package is distributed separately under the MIT license:
+`@estelwalks/agent-threat-scanner`.
+
+---
+
+## Acknowledgements
+
+Thanks to the following contributors:
+
+- [gobuer](https://github.com/gobuer)
+- [estelwalks](https://github.com/estelwalks)
+- [JJBondOne](https://github.com/JJBondOne)
+
+Development was supported by:
+
+- [Claude Code](https://code.claude.com/docs/en/)
+- [DeepSeek Harness](https://www.deepseek.com/harness/en/)
+- [Codex](https://developers.openai.com/codex/)
+- [Lovable](https://lovable.dev/)
+
+---
+
+## Star
+
+If AITracker has been helpful, please give the project a Star. Thank you.

@@ -1,0 +1,184 @@
+# ScopeGate
+
+**Never hand an AI agent a full OAuth scope again.**
+
+ScopeGate sits between your agents and the accounts they reach — yours or your
+clients'. You connect a service once, tick the exact actions an agent may call,
+and hand it an MCP endpoint that can do nothing else. Every call is logged; one
+click kills the key without touching the connection.
+
+- **Per-action permissions** — `gmail:read_emails` yes, `gmail:send_email` no. Finer than any provider's OAuth scopes.
+- **Audit trail** — who, which tool, what outcome, how long. Per project, exportable.
+- **One-click revocation** — regenerate an endpoint key; the service connection stays.
+- **Tokens never leave** — AES-256-GCM at rest, refreshed automatically, agents only ever see `sg_…`.
+
+Run it yourself in one command:
+
+```bash
+docker compose --profile local up
+```
+
+Open [http://localhost:3000](http://localhost:3000) — the admin login is printed in
+the container logs on first boot. Details in [Quick Start](#quick-start-self-hosted).
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL + Prisma 7
+- **UI**: Tailwind CSS v4, shadcn/ui
+- **Auth**: Better Auth (database-backed sessions, Prisma adapter)
+- **MCP**: `@modelcontextprotocol/sdk` (Streamable HTTP)
+- **Package Manager**: pnpm
+
+## Quick Start (self-hosted)
+
+Full feature parity with the hosted cloud version — nothing is cut for self-host.
+
+```bash
+git clone https://github.com/alifanov/scopegate.git
+cd scopegate
+docker compose --profile local up
+```
+
+Open [http://localhost:3000](http://localhost:3000). No `.env` file needed: a local
+Postgres and a fresh `BETTER_AUTH_SECRET` are provisioned automatically, and the
+generated admin login is printed once in the `app` container logs on first boot
+(look for `Generated admin login`) — search it with `docker compose logs app | grep -A4 "First run"`.
+The password is also saved to the `app_data` volume so it survives restarts.
+
+To connect real services (Gmail, LinkedIn, GitHub, …), copy `.env.example` to `.env`
+and fill in the OAuth client id/secret for the providers you want — every block is
+independent and optional, a provider without credentials simply doesn't show up.
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 20.19+, 22.12+ or 24+ (required by Prisma 7)
+- pnpm
+- PostgreSQL
+
+### Setup
+
+1. Clone the repository and install dependencies:
+
+```bash
+pnpm install
+```
+
+2. Copy the environment file and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Secret key for session signing |
+| `BETTER_AUTH_URL` | App base URL (e.g. `http://localhost:3000`) |
+| `ADMIN_EMAIL` | Bootstrap admin email |
+| `ADMIN_PASSWORD` | Bootstrap admin password |
+
+3. Run database migrations:
+
+```bash
+pnpm prisma migrate dev
+```
+
+4. Start the development server:
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/              # Login & register pages
+│   ├── (dashboard)/         # Protected dashboard pages
+│   │   └── projects/        # Project management, endpoints, audit, settings
+│   ├── api/
+│   │   ├── auth/[...all]/    # Better Auth catch-all handler
+│   │   ├── projects/        # Projects CRUD, endpoints, services, audit
+│   │   └── mcp/[apiKey]/    # MCP Streamable HTTP handler
+│   ├── layout.tsx
+│   └── page.tsx             # Landing page
+├── components/
+│   ├── ui/                  # shadcn/ui components
+│   ├── layout/              # Sidebar, header
+│   └── shared/              # Reusable app components
+├── lib/
+│   ├── db.ts                # Prisma client singleton
+│   ├── auth.ts              # Better Auth server instance
+│   ├── auth-client.ts       # Better Auth client SDK
+│   ├── auth-middleware.ts   # getCurrentUser() helper
+│   ├── bootstrap.ts         # Admin user bootstrap on empty DB
+│   ├── provider-registry.ts # Every supported provider — the one file to edit
+│   └── mcp/
+│       ├── permissions.ts   # Permission groups (derived from the registry)
+│       ├── tools/           # One file per service, aggregated in index.ts
+│       ├── service-fetch.ts # Unified, SSRF-safe transport for all providers
+│       └── handler.ts       # MCP server factory + audit logging
+├── generated/prisma/        # Generated Prisma client
+└── middleware.ts             # Route protection
+```
+
+## Available Scripts
+
+```bash
+pnpm dev              # Start development server
+pnpm build            # Production build
+pnpm start            # Start production server
+pnpm lint             # Run ESLint
+pnpm prisma generate  # Regenerate Prisma client
+pnpm prisma migrate dev  # Create and apply migrations
+pnpm prisma studio    # Open Prisma Studio (DB browser)
+```
+
+## How It Works
+
+1. **Login** — sign in with admin credentials (bootstrapped from env vars on first run)
+2. **Create a Project** — organize endpoints and services by project
+3. **Connect a Service** — add a service connection to the project
+4. **Create an MCP Endpoint** — select a service connection and pick specific permissions (e.g. `gmail:read_emails`, `calendar:create_event`)
+5. **Use the MCP URL** — plug the endpoint URL into any MCP-compatible AI agent; only the allowed actions are exposed
+6. **Monitor** — track every request in the audit log
+
+## Permissions
+
+A permission is a single action, not a service — `gmail:read_emails` can be granted
+without `gmail:send_email`. Groups are derived from `src/lib/provider-registry.ts`
+(27 providers: Google Workspace, Google Ads & Search Console, Meta, LinkedIn,
+Twitter, Slack, Notion, Jira, HubSpot, Salesforce, Stripe, Airtable, …) and listed
+in `src/lib/mcp/permissions.ts`. Adding a provider means editing the registry —
+transport, token strategy and permission groups are all derived from it.
+
+A few Google examples:
+
+| Group | Actions |
+|---|---|
+| Gmail | `gmail:read_emails`, `gmail:send_email`, `gmail:list_labels`, `gmail:search_emails` |
+| Google Calendar | `calendar:list_events`, `calendar:create_event`, `calendar:update_event`, `calendar:delete_event` |
+| Google Drive | `drive:list_files`, `drive:read_file`, `drive:create_file`, `drive:delete_file` |
+
+## Database Schema
+
+- **User** — authentication, team membership
+- **Session** — database-backed auth sessions
+- **Account** — auth provider credentials (email/password)
+- **Project** — logical grouping for services and endpoints
+- **TeamMember** — user-project relationship with roles (owner/member)
+- **ServiceConnection** — OAuth tokens for connected services
+- **McpEndpoint** — MCP endpoint with API key, rate limit, active status
+- **EndpointPermission** — allowed actions per endpoint
+- **AuditLog** — request log with action, status, duration, errors
+
+## License
+
+See [LICENSE](LICENSE).

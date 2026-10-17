@@ -1,0 +1,365 @@
+# RigMark
+
+![RigMark — benchmarks local AI how coding agents actually use it](docs/images/rigmark-hero.png)
+
+**RigMark benchmarks local AI how coding agents actually use it.**
+
+RigMark is an independent, reproducible serving benchmark for the whole
+OpenAI-compatible appliance: agent-shaped prose and code, an explicitly
+labelled structured-output ceiling,
+exact cache-busting/immediate-replay prefill, and concurrent request behaviour.
+It is a serving benchmark, not a claim that three prompts reproduce a complete
+multi-turn coding session.
+
+It is deliberately model-agnostic: use it with Qwen, GLM, DeepSeek, vLLM,
+SGLang, local GPU servers, or multi-node DGX Spark recipes. A different model or
+serving stack is an appliance comparison; identical weights and software are
+required before claiming a topology-only speed-up.
+
+**Sharing a run?** Post the generated ASCII `.card.txt` and link its matching
+JSON receipt. RigMark prints and saves the card automatically; see
+[One screenshot, one receipt](#one-screenshot-one-receipt) for an example.
+Agents running RigMark should follow [AGENTS.md](AGENTS.md).
+
+## Why RigMark exists
+
+RigMark grew out of running local AI for real work and trying to reconcile the
+figures shared on X with what we saw on our own hardware. A claim of
+"65–80 tok/s" tells you little without the workload: counting to 200 can look
+very different from writing prose or code, especially with speculative
+decoding. Alex describes that experience in
+[How and Why We Bought 4x DGX Sparks](https://blog.alexellis.io/how-and-why-we-bought-4-dgx-sparks/).
+
+What started as a tool for our own comparisons is now used by DGX Spark recipe
+authors when sharing their results. The useful change is from an isolated
+speed claim to a receipt: prose, code, structured output, and prefill measured
+under disclosed settings, with outputs and a traceable RigMark Git revision.
+Fixed inputs and published ranges make variation visible; they do not promise
+identical answers or timings from every serving stack.
+
+## What people are saying about RigMark
+
+> “keep up your work, rigmark itself is great.”
+>
+> — [@O80925253](https://x.com/O80925253), 30 September 2026
+
+> “I'm definitely going to be keeping Rigmark in the stack for testing.
+> Initial numbers look good…”
+>
+> — [@bertholomusai](https://x.com/bertholomusai), 4 October 2026,
+> after running full GLM-5.3 EXL3 on four DGX Sparks
+
+> “but actually running that test pointed out some improvements I missed.”
+>
+> — [@jayleaton](https://x.com/jayleaton), 29 September 2026,
+> after running the standard suite on TensorFold GLM-5.3-Flash on two DGX Sparks
+
+## Beyond RigMark: superterm for sovereign local AI
+
+Running recipes and tuning models is work in its own right. Beyond the
+benchmarks, local AI needs a control plane.
+
+**Coding, agents, chat, and voice—with models running on hardware you control.**
+
+Use [superterm](https://superterm.dev/) to write code with an agent, chat
+through an idea, or dictate the next task from your desktop or phone.
+Self-host your workspace and use local models and speech services to keep
+your work on your own infrastructure.
+
+<a href="https://superterm.dev/"><img src="docs/images/superterm-sovereign-ai.png" alt="superterm chat checking local coding agents, with a DeepSeek model picker and voice controls" width="720"></a>
+
+*Local-model chat checking in with coding agents. Staged demonstration.*
+
+[Explore superterm](https://superterm.dev/) ·
+[Community Edition and Pro](https://superterm.dev/pricing/)
+
+## One screenshot, one receipt
+
+The current protocol (1.3) allows 8,192 generated tokens per decode sample,
+including reasoning, with five samples per workload. Shorter answers stop
+normally. Prefill and the 256-token concurrency cap are unchanged. The archived
+receipt below retains its original protocol and 4,096-token default; old and
+new caps must not be presented as a matched comparison.
+
+```text
+╭────────────────────────────────────────────────────────────────────────╮
+│                                                                        │
+│  R I G M A R K   //   AGENT WORKLOAD RECEIPT                           │
+│  BENCHMARKS LOCAL AI HOW CODING AGENTS ACTUALLY USE IT                 │
+│  ●  15/15 BASIC OUTPUT GATES PASSED                                    │
+│                                                                        │
+├─ MODEL ────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  Qwen3.8-27B-FP8-vllm                                                  │
+│                                                                        │
+├─ SINGLE STREAM ────────────────────────────────────────────────────────┤
+│                                                                        │
+│  WORKLOAD         tok/s       Range tok/s   Last (s)    Checks         │
+│  PROSE             84.2        81.9–100.1       19.9     ✓ 5/5         │
+│  CODE             129.5       124.0–130.4       25.2     ✓ 5/5         │
+│  STRUCTURED*      136.0       135.0–136.1        7.9     ✓ 5/5         │
+│                                                                        │
+│  * Predictable JSON ceiling; not general agent performance.            │
+│  Decode medians are estimates; rates include streamed reasoning.       │
+│                                                                        │
+├─ PREFILL ──────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  DEPTH      First tok/s     First TTFT (s)    Replay TTFT (s)          │
+│  8K               8,173               1.00               0.25          │
+│  32K              6,968               4.70               0.44          │
+│  64K              5,808              11.28               0.77          │
+│  Cold cache UNVERIFIED: cache-hit usage unavailable.                   │
+│  Medians; replay is an immediate repeat, not a proven hit.             │
+│                                                                        │
+├─ CAPPED CONCURRENT GENERATION ─────────────────────────────────────────┤
+│                                                                        │
+│  Aggregate tok/s: C1 108.7 | C2 206.0 | C4 385.4                       │
+│  C4: 0/12 normal stops; 2/12 with visible output.                      │
+│  Capped throughput includes reasoning; not completed agent tasks.      │
+│                                                                        │
+├─ APPLIANCE ────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  Hardware: 1x NVIDIA RTX PRO 6000 Blackwell Workstation Edition, 96 GB │
+│  Topology: TP1, local PCIe GPU                                         │
+│  Checkpoint: Qwen/Qwen3.8-27B-FP8 @ local checkp                       │
+│  Quantisation: FP8 E4M3, dynamic activations, 128x128 blocks           │
+│  KV cache: FP8                                                         │
+│  Engine: vLLM 0.27.1                                                   │
+│                                                                        │
+├─ SETTINGS ─────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  SUITE: DEFAULT SETTINGS                                               │
+│  REQUEST: {"chat_template_kwargs": {"reasoning_effort": "low"}}        │
+│  Temperature 0.0 | top_p 1.0 | seed 20260905 | protocol 1.0.0          │
+│  Decode: 5 runs, 4096-token cap | Prefill: 8K/32K/64K, 3 pairs         │
+│  Concurrency: C1/C2/C4, 3 rounds, 256-token cap; workload code         │
+│  Comparison ID: 2026-09-05-rigmark-standard-v2                         │
+│                                                                        │
+├─ RECEIPT ──────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  SOURCE     git:046e92cbe941  •  clean                                 │
+│  JSON sha256:604ea2c48107a69f…                                         │
+│  SHARE THE CARD • LINK THE JSON RECEIPT • #RIGMARK                     │
+│  github.com/alexellis/rigmark                                          │
+│                                                                        │
+╰────────────────────────────────────────────────────────────────────────╯
+```
+
+This card is rendered from a published protocol 1.0 receipt. The current runner
+emits protocol 1.3 receipts with per-pair cache isolation and cache-usage
+evidence. This older receipt has no cache-hit evidence, so its prefill is
+explicitly labelled unverified by the current renderer.
+
+The card is the shareable headline. It always shows the benchmark Git revision
+and whether that worktree was clean or dirty. GitHub source archives embed the
+originating commit too, so downloading a tarball does not lose the benchmark
+revision. The content-hashed
+[result JSON](results/reference/qwen38-27b-fp8-rtxpro6000-low.json) is the
+receipt: complete outputs, ranges, TTFT, settings, and appliance metadata.
+The checksum identifies those exact bytes; it is not a signature or independent
+attestation. A linked Git commit or release supplies the public anchor.
+
+## Run the standard suite
+
+Python 3.10 or newer is required; there are no third-party packages.
+
+```bash
+git clone https://github.com/alexellis/rigmark
+cd rigmark
+./rigmark check
+./rigmark configure
+
+./rigmark bench \
+  --base-url http://SERVER:8000 \
+  --model auto \
+  --label my-appliance \
+  --comparison-id weekend-sweep-1 \
+  --metadata metadata.json
+```
+
+`./rigmark check` compares this checkout with the newest published release,
+including pre-releases. `bench` repeats that check before measuring and stops
+if the checkout is behind; update it before running. Use `--allow-stale` only
+for a deliberately pinned historical run, and label it as such. If GitHub is
+unreachable, the benchmark continues but its release status is unverified.
+An unreleased `master` commit ahead of the newest release is reported as such.
+
+The configurator explains every metadata field and writes the ignored local
+`metadata.json`. See [`METADATA.md`](METADATA.md) if an agent is filling it in
+for you. The benchmark refuses unchanged placeholders or missing required
+fields. Use the same comparison ID for every appliance in one A/B sweep. This
+makes the corresponding generated prompts byte-for-byte identical. Keep the ID
+when repeating the same inputs; changing it changes the prompt nonces. Fresh
+per-pair cache salts isolate prefill independently of that ID. If the model supports graded effort or a thinking toggle, set it
+explicitly with `--extra-body` and use the identical value throughout the
+sweep; model defaults are not assumed equivalent.
+
+The repository also includes clearly labelled
+[first-party serving records](examples/serving-records/) for the Qwen 27B,
+Qwen Flash Next, DeepSeek V4 Flash 0731, and GLM-5.3-Flash appliances operated
+by Alex Ellis. These are
+versioned metadata inputs, not benchmark results or defaults for other users.
+They pin details that are easy to misreport—especially the drafter, image,
+recipe revision, scheduler, context limit, and co-resident services. Copy one
+only when reproducing that appliance, then change every field that differs.
+
+The default suite performs:
+
+- five runs of code, prose, and structured JSON with an 8,192-token ceiling;
+- three cold/immediate-warm pairs at 8,192, 32,768, and 65,536 tokens; and
+- three rounds of code at concurrency 1, 2, and 4 with 256-token outputs.
+
+The concurrency phase is deliberately a capped generation-capacity test. It
+reports normal-stop and visible-output counts and must not be described as
+completed multi-agent coding work; reasoning models may spend the entire cap on
+reasoning.
+
+Results are written to `results/LABEL-TIMESTAMP.json`. Neither the endpoint URL
+nor API credentials are written to the result. Credentials are read from
+`OPENAI_API_KEY` by default; use `--api-key-env NAME` to select another
+environment variable. Visible generated output is retained for auditability;
+reasoning text is not retained, although its size and hash are recorded.
+Every decode workload has a basic output gate. Code and prose must emit a
+visible answer and finish normally; structured JSON must additionally match
+every requested value. This is not a code-correctness score. Throughput from a
+failed gate remains diagnostic but must not be cited as a successful workload
+result. RigMark also reports time to the last generated output, because tok/s
+alone can conceal how long a verbose or reasoning-heavy answer takes.
+
+The card retains medians and min/max ranges. The JSON receipt also includes
+`pooled_decode_tokens_per_second`, calculated from summed decode-token
+numerators and decode windows. It supplements the median; longer answers carry
+more weight. Neither ranges nor pooled rates are confidence intervals.
+
+Prefill sends a fresh `cache_salt` for every cold/replay pair. Known cache hits
+on a cold sample fail the run. If the server omits cache usage, the card marks
+that measurement unverified. Skipped phases remain visible as an incomplete
+suite. Custom suite flags and the full extra request body appear below the
+results, alongside wrapped appliance details.
+
+At the end, the runner prints a terminal result card designed to be
+screenshotted and saves a stable `RESULT.card.txt` beside the JSON. Reprint or
+regenerate it at any time with:
+
+```bash
+./rigmark report --save results/YOUR-RESULT.json
+```
+
+If an agent runs RigMark for you, ask it for **both files**: the generated
+`results/LABEL-TIMESTAMP.card.txt` (paste the full ASCII or screenshot it) and
+the matching `results/LABEL-TIMESTAMP.json` (link the complete receipt). Do not
+replace the card with a hand-written summary table. The card is the headline,
+and the JSON is the receipt. An older JSON receipt can be rendered with the
+current card layout using the command above, but it remains an older protocol
+run and is not directly comparable with current defaults.
+
+The code answer deliberately includes an implementation and its own test suite.
+Replay those model-supplied tests in a locked-down Docker container with:
+
+```bash
+docker pull golang:1.25
+./rigmark audit-code results/YOUR-RESULT.json
+```
+
+Generated code is untrusted. The command disables networking, drops
+capabilities, makes the container root filesystem and source mount read-only,
+and applies CPU, memory, and process limits. A disposable VM remains the
+stronger isolation boundary. Passing model-written tests is useful evidence of
+self-consistency, not proof of correctness.
+
+## Challenge a recipe
+
+Run the standard suite unchanged against a quiet endpoint and publish its card
+and JSON receipt. That is the whole challenge: agent-shaped code and prose,
+structured output labelled as a ceiling, cache-busting and immediate-replay
+prefill, and concurrent service load under one disclosed protocol. A recipe may
+optimise anything on the server side; RigMark keeps the client-side work and
+claim boundaries fixed.
+
+There is deliberately no universal `thinking=off` profile. Some templates
+implement that switch, some ignore it, and others expose different controls.
+Publish such a run as a separately labelled, model-specific ceiling and compare
+it only with receipts carrying the identical request body.
+
+For an engine without vLLM's `/tokenize` extension or token-ID completion
+input, add `--skip-prefill`. To omit load testing, add `--skip-concurrency`.
+
+## Compare two results
+
+```bash
+./rigmark compare results/recipe-a.json results/recipe-b.json
+```
+
+For a matched, screenshot-ready A/B card:
+
+```bash
+./rigmark compare --card results/recipe-a.json results/recipe-b.json
+```
+
+The comparison validates raw rows against reported summaries and gates, then
+stops when the benchmark revision, protocol, prompt corpus, seed,
+thinking/request body, run counts, output lengths, prefill depths/runs, or
+concurrency settings differ. `--allow-mismatch` exists for exploratory
+comparisons and prints the mismatches. A matched card means the client requests
+match; token/s ratios still require matching server-side token definitions.
+
+## The next question: quality
+
+Speed is only part of a useful local AI setup. Fitting a model into local
+memory often means quantising its weights: lossy compression that can change
+its answers. A faster recipe needs to be evaluated for what it gets right,
+as well as how quickly it generates tokens.
+
+RigMark's basic output gates check completion and the requested JSON values;
+they do not establish reasoning quality or equivalence to the original
+checkpoint. Even passing the model's own generated tests is only evidence of
+self-consistency. The separate, experimental
+[RigMark Quality](https://github.com/alexellis/rigmark-quality) project runs
+small coding and tool-use tasks with independent checks. Use `rigmark quality`
+there to inspect task-level receipts; it is not a complete model or
+quantisation quality score.
+
+We would welcome help extending the evaluations: independent code tests,
+instruction following, and retrieval at longer contexts, with pinned
+checkpoints and quantisation details.
+
+[Issues](https://github.com/alexellis/rigmark/issues) and
+[pull requests](https://github.com/alexellis/rigmark/pulls) are welcome,
+including suggestions for existing evaluations we can build on. Bring the
+prompts, expected results, and failure cases so others can reproduce them.
+
+## Fair-use checklist
+
+- Run against a quiet endpoint and disclose any competing traffic.
+- Pin and publish model, drafter, engine/image, and benchmark revisions.
+- Publish the complete result JSON and command, not only a screenshot.
+- Check the retained outputs and code-test audit; throughput alone is not a
+  quality score.
+- Headline code and prose medians with their ranges—not a best run.
+- Label structured output as a speculative-decoding ceiling.
+- Report cache-busting and immediate-replay prefill separately.
+- Verify the negotiated fabric rate rather than copying a product headline.
+
+The exact measurement definitions and claim boundaries are in
+[`PROTOCOL.md`](PROTOCOL.md).
+
+## Published reference runs
+
+Reference results include their complete generated outputs and appliance
+metadata, not just headline numbers. See [`RESULTS.md`](RESULTS.md) for the
+current table and exact commands.
+
+If RigMark helps you tune your setup or publish reproducible recipes,
+[consider sponsoring Alex Ellis](https://github.com/sponsors/alexellis) to
+support its maintenance and testing.
+
+## Development
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 -m py_compile audit_code.py bench.py compare.py configure.py receipt.py report.py rigmark
+```
+
+## Licence
+
+MIT

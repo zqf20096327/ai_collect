@@ -1,0 +1,396 @@
+![AI_PM Claude Code for PMs banner](./assets/banner-gpt.png)
+
+# 🚀 Claude Code for PMs — AI 네이티브 PM 실전 가이드
+
+> 한국어 PM 을 위한 **Claude Code 실전 플레이북**. `claude-opus-4-8` 기준, 8파트 + 10 유즈케이스.
+>
+> **"도구를 배우는 것이 아니라, PM의 일하는 방식을 재설계한다."**
+>
+> AI 네이티브 PM은 **컨텍스트 인프라**를 설계한다 — CLAUDE.md · INDEX.md · Skills · Hooks.
+
+![Stars](https://img.shields.io/github/stars/kimsanguine/AI_PM?style=social)
+![Forks](https://img.shields.io/github/forks/kimsanguine/AI_PM?style=social)
+![Last Commit](https://img.shields.io/github/last-commit/kimsanguine/AI_PM)
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+![Claude](https://img.shields.io/badge/Claude-claude--opus--4--8-blue)
+![Version](https://img.shields.io/badge/guide-v1.4-success)
+
+---
+
+## 시리즈 안에서의 위치
+
+```
+[AI_Human]          →      [AI_Engineer]        →      [AI_PM]  ← 여기 (Claude Code 활용)
+ 1단계 · 100일 과정         2단계 · 100 Agents          3단계 · 워크플로우 재설계
+ Python~RAG 기초            AI Agent 직접 구현           PM의 일하는 방식을 바꾸다
+```
+
+> 자매 PM 도구: **[hplan](https://github.com/kimsanguine/hplan)** — Product Build Gate (만들기 전 검증). AI_PM 이 "어떻게 만들 것인가" 라면, hplan 은 "정말 만들 것인가" 의 30분 체크리스트.
+>
+> 프롬프트 레지스트리: **[ai-prompts-playbook](https://github.com/kimsanguine/ai-prompts-playbook)** — 본 레포의 `/discovery`, `/competitor`, `/prd`와 PM 스킬 패턴을 재사용 가능한 prompt card로 정리한 companion playbook.
+>
+> 포트폴리오 운영: **[AI PM 포트폴리오 참조 운영](./docs/operations/ai-pm-portfolio.md)** — hplan과 signal-to-growth의 읽기 전용 handoff 경계.
+
+### PM 포트폴리오: 어떤 저장소를 언제 쓰는가
+
+AI_PM은 네 제품을 하나의 도구나 데이터베이스로 합치지 않습니다. PM이 판단
+책임을 잃지 않도록, 질문의 종류에 따라 아래 진입점을 사용합니다.
+
+| 지금 필요한 질문 | 사용할 제품 | 그 제품이 소유하는 것 | 이 레포의 역할 |
+| --- | --- | --- | --- |
+| 만들기 전에 투자할 가치가 있는가? | [hplan](https://github.com/kimsanguine/hplan) | Build Gate의 `GO`·`HOLD`·`INVESTIGATE` 판단 | Gate를 읽고 해석하는 playbook 제공 |
+| 고객 신호로 무엇을 실험하고 측정할까? | [signal-to-growth](https://github.com/kimsanguine/signal-to-growth) | 신호·실험·metric contract·outcome | 성장 운영의 질문과 평가 기준 제공 |
+| 역할과 검증 방식을 팀에 어떻게 정착시킬까? | AI_PM | 학습 자료·운영모델·PM-Eval 참고표 | 이 레포 자체가 답 |
+| 누가 읽고, 초안을 만들고, 외부 변경을 승인할까? | AI PM Plane (향후 fixture) | 정책·승인 receipt·audit trail | 정책 경계를 학습하고 검토 |
+
+AI_PM은 증거·결정·metric의 세 번째 원장을 만들지 않습니다. 원문과 실제 값은
+각 source system에 남기고, 제품 사이에는 **opaque reference**만 전달합니다.
+PM-Eval의 채점도 source record를 바꾸거나 다음 결정을 자동으로 내리지 않습니다.
+
+#### 합성 참조 루프: `GO → experiment → outcome → reconsideration`
+
+아래는 공개 fixture만 사용하는 운영 예시입니다. `CP-0001`, `EXP-0001`,
+`OUT-0001`은 내용이나 고객 정보를 뜻하지 않는 opaque 식별자입니다.
+
+1. hplan의 사람이 source record `hplan://checkpoint/CP-0001`에서 `GO`를
+   확정한다. hplan은 `build_gate_to_growth` Profile v0를 내보내지만 원래
+   checkpoint를 변경하지 않는다.
+2. signal-to-growth의 담당자가 그 참조를 근거로 source-native experiment를
+   연다. experiment와 metric의 본문·값은 signal-to-growth에만 남기고,
+   교차 문서에는 `stg://experiment/EXP-0001` 같은 참조만 쓴다.
+3. outcome이 완료되면 signal-to-growth는
+   `stg://outcome/OUT-0001`을 source record로 하는
+   `growth_outcome_to_reconsideration` Profile v0를 만든다. 이 Profile은
+   `reopen_reason`과 참조만 담은 **재검토 요청**이며 Gate 결론이 아니다.
+4. 지정된 사람은 hplan에서 원문 근거를 다시 보고 새 Gate 판단을 한다.
+   outcome이 `GO`·`HOLD`·`INVESTIGATE`를 자동으로 바꾸지 않는다.
+
+실습에서 Profile 형식은 [참조 운영 가이드](./docs/operations/ai-pm-portfolio.md)와
+[PM-Eval 참고표](./docs/operations/pm-eval-reference.md)를 함께 확인하세요.
+
+---
+
+## 전체 구조
+
+```mermaid
+graph LR
+    A[Part 1-3<br/>기초 & 설정] --> B[Part 4<br/>Discovery]
+    B --> C[Part 5<br/>Definition]
+    C --> D[Part 6<br/>Delivery]
+    D --> E[Part 7<br/>Growth]
+    E --> F[Part 8<br/>전략]
+    F -.-> B
+
+    style A fill:#f0f0f0,stroke:#333
+    style B fill:#e1f5fe,stroke:#0288d1
+    style C fill:#e8f5e9,stroke:#388e3c
+    style D fill:#fff3e0,stroke:#f57c00
+    style E fill:#fce4ec,stroke:#c62828
+    style F fill:#f3e5f5,stroke:#7b1fa2
+```
+
+| Part | 주제 | 핵심 질문 |
+|------|------|----------|
+| 1-3 | 기초 & 설정 | Claude Code를 어떻게 세팅하고 자동화하는가? |
+| 4 | Discovery | 유저 문제를 어떻게 구조화하는가? |
+| 5 | Definition | 해결책을 어떻게 검증 가능하게 정의하는가? |
+| 6 | Delivery | PM이 직접 프로토타입을 만들 수 있는가? |
+| 7 | Growth | 데이터로 성장을 어떻게 설계하는가? |
+| 8 | 전략 | AI 시대 PM의 커리어는 어디로 가는가? |
+
+---
+
+## 이 가이드는 무엇인가요?
+
+Claude Code(`claude-opus-4-8` 기준 CLI 에이전트)를 활용해 PM이 **Discovery → Definition → Delivery → Growth** 사이클 전반에서 일하는 방식을 어떻게 변화시킬 수 있는지를 다루는 실전 가이드입니다.
+
+단순한 도구 사용법이 아니라, **컨텍스트 인프라를 설계하는 법**을 배웁니다.
+
+```
+컨텍스트 인프라 4요소:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CLAUDE.md   →  취향·규칙·톤 (변하지 않음)
+INDEX.md    →  지식 지도 (어디에 무엇이 있는지)
+Skills      →  반복 워크플로우 패키지
+Hooks       →  세션 시작·도구 사용·완료 자동화
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+이 위에 검증 사다리(자동 포맷 → 테스트 → 시각 → LLM 리뷰)와
+폐루프(자주 고치는 것을 CLAUDE.md/Skills로 흡수)가 얹힌다.
+```
+
+PM 시간 배분도 같이 바뀝니다 — 문서 작성·회의·데이터 취합에서 **문제 정의·전략적 판단·AI 워크플로우 오케스트레이션**으로.
+
+---
+
+## 누구를 위한 가이드인가요?
+
+| 레벨 | 설명 | 권장 학습 경로 |
+| --- | --- | --- |
+| **J (Junior)** | PM 경력 0~2년, AI 도구 경험 적음 | Part 1 → 2 → 4 순서대로 |
+| **P (Practitioner)** | PM 경력 3~7년, AI 도구 일부 사용 중 | Part 1 훑고 → Part 3~6 집중 |
+| **L (Lead)** | PM 경력 7년+, 팀/조직 리딩 | Part 1 훑고 → Part 5~8 집중 |
+
+---
+
+## 목차
+
+### Part 1: 시작하기 — 왜 지금, AI 네이티브 PM인가
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 1.1 | [왜 지금인가](./docs/part1-foundations/1.1-why-now.md) | PM 역할 변화, 자동화/증강/직접판단 프레임워크 | 모든 레벨 |
+| 1.2 | [Claude Code란 무엇인가](./docs/part1-foundations/1.2-what-is-claude-code.md) | ChatGPT/Copilot과의 차이, CLI의 4가지 장점 | 모든 레벨 |
+| 1.3 | [설치와 첫 실행](./docs/part1-foundations/1.3-install-and-first-run.md) | 설치 가이드, 첫 대화 예시, 트러블슈팅 | J |
+
+### Part 2: 기본기 — Claude Code와 대화하기
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 2.0 | [도구 지도 — 5가지 범주](./docs/part2-basics/2.0-toolkit-map.md) | 기억·스킬·자동 실행·대리인·확장 5범주 분류 멘탈모델 (입문 overview) | 모든 레벨 |
+| 2.1 | [파일과 입력](./docs/part2-basics/2.1-files-and-input.md) | @파일 참조, 이미지 입력, 다중 출력 패턴 | J |
+| 2.2 | [모드와 깊이](./docs/part2-basics/2.2-modes-and-depth.md) | Edit/Auto-Accept/Plan 모드, effort/adaptive thinking | J → P |
+| 2.3 | [프로젝트 메모리](./docs/part2-basics/2.3-project-memory.md) | 메모리 계층 구조, CLAUDE.md 작성법 | P |
+| 2.4 | [커스텀 서브에이전트](./docs/part2-basics/2.4-custom-subagents.md) | 엔지니어/경영진/리서처 에이전트 구성 | P → L |
+| 2.5 | [에이전트 팀](./docs/part2-basics/2.5-agent-teams.md) | 멀티 에이전트 병렬 협업, Delegate 모드 | P → L |
+| 2.6 | [Human-in-the-Loop](./docs/part2-basics/2.6-human-in-the-loop.md) | AI 파트너 철학, 루프 깊이 프레임워크, 가드레일 설계 | 모든 레벨 |
+| 2.7 | [Hooks](./docs/part2-basics/2.7-hooks.md) | SessionStart / PostToolUse / Stop — 폐루프 자동화 | P → L |
+
+### Part 3: 고급 설정 — 워크플로우 자동화 인프라
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 3.1 | [MCP 연동](./docs/part3-advanced/3.1-mcp-integration.md) | Notion/Linear/Slack/GitHub를 하나의 터미널에서 연결 | P → L |
+| 3.2 | [CLAUDE.md 심화](./docs/part3-advanced/3.2-claude-md-deep-dive.md) | 폴더 구조, YAML front matter, 8축 프레임워크 | P → L |
+| 3.2.1 | [CLAUDE.md 패턴 카탈로그](./docs/part3-advanced/3.2.1-claude-md-patterns.md) | mono / multi-folder / layered 패턴, 선택 가이드 | P → L |
+| 3.2.2 | [4.7 시대의 CLAUDE.md](./docs/part3-advanced/3.2.2-claude-md-for-4-7.md) | Literal following 대응, 8축 detail, 마이그레이션 체크리스트 | P → L |
+| 3.3 | [슬래시 커맨드](./docs/part3-advanced/3.3-slash-commands.md) | /today, /prd, /status 등 반복 워크플로우 자동화 | P → L |
+| 3.4 | [커스텀 스킬](./docs/part3-advanced/3.4-custom-skills.md) | SKILL.md 기반 재사용 워크플로우 패키지 | P → L |
+| 3.5 | [외부 자동화 (n8n)](./docs/part3-advanced/3.5-automation-n8n.md) | 스케줄/이벤트 기반 워크플로우 구축 | P → L |
+| 3.6 | [Claude Code on the web](./docs/part3-advanced/3.6-claude-code-on-the-web.md) | 웹·모바일·GitHub Action 실행 환경, 네트워크 정책, cloud worktree | P → L |
+| 3.7 | [플러그인 & 마켓플레이스](./docs/part3-advanced/3.7-plugins-and-marketplace.md) | 명령·스킬·에이전트·훅·MCP를 한 묶음으로 포장·공유, 마켓플레이스 2단계 설치 | P → L |
+
+### Part 4: Discovery — 문제 발견
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 4.1 | [유저 리서치](./docs/part4-discovery/4.1-discovery-user-research.md) | CSV/설문 분석, 인터뷰 합성, PM 판단 포인트 | P |
+| 4.2 | [경쟁사 분석](./docs/part4-discovery/4.2-discovery-competitive-analysis.md) | 구조화된 분석, 멀티에이전트 병렬 분석, 감성 분석 | P → L |
+
+### Part 5: Definition — 해결책 정의
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 5.1 | [PRD 작성 (소크라틱 방법론)](./docs/part5-definition/5.1-definition-write-prd.md) | 소크라틱 질문법, 반문 기반 대화, 멀티에이전트 리뷰 | P |
+| 5.2 | [제품 전략 (Rumelt 전략 커널)](./docs/part5-definition/5.2-definition-product-strategy.md) | Diagnosis → Guiding Policy → Coherent Actions | P → L |
+
+### Part 6: Delivery — 직접 만들고 보여주기
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 6.1 | [바이브 코딩 + Pencil 연동](./docs/part6-delivery/6.1-delivery-vibe-coding.md) | 의도 기술 → Claude 구현 → PM 리뷰 루프 | J → P |
+| 6.2 | [비주얼 에셋](./docs/part6-delivery/6.2-delivery-visual-assets.md) | 5가지 비주얼 에셋 유형, Gemini API 연동 | P |
+| 6.3 | [GitHub 배포](./docs/part6-delivery/6.3-delivery-github-deploy.md) | Git 기초, Vercel 배포, 모니터링 | P |
+
+### Part 7: Growth — 측정과 운영
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 7.1 | [실험 분석](./docs/part7-growth/7.1-growth-experiment-analysis.md) | A/B 테스트 분석, Impact 공식, ROI 시나리오 | P → L |
+| 7.2 | [KPI 대시보드](./docs/part7-growth/7.2-growth-kpi-dashboard.md) | OMTM, KPI 정의 카드, 자동화 스크립트, 알림 체계 | L |
+| 7.3 | [AI 옵저빌리티](./docs/part7-growth/7.3-ai-observability.md) | Helicone/LangSmith 기반 프로덕션 모니터링 | L |
+
+### Part 8: 전략과 성장 경로
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| 8.1 | [AI 제품 전략](./docs/part8-strategy/8.1-ai-product-strategy.md) | 4D 프레임워크 (Direction/Differentiation/Design/Deployment) | L |
+| 8.2 | [성장 경로](./docs/part8-strategy/8.2-growth-path.md) | J/P/L 로드맵, Before/After, 팀 도입 가이드 | 모든 레벨 |
+
+### Appendix: 실전 연습 & 유즈케이스
+
+| # | 제목 | 핵심 내용 | 난이도 |
+| --- | --- | --- | --- |
+| A.1 | [러닝 시나리오](./docs/appendix/A.1-running-scenario.md) | Discovery → Delivery → Growth 전체 흐름 체험 | P → L |
+| A.2 | [Level 3 실습](./docs/appendix/A.2-level3-exercises.md) | 자동화/증강/직접판단 프레임워크 기반 프로젝트 적용 | P → L |
+| A.3 | [PM 실전 시나리오](./docs/appendix/A.3-usecase-scenarios.md) | 마켓 사이징, 피드백 합성, M&A 실사 등 6가지 | P → L |
+| A.4 | [일일 브리핑 자동화](./docs/appendix/A.4-usecase-daily-briefing.md) | Slack + Linear + Notion + GitHub 크로스 툴 브리핑 | J → P |
+| A.5 | [상태 보고서 자동화](./docs/appendix/A.5-usecase-status-report.md) | 프로젝트 상태 보고서 자동 생성 및 이해관계자별 변형 | J → P |
+| A.6 | [배틀 카드](./docs/appendix/A.6-usecase-battle-cards.md) | 경쟁사 배틀 카드 라이브러리 구축 | P → L |
+| A.7 | [고객 페르소나](./docs/appendix/A.7-usecase-customer-personas.md) | 행동 데이터 클러스터링 기반 페르소나 구축 | P → L |
+| A.8 | [투자 메모](./docs/appendix/A.8-usecase-investment-memo.md) | 비즈니스 케이스 작성 및 이사회 Q&A 시뮬레이션 | P → L |
+| A.9 | [프로세스 플로우차트](./docs/appendix/A.9-usecase-process-flowchart.md) | Mermaid 기반 프로세스 문서화 | J → P |
+| A.10 | [콘텐츠 적응](./docs/appendix/A.10-usecase-content-adaptation.md) | 릴리즈 콘텐츠 6채널 동시 적응 및 발행 자동화 | J → P |
+| A.11 | [프롬프트 치트시트](./docs/appendix/A.11-prompt-cheatsheet.md) | 본문 핵심 프롬프트를 한 페이지로, 바로 복사해 쓰는 1~2줄 모음 | J → P |
+| A.12 | [FAQ·트러블슈팅](./docs/appendix/A.12-faq-troubleshooting.md) | 비개발자 PM이 자주 막히는 지점, 첫 30분 Quickstart + 증상→원인→해결 | J → P |
+
+---
+
+## 🚀 권장 시작 트랙 (레벨별)
+
+| 레벨 | 추천 1번 | 추천 2번 | 추천 3번 |
+|---|---|---|---|
+| **J** (PM 0–2년) | [1.2 Claude Code란](./docs/part1-foundations/1.2-what-is-claude-code.md) | [1.3 설치와 첫 실행](./docs/part1-foundations/1.3-install-and-first-run.md) | [6.1 바이브 코딩](./docs/part6-delivery/6.1-delivery-vibe-coding.md) |
+| **P** (3–7년)    | [3.2 CLAUDE.md 심화](./docs/part3-advanced/3.2-claude-md-deep-dive.md) | [5.1 PRD 작성](./docs/part5-definition/5.1-definition-write-prd.md) | [2.6 Human-in-the-Loop](./docs/part2-basics/2.6-human-in-the-loop.md) |
+| **L** (7년+)     | [8.1 AI 제품 전략](./docs/part8-strategy/8.1-ai-product-strategy.md) | [3.5 외부 자동화 (n8n)](./docs/part3-advanced/3.5-automation-n8n.md) | [7.2 KPI 대시보드](./docs/part7-growth/7.2-growth-kpi-dashboard.md) |
+
+## 빠른 시작
+
+```
+"Claude Code가 뭔지 모르겠어"             → 1.2-what-is-claude-code.md
+"일단 설치부터 하고 싶어"                 → 1.3-install-and-first-run.md
+"무엇이 어디에 있는지 모르겠어"           → INDEX.md (지식 지도)
+"이 레포가 자기 자신을 어떻게 쓰는지 보고싶어" → CLAUDE.md (루트)
+"PRD 작성에 바로 써보고 싶어"             → 5.1-definition-write-prd.md
+"프로토타입을 직접 만들어보고 싶어"        → 6.1-delivery-vibe-coding.md
+"CLAUDE.md를 바로 세팅하고 싶어"          → templates/CLAUDE-md-starter.md + templates/claude-home/
+"4.7 시대 CLAUDE.md 작성법이 궁금해"      → 3.2.2-claude-md-for-4-7.md
+"훅으로 업무자동화를 만들고 싶어"               → 2.7-hooks.md + templates/hooks/
+"샘플 데이터로 실습하고 싶어"             → samples/README.md
+"전체 PM 워크플로우를 한 번에 보고 싶어"   → A.1-running-scenario.md
+"AI 프롬프트 작성법이 궁금해"             → ai-prompts-playbook (AI_PM companion prompt registry)
+```
+
+### 두 가지 진입로
+
+- **인터랙티브 코스** — 레포를 클론한 뒤 해당 폴더에서 Claude Code 를 열고 `/start` 를 입력하세요. 레벨을 확인한 뒤 `/start-1`·`/start-2`·`/start-3` 트랙으로 직접 손으로 따라 하는 온보딩이 시작됩니다.
+- **플러그인 설치** — Claude Code 에서 두 줄이면 끝납니다.
+
+  ```text
+  /plugin marketplace add kimsanguine/AI_PM
+  /plugin install ai-pm@ai-pm
+  ```
+
+---
+
+## 프로젝트 구조
+
+```
+AI_PM/
+├── CLAUDE.md                       # 루트 dogfood (모델·톤·규칙)
+├── INDEX.md                        # 주석 달린 지식 지도
+├── CHANGELOG.md                    # 버전 이력
+├── 00-index.md                     # 전체 목차 및 학습 가이드
+│
+├── 1.1 ~ 1.3                       # Part 1: 시작하기
+├── 2.0 ~ 2.7                       # Part 2: 기본기
+├── 3.1 ~ 3.7                       # Part 3: 고급 설정
+├── 4.1 ~ 4.2                       # Part 4: Discovery
+├── 5.1 ~ 5.2                       # Part 5: Definition
+├── 6.1 ~ 6.3                       # Part 6: Delivery
+├── 7.1 ~ 7.3                       # Part 7: Growth
+├── 8.1 ~ 8.2                       # Part 8: 전략과 성장
+├── A.1 ~ A.12                      # Appendix: 실전 유즈케이스 + 치트시트 · FAQ
+│
+├── .github/                        # "GitHub as PRD" 인프라
+│   ├── ISSUE_TEMPLATE/             # PRD / Discovery / RFC / UseCase / Bug
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── workflows/                  # CI — lint / links / frontmatter
+│   ├── scripts/                    # validate_frontmatter.py
+│   ├── labels.yml
+│   └── CODEOWNERS
+│
+├── .claude-plugin/
+│   └── marketplace.json            # /plugin 마켓플레이스 (ai-pm 플러그인 1종)
+│
+├── .claude/
+│   └── agents/                     # engineering-reviewer / exec-advisor / user-researcher
+│
+├── docs/
+│   └── operations/                 # sot-policy / closed-loop (운영 문서)
+│
+├── samples/                        # 실습용 데이터
+│   ├── ab-test-results.csv
+│   ├── competitor-data.json
+│   └── user-survey-results.csv
+│
+├── templates/
+│   ├── CLAUDE-md-starter.md
+│   ├── claude-home/                # ~/.claude/ 스타터 (CLAUDE.md + guides + skills)
+│   ├── commands/                   # 14종 — /today /prd /status /discovery /competitor
+│   │                               #   /briefing /review /postmortem /retro /pm-setup
+│   │                               #   /start /start-1 /start-2 /start-3
+│   └── hooks/                      # stop-notify / posttooluse-fmt / sessionstart-load
+│
+└── skills/                         # 8종
+    ├── prd-generator/
+    ├── discovery-synthesizer/
+    ├── competitor-battlecard/
+    ├── experiment-analyzer/
+    ├── kpi-card-builder/
+    ├── jtbd/
+    ├── opportunity-solution-tree/
+    └── working-backwards/
+```
+
+> 🔭 **변경 이력**: 버전별 변경 내역은 [CHANGELOG.md](./CHANGELOG.md) 에서 확인하세요.
+
+---
+
+## 학습 원칙
+
+1. **입력 → 응답 → 판단** — 모든 모듈은 실제 터미널 세션을 따라갑니다
+2. **PM이 판단하는 지점** — Claude가 할 수 없는 것, PM만이 할 수 있는 것을 명확히 합니다
+3. **Before/After** — 각 모듈에서 PM의 역할이 어떻게 변하는지를 보여줍니다
+4. **점진적 난이도** — Part 1의 설치부터 Part 8의 전략까지 자연스럽게 상승합니다
+5. **컨텍스트 인프라 우선** — 챕터마다 CLAUDE.md / INDEX.md / Skills / Hooks 중 무엇을 보강하는지를 명시합니다
+
+---
+
+## 주요 이론 프레임워크
+
+이 가이드에서 다루는 핵심 이론과 방법론입니다.
+
+| 프레임워크 | 출처 | 적용 챕터 |
+| --- | --- | --- |
+| 소크라틱 질문법 (Richard Paul & Linda Elder) | 비판적 사고 교육 | 5.1 PRD 작성 |
+| Rumelt 전략 커널 (Good Strategy Bad Strategy) | Richard Rumelt, 2011 | 5.2 제품 전략 |
+| Human-in-the-Loop (HITL/HOTL/HOOTL) | AI 협업 모델 | 2.6 HITL |
+| 자동화/증강/직접판단 프레임워크 | 본 가이드 제안 | 1.1, A.2 |
+| 4D AI 제품 전략 | 본 가이드 제안 | 8.1 AI 전략 |
+| 8축 CLAUDE.md 프레임워크 | 본 가이드 제안 | 3.2 |
+| Jobs to be Done (JTBD) | Clayton Christensen / Anthony Ulwick | `skills/jtbd` |
+| Opportunity Solution Tree (OST) | Teresa Torres, Continuous Discovery Habits | `skills/opportunity-solution-tree` |
+| Working Backwards (PR-FAQ) | Amazon | `skills/working-backwards` |
+
+---
+
+## 관련 프로젝트
+
+이 가이드는 AI Native 시리즈의 실전 단계이며, 자매 PM 도구와 함께 활용됩니다.
+
+| 프로젝트 | 설명 | 단계 |
+|----------|------|------|
+| **AI_PM** (현재) | Claude Code로 PM 워크플로우 재설계 | 3단계 (실전) |
+| [hplan](https://github.com/kimsanguine/hplan) | Product Build Gate — "정말 만들어야 하는가" 30분 체크리스트 | 자매 (PM 게이트) |
+| [AI_Human](https://github.com/kimsanguine/AI_Human) | AI 입문 100일 커리큘럼 — Python~RAG 기초 | 1단계 (초급) |
+| [AI_Engineer](https://github.com/kimsanguine/AI_Engineer) | AI Agent 100개 직접 구현 | 2단계 (중급) |
+| [ai-prompts-playbook](https://github.com/kimsanguine/ai-prompts-playbook) | 33+ AI 프롬프트 — 3-Layer 인지 프레임워크 | 참조 (크로스 활용) |
+
+> 💡 **빌드 게이트가 궁금하다면** → [hplan](https://github.com/kimsanguine/hplan)에서 고객 증거·배제 기록·COGS 기반의 결정적 빌드 판단법을 확인하세요.
+> 💡 **AI 프롬프트 활용법**이 궁금하다면 → [ai-prompts-playbook](https://github.com/kimsanguine/ai-prompts-playbook)에서 전문가의 눈 → 합의 너머 → 자기 검증의 3-Layer 프레임워크를 확인하세요.
+
+AI_PM은 PM 워크플로 특화 가이드입니다. 일반 지식 작업을 위한 Anthropic 공식 [knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)와 함께 사용하면 더욱 효과적입니다.
+
+---
+
+## Contributing
+
+이 가이드에 대한 피드백, 오류 수정, 추가 유즈케이스 제안을 환영합니다.
+
+- **Discussions**: 질문이나 아이디어가 있다면 [Discussions](https://github.com/kimsanguine/AI_PM/discussions)에 참여해 주세요
+- **Issues**: 오류나 개선 제안은 [Issues](https://github.com/kimsanguine/AI_PM/issues)에 등록해 주세요 (PRD / Discovery / RFC / UseCase / Bug 5종 템플릿 제공)
+- **Pull Requests**: 직접 수정 후 PR을 보내주셔도 좋습니다 (검증 사다리 4단계 체크 포함)
+
+---
+
+## License
+
+이 프로젝트는 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) 라이선스를 따릅니다.
+
+- 교육·학습 목적 자유 이용 가능
+- 상업적 이용 시 별도 라이선스 필요
+- 강의·기업 교육·상업적 활용 문의: kimsanguine@gmail.com
+
+---
+
+**© 2026 김생근 (Sanguine Kim)** | AI Agent Lead & AI Tutor

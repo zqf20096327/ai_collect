@@ -1,0 +1,416 @@
+👋 Hi, everyone! AReno is a fast, effortless, and self-contained toolkit that
+scales RL post-training up locally, initiated by the inclusionAI ASystem team
+and maintained by the AReno community.
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg"></a>
+  <a href="https://www.python.org/downloads/"><img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue.svg"></a>
+  <a href="https://pytorch.org/"><img alt="PyTorch 2.6+" src="https://img.shields.io/badge/PyTorch-2.6%2B-ee4c2c.svg"></a>
+  <a href="https://github.com/ml-explore/mlx"><img alt="MLX" src="https://img.shields.io/badge/Apple_Silicon-MLX-555555.svg"></a>
+  <a href="docs/concepts/npu.rst"><img alt="Ascend NPU" src="https://img.shields.io/badge/Ascend-NPU-d0021b.svg"></a>
+  <a href="https://asystem-ai.io/docs/areno/"><img alt="Documentation" src="https://img.shields.io/badge/documentation-AReno-2ea44f.svg"></a>
+</p>
+
+<p align="center">
+  <img alt="AReno" src="docs/_static/asystem_areno_logo.svg" width="640">
+</p>
+
+## AReno: ASystem Reinforcement Learning Nano
+
+AReno is a local LLM post-training toolkit for RL, SFT/DPO-style training, serving, and agentic RL. It was originally developed by engineers from the ASystem Team at Ant Group.
+
+Built on a **self-contained, full-stack design**, AReno is optimized to extract maximum performance from a single node, making it well-suited for **fast, local post-training** with no external training or inference backend in the loop.
+
+AReno's mission is to make LLM RL **accessible** for a broad community of researchers and developers — so you can go from a base checkpoint to a trained, served model on a single node, without standing up a cluster or wiring together a training framework, an inference server, and a kernel library.
+
+> Small but complete, like its name — nano in footprint, full-stack in
+> capability. We hope AReno makes scaling up your ideas locally both fast and
+> delightful. Enjoy!
+
+## Highlights
+
+- ✨ **Plug-and-play**: various post-training methods are easily accessible via the `--algo` flag or the same `Trainer` class from Python, no cluster or launcher to set up.
+- 🪶 **Lightweight**: one self-contained train/serve stack with CUDA, Ascend NPU, and Apple Silicon MLX backends.
+- 🧰 **Agentic RL ready**: run an agent function against AReno's local OpenAI-compatible proxy, return explicit trajectories, and train from tokens, logprobs, rewards, and loss masks derived by the trainer.
+- 🎞️ **Multimodal**: use image, audio, and video content with compatible model processors through the same OpenAI-style message format in serving and agentic training.
+- 🧩 **Native LoRA**: train TP-aware adapters for Qwen3, Qwen3-MoE, and Bailing-MoE V3, save standard PEFT artifacts, and reload them for training or serving.
+- 🗜️ **QLoRA**: train Qwen3 dense and Bailing-MoE V3 adapters on CUDA with NF4 weights, double quantization, and paged optimizers.
+- 🧩 **Extensible**: easily register new algorithms, model adapters, reward functions, and hardware backends without changing the core.
+
+## Installation
+
+### From source
+
+AReno supports Linux (x86_64 or aarch64) with an NVIDIA GPU and CUDA-enabled
+PyTorch 2.6 or newer, plus Apple Silicon macOS through MLX. Windows users can
+use WSL2 for the CUDA path. Ascend NPU integration uses CANN and ``torch_npu``.
+The CLI selects NPU on Linux when
+``torch_npu`` is installed, otherwise CUDA, and MLX on native ``arm64`` macOS.
+
+CUDA/WSL2 installation:
+
+```bash
+git clone https://github.com/inclusionAI/AReno.git
+cd AReno
+bash scripts/install.sh
+```
+
+Apple Silicon installation:
+
+```bash
+git clone https://github.com/inclusionAI/AReno.git
+cd AReno
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -e .
+```
+
+Platform dependency markers install the MLX stack on Apple Silicon without
+pulling in Linux-only Torch/CUDA packages. See the
+[Apple Silicon and MLX guide](docs/getting-started/mlx.rst) for supported
+algorithms, checkpoints, serving, multimodal behavior, and memory controls.
+
+### Docker
+
+Use our official [AReno image](https://ghcr.io/inclusionai/areno) `inclusionai/areno` container. Run:
+
+```bash
+# Please make sure the host has an NVIDIA driver and NVIDIA Container Toolkit.
+docker run --gpus all --rm -it \
+  ghcr.io/inclusionai/areno:v0.9.0 \
+  areno check
+```
+
+The [Dashboard](docs/cli/dashboard.rst) launches and monitors local or
+[Modal](https://modal.com) training and serving jobs, with agent chat, editable
+plans, GPU/cost estimates, and live metrics and logs. See the
+[Modal setup guide](docs/cli/dashboard-modal.rst).
+
+## Quick Start
+
+AReno provides core API abstractions for LLM post-training, with AReno SDK, RL loop is a short cycle of `Trainer` calls. Each step below maps a concept to the SDK call that performs it:
+
+![AReno training loop](docs/_static/train_loop.png)
+
+1. **Create the trainer** — construct a `Trainer` on the AReno backend and `init()` it to load the tokenizer and start workers.
+2. **Rollout** — inside `rollout_session(...)`, `rollout_batch(...)` generates on-policy completions for each prompt.
+3. **Score** — reward each completion and turn rewards into advantages (your reward function, not AReno's).
+4. **Train** — pack the rollout into `TrainSequence` objects and call `train(batch, loss_fn)` to run one optimizer step.
+5. **Repeat** — new weights produce new rollouts; loop until done, then `close()`.
+
+```python
+import asyncio
+
+from datasets import load_dataset
+
+from areno import Trainer
+from areno.api import RewardRecord, SamplingParams, TrainSequence, gspo_loss_fn
+from areno.api.rewards import compute_group_advantages
+from examples.math.math_verify_reward import reward_fn
+
+
+async def main():
+    # 1. Create the trainer
+    trainer = Trainer(world_size=1, model_path="Qwen/Qwen3-0.6B")
+    trainer.init()
+    tokenizer = trainer.get_tokenizer()
+
+    row = load_dataset("gsm8k", "main", split="train[0:1]")[0]
+    target = str(row["answer"]).rsplit("####", 1)[-1].strip()
+    prompt = f"Solve the problem and put the final answer in \\boxed{{}}.\n\nProblem: {row['question']}\nSolution:"
+    prompt_tokens = tokenizer.encode(prompt)
+    sampling = SamplingParams(max_new_tokens=512)
+
+    # 2. Rollout on-policy completions
+    async with trainer.rollout_session(sampling_params=sampling, proxy=False):
+        sequences = trainer.rollout_token_batch([prompt_tokens], n_samples=8, sampling_params=sampling)[0].sequences
+
+    # 3. Score and normalize rewards within the sample group
+    rewards = [
+        reward_fn(RewardRecord(prompt=prompt, completion=tokenizer.decode(seq.resp_tokens), answer=[target]))
+        for seq in sequences
+    ]
+    advantages = compute_group_advantages(rewards)
+
+    # 4. Train one step
+    batch = [
+        TrainSequence(
+            tokens=prompt_tokens + seq.resp_tokens,
+            logprobs=[0.0] * len(prompt_tokens) + seq.resp_logprobs,
+            prompt_len=len(prompt_tokens),
+            scalar_advantage=advantage,
+            reward=reward,
+            eos_token_id=tokenizer.eos_token_id,
+        )
+        for seq, reward, advantage in zip(sequences, rewards, advantages, strict=True)
+    ]
+    trainer.train(batch, gspo_loss_fn)
+
+    # 5. Repeat for more prompts, then close
+    trainer.close()
+
+
+asyncio.run(main())
+```
+
+See the documentation for the full `Trainer` API.
+
+## Command Line Interface (CLI)
+
+You can use the AReno Command Line Interface (CLI) to quickly get started with post-training without writing any Python.
+
+### Operations agent
+
+`areno agent` is a local operations assistant for AReno train and serve tasks.
+It uses an OpenAI-compatible model to inspect the current checkout, read command
+help, run diagnostics, and produce or execute AReno commands for the current
+machine. Configure the agent once with your endpoint, model, and API key:
+
+```bash
+areno agent --set \
+  --base-url http://127.0.0.1:8000/v1 \
+  --model deepseek-v4-flash \
+  --api-key "$OPENAI_API_KEY"
+```
+
+Then describe the job in natural language:
+
+```bash
+areno agent "Give me a complete command to run the math demo with n-samples=8, fitting the current GPU and using as much GPU memory as practical."
+```
+
+From a source checkout, you can run the same agent without installing AReno:
+
+```bash
+./agent.sh "Give me a complete command to run the math demo with n-samples=8, fitting the current GPU and using as much GPU memory as practical."
+```
+
+The agent can ask follow-up questions through the terminal when a required
+parameter is missing, and it streams command output while it works.
+
+### Diagnostics
+
+Check whether the current machine is ready to run AReno:
+
+```bash
+areno check
+```
+
+`areno check` prints `OK`, `WARN`, and `FAIL` statuses with concrete next steps for common setup issues such as missing CUDA, CPU-only PyTorch, missing `CUDA_HOME`, unavailable `nvcc`, missing optional runtime dependencies, or a missing `areno_accel` extension.
+
+For issue reports, collect a descriptive environment report:
+
+```bash
+areno env --json
+```
+
+The report includes AReno, Python, platform, PyTorch/CUDA, GPU, `nvcc`, dependency import status, and relevant environment variables.
+
+### Training
+
+#### Tiny training smoke test
+
+Use this command when you only want to check that a machine can run one small official training task end to end:
+
+```bash
+areno train \
+  --ckpt Qwen/Qwen3-0.6B \
+  --dataset-path gsm8k:main \
+  --dataset-loader-fn examples/math/dataset_loader.py \
+  --reward-fn-path examples/math/math_verify_reward.py \
+  --algo gspo \
+  --tp-size 1 \
+  --world-size 1 \
+  --batch-size 1
+```
+
+This is a smoke/sanity task for the CLI, dataset loader, reward function,
+rollout, and training-step wiring. It is not a quality benchmark. It requires
+either a CUDA-capable NVIDIA GPU on Linux or Apple Silicon with MLX. A
+successful run should reach rollout logs and a `train_stats=...` line without
+raising an exception. On Apple Silicon, use a checkpoint implemented by
+`mlx-lm` and start with `--tp-size 1 --world-size 1 --mini-bs 1`.
+
+Run GSPO on a GSM8K-style dataset with a reward function:
+
+```bash
+areno train \
+  --ckpt Qwen/Qwen3-0.6B \
+  --dataset-path gsm8k:main \
+  --dataset-loader-fn examples/math/dataset_loader.py \
+  --reward-fn-path examples/math/math_verify_reward.py \
+  --algo gspo \
+  --tp-size 4
+```
+
+`--ckpt` and `--dataset-path` accept either local paths or remote repo IDs. By default, remote refs use ModelScope. Use `--model-hub hf` to pull non-local model and dataset refs from Hugging Face. Switch algorithms by changing `--algo` (e.g. `--algo grpo`, `--algo sft`).
+
+For models whose tokenizer chat template supports a thinking-mode switch, add `--disable-thinking` to pass `enable_thinking=False` during training prompt rendering. Tokenizers that do not support this argument automatically use their normal chat-template path.
+
+For rollout-based algorithms, add `--tune-params` when you want AReno to probe
+rollout and train memory before the real run and fill conservative values for
+`--max-running-prompts`, `--batch-size`, and `--mini-bs`:
+
+```bash
+areno train \
+  --ckpt Qwen/Qwen3-0.6B \
+  --dataset-path gsm8k:main \
+  --dataset-loader-fn examples/math/dataset_loader.py \
+  --reward-fn-path examples/math/math_verify_reward.py \
+  --algo gspo \
+  --tp-size 1 \
+  --world-size 1 \
+  --n-samples 8 \
+  --tune-params \
+  --mem-frac 0.9 \
+  --tune-max-samples 256
+```
+
+The tuner uses dummy-loaded model weights and synthetic token rows, respects
+the configured sequence limits and tensor-parallel size, and enables
+`--drop-rollout-state` for the tuned run. See `docs/cli/training.rst` for the
+full tuning rules.
+
+For Agentic RL, add `--agent-fn` to supply an agent function. The agent calls the local OpenAI-compatible endpoint, including `tools` and `tool_choice` when needed, and returns explicit `AgentTrajectoryTurn` objects. AReno converts those turns into trainable assistant outputs and masks tool results by default:
+
+```bash
+python examples/agentic/tictactoe/dataset_generator.py \
+  --output /tmp/areno-tictactoe.jsonl \
+  --count 2048 \
+  --seed 2026
+```
+
+```bash
+areno train \
+  --ckpt Qwen/Qwen3-0.6B \
+  --dataset-path /tmp/areno-tictactoe.jsonl \
+  --dataset-loader-fn examples/agentic/tictactoe/dataset_loader.py \
+  --reward-fn-path examples/agentic/tictactoe/reward.py \
+  --agent-fn examples/agentic/tictactoe/run_agent.py \
+  --algo gspo \
+  --tp-size 1 \
+  --world-size 1
+```
+
+For a more realistic multi-turn software-engineering loop, see
+`examples/agentic/coding`. It uses a 100-record SWE-bench-style local dataset
+that ranges from easy to hard with most records marked hard, constrained
+Codex-style tools (`inspect_tree`, `read_file`, `rg`, `apply_patch`,
+`run_command`, `submit`), and an explicit trajectory-returning `run_agent.py`.
+The records are self-contained local Python tasks and do not require sandbox
+services, package installation, or network access.
+
+DuelGrid is a larger agentic demo with a browser game UI and multi-action
+turns. Before GSPO/RLVR post-training, Gemma-E2B-it performs poorly in this
+game and often moves back and forth without progress. After training, it learns
+to collect pickups, chase the user, attack when in range, and avoid trap tiles.
+
+| Train before | Reward | Train after |
+| --- | --- | --- |
+| <img src="examples/agentic/duelgrid/images/train_before.gif" alt="DuelGrid before training" width="260"> | <img src="examples/agentic/duelgrid/images/train_reward.jpg" alt="DuelGrid reward curve" width="260"> | <img src="examples/agentic/duelgrid/images/train_after.gif" alt="DuelGrid after training" width="260"> |
+
+See `examples/agentic/duelgrid` for the rule engine, fixed-path dataset loader,
+reward function, OpenAI-compatible agent, and browser UI.
+
+For the full list of training options, run `areno train --help`.
+
+#### Native LoRA
+
+Enable CUDA-native LoRA by passing a rank. AReno freezes the base model and
+trains the selected projection adapters through the same rollout and training
+engine, including agentic RL:
+
+```bash
+areno train \
+  --ckpt Qwen/Qwen3-0.6B \
+  --dataset-path gsm8k:main \
+  --dataset-loader-fn examples/math/dataset_loader.py \
+  --reward-fn-path examples/math/math_verify_reward.py \
+  --algo gspo \
+  --lora-rank 8 \
+  --lora-alpha 16 \
+  --save-path outputs/qwen3-lora \
+  --save-interval 100
+```
+
+Saved checkpoints contain standard PEFT `adapter_config.json` and
+`adapter_model.safetensors` files. Resume training or serve an adapter by
+supplying the frozen base checkpoint together with `--lora-adapter-path`.
+See the [native LoRA guide](docs/concepts/native-lora.rst) for supported
+models and targets, agentic training, save/reload, and serving examples.
+
+#### QLoRA
+
+For CUDA Qwen3 dense and Bailing-MoE V3, add `--qlora --adam-4bit` to the
+training command above to use NF4 weights, double quantization, and paged
+Adam4bit. `--qlora` enables rank 8 / alpha 16 LoRA by default; the existing
+`--lora-*` options override these settings. Saved adapters automatically
+restore their quantization mode through `--lora-adapter-path`.
+
+### Serving
+
+Serve a trained checkpoint as an OpenAI-compatible endpoint with continuous batching:
+
+```bash
+areno serve \
+  --model-path /path/to/model \
+  --tp-size 1 \
+  --world-size 1 \
+  --port 8000
+```
+
+To serve a saved native LoRA adapter without merging it into the base model:
+
+```bash
+areno serve \
+  --model-path Qwen/Qwen3-0.6B \
+  --lora-adapter-path outputs/qwen3-lora/step_000100 \
+  --tp-size 1 \
+  --world-size 1 \
+  --port 8000
+```
+
+The command selects CUDA, NPU or MLX from the host environment. MLX serving is
+single-process (`--tp-size 1 --world-size 1`) and uses the same long-lived
+continuous-batch request scheduler and HTTP API.
+
+Point any OpenAI client at `http://localhost:8000/v1/chat/completions` to start generating. For the full list of serving options, run `areno serve --help`.
+
+Use `--disable-thinking` with `areno serve` to pass `enable_thinking=False` to compatible tokenizer chat templates for request rendering.
+
+## Development
+
+If you want to contribute to AReno or customize it for your own needs, read the [contribution guide](CONTRIBUTING.md) and make a development install:
+
+```bash
+git clone https://github.com/inclusionAI/AReno.git
+cd AReno
+bash scripts/install.sh
+
+# Set up pre-commit hooks (formatting, linting, commit message checks)
+pip install pre-commit
+pre-commit install --install-hooks
+```
+
+New algorithms, model adapters, kernels, reward functions, and hardware backends all have first-class extension points, so most contributions land without forking the core.
+
+## Citation and Acknowledgement
+
+If you find the project helpful, please cite:
+
+```bibtex
+@misc{areno2026,
+  title        = {AReno: A Self-Contained, Full-Stack Toolkit for Single-Node LLM RL Post-Training},
+  author       = {Zibo He and Le Su and Zongyu Li and Xiaowei Zhu and Cheng Wang and Zhenxuan Pan},
+  year         = {2026},
+  url          = {https://github.com/inclusionAI/AReno},
+  license      = {Apache-2.0}
+}
+```
+
+AReno's API design is inspired by [Tinker](https://github.com/ThinkingMachine/Tinker) from ThinkingMachines. We would like to express our gratitude for their pioneering work.
+
+## License
+
+This repository's source code is available under the [Apache 2.0 License](LICENSE).

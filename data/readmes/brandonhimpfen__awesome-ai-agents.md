@@ -1,0 +1,97 @@
+# Awesome AI Agents [![Awesome Lists](https://srv-cdn.himpfen.io/badges/awesome-lists/awesomelists-flat.svg)](https://github.com/brandonhimpfen/awesome-lists)
+
+[![Support Open Work](https://img.shields.io/badge/Support-Open%20Work-0A0A0A?style=flat&logo=github)](https://github.com/brandonhimpfen/support) 
+[![GitHub Sponsor](https://srv-cdn.himpfen.io/badges/github/github-flat.svg)](https://github.com/sponsors/brandonhimpfen) 
+[![Buy Me a Coffee](https://srv-cdn.himpfen.io/badges/buymeacoffee/buymeacoffee-flat.svg)](https://buymeacoffee.com/brandonhimpfen) 
+[![Ko-Fi](https://srv-cdn.himpfen.io/badges/kofi/kofi-flat.svg)](https://ko-fi.com/brandonhimpfen) 
+[![PayPal](https://srv-cdn.himpfen.io/badges/paypal/paypal-flat.svg)](https://www.paypal.com/donate/?hosted_button_id=3LLKRXJU44EJJ) <br />
+[![X](https://srv-cdn.himpfen.io/badges/twitter/twitter-flat.svg)](https://x.com/ListsAwesome) 
+[![Facebook](https://srv-cdn.himpfen.io/badges/facebook-pages/facebook-pages-flat.svg)](https://www.facebook.com/awesomelists)
+
+> A curated list of frameworks, tools, platforms, and resources for building AI agents — autonomous or semi-autonomous systems with planning, memory, tool use, and multi-step reasoning.
+
+## Contents
+
+- [Frameworks](#frameworks)
+- [Multi-Agent Orchestration](#multi-agent-orchestration)
+- [Platforms](#platforms)
+- [Starter Kits](#starter-kits)
+- [Examples](#examples)
+- [Learning Resources](#learning-resources)
+- [Related Awesome Lists](#related-awesome-lists)
+
+## Frameworks
+
+- [AIWG](https://github.com/jmagly/aiwg) – Multi-agent framework for deploying and orchestrating project-owned agents, skills, context, rules, and governed workflows across AI coding platforms.
+- [AG2 (AutoGen)](https://github.com/ag2ai/ag2) – Multi-agent conversational framework with tool use and human-in-the-loop workflows.
+- [LangChain](https://github.com/langchain-ai/langchain) – Framework for LLM apps with agents, tools, memory, and planning.
+- [LangGraph](https://github.com/langchain-ai/langgraph) – Build stateful agents and graph-based agent workflows.
+- [LlamaIndex Agents](https://github.com/run-llama/llama_index) – Data-centric framework with retrieval-heavy agent workflows.
+- [Semantic Kernel](https://github.com/microsoft/semantic-kernel) – Microsoft’s orchestration framework with planners and connectors.
+- [CrewAI](https://github.com/crewai-inc/crewai) – Multi-agent “crews” that collaborate to complete tasks.
+- [SmolAgents](https://github.com/huggingface/smolagents) – Minimal agent framework that “thinks in code.”
+- [Agno](https://github.com/agno-agi/agno) – Multi-agent runtime and AgentOS for secure and production-ready systems.
+- [Phidata](https://github.com/phidatahq/phidata) – Tools and frameworks for multimodal, tool-using agents and teams.
+- [PydanticAI](https://github.com/pydantic/pydantic-ai) – Type-safe agent definitions with Pydantic models.
+- [Rasa](https://github.com/RasaHQ/rasa) – Conversational agent framework with NLU and dialogue management.
+- [Botpress](https://github.com/botpress/botpress) – Platform for conversational and task-focused agents.
+- [Mastra](https://github.com/mastra-ai/mastra) – TypeScript/Node.js framework for agentic applications.
+- [Kitaru](https://github.com/zenml-io/kitaru) – Durable execution framework for AI agents with checkpoints, replay, and stateful workflows using Python control flow.
+
+## Multi-Agent Orchestration
+
+- [LangGraph](https://github.com/langchain-ai/langgraph) – Graph-based workflows for multi-agent and stateful systems.
+- [LangFlow](https://github.com/langflow-ai/langflow) – Visual builder for LangChain/LangGraph flows.
+- [OpenAI Swarm](https://github.com/openai/swarm) – Lightweight agent team coordination for Python.
+- [CrewAI](https://github.com/crewai-inc/crewai) – Multi-agent task orchestration through role-based collaboration.
+- [DeerFlow](https://github.com/bytedance/deer-flow) – Research agent framework with web browsing, crawling, and Python execution.
+- [Bosun](https://github.com/virtengine/bosun) – Open source workflow and control framework for engineering-focused AI agents.
+- [OpenAgents](https://github.com/openagents-org/openagents) – Open source platform for building multi-agent systems with protocol-based communication and orchestration.
+- [YYLO](https://github.com/yylo-dev/yylo) – Command-line orchestrator for coding agents with isolated worktrees, task validation, review, and governed merge workflows.
+
+## Platforms
+
+- [Agno AgentOS](https://www.agno.com/) – Hosted and self-hosted agent operating system.
+- [Microsoft Agent Framework](https://www.microsoft.com/en-us/research/project/autogen/) – Enterprise agent stack around AutoGen/AG2.
+- [Google Vertex AI Agent Builder](https://cloud.google.com/vertex-ai) – Managed platform for search, conversation, and tool-using agents.
+- [Botpress Cloud](https://botpress.com/) – Hosted agent creation and deployment platform.
+
+## Starter Kits
+
+- [Agno Agent UI](https://github.com/agno-agi/agent-ui) – Next.js chat interface for AgentOS agents.
+- [LangGraph Chat UI](https://github.com/langchain-ai/langgraph/tree/main/examples/chat) – Example UIs for agent interactions.
+- [SmolAgents Starter Projects](https://github.com/samwit/smolagents_examples) – Multi-agent demo apps.
+- [CrewAI Quickstarts](https://github.com/crewai-inc/crewai-quickstarts) – Example dashboards and templates.
+
+## Examples
+
+- [AG2 Examples](https://github.com/ag2ai/ag2#examples) – Multi-agent code-writing, retrieval, and planning demos.
+- [CrewAI Example Projects](https://github.com/crewai-inc/crewai-quickstarts) – Research agents, content agents, and workflows.
+- [SmolAgents Examples](https://github.com/samwit/smolagents_examples) – Collaborative agent systems with tool use.
+- [AutoGroq](https://github.com/jgravelle/AutoGroq) – Team-based AI agent system for project assistance.
+- [ImageAgent (LangGraph)](https://github.com/josefdc/ImageAgent) – Image-editing agent powered by LangGraph.
+
+## Learning Resources
+
+- [Top Agent Frameworks Overview](https://github.com/topics/agent-framework) – Comparative list of agent frameworks.
+- [LangGraph Tutorials](https://github.com/langchain-ai/langgraph/tree/main/examples) – Tutorials for building agent workflows.
+- [CrewAI Learning Resources](https://github.com/crewai-inc/crewai) – Documentation and guided tutorials.
+- [SmolAgents Tutorials](https://github.com/huggingface/smolagents) – Examples of code-first agent development.
+- [Learn Agentic Patterns](https://learnagenticpatterns.com/) – Interactive curriculum covering agentic AI design patterns, including planning, tool use, and multi-step workflows.
+
+## Related Awesome Lists
+
+- [Awesome AI](https://github.com/brandonhimpfen/awesome-ai)
+- [Awesome AI Infrastructure](https://github.com/brandonhimpfen/awesome-ai-infrastructure)
+- [Awesome AI Research Papers](https://github.com/brandonhimpfen/awesome-ai-research-papers)
+- [Awesome LLMOps](https://github.com/brandonhimpfen/awesome-llmops)
+
+## Contribute
+
+Contributions are welcome. Please ensure your submission fully follows the requirements outlined in [`CONTRIBUTING.md`](CONTRIBUTING.md), including formatting, scope alignment, and category placement.
+
+Pull requests that do not adhere to the contribution guidelines may be closed.
+
+## License
+
+[![CC0](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg)](http://creativecommons.org/licenses/by-sa/4.0/)

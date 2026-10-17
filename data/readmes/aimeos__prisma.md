@@ -1,0 +1,2462 @@
+# PHP Prisma
+
+Light-weight PHP package for integrating multi-media and text related Large Language Models (LLMs) into your applications using a unified interface.
+
+<nav>
+<div class="method-header"><a href="#supported-providers">Supported providers</a></div>
+<ul class="method-list">
+    <li><a href="#audio">Audio</a></li>
+    <li><a href="#image">Image</a></li>
+    <li><a href="#text">Text</a></li>
+    <li><a href="#video">Video</a></li>
+</ul>
+<div class="method-header"><a href="#api-usage">API usage</a></div>
+<ul class="method-list">
+    <li><a href="#ensure">ensure</a><span>: Ensures that the provider has implemented the method</span></li>
+    <li><a href="#has">has</a><span>: Tests if the provider has implemented the method</span></li>
+    <li><a href="#model">model</a><span>: Use the model passed by its name</span></li>
+    <li><a href="#withclientoptions">withClientOptions</a><span>: Add options for the Guzzle HTTP client</span></li>
+    <li><a href="#withclientretry">withClientRetry</a><span>: Configure automatic retry for failed HTTP requests</span></li>
+    <li><a href="#withmaxresponsesize">withMaxResponseSize</a><span>: Set the maximum bytes read for a single provider response</span></li>
+    <li><a href="#withsystemprompt">withSystemPrompt</a><span>: Add a system prompt for the LLM</span></li>
+    <li><a href="#withmessages">withMessages</a><span>: Add prior conversation turns for multi-turn chat</span></li>
+    <li><a href="#withmaxtokens">withMaxTokens</a><span>: Set the maximum number of output tokens</span></li>
+    <li><a href="#withreasoning">withReasoning</a><span>: Enable or minimize model reasoning</span></li>
+    <li><a href="#withthinkingbudget">withThinkingBudget</a><span>: Set the thinking/reasoning budget in tokens</span></li>
+    <li><a href="#response-objects">Response objects</a><span>: How data is returned by the API</span></li>
+    <li><a href="#citations">Citations</a><span>: Source references from provider responses</span></li>
+    <li><a href="#finish-reason">Finish reason</a><span>: Why generation stopped</span></li>
+    <li><a href="#tool-steps">Tool steps</a><span>: Inspect tool call history</span></li>
+    <li><a href="#rate-limit">Rate limit</a><span>: Rate limit information from providers</span></li>
+</ul>
+<div class="method-header"><a href="#schemas">Schemas</a></div>
+<ul class="method-list">
+    <li><a href="#building-schemas">Building schemas</a><span>: Define tool parameters using the fluent Schema builder</span></li>
+    <li><a href="#from-arrays">From arrays</a><span>: Create schemas from JSON Schema arrays</span></li>
+    <li><a href="#type-reference">Type reference</a><span>: Available types and their methods</span></li>
+</ul>
+<div class="method-header"><a href="#tools">Tools</a></div>
+<ul class="method-list">
+    <li><a href="#creating-tools">Creating tools</a><span>: Create tools using the Tools facade</span></li>
+    <li><a href="#provider-tools">Provider tools</a><span>: Built-in tools executed server-side</span></li>
+    <li><a href="#tool-state">Tool state</a><span>: Inspect the configured call limit</span></li>
+    <li><a href="#error-handling">Error handling</a><span>: Customize how tool errors are returned</span></li>
+    <li><a href="#concurrent-tools">Concurrent tools</a><span>: Run tools in parallel</span></li>
+    <li><a href="#decorating-tools">Decorating tools</a><span>: Wrap tools with additional behavior</span></li>
+</ul>
+<div class="method-header"><a href="#audio-api">Audio API</a></div>
+<ul class="method-list">
+    <li><a href="#demix">demix</a><span>: Separate an audio file into its individual tracks</span></li>
+    <li><a href="#denoise">denoise</a><span>: Remove noise from an audio file</span></li>
+    <li><a href="#describe">describe</a><span>: Describe the content of an audio file</span></li>
+    <li><a href="#resume">resume</a><span>: Continue polling an audio job in another process</span></li>
+    <li><a href="#revoice">revoice</a><span>: Exchange the voice in an audio file</span></li>
+    <li><a href="#speak">speak</a><span>: Convert text to speech in an audio file</span></li>
+    <li><a href="#transcribe">transcribe</a><span>: Converts speech of an audio file to text</span></li>
+</ul>
+<div class="method-header"><a href="#image-api">Image API</a></div>
+<ul class="method-list">
+    <li><a href="#background">background</a><span>: Replace background according to the prompt</span></li>
+    <li><a href="#cancel">cancel</a><span>: Cancel a pending image job</span></li>
+    <li><a href="#describe-1">describe</a><span>: Describe the content of an image</span></li>
+    <li><a href="#detext">detext</a><span>: Remove all text from the image</span></li>
+    <li><a href="#erase">erase</a><span>: Erase parts of the image</span></li>
+    <li><a href="#imagine">imagine</a><span>: Generate an image from the prompt</span></li>
+    <li><a href="#inpaint">inpaint</a><span>: Edit an image area according to a prompt</span></li>
+    <li><a href="#isolate">isolate</a><span>: Remove the image background</span></li>
+    <li><a href="#recognize">recognize</a><span>: Recognize the text in an image (OCR)</span></li>
+    <li><a href="#relocate">relocate</a><span>: Place the foreground object on a new background</span></li>
+    <li><a href="#repaint">repaint</a><span>: Repaint an image according to the prompt</span></li>
+    <li><a href="#resume-1">resume</a><span>: Continue polling an image job in another process</span></li>
+    <li><a href="#uncrop">uncrop</a><span>: Extend/outpaint the image</span></li>
+    <li><a href="#upscale">upscale</a><span>: Scale up the image</span></li>
+    <li><a href="#vectorize">vectorize</a><span>: Creates embedding vectors from images</span></li>
+</ul>
+<div class="method-header"><a href="#text-api">Text API</a></div>
+<ul class="method-list">
+    <li><a href="#decide">decide</a><span>: Answer typed questions with probabilities</span></li>
+    <li><a href="#stream">stream</a><span>: Stream text deltas as they arrive</span></li>
+    <li><a href="#structure">structure</a><span>: Generate structured output from a prompt and schema</span></li>
+    <li><a href="#translate">translate</a><span>: Translate texts from one language to another</span></li>
+    <li><a href="#vectorize-1">vectorize</a><span>: Creates embedding vectors from texts</span></li>
+    <li><a href="#write">write</a><span>: Generate text from the given prompt</span></li>
+</ul>
+<div class="method-header"><a href="#video-api">Video API</a></div>
+<ul class="method-list">
+    <li><a href="#cancel-1">cancel</a><span>: Cancel a pending video job</span></li>
+    <li><a href="#describe-2">describe</a><span>: Describe the content of a video</span></li>
+    <li><a href="#extend">extend</a><span>: Continue a video according to the prompt</span></li>
+    <li><a href="#imagine-1">imagine</a><span>: Generate a video from text and optional media</span></li>
+    <li><a href="#repaint-1">repaint</a><span>: Repaint a video according to the prompt</span></li>
+    <li><a href="#resume-2">resume</a><span>: Continue polling a video job in another process</span></li>
+    <li><a href="#uncrop-1">uncrop</a><span>: Extend/outpaint the video frame</span></li>
+    <li><a href="#upscale-1">upscale</a><span>: Scale up a video</span></li>
+</ul>
+<div class="method-header"><a href="CUSTOM-PROVIDERS">Custom providers</a></div>
+</nav>
+
+## Supported providers
+
+- [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/)
+- [Alibaba](https://www.alibabacloud.com/help/en/model-studio/model-api-reference/)
+- [Anthropic](https://docs.anthropic.com/en/api)
+- [AudioPod AI](https://audiopod.ai/)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
+- [Bedrock (AWS)](https://docs.aws.amazon.com/bedrock/)
+- [Black Forest Labs](https://docs.bfl.ai/quick_start/introduction)
+- [BytePlus ModelArk](https://docs.byteplus.com/en/docs/ModelArk)
+- [Clipdrop](https://clipdrop.co/apis)
+- [Cohere](https://docs.cohere.com/docs/the-cohere-platform)
+- [DeepL](https://developers.deepl.com/docs)
+- [Deepgram](https://deepgram.com/)
+- [Deepseek](https://api-docs.deepseek.com/)
+- [ElevenLabs](https://elevenlabs.io/docs/overview/intro)
+- [Google Gemini](https://aistudio.google.com/models/gemini-2-5-flash-image)
+- [Google Translate](https://cloud.google.com/translate/docs/reference/rest/v2/translate)
+- [Google VertexAI](https://cloud.google.com/vertex-ai/generative-ai/docs)
+- [Groq](https://groq.com/)
+- [Ideogram](https://ideogram.ai/api)
+- [Kimi](https://platform.kimi.ai/docs/overview)
+- [Luma](https://docs.agents.lumalabs.ai/)
+- [Meta Model API](https://dev.meta.ai/docs/overview)
+- [MiniMax](https://platform.minimax.io/docs/)
+- [Mistral](https://docs.mistral.ai/api)
+- [ModelsLab](https://docs.modelslab.com/)
+- [Murf](https://murf.ai/api)
+- [Ollama](https://ollama.com/)
+- [OpenAI](https://openai.com/api/)
+- [Openrouter](https://openrouter.ai/docs/quickstart)
+- [Perplexity](https://docs.perplexity.ai/)
+- [Photoroom](https://docs.photoroom.com/)
+- [Recraft](https://www.recraft.ai/docs/api-reference/getting-started)
+- [Requesty](https://docs.requesty.ai/api-reference/overview)
+- [RemoveBG](https://www.remove.bg/api)
+- [Replicate](https://replicate.com/docs)
+- [Runway](https://docs.dev.runwayml.com/)
+- [StabilityAI](https://platform.stability.ai/)
+- [TypeSafe](https://docs.typesafe.ai/)
+- [VoyageAI](https://docs.voyageai.com/)
+- [xAI](https://docs.x.ai/)
+- [Z.AI](https://docs.z.ai/api-reference)
+
+### Audio
+
+|                       | demix | denoise | describe | resume | revoice | speak | transcribe |
+| :---                  | :---: | :---:   | :---:    | :---:  | :---:   | :---: | :---:      |
+| **Alibaba**           | -     | -       | -        |        | -       | yes   | -          |
+| **AudioPod**          | yes   | yes     | -        | yes    | yes     | yes   | yes        |
+| **Azure**             | -     | -       | -        |        | -       | beta  | beta       |
+| **Deepgram**          | -     | -       | -        |        | -       | yes   | yes        |
+| **ElevenLabs**        | -     | -       | -        |        | yes     | yes   | yes        |
+| **Google Gemini**     | -     | -       | yes      |        | -       | -     | -          |
+| **Groq**              | -     | -       | yes      |        | -       | yes   | yes        |
+| **Meta**              | -     | -       | beta     |        | -       | -     | beta       |
+| **Mistral**           | -     | -       | yes      |        | -       | -     | yes        |
+| **Murf**              | -     | -       | -        |        | yes     | yes   | -          |
+| **OpenAI**            | -     | -       | yes      |        | -       | yes   | yes        |
+| **Openrouter**        | -     | -       | yes      |        | -       | yes   | yes        |
+| **Z.AI**              | -     | -       | -        |        | -       | -     | yes        |
+
+### Image
+
+|                       | background | cancel | describe | detext | erase | imagine | inpaint | isolate | recognize | relocate | repaint | resume | uncrop | upscale | vectorize |
+| :---                  | :---:      | :---:  | :---:    | :---:  | :---: | :---:   | :---:   | :---:   | :---:     | :---:    | :---:   | :---:  | :---:  | :---:   | :---:     |
+| **Adobe Firefly**     | beta       | beta   | -        | -      | -     | beta    | beta    | -       | -         | beta     | beta    | beta   | beta   | beta    | -         |
+| **Alibaba**           | -          |        | -        | -      | -     | yes     | -       | -       | -         | -        | -       |        | -      | -       | yes       |
+| **Azure**             | -          |        | -        | -      | -     | -       | -       | -       | beta      | -        | -       |        | -      | -       | -         |
+| **Bedrock Titan**     | -          |        | -        | -      | -     | yes     | yes     | yes     | -         | -        | -       |        | -      | -       | yes       |
+| **Black Forest Labs** | -          | -      | -        | -      | -     | beta    | beta    | -       | -         | -        | beta    | beta   | beta   | -       | -         |
+| **Clipdrop**          | yes        |        | -        | yes    | yes   | yes     | -       | yes     | -         | -        | -       |        | yes    | yes     | -         |
+| **Cohere**            | -          |        | -        | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | yes       |
+| **Google Gemini**     | -          |        | yes      | -      | -     | yes     | -       | -       | -         | -        | yes     |        | -      | -       | -         |
+| **Groq**              | -          |        | yes      | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | -         |
+| **Ideogram**          | yes        | -      | yes      | yes    | yes   | yes     | yes     | yes     | -         | -        | yes     | yes    | -      | yes     | -         |
+| **Meta**              | -          |        | -        | -      | -     | beta    | -       | -       | -         | -        | beta    |        | -      | -       | -         |
+| **Mistral**           | -          |        | -        | -      | -     | -       | -       | -       | yes       | -        | -       |        | -      | -       | -         |
+| **ModelsLab**         | -          | -      | -        | -      | -     | beta    | -       | -       | -         | -        | -       | beta   | -      | -       | -         |
+| **OpenAI**            | -          |        | yes      | -      | -     | yes     | yes     | -       | -         | -        | -       |        | -      | -       | -         |
+| **Openrouter**        | -          |        | yes      | -      | -     | yes     | -       | -       | yes       | -        | yes     |        | -      | -       | yes       |
+| **Photoroom**         | yes        |        | -        | yes    | -     | yes     | -       | yes     | -         | yes      | yes     |        | -      | beta    | -         |
+| **Recraft**           | yes        |        | -        | -      | yes   | yes     | yes     | yes     | -         | -        | yes     |        | yes    | yes     | -         |
+| **RemoveBG**          | -          |        | -        | -      | -     | -       | -       | yes     | -         | yes      | -       |        | -      | -       | -         |
+| **Replicate**         | -          | beta   | -        | -      | -     | beta    | -       | -       | -         | -        | -       | beta   | -      | -       | -         |
+| **StabilityAI**       | -          |        | -        | -      | yes   | yes     | yes     | yes     | -         | -        | -       |        | yes    | yes     | -         |
+| **VoyageAI**          | -          |        | -        | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | yes       |
+| **xAI**               | -          |        | -        | -      | -     | beta    | -       | -       | -         | -        | beta    |        | -      | -       | -         |
+| **Z.AI**              | -          |        | -        | -      | -     | yes     | -       | -       | -         | -        | -       |        | -      | -       | -         |
+
+### Text
+
+|                       | stream | decide | structure | translate | vectorize | write | citations | custom tools | provider tools | system prompt | thinking budget |
+| :---                  | :---: | :---:  | :---:      | :---:     | :---:     | :---: | :---:     | :---:        | :---:          | :---:         | :---:           |
+| **Alibaba**           | yes   |        | yes        |           | yes       | yes   | -         | yes          | yes            | yes           | yes             |
+| **Anthropic**         | yes   |        | yes        |           | -         | yes   | yes       | yes          | yes            | yes           | yes             |
+| **Azure**             | beta  |        | beta       | beta      | beta      | beta  | -         | yes          |                | yes           | yes             |
+| **Bedrock**           | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | yes             |
+| **Cohere**            | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | -               |
+| **Deepseek**          | yes   |        | yes        |           | -         | yes   | -         | yes          |                | yes           | yes             |
+| **DeepL**             |       |        |            | yes       |           |       |           |              |                |               |                 |
+| **Google Gemini**     | yes   |        | yes        |           | yes       | yes   | yes       | yes          | yes            | yes           | yes             |
+| **Google**            |       |        |            | yes       |           |       |           |              |                |               |                 |
+| **Groq**              | yes   |        | yes        |           | -         | yes   | -         | yes          |                | yes           | yes             |
+| **Kimi**              | yes   |        | yes        |           | -         | yes   | -         | yes          |                | yes           | yes             |
+| **Meta**              | beta  |        | beta       |           | -         | beta  | yes       | yes          | yes            | yes           | yes             |
+| **Mistral**           | yes   |        | yes        |           | yes       | yes   | -         | yes          | yes            | yes           | yes             |
+| **Ollama**            | beta  |        | beta       |           | beta      | beta  | -         | yes          |                | yes           | yes             |
+| **OpenAI**            | yes   |        | yes        |           | yes       | yes   | yes       | yes          | yes            | yes           | yes             |
+| **Openrouter**        | yes   |        | yes        |           | -         | yes   | -         | yes          | yes            | yes           | yes             |
+| **Perplexity**        | beta  |        | beta       |           | -         | beta  | yes       | yes          |                | yes           | yes             |
+| **Requesty**          | yes   |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | yes             |
+| **TypeSafe**          |       | beta   |            |           |           |       |           |              |                |               |                 |
+| **Vertexai**          | beta  |        | beta       |           | beta      | beta  | yes       | yes          | yes            | yes           | yes             |
+| **xAI**               | beta  |        | beta       |           | -         | beta  | yes       | yes          | yes            | yes           | yes             |
+| **Z.AI**              | yes   |        | -          |           | -         | yes   | -         | yes          | yes            | yes           | yes             |
+
+Thinking-budget entries indicate request mapping in Prisma. The selected model
+must accept the mapped token budget or effort level; see [withThinkingBudget](#withthinkingbudget).
+
+### Video
+
+|                       | cancel | describe | extend | imagine | repaint | resume | uncrop | upscale |
+| :---                  | :---:  | :---:    | :---:  | :---:   | :---:   | :---:  | :---:  | :---:   |
+| **Alibaba**           | beta   | yes      | beta   | beta    | beta    | beta   | beta   | -       |
+| **Bedrock Nova**      | -      | beta     | -      | beta    | -       | beta   | -      | -       |
+| **BytePlus**          | beta   | beta     | beta   | beta    | beta    | beta   | -      | -       |
+| **Google Gemini**     |        | yes      | -      | -       | -       |        | -      | -       |
+| **Google Omni**       |        | -        | -      | beta    | beta    |        | -      | -       |
+| **Google Veo**        | -      | -        | -      | beta    | -       | beta   | -      | -       |
+| **Luma**              | -      | -        | -      | beta    | beta    | beta   | beta   | -       |
+| **Meta**              |        | beta     | -      | -       | -       |        | -      | -       |
+| **MiniMax**           | -      | -        | -      | beta    | -       | beta   | -      | -       |
+| **Openrouter**        | -      | yes      | -      | beta    | -       | beta   | -      | -       |
+| **Runway**            | beta   | -        | -      | beta    | beta    | beta   | -      | beta    |
+| **xAI**               | -      | -        | beta   | beta    | beta    | beta   | -      | -       |
+
+## Installation
+
+```
+composer req aimeos/prisma
+```
+
+## API usage
+
+Basic usage:
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$image = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->model( '<modelname>' ) // if model can be selected
+    ->ensure( 'imagine' ) // make sure interface is implemented
+    ->imagine( 'a grumpy cat' )
+    ->binary();
+
+$texts = Prisma::text()
+    ->using( 'deepl', ['api_key' => 'xxx'])
+    ->ensure( 'translate' )
+    ->translate( ['Hello'], 'de' )
+    ->texts();
+```
+
+#### OpenAI-compatible gateways
+
+The `openai` text provider uses `v1/responses` for `write()`, `stream()` and
+`structure()`. A gateway must implement the Responses API to work with these
+methods. Override the base `url` (without `/v1`) to point to such a gateway:
+
+```php
+$text = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx', 'url' => 'https://my-gateway.example.com'] )
+    ->model( 'my-model' )
+    ->write( 'Hello' )
+    ->text();
+```
+
+For gateways that expose only Chat Completions, use a matching provider such as
+`ollama`, or implement one with `OpenaiApi::completions()` as shown in the
+[custom provider guide](CUSTOM-PROVIDERS.md#openai-compatible-apis).
+
+### ensure
+
+Ensures that the provider has implemented the method.
+
+```php
+public function ensure( string $method ) : self
+```
+
+* @param **string** `$method` Method name
+* @return **Provider**
+* @throws \Aimeos\Prisma\Exceptions\NotImplementedException
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->ensure( 'imagine' );
+```
+
+### has
+
+Tests if the provider has implemented the method.
+
+```php
+public function has( string $method ) : bool
+```
+
+* @param **string** `$method` Method name
+* @return **bool** TRUE if implemented, FALSE if absent
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->has( 'imagine' );
+```
+
+### model
+
+Use the model passed by its name.
+
+Used if the provider supports more than one model and allows to select
+between the different models. Otherwise, it's ignored.
+
+```php
+public function model( ?string $model ) : self
+```
+
+* @param **string&#124;null** `$model` Model name
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->model( 'dall-e-3' );
+```
+
+### withClientOptions
+
+Add options for the Guzzle HTTP client.
+
+```php
+public function withClientOptions( array $options ) : self
+```
+
+* @param **array&#60;string, mixed&#62;** `$options` Associative list of name/value pairs
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withClientOptions( ['timeout' => 120] );
+```
+
+### withClientRetry
+
+Configure automatic retry for failed HTTP requests.
+
+```php
+public function withClientRetry( int $maxAttempts = 3, \Closure|int $delayMs = 100, ?\Closure $when = null ) : self
+```
+
+* @param **int** `$maxAttempts` Total number of attempts including the initial request
+* @param **\Closure|int** `$delayMs` Fixed delay in ms or closure: fn(int $attempt, ?ResponseInterface $response): int
+* @param **\Closure|null** `$when` Retry condition: fn(ResponseInterface $response, int $attempt): bool
+* @return **self** Provider interface
+
+By default, retries HTTP responses with status codes 429, 500, 502, 503, 504 and 529.
+Connection failures without an HTTP response are not retried. Configure retry
+and client options before the provider's first request.
+
+**Examples:**
+
+```php
+// Fixed delay of 200ms between retries
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withClientRetry( 3, 200 );
+
+// Exponential backoff
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withClientRetry( 3, fn( $attempt, $response ) => 100 * pow( 2, $attempt ) );
+
+// Custom retry condition
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withClientRetry( 3, 100, fn( $response, $attempt ) => $response->getStatusCode() === 429 );
+```
+
+### withMaxResponseSize
+
+Set the maximum number of bytes read for a single provider response.
+
+Bounds the bytes read through Prisma's JSON and SSE response readers, including text,
+reasoning and tool-call arguments. Defaults to 64 MiB and applies to each HTTP response,
+so each tool-loop turn has its own limit. Direct binary response reads and file downloads
+are separate; use `$file->maxSize( $bytes )` to configure a file's URL download limit (`-1` for no limit).
+
+```php
+public function withMaxResponseSize( int $bytes ) : self
+```
+
+* @param **int** `$bytes` Maximum bytes per response (minimum 1)
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withMaxResponseSize( 16 * 1024 * 1024 ); // cap responses at 16 MB
+```
+
+### withSystemPrompt
+
+Add a system prompt for the LLM.
+
+It may be used by providers supporting system prompts. Otherwise, it's
+ignored.
+
+```php
+public function withSystemPrompt( ?string $prompt ) : self
+```
+
+* @param **string&#124;null** `$prompt` System prompt
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->withSystemPrompt( 'You are a professional illustrator' );
+```
+
+### withMessages
+
+Add prior conversation turns sent before the current prompt, so the model has
+context from earlier exchanges in a multi-turn chat.
+
+Each entry is an array with a `role` of `user` or `assistant` and a string
+`content`. User turns may add a `files` key with an array of `File` objects for
+multimodal input, subject to the provider's file support: images where the selected
+model supports them; PDFs additionally on Anthropic; images, audio and video on
+Openrouter; images, audio, video and PDFs on Google Gemini/Vertexai. Set system
+context via [withSystemPrompt](#withsystemprompt). The current prompt passed to
+`stream()`/`write()`/`structure()` is appended as the final user turn.
+
+```php
+public function withMessages( array $messages ) : self
+```
+
+* @param **array** `$messages` Conversation turns (`['role' => 'user'|'assistant', 'content' => '…', 'files' => []]`)
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'] )
+    ->withMessages( [
+        ['role' => 'user', 'content' => 'Recommend a laptop'],
+        ['role' => 'assistant', 'content' => 'Sure - what is your budget?'],
+    ] )
+    ->write( 'Around $1500' );
+```
+
+### withMaxTokens
+
+Set the maximum number of output tokens for the response.
+
+```php
+public function withMaxTokens( ?int $tokens ) : self
+```
+
+* @param **int&#124;null** `$tokens` Maximum output tokens
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+\Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'] )
+    ->withMaxTokens( 4096 )
+    ->write( 'Tell me a story' );
+```
+
+### withReasoning
+
+Enable reasoning or ask supported providers to minimize it. Providers map
+`false` to their closest native control; for example, Google Gemini and Ollama disable
+thinking, OpenRouter excludes reasoning, and OpenAI uses minimal effort. Explicit
+provider options passed to `write()`, `stream()` or `structure()` take precedence.
+
+```php
+public function withReasoning( bool $enabled = true ) : self
+```
+
+**Example:**
+
+```php
+$response = \Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'] )
+    ->withReasoning( false )
+    ->write( 'Answer briefly' );
+```
+
+Providers without a native reasoning control ignore this setting.
+
+### withThinkingBudget
+
+Set the thinking/reasoning budget in tokens for models that support extended
+thinking. The budget is mapped to each provider's native format automatically:
+token counts for Anthropic, OpenAI, Google Gemini and Bedrock; effort levels for other
+OpenAI-API providers (&#8804; 1024 → low, &#8804; 8192 → medium, > 8192 → high).
+Kimi uses its native low/high/max levels for those same three ranges. Mistral
+applies the budget on its Chat Completions path; its Agents path for provider
+tools does not map this setting.
+
+```php
+public function withThinkingBudget( ?int $budget ) : self
+```
+
+* @param **int&#124;null** `$budget` Thinking budget in tokens
+* @return **self** Provider interface
+
+**Example:**
+
+```php
+$response = \Aimeos\Prisma\Prisma::text()
+    ->using( '<provider>', ['api_key' => 'xxx'] )
+    ->withThinkingBudget( 5000 )
+    ->withMaxTokens( 8192 )
+    ->write( 'Solve this step by step' );
+
+// Access the model's reasoning (if returned by the provider)
+$thinking = $response->meta()->thinking();
+```
+
+### Response objects
+
+The methods return a *DecisionResponse*, *FileResponse*, *TextResponse* or *VectorResponse* object that
+contains the returned data with optional meta/usage/description information.
+
+**DecisionResponse** objects:
+
+```php
+$answer = $response->answer( 'team' ); // answer for the question ID or NULL
+$answers = $response->answers(); // all answers by question ID
+
+$answer->type(); // provider specific question type or NULL
+$answer->value(); // selected outcome, probability or rating depending on the question type
+$answer->probabilities(); // probability per possible outcome, empty if not reported
+$answer->confidence(); // certainty between 0 and 1 or NULL if not reported
+$raw = $answer['legend'] ?? []; // provider specific keys stay reachable by subscript
+
+// loop over all answers
+foreach( $response as $id => $answer ) {
+    echo $id . ': ' . $answer->value();
+}
+```
+
+**FileResponse** objects:
+
+```php
+$base64 = $response->base64(); // first file as base64 data, waits for async requests
+$file = $response->binary(); // first file as binary data, waits for async requests
+$stream = $response->stream(); // first file as a readable PHP stream; close it after use
+$url = $response->url(); // first URL, only if URLs are returned, otherwise NULL
+$mime = $response->mimeType(); // image mime type, waits for async requests
+$text = $response->description(); // image description if returned by provider
+$bool = $response->ready(); // FALSE for async APIs until file is available
+$file = $response->first(); // first available file object
+$array = $response->files(); // all available file objects
+
+// loop over all available files
+foreach( $response as $name => $file ) {
+    $file->binary();
+}
+```
+
+File content is loaded and converted lazily when the requested representation is accessed.
+
+**TextResponse** objects:
+
+```php
+$text = $response->text(); // first text content (non-streaming)
+$text = $response->first(); // first available text
+$texts = $response->texts(); // all texts (non-streaming)
+
+// loop over all available texts
+foreach( $response as $text ) {
+    echo $text;
+}
+```
+
+**VectorResponse** objects:
+
+```php
+$vector = $response->first(); // first embedding vector if only one input has been passed
+$vectors = $response->vectors(); // embedding vectors for the passed inputs in the same order
+
+// loop over all available vectors
+foreach( $response as $vector ) {
+    print_r( $vector );
+}
+```
+
+Included **meta data** (optional):
+
+```php
+$meta = $response->meta();
+
+$meta->id();               // provider response ID or NULL
+$meta->model();            // model that produced the response or NULL
+$meta->thinking();         // extended thinking/reasoning output or NULL
+$meta->reasoningDetails(); // encrypted reasoning blocks for multi-turn continuity or NULL
+```
+
+`meta()` returns a `Values\Meta` object with typed accessors for the fields shared across
+providers. It also behaves like the array it replaced, so provider-specific keys stay reachable
+by subscript, iteration and `json_encode()`:
+
+```php
+$created = $response->meta()['created'] ?? null; // raw provider key
+$raw = $response->meta()->all();                 // complete provider map as array
+```
+
+Included **usage data** (optional):
+
+```php
+$usage = $response->usage();
+
+$usage->promptTokens();     // input tokens or NULL
+$usage->completionTokens(); // generated output tokens or NULL
+$usage->totalTokens();      // total tokens (falls back to prompt + completion) or NULL
+$usage->cacheReadTokens();  // cached input tokens or NULL
+$usage->cacheWriteTokens(); // tokens written to the provider cache or NULL
+$usage->thoughtTokens();    // reasoning/thinking tokens or NULL
+$usage->used();             // used units as float or NULL (tokens for text, credits/cost for media)
+```
+
+`usage()` returns a `Values\Usage` object whose typed accessors normalize the differing token
+keys each provider reports (e.g. `input_tokens`, `prompt_tokens`, `promptTokenCount`,
+`inputTokens` all map to `promptTokens()`). Accessors return `NULL` when a provider does not
+report that figure. Like `meta()`, it stays array-compatible for raw keys:
+
+```php
+$used = $response->usage()['used'];  // raw key, still works
+$raw = $response->usage()->all();    // complete provider map as array
+```
+
+### Citations
+
+TextResponse objects include citations when returned by providers that support them
+(Anthropic, Google Gemini, OpenAI, Perplexity, xAI). Each citation is a `Values\Citation` object
+with four fields:
+
+```php
+$response = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->write( 'What is the capital of France?' );
+
+$citations = $response->citations(); // array of Citation objects
+
+foreach( $citations as $citation ) {
+    $citation->title();  // string|null — source title
+    $citation->url();    // string|null — source URL
+    $citation->text();   // string|null — output text that references the source
+    $citation->source(); // string|null — verbatim quote from the source document
+}
+```
+
+The `text` field contains the snippet from the model's **output** that cites the source
+(populated by OpenAI, xAI, Google Gemini). The `source` field contains a verbatim quote from the
+**input/source document** (populated by Anthropic). For Perplexity, only `url` is available.
+
+Anthropic requires opting in via options:
+
+```php
+$response = Prisma::text()
+    ->using( 'anthropic', ['api_key' => 'xxx'] )
+    ->write( 'Summarize this document', $files, ['citations' => true] );
+```
+
+### Finish reason
+
+TextResponse objects include a finish reason indicating why the model stopped generating:
+
+```php
+$response = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->withTools( [$tool] )
+    ->withMaxSteps( 5 )
+    ->write( 'What is the weather in Berlin?' );
+
+$reason = $response->reason(); // 'stop', 'tool', 'length', 'content', 'error', or 'unknown'
+```
+
+| Reason | Meaning |
+| :--- | :--- |
+| `stop` | The model finished normally (reached a natural end or stop sequence) |
+| `tool` | The model stopped to request tool calls; returned when `withMaxSteps()` is exhausted mid-loop |
+| `length` | Output was truncated because it hit the max token limit |
+| `content` | Output was blocked or truncated by a safety/content filter |
+| `error` | The provider returned an error during generation |
+| `unknown` | The provider returned an unrecognized finish reason |
+
+### Tool steps
+
+After a tool-using request completes, inspect the full history of tool calls and their results via `steps()`:
+
+```php
+$response = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->withTools( [$tool] )
+    ->withMaxSteps( 5 )
+    ->write( 'What is the weather in Berlin?' );
+
+foreach( $response->steps() as $step ) {
+    $step->id();        // tool call ID from the provider
+    $step->name();      // tool name (e.g. 'weather')
+    $step->arguments(); // arguments the model passed (e.g. ['city' => 'Berlin'])
+    $step->result();    // result string returned to the model
+}
+```
+
+### Rate limit
+
+TextResponse and FileResponse objects can include rate limit information from the provider:
+
+```php
+$rateLimit = $response->rateLimit(); // RateLimit object or null
+
+$rateLimit?->limit();      // int|null — request limit
+$rateLimit?->remaining();  // int|null — remaining requests
+$rateLimit?->reset();      // string|null — reset timestamp
+$rateLimit?->retryAfter(); // int|null — retry after seconds
+```
+
+Returns `null` if the provider does not return rate limit headers.
+
+## Schemas
+
+Schemas define the parameters that tools accept. They are used by `Tools::make()` to tell the LLM what arguments a tool expects.
+
+### Building schemas
+
+Use the fluent `Schema` builder to define tool parameters:
+
+```php
+use Aimeos\Prisma\Schema\Schema;
+
+$schema = Schema::for( 'search', [
+    'query' => Schema::string()->description( 'Search query' )->required(),
+    'limit' => Schema::integer()->description( 'Max results' )->min( 1 )->max( 100 ),
+] );
+```
+
+`Schema::for()` creates a named schema with an object type. The first argument is the schema name, the second is an associative array of property names to types.
+
+**Nested objects:**
+
+```php
+$schema = Schema::for( 'create_event', [
+    'title' => Schema::string()->required(),
+    'location' => Schema::object( [
+        'city' => Schema::string()->required(),
+        'country' => Schema::string(),
+    ] )->required(),
+] );
+```
+
+**Arrays:**
+
+```php
+$schema = Schema::for( 'tag', [
+    'tags' => Schema::array()->items( Schema::string() )->min( 1 )->max( 10 )->required(),
+    'scores' => Schema::array()->items( Schema::number() ),
+] );
+```
+
+**Enums:**
+
+```php
+$schema = Schema::for( 'sort', [
+    'order' => Schema::string()->enum( ['asc', 'desc'] )->required(),
+] );
+
+// Or from a BackedEnum:
+$schema = Schema::for( 'sort', [
+    'order' => Schema::string()->enum( SortOrder::class )->required(),
+] );
+```
+
+**Strict mode and no additional properties** (for providers that support it, e.g. OpenAI):
+
+```php
+$schema = Schema::for( 'search', [
+    'query' => Schema::string()->required(),
+] )->strict()->withoutAdditionalProperties();
+```
+
+**Union types** allow a value to match any of several types (JSON Schema `anyOf`):
+
+```php
+$schema = Schema::for( 'result', [
+    'value' => Schema::anyOf( [
+        Schema::string(),
+        Schema::object( [
+            'code' => Schema::integer()->required(),
+            'message' => Schema::string()->required(),
+        ] ),
+    ] )->description( 'Either a plain string or an error object' )->required(),
+] );
+```
+
+Prisma adapts each `anyOf` branch for the target provider: object branches are
+closed for OpenAI, Anthropic and Cohere. Google Gemini receives the JSON Schema
+without OpenAPI filtering. The schema builder supports `anyOf`; it does not
+provide a `oneOf` type.
+
+**Reusable definitions** let you declare a sub-schema once and reference it from
+multiple places (JSON Schema `$defs` and `$ref`). Register a definition with
+`def()` and point to it with `Schema::ref()`:
+
+```php
+$schema = Schema::for( 'order', [
+    'billing'  => Schema::ref( 'Address' )->required(),
+    'shipping' => Schema::ref( 'Address' )->required(),
+] )->def( 'Address', Schema::object( [
+    'street' => Schema::string()->required(),
+    'city'   => Schema::string()->required(),
+] ) );
+```
+
+`Schema::ref( 'Address' )` resolves to the pointer `#/$defs/Address`; a value
+already starting with `#` is used verbatim. Definitions are adapted to the target
+provider just like inline schemas (objects are closed for OpenAI/Anthropic/Cohere;
+Google Gemini receives the JSON Schema directly). For providers without native
+schema support, such as Bedrock, they are passed through in the prompt as-is.
+
+### From arrays
+
+If you already have a JSON Schema array, use `Schema::fromArray()`:
+
+```php
+$schema = Schema::fromArray( 'search', [
+    'type' => 'object',
+    'properties' => [
+        'query' => ['type' => 'string', 'description' => 'Search query'],
+        'limit' => ['type' => 'integer'],
+    ],
+    'required' => ['query'],
+] );
+```
+
+### Type reference
+
+Scalar, array and object types support `description()`, `required()`, `nullable()`,
+`title()` and `enum()`. Union and reference types preserve `description()`,
+`title()` and the containing object's `required()` flag. To allow null in a union,
+include a nullable branch; apply enums to individual branches or the referenced definition.
+
+| Factory method | Type | Additional methods |
+| :--- | :--- | :--- |
+| `Schema::string()` | String | `min()`, `max()`, `pattern()`, `format()`, `default()` |
+| `Schema::integer()` | Integer | `min()`, `max()`, `multipleOf()`, `default()` |
+| `Schema::number()` | Number (float) | `min()`, `max()`, `multipleOf()`, `default()` |
+| `Schema::boolean()` | Boolean | `default()` |
+| `Schema::array()` | Array | `items()`, `min()`, `max()`, `unique()`, `default()` |
+| `Schema::object()` | Object | `withoutAdditionalProperties()`, `default()`, `def()` |
+| `Schema::anyOf()` | Union (`anyOf`) | `add()`, `default()` |
+| `Schema::ref()` | Reference (`$ref`) | — |
+
+## Tools
+
+Tools enable LLMs to call functions during text generation. Prisma supports both custom tools (executed locally) and provider tools (executed server-side by the LLM provider).
+
+### Creating tools
+
+Create tools using the `Tools` facade:
+
+**From scratch:**
+
+```php
+use Aimeos\Prisma\Schema\Schema;
+use Aimeos\Prisma\Tools;
+
+$tool = Tools::make( 'search', 'Search the web', Schema::for( 'search', [
+    'query' => Schema::string()->description( 'Search query' )->required(),
+] ), fn( $args ) => file_get_contents( 'https://api.example.com/search?q=' . $args['query'] ) );
+```
+
+**From a Laravel AI / MCP tool:**
+
+```php
+$tool = Tools::laravel( new MyLaravelTool() );
+// or pass the fully qualified class name (resolved via the Laravel container):
+$tool = Tools::laravel( MyLaravelTool::class );
+```
+
+The tool must extend `\Laravel\Mcp\Server\Tool` (MCP) or implement `\Laravel\Ai\Contracts\Tool` (AI). When a class name is given, the instance is resolved through the Laravel container (`app()`), so constructor dependencies are injected. MCP tools are executed via `handle()`; AI tools via `__invoke()` or `handle()`.
+
+**From a Symfony #[AsTool] class:**
+
+```php
+$tool = Tools::symfony( MySymfonyTool::class );
+// or with a specific tool name when the class has multiple #[AsTool] attributes:
+$tool = Tools::symfony( MySymfonyTool::class, 'tool-name' );
+```
+
+**Using tools with a provider:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use Aimeos\Prisma\Schema\Schema;
+use Aimeos\Prisma\Tools;
+
+$tool = Tools::make( 'weather', 'Get current weather', Schema::for( 'weather', [
+    'city' => Schema::string()->description( 'City name' )->required(),
+] ), fn( $args ) => json_encode( ['temp' => '22°C', 'city' => $args['city']] ) );
+
+$response = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->withTools( [$tool] )
+    ->withMaxSteps( 5 )
+    ->write( 'What is the weather in Berlin?' );
+```
+
+`withMaxSteps()` controls the maximum number of tool-loop steps performed (default is 25). Raise it for workflows that need more tool calls, or lower it to cap cost.
+
+> **Note:** Tool handlers can return any value. Strings are passed through as-is; all other return types (arrays, objects, numbers) are automatically JSON-encoded.
+
+**Tool choice:**
+
+`withToolChoice()` controls whether the model must use tools:
+
+| Constant | Description |
+|----------|-------------|
+| `Provider::AUTO` | Model decides (default) |
+| `Provider::REQUIRED` | Must use a tool |
+| `Provider::NONE` | No tools |
+
+```php
+use Aimeos\Prisma\Providers\Base as Provider;
+
+$provider->withToolChoice( Provider::REQUIRED );
+```
+
+The choice applies to the first tool-loop step. Supported choices vary: Deepseek,
+Meta, Openrouter, Requesty and Z.AI only send `AUTO`; Groq and xAI omit `NONE`.
+
+**Limiting tool calls:**
+
+```php
+$tool = Tools::make( ... )->max( 3 ); // This specific tool can only be called 3 times per request
+```
+
+### Provider tools
+
+Provider tools are built-in tools executed server-side by the LLM provider (e.g., web search, code execution). They don't require local function handlers. Create them using `Tools::provider()`:
+
+```php
+use Aimeos\Prisma\Prisma;
+use Aimeos\Prisma\Tools;
+
+$response = Prisma::text()
+    ->using( 'anthropic', ['api_key' => 'xxx'] )
+    ->withTools( [
+        Tools::provider( 'web_search' ),
+        Tools::provider( 'code_execution' ),
+    ] )
+    ->write( 'Search for the latest PHP version and write code to check it' );
+```
+
+**Available provider tools:**
+
+| Tool name | Providers |
+| :--- | :--- |
+| `web_search` | Anthropic, OpenAI, Google Gemini, Vertexai, Meta, Mistral, xAI, OpenRouter, Alibaba, Z.AI |
+| `web_search_premium` | Mistral |
+| `code_execution` | Anthropic, OpenAI, Google Gemini, Vertexai, Mistral, xAI |
+| `web_fetch` | Anthropic, Google Gemini, Vertexai |
+| `file_search` | OpenAI |
+| `image_generation` | Mistral |
+| `document_library` | Mistral |
+
+Provider tool names not supported by the chosen provider are silently ignored. Providers without any provider tool support (e.g. Bedrock, Cohere, Deepseek, Perplexity) ignore all provider tools.
+
+OpenAI omits `web_search` for `structure()` in both native and JSON modes.
+
+Custom and provider tools can be mixed in a single `withTools()` call:
+
+```php
+$response = Prisma::text()
+    ->using( 'anthropic', ['api_key' => 'xxx'] )
+    ->withTools( [
+        $customTool,
+        Tools::provider( 'web_search' ),
+        Tools::provider( 'code_execution' ),
+    ] )
+    ->withMaxSteps( 5 )
+    ->write( 'Search and analyze' );
+```
+
+Pass provider-specific options using `with()`:
+
+```php
+Tools::provider( 'web_search' )->with( [
+    'allowed_domains' => ['example.com', 'docs.example.com'],
+    'blocked_domains' => ['spam.com'],
+] );
+```
+
+Unknown or unsupported options are silently ignored by each provider.
+
+**Normalized options** (translated automatically per provider):
+
+| Option | Description | Supported by |
+| :--- | :--- | :--- |
+| `allowed_domains` | Only include results from these domains | Anthropic, OpenAI, OpenRouter |
+| `blocked_domains` | Exclude results from these domains | Anthropic, xAI, OpenRouter |
+| `search_context_size` | Search depth: `"low"`, `"medium"`, `"high"` | Meta, OpenAI, xAI |
+| `user_location` | User location object for localized results | Meta, OpenAI, Anthropic |
+
+**Provider-specific options:**
+
+| Option | Provider | Tool | Description |
+| :--- | :--- | :--- | :--- |
+| `->max( N )` | Anthropic | web_search, web_fetch, code_execution | Maps the tool call limit to `max_uses`; `with()` does not pass this option through |
+| `search_engine` | OpenRouter | web_search | `"auto"`, `"native"`, `"exa"` |
+| `container` | OpenAI | code_execution | Container config (`['type' => 'auto']`) |
+| `vector_store_ids` | OpenAI | file_search | Vector store IDs to search |
+| `max_num_results` | OpenAI | file_search | Max results returned |
+| `library_ids` | Mistral | document_library | Document library IDs |
+
+### Tool state
+
+The configured call limit is available via `limit()`:
+
+```php
+$tool = Tools::make( ... )->max( 3 );
+
+$tool->limit(); // 3 — configured maximum calls
+```
+
+The remaining budget is tracked per request, not on the tool itself: every
+`write()` / `stream()` / `structure()` call starts fresh, so a tool capped at 3 can be called
+up to 3 times in each request. Every executed call counts against the budget,
+including calls whose handler throws. Once the budget is exhausted within a
+request, further calls to that tool return an error to the model.
+
+### Error handling
+
+By default, when a tool handler throws an exception, the error message is returned to the model as `"Error: {message}"` instead of propagating the exception. You can override this with a custom error handler using `failed()`:
+
+```php
+$tool = Tools::make( 'search', 'Search the web', $schema, fn( $args ) => doSearch( $args ) )
+    ->failed( function( \Throwable $e, array $arguments ) : string {
+        Log::error( 'Tool failed', ['error' => $e->getMessage(), 'args' => $arguments] );
+        return 'Search is currently unavailable, please try a different approach.';
+    } );
+```
+
+The handler receives the thrown exception and the original arguments, and must return a string that is sent back to the model.
+
+### Concurrent tools
+
+Tools can be marked as concurrent so they are eligible to run in parallel when the configured concurrency strategy supports it:
+
+```php
+$schema = Schema::for( 'tool' );
+
+$search = Tools::make( 'search', 'Search the web', $schema, fn( $args ) => '...' )->concurrent();
+$weather = Tools::make( 'weather', 'Get weather', $schema, fn( $args ) => '...' )->concurrent();
+$save = Tools::make( 'save', 'Save to database', $schema, fn( $args ) => '...' ); // sequential (default)
+```
+
+When the LLM calls multiple tools in a single step, all runnable calls are handed
+to the configured concurrency strategy in the model's call order. A custom
+strategy is responsible for checking `$step->tool()->isConcurrent()` and keeping
+other tools sequential. You can also disable concurrency again:
+
+```php
+$tool->concurrent( false );
+```
+
+**Concurrency strategy:**
+
+Prisma uses the `Sequential` strategy by default, which runs every step one after another. To run concurrent tools in parallel, provide your own strategy (see below). You can also set the strategy explicitly:
+
+```php
+use Aimeos\Prisma\Tools\Concurrency\Sequential;
+
+$response = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->withConcurrency( new Sequential() )
+    ->withTools( [$search, $weather] )
+    ->write( 'Search and get weather for Berlin' );
+```
+
+**Custom concurrency strategy:**
+
+Implement the `Concurrency` interface to use your own execution strategy (e.g., async I/O, thread pools, or framework-specific solutions):
+
+```php
+use Aimeos\Prisma\Tools\Concurrency\Concurrency;
+use Aimeos\Prisma\Tools\Step;
+
+class CustomConcurrency implements Concurrency
+{
+    public function run( array $steps ) : array
+    {
+        foreach( $steps as $step )
+        {
+            if( $tool = $step->tool() )
+            {
+                $step->complete( $tool( $step->arguments() ) );
+            }
+        }
+
+        return $steps;
+    }
+}
+```
+
+This example executes sequentially. Each `$steps` entry is a `Step` object with
+`tool()`, `arguments()`, `id()`, `name()`, and `result()`. Complete the supplied
+objects with `$step->complete()`; the tool loop reads those same instances.
+
+> **Note:** Read-only tools that don't modify state should be marked as concurrent.
+
+### Decorating tools
+
+Use the `Decorator` abstract class to wrap tools with additional behavior:
+
+```php
+use Aimeos\Prisma\Tools\Adapter\Decorator;
+use Aimeos\Prisma\Tools\Adapter\Adapter;
+
+class LoggingTool extends Decorator
+{
+    private $logger;
+
+    public function __construct( Adapter $adapter, $logger )
+    {
+        parent::__construct( $adapter );
+        $this->logger = $logger;
+    }
+
+    public function __invoke( array $arguments ) : string
+    {
+        $this->logger->info( 'Tool called: ' . $this->name(), $arguments );
+        return parent::__invoke( $arguments );
+    }
+}
+
+$tool = new LoggingTool( Tools::make( 'search', 'Search', $schema, fn( $args ) => '...' ), $logger );
+```
+
+Decorators delegate all `Adapter` interface methods to the wrapped tool. Override any [adapter method](https://github.com/aimeos/prisma/blob/master/src/Tools/Adapter/Adapter.php) to add custom behavior.
+
+## Audio API
+
+### demix
+
+Separate an audio file into its individual tracks.
+
+```php
+public function demix( Audio $audio, int $stems, array $options = [] ) : FileResponse
+```
+
+* @param **Audio** `$audio` Input audio object
+* @param **int** `$stems` Number of stems to separate into (e.g. 2 for vocals and accompaniment)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Audio file response
+
+**Supported options:**
+
+* AudioPod
+
+### denoise
+
+Remove noise from an audio file.
+
+```php
+public function denoise( Audio $audio, array $options = [] ) : FileResponse
+```
+
+* @param **Audio** `$audio` Input audio object
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Audio file response
+
+**Supported options:**
+
+* [AudioPod](https://docs.audiopod.ai/api-reference/noise-reduction)
+
+### describe
+
+Describe the content of an audio file.
+
+```php
+public function describe( Audio $audio, ?string $lang = null, array $options = [] ) : TextResponse
+```
+
+* @param **Audio** `$audio` Input audio object
+* @param **string&#124;null** `$lang` ISO language code the description should be generated in
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text
+
+**Supported options:**
+
+* Google Gemini
+* Groq
+* Meta
+* Mistral
+* OpenAI
+* Openrouter
+
+### resume
+
+Continue polling an asynchronous audio job, e.g. in a later queue job.
+
+```php
+public function resume( string $jobId ) : FileResponse|TextResponse
+```
+
+* @param **string** `$jobId` Job ID returned by `jobId()` of a previous response
+* @return **FileResponse|TextResponse** Audio response, a text response for transcriptions
+
+**Supported providers:**
+
+* AudioPod: Only for `demix()`, `denoise()`, `revoice()`, `speak()` and `transcribe()`; the job ID is the status path
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$audio = Prisma::audio()
+    ->using( 'audiopod', config( 'services.audiopod' ) )
+    ->ensure( 'resume' )
+    ->denoise( $audio );
+
+$jobId = $audio->jobId(); // store it or pass it to a queue job
+
+// later, e.g. in the queue job
+$audio = Prisma::audio()
+    ->using( 'audiopod', config( 'services.audiopod' ) )
+    ->resume( $jobId );
+
+if( $audio->ready() ) {
+    $stream = $audio->stream();
+}
+```
+
+AudioPod transcriptions resume as a `TextResponse`, so use `text()` and `structured()`
+instead of `stream()` for job IDs of `transcribe()`.
+
+See the video [resume()](#resume-2) method for a complete queue job example.
+
+### revoice
+
+Exchange the voice in an audio file.
+
+```php
+public function revoice( Audio $audio, string $voice, array $options = [] ) : FileResponse;
+```
+
+* @param **Audio** `$audio` Input audio object
+* @param **string** `$voice` Voice name or identifier
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Audio file response
+
+**Supported options:**
+
+* AudioPod
+* [ElevenLabs](https://elevenlabs.io/docs/api-reference/speech-to-speech/convert)
+* [Murf](https://murf.ai/api/docs/api-reference/voice-changer/convert)
+
+### speak
+
+Converts text to speech.
+
+```php
+public function speak( string $text, ?string $voice = null, array $options = [] ) : FileResponse;
+```
+
+* @param **string** `$text` Text to be converted to speech
+* @param **string&#124;null** `$voice` Voice identifier for speech synthesis
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Audio file response
+
+**Supported options:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/qwen-tts-api)
+* [AudioPod](https://docs.audiopod.ai/api-reference/text-to-speech#generate-speech)
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech#convert-text-to-speech)
+* [Deepgram](https://developers.deepgram.com/reference/text-to-speech/speak-request)
+* [ElevenLabs](https://elevenlabs.io/docs/api-reference/text-to-speech/convert)
+* Groq
+* [Murf](https://murf.ai/api/docs/api-reference/text-to-speech/stream)
+* [OpenAI](https://platform.openai.com/docs/api-reference/audio/createSpeech)
+* Openrouter
+
+### transcribe
+
+Converts speech to text.
+
+```php
+public function transcribe( Audio $audio, ?string $lang = null, array $options = [] ) : TextResponse
+```
+
+* @param **Audio** `$audio` Input audio object
+* @param **string&#124;null** `$lang` ISO language code of the audio content
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Transcription text response
+
+**Supported options:**
+
+* [AudioPod](https://docs.audiopod.ai/api-reference/speech-to-text)
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/fast-transcription-create)
+* Deepgram
+* [ElevenLabs](https://elevenlabs.io/docs/api-reference/speech-to-text/convert)
+* Groq
+* [Meta Muse Voice Transcribe](https://dev.meta.ai/docs/api-reference/voice/transcribe)
+* [Mistral](https://docs.mistral.ai/api/endpoint/audio/transcriptions)
+* [OpenAI](https://platform.openai.com/docs/api-reference/audio/createTranscription)
+* Openrouter
+* [Z.AI](https://docs.z.ai/api-reference/audio/audio-transcriptions)
+
+*Note: Meta audio transcriptions only support mono 16-bit PCM WAV files at 16 or 24 kHz up to 10 minutes; `$lang` is mapped to the language name used by `languageBias`.*
+
+*Note: Z.AI audio transcriptions currently support only mono (single-channel) input files.*
+
+Azure uses the regional endpoint `https://{region}.api.cognitive.microsoft.com` of the
+`region` passed in the configuration (default: `eastus`). Use the endpoint of your Speech resource as
+`url` instead if required:
+
+```php
+Prisma::audio()->using( 'azure', [
+    'api_key' => 'xxx',
+    'url' => 'https://myres.cognitiveservices.azure.com',
+] );
+```
+
+## Image API
+
+Most methods require an image object as input which contains a reference to the image that
+should be processed. This object can be created by:
+
+```php
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.php', 'image/png' );
+$image = Image::fromLocalPath( 'path/to/image.png', 'image/png' );
+$image = Image::fromBinary( 'PNG...', 'image/png' );
+$image = Image::fromBase64( 'UE5H...', 'image/png' );
+$image = Image::fromStream( $stream, 'image/png' );
+
+// Laravel only:
+$image = Image::fromStoragePath( 'path/to/image.png', 'public', 'image/png' );
+```
+
+`fromStream()` retains a forward-only resource until conversion is needed. See
+the [custom provider guide](CUSTOM-PROVIDERS.md#file-types) for ownership details.
+
+The `mimeType` parameter is optional. If omitted, Prisma detects it when requested;
+URL-backed files use a probe of the first 255 bytes. `fromUrl()` also accepts an
+optional third argument, `bool $strict = true`.
+
+**Note:** It's best to use **fromUrl()** if possible because all other formats (binary and
+base64) can be derived from the URL content but URLs can't be created from binary/base64
+data.
+
+### background
+
+Replace image background with a background described by the prompt.
+
+```php
+public function background( Image $image, string $prompt, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **string** `$prompt` Prompt describing the new background
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/generateObjectCompositeV3Async)
+* Clipdrop
+* [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/replace-background-v3#request)
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/ai-backgrounds)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#replace-background) ([masked background](https://www.recraft.ai/docs/api-reference/endpoints#generate-background))
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->background( $image, 'Golden sunset on a caribbean beach' );
+
+$image = $fileResponse->binary();
+```
+
+### cancel
+
+Cancel an asynchronous image job, e.g. if its result isn't needed anymore.
+
+```php
+public function cancel( string $jobId ) : void
+```
+
+* @param **string** `$jobId` Job ID returned by `jobId()` of a pending response
+
+**Supported providers:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/): Pending and running jobs; the job ID is the status URL
+* [Replicate](https://replicate.com/docs/reference/http#predictions.cancel): Starting and processing predictions; the job ID is the prediction URL
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+Prisma::image()
+    ->using( 'replicate', config( 'services.replicate' ) )
+    ->ensure( 'cancel' )
+    ->cancel( $jobId );
+```
+
+Adobe throws a `BadRequestException` for finished jobs and a `NotFoundException` for
+jobs that were already canceled. See the video [cancel()](#cancel-1) method for
+details about the exceptions.
+
+### describe
+
+Describe the content of an image.
+
+```php
+public function describe( Image $image, ?string $lang = null, array $options = [] ) : TextResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **string&#124;null** `$lang` ISO language code the description should be generated in
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text
+
+**Supported options:**
+
+* Google Gemini
+* Groq
+* [Ideogram V4](https://developer.ideogram.ai/api-reference/describe-prompts/describe-v4)
+* OpenAI
+* Openrouter
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$textResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->describe( $image, 'de' );
+
+$text = $textResponse->text();
+```
+
+### detext
+
+Remove all text from the image.
+
+```php
+public function detext( Image $image, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* Clipdrop
+* [Ideogram](https://developer.ideogram.ai/api-reference/tools/layerize-text-v3#request)
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/ai-text-removal)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->detext( $image );
+
+$image = $fileResponse->binary();
+```
+
+### erase
+
+Erase parts of the image.
+
+```php
+public function erase( Image $image, Image $mask, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **Image** `$mask` Mask image object
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+The mask must be an image with black parts (#000000) to keep and white parts (#FFFFFF)
+to remove.
+
+**Supported options:**
+
+* [Clipdrop](https://clipdrop.co/apis/docs/cleanup)
+* [Ideogram](https://developer.ideogram.ai/api-reference/tools/remove-object#request)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#erase-region)
+* [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1erase/post)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+$mask = Image::fromBinary( 'PNG...' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->erase( $image, $mask );
+
+$image = $fileResponse->binary();
+```
+
+### imagine
+
+Generate an image from the prompt.
+
+```php
+public function imagine( string $prompt, array $images = [], array $options = [] ) : FileResponse
+```
+
+* @param **string** `$prompt` Prompt describing the image
+* @param **array&#60;int, \Aimeos\Prisma\Files\Image&#62;** `$images` List of reference image objects (provider-dependent)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/firefly_image_v5_generate_async_v4) ([Image3/4](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/generateImagesV3Async))
+* [Alibaba Qwen/Wan/Z-Image](https://www.alibabacloud.com/help/en/model-studio/qwen-image-api)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-[pro])
+* Clipdrop
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/image-generation#optional_configurations)
+* [Ideogram V4](https://developer.ideogram.ai/api-reference/generate-images/generate-v4) ([V3 fallback for reference and style options](https://developer.ideogram.ai/api-reference/generate-images/generate-v3))
+* [Meta Muse Image](https://dev.meta.ai/docs/api-reference/images/create-image) ([Editing](https://dev.meta.ai/docs/api-reference/images/edit-image))
+* [ModelsLab](https://docs.modelslab.com/image-generation/community-models/text2img)
+* [OpenAI Dall-e-2](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-2#customize-image-output)
+* [OpenAI Dall-e-3](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-3#customize-image-output)
+* [OpenAI GPT image 1](https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1#customize-image-output)
+* OpenAI GPT image 2 (default)
+* Openrouter
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/create-any-image)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#generate-image)
+* [Replicate](https://replicate.com/docs/topics/predictions/create-a-prediction)
+* [StabilityAI Core](https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1stable-image~1generate~1core/post)
+* [StabilityAI Stable Diffusion 3.5](https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1stable-image~1generate~1sd3/post)
+* [StabilityAI Ultra](https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1stable-image~1generate~1ultra/post)
+* [xAI Grok Image](https://docs.x.ai/docs/guides/image-generations) ([Multi-image editing](https://docs.x.ai/developers/model-capabilities/images/multi-image-editing))
+* [Z.AI](https://docs.z.ai/api-reference/image/generate-image)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->imagine( 'Futuristic robot looking at a dashboard' );
+
+$image = $fileResponse->binary();
+```
+
+Ideogram supports generating PNG images with transparency using `transparent => true`:
+
+```php
+$fileResponse = Prisma::image()
+    ->using( 'ideogram', ['api_key' => 'xxx'] )
+    ->imagine( 'A watercolor sunflower', [], [
+        'transparent' => true,
+        'aspect_ratio' => '1x1',
+        'output_resolution' => '2K',
+    ] );
+```
+
+This selects [Ideogram V4 transparent generation](https://developer.ideogram.ai/api-reference/generate-images/generate-transparent-v4).
+Supported options are `aspect_ratio` (including `AUTO`), `output_resolution` (`1K`, `2K`, `4K`, or `8K`),
+`rendering_speed` (`TURBO`, `DEFAULT`, or `QUALITY`), and `enable_copyright_detection`.
+Use `output_resolution` for the output size; the ordinary `resolution` option is unavailable on this endpoint.
+Reference images and other options, including V3 style controls and `seed`, throw `BadRequestException` when
+`transparent` is true. To use reference images, generate normally and then call `isolate()` on the result.
+Omitting `transparent` or setting it to false keeps the existing V4/V3 routing.
+
+Ideogram V4 generation also supports `async => true`, independently of `transparent`.
+Omitting `async` or setting it to false keeps synchronous behavior. Both modes return a `FileResponse`.
+The async routes are [V4 generation](https://developer.ideogram.ai/api-reference/generate-images/generate-v4-async)
+and [V4 transparent generation](https://developer.ideogram.ai/api-reference/generate-images/generate-transparent-v4-async),
+with the same generation options as their synchronous counterparts.
+
+```php
+$provider = Prisma::image()->using( 'ideogram', [
+    'api_key' => 'xxx',
+    'poll_timeout' => 300,
+] );
+
+// Submit both jobs before accessing their files so generation can overlap.
+$first = $provider->imagine( 'A watercolor landscape', [], ['async' => true] );
+$second = $provider->imagine( 'A sunflower sticker', [], ['async' => true, 'transparent' => true] );
+
+$generationId = $first->meta()['generation_id']; // Available immediately after submission
+$ready = $first->ready(); // One status request; no polling loop or sleep
+$landscape = $first->binary(); // Waits for completion if needed, then downloads the image
+$sticker = $second->binary();
+```
+
+Each response polls its own [generation ID](https://developer.ideogram.ai/api-reference/generate-images/get-generation).
+File access, including `url()`, `first()`, `files()`, and iteration, waits for completion; completed responses do not poll again.
+Submissions and individual status requests still use blocking HTTP. Waiting polls every two seconds, with a default
+900-second deadline. Configure `poll_timeout` in the provider configuration in seconds; `0` disables the deadline.
+Failed generations, generations without images and submissions without a generation ID throw `FailedException`, malformed responses and polling timeouts throw `PrismaException`.
+To continue polling in another process, e.g. a queue job, see [resume()](#resume-1).
+Completed metadata includes the generation ID, status, image metadata, and usage cost when supplied by Ideogram.
+
+`async => true` throws `BadRequestException` for requests that require V3 reference/style options and for methods
+other than `imagine()`, including `repaint()` with or without transparency. These calls are rejected before submission.
+
+### inpaint
+
+Edit an image by inpainting an area defined by a mask according to a prompt.
+
+```php
+public function inpaint( Image $image, Image $mask, string $prompt, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **Image** `$mask` Input mask image object
+* @param **string** `$prompt` Prompt describing the changes
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+The mask must be an image with black parts (#000000) to keep and white parts (#FFFFFF)
+to edit.
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/fillImagesV3Async)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-an-image-with-flux1-fill-[pro]-using-an-input-image-and-mask)
+* [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/edit-v3#request)
+* [OpenAI Dall-e-2](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-2#customize-image-output)
+* [OpenAI Dall-e-3](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-3#customize-image-output)
+* [OpenAI GPT image 1](https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1#customize-image-output)
+* OpenAI GPT image 2 (default)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#image-inpainting)
+* [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1inpaint/post)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+$mask = Image::fromBinary( 'PNG...' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->inpaint( $image, $mask, 'add a pink flamingo' );
+
+$image = $fileResponse->binary();
+```
+
+### isolate
+
+Remove the image background.
+
+```php
+public function isolate( Image $image, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Clipdrop](https://clipdrop.co/apis/docs/remove-background)
+* [Ideogram](https://developer.ideogram.ai/api-reference/tools/remove-background#request)
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/hd-background-removal)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#remove-background)
+* [RemoveBG](https://www.remove.bg/api#api-reference)
+* [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1remove-background/post)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->isolate( $image );
+
+$image = $fileResponse->binary();
+```
+
+### recognize
+
+Recognizes the text in the given image (OCR).
+
+```php
+public function recognize( Image $image, array $options = [] ) : TextResponse;
+```
+
+* @param **Image** `$image` Input image object
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text object
+
+**Supported options:**
+
+* [Azure](https://learn.microsoft.com/en-us/rest/api/computervision/image-analysis/analyze-image)
+* [Mistral](https://docs.mistral.ai/api/endpoint/ocr#operation-ocr_v1_ocr_post)
+* Openrouter
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$textResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->recognize( $image );
+
+$text = $textResponse->text();
+```
+
+Azure uses the regional endpoint `https://{region}.api.cognitive.microsoft.com` of the
+`region` passed in the configuration (default: `eastus`). Use the endpoint of your Vision
+resource as `url` instead if required:
+
+```php
+Prisma::image()->using( 'azure', [
+    'api_key' => 'xxx',
+    'url' => 'https://myres.cognitiveservices.azure.com',
+] );
+```
+
+### relocate
+
+Place the foreground object on a new background.
+
+```php
+public function relocate( Image $image, Image $bgimage, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image with foreground object
+* @param **Image** `$bgimage` Background image
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/preciseComposite) ([adaptive](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/adaptiveComposite))
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/static-background)
+* [RemoveBG](https://www.remove.bg/api#api-reference)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+$bgimage = Image::fromUrl( 'https://example.com/background.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->relocate( $image, $bgimage );
+
+$image = $fileResponse->binary();
+```
+
+### repaint
+
+Repaint an image according to the prompt.
+
+```php
+public function repaint( Image $image, string $prompt, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **string** `$prompt` Prompt describing the changes
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/firefly_image_v5_generate_async_v4)
+* [Black Forest Labs](https://docs.bfl.ai/flux_2/flux2_image_editing)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/image-generation#optional_configurations)
+* [Ideogram V4](https://developer.ideogram.ai/api-reference/edit-images/remix-v4) ([V3 fallback for reference and style options](https://developer.ideogram.ai/api-reference/edit-images/remix-v3))
+* [Meta Muse Image](https://dev.meta.ai/docs/api-reference/images/edit-image)
+* Openrouter
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/edit-with-ai)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#image-to-image)
+* [xAI](https://docs.x.ai/developers/model-capabilities/images/editing)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->repaint( $image, 'Use a van Goch style', ['transparent' => true] );
+
+$image = $fileResponse->binary();
+```
+
+Transparent output is only supported by a few providers.
+
+### resume
+
+Continue polling an asynchronous image job, e.g. in a later queue job.
+
+```php
+public function resume( string $jobId ) : FileResponse
+```
+
+* @param **string** `$jobId` Job ID returned by `jobId()` of a previous response
+* @return **FileResponse** Image response
+
+**Supported providers:**
+
+* Adobe Firefly: The job ID is the status URL and must point to a `firefly-*.adobe.io` HTTPS host or the configured API host
+* Black Forest Labs: The job ID is the polling URL and must be an HTTPS URL of `api.bfl.ai` or a regional host like `api.eu1.bfl.ai`
+* Ideogram: Only for `imagine()` with the `async` option
+* ModelsLab: Only for queued generations; the job ID is the fetch URL of the `modelslab.com` HTTPS host or the configured API host
+* Replicate: Only for predictions not finished while the request was open; the job ID is the prediction URL of the `api.replicate.com` HTTPS host or the configured API host
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$image = Prisma::image()
+    ->using( 'ideogram', config( 'services.ideogram' ) )
+    ->ensure( 'resume' )
+    ->imagine( 'A watercolor lighthouse at dusk', [], ['async' => true] );
+
+$jobId = $image->jobId(); // store it or pass it to a queue job
+
+// later, e.g. in the queue job
+$image = Prisma::image()
+    ->using( 'ideogram', config( 'services.ideogram' ) )
+    ->resume( $jobId );
+
+if( $image->ready() ) {
+    $stream = $image->stream();
+}
+```
+
+ModelsLab and Replicate return images directly if they finish fast enough. Then,
+`jobId()` is NULL and the response is ready, so check `jobId()` before resuming.
+See the video [resume()](#resume-2) method for a complete queue job example.
+
+### uncrop
+
+Extend/outpaint the image.
+
+```php
+public function uncrop( Image $image,  int $top, int $right, int $bottom, int $left, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **int** `$top` Number of pixels to extend to the top
+* @param **int** `$right` Number of pixels to extend to the right
+* @param **int** `$bottom` Number of pixels to extend to the bottom
+* @param **int** `$left` Number of pixels to extend to the left
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/expandImagesV3Async)
+* [Black Forest Labs](https://docs.bfl.ai/api-reference/models/expand-an-image-by-adding-pixels-on-any-side)
+* Clipdrop
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#image-outpainting)
+* [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1outpaint/post)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->uncrop( $image, 100, 200, 0, 50 );
+
+$image = $fileResponse->binary();
+```
+
+### upscale
+
+Scale up the image.
+
+```php
+public function upscale( Image $image, int $factor, array $options = [] ) : FileResponse
+```
+
+* @param **Image** `$image` Input image object
+* @param **int** `$factor` Upscaling factor between 2 and the maximum value supported by the provider
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **FileResponse** Response file
+
+**Supported options:**
+
+* [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/preciseUpsamplerV3Async)
+* Clipdrop
+* [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/upscale#request)
+* [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/preview-ai-upscale)
+* [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#crisp-upscale) ([creative upscale](https://www.recraft.ai/docs/api-reference/endpoints#creative-upscale))
+* [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Upscale)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$image = Image::fromUrl( 'https://example.com/image.png' );
+
+$fileResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->upscale( $image, 4 );
+
+$image = $fileResponse->binary();
+```
+
+### vectorize
+
+Creates embedding vectors of the images' content.
+
+```php
+public function vectorize( array $images, ?int $size = null, array $options = [] ) : VectorResponse
+```
+
+* @param **array&#60;int, \Aimeos\Prisma\Files\Image&#62;** `$images` List of input image objects
+* @param **int&#124;null** `$size` Size of the resulting vector or null for provider default
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **VectorResponse** Response vector object
+
+**Supported options:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/multimodal-embedding-api-reference)
+* Bedrock
+* [Cohere](https://docs.cohere.com/reference/embed#request)
+* Openrouter
+* [VoyageAI](https://docs.voyageai.com/reference/multimodal-embeddings-api)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use \Aimeos\Prisma\Files\Image;
+
+$images = [
+    Image::fromUrl( 'https://example.com/image.png' ),
+    Image::fromUrl( 'https://example.com/image2.png' ),
+];
+
+$vectorResponse = Prisma::image()
+    ->using( '<provider>', ['api_key' => 'xxx'])
+    ->vectorize( $images, 512 );
+
+$vectors = $vectorResponse->vectors();
+```
+
+## Text API
+
+### decide
+
+Answers typed questions about the given state with probabilities instead of generated text,
+e.g. yes/no questions, choices between options or ratings along levels.
+
+```php
+public function decide( string|array $state, array $questions, array $options = [] ) : DecisionResponse
+```
+
+* @param **string&#124;array&#60;int&#124;string, mixed&#62;** `$state` Text or structured data (e.g. chat logs, records) to evaluate
+* @param **array&#60;string, array&#60;string, mixed&#62;&#62;** `$questions` Map of question ID to question definition in the provider format
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **DecisionResponse** One typed answer per question ID
+
+Ask all questions about the same state in one call so the state is only sent once.
+The answers are probabilistic decisions, so check `confidence()` or the probabilities
+before acting on consequential answers. Pin a versioned model instead of an alias if
+you tuned thresholds for a specific model version.
+
+**Question formats:**
+
+* [TypeSafe](https://docs.typesafe.ai/api#question-types): `noul` (yes/no, value is the probability of yes), `choice` (one of up to 255 options) and `score` (rating along 2 to 10 ordered levels)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$response = Prisma::text()
+    ->using( 'typesafe', ['api_key' => 'xxx'] )
+    ->ensure( 'decide' )
+    ->decide( 'Help! My payouts have been failing for 3 days.', [
+        'urgent' => ['type' => 'noul', 'instructions' => 'Does this convey urgency?'],
+        'team' => ['type' => 'choice', 'instructions' => 'Which team should handle this?', 'criteria' => [
+            'billing' => 'Payments, invoicing, refunds',
+            'technical' => 'Bugs, outages, integrations',
+        ]],
+        'anger' => ['type' => 'score', 'instructions' => 'How frustrated is the customer?', 'criteria' => [
+            'Calm', 'Frustrated', 'Very angry'
+        ]],
+    ] );
+
+$team = $response->answer( 'team' );
+
+if( $team->confidence() > 0.7 ) {
+    route( $team->value() ); // 'billing'
+}
+```
+
+### stream
+
+Generate text from the given prompt and stream it in text chunks. The returned `TextResponse` is backed by a live stream: iterate `TextResponse::stream()` to consume each chunk as it arrives. The text accessors (`text()`, `texts()`, `first()`, `output()`) and iterating the response drain the stream for you, so you can also ignore the live chunks and use the response like a non-streamed one. Streaming uses the provider's streaming variant of [write()](#write), with the same tools, system prompts, [conversation history](#withmessages) and options. Mistral with provider tools runs its Agents API eagerly and then yields the complete answer as one chunk.
+
+> **Consume the stream before reading body metadata.** `usage()`, `steps()`, `meta()`, `citations()`, `reason()` and `structured()` are only populated **after** the stream has been consumed - either iterate `stream()` to completion or call one of the text accessors first (e.g. `text()`/`output()`). Read before the stream is drained, they return empty/default values. `rateLimit()` is the exception: it comes from the response headers and is available immediately, as are HTTP/auth errors, which surface from the `stream()` call itself rather than during iteration.
+
+```php
+public function stream( string $prompt, array $files = [], array $options = [] ) : TextResponse
+```
+
+* @param **string** `$prompt` Input prompt for text generation
+* @param **array&#60;int, File&#62;** `$files` Files for multimodal input (images, audio, documents)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Streamed response text
+
+Iterating `$response->stream()` yields:
+
+* a **string** for every streamed text delta, and
+* a **Step** for every executed tool call - once before it runs (`done() === false`) and once after it completed (`done() === true`). A tool rejected because of its call limit, invalid arguments or denied approval is not executed and is reported once (completed).
+
+> The stream is single-pass and the same `Step` instance is reused for both notifications, so read `done()` / `result()` **inside** the loop (a stored reference reflects the final state).
+
+**Supported providers:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/model-api-reference/)
+* [Anthropic](https://docs.anthropic.com/en/api/messages-streaming)
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-chat-completion)
+* [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/text-generation)
+* [Groq](https://console.groq.com/docs/text-chat)
+* [Kimi](https://platform.kimi.ai/docs/guide/utilize-the-streaming-output-feature-of-kimi-api)
+* [Meta](https://dev.meta.ai/docs/protocols/chat-completions)
+* [Mistral](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
+* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
+* [OpenAI](https://platform.openai.com/docs/api-reference/responses-streaming)
+* [Openrouter](https://openrouter.ai/docs/api-reference/streaming)
+* [Perplexity](https://docs.perplexity.ai/api-reference/chat-completions)
+* [Requesty](https://docs.requesty.ai/features/streaming)
+* [xAI](https://docs.x.ai/api/endpoints#chat-completions)
+* Vertexai
+* Z.AI
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$textResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->ensure( 'stream' )
+    ->stream( 'Summarize the benefits of renewable energy' );
+
+foreach( $textResponse->stream() as $delta ) {
+    echo $delta; // print each text chunk as it arrives
+}
+
+$full = $textResponse->output(); // all collected text, including text across tool-loop steps
+$usage = $textResponse->usage(); // token usage
+```
+
+**Multi-turn conversation:**
+
+Pass the earlier turns with [withMessages()](#withmessages); the current prompt is appended as the next user message.
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$textResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->withMessages( [
+        ['role' => 'user', 'content' => 'Recommend a laptop'],
+        ['role' => 'assistant', 'content' => 'Sure - what is your budget?'],
+    ] )
+    ->ensure( 'stream' )
+    ->stream( 'Around $1500' );
+
+foreach( $textResponse->stream() as $delta ) {
+    echo $delta;
+}
+```
+
+**Streaming with tools:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use Aimeos\Prisma\Tools\Step;
+
+$textResponse = Prisma::text()
+    ->using( 'anthropic', ['api_key' => 'xxx'] )
+    ->withTools( [$weatherTool] )
+    ->ensure( 'stream' )
+    ->stream( 'What is the weather in Berlin?' );
+
+foreach( $textResponse->stream() as $chunk ) {
+    if( !$chunk instanceof Step ) {
+        echo $chunk;                                                        // text delta
+    } elseif( $chunk->done() ) {
+        printf( "\n[%s -> %s]\n", $chunk->name(), $chunk->result() );       // tool result
+    } else {
+        printf( "\n[calling %s(%s)]\n", $chunk->name(), json_encode( $chunk->arguments() ) ); // tool call
+    }
+}
+
+$steps = $textResponse->steps(); // executed tool steps, same as write()
+```
+
+> **Performance:** the loop body runs once per chunk, synchronously in the read loop. For high-frequency sinks (broadcast, WebSocket, database), coalesce deltas - buffer them and flush every ~50ms or every N characters - instead of doing a round trip per chunk.
+
+**Laravel SSE (`response()->eventStream()`):**
+
+Because `stream()` returns an iterable response, it plugs straight into Laravel's native SSE helper - just delegate to its generator:
+
+```php
+use Aimeos\Prisma\Prisma;
+
+Route::get( '/chat', function () {
+    $response = Prisma::text()
+        ->using( 'openai', config( 'services.openai' ) )
+        ->ensure( 'stream' )
+        ->stream( 'Summarize the benefits of renewable energy' );
+
+    return response()->eventStream( function () use ( $response ) {
+        foreach( $response->stream() as $chunk ) {
+            if( is_string( $chunk ) ) {
+                yield $chunk;
+            }
+        }
+    } );
+} );
+```
+
+### structure
+
+Generate structured output from the given prompt and schema. The response JSON is parsed and available via the `structured()` method on the response object.
+
+```php
+public function structure( string $prompt, Schema $schema, array $files = [], array $options = [] ) : TextResponse
+```
+
+* @param **string** `$prompt` Input prompt for structured text generation
+* @param **Schema** `$schema` Schema definition for the structured output
+* @param **array&#60;int, File&#62;** `$files` Files for multimodal input (images, audio, documents)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text with structured data
+
+> Supply prior conversation turns with [withMessages()](#withmessages); the current `$prompt` is appended as the final user message.
+
+**Supported options:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/developer-reference/api-details)
+* [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/structured-output)
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-chat-completion)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html)
+* [Cohere](https://docs.cohere.com/reference/chat)
+* [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/structured-output)
+* [Groq](https://console.groq.com/docs/api-reference#chat-create)
+* [Kimi](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart#structured-output)
+* [Meta](https://dev.meta.ai/docs/structured-output)
+* [Mistral](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
+* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
+* [OpenAI](https://platform.openai.com/docs/api-reference/chat/create)
+* [Openrouter](https://openrouter.ai/docs/api-reference/chat-completions)
+* [Perplexity](https://docs.perplexity.ai/api-reference/chat-completions)
+* [Requesty](https://docs.requesty.ai/features/structured-outputs)
+* Vertexai
+* [xAI](https://docs.x.ai/api/endpoints#chat-completions)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+use Aimeos\Prisma\Schema\Schema;
+
+$schema = Schema::for( 'person', [
+    'name' => Schema::string(),
+    'age' => Schema::integer(),
+] );
+
+$textResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->ensure( 'structure' )
+    ->structure( 'Extract the person from: John is 30 years old', $schema );
+
+$data = $textResponse->structured(); // ['name' => 'John', 'age' => 30]
+$json = $textResponse->text(); // '{"name":"John","age":30}'
+```
+
+**Output mode:**
+
+Providers with mode selection default to sending the schema through their native
+structured-output API. Pass `['mode' => 'json']` to embed the schema in the prompt
+and parse the JSON response instead; `['mode' => 'structured']` selects native
+mode explicitly. Other values throw `BadRequestException` on these providers.
+`Schema::strict()` controls the strict flag where supported and defaults to false.
+
+Bedrock, Deepseek and Ollama always use JSON mode and ignore the option. Cohere
+also ignores `mode`, but always sends `response_format.json_schema`. Mistral uses
+prompt-based JSON through Chat Completions when custom tools are configured and
+ignores `mode` on that path.
+
+```php
+$textResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'] )
+    ->ensure( 'structure' )
+    ->structure( 'Extract the person', $schema, [], ['mode' => 'json'] );
+```
+
+> **Warning:** `structured()` is the model's output parsed as-is — always treat it as untrusted. Guard two separate things:
+>
+> * **Shape** — it is not validated against your schema. Native strict mode is provider-enforced, but JSON mode (`['mode' => 'json']`, and the JSON-only providers above) gives no guarantee the result matches the schema. Check it with `$schema->validate( $data )` (returns `[]` when valid).
+> * **Values** — even a schema-conformant result contains model-generated text. `validate()` verifies types and constraints, not safety, so never drop a value straight into SQL, a shell command, a file path, or markup. Use bound parameters, escaping, or allow-lists, exactly as you would for any user input.
+>
+> ```php
+> $data = $textResponse->structured();
+> $errors = $schema->validate( $data ); // [] when valid
+> if( $errors ) {
+>     // reject, retry, or handle the mismatch
+> }
+> ```
+
+### translate
+
+Translate one or more texts from one language to another.
+
+```php
+public function translate( array $texts, string $to, ?string $from = null, ?string $context = null, array $options = [] ) : TextResponse
+```
+
+* @param **array&#60;string&#62;** `$texts` Input texts to be translated
+* @param **string** `$to` ISO language code to translate the text into
+* @param **string&#124;null** `$from` ISO language code of the input text (optional, auto-detected if omitted)
+* @param **string&#124;null** `$context` Context for the translation (optional)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text
+
+**Supported options:**
+
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/translate)
+* [DeepL](https://developers.deepl.com/docs/api-reference/translate/openapi-spec-for-text-translation)
+* [Google](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate#authorization)
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$textResponse = Prisma::text()
+    ->using( 'deepl', ['api_key' => 'xxx'])
+    ->ensure( 'translate' )
+    ->translate( ['Hello', 'World'], 'de', 'en' );
+
+$texts = $textResponse->texts(); // ['Hallo', 'Welt']
+```
+
+Azure uses the global Translator endpoint `https://api.cognitive.microsofttranslator.com`
+by default. Pass the `region` of your resource if required or use the endpoint of your
+resource as `translate_url` option instead:
+
+```php
+Prisma::text()
+    ->using( 'azure', ['api_key' => 'xxx', 'region' => 'westeurope'] )
+    ->translate( ['Hello'], 'de', null, null, [
+        'translate_url' => 'https://myres.cognitiveservices.azure.com/translator/text/v3.0',
+    ] );
+```
+
+### vectorize
+
+Creates embedding vectors of the texts' content.
+
+```php
+public function vectorize( array $texts, ?int $size = null, array $options = [] ) : VectorResponse
+```
+
+* @param **array&#60;int, string&#62;** `$texts` List of input texts
+* @param **int&#124;null** `$size` Size of the resulting vector or null for provider default
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **VectorResponse** Response vector object
+
+**Supported options:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/embedding-api-details)
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-embedding)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
+* [Cohere](https://docs.cohere.com/reference/embed)
+* [Google Gemini](https://ai.google.dev/api/embeddings)
+* [Mistral](https://docs.mistral.ai/api/#tag/embeddings)
+* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
+* [OpenAI](https://platform.openai.com/docs/api-reference/embeddings/create)
+* [Requesty](https://docs.requesty.ai/api-reference/endpoint/embeddings-create)
+* Vertexai
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$vectorResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'])
+    ->ensure( 'vectorize' )
+    ->vectorize( ['The quick brown fox', 'jumps over the lazy dog'], 256 );
+
+$vectors = $vectorResponse->vectors(); // one embedding vector per input text
+```
+
+### write
+
+Generate text from the given prompt with optional multimodal file inputs (images, audio, documents).
+
+```php
+public function write( string $prompt, array $files = [], array $options = [] ) : TextResponse
+```
+
+* @param **string** `$prompt` Input prompt for text generation
+* @param **array&#60;int, File&#62;** `$files` Files for multimodal input (images, audio, documents)
+* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
+* @return **TextResponse** Response text
+
+> Supply prior conversation turns with [withMessages()](#withmessages); the current `$prompt` is appended as the final user message.
+
+**Supported options:**
+
+* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/model-api-reference/)
+* [Anthropic](https://docs.anthropic.com/en/api/messages)
+* Azure
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-call.html)
+* [Cohere](https://docs.cohere.com/reference/chat)
+* [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
+* [Google Gemini](https://ai.google.dev/gemini-api/docs/text-generation)
+* [Groq](https://console.groq.com/docs/text-chat)
+* [Kimi](https://platform.kimi.ai/docs/api/chat)
+* [Meta](https://dev.meta.ai/docs/api-reference/chat-completions/create-chat-completion)
+* [Mistral](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
+* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
+* [OpenAI](https://platform.openai.com/docs/api-reference/chat/create)
+* [Openrouter](https://openrouter.ai/docs/api-reference/chat-completions)
+* [Perplexity](https://docs.perplexity.ai/api-reference/chat-completions)
+* [Requesty](https://docs.requesty.ai/api-reference/endpoint/chat-completions-create)
+* Vertexai
+* [xAI](https://docs.x.ai/api/endpoints#chat-completions)
+* Z.AI
+
+**Example:**
+
+```php
+use Aimeos\Prisma\Prisma;
+
+$textResponse = Prisma::text()
+    ->using( 'openai', ['api_key' => 'xxx'])
+    ->ensure( 'write' )
+    ->write( 'Summarize the benefits of renewable energy' );
+
+$texts = $textResponse->texts(); // ['Renewable energy offers...']
+```
+
+## Video API
+
+### imagine
+
+Generate a video from a prompt and optional input media.
+
+```php
+public function imagine( string $prompt, array $media = [], array $options = [] ) : FileResponse
+```
+
+* @param **string** `$prompt` Description of the video to generate
+* @param **array** `$media` Semantic media roles: `start`, `end`, and `references`
+* @param **array&#60;string, mixed&#62;** `$options` Common and provider-specific options
+* @return **FileResponse** Generated video response
+
+```php
+use Aimeos\Prisma\Files\Image;
+use Aimeos\Prisma\Prisma;
+
+$video = Prisma::video()
+    ->using( 'runway', ['api_key' => 'xxx'] )
+    ->ensure( 'imagine' )
+    ->imagine(
+        'A paper boat crossing a rain-filled city street',
+        [
+            'start' => Image::fromUrl( 'https://example.com/start.png' ),
+            'end' => Image::fromUrl( 'https://example.com/end.png' ),
+            'references' => [],
+        ],
+        [
+            'duration' => 5,
+            'a

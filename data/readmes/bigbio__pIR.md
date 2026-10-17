@@ -1,0 +1,69 @@
+[![R-CMD-check](https://github.com/bigbio/pIR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bigbio/pIR/actions/workflows/R-CMD-check.yaml)
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+# [pIR](https://github.com/bigbio/pIR)
+
+An [R package](https://github.com/bigbio/pIR) to analyze the isoelectric point of peptides and proteins based on experimental values and predicted using different functions. The package provides a statistical framework to analyze the correlation between predicted and expected values, and it can be used in other contexts.
+
+### Installation
+
+First, we need to install `devtools`:
+
+```R
+install.packages("devtools")
+library(devtools)
+```
+
+Then we just call:
+
+```R
+install_github("bigbio/pIR")
+library(pIR)
+```
+
+### Examples
+
+```R
+# Other different pKSets that can be selected: rodwell, emboss, lehninger, grimsley, patrickios, DtaSelect
+
+library(pIR)
+seq <- "GLPRKILCAIAKKKGKCKGPLKLVCKC"
+pI <- pIIterative(sequence = seq, pkSetMethod = "solomon")
+print(pI)
+
+# The result will be 10.526
+
+
+# Computing all pI values using Iterative method.
+
+sequence <- "AADCEVEQWDSDEPIPAK"
+pIvalues <- computeAllIterativeValues(seq = sequence)
+
+# The result will be...
+
+pIvalues
+#            method values
+# 1         solomon 3.4161
+# 2         rodwell 3.3749
+# 3          emboss 3.5322
+# 4       lehninger 3.3711
+# 5        grimsley 3.3012
+# 6      patrickios 3.4220
+# 7       DtaSelect 3.7848
+# 8        toseland 3.3571
+# 9       thurlkill 3.4784
+# 10 nozaki_tanford 3.6445
+```
+
+### How to cite
+
+Audain, E., Ramos, Y., Hermjakob, H., Flower, D. R., & Perez-Riverol, Y. (2015). Accurate estimation of isoelectric point of protein and peptide based on amino acid sequences. Bioinformatics, btv674. [article](http://bioinformatics.oxfordjournals.org/content/early/2015/12/09/bioinformatics.btv674.full)
+
+Perez-Riverol, Y., Audain, E., Millan, A., Ramos, Y., Sanchez, A., Vizcaíno, J. A., ... & González, L. J. (2012). Isoelectric point optimization using peptide descriptors and support vector machines. Journal of proteomics, 75(7), 2269-2274. [article](https://www.researchgate.net/profile/Vladimir_Besada/publication/221825414_Isoelectric_point_optimization_using_peptide_descriptors_and_support_vector_machines/links/09e41503561f3b0787000000.pdf)
+
+### This library has been used in
+
+- Ramos, Y., Gutierrez, E., Machado, Y., Sánchez, A., Castellanos-Serra, L., González, L.J., Fernández-de-Cossio, J., Pérez-Riverol, Y., Betancourt, L., Gil, J. and Padrón, G., 2008. Proteomics based on peptide fractionation by SDS-free PAGE. Journal of proteome research, 7(6), pp.2427-2434. [article](https://www.researchgate.net/profile/Vladimir_Besada/publication/5431019_Proteomics_based_on_peptide_fractionation_by_SDS-free_PAGE/links/0912f50355c4ac1a82000000.pdf)
+
+- Ramos, Y., Garcia, Y., Pérez‐Riverol, Y., Leyva, A., Padrón, G., Sánchez, A., Castellanos‐Serra, L., González, L.J. and Besada, V., 2011. Peptide fractionation by acid pH SDS‐free electrophoresis. Electrophoresis, 32(11), pp.1323-1326. [article](https://www.researchgate.net/profile/Yasset_Perez-Riverol/publication/51094357_Peptide_fractionation_by_acid_pH_SDS-free_electrophoresis/links/53dd6e730cf2a76fb667c9f4.pdf)
+

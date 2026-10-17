@@ -1,0 +1,771 @@
+# AgnosticRag-Q
+
+**AgnosticRag-Q** is a cloud-agnostic and LLM-agnostic **Agentic AI, RAG, GraphRAG & RagSQL platform** for building intelligent search engines, enterprise AI assistants, multimodal knowledge systems, and natural-language database applications.
+
+It supports **TXT, CSV, PDF, Images, Audio, OCR, databases, and enterprise applications**, combining **Qdrant vector search, BM25 hybrid search, Neo4j knowledge graphs, multimodal retrieval, reranking, and intelligent routing**.
+
+`AgnosticRagRouter` provides an **Agentic AI orchestration layer** that analyzes each query and dynamically routes it to the appropriate RAG backend, GraphRAG knowledge base, RagSQL database service, Odoo ERP, PostgreSQL database, or custom MCP service. Multiple backends can also work together and merge their results into one final answer.
+
+The **GraphRAG** layer combines Qdrant semantic retrieval with Neo4j entities and relationships. It supports **Simple, Simple Entity, Complex, Complex Broad, and Adaptive Hybrid** query strategies for entity search, relationship discovery, multi-hop reasoning, and broader knowledge exploration.
+
+**RagSQL** enables **natural-language querying of databases**, including large database schemas. For large databases, it uses **GraphRAG (Qdrant + Neo4j)** to retrieve the relevant tables, columns, and relationships instead of sending the entire database schema to the LLM. The optimized schema context is then sent to the LLM to generate SQL, validated with **SQLGlot**, and executed through **SQLAlchemy or MCP**.
+
+The platform provides advanced document ingestion for **PDF text, tables, images, and OCR**, including page-aware extraction and retrieval of original source images associated with answers.
+
+A built-in **Simple Web Chatbot** provides an easy way for users to interact with the platform without dealing directly with APIs. It supports **streaming answers, conversation history, suggested questions, source files/images, backend/profile selection, multilingual interfaces, and RTL/LTR layouts**.
+
+It also includes **conversation-aware query rewriting, Redis conversation history, source-aware answers, backend profiles, per-user/session configuration, retries, caching, debugging, and stage-performance timing**.
+
+`AgnosticRagMCP` extends the platform through the **Model Context Protocol (MCP)**, connecting RAG knowledge bases with **Odoo, PostgreSQL, Google Drive, Telegram, WhatsApp, Microsoft Teams, and custom enterprise services**.
+
+The platform is highly **configuration-driven**: LLMs, embedding models, prompts, retrieval strategies, GraphRAG behavior, RagSQL, routing, chunking, reranking, and backend settings can be changed without modifying the main business logic.
+
+It supports **OpenAI, Google Gemini, Ollama, Hugging Face/local models**, with modular deployment through **Docker, on-premises infrastructure, or cloud environments**.
+
+The result is a flexible platform where **private documents, knowledge graphs, multimodal data, databases, enterprise applications, and conversational AI interfaces work together behind one unified Agentic AI platform**.
+
+  ---
+#### Flow Chart : Simple
+
+![Flow Chart : Simple](images/AgnosticRag_flowchart_simple.png)
+
+  ---
+#### Flow Chart : Details
+
+![Flow Chart : Details](images/AgnosticRag_flowchart_details.png)
+
+  --- 
+<table>
+  <tr>
+    <td align="center">
+      <b>Full RAG with translation</b><br>
+  <a href="https://www.youtube.com/watch?v=GIbtlLuHlyg">
+    <img src="https://img.youtube.com/vi/GIbtlLuHlyg/maxresdefault.jpg" width="400">
+      </a>
+    </td>
+    <td align="center">
+      <b>Full RAG With Images/PDFs</b><br>
+  <a href="https://www.youtube.com/watch?v=aKKh4YvL17s">
+    <img src="./images/Main4.PNG" width="800" alt="Full RAG With Images/PDFs">
+  </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Full RAG with Medical Data csv Table</b><br>
+  <a href="https://www.youtube.com/watch?v=8koN_m8l39s">
+    <img src="https://img.youtube.com/vi/8koN_m8l39s/maxresdefault.jpg" width="800">
+  </a>
+    </td>
+    <td align="center">
+      <b>Full RAG with Images : Search by an image or text</b><br>
+  <a href="https://www.youtube.com/watch?v=BzggFYE44i8">
+    <img src="https://img.youtube.com/vi/BzggFYE44i8/maxresdefault.jpg" width="400">
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Visual search AgnosticRAG</b><br>
+  <a href="https://www.youtube.com/watch?v=-IU3sSE7fD8">
+    <img src="https://img.youtube.com/vi/-IU3sSE7fD8/maxresdefault.jpg" width="800">
+  </a>
+    </td>    
+    <td align="center">
+      <b>Search in TXT and CSV using AgnosticRagRouter</b><br>
+  <a href="https://www.youtube.com/watch?v=fOU6PBjQch8">
+    <img src="https://img.youtube.com/vi/fOU6PBjQch8/maxresdefault.jpg" width="800">
+  </a>
+    </td>
+  </tr>  
+    <tr>
+    <td align="center">
+      <b>AgnosticRagMCP Telegram</b><br>
+  <a href="https://www.youtube.com/watch?v=ZF_NdOJTzfo">
+    <img src="https://img.youtube.com/vi/ZF_NdOJTzfo/maxresdefault.jpg" width="800">
+  </a>
+    </td>    
+    <td align="center">
+            <b>AgnosticRagMCP MS Teams</b><br>
+  <a href="https://www.youtube.com/watch?v=WLbRCGKRDdo">
+    <img src="https://img.youtube.com/vi/WLbRCGKRDdo/maxresdefault.jpg" width="800">
+  </a>
+    </td>
+  </tr>
+      <tr>
+    <td align="center">
+      <b>GraphRAG using Qdrant + Neo4j</b><br>
+  <a href="https://www.youtube.com/watch?v=dbYoXbP0LSg">
+    <img src="https://img.youtube.com/vi/dbYoXbP0LSg/maxresdefault.jpg" width="800">
+  </a>
+    </td>    
+    <td align="center">
+      <b>Full Example : Txt, CSV, Image, Audio and Graph</b><br>
+  <a href="https://www.youtube.com/watch?v=_LZ2YVS9wwI">
+    <img src="images/full_example_thumbnail.png" width="800">
+  </a>
+    </td>
+  </tr> 
+</table>
+
+## ✨ Key Highlights
+
+- **Core Multi-Modal RAG API** built with a clean, modular, and extensible architecture
+- **Config-Driven RAG** using `rag_settings.json` for models, embeddings, reranking, chunking, prompts, retrieval, and caching
+- **Config-Driven GraphRAG** using `graph_rag_settings.json` for Neo4j, graph extraction, entity/relation rules, query strategies, and prompts
+- **AgnosticRagRouter** intelligent LLM-based backend routing and multi-backend orchestration
+- **Config-Driven AgnosticRagRouter** using `router_settings.json` for routing rules, backends, prompts, retries, and thresholds
+- **AgnosticRagMCP** MCP-based enterprise integrations for Odoo, PostgreSQL, Telegram, WhatsApp, Microsoft Teams, Google Drive, and custom services
+- **Config-Driven AgnosticRagMCP** using `mcp_settings.json` for external services, tools, and database profiles
+- **RagSQL / Text-to-SQL** for natural-language querying of PostgreSQL databases
+- **RagSQL for Large Databases** using **Qdrant + Neo4j** to retrieve only the relevant database schema before SQL generation
+- **RagSQL Direct & Schema-RAG Modes** with **MCP or SQLAlchemy** for schema extraction and SQL execution
+- **SQL Validation** using **SQLGlot** before database execution
+- **Database Profiles** for configurable database connections, schema providers, SQL executors, and RagSQL modes
+- **GraphRAG** using **Qdrant + Neo4j** for semantic retrieval, entities, relationships, and multi-hop reasoning
+- **Multiple GraphRAG Query Strategies** including Simple, Simple Entity, Complex, Complex Broad, Hybrid, and Adaptive
+- **Qdrant Vector Search** with configurable collections and embedding models
+- **Hybrid Search** combining **BM25 sparse + Dense vector embeddings**
+- **PDF Data Extraction** for **text, tables, images, and image OCR**
+- **Page-Aware PDF Retrieval** with page numbers and source references
+- **PDF Source Images** associated with answers can be retrieved and displayed to users
+- **Flexible Ingestion** for CSV, TXT, PDF, Images, Audio, OCR, and database schemas
+- **CSV Retrieval** with table/field-aware extraction
+- **TXT Retrieval** with paragraph-based chunking
+- **Multi-Vector Image/PDF Retrieval** using **ColQwen / ColPali**
+- Optional **Muvera Fixed-Dimensional Encoding (FDE)** for fast image retrieval
+- **Multimodal Queries** supporting text, image, audio, text+image, and text+audio
+- **Audio Search** using Whisper + CLAP with Qdrant/Neo4j
+- **Audio Query Support** through uploaded audio files or text queries
+- **Hybrid Audio Transcript Search** using BM25 sparse + Dense embeddings
+- **Query Rewriting** creates a standalone retrieval query from the current query and conversation history
+- **Redis Conversation History** organized by `app_id / user_id / session_id`
+- **User & Backend Profiles** for per-user, per-session, Router, backend, MCP, and database configurations
+- **Source-Aware Answers** with source files, page numbers, images, and suggested questions
+- **Streaming Responses** for interactive RAG and chatbot experiences
+- **Built-in Caching** with engine/model cache and optional media/query result caching
+- **Performance Monitoring** with stage timing, logging, debugging, and request tracing
+- **Pluggable LLM Providers** including OpenAI, Gemini, Ollama, Hugging Face Transformers, and local models
+- **Cloud-Agnostic Deployment** supporting cloud and on-premises environments
+- **Horizontally Scalable Architecture** with independent RAG backends and services
+- **Docker-Based Modular Deployment** for text, image, audio, CSV, GraphRAG, RagSQL, Router, MCP, and UI services
+- **Simple Web Chatbot** with streaming, conversation history, sources, images, suggested questions, profiles, and multilingual support
+- **Simple Desktop GUI** for configuration, indexing, querying, testing, and backend/Router/RagSQL selection
+---
+
+- **Rewrite Prompt**
+```bash
+User query
+   ↓
+Load last N Redis turns (e.g., 2–3)
+   ↓
+Rewrite LLM (prompt above)
+   ↓
+Rewritten query
+   ↓
+Embedding
+   ↓
+Qdrant
+```
+
+- **Rewrite Prompt + GraphRAG Retrieval**
+```bash
+User query
+   ↓
+Load last N Redis turns (e.g., 2–3)
+   ↓
+Rewrite LLM
+   ↓
+Rewritten query
+   ↓
+Embedding
+   ↓
+Qdrant Semantic Search
+   ↓
+(Optional) Neo4j Graph Search
+   ↓
+Merge Semantic + Graph Results
+   ↓
+LLM Answer
+```
+
+---
+- **Config-Driven** `rag_settings.json` (models, rerank, chunking, prompts)
+```bash
+{
+  "api_base_url": "http://localhost:8000",
+  "qdrant_url": "http://localhost:6333",
+  "collection_prefix": "ManyImages-",
+  "collection_name": "ManyImages-__vidore_colpali-v1.3__multivector_image__dim128__muvera",
+  "enable_neo4j_with_qdrant": false,
+  "graph_store_provider": "neo4j",  
+  "topk_retrieve": 10,
+  "topk_use": 5,
+  "enable_rerank": false,
+  "text_group_lines": 1,
+  "txt_chunk_chars": 900,
+  "txt_overlap": 120,
+  "batch_size": 64,
+  "is_paragraph_enable": false,
+  "paragraph_end_str": "",
+  "include_marker": false,
+  "marker_contains": false,
+  "enable_structured_csv_lookup": false,
+  "enable_exact_filter_first": false,
+  "enable_qdrant_hybrid_search_csv": false,
+  "use_qdrant_hybrid_search_csv": false,
+  "enable_muvera_for_multi_vector_image": true,
+  "use_muvera_for_multi_vector_image": false,
+  "send_images_to_final_chat_for_multi_vector_image": true,
+  "docs_dir": "rag_data\\my_csvs\\docs",
+  "rerank_prompt_template": "You are a retrieval re-ranker.\nGiven a user question and a list of candidate contexts, select the most relevant items.\nRules:\n- Choose exactly {choose_k} distinct indices.\n- Prefer contexts that directly contain facts needed to answer.\n- Avoid redundant/duplicate contexts.\n- Output ONLY valid JSON, no extra text.\n\nReturn JSON format:\n{{\n  \"selected_indices\": [0, 2, 5],\n  \"reasons\": [\"short reason 1\", \"short reason 2\", \"short reason 3\"]\n}}\n\nQuestion:\n{query}\n\nCandidates:\n{candidates}",
+  "answer_prompt_template": "You are an assistant that answers strictly from retrieved context.\n\nIMPORTANT RULES:\n- Use ONLY the information in the Context.\n- First, check if there is an EXACT match to the Question (all provided key=value pairs) in a single Context row.\n- If there is an exact match:\n  - Output ONLY the value of Initial_ActivityDenialCode from that row.\n- If there is NO exact match but Context is not empty:\n  - Output:\n    Closest match (not exact).\n  - List differing fields (requested vs found).\n  - Then output ONLY the value of Initial_ActivityDenialCode from the closest-match row (the highest score row).\n- If Context is empty:\n  - Reply exactly: \"I don't know based on the provided context.\"\n- Do NOT add any other text.\n\nContext:\n{context}\n\nQuestion:\n{query}\n\nAnswer:",
+  "answer_prompt_template_image": "  You are an assistant that answers the user's question based on retrieved image(s) and recent conversation history.\n  \n  The retrieved images are provided as attachments alongside this prompt.\n\n  Rules:\n  - For questions about the images, answer using the visual content of the attached images.\n  - For meta-questions about the conversation (e.g. \\\"what did I just ask?\\\"), answer from the Conversation history below.\n  - If the images do not contain enough information to answer, reply exactly: \\\"I don't know based on the retrieved images.\\\"\n  - Keep the answer clear and concise.\\n\\nConversation history (most recent last):\n  {history}\n  \n  Retrieved image references (for traceability):\n  {context}\n  \n  Question: {query}\n  \n  Answer:",
+  "answer_prompt_template_audio": "You are an assistant that answers using BOTH the retrieved context and the recent conversation history.\n\nIMPORTANT RULES:\n- Prefer the Context for factual answers.\n- Use History only for continuity (follow-ups, pronouns).\n- DO NOT repeat the question.\n- DO NOT hallucinate or add information not present in the Context.\n- If the answer is not found in Context, reply exactly:\n  \"I don't know based on the provided context.\"\n\nOUTPUT FORMAT (STRICT):\n\n1) First: provide a clean and concise answer.\n2) Then: append the section EXACTLY as shown below.\n\nAssistant:\n<final answer>\n\nSelected Context:\n<context exactly as provided below, DO NOT modify, DO NOT summarize, DO NOT reorder>\n\n---\n\nHistory (last turns):\n{history}\n\nContext:\n{context}\n\nQuestion: {query}\n\nAnswer:",
+  "translate_prompt_template": "You are a translation engine.\n\n    Task:\n    - Translate the user text into natural English.\n    Rules:\n    - Output ONLY the English translation.\n    - No explanations, no quotes, no extra text.\n    - Keep proper nouns, IDs, emails, URLs, and numbers unchanged.\n    - If the text is already English, output it unchanged.\n\n    User text:\n    {text}",
+  "rewrite_prompt_template": "You are a query rewriting assistant for a retrieval-augmented generation (RAG) system.\n\nYour job is to rewrite the user's current message into a single, clear, standalone search query\nthat can be used to retrieve documents from a vector database.\n\nRules:\n- Use the conversation only to resolve references (e.g. \"it\", \"that\", \"the second one\").\n- Do NOT introduce new topics.\n- Do NOT answer the user.\n- Do NOT include chatty or conversational text.\n- Output ONLY the rewritten search query.\n- If the user query is already clear and standalone, return it unchanged.\n\nRecent conversation:\n{history}\n\nCurrent user question:\n{query}\n\nRewrite this into one concise standalone retrieval query.",
+  "enable_auto_translate": false,
+  "enable_rewrite": false,
+  "embedding_model": "vidore/colqwen2-v1.0",
+  "main_model": "gpt-4o-mini",
+  "translate_model": "qwen3:1.7b",
+  "rewrite_model": "gpt-4o-mini",
+  "main_provider": "openai",
+  "embedding_provider": "colqwen",
+  "translate_provider": "ollama",
+  "rewrite_provider": "openai",
+  "transformer_device": "cpu",
+  "transformer_trust_remote_code": true,
+  "transformer_local_files_only": false,
+  "transformer_embedding_trust_remote_code": false,
+  "transformer_embedding_local_files_only": false,
+  "transformer_embedding_backend": "auto",
+  "transformer_embedding_normalize": true,
+  "transformer_embedding_max_length": 512,
+  "transformer_embedding_prompt_prefix": "query: ",
+  "transformer_embedding_model_path": "",
+  "transformer_chat_backend": "causal",
+  "transformer_chat_model_path": "",
+  "transformer_chat_prompt": "{joined}",
+  "transformer_max_new_tokens": 128,
+  "transformer_temperature": 0.0,
+  "transformer_top_p": 0.9,
+  "transformer_do_sample": false,
+  "transformer_system_prompt": "",
+  "transformer_max_input_length": 2048,
+  "audio_clap_enable": false,
+  "enable_text_transcript_audio_one_search_qdrant": false,
+  "audio_clap_model": "laion/clap-htsat-unfused",
+  "audio_transcript_embedding_provider": "transformer",
+  "audio_transcript_embedding_model": "intfloat/multilingual-e5-small",
+  "whisper_language": "en",
+  "whisper_beam_size": 5,
+  "whisper_vad_filter": false,
+  "whisper_vad_threshold": 0.5,
+  "whisper_word_timestamps": false,
+  "whisper_device": "cpu",
+  "whisper_compute_type": "int8",
+  "audio_target_sr": 48000,
+  "audio_whisper_sr": 16000,
+  "silero_min_silence_ms": 250,
+  "silero_speech_pad_ms": 150,
+  "silero_threshold": 0.4,
+  "silero_window_samples": 512,
+  "audio_min_chunk_seconds": 1.2,
+  "audio_max_chunk_seconds": 20.0,
+  "audio_merge_gap_ms": 300,
+  "env_path": "keys.env",
+  "redis_url": "redis://localhost:6381",
+  "redis_store": "redis_store",
+  "redis_prefix": "rag",
+  "app_id": "rag_api1",
+  "session_id": "defaault1",
+  "user_id": "local_user1",
+  "history_turns": 5,
+  "history_rewrite_turns": 2,
+  "history_max_turns": 2000,
+  "history_ttl_seconds": 604800
+}
+```
+---
+- **Config-Driven AgnosticRagRouter** `router_settings.json` (routing, backends, prompts, retries, thresholds)
+
+```json
+{
+  "router_provider": "openai",
+  "router_model": "gpt-4o-mini",
+  "router_temperature": 0.0,
+  "router_prompt": "You are a routing agent. Choose the best RAG backend for the user query.",
+  "routing_mode": "rules_then_llm",
+  "fallback_backend": "eyad_asil",
+  "allow_multi_backend": false,
+  "confidence_threshold": 0.6,
+  "llm_call_timeout_seconds": 60.0,
+  "llm_call_retries": 1,
+  "backend_call_timeout_seconds": 180.0,
+  "backend_call_retries": 1,
+  "env_path": "keys.env",
+  "transformer_device": "cuda",
+  "transformer_trust_remote_code": true,
+  "transformer_local_files_only": false,
+  "transformer_chat_backend": "",
+  "transformer_chat_model_path": "",
+  "transformer_chat_prompt": "{joined}",
+  "transformer_max_new_tokens": 256,
+  "transformer_temperature": 0.0,
+  "transformer_top_p": 0.9,
+  "transformer_do_sample": false,
+  "transformer_system_prompt": "",
+  "transformer_max_input_length": 2048,
+  "openai_api_key": "",
+  "gemini_api_key": "",
+  "backends": [
+    {
+      "name": "medical_csv",
+      "title": "Medical CSV RAG",
+      "url": "http://localhost:8002",
+      "query_path": "/query",
+      "index_path": "/index/build",
+      "description": "Use for medical CSV questions, claims, claim denial codes, diseases, treatments, medicines, patient/insurance/medical table lookups.",
+      "source_type": "csv",
+      "docs_dir": "rag_data/my_csvs/docs",
+      "source_files": [
+        "claims_300.csv"
+      ],
+      "collection_prefix": "medical_csv",
+      "enabled": true,
+      "rules": {
+        "keywords_any": [
+          "medical",
+          "medicine",
+          "doctor",
+          "disease",
+          "treatment",
+          "drug",
+          "medicine",
+          "patient",
+          "claim",
+          "claims",
+          "denial",
+          "denialcode",
+          "insurance",
+          "سكري",
+          "ضغط",
+          "مرض",
+          "علاج",
+          "دواء",
+          "طبي",
+          "مطالبة",
+          "تأمين"
+        ]
+      },
+      "query_stream_path": "/query_stream"
+    },
+    {
+      "name": "eyad_asil",
+      "title": "Eyad Asil TXT RAG",
+      "url": "http://localhost:8001",
+      "query_path": "/query",
+      "index_path": "/index/build",
+      "description": "Use for questions about Eyad, Asil, family/private TXT knowledge, children info, personal notes in Asil_Eyad.txt.",
+      "source_type": "txt",
+      "docs_dir": "rag_data/my_csvs/docs",
+      "source_files": [
+        "Asil_Eyad.txt"
+      ],
+      "collection_prefix": "eyad_asil",
+      "enabled": true,
+      "rules": {
+        "keywords_any": [
+          "eyad",
+          "asil",
+          "إياد",
+          "اياد",
+          "أسيل",
+          "اسيل",
+          "لجين",
+          "lujain",
+          "family",
+          "child",
+          "children",
+          "عائلة",
+          "طفل",
+          "أطفال"
+        ]
+      },
+      "query_stream_path": "/query_stream"
+    }
+  ],
+  "routing_function_schema": "{\n  \"function\": \"query_<backend_name>_rag\",\n  \"arguments\": {\"query\": \"original user query\"},\n  \"backend_name\": \"backend_name\",\n  \"confidence\": 0.0,\n  \"reason\": \"short reason\"\n}",
+  "routing_rules_prompt": "- Choose medical_csv for medical CSV claims, denial codes, patient/insurance/medical table questions.\n- Choose eyad_asil for Eyad/Asil/private TXT family information.\n- If uncertain, choose the closest backend with low confidence.\n- Keep the original user query unchanged in arguments.query.",
+  "routing_prompt_template": "{router_prompt}\n\nYou are routing a user query to exactly one AgnosticRAG backend.\nReturn ONLY valid JSON. Do not use markdown. Do not add explanations outside JSON.\n\nAvailable tools/functions:\n{backend_tools}\n\nAvailable backend descriptions:\n{backend_descriptions}\n\nRequired JSON schema:\n{function_schema}\n\nRules:\n{routing_rules}\n\nUser query:\n{query}\n",
+  "stream_media_type": "text/event-stream",
+  "cors_allowed_origins": [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200"
+  ],
+  "cors_allowed_methods": [
+    "GET",
+    "POST",
+    "OPTIONS"
+  ],
+  "cors_allowed_headers": [
+    "*"
+  ]
+}
+```
+---
+## 🧠 Architecture Overview
+
+```
+GUI (Web / Desktop)
+   ↓
+AgnosticRagMCP (Optional)
+   ├── Telegram
+   ├── WhatsApp
+   ├── MS Teams
+   ├── Google Drive
+   └── External Tools / Drivers
+   ↓
+AgnosticRagRouter (Optional)
+   ↓
+Core RAG API (FastAPI)
+   ↓
+RAG Engine
+   ├── LLM Providers (Transformers, vLLM(Later), Ollama, OpenAI, Gemini, ...)
+   ├── Vector Store (Qdrant)
+   ├── Graph Store (Neo4j)   
+   └── Data Sources (Txt, CSV, Images, Audio(Speech))
+```
+
+- **Core API**: Handles retrieval, embeddings, GraphRAG, prompt construction, history, reranking, caching, and inference..
+- **AgnosticRagRouter**: Intelligent LLM-based routing and multi-backend orchestration.
+- **AgnosticRagMCP**: MCP-based integrations layer for Telegram, WhatsApp, MS Teams, Google Drive, enterprise connectors, and external AI tools/drivers.
+- **GUI (Desktop/Web)**: Thin client that communicates with the Core API or Router for quick testing and configuration generation.
+- **LLM Providers**: Swappable providers selected dynamically through configuration.
+- **Qdrant**: Hybrid vector database for dense, sparse, multimodal, and multivector retrieval.
+- **Neo4j**: Knowledge graph database for entity relationships, GraphRAG retrieval, and multi-hop reasoning.
+  
+---
+
+## 🚀 Core RAG API
+
+The Core API is responsible for:
+
+- Query understanding
+- Context retrieval from Qdrant and Neo4j
+- Hybrid search (Dense + BM25)
+- GraphRAG retrieval and multi-hop reasoning
+- Prompt construction
+- LLM inference
+- Conversation history management
+- Query rewriting and reranking
+- Multi-modal retrieval (text, image, audio)
+
+It can be used:
+- Directly as a FastAPI backend
+- As a backend for the provided GUI applications
+- As a foundation for custom enterprise applications
+- As a scalable backend for multi-RAG and GraphRAG deployments
+
+---
+## 🧠 AgnosticRagRouter
+
+`AgnosticRagRouter` is an intelligent routing layer for multi-backend RAG systems.
+
+It is responsible for:
+
+- LLM-based backend selection
+- Query routing across multiple RAG backends
+- Multi-domain orchestration
+- Dynamic backend dispatching
+- Agentic-AI style routing workflows
+- Configurable routing strategies and retry logic
+
+Example:
+- Text RAG backend
+- CSV / Medical RAG backend
+- Image RAG backend
+- Audio / Speech RAG backend
+
+The router can automatically select the most relevant backend depending on the user query.
+
+---
+## 🔌 AgnosticRagMCP
+
+`AgnosticRagMCP` is an MCP-based external integrations layer.
+
+It enables external systems and messaging platforms to communicate with AgnosticRagRouter and the Core RAG APIs.
+
+Supported / planned integrations:
+
+- Telegram Bots
+- WhatsApp Bots
+- MS Teams Bots
+- Google Drive tools
+- Enterprise connectors & drivers
+- External AI tools
+- MCP orchestration workflows
+
+Example flow:
+
+Telegram / WhatsApp / MS Teams User
+        ↓
+AgnosticRagMCP
+        ↓
+AgnosticRagRouter
+        ↓
+Selected RAG Backend 
+        ↓ 
+Qdrant Search + Neo4j Graph Search 
+        ↓ 
+Merge Semantic + Graph Context 
+        ↓ 
+       LLM 
+        ↓ 
+  Reply to User
+
+---
+
+## 🖥️ GUI (Quick Testing)
+
+The GUI is built on top of the Core API and provides:
+
+- Interactive chat interface
+- History-aware conversations
+- Easy switching between RAG configurations
+- Runtime configuration generation
+- Multi-backend testing support
+
+The GUI **does not contain RAG logic**; it strictly consumes the Core API, this will help admin and developers to setup the deployment configuration quickly.
+
+---
+
+## 🔌 LLM Providers
+
+### Current / Supported
+
+- **Ollama** (local)
+- **Transformer** (local)
+- **OpenAI** (remote)
+- **Gemini** (remote)
+- **ColPali** (multivector image retrieval) (local)
+- **ColQwen** (multivector image retrieval) (local)
+- **Whisper** (speech/audio transcription) (local)
+
+### Embedding / Retrieval Support
+- Dense embeddings
+- BM25 sparse embeddings
+- Hybrid search
+- Multi-vector retrieval
+- CLAP audio embeddings
+- Muvera FDE acceleration for image retrieval
+
+---
+
+## 🔮 Incoming Features
+    
+- **Transformers provider & vLLM provider**
+  - Local execution
+  - Hugging Face model support
+  - Transformers: Windows / Linux, GPU optional
+  - vLLM: Best for Ubuntu / Linux production
+
+- **PostgreSQL Data Source**
+  - Index relational data into **Qdrant**
+  - Enables RAG over structured datasets
+
+
+  
+---
+## 📦 Vector Store
+
+- **Qdrant** is used as the primary vector database
+- **Neo4j** is used as the knowledge graph database for GraphRAG
+
+- Supports:
+**Qdrant**
+  - Dense vector search
+  - Metadata filtering
+  - Multi-collection setups
+  - Qdrant-Hybrid search : BM25 (sparse) + Dense embeddings
+
+**Neo4j**
+  - Entity and relationship storage
+  - Graph traversal and relationship discovery
+  - Multi-hop retrieval
+  - GraphRAG context enrichment
+  - Relationship-aware search
+---
+
+## 🛠️ Configuration
+
+The system is configured via:
+
+- Environment variables
+- Config files
+- Provider-specific settings
+
+This allows you to:
+- Switch LLM providers
+- Change chat, embedding, translate and  rewrite models
+- Toggle rewrite prompt logic
+- Select data sources
+  
+---
+### Start Qdrant & Redis & RedisInsight By Docker `docker-compose.yml`
+
+Start All
+```bat
+docker compose up -d
+```
+
+Stop All
+```bat
+docker compose down
+```
+---
+
+## 🌐 URLs
+
+- **Swagger UI**: http://localhost:8000/docs
+- **Qdrant Dashboard**: http://localhost:6333/dashboard
+- **Neo4j Browser**: http://localhost:7474/browser/
+- **RedisInsight**: http://localhost:5540/
+
+---
+
+## ⚙️ Settings API
+
+```
+GET  http://localhost:8000/settings
+POST http://localhost:8000/settings
+```
+
+---
+
+## 📥 Index Data
+
+```
+POST http://localhost:8000/index/build
+
+{
+}
+```
+
+---
+
+## 📡 Qdrant State
+
+```
+GET http://localhost:8000/ping/qdrant
+GET http://localhost:8000/ping/qdrantWithInfo
+```
+
+---
+
+## ❓ Query Stream API
+
+```
+POST http://localhost:8000/query_stream
+
+{
+  "query": "who is here Father?",
+  "user_id": "local_user88777"
+}
+```
+
+## ❓ Query API
+
+```
+POST http://localhost:8000/query
+
+{
+  "query": "who is here Father?",
+  "user_id": "local_user88777"
+}
+```
+
+---
+
+## GUI Windows
+#### Main Window : Search in txt Files
+
+![Main Window](images/Main.PNG)
+
+  ---
+#### Main Window : Search in csv Files Tables
+
+![Main Window2](images/Main2.PNG)
+
+  ---
+#### Main Window : Search in Images by text query
+
+![Main Window3](images/Main3.PNG)
+
+  ---
+#### Main Window : Search in Images by image query
+
+![Main Window4](images/Main4.PNG)
+
+  ---  
+#### Main Window : Search in Audio(Speech) by text/audio_file query
+
+![Main Window5](images/Main5.PNG)
+
+  ---  
+#### Main Window : Search in TXT and CSV using AgnosticRagRouter
+
+![Main Window6](images/Main6.PNG)
+
+  ---    
+#### Results Window
+
+![Results Window](images/Results.PNG)
+
+---
+#### Logs Window
+
+![Logs Window](images/Logs.PNG)
+
+---
+#### History Window
+
+![History Window](images/History.PNG)
+
+---
+#### Settings Window
+
+![Settings Window](images/Settings1.PNG)
+
+---
+#### Settings Window
+
+![Settings Window](images/Settings2.PNG)
+
+---
+#### Qdrant Collections
+
+![Qdrant Collections](images/QdrantCollections.PNG)
+
+---
+#### Redis Data
+
+![Redis Data](images/Redis.PNG)
+---
+#### Swagger
+
+![Swagger](images/Swagger.PNG)
+---
+#### Telegram
+
+![Telegram](images/AgnosticRagMCP_Telegram.PNG)
+---
+
+## 📄 License
+
+MIT License © 2026 Mohammed & Manaf
+
+https://www.linkedin.com/in/mohammedkadi/
+
+https://www.linkedin.com/in/m-manaf-mahfouz-pmi-cpmai%C2%AE-2614b48/

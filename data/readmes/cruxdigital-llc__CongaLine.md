@@ -1,0 +1,802 @@
+# CongaLine 🦞🦞🦞
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-%3E%3D1.25.0-00ADD8.svg)](go.mod)
+[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.5-7B42BC.svg)](terraform/)
+
+<p align="center">
+  <img src="assets/congaline.png" alt="AI agents" width="300">
+</p>
+
+Self-host a fleet of isolated AI agents — each with its own container, network, secrets, and identity — managed through a single CLI. Choose your runtime ([OpenClaw](https://github.com/openclaw/openclaw) or [Hermes Agent](https://github.com/NousResearch/hermes-agent)), connect them to Slack or Telegram, and deploy anywhere: your laptop, a $5 VPS, a Raspberry Pi, or a hardened AWS account.
+
+> **CongaLine** *n.* A single-file procession of spiny lobsters that travel in physical contact during seasonal migration, reducing hydrodynamic drag and offering collective protection from predators.
+## Key Features
+
+- **Pluggable agent runtimes** — choose OpenClaw or Hermes per agent. Same Conga infrastructure, your choice of agent. Adding a third runtime is one Go package.
+- **Multi-channel support** — Slack and Telegram out of the box, each with its own central router that fans events out to per-agent containers
+- **Promotion pipeline** — develop locally, validate on a remote host, enforce in production. Same config at every tier.
+- **Per-agent isolation** — separate Docker containers, networks, secrets, and config
+- **Portable deployment policy** — define egress rules, model routing, and security posture in a single `conga-policy.yaml`. Each provider enforces what it can and reports the gap.
+- **Channels optional** — use via web UI (gateway) only, or connect to Slack/Telegram for messaging
+- **Two agent types** — user agents (DM-only) for individuals, team agents (channel-based) for groups
+- **CLI for everything** — operators and end users manage agents, secrets, and infrastructure through the `conga` CLI
+- **Modular provider system** — pluggable deployment targets (AWS, local, remote, future: Kubernetes, ECS)
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    CLI Commands                      │
+│  (setup, add-user, policy, channels, status, ...)    │
+└────────────────────┬─┬──────────────────────────────┘
+                     │ │
+        Provider     │ │ Runtime    (orthogonal)
+        (where)      │ │ (what)
+                     ▼ ▼
+       ┌─────────────────────────────┐
+       │  Any Provider × Any Runtime  │
+       └─────────────────────────────┘
+       │                             │
+   ┌───┴───────┐                 ┌───┴────┐
+   ▼           ▼                 ▼        ▼
+┌──────┐  ┌────────┐  ┌────────────┐  ┌────────┐
+│ AWS  │  │ Remote │  │  OpenClaw  │  │ Hermes │
+│      │  │  SSH   │  │  Node.js   │  │ Python │
+│ Local│  │        │  │ JSON cfg   │  │YAML cfg│
+└──────┘  └────────┘  └────────────┘  └────────┘
+```
+
+**Provider** decides *where* an agent runs (AWS, local Docker, remote SSH host).
+**Runtime** decides *what* agent runs (OpenClaw, Hermes, future runtimes).
+The two are orthogonal — any provider works with any runtime.
+
+### Separation of Concerns
+
+| Layer | Managed by | What it does |
+|-------|-----------|-------------|
+| **Infrastructure** | Terraform (AWS), `conga admin setup` (remote/local) | VPC/EC2, remote host, or local Docker environment |
+| **Configuration** | CLI (`conga admin setup`) | Runtime selection, model, shared secrets, Docker image |
+| **Agents** | CLI (`conga admin add-user/add-team`) | Per-agent containers, configs, routing, secrets |
+| **Policies** | CLI (`conga policy`) | Egress rules, security posture, routing enforcement |
+| **Channels** | CLI (`conga channels`) | Slack/Telegram routers, agent-channel bindings |
+
+## Supported Runtimes
+
+| Runtime | Language | Config | Default Image | Notes |
+|---------|----------|--------|---------------|-------|
+| **OpenClaw** | Node.js | `openclaw.json` | `ghcr.io/openclaw/openclaw:2026.6.5` | Native Slack via webhook plugin |
+| **Hermes** | Python | `config.yaml` | `nousresearch/hermes-agent:latest` | OpenAI-compatible API on port 8642 |
+
+Adding a third runtime is a single Go package under `pkg/runtime/<name>/` implementing the 22-method `Runtime` interface. No changes to providers, CLI, or core logic.
+
+> **Note:** Multi-runtime support is fully wired on the **local provider** today. The remote and AWS providers currently default to OpenClaw — Runtime interface integration on those providers is on the roadmap.
+
+## Supported Channels
+
+| Channel | Setup | Router | Notes |
+|---------|-------|--------|-------|
+| **Slack** | `conga channels add slack` | Socket Mode → HTTP fan-out | Walks you through creating a Slack app with the right scopes |
+| **Telegram** | `conga channels add telegram` | Long-polling (or webhook in production) | Walks you through @BotFather setup |
+
+Each channel runs a dedicated router container (`conga-router`, `conga-telegram-router`) that holds the single platform connection and fans events out to per-agent containers based on routing rules. One crash on Slack doesn't affect Telegram.
+
+## Bootstrap from Manifest
+
+The fastest way to stand up a complete environment — one file, one command.
+
+### 1. Create a manifest
+
+Copy the example and customize:
+
+```bash
+cp demo.yaml.example demo.yaml
+# Edit demo.yaml: set SSH host, Slack IDs, etc.
+```
+
+### 2. Create an env file with secrets
+
+```bash
+cat > demo.env << 'EOF'
+ANTHROPIC_API_KEY=sk-ant-...
+# Slack (optional)
+SLACK_BOT_TOKEN=xoxb-...
+SLACK_SIGNING_SECRET=...
+SLACK_APP_TOKEN=xapp-...
+# Telegram (optional)
+TELEGRAM_BOT_TOKEN=123456789:ABC...
+EOF
+```
+
+### 3. Bootstrap
+
+```bash
+conga bootstrap demo.yaml --env demo.env
+```
+
+This provisions the entire environment in one shot: server setup, agents, secrets, Slack channels, channel bindings, and egress policy. Each step is idempotent — re-running skips completed work.
+
+The `provider` field in the manifest selects the deployment target (`local`, `remote`, or `aws`). Secrets use `$VAR` references expanded from the env file — they're never stored in the manifest.
+
+> **Note:** `bootstrap` is additive — it creates and configures resources but never removes them. For full declarative lifecycle management (plan, apply, destroy), a Terraform provider is planned.
+
+After bootstrap, use the CLI and MCP tools for ongoing changes:
+```bash
+conga policy set-egress --allowed-domains "api.example.com"   # modify policy
+conga policy deploy                                            # push to agents
+conga admin add-user newagent                                  # add more agents
+conga channels bind newagent slack:U0123456789                 # bind to Slack
+```
+
+---
+
+## Quick Start (Local Docker)
+
+The fastest way to get running — no AWS account needed.
+
+### Prerequisites
+
+- **Docker Desktop** installed and running
+- **Go** >= 1.25 (to build the CLI)
+- **Anthropic API key**
+
+### 1. Build the CLI
+
+```bash
+go build -o /usr/local/bin/conga ./cmd/conga
+```
+
+### 2. Setup local environment
+
+```bash
+conga admin setup --provider local --runtime hermes   # or --runtime openclaw
+```
+
+This will prompt for the repo path (auto-detected), the LLM model (for Hermes), and the Docker image. Defaults are sensible — you can press Enter through most prompts. Channels are configured separately via `conga channels add`.
+
+### 3. Add an agent
+
+```bash
+conga admin add-user myagent
+```
+
+The agent inherits the runtime selected during setup. No channel binding needed for gateway-only mode.
+
+### 4. Set your API key
+
+```bash
+conga secrets set anthropic-api-key --agent myagent --value sk-ant-...
+conga refresh --agent myagent
+conga status --agent myagent
+```
+
+`conga status` shows port mappings with service labels:
+```
+Ports:
+  8642 → localhost:18789  (gateway)
+  8644 → localhost:18790  (webhook)
+```
+
+### 5. (Optional) Connect a channel
+
+```bash
+conga channels add slack         # walks you through creating a Slack app
+# or
+conga channels add telegram      # walks you through creating a bot via @BotFather
+
+conga channels bind myagent slack:U0123456789      # for Slack DMs
+conga channels bind myagent telegram:123456789     # for Telegram DMs
+```
+
+Each `channels add` command displays a step-by-step guide explaining where to obtain the credentials.
+
+### 6. Connect to the web UI
+
+```bash
+conga connect --agent myagent
+```
+
+Open the URL in your browser. Device pairing is auto-approved.
+
+### 7. Teardown (when done)
+
+```bash
+conga admin teardown --force
+```
+
+Removes all containers, networks, routers, and local config.
+
+## Quick Start (Remote — VPS, Bare Metal, Any SSH Host)
+
+Deploy to any Linux machine you can SSH into — a cloud VPS (Hetzner, DigitalOcean, Linode, Hostinger), a Raspberry Pi, a Mac Mini, a colocated server, or anything else running Linux with 4GB+ RAM.
+
+### Prerequisites
+
+- **Any SSH-accessible Linux host** with 4GB+ RAM and 10GB+ free disk
+- **SSH key authentication** configured (password auth not supported)
+- **Go** >= 1.25 (to build the CLI)
+- **Anthropic API key**
+
+Docker is installed automatically during setup if not already present.
+
+### 1. Build the CLI
+
+```bash
+go build -o /usr/local/bin/conga ./cmd/conga
+```
+
+### 2. Setup remote environment
+
+```bash
+conga admin setup --provider remote
+```
+
+This will prompt for:
+- SSH connection details (host, port, user, key path)
+- Docker image (auto-installs Docker if needed)
+- Slack tokens (optional — skip for gateway-only web UI)
+
+### 3. Add an agent
+
+```bash
+conga admin add-user myagent
+```
+
+With Slack:
+```bash
+conga admin add-user myagent U0123456789
+```
+
+### 4. Set your API key and start
+
+```bash
+conga secrets set anthropic-api-key --agent myagent
+conga refresh --agent myagent
+conga status --agent myagent
+```
+
+### 5. Connect
+
+```bash
+conga connect --agent myagent
+```
+
+Opens an SSH tunnel to the remote host's gateway. Open the URL in your browser — no ports are exposed to the internet.
+
+### 6. Teardown (when done)
+
+```bash
+conga admin teardown
+```
+
+Removes all containers, networks, and data from the remote host.
+
+## Quick Start (AWS)
+
+For teams and production — hardened, zero-ingress deployment.
+
+### Prerequisites
+
+- **AWS account** with [AWS SSO (Identity Center)](https://aws.amazon.com/iam/identity-center/) configured
+- **AWS CLI v2** with **session-manager-plugin** installed
+- **Terraform** >= 1.5
+- **Slack app** configured for the agent runtime (required for AWS deployment)
+- **Agent Docker image** — see [Docker Images](#docker-images)
+
+### 1. Bootstrap Terraform state
+
+```bash
+export AWS_PROFILE=your-aws-profile
+export AWS_REGION=us-east-2
+
+cd terraform
+./bootstrap.sh
+```
+
+### 2. Deploy infrastructure
+
+```bash
+cp backend.tf.example backend.tf    # edit with your account ID, region, profile
+cp terraform.tfvars.example terraform.tfvars  # edit with your settings
+
+terraform init
+terraform plan
+terraform apply
+```
+
+### 3. Configure the deployment
+
+```bash
+conga admin setup
+```
+
+### 4. Add agents and start
+
+```bash
+conga admin add-user boblobclaw UEXAMPLE01
+conga admin add-team bluthcompany CEXAMPLE01
+conga admin list-agents
+
+conga admin cycle-host   # restarts EC2; bootstrap discovers and provisions all agents
+```
+
+## Install the CLI (End Users)
+
+No Terraform, Go, or repo clone required. This is how users manage their agents and secrets as well as access the web UI securely.
+
+### Prerequisites (AWS provider)
+
+- **AWS CLI v2** — [Install guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- **session-manager-plugin** — macOS: `brew install --cask session-manager-plugin` | [Other platforms](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+- **AWS SSO access** — your admin will provide the SSO URL and account ID
+
+### Prerequisites (Remote provider)
+
+- **SSH access** to the remote host (key-based auth)
+
+### Prerequisites (Local provider)
+
+- **Docker Desktop** installed and running
+
+### Install
+
+**Homebrew (macOS/Linux)**:
+```bash
+brew tap cruxdigital-llc/conga-line
+brew install conga
+```
+
+**macOS (Apple Silicon)** — tested:
+```bash
+curl -fsSL https://github.com/cruxdigital-llc/conga-line/releases/latest/download/conga_darwin_arm64.tar.gz | tar xz -C /usr/local/bin conga
+```
+
+**macOS (Intel)**:
+```bash
+curl -fsSL https://github.com/cruxdigital-llc/conga-line/releases/latest/download/conga_darwin_amd64.tar.gz | tar xz -C /usr/local/bin conga
+```
+
+**Linux (amd64)** — untested:
+```bash
+curl -fsSL https://github.com/cruxdigital-llc/conga-line/releases/latest/download/conga_linux_amd64.tar.gz | tar xz -C /usr/local/bin conga
+```
+
+**Linux (arm64)** — untested:
+```bash
+curl -fsSL https://github.com/cruxdigital-llc/conga-line/releases/latest/download/conga_linux_arm64.tar.gz | tar xz -C /usr/local/bin conga
+```
+
+### First-time setup (AWS)
+
+```bash
+aws configure sso --profile your-profile
+export AWS_PROFILE=your-profile
+aws sso login
+
+conga auth status
+conga secrets set anthropic-api-key
+conga refresh
+conga connect            # opens SSM tunnel to web UI
+```
+
+### First-time setup (Remote — VPS, Raspberry Pi, Mac Mini, etc.)
+
+```bash
+conga admin setup --provider remote   # prompts for SSH host, installs Docker
+conga admin add-user myagent
+conga secrets set anthropic-api-key --agent myagent
+conga refresh --agent myagent
+conga connect --agent myagent          # opens SSH tunnel to web UI
+```
+
+### First-time setup (Local)
+
+```bash
+conga admin setup --provider local
+conga admin add-user myagent
+conga secrets set anthropic-api-key --agent myagent
+conga refresh --agent myagent
+conga connect --agent myagent
+```
+
+## CLI Reference
+
+### User Commands
+
+| Command | Description |
+|---------|-------------|
+| `conga auth login` | Authenticate (AWS: SSO login; local: not required) |
+| `conga auth status` | Show identity, provider, and agent mapping |
+| `conga secrets set <name>` | Create or update a secret |
+| `conga secrets list` | List your secrets |
+| `conga secrets delete <name>` | Delete a secret |
+| `conga connect` | Connect to web UI (AWS: SSM tunnel; remote: SSH tunnel; local: direct localhost) |
+| `conga refresh` | Restart container with fresh secrets |
+| `conga status` | Show container status and resource usage |
+| `conga logs` | Tail container logs |
+| `conga policy validate` | Validate policy file and show per-provider enforcement report |
+| `conga version` | Show CLI version |
+
+### Bootstrap
+
+| Command | Description |
+|---------|-------------|
+| `conga bootstrap <manifest.yaml>` | Provision an environment from a YAML manifest (additive, idempotent) |
+
+Flags: `--env <file>` (env file for secret expansion), `-f <file>` (manifest path)
+
+### Admin Commands
+
+| Command | Description |
+|---------|-------------|
+| `conga admin setup` | Configure shared secrets and settings |
+| `conga admin add-user <name> [slack_member_id]` | Provision a user agent (Slack ID optional for gateway-only) |
+| `conga admin add-team <name> [slack_channel]` | Provision a team agent (Slack channel optional for gateway-only) |
+| `conga admin list-agents` | List all provisioned agents (shows status: active/paused) |
+| `conga admin remove-agent <name>` | Remove an agent |
+| `conga admin pause <name>` | Temporarily stop an agent (preserves all data) |
+| `conga admin unpause <name>` | Resume a paused agent |
+| `conga admin cycle-host` | Restart the deployment environment |
+| `conga admin refresh-all` | Restart all agent containers (skips paused) |
+| `conga admin teardown` | Remove the entire deployment (local only; AWS: use `terraform destroy`) |
+
+### Global Flags
+
+| Flag | Description |
+|------|-------------|
+| `--provider` | Deployment provider: `aws`, `local`, `remote` (default: `local`) |
+| `--runtime` | Agent runtime: `openclaw`, `hermes` (default: `openclaw`) |
+| `--data-dir` | Data directory for local provider (default: `~/.conga/`) |
+| `--profile` | AWS CLI profile (default: `AWS_PROFILE` env var) |
+| `--region` | AWS region (default: from config) |
+| `--agent` | Override auto-detected agent name |
+| `--verbose` | Verbose output |
+| `--timeout` | Global timeout for operations (default: 5m) |
+
+## How It Works
+
+### Provider Auto-Detection
+
+The CLI selects a provider using:
+1. `--provider` flag if specified
+2. `~/.conga/config.json` `provider` field if set (persisted by `conga admin setup`)
+3. Default: `local`
+
+Use `--provider aws`, `--provider remote`, or `--provider local`, or run `conga admin setup` to persist the choice.
+
+### AWS Provider
+
+Discovers infrastructure via AWS APIs — no Terraform access or repo clone needed:
+- **Instance**: Found by EC2 tag `Name=conga-line-host`
+- **Agent config**: SSM Parameter Store at `/conga/agents/{name}`
+- **Secrets**: AWS Secrets Manager under `conga/agents/{name}/`
+- **Remote operations**: SSM RunCommand (no SSH, no ingress)
+- **Deterministic networking**: each agent runs on a static Docker subnet `10.99.<idx>.0/24` (agent `.2`, egress proxy `.3`, both pinned). This makes per-agent egress rules predictable and keeps the fleet reboot-safe — a host reboot brings every agent back unattended, with no IP collisions or manual intervention.
+- **Fail-closed egress**: every agent's outbound traffic is filtered by an Envoy proxy + iptables in all modes; only the agent's subnet, established responses, and DNS (port 53) are allowed — everything else is dropped. DNS works out of the box (no allowlist entry needed); application traffic is restricted to your declared domains.
+- **Provisioning engine**: agent lifecycle (systemd units, networks, egress, config) is generated by a shared, unit-tested Go engine and shipped over SSM — not ad-hoc shell — so AWS and remote hosts provision through the same tested code path.
+
+### Remote Provider
+
+For any SSH-accessible Linux host — VPS instances (Hetzner, DigitalOcean, Linode, Hostinger), bare metal servers (Raspberry Pi, Mac Mini), colocated servers, or any machine you can SSH into:
+- **Agent config**: `/opt/conga/agents/{name}.json` on remote host
+- **Secrets**: `/opt/conga/secrets/agents/{name}/` on remote host (file per secret, mode 0400)
+- **Container data**: `/opt/conga/data/{name}/` on remote host
+- **Container operations**: Docker CLI over SSH
+- **Network isolation**: Per-agent Docker bridge networks, localhost-only port binding on remote
+- **Gateway access**: SSH tunnel (no inbound ports exposed beyond SSH)
+- **Channel routers**: One container per platform (Slack, Telegram), auto-started when credentials are configured
+- **Docker auto-install**: Setup detects the OS and installs Docker if not present
+
+### Local Provider
+
+All state lives under `~/.conga/`:
+- **Agent config**: `~/.conga/agents/{name}.json` (includes runtime selection)
+- **Secrets**: `~/.conga/secrets/agents/{name}/` (file per secret, mode 0400)
+- **Container data**: `~/.conga/data/{name}/` (mounted to runtime-specific path: `/home/node/.openclaw` for OpenClaw, `/opt/data` for Hermes)
+- **Container operations**: Docker CLI (`docker run`, `docker logs`, etc.)
+- **Network isolation**: Per-agent Docker bridge networks, localhost-only port binding
+- **Channel routers**: One container per platform (`conga-router` for Slack, `conga-telegram-router` for Telegram), auto-started when channel credentials are configured
+
+## Deployment Policy
+
+CongaLine's three providers form a **promotion pipeline**: define your agent configuration locally, validate it on a remote host, then promote to hardened AWS infrastructure. The same configuration works at every tier — what changes is the enforcement level.
+
+The `conga-policy.yaml` file is the portable policy artifact that travels with your deployment. It defines three categories of policy:
+
+| Section | What it controls | Example |
+|---------|-----------------|---------|
+| **Egress** | Which external domains agents can reach | `allowed_domains: [api.anthropic.com, "*.slack.com"]` |
+| **Routing** | Model selection, fallback chains, cost limits | `default_model: claude-sonnet-4-6` |
+| **Posture** | Security property declarations | `isolation_level: standard`, `secrets_backend: file` |
+
+Each provider enforces what it can and transparently reports the gap:
+
+```bash
+$ conga policy validate --file conga-policy.yaml
+Policy: conga-policy.yaml
+Provider: local
+
+SECTION  RULE              LEVEL          DETAIL
+egress   domain_allowlist  validate-only  Warnings only; use mode: enforce to activate egress proxy
+routing  default_model     validate-only  Model selection validated; enforcement requires Bifrost
+posture  isolation_level   enforced       Docker cap-drop ALL, no-new-privileges, isolated networks
+posture  secrets_backend   enforced       File-based secrets (mode 0400)
+posture  monitoring        enforced       Config integrity monitoring + container logs
+```
+
+The same policy on AWS would show `enforced` for egress (per-agent Envoy proxy with domain-based CONNECT filtering) and `enforced` for standard monitoring (CloudWatch + VPC flow logs).
+
+> **Note:** The `mode` field only affects the local provider. Remote and AWS providers always enforce egress when `allowed_domains` are defined — there is no validate-only mode on those tiers.
+
+To get started, copy the example file and customize:
+
+```bash
+cp conga-policy.yaml.example ~/.conga/conga-policy.yaml
+conga policy validate
+```
+
+Per-agent overrides are supported — see [`conga-policy.yaml.example`](conga-policy.yaml.example) for all fields and options.
+
+## Per-Agent Model Routing
+
+Each agent can point at its own LLM provider, model, and endpoint via a small operator-authored YAML file alongside its prompts. This lets you, for example, route one privacy-sensitive user agent at a self-hosted vLLM/Ollama server on your LAN while every other agent keeps using the global Anthropic default — all without changing terraform, the policy file, or the CLI surface.
+
+### Where it lives
+
+```
+agents/
+├── _defaults/<runtime>/<type>/    # COMMITTED: defaults (SOUL.md, AGENTS.md, USER.md.tmpl)
+├── _example/                      # COMMITTED: agent.yaml.example template + prompt examples
+└── <agent-name>/                  # Gitignored. One directory per real agent.
+    ├── SOUL.md                    # Optional prompt overrides
+    ├── AGENTS.md
+    ├── USER.md
+    └── agent.yaml                 # Optional runtime overlay (THIS feature)
+```
+
+Only the leading-underscore entries (`_defaults/`, `_example/`) are committed; everything under `agents/<real-name>/` is gitignored. Agent names cannot start with `_`, so the underscore-prefixed entries can't collide with real agents.
+
+See [`agents/README.md`](agents/README.md) for the directory-level guide: what each file is for, how to create a new agent's overlay, and the resolution order.
+
+### Schema (v1)
+
+```yaml
+version: 1                                # required; unknown future versions fail with a clear "binary too old" message
+
+model:
+  # Two shapes are valid — pick the one matching what's actually running on
+  # your host. Mixing them up will break tool calling at runtime.
+
+  # (A) Native Ollama daemon:
+  provider: ollama
+  name: qwen3:6b                          # exact NAME from `ollama list`
+  base_url: http://192.168.1.10:11434     # NO /v1 suffix
+
+  # (B) Any OpenAI-compatible server (vLLM, llama.cpp --api, LiteLLM proxy,
+  #     hosted OpenAI). Replaces the block above; don't keep both:
+  # provider: openai
+  # name: qwen36
+  # base_url: http://192.168.1.10:4000/v1  # /v1 suffix REQUIRED
+```
+
+- The loader uses strict-key YAML parsing — a typo like `bare_url:` fails loudly with a line number instead of silently falling back to defaults.
+- Top-level keys other than `version:` and `model:` are reserved for future versions (`memory:`, `tools:`, `limits:`, `model.fallbacks:`, multi-modal model refs) and rejected today by the parser with an explicit "reserved for a future schema version" error.
+- The committed template at `agents/_example/agent.yaml.example` shows the Ollama variant with the full reserved keyspace as commented-out documentation.
+
+### Provider matrix
+
+| Overlay `provider` | When to use | `base_url` shape | API key |
+|---|---|---|---|
+| `ollama` | Direct Ollama daemon on LAN/loopback | `http://host:11434` — **NO `/v1` suffix** | None for LAN hosts (uses `ollama-local` sentinel) |
+| `openai` | Native OpenAI, vLLM, llama.cpp `--api`, LiteLLM proxy, any OpenAI-compatible endpoint | `https://api.openai.com/v1` or `http://host:port/v1` | Set `openai-api-key` in the secrets store |
+
+**The Ollama `/v1` warning is enforced by the loader.** OpenClaw explicitly warns against pointing `openai/*` at Ollama's `/v1` endpoint — it breaks tool calling. If you want to route through Ollama, use `provider: ollama` (native API root, no `/v1`). If you have a separate OpenAI-compatible proxy (LiteLLM, vLLM, llama.cpp) on the same host, use `provider: openai` with its `/v1` endpoint.
+
+### Additive allowlist behavior
+
+When an overlay is applied, the runtime's default model (`anthropic/claude-opus-4-7` for OpenClaw) **stays in the allowlist**. The overlay just adds the new model and changes the primary. So operators can `/model anthropic/claude-opus-4-7` mid-conversation to swap, then `/model openai/qwen36` to switch back. Both keys (`OPENAI_API_KEY` from per-agent secrets, `ANTHROPIC_API_KEY` from global secrets) are present in the container env.
+
+If you want to **lock** an agent to one model, do it at the egress policy layer (remove `api.anthropic.com` from that agent's `allowed_domains`), not via the overlay — the allowlist is a UX surface for `/model` selection, not a security boundary.
+
+### End-to-end walkthrough
+
+For a user agent that should default to a self-hosted Qwen model running behind a LiteLLM proxy on a private network:
+
+```bash
+# 1. Add the endpoint host to the agent's egress allowlist + open the VPN port.
+#    Edit terraform/environments/production/terraform.tfvars:
+#
+#    egress_ports = [
+#      { protocol = "tcp", port = 443, description = "HTTPS" },
+#      { protocol = "udp", port = 51820, description = "WireGuard VPN to LLM gateway" },
+#      ...
+#    ]
+#    agents = {
+#      myagent = {
+#        type                   = "user"
+#        egress_allowed_domains = ["api.anthropic.com", "*.slack.com", "10.0.0.5"]
+#        secrets = {
+#          "openai-api-key" = "<LiteLLM master key or vLLM token>"
+#        }
+#      }
+#    }
+
+# 2. Author the per-agent overlay (gitignored, never committed):
+mkdir -p agents/myagent
+cat > agents/myagent/agent.yaml <<'YAML'
+version: 1
+model:
+  provider: openai
+  name: qwen36
+  base_url: http://10.0.0.5:4000/v1
+YAML
+
+# 3. Apply infrastructure changes (lands the secret + syncs agent.yaml to the host):
+cd terraform/environments/production && terraform apply
+
+# 4. Regenerate the agent's openclaw.json with the overlay applied:
+cd -
+conga --provider aws refresh --agent myagent
+
+# 5. Verify in the agent's logs — should see `agent model: openai/qwen36`:
+conga --provider aws logs --agent myagent | grep "agent model"
+```
+
+For local and remote providers, steps 1 and 3 collapse — set the secret with `conga secrets set openai-api-key --agent myagent --value <key>` and the egress allowlist in `~/.conga/conga-policy.yaml`.
+
+> **Where the CLI looks for `agent.yaml`** (provider-specific): **AWS** tries `./agents` first, then walks up to the congaline repo root via `go.mod` and tries `<root>/agents`; if neither resolves, a stderr warning is emitted and overlay loading is skipped. **Local** prefers `<repo_path>/agents` (set during `conga admin setup`), falling back to the snapshot at `~/.conga/agents/`. **Remote** always reads from `<repo_path>/agents` on the operator's machine, then SFTP-pushes the file. The common thread: edits to a real repo's `agent.yaml` always go live without a re-sync, except when an old local install hasn't configured `repo_path` yet.
+
+### See also
+
+- [`agents/_example/agent.yaml.example`](agents/_example/agent.yaml.example) — annotated template
+- [`product-knowledge/standards/config-taxonomy.md`](product-knowledge/standards/config-taxonomy.md) — full taxonomy of where each per-agent concern lives (infra vs. policy vs. overlay vs. persistence vs. secrets)
+- [`specs/2026-05-19_feature_local-model-routing/`](specs/2026-05-19_feature_local-model-routing/) — design rationale and OpenClaw schema notes
+
+## MCP Server (AI Agent Integration)
+
+The CLI includes an MCP server that exposes agent management as tools for AI coding assistants like Claude Code. This lets an AI manage your CongaLine deployment conversationally — listing agents, checking status, setting secrets, refreshing containers, etc.
+
+### Setup
+
+1. Install the `conga` CLI (see above)
+2. Copy the example config:
+
+```bash
+cp .mcp.json.example .mcp.json
+```
+
+3. Edit `.mcp.json` with your provider and credentials:
+
+**AWS:**
+```json
+{
+  "mcpServers": {
+    "conga": {
+      "command": "conga",
+      "args": ["mcp", "serve"],
+      "env": {
+        "CONGA_PROVIDER": "aws",
+        "AWS_PROFILE": "your-profile"
+      }
+    }
+  }
+}
+```
+
+**Remote (SSH):**
+```json
+{
+  "mcpServers": {
+    "conga": {
+      "command": "conga",
+      "args": ["mcp", "serve"],
+      "env": {
+        "CONGA_PROVIDER": "remote"
+      }
+    }
+  }
+}
+```
+
+**Local Docker:**
+```json
+{
+  "mcpServers": {
+    "conga": {
+      "command": "conga",
+      "args": ["mcp", "serve"]
+    }
+  }
+}
+```
+
+4. Restart Claude Code — the conga tools will appear automatically.
+
+## Docker Images
+
+CongaLine supports two agent runtimes — pick the image that matches the runtime you select during setup.
+
+### OpenClaw
+
+Pinned to **2026.6.5**. We pin a specific upstream minor (rather than tracking `:latest`) so deploys stay bisectable across releases.
+
+```
+ghcr.io/openclaw/openclaw:2026.6.5
+```
+
+### Hermes Agent
+
+The official Nous Research image:
+
+```
+nousresearch/hermes-agent:latest
+```
+
+This image is `linux/amd64` only. On Apple Silicon Macs, Conga automatically retries the pull with `--platform linux/amd64` so it runs via Docker Desktop's Rosetta translation.
+
+Each runtime's default image is used automatically when you select it via `--runtime`. Override at any time during `conga admin setup`.
+
+## Development
+
+For developers building and testing the `conga` CLI locally.
+
+### Prerequisites
+
+- **Go** >= 1.25
+- **Docker** (for local provider testing)
+
+### Build and run
+
+```bash
+go build -o conga ./cmd/conga
+./conga auth status --provider local
+```
+
+### Project structure
+
+```
+├── cmd/conga/                  # Binary entry point
+├── internal/
+│   ├── cmd/                    # Cobra command definitions (CLI interface)
+│   └── mcpserver/              # MCP server (AI agent interface)
+├── pkg/                        # Public library (importable by external modules)
+│   ├── provider/               # Provider interface & registry
+│   │   ├── awsprovider/        # AWS implementation (EC2, SSM, Secrets Manager)
+│   │   ├── remoteprovider/     # Remote SSH implementation
+│   │   ├── localprovider/      # Local Docker implementation
+│   │   └── iptables/           # iptables rule generation for egress enforcement
+│   ├── runtime/                # Runtime interface & registry (pluggable agent runtimes)
+│   │   ├── openclaw/           # OpenClaw runtime (Node.js, JSON config)
+│   │   └── hermes/             # Hermes Agent runtime (Python, YAML config)
+│   ├── policy/                 # Portable policy schema, validation, enforcement
+│   ├── channels/               # Channel abstraction & platform integrations
+│   │   ├── slack/              # Slack channel (Socket Mode router)
+│   │   └── telegram/           # Telegram channel (long-poll/webhook router)
+│   ├── common/                 # Shared logic (config gen, routing, validation)
+│   ├── aws/                    # AWS SDK wrappers
+│   ├── discovery/              # Agent & identity resolution (AWS)
+│   ├── manifest/               # YAML manifest parsing for conga bootstrap
+│   ├── tunnel/                 # SSM port forwarding
+│   └── ui/                     # Spinners, prompts, tables
+├── scripts/                    # Embedded shell templates (AWS remote execution)
+├── go.mod                      # module github.com/cruxdigital-llc/conga-line
+├── terraform/                  # AWS infrastructure (VPC, EC2, IAM, etc.)
+├── deploy/egress-proxy/        # Envoy proxy for domain-filtered egress
+├── router/                     # Channel event routers (Node.js)
+│   ├── slack/                  # Slack router (Socket Mode → HTTP fan-out)
+│   └── telegram/               # Telegram router (long-polling → HTTP fan-out)
+└── agents/                     # Per-agent definitions: prompts (SOUL.md, AGENTS.md, USER.md.tmpl) + agent.yaml runtime overlay. Defaults at agents/_defaults/<runtime>/<type>/. Only _defaults/ and _example/ are committed; real agents are gitignored.
+```
+
+**Module boundary:** `pkg/` is the public API — external modules (like `terraform-provider-conga`) import these packages. `internal/` holds interface layers (CLI, MCP server) that only the `conga` binary uses.
+
+## License
+
+This project is licensed under the Apache License 2.0 — see [LICENSE](LICENSE) for details.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get involved.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.

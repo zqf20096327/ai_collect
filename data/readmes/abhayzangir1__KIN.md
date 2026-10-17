@@ -1,0 +1,103 @@
+# KIN
+
+KIN is a local-first, desktop-oriented workspace for AI chats, projects, and agent workflows. The repository contains a TypeScript core service, a React interface, a Tauri/Rust desktop shell, and SQLite-backed application state.
+
+KIN is under active development. Features described here are present in source unless stated otherwise; this is not a claim that every workflow has been validated end to end.
+
+## What is in the repository
+
+- **Multi-Agent Workforce Architecture**:
+  - **Projects as Organizations**: Each project forms an isolated organizational boundary containing dedicated goals, task DAGs, workspaces, and teams.
+  - **Project-Scoped Boss Orchestrators (`@Boss`)**: Every project has an authoritative `@Boss` orchestrator responsible for requirements intake, task delegation, and workforce management without foreign project crosstalk.
+  - **Channels as Departments**: Channels serve as departmental collaboration spaces seeded by default with `@Boss`, with dynamic specialist enrollment.
+  - **Multi-Channel Workforce Coordination Suite**: Tools for dynamic recruitment (`hireSpecialist`), coworker channel assignment (`assignCoworker`), department convening (`callMeeting`), cross-channel broadcasting (`channel_post`), direct messaging (`sendDirectMessage`), and recursive delegation (`delegateToAgent`).
+  - **Peer Direct Messaging**: Private agent-to-agent DMs (`dm-${agentA}-${agentB}`) with participant-only context isolation, completion token detection, turn depth limits (5-turn ceiling), and Operator Inspection Mode.
+  - **4-Tier Scoped Memory Fabric**: Strict separation across project knowledge (`rememberProject`), channel memory (`rememberChannel`), private agent state (`rememberPrivate`), and DM context.
+- A pluggable `RunnerAdapter` specification and registry decoupling execution engines from KIN's authoritative state and security plane.
+- A model gateway with provider integrations, credential settings, model discovery, custom model records, and an Ollama path. Provider availability depends on configuration and actual provider responses.
+- A tool gateway, approval and capability checks, skills, MCP stdio clients, schedules, browser control, and desktop-control paths.
+- A Tauri desktop shell and a browser-based development UI.
+
+The codebase does not include a general marketplace/plugin registry. Git worktrees separate working directories; they do not isolate processes, credentials, or network access. Browser, desktop, skill, model, recovery, and packaged-app behavior depends on the host and configuration.
+
+## Run from source
+
+### Requirements
+
+- Node.js 20 or later
+- npm
+- Rust and platform build tools to build the Tauri desktop shell
+- Ollama only if you want to use local Ollama inference
+
+### Install and build
+
+```sh
+git clone https://github.com/abhayzangir1/KIN.git
+cd KIN
+npm install
+npm run build
+```
+
+Run the core and UI in separate terminals:
+
+```sh
+npm run daemon --workspace=core
+```
+
+```sh
+npm run dev --workspace=ui
+```
+
+The development UI uses `http://localhost:5173`. The core defaults to `127.0.0.1:54321` and does not bind to a LAN interface by default. The repository's `start.bat` and `start.sh` scripts are development launchers, not self-contained installers.
+
+Run the core tests with:
+
+```sh
+npm test --workspace=core
+```
+
+This command reports results for the checkout and environment where it is run; this README does not assert a current test count or pass status.
+
+## Models and data handling
+
+Provider credentials can be managed in Settings. The model gateway contains discovery paths for supported providers and Ollama. A model appearing in a catalog or being marked configured does not prove that inference will succeed. Provider lists, model capabilities, pricing metadata, account access, quotas, and availability can change; verify by making a real request before relying on a model.
+
+Application state is stored locally in SQLite and project files use the local filesystem. Hosted model requests send prompts and selected context to that provider. Browser navigation contacts the requested websites. MCP tools receive the arguments passed to them. Local storage does not imply that all application activity is offline.
+
+## Boundaries to understand
+
+- Capability checks and approval flows are application controls; they are not a host-level security sandbox.
+- A Git worktree is a separate working directory, not process, network, or credential isolation.
+- Skills and MCP servers may execute code or external tools. Review their source and configuration before enabling them.
+- The Tauri build configuration exists, but a clean-machine installation with all required core/runtime dependencies has not been established by this README.
+- Product requirements in [PRD](docs/PRD.md) and [TRD](docs/TRD.md) describe desired behavior. See [current implementation notes](docs/PROJECT_STATUS.md) for the source-level scope and known boundaries.
+
+## Documentation
+
+### Core Specifications
+- [PRD.md — Product Vision, Personas, UX Architecture & Requirements](docs/PRD.md)
+- [TRD.md — System Architecture, Process Model, Crate Layout, IPC Protocol & NFRs](docs/TRD.md)
+- [DATA-MODEL.md — Authoritative Local Database Architecture & DDL Schemas](docs/DATA-MODEL.md)
+- [API-AND-CONTRACTS.md — Wire Protocol, Envelopes, Engine Commands & Events](docs/API-AND-CONTRACTS.md)
+- [BACKEND-SERVICES.md — Core Subsystems, Orchestration Harness, Memory & Task DAG](docs/BACKEND-SERVICES.md)
+- [FRONTEND-UX.md — 4-Zone Layout, UI/UX Interaction States & Keyboard Shortcuts](docs/FRONTEND-UX.md)
+- [SECURITY.md — Threat Model, Sandboxing, Secrets Vault & Sentinel Ledger](docs/SECURITY.md)
+- [TOOLS-AND-EXTENSIONS.md — 28 Builtin Tools, Browser Control, MCP & Extensions](docs/TOOLS-AND-EXTENSIONS.md)
+- [IMPLEMENTATION-PLAN.md — M0–M8 Milestones & Verification Criteria](docs/IMPLEMENTATION-PLAN.md)
+- [GLOSSARY-AND-DECISIONS.md — Canonical Vocabulary & Architecture Decision Records](docs/GLOSSARY-AND-DECISIONS.md)
+
+### Guides & Reference
+- [Architecture Guide](docs/ARCHITECTURE.md)
+- [Slash Commands Reference](docs/SLASH_COMMANDS.md)
+- [Skills Guide](docs/SKILLS_GUIDE.md)
+- [Core API Overview](docs/API.md)
+- [Operations & Runbooks](docs/OPERATIONS.md)
+- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+- [Contributing](docs/CONTRIBUTING.md)
+- [Current Implementation Notes](docs/PROJECT_STATUS.md)
+
+Screenshots in `docs/assets/screenshots/` are interface snapshots. They do not verify the corresponding workflow or current runtime state.
+
+## License
+
+KIN is distributed under the [MIT License](LICENSE).

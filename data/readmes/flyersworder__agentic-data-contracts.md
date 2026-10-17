@@ -1,0 +1,1482 @@
+# agentic-data-contracts
+
+[![PyPI version](https://img.shields.io/pypi/v/agentic-data-contracts.svg)](https://pypi.org/project/agentic-data-contracts/)
+[![PyPI downloads](https://img.shields.io/pepy/dt/agentic-data-contracts)](https://pypistats.org/packages/agentic-data-contracts)
+[![CI](https://github.com/flyersworder/agentic-data-contracts/actions/workflows/ci.yml/badge.svg)](https://github.com/flyersworder/agentic-data-contracts/actions/workflows/ci.yml)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**YAML-first, domain-driven data governance for AI agents.**
+
+You teach agents your business domains, metrics, and governance rules upfront — in YAML — instead of letting them reverse-engineer your data landscape by trial and error. The agent learns *what* a domain means, discovers *which* metrics to use, then writes queries that are validated against your rules at query time (via [sqlglot](https://github.com/tobymao/sqlglot)) before anything reaches the database.
+
+### Highlights
+
+- **Governed, not guessed** — the agent uses *your* metric definitions (`SUM(amount) FILTER (WHERE status = 'completed')`), not an ad-hoc query it invented.
+- **Bad SQL blocked before execution** — forbidden operations, disallowed tables, missing tenant filters, `SELECT *`, unbounded scans — caught by static analysis plus an optional EXPLAIN dry-run.
+- **Validate a whole corpus, not just live queries** — re-check a verified-examples database against the contract *and* its certified answers in CI (or a metric's arithmetic identity), catching drift when the contract or warehouse schema changes and a compliant query that quietly returns the wrong number.
+- **Business context first** — domain descriptions, metric ownership, freshness, and a metric graph (causal *and* arithmetic) guide the agent before it writes a line of SQL.
+- **Resource governance built in** — per-session cost, retry, row, and token budgets, and wall-clock limits.
+- **Per-caller row/column security** — allow/deny tables and filter values by principal, for multi-user bots.
+- **Framework-agnostic** — plain-function tools for the Claude Agent SDK, LangChain/deepagents, Pydantic AI, or no framework at all.
+- **Bring your own semantics** — read metrics from dbt, Cube, Apache Ossie, or inline YAML.
+- **Measured, not asserted** — a four-arm ablation on [DABStep](https://huggingface.co/datasets/adyen/DABstep) separates what the contract *knows* from how it is *delivered*, across four model families, with the contract arm externally scored on the public leaderboard. [Results below.](#measured-not-asserted)
+
+### Without a contract vs. with one
+
+| A raw agent on your warehouse | With `agentic-data-contracts` |
+|---|---|
+| Invents `revenue = SUM(amount)` — silently wrong (counts refunds, cancelled orders) | Uses the governed definition: `SUM(amount) FILTER (WHERE status = 'completed')` |
+| `SELECT *`, cross-tenant reads, unbounded scans | Blocked at query time — explicit columns, required `tenant_id`, row caps enforced |
+| Loops on retries with no cost ceiling | Per-session retry / cost / token budgets |
+| "Why did revenue drop?" → guesses | Walks the metric graph: arithmetic decomposition first, then causal drivers |
+
+### Measured, not asserted
+
+That table is the claim; [`experiments/dabstep-contract-eval/`](experiments/dabstep-contract-eval/) is the test of it. A four-arm ablation on [DABStep](https://huggingface.co/datasets/adyen/DABstep): 401 tasks × 4 arms × 4 model families = **6,416 graded runs**, scored by DABStep's own scorer. Accuracy on the hard split; every contrast is a paired McNemar on the same tasks.
+
+| arm | agent sees | glm-5.3-flash | deepseek-v4-flash | gpt-5.6-sol | Claude Sonnet 5 |
+|---|---|---:|---:|---:|---:|
+| **contract** | this library's tools + the contract | **55.1%** | **56.6%** | **77.4%** | **68.4%** |
+| `contract_hollow` | the same tools, domain content stripped | 19.3% | 22.6% | 51.2% | 38.0% |
+| `manual_prompt` | the vendor manual verbatim in the prompt | 22.9% | 42.9% | 50.3% | 23.8% |
+| `schema_only` | table and column names only | 13.9% | 22.6% | 37.0% | 22.9% |
+
+- **The gain is the content, not the scaffolding.** `contract_hollow` runs identical tooling with the domain knowledge stripped out. That is the only difference between the two arms, and on every model tested it explains more of the contract's lead than the tooling does.
+- **The contract is also the cheapest way to be right.** On every model the contract arm uses the fewest turns and by far the least reasoning; on three of four it also makes the fewest tool calls and is cheapest per correct answer (on Sonnet 5, about half the cost of any other arm). The exception is `gpt-5.6-sol`, where the contract's own text is a real input-token bill and `manual_prompt` edges it. It is the only arm that never had to be forced to answer. It is not thinking harder; it has less to search for.
+- **Governance held.** Across the ungoverned arms the models submitted 166 mutating SQL statements on 26 tasks. Both governed arms submitted zero.
+- **No leakage.** The contract was written from the vendor's manual alone and frozen, digest-pinned, before any benchmark question was read.
+- **Externally scored.** The contract arm answered all 450 tasks and was submitted to the [DABStep leaderboard](https://huggingface.co/spaces/adyen/DABstep), where Adyen graded it against the official golds: **51.9% on the hard split** for `glm-5.3-flash`, against a published band of ~20–26% hard for manual-in-prompt baselines running stronger models.
+
+Scope, stated plainly. The effect concentrates in the domain-specific task bucket; the non-fee bucket shows no contract advantage on any model. The table's golds are reconstructed for 401 of 450 tasks, and the leaderboard check shows that scoring runs ~6 points optimistic on hard tasks, one-sidedly; correcting for it moves the arm gaps by under 3 points, in both directions. Only the contract arm was submitted, so the gap above is not graded the same way on both sides. And this is one benchmark at k=1, where a replicate finds 23% of task verdicts flip at temperature 0. Full results, every caveat, and all 6,416 transcripts: **[`FINDINGS.md`](experiments/dabstep-contract-eval/FINDINGS.md)**.
+
+**Works with:** any Python agent framework — first-class helpers for the [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python), [LangChain](https://github.com/langchain-ai/langchain) / [deepagents](https://github.com/langchain-ai/deepagents), and [Pydantic AI](https://github.com/pydantic/pydantic-ai), plus a framework-free path (the tools are plain async functions). Optionally integrates with [ai-agent-contracts](https://pypi.org/project/ai-agent-contracts/) for formal resource governance.
+
+> **See it running:** [three example agents](#examples) — `revenue_agent` (finance), `growth_agent` (experimentation), `ops_agent` (SRE) — each runs end-to-end in demo mode with no API key.
+
+## Table of Contents
+
+- [How It Works](#how-it-works)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [The 9 Tools](#the-9-tools)
+- [Domain-Driven Agent Workflow](#domain-driven-agent-workflow)
+- [Contract Rules](#contract-rules)
+- [Semantic Sources](#semantic-sources)
+- [Table Relationships](#table-relationships)
+- [Metric Impacts](#metric-impacts) (incl. [decomposition & drill dimensions](#metric-decomposition-and-drill-dimensions))
+- [Checking declarations against the live schema](#checking-declarations-against-the-live-schema)
+- [Validating a verified-examples corpus](#validating-a-verified-examples-corpus)
+- [Checking that a query derives what it depends on](#checking-that-a-query-derives-what-it-depends-on)
+- [Custom Prompt Rendering](#custom-prompt-rendering)
+- [Consumer-authored sections (extras)](#consumer-authored-sections-extras)
+- [Scaling to Large Organizations](#scaling-to-large-organizations)
+- [Resource Limits](#resource-limits)
+- [Optional Dependencies](#optional-dependencies)
+- [Formal Governance with ai-agent-contracts](#optional-formal-governance-with-ai-agent-contracts)
+- [Examples](#examples)
+- [FAQ](#faq)
+- [Architecture](#architecture)
+
+## How It Works
+
+The agent follows a domain-driven workflow — understanding business context before writing SQL:
+
+```
+1. Agent receives: "How is revenue trending?"
+2. lookup_domain("revenue")     → "Revenue is recognized at fulfillment, not booking"
+3. lookup_metric("total_revenue") → SUM(amount) FILTER (WHERE status = 'completed')
+4. Agent writes SQL using the metric definition
+5. inspect_query(sql)           → {"valid": true, "estimated_cost_usd": 0.0, ...}
+6. run_query(sql)               → results returned
+```
+
+Governance rules are enforced automatically at query time:
+
+```
+Agent: "SELECT * FROM analytics.orders"
+  -> BLOCKED (no SELECT * — specify explicit columns)
+
+Agent: "SELECT order_id, amount FROM analytics.orders"
+  -> BLOCKED (missing required filter: tenant_id)
+
+Agent: "SELECT order_id, amount FROM analytics.orders WHERE tenant_id = 'acme'"
+  -> PASSED + WARN (consider using semantic revenue definition)
+```
+
+**Two files, two responsibilities.** The **contract** (`contract.yml`) defines *governance* — allowed tables, rules, resource limits, and domain *catalog metadata* (what a domain means, who owns it, when it was last reviewed). The **semantic source** (`semantic.yml`, or dbt/Cube) defines the *metrics themselves* — their SQL, source tables, and which domain each belongs to.
+
+Domain membership is **metric-first**: a metric declares the domains it belongs to (`domains: [...]`), and the contract's `Domain` block never lists its metrics. The grain that matters — the metric — owns the relationship; the domain is just a label it points at. `lookup_domain` reconstructs a domain's members at query time by reverse-looking-up the metrics that declare it, so the two files never drift. The library enforces all of this — before the query ever reaches the database.
+
+## Installation
+
+```bash
+uv add agentic-data-contracts
+# or
+pip install agentic-data-contracts
+```
+
+With optional database adapters:
+
+```bash
+uv add "agentic-data-contracts[duckdb]"      # DuckDB
+uv add "agentic-data-contracts[bigquery]"    # BigQuery
+uv add "agentic-data-contracts[snowflake]"   # Snowflake
+uv add "agentic-data-contracts[postgres]"    # PostgreSQL
+uv add "agentic-data-contracts[agent-sdk]"   # Claude Agent SDK integration
+uv add "agentic-data-contracts[langchain]"   # LangChain / deepagents integration
+uv add "agentic-data-contracts[pydantic-ai]" # Pydantic AI integration
+```
+
+## Quick Start
+
+### 1. Write a YAML contract
+
+```yaml
+# contract.yml
+version: "1.0"
+name: revenue-analysis
+
+semantic:
+  source:
+    type: yaml
+    path: "./semantic.yml"
+  allowed_tables:
+    - schema: analytics
+      description: "Curated analytics tables — prefer for reporting"
+      preferred: true
+      tables: ["*"]          # all tables in schema (discovered from database)
+    - schema: marketing
+      tables: [campaigns]    # or list specific tables
+      allowed_principals: [alice@co.com, bob@co.com]  # only these may query marketing.campaigns
+  forbidden_operations:
+    [DELETE, DROP, TRUNCATE, UPDATE, INSERT, CREATE, ALTER, MERGE, GRANT, REVOKE, COPY]
+  domains:
+    - name: revenue
+      summary: "Financial metrics from completed orders"
+      description: >
+        Revenue is recognized at fulfillment, not at booking.
+        Excludes refunds and chargebacks unless stated.
+      # Membership is metric-first: metrics declare their domains in the
+      # semantic source (see "Semantic Sources"), so no metric list here.
+  rules:
+    - name: tenant_isolation
+      description: "All queries must filter by tenant_id"
+      enforcement: block
+      query_check:
+        required_filter: tenant_id
+    - name: no_select_star
+      description: "Must specify explicit columns"
+      enforcement: block
+      query_check:
+        no_select_star: true
+    - name: pii_columns_redacted_for_juniors
+      description: "Junior analysts may not select PII columns from analytics.users"
+      enforcement: block
+      table: analytics.users
+      blocked_principals: [security_admin@co.com]   # everyone except security_admin
+      query_check:
+        blocked_columns: [ssn, dob, email]
+
+resources:
+  cost_limit_usd: 5.00
+  max_retries: 3
+  token_budget: 50000
+
+temporal:
+  max_duration_seconds: 300
+```
+
+### 2. Load the contract and create tools
+
+```python
+from agentic_data_contracts import DataContract, create_tools
+from agentic_data_contracts.adapters.duckdb import DuckDBAdapter
+
+dc = DataContract.from_yaml("contract.yml")
+adapter = DuckDBAdapter("analytics.duckdb")
+
+# Semantic source is auto-loaded from contract config (source.type + source.path)
+tools = create_tools(dc, adapter=adapter)
+```
+
+### Per-Caller Access Control (Optional)
+
+When different callers should see different subsets of a contract's tables, pass `caller_principal` to `create_tools`. Use a static string for single-user sessions (e.g. Chainlit), or a zero-arg callable when identity changes per request (e.g. a Webex room bot serving multiple users from one long-lived process):
+
+```python
+from agentic_data_contracts import DataContract, create_tools
+
+dc = DataContract.from_yaml("contract.yml")
+
+# Chainlit app (one user per session)
+tools = create_tools(dc, adapter=adapter, caller_principal="alice@co.com")
+
+# Webex bot (multiple users per bot instance, identity per message)
+import contextvars
+
+current_sender: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "sender", default=None
+)
+tools = create_tools(dc, adapter=adapter, caller_principal=lambda: current_sender.get())
+# Handler sets current_sender before invoking the agent for each message.
+```
+
+The resolver is called per-query, not cached, so one long-lived `Validator` can serve different callers sequentially. Fail-closed: any `allowed_principals` or `blocked_principals` field on a table requires the caller to be identified — an anonymous caller is treated as unauthenticated and denied.
+
+`Principal` and `resolve_principal` are available from the package root for integrators typing their own middleware:
+
+```python
+from agentic_data_contracts import Principal, resolve_principal
+```
+
+> **Known limitation:** `to_system_prompt()` lists all declared tables in the contract without filtering by principal. Query-time gating remains authoritative (denied queries never reach the database), but the agent may still be told about tables the current caller cannot access and can waste retry budget (`resources.max_retries`) on queries that will be blocked. Principal-aware prompt rendering is a candidate future feature — file an issue if your deployment needs it.
+
+#### Per-Rule Principal Scoping
+
+Individual `SemanticRule` entries accept the same `allowed_principals` / `blocked_principals` pair (mutually exclusive at load time). When a rule carries either field, it is skipped at validate-time for callers outside the scope. This works across every rule kind — `blocked_columns`, `required_filter`, `no_select_star`, `max_joins`, and `result_check`:
+
+```yaml
+rules:
+  # Block selecting `ssn` for everyone except the security admin.
+  - name: redact_ssn
+    enforcement: block
+    table: pii.users
+    blocked_principals: [security_admin@co.com]
+    query_check:
+      blocked_columns: [ssn]
+
+  # Only the on-call engineer is held to the 60-second timeout result-check.
+  - name: oncall_query_budget
+    enforcement: warn
+    table: prod.events
+    allowed_principals: [oncall@co.com]
+    result_check:
+      max_rows: 1_000_000
+```
+
+Same fail-closed contract as per-table scoping: a rule with `allowed_principals` or `blocked_principals` set requires the caller to be identified — anonymous callers are out of scope and the rule is skipped (it does not silently downgrade to "applies to everyone"). This lets you express things like "Alice may not select `ssn` from `pii.users`, but Bob may" directly in YAML, without splitting tables into per-principal views.
+
+### 3. Framework integrations
+
+Contract-aware tools are plain async functions, so they drop into any framework — expand the one you use.
+
+<details>
+<summary><b>Claude Agent SDK</b> — requires <code>claude-agent-sdk</code> 0.2.96+</summary>
+
+```python
+import asyncio
+from agentic_data_contracts import create_sdk_mcp_server
+from claude_agent_sdk import (
+    ClaudeAgentOptions,
+    AssistantMessage,
+    TextBlock,
+    query,
+)
+
+# One-liner: wraps all 9 tools and bundles into an SDK MCP server
+server = create_sdk_mcp_server(dc, adapter=adapter)
+
+options = ClaudeAgentOptions(
+    model="claude-sonnet-4-6",
+    system_prompt=f"You are a revenue analytics assistant.\n\n{dc.to_system_prompt()}",
+    mcp_servers={"dc": server},
+    **dc.to_sdk_config(),  # token_budget → task_budget, max_retries → max_turns
+)
+
+
+async def run(prompt: str) -> None:
+    async for message in query(prompt=prompt, options=options):
+        if isinstance(message, AssistantMessage):
+            for block in message.content:
+                if isinstance(block, TextBlock):
+                    print(block.text)
+
+
+asyncio.run(run("What was total revenue by region in Q1 2025?"))
+```
+
+#### Layer Anthropic's `data` plugin on top (governed analyst skills)
+
+The Agent SDK can load [knowledge-work plugins](https://github.com/anthropics/knowledge-work-plugins) alongside your governed tools, so the agent gets the `data` plugin's analyst *skills* (`validate-data`, `statistical-analysis`, `explore-data`, `sql-queries`, …) while every query it runs is still enforced by your contract. The skills are tool-agnostic — they drive "whatever warehouse tool is connected," which in your process is your governed in-process server.
+
+The one rule that makes this safe: **suppress the plugin's bundled `.mcp.json` warehouse servers** so the agent can't bypass the contract. `strict_mcp_config=True` does exactly that — it uses *only* the servers you pass in `mcp_servers`.
+
+```python
+import dataclasses
+
+server = create_sdk_mcp_server(dc, adapter=adapter)
+
+opts_kwargs = {
+    "model": "claude-sonnet-4-6",
+    "mcp_servers": {"dc": server},  # the ONLY data path
+    "allowed_tools": [f"mcp__dc__{t.name}" for t in tools],
+}
+
+# Feature-detect SDK support, then overlay the plugin's skills.
+fields = {f.name for f in dataclasses.fields(ClaudeAgentOptions)}
+if {"plugins", "skills", "strict_mcp_config"} <= fields:
+    opts_kwargs["plugins"] = [
+        {"type": "local", "path": "/path/to/knowledge-work-plugins/data"}
+    ]
+    opts_kwargs["skills"] = [
+        "validate-data",
+        "statistical-analysis",
+        "explore-data",
+        "sql-queries",
+    ]
+    opts_kwargs["strict_mcp_config"] = True  # ← ignore the plugin's warehouse .mcp.json
+    opts_kwargs["system_prompt"] = {  # skills need the claude_code harness
+        "type": "preset",
+        "preset": "claude_code",
+        "append": dc.to_system_prompt(),  # your governance, appended
+    }
+
+options = ClaudeAgentOptions(**opts_kwargs)
+```
+
+Notes:
+
+- **Curate the skill list — do not use `skills="all"`.** `data-context-extractor` is deliberately omitted: it generates a parallel semantic skill that competes with your contract as the source of metric truth. The viz/dashboard skills (`create-viz`, `build-dashboard`) need code-execution tools you may not want to grant.
+- **Set metric precedence in your prompt** (e.g. "resolve metrics via `lookup_metric`/`lookup_domain` before writing SQL") so the plugin's "just write a query" instinct doesn't undercut your governed semantic layer.
+- All three [examples](#examples) ship this wiring behind an opt-in `DATA_PLUGIN_PATH` env var — `growth_agent/agent.py` is the canonical, fully-commented template.
+
+</details>
+
+<details>
+<summary><b>LangChain / deepagents</b> — requires <code>langchain</code> 1.2.17+</summary>
+
+```python
+from agentic_data_contracts import create_langchain_tools, ContractMiddleware
+from deepagents import create_deep_agent
+
+# `dc` and `adapter` are from the previous example.
+# Returns list[BaseTool] — drop in anywhere LangChain accepts tools.
+tools = create_langchain_tools(dc, adapter=adapter)
+
+# Enforcement is auto-applied: session limits and BLOCKED envelopes from the
+# underlying tools surface as ToolMessage(status="error"). Running inside an
+# agent graph, each tool also reads the run's token usage, so a declared
+# token_budget binds here without the middleware. Pair with ContractMiddleware
+# (and apply_middleware=False) for graph-level interception.
+agent = create_deep_agent(tools=tools)
+```
+
+Install: `pip install "agentic-data-contracts[langchain]"`. For graph-level enforcement instead of in-tool — note the **shared session**, without which the middleware enforces against one budget while `run_query` reports `tokens_remaining` from another:
+
+```python
+from agentic_data_contracts.core.session import ContractSession
+
+session = ContractSession(dc)
+tools = create_langchain_tools(
+    dc, adapter=adapter, session=session, apply_middleware=False
+)
+agent = create_deep_agent(
+    tools=tools,
+    middleware=[ContractMiddleware(dc, adapter=adapter, session=session)],
+)
+```
+
+</details>
+
+<details>
+<summary><b>Pydantic AI</b> — requires <code>pydantic-ai-slim</code> 2.16.0+</summary>
+
+```python
+from agentic_data_contracts import create_pydantic_ai_tools
+from pydantic_ai import Agent
+
+# `dc` and `adapter` are from the previous example.
+# Returns list[pydantic_ai.Tool] — drop into Agent(tools=...).
+tools = create_pydantic_ai_tools(dc, adapter=adapter)
+agent = Agent("anthropic:claude-sonnet-4-6", tools=tools)
+```
+
+Enforcement is auto-applied in-tool: a blocked query (forbidden operation,
+missing required filter, unparseable SQL) or one the database fails to run
+(a missing column, a failed cast) raises `ToolFailed`. The model sees the
+message as a failed tool result and takes its next step from it, as it does
+under the LangChain and Claude Agent SDK adapters. Session-limit exhaustion
+raises a terminal `ContractSessionLimitError` that ends the run. Install:
+`pip install "agentic-data-contracts[pydantic-ai]"`.
+
+A failed call spends none of Pydantic AI's per-tool retry budget, so the
+contract is the one bound: every `BLOCKED —` and `ERROR —` result counts toward
+`resources.max_retries`, which ends repeated failures with
+`ContractSessionLimitError`, and `token_budget` and `max_duration_seconds`
+bound the whole run. A contract with none of these leaves only Pydantic AI's
+`UsageLimits(request_limit=...)`, 50 model requests by default. Pydantic AI's
+own retries (tool arguments it cannot parse, output validation) still end a
+run with `UnexpectedModelBehavior` past the agent's `retries` setting.
+
+**One shared agent for many users.** For a multi-user service, build the `Agent`
+**once** and pass each user's state via `deps` — `create_pydantic_ai_toolset`
+rebuilds the tools per run, bound to that user's session and principal, so you
+don't construct a separate agent (or tools list) per user:
+
+```python
+from agentic_data_contracts import ContractDeps, create_pydantic_ai_toolset
+from agentic_data_contracts.core.session import ContractSession
+from pydantic_ai import Agent
+
+# per_run_step=False: deps are stable within a run, so build the tools once
+# per run instead of once per model step.
+agent = Agent("anthropic:claude-sonnet-4-6", deps_type=ContractDeps)
+agent.toolset(per_run_step=False)(create_pydantic_ai_toolset(dc, adapter=adapter))
+
+# Per user: keep one ContractSession (cumulative limits) and pass it each turn.
+result = await agent.run(
+    "Revenue by region last quarter",
+    deps=ContractDeps(session=user_session, caller_principal="alice@corp.com"),
+    message_history=user_history,
+)
+```
+
+The caller owns each user's `ContractSession` (created once per user, keyed by
+user id). Per-user principals drive per-principal table/rule gating, and the same
+`ToolFailed` / `ContractSessionLimitError` enforcement applies per user.
+
+Pair with `**contract_run_kwargs(dc, user_session)` on each `run()` to have
+Pydantic AI enforce the token budget per model request — see
+[Resource Limits](#resource-limits).
+
+</details>
+
+<details>
+<summary><b>Directly</b> — no framework required</summary>
+
+```python
+import asyncio
+
+
+async def demo() -> None:
+    # Inspect a query without executing. Response is structured JSON.
+    inspect = next(t for t in tools if t.name == "inspect_query")
+    result = await inspect.callable(
+        {"sql": "SELECT id, amount FROM analytics.orders WHERE tenant_id = 'acme'"}
+    )
+    print(result["content"][0]["text"])
+    # {"valid": true, "violations": [], "warnings": [], "log_messages": [],
+    #  "schema_valid": true, "explain_errors": [], "pending_result_checks": [...]}
+
+    # Blocked query
+    result = await inspect.callable({"sql": "SELECT * FROM analytics.orders"})
+    print(result["content"][0]["text"])
+    # {"valid": false,
+    #  "violations": ["SELECT * is not allowed — specify explicit columns", ...],
+    #  "warnings": [], ...}
+
+
+asyncio.run(demo())
+```
+
+</details>
+
+## The 9 Tools
+
+| Tool | Description |
+|------|-------------|
+| `describe_table` | Get full column details for an allowed table |
+| `preview_table` | Preview sample rows from an allowed table; returns `{schema, table, columns, rows}` |
+| `list_metrics` | List metric definitions, optionally filtered by domain, tier, or indicator_kind; flags `stale` metrics |
+| `lookup_metric` | Get a metric definition (SQL, tier, indicator_kind, impacts, impacted_by, decompositions, drill_by, owners, freshness); fuzzy search fallback when no exact match |
+| `lookup_domain` | Get full domain context (description, metrics, tables, owners, freshness); fuzzy search fallback |
+| `lookup_relationships` | Look up join paths for a table; finds multi-hop paths when given a target table |
+| `trace_metric_impacts` | Walk the metric graph upstream (drivers) or downstream (affected) from a metric — across both causal impact edges and arithmetic decomposition edges (a metric's operands are drivers of it), filtered by `kinds` |
+| `inspect_query` | Validate a SQL query and estimate its cost via EXPLAIN without executing |
+| `run_query` | Validate and execute a SQL query, returning results as `{columns, rows, row_count, [truncated,] session}` |
+
+### Query protocol
+
+`run_query` and `inspect_query` state the workflow rules in their own tool
+descriptions, not only in the rendered system prompt:
+
+> When computing a metric, you MUST call lookup_metric first and use its governed
+> definition — never invent or adapt a metric formula.
+
+plus, on `run_query`, *"Prefer this tool over any other SQL or data-access path."*
+
+This is deliberate redundancy. The rendered contract prompt is opt-in — if you wire
+`create_langchain_tools(...)` or `create_pydantic_ai_toolset(...)` into an agent with
+your own system prompt, the contract may never be rendered — but tool descriptions
+travel with the tools on every path. A governance rule the host can drop by writing
+its own prompt isn't a governance rule. The precedence sentence matters when your
+agent also has a generic SQL tool, a warehouse MCP server, or a shell: without it,
+nothing tells the model which path is the governed one.
+
+Each sentence appears only when the capability it names exists — ordering when the
+semantic source actually has metrics, precedence when an adapter is configured (a
+validation-only setup can't execute, so claiming precedence there would point the
+agent at a tool that returns an error).
+
+### Result encoding
+
+`run_query` and `preview_table` both return a `columns` list alongside their
+`rows`. By default `rows` is a list of **positional arrays** aligned to
+`columns`:
+
+```json
+{"columns": ["region", "units"], "rows": [["EMEA", 412], ["APAC", 87]]}
+```
+
+This costs less than half the tokens of repeating every column name on every
+row, and matters more than it looks: tool results stay in the message history
+and are re-sent on every subsequent model request, so an oversized result is
+paid for repeatedly rather than once.
+
+Pass `row_format="records"` to `create_tools()` (or to any of the ecosystem
+wrappers) to get one dict per row instead — the pre-0.31 shape:
+
+```python
+tools = create_tools(contract, adapter=adapter, row_format="records")
+# {"columns": ["region", "units"],
+#  "rows": [{"region": "EMEA", "units": 412}, {"region": "APAC", "units": 87}]}
+```
+
+Both renderings coerce values identically, and carry identical information for
+distinctly-labelled columns; only the container differs. One case is not
+symmetric: a query with duplicate column labels (e.g. `SELECT t.id, u.id FROM
+t, t u`) collapses under `records`, since `dict(zip(columns, row))` is
+last-value-wins and silently drops one column — `compact`'s positional arrays
+keep both. An unrecognised value raises `ValueError` at `create_tools()` time,
+not on the first query.
+
+### Row cap
+
+`create_tools(..., max_result_rows=1000)` caps how many rows `run_query` and
+`preview_table` return; pass `None` for no cap. It changes the payload only
+when a result is actually truncated: `run_query`'s JSON gains `"truncated":
+true` after `row_count`, and `row_count` then counts the rows returned, not
+the query's true total — counting that would cost as much as the query this
+protects against, so it is never reported. An untruncated result's payload is
+byte-identical to what it always was. `preview_table`'s SQL `LIMIT` becomes
+`min(requested, 100, max_result_rows)`, so it is never truncated. A value less
+than 1 raises `ValueError` at `create_tools()` time, same as `row_format`.
+
+A contract's `result_check` rules (`min_rows`, `max_rows`, `min_value`,
+`max_value`, `not_null`) still see every row the adapter fetches, not the
+capped rows the agent sees: the tool asks the adapter for `max(max_result_rows,
+T + 1)` rows, where `T` is the largest `min_rows`/`max_rows` threshold any rule
+declares (0 when there are none, computed once at `create_tools()` time), then
+trims to `max_result_rows` only when building the agent's response. A
+`max_rows: 20` rule still blocks a 100-row result even when `max_result_rows`
+is 5, and since only 21 rows were fetched its message says the query returned
+"at least 21 rows". A contract declaring a very large threshold widens the fetch
+accordingly — that is the author's declared intent.
+
+## Domain-Driven Agent Workflow
+
+The core design principle: **agents should understand the business domain before writing SQL.** Instead of dumping table schemas and hoping for the best, the contract teaches the agent your business vocabulary through progressive disclosure:
+
+```
+1. Domain context     →  "What does 'revenue' mean here?"
+2. Metric definitions →  "How is 'total_revenue' calculated?"
+3. Query execution    →  "Run the validated SQL"
+```
+
+### Defining domains
+
+A domain in the contract carries **catalog metadata** — a description that teaches the agent your business rules (things the SQL alone can't express), plus ownership and review cadence. It does **not** list its metrics: domain membership is *metric-first*, declared on each metric in the semantic source via `domains: [...]`. The contract describes a domain; the metrics decide which domain they belong to. `lookup_domain` stitches the two together at query time by reverse-looking-up metrics that declare the domain.
+
+```yaml
+# contract.yml — catalog metadata only
+semantic:
+  domains:
+    - name: acquisition
+      summary: "Customer acquisition costs and conversion metrics"
+      description: >
+        Acquisition metrics track the cost and efficiency of
+        acquiring new customers across all channels.
+        CAC is calculated using fully-loaded cost, not just ad spend.
+      business_owner: growth-platform   # optional
+      last_reviewed: 2026-05-15          # optional — drives staleness detection
+    - name: retention
+      summary: "Customer retention, churn, and lifetime value"
+      description: >
+        Retention metrics measure how well we keep customers.
+        Churn is measured on a 30-day rolling window.
+        A customer is "active" if they had at least one qualifying
+        action in the window.
+```
+
+```yaml
+# semantic.yml — metrics declare their domain membership
+metrics:
+  - name: CAC
+    description: "Fully-loaded customer acquisition cost"
+    sql_expression: "..."
+    domains: [acquisition]
+  - name: churn_rate
+    description: "30-day rolling churn"
+    sql_expression: "..."
+    domains: [retention]
+```
+
+### How the agent uses domains
+
+The system prompt gives the agent a compact domain index. When a user asks a domain-specific question, the agent explores progressively:
+
+```
+lookup_domain("acquisition")        → business context + metric descriptions
+lookup_metric("CAC")                → SQL expression, source table, filters
+lookup_metric("acquisition cost")   → fuzzy match, returns [CAC, CPA] as candidates
+list_metrics(domain="retention")    → all metrics in the retention domain
+```
+
+**Navigation is bidirectional — two doors into the same graph.** Top-down: a user asks about a *domain*, the agent reads its context, then drills into the metrics. Bottom-up (the common case, since queries usually name a metric): the agent looks up a *metric*, and `lookup_metric` returns that metric's `domains`, which it can follow into `lookup_domain` for the business context. Because membership lives on the metric, the metric path is always a first-class on-ramp to the domain.
+
+Either way, the agent knows that "revenue is recognized at fulfillment, not at booking" *before* it writes a single line of SQL — reducing hallucinated metrics and incorrect calculations.
+
+### Why progressive disclosure works
+
+This pattern — compact index in the prompt, detailed context on demand — is the same philosophy validated by agent skill systems, MCP tool servers, and RAG architectures. Instead of overloading the agent's context window with everything upfront, you give it just enough to know *where to look*, then let it pull details when needed. The result is better token efficiency, more focused reasoning, and fewer hallucinations from context overload.
+
+## Contract Rules
+
+Rules are enforced at three levels:
+
+- **`block`** — query is rejected and an error is returned to the agent
+- **`warn`** — query proceeds and a `WARNINGS:` preamble is prepended to the `run_query` response (also in `inspect_query` under `warnings`)
+- **`log`** — query proceeds and a `LOG:` preamble is prepended to the `run_query` response (also in `inspect_query` under `log_messages`); rules at this level are omitted from the system prompt so the agent can't adapt behavior to avoid triggering them
+
+Each rule carries a `query_check` (pre-execution) or `result_check` (post-execution) block. Rules with neither are advisory — they appear in the system prompt but don't enforce anything. Every rule can be scoped to a specific table or applied globally.
+
+**Built-in query checks** (pre-execution, validated against SQL AST):
+
+| Check | Description |
+|-------|-------------|
+| `required_filter` | Require a column in WHERE clause (e.g., `tenant_id`) |
+| `no_select_star` | Forbid `SELECT *` — require explicit columns |
+| `blocked_columns` | Forbid specific columns in SELECT (e.g., PII) |
+| `require_limit` | Require a LIMIT clause |
+| `max_joins` | Cap the number of JOINs |
+
+Query checks read the SQL text before it runs. They keep a cooperating agent from doing by mistake what a rule forbids, and tell it why, so it can correct the query. They are not an access-control boundary: SQL has more ways to route a value into a result than a static check can recognise, so a query written to evade `blocked_columns` can still return a blocked column's values. If a column must never reach a given caller, enforce that in the database as well, with column privileges or a view that leaves it out, and connect the agent with credentials that have only that access.
+
+**Built-in result checks** (post-execution, validated against query output):
+
+| Check | Description |
+|-------|-------------|
+| `min_value` / `max_value` | Numeric bounds on a column's values |
+| `not_null` | Column must not contain nulls |
+| `min_rows` / `max_rows` | Row count bounds on the result set |
+
+Example with table scoping and both check types:
+
+```yaml
+rules:
+  - name: tenant_isolation
+    description: "Orders must filter by tenant_id"
+    enforcement: block
+    table: "analytics.orders"      # only applies to this table
+    query_check:
+      required_filter: tenant_id
+
+  - name: hide_pii
+    description: "Do not select PII columns from customers"
+    enforcement: block
+    table: "analytics.customers"
+    query_check:
+      blocked_columns: [ssn, email, phone]
+
+  - name: wau_sanity
+    description: "WAU should not exceed world population"
+    enforcement: warn
+    table: "analytics.user_metrics"
+    result_check:
+      column: wau
+      max_value: 8_000_000_000
+
+  - name: no_negative_revenue
+    description: "Revenue must not be negative"
+    enforcement: block
+    result_check:
+      column: revenue
+      min_value: 0
+```
+
+## Semantic Sources
+
+A semantic source provides metric, table schema, and relationship metadata to the agent. Paths are resolved relative to the contract file's directory (not the process CWD).
+
+**YAML** (built-in):
+```yaml
+# semantic.yml
+metrics:
+  - name: total_revenue
+    description: "Total revenue from completed orders"
+    sql_expression: "SUM(amount) FILTER (WHERE status = 'completed')"
+    source_model: analytics.orders
+    domains: [revenue]                 # optional — see "Metric Impacts" below
+    tier: [north_star, department_kpi] # optional — north_star / department_kpi / team_kpi
+    indicator_kind: lagging            # optional — leading | lagging
+    business_owner: revenue-platform   # optional — team that owns the definition
+    operational_owner: data-eng-finance # optional — team that owns data health
+    last_reviewed: 2026-05-15          # optional — drives staleness detection
+
+tables:
+  - schema: analytics
+    table: orders
+    description: "One row per order, not per shipped item."  # optional
+    columns:
+      - name: id
+        type: INTEGER
+      - name: amount
+        type: DECIMAL
+      - name: tenant_id
+        type: VARCHAR
+```
+
+**Table descriptions (optional).** A table's `description` is the granularity
+between `allowed_tables`' schema-group description (a schema and everything
+under it) and a column's own — what the *table* means, which an agent needs
+before it writes SQL over it: "`orders` is one row per authorisation attempt,
+not per settled transaction." It is rendered by `describe_table` ahead of the
+column list, and read from a **YAML** source, a **dbt** model's `description`,
+an **Ossie** dataset's, and a **Cube** cube's. It is omitted from a contract's
+canonical bytes when empty.
+
+That last point has a consequence worth reading before you upgrade to 0.50.0 or later.
+A contract keeps a byte-identical digest only if **no** table description
+reaches it from anywhere. It gains content, and `contract_digest` moves, if
+either:
+
+- its **dbt** models, **Ossie** datasets, or **Cube** cubes carry descriptions —
+  the source now carries one it previously discarded; or
+- its **YAML** source already had `description:` on a `tables:` entry. That key
+  was silently dropped before 0.50.0 (the defect in #89), so writing it was
+  natural and had no effect; it is now read, rendered, and frozen.
+
+Moving is the correct behaviour for a content address — the contract genuinely
+says more to the agent than it did. But a published ARD attestation over such a
+contract needs re-pinning, and the second group above are the authors least
+likely to expect it.
+
+`tier`, `indicator_kind`, and `domains` are all optional. For dbt and Cube sources, these fields live under the metric's `meta:` block and are read through the same field names. For Ossie, they live in the model's `custom_extensions` block (see [Apache Ossie](#apache-ossie) below).
+
+**Ownership & review cadence (optional).** `business_owner` / `operational_owner` (always *teams*, not individuals — owners outlive any one person) and `last_reviewed` declare who owns a metric's definition vs. its data health, and when it was last vetted. `last_reviewed` feeds `DataContract.find_stale()` (see [Governance Staleness](docs/architecture.md#governance-staleness)) and surfaces in `lookup_metric` / `lookup_domain` as a `stale` flag so the agent can disclose drift at query time. The same three fields are accepted on a `domain`. They are read from the **YAML source** and from an **Ossie** model's `custom_extensions` block; dbt/Cube metrics default to unset.
+
+**Metrics over several tables (optional).** A metric whose `sql_expression` reads more than its `source_model` declares the FROM clause it is written against in `from_sql`, and what one row of that FROM is in `grain`:
+
+```yaml
+metrics:
+  - name: transaction_fee
+    description: "Fee for one payment under one fee rule that applies to it"
+    source_model: main.fees
+    from_sql: >-
+      main.payments p
+      JOIN main.merchant_data m ON m.merchant = p.merchant
+      JOIN main.fees f ON f.card_scheme = p.card_scheme
+    grain: one row per (payment, fee rule that applies to it)
+    sql_expression: "f.fixed_amount + f.rate * p.eur_amount / 10000"
+```
+
+Without them, a join lives only in the description: nothing can build the query that checks the metric, and the agent has to rebuild the join from prose. With them, `lookup_metric` returns both, and `SELECT <sql_expression> FROM <from_sql>` (`metric_query(metric)`) is a whole query. `validate_metric_from_sql(contract, metrics)` is the CI gate for it, and reports a problem when:
+
+- the contract's own `Validator` refuses it: it does not parse as one statement, reads a table the caller may not read, joins more than `max_joins` allows, and so on. The agent will reuse the join, and the `Validator` is what judges that reuse, so the gate refuses exactly what run time would. Rules the agent satisfies by what it adds around the join (`required_filter`, `required_filter_values`, `require_limit`) are left out, and a `warn` or `log` rule is not a problem;
+- `from_sql` is more than a FROM clause (a WHERE, GROUP BY, ORDER BY, LIMIT or set operation in it), since the agent writes its own around it;
+- `from_sql` does not read the metric's `source_model`;
+- given an `explain_adapter`, the database cannot bind a name in the query, such as an alias `from_sql` does not define or a missing column. Only binding is checked, not the contract's cost or row limits, because a join with no WHERE estimates the full scan the agent's own query will narrow. Without an adapter, names are not checked: without the schema, `info.amount` may be a struct field as well as `alias.column`.
+
+The query includes the metric's `filters` as its WHERE clause, since without them it is a different quantity. `dialect`, `sql_normalizer` and `caller_principal` mean what they mean for `Validator`, and should match what the agent's queries are validated with. The default `caller_principal=None` is an anonymous caller, so a join over a principal-restricted table needs the principal that will reuse it. What the query means still needs a reviewer. A `{{ metric:NAME }}` placeholder in a verified example refuses a metric with `from_sql`, because its expression is written against aliases the example's FROM does not define. Both keys are optional and omitted from a frozen contract when unset, so existing digests do not move. A contract that uses them needs 0.62.0 or later, because earlier versions refuse unknown metric keys.
+
+**dbt** — point to a `manifest.json`:
+```yaml
+semantic:
+  source:
+    type: dbt
+    path: "./dbt/manifest.json"
+```
+
+**How a dbt metric becomes one expression.** MetricFlow keeps a metric's pieces apart. In the standard spec, `expr` and `agg` sit on a semantic model's measure, and the metric only names that measure. In the dbt 1.12 spec, they sit on the metric itself (`agg`, `expr`). Filters are Jinja either way. `DbtSource` combines the pieces into one `sql_expression` and takes `source_model` from the semantic model's table. A filter becomes a condition inside the aggregate, `SUM(CASE WHEN status = 'completed' THEN amount END)`, which gives the same result as a `WHERE` clause.
+
+A filter is translated only when it is a plain `{{ Dimension('entity__dim') }}` on the metric's own semantic model. The following are marked **untranslated**:
+
+- ratio, derived, cumulative and conversion metrics;
+- `percentile` and `median`, whose SQL differs by dialect;
+- semi-additive measures (`non_additive_dimension`, such as a closing balance);
+- any filter that needs a join, a time grain, an `Entity` or a `Metric`;
+- a filter on a time dimension, even through plain `Dimension()`, because MetricFlow truncates it to its grain before comparing;
+- metrics from pre-1.6 `dbt_metrics` manifests, which keep their `filters` and `model` as before.
+
+`fill_nulls_with` becomes `COALESCE(<expr>, <value>)`. `count` compiles to `SUM(CASE WHEN <e> IS NOT NULL THEN 1 ELSE 0 END)`, as MetricFlow compiles it. `join_to_timespine` is not represented: it adds empty time periods to a grouped result and doesn't change any value.
+
+An untranslated metric keeps its name and description. Its `sql_expression` is empty, and `untranslated` says why, which `lookup_metric` passes on to the agent. The source doesn't emit SQL that would compute something else.
+
+dbt 1.12 also writes `target/osi_document.json`, which `OssieSource` can load. For filtered, semi-additive or cumulative metrics that export is not safe: it keeps MetricFlow paths such as `order__status` in the SQL and drops window semantics. Prefer `manifest.json` with `DbtSource`.
+
+dbt's built-in `relationships` schema test compiles into the manifest as a test node — `DbtSource` projects each one into a `Relationship`, resolving the owner via `attached_node` (manifest v12+) and the referenced model via `depends_on.nodes`. Tests with non-`relationships` types (`not_null`, `unique`, custom tests) and tests that can't be resolved are silently ignored. Three optional knobs read from the test's `meta:` block (matching how `tier` / `domains` are read on metrics):
+
+```yaml
+# In your dbt schema.yml
+models:
+  - name: orders
+    columns:
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('customers')
+              field: id
+              meta:
+                preferred: true
+                required_filter: "status != 'cancelled'"
+                relationship_type: many_to_one  # default; one_to_one / many_to_many also accepted
+```
+
+**Cube** — point to a Cube schema file:
+```yaml
+semantic:
+  source:
+    type: cube
+    path: "./cube/schema.yml"
+```
+
+**How a Cube measure becomes one expression.** A measure's `sql` is aggregated by its `type`, and its `filters` fold into the aggregate the same way as dbt filters: `sql: amount`, `type: sum` becomes `SUM(amount)`.
+- `{CUBE}.col`, `${CUBE}.col` and `{<cube name>}.col` resolve to plain columns.
+- `{dimension}` and `{CUBE.dimension}` resolve to that dimension's SQL.
+- `number`, `string`, `time` and `boolean` measures already contain an aggregate, so their SQL is used as written.
+
+The following are marked **untranslated**, as for dbt:
+- a reference to another cube (it needs a join), to another measure, or to a `case:` dimension;
+- multi-stage measures (`multi_stage`, `time_shift`, `group_by`, `reduce_by`, `add_group_by`) and filters with no `sql`;
+- `count_distinct_approx`, `running_total` and `rolling_window`;
+- a `number` measure with `filters`;
+- a measure with no `type`.
+
+Each cube's `joins:` block projects into `Relationship` instances. The parser handles the single-equality form `{CUBE}.col1 = {Other}.col2` (in either direction); the `from` side is always the column on the cube declaring the join, regardless of how the SQL was written. Cube's `relationship` enum (`belongsTo`, `hasOne`, `hasMany`, plus the snake_case aliases `many_to_one` / `one_to_one` / `one_to_many`) maps to the canonical `Relationship.type`. Reads from each join's `meta:` block:
+
+```yaml
+# In your Cube schema
+cubes:
+  - name: Orders
+    sql_table: analytics.orders
+    joins:
+      - name: Users
+        sql: "{CUBE}.customer_id = {Users}.id"
+        relationship: belongsTo
+        meta:
+          preferred: true
+          required_filter: "status != 'cancelled'"
+          relationship_type: many_to_one  # optional override
+```
+
+Joins whose SQL doesn't match the single-equality pattern (composite keys with `AND`-chained equalities) or whose target cube can't be resolved by name are skipped silently — fall back to declaring those in your contract YAML via `YamlSource`.
+
+### Apache Ossie
+
+[Apache Ossie (incubating)](https://ossie.apache.org/) — formerly Open Semantic Interchange — is the vendor-neutral spec for exchanging semantic models across analytics, AI, and BI tools. Point at a model file:
+
+```yaml
+semantic:
+  source:
+    type: ossie
+    path: "./semantic/model.yml"
+```
+
+Ossie standardises what a metric *is*; this library enforces what an agent may *do* with it. So the spec is a strict subset of the vocabulary here — an Ossie `Metric` carries only `name`, `expression`, `description`, `datatype`, and `ai_context`.
+
+| Ossie | Read as |
+| --- | --- |
+| `datasets[].source` + `fields[]` | Table schemas. A three-part `database.schema.table` is keyed on its trailing `schema.table`; a query-backed dataset registers no table |
+| `metrics[].expression.dialects[]` | `sql_expression`, resolved deterministically — your `dialect=` first, then `ANSI_SQL`, then `Ossie_SQL_2026`, then the first declared entry |
+| `relationships[]` | `Relationship`, with cardinality *derived from both sides* — see below |
+| `ai_context` (anywhere) | Carried into `get_extras()["ossie_ai_context"]`, keyed by model then entity kind, never interpreted |
+| `custom_extensions[]` | Ours read as real vocabulary; every other vendor's carried into `get_extras()["ossie_custom_extensions"]`, keyed by model then vendor |
+
+**Cardinality.** Ossie never writes the join type down; it is implied by which endpoints are keys. The spec documents `to` as the one side, but nothing validates that — and trusting it is not free, because `RelationshipChecker` fires its fan-out warning only on `one_to_many`. So both sides are checked:
+
+| `from_columns` a key | `to_columns` a key | Type |
+| --- | --- | --- |
+| ✓ | ✓ | `one_to_one` |
+| ✗ | ✓ | `many_to_one` |
+| ✓ | ✗ | `one_to_many` |
+| ✗ | ✗ | `many_to_many` |
+
+Keys are optional in Ossie, and their absence is not evidence of fan-out — when the `to` dataset declares no keys at all, the spec's declaration stands and the join reads as `many_to_one`.
+
+Composite-key relationships are **skipped with a warning** rather than split into one edge per column pair — our `Relationship` has single-column endpoints, and splitting would assert two joins that are each individually wrong. Declare those in a `YamlSource` overlay.
+
+**Governance fields.** Ownership, review dates, tiers, decompositions, and the metric-impact graph have no home in the Ossie spec, and every `$def` in its JSON Schema sets `additionalProperties: false` — so they cannot be added as extra keys. They ride in the spec's own escape hatch, `custom_extensions`, under this project's vendor name:
+
+```yaml
+    custom_extensions:
+      - vendor_name: AGENTIC_DATA_CONTRACTS
+        data: |
+          {
+            "metrics": {
+              "total_sales": {
+                "business_owner": "revenue-analytics",
+                "operational_owner": "data-platform",
+                "last_reviewed": "2026-05-01",
+                "tier": ["gold"],
+                "domains": ["sales"],
+                "decompositions": [
+                  {"operator": "sum", "operands": ["total_profit", "total_cost"]}
+                ],
+                "drill_by": [
+                  {"dimension": "region", "column": "public.customer.c_region"}
+                ]
+              }
+            },
+            "metric_impacts": [
+              {"from": "total_cost", "to": "total_profit",
+               "direction": "negative", "confidence": "verified",
+               "evidence": "Margin bridge reconciled 2026-Q1."}
+            ]
+          }
+```
+
+Ossie stores extension payloads as a JSON *string*, so `data` is JSON nested inside YAML (a plain YAML mapping is accepted too). Restored decompositions and `drill_by` go through the same validators as `YamlSource`, failing loudly at load, and a bare `"tier": "gold"` is promoted to a list exactly as `YamlSource` does. Another vendor's malformed payload is carried verbatim and logged rather than raised on — a neighbour's typo must not stop your contract from being enforced.
+
+`expected_extras` does not apply to an Ossie source: its extras are synthesized by the parser under fixed keys, not authored as free top-level sections. Declaring it on a non-`yaml` source logs a warning rather than being silently dropped.
+
+> The spec is at `0.2.0.dev0` with no tagged releases yet, so expect churn. `dialect` is deliberately treated as an opaque string and never validated against the enum, since the accepted expression-language proposal adds `Ossie_SQL_2026` and makes it the default.
+
+## Table Relationships
+
+Define join paths so the agent knows how to combine tables correctly:
+
+```yaml
+# semantic.yml
+relationships:
+  - from: analytics.orders.customer_id
+    to: analytics.customers.id
+    type: many_to_one
+    description: >
+      Join orders to customers for region-level breakdowns.
+      Every order has exactly one customer.
+
+  - from: analytics.bdg_attribution.contact_id
+    to: analytics.contacts.contact_id
+    type: many_to_one
+    description: "Bridge table — filter to avoid fan-out from multiple attribution records."
+    required_filter: "attribution_model = 'last_touch_attribution'"
+
+  # When multiple parallel join paths exist between the same pair of tables
+  # (role-playing dimensions, multi-role FKs), mark the canonical one
+  # `preferred: true`. The agent sees `preferred="true"` in the prompt and
+  # `lookup_relationships` returns preferred edges first.
+  - from: analytics.orders.customer_id
+    to: analytics.users.id
+    type: many_to_one
+    description: "Customer who placed the order — canonical user join."
+    preferred: true
+  - from: analytics.orders.sales_rep_id
+    to: analytics.users.id
+    type: many_to_one
+    description: "Salesperson who closed the order."
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `from` / `to` | Yes | Fully qualified column references (`schema.table.column`) |
+| `type` | No | Cardinality: `many_to_one` (default), `one_to_one`, `one_to_many`, `many_to_many` |
+| `description` | No | Free-text context for the agent (join guidance, caveats, data quality notes) |
+| `required_filter` | No | SQL condition that **must** be applied when using this join (e.g., bridge table disambiguation) |
+| `preferred` | No | Mark the canonical join when alternatives exist (defaults to `false`). Surfaces as `preferred="true"` in the prompt, floats the edge to the front of `lookup_relationships` direct-lookup output, and biases multi-hop BFS path-finding toward it. Leave unset for role-playing peers (e.g. `order_date` vs `ship_date`) where no single path is canonical. |
+
+The agent sees these in its system prompt and uses them to write correct JOINs instead of guessing from column names.
+
+### Relationship Validation
+
+When a `SemanticSource` is passed to the `Validator`, declared relationships are actively validated against the agent's SQL:
+
+| Check | Trigger | Warning |
+|-------|---------|---------|
+| **Join-key correctness** | Agent joins on columns that match no declared relationship for the table pair (one pair may declare several); extra equalities beside a matching key are fine | "uses `orders.email`, `customers.email` but declared relationship specifies `orders.customer_id` -> `customers.id`" |
+| **Required-filter missing** | Join has `required_filter` but neither WHERE nor that join's ON clause includes it (the join key itself does not count; in an outer join's ON, only the null-extended side counts) | "has required filter `status != 'cancelled'` but query does not filter on: status" |
+| **Fan-out risk** | Aggregation (SUM, COUNT, etc.) across a `one_to_many` join | "Results may be inflated by row multiplication" |
+
+A join is recognised in `JOIN ... ON`, `USING`, or in `WHERE` for a comma or `CROSS` join. A `WHERE` equality between tables already joined by `ON`, or one that correlates a subquery with its outer query, is a filter, not a join. A key may be wrapped: parentheses and casts (`CAST(i.item_id AS VARCHAR)`, `i.item_id::VARCHAR`) are seen through, and an expression over exactly one column (`LOWER(x)`, `COALESCE(x, '')`) is keyed on that column. An expression over several columns, or a subquery, is not a join key.
+
+All relationship checks are **advisory only** (warnings, never blocks). Undeclared joins are silently ignored — the checker only validates relationships you've explicitly defined.
+
+## Metric Impacts
+
+Table relationships tell the agent *how to join*. Metric impacts tell the agent *what drives what* — the causal / economic graph between KPIs. When an agent is asked "why did revenue drop?", an impact graph lets it walk upstream to the drivers (conversion rate, active customers, traffic) rather than blindly querying revenue again. When it's asked to recommend an action, it can cite verified evidence rather than hand-waving.
+
+Declare impacts at the top level of the semantic YAML, alongside `metrics:` and `relationships:`:
+
+```yaml
+# semantic.yml
+metric_impacts:
+  - from: active_customers
+    to: total_revenue
+    direction: positive           # positive | negative
+    confidence: verified          # verified | correlated | hypothesized
+    evidence: "A/B test exp-042 (Q3 2025), +3.2% revenue lift, p<0.01"
+    description: "Retained customers drive repeat purchases."
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `from` / `to` | Yes | Metric names (must match a metric declared in the same contract) |
+| `direction` | No | `positive` (default) or `negative` |
+| `confidence` | No | `hypothesized` (default), `correlated`, or `verified` — lets the agent prioritize backed-up drivers over hunches |
+| `evidence` | No | Free text — study reference, A/B test ID, anything the agent should quote when making a recommendation |
+| `description` | No | Optional elaboration |
+
+Edges are directional. There's no `domains` field on the edge itself: an impact surfaces whenever either endpoint is in the agent's active domain, so cross-domain drivers (Checkout → Revenue) get discovered for free.
+
+### How the agent uses impacts
+
+`lookup_metric` surfaces an enriched response: each metric carries `impacts` (outgoing edges) and `impacted_by` (incoming edges), each rendered as a one-line citation string:
+
+```
+"positive impact on total_revenue (verified): A/B test exp-042 (Q3 2025), +3.2% revenue lift, p<0.01"
+```
+
+The agent can quote this verbatim in its answer — structured enough to reason over, readable enough to paste.
+
+`trace_metric_impacts` walks the graph via BFS:
+
+```python
+await trace.callable(
+    {
+        "metric_name": "total_revenue",
+        "direction": "upstream",  # upstream = drivers, downstream = affected
+        "max_depth": 2,
+    }
+)
+# Returns: {"edges": [{"depth": 1, "from": "active_customers", "to": "total_revenue",
+#                       "direction": "positive", "confidence": "verified",
+#                       "evidence": "A/B test exp-042..."}]}
+```
+
+Impacts declared in contract YAML reference metric names regardless of where the metric itself is defined, so this works even for dbt and Cube-sourced metrics — neither semantic layer has a native causal-graph concept. Unknown metric references in `metric_impacts` emit a warning at tool-creation time (same pattern as domain validation).
+
+`trace_metric_impacts` serializes at most 200 edges per call, nearest (BFS) first; a graph holding more than that adds a `note` naming the true total and how many are shown. A cycle-closing edge (`c -> a` when the graph has `a -> b -> c -> a`) is reported once rather than treated as an error — the graph genuinely closes.
+
+### Metric decomposition and drill dimensions
+
+Impact edges are *causal* — evidential and non-exhaustive. A metric can also declare its *arithmetic identity*: how its value is exactly reconstructed from other metrics. Declare `decompositions` on the metric itself:
+
+```yaml
+metrics:
+  - name: total_revenue
+    sql_expression: "SUM(amount)"
+    decompositions:
+      - operator: product            # sum | product | ratio | difference
+        operands: [paying_customers, arpu]
+    drill_by:
+      - {dimension: region, column: analytics.dim_customer.region}
+```
+
+An identity decomposition is *exhaustive and exact* — nothing else can move `total_revenue` except `paying_customers` and `arpu` — so an agent diagnosing a change can localize it deterministically before reaching for the speculative impact edges. `ratio` and `difference` are binary; `sum` and `product` take two or more operands. Decompositions are validated at load time: every operand must resolve to a declared metric, and the identity edges must form a DAG (a metric cannot transitively decompose into itself). A metric with no decomposition is a valid leaf.
+
+**Operand units and precision are yours to get right.** The library folds operand values with the declared operator and has no view of either. A conversion rate declared as a rounded percentage (`ROUND(100.0 * n / d, 1)`) makes a `product` identity false by ~100× — declare the identity in fraction units. The quieter trap is precision: an operand carried at three decimals leaves a ~0.03% residual, which [`reconcile_decomposition`](#validating-a-verified-examples-corpus) reports identically to ETL drift. Widen its `rel_tol` to the precision the operands actually have; the default `1e-4` assumes they are exact.
+
+**Declaring where the cross term goes.** When an agent attributes a *change* in
+`total_revenue` to its factors, the `ΔC·ΔP` cross term has to land somewhere —
+and every placement sums correctly, so two reports built on different
+placements are indistinguishable. A pilot across 16 sessions found three
+distinct placements on identical data, with a 13.5% swing on the headline
+contribution and the narrative conclusion flipping between them. That makes the
+placement a non-inferable business fact, so declare it:
+
+```yaml
+decomposition_convention:
+  convention: split_evenly       # source-wide default
+
+metrics:
+  - name: activations
+    decompositions:
+      - operator: product
+        operands: [volume, rate]
+        convention: fold_into    # explicit | split_evenly | fold_into, overrides the default
+        convention_operand: rate # required for fold_into
+```
+
+| Convention | Cross term | Known as |
+|---|---|---|
+| `explicit` | reported on its own line, attributed to no factor | — |
+| `split_evenly` | divided equally among the operands | Shapley, at two operands |
+| `fold_into` | absorbed entirely by `convention_operand` | Laspeyres / Paasche, at two operands |
+
+Only `product` and `ratio` have a cross term; declaring a convention on `sum`
+or `difference` raises at load. The default is resolved onto each decomposition
+when the source loads, so a frozen contract states its effective convention
+outright. Both `lookup_metric` and `trace_metric_impacts` carry the declaration
+to the agent.
+
+`drill_by` lists the dimensional cuts a metric can be sliced by, in priority order (`schema.table.column`) — the exhaustive `GROUP BY` axes ("revenue by region") that dominate weekly-review diagnosis. Its column reference is soft-validated: a malformed shape raises, but a reference to a table the contract hasn't declared is allowed (schemas are optional).
+
+Decomposition operands become identity edges in the same graph as impacts, so `trace_metric_impacts` walks both. Its `kinds` argument selects which — `identity` (arithmetic), `influence` (causal), or `all` (default) — and every returned edge is tagged with its `kind`:
+
+```python
+await trace.callable(
+    {
+        "metric_name": "total_revenue",
+        "direction": "upstream",  # operands drive their parent
+        "kinds": "identity",  # walk the arithmetic skeleton first
+    }
+)
+# Returns edges like: {"depth": 1, "from": "arpu", "to": "total_revenue",
+#                      "kind": "identity", "operator": "product",
+#                      "convention": "split_evenly"}
+```
+
+Both kinds answer `direction` the same way — every edge points from a driver to
+what it affects — so one pair declared as both an impact edge and a
+decomposition operand comes back under one direction, as two edges. An identity
+walk that finds nothing where edges exist on the other side says so in a `note`
+rather than returning a bare `[]`.
+
+Today `decompositions` / `drill_by` are declared directly in YAML contracts or in an Ossie model's `custom_extensions`; dbt/Cube extraction is deferred. Variance diagnosis itself is left to the agent, which already performs it from this grounding.
+
+## Checking declarations against the live schema
+
+A contract can declare a column that does not exist. The declaration sits inside `contract_digest`, so the contract stays "frozen" around a column the warehouse renamed — and every gate stays green, because the declarations did not change. The *world* did. `check_schema_drift` is the preflight that notices:
+
+```python
+from agentic_data_contracts import DataContract
+from agentic_data_contracts.validation import check_schema_drift
+
+report = check_schema_drift(contract, adapter)  # or pass an explicit source
+if not report.ok:
+    print(report.summary())
+    # in CI: sys.exit(1)
+```
+
+```text
+Checked 5 tables (46 columns): 2 drifted, 0 unchecked.
+  drift: main.merchant_category_codes: declared column 'column1' does not exist
+  drift: main.merchant_category_codes: declared column 'column2' does not exist
+```
+
+It walks every table the contract allows and — where the semantic source declares them — every column of those tables, reporting four kinds: `missing_schema`, `missing_table`, `missing_column`, and `case_mismatch` (a declaration matching a live column only case-insensitively, which matters because the description overlay is an exact-match lookup, so the authored text silently fails to reach a column that is right there).
+
+Four things worth knowing before you wire it into CI:
+
+- **The source argument is an override, not the only way in.** Omit it and the contract's own declared source is loaded, exactly as `create_tools` does. A contract carrying an inline frozen snapshot, checked the obvious way, would otherwise compare no columns at all and report a clean bill of health.
+
+- **Gate on `report.ok`, not `report.has_drift`.** A declaration the check could not reach a verdict on — an unresolved `*` wildcard, or an adapter that raised — lands in `report.unchecked`, and `ok` is False whenever anything is there. A connection failure is no evidence a table is missing, and it is not a pass either. `tables_checked` / `columns_checked` are reported for the same reason: a run that checked nothing must not read like a run that found nothing.
+- **It never resolves a wildcard for you.** `resolve_tables()` rewrites `allowed_tables[].tables` in place, and those bytes are inside the canonical form `contract_digest` hashes. A preflight that quietly re-pinned the artifact it was auditing would be worse than the defect. Resolve first, on a copy, and accept the digest movement knowingly.
+- **The allow-list is the scope.** Columns are checked for tables the contract allows, not every table the semantic source describes — a dbt manifest carries every model in the project, and walking all of them means hundreds of warehouse round-trips to report drift in tables the agent may not query anyway.
+
+Table and schema names are matched case-insensitively; only *columns* report a `case_mismatch`. A catalog that returns unquoted identifiers upper-cased (Snowflake) would otherwise make a wholly correct lower-case contract fail CI with every table "missing" — and unlike a column, whose overlay is an exact-match lookup, a table-name case difference breaks nothing, because every other path hands the name to the adapter to resolve.
+
+Undeclared *live* columns are never reported: the description overlay is a left join by design, and flagging every undocumented column would drown the finding that matters. Type mismatches (declared `BIGINT`, live `VARCHAR`) are the same class of drift and are not covered yet — names first.
+
+`describe_table` carries the agent-facing half of the same reconciliation. It already held the declarations and the live schema in one scope, so a declared column with no live counterpart now produces a `note` rather than falling out in silence:
+
+```json
+{"schema": "main", "table": "merchant_category_codes", "columns": [...],
+ "note": "The semantic source declares 2 column(s) this table does not have: column1, column2. Its documentation is stale — trust the column list above, not the declaration."}
+```
+
+A note, not an error: the live column list is still correct and still worth having, and failing the call would cost the agent a usable answer over a documentation defect.
+
+## Validating a verified-examples corpus
+
+If you keep a corpus of known-good `question → SQL` examples — the kind an analytics agent accumulates from real sessions and promotes through review — `validate_examples` re-checks each example's SQL against a contract using the *same* two-layer `Validator` that gates live queries. The corpus stays entirely yours (your repo, your format, your review flow); the library never stores, loads, or executes it — it contributes exactly one verb, *validate*.
+
+```python
+from agentic_data_contracts import DataContract
+from agentic_data_contracts.validation import VerifiedExample, validate_examples
+
+contract = DataContract.from_yaml("contract.yml")
+examples = [
+    VerifiedExample.from_dict(row) for row in load_your_yaml()
+]  # you own the load step
+
+report = validate_examples(
+    examples, contract, explain_adapter=adapter
+)  # adapter → live EXPLAIN
+if not report.ok:
+    print(report.summary())  # markdown, ready to post as an MR comment
+    # in CI: sys.exit(1)
+```
+
+Each example lands in exactly one `status` — `valid` (statically contract-checked and passed), `violation` (a check rejected it), `unverified` (the engine planned it but policy couldn't be statically checked — see below), or `unchecked` (no verdict possible) — with two flags, `contract_checked` and `engine_checked`, recording *what* was verified. `report.ok` is a **safe gate**: it is True only when *every* example is `valid`, so `if not report.ok: sys.exit(1)` fails on violations, unchecked, *and* unverified rows (test `report.violations` directly for a laxer gate). Two uses of the same call:
+
+- **MR gate** — validate the corpus in CI *before* a human reviews it; fail on `not report.ok`, so the human is no longer the only check.
+- **Drift sweep** — re-run against a *changed* contract; `report.violations` are the examples the change just broke. With an `explain_adapter`, the live EXPLAIN also catches a dropped or renamed column that static checks can't see.
+
+It confirms an example is still *allowed, well-formed, and plannable against the current schema* — never that it still returns the right answer, because it **never executes** the SQL. Result correctness is the second pass's job, [below](#asserting-the-certified-answer-not-just-compliance); whether an agent can reach that SQL from the contract at all is the [third's](#evaluating-agent-conformance). For SQL an engine parses but sqlglot cannot (e.g. Denodo/VDP), a parse failure falls back to the engine's own planner; those pass as plannable but policy-unverified, flagged in `report.unverified_compliance`. See [`examples/revenue_agent/verify_examples.py`](examples/revenue_agent/verify_examples.py) for a runnable, DuckDB-backed demo.
+
+### Asserting the certified answer, not just compliance
+
+`validate_examples` proves an example is *allowed* — it never proves the SQL is *right*. A query with every table permitted, the tenant filter present, and explicit columns can still sum the wrong rows and pass with `status: "valid"`. To close that gap, an example can carry the certified answer alongside its SQL, and a second pass, `check_example_answers`, executes just the compliant, asserted rows and compares:
+
+```yaml
+- id: acme-completed-revenue
+  question: "total completed revenue for acme"
+  sql: SELECT SUM(amount) FROM analytics.orders WHERE tenant_id = 'acme' AND status = 'completed'
+  expected: 10700.00     # the certified answer
+  rel_tol: 0.001          # optional, overrides the call-level default for this row
+  abs_tol: 0.0            # optional, likewise
+  time_scoped: false       # optional; see "relative time windows" below
+```
+
+```python
+from agentic_data_contracts.validation import check_example_answers
+
+report = validate_examples(examples, contract, explain_adapter=adapter)
+answers = check_example_answers(
+    report, adapter=adapter
+)  # a DIFFERENT adapter type — see below
+
+if not (report.ok and answers.ok):
+    print(report.summary())
+    print(answers.summary())
+    # in CI: sys.exit(1)
+```
+
+Note what `answers.ok` means before you paste that gate in: it is True only when at least one assertion was actually *checked* **and** every checked one matched. An **empty** answer report is therefore False, not True — a gate that quietly stopped asserting anything fails rather than passing. The consequence to expect: adopt the recipe before any row carries an `expected` and the build goes red on a corpus with nothing wrong with it. Add the first assertion, or leave `answers.ok` out of the gate until you do.
+
+`check_example_answers` takes `report` — the output of `validate_examples` — not the raw examples. That is deliberate, not incidental: it means the pipeline cannot hand it unvalidated SQL. A row that violates the tenant-filter rule is precisely the query that must not be sent to the warehouse to see what it returns, so a row is executed only when it is `status == "valid"` **and** declares an `expected` or `expected_rows`; everything else (a violation, an unverified or unchecked row, or a valid row with no assertion) produces no result at all. Note the two functions also take different adapter *kinds*: `validate_examples` takes an `ExplainAdapter` (plans only, never runs a query), while `check_example_answers` takes a `DatabaseAdapter` (executes) — the execute-capable adapter enters the pipeline only at this second, already-filtered stage.
+
+Each result lands in exactly one `status` — `match`, `mismatch`, `unassertable`, or `error`. What a `mismatch` carries depends on which assertion it came from: a scalar `expected` populates `expected` / `actual` / `abs_diff` / `rel_diff`, while a breakdown leaves all four `None` and reports through `expected_rows`, `actual_row_count`, and `row_differences` instead. **A SQL statement using a relative time window is refused, not executed**: `WHERE created_at >= CURRENT_DATE - 30` degrades correctly as fixture data ages, so the certified answer would too, for a reason the corpus author never touched. The checker scans for that before running anything — `CURRENT_DATE` / `CURRENT_TIMESTAMP` and friends, plus function-call spellings like `NOW()`, `GETDATE()`, and `TODAY()` — and marks the row `unassertable` when it finds one. Set `time_scoped: true` once you've confirmed the window is pinned some other way (e.g. the SQL binds explicit dates from application code) to run it anyway.
+
+The default tolerance is deliberately tight — `rel_tol=1e-9`, `abs_tol=0.0` — because a certified answer is meant to be *the* number, not an approximation; the default absorbs only floating-point representation noise. Widen `rel_tol` / `abs_tol` per example when the certified answer itself has limited precision — e.g. it was read off a dashboard that rounds to whole dollars — rather than loosening the call-level default for the whole corpus.
+
+One more consequence worth knowing before you write `expected: 0`: the tolerance's relative term is `rel_tol * abs(expected)`, so at `expected == 0` it's always zero and only the absolute term can pass a near-miss. A row asserting "zero failed orders in Q1" matches only an *exact* zero unless you also set an `abs_tol`.
+
+**`expected_rows`: certifying a breakdown, not just a scalar.** A certified answer isn't always a single number — revenue by region, a top-N list, any `GROUP BY` has nowhere to put its answer in `expected`. `expected_rows` is `expected`'s sibling for exactly that shape, and a row declares one or the other, never both:
+
+```yaml
+- id: revenue-by-region
+  question: "total revenue by region"
+  sql: >
+    SELECT c.region, SUM(o.amount) AS revenue
+    FROM analytics.orders o JOIN analytics.customers c ON o.customer_id = c.id
+    WHERE o.tenant_id = 'acme' AND o.status = 'completed'
+    GROUP BY c.region
+  expected_rows:
+    - [EMEA, 5000.00]
+    - [APAC, 3000.00]
+    - [AMER, 2700.00]
+
+- id: top-3-regions
+  ordered: true                # order IS the answer
+  expected_rows:
+    - [EMEA, 5000.00]
+    - [APAC, 3000.00]
+    - [AMER, 2700.00]
+```
+
+Row identity is inferred from the cells themselves, not declared: a non-numeric cell is a key (the group), a numeric cell is a value (the measurement). Comparison pairs rows by key and is **unordered by default** — a `GROUP BY` without an `ORDER BY` has no guaranteed row order, so a correct query should never fail on the order it happens to come back in. Set `ordered: true` when order *is* the answer (a top-N list); comparison then pairs rows by position instead of by key.
+
+A certified answer of "no rows" — the shape of every data-quality invariant ("no orders without a tenant", "no negative amounts") — is written with `expected`, not `expected_rows: []` (which is rejected as almost certainly a mistake, not a valid assertion): `SELECT COUNT(*) FROM ... WHERE ...` with `expected: 0`.
+
+**`{{ metric:NAME }}`: certifying the metric's own SQL.** A certified example written in plain SQL repeats the metric's logic by hand, so editing the metric changes no certified answer. The metric's `sql_expression` never runs anywhere: it reaches the agent only through `lookup_metric`, and the agent uses it as given. A placeholder makes the example execute the contract's *current* definition instead:
+
+```yaml
+- id: rules-matching-one-payment
+  sql: >
+    SELECT count(*)
+    FROM payments p
+    JOIN merchant_data m ON m.merchant = p.merchant
+    CROSS JOIN fees f
+    WHERE p.psp_reference = 12345
+      AND {{ metric:fee_rule_matches_transaction }}
+  expected: 57
+```
+
+Pass the contract's semantic source to `validate_examples(..., semantic_source=source)`. Each placeholder expands to `(<sql_expression>\n)` before anything else sees the SQL. The parentheses keep a metric's top-level `OR` from binding to the example's `AND`, and the newline keeps a trailing `--` comment in the metric from commenting out the closing parenthesis. The Validator, the EXPLAIN dry-run and `check_example_answers` all get the expanded text, which is recorded as `ExampleResult.sql`, so the metric's SQL is also checked against the contract's table rules. The example binds every table alias the expression reads (`p`, `m`, `f` above). When someone edits the metric, the certified answer moves and the row turns `mismatch`.
+
+Expansion is plain text substitution, applied before any `sql_normalizer`, so it works for dialects sqlglot can parse but cannot emit. Every row is expanded before any is validated. A placeholder that cannot expand faithfully raises `ValueError` naming the row: an unknown metric, an empty `sql_expression`, a placeholder with no `semantic_source`, a placeholder inside a metric's own expression (expansion is a single pass), or any other `{{` in the SQL. `{{` is reserved in example SQL, including inside string literals. **A metric that declares `filters` is refused too**: expanding its `sql_expression` alone would drop the filters and certify a different quantity. Write that metric's SQL out in full in the example instead. **A metric its source marked `untranslated` is refused too**, with the source's reason, for example a dbt ratio metric or a filter that needs a join. A dbt or Cube metric that *was* assembled expands like any other.
+
+`answers.covered_metrics` lists the metrics referenced by a row that asserted an answer and matched. `answers.uncovered_metrics(source)` lists the rest, i.e. the metrics no certified example tests. A row that references a metric but asserts no answer is validated but never executed, so it does not count as coverage. Coverage counts references, not what the engine ran: a placeholder inside a SQL comment or string literal is still expanded and still counts, so keep placeholders in live SQL.
+
+Its sibling `reconcile_decomposition(...)` applies the same CI-first, contract-relative spirit to a metric's declared arithmetic identity, executing the `decompositions` above against live data to assert the identity still holds within tolerance. Its default `rel_tol=1e-4` assumes the operands are exact — see [operand units and precision](#metric-decomposition-and-drill-dimensions) when one of them is a rounded percentage or carries limited decimals.
+
+`attribute_change(...)` applies a declared convention to measured values —
+values in, contributions out, no database access, because *when* each value was
+measured is the caller's business:
+
+```python
+from agentic_data_contracts.validation import attribute_change
+
+result = attribute_change(
+    contract.load_semantic_source().get_metric("activations"),
+    before={"volume": 10_000, "rate": 0.35},
+    after={"volume": 15_000, "rate": 0.45},
+)
+result.contributions  # {"volume": 1750.0, "rate": 1500.0} under fold_into: rate
+result.interaction  # 500.0 — the raw residual, so the placement is auditable
+```
+
+Its sibling `check_attribution(...)` scores a *reported* breakdown against the
+declared convention. Its intended caller is an **eval harness** measuring
+whether an agent follows the contract — not CI and not production, since a
+reported breakdown exists only inside a written answer.
+
+### Evaluating agent conformance
+
+Both passes above check SQL a human already got right. `validate_examples` asks whether the certified query is still *allowed and plannable*; `check_example_answers` whether it still *returns the right number*. Neither involves an agent, so neither can see the third way a contract decays. Rename a metric, trim a domain description, delete the sentence that explained which order status counts as revenue — enforcement is untouched and the certified SQL still returns `10700.00`, so both passes stay green, while an agent reading that contract can no longer find its way to the query. The contract stopped *teaching*, and nothing said so.
+
+`evaluate_conformance` is the third pass over the same corpus: can an agent reproduce the certified answer from the contract alone, through the governed path? The progression is *enforceable* → *accurate* → *teachable*, and only the last of the three degrades silently today.
+
+The library never runs your agent. You wire the agent the way you already do, give it one `ContractSession` per question with a `ToolRecorder` attached, and hand back what the session recorded:
+
+```python
+from agentic_data_contracts import DataContract
+from agentic_data_contracts.core.session import ContractSession
+from agentic_data_contracts.tools.factory import create_tools
+from agentic_data_contracts.validation import (
+    Attempt,
+    ToolRecorder,
+    VerifiedExample,
+    evaluate_conformance,
+)
+
+examples = [
+    VerifiedExample.from_dict(row) for row in load_your_yaml()
+]  # you own the load step
+corpus = [
+    ex for ex in examples if ex.question
+]  # a row with no question cannot be evaluated
+
+attempts = []
+for example in corpus:
+    # One recorder per row: a ToolRecorder serves exactly one attempt and
+    # refuses a second read, so two questions can never merge their call logs.
+    session = ContractSession(contract, recorder=ToolRecorder())
+    tools = {
+        t.name: t.callable
+        for t in create_tools(
+            contract,
+            adapter=adapter,
+            semantic_source=semantic,
+            session=session,
+            caller_principal=example.principal,  # a row's principal, or None
+        )
+    }
+
+    final_text = await your_agent_loop(
+        example.question, tools
+    )  # your agent, your framework
+
+    attempts.append(Attempt.from_session(example, session, final_text=final_text))
+
+report = evaluate_conformance(attempts)  # pure: no network, no database, no model
+print(report.summary())  # markdown, ready to post as a PR comment
+```
+
+`evaluate_conformance` itself is pure and synchronous — it scores recorded `Attempt`s and nothing else. Everything expensive and nondeterministic happens in *your* loop, above the call, which is what makes the verdict logic testable without a model and reproducible from a saved run. `Attempt.from_session` also carries off `session.cost_usd` and the recorder's own elapsed time, so a run can be costed. A runnable end-to-end demo with a scripted stand-in agent (no API key, no network) is [`examples/revenue_agent/evaluate_conformance.py`](examples/revenue_agent/evaluate_conformance.py).
+
+**Two orthogonal axes, five states each.** The `answer` axis scores the number: `match`, `mismatch`, `unassertable` (the agent's answering query used a relative time window, so the certified answer decays against it), `skipped` (the row certified no `expected`, **or** certified a breakdown via `expected_rows` — see below), `error`. The `protocol` axis scores the path: `followed`, `violated`, `contaminated`, `not_applicable` (the row activated no protocol rule), `unchecked`. A third field, `answer_source` (`declared` / `sole_scalar` / `last_scalar` / `none`), records *how* the answered number was picked and stays separate from the verdict, so a row that matched on an ambiguously-selected `last_scalar` still reports `answer="match"` and is still excluded from `ok` — the verdict and the evidence for it are different fields.
+
+**`evaluate_conformance` grades a certified breakdown only when the host declares it.** Set `final_rows` and `final_columns` on the `Attempt` — the breakdown counterpart to `final_answer` — and pass 3 scores it through the same `compare_rows` pass 2 uses, with tolerance and naming which group differed:
+
+```python
+attempt = Attempt.from_session(
+    example,
+    session,
+    final_rows=[["Europe", 7200.00], ["North America", 2700.00]],
+    final_columns=["region", "revenue"],
+)
+```
+
+The host declares rather than the library inferring, for the same reason `final_answer` exists: `_select_answer` picks a scalar by clustering candidates and *marks the guess* when it is ambiguous, and there is no equally honest inference for a breakdown — choosing whichever query happened to match would let a lucky drill-down pass. Leave them unset and the row reports `answer="skipped"` and passes, exactly as before; note that this means the protocol axis is graded but the numbers are not.
+
+Wiring `final_rows` uniformly is safe: on a row certified with a scalar `expected` it is ignored, and scalar selection runs as usual. A declared breakdown that reached no successful `run_query` reports `protocol="contaminated"` — pass 3 asks whether the answer came *through the governed path*, and one that never queried did not.
+
+**Tolerances are not symmetric with pass 2.** `check_example_answers` accepts corpus-wide `rel_tol`/`abs_tol` overrides that apply to any row setting none of its own, but `evaluate_conformance(attempts)` takes no such override and falls back straight to the library default for an unset row — so the same corpus can `match` in pass 2 and `mismatch` in pass 3 unless the tolerance is set per-row: a row's own `rel_tol`/`abs_tol` apply identically to both passes.
+
+The distinction that makes the gate mean anything is between **nothing to judge** and **couldn't judge**. `skipped` and `not_applicable` *pass*: no assertion was made, no rule was activated, and there is nothing to hold against the contract. `error` and `unchecked` *fail*: something was supposed to be judged and the evaluation could not do it. Conflating those two is the classic evaluation bug — a suite reporting a serene green because every single case was quietly skipped. For the same reason `report.ok` is False on an **empty** report: a harness that stopped producing attempts fails rather than passes.
+
+**`expects_metrics` activates the protocol rule.** The metric-consultation check only judges rows that declare which metric definitions should have been consulted before answering:
+
+```yaml
+- id: acme-completed-revenue
+  question: "total completed revenue for acme"
+  sql: SELECT SUM(amount) FROM analytics.orders WHERE tenant_id = 'acme' AND status = 'completed'
+  expected: 10700.00
+  expects_metrics: [total_revenue]   # lookup_metric must precede the answering query
+```
+
+A row that names nothing lands on `not_applicable` and passes. That is deliberate, not laziness: the output of this pass is meant to be read as *evidence about the contract's prose* — a `violated` row is an argument for rewriting a definition or a domain description. A guessed violation would therefore become wrongly-rewritten contract text, which is worse than the finding never existing. The rule fires only where a human said in the corpus what the right path was.
+
+**The closed world, and the `contaminated` status.** An agent in production may hold tools this library never created — a generic SQL tool, a warehouse MCP server, a shell, a retriever. The recorder cannot see any of them, which makes "never called `lookup_metric`" ambiguous between a real prose gap and the agent simply going around the contract. The evaluator therefore assumes a **closed world**: the eval runs the agent with the contract toolset and nothing else. That is legitimate precisely because it is an eval and not production — "can an agent answer this from the contract alone?" is not a question you can ask in an open world.
+
+The requirement is enforced by **derived evidence, never by assertion**. You are not asked to promise a closed world. An answer declared with zero successful `run_query` calls proves by construction that the number came from somewhere else, and the row is marked `contaminated`. If you *do* have full framework logs, `Attempt.foreign_tool_calls` accepts the names of non-contract tools that were available; it is used only to mark a row `contaminated` and is never input to any other verdict, keeping arbitrary trace formats out of the reasoning path. The **documented limit**: an agent that used `run_query` but drew its business context from a foreign retriever leaves no detectable trace at all. These findings are trustworthy in proportion to how closed the eval world actually was.
+
+**A blocked query is not a conformance failure.** Run the demo and you will see rows whose SQL the contract rejected counted among the *passes*. That is correct, and it is the point of keeping the axes orthogonal. A row certifying no `expected` and activating no protocol rule gives pass 3 nothing to judge, whatever happened to its SQL — legality is pass 1's job, and it already failed that row there. Blocked attempts are still recorded and surface in `reasons` as friction — the demo's blocked rows report `"1 blocked run_query attempt(s) with none accepted"`, and an attempt that recovered reports `"before an accepted one"` (or `"after an accepted one"` for a later drill-down, since the wording is derived from call order). That is diagnostic signal about how hard the contract was to obey, not a verdict. Each pass gates on what it can actually see, and the gate is composed:
+
+```python
+report = validate_examples(examples, contract, explain_adapter=explain_adapter)
+answers = check_example_answers(report, adapter=adapter)
+conformance = evaluate_conformance(attempts)
+
+if not (report.ok and answers.ok and conformance.ok):
+    sys.exit(1)
+```
+
+**One known limitation on the SDK and middleware paths.** `create_sdk_mcp_server` and the `contract_middleware` decorator both check the session budget *before* calling the inner tool closure, and the recorder lives inside that closure. So when a session budget is exhausted on one of those two paths, the blocked envelope is returned with **no tool call recorded at all**. The attempt's call log is then short for a reason nothing in it explains, and if you also declare a `final_answer`, the row is attributed `contaminated` — implying the agent went around the contract, when in fact it was cut off by its own budget. On those paths, pass `error=` to `Attempt.from_session` when you observe a budget block; an `error` attempt is scored `error` / `unchecked` and fails honestly instead of being mis-diagnosed.
+
+**Wiring it into CI.** Pass 3 differs in *kind* from the first two. It runs an agent: it costs money per invocation, needs a credential, takes minutes, and is **nondeterministic** — the same contract can pass and fail on consecutive runs from sampling alone. Wired as a hard all-must-match gate on every PR it will flake, and a flaky gate gets disabled, which costs you the signal entirely.
+
+| Pass | Trigger | Gate |
+|---|---|---|
+| 1 `validate_examples` | every PR | hard, all-must-pass |
+| 2 `check_example_answers` | every PR | hard, all-must-pass |
+| 3 `evaluate_conformance` | path-filtered on contract / semantic YAML changes, plus nightly | threshold over repeats via `pass_rate()`, or advisory with `summary()` posted as a PR comment |
+
+Run each question several times and `by_example()` groups the repeats — keyed on the example's `id`, falling back to its `question`, never on the positional label — so a verdict can be a *measurement* ("7 of 10 runs found the metric") rather than a single sample of a stochastic process.
+
+**Corpus readiness.** `VerifiedExample.question` has always been optional and non-load-bearing, so most existing corpora do not populate it. Adopting this pass therefore starts there: fill in `question` on the rows you want evaluated, and `expects_metrics` on the rows where the path matters. Rows without a question are skipped and counted, never treated as errors — an unevaluatable corpus stays visible instead of silently shrinking the run.
+
+## Checking that a query derives what it depends on
+
+Every check above reads either a policy (allowed tables, required filters) or a declared identity against live data. None of them can see a query that is authorized, parseable, plannable — and simply computes the wrong thing because it dropped a filter the metric's own definition assumes. `check_sensitivity` reads behaviour instead of text: it re-runs the caller's own query against a contract-authored shadow — one SELECT that stands in for a single table — and asks whether the answer moved.
+
+A metric declares what a correct query must respond to with a `sensitivity:` list. Each property names a `shadow` (the table it replaces and the SELECT that replaces it) and an `expect` (`unchanged` or `changes`), plus a required `description` — the claim in the owner's words, so a property nobody stated in words is one nobody can review:
+
+```yaml
+    sensitivity:
+      - name: only_completed_orders_count
+        description: >
+          Revenue recognizes completed orders only. A pending or refunded
+          order, however large, cannot change total_revenue.
+        shadow:
+          table: analytics.orders
+          sql: >
+            SELECT * FROM analytics.orders
+            UNION ALL
+            SELECT 900 + c.id, c.id, 999999.00, 'pending', c.tenant_id,
+                   DATE '2026-01-01'
+            FROM analytics.customers c
+        expect: unchanged
+```
+
+```python
+import sys
+
+from agentic_data_contracts.validation import (
+    check_sensitivity,
+    validate_sensitivity_tables,
+)
+
+# CI-time gate: refuses a shadow that reads a table the contract does not
+# govern. Pass the adapter's dialect so this parses shadows the same way
+# check_sensitivity below will.
+problems = validate_sensitivity_tables(
+    contract, source.get_metrics(), dialect=adapter.dialect
+)
+
+metric = source.get_metric("total_revenue")
+report = check_sensitivity(metric, sql, contract=contract, adapter=adapter)
+print(report.summary())
+
+# Fails on a violation, on "no verdict possible", and on a query that read
+# none of the shadowed tables -- so nothing was checked at all.
+if not report.ok:
+    sys.exit(1)
+```
+
+`check_sensitivity` takes the `MetricDefinition` itself, not a metric name — the same convention as `reconcile_decomposition`. Before anything runs, `sql` goes through the contract's own `Validator` (**step 0**): a policy block (a forbidden table, a missing tenant filter, more than one statement in the string) raises `ValueError`, because an entry point that ran arbitrary SQL past every other check would be a policy bypass. SQL the Validator cannot parse is a different outcome: there is no policy verdict to render on text Layer 1 could not read, so every selected property comes back `unchecked` and nothing at all executes — not even the base query.
+
+**Principal-restricted tables are checked as the caller.** `check_sensitivity` takes `caller_principal` — the same string, zero-arg callable, or `None` that `Validator` and `create_tools` take — and resolves it **once** per call. That one identity is used twice: step 0 validates the query as that caller, and every shadow must read only tables the caller may read (`contract.allowed_table_names_for(caller)`), so a contract-authored shadow can never reach a table the caller is denied — `ValueError` otherwise, even when the caller's own query is allowed. A callable is not re-invoked in between, so it cannot clear the query as one caller and have the shadow governed as another. The default, `None`, is an anonymous caller and fails closed: it is denied every table carrying `allowed_principals`/`blocked_principals`, both in the query and in a shadow. `validate_sensitivity_tables` takes an optional `caller_principal` string too, with a deliberately different default: a CI gate has no caller, so without one it checks shadows structurally against every table the contract declares (`contract.allowed_table_names()`); pass a principal to check against exactly what `check_sensitivity` will enforce for that caller.
+
+The shadow itself is never sent through the Validator; it is contract-authored, like `sql_expression`, and most shadows want the `SELECT *` the Validator would reject. It is constrained a different way instead: its tables must be ones the contract governs. That is checked in two places — at CI time by `validate_sensitivity_tables`, and again at run time inside `check_sensitivity`, which raises `ValueError` the moment a shadow reads an ungoverned table. Both are run-time and CI-time gates, deliberately not a load-time one: `YamlSource` holds no `DataContract` to check a shadow's tables against, so there is nothing to check at load. A shadow sqlglot cannot parse fails closed the same way an unparseable caller query does — its property comes back `unchecked` and nothing executes for it — and `validate_sensitivity_tables` reports it as a problem rather than staying silent about it.
+
+Each property lands in exactly one `status`: `pass`, `violation`, `not_applicable` (the query never references the shadowed table — an outcome, not a failure), or `unchecked` (no verdict was possible — including a *vacuous* test. A base result is vacuous when it has no rows or exactly one all-NULL row — the shape of `SUM` over nothing; a `COUNT` over nothing is `0`, indistinguishable from a real zero, and deliberately is not, so this narrows the gap rather than closing it. Under `expect: changes` a vacuous base is refused before the shadowed query runs, since no answer cannot move; under `expect: unchanged` it is refused only when the shadowed result is identical to it. Any other shadowed result is compared as usual, so a vacuous base that gains or loses a row — and several all-NULL rows that lose one — is a real `violation`). **`report.ok` is the whole CI gate.** It is False on any `violation`; on any `unchecked`, because "no verdict was possible" must not read as a pass; and on a report where **every** property is `not_applicable`. That last case is a query that read none of the shadowed tables, so nothing was checked — and it includes a fully hardcoded answer (`SELECT 10700.00 AS revenue`), the purest form of the defect this feature exists to catch. A run that checked nothing must not read like a run that found nothing; `check_schema_drift` holds itself to the same rule.
+
+The floor is one verdict, not all of them: `not_applicable` beside at least one `pass` does not block, because a metric with properties on several tables legitimately gets `not_applicable` for a query that reads only some of them. When you know no declared property applies to a query, say so with `properties=[]` — it returns an empty report, which is `ok`, and makes the opt-out a visible decision rather than a silent pass. A metric that declares no `sensitivity` properties also returns an empty, `ok` report: nothing was claimed, so nothing failed.
+
+**Determinism is filtered, not proved.** The base query runs `repeats` (default 2) times, and disagreement degrades every property to `unchecked`. Two runs catch most flakiness but not all of it — a `LIMIT` with no `ORDER BY` can agree across both repeats and still not be truly deterministic — so a passing property is evidence of stability, not a proof of it.
+
+**Cost:** the base query runs `repeats` times (default 2), once per call rather than once per property, and only when at least one property applies — a call whose properties are all `not_applicable` executes nothing. Each applicable property then adds at most one execution of its rewritten query. With the default, a metric with four properties costs six executions total, not twelve. A base query that fails — the engine rejects it, or its repeats disagree — is refused once for the whole call, and every property that needed it comes back `unchecked`

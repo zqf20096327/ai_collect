@@ -1,0 +1,179 @@
+<p align="center">
+  <a href="https://hermex.usama.ai/">
+    <img src="https://raw.githubusercontent.com/pseudo-usama/hermex/main/docs/content/docs/assets/logo.svg" alt="Hermex" width="640"/>
+  </a>
+  <br><br>
+  <em>Drive ChatGPT and Gemini from Python — no API keys, no billing, just the free web UI.</em>
+  <br><br>
+  <a href="https://pypi.org/project/hermex">
+    <img src="https://img.shields.io/pypi/v/hermex?color=3cb371" alt="PyPI"/>
+  </a>
+  <a href="https://pypi.org/project/hermex">
+    <img src="https://img.shields.io/pypi/pyversions/hermex?color=3cb371" alt="Python 3.11+"/>
+  </a>
+  <a href="https://github.com/pseudo-usama/hermex">
+    <img src="https://img.shields.io/badge/GitHub-Hermex-181717?logo=github" alt="GitHub Repo"/>
+  </a>
+  <a href="https://hermex.usama.ai/docs/">
+    <img src="https://img.shields.io/badge/docs-hermex.usama.ai-3cb371" alt="Docs"/>
+  </a>
+</p>
+
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/d40991d6-cfb1-4688-95ef-c03f2ef8140f" controls width="720" title="Hermex in sixty seconds" aria-label="Hermex in sixty seconds: an introduction to driving ChatGPT and Gemini from Python" aria-description="60-second narrated animation introducing Hermex. It explains what the library does, why it exists, and the problems it solves: official ChatGPT and Gemini APIs are billed per token, while the same models are free in the web UI. Hermex drives that web UI from Python — asking a question, attaching files, and returning the reply as a Python object — with no API key."></video>
+</p>
+
+---
+
+ChatGPT and Gemini are incredibly capable — but their official APIs are expensive, and for many tasks you simply don't need them. If you want to run OCR on an image, generate artwork, extract text from a screenshot, or just ask a quick question in a script, paying per-token for API access is overkill when the free web UI can do the same thing.
+
+Hermex lets you automate ChatGPT and Gemini with Python — no API keys, no billing, no paywalls. It opens a real Chrome browser, types your message, uploads your files, waits for the response, and hands it back to you as a Python object, just like a human would.
+
+```python
+from hermex import ChatGPT
+
+response = ChatGPT.simple_query("What does this receipt say?", attachments=["receipt.jpg"])
+print(response.text)
+```
+
+It uses undetected-chromedriver under the hood to avoid bot detection, and reuses a persistent browser profile so your login session survives across runs.
+
+## Installation
+
+```bash
+pip install hermex
+```
+
+Requires Python 3.11+ and Google Chrome 130+
+
+## First-time setup
+
+Hermex reuses a persistent Chrome profile so you only need to log in once:
+
+```python
+from hermex import Gemini
+
+Gemini.setup()  # opens a browser — log in, browse briefly, then close the window
+```
+
+After setup, all future runs reuse the saved session automatically. Repeat this if your session expires.
+
+Guest mode (no login) works for basic text queries on both Gemini and ChatGPT. Everything beyond that needs a logged-in session: file upload and image generation on both. Passing `attachments` without a session raises `LoginRequiredError` on both.
+
+## Usage
+
+### Single query
+
+```python
+from hermex import Gemini, ChatGPT
+
+# Gemini
+gemini = Gemini()
+gemini.open_url()
+response = gemini.query("Summarize the history of the internet.")
+print(response.text)
+gemini.close()
+
+# ChatGPT
+chatgpt = ChatGPT()
+chatgpt.open_url()
+response = chatgpt.query("Summarize the history of the internet.")
+print(response.text)
+chatgpt.close()
+```
+
+### Attaching files
+
+```python
+response = gemini.query(
+    "Describe what's in this image.",
+    attachments=["photo.jpg"],
+)
+print(response.text)
+```
+
+Supported formats: `.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`, `.pdf`, `.csv`, `.txt`, `.json`. Each platform exposes its allowed types via `Gemini.SUPPORTED_ATTACHMENTS` and `ChatGPT.SUPPORTED_ATTACHMENTS`.
+
+### One-shot query
+
+```python
+from hermex import Gemini, ChatGPT
+
+response = Gemini.simple_query("What is the capital of France?")
+print(response.text)
+
+response = ChatGPT.simple_query("What is the capital of France?")
+print(response.text)
+
+# With an attachment
+response = Gemini.simple_query("Describe this image.", attachments=["photo.jpg"])
+print(response.text)
+```
+
+## AssistantMessage object
+
+`query()` and `get_last_response()` return an `AssistantMessage` dataclass:
+
+```python
+@dataclass
+class AssistantMessage:
+    text: str | None   # plain text (or markdown if get_markdown=True)
+    image: Path | None # path to downloaded image, or None
+```
+
+## Scope & limitations
+
+- **Built for hobby, scripting, and research — not production.** It drives a real browser UI, so it's slower and less robust than an official API.
+- **It can break when the chat UIs change.** Hermex depends on the page structure of ChatGPT and Gemini; a redesign on their end may require an update here.
+- **Respect each platform's Terms of Service.** Automating the web UI isn't appropriate for every use case — use it responsibly and at your own risk.
+- **The platforms' own usage limits still apply.** Any caps the free web UI enforces (message and image-generation limits, cooldowns) are still in effect.
+
+## API reference
+
+Both `Gemini` and `ChatGPT` share the same interface — all methods below apply to both unless noted.
+
+| Method | Description |
+|---|---|
+| `open_url(url, timeout)` | Open the chat interface in the browser |
+| `send_message(message, attachments, paste, fake_typing, typing_delay, submit)` | Type and optionally submit a message |
+| `query(message, attachments, paste, fake_typing, typing_delay, get_markdown, remove_watermark, timeout)` | Send a message, wait for the response, and return it |
+| `get_last_response(get_markdown, remove_watermark)` | Retrieve the most recent response |
+| `wait_until_idle(timeout)` | Block until the chatbot finishes generating |
+| `get_state()` | Return the current UI state (`State.IDLE`, `GENERATING`, `TYPING`, `UPLOADING`) |
+| `simple_query(message, attachments, paste, fake_typing, typing_delay, get_markdown, remove_watermark, timeout)` | Class method — open, query, close in one call |
+| `short_wait()` | Sleep ~7 seconds |
+| `long_wait()` | Sleep ~5 minutes |
+| `refresh_page()` | Reload the current page |
+| `get_current_url(only_base)` | Return the current browser URL |
+| `close()` | Close the browser |
+| `setup()` | One-time login setup (class method) |
+
+See the [full documentation](https://hermex.usama.ai/docs/) for detailed guides on Gemini and ChatGPT.
+
+### Constructor options
+
+```python
+Gemini(
+    chrome_version=None,      # auto-detected from installed Chrome
+    download_dir=Path("."),   # where generated images are saved
+    headless=False,
+    typing_delay=0.025,       # seconds between keystrokes
+    disable_web_security=True,
+    data_dir=None,            # defaults to the platform data directory
+)
+# ChatGPT accepts the same parameters
+```
+
+## Watermark removal
+
+Gemini watermarks its generated images. Pass `remove_watermark=True` to strip it:
+
+```python
+response = gemini.query("Generate an image of a sunset.", remove_watermark=True)
+```
+
+## Notes
+
+- Bot detection is mitigated through per-character typing delays, fake typing before paste, a persistent browser profile, and a spoofed user agent. Avoid running headless for sensitive sessions.
+- Browser profile and session data are stored in the platform data directory (`~/Library/Application Support/hermex` on macOS).
+- See [CHANGELOG.md](https://github.com/pseudo-usama/hermex/blob/main/CHANGELOG.md) for the full release history.

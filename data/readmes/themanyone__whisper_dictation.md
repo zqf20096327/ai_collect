@@ -1,0 +1,359 @@
+# Whisper Dictation
+
+Private voice keyboard, AI chat, images, webcam, recordings, voice control in >= 4 GiB of VRAM. "The works" all AI features now running concurrently on an old laptop from 2013.
+
+<img src="img/ss.png" alt="example pic" title="Dictation anywhere, even social media." width="300" align="right">
+
+**The ship's computer.** Inspired by the *Star Trek* television series. Talk to your computer. Have it answer back with clear, easy-to-understand speech. Network it throughout the ship. Use your voice to write Captain's Log entries when the internet is down, when satellites are busy, or in the far reaches of the galaxy, "where no man has gone before."
+
+- Hands-free recording with `record.py`
+- Voice keyboard depends on `whisper.cpp`[Whisper.cpp](https://github.com/ggerganov/whisper.cpp)
+- LLM inference depends on [Llama.cpp](https://github.com/ggml-org/llama.cpp)
+- Agentic capabilities (unstable branch)
+- Translate various languages
+- Voice-controlled webcam, audio recorder
+- Launch & control apps, with `pyautogui`
+- Optional OpenAI `ChatGPT`, Google Gemini, more
+- If desired, speak answers out loud with `mimic3`*
+- Draw pictures with [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
+
+**Freedoms and responsibilities** Free and open-source software comes with NO WARRANTIES. You have permission to copy and modify for individual needs in accordance with the included LICENSE.
+
+**Translation.** This app is optimized for dictation. It can do some translation into English. But that's not its primary task. To use it as a full-time translator, start `whisper.cpp` with `--translate` and language flags. Use `ggml-medium.bin` or larger language model in place of `ggml-tiny.en.bin`.
+
+**Voice control.** The bot responds to commands.
+
+Say, "Computer, on screen." A window opens up showing the webcam. Say "Computer, take a picture". A picture, "webcam/image().jpg" is saved in a 'webcam' subdirectory of the current folder. Say, "Computer, search the web for places to eat". A browser opens up with a list of local restaurants. Say, "Computer, say hello to our guest". After a brief pause, there is a reply, either from your local machine, `ChatGPT`, or a local area chat server that you set up. A voice, `mimic3` says some variation of, "Hello. Pleased to meet you. Welcome to our shop. Let me know how I can be of assistance". It's unique each time. Say, "Computer, open terminal". A terminal window pops up. Say "Computer, draw a picture of a Klingon warship". An image of a warship appears with buttons to save, print, and navigate through previously-generated images.
+
+## Try unstable dictation, assistant & agent, with easy setup.
+
+Future development is progressing here: `git checkout ship_commander`.
+
+Or, if you don't have it yet.
+
+```shell
+git clone -b ship_commander --single-branch https://github.com/themanyone/whisper_dictation.git
+cd whisper_dictation
+./setup.sh
+```
+
+After switching branches, look at README.md again.
+
+## Or continue with this stable branch
+
+`git clone -b main --single-branch https://github.com/themanyone/whisper_dictation.git`
+
+## Preparation
+
+**Arch Linux** Install GStreamer and required plugins:
+
+```shell
+sudo pacman -S gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad swh-plugins
+```
+
+The `gst-plugins-good` package provides `souphttpsrc` required for mimic3 voice output.
+The `gst-plugins-bad` package provides LADSPA plugin support for audio effects.
+The `swh-plugins` package provides LADSPA delay plugins (`delay_1898.so`) for audio recording.
+
+**Fedora** Get the [Rpmfusion repos]( http://rpmfusion.org) and install [GStreamer](https://gstreamer.freedesktop.org/) using the system's package manager. It is necessary for recording temporary audio clips to send to your local `whisper.cpp` speech to text (STT) server for decoding.
+The required `ladspa-delay-so-delay-5s` may be found in the `gstreamer1-plugins-bad-free-extras` package.
+
+**Fedora 42** Install the [Fedora 42 CUDA repo from Nvidia](https://rpmfusion.org/Howto/CUDA).
+
+Sample Fedora CUDA `.bashrc` configuration.
+
+```shell
+export CUDAHOSTCXX=g++-14
+export CUDAHOSTCC=gcc-14
+export CUDACXX="$CUDA_HOME/bin/nvcc"
+export CUDA_HOME=/etc/alternatives/cuda
+export CUDA_TOOLKIT_ROOT="$CUDA_HOME"
+export CPLUS_INCLUDE_PATH=/usr/local/cuda/include
+export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:/usr/local/lib64:$HOME/.local/lib64"
+export C_INCLUDE_PATH="${CUDA_HOME}/include"
+export GGML_CUDA_ENABLE_UNIFIED_MEMORY=1
+export CMAKE_CXX_COMPILER_LAUNCHER=ccache
+# export TORCH_CUDA_ARCH_LIST=8.6 # card-specific compute capability
+export CUDA_VERSION=130
+export BNB_CUDA_VERSION=130 #python3.10 -m bitsandbytes
+export CUB_HOME=/opt/nvidia/cub-2.1.0
+
+# optional export LD_LIBRARY_PATH=${WHISPERCPP_ROOTDIR}/lib::$LD_LIBRARY_PATH
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:$CUDA_HOME/bin:$CUDA_HOME/nvvm/bin" ]]; then
+    PATH="$HOME/.local/bin:$HOME/bin:$CUDA_HOME/bin:$CUDA_HOME/nvvm/bin:$PATH"
+fi
+```
+
+**Fedora 43.** Should work with the above. You might still have to use the CUDA repo for Fedora 42 because these updates lag behind.
+
+**All Linux.** Set up CUDA and gstreamer. Follow instructions from Nvidia, and your distro's website or forums. Then install `whisper.cpp`
+
+```shell
+git clone https://github.com/ggerganov/whisper.cpp
+cd whisper.cpp
+
+cmake -B build -DGGML_CUDA=1
+cmake --build build -j6 --config Release
+ln -s $(pwd)/build/bin/whisper-server ~/.local/bin/  # or just copy it it somewhere in $PATH
+ln -s $(pwd)/build/bin/whisper-cli ~/.local/bin/
+```
+
+Finally, install the python requirements for this package.
+
+```shell
+cd ../whisper_dictation
+pip install -r requirements.txt
+```
+
+## Wayland Compatibility
+
+This application now supports both **X11** and **Wayland** display servers with automatic detection.
+
+### System Requirements
+
+**For Wayland sessions**, the application uses `python-evdev` for keyboard and mouse simulation:
+
+```shell
+# Install python-evdev (Arch Linux)
+sudo pacman -S python-evdev
+
+# Configure uinput permissions (required for Wayland)
+echo 'KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"' | sudo tee /etc/udev/rules.d/99-input.rules
+sudo usermod -aG input $USER
+```
+
+**Important:** After setting up uinput permissions, you must **logout and login** for the group membership to take effect.
+
+### How It Works
+
+The application automatically detects your session type:
+- **Wayland sessions**: Uses `evdev` backend for input simulation
+- **X11 sessions**: Uses traditional `PyAutoGUI` backend
+
+No manual configuration needed - the appropriate backend is selected at runtime based on the `XDG_SESSION_TYPE` environment variable.
+
+### Troubleshooting Wayland
+
+If keyboard/mouse simulation doesn't work on Wayland:
+
+1. Verify udev rule is in place: `cat /etc/udev/rules.d/99-input.rules`
+2. Check group membership: `groups | grep input`
+3. Ensure you've logged out and back in after adding yourself to the input group
+4. Verify `/dev/uinput` permissions: `ls -l /dev/uinput`
+
+If issues persist, you can fall back to X11 by running under XWayland or switching to an X11 session.
+
+## Quick start
+
+```shell
+whisper-server -l en -m "$MODELS_DIR/ggml-tiny.en.bin" --port 7777
+./whisper_cpp_client.py
+```
+
+A sound level meter appears. Adjust ambient (quiet) volume to about 33% (-33dB).  On Windows, use a modern Terminal or Powershell if ANSI escape sequences are cluttering up the output. 
+
+## Server setup
+
+There are many ways to start and stop `whisper-server`. There is `/etc/profile.d`, `~/.config/autostart` or launching it with a hotkey. The preferred method is to set up a user service or systemwide service. Users may save the following file as `$HOME/.config/systemd/user/whisper.service`
+
+Update: We added the `--convert` flag to this service file. If `whisper-server` was compiled with ffmpeg, it needs --convert or no output will be generated. Logs will reporet "error: failed to ffmpeg decode".
+
+```shell
+[Unit]
+Description=Run Whisper server
+Documentation=https://github.com/openai/whisper
+
+[Service]
+ExecStart=whisper-server -l en -m \
+ "$MODELS_DIR/ggml-tiny.en.bin" \
+ --convert --port 7777
+
+[Install]
+WantedBy=default.target
+```
+Run `export $MODELS_DIR=/path/to/models` (wherever the models reside). Don't forget to add that export to `.bashrc` too.
+
+Then run `systemctl --user daemon-reload` to update the configuration. Start the service with `systemctl --user start whisper`. If you want it to start automatically at login, use `systemctl --user enable whisper`. Check status with `systemctl --user status whisper`.
+
+If the server and client are on the same machine, uncomment the lines `os.system("systemctl --user start whisper")` near the bottom of `whisper_cpp_client.py`. Then it will start and stop the server automatically, saving resources when not in use.
+
+If your server is on another machine, and if `whisper-server` is compiled with `ffmpeg`, you may change audio_format from ".wav" to ".ogg" in whisper_cpp_client.py to save some network bandwidth.
+
+## Troubleshooting.
+
+If `whisper-server` is slow or refuses to use VRAM when it is supposed to, reboot. Or try and reload the crashed NVIDIA uvm module `sudo modprobe -r nvidia_uvm && sudo modprobe nvidia_uvm`.
+
+If whisper-server was compiled with ffmpeg, it needs to be restarted with --convert flag or no output will be generated. This might be a whisper.cpp bug. If started as a service: After editing `~/.config/systemd/user/whisper.service` to add the `--convert` flag, run `systemctl --user daemon-reload`.
+
+If VRAM is scarce, quantize `ggml-tiny.en.bin` according to whisper.cpp docs. Or use `-ng` option to avoid using VRAM altogether. It might be half as fast. But delays are not that noticeable with a modern CPU.
+
+Edit `whisper_cpp_client.py` client to change server locations from localhost to wherever they reside on the network. You can also change the port numbers. Just make sure servers and clients are in agreement on which port to use.
+
+Test clients and servers.
+
+```shell
+whisper-cli -l en -m $MODELS_DIR/ggml-tiny.en.bin samples/jfk.wav
+./whisper-server -l en -m $MODELS_DIR/ggml-tiny.en.bin --convert --port 7777
+
+./record.py test.wav # say something
+
+curl http://localhost:7777/inference -F "file=@test.wav;type=audio/wav"
+```
+
+## Running an AI server
+
+Hosting large language models provides some limited access to information, even if the internet is down. But don't trust the answers. Keep all logs and communications behind a good firewall for privacy. And network security is another topic...
+
+Supposing any chat server will do. Many use `llama.cpp` behind the scenes. Since it is not susceptible to "pickle" code injection, we don't have to recommend special `safetensors` models. So we'll use that. Understand that this is for a local home server. Running a public server comes with a catalog of other concerns so those folks might prefer to host these in a container, and/or on somebody else's cloud.
+
+```shell
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+```
+
+Compilation steps are the same as for whisper.cpp, but read the docs just in case. 
+
+### Download language models
+
+**Finding free models.** Save hundreds on annual subscriptions by running your own AI servers for every task. Look at the [leaderboard](https://huggingface.co/open-llm-leaderboard) to see which models perform best in the categories you want. As a rule of thumb, quantized 7B models are about the maximum our 4GiB VRAM can handle. Search for quantized models in .gguf format, or try [the ones on our page](https://huggingface.co/hellork).
+
+**AI Safety.** Monitor children's activities. Be aware that these models, made by the community, are under active development. They are *not guaranteed safe* for all ages.
+
+**High VRAM usage.** Use a tool like [nvtop](https://github.com/Syllo/nvtop) (availabl from package managers) to keep an eye on available VRAM.
+
+*Context window.* The context window is the size of input plus output. Running large models with a large context window (`-ctx` 8192), while sending graphics layers to the GPU for speed, uses lots of VRAM. They might even crash. With small models, `llama-server` now defaults to using VRAM. With large (> 3GiB) models, use `-ngl` and `-c` options with lower values, such as `-ngl 17` and `-c 512.
+
+Help! [Get this project off the ground with some better hardware](https://www.paypal.com/donate/?hosted_button_id=A37BWMFG3XXFG) (PayPal donation link). Thanks to supporters, we have better laptops now, with 8GiB VRAM, and many software improvements, so keep those donations coming!
+
+### Start chatting
+
+```shell
+./llama-server -m models/gemma-2-2b-it-q4_k_m.gguf -c 2048 -ngl 33 --port 8888
+```
+
+Use the above API endpoint by simply saying "Computer... What is the capital of France!" etc. Or navigate to the `llama.cpp` web interface at http://127.0.0.1:8888 and dictate into that. From there you can adjust settings like `temperature` to make it more creative, or more deterministic in its responses. 
+
+## Give it a voice
+
+If AI is speaking, it used to be necessary to turn volume down or relocate the mic to keep it from interacting with itself. Now it is more selective about what it hears.
+
+**Mimic3.** If you follow the instructions to configure [mimic3](https://github.com/MycroftAI/mimic3) as a service on any `linux` computer or `Raspberry Pi` on the network, Speech Dispatcher will speak answers out loud. It has an open port that other network users can use to enable speech on their devices. But they can also make it speak remotely. So it is essentially a Star Trek communicator that works over wifi. Follow the [instructions for setting up mimic3 as a Systemd Service](https://mycroft-ai.gitbook.io/docs/mycroft-technologies/mimic-tts/mimic-3#web-server). 
+
+Compile our updated version for python 3.13+ on Fedora.
+
+```shell
+sudo dnf install python3-onnxruntime
+git clone https://github.com/themanyone/mimic3.git
+cd mimic3
+pip install .
+```
+
+*Developer notes.* The `mimic3-server` is already lightening-fast on CPU. Do not bother compiling it with --cuda flag, which requires old `onnxruntime-gpu` that is not compatible with CUDA 12+ and won't compile with nvcc12... We got it working! And it just hogs all of VRAM and provides no noticeable speedup. If you still want to try GPU acceleration, get onnxruntime-rocm or similar via your distro's package manager.
+
+**Female voice.** For a pleasant, female voice, use  `mimic3-download` to obtain `en_US/vctk_low` To accommodate this change, we already edited the `params` line in our `mimic3_client.py`, and commented the other line out, like so.
+
+```
+    # params = { 'text': text, "lengthScale": "0.6" }
+    params = { 'text': text, "voice": "en_US/vctk_low" }
+```
+
+So just change it back if you want the default male voice, other languages, or to adjust speech characteristics to taste.
+
+## Optional ChatGPT from OpenAI
+
+Export the OPENAI_API_KEY and it will give preference to answers from ChatGPT. Edit `.bashrc`, or another startup file:
+
+```shell
+export OPENAI_API_KEY=<my API key>
+```
+
+We heard OpenAI also has enterprise endoints for ChatGPT that offer some privacy and security. But we have never been contacted by OpenAI and make no claims about its proprietary domains.
+
+## Optional Google Gemini
+
+* Sign up for a [GOOGLE_API_KEY](https://aistudio.google.com)
+* `pip install -q -U google-generativeai`
+* `export GENAI_KEY=<YOUR API_KEY>`
+
+## AI Images
+
+Now with `sdapi.py`, images may be generated locally, or across the network. Requires [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui). Start `webui.sh` on the server with --api options. Also use --medvram or --lowvram if your video is as bad as ours. If using remotely, configure our `sdapi.py` client with the server's address.
+
+**Start stable-diffusion webui**
+
+```shell
+webui.sh --api --medvram
+```
+
+### Spoken commands and program launchers
+
+The computer responds to commands. You can also call her Samantha (Or Peter with for voice).
+
+**Mute button.** There is no mute button. Say "pause dictation" to turn off text generation. It will keep listening to commands. Say, "Thank you", "resume dictation", or "Computer, type this out" to have it start typing again. Say "stop listening" or "stop dictation" to quit the program entirely. You could also configure a button to mute your mic. Something like `bash -c 'pactl set-source-mute $(pactl get-default-source) toggle'` if your system uses `pulseaudio`.
+
+These actions are defined in whisper_dictation.py. See the source code for the full list. Feel free to edit them too!
+
+Try saying:
+- Computer, on screen. (or "start webcam"; opens a webcam window).
+- Computer, take a picture. (saves to webcam/image.jpg)
+- Computer, off screen. (or "stop webcam")
+- Computer, record audio (records audio.mp3)
+- Computer, open terminal.
+- Computer, go to [thenerdshow.com](https://thenerdshow.com/). (or any website).
+- Computer, open a web browser. (opens the default homepage).
+- Computer, show us a picture of a Klingon battle cruiser.
+- Page up.
+- Page down.
+- Undo that.
+- Copy that.
+- Paste it.
+- Pause dictation.
+- Resume dictation.
+- New paragraph. (also submits chat forms :)
+- Samantha, tell me about the benefits of relaxation.**
+- Peter, compose a Facebook post about the sunny weather we're having.
+- Stop dictation. (quits program).
+
+# Files in this branch
+
+`whisper_cpp_client.py`: A small and efficient Python client that connects to a running [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) server on the local machine or across the network.
+
+`record.py`: Almost hands-free, sound-activated recorder. You can run it separately. It creates a file named `audio.wav`. Supply optional command line arguments to change the file name, quality, formats, add filters, etc. See `./record.py -h` for help. Some formats require `gst-plugins-bad` or `gst-plugins-ugly`, depending on your distribution.
+
+The record.py `-g` option lets you insert various GStreamer plugins, mixers, filters, controllers, and effects directly into the pipeline. See the [G-streamer documentation](https://gstreamer.freedesktop.org/) for details. Many audio and video plugins are available. Run `gst-inspect-1.0` for a list. The following records a high quality, lossless audio clip with echo effect and dynamic range compression.
+
+`./record.py -gq 'audioecho delay=250000000 intensity=0.25 ! audiodynamic' echo.flac`
+
+`on_screen.py` A simple python library to show and take pictures from the webcam.
+
+`sdapi.py` The client we made to connect to a running instance of [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui). This is what gets called when you say, "Computer...Draw a picture of a horse."
+
+Various test files, including:
+
+`mimic3_client.py`: a client to query and test `mimic3-server` voice output servers.
+
+`test_cuda.py`: torch, pytorch, cuda, and onnxruntime are no longer required for dictation. But you can still test them here, since `mimic3` uses onnxruntime for text to speech.
+
+### Improvements
+
+**Stable-Diffusion.** Stable-Diffusion normally requires upwards of 16 GiB of VRAM. But we were able to get it running with a mere 2 GiB using the `--medvram` or `--lowvram` option with [Stable Diffusion Web UI](https://techtactician.com/stable-diffusion-low-vram-memory-errors-fix/). 
+
+**I want it to type slowly.** We would love to have it type text slowly, but typing has become unbearably-slow on sites like Twitter and Facebook. The theory is they are using JavaScript to restrict input from bots. But it is annoying for fast typists too. If occasional slow typing doesn't bother you, change the code to use `pyautogui.typewrite(t, typing_interval)` for everything, and set a `typing_interval` to whatever speed you want.
+
+## Other Projects
+
+Whisper Dictation is not optimized for making captions or transcripts of pre-recorded material. Use [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) or [whisper-jax](https://github.com/sanchit-gandhi/whisper-jax) for that. They too have a [server with a web interface that makes transcripts for voice recordings and videos](https://github.com/sanchit-gandhi/whisper-jax/blob/main/app/app.py). 
+
+If you want real-time AI captions translating everyone's conversations in the room into English. If you want to watch videos with accents that are difficult to understand. Or if you just don't want to miss what the job interviewer asked you during that zoom call... WHAT???, check out my other project, [Caption Anything](https://github.com/themanyone/caption_anything). And generate captions as you record live "what you hear" from the audio monitor device (any sounds that are playing through the computer).
+
+### Thanks for trying out Whisper Dictation!
+
+- GitHub https://github.com/themanyone
+- YouTube https://www.youtube.com/themanyone
+- Mastodon https://mastodon.social/@themanyone
+- Linkedin https://www.linkedin.com/in/henry-kroll-iii-93860426/
+- Buy me a coffee https://buymeacoffee.com/isreality
+- [TheNerdShow.com](http://thenerdshow.com/)
+
+Copyright (C) 2023-2026 Henry Kroll III, www.thenerdshow.com.
+See [LICENSE](LICENSE) for details.

@@ -1,0 +1,385 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/godfaddaai/multiplayer-ai/main/site/favicon.svg" width="72" height="72" alt="mpai logo">
+</p>
+
+<h1 align="center">mpai</h1>
+
+<p align="center">
+  <strong>Your teammate's AI session. On your terminal.</strong><br>
+  Make existing Codex and Claude Code work multiplayer without moving the team into a new IDE.
+</p>
+
+<p align="center">
+  <a href="https://github.com/godfaddaai/multiplayer-ai/actions/workflows/ci.yml"><img alt="CI status" src="https://github.com/godfaddaai/multiplayer-ai/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/godfaddaai/multiplayer-ai/actions/workflows/codeql.yml"><img alt="CodeQL status" src="https://github.com/godfaddaai/multiplayer-ai/actions/workflows/codeql.yml/badge.svg"></a>
+  <a href="https://github.com/godfaddaai/multiplayer-ai/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/godfaddaai/multiplayer-ai?include_prereleases&style=flat"></a>
+  <a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-0b0d12.svg"></a>
+  <a href="https://godfaddaai.github.io/multiplayer-ai/"><img alt="View landing page" src="https://img.shields.io/badge/see_the_product-7687ff.svg"></a>
+</p>
+
+<p align="center">
+  <a href="https://www.producthunt.com/products/mpai?launch=mpai&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-mpai"><img alt="mpai on Product Hunt" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1213234&amp;theme=light" width="250" height="54"></a>
+</p>
+
+<p align="center">
+  <img src="./docs/demo.gif" alt="Real mpai recording: Reagan prompts Hudson's existing Claude Code session from a separate Mac and Claude preserves Reagan's name" width="100%">
+</p>
+
+<p align="center"><sub>Real two-Mac receipt · Reagan’s Mac → Hudson’s existing Claude Code session · August 2, 2026</sub></p>
+
+> [!IMPORTANT]
+> mpai is a public alpha for trusted teammates on macOS. It uses your existing
+> Tailscale network and exposes only sessions the host explicitly shares. Read
+> the [current alpha boundary](./docs/PUBLIC-ALPHA.md) before using it with
+> sensitive work.
+
+> [!TIP]
+> **Have two Macs, Tailscale, and a real teammate?** Run the
+> [five-minute first-room pilot](https://github.com/godfaddaai/multiplayer-ai/issues/7).
+> We are measuring completed rooms and week-later return—not launch votes.
+
+## The idea
+
+Remote control is arriving for AI coding, but it is built primarily for one
+person continuing their own work across devices. Teams still have a different
+problem: one person can be forty turns deep in a useful Codex or Claude Code
+conversation while everyone else gets a summary, a screen share, or a finished
+pull request.
+
+mpai adds the missing team layer:
+
+~~~text
+$ mpai @maya
+
+  MAYA'S SHARED SESSIONS
+  1  Codex         Release hardening             2m
+  2  Claude Code   Auth handoff                  18m
+
+  Following: Maya, Alex
+
+  MAYA
+  Trace the invite boundary before we cut the alpha.
+
+  CODEX
+  I found the shared access check. The direct-read test is missing.
+
+  ALEX → CODEX
+  Add the test, then run only the server suite.
+~~~
+
+The host keeps using the native agent. The teammate sees the same persisted
+context and can add a turn with their own name attached.
+
+## Quickstart
+
+### Requirements
+
+- macOS
+- Homebrew, or Node.js 20+ for the fallback install
+- Tailscale connected on both Macs
+- An authenticated current <code>codex</code> and/or <code>claude</code> CLI
+
+### 1. Host setup
+
+~~~bash
+brew install godfaddaai/tap/mpai && mpai start
+~~~
+
+Without Homebrew:
+
+~~~bash
+npm install --global https://github.com/godfaddaai/multiplayer-ai/releases/download/v0.4.19/multiplayer-ai-0.4.19.tgz && mpai start
+~~~
+
+The guided <code>mpai start</code> flow asks for both names, configures identity,
+installs and verifies the background
+service, discovers existing Codex and Claude Code sessions, and asks the host to
+choose exactly one. It then creates a participant invite for that session and
+prints the teammate's one-paste command. Every other session remains private.
+
+For scripts or a session ID you already know, skip the picker:
+
+~~~bash
+mpai start --name "Maya" --with "Alex" --session SESSION_ID
+~~~
+
+Existing hosts can omit <code>--name</code>. The lower-level
+<code>mpai setup</code>, <code>mpai list</code>, and <code>mpai invite</code>
+commands remain available for custom roles and broader workflows.
+
+### 2. Teammate joins
+
+Send the recommended one-line command printed by <code>mpai start</code> through
+a channel you trust. The invite contains a secret; do not paste it into an
+issue, terminal recording, or public chat. On the teammate's Mac with Node.js
+20+, that one paste opens the room without a global install or setup step:
+
+~~~bash
+npx --yes https://github.com/godfaddaai/multiplayer-ai/releases/download/v0.4.19/multiplayer-ai-0.4.19.tgz join 'mpai://100.x.y.z:7337/join?token=...' --no-service --attach
+~~~
+
+The invite establishes Alex's attributed identity, stores the peer credential
+outside config, checks for shared sessions, and opens the explicitly shared
+ready room. Installing with Homebrew first remains the permanent path when Alex
+also wants to host sessions back; the invite output prints both choices. An
+older or deliberately empty invite still prints the exact next command instead.
+
+Testing this with a real teammate? Join the
+[first 10-team public-alpha cohort](https://github.com/godfaddaai/multiplayer-ai/issues/7)
+and report only privacy-safe timing and outcome metadata.
+
+For a trusted cofounder relationship where both people intentionally share all
+present and future sessions:
+
+~~~bash
+mpai share all --with Alex
+~~~
+
+Return to selected sharing at any time:
+
+~~~bash
+mpai unshare all --with Alex
+mpai share SESSION_ID --with Alex
+~~~
+
+## What works in 0.4.19
+
+- One task and event model across Codex and Claude Code
+- Native session discovery and transcript reading
+- Fast bounded reads for very large Codex histories without sharing tool or
+  Codex-internal context
+- A live terminal room with named participants
+- Exact session switching, search, and reconnect notices
+- A ten-second peer connection deadline with actionable wake, Tailscale, and
+  host-service recovery instructions
+- Attributed remote prompts in supported provider modes
+- Viewer and participant roles
+- Private-by-default session sharing and invite revocation
+- Tailscale identity binding
+- macOS Keychain-backed peer credentials with legacy migration and a routed
+  mode-0600 fallback for non-interactive hosts where Keychain is unavailable
+- One remote turn at a time per task
+- Provider work is cancelled when a teammate disconnects; silent Claude turns
+  are terminated after two minutes without output so the room can recover
+- Append-only prompt audit trail
+- A macOS background service and provider-aware health checks
+- Automatic promotion back to managed Codex prompting after its daemon
+  returns, while standalone prompting remains blocked by default
+- Paste-an-invite setup from a fresh install
+- Upgrade-stable background-service launchers
+- Metadata-only redacted support bundles
+- Review-before-sharing alpha activation receipts that are never sent automatically
+- Review-first, explicitly consented cohort reporting through an authenticated
+  GitHub CLI, using fixed-choice metadata that cannot contain collaboration data
+
+## Room commands
+
+~~~text
+/sessions        list this teammate's shared sessions
+/find auth       search titles and workspaces
+/switch 2        follow session 2
+/open abc123     follow by session prefix
+/who             show named people in this room
+/refresh         read the newest native transcript
+/leave           return to your shell
+~~~
+
+Scriptable commands are available too:
+
+~~~bash
+mpai list @maya
+mpai show @maya 1234abcd --tail 6
+mpai prompt @maya 1234abcd "Check the retry boundary."
+mpai audit @maya
+~~~
+
+When something breaks, create a reviewable diagnostic without session content
+or secrets:
+
+~~~bash
+mpai support-bundle
+~~~
+
+Testing with the first-10-team cohort? A successful first room records one local
+timestamp on the host. Generate a separate privacy-safe receipt of the resulting
+invite-to-room elapsed minutes, named-prompt outcomes, active days/weeks, and reliability:
+
+~~~bash
+mpai alpha-receipt
+~~~
+
+The receipt exposes elapsed minutes, not the underlying timestamp. The command
+writes a mode-0600 JSON file locally and sends nothing. Review it
+before sharing; it excludes prompts, transcripts, names, task identifiers,
+paths, credentials, network addresses, and event timestamps.
+
+Turn that evidence into a copy-ready public report without sending anything:
+
+~~~bash
+mpai cohort-report --join-method npx \
+  --named-prompt yes --use-again yes
+~~~
+
+When a first-room timestamp exists, the report uses its measured elapsed time.
+`--minutes-to-room` remains available as an explicit override for older installs
+or a run measured outside mpai.
+
+After reviewing the exact preview, rerun with `--submit`. mpai asks for final
+confirmation and posts only the displayed fixed-choice counts to cohort issue
+#7 through your authenticated GitHub CLI. Automation must additionally pass
+`--yes`; nothing is submitted by default.
+
+## How it works
+
+~~~mermaid
+flowchart LR
+    A["Alex's terminal"] -->|"named prompt"| M["mpai"]
+    M -->|"Tailscale identity + invite role"| H["Maya's Mac"]
+    H --> C["Native Codex session"]
+    H --> D["Native Claude Code session"]
+    H -.->|"explicitly shared sessions only"| A
+~~~
+
+mpai is a coordination layer above the providers:
+
+~~~text
+start → listTasks → readTask → prompt(event stream) → close
+~~~
+
+Tasks keep provider-qualified IDs such as <code>codex:&lt;id&gt;</code> and
+<code>claude:&lt;id&gt;</code>. The terminal room and peer protocol do not need
+provider-specific UI. See [PROVIDERS.md](./docs/PROVIDERS.md).
+
+### Claude Code
+
+mpai reads the local Claude Code CLI session store and uses Claude Code's
+supported headless resume path for attributed turns. The teammate input is
+persisted as:
+
+~~~text
+[Multiplayer teammate: Alex]
+The actual prompt
+~~~
+
+The alpha targets local Claude Code CLI sessions, not every Claude surface.
+
+### Codex
+
+The strongest mode connects to the managed local Codex daemon so native clients
+and mpai can share one app server. If that daemon is absent, mpai can list and
+read persisted tasks through a standalone server, but remote prompting is
+disabled by default to avoid racing an active Desktop task.
+
+~~~bash
+codex app-server daemon bootstrap --remote-control
+mpai serve --codex-mode proxy
+codex --remote unix://
+~~~
+
+## Commercial and client work
+
+Yes. mpai is MIT-licensed, so commercial use is permitted. For the public
+alpha, treat client work as an explicitly authorized, client-controlled pilot:
+
+- Run the host on a client-owned Mac and a tailnet the client controls or has
+  intentionally invited you into.
+- Have the client issue your named invite and share only the exact sessions
+  needed for the engagement.
+- Start with non-sensitive work and review the security, privacy, and
+  acceptable-use boundaries together before sharing production context.
+- Keep a human at the host. mpai provides no arbitrary remote shell and cannot
+  grant or bypass provider approvals.
+
+The alpha is not yet an enterprise SLA, compliance certification, or substitute
+for the client's own access-control policy. If you pilot it, report
+privacy-safe install-to-first-room timing through the
+[first 10-team cohort](https://github.com/godfaddaai/multiplayer-ai/issues/7).
+
+## Security, plainly
+
+- The collaboration service listens on the Tailscale address, not every
+  interface.
+- Network identity comes from Tailscale; authorization comes from an
+  identity-bound invite and role.
+- New invitations default to selected-session access.
+- Unshared titles, transcripts, presence, audit events, and prompt routes stay
+  hidden.
+- The host stores only a SHA-256 hash of an issued invite token.
+- There is no endpoint for arbitrary shell execution, deletion, archival, or
+  remote approval delegation.
+- Codex remote approvals are declined. Claude remote turns use
+  <code>dontAsk</code>, so an operation that needs an interactive permission
+  prompt is denied.
+
+Joined-peer bearer tokens live in macOS Keychain when it is available. A
+non-interactive macOS session that cannot access Keychain falls back to a
+mode-0600 local credential file and records that backend in the peer reference.
+Reads follow that per-peer reference. The local config never stores the token
+itself; existing inline alpha tokens migrate on first load. Read
+[SECURITY.md](./SECURITY.md) for threat boundaries and reporting. The
+[privacy notice](./PRIVACY.md) explains local data handling, and the
+[acceptable use policy](./ACCEPTABLE_USE.md) states the authorization boundary.
+
+## Alpha limits
+
+This is useful enough to dogfood and early enough to break:
+
+- macOS and an existing tailnet are required.
+- Safe Codex prompting depends on the managed-daemon path. Standalone Codex is
+  view-only by default.
+- The Claude integration targets the local CLI session store.
+- Physical sleep/wake recovery and three-person concurrency proof remain open.
+- It is not yet certified for 100-person organizations.
+
+Every release gate is tracked in [PUBLIC-ALPHA.md](./docs/PUBLIC-ALPHA.md).
+The weighted, evidence-only path to 98/100 is tracked in
+[LAUNCH-READINESS.md](./docs/LAUNCH-READINESS.md).
+
+## Development
+
+~~~bash
+git clone https://github.com/godfaddaai/multiplayer-ai.git
+cd multiplayer-ai
+npm install
+npm run verify
+npm link
+mpai doctor
+~~~
+
+The local protocol dashboard under <code>src/web/</code> is diagnostic-only.
+The product interface is <code>mpai</code> in the terminal.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a pull request.
+
+## Roadmap
+
+- [x] macOS Keychain-backed peer credentials
+- [x] One-command Homebrew tap install
+- [x] Fresh-install invite bootstrap and upgrade-stable service launcher
+- [x] Redacted <code>mpai support-bundle</code>
+- [x] Public release-asset upgrade, rollback, and uninstall verification
+- [ ] Safe attachment across supported active Codex surfaces
+- [ ] Three-person concurrency certification
+- [ ] Linux support
+- [ ] Provider SDK and additional coding agents
+- [ ] Organization directory, RBAC, SSO/SCIM, policy, and audit export
+
+See [UPGRADING.md](./docs/UPGRADING.md) for the current update, rollback, and
+uninstall procedures.
+
+## Why this can matter
+
+The bet is not merely that AI coding is large. It is that teams now operate
+many powerful single-user agents while context, authorship, and steering remain
+fragmented across individual sessions.
+
+The evidence, competitive landscape, bottom-up scenarios, and falsification
+tests are documented in [MARKET-THESIS.md](./docs/MARKET-THESIS.md).
+
+## License
+
+[MIT](./LICENSE) © mpai contributors
+
+mpai is an independent open-source project. It is not affiliated with,
+endorsed by, or sponsored by Tailscale, OpenAI, or Anthropic. Product and
+company names belong to their respective owners.

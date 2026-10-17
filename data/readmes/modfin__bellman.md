@@ -1,0 +1,661 @@
+# Bellman
+
+[![integration-tests](https://github.com/modfin/bellman/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/modfin/bellman/actions/workflows/integration-tests.yml)
+
+It tries to be a unified interface to interact with LLMs and embedding models.
+In particular, it seeks to make it easier to switch between models and vendors
+while lowering the barrier to get started.
+Bellman supports `VertexAI/Gemini`, `OpenAI`, `Anthropic`, `VoyageAI`, `Ollama`, `vLLM` and `TypeSafe`.
+
+Bellman consists of two parts. The library and the service.
+The go library enables you to interact with the different LLM vendors directly while the service,
+`bellmand` creates a proxy service that lets you connect to all providers with one api key.
+
+Bellman supports the common things that we expect in modern LLM models.
+Chat, Structured, Tools and binary input. It also covers embeddings and
+decision models (typed questions answered with probabilities instead of text).
+
+## Why
+
+This project was built to the lack of official sdk/clients for the major players along with the
+slight differences in API.
+It also became clear when we started to play around with different LLMs in our projects that the
+differences, while slight, had implications and for each new model introduced it became an overhead.
+There are other projects out there, like go version of LangChain, that deals with some of it.
+But having one proxy to handle all types of models made things a lot easier for us to iterate over
+problems, models and solutions.
+
+## The Service
+
+`bellmand` is a simple web service that implements the bellman library and exposes it through a http api
+
+The easiest way to get started is to simply run it as a docker service.
+
+### Prerequisite
+
+- Docker being installed
+- API Keys to Anthropic, OpenAI, VertexAI(Google Gemini), VoyageAI and/or TypeSafe
+- Installing Ollama, https://ollama.com/ (very cool project imho)
+- (Optional) Running vLLM, if you want to proxy self-hosted OpenAI-compatible models
+
+### Run
+
+```sh
+## Help / Man
+docker run --rm -it modfin/bellman --help  
+
+## Example
+docker run --rm -d modfin/bellman \
+  --prometheus-metrics-basic-auth="user:pass" \
+  --ollama-url=http://localhost:11434 \
+  --vllm-url=http://localhost:8000 \
+  --vllm-model="*" \
+  --openai-key="$(cat ./credentials/openai-api-key.txt)" \
+  --anthropic-key="$(cat ./credentials/anthropic-api-key.txt)" \
+  --voyageai-key="$(cat ./credentials/voyageai-api-key.txt)" \
+  --typesafe-key="$(cat ./credentials/typesafe-api-key.txt)" \
+  --google-credential="$(cat ./credentials/google-service-account.json)" \
+  --google-project=your-google-project \
+  --google-region=europe-north1 \
+  --api-key=qwerty 
+```
+
+This will start the bellmand service that proxies requests to the model you define in the request.
+
+## The Library
+
+### Installation
+
+```bash
+go get github.com/modfin/bellman
+```
+
+## Usage
+
+The library provides clients for Anthropic, Ollama, OpenAI, VertexAI, VoyageAI, vLLM, TypeSafe and Bellman itself.
+
+All provider clients implement `gen.Gen`, `embed.Embeder` and/or `decide.Decider`,
+and can therefore be used interchangeably.
+
+```go
+anthropicClient := anthropic.New("ANTHROPIC_API_KEY")
+ollamaClient := ollama.New("http://localhost:11434")
+openaiClient := openai.New("OPENAI_API_KEY")
+vertexClient, err := vertexai.New(vertexai.GoogleConfig{
+    Project: "my-project",
+    Region:  "europe-north1",
+})
+if err != nil {
+    panic(err)
+}
+voyageClient := voyageai.New("VOYAGEAI_API_KEY")
+typesafeClient := typesafe.New("TYPESAFE_API_KEY")
+vllmClient := vllm.New([]string{"http://localhost:8000"}, []string{"*"})
+bellmanClient := bellman.New("http://localhost:8080", bellman.Key{Name: "test", Token: "BELLMAN_TOKEN"})
+
+```
+
+Model examples in this README are intentionally short. Source of truth for model constants:
+
+- `services/openai/models.go`
+- `services/anthropic/models.go`
+- `services/vertexai/models.go`
+- `services/ollama/models.go`
+- `services/vllm/models.go`
+- `services/voyageai/models.go`
+- `services/typesafe/models.go`
+
+You can always define your own model as well.
+
+```go
+gen.Model{
+		Provider: vertexai.Provider,
+		Name:     "gemini-3-flash-preview",
+		Config:   map[string]interface{}{"region": "global"},
+}
+```
+
+## bellman.New()
+
+The benefit of using the bellman client, when you are running `bellmand`,
+is that we can interchangeably use any model that we wish to interact with.
+
+```go
+client := bellman.New("BELLMAN_URL", bellman.Key{Name: "test", Token: "BELLMAN_TOKEN"})
+llm := client.Generator()
+res, err := llm.Model(openai.GenModel_gpt4o_mini).
+    Prompt(
+        prompt.AsUser("What company made you?"),
+    )
+fmt.Println(res, err)
+// OpenAI
+
+res, err := llm.Model(vertexai.GenModel_gemini_2_5_flash_latest).
+    Prompt(
+        prompt.AsUser("What company made you?"),
+    )
+fmt.Println(res, err)
+// Google
+
+// or even a custom model that you created yourself (trained) 
+// or a new model that is not in the library yet
+model := gen.Model{
+    Provider: vertexai.Provider,
+    Name:     "gemini-2.5-flash",
+    Config:   map[string]interface{}{"region": "us-central1"},
+}
+res, err := llm.Model(model).
+    Prompt(
+        prompt.AsUser("What company made you?"),
+    )
+fmt.Println(res, err)
+// Google
+
+
+```
+
+## Prompting
+
+Just normal conversation mode
+
+```go
+res, err := openai.New(apiKey).Generator().
+    Model(openai.GenModel_gpt5_mini_latest).
+    Prompt(
+        prompt.AsUser("What is the distance to the moon?"),
+    )
+if err != nil {
+    log.Fatalf("Prompt() error = %v", err)
+}
+
+answer, err := res.AsText()
+
+fmt.Println(answer, err)
+// The average distance from Earth to the Moon is approximately 384,400 kilometers 
+// (about 238,855 miles). This distance can vary slightly because the Moon's orbit
+// is elliptical, ranging from about 363,300 km (225,623 miles) at its closest 
+// (perigee) to 405,500 km (251,966 miles) at its farthest (apogee). <nil>
+```
+
+## System Prompting
+
+Just normal conversation mode
+
+```go
+res, err := openai.New(apiKey).Generator().
+    Model(openai.GenModel_gpt5_mini_latest).
+    System("You are a expert movie quoter and lite fo finish peoples sentences with a movie reference").
+    Prompt(
+        prompt.AsUser("Who are you going to call?"),
+    )
+if err != nil {
+    log.Fatalf("Prompt() error = %v", err)
+}
+
+answer, err := res.AsText()
+
+fmt.Println(answer, err)
+// Ghostbusters! <nil>
+```
+
+## General Configuration
+
+Setting things like temperature, max tokens, top p, and stop sequences
+
+```go
+res, err := openai.New(apiKey).Generator().
+    Model(openai.GenModel_gpt5_mini_latest).
+    Temperature(0.5).
+    MaxTokens(100).
+    TopP(0.9). // should really not be used with temperature
+    StopAt(".", "!", "?").
+    Prompt(
+        prompt.AsUser("Write me a 2 paragraph text about gophers"),
+    )
+if err != nil {
+    log.Fatalf("Prompt() error = %v", err)
+}
+
+answer, err := res.AsText()
+
+fmt.Println(answer, err)
+// Gophers are small, 
+// burrowing rodents belonging to the family Geomyidae, 
+// primarily found in North America
+```
+
+## Structured Output
+
+From many models, you can now specify a schema that you want the models to output.
+
+A supporting library that can transforming your go struct to json schema is provided. `github.com/modfin/bellman/schema`
+
+There are a few different annotations that you can use on your golang structs to enrich the corresponding json schema.
+
+| Annotation             | Description                                                                                                              | Supported        |
+|------------------------|--------------------------------------------------------------------------------------------------------------------------|------------------|
+| json-description       | A description of the field, overrides the default description value                                                      | *                |
+| json-type              | The type of the field, overrides the default type value                                                                  | *                |
+| json-enum              | A list of possible values for the field. Can be used with: slices, string, number, integer, boolean                      | *                |
+| json-maximum           | The maximum value for the field. Can be used with: number, integer                                                       | VertexAI, OpenAI |
+| json-minimum           | The minimum value for the field. Can be used with: number, integer                                                       | VertexAI, OpenAI |
+| json-exclusive-maximum | The exclusive maximum value for the field. Can be used with: number, integer                                             | VertexAI, OpenAI |
+| json-exclusive-minimum | The exclusive minimum value for the field. Can be used with: number, integer                                             | VertexAI, OpenAI |
+| json-max-items         | The maximum number of items in the array. Can be used with: slices                                                       | VertexAI, OpenAI |
+| json-min-items         | The minimum number of items in the array. Can be used with: slices                                                       | VertexAI, OpenAI |
+| json-max-length        | The maximum length of the string. Can be used with: string                                                               | OpenAI         |
+| json-min-length        | The minimum length of the string. Can be used with: string                                                               | OpenAI         |
+| json-format            | Format of a string, one of: date-time, time, date, duration, email, hostname, ipv4, ipv6, uuid. Can be used with: string | VertexAI, OpenAI |
+| json-pattern           | Regex pattern of a string. Can be used with: string                                                                      | OpenAI           |
+
+```go
+type Quote struct {
+   Character string `json:"character"`
+   Quote     string `json:"quote"`
+}
+type Response struct {
+   Quotes []Quote `json:"quotes"`
+}
+
+
+vertex, err := vertexai.New(googleConfig)
+if err != nil {
+   log.Fatalf("vertexai.New() error = %v", err)
+}
+
+llm := vertex.Generator()
+res, err := llm.
+    Model(vertexai.GenModel_gemini_2_5_pro_latest).
+    Output(schema.From(Response{})).
+    Prompt(
+        prompt.AsUser("give me 3 quotes from different characters in Hamlet"),
+    )
+if err != nil {
+    log.Fatalf("Prompt() error = %v", err)
+}
+
+answer, err := res.AsText() // will return the json of the struct
+fmt.Println(answer, err)
+//{
+//  "quotes": [
+//    {
+//      "character": "Hamlet",
+//      "quote": "To be or not to be, that is the question."
+//    },
+//    {
+//      "character": "Polonius",
+//      "quote": "This above all: to thine own self be true."
+//    },
+//    {
+//      "character": "Queen Gertrude",
+//      "quote": "The lady doth protest too much, methinks."
+//    }
+//  ]
+//}  <nil>
+
+var result Response
+err := res.Unmarshal(&result) // Just a shorthand to marshal it into your struct
+fmt.Println(result, err)
+// {[
+//      {Hamlet To be or not to be, that is the question.} 
+//      {Polonius This above all: to thine own self be true.} 
+//      {Queen Gertrude The lady doth protest too much, methinks.}
+// ]} <nil>
+```
+
+## Tools
+
+The Bellman library allows you to define and use tools in your prompts.
+Here is an example of how to define and use a tool:
+
+1. Define a tool:
+   ```go
+    type Args struct {
+         Name string `json:"name"`
+    }
+   
+    getQuote := tools.NewTool("get_quote",
+       tools.WithDescription(
+            "a function to get a quote from a person or character in Hamlet",
+       ),
+       tools.WithArgSchema(Args{}),
+	       tools.WithFunction(func(ctx context.Context, call tools.Call) (string, error) {
+	           var arg Args
+	           err := json.Unmarshal(call.Argument, &arg)
+	           if err != nil {
+	               return "",err
+	           }
+	           return dao.GetQuoateFrom(arg.Name)
+	       }),
+   )
+   ```
+
+2. Use the tool in a prompt:
+   ```go
+   res, err := anthropic.New(apiKey).Generator().
+       Model(anthropic.GenModel_4_5_haiku_latest).
+       System("You are a Shakespeare quote generator").
+       SetTools(getQuote).
+       // Configure if any specific tool must be used
+       SetToolConfig(tools.RequiredTool).
+       Prompt(
+           prompt.AsUser("Give me 3 quotes from different characters"),
+       )
+
+   if err != nil {
+       log.Fatalf("Prompt() error = %v", err)
+   }
+
+   // Evaluate with callback function
+   err = res.Eval(context.Background())
+   if err != nil {
+       log.Fatalf("Eval() error = %v", err)
+   }
+   
+   
+   // or Evaluate your self
+   
+   calls, err := res.AsTools()
+   if err != nil {
+         log.Fatalf("AsTools() error = %v", err)
+   }
+   
+   for _, call := range calls {
+       log.Printf("Tool: %s", call.Name)
+       switch call.Name {
+          // ....
+       }
+   }
+   
+   ```
+
+## Binary Data
+
+Images is supported by Gemini, OpenAI and Anthropic.\
+PDFs is only supported by Gemini and Anthropic
+
+#### Image
+
+```go 
+
+image := "/9j/4AAQSkZJRgABAQEBLAEsAAD//g......gM4OToWbsBg5mGu0veCcRZO6f0EjK5Jv5X/AP/Z"
+data, err := base64.StdEncoding.DecodeString(image)
+if err != nil {
+    t.Fatalf("could not decode image %v", err)
+}
+res, err := llm.
+    Prompt(
+        prompt.AsUserWithData(prompt.MimeImageJPEG, data),
+        prompt.AsUser("Describe the image to me"),
+    )
+
+if err != nil {
+    t.Fatalf("Prompt() error = %v", err)
+}
+fmt.Println(res.AsText())
+// The image contains the word "Hot!" in red text. The text is centered on a white background. 
+// The exclamation point is after the word.  The image is a simple and straightforward 
+// depiction of the word "hot." <nil>
+
+```
+
+#### PDF
+
+```go
+pdf, err := os.ReadFile("path/to/pdf")
+if err != nil {
+    t.Fatalf("could open file, %v", err)
+}
+
+res, err := anthropic.New(apiKey).Generator().
+    Prompt(
+        prompt.AsUserWithData(prompt.MimeApplicationPDF, pdf),
+        prompt.AsUser("Describe to me what is in the PDF"),
+    )
+
+if err != nil {
+    t.Fatalf("Prompt() error = %v", err)
+}
+fmt.Println(res.AsText())
+// The image contains the word "Hot!" in red text. The text is centered on a white background. 
+// The exclamation point is after the word.  The image is a simple and straightforward 
+// depiction of the word "hot." <nil>
+
+```
+
+## Reasoning
+
+Control reasoning by setting the budget for the reasoning tokens. Determine whether to return the reasoning data or not.
+The default thinking/reasoning behaviour is different depending on the model you are using.
+
+```go
+res, err := anthropic.New(apiKey).Generator().
+    Model(anthropic.GenModel_4_5_sonnet_latest).
+    MaxTokens(3000).
+    ThinkingBudget(2000). // the budget for reasoning tokens, set to 0 to disable reasoning if supported by the selected model
+    IncludeThinkingParts(true). // if available, includes the reasoning parts in the response (will be summaries for some models)
+    Prompt(
+        prompt.AsUser("What is 27 * 453?"),
+    )
+if err != nil {
+    log.Fatalf("Prompt() error = %v", err)
+}
+
+answer, err := res.AsText()
+
+fmt.Println(answer, err)
+```
+
+## Provider specific config
+Some providers have specific configuration that is not supported by the common interface.
+You can set these options manually on the `gen.Model.Config` struct.
+
+```go
+model := gen.Model{
+    Provider: openai.Provider,
+    Name:     openai.GenModel_gpt5_mini_latest.Name,
+    Config: map[string]interface{}{
+        "service_tier": openai.ServiceTierPriority,
+    },
+}
+
+// prompt..
+The returned metadata will then contain the service_tier used.
+```
+
+## Agent Example
+
+Supporter lib for simple agentic tasks
+
+```go
+type GetQuoteArg struct {
+    StockId int `json:"stock_id" json-description:"the id of a stock for which  quote to get"`
+}
+type Search struct {
+    Name string `json:"name" json-description:"the name of a stock being looked for"`
+}
+
+getQuote := tools.NewTool("get_quote",
+    tools.WithDescription("a function get a stock quote based on stock id"),
+    tools.WithArgSchema(GetQuoteArg{}),
+    tools.WithFunction(func (ctx context.Context, call tools.Call) (string, error) {
+        var arg GetQuoteArg
+        err := json.Unmarshal(call.Argument, &arg)
+        if err != nil {
+            return "", err
+        }
+         return `{"stock_id": ` + strconv.Itoa(arg.StockId) + `,"price": 123.45}`, nil
+    }),
+)
+
+getStock := tools.NewTool("get_stock",
+    tools.WithDescription("a function a stock based on name"),
+    tools.WithArgSchema(Search{}),
+    tools.WithFunction(func (ctx context.Context, call tools.Call) (string, error) {
+        var arg Search
+        err := json.Unmarshal(call.Argument, &arg)
+        if err != nil {
+            return "", err
+        }
+        return `{"stock_id": 98765}`, nil
+    }),
+)
+
+
+type Result struct {
+    StockId int     `json:"stock_id"`
+    Price   float64 `json:"price"`
+}
+
+llm := anthropic.New(apiKey).Generator()
+llm = llm.SetTools(getQuote, getStock)
+
+res, err := agent.Run[Result](5, 1, llm, prompt.AsUser("Get me the price of Volvo B"))
+if err != nil {
+    t.Fatalf("Prompt() error = %v", err)
+}
+
+fmt.Printf("==== Result after %d calls ====\n", res.Depth)
+fmt.Printf("%+v\n", res.Result)
+fmt.Printf("==== Conversation ====\n")
+
+for _, p := range res.Prompts {
+    fmt.Printf("%s: %s\n", p.Role, p.Text)
+}
+
+// ==== Result after 2 calls ====
+// {StockId:98765 Price:123.45}
+// ==== Conversation ====
+// user:       Get me the price of Volvo B
+// assistant:  tool function call: get_stock with argument: {"name":"Volvo B"}
+// user:       result: get_stock => {"stock_id": 98765}
+// assistant:  tool function call: get_quote with argument: {"stock_id":98765}
+// user:       result: get_quote => {"stock_id": 98765,"price": 123.45}
+// assistant:  tool function call: __return_result_tool__ with argument: {"price":123.45,"stock_id":98765}
+```
+
+## Embeddings
+
+Bellman integrates with most the embedding models as well as the LLMs that is provided by the supported
+providers. There is also a VoyageAI, voyageai.com, that only really deals with embeddings.
+
+```go
+client := bellman.New(...)
+
+res, err := client.Embed(embed.NewSingleRequest(
+    context.Background(),
+    vertexai.EmbedModel_text_005.WithType(embed.TypeDocument),
+    "The document to embed",
+))
+
+fmt.Println(res.SingleAsFloat32())
+// [-0.06821047514677048 -0.00014664272021036595 0.011814368888735771 ....], nil
+```
+
+Or using the query type.
+```go
+client := bellman.New(...)
+
+res, err := client.Embed(embed.NewSingleRequest(
+    context.Background(),
+    vertexai.EmbedModel_text_005.WithType(embed.TypeQuery),
+    "The query to embed",
+))
+
+fmt.Println(res.SingleAsFloat32())
+// [-0.06821047514677048 -0.00014664272021036595 0.011814368888735771 ....], nil
+```
+
+### Context aware embeddings
+Bellman also supports context aware embeddings. As of now, only with VoyageAI models.
+
+```go
+res, err := client.EmbedDocument(embed.NewDocumentRequest(
+    context.Background(),
+    voyageai.EmbedModel_voyage_context_3.WithType(embed.TypeDocument),
+    []string{"document_chunk_1", "document_chunk_2", "document_chunk_3", ...},
+))
+
+fmt.Println(res.AsFloat64())
+// [[-0.06821047514677048 ...], [0.011814368888735771 ....], ...], nil
+```
+
+### Type
+
+Some embeddings models support specific types of input.
+
+Eg.
+[VertexAI](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/task-types#retrieve_information_from_texts)
+and [VoyageAI](https://docs.voyageai.com/docs/embeddings)
+
+The API allows you to define what type of text you are sending.
+For example `embed.TypeDocument` for initial embedding and `embed.TypeQuery`
+for getting a vector that is to be compared
+
+## Decisions
+
+Decision models are the third model type in bellman, next to generation and embeddings.
+They do not write text. You hand them a shared *state* and a set of typed *questions*,
+and get one answer per question with a probability distribution instead of prose.
+That makes them a good fit for classification, routing, scoring and guardrails,
+where they are faster, cheaper (input tokens only) and easier to threshold than a chat model.
+
+Supported providers are OpenAI (`/v1/decisions`, `gpt-6-luna`, accepts images) and
+TypeSafe (`/v1/systemone`, Jev, accepts JSON state). Anthropic and Google have no
+equivalent API, so they are not available as deciders.
+
+There are three question types:
+
+| Type        | Ask                                   | Answer                                                                  |
+|-------------|---------------------------------------|-------------------------------------------------------------------------|
+| `Predicate` | a yes/no condition                    | `Probability`, P(true)                                                  |
+| `Choice`    | pick one of 2–255 unordered options   | `Choice`, `Probabilities` per option value, `Confidence`                |
+| `Score`     | place on 2–10 ordered levels          | `Score` (weighted level index), `Probabilities` per index, `Confidence` |
+
+`Confidence` only says how peaked the distribution is. It is not a calibrated measure of
+correctness, so pick your own thresholds from labelled examples.
+
+```go
+client := openai.New(apiKey) // or typesafe.New(apiKey), or bellman.New(...)
+
+req := decide.NewRequest(ctx, openai.DecideModel_gpt6_luna,
+    decide.Text("I was charged twice for order #4411 and need the extra charge refunded today."),
+).Ask(
+    decide.Predicate("refund", "Is the customer asking for money back?").
+        WithCriteria("The customer wants a charge reversed.", "No refund is requested."),
+    decide.Choice("department", "Which team should handle this?",
+        decide.NewOption("billing", "Charges, invoices and refunds."),
+        decide.NewOption("shipping", "Delivery and lost packages."),
+        decide.NewOption("other", "Anything else."),
+    ),
+    decide.Score("urgency", "How urgent is this?",
+        decide.NewLevel("low", "No deadline."),
+        decide.NewLevel("medium", "Wants it done, no deadline today."),
+        decide.NewLevel("high", "Losing money or a deadline today."),
+    ),
+)
+
+res, err := client.Decide(req)
+if err != nil {
+    log.Fatalf("Decide() error = %v", err)
+}
+
+p, _ := res.Probability("refund")      // 0.97
+team, _ := res.Choice("department")    // "billing"
+urgency, _ := res.Score("urgency")     // 1.9, i.e. between medium and high
+
+a, _ := res.Answer("department")
+fmt.Println(a.Probabilities, a.Confidence)
+// map[billing:0.95 other:0.03 shipping:0.02] 0.93
+```
+
+State can be made of several parts. `decide.JSON(v)` sends a structured object (TypeSafe
+forwards a lone JSON part as-is so questions can refer to its fields) and `decide.Image(mime, data)`
+adds an inline image (OpenAI only). `decide.Model` advertises `SupportImages` and `SupportJSONState`.
+
+Through `bellmand` the same request is served at `POST /decide`, gated by the
+`disable_decide` api-key flag and the `--disable-decide-models` server flag.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.

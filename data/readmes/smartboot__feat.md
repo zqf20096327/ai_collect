@@ -1,0 +1,164 @@
+# <img src="logo.svg" width="80" height="80"/> Feat Framework [![Apache License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/smartboot/feat)
+
+Somewhat like Vert.x, and somewhat like Spring Boot, Feat is a Java web service development framework.
+
+> ⭐ Star Feat on GitHub and be instantly notified of new releases.
+
+
+![](./pages/src/assets/performance.svg)
+
+### 🚀 Enterprise Value of Feat
+
+| Advantage | Description |
+|-----------|-------------|
+| ⚡ High Performance | Several times faster than traditional frameworks, significantly reducing server costs |
+| ⏱️ Low Latency | Millisecond-level response, enhancing user experience |
+| 📦 Easy to Use | Simple API design lowers the learning curve |
+| 🔐 High Reliability | Stable operation reduces operational pressure |
+
+---
+
+### 📦 Third-party Package Dependencies
+
+The main third-party package dependencies for each module in the Feat framework are as follows:
+
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Dependency</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2">Feat Core</td>
+<td><a href="https://gitee.com/smartboot/smart-socket" target="_blank">smart-socket</a></td>
+<td>Runtime</td>
+<td>A Java AIO-based network communication framework</td>
+</tr>
+<tr>
+<td><a href="https://gitee.com/alibaba/fastjson2" target="_blank">fastjson2</a></td>
+<td>Runtime</td>
+<td>Alibaba's JSON processing library</td>
+</tr>
+<tr>
+<td rowspan="2">Feat Cloud</td>
+<td><a href="https://github.com/mybatis/mybatis-3" target="_blank">mybatis</a></td>
+<td>Compile-time</td>
+<td>An excellent persistence layer framework</td>
+</tr>
+<tr>
+<td><a href="https://github.com/snakeyaml/snakeyaml" target="_blank">snakeyaml</a></td>
+<td>Compile-time</td>
+<td>YAML configuration file parsing library</td>
+</tr>
+<tr>
+<td rowspan="2">Feat AI</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+
+All dependencies use the latest stable versions to ensure optimal security and performance.
+
+---
+
+## Quick Start
+
+### Hello World (Feat Cloud)
+
+Create a simple annotation-based Web application with Feat Cloud:
+
+```java
+import tech.smartboot.feat.cloud.FeatCloud;
+import tech.smartboot.feat.cloud.annotation.Controller;
+import tech.smartboot.feat.cloud.annotation.RequestMapping;
+
+@Controller
+public class HelloWorld {
+
+    @RequestMapping("/hello")
+    public String hello() {
+        return "Hello, World!";
+    }
+
+    public static void main(String[] args) {
+        FeatCloud.cloudServer().listen();
+    }
+}
+```
+
+**Maven Dependencies:**
+
+```xml
+<!-- Runtime -->
+<dependency>
+    <groupId>tech.smartboot.feat</groupId>
+    <artifactId>feat-cloud</artifactId>
+    <version>2.4.2-SNAPSHOT</version>
+</dependency>
+
+<!-- Compile-time code generation -->
+<dependency>
+    <groupId>tech.smartboot.feat</groupId>
+    <artifactId>feat-cloud-starter</artifactId>
+    <version>2.4.2-SNAPSHOT</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+---
+
+## Performance Comparison
+
+Compared to other mainstream Java frameworks, Feat excels in the following areas:
+
+| Metric | Feat | Spring Boot | Vert.x |
+|--------|------|-------------|--------|
+| Startup Time | <100ms | ~700ms      | ~500ms |
+| Memory Usage | Low | High        | Medium |
+| Requests per Second | High | Medium      | High |
+| Response Latency | Extremely Low | Medium      | Low |
+
+
+---
+
+## Documentation & Community
+
+### 📚 Learning Resources
+
+- **[Official Documentation](https://smartboot.tech/feat)**: Detailed usage guides and API references
+- **[Sample Projects](https://gitee.com/smartboot/feat/tree/master/feat-test)**: Practical examples across various scenarios
+- **[Performance Test Reports](https://smartboot.tech/feat/appendix/benchmark/)**: Understand Feat's performance advantages
+
+### 💬 Getting Support
+
+- **[GitHub Issues](https://github.com/smartboot/feat/issues)**: Report issues or suggest new features
+- **[Gitee Issues](https://gitee.com/smartboot/feat/issues)**: Domestic user feedback channel
+- **[Enterprise Licensing Solutions](https://smartboot.tech/feat/auth/)**: Empowering efficient development and enterprise growth
+
+### 🤝 Contributing
+
+We welcome contributions in all forms:
+
+- **Report Issues**: Help us identify and fix bugs
+- **Improve Documentation**: Make documentation clearer and more complete
+- **Contribute Code**: Implement new features or fix known issues
+- **Share Experience**: Share your experiences and best practices using Feat within the community
+
+Please read our [Contribution Guide](CONTRIBUTING.md) before contributing.
+
+---
+
+## License
+
+Feat is open source under the [Apache License 2.0](LICENSE).
+
+---
+
+<p align="center">Feat - A Supersonic Java Framework for the Cloud Native Era</p>
+<p align="center">High Performance • Low Resource Consumption • Developer Friendly</p>

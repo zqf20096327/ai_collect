@@ -1,0 +1,346 @@
+# NanoLang
+
+[![CI](https://github.com/jordanhubbard/nanolang/actions/workflows/ci.yml/badge.svg)](https://github.com/jordanhubbard/nanolang/actions/workflows/ci.yml)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
+![Bootstrap](https://img.shields.io/badge/bootstrap-self--hosting%20in%20progress-yellow.svg)
+
+**I am a programming language designed for machines to write and humans to read, and a secure runtime that hosts least-privilege services on an ordinary kernel.** I require tests, I use unambiguous syntax, and my core is formally proved.
+
+I transpile to C when you need native performance. NanoISA is my verified bytecode VM; it isolates dangerous external calls in a separate process. After 4.0 I added versioned service contracts, unforgeable capabilities, a POSIX fabric, and a trap journal. I do not claim a kernel. My core semantics are mechanically proved in Coq — type soundness, progress, determinism, and the big-step ↔ small-step equivalence proof are all complete and `Admitted`-free.
+
+I published v5.0.0 with the language/runtime changes in [my release contract](docs/RELEASE_5.0.md). My planned v5.1.0 must complete the [full remaining roadmap](docs/ROADMAP.md), including NanoISA-only compilation and matching compiler bytecode. Those architecture gates remain unfinished.
+
+## Documentation
+
+**→ [User Guide](https://jordanhubbard.github.io/nanolang/) ←** - I provide a tutorial with examples you can execute. This is where I recommend you begin.
+
+**Additional Resources:**
+- [Getting Started](docs/GETTING_STARTED.md) - A brief introduction to my environment.
+- [Quick Reference](docs/QUICK_REFERENCE.md) - My syntax, summarized.
+- [Language Specification](docs/SPECIFICATION.md) - My complete technical definition.
+- [NanoISA VM Architecture](docs/NANOISA.md) - How my virtual machine is structured.
+- [Formal Verification](formal/README.md) - My Coq proof suite.
+- [Performance Monitoring and LLM Optimization](docs/PERFORMANCE_MONITORING.md) - `-pg` JSON, OS collectors, and a measured optimization loop.
+- [NanoLang 5.0](docs/RELEASE_5.0.md) - Language-contract changes, dependency shadows by default, module/cache hardening, and explicit unfinished runtime boundaries.
+- [NanoLang 4.5](docs/RELEASE_4.5.md) - Previous public cut covering 4.1–4.5: Forth evidence, NSI, capabilities, POSIX fabric, isolated Nano Emacs, effects-to-policy, trap journal.
+- [NanoLang 4.0](docs/RELEASE_4.0.md) - NanoISA v2, the verifier, and measured dispatch.
+- [Developer overview](docs/presentation/README.md) - Local 5.0 release-edition deck and narrative; published Google artifacts remain the 4.5 edition.
+- [All Documentation](docs/DOCS_INDEX.md) - An index of everything I have to say.
+
+## Quick Start
+
+```bash
+# Clone and build
+git clone https://github.com/jordanhubbard/nanolang.git
+cd nanolang
+make build
+
+# Create hello.nano
+cat > hello.nano << 'EOF'
+fn greet(name: string) -> string {
+    return (+ "Hello, " name)
+}
+
+shadow greet {
+    assert (== (greet "World") "Hello, World")
+}
+
+fn main() -> int {
+    (println (greet "World"))
+    return 0
+}
+
+shadow main { assert true }
+EOF
+
+# Compile and run
+./bin/nanoc hello.nano -o hello
+./hello
+```
+
+**BSD users:** Use `gmake` instead of `make`.
+
+## My Features
+
+- **Formally Proved Semantics** - I have proved type soundness, progress, and determinism in Coq with no `Axiom` declarations. The big-step ↔ small-step equivalence proof is complete and `Admitted`-free (including tuple value reconstruction in `formal/Equivalence.v`).
+- **NanoISA Virtual Machine** - I include a stack-based VM with 161 portable opcodes in an 8-bit opcode space. It isolates FFI calls in a co-process and can run as a daemon. Bytecode is verified before it runs.
+- **Automatic Memory Management** - I use reference counting so you never call `free()`. Heap allocations carry a small per-retain/release cost; pauses are deterministic. NanoVM also collects reference cycles (`src/nanovm/heap_cycles.c`); generated C already did.
+- **Machine-Led Optimization** - I run constant folding and dead-code elimination before code generation. I also support profile-guided inlining on my native C path.
+- **Shared IR** - I lower NanoLang and Nano Forth to NanoISA. C remains my production native path. Future LLVM, WebAssembly, JVM, and other general targets translate from NanoISA so every frontend shares one typed and verified boundary. PTX, OpenCL, and RISC-V remain direct experimental targets during that migration.
+- **Algebraic Effects** - I support typed, resumable effects with `effect`, `perform`, and `handle`. Side effects are explicit and composable.
+- **Async / Await** - I lower `async fn` and `await` to a CPS state machine at compile time.
+- **Dual Notation** - I support both prefix `(+ a b)` and infix `a + b` operators. My prefix calls are unambiguous.
+- **Rich Pattern Matching** - I support match guards (`Ok(v) if v > 0 =>`), or-patterns (`| A | B =>`), wildcard `_`, and exhaustiveness checking (warnings on incomplete matches).
+- **Shadow Tests** - My project policy requires useful shadows. Missing-shadow enforcement is not universal. My C seed, self-hosted native driver and `nano_virt` run dependency shadows before root shadows by default, before publishing executable output. `--root-shadows-only` narrows that scope. Source-only C emission does not execute shadows. Deadlines supervise test processes; they are not security sandboxes. `make test-language-claims` and `make test-native-shadows` check these boundaries.
+- **Type Inference** - I infer types where unambiguous so you can write `let x = 42` without an annotation. Inference is local and bidirectional, not full Hindley-Milner — explicit annotations are required at function boundaries.
+- **F-Strings and Pipes** - I support `f"Hello, {name}!"` string interpolation and `x |> f |> g` pipeline syntax.
+- **C Interop** - I communicate with C through modules. I can isolate these calls in a separate process to protect myself.
+- **Secure Runtime** - NSI v0 contracts, unforgeable capabilities, a POSIX service fabric, effects-to-policy, and a trap journal (`docs/NSI.md`, `docs/NSI_FABRIC.md`, `docs/NSI_EFFECTS.md`). I host services on an ordinary kernel. I do not claim a kernel, AES, or PKI. The journal is a tested library; it is not hooked into every VM trap in 4.5.
+- **Forth session** - Colon definitions compile to verified NanoISA. Jackson Core/Core Ext suites are vendored evidence. I do not claim a Standard System (`docs/FORTH_2012.md`, `docs/FORTH_STANDARD_SYSTEM.md`).
+- **Message catalogs** - Six-language catalogs and machine-draft user guides. JSON/TOON stay English. I do not call the system internationalized.
+- **Nano Emacs** - An SDL frame whose walker runs in `bin/nano_emacs_worker`. I do not claim GNU Emacs (`docs/NANO_EMACS.md`).
+- **VS Code Extension** - I ship a Language Server, a Debug Adapter Protocol server, and a VS Code extension source tree (`editors/vscode/`) with semantic tokens. Run `vsce package` to build a `.vsix`.
+- **Web Playground** - I include a browser-based CodeMirror 6 editor with share permalink and live evaluation.
+
+## Language Overview
+
+```nano
+# Variables — immutable by default, type annotation optional when inferrable
+let x: int = 42
+let y = "hello"            # type inferred as string
+let mut counter: int = 0
+
+# Functions with mandatory shadow tests
+fn add(a: int, b: int) -> int {
+    return (+ a b)
+}
+
+shadow add {
+    assert (== (add 2 3) 5)
+}
+
+# F-string interpolation
+let msg = f"Result: {(add 2 3)}"
+
+# Pipe operator
+let result = 5 |> add 3 |> double   # equivalent to double(add(3, 5))
+
+# Control flow
+if (> x 0) {
+    (println "positive")
+}
+
+# Pattern matching with guards and or-patterns
+union Shape { Circle { r: float }, Square { side: float }, Point {} }
+match shape {
+    Circle(c) if c.r > 0.0 => (println "circle"),
+    | Square(_) | Point(_) => (println "other")
+}
+
+# Structs, enums, and generic types
+struct Point { x: int, y: int }
+enum Status { Pending = 0, Active = 1 }
+let numbers: List<int> = (List_int_new)
+(List_int_push numbers 42)
+
+# Algebraic effects
+effect Log { log : string -> void }
+handle (perform Log.log "hi") with {
+    Log.log(msg) -> { (println msg) }
+}
+
+# Parallel binding hint
+par-let a = (compute_x)  b = (compute_y)  in (println (+ a b))
+```
+
+## NanoISA Virtual Machine
+
+I provide a virtual machine as an alternative to C transpilation.
+
+```bash
+# Compile to NanoISA bytecode and run
+./bin/nano_virt hello.nano --run
+
+# Compile to native binary (embeds VM + bytecode)
+./bin/nano_virt hello.nano -o hello
+
+# Emit raw .nvm bytecode, then execute separately
+./bin/nano_virt hello.nano --emit-nvm -o hello.nvm
+./bin/nano_vm hello.nvm
+
+# Strip source-map debug info for production .nvm output
+./bin/nano_virt hello.nano --emit-nvm --strip-debug -o hello.prod.nvm
+
+# Run with FFI isolation (external calls in separate process)
+./bin/nano_vm --isolate-ffi hello.nvm
+```
+
+**Architecture:**
+- **Generated instruction schema** - I use a local/stack hybrid whose active metadata comes from `spec/nanoisa.yaml`.
+- **Co-process FFI** (`nano_cop`) - I run external calls in a separate process. If they crash, I continue running.
+- **VM daemon** (`nano_vmd`) - I can run as a persistent process to start faster.
+- **Trap model** - I separate computation from I/O. This allows for future hardware acceleration.
+- **Reference-counted GC** - I manage memory deterministically. I release resources when they leave scope.
+
+I have documented my complete architecture in [docs/NANOISA.md](docs/NANOISA.md).
+
+## Formal Verification
+
+My core semantics, which I call NanoCore, are mechanically proved in Coq. I declare no `Axiom`s, and the equivalence proof (`eval_to_multistep_gen` in `formal/Equivalence.v`) is now complete and `Admitted`-free.
+
+- **Type Soundness** - I have proved that well-typed programs do not get stuck.
+- **Determinism** - I have proved that evaluation produces exactly one result.
+- **Semantic Equivalence** - I have proved that my big-step and small-step semantics agree, including the tuple value reconstruction case, with no `Admitted` sub-cases.
+
+My proved subset includes integers, booleans, strings, arrays, records, variants, pattern matching, closures, recursion, and mutable variables. I explain this further in [formal/README.md](formal/README.md).
+
+```bash
+cd formal/ && make    # Build all proofs (requires Rocq Prover >= 9.0)
+```
+
+## IDE & Debugger Support
+
+I ship a Language Server (`bin/nanolang-lsp`) and a Debug Adapter (`bin/nanolang-dap`) for IDE integration.
+
+```bash
+make lsp   # Build bin/nanolang-lsp  (hover, go-to-definition, completion, diagnostics)
+make dap   # Build bin/nanolang-dap  (breakpoints, step-through, variable inspection)
+```
+
+A VS Code extension is provided in `editors/vscode/`. It wires the LSP and DAP servers automatically.
+
+```bash
+# Compile through C to a native executable (default)
+./bin/nanoc program.nano -o program
+
+# Emit C source without invoking a native compiler
+./bin/nanoc program.nano --target c -o program.c
+
+# Experimental C-seed targets during the NanoISA translator migration
+./bin/nanoc_c program.nano --target ptx   -o program.ptx  # CUDA PTX
+./bin/nanoc_c program.nano --target riscv -o program.s    # RISC-V assembly
+
+# Export documentation from triple-slash comments
+./bin/nanoc_c program.nano --doc-md -o program.md
+```
+
+My self-hosted driver accepts `--target native` and `--target c`; it rejects
+unknown options, unsupported targets, missing option values, and multiple
+input files. With `--target c` and no `-o`, I write a sibling `.c` file. Use
+`--` before an input path beginning with `-`. My generated C uses headers in
+`src` and `modules/std`; link the runtime and module libraries used by the
+program. Source emission alone does not prove that those dependencies link.
+
+## Performance Monitoring and LLM Optimization
+
+The profiling options in this section belong to my C-seed driver,
+`bin/nanoc_c`; my self-hosted driver does not implement them yet.
+
+When I compile with `-pg`, the native binary wraps `main` as `_nl_run_with_profiling`. On Linux I drive **gprofng**. On macOS I drive **xctrace** (full Xcode) and fall back to **sample**. I print JSON on **stdout** and, with `--profile-output`, to a file. That JSON is for an agent to read; it is not a PGO input.
+
+`--profile` / `--profile-runtime` instrument generated C and can write `.nano.prof`. `--pgo` inlines from `.nano.prof`, not from `-pg` JSON.
+
+I treat optimization as: profile a real workload, change source, run tests, profile again, keep only a demonstrated improvement. I document the JSON fields I actually emit, and the per-OS collectors, in **[docs/PERFORMANCE_MONITORING.md](docs/PERFORMANCE_MONITORING.md)**. The user-guide session is **[Performance Profiling](userguide/guide/07_performance_profiling.md)**.
+
+## Building & Testing
+
+My native interpreter uses libffi for fixed-arity foreign calls. I need its
+development headers and library (`libffi-dev` on Debian/Ubuntu, `libffi` via
+Homebrew when the macOS SDK package is unavailable). My Makefile reads
+`pkg-config libffi`; `LIBFFI_CFLAGS` and `LIBFFI_LIBS` allow an explicit toolchain.
+
+```bash
+make build          # Build my compiler (bin/nanoc)
+make lsp            # Build my language server (bin/nanolang-lsp)
+make dap            # Build my debugger (bin/nanolang-dap)
+make vm             # Build my VM backend (bin/nano_virt, bin/nano_vm, bin/nano_cop, bin/nano_vmd)
+make test           # Run my full test suite
+make test-vm        # Run my tests through the NanoVM backend
+make test-quick     # Run my quick language tests
+make examples       # Build my examples
+```
+
+My self-hosted bootstrap tracks Nano and C sources, headers, JSON manifests,
+and directory membership under `src_nano`, `src`, `modules`, `std`, and
+`stdlib`. This is a conservative, modification-time dependency set: a library
+edit can rebuild the compiler even when that library is not imported. Hidden
+cache contents, object files and documentation edits are not source inputs;
+directory entry changes still invalidate conservatively. An unchanged build
+reuses its completed stages. Toolchain or environment changes require separate
+rebuild control; these prerequisites are not a content-addressed build key.
+
+## Examples & Interactive Tools
+
+**Web Playground** (I recommend this for learning my syntax):
+```bash
+./bin/nanoc examples/playground/playground_server.nano -o bin/playground
+./bin/playground  # Open http://localhost:8080
+```
+
+**Examples Browser** (This requires SDL2):
+```bash
+cd examples && make launcher
+```
+
+**Forth CLI:**
+```bash
+make forth
+# or, after `make examples`:
+./bin/forth
+```
+
+**Individual examples:**
+```bash
+./bin/nanoc examples/language/nl_fibonacci.nano -o fib && ./fib
+```
+
+I have categorized my games and demos in **[examples/README.md](examples/README.md)**.
+
+## Platform Support
+
+**I am fully supported on:**
+- Ubuntu 22.04+ (x86_64, ARM64)
+- macOS 14+ (Apple Silicon)
+- FreeBSD
+
+**Windows:** You may use me via WSL2 with Ubuntu.
+
+## For LLM Training
+
+I was designed to be written by machines.
+- **[MEMORY.md](MEMORY.md)** - My training reference for patterns and idioms.
+- **[spec.json](spec.json)** - My formal specification in machine-readable form.
+
+## Contributing
+
+I have guidelines for those who wish to contribute in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+
+## License
+
+I am released under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+## The Totally True and Not At All Embellished History of NanoLang
+
+### The continuing adventures of Jordan Hubbard and Sir Reginald von Fluffington III
+
+> *Part 1 of an ongoing chronicle. [Part 2: AI Code Reviewer →](https://github.com/jordanhubbard/ai-code-reviewer#the-totally-true-and-not-at-all-embellished-history-of-ai-code-reviewer)*
+> *[Chronicle index](https://github.com/jordanhubbard/ai-template/blob/main/CHRONICLE.md) · Ordered by first recorded AI-assisted commit.*
+> *Sir Reginald von Fluffington III appears throughout.  He does not endorse any of it.*
+
+The programmer had, by this point, written a text editor in bash and a Scheme interpreter in bash, and had grown accustomed to things that arguably should not exist.  He was sitting at his desk — Sir Reginald von Fluffington III occupying his preferred position on the keyboard, which was all of it — when the programmer had what he described as "a thought" and Sir Reginald later categorized, by aggressively ignoring it, as "a cry for help."
+
+"The problem," the programmer announced, to the room, to Sir Reginald, to the seventeen browser tabs he had open about formal verification, "is ambiguity.  Every language I use is ambiguous.  You write `f(x)` and nobody knows if it's a function call or a multiplication.  You write `1 + 2 * 3` and apparently this is a source of *controversy*.  And don't get me started on implicit type coercion, which should be a war crime."
+
+Sir Reginald blinked once.  He had heard variations of this speech before.  They usually ended with something in the repository.
+
+"I need a language," the programmer said, "that machines can write.  That has no ambiguity.  That requires tests.  That can be formally proved correct."  He paused, with the expression of a man who has just located a loophole in reality.  "And since no such language exists, I will build one."
+
+Sir Reginald pushed a pen off the desk.  Slowly.  Deliberately.  With full awareness of the implications.
+
+What followed was a period the programmer later called "necessary" and Sir Reginald filed under "this again."  A grammar was designed that distinguished prefix from infix without argument.  A type system was specified with the kind of precision usually reserved for bridge construction.  A virtual machine materialized, with ninety-four opcodes scattered across an eight-bit space, which the programmer described as "minimal" and which the existence of ninety-four of anything suggests was, on closer inspection, anything but.
+
+"It needs formal proofs," the programmer said, sometime around the fourth week.  "In Coq.  Zero axioms."
+
+Sir Reginald, who had been sleeping on the formal specification documents, shifted his weight slightly to cover the section on semantic equivalence.  He had learned that if he stayed on the important papers, progress was slowed.  He had also learned that this did not stop progress.  It merely made it slightly damp.
+
+The test blocks — `shadow` blocks I require under project policy, with enforcement gaps documented above — were added because the programmer was, as he put it, "tired of code that was never tested before it was written and therefore was never tested at all."  When asked whether `shadow` was a strange name for a test block, the programmer replied that it was "evocative."  Sir Reginald expressed no opinion.  His opinion on keywords was that they were all equally irrelevant to the procurement of tuna.
+
+The language was named NanoLang.  It was minimal in the way that a Swiss watch is minimal: every component was necessary, the whole was smaller than it had any right to be, and explaining how it worked required considerably more time than most people had.
+
+The language was also given a voice.  "It speaks in first person," the programmer noted, reviewing the README in which the language described its own features, "because it was designed to be written by machines, and machines should be able to parse its documentation without encountering ambiguity."  This was a reasonable position.  It did not make it less unsettling.
+
+Sir Reginald walked across the keyboard.  Fourteen characters were appended to the type specification.  They were later identified as `jjjjjjjjjkkkk` and removed.
+
+The formal proofs passed.  The VM ran.  The compiler compiled itself.  The programmer stared at this for a long moment in the way one stares at something one made that works, and experienced the specific species of pride that comes not from elegance but from completion.
+
+"It's done," he said.
+
+Sir Reginald knocked the coffee off the desk.  Not out of malice.  Out of a principled refusal to allow the programmer an uncontested moment.
+
+As of this writing, NanoLang has been used in production by exactly one person, who also wrote it.  Sir Reginald continues to withhold his endorsement across the chronicle, citing "procedural concerns," "insufficient tuna," "a general atmosphere of hubris," and, most recently, "aviation."
+
+## Task tracking
+
+I use [GitHub Issues](https://github.com/jordanhubbard/nanolang/issues) for all
+new and resumed work. My [tracking skill](skills/github-issue-tracking/SKILL.md)
+defines ownership, evidence and closure; my roadmap retains product ordering.

@@ -1,0 +1,891 @@
+[//]: # (Author: Christoph P. Neumann)
+[//]: # (Title: Awesome Abschlussarbeit Informatik/KI)
+[//]: # (Language: de-DE)
+[//]: # (Licence: CC BY 4.0)
+[//]: # (Kurztitel: Werkzeuge » Abschlussarbeiten)
+[//]: # (Lemma: tools-thesis)
+
+# Awesome Abschlussarbeit (Informatik/KI)
+
+[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+[![Made With Love](https://img.shields.io/badge/Made%20With-Love-pink.svg)](https://github.com/chetanraj/awesome-github-badges)
+[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/donate/?hosted_button_id=QTDJ2JA58ZM9L)
+[![Support on Ko‑fi](https://img.shields.io/badge/Donate-ko--fi-%23FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/cyberlytics)
+[![Buy Me A Coffee!](https://img.shields.io/badge/Donate-buymeacoffee-%23FFDD00?logo=buymeacoffee)](https://www.buymeacoffee.com/cyberpetaneuron)
+
+Dies ist ein digitaler Ressourcen-Pool für Abschlussarbeiten in der Informatik/KI (kostenlose Lernmaterialien) sowie eine Tool-Sammlung. Es gibt von mir die weiteren Schwesterseiten im Kontext Informatik/KI: [Digitaler Ressourcen-Pool Informatik/KI](https://github.com/cyberlytics/awesome-basics), [Werkzeuge » Software-Engineering](https://github.com/cyberlytics/awesome-software-engineering-tools), [Werkzeuge » Big Data und Cloud Computing für AI](https://github.com/cyberlytics/awesome-bdccai-tools) und [Agentic Engineering](https://github.com/cyberlytics/awesome-6GL).
+
+Hinweise:
+
+- Die Werkzeuge sind im Zweifelsfall für Studierende und private Nutzung, weniger für Unternehmen oder Freelancer (wegen der Lizenzbedingungen/EULA)
+- Entstanden an der [OTH Amberg-Weiden](https://www.oth-aw.de/cpn), welche für ein paar Einträge entsprechend den Kontext bildet.
+- Die kostenlosen Werkzeuge sind nicht immer Best-in-Class im Vergleich zu kostenpflichtigen/„(€)“ Alternativen, dennoch bleiben kostenpflichtige Angebote hier meist Out-of-Scope
+- Ein Windows-zentrischer Ersteindruck durch die Chocolatey-Referenzen kann leicht täuschen, denn die kostenlosen oder quelloffenen Tools gibt es i.d.R. auch für Linux oder macOS mittels snap/flatpak/brew/etc.
+- Empfehlung zu [Chocolatey](https://chocolatey.org/install): **choco feature enable -n useRememberedArgumentsForUpgrades**
+
+**Table of Contents**
+
+<!-- toc -->
+
+- [Grundwissen Abschlussarbeit (Informatik/KI)](#grundwissen-abschlussarbeit-informatikki)
+- [Literaturrecherche & Wissensaufbau](#literaturrecherche--wissensaufbau)
+- [Portable Apps](#portable-apps)
+- [Generative KI](#generative-ki)
+- [LaTeX & PDF](#latex--pdf)
+- [Markdown Publishing](#markdown-publishing)
+- [Schreiben](#schreiben)
+- [Anti-Prokrastination](#anti-prokrastination)
+- [Translations](#translations)
+- [Evaluation-Werkzeuge](#evaluation-werkzeuge)
+- [Management & Agile Methoden](#management--agile-methoden)
+- [Kollaborative Werkzeuge](#kollaborative-werkzeuge)
+- [Zeichnen](#zeichnen)
+- [Presentations](#presentations)
+- [Poster](#poster)
+- [Plug-Ins / Add-Ins / Extensions](#plug-ins--add-ins--extensions)
+- [Bildmaterialien](#bildmaterialien)
+- [Mathe](#mathe)
+- [Job-Bewerbungen](#job-bewerbungen)
+- [Kostenlose Alternativen](#kostenlose-alternativen)
+- [Android Apps](#android-apps)
+- [Bonus: 3D-Printing](#bonus-3d-printing)
+- [Appendix: More Free Student Stuff](#appendix-more-free-student-stuff)
+- [Footer](#footer)
+
+<!-- tocstop -->
+
+## Grundwissen Abschlussarbeit (Informatik/KI)
+
+\[ Zum Ausgleich **heterogener Vorkenntnisse aus den Bachelorseminaren** bzw. Forschungsseminaren: \]
+
+### Handwerkszeug: Schreiben
+
+- Bewertungskriterien:
+	- [**Neumannscher Kriterienkatalog** für wissenschaftliche Abschlussarbeiten](http://www.cyberlytics.eu/theses/criteria/)
+	- [**ACM** Kriterienkatalog für wissenschaftliche Arbeiten](https://dl.acm.org/journal/dgov/reviewer-guidelines#:~:text=Decision%20criteria)
+	- [**IEEE** Kriterienkatalog für wissenschaftliche Arbeiten](https://ieeeaccess.ieee.org/about-ieee-access/announcements/reviewerbestpractices_ieeeaccess/#Whatmakesagoodqualityreview)
+- Studentische Vorab-Vorbereitungen:
+	- (s. oben: Lernen Sie **10-Finger-schreiben**)
+	- Meine [**Erste-Hilfe**-Hinweise](https://www.oth-aw.de/neumann/thesis-prep/#erste-hilfe) für Abschlussarbeiten
+- Scribbr-Einführungen zu **[Bachelorarbeiten](https://www.scribbr.de/category/anfang-abschlussarbeit/)**, **[Masterarbeiten](https://www.scribbr.de/category/masterarbeit/)**, **[Dissertationen](https://www.scribbr.de/category/dissertation-doktorarbeit/)**
+- Exposé/Anbahnung:
+	- Einführung: [**Exposé** gliedern](https://www.scribbr.de/aufbau-und-gliederung/expose-bachelorarbeit/)
+	- Archivieren: **[Journal of Brief Ideas](https://beta.briefideas.org/)** (inkl. DOI per Zenodo)
+- Knigge: Die Abschlussarbeit ist meist der erste Kontakt zur korrekten Verwendung von akademischen Graden
+	- Kurzübersicht des Lektorats Unger: [Akademische Grade: Abkürzungen und Verwendung in Anschrift und Anrede](https://www.unker.com/de/akademische-titel)
+	- Umfassender Leitfaden: [Ratgeber für Anschriften und Anreden](https://www.protokoll-inland.de/SharedDocs/downloads/Webs/PI/DE/Allgemeines/Anschriften.html) von dem Bundesministerium des Innern
+	- Hinweis: Diplom, Bachelor und Master sind keine akademischen Titel, nur akademische Grade.
+		- Empfehlung: Diplom, Bachelor und Master gehören eher nicht auf Visitenkarten oder in E-Mail-Signaturen (bzw. Anschrift oder schriftliche Anrede), selbst wenn Sie es de jure schreiben könnten; es gilt in Akademikerkreisen als lächerlich.
+- Bücher als Einstieg in wissenschaftliche Abschlussarbeiten:
+	- Kostenlos: Buch [**Wissenschaftliches Arbeiten** - Methodenwissen für Wirtschafts-, Ingenieur- und Sozialwissenschaftler](https://link.springer.com/book/10.1007/978-3-662-62548-4) (2021) von Bernd Heesen
+	- €: Buch [**Studienarbeiten**: Ein Leitfaden … **am Beispiel Informatik**](https://www.amazon.de/dp/3728138118/) (2017) von Marcus Deiniger et al. ⭐
+- Wissenschaftliches Handwerkszeug:
+	- **[How to read a paper](https://web.stanford.edu/class/cs245/readings/how-to-read-a-paper.pdf)** ⭐
+	- [Berkeley **Understanding Science**](http://www.understandingscience.org/)
+	- Literaturrecherche: [Methoden](https://maelphes.github.io/syslitcom/methods.html)
+		- Systematische Literaturrecherche: [A compendium for systematic literature searching](https://maelphes.github.io/syslitcom/), [Preferred Reporting Items for Systematic reviews and Meta-Analyses (PRISMA)](https://www.prisma-statement.org), [TARCIS statement](https://www.bmj.com/content/385/bmj-2023-078384)
+	- Lesetechniken: **[PQ4R](https://www.google.com/search?q=PQ4R)** (Preview, Questions, Read, Reflect, Recite, Review), bzw. deren Vorgänger **[SQ3R](https://www.teachsam.de/arb/arb_les_strat_2.htm)** (Survey, Question, Read, Recite und Review)
+	- Schnelllesen: (€) Buch **[Speed Reading](https://www.amazon.de/dp/3868828710/)** (2017 | [Orig: 2006](https://books.google.de/books?id=HpvjGZ_Ff60C)) von Tony Buzan
+		- Verwandte Konzepte:
+			- [RSVP](https://elvers.us/perception/rsvp/) (= Rapid Serial Visual Presentation) von [Prof. Marry Potter](https://web.archive.org/web/20201117020411/https://bcs.mit.edu/users/mpottermitedu))
+			- [Spritz](https://www.technology.org/2014/03/19/spritz-speed-reading-apps-prose-cons/) = RSVP + ORP (= Optimal Recognition Point) ([TED-Video](https://www.youtube.com/watch?v=j7q7s-bjIVg))
+		- Training-App: [Reading Trainer](https://readingtrainer.com/)
+	- Wiss. Schreiben: **[IMRaD](https://en.wikipedia.org/wiki/IMRAD)** | [Elsevier **Einführung in wiss. Schreiben**](https://www.elsevier.com/connect/11-steps-to-structuring-a-science-paper-editors-will-take-seriously) ⭐
+		- Cheat Sheets: [Structure of a Research Paper: IMRaD Format](https://libguides.umn.edu/StructureResearchPaper), [IMRaD Cheat Sheet](https://www.cmu.edu/student-success/other-resources/handouts/comm-supp-pdfs/imrd-examples.pdf)
+		- Wiss. Publikation: [WASP (Write a Scientific Paper): Structuring a scientific paper](https://www.sciencedirect.com/science/article/pii/S0378378218305929)
+	- Wiss. Methoden: [Awesome **PhD**](https://github.com/macoj/phd) | [A three cycle view of **design science research**](https://community.mis.temple.edu/seminars/files/2009/10/Hevner-SJIS.pdf) (2007) von Alan R. Hevner (Zur DSR auch: [Wikipedia](https://en.wikipedia.org/wiki/Design_science_(methodology)))
+	- Citation Metrics: **[Impact Factor](https://en.wikipedia.org/wiki/Impact_factor)** | [Autorenmetriken (**h-Index, g-Index**, …)](http://www.harzing.com/pophelp/metrics.htm) | Paper [ISI Web of Science versus Google Scholar](http://www.int-res.com/articles/esep2008/8/e008p061.pdf)
+	- Englisch (verwende en_US für Informatik)
+		- (€:) Buch **[English for Writing Research Papers](https://www.amazon.de/dp/B008I37B80/)** (2011) von Adrian Wallwork
+		- Kindergartenfehler: [Saxon Genitive](https://www.wallstreetenglish.com/exercises/english-possessives-the-saxon-genitive)
+		- Englische Titel: per [Chicago Manual of Style (**CMOS**)](https://en.wikipedia.org/wiki/Title_case) die Regeln für Groß-/Kleinschreibung in engl. Titeln ⚠️
+			- Werkzeug: **[Capitalize My Title](https://capitalizemytitle.com/style/Chicago/)** ⭐
+	- Anführungszeichen: [Wikipedia](https://de.wikipedia.org/wiki/Anf%C3%BChrungszeichen) sowie Webartikel von [onlineprinters](https://www.onlineprinters.de/magazin/anfuehrungszeichen/)
+		- {DE: 99/66 + unten/oben} vs. {en-US: 66/99 oben/oben} vs. {en-UK: 6/9 oben/oben}
+	- Zitier-Stiele: bspw. [IEEE **Citation Guidelines**](https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf), [**APA** Basic Principles of Citation](https://apastyle.apa.org/style-grammar-guidelines/citations/basic-principles)
+	- Weiterführende Quellen: **[Awesome PhD](https://github.com/macoj/phd)**
+- Korrekturzeichen: **[DIN 16 511](http://www.cleverprinting.de/images/korrekturzeichen_1.png)**
+- Geschlechtersensible Formulierungen: OTH **[Fair formuliert](https://www.oth-aw.de/files/oth-aw/Services/Schreibwerkstatt/Leitfaden_Fair_Formuliert.pdf)** | **[geschickt gendern](https://geschicktgendern.de/)** ⭐
+	- Weitere nennenswerte Konzepte: [Phettberg-Methode](https://www.bpb.de/shop/zeitschriften/apuz/geschlechtergerechte-sprache-2022/346085/entgendern-nach-phettberg/)
+- Inklusive Formulierungen: ACM [Alternatives List for Charged Terminology in the Computing Profession](https://www.acm.org/diversity-inclusion/words-matter)
+- Kodex: [Leitlinien zur Sicherung **guter wissenschaftlicher Praxis**](https://www.dfg.de/download/pdf/foerderung/rechtliche_rahmenbedingungen/gute_wissenschaftliche_praxis/kodex_gwp.pdf) der DFG
+	- [IEEE Publishing Ethics](https://journals.ieeeauthorcenter.ieee.org/become-an-ieee-journal-author/publishing-ethics/guidelines-and-policies/submission-and-peer-review-policies/)
+- Authorship Criteria: **[KU Leuven](https://research.kuleuven.be/en/integrity-ethics/integrity/practices/publication-and-authorship/authorship#section-1)**, [ACM](https://www.acm.org/publications/policies/new-acm-policy-on-authorship), [IEEE](https://journals.ieeeauthorcenter.ieee.org/become-an-ieee-journal-author/publishing-ethics/ethical-requirements/#authorship), [Nature](https://www.nature.com/nature-portfolio/editorial-policies/authorship)
+	- Contributor Role Taxonomy: [CRediT](https://credit.niso.org/)
+- Generative KI in wissenschaftlichen Publikationen? vgl. **[ACM Policy on Authorship](https://www.acm.org/publications/policies/new-acm-policy-on-authorship)**!
+	- Für die Abschlussarbeit dürfen Sie keine generative KI verwenden, weil diese notengebend ist. Ich verbiete Ihnen das. Meine Policy.
+	- Während der Arbeit dürfen Sie für die Erstellung einer ernsthaften Publikation trotzdem generative KI einsetzen, unter Beachtung der notwendigen Sorgfalt und den Policies von ACM, IEEE und Springer zum Einsatz generativer KIs.
+	- Nach Abgabe Ihrer Abschlussarbeit dürfen Sie generative KI einsetzen, um sich die Abschlussarbeit zusammenzufassen zu lassen und so einen Erstentwurf für einen OTH-Forschungsbericht (ca. 2500 Wörter) oder einen Technischen Report (ca. 3000 bis 4500 Wörter) zu generieren, falls diese Beiträge nicht vorher schon erstellt wurden.
+- Lerntheorie: Sechsstufige **[Bloomsche Taxonomie der Lernziele](https://www.bloomstaxonomy.net/)** im kognitiven Bereich
+- DISCLAIMER: **[typst](https://typst.app/) vs. LaTeX**? Mit typst gibt es eine moderne, überlegene Typesetting-Variante zu latex, die aber technisch völlig eigenständig ist. (siehe [Werkzeuge-Schwesterseite](https://github.com/cyberlytics/awesome-thesis-tools#latex--pdf))
+	- "This being said …" jetzt zurück zum wohlbekannten LaTeX:
+	- LaTeX-Skills: **[A simple guide to LaTeX – Step by Step](https://latex-tutorial.com/tutorials/)** | **[Wikibooks: LaTeX](https://en.wikibooks.org/wiki/LaTeX)** | Overleaf **[Learn LaTeX in 30 Minutes](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)** | **[LearnLaTeX](https://www.learnlatex.org/)**
+	- LaTeX-Software: siehe [Werkzeuge-Schwesterseite](https://github.com/cyberlytics/awesome-thesis-tools#latex--pdf) ⭐ (LaTeX-Editor, PDF-Viewer, Literaturverwaltung, …)
+	- Korrekte Anführungszeichen ⚠️: lese **[Quotation Marks](https://latex.silmaril.ie/formattinginformation/quotes.html)** von Peter Flynn oder **[Formatting](https://www.andy-roberts.net/latex/formatting/)** von Andrew Roberts bzw. verwende **[csquotes](https://tex.stackexchange.com/tags/csquotes/info)** mit **\\enquote{..}** ⭐
+	- Wichtige Einordnung: [The **TeX family tree**: LaTeX, **pdfTeX**, **XeTeX**, LuaTeX and ConTeXt](https://de.overleaf.com/learn/latex/Articles/The_TeX_family_tree%3A_LaTeX%2C_pdfTeX%2C_XeTeX%2C_LuaTeX_and_ConTeXt) ⭐
+	- (Video-Kurs:) freeCodeCamp **[LaTeX – Full Tutorial for Beginners](https://www.youtube.com/watch?v=ydOTMQC7np0)** (2023) von Michelle Krummel
+	- OTH-intern: Moodle-Kurs **[LaTeX fürs Studium](https://moodle.oth-aw.de/course/view.php?id=18)** (Selbsteinschreibeschlüssel: "latex")
+	- KOMA-Script: **[scrguide](https://komascript.de/~mkohm/scrguide.pdf)**
+	- Common Anti-Patterns: enthalten in [An **essential guide** to LATEX2e usage](http://mirrors.ctan.org/info/l2tabu/english/l2tabuen.pdf) ⭐
+	- LaTeX-Humor: [Twelve LaTeX packages to get your paper accepted](https://andreas-zeller.info/2017/01/13/twelve-latex-packages-to-get-your-paper.html) von Andreas Zeller et al.
+- BibTeX: **[bibtex vs. biber and biblatex vs. natbib](https://tex.stackexchange.com/questions/25701/bibtex-vs-biber-and-biblatex-vs-natbib)** ⭐ | **[bibtex.org](http://www.bibtex.org/)**
+	- **[Tame the BeaST](http://tug.ctan.org/info/bibtex/tamethebeast/ttb_en.pdf)**
+	- Common Anti-Patterns: **[How to not mess up your bibliographies with Bibtex](https://clauswilke.com/blog/2015/10/02/bibtex/)** (2015) von Claus Wilke ⭐
+- Word:
+	- Word für Abschlussarbeiten: [**Kapitel 6** aus dem Buch **Wissenschaftliches Arbeiten**](https://link.springer.com/chapter/10.1007/978-3-662-62548-4_6) von Bernd Heesen
+	- Word für Fortgeschrittene: [LearnFree.org **Word Tips**](https://edu.gcfglobal.org/en/word-tips/) | [Microsoft **Word for Windows training**](https://support.microsoft.com/en-us/office/word-for-windows-training-7bcd85e6-2c3d-4c3c-a2a5-5ed8847eae73)
+- Open Science
+	- Zitierbare Software? **[Zenodo](https://about.zenodo.org/)** oder [citation.**cff**-Dateien](https://citation-file-format.GitHub.io/)
+- Paper Submission?
+	- Conference (Int'l Peer-rev'd): [International Conference on **Cloud Computing**, GRIDs, and Virtualization](https://www.iaria.org/conferences/CLOUDCOMPUTING.html)
+		- Eine Research Community auch für studentische Publikationen; explizit Beginner-friendly & Industry-friendly
+		- Es gibt ein LaTeX-Vorlage von mir: **[iaria.cls](https://ctan.org/pkg/iaria)** (vollständige IARIA [formating](https://www.overleaf.com/latex/templates/iaria/hxyjztwvpjkf) rules, allerdings nur pdflatex+biber, dafür inkl. IARIA citation style) und **[iaria-lite.cls](https://ctan.org/pkg/iaria-lite)** (mit den meisten der IARIA formatting rules, dafür beliebiges tex-Tooling, aber beim citation formatting nur mit IEEE-style und ohne IARIA-style) sowie ein Overleaf-Template als [Minimal Working Example (MWE)](https://www.overleaf.com/project/6603e95f2a0ded628482ed78)
+	- Journal (Int'l Peer-rev'd): [IEEE Access](https://ieeeaccess.ieee.org/) ([Beispiel](https://ieeexplore.ieee.org/document/10648683/)), [IntechOpen](https://www.intechopen.com/journals) ([Beispiel](https://www.intechopen.com/chapters/1195342))
+	- MINT-Hochschuldidaktik (DE Peer-rev'd): [MINT-Symposium](https://mint-symposium.de/) ([Beispiel](https://doi.org/10.57825/repo_in-6449))
+
+### Handwerkszeug: Getting Sh\*t Done
+
+- (s.oben: Werkzeug-**Basiswissen**: [**MIT**'s The **Missing Semester** of Your CS Education](https://missing.csail.mit.edu/))
+- Betriebssystemadministration und Shell-Scripting
+	- Windows: **[Windows Systemadministration](https://docs.microsoft.com/de-de/learn/paths/windows-server-deployment-configuration-administration/)** | [**PowerShell** Einführung](https://docs.microsoft.com/de-de/learn/modules/introduction-to-powershell/1-introduction) | [Windows Services Manager (**services.msc**)](https://www.thewindowsclub.com/open-windows-services)
+		- Windows Subsystem for Linux (WSL): [Ubuntu](https://ubuntu.com/wsl) | [Distribution Overwiew](https://github.com/sirredbeard/Awesome-WSL#supported-distributions) | [Awesome WSL](https://github.com/sirredbeard/Awesome-WSL)
+		- PowerShell:
+			- Terminologie: Legacy powershell.exe = bis PowerShell 5.1 | Modern **pwsh**.exe = ab PowerShell 6
+			- PowerShell [Quotation Rules](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules), [About Parsing](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_parsing), [Special Characters](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_special_characters), [pwsh-Command is removing quotation marks](https://stackoverflow.com/questions/59036580/pwsh-command-is-removing-quotation-marks)
+	- Linux: **[Linux Systemadministration](https://www.freecodecamp.org/news/linux-server-course-system-configuration-and-operation/)** | [Linux **Command-Line**](https://www.freecodecamp.org/news/command-line-for-beginners/)
+		- [zsh](https://grml.org/zsh/) | [powerlevel10k](https://github.com/romkatv/powerlevel10k)
+		- [Getting Started with PowerShell in Linux](https://www.tecmint.com/install-powershell-in-linux/)
+		- Webartikel [How I setup my terminal for max productivity](https://read.highgrowthengineer.com/p/how-i-setup-my-terminal-for-max-productivity)
+- **SSH**: [Linux](https://zah.uni-heidelberg.de/it-guide/ssh-tutorial-linux) | [Windows](https://www.makeuseof.com/tag/4-easy-ways-to-use-ssh-in-windows/) ⚠️
+	- [How to Set up SSH Tunneling (Port Forwarding)](https://linuxize.com/post/how-to-setup-ssh-tunneling/)
+- Virtualisierung: [IBM **What is virtualization?**](https://www.ibm.com/cloud/learn/virtualization-a-complete-guide) | [IBM **What are hypervisors?**](https://www.ibm.com/cloud/learn/hypervisors)
+	- VirtualBox: [Download](https://www.virtualbox.org/wiki/Downloads) [**First Steps**](https://www.virtualbox.org/manual/ch01.html)
+	- Image-Formate: [OVF](https://en.wikipedia.org/wiki/Open_Virtualization_Format) (bspw. via VirtualBox „Import…“) sowie [VDI, VMDK, VHD, HDD](https://docs.oracle.com/en/virtualization/virtualbox/6.0/user/vdidetails.html)
+	- Ready-to-Use Image Repos:
+		- Windows: [legal **free current Windows** virtual machine images](https://developer.microsoft.com/de-de/windows/downloads/virtual-machines/) | [alte Abandonware-Versionen von Windows](http://virtualdiskimages.weebly.com/) ([FAQ](http://virtualdiskimages.weebly.com/faq.html))
+		- Linux: **[OSBoxes](https://www.osboxes.org/)** ([FAQ](https://www.osboxes.org/faqs/)) | **[Linux VM Images](https://www.linuxvmimages.com/)** ([HowTo](https://www.linuxvmimages.com/how-to-use/), [Passwords](https://www.linuxvmimages.com/how-to-use/vm-image-password/))
+- **Docker**: [**Docker Labs** Tutorials and Free Resources](https://dockerlabs.collabnix.com/) | **[Getting Started with Docker](https://serversforhackers.com/c/getting-started-with-docker)** ⚠️
+	- Windows: [Docker Desktop **WSL 2** backend](https://docs.docker.com/desktop/windows/wsl/)
+	- Schlanker und Sicherer: **[Building Docker Images The Proper Way](https://martinheinz.dev/blog/42)** ⚠️
+	- Minibuch Docker (aus einer Java-Perspektive): [Docker Containerization Cookbook](https://www.javacodegeeks.com/minibook/docker-containerization-cookbook) von Java Code Geeks
+- **git**: [git - **the simple guide**](https://rogerdudler.GitHub.io/git-guide/) ⚠️
+	- Alternative Tutorials: **[About Git](https://docs.github.com/en/get-started/using-git/about-git)** | **[Learn Git](https://www.codecademy.com/learn/learn-git)** | **[Git it](https://github.com/jlord/git-it-electron)** | **[Oh My Git!](https://ohmygit.org/)** | **[Git Immersion](https://gitimmersion.com/)** | **[Learn Git Branching](https://learngitbranching.js.org/?locale=de_DE)** | [**Atlassian** Git Tutorial](https://www.atlassian.com/git/tutorials/what-is-git)
+	- Vortragsvideo **[Version Control (git)](https://missing.csail.mit.edu/2020/version-control/)** am MIT aus der bereits erwähnten Reihe [The Missing Semester of Your CS Education](https://missing.csail.mit.edu/)
+	- Kostenlose Bücher: **[Git Magic](http://www-cs-students.stanford.edu/~blynn/gitmagic/)** | **[Pro Git](https://git-scm.com/book/en/v2)**
+	- (Anm.: Default-Branch „master“ wurde mittlerweile zu „main“!)
+	- Cheatsheet: bspw. **[Git Tricks](https://devhints.io/git-tricks)**
+	- Branching-Modell: bspw. **[gitflow](https://nvie.com/posts/a-successful-git-branching-model/)** oder **[Trunk-Based-Development](https://trunkbaseddevelopment.com/)**
+	- Best Practices: Webartikel [**Best practices** for using Git](https://deepsource.com/blog/git-best-practices/)
+	- Nennenswert: [Get up to speed with **partial clone** and shallow clone](https://GitHub.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/) (git clone --filter=blob:none «url»)
+	- Namensgenerator: **[namelix](https://namelix.com/)** (für Bachel-/Master-/PhD-Projekte, OSS-Projekte, etc.)
+- Markdown: [Basic Syntax](https://www.markdownguide.org/basic-syntax/) | CommonMark [Learn Markdown in 60 Seconds](https://commonmark.org/help/)
+	- History: [Wikipedia](https://en.wikipedia.org/wiki/Markdown#History)
+	- Standardisierung: [CommonMark](https://commonmark.org/) ([Spec](https://spec.commonmark.org/current/)) | in CommonMark leider fehlend? u.a. Tabellen und Fußnoten
+	- GitHub-Flavored Markdown (GFM): freeCodeCamp [Learn GFM Syntax and Formatting](https://www.freecodecamp.org/news/github-flavored-markdown-syntax-examples/), u.a. [emoji](https://www.freecodecamp.org/news/github-flavored-markdown-syntax-examples/#heading-using-emoji), [Alerts](https://www.freecodecamp.org/news/github-flavored-markdown-syntax-examples/#heading-alerts) und [Collapsed Section](https://www.freecodecamp.org/news/github-flavored-markdown-syntax-examples/#heading-creating-a-collapsed-section)
+	- Weiterführend: [Awesome Markdown](https://github.com/mundimark/awesome-markdown)
+- **Testing**: siehe unten ⚠️
+- **Debugging**: Vortragsvideo [**Debugging** and Profiling](https://missing.csail.mit.edu/2020/debugging-profiling/) am MIT aus der bereits erwähnten Reihe [The Missing Semester of Your CS Education](https://missing.csail.mit.edu/)
+- Backups: Vortragsvideo **[Backups](https://missing.csail.mit.edu/2019/backups/)** am MIT aus der bereits erwähnten Reihe [The Missing Semester of Your CS Education](https://missing.csail.mit.edu/)
+- (Und natürlich meine **[Tools](https://github.com/cyberlytics/awesome-thesis-tools#presentations)**-Seite)
+
+
+## Literaturrecherche & Wissensaufbau
+
+- [Google **Scholar**](https://scholar.google.com) | **[ResearchGate](https://www.researchgate.net/)** | **[Semantic Scholar](https://www.semanticscholar.org)**
+	- DE: [**DBLP** Computer Science Bibliography](https://dblp.org/) | [**BASE**: Bielefeld Academic Search Engine](https://www.base-search.net/)
+	- Weitere Scholar-Alternativen: [Scopus](https://www.scopus.com/), [Lens.org](https://www.lens.org/), [JSTOR](https://www.jstor.org/)
+[OpenAlex](https://openalex.org/)
+		- Indirekte Alternativen: [Scispace](https://scispace.com/), [Semantic Scholar](https://www.semanticscholar.org/), [ResearchGate](https://www.researchgate.net/)
+	- Scholar-Alternativen mit API: [DBLP API](https://dblp.org/faq/How+to+use+the+dblp+search+API.html) ([DBLP SPARQL](https://sparql.dblp.org/)), [BASE API](https://api.base-search.net/), [Scopus API](https://dev.elsevier.com/api_docs.html), [Lens API](https://docs.api.lens.org/), [JSTOR programmatic access](https://labs.jstor.org/developers/), [OpenAlex API](https://docs.openalex.org/how-to-use-the-api/api-overview)
+		- Indirekte Alternativen mit API: [Semantic Scholar](https://www.semanticscholar.org/product/api) (NOT: Scispace, ResearchGate)
+- Fortgeschrittene Websuchen: Google [Advanced Search](https://www.google.com/advanced_search) (Liste of [Search Operators](https://ahrefs.com/blog/google-advanced-search-operators/)) | Google [Advanced Image Search](https://www.google.com/advanced_image_search)
+	- Clean Google Search result URLs: [URL clean](https://urlclean.com/)
+- KI-gestützte Literaturrecherche: [ResearchRabbit](https://www.researchrabbit.ai/), [Open Knowledge Maps](https://openknowledgemaps.org/), [Connected Papers](https://www.connectedpapers.com), [Consensus](https://consensus.app/search/), uvm.
+	- Weitere Referenzen: [Georgetown Univ.-Bib. Liste](https://guides.library.georgetown.edu/ai/tools)
+- Drei Informatik-Primärquellen: **[SpringerLink](https://link.springer.com/)**, **[ACM](https://dl.acm.org/)**, **[IEEE](https://ieeexplore.ieee.org/Xplore/home.jsp)**
+- **[Publish or Perish](https://harzing.com/resources/publish-or-perish)**: Desktop Applikation mit intergrierten Autoren-Metriken
+- Suche in mehreren PDFs (ohne Indexierung)
+	- CLI: **[ripgrep-all](https://github.com/phiresky/ripgrep-all)** \[**choco install ripgrep-all**\], **[SeekFast](https://seekfast.org/download-seekfast)**
+	- Alternative: unten im Abschnitt [Kostenlose Alternativen](#kostenlose-alternativen) die Abschnitte "Desktop Search Engine" und "Document Management Systeme"
+- Fancy Cloud-/AI-Stuff (€): **[scite\_](https://scite.ai/)**, **[Iris.ai](https://the.iris.ai/)**, [DistillerSR](https://www.distillersr.com/)
+- Anti-Paywall
+	- Ausgangsbasis: Google Scholar, etc. pp., dort kein PDF sondern nur Link des Publishers, dort teuer
+	- Rechtlicher Hintergrund: Webartikel [Was dürfen Sie nach Urheberrecht wirklich kopieren?](https://www.kopierermiete.de/news/18/04/was-duerfen-sie-nach-urheberrecht-wirklich-kopieren)
+	- WICHTIG Anti-Paywall #1: Recherchieren Sie aus dem Netzwerk Ihrer Hochschule heraus (VPN) ⚠️
+		- Die [Hochschul-Bibliothek](https://www.oth-aw.de/hochschule/ueber-uns/einrichtungen/bibliothek/suchen-und-finden/) schließt Verträge mit den Verlagen, Literaturdatenbanken, elektronischen Zeitschriften und verschiedenen E-Book-Portalen
+		- Der Zugang, bspw. **SpringerLink** ✔️ und **Hanser ✔️**, ist i.d.R. IP-basiert, verwenden Sie deswegen VPN wie von der [Hochschul-Bibliothek](https://www.oth-aw.de/hochschule/ueber-uns/einrichtungen/bibliothek/suchen-und-finden/digitale-bibliothek/) beschrieben
+		- Größte Lücke an der OTH-AW in Hinsicht _Informatik_-Literaturrecherche: Sie haben **KEINEN Zugang zu IEEE ❌ und ACM** ❌ (Warum? Gilt als zu teuer für uns. 😞)
+	- WICHTIG Anti-Paywall #2: Kostenlose PrePrint-Fassungen eruieren 1. **Fragen Sie den Erstautor** oder die Erstautorin per **E-Mail** ⚠️ oder 2. per **ResearchGate** ⚠️ nach einer (Preprint-)Fassung. **Nur Mut**!
+	- Anti-Paywall #3: Bücher und Publikationen gibt es auch als Papier, sogar kostenlos In der Bib Ihres Vertrauens 😦
+		- Und kein „Mimimi“, an dieser Stelle! Fernleihe gibt es aus, fei echt.
+	- Anti-Paywall #4: Legale Umgehung
+		- Indirektes Entfernen, wirksam für „Soft-Paywalls“ mittels Popup/Overlay: **[readermode](https://readermode.io/)** ([Chrome](https://chrome.google.com/webstore/detail/reader-mode/llimhhconnjiflfimocjggfjdlmlhblm/))
+		- Für wissenschaftliche Fachartikel: **[unpaywall.org](https://unpaywall.org/)** ([Chrome](https://chrome.google.com/webstore/detail/unpaywall/iplffkdpngmdjhlpjmppncnlhomiipha/), [Firefox](https://addons.mozilla.org/firefox/addon/unpaywall/))⚠️ sowie [Open Access Button](https://openaccessbutton.org/), [ScienceOpen](https://www.scienceopen.com/) und [CORE](https://scolary.com/tools/core) (= COnnecting REpositories)
+		- Für journalistische Webartikel: **[12ft.io](https://12ft.io/)**
+	- Rechtlich kritische Umgehung: Themenkomplex [Guerillia Open Access](https://archive.org/stream/GuerillaOpenAccessManifesto/Goamjuly2008_djvu.txt) und [Schattenbibliothek](https://www.google.com/search?q=schattenbibliothek) (Sci-Hub, Library Genesis, b-ok / Z-Library, Anna’s Archive und abgeschaltete Formen wie Bookfi)
+		- [Rechtliche Einordnung](https://de.wikipedia.org/wiki/Schattenbibliothek#Rechtliche_Einordnung)
+		- Webartikel [Schattenbibliotheken: Ein Krisensymptom der Wissenschaft](https://irights.info/artikel/schattenbibliotheken-ein-krisensymptom-der-wissenschaft/28663)
+		- Journalartikel [Who's downloading pirated papers? Everyone](https://www.science.org/doi/10.1126/science.352.6285.508)
+	- **Zusammenfassung** Ihres Informatik-Standard-Methodenkoffers zur **Literaturbeschaffung**:
+		- ⚠️: **Google Scholar, VPN: SpringerLink/Hanser, höfliche E-Mail-Nachfragen, ResearchGate, Bib besuchen (fei echt), unpaywall.org**
+- Read-it-Later
+	- (Remark: Pocket-like! But Pocket shut down in 2025.)
+	- Cloud: [Raindrop](https://raindrop.io/), [Notion](https://www.notion.com)
+	- Web/Self-Hosted: [karakeep](https://karakeep.app/), [shiori](https://github.com/go-shiori/shiori)
+	- (Außerdem die OneNote-Alternativen unter [Kostenlose Alternativen](#kostenlose-alternativen), wie Evernote)
+- Persönliches Wissensmanagement / Zettelkasten / Notizen
+	- **[Obsidian](https://obsidian.md/)** \[**choco install obsidian**\]: Zettelkasten und Notizen ([Obsidian **Video**-Tutorial: **Zettelkasten** für Beginner](https://www.youtube.com/watch?v=svqJ8BUh8mU))
+	- **[Notion](https://www.notion.so/)** \[**choco install notion**\]: Notizen und Kollaboration
+	- (Gegenüberstellung von [Obsidian vs. Notion](https://mattgiaro.com/zettelkasten-obsidian-notion/), aus der Perspektive Zettelkasten)
+	- Vgl. ggf. zusätzlich die OneNote-Alternativen im Abschnitt [Kostenlose Alternativen](#kostenlose-alternativen)
+- [Speed Reading](https://www.amazon.de/dp/3868828710/) / Schnelllesen / [RSVP](https://elvers.us/perception/rsvp/) / [Spritz](https://www.technology.org/2014/03/19/spritz-speed-reading-apps-prose-cons/):
+	- Browser bookmarklet: **[jetzt](https://ds300.github.io/jetzt/#install)** ⭐
+	- CLI/Console: [speedread](https://github.com/pasky/speedread)
+- Weiterführende Quellen: [Tools for Academic Research](https://tools.kausalflow.com/tools/) ([lineare Variante](https://github.com/emptymalei/awesome-research))
+
+## Portable Apps
+
+Disclaimer: Einsatz kann in Unternehmen verboten sein, selbst wenn diese rein technisch sogar ausführbar sind!
+
+- Portable Apps Repositories:
+	- [PortApps.io](https://portapps.io/apps/)
+	- [Portable Freeware](https://www.portablefreeware.com/)
+
+## Generative KI
+
+siehe Schwesterseite [awesome-6GL » Generative KI-Werkzeuge](https://github.com/cyberlytics/awesome-6GL#generative-ki-werkzeuge)
+
+## LaTeX & PDF
+
+- DISCLAIMER: **[typst](https://typst.app/) vs. LaTeX**? Mit typst gibt es eine moderne Typesetting-Variante zu latex, die aber technisch völlig eigenständig ist.
+	- Überlegen Sie ggf. Publikationen oder Abschlussarbeiten in typst zu schreiben; nur fehlt dann ggf. die einfache Vorlage (aber mind. [IEEE](https://typst.app/universe/package/charged-ieee/) gibt es sowie erste Drafts zu [ACM](https://typst.app/universe/package/clean-acmart))
+	- Mit [touying](https://touying-typ.github.io/) gibt es eine gute Altternative zu latex-beamer in typst
+	- Weiterführende Quellen: [Typst Examples Book](https://sitandr.github.io/typst-examples-book/book/), [Awesome Typst](https://github.com/qjcg/awesome-typst)
+	- "This being said …" jetzt zurück zum wohlbekannten LaTeX:
+- Einstieg:
+	- LaTeX: Overleaf **[Learn LaTeX in 30 Minutes](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)** sowie **[How to Write a Thesis in LaTeX](https://www.overleaf.com/learn/latex/How_to_Write_a_Thesis_in_LaTeX_(Part_1)%3A_Basic_Structure)**
+		- Weiteres Einstiegsmaterial:	**[A simple guide to LaTeX – Step by Step](https://latex-tutorial.com/tutorials/)** | **[Wikibooks: LaTeX](https://en.wikibooks.org/wiki/LaTeX)**
+		- Korrekte Anführungszeichen ⚠️: lese **[Quotation Marks](https://latex.silmaril.ie/formattinginformation/quotes.html)** von Peter Flynn oder **[Formatting](https://www.andy-roberts.net/latex/formatting/)** von Andrew Roberts bzw. verwende **[csquotes](https://tex.stackexchange.com/tags/csquotes/info)** mit **\\enquote{..}** ⭐
+		- Wichtige Einordnung: [The **TeX family tree**: LaTeX, **pdfTeX**, **XeTeX**, LuaTeX and ConTeXt](https://de.overleaf.com/learn/latex/Articles/The_TeX_family_tree%3A_LaTeX%2C_pdfTeX%2C_XeTeX%2C_LuaTeX_and_ConTeXt) ⚠️
+		- Common Anti-Patterns: enthalten in [An **essential guide** to LATEX2e usage](http://mirrors.ctan.org/info/l2tabu/english/l2tabuen.pdf) ⭐
+	- BibTeX/Literaturverzeichnis: **[Tame the BeaST](http://tug.ctan.org/info/bibtex/tamethebeast/ttb_en.pdf)**
+		- Wichtige Einordnung: **[bibtex vs. biber and biblatex vs. natbib](https://tex.stackexchange.com/questions/25701/bibtex-vs-biber-and-biblatex-vs-natbib)** ⚠️
+		- Common Anti-Patterns: **[How to not mess up your bibliographies with Bibtex](https://clauswilke.com/blog/2015/10/02/bibtex/)** (2015) von Claus Wilke ⭐
+		- Nennenswerte biblatex-Erweiterung: **[biblatex-ext](https://github.com/moewew/biblatex-ext)** ([CTAN](https://ctan.org/tex-archive/macros/latex/contrib/biblatex-contrib/biblatex-ext)) sowie darin enthalten **biblatex-ext-oa** für Open Access Symbole
+	- Installation: [LaTeX-**Installationsmöglichkeiten** für Linux, macOS, Windows und Cloud-Optionen](https://www.latex-project.org/get/) unter latex-project.org
+	- Vorlagen: Es gibt [LaTeX-**Vorlagen der OTH-AW**](https://www.oth-aw.de/latex/) bzw. Fakultät EMI für die Abschlussarbeit
+	- Groß-/Kleinschreibung von engl. Überschriften: **[Capitalize My Title](https://capitalizemytitle.com/style/Chicago/)** ⭐
+	- RGB-Schwarz vs. CMYK-Schwarz
+		- Ergänzen Sie in LaTeX unbedingt die **cmyk**-Option des **xcolor**-Packages ⚠️
+		- Ohne diese Option handelt es sich auf allen Seiten um RGB-Schwarz, die im Druck als **Farbseiten** zählen und das wird teuer. Mit dieser Option sparen Sie im Copy-Shop bares Geld.
+		- (Ein RGB-Schwarz – mit Werten 0,0,0 – wird i.d.R. in ein CMYK-Schwarz konvertiert, dessen Werte 75C, 68M, 67Y und 90K sind; was übrigens auch als Tiefschwarz bezeichnet wird. Nur mit gesetzter cmyk-Option wird ein RGB 0,0,0, in ein Druckkosten-effizientes CMYK 0,0,0,100 konvertiert.)
+		- In die LaTeX-Vorlage der OTH habe ich das bereits reingepatcht, aber haben Sie ein Auge darauf.
+- **[MikTeX](http://miktex.org)**: Umgebung für LaTeX unter Windows ⭐
+	- Stellen Sie nach der Installation den Package Manager auf einen Webmirror (FTP) Ihrer Wahl ein, damit zusätzlich benötigte Packages automatisch installiert werden können.
+	- (Unter Windows bspw. mittels chocolatey: **choco install miktex.install '"/Set:basic"'** sowie **choco install synctex**)
+	- Alternative: [TeX Live](https://tug.org/texlive/windows.html) \[choco install texlive\], [tectonic](https://tectonic-typesetting.GitHub.io/) \[choco install tectonic\]
+- **[Sumatra PDF](https://www.sumatrapdfreader.org)** \[**choco install sumatrapdf.install**\] ⭐: PDF Viewer
+	- Für LaTeX-Zwecke besser geeignet als Adobe Reader, weil er aus einem TeX-Editor heraus an die korrekte Stelle springt… sehr bequem!
+	- Außerdem blockiert Sumatra die angezeigte Datei nicht auf Betriebssystemebene, damit ist die Datei trotz Lesezugriff durch latex neu generierbar/schreibbar
+	- Nennenswerte Alternative: **[pympress](https://github.com/Cimbali/pympress/releases)** als PDF-Viewer (auch für Windows)
+- **[TeXstudio](https://www.texstudio.org/)** \[**choco install texstudio.install**\] ⭐: Ein Fork von Texmaker, früher auch TexMakerX genannt (m.E. weit besser als TeXworks)
+	- Warnhinweis: Sowohl MikTeX als auch Sumatra PDF vor den Editoren installieren, da diese sich tlw. beim ersten Start gleich für beides konfigurieren
+	- Alternativen: [TeXnicCenter 2.0](https://www.texniccenter.org) \[**choco install texniccenter**\], [Kile](https://kile.sourceforge.io/) \[**choco install kile**\], [Texmaker](https://www.xm1math.net/texmaker/) \[**choco install texmaker**\] sowie der in MikTeX und TeX Live enthaltene [TeXworks](https://tug.org/texworks) | speziell unter Mac/iOS: [Texifier](https://www.texifier.com/) oder [TeXShop](https://pages.uoregon.edu/koch/texshop/) | Gesamtübersicht: [LaTeX Editors/IDEs](https://tex.stackexchange.com/questions/339/latex-editors-ides)
+- **[TeXiFy](https://plugins.jetbrains.com/plugin/9473-texify-idea)** ⭐ als Plug-In für InteliJ IDEA von Jetbrains (Studis haben die Lizenz für IDEA kostenlos)
+	- Works with? MiKTeX or TeX Live! Inkl. Integration mit dem PDF Viewer plugin für IDEA.
+	- Alternativen: Es gibt auch für VS Code die Extension [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop), welche aber nur mit TeX Live harmoniert
+- **[Zotero](https://www.zotero.org/)** \[**choco install zotero**\] ⭐: Verwaltung der Literatur, u.a. PDFs sowie BibTeX
+	- Anleitungen: [Quick Start Guide](https://www.zotero.org/support/quick_start_guide), [Integrating Zotero with Word](https://researchguides.gonzaga.edu/zotero/word)
+	- Alternativen: [JabRef](https://www.jabref.org) \[**choco install jabref.install --ignore-dependencies**\] | [Mendeley Reference Manager](https://www.mendeley.com/reference-management/reference-manager) \[**choco install mendeley-reference-manager**\]
+	- Kommerzielle Alternativen: Citavi | EndNote, …
+	- Cloud-Alternative insb. im Zusammenspiel mit Overleaf: **[CiteDrive](https://www.citedrive.com/)**
+- **[Overleaf](https://www.overleaf.com)** ⭐: Kostenlos LaTeX-Dokumente in der Cloud editieren/kompilieren
+	- Zumindest mit einer „Compile timeout“ von bis zu 1 Minute
+	- Geniale Integration von **[LanguageTool](https://languagetool.org/overleaf)**, für Rechtschreibung und Grammatik, wenn es als Browser-Erweiterung installiert wurde
+	- Tastaturkürzel: [Overleaf **Keyboard Shortcuts**](https://www.overleaf.com/latex/templates/overleaf-keyboard-shortcuts/pphdnzrwmttk)
+	- Overleaf ist Open Source und man könnte sich den Overleaf-Server auch lokal selbst hosten: [github.com/overleaf/overleaf](https://github.com/overleaf/overleaf) ([Quick Start Guide](https://github.com/overleaf/toolkit/blob/master/doc/quick-start-guide.md))
+	- (Vorlagen: bspw. [IEEE Conference](https://www.overleaf.com/latex/templates/ieee-conference-template/grfzhhncsfqn) (aber [IEEEtran HowTo](http://mirrors.ctan.org/macros/latex/contrib/IEEEtran/IEEEtran_HOWTO.pdf) ⚠️ lesen, u.a. sollte man shared affiliations nicht mehrfach aufführen), [PocketMod](https://www.overleaf.com/latex/examples/creating-pocketmods-with-latex/nqbhpnrkskrx) oder [Résumé/CV](https://de.overleaf.com/gallery/tagged/cv))
+- TeX in git:
+	- **[gitattributes](https://richienb.github.io/gitattributes-generator/)**-Generator (Obacht: LF-formatiert) von Richie Bendall: Das **COMMON**-Profil deckt LaTeX-Projekte ab
+	- **[gitignore](https://www.toptal.com/developers/gitignore/)**-Generator (Obacht: LF-formatiert) von Toptal
+- Sonstige Werkzeuge
+	- **[pdfsizeopt](https://github.com/pts/pdfsizeopt)**: optimize the size of PDF files (with focus on PDFs created from TeX and LaTeX documents)
+	- Die TeX-Pakete [cs-techrep](https://ctan.org/pkg/cs-techrep) ([Bsp.](https://mirrors.ctan.org/macros/latex/contrib/cs-techrep/template/cs-techrep-example-neumann.pdf)) und [iaria](https://ctan.org/pkg/iaria) ([Bsp.](https://mirrors.ctan.org/macros/latex/contrib/iaria/template/iaria-example-neumann.pdf)) sowie [iaria-lite](https://ctan.org/pkg/iaria-lite) ([Bsp.](https://mirrors.ctan.org/macros/latex/contrib/iaria-lite/template/iaria-lite-example-neumann.pdf)) sind Vorlagen von mir
+	- Literaturverzeichnis:
+		- [BibTeX Tidy](https://flamingtempura.github.io/bibtex-tidy/index.html): can fix inconsistent whitespace, remove duplicates, remove unwanted fields, and sort entries
+		- DOI: **[doi2bib](https://www.doi2bib.org/)** für BibTeX | [DOI Citation Formatter](https://citation.crosscite.org/) bspw. für Word
+		- [**ISBN**-Validator](https://0b10011.io/tools/isbn-validator.html)
+		- [**ISSN**-Validator](https://journalseeker.researchbib.com/?action=issnChecker)
+		- Deprecated:
+			- BibTeX generator from URL: **[url-to-bibtex](https://url-to-bibtex.vercel.app/)** aber eigentlich nicht mehr MISC mit howpublished, sondern durch nunmehr ONLINE mit url und urldate!
+	- Quality Check:
+		- **[blackTeX](https://github.com/texworld/blacktex)** \[**pip install -U blacktex**\]: corrects some common [TeX anti-patterns](https://ctan.mirror.norbert-ruehl.de/info/l2tabu/english/l2tabuen.pdf)
+	- Nennenswerte CTAN-Pakete:
+		- Alle packages, welche ich in cs-techrep sowie iaria verwende!
+		- [backnaur](https://ctan.org/pkg/backnaur) `\usepackage[altpo]{backnaur}`
+		- [tcolorbox](https://ctan.org/pkg/tcolorbox): für [Poster](https://mirrors.ctan.org/macros/latex/contrib/tcolorbox/tcolorbox-tutorial-poster.pdf)!
+			- Oder tcolorbox für hübsche Boxen zu Research Questions sowie Findings:
+			```latex
+			\usepackage[most]{tcolorbox}
+			\tcbset{
+				resques/.style={
+					colback=white, 
+					colframe=black, 
+					boxrule=0.5pt, 
+					sharp corners, 
+					enhanced,  
+					width=\linewidth,
+					top=2pt, bottom=2pt, left=3pt, right=3pt,
+					breakable, drop lifted shadow
+				}
+			}
+			\newenvironment{resques}[1]{
+				\begin{tcolorbox}[resques]
+				\textbf{#1:}
+			}{
+				\end{tcolorbox}
+			}
+			```
+			Und damit Research Questions oder Findings als:
+			```latex
+			\begin{resques}{RQ\,1}
+			How does …?
+			\end{resques}
+			\begin{resques}{Finding\,1}
+			It occurs …?
+			\end{resques}
+			```
+			- Oder tcolorbox für hübschen Boxen zu LLM-Dialogen:
+			```latex
+			\usepackage[most]{tcolorbox}
+			\usepackage{xcolor}
+			\newtcolorbox{humanbox}{colback=blue!10!white,
+			  title=Human, colframe=blue, left=1mm, right=1mm, top=1mm, bottom=1mm}
+			\newtcolorbox{chatbotbox}{colback=green!10!white,
+			  title=Chatbot, colframe=green, left=1mm, right=1mm, top=1mm, bottom=1mm}
+			```
+			Und damit LLM-Dialoge als:
+			```latex
+			\begin{humanbox}
+			How can I format dialog between human and chatbot in LaTeX?
+			\end{humanbox}
+			\begin{chatbotbox}
+			You can use tcolorbox to distinguish between speakers and visually separate their lines, as shown here.
+			\end{chatbotbox}
+			```
+	- Open Science
+		- Software referenzieren? **[Zenodo](https://zenodo.org/)** | [GitHub-Doku](https://docs.github.com/de/repositories/archiving-a-GitHub-repository/referencing-and-citing-content) (benötigt: GitHub! Derzeit GitLab nicht unterstützt.)
+	- **[Tables Generator](https://tablesgenerator.com/)**: LaTeX tables generator using table data from a spreadsheet app
+		- Kann neben LaTeX auch HTML, ASCII-Tabellen, Markdown und MediaWiki generieren
+	- [**CubePDF** Utilities](https://www.cube-soft.jp/cubepdfutility/) \[**choco install cubepdfutility**\] ⭐: u.a. zum kostenlosen Löschen (sowie Extrahieren/Vereinigen) von Seiten aus einem PDF (bspw. zur Vorbereitung der 10Seiten-Vorabreview-Fassung), eine Funktion die aus dem Acrobat Reader ausgebaut ist und derzeit nur der Acrobat Pro Fassung vorbehalten ist
+	- LaTeX to HTML: [Übersicht per **TeX-FAQ**](https://texfaq.org/FAQ-LaTeX2HTML)
+		- tex4ht und [make4ht](https://github.com/michal-h21/make4ht) sind in MikTeX inkludiert: **make4ht filename.tex**
+		- **[LaTeXML](https://math.nist.gov/~BMiller/LaTeXML/)** \[**choco install latexml**\]: [Getting Started](https://hackmd.io/@UoL-IWG/latexml)
+	- PDF to HTML:
+		- Adobe Acrobat Pro
+		- **[pdf2htmlEX](https://pdf2htmlex.GitHub.io/pdf2htmlEX/)** \[[Docker](https://hub.docker.com/r/pdf2htmlex/pdf2htmlex)\]: [Quick Start](https://github.com/pdf2htmlEX/pdf2htmlEX/wiki/Quick-Start)
+		- [**PDFMate** PDF Converter Free](https://www.pdfmate.com/pdf-converter-free.html) (kostenlose Version mit einem 3-Seiten-Limit)
+	- LaTeX to Word
+		- via LibreOffice/OpenOffice: tex4ht und [make4ht](https://github.com/michal-h21/make4ht) sind in MikTeX inkludiert: **make4ht --format odt filename.tex**
+			- LibreOffice-Installation: **choco install libreoffice-still**
+		- via PDF: Desktop: [pdf2docx](https://dothinking.GitHub.io/pdf2docx/quickstart.html) \[**pip install pdf2docx**\] | Cloud: [**pdf2docx**.com](https://pdf2docx.com)
+- Weiterführende Quellen: **[Awesome LaTeX](https://github.com/egeerardyn/awesome-LaTeX)** | [Awesome fonts](https://github.com/brabadu/awesome-fonts)
+
+## Markdown Publishing
+
+- **[typst](https://typst.app/)** ⭐ \[**choco install typst**\]
+	- Mit typst gibt es eine moderne Typesetting-Variante zu latex, die aber technisch völlig eigenständig ist.
+	- HINWEIS: die eigenständige [typst Markup Syntax](https://typst.app/docs/reference/syntax/) (inkl. [Math mode](https://typst.app/docs/reference/math/)) ist eine Mischung aus [AsciiDoc](https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/) und [Markdown]() (bspw. MarkDown: Code-Blöcke und Listen | AsciiDoc: Überschriften sowie bold und italics | zzgl. [AsciiMath](https://asciimath.org/))
+	- Einführung: [Typst Examples Book](https://sitandr.github.io/typst-examples-book/book/)
+	- Cheat Sheet: [Typst Cheat Sheet](https://github.com/mewmew/typst-cheat-sheet)
+	- Scientific Layouts: [IEEE](https://typst.app/universe/package/charged-ieee/) | [ACM](https://typst.app/universe/package/clean-acmart))
+	- Weiterführende Quellen: [Awesome Typst](https://github.com/qjcg/awesome-typst), [Best of Typst](https://ydx-2147483647.github.io/best-of-typst/)
+- [Quarto](https://quarto.org/docs/output-formats/all-formats.html)  \[**choco install quarto**\]
+	- Quarto ist ein Open-Source-System für wissenschaftliche und technische Veröffentlichungen, das auf Pandoc basiert
+	- Unterstützt auch [Presentations](https://quarto.org/docs/presentations/)
+	- Scientific Layouts: [IEEE](https://github.com/dfolio/quarto-ieee) | [ACM](https://github.com/quarto-journals/acm)
+	- Weiterführende Quellen: [Awesome Quarto](https://github.com/mcanouil/awesome-quarto)
+- Markdown Syntax:
+	- Nennenswerte Markdown-Lücken? u.a. Tabellen und Fußnoten! Auch keine Auto-Links!
+		- AsciiDoc, etwas älter als Markdown, sowie Typst schließen und unterstützen alle Markdown-Lücken! Markdown wurde explizit als simple Syntax geschaffen!
+		- AsciiDoc als vollwertiges Dokumentationsformat für Technical Writing und für Multi-Channel Publishing (manpages, EPUB/HTML, DocBook, PDF), als [DocBook](https://tdg.docbook.org/)-Alternative; allerdings OHNE Layouting, Typographie oder Scripting
+		- Typst als professionalles Textsatz-System / typsetting engine (PDF und nur [experimenteller HTML](https://typst.app/docs/reference/html/)-Support), d.h. inkl. Layout und Typographie, als
+ [LaTeX](https://www.latex-project.org/)-Alternative; allerdings OHNE Multi-Channel-Intention, bpsw. kein EPUB und keine manpages
+		- Vereinfacht: MarkDown/AsciiDoc/DocBook (Online) sowie typst/latex (Print), wobei DocBook/AsciiDoc offensichtlich auch eine Print-Ausdehnung haben
+		- Weiterführende Infos: [lmptfy](https://www.perplexity.ai/search/new?q=Bitte+einen+ausführlichen+Vergleich+zu+AsciiDoc%2C+Markdown%2C+GFM%2C+Typst+sowie+LaTeX+und+DocBook.+Mit+historischer+und+konzeptioneller+Gegenüberstellung.+Und+Vergleichstabelle+von+gängigen+Elementen+zu+Markdown%2C+GFM%2C+AsciiDoc+und+Typst%2C+achte+dabei+auf+das+preformatting+der+Syntax+in+der+Tabelle.+Gehe+auch+auf+den+Math+Mode+ein%2C+sowie+AsciiMath.)
+	- Standardisierung: [CommonMark](https://commonmark.org/) ([Spec](https://spec.commonmark.org/current/)) (Auch keine Tabellen und Fußnoten!)
+	- Webartikel [The Ultimate Markdown Cheat Sheet for Technical Writers and Documentation Engineers](https://medium.com/@kevinteaches/the-ultimate-markdown-cheat-sheet-for-technical-writers-541dbb9fd53c)
+	- [GitHub Flavored Markdown](https://github.github.com/gfm/) (GFM), inkl. Tabellen (Weiterhin fehlend? u.a. Fußnoten!)
+
+## Schreiben
+
+- Einführungen:
+	- [memdesign](http://mirrors.ctan.org/info/memdesign/memdesign.pdf) ⭐: introduction to the business of book design
+- ⚠️ Lernen Sie 10-Finger-schreiben ⚠️
+	- Am besten jetzt nicht mehr mit QWERTZ-/QUERTY-basiertem 10-Finger-System anfangen, sondern gleich [Dvorak](https://de.wikipedia.org/wiki/Dvorak-Tastaturbelegung) \[EN\] lernen oder eines aus der [Neo-Familie](<https://de.wikipedia.org/wiki/Neo_(Tastaturbelegung)>) \[DE\] ([Neo2, Bone, Mine](https://neo-layout.org/Layouts/) oder [AdNW](http://adnw.de/))
+	- für Dvorak: [RapidTyping](https://rapidtyping.com/) als Windows-Desktop-Werkzeug, bzw. Online das [Dvorak keyboard training](https://learn.dvorak.nl/), das [Programmer Dvorak typing tutorial](http://programmer-dvorak.appspot.com/), uvm.
+	- für Neo: v.a. unter Linux mittels KTouch oder unter Windows [diverse Typing Tutors](https://typingsoft.com/all_typing_tutors.htm), von denen allerdings m.E. keiner auf Neo spezialisiert ist; also gerne auch den [RapidTyping](https://rapidtyping.com/) verwenden
+	- (für QWERTZ/QUERTY, falls ich Sie nicht davon abhalten konnte: [TIPP10](https://www.tipp10.com/) \[**choco install tipp10**\] sowie [diverse andere Typing Tutors](https://typingsoft.com/all_typing_tutors.htm))
+	- Ich selbst verwende Dvorak (allerdings gab es Neo im Jahr 1999 noch nicht, es entstand erst 2004, da war mein Studium schon fast vorbei, bzw. wurde Neo erst 2010 mit Neo2 konsolidiert)
+	- [Tastatur-Tastenkürzel unter Windows](https://www.digitalcitizen.life/keyboard-language-shortcut/):
+		- Drücke **Win + Leertaste**, um durch die Sprachen zu blättern.
+		- Alt-Shift/Ctrl-Shift-Einstellungen: Abschnitt "Erweiterte Tastatureinstellung" » Element "Tastenkombination für Eingabesprachen"
+- Rechtschreibprüfung?
+	- Word / OpenOffice.org / LibreOffice / etc.
+		- Benutzbar auch für LaTeX ⚠️ indirekt per Windows [TeX2RTF](https://www.ctan.org/pkg/tex2rtf) oder Linux [latex2rtf](http://latex2rtf.sourceforge.net/)
+	- Dienste wie [Scribbr](https://www.scribbr.de/rechtschreibpruefung/)
+- **[Grammarly](https://www.grammarly.com/)** \[**choco install grammarly-for-windows**\]: Grammatik-Prüfung, sehr mächtig, KI-gestützt, aber nur für Englisch!
+	- Auch [als MS Office Extension](https://www.grammarly.com/office-addin)
+	- Alternative: **[Ginger](https://www.gingersoftware.com/)** \[**choco install gingerwriter**\]
+- **[LanguageTool](https://languagetool.org/de)** \[**choco install languagetool**\]: Grammatik-Prüfung, mächtig, auch für **deutsche Grammatik**
+	- Im [Desktop Editor](https://languagetool.org/de/windows) ist das wichtigstes Tastaturkürzel: **Strg+Q** ⭐
+	- Auch als [Thunderbird-Extension](https://languagetool.org/de/thunderbird) und damit perfekt für E-Mails ⭐
+	- Auch [in Developer-Werkzeuge integriert](https://dev.languagetool.org/software-that-supports-languagetool-as-a-plug-in-or-add-on.html)
+	- Auch als Browser-Plugin ([Opera](https://addons.opera.com/de/extensions/details/grammar-and-spell-checker-languagetool/), [Firefox](https://addons.mozilla.org/de/firefox/addon/languagetool/), [Chrome](https://chrome.google.com/webstore/detail/grammar-checker-paraphras/oldceeleldhonbafppcapldpdifcinji), …) und damit perfekt für Overleaf ⭐
+	- Auch für LaTeX per VS-Code-Integration per [LTeX-Plugin](https://github.com/valentjn/vscode-ltex)
+	- Auch Markdown-Support, bspw. per [Obsidian-Integration](https://github.com/Clemens-E/obsidian-languagetool-plugin)
+	- Alternative: **[Duden Mentor](https://www.duden.de/rechtschreibpruefung-online)** (u.a. als [Word Extension](https://appsource.microsoft.com/de-de/product/office/WA200002017)) sowie **[Grammica](https://grammica.com/proofreading)** (ohne Desktop-Integration)
+- KI-gestütztes Schreiben:
+	- OBACHT: Gilt für eine Abschlussarbeit als High-Tech-Plagiarism [⚡](https://fsymbols.com/signs/hazard/)
+	- ChatGPT: [How to Install and Run **ChatGPT** as a Windows App](https://www.makeuseof.com/run-chatgpt-windows-app/)
+- **[DeepL](https://www.deepl.com/translator)** \[**choco install deepl**\]: Übersetzungen
+	- Wichtigstes Tastaturkürzel: **Strg+C+C** ⭐
+- **[QuillBot](https://quillbot.com/)**: Paraphrasierung
+	- Auch [als Word Plug-In](https://quillbot.com/word)
+- Screenshots: **[Snipaste](https://www.snipaste.com/)** | **[Greenshot](https://getgreenshot.org/)** \[**choco install greenshot**\]
+- **[namelix](https://namelix.com/)**: Namensgenerator für Bachel-/Master-/PhD-Projekte, OSS-Projekte, etc.
+- Call-for-Paper Termine: **[WikiCFP](http://www.wikicfp.com/cfp/)** | [Computer Science **Conference Search**](https://confsearch.ethz.ch/) (inkl. graphischer Kalender-Funktion)
+- Computing Research Conference Rank: [**CORE** Portal](http://portal.core.edu.au/conf-ranks/) | **[GGS](https://scie.lcc.uma.es/)**
+- **[SciSpace](https://typeset.io/for-writers/)** (früher: Typeset): Cloud-Editor mit unzähligen [Journal-Vorlagen](https://typeset.io/formats/) für das Schreiben von wissenschaftlichen Publikationen
+- Fancy Cloud-/AI-Stuff (€): **[genei](https://www.genei.io/)** sowie [QuillBot-Premium-Features](https://quillbot.com/premium)
+- Weiterführende Quelle: [Awesome Thesis](https://github.com/ocean1/awesome-thesis) | [Awesome PhD](https://github.com/macoj/phd) | [PhD Comics](https://phdcomics.com/comics/most_popular.php)
+
+## Anti-Prokrastination
+
+- Druckbare **[Wochenplaner](https://jinxkitchen.de/wp-content/uploads/printables/PDF-printable-jinxkitchen-sprinkle.pdf)** (kostenlos findbar im Dunstkreis [Essens- & Wochenplaner mit Einkaufslisten](https://jinxkitchen.de/printables/))
+- Erstellen eines Scrum Burndown-Charts (X: Werktage, Y: Seitenanzahl): [**Burndown-Chart**-Generator (**Printable-HTML**)](https://easyretro.io/tools/burndown-chart-generator/), [**Burndown-Chart**-Generator (**PDF**)](https://www.burndowngenerator.com/)
+- Pomodoro: **[Tomato-Timers](https://www.tomatotimers.com/)** (auch für [iOS](https://apps.apple.com/de/app/focus-hub-study-timer/id1478228599)), Android: [Google Play Search](https://play.google.com/store/search?q=pomodoro%20timer&c=apps)
+	- Quasi-Pomodoro: **[Boxing-Interval-Timer](https://boxingtimer.org/)** (auch für [Android](https://play.google.com/store/apps/details?id=com.brucemax.boxintervals) und [iOS](https://apps.apple.com/de/app/boxing-timer-professional/id978829173))
+	- Physisches Hilfsmittel: (€) **[Zeitwürfel](https://www.amazon.de/gp/product/B079HW6WT7/)**
+- Für Fälle in denen Prokrastination in echte Schreibblockaden und ggf. Depressionen übergehen: Die OTH hat eine **[Psychosoziale Beratung](https://www.oth-aw.de/hochschule/ueber-uns/einrichtungen/zentrum-fuer-gender-und-diversity/psychosoziale-beratung/)**
+	- Es finden sich auch [Tipps im Netz](https://www.google.com/search?q=prokrastination+schreibblockade+depression)
+
+## Translations
+
+- **[DeepL](https://www.deepl.com/translator)** \[**choco install deepl**\]: Übersetzungen
+	- (Unter Windows bspw. mittels chocolatey: )
+	- Wichtigstes Tastaturkürzel: **Strg+C+C**
+	- Für Entwickler: [**DeepL API** Free](https://www.deepl.com/pro#developer) (5000 chars/month)
+- **[OmegaT](https://omegat.org)** \[**choco install omegat**\]: free translation memory tool
+- Weiterführende Quelle: [Awesome Translations](https://github.com/mbiesiad/awesome-translations), [Awesome I18N](https://github.com/jpomykala/awesome-i18n)
+
+## Evaluation-Werkzeuge
+
+- Stichprobenumfang-Bestimmung: **[G\*Power](https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower)** \[**choco install gpower**\] aus der Psychologie
+- **[LimeSurvey](https://community.limesurvey.org/)**: Umfragen, bspw. für Kundenbefragungen zur Fitness-for-Use
+	- Alternativen: [**Tally**.so](https://tally.so/)
+- [**SonarQube** Community Edition](https://www.sonarqube.org/downloads/): (Web/Self-Hosted:) Statische Codeanalyse (SCA) für viele Programmiersprachen \[bspw. via **[docker](https://hub.docker.com/_/sonarqube)**\]
+	- Cloud-Alternativen: **[DeepSource](https://deepsource.io/)** für viele Programmiersprachen (kostenlos für öffentliche Repos)
+	- Desktop-Alternative: **[SourceMeter](https://sourcemeter.com/download)** für gängige Programmiersprachen (**Deep** SCA) | **[Designite](https://www.designite-tools.com/)** für C#/Java (kostenlos für Studierende mittels [Academic License](https://www.designite-tools.com/acad-lic-request/))
+- **[Codecov](https://about.codecov.io/for/open-source/)**: Test Code Coverage Analysen, kostenlos für öffentliche Open-Source Repos
+- COCOMO (aka Constructive Cost Model):
+	- LoC Counting: [cloc](https://github.com/boyter/scc), [scc](https://github.com/boyter/scc)
+	- [ProjectCodeMeter](https://www.projectcodemeter.com/cost_estimation/kop1.html)
+- **[Google Lighthouse](https://developers.google.com/web/tools/lighthouse/)**: Auch für die rudimentäre Evaluation von PWAs geeignet (Obacht: wissenschaftlich müssen Sie in der Evaluation von PWAs in Ihrer Abschlussarbeit tiefer bohren, aber den Lighthouse-Test sollten Sie auf jeden Fall auch bestehen)
+- Website Accessibility Checker:
+	- Cloud: (EN:) [web accessibility evaluation tool (**WAVE**)](https://wave.webaim.org/) ⭐ | (DE:) [buchstaben.com **Barrierefreiheit Test**](https://www.buchstaben.com/barrierefreiheit-test) ⭐, [experte.de Barrierefreiheit Test](https://www.experte.de/barrierefreiheit)
+		- Spezialthema Barrierefreie **Farben**: [Accessible Colors](https://accessible-colors.com/) (man muss seine Vorder- und Hintergrundfarbe manuell eintragen)
+		- Mittlerweile Kommerziell (€): [TPG ARC Scan](https://www.tpgi.com/free-website-accessibility-scan/) (formerly: Cynthia Says)
+		- Barrierefreiheit ist mittlerweile auch Teilaspekt von [Google Lighthouse](https://developers.google.com/web/tools/lighthouse/)
+	- Browser Add-In: **[Axe](https://www.deque.com/axe/)**, **[WAVE](https://wave.webaim.org/extension)**, [Siteimprove](https://addons.mozilla.org/firefox/addon/si-accessibility-checker/)
+- User tracking and analysis: **[Amplitude](https://amplitude.com/)**
+
+## Management & Agile Methoden
+
+- Terminumfragen: **[nuudel](https://nuudel.digitalcourage.de/)** ⭐, [fragab](https://fragab.com/)
+- Kalenderwoche: [aktuelle-**kalenderwoche**.org](https://www.aktuelle-kalenderwoche.org/)
+- Zeitzonen: **[worldtimebuddy](https://www.worldtimebuddy.com/)**, [Time Zone Map](https://www.timeanddate.com/time/map/)
+- Ganttcharts:
+	- Desktop: FOSS [Agantty](https://www.agantty.com/)
+	- Web: [Agantty](https://www.agantty.com/), [team gantt](https://www.teamgantt.com/), [toggl plan](https://toggl.com/plan/)
+- Kanban-Board: **[Wekan](https://wekan.GitHub.io/)** «Self-hosted»
+- Timer: **[Boxing Interval Timer](https://boxingtimer.org/)** oder [Online-Stopwatch](https://www.online-stopwatch.com/timer/5minutes/) (5min) etc. pp.
+- Time Tracking? **[TopTracker](https://www.toptal.com/tracker)**
+- Work Management? **[monday.com](https://monday.com/)** (free: 2 Persons, 3 Boards)
+- Projektmanagement? **[OpenProject](https://www.openproject.org/)** \[via [Docker](https://www.openproject.org/docs/installation-and-operations/installation/docker/)\] | **[GitLab](https://about.gitlab.com/install/)**[Issue Tracking](https://about.gitlab.com/stages-devops-lifecycle/issueboard/) \[bspw. via [Docker](https://docs.gitlab.com/ee/install/docker.html) oder per [Cloud](https://about.gitlab.com/pricing/)\] | Cloud: **[Taiga.io](https://www.taiga.io/)**
+- Mind Mapping? Desktop: **[XMind](https://www.xmind.net/)** \[**choco install xmind**\] | **[PlantUML MindMaps](https://plantuml.com/mindmap-diagram)** | **[Mermaid](https://mermaid.js.org/syntax/mindmap.html)**
+- Whiteboard? **[OpenBoard](https://openboard.ch)** \[**choco install openboard**\]
+- Zufallsentscheidung? [Online-**Glücksrad**](https://de.piliapp.com/random/wheel/) | **[Spin the Wheel](https://spinthewheel.io/de)**
+- Produktmanagement: **[pendo](https://www.pendo.io/)** kostenlos für 1 Web+Mobile App mit bis zu 1000 Endnutzern
+- Spreadsheets-on-Steroids: Cloud-basiertes **[Airtable](https://www.airtable.com/)** (vereinigt Aufgabenlisten, Projektmanagement, Spreadsheets, etc.)
+- Agile Retrospektiven: Methodenauswahl per **[Retromat](https://retromat.org/de/)** sowie **[Random Retros](https://www.randomretros.com/)**
+- (zzgl. der anschließende Abschnitt: [Kollaborative Werkzeuge](#kollaborative-werkzeuge))
+- Weiterführende Quellen: [Awesome Agile](https://lorabv.GitHub.io/awesome-agile/)
+
+## Kollaborative Werkzeuge
+
+- Kollaboratives **Whiteboarding** (inkl. Zeichnen): **[invision](https://www.invisionapp.com/)** | **[miro](https://miro.com/de/)** | **[mural](https://start.mural.co/)**
+- Kollaborative **Text**-Bearbeitung?
+	- No Sign-Up: **[YoPad](https://yopad.eu)** | **[EduPad](https://edupad.ch)**
+	- With Sign-Up: [Bit.ai](https://bit.ai/) | [Google Docs](https://docs.google.com/document/u/0/) | [Word Online](https://office.live.com/start/word.aspx) | [OnlyOffice Personal](https://personal.onlyoffice.com/)
+- Kollaborative **Spreadsheet**-Bearbeitung?
+	- No Sign-Up: **[EtherCalc](https://ethercalc.net)**
+	- With Sign-Up: [Google Sheets](https://sheets.google.com/document/u/0/) | [Excel Online](http://office.live.com/start/Excel.aspx) | [OnlyOffice Personal](https://personal.onlyoffice.com/)
+- Kollaborative **Präsentationen**? **[Pitch](https://pitch.com/)**
+- Kollaboratives **Mind Mapping**: **[ClickUp](https://clickup.com/features#view-tab-mind-maps)**
+- Kollaborativer **Software-Entwurf/Modellierung**: [**draw.io**/**diagrams.net** over Google Drive](https://www.drawio.com/doc/faq/share-diagrams), [**Visual Paradigm** Online](https://online.visual-paradigm.com/pricing/)
+	- ([LucidChart](https://www.lucidchart.com/), aber nur 3 Dokumente kostenlos)
+	- (€€€: [Cloudcraft](https://www.cloudcraft.co) unterstützt Kollaborative Modellierung, allerdings nur in den teuren Varianten)
+- Kollaboratives **Medien-Design**: **[snappa](https://snappa.com/)**
+- Kollaboratives **Malen**: **[Aggie.io](https://aggie.io/)**
+- Kollaborative **Feedback für Medien/Designs**: **[cage](https://www.cageapp.com/)**
+- Kollaborative **Aufgabenliste**: **[Trello](https://trello.com/)**
+- Kollaboratives **Projektmanagement**: **[Taiga.io](https://www.taiga.io/)**, [**GitLab** Issue Tracking](https://about.gitlab.com/pricing/)
+- **[worldbuddy](https://www.worldtimebuddy.com/)**: Time Converter and World Clock
+- **[aktuelle-kalenderwoche.org](https://www.aktuelle-kalenderwoche.org/)**: Planen und Nachschlagen
+
+## Zeichnen
+
+- Upscaler/Upsampling: (kann ggf. auch Kompressionsartefakte entfernen)
+	- Web/Cloud: [bigjpg](https://bigjpg.com), [Nero AI](https://ai.nero.com), [imglarger](https://imglarger.com), [Gigapixel AI](https://www.topazlabs.com/gigapixel-ai-it-really-works), [Waifu2X](https://waifu2x.io/), etc. pp.
+	- Desktop: [Upscayl](https://upscayl.github.io) ⭐ (choco install upscayl)
+- Bild-Vektorisierer (Image to SVG):
+	- Web/Cloud: [vectorizer.io](https://de.vectorizer.io), [Aspose](https://products.aspose.app/svg/de/image-vectorization), [convertio.co](https://convertio.co/de/image-converter/)
+	- Desktop: [inkscape](https://inkscape-manuals.readthedocs.io/en/latest/tracing-an-image.html) (allows for color by quantization and multiple scanning; based on famous but black/white [potrace](https://potrace.sourceforge.net))
+- Hintergrund-Entferner:
+	- Web/Cloud: [PhotoRoom](https://www.photoroom.com/hintergrund-entfernen), [Erase.bg](https://www.erase.bg/de), [cutout.pro](https://www.cutout.pro/remove-background)
+	- Desktop: [rembg](https://github.com/danielgatis/rembg) ⭐ (pip install rembg, pip install "rembg[cli]"; basiert auf [ONNX Runtime](https://onnxruntime.ai))
+- Microsoft **PowerPoint**: Unterschätzen Sie PowerPoint nicht als universelles Zeichenwerkzeug!
+	- Es ist ebenfalls mein Lieblingswerkzeug für Poster (DIN A1).
+	- Man kann in PowerPoint sogar Wireframing betreiben, mittels [Keynotopia](https://keynotopia.com/).
+	- Microsoft Office 365 Pro ist [kostenlos über studisoft.de](https://www.studisoft.de/shibboleth/shibdwayf?vi=23) für Studierende der OTH-AW
+- Microsoft **Visio**: Ein Klassiker. Kommerziell. Eine Desktop-Anwendung. Mittlerweile durch draw.io ersetzbar.
+	- Es gibt eine [Visio Stencils Datei für E/R-Modellierung und erweiterte E/R-Modellierung](http://www.cyberlytics.eu/theses/templates/ERD-Chen76_EERD-ElmasriNavathe94.vss) aus meiner eigenen Feder
+	- Derzeit ist Visio mutmaßlich nicht in der Microsoft Office 365 Pro Variante enthalten, die Sie kostenlos über studisoft.de beziehen können; aber Visio ist Teil der [Microsoft Azure Dev Tools for Teaching](https://www.oth-aw.de/hochschule/services/online-services/downloads-software/), welche für Studierende ebenfalls kostenlos zur Verfügung stehen
+- Adobe **Illustrator**: Für ambitionierte Vektorgrafiken.
+	- Illustrator erlaubt das Öffnen von PDFs und eignet sich dadurch gut zur Extraktion von Grafiken, ggf. in hochauflösendem Vektorformat.
+	- Über die Zugehörigkeit zur OTH-AW müssten Sie auch einen Zugang zur Adobe Creative Cloud bekommen können
+- [**draw.io**/diagrams.net](https://app.diagrams.net) ⭐: Universelles Zeichenwerkzeug, u.a. auf Augenhöhe mit Microsoft Visio
+	- Unterstützt ebenfalls Notationen wie UML und E/R-Diagramme
+	- Entweder als Cloud-WebApp oder als Desktop-Anwendung
+	- (Unter Windows bspw. mittels chocolatey: **choco install drawio**)
+- Datenvisualisierung
+	- **[Flourish](https://flourish.studio/)** ⭐: Univerelle Datenvisualisierung, besser als Microsoft Excel ([Templates](https://app.flourish.studio/templates))
+	- **[RAWGraphs](https://www.rawgraphs.io/)** ⭐: Open Source Datenvisualisierung, u.a. auf Augenhöhe mit Microsoft Excel ([Templates](https://www.rawgraphs.io/learning#charts-and-templates)
+- **[Krita](https://krita.org/)** ⭐: Open Source Alternative für Photoshop, also für Rastergrafiken
+	- (Unter Windos bspw. mittels chocolatey: **choco install krita**)
+	- \[ Es gibt andere Open Source Rastergrafikwerkzeuge, aber um Himmels willen **nicht** Gimp… \]
+- Themenkomplex: Isometrische 3D Vector Graphics/Icons
+	- Einstieg: [Referenz-Google-Suche](https://www.google.de/search?q=awesome+isometric+vector+3d)
+		- Außerdem sind isometrische Icons für eine [konzeptionelle SW-Architektur in **Visio**](https://surrogate-tm.GitHub.io/mailant/2004/11/21/great-shapes-for-conceptual-architecture-diagrams-in-visio-part-1.htm) enthalten
+	- Werkzeuge:
+		- **[Affinity Designer](https://affinity.serif.com/)** (vgl. [YouTube-Tutorial-Video](https://m.youtube.com/watch?v=oxm9VAMN3Dk)) als generisches Werkzeug mit spezieller Isometric-3D-Unterstützung
+		- **[Cloudcraft](https://www.cloudcraft.co)** zur Visualisierung von Cloud-Architekturen ([Beispiele](https://www.google.com/search?q=cloud+architecture+cloudcraft&tbm=isch))
+		- **[Icograms](https://icograms.com/)**
+
+## Presentations
+
+- **PowerPoint** (kostenlos für OTH-Studierende) oder dessen **kostenlose Desktop- oder HTML-Alternativen** (s. unten)
+	- Webseiten live in PPT-Präsentation einbinden?
+		- Derzeit praktisch nicht mehr machbar. Es gibt nur noch [ClassPoint](https://www.classpoint.io/features/embedded-browser) als Work-Around.
+		- ([PollEveryWhere](https://www.polleverywhere.com/) hatte die LiveSlides-Funktion integriert aber hat sie derzeit wieder verloren.)
+		- ([LiveSlide](https://liveslides.software.informer.com/download/) war der Vorgänger von PollEverywhere und wurde in PollEv integriert und ist jetzt installierbar aber unbrauchbar.)
+		- (Die Powerpoint-Extension von Microsoft selbst namens Web-Viewer war leider schon immer fast unbrauchbar.)
+	- Man kann auch mittels PowerPoint selbst eine Bild-in-Bild [Video-Aufzeichnung](https://insider.office.com/de-de/blog/tell-your-story-with-video-recording-in-powerpoint) („Teleprompter“) seiner Präsentation machen
+	- Dateigröße von PPT-Päsentation
+		- Eingebaute [**compress pictures** Funktion](https://support.microsoft.com/de-de/office/verringern-der-dateigr%C3%B6%C3%9Fe-ihrer-powerpoint-pr%C3%A4sentationen-9548ffd4-d853-41e7-8e40-b606bca036b4) ⚠️
+		- neuxpower ⭐
+			- Dateigröße tiefgehend analysieren (und manuell fixen)? neuxpower [Slidewise](https://neuxpower.com/slidewise-powerpoint-add-in) Extension (mit einer wertvollen Free Version ⭐ und einer noch wertvolleren (€) Bezahlversion)
+			- Dateigrößen automatisch fixen? (€) neuxpower [NXPowerLite](https://neuxpower.com/nxpowerlite-desktop) ⭐ (für PPT, aber auch Word, Excel und PDFs)
+				- Obacht mit den drei vorgefertigten Profilen [Balanced/Strong/Basic](https://support.neuxpower.com/hc/en-us/articles/201046011-How-do-Optimize-profile-optimization-settings-affect-my-files): Keines passt m.E. so richtig und ich würde ein customized profile empfehlen:
+					| Option | Wert |
+					| -------- | -------- |
+					| Resize images for display at: | 1920 x 1080 (1080p) |
+					| Allow JPEG conversion	| Enabled |
+					| Remove embedded Excel data from charts (PowerPoint & Word) | Disabled |
+					| Reduce color depth of PNG images (Office) | Enabled |
+					| Maintain compatibility with Word 2007 (Word) | Disabled |
+					| JPEG Quality (JPEG) | 8 |
+					| Remove Exif Data | Enabled |
+			- Alle drei Varianten (compress pictures, Slidewise, NXPowerLite) und mehr wertvolle Hinweise werden beschrieben im Webartikel [Reduce **PPT file size**](https://neuxpower.com/blog/why-is-my-powerpoint-so-big-and-how-can-i-reduce-the-size-of-the-ppt) ⭐
+			- Kostenloser Online-Datei-Compressor von neuxpower = WeCompress: [Analyzer](https://www.wecompress.com/en/analyze) (max. 200MB) und [Compressor](https://www.wecompress.com/en/) (max. 50MB)
+- **[latex-beamer](https://ctan.org/pkg/beamer)**
+	- Auch in [Overleaf](https://www.overleaf.com/learn/latex/Beamer) integriert
+	- (Eine [OTH-Vorlage für beamer](https://www.oth-aw.de/latex/) findet sich in unserem GitLab)
+	- Nennenswert: [Adobe PDF to PPT](https://www.adobe.com/acrobat/online/pdf-to-ppt.html) (use in private tab for reset)
+- HTML Presentation Frameworks
+	- **[reveal.js](https://revealjs.com/)** ⭐ | [shower](https://github.com/shower/shower) with [CLI](https://github.com/shower/cli/)
+	- (Inaktiv: [impress.js](https://github.com/impress/impress.js) | [Inspire.js](https://github.com/LeaVerou/inspire.js) | [deck.js](https://github.com/imakewebthings/deck.js) | [DZSlides](https://github.com/paulrouget/dzslides) | uvm.)
+- Markdown Presentation Frameworks
+	- Markdown to HTML Slide Decks
+		- **[Slidev](https://github.com/slidevjs/slidev)** ⭐ (local [slidev-cli](https://sli.dev/builtin/cli#export) bzw. [Cloud-App](https://sli.dev/)) | [Decker](https://elearning.uni-wuerzburg.de/decker/) | [Marp](https://marp.app/) ([mapr-cli](https://github.com/marp-team/marp-cli))
+		- Nennenswert: [reveal.js](https://revealjs.com/) unterstützt ebenfalls Markdown
+	- Markdown to PDF Slide Decks
+		- [typst](https://typst.app/) mit **[touying](https://touying-typ.github.io/)** ⭐
+			- Das `typst compile` für einen Foliensatz ist im Bereich Millisekunden und daher im Round-Trip einem latex-beamer deutlich überlegen!
+			- Optisch ist touying mit latex-beamer vergleichbar und als direkter Ersatz ausgelegt.
+			- OBACHT: genau genommen ist die typst Syntax eine Mischung aus AsciiDoc und Markdown (bspw. MarkDown: Code-Blöcke und Listen | AsciiDoc: Überschriften sowie bold und italics)
+		- [Quarto](https://quarto.org/docs/output-formats/all-formats.html) unterstützt [Presentations](https://quarto.org/docs/presentations/)
+	- Markdown to PPTX Slide Decks
+		- Local/CLI:
+			- Experimentelle Option per [Marp](https://github.com/marp-team/marp-cli): `marp --pptx --pptx-editable slide-deck.md`
+			- Option per [Quarto](https://quarto.org/docs/presentations/powerpoint.html): `quarto render slide-deck.qmd --to pptx --reference-doc template.pptx`
+		- Cloud: [Gamma](https://gamma.app/) (Skizze: Import von Markdown möglich und Export von PPTX möglich)
+
+**Nennenswerte Hilfswerkzeuge**:
+
+- **[pdfsizeopt](https://github.com/pts/pdfsizeopt)**: optimize the size of PDF files (with focus on PDFs created from TeX and LaTeX documents)
+- **[DirectPoll](https://directpoll.com)**: Abstimmungssystem („Clicker“), also Umfragen und Votings bei Großgruppen
+	- Alternativen bei Großgruppen:
+		- Cloud: **[OnlineTED](https://onlineted.de/)** Basic (max. 100 Teilnehmer) | **[Tweedback](https://tweedback.de/)** Free (nur 24h Session-Dauer) | **[Mentimeter](https://www.mentimeter.com)** (max. 2 Fragen pro Präsentation) | [**vevox**.com](https://www.vevox.com/pricing/education-pricing) (Multiple-Choice-Fragen kostenlos; früher meetoo.io)
+		- Self-Hosted: **[Arsnova](https://gitlab.com/particify/dev/foss/arsnova)** bzw. Particify \[via [Docker](https://gitlab.com/particify/dev/foss/docker-orchestration)\]
+		- Desktop: **[FreeQuizDome](https://www.freequizdome.com/)**
+	- Alternativen für kleinere Gruppen: **[PollEveryWhere](https://www.polleverywhere.com/)** Intro (max. 25 Teilnehmer, aber PPT-Integration) \[**choco install polleverywhere**\] | **[Kahoot!](https://kahoot.com/register/kahoot-study-pricing/)** (max. 10 Teilnehmer) | **[AhaSlides](https://ahaslides.com/pricing/)** (max. 7 Teilnehmer; mit [PowerPoint-Extension](https://ahaslides.com/blog/extension-for-powerpoint/))
+	- Beispielfragen: [90 Mentimenter-Beispiele](https://www.mentimeter.com/de-DE/blog/awesome-presentations/85-poll-questions-for-every-occasion)
+- Videos für eine Präsentation beschleunigen oder verlangsamen: [Online Video Cutter » Change Video Speed](https://online-video-cutter.com/change-video-speed)
+
+## Poster
+
+\[Hier: Scientific Research Posters\]
+
+- Formate:
+	- DIN A1: 59,4 cm x 84,1 cm
+		- Poster-Print 3:4-Format: 60 cm x 80 cm
+		- Poster-Print 2:3-Format: 60 cm x 90 cm
+	- DIN A0: 84,1 cm x 118,9 cm
+		- Poster-Print 2:3-Format: 80 cm x 120 cm
+		- Poster-Print 3:4-Format: 90 cm x 120 cm
+- **PowerPoint**: SmartTab "Entwurf" » Foliengröße » Benutzerdefiniert
+	- PowerPoint sollte als Werkzeug zur Poster-Gestaltung durch Laien nicht unterschätzt werden!
+- [typst](https://typst.app/universe/search/?category=poster) mit **[Peace of Posters (PoP)](https://jonaspleyer.github.io/peace-of-posters/showcase/)**
+- [latex](https://www.overleaf.com/learn/latex/Posters) mit **[beamerposter](https://www.ctan.org/pkg/beamerposter)**  sowie ggf. [tikzposter](https://ctan.org/pkg/tikzposter) oder [baposter](https://github.com/mloesch/baposter)
+	- Nennenswerte weitere Alternative: Poster auch mit **[tcolorbox](https://ctan.org/pkg/tcolorbox)** ⭐ welches ebenfalls [für Poster geeignet](https://mirrors.ctan.org/macros/latex/contrib/tcolorbox/tcolorbox-tutorial-poster.pdf) ist!
+- [Canva](https://www.canva.com/create/posters/), auch für [Scientific Posters](https://www.canva.com/posters/templates/research/)
+
+## Plug-Ins / Add-Ins / Extensions
+
+- Microsoft Office
+	- **PowerPoint** Add-Ins: bspw. [iSpring **PPT-Add-Ins-Empfehlung**sliste](https://www.ispringsolutions.com/blog/boost-your-powerpoint-7-free-powerpoint-add-ins)
+	- **Excel** Add-Ins: bspw [Power-User **Excel-Add-Ins-Empfehlung**sliste](https://www.powerusersoftwares.com/post/75-best-add-ins-plugins-and-apps-for-excel-free)
+	- **Outlook** Add-Ins: bspw [mxHERO **Outlook-Add-Ins-Empfehlung**sliste](https://www.mxhero.com/51-best-outlook-email-add-ins)
+	- **Word** Extensions: bspw [Power-User **Word-Extensions-Empfehlung**sliste](https://www.powerusersoftwares.com/post/2016/08/14/40-of-the-best-add-ins-plugins-and-apps-for-microsoft-word-free-or-not)
+	- **VBA** Entwickler-Werkzeuge: bspw. [xtrail **VBA-Add-Ins-Empfehlung**sliste](https://www.xltrail.com/blog/developer-tools-for-microsoft-excel) mit [Rubberduck](https://github.com/retailcoder/Rubberduck) \[**choco install rubberduck**\]
+- Adobe
+	- **Photoshop** Plug-Ins: bspw. [skylum **Photoshop-Plug-Ins-Empfehlung**lsliste](https://skylum.com/de/blog/best-free-photoshop-plugins-to-improve-your-creative-work)
+	- …
+- Software-Programming
+	- **VS Code** Extensions: **[Open VSX Registry](https://open-vsx.org/)** | **[Marketplace](https://marketplace.visualstudio.com/VSCode)** sowie bspw. [hackr.io **Code-Extensions-Empfehlung**sliste](https://hackr.io/blog/best-vscode-extensions)
+	- **Visual Studio** Extensions: **[Marketplace](https://marketplace.visualstudio.com/)** sowie bspw. [elmah.io **Visual-Studio-Extensions-Empfehlung**sliste](https://blog.elmah.io/list-of-the-best-free-visual-studio-extensions/)
+	- **Eclipse IDE** Plug-Ins: **[Marketplace](https://marketplace.eclipse.org/category/free-tagging/java)** sowie bspw. [tabnine **Eclipse-Plug-Ins-Empfehlung**sliste](https://www.tabnine.com/blog/plugins-for-eclipse/) bzw. [snyk-Liste](https://snyk.io/blog/10-eclipse-plugins-you-shouldnt-code-without/)
+	- …
+
+## Bildmaterialien
+
+- Kostenlos/lizenzfreundlich:
+	- Emojis: **[Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet)**, **[Emoji Finder](https://emoji.muan.co/)**
+	- **Concepts**/Nouns: **[Noun Project](https://thenounproject.com/)** ⭐ (Absolutely awesome! Free of charge with attributions, but account required.)
+	- **Fotos/Bilder:** **[Unsplash](https://unsplash.com/de)**, **[pixabay](https://pixabay.com/)** ⭐
+		- Weitere: [Pexels](https://www.pexels.com/)
+	- **Illustrationen:** **[unDraw](https://undraw.co/)** ⭐
+		- Weitere: [clker](http://www.clker.com), [pixabay](https://pixabay.com/vectors/) (mit Filter auf „Vectors“)
+	- **Icons:** **[Noun Project](https://thenounproject.com/)** ⭐, **[iconmonstr](https://iconmonstr.com)**, [**Feather** (OSS)](https://feathericons.com), [**FontAwesome** (Freebies)](https://fontawesome.com/v6/search?o=r&m=free), **[Emojis](https://www.webfx.com/tools/emoji-cheat-sheet/)**, **[CryptoKit](https://cryptokit.ch/specimen)**
+		- Cloud Computing: [**Kubernetes** Icons Set](https://github.com/kubernetes/community/tree/master/icons)
+		- Weitere: [Line Awesome](https://icons8.com/line-awesome), [Academicons](https://jpswalsh.GitHub.io/academicons/), [Twemoji](https://ellekasai.GitHub.io/twemoji-awesome/), [Font Mfizz](http://fizzed.com/oss/font-mfizz), [Google Font Icons](https://fonts.google.com/icons), [Material Design Icons](https://pictogrammers.com/library/mdi/), [Bootstrap Icons](https://icons.getbootstrap.com), [css.gg](https://css.gg/app), [Boxicons](https://boxicons.com), [Font Awesome Extension](https://andrelzgava.GitHub.io/font-awesome-extension/), [Streamline Freebies](https://www.streamlinehq.com/freebies))([Iconify Free Icons](https://freebiesbug.com/illustrator-freebies/iconify-650-free-icons/))
+	- **[Free Fonts](https://speckyboy.com/best-free-fonts/)**: Kostenlose Schriftarten
+	- Kunst, Kultur, Geschichte: **[Prometheus-Bildarchiv](https://www.prometheus-bildarchiv.de/)**
+- AI-rendered Illustrations/Art:
+	- siehe Schwesterseite [awesome-6GL » Bildmaterialien Werkzeuge](https://github.com/cyberlytics/awesome-6GL#bildmaterialien-werkzeuge)
+
+## Mathe
+
+- **[MathCha.io](https://www.mathcha.io)**: Eine Cloud-WebApp zum zeichnen von mathematischen Grafiken
+	- Erlaubt den Export nach SVG und sogar nach Tikz zwecks Latex
+- **[Geogebra](https://www.geogebra.org/calculator)**: Graphikrechner, 2D Geometrie, 3D Geometrie, Algebra-Rechner, …
+	- (Auch als Desktop-App unter Windows verfügbar, bspw. mittels chocolatey: **choco install geogebra6** bzw. **choco install geogebra-geometry**)
+	- Alternative: **Desmos** ([Desmos Calculator](https://www.desmos.com/calculator), [Desmos Geometry](https://www.desmos.com/geometry))
+- **[JSXGraph](https://jsxgraph.uni-bayreuth.de)**: JavaScript library for cross-browser interactive geometry, function plotting, charting, and data visualization
+- siehe auch Abschnitt **[Data Science](https://github.com/cyberlytics/awesome-bdccai-tools#data-science)** auf der Schwester-Seite zu BDCC/AI
+- siehe unten bei [Kostenlose Alternativen](#kostenlose-alternativen) zu SAS, MathWorks Matlab und Wolfram Mathematica
+
+## Job-Bewerbungen
+
+\[ Parallel zur Abschlussarbeit werden Sie mit der Jobsuche und Ihren Bewerbungen beginnen. \]
+
+- Biometrisches Passbild Generator: [photoaid.com](https://photoaid.com/de-de/biometrisches-passbild)
+- Weitere Tipps: vgl. [Digitaler-Ressourcenpool-Schwesterseite](https://github.com/cyberlytics/awesome-basics#bsc-bonusliste)
+- Lebenslauf-Werkzeuge für Informatiker:
+	- LaTeX: **[CV-Templates](https://de.overleaf.com/latex/templates/tagged/cv)** (mein eigenes Paket: [ECV](https://ctan.org/pkg/ecv))
+	- Web: [Free **Responsive HTML5 Website Template**](https://www.google.de/search?q=Free+Responsive+HTML5+Website+Template)
+	- Entwickler-CV: **[JSON resume](https://jsonresume.org/)**
+	- Cloud Resume Builder: bspw. [CakeResum](https://www.cakeresume.com/), [zety](https://zety.com/), [Resume Genius](https://resumegenius.com/), uvm.
+- KI-gestütztes Bewerbungsbild: [AI Portrait](https://www.aiportrait.me/)
+
+## Kostenlose Alternativen
+
+- Adobe Creative Cloud
+	- Desktop: **[Affinity Studio](https://www.affinity.studio/)** (Nennenswert: Canva hat den Affinity-Entwickler Serif in 2024 übernommen)
+	- Desktop-Klon der Adobe CC: ArtCraft **[Craft App Suite](https://getartcraft.com/apps)**
+		- **[PhotoCraft](https://getartcraft.com/apps/photocraft)** ([github](https://github.com/storytold/photocraft)) – Bildbearbeitung
+		- **[VectorCraft](https://getartcraft.com/apps/vectorcraft)** ([github](https://github.com/storytold/vectorcraft)) – Vektorillustration
+		- **[FilmCraft](https://getartcraft.com/apps/filmcraft)** ([github](https://github.com/storytold/filmcraft)) – Videobearbeitung
+		- **[LightCraft](https://getartcraft.com/apps/lightcraft)** ([github](https://github.com/storytold/lightcraft)) – Fotobibliothek & RAW-Konverter
+		- **[PdfCraft](https://getartcraft.com/apps/pdfcraft)** ([github](https://github.com/storytold/pdfcraft)) – PDF-Werkbank
+		- **[EffectCraft](https://getartcraft.com/apps/effectcraft)** ([github](https://github.com/storytold/effectcraft)) – Motion Graphics & Visual Effects (VFX)
+		- **[DesignCraft](https://getartcraft.com/apps/designcraft)** ([github](https://github.com/storytold/designcraft)) – Layout & Publishing
+		- **[FigCraft](https://getartcraft.com/apps/figcraft)** ([github](https://github.com/storytold/figcraft)) – Interface Design & Prototyping
+		- **[SoundCraft](https://getartcraft.com/apps/soundcraft)** ([github](https://github.com/storytold/soundcraft)) – Audio-Aufnahme, Bearbeitung & Mixing (DAW)
+		- AI-gestützte Teilaspekte: **[ArtCraft IDE for Artists](https://getartcraft.com/)** ([github](https://github.com/storytold/artcraft)), OBACHT: ArtCraft IDE (Einzel-App) nicht verwechseln mit dem ArtCraft App Launcher für die anderen Apps der Craft App Suite, also den Adobe-Klonen… (!)
+	- Weitere Alternativen zu einzelnen Produkten der Adobe CC? Unten!
+- Adobe **Photoshop**
+	- Desktop: **[Krita](https://krita.org/)** \[**choco install krita**\] + **[RawTherapee](https://www.rawtherapee.com/)** for RAW files \[**choco install rawtherapee**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[PhotoCraft](https://getartcraft.com/apps/photocraft)** ([github](https://github.com/storytold/photocraft))
+	- Cloud: **[Pixlr](https://pixlr.com/de/)**
+	- AI-gestützte Teilaspekte: [clipdrop.co](https://clipdrop.co/), [iLoveIMG](https://www.iloveimg.com/), [ArtCraft IDE](https://getartcraft.com/)
+	- Kollaboratives Malen: **[Aggie.io](https://aggie.io/)**
+- Adobe **Illustrator** (und Adobe Fresco)
+	- Desktop: **[FireAlpaca](https://firealpaca.com/)** \[**choco install firealpaca**\] | **[Inkscape](https://inkscape.org/)** \[**choco install inkscape**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[VectorCraft](https://getartcraft.com/apps/vectorcraft)** ([github](https://github.com/storytold/vectorcraft))
+	- Cloud: **[Vectr](https://vectr.com/)** | **[Canva](https://www.canva.com)** | [Graphite](https://editor.graphite.rs/) | [Corel Vector](https://app.corelvector.com/) (formerly: Gravit Designer)
+	- Kollaboratives Zeichnen (Design): **[snappa](https://snappa.com/)**
+	- Kollaboratives Zeichnen (Whiteboarding): **[invision](https://www.invisionapp.com/)** | **[miro](https://miro.com/de/)** | **[mural](https://start.mural.co/)**
+- Adobe **InDesign**
+	- Desktop: **[Scribus](https://www.scribus.net/)** \[**choco install scribus**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[DesignCraft](https://getartcraft.com/apps/designcraft)** ([github](https://github.com/storytold/designcraft))
+	- Cloud: **[LucidPress](https://www.lucidpress.com/)** | **[Canva](https://www.canva.com)**
+- Adobe **Acrobat** Pro
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[PdfCraft](https://getartcraft.com/apps/pdfcraft)** ([github](https://github.com/storytold/pdfcraft))
+	- Weitere Desktop Alternativen:
+		- PDF-Editor: **[PDF-XChange Editor](https://pdf-xchange.eu/pdf-xchange-editor/)** \[**choco install pdfxchangeeditor**\]
+		- Toolbox: **[CubePDF Utility](https://www.cube-soft.com/cubepdfutility/)** ⭐, [iLovePDF Desktop](https://www.ilovepdf.com/desktop), or [PDF24 Creator](https://tools.pdf24.org/creator)
+		- PDF-Compressor: (€) neuxpower [NXPowerLite](https://neuxpower.com/nxpowerlite-desktop) (Top!), kostenlos [iLovePDF Desktop](https://www.ilovepdf.com/desktop)
+		- PDF-Conversion to PowerPoint: only Acrobat itself, other Desktop/CLI approaches are garbage, but there are free Online alternatives below
+	- Web:
+		- PDF-Editor: [Sejda](https://www.sejda.com/pdf-editor), [iLovePDF Editor](https://www.ilovepdf.com/edit-pdf) or [PDFescape](https://www.pdfescape.com/)
+		- Toolbox: [iLovePDF](https://www.ilovepdf.com/), [PDF24 Tools](https://tools.pdf24.org/), [Smallpdf](https://smallpdf.com/pdf-tools), or [pdfforge Online](https://www.pdfforge.org/online/)
+		- PDF-Compressor: neuxpower [wecompress](https://www.wecompress.com/) (max. 50MB), [iLovePDF Compress](https://www.ilovepdf.com/compress_pdf)
+		- PDF-Conversion to PowerPoint: Adobe Online Tool **[Acrobat PDF to PPT](https://www.adobe.com/acrobat/online/pdf-to-ppt.html)** ⭐ (use in private tab for reset), (I have not tried, yet: [iLovePDF pdf-to-powerpoint](https://www.ilovepdf.com/pdf_to_powerpoint), [Smallpdf pdf-to-ppt](https://smallpdf.com/pdf-to-ppt) or [PDF24 pdf-to-powerpoint](https://tools.pdf24.org/pdf-to-powerpoint))
+- Prepress Tooling: Adobe **[Preflight](https://helpx.adobe.com/acrobat/using/analyzing-documents-preflight-tool-acrobat.html)**, Callas **[pdfToolbox](https://www.callassoftware.com/en/products/pdftoolbox/pdftoolboxdesktop)**/[pdfaPilot](https://www.callassoftware.com/en/products/pdfapilot/pdfapilotdesktop) and Enfocus **[PitStop](https://www.enfocus.com/pitstop-pro)**
+	- Desktop:
+		- In general: No traditional free alternative, but a mix of [GhostScript](https://www.ghostscript.com/releases/gsdnld.html) (Win: use gswin64c.exe; i.a., ps2pdf, pdf2ps), [pdftk free](https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/) (concat files, add security, compress), [Xpdf](https://www.xpdfreader.com/download.html) (pdftops, pdftotext, pdftohtml, pdftoppm, pdftopng, pdfimages, pdfinfo, pdfdetach,pdftops), [poppler](https://community.chocolatey.org/packages/poppler) (i.a., pdffonts), and Apache [PDFBox](https://pdfbox.apache.org/) as well as optionally [PsUtils](https://gnuwin32.sourceforge.net/packages/psutils.htm) (i.a., psnup, psbook)
+		- PDF/X-1a: **[scribus](https://www.scribus.net/)** \[**choco install scribus**\]
+			- Open arbitrary PDF file in Scribus (use default option **text as vectors**)
+			- Use **File** » **Document Setup…** » **Color Management**:
+				- Select **Activate Color Management**
+				- Optional: Download, e.g., CoatedFOGRA39.icc and save it alongside the PDF! Then you can change, in the Color Management dialog, the color profiles to the alongside icc file profile, e.g., using CoatedFOGRA39 for all CMYK options (and just keep sRGB for the RGB options)
+			- Use **File** » **Export** » **Save as PDF…**:
+				- In General tab: select **PDF/X-1a** as output compatibility standard
+				- In Fonts tab: select **Outline All Fonts**
+	- Cloud:
+		- In general: No free alternative.
+		- PDF/X-1a: **[pdfrest](https://pdfrest.com/apitools/convert-to-pdfx/)** (Starter account with free contingent)
+- Apple **Photos** / Google **Picasa**:
+	- (Category: Photo Cataloging, Image Organizer, Metadata Manager)
+	- Desktop: **[Mylio Photos](https://mylio.com/download/)** (free personal Ed.), [Tonfotos](https://tonfotos.com/)
+		- Viewer-centric: **[FastStone Image Viewer](https://www.faststone.org/)** ⭐ \[**choco install fsviewer**\] | [ACDsee Free](https://www.acdsee.com/en/products/acdsee-free/)
+	- Web/Self-Hosted: [Piwigo](https://piwigo.org/), [PhotoPrism](https://www.photoprism.app/)
+	- Cloud: iPhoto, Google Photos, …
+- Adobe **LightRoom**
+	- (Category: Non-Destructive RAW Photo Editor and Photography Workflows aka Lightweight DAM)
+	- Desktop: **[DarkTable](https://www.darktable.org/)** \[**choco install darktable**\] 
+		- zzgl. die DAM-Alternative unten!
+		- Editor-only: **[RawTherapee](https://www.rawtherapee.com/)** \[**choco install rawtherapee**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[LightCraft](https://getartcraft.com/apps/lightcraft)** ([github](https://github.com/storytold/lightcraft))
+	- Cloud: **[polarr](https://photoeditor.polarr.co/)**
+- Adobe **Experience Manager** bzw. **MediaValet**
+	- (Category: Media Asset Management bzw. Digital Asset Management = DAM)
+	- Desktop: **[digiKam](https://www.digikam.org/)**
+	- Web/Self-Hosted: **[AtroDAM](https://www.atrodam.com/)**, **[Phraseanet](https://www.phraseanet.com/)**
+	- Cloud: **[ResourceSpace](https://www.resourcespace.com/free)** (free 10GB), [Razuna](https://razuna.com/pricing/)
+		- (Cloud-Kommerziell/€: **[pixx.io](https://www.pixx.io/)** (DE, dt. Server, DSGVO), [**brandfolder**.com](https://brandfolder.com/), **[OpenText Media Management](https://www.opentext.com/products/media-management)**, uvm.)
+- Adobe **Dreamweaver**
+	- Desktop: **[BlueGriffon](http://www.bluegriffon.org/)** \[**choco install bluegriffon**\] | **[Google Web Designer](https://webdesigner.withgoogle.com/)** \[**choco install google-web-designer**\]
+	- Cloud: **[webflow](https://webflow.com/)**
+- Adobe **XD**
+	- Desktop: **[JustInMind](https://www.justinmind.com)**
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[FigCraft](https://getartcraft.com/apps/figcraft)** ([github](https://github.com/storytold/figcraft))
+	- Cloud: **[Figma](https://www.figma.com/)**, [mydraft](https://mydraft.cc/), [Moqups](https://moqups.com/), [Framer](https://www.framer.com/), [NinjaMock](https://ninjamock.com/), uvm.
+- Adobe **Premiere** / Apple **Final Cut**
+	- Desktop: **[OpenShot](https://www.openshot.org/)** \[**choco install openshot**\] | **[Kdenlive](https://kdenlive.org/de/)** \[**choco install kdenlive**\] | **[Shotcut](https://www.shotcut.org/)** \[**choco install shotcut.install**\] | **[DaVinci Resolve](https://www.blackmagicdesign.com/products/davinciresolve)** | **[HitFilm Express](https://fxhome.com/product/hitfilm-express)**
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[FilmCraft](https://getartcraft.com/apps/filmcraft)** ([github](https://github.com/storytold/filmcraft))
+	- AI-gestützte Teilaspekte: **[ArtCraft IDE for Artists](https://getartcraft.com/)** ([github](https://github.com/storytold/artcraft))
+- Adobe **Audition**
+	- Desktop: **[Audacity](https://www.audacityteam.org/)** \[**choco install audacity**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[SoundCraft](https://getartcraft.com/apps/soundcraft)** ([github](https://github.com/storytold/soundcraft))
+	- Cloud: **[Audiotool](https://www.audiotool.com/)**
+- Adobe **After Effects**
+	- Desktop: **[Natron](https://natronGitHub.GitHub.io/)** \[**choco install natron.install**\] + **[Blender](https://www.blender.org/)** \[**choco install blender**\]
+	- Desktop-Klon: [Craft App Suite](https://getartcraft.com/apps) insbesondere **[EffectCraft](https://getartcraft.com/apps/effectcraft)** ([github](https://github.com/storytold/effectcraft))
+- Adobe **Captivate** (Screencast)
+	- Desktop: **[OBS](https://obsproject.com/)** \[**choco install obs-studio**\] | **[TechSmith Capture](https://www.techsmith.com/learn/tutorials/capture-desktop/capture-app/)** (formerly Jing) \[**choco install capture**\] | **[Screencast-O-Matic](https://screencast-o-matic.com/)** | **[screenrec](https://screenrec.com/)**
+	- Spezialhinweis: Man kann auch [mittels **PowerPoint**](https://insider.office.com/de-de/blog/tell-your-story-with-video-recording-in-powerpoint) eine Bild-in-Bild-Aufzeichnung („Teleprompter“) seiner Präsentation machen
+- Adobe **Captivate** (E-Learning)
+	- Desktop: **[Adapt](https://www.adaptlearning.org/)** | **[Xerte](https://xerte.org.uk/)**
+	- Cloud: **[Moodle](https://download.moodle.org/)**
+- Apple AirDrop
+	- Ad Hoc: **[Local Send](https://localsend.org)** (selbes WLAN benötigt)
+	- Continuos: **[Syncthing](https://syncthing.net/)** (bilateral Peer-to-Peer)
+- Microsoft **Windows**
+	- Desktop: [Linux](https://distrosea.com/)! [BSD](https://de.wikipedia.org/wiki/Berkeley_Software_Distribution)! [ChromeOS](https://chromeos.google/products/chromeos-flex/)!
+		- Exotischer: [Solus](https://getsol.us/)! [ReactOS](https://reactos.org/)! BeOS/[Haiku](https://www.haiku-os.org/)!
+	- Tipp: Ausprobieren von Linux-Distributionen online per **[DistroSea](https://distrosea.com/)** für Distro-Hoppers
+- Microsoft **Office** (Word, Excel, PowerPoint)
+	- Spezialhinweis: [Microsoft Office 365](https://www.oth-aw.de/hochschule/services/online-services/microsoft-produkte/) für Studierende kostenlos per Studisoft / OTH-Rahmenvertrag
+	- Desktop: **[LibreOffice](https://www.libreoffice.org/)** ⭐ \[**choco install libreoffice-fresh --ignore-dependencies**\] (hoher Funktionsumfang)\
+		| [**Collabora Office**](https://www.collaboraonline.com/collabora-office/) for Desktop (UK; technisch basierend auf LibreOffice; mit Ribbons)\
+		| **[SoftMaker FreeOffice](https://www.freeoffice.com/)** \[**choco install freeoffice**\] (DE; hohe MS Office UI/UX-Kompatibilität)\
+		| [**OnlyOffice** Docs](https://www.onlyoffice.com/desktop.aspx) for Desktop (RU; hohe MS Office Format-Kompatibilität)\
+		| [**WPS Office**](https://de.wps.com/download/) (CN; hohe Benutzerfreundlichkeit)\
+		| (€:) [**WordPerfect** Office Education](https://www.wordperfect.com/en/product/education-edition/) (CA; hohe/präzise Formatkontrolle)
+	- Desktop-Klone:
+		- **[GenOffice](https://genoffice.ai/)** ([github](https://github.com/genspark-ai/genoffice))
+		- **[Craft App Suite](https://getartcraft.com/apps)** u.a. mit Textverarbeitung **[WordCraft](https://getartcraft.com/apps/wordcraft)** ([github](https://github.com/storytold/wordcraft)), Tabellenkalkulation **[GridCraft](https://getartcraft.com/apps/gridcraft)** ([github](https://github.com/storytold/gridcraft)) und Präsentationssoftware **[DeckCraft](https://getartcraft.com/apps/deckcraft)** ([github](https://github.com/storytold/deckcraft))
+	- Cloud: **[ZoHo](https://www.zoho.com/)** inkl. [Zoho Docs for Desktop](https://www.zoho.com/docs/help/zoho-docs-for-desktop.html#installing-zohodrive) | [**OnlyOffice** Personal](https://personal.onlyoffice.com/) | **[Google Workspace](https://workspace.google.com/)** ([Google Docs](https://docs.google.com/document/u/0/), [Google Sheets](https://docs.google.com/spreadsheets/u/0/), [Google Slides](https://docs.google.com/presentation/u/0/))
+	- Web/Self-Hosted: [APITable](https://github.com/apitable/apitable)
+	- Android: **[Collabora Office](https://www.collaboraonline.com/collabora-office-android-ios/)** for Android (UK)\
+		| SoftMaker **[Office NX](https://play.google.com/store/apps/developer?id=SoftMaker+Software+GmbH)** (DE)\
+		| [**OnlyOffice**](https://www.onlyoffice.com/office-for-android) for Android (RU)\
+		| [**WPS Office**](https://de.wps.com/office/android/) for Android (CN)
+- Microsoft **Word**
+	- vgl. Office, hinzu kommen noch weitere nennenswerte Alternativen:
+	- Klone: (1) **[GenOffice](https://genoffice.ai/)** ([github](https://github.com/genspark-ai/genoffice)) sowie (2) die AppCraft App **[WordCraft](https://getartcraft.com/apps/wordcraft)** ([github](https://github.com/storytold/wordcraft))
+	- Desktop: **[Jarte](https://www.jarte.com/)**
+	- Cloud: **[Dropbox Paper](https://paper.dropbox.com/)** | **[YoPad](https://yopad.eu)** | **[EduPad](https://edupad.ch)**
+- Microsoft **Excel**
+	- vgl. Office, hinzu kommen noch weitere nennenswerte Alternativen:
+	- Klone: (1) **[GenOffice](https://genoffice.ai/)** ([github](https://github.com/genspark-ai/genoffice)) sowie (2) die AppCraft App  **[GridCraft](https://getartcraft.com/apps/gridcraft)** ([github](https://github.com/storytold/gridcraft))
+	- Cloud: **[smartsheet](https://www.smartsheet.com/)**, **[Airtable](https://www.airtable.com/)** (zzgl. obige [ZohoSheets](https://www.zoho.com/sheet/) | [OnlyOffice Personal](https://personal.onlyoffice.com/) | [Google Sheets](https://sheets.google.com/document/u/0/) | [Excel Online](http://office.live.com/start/Excel.aspx))
+	- Kollaborative Spreadsheet-Bearbeitung? **[EtherCalc](https://ethercalc.net)**
+- Microsoft **PowerPoint**
+	- vgl. Office, hinzu kommen noch weitere nennenswerte Alternativen:
+	- Klone: (1) **[GenOffice](https://genoffice.ai/)** ([github](https://github.com/genspark-ai/genoffice)) sowie (2) die AppCraft App  **[DeckCraft](https://getartcraft.com/apps/deckcraft)** ([github](https://github.com/storytold/deckcraft))
+	- Desktop: [latex-**beamer**](https://ctan.org/pkg/beamer) bzw. [typst with **touying**](https://typst.app/universe/package/touying/)
+	- Web/Self-Hosted: **[reveal.js](https://revealjs.com/)**| [Decker](https://elearning.uni-wuerzburg.de/decker/) | [impress.js](https://github.com/impress/impress.js) | [Shower](https://github.com/shower/shower) | [Inspire.js](https://github.com/LeaVerou/inspire.js) | [deck.js](https://github.com/imakewebthings/deck.js) | [DZSlides](https://github.com/paulrouget/dzslides) | uvm.
+	- Cloud: **[slides.com](https://slides.com/)** (basiert auf [reveal.js](https://revealjs.com/))| [genially](https://genially.com/plans/education/) (für Studierende kostenlos) | **[Prezi](https://prezi.com/)** (nur 5 Dokumente kostenlos)\
+		| (€:) **[Haiku Deck](https://www.haikudeck.com/pricing/edu)**: KI-gestützte Veredelung von Präsentationen durch automatische Fotos und Designs\
+		| (€:) [Microsoft **Sway**](https://sway.cloud.com/)
+	- Kollaborative Präsentationen: **[Pitch](https://pitch.com/)**, **[Ludus](https://ludus.one/)**
+	- Kollaboratives Zeichnen (Whiteboarding): **[invision](https://www.invisionapp.com/)** | **[miro](https://miro.com/de/)** | **[mural](https://start.mural.co/)**
+- Microsoft **Access**
+	- Desktop: **[Navicat](https://www.navicat.com/en/products/navicat-premium)**, für Studierende kostenlos über das [Navicat Academic Partner Program for Students](https://www.navicat.com/en/sponsorship/education/student)
+	- Web/Self-Hosted: **[nuBuilder](https://www.nubuilder.com/)** | **[budibase](https://budibase.com/pricing/)**
+	- Cloud: **[Zoho Creator](https://www.zoho.com/creator/)** | **[Retool](https://retool.com/)** | **[Google AppSheet](https://about.appsheet.com/home/)**
+- Microsoft **Outlook** (Groupware)
+	- Desktop: **[EssentialPIM Free](https://www.essentialpim.com/features/overview/pro-vs-free)** | [Thunderbird](https://www.mozilla.org/en-US/thunderbird/) \[choco install thunderbird\] | [SeaMonkey](https://www.seamonkey-project.org/) \[choco install seamonkey\]
+	- Web/Self-Hosted: [**Zimbra** Open Source Edition](https://www.zimbra.com/open-source-email-overview/) | **[NextCloud Server](https://nextcloud.com/install/)** inkl. [Desktop File Sync Client](https://nextcloud.com/install/#install-clients) | Open Source **[grommunio](https://grommunio.com/download/)**
+	- Cloud: **[Zoho Mail](https://www.zoho.com/mail/)** (Forever Free Plan), **[Google Workspace](https://workspace.google.com/)**\
+		| [**OnlyOffice** Workspace](https://www.onlyoffice.com/saas.aspx) (u.a. [OnlyOffice Mail](https://www.onlyoffice.com/mail.aspx) und [Calendar](https://www.onlyoffice.com/calendar.aspx))
+- Microsoft **OneNote**
+	- Desktop: **[Laverna](https://laverna.cc/)**
+	- Cloud: **[Notion](https://www.notion.so/)** \[**choco install notion**\] | **[Evernote](https://evernote.com/)** \[**choco install evernote**\] | **[Zoho Notebooks](https://www.zoho.com/notebook/)** | **[Google Keep](https://keep.google.com/)** | uvm.
+- Microsoft **Visio**
+	- Desktop: **[draw.io](https://app.diagrams.net)** \[**choco install drawio**\]
+	- Cloud: [diagrams.net](https://app.diagrams.net)
+- Microsoft **Project**
+	- Desktop: **[ProjectLibre](https://sourceforge.net/projects/projectlibre/files/ProjectLibre/)** | **[GanttProject](https://www.ganttproject.biz/)**
+	- Web/Self-Hosted: **[OpenProject](https://www.openproject.org/)**
+	- Cloud: **[Taiga.io](https://www.taiga.io/)**
+- **Zoom** bzw. Microsoft **Teams** (Video-Konferenz)
+	- Web/Self-Hosted: **[BigBlueButton](https://docs.bigbluebutton.org/greenlight/gl-install.html)** \[via Container\] | **[Jitsi](https://jitsi.org/)** \[**choco install jitsi**\] (für kleine Gruppen) ggf. in Kombination mit einer [rocket.chat](https://www.rocket.chat/)-Integration | **[NextCloud Talk](https://nextcloud.com/talk/)** | **[WorkAdventure](https://github.com/thecodingmachine/workadventure)**
+	- Cloud: **[Discord](https://discord.com/)** | **[Jitsi Meet](https://meet.jit.si/)** (für kleine Gruppen) | [**gather**.town](https://www.gather.town/) | [Google **Meet**](https://apps.google.com/meet/) (max. 60 Minuten) | **[HyHyve](https://www.hyhyve.com/pricing/)**
+	- (Ergänzungsempfehlung: Für einen hochwertigen virtuellen Hintergrund ohne Greenscreen empfehle ich das kostenpflichtige [XSplit VCam](https://www.xsplit.com/vcam))
+	- (Zusatzhinweis: Slack-Alternativen (s. unten) – wie bspw. [Flock](https://www.flock.com/features/communication/video-cal

@@ -1,0 +1,152 @@
+# 🍢 餐饮连锁数字化 + AI 全景蓝图
+
+> 我们是 **原串**(一家真实运营中的平价烤串连锁品牌,官网 [ycbbq.cn](https://www.ycbbq.cn)),用「**1 个人** + AI」建成了覆盖订货、库存、生产、财务、门店运营、拓店招商的全链路数字化系统。
+> 这个仓库不放代码,放的是比代码更值钱的东西:**架构决策、业务口径、踩坑实录,以及能让 AI 直接替你施工的复刻指令**。
+
+**适合谁**:想做数字化的餐饮连锁创始人、IT 负责人、被老板拉来搭系统的工程师——以及你们手里的 AI 编程助手。
+
+![全景蓝图一图流](assets/overview.svg)
+
+四个仓库(后端 / 管理端 Web / 门店小程序 / 官网)各自独立发版,后端单体是唯一的数据与接口中枢——为什么这样拆,见[四端拆分](01-architecture/four-repos.md)。
+
+## English summary
+
+This repository is a blueprint, written entirely in natural language, for digitalizing a Chinese restaurant chain end to end with AI. It comes from a real, operating Chinese skewer-restaurant chain, where one engineer plus AI built and runs the whole system: ordering, inventory, central production, finance, store operations, delivery platforms, site selection and franchising. Inside you will find 26 module blueprints covering flows, domain models and metric definitions; 19 AI-executable build prompts across 8 milestones, each ending with an acceptance checklist; pitfalls written as symptom → root cause → rule; and the AI engineering practice that lets one person deliver the output of a team. There is no source code and no real business data: every figure in the text is fictional. The content is released under the MIT license. Non-Chinese readers do not need to read Chinese first: hand the repository to an AI coding assistant and ask it to build layer 05 milestone by milestone, starting from [00-bootstrap](05-replication/prompts/00-bootstrap.md).
+
+## 这里有什么
+
+| ✅ 有 | ❌ 没有 |
+|---|---|
+| 经真实门店验证的连锁数字化**整体方案**,正文全部用自然语言写成 | 源代码——方案与技术栈解耦,AI 时代照蓝图重建比读老代码更快([附录](06-appendix/README.md)里有通用示例伪码,同样不是产品源码) |
+| 26 个业务模块的流程、领域模型与口径红线 | 任何配方、原料用量、工艺参数(只讲研发/生产模块的**结构**) |
+| 我们踩过、你可以直接跳过的坑:**症状 → 根因 → 铁律** | 任何财务税务、公司主体安排(只讲记账引擎的**模式**) |
+| 19 条可按序直接喂给 AI 编程助手的**施工指令** | 任何真实经营数据(正文数字均为虚构;截图仅作界面展示) |
+
+> 📌 **最新更新(2026-10)**:AI 开始接管一线——新增 7 个模块页([线上客服 AI](02-modules/wm-ai-service.md) / [智能采购与排产](02-modules/smart-supply.md) / [开票、税务与资金侧自动化](02-modules/invoice-tax.md) / [工厂摄像头 AI 巡检](02-modules/factory-ai-inspection.md) / [机组联网与收工自动关机](02-modules/equipment-automation.md) / [质检与计量](02-modules/quality-control.md) / [认证记录自动生成](02-modules/certification-records.md))与 M8「AI 接管一线」的 3 份施工指令,补充了十余个既有页,并回填了近六周的新踩坑。完整清单见 [更新日志](CHANGELOG.md)。
+>
+> 历史更新:2026-08-30 新增[附录层](06-appendix/README.md)——[IM Agent 平台施工图](06-appendix/agent-platform-blueprint.md);2026-08 新增 5 个模块页(外卖逐单毛利 / 费用审批与工资 / 资产台账 / 冷链与工厂 IoT / 看板与车间大屏)与 M7 的 3 份施工指令。
+
+---
+
+## 界面速览
+
+以下均为**真实系统截图**(截图中的个人手机号与敏感金额已打码),直观感受各个端长什么样。
+
+| 飞书工作台 · 自建应用矩阵<br/>总部与工厂同学的统一入口:看板、巡检、选址、财务,以及各岗位 AI 机器人,全长在飞书里 | 门店小程序 · 店长首页<br/>营业额、配送、开收档、积分、经营分、外卖评分与 AI 差评分析,一屏到底 |
+|---|---|
+| <img src="assets/screens/feishu-workbench.jpg" width="380" alt="飞书工作台自建应用截图"> | <img src="assets/screens/miniapp-home.jpg" width="380" alt="门店小程序首页截图"> |
+
+| 飞书 · 改码机器人<br/>业务同学在群里 @机器人报 bug/提需求 → AI 定位根因、改码、说明修了什么 → 按风险分级决定直接上线还是等人确认 | 飞书 · 产品研发助手<br/>研发方案按落地难易/工艺/卖相多维对比给结论,合规红线(GB 2760/GB 7718)自动带出 |
+|---|---|
+| <img src="assets/screens/bot-codefix.jpg" width="380" alt="改码机器人对话截图"> | <img src="assets/screens/bot-rnd.jpg" width="380" alt="产品研发助手对话截图"> |
+
+| 飞书 · 设计助手<br/>@机器人一句话 + 附件,直接交付文件成品(如全品类 SOP 模板) | 飞书 · 选址助手<br/>定时任务每日挖掘空白市场,产出一张图发回群,附口径说明 |
+|---|---|
+| <img src="assets/screens/bot-design.jpg" width="380" alt="设计助手对话截图"> | <img src="assets/screens/bot-site.jpg" width="380" alt="选址助手对话截图"> |
+
+| 个微门店群 · 聊天即操作<br/>店长 @机器人查营业额;收档提交后机器人自动回执 | 个微门店群 · AI 视觉巡检<br/>开档问候 + 摄像头穿戴合规识别,异常带截图直接发到店群 |
+|---|---|
+| <img src="assets/screens/wechat-chatops.jpg" width="380" alt="门店群聊天办事截图"> | <img src="assets/screens/wechat-ai-inspection.jpg" width="380" alt="门店群AI巡检告警截图"> |
+
+| 工厂 AI 巡检大屏<br/>按点位抓拍、违规实时进台账 | 线上客服助手控制台<br/>待回、超时、紧急电话、交接班一页看 |
+|---|---|
+| <img src="assets/screens/factory-ai-wall.jpg" width="380" alt="工厂AI巡检大屏截图"> | <img src="assets/screens/wm-ai-console.jpg" width="380" alt="线上客服助手控制台截图"> |
+
+<sub>以上两张为 2026-10 新增,截图已脱敏(设备序列号与内部访问路径已遮盖)。</sub>
+
+**选址助手的日报成品** —— 公开人口格网 + 地图 POI 算商圈性价比,每天一张图,评估仅供参考、定铺由人拍板
+
+![每日空白市场挖掘日报](assets/screens/site-blank-market.png)
+
+**元订货 · 管理端 Web 首页** —— 总部同学的日常主页:出货完成率与趋势一屏看完,订单/商品/生产/门店/采购/财务/报表一站式
+
+![元订货管理端首页截图](assets/screens/ycmall-admin.png)
+
+**元财务 · 财务总览** —— 自建内账引擎:净利润与试算平衡、数据待办、成本校正提醒;九成以上凭证由订货/采购/收付等业务事件自动生成
+
+![元财务财务总览截图](assets/screens/finance-overview.png)
+
+> 💡 **这套财务体系跑出来的效果**:订货、生产、仓库、资金、[报销与工资](02-modules/expense-payroll.md)数据全打通,财务日常 **0 Excel 表格**;银行流水银企直联自动拉取、与业务收付自动匹配入账,内账自动汇总推送外账系统;每天需要人工处理的只有**不到 5%** 的匹配失败账目——财务做内账的时间:**每天约 10 分钟,每月结账约 1 小时**。怎么做到的,见[自建内账引擎](02-modules/finance-ledger.md)。
+
+---
+
+## 贯穿全书的七个原则
+
+七条反复验证过的骨架思想,后面每一层都会反复出现:
+
+| # | 原则 | 一句话 | 详见 |
+|---|------|--------|------|
+| 1 | **唯一出口** | 凡是"改数值"的系统(库存、积分、凭证),只留一个入口函数 + 完整流水,其余一律禁写 | [库存](02-modules/inventory.md) · [积分](02-modules/points.md) · [内账](02-modules/finance-ledger.md) |
+| 2 | **价格快照** | 单据在成交瞬间冻结价格与商品信息,此后统计、退款、对账只读快照,绝不读实时价 | [订货商城](02-modules/ordering-mall.md) |
+| 3 | **口径文档先行** | 每个指标先写清口径再写代码,人和 AI 读同一份文档 | [数据口径](03-pitfalls/data-caliber.md) |
+| 4 | **单体 + AI** | 小团队别碰微服务;单体仓库对 AI 的上下文最友好 | [技术选型](01-architecture/tech-stack.md) |
+| 5 | **锁与豁免** | 用业务锁(如锁订货)换数据质量,但豁免必须收敛到统一入口 | [订货商城](02-modules/ordering-mall.md)(正篇) · [营业额](02-modules/turnover.md) · [巡检经营分](02-modules/inspection.md) |
+| 6 | **人机半自动** | 拿不到官方 API 就承认现实:插件抓取 + SOP + 失败告警,人做最后一环 | [外卖平台集成](02-modules/delivery-platforms.md) |
+| 7 | **先影子、再限额、后放权** | 凡是让 AI 或规则替人做决定的功能(自动下单、客服代回、流水认领、收工关机),一律先影子运行只记不动,再限额真跑,最后按品/按场景放权,且每一级都能一键退回 | [智能采购与排产](02-modules/smart-supply.md) · [线上客服 AI](02-modules/wm-ai-service.md) · [开票、税务与资金侧自动化](02-modules/invoice-tax.md) · [机组联网与收工自动关机](02-modules/equipment-automation.md) |
+
+---
+
+## 地图:五层读法
+
+每层的目录页都有完整子页清单,这里只给一张速览表:
+
+| 层 | 讲什么 | 先读这几页 |
+|---|---|---|
+| [01 · 架构与决策](01-architecture/README.md) | 技术底座怎么选、怎么部署,以及"发了却没生效"的坑 | [技术选型](01-architecture/tech-stack.md) · [四端拆分](01-architecture/four-repos.md) |
+| [02 · 业务模块蓝图 ×26](02-modules/README.md) | 每个模块讲透:流程、领域模型、口径红线 | [订货商城](02-modules/ordering-mall.md) · [库存](02-modules/inventory.md) · [自建内账引擎](02-modules/finance-ledger.md) · [外卖逐单毛利](02-modules/wm-margin.md) |
+| [03 · 踩坑实录](03-pitfalls/README.md) | 症状 → 根因 → 铁律,按端分四页 | [数据口径](03-pitfalls/data-caliber.md)(最贵的一类坑) |
+| [04 · AI 工程实践](04-ai-engineering/README.md) | 1 个人干出一个团队产能的方法论 | [机器人体系](04-ai-engineering/bots-architecture.md) · [记忆方法论](04-ai-engineering/memory-methodology.md) · [业务型 AI](04-ai-engineering/business-ai.md) |
+| [05 · AI 复刻指南 ×19](05-replication/README.md) | 按 M1~M8 里程碑排好序、可直接喂给 AI 的施工指令 | 从 [00-bootstrap](05-replication/prompts/00-bootstrap.md) 开始 |
+| [附录 · 技术施工图](06-appendix/README.md) | 少数需要精确到接口契约才能复刻的东西,业务无关 | [IM Agent 平台施工图](06-appendix/agent-platform-blueprint.md) |
+
+## 三种打开方式
+
+- **👔 老板 / 业务负责人(15 分钟)**:读 [02 层模块全景](02-modules/README.md) 看每个模块解决什么问题,挑 [线上客服 AI](02-modules/wm-ai-service.md) 与 [智能采购与排产](02-modules/smart-supply.md) 两页看 AI 怎么接手一线的活,再读 [数据口径坑](03-pitfalls/data-caliber.md) 和 [04 层导读](04-ai-engineering/README.md)——知道该向团队要什么。
+- **🛠 技术负责人(2 小时)**:01 层全部 → 02 层按推荐顺序 → 03 层全部 → 04 层 → [附录](06-appendix/README.md)。读完你就知道每一步的深浅。
+- **🤖 直接让 AI 干活(约一至数周)**:见下方快速开始。
+
+## 快速开始:让 AI 复刻一套
+
+1. git clone 本仓库(或直接把仓库内容给你的 AI);
+2. 用能读写文件、能跑命令的 AI 编程助手(如 Claude Code)打开一个空项目;
+3. 把下面这段话**整段发给你的 AI**:
+
+```text
+请先读蓝图仓库的 README.md 和 05-replication/README.md,
+然后按 05-replication/prompts/00-bootstrap.md 开始施工,
+每完成一个里程碑跑一遍该文件末尾的验收清单,通过后再进入下一个。
+技术栈默认 Django + MySQL + Redis + Celery;
+如需更换技术栈,保持文中的模式与口径不变,实现方式由你决定。
+```
+
+每个 prompt 文件都自带**验收清单**——AI 说"做完了"不算数,清单过了才算。
+
+## 本仓库如何写成
+
+本仓库由原串技术团队维护——就是上面说的那 1 个人。初稿由我们自己的 AI 工程体系起草(方法论就在 [04 层](04-ai-engineering/README.md)),人工逐页复核机密红线后发布。欢迎提 issue 交流;涉及配方、财务与真实经营数据的问题恕不回答。
+
+## 常见问答
+
+**Q1:为什么不开放源码?**
+
+编程语言是为了把人的语言解释/编译成机器码,以后不需要传统编程语言和 coding 了。
+
+**Q2:开放这个项目的目的是什么?**
+
+希望记录自己的实践过程,学习交流。不接收打赏、咨询或付费搭建,有问题可以提 issue,我定期回答。
+
+P.S. 行业软件做的都一坨,希望都能动手做出更好的产品。
+
+**Q3:基于哪些协作平台?**
+
+公司工厂团队基于飞书 + 飞书网页应用 + 飞书机器人,门店基于个微门店群 + 机器人 + 门店小程序。
+
+**Q4:有哪些成本?**
+
+一台服务器 + Claude 账号订阅。
+
+## 声明
+
+- 正文示例数字均为虚构;界面截图为真实系统展示,其中数据不构成任何经营或投资建议。
+- 方案以烤串/烧烤连锁为背景写成,其他餐饮业态请自行映射。
+- License:[MIT](LICENSE)。随便用、随便改、随便转载,保留版权声明即可;我们不对使用后果承担任何责任。

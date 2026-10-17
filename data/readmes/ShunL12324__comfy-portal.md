@@ -1,0 +1,156 @@
+# Comfy Portal
+
+<div align="center">
+  <img src="assets/images/icon.png" width="120" alt="Comfy Portal Logo" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
+
+  <h3>Your Native iOS & Android Companion for ComfyUI</h3>
+
+  <p>
+    <a href="https://apps.apple.com/us/app/comfy-portal/id6741044736">
+      <img src="https://img.shields.io/badge/App_Store-Download-0D96F6?style=flat-square&logo=app-store&logoColor=white" alt="Download on the App Store">
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=com.sillyl12324.comfyportal">
+      <img src="https://img.shields.io/badge/Google_Play-Download-414141?style=flat-square&logo=google-play&logoColor=white" alt="Get it on Google Play">
+    </a>
+    <a href="https://github.com/ShunL12324/comfy-portal/actions/workflows/testflight.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/ShunL12324/comfy-portal/testflight.yml?style=flat-square&label=TestFlight%20Build" alt="TestFlight Build">
+    </a>
+    <a href="https://github.com/ShunL12324/comfy-portal/actions/workflows/google-play.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/ShunL12324/comfy-portal/google-play.yml?style=flat-square&label=Google%20Play%20Build" alt="Google Play Build">
+    </a>
+    <img src="https://img.shields.io/badge/Platform-iOS%2015.1+%20%7C%20Android-000000?style=flat-square&logo=apple&logoColor=white" alt="Platform: iOS 15.1+ | Android">
+    <a href="https://github.com/ShunL12324/comfy-portal/stargazers">
+      <img src="https://img.shields.io/github/stars/ShunL12324/comfy-portal?style=flat-square" alt="GitHub Stars">
+    </a>
+    <a href="https://github.com/ShunL12324/comfy-portal/issues">
+      <img src="https://img.shields.io/github/issues/ShunL12324/comfy-portal?style=flat-square" alt="GitHub Issues">
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/badge/License-Custom-F5C518?style=flat-square" alt="License">
+    </a>
+  </p>
+</div>
+
+---
+
+**Comfy Portal** is a professional, native iOS & Android client designed for [ComfyUI](https://github.com/comfyanonymous/ComfyUI). It bridges the gap between desktop power and mobile convenience, offering a seamless experience for AI artists and developers.
+
+> **Note**: This is an unofficial client and is not affiliated with the ComfyUI project.
+
+## Features
+
+| Feature | Description |
+| :--- | :--- |
+| **Native Experience** | Built with React Native and Expo for a smooth, responsive native feel. |
+| **Real-time Monitor** | Watch generation progress step-by-step and preview results instantly. Jobs keep running when you leave the screen or background the app, and are picked back up when you return. |
+| **Seamless Connect** | Connect to local (LAN) or remote (Cloud/RunPod) ComfyUI instances. |
+| **Workflow Manager** | View, manage, and execute your workflows on the go — import from a file, a URL or the clipboard, or sync them straight from your server. |
+| **AI Assistant** | Edit a workflow by describing what you want. Streams its replies, shows every change it makes, and works with 17 providers (OpenAI, Anthropic, Gemini, DeepSeek, Groq, xAI, Mistral…) or any OpenAI-compatible endpoint, including local ones like Ollama and LM Studio. |
+| **History Gallery** | Every generation kept per workflow — images and video — with multi-select to save, share or delete, and swipe navigation in full screen. |
+| **Broad Node Support** | Hand-built editors for the common nodes, and anything else rendered straight from your server's own node definitions, so custom nodes work without waiting for an app update. |
+| **Privacy First** | Direct connection to your server. No data is stored on our cloud. |
+
+## Interface
+
+<div align="center">
+  <img src="repo-assets/store-images/screenshot-1.png" width="200">
+  <img src="repo-assets/store-images/screenshot-2.png" width="200">
+  <img src="repo-assets/store-images/screenshot-3.png" width="200">
+  <br>
+  <img src="repo-assets/store-images/screenshot-4.png" width="200">
+  <img src="repo-assets/store-images/screenshot-5.png" width="200">
+  <img src="repo-assets/store-images/screenshot-6.png" width="200">
+</div>
+
+## Latest Updates
+
+| Version | Date | Changes |
+| :--- | :--- | :--- |
+| **v1.1.0** | 2026-08-24 | • **Feature**: AI assistant rebuilt on AI SDK v7 — streaming replies, a stop button, per-tool progress, and 17 providers plus any OpenAI-compatible endpoint<br>• **Feature**: Full-screen history gallery with multi-select save/share/delete and swipe navigation<br>• **Feature**: Load Image can reuse an image already on the server instead of re-uploading<br>• **Feature**: Nodes without a built-in editor now render from the server's `/object_info`<br>• **Feature**: ComfyUI-MiniMaxH3-Easy support<br>• **Improvement**: Generations survive navigation and backgrounding, and are recovered on return<br>• **Improvement**: Model pickers source their options from the server, so custom node folders work<br>• **Fix**: Long prompts were truncated before the AI assistant saw them, so its edits overwrote the rest<br>• **Fix**: Video in the history gallery played sound over a black screen<br>• **Fix**: Very large seed values lost precision |
+| **v1.0.7** | 2026-02-18 | • **Feature**: iOS Share Extension with Quick Actions<br>• **Feature**: Custom prompt injection replaces the fixed prompt templates<br>• **Feature**: Web platform support<br>• **Improvement**: AI chat sessions persist across app launches<br>• **Fix**: iPad layout and adaptive bottom sheets<br>• **Fix**: Real ComfyUI execution errors are surfaced instead of a generic message |
+| **v1.0.6** | 2026-02-09 | • **Fix**: Slider crash on workflows with invalid parameter values<br>• **Improvement**: Removed the redundant tag mode from CLIPTextEncode |
+| **v1.0.5** | 2026-02-08 | • **Feature**: AI-powered prompt enhancement for text-to-image workflows<br>• **Feature**: GetImageSize node support<br>• **Improvement**: LoadImage node with image preview and multiple source options<br>• **Improvement**: Workflow tab UI and empty states<br>• **Fix**: Dark mode flash on app launch<br>• **Fix**: Keyboard handling in modals and text inputs<br>• **Upgrade**: Expo SDK 55 with React Native 0.83 |
+
+Older versions and Android APK downloads are on the [Releases page](https://github.com/ShunL12324/comfy-portal/releases).
+
+## Quick Start
+
+### 1. Download App
+Get the latest version from the App Store or Google Play.
+
+<a href="https://apps.apple.com/us/app/comfy-portal/id6741044736">
+  <img src="assets/badges/app-store.svg" alt="Download on the App Store" height="40">
+</a>&nbsp;&nbsp;
+<a href="https://play.google.com/store/apps/details?id=com.sillyl12324.comfyportal">
+  <img src="assets/badges/google-play.svg" alt="Get it on Google Play" height="40">
+</a>
+
+### 2. Setup Server
+You need a running ComfyUI instance. We provide detailed guides for various setups:
+
+| Environment | Guide |
+| :--- | :--- |
+| **Local** | [Local Server Setup](https://shunl12324.github.io/comfy-portal/guide/local-server) |
+| **Remote** | [Remote Server Setup](https://shunl12324.github.io/comfy-portal/guide/remote-server) |
+| **RunPod** | [RunPod Deployment](https://shunl12324.github.io/comfy-portal/guide/remote-server-runpod) |
+
+### 3. Install Extension (Recommended)
+
+To unlock full functionality, including **workflow synchronization** and enhanced app integration, we strongly recommend installing the [Comfy Portal Endpoint](https://github.com/ShunL12324/comfy-portal-endpoint) extension.
+
+- **Workflow Sync**: Seamlessly sync your workflows from PC to App.
+- **Enhanced Integration**: Provides necessary API endpoints for better app performance.
+
+[Install Comfy Portal Endpoint →](https://github.com/ShunL12324/comfy-portal-endpoint)
+
+## Development
+
+### Prerequisites
+- Node.js 22+
+- pnpm 10+
+- macOS with the current stable Xcode, plus CocoaPods (for iOS)
+- Android Studio with JDK 17 (for Android)
+
+The app targets iOS 15.1+ and is built against Expo SDK 55 / React Native 0.83.
+
+### Build Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ShunL12324/comfy-portal.git
+   cd comfy-portal
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Run on Simulator/Device**
+   ```bash
+   npx expo run:ios      # iOS
+   npx expo run:android  # Android
+   ```
+
+## License
+This project is available for **personal and educational use**. Commercial usage requires a separate license. See [LICENSE](LICENSE) for details.
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Star History
+
+<div align="center">
+  <a href="https://star-history.com/#ShunL12324/comfy-portal&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ShunL12324/comfy-portal&type=Date&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ShunL12324/comfy-portal&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ShunL12324/comfy-portal&type=Date" />
+    </picture>
+  </a>
+</div>
+
+---
+<div align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/ShunL12324">Shun</a></sub>
+</div>

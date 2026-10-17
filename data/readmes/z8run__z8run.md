@@ -1,0 +1,368 @@
+<h1 align="center">z8run</h1>
+
+<h3 align="center">Open-Source Visual Flow Engine</h3>
+
+<p align="center">
+  Build, connect, and automate anything - visually.<br/>
+  Self-hosted alternative to <b>n8n</b> and <b>Node-RED</b>, built with Rust + React.
+</p>
+
+<p align="center">
+  <a href="https://github.com/z8run/z8run/actions/workflows/ci.yml"><img src="https://github.com/z8run/z8run/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/z8run/z8run/releases"><img src="https://img.shields.io/github/v/release/z8run/z8run?style=flat-square&color=06B6D4" alt="Release" /></a>
+  <a href="https://github.com/z8run/z8run/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0%20%2F%20MIT-blue?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/z8run/z8run/stargazers"><img src="https://img.shields.io/github/stars/z8run/z8run?style=flat-square" alt="Stars" /></a>
+  <a href="https://crates.io/crates/z8run"><img src="https://img.shields.io/crates/v/z8run?style=flat-square&color=e6522c" alt="Crates.io" /></a>
+  <a href="https://github.com/z8run/z8run/pkgs/container/z8run-api"><img src="https://img.shields.io/badge/ghcr.io-z8run--api-2496ED?style=flat-square&logo=docker" alt="Docker" /></a>
+</p>
+
+<p align="center">
+  <a href="https://app.z8run.org">Live Demo</a> &bull;
+  <a href="https://z8run.org">Website</a> &bull;
+  <a href="https://github.com/z8run/z8run/discussions">Community</a> &bull;
+  <a href="#quick-start">Quick Start</a>
+</p>
+
+<p align="center">
+  <img src="assets/demo.gif" alt="z8run flow editor demo" width="800" />
+</p>
+
+---
+
+## Why z8run?
+
+> Most workflow tools are either slow (Node.js), locked-in (SaaS), or hard to extend. z8run is none of those.
+
+z8run is an open-source visual flow engine built from the ground up in **Rust** for performance, safety, and extensibility. Inspired by tools like Node-RED and n8n, z8run is designed for developers who need real-time automation with a modern stack.
+
+**Key principles:**
+
+- **Fast** - Rust + Tokio async runtime, compiled to native code
+- **Visual** - Drag-and-drop node editor with real-time WebSocket sync
+- **Extensible** - WebAssembly plugin sandbox (write plugins in any language that compiles to WASM)
+- **Lightweight** - Single binary, embedded SQLite, zero external dependencies to get started
+- **Secure** - AES-256-GCM credential vault, JWT auth, sandboxed plugin execution
+
+## Comparison
+
+| Feature | z8run | Node-RED | n8n |
+|---|:---:|:---:|:---:|
+| Language | Rust | Node.js | Node.js |
+| Visual editor | Yes | Yes | Yes |
+| Self-hosted | Yes | Yes | Yes |
+| WASM plugins | Yes | No | No |
+| AI nodes (LLM, embeddings, agents) | 12 built-in | Community | Limited |
+| Credential vault (AES-256-GCM) | Built-in | Separate | Built-in |
+| Single binary deploy | Yes | No | No |
+| Open source | Apache-2.0 / MIT | Apache-2.0 | Sustainable Use |
+
+## Quick Start
+
+### Standalone binary (Windows, macOS, Linux)
+
+One file with the editor built in: no Docker, Node.js or database server
+needed. Download it from [Releases](https://github.com/z8run/z8run/releases):
+
+| Platform | File |
+|---|---|
+| Windows x86_64 | `z8run-windows-x86_64.zip` (contains `z8run.exe`) |
+| macOS Apple Silicon | `z8run-macos-arm64` |
+| Linux x86_64 | `z8run-linux-x86_64` |
+
+Each file has a `.sha256` next to it to verify the download.
+
+Start it by double-clicking it, or from a terminal:
+
+```bash
+./z8run                       # Windows: z8run.exe
+```
+
+It opens the editor at `http://localhost:7700` in your browser; create an
+account with **Create one** on the sign-in page. Started this way, z8run:
+
+- listens on `127.0.0.1` only, so other machines on your network can't reach it;
+- stores everything (SQLite database, keys, plugins) in your user folder:
+  `%APPDATA%\z8run` on Windows, `~/Library/Application Support/z8run` on
+  macOS, `~/.local/share/z8run` on Linux;
+- if it is already running, just opens the browser again.
+
+To use PostgreSQL, another SQLite file or another port, run the setup once:
+
+```bash
+z8run init
+```
+
+It asks, checks that the database works, and saves the answers for later
+starts (`--db-url`, `--port` and `--force` skip the questions).
+
+> **The binaries are not code-signed yet**, so the first start shows a warning:
+> - **Windows:** SmartScreen says "Windows protected your PC". Click
+>   **More info → Run anyway**.
+> - **macOS:** right-click the file → **Open**, then **Open** again. Or, from a
+>   terminal: `xattr -d com.apple.quarantine z8run-macos-arm64 && chmod +x z8run-macos-arm64`.
+> - **Linux:** `chmod +x z8run-linux-x86_64`.
+>
+> Compare the `.sha256` before bypassing the warning.
+
+Back up the data folder, in particular `secrets/vault.key`: without it, the
+credentials stored in the vault can't be decrypted.
+
+### From Source
+
+**Requirements:** [Rust](https://rustup.rs/) 1.91+, Node.js 22+ and `npm` (for frontend)
+
+```bash
+git clone https://github.com/z8run/z8run.git
+cd z8run
+npm --prefix frontend ci && npm --prefix frontend run build
+cargo build --release --features embed-ui
+./target/release/z8run        # desktop mode, as above
+```
+
+Without `--features embed-ui` the binary serves only the API, and the editor
+runs from the Vite dev server (`npm --prefix frontend run dev`, port 5173),
+which proxies to the API on port 7700.
+
+### With Docker
+
+```bash
+git clone https://github.com/z8run/z8run.git
+cd z8run
+cp .env.example .env          # set Z8_JWT_SECRET and POSTGRES_PASSWORD
+docker compose up -d
+```
+
+Pre-built images are available on [GHCR](https://github.com/z8run/z8run/pkgs/container/z8run-api):
+
+```bash
+docker pull ghcr.io/z8run/z8run-api:latest
+docker pull ghcr.io/z8run/z8run-nginx:latest
+```
+
+The server starts on `http://localhost:7700`.
+
+> **TLS / production deployment:** the bundled Nginx config (`deploy/nginx.conf`)
+> listens on plain HTTP (port 80) and assumes TLS is terminated **upstream**
+> (Cloudflare, a load balancer, or an ingress). It ships a baseline
+> Content-Security-Policy (tune it per deployment) and a **commented-out**
+> `Strict-Transport-Security` (HSTS) header — enable HSTS only once TLS is
+> served end-to-end. To terminate TLS in Nginx itself, add a `443 ssl` server
+> block with your certs and redirect `80 -> 443`; see the header comments in
+> `deploy/nginx.conf`.
+
+### Test the API
+
+```bash
+# Health check
+curl http://localhost:7700/api/v1/health
+
+# Create a flow
+curl -X POST http://localhost:7700/api/v1/flows \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My First Flow"}'
+
+# List all flows
+curl http://localhost:7700/api/v1/flows
+```
+
+## Architecture
+
+z8run is organized as a Rust workspace with focused crates:
+
+```
+z8run/
+├── crates/
+│   ├── z8run-core       # Flow engine, DAG validation, scheduler, 39 built-in nodes
+│   ├── z8run-storage    # SQLite / PostgreSQL persistence layer
+│   ├── z8run-runtime    # WASM plugin sandbox (wasmtime)
+│   └── z8run-api        # REST + WebSocket server (Axum)
+├── bins/
+│   └── z8run-cli        # z8run binary (serves the editor with --features embed-ui)
+├── frontend/            # React + TypeScript visual editor
+│   ├── src/features/    # Editor canvas, node palette, config panel
+│   ├── src/stores/      # Zustand state management
+│   └── src/lib/         # Node definitions, utilities
+└── Cargo.toml           # Workspace root
+```
+
+### How it works
+
+1. **Flows** are directed acyclic graphs (DAGs) of nodes connected by typed ports
+2. **Nodes** process messages and pass them to connected outputs
+3. **The scheduler** compiles flows into parallel execution plans using topological ordering
+4. **Plugins** run inside a WebAssembly sandbox with no network, filesystem or clock access, and with per-call CPU, time and memory limits
+5. **The editor** receives execution events live over a WebSocket (JSON), only for the flows its user owns
+
+## CLI
+
+```bash
+z8run                                  # Desktop mode: 127.0.0.1, per-user data folder, opens the browser
+z8run init                             # Choose the database (SQLite/PostgreSQL) and port
+z8run serve                            # Server mode: 0.0.0.0, ./data (Docker, services)
+z8run serve -p 8080                    # Custom port
+z8run migrate                          # Run database migrations
+z8run plugin list                      # List installed plugins
+z8run plugin install ./csv-parser.wasm # Install a plugin from .wasm file
+z8run plugin install ./json-transform/ # Install from directory with manifest.toml
+z8run plugin remove csv-parser         # Uninstall a plugin by name
+z8run plugin scan                      # Scan plugin directory
+z8run validate flow.json               # Validate a flow file
+z8run info                             # Show system information
+```
+
+### Plugins
+
+Plugins are WebAssembly modules that become nodes in the editor, under
+**Plugins** in the node palette. Install one with `z8run plugin install` and
+restart z8run to load it.
+
+A plugin exports `memory`, `z8_alloc(size) -> ptr` and
+`z8_process(ptr, len) -> ptr`. `z8_process` receives the message payload as
+JSON and returns a pointer to a 4-byte little-endian length followed by a JSON
+array of outputs, e.g. `[{"port": "output", "payload": {...}}]`. Optional
+exports: `z8_configure(ptr, len) -> i32` (receives the node config),
+`z8_validate() -> i32` and `z8_dealloc(ptr, len)`.
+
+A bare `.wasm` file gets one `input` and one `output` port. For named ports or
+editable settings, install a directory with a `manifest.toml`:
+
+```toml
+name = "row-scorer"            # node type: lowercase letters, digits, - and _
+version = "1.0.0"
+description = "Scores rows"
+author = "you"
+category = "transform"
+wasm_file = "row_scorer.wasm"  # inside the plugin directory
+inputs = [{ name = "rows", type = "array", required = true }]
+outputs = [{ name = "scored", type = "array" }]
+
+[config]                       # default settings, editable in the editor
+threshold = 5
+```
+
+Only `manifest.toml` and the module are copied on install. Names of built-in
+nodes (e.g. `http-request`) are refused. Each call runs under
+`Z8_PLUGIN_FUEL`, `Z8_PLUGIN_TIMEOUT_MS` and `Z8_PLUGIN_MAX_MEMORY_MB`; a
+manifest can lower its memory limit (`[capabilities] memory_limit_mb`) but not
+raise it.
+
+### Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `Z8_PORT` | `7700` | HTTP/WebSocket port |
+| `Z8_BIND` | `0.0.0.0` (`127.0.0.1` in desktop mode) | Bind address |
+| `Z8_DATA_DIR` | `./data` (per-user folder in desktop mode and `init`) | Data directory (database, keys, plugins, `z8run.env` from `init`) |
+| `Z8_DB_URL` | SQLite auto | Database URL (`sqlite://` or `postgres://`) |
+| `Z8_LOG_LEVEL` | `info` | Log level (trace, debug, info, warn, error) |
+| `Z8_JWT_SECRET` | - | JWT signing secret. **Required** for PostgreSQL/MySQL; with SQLite, generated once and kept in `<data dir>/secrets/jwt.key`. Generate with `openssl rand -base64 32` |
+| `Z8_VAULT_SECRET` | - | Encryption key for the credential vault. Falls back to `Z8_JWT_SECRET` when that is set, else generated once in `<data dir>/secrets/vault.key` |
+| `Z8_NO_BROWSER` | - | Set to `1` so desktop mode doesn't open the browser |
+| `POSTGRES_PASSWORD` | - | Password for the PostgreSQL user (Docker deployment) |
+
+Precedence: real environment variables, then `.env` in the working directory,
+then `<data dir>/z8run.env` written by `z8run init`. See
+[`.env.example`](.env.example) for the rest: rate limits and proxy trust,
+outbound (egress) policy for flows, database node limits and webhook limits.
+
+## API
+
+### REST Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/v1/health` | Health check |
+| `GET` | `/api/v1/info` | Server information |
+| `GET` | `/api/v1/flows` | List all flows |
+| `POST` | `/api/v1/flows` | Create a new flow |
+| `GET` | `/api/v1/flows/{id}` | Get flow by ID |
+| `DELETE` | `/api/v1/flows/{id}` | Delete a flow |
+| `POST` | `/api/v1/flows/{id}/start` | Start flow execution |
+| `POST` | `/api/v1/flows/{id}/stop` | Stop flow execution |
+
+### WebSocket
+
+Connect to `ws://localhost:7700/ws/engine` to receive execution events as JSON messages (`flow_started`, `node_completed`, `flow_stopped`, ...). The connection is authenticated with the session cookie, and each user only receives events for their own flows.
+
+## Built-in Nodes
+
+z8run ships with 39 built-in nodes (the authoritative list is the `register_node_type(...)` calls in `crates/z8run-core/src/nodes/mod.rs`):
+
+| Category | Nodes |
+|---|---|
+| **Input / Trigger** | HTTP In, Timer, Webhook (HMAC-SHA256 signature validation), Webhook Trigger, Cron Trigger |
+| **Process** | Function, JSON Transform (parse/stringify/extract), HTTP Request (outbound), Filter |
+| **Output** | Debug, HTTP Response |
+| **Logic** | Switch (multi-rule routing), Delay |
+| **Control flow** | If/Else, Loop |
+| **Data** | Database (PostgreSQL, MySQL, SQLite), MQTT (publish/subscribe) |
+| **Data engineering** | CSV, Aggregator, Batch |
+| **Data shaping** | Mapper |
+| **Security** | Sanitize |
+| **AI** | LLM, Embeddings, Classifier, Prompt Template, Text Splitter, Vector Store, Structured Output, Summarizer, AI Agent, Image Gen, STT, TTS |
+| **Integration** | Twilio (SMS/Call/Lookup), WhatsApp, CRM (HubSpot/Salesforce), Conversation Memory, Human Handoff |
+
+## Roadmap
+
+- [x] Core engine with DAG validation and topological scheduling
+- [x] REST API (Axum 0.8)
+- [x] SQLite / PostgreSQL persistence
+- [x] Visual node editor (React Flow + Zustand + Tailwind)
+- [x] 39 built-in nodes (HTTP In/Out/Request, Debug, Function, Switch, Filter, Delay, Timer, Webhook, JSON Transform, Database, MQTT, CSV, Aggregator, Batch, Mapper, Sanitize, If/Else, Loop, triggers + 12 AI nodes)
+- [x] Real-time WebSocket execution events
+- [x] Namespaced hook routes (`/hook/{flow_id}/{path}`)
+- [x] Smart config UI (dropdowns, password fields, code editors)
+- [x] Multi-database support (PostgreSQL, MySQL, SQLite)
+- [x] Flow management UI (list, create, delete from browser)
+- [x] Deploy & test from UI (save, deploy, stop buttons)
+- [x] Authentication & multi-user (JWT + argon2)
+- [x] Credential vault (AES-256-GCM encrypted connections)
+- [x] Flow import/export (JSON)
+- [x] WASM plugin execution (wasmtime sandbox with capabilities)
+- [x] MQTT node (publish/subscribe with TLS)
+- [x] AI suite: LLM, Embeddings, Classifier, Prompt Template, Text Splitter, Vector Store, Structured Output, Summarizer, AI Agent, Image Gen
+- [x] Docker deployment (multi-stage build, GHCR registry)
+- [x] CI/CD pipeline (GitHub Actions: build, test, deploy, release)
+- [x] Domain setup with Cloudflare (landing + app subdomains)
+- [x] Plugin install/remove CLI (`z8run plugin install`, `z8run plugin remove`)
+- [x] Standalone binary with embedded editor, including Windows (`--features embed-ui`, desktop mode, `z8run init`)
+- [ ] Undo/redo in the flow editor
+- [ ] Flow duplication
+- [ ] Node search/filter in the palette
+- [ ] Rate limiting on the API
+- [ ] Integration tests
+- [ ] MySQL storage adapter
+- [ ] Plugin marketplace
+- [ ] Helm chart for Kubernetes
+
+## Contributing
+
+z8run is in early development. Contributions, ideas, and feedback are welcome!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Security
+
+If you discover a security vulnerability, please email **security@z8run.org** instead of opening a public issue. We take security seriously and will respond promptly.
+
+## License
+
+z8run is dual-licensed under [Apache 2.0](LICENSE-APACHE) and [MIT](LICENSE-MIT). You may choose either license.
+
+## Support
+
+- Website: [z8run.org](https://z8run.org)
+- Email: [hello@z8run.org](mailto:hello@z8run.org)
+- GitHub Issues: [z8run/z8run/issues](https://github.com/z8run/z8run/issues)
+- Sponsor: [GitHub Sponsors](https://github.com/sponsors/z8run)
+
+---
+
+<p align="center">
+  Built with Rust and a lot of coffee.<br/><br/>
+  If you find z8run useful, please consider giving it a <a href="https://github.com/z8run/z8run">star on GitHub</a> - it helps others discover the project.
+</p>

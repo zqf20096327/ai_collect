@@ -1,0 +1,239 @@
+<!--
+SPDX-FileCopyrightText: © 2025 StreamKit Contributors
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<h1 align="center">
+  <br>
+  <img src="ui/src/assets/logo.png" alt="StreamKit Logo" height="120">
+  <br>
+  StreamKit
+  <br>
+</h1>
+<h4 align="center">Build and run real-time media pipelines on your own infrastructure</h4>
+<p align="center"><em>Live video compositing, speech-to-text, voice agents, real-time media processing — composable, observable, self-hosted.</em></p>
+<p align="center">
+  <a href="https://streamkit.dev"><img src="https://img.shields.io/badge/docs-streamkit.dev-blue?style=flat-square" alt="Documentation"></a>
+  <a href="https://demo.streamkit.dev"><img src="https://img.shields.io/badge/demo-try%20it%20live-brightgreen?style=flat-square" alt="Live Demo"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MPL%202.0-blue?style=flat-square" alt="License: MPL-2.0"></a>
+</p>
+<p align="center"><strong><a href="https://demo.streamkit.dev">Try the live demo</a></strong> — no install required</p>
+<br>
+
+<p align="center">
+  <img src="docs/public/screenshots/compositor.png" alt="StreamKit web UI (Monitor View): visual pipeline editor" width="800">
+  <br>
+  <em>Pipeline monitor showing real-time video compositing</em>
+</p>
+
+**StreamKit** is a self-hostable media processing server (written in Rust). You run a single binary (`skit`), then compose pipelines as a node graph (DAG) made from built-in nodes, plugins, and scriptable logic — via a web UI, YAML, or API.
+
+It operates in two distinct modes:
+
+1. **Dynamic (Real-time):** Long-running, interactive sessions (voice agents, live streams) that you can patch and tune live via the Web UI or WebSocket API.
+2. **Oneshot (Stateless):** Request/response processing (batch transcription, file conversion) via a simple HTTP API.
+
+Define your pipeline once, run it how you need.
+
+## Contents
+
+- [Project status](#project-status)
+- [Use cases](#use-cases)
+- [Try it from your terminal](#try-it-from-your-terminal)
+- [Core concepts](#core-concepts)
+- [Quickstart (Docker)](#quickstart-docker)
+- [What's included](#whats-included)
+- [Development](#development)
+- [Coding agents](#coding-agents)
+- [Docs & links](#docs--links)
+- [Acknowledgments](#acknowledgments)
+- [License](#license)
+
+## Project status
+
+StreamKit is still in its infancy and very much a work in progress. It's usable for tinkering and building prototypes, but it is not yet "production-hardened".
+
+Please keep in mind:
+
+- **Breaking changes** are likely (configs, APIs, node behavior, pipeline formats).
+- **Docs/tests are incomplete** and you may run into sharp edges, UI quirks, or missing features.
+- **Performance and security** haven't been fully audited; avoid exposing it to untrusted networks unless you've reviewed and hardened your deployment.
+- **Linux x86_64 only** today (ARM and other platforms are on the roadmap).
+
+If you try it and something feels off, please open an issue (or a small PR). For live help, join our [Discord](https://discord.gg/dcvxCzay47).
+
+## Use cases
+
+- **Video compositing** — Combine camera feeds with overlays and PiP layouts using the built-in compositor (CPU or GPU via wgpu), with crop/zoom, rotation, and z-ordering. Encoded with VP9 or AV1 for real-time transport, with a visual scene editor in the Web UI.
+- **Live web surfaces** — Render any web page (including WebGL and dynamic dashboards) to video frames via the Servo browser engine and composite them into live streams as overlays or standalone sources.
+- **Dynamic UI overlays** — Render scriptable, data-driven overlays (scoreboards, lower thirds, watermarks) using the Slint plugin and composite them into live video.
+- **Speech pipelines** — Build a transcription service: ingest audio via MoQ, run Whisper STT, stream transcription updates to clients.
+- **Voice agents** — TTS-powered bots that respond to audio input with Kokoro, Piper, or Matcha.
+- **Real-time translation** — Bilingual streams with live subtitles using NLLB or Helsinki translation models.
+- **Audio processing** — Mixing, gain control, format conversion, and custom routing.
+- **Batch processing** — High-throughput file conversion or offline transcription using the Oneshot HTTP API.
+- **Your idea** — Add your own node or plugin and compose it into a pipeline
+
+## Try it from your terminal
+
+Want a glimpse of what StreamKit can do without installing anything? These commands hit a public instance of the [speech gateway example](examples/speech-gateway/) — a thin HTTP front-end over StreamKit oneshot pipelines (Kokoro TTS and Whisper STT).
+
+Text to speech (returns Opus audio, piped straight to `ffplay`):
+
+```bash
+curl -d 'Hello from StreamKit' https://tts.streamkit.dev | ffplay -nodisp -autoexit -
+```
+
+Speech to text (record 5s from your mic with `ffmpeg`, get back JSON — no audio file needed):
+
+```bash
+# macOS (CoreAudio); list inputs with: ffmpeg -f avfoundation -list_devices true -i ""
+ffmpeg -hide_banner -f avfoundation -i ":0" -t 5 -ac 1 -ar 48000 -c:a libopus -f ogg - | curl -s --data-binary @- -H 'Content-Type: audio/ogg' https://stt.streamkit.dev | jq
+
+# Linux (PulseAudio/PipeWire); use "-f alsa -i default" for ALSA
+ffmpeg -hide_banner -f pulse -i default -t 5 -ac 1 -ar 48000 -c:a libopus -f ogg - | curl -s --data-binary @- -H 'Content-Type: audio/ogg' https://stt.streamkit.dev | jq
+```
+
+Drop `-t 5` to record until you stop `ffmpeg` with `q`. The trailing `| jq`
+just pretty-prints the JSON response — drop it (or install [`jq`](https://jqlang.github.io/jq/))
+if you don't have it.
+
+> [!NOTE]
+> `tts.streamkit.dev` and `stt.streamkit.dev` are a free, best-effort public demo with no SLA — they may be slow, rate-limited, or offline at any time, and usage is monitored for abuse. Don't send anything sensitive. To run your own, see [`examples/speech-gateway/`](examples/speech-gateway/).
+
+## Core concepts
+
+- **Pipelines** are node graphs (DAGs) that process real-time streams and requests.
+- **Execution modes**:
+  - **Oneshot**: stateless request/response pipelines (batch over HTTP)
+  - **Dynamic**: long-running sessions you can inspect and reconfigure while they run
+- **Transport**: real-time media over MoQ/WebTransport (QUIC) plus a WebSocket control plane for UI and automation (WebSocket transport nodes are on the roadmap; in the near term, non-media streams may also ride MoQ)
+- **Plugins**: native (C ABI, in-process) and WASM (Component Model).
+- **Media focus**: audio (Opus, WAV, OGG, FLAC, MP3) and video (VP9, AV1 encode/decode, compositing with CPU/GPU backends, WebM muxing). See the [roadmap](ROADMAP.md) for what's next.
+
+## Quickstart (Docker)
+
+> **Want to skip the setup?** [Try the live demo](https://demo.streamkit.dev) to explore StreamKit instantly in your browser.
+
+The fastest way to get started is using pre-built Docker images from GitHub Container Registry (GHCR). The image serves the web UI and includes sample pipelines.
+
+> [!CAUTION]
+> StreamKit ships with built-in authentication (auto-enabled on non-loopback binds). If you see the login page, run `skit auth print-admin-token` and paste the token; admins can mint additional tokens in **Admin → Access Tokens**. Do not disable auth when exposing it beyond localhost; see <https://streamkit.dev/guides/authentication/> and <https://streamkit.dev/guides/security/>.
+
+> [!NOTE]
+> Official Docker images are published for `linux/amd64` (x86_64). On ARM hosts (Raspberry Pi, Apple Silicon, etc.), use “Build from Source” or run with amd64 emulation.
+
+### CPU-only
+
+```bash
+docker run --rm \
+  -p 127.0.0.1:4545:4545/tcp \
+  -p 127.0.0.1:4545:4545/udp \
+  ghcr.io/streamer45/streamkit:latest \
+  skit serve # optional: this is the image default
+
+# Open http://localhost:4545 in your browser
+# Press Ctrl+C to stop
+```
+
+### Demo image (batteries included)
+
+The `:latest-demo` image bundles core plugins plus the models needed by the shipped sample pipelines (much larger image; intended for demos/evaluation, not production).
+
+```bash
+docker run --rm --name streamkit-demo \
+  -p 127.0.0.1:4545:4545/tcp \
+  -p 127.0.0.1:4545:4545/udp \
+  ghcr.io/streamer45/streamkit:latest-demo
+```
+
+> [!NOTE]
+> In Docker, StreamKit binds to `0.0.0.0` inside the container so published ports work. With `auth.mode=auto`, this means built-in auth is enabled by default.
+> To log in, print the bootstrap admin token and paste it into `http://localhost:4545/login`:
+>
+> ```bash
+> docker exec streamkit-demo skit auth print-admin-token --raw
+> ```
+
+> [!NOTE]
+> Linux-only (no login): run with host networking and bind to loopback inside the container to keep auth disabled in `auth.mode=auto`:
+>
+> ```bash
+> docker run --rm --name streamkit-demo \
+>   --network host \
+>   -e SK_SERVER__ADDRESS=127.0.0.1:4545 \
+>   ghcr.io/streamer45/streamkit:latest-demo
+> ```
+
+If you want the OpenAI-powered sample pipelines, pass `OPENAI_API_KEY` without putting it directly in the command:
+
+```bash
+# Inherit OPENAI_API_KEY from your current shell environment (recommended).
+# (Make sure it's set on the host before you run this.)
+docker run --rm --env OPENAI_API_KEY \
+  -p 127.0.0.1:4545:4545/tcp -p 127.0.0.1:4545:4545/udp \
+  ghcr.io/streamer45/streamkit:latest-demo
+```
+
+Or use an env-file so the secret never appears in your shell history:
+
+```bash
+printf 'OPENAI_API_KEY=%s\n' 'sk-...' > streamkit.env
+chmod 600 streamkit.env
+docker run --rm --env-file streamkit.env \
+  -p 127.0.0.1:4545:4545/tcp -p 127.0.0.1:4545:4545/udp \
+  ghcr.io/streamer45/streamkit:latest-demo
+```
+
+### Next steps
+
+- Open the UI at `http://localhost:4545` and load an example from the **Samples** list (bundled in the image under `/opt/streamkit/samples/pipelines`).
+- See [DOCKER.md](DOCKER.md) for volumes, env vars, GPU verification, and troubleshooting.
+- For GPU acceleration (selected plugins), see the docs: <https://streamkit.dev/deployment/gpu/>
+
+## What's included
+
+- Low-latency, real-time pipelines with backpressure and streaming semantics
+- Video compositing with CPU (tiny-skia) and GPU (wgpu) backends — multi-layer scenes with PiP, overlays, crop/zoom, and rotation. VP9 and AV1 codec support, WebM/MP4 muxing, and a dedicated compositor scene editor in the Web UI for visual layout
+- Node graph model (DAG) with built-in nodes plus modular extensions
+- Web UI for building/inspecting pipelines and a client CLI (`skit-cli`) for scripting (included in GitHub Release tarballs)
+- Load testing + observability building blocks (see `samples/loadtest/` and `samples/grafana-dashboard.json`)
+- Optional ML plugins + models (mounted externally by default): Whisper/SenseVoice (STT), Kokoro/Piper/Matcha (TTS), NLLB/Helsinki (translation), Slint (dynamic UI overlays). Some models may have restrictive licenses (e.g. NLLB is CC-BY-NC); review model licenses before production use.
+
+## Development
+
+StreamKit is a Rust workspace with a React web UI (builder + monitor) (Vite + Bun). Most tasks are wrapped in `just`:
+
+```bash
+just dev   # backend + UI (hot reload)
+just test  # Rust + UI tests
+just build # release build
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for prerequisites and setup, or run `just --list` for all commands.
+
+## Coding agents
+
+Contributions made with coding agents (Claude/Codex/etc.) are welcome, but should be **supervised** and **reviewed by a human** before merge. Treat agent output like untrusted code: verify correctness, security, licensing, and style.
+
+See [AGENTS.md](AGENTS.md) for repo-specific agent guidance.
+
+## Docs & links
+
+- [streamkit.dev](https://streamkit.dev) - Documentation site (source in `docs/`; run `just docs` locally)
+- [ROADMAP.md](ROADMAP.md) - Planned features and milestones toward v1.0
+- [DOCKER.md](DOCKER.md) - Docker deployment guide (CPU/GPU images)
+- [Systemd Deployment](https://streamkit.dev/deployment/systemd/) - Install from GitHub Releases and run via `systemd`
+- [samples/pipelines/](samples/pipelines/) - Example pipelines you can load and adapt
+- [samples/loadtest/](samples/loadtest/) - Load test configs for `skit-cli lt`
+- [MoQ](https://moq.dev/) - Media over QUIC (MoQ) project
+- [Discord](https://discord.gg/dcvxCzay47) - Community server
+
+## Acknowledgments
+
+- Huge credits to the [**Media over QUIC (MoQ)** project](https://github.com/moq-dev/moq). StreamKit's real-time functionality heavily relies on it.
+
+## License
+
+Mozilla Public License 2.0 - see [LICENSE](LICENSE) for details.

@@ -1,0 +1,297 @@
+# LLM Context Benchmarks
+
+Benchmark prompt-processing and generation throughput across context sizes
+(0.5k–128k tokens) for many inference engines: Ollama (API & CLI), MLX,
+MLX Distributed, MLX-VLM, llama.cpp, LM Studio, Exo, Apple Foundation Models
+Serve, vMLX, oMLX, Paroquant, SGLang, vLLM, and any OpenAI-compatible endpoint.
+
+Optimized for Apple Silicon but works anywhere Python runs.
+
+## Installation
+
+```bash
+# Install uv if you don't have it
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install project dependencies
+uv sync
+```
+
+Engine-specific setup:
+
+| Engine | Setup |
+| --- | --- |
+| Ollama | Install [Ollama](https://ollama.com), `ollama pull <model>` |
+| MLX / MLX-VLM / vMLX / oMLX | Apple Silicon only; models download from Hugging Face on first run |
+| MLX Distributed | Requires `mlx.launch` and a hostfile JSON |
+| llama.cpp | Run `llama-server -m model.gguf --port 8080` |
+| LM Studio | Install [LM Studio](https://lmstudio.ai), start the local server |
+| Apple Foundation Models Serve | Start the local server; defaults to `http://127.0.0.1:1976/v1` |
+| Exo / OpenAI-compatible | Any server exposing `/v1/chat/completions` |
+| Lucebox | Start the Lucebox server; defaults to `http://localhost:8081/v1`, reads prefill/decode timings from `usage.timings` |
+| SGLang | `python -m sglang.launch_server --model ... --port 8888`; start with `--enable-cache-report` for cached-token stats |
+| vLLM | `vllm serve <model>`; defaults to `http://127.0.0.1:8000/v1` |
+
+(Optional) pre-commit hooks for Black + isort:
+
+```bash
+pre-commit install
+```
+
+## Web UI
+
+Everything the CLI does is also available in a local web UI — launching sweeps
+with live progress, named endpoints, browsing saved results, and interactive
+comparisons across any set of runs:
+
+```bash
+uv run benchmark-webui            # opens http://127.0.0.1:8321
+uv run benchmark-webui --host 0.0.0.0 --port 9000 --no-open
+```
+
+- **Run** — pick an engine, contexts, and options; watch prompt/generation
+  speed live per context. MLX engines are automatically disabled on machines
+  without Apple Silicon (e.g. NVIDIA boxes).
+- **Endpoints** — save named inference targets ("M3 Ultra · llama.cpp",
+  "DGX · vLLM"); the name labels the run in results and charts.
+- **Results** — every folder in `output/` with sparklines, details, rename
+  and delete.
+- **Compare** — select up to 8 runs and compare any metric (generation/prompt
+  t/s, TTFT, TPOT, memory, KV cache, batch sweeps) in interactive charts.
+
+### Screenshots
+
+**Run** — configure engine, contexts and options; watch live progress with
+per-context chips and throughput as the sweep runs:
+
+![Run view — live sweep in progress](docs/webui/run.webp)
+
+**Results** — every saved run from `output/` with sparklines, context ranges,
+peak t/s, rerun / rename / delete:
+
+![Results view — saved runs](docs/webui/results.webp)
+
+**Run detail** — per-run metric charts plus the full results table, exportable
+as ZIP / HTML / PDF:
+
+![Run detail view — charts and metrics table](docs/webui/results-detail.webp)
+
+**Compare** — up to 8 runs side by side across every metric, with an
+all-metrics grid and relative-to-run mode:
+
+![Compare view — multi-run metric charts](docs/webui/compare.webp)
+
+### Master / Worker: aggregate results from multiple machines
+
+Any machine running the WebUI can act as the **master**. Workers come in two
+flavors: the `benchmark-worker` CLI, or — easier to manage — a worker machine
+running its own WebUI with `--master`, so you launch and watch runs locally
+while every run is mirrored to the master live. In both cases the benchmark
+runs locally on the worker, its console output streams to the master as a
+normal live card (progress chips, tPS), and every result file is uploaded to
+the master's `output/` as soon as it is written. The worker keeps its own
+local copy; mirroring never blocks the benchmark, and a master that is down
+or restarted mid-run is retried/re-attached automatically. *Stop* works in
+both directions: the master's stop button terminates the worker's benchmark,
+and stopping locally marks the master's card as stopped.
+
+```bash
+# master (any machine with the web UI)
+uv run benchmark-webui --host 0.0.0.0                # workers push to /api/worker/*
+uv run benchmark-webui --host 0.0.0.0 --worker-token s3cret   # ...with shared-secret auth
+
+# worker, CLI flavor (same engine syntax as `uv run benchmark -- ...`)
+uv run benchmark-worker --master http://192.168.1.10:8321 -- mlx mlx-community/Qwen3-0.6B-4bit
+uv run benchmark-worker --master http://192.168.1.10:8321 --token s3cret --label "M4 Max" -- ollama-api gpt-oss:20b
+
+# worker, WebUI flavor (full local UI + live mirroring of everything you launch)
+uv run benchmark-webui --master http://192.168.1.10:8321 --worker-name "M4 Max"
+uv run benchmark-webui --master http://192.168.1.10:8321 --master-token s3cret --no-open
+
+Notes:
+
+- One worker per machine/output directory at a time — a worker mirrors every
+  `benchmark_*` folder created while it runs (folders from other engines'
+  concurrent runs are filtered by tag prefix).
+- `--worker-token` (or `BENCHMARK_WORKER_TOKEN`) on the master requires the
+  same token on workers (`--token` for the CLI, `--master-token` /
+  `BENCHMARK_MASTER_TOKEN` for the WebUI flavor); without a token the ingest
+  endpoints are open — fine on a trusted LAN, not on exposed networks.
+- Workers send their launch command (secrets like `--api-key` are redacted in
+  the UI, but the upload itself carries them — use a token on untrusted
+  networks).
+
+### Docker
+
+The web UI can also run in a container — no local Python or `uv` needed:
+
+```bash
+docker compose up -d              # build + start, UI on http://127.0.0.1:8321
+docker compose logs -f webui      # follow server + benchmark logs
+docker compose down               # stop
+docker compose up -d --build      # rebuild after pulling code changes
+```
+
+The container is a pure benchmark *client* (~400 MB): it only ships the web UI
+and the HTTP client libraries, so it benchmarks remote endpoints you add in
+the UI (Ollama, llama.cpp, LM Studio, vLLM, MLX-Serve, any OpenAI-compatible
+server). Nothing runs models inside the container — mlx/torch/transformers are
+deliberately not installed (`requirements-docker.txt`), and the local-MLX
+engines are disabled in the engine picker.
+
+Notes:
+
+- The project directory is bind-mounted, so results (`output/`), generated
+  context files, and saved endpoints (`webui_endpoints.json`) live on the host
+  and survive rebuilds.
+- To benchmark a server running on the Docker host itself, use
+  `http://host.docker.internal:<port>` as the endpoint URL instead of
+  `localhost`.
+- The port is bound to `127.0.0.1` on purpose (the UI has no auth and the
+  endpoint store holds API keys). Edit `docker-compose.yml` to expose it on
+  the LAN.
+
+## Running Benchmarks
+
+```bash
+# List engines
+uv run benchmark --list-engines
+
+# Generate test files (only needed once)
+uv run generate-context-files pride_and_prejudice.txt
+
+# Run a benchmark (engine + model)
+uv run benchmark mlx mlx-community/Qwen3-4B-Instruct-2507-4bit
+uv run benchmark ollama-api gpt-oss:20b
+uv run benchmark llamacpp gpt-oss:20b --host localhost --port 8080
+uv run benchmark afms system --contexts 0.5,1,2,3.6
+uv run benchmark afms pcc --contexts 0.5,1,2,4,8,16,32
+
+# Generic OpenAI-compatible endpoint (separate entry point)
+uv run openai-benchmark --model llama3.2 --base-url http://localhost:11434/v1
+```
+
+Common options:
+
+- `--contexts 0.5,1,2,4,8,16,32` — context sizes to test (in thousands of tokens)
+- `--max-tokens 200` — generation cap per run
+- `--timeout 7200` — per-context timeout (default 3600s)
+- `--save-responses` — save model outputs to `response_<size>.txt`
+- `--runs 3` — repeat each context size; peak decode and peak prefill are kept
+  independently (they may come from different runs)
+
+Engine-specific options worth knowing:
+
+- `--kv-bit 4|8`, `--max-kv-size N` — MLX KV cache quantization / cap
+- `--host`, `--port` — llama.cpp server target
+- `--backend`, `--hostfile`, `--env`, `--pipeline` — MLX Distributed
+- `--base-url`, `--api-key` — OpenAI-compatible endpoints
+
+Apple Foundation Models Serve has different practical context limits by model:
+the local `system` model accepts about a 4k-token transcript, so use
+`--contexts 0.5,1,2,3.6`; `pcc` works with the standard `32k.txt` bucket, so use
+`--contexts 0.5,1,2,4,8,16,32`. AFMS token counts are estimated client-side with
+`cl100k_base` because `pcc` currently reports zero prompt/completion usage.
+
+## Comparing Runs
+
+After running multiple benchmarks, aggregate them:
+
+```bash
+# Auto-discover everything in output/
+uv run compare-benchmarks
+
+# Compare specific folders
+uv run compare-benchmarks output/benchmark_ollama_* output/benchmark_mlx_*
+
+# Custom output directory
+uv run compare-benchmarks --output my_comparison
+```
+
+Generates `comparison_chart.png`, `comparison_results.csv`,
+`comparison_table.txt`, plus per-engine heatmaps.
+
+### KL Divergence (MLX and llama.cpp)
+
+MLX and llama.cpp benchmarks automatically capture top-K logprobs over a fixed
+reference (the first ~512 tokens of `2k.txt`) into `logprobs.json` in each run
+directory. Cost: one extra forward pass, ~50 KB of disk.
+
+To compare distributions:
+
+```bash
+uv run compare-benchmarks --kl-baseline output/benchmark_mlx_<bf16-run>
+```
+
+Outputs:
+
+- `kl_divergence.csv` — mean KL per target run
+- `kl_divergence.png` — bar chart + per-position trace
+- A KL panel inside `comparison_chart.png`, paired with perplexity
+
+**Use bf16 as the baseline when possible.** Lower-precision runs (8-bit, 6-bit,
+4-bit, …) are quantizations of the bf16 weights, so KL(bf16 || quantized)
+directly measures how much the quantization distorts the output distribution.
+A quantized baseline conflates errors and is harder to interpret.
+
+Caveats:
+
+- Both runs must use the **same tokenizer** — KL is computed on display-string
+  tokens, so different tokenizer families produce noise.
+- llama.cpp capture needs a recent server build with OpenAI-compat
+  `echo + logprobs` support.
+- Pass `--no-kl-capture` to either benchmark to skip the capture step.
+- Don't put `--` between the command and `--kl-baseline`; uv passes the `--`
+  through and argparse then treats the flag as positional.
+
+## Output Files
+
+Each run writes a timestamped directory under `output/`:
+
+| File | Contents |
+| --- | --- |
+| `metadata.json` | Run identity: engine, model, machine, cache mode, context type, args (API keys redacted), git sha, package versions |
+| `hardware_info.json` | CPU/GPU/memory specs |
+| `benchmark_results.csv` | Per-context metrics (TPS, TTFT, total time, …); peak across `--runs` |
+| `results.json` | Every run per context (incl. discarded ones and why) plus median/mean/min/max/stdev |
+| `benchmark_chart.png` | Visual chart with hardware in the title |
+| `table.txt` | Formatted results table |
+| `xpost.txt` | Summary text for social posts |
+| `perplexity.json` | Perplexity score (MLX) |
+| `batch_benchmark.json` | Batch-size sweep (MLX) |
+| `logprobs.json` | Top-K logprobs for KL comparison (MLX, llama.cpp) |
+| `response_<size>.txt` | Model outputs, when `--save-responses` is set |
+
+## Project Layout
+
+```
+llm_context_benchmarks/
+├── benchmark.py              # Unified CLI dispatcher
+├── benchmark_common.py       # Shared utilities (hardware, charts, CSV, …)
+├── compare_benchmarks.py     # Multi-run comparison
+├── generate_context_files.py # Token-precise context file generation
+├── kl_capture.py             # Logprob capture + KL divergence (MLX, llama.cpp)
+├── <engine>_benchmark.py     # One file per engine (mlx, llamacpp, ollama_*, …)
+├── pyproject.toml            # uv-managed dependencies
+└── output/                   # Timestamped result directories
+```
+
+## Requirements
+
+- Python 3.13+
+- `uv` for dependency management
+- Engine-specific runtime (see Installation table)
+- Or just Docker, for the web UI against remote endpoints (see [Docker](#docker))
+
+## Contributing
+
+```bash
+pre-commit install
+# make changes
+pre-commit run --all-files
+```
+
+Benchmark-result PRs are welcome — they help build a cross-hardware picture.
+The `output/` folder is gitignored, so either rename your folder to include
+your hardware (e.g. `benchmark_m3_ultra_512gb_mlx_qwen3_4bit`) or whitelist
+it in `.gitignore` before committing.

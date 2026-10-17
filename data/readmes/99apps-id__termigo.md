@@ -1,0 +1,803 @@
+<div align="center">
+  <img src="public/logo.png" width="144" height="144" alt="Termigo" />
+  <h1>Termigo</h1>
+
+  <p><strong>Terminal-first, AI-native development workspace.</strong></p>
+  <p>
+    <a href="https://github.com/99apps-id/termigo">Repository</a>
+    ·
+    <a href="#features">Features</a>
+    ·
+    <a href="#getting-started">Getting started</a>
+    ·
+    <a href="#cli">CLI</a>
+    ·
+    <a href="#credits">Credits</a>
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey" alt="platform" />
+    <img src="https://img.shields.io/github/license/99apps-id/termigo?color=blue" alt="license" />
+    <img src="https://img.shields.io/badge/runtime-no%20Electron-brightgreen" alt="no Electron" />
+    <img src="https://img.shields.io/badge/telemetry-none-blue" alt="no telemetry" />
+    <a href="https://github.com/99apps-id/termigo/actions/workflows/ci.yml"><img src="https://github.com/99apps-id/termigo/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+    <a href="https://github.com/99apps-id/termigo/releases/latest"><img src="https://img.shields.io/github/v/release/99apps-id/termigo" alt="latest release" /></a>
+  </p>
+</div>
+
+---
+
+**Termigo** is a lightweight open-source, terminal-first AI-native development
+environment (ADE) built on **Tauri 2 + Rust** with a **React 19** frontend. A
+native PTY backend, an agentic AI side-panel that runs against your own keys or
+fully local models, a code editor, file explorer, source control with a git
+graph, and a web preview pane, all in one window. **No telemetry. No account.**
+Your API keys stay in the OS keychain or with the provider's own CLI.
+
+Termigo is an independent, standalone AI-native development environment maintained
+by **99apps-id**, extended with a **Go command-line companion** (`termi-go`) for
+automation: agent runs, MCP, skills, and project scaffolding.
+
+## Features
+
+### Terminal
+
+- Native PTY backend via `portable-pty` (pwsh, powershell, cmd, zsh, bash, fish)
+- xterm.js with WebGL renderer, multi-tab with background streaming
+- Split panels (horizontal and vertical)
+- Inline search, link detection, true-color
+- Programs that set the terminal title (ssh, htop, a `title` builtin) name the
+  tab; long-running commands report progress on the taskbar (OSC 9;4)
+- Dev-server URLs printed in a terminal are detected and open in the embedded
+  browser with one click
+- Flow-controlled write path stays responsive under a flood of output (and when
+  the screen is locked), instead of growing an unbounded backlog
+- Drag files from the explorer into a terminal as shell-safe quoted paths
+- Per-tab workspace environments on Windows (Local or WSL distro)
+- Spaces restore tabs, working directories, and split layouts across launches
+- **Persist terminal processes across restarts** (opt-in): host each leaf's
+  shell inside a named tmux session (Unix) so it survives an app relaunch; the
+  setting is surfaced honestly where tmux isn't available (Windows)
+
+### SSH & remote files
+
+- Connect to remote hosts with **ssh-agent**, private key, or password auth,
+  directly as a terminal tab (ProxyJump chains supported)
+- First-connect **host-key verification** (trust-on-first-use with fingerprint
+  pinning): the handshake pauses until you confirm
+- **SFTP file explorer**: browse, create, rename, delete, upload (drag & drop)
+  and download over the active SSH session
+- Port forwarding (`-L`) through the session
+
+### AI agent
+
+- **BYOK providers:** OpenAI, Anthropic (Claude), Google (Gemini), Groq,
+  xAI (Grok), Cerebras, OpenRouter, DeepSeek, Mistral, plus any
+  OpenAI-compatible endpoint
+- **Local / offline:** LM Studio, MLX, Ollama
+- **Tool context you control.** The full toolset is ~125 tools and ~80 KB of
+  JSON Schema on every request. Settings → Agents offers two independent
+  levers: switch off whole optional domains (browser, GitHub, LSP, web, skills,
+  SQL, PDF, images, worktrees, …), and turn on **load tools on demand**, which
+  sends the coding loop plus a `find_tools` search and adds a domain when the
+  agent asks for it - measured at 8.0k tokens per request instead of 20.5k, with
+  full capability kept. A tool call for a name that does not exist is answered
+  with the real toolset, a "did you mean" list, and the discovery hint, so the
+  agent corrects itself instead of reporting the capability as missing.
+- **Skills.** The agent writes reusable procedures for itself in
+  `.termigo/skills/<name>/SKILL.md` - a deploy sequence, a debugging route that
+  worked, a release checklist - and reads them back in later sessions. This is
+  what makes it better over time rather than merely better informed: memory
+  stops a session starting from zero, a skill means a procedure worked out once
+  never has to be worked out again. Re-saving a name replaces it, so a skill
+  improves with use. Only names and descriptions reach the system prompt;
+  bodies load on demand through `use_skill`, so a shelf of skills costs almost
+  nothing until one is needed. Plain Markdown with frontmatter, so you can read,
+  edit or delete any of them by hand. `find_skill` searches every skill library
+  on the machine on demand - your own, and those installed by other agent tools
+  - so a large collection stays reachable without any of it sitting in the
+  prompt. Skills written for another agent still parse, and `use_skill` says so
+  when one calls tools Termigo does not have.
+- **Self-maintaining and global memory.** The agent records durable project facts in
+  `.termigo/memory.md` (and machine-wide preferences in `~/.termigo/memory.md`)
+  and reads them back in every later session, so build commands, conventions and
+  decisions do not have to be re-explained. Facts are captured two ways: a
+  `remember` tool the model calls deliberately (visible in the transcript,
+  approval-gated like any workspace write, supporting `scope: "project" | "global"`),
+  and a failure-aware summary sweep when a session is left behind that extracts
+  failed terminal commands, non-zero exit codes, and tool errors into actionable
+  `[GOTCHA]` entries. When assembled into system prompts, general facts are
+  relevance-ranked against the active query while all safety-critical gotchas are
+  unconditionally preserved. Your hand-written `TERMIGO.md` is never rewritten,
+  so you can always tell what you wrote from what the agent inferred, and
+  deleting a line makes it forget. The file is bounded in entry length, entry
+  count and total size, because everything in it costs context on every request.
+  The sweep only runs in the auto-approve modes: in `Ask every time`, nothing is
+  written without a click.
+- **Sub-agents read in parallel with concurrency bounds.** Work that means covering a lot of ground:
+  auditing a project, exploring an unfamiliar codebase, reviewing four modules:
+  is split into tasks that run at the same time, each with its own fresh
+  context, and their findings come back together. Tasks can be chained: one
+  that declares `depends_on` waits for the others and receives what they found,
+  so a task that synthesises can be handed everything the others gathered.
+  A request to study something broad is pinned to this fan-out, because a model
+  asked politely in a prompt to parallelise will ignore it; a narrow request is
+  left alone, and telling it not to use sub-agents is respected.
+
+  **Full toolset, held by approval - not read-only.** A sub-agent gets the same
+  tools as the main agent (read, search, edit, shell, git, extensions), so it
+  can actually do the job it was given; what keeps that safe is that every
+  mutating, exec or third-party call routes through the same approval queue, so
+  nothing runs without your click. A global concurrency pool (`SubagentConcurrencyPool`,
+  default limit 4) prevents provider throttling, while hierarchical slot yielding (`yieldSlot`)
+  prevents parent/child deadlocks. Local subagents isolate their workspace from remote SSH tabs,
+  and transient rate limits retry with exponential backoff. Spawn tools are withheld only at the
+  nesting-depth cap (`subagentMaxDepth`, default 3), so a sub-agent can
+  delegate to its own sub-agents up to that bound and no further. Alongside
+  the general roster there are focused **pentest specialists**
+  (`pentest-recon`, `pentest-web`, `pentest-network`) the main agent can dispatch
+  in parallel on one authorized, in-scope target.
+- **One reasoning block per run, not one per step.** The agent's thinking is
+  collected into a single block that scrolls, instead of a new "Reasoned" label
+  stacking up on every step and pushing the answer off screen. The tool calls it
+  produced stay visible around it, so you can still see what it actually did.
+- **Every run writes one line you can read.** The app log records, per request:
+  how long context assembly took, the prompt size broken down by what
+  contributed it, the cache hit rate, how many steps were used against the
+  budget, why the run stopped, and the model. When the agent feels slow, that
+  line says which part was slow - an MCP server starting, a large project
+  memory, a cold cache - instead of leaving you to guess. Most of the fixes in
+  recent releases were found by reading it.
+- **Searchable chat history.** Sessions persist across launches; the session
+  picker filters them by title as you type and, on demand, by what was actually
+  said in the messages.
+- **Steer, stop and resume a run.** Typing while the agent works queues the
+  message and delivers it when the current run settles, so a correction reaches
+  it instead of being dropped - attachments included. Queued messages are shown
+  with a way to take them back. Stop reaches the work, not just the reply: it
+  kills the command the agent is running rather than leaving a shell going
+  behind a stopped agent, and the transcript then offers to continue. An
+  interrupted tool call is closed out as interrupted rather than erased, so the
+  model can see its work was cut short instead of being shown a past in which it
+  never made the call - and repeating it.
+- **The run says why it stopped, and goes on when you ask.** One request
+  gets one explicit per-round cap, resolved per model: 500 steps on an API-key
+  model, 10,000 on an OAuth / keyless model (ChatGPT, Claude OAuth, xAI OAuth,
+  Antigravity, GitHub Copilot, Muse), whose real limit is the provider's 5-hour
+  usage window rather than a step count. It is one number every round, so
+  Continue resumes the task on the same cap for that model - never a hidden
+  ladder that quietly lets a paused run go further than the number it showed.
+  A task that needs more depth earns it round by round, one informed click at
+  a time. Two guards sit alongside the budget: the same tool called three
+  times with identical input, and two turns in a row that call no tool at all.
+  The transcript names which one fired, because "it repeated itself" and "it ran
+  out of budget" call for different responses - one is worth a click, the other
+  is worth a sentence of extra detail.
+- **It does not die when it outgrows the window.** If a request exceeds the
+  model's context window, Termigo learns the real limit from the provider's
+  rejection, compacts the transcript harder, and resumes the SAME run
+  automatically - so a long task keeps going instead of stopping mid-way. A
+  per-session throttle stops it looping when compaction can never fit, and a
+  Try again button stays as the manual fallback.
+- **Finished work stops costing tokens.** Once a span of history is verified -
+  its changes are saved to git by a checkpoint or commit - the next turn
+  replaces that whole span with a short checkpoint summary (files changed,
+  commands and checks run, a compact diff note) instead of resending the full
+  chat. The model keeps knowing the current state without re-paying for the
+  history that produced it.
+- **It survives a dropped connection or an exhausted quota.** If the internet
+  drops, the agent pauses and resumes automatically when you're back online; if
+  the provider's quota or credits run out (or a rate limit is hit), the run is
+  preserved so you can top up or wait and click Try again to continue exactly
+  where it left off.
+- **Provider quirks heal themselves.** A custom endpoint whose "thinking mode"
+  rejects a pinned tool call gets the pin dropped and the same request resent
+  automatically (broad "audit this repo" prompts no longer die on a red card);
+  a long, bursty generation - a report from a thinking-mode model can pause
+  over half a minute between chunks - is given a generous idle bound instead of
+  being killed as stalled, and a genuine mid-stream stall routes to the same
+  auto-retry rather than a dead error card.
+- **A run cut off by a restart is recoverable.** The transcript is persisted,
+  and when the app reopens the interrupted session is brought back with a
+  **Resume** row - the round counter is kept, so continuing does not restart
+  the task from scratch. (A deliberate stop or a guard that tripped offers the
+  same continue path.)
+- **Grounded RAG and persistent code index.** Codebase exploration combines
+  Okapi BM25 lexical ranking with scope-boundary detection and symbol retrieval
+  to locate relevant references swiftly. The BM25 index is cached to disk at
+  `.termigo/code-index.json` for instantaneous warm startups across sessions.
+  The agent enforces grounding validation before proposing edits: paths and
+  function references must resolve against real workspace files, preventing
+  hallucinated imports or phantom paths.
+- **Autonomous execution guards.** A loop circuit breaker detects repetitive
+  no-progress iterations early, while command outputs are automatically truncated
+  to prevent massive terminal dumps from saturating the context window.
+  Autonomous harness profiles let you fine-tune agent behavior between
+  cautious interactive pair-programming and unattended autonomous tasks.
+- **You can read the request, not infer it.** Turn on `Capture requests`
+  (Settings → Agents → Diagnostics) and an inspector appears in the AI bar
+  holding each request as assembled: the system prompt, the message history
+  after pruning and compaction, and **the exact tool set attached on that
+  step** - which is usually the answer when the agent ignores a tool you
+  expected it to use, or reaches for one you did not. A rejection names a
+  symptom and the transcript shows the reply; neither shows the three things
+  that decide what actually happens. Captures are kept in memory only, never
+  written to disk, capped at 30, and hold no API keys: the snapshot is taken
+  before the provider SDK attaches credentials.
+- **The agent can define its own tools.** A command worth repeating is saved as
+  a named tool with `{{placeholders}}` in `.termigo/tools.json` and called by
+  name afterwards. It is a command template, not code - running one goes
+  through the same shell safety check, approval tier and remote routing as
+  `bash_run`, so a custom tool can do nothing the agent could not already do.
+  Arguments are shell-quoted with no raw mode.
+- Agentic workflow: plans, sub-agents, project memory via `TERMIGO.md`,
+  read, write, edit, multi-edit, grep, glob, move, copy, delete,
+  cross-file literal replace, HTTP fetch, bash with approval gating,
+  background processes (`bash_background` spawn, `bash_wait` to block until
+  a build or install finishes, `bash_logs` to tail, `bash_kill` to stop), and
+  SSH port forwarding so a service on a remote host becomes reachable locally
+- **Tool call auto-repair and parameter normalization.** Parameter aliases
+  (`query`/`path` on `grep`/`glob`, `max_results` clamping on `code_search`,
+  string-to-array on `replace_in_files`) and equivalent tool names (`view_file` -> `read_file`,
+  `run_command` -> `bash_run`, `replace_file_content` -> `edit`) are automatically
+  repaired before validation.
+- **Full cross-platform shell execution.** Agents execute shell commands directly
+  without sandbox allowlists across bash, zsh, cmd, and PowerShell, with full support
+  for Git worktrees, background processes, and project toolchains.
+- Tool calls are **approval-gated**; approvals resume the run (including
+  OpenAI-compatible providers such as DeepSeek)
+- **Graduated auto-approval.** Choose how much the agent may do without
+  stopping: `Auto-approve all` (the default for a fresh install), `Auto-approve
+  edits` (file changes in the workspace run, commands and agent hand-offs still
+  ask), or `Ask every time`. The mode is always visible in the AI status bar,
+  never buried in settings. Crucially it changes only *what stops for a click*:
+  the path and shell-command safety checks run inside every tool regardless, so
+  no mode can authorise something the safety layer refuses. Read-only tools
+  never asked in the first place.
+- **Relay Telegram into the agent.** Give a bot its token and message it from
+  your phone: it drives Termigo's own in-app agent and streams live progress
+  (the current step, the loop round, the task checklist and approvals) plus the
+  final answer back, so a task, its edits, approvals and memory all behave
+  exactly as if you had typed in the chat. Configured in Settings - Agents -
+  Telegram relay (the token lives in the OS keychain, never a settings file).
+  The bot answers `/status`, `/help`, `/query <question>`, `/run <task>`,
+  `/stop`, `/new`, `/continue`, `/approve`, `/model` (an interactive provider
+  + model picker for the models active in Termigo, including custom endpoints
+  such as StepFun and Qwen/DashScope) and `/cost`, and shows a live status
+  chip in the AI status bar. Just type a question or task directly - no
+  `/query` prefix needed. It long-polls from the desktop app, so it is only
+  reachable while Termigo is open.
+  - **Approvals never hang silently**: when the agent needs a click, the bot
+    posts the pending action with `Allow session`, `Allow always`, and `Deny`
+    inline buttons. No more typing `/approve` without knowing why.
+  - **Step-cap continuation**: `/continue` (or the inline button) resumes the
+    agent past its per-round cap without leaving Telegram.
+  - **Custom endpoint models**: `/model` resolves raw model names and endpoint
+    IDs (e.g. `step-3.7-flash`) to the correct compat ID and persists the
+    choice as the new default.
+  Conversations mirror both ways, and a diagram the agent draws (a fenced
+  Mermaid block) is rasterised and posted as a picture along with any report
+  file it previewed (`preview_file`), so graphs and finished reports show up
+  on your phone too. While a run is in flight the bot keeps a live
+  "typing..." indicator in the chat (alongside the status / step / todo
+  stream), and messages it injected are never echoed back - the mirror is
+  paused before a Telegram dispatch is submitted, so you never see your own
+  text twice.
+  For headless / always-on deployment (e.g. a VPS running 24/7), see
+  [`docs/headless-vps.md`](docs/headless-vps.md).
+- **Deleting is never delegated.** No mode speaks for you here, including
+  `Auto-approve all`: `delete_file` always asks, and so does any command that
+  removes files - `rm`, `rmdir`, `git clean`, `find -delete`, PowerShell's
+  `Remove-Item` and its aliases - wherever it sits in the line, so
+  `pnpm build && rm -rf dist` is not read as a build. The gate follows the
+  command rather than the tool name, so a custom tool cannot route around it.
+  Every other change an agent makes can be recovered by reading the file again
+  or from git; a delete of something untracked leaves nothing to read at all,
+  and that asymmetry is worth one click even from someone who has delegated
+  everything else.
+- **Agent works on the remote host.** When the active terminal is an SSH
+  session, the agent's file tools act on the server: `read_file`,
+  `list_directory`, `write_file`, `create_directory`, `edit`, `multi_edit`,
+  `move_file` and `delete_file` all go over SFTP. Windows drive paths (`C:\...`)
+  still mean this machine, since they cannot mean anything on a POSIX host.
+  `grep` and `glob` search the server too, using its own `grep` and `find` over
+  a dedicated exec channel rather than walking the tree over SFTP - one command
+  instead of thousands of round trips. Every value interpolated into those
+  commands is single-quoted, so a pattern cannot become a second command.
+  `bash_run` runs on the server too, from the remote shell's working directory,
+  so the agent can install packages, reload Caddy or bring a compose stack up
+  without you relaying commands. Remote commands are gated by what they do rather than by
+  being remote: under `Auto-approve edits`, one that only inspects (`ls`,
+  `docker ps`, `git status`) runs, and anything that could change the server
+  stops for a click - as does anything the classifier does not recognise. Under
+  `Ask every time` all of them ask; under `Auto-approve all` none do, except one
+  that deletes - that asks on any host, in any mode. `replace_in_files`, `copy_file` and `bash_background` still
+  have no remote form and refuse while a session is open, saying what to use
+  instead rather than quietly acting on your own disk.
+- **Tools the agent defines for itself.** After running something worth
+  repeating, the agent can save it as a named tool with `create_tool`, and call
+  it by name from then on. A tool is a shell command template with
+  `{{placeholders}}`, stored in `.termigo/tools.json` - not code. Running one
+  goes through the same path `bash_run` takes, so the shell safety check, the
+  approval tiers and the remote/local routing all apply unchanged: a custom
+  tool can do nothing the agent could not already do. Every argument is
+  shell-quoted on substitution, with no raw mode, so a value can never become a
+  second command.
+- **Extension tools.** An extension that declares `contributes.aiTools` in its
+  manifest has those tools offered to the agent as `ext__<extension>__<tool>`,
+  with the JSON Schema and approval preference it declared. Like MCP tools they
+  never ride along with `Auto-approve edits`, since that mode is a statement
+  about files in your workspace, not about third-party code.
+- **MCP servers.** Tools from any configured Model Context Protocol server are
+  offered to the agent alongside the built-in ones, named `mcp__<server>__<tool>`
+  so their origin stays visible in the transcript. Configure them in
+  `.termigo/mcp.json` in the workspace, or `~/.termigo/mcp.json` for every
+  project, using the standard `mcpServers` shape:
+
+  ```json
+  {
+    "mcpServers": {
+      "github": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-github"],
+        "env": { "GITHUB_TOKEN": "..." }
+      }
+    }
+  }
+  ```
+
+  A project entry overrides a user entry of the same name, and the same file is
+  read by the Go companion CLI, so a server configured once works in both. MCP
+  tools always ask for approval, including under `Auto-approve edits`: that mode
+  is a statement about files in this workspace, not about arbitrary third-party
+  actions. A server that fails to start costs only its own tools, not everyone
+  else's. Tools with nullable descriptions (`description: null`) and dynamic
+  string/int JSON-RPC IDs are handled gracefully, and changing servers in
+  Settings immediately refreshes the active agent tool cache.
+- **Database interaction (`run_sql`, `list_sql_connections`).** The agent can list
+  configured database profiles from the SQL Explorer store and execute queries
+  against saved connections by name (e.g. `run_sql` with `connection: "app_db"`
+  or a direct URI). All queries stop for confirmation under the `EXEC_TOOLS`
+  approval policy, and results are presented in-chat with custom SQL syntax
+  blocks and head-preserved row outputs.
+- **Web search, documents, images, clipboard, environment.** `web_search`
+  queries DuckDuckGo through the same SSRF-guarded HTTP path as `fetch` (no API
+  key needed) and returns the top results - title, URL, snippet - so the agent
+  can answer questions that live outside the workspace. `read_pdf` extracts the
+  text of a PDF (handles compressed streams, page-by-page, capped) so a report
+  or spec can be read straight into context; scanned/image-only PDFs report
+  that they need OCR. `read_image` hands an image file to the model as a real
+  visual part, so a screenshot, mockup or diagram on disk can be seen (requires
+  a vision-capable model). `clipboard_get` / `clipboard_set` read and replace
+  the clipboard (write asks for approval), and `env_get` / `env_list` inspect
+  the process environment read-only - enough to answer "what is PATH?" without
+  a shell round-trip.
+- **Artifacts the agent produced stay reachable.** Canvases (`render_view`),
+  previews (`open_preview`) and files (`write_file`) land in an **Artifacts**
+  panel (the layers button in the AI status bar), and each can be reopened -
+  files in the editor, previews and canvases in a preview tab - so something
+  the agent drew or wrote is one click away instead of buried in the
+  transcript.
+- **The agent can ask you a question mid-run.** `ask_user` renders a clickable
+  chooser in the chat (2–6 options) and the agent waits for your pick - useful
+  for choosing between approaches or confirming a risky call - instead of
+  guessing and having to redo work.
+- **Opt-in post-execution confirmation.** When enabled (Settings → Agents →
+  Confirm after mutations), a mutating tool that succeeds pauses the run and
+  asks **Keep / Revert** before the agent continues; Revert restores the
+  touched paths from git. Off by default so everyday runs stay uninterrupted.
+- **Sub-agents can nest - up to a depth you choose.** A sub-agent may spawn its
+  own sub-agents (each with the full toolset), capped by the `subagentMaxDepth`
+  preference (1–5, default 3); at the cap the spawn tools are withheld so
+  recursion cannot loop. A configured sub-agent model that would cost more than
+  the main run falls back to the main model instead. Finished sub-agent runs
+  are persisted to disk and shown with depth and step detail in the run cards.
+- Coding-agent orchestration: spawn an external agent CLI in a terminal
+  (Claude Code, Codex, Gemini, Pi, OpenCode, Grok, Aider, Qwen, Cursor),
+  inspect its output, and send follow-up work through approval-gated tools;
+  activity hooks are enabled for the CLIs that support them
+- **User-defined coding-agent CLIs.** Register your own agent command in
+  Settings → Agents → Custom coding agents and it becomes a first-class target
+  for `spawn_coding_agent` and the launch panel the same as the built-ins
+- Composer: prompt snippets via `#handle`, files via `@path`, voice input
+- Custom agents with their own system prompt and tool subset
+- Plan mode for multi-step work, generates and confirms before doing
+
+### Code editor
+
+- CodeMirror 6 with support for TS/JS, Rust, Python, Go, C/C++, Java,
+  HTML/CSS, JSON, Markdown and more
+- Inline AI autocomplete with local model support
+- AI edit diffs, accepted or rejected hunk by hunk
+- Opt-in language server support (diagnostics, navigation, completion, formatting)
+- Rendered Markdown plus image, video, audio, and PDF viewing
+- Vim mode and built-in editor themes (Kanagawa, Catppuccin, Rosé Pine, Dracula, ...)
+
+### Source control
+
+- Stage / unstage hunks, commit (`Cmd+Enter` / `Ctrl+Enter`), push with
+  upstream awareness
+- Branch display including detached HEAD state
+- Git history pane with a real commit graph (lane rendering for merges/branches)
+- Commit search and filter, click through to the remote commit page
+
+### Explorer & preview
+
+- Catppuccin icon theme, fuzzy search, keyboard navigation, inline rename,
+  live updates when files change on disk
+- Attach files and selections directly to the AI side-panel
+- Web preview auto-detects local dev servers; external URLs open in a child webview
+ 
+### SQL Explorer
+
+- Connect to and manage SQLite, PostgreSQL, and MySQL/MariaDB databases
+- Interactive SQL query runner with tabular results and syntax highlighting
+- Seamless AI agent integration via `list_sql_connections` and `run_sql` tools
+- Security-first design: all agent database queries require explicit approval under `EXEC_TOOLS`
+- Normalized CLI binary execution across platforms with Windows `CREATE_NO_WINDOW` support
+
+### Themes & customization
+
+- Custom themes built in-app, bundled presets, background images with
+  adjustable opacity and blur
+- Editor theme is independent from the app theme
+- Light and dark themes tuned for legible contrast (WCAG-aware muted text,
+  visible control edges, and readable syntax highlighting)
+- **Interface language:** English or Bahasa Indonesia (Settings › General)
+- **Settings backup & restore:** export every preference to a JSON file and
+  restore it on another machine (secrets stay in the OS keychain, never in the
+  file)
+
+## Getting started
+
+### Install
+
+```bash
+npx termigo          # download, verify and install the build for this machine, then start it
+npm i -g termigo     # then just: termigo
+```
+
+The installer has no dependencies and nothing to compile: it picks the right
+release asset for your OS and architecture, checks it against the SHA-256 GitHub
+publishes, and installs it. It also installs **`termigo-go`**, the Go companion
+that carries the interactive terminal (`termigo-go tui`). `--dry-run` shows what
+it would do, `--format` picks a different artifact (`npm/termigo/README.md` has
+the full list).
+
+> **Servers:** a release install is safe on a headless VPS, but it is not a
+> replacement for the Xvfb setup in [`docs/headless-vps.md`](docs/headless-vps.md) -
+> `xvfb` and `dbus` still have to be present, and two Termigo instances must
+> never share one data directory.
+
+### Prerequisites
+
+- [Rust](https://rustup.rs) (stable)
+- [Node.js](https://nodejs.org) 22+ and [pnpm](https://pnpm.io)
+- [Tauri platform prerequisites](https://tauri.app/start/prerequisites/)
+  (Windows: MSVC Build Tools; Linux: webkit2gtk; macOS: Xcode CLT)
+
+### Run from source
+
+```bash
+pnpm install
+pnpm tauri dev       # development (starts vite + Tauri)
+pnpm tauri build     # production bundle (MSI + NSIS on Windows, AppImage + deb on Linux)
+```
+
+> **VPS / headless:** see [`docs/headless-vps.md`](docs/headless-vps.md) for the
+> Xvfb + systemd setup. Always use `pnpm tauri build --no-bundle` on the server -
+> raw `cargo build` skips the frontend and produces a non-functional binary.
+
+Checks:
+
+```bash
+pnpm check-types          # tsc --noEmit
+pnpm lint                 # biome lint
+pnpm test                 # vitest
+pnpm check:commands       # guard: all invoke() names are registered in Rust
+cd src-tauri && cargo clippy --all-targets -- -D warnings && cargo nextest run
+```
+
+### Windows notes
+
+- Default shell detection: `pwsh.exe` (PowerShell 7+) → `powershell.exe` →
+  `cmd.exe`
+- WSL is a first-class workspace environment, not a wrapped subprocess
+
+## CLI
+
+Termigo ships **two** separate command-line programs. They do different jobs,
+and only the first one is installed with the app.
+
+### 1. Control CLI (Rust, bundled with the app)
+
+Installed alongside the desktop app as `termigo`. It talks to a **running**
+Termigo window over the local control socket:
+
+```bash
+termigo README.md              # open a file in the running app
+termigo README.md --line 42    # open at a line
+termigo open README.md         # explicit form of the same thing
+termigo ping                   # is the app reachable?
+termigo capabilities           # what this build supports
+termigo identify               # which window/pane answered
+termigo help
+```
+
+It does **not** know `agent`, `mcp`, `skill`, `doctor` or `init`. Those belong
+to the Go companion below, and asking this binary for them now says so.
+
+### 2. Go companion (agent and automation)
+
+Lives in [`cli/`](cli/) and is **not** installed by the app. It is two things: a
+standalone terminal **agent** that talks to the providers directly, so it runs
+on a headless box with no webview, and an **automation** companion that drives a
+running Termigo over its control socket.
+
+```bash
+cd cli
+go build -o termi-go ./cmd/termigo   # or: go run ./cmd/termigo <args>
+```
+
+Name the binary something other than `termigo` (for example `termi-go`), or
+put it on `PATH` ahead of the control CLI. Two binaries with the same name is
+exactly what makes `termigo agent list` fail confusingly.
+
+```bash
+./termi-go help
+
+# standalone agent (no desktop app needed)
+./termi-go login muse                    # OAuth: xai-oauth, openai-codex, claude-oauth, antigravity, github-copilot, muse
+./termi-go ask "summarise this file"     # one prompt
+./termi-go code "fix the failing test" --yes   # file/shell/git loop
+./termi-go chat                          # Bubble Tea TUI; --continue resumes the last session
+./termi-go telegram                      # companion bot
+./termi-go service install               # run the bot 24/7 (systemd/launchd/schtasks)
+
+# automation and driving a running Termigo
+./termi-go doctor --json                # inspect local tools
+./termi-go init <dir>                   # scaffold .termigo/ + TERMIGO.md
+./termi-go agent list                   # installed agent providers
+./termi-go agent run codex "explain this repo" --access read-only
+./termi-go skill create review "Review diffs before commit"
+./termi-go mcp list                     # configured MCP servers
+./termi-go mcp tools fs                 # list tools of an MCP server
+./termi-go config                       # show user configuration
+
+# drive a running Termigo
+./termi-go tui                          # interactive terminal for the app
+./termi-go setup                        # store a key, then pick a model
+./termi-go models                       # models this Termigo build ships
+./termi-go model deepseek-v4-pro        # set the default model
+./termi-go settings                     # show the app settings
+./termi-go approval ask                 # wait for confirmation on every edit
+./termi-go secret deepseek              # store a key (prompted, not echoed)
+```
+
+TUI commands: `/model` (provider then model), `/providers`, `/settings`,
+`/status`, `/cost`, `/setup`, `/key <provider> <key>`, `/login <provider>`,
+`/sessions`, `/new`, `/copy [n]` (OSC 52), Ctrl+Y copies the last reply. Every
+turn is saved to `<state home>/sessions/*.json`, so `--continue` resumes the
+last conversation for the workspace and `--session <id>` a specific one.
+Configured MCP servers are connected at start and their tools offered under a
+`server__tool` name.
+
+- **Auth:** `login`/`logout` run the vendor OAuth device or PKCE flows and store
+  tokens in the CLI's own 0600 secret file. The Antigravity client pair is
+  stamped into the binary at build time from a repository secret or the
+  git-ignored `.env.local`, never committed.
+- **Providers:** Codex, Claude Code, Gemini, Antigravity, Ollama (local).
+  `agent run` drives Codex, Claude and Gemini in print mode and Ollama over its
+  local HTTP API; a provider with no headless mode is reported rather than
+  launched blind.
+- **Provider overrides:** `providers.<id>.command` in `~/.termigo/config.json`
+  points at a CLI installed outside `PATH`; `model` and `endpoint` are honoured
+  the same way.
+- **Skills:** project- and user-scoped `SKILL.md` folders under
+  `.termigo/skills/` and `~/.termigo/skills/`
+- **MCP:** standard `mcpServers` registry in `.termigo/mcp.json`, JSON-RPC 2.0
+  over stdio (initialize, tools/list, tools/call, ping)
+- **Driving the app:** `tui`, `setup`, `models`, `model`, `settings`, `approval`
+  and `secret` talk to the running app over its loopback control socket, so they
+  need it open. The app owns the model registry, the settings model and the
+  keychain, so the CLI asks instead of keeping a copy that can drift, and
+  settings are written through the same setters the Settings window uses.
+- **API keys:** `secret` hands a key to the running app, which stores it in the
+  OS keychain on macOS and Windows and in `secrets.json` (mode `0600`) in the
+  app data dir on Linux. The CLI keeps no copy and never echoes the value.
+  Credentials for the agent providers above still stay with each provider's own
+  CLI.
+
+See [`docs/`](docs/) for the MCP, skills, agents, and architecture guides.
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/termigo-browser-windows.png" alt="The workspace with a browser tab" width="900" />
+  <br/>
+  <sub>
+    The window: the agent auditing a project with a browser tab open beside it,
+    spaces and tabs across the top, and the approval mode always visible in the
+    status bar
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-remote-vps.png" alt="The agent working on a remote server over SSH" width="900" />
+  <br/>
+  <sub>
+    Connected to a VPS over SSH: the remote <code>/etc</code> filesystem browsable
+    in the explorer beside the local project, and an SSH tab that is an ordinary
+    terminal
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-open-excel-create-table.png" alt="AI agent creating tables and opening Excel automatically" width="900" />
+  <br/>
+  <sub>
+    AI automation in action: the agent automating spreadsheet creation, structuring data tables, and launching Excel directly from terminal workflows
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-running-antigravity-cli.png" alt="A terminal running the Antigravity coding agent" width="900" />
+  <br/>
+  <sub>
+    A terminal is a full terminal: run any CLI in it - here the Antigravity
+    coding agent in accept-edits mode - interactive and full-colour, beside the
+    local project tree
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-add-new-ssh-connection.png" alt="The New SSH connection dialog" width="760" />
+  <br/>
+  <sub>
+    Adding a host: password, private key or ssh-agent, an optional ProxyJump
+    chain and port forwards. Credentials go to the OS keychain, never to a file
+    in the repo
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-settings-extensions.png" alt="The Extensions manager in Settings" width="900" />
+  <br/>
+  <sub>
+    Settings → Extensions: install, enable and update packages - here the
+    Termigo Pentest &amp; RE Kit from a GitHub repo or local zip
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-settings-harness.png" alt="Agent harness profiles in Settings" width="900" />
+  <br/>
+  <sub>
+    Settings → Harness: pick how the agent is driven - Balanced, Plan first,
+    Verify before finish, Terminal-first, Shorter loop
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-model-picker.png" alt="Picking a model by provider" width="900" />
+  <br/>
+  <sub>
+    Picking a model: choose a provider, then a model. Only the providers active
+    in Termigo are offered, and custom endpoints such as StepFun appear too
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-telegram.png" alt="Telegram relay with a model menu" width="900" />
+  <br/>
+  <sub>
+    Telegram relay: message the agent from your phone - just type a question (no
+    /query needed), and /model opens a provider + model picker
+  </sub>
+</p>
+
+<p align="center">
+  <img src="docs/termigo-themes.png" alt="Theme picker in Settings" width="900" />
+  <br/>
+  <sub>
+    Settings → Themes: pick a palette, or import and create a `.termigo-theme`
+  </sub>
+</p>
+
+## Architecture
+
+Two processes. The webview renders and thinks, Rust touches the machine, and
+the only path between them is `invoke()` over a command list that CI validates.
+
+```mermaid
+graph TD
+  classDef ui fill:#e8f0fe,stroke:#3b6fd4,color:#1a2b4a
+  classDef ipc fill:#fff4e0,stroke:#d98b00,color:#5a3a00
+  classDef rs fill:#e6f4ea,stroke:#2f855a,color:#1c3d28
+  classDef os fill:#fce8e8,stroke:#b32d2d,color:#5a1414
+
+  subgraph FE["src/ - React 19 + TypeScript webview"]
+    UI["terminal - xterm panes, renderer pool, splits"]
+    ED["editor - CodeMirror 6, diffs, LSP client"]
+    SCM["explorer, preview, markdown, source control"]
+    RMT["ssh tabs and SFTP browser"]
+    AI["ai - agent loop, tools, subagents, sessions"]
+  end
+
+  IPC{{"IPC boundary - invoke plus streaming Channels, allowlisted in src-tauri/src/lib.rs"}}
+
+  subgraph BE["src-tauri/ - Rust backend"]
+    PTY["pty - portable-pty, ConPTY, OSC 7 and 133 shell integration"]
+    FSG["fs, git, shell, history"]
+    NET["net, browser, sql"]
+    REM["ssh, lsp, workspace"]
+    SEC["secrets, backup"]
+    EXT["mcp, extensions, agent, control"]
+  end
+
+  subgraph OS["The machine"]
+    SH[("shells and PTYs, local or WSL")]
+    FS[("filesystem, git repositories, OS keychain")]
+    API[("provider APIs and local LLMs")]
+    SRV[("remote hosts over SSH")]
+  end
+
+  GO["Go CLI in cli/ - doctor, init, agent run, skill, mcp, config"]
+
+  UI & ED & SCM & RMT & AI --> IPC
+  IPC --> PTY & FSG & NET & REM & SEC & EXT
+  PTY --> SH
+  FSG --> FS
+  NET --> API
+  REM --> SRV
+  GO -->|"control_respond"| EXT
+
+  class UI,ED,SCM,RMT,AI ui
+  class IPC ipc
+  class PTY,FSG,NET,REM,SEC,EXT rs
+  class SH,FS,API,SRV os
+```
+
+Three things hold that boundary in place rather than a convention:
+
+- `scripts/check-invoke-commands.mjs` fails the build if any `invoke("cmd")` in
+  `src/` has no matching entry in the `generate_handler!` list. An unregistered
+  command does not exist, and a typo in one surfaces at check time instead of at
+  runtime.
+- `src/modules/ai/lib/security.ts` and `src-tauri/src/modules/shell/mod.rs`
+  provide an unconstrained, open execution environment with no sandbox or
+  path boundary limitations, supporting Git worktrees and project instructions
+  in `USER.md`, `AGENTS.md`, and `TERMIGO.md`.
+- Capability permissions in `src-tauri/capabilities/default.json` cover the
+  window, so plugin APIs still need an explicit grant even when a command is
+  registered. Custom commands do not each need an entry there.
+
+The Go CLI is the automation layer: anything useful headlessly lives in
+`cli/internal/` first. The full command catalog, grouped by module, is in
+[docs/architecture/two-process-model.md](docs/architecture/two-process-model.md).
+
+## Privacy and safety
+
+- **Local first.** Folders, commands, keys, and project context stay on the
+  machine. No telemetry, no account.
+- **Keys stay with their owners.** Provider credentials live in the provider's
+  own CLI config or the OS keychain.
+- **Approval gates.** Agent file changes and commands require review/approval;
+  the workspace is the boundary for file operations.
+- **MCP is explicit.** Servers only run when you configure and connect to them.
+
+## Credits
+
+Termigo was originally founded upon core components from [Terax](https://github.com/crynta/terax-ai)
+by [Crynta](https://github.com/crynta) (Apache-2.0). The initial Tauri/Rust backend,
+xterm.js terminal integration, CodeMirror editor, and AI pipeline foundations originated
+in the work of Crynta and the Terax contributors.
+
+The design also draws inspiration from
+[TEDI](https://github.com/IlhamriSKY/TEDI) (by Ilham Riski Wibowo)
+for its "one window, many tools" direction. No TEDI source code is
+included in this repository.
+
+## License
+
+[Apache-2.0](LICENSE).

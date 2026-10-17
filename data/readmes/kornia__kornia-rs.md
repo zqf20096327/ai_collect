@@ -1,0 +1,517 @@
+# kornia-rs: low level computer vision library in Rust
+
+English | [简体中文](README.zh-CN.md)
+
+![Crates.io Version](https://img.shields.io/crates/v/kornia)
+[![PyPI version](https://badge.fury.io/py/kornia-rs.svg)](https://badge.fury.io/py/kornia-rs)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/kornia-rs?label=PyPI%20downloads&logo=python&color=blue)](https://pypi.org/project/kornia-rs/)
+[![Crates.io Downloads](https://img.shields.io/crates/d/kornia?label=Crate%20downloads&logo=rust&color=orange)](https://crates.io/crates/kornia)
+[![Documentation](https://img.shields.io/badge/docs.rs-kornia-orange)](https://docs.rs/kornia)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://discord.gg/HfnywwpBnD)
+
+The `kornia` crate is a low-level computer vision library for [Rust](https://www.rust-lang.org/) 🦀
+
+Fast, thread-safe image I/O and processing with a single API that runs on the CPU or an NVIDIA GPU — the same `Image` and operators dispatch on where the data lives. It hands results to PyTorch and TensorRT with no host copy (DLPack, CUDA Array Interface), and fuses a camera frame into a normalized model input in one CUDA kernel — built for real-time pipelines.
+
+## 📚 Table of Contents
+
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Installation](#️-installation)
+- [Examples](#examples-image-processing)
+- [Python Usage](#python-usage)
+- [GPU / CUDA](#gpu--cuda)
+- [Development](#-development)
+- [Contributing](#-contributing)
+- [Citation](#citation)
+
+## Getting Started
+
+### Quick Example
+
+The following example demonstrates how to read and display image information:
+
+```rust
+use kornia::image::Image;
+use kornia::io::functional as F;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // read the image
+    let image: Image<u8, 3> = F::read_image_any_rgb8("tests/data/dog.jpeg")?;
+
+    println!("Hello, world! 🦀");
+    println!("Loaded Image size: {:?}", image.size());
+    println!("\nGoodbyte!");
+
+    Ok(())
+}
+```
+
+```bash
+Hello, world! 🦀
+Loaded Image size: ImageSize { width: 258, height: 195 }
+
+Goodbyte!
+```
+
+## Features
+
+- 🦀 Written in [Rust](https://www.rust-lang.org/): memory- and thread-safe, no GIL — usable from the free-threaded Python build.
+- ⚡ Fast image I/O and processing: libjpeg-turbo decoding and SIMD (NEON/AVX2) kernels.
+- 🎯 One API, CPU or GPU: the same `Image` and operators dispatch on residency — no separate GPU types.
+- 🔌 Zero-copy ML interop: DLPack and `__cuda_array_interface__` to and from PyTorch, plus numpy views.
+- 🎥 Real-time ready: V4L2 camera capture and a fused NV12/YUYV → normalized CHW CUDA kernel for inference.
+- 🐍 Python bindings via [PyO3/Maturin](https://github.com/PyO3/maturin), packaged for Linux (amd64/arm64, incl. Jetson), macOS and Windows; the same wheel is CPU-only or activates CUDA when an NVIDIA GPU is present.
+- Supported Python versions are 3.8 through 3.14, including the free-threaded (3.13t/3.14t) build.
+
+### Supported image formats
+
+- Read images from AVIF, BMP, DDS, Farbfeld, GIF, HDR, ICO, JPEG (libjpeg-turbo), OpenEXR, PNG, PNM, TGA, TIFF, WebP.
+
+### Image processing
+
+- Convert images to grayscale, resize, crop, rotate, flip, pad, normalize, denormalize, and other image processing operations.
+
+### Video processing
+
+- Capture video frames from a camera and video writers.
+
+## 🛠️ Installation
+
+### 🦀 Rust
+
+Add the following to your `Cargo.toml`:
+
+```toml
+[dependencies]
+kornia = "0.1"
+```
+
+Alternatively, you can use each sub-crate separately:
+
+```toml
+[dependencies]
+kornia-tensor = "0.1"
+kornia-tensor-ops = "0.1"
+kornia-io = "0.1"
+kornia-image = "0.1"
+kornia-imgproc = "0.1"
+kornia-3d = "0.1"
+kornia-apriltag = "0.1"
+kornia-vlm = "0.1"
+kornia-bow = "0.1"
+kornia-algebra = "0.1"
+```
+
+### 🐍 Python
+
+```bash
+pip install kornia-rs
+```
+
+A subset of the full rust API is exposed. See the [kornia documentation](https://kornia.readthedocs.io/en/stable/) for more detail about the API for python functions and objects exposed by the `kornia-rs` Python module.
+
+The `kornia-rs` library is thread-safe for use under the free-threaded Python build.
+
+### System Dependencies (Optional)
+
+Depending on the features you want to use, you might need to install the following dependencies in your system:
+
+#### v4l (Video4Linux camera support)
+
+```bash
+sudo apt-get install clang
+```
+
+#### turbojpeg
+
+```bash
+sudo apt-get install nasm
+```
+
+#### gstreamer
+
+```bash
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+```
+
+**Note:** Check the [gstreamer installation guide](https://docs.rs/gstreamer/latest/gstreamer/#installation) for more details.
+
+## Examples: Image Processing
+
+The following example shows how to read an image, convert it to grayscale and resize it. The image is then logged to a [`rerun`](https://github.com/rerun-io/rerun) recording stream for visualization.
+
+For more examples and use cases, check out the [`examples`](https://github.com/kornia/kornia-rs/tree/main/examples) directory, which includes:
+- Image processing operations (resize, rotate, normalize, filters)
+- Video capture and processing
+- AprilTag detection
+- Feature detection (FAST)
+- Visual language models (VLM) integration
+- And more...
+
+```rust
+use kornia::{image::{Image, ImageSize}, imgproc};
+use kornia::io::functional as F;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // read the image
+    let image: Image<u8, 3> = F::read_image_any_rgb8("tests/data/dog.jpeg")?;
+    let image_viz = image.clone();
+
+    let image_f32: Image<f32, 3> = image.cast_and_scale::<f32>(1.0 / 255.0)?;
+
+    // convert the image to grayscale
+    let mut gray = Image::<f32, 1>::from_size_val(image_f32.size(), 0.0)?;
+    imgproc::color::gray_from_rgb(&image_f32, &mut gray)?;
+
+    // resize the image
+    let new_size = ImageSize {
+        width: 128,
+        height: 128,
+    };
+
+    let mut gray_resized = Image::<f32, 1>::from_size_val(new_size, 0.0)?;
+    imgproc::resize::resize_native(
+        &gray, &mut gray_resized,
+        imgproc::interpolation::InterpolationMode::Bilinear,
+    )?;
+
+    println!("gray_resize: {:?}", gray_resized.size());
+
+    // create a Rerun recording stream
+    let rec = rerun::RecordingStreamBuilder::new("Kornia App").spawn()?;
+
+    rec.log(
+        "image",
+        &rerun::Image::from_elements(
+            image_viz.as_slice(),
+            image_viz.size().into(),
+            rerun::ColorModel::RGB,
+        ),
+    )?;
+
+    rec.log(
+        "gray",
+        &rerun::Image::from_elements(gray.as_slice(), gray.size().into(), rerun::ColorModel::L),
+    )?;
+
+    rec.log(
+        "gray_resize",
+        &rerun::Image::from_elements(
+            gray_resized.as_slice(),
+            gray_resized.size().into(),
+            rerun::ColorModel::L,
+        ),
+    )?;
+
+    Ok(())
+}
+```
+
+![Screenshot from 2024-03-09 14-31-41](https://github.com/kornia/kornia-rs/assets/5157099/afdc11e6-eb36-4fcc-a6a1-e2240318958d)
+
+## Python Usage
+
+### Reading Images
+
+Load an image, which is converted directly to a numpy array to ease the integration with other libraries.
+
+```python
+import kornia_rs as K
+import numpy as np
+import torch
+
+# load a JPEG with libjpeg-turbo
+img: np.ndarray = K.io.read_image_jpeg("dog.jpeg", "rgb")
+
+# or read any supported format
+# img: np.ndarray = K.io.read_image("dog.png")
+
+assert img.shape == (195, 258, 3)
+
+# convert to dlpack to import to torch
+img_t = torch.from_dlpack(img)
+assert img_t.shape == (195, 258, 3)
+```
+
+### Writing Images
+
+Write an image to disk:
+
+```python
+import kornia_rs as K
+import numpy as np
+
+# load a JPEG with libjpeg-turbo
+img: np.ndarray = K.io.read_image_jpeg("dog.jpeg", "rgb")
+
+# write the image to disk (mode, JPEG quality)
+K.io.write_image_jpeg("dog_copy.jpeg", img, "rgb", 95)
+```
+
+### `Image` — PIL-style class with uint8 + uint16 support
+
+`kornia_rs.image.Image` mirrors PIL's `fromarray` / `save` / `load` / `decode`
+and natively holds **`uint16`** for depth maps and scientific imagery
+(lossless via PNG-16):
+
+```python
+import io
+import numpy as np
+from kornia_rs.image import Image
+
+# Bit depth is auto-detected from the numpy dtype.
+rgb   = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
+depth = np.full((480, 640), 1500, dtype=np.uint16)            # mm
+
+rgb_img   = Image.fromarray(rgb)
+depth_img = Image.fromarray(depth)
+
+# In-memory encode for transit (Zenoh / MCAP / gRPC).
+png16_bytes = depth_img.encode("png")    # lossless on uint16
+
+# Save to disk (format from extension), or to any file-like (PIL parity).
+rgb_img.save("dog.png")
+buf = io.BytesIO(); rgb_img.save(buf, format="jpeg")
+
+# Decode auto-detects bit depth from the file header.
+back = Image.decode(png16_bytes, mode="L")
+assert back.dtype == np.uint16
+```
+
+### Encoding and Decoding (legacy, jpeg-only)
+
+The original `ImageEncoder`/`ImageDecoder` pair is still available for
+JPEG-only workflows that want the explicit `turbojpeg` backend object:
+
+```python
+import kornia_rs as K
+
+img = K.io.read_image_jpeg("dog.jpeg", "rgb")
+
+image_encoder = K.io.ImageEncoder()
+image_encoder.set_quality(95)
+img_encoded: list[int] = image_encoder.encode(img)
+
+image_decoder = K.io.ImageDecoder()
+decoded_img: np.ndarray = image_decoder.decode(bytes(img_encoded))
+```
+
+### Image Resizing
+
+Resize an image using the `kornia-rs` backend with SIMD acceleration:
+
+```python
+import kornia_rs as K
+
+# load image with kornia-rs
+img = K.io.read_image_jpeg("dog.jpeg", "rgb")
+
+# resize the image
+resized_img = K.imgproc.resize(img, (128, 128), interpolation="bilinear")
+
+assert resized_img.shape == (128, 128, 3)
+```
+
+### GPU / CUDA
+
+The published wheels are GPU-capable but load CUDA lazily: the same wheel runs on
+CPU when no GPU is present and uses the GPU when one is. The GPU path needs an
+NVIDIA driver (`libcuda`) and `nvrtc` from the CUDA toolkit; without them the CPU
+ops keep working.
+
+Device pixels use the same `Image` type. `.device` reads `"cpu"` or `"cuda:{id}"`,
+`.to_cuda(stream)` uploads, `.cpu()` downloads. Color ops live under
+`kornia_rs.imgproc` and dispatch on residency: a device `Image` runs the CUDA
+kernel, a host `Image` or numpy array runs the CPU kernel.
+
+```python
+import numpy as np
+import kornia_rs as K
+from kornia_rs.image import Image
+from kornia_rs.cuda import Stream
+
+if K.cuda.is_available():
+    rgb = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
+
+    img = Image.from_numpy(rgb).to_cuda(Stream.default())  # -> "cuda:0"
+    gray = K.imgproc.gray_from_rgb(img)                    # runs on the GPU
+    out = gray.cpu().numpy()                               # -> host, (480, 640, 1)
+```
+
+GPU color conversions (`gray_from_rgb`, `bgr_from_rgb`, `hsv_from_rgb`,
+`lab_from_rgb`, `ycbcr_from_rgb`, `sepia_from_rgb`, `apply_colormap`, …) and the
+fused `Preprocessor` are the GPU entry points. Tensors cross to PyTorch with no
+copy through DLPack (`torch.from_dlpack`) and `__cuda_array_interface__`.
+
+### Production: GPU-resident camera → model
+
+`Preprocessor` fuses resize, normalize and HWC→CHW into one CUDA kernel per
+frame. It emits a device tensor that feeds an inference engine with no host copy
+— the path for real-time camera pipelines.
+
+```python
+import torch
+from kornia_rs import Preprocessor, IMAGENET_MEAN, IMAGENET_STD
+from kornia_rs.cuda import Stream
+
+# One kernel per frame: NV12 -> normalized fp16 [1, 3, 640, 640] on the GPU.
+pre = Preprocessor(mode="letterbox", format="nv12", f16=True,
+                   mean=IMAGENET_MEAN, std=IMAGENET_STD, stream=Stream.default(0))
+
+t = pre.run(nv12_frame, 1920, 1080, 640, 640)  # device Tensor
+x = torch.from_dlpack(t)                        # zero-copy handoff to PyTorch
+# TensorRT: ctx.set_tensor_address("images", t.data_ptr)
+```
+
+The same one-call-per-residency model holds in Rust — `convert` picks CPU or GPU
+from where the images live:
+
+```rust
+let stream = CudaContext::new(0)?.default_stream();
+let rgb = Rgb8::from_size_vec(size, data)?.to_cuda(&stream)?;  // device image
+let mut gray = Gray8::zeros_cuda(size, &stream)?;
+rgb.convert(&mut gray)?;                                       // runs on the GPU
+```
+
+Full pipelines: [`examples/cuda_camera_preprocess`](examples/cuda_camera_preprocess)
+(V4L2 camera → fused CUDA preprocess) and
+[`kornia-py/examples/preprocess_to_inference.py`](kornia-py/examples/preprocess_to_inference.py)
+(NV12 → fused preprocess → ResNet-18 / TensorRT, GPU-resident end to end).
+
+## 🧑‍💻 Development
+
+### Prerequisites
+
+Before you begin, ensure you have `rust` and `python3` installed on your system.
+
+### Setting Up Your Development Environment
+
+1. **Install Rust** using rustup:
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+
+2. **Install [`pixi`](https://pixi.sh)** for package and environment management:
+   ```bash
+   curl -fsSL https://pixi.sh/install.sh | bash
+   ```
+
+3. **Clone the repository** to your local directory:
+   ```bash
+   git clone https://github.com/kornia/kornia-rs.git
+   ```
+
+4. **Install dependencies** using pixi:
+   ```bash
+   pixi install
+   ```
+
+### Available Commands
+
+You can check all available development commands via `pixi task list`:
+
+```bash
+pixi run rust-check        # Check Rust compilation (all targets)
+pixi run rust-clippy       # Run clippy (all targets, warnings as errors)
+pixi run rust-fmt          # Format Rust code
+pixi run rust-fmt-check    # Check Rust formatting
+pixi run rust-lint         # Run all Rust lints (fmt + clippy + check)
+pixi run rust-test         # Run Rust tests
+pixi run rust-test-release # Run Rust tests (release mode)
+pixi run rust-clean        # Clean Rust build artifacts
+pixi run py-build          # Build kornia-py for development
+pixi run py-build-release  # Build kornia-py for release
+pixi run py-test           # Run pytest
+pixi run cpp-build         # Build C++ library (debug)
+pixi run cpp-test          # Build and run C++ tests
+```
+### 🐳 Development Container
+
+This project includes a development container configuration for a consistent development environment across different machines.
+
+**Using the Dev Container:**
+
+1. Install the `Remote - Containers` extension in Visual Studio Code
+2. Open the project folder in VS Code
+3. Press `F1` and select `Remote-Containers: Reopen in Container`
+4. VS Code will build and open the project in the containerized environment
+
+The devcontainer includes all necessary dependencies and tools for building and testing `kornia-rs`.
+
+### 🦀 Rust Development
+
+Compile the project and run all tests:
+
+```bash
+pixi run rust-test
+```
+
+To run tests for a specific package:
+
+```bash
+pixi run rust-test-package <package-name>
+```
+
+To run clippy linting:
+
+```bash
+pixi run rust-clippy
+```
+
+### 🐍 Python Development
+
+Build Python wheels using `maturin`:
+
+```bash
+pixi run py-build
+```
+
+Run Python tests:
+
+```bash
+pixi run py-test
+```
+
+## 💜 Contributing
+
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Coding standards and style guidelines
+- Development workflow
+- How to run local checks before submitting PRs
+
+### AI Policy
+
+Kornia-rs accepts AI-assisted code but strictly rejects AI-generated contributions where the submitter acts as a proxy. All contributors must be the **Sole Responsible Author** for every line of code. Please review our [AI Policy](AI_POLICY.md) before submitting pull requests. Key requirements include:
+
+- **Proof of Verification**: PRs must include local test logs proving execution (e.g., `pixi run rust-test` or `cargo test`)
+- **Pre-Discussion**: All PRs must be discussed in Discord or via a GitHub issue before implementation
+- **Library References**: Implementations must be based on existing library references (Rust crates, OpenCV, etc.)
+- **Use Existing Utilities**: Use existing `kornia-rs` utilities instead of reinventing the wheel
+- **Error Handling**: Use `Result<T, E>` for error handling (avoid `unwrap()`/`expect()` in library code)
+- **Explain It**: You must be able to explain any code you submit
+
+Automated AI reviewers (e.g., @copilot) will check PRs against these policies. See [AI_POLICY.md](AI_POLICY.md) for complete details.
+
+### Community
+
+This is a child project of [Kornia](https://github.com/kornia/kornia).
+
+- 💬 Join our community on [Discord](https://discord.gg/HfnywwpBnD)
+- 💖 Support the project on [OpenCollective](https://opencollective.com/kornia)
+- 📖 Read the full [documentation](https://kornia.readthedocs.io/en/stable/)
+- 🦀 Browse the [Rust API docs](https://docs.rs/kornia)
+
+## Citation
+
+If you use kornia-rs in your research, please cite:
+
+```bibtex
+@misc{2505.12425,
+Author = {Edgar Riba and Jian Shi and Aditya Kumar and Andrew Shen and Gary Bradski},
+Title = {Kornia-rs: A Low-Level 3D Computer Vision Library In Rust},
+Year = {2025},
+Eprint = {arXiv:2505.12425},
+}
+```

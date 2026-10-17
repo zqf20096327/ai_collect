@@ -1,0 +1,97 @@
+# hdlib
+
+Hyperdimensional Computing Library for building Vector-Symbolic Architectures in Python 3.
+
+![Conda](https://img.shields.io/conda/dn/conda-forge/hdlib?label=hdlib%20in%20Conda)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.05704/status.svg)](https://doi.org/10.21105/joss.05704)
+[![DOI](https://zenodo.org/badge/485488487.svg)](https://doi.org/10.5281/zenodo.7996502)
+
+Vector-Symbolic Architectures (VSA, a.k.a. Hyperdimensional Computing) is an emergent computing paradigm that works by combining vectors in a high-dimensional space for representing and processing information. This approach recently shown promise in various domains for dealing with different kind of computational problems, including artificial intelligence, cognitive science, robotics, natural language processing, bioinformatics, medical informatics, cheminformatics, and internet of things among other scientific disciplines.
+
+Here we present _hdlib_, a Python library for designing Vector-Symbolic Architectures. It is distributed under the MIT license as a Python package through PyPI and Conda on the _conda-forge_ channel.
+
+GitHub releases are also available on Zenodo at [https://doi.org/10.5281/zenodo.7996502](https://doi.org/10.5281/zenodo.7996502).
+
+Please refer to the official [Wiki](https://github.com/cumbof/hdlib/wiki) for any information about the implemented modules and how to use the library.
+
+Here is the table of content:
+
+- [Getting started](https://github.com/cumbof/hdlib/wiki/Getting-started)
+  - [Installing `hdlib`](https://github.com/cumbof/hdlib/wiki/Getting-started#installing-hdlib)
+  - [Dependencies](https://github.com/cumbof/hdlib/wiki/Getting-started#dependencies)
+- [Vector-Symbolic Architectures](https://github.com/cumbof/hdlib/wiki/Vector-Symbolic-Architectures)
+  - [Hyperdimensional Vectors and Space](https://github.com/cumbof/hdlib/wiki/Vector-Symbolic-Architectures#hyperdimensional-vectors-and-space)
+  - [Arithmetic operations](https://github.com/cumbof/hdlib/wiki/Vector-Symbolic-Architectures#arithmetic-operations)
+- [Examples](https://github.com/cumbof/hdlib/wiki/Examples)
+  - [What is the Dollar of Mexico?](https://github.com/cumbof/hdlib/wiki/Examples#what-is-the-dollar-of-mexico)
+  - [Classification Model](https://github.com/cumbof/hdlib/wiki/Examples#classification-model)
+  - [Stepwise Feature Selection](https://github.com/cumbof/hdlib/wiki/Examples#stepwise-feature-selection)
+  - [Graph Encoding](https://github.com/cumbof/hdlib/wiki/Examples#graph-encoding)
+  - [Regression Model](https://github.com/cumbof/hdlib/wiki/Examples#regression-model)
+  - [Clustering](https://github.com/cumbof/hdlib/wiki/Examples#clustering)
+- [Support and contributions](https://github.com/cumbof/hdlib/wiki/Support-and-contributions)
+
+## Agent Skills
+
+Want to use `hdlib` with an LLM coding assistant? The [**hdlib-skills**](https://github.com/cumbof/hdlib-skills) repository provides a collection of [Agent Skills](https://github.com/cumbof/hdlib-skills) that teach LLM agents how to use the library effectively.
+
+The skills cover foundational concepts (vectors, space, arithmetic, and distance operations), machine learning models (classification, clustering, regression, graph encoding, and feature selection), quantum hyperdimensional computing, and common usage patterns (analogical reasoning, data encoding, and troubleshooting).
+
+They are compatible with any tool that supports the Agent Skills standard. See the [hdlib-skills](https://github.com/cumbof/hdlib-skills) repository for installation and usage instructions.
+
+## Credits
+
+Please credit our work in your manuscript by citing:
+
+```bibtex
+@article{cumbo2023hdlib,
+  title   = {hdlib: A python library for designing Vector-Symbolic Architectures},
+  author  = {Cumbo, Fabio and Weitschek, Emanuel and Blankenberg, Daniel},
+  journal = {Journal of Open Source Software},
+  volume  = {8},
+  number  = {89},
+  pages   = {5704},
+  year    = {2023},
+  doi     = {10.21105/joss.05704}
+}
+
+@misc{cumbo2026hdlib,
+  title         = {hdlib 2.0: Extending Machine Learning Capabilities of Vector-Symbolic Architectures}, 
+  author        = {Fabio Cumbo and Kabir Dhillon and Daniel Blankenberg},
+  year          = {2026},
+  eprint        = {2601.02509},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2601.02509}
+}
+```
+
+## Other publications
+
+`hdlib` has been cited in the following selected publications. If you have used our library in your research, we would love to hear from you!
+
+> Cumbo et al., (2020). A brain-inspired hyperdimensional computing approach for classifying massive DNA methylation data of cancer. _Algorithms_, 13(9), 233. https://doi.org/10.3390/a13090233
+> 
+> Cumbo et al., (2025). Feature selection with vector-symbolic architectures: a case study on microbial profiles of shotgun metagenomic samples of colorectal cancer. _Briefings in Bioinformatics_, 26(2), bbaf177. https://doi.org/10.1093/bib/bbaf177
+>
+> Joshi et al., (2025). Large-scale classification of metagenomic samples: a comparative analysis of classical machine learning techniques vs a novel brain-inspired hyperdimensional computing approach. _bioRxiv_, 2025-07. https://doi.org/10.1101/2025.07.06.663394
+>
+> Cumbo et al., (2025). Hyperdimensional computing in biomedical sciences: a brief review. _PeerJ Computer Science_, 11, e2885. https://doi.org/10.7717/peerj-cs.2885
+>
+> Cumbo et al., (2026). A novel Vector-Symbolic Architecture for graph encoding and its application to viral pangenome-based species classification. _BioData Mining_, 2026-05. https://doi.org/10.1186/s13040-026-00561-1
+>
+> Cumbo et al., (2026). Quantum Hyperdimensional Computing: a foundational paradigm for quantum neuromorphic architectures. _npj Unconventional Computing_, 3(1), 21. https://doi.org/10.1038/s44335-026-00064-6
+>
+> Cumbo et al., (2026). Designing vector-symbolic architectures for biomedical applications: ten tips and common pitfalls. _PeerJ Computer Science_, 12, e3682. https://doi.org/10.7717/peerj-cs.3682
+>
+> Cumbo et al., (2026). Predicting the toxicity of chemical compounds via Hyperdimensional Computing. _Molecular Informatics_, 45(9), e70052. https://doi.org/10.1002/minf.70052
+
+## Support and contributions
+
+Long-term discussion and bug reports are maintained via [GitHub Issues](https://github.com/cumbof/hdlib/issues), while code review is managed via [GitHub Pull Requests](https://github.com/cumbof/hdlib/pulls).
+
+Please, (i) be sure that there are no existing issues/PR concerning the same bug or improvement before opening a new issue/PR; (ii) write a clear and concise description of what the bug/PR is about; (iii) specifying the list of steps to reproduce the behavior in addition to versions and other technical details is highly recommended.
+
+For additional information about how to contribute, please visit the [CONTRIBUTING](https://github.com/cumbof/hdlib/blob/main/CONTRIBUTING.md) section.
+
+Copyright © 2025 [Fabio Cumbo](https://github.com/cumbof). See [LICENSE](https://github.com/cumbof/hdlib/blob/main/LICENSE) for additional details.

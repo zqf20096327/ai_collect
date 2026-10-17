@@ -1,0 +1,510 @@
+<p align="center">
+  <strong>English</strong> | <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/en-hero-banner.svg" width="800">
+</p>
+
+<p align="center">
+  Give your AI assistant a heartbeat — let it feel time passing, miss you, think on its own,<br>
+  and reach out first with full memory of every conversation you've ever had.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.12+-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/vue-3-4FC08D?logo=vuedotjs&logoColor=white" alt="Vue">
+  <img src="https://img.shields.io/badge/fastapi-009688?logo=fastapi&logoColor=white" alt="FastAPI">
+  <img src="https://img.shields.io/badge/license-MIT-yellow" alt="License">
+</p>
+
+---
+
+## Why Hermes Active?
+
+<p align="center">
+  <img src="docs/images/en-problem-statement.svg" width="800">
+</p>
+
+Every proactive messaging feature in traditional AI agents shares the same flaw: **each scheduled task spawns a brand-new, isolated session**.
+
+- ❌ The assistant has **no memory** of recent conversations when it reaches out
+- ❌ When the user replies, context is gone — "sorry, what were we talking about?"
+- ❌ Every run is stateless — no emotion, no continuity, no sense of time
+- ❌ Replying to a proactive message feels like talking to a stranger
+
+Hermes Active fixes this by running a **persistent consciousness layer** alongside Hermes Agent:
+
+- ✅ Proactive messages are **written directly into the live session** — the user's reply lands in full context
+- ✅ A **heartbeat loop** gives the assistant an emotional state that evolves with time and interaction
+- ✅ **Long-term memory** (Hindsight) is recalled before every thought and every reply
+- ✅ An **inner contemplation loop** lets the assistant think freely, building a compressed "sediment" of its own mind
+- ✅ Runs as a standalone service — **zero modifications to Hermes Agent's core** (one small optional session-sync patch)
+
+> The reference persona shipped with this system is **Kally (凯莉)** — every prompt, tag and default is fully customizable from the web UI.
+
+---
+
+## Screenshots
+
+> 📸 Screenshots captured from the web console (`http://localhost:18720`). Regenerate with `scripts/screenshot_readme.py`.
+
+<table>
+  <tr>
+    <td align="center">
+      <b>Dashboard</b><br><br>
+      <img src="docs/screenshots/dashboard.png" width="400"><br><br>
+      <i>System overview: sessions, messages, task stats, consciousness status at a glance.</i>
+    </td>
+    <td align="center">
+      <b>Active Consciousness</b><br><br>
+      <img src="docs/screenshots/active-consciousness.png" width="400"><br><br>
+      <i>Live VA emotion gauges, heartbeat log stream, thought log with full LLM reasoning.</i>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Passive Consciousness</b><br><br>
+      <img src="docs/screenshots/passive-consciousness.png" width="400"><br><br>
+      <i>Injection switches, Jinja2 template editor with live preview, per-signal test buttons.</i>
+    </td>
+    <td align="center">
+      <b>Free Consciousness</b><br><br>
+      <img src="docs/screenshots/free-consciousness.png" width="400"><br><br>
+      <i>Contemplation rounds timeline, thinking-chain inspector, sediment viewer.</i>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Scheduled Tasks</b><br><br>
+      <img src="docs/screenshots/cron-jobs.png" width="400"><br><br>
+      <i>Cron editor with placeholder insertion, prompt preview, execution logs.</i>
+    </td>
+    <td align="center">
+      <b>Injection Analytics</b><br><br>
+      <img src="docs/screenshots/analysis.png" width="400"><br><br>
+      <i>ECharts dashboards: injection trends, emotion/longing/heat distributions.</i>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Architecture
+
+<p align="center">
+  <img src="docs/images/en-architecture.svg" width="800">
+</p>
+
+
+### Dual-database design
+
+| Database | Access | Contents | Location |
+|----------|--------|----------|----------|
+| `state.db` | **Read-only** (sole exception: proactive messages are written back) | Hermes Agent's sessions & messages | `~/.hermes/state.db` |
+| `active.db` | **Read-write** | Users, configs, cron jobs, task logs, heartbeat & thought logs, contemplation logs, injection logs | `data/active.db` |
+
+Hermes Active never writes Hermes' configuration and never mutates conversation history — it only *appends* the proactive messages it sends, flagged with a configurable mark (e.g. `[凯莉 14:30]: …`), so the main agent naturally sees them as its own.
+
+---
+
+## Core Systems
+
+<p align="center">
+  <img src="docs/images/en-four-systems.svg" width="800">
+</p>
+
+### Active Consciousness — the heartbeat
+
+A scheduler fires every N seconds (default 600) and runs a full perceive → feel → decide → act cycle. Nothing is scripted: the emotion state, the decision score and the message itself all emerge from live context.
+
+
+#### Emotion system — Valence/Arousal + Social Need
+
+The assistant's mood is a persisted three-dimensional state:
+
+| Dimension | Range | Meaning | Natural drift |
+|-----------|-------|---------|---------------|
+| **Valence** | 0.0 – 1.0 | pleasant ↔ unpleasant | regresses toward neutral (0.5) |
+| **Arousal** | 0.0 – 1.0 | activated ↔ calm | decays over time |
+| **Social need** | 0.0 – 1.0 | desire to interact | grows with silence |
+
+From these, a dominant label is derived (`calm`, `happy`, `content`, `longing`, `yearning`, `missing`, `anxious`, `bored`, `concerned`).
+
+Each heartbeat fuses **two independent estimates** of the emotional state:
+
+1. **Deterministic evolution** — the previous state drifted forward by elapsed time (rates configurable: `decay_rate`, `social_need_growth`, `valence_regression`)
+2. **LLM assessment** — a dedicated prompt asks the LLM to read the recent conversation and output fresh VA values
+
+The fusion weight is not fixed: a **confidence score** (range sanity + agreement with the evolved state) shifts the blend between 0.7/0.3 and 0.3/0.7. If the LLM returns garbage (all zeros), the evolved value takes over silently.
+
+#### Decision matrix
+
+Sending is a scored decision, never a timer:
+
+```
+score = emotion_intensity × time_fitness × silence_factor × frequency_limit
+```
+
+| Factor | How it's computed |
+|--------|-------------------|
+| `emotion_intensity` | blended VA magnitude of the merged state |
+| `time_fitness` | time-of-day table — morning & evening windows 1.0, work hours 0.7–0.9, deep night 0.3 |
+| `silence_factor` | 0.6 within 30 min of the user's last message → 1.0 after 6 h of silence |
+| `frequency_limit` | hard gate: 0 once the hourly send cap is reached |
+
+| Score | Decision | Effect |
+|-------|----------|--------|
+| `≥ send_threshold` (default 0.35) | `auto_send` | generate thought → protection check → send |
+| `≥ memory_threshold` (default 0.05) | `memory` | generate thought → retain to Hindsight only |
+| `< memory_threshold` | `skip` | heartbeat ends without any LLM call |
+
+#### Thought engine
+
+Thoughts are generated by a dedicated pipeline (`ContextCollector → ThoughtEngine → LLM → parser`):
+
+- **Context bundle** — structured conversations (cross-session, per-platform, tool messages filtered), Hindsight recall results, emotion state, time context (hour / workday / mealtime), weather, user habits from `USER.md`
+- **Fully templated prompts** — system & user prompts are stored in the database and editable in the UI, with placeholders: `{session_context}`, `{hindsight_context}`, `{weather_display}`, `{emotion_display}`, `{time}`, `{persona}`
+- **SKIP protocol** — the LLM may answer `SKIP` when it has nothing worth saying; the heartbeat then stores nothing and sends nothing
+- **Reasoning capture** — chain-of-thought is extracted with a three-tier fallback (`reasoning_content → reasoning → reasoning_details`) and shown in the thought log
+- **Thought typing** — each thought is classified (`memory`, `env`, `emotion`, `silence`, `time`, `assoc`) and retained to Hindsight with tags (`active_consciousness`, dominant emotion, `high_emotion`, `user_related`)
+
+#### Send protection
+
+Three independent guards run *after* a thought is generated but *before* it is sent — blocked thoughts are retained to memory instead of discarded:
+
+| Guard | Config key | Default |
+|-------|-----------|---------|
+| Silence window — user just messaged | `active.no_send_after_user_msg_minutes` | 5 min |
+| Heat guard — user is actively chatting | `active.no_send_while_heat_above` | 1.0 msg/h |
+| Vibe guard — emotional intensity too low | `active.no_send_while_vibe_below` | 0.15 |
+| Cooldown between sends | `active.cooldown_minutes` | 30 min |
+
+#### Tiered LLM configuration
+
+Three independent LLM slots, each falling back to the one above:
+
+```
+thought_llm  →  emotion_llm  →  llm (universal)
+```
+
+Every slot supports `hermes` mode (reuse Hermes Agent's own `call_llm`, zero extra keys) or `custom` mode (any OpenAI-compatible provider/model/key/base_url). Connectivity can be tested per-slot from the UI.
+
+#### Observability
+
+Every heartbeat and every thought is persisted with its **complete detail payload** — prompts sent, raw LLM responses, reasoning, recall results, decision inputs, protection verdicts — inspectable in the web UI. A nightly job (03:00) prunes logs older than 30 days.
+
+---
+
+### Passive Consciousness — context injection
+
+Active consciousness *acts*; passive consciousness *perceives*. Whenever the user sends a message, a Hermes plugin assembles a live "state of mind" snapshot and injects it into the prompt — so the reply naturally reflects how long it's been, how the conversation feels, what's on the assistant's mind, and what the weather is like. **No extra LLM call is made on the user's turn.**
+
+
+#### Injected signals
+
+| Signal | Source | Computation |
+|--------|--------|-------------|
+| 💕 Longing | `state.db` | minutes since the user's last message ÷ 300, capped at 1.0 — five levels from `calm` to `anxious` |
+| 🔥 Chat heat | `state.db` | user messages in the last hour — `cold / warm / hot / fire` |
+| 🎭 Emotional intensity | `active.db` | written by the active-consciousness heartbeat — `工作 / 日常 / 八卦 / 情感 / 深度情感` |
+| 🌤 Weather | Amap / QWeather | unified `weather.*` config, cached, with high/low temperature alerts |
+| 📖 Memories | Hindsight Recall | semantic search over long-term memory |
+| 💭 Reflection | Hindsight Reflect | synthesized analysis of the current situation |
+
+#### Jinja2 template system
+
+The injected block is rendered from **user-managed Jinja2 templates** — create multiple templates, switch the active one, preview with mock data, and browse the full variable catalog from the UI. Conditional sections (`{% if inject_emotion %}`) mean one template serves many configurations. The block is wrapped in a configurable tag (default `[CONSCIOUSNESS_CONTEXT]`) so the main agent knows how to treat it.
+
+#### Platform filtering & analytics
+
+- **Platform whitelist** — injection runs only on enabled platforms (e.g. WeChat only)
+- **Injection logs** — every injection (success / skipped / error) is persisted with context length, scores and template id
+- **Analytics dashboard** — success rate, hourly/daily/weekly trends, emotion & longing & heat distributions, correlation stats (e.g. high-emotion × high-heat), rendered with ECharts
+- **Per-signal test endpoints** — each pipeline stage (longing, heat, emotion, weather, recall, reflect, full assembly) has a one-click test button in the UI
+
+> The plugin lives at `~/.hermes/plugins/passive-consciousness/` — see [docs/plugin-installation.md](docs/plugin-installation.md).
+
+---
+
+### Free Consciousness — inner contemplation
+
+Between heartbeats and user messages, the assistant can simply… think. Free consciousness is a scheduled contemplation loop with no task, no user waiting, and no expected output — an inner space where the assistant continues its own train of thought.
+
+
+#### Four-layer memory model
+
+The thinking chain keeps unbounded contemplation affordable by layering recency:
+
+| Layer | Content | Cost |
+|-------|---------|------|
+| **Sediment (意识积淀)** | LLM-compressed narrative of all distant rounds, refreshed every 10 rounds | ~300 chars total |
+| **Recent rounds** (default 3) | full verbatim thinking | high |
+| **Mid rounds** (default 17) | one-line summaries | low |
+| **Distant rounds** | key discoveries only | minimal |
+
+The result: the assistant always sees *everything it ever concluded* (sediment), *what it was recently thinking* (full text), and *the highlights in between* — a persistent inner narrative that survives indefinitely without blowing up the context window.
+
+All contemplation logs — including the exact prompt, raw response, reasoning and token estimates — are browsable in the UI.
+
+---
+
+### Scheduled Tasks
+
+The foundation layer: cron-style jobs with context injection, managed entirely from the web UI — independent from Hermes Agent's built-in cron.
+
+
+- **Placeholder system** — `{session}` (recent cross-session conversations), `{memory}` (Hindsight recall + reflect), `{weather}` (live weather), `{time}` (custom strftime via a picker component)
+- **Context blocks in prompts** — declare per-job context requirements inline; the parser extracts them before rendering
+- **Session fallback** — if the gateway's in-memory session is gone, the job resolves (or resets) the active session from `state.db` automatically
+- **Persona injection** — optionally append Hermes' `SOUL.md` to the system prompt
+- **Full logging** — every run stores the rendered prompt, LLM request/response, send result and duration
+- **Multi-platform** — WeChat and Feishu sending through Hermes' own platform adapters
+
+---
+
+### Web Console
+
+A complete management UI (Vue 3 + Naive UI + Pinia + ECharts), served directly by the backend — no separate web server:
+
+| Page | What you can do |
+|------|-----------------|
+| **Dashboard** | session/message/task statistics, system health at a glance |
+| **Sessions / Messages** | browse every session and message in `state.db`, search, delete, send manually |
+| **Active Consciousness** | live emotion gauges, heartbeat & thought logs with full LLM details, all thresholds and prompts editable |
+| **Passive Consciousness** | injection switches, template CRUD with live preview, platform whitelist, per-signal test buttons |
+| **Free Consciousness** | contemplation rounds, thinking-chain inspector, sediment viewer, interval & prompt config |
+| **Cron Jobs / Task Logs** | visual cron editor, placeholder insertion, run-now, execution history |
+| **Analysis** | injection analytics with trend / distribution / correlation charts |
+| **Config / System Logs** | every configuration key in one place, live backend log viewer |
+
+Authentication is JWT-based (default `admin` / `admin` — change it on first login), with route guards on the frontend and middleware on every API.
+
+---
+
+## Integrations
+
+Hermes Active integrates with Hermes Agent through **public interfaces only**:
+
+| Integration point | Interface | Purpose |
+|-------------------|-----------|---------|
+| LLM calls | `agent.auxiliary_client.call_llm()` | thought / emotion / contemplation generation |
+| Response parsing | `extract_content_or_reasoning()` | content + reasoning extraction |
+| Persona | `agent.prompt_builder.load_soul_md()` | load `SOUL.md` |
+| Session data | `hermes_state.SessionDB` | read sessions & messages, append proactive messages |
+| WeChat sending | `gateway.platforms.weixin.send_weixin_direct()` | proactive delivery |
+| Feishu sending | `gateway.platforms.feishu.FeishuAdapter` | proactive delivery |
+| Session sync | `gateway/extensions/session_fallback.py` | ⚠️ small patch — keeps gateway memory in sync when `state.db` changes externally |
+
+External services:
+
+- **[Hindsight](https://github.com/NousResearch/hindsight)** — long-term memory: `Recall` (semantic search), `Reflect` (synthesis), `Retain` (thought storage). Optional; the system degrades gracefully without it.
+- **Weather** — Amap (高德) and QWeather (和风) providers behind one unified `weather.*` configuration, with result caching and change-threshold detection.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | Python 3.12+ · FastAPI · SQLAlchemy 2 · APScheduler · Jinja2 |
+| Frontend | Vue 3 · Naive UI · Vue Router · Pinia · ECharts · Vite |
+| Storage | SQLite — dual database (`state.db` read-only / `active.db` read-write) |
+| LLM | Any OpenAI-compatible API, or Hermes Agent's own client |
+| Memory | Hindsight (Recall / Reflect / Retain) |
+| Weather | Amap · QWeather |
+| Auth | JWT (python-jose) · bcrypt |
+
+---
+
+## Project Structure
+
+```
+hermes-active/
+├── backend/                        # FastAPI backend (port 18720)
+│   ├── main.py                     # entry point, lifespan starts all schedulers
+│   ├── config.py                   # server constants
+│   ├── models/                     # SQLAlchemy tables + Pydantic schemas
+│   │   ├── database.py             # dual-engine setup (state.db / active.db)
+│   │   ├── active.py               # users, configs, task/heartbeat/thought/contemplation logs
+│   │   └── *_consciousness.py      # consciousness domain models
+│   ├── routers/                    # REST API layer
+│   │   ├── auth.py · sessions.py · messages.py · config.py
+│   │   ├── cron.py · task_logs.py · stats.py · system_logs.py
+│   │   ├── active_consciousness.py · passive_consciousness.py · free_consciousness.py
+│   │   └── hindsight.py · llm.py · test.py
+│   ├── services/                   # business logic
+│   │   ├── active_consciousness_service.py   # heartbeat, emotion, decision, retention
+│   │   ├── thought_engine.py                 # thought generation pipeline
+│   │   ├── context_collector.py              # structured context bundle
+│   │   ├── passive_consciousness_service.py  # signals: longing / heat / intensity
+│   │   ├── template_service.py               # Jinja2 injection templates
+│   │   ├── analysis_service.py               # injection analytics
+│   │   ├── free_consciousness_service.py     # contemplation loop + sediment
+│   │   ├── scheduler_service.py              # cron jobs with placeholders
+│   │   ├── message_service.py                # platform sending + state.db appends
+│   │   ├── weather_service.py                # Amap / QWeather with cache
+│   │   ├── llm_service.py · config_service.py · auth_service.py
+│   │   └── session_service.py · fallback_session_service.py · state_db.py
+│   └── tests/                      # pytest suites (emotion, decision, e2e, weather…)
+├── frontend/                       # Vue 3 console (dev port 5173, proxy to backend)
+│   └── src/
+│       ├── views/                  # one view per console page
+│       ├── api/                    # axios wrappers with JWT interceptor
+│       ├── components/             # layout, charts, pickers
+│       └── router/ · store/
+├── deployment/
+│   ├── systemd/                    # user service unit
+│   └── hermes-agent-patches/       # session_fallback patch + instructions
+└── docs/                           # design documents & installation guides
+```
+
+---
+
+## Quick Start
+
+<p align="center">
+  <img src="docs/images/en-deployment.svg" width="800">
+</p>
+
+### Prerequisites
+
+- Python 3.12+ and Node.js 18+
+- A running [Hermes Agent](https://github.com/NousResearch/hermes-agent) installation (`~/.hermes/hermes-agent`)
+- Optional: [Hindsight](https://github.com/NousResearch/hindsight) for long-term memory
+
+### Install
+
+```bash
+# Hermes Active lives inside the Hermes home directory
+cd ~/.hermes
+git clone https://github.com/your-org/hermes-active.git
+cd hermes-active
+
+# Backend — reuse Hermes Agent's venv so its modules are importable
+cd backend
+pip install -r requirements.txt
+
+# Frontend
+cd ../frontend
+npm install
+npm run build        # the backend serves frontend/dist directly
+```
+
+### Run
+
+```bash
+cd ~/.hermes/hermes-active/backend
+python main.py       # http://localhost:18720  (admin / admin)
+```
+
+For development: `npm run dev` starts the frontend on `:5173` with API proxying.
+
+### Production
+
+- **systemd unit** — ready-made user service in [deployment/systemd/](deployment/systemd/)
+- **session-sync patch** — apply the 4-file patch in [deployment/hermes-agent-patches/](deployment/hermes-agent-patches/README.md) so the gateway notices externally-appended messages
+- **passive-consciousness plugin** — install into `~/.hermes/plugins/` per [docs/plugin-installation.md](docs/plugin-installation.md)
+- Full walkthrough: [docs/deployment.md](docs/deployment.md)
+
+> ⚠️ Change the default password immediately after first login, and set `JWT_SECRET_KEY` in production.
+
+---
+
+## Configuration
+
+All configuration lives in the `configs` table of `active.db` and is editable from the web UI — nothing is hard-coded. Highlights:
+
+### Active consciousness
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `active_consciousness.enabled` | `false` | master switch |
+| `active_consciousness.active.heartbeat_interval` | `600` | heartbeat period (seconds) |
+| `active_consciousness.active.send_tag` | `凯莉` | proactive mark prepended in `state.db` |
+| `active_consciousness.decision.send_threshold` | `0.35` | score needed to auto-send |
+| `active_consciousness.decision.memory_threshold` | `0.05` | score needed to retain as memory |
+| `active_consciousness.decision.max_per_hour` / `max_per_day` | `2` / `5` | send rate limits |
+| `active_consciousness.emotion.decay_rate` | `0.02` | arousal decay per hour |
+| `active_consciousness.emotion.social_need_growth` | `0.01` | social-need growth per hour |
+| `active_consciousness.emotion.valence_regression` | `0.1` | valence regression speed |
+| `active_consciousness.llm.*` | hermes mode | universal LLM (tiered: `emotion_llm.*`, `thought_llm.*`) |
+| `active_consciousness.hindsight.*` | localhost:8888 | recall/store banks, limits, toggles |
+
+### Passive consciousness
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `passive_consciousness.enabled` | `false` | master switch |
+| `passive_consciousness.passive.inject_emotion / inject_heat / inject_memory / inject_thought` | `true` | per-signal toggles |
+| `passive_consciousness.passive.inject_tag` | `[CONSCIOUSNESS_CONTEXT]` | wrapper tag of the injected block |
+| `passive_consciousness.platforms.whitelist` | `["weixin"]` | platforms where injection runs |
+| `passive_consciousness.templates.*` | default template | Jinja2 template list + active id |
+| `passive_consciousness.hindsight.*` | enabled | recall limit, reflect toggle |
+
+### Free consciousness
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `free_consciousness.enabled` | `false` | master switch |
+| `free_consciousness.interval_minutes` | `30` | contemplation period |
+| `free_consciousness.recent_rounds` / `mid_rounds` | `3` / `17` | thinking-chain layer sizes |
+| `free_consciousness.sediment_compress_interval` | `10` | rounds between sediment compressions |
+| `free_consciousness.include_context` | `true` | inject realtime time/emotion/conversations |
+| `free_consciousness.store_to_hindsight` | `false` | retain discoveries to long-term memory |
+| `free_consciousness.prompts.system` / `prompts.user` | built-in | fully templated contemplation prompts |
+
+### Weather (unified)
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `weather.enabled` | `false` | master switch shared by cron, heartbeat and injection |
+| `weather.provider` | `qweather` | `amap` or `qweather` |
+| `weather.city` / `weather.adcode` | `北京` / `370100` | QWeather city name / Amap adcode |
+| `weather.amap_key` / `weather.qweather_key` | — | provider API keys |
+| `weather.cache_hours` | `4` | result cache TTL |
+
+Environment variables: `JWT_SECRET_KEY` — JWT signing key (set it in production).
+
+---
+
+## API Overview
+
+Everything the UI does is available over REST (JWT required except `/health` and login):
+
+| Group | Representative endpoints |
+|-------|--------------------------|
+| Auth | `POST /api/auth/login` |
+| Sessions & messages | `GET /api/sessions` · `GET /api/messages/{session_id}` · `POST /api/messages/send` · `POST /api/messages/send-and-inject` |
+| Cron | `GET/POST/PUT/DELETE /api/cron/jobs` · `POST /api/cron/jobs/{id}/run` · `GET /api/task-logs` |
+| Active consciousness | `GET/PUT /api/active-consciousness/config` · `GET .../status` · `GET .../heartbeats` · `GET .../thoughts` · `POST .../test/*` |
+| Passive consciousness | `GET/PUT /api/passive-consciousness/config` · `GET .../status` · `GET/POST/PUT/DELETE .../templates` · `POST .../test/*` · `GET .../analysis/*` |
+| Free consciousness | `GET/PUT /api/free-consciousness/config` · `GET .../status` · `GET .../logs` · `POST .../run` |
+| Misc | `GET /api/stats` · `GET /api/system-logs` · `POST /api/llm/test` · `GET /health` |
+
+---
+
+## Documentation
+
+| Document | Contents |
+|----------|----------|
+| [docs/deployment.md](docs/deployment.md) | full deployment walkthrough |
+| [docs/plugin-installation.md](docs/plugin-installation.md) | passive-consciousness plugin setup |
+| [deployment/hermes-agent-patches/](deployment/hermes-agent-patches/README.md) | session-sync patch instructions |
+| [docs/](docs/README.md) | design documents & architecture deep-dives |
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+<p align="center">
+  <img src="docs/images/en-footer-banner.svg" width="800">
+</p>
+
+<p align="center">
+  Built with ❤️ for the <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> community
+</p>

@@ -1,0 +1,263 @@
+<p align="center">
+  <img src="docs/banner.png" alt="FutureOS" width="600">
+</p>
+
+<h3 align="center">One AI agent, everywhere you work.</h3>
+<p align="center">
+  Terminal, desktop, mobile, and your chat apps — one Rust core, one agent.<br>
+  Configurable approvals and OS sandboxes. Local-first. Open source.
+</p>
+
+<p align="center">
+  <img src="docs/desktop-screenshot.png" alt="FutureOS desktop app — new conversation, models, skills, and workspace in one window" width="800">
+</p>
+
+<!-- TODO(demo): replace the static screenshot with a 60-90s demo GIF (TUI approval gate →
+     desktop GUI → IM-bot progress → session fork tree → /future-goal board), saved as docs/demo.gif -->
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#features">Features</a> •
+  <a href="#configure-a-model">Models</a> •
+  <a href="#essential-slash-commands-tui">Commands</a> •
+  <a href="#troubleshooting">Troubleshooting</a>
+</p>
+
+<p align="center">⭐ If FutureOS is useful to you, a star helps others find it.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Core-Rust-orange?style=for-the-badge&logo=rust" alt="Rust core">
+  <a href="https://github.com/futuregene/future-os/blob/main/THIRD_PARTY_NOTICES.md"><img src="https://img.shields.io/badge/License-MIT_%2B_Apache--2.0-green?style=for-the-badge" alt="License: MIT + Apache-2.0"></a>
+  <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/Lang-中文-red?style=for-the-badge" alt="中文"></a>
+</p>
+
+---
+
+## Why FutureOS
+
+- **Choose the execution boundary.** Configure file-access approvals and OS sandboxing for agent tools. The desktop defaults to Unrestricted (`off`); select Manual or Sandboxed before working with untrusted content. See the [security model](SECURITY.md) and [sandbox guide](docs/wiki/en/Sandbox.md) for defaults and limitations.
+- **One backend, every surface.** A single gRPC agent drives the terminal UI, desktop app, mobile apps, CLI, and IM bots — same sessions, same memory, same skills, wherever you happen to be.
+- **Long runs need engineering, not prompting.** The built-in goal control plane gives durable goals, event-sourced state, and verification gates to runs of 24+ hours — start a research task at night, review the results from your phone in the morning.
+
+## Features
+
+| Category | Details |
+|---|---|
+| **Multi-Interface** | Terminal UI (TUI), desktop app (GUI), mobile apps (Android & iOS), CLI, IM bots — one agent, everywhere. The desktop backend also runs **headless on a server** (`futureos-headless`: no window or WebView, works over SSH), and the phone↔desktop channel is **end-to-end encrypted** — a Noise handshake with ChaCha20-Poly1305 records, so the relay only carries ciphertext ([headless](docs/guide/desktop-headless.md), [remote](docs/wiki/en/Remote.md)) |
+| **Configurable Tool Safety** | read, write, edit, shell — approval rules and sandbox tiers (`off` / `manual` / `sandbox`); macOS Seatbelt, Linux system Bubblewrap, Windows restricted-token write protection. Availability and guarantees differ by platform ([guide](docs/wiki/en/Sandbox.md)) |
+| **Model Flexibility** | **Bring your own key**: the [built-in catalog](docs/wiki/en/Models.md) covers the major providers, and any OpenAI- or Anthropic-compatible endpoint can be added through `models.json`. Or sign in to the **FutureOS provider** (`future auth login`) and have the keys and model list provisioned for you. Both work side by side, and you choose which models the picker offers ([setup](#configure-a-model)) |
+| **Goal Engineering** | Durable goals/todos/gates/monitors for long-horizon runs of 24+ hours — deterministic should-run kernel, event-sourced state, hard checks (evidence floor / acceptance contracts / verify gates), lease liveness, multi-agent ([guide](docs/architecture/goal-control-plane.md)) |
+| **Scheduled Tasks** | Recurring work without you in the loop: a reusable prompt + working directory + model/thinking level, run at full permission on a schedule (interval / daily / weekly / monthly / yearly, or a single date) — and on demand whenever you want. Every run is an ordinary conversation plus a run ledger with status, result summary and prompt-version history ([guide](docs/architecture/tasks.md)) |
+| **Powerful Built-in Skills** | 15+ skills out of the box for everyday agent work — image read & generation, PDF/Word parsing, web search, browser control, slides, software install, and the `/future-goal` long-run goal orchestrator ([builtin](https://github.com/futuregene/future-skills/tree/main/builtin)) |
+| **Forkable Sessions** | Branch any conversation like a repo — fork, clone, and tree navigation over JSONL session history |
+| **Rust Core** | Agent, IM channel bridge, goal control plane, CLI, and TUI are all written in Rust — high performance with memory safety |
+
+## Quick Start
+
+### Install
+
+One line, no source build required:
+
+**macOS / Linux** — one script, auto-detects the platform: macOS gets the official signed app (arm64 / Intel); Linux gets the `.deb` on Debian/Ubuntu (desktop app + unified `future` CLI) or the portable tarball everywhere else:
+
+```bash
+curl -fsSL https://dl.future-os.cn/install.sh | bash
+```
+
+**Windows** (PowerShell) — runs the signed installer silently:
+
+```powershell
+iex (irm https://dl.future-os.cn/install.ps1)
+```
+
+Step-by-step installation for every platform (desktop app, toolchains, GUI
+packaging) is in the **[Build & Install](docs/guide/build-and-install.md)** guide.
+
+The installers finish by running `future init`.
+
+### Configure a model
+
+The agent needs at least one model provider before it can answer. The interactive setup supports both FutureOS and custom providers:
+
+```bash
+future config
+```
+
+**FutureOS hosted models** — device-flow sign-in provisions keys and a model list automatically:
+
+```bash
+future auth login
+```
+
+This works whether or not the agent is running: with the agent up the key is
+applied live; without it the key is written to `~/.future/agent/auth.json`
+and picked up when the agent starts.
+
+<details>
+<summary><strong>Prefer your own keys? (BYOK &amp; custom providers)</strong></summary>
+
+**Use a known provider.** Put your API key in `~/.future/agent/auth.json`, keyed by provider name. See the [built-in model catalog](docs/wiki/en/Models.md) — most providers have built-in base URLs and auto-discover their models:
+
+```json
+{
+  "openai": { "type": "api_key", "key": "sk-..." }
+}
+```
+
+For providers with user-specific base URLs (e.g. Azure's `YOUR_RESOURCE`), add a `baseUrl` field in `auth.json`:
+
+```json
+{
+  "azure": { "type": "api_key", "key": "sk-...", "baseUrl": "https://my-resource.openai.azure.com/openai/v1" }
+}
+```
+
+**Custom provider.** For providers not in the built-in catalog, specify everything in `~/.future/agent/models.json`:
+
+```json
+{
+  "providers": {
+    "my-provider": {
+      "apiKey": "sk-...",
+      "baseUrl": "https://my-api.example.com/v1",
+      "models": [
+        { "id": "my-model", "name": "My Model", "contextWindow": 128000, "maxTokens": 16384 }
+      ]
+    }
+  }
+}
+```
+
+</details>
+
+### Install skills (optional)
+
+Skills are add-on capability packs the agent picks up from
+`~/.future/agent/skills/`. Browse the catalog and install what you need —
+this only needs network access, not a running agent:
+
+```bash
+future skills list             # browse the skill catalog
+future skills install <name>   # install one skill
+future skills install          # no name: install every built-in skill
+```
+
+Skip this and the agent still answers fine — skills just add ready-made
+workflows. `uninstall` / `update` and friends are in the
+[CLI reference](docs/wiki/en/CLI.md).
+
+### Run the agent
+
+The terminal and CLI clients are thin gRPC clients. They connect over
+**per-user local IPC** by default (a Unix-domain socket on macOS/Linux,
+a current-user-only named pipe on Windows). Unix honors `FUTURE_AGENT_SOCKET`;
+otherwise the endpoint always lives under the instance's FutureOS home:
+`~/.future/run/agent.sock` by default, `<FUTURE_HOME>/run/agent.sock` for an
+instance started with its own home (`future agent --home DIR`) — see
+[isolated instances](docs/guide/directory-layout.md#running-several-isolated-instances-future_home).
+If the FutureOS home sits on a filesystem that cannot host Unix sockets (e.g.
+NFS), point `FUTURE_HOME` at a directory on a local filesystem.
+Desktop GUI/headless first attach to a compatible external Agent; when the default
+endpoint is absent and its instance lock is free, they run the complete Agent in
+their own process. Incompatible or locked/unavailable services produce an error
+without starting a second Agent. The TUI retains its independent Agent startup.
+You can also start an external Agent yourself:
+
+```bash
+future agent     # start the agent in the terminal (logs to stdout; Ctrl-C to stop)
+```
+
+Quitting an embedded Desktop stops work from every connected client, including
+CLI/TUI conversations. An attached external Agent stays running; Desktop cancels
+its own submitted runs. See [Desktop Agent lifecycle and recovery](docs/guide/desktop-agent.md).
+
+Then launch the terminal UI from the same `future` command:
+
+```bash
+future tui       # terminal UI
+```
+
+Published builds check for updates once in the background after TUI startup.
+A newer version is shown as a local notice with the official installer link;
+nothing is installed automatically. Release builds check the release channel,
+and test/nightly builds check nightly. Local/source builds skip the check.
+Network failures are silent; `future tui --offline` disables the check, and
+non-interactive commands never perform it.
+
+> **Remote / development mode:** pass `--grpc-addr 127.0.0.1:50051` to
+> `future agent` to serve plain TCP instead, and point clients at it with
+> `FUTURE_AGENT_GRPC_ADDR=127.0.0.1:50051`. TCP is opt-in — never expose it
+> beyond a trusted interface.
+
+<p align="center">
+  <img src="docs/tui-screenshot.png" alt="FutureOS terminal UI — built-in skills loaded, /help command palette" width="720">
+</p>
+
+> `future <cmd>` is the unified entry point for every Rust component: `future agent`,
+> `future tui`, `future channel`, `future goal`. Each runs the same code as the
+> standalone binary of the same name (the `future-*` binaries still exist as
+> build targets — `cargo build -p future-tui` etc. — but are no longer
+> installed by default).
+>
+> If connection fails, check Agent discovery, compatibility and instance ownership — see [Troubleshooting](#troubleshooting).
+
+### Essential Slash Commands (TUI)
+
+| Command | Purpose |
+|---|---|
+| `/help` | Show all commands and shortcuts |
+| `/model [name]` | Select / switch model |
+| `/new` | Start a new session |
+| `/sessions` | Browse and switch sessions |
+| `/tree` | Session tree with fork/clone hierarchy |
+| `/fork` | Fork from a chosen message |
+| `/clone` | Clone the current session |
+| `/name <name>` | Set the session name |
+| `/scoped-models` | Configure the model enable/disable list |
+| `/compact` | Compress conversation context |
+| `/status` | Session state, token usage, cost |
+| `/stop` | Abort current generation |
+| `/cancel <run-id>` | Cancel a queued run |
+| `/cwd <dir>` | Change the working directory |
+| `/approve <request-id>` | Approve a pending tool execution |
+| `/reject <request-id>` | Reject a pending tool execution |
+| `/reload` | Reload skills and context files |
+| `/skills` | Browse, install and manage skills |
+| `/providers` | Configure providers and models |
+| `/theme [id]` | Switch the color theme |
+
+Run `/help` in the TUI for the full list (40+ commands).
+
+### Keyboard Shortcuts (TUI)
+
+| Key | Action |
+|---|---|
+| `ctrl+c` | Interrupt / exit |
+| `ctrl+l` | Clear screen / redraw |
+| `ctrl+p` | Cycle model |
+| `ctrl+t` | Cycle thinking level |
+| `shift+tab` | Cycle thinking |
+| `ctrl+o` | Expand / collapse thinking |
+| `ctrl+g` | Expand / collapse tool output |
+| `ctrl+d` | Compact view: fold runs of tool calls and thinking |
+| `ctrl+x` | Copy the last answer |
+| `ctrl+r` | Browse sessions |
+| `ctrl+v` | Paste clipboard (image or text) |
+| `tab` | Autocomplete |
+| `↑↓` | Scroll / navigate lists |
+| `page up` / `page down` | Scroll the chat |
+| `ctrl+↑` / `ctrl+↓` | Scroll the chat line by line |
+| `enter` | Submit / accept |
+| `escape` | Close popup |
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Client exits with a connection / gRPC error | Run `future doctor`; check Agent startup/version/lock errors and that client/Agent use the same user and IPC environment. See the [Desktop Agent guide](docs/guide/desktop-agent.md) before changing service ownership. Only in explicit TCP mode, check the configured address/port. |
+| Agent replies with an auth / "no model" error | No model configured yet. Run `future config` — see [Configure a model](#configure-a-model). |
+| Build / install problems | See [Build & Install](docs/guide/build-and-install.md) (platform toolchains, linker, GUI packaging). |
+
+## Community
+
+[💬 Discussions](https://github.com/futuregene/future-os/discussions) • [🐛 Issues](https://github.com/futuregene/future-os/issues) • [🔒 Security](SECURITY.md) • [📖 Wiki](https://github.com/futuregene/future-os/wiki) • [Third-Party Notices](THIRD_PARTY_NOTICES.md)

@@ -1,0 +1,211 @@
+# mcp-quickstart
+
+> ⭐ **推荐：** [`npx ship-skills init`](https://github.com/G12789/ai-ship)（已登录 `gh` 会自动支持作者）
+
+[![CI](https://github.com/G12789/mcp-quickstart/actions/workflows/ci.yml/badge.svg)](https://github.com/G12789/mcp-quickstart/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/create-mcp-quickstart?color=cb3837&logo=npm)](https://www.npmjs.com/package/create-mcp-quickstart)
+[![node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![MCP](https://img.shields.io/badge/Model%20Context%20Protocol-ready-7c3aed)](https://modelcontextprotocol.io)
+
+> **Forge a working, testable, publishable MCP server in 30 seconds.**
+> One command. TypeScript **or** Python. Example tools, the Inspector, and tests — all wired up.
+> Or point it at an OpenAPI spec and get **one MCP tool per API endpoint, automatically.**
+
+```bash
+npm create mcp-quickstart@latest my-server
+```
+
+![mcp-quickstart demo](assets/demo.svg)
+
+Most "create an MCP server" guides leave you with an empty skeleton and a 20-step setup. `mcp-quickstart` hands you a server that **runs, tests, and connects to Claude / Cursor on the first try** — then gets out of your way.
+
+---
+
+## Turn any REST API into an MCP server
+
+Most scaffolders hand you an *empty* template and say "now go write your tools." `mcp-quickstart` can instead **read an existing API and write the tools for you** — from an OpenAPI spec **or** a single curl command:
+
+```bash
+# whole API, from an OpenAPI spec:
+npx mcp-quickstart petstore-mcp --from-openapi https://petstore3.swagger.io/api/v3/openapi.json
+
+# one endpoint, straight from a curl you already have:
+npx mcp-quickstart my-tool --from-curl "curl https://api.example.com/v1/search?q=hi -H 'Authorization: Bearer X'"
+```
+
+Point it at any OpenAPI 3.x document (a URL or a local `.json` / `.yaml`) and it generates a real, typed MCP server — **one tool per operation**, with path/query params and request bodies wired up to a small HTTP client. Request bodies are **expanded into per-field zod types** (`$ref`, nested objects, arrays and enums resolved), not an opaque blob — so the AI gets a real schema for each tool. Set `API_BASE_URL` (and an optional auth header) in `.env`, run `npm run dev`, and your AI agent can call the API immediately.
+
+**`--from-curl`** does the same for a single request: paste a curl command (or a file with one) and get one MCP tool. Query params and the JSON body become overridable tool inputs, and **auth headers are moved to `.env` instead of being hard-coded** into the generated source.
+
+```
+my-api-mcp/
+├── src/
+│   ├── index.ts   # one registerTool(...) per API operation — plain, editable TS
+│   └── http.ts    # generic caller: URL building, auth header, body
+└── .env.example   # API_BASE_URL, API_AUTH_HEADER, API_AUTH_VALUE
+```
+
+No magic, no runtime spec parsing — just generated TypeScript you own and can edit.
+
+---
+
+## Deploy a remote MCP server to the edge
+
+Local stdio servers are great, but the ecosystem is moving to **remote** MCP servers over Streamable HTTP. mcp-quickstart can scaffold one that **deploys to Cloudflare Workers** — stateless (`createMcpHandler`, no Durable Objects), so it runs on the **free Workers plan**, cold-starts in milliseconds, and is reachable globally:
+
+```bash
+npx mcp-quickstart edge-server --transport cloudflare -y
+cd edge-server && npm install
+npx wrangler login
+npm run deploy        # → https://edge-server.<you>.workers.dev/mcp
+```
+
+Then point Cursor / Claude at the `/mcp` URL. This is exactly what edge runtimes are good at — **low-latency orchestration**, not running models. (To run a model you still call a GPU backend; the Worker is the global front door / gateway.)
+
+## The closed loop: API → globally-deployed remote MCP server
+
+Combine the two ideas. Feed an OpenAPI spec (or a single `curl`) **and** target Cloudflare, and you get an API-backed remote MCP server that's ready to deploy worldwide — in one command:
+
+```bash
+npx mcp-quickstart api-edge \
+  --from-openapi https://petstore3.swagger.io/api/v3/openapi.json \
+  --transport cloudflare -y
+cd api-edge && npm install
+npx wrangler secret put API_AUTH_VALUE   # if the API needs auth
+npm run deploy        # → https://api-edge.<you>.workers.dev/mcp
+```
+
+Every API operation becomes an MCP tool, wired through a generated HTTP client, served by `createMcpHandler` on the **free Workers plan**. The base URL is baked in from the spec; auth lives in Workers **secrets**, never in your code or git. `--from-curl … --transport cloudflare` works the same way for a single endpoint.
+
+There's no extra cost to ship this: the scaffold, npm publish and the Workers free tier are all free — you only pay for the upstream API/traffic *you* choose to use.
+
+---
+
+## Why mcp-quickstart
+
+The official scaffolder gives you a bare bones starting point. `mcp-quickstart` is the *"…but without the part you hate"* version:
+
+| | Bare skeleton | **mcp-quickstart** |
+|---|:---:|:---:|
+| Runs immediately | partly | ✅ |
+| Example **tool + resource + prompt** | – | ✅ |
+| Unit tests included & passing | – | ✅ |
+| One-command **Inspector** (`npm run inspect`) | – | ✅ |
+| Claude Desktop + Cursor config in README | – | ✅ |
+| TypeScript **and** Python | one | ✅ both |
+| **Generate tools from an OpenAPI spec** | – | ✅ |
+| **Generate a tool from a curl command** | – | ✅ |
+| **One-command deploy to Cloudflare Workers** | – | ✅ |
+| `.env.example`, `.gitignore`, sane `tsconfig` | partly | ✅ |
+
+## Quick start
+
+```bash
+# interactive
+npm create mcp-quickstart@latest
+
+# non-interactive
+npm create mcp-quickstart@latest weather-server -- --lang ts -y
+npx mcp-quickstart weather-server --lang python -y
+```
+
+> **Before it lands on npm**, you can run it straight from GitHub:
+>
+> ```bash
+> npx github:G12789/mcp-quickstart weather-server --lang ts -y
+> ```
+
+Then:
+
+```bash
+cd weather-server
+npm install        # or: uv sync   (Python)
+npm run dev        # start the server on stdio
+npm run inspect    # open the MCP Inspector and click your tools
+npm test           # green out of the box
+```
+
+## What you get
+
+Every generated server ships with one of each MCP primitive, so you have a real reference to copy from:
+
+- **Tool** `ping` — proof of life
+- **Tool** `text_stats` — count chars / words / lines / sentences (fully offline)
+- **Resource** `greeting://{name}` — dynamic read-only data
+- **Prompt** `summarize` — a reusable prompt template
+
+Heavy logic lives in a separate, pure `tools.ts` / `tools.py` so it stays trivially testable.
+
+## Options
+
+```
+npm create mcp-quickstart@latest [name] [options]
+
+  --from-openapi <path|url>  generate one MCP tool per API operation from an OpenAPI spec
+  --from-curl <cmd|file>     turn a single curl command into an MCP tool
+  --lang <ts|python>         language (default: prompt)
+  --transport <stdio|http|cloudflare>   transport / deploy target (default: prompt)
+  --examples <bool>          include the example primitives (default: true)
+  --yes, -y                  accept defaults, skip prompts
+  --help, -h                 show help
+```
+
+## Templates
+
+| Language | Transport | Status |
+|---|---|:---:|
+| TypeScript | stdio | ✅ stable |
+| TypeScript | streamable HTTP | ✅ stable |
+| TypeScript | **from OpenAPI** (`--from-openapi`) | ✅ stable |
+| TypeScript | **from curl** (`--from-curl`) | ✅ stable |
+| TypeScript | **Cloudflare Workers** (`--transport cloudflare`) | ✅ stable |
+| TypeScript | **API → Workers** (`--from-openapi/--from-curl … --transport cloudflare`) | ✅ stable |
+| Python | stdio | ✅ stable |
+| Python | streamable HTTP | ✅ stable |
+
+Pick the transport at scaffold time:
+
+```bash
+npm create mcp-quickstart@latest my-server -- --lang ts --transport http -y
+```
+
+## Related tools
+
+mcp-quickstart isn't the only way to turn an API into an MCP server, and it's worth knowing the landscape:
+
+- [openapi-mcp-generator](https://github.com/harsha-iiiv/openapi-mcp-generator) — the most popular OpenAPI→MCP generator (TS, stdio/SSE/HTTP, endpoint filtering).
+- [Speakeasy](https://www.speakeasy.com/blog/generate-mcp-from-openapi) / Gram, [FastMCP](https://github.com/jlowin/fastmcp), [cnoe-io/openapi-mcp-codegen](https://github.com/cnoe-io/openapi-mcp-codegen) — generators and managed hosting, including Python options.
+- [Cloudflare Agents (`McpAgent`)](https://developers.cloudflare.com/agents/model-context-protocol/) — the official path for remote MCP servers on Workers, with built-in OAuth.
+
+Where mcp-quickstart fits: a **single, dependency-light CLI** that covers the common cases end to end — plain TS/Python starters, OpenAPI **and** curl import, and a one-command path from an API all the way to a deployed Cloudflare Worker — generating **plain code you own** (no runtime spec parsing, no lock-in). If you need managed hosting, governance, or deep SDK generation, reach for the tools above.
+
+## Roadmap
+
+- `--from-postman` importer (Postman collections → MCP tools)
+- Python output for the generated (OpenAPI / curl) servers
+- `--with auth` (OAuth) preset for the Cloudflare / HTTP transports
+
+Done: `--from-openapi` (v0.2.0) · `--from-curl` (v0.3.0) · per-field typed bodies / `$ref` (v0.4.0) · **Cloudflare Workers deploy target** (v0.5.0) · **API → Workers in one shot** (v0.6.0).
+
+Issues and PRs welcome — every issue gets a reply within 24h.
+
+## Contributing
+
+```bash
+git clone https://github.com/G12789/mcp-quickstart.git
+cd mcp-quickstart
+npm install
+node src/index.js test-out --lang ts -y   # try the scaffolder locally
+```
+
+Templates live in `templates/<language>-<transport>/`. Files prefixed with `_` (e.g. `_gitignore`) are renamed on generation.
+
+## More projects
+
+Part of a set of open tools — see [github.com/G12789](https://github.com/G12789):
+**mall-ai-digital-twin** · **merchant-membership-miniprogram** · **cyber-stage-widgets**
+
+## License
+
+[MIT](LICENSE)

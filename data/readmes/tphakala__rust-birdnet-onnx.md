@@ -1,0 +1,469 @@
+# birdnet-onnx
+
+[![CI](https://github.com/tphakala/rust-birdnet-onnx/actions/workflows/ci.yml/badge.svg)](https://github.com/tphakala/rust-birdnet-onnx/actions/workflows/ci.yml)
+[![Security](https://github.com/tphakala/rust-birdnet-onnx/actions/workflows/security.yml/badge.svg)](https://github.com/tphakala/rust-birdnet-onnx/actions/workflows/security.yml)
+[![codecov](https://codecov.io/gh/tphakala/rust-birdnet-onnx/graph/badge.svg)](https://codecov.io/gh/tphakala/rust-birdnet-onnx)
+[![Crates.io](https://img.shields.io/crates/v/birdnet-onnx.svg)](https://crates.io/crates/birdnet-onnx)
+[![docs.rs](https://docs.rs/birdnet-onnx/badge.svg)](https://docs.rs/birdnet-onnx)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/rust-1.92%2B-blue.svg)](https://www.rust-lang.org/)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub-pink.svg)](https://github.com/sponsors/tphakala)
+
+A Rust library for running inference on BirdNET, Perch, and [BSG Finland](https://github.com/luomus/BSG) ONNX models with CUDA GPU support.
+
+## Features
+
+- Support for BirdNET v2.4, v3.0, Perch v2, and BSG Finland models
+- Automatic model type detection from ONNX tensor shapes
+- Thread-safe classifier with builder pattern
+- Top-K predictions with configurable confidence threshold
+- Batch inference for GPU efficiency
+- BSG Finland post-processing: per-species calibration and Species Distribution Model (SDM)
+- CLI tool for WAV file analysis
+
+## Supported Models
+
+| Model | Sample Rate | Segment | Embeddings | Notes |
+| ----- | ----------- | ------- | ---------- | ----- |
+| BirdNET v2.4 | 48 kHz | 3.0s | Optional (1024-dim) | Embeddings require [patched model](#custom-classifiers-on-embeddings) |
+| BirdNET v3.0 | 32 kHz | 5.0s | 1280-dim | |
+| Perch v2 | 32 kHz | 5.0s | Variable | |
+| [BSG Finland](https://github.com/luomus/BSG) | 48 kHz | 3.0s | No | 265 Finnish species, [fused model](https://huggingface.co/tphakala/BSG) |
+
+## Installation
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+birdnet-onnx = "2.0.0-rc.16"
+```
+
+2.0.0 is still in release candidates, and cargo does not match a pre-release
+from a plain `"2.0"` requirement, so the version has to be spelled out in full.
+
+### ONNX Runtime Linking
+
+By default, ONNX Runtime is statically linked into your binary using the `download-binaries` feature. This means:
+
+- No external `onnxruntime.dll`/`libonnxruntime.so` needed at runtime
+- No DLL search order issues on Windows
+- Larger binary size (~50MB additional)
+
+For dynamic linking (loads ONNX Runtime at runtime):
+
+```toml
+[dependencies]
+birdnet-onnx = { version = "2.0.0-rc.16", features = ["load-dynamic"] }
+```
+
+With dynamic linking, you must ensure the correct ONNX Runtime library is available:
+
+- Set `ORT_DYLIB_PATH` environment variable to the library path, or
+- Place the library in the executable's directory, or
+- Install ONNX Runtime system-wide
+
+CUDA and cuDNN libraries always load dynamically from system paths regardless of linking mode.
+
+Features can be combined: `--features cuda,load-dynamic` enables CUDA with dynamic ONNX Runtime loading.
+
+## Library Usage
+
+```rust
+use birdnet_onnx::{Classifier, InferenceOptions, Result};
+
+fn main() -> Result<()> {
+    // Build classifier
+    let classifier = Classifier::builder()
+        .model_path("birdnet_v24.onnx")
+        .labels_path("labels.txt")
+        .top_k(5)
+        .min_confidence(0.1)
+        .build()?;
+
+    // Prepare audio segment (48kHz, 3.0s = 144,000 samples for v2.4)
+    let audio: Vec<f32> = load_audio_segment();
+
+    // Run inference
+    let result = classifier.predict(&audio, &InferenceOptions::default())?;
+
+    for pred in &result.predictions {
+        println!("{}: {:.1}%", pred.species, pred.confidence * 100.0);
+    }
+
+    Ok(())
+}
+```
+
+### With CUDA GPU
+
+```rust
+use birdnet_onnx::Classifier;
+
+let classifier = Classifier::builder()
+    .model_path("model.onnx")
+    .labels_path("labels.txt")
+    .with_cuda()  // Uses safe defaults for memory allocation
+    .build()?;
+```
+
+For fine-grained control over CUDA memory allocation:
+
+```rust
+use birdnet_onnx::{Classifier, CUDAConfig, ArenaExtendStrategy};
+
+let classifier = Classifier::builder()
+    .model_path("model.onnx")
+    .labels_path("labels.txt")
+    .with_cuda_config(
+        CUDAConfig::new()
+            .with_memory_limit(4 * 1024 * 1024 * 1024)  // 4GB limit
+            .with_arena_extend_strategy(ArenaExtendStrategy::SameAsRequested)
+    )
+    .build()?;
+```
+
+### Batch Inference
+
+```rust
+use birdnet_onnx::InferenceOptions;
+
+let segments: Vec<Vec<f32>> = chunk_audio_file();
+let refs: Vec<&[f32]> = segments.iter().map(|s| s.as_slice()).collect();
+
+let results = classifier.predict_batch(&refs, &InferenceOptions::default())?;
+```
+
+### GPU Memory-Efficient Batch Processing
+
+For processing many batches on GPU, use `BatchInferenceContext` to prevent memory growth:
+
+```rust
+use birdnet_onnx::{Classifier, InferenceOptions};
+
+let classifier = Classifier::builder()
+    .model_path("model.onnx")
+    .labels_path("labels.txt")
+    .with_cuda()
+    .build()?;
+
+// Create context with pre-allocated buffers (max 32 segments per batch)
+let mut ctx = classifier.create_batch_context(32)?;
+
+// Process multiple batches - memory is reused across calls
+for chunk in audio_segments.chunks(32) {
+    let refs: Vec<&[f32]> = chunk.iter().map(|s| s.as_slice()).collect();
+    let results = classifier.predict_batch_with_context(
+        &mut ctx,
+        &refs,
+        &InferenceOptions::default(),
+    )?;
+}
+```
+
+### Timeout and Cancellation
+
+```rust
+use birdnet_onnx::{InferenceOptions, CancellationToken};
+use std::time::Duration;
+
+// With timeout
+let options = InferenceOptions::timeout(Duration::from_secs(30));
+let result = classifier.predict(&audio, &options)?;
+
+// With cancellation token (for graceful shutdown)
+let token = CancellationToken::new();
+let options = InferenceOptions::new().with_cancellation_token(token.clone());
+
+// Cancel from another thread
+token.cancel();
+```
+
+## Execution Provider Query
+
+Query which execution provider was requested:
+
+```rust
+let classifier = Classifier::builder()
+    .model_path("model.onnx")
+    .labels_path("labels.txt")
+    .with_cuda()
+    .build()?;
+
+// Returns the requested provider (not necessarily the active one)
+println!("Requested: {}", classifier.requested_provider().as_str());
+```
+
+**Note:** This returns the *requested* execution provider. If the requested
+provider is unavailable, ONNX Runtime silently falls back to CPU. To verify
+which provider is actually running:
+
+1. Enable verbose logging: `export ORT_LOG_LEVEL=Verbose`
+2. Check log output for "Using [provider]" messages
+
+## CLI Usage
+
+A basic CLI tool is included for quick testing of the library. It is not intended for production analysis tasks.
+
+Build:
+
+```bash
+cargo build --release --bin birdnet-analyze
+```
+
+Analyze a WAV file:
+
+```bash
+birdnet-analyze recording.wav -m birdnet_v24.onnx -l labels.txt
+```
+
+With options:
+
+```bash
+birdnet-analyze recording.wav \
+    -m birdnet_v24.onnx \
+    -l labels.txt \
+    -o 1.5 \              # 1.5s overlap between segments
+    -k 5 \                # Top 5 predictions
+    --min-confidence 0.2 \
+    --batch-size 32 \     # Segments per batch
+    --timeout 30 \        # Per-batch timeout in seconds
+    -v                    # Verbose output (shows timing, memory usage)
+```
+
+With GPU acceleration:
+
+```bash
+birdnet-analyze recording.wav -m model.onnx -l labels.txt --cuda
+birdnet-analyze recording.wav -m model.onnx -l labels.txt --tensorrt
+```
+
+Example output:
+
+```
+Analyzing: recording.wav (3m 21s, 48000 Hz)
+Model: BirdNET v2.4 (3.0s segments, 1.5s overlap)
+Provider: CUDA
+
+00:00.0  Eurasian Pygmy-Owl (92.4%)
+00:01.5  Eurasian Pygmy-Owl (97.8%)
+00:03.0  Eurasian Pygmy-Owl (98.5%)
+...
+
+134 segments analyzed in 1.2s
+```
+
+## Range Filter (Meta Model)
+
+Filter species predictions by location and date using BirdNET's meta model:
+
+```rust
+use birdnet_onnx::RangeFilter;
+
+// Load the meta model
+let range_filter = RangeFilter::builder()
+    .model_path("birdnet_data_model.onnx")
+    .labels(labels)
+    .threshold(0.01)
+    .build()?;
+
+// Get species likely at location/date
+// Helsinki, Finland on June 15th
+let scores = range_filter.predict(60.1695, 24.9354, 6, 15)?;
+
+println!("Expected {} species", scores.len());
+for score in scores.iter().take(10) {
+    println!("{}: {:.1}%", score.species, score.score * 100.0);
+}
+```
+
+The meta model uses BirdNET's 48-week calendar (4 weeks per month).
+
+### Using RangeFilter for Location-Based Filtering
+
+```rust
+use birdnet_onnx::{Classifier, RangeFilter};
+
+// Build classifier
+let classifier = Classifier::builder()
+    .model_path("birdnet.onnx")
+    .labels_path("labels.txt")
+    .build()?;
+
+// Build range filter using classifier labels
+let range_filter = RangeFilter::builder()
+    .model_path("birdnet_data_model.onnx")
+    .from_classifier_labels(classifier.labels())
+    .threshold(0.01)
+    .build()?;
+
+// Get predictions
+let result = classifier.predict(&audio_segment)?;
+
+// Filter by location (Helsinki, June 15th)
+let location_scores = range_filter.predict(60.1695, 24.9354, 6, 15)?;
+let filtered = range_filter.filter_predictions(
+    &result.predictions,
+    &location_scores,
+    false,
+);
+
+for pred in filtered {
+    println!("{}: {:.1}%", pred.species, pred.confidence * 100.0);
+}
+```
+
+**Batch processing multiple files:**
+
+```rust
+// Calculate location scores once
+let location_scores = range_filter.predict(lat, lon, month, day)?;
+
+// Process multiple audio segments from same location
+let mut predictions_batch = Vec::new();
+for segment in audio_segments {
+    let result = classifier.predict(&segment)?;
+    predictions_batch.push(result.predictions);
+}
+
+// Filter all predictions at once
+let filtered_batch = range_filter.filter_batch_predictions(
+    predictions_batch,
+    &location_scores,
+    true, // rerank: multiply confidence by location score
+);
+```
+
+## BSG Finland Model
+
+The [BSG](https://github.com/luomus/BSG) (Bird Sounds Global) Finland model uses a BirdNET v2.4 backbone with a custom classification head for 265 Finnish bird species, developed by the Finnish Museum of Natural History (Luomus). The [fused ONNX model](https://huggingface.co/tphakala/BSG) combines the BirdNET backbone and BSG classification head into a single end-to-end model with a sigmoid output layer.
+
+Since the fused model shares the same input shape as BirdNET v2.4 (144,000 samples), auto-detection cannot distinguish them. Use `ModelType::BsgFinland` explicitly:
+
+```rust
+use birdnet_onnx::{Classifier, ModelType, InferenceOptions, BsgPostProcessor};
+
+// Build classifier with BSG model type
+let classifier = Classifier::builder()
+    .model_path("BSG_birds_Finland_v4_4_fused_fp32.onnx")
+    .labels_path("BSG_birds_Finland_v4_4_labels_fi.txt")
+    .model_type(ModelType::BsgFinland)
+    .build()?;
+
+// Build BSG post-processor for calibration and SDM
+let bsg = BsgPostProcessor::builder()
+    .labels_path("BSG_birds_Finland_v4_4_labels_fi.txt")
+    .calibration_path("BSG_calibration.csv")
+    .migration_path("BSG_migration.csv")               // optional, needed for SDM
+    .distribution_maps_path("BSG_distribution_maps.bin") // optional, needed for SDM
+    .build()?;
+
+let result = classifier.predict(&segment, &InferenceOptions::default())?;
+
+// Apply calibration only (no location data needed)
+let calibrated = bsg.calibrate(&result)?;
+
+// Or apply calibration + SDM adjustment (requires location and date)
+let adjusted = bsg.process(&result, 60.17, 24.94, 150)?;
+```
+
+### CLI with BSG
+
+```bash
+# Calibration only
+birdnet-analyze recording.wav \
+    -m BSG_fused.onnx -l BSG_labels.txt \
+    --model-type bsg \
+    --calibration BSG_calibration.csv
+
+# Calibration + SDM
+birdnet-analyze recording.wav \
+    -m BSG_fused.onnx -l BSG_labels.txt \
+    --model-type bsg \
+    --calibration BSG_calibration.csv \
+    --migration BSG_migration.csv \
+    --distribution-maps BSG_distribution_maps.bin \
+    --lat 60.17 --lon 24.94 --day-of-year 150 \
+    --csv results.csv
+```
+
+## Custom Classifiers on Embeddings
+
+`CustomClassifier` runs secondary ONNX models on embedding vectors extracted from a primary model. This enables custom classification heads trained on BirdNET embeddings, such as [BattyBirdNET](https://github.com/rdz-oss/BattyBirdNET-Analyzer) regional bat classifiers.
+
+### Prerequisites
+
+BirdNET v2.4 models with embedding output require a patched ONNX model that exposes the 1024-dim global average pooling layer as a second output. Use [birdnet-onnx-converter](https://github.com/tphakala/birdnet-onnx-converter):
+
+```bash
+python expose_embeddings.py --input birdnet-v24.onnx --output birdnet-v24-embeddings.onnx
+```
+
+### Usage
+
+```rust
+use birdnet_onnx::{Classifier, CustomClassifier, InferenceOptions};
+
+// Load BirdNET v2.4 with embeddings as the backbone
+let classifier = Classifier::builder()
+    .model_path("birdnet-v24-embeddings.onnx")
+    .labels_path("labels.txt")
+    .build()?;
+
+// Load a custom classifier (e.g., bat species)
+let bat_classifier = CustomClassifier::builder()
+    .model_path("BattyBirdNET-Bavaria-256kHz_fp32.onnx")
+    .labels_path("BattyBirdNET-Bavaria-256kHz_Labels.txt")
+    .min_confidence(0.1)
+    .build()?;
+
+// Run two-stage inference
+let result = classifier.predict(&audio_segment, &InferenceOptions::default())?;
+if let Some(embeddings) = &result.embeddings {
+    let bat_predictions = bat_classifier.predict(embeddings)?;
+    for pred in &bat_predictions {
+        println!("{}: {:.1}%", pred.species, pred.confidence * 100.0);
+    }
+}
+```
+
+### Batch Processing
+
+```rust
+let results = classifier.predict_batch(&segments, &InferenceOptions::default())?;
+let embeddings: Vec<Vec<f32>> = results
+    .iter()
+    .filter_map(|r| r.embeddings.clone())
+    .collect();
+let bat_results = bat_classifier.predict_batch(&embeddings)?;
+```
+
+## Development
+
+Requires [Task](https://taskfile.dev/) runner:
+
+```bash
+task --list        # Show available tasks
+task build         # Build in debug mode
+task build:release # Build in release mode
+task test          # Run unit tests
+task lint          # Run clippy
+task ci            # Run all CI checks
+```
+
+## Acknowledgments
+
+This library provides Rust bindings for running inference on models from these projects:
+
+- [BirdNET-Analyzer](https://github.com/birdnet-team/BirdNET-Analyzer) - Bird sound identification by the K. Lisa Yang Center for Conservation Bioacoustics at the Cornell Lab of Ornithology and Chemnitz University of Technology
+- [Perch](https://github.com/google-research/perch) - Bioacoustics research by Google Research
+- [BSG Finland](https://github.com/luomus/BSG) - Finnish bird species classifier by the Finnish Museum of Natural History (Luomus)
+
+Built with:
+
+- [ONNX Runtime](https://github.com/microsoft/onnxruntime) - Cross-platform inference engine by Microsoft
+- [ort](https://github.com/pykeio/ort) - Rust bindings for ONNX Runtime
+
+## License
+
+MIT

@@ -1,0 +1,537 @@
+# OceanBase DB Agent
+
+A conversational agent for troubleshooting OceanBase database issues and optimizing SQL performance (**FastAPI Backend** + **Vue 3 Frontend**).
+
+Users ask questions in natural language (e.g., "What are the slow SQLs?"), and the backend uses langchain + langgraph to orchestrate the LLM and tools. It retrieves OCP (OceanBase Control Platform) metadata and read-only SQL in real time, returning diagnostic results via **SSE streaming**. The frontend provides a chat interface built with Vue 3 + Vite.
+
+The backend leverages langchain's `create_agent` under the hood to orchestrate tools, using a **dual-adapter architecture** for the OCP client and SQL executor.
+
+---
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Directory Structure](#directory-structure)
+- [Local Development (Mock mode recommended, offline)](#local-development-mock-mode-recommended-offline)
+  - [Backend](#backend)
+  - [Frontend](#frontend)
+- [Configuration](#configuration)
+  - [config.yaml Fields](#configyaml-fields)
+  - [Configuration Priority](#configuration-priority)
+- [Conversation Memory (PostgreSQL)](#conversation-memory-postgresql)
+- [Tool Trace, Audit and Access Control](#tool-trace-audit-and-access-control)
+- [Deployment (Production)](#deployment-production)
+  - [Overall Topology](#overall-topology)
+  - [Step 0: Prepare Runtime Data (Important)](#step-0-prepare-runtime-data-important)
+  - [Step 1: Backend Deployment](#step-1-backend-deployment)
+  - [Step 2: Frontend Build and Static Asset Hosting](#step-2-frontend-build-and-static-asset-hosting)
+  - [Step 3: Reverse Proxy and /api Forwarding](#step-3-reverse-proxy-and-api-forwarding)
+- [Production Example: Nginx + systemd](#production-example-nginx--systemd)
+- [Integration Confirmation Checklist](#integration-confirmation-checklist)
+
+---
+
+## Tech Stack
+
+**Backend**
+- Python ≥ 3.13
+- FastAPI (0.141) · Uvicorn · Pydantic v2
+- langchain 1.4 / langchain-core 1.6 / langgraph 1.2 / langchain-openai (OpenAI-compatible LLM interface)
+- httpx (OCP real client) · PyMySQL (SQL real executor) · PyYAML · python-dotenv
+- Dependencies and locked versions can be found in `backend/requirements.txt`
+
+**Frontend**
+- Vite · Vue 3.5 · markdown-it · highlight.js · DOMPurify · vitest (Testing)
+
+**Other**
+- OceanBase Distributed Database Enterprise Edition 4.2.5 · OCP Enterprise Edition 4.2.5
+
+---
+
+## Directory Structure
+
+```
+ob_agent/
+├── backend/                  # FastAPI backend
+│   ├── app/
+│   │   ├── main.py           # create_app assembly (Config/LLM/Tools/Routes)
+│   │   ├── config.py         # Config loading (YAML + .env + Env variables)
+│   │   ├── logging_setup.py  # Logging: size-rotated file + console, uvicorn loggers (M9)
+│   │   ├── sse.py            # SSE frame serialization
+│   │   ├── agent/            # Agent orchestration
+│   │   │   ├── runner.py     # create_agent event stream → User event stream (Context compression/Timeout/Confirmation)
+│   │   │   ├── model.py      # Build ChatOpenAI
+│   │   │   ├── prompt.py     # System Prompt (DBA Assistant + Rules)
+│   │   │   ├── confirm.py    # HITL Human-in-the-loop confirmation channel (ConfirmationBroker + Middleware)
+│   │   │   ├── tools.py      # 11 DBA tools + search_docs/read_doc + 2 doc file tools (15 registered)
+│   │   │   ├── doc_index.py  # ob_wiki docs layer: chunking / search facade / read-by-section
+│   │   │   ├── embedding.py  # Embedding API client (batch embed, retry/backoff)
+│   │   │   ├── milvus_index.py # Milvus Lite collection: schema / meta / query / CLI (stats·health·rebuild)
+│   │   │   ├── milvus_build.py # Corpus → Milvus build (incremental/rebuild, sparse+dense, atomic swap)
+│   │   │   ├── retrieval.py  # Query-time: sparse/dense/hybrid + RRF + column-weight re-rank + rerank
+│   │   │   ├── rerank.py     # API rerank client (jina/dashscope protocols, no retry, degrade-not-500)
+│   │   │   ├── plan_view.py  # Normalize an OCP plan payload into a pre-order operator view
+│   │   │   ├── plan_diff.py  # Diff two plan views: verdict / cost ratio / regressed operators
+│   │   │   └── tool_input.py # Tool input Pydantic models
+│   │   ├── api/
+│   │   │   ├── chat.py       # POST /api/chat (SSE) · GET /api/health
+│   │   │   ├── confirm.py    # POST /api/chat/confirm (Approval back-channel)
+│   │   │   ├── threads.py    # GET /api/threads · GET/DELETE /api/threads/{id}
+│   │   │   ├── audit.py      # GET /api/audit (tool-call audit)
+│   │   │   └── deps.py       # Shared deps: Bearer token, memory availability, thread_id
+│   │   ├── memory/           # PG checkpointer + chat_message history + audit_event
+│   │   └── tools/            # Dual-adapter implementation
+│   │       ├── base.py       # Data models / Exceptions / Protocol interfaces
+│   │       ├── ocp/          # OCP client: mock.py (fixtures) / real.py (httpx)
+│   │       └── sql/          # SQL executors: guard.py (read-only) / base (shared pool) / mock · mysql · oracle
+│   ├── run.sh                # Startup entrypoint (creates .venv from requirements.txt on first run)
+│   ├── requirements.txt
+│   ├── config.example.yaml   # Example config (Tracked in Git)
+│   ├── config.yaml           # Actual config (Gitignored, not tracked)
+│   ├── .env.example          # Example env vars (Tracked in Git)
+│   └── .env                  # Actual env vars (Gitignored, not tracked)
+│   ├── logs/                 # app.log + rotations (Gitignored; created on first run)
+│   ├── scripts/              # unpack_doc.py: unzip the doc corpus in place (fixes filename encoding)
+│   ├── eval/                 # Retrieval eval set + run_eval.py (CI quality gate)
+│   ├── doc/                  # ob_wiki.zip (tracked) + ob_wiki/ (docs unzipped in place, gitignored)
+│   └── data/                 # mock fixtures (Tracked; real_*.json is gitignored)
+├── frontend/                 # Vue 3 + Vite frontend
+│   ├── src/                  # Components / composables / api / lib
+│   ├── tests/                # vitest pure logic unit tests
+│   ├── index.html · vite.config.js · package.json
+│   └── dist/                 # npm run build output
+├── tests/                    # Backend pytest (Repository root, pytest.ini testpaths=tests)
+├── .github/workflows/ci.yml  # CI: backend pytest + retrieval eval gate + frontend vitest
+└── README.md
+```
+
+> Note: Production and local artifacts such as `backend/doc/` (except `ob_wiki.zip`), `backend/config.yaml`, `backend/.env`, `frontend/dist/`, `.venv/`, `node_modules/`, etc., are excluded by `.gitignore` and **will not** be distributed via git. See [Deployment Steps](#step-0-prepare-runtime-data-important).
+
+---
+
+## Local Development (Mock mode recommended, offline)
+
+### Backend
+
+Execute in the **repository root directory**:
+
+```bash
+# One-time installation: Create backend/.venv and install runtime + dev dependencies (pytest, etc.)
+pip install -r requirements.txt
+```
+
+Start the service (defaults to mock mode if `backend/config.yaml` / `.env` is absent; can start even without LLM configured):
+
+```bash
+# Option 1: Start with uvicorn
+cd backend
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+# Option 2: use the repo script (works from any cwd; creates backend/.venv and
+# installs from requirements.txt on first run, then serves on 127.0.0.1:8000)
+./backend/run.sh
+```
+
+Health check:
+
+```bash
+curl -s http://127.0.0.1:8000/api/health
+```
+
+Expected output (Mock default, LLM unconfigured):
+
+```json
+{"status":"ok","ocp_provider":"mock","sql_provider":"mock","llm_configured":false,"memory_enabled":false,"auth_enabled":false}
+```
+
+Chat example (SSE streaming; returns a clear 503 error if LLM is not configured):
+
+```bash
+curl -N -X POST http://127.0.0.1:8000/api/chat \
+  -H 'content-type: application/json' \
+  -d '{"messages":[{"role":"user","content":"有哪些慢SQL？"}]}'
+```
+
+> With conversation memory enabled (`memory.enabled: true`) this same request must also carry a `thread_id`; see [Conversation Memory (PostgreSQL)](#conversation-memory-postgresql).
+
+> When LLM is not configured, the service starts as usual, and `/api/chat` returns a 503 advising you to complete the LLM configuration. Offline end-to-end validation is completed by injecting a stub model (`tests/helpers/scripted_model.py`), without relying on a real LLM.
+
+**Mock fixtures** — `backend/data/*.json` holds the offline fixtures that make `provider: mock` work end to end:
+
+| Fixture | Used by |
+| --- | --- |
+| `ocp_tenants.json`, `ocp_clusters.json` | `list_tenants`, `get_tenant_info`, `get_cluster_list` |
+| `ocp_cluster_stats.json`, `ocp_server_stats.json` | `get_cluster_resource_stats`, `get_server_resource_stats` |
+| `ocp_slow_sqls.json` (first `sqlId` is `sq-scan-orders-1`) | `get_slow_sql` |
+| `ocp_sql_text.json`, `ocp_top_plan.json`, `ocp_sql_explain.json` | `get_full_sql_text`, `get_sql_top_plan`, `get_sql_explain` |
+| `ocp_sql_explain_after.json` + the second entry of `ocp_top_plan.json` | `compare_plans` (the same SQL after its index was lost: a regression fixture) |
+| `sample_tables.json` | `execute_sql`, plus the synthesized `SHOW CREATE TABLE` behind `get_table_ddl` |
+| `slow_sqls.json` | the mock `oceanbase.gv$sql_audit` path behind `execute_sql` |
+| `explain_results.json` | the mock `EXPLAIN` lookup |
+
+With `ocp.provider: mock` **and** `sql_ro.provider: mock`, all eleven DBA tools answer from these fixtures, so the demo runs with neither OCP nor a database reachable. `real_*.json` files are for captured real responses and stay gitignored.
+
+### Frontend
+
+```bash
+cd frontend
+npm install        # First time
+npm run dev        # http://127.0.0.1:5173 (/api is proxied → 127.0.0.1:8000)
+```
+
+Start the backend first as described above (defaults to mock mode), then start the frontend. Entering "有哪些慢SQL？" on the webpage exhibits two behaviors: when LLM is unconfigured, it follows the **503 error branch** (displaying "LLM not configured" at the top); after connecting a real or stub LLM, entering the same prompt demonstrates the complete demo loop: `status` grey text → markdown streaming → `done`.
+
+### Tests and CI
+
+```bash
+# Backend tests — run from the repository ROOT (pytest.ini sets testpaths=tests, pythonpath=backend tests)
+backend/.venv/bin/python -m pytest -q
+
+# Document retrieval eval gate — real corpus, real numbers (see backend/eval/README.md)
+python backend/scripts/unpack_doc.py        # unpack the corpus once (idempotent; needed by the eval)
+python backend/eval/run_eval.py --strict    # exit 0 pass / 2 below threshold / 3 stale eval set
+
+# Frontend tests
+cd frontend && npm test
+```
+
+Document tool tests fall into two layers: `tests/test_doc_index.py` drives a small synthetic corpus (fast, mechanism-level), while `tests/test_retrieval_eval.py` runs 179 real questions against the unpacked 5146-document corpus and gates on recall@5 and MRR — it skips itself when the corpus is absent, and (since M7) skips the three gate assertions when the Milvus index has not been built yet. Baseline on the real corpus (Milvus sparse, re-recorded in M7): **recall@1 68.72%, recall@5 88.27%, recall@10 92.74%, MRR@10 0.760**, P50 ~89 ms per query; the other channels are measured as well — dense 86.59% / 0.763, hybrid **91.62% / 0.819**, and with API rerank (M8) sparse 89.94% / 0.776 / recall@1 69.27% vs hybrid 90.50% / 0.784 (full tables and the negative hybrid finding in `backend/eval/README.md`). The gate fails below recall@5 76% / MRR 0.68, so a ranking tweak cannot silently degrade retrieval. Since M8 `.github/workflows/ci.yml` runs three evaluation channels: **A** (every push/PR) sparse with rerank off, no secrets — unpack corpus → build the sparse Milvus index → backend pytest → eval gate; **B** (every push/PR) hybrid with rerank off against a vector index restored from `actions/cache` (it skips loudly, never fakes green, when the cache is cold); **C** (nightly / manual) sparse **and** hybrid with `--rerank api` against the real DashScope endpoint, using `EMBEDDING_API_KEY` / `RERANK_API_KEY` secrets and gated on recall@1 as well. Each channel uploads its full eval report as an artifact; the frontend vitest job is unchanged. Run `python backend/eval/run_eval.py --retriever hybrid --rerank api` locally to reproduce any of them.
+
+---
+
+## Configuration
+
+Backend configuration sources: **Environment Variables > `backend/config.yaml` > Default Values**; empty string environment variables will not override non-empty values in YAML. Support for `backend/.env` is also included (via dotenv). Only example files are committed to the repository; actual files should be generated locally.
+
+```bash
+cp backend/config.example.yaml backend/config.yaml
+cp backend/.env.example backend/.env
+```
+
+### config.yaml Fields
+
+| Section   | Field                                                    | Description                                      |
+| --------- | -------------------------------------------------------- | ------------------------------------------------ |
+| `ocp`     | `provider`                                               | `mock \| real` (**Note:** Set to `mock` for local demo) |
+| `ocp`     | `base_url`                                               | OCP 4.3.5 gateway address (e.g., `https://<ocp-host>:<port>`) |
+| `ocp`     | `username`/`password`                                    | HTTP Basic Auth (OCP admin account, not /login session) |
+| `ocp`     | `verify_ssl`                                             | Whether to verify OCP TLS certificates           |
+| `sql_ro`  | `provider`                                               | `mock \| real`                                  |
+| `sql_ro`  | `host_map`                                               | When real: Cluster name → Connection string mapping (dict string) |
+| `sql_ro`  | `username`/`password`                                    | Read-only database account (SELECT privilege only recommended) |
+| `sql_ro`  | `connect_timeout` / `query_timeout_seconds` / `max_rows` | Connection/query timeout and max row limits      |
+| `sql_ro`  | `driver`                                                 | **Oracle-mode tenants only** (ignored for MySQL): OCI driver (`oracledb` \| `cx_oracle`). Neither the DSN service name nor the tenant suffix is configurable — both come from the tool call: `db_name` is used as the DSN service name, and the read-only account is completed to `user@tenant#cluster` when it carries no `@`. `connect_timeout` / `query_timeout_seconds` are passed only to drivers that support them (`oracledb` thin mode: `tcp_connect_timeout` / `call_timeout`; `cx_Oracle`: no `tcp_connect_timeout` (skipped), `call_timeout` applied when the version allows it, otherwise skipped with a debug log) |
+| `llm`     | `base_url`/`api_key`/`model`                             | OpenAI-compatible model API (All three required to be considered "configured") |
+| `llm`     | `temperature` / `max_input_tokens`                       | Sampling temperature / Context compression threshold benchmark |
+| `agent`   | `send_row_data`                                          | Whether results passed to LLM contain row data  |
+| `agent`   | `max_seconds`                                            | Fallback limit for total execution time of a single agent turn |
+| `agent`   | `confirm_db_ops`                                         | Whether to enable human approval for `execute_sql` (HITL) |
+| `agent`   | `confirm_timeout_seconds`                                | Approval timeout (Defaults to rejection on timeout). **Must be less than `max_seconds`** — startup fails fast otherwise, since an equal/larger value would never fire before the whole-turn timeout |
+| `agent`   | `recursion_limit`                                        | Maximum recursion steps for langgraph           |
+| `memory`  | `enabled`                                                | Persist conversations to PostgreSQL (`true` when PG is available) |
+| `memory`  | `host`/`port`/`user`/`password`/`dbname`                 | PostgreSQL connection; set `dsn` to override the individual parts |
+| `memory`  | `pool_min_size` / `pool_max_size`                        | Connection pool bounds (shared by checkpointer and history table) |
+| `memory`  | `list_limit` / `messages_limit`                          | Default page caps for the thread-list / history endpoints |
+| `memory`  | `audit_retention_days`                                   | `>0` prunes audit rows older than N days at startup; `0` (default) keeps the trail forever |
+| `memory`  | `open_timeout_seconds` / `open_attempts`                 | Startup connect budget; worst-case startup block ≈ `open_attempts × open_timeout_seconds` + backoff |
+| `auth`    | `enabled`                                                | Require `Authorization: Bearer <token>` on every `/api/*` route except `/api/health` |
+| `auth`    | `token`                                                  | The shared token; `enabled: true` with an empty token fails fast at startup |
+| `logging` | `level` / `third_party_level`                            | Root log level and the cap for noisy third-party loggers (`pymilvus` / `milvus_lite` / `grpc` / `httpx` / `httpcore` / `urllib3` / `jieba` / `faiss`). An unknown level name fails fast at startup (a typo would otherwise silently keep the old level) |
+| `logging` | `file`                                                   | Log file, resolved relative to `backend/` (default `logs/app.log`); `""` keeps console output only. Rotated by size |
+| `logging` | `max_bytes` / `backups`                                  | Rotation threshold (default `5000000`) and how many `app.log.N` history files to keep (default `5`); `0` disables rotation / keeps no history |
+| `logging` | `console`                                                | Also write to stderr (default `true`). Under systemd stderr still reaches journald |
+
+Environment variables with the same names use uppercase format (e.g., `OCP_PROVIDER`, `LLM_BASE_URL`, `SEND_ROW_DATA`, `MEMORY_ENABLED`, `MEMORY_DSN`, `MEMORY_HOST`, `MEMORY_PASSWORD`, `AUTH_ENABLED`, `AUTH_TOKEN`, `CONFIRM_DB_OPS`, `CONFIRM_TIMEOUT_SECONDS`, `RECURSION_LIMIT`, `LOG_LEVEL`, `LOG_FILE`, `LOG_MAX_BYTES`, `LOG_BACKUPS`, `LOG_CONSOLE`, `LOG_THIRD_PARTY_LEVEL`).
+
+### Configuration Priority
+
+```
+Environment Variables (non-empty) > backend/config.yaml > Code Defaults
+```
+
+When LLM is not configured: backend starts normally, `/api/chat` returns `503`; `llm_configured` in `/api/health` shows `false`.
+
+---
+
+## Conversation Memory (PostgreSQL)
+
+When `memory.enabled` is `true`, conversations are persisted so the agent remembers earlier turns and the frontend can browse history. Two stores share **one** PostgreSQL connection pool:
+
+| Store | Role |
+| --- | --- |
+| LangGraph checkpoint (`AsyncPostgresSaver`, keyed by `thread_id`) | The agent state the LLM sees — this **is** the short-term memory. `setup()` creates `checkpoints`, `checkpoint_blobs`, `checkpoint_writes`, `checkpoint_migrations` on first start. |
+| `chat_message` (created by the backend) | The user/assistant transcript that powers the history UI. It is separate because `SummarizationMiddleware` rewrites checkpoint state once the context window fills up, which would silently drop early turns from the checkpoint. |
+
+**Request contract change**: when memory is enabled, `POST /api/chat` requires `thread_id` and only the **last** message is treated as the new turn (earlier turns come from the checkpoint). The frontend generates a `thread_id` per conversation and remembers it in `localStorage`. With `memory.enabled: false` the old stateless contract applies: the client sends the full history and no `thread_id` is needed.
+
+```bash
+# First turn on a new conversation (later turns reuse the same thread_id)
+curl -N -X POST http://127.0.0.1:8000/api/chat \
+  -H 'content-type: application/json' \
+  -d '{"thread_id":"demo-1","messages":[{"role":"user","content":"有哪些慢SQL？"}]}'
+
+# History browsing
+curl -s http://127.0.0.1:8000/api/threads
+curl -s http://127.0.0.1:8000/api/threads/demo-1/messages
+curl -X DELETE http://127.0.0.1:8000/api/threads/demo-1
+```
+
+`GET /api/threads` returns `{thread_id, title, created_at, updated_at, message_count}` (title = first user message, truncated). `DELETE` removes both the `chat_message` rows and the thread's checkpoints.
+
+**Prerequisites**: a reachable PostgreSQL database and a role allowed to create tables in `public` (the checkpointer creates its own tables on first start). `AsyncPostgresSaver.setup()` is idempotent; with multiple uvicorn workers a concurrent first start may log a migration conflict, which is handled by treating already-created tables as ready.
+
+**Degraded mode**: if PostgreSQL is unreachable, or `memory.enabled: false`, the backend still starts normally. `/api/threads*` returns `503`, `GET /api/health` reports `memory_enabled: false`, and the frontend hides the history sidebar and falls back to sending the full history on every request.
+
+---
+
+## Tool Trace, Audit and Access Control
+
+### Tool trace
+
+Every tool call is surfaced over SSE as a `tool` event once it finishes:
+
+```json
+{"type":"tool","phase":"end","id":"01a0ca10","name":"execute_sql","label":"执行只读 SQL",
+ "args":{"sql":"select ..."},"ok":true,"error":null,"rows":200,"truncated":true,
+ "approved":true,"duration_ms":842}
+```
+
+String arguments (SQL text) are truncated to 500 characters, and **result rows are never included** — the event carries call metadata only. The UI renders it as a collapsible list under the answer, so a diagnosis can be **checked** instead of trusted. Existing `status` events are unchanged, so older clients keep working.
+
+`approved` is `true`/`false` only for tools gated by human approval (`execute_sql`), and `null` for everything else. A denied or timed-out approval never reaches the tool handler and therefore never produces an `on_tool_end` — the confirmation middleware emits the `tool` event itself, which is why a **rejected** operation still shows up in the trace.
+
+`get_sql_explain` events additionally carry a `plan` object: the backend normalizes the OCP plan payload into a pre-order, depth-annotated operator tree plus an operator summary (operators, rows, cost, properties — still **no result rows**). The UI draws that as an execution-plan tree and highlights the most expensive operator; every other tool omits the field.
+
+### Audit log
+
+When memory is enabled, every tool event is also persisted to `audit_event` (same pool as the checkpointer): thread, tool, arguments, ok/error, rows, truncated, approved, duration.
+
+```bash
+curl -s "http://127.0.0.1:8000/api/audit?limit=20"
+curl -s "http://127.0.0.1:8000/api/audit?thread_id=demo-1&tool=execute_sql"
+```
+
+The UI exposes the same data through the **工具审计** button (current conversation, or all conversations). The audit table deliberately stores SQL text — that is its purpose — but never result rows. Audit uses the memory connection pool, so if memory is unavailable `/api/audit` returns `503` while tool trace over SSE keeps working.
+
+The audit trail is append-only: `DELETE /api/threads/{thread_id}` removes the conversation's messages and checkpoints but **intentionally keeps its audit rows**, so deleting a conversation cannot erase the record that a query was run.
+
+### Access control
+
+Minimal single-token scheme: set `auth.enabled: true` plus `auth.token` (or `AUTH_ENABLED`/`AUTH_TOKEN`). Every `/api/*` route except `/api/health` then requires `Authorization: Bearer <token>`; `/api/health` stays open so probes keep working. The frontend keeps the token in `localStorage` and prompts for it once on a `401` — no login page and no user accounts. Starting the backend with `auth.enabled: true` and an empty token fails immediately (fail closed).
+
+> Because conversations are now persisted, an unprotected deployment lets anyone who can reach the port read and delete every conversation **and** trigger read-only SQL on your clusters. Enable the token unless the port is already restricted to trusted networks.
+
+### Failure surfacing
+
+An unexpected agent failure is **not** streamed verbatim: the client gets a generic message plus a short `error_id` (`{"type":"error","error_id":"ab12cd34","message":"agent 执行出错…（error_id=ab12cd34）"}`) while the full traceback stays in the server log (since M9 that is `backend/logs/app.log` by default — see [Logging](#logging)) — connection strings and hosts must not leak to the browser. Tool/database errors are the deliberate exception: they still flow to the LLM and into the trace and audit, because a DBA needs to see *why* a query failed.
+
+Two concurrent requests on the same `thread_id` are rejected with `409` rather than being allowed to write divergent checkpoints, so a second browser tab gets a clear "this conversation is busy" message instead of silently corrupting the context.
+
+`GET /api/health` reports `auth_enabled` always, and adds `memory_error` **only** when memory/audit degraded, so you can tell why the history endpoints are returning `503`.
+
+### Logging
+
+The backend persists its own logs (M9) instead of relying on the terminal or `logging.lastResort`:
+
+- **Where**: `backend/logs/app.log` by default, resolved relative to the `backend/` directory (`LOG_FILE` / `logging.file` can point elsewhere). `logging.file: ""` disables the file and keeps console output only.
+- **Rotation**: the file is size-rotated — it grows to about `max_bytes` (default 5 MB) and then becomes `app.log.1`, keeping `backups` (default 5) history files, so disk usage is bounded at roughly `max_bytes × (backups + 1)`.
+- **What is captured**: application loggers (`app.*`), `uvicorn.error` and `uvicorn.access` (the access log is attached explicitly because uvicorn does not propagate it to the root logger), including full tracebacks from `logger.exception`. Noisy third-party loggers (`pymilvus` / `milvus_lite` / `grpc` / `httpx` / `httpcore` / `urllib3` / `jieba` / `faiss`) are capped at `third_party_level` (default `WARNING`) by a handler-level filter, because `jieba` re-enables its own `DEBUG` logger at import time.
+- **uvicorn's own level is left alone**: `uvicorn.error` / `uvicorn.access` keep whatever `--log-level` sets (default `INFO`); this module only decides *where* their records go. Use `--log-level` to make uvicorn itself more verbose.
+- **Console is kept** (`console: true`): under systemd stderr still reaches journald, so `journalctl -u ob-agent-backend -f` and `tail -f backend/logs/app.log` both work.
+- **Levels**: `INFO` by default (i.e. the startup/retrieval lines are now durable); an unknown level name fails fast at startup rather than silently keeping the old one. `LOG_*` environment variables are documented in the table above.
+- **Not written during tests**: pytest runs skip the file handler so the suite never appends to the repository's `logs/` (an explicit `LOG_FILE` or `force=True` overrides that).
+- **Single process only**: `RotatingFileHandler` cannot be shared between processes, which is fine because the backend must run with `--workers 1` (see [Deployment](#deployment-production)) — do not raise the worker count in the expectation that the log file stays consistent.
+
+```bash
+tail -f backend/logs/app.log                       # follow the backend log
+grep -n "ERROR\|Traceback" backend/logs/app.log    # errors and stack traces
+```
+
+---
+
+## Deployment (Production)
+
+> Dockerfile / docker-compose are **not included** in the repository. Production deployment utilizes the **Uvicorn (Backend) + Static Hosting + Reverse Proxy** architecture. The frontend build output consists of purely static files, and the API uses relative path `/api/*`. Therefore, a Web server is required to host static assets and forward `/api` to the backend, forming a unified site.
+
+### Overall Topology
+
+```
+                         443/80
+  Browser  ──────────────►  Nginx (Hosts frontend/dist static assets)
+                                │   /api/*  →  127.0.0.1:8000
+                                ▼
+                            Uvicorn (app.main:app, Backend)
+                                │
+                       ┌────────┴────────┐
+                       ▼                 ▼
+                  OCP Gateway     Read-only Database
+                 (ocp.base_url)       (sql_ro)
+```
+
+### Step 0: Prepare Runtime Data (Important)
+
+The following data **is not distributed via git** (excluded by `.gitignore`) and must be manually placed under the `backend/` working directory during deployment:
+
+1. **`backend/config.yaml`** and **`backend/.env`**: Generate and populate with actual values according to [Configuration](#configuration).
+2. **`backend/doc/`**: OceanBase official documentation knowledge base. The repository ships the compressed archive `backend/doc/ob_wiki.zip`; unzip it in place before starting the backend, which yields `backend/doc/ob_wiki/` (the extracted files are gitignored). The agent reaches it through the `search_docs` / `read_doc` tools, and since M7 retrieval is **Milvus Lite only**: one collection holds the built-in BM25 sparse field and a 1024-dim dense field (`backend/doc/ob_wiki.milvus.db`, gitignored, also a build artifact). A fresh checkout has no index yet, so build it once (the agent degrades to empty results, never a 500, until then): `cd backend && .venv/bin/python -m app.agent.milvus_index --rebuild --no-vectors` builds the sparse index only (no embedding key needed, ~75 s for 25220 chunks), while plain `--rebuild` also embeds real vectors (requires the embedding config; needed for the `dense`/`hybrid` retrievers — the default `sparse` works without them). The retired SQLite FTS5 index `backend/doc/ob_wiki.index.db` is no longer read by any code path and is kept locally for one release cycle. `read_doc` reads the wiki `.md` files directly and does not depend on the index at all. `read_file` / `list_directory` are still available for browsing and are rooted at `./doc`. **Missing the corpus directory will cause document retrieval features to fail**. Note that the vector index directory contains **document text** (it is gitignored; treat its backups like the corpus), and that retrieval can call two external endpoints when configured: the embedding API sends query text, and the rerank API (M8, `rerank.*`) sends the query plus up to `rerank.top_n` candidate passages (`title > section` and up to `rerank.max_passage_chars` characters of body). Both can be pointed at an internal endpoint, or disabled via `RETRIEVAL_DEFAULT_RETRIEVER=sparse` / `RERANK_MODE=off`.
+3. **PostgreSQL** (only when `memory.enabled: true`): a reachable instance plus a role allowed to create tables in `public`. The backend creates its own checkpoint and history tables on first start. See [Conversation Memory (PostgreSQL)](#conversation-memory-postgresql).
+
+> Working directory convention: The backend runs with `backend/` as its working directory (`run.sh` will `cd` to the script directory), ensuring relative paths like `./doc` and `./config.yaml` work properly.
+
+### Step 1: Backend Deployment
+
+**A. Install dependencies and set up venv**
+
+```bash
+cd backend
+python3.13 -m venv .venv            # Or use uv
+source .venv/bin/activate
+pip install -r requirements.txt      # requirements.txt is the single source of dependencies
+```
+
+In production, it is recommended to **disable reload** and run continuously.
+
+**B. Start with Uvicorn**
+
+```bash
+cd /path/to/ob_agent/backend
+.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+```
+
+- `--host 127.0.0.1`: The backend listens locally only; external reverse proxy (Nginx) exposes ports 443/80 externally.
+- `--workers`: **Keep this at 1.** The HITL confirmation channel (the frontend posts a decision to `/api/chat/confirm` with only a `request_id`) and the per-thread serialization lock are both **in-process** state. With more than one worker, an approval can land on a worker that never held the pending request (404/503), and two workers can run the same thread concurrently against the shared Postgres checkpointer. Horizontal scaling therefore requires sticky routing by `thread_id` at the gateway plus single-writer guarantees per thread — not provided by this version.
+- Maintain `cd backend` throughout to ensure relative paths `./doc` and `./config.yaml` remain valid.
+
+### Step 2: Frontend Build and Static Asset Hosting
+
+```bash
+cd frontend
+npm ci            # Precise installation according to package-lock.json
+npm run build     # Output generated in frontend/dist/
+```
+
+Copy the entire `frontend/dist/` directory to the deployment machine (or point Nginx root/alias to this directory). The build output consists of purely static files and does not depend on a Node runtime.
+
+### Step 3: Reverse Proxy and /api Forwarding
+
+The frontend initiates requests using relative paths:
+
+- `POST /api/chat` (SSE streaming conversation)
+- `POST /api/chat/confirm` (Approval back-channel)
+- `GET /api/health` (Health check; the only route exempt from the access token)
+- `GET /api/threads` · `GET /api/threads/{thread_id}/messages` · `DELETE /api/threads/{thread_id}` (Conversation history; 503 when memory is disabled)
+- `GET /api/audit` (Tool-call audit log; 503 when memory is disabled)
+
+The reverse proxy MUST:
+1. Return static assets (HTML/JS/CSS, etc.) from `frontend/dist`.
+2. Forward `/api/*` to backend `127.0.0.1:8000`.
+3. **Disable buffering for `/api`** (SSE requires real-time forwarding; avoid Nginx buffering breaking stream immediacy).
+
+---
+
+## Production Example: Nginx + systemd
+
+### 1) Nginx Site Configuration
+
+`/etc/nginx/conf.d/ob-agent.conf`:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.example.com;   # Replace with real domain/IP
+
+    root /var/www/ob-agent;                # Directory where frontend/dist was copied
+    index index.html;
+
+    # Static assets (Includes history route fallback, index.html suffices for single-page app)
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # API reverse proxy (Critical: SSE requires proxy buffering disabled)
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        # SSE: Disable proxy buffering to ensure real-time streaming
+        proxy_buffering off;
+        proxy_cache off;
+        # Relax streaming/long-connection timeout
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
+```
+
+> For production, it is recommended to add TLS (Let's Encrypt / Certificates) on port 443 and use `proxy_pass http://127.0.0.1:8000;` inside `location /api/` (Note that the URL has no trailing `/` to preserve the original `/api` URI prefix).
+
+### 2) systemd Backend Service
+
+`/etc/systemd/system/ob-agent-backend.service`:
+
+```ini
+[Unit]
+Description=OceanBase DB Agent backend (uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ob_agent/backend        # Must be backend; relative paths rely on it
+ExecStart=/opt/ob_agent/backend/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+Restart=always
+RestartSec=3
+User=www-data                                 # Adjust based on actual execution user
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now ob-agent-backend
+sudo systemctl status ob-agent-backend
+```
+
+The service writes two log streams, and neither needs extra unit directives:
+
+- `backend/logs/app.log` (plus rotations) — the application log described in [Logging](#logging); make sure the `User=` account can create/write `backend/logs/`, or point `logging.file` somewhere writable.
+- stderr/stdout → journald (systemd's default, which is why the unit has no `StandardOutput=`/`StandardError=`), i.e. `journalctl -u ob-agent-backend -f` shows the same lines with `logging.console: true`.
+
+If the unit runs with a read-only or ephemeral `WorkingDirectory` (containers, hardened systemd), log to a mounted path via `Environment=LOG_FILE=/var/log/ob-agent/app.log`.
+
+### 3) Post-Deployment Verification
+
+```bash
+# Direct backend health check
+curl -s http://127.0.0.1:8000/api/health
+
+# Full path health check via Nginx
+curl -s https://your-domain.example.com/api/health
+
+# SSE streaming conversation (via Nginx)
+curl -N -X POST https://your-domain.example.com/api/chat \
+  -H 'content-type: application/json' \
+  -d '{"messages":[{"role":"user","content":"有哪些慢SQL？"}]}'
+```
+
+Open the site in a browser, and you should see the empty state page "Hello, I am the OceanBase DBA Assistant". The health badge in the top-right corner displays `ocp_provider / sql_provider · LLM ready/unconfigured` (corresponding to fields returned by `GET /api/health`).
+
+---
+
+## Integration Confirmation Checklist
+
+- **real OCP**: Implemented — `backend/app/tools/ocp/real.py` (`httpx` + Basic Auth + envelope normalization, every network/protocol error normalized to `OcpClientError`), with HTTP-layer tests in `tests/test_real_ocp.py` (37 cases over an injected `httpx.MockTransport`: base_url check, Basic Auth on/off, the `data` vs `data.contents` response contracts, 9 failure paths, the default time window being evaluated **per call**, and a per-method return-type cross-check against `MockOcpClient`). Still to confirm against a live OCP: that the real payload field names/nesting match the docs (list endpoints under `data.contents`, single-object endpoints under `data`) and that authentication really is Basic Auth.
+- **real SQL**: EXPLAIN plan semantics, large result set cursor (SSCursor), `ob_query_timeout`, and read-only account permission scope.
+- **SSE**: Verify server truly aborts task when client disconnects (no orphan tasks).
+- **LLM**: After configuration, inject mock/demo hints per provider (the prompt no longer embeds mock hints).
+- **Resource water level**: Implemented — added `get_cluster_list`, `get_cluster_resource_stats` (`GET /api/v2/ob/clusters/{id}/stats`, a flat `ClusterResourceStats` object) and `get_server_resource_stats` (`GET /api/v2/ob/clusters/{id}/serverStats`, a `data.contents` list). The tool layer whitelists the fields and derives the `cpuAssignedPct` / `memoryAssignedPct` / `dataDiskUsedPct` / `logDiskUsedPct` water levels; when nothing is returned it reports `ok:false` with `error_kind: not_found`, so "no data" is never read as "zero usage". Remaining live-test item: real payload field names match the docs (CPU in cores, memory/disk in bytes) and whether a sampling time window must be passed.
+- **Document retrieval**: Implemented — `search_docs` / `read_doc` replace "guess directory names, then read whole files". Since M7 retrieval is **Milvus Lite only**: `backend/app/agent/milvus_index.py` owns the collection (built-in BM25 sparse field with `enable_analyzer=True` + jieba analyzer, plus a `FLOAT_VECTOR(1024)` dense field), `milvus_build.py` builds it from the corpus (incremental via a corpus fingerprint, or `--rebuild`, writing to a side directory and swapping atomically so a failed build never touches the live index), and `retrieval.py` does query-time work — sparse / dense / hybrid, reciprocal-rank fusion (`rrf_k=60`) and column-weight re-ranking. The SQLite FTS5 index and its tokenizer/penalty machinery were deleted (`doc_index.py` went 925 → 461 lines and is now just the docs layer: chunking, the search facade, and `read` straight from the `.md` file, which since M7 sees *every* section of a document instead of the 2 chunks per path the FTS5 table stored). Because Milvus' BM25 exposes a single `text` column, the FTS5 column weights survive as a **client-side re-rank**: the builder also stores a `keywords` column, and the sparse route scores `0.5 * normalized distance + 0.5 * column coverage` over (title 10, keywords 6, section 4, body 1), computed from the *original* query rather than the synonym-expanded one. Search returns the matching *section* with a readable snippet and a `score`; the MySQL/Oracle mode and the version written in the question are auto-detected and used as filters (the same-named MySQL/Oracle documents are otherwise indistinguishable); Chinese question words / fillers (`哪些` / `如何` / `一共` / `包含` …) are dropped from the query terms, so "错误码一共有哪些" no longer surfaces FAQ pages that merely say 哪些 a lot; navigation files (`index.md` and the root `README.md`) are classified as `nav` and heavily down-weighted (`nav_file_penalty`) instead of excluded — they only point at documents, and the body text is authoritative — while `include_index=true` lifts the penalty for genuine "what categories are there / how is the doc set organised" questions; in-document navigation sections (`相关文档` / `参见` / `更多信息`) are down-weighted too. Measured on the real corpus: 5146 docs → 25220 chunks (24138 doc + 1082 nav), sparse P50 ~89 ms per query, sparse gate 88.27% recall@5 / 0.760 MRR, dense 86.59% / 0.763, hybrid 91.62% / 0.819.
+- **Plan regression detection**: Implemented — `compare_plans` (`backend/app/agent/plan_diff.py`) answers "the same SQL suddenly got slower, why?". It rebuilds both plan trees, converts OCP's *cumulative* cost into per-operator self cost (so the true culprit is the leaf that changed, not every ancestor that inherits the increase), aligns siblings by `(operator, name)` with an LCS, and reports a verdict (`unchanged` / `changed` / `regressed` / `improved`), the cost ratio, the regressed and improved operators, added/removed operators, and property-level notes (available index lost, `physical_range_rows` jump, index-back, output rows). Unrelated branches are pruned from the returned tree. On the mock regression fixture (index lost → full scan) it reports `regressed`, cost ratio 95.2, cost 1958 → 186416 and rows 1 → 971070, pointing at `PHY_TABLE_SCAN(WRT(WARN_RULE_TOTAL_INDEX_N1))`.
+- **Retrieval eval + CI**: Implemented — `backend/eval/` holds 179 real DBA questions with expected documents (`retrieval_cases.jsonl`) and `run_eval.py`, which reports recall@1/@5/@10, MRR, latency, per-tag and per-route (`by_source`) breakdowns, and exits non-zero when a gate is missed (`--min-recall`, `--min-mrr`, `--min-hit1`, `--max-p50-ms`, `--max-nav-top1`; sparse baseline re-recorded in M7: 88.27% / 0.760; dense 86.59% / 0.763 and hybrid 91.62% / 0.819 are measured too, and FTS5's retired baseline was 79.33% / 0.706). Since M7 retrieval is Milvus-only, the index has to exist before the eval runs: CI builds the sparse index (`python -m app.agent.milvus_index --rebuild --no-vectors`, no embedding key needed) right after unpacking the corpus and before pytest. `tests/test_retrieval_eval.py` runs the same gate inside pytest plus two invariants: every expected path must still exist in the corpus (a stale eval set fails loudly after a corpus upgrade), and navigation pages must never take the top slot from a body document. Since M8 `.github/workflows/ci.yml` has three evaluation channels — A (every push/PR) sparse + `--rerank off` with no secrets; B (every push/PR) hybrid + `--rerank off` against a vector index restored from `actions/cache` (skipping loudly instead of faking green on a cache miss); C (nightly/manual, with `EMBEDDING_API_KEY` / `RERANK_API_KEY`) sparse **and** hybrid with `--rerank api` against the real endpoint, adding a recall@1 gate — each uploading its eval report as an artifact; `backend/scripts/unpack_doc.py` unpacks the corpus in CI (it repairs the archive's non-UTF-8 filenames and pins mtimes to the archive so the index fingerprint is machine-independent).
+- **API rerank (P2a)**: Implemented in M8 — `backend/app/agent/rerank.py` (`Reranker` protocol + `ApiReranker`) speaks both the Jina and DashScope text-rerank protocols, always sends one request per query (a retry would blow the latency budget), truncates/normalizes each passage, and raises `RerankUnavailable` on any failure so retrieval degrades to the fused order (`rerank_degraded`, never a 500). `retrieval.py` calls it **after fusion and before the `MAX_CHUNKS_PER_PATH` and `limit` truncation**, re-ranks only the top `rerank.top_n` candidates, and returns both `fused_rank` and `rerank_rank` per entry so a report can tell what moved. Honest measured result (179 cases, real DashScope `qwen3.7-text-rerank`): on **sparse** it is a small net win — recall@5 88.27% → 89.94%, MRR 0.760 → 0.776, `literal` tags 26/28 → **27/28** — at the cost of ~+150 ms P50; on **hybrid** it *hurts* recall@1 (75.98% → 70.39%) and MRR (0.819 → 0.784), and neither a longer passage nor `top_n=5` fixes it (dropping the `title > section` prefix collapses recall@1 to 55.31%). So the design's "+5pp recall@1" acceptance bar is **not met**, hybrid must not enable rerank — since M9 that rule is **enforced in code**, not just documented: `MilvusRetriever.search` resolves `rerank.mode=auto` (the default) to `off` on any non-sparse retriever and reports why in `RetrievalResult.rerank_skipped` (so the harmful combination can no longer be switched on by configuration alone; an explicit `--rerank api` still runs the reranker) — and the promising direction (mixing the fused and rerank scores by a weight instead of replacing the order) is recorded as future work in `backend/eval/README.md` and the design doc §8.6.
+- **Oracle Tenant**: Implemented — `execute_sql` / `get_table_ddl` now route Oracle-mode tenants to the OCI driver (`backend/app/tools/sql/oracle.py`). The DSN service name comes from the `db_name` argument of the tool (the tenant's SERVICE_NAME), not from configuration; the read-only account is completed to `user@tenant#cluster` when it carries no `@`. `get_table_ddl` passes `db_name` as the DDL owner and falls back to `all_tab_columns where owner = <db_name>`. `connect_timeout` / `query_timeout_seconds` are only passed to drivers that support them: `oracledb` thin mode takes both, `cx_Oracle` has no `tcp_connect_timeout` (skipped) and `call_timeout` is applied only when the version allows it, with the skip logged at debug level. Remaining live-test item: whether the tenant's SERVICE_NAME equals the `db_name` you pass (a mismatch surfaces as ORA-12514/12505), and whether `DBMS_METADATA.GET_DDL` is available. Note `cx_Oracle` has no wheel for Python ≥ 3.11, so the default `driver` is `oracledb` (thin mode, no Oracle client libraries needed).

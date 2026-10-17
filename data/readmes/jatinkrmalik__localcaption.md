@@ -1,0 +1,535 @@
+<div align="center">
+
+<img src="docs/icons/localcaption.svg" alt="localcaption" width="56" height="56" /> 
+
+# localcaption
+
+Offline Whisper transcription for YouTube and local files. Writes SRT, VTT, and JSON. No API key.
+
+<!-- Package -->
+<p>
+  <a href="https://pypi.org/project/localcaption/"><img src="https://img.shields.io/pypi/v/localcaption?logo=pypi&logoColor=white&color=%233775A9&cacheSeconds=300" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/localcaption/"><img src="https://img.shields.io/pypi/pyversions/localcaption?logo=python&logoColor=white&cacheSeconds=300" alt="Python versions"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/jatinkrmalik/localcaption?color=yellow" alt="License: MIT"></a>
+</p>
+
+<!-- Build -->
+<p>
+  <a href="https://github.com/jatinkrmalik/localcaption/actions/workflows/ci.yml"><img src="https://github.com/jatinkrmalik/localcaption/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/jatinkrmalik/localcaption/actions/workflows/release.yml"><img src="https://github.com/jatinkrmalik/localcaption/actions/workflows/release.yml/badge.svg" alt="Release"></a>
+  <a href="https://github.com/pypa/hatch"><img src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg" alt="Hatch project"></a>
+</p>
+
+<!-- Community -->
+<p>
+  <a href="https://github.com/jatinkrmalik/localcaption/stargazers"><img src="https://img.shields.io/github/stars/jatinkrmalik/localcaption?style=flat&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/jatinkrmalik/localcaption/commits/main"><img src="https://img.shields.io/github/last-commit/jatinkrmalik/localcaption?logo=github" alt="Last commit"></a>
+  <a href="https://github.com/jatinkrmalik/localcaption/issues"><img src="https://img.shields.io/github/issues/jatinkrmalik/localcaption?logo=github" alt="Open issues"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome"></a>
+</p>
+
+```bash
+pipx install localcaption && localcaption doctor --fix # to get started
+```
+
+</div>
+
+> [!TIP]
+> Local, offline Whisper transcription for YouTube, Vimeo, Twitch, Twitter/X, and [1000+ other sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) via yt-dlp, plus any video or audio file on disk. Paste a URL or a path; get `.txt`, `.srt`, `.vtt`, and `.json` without an API key and without uploading audio to the cloud. Default engine is [whisper.cpp](https://github.com/ggerganov/whisper.cpp); [faster-whisper](https://github.com/SYSTRAN/faster-whisper) is optional.
+
+`localcaption` is a tiny orchestrator over three battle-tested tools:
+
+| Stage | Tool |
+|---|---|
+| Download best audio | [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) (YouTube, Vimeo, Twitch, 1000+ sites) |
+| Re-encode to 16 kHz mono WAV | [`ffmpeg`](https://ffmpeg.org/) |
+| Transcribe locally | [`whisper.cpp`](https://github.com/ggerganov/whisper.cpp) (default) or [`faster-whisper`](https://github.com/SYSTRAN/faster-whisper) |
+
+Nothing is uploaded to a third-party service. No OpenAI / Google / DeepL keys
+required. Unlike pasting a clip into ChatGPT or calling the Whisper API,
+transcription stays on your laptop after the download.
+
+![Pipeline overview](docs/diagrams/pipeline.png)
+
+## Why localcaption
+
+- **Offline Whisper.** Audio is transcribed on your machine. No API key, no account.
+- **URLs and local files.** Any URL [yt-dlp](https://github.com/yt-dlp/yt-dlp) supports, plus local `.mp4` / `.wav` / `.mp3` / similar.
+- **Captions you can use.** One run writes `.txt`, `.srt`, `.vtt`, and `.json`.
+- **Batch.** `--batch urls.txt` walks a list of URLs or files.
+- **Chapters.** YouTube chapter markers become `.chapters.json` and `.chaptered.md`.
+- **Search.** `localcaption search <term>` greps past transcripts with timestamps.
+- **Local summaries.** `--summary` talks to a local [Ollama](https://ollama.com), not a hosted LLM.
+- **Two backends.** whisper.cpp by default; `pip install 'localcaption[faster]'` for faster-whisper.
+- **`doctor --fix`.** Installs missing `ffmpeg`/`cmake`, builds whisper.cpp, and downloads the default `small.en` model.
+
+## Who this is for
+
+- Podcasters and video folks who need SRT/VTT without uploading episodes.
+- Researchers transcribing interviews or lectures they cannot send to a cloud API.
+- Anyone who wants a YouTube transcript without logging into Google or pasting audio into ChatGPT.
+
+## Install
+
+### Prerequisites
+
+- Python 3.10+
+- `git`, `ffmpeg`, `cmake` on your `$PATH`
+  (macOS: `brew install ffmpeg cmake`)
+
+### Recommended: pipx (one line)
+
+The most Pythonic install. [`pipx`](https://pipx.pypa.io) creates an isolated
+virtualenv for `localcaption` and drops the console script on your `$PATH`,
+so you can run `localcaption <url-or-file>` from anywhere without polluting your
+system Python.
+
+```bash
+pipx install localcaption
+```
+
+The first time you run `localcaption <url-or-file>` it will tell you it can't find
+`whisper.cpp`. The fastest way to set it up is to let `localcaption` do it
+itself: clone, build, and download the default model in one shot:
+
+```bash
+localcaption doctor --fix          # ~2 min on an M-series Mac
+```
+
+`doctor --fix` is idempotent and end-to-end: it installs missing system
+tools (`ffmpeg`/`cmake` via `brew`/`apt`), clones + builds whisper.cpp at
+the canonical XDG location, downloads the default model, and re-runs the
+diagnostics to confirm everything works. Pick a faster model with
+`--model tiny.en`.
+
+Prefer to do it yourself? Two equivalent options:
+
+```bash
+# Option A: bootstrap script (also installs pipx + the localcaption package):
+curl -fsSL https://raw.githubusercontent.com/jatinkrmalik/localcaption/main/scripts/install.sh | bash
+
+# Option B: DIY, anywhere you like:
+git clone https://github.com/ggerganov/whisper.cpp /path/to/whisper.cpp
+cd /path/to/whisper.cpp && cmake -B build && cmake --build build -j --config Release
+bash models/download-ggml-model.sh small.en
+export LOCALCAPTION_WHISPER_DIR=/path/to/whisper.cpp   # add to your shell rc
+```
+
+> 💡 The `install.sh` bootstrap is just `pipx install localcaption` followed
+> by `localcaption doctor --fix`, same logic, single source of truth.
+> Override the default model with `WHISPER_MODEL=tiny.en bash install.sh`.
+
+After install, verify everything is wired up:
+
+```bash
+localcaption doctor                # read-only diagnostic
+localcaption doctor --fix          # diagnostic + auto-repair anything missing
+```
+
+### Uninstall
+
+To completely remove `localcaption` and everything it installed (the
+binary, whisper.cpp build, and ggml models (about 500 MB total):
+
+```bash
+# pipx + whisper.cpp + models, with confirmation prompts:
+curl -fsSL https://raw.githubusercontent.com/jatinkrmalik/localcaption/main/scripts/uninstall.sh | bash
+
+# Or, if you cloned the repo:
+bash scripts/uninstall.sh
+```
+
+Useful flags: `--dry-run` (preview), `--yes` (skip prompts),
+`--keep-models` (uninstall the binary but keep the ~500 MB whisper.cpp +
+models cache for next time).
+
+Sample output:
+
+```
+localcaption 0.4.0
+
+System tools:
+  ✅ python  (3.12.3)
+  ✅ ffmpeg  (/opt/homebrew/bin/ffmpeg)
+  ✅ cmake   (/opt/homebrew/bin/cmake)
+  ✅ git     (/opt/homebrew/bin/git)
+
+Python dependencies:
+  ✅ yt-dlp  (2025.10.14)
+
+whisper.cpp:
+  searching: /Users/you/.local/share/localcaption/whisper.cpp
+  ✅ directory exists
+  ✅ binary built  (.../build/bin/whisper-cli)
+  ✅ models present  (ggml-small.en.bin)
+
+All checks passed. You're good to go: localcaption <url-or-file>
+```
+
+If anything is missing, re-run with `--fix` and `localcaption` will install
+the missing system deps (via `brew`/`apt`), clone+build whisper.cpp, and
+download the default model, then re-verify:
+
+```bash
+localcaption doctor --fix                      # repair everything
+localcaption doctor --fix --model tiny.en      # …with a faster/smaller model
+```
+
+### Dev install (contributors)
+
+If you're hacking on `localcaption` itself, install editable from a clone:
+
+```bash
+git clone https://github.com/jatinkrmalik/localcaption
+cd localcaption
+./scripts/setup.sh           # creates .venv, pip install -e .[dev], clones+builds whisper.cpp HERE
+source .venv/bin/activate
+pytest                        # the suite should pass
+```
+
+The dev setup keeps `whisper.cpp/` inside the repo (so you can poke at it),
+and editable-installs the package so source edits take effect immediately.
+
+## Usage
+
+### CLI
+
+```bash
+# YouTube
+localcaption "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+# Vimeo, Twitch, Twitter/X, and 1000+ other sites work too
+localcaption "https://vimeo.com/148751763"
+
+# Local video/audio files
+localcaption /path/to/video.mp4
+localcaption ./recording.wav
+
+# Batch: one URL or local path per line (# comments and blank lines ignored)
+localcaption --batch urls.txt -o transcripts/ -m small.en
+
+# Transcript + local summary (requires a running Ollama)
+localcaption "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --summary
+localcaption ./talk.mp4 --summary --summary-model llama3.1:8b
+```
+
+| flag | default | what it does |
+|---|---|---|
+| `-m`, `--model` | `small.en` | whisper model name (`tiny.en`, `base.en`, `small.en`, `medium.en`, `large-v3`, …) |
+| `-o`, `--out` | `./transcripts` | output directory |
+| `-l`, `--language` | `auto` | ISO language code, or `auto` to let whisper detect it |
+| `--backend` | `whisper-cpp` | transcription backend: `whisper-cpp` or `faster-whisper`. `$LOCALCAPTION_BACKEND` if the flag is omitted |
+| `--whisper-dir` | auto-detect¹ | path to a built whisper.cpp checkout (whisper-cpp backend) |
+| `--keep-audio` | off | keep the downloaded audio + intermediate WAV in `<out>/.work/` |
+| `--no-print` | off | don't echo the transcript to stdout |
+| `--batch FILE` | off | transcribe each non-empty, non-`#` line in FILE sequentially |
+| `--summary` | off | after transcription, write `<id>.summary.md` via local Ollama |
+| `--summary-model` | `llama3.1:8b` | Ollama model used by `--summary` |
+| `--summary-prompt` | built-in | path to a prompt template (`{transcript}` is replaced if present) |
+
+¹ `--whisper-dir` resolution order:
+   1. The explicit flag value, if given.
+   2. `$LOCALCAPTION_WHISPER_DIR` env var.
+   3. `./whisper.cpp` (dev checkout).
+   4. `~/.local/share/localcaption/whisper.cpp` (where `install.sh` puts it).
+
+Outputs `<videoId>.txt`, `.srt`, `.vtt`, and `.json` in the chosen directory. For local files, the output filename is derived from the input file's name. With `--summary`, also writes `<videoId>.summary.md`. When the source has chapter markers (typical on YouTube), also writes `<videoId>.chapters.json` and `<videoId>.chaptered.md`. The raw whisper `.txt` is left unchanged.
+
+`--batch FILE` writes each item into `<out>/<videoId>/` and skips any video
+whose `.txt` is already there, so you can re-run a list after a failure.
+Local paths are relative to the list file (and `~` is expanded). The process
+is sequential (whisper.cpp already saturates the machine). Exit 0 if
+everything succeeded or was skipped, 1 otherwise.
+
+You can also invoke it as a module: `python -m localcaption <url-or-file>`.
+
+### faster-whisper (optional)
+
+`whisper.cpp` is the default backend and needs no extra Python packages.
+To use [faster-whisper](https://github.com/SYSTRAN/faster-whisper) instead
+(CTranslate2, typically faster on CPU/CUDA, including Windows):
+
+```bash
+pip install 'localcaption[faster]'
+# pipx:
+pipx inject localcaption faster-whisper
+
+localcaption --backend faster-whisper "https://www.youtube.com/watch?v=..."
+# or:
+export LOCALCAPTION_BACKEND=faster-whisper
+```
+
+faster-whisper downloads its own CTranslate2 weights on first use; it does
+not read ggml files from `--whisper-dir`. `--model` names (`base.en`,
+`small.en`, `large-v3`, ...) match the usual Whisper sizes.
+
+### Summaries (optional)
+
+If [Ollama](https://ollama.com) is running locally, `--summary` sends the
+`.txt` transcript to `http://localhost:11434/api/generate` and writes
+`<id>.summary.md` next to it. The built-in prompt asks for a TL;DR, key
+points, notable quotes, and action items.
+
+```bash
+localcaption <url-or-file> --summary
+localcaption <url-or-file> --summary --summary-model mistral
+localcaption <url-or-file> --summary --summary-prompt ./my_prompt.txt
+```
+
+If Ollama isn't reachable, localcaption logs a warning and still exits 0.
+The transcript files are unchanged.
+
+### Subcommands
+
+| Subcommand | What it does |
+|---|---|
+| _(default)_ `localcaption <url-or-file>` | Transcribe a URL or local video/audio file. |
+| `localcaption doctor` | Read-only diagnostic: prereqs, whisper.cpp, available models. Useful before filing a bug. |
+| `localcaption doctor --fix` | Self-heal: install missing system deps, clone+build whisper.cpp, download the default model, then re-verify. Idempotent. |
+| `localcaption model list` | List every supported whisper model with size + install status. |
+| `localcaption model info <name>` | Show metadata about a single model. |
+| `localcaption model download <name>` | Download a model with progress bar + atomic writes. |
+| `localcaption model rm <name>` | Remove an installed model to free disk space. |
+| `localcaption search <term>` | Grep previously transcribed videos. Ranked matches with timestamps. |
+
+### Search past transcripts
+
+Each successful transcription upserts one JSON line in
+`~/.local/share/localcaption/index.jsonl` (`id`, `url`, `title`, `duration`,
+`chapters`, `transcript`). Re-running the same id replaces that row. Override
+the path with `LOCALCAPTION_INDEX_PATH`.
+
+```bash
+localcaption search "install"
+# vid123  02:30  First, let's install pip
+#         Lecture on Python tooling
+```
+
+Search is a case-insensitive substring. Hits are ranked by how often the term
+appears (title matches get a small boost). Timestamps come from the sibling
+whisper `.json` or `.srt` when those files are still next to the `.txt`.
+
+### Managing models
+
+`localcaption` defaults to `small.en` (~466 MB), downloaded by
+`doctor --fix` or on first use. For a faster run use `--model tiny.en`;
+for non-English audio, pick a multilingual model. If the model isn't
+already installed, you'll be prompted to download it:
+
+```bash
+$ localcaption --model small.en "https://www.youtube.com/watch?v=..."
+
+Model 'small.en' is not installed (~466 MB).
+  Download it now? [Y/n] y
+  small.en       [████████████████████░░░░░░░░░░░░░░░░] 290.0/466.0 MB · 18.4 MB/s · ETA 9s
+```
+
+Or download/manage models explicitly:
+
+```bash
+localcaption model list                  # see what's available
+localcaption model info small.en         # check size before committing
+localcaption model download small.en     # ~466 MB, ~25 sec on a fast connection
+localcaption model rm large-v3           # free 3 GB after experimenting
+```
+
+For scripted/CI use, pass `--auto-download` to skip the prompt:
+
+```bash
+localcaption --model small.en --auto-download "https://www.youtube.com/..."
+```
+
+**Quick model picker:**
+
+| Model | Size | Best for |
+|---|---|---|
+| `tiny.en` | 75 MB | Fast fallback, English only, low-resource environments |
+| `base.en` | 142 MB | Faster than `small.en`, lower accuracy |
+| `small.en` | 466 MB | **Install default**, English, accuracy/speed balance |
+| `medium.en` | 1.5 GB | High accuracy English, ~3× slower than `small.en` |
+| `large-v3` | 3.0 GB | Best accuracy, multilingual, slow |
+| `large-v3-turbo` | 1.6 GB | Near-large quality at ~half the size, great compromise |
+
+Models without the `.en` suffix are multilingual (required for non-English audio).
+
+### Python API
+
+```python
+from pathlib import Path
+from localcaption.pipeline import transcribe_url
+
+result = transcribe_url(
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    out_dir=Path("transcripts"),
+    whisper_dir=Path("whisper.cpp"),
+    model="small.en",
+    summary=True,  # optional; writes .summary.md via local Ollama
+)
+print(result.transcripts.txt.read_text())
+
+# faster-whisper (pip install 'localcaption[faster]') does not need whisper_dir:
+# transcribe_url(url, out_dir=Path("transcripts"), backend="faster-whisper")
+```
+
+Batch from Python:
+
+```python
+from pathlib import Path
+from localcaption.batch import read_url_list, transcribe_urls
+
+result = transcribe_urls(
+    read_url_list(Path("urls.txt")),
+    out_dir=Path("transcripts"),
+    whisper_dir=Path("whisper.cpp"),
+    model="small.en",
+)
+print(result.summary())
+```
+
+## Architecture
+
+`localcaption` is intentionally tiny: an orchestrator (`pipeline.py`) drives
+three single-responsibility stages, each wrapping one external tool. The
+transcribe stage is a small `Backend` protocol; `whisper.cpp` is the default
+implementation and `faster-whisper` is an optional extra. Swapping backends
+does not touch `download.py` or `audio.py`.
+
+### Module map
+
+![Module architecture](docs/diagrams/architecture.png)
+
+| Layer | Files | Responsibility |
+|---|---|---|
+| Entry points | `cli.py`, `__main__.py` | argparse, exit codes, stdout formatting |
+| Orchestration | `pipeline.py`, `batch.py` | public Python API: `transcribe_url(...)`, `transcribe_urls(...)` |
+| Pipeline stages | `download.py`, `audio.py`, `whisper.py`, `backends/`, `summary.py` | download, re-encode, transcribe (pluggable), optional Ollama summary |
+| Chapters & search | `chapters.py`, `index.py` | YouTube chapter sidecars + JSONL search index |
+| Support | `errors.py`, `_logging.py` | exception hierarchy, tiny logger |
+
+### Runtime sequence
+
+End-to-end call flow for a single `localcaption <url>` invocation, including
+the subprocess hops to yt-dlp, ffmpeg, and whisper.cpp. The intermediate
+`.work/` directory is cleaned up at the end unless `--keep-audio` is passed.
+
+![Sequence diagram](docs/diagrams/sequence.png)
+
+> Diagrams live in [`docs/diagrams/`](docs/diagrams) as Mermaid `.mmd` source
+> files alongside the rendered PNGs. Regenerate with:
+> ```bash
+> mmdc -i docs/diagrams/<name>.mmd -o docs/diagrams/<name>.png \
+>   -t default -b white --width 1600 --scale 2
+> ```
+
+## Benchmarks
+
+Wall-clock times for the **complete** pipeline (yt-dlp download → ffmpeg
+re-encode → whisper.cpp transcription), measured with `base.en` (the
+previous default). These have **not** been re-run on `small.en`; expect
+transcription to take longer. Numbers will vary with your network speed
+and CPU/GPU; treat them as order-of-magnitude reference, not a
+competitive benchmark.
+
+| Video | Length | Wall-clock | Speed vs. realtime | Hardware |
+|---|---|---|---|---|
+| [TED-Ed: *How does your immune system work?*](https://www.youtube.com/watch?v=PSRJfaAYkW4) | 5:23   | **7.5 s**  | ~43× | MacBook Pro M4 Pro, 48 GB |
+| [3Blue1Brown: *But what is a Neural Network?*](https://www.youtube.com/watch?v=aircAruvnKk) | 18:40  | **19.3 s** | ~58× | MacBook Pro M4 Pro, 48 GB |
+| [Hasan Minhaj × Neil deGrasse Tyson: *Why AI is Overrated*](https://www.youtube.com/watch?v=BYizgB2FcAQ) | 54:17 | **49.8 s** | ~65× | MacBook Pro M4 Pro, 48 GB |
+
+<details>
+<summary>Reproduce</summary>
+
+```bash
+# Apple Silicon, macOS, whisper.cpp built with Metal,
+# model: ggml-base.en (matches the table above; not the current default),
+# language: auto, no other heavy processes.
+
+time localcaption --model base.en --no-print -o /tmp/lc-bench-1 \
+  "https://www.youtube.com/watch?v=PSRJfaAYkW4"
+
+time localcaption --model base.en --no-print -o /tmp/lc-bench-2 \
+  "https://www.youtube.com/watch?v=aircAruvnKk"
+
+time localcaption --model base.en --no-print -o /tmp/lc-bench-3 \
+  "https://www.youtube.com/watch?v=BYizgB2FcAQ"
+```
+
+If you'd like to contribute numbers from a different machine (Linux + CUDA,
+Windows + WSL, x86 macOS, etc.), open a PR adding a row above with your
+hardware in the **Hardware** column.
+</details>
+
+## Notes
+
+- Bigger models = better quality but slower. `small.en` is the default;
+  use `--model tiny.en` when you want speed over accuracy.
+- Apple Silicon: whisper.cpp's CMake build uses Metal automatically, you'll
+  see `ggml_metal_init` in the logs.
+- The pipeline accepts any URL `yt-dlp` supports (Vimeo, Twitch VODs, Twitter/X,
+  podcast pages, and [1000+ more](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)),
+  not just YouTube.
+- If you hit `HTTP 403 Forbidden`, your `yt-dlp` is probably stale.
+  `pip install -U yt-dlp` usually fixes it.
+
+## Roadmap
+
+The roadmap lives on GitHub Issues so it's easy to track, comment on, and
+contribute to:
+
+👉 **[Open roadmap items](https://github.com/jatinkrmalik/localcaption/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)**
+
+A snapshot of what's planned (click through for full descriptions, acceptance
+criteria, and discussion):
+
+| # | Item | Labels |
+|---|---|---|
+| [#7](https://github.com/jatinkrmalik/localcaption/issues/7) | `localcaption model {list,download,rm,info}` subcommand | _shipped in v0.2.0_ ✅ |
+| [#2](https://github.com/jatinkrmalik/localcaption/issues/2) | Batch mode (`--batch urls.txt`) | _shipped in v0.4.0_ ✅ |
+| [#3](https://github.com/jatinkrmalik/localcaption/issues/3) | Local auto-summary via Ollama (`--summary`) | _shipped in v0.4.0_ ✅ |
+| [#4](https://github.com/jatinkrmalik/localcaption/issues/4) | Speaker diarization with pyannote.audio (`--diarize`) | `stretch`, `help wanted` |
+| [#5](https://github.com/jatinkrmalik/localcaption/issues/5) | YouTube chapters & grep-able search index | _shipped in v0.4.0_ ✅ |
+| [#6](https://github.com/jatinkrmalik/localcaption/issues/6) | Pluggable transcription backends (faster-whisper / MLX) | _faster-whisper shipped in v0.4.0_ ✅ |
+| [#1](https://github.com/jatinkrmalik/localcaption/issues/1) | Switch default model from `base.en` to `small.en` | _shipped in v0.4.0_ ✅ |
+
+**Have an idea?** Open a
+[feature request](https://github.com/jatinkrmalik/localcaption/issues/new/choose),
+or jump into [Discussions](https://github.com/jatinkrmalik/localcaption/discussions)
+if you want to chat about it first.
+
+## FAQ
+
+**Does it need an OpenAI API key?**
+No. Whisper runs locally via whisper.cpp or faster-whisper.
+
+**Does audio leave my machine?**
+No, except the download of a URL you asked for. Transcription and optional Ollama summaries stay on localhost.
+
+**YouTube only?**
+No. Any site [yt-dlp supports](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) (Vimeo, Twitch, Twitter/X, podcasts, and many more), plus local video and audio files.
+
+**Does it write SRT and VTT?**
+Yes. Each run writes `.txt`, `.srt`, `.vtt`, and `.json`.
+
+**Windows?**
+macOS and Linux are the supported platforms (`doctor --fix` uses Homebrew or apt). Native Windows is not supported. WSL is the realistic path if you are on Windows.
+
+## Related projects
+
+`localcaption` deliberately stays tiny. If you want more, check out:
+
+- [`whishper`](https://github.com/pluja/whishper): full web UI for local
+  transcription with translation and editing.
+- [`transcribe-anything`](https://github.com/zackees/transcribe-anything):
+  multi-backend, Mac-arm optimised, supports URLs.
+- [`WhisperX`](https://github.com/m-bain/whisperX): word-level timestamps and
+  diarisation on top of openai-whisper.
+
+## Contributing
+
+Pull requests welcome! See [CONTRIBUTING.md](CONTRIBUTING.md). By
+participating you agree to abide by our
+[Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE).

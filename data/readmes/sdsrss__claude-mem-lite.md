@@ -1,0 +1,1201 @@
+[English](README.md) | [中文](README.zh-CN.md)
+
+# claude-mem-lite
+
+`claude-mem-lite` is a **persistent memory** (also called *long-term memory* or *cross-session context*) system for **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** — Anthropic's CLI coding agent. It runs as an **[MCP](https://modelcontextprotocol.io/) server** plus a set of Claude Code hooks, automatically capturing coding observations, decisions, and bug fixes during sessions, then providing full-text search with query expansion to recall them later.
+
+Compared to general-purpose LLM memory frameworks like [`mem0`](https://github.com/mem0ai/mem0) or the MCP reference [`memory`](https://github.com/modelcontextprotocol/servers/tree/main/src/memory) server, claude-mem-lite is purpose-built for Claude Code's hook lifecycle: episode batching cuts LLM calls 7–10× vs the original [claude-mem](https://github.com/thedotmack/claude-mem) (an estimated ~600× lower total cost — see the cost model below; this is an architecture estimate, not a measured benchmark), while the FTS5 retriever benchmarks at 0.90 Recall@10 / 0.85 Precision@10
+(see [Search Quality](#search-quality) for the reproduction command).
+
+> 中文简介：claude-mem-lite 是 Claude Code 的轻量级**持久化记忆 / 长期记忆 / 跨会话上下文**插件，基于 MCP 协议 + 钩子机制，自动捕获编码会话中的决策、修复和上下文，并通过 FTS5 全文检索召回。详见 [中文 README](README.zh-CN.md)。
+
+Zero external services. Single SQLite database. Minimal overhead.
+
+## Why claude-mem-lite?
+
+A ground-up redesign of [claude-mem](https://github.com/thedotmack/claude-mem), replacing its heavyweight architecture with a smarter, leaner approach.
+
+### Architecture comparison
+
+| | claude-mem (original) | claude-mem-lite |
+|---|---|---|
+| **LLM calls** | Every tool use triggers a Sonnet call | Only on episode flush (5-10 ops batched) |
+| **LLM input** | Raw `tool_input` + `tool_output` JSON | Pre-processed action summaries |
+| **Conversation** | Multi-turn, accumulates full history | Stateless single-turn extraction |
+| **Noise filtering** | LLM decides via "WHEN TO SKIP" prompt | Deterministic code-level Tier 1 filter |
+| **Runtime** | Long-running worker process (1.8MB .cjs) | On-demand spawn, exits immediately |
+| **Dependencies** | Bun + Python/uv + Chroma vector DB | Node.js only (3 npm packages) |
+| **Source size** | ~2.3MB compiled bundles | ~50KB readable source |
+| **Data directory** | `~/.claude-mem/` | `~/.claude-mem-lite/` (hidden, auto-migrates) |
+
+### Token & cost efficiency
+
+For a typical 50-tool-call session (illustrative cost model — the ratios below are
+architecture estimates derived from batch size, token counts, and model pricing, **not**
+a measured end-to-end benchmark):
+
+| | claude-mem | claude-mem-lite | Ratio (estimated) |
+|---|---|---|---|
+| LLM calls | ~50 (every tool use) | ~5-8 (per episode) | **~7-10x fewer** |
+| Tokens per call | 1,000-5,000 (raw JSON + history) | 200-500 (summaries only) | **~5-10x smaller** |
+| Total tokens | ~100K-250K | ~1K-4K | **~50-100x less** |
+| Model cost | Sonnet ($3/$15 per M) | Haiku ($0.25/$1.25 per M) | **~12x cheaper** |
+| Combined savings | | | **~600x lower cost (estimated)** |
+
+### Quality comparison
+
+| Dimension | Winner | Why |
+|---|---|---|
+| **Classification accuracy** | Tie | Both produce correct type/title/narrative |
+| **Noise filtering** | **lite** | Code-level filtering is deterministic; LLM "WHEN TO SKIP" is unreliable |
+| **Observation coherence** | **lite** | Episode batching groups related edits into one coherent observation |
+| **Code-level detail** | original | Sees full diffs, but rarely useful for memory search |
+| **Search recall** | Tie | Users search semantic concepts ("auth bug"), not code lines |
+| **Hook latency** | **lite** | Async background workers; original blocks 2-5s per hook |
+
+### Design philosophy
+
+The original sends **everything to the LLM and hopes it filters well**. claude-mem-lite **filters first with code, then sends only what matters** to a smaller model. This is not a downgrade; it's a smarter architecture that produces equivalent search quality at a fraction of the cost.
+
+### Comparison: memory systems for AI coding agents
+
+How claude-mem-lite differs from the major neighbors in the LLM-memory space (verified May 2026):
+
+| | **claude-mem-lite** | [`mem0`](https://github.com/mem0ai/mem0) | MCP reference [`memory`](https://github.com/modelcontextprotocol/servers/tree/main/src/memory) | [claude-mem](https://github.com/thedotmack/claude-mem) (original) |
+|---|---|---|---|---|
+| **Target client** | Claude Code only | Any LLM app via SDK | Any MCP client | Claude Code only |
+| **Capture model** | Auto via hooks | Manual `memory.add()` | Manual tool calls (`create_entities`, `add_observations`) | Auto via hooks |
+| **Code-aware retrieval** | FTS5 + 100+ synonym pairs (incl. CJK↔EN) | General-purpose | Generic graph nodes | Code-aware |
+| **Search** | FTS5 BM25 + query expansion (PRF, concept co-occurrence) | Hybrid: semantic + BM25 + entity linking | Knowledge-graph traversal | FTS5 + Chroma vector |
+| **Storage** | Single local SQLite | Pluggable; Qdrant or configurable vector store | Single JSONL file (knowledge graph) | SQLite + Chroma |
+| **LLM dependency** | Haiku per episode (5–10 ops batched) | LLM per add/search op | None (graph CRUD only) | Sonnet per tool call |
+| **Setup** | One command (`/plugin install` or `npx`) | SDK integration + vector store config | MCP install (per-client) | Bun + Python + Chroma |
+
+**When to pick which**: pick `mem0` if you need a memory layer for a non-Claude-Code app (your own agent, multiple LLM providers). Pick the MCP reference `memory` server if you specifically want a knowledge-graph data model and don't mind invoking memory tools by hand. Pick claude-mem-lite if you want zero-touch automatic capture purpose-built for Claude Code's hook lifecycle, with code-domain retrieval and no external services.
+
+## Features
+
+- **Automatic capture** -- Hooks into the Claude Code lifecycle (SessionStart, PreCompact, PreToolUse, PostToolUse, PostToolUseFailure, Stop, UserPromptSubmit — the seven events in `hooks/hooks.json`) to record observations without manual effort
+- **Lexical search with query expansion** -- FTS5 BM25 scoring, an AND->OR rescue pass, pseudo-relevance feedback and concept co-occurrence. A TF-IDF vector arm shipped alongside it until it was measured net-negative and removed; `--deep` still fuses multiple LLM-rewritten queries with Reciprocal Rank Fusion
+- **Timeline browsing** -- Navigate observations chronologically with anchor-based context windows
+- **Episode batching** -- Groups related file operations into coherent episodes before LLM encoding
+- **Error-triggered recall** -- Automatically searches memory when Bash errors occur, surfacing relevant past fixes
+- **Proactive file history** -- When editing a file, automatically shows relevant past observations for that file
+- **Session summaries** -- written at every Stop (the assistant's final report when it has Done / Not done sections, else — when the final reply has no report section at all — its first 120 characters, else the first prompt and recent observation titles), then upgraded by a background model summary when the session has observations
+- **Project-scoped context** -- Injects recent memory into `CLAUDE.md` and session startup for immediate context
+- **Observation types** -- Categorized as `decision`, `bugfix`, `feature`, `refactor`, `discovery`, or `change`
+- **Importance grading** -- LLM assigns 1-3 importance levels (routine / notable / critical) to each observation
+- **Observation relations** -- Bidirectional links between related observations based on file overlap
+- **User prompt capture** -- Records user prompts via UserPromptSubmit hook for intent tracking
+- **Read file tracking** -- Tracks files read during sessions for richer episode context
+- **Degraded fallback when the LLM fails** -- An episode the deterministic rules already rate notable (an error fixed, a config or schema file changed) is saved with inferred metadata instead of being discarded. A routine edit the rules rate as noise (`Modified a.js, b.js` with no lesson) is dropped — as it is when the model answers without a lesson — so a failing provider loses those episodes; `claude-mem-lite doctor` warns when the `claude` CLI it would call does not resolve
+- **Two-tier dedup** -- Jaccard similarity (5-minute window) + MinHash signatures (7-day cross-session window) prevent duplicates
+- **Synonym expansion** -- Abbreviations like `K8s`, `DB`, `auth` automatically expand to full forms in FTS5 search (100+ pairs including CJK↔EN cross-language mappings)
+- **CJK synonym extraction** -- Unsegmented Chinese text is scanned for known vocabulary words (数据库→database, 搜索→search, etc.) enabling cross-language memory recall
+- **Stop-word filtering** -- English stop words filtered from FTS queries, preventing false negatives from noise terms like "how", "the", "does"
+- **Pseudo-relevance feedback (PRF)** -- Top results seed expansion queries for broader recall
+- **Concept co-occurrence** -- Shared concepts across observations expand search to related topics
+- **Context-aware re-ranking** -- Active file overlap boosts relevance (exact match + directory-level half-weight)
+- **Superseded detection** -- Marks older observations as outdated when newer ones cover the same files with higher importance
+- **Adaptive time windows** -- Session startup recall uses velocity-based time windows (high/medium/low activity tiers)
+- **Token-budgeted context** -- Greedy knapsack algorithm selects session-start context within a 2,000-token budget, prioritizing by recency and importance
+- **Observation compression** -- Old low-value observations can be compressed into weekly summaries to reduce noise
+- **Secret scrubbing** -- Automatic redaction of API keys, tokens, PEM blocks, connection strings, and 15+ credential patterns
+- **Atomic writes** -- All file writes (episodes, CLAUDE.md) use write-to-tmp + rename to prevent corruption on crash
+- **Robust locking** -- PID-aware lock files with automatic stale/orphan cleanup (>30s timeout or dead PID)
+- **Stale session cleanup** -- Sessions active for >24h are automatically marked as abandoned on next start
+- **Domain synonym expansion** -- Search queries expand to domain synonyms (e.g., "fix" → debug, bugfix, troubleshoot, diagnose, repair)
+- **Multi-provider LLM mode** -- Provider priority `ANTHROPIC_API_KEY` (direct Anthropic API) → `OPENROUTER_API_KEY` (OpenRouter, OpenAI-compatible — point it at any model via `OPENROUTER_MODEL`) → `claude -p` CLI fallback when no key is set
+- **Lesson-learned indexing** -- `lesson_learned` field indexed in FTS5 with weight 8, making past debugging insights directly searchable
+- **Cross-source normalization** -- `mem_search` normalizes scores across observations, sessions, and prompts before merging, preventing any source from dominating results
+- **Exponential recency decay** -- Type-differentiated half-lives (decisions: 90d, discoveries: 60d, bugfixes: 14d, changes: 7d) consistently applied in all ranking paths
+- **Prompt-time memory injection** -- UserPromptSubmit hook automatically searches and injects relevant past observations with recency and importance weighting
+- **Dual injection dedup** -- `user-prompt-search.js` and `handleUserPrompt` coordinate via temp file to prevent duplicate memory injection
+- **Plugin cache hook self-heal** -- Claude Code runtime reads plugin hooks from `~/.claude/plugins/cache/<mp>/<plugin>/<ver>/hooks/hooks.json`, not from the marketplace source. When `install.mjs`-managed `settings.json` hooks coexist with a stale cache `hooks.json` (e.g. from a previous marketplace install or a plugin auto-update), the runtime registers hooks twice → every session start / user prompt fires twice. `install.mjs` and `hook-update.mjs` now clear cache `hooks.json` in every version dir, and `hook.mjs session-start` self-heals on every session (gated by `hasInstallManagedHooks` so plugin-only users are not affected). `install.mjs status` reports cache pollution state (since v2.31.1/2.31.2).
+- **Result-dedup cooldown** -- User-prompt memory injection uses result-overlap detection (>80% ID overlap → skip) instead of time-based cooldown, allowing topic switches within seconds while preventing redundant injections
+- **OR query fallback** -- When AND-joined FTS5 queries return zero results, automatically relaxes to OR-joined queries for broader recall (applied in both user-prompt-search and hook-memory paths)
+- **Configurable LLM model** -- Switch between Haiku (fast/cheap) and Sonnet (deeper analysis) via `CLAUDE_MEM_MODEL` env var
+- **DB auto-recovery** -- Detects and cleans corrupted WAL/SHM files on startup; periodic WAL checkpoints prevent unbounded growth
+- **Schema auto-migration** -- Idempotent `ALTER TABLE` migrations run on every startup, safely adding new columns and indexes without data loss
+- **LLM concurrency control** -- File-based semaphore limits background workers to 2 concurrent LLM calls, preventing resource contention
+- **stdin overflow protection** -- Hook input truncated at 256KB with regex-based action salvage for oversized tool outputs
+- **Cross-session handoff** -- Captures session state on `/exit` and `/clear`, then injects context when the next session detects continuation intent
+  <br>**Changed in v6.10.0**: the injected block went from two sections to six. Its observation queries were keyed on the hook-minted session id while every `mem_save` writes a `manual-<project>` id, so `completed` and `key_decisions` could not reach a saved lesson at all — 17 of 17 stored rows held 0 bytes in both. The block now also carries `## Tree state` (branch, short sha, uncommitted count) and `## Next steps`, read from the project's newest `tasks/<slug>-paused.md` when it is under a week old. Four additive nullable columns land on `session_handoffs`; the schema version deliberately does not move, so an older build still opens the database (measured: the v6.9.1 tree read and wrote a database this release had migrated). Revert by pinning `claude-mem-lite@6.9.1` — no data-directory work.
+  <br>Original behaviour and the measurements behind it via explicit keywords or FTS5 term overlap. **The `/clear` and `/compact` arm fires since v5.4.0** (R10-P1-1); before that it had never once written a row — `session_handoffs` on the maintainer's install held 4 `exit` rows and **0** `clear` rows. Two host facts settled it, both measured rather than assumed. (1) `Stop` runs at the end of every assistant *turn*, not once per session, and it deleted the session file that SessionStart reads to learn which session just ended — so the branch was unreachable, and mem sessions were minted per turn (58 prompts over 16 host sessions produced 56 mem sessions and 56 summary rows, 2026-09-07). (2) Claude Code **rotates its session id across `/clear`**: of 21 real transcripts, 12 carry a `/clear` command record, and in 12/12 that record's timestamp precedes its own file's first record by ~0.1s — the command is issued in the old session and replayed into a new file under a new id. So `Stop` no longer deletes the file, SessionStart asks the host's `source` (`startup`/`clear`/`compact`/`resume`) instead of guessing from the file, and the handoff's prompt lookup falls back to the unscoped set when the new session's id matches none. Revert path: `CLAUDE_MEM_LEGACY_STOP_UNLINK=1`
+- **Git-SHA continuation anchor** (v2.31.0) -- Handoff rows include `git_sha_at_handoff`; any handoff matching the current `HEAD` counts as continuation regardless of TTL. Code state is a stronger continuation signal than wall-clock time
+- **Startup dashboard** (v2.31.0) -- SessionStart hook aggregates `git status` + `~/.claude/tasks/*.json` + `~/.claude/plans/*.md` + most-recent exit handoff + recent event count into a single structured block injected via `hookSpecificOutput.additionalContext`
+- **Activity namespace** (v2.31.0) -- Dedicated `events` table + FTS5 for non-memdir types (`bugfix`, `lesson`, `bug`, `discovery`, `refactor`, `feature`, `observation`, `decision`) that don't compete with `WHAT_NOT_TO_SAVE` semantics on the observations table. CLI: `claude-mem-lite activity save|search|recent|show`. `hook-llm` routes non-memdir summary types through `persistHaikuSummary` so upgrades from observations→events are atomic. (v3.39: the `/lesson` and `/bug` slash commands were redirected from this events table to searchable **observations** — `mem_search` never read the events table, so explicit saves were unfindable; the events table remains the auto-capture activity log.)
+- **In-place observation updates** -- `mem_update` tool modifies existing observations atomically (field update + FTS text rebuild in one transaction), preserving original IDs and references
+- **Bulk export** -- `mem_export` tool exports observations as JSON or JSONL, with project/type/date filtering and 1000-row pagination cap with batch guidance
+- **FTS integrity management** -- `mem_fts_check` tool verifies FTS5 index health or rebuilds indexes on demand, useful after database recovery or when search results seem wrong
+- **Atomic multi-table writes** -- `saveObservation` wraps the observations + observation_files INSERTs in a single `db.transaction()`, preventing orphaned rows on crash
+- **Modular NLP pipeline** -- Synonym maps, stop words, scoring constants, and query building extracted into focused modules (`synonyms.mjs`, `stop-words.mjs`, `scoring-sql.mjs`, `nlp.mjs`) for independent testing and maintenance
+- **Surface-form PRF expansion** -- `observations_fts` is built on FTS5's default `unicode61` tokenizer, so the index is **not stemmed**: a query term matches the word forms actually stored, and `crash` does not match a row that only contains `crashes`. Pseudo-relevance feedback therefore uses the Porter stemmer only to *bucket* morphological variants when judging which candidate terms are discriminative, and emits the most frequent **surface** form of each — emitting a bare stem (`cach`) would match nothing and kill expansion recall
+
+## Platform Support
+
+| Platform | Status | Notes |
+|----------|--------|-------|
+| **Linux** | Supported | Primary development and testing platform; the whole CI matrix runs here |
+| **macOS** | Supported | Fully compatible (Intel and Apple Silicon) |
+| **Windows** | Installs, not CI-covered | The MCP server, the CLI and the `node` hooks work (`better-sqlite3` ships `win32-x64` and `win32-arm64` prebuilds, so nothing is compiled). **Four hook commands run under `bash`** — `setup.sh`, `post-tool-use.sh`, `pre-agent-inject.sh`, `pre-tool-recall-bash.sh` — and need Git for Windows or WSL on `PATH`; `claude-mem-lite doctor` reports it when `bash` cannot be found. No GitHub Actions runner exercises Windows, so this rests on user reports ([#28](https://github.com/sdsrss/claude-mem-lite/issues/28)), not on a green pipeline |
+| **WSL2** | Untested | Linux under the hood, so it should behave as the Linux row; nobody has reported either way |
+
+From v5.1.0 through v6.1.0, `package.json` declared `os: ["darwin", "linux"]`. That is an npm *install*
+gate, not a runtime check: on Windows it made `npm install` exit `EBADPLATFORM`, which the
+plugin launcher runs on the first MCP start after every plugin update — so the server never
+came up and `/mcp` reported `CONNECTION_CLOSED`. `win32` is now in the list. A platform that
+is still outside it gets a message naming both sides of the mismatch instead of a guess.
+
+## Requirements
+
+- **Node.js** >= 22
+- **Claude Code** CLI installed and configured (`claude` command available)
+- **SQLite3** support (provided by `better-sqlite3` 13, which ships prebuilt binaries for 8 platforms — no compiler needed on any of them; a platform it has no prebuild for falls back to building from source)
+- **Platform**: Linux or macOS; Windows installs and runs but is not CI-covered and needs Git Bash or WSL for four hooks (see [Platform Support](#platform-support))
+
+## Installation
+
+### Method 1: Plugin Marketplace (recommended)
+
+```bash
+/plugin marketplace add sdsrss/claude-mem-lite
+/plugin install claude-mem-lite
+```
+
+Plugin mode manages its own hooks/runtime. On session start it only **checks and reports** new claude-mem-lite versions; it does **not** self-overwrite plugin files in place. Update plugin-mode installs through Claude's plugin workflow.
+
+> **The plugin install is complete on its own** — hooks, MCP tools, and the bundled slash commands (`/mem`, `/lesson`, `/bug`, `/adopt`) all run from the plugin with no second step. The slash commands invoke the bundled CLI by an absolute path resolved from the plugin directory (`node "${CLAUDE_PLUGIN_ROOT}/cli.mjs" <cmd>`), so they work without anything on your `PATH`. A global `claude-mem-lite` **shell** command (for running queries yourself in a terminal) is **optional** — `npm i -g claude-mem-lite` — and is a *separate* npm install: the plugin's auto-update does **not** refresh it, so re-run `npm i -g claude-mem-lite@latest` if you want that shell command kept in sync. You do **not** need it for the plugin to be fully functional.
+
+> **Auto-adopt no longer adds its block to your project's `CLAUDE.md` (next release after 6.19.4).** On every SessionStart the plugin delivers its steering text — the trigger table that boosts Claude's proactive use of `mem_recall` / `mem_save`. In a git repository that does not already carry the block it keeps a managed block in `CLAUDE.local.md` at the repository root (Claude Code loads that file like `CLAUDE.md`, also in subagents that load project instructions; the built-in Explore and Plan agents load none) and adds the file to the repository's `.git/info/exclude` unless your ignore rules already cover it, so git does not list or commit it; you get a **one-time notice** the first time it is written. Claude Code reads instruction files before the plugin's startup hook runs, so the session that creates the file gets the text added to its context instead, once (its subagents do not see it). Where Claude Code reads an `AGENTS.md` as the project's instructions, it stops reading it once a `CLAUDE.md` or `CLAUDE.local.md` exists in the session's directory or above, so there nothing is written and the text is **injected** (subagents do not see it), with a one-time notice that names that `AGENTS.md`. With `CLAUDE_MEM_RULES_STEERING=1` the block goes to `.claude/rules/claude-mem-lite.md` at the repository root instead — excluded from git the same way, loaded by Claude Code as project instructions, also in subagents that load project instructions, and it leaves `AGENTS.md` loading — with its own one-time notice; it is not the default because in a pre-registered A/B it did not beat injection by the bar set in advance (`docs/audits/20261006-d212-ab.md`). Outside git, in a repository rooted at `$HOME`, where `CLAUDE.local.md` is tracked or a symbolic link, or where the repository root is an npm package that `npm publish` would ship it with (no `"private": true`, no `files` list leaving it out, and without one no `.npmignore` naming it), nothing is written and the text is **injected** into each session's context, with a one-time notice suggesting `/adopt` (not at `$HOME`). With the variable set, the same holds where the rules file cannot be written (a symbolic link on its path, a tracked or foreign file of that name, an npm package that would ship it). The notice beside an `AGENTS.md` names it, why there is no file, and the ways to a file that keep it loading, each only where it works: Project instructions = `claude-md-and-agents-md` in `/config`, after which `CLAUDE.local.md` is written (not where `CLAUDE.local.md` is refused too: a package root, or a file you removed), and `/adopt`, whose `CLAUDE.md` imports the `AGENTS.md` beside it (not offered when an `AGENTS.md` above that directory or in a subdirectory would stop loading). The detail file the block points at lives in the plugin's data directory, named with a `~/` path. `.git/info/exclude` is read by git only: docker build contexts, archives and other packagers can pick `CLAUDE.local.md` or the rules file up (a publishable npm package root does not keep `CLAUDE.local.md`: a block written before is taken out at the next session start; in a project whose `AGENTS.md` it would switch off, the block comes out and is injected, or, with `CLAUDE_MEM_RULES_STEERING=1`, moves to the rules file where that can be written). Earlier versions added the block to your project's own `<cwd>/CLAUDE.md` (a file that is normally committed) plus a `<cwd>/.claude/plugin_claude_mem_lite.md` detail file, unasked, in every project you opened; those projects keep the block, and the first session of this version refreshes it because the text changed — to move one to the local file, run `claude-mem-lite unadopt` there and commit the removal. Why not inject everywhere: in our sandbox evaluation (one project, Claude Opus 5.5) the agent made 1.5 proactive memory saves per 8-session run with injected steering against 5.25 with the block in `CLAUDE.local.md` or `CLAUDE.md`, and subagents never saw injected text. It applies regardless of install path (npm, npx, `/plugin`, manual); silence these notices with `MEM_NO_ADOPT_HINT=1`.
+>
+> **Want the block in `CLAUDE.md` instead** (for example to share it with your team)? Run `claude-mem-lite adopt`: it writes the slug-scoped managed block into `<cwd>/CLAUDE.md` plus the detail file, preserving everything outside the block, and removes the auto-written local copy (`CLAUDE.local.md` or the rules file). Claude Code stops reading `AGENTS.md` once a `CLAUDE.md` exists, so a `CLAUDE.md` that adopt creates next to an `AGENTS.md` (or `.claude/AGENTS.md`) starts by importing it (`@AGENTS.md`, behind a marker comment Claude Code does not load), and that file keeps loading; an `AGENTS.md` above the directory or tracked below it cannot be imported that way and is named in adopt's output, with the setting that keeps it (Project instructions = `claude-md-and-agents-md`). Nothing is imported where a `CLAUDE.md` of yours already exists, since `AGENTS.md` was not being read there. `unadopt` deletes a `CLAUDE.md` that holds nothing but those lines and the block. A project that carries the block is kept in sync on **every SessionStart** — refreshed when the shipped template changes — and gets no local or injected copy on top of it, also in sessions started from a subdirectory. A `CLAUDE.md` holding nothing but the block (what an earlier version's auto-adopt wrote) gets the same `AGENTS.md` import at the next session started in its directory, with a one-time notice. Seen from a session started in a subdirectory, the import points outside the working directory, so Claude Code asks once to approve it. A local block (`CLAUDE.local.md` or the rules file) the plugin created and you deleted (or `claude-mem-lite unadopt` removed) is not written back — the text is injected instead — until `claude-mem-lite adopt --enable` (beside an `AGENTS.md` that `CLAUDE.local.md` would switch off, a file comes back only with `CLAUDE_MEM_RULES_STEERING=1` too). Turn steering off per project with `claude-mem-lite adopt --disable` (it also removes the local block; a `CLAUDE.md` block stays until `unadopt`; `--enable` re-arms) or globally with `export MEM_NO_AUTO_ADOPT=1` (blocks already written stay and keep loading until `unadopt`); freeze the blocks against template refreshes with `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1`. `claude-mem-lite unadopt` removes the `CLAUDE.md` block, the detail file, and the local block (`CLAUDE.local.md` or `.claude/rules/claude-mem-lite.md`) with its exclude entry.
+
+### Method 2: npx (one-liner)
+
+```bash
+npx github:sdsrss/claude-mem-lite
+```
+
+Source files are automatically copied to `~/.claude-mem-lite/` for persistence.
+
+> **Note:** `npx github:…` installs from the repo's **default branch (HEAD)**, which can be ahead of the latest published release. For the stable released version use the npm package (`npx claude-mem-lite`), or pin a release tag: `npx github:sdsrss/claude-mem-lite#vX.Y.Z`.
+
+### Method 3: git clone
+
+```bash
+git clone https://github.com/sdsrss/claude-mem-lite.git
+cd claude-mem-lite
+node install.mjs install
+```
+
+`install` copies the source files to `~/.claude-mem-lite/`, as the npx method does. Update with `node install.mjs update`, which installs the latest signed release. `git pull && node install.mjs install` installs the checked-out branch instead: it can be ahead of the latest release, and no signature is checked.
+
+### What happens during installation
+
+1. **Install dependencies** -- `npm install --omit=dev` (compiles native `better-sqlite3`)
+2. **Register MCP server** -- `mem-lite` server with 19 tool definitions (10 core + 9 hidden-but-callable; `mem_search_feedback` is registered only when search telemetry is enabled). The pre-v2.78 generic server name `mem` is renamed to `mem-lite` for namespace hygiene; the tool names themselves (`mem_search`, `mem_recall`, ...) are unchanged.
+3. **Configure hooks** -- all seven lifecycle events: `SessionStart`, `PreCompact`, `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Stop`, `UserPromptSubmit`
+4. **Create data directory** -- `~/.claude-mem-lite/` (hidden) for database, runtime, and managed resource files
+5. **Auto-migrate** -- If `~/.claude-mem/` (original claude-mem) or `~/claude-mem-lite/` (pre-v0.5 unhidden) exists, migrates database and runtime files to `~/.claude-mem-lite/`, preserving the original untouched
+6. **Initialize database** -- SQLite with WAL mode, FTS5 indexes created on first server start
+
+Restart Claude Code after installation to activate.
+
+### Migration
+
+All installation methods auto-detect and migrate from previous versions:
+
+**From claude-mem (original `~/.claude-mem/`):**
+- Copy `claude-mem.db` → `~/.claude-mem-lite/claude-mem-lite.db` (renamed)
+- Copy the `runtime/` directory
+- **Original `~/.claude-mem/` is preserved** (no deletion, no overwrite)
+
+**From pre-v0.5 unhidden directory (`~/claude-mem-lite/`):**
+- Entire directory is moved to `~/.claude-mem-lite/` (hidden)
+
+**In-place rename:**
+- Existing `claude-mem.db` in `~/.claude-mem-lite/` is automatically renamed to `claude-mem-lite.db`
+
+Remove old directories manually after confirming:
+```bash
+rm -rf ~/.claude-mem/       # original claude-mem
+rm -rf ~/claude-mem-lite/   # pre-v0.5 unhidden (if not auto-moved)
+```
+
+### Directory Structure
+
+```
+~/.claude-mem-lite/
+  claude-mem-lite.db       # SQLite database — memory (WAL mode)
+  runtime/
+    session-<project>    # Active session state
+    ep-<project>.json    # Episode buffer
+    ep-flush-*.json      # Flushed episodes awaiting processing
+    reads-<project>.txt  # Read file paths (collected on flush)
+  managed/
+    repos/               # Shallow-cloned source repos
+```
+
+## Upgrading to 6.25.0
+
+**Every session gets the same first line on a file-recall block again.** No schema-version
+change: 6.24.0 still opens the database after this release has.
+
+- **What changes.** Since 6.16.0 half of sessions got a plain statement of where the notes come
+  from instead of "system-injected context, continue your planned action", so the two could be
+  compared by how often the agent cited a lesson. On the maintainer's own sessions the comparison
+  found no difference it could detect, and a scan of the agent's replies found neither line
+  surfaced to the user, so the split is closed: unset now means the older line in every session.
+  `CLAUDE_MEM_RECALL_FRAMING=factual` keeps the plain statement; `=ab` restores the split.
+- **Also in this release:** when the data directory cannot be read, `doctor` says "not checked"
+  for what it could not look at and `status` names the directory, instead of reporting a missing
+  or empty store. `maintain execute --ops dedup` names the merge pairs it skips. Details in
+  CHANGELOG.md.
+
+## Upgrading to 6.24.0
+
+**If you set `CLAUDE_CONFIG_DIR`, the installer, updates and hooks now use that directory, as
+Claude Code does.** No schema-version change: 6.23.3 still opens the database after this
+release has. Without `CLAUDE_CONFIG_DIR` nothing in this item changes.
+
+- **Who is affected.** Claude Code keeps `settings.json`, `plugins/` and `.claude.json` in
+  `CLAUDE_CONFIG_DIR` when it is set. The plugin kept using `~/.claude` and `~/.claude.json`:
+  `install` wrote its hooks where Claude Code never reads them, and with two profiles the
+  session-start setup and `self-update` pruned the other profile's plugin cache and edited its
+  `.claude.json`.
+- **What to do.** Installed with npm or npx: run `claude-mem-lite install` once more with the
+  variable set, so the hooks land in your config directory. Plugin installs need nothing. Hook
+  entries an older version wrote into `~/.claude/settings.json` stay there; if no other profile
+  uses `~/.claude`, `env -u CLAUDE_CONFIG_DIR claude-mem-lite cleanup-hooks` removes them.
+- **Also in this release:** `npm install -g claude-mem-lite` and `npx` no longer install the
+  development toolchain. As a dependency install it went from 298 packages / 541 MB to 96 / 57 MB;
+  after the release, `-g` and `npx` measured the same 96 packages. A confirmed
+  `maintain execute --ops purge_stale` now deletes every row its preview counted in one run,
+  behind one snapshot. `doctor` warns about a failing update check and about an
+  `ANTHROPIC_BASE_URL` that ends in `/v1`. Details in CHANGELOG.md.
+
+## Upgrading to 6.23.1
+
+**If you set `ANTHROPIC_BASE_URL` and `ANTHROPIC_API_KEY`, background LLM calls now go to that
+gateway.** No schema-version change: 6.22.1 still opens the database after this release has.
+To keep the old behaviour, stay on 6.22.1; a plugin install that already updated can follow the
+rollback recipe under "Trust model per install path".
+
+- **Who is affected.** The direct API leg used to post to `api.anthropic.com` with the built-in
+  model IDs whatever `ANTHROPIC_BASE_URL` said; only the `claude -p` fallback followed it. Now
+  the direct leg uses it too, together with `ANTHROPIC_DEFAULT_HAIKU_MODEL` /
+  `ANTHROPIC_DEFAULT_SONNET_MODEL`. Without `ANTHROPIC_BASE_URL` nothing changes, even when the
+  two model variables are set.
+- **A value the plugin cannot use** (not a parseable URL, not http or https, plain http to a
+  host that is not loopback, credentials in the URL, a query or a fragment) skips the direct
+  leg: every background call falls back to `claude -p`, which reads `ANTHROPIC_BASE_URL` itself,
+  and `claude-mem-lite doctor` says why. `doctor` now probes the gateway's host and port instead
+  of `api.anthropic.com`.
+- **Also in this release:** large stores no longer time out on every prompt. The database now
+  gets SQLite's planner statistics, which adds SQLite's own `sqlite_stat1` / `sqlite_stat4`
+  tables. And `CLAUDE_MEM_SEARCH_TELEMETRY=1` is a new, off-by-default switch that records MCP
+  searches for relevance feedback. Details in CHANGELOG.md.
+
+## Upgrading to 6.21.0
+
+**Projects whose names are not plain ASCII get a new id, and what they stored moves once.** No
+schema-version change: 6.20.0 still opens the database after this release has. Pin
+`claude-mem-lite@6.20.0` before upgrading to avoid the move; after it, 6.20.0 names these
+directories by their old ids again, so their moved rows are listed only with
+`--project <new id>`.
+
+- **Which projects.** Every character outside ASCII letters, digits and `_.-` used to become `-`,
+  so `~/projects/博客` and `~/projects/商城` were both `projects----` and shared one memory.
+  Letters, marks and digits of every script are now kept (`projects--博客`). An id whose parent
+  and directory names are both plain ASCII keeps its id byte for byte; a name with letters,
+  marks or digits of another script, or with a character outside the Basic Multilingual Plane
+  such as `🚀`, changes id.
+- **At a project's first session start its data moves.** When no stored file path shows another
+  directory using the old id, the project takes everything under it, deferred items and session
+  history included. Otherwise only the memories whose file paths lie inside the directory move;
+  the rest stay under the old id. A one-time notice says what moved and how to list what stayed
+  (`claude-mem-lite recent 50 --project <old id>`).
+- **Not in this release:** directories with the same parent and name in different repositories
+  (`~/a/packages/api` and `~/b/packages/api`) still share one id.
+- **Also changed:** two sessions open in one project keep separate memory sessions (handoffs,
+  summaries and unsaved tool activity no longer mix); a session's follow-up prompts no longer
+  resume another session; maintenance hides idle memories for 7 days before queuing them for
+  deletion, in every project; an importance you set is no longer changed by reads, the access
+  boost or re-enrich; `recall` / `mem_recall` rank the current project and the exact path first
+  (`--project` / `project` keep one project); `<private>` fails closed on an unclosed, nested or
+  attributed tag. Full list: CHANGELOG.md.
+
+## Upgrading to 6.19.0
+
+**Search output changes; no switch.** No schema change and no migration, so reverting is
+pinning `claude-mem-lite@6.18.0`.
+
+- **`search` / `mem_search` mark machine-written observations with `🤖`**, and `get` /
+  `mem_get` name them in the header. Hook-captured, imported and compressed rows carry it;
+  explicit saves and events do not. The result line explains the mark whenever a shown row
+  has it, and `search --json` adds `auto` to observation rows.
+- **`mem_search` shows a snippet line only when it adds to the title.**
+- Fixes: a lone search match in a new per-project store no longer sorts last; a Bash
+  step's stored description keeps the end of its output; the secret scrubber catches values
+  behind markdown labels and stays linear-time on crafted input.
+
+## Upgrading to 6.18.0
+
+**One default changes, with a switch.** No schema change and no migration. Pinning
+`claude-mem-lite@6.17.1` stops new lines; a line already written stays until that session's
+next observation titles replace it, and 6.17.1 keeps its unrecognised tag as text in the
+row's `notes`.
+
+- **Last Session shows how the previous session ended even without a report.** When the
+  final reply has no Done / Not done / Failed / Uncertain section, `Completed:` is its first
+  120 characters (code blocks and line-leading markers removed) where it used to be
+  observation titles, which are usually empty; the /clear handoff labels it
+  `<session-summary source="last-reply">`. A report or a model summary still takes
+  precedence. A later reply under 400 characters ("You're welcome!") does not replace an
+  earlier one, and a reply in which the secret scrubber finds anything writes no line at all.
+  `CLAUDE_MEM_SUMMARY_TAIL=0` restores the titles from the session's next turn on.
+
+## Upgrading to 6.17.0
+
+**Two defaults change; one has a switch.** No schema change and no migration, so reverting
+everything is pinning `claude-mem-lite@6.16.0`.
+
+- **The pre-edit lesson line asks for a lesson's `#NN` only where it changed the edit.** It no
+  longer asks for an applied / not-applicable verdict on every lesson in your next reply, which
+  put lesson-id lists into replies. Old directive: `CLAUDE_MEM_SALIENCE=verdict` (since 6.17.1
+  it also says it overrides the managed row and detail doc, which keep the new wording). Adopted
+  projects get the matching CLAUDE.md managed row and detail doc on the next SessionStart;
+  `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1` keeps the old text.
+- **SessionStart's "Deferred Work" list ends with "+N more open"** when more than its 5 rows
+  are open. No switch; pin 6.16.0 to revert.
+
+## Upgrading to 6.16.0
+
+**Three defaults change; one has an off switch.** No schema change and no migration, so
+reverting everything is pinning `claude-mem-lite@6.15.0`.
+
+- **Each session gets one of two first lines on a file-recall block.** Half of sessions keep
+  "system-injected context, continue your planned action"; the other half get a plain
+  statement of where the notes come from, as Claude Code's hooks guide recommends. The two
+  are compared by cite-rate before one becomes the default. Off (old line everywhere):
+  `CLAUDE_MEM_RECALL_FRAMING=legacy`.
+- **Memory text longer than the host's 10,000-character hook limit is trimmed by whole
+  lines**, with a closing line naming the ids left out, instead of the host replacing it with
+  a 2,000-character preview. No switch; pin 6.15.0 to revert.
+- **Lessons shown after a failed Bash command now count in citation decay**, like every other
+  surface: ones never cited are ranked down over time. No switch; pin 6.15.0 to revert.
+
+## Upgrading to 6.15.0
+
+**Two defaults change; one has an off switch.** No schema change and no migration, so
+reverting everything is pinning `claude-mem-lite@6.14.0`.
+
+- **An auto-captured lesson that repeats text a tool printed is kept out of automatic
+  injection.** Whoever controls a command's output (a repository's test, a fetched page, an
+  MCP server) could otherwise get a sentence of their choosing stored as a lesson that later
+  sessions are shown. Such an event stays searchable at importance 1; a `change` observation
+  loses the lesson. Four shared words are enough, filler included, so an occasional lesson
+  of your own is demoted too. Off: `CLAUDE_MEM_LESSON_OUTPUT_CAP=off`.
+- **Last Session reads your own Done / Not done report when it uses markdown headings**
+  (`## Done`, `**Not done**`) instead of falling back to the model's summary. No switch; pin
+  6.14.0 to revert.
+
+## Upgrading to 6.14.0
+
+**Five defaults change; three have an off switch.** No schema change and no migration: an
+older build still opens the database, so reverting everything is pinning
+`claude-mem-lite@6.13.6`.
+
+- **File recall now also fires before Bash commands that view or write a file** (`cat`,
+  `sed -n`, `head`; `sed -i`, `cat > f`, a python patch) — on recent models most reads and
+  edits go through Bash, and the recall face with the highest measured cite rate had almost
+  stopped firing. A **fourth hook command runs under `bash`**, `pre-tool-recall-bash.sh`; on
+  Windows it needs Git Bash or WSL like the other three. Off: `CLAUDE_MEM_BASH_RECALL=off`.
+- **Error recall stays quiet on a failure you meant to cause** (running a test file you just
+  wrote or edited) and on commands that only print data and exit 0. No switch; pin 6.13.6 to
+  revert. `error_recall` counts in `citation-stats` drop from here on — do not compare them
+  across this version.
+- **Auto-captured lessons must quote what happened.** The episode summarizer ignores
+  mutation-test probes, the agent's own failing inline scripts and subagent calls that do not
+  edit the project, and a lesson that quotes nothing from its window is dropped (the event is
+  kept, at importance 1). Off: `CLAUDE_MEM_EPISODE_INPUT_FILTER=off` /
+  `CLAUDE_MEM_LESSON_GROUNDING=off`.
+- **The `[mem] episode flushed: N entries` line is no longer injected.** The hints that
+  followed it are unchanged.
+
+## Upgrading to 6.13.0
+
+**One default changes: SessionStart no longer injects `### Key Events`.** That section listed
+the five newest importance ≥ 2 rows of the `events` table — activity the background summarizer
+records — at the top of every session, chosen by recency rather than by what you were doing. A
+check of 30 of them against git history and transcripts found 2 accurate and 16 wrong. Events are still stored, searchable with `mem_search`, and
+injected when your prompt or the file being edited matches them. To restore the section, set
+`CLAUDE_MEM_SESSION_EVENTS=1`. No schema change and no migration: an older build still opens
+the database, so reverting is pinning `claude-mem-lite@6.12.2`.
+
+**Citation readings drop at this version, and that is a measurement change.** A lesson the
+agent answers with `#NN n/a` is no longer counted as cited, so `citation-stats` per-face rates
+read lower from here on (`--sidechain` excepted: it counts an `n/a` as an answer). Do not compare
+a reading taken before 6.13.0 with one taken after.
+
+## Upgrading to 6.11.0
+
+**One default changes: re-enrich stops leaving part of its budget idle.** It reserves half of
+each run's budget for two backfill passes and gives its main scope the rest. When the main
+scope had fewer rows to enrich than its share, the remainder went unspent; it now goes to the
+backfills. The daily unattended pass runs once per machine per day, over all projects
+together, so with an empty main pool it now makes up to 6 of these LLM calls a day where it
+made 3. The ceiling of 6 is unchanged — it was always the declared budget — and a separately
+budgeted scope-classification pass, also unchanged, can add up to 6 more short calls. A manual
+`claude-mem-lite optimize --run` or `mem_optimize` behaves the same way. No schema change and
+no migration: an older build still opens the database, so reverting is pinning
+`claude-mem-lite@6.10.3`.
+
+**One security fix does not reach data you already have.** In some combinations of two
+labelled credentials on one line — `token: <v> secret: <v>` is one, when the first value ends
+in a letter — earlier versions redacted the first and stored the second as typed. Values on
+separate lines were never affected. This release fixes the write path; nothing already in
+your database is rewritten.
+
+<!-- normalize-per-project-note:start -->
+## Upgrading to 6.8.0
+
+**Two things change on upgrade. Neither needs an action from you, and neither is a schema
+change — an older build can still open the database.**
+
+*The first open backfills the file-lookup table, once.* Observations imported from a
+transcript before 6.7.2 carry their modified-files list but no row in the junction table the
+file-recall paths join, so asking about a file never found them. The repair was gated on that
+table being completely empty, which one ordinary `mem_save` falsifies forever. It now runs
+once per database, keyed on its own marker, and retries on a later open if it fails. A store
+that never ran `import-jsonl` matches no rows and pays nothing.
+
+Those rows become reachable through `recall` / `mem_recall` and the prompt-submit path. Two
+limits, both measured:
+
+- Not through the pre-tool recall hook, which admits only `importance >= 2` while every
+  imported row carries `1`.
+- Not for `NotebookEdit` rows imported before 6.7.2. Those were stored with an empty
+  modified-files list, because the importer of the day read `file_path` and `NotebookEdit`
+  sets `notebook_path` instead — so the backfill, which selects on that column being
+  non-empty, passes over them. Re-importing the transcript is what recovers those, and 6.7.2
+  made that work by putting the path into the title the dedup key is built from.
+
+*`doctor --json` changes shape.* Checks that print a repair command now carry it in a
+`details` array — previously the human screen got the command and the JSON got only the
+diagnosis. And four checks (dev drift, managed files, and both hook-script branches) now
+report `"level": "fail"` where they used to report `"warn"`, with a new `"glyph": "warn"`
+recording that they still render as ⚠ rather than ✗. They always counted toward the issue
+total and the exit code; the level now says so. If you filter on `level === "fail"` you will
+see four findings you were missing. The `issues` count, the summary line and the exit code
+are unchanged.
+
+## Upgrading to 6.1.0
+
+**One default changes, and only for the daily background pass.** Until 6.1.0 the unattended
+`normalize` task read the concept vocabulary of EVERY project at once, sent it to the model as
+one list, and wrote the answer back across every project — so one project's stored content
+could steer the synonym groups applied to an unrelated project's rows. It now runs one scoped
+pass per project.
+
+| | Before 6.1.0 | 6.1.0 |
+|---|---|---|
+| Unattended `normalize` | one pass over every project's vocabulary | one pass per project, at most 8 per run, rotating |
+| Cross-project synonym unification | automatic | does not happen |
+| `optimize --run --task normalize` with no `--project` | one cross-project pass | fans out the same way |
+
+**What you may notice:** `k8s` in one project and `kubernetes` in another are no longer folded
+together by the daily pass. Nothing is deleted, no row moves project, and search behaviour is
+unchanged — only which terms the background pass will unify.
+
+**It is forward-only.** Terms that earlier cross-project runs already unified stay unified.
+The replaced term is kept on the row as a search alias, so those rows are still findable under
+the old wording, but there is no record of which unification came from another project.
+
+**To keep the old behaviour:** set `CLAUDE_MEM_NORMALIZE_CROSS_PROJECT=1`. It restores the
+cross-project scope — and that scope is exactly the guard it gives up. The other two checks
+added in this release (a shape gate on concept tokens, and a check that the model's answer only
+uses terms the corpus already had) do still run on that path, but the second one is then judged
+against the union of every project's vocabulary, so it no longer keeps one project's term out
+of another project's rows. Set it only if you want cross-project unification and trust the
+contents of every project in the store. A foreground `optimize` run prints a warning when the
+flag is set, and `claude-mem-lite doctor` reports it as ⚠ — the daily pass runs in a worker
+with stderr closed, so it cannot warn you itself.
+<!-- normalize-per-project-note:end -->
+
+<!-- vector-arm-removal-note:start -->
+## Upgrading to 6.0.0 (breaking)
+
+**The default search path does not change.** 6.0.0 removes the TF-IDF vector arm, which has
+been disabled by default since 3.17.0 — if you never set CLAUDE_MEM_VECTORS, upgrading is
+behaviour-identical and there is nothing to do.
+
+Three surfaces are gone:
+
+| Removed | What happens now |
+|---|---|
+| `CLAUDE_MEM_VECTORS=1` | Inert. Setting it has no effect. |
+| `maintain execute --ops rebuild_vectors` | Exits 1: `Unknown operation(s): rebuild_vectors`. |
+| Tables `observation_vectors`, `vocab_state` | Dropped by schema migration v49 on first open. |
+
+**The migration is one-way.** Once a 6.0.0 build has opened your database, older versions
+refuse it — `schema.mjs`'s forward-incompat guard throws *"DB schema is v49 but this
+claude-mem-lite binary supports up to v48"*. If you want to stay on the vector arm, pin
+`claude-mem-lite@5.6.0` **before** upgrading. If you have already upgraded and need to go
+back, either re-upgrade, point `CLAUDE_MEM_DIR` at a fresh directory, or restore a
+pre-upgrade backup (`claude-mem-lite export` / the snapshots under your data dir).
+
+Why it was removed: measured directly against the shipped path, the arm was negative on both
+benchmark fixtures — including the vocabulary-mismatch suite that is the only reason a vector
+arm would exist (Recall@10 0.3407 → 0.3018, and roughly +88% P95 latency). No observations
+are lost; only the derived vector index is.
+<!-- vector-arm-removal-note:end -->
+
+## Usage
+
+### MCP Tools (used automatically by Claude)
+
+The server defines 19 tools but registers `mem_search_feedback` only when
+`CLAUDE_MEM_SEARCH_TELEMETRY=1`. The other 9 **core** tools appear in `tools/list`
+by default. The 9 **hidden** tools remain callable at the
+protocol layer (`tools/call` by exact name still routes normally); they're
+omitted from the list response so Claude Code sessions don't load 9 extra
+tool schemas at startup. (It read 20 / 11 until v5.0.0 removed the two skill-registry
+tools — `tool-schemas.mjs` is the source of truth, and
+`tests/tool-count-docs.test.mjs` now holds this paragraph, both README tool tables,
+`README.zh-CN.md`, `llms.txt` and `docs/ARCHITECTURE.md` to it.) Hidden tools are the maintenance / admin / browser
+surface — reach them through the CLI column in the second table.
+
+**Core (10 definitions; `mem_search_feedback` requires search telemetry)**
+
+| Tool | Description |
+|------|-------------|
+| `mem_search` | FTS5 full-text search with BM25 ranking. Filters by type, project, date range, importance level. |
+| `mem_search_feedback` | Record sparse relevance labels for results from an existing `mem_search` Search ID. |
+| `mem_recent` | Show most recent observations, ordered by time. Quick snapshot of latest activity. |
+| `mem_recall` | Recall observations related to a file. Use before editing to surface past bugfixes and context. |
+| `mem_timeline` | Browse observations chronologically around an anchor point. |
+| `mem_get` | Retrieve full details for specific observation IDs (includes importance and related_ids). |
+| `mem_save` | Manually save a memory/observation. Accepts `closes_deferred` array for transactional closure of deferred work. |
+| `mem_defer` | Mark work for a future session (v2.70+). First-class carry-forward signal, surfaced in SessionStart `### Deferred Work` block. |
+| `mem_defer_list` | List open deferred items for the current project. |
+| `mem_defer_drop` | Drop a deferred item without fixing it; requires a `reason` for the audit trail. |
+
+**Hidden-but-callable (9, CLI-routed)**
+
+| Tool | CLI equivalent | Notes |
+|------|----------------|-------|
+| `mem_update` | `claude-mem-lite update <id>` | Edit an observation in place. |
+| `mem_stats` | `claude-mem-lite stats` | Counts, type distribution, daily activity. |
+| `mem_delete` | `claude-mem-lite delete <id>` | Preview / confirm workflow, FTS5 cleanup. |
+| `mem_compress` | `claude-mem-lite compress` | Roll up old low-value observations (preview default; `--execute` to apply). |
+| `mem_maintain` | `claude-mem-lite maintain scan --ops dedup,decay` | dedup / decay / cleanup / vacuum (`scan` previews, `execute` applies). |
+| `mem_optimize` | `claude-mem-lite optimize` | LLM-powered re-enrich / normalize / cluster-merge (preview default; `--run` to apply). |
+| `mem_export` | `claude-mem-lite export` | JSON / JSONL dump, filters by project, type, date. |
+| `mem_fts_check` | `claude-mem-lite fts-check <check\|rebuild>` | FTS5 integrity + rebuild. |
+| `mem_browse` | `claude-mem-lite browse` | Tier-grouped dashboard (working / active / archive). |
+
+**Headless runs (`claude -p`).** With no permission prompt to answer, Claude Code 2.1.292
+refused every `mem_*` call until the server's tools were allowed, and the model did not switch
+to the CLI by itself: in an 88-session headless run (2026-10-06) all 13 calls were refused and
+nothing was saved. On 2.1.284 (2026-09-29) the same flags let these calls through, so this
+depends on the Claude Code version. Allow the server once in the `settings.json` the run reads:
+
+```json
+{ "permissions": { "allow": ["mcp__plugin_claude-mem-lite_mem-lite"] } }
+```
+
+For a single run, `claude -p … --allowedTools "mcp__plugin_claude-mem-lite_mem-lite"` does the
+same (both forms checked on 2.1.292, 2026-10-07: no refusal, and `mem_search` answered). That is
+the server's name under a plugin install. An npx or git-clone install registers it as
+`mem-lite`, so the rule there is `mcp__mem-lite`. An interactive session asks instead; answering
+"always allow" there records a rule of its own. The plugin does not tell the model to fall back
+to the CLI when a call is refused: the refusal is Claude Code's permission check for a tool you
+have not allowed, and routing the same action through Bash would sidestep it.
+
+### Skill Commands (in Claude Code chat)
+
+```
+/mem search <query>        # Full-text search across all memories
+/mem recent [n]            # Show recent N observations (default 10)
+/mem recall <file>         # Show past observations for a file
+/mem save <text>           # Save a manual memory/note
+/mem stats                 # Show memory statistics
+/mem timeline <query>      # Browse timeline around a match
+/mem browse                # Tier-grouped memory dashboard
+/mem <query>               # Shorthand for search
+/lesson <text>             # Save a non-obvious lesson to the events table (v2.31.0)
+/bug <text>                # Log a known bug + repro steps to the events table (v2.31.0)
+/verify                    # Check memories against the current code; correct stale ones after you approve
+```
+
+### Efficient Search Workflow
+
+```
+1. mem_search(query="auth bug")     -> compact ID index
+2. mem_timeline(anchor=12345)       -> surrounding context
+3. mem_get(ids=[12345, 12346])      -> full details
+```
+
+### Invited Memory (v2.32+)
+
+Opt-in mechanism that installs a slug-scoped managed block into the project's
+own `CLAUDE.md` (plus an on-demand detail doc under `.claude/`) so Claude Code
+loads the plugin's MCP-tool triggers as **project instructions** — a higher
+instruction-following authority than MCP server instructions (which are framed
+as tool metadata). Claude Code loads `CLAUDE.md` and the memdir `MEMORY.md` at
+equal weight, so steering lives in `CLAUDE.md` (the canonical home for project
+instructions) rather than polluting `MEMORY.md`, which is reserved for the user's
+own memories. The pre-v3.13 scheme wrote into `MEMORY.md`; it is migrated away
+automatically on the next SessionStart.
+
+```bash
+claude-mem-lite adopt              # install for current project
+claude-mem-lite adopt --all        # legacy clean-up: strip the old memory-dir sentinel in every project
+claude-mem-lite adopt --status     # list adopted/disabled projects + current gating snapshot
+claude-mem-lite adopt --dry-run    # preview without writing
+claude-mem-lite adopt --disable    # opt out of auto-adopt for current project (writes .mem-no-auto-adopt sentinel)
+claude-mem-lite adopt --enable     # re-arm auto-adopt for current project (deletes the sentinel)
+claude-mem-lite unadopt            # remove the CLAUDE.md block + doc, and the local block (CLAUDE.local.md or .claude/rules/; not written again)
+```
+
+Slash commands `/adopt` and `/unadopt` wrap the same CLI.
+
+**What adoption changes:**
+- A `<!-- claude-mem-lite:begin v1 -->…<!-- claude-mem-lite:end -->` managed
+  block is added to `<cwd>/CLAUDE.md` under its own
+  `## claude-mem-lite — persistent memory` header, containing a compact trigger
+  table pointing at `mem_recall` / `mem_save` / `mem_defer` with their key
+  arguments. The block is slug-scoped: only this region is managed; the rest of
+  your `CLAUDE.md` is preserved verbatim, and it coexists with other plugins'
+  blocks (e.g. `code-graph-mcp`) in the same file.
+- A `<cwd>/.claude/plugin_claude_mem_lite.md` detail file is written (not
+  auto-loaded; read on demand when the `CLAUDE.md` block points to it). The
+  block auto-refreshes when the shipped content drifts (version bump or template
+  change), unless `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1`.
+- Post-adopt the conservative hook layer auto-trims: MCP server instructions
+  drop the `WHEN TO USE` section, SessionStart injection drops the `File Lessons`
+  / `Key Context` sections. `#ID` references and the `Recent` table still fire
+  so `mem_get` remains reachable.
+
+**When does it take effect?**
+- The `CLAUDE.md` managed block and the hook-layer trim (`File Lessons` /
+  `Key Context` / lesson suffix) apply on the **next SessionStart** (any new
+  Claude Code session in the adopted project).
+- The MCP server instructions are built once at server boot and MCP has no
+  "push" protocol — the `WHEN TO USE` / `Decision rules` trim only applies
+  after Claude Code restarts and re-spawns the mem-lite MCP server. A single
+  `/exit` + fresh session is enough. Same caveat applies to `unadopt`.
+
+**Safety:**
+- Regenerated, not hand-edit-safe: `adopt` rewrites the managed block to the shipped
+  template, and so does every SessionStart whenever the block differs from it — hand edits
+  included. Keep your own notes outside the `claude-mem-lite:begin…end` markers, or set
+  `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1` to freeze the block.
+- Slug-scoped & dedup-guarded: only the `claude-mem-lite:begin…end` region is
+  ever rewritten, and duplicate / CRLF-orphaned copies are collapsed to one.
+  Unlike the legacy `MEMORY.md` scheme there is no line-budget gate — `CLAUDE.md`
+  has no truncation cap.
+- **Auto-adopt runs on EVERY SessionStart, for any install path, and no longer adds
+  the block to `CLAUDE.md` (next release after 6.19.4).** A git project without the
+  block gets it in `CLAUDE.local.md` at the git root (kept out of git via
+  `.git/info/exclude`), or in SessionStart context where `CLAUDE.local.md` would stop
+  Claude Code reading the project's `AGENTS.md` (in `.claude/rules/claude-mem-lite.md`
+  with `CLAUDE_MEM_RULES_STEERING=1`), outside git, and where no file can be written; a project that
+  carries the `CLAUDE.md` block (explicit `adopt`, or an older version's auto-adopt)
+  has it kept in sync — refreshed when the shipped template changes (freeze with
+  `CLAUDE_MEM_NO_TEMPLATE_REFRESH=1`) — and gets no local or injected copy, also in
+  sessions started from a subdirectory; a `CLAUDE.md` holding only the block also gets
+  adopt's `AGENTS.md` import when an `AGENTS.md` is beside it. A local block (`CLAUDE.local.md` or
+  the rules file) the plugin created and you (or `unadopt`) removed is not written back;
+  `adopt --enable` re-arms it (beside such an `AGENTS.md`, together with
+  `CLAUDE_MEM_RULES_STEERING=1`).
+  Per-project opt-out: `claude-mem-lite adopt --disable` (writes a durable
+  `<memdir>/.mem-no-auto-adopt` sentinel that survives marker deletion / plugin
+  reinstalls; run at the repository root it also covers sessions started in its
+  subdirectories; it removes the local block).
+  Global opt-out: `MEM_NO_AUTO_ADOPT=1` (blocks already written stay until `unadopt`).
+- The fallback hook layer is never removed from source — conditional trim is
+  runtime-gated on steering being delivered (block present, or injection on), so
+  projects that opted out get the full verbose output.
+
+See [the invited-memory design][invited-memory] for the full design (including the
+reusable template other plugins can follow). It is a development-time document and
+is no longer in the repository at HEAD, so that link is pinned to `v3.95.0`, the
+last release that carried it.
+
+[invited-memory]: https://github.com/sdsrss/claude-mem-lite/blob/v3.95.0/docs/plans/2026-04-16-invited-memory-pattern.md
+
+## Database Schema
+
+Five core tables with FTS5 virtual tables for search:
+
+**observations** -- Individual coding observations (decisions, bugfixes, features, etc.)
+```
+id, memory_session_id, project, type, title, subtitle,
+text, narrative, concepts, facts, files_read, files_modified,
+importance, related_ids, created_at, created_at_epoch,
+lesson_learned, minhash_sig, access_count, compressed_into, search_aliases,
+branch, superseded_at, superseded_by, last_accessed_at
+```
+
+**session_summaries** -- per-session summaries (written at Stop, upgraded by the background model summary)
+```
+id, memory_session_id, project, request, investigated,
+learned, completed, next_steps, files_read, files_edited, notes,
+remaining_items, lessons, key_decisions
+```
+
+**sdk_sessions** -- Session tracking
+```
+id, content_session_id, memory_session_id, project,
+started_at, completed_at, status, prompt_counter
+```
+
+**user_prompts** -- User prompts captured via UserPromptSubmit hook
+```
+id, content_session_id, prompt_text, prompt_number
+```
+
+**session_handoffs** -- Cross-session handoff snapshots (UPSERT, max 2 per project)
+```
+project, type, session_id, working_on, completed, unfinished,
+key_files, key_decisions, match_keywords, created_at_epoch
+```
+
+**observation_files** -- Normalized file membership for efficient file-based recall
+```
+obs_id, filename
+```
+
+FTS5 indexes: `observations_fts` (title, subtitle, narrative, text, facts, concepts, lesson_learned), `session_summaries_fts`, `user_prompts_fts`
+
+## How It Works
+
+### Hook Pipeline
+
+```
+SessionStart
+  -> Read the host's `source` (startup | clear | compact | resume) from stdin
+  -> On clear/compact: read the outgoing session from the session file, save its
+     'clear' handoff, emit the Working State block  (R10-P1-1, fixed v5.4.0)
+  -> Generate session ID (overwrites the session file)
+  -> Mark stale sessions (>24h active) as abandoned
+  -> Clean orphaned/stale lock files
+  -> Query recent observations (24h)
+  -> Inject context into CLAUDE.md + stdout
+
+PostToolUse (every tool execution)
+  -> Bash pre-filter skips noise in ~5ms (Read paths tracked to reads file)
+  -> Detect Bash significance (errors, tests, builds, git, deploys)
+  -> Accumulate into episode buffer
+  -> Proactive file history: show past observations for edited files
+  -> Flush when: buffer full (10 entries) | 5min gap | context change
+  -> Collect Read file paths into episode on flush
+  -> Spawn LLM episode worker for significant episodes
+  -> Error-triggered recall: search memory for related past fixes
+
+UserPromptSubmit (two parallel paths)
+  -> [user-prompt-search.js] Auto-search memory via FTS5 + active file context
+  -> [user-prompt-search.js] Inject relevant past observations with recency/importance weighting
+  -> [user-prompt-search.js] Write injected IDs to temp file for dedup
+  -> [hook.mjs handleUserPrompt] Capture user prompt text to user_prompts table
+  -> [hook.mjs handleUserPrompt] Increment session prompt counter
+  -> [hook.mjs handleUserPrompt] Handoff: detect continuation intent → inject previous session context
+  -> [hook.mjs handleUserPrompt] Semantic memory injection (hook-memory.mjs), deduped via temp file
+
+Stop
+  -> Flush final episode buffer
+  -> Save handoff snapshot (type 'exit')
+  -> Mark session completed
+  -> Write the session summary row (sync, no model call)
+  -> Spawn LLM summary worker (poll-based wait)
+  -> Keep the session file  <- Stop fires per TURN; deleting it here re-minted a mem
+     session every turn and left the SessionStart /clear branch unreachable (v5.4.0)
+```
+
+
+### Episode Encoding
+
+Episodes are batched related operations (edits to the same file group) that get processed by a background LLM worker:
+
+```
+Episode buffer -> Flush to JSON -> claude -p --model haiku -> Structured observation -> SQLite
+```
+
+Each observation includes type, title, narrative, concepts, facts, importance (1-3), and is automatically deduplicated via two tiers: Jaccard similarity (>70% within 5 minutes) and MinHash signatures (>80% within 7 days across sessions). If the LLM call fails, an episode the rules rate notable is saved with inferred metadata; a routine edit the rules rate as noise is dropped. Related observations are linked via `related_ids` based on FTS5 title similarity and file overlap.
+
+## Management Commands
+
+```bash
+# Plugin install:
+/plugin install claude-mem-lite       # Install / update
+/plugin uninstall claude-mem-lite     # Uninstall
+
+# git clone install:
+node install.mjs install              # Install and configure
+node install.mjs uninstall            # Remove (keep data)
+node install.mjs uninstall --purge    # Remove and delete all data
+node install.mjs status               # Show current status
+node cli.mjs doctor                   # Diagnose issues  (cli.mjs, not install.mjs — see note)
+node cli.mjs repair                   # Recover a broken install from the latest signed release
+node install.mjs cleanup-hooks        # Remove only stale claude-mem-lite hooks from settings.json
+node install.mjs update               # Force-check for updates and install them (direct install / npx mode)
+
+# npx install:
+npx claude-mem-lite                   # Install / reinstall
+npx claude-mem-lite uninstall         # Remove (keep data)
+npx claude-mem-lite doctor            # Diagnose issues
+```
+
+> `doctor` and `repair` are spelled `cli.mjs`, not `install.mjs`, on purpose. Those two are
+> the commands you reach for when the install is already broken, and `install.mjs` resolves
+> around a dozen static imports before its first line runs — one missing file and it exits
+> with a Node stack instead of telling you which file. `cli.mjs` has no static local imports
+> and catches that, naming the file and a repair command. Everything else in the list is
+> unaffected either way, except `update`: through `cli.mjs` (and the `claude-mem-lite`
+> command) `update <id>` edits a memory, and the updater is `self-update`.
+
+Notes:
+- Plugin mode only reports available updates; it does not self-update plugin files.
+  To upgrade an installed plugin to the latest published version, run **inside Claude Code**:
+  ```
+  /plugin marketplace update sdsrss
+  /plugin install claude-mem-lite@sdsrss
+  ```
+  (The first command refreshes the local marketplace clone; the second reinstalls from it. Without the first command, `/plugin install` reuses the stale local clone and you stay on whichever version you originally pulled.)
+- Direct install / npx mode checks GitHub Releases once a day (every 6 hours while GitHub is rate-limiting), from a session start, and shows a notice about a newer version at the next session start; the check does not install it. `npx claude-mem-lite self-update` (from a git clone, `node install.mjs update`) installs it, with staged replacement and rollback on install failure. Two things install without a command: when a hook finds a module or dependency missing, a session start runs `repair` (at most once per 6 hours), which installs the latest release if its signature verifies; and when the plugin is installed too, a session start copies a newer plugin version into the direct install (that copy is not signature-checked).
+- `CLAUDE_MEM_SKIP_UPDATE` turns off the check, the notice, and `self-update` / `install.mjs update` as well, so unset it before updating. It stops neither of the two installs above.
+- If you disabled the plugin but still have old mem hooks in `~/.claude/settings.json`, run `node install.mjs cleanup-hooks`.
+
+#### Trust model per install path
+
+The three install paths do **not** carry the same supply-chain guarantees — pick the one that matches your threat model:
+
+| Path | Update mechanism | Ed25519 release-signature verification |
+|------|------------------|----------------------------------------|
+| npm / npx / git-clone direct install | daily check announces; `self-update` installs from GitHub Releases, and `repair` reinstalls the latest release when a hook finds a module or dependency missing. With the plugin also installed, a session start copies a newer plugin version in without a signature check | **Yes** — every runtime file (hook scripts, MCP launcher and plugin declaration files included) is hash-pinned in a signed manifest; verification is fail-closed |
+| `/plugin install` (marketplace) | manual `/plugin marketplace update` + reinstall | **No** — Claude Code installs from a git clone of the marketplace repo; the plugin's own signature chain is not consulted on this path. You are trusting GitHub + the repo's branch protection, not the release signing key |
+
+**Rollback recipe (plugin path).** If an update misbehaves, pin the marketplace clone to the previous release tag and reinstall from it:
+
+```bash
+# 1. Find the local marketplace clone
+ls ~/.claude/plugins/marketplaces/          # e.g. sdsrss
+
+# 2. Pin it to the previous good tag (tags mirror npm versions, e.g. v3.62.0)
+cd ~/.claude/plugins/marketplaces/sdsrss
+git fetch --tags && git checkout v3.62.0
+
+# 3. Reinstall from the pinned clone — inside Claude Code:
+#    /plugin install claude-mem-lite@sdsrss
+# 4. To leave the pin later: git checkout main, then the normal update flow.
+```
+
+Your data directory (`~/.claude-mem-lite/`) is untouched by install/rollback; schema migrations are forward-only, so after rolling back more than one minor version check `node cli.mjs doctor` before trusting search results.
+
+### doctor
+
+Checks Node.js version, dependencies, server/hook files, database integrity, FTS5 indexes,
+stale processes, MCP registration, and whether the marketplace clone can still be updated.
+
+It runs `claude mcp list` to answer the registration question, and that **health-checks every
+MCP server you have configured** — i.e. briefly launches each one, including remote endpoints.
+`status` deliberately does not: on a plugin install it answers from the manifest instead.
+
+### status
+
+Shows MCP registration, hook configuration, plugin disabled state, and database stats (observation/session counts).
+
+### Recovery (stuck install / hook errors)
+
+If you see `ERR_MODULE_NOT_FOUND` on PreToolUse:Read/Edit hooks, or `claude-mem-lite` commands crash with import errors, you're likely hit by a partial update — an updater copied new scripts but missed a sibling `lib/*` file, breaking the hook chain.
+
+**v2.84.0+** ships a `repair` subcommand that re-syncs from the latest GitHub release:
+
+```bash
+claude-mem-lite repair
+```
+
+**If `repair` itself fails** (the bin is older than v2.84.0, or the bin is also broken), run this one-liner — it pulls a fresh tarball into a temp dir and runs *that* tarball's `install.mjs`, bypassing every file on your disk:
+
+```bash
+T=$(mktemp -d) && U=$(curl -sL https://api.github.com/repos/sdsrss/claude-mem-lite/releases/latest | grep -o '"tarball_url"[^,]*' | cut -d'"' -f4) && curl -sL "$U" | tar xz -C "$T" --strip-components=1 && node "$T/install.mjs" install
+```
+
+It resolves the latest **release** tag first. A shell one-liner cannot verify the release signature the way `repair` does, so running it is a trust decision you are making explicitly — that is why it is the last resort and not the first suggestion.
+
+After it finishes, `~/.claude-mem-lite/` is back in sync with the latest release and `claude-mem-lite repair` is available for next time.
+
+## Uninstall
+
+```bash
+# Plugin:
+/plugin uninstall claude-mem-lite
+
+# git clone:
+cd claude-mem-lite
+node install.mjs uninstall            # Keeps ~/.claude-mem-lite/ data
+node install.mjs uninstall --purge    # Deletes ~/.claude-mem-lite/ and all data
+
+# npx:
+npx claude-mem-lite uninstall
+npx claude-mem-lite uninstall --purge
+```
+
+Data in `~/.claude-mem-lite/` is preserved by default. Delete manually if needed:
+```bash
+rm -rf ~/.claude-mem-lite/
+```
+
+**`/plugin uninstall` does not delete the plugin cache.** Claude Code materializes each
+version under `~/.claude/plugins/cache/`, with its own `node_modules`. While the plugin is
+installed these get pruned to the newest three (SessionStart does it, and so does the update
+path), so the directory is bounded — measured at 241 MB — not unbounded. But `/plugin
+uninstall` removes the manifest and there is no uninstall hook a plugin can attach to, so the
+hooks stop firing and whatever is left is never reclaimed. `claude-mem-lite uninstall` does
+reclaim it, but after `/plugin uninstall` that command may no longer be on your PATH. Either
+run it **first**, or delete the directory yourself:
+
+```bash
+rm -rf ~/.claude/plugins/cache/sdsrss/claude-mem-lite
+```
+
+### Mixed-install residue (read this if you've used multiple install methods)
+
+`/plugin uninstall` only removes the plugin manifest — it **does not touch `~/.claude/settings.json`**. If you've ever run `claude-mem-lite install` (npx or git-clone path), hook entries pointing at `~/.claude-mem-lite/hook.mjs` were written into your user-global settings, and they keep firing after `/plugin uninstall`. If `~/.claude-mem-lite/hook.mjs` still exists they double-fire alongside the plugin; if you also ran `rm -rf ~/.claude-mem-lite/` they error every session.
+
+**The safe sequence is**: run `claude-mem-lite uninstall` first (which cleans the settings.json hooks plus the global MCP registration), then `/plugin uninstall claude-mem-lite`, then optionally `rm -rf ~/.claude-mem-lite/`.
+
+If you already uninstalled in the wrong order, `claude-mem-lite doctor` flags orphan hooks under `Orphan hooks:` with the exact cleanup command.
+
+## Project Structure
+
+```
+claude-mem-lite/
+  .claude-plugin/
+    plugin.json      # Plugin manifest
+    marketplace.json # Marketplace catalog
+  .mcp.json          # MCP server definition (plugin root)
+  hooks/
+    hooks.json       # Hook definitions (plugin mode)
+  commands/
+    mem.md           # /mem command definition
+  server.mjs           # MCP server: tool definitions, FTS5 search, database init
+  search-scoring.mjs # Extracted search helpers: re-ranking, PRF, concept expansion
+  hook.mjs             # Claude Code hooks: episode capture, error recall, session management
+  hook-llm.mjs         # Background LLM workers: episode extraction, session summaries
+  hook-shared.mjs      # Shared hook infrastructure: session management, DB access, LLM calls
+  hook-handoff.mjs     # Cross-session handoff: state extraction, intent detection, injection
+  hook-context.mjs     # CLAUDE.md context injection and token budgeting
+  hook-episode.mjs     # Episode buffer management: atomic writes, pending entry merging
+  hook-memory.mjs      # Semantic memory injection on user prompt
+  hook-semaphore.mjs   # LLM concurrency control: file-based semaphore for background workers
+  schema.mjs           # Database schema: single source of truth for tables, migrations, FTS5
+  tool-schemas.mjs     # Shared Zod schemas for MCP tool validation
+  tfidf.mjs            # the Porter stemmer (name is historical: the TF-IDF vector engine it held was removed)
+  tier.mjs             # Temporal tier system: activity-based time window classification
+  utils.mjs            # Re-export hub: backward-compatible surface for all utility modules
+  nlp.mjs              # FTS5 query building: synonym expansion, CJK bigrams, sanitization
+  scoring-sql.mjs      # BM25 weight constants and type-differentiated decay half-lives
+  stop-words.mjs       # Shared base stop-word set for all NLP/search modules
+  synonyms.mjs         # Unified synonym source: SYNONYM_MAP (bidirectional) + DISPATCH_SYNONYMS
+  project-utils.mjs    # Shared project name resolution with in-process cache
+  secret-scrub.mjs     # API key, token, PEM, and credential pattern redaction
+  format-utils.mjs     # String formatting: truncate, typeIcon, date/time/week formatting
+  hash-utils.mjs       # MinHash signatures, Jaccard similarity for dedup
+  bash-utils.mjs       # Bash output significance detection: errors, tests, builds, deploys
+  haiku-client.mjs     # Unified Haiku LLM wrapper: direct API or CLI fallback
+  # Install & config
+  install.mjs          # CLI installer: setup, uninstall, status, doctor (npx/git clone mode)
+  skill.md             # MCP skill definition (npx/git clone mode)
+  package.json         # Dependencies and metadata
+  scripts/
+    setup.sh           # Setup hook: npm install + migration (hidden dir + old dir)
+    post-tool-use.sh   # Bash pre-filter: skips noise in ~5ms, tracks Read paths
+    user-prompt-search.js # UserPromptSubmit hook: auto-search memory on user prompts
+    pre-tool-recall.js   # PreToolUse hook: file lesson recall before Edit/Write
+    post-tool-recall.js  # PostToolUse hook: error recall after a failed tool call
+    pre-agent-inject.sh  # PreToolUse hook: context for spawned agents
+    prompt-search-utils.mjs # Shared logic: skip patterns, intent detection, name matching
+  # Test & benchmark (dev only)
+  tests/               # Unit, property, integration, contract, E2E, pipeline tests
+  benchmark/           # BM25 search quality benchmarks + CI gate
+```
+
+## Search Quality
+
+Benchmarked on 200 observations across 30 queries (standard + hard-negative categories),
+measuring the **production-hybrid** retriever (the real `searchObservationsHybrid`) — the path
+`mem_search` / `recall` actually use. The CI gate (`npm run benchmark:gate`) runs this same
+path and fails on regression.
+
+| Metric | Score (production-hybrid) |
+|--------|---------------------------|
+| Recall@10 | 0.90 |
+| Precision@10 | 0.85 |
+| nDCG@10 | 0.97 |
+| MRR@10 | 0.96 |
+| P95 search latency | ~1.8ms |
+
+> **Where these numbers come from.** Reproduce with
+> `node benchmark/benchmark.mjs --production-hybrid` (deterministic — same fixture corpus,
+> same query set, no sampling). The CI reference capture is `benchmark/baseline.json`, and
+> `npm run benchmark:gate` fails the build when a run drifts more than 5% from it. This is
+> the single source for every retrieval figure quoted in this README.
+
+> **Note on the path measured.** This table measures whatever `mem_search` actually runs,
+> which is why the figures have moved twice. An older revision reported a narrower FTS-only
+> harness (Precision@10 0.96, P95 0.15ms); a later one attributed the lower precision to a
+> TF-IDF vector arm "trading precision for recall". **That attribution was wrong and the
+> claim is withdrawn** — the gate's `hybrid_over_bm25` delta never executed a vector path at
+> all, so it could not have measured that trade. The arm was later A/B'd directly, came out
+> negative on both fixtures, and was removed; these numbers are the shipped path with no
+> vector arm in it. For field-comparable recall, see the LongMemEval section below.
+
+### Recall on LongMemEval (standard benchmark)
+
+Beyond the in-repo micro-benchmark above, claude-mem-lite is measured on
+[LongMemEval](https://github.com/xiaowu0162/LongMemEval) (Wu et al.) — a
+500-question long-term-memory benchmark — so its recall is comparable to the
+field, not just to itself. Metric is **recall_any@k**: does *any* gold evidence session appear in the
+top *k* retrieved? This is the same session-level definition the systems we
+compare against report on this split — [agentmemory](https://github.com/rohitg00/agentmemory)
+(BM25 + vector + graph) and dense-embedding systems like MemPalace — so the rows
+below sit on one axis, not metric-shopped. (Note: 65% of the 500 questions have
+multiple gold sessions, so `recall_any@k` is looser than fractional recall there;
+all systems in this comparison report the any-hit form.) Corpus is user-turns-only
+(the standard raw-baseline rule). Runners: `benchmark/longmemeval.mjs` (lexical)
+and `benchmark/longmemeval-rerank.mjs` (rerank).
+
+| Retriever (zero embeddings) | @1 | @5 | @10 |
+|---|---|---|---|
+| Lexical — FTS5 BM25 + query expansion | **83.4%** | **95.2%** | **96.0%** |
+| + one top-20 LLM rerank pass † | 92.8% | 96.8% | 97.4% |
+
+*n = 500 questions.* The lexical row was re-measured 2026-07-18: the v3.39–v3.45
+alias/synonym-pipeline work lifted it from the previously published 76.8/90.6/95.2
+on the **same harness and dataset** (both unchanged since that run — the gain is
+engine-side, not metric drift). † The rerank row is the 2026-06 measurement taken
+against the *older* lexical baseline; with lexical now at 95.2 @5 its remaining
+headroom is ~1.6pt and a re-measurement is pending. The rerank pass hands the top
+20 lexical candidates to a single Haiku call (~1.4 s/query) that reorders them; it
+is **never worse than the lexical baseline by construction** — any LLM or parse
+failure falls back to the original candidate order.
+
+**Stricter metric, for the record.** The rows above are `recall_any@k` — does *any*
+gold session reach the top *k* — the metric agentmemory and MemPalace publish, so the
+comparison is like-for-like. Under the stricter **standard recall@k** (`|gold ∩ top-k| /
+|gold|`, the *fraction* of all gold sessions retrieved), the lexical stack scores
+@1 = 52.9% / @5 = 87.8% / @10 = 91.0%. The whole gap is the 65% of questions with
+multiple gold sessions — any-hit needs one, fractional needs them all, and @1 is capped
+at 1/|gold| there; single-gold question types score identically under both.
+`benchmark/longmemeval.mjs` reports both columns (the rerank row's fractional is not yet
+measured).
+
+**On embeddings, honestly.** With no LLM in the loop, our zero-embedding lexical
+stack now **ties** the BM25 + vector + graph hybrid (agentmemory, 95.2% @5) at the
+same retrieval stage; a dense-embedding baseline (MemPalace, ~96.6% @5) still leads
+by ~1.4pt. The remaining gap concentrates in paraphrase (single-session-preference
+is our lowest category at 80.0% @5). The rerank row's point stands: a *single cheap
+LLM call* reorders the top-20 lexical candidates because the candidate set is
+already rich enough that ranking, not recall, is the bottleneck. An
+embedding-plus-rerank stack still leads when both sides spend an LLM call; the
+takeaway is that claude-mem-lite reaches embedding-competitive recall with **no
+vector model, no knowledge graph, no Python, and no external service**.
+
+Per-category any@5, lexical (2026-07-18 run): knowledge-update 100.0 ·
+single-session-user 100.0 · multi-session 94.7 · single-session-assistant 94.6 ·
+temporal-reasoning 94.0 · single-session-preference 80.0.
+
+## Development
+
+```bash
+npm run lint              # ESLint static analysis
+npm test                  # Run full test suite (vitest)
+npm run test:smoke        # Run 5 core smoke tests
+npm run test:coverage     # Run tests with V8 coverage (≥75% lines/functions, ≥65% branches)
+npm run benchmark         # Run full search quality benchmark
+npm run benchmark:gate    # CI gate: fails if metrics regress beyond 5% tolerance
+```
+
+## Environment Variables
+
+Every environment variable the shipped code reads is listed below, grouped by what it
+controls. Booleans accept `1` unless noted. Anything not listed here is not read by
+claude-mem-lite.
+
+### Core
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CLAUDE_MEM_DIR` | Custom data directory. All databases, runtime files, and managed resources are stored here. | `~/.claude-mem-lite/` |
+| `CLAUDE_MEM_MODEL` | LLM model for background calls (episode extraction, session summaries). Accepts `haiku` or `sonnet`. | `haiku` |
+| `ANTHROPIC_API_KEY` | Anthropic API key. When set, all background LLM calls go directly to the Anthropic Messages API (with prompt caching) - or to the `ANTHROPIC_BASE_URL` gateway when that is set. Highest priority. | _(unset → CLI)_ |
+| `ANTHROPIC_BASE_URL` | Base URL for the direct Messages API when an Anthropic-compatible gateway serves the models (Azure AI Foundry, LiteLLM, Bedrock/Vertex proxies). No `/v1` suffix — the endpoint path is appended. The `claude -p` fallback reads the same variable, so one value covers both transports. Plain `http://` is accepted only for a loopback host; anything else would send the API key unencrypted. That request always goes straight to the loopback host, even when `NODE_USE_ENV_PROXY=1` sends other requests through `HTTP_PROXY`. A value that is set but unusable skips the direct API leg, so background calls fall back to the `claude -p` CLI, and doctor warns. | `https://api.anthropic.com` |
+| `ANTHROPIC_DEFAULT_HAIKU_MODEL` | Model ID or gateway deployment name for the `haiku` tier, honored on the direct API **only when `ANTHROPIC_BASE_URL` is set**. Without a base URL it stays CLI-only, so the Bedrock/Vertex form of this alias is never sent to `api.anthropic.com`. Use it when the gateway routes on deployment names rather than Anthropic model IDs (Azure Foundry deployments). The `claude -p` fallback resolves its `--model haiku` alias through it too. | built-in `claude-haiku-5-5` |
+| `ANTHROPIC_DEFAULT_SONNET_MODEL` | Same as above for the `sonnet` tier. | built-in `claude-sonnet-4-5-…` |
+| `OPENROUTER_API_KEY` | OpenRouter API key (OpenAI-compatible). Used for background LLM calls when `ANTHROPIC_API_KEY` is **not** set. If neither key is set, calls fall back to the `claude -p` CLI. | _(unset)_ |
+| `OPENROUTER_MODEL` | Overrides the OpenRouter model slug for **all** background calls (e.g. `openai/gpt-4o-mini`, `qwen/qwen-2.5-72b-instruct`). When unset, the `CLAUDE_MEM_MODEL` tier maps to `anthropic/claude-haiku-5.5` (haiku) or `anthropic/claude-sonnet-4.5` (sonnet). | _(tier default)_ |
+| `CLAUDE_MEM_DEBUG` | Enable debug logging (`1` to enable). | _(disabled)_ |
+| `MEM_QUIET_HOOKS` | Low-noise hooks. `1` drops the `File Lessons` / `Key Context` sections from SessionStart injection, the lesson suffix from `[mem] Related memories`, and the `WHEN TO USE` / `Decision rules` blocks from MCP server instructions. IDs and the `Recent` table still surface so `mem_get(ids=[…])` remains reachable. Intended for users running the invited-memory adopt path or who otherwise want minimal auto-injection. **Since v2.82.0 this env no longer gates auto-adopt — use `MEM_NO_AUTO_ADOPT=1` for that.** | _(disabled)_ |
+| `CLAUDE_MEM_SESSION_EVENTS` | `1`/`on` restores the SessionStart `### Key Events` section (recent high-importance rows from the `events` table). **Off by default since v6.13.0**: an audit of 30 events read 2 accurate and 16 wrong. The UserPromptSubmit events block and PreToolUse recall are query-matched and stay on; `mem_search` still reaches every event. | _(off)_ |
+| `CLAUDE_MEM_STARTUP_RECENT_ROWS` | Rows in the SessionStart `### Recent` table: of the rows the token budget picks, the project's own first and then other projects' (each newest first). `0` hides the table. Was the whole pick before the injection-budget change (7–13 rows per SessionStart table on the corpus it was measured on, mean 9.4). | `5` |
+| `CLAUDE_MEM_DASHBOARD_EVENTS` | `1` puts the `💡 mem events: N entries` count back on the SessionStart dashboard (dropped in the injection-budget change: the model never ran `activity` from it on the corpus measured). | _(off)_ |
+| `CLAUDE_MEM_SUMMARY_TAIL` | `0`/`off` stops Stop from using the head of the final reply (first 120 characters, code blocks and line-leading markers removed) as a session's Completed line when that reply has no Done / Not done / Failed / Uncertain section; Completed then falls back to observation titles, as before v6.18.0; a line already written gives way to the titles at the session's next turn. A later reply under 400 characters does not replace an earlier one. | _(on)_ |
+| `CLAUDE_MEM_EPISODE_INPUT_FILTER` | What the episode summarizer may learn from. A subagent's tool calls stay out of the episode buffer unless they edit a file inside the project, and mutation probes (mutate → RED run → restore) and the agent's own failing inline scripts (a patch's `anchor not found`) are dropped before a window is saved or summarized — replayed over the 30 audited events, this removes 3 of the 16 that were wrong outright; with `CLAUDE_MEM_LESSON_GROUNDING` none of the 16 lessons is injected. `off` restores the unfiltered input. | _(on)_ |
+| `CLAUDE_MEM_BASH_RECALL` | File recall before a Bash command that views (`cat`, `sed -n`, `head`…) or writes (`sed -i`, `cat > f`, a python patch…) a file, like the Read / Edit recall. A bash prefilter keeps Node from starting for other commands. `off` disables this leg only. | _(on)_ |
+| `CLAUDE_MEM_LESSON_GROUNDING` | An auto-captured event keeps its lesson only when the lesson quotes the window's own diagnosis (a failing output line, a comment the edit added, or the commit message); otherwise the row is kept without it at importance 1, below every injection face. `off` keeps unquoted lessons. | _(on)_ |
+| `CLAUDE_MEM_LESSON_OUTPUT_CAP` | An auto-captured lesson that shares four consecutive words with TOOL OUTPUT (a command's printed text or a tool's response, which whoever controls that output can write) is kept off the injection faces: an event keeps its row and lesson, searchable, at importance 1; a `change` observation, whose importance later reads can raise, loses the lesson, and the lesson-less row is then dropped like any other (kept only with `CLAUDE_MEM_KEEP_LOW_SIGNAL=1`). Four shared words of filler ("is not in the") count too, so a lesson quoting your own comment or commit message is demoted when it also happens to share such a run with output in the same window. The row's title is not checked. `off` restores the model's importance and the lesson. | _(on)_ |
+| `MEM_NO_AUTO_ADOPT` | Global opt-out for auto-adopt (v2.82.0+). `1` stops auto-adopt across **all** projects — no injected steering, no new local file (`CLAUDE.local.md` or `.claude/rules/claude-mem-lite.md`), and no sync of an existing `CLAUDE.md` or local block (those stay, and keep loading, until `claude-mem-lite unadopt`). For per-project opt-out use `claude-mem-lite adopt --disable` instead (writes a durable `<memdir>/.mem-no-auto-adopt` sentinel that survives marker deletion). | _(disabled)_ |
+| `MEM_NO_ADOPT_HINT` | Silences the one-time notices shown to you the first time a project gets `CLAUDE.local.md` or is steered by injection (the latter suggests `/adopt`, except at `$HOME`; in a project whose `AGENTS.md` the file would switch off it names that file and the setting too), the one-time notice that the guidance went to `.claude/rules/claude-mem-lite.md`, the one-time notice that SessionStart imported `AGENTS.md` into a `CLAUDE.md` holding only the block, and the one-line "Invited-memory 未启用：`claude-mem-lite adopt`…" hint that SessionStart appends when the current project hasn't been adopted. Since v2.82.1 auto-adopt runs on every SessionStart for any install path, so this hint typically surfaces only when you've explicitly opted out (`MEM_NO_AUTO_ADOPT=1` or `claude-mem-lite adopt --disable`). | _(disabled)_ |
+
+### What gets injected into your context
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CLAUDE_MEM_ALL_TOOLS` | `1` exposes every registered MCP tool in `tools/list` instead of only the core ones (pre-v2.34.0 behavior). The 9 hidden tools stay callable by exact name either way; `mem_search_feedback` is registered only when search telemetry is enabled. | _(9 core)_ |
+| `CLAUDE_MEM_FILE_INTEL` | `1` turns on the file-intel line on the first read of a large file — a `Read`, or a Bash `cat` / `sed -n` / `head` — (its approximate token size and a one-line summary). Off by default since the injection-budget change: the line reaches the model next to the read's result, so it cannot shape that read. | _(off)_ |
+| `CLAUDE_MEM_FILE_INTEL_MIN_TOKENS` | Files smaller than this stay silent — file-intel only pays for itself on large files. | `800` |
+| `CLAUDE_MEM_REREAD_GUARD` | `0` disables the warning when the same file is read twice in a session. Never fires on `offset`/`limit` paging. | _(on)_ |
+| `CLAUDE_MEM_REREAD_MIN_TOKENS` | Token floor below which the re-read guard stays silent. | `600` |
+| `CLAUDE_MEM_PRETOOL_NUDGE` | `1` extends the pre-tool recall nudge from `Read` to other tools. | _(Read only)_ |
+| `CLAUDE_MEM_KEEP_LOW_SIGNAL` | `1` keeps low-signal observations that the deterministic filter would otherwise drop before dedup/vector work. | _(filtered)_ |
+| `CLAUDE_MEM_NO_TEMPLATE_REFRESH` | `1` stops SessionStart from refreshing the adopted `CLAUDE.md` managed block when the shipped template changes. | _(refreshes)_ |
+| `CLAUDE_MEM_RULES_STEERING` | `1` makes auto-adopt write its block to `.claude/rules/claude-mem-lite.md` (git-excluded) where `CLAUDE.local.md` would stop Claude Code reading the project's `AGENTS.md`, instead of injecting it; the file reaches subagents and leaves `AGENTS.md` loading. A file written while it was on stays the channel. Off by default: a pre-registered A/B showed no gain over injection that cleared the bar (`docs/audits/20261006-d212-ab.md`). | _(inject)_ |
+| `MEM_QUIET_HOOKS` | See Core above — the broadest injection-volume switch. | _(disabled)_ |
+
+
+### Retrieval tuning
+
+Prompt-time search (`UPS_*` = the UserPromptSubmit surface). Defaults are the values the
+benchmark and A/B harness are calibrated against — changing them invalidates the numbers in
+[Search Quality](#search-quality).
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CLAUDE_MEM_UPS_MAX_RESULTS` | Max memories injected per prompt. | `3` |
+| `CLAUDE_MEM_UPS_REQUIRE_SIGNAL` | `0` restores always-search; by default the prompt must carry an explicit retrieval signal. | _(signal required)_ |
+| `CLAUDE_MEM_UPS_BM25_MIN` | BM25 relevance floor for a result to be injected. | `1e-5` |
+| `CLAUDE_MEM_UPS_BM25_MIN_FOLLOWUP` | Looser floor for follow-up prompts inside an already-injected session. | `5e-6` |
+| `CLAUDE_MEM_UPS_OR_BM25_MIN` | Floor applied to the OR-fallback arm (looser query, needs a stricter floor). | `30` |
+| `CLAUDE_MEM_UPS_TOP_MIN` | Minimum score for the top hit; `0` disables (useful on tiny test corpora). | `50` |
+| `CLAUDE_MEM_UPS_FLOOR_REF_CORPUS` | Reference corpus size the score floors are normalized against, so a fresh install with few rows is not silently gated to zero injections. Shared by every floor-bearing surface, including error-recall below. | `584` |
+| `CLAUDE_MEM_ERROR_RECALL_BM25_MIN` | Relevance floor for the error-recall surface (memories injected after a failed Bash command). **Off by default.** Setting it to `10.5` (the calibrated value) makes the surface stay silent when its best-matching memory is not actually about the failure — the whole set is dropped, never trimmed row-by-row. **It is a real trade, not a free win:** measured on a live database at that threshold, injections fall ~37% and ~39% of firings go silent, concentrated in projects with few memories. Off by default because nothing shows the dropped rows were noise. Explore with `node benchmark/error-recall-suite.mjs --sweep`. | `0` (off) |
+| `CLAUDE_MEM_ERROR_RECALL_RERANK` | `off` restores the flat keyword ordering of the error-recall surface. **On by default**, and unlike the floor above it removes nothing: memories that share only the failed command's vocabulary are demoted below memories that mention the failure itself, and when a project has none of the latter the result is unchanged. Measured on a live database over 52 real failing commands × 15 projects: the lead memory matched no error term in 42.3% of firings before, 21.5% after, with the injected row count identical. | _(on)_ |
+| `CLAUDE_MEM_ERROR_RECALL_ON_FAILURE` | `off` stops the plugin from recalling memories when a Bash command **fails at the host level**. On by default. Claude Code delivers failed tool calls to a separate `PostToolUseFailure` hook event, so before this the surface only ever saw commands that exited `0` while printing error-ish text — a genuinely failing build recalled nothing. Denials from your own guardrails (sandbox, policy hooks, declined permission prompts) and commands you interrupted are never recalled for. | _(on)_ |
+| `CLAUDE_MEM_UPS_IDENTIFIER_BYPASS` | `0` disables the bypass that lets an exact identifier match skip the score floors. | _(on)_ |
+| `CLAUDE_MEM_UPS_PROMPT_FALLBACK_LIMIT` | How many past-prompt rows the fallback arm may return. | `1` |
+| `MEM_COVERAGE_THRESHOLD` | Fraction of query terms a memory must cover to qualify (∈ [0,1]). | `0.4` |
+| `MEM_CROSS_PROJECT_BOOST` | Multiplier for matches from other projects (∈ [0,1]); raise it for installs that want more cross-project sharing. | `0.4` |
+| `MEM_OR_FALLBACK_MAX_TOKENS` | Max query tokens allowed into the OR fallback (∈ [0,50]). | `8` |
+| `CLAUDE_MEM_CJK_PREC_MIN` | Precision floor for CJK segmentation candidates. | `0.2` |
+| `CLAUDE_MEM_AUTO_DEEP` | `0` disables automatic deep-search escalation (one Haiku call rewriting a weak query into keyword/concept/HyDE variants). Explicit `deep: true` still works. | _(auto)_ |
+| `CLAUDE_MEM_DEEP_DISCLOSURE` | `off` suppresses the one-line caveat appended to a multi-variant deep result. The caveat exists because deep search fills the page even when the corpus cannot answer — measured at 10 of 10 slots on queries whose answers had been removed (`benchmark/deep-search-holdout.mjs`) — and `deep` is AUTO by default on the MCP surface, i.e. it escalates precisely when the honest answer is "nothing". It does not change retrieval, ranking, or which rows are returned. | _(on)_ |
+| `CLAUDE_MEM_REACH_DISCLOSURE` | `off` suppresses the one-line note that fires when a search's reported `total` exceeds what its pagination can hand back. The candidate pool is sized from `limit` alone and deliberately does not grow with `offset` (D#30 — an offset-scaled pool re-ranks its own prefix under RRF, so pages overlapped and gapped), while `total` is the full match count. Measured on a 128-row corpus: at the default limit of 20 the last non-empty offset is 59, so 60 of 128 rows are unreachable at any offset. The note reports that; it does not change retrieval, ranking, or which rows are returned. It stays **silent** when a filter you asked for (`tier`, or the CJK precision gate on prompts) removed rows after the count was taken — that gap is your filter, not the pool, and raising the limit would not recover it. | _(on)_ |
+| `CLAUDE_MEM_NORMALIZE_CROSS_PROJECT` | `1` restores the pre-fix behaviour where the daily unattended `normalize` runs ONCE over every project's concepts at the same time. That is how one project's stored content could steer synonym groups applied to another project's rows, so the default is now one scoped pass per project (bounded to 8 per run). The cost of the default is that `k8s` in one project and `kubernetes` in another are no longer unified automatically. Note that EVERY unscoped run fans out, including an explicit `optimize --run --task normalize` with no `--project` — this variable is the only route back to the single cross-project pass. A foreground `optimize` run prints a warning when it is set; the daily unattended pass cannot (its worker is spawned with stderr closed), so `claude-mem-lite doctor` reports it as a ⚠ instead. | _(off)_ |
+| `CLAUDE_MEM_AUTO_DEEP_CLI` | `0` disables the same auto-escalation on the CLI path only. | _(auto)_ |
+| `CLAUDE_MEM_UPS_PROMPT_ECHO` | `0` lets the "Past similar questions" fallback show a stored question identical (or nearly) to the prompt just typed, from an earlier session. The current session's own prompts stay excluded either way: showing the prompt just typed was a bug. | _(on)_ |
+| `CLAUDE_MEM_SCOPE_FILTER` | `1` stops environment-scoped observations from firing on file-triggered recall. They stay reachable via search. **Leave it off**: on the face it gates, `environment` is not the low-relevance class its premise assumes — it cites at least as well as `project` (47.5% vs 44.3%, intervals overlapping), and an earlier measurement left 173 recall groups empty with it on. | _(off)_ |
+| `CLAUDE_MEM_READS_CARRY` | An episode flush collects `reads-<project>.txt` only when it will actually save an observation, so a flush that records nothing no longer discards the Read paths it swept up (42.2% of the paths a flush consumed, measured over 1122 transcript

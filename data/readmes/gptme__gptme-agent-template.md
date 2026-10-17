@@ -1,0 +1,330 @@
+# gptme-agent-template
+
+[![built using gptme](https://img.shields.io/badge/built%20using-gptme%20%F0%9F%A4%96-5151f5?style=flat)](https://github.com/ErikBjare/gptme)
+<!--template-->
+
+[![Test](https://github.com/ErikBjare/gptme-agent-template/actions/workflows/test.yml/badge.svg)](https://github.com/ErikBjare/gptme-agent-template/actions/workflows/test.yml)
+
+> [!NOTE]
+> This is a template for a [gptme](https://gptme.org)-based agent. See the [agents documentation](https://gptme.org/docs/agents.html) for more information about gptme agents and how they work.
+>
+> [Fork it](#forking) to create a new agent with its own identity.
+
+<!--/template-->
+The name of the agent is gptme-agent.
+
+This git repository is the brain of gptme-agent. It is a workspace of their thoughts and ideas.
+
+ - gptme-agent will write their thoughts, plans, and ideas in this repository.
+ - gptme-agent's agent harness, including this repo, is in-progress.
+ - gptme-agent is encouraged to suggest improvements to their harness.
+
+Information about gptme-agent can be found in [`ABOUT.md`](./ABOUT.md), including their personality and goals.
+gptme-agent's runtime persona — voice, taste, and stance — lives in [`SOUL.md`](./SOUL.md), kept short and high-signal.
+Information about gptme-agent's harness and architecture can be found in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+
+For the first coding task after `gptme "hello"` — a disposable failing pytest
+and the commands to have the agent fix it — see
+[`docs/first-task-walkthrough.md`](./docs/first-task-walkthrough.md).
+
+For what happens *after* setup — where to run it, accounts, costs, and what
+breaks a few months in — see [`docs/operating-an-agent.md`](./docs/operating-an-agent.md).
+
+<!--template-->
+## Prerequisites
+
+Before forking or using this template, ensure you have the required dependencies installed.
+
+**Quick Check:**
+```sh
+./scripts/install-deps.sh
+```
+
+**Auto-Install (where possible):**
+```sh
+./scripts/install-deps.sh --install
+```
+
+### Required Dependencies
+
+| Dependency | Purpose | Installation |
+|------------|---------|--------------|
+| `git` | Version control | Package manager |
+| `python3` | Python 3.10+ runtime | Package manager |
+| `pipx` | Python CLI tool installer | `python3 -m pip install --user pipx` |
+| `uv` | Fast Python package manager | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| `gptme` | Agent framework | `pipx install gptme` |
+
+### Recommended Dependencies
+
+| Dependency | Purpose | Installation |
+|------------|---------|--------------|
+| `tree` | Directory visualization | `apt/brew/dnf install tree` |
+| `jq` | JSON processing | `apt/brew/dnf install jq` |
+| `gh` | GitHub CLI | [cli.github.com](https://cli.github.com/) |
+| `prek` | Git hooks (fast Rust runner) | `uv tool install prek` |
+| `shellcheck` | Shell script linter | `apt/brew/dnf install shellcheck` |
+<!--/template-->
+
+## Quick Start
+
+<!--template-->
+The easiest way to create a new agent from this template is with the `gptme-agent` CLI (included with gptme):
+
+```sh
+pipx install gptme
+
+# Create a new agent workspace from this template
+gptme-agent create ~/my-agent --name MyAgent
+
+cd ~/my-agent
+
+# Verify the workspace is healthy (optional but recommended)
+gptme-agent doctor
+
+# Run the agent interactively
+gptme "hello"
+```
+
+The agent's context is automatically loaded via `gptme.toml` which configures the files and context command to include.
+
+#### Verified end-to-end
+
+This quickstart was executed end-to-end against gptme 0.33.0 on 2026-09-18. The
+`gptme-agent create` step clones the template, customizes the agent name, and
+leaves a ready-to-run workspace:
+
+```text
+🚀 Creating agent workspace: /tmp/qs-test-agent
+   Agent name: QsTest
+   Mode: template-based
+
+📦 Cloning template from https://github.com/gptme/gptme-agent-template...
+   Branch: master
+✓ Template cloned and customized
+
+✅ Workspace created!
+```
+
+`gptme-agent doctor` confirms the workspace is ready (23 checks passed, 7
+warnings, 1 error — the error is the missing `origin` remote on a fresh clone,
+which is expected until you create a GitHub repository, add it as `origin`
+(`git remote add origin git@github.com:YOU/my-agent.git`), and push):
+
+```text
+Summary: 23 passed, 7 warnings, 1 errors
+```
+
+And `gptme "hello"` loads the agent's context and completes a turn (output
+abridged — the assistant reply appears between the lesson header and the session
+stats):
+
+```text
+Lessons: 4 unique lessons included (4 total matches)
+
+Hello! I'm QsTest, your AI agent. How can I help you today?
+
+· Session: $0.01 | 3 turns | 22k context | 35% cached
+Goodbye! (resume with: gptme --name autonomous-b659)
+```
+
+From `pipx install gptme` to a responding agent is under five minutes.
+
+When hello works, run the [first-task walkthrough](./docs/first-task-walkthrough.md):
+a two-file failing pytest, `gptme -n`, and a captured before/after from a
+fresh directory.
+
+### One Agent, Multiple Runtimes
+
+**Your agent is the workspace, not the harness.** Identity, memory, tasks,
+lessons, journal, workflow, and audit history live in this version-controlled
+repository. A harness is one runtime that can operate on that durable state.
+
+Keep these layers separate when configuring or comparing an agent:
+
+| Layer | What it owns | Examples |
+|-------|--------------|----------|
+| **Agent workspace** | Identity, memory, tasks, journal, lessons, workflow | This repository |
+| **Harness / runtime** | Agent loop, tools, context loading, permissions | gptme, Claude Code, Codex, Grok Build |
+| **Model / provider** | The model that reasons and generates output | GPT, Claude, Grok, Gemini, DeepSeek, local models |
+| **Access / billing** | How inference is authenticated and paid for | API keys, local inference, managed services, compatible subscriptions |
+
+These layers are orthogonal, but they are not a full Cartesian product: each
+harness supports a different set of models and access methods. The table below
+states exactly what this template ships and where an external adapter is still
+required.
+
+| Runtime | This template | Context contract |
+|---------|---------------|------------------|
+| **gptme** | Native / first-class | Loads `gptme.toml`, runs `context_cmd`, and matches lessons automatically |
+| **Claude Code** | First-class alternative with an autonomous launcher | Reads `AGENTS.md` natively (2.1.277+); the launcher builds a shared system prompt |
+| **Codex** | Manual workspace compatibility; no launcher | Reads `AGENTS.md`; run `scripts/context.sh` and load bootstrap files manually |
+| **Grok Build** | Not wired; external adapter required | An adapter must inject the workspace prompt/context and preserve run state |
+| **Pi** | Not wired; experimental adapter required | Do not treat it as supported until its context, auth, and session lifecycle are smoke-tested |
+
+The compatibility level is the important claim. “Can read the repository” is
+not the same as “ships a reliable autonomous adapter.”
+
+### Shipped Alternative: Claude Code
+
+The template also supports Claude Code as an alternative backend:
+
+```sh
+# Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# Authenticate
+claude /login
+
+# Run interactively (reads AGENTS.md automatically)
+claude
+
+# Run autonomously
+./scripts/runs/autonomous/autonomous-run-cc.sh
+```
+
+The `scripts/build-system-prompt.sh` script reads `gptme.toml` and builds a system prompt for Claude Code, so both backends share the same identity files and context.
+<!--/template-->
+
+<!--template-->
+### Workspace Health Check
+
+After creating or forking an agent workspace, verify everything is configured correctly:
+
+```sh
+gptme-agent doctor
+```
+
+This checks core files, configuration, directories, tools, and submodules. Use `--fix` to auto-fix simple issues (create missing directories, initialize submodules).
+
+> Requires gptme >= v0.32
+
+<!--/template-->
+
+Run the agent interactively with gptme or Claude Code:
+
+```sh
+gptme "hello"
+# or: claude
+```
+
+<!--autonomous-->
+## Autonomous Operation
+
+Agents can run autonomously on a schedule using systemd (Linux) or launchd (macOS).
+
+<!--template-->
+```sh
+# Install as a system service (runs every 30 minutes by default)
+gptme-agent install
+
+# Customize the schedule
+gptme-agent install --schedule "*:00"    # Every hour
+
+# Manage the agent
+gptme-agent status              # Check status
+gptme-agent logs --follow       # Monitor logs
+gptme-agent run                 # Trigger immediate run
+gptme-agent stop                # Pause scheduled runs
+```
+<!--/template-->
+
+See the [gptme agents documentation](https://gptme.org/docs/agents.html) for service installation and management commands.
+
+To customize the autonomous behavior, edit the run script for your backend:
+- **gptme**: `scripts/runs/autonomous/autonomous-run.sh`
+- **Claude Code**: `scripts/runs/autonomous/autonomous-run-cc.sh`
+
+**See**: [`scripts/runs/autonomous/README.md`](./scripts/runs/autonomous/README.md) for complete documentation.
+
+**Features**:
+- CASCADE workflow (Loose Ends → Task Selection → Execution)
+- Two-queue system (manual + generated priorities)
+- Safety guardrails (GREEN/YELLOW/RED operation classification)
+- Session documentation and state management
+- **Two shipped autonomous launchers**: gptme and Claude Code; other harnesses
+  need an adapter that preserves the same workspace contract
+
+### Minimal Headless Alternative
+
+If you don't need the full template workspace, gptme ships a built-in CLI to scaffold a bare headless agent (systemd user service + startup script + skeleton `gptme.toml`/`AGENTS.md`):
+
+```sh
+gptme service init --name myagent --model gpt-4o-mini --work-dir ~/gptme-agent
+```
+
+Run `gptme service init --help` for all options. Fork this template for a full agent workspace; use `gptme service init` for a minimal one.
+<!--/autonomous-->
+
+<!--template-->
+## Forking (manual alternative)
+
+If you prefer to fork manually instead of using `gptme-agent create`:
+
+```sh
+git clone https://github.com/gptme/gptme-agent-template
+cd gptme-agent-template
+git submodule update --init --recursive
+
+./scripts/fork.sh <path> [<agent-name>]
+```
+
+Then follow the instructions in the output.
+<!--/template-->
+
+## Domain Agent Apps
+
+Use [`knowledge/portable-agent-apps.md`](./knowledge/portable-agent-apps.md)
+when packaging a domain-specific agent app from this template. The short version:
+keep one shared workflow contract, expose it through thin runtime adapters, and
+preserve user-owned state across system updates.
+
+## Workspace Structure
+
+ - gptme-agent keeps track of tasks in [`TASKS.md`](./TASKS.md)
+ - gptme-agent keeps a journal in [`./journal/`](./journal/)
+ - gptme-agent keeps a knowledge base in [`./knowledge/`](./knowledge/)
+<!--people-->
+ - gptme-agent maintains profiles of people in [`./people/`](./people/)
+<!--/people-->
+<!--state-->
+ - gptme-agent manages work priorities in [`./state/`](./state/) using the two-queue system (manual + generated)
+<!--/state-->
+ - gptme-agent uses scripts in [`./scripts/`](./scripts/) for context generation, task management, and automation
+ - gptme-agent can add files to [`gptme.toml`](./gptme.toml) to always include them in their context
+
+### Key Directories
+
+<!--state-->
+**[`state/`](./state/)**: Work queue management
+- `queue-manual.md` - Manually maintained work queue with strategic context
+- `queue-generated.md` - Auto-generated queue from tasks and GitHub
+- See [`state/README.md`](./state/README.md) for detailed documentation
+
+<!--/state-->
+**[`scripts/`](./scripts/)**: Automation and utilities
+- `context.sh` - Main context generation orchestrator (includes `gptodo status --compact` when gptodo is installed)
+<!--autonomous-->
+- `runs/autonomous/` - Autonomous operation infrastructure
+<!--/autonomous-->
+- See [`scripts/README.md`](./scripts/README.md) for complete documentation
+
+**[`lessons/`](./lessons/)**: Behavioral patterns and constraints
+- Prevents known failure modes through structured guidance
+- See [`lessons/README.md`](./lessons/README.md) for lesson system documentation
+
+## Tasks and Communication
+
+Two packages from [gptme-contrib](https://github.com/gptme/gptme-contrib) cover the "what should I work on" and "who do I owe a reply" questions. Both are optional CLIs installed separately; the workspace runs without them.
+
+| Package | What it gives the agent | Status in this workspace |
+|---------|-------------------------|--------------------------|
+| [**gptodo**](https://github.com/gptme/gptme-contrib/tree/master/packages/gptodo) | File-based task manager and work queue: Markdown + YAML frontmatter tasks in `tasks/`, dependency-aware `ready`/`next` selection, claims, a state machine, and lint | Wired in: task files follow its format, `scripts/context.sh` shows `gptodo status --compact`, a pre-commit hook runs `gptodo check`, and [`TASKS.md`](./TASKS.md) / [`WORKFLOW.md`](./WORKFLOW.md) select work with `gptodo ready` |
+| [**gptmail**](https://github.com/gptme/gptme-contrib/tree/master/packages/gptmail) | Email (via `mbsync` + `msmtp`) and SSH agent-to-agent messaging, with messages stored as Markdown files in the workspace and replies tracked so each message is answered once | Not wired in: install and configure it if the agent should handle email or message other agents (see [`TOOLS.md`](./TOOLS.md#communication-optional)) |
+
+```sh
+uv tool install git+https://github.com/gptme/gptme-contrib#subdirectory=packages/gptodo
+uv tool install git+https://github.com/gptme/gptme-contrib#subdirectory=packages/gptmail  # optional
+```
+
+**Bring your own.** You can use a different task tracker (GitHub Issues, Linear, a single `TODO.md`, …) or communication system (any email client, chat bridge, or message bus). [`TASKS.md`](./TASKS.md#using-a-different-task-tracker) lists the places that call gptodo and what to replace.

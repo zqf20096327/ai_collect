@@ -1,0 +1,108 @@
+# Ghidra CLI
+
+> ⚠️ This project is under very active development and all types of backward compatibility are not being considered. ⚠️
+>
+> Check this repository and frequently update executable and skills for the better experience!
+
+A Rust CLI for AI agents automating native-binary reverse engineering with
+Ghidra: decompilation, queries, types, scripts, and patches. One persistent Java
+bridge per project keeps analysis state in Ghidra's JVM between commands.
+
+See [ghidra-cli command tree](docs/tree.md)!
+
+---
+
+## Install
+
+Install [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases) and a compatible full JDK (JDK 21 for Ghidra 12.x) separately.  
+Building the CLI requires a stable Rust toolchain.  
+See [runtime installation](docs/runtime.md#installation) for platform-specific requirements.
+
+```bash
+git clone https://github.com/toratako/ghidra-cli.git
+cd ghidra-cli
+cargo install --path .
+ghidra-cli doctor
+```
+
+or download a prebuilt binary from [releases](https://github.com/toratako/ghidra-cli/releases).  
+Windows/Linux/macOS binaries are available.
+You can [verify the downloaded archive](docs/verification.md) using GitHub Artifact Attestations.
+
+Ghidra is detected from PATH and known installation locations.  
+If it is not found, set `GHIDRA_INSTALL_DIR` or run `ghidra-cli config set ghidra_install_dir /path/to/ghidra`, then rerun `doctor`.
+
+To use a standalone `ghidra.jar` built by Ghidra's official `buildGhidraJar`,
+set `GHIDRA_JAR` or run `ghidra-cli config set ghidra_jar /path/to/ghidra.jar`.  
+See [standalone JAR setup](docs/runtime.md#standalone-ghidra-jar) for build requirements.  
+Use `ghidra-cli doctor --runtime` to also verify bridge startup.
+
+### Skills
+
+There is already an optimized [ghidra-cli skill](docs/skills/ghidra-cli/SKILL.md) for strong agents.  
+This skill is thin and does not include RE workflow, just usage and examples of the CLI commands.
+
+You can also [verify the skill ZIP](docs/verification.md) using GitHub Artifact Attestations.
+
+Install [ghidra-cli skill](docs/skills/ghidra-cli/) (If you download from [releases](https://github.com/toratako/ghidra-cli/releases), use `ghidra-cli-<version>-skill.zip`) to your agents:  
+[Claude Code](https://code.claude.com/docs/en/skills#where-skills-live), [Codex](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills), [Cursor](https://prod.cursor.com/docs/skills#skill-directories), [Gemini CLI](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/using-agent-skills.md#discovery-tiers), [OpenCode](https://opencode.ai/docs/skills#place-files)
+
+### Web
+
+Tested with ChatGPT Web Chat on September 24, 2026.
+
+ChatGPT Web Chat provides a Linux sandbox with OpenJDK 21.0.11 preinstalled.  
+Since ChatGPT supports file uploads of up to 512 MB per file ([source](https://help.openai.com/en/articles/8555545-file-uploads-faq#what-are-the-file-upload-size-restrictions)), the approximately 229 MiB `ghidra.jar` from Ghidra 12.1.4 can be uploaded directly.
+
+Upload the zipped skills, the `ghidra-cli` executable, and `ghidra.jar` to the web chat.
+
+To build `ghidra.jar`, download the [official Ghidra release](https://github.com/NationalSecurityAgency/ghidra/releases/) and run `./support/buildGhidraJar`.
+
+Prompt:
+
+<details>
+<summary>Click to expand</summary>
+<pre>
+
+Use the uploaded `ghidra-cli` executable and the uploaded `ghidra.jar` to verify that ghidra-cli works in this Linux sandbox.
+
+Also inspect the uploaded skills ZIP and follow its relevant instructions where applicable.
+
+Set `GHIDRA_JAR` to the absolute path of the copied standalone `ghidra.jar`.
+Then run: `ghidra-cli doctor --runtime`
+
+At the end, report the full `ghidra-cli doctor --runtime` output.
+
+</pre>
+</details>
+
+---
+
+## Uninstall
+
+```bash
+cargo uninstall ghidra-cli
+rm -rf ~/.config/ghidra-cli/
+rm -rf ~/.local/share/ghidra-cli/
+```
+
+## Documentation
+
+- [ghidra-cli skill](docs/skills/ghidra-cli/SKILL.md): commands and operational semantics for RE agents.
+- [Configuration and recovery](docs/runtime.md): JDK selection, environment variables, and troubleshooting.
+
+Development: [AGENTS.md](AGENTS.md), [tests](tests/README.md),
+[documentation map](docs/README.md), and [release history](CHANGELOG.md).
+
+## Related Projects (not affiliated)
+
+- [bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp)
+- [clearbluejar/pyghidra-mcp](https://github.com/clearbluejar/pyghidra-mcp)
+- [cellebrite-labs/ghidra-rpc](https://github.com/cellebrite-labs/ghidra-rpc)
+- [mrphrazer/ghidra-headless-mcp](https://github.com/mrphrazer/ghidra-headless-mcp)
+- [ghidra-user-jp/mecha_ghidra](https://github.com/ghidra-user-jp/mecha_ghidra)
+
+## License
+
+Licensed under [GPL-3.0](LICENSE).  
+This project is based on [akiselev/ghidra-cli](https://github.com/akiselev/ghidra-cli). Thanks a lot!

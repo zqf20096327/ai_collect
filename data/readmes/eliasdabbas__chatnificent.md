@@ -1,0 +1,302 @@
+
+<p align="center">
+  <img src="chatnificent-logo.svg" width="350">
+</p>
+
+> 🎉 **New — 33 live example apps now running on [chatnificent.com](https://chatnificent.com).** Every app is a single Python file you can [read on GitHub](https://github.com/eliasdabbas/chatnificent/tree/main/examples) and run yourself.
+
+<details>
+<summary><strong>Browse all 33 live apps →</strong></summary>
+
+#### Start here
+- [Quickstart](https://chatnificent.com/chat/quickstart/) — zero-dependency starting point with the built-in Echo provider
+- [Custom branding](https://chatnificent.com/chat/custom-branding/) — rebrand name, slogan, logo, favicon, title, welcome — in one constructor call
+
+#### Tools & agents
+- [Tool calling](https://chatnificent.com/chat/tool-calling/) — register a plain Python function; schema inferred from type hints + docstring
+- [Multi-tool agent](https://chatnificent.com/chat/multi-tool-agent/) — several tools, one agent loop, multi-turn task completion
+- [OpenAI Cookbook port](https://chatnificent.com/chat/how-to-call-functions-with-chat-models/) — the classic "How to call functions with chat models" recipe
+- [QR code tool](https://chatnificent.com/chat/tool-qr-code-simple/) — a tool that returns a real file; PNG persisted and rendered inline
+
+#### Images
+- [OpenAI image — simple](https://chatnificent.com/chat/openai-image-simple/) — every prompt becomes a PNG via `images.generate`
+- [OpenAI image variations](https://chatnificent.com/chat/openai-image-variations/) — generate variations and compare side-by-side
+- [OpenAI image studio](https://chatnificent.com/chat/openai-responses-image-studio/) — multi-turn image editing on the Responses API
+- [Gemini image — simple](https://chatnificent.com/chat/gemini-image-simple/) — same artifact recipe wired to Google's Gemini image model
+- [Gemini image — advanced](https://chatnificent.com/chat/gemini-image-advanced/) — live "studio" panel: model, aspect ratio, resolution, thinking level
+- [Gemini text + illustration](https://chatnificent.com/chat/gemini-multimodal-advanced/) — write a story with one model, illustrate with another
+
+#### Audio & video
+- [OpenAI TTS — simple](https://chatnificent.com/chat/openai-tts-simple/) — every message becomes a spoken `<audio>` clip
+- [OpenAI TTS — advanced](https://chatnificent.com/chat/openai-tts-advanced/) — stream chat reply, then append narration in the same bubble
+- [Gemini TTS — simple](https://chatnificent.com/chat/gemini-tts-simple/) — chat in text, then narrate; voice reshuffled from a 30-voice roster
+- [Gemini TTS — advanced](https://chatnificent.com/chat/gemini-tts-advanced/) — render a two-speaker dialog into one stitched WAV
+- [Gemini music — simple](https://chatnificent.com/chat/gemini-music-simple/) — 30-second MP3 from a text prompt via Lyria 3
+- [Gemini music — advanced](https://chatnificent.com/chat/gemini-music-advanced/) — Lyria 3 plus image prompts for inspiration
+- [Gemini video — simple](https://chatnificent.com/chat/gemini-video-simple/) — 4-second clip via Veo 3.1 Fast; async polling inside the LLM pillar
+
+#### Search
+- [Web search](https://chatnificent.com/chat/web-search/) — Gemini with Google Search grounding, parsed into result cards
+- [Interactive search](https://chatnificent.com/chat/openai-responses-interactive-search/) — reasoning effort, domain restriction, search type as live UI controls
+- [Website search](https://chatnificent.com/chat/openai-responses-website-search/) — restrict OpenAI's hosted web search to a single site
+
+#### Files & artifacts
+- [File serving — simple](https://chatnificent.com/chat/file-serving-simple/) — canonical Artifact recipe with no provider SDK
+- [File serving — advanced](https://chatnificent.com/chat/file-serving-advanced/) — SVG + WAV + text interleaved in a single assistant turn
+- [Export to PDF — simple](https://chatnificent.com/chat/conversation-export-pdf-simple/) — render the conversation to PDF after every reply
+- [Export to PDF — advanced](https://chatnificent.com/chat/conversation-export-pdf-advanced/) — on-demand export with Pydantic cover page
+
+#### Conversation state
+- [Auto title](https://chatnificent.com/chat/auto-title/) — model-generated sidebar titles after the first exchange
+- [Conversation summary](https://chatnificent.com/chat/conversation-summary/) — append a fresh summary to a sidecar file each turn
+- [Per-user memory](https://chatnificent.com/chat/memory-tool-multi-user/) — Anthropic's native memory tool, scoped per user
+- [Multi-chat mode](https://chatnificent.com/chat/single-app-multi-chat-mode/) — one app, four conversation modes locked per chat
+
+#### UI & display
+- [UI interactions](https://chatnificent.com/chat/ui-interactions/) — bind dropdowns, sliders, and toggles to LLM call kwargs
+- [Usage display](https://chatnificent.com/chat/usage-display/) — surface per-turn token counts from the raw API response
+- [Display redaction](https://chatnificent.com/chat/display-redaction/) — mask emails, phones, card numbers in the visible transcript
+
+</details>
+
+---
+
+# Chatnificent
+
+**LLM chat app framework. Minimally complete. Maximally hackable.**
+
+[![PyPI version](https://img.shields.io/pypi/v/chatnificent.svg)](https://pypi.python.org/pypi/chatnificent) [![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/eliasdabbas/chatnificent)
+
+Pre-built chat UIs give you a working app but almost no way to customize it. Building from scratch gives you full control but means wiring up a UI, LLM client, message store, streaming, auth, and tool calling yourself.
+
+Chatnificent is a Python framework where each of those concerns is an independent, swappable component. You get a working app immediately. When you need to change something — the LLM provider, the database, the entire UI — you swap one component, instead of rewriting the whole app.
+
+## Quickstart
+
+```bash
+pip install chatnificent
+```
+
+```python
+import chatnificent as chat
+
+app = chat.Chatnificent()
+app.run()  # http://127.0.0.1:7777
+```
+
+No API keys, no extras, no configuration. You get a working chat UI with the built-in Echo LLM, a stdlib HTTP server, and an HTML/JS frontend — all with zero dependencies.
+
+## One Install Away from Real LLM Responses
+
+```bash
+pip install openai
+export OPENAI_API_KEY="sk-..."
+```
+
+Run the same code. Chatnificent auto-detects the installed OpenAI SDK and your API key — no code change needed.
+
+## Swap Anything
+
+Every component is a pillar you can swap independently:
+
+```python
+import chatnificent as chat
+
+# Different LLM providers
+app = chat.Chatnificent(llm=chat.llm.Anthropic())   # pip install anthropic
+app = chat.Chatnificent(llm=chat.llm.Gemini())       # pip install google-genai
+app = chat.Chatnificent(llm=chat.llm.Ollama())       # pip install ollama (local)
+
+# Persistent storage
+app = chat.Chatnificent(store=chat.store.SQLite(db_path="chats.db"))
+app = chat.Chatnificent(store=chat.store.File(base_dir="./conversations"))
+
+# Mix and match
+app = chat.Chatnificent(
+    llm=chat.llm.Anthropic(),
+    store=chat.store.SQLite(db_path="conversations.db"),
+    layout=chat.layout.Bootstrap(),  # Requires: pip install "chatnificent[dash]"
+)
+```
+
+## Streaming by Default
+
+All LLM providers stream by default — token-by-token delivery via Server-Sent Events. Opt out with `stream=False`:
+
+```python
+app = chat.Chatnificent(llm=chat.llm.OpenAI(stream=False))
+```
+
+## Binary Outputs, Persisted Automatically
+
+LLMs increasingly return bytes — audio, images, PDFs. Chatnificent persists the bytes to disk and keeps the conversation log tiny.
+
+With an LLM subclass that returns audio bytes, a two-turn conversation renders like this in the browser:
+
+> **You:** Testing, one, two, three.
+>
+> **Bot:** `▶  ──●──────────  0:02`
+>
+> **You:** Now say it backwards.
+>
+> **Bot:** `▶  ──●──────────  0:02`
+
+*Each Bot turn is a native HTML5 `<audio>` player; shown here as ASCII because GitHub sanitizes `<audio>` tags from rendered markdown.*
+
+On disk:
+
+```text
+conversations/
+└── anonymous/
+    └── ce974dfa/
+        ├── messages.json
+        └── audio/
+            ├── 0.mp3
+            └── 1.mp3
+```
+
+`messages.json` carries short HTML references, not the audio bytes:
+
+```json
+[
+  {"role": "user", "content": "Testing, one, two, three."},
+  {"role": "assistant", "content": "<audio src=\"/anonymous/ce974dfa/audio/0.mp3\" controls></audio>"},
+  {"role": "user", "content": "Now say it backwards."},
+  {"role": "assistant", "content": "<audio src=\"/anonymous/ce974dfa/audio/1.mp3\" controls></audio>"}
+]
+```
+
+The framework serves those files at `/<user_id>/<convo_id>/<file_path>`, so they stream cleanly to the browser and survive page reloads. Swap the wrapper for `<img>` or `<video>` and the same machinery handles images and video.
+
+## The Architecture: 9 Pillars
+
+Every major function is handled by an independent pillar with an abstract interface:
+
+| Pillar | Purpose | Default | Implementations |
+| :--- | :--- | :--- | :--- |
+| **Server** | HTTP transport | `DevServer` (stdlib) | DevServer, DashServer |
+| **Layout** | UI rendering | `Default` (HTML/JS) | Default, Bootstrap, Mantine, Minimal |
+| **LLM** | LLM API calls | `OpenAI` / `Echo` | OpenAI, Anthropic, Gemini, OpenRouter, DeepSeek, Ollama, Echo |
+| **Store** | Persistence | `InMemory` | InMemory, File, SQLite |
+| **Engine** | Orchestration | `Orchestrator` | Orchestrator |
+| **Auth** | User identification | `Anonymous` | Anonymous, SingleUser |
+| **Tools** | Function calling | `NoTool` | PythonTool, NoTool |
+| **Retrieval** | RAG / context | `NoRetrieval` | NoRetrieval |
+| **URL** | Route parsing | `PathBased` | PathBased, QueryParams |
+
+Dash-based layouts (Bootstrap, Mantine, Minimal) require `pip install "chatnificent[dash]"` and the `DashServer`.
+
+## Customize the Engine
+
+The `Orchestrator` manages the full request lifecycle: conversation resolution, RAG retrieval, the agentic tool-calling loop, and persistence. Override hooks (for monitoring) and seams (for logic):
+
+```python
+import chatnificent as chat
+from typing import Any, Optional
+
+class CustomEngine(chat.engine.Orchestrator):
+
+    def _after_llm_call(self, llm_response: Any) -> None:
+        tokens = getattr(llm_response, 'usage', 'N/A')
+        print(f"Tokens: {tokens}")
+
+    def _prepare_llm_payload(self, conversation, retrieval_context: Optional[str]):
+        payload = super()._prepare_llm_payload(conversation, retrieval_context)
+        if not any(m['role'] == 'system' for m in payload):
+            payload.insert(0, {"role": "system", "content": "Be concise."})
+        return payload
+
+app = chat.Chatnificent(engine=CustomEngine())
+```
+
+## Build Your Own Pillars
+
+Implement the abstract interface and inject it:
+
+```python
+import chatnificent as chat
+from chatnificent.models import Conversation
+
+class MongoStore(chat.store.Store):
+    def save_conversation(self, user_id, conversation): ...
+    def load_conversation(self, user_id, convo_id): ...
+    def list_conversations(self, user_id): ...
+
+app = chat.Chatnificent(store=MongoStore())
+```
+
+Every pillar works the same way: subclass the ABC, implement the required methods, pass it in.
+
+## Can't Wait? Try It Right Now
+
+No cloning, no installing — just [install uv](https://docs.astral.sh/uv/getting-started/installation/) and run any example directly from GitHub:
+
+> **Note:** Most examples require LLM provider API keys. Set the ones you need before running:
+> ```bash
+> export OPENAI_API_KEY="sk-..."
+> export ANTHROPIC_API_KEY="sk-ant-..."
+> export GOOGLE_API_KEY="AI..."
+> export OPENROUTER_API_KEY="sk-or-v1-..."
+> ```
+> `quickstart.py` and `persistent_storage.py` work with zero keys (Echo LLM).
+
+```bash
+# Zero-dep — works immediately
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/quickstart.py
+
+# LLM providers
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/llm_providers.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/ollama_local.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openrouter_models.py
+
+# Features
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/persistent_storage.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/tool_calling.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/system_prompt.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/multi_tool_agent.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/memory_tool.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/memory_tool_multi_user.py
+
+# Customization
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/single_user.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/auto_title.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/custom_branding.py
+
+# Display enrichment
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/usage_display.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/usage_display_multi_provider.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/conversation_title.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/conversation_summary.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/display_redaction.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/web_search.py
+
+# Starlette server (requires OPENAI_API_KEY)
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/starlette_quickstart.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/starlette_server_options.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/starlette_uvicorn_options.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/starlette_multi_mount.py
+
+# OpenAI Responses API (requires OPENAI_API_KEY)
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openai_responses.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openai_responses_website_search.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openai_responses_image_generator.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openai_responses_image_studio.py
+
+# UI Interactions (requires OPENAI_API_KEY)
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/ui_interactions.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/openai_responses_interactive_search.py
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/single_app_multi_chat_mode.py
+
+# OpenAI Cookbook — From Cookbook to Production (requires OPENAI_API_KEY)
+uv run --script https://raw.githubusercontent.com/eliasdabbas/chatnificent/main/examples/how_to_call_functions_with_chat_models.py
+```
+
+## Examples
+
+The [`examples/`](examples/) directory has 31 standalone scripts covering basics, tool calling, display enrichment, web search, and more — each runnable with a single command:
+
+```bash
+uv run --script examples/quickstart.py
+```
+
+See the [examples README](examples/README.md) for the full list.

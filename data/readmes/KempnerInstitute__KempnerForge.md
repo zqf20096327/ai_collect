@@ -1,0 +1,255 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="KempnerForge" width="240"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/KempnerInstitute/KempnerForge/actions/workflows/ci.yml"><img src="https://github.com/KempnerInstitute/KempnerForge/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+  <a href="https://github.com/KempnerInstitute/KempnerForge/actions/workflows/docs.yml"><img src="https://github.com/KempnerInstitute/KempnerForge/actions/workflows/docs.yml/badge.svg" alt="Docs"/></a>
+  <a href="https://codecov.io/gh/KempnerInstitute/KempnerForge"><img src="https://codecov.io/gh/KempnerInstitute/KempnerForge/graph/badge.svg?token=JvU079LEsl" alt="codecov"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"/></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+"/></a>
+  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/pytorch-2.4+-ee4c2c.svg" alt="PyTorch 2.4+"/></a>
+  <a href="docs/claude-ready.md"><img src="https://img.shields.io/badge/agent--ready-v0.1-4c8eda.svg" alt="Agent-ready v0.1"/></a>
+</p>
+
+PyTorch-native framework for fault-tolerant distributed training of foundation models on AI clusters.
+
+## AI / NeuroAI use cases
+
+- **Scaling law experiments**: train the same architecture from 125M to 70B by swapping a TOML config. FSDP, tensor, expert, and pipeline parallelism are automatic.
+- **Mechanistic interpretability**: activation extraction hooks at any layer with CPU offload; attention weight capture exposes raw QK^T matrices.
+- **Sparse architecture research**: switch between dense and MoE by setting `num_experts` (0 for dense, >0 for MoE). Softmax top-k or DeepSeek-V3 sigmoid routing, shared experts, fine-grained experts, configurable MoE frequency.
+- **Optimizer and scheduler comparison**: 4 optimizers (AdamW, Muon, Lion, Schedule-Free AdamW) × 6 LR schedulers, composable via config. Data annealing phases for curriculum learning.
+- **Long-running jobs on shared clusters**: SLURM preemption handling, async DCP checkpointing, auto-resume, NaN detection, GPU/NCCL health monitoring.
+- **Representation analysis for NeuroAI**: batch activation extraction via `ActivationStore` and `extract_representations()`, saved to `.npz` for downstream comparison against neural recordings.
+
+## Features
+
+**Architecture**
+- Decoder-only Transformer: RoPE, GQA, SwiGLU, RMSNorm, `torch.compile`
+- Mixture-of-Experts: softmax top-k and DeepSeek-V3 sigmoid routers, shared experts, fine-grained experts, router z-loss, configurable frequency
+
+**Parallelism**
+- FSDP2, Tensor, Expert, and Pipeline Parallelism
+- FP8 mixed precision (E4M3/E5M2 via torchao, FSDP2 float8 all-gather)
+
+**Training**
+- Optimizers: AdamW, Muon, Lion, Schedule-Free AdamW
+- LR schedulers: cosine, linear, WSD, constant, REX, none
+- Losses: cross-entropy, chunked CE, z-loss regularizer
+- DCP async checkpointing with auto-resume
+- Stateful data pipeline, multi-dataset mixing, data annealing, HuggingFace integration (eager + streaming)
+- SLURM preemption, multi-node launch, `TrainingHook` extensibility
+- NaN / GPU / NCCL health monitoring, MFU tracking, WandB / TensorBoard / MLflow backends
+
+**Interpretability**
+- Activation hooks with CPU offload for probing, CKA, SVCCA
+- Attention weight capture via explicit QK^T path
+- Batch extraction over entire datasets
+
+## Architecture
+
+```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 10, 'rankSpacing': 20, 'padding': 2, 'subGraphTitleMargin': {'top': 0, 'bottom': 2}}}}%%
+flowchart TB
+    %% Layer 1: configuration inputs
+    TOML[TOML preset] --> JC[JobConfig<br/>typed dataclasses]
+    CLI[CLI overrides] --> JC
+
+    %% Layer 2: training loop
+    JC --> TL[training/loop.py<br/>training loop]
+
+    %% Layer 3: subsystems (each a compact vertical stack)
+    TL --> Model
+    TL --> Parallelism
+    TL --> Data
+    TL --> Resilience
+    TL --> Outputs
+
+    subgraph Model
+        direction TB
+        M1[Token Embedding]
+        M2[Transformer Blocks<br/>RoPE · GQA · SwiGLU/MoE]
+        M3[Output Head]
+        M1 --> M2 --> M3
+    end
+
+    subgraph Parallelism ["Parallelism (strict order)"]
+        direction TB
+        P1[1 · TP] --> P2[2 · EP] --> P3[3 · FP8] --> P4[4 · AC] --> P5[5 · FSDP2]
+    end
+
+    subgraph Data ["Data"]
+        direction TB
+        D1[MemoryMapped<br/>or HuggingFace] --> D2[MixtureSampler] --> D3[StatefulDataLoader]
+    end
+
+    subgraph Resilience
+        direction TB
+        R1[SIGTERM handler]
+        R2[NaN detector]
+        R3[NCCL health]
+    end
+
+    subgraph Outputs
+        direction TB
+        O1[DCP checkpoints]
+        O2[MetricsTracker<br/>WandB · TB · MLflow]
+        O3[torch.profiler]
+    end
+```
+
+Parallelism application order is enforced. Wrong order causes silent correctness bugs. See [`docs/architecture/parallelism-order.md`](docs/architecture/parallelism-order.md) for the rationale.
+
+## Benchmarks
+
+Benchmarking and performance studies live in [`benchmarks/`](benchmarks): MFU and dense scaling sweeps, MoE expert parallelism and expert packing, multi-node profiling, and config validation.
+
+## Quick start
+
+Prerequisites: Python ≥ 3.12 (auto-fetched by uv via `.python-version` if not present), PyTorch ≥ 2.4 (CUDA), [uv](https://docs.astral.sh/uv/).
+
+```bash
+# Install
+uv sync
+
+# Single-GPU debug run
+uv run python scripts/train.py configs/train/debug.toml
+
+# Multi-GPU (4 GPUs, FSDP)
+uv run torchrun --nproc_per_node=4 scripts/train.py configs/train/7b.toml
+
+# SLURM (single node)
+sbatch scripts/slurm/singlenode.sh configs/train/7b.toml
+```
+
+Further reading:
+- [`docs/getting-started/quickstart.md`](docs/getting-started/quickstart.md): 5-minute walkthrough (install → debug → multi-GPU → custom data → optimizer swap → MoE → hooks)
+- [`docs/how-to/end-to-end-training-run.md`](docs/how-to/end-to-end-training-run.md): tokenize → config → 1 GPU → 4 GPUs → resume → generate
+- [`examples/notebooks/`](examples/notebooks/): 6 Jupyter notebooks (model inspection, attention visualization, activation extraction, checkpoint analysis, optimizer comparison, MoE routing)
+
+### Vision-language models
+
+KempnerForge supports VLM training — images **or video** (a clip is an ordered set of frames) — via a thin wrapper around the existing `Transformer`. Visual tokens come from a frozen HF vision encoder (SigLIP2, CLIP, or a tiny `random` test stub), pass through a connector (a 2-layer adapter, or an `avgpool` / `attentional_pool` connector that pools patches to reduce tokens per frame), and feed the backbone via an arch-specific path:
+
+- **Joint-Decoder** (`arch = "joint_decoder"`): image embeds are prepended to the text sequence; the transformer runs over the concatenated `(image, text)` sequence and the LM head is applied to text positions only.
+- **Cross-Attention** (`arch = "cross_attention"`, Llama-3-V style): the residual stream carries text only. Separate `CrossAttentionBlock`s inserted at a configurable cadence let text queries attend to image K/V. CA blocks are zero-initialized so adding the arch on top of a text-only checkpoint is identity at step 0 and learns from there.
+- **Mixture-of-Transformers** (`arch = "mot"`, Liang et al. 2024 Algorithm 1): every layer carries per-modality Q/K/V/O projections plus a per-modality FFN; a single global self-attention mixes all modality streams. Image tokens prepend the text sequence (same residual layout as Joint-Decoder); per-modality residual projections are zero-initialized so a fresh MoT block is identity at construction. A warm-start helper (`mot_warm_start_from_text_stack`) translates a JD or text-only checkpoint into per-modality copies — toggle via `[model.vlm].mot_warm_start_from_text` + `mot_warm_start_path`.
+- **Mixture of Modality-Aware Experts** (`arch = "moma"`, Lin et al. 2024 arXiv:2407.21770): one shared set of Q/K/V/O projections feeding a global self-attention, plus per-modality MoE FFN groups (paper's optimal default 4 image + 4 text experts per layer). Tokens route deterministically to their modality group (level-1, reusing the same `modality_ids` mechanism MoT uses) and then through a learned expert-choice + Sigmoid router within the group (level-2, with Gumbel-Sigmoid noise during training, paper Eq. 5). Image tokens prepend the text sequence (same residual layout as JD/MoT). v1 supports training only — expert-choice routing is non-causal, so autoregressive generation requires auxiliary routers (paper §2.4) which are deferred to a follow-up.
+
+**Video** works across all four archs with no arch-specific changes: a clip is decoded into frames (by a registered `sampling_policy` — default `uniform`: by timestamp at a target fps, first and last frame kept), each frame is encoded and pooled by the connector, and the `F × tokens_per_frame` visual tokens enter the backbone exactly like image tokens. The data side is **pluggable** — `[video].dataset_type` selects a registered dataset builder (`webvid` ships; `dataset_name` picks the corpus within a WebVid-style layout) and `sampling_policy` selects the frame-sampling policy, so new dataset styles / policies are additive registrations. Configure the `[video]` section (`data_root`, `dataset_type`, `dataset_name`, `sampling_policy`, `fps`, `max_frames`, `frame_size`); see `examples/vlm/configs/vlm_video_webvid.toml`. Video decoding uses PyAV, an optional dependency — install it with `uv sync --group video`.
+
+The example ships in [`examples/vlm/`](examples/vlm/) — its configs and its own training entry point:
+
+```bash
+# 1-GPU smoke (random encoder, Joint-Decoder)
+uv run python examples/vlm/train.py examples/vlm/configs/vlm_debug.toml \
+    --data.hf_dataset_name=<vlm-dataset> --data.tokenizer_path=gpt2
+
+# 4-GPU SigLIP2 + 7B Joint-Decoder
+uv run torchrun --nproc_per_node=4 examples/vlm/train.py examples/vlm/configs/vlm_7b_siglip2.toml
+
+# 4-GPU 7B Cross-Attention (8 CA blocks at cadence 4)
+uv run torchrun --nproc_per_node=4 examples/vlm/train.py examples/vlm/configs/vlm_7b_cross_attn.toml
+
+# 4-GPU 7B Mixture-of-Transformers
+uv run torchrun --nproc_per_node=4 examples/vlm/train.py examples/vlm/configs/vlm_7b_mot.toml
+
+# 4-GPU 7B Mixture of Modality-Aware Experts (4 text + 4 image experts per layer)
+uv run torchrun --nproc_per_node=4 examples/vlm/train.py examples/vlm/configs/vlm_7b_moma.toml
+
+# 4-GPU video training on WebVid (Joint-Decoder; flip [vlm].arch for cross_attention / mot / moma)
+uv run torchrun --nproc_per_node=4 examples/vlm/train.py examples/vlm/configs/vlm_video_webvid.toml
+```
+
+Configs set `[model.vlm]` with `arch`, the encoder registry key, the number of image tokens, and a freeze list (`FreezeSpec`). For Cross-Attention, set `cross_attention_every_n_layers` and optionally `cross_attention_n_kv_heads` (0 → MHA; positive → GQA on the cross path). For MoT, set `mot_modalities` (must include both `"image"` and `"text"`); `mot_image_n_heads` / `mot_image_n_kv_heads` are forward-looking per-modality head fields (v1 enforces equality with the text-side counts since the operator runs a single global SDPA). For MoMa, set `moma_experts_per_modality = {image = N, text = M}` as a nested TOML table (the paper's optimal balanced default is `4t4i`; unbalanced allocations like `{image = 1, text = 7}` match the paper's `moe_7t1i` ablation), and optionally `moma_capacity_factor` (defaults to `1/|E^M|` per modality — the paper's perfect-balance setting) and `moma_gumbel_noise` (`true` by default for paper-faithful EC routing). `model.num_experts` must be `0` when `arch = "moma"`; the per-modality counts supersede it, and JobConfig.validate rejects the combination. The vision encoder stays in its HF-loaded dtype; the transformer, adapter, and CA / MoT / MoMa blocks are cast to `param_dtype`. Pipeline Parallel + VLM is not supported on this branch (raises at startup); MoMa + Expert Parallelism is also rejected in v1. Video is supported across all four archs via the `[video]` section (a clip is decoded into frames, pooled by the connector, and fed like image tokens); multi-image inputs and video *grounding* (point/track outputs with per-frame timestamps) are reserved for follow-up work.
+
+**Adding a new VLM arch.** The discriminated-union dispatch is registry-driven, so a new arch is four small additions, no edits to existing call sites:
+
+1. Add a `VLMConfig` subclass in `kempnerforge/config/vlm.py` decorated with `@registry.register_vlm_config("<arch_name>")`. Override `residual_stream_image_tokens()` if the arch's residual stream is not text-only-plus-prefix.
+2. Add a `ModalityStrategy` class (in `kempnerforge/model/vlm.py` for in-tree arches, or any module imported at startup) decorated with `@registry.register_modality_strategy("<arch_name>")`. Implement `prepare(wrapper, pixel_values, input_ids) -> ModalityContext` and `num_image_tokens(wrapper) -> int`.
+3. If the arch needs new modules (e.g. `CrossAttentionBlock` for Cross-Attention), add them under `kempnerforge/model/` and wire them into `Transformer.__init__` behind an `isinstance(config.vlm, MyConfig)` guard so non-arch builds stay zero-cost.
+4. Drop the arch name from `_RESERVED_ARCHS` in `kempnerforge/config/vlm.py` if it was reserved.
+
+The TOML loader picks up the new arch automatically — `[model.vlm]` with `arch = "<arch_name>"` instantiates the right subclass. `VLMWrapper.forward` is unchanged.
+
+## Agent-ready
+
+This repo ships a plugin with a small set of scoped skills that let an AI coding assistant drive first-run setup, smoke tests, SLURM launches, and common extension tasks (adding optimizers, MoE routers, new configs). Every skill gates on a shared preflight (`scripts/check_env.py`) so agents bail out with actionable errors instead of producing silent garbage.
+
+First-run flow, from a fresh clone (use the absolute path to your checkout; relative paths silently fail to register):
+
+```
+/plugin marketplace add /abs/path/to/KempnerForge
+/plugin marketplace list
+/plugin install kempnerforge@kempnerforge
+/reload-plugins
+/kempnerforge:cluster-config
+```
+
+The `marketplace list` step is a sanity check: `kempnerforge` should appear under "Configured marketplaces". If it doesn't, the add silently failed; re-check the absolute path.
+
+v0.1 ships these skills: `install-and-verify`, `cluster-config`, `smoke-test`, `slurm-launch`, `explain-architecture`, `add-optimizer`, `component-gaps`. Full catalog, install details, and how skills stay in sync with the code: [`docs/claude-ready.md`](docs/claude-ready.md).
+
+## Documentation
+
+The [documentation site](docs/index.md) is the canonical reference. Key entry points:
+
+- [Getting started](docs/getting-started/index.md): install, quickstart, first run
+- [Architecture](docs/architecture/index.md): model forward pass, parallelism order, data flow
+- [How-to guides](docs/how-to/index.md): end-to-end workflows, scaling, debugging, FP8, MoE experiments, interpretability
+- [Configuration](docs/configuration/index.md): config sections, CLI overrides, validation rules, registry
+- **Subsystems**: [training](docs/training/index.md) · [distributed](docs/distributed/index.md) · [MoE](docs/moe/index.md) · [data](docs/data/index.md) · [checkpointing](docs/checkpointing/index.md) · [metrics & profiling](docs/metrics-and-profiling/index.md) · [resilience](docs/resilience/index.md)
+- [Reference](docs/reference/index.md): available configs, parallelism recipes, benchmarks, environment variables
+
+## MoE engineering roadmap
+
+Core MoE, Expert Parallelism, DeepSeekMoE, grouped GEMM, FSDP2 compatibility, and FP8 are complete and validated at multi-node scale. Remaining work toward DeepSeek-V3 production quality:
+
+| Feature | Status | Impact |
+|---------|:------:|--------|
+| Router improvements (sequence aux loss, gradient scaling, adaptive bias, z-loss) | **Done** | Training quality |
+| FP8 mixed precision | **Done** | 2x compute throughput |
+| Pipeline parallelism for MoE (PP+EP+TP composition) | Blocked | Required for 100B+ |
+| Communication-computation overlap (async EP dispatch) | Planned | 15-30% throughput |
+| Node-limited expert routing (bounded cross-node traffic) | Planned | Scale to 64+ GPUs |
+| Multi-token prediction (MTP) | Planned | 10-15% sample efficiency |
+| Large-scale EP (hierarchical all-to-all, 256+ experts) | Planned | 1000+ GPU scale |
+
+> Dense pipeline parallelism works. MoE + PP is rejected at config validation time because MoE data-dependent routing is incompatible with static pipeline stage splitting. Use FSDP, TP, or EP for MoE models.
+
+## Project structure
+
+```
+kempnerforge/
+  config/      # typed dataclass configs, TOML loading, CLI overrides, registry
+  model/       # Transformer, attention, MLP, MoE, routers, norms, RoPE, embeddings, activation hooks
+  distributed/ # DeviceMesh, FSDP2, tensor/expert/pipeline parallelism, FP8
+  data/        # MemoryMappedDataset, MixtureDataset, StatefulDataLoader, MixtureSampler
+  training/    # optimizers, loss functions, LR schedulers, gradient utils, hooks
+  checkpoint/  # DCP-based distributed checkpointing with sync/async save
+  resilience/  # signal handling, NaN detection, GPU/NCCL health checks
+  metrics/     # MetricsTracker, MFU computation, WandB/TensorBoard/MLflow backends
+  profiling/   # torch.profiler integration, CUDA timing
+configs/       # TOML configs for training runs and model architecture presets
+scripts/       # training entry point, data validation, checkpoint conversion, SLURM launch
+benchmarks/    # performance benchmarks (forward pass, MoE, data pipeline, optimizer, MFU scaling)
+tests/         # unit, integration, distributed, and end-to-end tests
+```
+
+## Design principles
+
+- **PyTorch-native**: FSDP2, DTensor, DeviceMesh, DCP, SDPA, torch.compile
+- **Distributed-first**: multi-GPU is the default, not an afterthought
+- **Composition over inheritance**: components composed via config, not class hierarchies
+- **Minimal abstraction**: readable code over framework magic
+- **Stateful everything**: dataloader, sampler, and training state all support checkpoint/resume
+- **Configuration-driven**: all behavior controlled by typed dataclass configs, validated at startup
+
+## Contributing
+
+See [`docs/contributing.md`](docs/contributing.md) for the editor loop, build commands, and style conventions.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).

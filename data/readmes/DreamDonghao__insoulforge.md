@@ -1,0 +1,313 @@
+# InSoulForge
+
+一个基于 Agent 架构的智能 QQ 群聊机器人后端。
+
+QQ 交流群：1097487360
+
+> 本项目采用 OneBot 协议标准，不包含任何聊天平台协议的具体实现，也不提供任何连接聊天平台的方法。使用本项目时，您仅可使用合法合规的 OneBot 实现。使用本项目即表示您已阅读、理解并同意：由此产生的一切后果及风险均由您自行承担，本项目不承担任何责任。
+
+## ✨ 特性
+
+- **Web 管理后台** - 可视化管理会话、模型、提示词与工具配置
+- **自定义角色** - 通过提示词定制机器人的人设与性格，支持为各群聊设置附加提示词
+- **Jev 决策与智能回复** - 可选用 Jev 专用结构化决策模型快速判断是否回复，减少高频判断对聊天模型的依赖；低置信度或请求失败时由 Router LLM 兜底，再由 Executor 生成回复与调用工具
+- **智能记忆** - 自动提取群友喜好与重要事件，并根据互动更新好感度；可选配 Embedding 模型，按语义相似度召回长期记忆，减少对完整聊天记录的依赖
+- **图片识别** - 可单独配置视觉模型识别图片与 GIF 动图，媒体哈希缓存避免重复请求
+- **图片生成与编辑** - 支持文字生图、修改会话中的图片，也可使用上传的角色形象图作为参考；任务在后台执行，完成后自动发送到当前会话
+- **多条回复与深度思考** - 一次对话可连续发送多条消息，耗时操作前可先发过程消息，复杂问题按需调用深度思考模型
+- **自定义工具** - 使用 Lua 脚本与异步 HTTP 请求扩展能力，支持可视化配置及导入导出
+- **MCP 工具** - 支持接入 HTTP MCP 服务，由模型按需查询并启用远程工具
+- **适配 QQ 功能** - Bot 可自行收藏发送表情包、引用、@ 群友、撤回消息、拍一拍、禁言，并按规则将用户加入全局黑名单
+- **定时与后台任务** - 支持定时触发消息处理，以及图片生成等耗时任务，后台执行完成后发送结果
+
+## 🚀 快速开始
+
+全新 Ubuntu 系统可参考[完整 Docker 部署教程](docs/DEPLOYMENT.md)，包含 Docker 安装、NapCat 登录、OneBot 配置、备份和更新步骤。
+
+### 前置要求
+
+本机器人需配合 **OneBot** 协议实现使用。可使用 **NapCat** 等 OneBot 实现（本项目仅将其作为示例，不对其合法性、合规性作任何保证；如您认为其不合法合规，请自行更换其他合法合规的实现）。
+
+请确保所选 OneBot 实现合法合规，并启用 HTTP 或正向 WebSocket 服务之一。
+
+InSoulForge 的 HTTP 服务端口为 `7778`，用于访问管理后台；使用 OneBot HTTP 模式时，也通过该端口接收消息上报。使用正向 WebSocket 模式时，InSoulForge 主动连接 OneBot 的 WebSocket 服务，无需配置 HTTP 上报地址。
+
+### 方式一：Docker 部署（推荐）
+
+镜像已发布至 Docker Hub 和 GitHub Container Registry，支持 **amd64 / arm64** 架构：
+
+Docker Hub （推荐，可配置国内镜像加速）
+
+```bash
+docker pull dreamdonghao/insoulforge:latest
+```
+
+GitHub Container Registry （备用）
+
+```bash
+docker pull ghcr.io/dreamdonghao/insoulforge:latest
+```
+
+创建宿主机数据目录并启动容器：
+
+```bash
+sudo mkdir -p /opt/insoulforge/data
+
+docker run -d --name insoulforge \
+  -p 7778:7778 \
+  -v /opt/insoulforge/data:/app/data \
+  dreamdonghao/insoulforge:latest
+```
+
+> 配置文件、数据库等数据保存在宿主机的 `/opt/insoulforge/data` 目录中，不受执行命令所在目录影响。
+> 首次启动会自动创建 `/opt/insoulforge/data/config.json`，对应容器内的 `/app/data/config.json`。
+> 删除容器不会删除宿主机数据目录。更新前建议备份该目录，不要删除其中的数据。
+
+更新镜像时，停止并删除旧容器，再挂载同一个宿主机数据目录创建新容器：
+
+```bash
+docker pull dreamdonghao/insoulforge:latest
+docker stop insoulforge
+docker rm insoulforge
+docker run -d --name insoulforge \
+  -p 7778:7778 \
+  -v /opt/insoulforge/data:/app/data \
+  dreamdonghao/insoulforge:latest
+```
+
+> 如果旧容器使用了自定义网络、端口或其他启动参数，重建时也要保留这些参数。
+> 已部署的用户，更新时应继续使用原来的数据挂载路径；不要直接改为上述示例路径，否则程序可能读取到一份空数据。
+
+> 如果 napcat 也运行在 Docker 中，注意容器内的 `127.0.0.1` 指向容器自身。启动后让两个容器加入同一个 docker
+> 网络，然后用容器名互访（无需重建容器，connect 直接生效）：
+>
+> ```bash
+> docker network create bot-net
+> docker network connect bot-net napcat       # napcat 换成你的 napcat 容器名
+> docker network connect bot-net insoulforge
+> ```
+>
+> 使用 HTTP 时，在管理后台将 OneBot 的 HTTP 服务地址填为 `http://napcat:3000`（容器名 + napcat HTTP 端口），
+> 并将 napcat 的上报地址填为 `http://insoulforge:7778/`。使用正向 WebSocket 时，将 WebSocket 地址填为
+> `ws://napcat:3001`；此方式不需要配置 HTTP 上报地址。
+
+服务启动日志会输出本机可用地址的自动登录链接，例如：
+
+```text
+管理后台自动登录链接（重启后失效）: http://127.0.0.1:7778/index.html#token=<token>
+```
+
+直接打开链接即可登录；令牌位于 URL 片段中，不会发送到服务端，验证后会自动从地址栏清除。令牌仅保存在运行中的进程内，不会写入配置文件或数据库；每次重启服务都会生成新的令牌并使已有登录会话失效。在
+Docker 默认桥接网络中，容器无法枚举宿主机局域网地址；可将链接中的主机替换为宿主机 LAN IP 后访问。
+
+### 首次配置
+
+在管理后台完成以下配置：
+
+1. **OneBot 配置** - 填写连接参数
+    - Access Token
+    - Bot QQ 号
+    - HTTP 或 WebSocket 传输方式及其服务地址
+    - Bot 名称
+
+2. **LLM 配置** - 配置模型 API
+    - Router、Executor、Executor 思考和 Image 使用兼容 OpenAI 的聊天接口；Embedding 使用向量接口
+    - 可选配置 Jev 决策接口，用于群聊优先路由
+
+3. **启用群聊** - 添加要启用的 QQ 群或用户
+
+## 📖 使用指南
+
+推荐通过 Web 管理后台进行配置。
+
+### 群聊命令
+
+在群中 @机器人 发送命令（私聊无需 @，直接发送即可）：
+
+| 命令                   | 说明                                                | 权限   |
+|------------------------|-----------------------------------------------------|--------|
+| `/help`                | 显示帮助                                            | 所有人 |
+| `/status`              | 查看当前会话状态                                    | 所有人 |
+| `/admins`              | 查看管理员列表                                      | 所有人 |
+| `/about`               | 关于本项目                                          | 所有人 |
+| `/enable [会话ID]`     | 启用会话（群聊传群号，私聊可不带参数）              | 管理员 |
+| `/groupcard on\|off`   | 开启或关闭本群向模型发送群名片                      | 管理员 |
+| `/autoreply on\|off`   | 开启或关闭本群普通消息自动回复，关闭后仍可 @ 机器人 | 管理员 |
+| `/disable [会话ID]`    | 禁用会话（私聊可不带参数）                          | 管理员 |
+| `/groups`              | 查看已启用的会话列表                                | 管理员 |
+| `/addadmin <QQ号>`     | 添加管理员                                          | 管理员 |
+| `/deladmin <QQ号>`     | 移除管理员                                          | 管理员 |
+| `/blacklist`           | 查看全局 QQ 黑名单                                  | 管理员 |
+| `/addblacklist <QQ号>` | 将用户加入全局 QQ 黑名单                            | 管理员 |
+| `/delblacklist <QQ号>` | 将用户移出全局 QQ 黑名单                            | 管理员 |
+| `/listemoji`           | 查看QQ收藏表情列表                                  | 管理员 |
+| `/delemoji <名称>`     | 从QQ收藏表情中删除                                  | 管理员 |
+| `/clearimagecache`     | 清除图片和 GIF 描述缓存                             | 管理员 |
+
+命令支持中文别名，如 `/帮助`、`/状态`、`/启用`。
+
+除管理员命令和后台管理外，Executor 也能调用 `add_to_blacklist`：按工具提示先提醒用户；若其之后仍继续同类恶意行为，
+再将其加入全局黑名单并告知结果。该提醒顺序目前由模型依据聊天记录判断，后端会校验目标是否出现在当前会话记录中，
+并拒绝拉黑管理员和机器人自身。黑名单对所有会话生效。
+
+## ⚙️ 配置说明
+
+### OneBot 配置
+
+| 参数               | 说明                                   |
+|--------------------|----------------------------------------|
+| Access Token       | OneBot API 访问令牌                    |
+| Bot QQ 号          | 机器人自身的 QQ 号                     |
+| 传输方式           | HTTP 或正向 WebSocket，两者互斥        |
+| HTTP 服务地址      | HTTP 模式下的 OneBot HTTP 服务地址     |
+| WebSocket 服务地址 | WebSocket 模式下的 OneBot 正向连接地址 |
+| Bot 名称           | 机器人在群聊中的名称                   |
+
+### LLM 配置
+
+各模型可分别配置：
+
+| 模型         | 用途                                        | 建议配置              |
+|--------------|---------------------------------------------|-----------------------|
+| Router       | Jev 不可用或判定不确定时的回复决策          | 轻量聊天模型，低温度  |
+| Jev          | 群聊消息的优先回复决策（可选）              | Decisions API         |
+| Executor     | 生成回复                                    | 主力聊天模型          |
+| Executor思考 | `deep_think` 工具使用的深度思考模型（可选） | 推理模型，如 DeepSeek |
+| Image        | 图片内容识别                                | 多模态聊天模型        |
+| Memory       | 记忆提取、整理与好感度评分                  | 聊天模型              |
+| Embedding    | 长期记忆向量化与检索（可选）                | 向量模型              |
+
+**Jev 路由**：[Jev](https://docs.typesafe.ai/introduction) 是 TypeSafe 的 System One 结构化决策模型，
+不生成聊天正文，而是返回选项、概率分布和置信度。InSoulForge 将其用于高频回复判断，不确定时再交给 Router LLM，
+使决策与回复生成分工处理；实际延迟与成本收益取决于消息量、阈值及兜底比例。
+
+在「LLM 配置 → Jev」填写 API Key、Base URL、Path 和 Model 后启用；默认地址为
+`https://openrouter.ai/api/alpha`、路径为 `/decisions`、模型为 `~typesafe/jev-latest`。Jev 使用
+Decisions API，并非 OpenAI 兼容的聊天接口。默认 API Key 为空，因此不启用 Jev，原有 Router 行为不变。
+Jev 只处理通过硬规则的群聊消息；私聊、@机器人和系统任务沿用原有处理。Jev 返回的
+`answers.action.confidence` 低于「最低置信度」（默认 0.60）、缺失或无效，或判断结果为 `unclear`、请求失败时，
+再调用 Router LLM。这里比较的是 `confidence`，不是 `probabilities.reply`；保存阈值后立即生效。
+
+全局运行配置保存在 `data/config.json`，包括 LLM、OneBot、记忆与执行参数。文件不存在时程序会写入默认内容；缺失或类型错误的字段会在启动时自动修复。配置文件已被
+Git 忽略，Docker 部署时通过 `/opt/insoulforge/data:/app/data` 挂载宿主机数据目录即可持久化。
+
+> `config.json` 不保存管理后台访问令牌。请通过服务启动日志获取当前令牌，不要将其提交到仓库或发送给无关人员。
+
+**深度思考**：`Executor思考` 不是全局思考模式开关，而是 `deep_think` 工具使用的模型配置。Executor
+只有在遇到数学计算、多步推理、技术分析等复杂问题时才会按需调用，日常闲聊不会固定走推理模型。
+
+### 执行参数
+
+管理后台的“执行配置”页统一管理回复执行流程参数。最大迭代轮数默认 8，范围为 1～100 的整数，
+对应配置文件的 `execution.maxToolRounds`。每轮包含一次 Executor 模型请求及其工具调用处理，同轮多个工具只计一轮；
+最终生成回复也占一轮。达到上限仍未产生回复时，记录错误并结束本次回复流程。
+
+每轮模型请求末尾附带当前轮次和本轮之后的剩余轮数，帮助模型安排查询和收尾；该状态不写入聊天记录。
+最后一轮只开放 `reply`、`reply_with_quote`、`no_reply` 回复工具，非回复工具即使被模型返回也不会执行。
+上限设为 1 时，首轮就只允许回复工具。
+
+助手上下文还保留按顺序排列的工具名、参数和处理状态。`no_reply` 也会保存一条内部执行记录，
+不会发送到 QQ 或触发新回复；执行、发送失败会单独标记。工具历史供后续 Executor 参考，不保存完整工具结果。
+`reply`、`reply_with_quote` 不重复写入工具历史，已发送正文及引用目标仍保留在助手消息中。
+
+保存后无需重启，对后续启动的回复流程生效；正在运行的流程继续使用启动时的上限。旧配置文件启动时自动补默认值，
+手动写入的小数或越界值会恢复为 8 并写回文件。
+
+### 记忆与上下文参数
+
+- **近期上下文上限** - Router 与 Agent 实际可见的最近完整消息数，默认 100
+- **总结触发条数** - 消息预处理完成后，完整消息列表达到或超过该数量时触发一批记忆维护，默认 100
+- **每批总结条数** - 本批参与记忆提取与好感度评估，并在全部处理成功后移除的最旧消息数，默认 50，不能超过触发条数
+- **总结补充上下文条数** - 紧随总结批次的只读消息数，仅帮助模型理解语境，不参与提取或删除，默认 10
+- **Memory 模型 maxTokens** - 在「LLM 配置 → Memory」设置记忆提取与整理的输出 token 上限，默认 4000；旧配置会自动迁移
+- **Router 窗口触发/保留条数** - Router 使用的子窗口滑动参数，默认 20/10，用于平衡路由 prompt 长度与缓存命中
+- **短期记忆上限** - 每次归类整理后保留的短期记忆条数上限，默认 15
+- **长期记忆召回阈值** - 新记忆与已有长期记忆合并去重时的相似度阈值，默认 0.65
+- **长期记忆注入阈值** - 消息预处理时被动召回并注入当前消息的相似度阈值，默认 0.45
+
+记忆总结与好感度评估在后台异步执行，同一会话同时只处理一批。两者全部成功后统一保存结果，再从完整消息列表移除对应的旧消息；失败时保留消息，等待后续消息触发重试。维护任务本身不持久化，程序重启后也会在收到新消息时重新检查是否需要总结。
+
+图片生成等后台耗时任务与记忆维护相互独立，同一会话同时只允许一个耗时任务。任务完成后向原会话发送结果，并通过系统消息触发后续回复；执行或发送失败也通过系统消息交由机器人处理。运行中的任务不会在程序重启后恢复。
+
+### 提示词定制
+
+在管理后台可修改 Router 与 Executor 的系统提示词，支持 `{botName}` 占位符自动替换。
+
+## 🔧 高级功能
+
+### 自定义工具
+
+支持通过 Lua 脚本扩展机器人能力：
+
+1. 进入管理后台 → 自定义工具
+2. 点击"添加工具"或"导入"
+3. 填写工具名称、描述、参数定义和 Lua 脚本；网络请求可使用 Lua 的 `http.request()`
+4. 保存并启用
+
+工具支持：
+
+- **参数定义** - JSON Schema 格式，LLM 自动理解
+- **Lua 脚本** - 在进程内运行，可调用受控的消息发送与会话后台任务接口，不必重新编译主程序
+- **异步 HTTP** - Lua 脚本通过 `http.request()` 调用外部服务
+- **说明文档** - Markdown 格式，记录作者、用法、联系方式
+- **导入导出** - JSON 文件格式，方便分享
+
+#### 内置工具配置文件
+
+项目提供了一些常用工具配置，位于 `agentTools/` 目录：
+
+| 文件                 | 功能                  | 额外依赖             |
+|----------------------|-----------------------|----------------------|
+| `random.json`        | 随机数生成            | 无                   |
+| `get_weather.json`   | 天气查询              | 无                   |
+| `fetch_webpage.json` | 读取动态网页          | PageWeave 服务       |
+| `search_web.json`    | 读取 Bing 搜索结果页  | PageWeave 服务       |
+
+导入方法：
+
+1. 管理后台 → 自定义工具 → 导入
+2. 上传 JSON 文件
+
+网页读取和搜索工具使用 Lua 异步请求，默认连接 `http://172.31.100.240:7779/extract`；
+可修改脚本中的 `endpoint` 调整地址。缺少协议的网址自动补全 `https://`，其他协议会被拒绝。运行环境不需要 Python。
+已有同名工具需编辑更新或删除后重新导入，仓库文件不会自动覆盖 `data/tools/` 里的脚本。参数和运行说明见[工具文档](docs/TOOLS.md#pageweave-网页工具)。
+
+### 配置 Embedding（可选）
+
+1. 准备 OpenAI 兼容的 Embedding 服务（如硅基流动、OpenAI）
+2. 管理后台 → LLM配置 → Embedding，填写 API 配置
+
+配置后，短期记忆迁移到长期记忆时自动向量化入库；每条消息入库时后台召回相关长期记忆并注入回复上下文，也可通过
+`recall_memory` 工具按余弦相似度主动查询。未配置时长期记忆自动停用，仅保留短期记忆。
+
+### 图片与动图识别
+
+图片识别会先下载媒体并按 SHA-256、视觉模型和提示词版本查询缓存。静态图片以 Base64 Data URL 提交视觉模型；GIF 会按播放时间抽取最多
+16 帧并一次性提交，超过 16 帧时保留首尾帧并均匀取样。消息和 Agent 上下文只保留识别结果，不会包含图片 URL 或 Base64 内容；管理员可用
+`/clearimagecache` 清除描述缓存。
+
+---
+
+## 🛠️ 开发者指南
+
+本项目使用 **C++** 实现，Web 页面使用 **Vue 3**。
+
+通过 HTTP MCP 服务按需选择远程工具，而非一次向模型发送全部工具；服务用途描述在“MCP 服务”页编辑，
+查询分页、单次启用和本次回复启用上限在“执行配置”页设置。配置与限制见 [MCP 客户端文档](./docs/MCP.md)。默认不启用外部服务。
+
+本地构建、架构和调试见 [开发文档](./docs/DEVELOPMENT.md)；提交 Issue 或 Pull Request
+前请阅读 [参与贡献指南](./CONTRIBUTING.md)。
+
+## 贡献者
+
+项目由 [DreamDonghao](https://github.com/DreamDonghao) 发起，感谢所有参与开发和改进的贡献者。
+
+[![Contributors](https://contrib.rocks/image?repo=DreamDonghao/insoulforge)](https://github.com/DreamDonghao/insoulforge/graphs/contributors)
+
+---
+
+## 📄 许可证
+
+本项目采用标准 [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html)（`AGPL-3.0-only`）开源。
+
+详见 [LICENSE](LICENSE)。

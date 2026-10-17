@@ -1,0 +1,185 @@
+# LovePhone Studio｜小手机工坊
+
+面向个人 DIY 的 AI 陪伴小手机搭建器。
+
+> 这是一个本地优先的开源开发版。它目前主要支持 Windows；公开下载安装包前，仍需完成在线音乐的内容授权核验和 Windows 代码签名。
+
+## 开源与边界
+
+- 本项目以 [MIT License](LICENSE) 开源。
+- 欢迎提交问题与改进建议，参与方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+- 安全问题请按 [SECURITY.md](SECURITY.md) 中的方式私密报告，不要在公开 Issue 中附上 API Key、聊天内容或本地数据。
+- 隐私、数据保存和删除方式见 [docs/PRIVACY.md](docs/PRIVACY.md)。
+
+## 环境要求
+
+- Windows 10 或 Windows 11
+- Node.js 20 或更高版本
+- npm 10 或更高版本
+- Chrome 或 Edge（用于网页模式、PWA 和语音输入）
+
+首次安装依赖：
+
+```powershell
+npm ci
+```
+
+## 启动
+
+在项目目录打开两个终端。
+
+终端一启动页面：
+
+```powershell
+npm run web
+```
+
+终端二启动 AI 桥接服务：
+
+```powershell
+node server/ai-bridge.mjs
+```
+
+`npm run web` 会同时启动网页和本机 AI 桥接。然后打开：
+
+```text
+http://127.0.0.1:5177/
+```
+
+如需改 AI 服务端口，可在启动前设置 PowerShell 环境变量。例如：
+
+```powershell
+$env:LOVEPHONE_AI_PORT = "5189"
+npm run services
+```
+
+不要把 API Key 写入仓库、截图或公开讨论中。
+
+AI 桥接默认使用 `5189` 端口。旧的 MPV / CLI 音乐桥接仅保留为仓库中的历史实验文件，网页、小手机和公开安装包都不再安装或依赖它。
+
+搭建完成后，可在“完成”页打开独立小手机，也可以直接访问：
+
+```text
+http://127.0.0.1:5177/?mode=phone
+```
+
+### 导出纯 HTML 小手机
+
+“完成”页的“下载本地 HTML”会生成一个独立 ZIP：其中含 `index.html`、运行代码、素材和当前小手机配置。解压后可直接查看，也可以把整个文件夹部署到 Netlify、GitHub Pages、Vercel 或任意静态网站空间。导出文件不含 API Key、网易云登录 Cookie 或本地导入的音频文件；AI、在线音乐和天气仍需由使用者自行配置可访问的服务。
+
+Chrome 或 Edge 可以把独立小手机安装为 PWA 应用。
+
+## 部署到 Netlify
+
+完整的逐步说明见 [docs/NETLIFY_DEPLOY.md](docs/NETLIFY_DEPLOY.md)，推送前请先完成 [docs/GITHUB_RELEASE_CHECKLIST.md](docs/GITHUB_RELEASE_CHECKLIST.md)。
+
+本仓库已包含 `netlify.toml`。在 Netlify 中从 GitHub 导入仓库即可；它会执行 `npm run web:build`，只发布 `dist` 中的网页文件，并同时部署 `netlify/functions/ai.mjs`。
+
+- Netlify 网站运行 AI 网关，不需要启动本机 `5189` 服务。
+- 用户在“设置 → AI 模型连接”填写的 API Key 仅保存在当前浏览器会话；它不会写入 GitHub、Netlify 环境变量、配置导出或 IndexedDB。关闭浏览器后需要重新填写。
+- 音乐 App 仍然由浏览器直接调用用户填写的 HTTPS 兼容 API；网易云扫码 Cookie 仅保存在当前浏览器的音乐数据库中。
+- 本机 `npm run web` 与 Windows 桌面版仍会自动使用 `127.0.0.1:5189` 的本机桥接和 Windows DPAPI 密钥保存。
+
+## 部署到腾讯云 CloudBase
+
+项目也支持腾讯云 CloudBase 静态网站托管。公开源码不包含维护者的 CloudBase 环境 ID 或网关地址；部署者需在被 Git 忽略的本地文件中填写自己的配置。用户填写的 API Key 仍只在当前浏览器会话中使用。完整操作见 [docs/CLOUDBASE_DEPLOY.md](docs/CLOUDBASE_DEPLOY.md)。
+
+## 接入真实 AI
+
+1. 在左侧“功能 → 设置”中勾选允许使用的模型服务商。
+2. 在右侧小手机打开“设置 → AI 模型连接”。
+3. 从下拉栏选择服务商，填写 API Key 和模型名称。
+4. 点击“连接并测试”，成功后聊天 App 会使用真实模型并流式显示回复。
+5. 自定义服务商还需要填写兼容接口的基础地址。
+
+每个角色默认跟随全局 AI，也可以在角色详情中指定另一个已连接的服务商。
+
+API Key 由本机 AI 桥接服务使用 Windows DPAPI 按当前 Windows 用户加密保存，不会写入浏览器、普通配置或导出的 JSON。其他 Windows 用户和其他电脑无法直接解密这份密钥文件。
+
+## 已支持的模型协议
+
+- OpenAI 兼容协议
+- Anthropic Messages
+- Google Gemini `streamGenerateContent`
+
+内置服务商包括 OpenAI、Anthropic、Gemini、xAI、DeepSeek、火山引擎方舟 / 豆包、通义千问、Kimi、智谱、MiniMax、腾讯混元、百度千帆、硅基流动、OpenRouter、Ollama，以及自定义服务商。
+
+## 主要功能
+
+- 角色、聊天、记忆、日记、纪念日、晚安问候和设置 App
+- 小手机整体美化、App 主题、图标套装和可拖动小组件
+- 两页美化流程中的统一“+ 自定义”入口与实时手机预览
+- 自定义手机壳、语义配色、圆角、阴影、桌面网格、Dock 和每个 App 的界面变量
+- 声明式自定义小组件，可读取时间、天气、角色、音乐、纪念日、日记、记忆和心情
+- 离线 ZIP 主题包导入导出、导入预检、文件哈希和独立素材库
+- 本地音乐上传、IndexedDB 保存和浏览器原生播放
+- 可选的兼容在线音乐 API：搜索、推荐、榜单、歌单、歌词和浏览器播放
+- 小组件联动音乐、相框上传、天气、时钟等
+- 配置自动保存与 JSON 导入导出
+- IndexedDB 本地数据库、最多 10 份自动备份、手动备份与恢复
+
+## 安全自定义
+
+“美化”仍保持“整机美化”和“App 美化”两页。每组预设最后都有“+ 自定义”，编辑时左侧打开统一面板，右侧手机实时预览；点击“应用”才保存，点击“取消”会恢复编辑前的状态。
+
+开发者模式允许填写限定作用域 CSS，但不运行任意 JavaScript 或 HTML。CSS 不能使用外部网址、`@import`、远程字体或可执行表达式，只能影响整台手机或当前 App。自定义小组件只能读取白名单数据并调用白名单动作，不能读取 API Key。
+
+主题包仅接受 JSON、CSS、PNG、JPG、WebP、GIF、WOFF 和 WOFF2。导入前会检查 ZIP 路径、类型、数量、压缩前后体积、外部资源、CSS 和 SHA-256 文件哈希；检查完成后由用户确认是否应用。导入的主题包与素材保存在独立 IndexedDB 中，不与聊天和手机配置备份混在一起。
+
+## 自定义 App 开发
+
+在“功能 → 自定义 App”中可以导入 `.lovephone-app.zip` 包，为小手机安装自己的 App。安装前会展示权限与联网域名；安装后可以在“设置 → 自定义 App 管理”中随时收回权限、禁用或卸载。
+
+- [开发者 API 与安装包格式](docs/CUSTOM_APP_DEVELOPER_GUIDE.md)
+- [可直接修改的示例 App 源码](examples/hello-companion/)
+
+自定义 App 运行在沙箱中，不能直接读取 LovePhone 页面、API Key 或其他 App 的数据；但它获得你授权的聊天记录、角色资料、联网或 AI 能力后，仍可能处理对应内容并消耗你的模型额度。请只安装可信来源的 App 包，并在安装页认真核对权限和联网域名。
+
+## 社区与支持
+
+- 行为准则：[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- 提问与反馈：[SUPPORT.md](SUPPORT.md)
+- 贡献代码：[CONTRIBUTING.md](CONTRIBUTING.md)
+- 安全漏洞：[SECURITY.md](SECURITY.md)
+- 版本记录：[CHANGELOG.md](CHANGELOG.md)
+
+## 数据保存
+
+配置、聊天、记忆、日记和图片保存在浏览器的 IndexedDB 中。首次打开新版时，旧 `localStorage` 数据会先写入 IndexedDB 并生成迁移备份，成功后才会清理旧数据。
+
+系统每隔至少 15 分钟为修改前的数据创建一份自动备份，最多保留 10 份。“完成”页可以查看空间占用、立即备份、恢复最近备份或导出 JSON。浏览器数据仍只属于当前设备，换设备前应导出 JSON。
+
+## 桌面版
+
+开发模式：
+
+```powershell
+npm install
+npm run desktop
+```
+
+`npm run desktop` 是本地开发模式。音乐 App 使用浏览器原生播放，不要求安装 MPV 或网易云 CLI。
+
+生成可公开测试的 Windows 安装包：
+
+```powershell
+npm run desktop:build
+```
+
+目录测试版输出到 `release/win-unpacked`，安装包输出到 `release`。正式安装包会自动启动网页和 AI 桥接，不要求用户另装 Node。音乐 App 和唱片组件会保留：本地音乐可直接使用；在线音乐需要用户自行配置可信的兼容 API。
+
+正式安装包已启用 ASAR 封装，减少应用代码被直接修改的风险；这不是加密，也不能替代数字签名。当前 Windows 安装包代码签名仍是公开发布前的阻断项，具体说明见 `THIRD_PARTY_NOTICES.md` 和 `docs/RELEASE_AUDIT.md`。在线音乐由用户自行配置服务，使用前应自行确认接口与内容授权。
+
+## 常见问题
+
+### 页面能打开，但 AI 无法连接
+
+确认第二个终端正在运行 `node server/ai-bridge.mjs`，再在小手机“设置 → AI 模型连接”中点击“连接并测试”。API Key 仅交给本机 AI 桥接服务，不会进入导出的主题或配置文件。
+
+### 音乐 App 没有内容或不能播放
+
+本地音乐请先在音乐 App 右上角导入音频。在线音乐请在“设置 → 音乐服务”开启在线音乐，填写一个支持 HTTPS 和跨域请求的 NeteaseCloudMusicApi 兼容地址，再点击“测试音乐连接”。扫码登录会把凭证发送给该 API 服务，请只使用自己部署或明确可信的服务。
+
+### 换浏览器或换电脑后内容不见了
+
+聊天、记忆、图片和主题保存在当前设备的浏览器 IndexedDB。请在“完成”页导出 JSON 或主题包后再迁移设备；导出的文件不含 API Key。

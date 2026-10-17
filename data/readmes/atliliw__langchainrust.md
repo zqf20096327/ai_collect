@@ -1,0 +1,481 @@
+# langchainrust
+
+[![Rust](https://img.shields.io/badge/rust-1.85%2B-orange.svg)](https://www.rust-lang.org/)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
+[![Crates.io](https://img.shields.io/crates/v/langchainrust.svg)](https://crates.io/crates/langchainrust)
+[![Documentation](https://docs.rs/langchainrust/badge.svg)](https://docs.rs/langchainrust)
+[![CI](https://github.com/atliliw/langchainrust/actions/workflows/ci.yml/badge.svg)](https://github.com/atliliw/langchainrust/actions/workflows/ci.yml)
+[![Crates.io Downloads](https://img.shields.io/crates/d/langchainrust.svg)](https://crates.io/crates/langchainrust)
+
+A LangChain-inspired Rust framework for building LLM applications.
+
+**What it solves**: Build Agents, RAG, BM25 keyword search, Hybrid retrieval, LangGraph workflows, MCP tools, A2A agent-to-agent protocols, Guardrails, multi-agent Handoffs — all in pure Rust.
+
+---
+
+## Design Principles
+
+The framework is engineered around a few hard rules that come out of its own design reviews. These are what make it feel different from hand-rolled LLM glue code:
+
+| Principle | What it means in practice |
+|-----------|---------------------------|
+| **Explicit over silent** | No silent degradation. If an API promises X, it either delivers X or fails loudly. Batch-embedding alignment returns explicit errors instead of empty/shifted vectors; the keyword fallback for `EmbeddingMatcher` was removed; routing failures surface as errors, not swallowed `Err(_) => {}`. |
+| **Consumed or deleted abstractions** | Every trait either has real implementors or is removed. `BaseChatMemory` is now implemented by all four memories, all retrievers implement `RetrieverTrait`, and `PairwiseJudge` plugs into the unified `Evaluator` pipeline — so users write against one abstraction, not five ad-hoc names. |
+| **Structured output over text parsing** | Models that support `tool_calls` go through structured output (JSON schema / function calling). Regex-parsing model output is the last resort, not the default — it is the most common source of silent fragility. |
+| **Production hardening first** | Tool execution has timeouts, LLM calls retry with exponential backoff, agent loops are capped (`max_iterations` clamped to `[1, 100]`), parallel actions are concurrency-limited, and `CancellationToken` propagates through every runnable. Eliminate the deterministic failure paths before adding features. |
+| **Type system enforces safety** | Security properties live in types, not comments. Guardrails split `InputGuardrailResult` / `OutputGuardrailResult` so "Modify only applies to output" is enforced at compile time. |
+| **Composition first** | Everything can be `pipe`d. Since v0.16.0, prompts, memory, native providers, parsers and RAG are all `Runnable` — `prompt.pipe(llm).pipe(parser)` compiles and runs. |
+| **Honest implementations** | No fake backends. Empty-shell sandboxes (Wasm/E2B) were deleted; the WASM backend only came back in v0.27.0 as real code (a wasmi interpreter with its own WASI host), never as a stub. Unsupported operations (e.g. Pinecone fetch-by-ID) return explicit `StorageError`s instead of pretending to work. |
+
+---
+
+## Core Features
+
+### LLM & Providers
+
+| Component | Description |
+|-----------|-------------|
+| **Unified LLM access** | 11 providers behind one `BaseChatModel` trait: OpenAI, Ollama, Anthropic Claude, Gemini, Azure, Cohere, DeepSeek, Qwen, Moonshot, Zhipu, Mistral. `LLMClient::from_env()` auto-detects any of the 11 from environment variables. |
+| **OpenAI-compatible endpoint (v0.22.4)** | One generic `OpenAICompatibleChat` covers any `base_url` endpoint — keyless vLLM / LM Studio / SGLang / Ollama / internal gateways (no `Authorization` header is sent without a key), with `GroqChat` / `OpenRouterChat` / `XaiChat` presets, env constructors and `extra_headers`. |
+| **OpenAI-compatible thin wrappers** | DeepSeek / Qwen / Moonshot / Zhipu / Mistral reuse the OpenAI request path; each keeps its own error variant (`ProviderError::DeepSeek`, etc.) so you can tell which vendor failed. New vendors are cheap to add. |
+| **Chat & Streaming** | `chat()` (one full reply) and `stream_chat()` (first token in ~1s). Streaming chunks carry token usage (`StreamChunk`), so budget gates get real usage on the streaming path (v0.18). `config.streaming = true` makes `chat()` stream internally then aggregate. |
+| **Function Calling** | `bind_tools()` + `result.tool_calls`, the native path for tool-capable models. |
+| **Multimodal Vision** | `Message::human_with_image` / `human_with_audio` / `human_with_file` via schema `ImageContent` / `AudioContent` / `FileContent`. |
+| **Thinking models** | Reasoning is kept in `LLMResult.thinking_content` and never leaked into `content` (DeepSeek-R1, GLM-5.2, Claude Extended Thinking). |
+| **OpenAI Assistants API** | Stateful assistants with `requires_action` tool dispatch. |
+| **OpenAI Responses API** | Typed Responses-endpoint client (`openai/responses/`, ~1.4k lines): `web_search` / `file_search` / code-interpreter tooling. Chat Completions remains the portable default. |
+| **Anthropic Extended Thinking** | `with_thinking` for Claude reasoning. |
+| **Model Routing** | `RouterLLM` with 6 strategies — Fallback / RoundRobin / LeastLatency / `LatencyWeighted(beta)` (EMA-latency weighted draw, deterministic SplitMix64) / LowestCost (registry-priced, blended 0.75-in/0.25-out) / InputDirected — plus per-slot `ModelRateLimit` admission and a shared `RouterBudget` USD circuit breaker (v0.22.4). Remaining models always act as fallback. |
+| **Cost & budgets (v0.22.4)** | `ModelPrice` / `PricingTable` / shared `CostTracker` (run/session scopes, unknown models bill $0 and never break the loop), JSON-fetchable `ModelRegistry` of capabilities/prices, agent-level `BudgetConfig.max_cost_usd` hard gate on both invoke and stream paths, costs exported as `ObsEvent::Cost`. |
+| **Batch API** | `BatchClient` for OpenAI / Anthropic batch inference (~50% cost reduction). |
+| **LLM Cache** | `LLMCache` with TTL + true LRU eviction (hits refresh recency). |
+| **Structured Output** | `with_structured_output` + `StructuredOutputExt` trait, `JsonOutputParser` fallback, and streaming structured output via `PartialJsonParser`. |
+| **Native JSON Schema (v0.21)** | `OpenAIChat::with_json_schema_output::<T>()` sends `response_format: {type: "json_schema"}` (strict mode) generated from schemars 1.0 — schema-constrained decoding on the provider side; `make_strict_schema` enforces `additionalProperties: false` + full `required`. `with_structured_output` remains the portable path. |
+| **Token Counter** | `TiktokenCounter` (precise) / `CharRatioCounter` (Chinese-friendly estimate) + `TokenTrackingLLM` usage stats + `ModelPricing` cost estimation. |
+
+### Embeddings
+
+| Component | Description |
+|-----------|-------------|
+| **Unified `Embeddings` trait** | `embed_query` / `embed_documents` / `dimension` / `model_name`, with empty-input and batch-alignment checks enforced in the trait default path. |
+| **Providers** | OpenAI (ada-002 / 3-small / 3-large), DeepSeek, Qwen, Cohere (embed-v3.0, 4 input types), FastEmbed (local ONNX), Mock (deterministic, for tests), BagOfWords (local, always available). |
+| **Qwen3-Embedding (v0.21)** | `qwen3-embedding-0.6b` / `4b` / `8b` (dims 1024 / 2560 / 4096) + matryoshka output via `QwenEmbeddingsConfig::with_dimensions(32..=4096)`; the configured `dimensions` is passed through to the DashScope request. |
+| **Reliability** | Exponential-backoff retries (429/5xx, max 3, 4xx not retried) with jitter and `Retry-After` header support (v0.21), concurrent batching (OpenAI: 2048 docs/batch, concurrency 8), and unified normalization so downstream similarity is provider-independent. |
+| **Local ONNX** | `LocalEmbeddings` via the `local-embeddings` feature (ort). |
+| **Token-level embeddings (v0.21)** | Optional `TokenLevelEmbeddings` capability trait (native `async fn`, statically dispatched): `embed_tokens` returns per-token `TokenEmbedding { span, vector }` with byte-offset spans. Local ONNX path shares the fastembed pipeline. |
+| **Late chunking (v0.21, end-to-end in v0.23)** | `late_chunk(&embedder, text, &LateChunkConfig)` embeds the whole text once at token level, then mean-pools token vectors per chunk range into L2-normalized chunk vectors — better context retention than chunk-then-embed for long documents. `late_index_in(&vector_store, &embedder, parent_key, text, &config)` (v0.23) closes the loop: one token-level pass → pooled chunks → straight into any `VectorStore`, with deterministic `{parent}:{index}` ids. Runnable offline demo: `cargo run -p lc-rag --example late_chunking`. |
+| **Candle backend (v0.21)** | `CandleEmbeddings` via the `local-candle` feature: pure-Rust CPU inference for BERT-family models (`from_hf_hub("BAAI/bge-small-en-v1.5")` or `from_dir`), masked mean-pooling, batch size 16. v0.26.0 adds `with_quantization(F16 | Int8)` (+ one-shot `from_dir_with` / `from_hf_hub_with`) — the F16/Int8 paths quantize → dequantize to the F32 kernel (candle 0.11 dropped the quantized BERT forward), so on-CPU inference stays correct. |
+| **Vision embeddings (v0.22.4)** | `VisionEmbeddings` trait maps `(text/image)` into one shared vector space: Cohere Embed v4 (`CohereVisionEmbeddings`, 1536-d) and DashScope `multimodal-embedding-v1` (`QwenVisionEmbeddings`, 1024-d), plus `MockVisionEmbeddings` for tests. Feeds multimodal RAG (see below). |
+
+### Composition: Chains & LCEL
+
+| Component | Description |
+|-----------|-------------|
+| **LCEL** | `Runnable` with four base actions — `invoke` / `batch` / `stream` / `transform`. Operators: `pipe`, `RunnableLambda`, `RunnablePassthrough`, `RunnableParallel`, `RunnableBranch`, `RunnableBinding`, `RunnableWithFallbacks`, `RunnableAssign`, `with_retry`, `RunnableSequence`. Type-erased with `PhantomData` — dynamic composition with compiler-checked type matches. |
+| **Unified composition (v0.15)** | Prompts, memory, native providers, parsers and RAG are all `Runnable`: `prompt.pipe(llm).pipe(StrOutputParser)` — no glue code. `RunnableWithMessageHistory` wraps "LLM + memory" as one runnable (auto read history → invoke → write back). `RagRunnable` makes retrieval-augmented generation one link of a chain. Native `OpenAIChat`/`QwenChat`/`DeepSeekChat` errors are unified into `LcelError`. |
+| **Chains** | `BaseChain` with 9 implementations: `LLMChain`, `ConversationChain`, `SequentialChain`, `RouterChain`, `LLMRouterChain`, `RetrievalQA`, `ConversationRetrievalChain`, plus the 4 document chains — `Stuff` / `MapReduce` / `Refine` / `MapRerank`. Chain streaming per token, `ChainRunnable` bridges chains into LCEL. |
+| **Prompts** | `PromptTemplate` (parsed once, cached segments), `ChatPromptTemplate` (Runnable, outputs `Vec<Message>`), `FewShotPromptTemplate` + `ExampleSelector`s (`LengthBasedExampleSelector`). `{{`/`}}` escapes, Chinese variable names, missing variables error loudly. v0.22.4 adds `PromptRegistry` — versioned, named prompt storage with render-by-name and fallback, so prompt text is managed centrally instead of scattered through call sites. |
+| **Output Parsers** | `StrOutputParser`, `JsonOutputParser`, `CommaSeparatedListOutputParser`, `StructuredOutputParser`, `TypedOutputParser<T>` — all tolerant of dirty model output (markdown fences, trailing commas, trailing junk). |
+| **Retrieval & Sessions in LCEL (v0.17)** | `RetrieverRunnable` wraps any retriever as `Runnable<String, Vec<Document>>`; `SessionManagerRunnable` wraps persistent sessions as `Runnable<(session_id, message), reply>` — both compose with `pipe` into a chain. |
+| **Cancellation** | `CancellationToken` threads through `RunnableConfig` into every execution. |
+
+### Agents & Multi-Agent
+
+| Component | Description |
+|-----------|-------------|
+| **BaseAgent / AgentExecutor** | The "translator / butler" split: `BaseAgent` turns model output into a decision (Action / Actions / Finish), `AgentExecutor` is the one real loop — with tool timeouts, LLM retries, concurrency semaphore, and `max_iterations` clamped to `[1, 100]`. |
+| **FunctionCallingAgent** | Recommended path — reads native `tool_calls` (requires model support). |
+| **ReActAgent** | Text-regex thought/action loop, fallback for models without tool-calling. |
+| **Plan-Execute** | Planner → per-step executor → replan on failure; the executor factory is configurable (no longer hardcoded to function calling). |
+| **DeepResearch** | Multi-round research agent with sub-topic decomposition, parallel search, dedup, citation reporting. |
+| **RAG Agents** | `CorrectiveRAGAgent` (self-correcting grade/rewrite/detect), `AdaptiveRAG` (LLM-routed retrieval), as standalone graphs. |
+| **Handoffs** | Multi-agent handoff with `max_handoff_depth` (default 10) to stop A↔B ping-pong. |
+| **Orchestrators** | `Supervisor` (v0.24.0 — one router LLM delegates each round to a named sub-agent or `FINISH`, with scratchpad feedback and a bounded-rounds one-level recursion guard), `FanOutFanIn` (parallel fan-out + aggregate), `SequentialPipeline` (serial), `OrchestratorRunnable` for LCEL integration. |
+| **Parallel tool calls (v0.24.0)** | Multiple tool calls emitted in one model turn run concurrently, bounded by `.with_max_concurrency(n)` (default 8); observations zip back to actions in the model's call order on both invoke and stream paths. |
+| **Agent Hooks** | Approval (`on_before_tool_call` allow/reject/skip), `PromptInjectionHook`, `TokenBudgetHook`, `ContentFilterHook`, logging. |
+| **Agent Gates (v0.16)** | Async human-approval gate — `.with_approval()` (Allow / Deny / Modify; Deny feeds the reason back as an observation, Modify rewrites the arguments). Budget gate — `.with_budget()` with hard caps on tool calls / tokens / wall-clock duration / iterations, exceeding returns `AgentError::BudgetExceeded`. Both default off. |
+| **Cross-process resume (v0.18)** | `FileResumeStore` persists the pending human-approval / budget-gate state to disk (atomic write); a restarted executor loads the pending point and re-enters approval instead of restarting the agent loop. |
+| **Context compaction (v0.21)** | `.with_compaction(CompactionConfig)` — trigger on `TurnCount` / `TokenCount` / `Any` / `All`, compact with `SlidingWindow` or `TokenBudget` (turn-boundary truncation, no orphan tool results, `min_recent_turns` floor, default 2). Off by default; compaction count lands in `AgentMetrics.compactions`. |
+| **Streaming** | Token-level streaming via `StreamingFunctionCallingAgent` + `AgentStreamEvent`; tool-level events via `AgentExecutor::stream`. |
+| **Web SSE (v0.22.4)** | Optional axum SSE endpoint in `lc-agents` (`sse-server` feature) serving `AgentStreamEvent`s to browsers — see the `agent_sse_server` example. |
+| **Durable checkpoints (v0.22.4)** | LangGraph persistence gains three production backends behind `checkpoint-sqlite` (rusqlite bundled, WAL) / `checkpoint-postgres` (tokio-postgres) / `checkpoint-redis` (Lua CAS) features. Optimistic concurrency: stale writes return `GraphError::CheckpointVersionConflict` instead of last-write-wins. |
+| **Two-layer semantic memory (v0.22.4)** | Episodic layer (raw per-turn observations, vector-retrieved) + semantic layer (LLM-consolidated, deduped facts) with an async background extractor — the agent accumulates durable knowledge across sessions instead of only replaying recent chat. |
+| **Dynamic interrupt/resume + time travel (v0.24.0)** | `InterruptibleNode` suspends *inside* a node — its closure runs with `resume: None`, raises an `InterruptRequest` payload into the checkpoint, then re-enters with `resume: Some(decision)` via `CompiledGraph::resume_with_value` (even from a fresh process over a durable checkpointer; `NodeInterrupt`/`Resumed` stream events). Agent approvals converge on this one path: `ApprovalGate` + `ApprovalDecision` (Allow / Deny / Modify), so the gated tool executes exactly once and Deny performs no side effect; the non-graph `ResumeStore` remains for the plain executor. `get_state_history()` lists `CheckpointInfo`s and `fork_from(checkpoint, node, override_state)` branches a new forward-only lineage off any past state. |
+| **Territorial subgraph (v0.27.0)** | `TerritoryCheckpointer` + `CompiledGraph::with_territory(ns)` isolate a subgraph's checkpoints under a `"<ns>::"` thread namespace — a child graph no longer advances the parent's history when it shares the parent's checkpointer. |
+| **Tool Policies** | `ToolPolicy` / `ToolRisk` risk classification for tool access control. |
+
+### Retrieval & RAG
+
+| Component | Description |
+|-----------|-------------|
+| **Unified `RetrieverTrait`** | All retrievers implement it: `SimilarityRetriever`, `BM25Retriever` / `ChunkedBM25Retriever`, `UnifiedHybridIndex`, `ParentDocumentRetriever` — so any retrieval strategy plugs into the RAG pipeline. |
+| **RAGPipeline** | `RAGPipelineBuilder` (llm + embeddings + vector store + retriever) → `index_documents` / `query` / `query_with_sources` (citation tracing). |
+| **Document Loaders** | Text / JSON / Markdown / PDF / CSV / HTML + WebScraper / Sitemap / Docx. |
+| **Splitting** | `RecursiveCharacterSplitter` (paragraph → line → sentence → char), `SemanticSplitter` (async semantic chunking). |
+| **BM25** | Keyword search with Chinese/English tokenization, `ChunkedBM25Retriever` parent-child structure, AutoMerging. |
+| **Hybrid** | `UnifiedHybridIndex` — BM25 + vector with RRF (default) or `FusionMode::Weighted` linear fusion (v0.23.0), configurable `min_score`, plus `retrieve_mmr(query, cand_k, k, λ)` MMR diversity re-ranking over the fused pool (v0.23.0; standalone `mmr()` over `(id, score, embedding)` triples too). |
+| **Neural reranking (v0.24.0)** | Hosted cross-encoders behind one `AsyncReranker` trait: `CohereRerank` (default `rerank-multilingual-v3.0`) and `JinaRerank`, driven by `rerank_async(&reranker, query, results, top_n)`. The provider's out-of-order `results[].index` is mapped back to your input positions, clients bypass ambient proxies, and malformed bodies error instead of silently returning unsorted input. |
+| **Local late-interaction reranking (v0.26.0)** | `ColbertRerank` — token-level **MaxSim** re-ranking over a `TokenLevelEmbeddings` embedder (e.g. local ONNX `LocalEmbeddings`): each query token is cosine-matched against every document token and the maxima summed, rewarding partial matches on different tokens independently — unlike a pooled whole-document dot product. Generic over the embedder and object-safe, so it plugs into `rerank_async`; per-side token budgets via `with_max_query_tokens` / `with_max_doc_tokens`. |
+| **Small-to-big retrieval (v0.24.0)** | `SentenceWindowRetriever` — index single sentences, retrieve a deduplicated ±N-sentence window — and the public `ParentDocumentRetriever` — leaf-chunk hits return the *entire* parent document, combining precise recall with full-context answering. |
+| **Late-chunk dual-leg injection (v0.24.0)** | `UnifiedHybridIndex::add_late_chunked_document(doc, &[LateChunk])` writes token-pooled chunks to BOTH the vector index and the BM25/parent store in one call, with deterministic `{parent}::{segment}` ids (re-registering a parent idempotently replaces its chunk set). |
+| **Query Transformations** | `MultiQueryRetriever` (decompose into multiple queries), `HyDERetriever` (hypothetical document), `RerankingExecutor` + `KeywordReranker` / `BM25Reranker`. |
+| **Agentic retrieval (v0.26.0)** | `IterativeRetriever` / `IterativeRetrieval` — multi-round retrieval: when the first pass comes back thin it reformulates its own query (`refine_query`) and re-queries, merging deduplicated hits across rounds (`merge_dedup`), bounded by `with_max_rounds`. |
+| **Self-query (v0.27.0)** | `self-query` turns a natural-language question into a structured query (with filters) before hitting the store — no handcrafted query construction. |
+| **Context editing (v0.27.0)** | Package retrieved material before the model sees it: dedup across turns/sources, compress duplicated spans, prune by relevance, and trim to a token/segment budget. |
+| **Local ColBERT training (v0.27.0)** | `train_epoch` real training loop — sweeps a `TripletDataset`, embeds each batch through a real `TokenLevelEmbeddings`, computes margin loss, invokes per-batch callbacks, returns `EpochResult`; the `token_level` trait stays read-only (gradients ride an external `on_batch` callback). |
+| **SelfQueryRetriever (v0.18)** | LLM splits a natural-language query into `{query, filter}` via structured call, with an `allowed_attributes` whitelist; retrieves through `similarity_search_with_filter`. Composes in LCEL as a `RetrieverRunnable`. |
+| **GraphRAG** | Knowledge-graph RAG with Global / Local / Hybrid modes, entity extraction, community detection. Community detection is **Leiden** (v0.22.4: configurable `leiden_resolution` / `leiden_seed` / `max_community_levels`). |
+| **Multimodal RAG (v0.22.4)** | `MultimodalChunker` splits mixed text/image documents and embeds both modalities through `VisionEmbeddings`; `MultimodalRetriever` returns cross-modal hits so image content is answerable, not just text. |
+| **Advanced RAG** | `CorrectiveRAG` (self-correcting), `AdaptiveRAG` (adaptive retrieval + structured routing decisions). |
+| **Contextual Retrieval (v0.21)** | `ContextualEnhancer` — index-time transform: a small LLM writes a 1-2 sentence context per chunk, prepended to the content (original stored in metadata under `contextual_context`). Concurrency-limited, idempotent, fail-open (on LLM failure the original text is indexed). |
+| **Semantic Cache (v0.21)** | `CachedRetriever` wraps any `RetrieverTrait` — exact-match hits skip the embedder entirely; otherwise a cosine-similarity lookup over cached query vectors (`threshold` default 0.95, FIFO `max_entries` 256, optional TTL, `invalidate()` for corpus updates). |
+| **Native Hybrid Search (v0.21)** | `NativeHybridSearch` capability on `QdrantVectorStore` (Query API, server-side fusion, needs Qdrant ≥ 1.10): multi-branch `NativeHybridQuery` with `FusionMethod::Rrf` / `Dbsf` in a single round trip. Stores without the capability fail explicitly instead of silently degrading to client-side RRF. |
+
+### Memory & Sessions
+
+| Component | Description |
+|-----------|-------------|
+| **Four memories** | `ConversationBufferMemory` (full), `ConversationBufferWindowMemory` (last k turns), `ConversationSummaryMemory` (LLM summary), `ConversationSummaryBufferMemory` (summary + recent raw). All implement `BaseChatMemory`. |
+| **Semantic memory** | `VectorStoreRetrieverMemory` — retrieval by similarity, not recency. |
+| **Context window** | `ContextWindow` with `Truncate` / `Summarize` strategies and pluggable `TokenCounter`; System messages are always preserved. |
+| **Persistence** | `MongoPersistentMemory` (feature-gated) — generic over `BaseChatModel`, optimistic-lock concurrent writes, session-resume summary re-injection. |
+| **Sessions** | `EventSessionManager` / `EventStore` (v0.22.0, recommended) — **event sourcing**: the session is an append-only log, history is a projection; crash-safe idempotent appends, `fork_session` branching from any point, turn-window context, deterministic auto-compaction (snapshot past N turns, no LLM call). Legacy `SessionManager` / `SessionStore` deprecated (removed 0.23.0). |
+
+### Protocols: MCP & A2A
+
+| Component | Description |
+|-----------|-------------|
+| **Official MCP transports (v0.22.4)** | Spec-faithful clients `StdioMcpClient` (subprocess stdio) and `StreamableMcpClient` (Streamable HTTP, stateless + `Mcp-Session-Id` modes), and server side `MCPServer::serve_streamable_http` — interoperability-verified against the official TypeScript SDK 1.30.0 and Python SDK (4/4 scenarios). Includes OAuth 2.1 authorization flow (authorization server metadata, PKCE, token refresh) for remote servers requiring login. |
+| **MCP stateless track (v0.22.0)** | 2026-07-28 single-track model: every request is a self-contained JSON-RPC HTTP POST — no handshake, no session. `StatelessMcpClient` carries `_meta` (protocol version + client identity + optional `requestState`), tagged with `Mcp-Method` / `Mcp-Name` routing headers so gateways route and throttle without parsing the body. The legacy handshake client (`MCPClient`, SSE/old-HTTP transports, streaming push) was **removed in 0.22.0**. |
+| **MCP MRTR** | Multi-round tool requests: on `input_required { requestState, questions }` the client collects answers (`MrtrAnswerProvider`) and resends with the continuation token, bounded by `max_round_trips` (`-32003` on exceed). Server-initiated interaction without a push channel. v0.27.0 wires a `MrtrRoundTrip` state machine into the real `send()` loop. |
+| **MCP Tasks 扩展 (v0.27.0)** | `TaskProvider` trait — server registers `with_task_provider` to make `tasks/get` / `tasks/cancel` live (unregistered stays `method_not_found`, honest boundary), with `TaskState` (queued/running/completed/failed/cancelled), `TaskStatus` and `TaskResponse` (`shipping_label` / `restorable`); `server/discover` advertises `tasks:{}`. |
+| **MCP cursor 分页 (v0.27.0)** | `tools/list` / `resources/list` / `prompts/list` paginate end-to-end on `nextCursor` — `*Provider::list_*_page` returns a full envelope with `nextCursor`, and the stateless / stdio / streamable clients actually send the cursor. |
+| **MCP logging + subscriptions + ACL (v0.27.0)** | `LogSink` + `logging/setLevel` + `notifications/message` (threshold-filtered); `ResourcePushSink` with `notify_resource_changed` / `notify_resource_updated` push (list-changed vs content-updated); `ServerSandbox::ToolAcl` fine-grained per-tool ACL (deny-first, allow-list implies fail-closed, empty = unchanged). |
+| **MCP auth** | OAuth 2.1-style: `TokenValidator` + `StaticBearerValidator` / `JwtIssValidator` (iss + exp) server-side; per-request bearer auth client-side (`connect_with_auth`); 401 → `-32001`. |
+| **MCP server** | `MCPServer` exposes local `BaseTool`s — in-process (`handle_request`), as a **deployable stateless HTTP service** (`serve_http`, example `mcp_http_server`), or over stdio line framing for hosts like Claude Desktop / Cursor (`serve_stdio`). `server/discover` for capability queries. |
+| **MCP at scale** | Connection management, tool namespaces + conflict policy, static+dynamic tool discovery, per-tool timeout with hard cap, health checks + circuit breaker, per-server sandbox, sampling recursion guard, **MCP Gateway** (registry / pool / rate-limit / audit), multi-tenant isolation, per-method client rate limiting. |
+| **MCP tool adapter** | `MCPToolAdapter` implements `BaseTool` — MCP tools mix seamlessly with local tools in any agent; structured errors keep `{code, data}`; multi-type content (image/resource) preserved. |
+| **A2A v1.0.1** | Agent-to-Agent protocol: `AgentCard` with `supportedInterfaces[]` — one card declares multiple `(protocolVersion, transport, url)` bindings (JsonRpc / HttpJson / Grpc), tenant-tagged, with client-side `negotiate()`. Card **signing** (RFC 8785-lite canonicalization + JWS HS256) protects discovery from tampering. `send_task` / `get_task` / `cancel_task` over HTTP. |
+| **A2A push + SSE 自愈 + replay (v0.27.0)** | `sendSubscribe` → HTTP `/events` SSE → client `subscribe()` push is closed end-to-end; `A2ASseStream` gains opt-in reconnect (`sse_reconnect_max_attempts`, exponential backoff 250ms→5s, reconnects carry bearer + traceparent) and `Last-Event-ID` replay continuation; `/events` filters by authenticated principal + `?taskId=`. |
+| **A2A WebSocket transport (v0.27.0)** | The `ws` feature adds `GET /ws` beside `/events`, sharing its bearer auth, B7 cross-tenant `notification_visible` guard and `?taskId=` restriction; one filtered `TaskPushNotification` per text frame. Client `connect_ws` / `send_task_streaming_ws` mirror the SSE pair, and `A2AWebSocketStream::next()` answers protocol pings to keep an idle subscription alive. |
+| **A2A subscription context (v0.27.0)** | `A2ARequest::send_subscribe_with_context` / `A2AClient::subscribe_with_context` put a client-chosen `id` and `contextId` on `tasks/sendSubscribe`; `TaskPushNotification::StatusUpdate` / `ArtifactUpdate` carry an optional `context_id` (`skip_serializing_if`, wire-compatible when absent) for demultiplexing several subscriptions on one stream. The bundled server does not echo it yet — the client-side `A2ASubscription` already filters on task id, so a shared connection stays leak-free. |
+| **A2A scale (v0.27.0)** | `AgentFleet` / `SkillIndex` (`skill_affinity` semantic routing) + `DelegationGuard` / `TaskSharder` / `CircuitBreaker`; `A2AClientBuilder::fleet(Arc<AgentFleet>)` wires skill-affinity routing into `send_task` (no fleet → direct). |
+| **A2A vs MCP** | A2A orchestrates **agent ↔ agent**; MCP lets an **agent call tools**. They compose: A2A between agents, MCP below them. |
+
+### Quality: Guardrails, Evaluation, Observability
+
+| Component | Description |
+|-----------|-------------|
+| **Guardrails** | Input/output safety rails around any agent or chain. `InputGuardrailResult` (Pass/Block) and `OutputGuardrailResult` (Pass/Block/Modify) are type-separated — Modify is compile-time impossible on input. `Guardable` trait lets you wrap any `BaseChain`. |
+| **Built-in guardrails** | `SensitiveInfoGuardrail` (keywords + OpenAI-key regex + email + credit-card with Luhn check), `ForbiddenWordsGuardrail`, `MaxLengthGuardrail`. v0.22.4 adds `PiiRedactionGuardrail` (detect/redact PII on output) and `SchemaOutputGuardrail` (validate structured output against a JSON schema; fail → repair or block). |
+| **RAGAS evaluation (v0.22.4)** | Reference-free RAG metrics in `lc-evaluation`: `ContextPrecision`, `ContextRecall`, `AnswerRelevancy` — runnable through the same `EvalRunner`/`Report` path. |
+| **Streaming guardrails** | Two-phase: incremental keyword check (24-char sliding window) + full-output re-check. |
+| **Audit** | `AuditSink` trait + `FileAuditSink` (JSON Lines) for violation persistence; LLM-sensitive judge for context-aware decisions. |
+| **GuardedAgent** | Wrap an executor/chain → validate input → run → validate output; a blocked input never touches the network. |
+| **Retrieval Rail (v0.21)** | `RetrievalRail` batch-scans retrieved documents for prompt injection (pattern library shared with `PromptInjectionHook`); `GuardedRetriever` wraps any `RetrieverTrait` with `RailAction::Flag` (default, tags metadata) / `Redact` / `Drop` + `RailReport` counts and optional audit sink. Place it inside `CachedRetriever` so only clean results enter the cache. |
+| **AI Disclosure (v0.21)** | `disclose()` records an EU AI Act Art. 50-style transparency notice ("you are interacting with an AI system") through an `AuditSink`; template customizable via `DisclosureConfig::with_statement` with a `{system}` placeholder. Capability, not enforcement. |
+| **Evaluation** | 10+ evaluators: `ExactMatch`, `ContainsKeyword`, `RegexMatch`, `LengthCheck`, `Bleu`, `StringDistance`, `EmbeddingSimilarity`, `LLMAsJudge`, `PairwiseJudge`, `Faithfulness`. `EvalRunner` batches all examples × all evaluators into a `Report`. |
+| **Trace → golden → compare (v0.24.0)** | The `lc-testkit` record/replay harness now feeds evaluation: recordings sink into a golden `Dataset` (last user message → input, response → reference, tool results → RAG `contexts`) with a zero-network `ReplayPredictor`, and `lc-evaluation::compare_reports(&baseline, &candidate, tolerance)` gates any mean dropping by more than the tolerance (boundary inclusive), listing per-metric deltas and added/dropped evaluators. |
+| **LLM judge** | `StructuredJudge` shared with guardrails — prefers structured output, tolerant score parsing. |
+| **Callbacks** | `CallbackHandler` (3 lifecycle methods minimum) + `CallbackManager` dispatcher. Built-in: `StdOutHandler`, `FileCallbackHandler`, `LangSmithHandler`, `OtelHandler`. |
+| **Batched export + Edge buffer (v0.27.0)** | `BatchExporter` / `BatchSink` flush completed traces in batches with bounded retry/backoff and an on-disk park for undeliverables; a `LangfuseSink` (Ingestion API + HMAC-SHA256 signature) sits beside the existing LangSmith handler. |
+| **Tracing** | `Tracer` + `SpanGuard` (RAII), `InMemory` / `Console` / `OTel` backends, parent-child span tree, GenAI Semantic Conventions. OTel spans carry `gen_ai.*` attributes aligned with the OpenTelemetry GenAI semconv (v0.21): `gen_ai.system` / `gen_ai.request.model` / `gen_ai.response.finish_reason` / token usage incl. cache-read and reasoning extensions, plus `gen_ai.operation.name = "retrieve"` for retrieval spans. |
+| **OTLP metrics export (v0.26.0)** | `OtlpSink` implements `MetricsSink` — emits each event out over OpenTelemetry (feature `otlp`), reading `OTEL_EXPORTER_OTLP_*` / `OTEL_SERVICE_NAME`: token usage → `gen_ai.usage.input_tokens/output_tokens`, cost → `gen_ai.provider.name` + `langchainrust.cost_usd`, agent runs → `gen_ai.operation.name = "invoke_agent"`. |
+
+### Tools
+
+| Component | Description |
+|-----------|-------------|
+| **Built-in tools** | `Calculator`, `SimpleMathTool`, `DateTimeTool`, `URLFetchTool`, `WikipediaTool`, `DuckDuckGoSearchTool`, `PythonREPLTool`. |
+| **Hosted search & browser (v0.22.4)** | `HostedSearchTool` with Tavily / Serper / Exa backends (API key from env, one uniform tool interface — no scraping fragility). `CdpBrowserTool` drives a real Chrome over the DevTools Protocol (`navigate` / `extract_text` / `extract_links` / `metadata`) behind the `browser-cdp` feature for pages that require JavaScript execution, with hop-by-hop SSRF interception since v0.27.0. |
+| **`#[tool]` macro** | Define a tool from a plain function — auto-converted to `BaseTool`; `StructuredTool` gives typed in/out with automatic JSON. |
+| **Sandbox** | `SandboxTool` + `LocalSandbox` (subprocess + timeout). Tool-code execution is isolated — the Python blacklist is documented as *noise filtering, not a security boundary*. |
+| **WASM sandbox (v0.27.0)** | The `sandbox-wasm` feature adds `WasmSandbox`: a real WASI preview1 backend on the **wasmi** interpreter (no JIT, offline) with a self-contained host (stdio / exit / args / environ / random / clock). Only buffered stdout/stderr crosses the host boundary — OS isolation holds by construction — and the budget is enforced with deterministic wasm **fuel** metering (`timeout_ms × 1000` instructions) rather than a racy wall-clock thread. Takes WAT text or compiled wasm; `Language::Wasm` is rejected by `LocalSandbox`. |
+| **Extended tools** | `HTTPTool`, `FileTool` (sandboxed), `SQLTool` (read-only, `sqlite-storage` feature), `ComputerUseTool` (screen interaction). |
+| **Computer use native (v0.27.0)** | `computer-native` feature drives the real desktop via enigo + xcap — screenshot / click / type / scroll / key-press — with an observe-act-observe feedback loop (each action re-captures a fresh frame into the same output), behind explicit opt-in + a double safety gate. |
+| **Security** | SSRF protection (`is_private_ip`) on URL/HTTP tools with per-hop DNS resolution, all-answers validation, and IP pinning that closes the DNS-rebinding TOCTOU window (v0.22.4); path sandboxing; risk classification via `ToolPolicy`. |
+| **Per-hop browser SSRF (v0.27.0)** | `CdpBrowserTool` arms the CDP `Fetch` domain before navigating, so **every** request is paused and validated before it leaves: private hops get `Fetch.failRequest { errorReason: "BlockedByClient" }`, public ones `Fetch.continueRequest`. A redirect, DNS rebinding or subresource request toward an internal host is stopped before it goes out, not after the page lands. |
+
+### Vector Stores
+
+| Component | Description |
+|-----------|-------------|
+| **Unified `VectorStore` trait** | `add_documents`, `similarity_search`, `similarity_search_with_min_score`, `similarity_search_with_filter` (`MetadataFilter` with Eq/Ne/Gt/Gte/Lt/Lte/In/Nin + And/Or, v0.18), `similarity_search_text` (auto-embeds if the store owns an embedder, else explicit error), `embed_query`, `get_document`, `delete_document`, `count`, `clear`. |
+| **Backends** | InMemory, FileVectorStore (atomic write, fixed dim), ChunkedVectorStore (parent-child source retrieval), Qdrant, ChromaDB, LanceDB, Neo4j, Pinecone, Redis, MongoDB, SQLite, PGVector (typed `PGVectorStore` via the `pgvector-storage` feature). |
+| **Honest errors** | `VectorStoreError` distinguishes `DocumentNotFound` / `EmbeddingError` / `StorageError` / `ConnectionError`; missing features fail loudly instead of silently degrading (e.g. Qdrant without the feature → `ConnectionError`, not in-memory fallback). |
+
+---
+
+## Architecture
+
+langchainrust is a **23-crate workspace** with a single facade crate `langchainrust` (in `crates/lc`) that re-exports the public API. Layers depend downward — `lc-shared` / `lc-schema` sit at the bottom and are depended on by everyone, which is exactly how the circular-dependency problem is solved.
+
+```
+                       ┌──────────────────────────────────────┐
+                       │  langchainrust (facade, crates/lc)   │
+                       └──────────────────┬───────────────────┘
+                                          │
+       ┌──────────────┬───────────────────┼───────────────────┬──────────────┐
+    Protocol       Quality            Intelligence        Composition     Providers
+  ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐
+  │ lc-mcp             │ │ lc-guardrails      │ │ lc-agents          │ │ lc-chains          │ │ lc-providers       │
+  │ lc-a2a             │ │ lc-evaluation      │ │ lc-rag             │ │ lc-langgraph       │ │ lc-embeddings      │
+  │                    │ │ lc-callbacks       │ │ lc-vector-stores   │ │                    │ │ lc-prompts         │
+  │                    │ │ lc-observability   │ │                    │ │                    │ │ lc-tools           │
+  └─────────┬──────────┘ └──────────┬─────────┘ └──────────┬─────────┘ └──────────┬─────────┘ └──────────┬─────────┘
+            └───────────────────────┴──────────────────────┴──────────────────────┴──────────────────────┘
+                                          │
+        ┌─────────────────────────────────┴──────────────────────────────────────┐
+        │                           Core & Foundation                             │
+        │   ┌──────────┐   ┌──────────┐   ┌────────────────────────┐              │
+        │   │ lc-core  │   │ lc-schema│   │ lc-shared              │              │
+        │   │ Runnable │   │ Message  │   │ Document / ToolCall /  │              │
+        │   │ LCEL     │   │ types    │   │ TextSplitter           │              │
+        │   └──────────┘   └──────────┘   └────────────────────────┘              │
+        └─────────────────────────────────────────────────────────────────────────┘
+```
+
+(`lc-memory`, `lc-sessions`, `lc-testkit` and `lc-tools-derive` are omitted from the diagram for clarity; the crate table below lists all 23.)
+
+| Crate | Role |
+|-------|------|
+| **lc-core** | Execution layer: `Runnable` / LCEL operators, `BaseChatModel`/`BaseLanguageModel`, `BaseTool`/`ToolRegistry`, output parsers, structured output, token counter, `LLMCache`, `RouterLLM` (+ `ModelRegistry` pricing/capabilities, `ModelRateLimit`, `RouterBudget`), cost ledger (`CostTracker`, `ModelPrice`, `PricingTable`, `ObsEvent::Cost`), `CancellationToken`, `StructuredJudge`, `BatchClient`, `cosine_similarity`. |
+| **lc-schema** | `Message` (content + role + multimodal attachments), `MessageType`, `ImageContent`/`AudioContent`/`FileContent`. |
+| **lc-shared** | Cross-crate foundation types: `Document`, `VectorDocument`, `SearchResult`, `ChunkDocument`, `ToolCall`/`FunctionCall`, `TextSplitter` — breaks the dependency cycle. |
+| **lc-providers** | 11 LLM vendors behind `BaseChatModel`; `LLMClient` (auto-detect), `ProviderError` (per-vendor variants), `ChatModelWrapper` (error normalization for mixed routing). |
+| **lc-prompts** | `PromptTemplate`, `ChatPromptTemplate` (Runnable), `FewShotPromptTemplate`, `ExampleSelector`s. |
+| **lc-tools** | Built-in tool library + `#[tool]` proc macro (`lc-tools-derive`), sandbox. |
+| **lc-embeddings** | `Embeddings` trait + 7 providers, retries, concurrency, normalization. |
+| **lc-chains** | `BaseChain` + 9 chains, `ChainRunnable` bridge into LCEL. |
+| **lc-langgraph** | `StateGraph`, conditional/FanOut/FanIn edges, `Reducer`s, `Checkpointer` (memory/file + SQLite/Postgres/Redis durable backends, OCC conflict errors), `GraphPersistence`, `Subgraph`, dynamic injection; v0.24 adds in-node dynamic interrupt/resume (`InterruptibleNode`, `resume_with_value`), checkpoint `snapshots()` state history and `fork_from` time travel. |
+| **lc-agents** | ReAct / FunctionCalling / PlanExecute / CRAG / AdaptiveRAG / DeepResearch / Handoffs / Orchestrators / Hooks + human-approval gate (`ApprovalHandler`) / budget gate (`BudgetConfig`); v0.24 adds the `Supervisor` sub-agent router, graph-path `ApprovalGate` (approval-as-interrupt convergence) and bounded parallel tool calls. |
+| **lc-memory** | Buffer/Window/Summary/SummaryBuffer memories, `ContextWindow`, `MongoPersistentMemory`, two-layer semantic memory (episodic + consolidated facts, background extractor). |
+| **lc-sessions** | `EventSessionManager` + `EventStore` event-sourced multi-turn lifecycle (recommended); legacy `SessionManager`/`SessionStore` deprecated. |
+| **lc-rag** | `RetrieverTrait` (Similarity/BM25/UnifiedHybrid), `RAGPipeline`, MultiQuery/HyDE/Reranking, GraphRAG; v0.24 adds hosted neural rerankers (`AsyncReranker` Cohere/Jina), `SentenceWindowRetriever` / public `ParentDocumentRetriever`, and late-chunk dual-leg injection (MMR + weighted fusion landed in v0.23.0). |
+| **lc-vector-stores** | `VectorStore` trait + InMemory/File/Chunked/Qdrant/ChromaDB/LanceDB/Neo4j/Pinecone/Redis/Mongo/SQLite/PGVector backends. |
+| **lc-mcp** | MCP client/server: official stdio + Streamable HTTP transports (with OAuth 2.1), the framework's own stateless HTTP track, tool adapter, MRTR, Gateway. |
+| **lc-a2a** | A2A protocol server/client. |
+| **lc-evaluation** | Rule evaluators + LLM judges, `EvalRunner` + `Report`; v0.24 adds `compare_reports` baseline/candidate regression gating (`ReportComparison`, per-metric deltas, added/dropped evaluators). |
+| **lc-guardrails** | Input/output guardrails, `Guardable`, streaming guardrails, audit sinks. |
+| **lc-callbacks** | `CallbackHandler`/`CallbackManager` + StdOut/File/LangSmith/OTel + `Tracer`/`SpanGuard`. |
+| **lc-observability** | `MetricsSink` / `ObsEvent` observation bus with `JsonLinesSink` (JSONL files) and `MongoSink` (behind `observability-mongodb`). |
+| **lc-testkit** | Record/replay test harness: `RecordingProvider` records real LLM exchanges to JSONL, `ReplayProvider` replays them offline with zero network — framework tests run without API keys. Phase 2 (v0.17): tool definition recording (`bind_tools`), out-of-order replay (`ReplayStrategy::{Fifo, ByToolName}`), agent-level offline replay, and chain scenarios transcribed from online tests. Phase 3 (v0.18): strict message-signature replay (`ReplayStrategy::Exact`). Phase 4 (v0.24): trace → golden dataset bridge (`golden_dataset`, `write_golden_jsonl`, `ReplayPredictor`, `replay_golden_from_file`) closing the record→score→regression-gate loop. |
+
+---
+
+## Installation
+
+```toml
+[dependencies]
+langchainrust = "0.27.0"
+tokio = { version = "1.0", features = ["full"] }
+
+# Optional features — vector stores & storage
+langchainrust = { version = "0.27.0", features = ["qdrant-integration"] }    # Qdrant vector DB
+langchainrust = { version = "0.27.0", features = ["mongodb-persistence"] }   # MongoDB storage (memory + vector store + checkpoints)
+langchainrust = { version = "0.27.0", features = ["redis-storage"] }         # Redis vector store
+langchainrust = { version = "0.27.0", features = ["sqlite-storage"] }        # SQLite vector store (+ SQLTool)
+langchainrust = { version = "0.27.0", features = ["pgvector-storage"] }      # PGVector (requires user-configured sqlx/pgvector deps)
+
+# Durable LangGraph checkpointers (v0.22.4)
+langchainrust = { version = "0.27.0", features = ["checkpoint-sqlite"] }     # rusqlite bundled, WAL — zero extra infra
+langchainrust = { version = "0.27.0", features = ["checkpoint-postgres"] }   # tokio-postgres
+langchainrust = { version = "0.27.0", features = ["checkpoint-redis"] }      # Redis with Lua CAS
+
+# Local embeddings (vision/Cohere/Qwen multimodal embeddings need no feature)
+langchainrust = { version = "0.27.0", features = ["local-embeddings"] }      # Local ONNX embeddings (ort)
+langchainrust = { version = "0.27.0", features = ["fastembed"] }             # FastEmbed ONNX models
+langchainrust = { version = "0.27.0", features = ["local-candle"] }          # Pure-Rust Candle BERT embeddings
+
+# Observability
+langchainrust = { version = "0.27.0", features = ["opentelemetry"] }         # OpenTelemetry tracing spans
+langchainrust = { version = "0.27.0", features = ["otlp"] }                  # OTLP HTTP/JSON exporter (v0.22.4)
+langchainrust = { version = "0.27.0", features = ["observability"] }         # MetricsSink + JsonLinesSink (v0.22.4)
+langchainrust = { version = "0.27.0", features = ["observability-mongodb"] } # MongoDB observation sink
+
+# Tools & memory
+langchainrust = { version = "0.27.0", features = ["browser-cdp"] }           # CDP browser tool (v0.22.4)
+langchainrust = { version = "0.27.0", features = ["vectorstore-memory"] }    # VectorStoreRetrieverMemory (semantic memory)
+langchainrust = { version = "0.27.0", features = ["experimental"] }          # Experimental features
+# PineconeStore / FileVectorStore / hosted search (Tavily, Serper, Exa) require no feature flag.
+# The axum SSE agent endpoint is gated by lc-agents' own `sse-server` feature (see examples/agent_sse_server.rs).
+```
+
+> **Note on MSRV**: Rust **1.85+** required.
+
+---
+
+## Quick Start
+
+### 1. Basic chat
+
+```rust
+use langchainrust::{OpenAIChat, OpenAIConfig, BaseChatModel};
+use langchainrust::schema::Message;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let config = OpenAIConfig {
+        api_key: std::env::var("OPENAI_API_KEY")?,
+        base_url: "https://api.openai.com/v1".to_string(),
+        model: "gpt-4o-mini".to_string(),
+        ..Default::default()
+    };
+
+    let llm = OpenAIChat::new(config);
+
+    let response = llm.chat(vec![
+        Message::system("You are a helpful assistant."),
+        Message::human("What is Rust?"),
+    ], None).await?;
+
+    println!("{}", response.content);
+    Ok(())
+}
+```
+
+### 2. Multi-provider — same interface, swap config
+
+```rust
+use langchainrust::{
+    DeepSeekChat, MoonshotChat, ZhipuChat, QwenChat,
+    AnthropicChat, OllamaChat,
+};
+
+let deepseek = DeepSeekChat::from_env_result()?;
+let moonshot = MoonshotChat::with_model("moonshot-v1-128k")?; // reads key from env, returns Result
+let claude = AnthropicChat::from_env_result()?;
+let ollama = OllamaChat::new("llama3.2");
+```
+
+### 3. LCEL — compose everything into one chain
+
+```rust
+use langchainrust::{
+    ChatPromptTemplate, Message, OpenAIChat, OpenAIConfig, RunnableExt, StrOutputParser,
+};
+use std::collections::HashMap;
+
+let llm = OpenAIChat::new(OpenAIConfig {
+    api_key: std::env::var("OPENAI_API_KEY")?,
+    base_url: "https://api.openai.com/v1".to_string(),
+    model: "gpt-4o-mini".to_string(),
+    ..Default::default()
+});
+
+// prompt.pipe(llm).pipe(parser) — everything is a Runnable (v0.15)
+let prompt = ChatPromptTemplate::from_messages([
+    Message::system("你是一个简洁的 Rust 助手。"),
+    Message::human("{question}"),
+]);
+let chain = prompt.pipe(llm).pipe(StrOutputParser::new());
+
+let mut vars = HashMap::new();
+vars.insert("question".to_string(), "一句话说明什么是 Rust".to_string());
+let answer = chain.invoke(vars, None).await?;
+println!("{answer}");
+```
+
+For the full five-way composition — prompt + memory + LLM + parser + RAG in one program — see [`lcel_compose`](crates/lc/examples/lcel/lcel_compose.rs).
+
+### 4. BM25 keyword search (no API key)
+
+```rust
+use langchainrust::{BM25Retriever, Document};
+
+let mut retriever = BM25Retriever::new();
+
+retriever.add_documents_sync(vec![
+    Document::new("Rust is a systems programming language"),
+    Document::new("Python is a scripting language"),
+]);
+
+let results = retriever.search("systems programming", 3);
+
+for result in results {
+    println!("Document: {}", result.document.content);
+    println!("Score: {}", result.score);
+}
+```
+
+More examples in [中文使用指南](https://github.com/atliliw/langchainrust/blob/main/docs/USAGE.md) or [Usage Guide](https://github.com/atliliw/langchainrust/blob/main/docs/USAGE_EN.md).
+
+---
+
+## Examples
+
+The `crates/lc/examples/` directory provides 42 runnable examples covering core functionality:
+
+| Category | Examples | Requires API Key |
+|----------|----------|-----------------|
+| basic | chat / streaming / multi_provider / token_counter / quick_start / responses_api / batch_api / sandbox | Yes |
+| agent | function_calling / multi_tool / assistants / handoffs / plan_execute / deep_research / extended_thinking | Yes |
+| agent SSE | agent_sse_server (axum + SSE, v0.22.4) | Yes (`AGENT_SSE_API_KEY`) |
+| rag | bm25_search / document_loaders / file_vectorstore / semantic_splitter / adaptive_rag / corrective_rag / graph_rag | No |
+| langgraph | basic_graph / conditional_edge | No |
+| memory | buffer_memory / context_window / sessions / vectorstore_memory | No |
+| chains | llm_chain / sequential_chain | Yes |
+| lcel | lcel_pipe / lcel_compose | pipe: No / compose: Yes |
+| evaluation | evaluation / ragas_eval (RAGAS metrics, v0.22.4) | evaluation: No / ragas_eval: Yes |
+| guardrails | guardrails | No |
+| mcp | mcp_http_server / mcp_stdio_server (stateless track), mcp_server (server primitives) | No |
+| a2a | a2a_http_server | Yes |
+| otel | otel_tracing / otlp_tracing (OTLP exporter, v0.22.4; needs `--features otlp`) | No |
+
+Examples requiring API keys read from environment variables:
+
+```bash
+export OPENAI_API_KEY="your-key"
+cargo run --example basic_chat
+```
+
+Examples without API keys (BM25 / LangGraph / Memory / Loader) can run directly — great for quick exploration.
+
+---
+
+## Production Considerations
+
+Some hard-won guidance from the framework's design reviews:
+
+- **Don't rely on silent keyword fallbacks.** `LocalEmbeddings` without the `local-embeddings` feature is a Bag-of-Words fallback — don't use it for real semantic retrieval. Enable the feature or use an API provider.
+- **Embedding batch alignment errors are explicit.** Missing or shifted vectors now return `EmptyVectorInBatch` / `BatchMismatch` instead of empty slots — treat them as failures, don't skip them.
+- **Chinese text: prefer Tiktoken-based token counting.** The `len/4` heuristic over-counts Chinese; `ContextWindow` uses `TiktokenCounter` when available.
+- **Summary memory: old summaries survive LLM failure.** A failed summary leaves the previous summary and raw messages intact (`last_summary_error()` reports the failure); it never silently wipes history.
+- **MCP / A2A auth is at the JSON-RPC layer.** Bearer-token auth returns HTTP 200 with `{"error":{"code":401,...}}` in the body — check the body, not just the status code. Agent-card discovery is intentionally public.
+- **MCP failure semantics differ by transport.** The stateless HTTP track has no handshake or heartbeat — an unreachable server fails the *request* immediately, so there is no reconnect to wait on. The stdio transport has no reconnect at all: a child exit / pipe EOF surfaces as `MCPError::connection_lost()` on the next call; restarting the subprocess is the caller's job. MRTR round trips are bounded by `max_round_trips` (`-32003`), and method rate limits fail fast with `-32002`.
+- **Pinecone intentionally lacks fetch-by-ID.** `get_document` / `get_embedding` / `clear` return explicit `StorageError`s; `count` uses `describe_index_stats`. Don't design around those ops with Pinecone.
+- **SQLTool is read-only by default, use parameterized queries.** The Python blacklist is noise-filtering, not a security boundary — isolate real code execution with `LocalSandbox`.
+- **Summary memory and sessions need no special wiring.** `EventSessionManager` accepts a `BaseMemory` via `with_memory` (or per-session `with_memory_factory`) for persistent multi-turn apps. The legacy `SessionManager` is deprecated and removed in 0.23.0.
+- **Unknown model prices bill $0, they don't crash the run.** `CostTracker` records usage for models missing from the `PricingTable` at zero cost — register the model price explicitly if the USD budget gate must actually constrain it; otherwise the gate silently never trips on that model.
+- **Checkpoint writes are optimistic.** Concurrent stale writes against the same LangGraph checkpoint return `GraphError::CheckpointVersionConflict` — re-read and retry, never last-write-wins (SQLite/Postgres/Redis backends all use compare-and-swap).
+
+---
+
+## Documentation
+
+| Docs | Content |
+|------|---------|
+| [中文使用指南](https://github.com/atliliw/langchainrust/blob/main/docs/USAGE.md) | 所有组件的详细用法（中文） |
+| [Usage Guide](https://github.com/atliliw/langchainrust/blob/main/docs/USAGE_EN.md) | Detailed usage for all components |
+| [API Docs](https://docs.rs/langchainrust) | Rust API documentation |
+| [Changelog](https://github.com/atliliw/langchainrust/blob/main/CHANGELOG.md) | Release history and breaking changes |
+
+---
+
+## Testing
+
+```bash
+cargo test
+```
+
+---
+
+## Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## License
+
+MIT or Apache-2.0, at your option.

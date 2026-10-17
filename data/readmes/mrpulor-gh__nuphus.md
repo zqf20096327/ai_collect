@@ -1,0 +1,379 @@
+# Nuphus — 本地优先面向个人用户日常编程、办公、自动化工作流的 AI 协作伙伴
+
+[![Apache-2.0 License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/Rust-1.95%2B-orange)](https://rustup.rs/)
+[![Tauri](https://img.shields.io/badge/Tauri-v2-ffc131)](https://v2.tauri.app)
+[![React](https://img.shields.io/badge/React-18-61dafb)](https://react.dev)
+[![npm version](https://img.shields.io/npm/v/@nuphus/nuphus-desktop.svg)](https://www.npmjs.com/package/@nuphus/nuphus-desktop) [![npm downloads](https://img.shields.io/npm/dm/@nuphus/nuphus-desktop.svg)](https://www.npmjs.com/package/@nuphus/nuphus-desktop) [![CI](https://github.com/mrpulor-gh/nuphus/actions/workflows/main-guard.yml/badge.svg?branch=main)](https://github.com/mrpulor-gh/nuphus/actions/workflows/main-guard.yml)
+
+**中文** | [English](README.en.md)
+
+> **版本**: 0.2.29 · **状态**: Alpha（积极开发中） · **平台**: Windows / macOS / Linux
+> **技术栈**: Tauri v2 · Rust · React 18 · TypeScript
+
+<p align="center">
+  <img src="docs/readme-hero/preview.png" alt="Nuphus 桌面端与移动端" width="100%">
+</p>
+
+**Nuphus 是运行在你电脑上的 AI Agent——本地、私有、拥有真实的桌面执行力，手机是它的第二块屏幕。**
+
+它识别屏幕、操作鼠标键盘、控制窗口、读写文件、调度浏览器，把 LLM 的推理变成真实的自动化。数据留在本机，模型由你选择，Agent 替你做事情。你在桌面发起的每一个会话，手机上都实时同步——同一份记忆、同一个 Agent、同一场对话，随时随地继续。
+
+---
+
+## 设计哲学
+
+不在乎华丽的炫技，只在乎实用的能力。极简实用主义，功能按需呈现，拒绝堆砌套壳、重复探索和无意义消耗，主张一切落到日常工作中。
+
+### Leader：串行思考，并行执行
+
+Nuphus 的核心引擎用 Rust 构建，工具调用在毫秒级完成，延迟瓶颈在模型推理而非引擎。Agent 决策本身就是因果链——每一步依赖上一步的结果，桌面系统操作更应遵循串行逻辑。
+
+- **全局理解，掌控任务** — Leader 解析目标、规划路径、监督进度、汇总交付
+- **内部编排（串行）** — 调度内置 GoalType ExecAgent（项目分析 / 代码生成 / 调试诊断 / 文件操作等）按因果链逐步执行
+- **外部调度（并行）** — 通过显式交互指令，同时打开 Cline 修 bug、Claude Code 写测试、浏览器查文档——每个外部 Agent 拥有自己的上下文理解，Nuphus 在之上截图验证、阅读产出、汇总决策
+- **上下文传递** — 显式指令让外部 Agent 拥有任务上下文，减少重复指令和探索
+
+**串行的是思考，并行的是执行。**
+
+<p align="center">
+  <img src="docs/readme-hero/appearance-panel.png" alt="Nuphus 桌面端：对话执行中 + 右侧外观面板（三套内置主题 / 自定义主题 / 界面不透明度调节）" width="100%">
+</p>
+
+### Workflow：把一次探索固化为确定性执行
+
+LLM 每次用 token 解决 85% 相同的任务，是对算力和时间的双重浪费。Nuphus 的解法——**让 LLM 推理一次，编译为工作流，之后极低 token 重复执行**：
+
+```
+自然语言交互 → Agent 共同探索（理解界面/流程/参数） → 逐步固化参数 → 编译为确定性执行序列 → 引擎重复执行
+```
+
+这不是定时任务，而是**把一次有智慧的探索，固化为可重复的确定性执行**：
+
+- **自然语言探索** — 用自然语言与 Agent 交互，批阅试卷、浏览器自动化、桌面软件操作……Agent 理解意图、识别界面、逐帧操作
+- **参数固化** — 共同探索后，把每一步的定位、操作、异常处理固化为参数（参数即契约，全部有界面证据）
+- **确定性执行** — 编译后的执行序列极低 token 重复执行，不再依赖 LLM 每次重新推理
+- **值守修复** — 运行时 Agent 负责值守：发现错误时，根据设计意图和目标自动修复、记录、优化，而非盲目重试
+
+一次编译的投入，换来**确定性、可重复、极低边际成本**的自动化。
+
+<p align="center">
+  <img src="docs/readme-hero/workflow-demo.gif" alt="工作流演示：命令面板搜索定位，逐面板巡览 11 个设置面板" width="100%">
+</p>
+
+> 上面这段 GIF 是一次编译好的工作流在重复执行：`Ctrl+K` 命令面板搜索定位 → 依次打开/关闭 11 个设置面板（约 25 秒），全程零 LLM 推理。
+
+---
+
+## 核心亮点
+
+### 真实桌面执行力
+
+Nuphus 直接安装在你的操作系统上，拥有原生级的屏幕感知和输入控制能力：
+
+- **操控任意 GUI** — 窗口 + OCR + 键鼠，任何桌面软件/网页都能自动化，无需对方提供 API
+- **内置浏览器** — 可编程的浏览器内核，网页自动化、信息采集、表单交互都在本机完成
+- **编程与项目分析** — 项目分析、代码生成、调试诊断、文件操作，深度理解项目上下文
+- **多 Agent 调度** — 并行调度 Cline、Claude Code 等外部 Agent，统一汇总决策
+
+### 双端实时同步：桌面干活，手机掌控
+
+Nuphus 把「执行」和「掌控」分开：**桌面是 Agent 的双手，手机是你的遥控器。**
+
+- **同一会话，双端同步** — 手机连接的正是桌面那个 Agent：发消息走同一个会话入口，桌面和手机共享历史、记忆与状态
+- **实时事件流** — Agent 的每一步（思考、工具调用、执行结果）通过 WebSocket 实时推送到手机
+- **工作流遥控** — 手机上直接暂停、恢复、停止正在执行的工作流
+- **执行轨迹回放** — 手机上查看 Agent 的完整执行轨迹，每一步都透明可查
+- **远程访问免费** — 局域网内自动直连（零配置）；出门在外通过中继服务器远程访问，不落盘存储内容，只做身份校验与转发路由
+
+双通道自动切换：同一 WiFi 下手机直接连桌面（快、免费）；离开局域网自动走中继（稳定、可靠），回来自动切回直连。
+
+### 本地优先，隐私自有
+
+- **数据留在本机** — 对话、记忆、插件全部存储本地
+- **本地 AI 引擎** — PP-OCRv4（OCR）、Candle（语义搜索）全部本地运行，日常识别零 API 消耗
+- **4 层安全体系** — 权限开关 → 人在回路 → 注入检测 → 熔断保护
+- **模型自由** — OpenAI / Anthropic / DeepSeek / Qwen / 智谱等主流厂商统一接入，随时切换
+
+### 内置工具页：PDF / 图像 / 视频 / 音频 / 文档
+
+无需安装任何外部工具，工具页内置 23 个处理命令：
+
+| 分类 | 能力 |
+|------|------|
+| PDF | 合并 / 压缩 / 文本提取 / 图片转 PDF / 抽页 / 旋转 |
+| 图像 | 压缩 / 格式转换 / 缩放 / 拼接 / 批量压缩 / 批量转换 |
+| 视频 | 压缩 / 抽帧 / 转 GIF / 截取片段 |
+| 音频 | 提取音频 / 音频转换 / **语音克隆**（走云端） |
+| 文档 | docx / pptx / xls / pdf 等转文本 |
+
+### 更多能力
+
+| 能力 | 说明 |
+|------|------|
+| **记忆系统** | 跨会话经验积累，SQLite 持久化 + FTS5 + 向量语义检索，越用越懂你 |
+| **零编译扩展** | 知识库、技能、工作流、ui-maps 均为纯文本文件，放入 `plugin/` 即生效 |
+| **视觉感知三层** | 内置 OCR（零 API 消耗）→ 可配置视觉模型（复杂场景）→ 用户视觉引导（最灵活 fallback） |
+| **确定性工作流** | 常用任务编译为工作流，零 token 重复执行（见上文设计哲学） |
+| **音效反馈** | 任务完成 / 错误 / 重试均有音效提示，不盯屏也能感知状态 |
+
+---
+
+## 安装
+
+### npm 一键安装（推荐）
+
+一条命令完成安装，自动匹配当前平台的二进制（Windows x64 / macOS arm64 / Linux x64），**无需下载安装包、无需 Node.js / Rust 环境**：
+
+```bash
+# 全局安装（提供 nuphus 命令）
+npm install -g @nuphus/nuphus-desktop
+
+# 或免安装体验（不写入全局）
+npx @nuphus/nuphus-desktop
+```
+
+安装完成后在终端输入 `nuphus` 即可启动。
+
+> 首次安装体积较大（桌面应用含本地 OCR / 语音模型），请耐心等待。
+
+### 下载安装包
+
+面向不熟悉命令行的用户，**无需命令行、无需 Node.js / Rust 环境**：
+
+1. 从 [GitHub Releases](https://github.com/mrpulor-gh/nuphus/releases) 下载对应平台的安装包：
+   - **Windows**：`.exe`（NSIS 安装包，用户级安装，**无需管理员权限**）
+   - **macOS**：`.dmg`
+   - **Linux**：`.deb` / `.AppImage`
+2. 双击安装包完成安装（Windows 安装后桌面生成 **Nuphus** 快捷方式）
+3. 双击快捷方式即可启动
+
+> **国内网络下载缓慢或失败时**，改从 [Gitee Releases](https://gitee.com/nuphus/nuphus/releases)
+> 获取 Windows 安装包（与 GitHub 发布版同一文件，签名一致，可直接用于自动更新）。
+> macOS / Linux 安装包暂仅托管在 GitHub，可配合镜像或代理下载。
+
+### 从源码构建（开发者）
+
+**前置条件：**
+
+| 工具 | 版本 | 用途 |
+|------|------|------|
+| [Rust](https://rustup.rs/) | 1.95.0（`rust-toolchain.toml` 锁定） | 核心引擎编译 |
+| [Node.js](https://nodejs.org/) | ≥ 20（vitest 4 不支持 18） | Tauri 前端构建与前端测试 |
+| Tauri CLI | `cargo install tauri-cli --version "^2"` | 桌面应用开发 |
+
+```bash
+git clone https://github.com/mrpulor-gh/nuphus.git
+cd nuphus
+
+# 安装依赖（根目录 Tauri CLI + 前端依赖）
+npm install
+
+# 开发模式启动
+npx tauri dev
+```
+
+构建产物会持续增长，开发一段时间后可清理构建缓存释放磁盘（下次构建会重新编译）：
+
+```bash
+cargo clean
+```
+
+---
+
+## 快速开始
+
+### 配置模型
+
+1. 首次启动进入引导页，选择模型提供商并填入 API Key
+2. 按 Enter 提交即完成配置
+
+> 也支持环境变量免配置启动：`QWEN_API_KEY="sk-xxx" npx tauri dev`
+
+> 引导完成后可在「设置 → 模型」面板修改配置。API Key 加密存储：Windows 上经系统级 DPAPI 加密后写入本地 config.toml（`enc:v1:` 格式，绑定当前用户）；macOS/Linux 暂以明文保存（依赖系统文件权限，OS 凭据链接入在路线图中）。请勿分享或提交该文件。
+
+### 连接手机
+
+1. 在桌面端「手机」设置页开启移动端服务（默认端口 18772）
+2. 手机浏览器打开配对页，输入配对密码完成绑定
+3. 添加到主屏幕（PWA），以后像 App 一样使用
+
+同一 WiFi 下自动局域网直连；离开局域网自动走中继远程通道，全程免配置。
+
+---
+
+## 架构概览
+
+Nuphus 采用六层架构，自底向上，安全贯穿各层：
+
+```
+┌─────────────────────────────────────────────┐
+│ Tauri 壳                                    │  ← 前端 UI + 系统级能力（通知、托盘、快捷键）
+├─────────────────────────────────────────────┤
+│ Runtime                                     │  ← 统一主循环，三模式路由（Leader / Workflow / Custom）
+├─────────────────────────────────────────────┤
+│ Agent                                       │  ← Leader 决策 / ExecAgent 执行 / WorkflowAgent 设计
+├─────────────────────────────────────────────┤
+│ Transport                                   │  ← 多 Provider 抽象层（主流 AI 厂商统一接入）
+├─────────────────────────────────────────────┤
+│ Tools / Memory / Workflow                   │  ← 执行基础设施
+├─────────────────────────────────────────────┤
+│ Security / Permissions                      │  ← 贯穿所有层的安全链（注入检测 / 权限分级 / 审核）
+└─────────────────────────────────────────────┘
+```
+
+**双端同步架构**：
+
+```
+┌──────────┐   WebSocket 实时事件流    ┌──────────────┐
+│  手机 PWA │ ←──────────────────────→ │ 桌面 mobile  │
+│ (聊天/遥控)│   POST /message 共享入口   │  server(18772)│
+└──────────┘                          └──────┬───────┘
+      ↕ 局域网直连（同 WiFi 自动）              │ 共享会话/记忆/状态
+┌──────────┐                          ┌──────┴───────┐
+│ 中继服务器 │ ←──── 远程通道（免费）────→ │  Nuphus 桌面  │
+│ (不落盘)  │                          │  Agent 引擎   │
+└──────────┘                          └──────────────┘
+```
+
+手机端发消息走 `submit_user_message(source="mobile")`，与桌面共用同一 `leader_agent` / busy 锁 / 去重逻辑——双端是**同一个 Agent 的两个界面**，不是两个独立系统。断线自动指数退避重连，重连成功后重拉历史补齐间隙，不会丢消息。
+
+**数据流**：用户输入 → Tauri 事件 → Runtime 路由 → Leader 决策 → `task_dispatch` → ExecAgent 执行 → 结果返回 → 前端展示（桌面与手机同步）
+
+---
+
+## 配置
+
+Nuphus 使用 TOML 配置文件，`src/config/mod.rs::load_registry` 按优先级搜索：
+
+| 序号 | 路径 | 适用 |
+|---|---|---|
+| 1 | `<exe_dir>/config.toml` | 绿色版 / 便携部署 |
+| 2 | `./config.toml` | 开发 |
+| 3 | `~/.config/nuphus/config.toml` | Linux/macOS 用户级 |
+| 4 | `~/.nuphus/config.toml` | 兼容旧版 |
+| 5 | `<AppData>/nuphus/providers.toml` | Windows 桌面版规范配置（桌面端锚定，首次启动自动生成） |
+
+---
+
+## 设计原则
+
+1. **本地优先** — 数据默认留本机，云端只在用户选择时介入
+2. **极简心智** — 每个功能都尽量简单，避免过度抽象
+3. **确定性优先** — 能编译为工作流就不反复推理，能复用就不重写
+4. **Long-Term First** — 优先选择与现有架构一致、可维护的方案
+5. **克制优于堆叠** — 每个新功能必须证明自己不可替代
+6. **闭环设计** — 每个功能模块从输入到产出形成完整闭环
+
+---
+
+## 如何贡献
+
+Nuphus 是一个社区驱动的开源项目。除了代码贡献，你还可以通过以下方式参与生态建设：
+
+### 贡献插件（后续开放）
+
+| 插件类型 | 说明 | 示例 |
+|---------|------|------|
+| **ui-maps** | 任何软件的界面布局描述（按钮位置、窗口识别特征） | Photoshop 导出面板、企业 ERP 系统布局 |
+| **workflows** | 可复用的工作流模板 | "每日备份项目文件夹"、"批量图片压缩" |
+| **skills** | 领域方法论和操作指南 | "前端 UI 设计规范"、"特定框架的代码模式" |
+| **knowledge** | 项目领域知识文档 | API 参考、配置说明、架构文档 |
+
+所有插件均为纯文本文件（.md / .json），放入 `plugin/` 对应目录即可被 Nuphus 加载。
+
+### 参与讨论
+
+- GitHub Issues：Bug 报告和功能请求
+- GitHub Discussions：使用问题、经验分享、插件推荐
+
+---
+
+## 致谢
+
+### v0.2.29 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#105](https://github.com/mrpulor-gh/nuphus/pull/105) | 修复会话行 hover 动画标签重叠、按钮误触，并恢复 ModelsPage 测试基线（补 mock 缺失的 getVisionResolution） |
+
+### v0.2.28 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#104](https://github.com/mrpulor-gh/nuphus/pull/104) | 热门模型快捷 chip + 筛选框多关键词（空格 OR） |
+
+### v0.2.24 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#84](https://github.com/mrpulor-gh/nuphus/pull/84) | 补 mobile server / relay 威胁模型与已接受限制，写入 SECURITY.md |
+| [@yuansui486](https://github.com/yuansui486) | [#87](https://github.com/mrpulor-gh/nuphus/pull/87) | 修复外部数据点的 Markdown 渲染（MarkdownInline 导出供复用） |
+| [@yuansui486](https://github.com/yuansui486) | [#88](https://github.com/mrpulor-gh/nuphus/pull/88) | 明确模型连接成功反馈，并把模型能力探测移到后台不再阻塞切换 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#91](https://github.com/mrpulor-gh/nuphus/pull/91) | 外部 Agent 投递序列正确传递桌面输入与提交快捷键的失败 |
+
+### v0.2.23 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#67](https://github.com/mrpulor-gh/nuphus/pull/67) | 保留重新编辑时每月 29–31 日的定时规则 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#70](https://github.com/mrpulor-gh/nuphus/pull/70) | 手机端图片解码失败时显示原始路径 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#71](https://github.com/mrpulor-gh/nuphus/pull/71) | 修正移动画布步骤时的循环变量作用域判断 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#72](https://github.com/mrpulor-gh/nuphus/pull/72) | 稳定画布草稿与会话快照测试 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#73](https://github.com/mrpulor-gh/nuphus/pull/73) | 保护外部 Agent 任务状态并支持最近上报报告预览 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#74](https://github.com/mrpulor-gh/nuphus/pull/74) | 工作流新增非敏感运行参数方案 |
+| [@Steooenwolf-666](https://github.com/Steooenwolf-666) | [#75](https://github.com/mrpulor-gh/nuphus/pull/75) | 手机端支持失败图片就地重新加载 |
+| [@fouyzjl](https://github.com/fouyzjl) | [#79](https://github.com/mrpulor-gh/nuphus/pull/79) | switch_model 持久化 base_url，修复"改了调用地址又回退" |
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#80](https://github.com/mrpulor-gh/nuphus/pull/80) | 会话工作台启动只展开上次对话所在文件夹，并修好子菜单被抽屉裁切 |
+
+### v0.2.22 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@yuansui486](https://github.com/yuansui486) | [#65](https://github.com/mrpulor-gh/nuphus/pull/65) | 完善工作流节点调试、运行证据与画布编辑体验 |
+
+### v0.2.21 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@yuansui486](https://github.com/yuansui486) | [#58](https://github.com/mrpulor-gh/nuphus/pull/58) | 完善跨平台桌面执行可靠性与工作流进度沟通 |
+| [@yuansui486](https://github.com/yuansui486) | [#59](https://github.com/mrpulor-gh/nuphus/pull/59) | 修复画布工作台窗口拖动并增加原型明暗切换 |
+| [@yuansui486](https://github.com/yuansui486) | [#61](https://github.com/mrpulor-gh/nuphus/pull/61) | 优化工作流节点表单、变量选择与画布布局 |
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#63](https://github.com/mrpulor-gh/nuphus/pull/63) | 增强判断模型 API Key 行增加 TypeSafe 控制台外链 |
+
+### v0.2.20 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@yuansui486](https://github.com/yuansui486) | [#56](https://github.com/mrpulor-gh/nuphus/pull/56) | 完善跨平台目标绑定、语义观察与稳定回放 |
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#57](https://github.com/mrpulor-gh/nuphus/pull/57) | 手机端可查看电脑本地图片：新增 /file 端点与内联渲染 |
+
+### v0.2.19 贡献者
+
+感谢本版本提交 Pull Request 的社区贡献者：
+
+| 贡献者 | PR | 内容 |
+|--------|-----|------|
+| [@yuansui486](https://github.com/yuansui486) | [#52](https://github.com/mrpulor-gh/nuphus/pull/52) | UIA/Accessibility 语义桌面自动化基础层：语义观察、有限候选与执行前后复核 |
+| [@yuansui486](https://github.com/yuansui486) | [#54](https://github.com/mrpulor-gh/nuphus/pull/54) | 增强判断模型：独立配置 + 从本地有限候选中做结构化选择 |
+| [@zhoupeiyu515-ui](https://github.com/zhoupeiyu515-ui) | [#50](https://github.com/mrpulor-gh/nuphus/pull/50) | 日志轮转加固：改名失败不再丢历史 |
+
+更早版本的贡献者记录见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 许可
+
+Copyright © 2026 Nuphus Team · Apache License 2.0

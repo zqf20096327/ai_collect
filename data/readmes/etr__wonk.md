@@ -1,0 +1,355 @@
+# Wonk
+
+[![CI](https://github.com/etr/wonk/actions/workflows/ci.yml/badge.svg)](https://github.com/etr/wonk/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/wonk)](https://crates.io/crates/wonk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+**Structure-aware code search that cuts LLM token burn by 37%.**
+
+Wonk indexes your codebase with Tree-sitter to understand code structure — definitions, call graphs, imports, and scopes — then ranks search results so definitions surface first and tests sort last. A built-in MCP server exposes 25 tools for AI coding assistants, and a background daemon keeps the index fresh. Single static binary, zero runtime dependencies.
+
+## Before / after
+
+Searching for `Blueprint` in the Flask repo -- ripgrep returns 225 lines of unsorted noise (changelogs, docs, tests, definitions all mixed together). Wonk returns the same matches **ranked and deduplicated**: definitions first, usages next, comments and tests last, with re-exports collapsed into `(+N other locations)` annotations.
+
+<table>
+<tr><th>rg Blueprint (225 lines)</th><th>wonk search Blueprint (213 lines)</th></tr>
+<tr>
+<td>
+
+```
+./src/flask/app.py:1119:  ...Blueprint`
+./src/flask/app.py:1427:  ...Blueprint...
+./src/flask/blueprints.py:10:from ...
+./src/flask/blueprints.py:11:from ...
+./src/flask/blueprints.py:18:class Blueprint...
+./src/flask/__init__.py:3:from ...
+./src/flask/debughelpers.py:8:from ...
+./src/flask/debughelpers.py:146:  ...Blueprint
+  ... 217 more unsorted lines ...
+```
+
+</td>
+<td>
+
+```
+-- definitions --
+src/flask/blueprints.py:18:class Blueprint(...)
+  (+13 other locations)
+src/flask/sansio/blueprints.py:119:class Blueprint(...)
+  (+13 other locations)
+-- usages --
+src/flask/debughelpers.py:146:  ...Blueprint
+src/flask/sansio/app.py:374:  self.blueprints: ...
+  ... sorted by relevance ...
+-- tests --
+tests/test_blueprints.py:9:  ...
+```
+
+</td>
+</tr>
+</table>
+
+Same data, structured for an LLM context window -- definitions surface instantly instead of buried on line 67.
+
+## The problem
+
+LLM coding agents grep aggressively. A single query can stuff hundreds of noisy, unranked lines into the context window -- raw matches with no sense of what is a definition, what is a test, and what is a re-export. That is wasted tokens and wasted money.
+
+## How it works
+
+Wonk pre-indexes your codebase with Tree-sitter so it understands code structure: definitions vs. usages, symbol kinds, scopes, imports, and dependencies. When you search, results come back **ranked, deduplicated, and grouped by relevance** -- definitions first, tests last. The index stays fresh via a background file watcher, and a built-in MCP server exposes 25 tools for AI coding assistants.
+
+```
+┌─────────┐    ┌────────┐    ┌──────────────────────────┐    ┌────────┐    ┌────────┐
+│  Query  │───>│ Router │───>│  SQLite index             │───>│ Ranker │───>│ Budget │──> Output
+│ (CLI or │    │        │    │  (symbols, refs, imports,  │    │ Def >  │    │--bud-  │
+│   MCP)  │    │        │    │   deps, call edges)        │    │ Use >  │    │ get N  │
+└─────────┘    │        │───>│  grep fallback             │───>│ Test   │    └────────┘
+               └────────┘    └──────────────────────────┘    └────────┘
+                                          ▲
+                                ┌─────────┴──────────┐
+                                │  Daemon (notify)    │
+                                │  keeps index fresh  │
+                                └────────────────────┘
+```
+
+## Search modes
+
+| Mode | What it does |
+|------|-------------|
+| `wonk search <pattern>` | Full-text search ranked by code structure. Definitions first, tests last, re-exports collapsed. Add `--semantic` for hybrid RRF fusion. |
+| `wonk sym` / `sig` / `show` / `ref` | Direct symbol lookup. Find definitions, view signatures, read full source, or trace references — no regex needed. |
+| `wonk ask <query>` | Semantic search over code meaning. Works offline with the bundled default; Ollama remains an opt-in quality tier. |
+
+## Features at a glance
+
+**Search**
+- Smart ranking: definitions first, tests last, re-exports deduplicated
+- Zero-configuration offline semantic search (`wonk ask`) with optional Ollama embeddings
+- Hybrid RRF fusion blends structural + semantic results (`--semantic`)
+
+**Code intelligence**
+- Symbol lookup, signatures, and full source display (`sym`, `sig`, `show`)
+- Call graph traversal: callers, callees, shortest call path
+- Blast radius analysis with severity tiers and risk levels
+- Execution flow tracing from entry points
+- Changed symbol detection with blast/flow chaining
+- Diff-scoped review with line-anchored findings and a mechanical verdict
+
+**Architecture**
+- Single static binary -- SQLite, tree-sitter grammars, and grep engine bundled
+- 12 languages: TypeScript/TSX, JavaScript, Python, Rust, Go, Java, C, C++, Ruby, PHP, C#
+- Background daemon keeps index fresh via filesystem watcher
+- Worktree isolation -- separate index per git worktree
+- 25 MCP tools for AI coding assistants (JSON-RPC 2.0 over stdio)
+- Token budget (`--budget N`) caps output and preserves top-ranked results
+
+## Benchmarks
+
+25 code-understanding tasks across 5 real-world repos (ripgrep, tokio, httpx, pydantic, fastify), 5 runs each, median reported. Measures Claude Code token consumption with vs without wonk.
+
+| Category | Baseline (avg) | Wonk (avg) | Reduction | Quality (B→W) |
+|----------|---------------:|-----------:|----------:|--------------:|
+| symbol_location | 100k | 61k | 33% | 0.85→0.85 |
+| reference_tracing | 96k | 57k | 28% | 0.92→0.88 |
+| architecture | 162k | 101k | 29% | 0.90→0.96 |
+| multi_step | 143k | 104k | 23% | 0.93→0.93 |
+| structural | 130k | 69k | 46% | 0.95→0.88 |
+
+**Overall:** 37.4% total reduction (median per-task 29.7%, best 68.5%). Quality maintained at 0.90 vs 0.91 baseline.
+
+## Installation
+
+Standalone release downloads include `wonk-bundled-model-LICENSE.txt`, the
+MIT notice for the embedded Minish Lab model. Keep it with redistributed binaries.
+
+### curl (Linux / macOS)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/etr/wonk/main/install.sh | sh
+```
+
+### Cargo
+
+```sh
+cargo install wonk
+```
+
+### Building from source
+
+```sh
+git clone https://github.com/etr/wonk.git && cd wonk
+cargo build --release
+# Binary: target/release/wonk
+```
+
+## Quick start
+
+```sh
+cd your-project
+wonk search "handleRequest"       # ranked full-text search
+wonk sym "UserService"            # find symbol definitions
+wonk callers "dispatch"           # who calls this?
+wonk blast "processPayment"       # what breaks if this changes?
+wonk changes --blast --flows      # changed symbols + impact analysis
+wonk review --since main          # findings + verdict for this diff
+wonk ask "error handling logic"   # semantic search
+```
+
+Indexing happens automatically on first use.
+
+## How agents use wonk
+
+Wonk's primary audience is AI coding agents. Three integration paths:
+
+**MCP server** — `wonk mcp serve` exposes 25 JSON-RPC tools over stdio. Agents call `wonk_search`, `wonk_sym`, `wonk_callers`, `wonk_blast`, `wonk_review`, etc. with structured parameters and JSON responses. See [MCP server](#mcp-server).
+
+**Claude Code plugin** — the [wonk plugin](https://github.com/etr/wonk-plugin) bundles the MCP server, a skill that teaches Claude when to prefer wonk over grep/glob, and a session hook. See [Claude Code plugin](#claude-code-plugin).
+
+**CLI via Bash tool** — agents run wonk commands directly. Use `--format toon -q` for compact output and `--budget N` to cap token consumption.
+
+### Workflow patterns
+
+| Task | Command |
+|------|---------|
+| Find a definition | `wonk sym X` or `wonk show X` |
+| Full context (def + callers + callees) | `wonk context X --budget 4000` |
+| Trace forward call graph | `wonk callees X --depth 3` |
+| Shortest path A → B | `wonk callpath A B` |
+| Impact of a change | `wonk blast X` or `wonk changes --blast` |
+| Review a diff before committing | `wonk review --since main` |
+| Module overview | `wonk summary src/api --depth 1` |
+
+## Claude Code plugin
+
+The [wonk plugin](https://github.com/etr/wonk-plugin) integrates wonk into [Claude Code](https://docs.anthropic.com/en/docs/claude-code) as a native tool provider. It bundles the MCP server, an agent skill that teaches Claude when to prefer wonk over grep/glob, and a session hook that keeps the index fresh.
+
+```sh
+# Recommended: install via Groundwork Marketplace
+claude plugin marketplace add https://github.com/etr/groundwork-marketplace
+claude plugin install wonk
+```
+
+See the [wonk-plugin repo](https://github.com/etr/wonk-plugin) for alternative installation methods.
+
+## MCP server
+
+Wonk includes a built-in [MCP](https://modelcontextprotocol.io/) server for AI coding assistants. Add to your `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "wonk": {
+      "command": "wonk",
+      "args": ["mcp", "serve"]
+    }
+  }
+}
+```
+
+25 tools exposed: search, sym, ref, sig, show, deps, rdeps, callers, callees, callpath, summary, flows, blast, changes, context, ask, cluster, impact, init, update, status, repos, contracts (service-contract listing with kind/role/orphans/links filters), review (diff-scoped review: line-anchored findings plus a BLOCK/REVIEW/APPROVE verdict; findings are emitted only — nothing is posted to a forge and nothing is auto-fixed), feedback (report which search results were useful, against the slate a search persists when `[feedback] enabled = true`; pass `no_feedback: true` to `wonk_search` for index-only ranking reproducible from the index alone). All tools accept an optional `repo` parameter for multi-repo setups.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| **Search** | |
+| `search <pattern>` | Full-text search with smart ranking, dedup, `--semantic` fusion |
+| `ask <query>` | Semantic search via embedding similarity |
+| **Symbol lookup** | |
+| `sym <name>` | Symbol definitions by name, kind, or exact match |
+| `ref <name>` | Find references to a symbol |
+| `sig <name>` | Show function/method signatures |
+| `show <name>` | Show full source body (`--shallow` for containers) |
+| **Code structure** | |
+| `ls [path]` | List files and symbols (`--tree` for structure) |
+| `deps <file>` | Show file dependencies (imports) |
+| `rdeps <file>` | Show reverse dependencies |
+| `summary <path>` | Structural summary with optional `--semantic` description |
+| **Call graph** | |
+| `callers <name>` | Find callers with transitive `--depth` expansion |
+| `callees <name>` | Find callees with transitive `--depth` expansion |
+| `callpath <from> <to>` | Shortest call chain between two symbols |
+| **Program analysis** | |
+| `flows [entry]` | Detect entry points and trace execution flows |
+| `blast <symbol>` | Blast radius with severity tiers and risk levels |
+| `changes` | Changed symbols with optional `--blast` / `--flows` chaining |
+| `review` | Diff-scoped review: findings + BLOCK/REVIEW/APPROVE verdict |
+| `context <name>` | Full symbol context: callers, callees, flows, children |
+| `impact <file>` | Symbol-level change impact analysis |
+| **Semantic** | |
+| `cluster <path>` | Cluster symbols by embedding similarity (K-Means). Connectivity-based grouping is a different mechanism: the opt-in `community` rerank signal (`[rank.weights]`) groups symbols by call-graph structure |
+| **Index management** | |
+| `init` | Build index (auto-runs on first query) |
+| `update` | Rebuild index |
+| `status` | Show index stats |
+| `repos list\|clean` | Manage tracked repositories |
+| **Daemon** | |
+| `daemon start\|stop\|status\|list` | Manage background file watcher |
+| **Integration** | |
+| `mcp serve` | Start MCP server (JSON-RPC 2.0 over stdio) |
+
+Full flag reference: [`docs/commands.md`](docs/commands.md)
+
+## Comparison with alternatives
+
+| | wonk | ripgrep | ctags/LSP |
+|---|---|---|---|
+| Structural ranking | Definitions first, tests last | No ranking | N/A |
+| Deduplication | Re-export collapsing | None | N/A |
+| Call graph | Callers, callees, callpath, blast radius | No | LSP only (running server) |
+| Semantic search | Embedding similarity (bundled or Ollama) | No | No |
+| Token budget | `--budget N` caps output | No | No |
+| Setup | Single binary, auto-indexes | Single binary | Language server per language |
+| MCP server | 25 tools built-in | No | Via adapter |
+| Output | grep-compatible + JSON + TOON | grep + JSON | Protocol-specific |
+
+## Output formats
+
+**grep** (default) -- standard grep-compatible format, pipe-friendly:
+```
+src/main.rs:42:fn main() {}
+```
+
+**json** (`--format json`) -- NDJSON, one object per line:
+```json
+{"file":"src/main.rs","line":42,"col":1,"content":"fn main() {}"}
+```
+
+**toon** (`--format toon`) -- compact, indentation-based, minimal punctuation:
+```
+file: src/main.rs
+line: 42
+content: fn main() {}
+```
+
+## Supported languages
+
+TypeScript (TSX), JavaScript (JSX), Python, Rust, Go, Java, C, C++, Ruby, PHP, C#
+
+## Optional dependencies
+
+Wonk's core features work out of the box with zero external dependencies. Advanced features require:
+
+- **[Ollama](https://ollama.ai/)** -- optional higher-quality embedding tier and required for AI-generated summaries. Pull `nomic-embed-text` (embeddings) and `llama3.2:3b` (summaries).
+- **git** -- only needed for `wonk impact --since` and `wonk changes --scope compare`. Most likely already installed.
+
+## Semantic embedding tiers
+
+The default `bundled` provider is fully offline and needs no configuration.
+It uses the MIT-licensed `potion-code-16M-v2` model at 256 dimensions, packed
+to 6,518,611 bytes with row-wise q4 quantization. On an Apple M4 it embedded
+and stored 10,000 symbols from a cold start in 0.605 seconds. On the measured
+25-query corpus its hit_rate@10 was 0.20, identical to `nomic-embed-text`
+(0.00 absolute / 0.0 percentage-point delta); Ollama produced stronger
+early-rank MRR@10 (0.1080 versus 0.0480).
+
+Ollama remains available as an opt-in quality tier:
+
+```toml
+[embedding]
+provider = "ollama"
+```
+
+Switching providers changes vector spaces. Run
+`wonk update --force --provider bundled` (or `ollama`) after a switch. If the
+configured Ollama is unreachable at query time, semantic commands fall back to
+the bundled provider with a stderr warning instead of failing — the fallback
+never crosses a mismatched vector space, which always blocks with the re-embed
+command above. `wonk status` reports the active provider, the stored provider,
+and the stored dimension. See the
+[measured 25-query quality bake-off](bench/semantic-quality.md) for hit_rate@10
+and the exact delta against `nomic-embed-text`.
+
+## Configuration
+
+Layered TOML config: built-in defaults < `~/.wonk/config.toml` < `<repo>/.wonk/config.toml`.
+
+Full reference: [`docs/configuration.md`](docs/configuration.md)
+
+### Reproducibility
+
+With `[feedback] enabled = true`, ranking is a function of the index
+*and* the accumulated feedback history — that is the point, and it is
+also a determinism tradeoff. On demand, `wonk search --no-feedback`
+(or `no_feedback: true` on the MCP `wonk_search` tool) reproduces
+index-only ranking *exactly*: same index, same output, slates still
+recorded so you can keep reporting feedback. `[feedback] enabled =
+false` is the full opt-out. Learned state is inspectable and
+reversible — `wonk feedback --weights` shows every learned weight
+against its default, `--reset-weights`/`--reset-weight <FEATURE>`
+restore defaults without touching the event history, and
+`--clear-events`/`--clear-result <IDENTITY>` wipe history without
+touching the weights. `wonk status` summarizes the loop's state
+(events, sessions, current weight deviation). Benchmarks and the
+ranking regression suite run feedback-free, so measurement cannot
+confirm itself.
+
+## Acknowledgments
+
+Built with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [Groundwork](https://github.com/etr/groundwork).
+
+## License
+
+MIT

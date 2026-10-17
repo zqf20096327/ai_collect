@@ -1,0 +1,290 @@
+<div align="center">
+  <img src="./media/logo-128.png" alt="Bag of Words" width="128" />
+
+## The open-source agentic analytics platform
+
+BOW connects any LLM to your data and gives agents the context they need to do useful work.
+
+Each agent gets its own data, tools, credentials, instructions, permissions. Start in chat, then run the same agents in reports, dashboards, automations, scheduled tasks, team channels, and MCP clients.
+
+Set evals and use self-improving loops to make agents more reliable over time.
+
+[![Website](https://img.shields.io/badge/Website-bagofwords.com-blue)](https://bagofwords.com)
+[![Docs](https://img.shields.io/badge/Docs-Documentation-blue)](https://docs.bagofwords.com)
+[![Docker](https://img.shields.io/badge/Docker-Hub-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/bagofwords/bagofwords)
+[![e2e tests](https://github.com/bagofwords1/bagofwords/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/bagofwords1/bagofwords/actions/workflows/e2e-tests.yml)
+</div>
+
+## Features
+
+- **Analysis:** Create reports and dashboards, generate queries, and run deep or root cause analysis.
+- **Agent context:** Configure each agent with the right data, tools, credentials, instructions, permissions, and starters.
+- **Query acceleration:** Speed up analytical queries 10–1000× with an auto-updating cache that spares the source.
+- **Automations:** Schedule reports, run recurring tasks, and trigger investigations from events and webhooks.
+- **Channels:** Run headlessly via Claude Code, Codex, and other MCP clients, or through Microsoft Teams, Slack, WhatsApp, email, Excel, and the web app.
+- **MCP gateway:** Connect agents to MCP servers and custom APIs, then expose their context and tools to MCP clients through one governed gateway.
+- **Evals and self-improvement:** Set evals for expected behavior. When they fail, agents can draft instruction fixes and re-run the evals; passing changes can wait for approval or be promoted automatically.
+- **Governance:** Control access with RBAC, approvals, audit logs, service accounts, SSO, model policies, and row-level security support.
+
+[Deploy anywhere](https://docs.bagofwords.com/install)
+
+[![Bag of Words executive dashboard](./media/readme/final/business-dashboard.png)](https://bagofwords.com/demos/hero4.mp4)
+
+---
+
+## Quick Start
+
+```bash
+# Run with SQLite (default)
+docker run -p 3000:3000 bagofwords/bagofwords
+```
+
+### Run with PostgreSQL
+
+```bash
+docker run -p 3000:3000 \
+  -e BOW_DATABASE_URL=postgresql://user:password@localhost:5432/dbname \
+  bagofwords/bagofwords
+```
+
+Docker Compose and Kubernetes deployments are also available and recommended for servers. See the [installation docs](https://docs.bagofwords.com/install).
+
+## From Analysis Context to Action
+
+### Start with chat
+
+Ask questions across your data and get queries, charts, reports, dashboards, deep analysis, and root cause analysis. Agents plan their work, use tools, and reflect on the result.
+
+<div align="center">
+  <img src="./media/readme/final/root-cause-analysis.png" alt="Root cause analysis in Bag of Words" width="100%" />
+</div>
+
+### Give every agent the right context
+
+Choose the data and tools an agent can use, provide the right credentials, and add instructions and starters for its job. Manage shared business definitions and guardrails with versioning, review flows, and Git sync for dbt, markdown, code, and more.
+
+<div align="center">
+  <img src="./media/readme/final/agents-pending-instructions.png" alt="Review pending agent instruction changes in Bag of Words" width="100%" />
+</div>
+
+### Turn analysis into repeatable work
+
+Schedule reports and investigations, trigger agents from webhooks, and send results to the people and systems that need them. The same analysis context is available in chat, automations, channels, and external MCP clients.
+
+<div align="center">
+  <img src="./media/readme/final/automations-trigger.png" alt="Configure an event-driven agent trigger in Bag of Words" width="100%" />
+</div>
+
+### Evaluate and improve
+
+Define eval sets for the behavior that matters and run them as agents change. When an eval fails, a self-improving loop can draft instruction changes and re-run the tests up to a configured limit. Passing candidates can wait for approval or be promoted automatically.
+
+<div align="center">
+  <img src="./media/readme/final/evals-self-learning.png" alt="Configure eval-driven self-learning in Bag of Words" width="100%" />
+</div>
+
+### Monitor every run
+
+Get full observability across every message, query, plan, tool call, result, latency, cost, and failure. LLM-as-judge scores for accuracy, instruction coverage, and context use help teams catch unreliable data results, diagnose what happened, and feed failures back into evals and self-improving loops.
+
+<div align="center">
+  <img src="./media/readme/final/monitoring-observability.png" alt="Full agent observability and run diagnosis in Bag of Words" width="100%" />
+</div>
+
+### Agents pane: build and manage data agents at scale
+
+Create agents for teams, systems, and business domains. Scope their data, tools, credentials, instructions, permissions, starters, evals, and channels; review pending changes and manage the full agent fleet from one pane.
+
+<div align="center">
+  <img src="./media/readme/final/agents-overview.png" alt="Build and manage data agents at scale in Bag of Words" width="100%" />
+</div>
+
+### Speed up analytical queries with an auto-updating cache
+
+Query acceleration with caching lets agents query a warehouse or database at speed, improving the experience for users while reducing load and cost on the source. Admins choose what to cache — whole tables or specific queries — and BOW keeps it refreshed on a schedule.
+
+<div align="center">
+  <img src="./media/readme/final/query-latency-cloud.png" alt="Query latency on BigQuery and Snowflake, live versus the cached copy" width="100%" />
+</div>
+
+<div align="center">
+  <img src="./media/readme/final/query-latency-onprem.png" alt="Query latency on PostgreSQL, SQL Server, and Oracle, live versus the cached copy" width="100%" />
+</div>
+
+A refresh is a full run of your SQL, so a copy refreshed more often than it is queried costs more than it saves — the break-even is about 1.8 agent questions per refresh on BigQuery and 1.0 on Snowflake. One copy is shared by every agent that activates it, and row-level security can filter it per person against their profile attributes, groups, or roles. See the [caching documentation](https://docs.bagofwords.com/bow-fast/overview).
+
+## Architecture
+
+Bag of Words sits between your models, enterprise data, tools, and channels. It builds a governed analysis context for each agent, then carries that context from an interactive question to a scheduled or event-driven workflow.
+
+Bring your own models and infrastructure. Connect databases, warehouses, BI systems, files, business apps, MCP servers, and custom APIs without tying the workflow to one provider.
+
+<div align="center">
+  <img src="./media/arch.png" alt="Bag of Words architecture" width="100%" />
+</div>
+
+## Integrations
+
+<div align="center">
+  <img src="./media/readme/final/connectors.png" alt="Connect databases, warehouses, services, files, MCP servers, and custom APIs" width="100%" />
+</div>
+
+### Bring Any LLM
+
+Use your own API keys, endpoints, and model deployments. Multiple providers and models can be configured in the same environment.
+
+| Provider | Supported models and APIs | Notes |
+|---|---|---|
+| **OpenAI** | GPT and reasoning models | OpenAI API support |
+| **Azure OpenAI** | GPT and reasoning models | Azure endpoints and deployment names |
+| **Google Gemini** | Gemini and Flash models | Google API key support |
+| **Anthropic** | Claude models | Anthropic API key support |
+| **AWS Bedrock** | Foundation models available through Bedrock | API key, AWS access key, or IAM authentication |
+| **Any OpenAI-compatible API** | Ollama, Groq, Together AI, vLLM, LM Studio, and more | Provide a base URL and optional API key |
+
+### Connect Any Data
+
+| Connector | Category |
+|---|---|
+| PostgreSQL | Database / warehouse |
+| Snowflake | Database / warehouse |
+| Google BigQuery | Database / warehouse |
+| Databricks SQL | Database / warehouse |
+| Microsoft Fabric | Database / warehouse |
+| MySQL | Database / warehouse |
+| AWS Athena | Database / warehouse |
+| MariaDB | Database / warehouse |
+| DuckDB | Database / warehouse |
+| Microsoft SQL Server | Database / warehouse |
+| ClickHouse | Database / warehouse |
+| Azure Data Explorer | Database / warehouse |
+| Vertica | Database / warehouse |
+| AWS Redshift | Database / warehouse |
+| Trino | Database / warehouse |
+| Apache Pinot | Database / warehouse |
+| Apache Druid | Database / warehouse |
+| Oracle Database | Database / warehouse |
+| MongoDB | Database / warehouse |
+| Sybase SQL Anywhere | Database / warehouse |
+| Teradata Vantage | Database / warehouse |
+| SQLite | Database / warehouse |
+| Spark | Database / warehouse |
+| SAP HANA | Database / warehouse |
+| NetSuite | Business app |
+| Salesforce | Business app |
+| ServiceNow | Business app |
+| Monday data | Business app |
+| AWS Cost Explorer | Business app |
+| PostHog | Business app |
+| Priority ERP | Business app |
+| Outlook Mail | Business app |
+| Gmail | Business app |
+| Elasticsearch | Search and observability |
+| OpenSearch | Search and observability |
+| Splunk | Search and observability |
+| Zabbix | Monitoring and observability |
+| AppDynamics | Monitoring and observability |
+| Prometheus | Monitoring and observability |
+| AWS CloudWatch | Monitoring and observability |
+| VMware Aria Operations | Monitoring and observability |
+| Jaeger | Tracing and observability |
+| Kubernetes | Infrastructure |
+| NetApp ONTAP | Infrastructure |
+| Brocade Fabric OS | Infrastructure |
+| Tableau | BI tool |
+| Power BI | BI tool |
+| Power BI Report Server | BI tool |
+| Power BI (.pbix) | BI tool |
+| Qlik Sense | BI tool |
+| Qlik Sense (on-prem) | BI tool |
+| Qlik QVD | BI tool |
+| Sisense | BI tool |
+| Oracle BI | BI tool |
+| Infor OLAP | BI tool |
+| Microsoft Analysis Services | BI tool |
+| SAP BusinessObjects | BI tool |
+| SAP BW (XMLA) | BI tool |
+| SAP Datasphere | BI tool |
+| Timbr AI | Semantic layer |
+| Files and Directories | Files |
+| Amazon S3 | Files |
+| CSV | Files |
+| OneDrive | Files |
+| OneNote | Files |
+| SharePoint | Files |
+| SharePoint Server (on-prem) | Files |
+| SharePoint Lists | Business app |
+| Google Drive | Files |
+| OpenText Documentum | Files |
+
+### Connect Tools Through MCP
+
+Bag of Words can connect to any MCP server or custom API. Ready-to-connect MCP integrations include:
+
+| Integration | What it adds |
+|---|---|
+| Monday | Boards, items, updates, and workflows |
+| Notion | Pages, databases, and workspace search |
+| Jira / Atlassian | Jira issues and Confluence pages |
+| Linear | Issues, projects, and cycles |
+| Sentry | Errors, issues, releases, and diagnostics |
+| GitHub | Repositories, issues, and pull requests |
+| HubSpot | CRM contacts, companies, deals, and tickets |
+| Google Drive | File search and content access |
+| X | Posts, users, search, and trends |
+| X (Write) | Create and delete posts through a custom API |
+| Custom MCP server | Any compatible remote or self-hosted MCP server |
+| Custom API | Internal and third-party HTTP APIs |
+
+### Browse the Web
+
+Add a **Browser** connection to let an agent open web pages in a real (headless) browser — navigate, read page content, interact with elements, and capture screenshots — scoped to a URL allowlist you define. Useful for data that only lives behind a UI, including internal portals reachable from your deployment. The browser tools appear for an agent only when a browser connection is attached to it.
+
+| Tool | What it does |
+|---|---|
+| Navigate | Open an allowlisted URL and return the page structure |
+| Snapshot | Read the page as an accessibility tree with element references |
+| Extract | Pull the readable text from the current page |
+| Act | Click, type, select, hover, or scroll an element |
+| Vision | Capture a screenshot (secret fields masked) as a report file |
+
+### Run Anywhere
+
+| Surface | Use |
+|---|---|
+| Web app | Chat, reports, dashboards, evals, and monitoring |
+| Claude Code, Codex, and MCP clients | Use agents headlessly through MCP |
+| Excel | Bring governed analysis into spreadsheets |
+| Microsoft Teams | Ask questions and receive results in Teams |
+| Slack | Ask questions and receive results in Slack |
+| WhatsApp | Run agent conversations from WhatsApp |
+| Email | Ask questions and receive scheduled results by email |
+| Webhooks and APIs | Trigger agents from other systems |
+| Scheduled tasks | Run recurring reports, checks, and investigations |
+
+## Enterprise
+
+For teams that need stronger security, compliance, and governance:
+
+- **Self-hosted:** Deploy on your own infrastructure and keep control of your data.
+- **SSO and provisioning:** Connect Google Workspace and OIDC-compatible identity providers, with SCIM and LDAP support.
+- **RBAC:** Apply fine-grained permissions to agents, data, tools, and administration.
+- **Approvals and audit:** Review changes and track agent and data operations.
+- **Service access:** Use API keys and service accounts for headless workflows.
+- **Model controls:** Decide which providers and models are available to each organization.
+
+## Security and Privacy
+
+Bag of Words captures basic usage statistics from self-hosted instances to help improve the product. Disable telemetry in `bow-config.yaml`:
+
+```yaml
+telemetry:
+  enabled: false
+```
+
+You can also disable Intercom support chat:
+
+```yaml
+intercom:
+  enabled: false
+```

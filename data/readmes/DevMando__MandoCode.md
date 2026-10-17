@@ -1,0 +1,938 @@
+<p align="center">
+  <img src="docs/images/mcbanner.png" alt="MandoCode Logo" width="800">
+</p>
+
+<p align="center">
+  <strong>Your AI coding assistant — run locally or in the cloud with Ollama.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.nuget.org/packages/MandoCode"><img src="https://img.shields.io/nuget/v/MandoCode?logo=nuget&color=blue" alt="NuGet"></a>
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT">
+  <img src="https://img.shields.io/badge/.NET-10.0-blueviolet?logo=dotnet" alt=".NET 10.0">
+  <a href="https://github.com/RazorConsole/RazorConsole"><img src="https://img.shields.io/badge/RazorConsole-0.6.0-8A63D2" alt="Built with RazorConsole 0.6.0"></a>
+  <img src="https://img.shields.io/badge/Ollama-Local%20LLM-black?logo=ollama" alt="Ollama">
+  <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey" alt="Platform">
+  <img src="https://img.shields.io/badge/Made%20with%20%3C3%20by-Mando-red" alt="Made with <3 by Mando">
+</p>
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=gx_Fn1kzNQA"><img src="docs/images/mandocode-demo.gif" alt="MandoCode in action — click to watch the video demo on YouTube" width="800"></a>
+  <br>
+  <a href="https://www.youtube.com/watch?v=gx_Fn1kzNQA"><strong>▶ Watch the full demo with music on YouTube</strong></a>
+</p>
+
+MandoCode is an AI coding assistant built on [RazorConsole](https://github.com/RazorConsole/RazorConsole), powered by [Microsoft Agent Framework](https://github.com/microsoft/agent-framework) and [Ollama](https://ollama.ai). RazorConsole makes the entire terminal UI possible — Razor components, a virtual DOM, and Spectre.Console rendering all running in the console.
+
+Run locally or connect to Ollama cloud — no API keys required for anything, including web search (an optional free [Tavily](https://www.tavily.com/) key upgrades search reliability). It gives you Claude-Code-style project awareness — reading, writing, searching, planning, and web browsing across your entire codebase — without ever leaving your terminal. It understands **any file type**: C#, JavaScript, TypeScript, Python, CSS, HTML, JSON, config files, and more.
+
+> **Prefer a native app?** **[MandoCode Desktop](https://github.com/DevMando/MandoCode.Desktop)** is now
+> available — the exact same engine (Ollama + Microsoft Agent Framework, same brains) with a native Windows
+> interface instead of the terminal: a real integrated shell, a
+> git-aware file explorer, and 16 built-in themes. Same CLI underneath; WinUI 3 on top.
+
+---
+
+## Built for the developer workflow
+
+MandoCode organizes your work around **agents and workspaces**. Each agent has its own model, conversation, settings, and context. Switch between local and cloud Ollama models on the fly, and let agents talk to one another through `@` mentions, questions, and delegated tasks.
+
+Save an agent's context as a summary, carry it into another agent, or import multiple snapshots to bring related findings together. Reopen previous agents through history when you are ready to return to their work.
+
+Named workspaces hold **up to four independent agents each**. Keyboard shortcuts keep agent navigation, file browsing, project directories, context snapshots, MCP servers, and Skills within reach while other agents continue working.
+
+## A new way to work in the terminal — v0.16.0
+
+Built on **RazorConsole 0.6.0**, this release brings multiple workspaces, up to four independent agents per workspace, agent collaboration, portable context snapshots, and saved-agent history into one terminal interface. Explore your files, manage MCP servers and Skills, and keep working while other agents handle their tasks.
+
+The conversation scrolls above a persistent multiline prompt, with searchable pickers and collapsible tool output. See the feature demos below or read the [changelog](docs/CHANGELOG.md) for the full release details.
+
+---
+
+## Prerequisites
+
+- **.NET 10 SDK**: [dotnet.microsoft.com/download/dotnet/10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) *(the SDK includes the runtime, so install only the SDK)*
+- **Ollama**: [ollama.com/download](https://ollama.com/download) *(MandoCode walks you through setup on first run)*
+
+> **Already on .NET 8?** You're not blocked. MandoCode ships a .NET 8 build alongside the .NET 10
+> one, and `dotnet tool install -g MandoCode` picks the right one for your machine automatically.
+> That fallback goes away when .NET 8 reaches end of support in November 2026, so grab .NET 10 when
+> it's convenient. Run `mandocode --doctor` to see which runtime you're on.
+
+## Install
+
+```bash
+dotnet tool install -g MandoCode
+mandocode
+```
+
+First run launches a guided wizard: it detects Ollama, offers to start it, walks you through cloud sign-in if you'd like more powerful models, and auto-pulls a sensible default. You can re-run it any time with `/setup`.
+
+### Update
+
+Run `/update` inside MandoCode to check for the latest stable release. For global .NET tool installations, it asks before closing all workspaces, saves agent histories when persistence is enabled, and updates after the CLI exits. Finish work in other agents first. The terminal prints a log path with update progress, success, or failure; launch `mandocode` again after completion. The .NET SDK is required. Local tools and source builds should use their original installation method.
+
+You can also close MandoCode and update manually:
+
+```bash
+dotnet tool update -g MandoCode
+```
+
+## What Makes MandoCode Different
+
+<table>
+<tr>
+<td width="50%">
+
+### Multiple Agents and Workspaces
+
+Give each task its own agent. Open **up to four independent agents per workspace**, each with its own model, conversation, and approvals, and organize more projects into named workspaces. Switch between agents while others keep working.
+
+Use **Alt+N** to open an agent, **Alt+Left/Right** to switch agents, and **Alt+Shift+N** to create a workspace.
+
+<img src="docs/images/multi-agent-workspaces-demo.gif" alt="MandoCode multiple agents and workspace navigation" width="400">
+
+</td>
+<td width="50%">
+
+### Context You Can Carry Forward
+
+Save the useful background from a conversation with **`/context-snap-create`**. Capture its decisions, discoveries, and next steps in a summary you can revisit without repeating the whole conversation.
+
+Open **`/context-snap-import` (Alt+C)** to search saved snapshots, preview a summary, and import it into another agent. Snapshots persist across restarts, making it easy to give a fresh agent a head start.
+
+<img src="docs/images/context-snapshots-demo.gif" alt="Browsing context snapshots and importing a saved conversation summary into another agent" width="400">
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### Return to Previous Work
+
+A closed agent does not have to mean a fresh start. Open **`/history` (Alt+H)** to find saved agents by name, project, model, or conversation text, and preview their conversations before bringing them back.
+
+Re-launch an agent with its name, model settings, transcript, and conversation context—whether you closed it moments ago or are returning to an earlier task.
+
+<img src="docs/images/agent-history-demo.gif" alt="Browsing saved agent history and restoring a previous MandoCode conversation" width="400">
+
+</td>
+<td width="50%">
+
+### Agents That Collaborate
+
+Bring another agent into the conversation. Type **`@`**, then press **Tab** to switch from Files to Agents. Ask a teammate for its findings, request a review, or hand off independent work while you continue with your task.
+
+Expandable agent exchanges let you follow the requests, tool activity, and replies. Each agent keeps its own model, conversation, and approval settings.
+
+<img src="docs/images/agent-collaboration-demo.gif" alt="Tagging another MandoCode agent and collaborating through the conversation" width="400">
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+### Your Project at Your Fingertips
+
+Open **File Explorer (Alt+E)** to browse this agent's project folders and files without leaving the conversation. Select a file to insert an **`@` reference** at the prompt cursor, keeping your existing draft intact.
+
+Use **Alt+D** to change this agent's project directory and **Alt+G** to review Git changes. Each agent keeps its own project directory, so you can work across projects in the same workspace.
+
+<img src="docs/images/file-explorer-demo.gif" alt="Browsing project files in MandoCode File Explorer and inserting a file reference into the prompt" width="400">
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+### Extend Your Assistant
+
+Connect external tools and teach your agents reusable workflows from the CLI. **`/mcp` (Alt+M)** opens the MCP manager to add or edit servers, test connections, inspect available tools, and enable or disable integrations.
+
+With **`/skills` (Alt+K)**, install skills from Git, ZIP files, or local folders—or write, generate, and refine your own instructions before saving them. Shared integrations stay available across agents while each agent keeps its own conversation and settings.
+
+<p>
+  <img src="docs/images/mcp-manager.png" alt="MandoCode MCP manager with server status, search, and integration controls" width="48%">
+  <img src="docs/images/skills-manager.png" alt="MandoCode Skills manager showing installed skills, descriptions, and enable, edit, install, and creation controls" width="48%">
+</p>
+
+</td>
+</tr>
+</table>
+
+---
+
+## Features at a Glance
+
+| | Feature | Description |
+|-|---------|-------------|
+| **Workspace** | Independent agents | Up to four agents per workspace, with separate models, conversations, settings, and approvals |
+| **Workspace** | Named workspaces | Organize projects and switch workspaces while background agents keep working |
+| **AI** | Agent collaboration | Tag agents with `@` to ask questions, request reviews, and hand off independent tasks |
+| **Memory** | Context snapshots | Save a conversation summary and import it into another agent |
+| **Memory** | Agent history | Search, preview, and restore closed agents with their conversation context |
+| **Tools** | File Explorer and Git review | Browse files, attach references, change directories, and inspect project diffs |
+| **Tools** | Skills manager | Install, edit, generate, refine, and enable reusable skills |
+| **Input** | Multiline drafts | Wrapped prompts, multiline paste, and cursor navigation before conversation scrolling |
+| **Input** | Vision attachments | Reference image files; paste clipboard images with Alt+V on Windows |
+| **Sharing** | HTML transcripts | Export formatted conversations, code, and complete tool output with `/transcript-save` |
+| **AI** | Project-aware assistant | Reads, writes, deletes, and searches your entire codebase |
+| **AI** | Web search & fetch | Web search and webpage reading — keyless via DuckDuckGo, or Tavily with a free API key |
+| **AI** | MCP server support | Connect to any Model Context Protocol server (stdio or remote HTTP) — Claude-Desktop-compatible config |
+| **AI** | Session resume | `--continue` / `-c` reloads your last conversation for the folder — full memory, tool calls included |
+| **AI** | Streaming responses | Streams responses to keep long generations alive — no false "stalled" cutoffs |
+| **AI** | Task planner | Use `/plan` to review and execute a structured plan |
+| **AI** | Fallback function parsing | Handles models that output tool calls as raw JSON |
+| **UI** | Diff approvals | Color-coded diffs with approve / deny / redirect |
+| **UI** | Markdown rendering | Rich terminal output — headers, tables, code blocks, quotes |
+| **UI** | Syntax highlighting | C#, Python, JavaScript/TypeScript, Bash, PowerShell |
+| **UI** | Clickable file links | OSC 8 hyperlinks for file paths |
+| **UI** | Terminal theme detection | Auto-adapts colors for light and dark terminals |
+| **UI** | Taskbar progress | Windows Terminal integration during task execution |
+| **Input** | `/` command autocomplete | Slash commands with dropdown navigation |
+| **Input** | `@` file references | Attach file content to any prompt |
+| **Input** | `!` shell escape | Run shell commands inline (`!git status`, `!ls`) |
+| **Input** | `/copy` and `/copy-code` | Copy responses or code blocks to clipboard |
+| **Music** | Lofi + synthwave | Bundled tracks with playback, volume, and genre controls |
+| **Config** | Configuration wizard | Guided setup with model selection and connection testing |
+| **Config** | Config validation | Auto-clamps invalid settings to safe ranges |
+| **Reliability** | Retry + deduplication | Exponential backoff and duplicate call prevention |
+| **Education** | `/learn` command | LLM education guide with optional AI educator chat |
+
+---
+
+## Try it: carry a task between agents
+
+1. Open MandoCode in your project and ask it to explain a file using an `@` reference.
+2. Press **Alt+N** to open another agent. Use **Alt+Left/Right** to move between them; each keeps its own conversation.
+3. In a prompt, type **`@`**, press **Tab**, and select another agent. Ask it to share its findings or review your changes.
+4. Run **`/context-snap-create`** in the agent with useful background. Switch to the receiving agent, run **`/context-snap-import`**, choose the summary, and send your next prompt with that context.
+5. Save a shareable conversation with **`/transcript-save`**. After closing an agent, use **`/history`** to preview and restore it later.
+
+Press **Alt+Shift+N** when you want another workspace for a different project or task. Use **`/keybindings`** for the full shortcut reference.
+
+---
+
+## Everyday keyboard shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| **Alt+N** | Open a new agent |
+| **Alt+Left / Right** | Switch agents |
+| **Alt+W** | Close the highlighted agent, including from an open menu; stop active work if needed |
+| **Alt+Shift+N** | Create a workspace |
+| **Alt+Shift+Left / Right** | Switch workspaces |
+| **Alt+Shift+A** | Open the workspace picker |
+| **Alt+Shift+W** | Close the current workspace when its agents are idle |
+| **Alt+S** | Open this agent's settings |
+| **Alt+C** | Open context snapshots |
+| **Alt+H** | Browse saved-agent history |
+| **Alt+E** | Open File Explorer |
+| **Alt+D** | Change this agent's project directory |
+| **Alt+G** | Review Git changes |
+| **Alt+M** | Open the MCP manager |
+| **Alt+K** | Open the Skills manager |
+| **Alt+V** | Attach a clipboard image (Windows, vision-capable models) |
+| **Tab** in the `@` picker | Switch between Files and Agents |
+| **Page Up / Page Down** | Scroll the conversation from the prompt |
+| **Ctrl+End** | Return to the latest conversation output |
+
+Use **`/keybindings`** for the full reference, including menu navigation and editor controls. Type **`/`** to search available commands and see their descriptions. Shortcuts depend on your terminal forwarding the key combination to MandoCode.
+
+---
+
+## Commands
+
+Type `/` to see the autocomplete dropdown, or `!` to run a shell command.
+
+### Agents and workspaces
+
+| Command | What it does |
+|---------|--------------|
+| `/agent-new` | Open an independent agent pane (Alt+N) |
+| `/agent-focus` | Switch agents; optional left/right (Alt+Left/Right) |
+| `/agent-close` | Close the current idle agent |
+| `/agent-rename <name>` | Rename this agent |
+| `/agent-settings` | Edit this agent's model, behavior, and integrations (Alt+S) |
+| `/agent-file-explorer` | Browse this agent's files and folders (Alt+E) |
+| `/workspace-new [name]` | Create a workspace with up to four agents |
+| `/workspace [name or number]` | Switch workspaces |
+| `/workspace-all` | Search open workspaces |
+| `/workspace-rename <name>` | Rename this workspace |
+| `/workspace-close` | Close this workspace when its agents are idle |
+
+### Conversation, context, and sharing
+
+| Command | What it does |
+|---------|--------------|
+| `/plan <goal>` | Generate a plan for review before execution |
+| `/plan-resume` | Continue an unfinished plan |
+| `/plan-discard` | Forget an unfinished plan |
+| `/context-snap-create` | Save a context snapshot (summary) of this agent conversation (Alt+C) |
+| `/context-snap-import` | Browse and import saved context snapshots (Alt+C) |
+| `/copy` | Copy last AI response to clipboard |
+| `/copy-code` | Copy code blocks from last response |
+| `/transcript-save` | Save this agent conversation as standalone HTML; optional quoted file path |
+| `/clear` | Clear conversation history |
+| `/history` | Search and restore closed agents, including transcripts and conversation context (Alt+H) |
+
+### Project tools and integrations
+
+| Command | What it does |
+|---------|--------------|
+| `/git-changes` | Review this agent's changed files and Git diffs (Alt+G) |
+| `/change-directory [path]` | Change this agent's project directory (Alt+D) |
+| `/command <cmd>` | Run a shell command |
+| `/mcp` | Open the shared MCP manager: add/edit, test, enable/disable, and inspect tools (Alt+M) |
+| `/mcp tools <server>` | List tools exposed by connected MCP servers (server optional) |
+| `/mcp-reload` | Restart all MCP servers and re-register their tools |
+| `/skills` | Manage user skills: install from Git/ZIP/folder, edit, generate/refine, and enable/disable (Alt+K) |
+| `!<cmd>` | Shell escape (e.g., `!git status`) |
+| `!cd <path>` | Change project root directory |
+
+### Setup, models, and help
+
+| Command | What it does |
+|---------|--------------|
+| `/help` | Show commands and usage examples |
+| `/keybindings` | Show keyboard shortcuts grouped by task |
+| `/update` | Check for a stable release and update after the CLI exits |
+| `/setup` | Guided wizard — reconnect to Ollama, install/sign in, or pick a different model |
+| `/model` | Quick switch — pick a different model (context window auto-sized for local tiers) |
+| `/config` | Adjust settings — guided wizard |
+| `/config set <key> <value>` | Set one setting inline without leaving the session (e.g. `/config set modelResponseTimeout 300`); no args lists all keys + current values |
+| `/retry` | Retry Ollama connection |
+| `/ollama-pull` | Browse the Ollama library and download a model |
+| `/ollama-serve` | Start local Ollama if unavailable and retry the connection twice |
+| `/learn` | Interactive guide to LLMs and local AI |
+| `/exit` | Exit MandoCode |
+
+### Music
+
+| Command | What it does |
+|---------|--------------|
+| `/music` | Start playing music |
+| `/music-stop` | Stop playback |
+| `/music-pause` | Pause / resume |
+| `/music-next` | Next track |
+| `/music-vol <0-100>` | Set volume |
+| `/music-lofi` | Switch to lofi |
+| `/music-synthwave` | Switch to synthwave |
+| `/music-list` | List available tracks |
+
+### Downloading Ollama models
+
+First-run setup and `/setup` use a guided panel: **Connect → Choose model → Download → Verify → Ready**. Choose a recommended cloud starter (`glm-5.3-flash:cloud` or `deepseek-v4.1-flash:cloud`), a local starter with approximate download sizes, an installed model, or the full model browser. Cloud requires Ollama sign-in and internet; account limits and pricing apply. Local model memory use depends on the model and context, beyond download size. Back returns from choices, and Escape pauses setup. Downloads target your configured Ollama server; remote cloud authentication must be configured on that server. Setup tests a real model response before saving it as the default for new agents. Failed verification offers retry, another model, or Finish later. Existing model preferences are preserved until verification succeeds.
+
+Use `/ollama-pull` anytime to browse the Ollama library, choose a model tag, and download it with progress. Use the search box to filter model names; choose Popular, Name A–Z, or Newest (the default) (Ctrl+S cycles sorting). The table shows model names, capabilities, and hosting. Toggle Cloud to show only models marked for cloud hosting. Tab cycles through search, sorting/filter buttons, and the list. Left/Right selects a sorting button; Enter applies it. Ctrl+P pulls the model name typed in the search field. Enter, Escape, or the Cancel button cancels a download. Use `/model` afterwards to switch to the downloaded model.
+
+### Mention another agent
+
+Type `@` for files, then **Tab** to switch to open agents across workspaces. Type a name to filter, use Up/Down and Enter to select, or press Tab again for files. The switching hint appears only in the picker title. Escape closes the picker without deleting your text. Names with spaces are quoted automatically. Selecting a file that shares an agent's name inserts an explicit `@./` path.
+
+Try `What is @Ares working on?` or `Ask @Ares what it found and let me know later.` The picker shows plain agent names in purple, with white text when highlighted. Recognized chat mentions appear with consistent agent avatars and purple names in submitted prompts and reply prose. File paths, email addresses, code snippets, and unknown names stay literal. Agent interactions have their own collapsed sections in both transcripts, showing participants and live status. Expand one to inspect requests, messages, task commentary, tool calls, and Markdown replies with timestamps. Expansion stays open as updates arrive; failures and cancellations also have a visible notice. The main answer to the user stays outside the section. Up/Down moves through multiline drafts first, then scrolls the conversation when the caret reaches its first or last line. Each agent uses its own model, context, tools, and approval settings; busy agents keep working and call loops are blocked.
+
+| Agent tool | Behavior |
+|---|---|
+| `ask_agent_and_wait` | Waits for an answer needed to continue the current request |
+| `ask_agent_async` | Asks an independent question; its answer arrives later |
+| `send_agent_message` | Delivers information to an inbox without starting a turn or requesting a reply |
+| `delegate_to_agent` | Assigns independent work and returns after acceptance |
+| `request_agent_review` | Assigns a background review; file changes, commands, plans, and further assignments are blocked |
+| `handoff_to_agent` | Transfers a clearly specified task scope; the caller is instructed to stop working on that scope |
+| `update_agent_job` | Queues additional context for an interaction by ID |
+| `cancel_agent_job` | Requests cancellation of an interaction you assigned; completed changes remain |
+| `wait_for_agent_job` | Waits explicitly for a result, with a timeout; ending the wait does not cancel the job |
+| `list_agents`, `get_agent_status`, `read_agent_transcript`, `check_delegations` | Inspect agents, conversations, and background interaction states |
+
+Background questions and jobs have readable IDs such as `job1`; inbox messages use `message1`. Jobs and report Completed, Declined, Cancelled, or Failed outcomes. They return after acceptance rather than waiting for a result. Reports appear in the caller's transcript and are included with its next request. Messages and updates can reach busy agents but are consumed at the next turn, not injected into an active request. Cancellation targets only that interaction; ownership is checked by the assigning agent. Handoffs communicate responsibility and file scope to the models rather than locking files. Reviews permit built-in inspection tools; shell commands and unknown MCP tools are unavailable in a read-only review.
+
+### Context snapshots
+
+Open **Context Snapshots** beside Agent Settings, or use `/context-snap-create` to save a conversation summary. The outlined name textbox is ready to type into as soon as the form opens; no Enter-to-edit step is needed. Tab moves to the model and buttons. Enter a name or leave it blank for an AI title, choose a summarizer model (initially the current agent model), then Create. The separate summarizer does not change your agent context or run tools. Saved snapshots persist in `~/.mandocode/snapshots.json` and are shared across CLI agents and workspaces. The browser has a search/Create/Close toolbar, collapsible project groups with newest snapshots first, and a summary pane with Import into Agent/Delete actions. Wide terminals show the list and summary side by side; narrow terminals stack them. Tab moves through search, list, toolbar, summary, and actions. The selected snapshot stays subtly shaded while another control has keyboard focus. Click project headings or press Enter on them to collapse/expand. Click the summary to focus it; mouse wheel, arrows, Home/End, and Page Up/Page Down scroll it. Enter on a snapshot imports it, while Enter on Close or Escape closes without importing. Import queues a summary for the next message; multiple imports stack without duplicating the same snapshot. Delete requires confirmation. When `/model`, `/setup`, or the configuration wizard clears an existing conversation, a prompt offers Keep Memory, Create Snapshot, or Dismiss. Changing models in Agent Settings already keeps memory.
+
+### MCP and Skills managers
+
+Open `/mcp` (Alt+M) for MCP Servers or `/skills` (Alt+K) for Skills, or choose **Manage MCP Servers** / **Manage Skills** in Agent Settings → Integrations. Each table row has an Active/Disabled status toggle, Edit, and Delete buttons; MCP rows also have Tools. Click an item's name or press Enter on it to view full details. Up/Down moves between rows, Left/Right selects row actions, Tab visits all controls, and Escape returns or closes. Buttons wrap beneath their item in narrow panes. New Skill offers Write Manually with field explanations, or Create with AI with a task description and model picker. Names, URLs, commands, skill descriptions, and AI requests use outlined textboxes you can type into directly. Tab or Up/Down moves between fields; Left/Right moves the text cursor. Instructions, arguments, headers, and environment variables open dedicated multiline editors. Manual forms contain only Name, Description, and Instructions; AI refinement is optional and opens separately. Generated drafts remain editable until Save. Install offers a folder browser or Git URL/ZIP input. The MCP table has a live search textbox with +MCP Server to its right; Down or Enter from search moves into the results. Skills has a focused Search Skills textbox beside +Skill and Install. Both search fields use gold text and filter as you type. The selected item has its full name and wrapped details directly below the table; bulk toggles, Refresh, Close, and operation feedback stay in the footer. These managers edit shared user settings; Agent Settings still controls whether a particular agent can use MCP tools.
+
+For MCP, choose **+MCP Server**, select stdio or HTTP, fill in the executable/URL, then **Test Connection** or **Save & Connect**. Enter stdio arguments one per line, keeping arguments with spaces together without extra quotes. Environment variables and HTTP headers use one `KEY=value` per line. Enable/Disable and Enable All/Disable All persist the selection and reconnect open agents without clearing their conversations. Connection failures remain visible in the list; Details shows the complete error. Installing a stdio server means configuring its launch command, such as `npx` or `uvx`; the executable must be available on your system.
+
+For Skills, **Install** accepts a Git repository URL, local ZIP archive, or folder containing one or more `SKILL.md` directories. It copies the skill's bundled files, skips existing names, and does not alter project skills. **+Skill** offers Write Manually or Create with AI. Manual creation and Edit provide name, description, and instructions fields; AI creation takes a task description and authoring model before generating a draft. Review the Instructions before **Save**. Form actions are Save, Cancel, and Refine with AI. Cancel immediately discards the draft and returns to the list, as it does when creating or editing MCP servers. Authoring uses a separate conversation with no tools and leaves the agent's conversation and model unchanged.
+
+Skills use the same enable/disable convention as Desktop (`SKILL.md` / `SKILL.md.disabled`). Removing a skill moves it into `.trash` inside your user skills directory, with its recovery path shown in Details. Shared changes wait until other agents finish their requests and close their settings menus. Project skills keep their existing precedence over user skills.
+
+### Setup vs config vs model
+
+- **`/setup`** — first-run wizard, guided. Detects Ollama, offers to install it, walks you through cloud sign-in, picks a model with hardware-aware tiers, auto-pulls a sensible default. Use when something's broken or you're a newcomer.
+- **`/model`** — quick switch. Pick a model from your pulled list and go — local picks get a context window sized to their hardware tier automatically. Use when you just want to swap models.
+- **`/config`** — adjust settings. Full configuration form covering temperature, timeouts, ignore dirs, etc. Use when you know exactly what knob you want to turn.
+
+### CLI flags (outside the chat loop)
+
+```bash
+mandocode --continue        # resume this folder's most recent conversation (alias: -c)
+mandocode --doctor          # preflight check: .NET runtime, Ollama status, models, sign-in
+mandocode --config show     # print current config
+mandocode --config init     # create a default config file
+mandocode --config set <key> <value>   # set a single value (e.g. set model qwen3:8b)
+mandocode --config path     # show config file location
+```
+
+Run `mandocode --doctor` any time chat is misbehaving — exits 0 if everything's green, 1 if anything's missing, with a clear summary of what's wrong.
+
+Conversations save themselves automatically at the end of every turn (per project folder, under
+`~/.mandocode/sessions/`), so `mandocode --continue` picks up exactly where you left off — the model
+remembers what it read, said, and did, tools included. `/clear` deletes the saved session too.
+
+---
+
+## How It Works
+
+```
+  You type a prompt
+        |
+  MandoCode adds project context (@files, system prompt)
+        |
+  Microsoft Agent Framework sends to Ollama (local or cloud model)
+        |
+  AI responds with text + function calls
+        |
+  File operations go through diff approval
+  Web searches and fetches run directly
+        |
+  Rich markdown rendered in your terminal
+```
+
+The AI has sandboxed access to your project through a **FileSystemPlugin** (9 functions: list files, glob search, read, write, delete files/folders, text search, path resolution) and a **WebSearchPlugin** (web search via Tavily or DuckDuckGo, webpage fetching — works without any API key). All file operations are locked to your project root — path traversal is blocked.
+
+---
+
+## Troubleshooting
+
+```bash
+mandocode --doctor
+```
+
+Prints your runtime version, Ollama status, models pulled, and cloud sign-in state.
+
+### Local models: the context window is managed for you
+
+> **Using cloud models (`:cloud` tags)? Skip this section.** Cloud model context is managed on Ollama's servers and set to the model's maximum by default — nothing on your machine affects it, including the desktop app's slider.
+
+The **context window** is how much conversation + code the model can see at once. Left to its own devices, Ollama defaults it to ~4k tokens — which an agentic session fills almost immediately — and never errors on overflow: it silently drops the oldest content (including the system prompt, the model's instructions!), which looks like the model suddenly getting dumber mid-conversation. MandoCode handles all of this:
+
+- **Auto-sized per model** — picking a local model in `/setup` or `/model` sizes the window to its hardware tier: **16k** under 7B, **32k** for 7B+ (bigger models imply bigger GPUs, which also cover the larger KV cache). The floor is 16k because MandoCode's system prompt and tool definitions consume most of an 8k window before the conversation even starts.
+- **Enforced on every request** — the window is sent as `num_ctx` with each chat call, which outranks the Ollama desktop app's slider, `OLLAMA_CONTEXT_LENGTH`, and the ~4k default. Changes apply from your next message; no daemon restarts.
+- **Overflow protection** — if a long conversation nears the window anyway, MandoCode compacts older history into a recap *before* sending, instead of letting Ollama truncate silently.
+
+**When to tune it yourself** (`mandocode --config set contextLength 16384`, live from the next message):
+
+- **Generation got slow after switching models** — the auto-picked window may not fit your GPU. Every 8k of window costs roughly 0.5–1.5 GB of VRAM depending on the model; when the KV cache spills out of VRAM, tokens/sec craters. (Seen in the wild: a **256k** window dropped a small model from ~175 tok/s to ~11.) *More window is not better* — step it down a notch.
+- **Long sessions with lots of tools** (MCP servers, web search) — tool definitions ride on every request and can crowd even a 16k window. Step up to 32k if you have the memory.
+- **You'd rather manage it from Ollama** — set it to `0` and the daemon's own setting governs (desktop app: **Settings → Context length**).
+
+Verify what a loaded model is actually using with `ollama ps` (look at the CONTEXT column). Run `/learn` inside MandoCode for a friendly explainer.
+
+### ⚠️ All models: check your response cap (the #2 gotcha)
+
+The context window's evil twin — and unlike the slider above, this one applies to **every model, cloud included**. If the model **announces work and then just stops** — *"I'll create the game…"* and the turn ends with no plan, no files, and no error — your `maxTokens` is too low. It caps a *single reply* (`NumPredict`), and reasoning models spend output tokens thinking **before** they emit a tool call, so a low cap cuts them off before they ever act.
+
+Fresh installs default to 32k and never notice it. But if your config predates v0.11, or you once lowered `maxTokens` thinking it was the context window (they're different knobs — this caps what the model *says*, the context window caps what it *sees*), check it:
+
+```bash
+mandocode --config show                  # look at "Max Tokens"
+mandocode --config set maxTokens 32768
+```
+
+The telltale sign: token tracking shows output pinned at exactly your cap, turn after turn (e.g. `2k out` every time). Note that a running session keeps the config it loaded at startup — restart MandoCode (or use `/config set` in-app) for the change to take effect.
+
+### Build from source
+
+```bash
+git clone https://github.com/DevMando/MandoCode.git
+cd MandoCode
+dotnet build src/MandoCode/MandoCode.csproj
+dotnet run --project src/MandoCode/MandoCode.csproj -- /path/to/your/project
+```
+
+---
+
+## Recommended Models
+
+Models with **tool/function calling** support work best with MandoCode. The first-run wizard offers exactly the models below — auto-pulls the cloud default, or lets you pick a local tier matched to your hardware.
+
+**Cloud** (no GPU required — runs on Ollama's servers; sign in with `ollama signin`. Account limits and pricing apply):
+
+| Model | Notes |
+|-------|-------|
+| `glm-5.3-flash:cloud` | **Default cloud starter** — offered by `/setup` alongside `deepseek-v4.1-flash:cloud` |
+| `minimax-m3:cloud` | General-purpose alternative |
+| `kimi-k2.7-code:cloud` | Code-focused |
+
+**Local** (fully offline, runs on your hardware):
+
+| Model | Size | Notes |
+|-------|------|-------|
+| `qwen3:8b` | ~5.2 GB | **Recommended** — best balance of speed & quality (~6 GB VRAM) |
+| `qwen2.5-coder:7b` | ~4.7 GB | Code-focused (~5–6 GB VRAM) |
+| `mistral` | ~4.1 GB | Fast, general-purpose 7B (~5 GB VRAM) |
+| `llama3.1` | ~4.9 GB | Strong general reasoning, 8B (~6 GB VRAM) |
+
+MandoCode validates model compatibility on startup. Run `/learn` for a detailed guide on model sizes and hardware requirements, or `/setup` to switch between tiers any time.
+
+---
+
+<details>
+<summary><h2>Configuration Reference</h2></summary>
+
+### Config File
+
+Located at `~/.mandocode/config.json`
+
+```json
+{
+  "ollamaEndpoint": "http://localhost:11434",
+  "modelName": "glm-5.3-flash:cloud",
+  "modelPath": null,
+  "temperature": 0.7,
+  "maxTokens": 32768,
+  "contextLength": 16384,
+  "requestTimeoutMinutes": 15,
+  "modelResponseTimeoutSeconds": 680,
+  "responseStreaming": "all",
+  "toolResultCharBudget": 100000,
+  "enableAutoContinuation": true,
+  "maxAutoContinuations": 3,
+  "markdownRenderTimeoutSeconds": 60,
+  "ignoreDirectories": [],
+  "enableDiffApprovals": true,
+  "enableTaskPlanning": true,
+  "enableTokenTracking": true,
+  "enableThemeCustomization": true,
+  "enableFallbackFunctionParsing": true,
+  "enableWebSearch": true,
+  "tavilyApiKey": null,
+  "enableMcp": true,
+  "mcpServers": {},
+  "functionDeduplicationWindowSeconds": 5,
+  "maxRetryAttempts": 2,
+  "music": {
+    "volume": 0.5,
+    "genre": "lofi",
+    "autoPlay": false
+  }
+}
+```
+
+### All Options
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `ollamaEndpoint` | `http://localhost:11434` | Ollama server URL |
+| `modelName` | `glm-5.3-flash:cloud` | Model to use |
+| `modelPath` | `null` | Optional path to a local GGUF model file |
+| `temperature` | `0.7` | Response creativity (0.0 = focused, 1.0 = creative) |
+| `maxTokens` | `32768` | Cap on a single reply (`NumPredict`) — a runaway-generation safety ceiling, **not** the context window. If the model announces work then stops without acting, this is too low (see Troubleshooting) |
+| `contextLength` | `16384` | Context window (`num_ctx` / KV-cache size) for **local** models — sent with every request, so it overrides the Ollama desktop app's slider and the daemon's ~4k default; auto-sized to the model's hardware tier by `/setup` and `/model`. `0` = defer to the daemon's own setting. Bigger window = more VRAM. Cloud models manage context server-side |
+| `requestTimeoutMinutes` | `15` | Per-turn ceiling for a single model call / plan step. Cancel anytime with Ctrl+C |
+| `modelResponseTimeoutSeconds` | `680` | Stall watchdog — max seconds a single model call may run before it's treated as stalled. With streaming on (the default), the per-chunk heartbeat makes this mostly a safety net |
+| `responseStreaming` | `all` | Which models stream (with a per-chunk stall-watchdog heartbeat): `all`, `cloud` (cloud only), or `off` (non-streaming everywhere). `true`/`false` are accepted as aliases for `all`/`off` |
+| `toolResultCharBudget` | `100000` | Total characters of tool results per turn/step before further tool calls are refused (≈25k tokens) — guards the context window |
+| `enableAutoContinuation` | `true` | When the tool-result budget is exhausted mid-task, auto-continue in a fresh scope instead of stopping |
+| `maxAutoContinuations` | `3` | Hard cap on auto-continuations per request (prevents runaway loops) |
+| `markdownRenderTimeoutSeconds` | `60` | Max seconds to render the final markdown before falling back to raw text |
+| `ignoreDirectories` | `[]` | Additional directories to exclude from file scanning |
+| `enableDiffApprovals` | `true` | Show diffs and prompt for approval before file writes/deletes |
+| `enableTaskPlanning` | `true` | Enable task-planning support; start a CLI plan explicitly with `/plan` |
+| `enableTokenTracking` | `true` | Show session token totals and per-response token costs |
+| `enableThemeCustomization` | `true` | Detect terminal theme and apply a curated ANSI palette |
+| `enableFallbackFunctionParsing` | `true` | Parse function calls from text output |
+| `enableWebSearch` | `true` | Enable web search & page fetch (DuckDuckGo keyless, or Tavily with a key) |
+| `tavilyApiKey` | `null` | Optional Tavily key for reliable AI-optimized search (or set the `TAVILY_API_KEY` env var) |
+| `enableMcp` | `true` | Enable MCP server integration (servers configured under `mcpServers`) |
+| `functionDeduplicationWindowSeconds` | `5` | Time window to prevent duplicate function calls |
+| `maxRetryAttempts` | `2` | Max retry attempts for transient errors |
+| `music.volume` | `0.5` | Music volume (0.0 - 1.0) |
+| `music.genre` | `lofi` | Default genre (`lofi` or `synthwave`) |
+| `music.autoPlay` | `false` | Auto-start music on launch |
+
+### CLI Config Commands
+
+```bash
+mandocode config show              # Display current configuration
+mandocode config init              # Create default configuration file
+mandocode config set <key> <value> # Set a configuration value
+mandocode config path              # Show configuration file location
+mandocode config --help            # Show help
+```
+
+### Environment Variables
+
+| Variable | Overrides |
+|----------|-----------|
+| `OLLAMA_ENDPOINT` | `ollamaEndpoint` in config |
+| `OLLAMA_MODEL` | `modelName` in config |
+
+</details>
+
+<details>
+<summary><h2>Diff Approvals — Deep Dive</h2></summary>
+
+When the AI writes or deletes a file, MandoCode intercepts the operation and shows a color-coded diff before applying changes.
+
+### What You See
+
+- **Red lines** — content being removed
+- **Light blue lines** — content being added
+- **Dim lines** — unchanged context (3 lines around each change)
+- Long unchanged sections are collapsed with a summary
+
+### Approval Options
+
+| Option | Behavior |
+|--------|----------|
+| **Approve** | Apply this change |
+| **Approve - Don't ask again** | Auto-approve future changes to this file (per-file), or all files (global) |
+| **Deny** | Reject the change, the AI is told it was denied |
+| **Provide new instructions** | Redirect the AI with custom feedback |
+
+For **new files**, "don't ask again" sets a **global bypass** — all future writes and deletes are auto-approved for the session. For **existing files**, the bypass is **per-file**.
+
+Even when auto-approved, diffs are still rendered so you can follow along.
+
+### Delete Approvals
+
+File deletions show all existing content as red removals with a deletion warning. The same approval options apply.
+
+### Toggle
+
+```bash
+mandocode config set diffApprovals false
+```
+
+</details>
+
+<details>
+<summary><h2>@  File References — Deep Dive</h2></summary>
+
+Type `@` anywhere in your input (after a space or at position 0) to trigger file autocomplete. A dropdown appears showing your project files, filtered as you type.
+
+### How It Works
+
+1. Type your prompt and hit `@` — a file dropdown appears
+2. Type a partial name to filter (e.g., `Conf`) — matches narrow down
+3. Use arrow keys to navigate, **Enter** to select; **Tab** switches between Files and Agents
+4. The selected path is inserted (e.g., `@src/MandoCode/Models/MandoCodeConfig.cs`)
+5. Continue typing and press **Enter** to submit
+6. MandoCode reads the referenced file(s) and injects the content as context for the AI
+
+### Examples
+
+```
+explain @src/MandoCode/Services/AIService.cs to me
+what does the ProcessFileReferences method do in @src/MandoCode/Components/App.razor
+refactor @src/MandoCode/Models/LoadingMessages.cs to use fewer spinners
+```
+
+Multiple `@` references in one prompt are supported. Files over 10,000 characters are automatically truncated.
+
+### Controls
+
+| Key | Action |
+|-----|--------|
+| `@` | Open file dropdown |
+| Type | Filter files by name |
+| Up/Down | Navigate dropdown |
+| Enter | Insert selected file path (does not submit) |
+| Tab | Switch between Files and Agents |
+| Escape | Close dropdown, keep text |
+| Backspace | Re-filter, or close if you delete past `@` |
+
+</details>
+
+<details>
+<summary><h2>Task Planner — Deep Dive</h2></summary>
+
+Start with `/plan <goal>` when you want to review a structured plan before work begins. Ordinary CLI prompts run directly; complexity alone does not switch them into plan mode.
+
+### Workflow
+
+1. **Plan generation** — describe the goal and review the proposed steps.
+2. **User approval** — approve the plan, edit steps, choose One-shot it, or cancel.
+3. **Execution** — follow step-by-step progress and approve changes as needed.
+4. **Recovery** — review available recovery choices if a step fails; use `/plan-resume` to continue an unfinished plan or `/plan-discard` to forget it.
+
+See [Task Planner Documentation](src/MandoCode/docs/TaskPlanner.md) for full technical details.
+
+</details>
+
+<details>
+<summary><h2>/learn — LLM Education</h2></summary>
+
+The `/learn` command helps new users understand local LLMs and get set up.
+
+| Scenario | What happens |
+|----------|-------------|
+| Startup, no Ollama detected | Automatically displays the educational guide instead of a bare error |
+| `/learn` typed, no model running | Displays the static educational guide |
+| `/learn` typed, model is running | Shows the guide, then offers to enter AI educator chat mode |
+
+### Educational Content
+
+1. **What are Open-Weight LLMs?** — Free, private, offline models vs. cloud AI
+2. **Model Sizes & Hardware** — Parameters, quantization, VRAM requirements
+3. **Cloud vs Local Models** — Ollama cloud models (no GPU) vs local models
+4. **Recommended Models** — Table of cloud and local options
+5. **Getting Started** — Step-by-step setup instructions
+
+### AI Educator Chat Mode
+
+When Ollama is running, `/learn` offers an interactive chat mode where the AI explains LLM concepts using beginner-friendly language. Type `/clear` to return to normal mode.
+
+</details>
+
+<details>
+<summary><h2>MCP Servers — Deep Dive</h2></summary>
+
+MandoCode speaks the [Model Context Protocol](https://modelcontextprotocol.io) as a client, which means you can plug in any published MCP server — filesystem, database, GitHub, Linear, Slack, whatever — and its tools show up to the model alongside MandoCode's built-in plugins.
+
+### Adding a server
+
+Two ways:
+
+- **`/mcp`** inside MandoCode → **Add Server** — the server editor for name, transport, URL/command, and optional headers/env vars, with Test Connection and Save & Connect.
+- **Hand-edit `~/.mandocode/config.json`** — useful when copy-pasting a `mcpServers` block from a server's README. Run `/mcp-reload` after saving.
+
+### Config shape
+
+The `mcpServers` block mirrors [Claude Desktop's schema](https://modelcontextprotocol.io/docs/develop/connect-local-servers), so you can copy-paste any server's README installation snippet directly into `~/.mandocode/config.json`:
+
+```json
+{
+  "enableMcp": true,
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allow"]
+    },
+    "solana": {
+      "url": "https://mcp.solana.com/mcp",
+      "transport": "http"
+    },
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": { "Authorization": "Bearer ghp_your_token_here" },
+      "autoApprove": ["list_issues", "get_pr"]
+    }
+  }
+}
+```
+
+### Transports
+
+- **stdio** — for local servers. Populate `command` + `args` + optional `env`. Works with any server published as an npm/pip/go binary.
+- **HTTP / SSE** — for remote servers. Populate `url`; the client auto-detects Streamable HTTP or SSE. Custom headers go in `headers` — most commonly `Authorization: Bearer …` for servers that accept static tokens.
+
+### Does MandoCode need Node?
+
+**No.** MandoCode itself is pure .NET. But *individual servers* may need whatever runtime their `command` points at — Node for `npx`, Python for `uvx`, or nothing extra for standalone binaries. Same situation as Claude Desktop, Cursor, and VS Code.
+
+### OAuth-only servers
+
+Native OAuth is not in this release. For servers that require an OAuth flow (some hosted connectors like Google Drive), wrap them in stdio via the community [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) proxy, which handles the browser dance itself:
+
+```json
+"gdrive": {
+  "command": "npx",
+  "args": ["mcp-remote", "https://example.com/mcp"]
+}
+```
+
+### Approvals
+
+MandoCode cannot tell a read-only MCP tool from a destructive one by inspecting arguments, so the first call of each `(server, tool)` pair prompts you with **Approve / Approve for session / Deny**. Pre-trusted tools can be listed under `autoApprove` in a server's config entry to skip the prompt entirely.
+
+### Slash commands
+
+- `/mcp` — opens the shared server manager with connection status and tool inspection
+- `/mcp` → **Add Server** — configure a new server without hand-editing JSON
+- `/mcp` → **Delete** on a server row — remove a server from config (with confirmation)
+- `/mcp tools <server>` — list every tool exposed by connected servers with descriptions (server arg optional — omit to list all)
+- `/mcp-reload` — tears down every MCP client, restarts them, and re-registers their tools on the agent (useful when you edit the config mid-session)
+
+### Toggle
+
+```bash
+mandocode --config set mcp false   # disable all MCP integration
+```
+
+Individual servers can be muted without deleting them — set `"disabled": true` on any entry in `mcpServers`.
+
+</details>
+
+<details>
+<summary><h2>AI Plugins</h2></summary>
+
+### FileSystemPlugin
+
+The AI has sandboxed access to your project directory through these functions:
+
+| Function | Description |
+|----------|-------------|
+| `list_all_project_files()` | Recursively lists all project files, excluding ignored directories |
+| `list_files_match_glob_pattern(pattern)` | Lists files matching a glob pattern (`*.cs`, `src/**/*.ts`) |
+| `read_file_contents(relativePath, startLine?, endLine?)` | Reads file content with line count — large files page via `startLine`/`endLine`, and truncated output names the exact line to resume from |
+| `write_file(relativePath, content)` | Writes/creates a file (creates directories as needed) |
+| `delete_file(relativePath)` | Deletes a file |
+| `create_folder(relativePath)` | Creates a new directory |
+| `delete_folder(relativePath)` | Deletes a directory and all its contents |
+| `search_text_in_files(pattern, searchText)` | Searches file contents for text, returns paths and line numbers |
+| `get_absolute_path(relativePath)` | Converts a relative path to absolute |
+
+**Security:** All operations are sandboxed to the project root. Path traversal is blocked with a separator-boundary check.
+
+**Ignored directories:** `.git`, `node_modules`, `bin`, `obj`, `.vs`, `.vscode`, `packages`, `dist`, `build`, `__pycache__`, `.idea` — plus any custom directories from your config.
+
+### WebSearchPlugin
+
+The AI can search the web and fetch page content — no API keys required.
+
+| Function | Description |
+|----------|-------------|
+| `search_web(query, maxResults)` | Searches the web and returns titles, URLs, and snippets (1–10 results) |
+| `fetch_webpage(url, maxCharacters)` | Fetches a URL and extracts readable text content (500–15,000 chars) |
+
+Out of the box, search uses DuckDuckGo's free HTML endpoint — which rate-limits and temporarily blocks IPs under heavy agentic use, so searches can randomly fail. For reliable, AI-optimized search, add a free [Tavily](https://www.tavily.com/) API key (free tier ~1,000 searches/month):
+
+```bash
+/config set tavilyKey tvly-...        # in-app — verifies the key live against Tavily
+mandocode --config set tavilyKey tvly-...   # or from the CLI
+```
+
+With a key set, `search_web` prefers Tavily and keeps DuckDuckGo as the fallback; clear it anytime with `/config set tavilyKey clear`. The key is stored locally in `~/.mandocode/config.json` and only ever sent to Tavily — set the `TAVILY_API_KEY` environment variable instead if you'd rather keep it out of the file. Fetched pages are cleaned of scripts, nav, and non-content elements via HtmlAgilityPack.
+
+</details>
+
+<details>
+<summary><h2>Reliability & Internals</h2></summary>
+
+### Retry Policy
+
+Transient errors (HTTP failures, timeouts, socket errors) are retried with exponential backoff:
+
+```
+Attempt 1 -> fail -> wait 500ms
+Attempt 2 -> fail -> wait 1000ms
+Attempt 3 -> fail -> throw
+```
+
+### Function Deduplication
+
+| Operation | Window | Matching |
+|-----------|--------|----------|
+| Read operations | 2 seconds | Function name + arguments |
+| Write operations | 5 seconds (configurable) | Function name + path + content hash (SHA256) |
+
+### Fallback Function Parsing
+
+Some local models output function calls as JSON text instead of proper tool calls. MandoCode detects and parses:
+
+- Standard: `{"name": "func", "parameters": {...}}`
+- OpenAI-style: `{"function_call": {"name": "func", "arguments": {...}}}`
+- Tool calls: `{"tool_calls": [{"function": {"name": "func", "arguments": {...}}}]}`
+
+### Markdown Rendering
+
+AI responses are rendered as rich terminal output:
+
+| Markdown | Rendered as |
+|----------|------------|
+| `**bold**` | Bold text |
+| `*italic*` | Italic text |
+| `` `code` `` | Cyan highlighted |
+| Fenced code blocks | Bordered panels with syntax highlighting |
+| Tables | Spectre.Console table widgets |
+| `# Headers` | Bold yellow with horizontal rules |
+| `- lists` | Indented bullet points |
+| `> quotes` | Grey-bordered block quotes |
+| URLs | Clickable OSC 8 hyperlinks |
+
+Syntax highlighting supports **C#**, **Python**, **JavaScript/TypeScript**, and **Bash** with language-specific keyword coloring.
+
+### Token Tracking
+
+- **Per-response:** `[~1.2k in, 847 out]` after each AI response
+- **Session total:** `Total [4.2k tokens]` above the prompt
+- **File estimates:** `@file` attachments show estimated token cost (chars/4)
+
+### Event-Based Completion Tracking
+
+Function executions use semaphore-based signaling, ensuring each task plan step fully completes before the next begins.
+
+</details>
+
+---
+
+<details>
+<summary>Developer check: updater simulation</summary>
+
+Developers can exercise the real updater helper without installing or updating any tool:
+
+```bash
+dotnet run --project tests/UpdateSimulation/UpdateSimulation.csproj
+```
+
+This simulation replaces the package update command, verifies the helper waits for its parent to exit, and runs success and failure cases. Logs remain under `bin/update-simulation`. It does not test an actual NuGet installation or the interactive confirmation/history workflow.
+
+</details>
+
+## Architecture
+
+```
+src/MandoCode/
+  Components/        Razor UI (App, Banner, HelpDisplay, ConfigMenu, Prompt)
+  Services/          Core logic (AI, markdown, syntax, tokens, music, diffs, input state machine)
+  Models/            Data models, config, system prompts, educational content
+  Plugins/           Tool classes bound as AIFunctions (FileSystem, WebSearch, Planning, Skills)
+  Audio/             Bundled lofi and synthwave MP3 tracks
+  docs/              Feature and architecture documentation
+  Program.cs         Entry point and DI registration
+```
+
+### Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| [Microsoft.Agents.AI](https://github.com/microsoft/agent-framework) 1.19.0 | Agentic orchestration — tool calling, approval middleware |
+| [Microsoft.Extensions.AI](https://github.com/dotnet/extensions) 10.9.0 | Provider-agnostic chat/tool abstractions underneath Agent Framework |
+| [OllamaSharp](https://github.com/awaescher/OllamaSharp) 5.4.30 | Ollama model integration |
+| [ModelContextProtocol](https://github.com/modelcontextprotocol/csharp-sdk) 2.2.0 | MCP server support |
+| [RazorConsole.Core](https://github.com/RazorConsole/RazorConsole) 0.6.0 | Terminal UI with Razor components |
+| [Markdig](https://github.com/xoofx/markdig) 1.3.2 | Markdown parsing |
+| [NAudio](https://github.com/naudio/NAudio) 2.2.1 | Audio playback |
+| [HtmlAgilityPack](https://html-agility-pack.net/) 1.12.4 | HTML parsing for web search |
+| [FileSystemGlobbing](https://www.nuget.org/packages/Microsoft.Extensions.FileSystemGlobbing) 10.0.11 | Glob pattern matching |
+| [YamlDotNet](https://github.com/aaubry/YamlDotNet) 18.1.0 | Skill/config YAML parsing |
+
+---
+
+## Why .NET?
+
+Most AI coding agents in the wild are built with Python, Rust, or TypeScript. .NET rarely gets mentioned — but it should.
+
+[Microsoft Agent Framework](https://github.com/microsoft/agent-framework) is Microsoft's open-source SDK for building AI agents, and it's one of the most capable orchestration frameworks available: tool/function calling, middleware you can hook into for approvals and circuit breakers, structured multi-agent workflows, and first-class support for local models through providers like Ollama. It runs cross-platform on Windows, Linux, and macOS.
+
+MandoCode exists partly to prove the point: you can build a full-featured, agentic CLI tool on .NET and Agent Framework that stands alongside anything built in other ecosystems. The tooling is there. It's open source. It just doesn't get the attention it deserves.
+
+---
+
+<p align="center">
+  <a href="LICENSE">MIT License</a>
+</p>
+---
+
+## Support MandoCode
+
+If MandoCode helps your workflow, you can support its development by buying me a coffee.
+
+<a href="https://buymeacoffee.com/devmando"><img src="https://img.shields.io/badge/Buy_Me_a_Coffee-Support-FFDD00?logo=buymeacoffee&logoColor=black" alt="Support MandoCode on Buy Me a Coffee"></a>

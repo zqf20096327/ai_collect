@@ -1,0 +1,369 @@
+# Neuron AI Router
+
+> [!IMPORTANT]
+> Get early access to new features, exclusive tutorials, and expert tips for building AI agents in PHP. Join a community of PHP developers pioneering the future of AI development.
+> [Subscribe to the newsletter](https://neuron-ai.dev)
+
+> Before moving on, support the Neuron AI community giving a GitHub star ⭐️. Thank you!
+
+This package provides you with a `RouterProvider` component. It is a proxy that implements `AIProviderInterface` and routes inference calls (`chat`, `stream`, `structured`) to different underlying providers based on a routing strategy you define.
+The agent doesn't know it's talking to a router, it's a drop-in replacement for any Neuron AI provider.
+
+At its simplest, the router is a reliability layer: define a **fallback order** of providers and if one fails with a transient error, the next is tried transparently. On top of that, you can add routing rules to choose which provider handles each request.
+
+This is possible thanks to the Unified Messaging Layer that Neuron AI provides, with full support for multi-modality. Documentation here: https://docs.neuron-ai.dev/agent/messages
+
+![](/assets/header.png)
+
+## When to Use It
+
+- Stay reliable when a provider hits its quota, rate-limits you, or returns a server error — define a fallback order and the next provider is tried transparently
+- Route requests to the appropriate models based on the expected difficulty scored by the [classifier](#difficultyrule)
+- Route `structured()` calls to a provider with better structured output support (e.g., OpenAI) while using another provider for `chat()`
+- Use different providers depending on the content of the messages (e.g., route image-heavy requests to Gemini)
+- Implement cost-based or latency-based routing logic
+
+## Installation
+
+Install the composer package:
+
+```
+composer require neuron-core/router
+```
+
+## Quick Start
+
+The most common use case: a fixed provider order with automatic fallback, no routing rule needed. Anthropic is the primary; if it fails with a transient error, OpenAI is tried next.
+
+```php
+use NeuronAI\Router\RouterProvider;
+use NeuronAI\Providers\Anthropic\Anthropic;
+use NeuronAI\Providers\OpenAI\OpenAI;
+
+class MyAgent extends Agent
+{
+    protected function provider(): AIProviderInterface
+    {
+        return RouterProvider::make()
+            ->addProvider('anthropic', new Anthropic(
+                key: 'ANTHROPIC_API_KEY',
+                model: 'claude-sonnet-4-20250514',
+            ))
+            ->addProvider('openai', new OpenAI(
+                key: 'OPENAI_API_KEY',
+                model: 'gpt-4o',
+            ))
+            ->setFallbackOrder('anthropic', 'openai');
+    }
+
+    protected function instructions(): string
+    {...}
+
+    protected function tools(): array
+    {...}
+}
+```
+
+Once you need to choose providers per request, add a [routing rule](#routing-rules).
+
+## Default Provider
+
+The router delegates `messageMapper()` and `toolPayloadMapper()` to an underlying provider. After each inference call, these delegate to whichever provider the routing rule selected. If you need the mappers available before any inference call (e.g., during agent bootstrapping), set a default:
+
+```php
+RouterProvider::make()
+    ->addProvider('anthropic', new Anthropic(...))
+    ->addProvider('openai', new OpenAI(...))
+    ->setDefaultProvider('anthropic')
+    ->setRule(new LoadBalancingRule(['anthropic', 'openai']));
+```
+
+The default is overwritten each time the routing rule resolves a provider, so it only acts as the initial fallback.
+
+## Fallback Providers
+
+The fallback order defines which provider is tried, and in what order, when a call fails with a transient error — useful for staying reliable when a provider hits its quota, rate-limits you, or returns a server error. The [Quick Start](#quick-start) above shows the simplest case: no routing rule, just `setFallbackOrder()`. The first name is the **primary**, tried on every call; the rest are tried in order on transient failures.
+
+Names passed to `setFallbackOrder()` must be registered — an unknown name throws at configuration time. Calling without either `setRule()` or `setFallbackOrder()` throws `ProviderException`.
+
+### Combining a rule with fallback
+
+Add a routing rule and the fallback order works alongside it: the rule picks the provider for each request, and the fallback order takes over if that provider fails. The rule's chosen provider is always tried first and is implicitly excluded from the fallback list (it is never retried).
+
+```php
+RouterProvider::make()
+    ->addProvider('anthropic', new Anthropic(...))
+    ->addProvider('openai', new OpenAI(...))
+    ->addProvider('gemini', new Gemini(...))
+    ->setRule(new LoadBalancingRule(['anthropic', 'openai', 'gemini']))
+    ->setFallbackOrder('anthropic', 'openai', 'gemini');
+```
+
+### What triggers a fallback
+
+The router falls back only on **transient** failures:
+
+| Failure | Falls back? |
+|---------|-------------|
+| Network error / timeout / DNS (`HttpException` with no response) | Yes |
+| Rate limit / quota — `429` | Yes |
+| Upstream server error — `5xx` | Yes |
+| Client error — `400`, `401`, `403`, `404` | No (rethrown) |
+| Any non-`HttpException` (e.g. message-mapping bugs) | No (rethrown) |
+
+The last-tried provider's error is the one that surfaces to the caller.
+
+### Custom fallback strategy
+
+If the built-in policy doesn't fit, supply a callable that inspects the thrown `Throwable` and returns `true` to fall back, `false` to rethrow:
+
+```php
+$router->setFallbackStrategy(function (Throwable $e): bool {
+    // Fall back on any HTTP error, including client errors like 401/403.
+    return $e instanceof HttpException;
+});
+```
+
+The strategy takes precedence over the default policy entirely — there is no merging of the two.
+
+### Retry with backoff
+
+By default a failing provider is tried once and the router moves straight to the next one. Use `setRetry()` to retry the same provider first, waiting between attempts:
+
+```php
+RouterProvider::make()
+    ->addProvider('anthropic', new Anthropic(...))
+    ->addProvider('openai', new OpenAI(...))
+    ->setFallbackOrder('anthropic', 'openai')
+    ->setRetry(times: 2, backoff: 500);
+```
+
+| Parameter     | Type    | Description                                                                 |
+|---------------|---------|-----------------------------------------------------------------------------|
+| `$times`      | `int`   | Retries per provider, after the first attempt                               |
+| `$backoff`    | `int`   | Milliseconds to wait before the first retry                                 |
+| `$multiplier` | `float` | Factor applied to the wait time after each retry. Defaults to `1` (fixed)   |
+
+With the default multiplier the wait is the same before every retry. Pass a higher value for exponential backoff: `setRetry(times: 3, backoff: 500, multiplier: 2)` waits 500ms, 1000ms, then 2000ms.
+
+The configuration applies to every provider: each one gets its own `$times` retries before the router moves to the next in the fallback order. Retries are triggered by the same errors that trigger a fallback (including a [custom fallback strategy](#custom-fallback-strategy)), so a non-retryable error is still rethrown immediately. The wait blocks the current process.
+
+### Streaming
+
+For `stream()`, retry and fallback apply only to the **initial request** (the one that opens the connection). If that fails with a retryable error, the next provider is tried. Once the first chunk has been emitted the stream cannot restart, so any failure from that point on propagates as-is.
+
+## Routing Rules
+
+Routing logic is defined via the `RoutingRuleInterface`. The router calls `resolveProvider()` on the rule, passing context about the current request:
+
+```php
+interface RoutingRuleInterface
+{
+    public function resolveProvider(string $method, array $messages, array $tools): string;
+}
+```
+
+| Parameter  | Type     | Description                                            |
+|------------|----------|--------------------------------------------------------|
+| `$method`  | `string` | The inference method: `'chat'`, `'stream'`, or `'structured'` |
+| `$messages`| `array`  | The messages being sent to the provider                 |
+| `$tools`   | `array`  | The tools configured for this request                   |
+
+The method must return the name of a registered provider (as a string).
+
+### Built-in Rules
+
+#### MethodRule
+
+Routes based on the inference method. Set a default provider and optionally override specific methods:
+
+```php
+use NeuronAI\Router\Rules\MethodRule;
+
+$router = RouterProvider::make()->addProvider(...);
+
+// Use Anthropic for everything, except structured output which goes to OpenAI
+$router->setRule(
+    new MethodRule('anthropic')->structured('openai')
+)
+
+// Override each method individually
+$router->setRule(
+    new MethodRule('openai')
+        ->chat('anthropic')
+        ->stream('anthropic')
+        ->structured('openai')
+)
+```
+
+#### CallbackRule
+
+Wraps a callable for maximum flexibility. Use this when you need to inspect messages or tools:
+
+```php
+use NeuronAI\Router\Rules\CallbackRule;
+
+// Route based on tools presence
+$router->setRule(new CallbackRule(function (string $method, array $messages, array $tools): string {
+    if (count($tools) > 0) {
+        return 'anthropic';
+    }
+    return 'openai';
+}))
+```
+
+#### LoadBalancingRule
+
+Distributes requests across providers at random. Pass a list of provider names to give each one the same probability:
+
+```php
+use NeuronAI\Router\Rules\LoadBalancingRule;
+
+// Each request has an equal chance of going to Anthropic or OpenAI
+$router->setRule(
+    new LoadBalancingRule(['anthropic', 'openai'])
+)
+```
+
+Pass a map of provider name => weight to control the distribution:
+
+```php
+// 30% of the requests to Anthropic, 70% to OpenAI
+$router->setRule(
+    new LoadBalancingRule(['anthropic' => 30, 'openai' => 70])
+)
+```
+
+Weights must be positive integers. They are relative, so they don't have to sum to 100: each provider's share is its weight divided by the sum of all weights. For example, `['anthropic' => 30, 'openai' => 50]` sends 37.5% of the requests to Anthropic and 62.5% to OpenAI. Every request is always routed to exactly one provider.
+
+The provider is picked at random on every request, so the distribution holds over many requests rather than exactly. An empty list or an invalid weight throws `InvalidArgumentException`.
+
+#### DifficultyRule
+
+Routes by the difficulty of the current task using Neuron AI's built-in `ClassifierInterface`. Pass any implementation, such as [TypeSafeAI](https://docs.typesafe.ai/introduction). No separate classifier package is needed.
+
+```php
+use NeuronAI\Classifier\TypeSafeAI\TypeSafeAI;
+use NeuronAI\Providers\OpenAI\OpenAI;
+use NeuronAI\Router\RouterProvider;
+use NeuronAI\Router\Rules\DifficultyRule;
+
+$classifier = new TypeSafeAI(key: 'TYPESAFE_API_KEY');
+
+$router = RouterProvider::make()
+    ->addProvider('mini', new OpenAI(key: 'OPENAI_API_KEY', model: 'gpt-4o-mini'))
+    ->addProvider('4o', new OpenAI(key: 'OPENAI_API_KEY', model: 'gpt-4o'))
+    ->addProvider('o1', new OpenAI(key: 'OPENAI_API_KEY', model: 'o1'))
+    ->setRule(
+        (new DifficultyRule($classifier))
+            ->easy('mini', maxScore: 0.33)
+            ->medium('4o', maxScore: 0.70)
+            ->hard('o1')
+    );
+```
+
+On every `chat()`, `stream()`, or `structured()` request, the rule sends the entire supplied message history, serialized as JSON, to the classifier. Message roles and content, including tool calls and results, are preserved. The classifier assesses the work needed for the next response against three ordered levels: easy, medium, and hard. Its expected level position (`0` through `2`) is divided by two to obtain a score in `[0, 1]`.
+
+The rule chooses `easy` when the score is below its threshold, then `medium` when below its threshold, otherwise the most capable configured tier (`hard → medium → easy`). Thresholds default to `0.33` and `0.70`, must be finite numbers in `[0, 1]`, and are exclusive: a score exactly equal to a threshold moves to the next tier. Configure the easy threshold below the medium threshold when using both.
+
+The history is reclassified on each request, allowing the selected model to change as the task evolves. Empty history uses the most capable configured tier without calling the classifier. At least one tier must be configured. Classifier errors propagate to the caller; the router's provider fallback order applies only after a provider has been selected.
+
+#### ContentRule
+
+Routes based on the content blocks inside messages (images, files, audio, video). When a message contains a content type that not all providers support, you can route it to one that does:
+
+```php
+use NeuronAI\Router\Rules\ContentRule;
+
+// Use Anthropic by default, route images and video to Gemini, files to OpenAI
+$router->setRule(
+    new ContentRule('anthropic')
+        ->image('gemini')
+        ->video('gemini')
+        ->file('openai')
+)
+```
+
+When multiple content types are present in the same request, precedence is: **video → audio → image → file → default**. Content types without a configured provider are ignored and fall through to the next type in the precedence order.
+
+### Custom Rules
+
+Implement `RoutingRuleInterface` to create your own routing logic:
+
+```php
+use NeuronAI\Router\Rules\RoutingRuleInterface;
+
+class ImageAwareRule implements RoutingRuleInterface
+{
+    public function __construct(
+        private string $defaultProvider,
+        private string $imageProvider,
+    ) {}
+
+    public function resolveProvider(string $method, array $messages, array $tools): string
+    {
+        foreach ($messages as $message) {
+            foreach ($message->getContents() as $content) {
+                if ($content instanceof ImageContent) {
+                    return $this->imageProvider;
+                }
+            }
+        }
+        return $this->defaultProvider;
+    }
+}
+```
+
+Then use it:
+
+```php
+$router->setRule(
+    new ImageAwareRule(
+        defaultProvider: 'anthropic',
+        imageProvider: 'gemini',
+    )
+)
+```
+
+## Using with an Agent
+
+Inject the router just like any other provider — either via `setAiProvider()` or by overriding the `provider()` method:
+
+```php
+class MyAgent extends Agent
+{
+    protected function provider(): AIProviderInterface
+    {
+        return RouterProvider::make()
+            ->addProvider('anthropic', new Anthropic(
+                key: 'ANTHROPIC_API_KEY',
+                model: 'claude-sonnet-4-20250514',
+            ))
+            ->addProvider('openai', new OpenAI(
+                key: 'OPENAI_API_KEY',
+                model: 'gpt-4o',
+            ))
+            ->setRule(
+                new LoadBalancingRule(['anthropic', 'openai'])
+            );
+    }
+}
+```
+
+## Error Handling
+
+The router throws `ProviderException` with clear messages for misconfiguration:
+
+| Scenario | Error Message |
+|----------|--------------|
+| Neither a routing rule nor a fallback order set | `no routing strategy configured. Call setRule() to set one, or setFallbackOrder() to route without a rule.` |
+| No providers registered | `no providers registered. Call addProvider() to add one.` |
+| Rule returns unknown name | `unknown provider 'name'. Available: ...` |
+| Unknown default provider | `unknown provider 'name'. Available: ...` |
+| Mapper called with no default or prior call | `no provider available for delegation. Call setDefaultProvider() or make an inference call first.` |
+
+## Limitations
+
+- `messageMapper()` and `toolPayloadMapper()` delegate to the last-resolved provider (or the default). These are internal to each concrete provider and are never called by the agent directly.
+- `setHttpClient()` is forwarded to **all** registered providers.
+- The routing rule is called on every inference request, so keep it fast.

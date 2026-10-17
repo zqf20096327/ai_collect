@@ -1,0 +1,196 @@
+# Ollana (Ollama Over LAN)
+
+Auto-discover your Ollama server on your local network with hassle-free ease.
+
+Use your home or office Ollama server from any device on the same network without changing settings in your client applications or setting up a reverse proxy.
+
+## Table of Contents
+
+- [Why](#thinking-why)
+- [Installation](#installation)
+- [Usage](#man-usage)
+- [Architecture](#pencil-architecture)
+- [Contributing](#handshake-contributing)
+- [License](#judge-license)
+
+## :thinking: Why
+
+- **No need to specify the IP address of an Ollama server** - Automatically discovers Ollama servers on your local network using UDP broadcast.
+- **No need to modify your client application configuration** - Connect to a remote Ollama instance as if it were running locally.
+- **Secure the network traffic via TLS** - Network traffic is secured using TLS, employing self-signed X.509 certificates.
+- **Simple AuthZ and AuthN** - Unauthorized access is prevented through explicit bi-directional device management.
+
+## Installation
+
+### :dvd: Binaries
+
+The pre-compiled binaries for Linux and MacOS are available for download on the [Releases](https://github.com/grouzen/ollana/releases) page
+
+### 📦 crates.io
+
+You can install latest `ollana` from [crates.io](https://crates.io/crates/ollana)
+
+```sh
+cargo install ollana --locked
+```
+
+### :memo: From source
+
+Requires [Rust](https://rustup.rs/) (Edition 2021).
+
+```sh
+git clone https://github.com/grouzen/ollana.git
+cd ollana
+cargo build --release
+# or via cargo install
+cargo install --path .
+```
+
+### :penguin: Linux distros
+
+#### Gentoo linux
+
+It is available via `lamdness` overlay
+
+```sh
+sudo eselect repository enable lamdness
+sudo emaint -r lamdness sync
+sudo emerge -av app-misc/ollana
+```
+
+
+## :man: Usage
+
+### Allow devices
+
+![](/docs/demo/ollana-show-and-allow-device-github-dark.gif)
+
+First thing you need to do before running a proxy is to set up authorization between your Ollana server and client.
+This process requires approving the unique Device IDs for both the server and client on each end.
+
+For this, you need to get the Device IDs of both server and client by running the following command on each machine:
+
+```sh
+$ ollana device show
+# SHA-256 hash of the X.509 certificate that's automatically generated upon running any ollana command (including this one)
+Device ID: b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc 
+```
+
+You need to copy the Device IDs and allow them on both sides by running:
+
+```sh
+$ ollana device allow b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc
+Added Device ID: b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc
+```
+
+#### Device management
+
+Surprisingly you can also see the allowed Device IDs:
+
+```sh
+$ ollana device list
+Allowed Device IDs:
+b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc
+```
+
+And disable them as well:
+
+```sh
+$ ollana device disable b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc
+Removed Device ID: b596c4e40002ec65f12edbe0adc116739dd52f62e7ed2a691230cd62c16aa4dc
+```
+
+### Serve
+
+![](/docs/demo/ollana-server-serve-github-dark.gif)
+
+![](/docs/demo/ollana-client-serve-github-dark.gif)
+
+
+Now you can run a proxy.
+It automatically detects the mode (client or server) to run in by checking whether an Ollama server is running on your machine.
+
+```shell
+$ ollana serve
+```
+
+It also support an old-style SysV daemon mode to run in a background:
+```shell
+$ ollana serve -d
+```
+
+#### Run as a system service
+
+It is recommended to run it as a background process. This repository doesn't contain scripts for any particular start up system.
+
+You can find a SystemD and OpenRC scripts in my Gentoo overlay: https://github.com/grouzen/lamdness-overlay/tree/main/app-misc/ollana/files.
+
+For example, here is the [Systemd unit](https://github.com/grouzen/lamdness-overlay/blob/main/app-misc/ollana/files/ollana.service):
+```
+[Unit]
+Description=Ollana Service
+After=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/conf.d/ollana
+ExecStart=/usr/bin/ollana serve $OLLANA_OPTS
+User=ollana
+Group=ollana
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+```
+
+## :pencil: Architecture
+
+![Architecture Overview](docs/architecture-overview.png)
+
+See also [architecture-overview.md](docs/architecture-overview.md) for more details.
+
+
+## :handshake: Contributing
+
+Auto-reloading development server (see: https://actix.rs/docs/autoreload)
+
+```shell
+watchexec -e rs -r cargo run
+```
+
+### Debugging
+
+You can debug the application by setting the `RUST_LOG` environment variable to the desired level of verbosity. For example, to enable debug level:
+```shell
+RUST_LOG=debug ollana serve
+```
+
+
+## :judge: License
+
+```
+MIT License
+
+Copyright (c) 2025 Mykhailo Nedokushev
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```
+
+See [LICENSE](LICENSE) file.

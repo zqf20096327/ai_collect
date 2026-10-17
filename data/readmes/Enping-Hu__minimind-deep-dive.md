@@ -1,0 +1,80 @@
+<div align="center">
+
+<img src="images/social-preview.png" alt="minimind-deep-dive — 从 MiniMind 源码读起，延伸到大模型技术体系" width="840">
+
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-blue.svg)](LICENSE) ![based on MiniMind2 | 3](https://img.shields.io/badge/based%20on-MiniMind2%20%7C%203-2496ED.svg) ![docs 中文](https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-orange.svg) ![status updating](https://img.shields.io/badge/status-updating-brightgreen.svg)
+
+[不同之处](#这份笔记的不同) · [学习路径](#学习路径) · [怎么读](#怎么读) · [路线图](#路线图)
+
+</div>
+
+---
+
+这份笔记带你**逐节对照 MiniMind 源码来读**：每节都指向对应的源码文件和符号（函数 / 类名），讲清那段代码在做什么、为什么这么写，建议并排打开 [MiniMind](https://github.com/jingyaogong/minimind) 一起看。符号引用以 MiniMind2 主线为准，版本差异集中在第 9 章。
+
+但 MiniMind 是入口，不是终点。读懂一个组件后，笔记会从它出发延伸到所属的技术脉络——例如从 RMSNorm 讲到归一化的演进，从 CISPO 讲到 GRPO 变体家族——帮你顺着具体实现建立对大模型技术体系的理解，而不是停在「这个项目怎么写」。附录的深入卷更进一步，也覆盖 MiniMind 完全没涉及、但进阶绕不开的主题（量化、投机解码、RLHF 全景、模型代际史等），让这份笔记从「读懂一个项目」通向「读懂现代大模型」。
+
+面向想从源码层面真正搞懂一个 LLM 全流程的人。不需要精通，但先了解交叉熵、反向传播、self-attention、causal mask、RoPE、RMSNorm、PPO clip 会读得更顺。
+
+> **持续更新中**：主线（00–10 章）已写完，可以直接通读；在此基础上还会继续加深细节、延伸技术脉络、补充实验证据，进展见[路线图](#路线图)。
+
+## 这份笔记的不同
+
+除了带你逐行读懂源码，这份笔记还做了三件事：
+
+- **版本演进对照（第 9 章）** — MiniMind2 与 MiniMind-3 / Qwen3-style 逐条源码 diff：QK-Norm、移除 shared expert、PPO 重写（5→4 模型 + token-level GAE）、GRPO 默认 CISPO。
+- **真实实验证据（第 10 章）** — 不是「应该更好」，而是真实服务器训练曲线 + 固定 prompt 评测，包括一个反直觉的观察：RL 训练里 reward 不必然上升，而且即便上升，评测里的事实 / 代码正确性也没有同步提升。
+- **统一训练数学链（第 8 章）** — 一条 `logits → token log-prob → 序列 loss → backward → optimizer.step` 贯穿 Pretrain / SFT / DPO / PPO / GRPO，把六种训练的更新骨架统一起来。
+
+## 学习路径
+
+按 **结构 → 训练 → 机制 → 版本 → 实验** 推进。每章是一个目录，下分 `NN-子主题.md`；章末有思考题，参考答案折叠在下方。
+
+| Part | 章 | 内容 | 状态 |
+|---|---|---|---|
+| 结构 | [00 · overview](chapters/00-overview/) | MiniMind 是什么、四层源码地图、环境与快速开始 | ✅ |
+| 结构 | [01 · foundations](chapters/01-foundations/) | Tokenizer、Embedding、数据格式 | ✅ |
+| 结构 | [02 · model](chapters/02-model/) | Block / RMSNorm / Attention / RoPE / GQA / SwiGLU / MoE（+归一化演进） | ✅ |
+| 训练 | [03 · pretrain](chapters/03-pretrain/) | 数据与标签、前向到 loss、Pretrain 主循环 | ✅ |
+| 训练 | [04 · inference](chapters/04-inference/) | KV cache 与 generate（RL 在线采样的前置）、推理服务、权重格式 | ✅ |
+| 训练 | [05 · sft](chapters/05-sft/) | SFT：为什么只监督 assistant 回复 | ✅ |
+| 训练 | [06 · dpo](chapters/06-dpo/) | DPO：偏好优化与 −logsigmoid 目标 | ✅ |
+| 训练 | [07 · ppo-grpo](chapters/07-ppo-grpo/) | RL 总览、PPO、GRPO、SPO、训练信号总表（+GRPO 变体家族） | ✅ |
+| 机制 | [08 · training-mechanics](chapters/08-training-mechanics/) | 从 logits 到参数更新的完整训练机制 | ✅ |
+| 版本 | [09 · minimind2-vs-3](chapters/09-minimind2-vs-3/) | MiniMind2 → MiniMind-3 / Qwen3-style 逐条对照 | ✅ |
+| 实验 | [10 · experiments](chapters/10-experiments/) | 固定 prompt 设计、服务器训练记录、SFT vs RL 评测 | ✅ 持续补充 |
+| 进阶 | [appendix](chapters/appendix/) | 深入延伸卷（17 篇）：长上下文 / 模型结构 / 对齐与 RL / 推理与部署 / 训练方法 / 模型家族六大主题 | ✅ 持续补充 |
+
+> ✅ 表示主线已成稿；深入延伸篇统一收进 [appendix](chapters/appendix/)（按主题分卷，见其导航页），正文相关处给跳转链接——主线只读源码，想深入就顺链接进附录。附录既讲 MiniMind 源码里有、只是没展开的（如 RoPE 外推、MoE 演进），也讲 MiniMind 完全没涉及、但进阶绕不开的（如量化、投机解码、RLHF 全景、模型代际史、PagedAttention）。这些延伸篇会**随学习继续补**。第 10 章的实验同样持续补充。
+
+## 怎么读
+
+- **对照源码**：每节标出对应的源码文件与符号（函数 / 类名），并排打开源码一起读。
+- **分层深浅**：正文讲清概念与机制；张量级细节（shape / mask / padding / 索引技巧）收在每节的 `<details>源码细节</details>` 折叠块，按需展开。
+- **章末自测**：每章末有思考题，参考答案折叠在题目下方。
+
+## 路线图
+
+主线（源码精读）已完成，实验与延伸随自学进度持续扩充：
+
+- **可运行对照实验**（已开一批，持续加）— CPU 可跑的小实验放在 [`experiments/`](experiments/)，目前有 RoPE 多频、Pre/Post-Norm 对比，后续继续加。
+- **第 10 章实验补充**（已开一批，持续加）— 已补 Dense 与 MoE 全链路训练曲线和评测对比，更多阶段与对照还会继续加。
+
+## 范围与边界
+
+本书以 MiniMind2 主线为准（默认 `hidden_size=512`，约 26M 参数），分两条线推进：**主线**逐节对照源码，把 MiniMind 真有的代码和设计选择读透；**延伸**收进 appendix、正文相关处给跳转，既从具体实现顺到背后的技术脉络（如归一化演进、RoPE 长度外推、GRPO 变体家族），也补上 MiniMind 没涉及、但进阶必备的主题（如量化、投机解码、RLHF 全景、模型代际史）。这份笔记还在随学习继续补充：讲到的地方尽量讲透、给出源码或实测依据；一时讲不深的，会直接说清楚、点到为止。
+
+## 参与
+
+如果你发现文章里有任何错误，或者有更好的见解，欢迎提交 Issue 或 PR。
+
+## 来源与致谢
+
+- 源码：MiniMind / MiniMind-3，作者 [jingyaogong](https://github.com/jingyaogong/minimind)。
+- 数据格式与样本：引自 MiniMind-3 README；训练数据集见 [minimind_dataset](https://huggingface.co/datasets/jingyaogong/minimind_dataset)（ModelScope / HuggingFace）。
+- 配图：正文流程图（SVG）为源码精读时绘制；模型整体结构图（`LLM-structure*.png`）引自 MiniMind 官方仓库；训练曲线截图来自 SwanLab。均存于 [`images/`](images/)。
+- 本仓库是个人学习笔记的重构整理，不隶属于原项目。
+
+## 许可
+
+教学内容采用 [CC BY 4.0](LICENSE)（署名）；引用的 MiniMind 源码片段版权归原项目 [jingyaogong/minimind](https://github.com/jingyaogong/minimind)，遵循其 Apache-2.0 协议。

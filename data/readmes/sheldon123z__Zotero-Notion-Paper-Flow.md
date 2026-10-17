@@ -1,0 +1,248 @@
+# Zotero-Notion-Paper-Flow
+
+[![Release](https://img.shields.io/github/v/release/sheldon123z/Zotero-Notion-Paper-Flow?color=blue)](https://github.com/sheldon123z/Zotero-Notion-Paper-Flow/releases)
+[![CI](https://github.com/sheldon123z/Zotero-Notion-Paper-Flow/actions/workflows/ci-test.yml/badge.svg)](https://github.com/sheldon123z/Zotero-Notion-Paper-Flow/actions)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/github/license/sheldon123z/Zotero-Notion-Paper-Flow)](LICENSE)
+
+自动化论文收集和管理工具，从 HuggingFace Daily Papers 和 arXiv 获取论文，使用 LLM 服务进行中文翻译和分析，并同步到 Notion、Zotero 和 Wolai。
+
+## ✨ 特性
+
+- 📚 **多数据源**: 支持 HuggingFace Daily Papers 和 arXiv 搜索
+- 🤖 **LLM 智能分析**: 使用 Moonshot/DeepSeek 进行论文摘要翻译和分类
+- 🔄 **多服务同步**: 自动同步到 Notion、Zotero、Wolai、Feishu (飞书)
+- 📥 **PDF 下载**: 自动下载论文 PDF 文件
+- 🎯 **智能分类**: 基于内容自动分类和标签
+- 🖥️ **桌面应用**: Electron GUI 配置管理工具
+- ⚡ **现代架构**: 接口驱动设计，易于扩展和测试
+
+## 📦 安装
+
+### 从 PyPI 安装（推荐）
+```bash
+pip install paper-flow
+```
+
+### 从源码安装
+```bash
+git clone https://github.com/sheldon123z/Zotero-Notion-Paper-Flow.git
+cd Zotero-Notion-Paper-Flow
+pip install -e .
+```
+
+### 下载桌面应用
+
+从 [Releases](https://github.com/sheldon123z/Zotero-Notion-Paper-Flow/releases/latest) 页面下载适合你系统的版本：
+- **macOS**: `PaperFlow-{version}.dmg` 或 `.zip`
+- **Windows**: `PaperFlow-Setup-{version}.exe` 或便携版
+- **Linux**: `PaperFlow-{version}.AppImage` 或 `.deb`
+
+## 🚀 快速开始
+
+### 基本使用
+```bash
+# 使用关键词搜索论文
+paper-flow --keywords "reinforcement learning" "LLM" --limit 10
+
+# 指定日期和分类
+paper-flow --keywords "diffusion" --date 2025-01-01 --categories cs.LG
+
+# 下载 PDF
+paper-flow --keywords "transformer" --download-pdf --pdf-dir ./papers
+```
+
+### 配置文件
+
+创建 `config.json`：
+```json
+{
+  "keywords": ["reinforcement learning"],
+  "categories": ["cs.LG", "cs.AI"],
+  "services": {
+    "notion": true,
+    "zotero": true,
+    "wolai": false,
+    "feishu": false
+  },
+  "download_pdf": true,
+  "pdf_dir": "papers",
+  "search_limit": 10
+}
+```
+
+然后运行：
+```bash
+paper-flow --config config.json
+```
+
+## 概述
+
+本项目可以扫描HuggingFace的[Daily Papers](https://huggingface.co/papers)页面，解析页面，获取相关论文标题、截图、ID等，调用Arxiv库获取论文更完善的信息，调用LLM API（目前是调用的是Moonshot API）对摘要进行分析，首先翻译成中文，然后解析摘要中提到的论文的动机、方法、结果，并尝试对论文打标签，最后将解析结果，原始论文的链接，使用 Notion API、**Zotero** API、Wolai API 或 Feishu API 发送到对应平台。
+
+最终的效果如下图所示：
+
+Zotero展示：
+
+![](assets/zotero.png)
+
+Notion 论文主列表：
+
+![](assets/main_list.png)
+
+详情页：
+
+![](assets/all.png)
+
+# 快速上手
+
+## 准备工作
+
+- 申请Moonshot API：如果使用其他LLM的话，在`src/service/llm_service.py`中，替换为其他LLM的相关配置
+- Notion配置（可选），这步不申请的话，后续过程论文可以正常获取、解析，但结果无法正常插入Notion
+  - 在[此页面](https://www.notion.so/my-integrations)点击Create new integration，创建一个token，创建好之后，记录下Internal Integration Secret，供后续认证使用
+  - 在要写入的页面，点击右上角的三个点，在弹出的菜单中，点击Connect to，选择刚才生成的Integration名称
+  - 同样点击要写入的页面右上角的三个点，在弹出的菜单中，点击Copy link to view，可以得到类似 https://sheldon123z.notion.site/d7fe8ee7761c4a1fb82dc8f0a07d8fe1?v=bf26f727808c47b4be34536f5e800362&pvs=4 的地址，其中的d7fe8ee7761c4a1fb82dc8f0a07d8fe1 就是要拷贝的Notion DB ID
+- Feishu (飞书) API 申请（可选）
+  - 访问[飞书开放平台](https://open.feishu.cn/app)创建企业自建应用
+  - 获取 App ID 和 App Secret（在应用的"凭证与基础信息"页面）
+  - 开启"多维表格"权限（在"权限管理"页面添加 `bitable:app`）
+  - 创建多维表格，并在表格设置中获取 App Token 和 Table ID
+  - App Token: 打开多维表格后，从 URL 中提取，格式为 `bascnxxxxxxxxxxxxxx`
+  - Table ID: 在表格中，点击表格标签，从 URL 中提取，格式为 `tblxxxxxxxxxxxxxx`
+- Slack API申请（可选），这一步主要是配置定时调度后，将每次程序运行结果发送到Slack，如果不需要的话，这步置空或者随意填写一个字符串即可 
+- Zotero API申请（可选），这一步主要是配置定时调度后，将每次程序运行结果发送到Zotero，如果不需要的话，这步置空或者随意填写一个字符串即可 申请地址为 https://www.zotero.org/settings/keys, 注意需要将读写权限打开
+
+![申请新的key](assets/zotero_key.png)
+
+## 安装依赖
+### 直接安装（不推荐）
+```bash
+pip install requirements.txt
+```
+### 使用Conda虚拟环境
+使用conda环境的话，可以创建一个新的conda环境，然后安装依赖：
+
+```bash
+conda create -n daily_paper_app python=3.10
+conda activate daily_paper_app
+pip install requirements.txt
+```
+### 使用pyvenv虚拟环境
+使用pyvenv的话，可以创建一个新的虚拟环境，然后安装依赖：
+
+```bash
+python3 -m venv daily_paper_app
+source daily_paper_app/bin/activate
+python setup.py install
+```
+
+## 修改启动脚本
+
+修改`bin/start_daily_paper_app.sh`中SLACK_API_KEY、KIMI_API_KEY、NOTION_SECRET、NOTION_DB_ID、ZOTERO_API_KEY、ZOTERO_API_SECRET、FEISHU_APP_ID、FEISHU_APP_SECRET、FEISHU_APP_TOKEN、FEISHU_TABLE_ID 等环境变量。其中Zotero的API需要到页面版本Zotero中申请，申请后需要将Zotero API Key和Zotero API Secret填入，否则无法将论文添加到Zotero中，同时，请务必修改每在daily_paper_app.py中每个collection的编号，不然会插入新条目失败
+
+如上所述，只有KIMI_API_KEY是必须的，其他的如果不需要可以随意输入其他字符串，如果需要使用其他的LLM，请修改`src/service/llm_service.py`中相关配置以及`bin/start_daily_paper_app.sh`中相关配置
+
+
+## 启动程序
+
+### 命令行运行方式
+
+可以使用以下命令运行主程序，并支持多个参数控制抓取行为：
+
+```bash
+python src/daily_paper_app.py [选项参数]
+```
+
+常用参数说明如下：
+
+| 参数                | 示例                             | 说明                                      |
+| ------------------- | -------------------------------- | ----------------------------------------- |
+| `--keywords`        | `"LLM" "reinforcement learning"` | 搜索关键词（支持多个）                    |
+| `--categories`      | `cs.LG cs.AI`                    | 指定arXiv分类                             |
+| `--date`            | `2025-04-21`                     | 指定日期，只处理该日论文                  |
+| `--days`            | `3`                              | 处理过去 `n` 天的论文（与 `--date` 互斥） |
+| `--limit`           | `20`                             | 每日最多处理论文数量                      |
+| `--download-pdf`    | —                                | 下载PDF（flag）                           |
+| `--no-download-pdf` | —                                | 不下载PDF（flag）                         |
+| `--pdf-dir`         | `papers/pdf`                     | PDF保存目录                               |
+| `--no-arxiv`        | —                                | 跳过arXiv抓取                             |
+| `--no-hf`           | —                                | 跳过HuggingFace抓取                       |
+| `--config`          | `./config.json`                  | 指定配置文件路径                          |
+
+示例命令：
+
+```bash
+python src/daily_paper_app.py --keywords diffusion "RL" --date 2025-04-21 --download-pdf
+```
+配置好自己的.sh服务后可以使用bash启动
+
+```bash
+sh bin/start_daily_paper_app.sh
+```
+
+
+## 修改配置文件
+新增了在arxiv上使用分类进行搜索的能力，具体说明可看[这里](./src/service/config_setting.md)
+
+---
+## 定时调度
+
+可以通过crontab来定时调度，比如每天早上8点执行一次，可以添加如下命令：
+
+```bash
+crontab -e
+```
+
+在打开的文件中添加如下命令：
+
+```bash
+0 8 * * * sh /path/to/your/script/start_daily_paper_app.sh
+```
+
+其中`/path/to/your/script/start_daily_paper_app.sh`是`start_daily_paper_app.sh`的绝对路径，保存后，crontab会自动生效。
+
+此外，如果你是在conda环境中设置的，那么需要确保在crontab中执行的脚本是在conda环境中执行的，可以通过在执行脚本中添加以下命令来设置：
+
+```bash
+. /home/your_user_name/miniconda3/bin/activate your_env_name
+cd /path/to/this/project
+```
+
+其中`your_user_name`是你的用户名,`your_env_name`是你安装的环境名称。这样在定时执行的时候就可以
+
+---
+## Project Roadmap
+
+这是当前项目的开发进度与未来计划。
+
+### 已完成任务 ✅
+
+- [x] 添加定时调度
+- [x] 添加 Zotero API
+- [x] 添加 Slack API
+- [x] 添加 Notion API
+- [x] 添加 LLM API
+- [x] 添加 Arxiv API
+- [x] 添加 HuggingFace API
+- [x] 论文LLM解析
+- [x] 论文LL智能总结
+- [x] 添加论文标签
+- [x] 添加论文截图
+- [x] 增加LLM智能总结到 zotero extra 字段
+
+### 进行中的任务 ⏳
+- [x] 按分类文件夹增加插入zotero
+- [x] 增加 arxiv 特定领域论文订阅
+- [x] 触发器增加邮件通知:可以简单通过notion自动化实现，这里不再手动实现
+- [ ] 增加本地模型调用：可以通过ollma实现
+- [ ] 增加LLM论文分析能力
+- [ ] Wiki生成能力，每篇论文使用LLM生成一个wiki模版的说明
+- [ ] 联动其他
+
+### 计划中的任务 🚀
+
+- [] 高级学科分拣
+- [] 微信通知
+- 
+

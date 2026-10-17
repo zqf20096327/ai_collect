@@ -1,0 +1,488 @@
+# DeepSeek Harness Handbook
+
+[English](README.md) · [简体中文](docs/zh-CN/README.md) · [日本語](docs/ja/README.md) · [한국어](docs/ko/README.md) · [Español](docs/es/README.md)
+
+[![GitHub stars](https://img.shields.io/github/stars/sandbaseai/deepseek-harness-handbook?style=flat&logo=github&label=Stars&color=0b7a53)](https://github.com/sandbaseai/deepseek-harness-handbook/stargazers) [![Latest release](https://img.shields.io/github/v/release/sandbaseai/deepseek-harness-handbook?display_name=tag&sort=semver&color=0b7a53)](https://github.com/sandbaseai/deepseek-harness-handbook/releases/latest) [![Content check](https://github.com/sandbaseai/deepseek-harness-handbook/actions/workflows/content-check.yml/badge.svg?branch=main)](https://github.com/sandbaseai/deepseek-harness-handbook/actions/workflows/content-check.yml) [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-0b7a53.svg)](LICENSE)
+
+Listed in [Awesome DeepSeek Harness](https://github.com/0xsline/awesome-deepseek-harness#ecosystem-services--resources), the community-maintained DSH ecosystem directory.
+Also mapped in SandBase's [Awesome Agent Runtime](https://github.com/sandbaseai/awesome-agent-runtime), alongside runtime, sandbox, and tool-protocol infrastructure.
+
+![DeepSeek Harness Handbook — source-backed operator guides, Install Doctor, and Failure Router](assets/deepseek-harness-handbook-social-preview-v3.png)
+
+> The agent-first, English-canonical field guide to understanding, running, debugging, and extending [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), with reviewed Simplified Chinese coverage and multilingual foundations. — **Community-maintained and open-source.**
+
+If this handbook saves you a debugging cycle, [star the repository](https://github.com/sandbaseai/deepseek-harness-handbook). That signal helps more Agent builders find source-backed DeepSeek Harness guidance.
+
+### Cite or link the handbook
+
+If you publish a DeepSeek Harness tutorial, benchmark, plugin, or integration, link to the canonical handbook URL so readers can follow the source-backed runbooks and current release notes:
+
+```text
+SandBase. DeepSeek Harness Handbook: source-backed Agent runtime guides.
+https://github.com/sandbaseai/deepseek-harness-handbook
+```
+
+The handbook is community-maintained and independent of DeepSeek AI. Please link to the exact guide or release when you make a version-sensitive claim.
+
+**173 canonical guides · 202 localized documents · 79 curated Awesome resources · rc.2 + alpha.1 source-pinned analysis**
+
+Unlike a command catalog, this handbook follows the complete Agent boundary: model routing, tools, approval, sandboxing, durable Sessions, plugins, MCP, ACP, and operator-visible failure recovery. Version-sensitive pages identify the source revision they were checked against.
+
+Choose one path and get to evidence quickly:
+
+| Run | Evaluate | Debug or build |
+|---|---|---|
+| [Five-minute quickstart](docs/en/getting-started/quickstart.md) | [Agent Harness Scorecard](https://sandbaseai.github.io/deepseek-harness-handbook/agent-harness-scorecard.html) | [Interactive Failure Router](https://sandbaseai.github.io/deepseek-harness-handbook/diagnose.html) |
+| [CLI and headless map](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-cli.html) | [Agent runtime map](docs/en/architecture/agent-runtime.md) | [Profile repair and reset](https://sandbaseai.github.io/deepseek-harness-handbook/plugin-recovery.html) |
+| [API cost boundary](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-api-cost-boundary.html) | [Current field status](https://sandbaseai.github.io/deepseek-harness-handbook/field-status.html) | [MCP guide](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-mcp.html) |
+
+### Explore the Agent ecosystem
+
+The curated [Awesome resource map](https://sandbaseai.github.io/deepseek-harness-handbook/awesome-deepseek-harness-resources.html) now covers 79 source-linked starting points, including checkpoint/rewind, side Sessions, child-Agent visibility, browser and Office surfaces, plugin discovery and health checks, database analysis, adversarial workflow review, Agent evolution, mobile access, and provider fallback controls. Each entry is an Agent-oriented discovery lead, not a compatibility or security endorsement; inspect permissions, credentials, and rollback paths before installation.
+
+For scale context, the pinned [upstream catalog snapshot](https://github.com/0xsline/awesome-deepseek-harness/blob/07278233cba25e6f2d011018751187b7a4d8ed52/CATALOG.md) contains 271 hub repositories, 1,000 public `dsh-plugin` topic repositories, and 471 manual additions. This handbook deliberately curates a smaller, source-linked subset so every entry has an explicit Agent boundary to inspect.
+
+For Chinese-language peer discussion, see the upstream community’s [Feishu group discussion](https://github.com/deepseek-ai/deepseek-harness/discussions/4783) for the current invite and context. It is community-run and not official DeepSeek support; do not share credentials, private Session logs, or sensitive workspace data.
+
+### Newly source-verified
+
+| Problem | What the guide proves |
+|---|---|
+| [Understand Harness versus framework](docs/en/what-is-deepseek-harness.md#harness-versus-framework) | Separate model, provider, framework, and runtime responsibilities so tool, context, and long-running Agent claims are tested at the right boundary. |
+| [A continuable child exposes only `report`](docs/en/agent-patterns/continuable-child-empty-tool-registry.md) | Separate parent/child tool views, preset composition order, `toolFilter`, and cold-resume evidence before treating model prose as a tool result. |
+| [Read-only Windows PowerShell succeeds with noisy stderr](docs/en/troubleshooting/windows-readonly-pwsh-stderr.md) | Separate command output from ConstrainedLanguage preamble diagnostics and preserve the ACL sandbox while validating a narrow fix. |
+| [Firefox shows a blank Web client while Chrome works](docs/en/troubleshooting/firefox-web-client-blank.md) | Separate browser bootstrap, cached assets, origin/WebSocket, and extension boundaries before touching provider credentials or durable Sessions. |
+| [An alpha.1 auth token cannot be obtained or entered](docs/en/troubleshooting/auth-token-not-available.md) | Keep acquisition, UI entry, credential storage, token scope, and outbound authorization as separate contracts with redacted evidence. |
+| [A settings section recurses on `removeChild`](docs/en/troubleshooting/webview-mutation-observer-loop.md) | Route `NotFoundError` through DOM ownership and render-generation evidence instead of misclassifying it as a proven MutationObserver CPU loop. |
+| [Long ChatView sessions grow WebContent memory](docs/en/troubleshooting/chatview-long-session-memory.md) | Separate renderer DOM retention from Host memory, preserve Sessions, and measure a virtualization boundary before using reload as containment. |
+| [Choose from the DSH ecosystem by capability](docs/en/ecosystem/awesome-resources.md) | Use four bounded Agent starter paths and multilingual maps to choose skills, memory, routing, UI, file, research, and governance resources from the public Awesome catalog. |
+| [Custom providers can hide multi-protocol models](docs/en/getting-started/model-providers.md#a-custom-provider-catalog-is-not-automatically-multi-protocol) | Separate live model discovery from provider-default filtering, then pin each model's protocol and verify the actual request endpoint. |
+| [Recover a client Cordis inspect query stuck Pending](docs/en/troubleshooting/cordis-inspect-client-query-hangs.md) | Separate a page refusal from Host settlement, preserve first-valid-page routing, and make every inspect wait bounded. |
+| [Evaluate cross-Session memory without leaking scope or losing the store](docs/en/architecture/sessions-vs-memory.md#case-study-dsh-memory-lite-010) | A local JSON file is not a local-only data path once recall becomes a model-visible tool result; require scoped identity, atomic writes, corruption quarantine, retrieval budgets, and explicit privacy copy. |
+| [Edit model capabilities without mistaking declarations for proof](docs/en/getting-started/model-providers.md#evaluate-a-third-party-capability-editor-before-production-use) | Image, reasoning, capacity, and gateway fields declare a route contract; verify the real endpoint and keep headers out of whole-namespace presets. |
+| [Diagnose a terminal command still shown after 40 minutes](https://sandbaseai.github.io/deepseek-harness-handbook/long-running-terminal.html) | Standard alpha.1 foreground Bash cannot explain that timer by default; route background jobs, persistent terminals, live processes, and stale presentation before retrying. |
+| [Repair count-balanced but ID-invalid tool history](docs/en/troubleshooting/dangling-tool-calls-insufficient-results.md#add-the-alpha1-identity-and-compaction-branches) | Equal call/result counts do not prove valid pairing; use an ordered identity ledger and keep request stripping observable as containment. |
+| [Stop empty continuation chunks from erasing a valid tool ID and name](docs/en/troubleshooting/streamed-tool-call-empty-identity.md) | rc.2 and tagged alpha.1 both accept explicit empty identity updates; retain the first valid identity, reject never-identified calls before policy, and keep invalid records out of Session replay. |
+| [Recover when one corrupt Session prevents Web startup](docs/en/troubleshooting/session-history-corruption-triage.md) | A Windows `plugin tree failed to load` can wrap one bad Zstandard header; isolate the artifact before changing the launcher, profile, or every healthy Session. |
+| [Classify macOS `sandbox-exec ENOENT`](docs/en/troubleshooting/sandbox-denied-vs-unavailable.md#when-macos-says-spawn-sandbox-exec-enoent) | Host executable lookup can succeed while the Harness sandbox provider cannot start; preserve fail-closed behavior and prove the provider boundary before changing authority. |
+| [Keep a single `~` literal in Markdown](docs/en/troubleshooting/markdown-single-tilde.md) | alpha.1 calls both GFM parsers without disabling single-tilde strikethrough; verify source and served bundle across streaming, finalized, and plain-text projections. |
+| [Evaluate a bounded Ralph failure successor](docs/en/agent-patterns/ralph-bounded-failure-successor.md) | Discussion #109's recovery proposal can remain fail-closed: default off, fresh child only, shared budgets, observable failure state, no-change circuit breaking, and no retry for infrastructure failures. |
+| [Keep HTTP(S) URLs out of filesystem tools](docs/en/troubleshooting/filesystem-url-as-path.md) | Discussion #4862's Windows reproduction is a capability-boundary failure: reject URI-like input before local path resolution, preserve the original value, and route network retrieval to a web/fetch tool. |
+| [Fold compaction and retry usage without losing cost evidence](docs/en/operations/token-meter-accounting.md#treat-compaction-and-retry-usage-as-separate-billing-events) | Discussion #1886 separates duplicate chunk/message observations from independent retry attempts and makes `compaction/summary.usage` visible in cumulative accounting. |
+
+Each entry above names its pinned official source revision—currently rc.2 [`b150a551…`](https://github.com/deepseek-ai/deepseek-harness/tree/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e) or alpha.1 [`cd5ef814…`](https://github.com/deepseek-ai/deepseek-harness/tree/cd5ef8148158c3a752a658978873241fdf8e2bbc)—records what is observed, source-verified, inferred, or proposed, and includes acceptance gates rather than a copy-paste-only happy path.
+
+If the handbook resolves a real question, **[star it on GitHub](https://github.com/sandbaseai/deepseek-harness-handbook)**. That signal helps the next Agent builder find a source-backed answer instead of another unverified command list. If a claim differs from the runtime you operate, [open an evidence report](https://github.com/sandbaseai/deepseek-harness-handbook/issues/new/choose) with the exact DSH version and first failing boundary.
+
+[Browse the visual field guides](https://sandbaseai.github.io/deepseek-harness-handbook/) · [Explore the Awesome resource map](https://sandbaseai.github.io/deepseek-harness-handbook/awesome-deepseek-harness-resources.html) · [Download its JSON index](https://sandbaseai.github.io/deepseek-harness-handbook/awesome-deepseek-harness-resources.json) · [Read the Show & Tell](https://github.com/sandbaseai/deepseek-harness-handbook/discussions/286) · [Help validate the index](https://github.com/sandbaseai/deepseek-harness-handbook/issues/285) · [Request a source-backed runbook](https://github.com/sandbaseai/deepseek-harness-handbook/discussions/99) · [Subscribe to new guides](https://sandbaseai.github.io/deepseek-harness-handbook/feed.xml) · [Read the changelog](CHANGELOG.md)
+
+DeepSeek Harness is more than a model wrapper. It is a composable agent runtime that connects model providers, tools, approval, sandboxing, durable sessions, subagents, and user interfaces through a plugin graph. This independent handbook explains those systems from the perspective of people building and operating agents.
+
+The project is maintained by [SandBase](https://sandbase.ai/). It is not an official DeepSeek AI project.
+
+> [!IMPORTANT]
+> DeepSeek Harness is in developer preview and may introduce compatibility-breaking changes. Pages in this handbook name their verification date and link to primary sources. Pin the revision you deploy.
+
+> **This repository is documentation, not a DeepSeek Harness plugin.** Do not run `dsh plugin add github:sandbaseai/deepseek-harness-handbook`; the handbook has no `dsh.bundle` activation contract. Read the guides from GitHub or the visual field site instead.
+
+## Start with your goal
+
+Choose the smallest path that matches the job. The full task index remains available below without occupying the repository's first screen.
+
+| Goal | Fastest useful path |
+|---|---|
+| Install or run DeepSeek Harness for the first time | [Five-minute quickstart](docs/en/getting-started/quickstart.md) |
+| UI looks reset after changing launch commands | [Install identity and `DSH_HOME` guide](docs/en/getting-started/install-deepseek-harness.md#state-is-separate-from-the-executable) |
+| `npx` installs but `dsh web` burns CPU without a port | [Post-install Web startup boundary](docs/en/getting-started/install-deepseek-harness.md#install-success-does-not-prove-dsh-web-startup) |
+| ACP inline images fail in the Python SDK | [ACP inline-image contract](docs/en/troubleshooting/acp-inline-image-python-sdk.md) |
+| Web renderer drops dollar signs from prose | [Literal dollar rendering](docs/en/troubleshooting/web-dollar-math-rendering.md) |
+| Every request fails during plugin inventory preparation | [Request extension boundary](docs/en/troubleshooting/request-extension-inventory-failure.md) |
+| A follow-up accepted during a running turn never starts | [Queued follow-up wake-latch recovery](docs/en/troubleshooting/queued-followup-wake-latch.md) |
+| A renamed workspace breaks tools and sandbox roots | [Recover a stale session cwd](docs/en/troubleshooting/renamed-workspace-stale-cwd.md) |
+| Evaluate a Codex-style Web client without replacing the Host | [Client extension boundary](docs/en/integrations/dsh-codex-ui-extension-boundary.md) |
+| OpenRouter rejects concurrent requests with an in-flight budget cap | [Retry the provider-attested cooldown](docs/en/troubleshooting/openrouter-inflight-budget-retry.md) |
+| A resumed Agent intermittently loses a registered tool | [Resumed tool-view boundary](docs/en/troubleshooting/resumed-agent-tool-view-missing.md) |
+| Evaluate nested follow-up Sessions safely | [Nested follow-up evaluation](docs/en/agent-patterns/nested-followups-evaluation.md) |
+| Sessions corrupt under concurrent writers or recovery | [Session write-integrity invariants](docs/en/architecture/session-write-integrity.md) |
+| Session cold-open is dominated by zstd frames | [Session framing performance](docs/en/architecture/session-framing-performance.md#choose-compression-level-with-a-write-path-budget) |
+| Diagnose a failing install | [Interactive Install Doctor](https://sandbaseai.github.io/deepseek-harness-handbook/install-doctor.html) |
+| Route an Agent, model, tool, Session, or UI failure | [Interactive Failure Router](https://sandbaseai.github.io/deepseek-harness-handbook/diagnose.html) |
+| Check what is shipped, inferred, or proposed | [Current field status](https://sandbaseai.github.io/deepseek-harness-handbook/field-status.html) |
+| Configure a model, gateway, image route, or reasoning level | [Model provider guide](docs/en/getting-started/model-providers.md) |
+| Build and package a plugin | [First plugin lab](docs/en/plugin-development/first-plugin.md) |
+| Connect MCP tools | [MCP integration guide](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-mcp.html) |
+| Connect SandBase Harness as a real MCP runtime | [SandBase Harness bridge guide](docs/en/integrations/sandbase-harness-bridge.md) |
+| Understand Sessions, Skills, and long-term memory | [Memory architecture](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-memory.html) |
+| Audit permissions, credentials, or a community plugin | [Security guides](#security) |
+
+<details>
+<summary><strong>Browse the complete task-specific index</strong></summary>
+
+### Every current task route
+
+| I want to… | Start here |
+|---|---|
+| Explain why `ask_user_question` aborted before I answered | [`ask_user_question` abort and deadline guide](https://sandbaseai.github.io/deepseek-harness-handbook/ask-user-question-aborted.html) |
+| Stop an Agent alternating between unknown `edit` and `str_replace_editor` calls | [Unknown edit-tool assembly diagnosis](https://sandbaseai.github.io/deepseek-harness-handbook/unknown-edit-tool.html) |
+| Reach Settings sections clipped below a long plugin navigation | [Settings navigation overflow repair](https://sandbaseai.github.io/deepseek-harness-handbook/settings-plugin-nav-overflow.html) |
+| Organize Sessions without turning a sidebar label into a filesystem root | [Session Collections and no-Workspace design](https://sandbaseai.github.io/deepseek-harness-handbook/session-groups-workspace-less.html) |
+| Design two real Session panes without crossing data or interaction identity | [Multi-Session presentation contract](https://sandbaseai.github.io/deepseek-harness-handbook/multi-session-presentation-contract.html) |
+| Customize the Web UI without patching files inside an npx installation | [Persistent Client plugin guide](https://sandbaseai.github.io/deepseek-harness-handbook/persistent-web-ui-client-plugin.html) |
+| Generate strict Typert artifacts for a plugin developed outside the monorepo | [Out-of-tree Typert generation guide](https://sandbaseai.github.io/deepseek-harness-handbook/out-of-tree-typert-generation.html) |
+| Diagnose manual `/compact` ending with `DeepSeek request aborted by caller` | [Manual compaction cancellation runbook](https://sandbaseai.github.io/deepseek-harness-handbook/manual-compaction-aborted.html) |
+| Fix `ERR_PNPM_UNEXPECTED_STORE` during a plugin update | [pnpm store-identity recovery](https://sandbaseai.github.io/deepseek-harness-handbook/pnpm-unexpected-store.html) |
+| Fix `AbortSignal.any is not a function` even though Node looks current | [Runtime identity and offline recovery runbook](https://sandbaseai.github.io/deepseek-harness-handbook/abortsignal-any.html) |
+| Recover Web stuck on Loading plugins in a pnpm source checkout | [pnpm symlink boot guide](https://sandbaseai.github.io/deepseek-harness-handbook/web-loading-plugins-pnpm.html) |
+| Separate Responses API full-history traffic, retry attempts, and SSE leaks | [Responses overload runbook](https://sandbaseai.github.io/deepseek-harness-handbook/responses-overload-retry.html) |
+| Run supported Codex hooks without assuming policy parity | [Codex hooks bridge guide](https://sandbaseai.github.io/deepseek-harness-handbook/codex-hooks-bridge.html) |
+| Install the Claude Code hooks bridge without duplicating the runtime | [Hooks bridge installation guide](https://sandbaseai.github.io/deepseek-harness-handbook/claude-code-hooks-bridge.html) |
+| Recover when a second core package copy breaks every tool call | [Duplicate core runtime recovery](https://sandbaseai.github.io/deepseek-harness-handbook/duplicate-core-runtime.html) |
+| Design session, model, JSON, and exit semantics for headless embedding | [Programmatic headless contract](https://sandbaseai.github.io/deepseek-harness-handbook/headless-programmatic-contract.html) |
+| Build rc.8 in an air-gapped environment without losing provenance | [Air-gapped source-build guide](https://sandbaseai.github.io/deepseek-harness-handbook/air-gapped-source-build.html) |
+| Interpret token estimates or recover `messageTokens` underflow after compaction | [Token accounting and projection recovery](https://sandbaseai.github.io/deepseek-harness-handbook/token-meter-accounting.html) |
+| Recover preset collisions in Host providers or scoped tools | [Preset generation and registry-ownership recovery](https://sandbaseai.github.io/deepseek-harness-handbook/preset-generation-recovery.html) |
+| Recover raw pinyin, kana, or jamo in the Web composer | [Web IME composition runbook](https://sandbaseai.github.io/deepseek-harness-handbook/web-ime-composition.html) |
+| Protect API keys from backups, same-UID tools, or an untrusted Agent | [Credential storage threat model](https://sandbaseai.github.io/deepseek-harness-handbook/api-key-storage.html) |
+| Recover a Session whose committed event sequence repeats | [Duplicate committed seq runbook](https://sandbaseai.github.io/deepseek-harness-handbook/duplicate-session-seq.html) |
+| Recover a Web composer stuck read-only after sending an image | [Image-send admission runbook](https://sandbaseai.github.io/deepseek-harness-handbook/image-send-readonly.html) |
+| Set and verify reasoning effort for a headless one-shot run | [Headless reasoning-effort guide](https://sandbaseai.github.io/deepseek-harness-handbook/headless-reasoning-effort.html) |
+| Fix spawn delegations that lose reasoning effort | [Spawn subagent route-fidelity runbook](https://sandbaseai.github.io/deepseek-harness-handbook/spawn-subagent-reasoning-effort.html) |
+| Configure Bailian Token Plan without losing reasoning or model metadata | [Bailian catalog-route runbook](https://sandbaseai.github.io/deepseek-harness-handbook/bailian-token-plan.html) |
+| Fix a custom OpenAI-compatible provider that silently sends `/messages` | [Custom provider catalog-collision runbook](https://sandbaseai.github.io/deepseek-harness-handbook/custom-provider-catalog-collision.html) |
+| Recover tools that repeatedly return `Unknown or expired MCP session` | [Expired MCP session loop runbook](https://sandbaseai.github.io/deepseek-harness-handbook/expired-mcp-session-loop.html) |
+| Understand the shipped CLI, automate one task, or evaluate a community TUI | [DeepSeek Harness CLI map](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-cli.html) |
+| Recover when the Windows folder picker crashes or truncates a Unicode path | [Windows folder-picker crash and truncation guide](https://sandbaseai.github.io/deepseek-harness-handbook/windows-folder-picker-crash.html) |
+| Connect to DeepSeek through an authorized proxy or enterprise CA | [Provider egress and TLS guide](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-api-fetch-failed.html) |
+| Fix Web Search authentication when chat uses a custom gateway | [Custom-gateway Web Search runbook](https://sandbaseai.github.io/deepseek-harness-handbook/web-search-custom-gateway.html) |
+| Add an MCP server or diagnose missing MCP tools | [MCP preset and connection guide](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-mcp.html) |
+| Evaluate DeepSeek Harness as an ACP External Agent in an editor | [ACP editor-integration boundary](https://sandbaseai.github.io/deepseek-harness-handbook/acp-editor-boundary.html) |
+| Fix or render an ACP permission request without hanging the turn | [ACP permission client contract](https://sandbaseai.github.io/deepseek-harness-handbook/acp-permission-hang.html) |
+| Move Codex or Claude Code memory without losing provenance or isolation | [Sessions, Skills, and long-term memory](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-memory.html) |
+| Run Web, headless, ACP, or SDK processes concurrently without sharing a writable Session root | [Single-writer Session topology](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-single-writer.html) |
+| Fix `spawn bash ENOENT` after moving or renaming a workspace | [Moved-workspace recovery runbook](https://sandbaseai.github.io/deepseek-harness-handbook/workspace-moved-spawn-enoent.html) |
+| Upgrade an exact runtime and preserve a proven rollback | [Upgrade and rollback guide](https://sandbaseai.github.io/deepseek-harness-handbook/upgrade-deepseek-harness.html) |
+| Detect when a community plugin replaces core Agent providers | [Composition-diff plugin audit](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-plugin-audit.html) |
+| Choose an exact, reproducible installation topology | [Install DeepSeek Harness safely](https://sandbaseai.github.io/deepseek-harness-handbook/install-deepseek-harness.html) |
+| Diagnose `npx` waiting at the DeepSeek Harness install prompt | [npx install-boundary runbook](https://sandbaseai.github.io/deepseek-harness-handbook/npx-install-prompt-hangs.html) |
+| Create, invoke, and debug a reusable Skill | [DeepSeek Harness Skills lab](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-skills.html) |
+| Diagnose why AGENTS.md loaded but did not constrain an action | [AGENTS.md scope, visibility, and enforcement map](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-agents-md.html) |
+| Build, test, package, and install my first plugin | [First DeepSeek Harness plugin lab](docs/en/plugin-development/first-plugin.md) |
+| Let a third-party execution tool render the correct code language | [Tool-owned code-card language design](https://sandbaseai.github.io/deepseek-harness-handbook/tool-code-card-language.html) |
+| Keep a plugin subprocess from freezing the Agent Host | [Async subprocess tool guide](https://sandbaseai.github.io/deepseek-harness-handbook/async-subprocess-tools.html) |
+| Archive or delete old Sessions without corrupting durable history | [Session archive, trash, and delete guide](https://sandbaseai.github.io/deepseek-harness-handbook/session-archive-trash-delete.html) |
+| Fix native `read_image` failing with a missing `fs` injection | [`read_image` service-scope guide](https://sandbaseai.github.io/deepseek-harness-handbook/read-image-fs-inject.html) |
+| Fix valid WebP images rejected by a pi-ai backend | [Image media-type compatibility guide](https://sandbaseai.github.io/deepseek-harness-handbook/pi-ai-image-media-type.html) |
+| Let an SDK embedding answer Agent questions and approvals | [SDK human-interaction wire guide](https://sandbaseai.github.io/deepseek-harness-handbook/sdk-human-interaction-wire.html) |
+| Discover and manage community plugins from the DSH Web UI | [DSH Plugin Store](https://sandbaseai.github.io/dsh-plugin-store/) ([GitHub](https://github.com/sandbaseai/dsh-plugin-store)) |
+| Fix a plugin boot crash for missing `@deepseek-ai/dsh-client-schema-form` | [Plugin distribution-closure runbook](https://sandbaseai.github.io/deepseek-harness-handbook/missing-client-schema-form.html) |
+| Fix `additionalProperties`, type-array, or `oneOf` tool schema errors | [Tool schema subset guide](https://sandbaseai.github.io/deepseek-harness-handbook/tool-schema-subset.html) |
+| Distinguish the official Agent runtime from same-name API wrappers | [Official DeepSeek Harness identity guide](https://sandbaseai.github.io/deepseek-harness-handbook/official-deepseek-harness.html) |
+| Check rc.7 baseline and alpha.1 migration context | [DeepSeek Harness Field Status](https://sandbaseai.github.io/deepseek-harness-handbook/field-status.html) |
+| Capture the package and source revision that actually ran | [DeepSeek Harness Version Evidence](https://sandbaseai.github.io/deepseek-harness-handbook/version-evidence.html) |
+| Find the first broken runtime boundary | [Interactive Failure Router](https://sandbaseai.github.io/deepseek-harness-handbook/diagnose.html) |
+| Keep the essential commands and checks in one tab | [DeepSeek Harness cheat sheet](docs/en/reference/cheat-sheet.md) |
+| Choose the right official runnable example | [Official examples map](docs/en/examples/official-examples-map.md) |
+| Understand what DeepSeek Harness actually is | [DeepSeek Harness explained](docs/en/what-is-deepseek-harness.md) |
+| Choose between DeepSeek Harness, Claude Code, and Codex | [Source-backed control-plane comparison](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-vs-claude-code-vs-codex.html) |
+| Read a Session log without dropping packed assistant output | [Session log storage-format map](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-session-log-format.html) |
+| Recover when an invalid overlay prevents the profile from booting | [Invalid-overlay recovery runbook](https://sandbaseai.github.io/deepseek-harness-handbook/invalid-overlay-boot-failure.html) |
+| Run the Web UI safely | [Five-minute quickstart](docs/en/getting-started/quickstart.md) |
+| Use it from Python | [Python SDK quickstart](docs/en/getting-started/python-sdk.md) |
+| Run one task in automation or CI | [CLI and Headless Agent guide](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-cli.html) |
+| Configure DeepSeek, a custom provider, or an image-capable model missing its UI modality control | [Model provider guide](docs/en/getting-started/model-providers.md) |
+| Track the rc.2 Files-backed image-input release | [Release and migration note](docs/en/updates/README.md) |
+| Prove DeepSeek chat and Web search cannot create unexpected charges | [DeepSeek API cost-boundary runbook](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-api-cost-boundary.html) |
+| Fix a context-window or token-budget error | [Classify and recover context overflow](https://sandbaseai.github.io/deepseek-harness-handbook/context-window-overflow.html) |
+| Understand why one model switch affects future Agents | [Map session and deployment model state](https://sandbaseai.github.io/deepseek-harness-handbook/session-model-default.html) |
+| Fix a plugin script corrupted around a dollar sign | [Repair tapIndex replacement-string insertion](https://sandbaseai.github.io/deepseek-harness-handbook/tapindex-dollar-corruption.html) |
+| Fix an OpenAI-compatible gateway that rejects `developer` | [Diagnose system-message role compatibility](https://sandbaseai.github.io/deepseek-harness-handbook/openai-compatible-developer-role.html) |
+| Fix CJK commands that stall persistent Bash for 300 seconds | [Separate the locale/readline trap from PTY corruption](https://sandbaseai.github.io/deepseek-harness-handbook/macos-bash-nonascii.html) |
+| Fix plugin installation blocked by `ERR_PNPM_ADDING_TO_ROOT` | [Make the profile workspace target explicit](https://sandbaseai.github.io/deepseek-harness-handbook/pnpm-adding-to-root.html) |
+| Fix rc.8 source builds when Node parses an ELF, shell, or Windows pnpm entrypoint | [Cross-platform pnpm entrypoint runbook](https://sandbaseai.github.io/deepseek-harness-handbook/windows-standalone-pnpm.html) |
+| Stop black console windows flashing during Windows tool calls | [Two-path Windows process-creation runbook](https://sandbaseai.github.io/deepseek-harness-handbook/windows-console-window-flash.html) |
+| Find the corrupt `package.json` behind a pathless boot SyntaxError | [Package-closure recovery runbook](https://sandbaseai.github.io/deepseek-harness-handbook/corrupt-package-json-profile-boot.html) |
+| Fix an OpenAI-compatible `server_error` that never retries | [pi-ai classification and retry evidence](https://sandbaseai.github.io/deepseek-harness-handbook/pi-ai-server-error-retry.html) |
+| Recover an old Session that throws `received an update before its start Match` | [Conversation projection recovery](https://sandbaseai.github.io/deepseek-harness-handbook/conversation-update-before-start.html) |
+| Recover when pnpm leaves a plugin package behind but DSH skips reconciliation | [Partial plugin install recovery](https://sandbaseai.github.io/deepseek-harness-handbook/plugin-add-nonzero-reconcile.html) |
+| `allowBuilds` blocks an rc.8 registry plugin install | [Review pnpm's approval gate](docs/en/troubleshooting/plugin-add-nonzero-reconcile.md#registry-packages-can-hit-pnpm-11s-approval-gate-too) |
+| Recover when a Node 24 + tsx build exits 0 but creates no artifacts | [Silent source-build recovery](https://sandbaseai.github.io/deepseek-harness-handbook/node24-tsx-silent-build.html) |
+| Fix unknown or malformed prompt variables such as `{{hexagon}}` or `{{dotted.state.path}}` in `tools:sdk` | [Code Mode literal-section boundary](https://sandbaseai.github.io/deepseek-harness-handbook/code-mode-unknown-prompt-variable.html) |
+| Fix npm `ETARGET` for `dsh-agent-loop@^0.1.0-rc.8` | [Registry and cache recovery](https://sandbaseai.github.io/deepseek-harness-handbook/npm-etarget-rc8.html) |
+| Session title stays on the first-prompt fallback with a reasoning model | [Auxiliary title budget diagnosis](https://sandbaseai.github.io/deepseek-harness-handbook/session-title-reasoning-budget.html) |
+| Generate exact installation evidence commands for my OS and install path | [Interactive Install Doctor](https://sandbaseai.github.io/deepseek-harness-handbook/install-doctor.html) |
+| Recover an empty sidebar, unreadable Session, or false “no more history” state without destroying evidence | [Route storage, sequence, identity, projection, and read-state failures](https://sandbaseai.github.io/deepseek-harness-handbook/session-history-recovery.html) |
+| Stop repeated narration, tool calls, or Agent turns before they exhaust a budget | [Event-shaped runaway Agent runbook](docs/en/troubleshooting/runaway-agent-loop.md) |
+| Stop a compacted long Session from exhausting or blocking the Web Host during cold restore | [Session heap and restore operator guide](https://sandbaseai.github.io/deepseek-harness-handbook/session-heap-growth.html) |
+| Detect repeated model text inside one streaming attempt | [Degenerate-output guard guide](https://sandbaseai.github.io/deepseek-harness-handbook/degenerate-model-output.html) |
+| Stop a foreground tool after `session.cancel` is accepted but work remains live | [Stuck-tool cancellation runbook](https://sandbaseai.github.io/deepseek-harness-handbook/stuck-tool-cancellation.html) |
+| Recover when every turn in one Session returns invalid JSON | [Poisoned Session recovery guide](docs/en/troubleshooting/poisoned-session-invalid-tool-json.md) |
+| Recover when every retry reports insufficient tool messages | [Missing tool-result recovery guide](https://sandbaseai.github.io/deepseek-harness-handbook/insufficient-tool-messages.html) |
+| Fix a todo that stays in progress after the final answer | [Todo state and projection guide](https://sandbaseai.github.io/deepseek-harness-handbook/todo-stuck-in-progress.html) |
+| Fix a Code Mode Skill that appears in UI but not model context | [Code Mode Skill context guide](https://sandbaseai.github.io/deepseek-harness-handbook/code-mode-skill-context.html) |
+| Fix `terminal inspection is unsupported on platform win32` in Minimal | [Windows Minimal preset Bash guide](https://sandbaseai.github.io/deepseek-harness-handbook/windows-minimal-bash.html) |
+| Diagnose a frozen first `workspace-write` call on Windows | [Windows first ACL grant guide](https://sandbaseai.github.io/deepseek-harness-handbook/windows-acl-first-run.html) |
+| Run DeepSeek Harness from source on a Synology NAS | [Synology NAS deployment guide](https://sandbaseai.github.io/deepseek-harness-handbook/synology-nas.html) |
+| Recover when the Agent waits but no question or approval card appears | [Missing interaction card guide](https://sandbaseai.github.io/deepseek-harness-handbook/missing-question-card.html) |
+| Diagnose `Output token limit reached` without confusing it with context overflow | [Output token ceiling guide](https://sandbaseai.github.io/deepseek-harness-handbook/output-token-limit.html) |
+| Recover when a Git plugin installs without its declared `dist/` or `lib/` export | [Missing plugin artifact guide](https://sandbaseai.github.io/deepseek-harness-handbook/git-plugin-missing-dist.html) |
+| Fix `/compact` when its summary reaches the token cap | [Compaction summary truncation guide](https://sandbaseai.github.io/deepseek-harness-handbook/compaction-summary-truncated.html) |
+| Decide which plugin `missing peer` and ignored-build warnings require action | [Plugin peer-warning guide](https://sandbaseai.github.io/deepseek-harness-handbook/plugin-peer-warnings.html) |
+| Keep answers in Chinese or another language and diagnose an English Think row | [Response and reasoning language guide](https://sandbaseai.github.io/deepseek-harness-handbook/response-language.html) |
+| Recover a long prompt after Web clears it but the turn fails | [Accepted-before-durable prompt recovery](https://sandbaseai.github.io/deepseek-harness-handbook/prompt-send-recovery.html) |
+| Fix empty streamed tool identity before it causes `UNKNOWN_TOOL`, replay 400s, or a corrupt Session resume | [Streamed tool-call identity guide](https://sandbaseai.github.io/deepseek-harness-handbook/streamed-tool-call-identity.html) |
+| Explain slow first-token latency before blaming the provider | [Mature Session TTFT guide](docs/en/troubleshooting/slow-ttft-mature-sessions.md) |
+| Fix `ReplaceFileW EACCES` while editing a Windows profile | [Windows HMR-watched config recovery](docs/en/troubleshooting/windows-replacefile-eacces.md) |
+| Decide whether worker-thread Code Mode fits the security boundary | [Code Mode trust-boundary guide](docs/en/security/code-mode-worker-trust-boundary.md) |
+| Fix Web, headless, or custom-profile startup reporting `--expose-internals` is required | [HMR loader-capability diagnosis](https://sandbaseai.github.io/deepseek-harness-handbook/hmr-expose-internals.html) |
+| Fix a pnpm global install that reports an installed plugin as missing | [Global native-binding resolution guide](docs/en/troubleshooting/pnpm-global-native-binding.md) |
+| Fix macOS workspace selection when the path ends in `:/` | [macOS native picker path guide](docs/en/troubleshooting/macos-workspace-picker-trailing-colon.md) |
+| Keep one incompatible custom-event Session from blocking global search | [Custom Session event compatibility](https://sandbaseai.github.io/deepseek-harness-handbook/custom-session-events.html) |
+| Connect external MCP tools | [MCP integration guide](docs/en/integrations/mcp.md) |
+| Design multi-tenant MCP across ACP | [Session-scoped MCP architecture](docs/en/integrations/acp-session-scoped-mcp.md) |
+| Add reusable Agent instructions | [Skills guide](docs/en/agent-patterns/skills.md) |
+| Evaluate an optional bounded recovery round in Ralph | [Ralph failure-successor design guide](docs/en/agent-patterns/ralph-bounded-failure-successor.md) |
+| Delegate work to child Agents | [Subagents guide](docs/en/agent-patterns/subagents.md) |
+| Inspect or cancel one stale pending continuable-subagent follow-up | [Subagent inbox control map](https://sandbaseai.github.io/deepseek-harness-handbook/subagent-inbox-control.html) |
+| Let a subagent request human clarification safely | [Parent-owned question relay](docs/en/agent-patterns/subagent-human-question-relay.md) |
+| Understand the runtime | [The agent-runtime mental model](docs/en/architecture/agent-runtime.md) |
+| Understand one complete turn | [Agent Loop and Session Events](docs/en/architecture/agent-lifecycle.md) |
+| Choose between Session persistence and long-term memory | [Sessions are not long-term memory](docs/en/architecture/sessions-vs-memory.md) |
+| Understand approval, guards, and tool effects | [Tool execution pipeline](docs/en/architecture/tool-execution-pipeline.md) |
+| Build an Agent rather than a loose collection of tools | [Agent design map](docs/en/agent-patterns/designing-an-agent.md) |
+| Research a repository without publishing changes | [Repository Research Agent recipe](docs/en/recipes/repository-research-agent.md) |
+| Run or debug DeepSeek Harness on Windows | [Windows compatibility and ACL boundary guide](docs/en/troubleshooting/windows-compatibility.md) |
+| Recover partial multi-agent work after `unknown job` | [Subagent ID routing and recovery](docs/en/troubleshooting/subagent-unknown-job-id.md) |
+| Recover a profile after a plugin change | [Plugin install and recovery guide](docs/en/troubleshooting/plugin-install-recovery.md) |
+| Diagnose an `ERR_HTTP2_INVALID_SESSION` crash | [HTTP/2 provider-transport troubleshooting](docs/en/troubleshooting/http2-invalid-session.md) |
+| Fix remote Settings unavailable, `crypto.randomUUID`, or Host/Origin 403 safely | [Remote Web control-plane guide](https://sandbaseai.github.io/deepseek-harness-handbook/remote-settings-loopback.html) |
+| Fix persistent Bash on NixOS or minimal Linux | [PTY shell-path guide](docs/en/troubleshooting/pty-shell-path.md) |
+| Protect or recover a session log | [Live session log durability](docs/en/troubleshooting/live-session-log-durability.md) |
+| Fix first Session flush when the filesystem rejects hard links | [Session hard-link compatibility runbook](https://sandbaseai.github.io/deepseek-harness-handbook/session-hard-link-unsupported.html) |
+| Fix a failing installation or run | [Troubleshooting index](docs/en/troubleshooting/README.md) |
+| Track upstream changes | [Updates and breaking changes](docs/en/updates/README.md) |
+
+</details>
+
+## The agent-first mental model
+
+```mermaid
+flowchart LR
+  U[User goal] --> A[Agent contract]
+  A --> C[Profile + Bundles + Patches]
+  C --> G[Cordis plugin graph]
+  G --> L[Agent Loop]
+  L --> M[Model provider]
+  L --> T[Tools + policy + approval + sandbox]
+  L --> S[Durable Session events]
+  S --> L
+  S --> H[Web, headless, SDK, clients]
+```
+
+An agent is not just a prompt. A useful Agent has a task boundary, allowed effects, completion condition, model route, tool surface, permission policy, session strategy, failure behavior, and an operator-visible result. DeepSeek Harness supplies the runtime vocabulary for assembling those responsibilities without forcing every product into one fixed loop or interface.
+
+## What makes this handbook different
+
+- **Agent-first:** concepts are organized around building, running, and debugging Agents.
+- **Source-backed:** version-sensitive claims link to official documentation or source.
+- **Operational:** every tutorial includes success evidence, failure branches, and safety boundaries.
+- **Visual:** architecture pages prioritize diagrams over walls of text.
+- **Living:** updates, breaking changes, and troubleshooting pages follow upstream development.
+- **Multilingual by design:** English is canonical; translations declare their source revision and review status. Current depth is [reported explicitly](#language-coverage).
+
+## Language coverage
+
+| Locale | Current status | Published coverage |
+|---|---|---|
+| English | Canonical | 173 pages |
+| 简体中文 | Draft refresh | Reviewed core guides plus a machine-assisted current navigation awaiting fluent review |
+| 日本語 | Draft | Navigation plus ecosystem resource map |
+| 한국어 | Draft | Navigation plus ecosystem resource map |
+| Español | Draft | Navigation plus ecosystem resource map |
+
+The locale links at the top do not imply feature parity. English remains the source of truth until a translation points to the current canonical revision and has been reviewed by a fluent contributor.
+
+## Published guide map
+
+Every item below is available now. Planned coverage lives in the [public roadmap](ROADMAP.md).
+
+### Getting started
+
+- [Diagnose manual compaction aborted by its caller signal](docs/en/troubleshooting/manual-compaction-caller-abort.md)
+- [Preserve embedded code through literal file tools](docs/en/troubleshooting/embedded-code-escaping.md)
+- [Fix pnpm store drift during plugin update](docs/en/troubleshooting/pnpm-unexpected-store-plugin-update.md)
+- [Diagnose npx hanging before DeepSeek Harness starts](docs/en/troubleshooting/npx-install-prompt-hangs.md)
+- [What is DeepSeek Harness?](docs/en/what-is-deepseek-harness.md)
+- [DeepSeek Harness vs Claude Code vs Codex](docs/en/reference/deepseek-harness-vs-coding-agents.md)
+- [Install DeepSeek Harness safely](docs/en/getting-started/install-deepseek-harness.md)
+- [Upgrade and roll back safely](docs/en/getting-started/upgrade-and-rollback.md)
+- [Five-minute Web UI quickstart](docs/en/getting-started/quickstart.md)
+- [Python SDK quickstart](docs/en/getting-started/python-sdk.md)
+- [Headless Agent and CI](docs/en/getting-started/headless-agent.md)
+- [Configure model providers](docs/en/getting-started/model-providers.md)
+
+### Architecture
+
+- [The agent-runtime mental model](docs/en/architecture/agent-runtime.md)
+- [Session log storage format and packed rows](docs/en/reference/session-log-storage-format.md)
+- [Agent Loop and Session Events](docs/en/architecture/agent-lifecycle.md)
+- [Sessions are not long-term memory](docs/en/architecture/sessions-vs-memory.md)
+- [Tool execution pipeline](docs/en/architecture/tool-execution-pipeline.md)
+
+### Agent patterns
+
+- [Designing an Agent](docs/en/agent-patterns/designing-an-agent.md)
+- [AGENTS.md scope and precedence](docs/en/agent-patterns/agents-md-scope.md)
+- [Skills: discovery, precedence, and invocation](docs/en/agent-patterns/skills.md)
+- [Subagents: providers, delegation, and continuation](docs/en/agent-patterns/subagents.md)
+
+### Recipes
+
+- [Repository Research Agent](docs/en/recipes/repository-research-agent.md)
+
+### Operations
+
+- [Keep concurrent Session roots single-writer](docs/en/operations/single-writer-session-roots.md)
+
+### Official examples
+
+- [Choose the right upstream example](docs/en/examples/official-examples-map.md)
+- Headless CLI task runner
+- Python SDK and JSON-RPC runtime
+- ACP automation server
+- MCP memory overlays
+- Self-modifying Cordis composition
+- Session-local schedules
+
+### Integrations
+
+- [Connect MCP servers](docs/en/integrations/mcp.md)
+- [Host stdio-only ACP for multiple tenants](docs/en/integrations/acp-remote-hosting.md)
+- [Evaluate the ACP editor-integration boundary](docs/en/integrations/acp-editor-boundary.md)
+- [Render ACP permission requests safely](docs/en/integrations/acp-permission-request-ui.md)
+- [Recover a silent Node 24 and tsx source build](docs/en/troubleshooting/node24-tsx-silent-build.md)
+- [Fix clustered `MISSING_EXPORT` failures after a source revision change](docs/en/troubleshooting/source-build-missing-exports.md)
+- [Stop and safely retry a stuck Turn](docs/en/troubleshooting/stuck-turn-stop-and-retry.md)
+- [Fix double-brace tool text breaking Code Mode prompt assembly](docs/en/troubleshooting/code-mode-unknown-prompt-variable.md)
+- [Fix npm ETARGET while installing rc.8](docs/en/troubleshooting/npm-etarget-rc8.md)
+- [Fix missing `dsh-client-schema-form` after npm installation](docs/en/troubleshooting/missing-client-schema-form.md)
+- [Fix Session titles that stay on the fallback with reasoning models](docs/en/troubleshooting/session-title-reasoning-budget.md)
+- [Generate an installation evidence plan with Install Doctor](docs/en/tools/install-doctor.md)
+
+### Plugin development
+
+- [Stop Goal rounds while owned subagents are still running](docs/en/agent-patterns/goal-round-subagent-wait.md)
+- [Render a tool-produced image in its Web result card](docs/en/plugin-development/tool-image-result-card.md)
+- [Design general files and provider-native PDF/video passthrough](docs/en/integrations/general-file-attachments.md)
+- [Pin OpenRouter providers without arbitrary request-body passthrough](docs/en/integrations/openrouter-provider-pinning.md)
+- [Build your first DeepSeek Harness plugin](docs/en/plugin-development/first-plugin.md)
+- [Run subprocesses safely inside tools](docs/en/plugin-development/async-subprocess-tools.md)
+- [Fix `read_image` missing its filesystem injection](docs/en/troubleshooting/read-image-fs-inject.md)
+- [Fix pi-ai image MIME rejection on OpenAI-compatible backends](docs/en/troubleshooting/pi-ai-image-media-type.md)
+- [Design SDK server-to-client questions and approvals](docs/en/integrations/sdk-human-interaction-wire.md)
+- [Archive, trash, and delete Sessions safely](docs/en/operations/session-archive-trash-delete.md)
+- [Author tool schemas for the enforced subset](docs/en/plugin-development/tool-schema-subset.md)
+- [Custom durable Session event compatibility](docs/en/plugin-development/custom-session-events.md)
+
+### Security
+
+- [Threat-model API key storage and choose a stronger credential boundary](docs/en/security/credential-storage-threat-model.md)
+- [Audit community plugins before installation](docs/en/security/community-plugin-audit.md)
+- [Code Mode worker-thread trust boundary](docs/en/security/code-mode-worker-trust-boundary.md)
+- [Prevent unexpected DeepSeek API charges](docs/en/security/prevent-unexpected-deepseek-api-charges.md)
+
+### Searchable operations
+
+- [Verify the official DeepSeek Harness project](docs/en/reference/official-project-identity.md)
+- [DeepSeek Harness Field Status: rc.7 baseline + alpha.1 context](https://sandbaseai.github.io/deepseek-harness-handbook/field-status.html)
+- [DeepSeek Harness Version Evidence](https://sandbaseai.github.io/deepseek-harness-handbook/version-evidence.html)
+- [Interactive Failure Router](https://sandbaseai.github.io/deepseek-harness-handbook/diagnose.html)
+- [DeepSeek Harness cheat sheet](docs/en/reference/cheat-sheet.md)
+- [Troubleshooting index](docs/en/troubleshooting/README.md)
+- [Add an MCP server and diagnose missing tools](https://sandbaseai.github.io/deepseek-harness-handbook/deepseek-harness-mcp.html)
+- [`ERR_HTTP2_INVALID_SESSION` provider-transport crashes](docs/en/troubleshooting/http2-invalid-session.md)
+- [Sandbox denial versus sandbox unavailable](docs/en/troubleshooting/sandbox-denied-vs-unavailable.md)
+- [Windows compatibility and troubleshooting](docs/en/troubleshooting/windows-compatibility.md)
+- [Minimal preset Bash failure on native Windows](docs/en/troubleshooting/windows-minimal-preset-bash.md)
+- [First Windows workspace-write freeze](docs/en/troubleshooting/windows-first-workspace-write-freeze.md)
+- [Synology NAS source deployment](docs/en/getting-started/synology-nas-source-deployment.md)
+- [Missing question or approval card after reconnect](docs/en/troubleshooting/missing-question-approval-after-reconnect.md)
+- [`Output token limit reached`](docs/en/troubleshooting/output-token-limit-reached.md)
+- [Git plugin missing its built export](docs/en/troubleshooting/git-plugin-missing-dist.md)
+- [Compaction summary truncated at the token cap](docs/en/troubleshooting/compaction-summary-truncated.md)
+- [Plugin peer-dependency and ignored-build warnings](docs/en/troubleshooting/plugin-peer-dependency-warnings.md)
+- [Response and reasoning language control](docs/en/troubleshooting/response-language-and-reasoning.md)
+- [Fix `reasoning_content` replay across providers and thinking modes](docs/en/troubleshooting/pi-ai-cross-provider-reasoning-replay.md)
+- [Prompt accepted before it became durable](docs/en/troubleshooting/prompt-accepted-before-durable.md)
+- [Windows folder-picker worker crash](docs/en/troubleshooting/windows-folder-picker-worker-crash.md)
+- [DeepSeek API fetch failures behind a proxy or enterprise CA](docs/en/troubleshooting/deepseek-api-fetch-failed-proxy-ca.md)
+- [Fix Web Search authentication on a custom gateway](docs/en/troubleshooting/web-search-custom-gateway-auth.md)
+- [Configure Bailian Token Plan without losing catalog compatibility](docs/en/troubleshooting/bailian-token-plan-catalog-route.md)
+- [Recover duplicated committed Session sequence numbers](docs/en/troubleshooting/duplicate-committed-session-seq.md)
+- [Recover a composer stuck read-only after an image send](docs/en/troubleshooting/image-send-composer-readonly.md)
+- [Set and verify reasoning effort for headless runs](docs/en/guides/headless-reasoning-effort.md)
+- [Fix spawn subagents that drop reasoning effort](docs/en/troubleshooting/spawn-subagent-reasoning-effort.md)
+- [Fix `unknown job` after a background subagent run](docs/en/troubleshooting/subagent-unknown-job-id.md)
+- [Recover an expired MCP session without a repeated tool-call loop](docs/en/troubleshooting/expired-mcp-session-loop.md)
+- [Plugin installation and known-good recovery](docs/en/troubleshooting/plugin-install-recovery.md)
+- [Resume historical `code` Sessions after the preset became `ptc`](docs/en/troubleshooting/historical-code-preset-resume.md)
+- [Remote Web access, SSH, HTTPS, and trust](docs/en/troubleshooting/remote-web-secure-context.md)
+- [Route OpenCode Go models by protocol and entitlement](docs/en/troubleshooting/opencode-go-model-routing.md)
+- [Recover Web from a Client plugin boot failure](docs/en/troubleshooting/web-client-plugin-boot-failure.md)
+- [Design shared dependency caches as explicit workspace-write capabilities](docs/en/security/workspace-write-shared-cache.md)
+- [PTY shell path on NixOS and minimal Linux](docs/en/troubleshooting/pty-shell-path.md)
+- [Protect and recover live session logs](docs/en/troubleshooting/live-session-log-durability.md)
+- [Recover `spawn bash ENOENT` after a workspace moves](docs/en/troubleshooting/workspace-moved-spawn-enoent.md)
+- [Classify and recover context overflow](https://sandbaseai.github.io/deepseek-harness-handbook/context-window-overflow.html)
+- [Stop a runaway Agent loop and contain spend](docs/en/troubleshooting/runaway-agent-loop.md)
+- [Detect and recover from degenerate repeated model output](docs/en/troubleshooting/degenerate-model-output.md)
+- [Stop a tool that will not cancel](docs/en/troubleshooting/stuck-tool-cancellation.md)
+- [Recover a Session poisoned by invalid tool-call JSON](docs/en/troubleshooting/poisoned-session-invalid-tool-json.md)
+- [Contain empty streamed tool identity before it poisons Session replay and resume](docs/en/troubleshooting/streamed-tool-call-empty-identity.md)
+- [Diagnose slow TTFT in mature Sessions](docs/en/troubleshooting/slow-ttft-mature-sessions.md)
+- [Fix `ReplaceFileW EACCES` on Windows HMR-watched config](docs/en/troubleshooting/windows-replacefile-eacces.md)
+- [Treat worker-thread Code Mode as host-trusted](docs/en/security/code-mode-worker-trust-boundary.md)
+- [Fix `--expose-internals` HMR startup from a source checkout](docs/en/troubleshooting/hmr-expose-internals-source-checkout.md)
+- [Fix pnpm global native-binding plugin resolution](docs/en/troubleshooting/pnpm-global-native-binding.md)
+- [Fix macOS workspace picker trailing-colon paths](docs/en/troubleshooting/macos-workspace-picker-trailing-colon.md)
+- [Persist custom plugin events without breaking Session resume](docs/en/plugin-development/custom-session-events.md)
+- [Updates and breaking changes](docs/en/updates/README.md)
+
+## Repository structure
+
+```text
+docs/<locale>/
+  getting-started/     installation and first runs
+  architecture/        runtime and lifecycle explanations
+  agent-patterns/      design decisions for real agents
+  recipes/             reproducible agent builds
+  troubleshooting/     symptom-driven diagnostic pages
+  ecosystem/           plugins, tools, skills, and comparisons
+  updates/             upstream change coverage
+scripts/               content and translation verification
+content-manifest.json  canonical revision and locale status
+```
+
+## Editorial and commercial boundary
+
+DeepSeek Harness remains the subject of every technical page. SandBase maintains the handbook and may provide a restrained link to related Agent, model, Skill, or MCP discovery resources. A mention is never presented as an official DeepSeek recommendation, a compatibility guarantee, or a security endorsement.
+
+## Contributing
+
+Corrections, reproducible examples, diagrams, troubleshooting cases, upstream change notes, and fluent translation reviews are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), follow the [Code of Conduct](CODE_OF_CONDUCT.md), and run `npm run check` before submitting a pull request.
+
+New here? Choose a scoped task from the [public roadmap](ROADMAP.md), open a [documentation request](https://github.com/sandbaseai/deepseek-harness-handbook/issues/new?template=documentation-request.yml), or use the [support router](SUPPORT.md) to find the correct project. Reproducible evidence is more valuable than a large patch.
+
+Two current evidence units are intentionally small: [review five Simplified Chinese navigation summaries](https://github.com/sandbaseai/deepseek-harness-handbook/issues/226), or [validate one cold-restart Session recovery row](https://github.com/sandbaseai/deepseek-harness-handbook/issues/16). Both issues define the privacy boundary and observable acceptance evidence.
+
+## Primary sources
+
+- [DeepSeek Harness official repository](https://github.com/deepseek-ai/deepseek-harness)
+- [Official architecture documentation](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)
+- [Official Agent lifecycle](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/agent-lifecycle.md)
+- [Official capability seams](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)
+- [Official tool execution pipeline](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md)
+- [Official user guides](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/user/guide)
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).

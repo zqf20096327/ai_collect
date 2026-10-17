@@ -1,0 +1,158 @@
+# gmc
+
+<div align="center">
+  <img src="./logo.png" alt="gmc logo" width="200" />
+  <br />
+  <p>Parallel worktrees for parallel AI agents — plus AI-generated commits.<br />A Git workflow CLI built for the AI coding era: spin up a worktree per agent, share <code>.env</code> and <code>node_modules</code> across them, and let an LLM write the commit when you're done.</p>
+  <p>
+    <a href="https://github.com/samzong/gmc/releases"><img src="https://img.shields.io/github/v/release/samzong/gmc" alt="Release Version" /></a>
+    <a href="https://goreportcard.com/report/github.com/samzong/gmc"><img src="https://goreportcard.com/badge/github.com/samzong/gmc" alt="go report" /></a>
+    <a href="https://github.com/samzong/gmc/blob/main/LICENSE"><img src="https://img.shields.io/github/license/samzong/gmc" alt="MIT License" /></a>
+  </p>
+</div>
+
+## Installation
+
+### Homebrew (macOS/Linux)
+
+```bash
+brew install samzong/tap/gmc
+# or
+go install github.com/samzong/gmc@latest
+```
+
+## Features
+
+| Command | What it does |
+| --- | --- |
+| **Worktree — parallel AI development** | |
+| `gmc wt clone <url> [--upstream <url>]` | Clone as `.bare/` + worktree layout, optionally register upstream |
+| `gmc wt add <name> [-b <base>] [--sync]` | New worktree on a new branch |
+| `gmc wt dup [N] [-b <base>]` | Fan out N sibling worktrees for parallel agents |
+| `gmc wt promote <candidate>` | Apply a candidate's changes into the current worktree |
+| `gmc wt list` | List all worktrees in the family with each one's allocated disk size |
+| `gmc wt list -A` | Scan home for repositories with linked worktrees; show each family's local status |
+| `gmc wt switch` | Interactive switch between worktrees |
+| `gmc wt remove <name> [-D]` | Delete worktree (and optionally its branch) |
+| `gmc wt sync` | Pull the base branch up to date |
+| `gmc wt share add <path>` | Share `.env` / `node_modules` / venv across worktrees |
+| `gmc wt pr-review <pr-number>` | Spin up a worktree from a GitHub PR |
+| `gmc wt prune` | Remove worktrees whose branches are merged; `--all` runs across repositories with linked worktrees in the home directory |
+| **Commit — AI message generation** | |
+| `gmc` | Generate Conventional Commits message from staged diff |
+| `gmc -a [paths...]` | Stage (all or given paths), then commit |
+| `gmc --branch <desc>` | Generate a branch name, switch, then commit |
+| `gmc --issue <N>` | Append `(#N)` to the subject |
+| `gmc --prompt <text>` | Extra instruction for the LLM |
+| `gmc --dry-run` | Generate but don't commit |
+| `gmc -y` / `--no-verify` / `--no-signoff` | Auto-confirm / skip hooks / skip signoff |
+| **Other** | |
+| `gmc tag [-y]` | Suggest and create the next semver tag |
+| `gmc init` | Interactive setup wizard |
+| `gmc config set <key> <value>` / `gmc config get` | Manage config |
+| `gmc --output json` | Machine-readable output for agents and CI |
+| `gmc completion zsh\|bash\|fish` | Shell completion |
+
+## Rust dependency cache
+
+New Rust worktrees automatically cache dependencies with [Kache](https://github.com/kunobi-ninja/kache).
+Keep using the same gmc and Cargo commands; no separate installation or configuration is required.
+Packages selected by Cargo retain native incremental compilation, and each worktree keeps its own target directory.
+
+Setup discovers root and nested `Cargo.toml` files, including multiple Rust projects in a monorepo.
+Parent Rust roots cover their descendants; existing `.cargo` directories or compiler wrappers are preserved.
+Dependency/build directories, symbolic links, and nested Git repositories are excluded from discovery.
+It adds ignored local Cargo configuration without changing global configuration or tracked files.
+The first eligible creation downloads a pinned, checksum-verified Kache release. Tools and a local
+cache capped at 10 GiB live under `${XDG_DATA_HOME:-~/.local/share}/gmc/rust-cache`.
+Unavailable setup leaves normal Cargo builds available; diagnostics use gmc's existing `--debug` flag.
+
+## Config
+
+Config lives at `~/.config/gmc/config.yaml` (legacy `~/.gmc.yaml` still works). A project-level `.gmc.yaml` also applies, but it is repository content and untrusted, so it may only set `role`, `model` and `enable_emoji` — never `api_key`, `api_base` or `prompt_template`. Those three decide which credential is used, where it is sent, and which local file is read into the prompt, so they come only from your own config or `GMC_*` variables. Names passed with `--config` or `GMC_*` always win over a project config, and gmc warns on stderr whenever it ignores something from one. Run `gmc init` for a guided setup, or set fields manually:
+
+```bash
+gmc config set apibase https://api.openai.com/v1
+gmc config set apikey  sk-...
+gmc config set model   gpt-4.1-mini
+gmc config set role    "Backend Developer"
+```
+
+Custom prompt template: set `prompt_template` to a YAML file whose `template` key holds a prompt using the `{{.Role}}`, `{{.Files}}` and `{{.Diff}}` variables. A file without a `template` key, or an empty one, is reported and the built-in template is used instead.
+
+```yaml
+template: |
+  {{.Role}}, summarize the changes below as one Conventional Commits line.
+
+  Files:
+  {{.Files}}
+
+  Diff:
+  {{.Diff}}
+```
+
+## Task workflow
+
+`gmc task` manages local AI coding tasks on a repo-family ledger: worktree, agent session, runs, events, and logs.
+
+```bash
+gmc task add "Fix worktree cleanup"
+gmc task start <task-id>                  # create worktree, launch agent in tmux
+gmc task run <task-id> -- go test ./...   # headless run, recorded with logs
+gmc task advance <task-id>                # move to the next workflow node
+gmc task show <task-id>                   # status, runs, warnings
+gmc task refresh                          # reconcile records with runtime state
+gmc task gc                               # dry-run cleanup; --apply kills live, unattached sessions of finished nodes or done tasks
+```
+
+It uses an embedded plan -> code -> review -> ship workflow when no user workflow is configured. The built-in workflow runs each agent with its own approval settings — nothing bypasses prompts or sandboxes. The launched command is printed as `command:` on start and advance. The default reference lives at `internal/task/default_workflow.yaml`.
+
+To customize it — or to run agents unattended by setting explicit node commands:
+
+```bash
+mkdir -p ~/.config/gmc
+cp internal/task/default_workflow.yaml ~/.config/gmc/workflow.yaml
+```
+
+A `workflow.yaml` replaces the built-in workflow entirely.
+
+## Shell completion
+
+```bash
+gmc completion zsh  > ~/.zsh/completions/_gmc
+gmc completion bash > ~/.bash_completion.d/gmc
+```
+
+## Troubleshooting
+
+### oh-my-zsh `git` plugin conflicts with `gmc`
+
+If you use [oh-my-zsh](https://ohmyz.sh/) with the `git` plugin enabled, it defines:
+
+```zsh
+alias gmc='git merge --continue'
+```
+
+That alias shadows the `gmc` CLI, so commands like `gmc` or `gmc version` run `git merge --continue` instead.
+
+**Fix:** add this to `~/.zshrc` *after* `source $ZSH/oh-my-zsh.sh`:
+
+```zsh
+unalias gmc 2>/dev/null
+```
+
+Then reload your shell (`source ~/.zshrc`) or open a new terminal.
+
+**Workaround without changing config:** prefix the command to bypass the alias:
+
+```zsh
+\gmc version
+# or
+command gmc version
+```
+
+If you still want a short alias for `git merge --continue`, pick a different name (for example `gmcont`) before removing `gmc`.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

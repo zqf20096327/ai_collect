@@ -1,0 +1,869 @@
+# cometx
+
+```
+   _________  ____ ___  ___  / /__  __
+  / ___/ __ \/ __ `__ \/ _ \/ __/ |/_/
+ / /__/ /_/ / / / / / /  __/ /__>  <
+ \___/\____/_/ /_/ /_/\___/\__/_/|_|
+```
+
+Open source extensions for the [Comet](https://www.comet.com/site/?utm_source=cometx&utm_medium=referral&utm_campaign=cometx_2022&utm_content=github) SDK.
+
+These extensions are created and supported by the community and are
+not an official project of Comet ML. We welcome contributions!
+
+## Installation
+
+```
+pip install cometx --upgrade
+```
+
+To use these command-line functions, you can set your Comet API key and URL override using command-line flags:
+
+```
+cometx --api-key="YOUR-COMET-API-KEY" COMMAND
+```
+
+If you are a Comet on-prem user, and your installation does not use smart-keys, you'll also need to set the URL override:
+
+```
+cometx --api-key="YOUR-COMET-API-KEY" --url-override="https://your-companys-comet.com/clientlib/" COMMAND
+```
+
+## Usage
+
+`cometx` is composed of a series of commands that are useful
+independently, and can be used together to create sophisticated tools
+for ML management.
+
+### Commands
+
+* [cometx admin](#cometx-admin)
+* [cometx config](#cometx-config)
+* [cometx copy](#cometx-copy)
+* [cometx count](#cometx-count)
+* [cometx delete-assets](#cometx-delete-assets)
+* [cometx download](#cometx-download)
+* [cometx list](#cometx-list)
+* [cometx log](#cometx-log)
+* [cometx migrate-users](#cometx-migrate-users)
+* [cometx rename-duplicates](#cometx-rename-duplicates)
+* [cometx reproduce](#cometx-reproduce)
+* [cometx smoke-test](#cometx-smoke-test)
+* [cometx update](#cometx-update)
+
+For all commands, use the `--help` flag to get additional information.
+
+## Global Options
+
+These flags are availble before a command:
+
+* `--api-key API_KEY` - Set the COMET_API_KEY
+* `--url-override URL_OVERRIDE` - Set the COMET_URL_OVERRIDE
+
+This command shows the cometx version:
+
+* `--version` - Display comet_ml version
+
+This command can be used globally, or for individual commands:
+
+* `-h, --help` - Show help message
+
+## cometx list
+
+This command is used to:
+
+* get a list of all workspaces that you are a member of
+* get a list of all projects in a workspace
+* get a list of all experiments (by name or key) in a project
+
+cometx list examples:
+
+```
+cometx list WORKSPACE/PROJECT/EXPERIMENT-KEY-OR-NAME
+cometx list WORKSPACE/PROJECT
+cometx list WORKSPACE
+cometx list
+```
+
+### Flags
+
+* `-u, --use-name` - Use experiment names for experiment folders and listings
+* `--query QUERY` - Only list experiments that match this Comet query string
+* `--debug` - Provide debug info
+
+For more information, `cometx list --help`
+
+## cometx count
+
+This command is used to:
+
+* count the number of workspaces you are a member of
+* count the number of projects in workspaces
+* count the number of experiments in projects
+* count the number of artifacts in workspaces
+
+cometx count examples:
+
+```
+cometx count
+cometx count --workspaces-only
+cometx count --with-projects
+cometx count --with-experiments
+cometx count --count-all
+cometx count --limit 10
+```
+
+### Flags
+
+* `--workspaces-only` - Count only workspaces (fastest)
+* `--with-projects` - Count workspaces and projects (default)
+* `--with-experiments` - Count workspaces, projects, and experiments (slowest, most detailed)
+* `--count-all` - Count everything: workspaces, projects, artifacts, and experiments (most comprehensive)
+* `--limit LIMIT` - Process only the first N workspaces (useful for testing)
+* `--debug` - Provide debug info
+
+For more information, `cometx count --help`
+
+## cometx download
+
+This command is used to:
+
+* download all workspaces, projects, and experiments of workspaces that you are a member of
+* download all projects, and experiments of a given workspace
+* download all experiments of a given workspace/project
+* download artifacts and models from the registry
+* download panels
+
+> **Note**: For detailed information on copying experiments from one Comet installation to another, see [MIGRATIONS.md](https://github.com/comet-ml/cometx/blob/main/MIGRATIONS.md).
+
+cometx download examples:
+
+```
+cometx download WORKSPACE/PROJECT/EXPERIMENT-KEY-OR-NAME [RESOURCE ...] [FLAGS ...]
+cometx download WORKSPACE/PROJECT [RESOURCE ...] [FLAGS ...]
+cometx download WORKSPACE [RESOURCE ...] [FLAGS ...]
+cometx download [RESOURCE ...] [FLAGS ...]
+```
+
+Where [RESOURCE ...] is zero or more of the following names:
+
+* run - alias for: code, git, output, graph, and requirements
+* system
+* others
+* parameters
+* metadata
+* metrics
+* assets
+* html
+* project - alias for: project_notes, project_metadata
+
+If no RESOURCE is given it will download all of them.
+
+### Flags
+
+* `--from from` - Source of data to copy. Should be: comet, wandb, or neptune. When using `--from neptune`, you must set the `NEPTUNE_API_TOKEN` environment variable.
+* `-i IGNORE [IGNORE ...], --ignore IGNORE [IGNORE ...]` - Resource(s) (or 'experiments') to ignore
+* `-j PARALLEL, --parallel PARALLEL` - The number of threads to use for parallel downloading; default (None) is based on CPUs
+* `-o OUTPUT, --output OUTPUT` - Output directory for downloads
+* `-u, --use-name` - Use experiment names for experiment folders and listings
+* `-l, --list` - List the items at this level (workspace, project, experiment, artifacts, or model-registry) rather than download
+* `--flat` - Download the files without subfolders
+* `-f, --ask` - Queries the user; if flag not included system will answer `yes` for all queries
+* `--filename FILENAME` - Only get resources ending with this
+* `--query QUERY` - Only download experiments that match this Comet query string
+* `--asset-type ASSET_TYPE` - Only get assets with this type
+* `--sync SYNC` - What level to sync at: all, experiment, project, or workspace
+* `--debug` - Provide debug info
+
+To download artifacts:
+
+```
+cometx download WORKSPACE/artifacts/NAME [FLAGS ...]
+cometx download WORKSPACE/artifacts/NAME/VERSION-OR-ALIAS [FLAGS ...]
+```
+
+To download models from the model registry:
+
+```
+cometx download WORKSPACE/model-registry/NAME [FLAGS ...]
+cometx download WORKSPACE/model-registry/NAME/VERSION-OR-STAGE [FLAGS ...]
+```
+
+To download panels:
+
+```
+cometx download WORKSPACE/panels/NAME-OR-ID [FLAGS ...]
+cometx download WORKSPACE/panels [FLAGS ...]
+```
+
+For more information, `cometx download --help`
+
+## cometx copy
+
+This command is used to:
+
+* copy downloaded data to a new experiment
+* create a symlink from one project to existing experiments
+* copy panels
+
+> **Note**: For detailed information on copying experiments from one Comet installation to another, see [MIGRATIONS.md](https://github.com/comet-ml/cometx/blob/main/MIGRATIONS.md).
+
+cometx copy examples:
+
+```
+cometx copy SOURCE DESTINATION
+cometx copy --symlink SOURCE DESTINATION
+cometx copy --path /base/path SOURCE DESTINATION
+cometx copy --path ~/Downloads SOURCE DESTINATION
+```
+
+where SOURCE is:
+
+* if not `--symlink`, "WORKSPACE/PROJECT/EXPERIMENT", "WORKSPACE/PROJECT", or "WORKSPACE" folder
+* if `--symlink`, then it is a Comet path to workspace or workspace/project
+* "WORKSPACE/panels" or "WORKSPACE/panels/PANEL-ZIP-FILENAME" to copy panels
+
+where DESTINATION is:
+
+* WORKSPACE
+* WORKSPACE/PROJECT
+
+Not all combinations are possible:
+
+| Destination → <br/>Source ↓ | WORKSPACE            | WORKSPACE/PROJECT      |
+|--------------------|----------------------|------------------------|
+| `WORKSPACE/*/*`      | Copies all projects  | N/A                    |
+| `WORKSPACE/PROJ/*`   | N/A                  | Copies all experiments |
+| `WORKSPACE/PROJ/EXP` | N/A                  | Copies experiment      |
+
+### Asset Types
+
+* 3d-image
+* 3d-points - deprecated
+* audio
+* confusion-matrix - may contain assets
+* curve
+* dataframe
+* dataframe-profile
+* datagrid
+* embeddings - may reference image asset
+* histogram2d - not used
+* histogram3d - internal only, single histogram, partial logging
+* histogram_combined_3d
+* image
+* llm_data
+* model-element
+* notebook
+* source_code
+* tensorflow-model-graph-text - not used
+* text-sample
+* video
+
+### Flags
+
+* `-i IGNORE [IGNORE ...], --ignore IGNORE [IGNORE ...]` - Resource(s) (or 'experiments') to ignore
+* `-j PARALLEL, --parallel PARALLEL` - The number of threads to use for parallel uploading; default (None) is based on CPUs
+* `--debug` - If given, allow debugging
+* `--quiet` - If given, don't display update info
+* `--symlink` - Instead of copying, create a link to an experiment in a project
+* `--sync` - Check to see if experiment name has been created first; if so, skip
+* `--path PATH` - Path to prepend to workspace_src when accessing files (supports ~ for home directory)
+* `--create-workspaces` - Attempt to create the destination workspace if it does not exist (requires appropriate API permissions)
+
+### Using --path
+
+The `--path` option allows you to specify a base directory where your workspace folders are located. This is useful when your downloaded experiments are stored in a specific directory structure.
+
+Examples:
+```bash
+# Copy from experiments in /data/experiments/workspace
+cometx copy --path /data/experiments workspace dest-workspace
+
+# Copy from experiments in your home directory
+cometx copy --path ~ workspace dest-workspace
+
+# Copy from experiments in Downloads folder
+cometx copy --path ~/Downloads workspace dest-workspace
+```
+
+For more information, `cometx copy --help`
+
+## cometx log
+
+This command is used to log a resource (metrics, parameters, asset,
+etc) file to a specific experiment or experiments.
+
+cometx log examples:
+
+```
+cometx log WORKSPACE/PROJECT/EXPERIMENT-KEY FILENAME ... --type=TYPE
+cometx log WORKSPACE PANEL-ZIP-FILENAME ... --type=panel
+cometx log WORKSPACE PANEL.py ... --type=panel
+cometx log WORKSPACE PANEL-URL ... --type=panel
+cometx log WORKSPACE/PROJECT --type=other --set "key:value"
+cometx log WORKSPACE --type=other --set "key:value"
+```
+
+Where TYPE is one of the following names:
+
+* all
+* asset
+* audio
+* code
+* image
+* metrics
+* notebook
+* panel
+* tensorflow-file
+* text-sample
+* video
+* other
+* tensorboard-folder-assets
+
+### Flags
+
+* `--type TYPE` - The type of item to log
+* `--set SET` - The key:value to log
+* `--query QUERY` - A Comet Query string, see https://www.comet.com/docs/v2/api-and-sdk/python-sdk/reference/API/#apiquery
+* `--debug` - If given, allow debugging
+* `--use-base-name` - If given, using the basename for logging assets
+
+For more information, `cometx log --help`
+
+## cometx migrate-users
+
+This command migrates users into workspaces from a source Comet environment to a destination environment. It reads workspace membership from a chargeback report fetched from the source environment's admin API (or a pre-downloaded local file) and invites each user to the corresponding workspace in the destination environment by email. If a user with that email does not yet exist in the destination, they will be provisioned access once they sign up.
+
+```
+cometx migrate-users --api-key DEST_KEY --source-api-key SOURCE_KEY [FLAGS ...]
+cometx migrate-users --api-key DEST_KEY --chargeback-report /path/to/report.json [FLAGS ...]
+```
+
+**Arguments:**
+* `--api-key API_KEY` - API key for the destination environment. Falls back to `COMET_API_KEY` if not provided.
+* `--url URL` - Base URL of the destination Comet environment (e.g. `https://comet.example.com`). Required for self-hosted instances when the API key does not encode the server URL.
+* `--source-api-key SOURCE_API_KEY` - API key for the source environment. Used to fetch the chargeback report. Required unless `--chargeback-report` is given.
+* `--source-url SOURCE_URL` - Base URL of the source Comet environment. Required for self-hosted source instances when the source API key does not encode the server URL.
+* `--chargeback-report PATH` - Path to a local chargeback report JSON file. When provided, `--source-api-key` is not required.
+
+### Flags
+
+* `--create-workspaces` - Create workspaces on the destination if they don't already exist (default: off)
+* `--dry-run` - Print what would happen without making any changes
+* `--failures-output PATH` - Path to write failed operations JSON (default: `bulk_add_failures_by_email.json`)
+
+### Examples
+
+```bash
+# Dry run — preview what would happen
+cometx migrate-users --api-key DEST_KEY --source-api-key SOURCE_KEY --dry-run
+
+# Execute the migration
+cometx migrate-users --api-key DEST_KEY --source-api-key SOURCE_KEY
+
+# Use a local chargeback report file
+cometx migrate-users --api-key DEST_KEY --chargeback-report /tmp/chargeback_reports.json
+
+# Self-hosted environments — provide explicit URLs
+cometx migrate-users --api-key DEST_KEY --url https://comet.dest.example.com \
+    --source-api-key SOURCE_KEY --source-url https://comet.src.example.com
+```
+
+For more information, `cometx migrate-users --help`
+
+## cometx rename-duplicates
+
+This command is used to rename duplicate experiments within projects. When multiple experiments share the same name in a project, this command renames the duplicates to NAME-1, NAME-2, etc. while avoiding conflicts with existing names.
+
+```
+cometx rename-duplicates [PATH] [--dry-run] [--debug]
+```
+
+cometx rename-duplicates examples:
+
+```
+cometx rename-duplicates                           # Process all workspaces
+cometx rename-duplicates WORKSPACE                 # Process all projects in a workspace
+cometx rename-duplicates WORKSPACE/PROJECT         # Process a single project
+cometx rename-duplicates WORKSPACE/PROJECT --dry-run  # Preview changes without renaming
+```
+
+Where PATH is optional and can be:
+
+* `WORKSPACE` - process all projects in a workspace
+* `WORKSPACE/PROJECT` - process a single project
+* (empty) - process all workspaces and projects you have access to
+
+### Flags
+
+* `--dry-run` - Preview changes without actually renaming experiments
+* `--debug` - Provide debug info
+
+For more information, `cometx rename-duplicates --help`
+
+## cometx delete-assets
+
+To delete experiments assets:
+
+```
+cometx delete-assets WORKSPACE/PROJECT --type=image
+cometx delete-assets WORKSPACE/PROJECT/EXPERIMENT --type=all
+```
+
+Type can be valid asset type, including:
+
+* all
+* asset
+* audio
+* code
+* image
+* notebook
+* text-sample
+* video
+
+### Flags
+
+* `--type TYPE` - The type of item to log
+* `--debug` - If given, allow debugging
+* `--query QUERY` - Only delete experiments that match this Comet query string
+
+For more information, `cometx delete-assets --help`
+
+## cometx config
+
+To enable auto-logging of your notebooks in Jupyter environments:
+
+```python
+cometx config --auto-log-notebook yes
+```
+
+To turn auto-logging of notebooks off, use:
+
+```python
+cometx config --auto-log-notebook no
+```
+
+If you keep the generated experiment URLs in the notebook, but later edit the notebook, the notebooks will be updated in all of the experiments created in the notebook.
+
+### Flags
+
+* `--debug` - If given, allow debugging
+* `--auto-log-notebook AUTO_LOG_NOTEBOOK` - Takes a 1/yes/true, or 0/no/false
+
+For more information, `cometx config --help`
+
+## cometx reproduce
+
+```
+cometx reproduce [-h] [--run] [--executable EXECUTABLE] COMET_PATH OUTPUT_DIR
+```
+
+This command is used to reproduce experiments by copying files to a specified output directory.
+
+### Flags
+
+* `--run` - Run the reproducible script
+* `--executable EXECUTABLE` - Run the reproducible script with specified executable
+
+For more information, `cometx reproduce --help`
+
+## cometx update
+
+```
+cometx update [-h] [--debug] COMET_SOURCE COMET_DESTINATION
+```
+
+To update existing experiments.
+
+cometx update SOURCE DESTINATION
+
+where SOURCE is a folder:
+
+* "WORKSPACE/PROJECT/EXPERIMENT"
+* "WORKSPACE/PROJECT"
+* "WORKSPACE"
+
+where DESTINATION is a Comet:
+
+* WORKSPACE
+* WORKSPACE/PROJECT
+
+### Flags
+
+* `--debug` - If given, allow debugging
+
+For more information, `cometx update --help`
+
+## cometx admin
+
+```
+cometx admin [-h] [--host HOST] [--debug] ACTION [ARGUMENTS ...]
+```
+
+To perform admin functions
+
+### Actions
+
+#### chargeback-report
+
+Generate a chargeback report from the Comet server.
+
+```
+cometx admin chargeback-report [YEAR-MONTH]
+```
+
+**Arguments:**
+* `YEAR-MONTH` (optional, deprecated) - The YEAR-MONTH to run report for, eg 2024-09. If not provided, generates a report for all available periods.
+
+**Output:**
+* Saves a JSON file: `comet-chargeback-report.json` (or `comet-chargeback-report-{YEAR-MONTH}.json`)
+
+**Examples:**
+```
+cometx admin chargeback-report
+cometx admin chargeback-report 2024-09
+```
+
+#### usage-report
+
+Generate a usage report with experiment counts and statistics for one or more workspaces/projects.
+
+```
+cometx admin usage-report WORKSPACE [WORKSPACE ...]
+cometx admin usage-report WORKSPACE/PROJECT [WORKSPACE/PROJECT ...]
+cometx admin usage-report --app
+```
+
+**Arguments:**
+* `WORKSPACE_PROJECT` (required, one or more, unless using `--app`) - One or more `WORKSPACE` or `WORKSPACE/PROJECT` to run usage report for. If `WORKSPACE` is provided without a project, all projects in that workspace will be included.
+
+**Options:**
+* `--units {month,week,day,hour}` - Time unit for grouping experiments (default: month)
+  * `month`: Group by month (YYYY-MM format)
+  * `week`: Group by ISO week (YYYY-WW format)
+  * `day`: Group by day (YYYY-MM-DD format)
+  * `hour`: Group by hour (YYYY-MM-DD-HH format)
+* `--max-experiments-per-chart N` - Maximum number of workspaces/projects per chart (default: 5). If more workspaces/projects are provided, multiple charts will be generated.
+* `--no-open` - Don't automatically open the generated PDF file after generation.
+* `--app` - Launch interactive Streamlit web app instead of generating PDF. When using this option, you don't need to specify workspace/project arguments.
+
+**Output:**
+* **PDF Report** (default): Generates a PDF report containing:
+  * Summary statistics (total experiments, users, run times, GPU utilization)
+  * Experiment count charts by time unit
+  * GPU utilization charts (if GPU data is available)
+  * GPU memory utilization charts (if GPU data is available)
+* **Interactive Web App** (with `--app`): Launches a Streamlit web interface where you can:
+  * Select workspace and project from dropdowns
+  * View statistics and charts interactively
+  * Change time units and regenerate reports
+  * View "All Projects" from a workspace
+
+**Examples:**
+```
+# Generate report for a single workspace
+cometx admin usage-report my-workspace
+
+# Generate report for multiple projects
+cometx admin usage-report my-workspace/project1 my-workspace/project2
+
+# Generate report with weekly grouping
+cometx admin usage-report workspace1 workspace2 --units week
+
+# Generate report with daily grouping, don't auto-open
+cometx admin usage-report workspace --units day --no-open
+
+# Launch interactive web app
+cometx admin usage-report --app
+```
+
+#### growth-report
+
+Generate an organization growth & adoption report as a single self-contained HTML
+page, built entirely from the **admin chargeback report**. Distinct from
+`usage-report` (experiment-count PDF): `growth-report` gives an org-wide view of
+workspaces, users, and platform adoption, per workspace/department.
+
+**Requires an admin user's API key** — the report is derived entirely from the
+admin chargeback endpoint, which accepts only server admins (the server's admin
+user list) and, on self-hosted installs, organization admins. Workspace roles
+such as Manage don't count. With any other key the command errors out (non-zero
+exit).
+
+```
+cometx admin growth-report [WORKSPACE ...]
+```
+
+**Arguments:**
+* `WORKSPACE` (optional, zero or more) - Workspaces to scope the report to. If omitted, the report is org-wide.
+
+**Options:**
+* `--units {month,week,day,hour}` - Chart bucket granularity (default: month). Charts render all-time history at this granularity; unrelated to `--window` below.
+* `--window WINDOW` - Relative analysis window for the growth KPIs, e.g. `7d`, `14d`, `30d`, `90d`, `2w`, `6m`, `1y` (default: `7d`). `d`=days, `w`=weeks (×7d), `m`=months (≈30 days), `y`=years (≈365 days).
+* `--output PATH` - Output HTML file path (default: `growth_report.html`).
+* `--active-window WINDOW` - Activity window for the users layer, e.g. `30d`/`60d` (default: `60d`). A user is *active* when their last-used timestamp falls within this window.
+* `--leaderboard-top-n N` - Top/bottom N size for the leaderboards section (default: `5`).
+* `--exclude-personal` - Drop workspaces whose name matches `--personal-pattern` from the chargeback data (default: off; no effect without `--personal-pattern`).
+* `--personal-pattern REGEX` - Regex used with `--exclude-personal` to identify personal-workspace names to drop, e.g. `'^user-'` (default: none).
+* `--no-open` - Don't automatically open the generated HTML file after generation.
+* `--csv-dir DIR` - Also write Glue-ready CSV fact tables (`growth_users.csv`, `growth_workspaces.csv`, `growth_org_kpis.csv`) into `DIR` (created if missing). See [CSV export](README-ADMIN.md#csv-export) for the schema and the S3/Glue layout.
+* `--no-html` - Skip the HTML report. Requires `--csv-dir`; with neither, there is nothing to write and the command errors out.
+* `--mpm` - Include MPM presence (monitored models per workspace), collected from the MPM and model-registry APIs. The key's user must be an organization admin (a separate check from chargeback's server-admin one) or a member of every workspace; otherwise private models in workspaces they aren't a member of are silently missed. Off by default because it makes one request per registry model in workspaces the key's user isn't a member of.
+* `--chargeback-report FILE` - Read the chargeback report from a local JSON file (as saved by `cometx admin chargeback-report`) instead of calling the chargeback endpoint. This skips the chargeback request only; `/api/admin/service-accounts` is still queried to classify accounts.
+
+**Two time concepts:**
+* `--units` controls chart *granularity* — every chart shows the full all-time history bucketed at this resolution.
+* `--window` controls the *analysis window* for the "New in {window} (% of base)" growth KPIs — accounts/workspaces created in the last `--window` vs. those that existed before it.
+
+**Growth rates:** the growth KPIs are computed from chargeback `createdAt`
+timestamps as `new_in_window / count_before_window × 100`. Workspace creation is
+proxied from each workspace's earliest member `createdAt`.
+
+**Report sections:** an **Organization overview (chargeback)** section (org-wide
+KPIs, workspace platform mix, total-vs-active and added-vs-deleted charts, and a
+by-workspace table; with `--mpm`, also MPM workspaces / Monitored models KPIs and
+an MPM models column), a **Users** section (Total / Active / Active % / New-in-window
+KPIs plus over-time charts), a **Leaderboards** section (top-N and active-aware
+bottom-N workspaces by experiments/projects, and by MPM monitored models with
+`--mpm`, and users by Opik spans / EM activity), and a **Personal vs Service accounts** split (service
+accounts from the admin API, with a labeled regex fallback). Each people section
+degrades independently: if its inputs are missing, a warning is printed and only
+that section is dropped.
+
+**Caveats:**
+* **Chargeback is required** — the whole report is derived from the admin chargeback report; without admin access the command errors out.
+* **Workspace "created" is a proxy** — the earliest member `createdAt`, since chargeback has no workspace-creation timestamp. The added-vs-deleted "deleted" series is also a best-effort proxy (all members removed) and typically reads ~0.
+* **"Total projects" counts EM projects only** — chargeback's per-workspace `projects[]` covers Experiment Management; Opik projects and MPM aren't represented there (Opik appears only as a per-user span count; MPM comes only from `--mpm`, below).
+* **MPM needs `--mpm`.** Chargeback has no MPM data; `--mpm` collects monitored models per workspace from the MPM and model-registry APIs. It reflects which models are monitored *now*, so a trend builds up only from regular `--csv-dir` exports. A workspace whose lookup fails is reported as unknown, never as zero (see [README-ADMIN.md](README-ADMIN.md#growth-report)).
+
+**Examples:**
+```
+# Org-wide report, default 7-day window
+cometx admin growth-report
+
+# 30-day window, scoped to two workspaces
+cometx admin growth-report --window 30d my-workspace another-workspace
+
+# Write to a file without auto-opening
+cometx admin growth-report --no-open --output growth.html
+
+# 30-day activity window and top/bottom-10 leaderboards, excluding personal
+# workspaces named like "user-..."
+cometx admin growth-report --active-window 30d --leaderboard-top-n 10 \
+  --exclude-personal --personal-pattern '^user-'
+
+# Write Glue-ready CSVs alongside the HTML report
+cometx admin growth-report --csv-dir ./out
+
+# CSV-only, no HTML
+cometx admin growth-report --csv-dir ./out --no-html
+
+# Regenerate CSVs from a saved chargeback snapshot
+cometx admin growth-report --chargeback-report report.json --csv-dir ./out
+
+# Include MPM presence (monitored models per workspace)
+cometx admin growth-report --mpm --csv-dir ./out
+```
+
+#### gpu-report
+
+Generate a GPU usage report for one or more workspaces/projects with detailed GPU metrics analysis.
+
+```
+cometx admin gpu-report WORKSPACE [WORKSPACE ...] --start-date DATE
+cometx admin gpu-report WORKSPACE/PROJECT [WORKSPACE/PROJECT ...] --start-date DATE
+```
+
+**Arguments:**
+* `WORKSPACE_PROJECT` (required, one or more) - One or more `WORKSPACE` or `WORKSPACE/PROJECT` to run GPU report for. If `WORKSPACE` is provided without a project, all projects in that workspace will be included.
+
+**Options:**
+* `--start-date DATE` (required) - Start date for the report in YYYY-MM-DD format (e.g., `2024-01-01`)
+* `--end-date DATE` (optional) - End date for the report in YYYY-MM-DD format (e.g., `2024-12-31`). If not provided, reports from start-date onwards.
+* `--metrics METRIC [METRIC ...]` (optional) - List of metrics to track. If not provided, uses default GPU metrics:
+  * `sys.gpu.0.gpu_utilization` - GPU utilization percentage
+  * `sys.gpu.0.memory_utilization` - GPU memory utilization percentage
+  * `sys.gpu.0.used_memory` - GPU memory used in GB
+  * `sys.gpu.0.power_usage` - GPU power usage in watts
+  * `sys.gpu.0.temperature` - GPU temperature in Celsius
+* `--open` - Automatically open the generated PDF file after generation.
+
+**Output:**
+* Generates a PDF report containing:
+  * Summary statistics (total experiments, workspaces, metrics tracked)
+  * Breakdown by workspace (if multiple workspaces)
+  * Average metrics by workspace charts (bar charts)
+  * Maximum metrics by month charts (time series line charts with workspace legend)
+* Generates individual PNG chart files for each metric:
+  * `gpu_report_avg_{metric}_by_workspace.png` - Average metric value per workspace
+  * `gpu_report_max_{metric}_by_month.png` - Maximum metric value per month over time
+
+**Examples:**
+```
+# Generate report for a single workspace from a start date
+cometx admin gpu-report my-workspace --start-date 2024-01-01
+
+# Generate report with date range
+cometx admin gpu-report my-workspace --start-date 2024-01-01 --end-date 2024-12-31
+
+# Generate report for multiple projects
+cometx admin gpu-report workspace1/project1 workspace2 --start-date 2024-01-01
+
+# Generate report with custom metrics
+cometx admin gpu-report my-workspace --start-date 2024-01-01 --metrics sys.gpu.0.gpu_utilization sys.gpu.0.memory_utilization
+
+# Generate report and automatically open PDF
+cometx admin gpu-report my-workspace --start-date 2024-01-01 --open
+```
+
+### Global Flags
+
+* `--host HOST` - Override the HOST URL
+* `--debug` - If given, allow debugging
+* `--api-key API_KEY` - Set the COMET_API_KEY
+* `--url-override URL_OVERRIDE` - Set the COMET_URL_OVERRIDE
+
+For more information, `cometx admin --help`
+
+> **Note**: For detailed information on admin commands, see [README-ADMIN.md](https://github.com/comet-ml/cometx/blob/main/README-ADMIN.md).
+
+## cometx smoke-test
+
+```
+cometx smoke-test [-h] [--exclude [EXCLUDE ...]] [--debug DEBUG] COMET_PATH [include ...]
+```
+
+Perform a smoke test on a Comet installation. Logs results to WORKSPACE/smoke-tests or WORKSPACE/PROJECT.
+
+Examples:
+
+Run all tests:
+```
+cometx smoke-test WORKSPACE    # project defaults to smoke-tests
+cometx smoke-test WORKSPACE/PROJECT
+```
+
+Run everything except mpm tests:
+```
+cometx smoke-test WORKSPACE/PROJECT --exclude mpm
+```
+
+Run just optimizer tests:
+```
+cometx smoke-test WORKSPACE/PROJECT optimizer
+```
+
+Run just metric tests:
+```
+cometx smoke-test WORKSPACE/PROJECT metric
+```
+
+Items to include or exclude:
+
+* optimizer
+* mpm
+* panel
+* opik
+* experiment
+  * metric
+  * image
+  * asset
+  * dataset-info
+  * confusion-matrix
+  * embedding
+
+### Flags
+
+* `--exclude [EXCLUDE ...]` - Items to exclude; any of: asset, confusion-matrix, dataset-info, embedding, experiment, image, metric, mpm, opik, optimizer, panel
+* `--debug DEBUG` - Show debugging information
+
+For more information, `cometx smoke-test --help`
+
+## Copy/Download Use Cases
+
+In this section we'll explore some common scenarios.
+
+1. Copy a specific project from one Comet installation to another
+2. Copy all projects in workspace to a new workspace
+3. Copy specific experiments in a project to new experiments
+
+### 1. Copy a specific project from one comet installation to another
+
+A useful idiom is to set your Comet environment variables on the line
+of a command. In this manner, you can set the `COMET_URL_OVERRIDE`
+and `COMET_API_KEY` for different installations.
+
+Of course, you don't have to set the environment variables if you are
+copying experiments on the same Comet installation.
+
+Here is how you one could download the experiments in
+WORKSPACE/PROJECT from http://comet.a.com:
+
+```shell
+cometx --api-key=A-KEY download WORKSPACE/PROJECT
+```
+
+The `cometx download` command downloads all of the Comet experiment
+data into local files. Note that WORKSPACE/PROJECT refers to a
+workspace and project on http://comet.a.com.
+
+One could then copy the downloaded experiment data with a similar command:
+
+```shell
+cometx --api-key=B-KEY copy WORKSPACE/PROJECT NEW-WORKSPACE/NEW-PROJECT
+```
+
+Note that WORKSPACE/PROJECT now refers to a directory, and
+NEW-WORKSPACE/NEW-PROJECT refers to a workspace and project on
+http://comet.b.com.
+
+### 2. Copy all projects in workspace to a new workspace
+
+Similarly, one can copy all of the projects by first downloading them:
+
+```shell
+cometx --api-key=A-KEY download WORKSPACE
+```
+
+and then copying them:
+
+```shell
+cometx --api-key=B-KEY copy WORKSPACE NEW-WORKSPACE
+```
+
+### 3. Copy specific experiments in a project to new experiments
+
+Similarly, one can copy a single experiment first downloading it:
+
+```shell
+cometx --api-key=A-KEY download WORKSPACE/PROJECT/EXPERIMENT-NAME-OR-ID
+```
+
+and then copying it:
+
+```shell
+cometx --api-key=B-KEY copy WORKSPACE/PROJECT/EXPERIMENT-NAME-OR-ID NEW-WORKSPACE/NEW-PROJECT
+```
+
+## Running Tests
+
+WARNING: Running the tests will create experiments, models, assets, etc.
+in your default workspace if not set otherwise.
+
+To run the tests, you can either export all of these items in the
+environment:
+
+```shell
+$ export COMET_USER="<USERNAME>"
+$ export COMET_WORKSPACE="<WORKSPACE>"
+$ export COMET_API_KEY="<API-KEY>"
+$ pytest tests
+```
+
+Or, define `workspace` and `api_key` in your ~/.comet.config file:
+
+```shell
+$ export COMET_USER="<USERNAME>"
+$ pytest tests
+```

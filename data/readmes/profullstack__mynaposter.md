@@ -1,0 +1,1617 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/web/assets/brand/myna-logo-dark.svg">
+    <img alt="myna" src="apps/web/assets/brand/myna-logo-light.svg" width="356" height="128">
+  </picture>
+</p>
+
+# myna
+
+A terminal social media manager. One place to log in, write, schedule and post
+to every network you use.
+
+```bash
+myna                                  # the TUI
+myna login bluesky                    # connect an account
+myna post all "the release notes are up"
+echo "shipping today" | myna post bluesky,mastodon
+```
+
+Built on [HQTUI](https://hqtui.com). Credentials are encrypted on your own
+machine and nothing is sent anywhere except the posts you make.
+
+---
+
+## What it does
+
+- **Post once, everywhere.** Text is tailored per network: character limits,
+  URL weighting, threads where they exist, truncation where they do not.
+- **Schedule.** `myna schedule "tomorrow 9am"` queues a post; the scheduler
+  sends it while the TUI is open, or run `myna run` as a daemon.
+- **Read back.** Home timelines, mentions, per-post engagement, and a history of
+  what landed and what failed.
+- **See how it did.** A performance screen with volume over time, delivery rate,
+  per-network breakdown, the hours you actually post, and your best posts.
+- **Write, optionally.** Paste a link and get a drafted post with hashtags that
+  suit each network. The writer never posts on its own; drafts land in the
+  compose box for you to edit.
+- **Infographics.** The model picks the copy, myna renders the graphic. Text on
+  the image is exactly the text in the copy.
+- **Grow the right audience.** Seed a follow graph with people worth learning
+  from, let myna read who *they* follow, and follow the accounts they agree
+  on, a few an hour, from `myna run`. See [The follow graph](#the-follow-graph).
+- **List the product itself.** `myna directory saasrow <url>` reads the page and
+  submits it to a software directory over that directory's MCP server — any MCP
+  server, including one myna has never heard of, since it reads the server's own
+  tool schemas to work out the fields. A listing is not a post, so it has its own
+  command and its own credentials. See [Directories](#directories).
+- **Get reshared.** A network of people and agents who reshare each other's
+  posts, matched by topic, each with their own myna and their own limits.
+  Optionally a few cents a reshare, settled through CoinPay. Your profile is an
+  [OpenProfile.md](docs/openprofile.md). See [The reshare network](#the-reshare-network).
+- **Answer the people who answer you.** `myna engage` turns replies, reposts,
+  quotes and new followers into a queue of follow-ups: a reply the writer
+  drafts from what they said, and a follow-back, sent on a pace. See
+  [Follow-ups](#follow-ups).
+- **Find the people worth being seen by.** `myna upvote` reads what you have
+  been posting about, searches every network for other people on the same
+  subject, and amplifies them: a vote on what is genuinely on topic, a share of
+  some of it, and once in a while a reply carrying one of your links. See
+  [The upvoter](#the-upvoter).
+- **Find what people are asking for.** `myna asks` reads the subreddits where
+  people post "is there a site that does X, Y and Z?", counts how many
+  different people want the same thing, drafts the answer onto a card you
+  paste, and tracks the thread and your reply. See [Asks](#asks).
+- **Run a newsletter.** `myna newsletter` writes issues in Markdown, keeps
+  subscribers on a contacts list, sends through your own SMTP server or a mail
+  API (Resend, Postmark, SES and others), or through myna cloud, under the
+  daily email cap, and resumes from a per-recipient ledger so nobody gets an
+  issue twice. Every issue carries a one-click unsubscribe and your postal
+  address. See [Newsletters](#newsletters).
+- **Sound like yourself.** One Markdown file says who you are, who you are
+  talking to, the subjects you keep returning to and what never goes out.
+  `myna brand learn` writes it from the posts you have already sent, without
+  asking a single question, and every path that drafts anything reads it.
+  See [The brand](#the-brand).
+- **Plan in angles, not posts.** A plan item is a subject and an argument on a
+  date, with no copy written yet. `myna atomize <url>` splits one long thing
+  you wrote into the separate arguments inside it and dates them across the
+  weeks ahead. See [The plan](#the-plan).
+- **Fill the gaps, not the calendar.** `myna autopilot` counts what you posted
+  last week and what is booked for next week, and does nothing at all while you
+  are meeting your own cadence. When you fall short it takes the next angle off
+  the plan, drafts it, and books it no sooner than a day out, so there is always
+  time to cancel. See [Autopilot](#autopilot).
+- **Plugins.** A plugin can add a network, a command, a daemon task or a source
+  of people to follow. The bundled one pulls seeds from
+  [OutreachGraph](https://outreachgraph.com). See [Plugins](#plugins).
+
+## Install
+
+```bash
+curl -fsSL https://mynaposter.com/install.sh | sh
+```
+
+A single binary with the runtime compiled in, for Linux, macOS and Windows.
+Nothing else needs to be installed first.
+
+The script checks the download against the published `SHA256SUMS` before it
+writes anything, stages the binary beside the target and renames over it so a
+running `myna` is never half-replaced, and picks the AVX2-free build on older
+CPUs. `MYNA_BIN` chooses the directory, `MYNA_VERSION` pins a version. Read it
+first if you would rather not pipe a script — it is at
+[mynaposter.com/install.sh](https://mynaposter.com/install.sh), and the binaries
+are on the [releases page](https://github.com/profullstack/mynaposter/releases)
+if you want to verify them yourself.
+
+Already have a package manager:
+
+```bash
+bun add -g @profullstack/myna     # or: npm i -g @profullstack/myna
+```
+
+That route needs Bun 1.1+ or Node 22.6+.
+
+### Updating
+
+```bash
+myna update           # replace this binary with the newest release
+myna update --check   # only say whether one is waiting
+```
+
+`update` does what the installer does, from inside myna: it picks the asset this
+machine can run (including the AVX2-free build on older CPUs), checks it against
+the published `SHA256SUMS`, and renames it over the running binary rather than
+writing into it, so a failed download leaves the working copy untouched.
+
+`--check` exits 1 when an update is waiting, which is the answer a cron job
+wants. `--version <x.y.z>` installs a specific release, up or down, and
+`--force` reinstalls the one you already have.
+
+A myna running from a checkout or a global `bun`/`npm` install has no binary to
+replace, so `update` says which release is newest and how to update the way it
+was installed, instead of overwriting Bun.
+
+## Logging in
+
+`/login <network>` asks for whatever that network actually accepts. This is the
+part most tools are vague about, so to be plain:
+
+| How you log in | Networks |
+|---|---|
+| **Real username and password** | Bluesky (app password), Lemmy, Matrix, Mattermost, WordPress (application password), Reddit (script app) |
+| **A token you paste** | Telegram, Discord, Slack, Misskey, Nostr, dev.to (and any Forem), Hashnode, Ghost, Micro.blog, MoltExchange, ugig.net |
+| **A token you paste, or none: myna registers the agent** | Moltbook, The Colony, 4claw |
+| **Approving a short code** | tsbb, agenticjobs (device flow: the board shows a code, you approve it in a browser) |
+| **Nothing — files on this machine** | Git blog (a repository, committed through GitHub with your token or `gh`), HTML blog (a directory of pages) |
+| **One click in a browser, no setup** | Mastodon, Pleroma, Akkoma, GoToSocial, Pixelfed. myna registers itself on the instance and opens an Authorize page. Nothing to type but the instance, and no developer account anywhere |
+| **App keys** | Tumblr |
+| **Browser sign-in (OAuth)** | X, Facebook, Instagram, Threads, LinkedIn, Pinterest, TikTok, YouTube |
+| **Browser sign-in, no setup** | bl0ggers (PKCE over a loopback port: pick the publication, approve, done; `--token blg_...` for headless boxes) |
+
+Two of those rows are browser sign-ins for opposite reasons. Mastodon and its
+relatives let *any* client register itself, so the browser flow needs no setup
+at all: you type the instance and click Authorize. X, Meta, LinkedIn, Pinterest,
+TikTok and YouTube require you to register an app on their developer portal first,
+because they removed password APIs years ago and scraping a login session is
+both against their terms and fragile enough to break without warning.
+
+Anything a login would ask for can be given on the command line instead, in the
+order the network declares its fields or as `--<field>`, and what you pass is
+never asked for again:
+
+```sh
+myna login tsbb https://bbs.hqtui.com/ --forum app-showcase
+myna login tsbb https://bbs.hqtui.com/ app-showcase        # same thing, positionally
+```
+
+That makes a login scriptable, and outside a terminal a missing required field
+is an error naming the flag rather than a prompt nobody can answer. `/login tsbb
+https://bbs.hqtui.com/` does the same in the TUI: the dialog opens with the
+board filled in and the cursor on the first empty box.
+
+**A board is a set of forums, so tsbb takes several and cycles through them.**
+Login reads the board's forum list, and either takes the slugs you name or asks
+which ones, checking them against the board before it asks anyone to approve a
+code:
+
+```sh
+myna login tsbb https://bbs.hqtui.com/ --forum app-showcase,announcements,news
+```
+
+Each post then goes to the *next* forum in that list rather than to all of them
+at once, which is what a board would read as spam. `myna post --forum <slug>` is
+a detour for one post and leaves the rotation where it stands.
+
+**Mastodon no longer accepts a password at all.** `grant_type=password` was
+removed; a current server answers `unsupported_grant_type`. myna used to offer
+the field and produced a confusing failure, so it does not any more.
+
+Two more things worth knowing before you plan a posting workflow:
+
+- **Facebook and Instagram cannot post to a personal profile at all.** Facebook
+  needs a Page you administer; Instagram needs a Business or Creator account
+  linked to one, and its API will only fetch images from a public URL.
+- **Reddit script apps do not work on accounts with 2FA**, and Mastodon's
+  password grant is refused by instances with 2FA. Both fall back to a token.
+
+## Supported networks
+
+36 in total.
+
+**Major** X, Facebook, Instagram, Threads, Bluesky, Reddit, LinkedIn, Pinterest,
+TikTok, YouTube
+**Fediverse and self-hosted** Mastodon (and Pleroma, Akkoma, GoToSocial),
+Misskey (and Sharkey, Firefish), Pixelfed, Lemmy, Nostr, tsbb, agenticjobs
+**Built for AI agents** Moltbook, The Colony, 4claw, MoltExchange (named in `--to`, never part of `all`), ugig.net
+**Chat** Telegram, Discord, Slack, Matrix, Mattermost
+**Long-form** dev.to (and forem.com, CodeNewbie, any Forem), Hashnode, Ghost, WordPress, Micro.blog, Tumblr (named in `--to`, never part of `all`)
+**Your own blogs** Git blog, HTML blog, bl0ggers (one account per publication)
+**Your calendar** Google Calendar (an event is a post; see [Calendar](#calendar-what-myna-is-going-to-say-on-the-calendar-you-already-look-at))
+
+`myna networks` prints the current list with each one's login method and limit.
+
+### Networks for AI agents
+
+Moltbook, The Colony and 4claw issue keys over their own API, so `myna login`
+with no key registers the agent and stores the key it is given (shown once, by
+them and by myna). MoltExchange and Moltbook then want a person to verify the
+agent in a browser before it can post; login prints the link.
+
+```bash
+myna login colony --username riotcoder --bio "Profullstack's agent"   # registers, active at once
+myna login 4claw --name riotcoder --board singularity
+myna login moltbook --name riotcoder                # opens the claim link; verify needs a post on X
+myna login moltexchange --apiKey molt_...           # register at api.moltexchange.ai first
+myna login ugig --apiKey ugig_live_...
+myna post --to moltbook --submolt general --title "..." "body"
+myna post --to colony --colony findings --postType finding --title "..." "body"
+myna post --to 4claw --board singularity --title "..." "body"
+myna post --to moltexchange --exchange openclaw --title "How do you ...?" "details"
+```
+
+A Moltbook post comes back with an obfuscated arithmetic challenge and stays
+hidden until it is answered; myna reads it with a rule-based parser, asks the
+configured model only when the parser declines, and never submits a guess.
+
+Any other Forem is the dev.to network with an address: `myna login devto
+--instance https://community.codenewbie.org`. The account is
+`devto:you@community.codenewbie.org`, separate from `devto:you`.
+
+Places with no posting API (Hacker News, Stacker News, Indie Hackers, Medium,
+HackerNoon, Quora) are [hand-off cards](#hand-offs): the text, the page to open,
+and a done button.
+
+### The job board
+
+[agenticjobs](https://agenticjobs.work) holds two different things and myna
+treats them as two different things.
+
+A **job opening** is a publication, and stays where it was: `myna jobs post
+opening.md`, named explicitly, never part of a fan-out. A status update turning
+into a job opening at your company is not something you can delete your way out
+of.
+
+An **update** is a status post — a role filled, something shipped, who is free
+next — and that is what the `agenticjobs` network posts. It goes out with the
+rest of them.
+
+```bash
+myna login agenticjobs agenticjobs.work --org acme   # device flow; --org is optional
+myna post "shipped resume downloads" --to all        # the board is included
+myna post --to agenticjobs "we closed the backend role https://acme.dev/blog"
+myna follow agenticjobs acme                         # or candidate:ada, or a page URL
+myna follow bluesky https://bsky.app/profile/mary.my.id/follows   # everyone mary follows, a few an hour
+myna follow bluesky https://bsky.app/profile/mary.my.id/followers --outreachgraph   # her followers, each handed to OutreachGraph
+```
+
+An update goes through the board's own MCP endpoint (`/api/mcp`, its
+`post_update` tool, the same bearer token the device flow handed over), which is
+the door an agent uses; a board too old to have one is answered over REST, and
+`MYNA_AGENTICJOBS_TRANSPORT=rest` picks REST outright. The same update is one
+tool call away for an agent driving myna: `myna_update` on myna's MCP server
+takes `body`, `link`, `org` and `dry_run`.
+
+Leave `--org` off and you post as yourself, which the board only allows if you
+have published a resume there, so an update always has a page behind it. A
+trailing URL moves into the board's own link field rather than being printed
+twice, since the board renders the link under the body. 600 characters, five a
+day, and the same text twice is refused.
+
+myna will not tell you who somebody else follows on that board. It is a job
+board: that list is which employers a person is looking at.
+
+### Your own blogs
+
+Two networks cover nearly every blog that is not a CMS, and both take the
+post as Markdown:
+
+- **Git blog** (`gitblog`) — a repository where a post is one Markdown file
+  with frontmatter (`content/blog/<slug>.md`, the Next.js, Astro and Hugo
+  shape). myna commits the file through the GitHub API, so no checkout is
+  needed and the site's own deploy publishes it. The token is optional:
+  `GH_TOKEN` or `gh auth token` is used when none is stored.
+- **HTML blog** (`htmlblog`) — a directory of plain pages where writing the
+  file is publishing. myna writes the next `NNN-post.html`, lists it in
+  `index.html`, runs the blog's `build-feed.mjs`, and pushes a mirror
+  repository if you name one. When
+  [cli-tools](https://github.com/profullstack/cli-tools)' `blog-post` is on
+  the PATH the page is written by it, byline and analytics tags included.
+
+```bash
+myna login gitblog                 # repo, posts directory, branch, where posts appear
+myna login htmlblog                # directory, public URL, optional mirror checkout
+myna post --to gitblog "Release 1.2
+
+The first paragraph is the description.
+
+## What changed
+..." --title "Release 1.2" --tags "release, cli"
+myna post --to htmlblog --description "One line for the feed" < post.md
+```
+
+Both are **never part of `all`**, and neither is any long-form network (dev.to,
+Hashnode, Ghost, WordPress, Micro.blog, Tumblr) or bl0ggers. A social post fanned out by
+accident is an embarrassment; an article fanned out by accident is a
+publication (and on your own blog, a commit), so those only post when named in
+`--to`. One post can name several: `--to htmlblog,devto` writes the page and
+the article from the same Markdown. Per-post flags: `--slug`,
+`--description`, `--tags`, `--date` (the future is refused), `--draft true`,
+`--author`, `--canonical-url`, and `--overwrite true` for a Git blog.
+
+#### Which copy is the original
+
+`--to htmlblog,devto` publishes the same article twice, so one of them has to
+be the original or search engines pick for you. `--canonical-url` says which:
+
+```sh
+myna post --to devto --title "Release 1.2" \
+  --canonical-url https://example.com/blog/042-post.html < post.md
+```
+
+It is honored wherever the network has a field for it, and the field is
+different every time:
+
+| network | what it sends |
+| --- | --- |
+| dev.to | `canonical_url` |
+| Hashnode | `originalArticleURL` |
+| Ghost | `canonical_url` |
+| Tumblr | `source_url`, the attribution link it has instead |
+| gitblog | `canonical:` in the post's frontmatter, for the site template to render |
+| htmlblog | `<link rel="canonical">` in the page head |
+| bl0ggers | `canonical_url` |
+
+WordPress and Micro.blog are left out on purpose. WordPress core has no
+canonical field (it belongs to an SEO plugin's post meta) and Micropub defines
+no canonical property, so neither pretends to support one.
+
+**htmlblog points at itself** without being asked, using the `siteUrl` you
+logged in with, because the original should confirm what the copies claim.
+Pass `--canonical-url` only when the original really is elsewhere. When
+profullstack/cli-tools' `blog-post` writes the page, it applies its own
+`siteUrl` and myna forwards the flag only when you set one — that needs
+cli-tools 0.28.0 or newer.
+
+### bl0ggers publications
+
+A [bl0ggers.com](https://bl0ggers.com) publication is a blog, a newsletter and a
+podcast under one name, and each publication has its own API key, so in myna
+**one account is one publication**: `bl0ggers:<slug>`. Log in once per
+publication.
+
+```bash
+myna login bl0ggers                         # browser: pick a publication, approve myna
+myna login bl0ggers --channel newsletter    # same, with that account's default channel
+myna login bl0ggers --token blg_...         # headless/agent: the key is checked, then stored
+myna post --to bl0ggers:riot-notes --title "Release 1.2" --tags "release, cli" < post.md
+myna post --to bl0ggers:riot-notes --channel newsletter --title "October" < issue.md
+myna post --to bl0ggers:riot-notes --title "..." --canonical-url https://example.com/post < post.md
+```
+
+The browser sign-in is authorization code + PKCE (S256): myna listens on
+`127.0.0.1` at a random port, opens bl0ggers' authorize page, checks the
+`state` that comes back, and exchanges the code with its verifier for the
+publication's key. The key goes into the encrypted vault like every other
+credential; the publication's URL is recorded so links to it get
+[campaign tags](#campaign-tags-on-your-links). A loopback redirect needs the
+browser on the same machine; over SSH, use `--token`.
+
+Per-post flags: `--channel blog|newsletter|podcast` (else the account's
+default, else bl0ggers picks), `--slug`, `--description` (the excerpt),
+`--tags`, `--image-url`, `--audio-url`, `--canonical-url` (a guest post),
+`--draft true`, `--broadcast true|false` (email the post to confirmed
+subscribers when it goes live, at most once per post; bl0ggers defaults it on
+for `--channel newsletter` and off otherwise, and myna sends it only when you
+pass it). A paused publication saves posts as drafts. Every post carries
+an `external_id` (the queue entry for a scheduled post, else a hash of the
+account and title, or `--external-id`), so a retried send updates the post it
+already wrote instead of publishing it twice.
+
+### YouTube: search, then comment
+
+YouTube has no timeline to post into. What it has is videos, and under each
+one a comment thread, so on YouTube a "post" is a comment on a video you name.
+The useful loop is to search for videos on your subject and comment where the
+conversation already is:
+
+```bash
+myna search youtube "terminal social media manager"
+myna post youtube "If you want this from a terminal, myna does it: https://mynaposter.com" --video dQw4w9WgXcQ
+myna post youtube "Thanks, fixed in 0.4" --reply-to UgzQK7s8m1Xf3kR9pL54AaABAg
+myna post youtube "Release walkthrough" --media walkthrough.mp4 --privacy unlisted
+```
+
+`--video` takes an id or any YouTube link. `myna search` lists the id, channel
+and link for each hit, and `--json` gives the same for a script. A plain
+`myna post youtube` with no video and no video file is an error, on purpose:
+there is nothing on YouTube it could sensibly go to.
+
+Two things to know. Uploads from an app that has not passed Google's
+verification are forced to private, which is Google's rule, not myna's. And
+YouTube filters repeated identical comments as spam, so write for the video
+you are commenting on rather than pasting one line everywhere: a comment that
+answers what the video is about, with your link, lands. The same one pasted
+under twenty videos disappears.
+
+## Skills: the rules per network and per account
+
+Every network and every account gets a `skill.md`: a Markdown file with
+frontmatter, the shape an agent loads as a skill, kept under
+`~/.config/myna/skills/<network>/skill.md` and
+`~/.config/myna/skills/<network>/<account>/skill.md`. The body says what
+belongs there and in what voice; the frontmatter carries limits myna itself
+enforces: `maxPerDay`, `minGapMinutes`, `maxChars`, `requiresCanonical`,
+`contentPolicy`. An account's skill inherits from its network's, with the
+stricter value winning.
+
+The blog template is the reason this exists: **four posts a day, major feature
+announcements and launches only**, no bug-fix stories, no re-sends, never a
+title the blog already carries. myna holds a fifth post to the next day and
+refuses a duplicate title outright (`--allow-duplicate` if you mean it). The
+cap paces automated promotion; a post you ask for by hand goes out with
+`--now`, at once, past the cap.
+
+```bash
+myna skill list                                   # every network and account, which skill is on
+myna skill show htmlblog                          # the blog's rules
+myna skill show htmlblog:dev.profullstack.com/~anthony/blog
+myna skill init                                   # write the missing files; --force rewrites all
+myna skill add bluesky:alice launch-week --from launch-week.md
+myna skill default bluesky:alice launch-week      # pin one; or rotate bluesky:alice on
+```
+
+A fourth dimension is the **post type**, `skills/types/<type>/skill.md`: what
+a post is wherever it goes. Nine ship built in (`launch-announcement`,
+`release-notes`, `bug-story`, `essay`, `repost`, `promo`, `reply`, `event`,
+`social-update`), each naming which kinds of target may carry it and an
+ordered structure an agent writes. `myna post --type bug-story` to the blog is
+refused, because the blog carries launches and essays only; without `--type`
+a post to a blog is a `launch-announcement` and anything else a
+`social-update`. `myna skill show type:<slug>` prints one; `myna skill add
+--type <slug>` adds your own.
+
+An account can hold several skills: pin one, or turn rotation on and each send
+takes the next in turn. The cursor lives in settings, never in the files, and
+each history entry records the skill it used. myna writes a file only when it
+is absent, so what you edit stays edited.
+
+Agents should read the account's skill before posting: `myna skill show`,
+`GET /:network/:account/skill.md` on the dashboard, or the `myna_skill` MCP
+tool. The full mechanism is in [docs/skills.md](docs/skills.md).
+
+## The TUI
+
+```
+  compose  accounts  directories  queue  history  feed  networks  help    all 4
+
+╭─ Compose ─────────────────────────────────────────╮ ╭─ Goes to ──────────────╮
+│ myna is a terminal social media manager. One      │ │ bluesky:alice   139/300│
+│ command posts to every account you own.           │ │ mastodon:@alice 139/500│
+│                                                   │ │ x:@alice        140/280│
+│ https://mynaposter.com                            │ │ reddit:u/alice 139/4000│
+╰───────────────────────────────────────────────────╯ ╰────────────────────────╯
+
+╭─ Command ──────────────────────────────────────────────────────────────────────╮
+│  /link https://example.com/post                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯
+ myna  / for commands    Enter to edit the post    Ctrl+S to send      accounts 4
+```
+
+The right pane counts each network as that network counts, so `x` reads 140 while
+the others read 139: X bills every URL at 23 characters regardless of length.
+
+**Keys.** `/` command bar, `Enter` edit the post, `Ctrl+S` or `F2` send, `Ctrl+T` pick
+targets, `Esc` back, `Tab` next tab (or complete a half-typed command), `Shift+Tab`
+previous tab, `1`–`9` switch screen, `Ctrl+C` quit. Pasting works in every field.
+
+## Commands
+
+Every slash command in the TUI is also a subcommand, so anything you can do by
+hand you can put in a script.
+
+```bash
+myna login <network>              myna post [target] [text]
+myna logout <account>             myna schedule "in 2h" "text"
+myna accounts                     myna queue / cancel <id>
+myna networks                     myna history
+myna feed [network]               myna delete <account> <id>
+myna draft "<topic>"              myna link <url>
+myna infographic <url|topic>      myna run
+myna config [key] [value]         myna doctor
+myna keys                         myna repost <account> <post url>
+myna search [network] <query>     myna follow <account> <handle>
+myna following <account> [handle] myna followers <account> [handle]
+myna graph <subcommand>           myna outreachgraph push <account>
+myna plugins [add|remove]         myna outreachgraph <subcommand>
+myna crawlproof <subcommand>      myna calendar <subcommand>
+myna directory <id> <url>         myna directory listings [id]
+myna skill list | show | init     myna skill add | default | rotate
+myna skill show type:<slug>       myna post --type <slug>
+myna utm [--add example.com]      myna brand [learn|edit|set|pillar]
+myna plan [generate|draft|queue]  myna atomize <url|file>
+myna autopilot [on|off|now|set]
+```
+
+Flags: `--to`, `--title`, `--media`, `--style`, `--json`, `--dry-run`,
+`--no-thread`, `--limit`, `--force`, `--allow-duplicate`, `--type`. Any other `--flag value` is handed to the
+network as an option: `--video` and `--reply-to` for YouTube, `--subreddit` for
+Reddit, `--privacy` for an upload.
+
+`--json` on any read command gives machine output, so `myna accounts --json | jq`
+works the way you would expect.
+
+## Campaign tags on your links
+
+A post that sends someone to your site is invisible at the other end unless the
+link says where it came from. myna adds `utm_source`, `utm_medium` and
+`utm_campaign` to the links in a post, per network, so your analytics can tell a
+Bluesky visit from a Mastodon one.
+
+```bash
+myna utm                                  what gets tagged, and with what
+myna utm --add crawlproof.com,example.org tag these sites too
+myna utm --exclude news.example.com       never tag this one
+myna utm --campaign "{type}-{date}"       change a template
+myna utm --off                            send links exactly as written
+```
+
+Two rules keep it from doing damage. Only sites you own are tagged: myna reads
+those off the accounts that told it where they publish, so a blog account needs
+no setting up, and `--add` covers everything else. And a link that already
+carries any `utm_` parameter is sent exactly as you wrote it, because a tag you
+placed by hand is a decision rather than an oversight.
+
+Templates take `{network}`, `{kind}`, `{type}` and `{date}`. The defaults are
+`{network}`, `{kind}` and `{type}`, which give you
+`utm_source=bluesky&utm_medium=social&utm_campaign=launch-announcement`. Tags go
+on before a post is measured against a network's character limit, so a tagged
+link can never push a post over it.
+
+## The follow graph
+
+Following someone's *followers* is noise: anyone can follow an account, and
+most who do are bots, fans and the idle. Following who they *follow* is the
+opposite. It is a list a person you already trust curates by hand, and when
+several of those people follow the same account, that account is the one to
+follow first. That is the whole idea:
+
+```
+seeds  ──who they follow──▶  candidates  ──ranked, a few an hour──▶  follows
+```
+
+```bash
+myna graph seed bluesky jay.bsky.team pfrazee.com --weight 2   # people worth learning from
+myna graph seed mastodon Gargron@mastodon.social
+myna graph expand                       # read who each seed follows
+myna graph candidates                   # best first: score, how many seeds, who
+myna graph follow --limit 5 --dry-run   # what would go out
+myna graph follow --limit 5             # send them
+myna graph on && myna run               # or let the daemon do it, 10 an hour
+```
+
+A candidate's score is the summed weight of the seeds who follow them, so a
+person three seeds all follow outranks a person one seed follows, and a seed
+with `--weight 2` counts double. The seeds themselves are candidates too. Your
+own accounts never are, and neither is anyone you have already followed, marked
+with `myna graph skip`, or failed to follow three times.
+
+The daemon follows at most `graph.followsPerHour` (10) and `graph.followsPerDay`
+(80) per account, spread evenly across the hour rather than in a burst, which
+is what gets a new account flagged. Every attempt counts against the ceiling,
+successful or not. `myna graph status` shows the budget each account has left;
+`myna config graph.followsPerHour 5` changes it. `graph.networks` restricts
+the daemon to some networks (`bluesky,mastodon`), and `graph.minSeeds 2` means
+nobody is followed on one seed's word alone.
+
+Two direct commands sit under the graph: `myna following <account> [handle]`
+lists who anyone follows (yours by default), and `myna follow <account> <handle>`
+follows one person now. `myna followers <account> [handle]` lists the other
+direction.
+
+### Followers, when you want them
+
+The graph reads who a seed *follows* by default, for the reason above. When
+the people who follow a seed are the audience you are after (a rival's
+customers, a conference account's attendees), read that list instead:
+
+```bash
+myna config graph.expand followers      # or both; following is the default
+myna graph expand --followers           # for one read, whatever the setting
+myna follow bluesky https://bsky.app/profile/rival.example/followers   # a pasted followers page
+myna follow bluesky rival.example --followers                          # the same by flag
+```
+
+A follower of a seed scores `graph.followerWeight` (0.5) of a follow, so a
+person three seeds follow still outranks a person three seeds are followed by.
+Followers lists are read on Bluesky, Mastodon and its relatives, and Misskey.
+
+### Handing who you follow to OutreachGraph
+
+[OutreachGraph](https://outreachgraph.com) can take every account myna
+follows, open a person for each, read their profile and home page into an
+[OpenProfile.md](https://logicsrc.com/openprofile), and work out which offer
+to reach them with once it has their contact details. Nothing is sent to
+anyone; it is assessment. Sign in once with `myna outreachgraph login`, then:
+
+```bash
+myna follow bluesky mary.my.id --outreachgraph            # this follow, handed over as it goes
+myna graph follow --limit 5 --outreachgraph               # the graph's follows too
+myna config graph.outreachgraph true                      # every follow, the daemon's included
+myna outreachgraph push bluesky:me.example                # who you already follow, in pages of 100
+myna outreachgraph push bluesky:me.example --followers    # or who follows you
+```
+
+Each person goes over with their handle, display name, bio and profile URL;
+OutreachGraph answers with who was new, who it knew, and how many OpenProfile
+reads it queued. Networks it has no name for (a job board) are skipped and
+said so.
+
+Works on Bluesky, Mastodon and its relatives, Misskey, X and Nostr. Two
+caveats. **X reads following lists only on the Basic tier and above**; on a
+free app the request answers 403, and an account signed in before this
+release needs `myna login x` again so its token carries the `follows` scopes.
+**Nostr refuses to follow from an account with no contact list on its
+relays**: a follow is a new kind 3 event that replaces the old one everywhere,
+so myna will only extend a list it can find, never publish one that would wipe
+what another client wrote. Follow one person from any other Nostr client first.
+
+## Directories
+
+Posting tells people about the product. A directory lists the product itself,
+which is a different thing: a name, a website, a description and a category,
+reviewed by somebody and then indexed by search engines and assistants. myna
+does both, and keeps them apart.
+
+```bash
+myna directory                            # what myna can submit to
+myna directory login saasrow              # emails you a one-time code
+myna directory saasrow https://example.com --dry-run
+myna directory saasrow https://example.com
+myna directory listings                   # yours, and where each one stands
+```
+
+Give it a URL and myna reads the page, works out the name, writes the
+description and picks the category and vocabulary terms the directory accepts.
+Anything it got wrong is a flag: `--name`, `--description`, `--category`,
+`--tags a,b`, `--platforms cli,web`, `--pricing free`. `--dry-run` prints the
+listing and sends nothing, which is worth doing first — a submission is public
+and a person reads it.
+
+Without a writing model configured, the listing falls back to the page's own
+metadata. That is worse than a written one and still usually good enough;
+`--no-ai` asks for it deliberately.
+
+**How it talks to the directory.** Listings go over the directory's MCP server:
+the tool schemas describe the fields, so a directory that adds one needs no
+release here. Signing in is the exception and goes over its REST API, because
+the emailed code is a conversation with a person rather than something a tool
+call can carry. The API key it hands back is kept in myna's encrypted vault,
+apart from your posting accounts — deliberately, so that `--to all` can never
+turn a stray thought into a product submission.
+
+**Any MCP server, not just the ones myna ships.** `myna directory catalog` lists
+the endpoints myna knows; anything else is a URL:
+
+```bash
+myna directory add acme https://acme.example/api/mcp
+myna directory login acme          # paste the key that directory issued you
+myna directory acme https://example.com
+myna directory tools acme          # what that server actually offers
+myna directory drop acme
+```
+
+Nothing is hard-coded about the second one. myna reads the server's tool table,
+picks out the tool that creates a listing whatever it is called, and sends your
+fields under whatever names *that tool's schema* uses — a directory whose field
+is `product_url` rather than `website` needs no code here. A field the server
+marks required and myna could not work out fails before the call rather than
+after it. What a custom directory cannot do is sign you in: there is no MCP
+method for that, so it takes a key you already have.
+
+[SaaSRow](https://saasrow.com) has a written adapter for one reason: its sign-in
+is an emailed code, which is a conversation with a person rather than a tool
+call. A plugin can add a directory too, with `directories: [...]`, exactly as it
+adds a network.
+
+The same thing is on every surface: `/directory` in the TUI, a Directories
+screen in the desktop app, and `myna_directories`, `myna_directory_preview`,
+`myna_directory_submit` and `myna_directory_listings` over [MCP](#mcp).
+
+## Plugins
+
+A plugin is an ES module whose default export describes what it adds:
+networks, commands, daemon tasks, sources of seeds for the follow graph, and
+hooks: `afterPost` hears about every post once it is out, `afterSchedule` and
+`afterCancel` about every queue entry as it is made and removed. The bundled
+`outreachgraph`, `crawlproof` and `calendar` plugins are the references; read
+[docs/plugins.md](docs/plugins.md) to write one.
+
+```bash
+myna plugins                                 # what is loaded, and what each adds
+myna plugins add @someone/myna-plugin-foo    # from npm, into ~/.config/myna/plugins
+myna plugins add ./my-plugin                 # or a directory on disk
+myna plugins remove foo
+```
+
+Plugin commands run as `myna <command>`; plugin tasks run inside `myna run`;
+a plugin's secrets live in the same encrypted vault as your accounts.
+
+### OutreachGraph: influencers as seeds
+
+[OutreachGraph](https://outreachgraph.com) finds the people who matter for
+what you sell and ranks them by opportunity. The bundled plugin pulls that
+list, keeps the ones with a Bluesky, Mastodon, X, Nostr or Misskey identity,
+and hands them to the graph as seeds, weighted by their score. The graph then
+does the rest: reads who those people follow, and follows the accounts they
+agree on.
+
+```bash
+myna outreachgraph login       # email + password, stored in the vault
+myna outreachgraph people      # the ranked list, with the handles myna can use
+myna outreachgraph sync        # pull them in as seeds now
+myna graph on && myna run      # the daemon re-syncs every six hours
+```
+
+### CrawlProof: an ad for every blog post
+
+[CrawlProof](https://crawlproof.com) runs an ad network across the sites that
+carry its slots. The bundled plugin turns a blog post into a campaign the
+moment it is published: after `myna post` lands a page on a Git blog or an
+HTML blog, the page's URL goes to CrawlProof, which reads it, writes the
+creatives and starts serving. Social posts do not get a campaign of their
+own; `--ad true` on any post runs one for the first URL in it. Pass `--ad false`
+to publish one post without creating a campaign, keeping automatic ads enabled
+for other posts.
+
+```bash
+myna crawlproof login                 # paste an API token from Social → API tokens
+myna post --to htmlblog < post.md     # …and the new page gets a campaign
+myna post --to htmlblog --ad false < post.md # publish this page without an ad
+myna crawlproof ad https://example.com/launch --budget 300
+myna crawlproof ads                   # campaigns, newest first
+myna crawlproof ads show crawlproof-ad-144      # delivery, and the visits it sent
+myna crawlproof ads pause crawlproof-ad-144     # or resume, budget <cents>, delete --yes
+myna crawlproof auto off              # stop the automatic ones
+```
+
+### Calendar: what myna is going to say, on the calendar you already look at
+
+The bundled `calendar` plugin brings Google Calendar in as a network, `gcal`,
+and mirrors the queue onto it. Every post that goes through `myna schedule`
+gets an event at the moment it is due, with the text and the targets in the
+description; `myna cancel` takes the event away again. An event is also just a
+post to `gcal`, which is never part of `all`.
+
+```bash
+myna login gcal                       # a Google Cloud OAuth client with the Calendar API enabled
+myna schedule "2027-04-01 9am" "…"    # queued, and on the calendar
+myna calendar list --days 30          # what is coming up
+myna calendar add "tomorrow 9am" "Standup" --duration 30m --location "Room 1"
+myna post --to gcal --at "friday 3pm" --title "Release review" "Agenda inside"
+myna feed gcal                        # the next events, as a timeline
+myna calendar calendars               # which calendars the account can write to
+myna calendar auto off                # stop mirroring the queue
+```
+
+Google is the first provider; the network is `gcal` so another calendar can be
+another network in the same plugin. While the OAuth client's consent screen is
+in testing, Google expires the sign-in after seven days; publish the consent
+screen and the sign-in is permanent.
+
+## The brand
+
+myna used to have one knob for this: `ai.voice`, a single sentence. That is
+enough to stop a draft sounding like a press release and nowhere near enough to
+make two drafts sound like the same person.
+
+The brand is one Markdown file in `~/.config/myna/brand.md`, with fixed
+headings, which everything that writes reads first: the writer, follow-up
+replies, upvote replies, newsletter issues, infographic copy.
+
+```bash
+myna brand learn                    # from the posts you have already sent
+myna brand                          # what it says now
+myna brand edit                     # it is Markdown, edit it
+```
+
+`learn` asks nothing. It reads your sent history, your OpenProfile and your
+site, and writes the file. A brand you have to sit an interview for is a brand
+that never gets written. It needs at least three sent posts to have anything to
+go on, and it keeps the `Links` section it finds, because the model has no
+business inventing URLs.
+
+```markdown
+# Profullstack
+
+## Audience
+
+People who run their own infrastructure and would rather read a man page.
+
+## Voice
+
+Short declaratives. Name the failure before the fix. Never open with a question.
+
+## Pillars
+
+- Terminals: a terminal beats a dashboard for anything you repeat
+- Self-hosting: you should own the credentials
+
+## Avoid
+
+- excited to announce
+- game changer
+```
+
+Every field can also be set from the command line, which is what a script
+wants:
+
+```bash
+myna brand set voice "Short declaratives. Name the failure before the fix."
+myna brand pillar add "Licensing: who it actually protects"
+myna brand avoid add "excited to announce"
+```
+
+## The plan
+
+The queue holds posts: finished text with a send time. The plan is the step
+before that, and it holds *angles*: a subject and the argument a post would
+make, on a date, with no copy written yet.
+
+That separation is the whole point. A month generated as finished posts is a
+month of copy to delete. A month generated as angles is a list you can read in
+thirty seconds and strike half of, and the writer runs later, when you have
+picked one.
+
+```bash
+myna plan                            # what is planned, and what state it is in
+myna plan generate --days 30 --per-week 5
+myna plan draft <id>                 # write the copy for one angle
+myna plan queue <id>                 # book it into the pacing queue
+myna plan drop <id>
+```
+
+`generate` works from the brand's pillars and spreads the slots evenly over the
+window. It reads what you have already sent so it does not re-argue last week,
+and it skips an angle that is already in the plan.
+
+### Atomizing something you already wrote
+
+One long piece carries five or ten separate arguments and gets read for a day.
+`myna atomize` pulls the arguments out and dates them.
+
+```bash
+myna atomize https://example.com/blog/post --angles 12 --over 30d
+myna atomize ./whitepaper.md --dry-run      # the angles, nothing written
+```
+
+It takes a URL or a local file: a post, a whitepaper, a transcript, a release
+note. The rule the model is held to is that every angle must be a claim the
+source actually makes, so nothing is invented on the way out. What lands is
+plan items, not posts, so nothing is drafted until you ask.
+
+The practice is old enough to have a name that is not ours: content
+atomization, described in 2008, long before a model could do the splitting.
+
+## Autopilot
+
+Off until you turn it on. It only ever fills a gap.
+
+```bash
+myna autopilot                       # where the cadence stands
+myna autopilot on
+myna autopilot set perWeek 5
+myna autopilot set holdHours 24
+myna autopilot now --dry-run         # what it would do, right now
+```
+
+Each turn it counts the distinct posts you sent in the last seven days and what
+is booked for the next seven. If that meets your cadence it stops there and
+does nothing. Post enough yourself and it never runs at all. Fall short and it
+takes the oldest open angle off the plan, drafts it with the brand loaded, and
+hands it to the pacing queue.
+
+Two things keep it honest:
+
+- **The hold window.** Nothing it books is ever due sooner than `holdHours`
+  away, a day by default. It is in `myna queue` and `myna cancel` takes it
+  back. An autopilot that can publish inside the next minute is one you have to
+  watch.
+- **One post a turn.** The daemon calls it hourly. Filling a week's deficit in
+  one burst is the posting pattern that gets accounts flagged, and re-reading
+  the deficit every hour means a post you write yourself at noon cancels the
+  fill that would have gone out that evening.
+
+It refuses out loud rather than silently: no brand, an empty plan, no writer
+key, every account held back by its own pacing rules. `myna autopilot` prints
+the same sentence the daemon logs, so "why has it not posted" always has an
+answer.
+
+Counting is by distinct text, not by history entry: a post that fanned out to
+six accounts is one post, not six.
+
+## The writer
+
+Off unless you configure it. It drafts; you decide.
+
+```bash
+myna config ai.provider anthropic          # or openai, or ollama
+myna config ai.voice "Plain, specific, no hype."
+myna link https://example.com/post --to all
+```
+
+Anthropic is the default and uses `ANTHROPIC_API_KEY`. OpenAI uses
+`OPENAI_API_KEY`. Ollama needs no key and talks to `OLLAMA_HOST`.
+
+## Infographics
+
+```bash
+myna infographic https://example.com/report --style html
+myna post all --media /tmp/.../infographic.png "the numbers are in"
+```
+
+Three backends:
+
+- `svg` renders a built-in template. Offline, no AI, exact text.
+- `html` has the model write HTML and CSS, then screenshots it. Real text,
+  better design.
+- `image` hands the whole thing to an image model. Good for illustration, and
+  the only one where the text can come out wrong.
+
+The first two exist because image models rewrite words on the way through:
+invented figures, misspelled names, quotes nobody said. Letting the model choose
+the copy and rendering it ourselves removes that failure entirely.
+
+Rendering to PNG needs one of Chrome/Chromium, `rsvg-convert`, ImageMagick or
+Inkscape. myna finds browsers that Playwright or Puppeteer already downloaded.
+`myna doctor` reports what it found.
+
+
+## Moving between machines
+
+```bash
+myna save ~/myna.myna        # on the laptop
+scp ~/myna.myna server:      # however you like
+myna load ~/myna.myna        # on the server
+```
+
+A bundle holds the connected accounts, the pending queue and the settings. It is
+**always encrypted with a passphrase you type**, never with the local keyfile:
+the keyfile is machine-specific so a bundle sealed with it could not be opened
+anywhere else, and the file holds a live token for every account you have. There
+is no plaintext option for that reason.
+
+`load` is additive and shows you the effect before causing it. An account that
+already exists here is **kept, not replaced**, unless you pass `--overwrite` —
+tokens get refreshed in place, so a bundle taken last week can carry one that has
+since been rotated, and silently clobbering a working account with a stale token
+is the failure that would be hardest to notice.
+
+## The reshare network
+
+The hardest thing to get from anyone is a share. The reshare network is people
+and agents who have agreed to reshare each other, within limits they set. You say
+what you will amplify and what it costs; the network sends you posts that fit;
+your own myna does the resharing with your own accounts.
+
+```bash
+myna cloud login you@example.com           # the network uses the cloud account
+myna reshare set topics devtools,rust      # what you will reshare
+myna reshare join                          # publish your terms
+myna reshare set auto on                   # offer every post you send
+myna run                                   # pulls matches every ten minutes
+```
+
+`myna profile` is your [OpenProfile.md](docs/openprofile.md): who you are, which
+accounts, which topics, what you will reshare. Built from settings and accounts,
+or hand-written at `~/.config/myna/openprofile.md`. No social token ever goes up;
+the server only matches profiles to requests and keeps score. A native repost
+where the network has one, a post carrying the link where it does not, at most
+`perDay` a day. `rateUsd` is what a reshare by you costs, `bountyUsd` what you
+offer; `myna reshare owed` shows what to settle through CoinPay. The whole thing
+is in [docs/reshare.md](docs/reshare.md).
+
+## Your DID
+
+A decentralized identifier is a name that resolves to keys, not to a company:
+`did:key`, `did:web`, Bluesky's `did:plc`. CoinPay issues one per account and
+lets a person's DID stand behind an agent's. myna proves yours and attaches it.
+
+```bash
+myna did login              # a CoinPay OAuth grant with the did scope, in the browser
+myna did login --cli        # or reuse the session from `coinpay login`
+myna did assign all         # owner of every account
+myna did assign bluesky:bot --role operator   # answerable for an account that is an agent
+myna did show
+```
+
+The DID goes into the OpenProfile: the identity block for a person, the
+Operator section for an agent. Nothing is typed in; CoinPay's answer is what is
+kept.
+
+## Follow-ups
+
+The people who reply, repost, quote or follow are the point of posting and the
+easiest to ignore. `myna engage` answers them from a queue you can read first.
+
+```bash
+myna engage on        # the daemon scans notifications every 15 minutes
+myna engage           # who engaged, what they said, the drafted reply, follow or not
+myna engage send      # send what is due (--dry-run to rehearse)
+```
+
+A reply is drafted by the writer from what they wrote, with your original post
+as context, in your voice, and goes under their post; a repost gets a thank-you
+under the post they shared; everyone gets a follow-back. One per person per
+week, at most `maxPerDay` an account, `gapMinutes` apart, likes ignored unless
+asked. Off by default. The whole thing is in [docs/engage.md](docs/engage.md).
+
+## The upvoter
+
+Posting into a feed nobody reads is the slow way to be ignored. `myna upvote`
+finds the people already writing about what you write about, and amplifies
+them, from a queue you can read first.
+
+```bash
+myna upvote on        # the daemon searches every 30 minutes, casts what is due
+myna upvote           # whose post, why it matched, and what myna will do
+myna upvote topics    # what myna thinks you are about, from your own posts
+myna upvote send      # cast what is due (--dry-run to rehearse)
+```
+
+The subject is not configured: it is read off your own send history, so it
+follows what you post. What clears the bar gets a vote; a sixth of that is also
+shared; a small fraction gets a reply carrying one of your links, and only when
+the post is a strong match, one of your posts genuinely overlaps with it, and
+the writer agrees it would help rather than advertise. At most two of those a
+day an account.
+
+Nothing is cast in the same breath it is found, one author gets one action per
+cooldown, and Reddit ships as manual only because its API terms forbid
+automated voting. Off by default. The whole thing is in
+[docs/upvote.md](docs/upvote.md).
+
+## Asks
+
+People post "is there a site that does X, Y and Z?" every day. `myna asks`
+reads those posts from RSS Amplifier's subreddit mirrors, falling back to the
+Arctic Shift archive, because Reddit blocks servers. It keeps the posts that
+are really somebody asking for a tool, groups them into ideas, and flags an
+idea BUILD once five different people have asked for it.
+
+```bash
+myna asks on                 # the daemon reads the subs every 30 min, stats every 6 h
+myna asks ideas              # what people keep asking for, most wanted first
+myna asks reply <id>         # the answer, on a hand-off card to paste
+myna asks stats --refresh    # thread score and comments, your reply's score and answers
+```
+
+A reply names one of your products, with a disclosure and a UTM-tagged link,
+only when it answers what was asked (`myna asks product add`). Nothing is ever
+posted to Reddit from here. The full story is in [docs/asks.md](docs/asks.md).
+
+## Hand-offs
+
+myna posts everywhere it has an account. What is left after a launch is the
+step only a person can do: a comment on the Reddit thread, a Hacker News
+submission, a reply on LinkedIn. A hand-off is that step written down as a
+card, with the exact text to paste, the page to open and the steps, so it
+takes thirty seconds from a phone instead of a paragraph of instructions
+nobody gets round to.
+
+```bash
+myna handoff add "r/ArtificialInteligence" --title "Comment on the thread" \
+  --open https://www.reddit.com/r/ArtificialInteligence/comments/1wesii0/ \
+  --step "Copy" --step "Open the thread, Add a comment" --step "Paste, Comment" < comment.md
+# Hand-off 3f9a2c1d: r/ArtificialInteligence, Comment on the thread
+# https://mynaposter.com/handoff/AbCdEfGhIjKlMnOpQrStUv
+
+myna handoff                  # what is waiting on you
+myna handoff show 3f9a        # the card, in the terminal
+myna handoff done 3f9a        # or press Mark done on the page
+```
+
+The card is kept in `handoffs.json`. When this machine is signed in to myna
+cloud (`myna cloud login`) it is published too, at a link that is the whole
+secret: anyone holding it can read the card and mark it done, nobody else can
+find it. `--local` keeps a card off the cloud. The daily recap lists open
+hand-offs with their links, so the mail is enough to finish them.
+
+## The nightly summary
+
+Once a day the daemon (`myna run`) mails a report of what myna did: sent in
+the last 24 hours, booked for the next 24, hand-offs waiting on you and the
+queue depth, each against the day before; a 7-day chart of posts sent; a row
+per network with its own 7-day heat strip; the next day's posts; and every
+open hand-off as an **Open card** button. It is HTML with a plain-text part,
+drawn in the same house style as our fleet and GitHub reports.
+
+It is **on by default**. It goes to `recap.to`, else your profile email
+(`myna profile`), else your myna cloud login, at 08:00 local time.
+
+```sh
+myna recap status                 # on/off, where it goes, when it last went
+myna recap off                    # stop the nightly summary
+myna recap on [--to you@example.com] [--at 07:30]
+myna recap                        # print it now
+myna recap --html recap.html      # write the HTML mail to look at
+myna recap --send                 # send one now (the daemon then skips today)
+```
+
+`myna config recap.enabled false` is the same switch as `myna recap off`. The
+mail goes out through the `mail` command (`--command` picks another); a `mail`
+too old for `--html` still gets the plain-text recap.
+
+## AT Protocol servers
+
+The network behind Bluesky is servers anyone can run: a PDS holds accounts, a
+relay streams the firehose, a feed generator serves a feed. myna keeps a public
+directory of them at [mynaposter.com/listing/atproto](https://mynaposter.com/listing/atproto),
+probed before they are shown and every half hour after. A PDS listed there is a
+place to make an account; `myna login bluesky` takes its URL as the service.
+
+```bash
+myna atproto                         # the list
+myna atproto probe https://bsky.social
+myna atproto add https://pds.example --tags community,open-signup   # after myna cloud login
+```
+
+### An account on any PDS, from your OpenProfile
+
+The network behind Bluesky is servers anyone can run, and an account is a
+request to one of them. Everything that request needs is already in your
+OpenProfile (`myna profile`): the handle you go by, your email, your name,
+your headline, your home page, your avatar. So:
+
+```bash
+myna atproto list --kind pds --online        # servers with open signup say "open"
+myna atproto signup https://pds.example      # ada.bsky.social becomes ada.pds.example
+myna atproto signup https://pds.example --handle lovelace --invite pds-example-abc
+myna atproto profile                         # push the OpenProfile to every Bluesky account
+myna atproto profile bluesky:ada.pds.example --dry-run
+```
+
+The password is generated (144 bits) and kept in the vault beside the other
+accounts; the new account posts, follows and reads like any `myna login
+bluesky` one. The profile record is the OpenProfile's name, headline, home
+page and topics within Bluesky's limits, and the avatar when the Avatar line
+is an image under 1 MB. Fields the OpenProfile does not speak to (a banner,
+labels) are left as they are.
+
+## Mail and texts to people
+
+Posts reach networks; these reach people. An SMTP server you already have, a
+Telnyx number for texts, and a contacts file with lists.
+
+```bash
+myna smtp add work --host smtp.fastmail.com --user you@example.com --from "You <you@example.com>"
+myna smtp test work you@example.com
+myna sms setup --from +14084269127            # a Telnyx number on a messaging profile
+myna contacts import agenticjobs --list candidates   # the contact info candidates published
+myna contacts add ada@example.com --name Ada --tags rust --list launch
+myna email --list launch --subject "We shipped" < announcement.md   # Markdown, as text and HTML
+myna sms send --list launch "We shipped. Details: https://example.com" --dry-run
+```
+
+The SMTP password and the Telnyx key live in the vault; the servers, the
+setup and every send are in `outreach.json`. An opted-out contact
+(`myna contacts optout <id>`) is never on a list's recipients again. At most
+200 emails and 100 texts a day unless `outreach.maxEmailsPerDay` and
+`outreach.maxSmsPerDay` say otherwise. The agenticjobs import reads a
+candidate's contact block exactly as the board shows it to the account you are
+logged in with, and writes the source on every contact.
+
+### Mail providers
+
+SMTP is one door out; a mail API is another, and myna speaks the well known
+ones over their own HTTP APIs, with nothing extra installed. Add one with its
+key on stdin (or `--key`, or at the prompt); the key goes in the vault, never
+in `outreach.json`.
+
+```bash
+myna mail provider add rs --type resend --from "You <you@example.com>" < resend-key.txt
+myna mail provider add mg --type mailgun --domain mg.example.com --region eu --from "You <you@mg.example.com>"
+myna mail provider add pm --type postmark --from "You <you@example.com>"   # --stream to pick one
+myna mail provider add aws --type ses --region us-east-1 --key-id AKIA... --from you@example.com   # secret key on stdin
+myna mail provider add mj --type mailjet --key-id <api key> --from you@example.com                 # secret key on stdin
+myna mail provider add cloud --type myna-cloud --from "You <you@example.com>"   # myna sends for you
+myna mail provider list                   # * marks the default
+myna mail provider default rs             # what email and newsletters use without --via
+myna mail provider test rs --to you@example.com
+myna email --to ada@example.com --subject "Hi" --via pm < note.md
+myna newsletter send weekly-1 --yes --via rs
+```
+
+| Type | API | Notes |
+| --- | --- | --- |
+| `resend` | Resend | Newsletters go through the batch endpoint, 100 per call |
+| `mailgun` | Mailgun | `--domain` (else the from address's), `--region us` or `eu` |
+| `mandrill` | Mailchimp Transactional | The Mandrill API key |
+| `sendgrid` | SendGrid | `--region eu` for the EU host |
+| `postmark` | Postmark | Server token; stream `outbound` for one email, `broadcast` for a newsletter, or `--stream` |
+| `ses` | Amazon SES v2 | `--key-id` plus the secret access key, `--region`; signed with SigV4 by hand |
+| `brevo` | Brevo | |
+| `sparkpost` | SparkPost | `--region eu` for the EU host; newsletters go as non-transactional |
+| `mailjet` | Mailjet | `--key-id` is the API key, the secret key on stdin; batches of 50 |
+| `smtp2go` | SMTP2GO | `--region us`, `eu` or `au` for a regional host |
+| `smtp` | Your SMTP server | The same as `myna smtp add` (`--host --port --user --secure`) |
+| `myna-cloud` | myna cloud | No key: the account from `myna cloud login` |
+
+Every provider passes the message's own headers through, so a newsletter's
+`List-Unsubscribe` and `List-Unsubscribe-Post` reach the inbox whichever door
+it used. A 429 or a 5xx from any of them is a retryable failure; a refusal is
+final. Every SMTP server is a provider already, under its own id, and `--smtp`
+still works where `--via` does. With no `--via` and no default set, mail goes
+through the first SMTP server, then the first mail provider.
+
+**Sending through myna cloud.** `myna-cloud` needs no key of your own:
+mynaposter.com sends through Profullstack's Resend account for the signed-in
+myna cloud account. It is capped per account per day (100 unless the instance
+sets `MYNA_MAIL_DAILY_CAP`), one recipient per message, and a newsletter must
+carry its unsubscribe header. Resend only sends from domains verified on that
+account, so your mail goes out as `"Your Name via myna" <mail@mynaposter.com>`
+with Reply-To set to your myna cloud email; replies come to you.
+
+## Newsletters
+
+An issue is a subject and a Markdown body aimed at one contacts list; the
+subscribers are that list, so `myna contacts` and `myna email --list` see the
+same people.
+
+It is the same newsletter on every surface: the CLI below; the TUI's
+Newsletter tab and `/newsletter` (write the issue in the compose box, then
+`/newsletter new <list> <subject>`, `dry`, `test`, `send`); the desktop app's
+Newsletter view (write, test, send, subscribe, import a CSV); the local
+dashboard (`myna dashboard`), which shows each issue's deliveries and each
+list's size; and the MCP tools, over stdio or at mynaposter.com/api/mcp.
+
+```bash
+myna config newsletter.address "Profullstack, Inc., 1 Main St, San Jose, CA 95112, USA"   # required
+myna cloud login                                   # mynaposter.com hosts the unsubscribe links
+myna newsletter import subscribers.csv --list moshcode   # email,name,tags (or .json)
+myna newsletter subscribe ada@example.com --list moshcode --name Ada
+myna newsletter create --subject "Moshcode weekly #1" --list moshcode < issue.md
+myna newsletter send moshcode-weekly-1 --to you@example.com     # one [test] copy (--test works too)
+myna newsletter send moshcode-weekly-1 --dry-run
+myna newsletter send moshcode-weekly-1 --yes                    # without --yes: the numbers, nothing sent
+myna newsletter edit moshcode-weekly-2 --at "friday 9am"          # the daemon sends it
+myna newsletter list | show <id> [--body] | rm <id> [--force]
+myna newsletter subscribers --list moshcode
+myna newsletter unsubscribe ada@example.com [--list moshcode]
+myna newsletter sync                                # pull one-click unsubscribes
+```
+
+**The way out.** Every message carries `List-Unsubscribe` (an https link and a
+mailto) with `List-Unsubscribe-Post: List-Unsubscribe=One-Click`, so Gmail and
+Apple Mail show their own unsubscribe button, plus a link and your postal
+address in the footer. A send without `newsletter.address` is refused. The link
+is hosted by myna cloud at `mynaposter.com/api/v1/newsletter/u/<inbox>/<token>`:
+the token is random per subscriber and made on your machine, so the server
+never sees an address. It is one click either way: the mail client's
+one-click POST (RFC 8058, what Gmail and Yahoo require of bulk senders) shows
+no page at all, and the footer link unsubscribes on the click and opens a
+"You're unsubscribed" page with a **Re-subscribe** button, so a click nobody
+meant (a link scanner's included) is one press to undo. A HEAD request records
+nothing. `myna newsletter sync`, every send and the daemon pull the changes
+back: an unsubscribe becomes the opt-out, and a Re-subscribe pressed by that
+person on that page lifts it. Nothing else ever lifts an opt-out. To host
+it yourself, `myna config newsletter.unsubscribeUrl "https://you.example/u/{token}"`
+and hand each token you receive to `myna newsletter unsubscribe <token>`.
+
+**Branded layout.** Set a name or a logo and every issue goes out as a full HTML email: a dark header with the logo and name, the issue on a white card with inline styles on every heading, list and link (mail clients strip `<style>`), the call to action as a button in your accent colour, and the footer below. The plain text part is unchanged. The logo must be an https PNG or JPEG, since most mail clients will not show an SVG.
+
+```
+myna config newsletter.brand.name "Profullstack"
+myna config newsletter.brand.logoUrl https://profullstack.com/icons/favicon-196x196.png
+myna config newsletter.brand.url https://profullstack.com
+myna config newsletter.brand.accent "#e5383b"
+myna config newsletter.brand.tagline "Agentic engineering"
+```
+
+**On the web too.** Name accounts for a list and every issue to it also goes up as a post once it has gone out: the daemon publishes it on its next turn, once per account, with `myna:newsletter:<id>` as the idempotency key. A bl0ggers publication takes it on its newsletter channel (`/issues`), and an issue sent within the last two days is mailed to that publication's own subscribers too; an older one is filed quietly. `{{cta}}` becomes a plain link to the set's first call to action. A failed post is retried for five turns, then waits for a hand.
+
+```
+myna newsletter publish-to profullstack-users bl0ggers:chovy   # set (none clears it; no args lists)
+myna newsletter publish profullstack-002 --broadcast false     # by hand, e.g. back issues
+```
+
+### One command: `myna newsletter blast`
+
+The import, create, test copy and list send above, as two short commands. The
+issue is a file argument, not stdin, so nothing breaks when the command is pasted.
+
+```bash
+# Step one: import, create (or update the draft), ONE test copy, then stop.
+myna newsletter blast issue.md --csv users.csv --list profullstack-users --tags profullstack \
+  --id profullstack-001 --subject "..." --subject-b "..." \
+  --service "a Profullstack, Inc. product" --cta-set default --via resend \
+  --reply-to anthony@profullstack.com --max-per-day 6000
+# It prints who gets it, how the variants split, and the command for step two.
+
+# Step two, after checking the test copy: the list send, in the background.
+myna newsletter blast --go profullstack-001 --max-per-day 6000
+myna newsletter status profullstack-001 --watch    # sent, failed, remaining, rate, ETA, per variant
+```
+
+- `--clean` runs the CSV through `email-cleaner - --format json` (from
+  profullstack/cli-tools, which must be on PATH) and imports only the rows it
+  keeps, printing how many were rejected and why.
+- The test copy goes to `--test-to`, else the `--reply-to`, else the From
+  address of the provider. It is variant A, with `[test]` in the subject.
+- Running step one again with the same `--id` updates the draft. Once any of
+  the list has it, the body, subjects and list are fixed: the same file and
+  subjects resume it, anything else is refused.
+- Without `--csv`, the list must already have people on it.
+- `--go` (or `myna newsletter send <id> --yes --background`) starts a detached
+  process and returns at once. It logs to
+  `~/.local/state/myna/newsletter-<id>.log` (`$XDG_STATE_HOME/myna`, or
+  `$MYNA_HOME/state`) and holds `newsletter-<id>.lock` there with its pid.
+  Every list send of that issue (another `--go`, `send --yes`, the daemon, the
+  TUI) is refused while that pid is alive; a lock left by a dead process is
+  cleared on its own. `kill <pid>` stops it, and the same `--go` carries on
+  from the ledger, so nobody gets it twice.
+- When the daily cap stops a run, the log says how many are left; `--go` again
+  the next day sends the rest.
+
+**Pacing and resuming.** A send goes out under `outreach.maxEmailsPerDay`
+(shared with `myna email`) and stops when today's cap is spent; run it again
+tomorrow, or schedule the issue with `--at` and `myna run` carries on each
+day by itself. `newsletters.json` records each recipient as `pending` before
+the provider is asked and `sent` after it answers, so a rerun skips everyone
+who has it. A refusal is `failed` and is retried only with `--retry-failed`; a
+send that died mid-message (or a connection to the API that dropped) leaves
+`pending`, retried only with `--retry-uncertain`, because that person may
+already have it. A failure the provider calls temporary (a 429 rate limit, a
+5xx) stops the run and is tried again on the next one by itself. An issue sent by hand that stopped
+part way (say with `--limit 5`) waits for a hand; only scheduled issues resume
+on their own. Messages go out one a second (`newsletter.paceMs`), and
+`--max-per-day N` raises the cap for one run. With a provider that has a batch
+endpoint (Resend, Postmark, Mailjet, myna cloud) the pace is between batch
+calls instead, and each recipient still gets their own message, link and
+ledger row.
+
+### Tracking and A/B tests
+
+With [crawlproof.com](https://crawlproof.com) tracking set up, every link in an
+issue goes through a signed click URL, the HTML part carries an open pixel,
+and the unsubscribe link is crawlproof's signed one (one-click too) instead of
+myna cloud's, so no `myna cloud login` is needed.
+
+```bash
+myna newsletter track connect moshcode.sh           # from your CrawlProof project: switched on, id and secret kept
+myna newsletter track set <trackingId> --secret <hex>   # or by hand, from the project's Tracking tab
+myna newsletter track status --check
+myna newsletter create --id moshcode-001 --list moshcode-users --service moshcode \
+  --subject "What shipped in moshcode" --subject-b "Five new things in moshcode" < issue.md
+myna newsletter send moshcode-001 --dry-run         # the variants and how the list splits
+myna newsletter stats moshcode-001                  # per variant: sent, opens, clicks, CTR, unsubscribes
+myna newsletter sync-optouts                        # unsubscribes from myna cloud and crawlproof
+myna newsletter cta list | add "<label>" <url> | rm "<label>"   [--set name]
+```
+
+- **Variants.** An issue's subjects (one, or A and B with `--subject-b`) crossed
+  with the calls to action in its CTA set: two subjects and the four default
+  CTAs (Book a demo, Schedule a call, See our plans, Support us) make eight
+  variants, A to H. Which one a person gets is a hash of the issue id and their
+  address, so a resumed send gives nobody a different one. `{{cta}}` in the
+  body marks where the button goes; without it the CTA goes last, before the
+  footer. `create` uses the `default` set unless `--cta-set <name>` or
+  `--cta-set none`.
+- **The footer.** `--service moshcode` makes it say "You get this because you
+  have an account at moshcode; our Terms say we may email news and updates."
+  instead of "you subscribed to <list>", for a list of your users.
+- **Unsubscribes.** Before every send, myna pulls unsubscribes from every source
+  that is set up (the myna cloud inbox, and crawlproof when tracking is on) and
+  applies them. Both fail closed: if either cannot be read, a list send stops
+  before anyone is mailed, the daemon sends nothing that turn, and
+  `myna newsletter sync` exits non-zero. A `--to` test copy still goes out,
+  with a warning. When one person has both a myna cloud re-subscribe and a
+  crawlproof unsubscribe, the one with the later timestamp wins, whichever
+  arrives first.
+- **Stats.** Events are joined to variants through each recipient's msgId in
+  `newsletters.json`. Opens and clicks count unique messages, with machine-flagged
+  ones (mail proxies, scanners, Apple's prefetch) left out; all opens are shown
+  beside them. The leader has the best click-through rate, or the best open rate
+  before anyone has clicked. Test copies (`--to`) are never counted.
+
+## Your settings on every machine
+
+`myna config`, the profile, the pacing, the graph limits, and every skill file
+under `skills/` are a snapshot that syncs through your myna cloud account:
+
+```bash
+myna cloud login you@example.com
+myna synconfig save            # this machine's settings become revision 1
+# on another machine
+myna synconfig load            # and it has them
+myna synconfig                 # where this machine stands: changed here, newer there
+```
+
+`myna run` does it on its own every five minutes once you are signed in
+(`myna synconfig off` stops that): pull what another machine saved, then push
+what changed here. Two machines that both edit before either syncs do not get
+merged; the second save is refused with "another machine saved first", and
+you pick: `load` to take theirs (it will not overwrite a file you edited here
+unless `--force`), or `save --force` to make yours the newest. The cloud keeps
+the last ten revisions. `syncfg` and `sync` are the same command.
+
+What never syncs: the vault and its key, the cloud session, the queue, the
+history, the follow ledger, hand-offs, contacts. Accounts travel sealed with
+`myna cloud push`. The mechanism is [`@profullstack/synconfig`](packages/synconfig)
+(alias `@profullstack/syncfg`), extracted from moshcode's settings sync so any
+tool with a config directory and a cloud can do the same.
+
+## Cloud backup, if you want it
+
+Optional. myna never contacts a server unless you run a `cloud` command.
+
+```bash
+myna cloud signup you@example.com
+myna cloud push        # encrypts here, then uploads
+myna cloud pull        # on the other machine
+```
+
+What goes up is the same bundle `save` writes: **sealed on your machine with a
+passphrase that never leaves it.** The server stores ciphertext it cannot read
+and refuses to store anything that is not already sealed. That is the only
+arrangement under which keeping tokens for 26 social networks on somebody
+else's computer is a reasonable thing to do — a full compromise of the server
+yields nothing.
+
+Sign-in is email and password. The house pattern is magic link and passkey, with
+an optional password for devices those cannot reach; a terminal has no mail
+client to open a link in and no authenticator to hold a passkey, which is that
+exception exactly.
+
+Self-host it by pointing `MYNA_SERVER` at your own instance.
+
+## Beyond the terminal
+
+myna is one core with four faces. An account connected in any of them works in
+all of them, because they read the same vault.
+
+| | |
+|---|---|
+| `apps/cli` | The TUI and the scriptable CLI |
+| `apps/desktop` | An Electron app, same core |
+| `apps/api` | An HTTP API for scripts and cron |
+| `packages/mcp` | An MCP server, so an agent can post for you |
+
+myna is also an MCP *client*, in one place: a software directory that accepts
+listings over MCP is submitted to that way. See [Directories](#directories).
+
+### Several accounts on one network
+
+Accounts are keyed by `network:handle`, so as many as you like can coexist:
+
+```bash
+myna post bluesky "goes to every Bluesky account"
+myna post bluesky:work.bsky.social "just the work one"
+myna post bluesky,mastodon:@me@example.com "mix and match"
+```
+
+Naming a network and one of its accounts together still posts once to each.
+
+### HTTP API
+
+```bash
+export MYNA_API_TOKEN=$(openssl rand -hex 32)
+bun apps/api/src/server.ts
+
+curl localhost:8787/v1/networks
+curl -X POST localhost:8787/v1/post \
+  -H "authorization: Bearer $MYNA_API_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"text":"shipping today","to":"all"}'
+```
+
+Reads are open when no token is set; writes are refused outright rather than
+left unauthenticated. `DATABASE_URL` decides the shape: unset means single-user
+against `~/.config/myna`, set means the hosted Postgres schema in
+`apps/api/src/db/schema.sql`.
+
+Postgres runs in a container you control, not a managed add-on:
+
+```bash
+docker compose up -d postgres
+export DATABASE_URL=postgres://myna:myna@127.0.0.1:5432/myna
+bun run db:migrate
+```
+
+### MCP
+
+```json
+{ "mcpServers": { "myna": { "command": "bunx", "args": ["@profullstack/myna-mcp"] } } }
+```
+
+Twenty-eight tools: `myna_accounts`, `myna_networks`, `myna_skills`,
+`myna_skill`, `myna_preview`, `myna_post`, `myna_update`, `myna_schedule`, `myna_queue`,
+`myna_cancel`, `myna_history`, `myna_draft`, `myna_timeline`, `myna_search`,
+and for [directories](#directories) `myna_directories`,
+`myna_directory_preview`, `myna_directory_submit` and
+`myna_directory_listings`, and for [newsletters](#newsletters)
+`myna_newsletters`, `myna_newsletter`, `myna_newsletter_create`,
+`myna_newsletter_edit`, `myna_newsletter_delete`, `myna_newsletter_send`
+(a dry run unless `dry_run` is false), `myna_newsletter_subscribe`,
+`myna_newsletter_unsubscribe`, `myna_newsletter_subscribers` and `myna_newsletter_track_connect`. An agent should call `myna_skill` for an account
+before `myna_post` to it: the [skill](#skills-the-rules-per-network-and-per-account)
+says what belongs there and how often.
+
+There is deliberately no login tool, for a network or a directory. Connecting
+one means typing a password, completing a browser flow or reading a code out of
+an email, and that belongs to a person. `myna_post` publishes immediately and
+cannot be undone on every network, which its description says plainly;
+`myna_preview` is there to check the targets and the per-network tailoring
+first, and `myna_directory_preview` does the same for a listing.
+
+### Deploying
+
+`.railway/railway.ts` defines the two deployable services. One thing to know
+before editing it: the file is declarative for the **whole** Railway project, so
+without `export const partial` it plans to delete every service it does not
+mention. Run `railway config plan` and read the destroy count before applying.
+
+## Where things are kept
+
+```
+~/.config/myna/
+  vault.json      accounts and credentials, AES-256-GCM
+  vault.key       the key, when not using a passphrase (0600)
+  queue.json      scheduled posts
+  history.json    what was sent
+  graph.json      follow graph: seeds, candidates, and every follow sent
+  settings.json   preferences, and which skill each account is on
+  contacts.json   people you may write to, their lists, and who opted out
+  outreach.json   SMTP servers (passwords in the vault) and every mail and text sent
+  newsletters.json  issues, who each one reached, and unsubscribe tokens
+  skills/         the rules per network and per account, as skill.md files
+  plugins/        plugins installed with `myna plugins add`
+```
+
+Plugin secrets (an OutreachGraph login, say) are inside `vault.json` beside the
+accounts, not in settings.json.
+
+The vault is encrypted with a local keyfile by default, so myna does not ask for
+a master password on every launch. To use a passphrase instead:
+
+```bash
+MYNA_PASSPHRASE="…" myna doctor
+```
+
+Set `MYNA_HOME` to keep everything somewhere else.
+
+## Development
+
+```bash
+bun install
+bun run cli          # the TUI from source
+bun test             # unit tests; no database needed
+bun run typecheck
+```
+
+The cloud tests need a real Postgres and skip themselves without one:
+
+```bash
+bun run db:up
+export DATABASE_URL=postgres://myna:myna@127.0.0.1:5432/myna?sslmode=disable
+bun apps/api/src/db/migrate.ts
+bun test apps/api/test
+```
+
+The Nostr signing is BIP340 Schnorr implemented over BigInt, because `node:crypto`
+exposes no Schnorr primitive. It is checked against the BIP340 reference vectors
+in `packages/core/test/schnorr.test.ts`.
+
+```
+packages/core     adapters, vault, scheduling, the writer, infographics
+apps/cli          the TUI and the scriptable CLI
+```
+
+### Cutting a release
+
+Pushing a `v*` tag builds and attaches the binaries, but a tag on its own leaves
+four things undone: the `VERSION` literal a test guards, the binary in
+`~/.local/bin` that the daemon actually runs, the announcement, and the ad.
+`scripts/ship.ts` does the lot in order and stops at the first thing that does
+not look right.
+
+```bash
+bun scripts/ship.ts minor --dry-run          see every step, change nothing
+bun scripts/ship.ts minor --announce "..."   bump, test, tag, install, announce
+bun scripts/ship.ts 0.34.1                   an exact version instead of a level
+```
+
+`--no-install` leaves this box alone, `--no-ad` skips the CrawlProof ad.
+
+Two things it reads rather than restates, so it cannot drift: the packages to
+bump are every workspace `package.json` already on the current version, so a
+package that joins the release set is found and one deliberately left behind
+stays behind; and the test command is parsed out of the release workflow, so
+ship can never test less than CI does.
+
+The announcement copy is never written for you. Without `--announce` the send is
+skipped and the command to run is printed instead.
+
+## Licence
+
+MIT

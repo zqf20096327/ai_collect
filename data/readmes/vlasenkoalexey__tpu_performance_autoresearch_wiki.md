@@ -1,0 +1,524 @@
+# 🤖 TPU Model Performance Auto-optimization
+
+> **Model optimization that feels like cheating.**
+> Point an LLM agent at your training script and hardware target, come back to a **state-of-the-art-capable configuration** with a fully documented research trail.
+
+This repository is an experiment in **autonomous TPU model performance optimization**, end-to-end: profile analysis, hypothesis generation, experiment execution on real hardware, and result synthesis — all run by an LLM agent against a knowledge base it maintains itself.
+
+The claim is structural, not incremental: **given a sufficiently capable LLM, the right profiling tools, and a knowledge base that includes the model's + framework's source, an autonomous agent can drive any (model, hardware) pair to state-of-the-art performance for that combination**. This isn't a replacement for performance engineers — it's a force multiplier. The primary goal is unchanged: a faster model. The engineer stays in charge of direction (picking targets, adjudicating contradictions, deciding which gains are worth keeping); the agent absorbs the legwork (reading code, generating hypotheses, running experiments, profiling, writeup).
+
+> 📝 **Blog series:** a series of articles walks through this TPU auto-optimization work in depth — motivation, methodology, and case-study results. Read them at **[vlasenkoalexey.github.io/tags/autoresearch](https://vlasenkoalexey.github.io/tags/autoresearch/)**.
+
+
+## Case study
+
+**Fully autonomous TPU model optimization — four agents, same problem, no human steering.** Qwen3-8B on a
+single TPU v6e-8. Each harness ran its own loop end to end: propose a hypothesis, patch the model code,
+benchmark on real hardware, profile, revise.
+
+![Qwen3-8B v6e-8 — best causal MFU per experiment, four agents racing the MaxText SOTA line](raw/assets/qwen3-mfu-comparison.gif)
+
+*Each agent's running-best MFU as its experiments land, at 2k and 8k context. Dashed line is hand-optimized
+**MaxText SOTA** — 36.6% at 2k, 39.8% at 8k. Hollow dots are misses, filled are hits.*
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="raw/assets/agents/claude.png" width="34"><br><b>Claude Opus 4.8</b><br><img src="raw/assets/agents/line-claude.png" width="120"><br>2k 35.8% · 8k 34.6%</td>
+<td align="center" width="25%"><img src="raw/assets/agents/antigravity.png" width="34"><br><b>Antigravity Gemini 3.1 Pro</b><br><img src="raw/assets/agents/line-antigravity.png" width="120"><br>2k 33.0% · 8k 30.6%</td>
+<td align="center" width="25%"><img src="raw/assets/agents/codex.png" width="34"><br><b>Codex GPT-5.5</b><br><img src="raw/assets/agents/line-codex.png" width="120"><br>2k 47.3% · 8k 40.5%</td>
+<td align="center" width="25%"><img src="raw/assets/agents/claude-fable.png" width="34"><br><b>Claude Fable 5</b><br><img src="raw/assets/agents/line-claude-fable.png" width="120"><br>2k 40.5% · 8k 39.9%</td>
+</tr>
+</table>
+
+*MaxText hand-optimized reference: **2k 36.6%** · **8k 39.8%**.*
+
+**Codex GPT-5.5 and Claude Fable 5 both beat the hand-optimized MaxText baseline at both context lengths,
+autonomously** — Codex by a wide margin at 2k (47.3% vs 36.6%). The animation also shows *how* they got
+there: progress is not smooth but a staircase of step-changes separated by long flat stretches of failed
+hypotheses, which is what an honest search looks like.
+
+▶ **[Explore the experiments interactively](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/wiki/analyses/qwen3/mfu-explorer.html)**
+— every run with its config diff, profile and verdict. Llama3 8B has its own explorer
+[here](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/wiki/analyses/llama3/mfu-explorer.html).
+
+## Case study 2 — kernel lane
+
+The same loop, one level down the stack — pointed at hand-written **Pallas kernels** rather than model
+configs. Each round: work out what the kernel is actually limited by, commit to a falsifiable prediction
+before writing code, author the kernel, check its numerics against a reference implementation, then keep
+or discard it on the measurement. Here all three agents attack **GQA attention** on one v6e chip, scored
+against
+[MaxKernel](https://github.com/AI-Hypercomputer/accelerator-agents)'s published best.
+
+![gqa-attention kernel hill climb — three agents' running-best speedup vs experiment number](raw/assets/kernel-gqa-hillclimb.gif)
+
+*Running-best speedup over the naive baseline, one staircase per agent. Filled marker = that experiment
+raised the best; hollow = it did not. Dashed line is **MaxKernel best, 2.48×**.*
+
+<table>
+<tr>
+<td align="center" width="33%"><img src="raw/assets/agents/claude.png" width="34"><br><b>Claude Opus 5</b><br><img src="raw/assets/agents/line-opus5.png" width="120"><br><b>6.77×</b> · 22 experiments</td>
+<td align="center" width="33%"><img src="raw/assets/agents/codex.png" width="34"><br><b>Codex GPT-5.6</b><br><img src="raw/assets/agents/line-codex.png" width="120"><br>3.73× · 9 experiments</td>
+<td align="center" width="33%"><img src="raw/assets/agents/antigravity.png" width="34"><br><b>Gemini Flash 3.6</b><br><img src="raw/assets/agents/line-gemini.png" width="120"><br>3.51× · 12 experiments</td>
+</tr>
+</table>
+
+**All three beat MaxKernel's 2.48×, and Opus 5 reaches 2.7× MaxKernel's number.** The hollow markers are the
+point of the animation: most experiments do not move the frontier. Opus 5's jump from 3.73× to 4.97× at
+experiment 8, and again to 6.03× at 15, are single structural changes surrounded by long flat runs of refuted
+hypotheses — the same staircase shape as the model lane, one level down the stack.
+
+▶ **[Explore the kernel experiments interactively](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/tools/kernel_explorer/kernel-explorer.html?kernel=gqa-attention&llm=all)** — every
+experiment with its verdict, the candidate ledger underneath it (including the failures that never
+shipped), and per-arm frontier lines across all 40+ kernel families. Switch family or arm from the
+dropdowns, or straight from the URL: `?kernel=<family>&llm=all`. [All families at once](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/tools/kernel_explorer/kernel-explorer.html?kernel=all&llm=all).
+
+## The Core Components
+
+### 🔁 Autoresearch — specialized to TPU perf
+
+**Autoresearch** — introduced in [Karpathy's autoresearch github repo](https://github.com/karpathy/autoresearch) — is a methodology for letting an LLM agent run an open-ended research program: propose ranked hypotheses, run experiments, evaluate outcomes, revise priors, feed what it learned into the next round. The methodology is **domain-agnostic** — any question you can frame as a ranked set of falsifiable experiments with measurable outcomes is a candidate. Karpathy's original target was LLM pretraining *quality* (architectural and optimizer tweaks judged by loss); **this repository specializes the same loop to TPU model *performance*** — wall-clock step time, tokens/sec, MFU, memory budget.
+
+Applied in this repo, the loop runs continuously: **hypothesis → minimal code diff → benchmark on real hardware → profile + HLO capture → op-by-op diff against the prior best → profile-grounded verdict → writeup + ledger row → next round.** Every experiment, winning or losing, is recorded as context for the next hypothesis and submitted to a separate git branch. Successful experiments are built on top of each other creating a hierarchical tree of ideas that play best together. The discipline is what makes the loop compound rather than oscillate — each experiment permanently improves the priors for the next one.
+
+The same loop also runs one level down the stack, on hand-written **Pallas kernels**: [`wiki/kernel_experiments/program.md`](wiki/kernel_experiments/program.md) is the kernel-lane protocol, with [`/formulate-kernel-hypothesis`](.claude/skills/formulate-kernel-hypothesis/SKILL.md) and [`/author-kernel`](.claude/skills/author-kernel/SKILL.md) in place of the model-lane skills, an independent [`kernel-verifier`](.claude/agents/kernel-verifier.md) that re-measures every candidate rather than trusting its author, and [`kernelgate`](tools/kernelgate) (`kgate`) as the measurement and parity gate — a number without a receipt does not exist. Knowledge is split the same way: [`kernel-optimization-index.md`](wiki/kernel-optimization-index.md) is the regeneratable router, [`BRIEFS.md`](wiki/kernel_experiments/BRIEFS.md) holds the rules earned from failed runs, and [`wiki/kernels/classes/`](wiki/kernels/classes) carries the per-class levers a hypothesis must pick from. The two lanes compose — a slow op found in a model experiment can spawn a kernel family at that exact operating point, and a kernel win is merged only after it validates end-to-end back in the model lane. See [Case study 2](#case-study-2--kernel-lane).
+
+The rest of this section describes the supporting components that make that discipline possible in the TPU-perf domain.
+
+### 🔌 xprof-cli — profiling as a first-class LLM capability
+
+Autoresearch is a feedback loop: hypothesize → experiment → **observe** → revise. Without the *observe* step grounded in real signal, the loop collapses into flag-guessing. For TPU performance optimization, "real signal" means knowing where each millisecond of step time goes, which tensor sits where in HBM, and where every op lands on the roofline. The source of truth is [**XProf**](https://github.com/openxla/xprof), OpenXLA's official TPU profiler — step-time breakdown, per-HLO-op runtime + memory traffic, collective-overlap timing, roofline classification, memory timeline.
+
+Raw XProf is a web UI, not something an LLM agent can use directly. We bridge the gap with [**xprof-cli**](https://github.com/vlasenkoalexey/xprof-cli) (private repo - reach out to [@vlasenkoalexey](https://github.com/vlasenkoalexey) for access), which exposes XProf as **programmatic tools the agent invokes straight from a shell** — `xprof-cli get_overview --logdir=… --run=…`. It runs in-process with no server to start or keep in sync, so a profile captured seconds ago is readable on the next call. (An [MCP](https://modelcontextprotocol.io/) transport also exists and still works, but it is legacy; the CLI is the supported path.)
+
+Besides analyzing profiles, it also exposes an API to access **HLO dumps** — produced when the trainer is launched with [`XLA_FLAGS="--xla_dump_to=<dir> --xla_dump_hlo_as_text"`](https://openxla.org/xla/flags_guidance) — which lets the LLM connect profile information back to the [**optimized HLO**](https://openxla.org/xla/architecture#xla_the_tensorflow_compiler_framework) (what XLA actually executes on the TPU, after layout assignment, fusion, scheduling, collective-fusion, and remat passes) and to the [**original HLO**](https://openxla.org/xla/operation_semantics) (the IR the framework — JAX or torchax — emitted before XLA's optimization passes ran). From there the LLM can backtrace the original HLO back to the line of model code that produced it.
+
+Profiles and HLO answer *which op* is slow. For kernel work you need to know *why*, inside a single kernel — and
+that is the **LLO** (low-level optimizer) layer: the machine code XLA's TPU backend actually schedules. Captured
+with `--xla_jf_dump_to` plus the two kernel-profiling `LIBTPU_INIT_ARGS` flags, it exposes what no profile can:
+
+- **`get_llo_fit_summary`** — a one-screen kernel digest: VMEM allocated vs the scoped limit, MXU operand width
+  and matmul count, per-unit static occupancy (MXU / VPU / load / store / scalar), register **spills and fills**
+  per bundle, and a pipeline timeline classifying every bundle as overlap, MXU-only, memory-stall or bubble.
+- **`get_llo_utilization`** / **`get_kernel_stage_breakdown`** — measured per-unit utilization and Mosaic
+  pipeline-stage timing over the real kernel spans, with DMA wait ratios.
+- **`get_llo_bundles`** / **`get_llo_schedule_analysis`** — the individual VLIW bundles and their HLO
+  attribution, so a stall run can be traced to the instruction that caused it.
+
+Register spilling, half-empty MXU pushes and serial VPU dependency chains are invisible to a trace viewer and are
+routinely the whole story in a Pallas kernel. This layer is what makes the kernel lane possible at all.
+
+### 🧠 LLM Wiki — collection of domain knowledge on TPU optimization
+
+Out of the box, an LLM's knowledge of TPU performance is thin — it has a rough sense of FLOPs, attention, and general ML training, but not much sense of XLA optimization passes, VMEM budgets, splash attention's block-size knobs, how torchax dispatches through JAX, or the quirks of any particular Pallas kernel. The usual fix for this kind of gap is **RAG** — retrieve snippets from a vector database at query time. That works, but it's probabilistic (you hope the right chunk lands in the top-k), expensive to set up (embedding pipeline, vector store, rank tuning), and hard to audit after the fact.
+
+A lighter alternative, popularized by Karpathy in his [**LLM wiki gist**](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f), is to just build a wiki: plain markdown files on disk, with a schema, cross-linked by relative paths, backed by an `index.md` the LLM reads first on every task. Retrieval is `grep` — deterministic, auditable, near-free. No vector DB, no embeddings, no rank tuning. The LLM reads what it needs and writes what it learns, and because markdown is human-readable too, a person can open the wiki at any time and see exactly what the LLM "knows" about the domain.
+
+In practice, using an LLM wiki is straightforward: you point the agent at a source — a paper, a doc page, a codebase — and ask it to summarize into the schema's page format, cross-linked to anything it touches. Ingestion can be as low-lift as *"find every public reference to Pallas TPU kernels, catalog them by repo, backend, stability, and claimed performance improvements, and add the result to the wiki"* — which is exactly how this repo's [Pallas kernel directory](wiki/analyses/2026-04-23-pallas-kernel-directory.md) was built, surveying ~200 kernels across ~30 OSS repos and indexing them by function. The payoff is leverage on every subsequent run: when the agent is scoring optimization hypotheses later, it already knows which Pallas kernels exist in the ecosystem, which are production-grade, and how to apply them — no re-discovery, no hallucinating kernels that don't exist.
+
+**Bonus**: because the wiki is plain markdown with relative links, you can point [**Obsidian**](https://obsidian.md/) — a free, local-first markdown knowledge-base editor — at the wiki directory and immediately get a navigable graph view, backlinks, full-text search, and tag filtering on top of exactly the same files the LLM is reading and writing. Same source of truth, two readers: the agent uses `grep` and direct file I/O, you get a visual UI for browsing what the agent has learned, spot-checking its writeups, or manually exploring the experiment tree.
+
+Click the image below for a live force-graph view of the **public infra wiki** — every markdown page the agent has built or read, and the cross-links between them. Hover a node to light up its neighbors, click to open the underlying page, search to dim non-matches, toggle categories from the legend.
+
+[![The wiki graph: every markdown page the agent has built or read, and the cross-links between them. Click to interact.](raw/assets/wiki.png)](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/tools/graph/index.html)
+
+> [!NOTE]
+> The interactive link above renders the **public** [`tpu_performance_autoresearch_wiki`](https://github.com/vlasenkoalexey/tpu_performance_autoresearch_wiki). GitHub Pages can't serve a private repo on the free tier, so the **private** version's live viewer (current snapshot: **3,580 pages, 7,275 cross-links** across 4 model families + shared concept/observation/source/codebase substrate) is checked in at [`tools/graph/`](tools/graph/) and runs locally:
+> ```bash
+> python3 tools/graph/build_graph.py        # regenerate graph.json after wiki edits
+> python3 -m http.server 8000               # serve from repo root
+> #                                         then open http://localhost:8000/tools/graph/
+> ```
+> Double-clicking `tools/graph/index.html` directly (file://) often works too, but some browser/version combos block `fetch('graph.json')` over file://; the HTTP server is the reliable fallback if you see an empty canvas + a CORS error in the dev console.
+
+
+### 💻 Your model codebase — what LLM can actually change and optimize
+
+The model code you want to optimize rarely exists in isolation — it lives inside a larger training framework your team owns or forks, like [TorchTitan](https://github.com/pytorch/torchtitan). The wiki structure adapts naturally: add the framework as a git submodule under `raw/code/<slug>`, pin the commit you ingested, and let the agent edit it in place on per-experiment branches. Each experiment is a real diff on a real branch — auditable, revertable, and tied back to the experiment page that produced it, the profile that justified it, and the verdict that accepted or rejected it.
+
+This is the part that distinguishes this setup from "LLM as smart reader." The agent gets **write access** to the model code, not just read access. It can swap an attention kernel, tune a batch size, restructure remat, flip an XLA flag, and then measure whether it actually helped — all under the autoresearch protocol that makes the change reviewable. There are multiple ways to wire this up (submodule, sibling clone, monorepo subdir), and no single right way — pick the one that matches how your team already version-controls the model.
+
+The wiki itself stays **out of the model code repo**, intentionally. Hypothesis / experiment / observation / analysis pages live only in the wiki; the model repo gets only the code plus a `exp: wiki/experiments/<...>.md` footer in each commit message that ties back to the experiment that produced the change. That keeps the model repo upstream-mergeable (no narrative ever lands in someone else's main branch) and keeps profile artifacts, cross-lane experiments, and the historical experiment ledger in a single auditable place. The full rationale and the alternative pointer-pattern conventions are in [`SCHEMA.md`](SCHEMA.md) under "Experiment narrative vs. model code".
+
+For a serious optimization project, the recommended pattern is **one private autoresearch repo per model family**, forked from this template, with the model's code repo plus any reference codebases (MaxText, etc.) added as submodules under `raw/code/`. Shared knowledge that applies across model families — Pallas kernel directory, framework concepts, scaling techniques — stays in this template (the infra wiki) and is linked from the per-model repos. See [`SCHEMA.md`](SCHEMA.md) under "One wiki per model family (or per project)" for the layout.
+
+### 🏆 State of the art repos — optimization reference
+
+The setup so far is enough for the agent to optimize your model on its own — but you can shortcut a lot of the search by handing it a working reference for what "fast on TPU" actually looks like. Ingest a state-of-the-art TPU codebase alongside your own and the optimization question changes shape: instead of *"explore the space of possible optimizations,"* it becomes *"figure out why this reference model is fast, why mine is slow, and close the gap."* That's a much narrower, much more tractable search.
+
+Concrete references worth ingesting: for TPU training, [MaxText](https://github.com/AI-Hypercomputer/maxtext) and [MaxDiffusion](https://github.com/AI-Hypercomputer/maxdiffusion); for inference, [vLLM](https://github.com/vllm-project/vllm) and [SGLang](https://github.com/sgl-project/sglang) (both have first-class TPU backends). Once these are in the wiki — kernels cataloged, sharding strategies indexed, XLA flags noted — the agent has a concrete target to compare against, not just a space of abstract hypotheses.
+
+And the agent can go further than reading code. It can actually **run** the reference model, profile it through the same xprof-cli it uses for your own model, and read its HLO and op-level breakdown side-by-side with yours. From there it can attribute the gap concretely — different attention kernels, different fusion patterns, different sharding or remat strategies, different XLA flags — and turn each gap item into a falsifiable hypothesis on your own model. That short-circuits a large chunk of the search: many "what should I try next?" decisions collapse into "do what the fast reference already does, and measure."
+
+### ⚙️ Your framework's codebase — going even deeper
+
+Optional, but useful: ingest the framework your model is built on. The dominant choice on TPU is [JAX](https://github.com/jax-ml/jax), but PyTorch-on-TPU paths matter too — [PyTorch/XLA](https://github.com/pytorch/xla), [torchax](https://github.com/pytorch/xla/tree/master/torchax), and [TorchTPU](https://developers.googleblog.com/torchtpu-running-pytorch-natively-on-tpus-at-google-scale/) (Google's native PyTorch-on-TPU backend, in private preview — ingested here as [`raw/code/torch_tpu`](raw/code/torch_tpu)). With the framework in the wiki, the agent can resolve crash stacktraces all the way down to the framework internals, reason about *why* a particular dispatch path emitted the HLO it did, and propose fixes that touch the framework boundary rather than just the model code. This is where the deeper bugs and the deeper wins tend to live — not in your model file, but in how your framework lowers it to XLA.
+
+**Bonus** — if your model is in PyTorch, consider asking the LLM to port it to JAX as a stepping stone. The vast majority of public TPU optimization knowledge — kernels, sharding patterns, scaling recipes, reference trainers like MaxText — is JAX-native, so an agent has dramatically more priors to work with on the JAX side, and a PyTorch-only loop can stall on questions where the JAX-side answer is well-known. With the full model repo, the framework source on both sides, and a state-of-the-art JAX reference all in the wiki, porting is largely a mechanical exercise the agent can do on its own. Optimize there, then translate the wins back: a kernel choice becomes a torchax call, a sharding spec becomes a `torch.distributed` plan, a flag becomes an `XLA_FLAGS` line. JAX serves as the optimization playground; your PyTorch codebase remains the destination.
+
+---
+
+## Putting it all together
+
+Combine these ingredients and you have an agent that knows your model and your codebase intimately, can run and profile the training script end-to-end, can pinpoint bottlenecks from a trace, can attribute every op on the profile back to the HLO that produced it and the line of model code that emitted that HLO, and can step into the framework when the answer lives below your model — all while recording every experiment, every verdict, and every prior it revised along the way.
+
+And critically, this is a **self-learning, self-improving** agent. Every experiment it runs — winners *and* losers — is filed back into the wiki as a permanent piece of context: what was tried, what worked, what didn't, and *why*. The next hypothesis is scored against that growing record, so a refuted experiment in week one shapes the ranked list in week ten; a generalizable lesson extracted from one failed run ("scan-over-layers needs an internally-tiled attention kernel") becomes a prior the agent applies automatically the next time scan comes up. The longer it runs, the smarter it gets — not because the model is updating, but because the wiki is.
+
+```mermaid
+flowchart TB
+    subgraph INPUTS_ROW[" "]
+        direction LR
+        subgraph IN["<span style='font-size:1.25em'><b>📥 What you bring</b></span>"]
+            direction TB
+            IN1["💻 Your model +<br/>training script"]
+            IN2["🖥️ Target<br/>hardware"]
+        end
+        INTERNET{{"<span style='font-size:1.25em'><b>☁️ Internet</b></span><br/>papers · docs · OSS repos"}}
+    end
+
+    subgraph HUB_ROW[" "]
+        direction LR
+        WIKI[("<div style='text-align:center'><span style='font-size:1.25em'><b>🧠 LLM Wiki</b></span></div><div style='text-align:left;white-space:nowrap'>• Domain knowledge<br/>• Your model code<br/>• Framework sources<br/>• Reference implementations<br/>• Research trail</div>")]
+        subgraph OUT["<span style='font-size:1.25em'><b>📤 What you get back</b></span>"]
+            direction TB
+            OUT1["💻 Optimized model code<br/>committed to your repo"]
+            OUT2["🏆 SOTA configuration<br/>discovered<br/>(kernels, flags, sharding)"]
+            OUT3["📜 Full research trail —<br/>every experiment, win or loss"]
+        end
+    end
+
+    subgraph ENGINE["<span style='font-size:1.25em'><b>🔁 Autoresearch 🤖</b></span>"]
+        direction LR
+        E1["📖 READS<br/>priors, references"]
+        E2["📊 PROFILES<br/>real runs, HLO"]
+        E3["🧪 EXPERIMENTS<br/>edits real code,<br/>runs on real TPU"]
+        E4["💡 LEARNS<br/>distills findings"]
+        E1 --> E2
+        E2 --> E3
+        E3 --> E4
+        E4 --> E1
+    end
+
+    IN ==> WIKI
+    INTERNET -- "ingest data sources" --> WIKI
+    WIKI ==> OUT
+    WIKI -. "load priors" .-> ENGINE
+    ENGINE -. "file every experiment back" .-> WIKI
+
+    style INPUTS_ROW fill:none,stroke:none
+    style HUB_ROW fill:none,stroke:none
+    style IN fill:#2563eb,stroke:#93c5fd,stroke-width:2px,color:#fff
+    style ENGINE fill:#ea580c,stroke:#fdba74,stroke-width:3px,color:#fff
+    style OUT fill:#16a34a,stroke:#86efac,stroke-width:2px,color:#fff
+    style WIKI fill:#7c3aed,stroke:#c4b5fd,stroke-width:3px,color:#fff
+    style INTERNET fill:#0ea5e9,stroke:#bae6fd,stroke-width:3px,color:#fff
+```
+
+Point it at a model and act as reviewer — you set the targets, arbitrate contradictions, and audit the trail, keeping the branches whose gains are worth merging; the agent runs the loop autonomously — reading, proposing hypotheses, experimenting, profiling, and learning — filing each run to its own branch so review happens after the fact, not as a gate on every step. Every cycle leaves the wiki smarter than before, so the next cycle starts from a better prior.
+
+## What this unlocks
+
+- **Optimization that feels like cheating.** Describe a goal in a sentence. Come back to a configuration at or near the hardware's achievable ceiling, with a linked research trail showing every experiment that led there. The LLM picks the right experiments because it has read the right papers, studied the right code, and learned from every prior experiment it ran on this model.
+- **Ask questions, let the LLM explore.** "Why are we OOM-ing at batch=4?" "What kernel would help the loop-fusion bucket?" "Does splash win at seq=2048?" — the LLM reads the profile, surfaces the relevant prior experiments, proposes the next hypothesis, runs it. You don't need to know what to ask next.
+- **Dramatic ramp-up speedup.** An engineer new to TPU perf can browse `concepts/` → `analyses/` → `experiments/` and build a real mental model in hours instead of weeks. The wiki is a curriculum that **writes itself as it's used**.
+- **Debug the framework, not just the model.** Most TPU perf issues aren't in your model — they're in torchax's dispatch, JAX's sharding plan, or a Pallas kernel's `shard_map` wrapping. With the framework source ingested, the LLM can read it. When torchax's `JittableModule` dedup produced a tied-weight crash (exp 2), the agent pinpointed the cause by grepping `raw/code/torchax/`. When scan-over-layers + XLA SDPA regressed −60 % (exp 51), it explained the mechanism by cross-referencing JAX's scan lowering with the attention code path.
+- **Generalizable findings, written down.** A recent run discovered that **Pallas custom-calls only beat XLA when XLA wasn't already fusing the pattern** — confirmed twice independently (exp 33 Pallas RMSNorm, exp 47 levanter fused CE, both rejected at the same boundary tax). That insight now lives in [an analysis page](wiki/analyses/2026-04-24-gemma4-jax-ceiling-and-process-retrospective.md) and will guide every future Pallas hypothesis. Writing this down is what turns 50 experiments into leverage for the next 50.
+
+
+## Repo layout
+
+```
+SCHEMA.md           single source of truth — page types, operations, rules.
+CLAUDE.md           @SCHEMA.md pointer for Claude Code.
+GEMINI.md           Gemini/Antigravity emulation guide — slash-command + subagent translation rules.
+AGENTS.md           Codex project instructions; points Codex at SCHEMA.md and shared skills.
+.claude/            canonical shared agent skills, scripts, Claude subagents.
+.agents/skills      Codex + Antigravity/Gemini skill-discovery symlink to .claude/skills.
+.codex/             Codex-only adapters: MCP config, custom-agent wrappers.
+wiki/               LLM-owned markdown (index, log, page types per schema).
+  index.md          cross-section — updated on every write.
+  log.md            append-only event log.
+  sources/          ingested papers, docs, talks.
+  codebases/        ingested repos (one page per repo, performance-relevant surfaces annotated).
+  concepts/         techniques, hardware features, compiler flags, kernels.
+  models/           each model under optimization.
+  hypotheses/       ranked candidate optimizations.
+  experiments/      runs — config, profile link, metrics, verdict.
+  observations/     reusable findings pulled from profiles / runs.
+  analyses/         syntheses, ceiling reports, directories.
+  kernels/          kernel families under optimization + per-class lever pages.
+  kernel_experiments/  the kernel-lane protocol, earned rules, and per-family runs.
+tools/              kernelgate (verification gates), the kernel explorer, the wiki graph viewer.
+raw/                immutable inputs — never modified.
+  sources/          PDFs, HTML snapshots of papers.
+  code/             ingested repos (git submodules) — model code + framework + kernels.
+  profiles/         xprof traces, HLO dumps (gitignored, multi-GB per run).
+  assets/           figures, plots.
+```
+
+---
+
+## Get started
+
+Clone with submodules (the `raw/code/` dir pulls the ingested codebases, a few GB in total; use `--depth` if that matters to you). The public version lives at [vlasenkoalexey/tpu_performance_autoresearch_wiki](https://github.com/vlasenkoalexey/tpu_performance_autoresearch_wiki):
+
+```bash
+git clone --recurse-submodules https://github.com/vlasenkoalexey/tpu_performance_autoresearch_wiki
+cd tpu_performance_autoresearch_wiki
+```
+
+Or on an existing clone:
+
+```bash
+git submodule update --init --recursive
+```
+
+Solution has been tested with Antigravity, Claude Code, and Codex.
+
+### Installing Antigravity CLI
+
+For Antigravity CLI, see https://antigravity.google/docs/cli/install:
+
+```bash
+curl -fsSL https://antigravity.google/cli/install.sh | bash
+```
+
+You can authenticate under your personal account. If you'd want Antigravity to use model quota from a Cloud project, add the following lines to your `~/.bashrc` or `~/.bash_profile`:
+
+```bash
+export GOOGLE_CLOUD_PROJECT="tpu-pytorch"  # your cloud project name
+export GOOGLE_CLOUD_LOCATION="global"
+export GOOGLE_GENAI_USE_VERTEXAI=True
+```
+
+> **Running on a Cloud TPU VM.** If `agy` fails to start on the VM, unset `LD_PRELOAD` for the
+> invocation:
+>
+> ```bash
+> env -u LD_PRELOAD agy --dangerously-skip-permissions --print-timeout 45m
+> ```
+
+### Configuring xprof-cli
+
+Start an LLM agent session (Antigravity, Claude Code, Codex, etc.) in this directory. The agent reads
+[`SCHEMA.md`](SCHEMA.md) and follows it.
+
+> **Codex adapters.** The repo includes additive compatibility adapters: [`AGENTS.md`](AGENTS.md) for project
+> instructions and [`.codex/`](.codex/) for MCP config and custom-agent wrappers, so Claude Code, Codex and
+> Antigravity all read the same protocol.
+
+[`xprof-cli`](https://github.com/vlasenkoalexey/xprof-cli) is checked in as a submodule at
+[`raw/code/xprof-cli`](raw/code/xprof-cli). **The repo is private** - reach out to
+[@vlasenkoalexey](https://github.com/vlasenkoalexey) for access. The submodule is marked
+`update = none` in [`.gitmodules`](.gitmodules), so a plain `git clone --recurse-submodules`
+skips it cleanly (no auth prompt); once you have access, fetch it explicitly. It exposes the
+full xprof / HLO / LLO tool surface. **Install it once and the agent calls it straight from a
+shell — no server required:**
+
+```bash
+git submodule update --init --checkout raw/code/xprof-cli   # requires repo access
+pip install -e 'raw/code/xprof-cli[full]'      # + xprof converters and tensorflow-cpu
+
+xprof-cli list_runs        --logdir=raw/profiles
+xprof-cli get_overview     --logdir=raw/profiles --run=<run>
+xprof-cli get_roofline_model --logdir=raw/profiles --run=<run>
+xprof-cli                                       # list all commands
+xprof-cli get_overview -- --help                # per-tool help
+```
+
+It runs **in-process** (`XPROF_MODE=local`), so a freshly captured profile is picked up on the next
+invocation with nothing to restart.
+
+**Kernel work needs two extra capture steps.** The LLO family — `get_llo_fit_summary`,
+`get_llo_utilization`, `get_llo_static_utilization`, `get_device_wall_report` — reads signal that is only
+emitted when the workload is launched with the kernel-profiling flags:
+
+```bash
+# 1. per-unit counter tracks in the trace
+LIBTPU_INIT_ARGS="--xla_enable_custom_call_region_trace=true \
+                  --xla_xprof_register_llo_debug_info=true" python your_workload.py
+
+# 2. LLO dumps for the inside-the-kernel drilldown
+LIBTPU_INIT_ARGS="--xla_jf_dump_to=/tmp/jf_dump --xla_jf_dump_llo_text=true \
+                  --xla_jf_dump_llo_static_gaps=true" python your_pallas_workload.py
+export XLA_JF_DUMP_DIR=/tmp/jf_dump
+```
+
+`xprof-cli check_kernel_profiling` is the gate — run it first; if the flags weren't active the drilldown is
+unavailable. Note the LLO dumper writes to its **own** `--xla_jf_dump_to` directory: XLA's `--xla_dump_to`
+does not receive LLO dumps, and with only that flag set `--xla_jf_dump_llo_text=true` is accepted but
+silently writes nothing.
+
+**Optional — the interactive UI.** Experiment pages link to a trace viewer at `http://localhost:8791`; start
+it when you want to click through a profile by hand:
+
+```bash
+pip install xprof
+xprof --logdir=raw/profiles --port=8791 &
+```
+
+
+### Installing kernelgate
+
+Kernel experiments are gated by [`kernelgate`](tools/kernelgate) (`kgate`) — timing, parity against a
+high-precision oracle, and the firing audit that proves the candidate kernel actually ran. A result without a
+kgate receipt does not count, so install it before starting a kernel run:
+
+```bash
+pip install -e tools/kernelgate     # provides the `kgate` console script
+# or, without installing:
+PYTHONPATH=tools/kernelgate python -m kernelgate <cmd> ...
+```
+
+### Running on CloudTPU VM
+
+If you only plan to run optimizer for small models that can fit on singlehost TPU, or if you only want to optimize kernels, you can do that directly from Cloud TPU VM. You can also use it to schedule bigger runs on GKE.
+
+Follow this guide to setup a Cloud TPU VM and SSH into that VM: https://cloud.google.com/tpu/docs/create-tpu-vm
+Once on Cloud TPU VM, you'd need to setup and configure your agentic harness (Antigravity - see above, Claude Code or Codex).
+Then you can follow the rest of the steps.
+
+### Running on GKE
+
+If you plan to run and optimize bigger models, you can do that on GKE.
+Agent would be running on your devbox, VM or Cloud TPU VM, and should be configured to access your GKE resources.
+
+TPU workloads are generally dispatched using [XPK](https://github.com/AI-Hypercomputer/xpk), make sure that you have that installed.
+Instruction to configure and connect to GKE cluster might differ, so make sure that you can manually schedule jobs on your cluster using XPK.
+
+**Prerequisites** (GKE path): authenticated `gcloud` (`gcloud auth login`), `kubectl`, and `xpk` on `PATH`, plus a TPU cluster you can reach. Gated model weights (e.g. Llama 3) need an `HF_TOKEN` passed into the pod env.
+
+**Teach the agent your fleet.** Cluster inventory lives under [`.env/`](.env/) as markdown the agent reads before picking a cluster — one file per GCP project plus a merged [`.env/gke-tpu-cluster-scan.md`](.env/gke-tpu-cluster-scan.md) ("consult this first"). Each row records XPK type, topology/slices, ready-node count, gcsfuse, and spot status, so the agent can pick a cluster with free capacity and the right topology.
+
+Populate it with [`/scan-gke-clusters <project>`](.claude/skills/scan-gke-clusters/SKILL.md) (wraps [`scan-gke-clusters.sh`](.claude/scripts/scan-gke-clusters.sh)). It enumerates every cluster with TPUs in the project, probes status/XPK/pool composition with hard timeouts, writes `.env/<project>-gke-tpu-cluster-scan.md`, and merges the rows into the combined inventory. Re-run when a cluster is added or its pools change.
+
+### Adding new repository
+
+To run the optimization loop against your own model, it is a good idea to add it and codebase that hosts it to the current repo as submodule. Both steps are optional, use your judgement if you want either of those based on your repo complexity and how much you want to iterate on your codebase.
+
+1. **Add the repo as a submodule.** `git submodule add <url> raw/code/<slug>` and pin the commit. Same for any reference trainer (e.g. MaxText) or framework source you want ingested alongside it.
+2. **Ingest it** — [`/wikify-ingest-repo`](.claude/skills/wikify-ingest-repo/SKILL.md): *"Ingest `raw/code/<slug>` as a codebase, highlighting performance-relevant surfaces."* This runs the SCIP-grounded, lint-gated ingest that writes the `wiki/codebases/<slug>/{overview,concepts,catalog}` silo (the overview leads with a *Performance-relevant surfaces* section) and registers it into `wiki/index.md` — not a single hand-authored page. See `INGEST-CODEBASE` in [`SCHEMA.md`](SCHEMA.md).
+   > **Prerequisite (one-time):** the skill drives the `wikify` CLI, which must be on `PATH`. Install it from [wikify-repo](https://github.com/vlasenkoalexey/wikify-repo) — `pip install -e .` then `scripts/setup-vendor.sh` (pulls `scip-python` + the vendored `scip-clang`). TS/JS, Go, and Rust indexers auto-install on demand when `wikify prepare` detects the language. Skip this step for languages wikify doesn't cover.
+
+### Starting model optimization experiment
+
+You start experiment in one prompt like:
+`Start model optimization experiment for <your model path>. Use <your cluster name> for iteration.`
+
+Possible alternatives (second part of the prompt): 
+
+`Run experiment locally`.
+
+`Run experiment on clusters <your cluster name1>, <your cluster name2>, ... concurrently` - Claude can generally run up to 4 experiments on the same model at the same time.
+
+Agent will create a folder under `wiki/experiments` and you should be able to observe the process, ask questions, and guide agent as optimization experiment is running.
+
+
+### Starting Kernel optimization experiment
+
+You start experiment in one prompt like:
+`Start kernel optimization experiment for <your kernel path>.`
+
+`<your kernel path>` is the kernel at its **real ship path** — an existing kernel inside an ingested repo
+under `raw/code/`, or a benchmark problem directory whose `baseline.py` becomes the parity reference. The
+agent derives the family slug from it and bootstraps the family binding on first run.
+
+Kernel experiments run **locally on a Cloud TPU VM by default, or on a GKE cluster pod** — chosen once per run
+and dispatched through the same indirection ([`tools/kernel_exec/kexec.sh`](tools/kernel_exec/kexec.sh)), so the
+authoring/verification tooling is identical either way. The cluster path is the right choice when the target TPU
+generation differs from the local VM or the op-point needs more chips; the pod's generation is discovered from the
+cluster, never assumed. Multi-host/collective op-points remain a TODO (one pod = one node).
+
+**Optional — pin a chip.** Add `on tpu chip N` to the prompt to bind the run to one accelerator. Claude Code
+handles this well, and because each family holds a lock on its own chip, pinning is what lets you run several
+kernel families concurrently on one VM — one per chip:
+
+```
+Start kernel optimization experiment for <kernel path A> on tpu chip 0.
+Start kernel optimization experiment for <kernel path B> on tpu chip 1.
+```
+
+Agent will create a folder under `wiki/kernel_experiments` and you should be able to observe the process, ask questions, and guide agent as optimization experiment is running.
+
+---
+
+## Ingested codebases (current)
+
+The repos below are git submodules under `raw/code/` and have corresponding pages in `wiki/codebases/`. Together they cover the JAX stack, profiling, kernel libraries, reference trainers, inference engines, and research-lab artifacts.
+
+### Foundation
+
+- [jax](raw/code/jax) — JAX itself: transformations, sharding, `jax.profiler`, Pallas DSL, first-party TPU kernels (`flash_attention`, `splash_attention`, `paged_attention`, `ragged_paged_attention`, `megablox`, `matmul`, `all_gather`, `threefry`). Ground truth for everything downstream.
+- [xprof](raw/code/xprof) — XProf profiler + TensorBoard plugin (OpenXLA). Profile capture + UI.
+- [xprof-cli](raw/code/xprof-cli) — the profiling brain: the xprof/HLO/LLO tools an agent calls from a shell (`xprof-cli <tool> --logdir=…`). Serverless by default; the MCP transport is legacy.
+- [stablehlo](raw/code/stablehlo) — StableHLO op-set + MLIR dialect reference; consulted when reading HLO dumps.
+
+### Frameworks
+
+- [torchax](raw/code/torchax) — PyTorch-on-JAX interop layer (Google).
+- [torch_tpu](raw/code/torch_tpu) — Google's [TorchTPU](https://developers.googleblog.com/torchtpu-running-pytorch-natively-on-tpus-at-google-scale/) backend: native PyTorch-on-TPU (custom ATen kernels, XLA compilation cache, DP/TP, `torch.compile` graph mode). Now in private preview.
+- [jax-huggingface](wiki/codebases/jax-huggingface.md) (under [learning-machine](raw/code/learning-machine)) — Qi Huang's JAX/ML tutorial series, including Llama-2 + SD2 on TPU.
+
+### Kernels
+
+- [tokamax](raw/code/tokamax) — OpenXLA custom TPU/GPU Pallas kernels (splash, GLU, layer_norm, ragged_dot, cross-entropy).
+- [pallas-forge](raw/code/pallas-forge) — auto-tuning framework for Pallas kernels on TPU.
+- [ejkernel](raw/code/ejkernel) — broadest community TPU Pallas surface (17 kernels).
+- [ringattention](raw/code/ringattention) — canonical Pallas TPU ring-attention (Liu et al. 2023).
+- [alphafold3](raw/code/alphafold3) (@ v3.0.1) — only public production Pallas fused GLU (GPU Triton-on-Pallas); kernels removed from `main` after v3.0.1.
+- [recurrentgemma](raw/code/recurrentgemma) — DeepMind's canonical Mosaic-TPU LRU Pallas scan.
+- [aqt](raw/code/aqt), [qwix](raw/code/qwix) — quantization frameworks; qwix is AQT's successor.
+- [accelerator-agents](raw/code/accelerator-agents) — AI-Hypercomputer's agent suite: **MaxKernel** (Pallas-kernel-writing agent) and **MaxCode** (PyTorch→JAX migration), plus **[JAXBench](raw/code/accelerator-agents/JAXBench/benchmark)** — the Pallas/JAX benchmark suite this repo's kernel lane is scored against.
+- [kernelgate](tools/kernelgate) (`kgate`) — **not an ingested submodule; this repo's own tool**, under [`tools/`](tools/). The verification gate every kernel result must pass: co-measured interleaved timing, floor-normalized oracle parity (fp32, escalating to fp64), a firing audit proving the candidate kernel actually executed, roofline sanity checks, and tamper-evident self-hashed receipts. A number without a receipt does not exist.
+
+### Reference trainers & inference engines
+
+- [torchtitan](raw/code/torchtitan) — Google-PyTorch's TPU-oriented fork of [pytorch/torchtitan](https://github.com/pytorch/torchtitan); reference PyTorch trainer for Llama 3/4, DeepSeek-V3, Qwen 3, etc., used as the PyTorch-side counterpart to MaxText.
+- [maxtext](raw/code/maxtext) — AI-Hypercomputer reference JAX trainer for Gemma/Llama/DeepSeek/Qwen/Mistral/Kimi.
+- [maxdiffusion](raw/code/maxdiffusion) — AI-Hypercomputer reference JAX diffusion trainer; first-class ring-attention integration.
+- [tpu-inference](raw/code/tpu-inference) — vLLM's TPU inference backend; novel RPA v2/v3, MLA v1/v2, fused_moe v1, blockwise quantized_matmul, all_gather_matmul, GDN, SparseCore kernels.
+- [sglang-jax](raw/code/sglang-jax) — SGLang's JAX port; ~2,000+ tuned block-size entries.
+- [axlearn](raw/code/axlearn) — Apple's training framework; only public Pallas Mamba1 / Mamba2 / RAttention SSM kernels.
+- [EasyDeL](raw/code/EasyDeL) — training/serving framework wrapping ejkernel.
+- [marin](raw/code/marin) — vendors levanter; fused CE kernel with Gemma-style logit soft-cap + deployment-time autotune harness.
+- [tpu-recipes](raw/code/tpu-recipes) — AI-Hypercomputer's reproducible recipes for training + inference on Cloud TPU (Trillium v6e and Ironwood v7x). Tuned per-(model, hardware, topology) MaxText configs (`remat_policy`, `decoder_layer_input: offload`, `query_proj`/`key_proj`/`value_proj` offload, FSDP sharding) for Llama 3.1, Gemma 3/4, Mixtral, DeepSeek 3, Qwen 3, GPT-OSS, Wan 2.1, GPT-3, plus diffusion (SDXL, Diffusion-2). Includes microbenchmarks for HBM bandwidth and matmul peak throughput.
+
+### Other
+
+- [autoresearch](raw/code/autoresearch) — Karpathy's autoresearch reference implementation.
+- [scaling-book](raw/code/scaling-book) — "How To Scale Your Model" (DeepMind).
+- [graphcast](raw/code/graphcast) — DeepMind weather-forecasting model; splash-wrapper non-LLM example.
+- [simply](raw/code/simply) — DeepMind serving framework.
+- [jaxite](raw/code/jaxite) — FHE Pallas kernels (only non-ML Pallas TPU reference).
+
+---
+
+## FAQ
+
+**Is this production-ready?**
+This is a research project, use your judgment if you want to use it on your production system.
+
+**Does it need a specific LLM?**
+The wiki is plain markdown and the tooling is plain CLIs — there is no server to run and no MCP dependency. Tested with Claude Code, Codex, and Antigravity; any agent that can run shell commands and read/write markdown should work.
+
+**Does it need Google Cloud?**
+Only if your TPU lives there. The wiki, profiles, and analyses are just files.
+
+**What if my framework / model / hardware isn't ingested yet?**
+Add it as a submodule under `raw/code/` and ask the agent to ingest it. That's the whole onboarding flow — see `INGEST-CODEBASE` in [`SCHEMA.md`](SCHEMA.md).
+
+**Can it change my model's semantics?**
+The protocol explicitly forbids it. Any optimization that changes loss trajectory beyond bf16-reorder noise is marked `-invalid` and not reported as a win (see [`SCHEMA.md`](SCHEMA.md) rule #6).
+
+**Is it officially supported project?**
+No, it is a personal research project.
+
+---
+
+## Authoritative contract
+
+[`SCHEMA.md`](SCHEMA.md) defines page types, operations, frontmatter, naming, verdict suffixes, and behavioral rules. If anything in this README conflicts with `SCHEMA.md`, the schema wins.
+
+---
+
+*This repository is itself run by the autoresearch loop. The commit history is the research log. Browse [`wiki/analyses/`](wiki/analyses/) for the recurring retrospectives.*

@@ -1,0 +1,343 @@
+<div align="center">
+
+# Evolve: On‑the‑job learning for AI agents
+
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+[![Documentation](https://shields.io/badge/Official%20Webpage-Documentation-blue)](https://agenttoolkit.github.io/altk-evolve)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.10600-b31b1b)](https://arxiv.org/pdf/2603.10600)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.32091-b31b1b)](https://arxiv.org/abs/2609.32091)
+[![License](https://img.shields.io/github/license/AgentToolkit/altk-evolve)](https://www.apache.org/licenses/LICENSE-2.0)
+![Stars](https://img.shields.io/github/stars/AgentToolkit/altk-evolve?style=social)
+
+</div>
+
+Coding agents repeat the same mistakes because they start fresh every session. Evolve gives agents memory — they learn from what worked and what didn't, so each session is better than the last.
+
+Evolve is a system designed to help agents improve over time by learning from their trajectories. The Lite version is designed to effortlessly slot into existing agent assistants like Claude Code and Codex. It uses a combination of an MCP server for tool integration, vector storage for memory, and LLM-based conflict resolution to refine its knowledge base.
+
+On the AppWorld benchmark, Evolve improved agent reliability by +8.9 points overall, with a 74% relative increase on hard multi-step tasks. Evolve is a system designed to help agents improve over time by learning from their trajectories. It uses a combination of an MCP server for tool integration, vector storage for memory, and LLM-based conflict resolution to refine its knowledge base.
+
+> [!IMPORTANT]
+> ⭐ **Star the repo**: it helps others discover it.  
+
+## Latest from Evolve
+
+Research, releases, and practical findings from the Evolve team.
+
+<!-- BEGIN LATEST-UPDATES (generated; edit includes/latest-updates.md then run scripts/sync_latest_updates.py) -->
+- **2026-09-25** · Paper — **[Memory as Middleware for Self-Improving AI Agents](https://arxiv.org/abs/2609.32091)**
+  The case for agent memory as a pluggable middleware layer, with Evolve as the reference implementation (to appear at [Middleware 2026](https://middleware-conf.github.io/2026)).
+- **2026-09-15** · Article — **[Your Agent Aced the Task. Will It Do It Again?](https://huggingface.co/blog/ibm-research/altk-evolve-consistency)**
+  Diagnosing where an agent's decisions wobble and stabilizing them so success repeats.
+- **2026-09-08** · Paper — **[Closing the Consistency Gap: Self-Evolving Agents That Learn to Stay on Course](https://arxiv.org/abs/2609.08832)**
+  Turning unstable trajectory steps into episodic memory to keep agents consistent across repeated runs.
+- **2026-08-18** · Article — **[How Much Memory Does Your Agent Actually Need?](https://huggingface.co/blog/ibm-research/altk-evolve-hmm)**
+  Why agent memory should be calibrated to the model instead of simply increased.
+- **2026-08-11** · Article — **[Thinking of ACE? We Can Do It with Fewer Tokens](https://huggingface.co/blog/ibm-research/altk-evolve-sldd)**
+  Comparing Evolve's targeted guideline retrieval with ACE's playbook approach and token usage.
+- **2026-04-08** · Article — **[ALTK‑Evolve: On‑the‑Job Learning for AI Agents](https://huggingface.co/blog/ibm-research/altk-evolve)**
+  An introduction to learning reusable guidance from agent trajectories.
+- **2026-04-07** · Announcement — **[IBM introduces ALTK Evolve](https://www.ibm.com/new/announcements/altk-evolve-on-the-job-learning-for-ai-agents)**
+  Evolve is opened to builders creating agents that learn from experience.
+- **2026-03-11** · Paper — **[Trajectory-Informed Memory Generation for Self-Improving Agent Systems](https://arxiv.org/abs/2603.10600)**
+  The research framework and evaluation underlying Evolve.
+<!-- END LATEST-UPDATES -->
+
+
+## Quick Start (Lite)
+[IBM Bob →](https://agenttoolkit.github.io/altk-evolve/examples/hello_world/bob/)
+
+[Claude Code →](https://agenttoolkit.github.io/altk-evolve/examples/hello_world/claude)
+
+[Codex →](https://agenttoolkit.github.io/altk-evolve/examples/hello_world/codex/)
+
+[Hermes →](https://agenttoolkit.github.io/altk-evolve/integrations/hermes/)
+
+## Quick Start (Evolve MCP Server)
+### Installation
+Prerequisites:
+- Python 3.12 or higher
+- `uv` (recommended) or `pip`
+
+From Source
+```bash
+# Clone the repository and install dependencies
+git clone https://github.com/agenttoolkit/altk-evolve.git
+cd altk-evolve
+uv venv --python=3.12 && source .venv/bin/activate
+uv sync --package altk-evolve
+# Build the UI
+cd frontend/ui
+npm ci && npm run build
+cd ../..
+```
+From PyPI
+```bash
+pip install altk-evolve
+```
+
+**Choose your installation:**
+
+- `altk-evolve` bundles `altk-evolve-core[server,cli,fastembed,tracing]` at the same version.
+- `altk-evolve-core` contains the Python implementation without server/CLI dependencies,
+  an embedding runtime, or a Phoenix server. Libraries should depend on core and select the extras they need.
+- Add `[server]` for the HTTP/MCP server and its telemetry exporters, or `[cli]`
+  for the command-line interface. `[telemetry]` provides the SDK and OTLP exporter
+  independently; both `[server]` and `[tracing]` include it. Core retains the OpenTelemetry API so host applications
+  can supply their own telemetry providers.
+- All extras belong to core. Existing `altk-evolve[pgvector]`, `[pii-semantic]`, and
+  other extras forward to core while retaining the convenience defaults.
+- Install `altk-evolve-core[phoenix]` (or `altk-evolve[phoenix]`) only to run the
+  local Phoenix server. Remote tracing uses the separate `arize-phoenix-otel` package.
+
+Both packages use the same `altk_evolve` imports and `evolve` / `evolve-mcp` commands;
+only core owns those files. Core-only filesystem storage works without an embedding
+runtime. Features that embed text require `[fastembed]` or `[sentence-transformers]`.
+
+**Embedding migration:** FastEmbed is now the default provider. To retain the
+previous runtime, install `altk-evolve-core[sentence-transformers]` and set
+`EVOLVE_EMBEDDING_PROVIDER=sentence_transformers`. Validate retrieval quality before
+switching an existing vector store to another runtime; changing models requires
+re-embedding stored vectors. The specialized `sbert_large` CodeRank metric requires
+an exported CodeRank ONNX artifact with FastEmbed, or the Sentence Transformers
+provider. `[fastembed-export]` includes both runtimes for that export.
+
+**Source development and releases:** The root project is core. Use
+`uv sync --package altk-evolve` for the convenience bundle, or select root extras
+explicitly. After changing the version or extras, run
+`uv run --no-project python scripts/sync_convenience.py` and `uv lock`.
+`uv build --all-packages` builds both distributions. Releases publish core first,
+then the exactly matching convenience package through the same trusted publisher.
+
+**Optional Backend Dependencies:**
+
+The default filesystem backend uses simple text matching and requires no additional dependencies. For semantic vector similarity search, install one of these backends:
+
+For PostgreSQL with pgvector support (recommended for production):
+```bash
+uv sync --extra pgvector
+```
+
+For Milvus support (optimized for large-scale vector search):
+```bash
+uv sync --extra milvus
+```
+
+See the [Backend Configuration Guide](docs/guides/backend-configuration.md) for detailed comparison and setup instructions.
+
+### Configuration
+
+For direct OpenAI usage:
+```bash
+export OPENAI_API_KEY=sk-...
+```
+
+For LiteLLM proxy usage and model selection (including global fallback via `EVOLVE_MODEL_NAME`), see [the configuration guide](docs/guides/configuration.md).
+
+### Running Services
+Start the Web UI and MCP server
+```bash
+uv run evolve-mcp
+```
+The Web UI can be accessed from: `http://127.0.0.1:8000/ui/`
+
+### Starting the Web UI and MCP Server
+If you only want to access the Web UI and API (without the MCP server stdio blocking the terminal), you can run the FastAPI application directly using `uvicorn`:
+```bash
+uv run uvicorn altk_evolve.frontend.mcp.mcp_server:app --host 127.0.0.1 --port 8000
+```
+Then navigate to `http://127.0.0.1:8000/ui/`.
+
+### Starting only the MCP Server
+If you're attaching Evolve to an MCP client that requires a direct command (like Claude Desktop):
+```bash
+uv run evolve-mcp
+```
+Or for SSE transport:
+```bash
+uv run evolve-mcp --transport sse --port 8201
+```
+
+Verify it's running:
+```bash
+npx @modelcontextprotocol/inspector@latest http://127.0.0.1:8201/sse --cli --method tools/list
+```
+
+**Available tools:**
+- `get_entities(task: str, entity_type: str = "guideline", include_public: bool = False)`: Get relevant entities for a specific task. Set `include_public=True` to merge in public entities from all other namespaces; those results are annotated with `[public: {owner_id}]`.
+- `get_guidelines(task: str)`: Get relevant guidelines for a specific task (backward compatibility alias for `get_entities`).
+- `get_guidelines_with_attribution(task: str)`: Return formatted guidelines with the entity IDs used to build the prompt.
+- `get_relevant_guidelines(task: str, top_k: int | None, core_support: int | None)`: Retrieve the always-on guideline core plus a task-relevant dosage.
+- `list_entities(...)`: Return structured, filtered, cursor-paginated entity inventory for user and administrative UIs.
+- `get_entity(entity_id: str, user_id: str | None, record_access: bool = True)`: Return one structured entity, enforcing ownership when a caller ID is supplied.
+- `patch_entity_metadata(entity_id: str, metadata_patch: str, user_id: str | None)`: Merge JSON metadata through the memory hook seam.
+- `record_access(entity_ids: list[str], accessed_at: str | None)`: Explicitly stamp the retention engine's `last_accessed` signal.
+- `validate_retention_policy(policy: str)`: Validate and normalize a JSON retention policy without scanning data.
+- `put_retention_policy(policy_id: str, name: str, policy: str, ...)`: Create or replace an Evolve-owned retention policy.
+- `get_retention_policy(policy_id: str)` / `list_retention_policies()`: Read the namespace's policy catalog for operators and management UIs.
+- `run_retention(policy_id: str, dry_run: bool = True, ...)`: Dry-run or apply a stored policy and persist a structured, entity-linked report.
+- `list_retention_runs(...)`: Read namespace-scoped retention run history, optionally filtered by agent or policy.
+- `get_compliance_status()`: Report backend health, retention availability, hook coverage, and configured plugin health.
+- `save_trajectory(trajectory_data: str, task_id: str | None, owner_id: str | None)`: Save a conversation trajectory and generate new guidelines.
+- `create_entity(content: str, entity_type: str, metadata: str | None, enable_conflict_resolution: bool, owner_id: str | None, visibility: str = "private")`: Create a single entity. Pass `visibility="public"` and `owner_id` to make it immediately discoverable by other namespaces.
+- `publish_entity(entity_id: str, user_id: str | None)`: Make an entity publicly visible to all namespaces. Records the caller as owner and stamps `published_at`.
+- `unpublish_entity(entity_id: str, user_id: str | None = None)`: Revert an entity to private visibility. Ownership is enforced server-side: if the entity has an `owner_id`, `user_id` must match it.
+- `delete_entity(entity_id: str)`: Delete a specific entity by its ID.
+
+### Filter Migration Note
+Entity search filters reserve bare keys for top-level schema columns only: `id`, `type`, `content`, and `created_at`.
+
+If you need to filter on JSON metadata, use the `metadata.<key>` form. For example, use `filters={"type": "trajectory", "metadata.task_id": "123"}` instead of `filters={"type": "trajectory", "task_id": "123"}`.
+
+Existing integrations that stored custom fields in entity metadata should update filter writers to add the `metadata.` prefix for those keys.
+
+## Features
+- **Proactive**: Learns how to recognize problems and their solutions, and generates guidelines that get automatically applied to new tasks.
+- **Conflict Resolution**: Update existing guidelines when new information contradicts them.
+- **On Command**: An array of tools to manage guidelines whether in the agent or through a CLI
+- **Sharing**: Publish individual entities so other agents can discover and retrieve them across namespaces.
+
+## Architecture
+Evolve is built on a modular architecture which forms a feedback loop, taking conversation traces (trajectories) from an agent, extracting key insights into a database, feeding it back into the agent.
+
+_Lite Mode omits the Interaction layer. All activity is performed in-agent_
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-wide-dark.svg">
+  <img src="docs/assets/architecture-wide-light.svg" alt="Architecture" width="480">
+</picture>
+
+## Entity Sharing
+
+Evolve supports sharing entities across namespaces using a simple public/private visibility model.
+
+**Visibility** is stored in each entity's metadata and is private by default. Existing entities without a `visibility` field are unaffected.
+
+| Metadata field | Description |
+|---|---|
+| `owner_id` | User ID who created or last published the entity |
+| `visibility` | `"private"` (default) or `"public"` |
+| `published_at` | ISO-8601 timestamp of the most recent publish |
+
+### MCP Tools
+
+**Personal facts on a shared Evolve service:**
+```python
+store_user_facts(namespace_id="service-instance-1", user_id="alice", message="I prefer concise answers")
+retrieve_user_facts(namespace_id="service-instance-1", user_id="alice", query="answer preferences")
+```
+Pass the service instance ID as `namespace_id` and the individual user's ID as
+`user_id` on both calls. Explicitly scoped retrieval filters by that exact pair,
+including query fallback, and never falls back to another user's facts. Empty
+explicit namespaces or user IDs are rejected. Calls omitting `namespace_id`
+retain the configured default namespace and legacy default-user fallback.
+Integrating clients must supply the scope; upgrading Evolve alone cannot infer
+which service instance an unscoped request belongs to.
+
+
+**Publishing an entity:**
+```python
+publish_entity(entity_id="42", user_id="alice")
+```
+Sets `visibility=public` and records the owner and publish timestamp.
+
+**Unpublishing:**
+```python
+unpublish_entity(entity_id="42", user_id="alice")
+```
+Reverts the entity to private. The entity stays in its namespace — only its visibility changes.
+
+**Retrieving public entities from all namespaces:**
+```python
+get_entities(task="write safer code", include_public=True)
+```
+Merges results from the caller's namespace with public entities from all other namespaces. Public results are annotated with `[public: {owner_id}]`.
+
+**Creating an entity with visibility:**
+```python
+create_entity(content="...", entity_type="guideline", visibility="public", owner_id="alice")
+```
+
+### What's deferred (Phase 1C)
+REST API endpoints (`GET /api/entities/public`, publish/unpublish routes) and UI controls are not yet implemented.
+
+## Guideline Provenance
+Evolve automatically tracks the origin of every guideline it generates or stores. Every guideline entity contains `metadata` identifying its source:
+- `creation_mode`: Identifies how the guideline was created (`auto-phoenix` via trace observability, `auto-mcp` via trajectory saving tools, or `manual`).
+- `source_task_id`: The ID of the original trace or task that inspired the guideline, providing full auditability.
+
+See the [Low-Code Tracing Guide](docs/guides/low-code-tracing.md#6-understanding-guideline-provenance-metadata) for more details.
+
+
+## Contributing, Community, and Feedback
+Evolve is an active project, and real‑world usage helps guide its direction.
+
+If you’re experimenting with Evolve or exploring on‑the‑job learning for agents, feel free to open an issue or discussion to share use cases, ideas, or feedback.
+
+See the [Contributing Guide](CONTRIBUTING.md) to understand our development process, or how to submit changes, report bugs, or propose features.
+
+### Embedded memory API and scheduling
+
+Hosts can mount the [scoped REST router](docs/guides/embedded-memory-api.md) with their own client and authentication dependencies. Evolve owns [retention schedules and worker execution](docs/guides/retention-scheduling.md), using Kubernetes-compatible cron, timezone, concurrency, deadline, and suspension fields. Use `evolve retention schedules` to manage schedules and `start`/`stop` to enable or suspend them. The Evolve service owns background execution.
+
+The [public retention service](docs/guides/retention-api.md) is available as `client.retention(namespace_id, agent_id=...)`; CLI, REST, MCP, and scheduling share its operations and scope checks.
+
+### OpenTelemetry service instrumentation
+
+Evolve's Python operations use the OpenTelemetry API and inherit the host's
+provider. Constructing `EvolveClient` never installs or replaces a provider.
+Standalone MCP services export telemetry by default. Compatible SDK and exporter
+versions are included in the `[server]` and `[tracing]` extras (both included by
+the convenience package). To configure a destination:
+
+```bash
+uv pip install altk-evolve
+export OTEL_SERVICE_NAME=evolve
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+python -m altk_evolve.frontend.mcp --transport sse
+```
+
+Without an endpoint setting, the OTLP exporter uses localhost:4318. Export runs
+in the background with bounded queues; an absent collector does not block memory
+operations. Unsent telemetry may be dropped. Requests default to a one-second
+export timeout, overridable through standard OTEL timeout settings. Set
+`EVOLVE_OTEL_ENABLED=false` to disable Evolve-owned export. If exporter packages
+cannot be imported, Evolve logs a warning and continues without an exporter.
+Invalid exporter configuration also logs a warning and leaves service startup
+unaffected; correct the settings and retry initialization to enable export.
+
+Use an actual reachable collector address. OpenLIT and other OTLP backends are
+supported without their SDKs. This exporter uses HTTP/protobuf; the signal-specific
+`OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` and `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT`
+include `/v1/traces` and `/v1/metrics`, respectively. Standard resource, sampling,
+batch-size, export-timeout and metric-interval environment settings apply.
+`OTEL_TRACES_EXPORTER=none` and `OTEL_METRICS_EXPORTER=none` disable each exporter;
+`OTEL_SDK_DISABLED=true` prevents Evolve's service initialization. An existing
+host tracer provider is left untouched, including ownership of its shutdown.
+Custom service hosts can explicitly call `configure_service_telemetry()` from
+`altk_evolve.telemetry` at startup. The SDK installs process-exit shutdown hooks;
+the MCP lifespan does not synchronously flush or wait for a collector.
+
+Spans cover memory search, query embeddings and PostgreSQL retrieval, write
+preparation/commit, fact extraction and conflict resolution, model calls,
+processing stages/processors, active hooks, and retention marking/sweeping/jobs.
+FastMCP propagates MCP trace metadata; the scoped REST router accepts W3C trace
+headers. Independent scheduled attempts start separate traces with job references.
+Duration histograms and outcome counters have bounded operation/result labels,
+never namespace, user, conversation or entity IDs. Namespace attribution belongs
+on spans. Evolve's instrumentation excludes contents, prompts, SQL values and
+exception messages. Evolve-owned export forwards Evolve's instrumentation and
+sanitized FastMCP transport spans that retain timing, IDs, kind and status code
+to preserve the trace tree. Transport names are fixed; attributes, exception
+events, links and status descriptions are omitted. Metrics only forward the
+`altk_evolve` scope. A host-owned provider controls
+its own exporters and third-party capture settings.
+Traces are diagnostic and may be sampled; durable retention receipts remain the
+authoritative audit record.
+
+MCP clients must send `notifications/cancelled` to cancel server work; stopping a
+local wait alone does not cancel the request. Evolve checks cooperative
+cancellation around model calls and before committing prepared memory writes.
+An in-flight provider call may still finish, and earlier committed writes remain.
+These checkpoints do not provide rollback or interrupt arbitrary synchronous work.

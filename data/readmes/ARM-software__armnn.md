@@ -1,0 +1,180 @@
+<br>
+<div align="center">
+  <img src="Arm_NN_horizontal_blue.png" alt="Arm NN Logo" width="300"/>
+</div>
+
+* [Quick Start Guides](#quick-start-guides)
+* [Pre-Built Binaries](#pre-built-binaries)
+* [Software Overview](#software-overview)
+* [Get Involved](#get-involved)
+* [Contributions](#contributions)
+* [Disclaimer](#disclaimer)
+* [License](#license)
+* [Inclusive language commitment](#inclusive-language-commitment)
+* [Third-party](#third-party)
+* [Build Flags](#build-flags)
+
+# Arm NN
+
+**Arm NN**  is now a legacy project and is no longer actively maintained by Arm. As a result, no further updates,
+including security patches and functional improvements, should be expected, and users should be aware that the project
+may not be secure against untrusted inputs or hostile environments.
+Accordingly, it is strongly recommended that **Arm NN** only be used in trusted contexts.
+
+**Arm NN** is the **most performant** machine learning (ML) inference engine for Android and Linux, accelerating ML
+on **Arm Cortex-A CPUs and Arm Mali GPUs**. This ML inference engine is an open source SDK which bridges the gap
+between existing neural network frameworks and power-efficient Arm IP.
+
+Arm NN outperforms generic ML libraries due to **Arm architecture-specific optimizations** (e.g. SVE2) by utilizing
+**[Arm Compute Library (ACL)](https://github.com/ARM-software/ComputeLibrary/)**. To target Arm Ethos-N NPUs, Arm NN
+utilizes the [Ethos-N NPU Driver](https://github.com/ARM-software/ethos-n-driver-stack). For Arm Cortex-M acceleration,
+please see [CMSIS-NN](https://github.com/ARM-software/CMSIS_5).
+
+Arm NN is written using portable **C++17** and built using [CMake](https://cmake.org/) - enabling builds for a wide
+variety of target platforms, from a wide variety of host environments. **Python** developers can interface with Arm NN
+through the use of our **Arm NN TF Lite Delegate**.
+
+
+## Quick Start Guides
+**The Arm NN TF Lite Delegate provides the widest ML operator support in Arm NN** and is an easy way to accelerate
+your ML model. To start using the TF Lite Delegate, first download the **[Pre-Built Binaries](#pre-built-binaries)** for
+the latest release of Arm NN. Using a Python interpreter, you can load your TF Lite model into the Arm NN TF Lite
+Delegate and run accelerated inference. Please see this
+**[Quick Start Guide](delegate/DelegateQuickStartGuide.md)** on GitHub or this more comprehensive
+**[Arm Developer Guide](https://developer.arm.com/documentation/102561/latest/)** for information on how to accelerate
+your TF Lite model using the Arm NN TF Lite Delegate.
+
+We provide Debian packages for Arm NN, which are a quick way to start using Arm NN and the TF Lite Parser
+(albeit with less ML operator support than the TF Lite Delegate). There is an installation guide available
+[here](InstallationViaAptRepository.md) which provides instructions on how to install the Arm NN Core and the TF Lite
+Parser for Ubuntu 20.04.
+
+To build Arm NN from scratch, we provide the **[Arm NN Build Tool](build-tool/README.md)**. This tool consists of
+**parameterized bash scripts** accompanied by a **Dockerfile** for building Arm NN and its dependencies, including
+**[Arm Compute Library (ACL)](https://github.com/ARM-software/ComputeLibrary/)**. This tool replaces/supersedes the
+majority of the existing Arm NN build guides as a user-friendly way to build Arm NN. The main benefit of building
+Arm NN from scratch is the ability to **exactly choose which components to build, targeted for your ML project**.<br>
+
+
+## Pre-Built Binaries
+
+| Operating System                              | Architecture-specific Release Archive (Download)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Android 11 "R/Red Velvet Cake" (API level 30) | [![](https://img.shields.io/badge/download-arm64--v82a-orange)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-30-arm64-v8.2-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v8a-orange)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-30-arm64-v8a.tar.gz)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Android 12 "S/Snow Cone" (API level 31)       | [![](https://img.shields.io/badge/download-arm64--v82a-yellow)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-31-arm64-v8.2-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v8a-yellow)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-31-arm64-v8a.tar.gz)  [![](https://img.shields.io/badge/download-arm64--v86a-yellow)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-31-arm64-v8.6-a.tar.gz)  [![](https://img.shields.io/badge/download-arm64--v86asve-yellow)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-31-arm64-v8.6-a-sve.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86asve2-yellow)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-31-arm64-v8.6-a-sve2.tar.gz) |
+| Android 13 "T/Tiramisu" (API level 33)        | [![](https://img.shields.io/badge/download-arm64--v82a-purple)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-33-arm64-v8.2-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86a-purple)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-33-arm64-v8.6-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86asve-purple)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-33-arm64-v8.6-a-sve.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86asve2-purple)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-33-arm64-v8.6-a-sve2.tar.gz)                                                                                                                                                                    |
+| Android 14 "U/Upside Down Cake" (API level 34)| [![](https://img.shields.io/badge/download-arm64--v82a-blue)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-34-arm64-v8.2-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86a-blue)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-34-arm64-v8.6-a.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86asve-blue)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-34-arm64-v8.6-a-sve.tar.gz) [![](https://img.shields.io/badge/download-arm64--v86asve2-blue)](https://github.com/ARM-software/armnn/releases/download/v26.01/ArmNN-android-34-arm64-v8.6-a-sve2.tar.gz)                                                                                                                                                                            |
+
+Arm NN also provides pre-built multi-isa binaries for Android. The v8a binary includes support from basic v8a architecture and upwards. 
+The v8.2a binary includes support from v8.2a and upwards. These include support for SVE, SVE2, FP16 and some dot product kernels.
+These kernels need appropriate hardware to work on.
+
+
+| Multi ISA Architecture | Release Archive (Download)                                                                                                                                                              |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Linux Arm v8a          | [![](https://img.shields.io/badge/download-arm64--v8a-pink)](https://github.com/ARM-software/armnn/releases/download/v26.01/MULTI_ISA-GCC11-ArmNN+ACL-linux-armv8a.tar.gz)              |
+| Linux Arm v8.2a        | [![](https://img.shields.io/badge/download-arm64--v82a-violet)](https://github.com/ARM-software/armnn/releases/download/v26.01/MULTI_ISA-GCC11-ArmNN+ACL-linux-armv8.2-a.tar.gz)        |
+| Android 31 v8a         | [![](https://img.shields.io/badge/download-android--v8a-tan)](https://github.com/ARM-software/armnn/releases/download/v26.01/MULTI_ISA-ArmNN+ACL+SL-android-31-arm64-v8a.tar.gz)        |
+| Android 31 v8.2a       | [![](https://img.shields.io/badge/download-android--v82a-indigo)](https://github.com/ARM-software/armnn/releases/download/v26.01/MULTI_ISA-ArmNN+ACL+SL-android-31-arm64-v8.2-a.tar.gz) |
+
+
+
+## Software Overview
+The Arm NN SDK supports ML models in **TensorFlow Lite** (TF Lite) and **ONNX** formats.
+
+**Arm NN's TF Lite Delegate** accelerates TF Lite models through **Python or C++ APIs**. Supported TF Lite operators
+are accelerated by Arm NN and any unsupported operators are delegated (fallback) to the reference TF Lite runtime -
+ensuring extensive ML operator support. **The recommended way to use Arm NN is to
+[convert your model to TF Lite format](https://www.tensorflow.org/lite/convert) and use the TF Lite Delegate.** Please
+refer to the [Quick Start Guides](#quick-start-guides) for more information on how to use the TF Lite Delegate.
+
+Arm NN also provides **TF Lite and ONNX parsers** which are C++ libraries for integrating TF Lite or ONNX models
+into your ML application. Please note that these parsers do not provide extensive ML operator coverage as compared
+to the Arm NN TF Lite Delegate.
+
+**Android** ML application developers have a number of options for using Arm NN:
+* Download and use our [Pre-Built Binaries](#pre-built-binaries) for the Android platform
+* Build Arm NN from scratch with the Android NDK using this [GitHub guide](BuildGuideAndroidNDK.md)
+
+Arm also provides an [Android-NN-Driver](https://github.com/ARM-software/android-nn-driver) which implements a
+hardware abstraction layer (HAL) for the Android NNAPI. When the Android NN Driver is integrated on an Android device,
+ML models used in Android applications will automatically be accelerated by Arm NN.
+
+**For more information about the Arm NN components, please refer to our
+[documentation](https://github.com/ARM-software/armnn/wiki/Documentation).**
+
+For FAQs and troubleshooting advice, see the [FAQ](docs/FAQ.md) or take a look at previous
+[GitHub Issues](https://github.com/ARM-software/armnn/issues).
+
+
+## Get Involved
+The best way to get involved is by using our software. If you need help or encounter an issue, please raise it as a
+[GitHub Issue](https://github.com/ARM-software/armnn/issues). Feel free to have a look at any of our open issues too.
+We also welcome feedback on our documentation.
+
+Feature requests without a volunteer to implement them are closed, but have the 'Help wanted' label, these can be
+found [here](https://github.com/ARM-software/armnn/issues?q=is%3Aissue+label%3A%22Help+wanted%22+).
+Once you find a suitable Issue, feel free to re-open it and add a comment, so that Arm NN engineers know you are
+working on it and can help.
+
+When the feature is implemented the 'Help wanted' label will be removed.
+
+
+## Contributions
+The Arm NN project welcomes contributions. For more details on contributing to Arm NN please see the [Contributor Guide](CONTRIBUTING.md).
+
+Particularly if you'd like to implement your own backend next to our CPU, GPU and NPU backends there are guides for
+backend development: [Backend development guide](src/backends/README.md),
+[Dynamic backend development guide](src/dynamic/README.md).
+
+
+## Disclaimer
+The armnn/tests directory contains tests used during Arm NN development. Many of them depend on third-party IP, model
+protobufs and image files not distributed with Arm NN. The dependencies for some tests are available freely on
+the Internet, for those who wish to experiment, but they won't run out of the box.
+
+
+## License
+Arm NN is provided under the [MIT](https://spdx.org/licenses/MIT.html) license.
+See [LICENSE](LICENSE) for more information. Contributions to this project are accepted under the same license.
+
+Individual files contain the following tag instead of the full license text.
+
+    SPDX-License-Identifier: MIT
+
+This enables machine processing of license information based on the SPDX License Identifiers that are available
+here: http://spdx.org/licenses/
+
+
+## Inclusive language commitment
+Arm NN conforms to Arm's inclusive language policy and, to the best of our knowledge, does not contain any non-inclusive language.
+
+If you find something that concerns you, please email terms@arm.com
+
+
+## Third-party
+Third party tools used by Arm NN:
+
+| Tool           | License (SPDX ID) | Description                    | Version | Provenience                          |
+|----------------|-------------------|------------------------------------------------------------------|---------|--------------------------------------|
+| cxxopts        | MIT               | A lightweight C++ option parser library | 3.1.1   | https://github.com/jarro2783/cxxopts |
+| doctest        | MIT               | Header-only C++ testing framework | 2.4.6   | https://github.com/onqtam/doctest    |
+| fmt            | MIT               | {fmt} is an open-source formatting library providing a fast and safe alternative to C stdio and C++ iostreams. | 8.30    | https://github.com/fmtlib/fmt  |
+| ghc            | MIT               | A header-only single-file std::filesystem compatible helper library | 1.3.2   | https://github.com/gulrak/filesystem |
+| half           | MIT               | IEEE 754 conformant 16-bit half-precision floating point library | 1.12.0  | http://half.sourceforge.net          |
+| mapbox/variant | BSD               | A header-only alternative to 'boost::variant' | 1.1.3   | https://github.com/mapbox/variant    |
+| stb            | MIT               | Image loader, resize and writer | 2.16    | https://github.com/nothings/stb      |
+
+
+## Build Flags
+Arm NN uses the following security related build flags in their code:
+
+| Build flags	      |
+|---------------------|
+| -Wall	              |
+| -Wextra             |
+| -Wold-style-cast    |
+| -Wno-missing-braces |
+| -Wconversion        |
+| -Wsign-conversion   |
+| -Werror             |

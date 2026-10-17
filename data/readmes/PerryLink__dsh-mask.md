@@ -1,0 +1,287 @@
+<div align="center">
+
+# dsh-mask
+- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-mask` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-mask)
+[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-mask?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-mask?ref=badge)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-mask/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-mask)
+
+**PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, keep it reversible host-side.**
+
+*Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.*
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-mask.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-mask/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-mask/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-mask?label=version)](https://github.com/PerryLink/dsh-mask/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-mask)](https://www.npmjs.com/package/dsh-mask)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-mask)](https://www.npmjs.com/package/dsh-mask)
+
+[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
+</div>
+
+---
+
+**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+
+
+## What is dsh-mask?
+
+PII masking middleware for DeepSeek Harness — anonymize personal data before it reaches the model, keep it reversible host-side.
+
+Phones, emails, ID cards, bank cards, keys, and more become placeholders at the model boundary; the plaintext never enters your session log.
+
+![Terminal demo of dsh-mask: dsh-mask — PII becomes placeholders before the model sees it](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.png)
+
+![Animated terminal demo of dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-demo.gif)
+
+*The same run, animated.*
+
+## Comparison
+
+![Measured comparison chart for dsh-mask](https://raw.githubusercontent.com/PerryLink/dsh-mask/main/docs/assets/dsh-mask-evidence.png)
+
+108 synthetic samples (60 positive, 48 negative) · from benchmark/RESULTS.md
+
+## Compatibility
+
+| Surface | Status |
+|---|---|
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (adapted 2026-09-18): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. Verified 2026-09-18 against the dsh-v0.1.7-alpha.1 master checkout (full gate chain + profile install smoke). |
+| Node | `^22.19.0 \|\| >=24.0.0` |
+| Platforms | Anywhere DSH runs (pure host, zero-dependency regex; no browser half) |
+| Model | Text models fully supported; no extra model capability required |
+
+## What you get
+
+`dsh-mask` anonymizes personal data **at the model boundary** — before a message reaches the model — and keeps a restore table host-side so placeholders stay reversible:
+
+- **Request-time masking** — `agent/pre-step` messages are rewritten so phones, emails, ID cards, bank cards, and keys (on by default) and IPs (opt-in) become `<PHONE_1>`-style placeholders. The masked text is what gets logged and sent to the model.
+- **Restore table** — the `placeholder → original` map lives only in memory and a controlled storage domain (`dsh_mask`); the plaintext never enters the session log.
+- **Audit, not plaintext** — the `mask/applied` session event records only "replaced N values + type distribution", never the original text or the mapping.
+- **`/mask` command** — `status` (counts + distribution), `on`/`off` (runtime toggle), `restore <text>` (unmap placeholders), `help`.
+- **`mask_test` tool** — run a snippet through the detector and see the placeholder result; it never reveals the original values.
+
+```text
+user message ──agent/pre-step──▶ placeholders ──model──▶ placeholders ──restore──▶ display
+                                   ▲                                                    │
+                                   └──────── restore table (memory + dsh_mask) ────────┘
+```
+
+## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-mask
+```
+
+```sh
+# 1. install the bundle into your profile
+dsh plugin --profile web add github:PerryLink/dsh-mask
+
+# or from npm (published releases)
+dsh plugin --profile web add dsh-mask
+
+# 2. verify the row mounts
+dsh --profile web --dump-config | grep -A2 'id: mask'
+```
+
+Then tailor the entity list in your profile patch:
+
+```yaml
+- insert:
+    - id: mask
+      name: dsh-mask
+      config:
+        entities: [phone, email, id-card, bank-card, key]
+```
+
+```
+> /mask status
+> /mask restore <PHONE_1>
+```
+
+## Install & uninstall
+
+- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-mask` (equivalent to installing from `git+https://github.com/PerryLink/dsh-mask.git`). No build step — `index.mjs` and `lib/` are the shipped artifacts.
+- **npm channel** (published releases): `dsh plugin --profile web add dsh-mask`.
+- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-mask-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-mask` (or remove the row from the profile patch).
+
+`dsh-mask` no longer bundles the storage stack. Profiles that already compose it (the `web` profile does, via `@deepseek-ai/dsh-web-app`) provide `storageDomain`, so persistence works out of the box. On a bare profile without storage the plugin still mounts and masks, but the restore table is memory-only (lost on restart) — compose the storage stack in your profile patch, or set `persistRestoreTable: false`.
+
+## Configuration
+
+All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id-targeted override replaces the whole row — restate every key you need. `cordis.patch.yml` documents each key inline.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | Master switch; `false` unregisters the listener, the `/mask` command, and the `mask_test` tool |
+| `mode` | `regex` | Detection mode; only `regex` is implemented (`regex+ner` for name/address recognition is reserved and fails loud) |
+| `entities` | `[phone, email, id-card, bank-card, key]` | Which PII types to mask; `ip` is also regex-capable (opt-in), `person`/`address` require NER |
+| `scope` | `[messages]` | Masking surface(s); `messages` masks agent/pre-step messages, `tools` masks tool-result text on tools/post-execute. Accepts a string or an array, e.g. `[messages, tools]` |
+| `registerCommand` | `true` | Register the `/mask` command |
+| `registerTools` | `true` | Register the `mask_test` tool when the tools service is present |
+| `persistRestoreTable` | `true` | Persist the restore table to the controlled `dsh_mask` storage domain (`false` = memory only) |
+| `maxRestoreEntriesPerSession` | `500` | Per-session restore entry cap (oldest evicted first) |
+| `maxSessions` | `1000` | In-memory session cap (least-recently-used evicted, mapping reloaded on demand) |
+| `maskClientEnabled` | `false` | Feature flag for the browser half "reveal" bubble (defensive; off by default until the live slot catalog verifies the target slot). The key is schema-declared and validated, but no runtime code reads it yet, so it changes nothing until the browser half ships |
+
+Example override in your profile patch:
+
+```yaml
+- insert:
+    - id: mask
+      name: dsh-mask
+      config:
+        entities: [phone, email, id-card, bank-card, key, ip]
+        persistRestoreTable: false
+        registerCommand: true
+```
+
+## Tools & surfaces
+
+| Surface | Reveals plaintext | Notes |
+|---|---|---|
+| `agent/pre-step` masking | never | Rewrites messages to placeholders before they are logged or sent to the model |
+| `tools/post-execute` masking | never | Rewrites tool-result text blocks to placeholders before they are logged or fed back to the model (scope: `tools`) |
+| `/mask status` | never | Enabled state, total replaced, type distribution |
+| `/mask on` / `/mask off` | never | Runtime toggle (resets to `config.enabled` on restart) |
+| `/mask restore <text>` | yes (explicit) | Unmaps placeholders back to the values stored for this session |
+| `mask_test` | never | Masks a snippet and reports the placeholder result + counts |
+
+## Permissions & data
+
+- **Permissions**: `dsh-mask` performs no network requests and stores no credentials; it only reads the session at the `agent/pre-step` boundary and writes its own `dsh_mask` storage domain. The `dshWorkshop` manifest declares `network:none` and `credentials:none`.
+- **Data**: the `placeholder → original` restore table lives in memory and, when `persistRestoreTable: true`, in the controlled `dsh_mask` storage domain — this is the only place plaintext PII is stored, and it is never written to the session log.
+- **Session log**: `mask/applied` is declared in `types.d.ts` and appended only when the host records the type (see Known limitations). Its payload is counts + type distribution only.
+
+## Security boundaries
+
+- **Plaintext never enters the session log.** The masked (placeholder) form is what gets logged and sent to the model, so model-visible content is reconstructable from the log in placeholder form; the originals stay in the restore table.
+- **Sanitize before display/log.** `lib/sanitize.mjs` redacts PII, secrets, and URL credentials before any text reaches the model or the log; `mask_test` and `/mask status` never echo originals.
+- **Controlled restore.** `/mask restore` is the single explicit reveal surface, and it only reads the mapping for the active session.
+- **Fail closed.** Unimplemented `mode` (`regex+ner`), unknown `scope` values, NER-only entities, and out-of-bounds numbers all fail loudly at load.
+- **Registrations are effects.** The listener, command, tool, and storage-domain close are all Cordis effects — stop/hot-reload removes them.
+
+## Known limitations
+
+- **Regex only.** Name (`person`) and address (`address`) recognition needs an external NER recognizer, which the pure-host zero-dependency form does not bundle; `mode: regex+ner` and those entities fail loudly at load. The PII types covered out of the box are phone, email, ID card, bank card, key, and (opt-in) IP.
+- **Region-specific patterns.** The `phone` and `id-card` detectors match mainland-China formats only: `phone` is `1[3-9]` followed by nine digits, and `id-card` is an 18-character Chinese resident ID (17 digits plus a digit or `X`). Phone numbers and national identifiers from other countries are not detected. `email`, `ip`, and `key` are region-agnostic; `bank-card` accepts any 16-19 digit run at a lower confidence score.
+- **Display-layer restore needs a client half.** Masking is fully host-side, but transparently un-masking the assistant bubbles in the client UI is a browser-half feature this pure-host form does not ship. The host side keeps the restore table and the exported `RestoreStore` seam (its methods take a session id), so a future client half would reach them through a host remote rather than directly; today the unmasking surface is the `/mask restore <text>` command, and the `maskClientEnabled` key is validated but read by no runtime code yet.
+- **Session events on `0.1.7-rc.2`.** The harness records 59 session event types and none of them is `mask/*`; its `Session.append` also cannot stamp the `ignorable` envelope, so the session-log audit appends are skipped and sessions keep loading. The gate is not silent about it: the first refusal per session logs one visible warning naming the skipped type and this documented limitation. The plugin enables the append automatically once a host records the type or supports the `ignorable` envelope.
+
+## Development
+
+```sh
+pnpm install                                       # node ^22.19 || >=24
+pnpm run typecheck && pnpm run typecheck:ci        # two rulers: checkout face (guarded; unverifiable without the checkout) + published-line face
+pnpm test                                          # node --test
+pnpm run verify:self-contained                     # dependency specs resolve from the registry
+pnpm run verify:artifacts                          # shipped files present + index.mjs importable
+pnpm run check:readmes                             # five-language README consistency
+pnpm pack                                          # the published tarball
+```
+
+There is no build step: pure ESM, `index.mjs` and `lib/` are the shipped artifacts.
+
+### Benchmark
+
+The PII benchmark (per-type P/R/F1 over 108 synthetic samples) is published in [`benchmark/RESULTS.md`](benchmark/RESULTS.md); regenerate it with `node benchmark/run.mjs` (no build step, zero new dependencies).
+
+## Interoperability with other DSH plugins
+
+Verified against **DSH `0.2.0-rc.2`** (the runtime this README ships for) and the high-star plugin set surveyed on 2026-10-05.
+
+This plugin **does not interfere** with other plugins, including the widely installed high-star ones:
+
+- **No tool-name collision.** Every tool is namespaced; no bare name owned by a shipped tool or another plugin is registered.
+- **No service-key collision.** It provides no service key at all, so it cannot collide on one.
+- **No slot collision.** It registers no client slot key, so it cannot contend for a `shadows-shipped-ui` seat.
+- **No HTTP route collision.** It registers no `webServer` prefix.
+- **No patch-layer collision.** The bundle patch only `insert`s its own row; it never overrides a built-in row's `config`.
+- **No global mutation.** It does not patch prototypes, rewrite `process.env`, or replace the global fetch dispatcher.
+
+**Shared event listeners are non-interfering by construction.** It observes the ordering-sensitive events `agent/pre-step`, `tools/post-execute` with `ctx.on()` — Cordis's broadcast registration, where every listener runs and none can starve another. **Every listener here delegates through `next()`**, so the chain is never short-circuited, and a mutation is applied to the value `next()` produced rather than returned in its place:
+  - `agent/pre-step` — also used by `dsh-routing-suite` (7000★, 7 listeners), `modlens` (4122★), `dsh-purge` (3317★), `dsh-agent-teams` (1923★), `dsh-context` (1849★).
+  - `tools/post-execute` — also used by `cc-safety-net` (1576★).
+
+Static evidence: `dsh-plugin-doctor` K10–K13 report `pass` for every check on this repository.
+
+## Topics
+
+`dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `pii`, `mask`, `privacy`, `anonymization`, `security`
+
+## Contributors
+
+- [@PerryLink](https://github.com/PerryLink) — creator and maintainer: the regex PII detector ported from Pii-Stripper-Middleware, the `agent/pre-step` masking seam, the restore table, the `/mask` command and `mask_test` tool, and the five-language docs.
+
+## PerryLink DSH Plugin Family
+
+This project is one of the **34 actively maintained** DeepSeek Harness plugins from [PerryLink](https://github.com/PerryLink) — the roster is **42**, of which **5** are frozen and **3** retired; every one keeps its row below, with the reason in the Status column. If this one helps you, the others likely will too:
+
+| Plugin | One-liner | Status |
+|---|---|---|
+| **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | 🧊 FROZEN — see the repo README |
+| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | 🧊 FROZEN — see the repo README |
+| **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
+| **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
+| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
+| **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
+| **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
+| **[dsh-industry-research](https://github.com/PerryLink/dsh-industry-research)** | Industry research orchestration that seals its deliverables through this plugin's `ctx.researchReport.assemble` | |
+| **[dsh-laya](https://github.com/PerryLink/dsh-laya)** | Laya typed decisions (`noul`/`choice`/`score`) as a first-class Cordis service and model-visible tools | |
+| **[dsh-library](https://github.com/PerryLink/dsh-library)** | Local document knowledge base for DeepSeek Harness. | |
+| **[dsh-local-ai](https://github.com/PerryLink/dsh-local-ai)** | Local-model (Ollama) integration for DeepSeek Harness. | |
+| **[dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions)** | LSP diagnostics, formatting, completion, code actions and rename over language servers | |
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII masking middleware: anonymize at the model boundary, restore at the display layer | |
+| **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors | |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | |
+| **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
+| **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
+| **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
+| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
+| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill | |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | One-package, one-corridor-index plugin upgrade skill: routes a repository to the matching closed corridor card | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | 🚫 RETIRED — corridors carried by `dsh-plugin-upgrade` |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | 🧊 FROZEN — see the repo README |
+| **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
+| **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
+| **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
+| **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
+| **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
+| **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
+| **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
+
+### Install from the DSH Desktop Market
+
+All PerryLink plugins are browsable in the built-in DSH Desktop Market: **Market → Sources → add source → paste** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ select it**. Installation still goes through the Market's npm-identity verification and your confirmation.
+
+## License
+
+[LICENSE](LICENSE) (Apache License 2.0) © 2026 dsh-mask contributors

@@ -1,0 +1,205 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Lume — an open-source terminal you can drive from your phone" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/hugomyb/Lume/releases/latest"><img src="https://img.shields.io/github/v/release/hugomyb/Lume?color=4ea1ff&cacheSeconds=3600" alt="Latest release"></a>
+  <a href="https://github.com/hugomyb/Lume/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/hugomyb/Lume/ci.yml?branch=main&label=CI" alt="CI"></a>
+  <a href="https://github.com/hugomyb/Lume/releases"><img src="https://img.shields.io/github/downloads/hugomyb/Lume/total?color=56d364&cacheSeconds=3600" alt="Downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-c678dd" alt="License: MIT"></a>
+  <a href="https://github.com/hugomyb/Lume/stargazers"><img src="https://img.shields.io/github/stars/hugomyb/Lume?cacheSeconds=3600" alt="Stars"></a>
+</p>
+
+An **open-source terminal emulator** with command blocks, inline AI and split
+panes — that you can also **drive from your phone** or any other device, on the
+LAN or across the Internet with a one-click tunnel.
+
+Built with **Rust + Tauri 2 + SolidJS + xterm.js**: a few-MB native binary,
+**fully local, no account, no telemetry**.
+
+> **Platforms:** **Linux** (X11 & Wayland), **macOS** (Intel & Apple Silicon)
+> and **Windows** — built for all three on every release. macOS & Windows
+> binaries are currently **unsigned** (a one-time first-launch prompt; see
+> [Install](#install)).
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="assets/screenshots/blocks.png" alt="Command blocks"><br><sub>Command blocks — each command + output is a navigable block</sub></td>
+    <td width="50%"><img src="assets/screenshots/ai.png" alt="Inline AI"><br><sub>Inline AI — explain a block or generate a command</sub></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/panes.png" alt="Panes &amp; themes"><br><sub>Panes, tabs &amp; themes</sub></td>
+    <td><img src="assets/screenshots/remote.png" alt="Remote control"><br><sub>Remote control from your phone</sub></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="assets/screenshots/settings.png" alt="Settings"><br><sub>Settings — appearance, shell, AI providers, file tree, shortcuts &amp; more</sub></td>
+  </tr>
+</table>
+
+## Features
+
+New to Lume? The **[user guide](docs/guide.md)** shows how to use each feature.
+
+- **Remote control** — drive your terminals from your phone, a browser or
+  **another Lume**, on the LAN or over the internet (cloudflared quick tunnel).
+  Devices pair once with a single-use QR code, can be revoked one by one, and
+  the session is **end-to-end encrypted** (neither the LAN nor the tunnel sees
+  it). The mobile page has a Termux-style key row, live directory completion,
+  swipe-to-move-cursor, and a tab bar to switch/create terminals; a Lume ↔ Lume
+  pane reconnects by itself after a network drop or a restart. Internet tunnel
+  optional (LAN only if you prefer).
+- **Command palette** (`Ctrl+Shift+P`) — every action, workspace, SSH host,
+  workflow and theme in one searchable list, organised in sections with
+  sub-lists and recent actions; `!` searches the history, `?` asks the AI for a
+  command.
+- **Command blocks** — each command + its output is an isolated, navigable block
+  (via shell integration / OSC 133), with exit-code badges, copy, rerun.
+- **Inline AI** — explain a block or generate a command from natural language,
+  with opt-in extra context (folder, branch, previous block). Multiple providers: the local **Claude** or **Codex** CLI, or any
+  **OpenAI-compatible API** (OpenAI, DeepSeek, Ollama…). Pick per provider model.
+- **Panes & tabs** — splits, drag-and-drop rearrange, layout presets, full
+  session persistence (tabs, panes, sizes, working dirs, recent blocks), and the
+  current git branch on each tab.
+- **Workspaces** — save the current tab (or all of them) as a named workspace
+  from the `▾` next to the `+`, and reopen it in one click: layout, folders and
+  startup commands such as `npm run dev` (run, ask first, or never — your
+  choice). Plain YAML files you can share and version.
+- **Rich history** (`Ctrl+Shift+H`) — every command with its folder, exit code,
+  duration and git branch; filter with `failed`, `here`, `project:…`,
+  `branch:…`. Stored locally in a plain JSONL file, with "never record"
+  patterns for secrets.
+- **SSH manager** — hosts from `~/.ssh/config` (including `Include`s), favorites,
+  per-host tmux re-attach or mosh, and a one-click reconnect when a session drops.
+- **Workflows** — parameterized command snippets (Warp-compatible YAML).
+- **Autocomplete** — inline suggestions from history, files, aliases, commands.
+- **File tree sidebar** that follows the active pane's directory, with
+  customizable right-click commands.
+- **Themes & fonts** — 10 built-in themes, custom font import, Nerd Font support,
+  remappable keybindings, text zoom.
+- **14 languages** — fully translated UI, switchable in settings (English default).
+- **Desktop notifications** when long commands finish in the background.
+- **Self-updating** on every platform, with signature-verified updates.
+- **Small download** — 3.6 MB on Windows, 5.4 MB on Debian/Fedora, 9 MB as a
+  universal macOS disk image. Not Electron.
+
+## Install
+
+Grab the installer for your OS from the [latest release](https://github.com/hugomyb/Lume/releases/latest).
+
+### Linux x86_64
+
+#### AppImage (any distro, auto-updating) — recommended
+```bash
+curl -fsSL https://raw.githubusercontent.com/hugomyb/Lume/main/scripts/install.sh | bash
+```
+This installs the latest AppImage and adds a menu entry. If it doesn't launch,
+install FUSE 2: `sudo apt install -y libfuse2`.
+
+#### Debian / Ubuntu
+Download `Lume_*_amd64.deb` from the [latest release](https://github.com/hugomyb/Lume/releases/latest):
+```bash
+sudo apt install ./Lume_*_amd64.deb
+```
+
+#### Fedora / RHEL / openSUSE
+```bash
+sudo dnf install ./Lume-*.x86_64.rpm
+```
+
+#### Arch / Manjaro (AUR)
+```bash
+yay -S lume-bin       # or: paru -S lume-bin
+```
+
+### macOS (Intel & Apple Silicon)
+Download the universal `Lume_*_universal.dmg`, open it, and drag **Lume** to
+Applications. It's **unsigned** for now, so on first launch macOS will block it —
+**right-click the app → Open** (or System Settings → Privacy & Security →
+*Open Anyway*). After that it launches normally and auto-updates.
+
+### Windows
+Download and run `Lume_*_x64-setup.exe` (NSIS installer). It's **unsigned** for
+now, so SmartScreen may warn — click **More info → Run anyway**. Updates install
+in-app afterwards.
+
+## Shell integration
+
+For command blocks, autocomplete and cwd tracking, add the integration line to
+your shell config (Lume shows the exact line on first launch; the script is
+written to your config dir — `~/.config/lume/` on Linux/macOS, `%APPDATA%\lume\`
+on Windows):
+
+```bash
+# ~/.zshrc  (or .bashrc / fish config.fish)
+[[ -n "$LUME_TERM" ]] && source "$HOME/.config/lume/lume-shell-init.zsh"
+```
+
+```powershell
+# PowerShell — $PROFILE  (Windows)
+if ($env:LUME_TERM) { . "$env:APPDATA\lume\lume-shell-init.ps1" }
+```
+
+## Build from source
+
+Requirements: Rust (stable), Node 20+, and the Tauri Linux deps:
+
+```bash
+sudo apt install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev \
+  libayatana-appindicator3-dev libxdo-dev patchelf
+
+npm install
+npm run tauri dev      # run in dev
+npm run tauri build    # build bundles (target/release/bundle/)
+```
+
+## Troubleshooting
+
+**Text looks blurry (Linux, Wayland session).** Lume paints its terminal grid
+natively with cairo, which WebKitGTK's Wayland compositing path makes
+impossible — so on a Wayland session that also has XWayland, Lume starts on
+GDK's x11 backend. Under a compositor set to a fractional/HiDPI scale
+(Hyprland, sway, GNOME at 125–150%), XWayland windows are rendered at 1× and
+then upscaled by the compositor, which softens the whole window. Two ways out:
+
+```bash
+GDK_BACKEND=wayland lume   # crisp: native Wayland, web renderer instead of the native grid
+```
+
+or tell the compositor not to upscale XWayland clients (`xwayland { force_zero_scaling = true }`
+on Hyprland, `xwayland scale 1` on sway). An explicit `GDK_BACKEND` is always
+honored.
+
+**Glyphs look wrong / not monospaced.** Check the font in Settings → Appearance:
+the default stack starts with Menlo, which only exists on macOS. Pick a family
+you actually have installed (any Nerd Font, DejaVu Sans Mono, JetBrains Mono…).
+
+**The usage pill says "quota" instead of a percentage (Claude CLI).** Lume reads
+your subscription limits from `claude -p /usage`, and the CLI only includes the
+percentages when it is allowed to look them up. `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1`
+blocks that lookup — check your shell environment and the `env` block of
+`~/.claude/settings.json`. If you set it for privacy, the narrower switches keep
+the limits visible:
+
+```json
+"env": { "DISABLE_TELEMETRY": "1", "DISABLE_ERROR_REPORTING": "1" }
+```
+
+To check what the CLI itself reports: `claude -p /usage --output-format json | jq -r .result`
+should list `Current session: N% used` lines.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to set
+up, build, run the checks, and open a pull request. By participating you agree to
+the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Security
+
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md).
+Do not open a public issue for security problems.
+
+## License
+
+[MIT](LICENSE) © Hugo Mayonobe

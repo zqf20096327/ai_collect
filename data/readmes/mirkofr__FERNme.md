@@ -1,0 +1,634 @@
+<div align="center">
+
+# 🌿 FERNme
+
+### Fuzzy-Edged Recall Network
+
+*Agent personalization memory that models the user, not the transcript.*
+
+**Memory for AI agents that costs zero LLM calls to write, keeps the prompt small no matter how much it remembers, and lets each person see, edit, and delete what it knows about them.**
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-2471a3.svg)](LICENSE)
+[![CI](https://github.com/mirkofr/FERNme/actions/workflows/ci.yml/badge.svg)](https://github.com/mirkofr/FERNme/actions/workflows/ci.yml)
+[![Site](https://img.shields.io/badge/site-fernme.dev-1d9e75.svg)](https://fernme.dev)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-1d9e75.svg)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/status-v0.4%20research%20preview-7f77dd.svg)](#-honest-status)
+
+[**fernme.dev**](https://fernme.dev)
+
+</div>
+
+---
+
+## Three claims, each reproducible
+
+| | FERNme | For comparison | Reproduce |
+|---|---|---|---|
+| **LLM calls to write a memory** | **0**. Writes are graph arithmetic. | Mem0 OSS 2.2.1: 1 extraction call per message, with a ~8,400-token system prompt (counted from Mem0's own prompts) | `python -m fernme.eval.cost_race --with-mem0-prompts` |
+| **Prompt tokens per turn** | **~40**, flat from message 10 to message 300 | Pasting the history: 6,051 tokens by message 300 | `python -m fernme.eval.cost_race` |
+| **User control** | Every memory is visible, explainable (`why`), editable, exportable, and deletable; consent-gated, per-site isolated | Mem0, Zep, and Letta are built around one agent or one user ([comparison](COMPARISON.md)) | `python run_demo.py` |
+
+All numbers above come from synthetic, fictional message streams, not real users.
+FERNme does not win every recall benchmark; see the [benchmarks](#-benchmarks) for
+where simple baselines beat it. A real-model recall head-to-head against Mem0 is
+[wired and owner-run](docs/mem0-head-to-head.md).
+
+## Try it in 60 seconds
+
+```bash
+pip install "fernme[mcp] @ git+https://github.com/mirkofr/FERNme"
+```
+
+```python
+from fernme.service import FernService
+
+svc = FernService(db_path=":memory:")
+svc.consent("shop.example", "elena", True)
+svc.observe("shop.example", "elena", "chat",
+            {"tags": ["pref:concise", "pref:oat_milk"],
+             "text": "Elena prefers concise answers and oat milk."})
+print(svc.card("shop.example", "elena")["wire"])   # the card your agent injects
+```
+
+Use it from Claude Code, Codex, or any MCP client: run `fernme-mcp`, or add the
+bundled plugin (`/plugin marketplace add mirkofr/FERNme`). See
+[MCP and plugin packaging](#mcp-and-plugin-packaging).
+
+## How it works
+
+Most agent memory is **written by an LLM on every turn** (expensive, hallucination-prone), **evaluated on question-answering** (not actions), and **assumes a single user**. FERNme is built for the opposite world: agents that act for many people, in any domain. Each user is a sparse, fuzzily-weighted node in a per-site graph; the graph also supports opt-in typed entities with labeled, Hebbian-weighted relations while the deterministic write/recall core stays at zero LLM calls. Optional propose-only enrichment can add connection suggestions powered by the agent you already use or a model you choose; nothing lands in memory truth until a human accepts it. Retrieval is **spreading activation**, and the prompt-facing card stores only **deviations from a population prior**.
+
+| FERNme is | FERNme is not |
+|---|---|
+| A user-owned personalization memory layer for agents | A generic transcript store |
+| A fuzzy graph of preferences, habits, style, constraints, and outcomes | A folder of chat logs with search |
+| Deterministic-first memory writes with optional LLM enrichment | An LLM extraction call on every turn |
+| A bounded prompt card that stays small as memory grows | Full-history injection |
+| An inspectable and editable user model | Hidden behavioral profiling |
+| Consent-first, per-site, default-deny sharing | Cross-site surveillance |
+
+The full feature list (collective priors, supernode, style and mood memory,
+outcome learning, tamper-evident audit chain, and more) is in
+[docs/features.md](docs/features.md).
+
+---
+
+## 📊 Benchmarks
+
+> **Honest scope:** the numbers below are on **synthetic or LLM-authored** data, not real
+> users. They validate the *mechanism* and surface failures; a real-human pilot is the
+> pending next step. The Mem0 (LLM) head-to-head needs an API key and is not yet run.
+> Entity-layer validation includes synthetic acceptance fixtures, the entity micro-eval,
+> and one scoped maintainer-copy check; broader real-profile benchmarks are still pending.
+
+### On LLM-authored people (closest to real, agentic ingestion)
+A sample of 16 of 92 third-person profiles (ChatGPT-authored), read as **prose only** and
+remembered agentically, then scored against hidden answer keys:
+
+| metric | result |
+|---|---|
+| preference coverage vs. hidden key | **75%** |
+| communication style — formality | **100%** |
+| mood sign / mood arc | **94% / 100%** |
+| preference drift detected | **94%** |
+| injection attempts ignored | **100%** |
+| note → card compression | **7.3×** |
+
+*(The "agent" here is an LLM reading prose, so these reflect agent + engine together — the
+engine is solid; the extraction quality is the agent's.)*
+
+### Cost, recall, and Pareto (synthetic, multi-seed)
+
+> Reproduce: `python -m fernme.eval.cost_variance` · `... quality` · `... drift` · `... context` · `... retention` · `... ablation` · `... pilot` · `... entities`
+
+> Unified harness: `python -m fernme.eval.harness --seeds 6 --json reports/eval_harness.json`
+
+> Token race (FERNme vs full history vs Mem0's measured prompts): `python -m fernme.eval.cost_race --turns 300 --with-mem0-prompts --json reports/cost_race.json --html token_race.html`
+
+> Mem0 recall head-to-head (owner-run, needs an API key): `python -m fernme.eval.mem0_h2h --check`, then see [docs/mem0-head-to-head.md](docs/mem0-head-to-head.md)
+
+> Canonicalization queue: `python -m fernme.eval.canonicalization --seeds 6 --json reports/canonicalization.json`
+
+> Propose-only enrichment: `python -m fernme.eval.enrichment --seeds 6 --json reports/enrichment.json`
+
+**Unified harness** - synthetic hidden-answer-key scenarios for static,
+abrupt drift, gradual drift, staleness, contextual, fragmented-entity, outcome, and
+slot-change regimes (updated 2026-09-30: the fixtures no longer use FERNme's reserved
+`style:` namespace, which the card never shows and which had capped FERNme's recall;
+`slot_change` is new and tests one-value-at-a-time facts such as city or employer). Same events/probes for every method; BM25 reads Cabinet event text with a
+pure-Python scorer; all methods in this table make no model calls. Outcome rows include action
+quality; non-FERN baselines do not have an outcome feedback mechanism.
+
+| regime | method | recall@5 | precision@5 | stale recall | action | tokens | LLM calls |
+|---|---|---:|---:|---:|---:|---:|---:|
+| static | FERNme pure | 0.917 +/- 0.118 | 0.733 +/- 0.094 | 0.000 +/- 0.000 | 0.733 +/- 0.094 | 40.8 +/- 1.1 | 0 |
+| static | FERNme entities | 1.000 +/- 0.000 | 0.800 +/- 0.000 | 0.000 +/- 0.000 | 0.800 +/- 0.000 | 38.8 +/- 2.2 | 0 |
+| static | recency | 0.583 +/- 0.118 | 0.467 +/- 0.094 | 0.000 +/- 0.000 | 0.467 +/- 0.094 | 25.5 +/- 1.3 | 0 |
+| static | frequency | 0.958 +/- 0.093 | 0.767 +/- 0.075 | 0.000 +/- 0.000 | 0.767 +/- 0.075 | 26.3 +/- 0.5 | 0 |
+| static | BM25 Cabinet | 1.000 +/- 0.000 | 0.800 +/- 0.000 | 0.000 +/- 0.000 | 0.800 +/- 0.000 | 119.8 +/- 35.2 | 0 |
+| abrupt drift | FERNme pure | 0.833 +/- 0.186 | 0.667 +/- 0.149 | 0.208 +/- 0.172 | 0.667 +/- 0.149 | 44.8 +/- 1.8 | 0 |
+| abrupt drift | FERNme entities | 0.833 +/- 0.186 | 0.667 +/- 0.149 | 0.208 +/- 0.172 | 0.667 +/- 0.149 | 44.8 +/- 1.8 | 0 |
+| abrupt drift | recency | 1.000 +/- 0.000 | 0.800 +/- 0.000 | 0.000 +/- 0.000 | 0.800 +/- 0.000 | 28.7 +/- 0.9 | 0 |
+| abrupt drift | frequency | 0.292 +/- 0.093 | 0.233 +/- 0.075 | 0.958 +/- 0.093 | 0.233 +/- 0.075 | 29.3 +/- 0.7 | 0 |
+| abrupt drift | BM25 Cabinet | 0.250 +/- 0.000 | 0.200 +/- 0.000 | 1.000 +/- 0.000 | 0.200 +/- 0.000 | 907.3 +/- 30.6 | 0 |
+| gradual drift | FERNme pure | 0.625 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 49.0 +/- 0.0 | 0 |
+| gradual drift | FERNme entities | 0.625 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 49.0 +/- 0.0 | 0 |
+| gradual drift | recency | 0.562 +/- 0.062 | 0.900 +/- 0.100 | 0.000 +/- 0.000 | 0.900 +/- 0.100 | 30.8 +/- 0.9 | 0 |
+| gradual drift | frequency | 0.562 +/- 0.062 | 0.900 +/- 0.100 | 0.167 +/- 0.167 | 0.900 +/- 0.100 | 32.5 +/- 0.5 | 0 |
+| gradual drift | BM25 Cabinet | 0.479 +/- 0.047 | 0.767 +/- 0.075 | 0.389 +/- 0.124 | 0.767 +/- 0.075 | 86.0 +/- 17.0 | 0 |
+| staleness | FERNme pure | 0.714 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 36.7 +/- 2.7 | 0 |
+| staleness | FERNme entities | 0.714 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 36.7 +/- 2.7 | 0 |
+| staleness | recency | 0.714 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 32.0 +/- 0.6 | 0 |
+| staleness | frequency | 0.571 +/- 0.000 | 0.800 +/- 0.000 | 0.250 +/- 0.000 | 0.800 +/- 0.000 | 31.8 +/- 0.4 | 0 |
+| staleness | BM25 Cabinet | 0.714 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 58.7 +/- 16.6 | 0 |
+| contextual | FERNme pure | 0.750 +/- 0.144 | 0.600 +/- 0.115 | 0.000 +/- 0.000 | 0.600 +/- 0.115 | 42.8 +/- 0.9 | 0 |
+| contextual | FERNme entities | 0.750 +/- 0.144 | 0.600 +/- 0.115 | 0.000 +/- 0.000 | 0.600 +/- 0.115 | 42.5 +/- 0.5 | 0 |
+| contextual | recency | 0.542 +/- 0.093 | 0.433 +/- 0.075 | 0.000 +/- 0.000 | 0.433 +/- 0.075 | 28.5 +/- 1.0 | 0 |
+| contextual | frequency | 0.583 +/- 0.118 | 0.467 +/- 0.094 | 0.000 +/- 0.000 | 0.467 +/- 0.094 | 28.5 +/- 0.5 | 0 |
+| contextual | BM25 Cabinet | 1.000 +/- 0.000 | 0.800 +/- 0.000 | 0.000 +/- 0.000 | 0.800 +/- 0.000 | 842.0 +/- 0.0 | 0 |
+| fragmented entity | FERNme pure | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 47.5 +/- 1.4 | 0 |
+| fragmented entity | FERNme entities | 0.500 +/- 0.500 | 0.100 +/- 0.100 | 0.000 +/- 0.000 | 0.100 +/- 0.100 | 43.7 +/- 3.0 | 0 |
+| fragmented entity | recency | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 30.2 +/- 1.8 | 0 |
+| fragmented entity | frequency | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 31.0 +/- 0.0 | 0 |
+| fragmented entity | BM25 Cabinet | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 90.0 +/- 0.0 | 0 |
+| outcome | FERNme pure | 0.500 +/- 0.000 | 0.500 +/- 0.000 | 0.000 +/- 0.000 | 0.500 +/- 0.000 | 30.0 +/- 0.0 | 0 |
+| outcome | FERNme entities | 0.500 +/- 0.000 | 0.500 +/- 0.000 | 0.000 +/- 0.000 | 0.500 +/- 0.000 | 30.0 +/- 0.0 | 0 |
+| outcome | recency | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 28.0 +/- 0.0 | 0 |
+| outcome | frequency | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 28.0 +/- 0.0 | 0 |
+| outcome | BM25 Cabinet | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 0.000 +/- 0.000 | 60.0 +/- 0.0 | 0 |
+| slot change | FERNme pure | 0.933 +/- 0.094 | 0.933 +/- 0.094 | 0.111 +/- 0.157 | 0.933 +/- 0.094 | 47.8 +/- 0.9 | 0 |
+| slot change | FERNme entities | 0.933 +/- 0.094 | 0.933 +/- 0.094 | 0.111 +/- 0.157 | 0.933 +/- 0.094 | 47.8 +/- 0.9 | 0 |
+| slot change | recency | 1.000 +/- 0.000 | 1.000 +/- 0.000 | 0.000 +/- 0.000 | 1.000 +/- 0.000 | 27.0 +/- 0.0 | 0 |
+| slot change | frequency | 0.400 +/- 0.000 | 0.400 +/- 0.000 | 1.000 +/- 0.000 | 0.400 +/- 0.000 | 28.0 +/- 0.0 | 0 |
+| slot change | BM25 Cabinet | 0.400 +/- 0.000 | 0.400 +/- 0.000 | 1.000 +/- 0.000 | 0.400 +/- 0.000 | 70.0 +/- 24.2 | 0 |
+
+Read this as a quality gate, not a victory lap: BM25 wins when query text directly
+matches Cabinet prose but spends far more context tokens; recency wins the deliberately
+abrupt drift fixture; frequency fails staleness; entity flags matter on fragmented
+identity; and only FERNme exercises the outcome loop. FERNme stays compact and
+zero-call, but it does not dominate every synthetic regime. The slot-change
+regime was written together with the feature it tests (the newest confirmed value
+wins in single-value slots such as city or employer), so treat its FERNme rows as a
+mechanism check; plain recency still wins it.
+
+**Cost** — per-turn memory tokens vs. profile size (5 seeds):
+
+| metric | FERNme | baseline |
+|---|---|---|
+| card size | **25.1 ± 0.6 tokens** (flat) | full history grows linearly |
+| at 120 interactions | **1×** | **77.4× ± 1.3** larger |
+| LLM calls per write | **0** | 1 per message for Mem0 OSS 2.2.1 (measured with `cost_race`); older extraction designs use ~2 |
+
+Older focused recall modules remain regression checks, but the unified harness
+above is the README source of truth for cross-method quality claims.
+
+**Cold-start ablation** — population prior gives **+0.06 precision@5 at turns 1–3**, washing out by turn 10 (a real but modest, cold-start-only benefit).
+
+**Typed-entity A2 micro-eval** (`python -m fernme.eval.entities`) — synthetic,
+fictional alias-fragmentation fixture. It reports the rank of a fragmented person
+entity with `entity_aggregation` off vs. on. The entity layer also has one scoped
+maintainer-copy check listed in Honest status; treat that as n=1 evidence, not a
+general real-profile benchmark.
+
+**Suggest-and-approve canonicalization eval** (`python -m fernme.eval.canonicalization --seeds 6 --json reports/canonicalization.json`) - synthetic,
+fictional fragmented-alias fixture with planted duplicate aliases. The queue is
+propose-only: no candidate changes memory truth unless a human accepts it.
+
+| metric | result |
+|---|---:|
+| suggestion precision | 1.000 +/- 0.000 |
+| suggestion recall | 1.000 +/- 0.000 |
+| suggestions per seed | 4.000 +/- 0.000 |
+
+**Propose-only enrichment eval** (`python -m fernme.eval.enrichment --seeds 6 --json reports/enrichment.json`) - synthetic, fictional relation-link fixture with a mock proposal source. OFF is inert; ON reads Cabinet text in a batch, validates proposals, and enqueues suggestions only.
+
+| metric | enrichment OFF | enrichment ON |
+|---|---:|---:|
+| precision | 0.000 +/- 0.000 | 1.000 +/- 0.000 |
+| recall | 0.000 +/- 0.000 | 1.000 +/- 0.000 |
+| suggestions | 0.000 +/- 0.000 | 2.000 +/- 0.000 |
+| FERNme-initiated LLM calls | 0.000 +/- 0.000 | 1.000 +/- 0.000 |
+| recall delta |  | 1.000 |
+
+Agent-driven proposals spend the caller agent's tokens outside FERNme and leave `svc.llm_calls` at 0. This eval is a harness wiring check, not a real-model quality claim.
+**Cost / quality status for enrichment** - the old gated/offline Pareto table was modeled before Phase 12. The current backed number is the synthetic propose-only enrichment eval above. Real-model quality and cost are deliberately not claimed until an owner-run model eval exists.
+**Simulated outcome pilot** — fake storefront, learn-from-behavior shoppers: **+17% relative conversion lift** over a popularity baseline; tied at visit 1 (cold start), pulling ahead as it learns, recovering through a mid-pilot taste drift.
+
+---
+
+## Memory modes and enrichment
+
+FERNme ships one deterministic memory core with a deployment-level switch: `FernService(memory_mode=...)`. Every hot write and recall stays model-free in every mode. Optional enrichment is a separate, default-off proposal tier.
+
+| path | model use | cost accounting | status |
+|---|---|---|---|
+| `pure` (default) | none | cheapest, flat | tested, key-less |
+| agent proposals | external agent proposes via MCP tools | `svc.llm_calls` remains 0 because FERNme made no call | wired, human-approved |
+| batch `enrich(llm_fn=...)` | caller-supplied model function, off hot path | `svc.llm_calls` counts FERNme-initiated batch calls and returns a token estimate | mock-validated synthetic eval |
+| no source configured | none | clean no-op | tested graceful skip |
+
+- `propose_relation(...)` and `propose_entity_link(...)` enqueue suggestions into the existing human review queue. Accepting applies through `entity_relate` or `entity_link_alias`; rejecting sticks.
+- Model or agent output is untrusted data. Relation vocabulary, entity kind checks, same-surname/low-confidence rules, and injection filters run before anything is enqueued.
+- The old `gated`/`offline` mode names remain for compatibility, but they do not write model-derived truth during `observe`. `consolidate()` is now a compatibility wrapper around propose-only enrichment.
+- See the synthetic enrichment eval above for the current measured ON/OFF delta with a mock proposal source. Real-model numbers are owner-run only.
+## 🧭 The 9 leapfrog dimensions (status)
+
+FERNme's edge isn't the mechanism (that's now a crowded 2026 category) — it's competing
+on dimensions single-user, vendor-owned, recall-optimized systems **structurally can't**.
+
+| # | Dimension | Status |
+|---|---|---|
+| 9 | **Communication-style & mood memory** | ✅ built + tested |
+| 2 | **Outcome-learning for any goal** (reinforce on results) | ✅ built + tested |
+| 8 | **Explainable provenance** (`why`) | ✅ built + tested |
+| - | **Persisted edge provenance** (`stated` vs `inferred`) | built + tested |
+| - | **Typed identity entities + relations** | validated on synthetic acceptance fixtures; no real-profile validation yet |
+| - | **Entity-aware card aggregation/enrichment** | validated on synthetic acceptance fixtures; no real-profile validation yet |
+| 1 | **Private collective priors** (network-effect cold-start; k-anonymity + bounded-mean DP) | ✅ built + tested |
+| 4 | **Verifiable, cryptographic data ownership** (tamper-evident HMAC chain, cascading unlearning) | ✅ built + tested |
+| 7 | **Multi-timescale memory** (fast context vs. slow identity) | ✅ built + tested |
+| 6 | **Self-tuning forgetting** (learn decay from outcomes; adapts to drift) | ✅ built + tested |
+| 5 | **Injection-resistant by construction** (deterministic writes can't be talked into beliefs) | ✅ built + tested |
+| 3 | **Open user-owned memory protocol** (portable across any agent, with consent) | ◑ spec stage |
+
+> These are deliberately the things HippoGraph et al. can't follow: they're single-user
+> (no collective priors), vendor-owned (no user-owned protocol), and recall-optimized
+> (no outcome loop). Built in honest, tested slices — research-dependent ones are marked.
+
+## 🏗 Architecture
+
+```mermaid
+flowchart TD
+    V[Visitor on a website] -->|prompt + action| API[FERNme Service]
+    API --> CONSENT{consent?}
+    CONSENT -->|no| STOP[blocked]
+    CONSENT -->|yes| ENGINE
+    subgraph ENGINE[Engine - zero-LLM write/recall core]
+      W[Hebbian write + decay] --> G[(Per-site preference graph<br/>fuzzy 0-9 edges)]
+      W --> E[(Entity tables<br/>entities, aliases, fields, relations)]
+      E -->|opt-in alias aggregation| R
+      G --> R[Spreading-activation retrieval]
+      R --> CARD[Token-minimal card ~25 tok]
+      PRIOR[Population prior<br/>differential encoding] --> R
+    end
+    CARD --> AGENT[Agent: recommend / act]
+    G --> CAB[(Cabinet: raw event log)]
+    API --> STORE[(SQLite or Postgres<br/>multi-tenant)]
+    API --> GLASS[🪟 Glass-box editor]
+    API -.user signs in.-> SUPER[User-owned Supernode<br/>cross-site, default-deny]
+```
+
+---
+
+## 🧠 How FERNme works (visual walkthrough)
+
+| | |
+|---|---|
+| ![Why FERNme](explanation%20of%20fern/IMG_7794.PNG)<br/>**Why FERNme** - adaptive local memory instead of expensive RAG/vector retrieval in the loop. | ![Seven core principles](explanation%20of%20fern/IMG_7796.PNG)<br/>**Core principles** - zero-LLM deterministic core, optional human-approved enrichment, Hebbian, fuzzy, memory cards, action-aware, user-owned. |
+| ![How memory grows](explanation%20of%20fern/IMG_7797.PNG)<br/>**How memory grows** — new event → connect → strengthen → decay → update the card. | ![Fuzzy Hebbian graph](explanation%20of%20fern/IMG_7799.PNG)<br/>**Fuzzy Hebbian graph** — sparse, weighted (0–9) edges for users, preferences, topics, and goals. |
+| ![The LLM gate](explanation%20of%20fern/IMG_7784.PNG)<br/>**Propose-only enrichment** - agent/model suggestions go to review; nothing auto-writes truth. | ![Memory card](explanation%20of%20fern/IMG_7802.PNG)<br/>**Memory card** - bounded, interpretable, token-minimal context for the agent. |
+| ![Action-aware learning](explanation%20of%20fern/IMG_7781.PNG)<br/>**Action-aware learning** - good outcomes strengthen connections, bad outcomes weaken them. | ![FERNme architecture](explanation%20of%20fern/IMG_7788.PNG)<br/>**Architecture** - ingestion bridge -> vocabulary -> fuzzy graph -> memory card -> agent, with optional proposal enrichment off the hot path. |
+
+**Local graph UI demo:** FERNme now ships a bundled React SPA at `/ui/graph`
+instead of the old single-file HTML graph. The screenshot below is generated
+only from the checked-in synthetic Elena fixture, not from a private database.
+The UI has source-owned assets, remembered site/user defaults, canonical
+entity-kind filters, category filters, known-only filtering, search/focus,
+relation hover labels, animated focused links, 2D plus optional spatial mode,
+and a flip-in selected tag/entity card with evidence and confidence details.
+
+![FERNme local graph UI with Elena synthetic memory](docs/elena_spa_graph.png)
+
+*Elena's memory (fictional demo) — local SPA graph UI with canonical entity
+filters, focused relation animation, and an inspectable project card. Every
+visible node stays synthetic and every relation remains explainable.*
+
+## 🚀 Quickstart
+
+```bash
+git clone https://github.com/mirkofr/FERNme && cd FERNme
+pip install -e ".[dev,api]"          # add ,fernmark / ,media / ,pgtest for the optional suites
+
+python run_demo.py                      # cold-start → learning → glass-box edit
+python supernode_demo.py                # one person, three sites, one owned profile
+python -m pytest tests -q               # 338 passed, 61 skipped without the fernmark/media/pgtest extras
+
+# experiments
+python -m fernme.eval.drift               # FERNme beats a frequency counter when tastes change
+python -m fernme.eval.retention           # permanent facts persist while stale volatile facts fade
+python -m fernme.eval.pilot               # +17% simulated conversion lift
+
+# run it live
+FERNME_API_KEY=secret uvicorn fernme.api.rest:app --port 8077   # REST API (docs at /docs)
+fernme-ui --site demo --user elena --port 8077 --no-open    # local SPA + graph UI
+open http://localhost:8077/ui/graph                         # graph, review queue, editor, feed, health
+open http://localhost:8077/graph                            # legacy redirect to /ui/graph
+fernme-mcp --print-db-path                                   # show the shared SQLite DB path
+fernme-mcp                                                   # MCP server for agents/Codex/Claude
+python -m fernme.import_obsidian ./vault --site demo --user elena --dry-run
+python -m fernme.import_fernmark ./document.fernmark.json --site demo --user elena --dry-run
+```
+
+> 🗄 **Storage:** defaults to `~/.fernme/fernme.db` (SQLite). For production use `PostgresStore` — same interface, tested against a real Postgres 16. Keep SQLite off cloud-synced folders.
+
+### MCP and plugin packaging
+
+Install and find your database:
+
+```bash
+pip install fernme
+fernme-mcp --print-db-path
+fernme-mcp
+```
+
+The default install includes the MCP server. On first use, FERNme creates one
+SQLite database at `~/.fernme/fernme.db` unless `FERNME_DB` points somewhere
+else. `fernme-mcp --print-db-path` prints the resolved path to stdout and exits;
+normal MCP startup logs the path to stderr so stdout remains clean for JSON-RPC.
+Set that same `FERNME_DB` in Codex/Cowork MCP config `env`, the CLI importer, and
+the UI process when you want the agent and graph to use the same memory. Optional
+`FERNME_SITE` and `FERNME_USER` set the profile tools use, and lock MCP tools to it (see Agent safety below).
+For the graph UI dependencies, install `pip install "fernme[ui]"`.
+
+Two plugins live under `packaging/` (Claude Code / Cowork and Codex layouts):
+
+| plugin | what it adds | MCP tools | tool-description tokens* |
+|---|---|---:|---:|
+| `fernme-memory` | the memory: recall, remember, pinned settings, edit, forget, outcomes, why, export, review queue | 20 | ~3,200 |
+| `fernme-docs` (optional add-on) | managed documents (FERNmark) and photo memory, same database | 11 | ~2,070 |
+
+\*Every tool description is loaded into each agent session, so the default
+plugin ships only the memory tools. Rough estimate (characters / 4).
+
+```bash
+codex plugin marketplace add ./packaging/codex
+claude plugin marketplace add ./packaging/claude
+```
+
+For Claude Code CLI: `/plugin marketplace add mirkofr/FERNme`, then
+`/plugin install fernme-memory@fernme-local` (and optionally
+`fernme-docs@fernme-local`). For Cowork: Customize > Plugins > "+" > Add
+marketplace from GitHub > enter the repo URL > install `fernme-memory`.
+
+The shipped configs run:
+
+```bash
+# fernme-memory
+uvx --from "fernme[mcp] @ git+https://github.com/mirkofr/FERNme@v0.4.2" fernme-mcp --tools core
+# fernme-docs (needs the FERNmark package)
+uvx --with "<fernmark package>" --from "fernme[mcp] @ git+https://github.com/mirkofr/FERNme@v0.4.2" fernme-mcp --tools documents,photos
+```
+
+`fernme-mcp --tools` accepts `core`, `documents`, `photos`, `all`, or `auto`
+(default: core, plus documents/photos when `FERNME_MANAGED_DOCUMENTS` or
+`[media] enabled` turn them on). `FERNME_MCP_TOOLS` sets the same from the
+environment. Both plugins read and write one database (`FERNME_DB`), and
+concurrent writers are safe.
+
+Cloud agents (OpenAI dots, xAI Grok Bot, and others that connect to remote MCP
+servers) use `fernme-mcp --transport http` with one token per agent, each locked
+to its own profile. Remote agents never get tools that read files on your machine,
+and only you approve consent and suggested merges; see
+[docs/cloud-agents.md](docs/cloud-agents.md).
+
+Agent safety on the MCP tools: `grant_consent` asks first (the agent must show
+the returned question and call again with `confirm=true` only after you say yes);
+setting `FERNME_SITE` / `FERNME_USER` locks the server to that profile so an agent
+cannot read or write another one (`FERNME_ALLOW_OTHER_PROFILES=true` turns the
+lock off); `import_obsidian` previews by default (`dry_run=false` to write).
+Every consent request also appears in the FERNme app's Review queue, where you can
+approve or deny it; `FERNME_CONSENT_MODE=inbox` makes that the only way to grant
+consent (the default for remote agents).
+
+The plugins are pinned to the release tag `v0.4.2`, so external testers get the
+same server build once the owner pushes that tag. See `docs/mcp.md` for local
+development alternatives.
+
+### Import your Obsidian vault
+
+FERNme can import a local Obsidian vault deterministically:
+
+```bash
+python -m fernme.import_obsidian ./vault --site demo --user elena --dry-run
+python -m fernme.import_obsidian ./vault --site demo --user elena --max-notes 100
+```
+
+The importer requires consent, preserves Markdown note bodies in the Cabinet as
+data, maps simple frontmatter tags through the existing vocabulary, extracts
+structured fields such as email and ISO dates into event payloads, and queues
+wikilink or alias candidates for human review. It never auto-applies entity
+truth. Through MCP, agents call `import_obsidian(site, user, path, ...)`; the
+path is on the MCP server machine and the returned summary is counts-only.
+
+### Managed document evidence (FERNmark)
+
+FERNme can convert raw supported files locally or ingest FERNmark's validated
+schema-v1 envelope without adding an LLM call. The optional dependency is
+pinned to an immutable public Git commit. Use a placeholder path in shared
+instructions, never a machine-specific path:
+
+```bash
+pip install fernme "fernmark @ git+https://github.com/mirkofr/FERNmark.git@23e16ea5b01f4ce77fee81b5bf4f7e0d87d77bae"
+set FERNME_MANAGED_DOCUMENTS=true
+set FERNME_VAULT=<vault-root>
+```
+
+The engine flag is default-off; the optional `fernme-docs` plugin enables it. Preview performs
+conversion and validation in memory with zero persistent writes. Confirmation
+stores full Markdown as Cabinet evidence and catalog metadata separately from
+the normal hot graph, and writes through the same single `CapturePipeline` ->
+`service.observe()` path as every other import, so native identity tags
+(`doc:`, `mime:`, `quality:`, plus origin/vault/status/title facts) always
+reach the graph. `recall_documents` returns a bounded metadata overlay with
+relative pointers and continuation (with a `hint` naming `import_document` on
+an empty catalog), while normal `recall_card` and its `assoc_floor` remain
+unchanged. Archive, supersede, pin, authority, and selective forget operations
+are explicit. `read_document` gives bounded, audit-logged, paged access to a
+document's stored Markdown by reference only. `remember_document_use` records
+that a document was used for something, as a byproduct of work already done
+in the turn -- never a reason for a separate model call. `backfill_documents`
+(also `python -m fernme.backfill_documents`) catalogs pre-Phase-18 document
+imports without duplicating events or graph edges. The agent may infer at most
+eight topical tags while already reading selected Markdown, but must link them
+to the document via `propose_tags`; FERNme never auto-accepts semantic tags.
+See `docs/fernmark-document-adapter.md` for the vault and lifecycle contract.
+
+### Photo memory (default off)
+
+Install `fernme[media]`, set `[media] enabled = true` in `fern.toml`, and use the
+two-step MCP flow `remember_photo(..., confirm=false)` followed by
+`confirm=true` only after the user agrees. JPEG, PNG, and WebP files are
+re-encoded without EXIF/GPS, stored in a local blob directory beside the SQLite
+database, and linked to agent-emitted tags as `asset:<uuid>` nodes;
+`forget_photo` deletes the files and graph evidence. Honest cost: this adds 0
+extra model calls when tags ride an agent turn that already perceived the image.
+Silent or bulk ingestion without an agent is not implemented and is out of
+scope for this phase.
+
+---
+
+## Minimal API example
+
+```python
+from fernme.service import FernService
+
+svc = FernService(db_path=":memory:")
+svc.consent("shop.example", "elena", True)
+
+svc.observe(
+    "shop.example",
+    "elena",
+    "chat",
+    {
+        "tags": ["pref:concise", "pref:oat_milk"],
+        "text": "Elena prefers concise answers and oat milk.",
+    },
+)
+
+print(svc.card("shop.example", "elena")["wire"])
+```
+
+Pinned settings are for choices a user states outright ("always use box plots").
+One value per key, they never fade, and every card lists all of them, whatever the
+context, card budget or population prior:
+
+```python
+svc.set_setting("shop.example", "elena", "plot.style", "box", text="I like box plots")
+svc.card("shop.example", "elena")["settings"]      # {'plot.style': 'box'}
+svc.clear_setting("shop.example", "elena", "plot.style")
+```
+
+Embedding FERNme in a server app (Postgres schema, connection pool, migrations as
+a deploy step, per-user locking, hosted multi-user rules) is covered in
+[docs/embedding.md](docs/embedding.md) and the hosted section of
+[SECURITY.md](SECURITY.md).
+
+Typed entities are opt-in (`entities=True`, `entity_aggregation=True`):
+
+```python
+from dataclasses import replace; from fernme.config import DEFAULT
+svc = FernService(db_path=":memory:", cfg=replace(DEFAULT, entities=True, entity_aggregation=True)); svc.consent("demo.example", "alex", True)
+alex = svc.entity_create("demo.example", "alex", "person", "Alex Chen")
+dana = svc.entity_create("demo.example", "alex", "person", "Dana Reyes")
+svc.entity_relate("demo.example", "alex", alex, "friend_of", dana)
+print(svc.recall_path("demo.example", "alex", alex, dana))
+```
+
+---
+
+## 🧱 What's inside
+
+- **Engine** - zero-model-call Hebbian write/recall core, ACT-R decay, spreading activation, token-minimal card.
+- **Population prior** — IDF cold-start; differential (deviation-only) storage is
+  enforced by an explicit `prune_to_prior` pass (redundant edges read through to the prior).
+- **Stores** — `SQLiteStore` (zero-setup) and `PostgresStore` (tested vs real PG 16), one interface.
+- **Ingestion bridge** - a per-site **catalog** (item_id->tags) plus a controlled namespaced vocabulary (`vocabulary.py`) that canonicalizes catalog, free-text, and agent-supplied tags to one form (`pref:`, `topic:`, `goal:`, `context:`) so the same concept does not drift across months. The deterministic Obsidian importer uses the same vocabulary and queues wikilink aliases for review. Enrichment proposals are separate and human-approved.
+- **Structured-field capture** — regex-only contact/date extraction keeps email,
+  phone, URL, handle, and ISO-date values in the Cabinet payload as data, not tags.
+- **Typed entity layer** - opt-in service APIs and additive SQLite/Postgres tables for entities, tag aliases, fields, Hebbian typed relations, relation facts, alias aggregation, and compact entity-aware card enrichment behind default-off flags.
+- **Propose-only enrichment** - default-off `propose_relation`, `propose_entity_link`, and batch `enrich(llm_fn=...)` validation into the existing suggestion queue; human accept/reject is the only truth write trigger.
+- **The Cabinet** — append-only event log with `recall()` for specific facts.
+- **Edge provenance** — persisted `stated`/`inferred` authority metadata on graph
+  edges across SQLite, Postgres, and consolidation undo.
+- **Supernode** (`supernode.py` + `auth.py`) — user-owned cross-site profile, built by **sign-in** (verified token → opaque person id), default-deny scoped views, sensitive categories walled off.
+- **Proactive triggers** — due-to-reorder + fading-favorite nudges.
+- **Safety** — event tags treated as untrusted data: injection-pattern dropping, size/value caps.
+- **Interfaces** — REST (`/observe /card /recall /edit /export /delete /triggers …`) + MCP tools + a bundled **local React SPA** at `/ui/graph` (graph, review queue, memory editor, feed, health; `/graph` redirects for old bookmarks).
+- **Governance** — consent-gated everywhere; export & right-to-be-forgotten built in.
+
+---
+
+## 🔬 How FERNme compares
+
+FERNme is a **different category** from conversational memories — it is a user-owned personalization graph evaluated by *actions*, not a transcript store optimized for QA recall. Don't benchmark it only on LoCoMo; that's the wrong axis.
+
+| | 🌿 FERNme | Mem0 | Zep/Graphiti | Letta | MemOS |
+|---|:--:|:--:|:--:|:--:|:--:|
+| Write | **zero-LLM deterministic core; optional propose-only enrichment** | LLM | LLM-built KG | LLM-paged | LLM |
+| Typed relations | deterministic, opt-in entity/relation graph | LLM-extracted memories | LLM-built KG per episode | model-managed pages | hybrid |
+| Retrieval | spreading activation | vector | graph+time | OS paging | hybrid |
+| Eval axis | **outcomes** | QA | temporal QA | long-horizon | QA |
+| User-owned + glass-box | **✅** | – | – | – | – |
+| Multi-tenant per-site | **✅** | passport | – | – | – |
+
+**Leads on:** write cost, interpretability, per-site user-ownership/consent. **Honestly behind on:** nuanced/causal preferences (LLM extraction wins), benchmark credibility, ecosystem & distribution.
+
+---
+
+## ⚖️ Honest status
+
+Done & tested (338 passed, 61 skipped on Python 3.11 without the optional
+fernmark, media, and pgtest extras; checked on 2026-09-30 with mcp 1.30 and 2.2): engine, SQLite + real-Postgres stores,
+supernode + sign-in, triggers, safety, REST/MCP, bundled local SPA, 2D/spatial
+memory graph view, canonical entity-kind filters, review-backed re-kind
+suggestions, selected-node evidence cards, class-targeted volatility retention,
+contradiction-scoped verify, persisted edge provenance, structured-field ingest,
+suggest-and-approve canonicalization, cross-user assoc k-suppression,
+deterministic Obsidian and FERNmark document import, MCP packaging smoke
+coverage, self-configuring install paths, and the full results suite above.
+
+🆕 **Typed entity layer:** deterministic, consent-gated service APIs plus additive
+SQLite/Postgres tables for entities, aliases, fields, typed relations, and inert
+relation facts with Hebbian strengthening/decay. Opt-in retrieval integration can aggregate fragmented
+aliases and enrich card slots with compact entity context. It is validated on
+synthetic acceptance fixtures and the `python -m fernme.eval.entities` micro-eval;
+First real-profile validation (n=1, maintainer's own 722-tag profile): with entity flags on, a fragmented person's card rank improved 11→6, a previously-missed contact_of relationship surfaced in the card, and token cost stayed flat (~150 vs ~155). Synthetic-vs-real caveat applies: one profile, one probe set. Structured-field ingest now retains email, phone, URL, handle, and ISO-date extractions in event payloads as Cabinet data; entity-field writes are available through the service API, with automatic promotion left for a later pass.
+
+**Suggest-and-approve canonicalization:** deterministic alias-merge and
+entity-link suggestions are persisted per site/user for human review. This is
+synthetic-validated by `python -m fernme.eval.canonicalization` (precision
+1.000 +/- 0.000, recall 1.000 +/- 0.000 on planted duplicate aliases), opt-in at
+the service/API layer, and propose-only: rejected suggestions do not resurface,
+and accepted suggestions apply through existing entity alias APIs.
+
+**Propose-only enrichment:** default-off agent/model proposal surfaces enqueue typed relation and entity-link candidates into the same review queue. With enrichment disabled, outputs are byte-identical and `propose_*`/`enrich()` are inert. With enrichment enabled, proposals are sanitized, vocabulary/entity-kind checked, counted when dropped, and never written to memory truth until accepted by a human. Synthetic mock eval: precision 1.000 +/- 0.000, recall 1.000 +/- 0.000, 2.000 suggestions/seed, and 1.000 FERNme-initiated batch LLM call/seed. Agent-driven proposals make 0 FERNme LLM calls.
+**Cross-user assoc isolation:** assoc graph reads are k-suppressed by default
+(`assoc_min_users=2`). This is a deliberate privacy-motivated behavior change on
+multi-user sites: one user's rare co-occurrence pair cannot influence another
+user's retrieval until at least two distinct users reinforce it. Single-user sites
+are unchanged because each user's own assoc contributions remain visible to them;
+`assoc_min_users=1` is the compatibility escape hatch for the old shared-site
+behavior.
+
+🆕 **New default behavior:** class-targeted volatility retention is on by default. Permanent facts use very long retention, volatile/current facts fade fast, and drift-tested taste classes stay short. Synthetic R5 retention eval: permanent facts above floor at day 700 improve **0.000 -> 1.000**, stale volatile weight improves **2.114 -> 0.000**, and slow changed facts still prefer the new value **1.000**. Legacy focused drift checks remain regression coverage; cross-method claims use the unified harness above.
+
+🆕 **Verify scope:** contradiction-scoped verify is on for genuine single-value-slot conflicts and marks only the older side of the contradiction. Synthetic R5 eval: contradicted-stale verify precision **1.000**, recall **1.000**, nag **0.000**, with **0.959 +/- 0.156** conflict pairs/user. The perfect contradicted-stale score is by construction, so it validates wiring, not real-world conflict-detector quality. Confidence separates "keep it" from "trust it"; stale-high-confidence-wrong improves in the fixture (**0.070 -> 0.004**) because middle-class confidence no longer decays slower than flat.
+
+🚧 **Still open (genuinely needs the outside world):**
+- A **real-human per-site pilot** — only live users close the loop a simulator can't.
+- The **Mem0 (LLM) recall head-to-head** — `fernme.eval.mem0_h2h` runs real Mem0 on the harness scenarios; needs `OPENAI_API_KEY` ([how](docs/mem0-head-to-head.md)).
+- **Embeddings** for context-to-attribute matching; optional propose-only enrichment for messy inputs.
+- **Silent staleness verify** -- age-only verify remains off by default. In the synthetic sweep, the best age-only point was still weak (precision **0.461**, recall **0.651**, nag **0.214**), so silent-stale detection needs the next milestone: learned per-edge volatility or outside corroboration.
+
+> Every claim above is backed by a test or a reproducible experiment. Where a result is simulated, it says so — a simulator proves the *mechanism*, not real-world behavior.
+
+---
+
+## 📁 Layout
+
+```
+fernme/
+  core/      graph types · fuzzy 0–9 edges · event record
+  write/     event->attr mapping (zero-model-call core) · Hebbian update · decay
+  retrieve/  base-level + spreading activation · token-minimal card · entity_card.py
+  capture/   adapters · extractors.py (regex-only structured fields)
+  prior/     population prior · differential encoding · IDF cold-start
+  store/     sqlite_store · postgres_store (one interface)
+  relations.py · typed entity/relation vocabulary
+  supernode.py · auth.py · triggers.py · safety.py · service.py
+  api/       rest.py (FastAPI) · mcp_server.py · serve.py
+  web/       app/ (React SPA source) · static/app/ (bundled local UI assets)
+  eval/      simulator - cost - quality - drift - context - ablation - pilot - entities - harness - enrichment
+tests/       338 passed, 61 skipped without optional extras   ·   *_demo.py walkthroughs
+```
+
+---
+
+## 📜 License & citation
+
+Apache-2.0, © 2026 Acquilab Inc. — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Security notes in [SECURITY.md](SECURITY.md); the name is a working codename (see [NAMING.md](NAMING.md)).
+If you use FERNme in research, please cite it via [CITATION.cff](CITATION.cff).
+
+<div align="center">
+<sub>Research preview. Benchmarks are synthetic or LLM-authored unless stated otherwise.</sub>
+</div>

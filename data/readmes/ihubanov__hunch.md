@@ -1,0 +1,650 @@
+# Hunch
+
+**Calibrated yes/no, pick-one and scale judgments from your own LLMs — on text and on images — read straight off the logprobs.**
+
+A lot of code needs a small judgment that plain logic can't express: *is this message asking for a refund?
+Which team should handle this ticket? How severe is this alert? Does this new fact replace the old one?*
+The usual answer is a pile of `if/else` branches and regexes, or a chat prompt whose free-text answer you then
+parse. Hunch replaces both with one typed call. You describe the check, and it returns a probability your code
+can threshold, not a paragraph.
+
+It works on photos too. *Does this photo show flooding? Does it show the event in the headline? Is this a protest or
+a concert crowd?* Send the image with the check and get a probability you can gate at 0.9, the same as for text. On
+188 hand-labelled look-alike photos (a flooded street vs a wet one, earthquake rubble vs a demolition site, a building
+on fire vs one lit by fireworks), four vision models qualify, one of them a 4-bit 35B MoE on an edge-class GPU, with Gemma-4-31B at **98.4%** and calibration error
+0.016. See [Images](#images).
+
+- **Typed checks:** `yesno` → `p_yes`, `pick` (one of up to 300 options) → the best option and a full
+  distribution, `scale` (up to 10 ordered levels) → an expected value and a distribution. Every answer carries a
+  `confidence`.
+- **No text generation.** Each check is a single constrained output token (`max_tokens: 1`), and the answer
+  is read from the token logprobs and renormalised over the allowed labels. The model can't ramble, and a
+  malformed answer can't make it into your code.
+- **Images too.** Send photos with the request and ask about them (*does this photo show flooding? does it show
+  the event in the headline?*) on any vision model your vLLM serves. Same checks, same probabilities, same gate:
+  four models qualify on a hand-labelled set of 188 look-alike photos (see [Images](#images)).
+- **Parallel by default.** All checks in a request run concurrently, with the context first in every prompt so the
+  server's prefix cache is reused.
+- **Your models, your hardware.** Hunch runs against any [vLLM](https://github.com/vllm-project/vllm)
+  OpenAI-compatible server. No data leaves your network.
+
+## Quick start
+
+**Inside an agent that already talks to a vLLM endpoint, there's nothing to set up.** Hunch reads the endpoint and
+model the agent already uses (`ANTHROPIC_BASE_URL` / `ANTHROPIC_MODEL`, `OPENAI_BASE_URL` / `OPENAI_MODEL`, …) and runs
+in-process, with no server and no config file:
+
+```python
+from hunch import judge      # pip install "hunch @ git+https://github.com/ihubanov/hunch"
+r = judge({"ticket": "Charged twice for order A-104."},
+          {"refund": {"kind": "yesno", "question": "Is the customer asking for money back?"}})
+r["results"]["refund"]["p_yes"]
+```
+
+The same from a shell, or as a tool the agent starts itself (see [Zero-config](#zero-config-library-cli-mcp)):
+
+```bash
+python -m hunch judge '{"context": "...", "checks": {...}}'     # one call, JSON out
+claude mcp add hunch -- python -m hunch mcp                       # a `judge` tool for Claude Code
+```
+
+As a shared service:
+
+```bash
+pip install .            # or: docker build -t hunch .
+export HUNCH_BACKEND_URL=http://localhost:8000          # your vLLM server
+export HUNCH_BACKEND_MODEL=Qwen/Qwen3.5-397B-A17B        # a model it serves
+python -m hunch selftest                                  # must print SELFTEST PASSED
+python -m hunch                                           # serves http://127.0.0.1:8791
+```
+
+```bash
+curl -s localhost:8791/v1/judge -H 'content-type: application/json' -d '{
+  "context": {"ticket": "Charged twice for order A-104. Fix it today or I cancel."},
+  "checks": {
+    "refund": {"kind": "yesno", "question": "Is the customer asking for money back?",
+               "yes_if": "asks for a refund or reversal of a charge",
+               "no_if": "anything else, including only reporting a problem"},
+    "team":   {"kind": "pick", "question": "Which team handles this?",
+               "options": {"billing": "charges, refunds", "technical": "bugs", "sales": "pricing"}},
+    "anger":  {"kind": "scale", "question": "How angry is the customer?",
+               "levels": ["calm", "annoyed", "furious"]}
+  }
+}'
+```
+
+```json
+{
+  "model": "qwen3.5",
+  "results": {
+    "refund": {"kind": "yesno", "p_yes": 0.5927},
+    "team":   {"kind": "pick", "pick": "billing", "probs": {"billing": 0.9997, "technical": 0.0002, "sales": 0.0001}, "confidence": 0.9975},
+    "anger":  {"kind": "scale", "value": 1.647, "probs": [0.0027, 0.3477, 0.6496], "confidence": 0.3963}
+  },
+  "usage": {"prompt_tokens": 465, "completion_tokens": 3, "backend_calls": 3}
+}
+```
+
+That's a real response from Qwen3.5-397B (lightly trimmed). `p_yes` is 0.59 because the customer reports a double charge but never
+explicitly asks for money back. Hunch reports that uncertainty instead of guessing, and your code decides what 0.59 means.
+
+## Qualify your model first
+
+Not every model makes a good Hunch backend. In our tests the older Qwen3 generation was **confidently wrong**, and
+spelling out definitions made it *worse*. Check before you rely on a model:
+
+```bash
+python -m hunch qualify qwen            # one or more model names from hunch.toml (default: all)
+```
+
+It runs straight against your backend (no Hunch server needed) and uses the 240 fictional look-alike pairs that ship
+with Hunch ([`hunch/lookalikes.py`](hunch/lookalikes.py)): two runs with the look-alikes named, plus one with the
+bare question. That's about 720 one-token calls, roughly a minute at the default concurrency. A model is
+**QUALIFIED** when:
+
+| Criterion | Default | Why |
+| --- | --- | --- |
+| Backend setup | constraint enforced, logprobs returned | otherwise answers are unconstrained |
+| Accuracy at `p_yes ≥ 0.9` | ≥ 90% (`--min-accuracy`) | the gate you'd actually use |
+| Calibration error (ECE) | ≤ 0.15 (`--max-ece`) | a wrong answer mustn't look as certain as a right one |
+| Definitions don't hurt | named ≥ question-only − 1 point (`--max-definitions-drop`) | if better-written checks make it worse, you can't fix it by writing better checks. A drop of a point or less is run-to-run noise |
+| Stability | ≤ 2% of answers flip between identical runs (`--max-flip-rate`) | the same input should get the same decision |
+
+A backend that is down is reported as **UNAVAILABLE**, not as a failed model. The exit code is 0 only if every
+model qualifies, and `--json FILE` writes the full report. `--quick` does one named run (no stability check).
+
+`python -m hunch selftest` is the 10-second version (setup plus 12 cases). Run it after every deployment. Use
+`qualify` when choosing or upgrading a model.
+
+## API
+
+### `POST /v1/judge`
+
+| Field | Type | |
+| --- | --- | --- |
+| `context` | string, object or array | The data to judge. Use an object with named fields when there are several parts, and refer to them in questions with backticks, e.g. `` `ticket.messages[0]` `` |
+| `checks` | object: id → check | Your own ids; results come back under the same ids |
+| `images` | list of strings, optional | Up to 8 images for a vision model: `https://…` URLs the backend can fetch, or `data:image/…;base64,…` URLs. They are part of the context, numbered `IMAGE 1`…`IMAGE n` so questions can refer to them. `context` may be omitted when only images are judged |
+| `model` | string, optional | One of the configured models; defaults to `service.default_model` |
+| `effort` | string, optional | Thinking effort for a `deliberate` model on this call only (`low` / `high` / `max`). Ignored for `one_token` models (it would switch thinking on) and by backends without it. In `hunch.toml`, `effort` requires `mode = "deliberate"` or `"auto"` |
+
+Check kinds:
+
+| `kind` | Fields | Result |
+| --- | --- | --- |
+| `yesno` | `question`, optional `yes_if`, `no_if` | `p_yes` (0–1) |
+| `pick` | `question`, `options`: key → description or `null` (1–300 options) | `pick` (most likely key), `probs` (key → p), `confidence` |
+| `scale` | `question`, `levels`: list of descriptions, lowest first (1–10) | `value` (expected level, can fall between levels), `probs` (list), `confidence` |
+
+`confidence` = 1 − normalised entropy of the distribution: 1.0 means all probability is on one answer, 0.0 means uniform.
+
+Errors come back as `{"error": {"code": "...", "message": "..."}}`:
+
+| HTTP | `code` | When |
+| --- | --- | --- |
+| 400 | `invalid_request`, `unknown_model`, `too_many_options`, `too_many_levels`, `too_many_images`, `images_not_supported` (images sent to a text-only model) | Bad input (unknown fields are rejected) |
+| 401 | `unauthorized` | `HUNCH_API_KEYS` is set and the bearer key is missing or wrong |
+| 413 | `context_too_long` | The context plus the question exceed the model's context window |
+| 502 | `backend_error` | The backend returned an error, or did **not** enforce the constraint (never turned into a made-up probability) |
+| 503 | `backend_unavailable` | Still failing after retries (429 / 5xx / timeouts, with `Retry-After` honoured) |
+
+`GET /v1/models` lists the configured models, each with the `mode` its checks actually run in (`one_token` or
+`deliberate`; `auto` is resolved, with the configured value in `configured_mode`). `GET /health` checks that the backend serves them.
+
+## Why logprobs instead of asking for JSON
+
+The common way to get a decision out of an LLM is to ask for JSON (`{"is_refund": true}`) and parse it. That works,
+but you only get the model's *top* answer, with no sense of how close the call was. You pay for the output tokens,
+reasoning models may think for hundreds of tokens first, and every so often the output isn't valid.
+
+Hunch asks for exactly **one constrained token** and reads the probability the model put on each allowed answer:
+
+| | Ask for JSON | Hunch |
+| --- | --- | --- |
+| What you get | one answer (`true`) | a probability (`p_yes: 0.93`) plus a distribution for picks and scales |
+| Close calls | invisible: 51% and 99% look the same | visible, so you can route 0.4–0.6 to a human or a bigger model |
+| Output tokens | tens to hundreds (more with thinking) | 1 |
+| Malformed output | possible, needs retries or repair | impossible: the grammar only allows the labels |
+| Thresholds | fixed by the model's wording | yours: act at 0.9, review at 0.5–0.9, drop below 0.5 |
+| Many questions | one long prompt, and answers influence each other | independent parallel checks over the same cached context |
+
+The probability is what makes this useful in code: you pick the threshold per decision, based on how costly a
+mistake is. That's a plain `if p_yes >= 0.9`, not a prompt tweak.
+
+## Zero-config: library, CLI, MCP
+
+The same engine runs three more ways, all using **the LLM the agent already has** instead of a separate setup:
+
+| | How | For |
+| --- | --- | --- |
+| Library | `from hunch import judge, ajudge` | Python agents and scripts: in-process, no server |
+| One-shot CLI | `python -m hunch judge '<json>'` (or `-` for stdin) | shells, other languages, cron |
+| MCP server | `python -m hunch mcp` (stdio, one `judge` tool) | agents that call tools: the agent starts it on demand |
+| HTTP server | `python -m hunch` | a shared service; unchanged, and now also zero-config |
+
+Settings are found in this order: arguments (`judge(..., base_url=, api_key=, model=)`), a `hunch.toml`, then the
+agent's own variables. The first one set wins:
+
+| | Variables |
+| --- | --- |
+| Endpoint | `HUNCH_BACKEND_URL`, `ANTHROPIC_BASE_URL`, `OPENAI_BASE_URL`, `OPENAI_API_BASE`, `LLM_BASE_URL` (a trailing `/v1` is fine) |
+| Key | `HUNCH_BACKEND_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `OPENAI_API_KEY`, `LLM_API_KEY`. None at all is fine |
+| Model | `HUNCH_BACKEND_MODEL`, `ANTHROPIC_MODEL`, `OPENAI_MODEL`, `LLM_MODEL`; if none is set and the endpoint serves one model, that one |
+
+- **`HUNCH_MODE` / `HUNCH_EFFORT` apply only on this discovered path.** `mode` and `effort` are per model in a
+  config file, so a config file wins and Hunch prints a warning to stderr if you set the variables while one
+  declares models. Set `mode` in the file there. (This is the trap that costs an hour: the variables look like
+  they worked, because the same values appear in the response either way.)
+- **Mode is `auto`:** one probe per model (remembered for the process) decides between one token and
+  [deliberate](#deliberate-mode). It catches models with *no* thinking-off mode (GLM-5.3), but not models whose
+  thinking-off answers are merely worse: DeepSeek-V4.1-Flash probes as one-token and fails `qualify` that way. For
+  those, set `HUNCH_MODE=deliberate` (and `HUNCH_EFFORT=low`); `qualify` tells you which models need it.
+- **Every response says how it ran:** `mode` (resolved) and `effort` (the thinking effort actually sent, `null` in
+  one-token mode). A requested `effort` that was not applied adds a `notes` entry instead of being dropped silently.
+  This is the only change to the HTTP response since v1.5: two added fields, and `notes` when relevant.
+- **The main model, not the small one.** `ANTHROPIC_SMALL_FAST_MODEL` is deliberately not read. Run
+  `python -m hunch qualify` on whatever you point it at.
+- **It needs token logprobs.** The endpoint has to be an OpenAI-compatible vLLM server (a gateway in front of one is
+  fine). Anthropic's API returns no logprobs and can't constrain the answer, so an agent running on Claude itself
+  should set `HUNCH_BACKEND_URL` to a vLLM server; pointing at `api.anthropic.com` is refused with that message.
+- `judge()` blocks, and is safe to call from code that already runs an event loop. `ajudge()` is the async version.
+  Both return the HTTP API's `{"model", "results", "usage"}` and raise `hunch.HunchError` (`.code`, `.message`).
+
+MCP config for other clients:
+
+```json
+{"mcpServers": {"hunch": {"command": "python", "args": ["-m", "hunch", "mcp"]}}}
+```
+
+## Using it over HTTP
+
+No client library is needed; it's one POST:
+
+```python
+import httpx
+
+HUNCH = "http://127.0.0.1:8791"
+
+def judge(context, checks, model=None, images=None):
+    body = {"context": context, "checks": checks, "model": model}
+    if images:
+        body["images"] = images     # vision models: http(s) or data: URLs, see Images below
+    r = httpx.post(f"{HUNCH}/v1/judge", json=body, timeout=60)
+    r.raise_for_status()
+    return r.json()["results"]
+
+res = judge(
+    {"old": "The staging DB listens on port 5432.", "new": "Staging DB moved to port 6432."},
+    {"replaces": {"kind": "yesno",
+                  "question": "Does `new` replace `old`'s value for the same thing?",
+                  "yes_if": "same thing, changed value",
+                  "no_if": "the same value restated, only more detail added, or a different thing"}},
+)
+p = res["replaces"]["p_yes"]
+if p >= 0.9:
+    ...        # act automatically
+elif p >= 0.5:
+    ...        # queue for review
+else:
+    ...        # leave as is
+```
+
+Patterns that work well:
+
+- **Fan out.** Put every question you *might* need about one context in a single request. They run in parallel and
+  share the cached context, so the questions your code ends up ignoring cost little.
+- **Choose from candidates, don't generate.** Find candidates with code (regex, search, a list of IDs) and ask a
+  `pick` which one fits. The answer is always one of your candidates.
+- **Decompose.** Rather than one "how good is this?" `scale`, ask three narrow `scale`s and weight them in code.
+  When your priorities change, you change a weight, not a prompt.
+- **Gate expensive work.** Use a cheap `yesno` ("does this passage answer the question at all?") before sending
+  anything to a big generative model.
+
+## Images
+
+Hunch passes images through to the model as ordinary chat content parts, so any vision model on your vLLM server
+can answer checks about photos, and the answer is read off the logprobs exactly as for text:
+
+```python
+res = judge({"headline": "Floods hit the area"},
+            {"shows_it": {"kind": "yesno", "question": "Does the photo show the event described in the headline?",
+                          "yes_if": "the photo shows that kind of event",
+                          "no_if": "a similar-looking but different scene (e.g. a wet street for a flood), "
+                                   "or a real photo of a different kind of event"}},
+            images=["data:image/jpeg;base64,..."])
+```
+
+**Measured.** [`bench/images.py`](bench/images.py) runs 188 freely licensed Wikimedia Commons photos, labelled by
+hand, through eight questions a news or monitoring pipeline asks. Each question comes with its look-alike: a
+flooded street vs a wet one (and photos of London's *Flood Street*), a protest vs a concert crowd or a memorial, an
+active wildfire vs a red sunset or forest that has already burned, a road crash vs a traffic jam, a building on
+fire vs one lit red by fireworks or a fire station, earthquake rubble vs a demolition site, a polling station vs a
+queue, a press conference vs a lecture or TED talk. Scored with `qualify`'s criteria, NVFP4 checkpoints on vLLM,
+thinking off, one token per check:
+
+| Model | *"Does this photo show …?"* | AUROC | ECE | *"Does the photo show the event in the headline?"* | AUROC | ECE | Flips |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Gemma-4-31B-IT | ✅ **98.4%** | 1.000 | 0.016 | ✅ **98.2%** | 0.997 | 0.016 | 0% |
+| Qwen3.5-397B-A17B | ✅ 97.3% | 0.999 | **0.013** | ✅ 97.4% | 0.997 | 0.055 | 0% |
+| Qwen3.8-Flash-Next | ✅ 97.3% | 1.000 | 0.021 | ✅ 96.7% | 0.998 | 0.022 | 0–0.4% |
+| Qwen3.6-35B-A3B (AWQ int4, edge-class GPU) | ✅ 97.9% | 1.000 | 0.072 | ✅ **98.2%** | 0.999 | 0.085 | 0–0.4% |
+
+Accuracy is at the `p_yes ≥ 0.9` gate over 188 photos (photo task) and 274 checks (headline task: every photo with
+its own event's headline, plus every real event photo with a clearly different event's headline, all of which the
+three models rejected). For both Qwen models the definitions cost 0.4 points on the headline task (one check in
+274), within the 1-point allowance.
+
+**What this shows:** the 0.9 gate carries over to images unchanged. Calibration on photos is as good as or better
+than on text, and the few remaining misses are photos the models hedge on (a tree standing in Mekong floodwater, a
+car hanging off a quay), which is what a gate should send to review.
+
+**Limits:** eight questions and 188 photos, chosen and labelled by us; well-known Commons photos may be in the
+models' training data; no stock-photo or AI-generated-image detection was tested. Two lessons from building it:
+auditing labels against the models' disagreements found one of ours wrong (a car-and-streetcar collision we had
+labelled "no crash"), and headlines that name details ("thousands march demanding new elections") make most real
+protest photos a correct *no*, so say in the check whether you mean the kind of event or this specific one.
+**Measure on your own images** before relying on it: `python bench/images.py` shows how.
+
+## Choosing a model
+
+From the bundled benchmark (see [Measured](#measured)):
+
+- **Most accurate:** a large instruct model (Qwen3.5-397B: 100%). Use it for decisions where errors are costly.
+- **Best mid-size:** Qwen3.8-27B (99.6%, calibration error 0.058). It qualifies comfortably on a single GPU.
+- **Why not a small purpose-trained decision model?** We measured one (Laya, 322M-421M, Apache-2.0).
+  Asked in a form it can answer, its best checkpoint ranks these pairs at AUROC 0.953 — comparable to a
+  9B LLM, in a model 20x smaller and ~2.3x faster per call — but reaches only 81.2% at the 0.9 gate with
+  ECE 0.301, i.e. a good ordering with probabilities you would have to calibrate yourself. Method,
+  numbers, and two corrections we published against ourselves:
+  [docs/COMPARISON-laya.md](docs/COMPARISON-laya.md).
+- **Generation beats size.** Every Qwen3-generation model failed (Qwen3-14B scored *below* Qwen3-8B), while the newer
+  Qwen3.5+ models pass. The small Qwen3.5-9B ranks almost perfectly (AUROC 0.996) but hedges on look-alikes, so use it
+  only with a strict act threshold (≥ 0.97) and human review below that.
+- **Best calibrated per GPU:** a mid-size dense model (Gemma-4-31B: 98.8%, calibration error 0.013). Its
+  probabilities are the most trustworthy as probabilities, and it's light enough to run next to other workloads.
+- **Edge:** a small MoE (Qwen3.6-35B-A3B, 4-bit: 99.6%). It fits on edge hardware and
+  suits requests that ask only a few checks.
+- **A thinking-off mode is not automatically a good one.** DeepSeek-V4.1-Flash answers in one token, but those answers
+  follow the order the options are listed in, and even with `debias = true` its calibration fails (ECE 0.192).
+  Allowed to think for ~60 tokens (`mode = "deliberate"`, `effort = "low"`) it qualifies at 98.8% with ECE 0.013, tied
+  with Gemma as the best calibrated model we have measured. See
+  [Models whose thinking-off mode is weaker](#models-whose-thinking-off-mode-is-weaker).
+- **Position-biased models** work with `debias = true`, at twice the calls. It reduces the bias by averaging it; it
+  does not remove it.
+- **Check the model has a real non-thinking mode.** GLM-5.3 has none: its template always opens a thinking block, so
+  its first token is never an answer. Run it with `mode = "deliberate"` and it qualifies at 97.5% (ECE 0.025); leave
+  it in one-token mode and it scores 66.7% (see [Models with no non-thinking mode](#models-with-no-non-thinking-mode)). Run `python -m hunch selftest` and `python bench/bench.py accuracy <model>` before adopting a model.
+- **Thinking models must have thinking switched off per request.** Otherwise the one allowed token is spent on
+  reasoning. Hunch sends `reasoning_effort: "none"` by default. Some chat templates need
+  `chat_template_kwargs = { enable_thinking = false }` in the model's `extra_body` instead (see `hunch.toml.example`).
+
+## When not to use Hunch
+
+- **Generating text** (summaries, replies, extraction of free-form values). Use a generative model, or have code
+  find candidates and let Hunch `pick`.
+- **Arithmetic, counting, date comparison, exact matching.** Do it in code.
+- **Multi-step reasoning.** A check is a snap judgment over the context you give it. Split the problem, or use a
+  reasoning model.
+- **Security boundaries.** Context is data, but a model can still be steered by adversarial text inside it. Don't make
+  a Hunch check the only thing standing between untrusted input and a dangerous action.
+
+## How it works
+
+1. **Labels, not text.** Answers map to single-token labels: `Y`/`N`, letters `A`… for options, and digits `0`–`9`
+   for levels. Each check is sent as a chat completion with
+   `structured_outputs: {"choice": [labels]}`, `logprobs: true`, `max_tokens: 1`, `temperature: 0` and
+   `reasoning_effort: "none"`.
+2. **Probabilities from logprobs.** The label logprobs are exponentiated and renormalised over the allowed labels.
+   `scale.value` is the expectation Σ i·p(i).
+3. **Big picks.** vLLM returns at most `--max-logprobs` alternatives (20 by default), so a pick with more than 15
+   options is split into groups. One call picks the group and one call per group picks within it, all in parallel:
+   p(option) = p(group) × p(option | group). 300 options take 21 calls, 100 options take 8.
+4. **Position-bias correction** (`debias = true` per model). Some models lean toward whichever answer is listed
+   first. With debias on, yes/no checks are asked in both answer orders and small picks in both option orders, and
+   the results are averaged. That doubles the calls, so only enable it for models that need it.
+
+**vLLM gotcha:** use `structured_outputs`. Some vLLM versions silently **ignore** the legacy `guided_choice`
+parameter, so the model answers unconstrained and nothing tells you. `python -m hunch selftest` checks that the
+constraint is really enforced (it asks the model to write "hello" while restricted to `A`/`B`).
+
+## Measured
+
+Hunch ships 240 **fictional, labelled look-alike pairs** ([`hunch/lookalikes.py`](hunch/lookalikes.py)): "does NEW replace OLD?" and
+"do A and B say the same thing?". It deliberately includes restatements and same-value-different-thing traps,
+two runs per model, with yes counted at `p_yes ≥ 0.9`. All results below use the checks in
+[`hunch/lookalikes.py`](hunch/lookalikes.py), which **name the look-alike cases** in `no_if` (e.g. *"`new` restates the same
+value, or is about a different thing"*). Results on vLLM (NVFP4 checkpoints unless noted), measured 2026-09:
+
+| Model | Verdict | Accuracy | AUROC | Brier | ECE | Max drift between runs |
+| --- | --- | --- | --- | --- | --- | --- |
+| Qwen3.5-397B-A17B | ✅ Qualified | **100.0** | 1.000 | 0.017 | 0.049 | 0.150 |
+| Qwen3.8-27B (bf16) | ✅ Qualified | 99.6 | 1.000 | 0.030 | 0.058 | – (0 flips) |
+| Qwen3.6-35B-A3B (AWQ int4) | ✅ Qualified* | 99.6 | 1.000 | 0.055 | 0.116 | 0.263 |
+| Gemma-4-31B-IT | ✅ Qualified | 98.8 | 0.991 | **0.013** | **0.013** | **0.011** |
+| DeepSeek-V4.1-Flash (`mode = "deliberate"`, `effort = "low"`) | ✅ Qualified | 98.8 | 0.991 | **0.013** | **0.013** | – (1.2% flips) |
+| DeepSeek-V4.1-Flash (one token, debias on) | ❌ Not qualified | 92.9 | 0.994 | 0.133 | 0.192 | – (1.2% flips) |
+| Qwen3.5-9B (bf16) | ❌ Not qualified | 90.8 | 0.996 | 0.192 | 0.266 | – (0 flips) |
+| Qwen3-8B (bf16) | ❌ Not qualified | 76.7 | 0.838 | 0.238 | 0.242 | 0.169 |
+| Qwen3-14B (bf16) | ❌ Not qualified | 71.7 | 0.806 | 0.286 | 0.289 | 0.195 |
+| GLM-5.3 (`mode = "deliberate"`) | ✅ Qualified | 97.5 | 0.977 | 0.025 | 0.025 | – (0.8% flips) |
+| GLM-5.3 (`mode = "one_token"`) | ❌ Not qualified | 66.7 | 0.734 | 0.194 | 0.065 | – (9.2% flips) |
+| Qwen3-0.6B (bf16) | ❌ Not qualified | 35.8 | 0.758 | 0.611 | 0.630 | 0.024 |
+
+Verdicts use `python -m hunch qualify`'s default criteria (accuracy ≥ 90%, ECE ≤ 0.15, definitions cost at most 1 point,
+≤ 2% flips). Qwen3.5-397B, Qwen3.8-27B, Gemma-4-31B, Qwen3.5-9B, GLM-5.3 and DeepSeek-V4.1-Flash were run through `qualify` itself; for the others the
+same criteria are applied to their benchmark numbers. \* Qwen3.6-35B-A3B passes on accuracy, calibration and stability;
+its question-only run wasn't measured.
+
+Why the others fail:
+- **DeepSeek-V4.1-Flash in one-token mode:** calibration. Its thinking-off answers lean on the listed order of the
+  answers; allowed to think, the same model qualifies. See
+  [Models whose thinking-off mode is weaker](#models-whose-thinking-off-mode-is-weaker).
+- **Qwen3.5-9B:** calibration. Real positives sit at p≈0.99, but the look-alike traps land at a median of 0.42–0.65, so
+  it hedges rather than being confidently wrong.
+- **The Qwen3 generation:** confidently wrong, and definitions make it *worse*.
+- **GLM-5.3 in one-token mode:** it has no non-thinking mode, so its first token opens a scratchpad rather than
+  answering. In `mode = "deliberate"` the same model qualifies at 97.5% with ECE 0.025. See
+  [Models with no non-thinking mode](#models-with-no-non-thinking-mode).
+
+### Same benchmark, vague checks
+
+The same 240 pairs with only the `question` ("Does `new` replace `old`'s value for the SAME thing?"), with no `yes_if` /
+`no_if` (`python bench/bench.py accuracy --vague <model>`). A dash means the row came from `python -m hunch qualify`,
+which until v1.2.1 recorded only accuracy for its question-only run; those backends are no longer up to re-measure.
+
+| Model | Verdict | Accuracy, look-alikes named | Accuracy, question only | AUROC, question only | Brier, question only |
+| --- | --- | --- | --- | --- | --- |
+| Qwen3.5-397B-A17B | ✅ Qualified | 100.0 | **83.3** | 0.884 | 0.182 |
+| Qwen3.8-27B | ✅ Qualified | 99.6 | **80.0** | – | – |
+| GLM-5.3 (`mode = "deliberate"`) | ✅ Qualified | 97.5 | **81.2** | – | – |
+| Gemma-4-31B-IT | ✅ Qualified | 98.8 | **80.4** | 0.863 | 0.196 |
+| DeepSeek-V4.1-Flash (`mode = "deliberate"`, `effort = "low"`) | ✅ Qualified | 98.8 | **83.3** | 0.875 | 0.167 |
+| DeepSeek-V4.1-Flash (one token, debias on) | ❌ Not qualified | 92.9 | **78.3** | 0.865 | 0.241 |
+| Qwen3.5-9B | ❌ Not qualified | 90.8 | **81.7** | – | – |
+| Qwen3-8B | ❌ Not qualified | 76.7 | **81.2** (definitions hurt) | – | – |
+| Qwen3-14B | ❌ Not qualified | 71.7 | **74.6** (definitions hurt) | – | – |
+| GLM-5.3 (`mode = "one_token"`) | ❌ Not qualified | 66.7 | **67.5** (definitions hurt) | – | – |
+
+The model and the service are the same; only the definitions changed. On every model that can answer the question at
+all, two short definitions (`yes_if` / `no_if`) are worth 9–24 accuracy points. Definitions go the other way on the
+older Qwen3 models, and on GLM-5.3 in one-token mode — where nothing in the prompt can help, because the token being
+read is not an answer. The same GLM in `deliberate` mode gains 16 points from them. That contrast is exactly what
+`qualify`'s "definitions help" check is for. Write the definitions first, then choose the model.
+
+These are results for one synthetic task on our hardware. **Measure on your own labelled cases** before a decision depends on
+Hunch: `python bench/bench.py accuracy <model>` shows how.
+
+### Models with no non-thinking mode
+
+GLM-5.3 scores 66.7% here, which looks like a weak model. It isn't — we were measuring the wrong thing.
+
+**GLM-5.3 has no non-thinking mode.** Its chat template always appends a thinking block to the generation prompt, so
+the first generated token is the model *opening a scratchpad*, never an answer. Constraining that position to `Y`/`N`
+projects a distribution that isn't about the verdict onto two tokens. The result looks exactly like what we measured:
+probabilities pinned near 0.5, unstable between identical runs (52 of 240 answers flipped), and very sensitive to how
+the prompt is built. There is no flag that avoids this: the GLM-4.x thinking toggle was removed, and
+`reasoning_effort: "none"` is not a recognised value — it falls through to *maximum* reasoning while also switching
+the server's reasoning parser off.
+
+Let the same model think, and constrain only its final verdict token, and it is excellent:
+
+| How GLM-5.3 is asked | Accuracy | AUROC | ECE | Flips | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| One constrained token (`mode = "one_token"`) | 66.7% | 0.734 | 0.065 | 9.2% | ❌ |
+| Thinking first, verdict token constrained (`mode = "deliberate"`) | **97.5%** | **0.977** | **0.025** | 0.8% | ✅ |
+
+Same model, same server, same 240 pairs. It costs hundreds of thinking tokens and seconds per decision instead of
+one token in well under a second — and with a 512-token budget a few checks never reach a verdict, so
+`think_budget = 1024` is the setting that qualified.
+
+**What to take from this:**
+
+- **Hunch measures something narrow:** does the model have an answer *at the first generated token*? A model whose
+  template always starts with a scratchpad cannot, whatever its ability.
+- **The symptom is recognisable.** Probabilities clustered near 0.5, unstable between identical runs and moving a lot
+  when you reshape the prompt, mean you are reading a position that isn't the answer — not that the model is weak.
+  Check whether your model has a real non-thinking mode before blaming it.
+- **A reasoning model can still give you a calibrated probability.** Let it think, constrain the final answer to your
+  labels, and read the logprobs of that token. That is what [`mode = "deliberate"`](#deliberate-mode) does.
+
+### Models whose thinking-off mode is weaker
+
+DeepSeek-V4.1-Flash is the opposite case to GLM. It *does* have a working non-thinking mode: with
+`reasoning_effort: "none"` its first token is a clean `Y` or `N`. But that snap answer is not the model's best
+judgment:
+
+| How DeepSeek-V4.1-Flash is asked | Accuracy | AUROC | ECE | Flips | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| One token | 82.9% | 0.968 | 0.225 | 2.5% | ❌ |
+| One token, `debias = true` | 92.9% | 0.994 | 0.192 | 1.2% | ❌ calibration |
+| `mode = "deliberate"`, default effort | 97.9% | 0.984 | 0.021 | 0.8% | ✅ |
+| `mode = "deliberate"`, `effort = "low"` | **98.8%** | **0.991** | **0.013** | 1.2% | ✅ |
+
+Every error in one-token mode was a false *yes*, and most were the restatement trap, answered with confidence:
+asked whether "Port 5432 is where the staging Postgres accepts connections" *replaces* "The staging Postgres listens on
+port 5432", it said yes at 0.99 when `Y` was listed first, and mostly no when `N` was. `debias` averages the two
+orders, which dilutes that bias into hedged probabilities but cannot remove it — hence good ranking (AUROC 0.994) and
+failed calibration. Allowed to think, it gets the same pair right in both orders, spending ~60 thinking tokens (about a
+second per check on our deployment), and `low` effort is enough.
+
+**What to take from this:** when a model can think, its thinking-off answers may be the weaker of the two, and
+`debias` can hide that rather than fix it. `python -m hunch qualify` now tries both (see below).
+
+### Deliberate mode
+
+For exactly these models, Hunch can read the answer differently. Set `mode` on the model in `hunch.toml`:
+
+| `mode` | What happens | Cost per check |
+| --- | --- | --- |
+| `one_token` (default) | The answer is the first generated token | 1 token, well under a second |
+| `deliberate` | The model thinks; only its final verdict token is constrained, and that token's logprobs give the probability | up to `think_budget` tokens (2048 by default) and seconds |
+| `auto` | One unconstrained probe at first use: if the first token opens a scratchpad, `deliberate`, else `one_token` | one extra call, once |
+
+Everything downstream is identical — same API, same `probs` and `confidence`, same thresholds, same `qualify`
+criteria. In `deliberate` mode Hunch drops the fields that switch thinking *off* (`reasoning_effort: "none"`,
+`enable_thinking: false`, `thinking: false`) but keeps real effort levels.
+
+**How long it thinks: `effort`.** On backends that support it (GLM-style `reasoning_effort`), set `effort` per model
+in `hunch.toml`, or per request for one call. More thinking buys stability, and the curve is steep at the cheap end —
+GLM-5.3 on the 240 pairs:
+
+| `effort` | Thinking tokens | Accuracy | ECE | Flips between runs | Qualifies |
+| --- | --- | --- | --- | --- | --- |
+| `low` | ~3 | 94.2% | 0.088 | 4.6% | no (stability) |
+| `high` | ~20 | 96.7% | 0.033 | 2.5% | no (just over) |
+| default (`max`) | ~79 | **97.5%** | **0.025** | **0.8%** | **yes** |
+
+`low` costs barely more than one-token mode, which suits cheap high-volume checks where you re-run or review the
+borderline cases; the default is what belongs behind a 0.9 gate. Measure it on your own task.
+
+**Size the caller's timeout above the thinking, not Hunch's.** Hunch's own backend timeout (`timeout_s`, 30s by
+default) is rarely the one that bites: a caller with an 8-second budget gives up first and gets nothing back,
+usually fail-open. Measured here on DeepSeek-V4.1-Flash in deliberate mode: ~62 thinking tokens, ~1.5s per check.
+GLM-5.3's untamed tail reaches 3579 thinking tokens, so budget seconds, not milliseconds. Size it above the
+**p99 of your own checks, not the median** — a 2.4s median with a 16s tail (we saw one) still fails the call that
+lands in the tail, and that looks like a flaky judge rather than a tight budget.
+Two things to know when a call is slower than that: **some backends ignore `reasoning_effort` entirely** (on our
+gateway DeepSeek thought ~62 tokens at `low`, default and `high` alike — identical latency), so if a check takes far
+longer than its thinking tokens suggest, suspect queueing on a shared endpoint or a larger context, not the effort
+setting; and check `effort` in the response, which reports what was actually sent.
+
+**`think_budget` is a cap, not a knob.** Raising it does not make the model think longer, and lowering it does not
+make it think less — it only decides whether a long answer arrives or the call raises. Measured on GLM at default
+effort: median 128 thinking tokens, p95 671, max 3579, so a 512 cap truncated 3% of checks. With `effort` set the
+tail collapses (`low` max 59, `high` max 138) and 256 is plenty. Size it above your p99 and control cost with
+`effort`.
+
+`python -m hunch qualify` handles both situations by itself. If a model fails in one-token mode **and** it can think —
+either because its first token always opens a scratchpad (GLM) or because it thinks once thinking isn't switched off
+(DeepSeek) — it re-runs the model in `deliberate` mode, reports both, and tells you which setting qualifies. A model
+counts as qualified if either mode passes.
+
+## Writing good checks
+
+- **Name the look-alike.** Say what counts as *no* for the case that looks most like *yes*. On the bundled
+  benchmark, dropping `yes_if` / `no_if` costs 17–24 accuracy points on every model tested
+  (see [vague checks](#same-benchmark-vague-checks)). One sentence in `no_if` ("restating the same value, or a
+  different thing") is most of the fix. Look for more than one look-alike: on memory-style pairs, a "replaces" or
+  "duplicate" check that doesn't also say *adding detail is not a replacement (or a duplicate)* called refinements
+  ("machine parts" → "machine parts, mostly pumps and valves") replacements at p = 1.0 on one model. A threshold
+  can't catch that; naming the case fixes it.
+- **Definitions go in `yes_if` / `no_if` and option descriptions,** not only in the question.
+- **One judgment per check.** Split "is this a good candidate?" into several checks and combine them in code.
+- **Keep arithmetic, counting, dates and IDs in code.** Give the model only the judgment.
+- **Add an escape option** (`"none": "none of the above"`) to picks when nothing may fit. A pick always
+  returns *something*.
+- **Treat `p_yes` and `confidence` as uncalibrated for your task** until you've checked them against 20–40
+  labelled cases.
+
+## Framing-invariance: catch a leading check
+
+A yes/no answer can be driven by how the question is *worded* rather than by the facts — a check phrased to expect
+`yes` can inflict `yes`. `debias` already flips the label order; `judge_framed` flips the question **framing**. Give a
+check a `framings` list — alternate phrasings of the same question, each tagged `"polarity": "same"` (a reword) or
+`"flip"` (the complement, e.g. *"is X irrelevant?"*) — and every framing is judged in the one request and folded onto
+a single *P(true)* axis:
+
+```python
+from hunch import judge_framed
+r = judge_framed("Fix the error-handling in the request path.", {
+    "relevant": {"kind": "yesno",
+                 "question": "Is this note relevant to the task?",
+                 "framings": [{"question": "Is this note irrelevant / unrelated to the task?",
+                               "polarity": "flip"}]}})
+r["results"]["relevant"]   # {"p_yes": ..., "swing": ..., "framing_flag": ..., "views": {...}}
+```
+
+`p_yes` is the consensus (mean of the framings' *P(true)* — the robust estimate to threshold); `swing` is the spread
+between framings; `framing_flag` is `True` when `swing` exceeds `swing_gate` (default `0.25`), i.e. the wording, not
+the content, is moving the answer — trust that `p_yes` less, or neutralise the question. Checks with no `framings`
+pass through `judge_framed` exactly as `judge` returns them, so it is a drop-in you turn on per check.
+
+It catches *framing*-driven answers. It does **not** catch a model that is stably wrong under every framing — that is
+the model believing the wrong thing, and it needs evidence or grounding, not this.
+
+## Configuration
+
+`hunch.toml` (path in `HUNCH_CONFIG`, or `./hunch.toml`). See [`hunch.toml.example`](hunch.toml.example):
+
+```toml
+[backend]
+url = "http://localhost:8000"
+
+[service]
+default_model = "qwen"
+max_concurrency = 16        # simultaneous backend calls
+# api_keys = ["change-me"]  # required when listening beyond localhost
+
+[models.qwen]
+backend_model = "Qwen/Qwen3.5-397B-A17B"
+
+[models.deepseek]
+backend_model = "deepseek-ai/DeepSeek-V4.1-Flash"
+mode = "deliberate"         # its thinking-off answers are position-biased; thinking briefly fixes that
+effort = "low"
+```
+
+| Environment variable | Meaning |
+| --- | --- |
+| `HUNCH_HOST` / `HUNCH_PORT` | Listen address (default `127.0.0.1:8791`) |
+| `HUNCH_BACKEND_URL`, `HUNCH_BACKEND_KEY` | vLLM server and optional bearer key |
+| `HUNCH_BACKEND_MODEL` | Quick single-model setup without a TOML file (exposed as `default`) |
+| `HUNCH_DEFAULT_MODEL` | Overrides `service.default_model` |
+| `HUNCH_CONCURRENCY` | Simultaneous backend calls. Keep it modest on a shared server |
+| `HUNCH_BACKEND_MODEL` + `mode` in `hunch.toml` | `one_token` (default), `deliberate` or `auto` — see [Deliberate mode](#deliberate-mode) |
+| `HUNCH_MODE`, `HUNCH_EFFORT` | Override `mode` / `effort` for a model **discovered from the environment**. Ignored (with a warning) when a config file declares models — set them in the file instead |
+| `SSL_CERT_FILE` | CA bundle for a backend behind a private or self-signed CA, e.g. `/etc/ssl/certs/ca-certificates.crt` (Python doesn't use the system store by default) |
+| `HUNCH_API_KEYS` | Comma-separated bearer keys. Hunch **refuses** to listen beyond localhost without them (or `HUNCH_ALLOW_NOAUTH=1` behind an authenticating proxy) |
+
+## Deploying
+
+- **Docker:** `docker build -t hunch .`, then run it with `HUNCH_BACKEND_URL`, `HUNCH_API_KEYS` and a mounted `hunch.toml`
+  (see [`deploy/docker-compose.yml`](deploy/docker-compose.yml)). The image runs as non-root under `tini`, with a health check.
+- **systemd:** [`deploy/hunch.service`](deploy/hunch.service).
+- After deploying, run `python -m hunch selftest` (or `docker compose exec hunch python -m hunch selftest`).
+
+## For coding agents
+
+[`SKILL.md`](SKILL.md) is a drop-in guide for an agent writing a Hunch integration: the call, the rules for writing
+checks, thresholds, qualifying a model, and what not to do. [`llms.txt`](llms.txt) indexes it for agents that look for
+one. Point your agent at the raw URLs:
+
+```
+https://raw.githubusercontent.com/ihubanov/hunch/main/llms.txt
+https://raw.githubusercontent.com/ihubanov/hunch/main/SKILL.md
+```
+
+## Development
+
+```bash
+pip install -e '.[dev]'
+pytest -q                                   # offline tests against a fake backend
+python -m hunch selftest                    # quick live pre-flight against your backend
+python -m hunch qualify qwen                 # full qualification of a model (verdict + reasons)
+python bench/bench.py accuracy qwen gemma   # live accuracy benchmark
+python bench/bench.py fanout qwen           # latency vs number of checks
+```
+
+## License
+
+MIT. See [LICENSE](LICENSE).

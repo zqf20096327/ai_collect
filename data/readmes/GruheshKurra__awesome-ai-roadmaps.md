@@ -1,0 +1,65 @@
+# Awesome AI Roadmaps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+
+Free AI and machine learning roadmaps, from Python and math to deep learning, LLMs, and AI safety. Each step links to a specific video, paper, or chapter in learning order. 35 tracks, 344 steps.
+
+Read on [the website](https://gruheshkurra.github.io/awesome-ai-roadmaps/) or browse the tracks below.
+
+## Contents
+
+| Track | Covers | Steps |
+| --- | --- | ---: |
+| [Python for ML](tracks/python-for-ml/) | NumPy, notebooks, pandas, plots. | 9 |
+| [Math for ML](tracks/math-for-ml/) | Matrices, derivatives, gradient descent, random variables, Bayes. | 11 |
+| [Learn NLP](tracks/nlp/) | Word vectors, tokenization, parsing, RNNs, transformers, BERT. | 14 |
+| [ML Basics](tracks/ml-basics/) | Regression, cross-validation, classification metrics, trees, SVM, clustering, PCA. | 12 |
+| [Deep Learning](tracks/deep-learning/) | Backprop, CNNs, RNNs, optimization. | 12 |
+| [Computer Vision](tracks/computer-vision/) | CNNs, detection, segmentation, ViT. | 12 |
+| [LLMs](tracks/llms/) | Transformers, GPT, decoding, sampling, scaling, RLHF. | 13 |
+| [DeepSeek-V3 Architecture](tracks/build-deepseek-v3/) | Sparse MoE, expert balancing, MLA, multi-token prediction, FP8 training. | 6 |
+| [From Scratch](tracks/from-scratch/) | Autograd, tokenizers, GPT-2, LayerNorm in C, C/CUDA training. | 8 |
+| [Eval Harnesses](tracks/eval-harnesses/) | Benchmarks, contamination, SWE-bench, LLM-as-judge, custom eval tasks. | 8 |
+| [RAG](tracks/rag/) | Embeddings, chunking, vector search, eval. | 8 |
+| [Agents & Tooling](tracks/agents-tooling/) | Tool use, ReAct, memory, browser/computer-use, task-completion evaluation. | 8 |
+| [Coding Agents](tracks/coding-agents/) | Repository context, edit formats, test loops, SWE-agent, Agentless, patch evaluation. | 7 |
+| [AI Tools](tracks/ai-tools/) | Cursor, Claude Code, local models, MCP, hosted demos. | 6 |
+| [Prompting & Context](tracks/prompt-context/) | Prompt structure, chain-of-thought, context engineering. | 6 |
+| [Fine-Tuning](tracks/fine-tuning/) | LoRA, QLoRA, supervised fine-tuning, DPO, data for adapters. | 7 |
+| [Speech & Audio](tracks/speech-audio/) | Spectrograms, CTC, wav2vec, Whisper, TTS. | 11 |
+| [Multimodal](tracks/multimodal/) | CLIP, Flamingo, BLIP-2, LLaVA, ImageBind. | 11 |
+| [Generative Models](tracks/generative-models/) | VAE, GAN, flows, diffusion, flow matching. | 12 |
+| [Reinforcement Learning](tracks/reinforcement-learning/) | MDPs, Q-learning, DQN, policy gradients, PPO, SAC. | 11 |
+| [Embodied AI](tracks/embodied-ai/) | Robot simulation, imitation learning, ACT, diffusion policies, OpenVLA, sim-to-real transfer. | 8 |
+| [Graph ML](tracks/graph-ml/) | Node embeddings, GCN, PyTorch Geometric, GraphSAGE, GAT, GIN, TransE. | 12 |
+| [Recommender Systems](tracks/recsys/) | Collaborative filtering, matrix factorization, Wide & Deep, two-tower, SASRec. | 12 |
+| [Time Series](tracks/time-series/) | Time-aware evaluation, naïve baselines, ARIMA, ETS, DeepAR, N-BEATS, TFT, PatchTST. | 14 |
+| [Causal ML](tracks/causal-ml/) | Potential outcomes, DAGs, propensity scores, double ML, LATE, causal forests. | 11 |
+| [Interpretability](tracks/interpretability/) | Permutation importance, PDP, LIME, SHAP, Grad-CAM, TCAV, circuits. | 13 |
+| [Evals & Safety](tracks/evals-safety/) | Alignment, specification gaming, red teaming, toxicity, truthfulness, false refusals. | 13 |
+| [Data-Centric AI](tracks/data-centric/) | Datasheets, weak supervision, label auditing, synthetic data, filtering. | 13 |
+| [MLOps](tracks/mlops/) | Data versioning, pipelines, experiment tracking, model registry, serving, monitoring. | 8 |
+| [ML Engineering Project](tracks/become-ml-engineer/) | Problem framing, data leakage, pipelines, threshold tuning, local serving, model cards. | 9 |
+| [ML Research Practice](tracks/become-researcher/) | Paper reading, baselines, ablations, reproducibility, uncertainty, research writing. | 8 |
+| [Inference & Serving](tracks/inference-serving/) | KV cache, quantization, batching, llama.cpp, vLLM, latency and throughput. | 8 |
+| [GPU Systems](tracks/gpu-systems/) | CUDA, GPU memory, benchmarking, profiling, mixed precision, Triton kernels. | 8 |
+| [Distributed Training](tracks/distributed-training/) | DDP, torchrun, multi-node training, FSDP2, tensor and pipeline parallelism. | 7 |
+| [Model Compression](tracks/compression/) | Pruning, quantization, distillation, MobileNetV2, sparse inference. | 8 |
+
+## Where to start
+
+- **New to machine learning:** [Python for ML](tracks/python-for-ml/) → [Math for ML](tracks/math-for-ml/) → [ML Basics](tracks/ml-basics/) → [Deep Learning](tracks/deep-learning/).
+- **Build with language models:** [LLMs](tracks/llms/) → [Prompting & Context](tracks/prompt-context/) → [RAG](tracks/rag/) → [Eval Harnesses](tracks/eval-harnesses/).
+- **Implement the models:** start with [Deep Learning](tracks/deep-learning/), then follow [From Scratch](tracks/from-scratch/).
+- **Ship a first ML project:** [ML Basics](tracks/ml-basics/) → [ML Engineering Project](tracks/become-ml-engineer/) → [MLOps](tracks/mlops/).
+- **Run and optimize LLMs:** [LLMs](tracks/llms/) → [Inference & Serving](tracks/inference-serving/) → [GPU Systems](tracks/gpu-systems/).
+
+Check each track's prerequisites. Work through its numbered steps in order; use the video, reading, or both. YouTube links are bold. An empty cell means that medium is not listed.
+
+## Why this exists
+
+Each track puts concepts in learning order and links directly to lessons, papers, and chapters. Follow a track from the top, or use its prerequisites to find the preparation you need.
+
+Resources are selected for free access. Paid courses, certificate walls, and DSA/interview material are out of scope. Links can change; report unavailable resources through the issue forms below.
+
+## Adding a resource
+
+Use the [issue forms](https://github.com/GruheshKurra/awesome-ai-roadmaps/issues/new/choose) to suggest a resource or report a broken link, paywall, or learning gap. See [contributing.md](contributing.md) for the selection criteria. Please use issues for resource suggestions rather than pull requests.

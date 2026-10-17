@@ -1,0 +1,214 @@
+# 铃酱跑图台 · Suzu-chan Painter
+
+一个 ComfyUI 的薄前端 —— **不会写英文提示词，也能把图拼出来。**
+
+纯 Python 标准库，零依赖；前端是单文件 HTML，跑在本机浏览器里。
+
+## 它能干什么
+
+- **中文标签点选** —— 本地 danbooru 中文词库（3 万词），8 个大类 → 细分组 → 点标签进「已选」→ 一键拼成提示词。提示词框里直接打中文也会弹候选。**已选词按分类分组显示，可以拖拽调整顺序。**
+- **角色参考** —— 搜角色名（英文最好搜，中文需要接 AI），出来缩略图 + 该角色的 danbooru tag 清单 + **CivitAI 上的 LoRA 链接**，点一下把 tag 灌进提示词框。数据来自 [AnimaDex](https://github.com/zetaneko/AnimaDex)（MIT）的公开接口，只做代理、不复制它的库。
+- **说人话 → 提示词** —— 中文描述交给 LLM 翻成 danbooru tag 串，**翻完会用本地词表校验 + 模糊纠错**（模型爱说的 `beautiful girl` 这类词表里没有的会被丢掉）。
+- **批量跑图** —— 一行一个 prompt，每行可出 N 张（seed 自动递增，不会出一堆一样的）。**实时进度条**（走 ComfyUI 的 WebSocket，逐帧显示「生成中 7/20」）。
+- **提示词库** —— 存 / 搜 / 分组 / ★置顶，也能从图墙反查导入。
+- **配置档** —— 把「线 + LoRA + 强度 + 尺寸 / 步数 / CFG」存成一条，点一下整套填上，不用每次挨个改下拉。旁边还有**预设**（可点击拼进提示词框的词片，可以带自己的负面词）。
+- **多 LoRA** —— 最多 4 个 LoRA 串联，每个单独设强度。
+- **图墙** —— 看结果、读 PNG 元数据、一键载入某张图的全部参数。
+- **ComfyUI 按需开关** —— 不跑图不占显存，要用再唤醒。
+
+## 快速开始
+
+**前提**：Python 3.11+（只用标准库）；一个能跑通的 ComfyUI（默认 `http://127.0.0.1:8188`）。
+
+> ⚠️ 本仓库**只含本项目的代码**。ComfyUI 本体、模型、LoRA、VAE 都要你自己准备，各自的许可由你自行遵守 —— 详见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
+
+```bash
+git clone https://github.com/trigger94666-max/suzu-chan-painter.git
+cd suzu-chan-painter
+```
+
+### 1. 配路径
+
+复制 `config.example.json` 为 `config.json`，改成你自己的：
+
+```json
+{
+  "port": 8199,
+  "comfy_url": "http://127.0.0.1:8188",
+  "output_dir": "C:/ComfyUI/output",
+  "download_dir": "C:/ComfyUI/output",
+  "tag_dir": "./knowledge/danbooru-tags-zh"
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `comfy_url` | ComfyUI 地址 |
+| `output_dir` | 出图目录（ComfyUI 的 output） |
+| `download_dir` | 另一个要显示在图墙的目录，没有就填成一样 |
+| `tag_dir` | 中文词库目录（下一步会下到这里） |
+| `comfy_dir` / `comfy_log` | ComfyUI 安装目录 / 日志路径 —— 只有要用「重启 ComfyUI」才需要 |
+| `proxy` | 访问境外 LLM 端点用的代理，留空则不走 |
+| `prompt_help` | 提示词助手配置。`endpoint` 填**任何 OpenAI 兼容**的 chat/completions 地址即可，`key_env` 是存放 key 的环境变量名；不用就把 `enabled` 设 `false` |
+
+相对路径一律相对**项目根目录**。环境变量可临时覆盖（见 `config.py` 的 `ENV_MAP`）。
+
+### 2.（可选）接一个 AI
+
+不接也能用，接了多两个功能：**中文描述 → 英文 tag**、**中文角色名搜索**。两种接法：
+
+- **网页上点**（推荐）—— 打开跑图台，展开「**AI 增强**」区块，选一家 → 照着提示去拿 key → 粘贴 → **测试连接** → 保存。会自动写回 `config.json`。
+- **手改配置** —— 填 `config.json` 的 `tag_translator` 段：
+
+```json
+"tag_translator": {
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "api_key": "sk-..."
+}
+```
+
+| `provider` | 说明 |
+|---|---|
+| `deepseek` | 便宜、国内直连、支付宝充值。key 在 [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) 建 |
+| `openai` | 质量好，需要海外支付。可配合 `proxy` |
+| `ollama` | 本机跑，免费不用 key。装完 `ollama pull qwen2.5:7b` |
+| `custom` | 任何 OpenAI 兼容接口，自己填 `endpoint` |
+
+`provider` **留空 = 功能关闭**（界面显示「未开启」，提示词区不会出现多余的输入框）。key 只存在你本机的 `config.json` 里。
+
+### 3. 下词库
+
+```bash
+python fetch_tags.py                          # 需要代理时加 --proxy http://127.0.0.1:7890
+```
+
+数据来自 [amenorira/danbooru-tags-data-zh](https://github.com/amenorira/danbooru-tags-data-zh)（MIT），**不随仓库分发**，由这个脚本拉到你本机。
+
+### 4. 起
+
+```bash
+python server.py
+```
+
+Windows 也可以双击 `start.bat`。然后打开 **http://127.0.0.1:8199**。
+
+## 「线」是什么
+
+一条**线** = 一套「模型 + CLIP/VAE + 采样参数 + 默认负面词」的组合。
+
+仓库自带的那条 `example` **只是占位示例**（模型名是假的，照抄会报「模型不存在」）。**你自己的线写在 `config.json` 的 `lines` 段里**，启动时自动合并进来（同名的覆盖示例线）—— 这样你的模型清单不会进仓库，也不用手改代码。字段说明见下一节。
+
+LoRA 想显示中文别名，写在自己 `config.json` 的 `lora_meta` 段里（格式 `文件名: [线, 别名, 是否星标]`）；不写就靠文件名规则自动归线。
+
+### 用自己的模型（「线」）
+
+跑图台按「线」（line）组织模型 —— 一条线就是**模型组合 + 采样参数**。仓库里只带一条 **示例线** `example`：模型名是占位的，照抄会报「模型不存在」。
+
+**你自己的线写在 `config.json` 的 `lines` 段里**，启动时自动合并进来（同名的覆盖示例线）：
+
+```json
+"lines": {
+  "my_model": {
+    "ckpt": "my_checkpoint.safetensors",
+    "pos_node": "CLIPTextEncode",
+    "steps": 20, "cfg": 7.0, "sampler": "euler", "scheduler": "normal",
+    "width": 512, "height": 512,
+    "neg": "worst quality, low quality"
+  }
+}
+```
+
+- `ckpt` 与 `unet` **二选一**：前者是 checkpoint（整包），后者是分离式模型（配 `clip` / `clip_type` / `vae`，还可能要用 `unet_node`，比如 GGUF 用 `UnetLoaderGGUF`）
+- `pos_node` 是正向文本编码的节点名，**各家模型不一样**（SD 系是 `CLIPTextEncode`）
+- `neg` 是该线的默认负面词；另外在 `config.json` 的 `negatives.combo` / `negatives.real` 里可以整体覆盖
+- 字段全表和更多例子见 `comfy_batch.py` 顶部 `LINES` 的注释
+
+这样你的模型清单不会被提交进仓库，也不用手改代码。
+
+## HTTP API
+
+给脚本 / agent 用，和网页共用同一个队列：
+
+```
+POST /api/run
+{"line":"example","prefix":"mybatch","jobs":[{"suffix":"a","prompt":"1girl, solo","seed":123}]}
+```
+
+跑图台会按需唤醒 ComfyUI、跑完释放显存、产物进图墙。
+
+配置档（整套参数一键套用）：
+
+```
+GET  /api/profiles          → {"items":[{id,name,line,lora,lora_strength,width,...}]}
+POST /api/profiles          → 新建或更新（带 id 则更新），字段同上 + prompt/negative
+POST /api/profiles/delete   {"id":"p123"}
+POST /api/profiles/touch    {"ids":["p123"]}       # 用一次计数 +1
+```
+
+预设（可点击拼进提示词框的词片）：
+
+```
+GET  /api/presets           / POST /api/presets         {name, tags, note, neg}
+POST /api/presets/delete    {"ids":[...]}
+```
+
+任务进度（前端进度条用的）：
+
+```
+GET  /api/jobs              → 当前所有任务的快照（状态机）
+GET  /api/progress          → SSE 流，逐帧推 {id,status,progress,step,total}
+```
+
+第一项 `status` 取值：`queued` / `running` / `success` / `failed` / `cancelled`。
+
+标注分类 / 角色参考 / AI 设置：
+
+```
+GET  /api/classify?tags=1girl,blue_eyes,long_hair   → 按 8 大类分组
+GET  /api/charsearch?q=miku&n=12[&lora=1]           → 角色 + danbooru tags + LoRA 链接
+GET  /api/llm-config                                 → 当前 AI 增强配置（不含 key 明文）
+POST /api/llm-config    {provider,endpoint,model,api_key}   → 写回 config.json（自动备份）
+POST /api/llm-test      {cfg:{...},api_key}          → 真发一次请求验证连通性
+POST /api/translate-tags {text}                      → 中文 → tag（带词表校验）
+```
+
+## 文件结构
+
+```
+server.py            后端（标准库 http.server，零依赖）
+index.html           单文件前端（原生 JS，无框架无 CDN）
+tagcats.py           标签分类规则（8 大类 → 23 个二级组）—— 改分类只动这个文件
+comfy_batch.py       线定义 + ComfyUI 节点图构建
+comfy_ws.py          手写 WebSocket 客户端 + 任务状态机（进度条用，标准库实现）
+tagtr.py             人话 → tag：可插拔 Provider + 词表校验（可选，不配就关）
+config.py            配置加载（默认值 < config.json < 环境变量）+ 网页改配置的写回
+config.example.json  配置模板
+fetch_tags.py        中文词库下载脚本
+start.bat / stop.bat Windows 启动/停止
+```
+
+## 许可
+
+MIT，见 [`LICENSE`](LICENSE)。
+
+第三方组件与数据（ComfyUI、模型、标签词库等）的归属与许可，见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
+
+中文词库数据来自 [amenorira/danbooru-tags-data-zh](https://github.com/amenorira/danbooru-tags-data-zh)（MIT），由 `fetch_tags.py` 下载，不随本仓库分发。
+
+## 免责声明与边界
+
+本项目是一个**通用软件工具**，只做两件事：组织提示词、把任务提交给你本机的 ComfyUI。
+
+- **不提供**模型、LoRA、VAE、图片或任何生成内容
+- **不托管**任何在线服务，全部在本机运行
+- **不内置**面向特定用途的配置
+- 生成的图片由你本机的模型产出，全部留在你自己的机器上
+
+使用者需自行确保：
+
+1. 使用方式符合**所在地法律法规**
+2. 所用模型、LoRA、自定义节点符合**各自的许可条款**
+3. 生成内容符合你所发布平台的规则
+
+本项目按 MIT 许可「按现状」提供，不保证生成结果适用于任何特定用途。

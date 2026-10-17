@@ -1,0 +1,212 @@
+# Power Interview AI - Privacy-First AI Interview Assistant
+
+<div align="center">
+
+**Your Personal AI-Powered Interview Coach**
+
+🌐 **Website**: [https://www.powerinterviewai.com](https://www.powerinterviewai.com)
+
+[![Version](https://img.shields.io/github/v/release/PowerInterviewAI/client-app?label=version&color=blue&sort=semver&cacheSeconds=3600)](https://github.com/PowerInterviewAI/client-app/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+📧 [Email](mailto:team@vectorleappulse.xyz) | 💬 [Telegram](https://t.me/power_interview_ai) | 💭 [Discord](https://discord.gg/TJJp5azK7Z) | 🐦 [X](https://x.com/power_interview)
+
+</div>
+
+## Overview
+
+Power Interview is a privacy-first AI assistant designed to help you ace technical and behavioral interviews. With real-time transcription and intelligent suggestions, you'll have the confidence and support you need during live interviews - all while keeping you in control of your data.
+
+## Privacy
+
+Power Interview is built with privacy as a core principle. Here is exactly what is stored where:
+
+- **Your interview configuration is stored on your account**: full name, CV/profile, and context are saved to the backend so they follow you across devices. You can change or clear them at any time from the configuration dialog
+- **Transcripts are never stored**: interview audio is relayed through the backend to the ASR provider for live transcription and is not retained; transcripts exist only in memory for the duration of the session
+- **Device settings stay on the device**: audio device, window bounds, and scroll preferences are local-only
+- **Local storage**: credentials and local settings are written by Electron Store to your OS user-data directory as a plain JSON file, protected by filesystem permissions
+- **No Data Mining**: no selling or sharing of personal data
+- **Minimal Data Transfer**: only the data needed for an active AI request, or an explicit configuration update, is sent to the backend
+
+## Key Features
+
+### Real-Time Transcription
+
+Stay on top of the conversation with live ASR:
+
+- Dual-channel transcription (you + interviewer)
+- WebSocket streaming for low latency
+- Speaker detection
+- Full transcript history
+
+### Intelligent AI Suggestions
+
+#### Live Suggestions
+
+- Personalized responses based on CV and job description
+- Streaming responses in real time
+- Context-aware outputs
+- Two styles: hint-only (a headline plus keyword bullets, the default) or full sentences
+
+#### Action Suggestions
+
+- Screenshot-based problem understanding
+- Multi-image support (up to 4)
+- LLM-powered solutions
+- Syntax-highlighted code output
+
+### Smart Configuration
+
+- Guided setup on first launch, covering everything a first interview needs
+- **Account**: profile (CV), job context and password, synced to your account across devices
+- **Configuration**: microphone (with a live test), interview language, suggestion style, and
+  transcript panel visibility - local to each device
+- Persistent settings
+
+### Staying Out of Sight
+
+The app keeps itself off the surfaces a screen share exposes. There is no desktop shortcut, and stealth mode hides the window from screen capture while also removing the Windows taskbar button and the macOS Dock icon and Cmd+Tab entry. Outside stealth mode the app behaves like any other window, taskbar button and Dock icon included, unless you turn on "Hide taskbar icon during live interviews" in Configuration.
+
+**Lost the window?** Launch Power Interview again. It does not start a second copy - the running app brings its window back and focuses it.
+
+## Platform Support
+
+Power Interview desktop client is supported on:
+
+- Windows 10/11 (x64 installer build)
+- macOS 14.4+ (Apple Silicon and Intel release artifacts) - 14.4 is the floor for system-audio loopback capture
+
+Release binaries are published on the [GitHub Releases](https://github.com/PowerInterviewAI/client-app/releases) page.
+
+### Code signing
+
+- **macOS**: release builds are signed with a Developer ID Application certificate and notarized by Apple, so they open without a Gatekeeper warning. The release workflow needs the `CSC_LINK`, `CSC_KEY_PASSWORD`, `APPLE_API_KEY_P8`, `APPLE_API_KEY_ID`, `APPLE_API_ISSUER` and `APPLE_TEAM_ID` repository secrets; `mac.forceCodeSigning` fails the build if the certificate is missing. Releases up to v1.9.4 were ad-hoc signed only: if one shows "app is damaged", run `xattr -cr "/Applications/Power Interview AI.app"`.
+- **Windows**: the installer is not code-signed yet, so SmartScreen shows "Windows protected your PC". Click "More info" then "Run anyway".
+
+## Architecture
+
+Power Interview follows a **client-server architecture**.
+
+### Desktop Client
+
+- Electron + React + TypeScript
+- Zustand + React Query
+- Handles UI and orchestration
+
+### Backend Services
+
+- AI/LLM Service for suggestions
+- ASR Service for transcription
+- Auth Service
+
+### Communication
+
+- WebSocket (real-time)
+- REST API
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js v22.15+ (required by the main-process test runner)
+- pnpm (the repo pins `pnpm@11.1.3` via `packageManager`)
+
+### Installation
+
+```bash
+git clone https://github.com/PowerInterviewAI/client-app
+cd client-app
+pnpm install
+```
+
+### Run
+
+```bash
+pnpm start
+```
+
+### Checks
+
+```bash
+pnpm lint          # ESLint
+pnpm build         # tsc + vite build (renderer)
+pnpm test:main     # main-process checks
+```
+
+### Configuration
+
+- Set profile (CV, job description)
+- Select microphone (changeable mid-interview, without interrupting transcription)
+- Start assistant
+
+## Use Cases
+
+### Technical Interviews
+
+- Code suggestions
+- Debugging assistance
+- Live transcription
+
+### Behavioral Interviews
+
+- AI-generated responses
+- Context-aware answers
+
+### Practice Sessions
+
+- Self-monitoring
+- Feedback loops
+
+## Security & Privacy
+
+- HTTPS + secure WebSockets for all backend traffic
+- Interview configuration stored against your account; transcripts never persisted server-side
+- Local settings and credentials stored in your OS user-data directory
+- Full user control - configuration can be edited or cleared at any time
+
+## Technology Stack
+
+### Frontend
+
+- Electron
+- React 19
+- TypeScript
+- Tailwind CSS
+
+### Backend
+
+- FastAPI (Python 3.12), MongoDB, Redis
+- REST over HTTPS and WebSocket streaming for ASR
+
+## Project Structure
+
+```
+power-interview-client/
+├── src/
+│   ├── main/       Electron main process
+│   └── renderer/   React renderer
+├── test/           Main-process checks (pnpm test:main)
+├── public/
+├── build/
+```
+
+## Contributing
+
+Pull requests welcome.
+
+## License
+
+MIT License
+
+## Support
+
+- Email: [team@vectorleappulse.xyz](mailto:team@vectorleappulse.xyz)
+- GitHub Issues for bugs/features
+
+---
+
+<div align="center">
+
+**Built to help you succeed in interviews**
+
+</div>

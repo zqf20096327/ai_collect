@@ -1,0 +1,477 @@
+# Proximum
+
+[![Clojars Project](https://img.shields.io/clojars/v/org.replikativ/proximum.svg)](https://clojars.org/org.replikativ/proximum)
+[![Slack](https://img.shields.io/badge/slack-join_chat-brightgreen.svg)](https://clojurians.slack.com/archives/CB7GJAN0L)
+[![GitHub last commit](https://img.shields.io/github/last-commit/replikativ/proximum/main.svg)](https://github.com/replikativ/proximum)
+
+> ⚠️ **Early Beta**: Proximum is under active development. APIs may change before 1.0 release. Feedback welcome!
+
+> 📋 **Help shape Proximum!** We'd love your input. Please fill out our [2-minute feedback survey](https://docs.google.com/forms/d/e/1FAIpQLSeUQuw5SPyIx661e1pwZiX0100bP-DPpF2Zfpptg1h6k14OTA/viewform).
+
+A high-performance, embeddable vector database for Clojure and Java with **Git-like versioning** and **copy-on-write branching**.
+
+## Why Proximum?
+
+Unlike traditional vector databases, Proximum brings **persistent data structure semantics** to vector search:
+
+- ✨ **Time Travel**: Query any historical snapshot
+- 🌿 **Efficient Branching**: Share immutable data and use filesystem reflinks for vector storage when available
+- 🔒 **Immutability**: All operations return new versions, enabling safe concurrency
+- 💾 **True Persistence**: Durable storage with structural sharing
+- 🚀 **High Performance**: SIMD-accelerated search with competitive recall
+- 📦 **Pure JVM**: No native dependencies, works everywhere
+
+Perfect for **RAG applications**, **semantic search**, and **ML experimentation** where you need to track versions, A/B test embeddings, or maintain reproducible search results.
+
+---
+
+## Quick Start
+
+### Clojure
+
+```clojure
+(require '[proximum.core :as prox])
+
+;; Create identifier of the underlying storage with (random-uuid)
+(def store-id #uuid "465df026-fcd3-4cb3-be44-29a929776250") 
+
+;; Create an index - feels like Clojure!
+(def idx (prox/create-index {:type :hnsw
+                              :dim 384
+                              :store-config {:backend :memory
+                                             :id store-id}
+                              :capacity 10000}))
+
+;; Use collection protocols
+(def idx2 (assoc idx "doc-1" (float-array (repeatedly 384 rand))))
+(def idx3 (assoc idx2 "doc-2" (float-array (repeatedly 384 rand))))
+
+;; Search for nearest neighbors
+(def results (prox/search idx3 (float-array (repeatedly 384 rand)) 5))
+; => ({:id "doc-1", :distance 0.234} {:id "doc-2", :distance 0.456} ...)
+
+;; Git-like branching (sync! is async - returns channel)
+(require '[clojure.core.async :as a])
+(let [idx3 (a/<!! (prox/sync! idx3))]  ; Block until persisted
+  (def experiment (prox/branch! idx3 "experiment")))
+```
+
+📖 [Full Clojure Guide](docs/CLOJURE_GUIDE.md)
+
+### Java
+
+```java
+import org.replikativ.proximum.*;
+
+// Create index with builder pattern
+try (ProximumVectorStore store = ProximumVectorStore.builder()
+        .dimensions(384)
+        .storagePath("/tmp/vectors")
+        .build()) {
+
+    // Add vectors (immutable - returns new store)
+    store = store.add(embedding1, "doc-1");
+    store = store.add(embedding2, "doc-2");
+
+    // Search for nearest neighbors
+    List<SearchResult> results = store.search(queryVector, 5);
+    // => [SearchResult{id=doc-1, distance=0.234}, ...]
+
+    // Git-like versioning (sync() is async - returns CompletableFuture)
+    store = store.sync().get();  // Block until persisted
+    UUID snapshot1 = store.getCommitId();
+
+    store = store.add(embedding3, "doc-3");
+    store = store.sync().get();
+
+    // Time travel: Query historical state
+    ProximumVectorStore historical = ProximumVectorStore.connectCommit(
+        Map.of("backend", ":file", "path", "/tmp/vectors"), snapshot1);
+    historical.search(queryVector, 5);  // Only sees doc-1, doc-2!
+
+    // Branch for experiments
+    ProximumVectorStore experiment = store.branch("experiment");
+}
+```
+
+📖 [Full Java Guide](docs/JAVA_GUIDE.md)
+
+---
+
+## Installation
+
+[![Clojars Project](https://img.shields.io/clojars/v/org.replikativ/proximum.svg)](https://clojars.org/org.replikativ/proximum)
+
+### Clojure (deps.edn)
+
+```clojure
+{:deps {org.replikativ/proximum {:mvn/version "LATEST"}}}
+```
+
+### Leiningen (project.clj)
+
+```clojure
+[org.replikativ/proximum "LATEST"]
+```
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>org.replikativ</groupId>
+  <artifactId>proximum</artifactId>
+  <version>LATEST</version>
+</dependency>
+```
+
+### Gradle
+
+```gradle
+implementation 'org.replikativ:proximum:LATEST'
+```
+
+---
+
+## Design Rationale: Why Not JVector?
+
+You might wonder: **Why build Proximum instead of extending JVector?** After all, JVector (DataStax) is a mature HNSW implementation with quantization support.
+
+### The Short Answer
+
+Proximum **aims at peak performance** (see benchmarks below) while adding **git-like versioning**. The architectures serve different goals: JVector optimizes for quantization at scale; Proximum optimizes for versioning with structural sharing.
+
+**Where JVector leads:** Quantization (PQ/BQ/NVQ) enables larger-than-memory indices (>10M vectors) by keeping compressed vectors in RAM and correcting with full-resolution reads. This is on Proximum's roadmap.
+
+### Architectural Comparison
+
+| Aspect | JVector | Proximum |
+|--------|---------|----------|
+| **Edge Storage** | Per-node `Neighbors` objects | Chunked `int[][]` arrays |
+| **Fork Cost** | O(nodes) — copy all neighbors | O(chunks) — shallow array clone |
+| **Versioning** | None (write-once) | Git-like (commits, branches, merge) |
+| **Persistence** | File-centric, single backend | Pluggable (memory, file, S3, etc.) |
+| **Structural Sharing** | No | Yes (chunk-level copy-on-write) |
+| **Quantization** | Yes (PQ/BQ/NVQ) | Roadmap |
+
+### The Chunking Difference
+
+This is the key architectural decision that enables git-like features:
+
+```java
+// JVector: Each node has its own neighbor array
+DenseIntMap<Neighbors> neighbors;  // ~1M objects for 1M nodes
+
+// Proximum: Nodes are grouped into chunks
+int[][] layer0;  // ~1000 chunks for 1M nodes (1024 nodes/chunk)
+```
+
+**Why this matters for branching:**
+
+```java
+// JVector "fork" would require:
+for (int i = 0; i < 1_000_000; i++) {
+    newNeighbors[i] = oldNeighbors[i].copy();  // O(nodes)
+}
+
+// Proximum fork:
+int[][] newLayer0 = layer0.clone();  // O(chunks) — shallow clone
+// Only ~1000 array references copied, data is shared
+```
+
+### What Would JVector Need?
+
+Adding git-like features to JVector would require:
+
+1. **Chunk-based edge storage** — Replace `DenseIntMap<Neighbors>` with chunked arrays
+2. **Copy-on-write semantics** — Track dirty chunks for incremental persistence
+3. **Versioning system** — Commit graph, branch tracking, merge logic
+4. **Storage abstraction** — Content-addressable chunks, pluggable backends
+5. **Immutable API** — `fork()` method, transient/persistent modes
+
+These are **fundamental architectural changes**, not additions. JVector's CAS-based concurrent mutation model optimizes for throughput without versioning overhead.
+
+### Different Use Cases
+
+| JVector Shines At | Proximum Shines At |
+|-------------------|-------------------|
+| Very large indices (>10M) with quantization | Knowledge management with history |
+| Memory-constrained deployments | A/B testing embedding models |
+| Simple API, single version | Audit trails and compliance |
+| Java-centric production systems | Clojure persistent data structures |
+
+### Integration Possibilities
+
+Proximum could integrate with JVector at the **algorithm layer**:
+
+- SIMD distance computation (Panama Vector API)
+- PQ/BQ/NVQ compression algorithms
+- Search patterns (two-pass, reranking)
+
+But the **versioning layer** requires Proximum's specialized architecture.
+
+### Lessons from Lucene
+
+We successfully added git-like features to Lucene's HNSW implementation because Lucene's architecture already had:
+
+- Segment-based storage (natural chunking)
+- Read-only index readers (immutable snapshots)
+- Point-in-time search semantics
+
+JVector lacks these primitives. Proximum builds them from the ground up.
+
+---
+
+## Key Features
+
+### 🔄 Versioning & Time Travel
+
+Every `sync()` creates a commit. Query any historical state:
+
+```java
+index = index.sync().get();  // Snapshot 1 (blocks until persisted)
+// ... make changes ...
+index = index.sync().get();  // Snapshot 2
+
+// Time travel to earlier state
+ProximumVectorStore historical = index.asOf(commitId);
+```
+
+**Use Cases:** Audit trails, debugging, A/B testing, reproducible results
+
+### 🌿 Copy-on-Write Branching
+
+Fork an index for experiments while sharing immutable data. Vector mmap storage
+uses a filesystem reflink when the runtime probe succeeds and otherwise falls
+back to a file copy:
+
+```java
+index = index.sync().get();
+ProximumVectorStore experiment = index.branch("new-model");
+
+// Test different embeddings
+experiment = experiment.add(newEmbedding, "doc-1");
+
+// Merge or discard - original unchanged
+```
+
+**Use Cases:** A/B testing, staging, parallel experiments
+
+### 🔍 Advanced Features
+
+- **Filtered Search**: Multi-tenant search with ID filtering
+- **Metadata**: Attach arbitrary metadata to vectors
+- **Compaction**: Reclaim space from deleted vectors
+- **Garbage Collection**: Clean up unreachable commits
+- **[Crypto-Hash](docs/CRYPTO_HASH_GUIDE.md)**: Tamper-proof audit trail with SHA-512
+
+### ⚡ Async Operations
+
+Storage operations are non-blocking and return immediately for efficient I/O:
+
+**Async Operations:**
+- `sync!` / `sync()` - Persist changes and create commit
+- `flush!` / `flush()` - Force pending writes to storage
+- `gc!` / `gc()` - Garbage collect unreachable commits (detached embedding
+  generations require the owner's complete `:generation-ids` root set)
+- `close!` / `close()` - Release resources (mmap, file handles)
+
+**Clojure - Blocking:**
+```clojure
+(require '[clojure.core.async :as a])
+
+;; Wait for completion
+(let [idx2 (a/<!! (prox/sync! idx))]
+  ;; idx2 is the updated index
+  (prox/search idx2 query 5))
+
+;; Chain operations
+(-> idx
+    (prox/insert vector "id")
+    (prox/sync!)
+    (a/<!!)
+    (prox/close!)
+    (a/<!!))
+```
+
+**Clojure - Async composition:**
+```clojure
+(a/go
+  (let [idx2 (a/<! (prox/sync! idx))
+        idx3 (a/<! (prox/flush! idx2))]
+    (a/<! (prox/close! idx3))))
+```
+
+**Java - Blocking:**
+```java
+// Block with .get() or .join()
+store = store.sync().get();
+store = store.flush().join();
+store.close().get();
+```
+
+**Java - Async chaining:**
+```java
+store.sync()
+     .thenCompose(s -> s.flush())
+     .thenCompose(s -> s.close())
+     .get();  // Only block at the end
+```
+
+---
+
+## Integrations
+
+### Spring AI
+
+```java
+import org.replikativ.proximum.spring.ProximumVectorStore;
+
+@Bean
+public VectorStore vectorStore() {
+    return ProximumVectorStore.builder()
+        .dimensions(1536)
+        .storagePath("/data/vectors")
+        .build();
+}
+```
+
+📖 [Spring AI Integration Guide](docs/SPRING_AI_GUIDE.md) | [Spring Boot RAG Example](examples/spring-boot-rag/)
+
+### LangChain4j
+
+```java
+import org.replikativ.proximum.langchain4j.ProximumEmbeddingStore;
+
+EmbeddingStore<TextSegment> store = ProximumEmbeddingStore.builder()
+    .dimensions(1536)
+    .storagePath("/data/embeddings")
+    .build();
+```
+
+📖 [LangChain4j Integration Guide](docs/LANGCHAIN4J_GUIDE.md)
+
+---
+
+## Performance
+
+**SIFT-1M (1M vectors, 128-dim, Intel Core Ultra 7):**
+
+~~~bash
+# clj -M:benchmark -m runner sift1m
+
+...
+
+Library                   Insert (vec/s)  Search QPS   p50 (us)   p99 (us)   Recall@10 
+--------------------------------------------------------------------------------------
+proximum                  13392           3844         264.1      461.0      98.63%
+jvector                   9771            3609         277.4      485.2      95.95%
+lucene-hnsw               2395            3036         340.5      467.1      98.53%
+hnswlib-java              4260            1007         1033.3     1377.4     98.29%
+datalevin/usearch         2492            3616         268.1      375.1      96.96%
+~~~
+
+**Proximum metrics:**
+- Storage: 762.8 MB
+- Heap usage: 545.7 MB
+
+~~~bash
+# clj -M:benchmark -m runner dbpedia-openai-100k
+
+...
+
+Library                   Insert (vec/s)  Search QPS   p50 (us)   p99 (us)   Recall@10 
+--------------------------------------------------------------------------------------
+proximum                  3726            1648         621.3      874.2      99.10%
+jvector                   4267            1795         570.0      798.0      98.65%
+lucene-hnsw               969             1306         787.2      1113.7     99.28%
+hnswlib-java              2070            609          1688.2     2230.4     99.22%
+datalevin/usearch         941             1364         700.5      955.1      98.76%
+~~~
+
+~~~bash
+#  clj -M:benchmark -m runner glove100
+
+...
+
+Library                   Insert (vec/s)  Search QPS   p50 (us)   p99 (us)   Recall@10 
+----------------------------------------------------------------------------------
+proximum                  7437            2604         382.6      638.6      81.93%
+jvector                   7613            2620         361.9      691.4      70.14%
+lucene-hnsw               1500            2031         482.9      819.2      81.35%
+hnswlib-java              2779            722          1380.9     2236.5     80.91%
+datalevin/usearch         1455            2424         403.8      661.8      75.67%
+~~~
+
+**Key features:**
+- Pure JVM with SIMD acceleration (Java Vector API)
+- No native dependencies, works on all platforms
+- Persistent storage with structural sharing and copy-on-write branching
+
+---
+
+## Documentation
+
+**API Guides:**
+- [Clojure Guide](docs/CLOJURE_GUIDE.md) - Complete Clojure API with collection protocols
+- [Java Guide](docs/JAVA_GUIDE.md) - Builder pattern, immutability, and best practices
+
+**Integration Guides:**
+- [Spring AI Guide](docs/SPRING_AI_GUIDE.md) - Spring Boot RAG applications
+- [LangChain4j Guide](docs/LANGCHAIN4J_GUIDE.md) - LangChain4j embedding store integration
+
+**Advanced Topics:**
+- [Cryptographic Auditability](docs/CRYPTO_HASH_GUIDE.md) - Tamper-proof commit hashing and verification
+- [Persistence Design](docs/PERSISTENCE.md) - Internal persistence mechanisms (PES, VectorStorage, PSS)
+
+**Examples:**
+- [Spring Boot RAG Example](examples/spring-boot-rag/) - Full-featured RAG application with versioning
+
+---
+
+## Examples
+
+Browse working examples in [`examples/`](examples/):
+
+- **Clojure**: Semantic search, RAG, collection protocols
+- **Java**: Quick start, auditable index, metadata usage
+
+**Demo Projects:**
+- **[Einbetten](https://github.com/replikativ/einbetten)**: Wikipedia semantic search with Datahike + FastEmbed (2,000 articles, ~8,000 chunks)
+
+---
+
+## Requirements
+
+- **Java**: 22+ (Foreign Memory API finalized in Java 22)
+- **OS**: Linux, macOS, Windows
+- **CPU**: AVX2 recommended, AVX-512 for best performance
+
+**JVM Options Required:**
+```bash
+--add-modules=jdk.incubator.vector
+--enable-native-access=ALL-UNNAMED
+```
+
+---
+
+## License
+
+Apache-2.0 (Apache License, Version 2.0) - see [LICENSE](LICENSE)
+
+---
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Code of conduct
+- Development workflow
+- Testing requirements
+- Licensing (DCO/Apache-2.0)
+
+---
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/replikativ/proximum/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/replikativ/proximum/discussions)
+- **Commercial Support**: contact@datahike.io

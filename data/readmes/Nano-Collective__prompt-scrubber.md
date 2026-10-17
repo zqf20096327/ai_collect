@@ -1,0 +1,229 @@
+# prompt-scrub
+
+Built by the [Nano Collective](https://nanocollective.org) — a community collective building AI tooling not for profit, but for the community.
+
+`prompt-scrub` is a local-first utility designed to strip identifying content out of prompts and messages before they hit any cloud LLM.
+
+![Build Status](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/build.svg)
+![Coverage](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/coverage.svg)
+![Version](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/npm-version.svg)
+![Downloads](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/npm-downloads-monthly.svg)
+![License](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/npm-license.svg)
+![Repo Size](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/repo-size.svg)
+![Stars](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/stars.svg)
+![Forks](https://github.com/Nano-Collective/prompt-scrubber/raw/main/badges/forks.svg)
+
+It maps sensitive data (emails, secrets, paths, URLs, phone numbers, postal addresses, credit cards, IBANs, SSNs, IP addresses) to stable placeholders locally, allowing you to rehydrate the model's responses back to their original forms securely.
+
+## What it is / What it is not
+
+`prompt-scrub` reduces identity leakage at the **content layer**. It is **partial defence, not anonymity**.
+
+**What it does:**
+- Detects and replaces common identifying content (emails, paths, phone numbers, postal addresses, secrets, URLs, credit cards, IBANs, SSNs, IP addresses) before your prompt leaves your machine.
+- Maps each value to a stable placeholder so the model's response can be rehydrated locally.
+- Gives you `inspect` (table of detected entities with confidence and method), `diff` (visual before/after), and `--min-confidence <0-1>` on `scrub`/`inspect` to drop anything below a threshold — so you can see what was detected, what was missed, and exactly what will be sent before you commit to sending.
+
+**What it does not do:**
+- It does not make you anonymous. A semantically identifying question (a niche bug only you have, your private codebase, your financial situation) remains identifying after scrubbing.
+- It does not address stylistic fingerprinting — the way you phrase things goes out unchanged.
+- It does not operate at the network or key layer. Your IP address, request timing, and headers are outside its scope.
+- Detectors can and do miss things. Always review the output before sending.
+
+> [!IMPORTANT]
+> A user who believes this tool makes them anonymous is worse off than one who never used it — they stop reading their prompts and trust the defaults. Always use `inspect` first to see what the tool actually found.
+
+Read the full [Threat Model](docs/features/threat-model.md) for a complete breakdown of what is and is not defended.
+
+## Quick Start
+
+Install globally to use the CLI:
+
+```bash
+npm install -g @nanocollective/prompt-scrub
+```
+
+Or install as a dependency in your Node.js project:
+
+```bash
+npm install @nanocollective/prompt-scrub
+```
+
+### Recommended: Inspect first
+
+Before scrubbing, run `inspect` on a real prompt to review what the tool detected before sending your prompt:
+
+```bash
+echo "My email is alice@acme.com and I work at /Users/alice/projects. My phone is +44-7700-900999." \
+  | prompt-scrub inspect
+```
+
+```
+Detected entities:
+  [Email]    alice@acme.com                   → «Email_1»  (chars 12-26, confidence 0.95 exact-pattern)
+  [Path]     /Users/alice/projects.           → «Path_1»   (chars 41-63, confidence 0.80 structural)
+  [Phone]    +44-7700-900999                  → «Phone_1»  (chars 76-91, confidence 0.90 structural)
+
+No session written.
+Hash: 7e5eea933db987e10e10e259ebcfea9d3250d8a68925fd9360f515e3a4bfbba9
+```
+
+Each entity carries the confidence the detector assigned it: an exact vendor key pattern scores 0.99, a capitalised-word name guess only 0.5. Pass `--min-confidence <0-1>` to `scrub` or `inspect` to drop everything below a threshold. See [Confidence & Tiered Detection](docs/features/detectors.md#confidence--tiered-detection).
+
+The hash is deterministic — the same prompt always produces the same hash, so you can verify cache stability across runs. Once you are satisfied with what `inspect` shows, run `diff` to see the replacements in place, then proceed with `scrub`.
+
+```bash
+echo "My email is alice@acme.com" | prompt-scrub diff --no-color
+```
+
+```
+- My email is alice@acme.com
++ My email is «Email_1»
+```
+
+## Usage Examples
+
+**CLI: Scrubbing text**
+```bash
+echo "My email is user@example.com" | prompt-scrub scrub
+# stdout: My email is «Email_1»
+# stderr: Session ID: 6f1c2b90-...
+# stderr: Scrubbed: 1 entity (1 Email)   — pass -q/--quiet to suppress the summary
+
+# Only scrub what the detectors are confident about
+echo "My email is user@example.com" | prompt-scrub scrub --min-confidence 0.9
+```
+
+**CLI: Encrypting session files at rest**
+
+Local session files map placeholders like `«Secret_1»` back to your real secrets. If your laptop is stolen or another process on your account reads `~/.config/prompt-scrub/sessions/`, those secrets leak. Enable encryption to keep them protected on disk:
+
+```json
+// ~/.config/prompt-scrub/config.json
+{ "encryptionEnabled": true }
+```
+
+Then pass a passphrase via the `PROMPT_SCRUB_KEY` environment variable when running `scrub`/`rehydrate`/`sessions`:
+
+```bash
+# Read your passphrase from a secret manager; do NOT echo it inline — it will
+# land in your shell history.
+export PROMPT_SCRUB_KEY
+read -rs PROMPT_SCRUB_KEY   # enter interactively
+echo "sk-1234567890abcdefghij" | prompt-scrub scrub
+```
+
+If `PROMPT_SCRUB_KEY` is unset and `stdin` is a TTY, `prompt-scrub` will prompt for the passphrase interactively (with input muted). Rehydrate on an encrypted session also requires the same key.
+
+> Note: `prompt-scrub` only reads the file `rehydrate` was asked about. If you only ever use `scrub`, the *output* (the scrubbed prompt) is safe to send anywhere regardless of encryption; encryption protects the *session file* on disk.
+
+To migrate existing plaintext sessions after enabling encryption:
+
+```bash
+PROMPT_SCRUB_KEY=… prompt-scrub sessions encrypt
+```
+
+**CLI: Watch clipboard**
+```bash
+# Monitor clipboard and automatically scrub sensitive data
+prompt-scrub watch --clipboard
+
+# Watch a file
+prompt-scrub watch --file prompt.txt --once
+
+# Preview changes without writing anything
+prompt-scrub watch --file prompt.txt --dry-run --once
+```
+
+See the [CLI Reference](docs/getting-started/cli.md#watch-mode) for all watch options and platform requirements.
+
+**CLI: Run a transparent scrubbing proxy**
+```bash
+# Point your SDK at the proxy instead of the upstream API.
+prompt-scrub proxy --target https://api.openai.com --port 8080 &
+export OPENAI_BASE_URL=http://localhost:8080/v1
+
+# Any request your app sends to OpenAI is now scrubbed on the way out and
+# rehydrated on the way back, transparently. Streaming (SSE) responses work.
+```
+
+See the [CLI Reference](docs/getting-started/cli.md#proxy-mode) for the full set of options and supported providers.
+
+**Node.js API: Scrubbing, Rehydrating, and Key Injection**
+```typescript
+import {
+  scrub,
+  rehydrate,
+  setCachedEncryptionKey,
+} from '@nanocollective/prompt-scrub';
+
+// Optional: inject a key without relying on PROMPT_SCRUB_KEY / TTY prompting.
+setCachedEncryptionKey(process.env.MY_APP_KEY ?? '');
+
+const prompt = "My key is sk-12345";
+const { scrubbedContent, sessionId } = scrub({ content: prompt });
+console.log(scrubbedContent); // "My key is «Secret_1»"
+
+// ... send to LLM ... get response "I see your key is «Secret_1»"
+
+const { content } = rehydrate({
+  content: "I see your key is «Secret_1»",
+  sessionId,
+});
+console.log(content); // "I see your key is sk-12345"
+```
+
+## Configuration
+
+`prompt-scrub` reads an optional config file for extra rule packs, URL allowlisting, the active locale, a default confidence floor, session TTL, and encryption. Create one pre-filled with the default schema:
+
+```bash
+prompt-scrub init
+# Created config file at /home/alice/.config/prompt-scrub/config.json
+```
+
+Print the configuration that is actually active — JSON on `stdout`, the path it came from on `stderr`:
+
+```bash
+prompt-scrub config show
+```
+
+Set `locale` (or pass `--locale de-DE` to `scrub`, `inspect`, or `watch`) to activate detectors from locale-specific rule packs. Built-in detectors are English-shaped and always run. A locale that activates no detector warns on `stderr` rather than silently scrubbing with English rules only.
+
+Entries that do not match the schema are reported and exit non-zero, so `config show` doubles as a config check in scripts. See the [CLI reference](docs/getting-started/cli.md#configuration) for the full schema and options.
+
+## Session Management & Garbage Collection
+
+`prompt-scrub` maps sensitive data to placeholders and stores these mappings in session files (by default in `~/.config/prompt-scrub/sessions/`).
+
+To protect your privacy and save disk space, session files have a **Time-to-Live (TTL)**. By default, sessions that are older than **7 days** are automatically deleted when you run the `scrub` or `sessions list` commands. Active sessions (ones you interact with) will naturally have their TTL reset.
+
+You can also manually prune expired sessions:
+```bash
+prompt-scrub sessions gc
+```
+
+To configure the TTL, add `sessionTtlDays` to your `~/.config/prompt-scrub/config.json`:
+```json
+{
+  "sessionTtlDays": 14,
+  "encryptionEnabled": true
+}
+```
+
+Once `encryptionEnabled` is on, run `prompt-scrub sessions encrypt` (passing `PROMPT_SCRUB_KEY`) to rewrite any plaintext sessions already on disk.
+
+## Documentation
+
+Full user guides and architecture details are in the [`docs/`](docs/) directory:
+- [Getting Started](docs/getting-started/index.md)
+- [Threat Model](docs/features/threat-model.md)
+- [Architecture](docs/features/index.md)
+
+Read the full whitepaper at [docs.nanocollective.org](https://docs.nanocollective.org).
+
+## Community
+
+- **Discord:** [Join the Nano Collective Discord](https://discord.gg/ktPDV6rekE)
+- **Contributing:** Read our [Contributing Guide](CONTRIBUTING.md) to get started.
+- **Issues:** Check the [GitHub Issues](https://github.com/Nano-Collective/prompt-scrubber/issues) for planned work or to report bugs.

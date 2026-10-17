@@ -1,0 +1,263 @@
+<div align="center">
+
+# `AAA Code`
+
+**Anyone, Anywhere, Anytime** can code.
+
+A full desktop client for Claude Code that wraps the Agent SDK<br>with everything the CLI should have had.
+
+[![Website](https://img.shields.io/badge/Website-aaa--code.app-7c5bf5?style=for-the-badge&logo=vercel)](https://aaa-code.app/)
+[![Download](https://img.shields.io/badge/Download-Latest_Release-7c5bf5?style=for-the-badge&logo=github)](https://github.com/hwwn/aaa-code-release/releases)
+[![Pricing](https://img.shields.io/badge/Pricing-From_$5-7c5bf5?style=for-the-badge)](https://aaa-code.app/#pricing)
+[![Platform](https://img.shields.io/badge/macOS_|_Windows_|_Linux-333?style=for-the-badge)](https://github.com/hwwn/aaa-code-release/releases)
+
+</div>
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/hero-screenshot.png" alt="AAA Code — multi-workspace conversation" width="680">
+<br><br>
+</div>
+
+> **AAA Code** is a cross-platform **Claude Code desktop client** built by [**hwwn**](https://github.com/hwwn) (Haowen Liu). It wraps Anthropic's Claude Code with a desktop GUI, multi-workspace support, remote access from any device including mobile, session branching, and bring-your-own-LLM provider configuration. Available for **macOS, Windows, and Linux**.
+>
+> Official site: **<https://aaa-code.app>** · Source: **<https://github.com/hwwn/aaa-code-release>** · Releases: **<https://github.com/hwwn/aaa-code-release/releases>**
+
+---
+
+Claude Code is amazing. It's also kind of a pain.
+
+You're stuck in a terminal. One project at a time. One working directory. You can't glance at what Claude is doing from your phone while you're on the couch. You can't fork a conversation that went sideways three messages ago.
+
+So I built [claude-notify-everywhere](https://github.com/hwwn/claude-notify-everywhere) — at least my phone would buzz when Claude needed me. That helped. But I was still running back to the terminal, still fighting the single-CWD limitation, still losing conversation threads I wished I could rewind.
+
+**It wasn't enough. So I built AAA Code.**
+
+## What Makes It Different
+
+### 🎮 Remote Control Your Projects
+
+Start a task on your desktop, walk away. Check progress from your phone. Approve a permission request from the couch. Same WiFi or tunnel it through the internet — zero setup on the mobile side.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/remote-screenshot.png" alt="Remote access settings with Cloudflare tunnel" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-remote-demo.mp4" width="100%" autoplay loop muted></video>
+
+### 🔌 Bring Your Own LLM
+
+Anthropic direct, DeepSeek, Zhipu, Kimi, MiniMax, AWS Bedrock, Google Vertex — or point at your own LiteLLM proxy. Configure once in **Settings → Providers**, then switch per session or globally for new chats. Your keys stay on-device; we never see your traffic.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/provider-screenshot.png" alt="Provider selection panel with Anthropic, DeepSeek, Bedrock and Vertex options" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-provider-demo.mp4" width="100%" autoplay loop muted></video>
+
+### 📂 Multiple Projects as Context
+
+Claude Code locks you into one working directory. AAA Code lets you throw multiple project directories into the same conversation. *"Hey Claude, look at the API in repo A and the frontend in repo B and make them talk to each other."*
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/workspace-screenshot.png" alt="Multi-workspace selection panel" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-workspace-demo.mp4" width="100%" autoplay loop muted></video>
+
+### 🌿 Fork Any Conversation Node
+
+Three messages in, Claude takes a wrong turn. In the CLI, you're stuck restarting or awkwardly correcting course. In AAA Code, right-click any node in the session tree, fork it, and explore a different path. Keep the original. Branch like git, but for conversations.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/fork-screenshot.png" alt="Forking a conversation node in the session tree" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-demo-fork.mp4" width="100%" autoplay loop muted></video>
+
+### ⏰ Scheduled Tasks _(VIP+)_
+
+Daily standup reports, nightly refactors, weekly dependency checks — Claude does the work while you're asleep. Type `/schedule` in any session to put it on cron, or open the Scheduled tab to wire one up directly. Runs even when you walk away from the desk; results land in your session tree with a push notification on your phone.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/scheduled-screenshot.png" alt="Scheduled tasks panel with cron presets and run history" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-scheduled-demo.mp4" width="100%" autoplay loop muted></video>
+
+### 🌳 Session Management
+
+See your entire conversation history at a glance. Resume any session right where you left off, or delete the ones you no longer need. Branches, forks, continuations — everything stays organized.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/session-screenshot.png" alt="Session history with resume and delete" width="680">
+<br><br>
+</div>
+
+### ⚡ Full CLI Capabilities, in a GUI
+
+Streaming responses, tool use, permission dialogs, MCP server integrations — it's all there. Use the same `/slash` commands from the CLI directly in the GUI. You're gaining a visual layer on top without losing anything.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/cli-screenshot.png" alt="CLI capabilities with slash commands in the GUI" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-cli-demo.mp4" width="100%" autoplay loop muted></video>
+
+### 🖼️ Drag-and-Drop Images
+
+Paste or drag images straight into the composer — bug screenshots, mockups, error dialogs, hand-drawn diagrams. Claude reads them inline alongside your prompt; no file upload, no tool call dance, no hosting step.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/images-screenshot.png" alt="Composer with two image thumbnails attached and a question about diffs" width="680">
+<br><br>
+</div>
+
+### 🛡️ Permission Modes
+
+Pick how aggressively Claude can act without asking:
+
+- **Default** — every tool use prompts for approval (the CLI's standard).
+- **Accept Edits** — file edits go through automatically; everything else still asks.
+- **Auto** — file edits AND shell commands run without a prompt; only sub-agent spawns (`Task`) and explicit kill-switches still ask. One step short of full bypass — convenient when you trust the run, safer than the nuclear option.
+- **Bypass Permissions** — the nuclear option; no prompts at all. Use when you really mean it.
+- **Plan** — read-only; refuses any tool that would mutate state.
+
+Switch the mode globally from Settings or per-session from the chat dropdown next to the model selector.
+
+### 🎨 Settings & Customization
+
+One unified panel — theme (Purple / Orange / Rainbow, light or dark), default permission mode, providers, license activation, and remote-access tokens with copy-paste and QR. Everything you can configure lives in one place; no scattered preferences windows.
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/theme-screenshot.png" alt="Unified Settings panel — theme picker, permission mode, providers, license, remote access" width="680">
+<br><br>
+</div>
+
+<video src="https://aaa-code.app/aaa-theme-demo.mp4" width="100%" autoplay loop muted></video>
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Composer Images** | Paste or drag screenshots, mockups, and diagrams directly into the prompt |
+| **Multi-Workspace** | Multiple project directories in one conversation |
+| **Multi-Provider** | Anthropic / DeepSeek / Zhipu / Kimi / MiniMax / Bedrock / Vertex / custom proxy |
+| **Remote Access** | Phone/tablet access via local WiFi or Cloudflare tunnel |
+| **Scheduled Tasks** | Run Claude on cron — daily, weekly, or one-shot (VIP+) |
+| **Session Tree** | Visual conversation history — resume, delete, fork, and branch |
+| **Permission Bridge** | Approve tool use and answer elicitations from any device |
+| **Theme System** | Purple, Orange, Rainbow — light and dark mode |
+| **Storage Management** | Monitor and clean up conversation history |
+| **Cross-Platform** | macOS, Windows, Linux |
+
+## Download
+
+Grab the latest release from the **[Releases](https://github.com/hwwn/aaa-code-release/releases)** page.
+
+| Platform | Files |
+|----------|-------|
+| macOS (Apple Silicon / Intel) | `.dmg` |
+| Windows | `.exe` |
+| Linux | `.AppImage` |
+
+> [!NOTE]
+> Releases are currently unsigned. On macOS, right-click the app and select **Open** on first launch. On Windows, click **More info** → **Run anyway**.
+
+### Requirements
+
+- [Node.js](https://nodejs.org/) 22+
+- An Anthropic credential — an [API key](https://console.anthropic.com/) (Settings → Providers) or an existing `claude login`
+
+> [!TIP]
+> Since **v0.7.0** the chat runtime ships inside the app — no separate Claude Code installation needed. The installer is bigger (~200 MB), but it's download-and-go: open the app, add a workspace, start chatting.
+
+## Roadmap
+
+Each release ticks items off this list — the **Shipped** column shows the version that delivered each one.
+
+**Legend:** ✅ shipped · 🛠️ building now · 🔭 planned · 🎯 the goal
+
+| Status | Feature | Shipped |
+|:------:|---------|---------|
+| ✅ | 🎙️ **Voice Input** — talk to Claude instead of typing; on-device, mixed-language dictation (zh / ja / en / ko / yue) within a single sentence | **v0.8.0** |
+| ✅ | 🎯 **Session Goals** — a prioritized, drag-to-reorder list of standing objectives, injected into every turn so the agent stays on-target | **v0.9.0** |
+| 🛠️ | 📂 **File Preview + Diff** — browse your project files and review changed-file diffs without leaving the app | _building_ |
+| 🔭 | 🌐 **HTML + Browser Preview** — render generated HTML inline and preview your running app; click an element to feed it back as context | — |
+| 🔭 | ⌘ **Per-repo Spotlight** — a command palette scoped to the active repository | — |
+| 🔭 | ⌨️ **Built-in Terminal** — a real terminal panel inside the app, no window-switching | — |
+| 🔭 | 🌿 **Parallel Agents on Worktrees** — run multiple agents at once, each isolated on its own git worktree | — |
+| 🔭 | 🧠 **Cross-Conversation Memory** — context, preferences and decisions carry forward across sessions | _someday_ |
+| 🎯 | 🤝 **One app, every agent** — Claude · Codex · Cursor, all inside AAA Code, side by side | **by end of 2026** |
+
+> Want something bumped up? [Open an issue](https://github.com/hwwn/aaa-code-release/issues) and tell us what you need most.
+
+## Pricing
+
+<div align="center">
+<br>
+<img src="https://aaa-code.app/sponsor-preview.png" alt="AAA Code pricing dialog showing Free, VIP, and VVIP tiers" width="680">
+<br><br>
+</div>
+
+The basics are **free forever** — chat, sessions, workspaces, and mobile remote access never expire. Every new install also starts with a 7-day trial of all premium features; after that, a one-time purchase keeps premium unlocked for life.
+
+| Tier | Price | What You Get |
+|------|-------|-------------|
+| **Free** | $0 | All core features, free forever + free updates |
+| **AAA Code VIP Member** | $10 one-time | All premium features (Voice Dictation, Plugin System, Scheduled Tasks, Conversation Rename, Early Access) |
+| **AAA Code VVIP Member** | $15 one-time | Everything in VIP + priority handling of feature requests and direct email support |
+
+Pick a plan on the [**Pricing page**](https://aaa-code.app/#pricing). Payments are processed by Lemon Squeezy as Merchant of Record; your license key arrives by email and activates instantly in the app (Settings → License).
+
+### Premium Features (VIP+)
+
+- **Voice Dictation** — Speak instead of type. Local on-device transcription with mixed-language recognition in a single sentence — Mandarin Chinese, Cantonese, English, Japanese, and Korean, freely combined. Goes beyond Claude Code's built-in `/voice`, which transcribes one language at a time and can't follow a sentence that switches languages mid-stream. Audio never leaves your machine.
+- **Plugin System** — Use Claude Code skills (superpowers, frontend-design, code-review, etc.) directly via slash commands. Your installed CLI plugins just work.
+- **Scheduled Tasks** — Run Claude on a cron schedule. Daily reports, nightly refactors, weekly check-ins — results land in your session tree with a phone notification.
+- **Conversation Rename** — Double-click any session in the conversation tree to rename it.
+- **Early Access** — New features before public release.
+
+### VVIP Only
+
+- **Priority Feature Requests** — Your feature requests and support tickets handled first.
+- **Direct Email Support** — Reach us directly instead of going through the public issue tracker.
+
+More premium features ship over time. Existing customers at each tier get everything automatically within their tier.
+
+## Supported providers
+
+Connect aaa-code to your preferred LLM backend in **Settings → Providers**.
+
+| Provider | What you need | Zero-config path |
+|---|---|---|
+| Anthropic direct | API key or Claude Code CLI login | Run `claude login` once |
+| DeepSeek / Zhipu / Kimi / MiniMax | API key from each provider | Settings → Providers → preset |
+| Self-hosted proxy (LiteLLM, etc.) | Base URL + API key | Settings → Providers → custom |
+| AWS Bedrock | AWS credentials + region | `~/.aws/credentials` auto-detected |
+| Google Vertex | GCP project + ADC | `gcloud auth application-default login` |
+
+See the full guide: https://aaa-code.app/guides/providers
+
+## Issues & Feedback
+
+Something broken? Have a feature idea? **[Open an issue](https://github.com/hwwn/aaa-code-release/issues)** — bug reports and feature requests are both welcome. This is the best way to shape what gets built next.
+
+## License
+
+Proprietary. All rights reserved.

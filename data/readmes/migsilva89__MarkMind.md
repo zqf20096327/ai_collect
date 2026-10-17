@@ -1,0 +1,191 @@
+# MarkMind - AI-Powered Bookmark Organization
+
+<div align="center">
+  <img src="./assets/readme/logo.png" alt="MarkMind Logo" width="128" height="128">
+  <h3>Transform your chaotic bookmarks into organized bliss with AI</h3>
+  <p>
+    <a href="https://chromewebstore.google.com/detail/MarkMind/bdobgdkpeffdbonfpokgkbncgnbnjnoo">
+      <img src="https://img.shields.io/badge/Chrome-Add%20to%20Chrome-green" alt="Chrome Web Store">
+    </a>
+    <a href="https://github.com/migsilva89/MarkMind/issues">
+      <img src="https://img.shields.io/github/issues/migsilva89/MarkMind" alt="Issues">
+    </a>
+    <a href="https://github.com/migsilva89/MarkMind/blob/main/LICENSE">
+      <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+    </a>
+    <a href="https://buymeacoffee.com/migsilva?utm_source=github-markmind">
+      <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-%E2%98%95-FFDD00" alt="Buy me a coffee">
+    </a>
+  </p>
+
+  <a href="https://www.youtube.com/watch?v=9I5tpjMDrIQ">
+    <img src="https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube" alt="Watch on YouTube">
+  </a>
+</div>
+
+---
+
+## Why MarkMind?
+
+MarkMind uses AI to understand what you're saving and automatically organizes your bookmarks into the right folders. One click and your bookmarks find their perfect home.
+
+<div align="center">
+  <img src="./assets/readme/demo.gif" alt="MarkMind Demo - Organize current page" width="400">
+  <p><em>One click to organize the page you're visiting</em></p>
+</div>
+
+### Key Features
+
+- **Smart Organization** - AI analyzes page content and suggests the best folder
+- **Bulk Processing** - Organize hundreds (or thousands) of bookmarks at once
+- **Handles Loose Bookmarks** - Bookmarks scattered outside folders are organized too, not just ones already in folders
+- **Duplicate Cleanup** - Finds bookmarks saved more than once and lets you remove the extras
+- **Live Progress** - See exactly how many bookmarks have been organized while it works
+- **Multiple AI Providers** - Google Gemini, OpenAI, Anthropic, or OpenRouter
+- **Privacy First** - Your bookmarks stay in your browser, only titles/URLs are sent to the AI
+- **Review Before Apply** - Always review and approve changes before they happen
+- **Works With Your Structure** - Respects your existing bookmark folders
+
+## See It In Action
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <img src="./assets/readme/bulk.gif" alt="Bulk organize bookmarks" width="260">
+        <br>
+        <strong>Bulk Organize</strong>
+        <br>
+        <em>Scan and sort hundreds of bookmarks at once</em>
+      </td>
+      <td align="center" width="33%">
+        <img src="./assets/readme/control.gif" alt="Review AI suggestions" width="260">
+        <br>
+        <strong>You're In Control</strong>
+        <br>
+        <em>Review every AI suggestion before it's applied</em>
+      </td>
+      <td align="center" width="33%">
+        <img src="./assets/readme/private.gif" alt="Privacy and settings" width="260">
+        <br>
+        <strong>Private & Secure</strong>
+        <br>
+        <em>Your API key stays local, your data never leaves your browser</em>
+      </td>
+    </tr>
+  </table>
+</div>
+
+## Getting Started
+
+### Install from Chrome Web Store
+
+1. [Add MarkMind from the Chrome Web Store](https://chromewebstore.google.com/detail/markmind/bdobgdkpeffdbonfpokgkbncgnbnjnoo)
+2. Click the MarkMind icon and choose your AI provider
+3. Enter your API key (get a free one from [Google AI Studio](https://aistudio.google.com/app/apikey))
+4. Start organizing!
+
+### Using MarkMind
+
+**Add Current Page:**
+
+1. Navigate to any page
+2. Click the MarkMind icon
+3. Hit "Organize" - AI suggests the best folder
+4. Accept, decline, or customize the suggestion
+
+**Bulk Organize:**
+
+1. Click the MarkMind icon → Organize tab
+2. Scan your bookmarks
+3. (Optional) Review and remove any duplicate bookmarks found
+4. Select bookmarks to organize — loose bookmarks outside folders are included
+5. Review AI suggestions and apply
+
+### What to Expect
+
+- **How long does it take?** Usually seconds to a minute. Large collections are processed in several passes and can take a few minutes — you'll see a live "Organized X of Y bookmarks" count and a timer the whole time, so you always know it's working. Feel free to close the popup; it keeps going in the background.
+- **Free AI providers:** Free tiers (e.g. free Gemini models) have stricter limits and can be briefly unavailable. MarkMind automatically retries, sizes the work to fit your model, and tells you in plain language if something needs another try. If a large run struggles, organizing in smaller groups helps.
+- **Scattered bookmarks:** Bookmarks that aren't in any folder are picked up and organized along with the rest.
+- **Duplicates:** After scanning, MarkMind shows any bookmarks saved more than once and lets you remove the extras (it always keeps one copy).
+
+## Supported AI Providers
+
+| Provider | Get API Key |
+| -------- | ----------- |
+| Google Gemini | [Google AI Studio](https://aistudio.google.com/app/apikey) |
+| OpenAI | [OpenAI Platform](https://platform.openai.com/api-keys) |
+| Anthropic | [Anthropic Console](https://console.anthropic.com/) |
+| OpenRouter | [OpenRouter](https://openrouter.ai/keys) |
+
+## Privacy & Security
+
+- Bookmarks never leave your browser (only titles/URLs sent to AI for analysis)
+- API keys stored securely in Chrome's local storage
+- No personal data collected or tracked
+- No analytics, no telemetry
+- Open source - verify the code yourself
+
+## For Developers
+
+### Tech Stack
+
+- **React 19** + **TypeScript**
+- **Vite** with @crxjs/vite-plugin
+- **Chrome Manifest V3**
+- **CSS** with design tokens
+
+### Local Development
+
+```bash
+git clone https://github.com/migsilva89/MarkMind.git
+cd MarkMind
+npm install
+npm run dev       # Dev server with HMR
+npm run build     # Production build → dist/
+```
+
+Load the extension:
+
+1. Go to `chrome://extensions/`
+2. Enable "Developer mode"
+3. Click "Load unpacked" → Select `dist/`
+
+### Project Structure
+
+```text
+src/
+├── components/      # React components (one per file)
+├── hooks/           # Custom hooks (folder per hook)
+├── services/        # Chrome API & AI provider wrappers
+├── config/          # Configuration data
+├── types/           # TypeScript interfaces
+├── utils/           # Utility functions
+├── styles/          # Design tokens (CSS variables)
+└── App.tsx          # Root component
+```
+
+### Contributing
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## Support
+
+- [Open an issue](https://github.com/migsilva89/MarkMind/issues) on GitHub
+- Email: <themarkmind@gmail.com>
+- Website: [markmind.xyz](https://markmind.xyz)
+- Like it? [Buy me a coffee](https://buymeacoffee.com/migsilva?utm_source=github-markmind) — it keeps the next release coming
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <p>If you find MarkMind useful, consider <a href="https://github.com/migsilva89/MarkMind">giving it a star</a></p>
+</div>

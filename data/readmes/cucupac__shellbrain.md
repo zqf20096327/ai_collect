@@ -1,0 +1,99 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/cucupac/shellbrain/main/docs/assets/shellbrain_logo_badge.png" alt="ShellBrain logo" height="88">
+</p>
+
+<h3 align="center">ShellBrain</h3>
+
+<p align="center">Long-term Memory for AI.</p>
+
+ShellBrain uses case-based reasoning and a self-managing concept graph as long-term memory for software engineering.
+
+## Install
+
+```bash
+curl -L shellbrain.ai/install | bash
+```
+
+**Works for Codex, Claude Code, and Cursor.**
+
+Requirements.
+- macOS or Linux, Python 3.11+, Docker.
+
+### Upgrade for Latest Capabilities
+
+```bash
+shellbrain upgrade
+```
+
+---
+
+## Recall in One Command
+
+<p align="center">
+  <img src="docs/assets/shellbrain-recall-context-diagram.png" alt="ShellBrain recall uses vector search and BM25 to search your memories. An inner recall agent summarizes the search results." width="720">
+</p>
+
+---
+
+## Architecture
+
+ShellBrain stores evidence and two forms of reusable knowledge:
+
+- **Episodic Memory.** It stores prompts, responses, and tool calls.
+- **Case-Based Memory.** Problems, solutions, and failed attempts are structured and stored.
+- **Concept Graph.** It connects claims, relations, and implementations.
+
+Memories and concepts link directly to supporting evidence. The code is the source of truth.
+
+---
+
+## How Agents Use ShellBrain
+
+### Recall
+
+Working agents run `shellbrain recall` for long-term memory related to their current task.
+
+Recall combines BM25, vector similarity, and explicit graph associations.
+
+```bash
+shellbrain recall "What is ShellBrain, and how does it help a working coding agent?"
+```
+
+**Response:**
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "brief": {
+      "memories": ["Relevant remembered context."],
+      "code": ["README.md"]
+    },
+    "fallback_reason": null
+  },
+  "errors": []
+}
+```
+
+Terminals show styled Memories and Code bullets. Pipes receive JSON.
+If no useful memory is found, both lists are empty. Provider failures return errors.
+
+### Recall Provider
+
+For blazing fast recall for cheap, [get an Inception API key](https://platform.inceptionlabs.ai/dashboard/api-keys) and run:
+
+```bash
+mkdir -p ~/.shellbrain
+printf '\nINCEPTION_API_KEY=%s\n' 'PASTE_YOUR_KEY_HERE' >> ~/.shellbrain/.env
+chmod 600 ~/.shellbrain/.env
+shellbrain admin recall provider inception
+```
+
+Switch back with `shellbrain admin recall provider codex`, or choose `claude`.
+
+
+---
+
+## Docs
+
+- [Technical Docs](https://deepwiki.com/cucupac/shellbrain)

@@ -1,0 +1,233 @@
+<p align="center">
+  <img src="docs/img/daedra-logo.svg" width="128" alt="daedra">
+</p>
+
+<h1 align="center">Daedra</h1>
+
+<p align="center">
+  Self-contained web search MCP server. Rust. 14 unkeyed backends. Mwmbl and Marginalia answer from any IP. Brave HTML may rate-limit. Basic search needs no API keys.<br>
+  Single binary. Relevance-ranked multi-backend search. Zero configuration for basic search.
+</p>
+
+<p align="center">
+
+[![Crates.io](https://img.shields.io/crates/v/daedra.svg)](https://crates.io/crates/daedra)
+[![CI](https://github.com/dirmacs/daedra/actions/workflows/ci.yml/badge.svg)](https://github.com/dirmacs/daedra/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+</p>
+
+Daedra is a self-contained web search [MCP](https://modelcontextprotocol.io/) server in Rust. It gives search and page-fetch tools to AI agents. It works from any IP address: datacenter, VPS, or residential. Basic search needs no API keys.
+
+## Why Daedra
+
+Major search engines block datacenter and VPS IP addresses with CAPTCHAs. Daedra solves this with a multi-backend fan-out. All available backends run the query at once, and the results merge by relevance:
+
+```
+Mwmbl → Brave → Marginalia → Bing RSS → Bing → Google News → Hacker News → Google → Wikipedia → StackOverflow → GitHub → Wiby → DDG Instant → DuckDuckGo HTML
+```
+
+Three backend groups exist. Scraper backends read HTML and sometimes meet a CAPTCHA. Machine-format backends read RSS and JSON feeds that engines publish for integrations. Knowledge backends query Wikipedia, StackOverflow, GitHub, Wiby, and DDG Instant. All fourteen backends need no paid search key.
+
+Unkeyed general coverage depends on where daedra runs. Mwmbl and Marginalia answer from any IP. Brave HTML may rate-limit. The knowledge and machine-format backends (wiki, HN, StackOverflow, GitHub, Bing RSS, Google News) work from any IP.
+
+Per-backend circuit breakers and per-backend rate limits keep the chain stable under load. The chain retries only transient errors. Bot protection and rate-limit errors fail fast, so the next backend starts at once.
+
+## Features
+
+- 14 unkeyed search backends with automatic fallback (see the table below)
+- Circuit breaker (`BackendHealth`): opens after repeated failures, with a 30 second cooldown
+- Per-backend rate limits via `governor`, with separate quotas for knowledge and scraper backends
+- Classified retry: the chain retries only transient errors
+- Readability extraction: `dom_smoothie` extracts the article body from HTML pages
+- PDF support: `infer` detects the MIME type, `pdf-inspector` extracts Markdown (OCR-needing pages are reported)
+- Content classification: `FetchedContent` (`Html` / `Pdf` / `Binary`) on every fetch
+- URL classification: `src/url_classification.rs` maps search result URLs to content types
+- MCP tools: `web_search`, `visit_page`, `crawl_site`, and the `search_duckduckgo` alias
+
+## Install
+
+```bash
+cargo install daedra
+```
+
+## Search backends
+
+| Backend | Type | API Key | Works from VPS? |
+|---------|------|---------|----------------|
+| **Mwmbl** | Public JSON API | None | **Always** |
+| Brave | HTML scraping | None | Sometimes (rate limits) |
+| **Marginalia** | Public JSON API | None / `MARGINALIA_API_KEY` | **Always** (no SLA) |
+| **Bing RSS** | `format=rss` machine output | None | **Always** |
+| Bing | HTML scraping | None | Sometimes (CAPTCHA risk) |
+| **Google News** | News RSS feed | None | **Always** |
+| **Hacker News** | Algolia JSON API | None | **Always** |
+| **Google** | HTML scraping | None | Rarely (CAPTCHA risk) |
+| **Wikipedia** | OpenSearch API | None | **Always** |
+| **StackExchange** | Public API | None | **Always** |
+| **GitHub** | Public API | None / `GITHUB_TOKEN` | **Always** |
+| **Wiby** | Indie web search | None | **Always** |
+| **DDG Instant** | Knowledge graph API | None | **Always** |
+| DuckDuckGo | HTML scraping | None | Rarely (blocked since mid-2025) |
+
+The merge ranks every result by how much of the query it shares. Results that share no query token land after every matched result. When no result matches at all, the search reports this. It does not return unrelated feed noise. Backends that ignore the query cannot outvote backends that found nothing relevant.
+
+This crate does not accept paid search keys. Mwmbl and Marginalia are the unkeyed general indexes. HTML scrapers may meet a CAPTCHA. Knowledge and feed backends stay on wiki, HN, StackOverflow, GitHub, and RSS.
+
+`--backend` and `--exclude` select or skip backends by name. `--time-range d|w|m|y` filters by recency on the backends that support it (Hacker News, Google News).
+
+## Usage
+
+### MCP server (for Claude, Cursor, pawan, and similar agents)
+
+```json
+{
+  "mcpServers": {
+    "daedra": {
+      "command": "daedra",
+      "args": ["serve", "--transport", "stdio", "--quiet"]
+    }
+  }
+}
+```
+
+### CLI
+
+```bash
+# Search: pick backends, filter by recency
+daedra search "rust async runtime" --num-results 5
+daedra search "crate release" --backend hn --time-range w
+daedra search "tokio" --exclude bing-rss --exclude gnews
+
+# Fetch a webpage as Markdown (HTML via Readability, PDF via pdf-inspector)
+daedra fetch https://rust-lang.org
+daedra fetch https://example.com/report.pdf --timeout 60
+daedra fetch https://example.com/report.docx   # docx, odt, epub, pptx, xlsx, csv too
+
+# Crawl with the optional crawlberg engine (rebuild with --features crawlberg)
+daedra crawl https://rust-lang.org --engine crawlberg -m 10 -d 3
+
+# Crawl: root page always included; robots.txt honored; depth follows links
+daedra crawl https://rust-lang.org -m 5 --depth 2 --delay-ms 250
+
+# Check backend health (reports missing API keys; JSON with -f json)
+daedra check
+
+# Server info (four MCP tools; JSON with -f json)
+daedra info
+```
+
+### As a Rust library
+
+```rust
+use daedra::tools::SearchProvider;
+use daedra::types::SearchArgs;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let provider = SearchProvider::auto();
+    let args = SearchArgs {
+        query: "rust programming".to_string(),
+        options: None,
+    };
+    let results = provider.search(&args).await?;
+    for r in &results.data {
+        println!("{} — {}", r.title, r.url);
+    }
+    Ok(())
+}
+```
+
+## MCP tools
+
+### `web_search`
+
+Search the web with automatic backend fallback.
+
+```json
+{
+  "query": "search terms",
+  "options": {
+    "region": "wt-wt",
+    "safe_search": "MODERATE",
+    "num_results": 10,
+    "time_range": "w"
+  }
+}
+```
+
+`search_duckduckgo` is an alias for `web_search`. It exists for backward compatibility.
+
+### `visit_page`
+
+Fetch a page and extract the content as Markdown. HTML pages use `dom_smoothie` Readability extraction. The `infer` crate detects PDFs, and `pdf-inspector` extracts Markdown. Office documents (docx, doc, odt, rtf, epub, pptx, xlsx, csv) convert via `anydoc`.
+
+```json
+{
+  "url": "https://example.com",
+  "selector": "article.main",
+  "include_images": false
+}
+```
+
+### `crawl_site`
+
+Crawl a site from a root URL and return Markdown for each page. The crawler always fetches the root page, honors robots.txt (longest-match rule; `ignore_robots` opts out), expands one level of sitemap indexes, and can follow same-origin link layers with `depth` (max 5). `delay_ms` staggers fetches. The command exits non-zero when it fetched zero pages.
+
+## Architecture
+
+```
+Daedra
+├── SearchProvider (fallback chain, circuit breakers, keyed rate limits)
+│   ├── MwmblBackend (unkeyed general-web JSON)
+│   ├── BraveBackend / BingBackend / GoogleBackend (HTML scraping)
+│   ├── BingRssBackend / GoogleNewsBackend / HnAlgoliaBackend (machine formats)
+│   ├── WikipediaBackend / StackExchangeBackend / GitHubBackend
+│   ├── WibyBackend / DdgInstantBackend
+│   └── SearchClient (DuckDuckGo HTML, last resort)
+├── FetchClient (FetchedContent: Html / Pdf / Binary → Markdown)
+│   ├── dom_smoothie (Readability), infer (MIME), pdf-inspector (PDF), anydoc (Office)
+├── soft_block (classifies zero-result scraper pages: genuine empty or bot block)
+├── url_classification (search result URL → ContentType)
+├── SearchCache (moka async cache)
+├── MCP Server (DaedraHandler: handle_web_search, handle_visit_page, handle_crawl_site)
+│   ├── STDIO transport (JSON-RPC)
+│   └── SSE transport (Axum HTTP)
+└── CLI (Commands::run, CheckReporter)
+```
+
+## Key dependencies
+
+| Crate | Role |
+|-------|------|
+| `dom_smoothie` 0.17 | Readability article extraction |
+| `infer` 0.19 | MIME detection on fetched bytes |
+| `pdf-inspector` 1.17 | PDF → Markdown extraction |
+| `anydoc` 0.2 | Office and ebook documents → Markdown |
+| `quick-xml` 0.42 | RSS parsing for the machine-format backends |
+| `governor` 0.10 | Per-backend keyed rate limiting |
+
+## Configuration
+
+```bash
+# Optional quota tokens (raise rate limits; backends work without them)
+export GITHUB_TOKEN=...          # Higher GitHub API rate limit
+export MARGINALIA_API_KEY=...    # Higher Marginalia rate limit
+
+# Logging
+export RUST_LOG=daedra=info
+```
+
+## Ecosystem
+
+| Project | What |
+|---------|------|
+| [pawan](https://github.com/dirmacs/pawan) | CLI coding agent that uses daedra for web search via MCP |
+| [ares](https://github.com/dirmacs/ares) | Agentic retrieval-enhanced server |
+| [eruka](https://eruka.dirmacs.com) | Context intelligence engine |
+
+Built by [DIRMACS](https://dirmacs.com).
+
+## License
+
+MIT

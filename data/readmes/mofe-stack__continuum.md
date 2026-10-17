@@ -1,0 +1,164 @@
+# Continuum — Save & Export AI Chats, Resume Anywhere
+
+> 🏆 Winner — Hack the Valley 2026
+
+Continuum is a browser extension that captures an AI chat session and lets you pick it back up in a fresh chat, so you never lose your context when you hit a length or message limit. Capture a conversation on one site, then resume it — with the full history handed over — on another.
+
+It runs entirely on your own device. There's no account, no server, and nothing gets sent anywhere unless you ask it to.
+
+## Get it
+
+- **Chrome Web Store:** https://chromewebstore.google.com/detail/continuum-capture-save-an/nnohcpdjcfhkpmplgpcabpfipnokinbi
+- **Firefox Add-ons:** https://addons.mozilla.org/en-US/firefox/addon/continuum/
+- **Website:** https://continuum-capture.netlify.app
+
+Or run it unpacked — see [Running it locally](#running-it-locally) below.
+
+## What it does
+
+- **Capture a chat.** Click the Continuum button on a supported AI site and it grabs the whole conversation — messages, and any images or files that came with it.
+- **Resume somewhere else.** Open a new chat on a supported site and Continuum drops the captured history back in, so the model picks up where you left off instead of starting cold.
+- **Save and export.** Captured sessions are kept locally and can be exported to Markdown or PDF.
+- **Optional AI compression.** For very long chats, you can condense the handoff with your own API key to save tokens. The whole conversation is turned into a structured brief with seven sections: completed work, current state, in progress, next steps, constraints, critical context, and discarded attempts. All the key details including code, images, files, decisions, and instructions are carried through. It's off by default and only runs when you resume.
+
+## Supported sites
+
+Right now Continuum works with:
+
+- **Claude** (claude.ai)
+- **ChatGPT** (chatgpt.com)
+- **Gemini** (gemini.google.com)
+- **Perplexity** (perplexity.ai)
+
+More platforms are coming soon.
+
+A captured chat from any of these can be resumed into Claude, ChatGPT, Gemini, or Perplexity today; more sites (Grok, DeepSeek, Copilot) are still being wired up as resume targets. The source and the destination don't have to match — a chat captured on one site can be resumed into another.
+
+## Languages
+
+Continuum's interface is available in 11 languages, chosen automatically from your browser's language:
+
+English · Español · Português (BR) · Deutsch · Français · 日本語 · 简体中文 · Русский · 한국어 · Italiano · Türkçe
+
+**Your own content is never translated.** Chat titles, message text, and exported PDF or Markdown files come through exactly as captured — so running Claude in English with Continuum's interface in Spanish still gives you English chat titles and an unchanged export.
+
+## What gets captured
+
+Every site captures the full conversation text. What comes through for **attachments** depends on what each site lets an extension reach:
+
+| | Claude | ChatGPT | Gemini | Perplexity |
+|---|:---:|:---:|:---:|:---:|
+| Messages | ✅ | ✅ | ✅ | ✅ |
+| Images you uploaded | ✅ | ✅* | ✅ | name only |
+| Images in answers | name only | ✅ | ✅ | ✅ |
+| Files you uploaded | ✅* | ✅ | name only | name only |
+| AI-generated files | name only | ✅ | name only | — |
+
+**What the symbols mean:**
+
+- ✅: saved in full
+- **name only**: listed in the transcript, but the file/image itself isn't saved
+- **—**: not captured
+
+**Notes:**
+
+- Gemini images — both the ones it generates in answers and the ones you upload — are saved in full (images you added before installing it come through by name only, since Gemini locks the original upload afterward). Uploaded *files* (PDFs, docs) still come through by name only: their cards expose no real download link (the "Open" is a JS handler), so the bytes can't be pulled out.
+- Perplexity renders your uploads as plain filename chips with no downloadable URL behind them, so uploaded images and files come through by name only. Images that appear inside answers are saved. The transcript keeps the answer's full formatting (headings, lists, code, tables); the little citation number chips and the Sources/Images side panels are left out — they're web results, not the conversation.
+- Perplexity only generates downloadable files via Labs (a Pro feature), which we haven't been able to test; regular threads don't produce file artifacts, so there's nothing to capture there.
+- Claude captures your normal uploads (images, PDFs, docs, text) fine. The one exception is files that got routed to Claude's code/analysis tool — the ones that, when you click them, say they're too large and you have to download them. Those bytes live only in Claude's temporary sandbox and can't be pulled back out, so they're noted by name. Files Claude *generates* for you — the download cards — are also captured by name only: their Download button is a script handler with no link behind it, so the file itself can't be pulled out. Images Claude generates in answers are name only too — they render inside a sandboxed cross-origin frame whose pixels an extension can't read, but their title is saved.
+
+## Privacy
+
+Continuum is local-first. Your conversations and any API keys you enter stay in your browser's own storage on your device.
+
+- No Continuum server, account, or cloud. There's no backend.
+- No tracking, analytics, or telemetry.
+- Your data only ever leaves your device when **you** trigger it: resuming a chat (the history goes to the AI site you picked) or running the optional AI compression (the text goes to the provider you chose, with your own key).
+
+The full policy is in [PRIVACY.md](./PRIVACY.md).
+
+## Running it locally
+
+You can load the extension unpacked while it's still in review. Build first, then load the folder for your browser:
+
+```bash
+node build-chrome.js     # → build/chrome/
+node build-firefox.js    # → build/firefox/
+```
+
+**Chrome / Opera / Edge**
+1. Go to `chrome://extensions`
+2. Turn on **Developer mode** (top right)
+3. Click **Load unpacked** and select the **`build/chrome`** folder
+
+**Firefox**
+1. Go to `about:debugging#/runtime/this-firefox`
+2. Click **Load Temporary Add-on**
+3. Select **`build/firefox/manifest.json`**
+
+## Building the packages
+
+Continuum ships from one shared `src/` — only the manifest differs per browser (Chrome uses a service-worker background; Firefox uses a scripts background plus `gecko` settings). The build scripts copy the source as-is — no bundling, minifying, or code generation — and write both an unpacked folder (for loading during dev) and a packaged file (for the store).
+
+```bash
+node build-firefox.js    # → build/firefox/  and  continuum-firefox.xpi
+node build-chrome.js     # → build/chrome/   and  continuum-chrome.zip
+```
+
+## Tests
+
+Plain Node — no test runner, no dependencies. Each file runs on its own:
+
+```bash
+node tests/adapter-tree.test.js
+node tests/compressor.test.js
+# …or all of them
+for f in tests/*.test.js; do node "$f"; done
+```
+
+They cover the per-site capture adapters, the compressor and its stats, Markdown
+cleanup, and the text sanitizer — the parts most likely to break silently when a
+supported site changes its DOM.
+
+## Project layout
+
+```
+manifest.firefox.json  Firefox manifest (scripts background + gecko settings)
+manifest.chrome.json   Chrome manifest (service-worker background)
+src/                   Shared source — used by both builds
+  background.js        Background worker (handles cross-origin image fetches, etc.)
+  content-script.js    Entry point injected into supported AI sites
+  adapters/            Per-site capture logic (Claude, ChatGPT, Gemini, Perplexity)
+  core/                Storage, settings, compression, session model, PDF export
+  ui/                  Floating button + capture panel
+  vendor/              Third-party libs (fflate, jsPDF)
+_locales/              Interface strings for all 11 languages (generated)
+i18n/                  Source copy the _locales catalogs are built from
+  listing.js           Store name + descriptions
+  ui.js                Panel labels
+  ui-settings.js       Settings, dialogs, and the permission page
+  preambles.js         The resume message typed into the new chat
+tools/
+  build-locales.js     Generates _locales/ from i18n/
+  check-locales.js     Verifies every key used in src/ exists, and flags orphans
+icons/                 Extension icons
+tests/                 Unit tests for the adapters, compressor, and sanitizer
+build-firefox.js       Builds the Firefox .xpi (+ build/firefox/)
+build-chrome.js        Builds the Chrome .zip (+ build/chrome/)
+PRIVACY.md             Privacy policy
+```
+
+After editing anything under `i18n/`, regenerate the catalogs:
+
+```bash
+node tools/build-locales.js   # writes _locales/<locale>/messages.json
+node tools/check-locales.js   # verifies every key used in src/ exists
+```
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
+
+## Contact
+
+mofecontinuum@gmail.com

@@ -1,0 +1,121 @@
+
+<p align="center">
+ <img src="https://kaapana.ai/kaapana-downloads/kaapana-docs/stable/img/kaapana_logo_2.png" height=170 alt="kaapana" border="0" />
+</p>
+
+[![Documentation Status](https://readthedocs.org/projects/kaapana/badge/?version=latest)](https://kaapana.readthedocs.io/en/latest/?badge=latest)
+<a href="https://join.slack.com/t/kaapana/shared_invite/zt-hilvek0w-ucabihas~jn9PDAM0O3gVQ/"><img src="https://img.shields.io/badge/chat-slack-blueviolet" /></a>
+
+## What is Kaapana?
+
+<p>
+  <a href="https://kaapana.ai/kaapana-downloads/kaapana-docs/stable/gif/kaapana-v0.2.1-showcase.mp4" target="_blank">
+    <img src="https://kaapana.ai/kaapana-downloads/kaapana-docs/stable/img/thumbnail_kaapana_vid.png" />
+  </a>
+</p>
+
+Kaapana is an open-source toolkit for state-of-the-art platform provisioning in the field of medical data analysis. The applications comprise AI-based workflows and federated learning scenarios with a focus on radiological and radiotherapeutic imaging. The name Kaapana comes from the Hawaiian word kaʻāpana, meaning "distributor" or "part".
+
+Obtaining large amounts of medical data necessary for developing and training modern machine learning methods is an extremely challenging effort that often fails in a multi-center setting, e.g. due to technical, organizational and legal hurdles. A federated approach where the data remains under the authority of the individual institutions and is only processed on-site is, in contrast, a promising approach ideally suited to overcome these difficulties.
+
+Following this federated concept, the goal of Kaapana is to provide a framework and a set of tools for sharing data processing algorithms, for standardized workflow design and execution as well as for performing distributed method development. This will facilitate data analysis in a compliant way enabling researchers and clinicians to perform large-scale multi-center studies.
+
+By adhering to established standards and by adopting widely used open technologies for private cloud development and containerized data processing, Kaapana integrates seamlessly with the existing clinical IT infrastructure, such as the Picture Archiving and Communication System (PACS), and ensures modularity and easy extensibility.
+
+Core components of Kaapana:
+* **Workflow management:** Large-scale image processing with SOTA deep learning algorithms, such as [nnU-Net](https://github.com/MIC-DKFZ/nnunet) image segmentation and [TotalSegmentator](https://github.com/wasserth/TotalSegmentator)
+* **Datasets:** Exploration, visualization and curation of medical images
+* **Extensions:** Simple integration of new, customized algorithms and applications into the framework
+* **Storage:** An integrated PACS system and Minio for other types of data
+* **System monitoring:** Extensive resource and system monitoring for administrators
+* **User management** Simple user management via [Keycloak](https://www.keycloak.org/)
+
+Core technologies used in Kaapana:
+* [Kubernetes](https://kubernetes.io/): Container orchestration system
+* [Helm](https://helm.sh/): The package manager for Kubernetes
+* [Airflow](https://airflow.apache.org/): Workflow management system enabling complex and flexible data processing workflows
+* [OpenSearch](https://opensearch.org/): Search engine for DICOM metadata-based searches
+* [dcm4chee](https://www.dcm4che.org/): Open source PACS system serving as a central DICOM data storage
+* [Prometheus](https://github.com/prometheus/prometheus): Collecting metrics for system monitoring
+* [Grafana](https://github.com/grafana/grafana): Visualization for monitoring metrics
+* [Keycloak](https://www.keycloak.org/): User authentication
+* [OHIF Viewers](https://ohif.org/): Visualization of medical images
+
+
+Currently, Kaapana is used in multiple projects in which a Kaapana-based platform is deployed at multiple clinical sites with the objective of distributed radiological image analysis and quantification. The projects include [RACOON](https://racoon.network/) initiated by [NUM](https://www.netzwerk-universitaetsmedizin.de) with all 38 German university clinics participating, the Joint Imaging Platform ([JIP](https://jip.dktk.dkfz.de/jiphomepage/)) initiated by the German Cancer Consortium ([DKTK](https://dktk.dkfz.de/)) with 11 university clinics participating as well as [DART](https://cce-dart.com) initiated by the [Cancer Core Europe](https://cancercoreeurope.eu/) with 7 cancer research centers participating.
+
+For more information, please also take a look at our [Kaapana publication](https://www.arxiv.org/abs/2512.09644).
+
+## Documentation
+
+Check out the [documentation](https://kaapana.readthedocs.io/en/latest/) for further information about how Kaapana works, for instructions on how to build, deploy, use and further develop the platform.
+
+## Where to find us
+* [GitLab](https://gitlab.hzdr.de/kaapana/kaapana/): The main Kaapana repository, mirrored on GitHub.
+* [Slack](https://join.slack.com/t/kaapana/shared_invite/zt-hilvek0w-ucabihas~jn9PDAM0O3gVQ/): Join the community for discussions and updates.
+* [YouTube](https://www.youtube.com/@KaapanaAI): Tutorials, demos and more in-depth presentations.
+* [Website](https://kaapana.ai/)
+
+## Versioning
+
+As of Kaapana 0.2.0 we follow strict [SemVer](https://semver.org/) approach to versioning.
+
+## Citations
+Please cite the [following paper](https://www.arxiv.org/abs/2512.09644) when using Kaapana:
+
+    Ünal Akünal, Markus Bujotzek, Stefan Denner, Benjamin Hamm, Klaus Kades, Philipp Schader, Jonas Scherer, Marco Nolden, Peter Neher, Ralf Floca, & Klaus Maier-Hein. (2025). Kaapana: A Comprehensive Open-Source Platform for Integrating AI in Medical Imaging Research Environments. doi: 10.48550/arXiv.2512.09644. URL https://www.arxiv.org/abs/2512.09644.
+
+When using Kapaana for federated learning please also [cite](https://link.springer.com/chapter/10.1007/978-3-031-18523-6_13#citeas) the [following paper](https://link.springer.com/book/10.1007/978-3-031-18523-6):
+
+    Klaus Kades, Jonas Scherer, Maximilian Zenk, Marius Kempf, and Klaus MaierHein. Towards Real-World Federated Learning in Medical Image Analysis Using Kaapana. In Distributed, Collaborative, and Federated Learning, and Affordable AI and Healthcare for Resource Diverse Global Health, pages 130140, Cham, 2022b. Springer Nature Switzerland. ISBN 978-3-031-18523-6. doi: 10.1007/978-3-031-18523-6_13. URL https://doi.org/10.1007/978-3-031-18523-6_13.
+
+## Licence
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program (see file LICENCE).  
+If not, see <https://www.gnu.org/licenses/>.
+
+## Considerations on our license choice
+
+You can use Kaapana to build any product you like, including commercial closed-source ones since it is a highly modular system. Kaapana is licensed under the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html) for now since we want to ensure that we can integrate all developments and contributions to its core system for maximum benefit to the community and give everything back. We consider switching to a more liberal license in the future. This decision will depend on how our project develops and what the feedback from the community is regarding the license. 
+
+Kaapana is built upon the great work of many other open-source projects, see the documentation for details. For now, we only release source code we created ourselves since providing pre-built docker containers and licensing for highly modular container-based systems is [a complex task](https://www.linuxfoundation.org/blog/2020/04/docker-containers-what-are-the-open-source-licensing-considerations/). We have done our very best to fulfill all requirements, and the choice of AGPL was motivated mainly to make sure we can improve and advance Kaapana in the best way for the whole community. If you have thoughts about this or if you disagree with our way of using a particular third-party toolkit or miss something please let us know and get in touch. We are open to any feedback and advice on this challenging topic.
+
+## Contribution guide
+If you want to contribute to Kaapana by submitting an issue or code please have a look at our [contribution guide](https://codebase.helmholtz.cloud/kaapana/kaapana/-/blob/develop/CONTRIBUTION.md).
+
+## Acknowledgments
+
+[**Helmholtz Federated IT Services - HIFIS**](https://hifis.net/services/software/helmholtzgitlab/): We thank HIFIS for the Helmholtz GitLab Service hosting our issue tracker, repository and container registry and all the support.
+
+### Supporting projects
+
+[**Radiological Cooperative Network - RACOON**](https://www.netzwerk-universitaetsmedizin.de/projekte/racoon): This work was partially supported by RACOON, funded by the German Federal Ministry of Education and ResearchDieses in the Netzwerk Universitätsmedizin (NUM; funding code 01KX2021).
+
+[**Building Data Rich Clinical Trials - CCE_DART**](https://cce-dart.com/): This project has received funding from the European Union’s Horizon 2020 research and innovation program under grant agreement No 965397.
+
+[**Capturing Tumor Heterogeneity in Hepatocellular Carcinoma - A Radiomics Approach Systematically Tested in Transgenic Mice**](https://gepris.dfg.de/gepris/projekt/410981386) This project is partially funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) – 410981386.
+
+[**Data Science Driven Surgical Oncology Project**](https://www.nct-heidelberg.de/forschung/precision-local-therapy-and-image-guidance/surgical-oncology.html): This work was partially supported by the Data Science Driven Surgical Oncology Project (DSdSO), funded by the Surgical Oncology Program at the National Center for Tumor Diseases (NCT), Heidelberg, a partnership by DKFZ, UKHD, Heidelberg University.
+
+[**Joint Imaging Platform - JIP**](https://jip.dktk.dkfz.de/jiphomepage/): This work was partially supported by Joint Imaging Platform, funded by the German Cancer Consortium.
+
+[**HiGHmed**](https://highmed.org/): This work was partially supported by the HiGHmed Consortium, funded by the German Federal Ministry of Education and Research (BMBF, funding code 01ZZ1802A).
+
+[**Trustworthy Federated Data Analysis - TFDA**](https://tfda.hmsp.center/): This work is partially funded by the Helmholtz Association within the project "Trustworthy Federated Data Analytics” (TFDA) (funding number
+ZT-I-OO1 4).
+
+
+## Copyright
+
+Copyright (C) 2026  German Cancer Research Center (DKFZ)

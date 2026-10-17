@@ -1,0 +1,91 @@
+# End-to-End AI for Science
+
+This Bootcamp will provide researchers hands-on approaches on how to use NVIDIA PhysicsNeMo, a framework that combines physics and partial differential equations (PDEs) with artificial intelligence (AI) to build robust models. Participants will also learn about the differences between Physics-driven and Data-driven approaches to AI. In addition, the Bootcamp will provide hands-on experience with visualizing the results of physics simulations using ParaView. This Lab will also introduce you to Earth2Studio where you get to try out different workflows for various Weather forecasting models!
+
+<p align="center">
+  <img width="600" height="400" src="https://github.com/openhackathons-org/End-to-End-AI-for-Science/blob/d403086ce59c49b26be430bbea0056c37bd4d5f6/workspace/python/jupyter_notebook/omniverse/images/tcwv.gif">
+</p>
+
+
+## Bootcamp contents:
+
+The content is structured in multiple modules covering the following: 
+
+- Introduction to NVIDIA PhysicsNeMo
+- Module 1: Physics Informed approaches to an AI for Scientific application.
+  - Lab 1: Simulating Projectile Motion
+  - Lab 2: Steady State Diffusion in a Composite Bar using PINNs
+  - Lab 3: Forecasting weather using Navier-Stokes PDE
+  - Lab 4: Spring mass problem - Solving transient problems and inverse problems - Optional 
+- Module 2: Data-driven approach to an AI for Scientific application.
+  - Lab 1: Solving the Darcy-Flow problem using FNO
+  - Lab 2: Solving the Darcy-Flow problem using AFNO
+  - Lab 3: Forecasting weather using FourCastNet
+  - Lab 4: Modeling Magnetohydrodynamics with Physics Informed Neural Operators
+- Module 3: Data-driven approach using PhysicsNeMo Core and Introduction to Earth2Studio
+  - Lab 1: Training Physics-ML Models using PhysicsNeMo Core
+  - Lab 2: Training Weather forecasting Models using PhysicsNeMo Core
+  - Lab 3: Introduction to Earth2Studio - Deterministic Inference
+  - Lab 4: Introduction to Earth2Studio - Diagnostic & Ensemble Inference
+- Module 4: Application of DoMINO to external aerodynamics simulations
+  - Lab 1: Data pre-processing pipeline for DoMINO
+  - Lab 2: Training and Inference recipe for DoMINO using PhysicsNeMo
+- Module 5: From Transformer Theory to GeoTransolver — Physics-Aware AI for Large-Scale CFD
+  - Lab 0 (Notebook 0): **Data Preprocessing** — Converts raw Ahmed body VTP/STL surface meshes
+    to Zarr format, computes per-field normalization statistics, and validates the dataset
+    structure required by all subsequent notebooks.
+  - Lab 1 (Notebook 1): **Why Standard Transformers Fail at Scale** — Derives the O(N²) memory
+    and compute bottleneck of standard self-attention from first principles. Demonstrates it
+    concretely on Ahmed body pressure fields and explains why this makes large physics meshes
+    intractable.
+  - Lab 2 (Notebook 2): **How Physics-Attention Solves It** — Builds a NumPy blueprint of the
+    Slice–Aggregate–Attend–Deslice pipeline, showing how learnable physics slices reduce
+    complexity from O(N²) to O(N). Includes a corrected aggregation derivation and a full
+    complexity comparison table.
+  - Lab 3 (Notebook 3): **Training Transolver** — Constructs a complete training loop using
+    PhysicsNeMo's `TransolverDataPipe`. Covers mixed-precision training, OneCycleLR scheduling,
+    checkpoint management, and post-training visualization of learned ascription weights and
+    per-point slice entropy.
+  - Lab 4 (Notebook 4): **From Transolver to GeoTransolver — the GALE Mechanism** — Explains
+    representation drift and how Geometry-Aware Latent Embeddings (GALE) provide a persistent
+    geometry context at every layer via a learned gating parameter α. Includes interactive
+    visualization of the cross-attention geometry recall.
+  - Lab 5 (Notebook 5): **Training GeoTransolver** — End-to-end training of GeoTransolver on
+    the Ahmed body dataset. Highlights the differences from Lab 3: geometry tensor injection,
+    GALE cross-attention blocks, and the extended `make_datapipe_geo` pipeline.
+  - Lab 6 (Notebook 6): **Uncertainty Quantification** — Estimates prediction confidence using
+    MC-Dropout and ensemble methods, producing per-point uncertainty maps over the Ahmed body
+    surface fields.
+- Earth-2 workshops presented at GTC
+  - GTC 2025: Running AI weather inference with Earth2Studio
+  - GTC 2026: Training AI weather models with PhysicsNeMo
+
+
+## Tools and frameworks:
+
+The tools and frameworks used in the bootcamp are as follows:
+- [NVIDIA® PhysicsNeMo](https://developer.nvidia.com/PhysicsNeMo)
+- [NVIDIA Earth2Studio](https://github.com/NVIDIA/earth2studio)
+- [ParaView](https://www.paraview.org/)
+
+## Bootcamp duration:
+
+The overall bootcamp will take approximately 14 hours. 
+
+## Bootcamp prerequisites:
+
+Mathematical background in Differential equations, Python proficiency, and familiarity with deep learning fundamentals and frameworks are required.
+
+## Deploying the Bootcamp materials:
+
+For deploying the materials, please refer to the Deployment guide present [here](Deployment_Guide.MD)
+
+## Attribution
+
+This material originates from the OpenHackathons Github repository. Check out additional materials [here](https://github.com/openhackathons-org)
+
+Don't forget to check out additional [Open Hackathons Resources](https://www.openhackathons.org/s/technical-resources) and join our [OpenACC and Hackathons Slack Channel](https://www.openacc.org/community#slack) to share your experience and get more help from the community.
+
+## Licensing
+
+Copyright © 2024 OpenACC-Standard.org. This material is released by OpenACC-Standard.org, in collaboration with NVIDIA Corporation, under the Creative Commons Attribution 4.0 International (CC BY 4.0). These materials may include references to hardware and software developed by other entities; all applicable licensing and copyrights apply.

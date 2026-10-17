@@ -1,0 +1,456 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/horizontal-dark.svg">
+  <img src="assets/brand/horizontal.svg" width="380" alt="nirs4all">
+</picture>
+<br><br>
+<img src="docs/source/assets/logo-cirad-en.jpg" width="260" alt="CIRAD Logo">
+
+# NIRS4ALL
+
+**A comprehensive Python library for Near-Infrared Spectroscopy data analysis**
+
+[![PyPI version](https://img.shields.io/pypi/v/nirs4all.svg)](https://pypi.org/project/nirs4all/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
+[Documentation](https://GBeurier.github.io/nirs4all/) •
+[Legacy Python documentation](https://GBeurier.github.io/nirs4all/legacy/index.html) •
+[Installation](#installation) •
+[Quick Start](#quick-start) •
+[Examples](examples/) •
+[Contributing](CONTRIBUTING.md)
+
+</div>
+
+---
+
+## Which nirs4all do you need?
+
+nirs4all comes in two flavors — pick the one that fits your workflow:
+
+| | **nirs4all Studio** (Desktop App) | **nirs4all** (Python Library) |
+|---|---|---|
+| **Best for** | Researchers, technicians, and anyone who prefers a visual interface | Developers, data scientists, and anyone who writes Python scripts |
+| **What it is** | A Rust-owned desktop control plane with drag-and-drop pipelines, interactive charts, and bounded native training; CPython is embedded over stdio only for explicit libraries/plugins | A `pip install` Python package with a declarative API for building NIRS pipelines in code |
+| **Install** | [Download the installer](https://github.com/GBeurier/nirs4all-studio/releases/latest) | `pip install nirs4all` |
+| **Repository** | [GBeurier/nirs4all-studio](https://github.com/GBeurier/nirs4all-studio) | **You are here** |
+
+> **Not sure?** If you've never written Python code, start with **nirs4all Studio**.
+> Studio exposes a deliberately bounded product surface; it does not mirror every
+> Python-library capability or run a Python HTTP control plane.
+
+---
+
+## Overview
+
+NIRS4ALL bridges the gap between spectroscopic data and machine learning by providing a unified framework for **data loading**, **preprocessing**, **model training**, and **evaluation**. Built for researchers and practitioners working with Near-Infrared Spectroscopy data.
+
+<div align="center">
+<img src="docs/source/assets/pipeline.jpg" width="400" alt="Pipeline Overview">
+</div>
+
+### Key Features
+
+- **NIRS-Specific Preprocessing** — SNV, MSC, Savitzky-Golay, Norris-Williams, wavelet denoise, OSC/EPO, and 30+ spectral transforms
+- **Advanced PLS Models** — AOM-PLS, POP-PLS, OPLS, DiPLS, MBPLS, and 15+ PLS variants with automatic operator selection
+- **Multi-Backend ML** — Seamless integration with scikit-learn, TensorFlow, PyTorch, and JAX
+- **Declarative Pipelines** — Define complex workflows with simple, readable syntax
+- **Parallel Execution** — Multi-core pipeline variant execution via joblib
+- **Hyperparameter Tuning** — Built-in Optuna integration for automated optimization
+- **Rich Visualizations** — Performance heatmaps, candlestick plots, SHAP explanations
+- **Model Deployment** — Export trained pipelines as portable `.n4a` bundles
+- **sklearn Compatible** — `NIRSPipeline` wrapper for SHAP, cross-validation, and more
+- **Stable API Contracts** — Public API signatures, result schemas, and workspace storage format are stable since v0.9.0
+
+<div align="center">
+<img src="docs/source/assets/heatmap.png" width="400" alt="Performance Heatmap">
+<img src="docs/source/assets/candlestick.png" width="400" alt="Performance Distribution">
+<img src="docs/source/assets/stacking.png" width="400" alt="Regression Scatter Plot">
+<br><em>Advanced visualization capabilities for model performance analysis</em>
+</div>
+
+---
+
+## Installation
+
+### Basic Installation
+
+```bash
+pip install nirs4all
+```
+
+This installs the Python library, scikit-learn, DAG-ML, Core and Methods runtimes.
+The historical `[native]` extra remains accepted but is no longer required for
+portable execution. Deep learning frameworks are optional.
+
+### With ML Backends
+
+```bash
+# TensorFlow
+pip install nirs4all[tensorflow]
+
+# PyTorch
+pip install nirs4all[torch]
+
+# JAX
+pip install nirs4all[jax]
+
+# All frameworks
+pip install nirs4all[all]
+
+# All frameworks with GPU support
+pip install nirs4all[all-gpu]
+```
+
+### Docker
+
+```bash
+docker pull ghcr.io/gbeurier/nirs4all:latest
+docker run --rm -v "$(pwd):/workspace" ghcr.io/gbeurier/nirs4all my_script.py
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/GBeurier/nirs4all.git
+cd nirs4all
+pip install -e ".[dev]"
+```
+
+### Verify Installation
+
+```bash
+nirs4all --test-install      # Check dependencies
+nirs4all --test-integration  # Run integration tests
+nirs4all --version           # Check version
+```
+
+---
+
+## Quick Start
+
+### Simple API (Recommended)
+
+```python
+import nirs4all
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import ShuffleSplit
+from sklearn.cross_decomposition import PLSRegression
+
+# Define your pipeline
+pipeline = [
+    MinMaxScaler(),
+    {"y_processing": MinMaxScaler()},
+    ShuffleSplit(n_splits=3, test_size=0.25),
+    {"model": PLSRegression(n_components=10)}
+]
+
+# Train and evaluate
+result = nirs4all.run(
+    pipeline=pipeline,
+    dataset="path/to/your/data",
+    name="MyPipeline",
+    verbose=1
+)
+
+# Access results
+print(f"Best RMSE: {result.best_rmse:.4f}")
+print(f"Best R²: {result.best_r2:.4f}")
+
+# Export for deployment
+result.export("exports/best_model.n4a")
+```
+
+### Session for Multiple Runs
+
+```python
+import nirs4all
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cross_decomposition import PLSRegression
+from sklearn.ensemble import RandomForestRegressor
+
+with nirs4all.session(verbose=1, save_artifacts=True) as s:
+    # Compare models with shared configuration
+    pls_result = nirs4all.run(
+        pipeline=[MinMaxScaler(), PLSRegression(n_components=10)],
+        dataset="data/wheat.csv",
+        name="PLS",
+        session=s
+    )
+
+    rf_result = nirs4all.run(
+        pipeline=[MinMaxScaler(), RandomForestRegressor(n_estimators=100)],
+        dataset="data/wheat.csv",
+        name="RandomForest",
+        session=s
+    )
+
+    print(f"PLS: {pls_result.best_rmse:.4f} | RF: {rf_result.best_rmse:.4f}")
+```
+
+### sklearn Integration with SHAP
+
+```python
+import nirs4all
+from nirs4all.sklearn import NIRSPipeline
+import shap
+
+# Train with nirs4all
+result = nirs4all.run(pipeline, dataset)
+
+# Wrap for sklearn compatibility
+pipe = NIRSPipeline.from_result(result)
+
+# Use with SHAP
+explainer = shap.Explainer(pipe.predict, X_background)
+shap_values = explainer(X_test)
+shap.summary_plot(shap_values)
+```
+
+---
+
+## Public API (v0.9.0+)
+
+The following entry points and result objects are **stable contracts** — their signatures and return types are guaranteed within the 0.9.x series:
+
+```python
+import nirs4all
+
+result = nirs4all.run(pipeline=[...], dataset="path/to/data", verbose=1)
+preds  = nirs4all.predict("model.n4a", new_data)
+expl   = nirs4all.explain("model.n4a", data)
+result = nirs4all.retrain("model.n4a", new_data, mode="transfer")
+sess   = nirs4all.session(...)
+sess   = nirs4all.load_session(path)
+ds     = nirs4all.generate(n_samples=500, complexity="realistic")
+```
+
+**Result objects**: `RunResult`, `PredictResult`, `ExplainResult` — expose `best_score`, `best_rmse`, `best_r2`, `best_accuracy`, `top(n)`, `export()`, `filter(**kwargs)`, `get_datasets()`, `get_models()`.
+
+---
+
+## Pipeline Syntax
+
+NIRS4ALL uses a declarative syntax for defining pipelines:
+
+```python
+from nirs4all.operators.transforms import SNV, SavitzkyGolay, FirstDerivative
+
+pipeline = [
+    # Preprocessing
+    MinMaxScaler(),
+    SNV(),
+    SavitzkyGolay(window_length=11, polyorder=2),
+
+    # Target scaling
+    {"y_processing": MinMaxScaler()},
+
+    # Cross-validation
+    ShuffleSplit(n_splits=5, test_size=0.2),
+
+    # Models to compare
+    {"model": PLSRegression(n_components=10)},
+    {"model": RandomForestRegressor(n_estimators=100)},
+
+    # Neural network with training parameters
+    {
+        "model": nicon,
+        "name": "NICON-CNN",
+        "train_params": {"epochs": 100, "patience": 20}
+    }
+]
+```
+
+### Advanced Features
+
+```python
+# Feature augmentation - generate preprocessing combinations
+{
+    "feature_augmentation": {
+        "_or_": [SNV, FirstDerivative, SavitzkyGolay],
+        "size": [1, (1, 2)],
+        "count": 5
+    }
+}
+
+# Hyperparameter optimization
+{
+    "model": PLSRegression(),
+    "finetune_params": {
+        "n_trials": 50,
+        "model_params": {"n_components": ("int", 1, 30)}
+    }
+}
+
+# Branching for parallel preprocessing paths
+{
+    "branch": [
+        [SNV(), PLSRegression(n_components=10)],
+        [MSC(), RandomForestRegressor()]
+    ]
+}
+
+# Merge branch outputs (stacking)
+{"merge": "predictions"}
+```
+
+---
+
+## Available Transforms
+
+### NIRS-Specific Preprocessing
+
+| Transform | Description |
+|-----------|-------------|
+| `SNV` / `StandardNormalVariate` | Standard Normal Variate normalization |
+| `RNV` / `RobustStandardNormalVariate` | Robust Normal Variate (outlier-resistant) |
+| `MSC` / `MultiplicativeScatterCorrection` | Multiplicative Scatter Correction |
+| `SavitzkyGolay` | Smoothing and derivative computation |
+| `FirstDerivative` / `SecondDerivative` | Spectral derivatives |
+| `NorrisWilliams` | Gap derivative with segment smoothing |
+| `WaveletDenoise` | Multi-level wavelet denoising with thresholding |
+| `OSC` | Orthogonal Signal Correction (DOSC) |
+| `EPO` | External Parameter Orthogonalization |
+| `Detrend` | Remove linear/polynomial trends |
+| `Gaussian` | Gaussian smoothing |
+| `Haar` | Haar wavelet decomposition |
+
+### Signal Processing
+
+| Transform | Description |
+|-----------|-------------|
+| `Baseline` | Baseline correction (ALS, AirPLS, ArPLS, IModPoly, SNIP, etc.) |
+| `ReflectanceToAbsorbance` | Convert R to A using Beer-Lambert |
+| `ToAbsorbance` / `FromAbsorbance` | Signal type conversion |
+| `KubelkaMunk` | Kubelka-Munk transform |
+| `Resampler` | Wavelength interpolation |
+| `CARS` / `MCUVE` | Feature selection methods |
+
+### Built-in NIRS Models
+
+| Model | Description |
+|-------|-------------|
+| `AOMPLSRegressor` / `AOMPLSClassifier` | Adaptive Operator-Mixture PLS — auto-selects best preprocessing |
+| `POPPLSRegressor` / `POPPLSClassifier` | Per-Operator-Per-component PLS via PRESS |
+| `PLSDA` | PLS Discriminant Analysis |
+| `OPLS` / `OPLSDA` | Orthogonal PLS |
+| `MBPLS` | Multi-Block PLS |
+| `DiPLS` | Domain-Invariant PLS |
+| `IKPLS` | Improved Kernel PLS |
+| `FCKPLS` | Fractional Convolution Kernel PLS |
+
+### Splitting Methods
+
+| Splitter | Description |
+|----------|-------------|
+| `KennardStoneSplitter` | Kennard-Stone algorithm |
+| `SPXYSplitter` | Sample set Partitioning based on X and Y |
+| `SPXYFold` / `SPXYGFold` | SPXY-based K-Fold cross-validation (with group support) |
+| `KMeansSplitter` | K-means clustering based split |
+| `KBinsStratifiedSplitter` | Binned stratification for continuous targets |
+
+See [Preprocessing Guide](docs/source/user_guide/preprocessing/) for complete reference.
+
+---
+
+## Examples
+
+The `examples/` directory is organized by topic:
+
+### User Examples (`examples/user/`)
+
+| Category | Examples |
+|----------|----------|
+| **Getting Started** | Hello world, basic regression, classification, visualization |
+| **Data Handling** | Multi-source, data loading, metadata |
+| **Preprocessing** | SNV, MSC, derivatives, custom transforms |
+| **Models** | Multi-model, hyperparameter tuning, stacking, PLS variants |
+| **Cross-Validation** | KFold, group splits, nested CV |
+| **Deployment** | Export, prediction, workspace management |
+| **Explainability** | SHAP basics, sklearn integration, feature selection |
+
+### Reference Examples (`examples/reference/`)
+
+Complete syntax reference and advanced pipeline patterns.
+
+Run examples:
+
+```bash
+cd examples
+./run.sh              # Run all
+./run.sh -i 1         # Run by index
+./run.sh -n "U01*"    # Run by pattern
+```
+
+---
+
+## Documentation
+
+| Section | Description |
+|---------|-------------|
+| [**User Guide**](docs/user_guide/) | Preprocessing, API migration, augmentation |
+| [**API Reference**](docs/api/) | Module-level API, sklearn integration, data handling |
+| [**Specifications**](docs/specifications/) | Pipeline syntax, config format, metrics |
+| [**Explanations**](docs/explanations/) | SHAP, resampling, SNV theory |
+
+Common user and developer guide: [documentation](https://GBeurier.github.io/nirs4all/).
+The previous Python guides and detailed references are under [Legacy — Python](https://GBeurier.github.io/nirs4all/legacy/index.html).
+
+---
+
+## Research Applications
+
+NIRS4ALL has been used in published research:
+
+> **Houngbo, M. E., et al. (2024).** *Convolutional neural network allows amylose content prediction in yam (Dioscorea alata L.) flour using near infrared spectroscopy.* **Journal of the Science of Food and Agriculture, 104(8), 4915-4921.** John Wiley & Sons, Ltd.
+
+---
+
+## Citation
+
+If you use NIRS4ALL in your research, please cite:
+
+```bibtex
+@software{beurier2025nirs4all,
+  author = {Gregory Beurier and Denis Cornet and Lauriane Rouan},
+  title = {NIRS4ALL: Open spectroscopy for everyone},
+  url = {https://github.com/GBeurier/nirs4all},
+  version = {1.4.8},
+  year = {2026},
+}
+```
+
+---
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+- [Report bugs](https://github.com/GBeurier/nirs4all/issues)
+- [Request features](https://github.com/GBeurier/nirs4all/issues)
+- [Improve documentation](docs/)
+
+---
+
+## License
+
+`nirs4all` is dual-licensed open-source — **`CeCILL-2.1 OR AGPL-3.0-or-later`** (your choice) —
+with an optional **commercial license** for closed-source / SaaS use. For any commercial use,
+contact <nirs4all-admin@cirad.fr>. See [`LICENSING.md`](LICENSING.md), the full texts bundled
+under [`LICENSES/`](LICENSES/), and third-party attributions in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
+---
+
+## Acknowledgments
+
+- [CIRAD](https://www.cirad.fr/) for supporting this research
+- The open-source scientific Python community
+
+<div align="center">
+<br>
+<strong>Made for the spectroscopy community</strong>
+</div>

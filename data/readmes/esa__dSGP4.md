@@ -1,0 +1,276 @@
+# dSGP4 ($\partial\textrm{SGP4}$)
+[![build](https://github.com/esa/dSGP4/actions/workflows/build.yml/badge.svg)](https://github.com/esa/dSGP4/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/esa/dSGP4/graph/badge.svg?token=K3py7YT8UR)](https://codecov.io/gh/esa/dSGP4)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/dsgp4/badges/latest_release_relative_date.svg)](https://anaconda.org/conda-forge/dsgp4)
+[![PyPI downloads](https://img.shields.io/pepy/dt/dsgp4?label=PyPI%20downloads&logo=pypi&logoColor=white)](https://pepy.tech/projects/dsgp4)
+[![conda-forge downloads](https://img.shields.io/conda/dn/conda-forge/dsgp4?label=conda-forge%20downloads&logo=anaconda&logoColor=white)](https://anaconda.org/conda-forge/dsgp4)
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.actaastro.2024.10.063-blue)](https://doi.org/10.1016/j.actaastro.2024.10.063)
+
+Differentiable SGP4 in PyTorch.
+
+<p align="center">
+  <a href="https://github.com/esa/dSGP4">
+    <img src="https://raw.githubusercontent.com/esa/dSGP4/master/doc/_static/logo_dsgp4.png" alt="Logo" width="280">
+  </a>
+</p>
+
+This repository contains the implementation described in:
+
+Acciarini, Baydin, Izzo, *Closing the gap between SGP4 and high-precision propagation via differentiable programming*, Acta Astronautica (2025), [https://doi.org/10.1016/j.actaastro.2024.10.063](https://doi.org/10.1016/j.actaastro.2024.10.063).
+
+## What dSGP4 provides
+
+- A PyTorch implementation of SGP4 with autograd support.
+- Gradients of propagated states with respect to time and TLE-derived parameters.
+- Parsing, writing and conversion of both TLEs and CCSDS OMMs (JSON/XML/KVN/CSV).
+- Single-object and batched propagation APIs.
+- A hybrid model (`mldsgp4`) for learning corrections around SGP4 dynamics.
+
+Primary use cases include state transition matrix estimation, covariance transformation/propagation, gradient-based orbit estimation, and ML-augmented orbit prediction.
+
+## Installation
+
+From PyPI:
+
+```bash
+pip install dsgp4
+```
+
+The plotting helpers (`dsgp4.plot_orbit`, `dsgp4.plot_tles`) need matplotlib, which is an optional extra:
+
+```bash
+pip install dsgp4[plot]
+```
+
+From conda-forge:
+
+```bash
+conda install conda-forge::dsgp4
+# or
+mamba install dsgp4
+```
+
+From source:
+
+```bash
+git clone https://github.com/esa/dSGP4.git
+cd dSGP4
+pip install -e .
+```
+
+## Quick start
+
+### 1. Parse a TLE and propagate
+
+```python
+import torch
+import dsgp4
+
+tle = dsgp4.TLE([
+    "1 25544U 98067A   24060.50000000  .00016717  00000-0  30134-3 0  9990",
+    "2 25544  51.6403 124.7938 0005102 220.2782 248.4427 15.50010353440289",
+])
+
+# Initialize once, then reuse for multiple propagations.
+dsgp4.initialize_tle(tle, gravity_constant_name="wgs-84")
+
+# tsince is in minutes from TLE epoch.
+tsince = torch.tensor([0.0, 10.0, 20.0])
+state = dsgp4.propagate(tle, tsince)
+
+# state shape: (N, 2, 3) when tsince has N elements
+# state[:, 0, :] -> position [km], state[:, 1, :] -> velocity [km/s]
+print(state.shape)
+```
+
+### 2. Parse an OMM and propagate
+
+Space-Track distributes the same SGP4 mean elements in the CCSDS OMM (Orbit Mean-Elements
+Message) format, which dSGP4 reads in all its four serializations (JSON, XML, KVN and CSV):
+
+```python
+import torch
+import dsgp4
+
+omm = dsgp4.OMM({
+    "OBJECT_NAME": "ISS (ZARYA)",
+    "OBJECT_ID": "1998-067A",
+    "EPOCH": "2024-02-29T12:00:00.000000",
+    "MEAN_MOTION": "15.50010353",
+    "ECCENTRICITY": "0.0005102",
+    "INCLINATION": "51.6403",
+    "RA_OF_ASC_NODE": "124.7938",
+    "ARG_OF_PERICENTER": "220.2782",
+    "MEAN_ANOMALY": "248.4427",
+    "NORAD_CAT_ID": "25544",
+    "BSTAR": "0.00030134",
+    "MEAN_MOTION_DOT": "0.00016717",
+    "MEAN_MOTION_DDOT": "0",
+})
+
+# OMM objects are used exactly like TLE ones:
+dsgp4.initialize_tle(omm)
+state = dsgp4.propagate(omm, torch.tensor([0.0, 10.0]))
+
+# whole files (one message or many) are read with:
+omms = dsgp4.omm.load("gp.json")
+
+# and the two formats convert into each other:
+tle = omm.to_tle()
+omm = tle.to_omm()
+```
+
+Unlike a TLE, an OMM is not constrained by two fixed-width lines: objects whose catalog number
+is above 339999 (i.e. beyond what the Alpha-5 convention can encode) can only be represented
+this way, and `to_tle()` raises a `ValueError` for them.
+
+### 3. Differentiate through propagation
+
+```python
+import torch
+import dsgp4
+
+tle = dsgp4.TLE([
+    "1 25544U 98067A   24060.50000000  .00016717  00000-0  30134-3 0  9990",
+    "2 25544  51.6403 124.7938 0005102 220.2782 248.4427 15.50010353440289",
+])
+
+time_min = torch.tensor(15.0, requires_grad=True)
+state = dsgp4.propagate(tle, time_min, initialized=False)
+
+# Example scalar objective: x-position at time_min.
+loss = state[0, 0]
+loss.backward()
+print(time_min.grad)
+```
+
+### 4. Batched propagation
+
+```python
+import torch
+import dsgp4
+
+tles = [
+    dsgp4.TLE([
+        "1 25544U 98067A   24060.50000000  .00016717  00000-0  30134-3 0  9990",
+        "2 25544  51.6403 124.7938 0005102 220.2782 248.4427 15.50010353440289",
+    ]),
+    dsgp4.TLE([
+        "1 40967U 15058A   24060.50000000  .00000033  00000-0  00000+0 0  9992",
+        "2 40967   0.0187  89.2881 0002035  82.1068 220.3980  1.00270014 30754",
+    ]),
+]
+
+times = torch.tensor([5.0, 30.0])
+states = dsgp4.propagate_batch(tles, times, initialized=False)
+print(states.shape)  # (2, 2, 3)
+```
+
+## Technical notes and limitations
+
+- Time input (`tsince`) is in minutes from the TLE epoch.
+- Output units are km (position) and km/s (velocity).
+- Supported gravity models: `wgs-72`, `wgs-84`, `wgs-72old`.
+- Deep-space propagation is supported.
+- Default torch dtype is set to `float64` when importing `dsgp4`. Setting a different default afterwards
+  (e.g. `torch.set_default_dtype(torch.float32)`) is supported end to end: element sets, initialization and
+  propagation then all use that dtype (at the corresponding cost in accuracy).
+
+## MCP server (LLM/agent integration, experimental)
+
+dSGP4 ships an optional [Model Context Protocol](https://modelcontextprotocol.io) server that exposes the library to
+LLM clients and agents (Claude Desktop, Claude Code, IDEs, ...) as tools, resources and prompts.
+
+> **Note:** this layer is experimental. The library functionality behind it is stable, but the MCP Python SDK is
+> still evolving quickly, so the server surface (tool names, output fields) may be adjusted in future releases.
+
+Install the extra (requires Python >= 3.10) and run it:
+
+```bash
+pip install dsgp4[mcp]
+dsgp4-mcp                        # stdio transport, all tool domains
+dsgp4-mcp --domains tle,propagation
+dsgp4-mcp --transport streamable-http --port 8000
+```
+
+For a Claude Desktop / Claude Code style client configuration:
+
+```json
+{
+  "mcpServers": {
+    "dsgp4": {
+      "command": "dsgp4-mcp"
+    }
+  }
+}
+```
+
+The tools are organized in six domains, each selectable via `--domains`:
+
+- `tle`: parse, describe, validate, build and convert element sets (TLE and CCSDS OMM formats);
+- `propagation`: dSGP4 propagation (single and batched), Cartesian-to-Keplerian and time conversions;
+- `gradients`: autodiff Jacobians of the state w.r.t. the TLE parameters and time, covariance transformations;
+- `estimation`: differentiable Newton-Raphson TLE determination (re-epoch a TLE, fit a TLE to a state);
+- `ml`: forecasts with trained ML-dSGP4 models;
+- `plot`: rendered PNG orbit and element-distribution plots.
+
+Reference resources (`dsgp4://reference/...`, e.g. the TLE format, the differentiable SGP4 parameters and their
+units, example element sets) and workflow prompts (orbit characterization, orbit comparison, uncertainty analysis,
+TLE determination, ML-dSGP4 training) are always available. The server can also be created programmatically with
+`dsgp4.mcp.create_server()`.
+
+See the [MCP page of the documentation](https://esa.github.io/dSGP4/mcp.html) for how to connect the server to
+Claude Desktop, Claude Code and other MCP clients, the full tool listing, and the HTTP transport.
+
+## Development
+
+Run tests:
+
+```bash
+pytest -q
+```
+
+## Documentation and notebooks
+
+- Full docs: [https://esa.github.io/dSGP4](https://esa.github.io/dSGP4)
+- Tutorials and examples are in `doc/notebooks/`.
+
+## Citation
+
+If you use `dsgp4`, please cite:
+
+```bibtex
+@article{acciarini2024closing,
+  title = {Closing the gap between SGP4 and high-precision propagation via differentiable programming},
+  journal = {Acta Astronautica},
+  volume = {226},
+  pages = {694-701},
+  year = {2025},
+  issn = {0094-5765},
+  doi = {https://doi.org/10.1016/j.actaastro.2024.10.063},
+  url = {https://www.sciencedirect.com/science/article/pii/S0094576524006374},
+  author = {Giacomo Acciarini and Atılım Güneş Baydin and Dario Izzo},
+  keywords = {SGP4, Orbital propagation, Differentiable programming, Machine learning, Spacecraft collision avoidance, Kessler, Kessler syndrome, AI for space, Applied machine learning for space}
+}
+```
+
+## Authors
+
+- [Giacomo Acciarini](https://www.esa.int/gsp/ACT/team/giacomo_acciarini/)
+- [Atılım Güneş Baydin](http://gbaydin.github.io/)
+- [Dario Izzo](https://www.esa.int/gsp/ACT/team/dario_izzo/)
+
+The project originated from work at the [University of Oxford AI4Science Lab](https://oxai4science.github.io/).
+
+## Acknowledgements
+
+We thank Dr. T.S. Kelso for support and validation guidance against the official Space-Track SGP4 release:
+[https://www.space-track.org/documentation#/sgp4](https://www.space-track.org/documentation#/sgp4).
+
+## License
+
+dSGP4 is distributed under GNU GPL v3. Contact the authors for alternative licensing options.
+
+## Contact
+
+- giacomo.acciarini@gmail.com

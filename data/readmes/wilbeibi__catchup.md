@@ -1,0 +1,121 @@
+<h1 align="center">CatchUp — coding-agent context handoff</h1>
+
+<div align="center">
+
+### Session handoff for AI coding agents: resume your work in another agent
+
+<img src="assets/passing-coding-banner.png" alt="Coding agents pass a session transcript through a handoff machine" width="800">
+
+</div>
+
+`catchup` is a local-first CLI that hands off session context between AI coding agents. It reads a local session into clean Markdown, and `catchup fork` resumes the work in the same agent or a different one: hand a Claude Code session to Codex, a Cursor session to OpenCode, and so on.
+
+Reach for it whenever you don't want to explain the whole job again: an agent hits its usage limit, you switch tools mid-task, you pick up older work, or you want a clean record of what happened.
+
+Works with **Claude Code**, **Codex**, **Copilot CLI**, **Cursor**, **Cline**, **Kimi**, **Antigravity**, **OpenCode**, **Pi Agent**, **ZCode**, **Grok Build**, **Grok Bot**, **DeepSeek Harness**, and **Amp**.
+
+<div align="center">
+
+**Claude Code hits its usage limit. One command hands the session to Codex.**
+
+<img src="assets/handoff.gif" alt="Claude Code hits its 5-hour limit; catchup fork --into codex starts Codex seeded with the Claude session's transcript" width="850">
+
+**For older work, search sessions by keyword and open the matching one.**
+
+<img src="assets/recall.gif" alt="An agent recalls a past session by keyword with catchup -q, then pulls it up by id" width="850">
+
+</div>
+
+## Install
+
+```bash
+# Homebrew
+brew install wilbeibi/tap/catchup
+
+# prebuilt binary (Linux/macOS, no Go needed)
+curl -fsSL https://catchup.pages.dev/install.sh | sh
+
+# or with Go
+go install github.com/wilbeibi/catchup@latest
+
+catchup install-skill          # optional: install the agent skill
+catchup install-skill <agent>  # ...or for one agent only
+```
+
+Windows binaries are on the [releases page](https://github.com/wilbeibi/catchup/releases).
+
+Restart the agent, then ask it to catch up on the last session.
+
+For advance notice before quota handoffs, enable [quota visibility](recipes/quota-visibility.md): statusline display, plus an optional Codex turn-end reminder.
+
+I use `catchup` with [herdr](https://herdr.dev) day to day. The [wilbeibi/herdr-catchup](https://github.com/wilbeibi/herdr-catchup) plugin adds pane actions for summary, fork, and handoff:
+
+```bash
+herdr plugin install wilbeibi/herdr-catchup
+```
+
+## Usage
+
+Agents: `claude` · `codex` · `copilot` · `cursor` · `cline` · `kimi` · `agy` (Antigravity) · `opencode` · `pi-agent` · `zcode` · `deepseek` (dsh) · `grok` · `grokbot` · `amp`
+
+`cursor` reads CLI and desktop IDE history. IDE IDs use `ide:<id>` and retain mid-turn user messages and failed commands from the desktop database. Compaction boundaries and API stop events are unavailable. Continue in Cursor IDE, or hand off with `catchup fork cursor --id ide:<id> --into codex`.
+
+`catchup grokbot --all-dirs` reads the active account's Grok Bot desktop cache; `grok` remains Grok Build. Bot chats have no local project directory. The cache can omit older messages, tool failures and compaction history; warnings describe these limits. Use `catchup fork grokbot --all-dirs --into codex` for a handoff. Native launch and local skill installation are unavailable.
+
+Omit `<agent>` and catchup uses whichever agent has the newest session in this directory. Inside a live session, that's usually the session you're in.
+
+**For you:** run in your terminal to re-enter a session:
+
+```bash
+catchup --all-dirs -q "cache"     # search across projects and agents
+catchup --list                   # where was I: recent sessions, every agent
+catchup fork                     # fork the newest session across agents
+catchup fork <agent>             # fork that agent's newest session
+catchup fork codex --into claude # continue a Codex session in Claude
+catchup fork claude --into claude --since-compact
+                                 # restart the same agent clean, keeping the work
+```
+
+**For agents:** run inside a session to read prior work. `--agent` is the detailed
+form, the same transcript plus the tool calls that failed:
+
+```bash
+catchup <agent> --agent --since-compact  # another agent's latest, since compaction
+catchup --agent --since-compact          # this session's context after a compaction
+catchup <agent> --agent --last 4         # read last 4 exchanges
+catchup <agent>/3 --agent                # read 3rd newest session
+catchup <agent> --id <id> --agent        # read exact session
+catchup <agent> --list                   # list recent sessions
+catchup <agent> -q "auth"                # search sessions
+catchup <agent>/3 -q "auth"              # read only its auth exchanges
+
+catchup <agent> --json                   # render JSON; also --html
+```
+
+Use `fork` to continue with the same agent and keep native session state. Use `fork --into` to start another agent with the transcript, or the same agent with `--last`/`--since-compact`, which restarts it clean on a trimmed transcript when the context is spent but the work isn't. Use read commands when you want old work in a clean context.
+
+Every supported agent can supply a handoff. Amp, Kimi, ZCode, and DeepSeek Harness cannot be launched as interactive `--into` targets; save the transcript and open it in those tools instead.
+
+Use `--all-dirs` again when selecting a search result by rank, or select its stable ID with `--id`.
+Listings show each session's directory and recorded parent or fork relationship.
+Codex native titles are searchable, including renamed titles. A title-only match opens the whole conversation.
+
+Amp reads local JSON caches in `$XDG_DATA_HOME/amp/threads` (default `~/.local/share/amp/threads`).
+Set `AMP_DATA_HOME` to override the Amp data directory. Cloud-only threads are unavailable until cached locally.
+Amp tool results and reasoning are omitted. Native Amp launch and resume are unsupported.
+
+## Boundaries
+
+- One agent at a time. It does not merge histories.
+- Human Markdown and HTML contain the conversation only.
+- `--agent`, `--json`, and `fork --into` also retain tool calls the source log marked failed. Successful tool activity and reasoning traces remain stripped.
+- Read-only, except `fork`.
+- Same-agent `fork` uses the agent's native resume path, so it keeps real session state.
+- Same-agent `fork --into` is the opposite trade: native state is dropped for a clean context.
+- Cross-agent `fork --into` seeds the new agent with a transcript, not native state.
+- `fork` returns the launched agent's exit status, so shell scripts and CI can handle its failure normally.
+- On Windows, `fork --into` passes the transcript in a content-addressed file under `.catchup/`, because the command line there truncates multi-line prompts. Identical transcripts share one file; files remain for native resumes and can be removed when no launched session needs them.
+
+## License
+
+MIT

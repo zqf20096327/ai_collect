@@ -1,0 +1,46 @@
+<p align="right">
+  <strong>English</strong> | <a href="README_ZH.md">简体中文</a>
+</p>
+
+<p align="center">
+  <img src="assets/icon/typex.svg" width="112" alt="Typex app icon" />
+</p>
+
+<h1 align="center">Typex</h1>
+
+<p align="center">
+  <strong>Speak. It types.</strong>
+</p>
+
+## About
+
+Typex is an open-source, desktop AI voice input tool. Hold a shortcut and speak — Typex types the cleaned-up text directly into whatever app you're using.
+
+## Features
+
+- **Native-grade performance**: Built on Tauri 2 and Rust. Recording, global shortcuts, provider calls, local inference, and text injection all run on the Rust side, keeping Typex light and fast.
+- **Speak anywhere**: Hold the global shortcut and talk naturally in any app — Typex inserts the polished text right at your cursor. It strips filler words, fixes punctuation, and tracks your intent even if you change your mind mid-sentence.
+- **Speech translation**: Speak in one language, get text in another. Bidirectional translation makes multilingual workflows (like English/Chinese) effortless.
+- **Context-aware voice assistant**: Select some text and dictate an instruction — rewrite, translate, clean up, summarize, or reformat it in place. If your instruction is a question, Typex shows the answer in a read-only popup instead.
+- **BYOK by default**: No Typex account required. Bring your own STT and LLM services — Typex supports OpenAI-compatible APIs, OpenAI Responses, Volcano Engine/Doubao STT, Ollama or self-hosted endpoints, plus built-in presets for common providers.
+- **Local and offline models**: Download models like SenseVoice, Qwen3-ASR, Whisper large-v3, or Qwen GGUF for fully offline STT and local LLM workflows.
+- **Free and open source**: Typex is licensed under GPL-3.0. No mandatory account, no subscription wall.
+- **Privacy-first by design**: Audio, selected text, and generated text are only ever sent to the endpoint you configure — with local models, nothing leaves your machine. Typex has no telemetry.
+
+## Download
+
+Get the latest release from the [GitHub Releases page](https://github.com/typex-ink/Typex/releases).
+
+Windows builds support 64-bit Windows 10 22H2 or later and Windows 11. The NSIS installer uses the WebView2 Evergreen Bootstrapper and may need an internet connection when WebView2 is not already installed. Native AI runtimes, the required VC++ runtime files, and the Vulkan loader are deployed app-locally; no separate developer tools or system-wide VC++/Vulkan runtime installation is required.
+
+Windows release candidates are currently not Authenticode-signed. Windows may therefore show an **Unknown Publisher** or Microsoft Defender SmartScreen warning. Verify the SHA-256 checksum and Tauri updater signature published with the release before choosing **More info > Run anyway**. Managed devices using WDAC, AppLocker, or Smart App Control may block unsigned builds entirely.
+
+macOS builds are signed with Developer ID and notarized by Apple. Open the downloaded `.dmg`, drag **Typex** into **Applications**, and launch it.
+
+## Links
+
+- Website: [typex.ink](https://typex.ink)
+
+## License
+
+Typex is licensed under GPL-3.0. See [LICENSE](LICENSE) for details.

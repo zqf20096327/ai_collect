@@ -1,0 +1,378 @@
+<p align="center">
+  <img src="assets/grandma-mascot.gif" width="280" alt="grandma, knitting your memory threads" />
+</p>
+
+<h1 align="center">grandma</h1>
+<p align="center"><b>A memory layer for Claude Code that learns as you work.</b></p>
+
+<p align="center">
+  <a href="https://github.com/anshulforyou/grandma/actions"><img src="https://github.com/anshulforyou/grandma/actions/workflows/test.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT">
+  <img src="https://img.shields.io/badge/telemetry-none-blueviolet" alt="no telemetry">
+</p>
+
+Your AI forgets everything between sessions. Every morning you re-explain your stack, your conventions, your client, your life. Grandma fixes that. She gives Claude Code a persistent memory that is **yours** (plain markdown in your own git repo), **separated by sweater** (one per part of your life, kept apart), and **learned passively** while you work.
+
+> **A sweater is a context you keep separate memory in** — one company, one client, your
+> job hunt, your writing. Open a sweater and grandma remembers everything about *that* part
+> of your life and nothing from the others. Your projects live inside a sweater.
+
+Grandma does three things a single session never can:
+
+- **Keeps your worlds apart.** Client A's memory never shows up in a client B session — enforced by a test, not by discipline.
+- **Remembers across all of them, forever.** Tell her once, in any session; every future session in that sweater knows.
+- **Analyzes your whole history and acts on it.** She can study weeks of your chats and turn what she finds into memory:
+
+```text
+$ grandma "analyse my last 2 weeks of chats, write how I actually write, and make it part of my identity"
+grandma> read 1,297 of your messages across 19 sessions.
+         ✓ wrote global/style.md (3 registers: how you type, how your work should read, how you write prompts)
+         ✓ updated global/identity.md
+         review it: git -C ~/.grandma diff
+```
+
+Here is the everyday loop. Teach her once, and a brand new session already knows:
+
+```text
+# Monday
+$ grandma acme
+you> we use pnpm here, never yarn. and never push to main directly.
+grandma> ✓ noted (preference) -> acme/facts.md: pnpm only, no direct pushes to main
+         ...continues your actual task...
+
+# Thursday, brand new session
+$ grandma acme
+grandma> ▣ memory: acme loaded · 4 files · ~1.9k tokens
+you> set up the new billing service
+grandma> Scaffolding with pnpm. I'll open a PR rather than pushing to main.
+```
+
+Watch it happen:
+
+<p align="center">
+  <img src="demo/hero.gif" width="830" alt="teach grandma once on Monday, a fresh Thursday session already knows" />
+</p>
+
+## Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/anshulforyou/grandma/master/install.sh | bash
+```
+
+That clones the engine, creates your private memory home, and offers a two-minute interview where grandma learns who you are. Or manually:
+
+```sh
+git clone https://github.com/anshulforyou/grandma && cd grandma && ./bin/grandma init
+```
+
+Requirements: [Claude Code](https://claude.com/claude-code), git, jq, python3. macOS or Linux (Windows via WSL). `grandma doctor` checks everything and tells you how to fix what is missing.
+
+## Update
+
+The engine is a git checkout, so updating is a fast-forward:
+
+```sh
+grandma update          # land on the latest master, then show what changed
+grandma update --force  # same, but stash local engine edits first
+grandma version         # what you are running right now
+```
+
+Update always lands you on `master`, whichever branch the engine checkout is on, and it only ever fast-forwards: no force, no rewritten history. If you have been hacking on the engine, uncommitted changes to tracked files stop it with a list of what it found, and `--force` stashes those for you and prints the command to get them back. Untracked scratch files are left where they are. It also stops rather than guess when the situation is ambiguous: a local `master` with commits of its own, a branch another worktree has checked out, a detached HEAD holding work nothing points at, or an engine directory that turns out to be inside some other git repository.
+
+grandma tracks `master` (a rolling release). It never phones home: instead of checking a server, it prints one quiet line at launch when your engine has gone stale (more than a week since your last `grandma update`), nudging you to run it. Silence that with `GRANDMA_NO_UPDATE_CHECK=1`, or tune the window with `GRANDMA_UPDATE_STALE_DAYS`. Re-running the installer updates in place too.
+
+### Tab completion
+
+Optional, and worth it. With it on, `grandma <TAB>` lists your sweaters, `grandma per<TAB>` completes the one you mean, and `grandma acme <TAB>` lists the projects under acme. Add one line to your shell rc:
+
+```sh
+# bash: add to ~/.bashrc
+eval "$(grandma completions bash)"
+
+# zsh: add to ~/.zshrc, below an existing `autoload -Uz compinit && compinit`
+eval "$(grandma completions zsh)"
+
+# fish: add to ~/.config/fish/config.fish
+grandma completions fish | source
+# (or persist it once: grandma completions fish > ~/.config/fish/completions/grandma.fish)
+```
+
+Start a new shell and press TAB after `grandma`. Grandma does not touch your rc file for you, so turning this on stays your call.
+
+### Search your memory
+
+Sometimes you just want to know what she remembers, without starting a session:
+
+```text
+$ grandma search pnpm
+global/preferences.md:9:- pnpm only, never yarn
+acme/facts.md:4:- pnpm workspaces, one lockfile at the root
+  2 match(es) in 2 file(s)
+
+$ grandma search acme migrations       # scoped to one sweater
+acme/facts.md:6:- Postgres, migrations via atlas only
+  1 match(es) in 1 file(s) · sweater acme
+```
+
+Read-only, and it never starts Claude. Output is `file:line:text`, so it pipes like grep.
+The scoped form searches that sweater alone (not global), so a hit always tells you which
+sweater owns the memory. Matching is a case-insensitive literal string — ripgrep when you
+have it, grep otherwise, and both are made to agree. Exit codes follow grep: `0` matches,
+`1` no matches, `2` bad usage. Pending proposals and watch scratch are not searched; they
+are not memory until you accept them.
+
+## How it works
+
+Three layers of memory, loaded in the right amounts at the right times:
+
+```text
+global/             who you are, how you like to work        always loaded
+<sweater>/            one folder per context: a job, a client, loaded for that sweater only
+                    a side project, your job hunt
+project CLAUDE.md   deep per-project instructions            auto-loaded in that folder
+```
+
+- `grandma acme` assembles global + acme memory and launches Claude Code with it.
+- `grandma acme billing-api` also drops you into that project so its CLAUDE.md rides along.
+- `grandma` alone shows a picker, including "describe a new sweater" where you explain a new context in plain words and grandma scaffolds it.
+
+### Connections, bound to one sweater
+
+A sweater can own its MCP servers, and they reach every project in that sweater and no other sweater. Put a Notion workspace on `acme` and it is there in every acme project and in none of your others. Two sweaters can hold two different Notion workspaces, or two different mail accounts, without either one seeing the other.
+
+Anything a sweater does not bind still comes from your account's own connectors, the ones you connected in Claude. So `acme` can bind its own Notion and keep getting Gmail and Drive from your account without setting them up again. When a bound server and a connector point at the same service, the CLI drops the connector and the sweater's own copy wins.
+
+```sh
+grandma mcp add acme notion https://mcp.notion.com/mcp   # this sweater only
+grandma mcp add global gmail https://mail.example/mcp    # every sweater
+grandma mcp list acme                                    # what an acme session gets
+grandma mcp remove acme notion
+grandma mcp strict acme on                               # only acme's own servers, no connectors
+```
+
+Then `grandma acme` and sign in once with `/mcp` inside the session.
+
+Most providers handle that sign-in themselves, and those just work: bind, launch, pick your account.
+
+A few need credentials of your own, and Google is one. Bind it the same way and grandma walks the rest:
+
+```sh
+grandma mcp add acme gmail https://gmailmcp.googleapis.com/mcp/v1
+```
+
+It opens Google's credentials page, tells you which client type to pick and which audience setting matters, takes the client ID and the secret, and does the deposit itself. grandma keeps no copy of the secret, and the deposit leaves nothing registered that another sweater would load. After that, `grandma acme` and `/mcp` signs in normally and stays signed in. Pass `--client-id` if you already have one and it skips straight to the secret.
+
+Google is not the only provider that refuses to register the CLI itself. Slack's hosted server does the same, and others will. grandma only walks you through Google today; for the rest, make a client with the provider and pass `--client-id`, or authenticate with a token instead and pass it as an environment reference:
+
+```sh
+grandma mcp add acme slack https://mcp.slack.com/mcp --header 'Authorization: Bearer $SLACK_TOKEN'
+```
+
+grandma stores the reference, never the token.
+
+Credentials for those come from the provider. For Google that means an OAuth client of your own, and if the consent screen offers Internal for your own Workspace domain, take it: nothing to verify and it lasts, though an Internal client only admits accounts on that one domain, so a second domain needs its own client bound to its own sweater.
+
+Google gates its hosted MCP servers on the Cloud project behind that client, and sign-in succeeds whether or not the gates are open, so the failure shows up later as "tools fetch failed". The project needs the Gmail API, the separate Gmail MCP API (`gmailmcp.googleapis.com`), and enrollment in the Google Workspace Developer Preview Program, which Google approves on its own schedule. Drive is the same with the Drive API and `drivemcp.googleapis.com`. If you only need one Google account, connecting Gmail and Drive in Claude and leaving them unbound here is much less work.
+
+Without strict, a server you configured some other way (in the CLI's user config, in its entry for the project folder, or in the folder's `.mcp.json`) also loads. If one of those points at the same service as a server the sweater binds, both would load with two different logins, so grandma names it at launch and says where it lives. A strict sweater runs with the CLI's own `--strict-mcp-config`: it sees exactly its own servers plus global ones and ignores every other source, connectors included. Use it for a sweater that must never touch anything else, a client's workspace for instance.
+
+Anything you want everywhere goes in `global/mcp.json`. A sweater that binds nothing passes no flags at all, so nothing changes until you use this. Turn it off for one run with `GRANDMA_NO_MCP=1`.
+
+Credentials are never written into these files. An OAuth server needs only its address, and the login lives in the CLI's own credential store outside your memory repo. A server that needs a key reads it from the environment: pass `--header 'Authorization: Bearer $MY_TOKEN'` and grandma stores the reference. Hand it the token itself and it refuses, because your memory home is a git repo you may push.
+
+grandma hands the assembled memory to the CLI as a file rather than on the command line, because a single command-line argument is capped at 128 KB on Linux and the whole command line at about a megabyte on macOS, and a memory home can outgrow either. On a CLI too old to take a file it falls back to the command line, checks the size first, and explains what to shrink instead of leaving you with the shell's `Argument list too long`. Force that older path with `GRANDMA_NO_PROMPT_FILE=1`, cap the one-off capability check with `GRANDMA_PROBE_TIMEOUT` (5 seconds by default), and silence the warning about a mis-tiered log with `GRANDMA_NO_SIZE_WARN=1`.
+
+Memory lives in `GRANDMA_HOME` (default `~/.grandma`), a git repo that belongs to you. The engine never stores your data next to its own code.
+
+Inside a sweater there are two tiers, and the difference matters:
+
+```text
+<sweater>/facts.md          every .md at the sweater root      loaded EVERY session
+<sweater>/projects.md       small, curated, updated in place
+<sweater>/decisions.md      the exception: on demand only      loaded with --full
+<sweater>/log/<date>.md     dated, append-only, rotates        loaded with --full (newest only)
+```
+
+Anything that grows belongs in `log/`. Put an append-only file at the sweater root and it rides in every session from then on, which is how a memory home quietly becomes too large to load. If you have a flat `log.md`, move it: `mkdir -p acme/log && mv acme/log.md acme/log/2026-01-31.md`.
+
+### She learns while you work
+
+During a session, when something worth keeping comes up (a preference, a correction, a fact that changed, a lesson), grandma writes it to the right memory file and tells you in one line:
+
+```text
+✓ noted (correction) -> global/preferences.md: never auto-commit, review diffs first
+```
+
+Writes land as uncommitted diffs in your memory repo. `git diff` is your review queue. Nothing is committed behind your back.
+
+### She survives the context window
+
+Long sessions hit Claude Code's compaction, which normally drops the instructions grandma injected at launch. Two hooks cover this. The moment compaction happens, grandma re-injects your memory, so hour six behaves like minute one. And just before compaction, it checkpoints the working state of the current task (what you decided, what is done, what is next) and folds that back in too, so the session keeps the thread of its own work and not just your standing preferences. When you exit, grandma looks over the session right then and shows you what she noted, the live diffs plus a drafted proposal, and asks whether to review now or leave it. Nothing is applied without you. (Sessions you did not start with grandma get the same distill quietly in the background, surfaced at your next launch.)
+
+### She watches for your blind spots
+
+```sh
+grandma watch start "why are my sessions getting longer?" --weeks 2
+```
+
+For two weeks grandma measures every session (duration, turns, tokens, compactions, tool calls) and reads the substantial ones. When the window closes you get a notification and a grounded report: the patterns, the numbers, what to change. It found real bugs in its own development. It will find your habits too.
+
+## Day to day
+
+Eight recipes with real transcripts in [docs/use-cases.md](docs/use-cases.md):
+
+1. Stop re-explaining your stack every session
+2. The correction that sticks forever
+3. Client A and client B, with contexts that cannot bleed
+4. Onboard a new project in five minutes
+5. Survive a marathon session
+6. End the day, review what she learned
+7. Find out why your sessions drag
+8. Grandma is not just for work
+
+## Her voice: grandma-yawn
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/anshulforyou/grandma-yawn/main/assets/grandma-yawn.gif" width="420" alt="grandma knitting your voice into text" />
+</p>
+
+[grandma-yawn](https://github.com/anshulforyou/grandma-yawn) is a separate macOS tool: hold Fn, talk, and your words are typed wherever your cursor is. Point it at your grandma home and it uses what she knows:
+
+- **Meetings land in the right sweater.** Transcripts go to that sweater's `meetings/` folder with a memory proposal for `grandma review`.
+- **Names come out right.** The people and projects in your memory are spelled the way you spell them.
+- **Ask about your screen.** Hold Fn+Control and ask "reply to this email" or "where's the fund raise at". She answers with a compact profile of you and the memory of whatever sweater or project you name, routed the way grandma routes.
+
+It reads memory the way grandma does, root memory files only, never `secrets/`. Unlike grandma, those features send the memory they use to Anthropic's API, so they are off until you turn them on.
+
+## Why files, why git
+
+|  | grandma | one big CLAUDE.md | hosted AI memory | vector memory stores |
+|---|---|---|---|---|
+| Your data lives | your disk, your git repo | your repo | their servers | a database |
+| Sweater isolation | hard guarantee, tested | one file for everything | opaque | query-dependent |
+| Review changes | `git diff` | manual | no | no |
+| Learns passively | yes | no | sometimes | app-dependent |
+| Survives compaction | yes, self-heals | partially | n/a | n/a |
+| Telemetry | none | none | yes | varies |
+
+## Trust
+
+- **16 tested invariants** guard the core promise: loading sweater X injects exactly global + X and nothing else, only a real sweater can be loaded at all, the engine contains no sweater jargon and no personal data, no secrets in memory, hooks cannot recurse or run away, and a shared memory cannot leave without being stripped and shown to you. The suite gates every commit and runs in CI on macOS and Linux.
+- **No telemetry, no server, no accounts.** Your memory never leaves your machine.
+- Failure modes are documented, not hidden: [docs/architecture.md](docs/architecture.md) includes the war stories, like the day a hook recursion produced 4,718 files before the circuit breaker existed.
+
+## Commands
+
+```text
+grandma                        pick a sweater, or describe a new one
+grandma <sweater> [project]      launch a remembered session
+grandma init | doctor          setup and health checks
+grandma save <sweater> [project] distill a finished session into memory
+grandma review [sweater]         review what background distills proposed
+grandma search [sweater] <query> grep across your memory
+grandma status                   one screen for the whole memory home
+grandma ingest [sweater]         catalog an existing folder of projects
+grandma watch ...              analysis campaigns over your sessions
+grandma test [sweater]           verify the integrity invariants
+grandma completions bash|zsh|fish print the shell tab-completion script
+grandma knit share <sweater> <project> --to <who>   share a project's memory
+grandma knit pull                pull a teammate's shared memory in for review
+grandma knit contacts            the people you share with, by name
+grandma knit install-agent       check for shares every 60s (opt-in)
+```
+
+## Known quirks (v0.1)
+
+- **Exit sessions with Ctrl+D**, not `/exit`. Claude Code's `/exit` skips SessionEnd
+  hooks (upstream issue), so the end-of-session distill only runs on Ctrl+D. Manual
+  fallback always works: `grandma save <sweater>`.
+- Sweater names that collide with subcommands (`init`, `save`, `review`, `search`,
+  `status`, `ingest`, `watch`, `knit`, `test`, `doctor`, `completions`, `update`, `version`, `help`) are
+  reserved, as are the folders grandma owns in your memory home (`global`, `proposals`,
+  `watches`, `templates`). Grandma refuses those names when you knit a sweater rather than
+  letting you make one it could never load.
+- macOS is the daily-driven platform. Linux is CI-tested but younger: if something
+  misbehaves, `grandma doctor` first, then an issue with its output.
+
+## Where this is going: remember, watch, knit
+
+Grandma is being built in three phases, and you are looking at the first two.
+
+1. **Remember** (shipped). Scoped memory: who you are, how you work, what each
+   context needs. Loaded every session, learned passively, reviewed via git.
+2. **Watch** (shipped). She analyzes how you actually work: `grandma watch` measures
+   your sessions, reads the substantial ones, and reports the patterns behind your
+   long sessions and wasted tokens.
+3. **Knit** (v1 shipped). The sharing phase. Two people work the same project, and each
+   one builds their own memory of it locally: the sharp edges, the decisions, the things
+   that only bite you once. Knit lets you trade those.
+
+   ```sh
+   grandma knit share home-ops yard --to their-github-handle
+   ```
+
+   That takes your memory of one project, strips the personal scope out of it, prints
+   the exact payload for you to read, and asks before anything moves. Say yes and it
+   lands in a private `grandma-knit-yard` repo under your own GitHub, with your teammate
+   invited to it. GitHub emails them. Their next `grandma` prints one line saying a share
+   is waiting, and `grandma knit pull` accepts the invitation and turns the share into a
+   normal memory proposal, reviewed with `grandma review` like anything else grandma
+   drafts. Think git, but for the context in your heads instead of the code on disk.
+
+   What "personal scope stripped" means, concretely: only that one project's memory
+   travels, never your sweater's memory and never global. Inside the project file, a line
+   goes if it carries your name, an address, something that looks like a credential, a
+   term from your `denylist.txt`, or a `<!-- private -->` marker. Absolute home paths come
+   out as `~`. Anything between `<!-- knit:private -->` and `<!-- /knit:private -->` is
+   dropped whole. You still see the payload before it moves, because a strip you cannot
+   read is a strip you cannot trust.
+
+   Honest about the security level: a share is personal-stripped, non-secret project
+   memory, and the boundary is the private repo's access list. Nothing is encrypted. Do
+   not knit anything you would not paste into that teammate's inbox. Also note the two
+   people on a project repo can see each other's shares of it, which is the point for
+   teammates and the wrong tool for a one-off handover. For that, and for anyone not on
+   GitHub, `--file` writes the same bundle to disk and `grandma knit pull --file` reads
+   it back.
+
+   You do not have to remember anyone's GitHub handle. The first time you share with
+   someone, grandma offers to save them under a name you pick, and after that
+   `--to Priyansh` is enough. `grandma knit contacts` shows the book, which lives with the
+   rest of knit's local scratch and never becomes memory. You can point `--to` at a handle, a
+   saved name, or an email. An email you have saved against a contact resolves instantly; an
+   email grandma has not seen is looked up on GitHub, which only works when that person made
+   their address public on their profile. When it cannot match one, it says so and tells you
+   to add the handle once. The handle is the part an invite actually needs, because GitHub's
+   collaborator API takes a username and has no way to accept an address.
+
+   You find out three ways, and you choose how much to opt into. A line when you next open
+   grandma, a desktop notification when a share turns up (once per share, not once per
+   check), and if you want it immediate, `grandma knit install-agent` checks every 60
+   seconds in the background. That last one is affordable because the check is a conditional
+   request and GitHub does not charge for a "nothing changed" answer, so the quiet case costs
+   nothing. Installing verifies that the job can actually run and tells you if it cannot,
+   rather than claiming success and going silent.
+
+   No grandma server and no grandma account, still. The transport is your own GitHub
+   through the `gh` CLI you already log into. If you have not got it, knit explains why it
+   needs it and offers to install it. The launch check never waits on the network:
+   it prints from a cache that a detached, lock-guarded, time-capped poll refreshes, and a
+   failed call leaves the old cache alone rather than claiming nothing is waiting. Silence
+   it with `GRANDMA_NO_KNIT_CHECK=1`.
+
+   Still open for design, and where contributions land best: merging when the two memories
+   disagree (v1 hands the conflict to you in review rather than resolving it), keeping a
+   share in sync as both sides learn more, and how much of a note's origin should survive
+   the merge. The [knit design discussion](https://github.com/anshulforyou/grandma/discussions/14)
+   is the place for it.
+
+## Roadmap
+
+- **Knit round two: two-way sync, and a real merge when two memories disagree (see above)**
+- Adapters beyond Claude Code (Cursor, Codex CLI, aider)
+- Community sweater templates (share your best sweater setups)
+- Memory rollup (old logs compress instead of growing)
+
+## License
+
+MIT. Built by [@anshulforyou](https://github.com/anshulforyou). Knitted by a grandma who never forgets.

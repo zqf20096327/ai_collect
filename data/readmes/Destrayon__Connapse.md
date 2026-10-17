@@ -1,0 +1,472 @@
+<p align="center">
+  <img src="connapse-logo-v27-teal.svg" alt="Connapse logo" width="375" />
+</p>
+
+<p align="center">
+  <em>Stop losing context between AI sessions. Give your agents persistent, searchable memory.</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10.0-512BD4" alt=".NET"></a>
+  <a href="https://github.com/Destrayon/Connapse/actions"><img src="https://img.shields.io/github/actions/workflow/status/Destrayon/Connapse/ci.yml?branch=main&label=build" alt="Build"></a>
+  <a href="https://github.com/Destrayon/Connapse/actions"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/Destrayon/Connapse/badges/tests.json" alt="Tests"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/Destrayon/Connapse/issues"><img src="https://img.shields.io/github/issues/Destrayon/Connapse" alt="GitHub Issues"></a>
+  <a href="https://github.com/Destrayon/Connapse/stargazers"><img src="https://img.shields.io/github/stars/Destrayon/Connapse?style=social" alt="GitHub Stars"></a>
+  <a href="https://glama.ai/mcp/servers/Destrayon/Connapse"><img src="https://glama.ai/mcp/servers/Destrayon/Connapse/badges/score.svg" alt="Connapse MCP server"></a>
+  <a href="https://github.com/Destrayon/Connapse#-quick-start"><img src="https://img.shields.io/badge/Docker-ready-2496ED?logo=docker" alt="Docker"></a>
+</p>
+
+<p align="center">
+  <img src="docs/demos/hero-upload-search.gif" alt="Connapse demo — upload a PDF, search with hybrid vector and keyword search, get results with source citations in seconds" width="720" />
+</p>
+
+> *Your AI agents forget everything between sessions. Connapse fixes that.*
+
+Every time you start a new conversation, your AI agent starts from zero — no memory of past research, no access to your documents, no accumulated knowledge. Connapse is an open-source knowledge backend that gives agents persistent, searchable memory. Upload documents or point it at your existing Amazon S3 buckets or local filesystems. Agents query and build their own research corpus via 11 MCP tools, REST API, or CLI. Container-isolated, hybrid search (vector + keyword), self-hosted and private. Deploy in 60 seconds with Docker. Built on .NET 10.
+
+<details>
+<summary><strong>🤖 AI Agent Integration</strong> — Claude queries and builds your knowledge base via MCP</summary>
+<br>
+
+<p align="center">
+  <img src="docs/demos/mcp-agent-integration.gif" alt="Claude querying Connapse knowledge base via MCP server — asks about preventing cascading failures in microservices, gets structured answer with circuit breaker pattern details cited from distributed-systems-notes.md" width="720" />
+</p>
+
+> *AI agents query your knowledge base through the MCP server, receiving structured answers with source citations from your documents.*
+
+</details>
+
+<details>
+<summary><strong>🎛️ Your Knowledge, Your Rules</strong> — Runtime configuration without restarting</summary>
+<br>
+
+<p align="center">
+  <img src="docs/demos/settings-providers.gif" alt="Connapse settings panel — switching embedding providers, adjusting chunking parameters, and configuring search settings at runtime without restart" width="720" />
+</p>
+
+> *Switch embedding providers, tune chunking parameters, and configure search — all at runtime, without restarting.*
+
+</details>
+
+---
+
+## 📦 Quick Start
+
+```bash
+git clone https://github.com/Destrayon/Connapse.git && cd Connapse && docker-compose up -d
+# Open http://localhost:5001
+```
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) (for development)
+- (Optional) [Ollama](https://ollama.ai/) for local embeddings
+
+### Run with Docker Compose
+
+```bash
+# Clone the repository
+git clone https://github.com/Destrayon/Connapse.git
+cd Connapse
+
+# Set required auth environment variables (or use a .env file)
+export CONNAPSE_ADMIN_EMAIL=admin@example.com
+export CONNAPSE_ADMIN_PASSWORD=YourSecurePassword123!
+export Identity__Jwt__Secret=$(openssl rand -base64 64)
+
+# Start all services (PostgreSQL, MinIO, Web App)
+docker-compose up -d
+
+# Open http://localhost:5001 — log in with the admin credentials above
+```
+
+The first run will:
+1. Pull Docker images (~2-5 minutes)
+2. Initialize PostgreSQL with pgvector extension and run EF Core migrations
+3. Create MinIO buckets
+4. Seed the admin account (from env vars) and start the web application
+
+### Development Setup
+
+```bash
+# Start infrastructure only (database + object storage)
+docker-compose up -d postgres minio
+
+# Run the web app locally
+dotnet run --project src/Connapse.Web
+
+# Run all tests
+dotnet test
+
+# Run just unit tests
+dotnet test --filter "Category=Unit"
+```
+
+### Command-line client
+
+The `connapse` CLI is published separately at [Destrayon/connapse-cli](https://github.com/Destrayon/connapse-cli).
+
+Install:
+
+```bash
+dotnet tool install -g Connapse.CLI
+# or: download a binary from https://github.com/Destrayon/connapse-cli/releases/latest
+```
+
+Get started:
+
+```bash
+connapse auth login --server https://localhost:5001
+connapse --help
+```
+
+### Using with Claude (MCP)
+
+Connapse includes a Model Context Protocol (MCP) server for integration with Claude and any MCP client.
+
+**Setup**: Create an agent API key via the web UI (Settings → Agent API Keys), then add the config snippet for your client:
+
+<details>
+<summary><strong>Claude Code (CLI)</strong></summary>
+
+```bash
+claude mcp add connapse --transport streamable-http http://localhost:5001/mcp --header "X-Agent-Api-Key: YOUR_API_KEY"
+```
+
+</details>
+
+<details>
+<summary><strong>Claude Desktop</strong></summary>
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "connapse": {
+      "transport": "streamable-http",
+      "url": "http://localhost:5001/mcp",
+      "headers": {
+        "X-Agent-Api-Key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>VS Code / Cursor</strong></summary>
+
+Add to your `.vscode/settings.json` (VS Code) or Cursor MCP config:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "connapse": {
+        "transport": "streamable-http",
+        "url": "http://localhost:5001/mcp",
+        "headers": {
+          "X-Agent-Api-Key": "${input:connapseApiKey}"
+        }
+      }
+    }
+  }
+}
+```
+
+VS Code will prompt for the API key on first use.
+
+</details>
+
+The MCP server exposes:
+
+| Tool | Description |
+|------|-------------|
+| `container_create` | Create a new container for organizing files |
+| `container_list` | List all containers with document counts |
+| `container_delete` | Delete a container |
+| `container_stats` | Get container statistics (documents, chunks, storage, embeddings) |
+| `upload_file` | Upload a single file to a container |
+| `bulk_upload` | Upload up to 100 files in one operation |
+| `list_files` | List files and folders at a path |
+| `get_document` | Retrieve full parsed text content of a document |
+| `delete_file` | Delete a single file from a container |
+| `bulk_delete` | Delete up to 100 files in one operation |
+| `search_knowledge` | Semantic, keyword, or hybrid search within a container |
+
+> **Full reference:** See [docs/mcp-tools.md](docs/mcp-tools.md) for parameter tables, return formats, error cases, and usage examples.
+
+> **Containers and sources**: `container_list` tags each scope `managed` or `source`. A **source** is an external system Connapse mirrors read-only — searchable, but never browsable and never writable. `list_files` and every write tool resolve containers only; pass a source id and they report it as not found. See [docs/connectors.md](docs/connectors.md).
+
+<details>
+<summary><strong>Example prompts</strong> — what to ask your agent</summary>
+
+- *"Create a container called 'project-research' for my architecture notes"*
+- *"Upload all the PDFs in my downloads folder to the project-research container"*
+- *"Search my project-research container for information about rate limiting strategies"*
+- *"List all files in the /notes/ folder of my project-research container"*
+- *"Get the full text of distributed-systems-notes.md from project-research"*
+- *"Delete meeting-2026-03-14.md from project-research and upload this updated version"*
+- *"Delete all files in the /drafts/ folder of project-research"*
+- *"How many documents and chunks are in my project-research container?"*
+
+</details>
+
+<details>
+<summary><strong>Troubleshooting</strong></summary>
+
+**Connection refused on localhost:5001** — Docker not running or port conflict. Check `docker compose ps` and `docker compose logs web`.
+
+**401 Unauthorized / API key not working** — Verify the key in Settings > Agent API Keys. Keys are shown once at creation.
+
+**Tools not appearing in Claude** — Restart your MCP client after config changes. Verify endpoint with `curl http://localhost:5001/mcp`.
+
+**Uploads failing or timing out** — Check file type is in the allowlist. Max file size depends on server config.
+
+**Search returns no results** — Documents need time to embed after upload. Check container stats for embedding progress.
+
+</details>
+
+---
+
+## 🚀 Features
+
+- **🗂️ Container-Isolated Knowledge** — Each project gets its own vector index, storage connector, and search configuration. No cross-contamination between projects, teams, or clients.
+- **🔍 Hybrid Search** — Vector similarity + keyword full-text with configurable fusion (convex combination, DBSF, AutoCut). Get results that pure vector search misses.
+- **🧠 Multi-Provider AI** — Swap between Ollama, OpenAI, Azure OpenAI, and Anthropic for both embeddings and LLM — at runtime, per container, without restarting.
+- **🔌 Index Your Existing Storage** — Connect MinIO, local filesystem (live file watching), or Amazon S3 (IAM auth). Your files stay where they are.
+- **🤖 4 Access Surfaces** — Web UI, REST API, CLI (native binaries), and MCP server for Claude. Built for humans, scripts, and AI agents equally.
+- **🔐 Enterprise Auth** — Multi-tier RBAC (Cookie + OAuth 2.1 + PAT + JWT) with AWS identity linking. Per-user filtering of search results by AWS permissions is enforced once identity linking is configured (opt-in; unrestricted until then).
+- **🐳 One-Command Deploy** — Docker Compose with PostgreSQL + pgvector, MinIO, and optional Ollama. Structured audit logging and rate limiting built in.
+
+<details>
+<summary><strong>See all features</strong></summary>
+
+- **📄 Multi-Format Ingestion**: PDF, Office documents, Markdown, plain text — parsed, chunked, and embedded automatically
+- **⚡ Real-Time Processing**: Background ingestion with live progress updates via SignalR
+- **🎛️ Runtime Configuration**: Change chunking strategy, embedding model, and search settings per container without restart
+- **☁️ Cloud Identity Linking**: AWS IAM Identity Center (SAML) identity linking. Per-user AWS permission filtering is enforced once configured (opt-in; unrestricted until then)
+- **👥 Invite-Only Access**: Admin-controlled user registration with four roles (Admin / Editor / Viewer / Agent)
+- **🤖 Agent Management**: Dedicated agent entities with API key lifecycle, scoped permissions, and audit trails
+- **📋 Audit Logging**: Structured audit trail for uploads, deletes, container operations, and auth events
+- **📦 CLI Distribution**: Native self-contained binaries (Windows/Linux/macOS) and .NET global tool via NuGet
+- **🔄 Cross-Model Search**: Switch embedding models mid-project — automatic Semantic→Hybrid fallback for legacy vectors
+
+</details>
+
+---
+
+## 🎯 Who Is Connapse For?
+
+- **AI agent developers** who need a knowledge backend their agents can both query and build — upload research, curate a corpus, and search it via MCP or REST API
+- **.NET / Azure teams** who want a RAG platform that fits their existing stack and cloud identity
+- **Enterprise teams** who need project-isolated knowledge bases with proper RBAC and audit trails
+- **Anyone tired of re-uploading files** — point Connapse at your existing Amazon S3/filesystem storage
+
+<details>
+<summary><strong>⚠️ Security Status (v0.3.x)</strong></summary>
+
+**This project is in active development (v0.3.2) and approaching production-readiness.**
+
+v0.3.x adds cloud connector architecture, multi-provider embeddings and LLM support, cloud identity linking, and rate limiting.
+
+- ✅ **Authentication and authorization** (v0.2.0)
+- ✅ **Role-based access control** (Admin / Editor / Viewer / Agent)
+- ✅ **Audit logging**
+- ✅ **Cloud identity linking** — AWS IAM Identity Center (SAML)
+- ✅ **Per-user search filtering (opt-in)** — enforced once AWS identity linking is configured (AWS S3 Access Grants, fail-closed); unconfigured deployments have no per-user filtering, see [SECURITY.md](SECURITY.md)
+- ✅ **Rate limiting** — built-in ASP.NET Core middleware with per-user and per-IP policies (v0.3.2)
+- ⚠️ **Set a strong `Identity__Jwt__Secret`** in production — see [deployment guide](docs/deployment.md)
+
+See [SECURITY.md](SECURITY.md) for the full security policy.
+
+</details>
+
+---
+
+## 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                         Access Surfaces                              │
+│  Web UI (Blazor)  │  REST API  │  CLI  │  MCP Server                │
+└─────────────┬────────────────────────────────────────────────────────┘
+              │
+┌─────────────▼────────────────────────────────────────────────────────┐
+│                       Core Services Layer                            │
+│  Document Store  │  Vector Store  │  Search  │  Ingestion           │
+└─────────────┬────────────────────────────────────────────────────────┘
+              │
+┌─────────────▼────────────────────────────────────────────────────────┐
+│                        Connectors Layer                              │
+│  MinIO  │  Filesystem  │  Amazon S3  │                               │
+└─────────────┬────────────────────────────────────────────────────────┘
+              │
+┌─────────────▼────────────────────────────────────────────────────────┐
+│                        Infrastructure                                │
+│  PostgreSQL+pgvector  │  MinIO (S3)  │  Ollama (optional)           │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow: Upload → Search
+
+```
+[Upload] → [Parse] → [Chunk] → [Embed] → [Store] → [Searchable]
+              ↓
+         [Metadata]
+              ↓
+        [Document Store]
+```
+
+**Target**: < 30 seconds from upload to searchable.
+
+**Key Technologies**:
+- **Database**: PostgreSQL 17 + pgvector for vector embeddings
+- **Object Storage**: Managed Storage abstraction — MinIO (S3-compatible) by default, overridable per deployment
+- **Backend**: ASP.NET Core 10 Minimal APIs
+- **Frontend**: Blazor Server (interactive mode)
+- **Embeddings**: Ollama (default), OpenAI, Azure OpenAI (configurable)
+- **LLM**: Ollama, OpenAI, Azure OpenAI, Anthropic (configurable)
+- **Search**: Hybrid vector + keyword with convex combination fusion
+- **Connectors**: Managed Storage (MinIO default), Filesystem, Amazon S3
+
+---
+
+## 📚 Documentation
+
+- [Architecture Guide](docs/architecture.md) - System design and component overview
+- [API Reference](docs/api.md) - REST API endpoints and examples
+- [Connectors Guide](docs/connectors.md) - Connector types, configuration, and background sync
+- [AWS Setup](docs/aws-setup.md) - Roles Anywhere access, IAM Identity Center, S3 Access Grants, troubleshooting
+- [Deployment Guide](docs/deployment.md) - Docker and production setup
+- [Security Policy](SECURITY.md) - Security limitations and roadmap
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute
+
+---
+
+## 🗺️ Roadmap
+
+Connapse is pre-1.0. Major design work is tracked in [Discussions](https://github.com/Destrayon/Connapse/discussions).
+
+### v0.1.0 — Foundation (Complete)
+- ✅ Document ingestion pipeline (PDF, Office, Markdown, text)
+- ✅ Hybrid search (vector + keyword with convex combination fusion)
+- ✅ Container-based file browser with folders
+- ✅ Web UI, REST API, CLI, MCP server
+
+### v0.2.0 — Security & Auth (Complete)
+- ✅ Three-tier auth: Cookie + Personal Access Tokens + JWT (HS256)
+- ✅ Role-based access control (Admin / Editor / Viewer / Agent)
+- ✅ Invite-only user registration (admin-controlled)
+- ✅ First-class agent entities with API key lifecycle
+- ✅ Agent management UI + PAT management UI
+- ✅ Audit logging (uploads, deletes, container operations)
+- ✅ CLI auth commands (`auth login`, `auth whoami`, `auth pat`)
+- ✅ GitHub Actions release pipeline (native binaries + NuGet tool)
+- ✅ 256 passing tests (unit + integration)
+
+### v0.3.0 — Connector Architecture (Complete)
+- ✅ 3 connector types: Managed Storage (MinIO default, provider-abstracted), Filesystem (FileSystemWatcher), Amazon S3 (IAM-only)
+- ↩️ Azure Blob Storage connector (managed identity) — shipped in v0.3.0, since removed ([#476](https://github.com/Destrayon/Connapse/issues/476)): it was unverified and torn down for a clean rebuild
+- ✅ Per-container settings overrides (chunking, embedding, search, upload)
+- ↩️ Cloud identity linking: Azure AD (OAuth2+PKCE) — shipped in v0.3.0, since removed ([#476](https://github.com/Destrayon/Connapse/issues/476)) alongside the Azure Blob connector
+- ↩️ AWS IAM Identity Center (device auth flow) — shipped in v0.3.0, since removed ([#435](https://github.com/Destrayon/Connapse/issues/435)): the device flow could not carry a per-user identity through to a token
+- ⚠️ IAM-derived scope enforcement — the v0.3.0 `CloudScopeService` was built but never wired into search ([#422](https://github.com/Destrayon/Connapse/issues/422)) and has since been removed; per-user AWS search filtering was rebuilt on `ISearchScopeResolver` + AWS S3 Access Grants (epic [#436](https://github.com/Destrayon/Connapse/issues/436)) — opt-in, fail-closed once AWS identity linking is configured
+- ✅ Multi-provider embeddings: Ollama, OpenAI, Azure OpenAI
+- ✅ Multi-provider LLM: Ollama, OpenAI, Azure OpenAI, Anthropic
+- ✅ Multi-dimension vector support with partial IVFFlat indexes per model
+- ✅ Cross-model search: automatic Semantic→Hybrid fallback for legacy vectors
+- ✅ Background sync: FileSystemWatcher for local, 5-min polling for cloud containers
+- ✅ Connection testing for all providers (Amazon S3, MinIO, LLM, embeddings)
+- ✅ 457 passing tests (unit + integration)
+
+### v0.3.2 — Hardening & Polish (Complete)
+- ✅ Input validation hardening: filename length, path depth, control characters, search params, agent fields
+- ✅ Security fixes: empty API key auth bypass, path traversal, security headers middleware
+- ✅ Unified upload pipeline (`IUploadService`) shared by API and MCP
+- ✅ File type allowlist for uploads
+- ✅ Rate limiting middleware (per-user and per-IP)
+- ✅ Bulk MCP tools: `bulk_upload` and `bulk_delete`
+- ✅ CLI improvements: `files` commands, `container stats`, `--pre` updates, `--help` flags
+- ✅ Self-hosted fonts (no CDN dependencies)
+- ✅ Docker release package on ghcr.io
+
+### Future
+- **v0.4.0**: Communication connectors (Slack, Discord). (Per-user AWS search permissions — epic [#436](https://github.com/Destrayon/Connapse/issues/436), via IAM Identity Center SAML identity linking, not Cognito — has already shipped.)
+- **v0.5.0**: Knowledge platform connectors (Notion, Confluence, GitHub)
+- **v1.0.0**: Production-ready stable release
+
+---
+
+## ❓ FAQ
+
+**Does Connapse require internet access?** — No. Use Ollama for fully offline embeddings and search.
+
+**How many documents can it handle?** — Thousands per container. Built on PostgreSQL + pgvector.
+
+**Which MCP clients work with Connapse?** — Any client supporting Streamable HTTP transport — Claude Desktop, Claude Code, VS Code, Cursor, and others.
+
+**Is my data private?** — Fully self-hosted. With Ollama, nothing leaves your machine. Cloud providers (OpenAI, Azure) are optional.
+
+**What embedding providers are supported?** — Ollama (local), OpenAI, and Azure OpenAI. Switch at runtime without re-deploying.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Quick contribution checklist**:
+- Fork the repo and create a feature branch
+- Follow code conventions in [CONTRIBUTING.md](CONTRIBUTING.md)
+- Write tests for new features (xUnit + FluentAssertions)
+- Ensure all tests pass: `dotnet test`
+- Update documentation if needed
+- Submit a pull request
+
+**Good first issues**: Check [issues labeled `good-first-issue`](https://github.com/Destrayon/Connapse/labels/good-first-issue)
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for details.
+
+You are free to:
+- ✅ Use commercially
+- ✅ Modify
+- ✅ Distribute
+- ✅ Sublicense
+- ✅ Use privately
+
+The only requirement is to include the copyright notice and license in any substantial portions of the software.
+
+---
+
+## 💬 Support & Community
+
+- 📖 **Documentation**: [docs/](docs/)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Destrayon/Connapse/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/Destrayon/Connapse/discussions)
+- 🔒 **Security Issues**: See [SECURITY.md](SECURITY.md)
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- [.NET](https://dotnet.microsoft.com/) - Application framework
+- [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor) - Web UI
+- [PostgreSQL](https://www.postgresql.org/) + [pgvector](https://github.com/pgvector/pgvector) - Vector database
+- [MinIO](https://min.io/) - S3-compatible object storage
+- [Ollama](https://ollama.ai/) - Local LLM inference
+
+---
+
+**⭐ If you find this project useful, please star the repository to show your support!**

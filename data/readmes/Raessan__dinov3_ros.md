@@ -1,0 +1,119 @@
+# dinov3_ros: DINOv3-based ROS 2 package for vision tasks
+
+This repository provides ROS 2 nodes for performing multiple vision tasks—such as object detection, semantic segmentation, and depth estimation—using Meta’s [DINOv3](https://github.com/facebookresearch/dinov3) as the backbone. A key advantage of this approach is that the DINOv3 backbone features are computed only once (the most computationally demanding step), and these shared features are then reused by lightweight task-specific heads. This design significantly reduces redundant computation and makes multi-task inference more efficient.
+
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Docker](#docker)
+3. [Usage](#usage)
+4. [Tasks](#tasks)
+5. [Demos](#demos)
+6. [License](#license)
+7. [References](#references)
+
+
+## Installation
+
+First, ROS2 Humble should be installed. Follow instructions for [ROS2 Humble installation](https://docs.ros.org/en/humble/Installation.html). Previous versions are not reliable due to the need of recent versions of Python to run DINOv3.
+
+```
+git clone --recurse-submodules https://github.com/Raessan/dinov3_ros.git
+cd dinov3_ros
+pip install -e .
+cd ros2_ws 
+rosdep install --from-paths src --ignore-src -r -y
+colcon build
+. install/setup.bash
+```
+
+The only package that has to be installed separately is pytorch, due to its dependence with the CUDA version. For example:
+
+```
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu129 
+```
+
+Finally, we provide weights for the lightweight heads developed by us, but the DINOv3 backbone weights should be requested and obtained from their [repo](https://github.com/facebookresearch/dinov3). Its default placement is in `dinov3_toolkit/backbone/weights`. The presented heads have been trained using the `vits16plus` model from DINOv3 as a backbone.
+
+## Docker
+
+If running with docker, two steps are needed to work: 
+
+1. First install the [Nvidia Container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) in the host machine.
+
+2. Build the Dockerfile setting any argument, such as the torch index URL. Finally, create the container, with the following lines:
+
+``` 
+docker compose build --build-arg TORCH_INDEX_URL=https://download.pytorch.org/whl/cu129
+docker compose up
+``` 
+
+Any terminal should be opened as `docker exec -it dinov3_ros bash`.
+
+## Usage
+
+Launch the bringup file from the `ros2_ws` folder with the command `ros2 launch bringup dinov3_ros dinov3.launch.py arg1:=value arg2:=value`. The available launch arguments so far are:
+
+- **debug**: Whether to publish debug images that help interpret visually the results of the tasks. For example, overlaid bounding boxes for the task of detection, or colored depth map in the task of depth estimation (default: *true*).
+
+- **perform_{*task*}**: *task* can be any of the developed head (detection, segmentation, depth...) and this variables activates or deactivates the task (default: all *true*).
+
+- **topic_image**: The name of the topic that contains the input image (default: *topic_image*).
+
+- **image_reliability**: The QoS reliability for the ROS2 subscriber. 0 corresponds to `SYSTEM_DEFAULT`, 1 corresponds to `RELIABLE`, and 2 corresponds to `BEST_EFFORT` (default: *2*)
+
+- **params_file**: The path to the config file with required information for the models. This file is by default in `config/params.yaml` and contains important variables such as the `img_size` (default *640x640*, used to train the provided models), the `device` (default *cuda*) and the paths of the backbones and heads, along with variables to create the models or perform inference.
+
+The file `params.yaml` should be changed before launching the bringup file if the variables should be different from the ones provided.
+
+## Tasks
+
+META has only released model heads for the large ViT-7B backbone, so for smaller backbones we trained task-specific heads (each < 5M parameters) in separate repositories to achieve good precision. Our goal was not to beat SOTA models, but to provide a lightweight, plug-and-play toolkit. 
+
+Each task has a `head_{task}` subfolder in `dinov3_toolkit` containing a `model_head.py` and `utils.py` copied from the original repo. The `backbone` folder contains `model_backbone.py`, while `common.py` provides shared utilities. Some tasks also include a `class_names.txt` file listing the classes used for training.
+
+### Object detection
+
+Check the following repo: [object_detection_dinov3](https://github.com/Raessan/object_detection_dinov3)
+
+### Semantic segmentation
+
+Check the following repo: [semantic_segmentation_dinov3](https://github.com/Raessan/semantic_segmentation_dinov3)
+
+### Depth estimation
+
+Check the following repo: [depth_dinov3](https://github.com/Raessan/depth_dinov3)
+
+### Optical flow
+
+Check the following repo: [optical_flow_dinov3](https://github.com/Raessan/optical_flow_dinov3)
+
+## Demo
+
+### Detection, semantic segmentation and depth estimation
+
+<img src="assets/detection_seg_depth.gif" height="800">
+
+### Optical flow
+
+<img src="assets/optical_flow.gif" height="800">
+
+## License
+- Code in this repo: Apache-2.0.
+- DINOv3 submodule: licensed separately by Meta (see its LICENSE).
+- We don't distribute DINO weights. Follow upstream instructions to obtain them.
+
+## References
+
+- [Oriane Siméoni, Huy V. Vo, Maximilian Seitzer, Federico Baldassarre, Maxime Oquab, Cijo Jose, Vasil Khalidov, Marc Szafraniec, Seungeun Yi, Michaël Ramamonjisoa, Francisco Massa, Daniel Haziza, Luca Wehrstedt, Jianyuan Wang, Timothée Darcet, Théo Moutakanni, Leonel Sentana, Claire Roberts, Andrea Vedaldi, Jamie Tolan, John Brandt, Camille Couprie, Julien Mairal, Hervé Jégou, Patrick Labatut, Piotr Bojanowski (2025). Dinov3. *arXiv preprint arXiv:2508.10104.*](https://github.com/facebookresearch/dinov3)
+
+- [González-Santamarta, Miguel Á (2023). yolo_ros](https://github.com/mgonzs13/yolo_ros) (used as reference for some part of the implementation)
+
+- [Escarabajal, Rafael J. (2025). object_detection_dinov3](https://github.com/Raessan/object_detection_dinov3)
+
+- [Escarabajal, Rafael J. (2025). semantic_segmentation_dinov3](https://github.com/Raessan/semantic_segmentation_dinov3)
+
+- [Escarabajal, Rafael J. (2025). optical_flow_dinov3](https://github.com/Raessan/optical_flow_dinov3)
+
+- [Escarabajal, Rafael J. (2025). depth_dinov3](https://github.com/Raessan/depth_dinov3)

@@ -1,0 +1,344 @@
+![banner](figures/banner.jpg)
+
+# A Network Traffic Feature Extraction Tool
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Overview
+
+This tool is engineered for robust and efficient feature extraction, particularly for applications such as network intrusion detection systems, among others. Leveraging Rust language and eBPF, it excels in processing high volumes of network traffic with remarkable speed and throughput. (When your traffic is already captured, don't worry! It also has a build in pcap reader which is also amazingly fast.) With various pre-defined feature sets and the ability to create custom feature sets, RustiFlow offers a versatile solution for network security applications.
+
+<a href="https://github.com/idlab-discover/RustiFlow/actions">![Badge displaying GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/idlab-discover/RustiFlow/rust.yml?logo=github)</a>
+<a href="https://idlab-discover.github.io/RustiFlow"> ![Badge linking to the project documentation website](https://img.shields.io/website?url=https%3A%2F%2Fidlab-discover.github.io%2FRustiFlow&label=Documentation)</a> <a href="https://github.com/idlab-discover/RustiFlow/blob/main/LICENSE"> ![GitHub license](https://img.shields.io/github/license/idlab-discover/RustiFlow) </a>
+
+![Ubuntu 24](https://img.shields.io/badge/Tested%20on%20ubuntu-purple?logo=ubuntu)
+
+![Animated image showing network flows](figures/flows.gif)
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Key Features
+
+- **High Throughput:** Utilizes Rust and the [Aya](https://aya-rs.dev/) library for eBPF program compilation and execution, ensuring exceptional performance and resource efficiency.
+- **Versatile Feature Sets:** Offers a variety of pre-defined feature sets (flows) and the flexibility to create custom feature sets tailored to specific requirements. An example of the custom flow is shown [here](https://github.com/idlab-discover/RustiFlow/blob/main/rustiflow/src/flows/custom_flow.rs).
+- **Pcap File Support:** Facilitates packet analysis from pcap files, compatible with both Linux and Windows generated files.
+- **Diverse Output Options:** Features can be outputted to the console, a CSV file, or other formats with minimal effort.
+- **Richer TCP Quality Signals:** The RustiFlow feature set exports duplicate ACK counts, zero-window observations, and TCP close style in addition to the existing lifecycle and retransmission fields.
+- **Endpoint-Aware IP Context:** The RustiFlow feature set exports `ip_version`, endpoint IP scope, and coarse `path_locality` derived from normalized addresses without expanding the eBPF event payload.
+
+## Feature sets
+
+See the [wiki](https://github.com/idlab-discover/RustiFlow/wiki) for the different feature sets available.
+
+## Supported Packet/Header Coverage
+
+RustiFlow currently extracts flows from the following protocol/header combinations:
+
+| Layer | Offline pcap | Realtime eBPF |
+| --- | --- | --- |
+| Link | Ethernet, Linux cooked capture, 802.1Q VLAN | Ethernet |
+| Network | IPv4, IPv6 | IPv4, IPv6 |
+| IPv6 extras | Extension headers supported before transport parsing | Extension headers supported before transport parsing |
+| Transport | TCP, UDP, ICMP, ICMPv6 | TCP, UDP, ICMP, ICMPv6 |
+
+Notes:
+
+- Realtime support is Linux-only.
+- Offline and realtime aim to expose the same flow semantics, but timestamp and packet-length sources can differ slightly.
+- Realtime VLAN parsing is not implemented yet.
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Architecture
+
+### Realtime processing
+
+![RustiFlow Architecture Realtime](figures/realtime.png)
+
+### Offline PCAP processing
+
+![RustiFlow Architecture Offline](figures/offline.png)
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Using the release binary:
+
+Copy the rustiflow binary that you can find in this repo in releases to a location of your choice or to the `/usr/local/bin` folder.
+If it does not have the right permissions, you can run the following command:
+
+```bash
+chmod +x /path/to/rustiflow
+```
+
+### Using commands:
+
+You can then run the binary with the following commands displayed on the [help menu](#usage-instructions).
+
+### Using the tui interface:
+
+If you want a more graphical interface, you can use the tui interface by just running `rustiflow` without any arguments. This will open a field where you can enter a configuration file you want to edit or you can choose to start new. After that, the following interface will show up:
+
+![The tui interface](figures/tui_rustiflow.GIF)
+
+> **NOTE:** When using the save button, you will be prompted for a filename. You can reuse this file with following command:
+
+```bash
+rustiflow --config-file <filename> realtime <interface> [--only-ingress]
+```
+
+```bash
+rustiflow -c <filename> pcap <path to pcap file>
+```
+
+> After saving the configuration file, you can safely reset without changing the configuration file.
+
+### Using the configuration file:
+
+This is an example of a configuration file that you can use to run the tool with the `--config-file` option.
+
+```toml
+[config]
+features = "CIDDS"
+active_timeout = 522
+idle_timeout = 885855
+early_export = 25
+expiration_check_interval = 0
+
+[output]
+output = "Csv"
+export_path = "path/to/output.csv"
+header = false
+drop_contaminant_features = true
+```
+
+Example 2:
+
+```toml
+[config]
+features = "Nfstream"
+active_timeout = 3600
+idle_timeout = 120
+early_export = 10
+expiration_check_interval = 60
+threads = 8
+
+[output]
+output = "Print"
+header = true
+drop_contaminant_features = false
+```
+
+For realtime CSV exports, the live packet graph is now off by default so the
+standard CLI path keeps the best throughput-oriented behavior. Enable it only
+when you want the graph:
+
+```toml
+[output]
+packet_graph = true
+```
+
+or with:
+
+```bash
+rustiflow ... -o csv --export-path out.csv --packet-graph realtime <interface>
+```
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Using the Container:
+
+Make sure that you don't use docker desktop and that you don't have it installed on your machine. If you have this setup, it will not work as intended as the `--network host` will not link the container to the host network, but to the network of a VM that docker desktop uses.
+
+- **Build the Container**:
+  ```bash
+  docker build -t rustiflow .
+  ```
+- **Run the Container**:
+  ```bash
+  docker run --rm --network host -v /path/on/host:/app rustiflow [ARGS]
+  ```
+  Run it with the `--privileged` flag if you want to capture traffic in real-time.
+- **Example**:
+  ```bash
+  docker run --rm --network host -v /home/user/pcap:/app rustiflow \
+    -f basic \
+    -o print \
+    pcap /app/pcap.pcap
+  ```
+  ```bash
+  docker run --rm --privileged --network host -v /home/user/output:/app rustiflow \
+    -f cic \
+    -o csv \
+    --export-path /app/output.csv \
+    realtime enp5s0
+  ```
+
+Notes:
+
+- The current CLI uses flags such as `-f basic` and `-o csv`; the older
+  positional examples are no longer correct.
+- Realtime capture in a container still depends on Linux host support for eBPF
+  and `tc`, so `--privileged --network host` remains the practical baseline for
+  local testing.
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Installation Guide for development
+
+### Prerequisites:
+
+- **libpcap-dev**:
+  ```sh
+  sudo apt install libpcap-dev
+  ```
+- **Rust Installation**:
+  ```bash
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  ```
+- **Nightly Rust Toolchain**:
+  ```bash
+  rustup install stable
+  rustup toolchain install nightly --component rust-src
+  ```
+
+### bpf Linker Installation:
+
+Use the upstream prebuilt binary. Building current `bpf-linker` releases with
+`cargo install` requires a matching system LLVM installation; Rust's
+`llvm-tools-preview` component alone is not sufficient.
+
+- **For Linux x86_64**:
+  ```bash
+  sudo apt install zstd # Debian/Ubuntu; use your distribution's package manager elsewhere
+  curl -fL --retry 3 https://github.com/aya-rs/bpf-linker/releases/download/v0.11.1/bpf-linker-x86_64-unknown-linux-musl.tar.zst -o /tmp/bpf-linker.tar.zst
+  mkdir -p "$HOME/.cargo/bin"
+  tar --zstd -xf /tmp/bpf-linker.tar.zst -C "$HOME/.cargo/bin"
+  rm /tmp/bpf-linker.tar.zst
+  bpf-linker --version
+  ```
+- **For macOS/Linux (Other Architectures)**: choose the matching archive from
+  the [upstream releases](https://github.com/aya-rs/bpf-linker/releases/tag/v0.11.1),
+  or follow the [upstream installation guide](https://github.com/aya-rs/bpf-linker#installation).
+- **Ubuntu 20.04 LTS Specific**:
+  ```bash
+  sudo apt install linux-tools-5.8.0-63-generic
+  export PATH=/usr/lib/linux-tools/5.8.0-63-generic:$PATH
+  ```
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Building the Project
+
+- **eBPF Programs**:
+  ```bash
+  cargo xtask ebpf-ipv4
+  cargo xtask ebpf-ipv6
+  ```
+- **User Space Programs**:
+  ```bash
+  cargo build
+  ```
+
+## Running the Project in dev mode
+
+```bash
+cargo xtask run -- [OPTIONS] <COMMAND>
+```
+
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Usage Instructions
+
+### Command Help:
+
+```bash
+rustiflow help
+```
+
+```bash
+Usage: rustiflow [OPTIONS] <COMMAND>
+
+Commands:
+  realtime  Real-time feature extraction
+  pcap      Feature extraction from a pcap file
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+  -c, --config-file <CONFIG_FILE>
+          Configuration file path
+
+  -f, --features <FEATURES>
+          The feature set to use (required if no config file is provided)
+
+          Possible values:
+          - basic:     A basic flow that stores the basic features of a flow
+          - cic:       Represents the CIC Flow, giving 90 features
+          - cidds:     Represents the CIDDS Flow, giving 10 features
+          - nfstream:  Represents a nfstream inspired flow, giving 71 features
+          - rustiflow: Represents the Rusti Flow, giving 203 features
+          - custom:    Represents a flow that you can implement yourself
+
+      --active-timeout <ACTIVE_TIMEOUT>
+          The maximum time a flow is allowed to last in seconds (optional)
+
+          [default: 3600]
+
+      --idle-timeout <IDLE_TIMEOUT>
+          The maximum time with no packets for a flow in seconds (optional)
+
+          [default: 120]
+
+      --early-export <EARLY_EXPORT>
+          The print interval for open flows in seconds (optional)
+
+      --expiration-check-interval <EXPIRATION_CHECK_INTERVAL>
+          Interval (in seconds) for checking and expiring flows in the flowtable. This represents how often the flowtable should be scanned to remove inactive flows
+
+          [default: 60]
+
+      --threads <THREADS>
+          The numbers of threads to use for processing packets (optional) (default: realtime uses 12, capped at the number of logical CPUs; pcap uses 5; maximum number of logical CPUs)
+
+      -o, --output <OUTPUT>
+              Output method (required if no config file is provided)
+
+              Possible values:
+              - print: The output will be printed to the console
+              - csv:   The output will be written to a CSV file
+
+          --export-path <EXPORT_PATH>
+              File path for output (used if method is Csv)
+
+          --packet-graph
+              Enable the realtime packet graph for CSV exports
+              [default: false]
+
+          --header
+              Whether to export the feature header
+
+          --drop-contaminant-features
+              Whether to drop contaminant features
+
+      -h, --help
+              Print help (see a summary with '-h')
+
+      -V, --version
+              Print version
+
+```
+
+## Logging in both development or using the binary
+
+### Development
+
+```bash
+RUST_LOG=info cargo xtask run --
+```
+
+Run the focused Rust test suite with:
+
+```bash
+cargo test -p rustiflow
+```
+
+If you also have the sibling `concap` repository and a reachable Kubernetes cluster,
+you can run a tiny ConCap-backed smoke check and then reprocess the downloaded pcap
+with your current local RustiFlow checkout:
+
+```bash
+./scripts/concap_smoke.sh ../concap nmap-tcp-syn-version.yaml
+```
+
+### Binary
+
+```bash
+sudo RUST_LOG=info rustiflow
+```
+
+**Note:** For specific logging levels, adjust `RUST_LOG` to `error` for error messages, and `debug` for debug messages. If you don't want any additional logs, just remove `RUST_LOG=info`.
+
+---

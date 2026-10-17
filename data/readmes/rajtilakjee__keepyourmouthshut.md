@@ -1,0 +1,115 @@
+<!-- omit in toc -->
+# KeepYourMouthShut - Acid Reflux for your Ears!
+
+![GitHub release (with filter)](https://img.shields.io/github/v/release/rajtilakjee/keepyourmouthshut) &nbsp; ![GitHub License](https://img.shields.io/github/license/rajtilakjee/keepyourmouthshut) &nbsp; ![GitHub Repo stars](https://img.shields.io/github/stars/rajtilakjee/keepyourmouthshut) &nbsp; ![GitHub forks](https://img.shields.io/github/forks/rajtilakjee/keepyourmouthshut) &nbsp; ![GitHub repo size](https://img.shields.io/github/repo-size/rajtilakjee/keepyourmouthshut)
+
+_[Please consider sponsoring this project to help keep it alive!]_
+
+KeepYourMouthShut is an AI-assisted open-source app that provides a 360-degree podcast solution 🎙️ It has a developer-first approach for creating entire episodes of podcasts without requiring any expensive equpment or setup. The app takes a number of input from the end-user and based on that generates a script and an audio voice-over file based on that script.
+
+<div align="center"><img title="KeepYourMouthShut App" alt="KeepYourMouthShut App" src="public/app-screenshot.png"></div>
+
+<!-- omit in toc -->
+## Table of Content
+
+- [🚀 Installation](#-installation)
+- [⚠️ Deployment](#️-deployment)
+- [🛠️ Built With](#️-built-with)
+- [🎸 Music](#-music)
+- [🚸 Contributing](#-contributing)
+- [🪫 Versioning](#-versioning)
+- [🏅 Acknowledgement](#-acknowledgement)
+- [🕹️ License](#️-license)
+- [📟 Citation](#-citation)
+
+## 🚀 Installation
+
+For local installation, clone the repository and run the following commands:
+
+1. Install [FFMPEG](https://ffmpeg.org/)
+2. Create a free account on [llmOS](https://www.llmos.dev/) and get an API key
+3. Insert the API key in the `.env` file. A sample `.env` file is given.
+4. Run `pip install -r app/requirements.txt`
+5. Run `flask --app app/keepyourmouthshut.py run`
+
+This will start the Flask app on port 5000 within a development environment. You can view the app in your browser at `http://127.0.0.1:5000`.
+
+## ⚠️ Deployment
+
+This app can be deployed on AWS. The following official tutorial from AWS will show you how to serve a Flask app on AWS:
+
+https://aws.amazon.com/tutorials/serve-a-flask-app/
+
+If you want to deploy this app on AWS Lambda as a Serverless function, you can use [Zappa](https://github.com/zappa/Zappa).
+
+## 🛠️ Built With
+
+- [Python](https://www.python.org/)
+- [llmOS](https://www.llmos.dev/) — default LLM (Mistral-7B)
+- [edge-tts](https://github.com/rany2/edge-tts) — default TTS (`en-GB-SoniaNeural`)
+- [60db](https://docs.60db.ai) — optional drop-in peer for TTS + LLM + STT (this fork)
+- [Pixabay](https://pixabay.com/music/) — royalty-free background music
+
+### 60db provider (alongside edge_tts + llmOS)
+
+This fork adds [60db](https://docs.60db.ai) as a peer provider for the same two services KYMS already uses. One `SIXTYDB_API_KEY` covers all three concerns; each switch is independent so you can mix providers:
+
+| Concern | File | Env switch | 60db endpoint |
+|---|---|---|---|
+| TTS | `app/utils/sixtydb_tts_stuff.py` | `TTS_PROVIDER=sixtydb` | `POST /tts-synthesize` (default), `POST /tts-stream`, or `wss://api.60db.ai/ws/tts` |
+| LLM | `app/utils/sixtydb_llm_stuff.py` | `LLM_PROVIDER=sixtydb` | `POST /v1/chat/completions` |
+| STT | `app/utils/sixtydb_stt_stuff.py` | _utility_ (no auto-consumer in pipeline) | `POST /stt` |
+
+Default behaviour is unchanged — both `edge_tts` and `llmOS` keep working without any `.env` edits. Flip the switches when you want 60db.
+
+Pick the TTS transport surface via `SIXTYDB_TTS_TRANSPORT=sync|stream|ws` (default `sync`; `ws` requires the optional `websockets` package).
+
+## 🎸 Music
+
+- Whistle Vibes - Music by <a href="https://pixabay.com/users/top-flow-production-28521292/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=172471">Sergio Prosvirini</a> from <a href="https://pixabay.com/music//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=172471">Pixabay</a>
+- Scandinavianz Thessaloniki - Music by <a href="https://pixabay.com/users/musicbyscandinavianz-35973063/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=173689">Oliver Moilanen</a> from <a href="https://pixabay.com/music//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=173689">Pixabay</a>
+- Lofi Chill (medium version) - Music by <a href="https://pixabay.com/users/bodleasons-28047609/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=159456">Bohdan Kuzmin</a> from <a href="https://pixabay.com/music//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=159456">Pixabay</a>
+- Bolero - Music by <a href="https://pixabay.com/users/lesfm-22579021/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=161191">Oleksii Kaplunskyi</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=161191">Pixabay</a>
+
+## 🚸 Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+## 🪫 Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/rajtilakjee/keepyourmouthshut/tags).
+
+## 🏅 Acknowledgement
+
+1. Adam Tal - https://github.com/AdmTal
+2. rany2 - https://github.com/rany2
+
+## 🕹️ License
+
+This project is licensed under the GPL-3.0 license, see the [LICENSE.md](LICENSE.md) file for details
+
+## Star History
+
+<a href="https://star-history.com/#rajtilakjee/keepyourmouthshut&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rajtilakjee/keepyourmouthshut&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=rajtilakjee/keepyourmouthshut&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=rajtilakjee/keepyourmouthshut&type=Date" />
+ </picture>
+</a>
+
+## 📟 Citation
+
+```
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Bhattacharjee"
+  given-names: "Rajtilak"
+  orcid: "https://orcid.org/0009-0008-2465-0266"
+title: "keepyourmouthshut"
+version: 0.0.1
+doi: 10.5281/zenodo.10199470
+date-released: 2023-11-23
+url: "https://github.com/rajtilakjee/keepyourmouthshut"
+```

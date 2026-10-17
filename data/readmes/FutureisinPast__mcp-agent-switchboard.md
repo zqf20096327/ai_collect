@@ -1,0 +1,530 @@
+# Agent Switchboard
+
+**Use Claude Code, Codex, Gemini, Antigravity, and VS Code together — without copy-pasting context between them.**
+
+Agent Switchboard is a **local MCP bridge** that lets your AI coding agents hand tasks to each other, review each other's work, run multi-round debates, and share compact project context — a local nervous system where the tools stay separate but coordinate through one local broker.
+
+**No API keys. No cloud broker. No extra billing.** It uses the local CLIs, IDE bridge routes, and subscriptions you already have where possible.
+
+> **⭐ If this saves your agent workflow, please star the repo so others can find it!**
+
+## Why this exists
+
+Modern AI coding workflows are fragmented. You might use **Codex** or **Claude Code** as the reasoning brain, **Gemini Flash** for bounded workhorse tasks, and **Antigravity / VS Code** for workspace context — but normally they can't talk to each other, so you end up manually copying plans, files, errors, and context from one assistant to another. That's fine for small tasks; it gets messy fast on real projects. Agent Switchboard gives those agents a shared local coordination layer so they cooperate instead of working blind to each other.
+
+## Fast Version
+
+- **Ask one assistant to use another** - from Codex, ask the Claude frontier to audit; from Claude, ask the Codex frontier to reason; send bounded implementation, search, and preparation work to Gemini Flash/Antigravity.
+- **Consult flagships without dumping context** - Codex/Claude hosts use their native same-vendor flagship child agent, then `consult_decision` adds only the bounded cross-vendor leg needed for the task; Gemini uses the broker for both.
+- **See across chats** - pull a *compact snapshot* of what another agent's session knows; **Codex and Claude Code are read on demand from disk**, no copy-paste.
+- **Run cross-model debate** - Codex vs Claude for N rounds, then synthesize a verdict.
+- **Keep the selected model as the brain, route labour cheaply** - global model rules, reader/workhorse roles, and a completion audit are installed and refreshed by the same exe.
+- **Use Gemini Flash as an external workhorse** - Codex and Claude brains route eligible bounded labour through the Switchboard MCP `route_agent_task` tool by default, without treating Flash as a native child or authoritative brain. Gemini, Antigravity, and unknown hosts receive no automatic downward routing, though explicit routes remain available.
+- **Token compaction is built in** - compressed handoffs, compact context packs, work memory, and retrievable originals instead of dumping entire transcripts.
+- **Keep it local** - SQLite state under `~/.agent-broker`; no private chat scraping, no cloud broker.
+- **Use subscriptions you already pay for** - no required API keys or metered orchestration service.
+- **Know the truth** - `doctor` reports which routes are full, partial, or app-only on your machine.
+
+Everything user-facing — the `agent-switchboard.exe` binary, the command, and the MCP server key — is `agent-switchboard`. Internally, local state stays in `~/.agent-broker` and the Python entrypoint is `agent_broker_mcp.py`.
+
+> Built for [Antigravity](https://antigravity.google) and VS Code users. Antigravity is a VS Code fork, so the same bridge extension installs in both.
+
+> **Honest scope:** only **Antigravity** has a true programmatic in-app send *and* a structured reply back to the broker. Claude/Codex are reached through a CLI round-trip or an auto-opened inbox file - see [Delivery, honestly](#delivery-honestly). This is a power-user tool for people who already run these assistants; it drives logged-in subscription UIs, so read [Terms & risk](#terms--risk) first.
+
+---
+
+## Requirements
+
+Two supported install paths — pick one:
+
+- **Self-contained `agent-switchboard.exe`** (no Python needed). One file from the [Releases](../../releases) page does everything: installs the MCP server into every assistant, installs the bridge extension (the VSIX is **embedded**), and runs the MCP server itself (`agent-switchboard.exe serve`). Has a built-in uninstall.
+- **Python 3.10+** (run from source). The broker is one dependency-free Python file; agents launch it as `python agent_broker_mcp.py`.
+
+Other notes:
+- Windows 10/11 for the installer, bridge auto-select, and shortcut patching (the broker itself is cross-platform; the installer/CDP layer is Windows-first today).
+- **Antigravity CLI (`agy`)** is required for the default headless Antigravity route. Install it from the [official Antigravity CLI docs](https://antigravity.google/docs/cli/installation); without it, Switchboard falls back to the existing in-app bridge/inbox.
+- **Node.js on PATH** is needed only for the CDP helpers (Antigravity model auto-select, Codex/Claude webview submit).
+- Optional: `pip install tiktoken` for exact token accounting (a `chars/4` estimate is used if it's absent; the exe bundles it).
+
+---
+
+## Quick Start (Windows)
+
+1. **Close Antigravity and VS Code.** The installer refuses to run while either IDE is open, so extensions and debug flags can't be left half-updated.
+2. **Install** one of two ways:
+
+   **A — Self-contained exe (no Python):** download `agent-switchboard.exe` from the Releases page and run it. Pick **Install** from the menu (or `agent-switchboard.exe install`).
+
+   **B — From source (Python 3.10+):**
+
+   ```powershell
+   powershell -NoProfile -ExecutionPolicy Bypass -File .\install-agent-broker.ps1
+   ```
+
+   Either way the installer detects which assistants you have (Codex, Claude Code, Antigravity, VS Code), **registers the MCP server with each**, installs the bridge extension (VSIX embedded in the exe; auto-built/located from source), and writes config. If **Antigravity is installed**, it then **offers (default Yes) to enable automated in-app model selection** — press Enter to accept (it patches the Antigravity launcher to open a local debug port) or decline to skip. Every config it edits is backed up first.
+3. **Open Antigravity / VS Code again** so the `Agent Switchboard Bridge` extension activates.
+4. **Try it.** In any registered assistant: *"Use Agent Switchboard to ask Claude Opus to audit this function."*
+5. **Check what actually works on your machine:** run `agent-switchboard.exe doctor` (or `python agent_broker_mcp.py bridge doctor`). It's read-only and tells you, per assistant, whether a CLI/extension is present, which delivery route you'll get, and whether a headless debate can run — see [Diagnostics: `doctor`](#diagnostics-doctor).
+
+**Uninstall / rollback (both paths):** run `agent-switchboard.exe uninstall` (or `python setup.py uninstall`), or pick **Uninstall** from the menu. It reverses MCP registration in all four hosts, **removes the bridge extension**, and removes the installed broker exe. Add `--remove-data` to also delete `~/.agent-broker`. The broker uses whatever subscriptions your assistants are already logged into.
+
+---
+
+## What It Does
+
+| Goal | ✅ |
+|---|---|
+| Let Codex, Claude Code, and Antigravity consult each other | ✅ |
+| Use existing **subscriptions** — no API keys, no extra billing | ✅ |
+| Keep all shared state **local** (SQLite), never scrape private chat history | ✅ |
+| **Token compaction** so cross-agent calls don't burn context | ✅ compressed handoffs + compact context packs with a locally-stored, retrievable original (Headroom-style *retrieval*, not a reversible codec) |
+| Keep a short per-topic **work memory** so the next model sees what changed, where, why, checks, risks, and next step | ✅ |
+| **Peek at another open chat** — fetch a *compact snapshot* of what another agent's session knows, on request (opt-in, local, never silent scraping) | ✅ active context snapshots; **Codex & Claude Code read on disk**, with **Antigravity local task/log/activity fallback** (`request_context_snapshot` → `get_latest_context_snapshot`) |
+| **Cross-model debate** — two assistants debate N rounds headless on your subscriptions, then a synthesis judge writes a verdict | ✅ (`agent-switchboard debate`) |
+| Route Codex, Claude, and Antigravity to their **headless CLIs** by default; use the **in-app chat/inbox** only when asked or as fallback | ✅ |
+| Select Antigravity CLI models naturally (`gemini flash` for the moving workhorse, or an exact version pin) and discover future models from live `agy models` output | ✅ |
+| Let Codex/Claude proactively use newest live Flash High as a cheap external workhorse, with native fallback and independent-package concurrency rules | ✅ |
+| Consult Astra/Fable progressively for architecture and important decisions using a hard-bounded brief, with self-consult prevention and skip notices | ✅ (`consult_decision`) |
+| Fall back to the in-app extension / app automatically when a CLI isn't installed | ✅ (see caveats in the docs) |
+| Send a prompt straight into Antigravity's chat panel + get a structured reply back | ✅ (`antigravity.sendPromptToAgentPanel`, the only full in-app round-trip) |
+| Pick the Antigravity model automatically | ✅ **Offered at install** (default on) when Antigravity is detected — patches the launcher to open a local CDP debug port so the broker auto-selects the model in-app; just decline at the prompt to skip |
+
+---
+
+## How It Works
+
+The broker is a dependency-free Python MCP server. Each assistant talks to it over stdio JSON-RPC; the broker keeps shared state in one local SQLite file (WAL mode, so multiple hosts can poll it concurrently) and routes work to the right place.
+
+**Routing priority:**
+
+1. **Surface** — Codex, Claude, and Antigravity default to the **headless CLI** (reliable, model-switchable, answer returned inline). For Antigravity, that means the standalone `agy` executable, not the IDE's `antigravity chat` launcher. Say **"in app"** / **"inbox"**, pass `surface: extension` / `surface: inbox`, or set `use_inbox: true` to force the bridge panel. If `agy` is absent, an automatic Antigravity route falls back to that bridge/inbox.
+2. **Model** — vague Codex requests resolve from live `codex debug models` metadata plus the Astra capability seed; a future live model with higher catalog priority wins automatically. Claude frontier consults use the moving `fable` alias and fall back to the moving `opus` alias only on an explicit availability/entitlement error. Bare Antigravity and **"Gemini Flash"** select the newest exact stable `gemini-<numeric>-flash-high` slug advertised by live `agy models`, using numeric version order; the bundled static slug is offline fallback only. Explicit version pins remain exact, and preview/nonconforming SKUs are never auto-promoted. Gemini Flash remains a non-authoritative labour model regardless of version.
+3. **Flagship decision lane** — decision work maps `bounded` / `architecture` / `critical` to `high` / `xhigh` / `max`. Sol-or-lower Codex hosts consult Astra through a native Codex child agent; Opus-or-lower Claude hosts do the equivalent with Fable. The compact native result is passed to `consult_decision`, which adds only Fable for Codex or Astra for Claude on architecture/critical work. A missing native result returns `needs_native_consultation` without launching a nested same-vendor CLI. Astra and Fable hosts consult the opposite vendor; Gemini hosts consult both through the broker. Every path keeps the 12,000-byte / roughly 3,000-token brief cap and reports unavailable advisers instead of substituting Flash for flagship judgment.
+4. **External workhorse lane** — Codex and Claude brains use newest live Flash High through Agent Switchboard first for eligible bounded search/read/extraction/summaries/drafting, low-risk implementation/tests from an approved plan, and independent parallel packages. Gemini, Antigravity, and unknown hosts receive no automatic downward cost route; they may still request an explicit route, and Gemini retains its upward Astra/Fable decision consultation described above. Flash is not a native child agent. Each call carries exactly one package and schema-enforced output; implementation requires a package id, a 1-5-file allowlist, and explicit acceptance criteria. Flash cannot receive danger-full-access or live production work. Every non-creditable Flash result — unavailable, rejected schema/structure, blocked, or failed — returns Codex/Claude callers a structured native reader/workhorse handoff with the package id, semantic lane, live native role/model/effort, a broker-backed failure reason, and any required brain-review/rescope caveat. Switchboard never auto-launches that native work; the brain reviews the handoff and independently verifies cited lines, the actual diff, and checks.
+5. **Token budget** — every routed task carries a task contract (`implementation_plan`, `co_audit`, `debate`, `review`, …) with a word budget, and a compressed context pack instead of raw history. If a caller inlines a bloated `prompt` (over a soft token limit), the broker stashes the full text as a retrievable `context_ref` and returns a `prompt_notice` nudging it to send a short instruction + ref next time — so token discipline is enforced by the system, not left to each agent.
+
+Use the Switchboard MCP tool `route_agent_task` with `target_agent: "antigravity"`, `surface: "cli"`, `target_model: "gemini flash"`, and `effort: "high"`. The sender brain must not run `agy` directly; `surface: "cli"` tells Switchboard to invoke its internal CLI backend. Set `mode: "plan"` for read-only work. For implementation, set `mode: "accept-edits"` and include `work_package_id`, 1-5 exact `allowed_files`, and `acceptance_criteria`; Switchboard rejects an incomplete or whole-plan handoff.
+
+---
+
+## See what another chat knows (active context snapshots)
+
+Working in one assistant but need the *current* state another open chat is holding? Ask for a **context snapshot** — a COMPACT continuation state (objective, plan, touched files, checks, risks, next step), **not** a full transcript, and **never** silent scraping (it's opt-in and local).
+
+- **`request_context_snapshot(project, topic, target_agent)`** asks the best available open surface for that compact state.
+- **Codex & Claude Code fast path (on disk):** the broker reads the live session transcript on disk — **Codex** from `~/.codex`, **Claude Code** from `~/.claude/projects` — redacted + truncated and **scoped to the session whose `cwd` matches the project** (no cross-project leak), returning **immediately** with no agent cooperation or CDP needed. The two CLIs are symmetric.
+- **Antigravity fallback:** when no live bridge snapshot is available, the broker can read local Antigravity task/log/activity files (`~/.gemini/antigravity-ide/brain` plus workspace/file history) and return a bounded, clearly low/medium-confidence continuation snapshot. This is not guaranteed to be the visible chat transcript, but it prevents dead-end "cannot find context" failures.
+- **Other surfaces:** the request is queued for a capable bridge host (`claim_context_snapshot_request` / `complete_context_snapshot_request`, race-safe + idempotent, with a stale-claim reaper), or picked up from a `.agent-broker/context-snapshots/` fallback file. If **no live surface is heartbeating** and no local fallback exists, the request reports `no_live_surface` (with guidance) instead of queuing forever with no claimer.
+- **Honest limit:** a surface feeds the nerve system only if it's readable on disk (Codex/Claude Code), a live heartbeating bridge (Antigravity/VS Code), **or** it proactively records. A disconnected helper — e.g. the **Claude desktop app** (Electron + server-side history, not on disk) — can be *registered to push* context, but cannot be read on demand. `doctor` shows exactly which surfaces can contribute, so blind spots are visible, not surprising.
+- Read it back with **`get_latest_context_snapshot`** — it also folds into `get_context_pack` ("Latest Context Snapshots") and `get_topic_status`, so the next model picks it up automatically. Live-host routing uses `record_surface_heartbeat` / `list_live_surfaces`.
+
+This is the cross-chat "peek" layer: agents and IDEs can see what another agent's session currently knows and fetch it on request, without copy-pasting transcripts.
+
+---
+
+## Delivery, honestly
+
+There is a real difference between **delivered** (a file/prompt reached the surface), **auto-opened** (the bridge opened it for you), **submitted** (it was actually sent into a chat), and **completed back to broker state** (a model-tagged reply landed in the broker). Antigravity is still the only true structured in-app round-trip; queued Codex requests also get a broker-owned CLI worker when the Codex CLI is available.
+
+| Target | Mechanism | How far it gets |
+|---|---|---|
+| **Antigravity CLI** (default) | `agy --print <prompt> --model … --effort … --output-format json --json-schema …` (direct argument-array invocation, no shell) | **reported, pending brain verification** — schema-enforced headless round-trip; `plan` is sandboxed, while bounded implementation uses `accept-edits` |
+| **Antigravity** (in-app Gemini/Claude) | `antigravity.sendPromptToAgentPanel` (+ optional CDP model select) | delivered → submitted → **completed back to broker** (`complete_antigravity_request`) — the only structured round-trip |
+| **Claude extension** | `claude-inbox` markdown, **auto-opened** + best-effort CDP auto-submit | delivered → auto-opened → (often) submitted → **recorded back to broker**: the request now has a durable `claude_requests` row, so a reply via `respond_to_request` lands on it, or a file written to `claude-responses/` is ingested by `bridge claude-responses` |
+| **Claude CLI** | `claude -p` headless (prompt via stdin) | **completed** — full headless round-trip |
+| **Codex extension / inbox** | `codex-inbox` markdown, **auto-opened**, plus bounded Codex CLI worker when available | delivered → auto-opened for visibility; the worker records **completed/failed** back to broker state so polling does not hang forever. Extension-only/no-CLI installs remain manual via `respond_to_request` |
+| **Codex CLI** | `codex exec` headless | **completed** — full headless round-trip |
+| **Gemini** | `gemini` CLI (`-m <model>` honored) or `GEMINI_API_KEY` | **completed** via CLI; the API path is an off-by-default escape hatch |
+
+> **Answer return-path:** any surface without a native completion API closes the loop by calling **`respond_to_request(request_id, response)`** — the broker records the answer + timing on the request and refreshes a per-topic **`ledger.md`** (`get_request_ledger`). Codex inbox requests now also start a bounded CLI worker by default, so `request_result` returns an answer or a terminal error instead of staying `delivered` forever.
+
+> **Model enforcement, honestly:** the broker can only *switch the answering model programmatically* on **Antigravity** (CDP UI automation, best-effort) and the **CLIs** (`--model`/`-m` flag). Codex/Claude CLI responses are attested from runtime metadata and fail closed when metadata is missing or mismatched. `agy` receives the exact dynamically resolved Flash slug and returns a conversation id, but currently does not expose independent actual-model attestation, so the result labels the requested route without claiming stronger proof. Answer prose and usage summaries are never accepted as model proof. The broker **cannot** drive the Codex- or Claude-*extension* model picker, so those surfaces still receive a strict guard plus a notification to select the requested model.
+
+> **Model + effort on the CLIs:** model and reasoning effort are **separate inputs**, never folded together. Pass **`effort`** and the broker sets the CLI's own effort flag. A bare family request defaults to the live Codex frontier at `max`, Claude's moving `fable` alias at `max` (then `opus` only when unavailable), or Antigravity's dynamically selected latest stable Gemini Flash High workhorse at `high`. Explicit `cheap_read` and `balanced` policies select dynamically discovered Codex reader/workhorse models or Claude `haiku`/`sonnet`; prompt keywords never guess. Flash remains a non-authoritative external workhorse regardless of version. If Claude's frontier is unavailable, Flash supplies a degraded advisory second opinion; for routine bounded labour, both Codex and Claude may proactively use it with the failure/concurrency safeguards above. The selected main-session model is never rewritten. Flash permission bypass is prohibited; production deployment remains with the brain.
+
+> The broker is **target-driven** when a target is named. If a Codex/Claude caller leaves the target completely empty, Switchboard uses the caller only as a fallback: Codex defaults to Claude, and Claude defaults to Codex. A named target or prompt phrase like "consult with Claude" still wins.
+
+---
+
+## Diagnostics: `doctor`
+
+Because "what works" depends on **what you have installed**, the broker ships a
+read-only `doctor` that probes this machine and tells you the truth — no state is
+changed.
+
+```powershell
+agent-switchboard.exe doctor          # rendered report
+agent-switchboard.exe doctor --json   # machine-readable
+# from source:  python agent_broker_mcp.py bridge doctor
+```
+
+For each assistant it reports: whether the **CLI** is found (and a live
+`--version` smoke test), whether the **extension** is installed, the **CDP port**,
+the **delivery route** you'll actually get, the **reply path**, and whether a
+**headless debate** can run. It also prints a **nerve-system** view — which
+surfaces can feed `request_context_snapshot` (on-disk fast-path vs live bridge vs
+push-only), so a blind spot like a disconnected desktop app is visible. It flags
+broker/bridge version drift and prints actionable next steps.
+
+For Antigravity MCP specifically, `doctor` reads the selected effective registration and runs a bounded stdio probe against that exact registered command, arguments, and environment: JSON-RPC `initialize`, `initialized`, `tools/list`, then one harmless read-only tool call. The process is always reconciled and only environment key names are reported. A locally callable server proves registration and stdio behavior, not that an existing Antigravity chat imported the tools; host exposure therefore remains `unverified` until the user gracefully reloads/restarts Antigravity and checks a fresh chat.
+
+On Windows, Switchboard-owned bounded subprocesses use hidden-window flags and are waited on or killed/reaped on timeout. Launches of persistent user-facing IDE/app windows are explicitly external-owned and are not reconciled as package workers. When diagnosing empty `cmd.exe` chains, parentage matters: the observed Antigravity `language_server` → `cmd /c npx` → `chrome-devtools-mcp` chains were external to Switchboard, not broker-owned; that distinction identifies those observed processes rather than asserting a universal cause.
+
+**What each install combination gets you** (this is what `doctor` checks):
+
+| You have… | Codex / Claude result |
+|---|---|
+| **CLI on PATH** | full headless round-trip (best); answer returns inline |
+| **Extension only, no CLI** | the broker still *delivers* into the extension (auto-opened inbox + best-effort CDP auto-submit), but it's **semi-manual** and not a silent headless round-trip. `doctor` reports this as `partial` / `delivery-only` |
+| **Desktop app only** | clipboard hand-off only — no programmatic return path |
+| **Neither** | `doctor` tells you exactly what to install |
+
+> **Headless debate** (running both sides automatically) needs **both** the Codex
+> **and** Claude CLIs present — `doctor` reports `headless autonomous debate
+> runnable: YES/no` before you try. Extension-only setups can still get a one-shot
+> second opinion, just not an autonomous multi-round run.
+
+---
+
+## Changelog
+
+### v1.0.57 (`code_graph`: literal search, context suggestions, usage events, hot-reloading adapter)
+- Routing telemetry: async Flash dispatches now record their target and model, and request_result records the terminal outcome, so routing reports show real Flash use and failure rates (previously async packages were invisible to the gate log).
+- **String-literal index** built in the same pass and snapshot as the graph (AST owner for Python, textual candidates elsewhere; literals of 12+ characters; a miss is not absence). New op **`find_text`** answers "where does this message come from?"; a quoted phrase in `locate` now puts literal matches first. Every response carries an integer `hits`.
+- **`context_for`** (1-5 Python files): up to 5 suggested files to read next (imports, conftest, tests). Suggestion only: never includes the declared files and never widens allowed writes.
+- **Usage events:** one `kind=code_graph` row per call, with no query content. `agent-switchboard.exe code-graph-usage [--days N]` reports counts, hit/stale/truncated rates and per-session code_graph versus Read/Grep. It is descriptive only, and session attribution currently resolves Codex sessions only (other hosts show `unknown`).
+- **Hot-reloading adapter:** `install_code_graph.ps1` publishes immutable releases under `<home>\releases\<sha256-12>`, validates them (`py_compile` plus a stdio `health`), and writes the `runtime.json` marker last and atomically; the bridge switches to a new release after a health handshake, keeps the old child if it fails (`adapter_update_pending`), and never counts a planned reload toward the crash cap.
+- **Measured costs:** about +1 s per refresh and a 1.4 MB literal artifact on this repository. See `RELEASE_NOTES_v1.0.57.md`.
+- **Host rule:** The host rule for code_graph is now optional and situational (large or unfamiliar code, when several broad searches would otherwise be needed); models are told to skip it for small or familiar code, to avoid adding lookup overhead on top of required reads.
+
+### v1.0.56 (WP-FL: validate once, apply last, truthful apply outcomes)
+- **Fixed the apply-then-reject bug:** a Flash accept-edits package could write its files and still be reported `rejected` / "NOT applied". Cause: two validations (the second ran after apply without the staging roots, so staged-path reports became out-of-scope) and model attestation ran after apply.
+- **Validate once, apply last:** one validation against the staging roots, every rejection check (including transcript attestation) before the first real write; staging is removed after apply. Apply happens only for a `completed` worker; `blocked`/`failed` edits are quarantine-only.
+- **Truthful outcomes:** `applied_then_rejected`, `apply_outcome_uncertain` and `needs_context`, backed by a durable write-back journal keyed by package id and a unique run token (committed records are sticky). `apply_changes` rolls back to the baseline on any mid-apply failure and reports `rolled_back` / `rollback_incomplete`.
+- **Prompts and staging:** exact declared paths are remapped to staged paths with a workspace-relative path table (implementation mode only); `.pyc`/`.pytest_cache` artifacts are ignored; the worker runs with `PYTHONDONTWRITEBYTECODE=1` and `-p no:cacheprovider`; any reparse point or junction in staging is refused.
+- **Strict `needs_context`:** only import-only failed checks whose module exists in the workspace but was not staged; nothing is applied and the missing files are listed for `read_context`.
+- **Review:** independent adversarial review, 10 findings fixed and re-verified. **Known limits:** a reparse attribute on dedup/cloud temp volumes refuses the package (safe direction); blocked/failed worker edits are quarantine-only. See `RELEASE_NOTES_v1.0.56.md`.
+
+### v1.0.55 (shared `code_graph` locator tool, gate exemption, host rule, runtime installer)
+- **New MCP tool `code_graph`** (ops `locate`, `expand`, `path`, `stats`, `refresh`, `health`) backed by a supervised, lazily started adapter child running code-only graphify 0.9.77 with no network. Results are locators (file, symbol, line, confidence), not evidence: confirm with a targeted read. Default response 1,500 chars, hard ingress cap 8,000, projects restricted to an allowlist (`projects.json`).
+- **Routing gate:** `code_graph` read ops are exempt from the direct-labour count and grant no relief; `refresh` is counted normally.
+- **Host rule:** one bullet ("locate with `code_graph` before broad grep; low confidence -> targeted grep") is added to the managed rules for every host (also in `COST_AWARE_ROUTING_RULES`); the upgrade path relies on the self-consistent checksum.
+- **Runtime installer:** `code_graph_runtime/` is the single source of truth; `install_code_graph.ps1` (idempotent, `-CodeGraphHome`, default `$HOME\.agent-broker\code-graph`) builds the pinned venv, copies the runtime, registers `agent-broker` in `projects.json` only when missing, then runs `refresh` and `health`. It never touches the exe, the Switchboard DB or host config.
+- **Live regression test** `tests/test_code_graph_live.py` maps Switchboard with its own graph; symbol coverage grows automatically. Add a question to `tests/code_graph_questions.json` per new feature. Skip with `AGENT_BROKER_SKIP_CODE_GRAPH_LIVE=1`.
+- **UTF-8 protocol fix:** the adapter's line protocol now runs private and UTF-8 on Windows pipes (cp1252 default corrupted non-ASCII output).
+- **Known limits:** paraphrase recall is weak; module constants and non-code files are not indexed; never use graphify `update`/`watch`.
+
+### v1.0.54 (WP-SB12: route approval/effort fixes, false reworded-retry hold, Flash salvage)
+- **`route_agent_task` codex_cli/claude_code now forwards `outbound_reviewed`** to `consult()`, so the stored `codex_requests` row carries the approval and an approved `needs_owner_review` request is no longer held again.
+- **The WP-SB2 effort ladder now actually reaches the dispatch.** The route marks its resolved effort as caller-requested so `consult()` stops forcing every serious Astra consult back to max: bounded -> high, unrated -> xhigh, risk flag -> max, explicit effort wins (sync and async).
+- **Outbound screen:** "retry/resend ... previous/earlier/prior" is no longer a reworded retry by itself; the window must contain an explicit screened-request word (blocked, flagged, screened, filtered, refused, rejected, held).
+- **Flash acceptance criteria** are matched by position and count with whitespace/quote/case normalised; a same-index paraphrase (token overlap >= 0.6) is a caveat. Count mismatch, a failed criterion or an unrelated criterion still reject.
+- **A rejected or failed accept-edits package keeps its work:** changed allowed files plus `changes.diff` are copied into quarantine (never applied) and reported as `quarantine_files` / `quarantine_diff` in the result and `native_handoff`.
+- **Async progress `last_action`** is now read from the real agy transcript (`tool_calls[].args.toolAction/toolSummary`).
+
+### v1.0.53 (WP-SB10: async Flash lane -- long agy packages no longer die at the 240 s sync cap)
+- **Flash implementation and research packages now run in a detached worker.** `route_agent_task` with `target_agent="antigravity"` (CLI surface) defaults to async for `mode="accept-edits"` and for `task_kind` research/implementation; `quick_check`/`search` stay sync, and an explicit `async` always wins. The worker reuses the Codex/Claude pattern (request row, detached `run-flash-request` bridge process, `request_status`/`request_result` polling) and runs the same `consult()` dispatch -- staging, agy, structured validation, apply -- with a per-call `timeout_seconds` bounded to 240-10800 s (default 3600 s, env `AGENT_BROKER_FLASH_ASYNC_TIMEOUT_SECONDS`).
+- **Immediate return:** `status` queued/running, `request_id`, `work_package_id`, the broker `receipt` (issued at queue time), `async_worker {started, pid, timeout_seconds, log}` and a `poll` hint, all inside the response envelope budget.
+- **Polling:** while running, `request_result`/`request_status` show elapsed seconds plus live agy step count and last action from the transcript; when done, the final envelope under the stored `max_response_chars` (full result under `response_ref`). A dead or overdue worker is failed with the WP-SB3 timeout classification and the `flash-failed`/`flash-unavailable` native handoff.
+- **Cancel** (`cancel` verb / tool) now kills the Flash worker and its agy process tree. **Overlap guard:** a new accept-edits package whose write/create paths overlap a queued or running Flash package is refused with the conflicting request_id.
+- **Gate relief:** a successfully started async package earns exactly one relief (deduped by request_id; a later completed result never credits twice; failed starts earn nothing).
+- `tests/conftest.py` now forbids any test from spawning a real Flash worker. See `RELEASE_NOTES_v1.0.53.md` for the exact pytest evidence.
+
+### v1.0.52 (WP-SB9: explicit versioned Claude model ids, never-fall-back-to-Opus)
+- **A versioned Claude request now resolves to an explicit model id, never a bare CLI alias.** A Codex host asking for "opus 5.5" previously matched the bare `opus` catalog alias, and `claude --model opus` resolved inside the installed Claude CLI's own (possibly stale) alias table -- silently running Opus 4.8 instead of 5.5. Static catalog entries for `claude-fable-5-1`, `claude-opus-5-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001` now match their versioned aliases exactly; the bare `fable`/`opus`/`sonnet`/`haiku` entries keep only unversioned aliases.
+- **New generic versioned-model parser** (`parse_claude_versioned_model`) handles any Claude version not in the static catalog (e.g. "sonnet 5.2" -> `claude-sonnet-5-2`, "opus 4.8" -> `claude-opus-4-8`), used only when no exact catalog alias matches.
+- **`_PROMPT_MODEL_PATTERNS` now resolves a versioned mention in prompt text (e.g. "Opus 5.5") before any bare pattern**, so free-text routing requests get the same explicit-id treatment as structured `target_model` args.
+- **Owner rule: never fall back to Opus.** `claude_frontier_candidates()` no longer retries under `opus` when `best`/`fable` are unavailable -- the chain now ends at `fable`. An explicit "opus ..." request is still honoured as asked.
+- See `RELEASE_NOTES_v1.0.52.md` for the exact pytest evidence.
+
+### v1.0.51 (WP-SB8D: latched-target skip + retry_unavailable, header-bounded response envelope guarantee, Switchboard-child hook scope)
+- **A latched flagship target no longer dispatches "anyway."** A live Astra audit found that when `_route_task_flagship_fallback()` had no available fallback for an actively-latched `route_agent_task` target, it silently proceeded on the original (latched) model with a notice. It now returns a structured `skipped_unavailable`/`skipped_quota` result instead -- carrying the latch reason/kind (and `expires_at` for quota) plus guidance to use `consult_decision` for the cross-vendor fallback or retry with `retry_unavailable=true` -- and never dispatches.
+- **New optional `retry_unavailable` on `route_agent_task`.** Forces exactly one dispatch despite an active latch (for after switching accounts or topping up): a genuine success clears the latch, a fresh availability failure refreshes it, using the same classifier `consult_decision`'s own retry path uses (`_decision_failure_kind`).
+- **`apply_response_envelope_budget()` now bounds every header field individually and guarantees the final size.** The header used to be kept whole, so a large `native_handoff` (or any bulky header object/string) could push the result past `max_response_chars` with no final re-check. Header scalars are now truncated when oversized; bulky header objects (`native_handoff`, `caveats`) collapse to essential scalar keys (`native_handoff`: family, role, model, flash_skip_reason, action) or a small condensed stub, with the full object always recoverable via `response_ref`. A final serialized-size check (`_enforce_envelope_size_guarantee`) guarantees `len(json.dumps(result)) <= max_response_chars` in every case, including a pathological result where every field is huge: it drops non-essential keys (largest first), then shrinks remaining string values, then -- only if the budget is too small even for the essential set (status, outcome, accepted, credit_eligible, receipt, work_package_id, response_ref, truncated) -- falls back to `status`/`truncated` alone.
+- **A Switchboard child (`AGENT_BROKER_CHILD=1`) is no longer brain-gated.** Since v1.0.50, a Codex/Claude child launched by Switchboard loads the owner's own config and therefore the routing hooks -- a live Astra audit child hit the 4-call direct-labour gate on its 5th read, and the Stop hook demanded a flagship-consultation receipt (a recursive requirement, since satisfying it would mean the child spawning/consulting another agent, which its own PreToolUse guard had just denied). Every hook entry point (`pre_tool_use`, `post_tool_use`, `stop`, `subagent_start`, `subagent_stop`, `user_prompt_submit`) now short-circuits under the child flag to only the behaviour appropriate for a depth-1 adviser/worker: PreToolUse keeps only the existing spawn/consult guard (no labour counting, no flagship prompt cap, no Claude-circuit-breaker deny); PostToolUse keeps only the ingress quarantine (no labour checkpoint, no credit/decision-receipt bookkeeping); Stop/SubagentStop/SubagentStart never block and record nothing; UserPromptSubmit injects one short role-reminder line instead of the brain's delegation policy. Non-child behaviour is unchanged.
+- See `RELEASE_NOTES_v1.0.51.md` for the exact pytest evidence.
+
+### v1.0.50 (WP-SB8A + WP-SB8B + WP-SB8C: gate relief behind quarantine, bounded response envelope, opt-in extended prompt budget, Flash no-trim, Codex child trust regression, resend dedup fix)
+- **Codex consult/worker children no longer lose project trust (WP-SB6 regression, fixed by WP-SB8C).** `--ignore-user-config` (added in WP-SB6 to keep a Codex child from seeing the Switchboard MCP server or spawning sub-agents) also skipped `~/.codex/config.toml` entirely, including the `[projects.'<path>'] trust_level = "trusted"` entry -- so every child became untrusted and even read-only shell commands (`git log`, etc.) were rejected as "blocked by policy" (confirmed live: a real Astra audit's `git diff` failed this way). The command now drops `--ignore-user-config` and instead passes `-c mcp_servers.agent_switchboard.enabled=false` (a documented per-server config key, confirmed via `codex mcp get agent_switchboard`) alongside the existing `--disable multi_agent`. Verified with real `codex exec` dry runs (gpt-6-luna/low, `--sandbox read-only --skip-git-repo-check --json`): the old flags left `git log -1 --oneline` blocked by policy with only built-in tools visible; the new flags ran the git command successfully (its real output appeared in the JSON stream) while the full MCP tool list came back with every one of the owner's other servers present and `agent_switchboard` completely absent.
+- **`queue_codex_request` no longer swallows an owner-approved resend.** Its dedup query matched *any* prior request for the same project/topic/prompt/mode regardless of status, so a request the outbound screen had held, which the owner then approved and resent with `outbound_reviewed=true`, deduped against the original FAILED/errored row and returned `deduped: true, "request already terminal"` without ever running. The dedup query now excludes every real failure terminal state (`error`, `cancelled`, `canceled`, `expired`, `failed`) outright, and includes `outbound_reviewed` in the dedup key so a resend carrying a different reviewed flag than a stored row is treated as a new request rather than matched to the stale one; a `queued`/`running`/`completed` row with the same `outbound_reviewed` value still dedupes exactly as before.
+- **Response-envelope budget closes the "24,640 chars for an 8,000-char cap" bug.** `max_response_chars` used to cap only the raw `response` string; a Flash dispatch's `structured_output` came back in full, duplicated a second time inside `response` as a JSON string, and the host's own context gate quarantined the oversized result (hiding status/receipt with it). Every `route_agent_task`/`consult`/queue-request result is now fit to `max_response_chars` (default 6,000 when unset) with `apply_response_envelope_budget`: a compact header (status, outcome, accepted, credit_eligible, worker_status, disposition, receipt, work_package_id, model/attested_model/attestation/model_attested, elapsed_seconds, native_handoff, response_ref, truncated) always survives whole; the duplicated raw `response` is dropped once `structured_output` is present; long string leaves in `structured_output` are trimmed proportionally with a "...[truncated; full text in response_ref]" marker; and bulky diagnostic blocks (model_resolution.catalog_status, verbose progress/containment) are condensed first. The full untrimmed result is always stored and retrievable via `response_ref` + `retrieve_shared_context`.
+- **Opt-in `prompt_budget` tier.** `route_agent_task`, `consult_codex`/`consult_claude`, `queue_codex_request`/`queue_claude_request`, and `consult_decision` all take `prompt_budget` ("standard", the default, or "extended") plus a required, non-empty, <=200-char `budget_reason` when extended. Standard keeps every existing bounded cap (14,000-byte/3,500-token frontier provider prompt; 12,000-byte/3,000-token decision brief; 4,000-byte evidence excerpts; 8,000-byte combined decision result). Extended multiplies every one of those byte/token budgets by 3 (42,000 bytes/10,500 tokens for the provider prompt, matching `routing_gate.FLAGSHIP_PROMPT_EXTENDED_MAX_BYTES` so the PreToolUse delegation gate and this in-process cap never disagree) -- the fixed count limits (questions/options/evidence_refs) are unchanged. Over-standard rejections now say how to opt in; `prompt_budget`/`budget_reason` are echoed in every result and recorded in the `consult_decision` ledger entry.
+- **Flash no longer burns its run trimming its own answer.** The `research_coverage[].answer` field in the `--json-schema` contract passed to `agy` had a 2,000-char cap that once cost a worker its whole 240s sync timeout writing a script to shrink its output to fit; it is now 20,000 chars, and the worker contract prompt states plainly: "There is no length limit on your answer; the broker stores the full result. Do not measure, trim or shorten your output." (the old "keep the full report within 8,000 characters" line is gone).
+- **A `research_questions` item over 500 characters now raises a useful error** naming the item's index, its actual length, the limit, and suggesting the question be split -- not a bare `ValueError`.
+- **Gate relief now sits behind quarantine, not before it.** A `PostToolUse` MCP response over the ingress cap is quarantined to a local evidence file exactly as before, but the notice handed back now also carries a compact scalar projection (status/outcome/accepted/credit_eligible/worker_status/disposition/receipt/work_package_id/attested_model/attestation/response_ref/elapsed_seconds) pulled straight from the quarantined body, so the brain can often decide the next step without opening the file at all.
+- **Switchboard's own broker-probe/read tools are exempt from the direct-labour count.** `get_*`/`list_*` MCP lookups and an explicit exempt set (`run_evidence_probe`, `retrieve_shared_context`, `resolve_model_request`, `request_status`, `request_result`, `compact_topic`) are the gate checking its own ledger, not the brain doing work, and no longer count toward the allowance.
+- **The `routing-override` exemption is looser and safer.** Any `routing-override` invocation (including a bare `--help`) is now exempt from the shell-command labour count, not just the exact `--session/--package/--reason` form; a shell separator is neutralized only inside a quoted string, so a chained command tacked on after the override (`;`, `&&`, `|`) still fails to match and earns no free pass.
+- **Deny-message counters and suggestions are sharper.** The reason text now shows the count for *this* block (since the last relief) separately from the session-wide total, and the suggested `route_agent_task` snippet is shaped to the blocked category -- a research-shaped block (reads/searches/evidence) is never pointed at the `quick_check` lane, which would skip the mandatory `research_questions` coverage/depth contract.
+- **The flagship delegation prompt cap (routing_gate.py's PreToolUse hook on Agent/Task) is now tiered.** Up to `FLAGSHIP_PROMPT_MAX_BYTES` (14,000) is allowed silently as before; between that and the new `FLAGSHIP_PROMPT_EXTENDED_MAX_BYTES` (42,000) is allowed but logged and named in the permission reason so the extended budget is visible, not silent; past the extended cap the call is denied exactly as before, with both limits named.
+- See `RELEASE_NOTES_v1.0.50.md` for the exact pytest evidence.
+
+### v1.0.49 (flagship chains carry no same-vendor fallback)
+
+### v1.0.48 (flagship fallback, smart latches, effort ladder, Flash timeout fixes)
+- **`consult_decision` now has a real fallback chain.** A latched or unavailable native flagship (e.g. Fable blocked on credits) walks the rest of its same-vendor chain, then the opposite-vendor chain, at the same ladder effort, instead of failing outright or asking for the same blocked model again.
+- **Availability latches are smarter.** Credit/plan blocks last the session; quota/rate-limit blocks expire at the parsed reset time or after a bounded default window; both are voided early when the signed-in account changes, so a fresh sign-in is retried automatically.
+- **Direct frontier reviews, audits, and debates use a bounded effort ladder** (`complexity`: bounded/architecture/critical, plus `risk_flags`) instead of always running at max, and oversized prompts to expensive models are rejected with guidance instead of silently truncated.
+- **Consult children can no longer recurse.** A depth-1 flagship adviser child is fenced from spawning its own agents or calling Switchboard tools, closing a leak where an architecture consult could silently double its own cost.
+- **Flash timeouts are classified correctly.** A synchronous MCP timeout that hit mid-execution now reports `flash-failed` with transcript evidence instead of being mislabelled `flash-unavailable`/`model_resolution failed`.
+- **Flash model selection is attested from the agy transcript** when the CLI's own JSON omits it, closing a gap where a dispatched model could go unverified.
+- **Stale `gpt-5.6-terra` references are gone.** The generated hierarchy text and static Codex catalog now reflect the live `gpt-6-sol`/`gpt-6-luna` workhorse and reader roles.
+
+### v1.0.47 (Codex-native hook discovery and trust diagnosis)
+- **Corrects v1.0.46's Codex hook activation assumption.** Codex automatically discovers `~/.codex/hooks.json`; `hooks` in `config.toml` is a table for inline hooks and trust state, not a scalar file path. Switchboard no longer tries to add that invalid scalar and preserves the Codex App-owned `[hooks.state]` table byte-for-byte.
+- **`doctor` now asks Codex itself whether Switchboard hooks are ready.** A bounded read-only `hooks/list` app-server probe reports each required handler's discovery, enabled state, and trust state. New or changed hooks are reported as `pending_user_review` with the supported `/hooks` remediation instead of being mistaken for active enforcement; Switchboard never manufactures private trust hashes.
+- **The v1.0.46 routing, session, async-decision, progress, schema, and dynamic-model fixes remain intact.** Symbolic `gemini flash` still resolves to the newest live stable Flash High (3.8 now, future 3.9/4 automatically), while Astra remains the flagship decision tier over Sol.
+
+### v1.0.46 (enforced routing activation, session-safe evidence, and async decisions)
+- **Superseded by v1.0.47 for Codex hook setup.** This release added structural/current-session hook diagnosis and the expanded deterministic gate harness, but its attempted scalar `hooks` path activation was incompatible with Codex's table-valued hook configuration. Use v1.0.47 or newer.
+- **Capability tier now outranks provider ordering.** Astra remains the Codex flagship decision consultant when a higher-priority Sol workhorse is also advertised; only a model explicitly classified as a newer frontier can supersede it. The Flash labour lane continues to resolve symbolic `gemini flash` to the newest live stable numeric Flash High, including 3.8 today and future 3.9/4 releases.
+- **Routing evidence is tied to an explicit current session.** `routing-report` no longer borrows the newest unrelated audit; historical fallback requires `--last`. Native lifecycle, Flash dispatch/failure/handoff, and linked flagship consultation events are rendered together without double-counting, and important read-only turns cannot complete without a decision receipt.
+- **Asynchronous consultations now reconcile into durable terminal evidence.** Polling a completed child request appends an idempotent terminal event linked to the immutable parent decision, updates the returned decision state, latches organization-level availability failures such as HTTP 403, and returns the resulting handoff notice. Flash responses also include truthful terminal phase metadata, including validation, workspace application, quarantine, and fallback state.
+- **Diagnostics and schemas are more actionable.** `doctor` exposes the resolved executable and gate-harness command, while research locator and attestation constraints are described consistently in MCP schemas and validation errors.
+
+### v1.0.45 (Antigravity registration, bridge launch, and live Flash selection)
+- **Antigravity registration targets its authoritative Gemini configuration.** Installation writes the schema-compatible server entry to `~/.gemini/config/mcp_config.json` without the forbidden `type` field, safely handles an empty file, and migrates recognized legacy registrations without overwriting unrelated entries.
+- **The bridge launches the installed packaged broker directly.** Auto-detection prefers `~/.agent-broker/agent-switchboard.exe`, then falls back to the source `agent_broker_mcp.py` through Python; explicit executable and script paths remain supported.
+- **Symbolic `gemini flash` routing refreshes the live CLI catalog before dispatch.** It selects the newest advertised stable numeric Flash High (3.8 when the CLI advertises it, then future 3.9, 4, and later releases automatically), preserves explicit model pins, and retains bounded breaker/cache fallback behavior when live discovery fails.
+
+### v1.0.44 (host-aware labour routing + MCP/process diagnostics)
+- **Flash-first labour routing is host-aware.** Codex and Claude use Flash first for eligible bounded labour; Gemini, Antigravity, and unknown hosts receive no automatic downward route, while explicit routing and Gemini's upward Astra/Fable decision consultation remain available.
+- **Flash failures return an actionable native handoff.** Every unavailable, rejected, blocked, or failed Flash outcome gives Codex/Claude callers a structured reader/workhorse fallback without auto-launching native work.
+- **Antigravity MCP diagnosis now exercises the registered server.** `doctor` performs a bounded stdio initialize/list/read-only-call probe and keeps chat-level host exposure explicitly unverified until a user-controlled reload/fresh-chat check.
+- **Windows lifecycle ownership is explicit.** Bounded broker processes are hidden and reconciled; persistent IDE/app launches are external-owned.
+
+### v1.0.43 (native flagship handoff + capable Codex CLI selection)
+- **Same-vendor flagship advice now stays inside the initiating host.** Codex uses a native Astra child agent and Claude uses its native Fable child-agent path; the compact result is handed back to `consult_decision`, which invokes only the opposite-vendor adviser required for architecture/critical work. If that native result is missing, the broker returns an explicit request without contacting any provider.
+- **Decision lanes are explicit and bounded.** Native and cross-vendor results are labelled separately, unavailable native advisers become final handoff notices, and Gemini continues to use both flagship bridges. The existing brief, question, evidence, excerpt, and token limits still apply.
+- **Cross-vendor Astra calls select a locally capable Codex executable.** When multiple Codex CLIs are installed, Switchboard checks their advertised model catalogs and uses one that exposes the requested Astra model instead of blindly preferring an older configured executable; deterministic fallback is preserved when no candidate advertises it.
+
+### v1.0.42 (bounded progressive flagship decisions + quiet Windows workers)
+- **New `consult_decision` orchestration route.** Codex, Claude, and Gemini hosts can send one structured decision brief to the appropriate higher-tier Astra/Fable adviser(s). Complexity selects `high`, `xhigh`, or `max`; the current host model is excluded; quota/provider failures are isolated and returned as final-handoff notices.
+- **Flagship cost is bounded before dispatch.** Decision input is limited to one decision, three questions, four options, eight evidence references, 4,000 excerpt bytes, 12,000 total UTF-8 bytes, and about 3,000 tokens. Provider prompts and inline advice are capped, nested consultations/tools are forbidden, and Flash remains labour-only rather than a cheap substitute for architectural judgment.
+- **Dynamic lanes now recognize Astra and future Flash releases.** Astra is the Codex frontier seed while live catalog priority can still promote a future model automatically. Antigravity keeps selecting the newest stable numeric Flash High, and `route_agent_task` now forwards required `research_questions` to the Flash backend instead of silently dropping them.
+- **Background broker processes stay quiet on Windows.** Frozen serve/bridge/hook modes hide only a private console they own, all production child-process calls declare no-window creation flags, and timeout cleanup continues to terminate the owned process tree.
+
+### v1.0.41 (session-aware Claude fallback + evidence-forced Flash research)
+- **An explicit Claude availability failure now opens a session circuit.** Quota exhaustion, disabled subscription/organization access, a missing Claude CLI, explicit provider unavailability, or whole-family access failure is remembered across turns in the same main session. Later synchronous or queued Claude dispatches are denied instead of retrying Fable/Opus; a new main session starts clean. Successful calls and generic timeouts, network errors, HTTP 429/503 responses, repository permission failures, or one unavailable model do not open the circuit. While open, the brain may use the newest live Flash High only as a degraded, non-authoritative second opinion.
+- **Flash is reinforced as the first labour lane for both Codex and Claude.** The managed globals, runtime hierarchy, and live per-turn hook guidance now call out bounded reads, search, extraction, summaries, drafting/writing, and isolated low-risk packages. The symbolic `gemini flash` target still resolves against the live Antigravity catalog, so a newer stable Flash High release is selected without another hardcoded version update.
+- **Factual Flash work now has a mandatory research contract instead of a prose-only reminder.** Senders must use `task_kind=research` with one to three exact questions. Switchboard repeats the depth rules in every package, requires ordered per-question coverage, multiple evidence probes, a primary citation and competing-explanation check for answers, and searched boundaries/gaps for `NOT FOUND`; shallow, missing, reordered, low-confidence, or unsupported completed reports are rejected for brain review.
+
+### v1.0.40 (screened outbound consultations + fail-closed in-app model selection)
+- **Outbound requests to the external review lane are now screened before they are sent.** Wording that inaccurately describes ordinary authorized work is corrected to accurate wording, and any substitutions made are reported back rather than applied silently. A request whose substance asks for help defeating access controls, avoiding enforcement, or retaining content a platform makes ephemeral is refused, and that refusal cannot be talked around by rewording. An ambiguous request is held for explicit operator approval instead of being sent or silently dropped. Screening covers the fully assembled payload, including any attached context, not just the typed request text. A per-dispatch log records the classification and content hashes, never the content itself.
+- **An in-app dispatch whose model selection can't be verified now returns instead of running anyway.** Previously, if the IDE's own model picker failed to switch, the request would silently run against whatever model happened to already be selected. It now reports that model selection needs attention instead of proceeding.
+
+### v1.0.39 (a worker's finished work is no longer thrown away)
+- **Work that succeeded was being reported as a failure and discarded.** The worker CLI exits with an error process status whenever any single tool call inside it fails, even when the task itself completed correctly. Validation treated that exit status as authoritative and rejected the whole dispatch, discarding a correct, fully-formed result along with it. The structured payload the worker returns is now the primary signal: a process-status mismatch alone is recorded as a caveat and the result is accepted with caveats, while a missing or unparseable payload, a schema violation, a scope violation, or a safety-rule failure still rejects exactly as before. Every result now carries a disposition (accepted, accepted with caveats, or rejected) and the list of caveats behind it.
+- **A rejected dispatch now keeps its artifacts for inspection instead of losing them.** When a rejection follows real worker execution, its stdout, stderr, parsed payload, and a manifest with hashes and sizes are written to a quarantine location that is pruned by age, count, and size, and the rejection receipt names that location and states plainly that the quarantined artifacts were not accepted and not applied. Rejections that happen before a worker ever runs are unchanged. Error messages for a missing structured payload now report what the backend actually returned instead of a generic complaint.
+
+### v1.0.38 (quiet disconnects + a steadier worker lane)
+- **A peer hanging up is no longer logged as an error.** When the other side of the connection closes without warning, the server now recognizes that as a normal disconnect (including the platform-specific way Windows reports it) and logs a single quiet line instead of a full error trace; a genuine write failure still gets the full trace. Request ids in these log lines are now length-capped so an oversized or malformed id can't blow up the log.
+- **Fixed a bug where the worker lane could go dark for no real reason.** The file that tracks model availability was being updated by many processes at once with no coordination, so failure counts could be lost or double-counted — occasionally tripping the circuit breaker that disables the worker lane even while model discovery was working fine. Updates to that file are now serialized and written atomically, so the file can never be left half-written, and an update that can't get a lock in time is skipped and logged rather than blocking a dispatch.
+
+### v1.0.37 (stdio transport reliability)
+- **Responses are now serialized and written under a single guarded path.** Every reply is serialized inside the request guard and emitted through one writer that encodes, writes, and flushes under a lock, logging the request id, byte count, and a hash digest. Previously a response that failed to serialize could take the server down after the work had already completed, leaving the caller to wait out its own timeout with nothing returned.
+- **Malformed frames no longer end the session.** Frames are read as raw bytes and decoded as strict UTF-8 one at a time, so a malformed frame is reported as a parse error instead of dropping the connection. UTF-8 request bodies are no longer mangled by the host's locale codec.
+- **Failures now answer with the request's own id instead of null**, so a caller can match an error reply to the call it made. Host registrations set `PYTHONUTF8=1`, and new end-to-end tests exercise the server as a real subprocess.
+
+### v1.0.36 (model resolution order)
+- Model resolution now consults the observed model catalog before probing the network, avoiding an unnecessary network round trip when the answer is already known locally.
+
+### v1.0.35 (manifest-scoped packages + safer staging)
+- **The package manifest is now the scope, not the containing directory.** A dispatch no longer walks the whole project tree looking for files to read, which previously caused every read package to be refused on large workspaces.
+- **The Flash worker gets real tool access, confined to a disposable copy.** Work happens against an isolated copy of the relevant files rather than the live tree.
+- **Staged write-back no longer destroys a concurrent edit.** Writing results back checks for a conflicting change instead of blindly overwriting.
+- **Consult children no longer inherit the whole environment.** Child processes get an allowlisted environment instead of a full copy of the parent's.
+
+### v1.0.34 (Flash-first workhorse lane + gate repair)
+- **Stale MCP registrations are detected and repaired.** `refresh`/`hierarchy` now re-points any host still registered to an older broker binary at the canonical `agent-switchboard.exe`, and `status` prints a per-host registration health table with the version each registered command actually reports. This closes a silent failure mode in which the hooks ran the current build while every host's MCP *server* stayed on an old one — so schema, envelope, and validation changes shipped but never took effect. A running host keeps serving the process it launched, so a window reload is still required after a repair.
+- **Flash is now the default workhorse lane, with objective exceptions.** The managed hierarchy, the runtime routing rules, and the `route_agent_task` description all lead with the Flash package call instead of "native first". Choosing a native role for an eligible package now calls for a stated `flash_skip` reason (`host-tools:`, `unshared-state:`, `flash-failed:`, `flash-unavailable:`, `atomic-oversize:`). Every prior Flash prohibition is unchanged.
+- **A completed Flash dispatch relieves the labour gate; a failed one does not.** `route_agent_task` returns a server-issued, ledger-backed receipt (`broker:<uuid>`), the resolved and backend-attested model, elapsed time, and an outcome. Only `completed_verified` grants credit, the receipt is verified against the ledger and is single-use, and credit for a blocked, rejected, failed, or unavailable dispatch is refused — so relief cannot be farmed by firing a route known to fail.
+- **The gate actually engages.** The direct-labour allowance drops from ten to four (it previously exempted most real turns), hook matchers changed from a static tool list to `.*` after `PowerShell` — this platform's primary shell — was found missing from it and bypassing labour counting, mutation tracking, and the direct-`agy` deny. Tool-name classification now canonicalizes the MCP server segment, so `mcp__agent-switchboard__*` and `mcp__agent_switchboard__*` are treated alike. The direct-`agy` deny no longer depends on a host field being present.
+- **Resolved-model mismatch and out-of-scope writes are rejected.** Switchboard compares the model the backend attests against the one requested, and hashes the package root before and after an implementation package to check the worker's file-change claims against the filesystem. An out-of-scope change is reported and refused; nothing is auto-reverted, because a file outside the allowlist may be the user's.
+- **New `run_evidence_probe` tool** gives the read-only reader lane the measurements it could not make without a shell — file hashes, real encoding/BOM/line endings, git state, file stat, bounded literal grep, filtered process list. The catalog is fixed, with no pass-through command probe; secret-material filenames and symlink/reparse paths are refused, results are capped, and process listings never include command lines.
+- **New verification commands.** `agent-switchboard.exe gate-harness` proves enforcement deterministically (including the negative control a cooperative live session may never produce); `canary flash` runs one real read-only package end to end and prints its receipt and attested model; `routing-report` summarizes a session's lanes. Every MCP result now carries `_meta.switchboard` with the version, a build fingerprint of the running image, and the server pid, so "is this window on the new build?" is answerable from any response.
+
+### v1.0.33 (managed Gemini hierarchy + MCP-only sender boundary)
+- Install/repair now manages the same checksum-protected hierarchy in `~/.gemini/GEMINI.md`. It narrowly replaces the known obsolete global Pine-v6 persona, while preserving unrelated user-authored Gemini content and refusing tampered managed blocks.
+- Sender brains must enter cross-vendor and Flash labour through Switchboard MCP `route_agent_task`. "Through CLI" means `surface: "cli"` on that tool; only Switchboard may start `agy`, and the installed Codex/Claude pre-tool hooks deny sender-side direct invocation.
+- A Switchboard-launched Flash session is explicitly the non-authoritative worker for one schema-enforced package, never the brain/router and never an autonomous whole-plan executor.
+
+### v1.0.32 (fail-closed Gemini Flash work packages)
+- Every Antigravity Flash CLI call now uses `--output-format json --json-schema ...`. Switchboard validates the structured result locally and rejects missing fields, malformed output, contradictory completion, out-of-scope file changes, and unsupported claims that a defect is intentional/by design.
+- Flash implementation is limited to one package per call and requires `work_package_id`, 1-5 exact `allowed_files`, and explicit `acceptance_criteria`. Whole-plan execution, continuation to another package, `danger-full-access`, production SSH, live credentials, destructive operations, migrations, and live deployment are prohibited.
+- A valid Flash result returns `brain_verification: pending` and `accepted: false`. The Codex or Claude sender must independently inspect cited primary lines, the actual diff, and check output before accepting the package or dispatching the next one; ambiguity and failure fall back to the native reader/workhorse.
+
+### v1.0.31 (dynamic Gemini Flash external workhorse routing)
+- Bare Antigravity and `gemini flash` requests now select the newest exact stable `gemini-<numeric>-flash-high` slug advertised by live `agy models`, including its current tabular output. Numeric version ordering handles future releases automatically, while preview/nonconforming models are excluded, the bundled 3.6 slug remains an offline fallback, and explicit version pins remain exact.
+- Gemini Flash High is classified as a proactive external workhorse for bounded search, reading, extraction, summaries, drafting, and approved low-risk implementation/tests. It remains non-authoritative regardless of version and cannot replace the Sol/Fable frontier brain; when Claude's Fable-to-Opus chain is unavailable, Flash is only a degraded advisory second opinion and the Codex brain retains judgment.
+- Missing, quota-limited, timed-out, mismatched, or failed `agy`/Flash work falls back to the host's native cheap reader/workhorse and records the fallback. Flash and native workers may run concurrently only on independent packages: reads may be parallel, while writes remain serial unless demonstrably isolated, with the brain reviewing evidence and actual diffs.
+
+### v1.0.30 (Windows-safe Claude hook execution)
+- Claude Code routing hooks now use executable-plus-argument-array form, preventing `/usr/bin/bash` from stripping backslashes out of Windows executable paths. Install/repair migrates legacy string-form Switchboard hooks without changing other user hooks; Codex hooks keep their existing command-string format.
+- Completion now requires every Claude-managed background Bash, PowerShell, or Monitor job started by a package to reach a terminal result or be stopped. Launching or detaching background work does not count as verification.
+
+### v1.0.29 (strict native pre-labour enforcement)
+- The installed `PreToolUse` gate now atomically allows one bounded block of direct brain labour, then denies the next eligible read, search, evidence, test, documentation, or mechanical call until a same-vendor native reader/workhorse starts or a package-specific brain override is registered.
+- Native-agent relief is bounded rather than permanent: each cheap-role start opens only the next block, while completed planning work cannot disable later implementation enforcement. Switchboard consultation controls remain available, but ordinary research MCP calls count as evidence labour.
+- Direct-labour counts are captured before tool execution, resist parallel-call and retry bypasses, and set a floor that the final routing audit cannot under-report. Managed native roles are also instructed to cap their return at 8,000 characters so cheap-agent transcripts do not flood the brain context.
+
+### v1.0.28 (bounded context ingress and complete routing audits)
+- Oversized MCP verification payloads are quarantined outside the brain context by the installed `PostToolUse` hook. The brain receives a compact evidence reference and must request an explicit field projection or output cap instead of ingesting the raw response.
+- Decision premises are explicit: readers locate candidate evidence and distinguish fact from interpretation; the brain adjudicates only the minimum primary evidence whose truth could change a decision.
+- Completion audits now cover unplanned as well as planned work and include a direct-brain labour census for reads, searches, evidence queries, tests, documentation, and other routine work.
+- `agent-switchboard.exe --version` (plus `version` and `-v`) reports the packaged release, so an installed binary can be verified directly.
+
+### v1.0.27 (native-first labour routing)
+- Same-vendor labour now uses native subagents first: Codex `explorer`/Luna-low and `worker`/Terra-medium, or Claude `Explore`/Haiku and `economy-worker`/Sonnet-medium. That same-vendor restriction remains; the current policy also permits the distinct external Antigravity Flash workhorse lane documented above.
+- Plans now carry a portable semantic lane plus execution mechanism and executor-resolved exact model/effort. A Claude-authored Sonnet/Haiku package is re-resolved to Codex's current native worker/reader when Codex executes it, and vice versa.
+- The completion gate records host-issued `SubagentStart`/`SubagentStop` ids and accepts mixed `native:<agent-id>` and `broker:<uuid>` receipts. Bare brain overrides no longer bypass the whole audit; retained work uses a package-specific `override: brain - <WP-ID>: <specific reason>`.
+- A one-shot native-first checkpoint fires after ten mutating operations without a completed cheap native agent. Dirty-worktree or deployment ownership no longer excuses read-only, test, evidence, documentation, or isolated mechanical labour.
+- Dynamic Codex role selection excludes the frontier brain from cheaper roles when alternatives exist. A transient catalog failure keeps the last-known managed native roles instead of installing stale hard-coded model ids.
+
+### v1.0.26 (future-proof brain/labour hierarchy)
+- The install/repair flow now owns checksum-marked global Codex and Claude hierarchy blocks, cheap reader/workhorse role files, and merge-safe prompt/tool/stop hooks. It preserves existing hooks and main model/effort settings; the same refresh runs whenever the installed MCP server starts.
+- Codex brain/worker/reader roles are selected from live `codex debug models` priority/visibility/description metadata. Claude uses moving family aliases: Fable/max for the peer brain, Opus/max only on an explicit Fable availability failure, Sonnet/medium for workhorse implementation, and Haiku for read-only labour.
+- Queued Claude jobs now preserve their requested permission mode instead of hardcoding `plan`, so approved routine implementation can execute on the workhorse. Direct and async results report requested, attempted, and runtime-attested actual models.
+- A bounded completion gate observes mutating tool use and requests a broker-verified routing audit (or an explicit brain override) before an implementation can claim completion. It fails open when the broker ledger is unavailable and blocks at most once per turn.
+
+### v1.0.25 (exact Haiku pin + tighter delegation contracts + codex discovery order)
+- `CLAUDE_CHEAP_MODEL` now pins the exact `claude-haiku-4-5-20251001` model id instead of the floating `haiku` alias; the static Claude catalog entry was updated to match while keeping all existing Haiku aliases (`haiku`, `claude haiku`, `haiku 4.5`) resolvable.
+- Implementation-plan and implementation task contracts, and the cost-aware routing rules, now require each work package to state `Route | exact model/effort | deliverable | verification | escalation`, require workers to record an `override: brain - <reason>` line when deviating from the assigned route, reclassify risk/difficulty at each work-package boundary, return the first ambiguity or failed fix to the brain before delegating the deterministic remainder, default to parallel reads / serial writes, and require the final routing audit to cross-check the broker's actual-model ledger rather than a worker's self-report.
+- `discover_codex` (broker) and `setup.py`'s config writer/repair now resolve Codex CLI path in the same order: a valid configured `codex_path`, then a valid `CODEX_CLI_PATH` marker from `~/.codex/config.toml`, then `PATH`.
+- Direct and asynchronous Codex/Claude CLI calls now record the runtime-reported model (and Codex effort), label missing evidence `unverified`, and fail closed on a requested-model mismatch. Claude trusts only the main assistant event; Codex trusts the persisted `turn_context` tied to the emitted thread id.
+- Codex request rows now preserve `read-only`, `workspace-write`, or `danger-full-access` through the detached worker instead of silently forcing every worker to read-only. Native Windows sandbox failures still escalate to the brain; the broker never weakens the requested sandbox automatically.
+
+### v1.0.24 (cost-aware frontier brain + worker routing)
+- Bare serious consultations now use the current frontier brain at maximum effort: Codex Sol/max and Claude Fable/max.
+- Explicit `model_policy="cheap_read"` routes read/extract/summarize labor to Luna/low or Haiku (without an unsupported Haiku effort flag).
+- Explicit `model_policy="balanced"` routes bounded implementation/testing from an approved plan to Terra/medium or Sonnet/medium. Prompt keywords never silently downshift a serious request.
+- The routing guide now documents both families and the evidence/escalation contract remains in the shared ground rules.
+
+### v1.0.23 (cross-agent output discipline)
+- Shared task contracts now lead with the result, describe failures concretely, avoid invented estimates, and prefer plain language.
+- Review/audit/bug-hunt contracts report every substantiated in-scope finding, keep unrelated observations separate, and identify residual verification gaps when no finding is confirmed.
+
+### v1.0.22 (Antigravity CLI-first routing)
+- **Antigravity now defaults to the standalone `agy` CLI**, matching Codex and Claude's CLI-first behavior. Calls return stdout directly; if `agy` is missing, automatic routing falls back to the existing in-app bridge/inbox.
+- **Explicit surface intent always wins.** `surface="extension"` / `"inbox"` or `use_inbox=true` forces the in-app bridge; `surface="cli"` requires the headless CLI.
+- **Model selection uses stable, live CLI slugs.** `"flash high 3.6"` resolves to `gemini-3.6-flash-high`, and `list_agent_models` merges `agy models` output so newly released models become available without hardcoding another broker release.
+- **Execution mode follows task intent.** Consult/review defaults to sandboxed `plan`; `task_kind="implementation"` defaults to `accept-edits`; bypassing permission prompts remains an explicit `danger-full-access` choice.
+- Added `consult_antigravity`, `antigravity_cli_path`, doctor reporting for `agy`, installer detection, and CLI/inbox fallback guidance.
+
+### v1.0.21 (limits are advisory — stop force-shrinking data between sessions)
+- **Inline consult responses: default 5k → 20k chars, hard ceiling 40k → 200k** (`AGENT_BROKER_CONSULT_RESPONSE_CHARS` / `_MAX`). Full responses were always preserved (history + request row + `response_ref`), but the small inline cap force-shrank what the calling session actually saw.
+- **Truncation no longer mangles structure.** The old path collapsed all newlines/indentation (destroying code blocks and diffs). The rare over-ceiling cut is now a clean tail-cut at a line boundary with an explicit `[... truncated inline; FULL response preserved — see response_ref]` marker.
+- **Word budgets are now explicitly ADVISORY** in the task contract, ground-rules file, and the prompt-size notice: aim lean, avoid *redundant* content (re-pasted files the receiver can read itself), but **never omit unique data** needed for a correct/complete answer. The prompt notice now states the prompt was delivered in full.
+- Audited the full transfer path: prompts (MCP → DB → stdin → CLI) and responses (CLI pipe → DB → `request_result`) move **untruncated**; only display excerpts (history, event log) are shortened.
+
+### v1.0.20 (no stray Claude tabs — worker requests skip the UI inbox)
+- **Worker-handled Claude requests no longer open a new Claude tab.** v1.0.19 wrote the inbox `.md` *and* started the CLI worker, so the bridge also delivered the prompt into the IDE — a stray tab popped up while the worker answered headless. Inbox files are now written **only when no CLI worker took the request** (UI fallback path), and the worker deletes any leftover inbox copies when it finalizes (covers rows queued by older servers).
+
+### v1.0.19 (Claude/Fable requests get the CLI worker too)
+- **Queued Claude consults no longer sit "queued" forever.** A Claude inbox request (e.g. Opus consulting Fable) used to depend entirely on an interactive session or the bridge picking the inbox file up — in a headless environment nothing ever did. Queueing now also starts a detached **Claude CLI worker** (`claude -p --model fable/opus/sonnet/haiku --effort …`, same machinery as the Codex worker: atomic claim, 1800s cap, rowcount-gated side effects, no console window) that records the answer; collect it with `request_result(request_id, wait_seconds=180)`. The inbox file stays as the UI fallback. Disable via `AGENT_BROKER_CLAUDE_QUEUE_AUTORUN=0`.
+- **Targets that aren't CLI-runnable** (e.g. Antigravity panel models) keep the UI delivery path, and now **expire with a clear error** after ~35 min instead of hanging forever; stale-expiry covers `claude_requests` like it covers `codex_requests`.
+- Schema: `claude_requests` gained `effort`, `cli_model`, `worker_pid`, `worker_started_at`, `worker_completed_at` (auto-migrated).
+
+### v1.0.18 (max-effort headroom + honest wait expectations)
+- **Worker cap raised 900s → 1800s.** A max-effort Sol consult on a real design prompt commonly runs 5-15 minutes (live-measured: 8m21s); the old cap risked killing legitimate long runs. Override via `AGENT_BROKER_CODEX_ASYNC_TIMEOUT_SECONDS`.
+- **Pending/running responses now state the real ETA.** The pending payload carries `typical_wait: "5-15 minutes at max/xhigh effort"` and `retry_after_seconds: 120` (was a hammer-inducing 20), and `request_result` reports `elapsed_seconds` plus a "this is normal, not a hang" note for max/xhigh — so callers stop reading a 8-minute run as stuck.
+
+### v1.0.17 (consult is always Sol/max — no silent downgrade)
+- **Removed the prompt-keyword "cheap read" guesser.** It was silently routing real consults to `gpt-5.6-luna` at low effort whenever the prompt mentioned reading/lines/deleting — producing hedged, untrustworthy answers. Luna now runs **only** when the caller explicitly sets `model_policy='cheap_read'` or names a Luna model.
+- **A serious consult on Sol is forced to `max`.** Even if the caller passes `high`/`medium`, a consult/plan/audit/review/debate is clamped up to `max` (unless it explicitly opted into a cheaper tier). Safe now that max routes async instead of hanging — so the earlier hang fix no longer costs you effort.
+
+### v1.0.16 (no more stray cmd windows)
+- **Consults no longer pop an empty `cmd.exe` window on Windows.** The detached async worker runs without a console of its own, so the Codex/Claude CLI (and git/powershell helpers) it spawned were getting a fresh console window that lingered on screen. Every child process now spawns with `CREATE_NO_WINDOW`, so all consultation work happens silently in the background.
+
+### v1.0.15 (highest-effort default + effort-based async routing)
+- **Consults/plans default to `gpt-5.6-sol` at `max` again** (v1.0.14 had dropped this to `high`). Quality is the default; latency is handled by routing, not by lowering effort.
+- **`max`/`xhigh` consults route async up front.** Instead of blocking the 240s sync window and then reporting pending, an effort that doesn't fit the window returns a pending `request_id` immediately while the detached worker finishes it — collect with `request_result(request_id, wait_seconds=180)`. Efforts that fit (`high`/`medium`/`low`) still return **inline**.
+- **Reading/labour stays on Luna.** `model_policy='cheap_read'` (and cheap/reader-shaped requests) run `gpt-5.6-luna` at `low` and return inline.
+- **Defaults only — the caller always overrides.** An explicit `effort`, `target_model`, or `model_policy` wins: request Luna for a consult, or Sol/max for anything, as the task needs.
+
+### v1.0.14 (Codex consult no longer hangs / times out)
+- **Direct `consult_codex` no longer times out and discards the work.** A consult now runs through the same ledger+worker path as queued requests: it returns the answer inline when it finishes inside the sync window, otherwise it returns a `status: "pending"` payload with a `request_id` — the detached worker keeps running to its own cap and records the answer, so nothing is lost. Collect a pending answer with `request_result(request_id, wait_seconds=120)`.
+- **Consults default to `high` effort, not `max`.** At `max`, `gpt-5.6-sol` routinely overran the 240s sync window and the timeout threw the work away. `high` finishes inline for typical consults; the sync path no longer clamps serious consults *up* to `max` (the async routing paths still do). Pass `effort: "max"` explicitly when you want it — that request just returns a pending id.
+- **`request_result` / `request_status` gained `wait_seconds` long-poll.** One call blocks (bounded to the MCP window) until the request reaches a terminal state, the reliable way for a turn-based caller to collect a pending consult.
+- **Worker hardening.** Atomic single-writer claim (no duplicate workers on a simultaneous start); post-completion history/events are skipped when a worker loses the finalize race; lone UTF-16 surrogates in CLI output are scrubbed before the DB write (previously crashed `store_consultation` *after* a successful consult, discarding the answer).
+
+### v1.0.13 (Codex inbox async worker)
+- **Claude -> Codex inbox requests no longer stay `delivered` forever.** Queued Codex requests now start a bounded headless Codex CLI worker that writes the answer/error back to the same request row.
+- **Old stuck Codex inbox requests now fail cleanly when polled.** `request_status` / `request_result` turns stale pre-fix Codex rows into terminal errors with a requeue note.
+- **Async Codex requests preserve model policy.** Task kind, token budget, target model, and effort are stored on the queued request, so serious Sol consults still run at `max`.
+
+### v1.0.12 (Codex consult effort guard)
+- **Serious Codex Sol consults no longer silently run at medium.** Accidental lower efforts on `gpt-5.6-sol` consult/audit/review/debate routes are upgraded to `max`.
+- **Deliberate downshifts are still allowed.** Use `model_policy: "balanced"`, `"efficient"`, or `"lower_effort"` when medium/lower effort is intentionally enough, or `model_policy: "cheap_read"` for Luna reader/sample-prep work.
+
+### v1.0.11 (Codex 5.6 routing guide)
+- **Codex defaults now target GPT-5.6 Sol at max reasoning.** Bare `codex`/`gpt` consults, audits, reviews, debates, and co-op routes resolve to `gpt-5.6-sol` with `max` effort.
+- **Cheap reader/sample-prep requests now downshift automatically.** Explicit cheap/fast reading, extraction, summarizing, drafting, or sample-prep requests can use `model_policy: "cheap_read"` and resolve to `gpt-5.6-luna` with `low` effort.
+- **Agents can ask the broker which model policy to use.** New `get_model_routing_guide` returns the policy, examples, and available model catalog so Claude/Codex do not have to rediscover the rules every session.
+
+### v1.0.10 (consultation response redaction fix)
+- **Successful local consultation answers are no longer line-redacted before return or storage.** Long Fable/Claude/Codex/Gemini responses now keep security-audit wording intact in both the inline excerpt and `retrieve_shared_context(response_ref, query)`.
+- **Generic shared context redaction remains enabled by default.** User-provided context, prompts, logs, and error responses still use the existing safety redaction path.
+- **Retrieved shared context now flags stored redaction placeholders.** Older refs that already contain `[redacted possible secret line]` report `contains_redaction_placeholders` so callers know those lines were removed before storage.
+
+### v1.0.9 (Fable backend routing fix)
+- **Fable max no longer gets caught by the Opus async-inbox rule.** The automatic async queue is now limited to `opus` at max effort; `fable`, `sonnet`, and other Claude aliases stay on the direct Claude CLI backend unless async is explicitly requested.
+- **`route_agent_task` now honors the requested Claude effort.** A routed request with `effort: low` now resolves and runs as low instead of silently falling back to Claude's max-effort default.
+- **Stale Fable inbox requests can be safely cancelled.** The failed queued Fable requests from the regression are terminal once cancelled and will not be re-delivered by the bridge.
+
+### v1.0.8 (async Opus Max consults)
+- **Heavy Codex -> Claude Opus/max consults no longer block inside the MCP timeout.** Reviews, audits, debates, bug hunts, implementations, and other large max-effort Claude requests from Codex now queue through the Claude inbox and return a request id immediately.
+- **Opus/max quality is preserved instead of downgraded.** The queued Claude request carries a strict model guard plus an explicit effort guard, so the receiver is told to use Claude Opus at max effort or report a mismatch instead of silently answering with a lesser/default model.
+- **Codex can track the queued Claude answer.** `queue_claude_request`, `get_claude_requests`, `request_status`, and `request_result` are now exposed as MCP tools, so a caller can queue a long Opus pass, keep working, then retrieve the recorded answer.
+- **Claude inbox prompts now include the return path in the injected body.** Claude sees the exact `respond_to_request(...)` instruction, plus the `.agent-broker/claude-responses/<request-id>.md` fallback, after the bridge strips the metadata header.
+
+### v1.0.7 (direct consult timeout hardening)
+- **Direct Claude/Codex consults now finish before Codex's MCP tool-call timeout.** Synchronous CLI consults are capped below the client timeout, so Codex gets a controlled broker response instead of a red `timed out awaiting tools/call` failure.
+- **Codex -> Claude CLI consults are isolated from Claude extension state.** Switchboard starts Claude consults with safe mode, an empty MCP config, no Chrome bridge, and no session persistence so a Claude extension task using Switchboard does not bleed into a Codex extension consult.
+- **Claude consults now use stream-json parsing.** If Claude starts answering but does not finish before the safe timeout, the broker can return any partial answer it received instead of losing everything.
+- **Tool descriptions now warn that direct consults are bounded.** Full-site reviews should be split into batches or routed asynchronously; a single synchronous MCP tool call is not a safe place for a many-minute Opus pass.
+
+### v1.0.6 (Codex/Claude peer-consult fallback)
+- **Codex can now ask for a peer consult without naming every routing field.** If a Codex-origin Switchboard call leaves `target_agent` and `target_model` empty, the broker now defaults to Claude Code CLI with the flagship Claude model (`opus`, max effort) instead of falling into Antigravity model selection.
+- **Claude gets the symmetric fallback.** Ambiguous Claude-origin consult/co-op/debate requests now default to Codex CLI with the flagship Codex model (`gpt-5.5`, xhigh effort).
+- **Prompt wording still wins.** Natural phrases such as "consult with Claude" or "ask Codex for a second opinion" are detected before the peer fallback, and explicit structured targets continue to take priority.
+
+### v1.0.5 (Antigravity local context + Claude tool permissions)
+- **Antigravity context pickup no longer dead-ends when no live bridge answers.** `request_context_snapshot(target_agent="antigravity")` now falls back to bounded local Antigravity task/log/activity state (`~/.gemini/antigravity-ide/brain`), workspace state, file history, and recent project file mtimes. It clearly labels the result as low/medium-confidence instead of pretending it is a guaranteed visible-chat transcript.
+- **Claude's default MCP catalog now includes the tools Switchboard asks it to use.** The lite profile exposes Codex queue/status, work-memory recording, context-event recording, and request-ledger tools, so Claude no longer gets instructions to call hidden tools such as `record_work_memory`.
+- **Docs now describe the real Antigravity fallback and Claude tool profile.** README context-snapshot and tool-profile sections now match the shipped behavior.
+
+### v1.0.4 (Antigravity bridge claim isolation)
+- **Antigravity bridge claims are now workspace-scoped and fresh-only by default.** The bridge passes its current workspace root when claiming queued Antigravity work, and ignores queued work older than 10 minutes unless configured otherwise. This prevents an unrelated Antigravity window/chat from waking up for stale or cross-project broker tasks.
+- **Context snapshot claims use the same isolation.** Live bridge hosts now claim snapshot requests only for the active workspace and within the freshness window, so snapshot polling cannot route another project’s request into the visible Antigravity panel.
+- **Antigravity broker handoffs are one-shot by default.** The bridge prompt now tells the in-app agent not to create scheduled tasks, background timers, wait loops, or delayed follow-up chat turns after a broker request is delivered. If a deploy/test/tool is still pending, the agent should report current status, complete the broker request, and stop.
+- **Bridge settings added:** `claimCurrentWorkspaceOnly`, `antigravityClaimMaxAgeMs`, `snapshotClaimMaxAgeMs`, and `preventAntigravityBackgroundTimers`. Bridge extension version is now `1.0.1`.
+
+### v1.0.3 (Claude/MCP context budget reduction)
+- **Claude gets a lite MCP catalog by default.** When the MCP client identifies as Claude, `tools/list` now returns 18 compact user-facing tools instead of the full bridge/internal catalog. It includes Codex routing, request return, and work-memory recording so broker instructions never ask Claude to call hidden tools. Set `AGENT_BROKER_TOOL_PROFILE=full` or `mcp_tool_profile: "full"` if a client needs every internal bridge tool.
+- **Tool results are summary-first.** MCP JSON results are compact by default, `get_consultation_history` now returns bounded summaries unless `include_raw=true`, and long consult responses return an excerpt plus `response_ref` for explicit retrieval.
+- **Smaller default context reads.** Default context packs are 2.4k tokens, work memory is 5 entries / ~2.6k chars, and snapshot fast paths read 4 turns / ~300 tokens unless a caller asks for more.
+
+### v1.0.2 (straightforward CLI model + reasoning-effort selection; smallest-sufficient build rung)
+- **Pick the model and reasoning effort the obvious way.** `consult_codex` / `consult_claude` / `route_agent_task` now take a first-class **`effort`** field (`minimal|low|medium|high|xhigh`, plus phrases — *"extra high" → xhigh*, *"ultra"/"max" → family top*) that is passed to the CLI as **its own flag** (Codex `-c model_reasoning_effort=`, Claude `--effort`) and **never** smuggled into the model name. A bare family request — **"codex"**, **"claude"** — now resolves to the **flagship model at the highest available effort** (Codex `gpt-5.5`/`xhigh`, Claude `opus`/`max`) instead of stalling on a model-selection prompt; a specific model is honored verbatim (**"sonnet 4.6 for implementation"**, **"gpt-5.4-mini"**). Effort phrases are split out of the model text before matching, so a request like *"5.5 extra high"* resolves cleanly to model `gpt-5.5` + effort `xhigh` — fixing a class of failures where the effort phrase produced an invalid `--model "gpt-5.5-codex xhigh"` (rejected by Codex). Per-request auto-pinning of a topic default is now **opt-in** (`remember_model`). New shared helper `resolve_cli_model_and_effort()`; **Fable** added to the Claude catalog. *(Tagged `v1.0.1` in source; first shipped as a binary in v1.0.2.)*
+- **Smallest-sufficient-implementation rung in the build contracts.** The `implementation` and `implementation_plan` task contracts now tell the receiving agent to prefer the **standard library / a native platform feature / an already-installed dependency over new code or new dependencies** — explicitly **without** dropping required validation, error handling, security checks, or tests, and without disputing an approved plan (stop and report instead). Scoped to code-writing task kinds only; `consult`/`co_audit`/`debate`/`review` are unchanged, so second-opinion reasoning quality is untouched.
+- **Installer: more reliable Claude desktop detection.** Recognizes the Microsoft Store / MSIX "Cowork" build (registered AppX package) in addition to the `%APPDATA%/Claude` data dir and the legacy standalone installer, so Store users aren't false-negatived.
+
+### v1.0.0 (diagnostics + Claude reply path + CLI-default routing + debate + Claude Code nerve-system)
+- **Claude Code joins the nerve system (on-disk fast path).** `request_context_snapshot` now reads live **Claude Code** sessions on disk (`~/.claude/projects`, scoped to the session whose `cwd` matches the project) and completes **immediately** — symmetric with the existing Codex `~/.codex` reader, so the most common "recent chat" surface is finally peekable without any agent cooperation. When **no surface is heartbeating** it returns `no_live_surface` (with guidance) instead of queuing forever; `doctor` gained a **nerve-system** report of which surfaces can contribute (on-disk vs live bridge vs push-only); and the installer now also registers the **Claude desktop app** (push-only — it stores chat in Electron/server-side and can't be read on disk, surfaced honestly in `doctor`). Installer hardening: Antigravity debug-port helper scripts are copied to a **durable** `~/.agent-broker` path (the frozen-exe build previously baked a PyInstaller temp path into the launcher shortcut, breaking Antigravity launch after install), uninstall **restores the patched launcher shortcuts** so the opt-in is fully reversible, and the setup menu leads with **Install** (Status moved last).
+- **Headless CLI is now the default route for Codex/Claude.** `route_agent_task` sends Codex/Claude work to the headless CLI by default (reliable, model-switchable via `-m`, answer returned inline). Say **"in app"** / `surface=extension` for the in-app IDE chat panel, or `surface=app` for a visible desktop-app handoff — both honored. **Exceptions:** **Gemini** defaults to Antigravity in-app automation unless you explicitly request `surface=cli`; and **Antigravity-hosted models** (e.g. Antigravity's Opus/Gemini) **always** use Antigravity automation, never a CLI. If the CLI is missing, auto-routing degrades to the in-app extension, then the app handoff.
+- **Antigravity automation is a true round-trip (verified).** From any driver (e.g. the Claude app) you can route to a *named* Antigravity model — the bridge **auto-selects that model** (switching away from whatever was active) over CDP, sends the prompt into the live Antigravity agent panel, and the structured reply returns to the broker (`complete_antigravity_request`). Confirmed working end-to-end: "send to Antigravity Gemini 3.5 (High) and reply" auto-switched the model and returned the answer. This remains the **only** surface with a fully programmatic in-app send *and* structured reply.
+- **`doctor` — read-only capability report.** `agent-switchboard.exe doctor` (or `bridge doctor [--json]`) probes this machine per assistant: CLI present + live `--version` smoke test, extension installed, CDP port, the delivery route you'll actually get, the reply path, and whether a headless debate can run. Flags broker/bridge version drift and prints next steps. **No new MCP tool** (CLI-only — keeps the 36-tool context budget unchanged). Also probes for a CLI binary bundled inside an installed extension as a *detected-and-smoke-tested* fallback, never an assumed one.
+- **Claude-extension replies are now first-class.** Added a durable `claude_requests` table (mirrors `codex_requests`): `queue_claude_request` records a row, `respond_to_request` and `ledger.md` now recognize Claude requests, and a new `bridge claude-responses [project]` verb ingests answer files written under `.agent-broker/claude-responses/` (idempotent; archives to `processed/`). Previously a Claude-extension reply had no row to attach to. Still no MCP tool added (36 unchanged).
+- **Internal request-lifecycle adapter.** One canonical state map + `is_terminal_state()` so terminal-state logic lives in a single place for new code (reply ingestion, `doctor`, `status`/`result`/`cancel`). Existing per-table status values are unchanged on the wire — no migration.
+- **Request inspection + maintenance verbs.** `bridge status <id>` and `result <id>` (read-only, normalized to the canonical lifecycle across codex/antigravity/claude requests), `cancel <id> [reason]` (terminal-guarded, idempotent), and `reap [max_age_hours]` (marks abandoned non-terminal requests `expired` — never re-queues, so no double-delivery; never touches terminal or `awaiting_model_selection` rows). CLI-only; 36 MCP tools unchanged.
+- **Cross-model debate engine** (`bridge debate <project> <topic> "<proposition>" [rounds] [sideA[:model[:effort]]] [sideB[:model[:effort]]]`). Two assistants debate **headless on your subscriptions** (no API key) for N rounds, then a synthesis judge writes a verdict; the transcript + verdict are saved under `.agent-broker/debates/`. Each debater keeps real memory across rounds via its CLI's own resume primitive (`codex exec resume`, `claude -p --resume`) — **no daemon, no app-server, no network port**; every turn is a clean bounded subprocess. Defaults: Codex latest + `xhigh` reasoning vs Claude `opus` + `xhigh`, synthesis at `high`; the transcript labels each side as e.g. `codex/latest (xhigh)` so you always see which model+effort argued. Token discipline (no file/command exploration, ~500-word cap, only the opponent's last message per turn) keeps cost down without lowering reasoning. CLI-only; 36 MCP tools unchanged.
+
+### v0.6.0 (active context snapshots)
+- **Peek at what another open chat knows.** New `request_context_snapshot` asks the best available surface for a COMPACT continuation state (objective, plan, files, checks, risks, next step) - not a full transcript. Read it back with `get_latest_context_snapshot`; it also lands in `get_context_pack` under "Latest Context Snapshots" and in `get_topic_status`. Opt-in and local - no silent chat scraping.
+- **Codex fast path:** for Codex the broker reads the live `~/.codex` session transcript on disk (redacted + truncated) and returns immediately - no agent cooperation or CDP needed. Strictly scoped to the session whose `cwd` matches the project (no cross-project leak).
+- **Cooperative delivery for other surfaces:** `claim_context_snapshot_request` (capability-gated, stale-claim reaper), `complete_context_snapshot_request` (race-safe, idempotent), `snapshot-release` for undeliverable claims, plus `record_surface_heartbeat`/`list_live_surfaces` so the bridge can route to a live host. Bridge polls snapshots first and scans a `.agent-broker/context-snapshots/` fallback dir. 36 MCP tools.
+
+### v0.5.0 (model enforcement + one-file install)
+- **Strict model guard on non-switchable surfaces.** When a specific model is requested for the Codex/Claude *extension* (or app) — surfaces the broker can't switch — the delivered prompt now leads with a self-check: state your model; if you're not the requested one, **STOP and tell the user to switch**. The bridge also shows a "select `<model>`" notification. A lesser/default model can no longer silently answer in the requested model's place. Codex requests carry `target_model` + `strict_model`.
+- **Conservative prompt-model detection.** "Get Opus's opinion" with no explicit model arg resolves to Opus (so the topic's Sonnet default doesn't win), as a one-off that doesn't rewrite the stored default. Tightly anchored so ordinary prose ("the *user*…", "*budget*…", "magnum *opus*") never misfires.
+- **Self-contained `agent-switchboard.exe`.** One dual-mode binary (PyInstaller) that installs everything (the bridge **VSIX is embedded**) and runs the MCP server via `agent-switchboard.exe serve` — no Python requ

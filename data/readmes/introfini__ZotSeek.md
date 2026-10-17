@@ -1,0 +1,935 @@
+# ZotSeek | AI-Powered Semantic Search & MCP Server for Zotero
+
+Find similar papers by **meaning**, not just keywords. 100% local, no data leaves your machine. Now with a built-in **MCP server** for AI agents.
+
+> **Status:** ✅ Stable release · Zotero 8, 9 & 10 · Transformers.js running locally
+>
+> **New:** 🤖 **MCP server built in** — Claude Code, Codex, and any MCP client can search your library and cite papers with links that open straight to the matched PDF page. Fully local, read-only, opt-in. [Set it up in one line →](docs/MCP.md)
+>
+> **New from the same author:** 🔎 [**citefact**](https://github.com/hearthresearch/citefact) — audit your manuscript against your Zotero library: citations exist, quotes are verbatim, claims are supported.
+
+![ZotSeek Search Dialog](docs/images/search-dialog-by-section-hover.png)
+
+---
+
+## Features
+
+- 🔒 **100% Local** - No data sent to cloud, works completely offline
+- 🧠 **True Semantic Search** - Find papers by meaning, not just keywords
+- 🤖 **AI Agent Access (MCP)** - Let Claude Code and other MCP clients search your library, fully local and opt-in ([docs](docs/MCP.md))
+- 🔍 **Find Similar Documents** - Right-click any paper → discover related research
+- 📖 **Search from PDF Selection** - Select text while reading → right-click → find documents about that concept
+- 🔎 **Natural Language Search** - Search with queries like "machine learning in healthcare"
+- 🔀 **Multi-Query Search** - Combine up to 4 queries with AND/OR logic to find topic intersections
+- 📝 **Your Notes, Searched Too** - Optionally index the text of notes attached to an item, so what you wrote is findable alongside the paper itself; off by default, and existing items are back-filled on demand
+- 🕘 **Recent Searches** - The search window remembers your last 10 queries, so you can go back to a phrasing that worked; clear the list from the dropdown at any time
+- 🔗 **Hybrid Search** - Combines AI and keyword search, with the keyword half reading PDF text and note content, not just titles and tags
+- ⚡ **Lightning Fast** - Searches complete in <100ms
+- 📑 **Section-Aware** - See where each match came from (Abstract, Methods, Results, or one of your notes)
+- 📄 **Matched-Passage Preview** - Hover a result to read the exact passage that matched, with query terms highlighted
+- 📍 **Passage-Level Location** - Jump to exact page & paragraph in Full Document mode
+- ✅ **Multi-Select in Results** - Select multiple search results, right-click to add to collections
+- 📁 **Save Results as Collection** - One click saves the full result set into a new Zotero collection so you can revisit the list later without re-running the search
+- 🧩 **Selectable Embedding Models** - Choose from 4 curated local models, including multilingual options; non-bundled models download once from Hugging Face to your machine
+- 🖥️ **Local Inference Server (optional)** - Serve the embedding model from LM Studio, Ollama, llama.cpp or vLLM on the same machine for native GPU speed: OpenAI-compatible API, localhost only
+- 🔄 **Auto-Index** - Automatically index new papers when you add them to your library
+- 👥 **Group Libraries (opt-in)** - Extend indexing and search to your Zotero group libraries with the Index scope setting
+- 🗑️ **Auto-Cleanup** - Embeddings automatically removed when items are deleted or trashed
+- 🚫 **Tag-Based Exclusion** - Tag items with `zotseek-exclude` to skip them during indexing
+- 📊 **Indexing Status Column** - "ZotSeek" column in the item list shows whether each paper is fully indexed, partially indexed (chunk limit hit), out of date, excluded, or not indexed
+- ⏸️ **Pause & Cancel** - Pause or cancel long-running indexing operations at any time
+- 💾 **Crash-Resilient** - Checkpoint saving every 10 items, **auto-resume on next startup** if a bulk run was interrupted, worker recovery on sleep/wake, skips problematic chunks automatically
+- 🔌 **Plugin API** - Other Zotero plugins can [call ZotSeek's search programmatically](docs/API.md)
+- ⚙️ **Configurable** - Customize via Zotero Settings → ZotSeek (also accessible from search dialog)
+- 🌐 **Localized** - UI available in English and Chinese (zh-CN)
+
+---
+
+## Privacy & Security
+
+ZotSeek is designed with privacy as a core principle:
+
+| Aspect | Guarantee |
+|--------|-----------|
+| **AI Model** | Default model bundled (~130MB); optional models download once from Hugging Face on demand — no API keys, no subscription |
+| **Processing** | All AI inference runs locally on your CPU/GPU |
+| **Your Papers** | Only indexes items from your local Zotero library |
+| **Network** | Zero network requests for search or indexing, unless you opt into a local inference server (see below) |
+| **Storage** | Embeddings saved locally in `zotseek.sqlite` in your Zotero data folder |
+| **Offline** | Works completely offline after installation (or after the optional inference server has started) |
+
+**What this means:**
+- Your research never leaves your machine
+- No cloud services, no API keys, no subscriptions
+- No telemetry or usage tracking
+- Uninstalling the plugin removes all ZotSeek data
+
+**Optional local inference server:** the default is the fully in-process engine described above, which makes no network requests at all. If you choose to add a local inference server (LM Studio, Ollama, llama.cpp or vLLM), the guarantee shifts from "no network code exists" to "network code provably cannot leave the machine": every request is validated at request time against an allow-list of `127.0.0.1`, `localhost` and `[::1]`, there is no preference to override this, redirects to a non-loopback address are refused rather than followed, and cloud or remote endpoints are unsupported by design. This is opt-in and off by default.
+
+---
+
+## More Screenshots
+
+<details>
+<summary>Click to expand</summary>
+
+### Notes in Search Results
+Notes are searched alongside abstracts and PDF text. The Section column says where each
+match came from, and a note has no page to point at.
+
+![Search results including notes](docs/images/search-dialog-notes.png)
+
+### Recent Searches
+Click the empty search box to bring back a query you ran earlier.
+
+![Recent searches dropdown](docs/images/search-history.png)
+
+### Find Similar Documents
+![Find Similar Results](docs/images/find-similar.png)
+
+### Context Menu
+![Context Menu](docs/images/context-menu.png)
+
+### PDF Selection Context Menu
+![PDF Find Related](docs/images/context-menu-pdf-find-similar.png)
+
+### Settings Panel
+![Settings Panel](docs/images/settings.png)
+
+### Indexing Progress
+![Indexing Progress](docs/images/progress.png)
+
+</details>
+
+---
+
+## How It Works
+
+### The Big Picture
+
+```mermaid
+flowchart TD
+    subgraph INDEX["1️⃣ INDEX"]
+        A[📄 Paper] --> B[🤖 AI Model] --> C[768 numbers]
+    end
+    
+    subgraph SEARCH["2️⃣ SEARCH"]
+        D[🔍 Query] --> E[Query → 768 numbers]
+        E --> F{Compare all papers}
+        F --> G[📊 Ranked results]
+    end
+    
+    C -.->|stored| F
+```
+
+**How it works:** Each paper becomes 768 numbers capturing its meaning. To search, we convert your query to numbers and find papers with similar numbers.
+
+### Step-by-Step Process
+
+#### 1️⃣ Indexing Your Library
+
+When you use "Index Current Collection" or "Update Entire Library":
+
+```
+For each paper:
+  1. Extract title + abstract (Abstract mode)
+     — OR —
+     Extract PDF text page-by-page with exact page numbers (Full Document mode)
+  2. Split into paragraphs, filter out References/Bibliography
+  3. Send to local AI model (nomic-embed-text-v1.5)
+  4. Model outputs 768 numbers per chunk (the "embedding")
+  5. Save embeddings + location metadata to local database (zotseek.sqlite)
+```
+
+**Time:** ~3 seconds per chunk
+
+#### 2️⃣ Finding Similar Documents
+
+When you right-click → "Find Similar Documents":
+
+```
+  1. Load the selected paper's embedding
+  2. Compare against all indexed papers (cached in memory)
+  3. Rank by semantic similarity
+  4. Show top results
+```
+
+**Time:** ~70ms (with cache)
+
+---
+
+## Hybrid Search
+
+The plugin combines **semantic search** (AI embeddings) with **Zotero's keyword search** using **Reciprocal Rank Fusion (RRF)** for optimal results.
+
+### Search Modes
+
+| Mode | Best For | How It Works |
+|------|----------|--------------|
+| 🔗 **Hybrid** (Recommended) | Most searches | Combines semantic + keyword results |
+| 🧠 **Semantic Only** | Conceptual queries | Finds related papers by meaning |
+| 🔤 **Keyword Only** | Author/year searches, exact phrases | Zotero's own search over titles, authors, years, tags, PDF text and notes; a match inside a PDF or a note is credited to the paper it belongs to |
+
+### Why Hybrid Search?
+
+| Query Type | Pure Semantic | Pure Keyword | Hybrid |
+|------------|---------------|--------------|--------|
+| "trust in AI" | ✅ Great | ❌ Poor | ✅ Great |
+| "Smith 2023" | ❌ Poor | ✅ Great | ✅ Great |
+| "RLHF" | ⚠️ Maybe | ✅ Exact only | ✅ Both |
+
+### Result Indicators
+
+| Icon | Meaning |
+|------|---------|
+| 🔗 | Found by BOTH semantic and keyword (high confidence) |
+| 🧠 | Found by semantic search only (conceptually related) |
+| 🔤 | Found by keyword search only (exact match) |
+
+### Section-Aware Results
+
+The **Source** column shows where the match came from:
+
+| Source | What it means |
+|--------|---------------|
+| Abstract | Title + Abstract |
+| Methods | Introduction, Background, Methods |
+| Results | Results, Discussion, Conclusions |
+| Content | Generic (sections not detected) |
+| Note | A note attached to the item, when note indexing is on |
+
+A note has no page, so a Note result leaves the Location column empty and opens the note
+itself rather than jumping into the PDF.
+
+### Matched-Passage Preview
+
+Hover any result row to see a tooltip with the exact passage that matched your query, along with its location (page & paragraph), section type, and match score. This lets you judge whether a result is relevant without opening the paper. In **Keyword** and **Hybrid** searches the query terms are highlighted inside the passage, and the preview is centered on the first match so the relevant text is always in view. (Pure semantic search has no literal terms to highlight, so the passage is shown without highlighting.)
+
+### Result Granularity (Full Document Mode)
+
+When using **Full Document** indexing mode, you can toggle between two result views:
+
+| Mode | Results | Best For |
+|------|---------|----------|
+| **By Section** (default) | 1 result per paper, best matching section, with the location of that match | Overview of matching papers |
+| **By Location** | Every matching paragraph with exact page & paragraph | Finding specific passages |
+
+**By Section** - Aggregates all chunks per paper and shows the highest-scoring match. The **Location** column shows where that best match was found (page & paragraph), so you get one diverse result per paper without losing the exact location:
+
+![By Section Mode](docs/images/search-dialog-by-section-hover.png)
+
+**By Location** - Returns every matching paragraph individually with its own score:
+
+![By Location Mode](docs/images/search-dialog-by-location.png)
+
+In **By Location** mode, clicking a result opens the PDF to the exact page where the match was found.
+
+### Multi-Query Search
+
+Combine up to 4 search queries to find papers at the intersection of multiple topics:
+
+1. Click the **"+"** button next to the search field to add more queries
+2. Choose **AND** or **OR** to combine results
+3. For AND mode, select a combination formula
+
+| Operator | Behavior | Best For |
+|----------|----------|----------|
+| **AND** | Papers must match ALL queries | Finding topic intersections |
+| **OR** | Papers can match ANY query | Broadening search with synonyms |
+
+| AND Formula | How It Works | Use When |
+|-------------|--------------|----------|
+| **Minimum** (default) | Uses lowest score across queries | You want strict intersection |
+| **Product** | Geometric mean of scores | Balanced relevance across all queries |
+| **Average** | Arithmetic mean of scores | More lenient matching |
+
+**Example:** Search for papers about "machine learning" AND "healthcare" AND "ethics" to find AI ethics papers specifically in the medical domain.
+
+**Match column with multiple queries:** Shows combined score plus individual per-query scores:
+- `73% (77|73|68)` = 73% combined, with 77% for Q1, 73% for Q2, 68% for Q3
+
+For technical details, see [docs/SEARCH_ARCHITECTURE.md](docs/SEARCH_ARCHITECTURE.md).
+
+### Recent Searches
+
+Semantic search rewards rephrasing, and the phrasing that finally worked is easy to lose. The search window keeps the last 10 queries you actually ran:
+
+1. Click the empty search field (or press the Down arrow while it's empty) to see them, newest first
+2. Pick one to put it back in the box and run it again
+3. Choose **Clear search history** in the same dropdown to forget all of them
+
+Only the text of the main search box is kept, in a preference, so the list survives a restart. Running a query you have run before moves it back to the top instead of listing it twice, and a search you never ran (text you typed and then deleted) never enters the list.
+
+---
+
+## Indexing Modes
+
+| Mode | What Gets Indexed | Best For |
+|------|-------------------|----------|
+| **Abstract** | Title + Abstract | Fast indexing, quick setup |
+| **Full Document** (default) | PDF content split by sections | Deep content search, better results |
+
+Configure via **Zotero → Settings → ZotSeek**.
+
+### Library Scope (Group Libraries)
+
+By default, ZotSeek indexes only **My Library**. If you use Zotero group libraries, the **Index scope** setting (under Auto-Indexing) lets you include them:
+
+| Scope | What Gets Indexed |
+|-------|-------------------|
+| **My Library** (default) | Your personal library only |
+| **All libraries** | Personal library + every group library |
+
+The scope applies to both the bulk **Update Index** action and background auto-indexing. Once indexed, group items show up in search results like any other paper, with links that open them in the right library. Searches over MCP/REST can also be limited to a single library with the `library_key` parameter (see [docs/MCP.md](docs/MCP.md)).
+
+### How Full Document Mode Works
+
+For papers with PDFs, the chunker:
+1. Extracts text page-by-page with exact page numbers
+2. Splits each page into paragraphs
+3. Prepends title to each chunk for context
+4. **Automatically filters out References/Bibliography sections**
+
+When searching, if *any* chunk matches your query, the paper ranks highly (MaxSim aggregation in "By Section" mode).
+
+### References Filtering
+
+The chunker automatically detects and excludes bibliography sections:
+- Detects headers: "References", "Bibliography", "Works Cited", "Literature Cited"
+- Recognizes citation patterns: `[1]`, `Smith, J. (2021).`, DOI links
+- Stops indexing once references section is detected
+
+This keeps your search results focused on the actual content of papers.
+
+### Chunk Size Trade-offs
+
+The `maxTokens` setting controls how text is split for embedding. It's a **ceiling, not a target** — chunks are split at paragraph boundaries and may be smaller.
+
+| Chunk Size | Speed | Search Behavior |
+|------------|-------|-----------------|
+| **500-800** | Fast (~0.5s/chunk) | Higher precision, finds specific passages |
+| **2000** | Moderate (~3s/chunk) | Balanced (default) |
+| **4000+** | Slow | Higher recall, finds broad topics |
+
+**Default:** 2000 tokens. Firefox 140+ handles larger chunks efficiently.
+
+**Recommendations:**
+- Large libraries with full-paper indexing: use defaults
+- Finding specific methodologies: try 500-600
+- Broad topic discovery: try 2000-3000
+
+For detailed chunking documentation, see [docs/SEARCH_ARCHITECTURE.md](docs/SEARCH_ARCHITECTURE.md#chunking-strategy).
+
+### Indexing Status Column
+
+ZotSeek adds a "ZotSeek" column to the Zotero item list so you can see at a glance how each paper has been indexed. The first time you install this version the column appears automatically; you can hide or reorder it from the column-header menu like any other Zotero column.
+
+| Glyph | Meaning |
+|-------|---------|
+| `✓` | Fully indexed |
+| `◐` | Partial — the paper hit the *Max Chunks per Paper* limit and only part of its content is in the index. Raise the limit or switch to Abstract mode to capture the full text. |
+| `↻` | Out of date — the item was modified after it was indexed. Re-index to refresh. |
+| `⊘` | Excluded — the item carries the `zotseek-exclude` tag. |
+| *(empty)* | Not indexed. |
+
+After indexing, a one-line summary in the progress window also warns when any paper hit the chunk limit, and the same warning is written to the debug log per affected paper.
+
+### Indexing Child Notes
+
+Enable **"Also index child notes"** in Settings to make the text of notes attached to an item searchable alongside its abstract or full text. This includes notes created by [Better Notes](https://github.com/windingwind/zotero-better-notes), since it stores its content in the same note field Zotero itself uses. A note's text is added to its parent item, not indexed as a separate result.
+
+- **Off by default, and turning it on does not re-index anything by itself.** Items indexed from then on include their notes. Items that are already in the index keep exactly what they have until you run **"Add Note Text to Existing Items"** (below), or until you edit each note individually.
+- **Works in both modes.** This setting is independent of Abstract/Full Document mode; it adds note text on top of whichever mode is active.
+- **Not indexed:** standalone notes (notes not attached to any item), comments on PDF annotations, and images inside a note — every embedding model ZotSeek ships is text-only. Text surrounding an image is still indexed; only the image itself is skipped. Annotation comments are still found by Hybrid and Keyword search, which match their exact words: the result shows the comment and opens the PDF on that annotation.
+- **Editing a note** re-indexes its parent after a quiet period (default 60 seconds, adjustable via **"Delay before re-indexing an edited note"**) — but only while **"Automatically index new items"** is also enabled. With auto-indexing off, edited notes are picked up the next time you run Update Index by hand.
+- **Trashing a note** removes its text from the index the same way. Permanently erasing a note (bypassing the trash) leaves nothing to resolve back to its parent, so that removal only takes effect on the next manual Update Index.
+- **Turning the setting back off does not remove note text that is already indexed.** It only stops new note text from going in. Notes already in the index stay searchable until those items are re-indexed from scratch: remove them from the index and index them again, or clear and rebuild the whole index from Settings. If you put something in a note that you would rather not have indexed, switching the setting off is not enough on its own.
+
+#### Adding Notes to Items That Are Already Indexed
+
+**"Add Note Text to Existing Items"**, in the item context menu's ZotSeek submenu next to the other indexing commands, adds note text to items that already have an entry in the index. Nothing else does: **Update Entire Library** skips anything already indexed, whatever changed about it, so without this action the setting would only ever apply to items indexed after you switched it on.
+
+- **What it picks up:** items that are **already indexed**, and that have at least one note which is not in the trash. Items that are not indexed yet are left alone, since **Update Entire Library** covers those, notes included.
+- **Scope:** your personal library, or every library, following the same **Index scope** setting as Update Entire Library.
+- **Cost:** existing embeddings are reused, so only the note text goes to the model. In Full Document mode each candidate PDF is still read again to confirm the rest of the item has not changed, so the run is much faster than re-indexing from scratch but not instant.
+- **Interruptions:** pause, cancel and resume-after-a-crash behave exactly as they do for Update Entire Library.
+- **If the setting is off**, the action stops and asks you to turn it on first; there would be no note text to add.
+- **Running it again is safe.** Items whose notes are already indexed are left untouched rather than rewritten, and are reported as such at the end of the run.
+
+---
+
+## Choose Your Embedding Model
+
+ZotSeek ships with a curated set of local embedding models. The default model is bundled and works immediately; other models download once from Hugging Face and are then available offline.
+
+Go to **Zotero → Settings → ZotSeek → Embedding Model** to pick the model that fits your library.
+
+| Model | Dims | Multilingual | Approx. size | When to use |
+|-------|------|-------------|--------------|-------------|
+| **nomic-embed-text-v1.5** *(default, bundled)* | 768 | No | ~130 MB | English or mostly-English libraries. Strong all-around retrieval quality, no download needed. |
+| **paraphrase-multilingual-MiniLM-L12-v2** | 384 | Yes | ~135 MB | Smaller and faster; good for hardware-constrained machines or mixed-language collections where speed matters more than top accuracy. |
+| **multilingual-e5-base** | 768 | Yes | ~110 MB | Balanced multilingual quality at the same 768-dimension space as the default. Good first choice for non-English libraries. |
+| **BGE-M3** | 1024 | Yes | ~570 MB | Highest-quality multilingual retrieval in the set. Worth the extra size for large, mixed-language collections where accuracy is paramount. |
+
+**Privacy:** models are downloaded once from Hugging Face directly to your Zotero profile directory. No library content is ever sent anywhere — inference runs entirely on your machine.
+
+**Coverage indicator:** below the model selector, Settings shows "N of M items searchable with the active model." When any items are missing coverage, an **Index remaining N** button appears. Clicking it indexes those items in the background while you continue working; the button shows "Indexing in the background..." and disables itself while the run is active.
+
+**Three ways to index with a model (all preserve other models' embeddings):**
+1. The prompt shown immediately after you switch to a new model.
+2. The **Index remaining** button on the coverage line in Settings.
+3. The toolbar or right-click → ZotSeek → **Update Entire Library** action — now model-aware, it backfills items not yet covered by the active model rather than reporting "already indexed."
+
+**Switching models:** switching to a different model triggers a background re-index for items that have not yet been indexed with the new model. Items indexed with other models retain their embeddings — switching back is instant.
+
+**Manage downloaded models:** a "Manage downloaded models" panel in Settings shows per-model index statistics (items, chunks, and embedding storage) and lets you delete models you no longer need (this also removes that model's embeddings from the database). The built-in model and whichever model is currently active cannot be removed; each shows an inline reason ("Built-in" / "Active") with a tooltip explaining why.
+
+---
+
+## Using a Local Inference Server
+
+If you have a GPU, running the embedding model in a dedicated inference server (LM Studio, Ollama, llama.cpp or vLLM) is faster than the built-in WASM engine, which runs on CPU inside Zotero. This is entirely optional: the default remains the fully in-process engine, and ZotSeek never talks to anything off this machine.
+
+**Setup with LM Studio:**
+1. In LM Studio, load an embedding model (e.g. an embedding-capable GGUF) and start the local server. Note the port shown (typically `1234`).
+2. In Zotero, go to **Settings → ZotSeek → Local inference server** and enter the server URL, e.g. `http://127.0.0.1:1234`.
+3. Click **Test connection**. ZotSeek lists the models the server currently has loaded.
+4. Pick a model from the dropdown. ZotSeek sends a test embedding request and reports the dimensions it returns.
+5. Click **Add model**. The model now appears in the main **Embedding Model** picker alongside the bundled and Hugging Face models.
+6. Select it in the model picker to make it the active model.
+
+**Setup with Ollama:**
+1. Pull an embedding model, e.g. `ollama pull nomic-embed-text`. Ollama serves its OpenAI-compatible API on port `11434` by default.
+2. In **Settings → ZotSeek → Local inference server**, enter `http://127.0.0.1:11434`.
+3. Follow the same Test connection → pick model → Add model steps as above.
+
+The same flow works with llama.cpp's server (`llama-server`) and vLLM, since both also expose an OpenAI-compatible `/v1/embeddings` endpoint on localhost.
+
+**Re-indexing note:** a server-hosted model is a separate index from the built-in models, even for the same model name: indexing runs once per model, and previous indexes are kept. Switching between a server model and a built-in model does not require re-indexing again later, since both are retained side by side.
+
+**API key note:** if your server requires an API key, ZotSeek stores it in plain text in the Zotero profile preferences, sends it only to the loopback server you configured, and never logs it.
+
+**Choosing a model and task prefixes:**
+
+Pick a dedicated embedding model. The server's model list includes every model it has loaded, including chat models, and ZotSeek cannot tell the two apart from the API alone, so it warns you when a selected model's name does not look like an embedding model. Running a chat model as your embedding model produces poor search results.
+
+Some embedding models were trained to expect a short prefix before the text, different for queries versus documents (a "task prefix"). Using the correct prefix helps the model separate what you are searching for from what you indexed.
+
+| Model family | Query prefix | Document prefix |
+|--------------|--------------|------------------|
+| Nomic | `search_query: ` | `search_document: ` |
+| E5 | `query: ` | `passage: ` |
+| Most others (BGE, MiniLM, GTE) | none | none |
+
+ZotSeek pre-fills these prefixes automatically when it recognizes the model family from its name. If you are using a model that is not listed here, check the model card on Hugging Face for a prefix requirement, and leave the fields empty if the card does not mention one.
+
+Using the wrong prefixes does not produce an error. Search will simply run and quietly return lower-quality results.
+
+---
+
+## The AI Model
+
+### nomic-embed-text-v1.5
+
+| Property | Value |
+|----------|-------|
+| **Name** | [nomic-ai/nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) |
+| **Size** | 131 MB (quantized) |
+| **Dimensions** | 768 (Matryoshka - can truncate to 256/128) |
+| **Context Window** | 8192 tokens |
+| **Speed** | ~3 seconds per chunk |
+| **Quality** | Outperforms OpenAI text-embedding-3-small on MTEB |
+| **Special Feature** | Instruction-aware prefixes for queries vs documents |
+
+### Why This Model?
+
+- ✅ **Superior retrieval quality** - Outperforms OpenAI text-embedding-3-small and jina-v2 on MTEB benchmarks
+- ✅ **8K context window** - Most papers fit in 1-3 chunks (vs 10-20 with 512-token models)
+- ✅ **Instruction-aware** - Uses `search_document:` for indexing and `search_query:` for queries
+- ✅ **Matryoshka embeddings** - 768 dims can be truncated to 256/128 with minimal quality loss
+- ✅ **Fully open** - Open weights, open training data, reproducible
+- ✅ **Works in Zotero** - Compatible with Transformers.js v3 via wasmPaths configuration
+
+### How Embeddings Work
+
+The model converts text into 768 numbers that capture semantic meaning:
+
+```
+"Machine learning for medical diagnosis"  →  [0.023, -0.045, 0.012, ...]
+"AI in healthcare applications"           →  [0.021, -0.048, 0.015, ...]  ← Similar!
+"Organic chemistry synthesis"             →  [-0.089, 0.034, 0.067, ...]  ← Different!
+```
+
+Papers with **similar meanings** have **similar numbers**, even if they use different words.
+
+---
+
+## Architecture
+
+### System Overview
+
+```mermaid
+flowchart LR
+    subgraph Main["Main Thread"]
+        A[Plugin] <--> B[(SQLite)]
+        A <--> C[Search]
+    end
+    
+    subgraph Worker["ChromeWorker"]
+        D[Transformers.js]
+        E[nomic-embed-v1.5]
+    end
+    
+    A -->|text| Worker
+    Worker -->|embeddings| A
+```
+
+### Why ChromeWorker?
+
+Transformers.js can't run directly in Zotero's main thread because:
+- Missing browser globals (`self`, `navigator`, `indexedDB`)
+- Cache API crashes Zotero
+- Would block UI during model inference
+
+**Solution:** Run in a separate ChromeWorker thread with special configuration.
+
+### Data Storage
+
+Embeddings are stored in a **separate SQLite database** (`zotseek.sqlite`) attached to Zotero's connection:
+
+- **Location:** `<Zotero Data Directory>/zotseek.sqlite`
+- **Size:** ~15KB per paper (abstract mode), ~150KB per paper (full document mode)
+- **Benefits:** O(1) indexed lookups, in-memory caching, atomic updates, clean uninstall
+
+The SQLite backend uses the **ATTACH DATABASE** pattern (inspired by Better BibTeX):
+- **Separate file** - Keeps Zotero's main database clean and unbloated
+- **Smart caching** - Pre-normalized Float32Arrays cached in memory after first search
+- **Reliable queries** - Uses `columnQueryAsync()` and `valueQueryAsync()` for robust data retrieval
+- **Clean uninstall** - Database file automatically removed when plugin is uninstalled
+
+### Copying the database between machines
+
+ZotSeek stores its embeddings in `zotseek.sqlite` inside your Zotero data directory. The file is local and is not synced by Zotero's built-in sync.
+
+> **If your Zotero data folder is on a network drive or NAS:** downloadable embedding models are kept next to Zotero's profile instead, not in the data folder, because reading a few hundred megabytes of model weights over a network share can stall indexing. Models downloaded by earlier versions still work from the old location, but if you are on network storage it is worth removing and re-downloading them from **Settings → ZotSeek → Models** so they end up local.
+
+If you use Zotero on multiple machines and want to avoid re-indexing your library on each one, you can copy the file manually:
+
+1. Quit Zotero on both machines.
+2. Find your Zotero data directory (Preferences → Advanced → Files and Folders).
+3. Copy `zotseek.sqlite` from one machine to the other.
+4. Start Zotero on the destination machine.
+
+The plugin identifies items by Zotero's stable item keys (the same identifiers visible in the Zotero web API), so the database works correctly regardless of which machine indexed the items.
+
+Notes:
+- Both Zotero libraries must be in sync — items not yet present on the destination will appear as "unresolved embeddings" in Preferences → Database Health until sync completes.
+- The file can be large (hundreds of MB for libraries with full-document indexing). It is not designed to be cloud-synced continuously.
+- Group libraries are supported via stable group IDs assigned by Zotero's server.
+
+---
+
+## Cosine Similarity
+
+The math behind "how similar are two papers":
+
+$$\text{similarity} = \frac{A \cdot B}{\|A\| \times \|B\|}$$
+
+Where:
+- **A · B** = sum of (a[i] × b[i]) for all 768 dimensions
+- **‖A‖** = sqrt(sum of a[i]²)
+- **‖B‖** = sqrt(sum of b[i]²)
+
+**Result:** 0.0 (completely different) to 1.0 (identical)
+
+**Interpretation:**
+- 0.9+ = Very similar (probably same topic)
+- 0.7-0.9 = Related topics
+- 0.5-0.7 = Loosely related
+- <0.5 = Different topics
+
+---
+
+## Use with AI Agents (MCP)
+
+ZotSeek can let **Claude Code** and other MCP clients search your library semantically, so an agent can find relevant papers and cite them with links that open straight to the right page in Zotero. Each result carries `zotero://` deep links: one opens the item, one opens its PDF at the exact page that matched your query.
+
+**What this enables** — real workflows from a thesis-writing session:
+
+- *"Find me a citable definition of human-AI collaboration"* → the agent searches the library, proposes three candidate papers with the matched passages, and links each one so it opens in Zotero at the relevant page.
+- Mark claims in a draft with `[citation needed]` → the agent hunts your library for sources that actually support each claim and flags the ones nothing supports.
+- *"A reviewer says these statements are too strong — what evidence do I have?"* → the agent cross-checks the argument against what you have actually collected, paper by paper.
+
+It runs entirely on your machine and is **opt-in** (off by default). Enable it in **Settings → ZotSeek → AI Agent Access**, make sure Zotero's local HTTP server is allowed (**Settings → Advanced**), then connect Claude Code with:
+
+```bash
+claude mcp add --transport http --scope user zotseek http://localhost:23119/zotseek/mcp
+```
+
+The same searches are also available as plain REST endpoints for scripts. Everything is read-only — nothing can modify your library or index. See [docs/MCP.md](docs/MCP.md) for the full setup, tool reference, REST API, and security notes.
+
+Once the manuscript is written, the complementary tool [citefact](https://github.com/hearthresearch/citefact) closes the loop: point it at the same Zotero collection and it audits the finished draft — citations exist, quotes are verbatim, and each source actually supports the claim citing it.
+
+---
+
+## Built with ZotSeek
+
+Independent projects built on ZotSeek's local API:
+
+- **[Wordbot](https://github.com/Addy-ad/wordbot)** by [@Addy-ad](https://github.com/Addy-ad) — a Microsoft Word add-in for researchers. It converts LLM output into native Word formatting (tables, equations, code blocks, headings) and grounds it in your library: it runs semantic searches through ZotSeek, then writes text with inline citations that Zotero's own Word plugin recognises, so you can build a unified bibliography from them. Runs entirely offline against a local LLM server. Windows and macOS. See the author's [introduction and demo](https://github.com/introfini/ZotSeek/discussions/46) for what it looks like in use and which edition to pick.
+
+These are third-party projects, maintained by their authors and released under their own licences (Wordbot is non-commercial). Please report problems with them on their own issue trackers.
+
+---
+
+## Installation
+
+### For Users
+
+**Requirements:** Zotero 8.0 or newer (Zotero 9 and Zotero 10 supported).
+
+1. Download the latest `zotseek-X.Y.Z.xpi` from the [Releases page](https://github.com/introfini/ZotSeek/releases/latest).
+2. In Zotero, open **Tools → Plugins**.
+3. Click the gear icon (⚙️) in the top-right and choose **Install Plugin From File…**
+4. Select the downloaded `.xpi` file.
+5. Restart Zotero when prompted.
+
+After installation, ZotSeek is ready to use — open **Zotero → Settings → ZotSeek** to configure it, then right-click a collection and choose **ZotSeek → "Update Entire Library"** to build your index.
+
+**Updating:** ZotSeek checks for updates automatically. New releases are delivered through Zotero's built-in plugin update mechanism, so you'll be notified when a new version is available.
+
+### For Developers
+
+```bash
+# Clone the repository
+git clone https://github.com/introfini/ZotSeek
+cd zotseek
+
+# Install dependencies (includes zotero-plugin-toolkit for stable progress windows)
+npm install
+
+# Build the plugin
+npm run build
+
+# Create extension proxy file (macOS)
+echo "$(pwd)/build" > ~/Library/Application\ Support/Zotero/Profiles/*.default/extensions/zotseek@zotero.org
+
+# Restart Zotero with debug console
+open -a Zotero --args -purgecaches -ZoteroDebugText -jsconsole
+```
+
+### Building a Distributable XPI
+
+```bash
+npm run release
+```
+
+The interactive release script bumps the version, syncs `manifest.json` and `update.json`, rebuilds, and packages `zotseek-X.Y.Z.xpi` at the project root.
+
+---
+
+## Usage
+
+### Index Your Library
+
+1. Right-click on a collection → **ZotSeek → "Index Current Collection"**. Subcollections
+   are included. On Zotero 10 you can select several collections first and index them in
+   one pass; items filed in more than one of them are indexed once. The same command is
+   also in the ZotSeek submenu you get by right-clicking a paper, where it indexes the
+   collection selected on the left.
+2. Or use **"Update Entire Library"** to index all items
+3. A progress window will appear showing:
+   - Current item being processed
+   - Progress percentage
+   - Estimated time remaining (ETA)
+   - Option to cancel at any time
+4. Indexing speed: ~3 seconds per chunk
+
+**Automatic Compaction (Zotero 10+):**
+Re-indexing, switching models and purging orphans all leave free space inside
+ZotSeek's database file. Zotero 10 runs its own database maintenance after a few
+minutes of idle, and ZotSeek reclaims its space in the same window — but only when
+there is a meaningful amount to recover and no indexing is running. Turn it off under
+**Settings → ZotSeek → Integrations & Maintenance**, where the manual **Compact
+Database** button also lives.
+
+**Crash-Resilient Indexing:**
+- Progress is saved every 25 items (checkpoint saving)
+- If Zotero crashes or you need to stop, simply re-run "Update Index"
+- Already-indexed items are automatically skipped
+- No need to start over from scratch
+
+**Progress Window Features:**
+- ✅ AI model loaded status
+- ✅ Extraction progress (chunks from items)
+- 📊 Current paper being processed
+- 📈 Progress bar with percentage
+- ⏱️ ETA countdown
+- ⏸ Pause/resume button (pauses at batch boundaries, all progress saved)
+- ✕ Cancel button (shows quiet notification, no error alert)
+- 🪟 Hides while Zotero is minimized and reappears on restore (macOS)
+
+### Find Similar Documents
+
+1. Select any paper in your library
+2. Right-click → **"Find Similar Documents"**
+3. Results appear showing similarity percentages
+
+### Save Results as Collection
+
+Every ZotSeek search result set can be saved into a Zotero collection so you can come back to the same list later without re-running the search:
+
+- In the search dialog, click **"Save Results as Collection"** in the footer to export every result.
+- Or right-click any subset of results and choose **Add to Collection → New collection...** to export just the selection.
+- The same button appears in the **Find Similar Documents** dialog.
+
+The modal pre-fills a sensible name (your query + today's date, e.g. `ZotSeek: "machine learning" · 2026-04-21`) that you can edit. A live status line shows `N items → My Library` so you know where the collection will land.
+
+New collections are created at the target library's root. If you want them in a specific subfolder, drag them from Zotero's sidebar after the export — faster and more flexible than a dropdown.
+
+When search results span multiple libraries (for example, your personal library and a group library), a Library dropdown appears so you can pick which library receives the new collection. Items in other libraries are reported as skipped in the confirmation status.
+
+### Search from PDF Selection
+
+While reading a PDF, you can search for related documents based on selected text:
+
+1. Open a PDF in Zotero's reader
+2. Select a passage that describes a concept you want to explore
+3. Right-click → **"Find Related Documents"**
+4. ZotSeek opens with the selected text as the search query
+5. Results show documents related to that concept (current document is excluded)
+
+This is useful for:
+- Exploring unfamiliar concepts while reading
+- Finding additional sources on a specific topic
+- Discovering related work mentioned in a paper
+
+### Auto-Index New Papers
+
+ZotSeek can automatically index papers as you add them to your library:
+
+1. Go to **Zotero → Settings → ZotSeek**
+2. Enable **"Automatically index new items"**
+3. Now when you add papers (via browser connector, drag & drop, etc.), they'll be indexed automatically
+
+**How it works:**
+- Detects when new items are added to your library
+- Waits for PDF attachments to arrive (with automatic retry)
+- Batches multiple items together with a configurable delay (default: 10 seconds)
+- Each new item resets the countdown, preventing indexing during bulk imports
+- Shows a brief progress indicator while indexing
+- Respects your indexing mode setting (Abstract or Full Document)
+
+**Configuring the delay:** Go to **Zotero Settings > ZotSeek** and adjust the **Auto-index delay** slider (1-300 seconds). Longer delays are useful when importing large batches via browser connector or RSS feeds.
+
+### Managing the Index
+
+**Automatic cleanup:** When you delete or trash items in Zotero, their embeddings are automatically removed from the ZotSeek index. This prevents ghost search results and keeps the index clean — no action needed on your part.
+
+**Manual removal:** To remove specific items from the index without deleting them:
+1. Select one or more items in Zotero
+2. Right-click → **ZotSeek → "Remove from Index"**
+3. A notification confirms how many items were removed
+
+This is useful when you want to re-index specific items (e.g., after updating a PDF), or to exclude items from search results without deleting them from your library.
+
+### Excluding Items from Indexing
+
+You can prevent specific items from being indexed by tagging them:
+
+1. Select one or more items in Zotero
+2. Add the tag `zotseek-exclude` (or your custom tag name)
+3. These items will be skipped during all indexing operations
+
+**Customizing the tag name:** Go to **Zotero → Settings → ZotSeek → Advanced Settings** and change the **Exclude tag** field. Leave it empty to disable tag-based exclusion.
+
+**Tip:** Use Zotero's advanced search (Edit → Advanced Search) to find items by title, type, collection, etc., then bulk-tag them. This is more flexible than regex-based filtering since it leverages Zotero's native search capabilities.
+
+### ZotSeek Search Dialog
+
+1. Click the **ZotSeek button** in the toolbar (🔍✨)
+2. Or right-click → **ZotSeek → "Search Library..."**
+3. Enter a natural language query (e.g., "machine learning for medical diagnosis")
+4. **Optional:** Click "+" to add more queries (up to 4) and combine with AND/OR
+5. View results ranked by semantic similarity
+6. Double-click any result to open it in Zotero
+7. Click **⚙ Settings** (bottom-left) to quickly access ZotSeek preferences
+
+### Working with Multiple Search Results
+
+Select multiple items in the ZotSeek search results:
+
+1. **Select multiple items:**
+   - **Shift+click** to select a range of items
+   - **Cmd+click** (Mac) or **Ctrl+click** (Windows/Linux) to toggle individual items
+2. **Right-click** on the selection to open the context menu:
+   - **Show in Library** - Selects all items in Zotero's main pane
+   - **Add to Collection** - Add all selected items to any collection
+3. Click **"Open Selected"** to select all items in the Zotero library (when multiple selected)
+
+### View Debug Output
+
+Help → Debug Output Logging → View Output
+
+Look for `[ZotSeek]` entries.
+
+---
+
+## Configuration
+
+### Settings Panel
+
+Access settings via **Zotero → Settings → ZotSeek** (or **Zotero → Preferences** on macOS).
+
+The settings panel allows you to configure:
+- **Indexing Mode**: Abstract only or Full Document
+- **Search Options**: Maximum results, and a minimum similarity threshold that applies to the AI half of the search; keyword matches are always returned, since a literal match is its own evidence
+- **Exclusion**: Exclude books, exclude by tag
+- **Actions**: Clear index, re-index library
+
+### Preferences Reference
+
+Preferences are stored in Zotero's preferences system:
+
+**Search Settings:**
+
+| Preference | Default | Description |
+|------------|---------|-------------|
+| `zotseek.minSimilarityPercent` | `30` | Minimum similarity % for semantic matches; keyword matches are never filtered by it |
+| `zotseek.topK` | `20` | Maximum number of results |
+| `zotseek.autoIndex` | `false` | Automatically index new papers when added |
+| `zotseek.autoIndexDelay` | `10` | Seconds to wait after last item before auto-indexing (1-300) |
+| `zotseek.noteIndexDelay` | `60` | Seconds to wait after a note edit before re-indexing its parent (requires `zotseek.autoIndex`) |
+
+**Indexing Settings:**
+
+| Preference | Default | Description |
+|------------|---------|-------------|
+| `zotseek.indexingMode` | `"full"` | `"abstract"` or `"full"` |
+| `zotseek.indexNotes` | `false` | Also index the text of child notes attached to an item |
+| `zotseek.maxTokens` | `2000` | Max tokens per chunk |
+| `zotseek.maxChunksPerPaper` | `100` | Max chunks per paper |
+| `zotseek.excludeBooks` | `true` | Skip books during indexing |
+| `zotseek.excludeTag` | `"zotseek-exclude"` | Tag name to skip items during indexing (empty to disable) |
+
+**Hybrid Search Settings:**
+
+| Preference | Default | Description |
+|------------|---------|-------------|
+| `zotseek.hybridSearch.enabled` | `true` | Enable hybrid search |
+| `zotseek.hybridSearch.mode` | `"hybrid"` | `"hybrid"`, `"semantic"`, or `"keyword"` |
+| `zotseek.hybridSearch.semanticWeightPercent` | `50` | Semantic weight (0-100) |
+| `zotseek.hybridSearch.rrfK` | `60` | RRF constant |
+| `zotseek.hybridSearch.autoAdjustWeights` | `true` | Auto-adjust based on query |
+
+You can also access preferences via `about:config` (Help → Debug Output Logging → View Output, then navigate to `about:config`).
+
+---
+
+## Performance
+
+Tested on MacBook Pro M3:
+
+| Operation | Time |
+|-----------|------|
+| Model loading | ~1.5 seconds (bundled, 131MB) |
+| Index 1 chunk | ~3 seconds (optimized from ~45s) |
+| Index 10 papers (40 chunks) | ~2 minutes |
+| **First search** | ~130ms (loads cache) |
+| **Subsequent searches** | **~70ms** (uses cache) |
+| **Hybrid search** | ~70ms (with cache) |
+| Storage size | ~130 KB per 10 papers (full mode) |
+| Memory usage (cached) | +75MB for 1,000 papers |
+
+### Performance Optimizations
+
+The plugin includes several performance optimizations:
+
+1. **Tuned Chunk Size** - 2000 tokens (~3s/chunk) balances recall and speed while avoiding the O(n²) attention bottleneck
+2. **In-Memory Caching** - Embeddings cached after first search
+3. **Pre-normalized Vectors** - Float32Arrays normalized on load for fast dot product
+4. **Parallel Searches** - Semantic and keyword searches run simultaneously
+5. **Reliable SQLite Methods** - Uses `columnQueryAsync()` and `valueQueryAsync()`
+
+### GPU Acceleration (Experimental)
+
+ZotSeek automatically detects and uses **WebGPU** for GPU-accelerated embeddings when available:
+
+| Backend | When Used | Speed |
+|---------|-----------|-------|
+| **WebGPU (GPU)** | If browser/Zotero supports WebGPU | Up to 10-20x faster |
+| **WASM (CPU)** | Fallback when WebGPU unavailable | ~3 seconds per chunk |
+
+**Current status (August 2026):**
+- Firefox 141 shipped WebGPU on **Windows only** (July 2025)
+- **macOS and Linux** WebGPU support is still in progress at Mozilla
+- Zotero 8, 9 and 10 all ship Firefox 140 ESR — one version before the first WebGPU build, so GPU acceleration is still gated on an upstream Firefox ESR bump
+
+**When will GPU work?** Once Zotero upgrades to a Firefox ESR with WebGPU support for your platform, GPU acceleration will automatically activate — no plugin update needed.
+
+**Check if GPU is being used:** Look for "Model loaded on GPU" or "Model loaded on CPU" in Zotero's debug console (Help → Debug Output Logging → View Output).
+
+Note: If WebGPU is unavailable or fails, the plugin automatically falls back to CPU without interruption.
+
+---
+
+## Limitations
+
+- **Default model is English-optimized** - The bundled nomic-embed-text-v1.5 is trained primarily on English text; switch to a multilingual model in Settings for non-English libraries (UI available in English and Chinese)
+- **Large plugin size** - ~131MB due to bundled AI model
+- **CPU only (for now)** - GPU acceleration ready but waiting for Zotero/Firefox WebGPU support
+- **Zotero 8 or newer required** - As of v1.12.0, Zotero 7 is no longer supported. Users on Zotero 7 should upgrade to Zotero 8 or later, or stay on ZotSeek v1.11.x.
+
+---
+
+## Comparison with OpenAI
+
+| Feature | This Plugin (Local) | OpenAI API |
+|---------|--------------------| -----------|
+| **Cost** | Free | ~$0.02 per 1K papers |
+| **Privacy** | 100% local | Data sent to OpenAI |
+| **Offline** | Yes (after model loads) | No |
+| **Quality** | Excellent (outperforms text-embedding-3-small) | Good |
+| **Speed** | ~70-130ms | ~100ms |
+| **Context** | 8192 tokens | 8191 tokens |
+
+---
+
+## Technical Details
+
+See the [docs/](docs/) folder for detailed documentation:
+
+- [**API.md**](docs/API.md) - Plugin API for integration with other Zotero plugins
+- [**SEARCH_ARCHITECTURE.md**](docs/SEARCH_ARCHITECTURE.md) - Hybrid search, RRF fusion, chunking strategy
+- [**DEVELOPMENT.md**](docs/DEVELOPMENT.md) - Development guide, ChromeWorker + Transformers.js implementation
+- [**ROADMAP.md**](docs/ROADMAP.md) - Planned features and improvements
+- [**MCP.md**](docs/MCP.md) - Local MCP server and REST API for AI agents and scripts
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+## License
+
+MIT License - see [LICENSE](LICENSE)
+
+---
+
+## Related Projects
+
+- **[citefact](https://github.com/hearthresearch/citefact)** — CLI that audits a manuscript against the full text of its cited sources, straight from a Zotero collection. ZotSeek helps you *find* the right papers; citefact verifies the final draft actually *uses* them correctly. `uvx citefact check manuscript.md --zotero-collection "My Collection"`.
+
+---
+
+## Acknowledgments
+
+- [Transformers.js](https://huggingface.co/docs/transformers.js) by Hugging Face
+- [sentence-transformers](https://www.sbert.net/) for the embedding model
+- [Zotero](https://www.zotero.org/) for the amazing reference manager
+- [windingwind's Zotero Plugin Docs](https://windingwind.github.io/doc-for-zotero-plugin-dev/) for invaluable guidance
+
+---
+
+*ZotSeek: AI-Powered Semantic Search for Zotero — Built by José Fernandes*

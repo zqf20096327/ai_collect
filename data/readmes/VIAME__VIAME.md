@@ -1,0 +1,321 @@
+
+<p align="center">
+<img src="docs/manual/_static/images/viami_logo.png" alt="VIAME Logo" width="200" height="78">
+</p>
+
+VIAME is a computer vision application designed for do-it-yourself artificial intelligence
+including object detection, object tracking, data annotation, multi-camera processing,
+size measurement, image enhancement, rapid model generation, query-based search, mosaicing,
+and tools for the evaluation of algorithms. Originally targeting marine species analytics,
+VIAME now contains many algorithms and libraries, and is useful as a generic computer vision
+toolkit. It contains a number of tools for accomplishing the above, a pipeline framework
+which can connect C++/Python nodes in a multi-threaded fashion, and multiple algorithms
+resting on top of the pipeline infrastructure. Lastly, a portion of the algorithms have been
+integrated into both desktop and web user interfaces for deployments in different environments,
+with an open annotation archive and example of the web platform available at
+[viame.kitware.com](https://viame.kitware.com).
+
+
+Documentation
+-------------
+
+The [User's Quick-Start Guide](https://viame.github.io/VIAME/sections/quick_start_guide.html)
+and [Full Manual](https://viame.github.io/VIAME/) are more comprehensive,
+but select entries are also listed below broken down by individual functionality:
+
+
+[Documentation Overview](https://viame.github.io/VIAME/#documentation-overview) <>
+[Installation](examples/installing_from_binaries) <>
+[Building](examples/building_from_source) <>
+[All Examples](https://github.com/Kitware/VIAME/tree/master/examples) <>
+[DIVE Interface](https://kitware.github.io/dive) <>
+[Object Detection](examples/object_detection) <>
+[Detector Training](examples/object_detector_training) <>
+[Object Tracking](examples/object_tracking) <>
+[Search and Rapid Model Generation](examples/video_and_image_search) <>
+[Model Evaluation](examples/scoring_and_evaluation) <>
+[Detection Formats](https://viame.github.io/VIAME/sections/detection_file_formats.html) <>
+[Python Usage](https://github.com/VIAME/VIAME/blob/main/docs/python_package.md) <>
+[Image Enhancement](examples/image_enhancement) <>
+[Registration and Mosaicing](examples/registration_and_mosaicing)  <>
+[Size Measurement](examples/stereo_measurement) <>
+[Pipelining Overview](https://github.com/Kitware/kwiver) <>
+[Core Classes](https://kwiver.readthedocs.io/en/latest) <>
+[Plugin Integration](examples/example_pipeline) <>
+[Example Templates](plugins/templates) <>
+[Embedding Algorithms](examples/using_algorithms_in_code)
+
+
+Installations
+-------------
+
+For a full installation guide and description of the various flavors of VIAME, see the
+quick-start guide, above. The full desktop version is provided as either a .zip or
+.tar.gz file. Alternatively, .msi installers are available via the DIVE standalone tool,
+which can then install VIAME from the 'add-ons' page. Lastly, docker files are available
+for both VIAME Desktop and Web (below). For full desktop installs, extract
+the binaries and place them in a directory of your choosing, for example /opt/noaa/viame
+on Linux or C:\Program Files\VIAME on Windows. If using packages built with GPU support,
+make sure to have sufficient video drivers installed, version 570.65 or higher. This isn't
+required if just using manual annotators or you don't care much about algorithm speed.
+
+**Installation Requirements:** <br>
+* Up to 8 Gb of Disk Space for the Full Installation <br>
+* Windows 7\*, 8, 10, or 11 (64-Bit) or Linux (64-Bit, e.g. RHEL, CentOS, Ubuntu) <br>
+  * Windows 7 requires some updates and service packs installed, e.g. [KB2533623](https://support.microsoft.com/kb/2533623). <br>
+  * MacOS is currently supported running web and standalone annotation tools, but not full desktop.
+
+**Installation Recommendations:** <br>
+* NVIDIA Drivers (Version 570.65 or above,
+Windows 
+[\[1\]](https://www.nvidia.com/Download/index.aspx?lang=en-us)
+[\[2\]](https://developer.nvidia.com/cuda-downloads)
+Ubuntu 
+[\[1\]](https://linuxhint.com/ubuntu_nvidia_ppa/)
+[\[2\]](https://developer.nvidia.com/cuda-downloads)
+CentOS 
+[\[1\]](https://developer.nvidia.com/cuda-downloads)
+[\[2\]](https://www.nvidia.com/Download/index.aspx?lang=en-us)) <br>
+* A [CUDA-enabled GPU](https://developer.nvidia.com/cuda-gpus) with 8 Gb or more VRAM <br>
+
+<!-- install-links:start -->
+**Windows Full Desktop Binaries:** <br>
+* [VIAME v0.23.6 Windows, GPU Enabled, Mirror1 (.zip)](https://drive.google.com/file/d/13M5cKqPleICgRBzBk_ZFk_I9J9a5S9zl/view?usp=sharing) <br>
+* [VIAME v0.23.6 Windows, GPU Enabled, Mirror2 (.zip)](https://data.kitware.com/api/v1/item/6ac91d9bbf27396ed0c8f211/download) <br>
+* [VIAME v0.21.1 Windows, CPU Only, Mirror1 (.zip)](https://drive.google.com/file/d/1WkFHOdMPkxYrow7Utcyx_RTPdG4EbOan/view?usp=sharing) <br>
+* [VIAME v0.21.1 Windows, CPU Only, Mirror2 (.zip)](https://data.kitware.com/api/v1/item/683fbc2bdfcff796fee73cfe/download)
+
+**Linux Full Desktop Binaries:** <br>
+* [VIAME v0.23.6 Linux, GPU Enabled, Mirror1 (.tar.gz)](https://drive.google.com/file/d/1r2xpV1s54pQLOx76Wa3B2-RS0_GapNWp/view?usp=sharing) <br>
+* [VIAME v0.23.6 Linux, GPU Enabled, Mirror2 (.tar.gz)](https://data.kitware.com/api/v1/item/6ac91fefbf27396ed0c8f215/download) <br>
+* [VIAME v0.21.1 Linux, CPU Only, Mirror1 (.tar.gz)](https://drive.google.com/file/d/1U2H-AE6IwGkClmNEDw-GAETtJTDfKUuR/view?usp=sharing) <br>
+* [VIAME v0.21.1 Linux, CPU Only, Mirror2 (.tar.gz)](https://data.kitware.com/api/v1/item/683fbc82dfcff796fee73d01/download)
+<!-- install-links:end -->
+
+**Web Applications**: <br>
+* [VIAME Online Web Annotator and Public Annotation Archive](https://viame.kitware.com/) <br>
+* [VIAME Web Local Installation Instructions](https://kitware.github.io/dive/Deployment-Overview/) <br>
+* [VIAME Web Source Repository](https://github.com/Kitware/dive)
+
+**Additional Packages:** <br>
+* [DIVE Standalone Desktop Annotator (Linux, Mac, Windows)](https://github.com/Kitware/dive/releases)
+* [Model Zoo and Add-Ons](https://github.com/VIAME/VIAME/wiki/Model-Zoo-and-Add-Ons)
+* [Custom and Prior VIAME Versions](https://github.com/VIAME/VIAME/wiki/Custom-VIAME-Installations)
+
+
+Docker Images
+-------------
+
+Docker images are available on: https://hub.docker.com. For a default container with just core
+algorithms, runnable via command-line, see:
+
+kitware/viame:gpu-algorithms-default
+
+This image is headless (ie, it contains no GUI) and contains a command line interface
+installation in the folder /opt/noaa/viame. For links to the full VIAME-Web containers
+see the above section in the installation documentation. Most add-on models are not
+included by default but can be downloaded via running the script download_viame_addons.sh
+in the bin folder, or by using the viame add-ons tool.
+
+
+Python Package
+--------------
+
+VIAME is available on pypi (for Python 3.10 through 3.14), with wrappers around both
+its main command line tool and libraries for running different algorithms.
+
+To install on Linux run:
+
+pip install viame
+
+To install on Windows, first install torch <2.11 with CUDA 12 support, then VIAME:
+
+pip install "torch<2.11" torchvision --index-url https://download.pytorch.org/whl/cu128
+
+pip install viame
+
+This puts the `viame` tool described below on your path. Only a minimal set
+of pipelines ships with it; larger models come from `viame add-ons`. See
+[VIAME as a Python Package](docs/python_package.md) for additional details.
+
+Command Line Interface Basics
+-----------------------------
+
+Every command line tool is a subcommand of the `viame` program. `viame help`
+lists them with a one line description each, and `viame help <tool>` prints
+that tool's own options.
+
+A desktop or docker installation needs its environment set up first, via running
+the below before commands (pip package installs do not require this):
+
+source [viame-install-directory]/setup_viame.sh
+
+Example tool usage:
+
+```
+viame help                                       # list every tool
+viame run my_pipeline.pipe                       # run a single pipeline file as-is
+viame run my_pipeline.pipe video.mp4             # run a pipeline on a video
+viame run detector.zip video.mp4                 # run a detector on a video
+viame run detector.zip image_list.txt            # ... or a list of images
+viame run detector.pipe videos/                  # run a pipeline over a folder
+viame train data/ train_detector.conf            # train a model on some data
+viame score detections.csv groundtruth.csv       # score file against groundtruth
+viame score computed/ groundtruth/               # score folder against groundtruth
+viame csv detections.csv --print-types           # inspect a VIAME csv
+viame json tracks.json --print-types             # inspect a DIVE or COCO json
+viame add-ons                                    # list and install model add-ons
+```
+
+
+Quick Build Instructions
+------------------------
+
+These instructions are intended for developers or those interested in building the latest release
+branch. Anyone interested in just running the software as-is and not modifying it should use the
+installers listed in the prior section, without needing to do a software build. More in-depth
+build instructions can be found [here](examples/building_from_source), but the software
+can be built either as a super-build, which builds most of its dependencies alongside itself, or
+standalone. To build VIAME requires, at a minimum, [Git](https://git-scm.com/),
+[CMake](https://cmake.org/), and a [C++ compiler](http://www.cplusplus.com/doc/tutorial/introduction/).
+Installing Python and CUDA is also recommended. If using CUDA, version 12.6 with CUDNN 9 is
+preferred, though other versions of 11 through 13 also likely work. For python distributions, at a
+minimum Python 3.10 or above is necessary, alongside having pip installed.
+
+To build on the command line in Linux, use the following commands, only replacing [source-directory]
+and [build-directory] with locations of your choice. While these directories can be the same,
+it's good practice to have a 'src' checkout then a seperate 'build' directory alongside it:
+
+	git clone https://github.com/VIAME/VIAME.git [source-directory]
+
+	cd [source-directory] && git submodule update --init
+
+Next, create a build directory and run the following `cmake` command (or alternatively
+use the cmake GUI if you are not using the command line interface):
+
+	mkdir [build-directory] && cd [build-directory]
+
+	cmake -DCMAKE_BUILD_TYPE:STRING=Release [source-directory]
+
+Once your `cmake` command has completed, you can configure any build flags you want
+using 'ccmake' or the cmake GUI, and then build with the following command on Linux:
+
+	make -j8
+
+Or alternatively by building it in Visual Studio or your compiler of choice on
+Windows. On Linux, '-j8' tells the build to run multi-threaded using 8 threads, this
+is useful for a faster build though if you get an error it can be difficult to see
+it, in which case running just 'make' might be more helpful. For Windows,
+currently VS2019 is the most tested compiler.
+
+There are several optional arguments to viame which control which plugins get built,
+such as those listed below. If a plugin is enabled that depends on another dependency
+such as OpenCV) then the dependency flag will be forced to on. If uncertain what to turn
+on, it's best to just leave the default enable and disable flags which will build most
+(though not all) functionalities. These are core components we recommend leaving turned on:
+
+
+<center>
+
+| Flag                         | Description                                                                    |
+|------------------------------|--------------------------------------------------------------------------------|
+| VIAME_ENABLE_OPENCV          | Builds OpenCV and basic OpenCV processes (video readers, simple GUIs)          |
+| VIAME_ENABLE_VXL             | Builds VXL and basic VXL processes (video readers, image filters)              |
+| VIAME_ENABLE_PYTHON          | Turns on support for using python processes (multiple algorithms)              |
+| VIAME_ENABLE_PYTORCH         | Installs all pytorch processes (detectors, trackers, classifiers)              |
+
+</center>
+
+
+And a number of flags which control which system utilities and optimizations are built, e.g.:
+
+
+<center>
+
+| Flag                         | Description                                                                    |
+|------------------------------|--------------------------------------------------------------------------------|
+| VIAME_ENABLE_CUDA            | Enables CUDA (GPU) optimizations across all packages                           |
+| VIAME_ENABLE_CUDNN           | Enables CUDNN (GPU) optimizations across all processes                         |
+| VIAME_ENABLE_DIVE            | Enables DIVE GUI (annotation and training on multiple sequences)               |
+| VIAME_ENABLE_VIVIA           | Builds VIVIA GUIs (VIEW and SEARCH for annotation and video search)            |
+| VIAME_ENABLE_DOCS            | Builds Doxygen class-level documentation (puts in install tree)                |
+| VIAME_BUILD_DEPENDENCIES     | Build VIAME as a super-build, building all dependencies (default)              |
+| VIAME_INSTALL_EXAMPLES       | Installs examples for the above modules into install/examples tree             |
+| VIAME_DOWNLOAD_MODELS        | Downloads pre-trained models for use with the examples and interfaces          |
+
+</center>
+
+
+And lastly, a number of flags which build algorithms or interfaces with more specialized functionality:
+
+
+<center>
+
+| Flag                         | Description                                                                    |
+|------------------------------|--------------------------------------------------------------------------------|
+| VIAME_ENABLE_PYTORCH-*       | Builds a number of PyTorch plugins with different functions                    |
+| VIAME_ENABLE_ONNX            | Builds support for ONNX methods (detectors/stereo)                             |
+| VIAME_ENABLE_TENSORRT        | Builds support for TensorRT methods (detectors/stereo)                         |
+| VIAME_ENABLE_TENSORFLOW      | Builds TensorFlow object detector plugin                                       |
+| VIAME_ENABLE_DARKNET         | Builds deprecated Darknet (YOLO) object detector plugin                        |
+| VIAME_ENABLE_MATLAB          | Turns on support for and installs all matlab processes                         |
+
+</center>
+
+
+Source Code Layout
+------------------
+<pre>
+ VIAME
+   ├── cmake               # CMake configuration files for subpackages
+   ├── docs                # Documentation files and manual (pre-compilation)
+   ├── configs             # All system-runnable config files and models
+   │   ├── pipelines       # All processing pipeline configs
+   │   │   └── models      # All models, which only get downloaded based on flags
+   │   ├── prj-linux       # Default linux project files
+   │   └── prj-windows     # Default windows project files 
+   ├── examples            # All runnable examples and example tutorials
+   ├── packages            # External projects used by the system
+   │   ├── kwiver          # Processing backend infastructure
+   │   ├── fletch          # Dependency builder for things which don't change often
+   │   ├── vivia           # Baseline desktop GUIs (v1.0)
+   │   └── ...             # Assorted other packages (typically for algorithms)
+   ├── plugins             # Integrated algorithms or wrappers around external projects
+   │   └── ...             # Assorted plugins (detectors, depth maps, filters, etc.)
+   ├── tools               # Standalone tools or scripts, often building on the above
+   └── README.md           # Project introduction page that you are reading
+   └── RELEASE_NOTES.md    # A list of the latest updates in the system per version
+</pre>
+
+
+Update Instructions
+-------------------
+
+If you already have a checkout of VIAME and want to switch branches or
+update your code, it is important to occasionally re-run:
+
+	git submodule update --init
+
+After switching branches to ensure that you have on the correct hashes
+of sub-packages within the build. Very rarely you may also need to run:
+
+	git submodule sync && git submodule update
+
+Just in case the address of submodules has changed. You only need to
+run this command if you get a "cannot fetch hash #hashid" error. Lastly,
+in the advanced case of running extra manual builds for certain dependencies,
+a recursive module update is required:
+
+	git submodule update --init --recursive
+
+
+License, Citations, and Acknowledgements
+----------------------------------------
+
+The core of VIAME is released under a BSD-3 license (see LICENSE.txt).
+
+A non-exhaustive list of relevant papers used within the project alongside contributors
+can be found [here](docs/citations.md).
+
+VIAME was developed with funding from multiple sources, with special thanks
+to those listed [here](docs/acknowledgements.md).

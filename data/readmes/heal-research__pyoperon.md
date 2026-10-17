@@ -1,0 +1,99 @@
+# pyoperon
+
+[![License](https://img.shields.io/github/license/heal-research/pyoperon)](https://github.com/heal-research/pyoperon/blob/master/LICENSE)
+[![build-linux](https://github.com/heal-research/pyoperon/actions/workflows/build-linux.yml/badge.svg?branch=main)](https://github.com/heal-research/pyoperon/actions/workflows/build-linux.yml)
+[![build-macos](https://github.com/heal-research/pyoperon/actions/workflows/build-macos.yml/badge.svg?branch=main)](https://github.com/heal-research/pyoperon/actions/workflows/build-macos.yml)
+[![Matrix chat](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#operon:matrix.org)
+
+**pyoperon** is the python bindings library of [**Operon**](https://github.com/heal-research/operon), a modern C++ framework for symbolic regression developed by [Heal-Research](https://github.com/heal-research) at the University of Applied Sciences Upper Austria.
+
+A scikit-learn regressor is also available:
+```python
+from pyoperon.sklearn import SymbolicRegressor
+```
+
+`SymbolicRegressor` accepts a `callbacks=` argument for monitoring or early stopping during `fit()`, in the style of Keras/Lightning callbacks:
+```python
+from pyoperon.sklearn import SymbolicRegressor
+from pyoperon import EarlyStopping
+
+reg = SymbolicRegressor(
+    population_size=1000, generations=1000,
+    callbacks=[EarlyStopping(patience=20)],
+)
+reg.fit(X, y)
+```
+Subclass `pyoperon.Callback` (`on_fit_begin`/`on_generation_end`/`on_fit_end`) for custom monitoring; return `True` from `on_generation_end` to request early termination. See `pyoperon/callback.py` for the full API.
+
+`fit()` also accepts `sample_weight=`, matching the scikit-learn convention, for training on non-uniformly sampled data (e.g. stratified/reweighted survey data, or down-weighting outliers) without distorting the fitted model:
+```python
+reg.fit(X, y, sample_weight=sample_weight)
+```
+
+The [example](https://github.com/heal-research/pyoperon/tree/main/example) folder contains sample code for using either the Python bindings directly or the **pyoperon.sklearn** module.
+
+# Installation
+
+New releases are published on [github](https://github.com/heal-research/pyoperon/releases/) and on [PyPI](https://pypi.org/project/pyoperon/).
+
+Most of the time `pip install pyoperon` should be enough.
+
+## Building from source
+
+### Conda/Mamba
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/heal-research/pyoperon.git
+cd pyoperon
+```
+
+2. Install and activate the environment (replace `micromamba` with your package manager)
+
+```bash
+micromamba env create -f environment.yml
+micromamba activate pyoperon
+```
+
+3. Build the C++ dependencies and install `pyoperon`
+
+```bash
+export CC=clang
+export CXX=clang++
+python script/dependencies.py
+pip install . --no-build-isolation
+```
+
+### Nix
+
+The repository includes a `flake.nix` with a development shell that provides all C++ and Python dependencies.
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/heal-research/pyoperon.git
+cd pyoperon
+```
+
+2. Enter the dev shell and install `pyoperon` into a virtual environment
+
+```bash
+nix develop .#pyenv
+virtualenv --system-site-packages .venv
+source .venv/bin/activate
+pip install scikit-build-core
+pip install --no-build-isolation .
+```
+
+3. Run the tests (optional)
+
+```bash
+pip install --no-build-isolation '.[test]'
+pytest tests/ -v
+```
+
+
+# Contributing
+
+See the [CONTRIBUTING](CONTRIBUTING.md) document.

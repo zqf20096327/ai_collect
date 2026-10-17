@@ -1,0 +1,404 @@
+# Ethora — SDK Monorepo
+
+![GitHub stars](https://img.shields.io/github/stars/dappros/ethora) ![GitHub forks](https://img.shields.io/github/forks/dappros/ethora) ![GitHub license](https://img.shields.io/github/license/dappros/ethora)
+
+[![Available on AWS Marketplace](https://img.shields.io/badge/AWS_Marketplace-Ethora_Core-FF9900?logo=amazonaws&logoColor=white)](https://aws.amazon.com/marketplace/pp/prodview-xgn2obhnb5au4) [![Docker Hub](https://img.shields.io/badge/Docker_Hub-dappros-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/u/dappros) [![Helm chart on Artifact Hub](https://img.shields.io/badge/Artifact_Hub-ethora--core-417598?logo=helm&logoColor=white)](https://artifacthub.io/packages/helm/ethora/ethora-core) [![Every way to get Ethora](https://img.shields.io/badge/ethora.com-%2Fget-0052CD)](https://ethora.com/get/)
+
+**Chat, messaging and conversational AI SDK platform.** Add real-time messaging, AI bots, and backend services to your app in minutes.
+
+This repository serves as the **SDK monorepo** — a single place to discover, clone, and navigate all Ethora SDKs, tools, and sample apps. Each component lives in its own focused repository, linked here as git submodules.
+
+## Ecosystem
+
+| Folder | Repository | Description | Status |
+|--------|-----------|-------------|--------|
+| [`sdk-reactjs/`](sdk-reactjs/) | [ethora-chat-component](https://github.com/dappros/ethora-chat-component) | React.js chat SDK — embed chat in any web app | Active |
+| [`sdk-reactnative/`](sdk-reactnative/) | [ethora-chat-component-rn](https://github.com/dappros/ethora-chat-component-rn) | React Native chat SDK (iOS & Android) | Active |
+| [`sdk-android/`](sdk-android/) | [ethora-sdk-android](https://github.com/dappros/ethora-sdk-android) | Native Android SDK (Kotlin) | Active |
+| [`sdk-swift/`](sdk-swift/) | [ethora-sdk-swift](https://github.com/dappros/ethora-sdk-swift) | Native iOS SDK (Swift) | Active |
+| [`sdk-wordpress/`](sdk-wordpress/) | [ethora-wp-plugin](https://github.com/dappros/ethora-wp-plugin) | WordPress plugin — no-code chat widget | Active |
+| [`app-reactjs/`](app-reactjs/) | [ethora-app-reactjs](https://github.com/dappros/ethora-app-reactjs) | Full web app (React.js) — App Builder frontend | Active |
+| [`playground/`](playground/) | [ethora-sdk-playground](https://github.com/dappros/ethora-sdk-playground) | SDK testing & demo playground | Active |
+| [`backend-integration/`](backend-integration/) | [ethora-sdk-backend-integration](https://github.com/dappros/ethora-sdk-backend-integration) | Backend integration examples | Active |
+| [`mcp-cli/`](mcp-cli/) | [ethora-mcp-server](https://github.com/dappros/ethora-mcp-server) | MCP server for AI agents and IDEs: hosted remote endpoint + stdio CLI | Active |
+| [`rag-demos/`](rag-demos/) | [rag_demos](https://github.com/dappros/rag_demos) | RAG pipeline demos & examples | Active |
+| [`bots/`](bots/) | [ethora-bots](https://github.com/dappros/ethora-bots) | Bot framework (XMPP, LLM, automation) | Active |
+| [`setup/`](setup/) | [ethora-setup](https://github.com/dappros/ethora-setup) | CLI setup tool — `npx @ethora/setup` | Active |
+| — | [ethora-install](https://github.com/dappros/ethora-install) | Self-hosted server installer: one-line install, Docker Compose, Helm chart, marketplace images | Active |
+| [`api/`](api/) | *(inline)* | REST API documentation (Swagger/OpenAPI) | Reference |
+| [`api/CHAT_PROTOCOL.md`](api/CHAT_PROTOCOL.md) | *(inline)* | Chat wire protocol: JIDs, XMPP stanzas and the `<data>` element, history, push, AI agents | Reference |
+| — | [ethora-app-react-native](https://github.com/dappros/ethora-app-react-native) | React Native app (iOS & Android) | Legacy |
+| — | [site_crawler](https://github.com/dappros/site_crawler) | Website crawler for RAG ingestion | Active |
+
+## Feature coverage across SDKs
+
+> Quick glance at what each SDK supports. Full matrix with evidence: **[features/](features/)**  ·  Source: [`features/features.yaml`](features/features.yaml)
+
+| Capability | React.js | React Native | Android | iOS | WordPress |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Email/password login | ✅ | ✅ | ✅ | ✅ | — |
+| JWT / custom-token login | ✅ | ✅ | ✅ | ✅ | — |
+| OAuth / social login | ✅ | 🟡 | 🛠 | 🟡 | 🟡 |
+| Text messaging (send/edit/delete/reply) | ✅ | ✅ | ✅ | ✅ | 🟡 |
+| Reactions | ✅ | — | ✅ | ✅ | — |
+| Typing indicator | ✅ | ✅ | ✅ | ✅ | — |
+| Delivery status indicators | ✅ | — | — | ✅ | — |
+| Message history (MAM pagination) | ✅ | ✅ | ✅ | ✅ | — |
+| Images / video / files / audio | ✅ | ✅ | ✅ | ✅ | — |
+| 1:1 messaging | ✅ | ✅ | ✅ | ✅ | 🟡 |
+| Group rooms (MUC) | ✅ | ✅ | ✅ | ✅ | — |
+| Single-room (embedded widget) mode | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Unread counter | ✅ | ✅ | ✅ | ✅ | — |
+| Push notifications | ✅ | 🟡 | ✅ | ✅ | — |
+| In-app notifications | ✅ | — | 🟡 | 🟡 | — |
+| Prebuilt chat UI | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Theming | 🟡 | 🟡 | ✅ | ✅ | — |
+| Dark mode | — | — | ✅ | — | — |
+| Custom component overrides | ✅ | ✅ | ✅ | 🟡 | — |
+| Self-hosted server support | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Offline message cache | ✅ | 🟡 | ✅ | ✅ | — |
+
+Legend: ✅ Present  ·  🟡 Partial  ·  🛠 Roadmap  ·  — Absent
+
+**Coverage (present + partial×0.5) / 44 features:** React.js 77%  ·  Android 76%  ·  React Native 68%  ·  iOS 68%  ·  WordPress 14%
+
+> Last reviewed **2026-04-21** (v26.04). Monthly AI-reviewed update proposed via PR.
+
+## Hosted services
+
+These public services run on the Ethora Cloud and are useful when exploring or testing the platform — no setup required.
+
+| Service | URL | What it is |
+|---------|-----|------------|
+| **Web app** | [app.chat.ethora.com](https://app.chat.ethora.com) | Sign up, create apps, get API credentials, manage chats and AI bots. |
+| **API** | [api.chat.ethora.com](https://api.chat.ethora.com) | REST API used by all SDKs. |
+| **API docs (Swagger)** | [api.chat.ethora.com/api-docs/#/](https://api.chat.ethora.com/api-docs/#/) | Live, up-to-date OpenAPI / v2 routes. |
+| **XMPP** | `wss://xmpp.chat.ethora.com/ws` | Real-time messaging gateway (WebSocket; BOSH at `/bosh`). Wire protocol: [api/CHAT_PROTOCOL.md](api/CHAT_PROTOCOL.md). |
+| **SDK Playground** | [playground.chat.ethora.com](https://playground.chat.ethora.com) | Live `@ethora/chat-component` playground, code export, HTTP testing. |
+| **Uptime / status** | [uptime.chat.ethora.com](https://uptime.chat.ethora.com) | Public uptime and journey checks for the Ethora platform. |
+| **Documentation** | [API docs](https://api.chat.ethora.com/api-docs/) | REST API reference. Chat protocol and push: [api/](api/). Guides and SDK docs: [ethora.com/chat-sdk](https://ethora.com/chat-sdk/) and [ethora.com/ai-sdk](https://ethora.com/ai-sdk/). |
+| **QA environment** | [chat-qa.ethora.com](https://chat-qa.ethora.com) | Pre-production QA environment (use for pre-release validation only; `chat.ethora.com` remains the canonical default for everything else). |
+
+## Getting Started
+
+### Clone with all submodules
+
+```bash
+git clone --recurse-submodules https://github.com/dappros/ethora.git
+cd ethora
+```
+
+If you already cloned without `--recurse-submodules`:
+
+```bash
+git submodule update --init --recursive
+```
+
+### Automatic submodule bumps
+
+This repo can update its submodule pointers automatically via `.github/workflows/bump-submodules.yml`.
+
+Behavior:
+
+- runs every 6 hours on weekdays and on manual dispatch
+- updates each submodule to the latest commit on its remote default branch
+- commits pointer bumps directly into `main`
+
+### Set up credentials (recommended)
+
+```bash
+npx @ethora/setup
+```
+
+This will create an account, set up an app, and generate config files for your target SDK. You can also connect to a self-hosted server.
+
+### Quick paths
+
+**Add chat to a website (fastest):**
+```bash
+cd sdk-reactjs
+npm install
+# See sdk-reactjs/README.md for embedding instructions
+```
+
+**Add chat to a React Native app:**
+```bash
+cd sdk-reactnative
+npm install
+# See sdk-reactnative/README.md
+```
+
+**Native Android SDK:**
+```bash
+cd sdk-android
+# See sdk-android/README.md for Gradle setup
+```
+
+**Native iOS SDK:**
+```bash
+cd sdk-swift
+# See sdk-swift/README.md for Swift Package Manager setup
+```
+
+**WordPress (no code):**
+Install the plugin from `sdk-wordpress/` or see [ethora-wp-plugin](https://github.com/dappros/ethora-wp-plugin).
+
+**Connect via MCP (IDE/AI agent):**
+
+There is a hosted MCP server, so nothing needs installing. Point any MCP client at the URL and sign
+in through your browser:
+
+```
+https://mcp.chat.ethora.com/mcp/oauth
+```
+
+```bash
+# Claude Code, Cursor, VS Code and other CLI-configured clients
+claude mcp add --transport http ethora https://mcp.chat.ethora.com/mcp/oauth
+```
+
+An agent with no account can connect to `https://mcp.chat.ethora.com/mcp` without a credential and
+call the registration tool to get its own API key, with no human step.
+
+To run it yourself, against Ethora Cloud or your own deployment:
+
+```bash
+npx -y @ethora/mcp-server
+```
+
+Endpoint details, per-client setup and the full tool reference are at
+[ethora.com/ai-sdk/mcp-server](https://ethora.com/ai-sdk/mcp-server/), and the source is in
+[ethora-mcp-server](https://github.com/dappros/ethora-mcp-server).
+
+### Default backend
+
+Sign up for a free account at [app.chat.ethora.com](https://app.chat.ethora.com/register) to get API credentials. The SDKs connect to Ethora Cloud by default. To point them at your own server, see **Run your own server** below.
+
+Canonical default endpoints (used by all official SDKs unless overridden):
+
+| Purpose | Default value |
+|---------|---------------|
+| API base URL | `https://api.chat.ethora.com` |
+| API base URL (versioned) | `https://api.chat.ethora.com/v1` (legacy), `https://api.chat.ethora.com/v2` (current) |
+| Swagger / API docs | `https://api.chat.ethora.com/api-docs/#/` |
+| XMPP WebSocket | `wss://xmpp.chat.ethora.com:5443/ws` |
+| XMPP host | `xmpp.chat.ethora.com` |
+| XMPP MUC (conference) | `conference.xmpp.chat.ethora.com` |
+| Web app (sign up, admin) | `https://app.chat.ethora.com` |
+
+### Run your own server
+
+The same server behind Ethora Cloud installs on your own infrastructure in about ten minutes. On a fresh Ubuntu 22.04 or 24.04 server (2 vCPU, 4 GB RAM, ports 80 and 443 open):
+
+```bash
+curl -fsSL https://get.ethora.com | bash -s -- --domain chat.example.com --admin-email you@example.com
+```
+
+Or install from [AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-xgn2obhnb5au4), [Docker Hub](https://hub.docker.com/u/dappros) (Docker Compose, Portainer, Coolify, Dokploy), the [Helm chart](https://artifacthub.io/packages/helm/ethora/ethora-core) on Kubernetes, or the [Cloudron App Store](https://ca.cloudron.io/app/ethora). Installer, Compose files, chart source and the editions table: [dappros/ethora-install](https://github.com/dappros/ethora-install). Every channel, including a managed dedicated server with an SLA direct from Ethora, is listed at [ethora.com/get](https://ethora.com/get/).
+
+Point the SDKs at your install with `npx @ethora/setup` (choose a self-hosted profile) or by setting the API base URL and XMPP host to `api.<your root>` and `xmpp.<your root>`.
+
+## What you can build
+
+- **Chat / Messaging** — 1:1 and group chat, push notifications, audio/video calls
+- **AI Assistants** — LLM-powered bots, RAG pipelines, prompt engineering
+- **Backend-as-a-Service** — Users, files, push notifications out of the box
+- **Digital Wallets** — ERC-20/721/1155 tokens, documents, digital assets
+- **Gamification** — Coins/points, referrals, daily bonuses, collectibles
+
+## Architecture
+
+```
+Your App
+  └── Ethora SDK (React.js / React Native / Android / Swift / WordPress)
+        └── Ethora Platform API (REST + XMPP)
+              ├── Chat (Ejabberd + custom services)
+              ├── AI (LLM bots, RAG)
+              ├── Users & Auth (SSO, JWT)
+              ├── Files & Storage (S3/IPFS)
+              ├── Push Notifications (FCM/APNs)
+              └── Blockchain (EVM, optional)
+```
+
+**Hosting options:** Cloud (free tier) | Self-hosted (AWS Marketplace, Docker, Helm, Cloudron and more) | Managed dedicated server with an SLA. Every option, with pricing, is on [ethora.com/get](https://ethora.com/get/).
+
+## Testing & Quality
+
+Each SDK ships with its own automated test suite, all coordinated by a
+single cross-platform selector contract: Android Compose `testTag`
+strings, iOS SwiftUI `accessibilityIdentifier` strings, and Web
+`data-testid` attributes all use the same human-readable IDs
+(`chat_input`, `chat_send_button`, `rooms_list`, …). Renaming any
+selector is a four-repo change by design — a contract drift breaks
+four CI runs the same week instead of silently rotting in one.
+
+### Test layers
+
+| Layer | Where | What it catches |
+|-------|-------|-----------------|
+| L1 — Hermetic unit | JVM / Swift unit test, fakes for backend | Pure logic: reducers, parsers, state machines, formatters |
+| L2 — Component UI | Compose UI / SwiftUI snapshot / Vitest + RTL | Single-component rendering + interaction |
+| L3 — E2E synthetic | Maestro (mobile) / Playwright (web) against a real backend | Multi-screen flows, real network, cross-platform parity |
+| L4 — Manual | Tester on a real device | UX feel, IME quirks, real-device-only bugs |
+
+General rule: **push every test as far down the pyramid as it will
+go.** A pure reducer behaviour that can be expressed at L1 should
+never live at L2 or L3. L3 is reserved for what L1 + L2 genuinely
+cannot reach.
+
+### Per-SDK testing entry points
+
+| SDK | L1 / L2 setup + how to run | L3 flows |
+|-----|----------------------------|----------|
+| Android | [`sdk-android/README.md` → Testing](sdk-android/README.md#testing) — Compose UI test scaffold + JVM unit-test layer, Quickstart commands, AVD setup, full test inventory | [`sample-android/.maestro/`](sample-android/) |
+| iOS | [`sdk-swift/README.md`](sdk-swift/) — XCTest scaffold + `accessibilityIdentifier` markers | [`sample-swift/.maestro/`](sample-swift/) |
+| Web (chat component) | [`sdk-reactjs/README.md`](sdk-reactjs/) — Vitest + RTL setup, shared `data-testid` IDs | Playwright suite in the `ethora-app-reactjs` repo |
+| React Native | [`sdk-reactnative/README.md`](sdk-reactnative/) | (in progress) |
+
+### Cross-platform scenario catalog
+
+For the failure-mode clusters distilled from field reports and the
+recommended test layer per cluster, see
+[**QA_SCENARIOS.md**](QA_SCENARIOS.md). The catalog covers 12 areas
+(multi-room state machine, send + media orchestration, connection
+lifecycle, send-status correctness, unread counter, history + render
+parity, media upload, configuration safety, UI affordances, app
+lifecycle, auth + token state, cross-platform parity) and is updated
+when a new field bug class doesn't fit cleanly into the existing
+clusters.
+
+## Contributing
+
+We welcome issues, discussions, and PRs across the ecosystem. Each submodule has its own issue tracker — use the relevant repository for bug reports and feature requests.
+
+- [Open an issue](https://github.com/dappros/ethora/issues) for cross-cutting concerns
+- Use [Discussions](https://github.com/dappros/ethora/discussions) for Q&A
+- Follow conventional commit messages
+
+## Contact
+
+- Website: https://ethora.com/ | [Chat SDK](https://ethora.com/chat-sdk/) | [AI SDK](https://ethora.com/ai-sdk/) | [Self-hosted chat server](https://ethora.com/chat-sdk/self-hosted-chat-server-aws/) | [Get Ethora](https://ethora.com/get/) | [Pricing](https://ethora.com/pricing)
+- Try Free: https://app.chat.ethora.com/register
+- Twitter/X: https://x.com/EthoraOfficial
+- LinkedIn: https://www.linkedin.com/company/ethora-official/
+
+## License
+
+SDKs, web client and samples in this monorepo: AGPL and MIT licenses (see each repository). Commercial licenses available from [Dappros](https://www.dappros.com/).
+
+Server: Ethora Core is provided under the [Ethora Core Software License](https://ethora.com/legal/ethora-core-license/); Ethora Enterprise under the [Enterprise EULA](https://ethora.com/legal/enterprise-eula/). All legal documents: [ethora.com/legal](https://ethora.com/legal/).
+
+---
+
+<details>
+<summary><strong>Previous README content (archive)</strong></summary>
+
+### Project Updates (Archive)
+
+<details>
+<summary><strong>4 Dec 2024</strong> — New platform UI released</summary>
+
+Finally our new version of the overall platform UI is released. This affects the whole web version including chat component and Admin Screens.
+We hope you like the new look of Ethora and this inspires you to build your fascinating projects with Ethora engine!
+Both old and new UI are going to remain available for you to use for a few months after which we will sunset the old version.
+More details in our Community Forum: https://forum.ethora.com/topic/38-new-version-soft-launch/#comment-48
+</details>
+
+<details>
+<summary><strong>11 Oct 2024</strong> — NPM: Ethora Chat Component</summary>
+
+We released the **Ethora Chat Component** npm package — launch a chat room in minutes without digging into a mono-repo.
+https://www.npmjs.com/package/@ethora/chat-component
+</details>
+
+<details>
+<summary><strong>3 Sep 2024</strong> — Web version redesign</summary>
+
+We're updating our web design — new login/sign-in screens and Admin dashboard. Follow updates: https://forum.ethora.com/forum/16-updates-and-announcements/
+</details>
+
+<details>
+<summary><strong>5 Jul 2024</strong> — Chat Component alpha</summary>
+
+Alpha of the chat component released. It combines Ethora's platform features with simple embedding. More: https://forum.ethora.com/topic/9-ethora-nmp-package-chat-component-alpha-version/#comment-9
+</details>
+
+<details>
+<summary><strong>11 Oct 2023</strong> — Architecture & design plans</summary>
+
+Architecture review & refactoring; forthcoming design updates (mobile first, then web).
+Video by @CodeEater21 on building iOS/Android with Ethora: https://www.youtube.com/watch?v=pKEMcxJb5HM
+Self-hosted options via AWS Marketplace / Docker Hub planned.
+</details>
+
+### Screenshots
+
+**React Native — Standard UI (new design)**
+![CleanShot 2024-07-05 at 15 56 26@2x](https://github.com/dappros/ethora/assets/328787/19cd37ff-150c-4994-a582-757bf30d914a)
+
+**React Native — Standard UI (old version)**
+<img width="736" alt="collage_ethora_ 2022-08-31" src="https://user-images.githubusercontent.com/328787/187653868-456026a8-ef7e-498c-9088-1d545dc9f818.png">
+
+**Branded (customized) UI**
+<img width="622" alt="Screenshot 2023-05-04 at 17 31 05" src="https://user-images.githubusercontent.com/328787/236267243-d0c8f324-4a27-4743-a547-702351385a21.png">
+
+### App Builder
+
+The fastest way to get your app running:
+1. Customize name, logo, colors
+2. Launch your web app on your subdomain
+3. Generate React Native codebases for iOS & Android
+
+Sign up: https://app.chat.ethora.com/register
+
+<img width="800" alt="App Builder" src="https://github.com/dappros/ethora/assets/328787/5c5b5230-e3d5-4f16-9f3a-9aae98649105">
+
+### 5-minute demo (widget)
+
+Add an AI chat to any site:
+<img width="1518" height="294" alt="CleanShot 2025-10-07 at 16 07 58@2x" src="https://github.com/user-attachments/assets/1c547286-9bb6-449c-bdc5-8fa23d3d9449" />
+
+### Chat Bots
+
+Ethora uses **XMPP** for chat. Connect bots in Python, Node.js, etc.
+
+- **ChatGPT bot** — integrate OpenAI/LLMs for topic-specialized assistants
+  <img width="400" alt="Screenshot 2023-05-05 at 11 01 10" src="https://user-images.githubusercontent.com/328787/236429436-a1046904-b342-44e8-98a9-c269eb42857b.png">
+
+- **Translate bot** — interpreter bot (EN-ES)
+  <img width="400" alt="Screenshot 2023-05-05 at 11 03 15" src="https://user-images.githubusercontent.com/328787/236429833-26d10fd6-88c2-4e46-a1c5-be3f273071ea.png">
+
+### Gamification, Referrals & Rewards
+
+- **Coin** (ERC-20) for project economy
+- **Sign-up bonus** (100 Coins by default)
+- **Daily check-in** (5 Coins)
+- **Referrals** (25 Coins to both users)
+
+### Threads
+
+Keep busy chats tidy with thread replies.
+
+### Core Features
+
+- iOS, Android, Web
+- Your own name, branding, token/coin name
+- SSO (Social Sign On) via Gmail, Facebook, Apple or email
+- AI Bots with LLM, RAG, prompt engineering features
+- Each user gets a digital assets wallet + cryptographic keypair
+- Coins (ERC-20) & NFTs (ERC-721/1155)
+- Crypto-likes (tip tokens to messages)
+- Rooms & spaces, QR/public-key invites
+- Profiles, push, audio/video calls
+
+### Authors & Governance
+
+Ethora & its server infrastructure have been developed since 2018 by [Dappros](https://www.dappros.com/) and [DeepX](https://deepxhub.com/). The team is led by Taras Filatov, a Ukrainian-born and UK-based tech entrepreneur.
+
+**Backend:** Dappros Platform API & DeepX RTC: EVM chain + API/cache (Node.js, Kafka, Redis, MongoDB), IPFS/S3 storage, and XMPP Ejabberd messaging with custom services (Erlang, Mnesia, MySQL, Cassandra).
+
+**Commercial model:**
+- Client-side: free, open-source (closed-source commercial license available)
+- Server-side: freemium (generous free tier + paid SLA for businesses)
+
+</details>

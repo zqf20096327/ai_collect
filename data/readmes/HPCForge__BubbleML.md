@@ -1,0 +1,67 @@
+# BubbleML
+**Accepted to NeurIPS 2023 as a [Spotlight Paper 🏅](https://proceedings.neurips.cc/paper_files/paper/2023/hash/01726ae05d72ddba3ac784a5944fa1ef-Abstract-Datasets_and_Benchmarks.html)**
+
+A multiphase, multiphysics dataset of boiling processes. These simulations can be used to model datacenter cooling systems, like liquid cooling flowing across a GPU. They can even model the cooling of nuclear waste: a pool of liquid sitting on a heated surface.
+
+![SubCooled Temperature](video/subcooled.gif)
+
+We hope that BubbleML will be useful to members of the Thermal Science community who are interested in exploring and applying machine learning techniques. We also believe this dataset offers interesting challenges to the scientific machine learning community: handling multiphase data, handling complex boundary conditions, achieving stability in long auto-regressive rollouts, etc.
+
+## Follow-up Work: Bubbleformer
+**Accepted to NeurIPS 2025 as a Spotlight Paper🏅**
+
+[[Paper]](https://neurips.cc/virtual/2025/loc/san-diego/poster/121854) [[Poster]](media/Poster_NIPS25_Bubbleformer_FINAL.pdf) [[Dataset on Hugging Face (BubbleML 2.0)]](https://huggingface.co/datasets/hpcforge/BubbleML_2)
+
+We introduce **Bubbleformer**, a transformer-based spatiotemporal model that forecasts stable and long-range boiling dynamics—including nucleation, liquid-vapor interface evolution, and heat transfer—without dependence on simulation data during inference.
+
+The project combines:
+
+- **Bubbleformer**: A novel transformer architecture for forecasting multiphase fluid dynamics
+- **BubbleML 2.0**: A comprehensive dataset of boiling simulations across diverse fluids and configurations
+
+## Documentation and Examples
+
+Documentation discussing the data fields, format, and relevant parameters can be found in [bubbleml_data/DOCS.md](bubbleml_data/DOCS.md). We also provide a set of [examples](examples/) illustrating how to use the dataset.
+
+The examples are Jupyter Notebooks showing how to [read and visualize BubbleML](examples/data_loading.ipynb)
+and [train a Fourier Neural Operator](examples/pytorch_training.ipynb) on the BubbleML dataset. These are stand-alone examples that use a small, downsampled version of
+Subcooled Pool boiling. These examples are intended to show 1. how to load the dataset, 2. how to read tensors from
+the dataset, and 3. how to setup model training for the dataset. Extended descriptions can be found in [bubbleml_data/DOCS.md](bubbleml_data/DOCS.md). To run the examples, you should follow the [environment setup](sciml/README.md) for the SciML code.
+
+## Download BubbleML
+
+BubbleML is publicly available and open source. We provide links to download each study in [bubbleml_data/README.md](bubbleml_data/README.md).
+
+## Extending BubbleML
+
+It's possible that BubbleML will not match your needs. For instance, in BubbleML's current iteration, each study varies one parameter. One obvious extension is to vary multiple parameters, like both the heater and liquid temperatures. This will lead to different phenomena. Another idea is runnning low resolution simulations to study upscaling models. And, of course, there are some labs who may just want to generate very large datasets, containing hundreds or thousands of individual simulations!
+
+To support such efforts, we provide a [reproducibility capsule](https://github.com/Lab-Notebooks/Outflow-Forcing-BubbleML) for running your own boiling simulations with Flash-X. This includes lab notebooks for running simulations. It also includes analysis scripts and the submissions files used to generate BubbleML.
+
+## Models
+
+Checkpoints for the models mentioned in the paper, along with ther respective results are listed in the [model zoo](model-zoo/README.md). (Note: metrics will not necessarily match the paper. We hope that this page serves as a "live" listing that shows the best results thus far.)
+
+## Running SciML Code
+
+Please refer to the [SciML README.md](sciml/README.md)
+
+## Running Optical Flow Benchmarks
+
+Please refer to the [Optical Flow README.md](optical_flow/README.md)
+
+## Citation
+
+If you have found BubbleML useful in your research, please consider citing the following paper:
+
+```bibtex
+@inproceedings{
+    hassan2023bubbleml,
+    title={Bubble{ML}: A Multi-Physics Dataset and Benchmarks for Machine Learning},
+    author={Sheikh Md Shakeel Hassan and Arthur Feeney and Akash Dhruv and Jihoon Kim and 
+            Youngjoon Suh and Jaiyoung Ryu and Yoonjin Won and Aparna Chandramowlishwaran},
+    booktitle={Advances in Neural Information Processing Systems},
+    year={2023},
+    url={https://openreview.net/forum?id=0Wmglu8zak}
+}
+```

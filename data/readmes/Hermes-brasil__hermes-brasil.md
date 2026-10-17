@@ -1,0 +1,108 @@
+# 🇧🇷 Hermes Brasil
+
+**Comunidade brasileira de Hermes Agent** — o agente de IA open source da Nous Research que cresce com você.
+
+Este repositório reúne skills, guias, integrações e recursos em **português** para a comunidade brasileira de Hermes Agent.
+
+## O que é o Hermes Agent?
+
+[Hermes Agent](https://github.com/NousResearch/hermes-agent) é um agente de IA open source (MIT) da Nous Research, com um loop de aprendizado próprio: ele cria skills a partir da experiência, melhora durante o uso e constrói um modelo profundo de quem você é. Roda num VPS barato, GPU cluster ou serverless.
+
+- 📝 **Skills**: conhecimento sob demanda, compatível com o padrão [agentskills.io](https://agentskills.io)
+- 🧠 **Memória**: persistente, sobrevive entre sessões
+- 🔌 **MCP**: integra servidores MCP para mais ferramentas
+- ⏰ **Cron**: automações agendadas
+- 💬 **Canais**: Telegram, Discord, Slack, WhatsApp, Signal, Teams
+
+## 📁 Estrutura do repositório
+
+```
+hermes-brasil/
+├── skills/          → Skills em português (formato SKILL.md)
+│   ├── anti-ai-slop/                       → Revisão editorial anti-slop (PT-BR + EN)
+│   ├── hermes-ops-producao/                → Ops de produção (update, gateway, health)
+│   ├── hermes-philosophy-podcast/          → Filosofia do Hermes (podcast Nous Research)
+│   ├── orquestracao-kanban-humano-agente/  → Kanban humanos + agentes (com pitfalls)
+│   ├── prospeccao-b2b-comercio-local/      → Prospecção B2B de comércio local
+│   ├── rag-assistente-conhecimento/        → Assistente RAG com conhecimento da empresa
+│   ├── think-tank-research/                → Pesquisa multi-persona com síntese por evidências
+│   └── triagem-conteudo-externo/           → Defesa contra instruções em conteúdo não confiável
+├── guides/          → Guias de instalação, configuração e uso (pt-BR)
+│   ├── instalacao-basica.md                → Atalho mínimo
+│   ├── instalacao-producao-vps.md          → VPS 24/7, gateway, update
+│   ├── cron-em-producao.md                 → Jobs sérios (ledger, delivery, HOME)
+│   ├── backup-e-recuperacao.md             → Backup verificável e restauração segura
+│   ├── profiles-e-kanban.md                → Multi-agente com profiles
+│   ├── mcp-no-hermes.md                    → Servidores MCP: catálogo, instalação e pitfalls
+│   ├── testando-skills-localmente.md       → Validação antes do Pull Request
+│   ├── autoria-de-skills.md                → Escrever skills que o agente realmente carrega
+│   ├── chrome-windows-cdp-wsl.md           → Chrome do Windows no Hermes/WSL via CDP
+│   ├── primeiro-agente.md                  → Criando seu primeiro agente (passo a passo)
+│   └── ojobinho-no-hermes.md               → Candidaturas locais com revisão humana
+├── CONTRIBUTING.md → Guia para contribuir
+├── README.md
+└── LICENSE          → MIT
+```
+
+`integrations/` e `community/` são áreas planejadas para contribuições futuras; ainda não fazem parte da árvore atual.
+
+## 🚀 Como usar as skills
+
+Com o Hermes instalado:
+
+```bash
+# Adicionar este repo como tap de skills
+hermes skills tap add Hermes-brasil/hermes-brasil
+
+# Ou instalar uma skill apontando o SKILL.md raw
+hermes skills install https://raw.githubusercontent.com/Hermes-brasil/hermes-brasil/main/skills/anti-ai-slop/SKILL.md
+```
+
+Também funciona clonar o repo e copiar pastas de `skills/` para `~/.hermes/skills/`.
+
+## 📖 Guias recomendados (ordem)
+
+1. [Instalação básica](./guides/instalacao-basica.md)
+2. [Produção em VPS](./guides/instalacao-producao-vps.md)
+3. [Cron em produção](./guides/cron-em-producao.md)
+4. [Profiles + Kanban](./guides/profiles-e-kanban.md)
+5. [Servidores MCP](./guides/mcp-no-hermes.md)
+6. [Autorando skills que carregam](./guides/autoria-de-skills.md)
+7. [oJobinho no Hermes](./guides/ojobinho-no-hermes.md)
+
+## 🚀 Como contribuir
+
+1. Faça um **fork** deste repositório
+2. Crie uma branch para sua contribuição
+3. Adicione sua skill/guia/integração (veja [CONTRIBUTING.md](./CONTRIBUTING.md))
+4. Abra um **Pull Request**
+
+Antes do PR, siga o guia de [teste local de skills](./guides/testando-skills-localmente.md).
+
+### Padrão de skill (SKILL.md)
+
+Cada skill em `skills/` segue o formato [agentskills.io](https://agentskills.io):
+
+```markdown
+---
+name: nome-da-skill
+description: O que a skill faz (primeira frase = gatilho)
+---
+# Conteúdo da skill em português
+```
+
+**Critérios:** conteúdo técnico real, testado, sem segredos/credenciais, em português (ou bilíngue).
+
+## 🤝 Comunidade
+
+Junte-se aos canais oficiais da comunidade brasileira de Hermes Agent:
+
+- **Grupo WhatsApp**: [Entre no grupo](https://chat.whatsapp.com/DIDJlL9yQdlBY0fa4pABbe?s=cl&p=a&ilr=1)
+- **Telegram**: [t.me/hermesagentbr](https://t.me/hermesagentbr)
+- **Discord**: [Entre no Discord](https://discord.gg/nkZQeVjcJ)
+- **Hermes Bible**: [www.hermesbible.com](https://www.hermesbible.com/) — guia e recursos da comunidade
+- **Docs oficial**: [hermes-agent.nousresearch.com](https://hermes-agent.nousresearch.com)
+
+## 📜 Licença
+
+[MIT](LICENSE) © 2026 Comunidade Hermes Brasil

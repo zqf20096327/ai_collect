@@ -1,0 +1,1490 @@
+# SynthoraAI - AI-Powered Article Content Curator
+
+> [!TIP]
+> **SynthoraAI - Synthesizing the world’s news & information through AI.** 🚀✨
+
+The **SynthoraAI - AI-Powered Article Content Curator** is a comprehensive, AI-powered system designed to aggregate, summarize, and present curated government-related articles.
+This monorepo, multi-services project is organized into seven main components:
+
+- **Backend:** Provides a robust RESTful API to store and serve curated articles.
+- **Crawler:** Automatically crawls and extracts article URLs and metadata from government homepages and public API sources.
+- **Frontend:** Offers an intuitive Next.js-based user interface for government staff (and potentially the public) to browse and view article details.
+- **Newsletter:** Sends daily updates to subscribers with the latest articles.
+- **Agentic AI Pipeline:** Production-hardened multi-agent system on LangGraph + LangChain 1.x — resilience (retry/circuit-breaker/timeout), OpenTelemetry + Prometheus observability, a non-root container image, and Kubernetes/Helm/Terraform artifacts; zero known Python CVEs.
+- **Chat Orchestration:** TypeScript-based dual-provider (Anthropic + Google) chat layer with 16 specialized agents, intent routing, grounding validation, and cost tracking.
+- **MCP Server + ACP Layer:** Model Context Protocol server exposing the agentic pipeline as 28 tools, 14 resources, and 7 prompts (each wrapped by `tool_middleware`), plus a production-grade Agent Communication Protocol (ACP) for agent-to-agent messaging with Redis-backed multi-replica support.
+
+<p align="center">
+  <img src="frontend/img/logo.png" alt="AI-Powered Article Content Curator Logo" width="30%">
+</p>
+
+**High-Level Architecture:** Each component is maintained in its own directory:
+
+- **Backend:** `backend/`
+  - Live: [https://ai-content-curator-backend.vercel.app/](https://ai-content-curator-backend.vercel.app/)
+- **Frontend:** `frontend/`
+  - Live: [https://synthoraai.vercel.app/](https://synthoraai.vercel.app/)
+- **Crawler:** `crawler/`
+  - Live: [https://ai-content-curator-crawler.vercel.app/](https://ai-content-curator-crawler.vercel.app/)
+- **Newsletter:** `newsletters/`
+  - Live: [https://ai-content-curator-newsletters.vercel.app/](https://ai-content-curator-newsletters.vercel.app/)
+- **Agentic AI Pipeline:** `agentic_ai/`
+  - Documentation: [agentic_ai/README.md](agentic_ai/README.md)
+
+Additionally, the project includes a set of shell scripts and a Makefile for automating common tasks, as well as a CLI tool for managing crawling and article operations. It also fully supports AWS, Terraform, & Kubernetes deployments with blue/green deployments, canary releases, and rolling updates via GitHub Actions. Enterprise-grade observability is provided through Splunk (via OpenTelemetry Collector and Kinesis Data Firehose), Prometheus, and Grafana.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Collaboration & Agile Workflow with Jira](#collaboration--agile-workflow-with-jira)
+- [User Interface](#user-interface)
+- [Backend](#backend)
+- [Crawler](#crawler)
+- [Frontend](#frontend)
+- [Newsletter Subscription](#newsletter-subscription)
+- [Agentic AI Pipeline](#agentic-ai-pipeline)
+- [Article Q&A Feature](#article-qa-feature)
+- [Sitewide AI Chat](#sitewide-ai-chat)
+- [Intelligent Recommendation System](#intelligent-recommendation-system)
+- [Command Line Interface (CLI)](#command-line-interface-cli)
+- [Shell Scripts & Makefile](#shell-scripts--makefile)
+- [Testing](#testing)
+- [Continuous Integration / Continuous Deployment (CI/CD)](#continuous-integration--continuous-deployment-cicd)
+- [Deployment](#deployment)
+- [License](#license)
+- [Contact](#contact)
+- [Conclusion](#conclusion)
+
+---
+
+## Overview
+
+The **SynthoraAI - AI-Powered Article Content Curator** system is designed to provide government staff with up-to-date, summarized content from trusted government sources and reputable news outlets. By leveraging AI (Google Generative AI / Gemini) for summarization and using modern web technologies, this solution ensures that users receive concise, accurate, and timely information.
+
+> [!IMPORTANT]
+> Live Web App: **[https://synthoraai.vercel.app/](https://synthoraai.vercel.app/).**
+
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Shell](https://img.shields.io/badge/Shell-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
+![HCL](https://img.shields.io/badge/HCL-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+![YAML](https://img.shields.io/badge/YAML-CB171E?style=for-the-badge&logo=yaml&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![React Three Fiber](https://img.shields.io/badge/React%20Three%20Fiber-0A0A0A?style=for-the-badge&logo=reactos&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
+![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer%20Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A?style=for-the-badge&logo=postcss&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css&logoColor=white)
+![Sass](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)
+![SWR](https://img.shields.io/badge/SWR-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide-F56565?style=for-the-badge&logo=lucide&logoColor=white)
+![React Icons](https://img.shields.io/badge/React%20Icons-E91E63?style=for-the-badge&logo=react&logoColor=white)
+![React Markdown](https://img.shields.io/badge/React%20Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
+![Marked](https://img.shields.io/badge/Marked-000000?style=for-the-badge&logo=markdown&logoColor=white)
+![remark-gfm](https://img.shields.io/badge/remark--gfm-333333?style=for-the-badge)
+![remark-math](https://img.shields.io/badge/remark--math-333333?style=for-the-badge)
+![KaTeX](https://img.shields.io/badge/KaTeX-0E7C61?style=for-the-badge)
+![React Toastify](https://img.shields.io/badge/React%20Toastify-7E22CE?style=for-the-badge)
+![React Slick](https://img.shields.io/badge/React%20Slick%20Carousel-2C3E50?style=for-the-badge)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?style=for-the-badge&logo=openapiinitiative&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![WebAuthn](https://img.shields.io/badge/WebAuthn%20%2F%20Passkeys-3423A6?style=for-the-badge&logo=webauthn&logoColor=white)
+![bcrypt](https://img.shields.io/badge/bcrypt-3C5A99?style=for-the-badge)
+![Zod](https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+![CORS](https://img.shields.io/badge/CORS-FF6C37?style=for-the-badge)
+![Rate Limit](https://img.shields.io/badge/express--rate--limit-444444?style=for-the-badge)
+![Validator](https://img.shields.io/badge/Validator.js-6E40C9?style=for-the-badge)
+![Winston](https://img.shields.io/badge/Winston-231F20?style=for-the-badge)
+![dotenv](https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black)
+![Commander](https://img.shields.io/badge/Commander.js-4B5563?style=for-the-badge)
+![Anthropic Claude](https://img.shields.io/badge/Anthropic%20Claude-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge)
+![MCP](https://img.shields.io/badge/Model%20Context%20Protocol-000000?style=for-the-badge&logo=modelcontextprotocol&logoColor=white)
+![ACP](https://img.shields.io/badge/Agent%20Communication%20Protocol-1A1A2E?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Uvicorn](https://img.shields.io/badge/Uvicorn-499848?style=for-the-badge)
+![Pydantic](https://img.shields.io/badge/Pydantic-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
+![HTTPX](https://img.shields.io/badge/HTTPX-0C344B?style=for-the-badge)
+![structlog](https://img.shields.io/badge/structlog-2B2B2B?style=for-the-badge)
+![Tenacity](https://img.shields.io/badge/Tenacity-5C6BC0?style=for-the-badge)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![Pinecone](https://img.shields.io/badge/Pinecone-000000?style=for-the-badge&logo=pinecone&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-FF4438?style=for-the-badge&logo=redis&logoColor=white)
+![hiredis](https://img.shields.io/badge/hiredis-A41E11?style=for-the-badge)
+![Puppeteer](https://img.shields.io/badge/Puppeteer-40B5A4?style=for-the-badge&logo=puppeteer&logoColor=white)
+![Chromium](https://img.shields.io/badge/Chromium-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)
+![Cheerio](https://img.shields.io/badge/Cheerio-E88C1F?style=for-the-badge&logo=cheerio&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-4B8BBE?style=for-the-badge)
+![aiohttp](https://img.shields.io/badge/aiohttp-2C5BB4?style=for-the-badge&logo=aiohttp&logoColor=white)
+![lxml](https://img.shields.io/badge/lxml-005C9C?style=for-the-badge)
+![Readability](https://img.shields.io/badge/Readability-3B82F6?style=for-the-badge)
+![Resend](https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=resend&logoColor=white)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-29B6F6?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Helm](https://img.shields.io/badge/Helm-0F1689?style=for-the-badge&logo=helm&logoColor=white)
+![Istio](https://img.shields.io/badge/Istio-466BB0?style=for-the-badge&logo=istio&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=FF9900)
+![Amazon ECS](https://img.shields.io/badge/Amazon%20ECS-232F3E?style=for-the-badge&logo=amazonecs&logoColor=FF9900)
+![Amazon ECR](https://img.shields.io/badge/Amazon%20ECR-232F3E?style=for-the-badge)
+![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+![Amazon CloudWatch](https://img.shields.io/badge/CloudWatch-FF4F8B?style=for-the-badge&logo=amazoncloudwatch&logoColor=white)
+![Route 53](https://img.shields.io/badge/Route%2053-8C4FFF?style=for-the-badge)
+![ElastiCache](https://img.shields.io/badge/ElastiCache-C925D1?style=for-the-badge)
+![AWS CodeDeploy](https://img.shields.io/badge/CodeDeploy-4B612C?style=for-the-badge)
+![AWS IAM](https://img.shields.io/badge/AWS%20IAM-DD344C?style=for-the-badge)
+![Amazon VPC](https://img.shields.io/badge/Amazon%20VPC-232F3E?style=for-the-badge)
+![ALB](https://img.shields.io/badge/Elastic%20Load%20Balancing-8C4FFF?style=for-the-badge)
+![Auto Scaling](https://img.shields.io/badge/EC2%20Auto%20Scaling-EC912D?style=for-the-badge)
+![Amazon Kinesis Data Firehose](https://img.shields.io/badge/Kinesis%20Data%20Firehose-FF9900?style=for-the-badge)
+![Cron](https://img.shields.io/badge/Cron%20Jobs-2C3E50?style=for-the-badge)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-425CC7?style=for-the-badge&logo=opentelemetry&logoColor=white)
+![Splunk](https://img.shields.io/badge/Splunk-000000?style=for-the-badge&logo=splunk&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
+![Supertest](https://img.shields.io/badge/Supertest-3C873A?style=for-the-badge)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=black)
+![Husky](https://img.shields.io/badge/Husky-42283C?style=for-the-badge)
+![Nodemon](https://img.shields.io/badge/Nodemon-76D04B?style=for-the-badge&logo=nodemon&logoColor=white)
+![ts-node](https://img.shields.io/badge/ts--node-3178C6?style=for-the-badge&logo=tsnode&logoColor=white)
+![tsx](https://img.shields.io/badge/tsx-2B7489?style=for-the-badge)
+![GNU Make](https://img.shields.io/badge/GNU%20Make-A42E2B?style=for-the-badge&logo=gnu&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
+
+---
+
+## Architecture
+
+Below is a high-level diagram outlining the system architecture:
+
+```mermaid
+flowchart LR
+    subgraph Sources[Trusted Sources]
+        GovSites[Government Websites]
+        NewsAPIs[Public News APIs]
+    end
+
+    Sources -->|URLs & Metadata| Crawler
+    Crawler[[Crawler Service<br/>Next.js API Routes]] -->|Summaries & Topics| MongoDB[(MongoDB Atlas)]
+    Crawler -->|AI Prompts| GoogleAI[(Google Generative AI)]
+    MongoDB --> Backend[[Backend API<br/>Next.js + Express]]
+    Backend -->|Cached Responses| Redis[(Redis)]
+    Backend -->|REST/JSON| Frontend[[Frontend Web App<br/>Next.js + React]]
+    Backend -->|Digest Payload| Newsletter[[Newsletter Service<br/>Next.js Serverless]]
+    Newsletter -->|Emails| Subscribers[(Subscribers)]
+    Frontend -->|Browse & Manage| Users[(Staff & Public Users)]
+    Backend -.->|AI-Assisted Features| GoogleAI
+    Crawler -.->|Cron & Shell Scripts| Automation[Shell / Make CLI]
+    Backend -.->|Operational Scripts| Automation
+
+    subgraph Observability[Observability Stack]
+        OTEL[Splunk OTEL Collector]
+        Splunk[(Splunk)]
+        Prometheus[Prometheus]
+        Grafana[Grafana]
+    end
+
+    Backend -.->|OTLP + logs| OTEL
+    Frontend -.->|OTLP + logs| OTEL
+    Crawler -.->|logs| OTEL
+    Newsletter -.->|logs| OTEL
+    OTEL -->|HEC| Splunk
+    OTEL -->|remote write| Prometheus
+    Prometheus --> Grafana
+```
+
+To illustrate how articles move through the platform, the following sequence captures the typical daily refresh:
+
+```mermaid
+sequenceDiagram
+    participant Cron as Vercel Cron / Shell
+    participant Crawl as Crawler Service
+    participant Back as Backend API
+    participant AI as Google Generative AI
+    participant DB as MongoDB
+    participant UI as Frontend
+    participant Mail as Newsletter Service
+
+    Cron->>Crawl: Trigger fetchAndSummarize job
+    Crawl->>AI: Request summaries & topics
+    AI-->>Crawl: Return condensed insights
+    Crawl->>DB: Upsert articles & analytics
+    Back->>DB: Query latest curated data
+    UI->>Back: Fetch paginated articles
+    Mail->>Back: Request latest articles
+    Back-->>Mail: Deliver curated digest data
+    Mail->>Subscribers: Send newsletter email
+```
+
+This project consists of **4 primary microservices** that interact with each other:
+
+1. **Crawler:**
+   - Crawls government homepages and public API sources to extract article URLs and metadata.
+   - Uses Axios and Cheerio for static HTML parsing, with Puppeteer as a fallback for dynamic content.
+   - Scheduled to run daily at 6:00 AM UTC via a serverless function on Vercel.
+   - Provides a basic landing page with information about the crawler and links to the backend and frontend.
+   - **_Deployed on Vercel at [https://ai-content-curator-crawler.vercel.app](https://ai-content-curator-crawler.vercel.app)._**
+2. **Backend:**
+   - Built with Express.js and Next.js, serving as a RESTful API for the frontend.
+   - Integrates Google Generative AI (Gemini) for content summarization.
+   - Stores articles in MongoDB using Mongoose, with fields for URL, title, full content, summary, source information, and fetch timestamp.
+   - Scheduled serverless function to fetch and process new articles daily at 6:00 AM UTC.
+   - **_Deployed on Vercel at [https://ai-content-curator-backend.vercel.app](https://ai-content-curator-backend.vercel.app)._**
+3. **Newsletter Service:**
+   - Allows users to subscribe to a newsletter for daily updates on the latest articles.
+   - Integrated with Resend API for managing subscriptions and sending emails.
+   - By default, the newsletter is sent daily at 9:00 AM UTC, from the email address with the `sonnguyenhoang.com` domain.
+   - **_Deployed on Vercel as a serverless function, at [https://ai-content-curator-newsletters.vercel.app](https://ai-content-curator-newsletters.vercel.app)._**
+4. **Frontend:**
+   - Built with Next.js and React, providing a modern, mobile-responsive UI for browsing and viewing curated articles.
+   - Fetches and displays a paginated list of articles from the backend API, with filtering options.
+   - Dedicated pages for full article content, AI-generated summaries, source information, and fetched timestamps.
+   - User authentication for marking articles as favorites, commenting, discussions, and upvoting/downvoting comments.
+   - 3D visualizations + components built with React Three Fiber + WebGL and Three.js for an engaging user experience.
+   - AI-powered features such as article Q&A, bias analysis, and related article recommendations using vector similarity search with Pinecone.
+   - and many more features in the app!
+   - **_Deployed on Vercel at [https://synthoraai.vercel.app/](https://synthoraai.vercel.app/)._**
+
+Additionally, there are **3 advanced AI components:**
+
+1. **Agentic AI Pipeline:**
+   - A sophisticated multi-agent system built with Python, leveraging LangGraph and LangChain for advanced content processing. This pipeline handles tasks such as article summarization, topic extraction, bias analysis, and more. It is designed to be modular and extensible, allowing for the addition of new agents and tools as needed. The pipeline is exposed via a FastAPI HTTP bridge for seamless integration with other services.
+2. **Orchestration Layer:**
+   - **Python** (`agentic_ai/orchestration/`): Enterprise article-processing orchestration atop the LangGraph pipeline — content supervision, cost budgeting, error recovery with circuit breaking, dead-letter queuing, and concurrent batch processing. `mypy --strict` clean with 100% line coverage across all modules. Exposed via a FastAPI HTTP bridge (`agentic_ai/api.py` on port 8000) for cross-service integration.
+   - **TypeScript** (`orchestration/`): Dual-provider LLM chat layer — unified Anthropic + Google client, intent-based agent routing (16 agents), grounding validation, prompt caching, cost tracking, and structured observability. `strict` TypeScript with 233 Jest tests behind an enforced coverage gate. Integrated into the backend via `/api/orchestrator/*` endpoints. See `orchestration/README.md`.
+3. **MCP Server + ACP Layer** (`mcp_server/`): Model Context Protocol server exposing the agentic pipeline over stdio — 28 tools, 14 resources, and 7 prompts for Claude Code and IDE integration. Includes ACP with Redis-backed agent registry and inter-agent message routing for production multi-replica deployments. Configured via `.mcp.json`.
+
+This monorepo, microservices architecture is designed to be modular and scalable, allowing for easy updates and maintenance. Each component can be developed, tested, and deployed independently, ensuring a smooth development workflow.
+
+> [!NOTE]
+> This architecture diagram above is a simplified representation and may not include all components or interactions. For a more detailed view, please refer to the individual service documentation.
+
+---
+
+## Collaboration & Agile Workflow with Jira
+
+The team follows an Agile (Kanban) workflow tracked in Jira, with a GitHub branch/PR process keyed to Jira issue IDs.
+
+> [!IMPORTANT]
+> **Before starting any work, read [AGILE_WORKFLOW.md](AGILE_WORKFLOW.md).**
+> It is the authoritative process reference — Kanban board columns, the
+> Agile rationale, the step-by-step branch/PR/code-review workflow,
+> Jira-issue-key branch naming, and the Jira + Confluence project links.
+> For local setup and code-style mechanics, see
+> **[CONTRIBUTING.md](.github/CONTRIBUTING.md)**.
+
+---
+
+## User Interface
+
+The user interface is built with Next.js and React, providing a modern, mobile-responsive experience.
+Below are some screenshots of the application (some screenshots may be outdated and not reflect the latest UI - visit [https://synthoraai.vercel.app/](https://synthoraai.vercel.app/) for the latest version):
+
+### 0. Landing Page
+
+<p align="center">
+  <img src="frontend/img/landing.png" alt="Landing Page" width="100%">
+</p>
+
+### 1. Home Page
+
+<p align="center">
+  <img src="frontend/img/home.png" alt="Home Page" width="100%">
+</p>
+
+### 2. Article Details Page
+
+<p align="center">
+  <img src="frontend/img/article-details.png" alt="Article Detail Page" width="100%">
+</p>
+
+### 2.1. Article Q&A Feature
+
+<p align="center">
+  <img src="frontend/img/articles-qa.png" alt="Article Q&A Feature" width="100%">
+</p>
+
+### 2.2. Related Articles (Vector Similarity Search)
+
+<p align="center">
+  <img src="frontend/img/related-articles.png" alt="Related Articles (Vector Similarity Search)" width="100%">
+</p>
+
+### 2.3. AI-Powered Article Bias Analysis
+
+<p align="center">
+  <img src="frontend/img/article-bias-analysis.png" alt="Article Bias Analysis" width="100%">
+</p>
+
+### 2.4. Article Ratings
+
+<p align="center">
+  <img src="frontend/img/article-ratings.png" alt="Article Ratings" width="100%">
+</p>
+
+### 2.5. Article Comments
+
+<p align="center">
+  <img src="frontend/img/article-comments.png" alt="Article Comments & Ratings" width="100%">
+</p>
+
+### 3. Favorite Articles Page (Only for Authenticated Users)
+
+<p align="center">
+  <img src="frontend/img/favorites.png" alt="Favorite Articles Page" width="100%">
+</p>
+
+### 4. Newsletter Subscription Page
+
+<p align="center">
+  <img src="frontend/img/newsletter.png" alt="Newsletter Subscription Page" width="100%">
+</p>
+
+### 5. User Authentication
+
+<p align="center">
+  <img src="frontend/img/login.png" alt="User Authentication" width="100%">
+</p>
+
+### 6. User Registration
+
+<p align="center">
+  <img src="frontend/img/register.png" alt="User Registration" width="100%">
+</p>
+
+### 7. Reset Password
+
+<p align="center">
+  <img src="frontend/img/reset-password.png" alt="Reset Password" width="100%">
+</p>
+
+### 8. Search Results
+
+<p align="center">
+  <img src="frontend/img/search-results.png" alt="User Profile Page" width="100%">
+</p>
+
+### 9. App-wide Translate Feature
+
+<p align="center">
+  <img src="frontend/img/translate.png" alt="App-wide Translate Feature" width="100%">
+</p>
+
+### 10. Daily Newsletter Email Example
+
+<p align="center">
+  <img src="frontend/img/newsletter-example.png" alt="Daily Newsletter Example" width="100%">
+</p>
+
+### 11. Passkey Management Page
+
+<p align="center">
+  <img src="frontend/img/passkeys.png" alt="Passkey Management Page" width="100%">
+</p>
+
+### 12. Privacy Data Export Page / Account Deletion Flow
+
+<p align="center">
+  <img src="frontend/img/privacy.png" alt="Privacy Data Export Page / Account Deletion Flow" width="100%">
+</p>
+
+_many more pages and features are available in the app - we encourage you to explore!_
+
+---
+
+## Backend
+
+The **Backend** is responsible for storing articles and serving them via RESTful endpoints. It integrates AI summarization, MongoDB for storage, and runs within a Next.js environment using Express.js for API routes.
+
+### Features
+
+- **Data Ingestion:**  
+  Receives article URLs and data from the crawler and external API sources.
+- **Content Summarization:**  
+  Uses Google Generative AI (Gemini) to generate concise summaries.
+- **Storage:**  
+  Persists articles in MongoDB using Mongoose with fields for URL, title, full content, summary, source information, and fetch timestamp.
+- **API Endpoints:**
+  - `GET /api/articles` – Retrieves a paginated list of articles (supports filtering via query parameters such as `page`, `limit`, and `source`).
+  - `GET /api/articles/:id` – Retrieves detailed information for a specific article.
+- **Scheduled Updates:**  
+  A serverless function (triggered twice daily at 6:00 AM and 6:00 PM UTC) fetches and processes new articles, so that the system remains up-to-date!
+- **User Authentication:**  
+  Supports email + password registration, login, and JWT-based authentication, **plus passwordless passkey (WebAuthn / FIDO2) sign-in**. Users can sign up with a passkey only, add additional passkeys to an existing account, and manage them (list / rename / delete) at `/account/passkeys`. Both flows issue the same JWT, so the rest of the system is unchanged.
+- **Privacy & Data Controls:**  
+  GDPR-style data-subject endpoints — `GET /api/privacy/export` returns a JSON archive of all data held for the user (profile, favorites, comments, ratings, passkey metadata, newsletter subscription; password hashes and raw keys excluded). Account deletion is a two-step, token-gated flow (`POST /api/privacy/request-deletion` issues a 1-hour token; `DELETE /api/privacy/account` verifies it and cascade-deletes the user and all linked records).
+- **Favorite Articles:**  
+  Authenticated users can mark articles as favorites for quick access.
+- **Newsletter Subscription:**  
+  Users can subscribe to a newsletter for daily updates on the latest articles. This feature is integrated with a third-party service (Resend) for managing subscriptions and sending emails.
+- **Bias Detection & Analysis:**  
+  The app also includes a bias detection & analysis feature, powered by Google Generative AI, to analyze articles for potential bias and provide deep article insights to users.
+- **User Ratings:**  
+  Users can rate articles, allowing for feedback and quality assessment.
+- **Dark Mode:**  
+  The frontend offers a dark mode option for improved readability and user experience.
+- **Discussions & Comments:**  
+  Users can also discuss and comment on articles, fostering engagement and collaboration.
+- **Upvote/Downvote Comments:**  
+  Users can upvote or downvote comments to highlight valuable contributions.
+
+### Backend Swagger API Documentation
+
+<p align="center">
+  <img src="frontend/img/swagger.png" alt="Backend Swagger API Documentation" width="100%">
+</p>
+
+### Prerequisites & Installation (Backend)
+
+> [!CAUTION]
+> Before proceeding, run `npm install` once in the root directory of the monorepo to install the necessary dependencies for managing the project!
+
+1. **Prerequisites:**
+
+   - Node.js (v18 or later)
+   - MongoDB (local or cloud)
+   - Vercel CLI (for deployment)
+
+2. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/hoangsonww/AI-Gov-Content-Curator.git
+   cd AI-Gov-Content-Curator/backend
+
+   # then, fill in the environment variables as described in .env.example file
+   # approved team members, please contact me for the actual .env file and API keys!
+   ```
+
+3. **Install Dependencies (inside `backend/`):**
+
+   ```bash
+   npm install
+   ```
+
+### Configuration (Backend)
+
+Create a `.env` file in the ROOT directory with the following (this will be shared across all components in this monorepo):
+
+```dotenv
+MONGODB_URI=<your_mongodb_uri>
+GOOGLE_AI_API_KEY=<your_google_ai_api_key>
+GOOGLE_AI_API_KEY1=<your_google_ai_api_key1_optional>
+GOOGLE_AI_API_KEY2=<your_google_ai_api_key2_optional>
+GOOGLE_AI_API_KEY3=<your_google_ai_api_key3_optional>
+AI_INSTRUCTIONS=Summarize the articles concisely and naturally (change if needed)
+NEWS_API_KEY=<your_news_api_key>
+NEWS_API_KEY1=<your_news_api_key1>
+PORT=3000
+CRAWL_URLS=https://www.state.gov/press-releases/,https://www.bbc.com/news,https://www.nytimes.com/,https://www.dallasnews.com/news/,https://www.houstonchronicle.com/,,https://www.whitehouse.gov/briefing-room/,https://www.congress.gov/,https://www.statesman.com/news/politics-elections/
+AICC_API_URL=https://ai-content-curator-backend.vercel.app/
+RESEND_API_KEY=<your_resend_api_key>
+RESEND_FROM="AI Curator <your_email>"
+UNSUBSCRIBE_BASE_URL=<your_unsubscribe_base_url>
+
+# Auth
+JWT_SECRET=<long_random_string>
+
+# WebAuthn / Passkey configuration
+# RP_ID MUST equal the FRONTEND apex domain (eTLD+1), not the backend's host.
+RP_ID=localhost
+RP_NAME=SynthoraAI
+RP_ORIGIN=http://localhost:3000,https://synthoraai.vercel.app
+```
+
+Refer to the `.env.example` file for more details on each variable.
+
+### Running Locally (Backend)
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Access endpoints:
+
+- `GET http://localhost:3000/api/articles`
+- `GET http://localhost:3000/api/articles/:id`
+
+### Deployment on Vercel (Backend)
+
+1. **Configure Environment Variables** in your Vercel project settings.
+2. Create or update the `vercel.json` in the root of the backend directory:
+
+   ```json
+   {
+     "version": 2,
+     "builds": [
+       {
+         "src": "package.json",
+         "use": "@vercel/next"
+       }
+     ],
+     "crons": [
+       {
+         "path": "/api/scheduled/fetchAndSummarize",
+         "schedule": "0 6,18 * * *"
+       }
+     ]
+   }
+   ```
+
+3. **Deploy** with:
+
+   ```bash
+   vercel --prod
+   ```
+
+---
+
+## Crawler
+
+The **Crawler** automatically retrieves article links and metadata from government homepages and public API sources. It uses Axios and Cheerio for static HTML parsing and falls back to Puppeteer when necessary.
+
+### Features
+
+- **Article Extraction:**  
+  Crawls specified URLs to extract article links and metadata.
+
+- **Error Handling & Resilience:**  
+  Implements a retry mechanism and fallback to Puppeteer for dynamic content fetching when encountering issues (e.g., HTTP 403, ECONNRESET).
+
+- **Scheduling:**  
+  Deployed as a serverless function on Vercel, scheduled via cron (runs daily at 6:00 AM UTC).
+
+- **Next.js UI:**  
+  Provides a basic landing page with information about the crawler and links to the backend and frontend.
+
+### Prerequisites & Installation (Crawler)
+
+1. **Prerequisites:**
+
+- Node.js (v18 or later)
+- NPM (or Yarn)
+- Vercel CLI (for deployment)
+
+2. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/hoangsonww/AI-Gov-Content-Curator.git
+   cd AI-Gov-Content-Curator/crawler
+   ```
+
+3. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+### Running Locally (Crawler)
+
+Start the Next.js development server to test both the UI and crawler function:
+
+```bash
+npm run dev
+```
+
+- UI: [http://localhost:3000/](http://localhost:3000/)
+- Crawler Function: [http://localhost:3000/api/scheduled/fetchAndSummarize](http://localhost:3000/api/scheduled/fetchAndSummarize)
+
+Alternatively, run the crawler directly:
+
+```bash
+npx ts-node schedule/fetchAndSummarize.ts
+
+# or
+npm run crawl
+```
+
+Also, there are 2 more scripts for the crawler:
+
+1. Fetch and crawl all past articles (will run indefinitely, unless you stop it):
+
+   ```bash
+   npx ts-node scripts/fetchPastArticles.ts
+
+   # or
+   npm run fetch:past
+   ```
+
+2. Fetch and crawl all newest/latest articles:
+
+   ```bash
+    npx ts-node scripts/fetchLatestArticles.ts
+
+    # or
+    npm run fetch:latest
+   ```
+
+Run these locally to test the crawler functionality. You can also run them in a Docker container if you prefer.
+
+### Deployment on Vercel (Crawler)
+
+1. **Set Environment Variables** in the Vercel dashboard.
+2. Create or update the `vercel.json` in the `crawler` directory:
+
+   ```json
+   {
+     "version": 2,
+     "builds": [
+       {
+         "src": "package.json",
+         "use": "@vercel/next"
+       }
+     ],
+     "crons": [
+       {
+         "path": "/api/scheduled/fetchAndSummarize",
+         "schedule": "0 6 * * *"
+       }
+     ]
+   }
+   ```
+
+3. **Deploy** with:
+
+   ```bash
+   vercel --prod
+   ```
+
+---
+
+## Frontend
+
+The **Frontend** is built with Next.js and React, providing a modern, mobile-responsive UI for browsing and viewing curated articles.
+
+### Features
+
+- **Article Listing:**  
+  Fetches and displays a paginated list of articles from the backend API. Supports filtering by source.
+
+- **Article Detail View:**  
+  Dedicated pages display full article content, AI-generated summaries, source information, and fetched timestamps.
+
+- **Responsive Design:**  
+  The UI is optimized for both desktop and mobile devices.
+
+- **Authentication:**  
+  Users can register and log in with email + password, or sign in with a **passkey** (Face ID, Touch ID, Windows Hello, or a hardware key) for a faster, passwordless experience. New accounts may be created passkey-only. The frontend stores the issued JWT in `localStorage` and sends it on the `Authorization` header for protected routes.
+
+- **Chatbot Q&A Feature:**
+  Users can ask questions about specific articles, powered by RAG (Retrieval-Augmented Generation) using Google Generative AI. The sitewide chat supports inline message editing with conversation branching—edit any prior message and the conversation forks from that point with fresh AI responses.
+
+- **Related Articles (Vector Similarity Search):**  
+  Displays related articles based on vector similarity search using embeddings generated by Google Generative AI.
+
+- **Article Bias Analysis:**  
+  Analyzes articles for potential bias using Google Generative AI and provides insights to users.
+
+- **Article Ratings:**  
+  Users can rate articles, allowing for feedback and quality assessment.
+
+- **Discussions & Comments:**  
+  Users can discuss and comment on articles, fostering engagement and collaboration.
+
+- **Upvote/Downvote Comments:**  
+  Users can upvote or downvote comments to highlight valuable contributions.
+
+- **Search Functionality:**  
+  Users can search for articles using keywords, with results fetched from the backend API.
+
+- **Translation Feature:**  
+  Articles can be translated into multiple languages using Google Translate API.
+
+- **Favorite Articles:**  
+  Authenticated users can mark articles as favorites for quick access. This is stored in the backend and displayed in the frontend.
+
+- **Privacy & Data Controls:**  
+  The `/account/privacy` page (linked from the auth dropdown) lets users download a JSON archive of all their data and delete their account through a deliberate two-step flow (request → type `DELETE` → confirm).
+
+- **Newsletter Subscription:**  
+  Users can subscribe to a newsletter for daily updates on the latest articles. This feature is integrated with a third-party service (Resend) for managing subscriptions and sending emails.
+
+- **Dark Mode:**  
+  The frontend offers a dark mode option for improved readability and user experience.
+
+- **Additional UI Components:**  
+  Includes components like HeroSlider, LatestArticles, ThemeToggle, and more for an enhanced user experience.
+
+- **Static Site Generation (SSG):**  
+  The frontend uses Next.js's SSG capabilities to pre-render pages for improved performance and SEO.
+
+### Prerequisites & Installation (Frontend)
+
+1. **Prerequisites:**
+
+- Node.js (v18 or later)
+- NPM or Yarn
+
+2. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/hoangsonww/AI-Gov-Content-Curator.git
+   cd AI-Gov-Content-Curator/frontend
+   ```
+
+3. **Install Dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+   or
+
+   ```bash
+   yarn
+   ```
+
+### Configuration (Frontend)
+
+(Optional) Create a `.env.local` file in the `frontend` directory to configure the API URL:
+
+```dotenv
+NEXT_PUBLIC_API_URL=https://your-backend.example.com
+```
+
+### Running Locally (Frontend)
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Access the application at [http://localhost:3000](http://localhost:3000).
+
+### Deployment on Vercel (Frontend)
+
+1. **Configure Environment Variables** in the Vercel dashboard (e.g., `NEXT_PUBLIC_API_URL`).
+2. Vercel automatically detects the Next.js project; if needed, customize with a `vercel.json`.
+3. **Deploy** with:
+
+   ```bash
+   vercel --prod
+   ```
+
+Alternatively, you can deploy directly from the Vercel dashboard.
+
+---
+
+## Newsletter Subscription
+
+The app also includes a newsletter subscription feature, allowing users to sign up for updates.
+This is integrated with a third-party service ([Resend](https://resend.com)) for managing subscriptions.
+
+### Features (Newsletter)
+
+- **Subscription Form:**  
+  Users can enter their email addresses to subscribe to the newsletter.
+- **Unsubscribe Option:**  
+  Users can unsubscribe from the newsletter at any time.
+- **Daily Updates:**  
+   Subscribers receive daily updates with the latest articles. Only the
+  latest articles are sent to subscribers, ensuring they receive the most relevant information.
+
+### Prerequisites & Installation (Newsletter)
+
+> [!IMPORTANT]
+> This assumes that you have already set up the backend and frontend as described above.
+
+1. **Prerequisites:** Sign up for a Resend account and obtain your API key.
+2. **Go to Domain Settings:** In your Resend dashboard, navigate to the "Domains" section and add your domain (you'll have to have
+   purchased a domain name that you have access to). Render will ask that you verify your domain ownership by adding a TXT record to your DNS settings, as
+   well as adding an MX record to your DNS settings, and more. Follow the instructions provided by Resend to complete this step.
+3. **Configure Environment Variables:** Create a `.env` file in the `newsletters` directory with the following variables:
+   - `RESEND_API_KEY`: Your Resend API key.
+   - `RESEND_DOMAIN`: The domain you added in the Resend dashboard.
+4. **Deploy the CRON Job:** Simply run `vercel --prod` in the `newsletters` directory to deploy the CRON job that sends daily updates to subscribers.
+5. **Configure the CRON Job:** In your Vercel dashboard, navigate to the "Functions" section and set up a CRON job that runs daily at 9:00 AM UTC. This job will send the latest articles to subscribers.
+6. **That's it!** Your newsletter subscription feature is now set up and ready to go. Users can subscribe to receive daily updates with the latest articles.
+
+### Note
+
+> [!IMPORTANT]
+>
+> - The newsletter subscription feature is designed to be simple and effective. It allows users to stay informed about the latest articles without overwhelming them with too many emails.
+> - The subscription form is integrated into the frontend, and users can easily sign up or unsubscribe at any time.
+> - The daily updates are sent via email, ensuring that subscribers receive the most relevant information without having to check the app constantly.
+> - The newsletter feature is built using the Resend API, which provides a reliable and scalable solution for managing subscriptions and sending emails.
+> - Sometimes, the emails may end up in the spam folder, so users should check their spam folder if they don't see the emails in their inbox.
+
+---
+
+## Agentic AI Pipeline
+
+The **Agentic AI Pipeline** is a production-hardened multi-agent system
+built with **LangGraph + LangChain 1.x** that processes articles through
+a series of specialized AI agents — content analysis, summarization,
+classification, sentiment analysis, and quality assurance.
+
+### Overview
+
+The Agentic AI Pipeline implements an **assembly line architecture** where each specialized agent performs a specific task in sequence. Built on LangGraph's state machine framework, the pipeline ensures reliable, scalable, and sophisticated multi-agent orchestration.
+
+```mermaid
+graph LR
+    A[Article Input] --> B[Content Analyzer]
+    B --> C[Summarizer]
+    C --> D[Classifier]
+    D --> E[Sentiment Analyzer]
+    E --> F[Quality Checker]
+    F --> G{Quality Pass?}
+    G -->|Yes| H[Output]
+    G -->|No & Retry| B
+    G -->|Max Retries| H
+```
+
+### Key Features
+
+- **🤖 Multi-Agent Architecture**: Five specialized agents working in concert
+  - **Content Analyzer**: Extracts structure, entities, and key information
+  - **Summarizer**: Generates concise, accurate summaries
+  - **Classifier**: Categorizes content into 15+ topic categories
+  - **Sentiment Analyzer**: Analyzes emotional tone and objectivity
+  - **Quality Checker**: Validates outputs with automatic retry logic
+
+- **🔄 Assembly Line Processing**: LangGraph state machine with conditional routing and a bounded quality-retry loop
+- **🩺 Resilience**: Retry + per-provider circuit breaker + timeout (`guarded_call`) on every external call
+- **📡 Observability**: OpenTelemetry tracing + a typed Prometheus registry (`synthora_*` metrics) + trace-correlated, secret-redacted JSON logs
+- **🔐 Security**: `SecretStr` credentials, typed errors, input sanitization, token-bucket rate limiting, production fail-fast config
+- **🔌 MCP Server**: Model Context Protocol server (stdio) — every tool wrapped by `tool_middleware`
+- **🛰️ ACP Layer**: Agent Communication Protocol for inter-agent messaging (`register -> heartbeat -> send -> inbox -> ack`)
+- **📬 Durable Agent Comms**: Redis-backed ACP store for multi-replica deployments with TTL, retention, and liveness pruning
+- **🐳 Container & Infra**: Non-root multi-stage image; Kubernetes manifests, Helm chart, and Terraform module
+- **🧪 Operational Preflight**: Live ACP roundtrip checks are part of `make mcp-preflight`
+- **☁️ Cloud-Ready**: Production configs for AWS Lambda and Azure Functions
+- **📊 Quality Assurance**: Built-in quality checking with automatic retry mechanisms
+- **⚡ Production-Ready**: Comprehensive logging, monitoring, and error handling
+- **🔐 Secure**: Secrets management via AWS Secrets Manager and Azure Key Vault
+
+### Architecture
+
+The pipeline uses an **assembly line architecture** where articles flow through multiple specialized agents:
+
+1. **Intake Node**: Validates input and initializes state
+2. **Content Analysis**: Extracts structure, entities, dates, and style
+3. **Summarization**: Generates 150-200 word summaries
+4. **Classification**: Categorizes into relevant topics
+5. **Sentiment Analysis**: Analyzes tone, objectivity, urgency, and controversy
+6. **Quality Check**: Validates outputs and determines if retry is needed
+7. **Output Node**: Returns final results
+
+**Technology Stack:**
+- **LangChain**: Framework for LLM-powered applications
+- **LangGraph**: State machine orchestration for multi-agent systems
+- **Python 3.11+**: Modern Python with async/await support
+- **Redis**: State management and caching
+- **MongoDB**: Data persistence
+- **Prometheus**: Metrics and monitoring
+- **Splunk + OpenTelemetry**: Centralized log aggregation, distributed tracing, and enterprise observability via OTEL Collector
+- **MCP Python SDK (FastMCP)**: Model Context Protocol server implementation
+- **ACP Store Backends**: Redis (production) + in-memory fallback (non-production)
+
+**MCP + ACP Surface:**
+- **MCP:** 28 tools, 14 resources, 7 prompts
+- **ACP Tools:** `acp_register_agent`, `acp_unregister_agent`, `acp_heartbeat`, `acp_send_message`, `acp_fetch_inbox`, `acp_acknowledge_message`, `acp_list_agents`, `acp_get_message`
+- **ACP Resources:** `acp://agents`, `acp://stats`, `acp://messages/recent`
+
+**Cloud Deployment:**
+- **AWS**: Lambda, API Gateway, S3, SQS, Secrets Manager, CloudWatch, Kinesis Firehose → Splunk HEC
+- **Azure**: Functions, Storage Queues, Blob Storage, Key Vault, Application Insights
+
+**Beads Subarchitecture:**
+- Beads are the atomic unit of work in the agentic architecture. Each bead is a discrete, well-scoped task that an agent (human or AI) can claim, execute, and verify independently
+- Beads follow a `PENDING → CLAIMED → IN_PROGRESS → REVIEW → DONE` lifecycle with a `BLOCKED` escape state, and use file-level reservations (`.beads/.status.json`) to prevent concurrent-edit conflicts across agents
+- Service-scoped IDs (`ORCH-001`, `CRAWL-005`, `PIPE-012`, etc.) tie every bead to the service it changes, enabling per-service tracking and parallelism
+- A compound learning loop records structured session logs in `.agent-sessions/` after each completed bead, so future agents benefit from accumulated experience
+- See [.beads/README.md](.beads/README.md) for the full specification and [.agent-sessions/README.md](.agent-sessions/README.md) for session log format
+
+### Getting Started
+
+**Quick Start:**
+
+```bash
+# Navigate to the agentic_ai directory
+cd agentic_ai
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your API keys
+# For production ACP, set:
+# ACP_ENABLED=true
+# ACP_BACKEND=redis
+# REDIS_HOST=<redis-host>
+# REDIS_PORT=6379
+
+# Run the MCP server
+PYTHONPATH=.. python -m mcp_server
+
+# Run production-readiness preflight (includes live ACP checks)
+make mcp-preflight
+```
+
+**Use Programmatically:**
+
+```python
+from agentic_ai.core.pipeline import AgenticPipeline
+import asyncio
+
+# Initialize pipeline
+pipeline = AgenticPipeline()
+
+# Process an article
+result = asyncio.run(pipeline.process_article({
+    "id": "article-123",
+    "content": "Your article content...",
+    "url": "https://example.com/article",
+    "source": "government"
+}))
+
+print(f"Summary: {result['summary']}")
+print(f"Topics: {result['topics']}")
+print(f"Quality Score: {result['quality_score']}")
+```
+
+**Deploy to Cloud:**
+
+```bash
+# Deploy to AWS
+cd agentic_ai/aws
+./deploy.sh production
+
+# Deploy to Azure
+cd agentic_ai/azure
+./deploy.sh production
+```
+
+**Docker Deployment:**
+
+```bash
+cd agentic_ai
+docker-compose up -d
+```
+
+### Detailed Documentation
+
+For comprehensive documentation including:
+- Detailed agent specifications
+- MCP server API reference
+- Cloud deployment guides
+- Performance optimization tips
+- Monitoring and observability setup
+- Integration examples
+
+**Please see the complete documentation: [agentic_ai/README.md](agentic_ai/README.md)**
+
+For full MCP + ACP protocol and runtime diagrams, see **[MCP-ACP.md](MCP-ACP.md)**.
+
+> [!TIP]
+> For a comprehensive reference of all AI/ML components — the three orchestration layers, 21 agents, LLM providers, cost controls, grounding rules, and 15+ Mermaid architecture diagrams — see **[AI_ML.md](AI_ML.md)**.
+
+---
+
+## Article Q&A Feature
+
+The article Q&A feature allows users to ask questions about specific articles and receive AI-generated answers. This feature is integrated into the frontend and backend, providing a seamless experience for users.
+
+The AI will have access to the article content and will use RAG to generate answers based on the information provided in the article. This feature is designed to enhance user engagement and provide quick answers to common questions.
+
+### Features (Article Q&A)
+
+The chatbot is given an identity (ArticleIQ) and is designed to answer questions related to the articles. The AI will have access to the article content and will use RAG (Retrieval-Augmented Generation) to generate answers based on the information provided in the article:
+
+- **Ask Questions:** Users can ask questions about specific articles directly from the article detail page.
+- **AI-Generated Answers:** The AI will generate answers based on the content of the article, providing users with relevant information.
+- **User-Friendly Interface:** The Q&A feature is integrated into the article detail page, making it easy for users to ask questions and receive answers without navigating away from the content.
+- **RAG Integration:** The AI will use RAG (Retrieval-Augmented Generation) to provide accurate and contextually relevant answers based on the article content.
+- **Real-Time Responses:** Users will receive answers in real-time, enhancing the overall user experience and engagement with the content.
+
+In addition to the site-wide chatbot, article-specific chatbots are also available on each article detail page. These chatbots are tailored to the content of the specific article, allowing users to ask questions and receive answers that are directly relevant to the article they are reading.
+
+### Prerequisites & Installation (Article Q&A)
+
+> [!TIP]
+> This feature is integrated into the existing backend and frontend, so you don't need to set up anything separately.
+
+1. **Prerequisites:** Ensure that you have the backend and frontend set up as described above.
+2. **Install Dependencies:** Make sure you have the necessary dependencies installed in both the backend and frontend directories. You can run `npm install` in the root directory to install dependencies for all components.
+3. **Configure Environment Variables:** Ensure that you have the necessary environment variables set up in your `.env` file. This includes the Google AI API key and any other required variables.
+4. **Deploy the Backend:** If you haven't already, deploy the backend to Vercel using `vercel --prod` in the backend directory. Or, just run locally with `npm run dev`.
+5. **Deploy the Frontend:** If you haven't already, deploy the frontend to Vercel using `vercel --prod` in the frontend directory. Or, just run locally with `npm run dev`.
+6. **Test the Feature:** Once everything is set up, you can test the article Q&A feature by navigating to an article detail page of an article and asking questions. The AI will generate answers based on the content of the article.
+7. **That's it!** The article Q&A feature is now integrated into the existing system, providing users with an enhanced experience and quick access to information.
+
+### Using the Article Q&A Feature
+
+To use the article Q&A feature, simply navigate to the article detail page of an article and look for the Q&A section. You can ask questions related to the article, and the AI will generate answers based on the content provided.
+
+Feel free to ask any questions related to the article, and the AI will do its best to provide accurate and relevant answers. This feature is designed to enhance user engagement and provide quick access to information without having
+to read through the entire article.
+
+---
+
+## Sitewide AI Chat
+
+The sitewide chat lets users ask open-ended questions across the full corpus—not just a single article—while keeping every claim cited. The system provides two chat paths: a direct Gemini-powered RAG pipeline and an orchestrated multi-agent pipeline.
+
+### Direct RAG Chat (`/api/chat/sitewide`)
+
+- **RAG over the whole library:** The backend converts queries to gemini-embedding-001 vectors, searches Pinecone for top matches, and builds a context block with `[Source N]` slots.
+- **Streaming Gemini replies:** Gemini 2.0 Flash / Flash Lite streams text via Server-Sent Events (SSE) with automatic API-key/model failover and history compaction to stay within token budgets.
+- **Inline citations & warnings:** Responses carry citation metadata plus hallucination checks (missing citations, invalid refs, overconfident claims, uncited numbers). The frontend renders clickable superscripts and yellow warnings if issues are detected.
+
+### Orchestrated Multi-Agent Chat (`/api/orchestrator/chat`)
+
+- **16 specialized agents:** 8 Anthropic (Claude) primary + 8 Google (Gemini) fallback agents covering article search, Q&A, topic exploration, trend analysis, bias detection, clarification, and quality review.
+- **Intent-based routing:** LLM-based intent classification routes queries to the best-fit agent, with keyword heuristic fallback.
+- **Dual-provider failover:** Anthropic primary with automatic Google failover after retry exhaustion (3 attempts, exponential backoff with jitter).
+- **Grounding validation:** 10 canonical rules applied post-generation to detect hallucinations, missing citations, and unsupported claims.
+- **Cost tracking:** Real-time daily budget enforcement with per-model cost breakdown.
+- **Streaming support:** SSE streaming via `/api/orchestrator/chat/stream`.
+
+### Rich Client UX
+
+- `frontend/pages/ai_chat.tsx` provides multiple conversations, local storage persistence, typing indicators, and interactive source cards.
+- **Message editing with conversation branching:** Users can click the pencil icon on any sent message to edit it inline. Submitting the edit truncates the conversation at that point (removing all subsequent messages) and re-sends the edited message with only the preceding history, effectively branching the conversation from the edit point.
+
+### How It Works
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as Frontend (ai_chat.tsx)
+    participant API as Backend /api/chat/sitewide
+    participant Vec as Pinecone (ai-gov-articles)
+    participant LLM as Gemini 2.0 Flash
+
+    User->>UI: Ask question
+    UI->>API: POST userMessage + trimmed history
+    API->>Vec: Embed query (gemini-embedding-001) & semantic search
+    Vec-->>API: Top K articles + metadata
+    API->>LLM: Stream request with context + citations + guardrails
+    LLM-->>API: SSE chunks (text)
+    API-->>UI: SSE events (status/context/citations/chunk/warnings/done)
+    UI-->>User: Live updates, clickable citations, warnings if any
+```
+
+### Streaming Contract
+
+- **Endpoint:** `POST /api/chat/sitewide`
+- **Events:** `status`, `context`, `citations`, `chunk`, `warnings`, `done`
+- **Payloads:** JSON per event (e.g., `{"message":"Generating response..."}`, `{"sources":[{number,title,url,score}]}`, `{"text":"partial reply"}`)
+- **Frontend handling:** Streams append text into the active message bubble; citations hydrate source cards; warnings show a yellow banner above the AI reply.
+
+---
+
+## Intelligent Recommendation System
+
+SynthoraAI employs a sophisticated, multi-layered recommendation engine to deliver personalized and contextually relevant content to users.
+
+### Related Articles (Vector Similarity Search)
+
+The Related Articles feature leverages **Pinecone**, a high-performance vector database, to find semantically similar articles:
+
+```mermaid
+flowchart LR
+    Article[Current Article] --> Embed[Generate Embedding]
+    Embed --> Pinecone[(Pinecone Index)]
+    UI[Article Page] --> API[/api/articles/:id/similar/]
+    API --> Pinecone
+    Pinecone --> API
+    API --> UI
+```
+
+- **Embedding Generation:** Article content is transformed into high-dimensional vector embeddings using state-of-the-art NLP models
+- **Vector Storage:** Embeddings are indexed in Pinecone for lightning-fast similarity searches
+- **Semantic Matching:** When viewing an article, the system queries Pinecone to retrieve the most semantically similar articles based on cosine similarity
+- **Real-time Results:** Users see up to 6 related articles displayed in an interactive carousel on each article detail page
+
+This approach goes beyond simple keyword matching, understanding the deeper semantic relationships between articles to surface truly relevant content.
+
+### Recommended Articles (Client-Side ML)
+
+The Recommended Articles section uses a **lightweight machine learning model** running directly in the browser:
+
+- **Privacy-First:** All computation happens client-side—no user data is sent to external servers
+- **Behavioral Analysis:** The model analyzes user interactions (views, time spent, favorites, ratings) to build a personalized preference profile
+- **Real-Time Adaptation:** Recommendations dynamically update based on current session behavior and historical patterns
+- **Hybrid Approach:** Combines collaborative filtering with content-based signals for optimal accuracy
+- **Performance Optimized:** Uses WebAssembly and quantized model weights to ensure fast inference without impacting page load times
+
+Together, these systems ensure users discover relevant content through both semantic similarity and personalized behavioral patterns.
+
+---
+
+## Command Line Interface (CLI)
+
+The `aicc` command gives you a single entrypoint to manage your entire monorepo—frontend, backend, crawler—and perform content‐curation tasks.
+
+### Installation
+
+From the **project root**:
+
+```bash
+# Install dependencies
+npm install
+
+# Link the CLI so `aicc` is on your PATH
+npm link
+```
+
+> [!TIP]
+> This sets up a global symlink named `aicc` pointing at `./bin/aicc.js`.
+
+### Usage
+
+Run `aicc` with no arguments to display help:
+
+```bash
+aicc
+```
+
+#### Workspace Management
+
+| Command                | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| `aicc dev`             | Start **all** services in development mode                    |
+| `aicc dev <service>`   | Start one service (`frontend` / `backend` / `crawler`) in dev |
+| `aicc build`           | Build **all** services for production                         |
+| `aicc build <service>` | Build one service                                             |
+| `aicc start`           | Start **all** services in production mode                     |
+| `aicc start <service>` | Start one service                                             |
+| `aicc lint`            | Run Prettier across all packages                              |
+| `aicc format`          | Alias for `aicc lint`                                         |
+
+**Examples**:
+
+```bash
+# Run frontend + backend + crawler in parallel
+aicc dev
+
+# Build only the backend
+aicc build backend
+
+# Start crawler in prod mode
+aicc start crawler
+
+# Lint & format everything
+aicc lint
+```
+
+#### Crawling
+
+Kick off your scheduled crawler (`schedule/fetchAndSummarize.ts`) in the **crawler** package:
+
+```bash
+aicc crawl
+```
+
+This will `cd crawler` and run `npm run crawl` under the hood.
+
+#### Article CRUD
+
+Interact with your backend’s `/api/articles` endpoints directly from the CLI:
+
+| Command                                                    | Description                                   |
+| ---------------------------------------------------------- | --------------------------------------------- |
+| `aicc article create --title <t> --content <c> [...flags]` | Create a new article                          |
+| `aicc article get <id>`                                    | Fetch one article by its MongoDB `_id`        |
+| `aicc article list [--limit N]`                            | List articles, optionally limiting the number |
+| `aicc article update <id> [--flags]`                       | Update fields on an existing article          |
+| `aicc article delete <id>`                                 | Delete an article by ID                       |
+
+**Flags for `create` & `update`:**
+
+- `--title <string>` — Article title
+- `--content <string>` — Full article content (stored in `content`)
+- `--summary <string>` — Brief summary
+- `--topics <topic1> ...` — One or more topic tags
+- `--source <string>` — Source identifier
+
+**Examples**:
+
+```bash
+# Create a new article
+aicc article create \
+  --title "AI in 2025" \
+  --content "Deep dive into AI trends..." \
+  --summary "Key trends in AI" \
+  --topics ai machine-learning \
+  --source "manual-cli"
+
+# Get an article
+aicc article get 64a1f2d3e4b5c6a7d8e9f0
+
+# List up to 5 articles
+aicc article list --limit 5
+
+# Update title and topics
+aicc article update 64a1f2d3e4b5c6a7d8e9f0 \
+  --title "AI Trends 2025" \
+  --topics ai trends
+
+# Delete an article
+aicc article delete 64a1f2d3e4b5c6a7d8e9f0
+```
+
+With `aicc` in your toolbox, you can develop, build, run, lint, crawl, and manage content—all from one unified interface.
+
+---
+
+## Shell Scripts & Makefile
+
+The project includes several shell scripts and a Makefile to simplify common tasks. These scripts are located in the `scripts` directory and can be executed directly from the command line.
+
+### Shell Scripts
+
+Various shell scripts are provided for tasks such as:
+
+- Starting the backend or frontend
+- Running the crawler
+- Building the project
+- Running tests
+- Deploying to Vercel
+- and more...
+
+These scripts are designed to be easy to use and can be executed with a simple command.
+Visit the `shell` directory for more details on each script.
+
+To run a shell script, use the following command:
+
+```bash
+chmod +x scripts/<script_name>.sh
+./scripts/<script_name>.sh
+```
+
+#### `daily.sh` Script in Root Directory
+
+The `daily.sh` script is a shell script that automates the process of running the crawler and sending out the newsletter.
+It is designed to be run daily, and it performs the following tasks:
+
+- Runs the crawler to fetch the latest articles.
+- Processes the articles and generates summaries.
+- Cleanups any temporary files or artifacts, as well as dirty/corrupted articles.
+- Sends out the newsletter to subscribers with the latest articles.
+- Performs any other necessary tasks related to the daily operation of the application.
+
+To run the `daily.sh` script, use the following command:
+
+```bash
+chmod +x daily.sh
+./daily.sh
+```
+
+Please ensure that you have the necessary permissions and environment variables set up before running the script.
+
+Also, you can set up a cron job to run this script automatically at a specified time each day. To do so, simply run
+the `install_daily_cron.sh` script, which will install the cron job for you.
+
+```bash
+chmod +x install_daily_cron.sh
+./install_daily_cron.sh
+```
+
+This will create a cron job that runs the `daily.sh` script every day at 16:00 (4:00 PM) UTC. You can adjust the timing in the `install_daily_cron.sh` script if needed.
+
+To confirm, run the following command to view your cron jobs:
+
+```bash
+crontab -l
+```
+
+This will display a list of all your cron jobs, including the one you just created for the `daily.sh` script.
+
+> [!CAUTION]
+> Be sure to keep your computer on and connected to the internet for the cron job to run successfully at the scheduled time!
+
+> [!TIP]
+> Logs will be saved in the `daily.log` file in the root directory, so you can check the output of the script and any errors that may occur.
+
+### Makefile
+
+The Makefile provides a convenient way to run common tasks using the `make` command. It includes targets for building, testing, and deploying the project.
+
+To use the Makefile, navigate to the project root directory and run:
+
+```bash
+make <target>
+```
+
+#### Example Makefile Targets
+
+| Target         | Description                                |
+| -------------- | ------------------------------------------ |
+| `bootstrap`    | Install dependencies for all packages      |
+| `clean`        | Remove build artifacts and temporary files |
+| `deps`         | Install dependencies for all packages      |
+| `dev:frontend` | Start the frontend in development mode     |
+| `dev:backend`  | Start the backend in development mode      |
+| and more...    |                                            |
+
+To see all available targets, run:
+
+```bash
+make help
+```
+
+This will display a list of all targets defined in the Makefile along with their descriptions.
+
+---
+
+## Testing
+
+### Backend
+
+The backend uses Jest + Supertest (with an in-memory MongoDB) for unit and integration tests. From the **backend** workspace root, run:
+
+```bash
+# Install dependencies (npm ci is correct here—it installs exactly from package-lock)
+npm ci
+
+# Run all tests once
+npm run test
+
+# Rerun tests on file changes
+npm run test:watch
+
+# Generate a coverage report
+npm run test:coverage
+```
+
+> [!NOTE]
+> If your changes do not involve AI functionality, you'll need to set `GOOGLE_AI_API_KEY=dummy` in `backend/.env` to prevent tests from failing due to missing API keys.
+
+### Frontend
+
+The frontend uses Playwright for end-to-end testing. From the **frontend** workspace directory, run:
+
+```bash
+# Install dependencies
+npm ci
+
+# Headless E2E run (default)
+npm run test:e2e
+
+# Run in headed mode (open real browser windows)
+npm run test:e2e:headed
+
+# Open the HTML report after a run
+npm run test:e2e:report
+```
+
+By default, the Playwright report is served at `http://localhost:9323` (or another port as printed in your console).
+
+### Crawler
+
+The crawler uses Jest + ts-jest to test the `fetchAndSummarize` job. From the **crawler** workspace root, run:
+
+```bash
+# Install dependencies
+npm ci
+
+# Run all crawler tests once
+npm run test
+
+# (Optional) Re-run on file changes
+npm run test -- --watch
+
+# To execute an actual crawl against your configured URLs:
+npm run crawl
+```
+
+Make sure required environment variables (e.g. `MONGODB_URI`, `CRAWL_URLS`, `CRAWL_MAX_LINKS`, etc.) are defined before invoking `npm run crawl` and any test commands. Using `npm ci` in each workspace ensures a clean, reproducible installation based on your lockfile.
+
+---
+
+## Continuous Integration / Continuous Deployment (CI/CD)
+
+The project uses **GitHub Actions** for CI/CD. The workflow is defined in `.github/workflows/ci.yml`. It includes:
+
+- **Linting:** Runs ESLint and Prettier checks on all code changes.
+- **Testing:** Executes unit tests for the backend and frontend.
+- **Deployment:** Automatically deploys the backend and frontend to Vercel on successful merges to the main branch.
+- **Docker:** Builds and pushes Docker images for the backend and crawler.
+- **Cron Jobs:** Configures scheduled tasks for the backend and crawler.
+- **Environment Variables:** Sets up environment variables for the backend and crawler.
+- and more...
+
+<p align="center">
+  <img src="frontend/img/ci.png" alt="CI/CD Workflow" width="100%">
+</p>
+
+Additional `.yml` files are also available for specific tasks, such as `backend-ci.yml`, `crawler-ci.yml`, and `frontend-ci.yml`.
+
+---
+
+## Deployment
+
+The project fully supports deployment with **AWS**, **Kubernetes**, and **Terraform** for infrastructure as code (IaC). It utilizes blue/green and canary deployment strategies for zero-downtime releases.
+
+For detailed deployment instructions, refer to the [`infrastructure/`](./infrastructure/README.md) directory, which contains Terraform scripts and Kubernetes manifests.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
+
+---
+
+## Contact
+
+If you have any questions or suggestions, feel free to reach out to the repository maintainer:
+
+- **David Nguyen**
+  - [LinkedIn](https://www.linkedin.com/in/hoangsonw/)
+  - [GitHub](https://github.com/hoangsonww)
+  - [Email](mailto:hoangson091104@gmail.com)
+  - [Website](https://sonnguyenhoang.com/)
+
+I will be happy to assist you with any questions or issues you may have regarding this project.
+
+> [!TIP]
+> If I don't know the answer, I'll be able to forward your question to the right person in the AICC team who can help you!
+
+---
+
+## Conclusion
+
+The **SynthoraAI - AI-Powered Article Content Curator** project brings together a powerful backend, an intelligent crawler,
+a newsletter service, and a modern frontend to deliver up-to-date, summarized government-related articles. Leveraging advanced technologies
+like Google Generative AI, Next.js, Express.js, and MongoDB, the system is both scalable and robust. Whether you’re a government staff member
+or a curious public user, this solution provides a streamlined, user-friendly experience to quickly access relevant, summarized content.
+
+> [!NOTE]
+> This project is a work in progress, and contributions are welcome! If you have ideas for improvements, bug fixes, or new features, please feel free to open an issue or submit a pull request.
+
+---
+
+Thank you for exploring this project! If you have any questions, suggestions, or contributions, feel free to reach out. Your feedback is invaluable in making this project even better.
+Cheers to a more informed world! 🚀
+
+**[🔝 Back to Top](#ai-powered-article-content-curator)**

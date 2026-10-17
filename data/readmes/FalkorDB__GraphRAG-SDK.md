@@ -1,0 +1,315 @@
+<h1 align="center">GraphRAG-SDK</h1>
+<h2 align="center">The simplest, most accurate GraphRAG framework built on FalkorDB</h2>
+
+<p align="center"><b>Benchmark-leading accuracy</b> · <b><a href="https://docs.falkordb.com/graphrag/reducing-llm-hallucinations">Reduce LLM hallucinations</a></b> · <b>FalkorDB-fast</b> · <b>Multi-tenant</b> · <b>Graph traversal</b> · <b><a href="#quick-start">5-minute setup</a></b></p>
+
+<p align="center">
+  <a href="https://pypi.org/project/graphrag-sdk/"><img src="https://img.shields.io/pypi/v/graphrag-sdk.svg?label=pypi" alt="PyPI version"></a>
+  <a href="https://pepy.tech/projects/graphrag-sdk"><img src="https://img.shields.io/pepy/dt/graphrag-sdk?label=downloads&color=16A534" alt="Downloads"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green.svg" alt="License: Apache 2.0"></a>
+  <a href="https://github.com/FalkorDB/GraphRAG-SDK/actions"><img src="https://img.shields.io/github/actions/workflow/status/FalkorDB/GraphRAG-SDK/ci.yml?label=CI" alt="CI"></a>
+  <a href="https://discord.gg/6M4QwDXn2w"><img src="https://img.shields.io/discord/1146782921294884966?label=Discord&logo=discord" alt="Discord"></a>
+  <a href="https://github.com/FalkorDB/GraphRAG-SDK"><img src="https://img.shields.io/github/stars/FalkorDB/GraphRAG-SDK?style=social" alt="GitHub Stars"></a>
+</p>
+
+![knowledge-graph-construction-b](https://github.com/user-attachments/assets/69066899-0168-4e14-b359-f68c5b6c1e75)
+
+
+Most GraphRAG systems work in demos and break under production constraints. GraphRAG SDK was built from real deployments around a simple idea: the retrieval harness matters more than the model. The result is a modular, benchmark-leading framework with predictable cost and sensible defaults that gets you from raw documents to cited answers in under 5 minutes.
+
+It is designed to **reduce LLM hallucinations**: answers can be grounded in context retrieved from the knowledge graph, while applications inspect that context, validate generated claims, and gate generation when evidence is insufficient. `MENTIONED_IN` provenance edges trace entity mentions to their source chunks — see the [Reducing LLM Hallucinations guide](https://docs.falkordb.com/graphrag/reducing-llm-hallucinations) and the [grounded answers with abstention example](graphrag_sdk/examples/grounded_answers_with_abstention.py).
+
+---
+
+## Why GraphRAG for factual reliability?
+
+Hallucinations in RAG are usually a retrieval failure, not a model failure: the model is asked to answer from context that never contained the answer. A knowledge graph attacks that at the retrieval layer, and keeps the evidence attached to the answer.
+
+- **Relationship traversal retrieves the connected evidence vector similarity misses** — multi-hop facts rarely live in one chunk that happens to be similar to the question.
+- **Retrieved context is traceable to source chunks**; `MENTIONED_IN` edges trace entity mentions, and `return_context=True` returns the retrieval trail for application-level validation.
+- **The ontology constrains what can be extracted**, so the graph stores typed, checkable facts instead of free-form model output.
+- **Your application can abstain when evidence is insufficient** — gate generation on retrieval and return an explicit "evidence-insufficient" response ([example](graphrag_sdk/examples/grounded_answers_with_abstention.py)).
+- **Benchmark accuracy is the measurable outcome** of all of the above — see the table below.
+
+→ Full guide: [Reducing LLM hallucinations](https://docs.falkordb.com/graphrag/reducing-llm-hallucinations) · API reference: [Reliability and Grounding](https://docs.falkordb.com/graphrag/reliability-and-grounding)
+
+---
+
+## Benchmarks
+| Rank | System | Novel (Multi-Doc) | Medical (Single-Doc) | Overall |
+| :--- | :--- | :---: | :---: | :---: |
+| **1** | **FalkorDB GraphRAG SDK ◄** | **66.09** | **76.87** | **71.48** |
+| 2 | G-reasoner | 58.94 | 73.30 | 66.12 |
+| 3 | AutoPrunedRetriever | 63.72 | 67.00 | 65.36 |
+| 4 | HippoRAG2 | 56.48 | 64.85 | 60.67 |
+| 5 | Fast-GraphRAG | 52.02 | 64.12 | 58.07 |
+| 6 | **RAG (w rerank) (Vector RAG)** | **48.35** | **62.43** | **55.39** |
+| 7 | LightRAG | 45.09 | 62.59 | 53.84 |
+| 8 | HippoRAG | 44.75 | 59.08 | 51.92 |
+| 9 | MS-GraphRAG (local) | 50.93 | 45.16 | 48.05 |
+
+> **How these are computed.** Per dataset, ACC is the unweighted mean of the four
+> task-category scores, matching the [GraphRAG-Bench](https://graphrag-bench.github.io)
+> leaderboard convention:
+>
+> `Dataset ACC = (Fact Retrieval + Complex Reasoning + Contextual Summarize + Creative Generation) / 4`
+> `Overall = (Novel ACC + Medical ACC) / 2`
+>
+> Overall is our own summary across the two datasets; the leaderboard ranks each
+> dataset separately. Novel has 20 documents and 2,010 questions, Medical 1 corpus
+> and 2,062 questions. FalkorDB scored August 2026 with `gpt-4o-mini` (Azure OpenAI)
+> at temperature 0.7 for both graph construction and generation, `text-embedding-3-large`
+> at 1024 dimensions, text-to-Cypher retrieval enabled, and the benchmark's own
+> `generation_eval.py` unmodified as the judge. Competitor numbers are from the
+> published leaderboard, unchanged. See [the GraphRAG accuracy benchmark page](https://docs.falkordb.com/graphrag/graphrag-accuracy-benchmark)
+> for the full FalkorDB vs vector RAG comparison, configuration, reproduction
+> instructions and limitations, and [the benchmark methodology page](https://docs.falkordb.com/graphrag/benchmark) for
+> per-category results and the full 15-system comparison.
+
+Vectors match similar chunks. The graph traverses relationships. Every answer cites its source.
+
+---
+
+## Quick Start
+
+### 1. Install and start FalkorDB
+
+```bash
+pip install graphrag-sdk[litellm]
+docker run -d -p 6379:6379 -p 3000:3000 --name falkordb falkordb/falkordb:latest
+export OPENAI_API_KEY="sk-..."
+```
+
+> For PDF ingestion, install the `pdf` extra instead: `pip install graphrag-sdk[litellm,pdf]`.
+> Ingestion sanitizes unsupported control characters in IDs and string properties before graph upserts, which helps avoid FalkorDB Cypher parse errors on noisy PDFs.
+
+### 2. Ingest a document
+
+```python
+import asyncio
+from graphrag_sdk import GraphRAG, ConnectionConfig, LiteLLM, LiteLLMEmbedder
+
+async def main():
+    async with GraphRAG(
+        connection=ConnectionConfig(host="localhost", graph_name="my_graph"),  # graph_name = per-tenant isolation
+        llm=LiteLLM(model="openai/gpt-5.5"),
+        embedder=LiteLLMEmbedder(model="openai/text-embedding-3-large", dimensions=256),
+    ) as rag:
+        # Ingest raw text (pass a file path with the `pdf` extra installed for PDFs)
+        result = await rag.ingest(
+            text="Alice Johnson is a software engineer at Acme Corp in London.",
+            document_id="my_doc",
+        )
+        print(f"Nodes: {result.nodes_created}, Edges: {result.relationships_created}")
+
+        # Finalize: deduplicate entities, backfill embeddings, create indexes
+        await rag.finalize()
+
+        # Full RAG: retrieve + generate
+        answer = await rag.completion("Where does Alice work?")
+        print(answer.answer)
+
+asyncio.run(main())
+```
+
+### 3. Define a schema (optional)
+
+```python
+from graphrag_sdk import GraphSchema, EntityType, RelationType
+
+schema = GraphSchema(
+    entities=[
+        EntityType(label="Person", description="A human being"),
+        EntityType(label="Organization", description="A company or institution"),
+        EntityType(label="Location", description="A geographic location"),
+    ],
+    relations=[
+        RelationType(label="WORKS_AT", description="Is employed by", patterns=[("Person", "Organization")]),
+        RelationType(label="LOCATED_IN", description="Is situated in", patterns=[("Organization", "Location")]),
+    ],
+)
+
+async with GraphRAG(
+    connection=ConnectionConfig(host="localhost", graph_name="my_graph"),
+    llm=LiteLLM(model="openai/gpt-5.5"),
+    embedder=LiteLLMEmbedder(model="openai/text-embedding-3-large", dimensions=256),
+    schema=schema,
+) as rag:
+    ...  # ingest / completion as above
+```
+
+<p align="center">
+  <b>→ Full walkthrough: <a href="https://docs.falkordb.com/graphrag/getting-started">Getting Started</a></b><br/>
+  <b>→ Compose your own pipeline: <a href="graphrag_sdk/examples/03_custom_strategies.py">Custom Strategies</a></b>
+</p>
+
+---
+
+![document-to-provenance-answer-flow-v1](https://github.com/user-attachments/assets/afd1607e-20e1-4954-95f2-274701f5d61d)
+
+
+## Incremental Updates *(v1.1.0)*
+
+Re-sync individual documents without rebuilding the graph. The canonical
+CI use case is updating the graph on PR merge — added, modified, and
+deleted files in one batch:
+
+```python
+async with GraphRAG(connection=ConnectionConfig(...), llm=..., embedder=...) as graph:
+    result = await graph.apply_changes(
+        added=["docs/new_feature.md"],
+        modified=["docs/api.md"],
+        deleted=["docs/removed_page.md"],
+    )
+    await graph.finalize()  # once per batch — finalize is O(graph size)
+
+    # Per-file outcomes are wrapped in BatchEntry — the batch never raises.
+    for entry in result.added + result.modified + result.deleted:
+        if not entry.is_success:
+            print(f"failed: {entry.error_type}: {entry.error}")
+```
+
+The three primitives behind the wrapper:
+
+| Method | When to use |
+|---|---|
+| `update(source, document_id=...)` | Document content changed. SHA-256 hash short-circuits no-op updates (touch-only PRs cost ~1 Cypher query). Pass `if_missing="ingest"` for upsert semantics. |
+| `delete_document(document_id)` | Document removed. Cleans up entities orphaned by the deletion; preserves entities still referenced by other documents. |
+| `apply_changes(added=..., modified=..., deleted=...)` | Heterogeneous batch. Per-file errors are collected, not raised. Does not call `finalize()` — caller drives that cadence. |
+
+In file mode, `document_id` defaults to `os.path.normpath(source)` so
+`update("docs/x.md")` matches the original `ingest("docs/x.md")` with
+no extra plumbing. See [`examples/07_incremental_updates.py`](graphrag_sdk/examples/07_incremental_updates.py).
+
+**Cost model.** `finalize()` runs cross-document deduplication, which
+scans the full entity table — its cost is **O(graph size)**, not
+O(change size). Embedding backfill within `finalize()` is O(change
+size) (only nodes/edges missing embeddings get touched). For CI use
+cases, batch all PR changes through `apply_changes` and call
+`finalize` **once** at the end of the run, not per file — per-file
+`finalize` multiplies the dedup constant by the number of files
+touched.
+
+**Crash safety.** `update()` uses an idempotent rollforward cutover:
+the new content is written to a `__pending__` Document, then a single
+atomic Cypher statement marks `ready_to_commit=true`, then the live
+document is replaced. A crash before the marker discards the pending
+on retry; a crash after the marker rolls forward to completion. Either
+way, retrying the same `update()` call is safe and converges on the
+correct final state.
+
+**Concurrency.** `apply_changes` exposes two knobs: `max_concurrency`
+(adds, default 3) and `update_concurrency` (modifies, default 1).
+Updates default to 1 because orphan-cleanup correctness under
+concurrent updates depends on a pipeline-ordering invariant; raising
+that default is safe only if you've verified your concurrent updates
+can never share an entity. The integration test
+`test_concurrent_updates_preserve_shared_entity` is the tripwire that
+guards the default.
+
+---
+
+## Ingestion & Retrieval Pipeline
+
+| Area | Step | Cost |
+| --- | --- | --- |
+| Ingestion | Extract entities & relations | LLM |
+| Ingestion | Resolve & deduplicate entities | LLM |
+| Ingestion | Embed & index | LLM |
+| Retrieval | Vector search | DB |
+| Retrieval | Full-text search | DB |
+| Retrieval | Text-to-Cypher *(experimental)* | LLM |
+| Retrieval | Cypher queries | DB |
+| Retrieval | Relationship expansion | DB |
+| Retrieval | Cosine reranking | Local |
+
+> 💡 Retrieved context can be traced to source chunks; `MENTIONED_IN` edges connect entity mentions to chunks. Pass `return_context=True` to `completion()` so your application can inspect the retrieval trail and validate generated claims.
+
+---
+
+## Examples
+
+> **Working starters — clone, plug in your source, ship.**
+
+| # | Example | What you'll build |
+|---|---------|-------------------|
+| 1 | [Quick Start](graphrag_sdk/examples/01_quickstart.py) | Your first ingest-and-query loop in under 30 lines |
+| 2 | [PDF with Schema](graphrag_sdk/examples/02_pdf_with_schema.py) | A PDF Q&A bot with your own entity and relation types |
+| 3 | [Custom Strategies](graphrag_sdk/examples/03_custom_strategies.py) | Composing ingestion strategies explicitly |
+| 4 | [Custom Provider](graphrag_sdk/examples/04_custom_provider.py) | Plug in any LLM or embedder behind a clean interface |
+| 5 | [Notebook Demo](graphrag_sdk/examples/05_notebook_demo.ipynb) | An interactive walkthrough that shows the provenance trail |
+| 6 | [Markdown, Document-Aware](graphrag_sdk/examples/06_markdown_document_aware.py) | Structure-preserving Markdown ingestion with queryable heading breadcrumbs |
+| 7 | [Incremental Updates](graphrag_sdk/examples/07_incremental_updates.py) | `update`, `delete_document`, and `apply_changes` for CI-driven graph syncs |
+| 8 | [Ontology Lifecycle](graphrag_sdk/examples/08_ontology_lifecycle.py) | Declare an ontology, ingest with it, and round-trip it as JSON config |
+| 9 | [Ontology Evolution](graphrag_sdk/examples/09_ontology_evolution.py) | Mutating schema evolution — rename types and atomically add attributes with LLM backfill |
+| 10 | [Ontology Discovery](graphrag_sdk/examples/10_ontology_discovery.py) | Discover an ontology from raw sources and propose extensions as new docs arrive |
+| 11 | [Structured Ingestion](graphrag_sdk/examples/11_structured_ingestion.py) | Declared mappings end to end, with a re-ingest that corrects a row, adds one and drops one |
+| ★ | [Grounded Answers with Abstention](graphrag_sdk/examples/grounded_answers_with_abstention.py) | Cite the retrieved context behind an answer, and abstain when the graph has no supporting evidence |
+
+---
+
+## Documentation
+
+Full documentation: **<https://docs.falkordb.com/graphrag>**
+
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](https://docs.falkordb.com/graphrag/getting-started) | Step-by-step tutorial from install to first query |
+| [Architecture](https://docs.falkordb.com/graphrag/architecture) | Pipeline design, graph schema, retrieval strategy |
+| [Reducing LLM Hallucinations](https://docs.falkordb.com/graphrag/reducing-llm-hallucinations) | Grounded retrieval, source provenance, and abstention |
+| [Configuration](https://docs.falkordb.com/graphrag/configuration) | Connection, providers, and tuning reference |
+| [Strategies](https://docs.falkordb.com/graphrag/strategies) | All ABCs and built-in implementations |
+| [Providers](https://docs.falkordb.com/graphrag/providers) | LLM and embedder configuration guide |
+| [Reliability and Grounding](https://docs.falkordb.com/graphrag/reliability-and-grounding) | Grounding, provenance and abstention mapped to the APIs that implement them |
+| [Benchmark](https://docs.falkordb.com/graphrag/benchmark) | Methodology, results, and reproduction instructions |
+| [Accuracy Benchmark: FalkorDB vs Vector RAG](https://docs.falkordb.com/graphrag/graphrag-accuracy-benchmark) | 71.48 vs 55.39 comparison, evaluation definition, limitations, how to cite |
+| [API Reference](https://docs.falkordb.com/graphrag/api-reference) | Full API documentation |
+
+---
+
+## Development Milestones
+- 2024-06: First public release
+- 2024-Q4: PDF ingestion and multi-provider LLMs
+- 2025-Q1–Q2: Pluggable providers and pipeline tuning
+- 2025-Q3: Sharper retrieval, deeper test coverage
+- 🎉 2026-04: Version 1.0 is released with a new set of benchmarks based on a year's worth of research and customer PoCs
+  - 📦 Still on the v0.x API? Pin the legacy release: `pip install graphrag-sdk==0.8.2`
+- 2026-Q2: Production observability; **tabular ingestion** — load a CSV by declaring what its columns mean, so a row and a paragraph about the same thing become one node ([docs](https://docs.falkordb.com/graphrag/structured-ingestion))
+- 2026-Q3: Introduce Agentic GraphRAG; complete PDF ingestion
+- 2026-Q4: Smarter retrieval — dynamic traversal, temporal graph
+
+---
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, testing, and code style guidelines.
+
+Please read our [Code of Conduct](https://github.com/FalkorDB/.github/blob/main/CODE_OF_CONDUCT.md) before participating.
+
+### Community
+
+- [Discord](https://discord.gg/6M4QwDXn2w) -- Ask questions, share what you build
+- [GitHub Discussions](https://github.com/FalkorDB/GraphRAG-SDK/discussions) -- Feature ideas, Q&A
+- [Issues](https://github.com/FalkorDB/GraphRAG-SDK/issues) -- Bug reports and feature requests
+
+---
+
+## Citation
+
+If you use GraphRAG SDK in your research, please cite:
+
+```bibtex
+@software{graphrag_sdk,
+  title  = {GraphRAG SDK: A Modular Graph RAG Framework},
+  author = {FalkorDB},
+  year   = {2026},
+  url    = {https://github.com/FalkorDB/GraphRAG-SDK},
+}
+```
+
+---
+
+## License
+
+[Apache License 2.0](LICENSE)

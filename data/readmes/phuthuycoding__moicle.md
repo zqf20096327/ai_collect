@@ -1,0 +1,336 @@
+# MoiCle
+
+[![npm version](https://img.shields.io/npm/v/moicle.svg)](https://www.npmjs.com/package/moicle)
+[![npm downloads](https://img.shields.io/npm/dm/moicle.svg)](https://www.npmjs.com/package/moicle)
+[![license](https://img.shields.io/npm/l/moicle.svg)](https://github.com/phuthuycoding/moicle/blob/master/LICENSE)
+[![node](https://img.shields.io/node/v/moicle.svg)](https://nodejs.org)
+[![GitHub stars](https://img.shields.io/github/stars/phuthuycoding/moicle?style=social)](https://github.com/phuthuycoding/moicle)
+
+> Reusable AI agents, commands, skills, and architecture references for Claude Code
+
+**If you find this project useful, please consider giving it a ⭐ on [GitHub](https://github.com/phuthuycoding/moicle)!**
+
+A toolkit to bootstrap and accelerate project development with Claude Code through specialized agents, automation commands, workflow skills, and unified architecture references.
+
+## Features
+
+- **18 AI Agents** - 6 developer agents + 12 utility agents
+- **2 Commands** - Wizards for project bootstrap and go-to-market planning
+- **10 Skills** - Mode-based, auto-triggered workflows for the full SDLC (feature, bug, review, research, docs, marketing) plus standalone `/challenge` (self-critique) and `/cleanup` (dead-code/duplicate)
+- **9 Architecture References** - DDD + Hexagonal + stack-specific patterns
+
+
+## Current Support
+
+- [x] Claude
+- [x] Codex CLI
+- [x] Antigravity
+- [x] Cursor
+- [x] Devin CLI
+- [x] Windsurf
+
+Older MoiCle versions merged agents into `~/.cursor/AGENTS.md`. Re-run `moicle install --target cursor` for native `.cursor/rules/*.mdc` layout; you may delete legacy `AGENTS.md` manually.
+
+### Upgrading & stale items
+
+`moicle upgrade` bumps the npm package only — items already installed in `~/.claude/` (or `./.claude/`, `.cursor/`…) stay untouched. When a MoiCle release **removes** an asset (e.g. a skill or command deleted from the package), the leftover files remain active in your editor until removed.
+
+Starting with this release, `moicle install` writes a `.moicle-manifest.json` into the target dir recording exactly what it placed. `moicle uninstall` removes everything in that manifest — including items the newer package no longer ships — while leaving your own files alone:
+
+```bash
+# Clean upgrade path
+moicle uninstall && moicle install
+```
+
+Leftovers from pre-manifest versions (< this release) aren't tracked — remove them manually if needed, e.g. `~/.claude/commands/doc.md`, `~/.claude/skills/feature-track/`.
+
+## Installation
+
+```bash
+npm install -g moicle
+```
+
+## Quick Start
+
+```bash
+# Install agents, commands, skills, architecture
+moicle install
+
+# Install for Codex CLI
+moicle install --target codex --global
+
+# Install for Antigravity
+moicle install --target antigravity --global
+
+# Install for Cursor (rules, commands, skills, architecture)
+moicle install --target cursor --global
+moicle install --target cursor --project
+
+# Choose:
+# 1. Pick Claude Code, Codex CLI, or Antigravity
+# 2. Pick global or project scope
+```
+
+## CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `moicle install` | Interactive installation menu |
+| `moicle install --global` | Install to ~/.claude/ (symlinks) |
+| `moicle install --project` | Install to ./.claude/ (copies) |
+| `moicle install --target codex --global` | Install Codex skills + architecture to ~/.codex/ |
+| `moicle install --target codex --project` | Install Codex skills + architecture to ./.codex/ |
+| `moicle install --target cursor --global` | Install Cursor rules, commands, skills to ~/.cursor/ |
+| `moicle install --target cursor --project` | Install Cursor assets to ./.cursor/ |
+| `moicle list --target cursor` | List Cursor rules, commands, and skills |
+| `moicle status` | Show enabled/disabled status |
+| `moicle enable <item>` | Enable an agent/command/skill |
+| `moicle disable <item>` | Disable an agent/command/skill |
+| `moicle uninstall` | Remove installations |
+
+## What's Included
+
+### Architecture References (9)
+
+| File | Description |
+|------|-------------|
+| `clean-architecture.md` | Core Clean Architecture principles |
+| `hexagonal-architecture.md` | Ports & Adapters boundary pattern |
+| `go-backend.md` | Go + Gin project structure |
+| `laravel-backend.md` | Laravel + PHP project structure |
+| `nodejs-nestjs.md` | Node.js + NestJS + Prisma (DDD + Hexagonal) |
+| `react-frontend.md` | React + Vite project structure |
+| `remix-fullstack.md` | Remix fullstack structure |
+| `flutter-mobile.md` | Flutter mobile structure |
+| `monorepo.md` | Monorepo structure |
+
+### Developer Agents (6)
+
+| Agent | Description |
+|-------|-------------|
+| `@flutter-mobile-dev` | Flutter/Dart mobile & desktop development |
+| `@go-backend-dev` | Go + Gin backend API development |
+| `@laravel-backend-dev` | Laravel + PHP backend API development |
+| `@nodejs-backend-dev` | Node.js + NestJS + Prisma backend development |
+| `@react-frontend-dev` | React + TypeScript frontend development |
+| `@remix-fullstack-dev` | Remix full-stack development |
+
+### Utility Agents (12)
+
+| Agent | Description |
+|-------|-------------|
+| `@api-designer` | RESTful & GraphQL API design |
+| `@brainstormer` | Structured ideation — 6 proven frameworks |
+| `@clean-architect` | Clean Architecture + MVVM patterns |
+| `@code-reviewer` | Code review for quality, security, performance |
+| `@db-designer` | Database schema design |
+| `@devops` | CI/CD, Docker, Kubernetes, Infrastructure |
+| `@docs-writer` | Technical documentation |
+| `@perf-optimizer` | Performance analysis & optimization |
+| `@refactor` | Code refactoring & cleanup |
+| `@researcher` | Delegated exploration — prior art, libraries, trade-offs |
+| `@security-audit` | Security vulnerability analysis |
+| `@test-writer` | Unit & integration test writing |
+
+### Commands (2)
+
+| Command | Description |
+|---------|-------------|
+| `/bootstrap` | Wizard to create new project with 5 stack options |
+| `/marketing` | Unified go-to-market plan (brand + video + content) |
+
+### Skills (10)
+
+Skills are grouped by a `<group>-` prefix. Type `/<group>-` then `Tab` in Claude Code to see all skills in a group. Each skill bundles several related workflows into **modes** chosen at the top of the file — pick a mode (or let Claude pick it from your natural-language phrasing). Two skills — `/challenge` and `/cleanup` — are intentionally standalone (no group prefix).
+
+**`/feature-*` — Build & Change**
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/feature-build` | NEW · REFACTOR · API · DEPRECATE · TRACK | Build a new DDD feature, restructure existing code, add/integrate an API, safely sunset a feature, or run a tracked checklist loop (branch → per-item test/implement/verify/commit) |
+
+**`/fix-*` — Bugs & Incidents**
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/fix-bug` | QUICK · DEEP | QUICK: fix fast with rollback plan · DEEP: trace a hard / recurring / intermittent bug |
+| `/fix-incident` | — | Production outage / on-call workflow |
+
+**`/review-*` — Review & Quality**
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/review-code` | SELF · PR · ARCHITECT · TDD · ADDRESS | Self-review a branch, review a teammate's PR, deep DDD audit, test-first development, or address PR comments |
+
+**`/research-*` — Explore & Learn**
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/research-explore` | WEB · SPIKE · ONBOARDING | Research solutions via docs, validate by building a prototype, or ramp up on a new codebase |
+
+**`/docs-*` — Project Documentation**
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/docs-sync` | SINGLE · FULL | SINGLE: hand-author one doc · FULL: auto-generate the whole docs site with review loop |
+
+**`/marketing-*` — Brand & Content** (wrapped by the `/marketing` command)
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/marketing-content` | STRATEGY · POST | Multi-post content strategy, or write ONE evergreen post optimized for Search + AI |
+| `/marketing-brand` | LOGO · VIDEO | Logo + brand identity spec, or video script/storyboard/production plan |
+
+**`/challenge` — Self-Critique** (standalone, no group)
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/challenge` | — | A quick skeptical re-examination of what you just did (or selected code): simpler? duplicated? optimal? edge cases? — reports honest findings without self-congratulating. Lighter than `/review-code` SELF. |
+
+**`/cleanup` — Dead Code & Duplicate** (standalone, no group)
+
+| Skill | Modes | When to use |
+|-------|-------|-------------|
+| `/cleanup` | DEAD-CODE · DUPLICATE | Safely remove dead code / consolidate duplicates. Detects with stack tools, **verifies each hit with grep**, then classifies DELETE (true dead) vs KEEP (reusable utils/scopes/helpers — asks when unsure). Removes per-group with build+test each. |
+
+### Skill decision matrix
+
+When more than one skill / mode could fit, use this matrix:
+
+| Situation | Use | Not |
+|-----------|-----|-----|
+| Bug just happened in prod, need fix in <1h | `/fix-bug` (QUICK) | `/fix-bug` DEEP (too slow) |
+| Bug keeps coming back after "fixes" | `/fix-bug` (DEEP) | `/fix-bug` QUICK (will repeat) |
+| About to push / open PR | `/review-code` (SELF) | `/review-code` PR (that's for others') |
+| Reviewing teammate's PR | `/review-code` (PR) | `/review-code` SELF (that's for own branch) |
+| Want to verify DDD compliance only | `/review-code` (ARCHITECT) | `/review-code` PR (broader scope) |
+| Don't know the right solution yet | `/research-explore` (WEB) | SPIKE (skip if you can decide from docs) |
+| Need to validate an idea by building | `/research-explore` (SPIKE) | `/feature-build` NEW (commit only after spike) |
+| Driving a multi-step task as a checklist with commit-per-step | `/feature-build` (TRACK) | `/feature-build` NEW (single full DDD feature), `/review-code` TDD (one unit, no branch/commit) |
+| Writing README / API docs by hand | `/docs-sync` (SINGLE) | `/docs-sync` FULL (overkill for single file) |
+| Generating full docs site from codebase | `/docs-sync` (FULL) | `/docs-sync` SINGLE (manual is slower) |
+| Quick "did I overcomplicate this?" gut-check on fresh code | `/challenge` | `/review-code` ARCHITECT (heavier, scored audit) |
+
+### Backward compatibility
+
+The 22 original skills were consolidated into 10 mode-based skills. Old trigger phrases still work — they're kept in each skill's `description` so Claude auto-invokes the right skill **and the right mode** when the user says e.g. "deep debug" (→ `/fix-bug` DEEP), "hotfix" (→ `/fix-bug` QUICK), "review changes" (→ `/review-code` SELF). The flattened name `/group-action` is the explicit invocation form.
+
+## Architecture-First Approach
+
+All agents reference architecture files to ensure consistency:
+
+```
+~/.claude/
+├── agents/
+├── commands/
+├── skills/
+└── architecture/          # Architecture references
+    ├── ddd-architecture.md
+    ├── flutter-mobile.md
+    ├── go-backend.md
+    ├── hexagonal-architecture.md
+    ├── laravel-backend.md
+    ├── monorepo.md
+    ├── nodejs-nestjs.md
+    ├── react-frontend.md
+    ├── remix-fullstack.md
+    └── _shared/           # read-project-first, engineering-principles, stack-detection, severity-levels
+```
+
+When an agent is invoked, it **reads the architecture file first** before coding according to the defined structure.
+
+For Codex CLI, MoiCle installs architecture docs into `~/.codex/architecture` or `./.codex/architecture`, and converts MoiCle agents, commands, and existing skills into native Codex skills under `.codex/skills`. Restart Codex after a global install so the new skills are loaded.
+
+For Antigravity, MoiCle installs architecture docs into `~/.gemini/architecture` or `./.gemini/architecture`, and converts MoiCle agents, commands, and existing skills into native Antigravity skills under `.gemini/skills`.
+
+For Devin CLI, MoiCle installs agents as native subagent profiles into `~/.config/devin/agents` or `./.devin/agents`, converts commands and skills into native Devin skills under `~/.config/devin/skills` or `./.devin/skills`, and installs architecture docs into `<root>/architecture`. Ask Devin to use a profile by name (e.g. "review with the code-reviewer subagent") or invoke skills with `/skill-name`.
+
+## Usage Examples
+
+### Using Commands
+
+```bash
+# Bootstrap new project
+/bootstrap                              # Interactive wizard
+/bootstrap go                           # Quick start with Go + Gin
+/bootstrap react                        # Quick start with React + Vite
+/bootstrap flutter                      # Quick start with Flutter
+/bootstrap landing using monorepo       # Create landing page with monorepo structure
+
+# Go-to-market plan
+/marketing                              # Unified brand + video + content plan
+```
+
+### Using Agents
+
+```bash
+# Agents will automatically read architecture reference before coding
+@go-backend-dev Implement user authentication module
+@react-frontend-dev Create dashboard page with charts
+@clean-architect Review this PR's architecture
+```
+
+### Enable/Disable Agents
+
+```bash
+# Disable unused agents
+moicle disable @rust-dev
+moicle disable @swift-ios-dev
+
+# Enable again
+moicle enable @rust-dev
+
+# View status
+moicle status
+```
+
+## Project Structure
+
+```
+claude-agents-kit/
+├── bin/
+│   └── cli.js
+├── src/
+│   ├── commands/
+│   │   ├── install.js
+│   │   ├── uninstall.js
+│   │   ├── list.js
+│   │   ├── enable.js
+│   │   ├── disable.js
+│   │   └── status.js
+│   └── utils/
+│       ├── symlink.js
+│       └── config.js
+├── assets/
+│   ├── agents/
+│   │   ├── developers/
+│   │   └── utilities/
+│   ├── architecture/        # Architecture references
+│   ├── commands/
+│   └── skills/
+├── package.json
+└── README.md
+```
+
+## Requirements
+
+- Node.js >= 18.0.0
+- Claude Code CLI
+
+## Donate
+
+If you find this project useful, consider buying me a coffee!
+
+**USDT / ETH / BNB:**
+```
+0xf3b2a531cb2774c77a751cdb10e043992eff5a2c
+```
+
+| Network | Token |
+|---------|-------|
+| Ethereum (ERC-20) | USDT, ETH |
+| Binance Smart Chain (BEP-20) | USDT, BNB |
+
+## License
+
+GPL-3.0

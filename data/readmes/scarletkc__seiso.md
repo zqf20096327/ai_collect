@@ -1,0 +1,110 @@
+<div align="center">
+
+<img src="https://github.com/scarletkc/seiso/raw/main/assets/logo.svg" alt="seiso logo" width="128" />
+
+# seiso
+
+**A Markdown convention and linter for project docs written by AI and read by humans and agents.**
+
+[![CI](https://img.shields.io/github/actions/workflow/status/scarletkc/seiso/ci.yml?branch=main&label=CI&logo=githubactions&logoColor=white)](https://github.com/scarletkc/seiso/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/seiso?logo=rust&label=crates.io)](https://crates.io/crates/seiso)
+[![PyPI](https://img.shields.io/pypi/v/seiso?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/seiso/)
+[![npm](https://img.shields.io/npm/v/%40scarletkc%2Fseiso?logo=npm&label=npm)](https://www.npmjs.com/package/@scarletkc/seiso)
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/scarletkc/seiso/blob/main/LICENSE)
+[![CodeRabbit Reviews](https://img.shields.io/coderabbit/prs/github/scarletkc/seiso?label=CodeRabbit%20Reviews&labelColor=171717&color=FF570A)](https://coderabbit.ai)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/scarletkc/seiso)
+
+</div>
+
+AI writes project docs faster than anyone can review them, and coding agents
+read those docs back as context for the next change. People and agents alike
+take the page at its word, so a stale version number or a field list updated
+in only one of its three copies misleads all of them. And AI makes the same
+few mistakes over and over.
+
+seiso defines one convention for how Markdown in a repository is organized,
+the way rustfmt settled formatting for Rust code. Projects share the rules
+instead of negotiating their own; each project mainly maps its documents to
+kinds, and `seiso init` suggests a starting point.
+
+## The convention
+
+- Every document declares one kind, such as `howto`, `reference`, or `adr`,
+  and holds only what that kind is for. A how-to gives the steps. Why the
+  design looks this way belongs in an ADR.
+- Each fact has one home. Other pages link to it instead of retelling it.
+- Long-lived pages don't record values that change faster than the page,
+  such as versions, deployment status, or counts.
+- A pointer names a file or symbol, so the reader doesn't have to search for
+  what the sentence promised.
+- The finished page doesn't address whoever asked for it or narrate how it,
+  or the work it describes, was made.
+- Judgment calls a tool can't make are written down with a reason. An
+  exception without one is itself a violation.
+
+The convention is written up as a standalone
+[specification](https://seiso.fog.moe/latest/convention),
+with [worked examples](https://seiso.fog.moe/latest/examples)
+and an [adoption guide](https://seiso.fog.moe/latest/adopting),
+so a project can follow it without installing anything. The specification is
+provisional before 1.0.0 and versioned separately from seiso; its direction is
+open for discussion in [#37](https://github.com/scarletkc/seiso/issues/37).
+
+seiso is the reference implementation. Its rules check documents against the
+specification; stable rules run by default, and the rest are opt-in previews.
+Each diagnostic says where the problem is and how to fix it, so an agent can
+repair most findings from seiso's output alone. When a fix needs a judgment,
+such as which of two pages owns a fact, the diagnostic names the decision.
+seiso doesn't guess whether prose sounds machine-written, and it leaves
+formatting and spelling to other tools.
+[How seiso checks the convention](https://github.com/scarletkc/seiso/blob/main/docs/reference/convention.md)
+maps each rule to the requirement it covers and the evidence it can claim.
+
+## Install
+
+```sh
+cargo install seiso
+uv tool install seiso    # or: pipx install seiso
+npm install -g @scarletkc/seiso
+```
+
+The PyPI and npm packages include prebuilt binaries for macOS on Apple silicon
+and Intel, Linux x64 and arm64 with glibc or musl (such as Alpine), and
+Windows x64 and arm64. On other platforms, use cargo; the PyPI package also
+works there but builds from source, which requires a Rust toolchain. From a
+source checkout, run `cargo run -- <command>`.
+
+## Quick start
+
+From the repository root:
+
+```sh
+seiso init
+seiso check
+```
+
+`seiso init` writes a `seiso.toml` at the repository root with suggested
+exclusions, kind mappings, and documentation site entries; review them before
+relying on the results.
+
+`seiso check` runs only stable rules, which have met the
+[promotion criteria](https://github.com/scarletkc/seiso/blob/main/docs/evaluation/policy.md).
+The other rules are in preview: they are experimental, can report false
+positives, and run only with `--preview`. Try them locally before relying on
+them, and keep them out of CI gates. `seiso rule --all` lists every rule with
+its status, `seiso rule <CODE>` explains a rule with examples, and `seiso parse`
+inspects the document model without running rules.
+
+## Documentation
+
+- [Checking documents](https://github.com/scarletkc/seiso/blob/main/docs/guides/checking.md): configuration, rule selection, and output formats
+- [Integrations](https://github.com/scarletkc/seiso/blob/main/docs/guides/integrations.md): Claude Code hooks, pre-commit, and CI
+- [Development](https://github.com/scarletkc/seiso/blob/main/docs/guides/development.md): building, testing, and validation commands
+- [Architecture](https://github.com/scarletkc/seiso/blob/main/docs/reference/architecture.md): command execution
+- [Roadmap](https://github.com/scarletkc/seiso/blob/main/docs/design/roadmap.md): proposed features and milestone evidence
+- [Documentation index](https://github.com/scarletkc/seiso/blob/main/docs/README.md): guides, references, and evaluation records
+- [Contributing](https://github.com/scarletkc/seiso/blob/main/CONTRIBUTING.md): issues, branches, commits, and pull requests
+
+## License
+
+seiso is licensed under [MIT](https://github.com/scarletkc/seiso/blob/main/LICENSE).

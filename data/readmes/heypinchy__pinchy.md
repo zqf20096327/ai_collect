@@ -1,0 +1,190 @@
+<p align="center">
+  <img src=".github/assets/pinchy-logo.png" alt="Pinchy" width="120" />
+</p>
+
+<h1 align="center">Pinchy</h1>
+
+<p align="center">
+  <strong>Self-hosted AI agent platform built on OpenClaw.</strong><br/>
+  Enterprise-ready. Offline-capable. Open source.
+</p>
+
+<p align="center">
+  <a href="https://docs.heypinchy.com">Docs</a> •
+  <a href="https://heypinchy.com">Website</a> •
+  <a href="https://heypinchy.com/blog">Blog</a> •
+  <a href="https://github.com/heypinchy/pinchy/discussions">Discussions</a> •
+  <a href="https://linkedin.com/in/clemenshelm">LinkedIn</a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="License: AGPL-3.0" /></a>
+  <a href="https://github.com/heypinchy/pinchy/releases"><img src="https://img.shields.io/github/v/release/heypinchy/pinchy?color=ef4444" alt="Latest release" /></a>
+  <a href="https://github.com/heypinchy/pinchy/stargazers"><img src="https://img.shields.io/github/stars/heypinchy/pinchy?style=flat&color=f97316" alt="GitHub stars" /></a>
+  <a href="https://github.com/heypinchy/pinchy/discussions"><img src="https://img.shields.io/github/discussions/heypinchy/pinchy?color=8b5cf6" alt="GitHub Discussions" /></a>
+</p>
+
+<p align="center">
+  <img src="https://heypinchy.com/screenshots/chat-interface.png" alt="Pinchy chat interface — a team member talking to a scoped AI agent" width="820" />
+</p>
+
+---
+
+## What is Pinchy?
+
+Pinchy is an enterprise layer on top of [OpenClaw](https://github.com/openclaw/openclaw) — the open-source AI agent framework. OpenClaw is incredibly powerful for individual power users. But for teams and companies, critical pieces are missing: permissions, audit trails, user management, and governance.
+
+Pinchy fills that gap.
+
+### The Problem
+
+You want AI agents in your company. But:
+
+- **Cloud platforms** (Dust, Glean, Copilot Studio) send your data to external servers. For regulated industries in the EU, that's a non-starter.
+- **Workflow builders** (n8n, Dify) let you chain steps visually — but they're not autonomous agents.
+- **Frameworks** (CrewAI, LangChain) are libraries, not platforms. No UI, no permissions, no deployment story.
+- **OpenClaw** is the best open-source agent runtime — but it has no user management, no role-based access, no audit trail.
+
+### The Solution
+
+Pinchy wraps OpenClaw into something enterprises can trust:
+
+- **Plugin Architecture** — Agents get scoped tools, not raw shell access. A "read Odoo sales orders" tool, not `exec`. Each tool is granted explicitly, per agent.
+- **Role-Based Access Control** — Who can use which agent. What each agent can do. Per team, per role.
+- **Audit Trail** — Every agent action logged. Who, what, when. Cryptographically signed and verifiable.
+- **Web & Telegram** — Reach agents in a web UI or from Telegram on your phone. One bot per agent, with the same permissions and audit trail.
+- **Self-Hosted & Offline** — Your server, your data, your models. Works without internet.
+- **Model Agnostic** — OpenAI, Anthropic, local models via Ollama. Your choice.
+
+### How Pinchy compares
+
+|                                          | OpenClaw alone | Cloud platforms (Dust, Glean) | Workflow tools (n8n) |    **Pinchy**     |
+| ---------------------------------------- | :------------: | :---------------------------: | :------------------: | :---------------: |
+| Self-hosted, data stays in-house         |       ✅       |              ❌               |          ✅          |      **✅**       |
+| Agent-first (not flow-first)             |       ✅       |              ✅               |      flow steps      |      **✅**       |
+| Per-agent tool permissions (allow-list)  |       ❌       |            partial            |      flow-level      |      **✅**       |
+| Roles & per-user access                  |       ❌       |              ✅               |         paid         |      **✅**       |
+| Tamper-evident audit trail (HMAC-signed) |       ❌       |            partial            |    execution log     |      **✅**       |
+| Chat UI + Telegram for end users         |    partial     |              ✅               |          ❌          |      **✅**       |
+| Odoo ERP integration                     |       ❌       |              ❌               |      connectors      |      **✅**       |
+| Open source                              |       ✅       |              ❌               |      fair-code       | **✅ (AGPL-3.0)** |
+
+Honest caveats: Pinchy is young, the integration list is short (Odoo, email — Gmail & Microsoft 365, Telegram, web search, documents), there is no compliance certification yet, and granular RBAC is on the roadmap.
+
+## Quick Start
+
+```bash
+mkdir -p pinchy && cd pinchy
+curl -fsSL https://raw.githubusercontent.com/heypinchy/pinchy/v0.9.1/docker-compose.yml -o docker-compose.yml
+echo "PINCHY_VERSION=v0.9.1" > .env
+docker compose up -d
+# Open http://localhost:7777 — the setup wizard creates your admin account
+```
+
+That is the whole thing: no build step, pre-built images on GHCR. Pair it with a local model via [Ollama](https://docs.heypinchy.com/guides/ollama-setup/) and nothing ever leaves your network. Full setup, configuration, and development instructions: **[Installation Guide](https://docs.heypinchy.com/installation/)**.
+
+## Status
+
+> Pinchy is in early development. The core is working — setup, auth, multi-user, agent chat, scoped permissions, knowledge base agents, the audit trail, and integrations for email, Telegram, Odoo and web search. Granular RBAC and a plugin marketplace are what we're building next.
+
+### What works today
+
+**Platform**
+
+- **Setup wizard** — Create your admin account on first run
+- **Authentication** — Credentials-based login with database sessions
+- **Multi-user** — Invite users, admin and member roles, personal and shared agents
+- **Groups** _(Enterprise)_ — Bundle users into groups and scope a shared agent's visibility to them
+- **Context management** — Per-user personal context and organization-wide context, editable in Settings
+- **Provider management** — Configure Anthropic, OpenAI, Google, Ollama (local or cloud), and any number of OpenAI-compatible endpoints
+
+**Agents**
+
+- **Agent chat** — Real-time WebSocket chat with OpenClaw agents, conversation history
+- **Agent permissions** — Allow-list model for agent tools (safe and powerful categories)
+- **Agent settings** — Configure name, model, personality, instructions, and tool permissions per agent
+- **Knowledge Base agents** — Create agents with scoped read-only access to specific directories
+- **Smithers onboarding** — New users get an onboarding interview where Smithers learns about them through conversation
+
+**Integrations**
+
+- **Email integration** — Connect Gmail, Microsoft 365, or any IMAP/SMTP mailbox; agents can read, search, draft, and send email with per-agent permissions
+- **Email automations** — Standing workflows that let an agent act on incoming mail on its own, each one created disabled until a person switches it on
+- **Telegram channels** — Chat with your agents from Telegram, one bot per agent, with the same permissions and audit trail
+- **Odoo integration** — Scoped, permission-aware access to your Odoo ERP with 20+ pre-built templates
+- **Web search** — Live web access via the Brave Search API, with per-agent domain allow/deny lists
+
+**Operations**
+
+- **Audit trail** — Cryptographic audit logging with HMAC-signed entries, integrity verification, and CSV export
+- **Usage & costs dashboard** — Token usage, estimated costs, and cache savings per agent (per-user breakdown and CSV export are Enterprise)
+- **Domain lock** — Pin the instance to one hostname and serve it over HTTPS, so a stray IP request is refused and audited
+- **Docker Compose deployment** — Single command to run the full stack
+- **CI pipeline** — Automated linting, testing, and security auditing
+
+### What's coming
+
+- Granular RBAC with custom roles beyond admin/member ([#527](https://github.com/heypinchy/pinchy/issues/527))
+- Plugin marketplace for agent tools
+- Additional chat channels for reaching agents
+
+<!-- Both lists are checked against the code by scripts/lib/readme-status.test.mjs:
+     a shipped feature missing from "What works today", or a promise here that
+     the tree already contains, fails `pnpm test:scripts`. -->
+
+Follow our progress on [the blog](https://heypinchy.com/blog/building-pinchy-in-public) and [LinkedIn](https://linkedin.com/in/clemenshelm).
+
+## Tech Stack
+
+| Layer         |                                      Technology |
+| ------------- | ----------------------------------------------: |
+| Frontend      | Next.js 16, React 19, TailwindCSS v4, shadcn/ui |
+| Auth          |       Better Auth (email/password, DB sessions) |
+| Database      |                      PostgreSQL 17, Drizzle ORM |
+| Agent Runtime |                    OpenClaw Gateway (WebSocket) |
+| Testing       |                   Vitest, React Testing Library |
+| CI/CD         |         GitHub Actions, ESLint, Prettier, Husky |
+| Deployment    |                                  Docker Compose |
+
+## Origin Story
+
+Pinchy started when an AI agent sent a WhatsApp message it shouldn't have — leaking its entire internal reasoning process to a friend instead of a simple "Sure, let's grab lunch!" That moment made one thing clear: AI agents without proper guardrails are a liability, not an asset.
+
+Read the full story on [heypinchy.com](https://heypinchy.com/blog/building-pinchy-in-public).
+
+## Philosophy
+
+We care about how Pinchy _feels_, not just what it does. Security + Ease is our core tension — enterprise-grade protection that feels light, not intimidating. Smart defaults everywhere, personality templates instead of blank slates, zero-config setup, and full customization when you need it.
+
+Read more in our [Philosophy docs](https://docs.heypinchy.com/concepts/philosophy/) and [`PERSONALITY.md`](PERSONALITY.md).
+
+## Contributing
+
+We love contributions! Whether it's code, docs, bug reports, or ideas — all are welcome.
+
+Please read our [Contributing Guide](CONTRIBUTING.md) before submitting a PR. If you're writing any user-facing text, also check our [Personality Guide](PERSONALITY.md).
+
+## Community
+
+- [GitHub Discussions](https://github.com/heypinchy/pinchy/discussions) — Questions, ideas, show & tell
+- [Issues](https://github.com/heypinchy/pinchy/issues) — Bug reports and feature requests
+- [Blog](https://heypinchy.com/blog) — Build in public updates
+- [LinkedIn](https://linkedin.com/in/clemenshelm) — Daily updates from the founder
+
+If Pinchy is useful to you, a ⭐ helps other teams find it.
+
+<a href="https://star-history.com/#heypinchy/pinchy&Date">
+  <img src="https://api.star-history.com/svg?repos=heypinchy/pinchy&type=Date" alt="Pinchy star history" width="600" />
+</a>
+
+## License
+
+Pinchy is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
+
+This means you can use, modify, and distribute Pinchy freely — but if you run a modified version as a network service, you must release your changes under the same license. This protects the project from being turned into a proprietary cloud service without giving back.
+
+## Who's Behind This
+
+Pinchy is built by [Clemens Helm](https://clemenshelm.com) — a software developer with 20+ years of experience, daily OpenClaw power user, and believer in self-hosted AI.
+
+Built in Vienna, Austria.

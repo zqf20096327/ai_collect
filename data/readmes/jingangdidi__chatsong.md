@@ -1,0 +1,526 @@
+# chatsong
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square)](https://github.com/jingangdidi/chatsong/blob/main/LICENSE)
+
+[中文文档](https://github.com/jingangdidi/chatsong/blob/main/README_zh.md)
+
+**A lightweight(~10M), portable executable for invoking LLM with multi-API support - eliminating installation requirements while maintaining operational efficiency.**
+
+**轻量级大语言模型OpenAI格式api调用工具，无需安装，仅一个~10M可执行文件，支持自定义多种模型（OpenAI、Claude、Gemini、DeepSeek等，以及第三方提供的api）和prompt。**
+
+<img src="https://github.com/jingangdidi/chatsong/raw/main/assets/image/demo.png">
+
+## 👑 Features
+- ​💪​ Single-file executable - no installation required
+- 🔐 Privacy first, all data is stored locally
+- 🤖 Unified multi-API support for LLM providers
+- 🎨​ Customize models and prompts within the config file
+- 1️⃣​ Support saving Q&A records as a single HTML file
+- 📚​ Support invoking different models within the same conversation
+- ​🌐​ Support web search and urls
+- ​📤​ Support upload and parse zip, html, pdf, and text file
+- 💻​ Support add local model in config.txt (e.g. provide by llama-server)
+- ✨ Support markdown and code highlight
+- 📊 Support counting the token usage for each conversation and message
+- 💰 Support setting how many contextual messages to include in each query, greatly saving token usage
+- ✂️ Support delete message
+- 😎 Support incognito mode
+- 📡 Support calling APIs compatible with the OpenAI format, such as Deepseek, Qwen, Z.AI GLM, and Moonshot Kimi
+- 🔧 Support built-in filesystem tools
+- 🔨 Support custom external tools and MCP stdio tools
+- 🤔 Support planning mode
+- 🧰 Support skills
+- 👾 Support Discord bot
+- 🎤 Support Qwen3-ASR
+- 📢 Support OmniVoice-TTS
+
+## 🚀 Quick-Start
+**structure**
+```
+some dir
+├─ chatsong      # single executable file
+├─ config.txt    # config file
+├─ skills        # skills path (optional, `-S`, default: `./skills`)
+├─ Qwen3-ASR     # downloaded Qwen3-ASR model path (optional, `-d`)
+├─ OmniVoice-TTS # downloaded OmniVoice-TTS model path (optional, `-D`)
+└─ chat-log      # save chat log
+```
+**1. download a pre-built binary**
+
+[latest release](https://github.com/jingangdidi/chatsong/releases)
+
+**2. prepare config.txt**
+
+add your models, api key, endpoint, etc, see [config_template.txt](https://github.com/jingangdidi/chatsong/blob/main/config_template.txt) for details.
+
+**3. start server**
+
+local usage:
+```
+./chatsong
+```
+If you want to start the service on computer A in the intranet and computer B accesses it, computer A needs to specify its own IP address when starting the service, which cannot be the default `127.0.0.1`.
+It can be specified through the command-line parameter `-a <ip>`, for example, the IP of computer A is `192.168.1.5`:
+```
+./chatsong -a 192.168.1.5
+```
+You can also write it directly in the `config.txt`:
+```
+ip_address: "192.168.1.5",
+```
+
+**4. visit directly in your browser**
+
+[http://127.0.0.1:8080/v1](http://127.0.0.1:8080/v1)
+
+[http://192.168.1.5:8080/v1](http://192.168.1.5:8080/v1)
+
+**5. terminate the service**
+```
+press `Ctrl+C` to automatically save all chat records to the output directory while simultaneously updating the graph file
+```
+
+## 🎤 ASR + TTS
+
+Starting from v0.5.1, [Qwen3-ASR](https://huggingface.co/Qwen/Qwen3-ASR-0.6B) and [OmniVoice-TTS](https://huggingface.co/k2-fsa/OmniVoice) models are supported. When compiling, `--features asr-cuda,tts-cuda` are specified. When using, `-d` is used to specify the downloaded path of the Qwen3-ASR model, and `-D` is used to specify the downloaded path of the OmniVoice-TTS model. If you want to use voice cloning, `-R` can be used to specify the wav audio file (preferably less than 20 seconds, but not too short). The default voice assistant identity is `daily chat assistant`, and `-E` can be used to change the identity.
+
+## 🧰 skills
+Starting from `v0.4.2`, calling skills is supported. You can place the skill folder directly inside the `skills` folder, or place multiple skill folders within the same subfolder under the `skills` directory; they will be grouped together. You can select them by group using the dropdown on the left side of the page.
+```
+skills
+├─ skill-1
+├─ skill-2
+├─ skill-3
+└─ skill-group-a # This folder can store multiple skills, grouped together
+   ├─ skill-a1
+   ├─ skill-a2
+   └─ skill-a3
+```
+
+## 🛠 Call tools
+Starting from `v0.4.0`, chatsong supports calling tools. In addition to the built-in file system tools, you can also specify your own external tools and MCP's stdio tools through `SingleExternalTool` and `StdIoServer` in `config.txt`.
+
+The `Call tools` dropdown option on the left side of the page supports the following options:
+
+  - ⚪ white indicates not using any tools
+  - 🔴 red indicates selecting all tools
+  - 🟢 green indicates selecting built-in tools
+  - 🟣 purple indicates selecting all custom external tools
+  - 🟡 yellow indicates selecting MCP tools
+  - other options indicate selecting only one tool
+
+Add tools in `config.txt`:
+
+**1. built-in tools**
+
+  These tools have been compiled in `chatsong` and do not require additional configuration of `config.txt`. They can be called directly.
+
+**2. custom external tools**
+
+  `command`: fill in the command to be called
+
+  `args`: fill in the script and other parameters
+
+  `description`: fill in the functionality of the tool. The model will use this description to determine whether to use it to complete a task
+
+  `approval`: does calling this tool require user confirmation.
+
+  ```
+  external_tools: [
+    SingleExternalTool(
+      name: "The name of Tool 1",
+      command: "The command called by Tool 1, e.g., ./my_tool.exe",
+      description: "The description of Tool 1",
+      approval: false,
+      schema: r#"json format schema"#,
+    ),
+    SingleExternalTool(
+      name: "The name of Tool 2",
+      command: "The command called by Tool 1, e.g., python3",
+      args: ["Script and other parameters are specified in this list, e.g., my_tool.py"],
+      description: "The description of Tool 2",
+      approval: true,
+      schema: r#"json format schema"#,
+    )
+  ]
+  ```
+
+  Note that the `schema` parameter type and description should be filled in JSON format. As it may contain `"` and line breaks, it should be placed between `r"#` and `"#`. For example, the following example is a Python script I wrote myself to calculate the sum of two numbers. The first parameter is `--a`, which specifies the first number, the second parameter is `--b`, which specifies the second number, the `type`, which specifies the parameter type, and the `description`, which describes the function of the parameter:
+  ```
+  schema: r#"
+  {
+    "properties": {
+      "a": {
+        "type": "integer",
+        "description": "The first value.",
+      },
+      "b": {
+        "type": "integer",
+        "description": "The second value.",
+      },
+    },
+    "required": ["a", "b"],
+    "type": "object",
+  }
+  "#
+  ```
+
+**3. MCP stdio tools**
+
+  `command`: fill in the command to be called
+
+  `args`: fill in parameters
+
+  ```
+  mcp_servers: [
+    StdIoServer(
+      command: "./rust-mcp-filesystem",
+      args: [
+        "--allow-write",
+        "./",
+      ],
+    ),
+    StdIoServer(
+      command: "uvx",
+        args: [
+          "excel-mcp-server",
+          "stdio",
+        ],
+    ),
+  ]
+  ```
+
+For complex tasks, you can activate the `plan mode` (only valid when calling tools), which will first create a plan, break down the problem into multiple subtasks, and then complete them one by one. Each step will be judged based on the previously completed steps, whether to proceed to the next step or update the plan. If the task exceeds the capabilities of the model and specified tools, it will end directly and return the reason.
+
+<img src="https://github.com/jingangdidi/chatsong/raw/main/assets/image/plan_mode.png" width="50%">
+
+## 🍔 Summarize and compress historical messages
+Too many historical messages can take up valuable context. If previous messages are unrelated to recent tasks, you can use `contextual messages` to limit the number of historical messages included in each question, or click the delete button above the message box to delete them. But if there are many historical messages related to the current tasks, you can click the summary button (<img src="https://github.com/jingangdidi/chatsong/raw/main/assets/image/format-space-less-svgrepo-com.svg" width="18" height="18" align="center">) in the bottom left corner of the page to summarize and compress the historical messages within the specified range of `contextual messages`. This not only preserves the previous historical message information, but also reduces the use of context.
+
+## 📺 Detailed Instructions
+[YouTube demo vedio](https://youtu.be/c1DeuIodiSk)
+
+[bilibili demo vedio](https://www.bilibili.com/video/BV1bBuzzAEXs)
+
+[Chinese manual](https://github.com/jingangdidi/chatsong/blob/main/doc/manual_zh.md)
+
+[English manual](https://github.com/jingangdidi/chatsong/blob/main/doc/manual_en.md)
+
+<img src="https://github.com/jingangdidi/chatsong/raw/main/assets/image/screenshot-en-label.png">
+
+This section remains pending completion and will be duly supplemented.
+
+## 🧬 message and Q&A pair
+- One message is a single question or answer.
+- One Q&A pair can contain multiple messages (multiple consecutive questions + multiple consecutive answers)
+<img src="https://github.com/jingangdidi/chatsong/raw/main/assets/image/QA-pair.png">
+
+## ⌨️ Building from source
+```
+git clone https://github.com/jingangdidi/chatsong.git
+cd chatsong
+cargo build --release
+```
+if use `-k` code complation:
+```
+cargo build --release --features code_completion
+```
+if use voice assistant, specify `--features asr-cuda,tts-cuda` during compilation, you can also use CPU inference for ASR and TTS, but it will be slower (`asr,tts`). Mac can use `asr-metal,tts-metal`:
+```
+cargo build --release --features asr-cuda,tts-cuda
+```
+
+## 🚥 Arguments
+```
+Usage: chatsong [-c <config>] [-a <addr>] [-p <port>] [-e <engine-key>] [-s <search-key>] [-C <channels>] [-w <allowed-path>] [-g <graph>] [-m <maxage>] [-r] [-l] [-A] [-k] -d <asr-dir> -D <tts-dir> [-R <ref-audio>] [-E <role>] [-W <wake-words>] [-P <stop-words>] [-S <skills>] [-b <bgc>] [-o <outpath>]
+
+server for LLM api
+
+Options:
+  -c, --config        config file, contain api_key, endpoint, model name
+  -a, --addr          ip address, default: 127.0.0.1
+  -p, --port          port, default: 8080
+  -e, --engine-key    search engine key, used for google search
+  -s, --search-key    search api key, used for google search
+  -C, --channels      channel, multiple channels separated by `::`, currently only supports discord: `-C discord:token:guild_id`
+  -w, --allowed-path  allowed path, used for call tools, multiple paths separated by commas, default: ./
+  -g, --graph         graph file, default: search for the latest *.graph file in the output path
+  -m, --maxage        cookie max age, default: 1DAY, support: SECOND, MINUTE, HOUR, DAY, WEEK
+  -r, --share         allow sharing of all chat logs
+  -l, --english       chat page show english
+  -A, --approval-all  approval to call all tools without pop-up prompts
+  -k, --shortcut-key  enable shortcut key code complete, can be used in any editor, support 4 modes: 1. press the Left Ctrl/command 3 times (code completion), 2. press the Right Ctrl/command 3 times (write code), 3. press Left Shift 4 times (debug), 4. press Right Shift 4 times (shell command)
+  -d, --asr-dir       qwen3-ASR model dir (config.json, merges.txt, model.safetensors, tokenizer_config.json, vocab.json)
+  -D, --tts-dir       omni voice TTS model dir (config.json, tokenizer_config.json, model.safetensors, audio_tokenizer/config.json, audio_tokenizer/model.safetensors)
+  -R, --ref-audio     reference audio for omni voice clone
+  -E, --role          prompt role for asr and tts
+  -W, --wake-words    wake words, multiple words separated by commas, default: 你好,hello
+  -P, --stop-words    stop words, multiple words separated by commas, default: 结束,stop
+  -S, --skills        skills path, default: ./skills
+  -b, --bgc           background color, support specify hex color or built-in colors: 1(#E6E6E6), 2(#F5F5DC), 3(#FFFFE0), 4(#E6E6FA), default: 1
+  -o, --outpath       output path, default: ./chat-log
+  -h, --help          display usage information
+```
+
+## 📝 config.txt
+```
+(
+    ip_address: "127.0.0.1",       // required, if you want to access from other computers within the intranet, you need to change it to the local IP address, such as 192.168.1.5
+    port: 8080,                    // required
+    google_engine_key: "",         // optional, used for web search
+    google_search_key: "",         // optional, used for web search
+    allowed_path: "./",            // optional, allowed path for tools, multiple paths separated by commas, default: ./
+    maxage: "1DAY",                // required, cookie maxage, support: SECOND, MINUTE, HOUR, DAY, WEEK
+    show_english: true,            // required, true: show english page，false: show chinese page
+    skills_path: Some("./skills"), // skills path
+    bgc: "1",                      // background color, support hex color (e.g. #F5F5DC, #fff, #000), or built-in color: 1(#E6E6E6), 2(#F5F5DC), 3(#FFFFE0), 4(#E6E6FA), default: 1
+    outpath: "./chat-log",         // required, where to save chat log files
+    model_config: [
+        Config(
+            provider: "openai",          // required
+            api_key: "sk-xxx",           // required
+            endpoint: "https://api.xxx", // required
+            models: [
+                Model(
+                    name: "gpt-4.1-mini-2025-04-14",          // required
+                    pricing: "(in: 0.0028/k, out: 0.0112/k)", // optional
+                    discription: "OpenAI gpt-4.1 model",      // optional
+                    group: "gpt-4.1",                         // required
+                    is_default: false,                        // required
+                    is_cot: false,                            // required, does it support Chain of thought (CoT) deep reasoning
+                ),
+                Model(
+                    name: "gpt-4.1-nano-2025-04-14",
+                    pricing: "(in: 0.0007/k, out: 0.0028/k)",
+                    discription: "OpenAI gpt-4.1 model",
+                    group: "gpt-4.1",
+                    is_default: false,
+                    is_cot: false,
+                ),
+            ],
+        ),
+        Config(
+            provider: "claude",
+            api_key: "sk-xxx",
+            endpoint: "https://api.xxx",
+            models: [
+                Model(
+                    name: "claude-3-5-sonnet-20241022",
+                    pricing: "(in: 0.015/k, out: 0.075/k)",
+                    discription: "claude model",
+                    group: "Claude",
+                    is_default: false,
+                    is_cot: false,
+                ),
+                Model(
+                    name: "claude-3-7-sonnet-20250219",
+                    pricing: "(in: 0.015/k, out: 0.075/k)",
+                    discription: "claude model",
+                    group: "Claude",
+                    is_default: false,
+                    is_cot: true,
+                ),
+            ],
+        ),
+        Config(
+            provider: "gemini",
+            api_key: "sk-xxx",
+            endpoint: "https://api.xxx",
+            models: [
+                Model(
+                    name: "gemini-2.0-pro-exp-02-05",
+                    pricing: "(in: 0.01/k, out: 0.04/k)",
+                    discription: "google gemini model",
+                    group: "Gemini",
+                    is_default: false,
+                    is_cot: false,
+                ),
+                Model(
+                    name: "gemini-2.0-flash",
+                    pricing: "(in: 0.005/k, out: 0.02)",
+                    discription: "google gemini model",
+                    group: "Gemini",
+                    is_default: false,
+                    is_cot: false,
+                ),
+            ],
+        ),
+        Config(
+            provider: "deepseek",
+            api_key: "sk-xxx",
+            endpoint: "https://api.deepseek.com/v1",
+            models: [
+                Model(
+                    name: "deepseek-chat",
+                    pricing: "(in: 0.002/k, out: 0.008/k)",
+                    discription: "deepseek new model DeepSeek-V3",
+                    group: "DeepSeek",
+                    is_default: true,
+                    is_cot: false,
+                ),
+                Model(
+                    name: "deepseek-reasoner",
+                    pricing: "(in: 0.004/k, out: 0.016/k)",
+                    discription: "deepseek new cof model DeepSeek-R1",
+                    group: "DeepSeek",
+                    is_default: false,
+                    is_cot: true,
+                ),
+            ],
+        ),
+    ],
+    prompts: [
+        Prompt(
+            name: "translator",
+            content: "I want you to act as an English translator, spelling corrector and improver. I will speak to you in any language and you will detect the language, translate it and answer in the corrected and improved version of my text, in English. I want you to replace my simplified A0-level words and sentences with more beautiful and elegant, upper level English words and sentences. Keep the meaning same, but make them more literary. I want you to only reply the correction, the improvements and nothing else, do not write explanations.",
+        ),
+        Prompt(
+            name: "Rewrite to Rust",
+            content: "Rewrite the following code in Rust.",
+        ),
+    ],
+    external_tools: [
+        SingleExternalTool(
+            name: "complement_DNA_or_RNA",
+            command: "./complement-linux-x86_x64-musl",
+            description: "Calculate complement of given DNA or RNA",
+            approval: false,
+            schema: r#"
+{
+    "properties": {
+        "seq": {
+            "type": "string",
+            "description": "DNA or RNA sequence.",
+        },
+        "revcomp": {
+            "type": "boolean",
+            "description": "Whether to obtain the reverse complementary sequence. If present, enables reverse complementation.",
+        },
+        "rna": {
+            "type": "boolean",
+            "description": "Whether to use RNA alphabet.",
+        },
+    },
+    "required": ["seq"],
+    "type": "object",
+}
+"#,
+        ),
+        SingleExternalTool(
+            name: "add_two_value",
+            command: "python",
+            args: ["add_two_value.py"],
+            description: "add two value",
+            approval: false,
+            schema: r#"
+{
+    "properties": {
+        "a": {
+            "type": "integer",
+            "description": "The first value.",
+        },
+        "b": {
+            "type": "integer",
+            "description": "The second value.",
+        },
+    },
+    "required": ["a", "b"],
+    "type": "object",
+}
+"#,
+        ),
+    ],
+    mcp_servers: [
+        StdIoServer(
+            command: "./rust-mcp-filesystem",
+            args: [
+                "--allow-write",
+                "./",
+            ],
+        ),
+        StdIoServer(
+            command: "uvx",
+            args: [
+                "excel-mcp-server",
+                "stdio",
+            ],
+        ),
+    ]
+)
+```
+
+## ⏰ changelog
+- [2026.05.?] release [v0.5.1](https://github.com/jingangdidi/chatsong/releases/tag/v0.5.1)
+  - 🛠 Fix: Tool calling.
+  - ⭐️ Add: Support `Qwen3-ASR` and `OmniVoice-TTS`, compile `--features asr-cuda,tts-cuda`, the wake-up word is `hello` and the termination word is `stop`.
+- [2026.05.06] release [v0.5.0](https://github.com/jingangdidi/chatsong/releases/tag/v0.5.0)
+  - ⭐️ Add: Support shortcut key code complete, can be used in any editor, support 4 modes: 1. press the Left Ctrl (macos `command`) 3 times (complete the selected code), 2. press the Right Ctrl (macos `command`) 3 times (write code), 3. press the Left Shift 4 times (debug the selected code), 4. press Right Shift 4 times (complete the shell command of the current command line or write a shell command that matches the description of the current command line)
+- [2026.04.29] release [v0.4.2](https://github.com/jingangdidi/chatsong/releases/tag/v0.4.2)
+  - 🛠 Fix: Previously, the system was designed to retry tool calls up to 3 times upon failure, but due to a bug, it would exit immediately instead of retrying. This issue has now been resolved.
+  - ⭐️ Add: Support for skills — specify the path via command-line flag `-S` or via config file named `skills`. Default path is `./skills`. Skills can be placed directly in the `skills` folder, or multiple skill folders can be grouped under subdirectories within `skills`. These groups are selectable via a dropdown on the left sidebar.
+  - ⭐️ Add: Built-in tools now include `codebase`, `web` and `run_x`.
+  - ⭐️ Add: Support for Discord bot integration.
+  - 💪🏻 Optimize: Detailed token statistics are now displayed for each API call, including input tokens (including cached tokens) and output tokens (including reasoning tokens).
+  - 💪🏻 Optimize: Customizable page background color — set via command-line flag `-b` or config file `bgc`. Supports hex colors (e.g., #F5F5DC, #fff, #000) or four built-in options: 1 (#E6E6E6), 2 (#F5F5DC), 3 (#FFFFE0), 4 (#E6E6FA). Default is 1.
+  - 💪🏻 Optimize: Math formulas are now rendered properly in the UI.
+  - 💪🏻 Optimize: Option to disable reasoning (available for deepseek, qwen, kimi, glm).
+  - 💪🏻 Optimize: Separates reasoning content from the final response (supported for deepseek, qwen, kimi, glm, minimax).
+  - 💪🏻 Optimize: When calling the `edit_file` tool, vertical scrollbars are now supported to prevent content overflow beyond the viewport.
+  - 💪🏻 Optimize: Improved rendering of Markdown content on the page.
+- [2026.03.17] release [v0.4.1](https://github.com/jingangdidi/chatsong/releases/tag/v0.4.1)
+  - 🛠Fix: built-in tool `tail_file` and `read_file`.
+  - 🛠Fix: When calling tools, the ID number is always 1.
+  - ⭐️Add: Before calling built-in tools `create_directory`, `edit_file`, `move_file`, `unzip_file`, `write_file`, `zip_directory`, `zip_files`, a pop-up window will appear asking the user to confirm whether to continue.
+  - ⭐️Add: Add `approval` to the custom external tool `SingleExternalTool`.
+  - ⭐️Add: Add `-A`: approval to call all tools without pop-up prompts.
+  - 💪🏻Optimize: Plan mode prompt optimization to make the entire process more robust.
+  - 💪🏻Optimize: Dispaly pretty diffs when calling `edit_file`.
+- [2026.01.01] release [v0.4.0](https://github.com/jingangdidi/chatsong/releases/tag/v0.4.0)
+  - ⭐️Add: Add built-in filesystem tools.
+  - ⭐️Add: Support the use of custom external tools, specified through `SingleExternalTool` in `config.txt`.
+  - ⭐️Add: Support the use of MCP stdio tools, specified through `StdIoServer` in `config.txt`.
+  - ⭐️Add: When calling tools, chatsong supports the planning mode, which first breaks down complex problems into multiple small tasks, and then call tools to implement them one by one.
+  - ⭐️Add: Add a button to summarize the current history (bottom left corner of the page)
+  - ⭐️Add: A custom `top-p` parameter has been added to the back of the left side of the page.
+  - 💪🏻Optimize: Enlarge the question input box.
+  - 💪🏻Optimize: When selecting models and tools from the dropdown menu, use clearer grouping.
+  - 💪🏻Optimize: The token usage is directly obtained from the usage returned by the model, rather than estimated based on tiktoken.
+- [2025.11.06] release [v0.3.3](https://github.com/jingangdidi/chatsong/releases/tag/v0.3.3)
+  - 🛠Fix: When use streaming, if there is no error in obtaining the response but the choices are empty, the answer will not be sent to the client, and a message box for the answer will not be created on the left side of the page. The client messages number will be 1 less than the server, resulting in an error in the next question. Before ending the streaming answer, check if the total string of the answer is empty. If it is empty, send "no response result" as the answer.
+  - ⭐️Add: Support Qwen3-vl api, you can send images (png, jpg, jpeg) or PDF documents (automatically converting each page into an image, note that the file extension must be lowercase (.pdf), otherwise only textual content will be extracted) for inquiry. You can use the officially provided Qwen3-VL model or run [llama.cpp](https://github.com/ggml-org/llama.cpp) locally.
+  - 💪🏻Optimize: change command line info `Running on http://127.0.0.1:8080` to `Running on http://127.0.0.1:8080/v1`
+- [2025.10.15] release [v0.3.2](https://github.com/jingangdidi/chatsong/releases/tag/v0.3.2)
+  - 🛠Fix: Fix the issue where other computers on the intranet are not accessible.
+  - 🛠Fix: The abbreviation for the chain of thought model in config.txt is spelled incorrectly, changing "cof" to "cot".
+  - ⭐️Add: The command line supports "-h", previously only "--help" could be used.
+  - ⭐️Add: Support calling the official API of the Z.AI GLM model. Currently, the official APIs of Deepseek, QWEN, Z.AI GLM, and Moonshot Kimi can all be called.
+  - 💪🏻Optimize: The default value for "contextual messages" on the left side of the page has been changed from "unlimit" to "prompt + 1 Q&A pair".
+- [2025.08.11] release [v0.3.1](https://github.com/jingangdidi/chatsong/releases/tag/v0.3.1)
+  - 🛠Fix: If the "stop" button is clicked while a response is in progress, the next input will be appended to the end of the incomplete answer. Switch "cancel" to "abort" ensures the server promptly detects the termination signal and ceases responding.
+  - 🛠Fix: When navigating back to the previous chat history page, if any messages have been deleted from the prior records, all subsequent messages following the deleted content will not be displayed due to the discontinuity between server-side IDs and their frontend counterparts.
+- [2025.07.15] release [v0.3.0](https://github.com/jingangdidi/chatsong/releases/tag/v0.3.0)
+  - ⭐️Add: Support delete message.
+  - ⭐️Add: Support incognito mode.
+  - 💪🏻Optimize: Place the upload file button on the left side of the input box.
+  - 💪🏻Optimize: Place the download button and usage button in the bottom left corner of the page.
+- [2025.07.11] release [v0.2.2](https://github.com/jingangdidi/chatsong/releases/tag/v0.2.2)
+  - 🛠Fix: When saving chat history by clicking the left-side button, consecutive unanswered questions at the end should no longer be removed. Previously, this caused ID mismatches between the server and the page when continuing the conversation, resulting in errors.
+  - 🛠Fix: When syncing chat history across different computers, if continuing a conversation on Computer A based on a chat from Computer B, the chat history would fail to save due to path discrepancies upon closing the service.
+  - ⭐️Add: Auto-scroll pauses when scrolling upward and resumes when scrolling downward.
+  - ⭐️Add: Support for line breaks in input questions using Shift + Enter.
+  - ⭐️Add: Display token count for uploaded files. If the file is an image or audio, the token count will not be shown.
+  - 💪🏻Optimize: Command logs now use LocalTime (e.g., 2025-07-07T13:33:48.032687+08:00) instead of the default UTC time.
+  - 💪🏻Optimize: The command line now displays both the current question number and its corresponding QA pair index. Previously, it only showed the question number. 
+- [2025.07.07] release [v0.2.1](https://github.com/jingangdidi/chatsong/releases/tag/v0.2.1)
+  -  🛠Fix: When copying a newly posed question or freshly received answer (excluding prior conversation history) by clicking the avatar, the input field not automatically gains focus.
+  -  🛠Fix: Token consumption not updating upon query submission.
+  -  🛠Fix: Lack of response in non-streaming output scenarios.
+  -  ⭐️Add: When using web search, prefix the timestamp of the query with 🌐 to indicate an web search was performed.
+  -  ⭐️Add: Upon hovering over the message box, display the message number, Q&A pair number and token count for this message.
+- [2025.07.01] release [v0.2.0](https://github.com/jingangdidi/chatsong/releases/tag/v0.2.0)
+  - Fix the issue of excessive memory usage by optimizing code highlighting.
+  - Optimize contextual messages, support Q&A pair.
+  - When there is no input question and the last message is an answer, the question will be asked again based on the last question.
+  - There are too many parameters on the left side of the page, so the infrequently used ones will be placed separately on the "back". The left parameter area can be flipped by clicking the bottom left button, and the main commonly used parameters will be displayed on the "front" by default.
+  - Add a schematic diagram of Q&A pairs by [Excalibraw](https://excalidraw.com)
+- [2025.06.30] release [v0.1.1](https://github.com/jingangdidi/chatsong/releases/tag/v0.1.1)
+- [2025.06.20] release [v0.1.0](https://github.com/jingangdidi/chatsong/releases/tag/v0.1.0)

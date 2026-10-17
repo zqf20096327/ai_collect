@@ -1,0 +1,335 @@
+<!-- CUBRID-LAB-ICON:START -->
+<p align="center">
+  <a href="https://github.com/cubrid-lab/brand"><img src="https://raw.githubusercontent.com/cubrid-lab/brand/94e2bf6b915d7ef6a1111e06376f693f70bf6c4e/dist/icons/cubrid-mcp-server.svg" alt="cubrid-mcp-server icon (CUBRID Lab brand repository)" width="120"></a>
+</p>
+<!-- CUBRID-LAB-ICON:END -->
+
+# cubrid-mcp-server
+
+[![PyPI](https://img.shields.io/pypi/v/cubrid-mcp-server.svg)](https://pypi.org/project/cubrid-mcp-server/)
+[![coverage](https://codecov.io/gh/cubrid-lab/cubrid-mcp-server/branch/main/graph/badge.svg)](https://codecov.io/gh/cubrid-lab/cubrid-mcp-server)
+
+A [Model Context Protocol](https://modelcontextprotocol.io) server for [CUBRID](https://www.cubrid.org/), enabling LLMs to safely inspect schemas and execute read-only queries via [pycubrid](https://pypi.org/project/pycubrid/).
+
+<!-- mcp-name: io.github.cubrid-lab/cubrid-mcp-server -->
+
+<img src="docs/demo.gif" alt="Terminal recording: an MCP client lists the tools, calls all_table_names, and execute_query rejects DROP TABLE" width="100%"/>
+
+<sub>Terminal recording of a real MCP stdio session (<code>demos/mcp_demo.py</code>, recorded with <code>demos/record_demo.sh</code>).</sub>
+
+## Start here
+
+New to CUBRID or to MCP? Follow the [Quick Start guide](docs/quickstart.md). It
+starts a disposable local CUBRID lab, prepares a sample table and a dedicated
+read-only account, connects one MCP client (a short Python script) and runs a
+first query, showing what each result means and how to clean up. The sections
+below are the reference for configuration, tools and client setup.
+
+## Features
+
+| Tool | Description |
+|------|-------------|
+| `all_table_names` | List every user table in the database |
+| `filter_table_names` | Substring search over table names |
+| `schema_definitions` | Column types, nullability, defaults, and primary key info |
+| `describe_table` | Full metadata: columns, primary key, and indexes in one call |
+| `list_indexes` | Indexes for a table with key columns and flags |
+| `explain_query` | Execution plan/trace for a `SELECT`/`WITH` (via CUBRID `SHOW TRACE`) |
+| `table_row_counts` | `COUNT(*)` for one or many tables |
+| `list_serials` | CUBRID `SERIAL` sequences with current value and bounds |
+| `list_class_hierarchy` | CUBRID `CLASS` inheritance relationships |
+| `execute_query` | Run read-only SQL with automatic output truncation |
+| `health_check` | Verify database connectivity on demand |
+| `execute_write` | Run a single `INSERT`/`UPDATE`/`DELETE` in an atomic transaction (**only registered when opt-in write mode is enabled**) |
+
+### Resources
+
+Schema metadata is also exposed as read-only [MCP Resources](https://modelcontextprotocol.io/docs/concepts/resources), so clients can discover and read schema context without a tool call. Resources reuse the same read-only catalog queries as the tools — no additional data access or write surface.
+
+| Resource URI | MIME type | Description |
+|--------------|-----------|-------------|
+| `cubrid://agent-guide` | `text/markdown` | CUBRID agent guide: dialect, types, performance |
+| `cubrid://guide/*` | `text/markdown` | 4 topic guides: sql-dialect, types, performance, collections |
+| `cubrid://schema` | `application/json` | Whole-schema index: every user table with its per-table resource URI |
+| `cubrid://schema/{table}` | `application/json` | Per-table metadata (columns, primary key, indexes) — mirrors `describe_table` |
+
+Schema resources always read the `default` connection (see [Multi-Connection](docs/MULTI_CONNECTION.md)). The guides are static Markdown. Table names in `{table}` are percent-decoded by URI-template matching; an unknown or system table produces a resource-read error, matching the `describe_table` tool.
+
+## Prompts
+
+The server also exposes a small set of **MCP Prompt templates** — reusable, guided
+starting points for common inspection tasks. Prompts are **guidance-only**: each one
+returns text that tells the client which of the existing read-only tools to call and
+in what order. They never touch the database, execute SQL, or add any new data-access
+surface, and any argument you pass is fenced and treated strictly as untrusted data.
+The prompts are advisory templates only — the actual read-only enforcement remains in
+the underlying tools (`execute_query`/`explain_query` via `safety.py`).
+
+| Prompt | Arguments | Description |
+|--------|-----------|-------------|
+| `summarize_table` | `table` | Describe a table, then sample it with a bounded read-only query |
+| `explain_query` | `sql` | Obtain and interpret a `SELECT`/`WITH` execution plan via `explain_query` |
+| `inspect_schema` | _(none)_ | Build a high-level overview of the whole schema from the read-only tools |
+| `find_index_candidates` | `table` | Review a table's index coverage for potential review areas |
+| `optimize_query` | `sql` | Analyze the execution plan and suggest CUBRID-specific optimizations |
+| `migrate_from_mysql` | `sql` | Convert MySQL query syntax to valid CUBRID SQL |
+| `explore_unknown_db` | _(none)_ | Systematically explore an unfamiliar database |
+| `safe_data_analysis` | `question` | Answer data questions using read-only queries |
+| `write_cubrid_sql` | `natural_language` | Generate valid CUBRID SQL from natural language |
+
+## Quick Start
+
+The values below are placeholders for your own database and account. The
+[Quick Start guide](docs/quickstart.md) walks through the same settings with a
+prepared lab, using the account `mcp_reader` from [SECURITY.md](SECURITY.md).
+
+### Configure
+
+Set the required environment variables:
+
+```bash
+export CUBRID_HOST=localhost
+export CUBRID_PORT=33000        # optional, default: 33000
+export CUBRID_USER=readonly_user   # a CUBRID user with SELECT-only grants (see Security)
+export CUBRID_PASSWORD=secret
+export CUBRID_DATABASE=mydb
+```
+
+Optional settings:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CUBRID_MCP_READONLY` | `1` | Enforce read-only SQL whitelist. `0` relaxes the whitelist only; `execute_query` still rejects write, DDL, transaction-control, `CALL`, `EVALUATE` and `KILL` statements (use `execute_write`) |
+| `CUBRID_MCP_MAX_CHARS` | `4000` | Max characters in query output |
+| `CUBRID_MCP_MAX_ROWS` | `1000` | Max rows returned by `execute_query` before truncation |
+| `CUBRID_MCP_MAX_SQL_LENGTH` | `65536` | Max length (characters) of a submitted SQL statement |
+| `CUBRID_MCP_QUERY_TIMEOUT` | `30` | Per-statement socket read timeout in seconds. If the server sends no data within this window the query is aborted and the connection is reset. This is a socket read timeout, not a true server-side statement timeout. |
+| `CUBRID_MCP_AUDIT_LOG` | `0` | Opt-in audit logging. When enabled, emits one redaction-safe JSON record per executed statement (`execute_query`/`explain_query`/`execute_write`) to **stderr** — see [Logging](#logging). Honoured per connection (`CUBRID_<NAME>_MCP_AUDIT_LOG`). |
+| `CUBRID_MCP_WRITE` | `0` | Opt-in write mode. When enabled (`1`), registers the `execute_write` tool for single-statement DML. Honoured per connection (`CUBRID_<NAME>_MCP_WRITE`); the tool is registered when any connection enables it. Off by default. |
+
+### Multiple connections
+
+By default the bare `CUBRID_*` variables define a single connection named `default`.
+You can serve additional CUBRID databases from the same process by listing extra
+connection names in `CUBRID_CONNECTIONS` (comma-separated) and providing
+`CUBRID_<NAME>_*` variables for each. Every tool accepts an optional `connection`
+argument selecting which connection to target; omitting it (or passing `default`)
+uses the bare-variable connection, so existing single-database setups are unchanged.
+
+```bash
+# Default connection (unchanged)
+export CUBRID_HOST=localhost
+export CUBRID_USER=readonly_user
+export CUBRID_PASSWORD=secret
+export CUBRID_DATABASE=mydb
+
+# Additional named connections
+export CUBRID_CONNECTIONS=reporting,analytics
+
+export CUBRID_REPORTING_HOST=reporting-db
+export CUBRID_REPORTING_USER=readonly_user
+export CUBRID_REPORTING_PASSWORD=secret
+export CUBRID_REPORTING_DATABASE=reports
+export CUBRID_REPORTING_MCP_MAX_ROWS=500   # optional per-connection tuning
+
+export CUBRID_ANALYTICS_HOST=analytics-db
+export CUBRID_ANALYTICS_USER=readonly_user
+export CUBRID_ANALYTICS_PASSWORD=secret
+export CUBRID_ANALYTICS_DATABASE=analytics
+```
+
+Notes:
+
+- Connection names must match `[A-Za-z0-9_]+` and are matched case-insensitively.
+- `default` is reserved (it always comes from the bare `CUBRID_*` variables) and
+  cannot appear in `CUBRID_CONNECTIONS`.
+- For a named connection `<NAME>`, connection fields live at `CUBRID_<NAME>_HOST`
+  etc. and the optional MCP tuning knobs at `CUBRID_<NAME>_MCP_*` (same suffixes as
+  the global ones). Named connections do **not** inherit values from the bare vars.
+- Selecting an unknown connection returns a clear error listing the available names.
+- Each connection has its own read-only enforcement, so a named connection can set
+  `CUBRID_<NAME>_MCP_READONLY` independently of the default.
+
+### Run
+
+### Run from PyPI
+
+Use [`uvx`](https://docs.astral.sh/uv/guides/tools/) to run directly from PyPI:
+
+```bash
+uvx cubrid-mcp-server
+```
+
+Or with `pipx`:
+
+```bash
+pipx run cubrid-mcp-server
+```
+
+### Run from source
+
+```bash
+git clone https://github.com/cubrid-lab/cubrid-mcp-server.git
+cd cubrid-mcp-server
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+cubrid-mcp-server
+```
+
+## MCP Client Integration
+
+### Claude Desktop
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "cubrid": {
+      "command": "uvx",
+      "args": ["cubrid-mcp-server"],
+      "env": {
+        "CUBRID_HOST": "localhost",
+        "CUBRID_USER": "readonly_user",
+        "CUBRID_PASSWORD": "secret",
+        "CUBRID_DATABASE": "mydb"
+      }
+    }
+  }
+}
+```
+
+### Claude Code
+
+Add to `.mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "cubrid": {
+      "command": "uvx",
+      "args": ["cubrid-mcp-server"],
+      "env": {
+        "CUBRID_HOST": "localhost",
+        "CUBRID_USER": "readonly_user",
+        "CUBRID_PASSWORD": "secret",
+        "CUBRID_DATABASE": "mydb"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "cubrid": {
+      "command": "uvx",
+      "args": ["cubrid-mcp-server"],
+      "env": {
+        "CUBRID_HOST": "localhost",
+        "CUBRID_USER": "readonly_user",
+        "CUBRID_PASSWORD": "secret",
+        "CUBRID_DATABASE": "mydb"
+      }
+    }
+  }
+}
+```
+
+## Security
+
+The server is **read-only by default**. A code-level SQL whitelist allows only `SELECT`, `SHOW`, `DESC`, `DESCRIBE`, and `WITH` statements. Multi-statement queries are rejected. CUBRID has no `EXPLAIN` statement; use the `explain_query` tool for execution plans (it executes the statement under `SET TRACE ON` and rolls back).
+
+Read-only mode also rejects `INCR`, `DECR`, serial advances (`NEXT_VALUE`, `NEXTVAL`, `SERIAL_NEXT_VALUE`) and the click counter `WITH INCREMENT FOR`: they change data inside a `SELECT`, the rollback does not undo them, and **a `SELECT`-only grant does not prevent them**. See the [Security Model](docs/SECURITY_MODEL.md).
+
+> **The SQL keyword checks are a guardrail and defense-in-depth, not a security boundary.** The primary control is a dedicated least-privilege database account: **run the server as a CUBRID user that has `SELECT` only on the tables the model needs**, never reuse `dba` or the owner account, and keep the account to the minimum privileges required, with no DDL rights. See [`SECURITY.md`](./SECURITY.md).
+
+For production use, also configure a read-only database user. See [`SECURITY.md`](./SECURITY.md) for the recommended setup.
+
+### Write mode (opt-in)
+
+Write access is **disabled by default**. Setting `CUBRID_MCP_WRITE=1` registers an additional `execute_write` tool that accepts a **single** `INSERT`, `UPDATE`, or `DELETE` statement and runs it in an explicit transaction (commit on success, rollback on any error). When write mode is off the tool is not registered at all, so no write path is exposed in MCP capability discovery. With multiple connections configured, the tool is registered when **any** connection enables writes (via `CUBRID_MCP_WRITE` or `CUBRID_<NAME>_MCP_WRITE`).
+
+Constraints and rationale:
+
+- **Single-statement DML only.** Standalone reads, DDL (`CREATE`/`ALTER`/`DROP`/`TRUNCATE`), transaction-control, and multi-statement input are rejected. (A single DML statement may still legally contain subqueries, e.g. `INSERT ... SELECT`.)
+- **DDL is intentionally unsupported.** `execute_write` is a DML tool (`INSERT`/`UPDATE`/`DELETE`) and `execute_query` is read-only, so `CREATE`/`ALTER`/`DROP`/`TRUNCATE` are rejected by both. (The server runs pycubrid with autocommit off; on the CUBRID versions tested (10.2, 11.2, 11.4) DDL is transactional and is rolled back if it is not committed, so the exclusion rests on the tool contracts, not on DDL auto-commit.)
+- **Write mode is per-connection.** `execute_write` accepts the same optional `connection` argument as the read tools and runs against that connection; a connection whose `CUBRID_<NAME>_MCP_WRITE` is off refuses the write even when another connection enables it.
+- `execute_query` never becomes a write path through the write-mode flag or `CUBRID_MCP_READONLY`: with `CUBRID_MCP_READONLY=0` it still rejects write, DDL and transaction-control statements, method calls (`CALL`, `EVALUATE`) and `KILL` before they run, so `CALL login(...)` cannot change the session user, rejects `INCR`, `DECR`, serial advances and the click counter, which change data inside a `SELECT`, and rolls back any statement that returns no result set. Clients that sent writes through `execute_query` with `CUBRID_MCP_READONLY=0` must switch to `execute_write`.
+- Enforcement is defense-in-depth; still run the server as a CUBRID user granted only the privileges it needs. See [`SECURITY.md`](./SECURITY.md).
+
+## Logging
+
+The server speaks the MCP **stdio transport**, where `stdout` carries the JSON-RPC protocol stream. Anything written to `stdout` by the server or its dependencies will corrupt that stream and break the client connection. For this reason **all logging is routed to `stderr`**, and you should keep it that way: when adding custom logging or diagnostics, never `print()` to `stdout` — use the standard `logging` module (which is configured to emit on `stderr`) or write to `stderr` explicitly. The log level defaults to `INFO`.
+
+Errors surfaced back to the LLM client are **sanitized**: only the exception category (e.g. `query failed: OperationalError`) is returned, while the full exception detail is logged to `stderr` for operators. This keeps schema details, hostnames, SQL fragments, and configuration values out of client-visible messages.
+
+### Audit logging (opt-in)
+
+Set `CUBRID_MCP_AUDIT_LOG=1` to record every executed statement (`execute_query`, `explain_query`, and `execute_write`) as a single structured JSON line on **stderr**. It is **off by default** and honoured **per connection** — a named connection sets `CUBRID_<NAME>_MCP_AUDIT_LOG` independently of the default. Each record is redaction-safe and contains only:
+
+| Field | Description |
+|-------|-------------|
+| `tool` | The MCP tool that ran the statement (`execute_query` / `explain_query` / `execute_write`). |
+| `status` | `ok` or `error`. |
+| `category` | The leading SQL keyword only (e.g. `SELECT`, `WITH`), read after comments and string literals are stripped — never the full statement. |
+| `identifiers` | Table names extracted after `FROM`/`JOIN` via a strict identifier regex; anything that is not a bare identifier (values, literals, expressions) is dropped. |
+| `sql_length` | Length of the submitted SQL, in characters. |
+| `row_count`, `truncated` | Result size and whether output was truncated (success only). |
+| `duration_ms` | Wall-clock duration of the call, in integer milliseconds. |
+| `error_type` | On failure, the exception **class name only** (via the same sanitization as client-facing errors). |
+
+The **raw SQL text, bound parameters, and literal values are never logged**, so secrets embedded in a query (e.g. `WHERE token = '...'`) do not reach the audit stream. Records go to `stderr` only and never to `stdout`.
+
+
+## Development
+
+```bash
+git clone https://github.com/cubrid-lab/cubrid-mcp-server.git
+cd cubrid-mcp-server
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+
+# Lint & type check
+ruff check .
+mypy cubrid_mcp_server
+
+# Unit tests
+pytest -m "not integration"
+
+# Integration tests (requires running CUBRID)
+export CUBRID_HOST=localhost CUBRID_USER=dba CUBRID_PASSWORD="" CUBRID_DATABASE=demodb
+pytest -m integration
+```
+
+The live shared-session concurrency regression can also be run on its own:
+
+```bash
+pytest tests/test_integration.py::TestCubridIntegration::test_concurrent_tool_calls_serialize_shared_session -q
+```
+
+It starts simultaneous in-process `explain_query` and `execute_query` calls on
+the same cached Database connection: the query must wait until the real trace
+context releases the existing RLock. It verifies independent responses, session
+reuse and cursor cleanup. This is not a test of MCP stdio transport concurrency,
+connection pooling or per-request transaction isolation.
+
+## Related Projects
+
+- [pycubrid](https://github.com/cubrid-lab/pycubrid) — Pure-Python DB-API 2.0 driver this server is built on
+- [sqlalchemy-cubrid](https://github.com/cubrid-lab/sqlalchemy-cubrid) — SQLAlchemy 2.0–2.2 dialect for CUBRID
+- [cubrid-cookbook-python](https://github.com/cubrid-lab/cubrid-cookbook-python) — 68 runnable examples incl. one-command app templates that use this stack
+
+## Disclaimer
+
+> This project is part of [CUBRID Lab](https://github.com/cubrid-lab), an independent open-source initiative for CUBRID developer tooling, and is not affiliated with, sponsored by, or endorsed by CUBRID Corporation or the official CUBRID project.
+
+
+## License
+
+MIT (see [`LICENSE`](./LICENSE)).

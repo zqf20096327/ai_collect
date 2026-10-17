@@ -1,0 +1,380 @@
+# NovelAI Python SDK
+
+![intro](./docs/images/intro.png)
+
+[![PyPI version](https://img.shields.io/pypi/v/novelai-sdk.svg)](https://pypi.org/project/novelai-sdk/)
+[![Python Version](https://img.shields.io/pypi/pyversions/novelai-sdk.svg)](https://pypi.org/project/novelai-sdk/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+
+English | [日本語](/docs/README_jp.md) | [简体中文](/docs/README_zh-hans.md)
+
+A modern, type-safe Python SDK for NovelAI's image generation API. Features robust validation with Pydantic v2 and complete type hints.
+
+Supported image models include `nai-diffusion-5-full`, `nai-diffusion-5-curated`,
+`nai-diffusion-4-5-full`, and `nai-diffusion-4-5-curated`.
+
+## Features
+
+- Python 3.10+ with full type hints and Pydantic v2 validation
+- High-level convenience API with automatic validation
+- Built-in PIL/Pillow support for easy image operations
+- SSE streaming for real-time progress monitoring
+- Precise reference(Character reference), ControlNet, and multi-character positioning
+- Director Tools: line art, sketch, colorize, emotion, declutter, background removal, and 2x upscale
+- Tag suggestions (en/jp) matching the web UI's prompt autocomplete
+
+## Comparison with Alternatives
+
+| Feature                         | novelai-sdk | [novelai-api](https://github.com/Aedial/novelai-api) | [novelai-python](https://github.com/LlmKira/novelai-python) |
+| ------------------------------- | :---------: | :--------------------------------------------------: | :---------------------------------------------------------: |
+| Type Safety (Pydantic v2)       |      ✅      |                          ❌                           |                              ✅                              |
+| Async Support                   |      ✅      |                          ✅                           |                              ✅                              |
+| Image Generation                |      ✅      |                          ✅                           |                              ✅                              |
+| Text Generation                 |      🚧      |                          ✅                           |                              ✅                              |
+| **Precise Reference(Character Reference)**         |      ✅      |                          ❌                           |                              ❌                              |
+| **Multi-Character Positioning** |      ✅      |                          ❌                           |                              ✅                              |
+| ControlNet / Vibe Transfer      |      ✅      |                          ❌                           |                              ✅                              |
+| Director Tools (line art, emotion, etc.) |      ✅      |                          ✅                           |                              ✅                              |
+| SSE Streaming                   |      ✅      |                          ❌                           |                              ✅                              |
+| Python 3.10+                    |      ✅      |                          ❌                           |                              ❌                              |
+| Active Maintenance              |      ✅      |                          ✅                           |                              ⚠️                              |
+
+✅ Supported | ❌ Not supported | 🚧 Planned | ⚠️ Limited maintenance
+
+## Documentation
+
+For detailed guides and advanced usage, visit our [Documentation Site](https://caru-ini.github.io/novelai-sdk/).
+
+## Quick Start
+
+### Installation
+
+```bash
+# Using pip
+pip install novelai-sdk
+
+# Using uv (recommended)
+uv add novelai-sdk
+```
+
+### Basic Usage
+
+```python
+from novelai import NovelAI
+from novelai.types import GenerateImageParams
+
+# Initialize client (API key from NOVELAI_API_KEY environment variable)
+client = NovelAI()
+
+# Generate an image
+params = GenerateImageParams(
+    prompt="1girl, cat ears, masterpiece, best quality",
+    model="nai-diffusion-4-5-full",
+    size="portrait",  # or (832, 1216)
+    steps=23,
+    scale=5.0,
+)
+
+images = client.image.generate(params)
+images[0].save("output.png")
+```
+
+### CLI Usage
+
+```bash
+# Basic generation
+python -m novelai "1girl, cat ears, maid" -o output.png
+
+# Interactive mode
+python -m novelai --interactive --model nai-diffusion-4-5-full
+
+# Generate from request JSON (high-level params)
+python -m novelai --request-json examples/request_user.json -o output
+
+# Generate from request JSON (stdin)
+cat examples/request_user.json | python -m novelai --request-json-stdin -o output
+```
+
+## Authentication
+
+Provide your NovelAI API key via environment variable or direct initialization:
+
+```python
+# Using .env file (recommended)
+from dotenv import load_dotenv
+load_dotenv()
+client = NovelAI()
+
+# Environment variable
+import os
+os.environ["NOVELAI_API_KEY"] = "your_api_key_here"
+client = NovelAI()
+
+# Direct initialization
+client = NovelAI(api_key="your_api_key_here")
+```
+
+### Data Model Architecture
+
+The library is designed with two distinct layers of data models:
+
+![Model Architecture](./docs/images/model-architecture.png)
+
+1. **User Model (Recommended)**: User-friendly models with sensible defaults and automatic validation.
+2. **API Model**: Direct 1:1 mapping to NovelAI's API endpoints, primarily used internally.
+
+#### High-Level API
+
+```python
+from novelai import NovelAI
+from novelai.types import GenerateImageParams
+
+client = NovelAI()
+params = GenerateImageParams(
+    prompt="a beautiful landscape",
+    model="nai-diffusion-4-5-full",
+    size="landscape",
+    quality=True,
+)
+images = client.image.generate(params)
+```
+
+## Advanced Features
+
+### Character Reference
+
+Maintain consistent character appearances with reference images:
+
+```python
+from novelai.types import CharacterReference
+
+character_references = [
+    CharacterReference(
+        image="reference.png",
+        type="character",
+        fidelity=0.75,
+    )
+]
+
+params = GenerateImageParams(
+    prompt="1girl, standing",
+    model="nai-diffusion-4-5-full",
+    character_references=character_references,
+)
+```
+
+### Multi-Character Positioning
+
+Position multiple characters individually with separate prompts:
+
+```python
+from novelai.types import Character
+
+characters = [
+    Character(
+        prompt="1girl, red hair, blue eyes",
+        enabled=True,
+        position=(0.3, 0.5),
+    ),
+    Character(
+        prompt="1boy, black hair, green eyes",
+        enabled=True,
+        position=(0.7, 0.5),
+    ),
+]
+
+params = GenerateImageParams(
+    prompt="two people standing",
+    model="nai-diffusion-4-5-full",
+    characters=characters,
+)
+```
+
+Omit `position` on every character to let the AI decide the placement. Grid presets like `"C3"` are also accepted. On V4/V4.5 the coordinates are snapped to the 5x5 grid like the web UI; V5 sends them as given.
+
+### ControlNet (Vibe Transfer)
+
+Control composition and pose with reference images:
+
+```python
+from novelai.types import ControlNet, ControlNetImage, GenerateImageParams
+
+controlnet_image = ControlNetImage(image="pose_reference.png", strength=0.6)
+controlnet = ControlNet(images=[controlnet_image])
+
+params = GenerateImageParams(
+    prompt="1girl, standing",
+    model="nai-diffusion-4-5-full",
+    controlnet=controlnet,
+)
+```
+
+### Streaming Generation
+
+Monitor generation progress in real-time:
+
+```python
+from novelai.types import GenerateImageStreamParams
+from base64 import b64decode
+
+params = GenerateImageStreamParams(
+    prompt="1girl, standing",
+    model="nai-diffusion-4-5-full",
+    stream="sse",
+)
+
+for chunk in client.image.generate_stream(params):
+    image_data = b64decode(chunk.image)
+    print(f"Received {len(image_data)} bytes")
+```
+
+### Image-to-Image
+
+Transform existing images with text prompts:
+
+```python
+from novelai.types import GenerateImageParams, I2iParams
+
+i2i_params = I2iParams(
+    image="input.png",
+    strength=0.5,  # 0.0-1.0
+    noise=0.0,
+)
+
+params = GenerateImageParams(
+    prompt="cyberpunk style",
+    model="nai-diffusion-4-5-full",
+    i2i=i2i_params,
+)
+```
+
+### Batch Generation
+
+Generate multiple variations efficiently:
+
+```python
+params = GenerateImageParams(
+    prompt="1girl, various poses",
+    model="nai-diffusion-4-5-full",
+    n_samples=4,
+)
+
+images = client.image.generate(params)
+for i, img in enumerate(images):
+    img.save(f"output_{i}.png")
+```
+
+### Estimate Anlas
+
+Estimate the generation cost before sending the request:
+
+```python
+from novelai.types import GenerateImageParams
+
+params = GenerateImageParams(
+    prompt="1girl, night city",
+    model="nai-diffusion-4-5-full",
+    size=(1024, 1024),
+    steps=28,
+)
+
+estimate = params.calculate_anlas(is_opus=True)
+print(estimate.total_anlas)
+```
+
+`calculate_anlas()` is a best-effort estimate based on the current web UI and
+documentation. It is useful for previews, but it is not guaranteed to be a
+100% accurate billing source of truth.
+
+## Examples
+
+For practical usage examples, see the [Examples Documentation](https://caru-ini.github.io/novelai-sdk/examples/) or the [`examples/`](./examples/) directory.
+
+## Roadmap
+
+- [x] Async support
+- [x] FastAPI integration example
+- [ ] Vibe transfer file support (`.naiv4vibe`, `.naiv4vibebundle`)
+- [x] Anlas consumption calculator
+- [x] Director Tools (`/ai/augment-image`) and 2x upscale (`/ai/upscale`)
+- [x] Tag suggestions (`/ai/generate-image/suggest-tags`, en/jp)
+- [ ] Image metadata extraction
+- [ ] Text generation API support
+
+## Development
+
+### Setup
+
+```bash
+git clone https://github.com/caru-ini/novelai-sdk.git
+cd novelai-sdk
+uv sync
+```
+
+### Code Quality
+
+```bash
+# Format code
+uv run poe fmt
+
+# Lint code
+uv run poe lint
+
+# Type checking
+uv run poe check
+
+# Install poe globally for easier access
+uv tool install poe
+
+# Run all checks before committing
+uv run poe pre-commit
+```
+
+### Testing
+
+Tests will be added in future releases.
+
+## Requirements
+
+- Python 3.10+
+- httpx (HTTP client)
+- Pillow (image processing)
+- Pydantic v2 (validation and type safety)
+- python-dotenv (environment variables)
+- rich (CLI output rendering)
+
+## Contributing
+
+Contributions are welcome. For major changes, please open an issue first.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute, including development setup, code quality checks, and pull request guidelines.
+
+```plaintext
+{feat|fix|docs|style|refactor|test|chore}: Short description
+```
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Run code quality checks (`uv run poe pre-commit`)
+4. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
+
+## License
+
+MIT License. See LICENSE file for details.
+
+## Links
+
+- [NovelAI Official Website](https://novelai.net/)
+- [NovelAI Documentation](https://docs.novelai.net/)
+- [Issue](https://github.com/caru-ini/novelai-sdk/issues)
+
+## Disclaimer
+
+This is an unofficial client library. Not affiliated with NovelAI. Requires an active NovelAI subscription.
+
+## Acknowledgments
+
+Thanks to the NovelAI team and all contributors.

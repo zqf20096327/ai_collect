@@ -256,6 +256,7 @@ def main():
         stop_evt = threading.Event()
         windows += 1
         round_exc = None
+        window_done0 = processed_n[0]
         print(f"[窗 {windows}] 目标 {len(targets)} 项", flush=True)
         try:
             with ThreadPoolExecutor(args.workers) as ex:
@@ -278,22 +279,35 @@ def main():
                 targets = nxt
                 continue
             break
-        if not isinstance(round_exc, (gh.CoreReserveOut, gh.QuotaPatienceOut)):
-            stop_reason = str(round_exc)                # BudgetOut 自然到顶
+        if isinstance(round_exc, (gh.CoreReserveOut, gh.QuotaPatienceOut)):
+            if waits >= args.wait_windows:
+                stop_reason = (f"{round_exc},"
+                               f"跨窗等待 {args.wait_windows} 次已用尽")
+                break
+            reset = getattr(round_exc, "reset", None)
+            wait_sec = (max(5.0, reset - time.time() + 5)
+                        if reset else 600.0)
+            if deadline and time.time() + wait_sec > deadline:
+                stop_reason = (f"{round_exc},等下一窗需 {wait_sec / 60:.0f} 分钟"
+                               f"将超总时长上限")
+                break
+            waits += 1
+            print(f"[跨窗] {round_exc} — 睡 {wait_sec / 60:.0f} 分钟到下一小时窗"
+                  f"(等待 {waits}/{args.wait_windows})", flush=True)
+            time.sleep(wait_sec)
+            targets = pick_targets(args.mode, pool, items)
+            continue
+        # BudgetOut:本窗预算到顶,总时长还够就发新窗续跑(dbhub 语义:
+        # 预算按窗发新;漏了这步会一窗即停,--max-total-minutes 形同虚设)
+        progressed = processed_n[0] > window_done0
+        stuck_rounds = 0 if progressed else stuck_rounds + 1
+        if stuck_rounds >= 2:
+            stop_reason = f"{round_exc}(连续无进展,收尾防空转)"
             break
-        if waits >= args.wait_windows:
-            stop_reason = f"{round_exc},跨窗等待 {args.wait_windows} 次已用尽"
+        if deadline and time.time() >= deadline:
+            stop_reason = f"{round_exc},已达总时长上限"
             break
-        reset = getattr(round_exc, "reset", None)
-        wait_sec = max(5.0, reset - time.time() + 5) if reset else 600.0
-        if deadline and time.time() + wait_sec > deadline:
-            stop_reason = (f"{round_exc},等下一窗需 {wait_sec / 60:.0f} 分钟"
-                           f"将超总时长上限")
-            break
-        waits += 1
-        print(f"[跨窗] {round_exc} — 睡 {wait_sec / 60:.0f} 分钟到下一小时窗"
-              f"(等待 {waits}/{args.wait_windows})", flush=True)
-        time.sleep(wait_sec)
+        print(f"[续窗] 本窗停止:{round_exc}(断点已存,发新预算续跑)", flush=True)
         targets = pick_targets(args.mode, pool, items)
 
     gh.set_budget(None)

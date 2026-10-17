@@ -1,0 +1,540 @@
+# DevoChat
+
+*English | [한국어](README.ko.md)*
+
+### Unified AI Chat Platform
+DevoChat is a web application that allows you to use various multimodal AI models and tools through a single interface. Check out the [live demo](https://devochat.com).
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/main.png" alt="Main Page">
+      <br>
+      <em>Main Page</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/model-select.png" alt="Model Selection">
+      <br>
+      <em>Model Selection</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/file-upload.png" alt="File Upload">
+      <br>
+      <em>File Upload</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/image-upload.png" alt="Image Upload">
+      <br>
+      <em>Image Upload</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/tool-select.png" alt="Tool Selection">
+      <br>
+      <em>Tool Selection</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/tool-use.png" alt="Tool Usage">
+      <br>
+      <em>Tool Usage</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/code.png" alt="Code Block">
+      <br>
+      <em>Code Highlighting</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/latex.png" alt="LaTeX Formula">
+      <br>
+      <em>Formula Rendering</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/url-detect.png" alt="URL Processing">
+      <br>
+      <em>URL Processing</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/realtime.png" alt="Real-time Conversation">
+      <br>
+      <em>Real-time Conversation</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="samples/image-generation.png" alt="Image Generation">
+      <br>
+      <em>Image Generation</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="samples/image-edit.png" alt="Image Editing">
+      <br>
+      <em>Image Editing</em>
+    </td>
+  </tr>
+</table>
+
+## Key Features
+
+- **Unified Conversation System**
+  - Uses MongoDB-based unified schema to freely switch between AI models during conversations without losing context.
+  - Provides client layers that normalize data to meet the API requirements of each AI provider.
+  - Offers an integrated management environment for various media files including images, PDFs, and documents.
+
+- **Advanced Conversation Feature**
+  - Provides parameter controls including reasoning intensity, response length, and system prompt modification.
+  - Supports markdown, LaTeX formula, and code block rendering.
+  - Enables streaming responses and simulates streaming for non-streaming models by sending complete responses in chunks.
+  - Supports image generation via Text-to-Image and Image-to-Image models.
+  - Supports real-time/low-latency STS (Speech-To-Speech) conversations through RealTime API.
+
+- **Model Switching Architecture**
+  - Allows immediate addition of various AI models to the system through JSON modification without code changes.
+  - Supports toggling of additional features like reasoning, web search, and research for hybrid models.
+  - Enables linking separate text-to-image and image-editing models (e.g., bytedance/seedream-v5.0-lite, bytedance/seedream-v5.0-lite/edit) with a "switch" variant to function as a single model.
+
+- **Web-based MCP Client**
+  - Connects directly to all types of MCP servers (SSE, Local) from web browsers.
+  - Provides simple access to local MCP servers from anywhere on the web using the [secure-mcp-proxy](https://github.com/gws8820/secure-mcp-proxy) package.
+  - Supports visual monitoring of real-time tool calls and execution processes.
+
+## Project Structure
+
+```
+devochat/
+├── frontend/                           # React frontend
+│   ├── public/                         # Static public assets
+│   ├── src/
+│   │   ├── components/                 # UI components
+│   │   ├── contexts/                   # State management
+│   │   ├── pages/                      # Page components
+│   │   ├── resources/                  # Static resources
+│   │   ├── styles/                     # CSS stylesheets
+│   │   ├── utils/                      # Utility functions
+│   │   └── App.js                      # Main app component
+│   ├── build/                          # Production build output
+│   ├── releases/                       # Archived frontend builds
+│   ├── package.json
+│   └── package-lock.json
+│
+├── backend/                            # FastAPI backend
+│   ├── config/                         # Configuration files
+│   │   ├── chat_models.json            # Text AI model settings
+│   │   ├── image_models.json           # Image generation AI model settings
+│   │   ├── mcp_servers.json            # MCP server settings
+│   │   └── realtime_models.json        # Real-time conversation model settings
+│   ├── generated/                      # Generated outputs
+│   ├── prompts/                        # System prompts
+│   ├── routes/                         # API routers
+│   │   ├── chat_clients/               # Text AI model clients
+│   │   ├── image_clients/              # Image generation AI model clients
+│   │   ├── auth.py                     # Authentication/authorization management
+│   │   ├── common.py                   # Common utilities
+│   │   ├── conversations.py            # Conversation management API
+│   │   ├── realtime.py                 # Real-time communication
+│   │   └── uploads.py                  # File upload handling
+│   ├── uploads/                        # Uploaded files and images
+│   ├── logging_util.py                 # Logging utility
+│   ├── main.py                         # FastAPI application entry point
+│   └── requirements.txt                # Python dependencies
+├── mcp-proxy/                          # Local MCP proxy package
+│   ├── src/                            # Proxy source package
+│   ├── servers.json                    # Local MCP server definitions
+│   └── pyproject.toml
+└── samples/                            # README screenshots
+```
+
+## Tech Stack
+
+![React](https://img.shields.io/badge/React-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![JavaScript](https://img.shields.io/badge/JavaScript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+
+## Installation and Setup
+
+### Frontend
+
+#### Environment Variables
+```
+WDS_SOCKET_PORT=0
+REACT_APP_FASTAPI_URL=http://localhost:8000
+```
+
+#### Package Installation and Start
+```bash
+$ cd frontend
+$ npm install
+$ npm start
+```
+
+#### Build and Deploy
+```bash
+$ cd frontend
+$ npm run build
+$ npx serve -s build
+```
+
+### Backend
+
+#### Python Virtual Environment Setup
+```bash
+$ cd backend
+$ python -m venv .venv
+$ source .venv/bin/activate  # Windows: .venv\Scripts\activate
+$ pip install -r requirements.txt
+```
+
+#### Environment Variables
+```
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/chat_db
+PRODUCTION_URL=https://your-production-domain.com
+DEVELOPMENT_URL=http://localhost:3000
+AUTH_KEY=your_auth_secret_key
+
+# API Key Configuration
+OPENAI_API_KEY=...
+ANTHROPIC_API_KEY=...
+GEMINI_API_KEY=...
+OPENROUTER_API_KEY=...
+XAI_API_KEY=...
+GROK_API_KEY=...
+FLUX_API_KEY=...
+WAVESPEED_API_KEY=...
+GOOGLE_STT_API_KEY=...
+REALTIME_API_KEY=...
+```
+
+#### Run FastAPI Server
+```bash
+$ uvicorn main:app --host=0.0.0.0 --port=8000 --reload
+```
+
+## Usage
+
+### chat_models.json Configuration
+
+Define the AI models available in the application and their properties through the `chat_models.json` file.
+
+```json
+{
+  "default": "google/gemini-3.5-flash",
+  "alias": "google/gemini-3.1-flash-lite",
+  "models": [
+    {
+      "model_name": "google/gemini-3.5-flash",
+      "model_alias": "Gemini 3.5 Flash",
+      "description": "Default Gemini model",
+      "endpoint": "/chat/openrouter",
+      "billing": {
+        "in_billing": "1.5",
+        "out_billing": "9"
+      },
+      "capabilities": {
+        "stream": true,
+        "vision": true,
+        "reasoning": true,
+        "web_search": "toggle",
+        "research": false,
+        "mcp": true
+      },
+      "controls": {
+        "instructions": true,
+        "reason": {
+          "levels": ["low", "medium", "high", "xhigh"],
+          "default": "medium"
+        },
+        "verbosity": false
+      },
+      "admin": false
+    },
+    {
+      "model_name": "gpt-5.5",
+      "model_alias": "GPT 5.5",
+      "description": "High-performance GPT model",
+      "endpoint": "/chat/gpt",
+      "billing": {
+        "in_billing": "5",
+        "out_billing": "30"
+      },
+      "capabilities": {
+        "stream": true,
+        "vision": true,
+        "reasoning": "toggle",
+        "web_search": "toggle",
+        "research": false,
+        "mcp": true
+      },
+      "controls": {
+        "instructions": true,
+        "reason": {
+          "levels": ["low", "medium", "high", "xhigh"],
+          "default": "medium"
+        },
+        "verbosity": {
+          "levels": ["low", "medium", "high"],
+          "default": "medium"
+        }
+      },
+      "admin": true
+    },
+    {
+      "model_name": "mistralai/mistral-large-2512",
+      "model_alias": "Mistral Large 3",
+      "description": "Default Mistral model",
+      "endpoint": "/chat/openrouter",
+      "billing": {
+        "in_billing": "0.5",
+        "out_billing": "1.5"
+      },
+      "capabilities": {
+        "stream": true,
+        "vision": true,
+        "reasoning": false,
+        "web_search": "toggle",
+        "research": false,
+        "mcp": true
+      },
+      "controls": {
+        "instructions": true,
+        "reason": false,
+        "verbosity": false
+      },
+      "admin": false
+    }
+  ]
+}
+```
+
+### Parameter Description
+
+| Parameter | Description |
+|---------|------|
+| `default` | Default chat model selected when the app initializes |
+| `alias` | Model used to generate conversation aliases/titles |
+| `model_name` | The actual identifier of the model used in API calls |
+| `model_alias` | User-friendly name displayed in the UI |
+| `description` | Brief description of the model for reference when selecting |
+| `endpoint` | API path for handling model requests in the backend (e.g., `/chat/gpt`, `/chat/claude`, `/chat/gemini`, `/chat/grok`, `/chat/openrouter`) |
+| `billing` | Object containing model usage cost information |
+| `billing.in_billing` | Billing cost for input tokens (prompts). Unit: USD per million tokens |
+| `billing.out_billing` | Billing cost for output tokens (responses). Unit: USD per million tokens |
+| `variants` | Defines target models for `"switch"` capability values. Keys such as `reasoning`, `web_search`, and `research` point to the feature-specific model; `base` points back to the normal model |
+| `capabilities` | Defines the features supported by the model |
+| `capabilities.stream` | Whether streaming response is supported. Possible values: `true`, `false` |
+| `capabilities.vision` | Whether image input is supported. Possible values: `true`, `false` |
+| `capabilities.reasoning` | Whether reasoning is supported. Possible values: `true`, `false`, `"toggle"`, `"switch"` |
+| `capabilities.web_search` | Whether web search is supported. Possible values: `true`, `false`, `"toggle"`, `"switch"` |
+| `capabilities.research` | Whether research mode is supported. Possible values: `true`, `false`, `"toggle"`, `"switch"` |
+| `capabilities.mcp` | Whether MCP server integration is supported. Possible values: `true`, `false` |
+| `controls` | Defines user control options supported by the model |
+| `controls.instructions` | Whether custom instructions setting is possible. Possible values: `true`, `false` |
+| `controls.reason` | Defines selectable reasoning intensity levels. Possible values: `false` or an object |
+| `controls.reason.levels` | String array defining the selectable options shown in the UI |
+| `controls.reason.default` | Default value applied when the model is selected |
+| `controls.verbosity` | Defines selectable response length levels. Possible values: `false` or an object |
+| `controls.verbosity.levels` | String array defining the selectable options shown in the UI |
+| `controls.verbosity.default` | Default value applied when the model is selected |
+| `admin` | If `true`, only admin users can access/select this model |
+
+### Value Description
+
+#### true
+The feature is always enabled.
+
+#### false  
+The feature is not supported.
+
+#### toggle
+Users can turn the feature on or off without changing the selected model.
+
+#### switch
+When a user toggles the feature, the selected model changes to another model defined in the `variants` object.
+
+
+### image_models.json Configuration
+
+Define the image generation AI models available in the application and their properties through the `image_models.json` file:
+
+```json
+{
+  "default": "gemini-2.5-flash-image",
+  "alias": "google/gemini-3.1-flash-lite",
+  "models": [
+    {
+      "model_name": "gemini-2.5-flash-image",
+      "model_alias": "Nano Banana",
+      "description": "Google",
+      "endpoint": "/image/google/gemini",
+      "billing": {
+        "in_billing": "0",
+        "out_billing": "0.039"
+      },
+      "capabilities": { "vision": true, "max_input": 10 },
+      "admin": false
+    },
+    {
+      "model_name": "bytedance/seedream-v5.0-lite",
+      "model_alias": "Seedream 5.0 Lite",
+      "description": "BytePlus",
+      "endpoint": "/image/wavespeed",
+      "billing": {
+        "in_billing": "0",
+        "out_billing": "0.04"
+      },
+      "variants": {
+        "vision": "bytedance/seedream-v5.0-lite/edit"
+      },
+      "capabilities": { "vision": "switch" },
+      "admin": false
+    },
+    {
+      "model_name": "bytedance/seedream-v5.0-lite/edit",
+      "model_alias": "Seedream 5.0 Lite",
+      "description": "BytePlus",
+      "endpoint": "/image/wavespeed",
+      "billing": {
+        "in_billing": "0",
+        "out_billing": "0.04"
+      },
+      "variants": {
+        "base": "bytedance/seedream-v5.0-lite"
+      },
+      "capabilities": { "vision": "switch", "max_input": 10 },
+      "admin": false
+    }
+  ]
+}
+```
+
+### Image Model Parameter Description
+
+| Parameter | Description |
+|---------|------|
+| `default` | Default image model selected when the image page initializes |
+| `alias` | Model used to generate image conversation aliases/titles |
+| `variants` | Defines target models for `"switch"` capability values. `vision` points to the image-editing model; `base` points back to the text-to-image model |
+| `capabilities.vision` | Whether image input is supported. `true`: supported, `false`: not supported, `"switch"`: switch to variant model |
+| `capabilities.max_input` | Maximum number of images that can be input simultaneously |
+
+### Model Switching System (Variants)
+
+You can define various variants of models through the `variants` object.
+
+#### Example
+```json
+[
+  {
+    "model_name": "bytedance/seedream-v5.0-lite",
+    "variants": {
+      "vision": "bytedance/seedream-v5.0-lite/edit"
+    },
+    "capabilities": {
+      "vision": "switch"
+    }
+  },
+  {
+    "model_name": "bytedance/seedream-v5.0-lite/edit",
+    "variants": {
+      "base": "bytedance/seedream-v5.0-lite"
+    },
+    "capabilities": {
+      "vision": "switch"
+    }
+  }
+]
+```
+
+### realtime_models.json Configuration
+
+Define the real-time voice models available in the application through the `realtime_models.json` file.
+
+```json
+{
+  "default": "gpt-realtime-2:coral",
+  "models": [
+    {
+      "model_name": "gpt-realtime-2:marin",
+      "model_alias": "Marin",
+      "model_gender": "female",
+      "description": "A warm motivator"
+    },
+    {
+      "model_name": "gpt-realtime-2:ash",
+      "model_alias": "Ash",
+      "model_gender": "male",
+      "description": "A steady supporter who believes in you"
+    }
+  ]
+}
+```
+
+### Realtime Model Parameter Description
+
+| Parameter | Description |
+|---------|------|
+| `default` | Default real-time voice model selected when the real-time page initializes |
+| `model_name` | Actual voice/model identifier used by the real-time API |
+| `model_alias` | User-friendly voice name displayed in the UI |
+| `model_gender` | UI grouping/style hint for the voice. Current values use `female` or `male` |
+| `description` | Short voice/personality description displayed in the model picker |
+
+## MCP Server Configuration
+
+DevoChat is a web-based MCP (Model Context Protocol) client.
+You can define external servers to connect to in the `mcp_servers.json` file.
+
+### mcp_servers.json
+
+```json
+{
+  "server-id": {
+    "url": "https://example.com/mcp/endpoint",
+    "authorization_token": "your_authorization_token",
+    "name": "Server_Display_Name",
+    "description": "Short description shown in the server picker",
+    "admin": false
+  }
+}
+```
+
+### Recommended MCP Servers
+
+- **[github](https://github.com/modelcontextprotocol/servers/tree/main/src/github)**
+- **[spotify](https://github.com/varunneal/spotify-mcp)** 
+- **[arxiv](https://github.com/blazickjp/arxiv-mcp-server)**
+- **[perplexity](https://github.com/jsonallen/perplexity-mcp)**
+- **[apple-mcp](https://github.com/peakmojo/applescript-mcp)**
+- **[desktop-commander](https://github.com/wonderwhy-er/DesktopCommanderMCP)**
+- ...
+
+### Local MCP Server Integration
+
+To connect local MCP servers, use [secure-mcp-proxy](https://github.com/gws8820/secure-mcp-proxy):
+
+```bash
+git clone https://github.com/gws8820/secure-mcp-proxy
+cd secure-mcp-proxy
+uv run python -m secure_mcp_proxy --named-server-config servers.json --port 3000
+```
+
+## Contributing
+
+1. Fork this repository
+2. Create a new branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Create a Pull Request
+   
+## License
+
+This project is distributed under the [MIT License](LICENSE).

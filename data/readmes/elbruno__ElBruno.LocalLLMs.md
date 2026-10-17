@@ -1,0 +1,516 @@
+# ElBruno.LocalLLMs
+
+[![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalLLMs)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalLLMs)
+[![Build Status](https://github.com/elbruno/ElBruno.LocalLLMs/actions/workflows/ci.yml/badge.svg)](https://github.com/elbruno/ElBruno.LocalLLMs/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![HuggingFace](https://img.shields.io/badge/🤗_HuggingFace-ONNX_Models-orange?style=flat-square)](https://huggingface.co/elbruno)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
+[![GitHub stars](https://img.shields.io/github/stars/elbruno/ElBruno.LocalLLMs?style=social)](https://github.com/elbruno/ElBruno.LocalLLMs)
+[![Twitter Follow](https://img.shields.io/twitter/follow/elbruno?style=social)](https://twitter.com/elbruno)
+
+## Run local LLMs in .NET through IChatClient 🧠
+
+Run local LLMs in .NET through `IChatClient` — the same interface you'd use for Azure OpenAI, Ollama, or any other provider. Powered by ONNX Runtime GenAI and BitNet.
+
+## What's New
+
+> The last 5 notable additions to the library. Updated with each NuGet release.
+
+- 🔌 **`ElBruno.AI.Decisions` provider** — `ElBruno.LocalLLMs.Decisions` now implements the shared [`ElBruno.AI.Decisions`](https://www.nuget.org/packages/ElBruno.AI.Decisions) `IDecisionClient`, so the in-process ONNX Laya model drops in next to the Foundry, Ollama and Jev providers and into `DecisionRoutingChatClient`. The rich API moved to `ILayaDecisionClient`. **Breaking** for code that injected the v0.22.0 `IDecisionClient`. See the [SharedDecisions sample](src/samples/SharedDecisions/).
+- 🎯 **`ElBruno.LocalLLMs.Decisions`** — new package for local **System One** decision models. Typed `choice`, `score` and yes/no answers with full probability distributions in a single forward pass (~600 ms on CPU), running [Laya](https://github.com/NandhaKishorM/laya) **fully in-process on ONNX Runtime** — no server, no Python. Built for routing, triage, moderation and intent detection, where a chat model is slow and overkill. Call `services.AddLocalDecisions()` and inject `ILayaDecisionClient`. See the [Local Decisions Guide](docs/decisions-guide.md) and the [LocalDecisions sample](src/samples/LocalDecisions/).
+- ⬆️ **.NET 10 only** — every project now single-targets `net10.0`. .NET 8 reaches end of support in November 2026, so multi-targeting was dropped ahead of it. **Breaking:** consumers still on .NET 8 must stay on `v0.21.0` or upgrade to .NET 10.
+- 🧩 **`ElBruno.LocalLLMs.BlazorComponents`** — new Razor Class Library with 7 ready-to-use Blazor components: `ModelStatusCard` (download progress bar + actions), `ModelGallery` (filterable grid), `ModelSelector` (two-way-bindable dropdown), `ChatBox` (streaming token display), `EnvironmentDashboard` (CPU/CUDA/DirectML badges), `LocalLLMHealthBadge` (nav-bar status dot), and `RagPlayground`. Call `services.AddLocalLLMsBlazorComponents()` to register. See the [Blazor Components Guide](docs/blazor-components.md) and the [BlazorDemo sample](src/samples/BlazorDemo/).
+- 🧠 **GPT-OSS 20B support** — OpenAI's open-weight MoE model (Apache-2.0) now runs locally via the official `onnxruntime/gpt-oss-20b-onnx` artifacts. Adds the **Harmony** prompt format, channel-aware output filtering (chain-of-thought is stripped, never shown to users), Harmony tool calling, and a `ReasoningEffort` option. Two model IDs: `gpt-oss-20b` (CPU INT4) and `gpt-oss-20b-cuda`. See the [GptOssChat sample](src/samples/GptOssChat/). Also fixes a token-duplication bug that repeated the final token of every generation.
+
+## Features
+
+- 🧩 **Blazor components** — `ModelStatusCard`, `ChatBox`, `ModelGallery`, `ModelSelector`, `EnvironmentDashboard`, `LocalLLMHealthBadge`, `RagPlayground` via `ElBruno.LocalLLMs.BlazorComponents` ([guide](docs/blazor-components.md))
+- 🎯 **Local decision models** — typed choice/score/yes-no answers with probabilities in one forward pass via `ElBruno.LocalLLMs.Decisions` ([guide](docs/decisions-guide.md))
+- 🔌 **`IChatClient` implementation** — seamless integration with [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai)
+- 📦 **Automatic model download** — models are fetched from HuggingFace on first use
+- 🚀 **Zero friction** — works out of the box with sensible defaults (Phi-3.5 mini)
+- 🖥️ **Multi-hardware** — CPU, CUDA, and DirectML execution providers
+- 💉 **DI-friendly** — register with `AddLocalLLMs()` or `AddBitNetChatClient()` in ASP.NET Core
+- 🔄 **Streaming** — token-by-token streaming via `GetStreamingResponseAsync`
+- 📊 **Multi-model** — switch between Phi-3.5, Phi-4, Qwen2.5, Qwen3, Llama 3.2, MagenticBrain, and more
+- 👁️ **Vision-language models** — run Fara 1.5-9B image+text models via `LocalVisionChatClient`
+- 🤖 **Agentic models** — Qwen3 / MagenticBrain support for multi-agent orchestration loops
+- 🎯 **Fine-tuned models** — pre-trained Qwen2.5 variants for tool calling and RAG ([guide](docs/fine-tuning-guide.md))
+- ⚡ **BitNet support** — run 1.58-bit ternary models via [bitnet.cpp](https://github.com/microsoft/BitNet) with extreme efficiency ([guide](docs/bitnet-guide.md))
+- 📈 **OpenTelemetry diagnostics** — lifecycle activities and metrics for queued, first-token, completion, cancellation, and failure ([guide](docs/observability.md))
+
+## Packages
+
+| Package | NuGet | Downloads | Description |
+|---------|-------|-----------|-------------|
+| `ElBruno.LocalLLMs` | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs) | Core library — ONNX Runtime GenAI models via IChatClient |
+| `ElBruno.LocalLLMs.Rag` | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.Rag.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.Rag) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.Rag.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.Rag) | RAG pipeline — document chunking, indexing, retrieval |
+| `ElBruno.LocalLLMs.BitNet` | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.BitNet.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.BitNet) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.BitNet.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.BitNet) | BitNet 1.58-bit models via bitnet.cpp + IChatClient |
+| `ElBruno.LocalLLMs.BlazorComponents` | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.BlazorComponents.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.BlazorComponents) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.BlazorComponents.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.BlazorComponents) | Blazor components — ModelStatusCard, ChatBox, ModelGallery, and more |
+| `ElBruno.LocalLLMs.Decisions` | [![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalLLMs.Decisions.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.Decisions) | [![Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalLLMs.Decisions.svg?style=flat-square)](https://www.nuget.org/packages/ElBruno.LocalLLMs.Decisions) | System One decision models — typed choice, score and yes/no answers |
+
+## Installation
+
+```bash
+dotnet add package ElBruno.LocalLLMs
+```
+
+For CPU scenarios, no extra package is required — the transitive `buildTransitive` shim copies `onnxruntime-genai.dll` automatically on Windows.
+
+Add a runtime package only when you want a specific GPU provider:
+
+```bash
+# 🟢 NVIDIA GPU (CUDA):
+dotnet add package Microsoft.ML.OnnxRuntimeGenAI.Cuda
+
+# 🔵 Any Windows GPU — AMD, Intel, NVIDIA (DirectML):
+dotnet add package Microsoft.ML.OnnxRuntimeGenAI.DirectML
+```
+
+> ⚠️ **Add at most one GPU runtime package.** Do not reference both `Microsoft.ML.OnnxRuntimeGenAI.Cuda`
+> and `Microsoft.ML.OnnxRuntimeGenAI.DirectML` simultaneously.
+>
+> If you use a GPU runtime package and want to disable the transitive CPU copy shim, set:
+> `<ElBrunoLocalLLMsDisableCpuNativeCopy>true</ElBrunoLocalLLMsDisableCpuNativeCopy>`
+> in your application `.csproj`.
+
+> 🚀 The library defaults to `ExecutionProvider.Auto` — on Windows it tries DirectML → CUDA → CPU, and on Linux it tries CUDA → CPU. No code changes needed.
+
+## Quick Start
+
+```csharp
+using ElBruno.LocalLLMs;
+using Microsoft.Extensions.AI;
+
+// Create a local chat client (downloads Phi-3.5 mini on first run)
+using var client = await LocalChatClient.CreateAsync();
+
+var response = await client.GetResponseAsync([
+    new(ChatRole.User, "What is the capital of France?")
+]);
+
+Console.WriteLine(response.Text);
+```
+
+## First Run
+
+The first time you create a `LocalChatClient`, the model is downloaded from HuggingFace to your local cache directory (~2-4 GB). This typically takes **30-60 seconds** depending on your internet connection.
+
+**Track download progress:**
+```csharp
+using var client = await LocalChatClient.CreateAsync(
+    new LocalLLMsOptions { Model = KnownModels.Phi35MiniInstruct },
+    progress: new Progress<ModelDownloadProgress>(p =>
+    {
+        var percent = (p.BytesDownloaded * 100) / p.TotalBytes;
+        Console.WriteLine($"{p.FileName}: {percent:F1}%");
+    })
+);
+```
+
+**Subsequent runs load instantly** from cache (`%LOCALAPPDATA%/ElBruno/LocalLLMs/models`).
+
+**Skip auto-download** if using a pre-downloaded model:
+```csharp
+var options = new LocalLLMsOptions
+{
+    Model = KnownModels.Phi35MiniInstruct,
+    ModelPath = "/path/to/local/model",
+    EnsureModelDownloaded = false
+};
+using var client = await LocalChatClient.CreateAsync(options);
+```
+
+## Streaming
+
+```csharp
+using ElBruno.LocalLLMs;
+using Microsoft.Extensions.AI;
+
+using var client = await LocalChatClient.CreateAsync(new LocalLLMsOptions
+{
+    Model = KnownModels.Phi35MiniInstruct
+});
+
+await foreach (var update in client.GetStreamingResponseAsync([
+    new(ChatRole.System, "You are a helpful assistant."),
+    new(ChatRole.User, "Explain quantum computing in simple terms.")
+]))
+{
+    Console.Write(update.Text);
+}
+```
+
+## GPU Acceleration
+
+By default, `ExecutionProvider.Auto` tries GPU first and falls back to CPU automatically:
+
+```csharp
+// Use explicit GPU provider (fails if CUDA not installed; use Auto to fallback to CPU)
+var options = new LocalLLMsOptions
+{
+    ExecutionProvider = ExecutionProvider.Cuda
+};
+
+// Multi-GPU systems: select device ID
+var options2 = new LocalLLMsOptions
+{
+    ExecutionProvider = ExecutionProvider.Cuda,
+    GpuDeviceId = 1  // Use second GPU
+};
+```
+
+**Auto fallback behavior:**
+- **Windows + DirectML available** → uses a Windows GPU through DirectML
+- **Windows + DirectML unavailable, CUDA available** → uses NVIDIA GPU
+- **Linux + CUDA available** → uses NVIDIA GPU
+- **GPU unavailable** → falls back to CPU (no errors, just slower)
+
+> ⚠️ **CUDA note:** ONNX Runtime GenAI `0.15.x` expects CUDA `13.*`, cuDNN `9.*`, and the latest Microsoft Visual C++ 2015-2022 runtime. When those native libraries are missing, provider diagnostics now surface the exact DLL mismatch or missing dependency instead of entering the failing native path.
+
+See [Troubleshooting: GPU Setup](docs/troubleshooting-guide.md#gpu-setup-validation) for debugging GPU issues.
+
+## Model Metadata
+
+Inspect model capabilities at runtime — context window size, model name, and vocabulary:
+
+```csharp
+using var client = await LocalChatClient.CreateAsync();
+
+var metadata = client.ModelInfo;
+Console.WriteLine($"Model:          {metadata?.ModelName}");
+Console.WriteLine($"Context window: {metadata?.MaxSequenceLength}");
+Console.WriteLine($"Vocab size:     {metadata?.VocabSize}");
+```
+
+This is useful for prompt-length validation, adaptive chunking, and model selection logic.
+
+## Dependency Injection
+
+```csharp
+builder.Services.AddLocalLLMs(options =>
+{
+    options.Model = KnownModels.Phi35MiniInstruct;
+    options.ExecutionProvider = ExecutionProvider.DirectML;
+});
+
+// Inject IChatClient anywhere
+public class MyService(IChatClient chatClient) { ... }
+```
+
+## Error Handling
+
+The library provides structured exception types for graceful error handling:
+
+```csharp
+using ElBruno.LocalLLMs;
+using Microsoft.Extensions.AI;
+
+try
+{
+    using var client = await LocalChatClient.CreateAsync();
+    var response = await client.GetResponseAsync([
+        new(ChatRole.User, "Your question here")
+    ]);
+}
+catch (ExecutionProviderException ex)
+{
+    // GPU/provider-specific error (no CUDA, DirectML not available, etc.)
+    Console.WriteLine($"Provider error: {ex.Message}");
+}
+catch (ModelCapacityExceededException ex)
+{
+    // Prompt/response too long for model's context window
+    Console.WriteLine($"Capacity error: {ex.Message}");
+    // Solution: use a larger model or truncate the prompt
+}
+catch (InvalidOperationException ex)
+{
+    // General operation error (model not found, download failed, etc.)
+    Console.WriteLine($"Operation error: {ex.Message}");
+}
+```
+
+## Observability
+
+`LocalChatClient` emits generation lifecycle diagnostics through `ActivitySource` and `Meter`, both named `ElBruno.LocalLLMs`.
+
+```csharp
+using ElBruno.LocalLLMs.Diagnostics;
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(tracing => tracing.AddSource(LocalLLMsInstrumentation.ActivitySourceName))
+    .WithMetrics(metrics => metrics.AddMeter(LocalLLMsInstrumentation.MeterName));
+```
+
+By default, telemetry excludes prompt and completion text. Opt in only when you want content attached:
+
+```csharp
+var options = new LocalLLMsOptions
+{
+    CaptureTelemetryContent = true
+};
+```
+
+See [docs/observability.md](docs/observability.md) for the lifecycle event contract, metric names, and Aspire wiring notes, and [docs/cancellation.md](docs/cancellation.md) for voice barge-in cancellation behavior.
+
+## Local Decisions
+
+Sometimes you don't need prose — you need a decision. `ElBruno.LocalLLMs.Decisions` runs a
+**System One** model that returns a *typed* answer with its full probability distribution in a
+single forward pass, fast enough to call on every request.
+
+```bash
+dotnet add package ElBruno.LocalLLMs.Decisions
+```
+
+The model runs **in-process on ONNX Runtime** — no server to start and no Python. The weights are
+downloaded from [`elbruno/laya-onnx`](https://huggingface.co/elbruno/laya-onnx) on first use
+(about 800 MB) and cached afterwards.
+
+Ask several questions at once — they share one forward pass, so four cost about what one costs:
+
+```csharp
+using var client = new LayaOnnxDecisionClient();
+
+DecisionResult result = await client.EvaluateAsync(
+    new DecisionRequest("My invoice charged me twice and I want my money back.")
+        .Choose("team", new Dictionary<string, string?>
+        {
+            ["billing"]   = "Payment, invoice and refund problems",
+            ["technical"] = "Bugs, outages and API errors",
+            ["sales"]     = "Pricing, upgrades and new purchases"
+        })
+        .Score("urgency", new[] { "no rush", "normal", "urgent", "critical" })
+        .Ask("refund", "The customer is asking for a refund."));
+
+ChoiceResult team = result.Choice("team");
+
+// Gate on the probability so ambiguous tickets reach a human
+// instead of being confidently misrouted.
+string route = team.ChoiceOrNull(0.6) ?? "human-review";
+
+Console.WriteLine(route);                                  // billing
+Console.WriteLine(result.Score("urgency").Score);          // 1.67 of 3
+Console.WriteLine(result.Probability("refund").IsTrue);    // True
+```
+
+> ⚠️ Laya's public checkpoints report **uncalibrated confidence**. Fit `DecisionThreshold` against
+> your own labelled examples before relying on a boolean verdict. Answers whose temperature bucket
+> the checkpoint got wrong are flagged with `CalibrationClamped` — see the
+> [Local Decisions Guide](docs/decisions-guide.md#clamped-calibration-buckets) and the
+> [DecisionCalibration sample](src/samples/DecisionCalibration/).
+
+## Cache Management
+
+Inspect and manage the local model cache programmatically:
+
+```csharp
+// Remove a model from the cache (no-op if not cached)
+await LocalChatClient.DeleteModelFromCacheAsync(KnownModels.Phi35MiniInstruct);
+
+// Or use a custom cache directory
+await LocalChatClient.DeleteModelFromCacheAsync(
+    KnownModels.Phi35MiniInstruct,
+    cacheDirectory: @"D:\my-models");
+
+// Get cached size in bytes for one model (0 if not downloaded)
+long bytes = LocalChatClient.GetModelCacheSize(KnownModels.Phi35MiniInstruct);
+Console.WriteLine($"Cached: {bytes / 1024 / 1024:N0} MB");
+
+// List all cached models with size and last-modified date
+var cached = LocalChatClient.ListCachedModels();
+foreach (var repo in cached)
+    Console.WriteLine($"{repo.LocalDirectory}  {repo.TotalSizeBytes / 1024 / 1024:N0} MB  {repo.LastModified:yyyy-MM-dd}");
+
+// Same APIs available on LocalVisionChatClient for vision models
+await LocalVisionChatClient.DeleteModelFromCacheAsync(KnownModels.Fara15_9B);
+long visionBytes = LocalVisionChatClient.GetModelCacheSize(KnownModels.Fara15_9B);
+```
+
+The default cache directory is `%LOCALAPPDATA%/ElBruno/LocalLLMs/models` (Windows) or `~/.local/share/ElBruno/LocalLLMs/models` (Linux/macOS).
+
+These operations delegate to [ElBruno.HuggingFace.Downloader](https://www.nuget.org/packages/ElBruno.HuggingFace.Downloader) which provides the underlying `DeleteCachedFilesAsync`, `GetCachedSize`, and `ListCachedRepos` implementation.
+
+## Troubleshooting
+
+**GPU not working?** Use `ExecutionProvider.Cpu` explicitly. See [GPU Setup Validation](docs/troubleshooting-guide.md#gpu-setup-validation).
+
+**Out of memory?** Try a smaller model:
+```csharp
+var options = new LocalLLMsOptions
+{
+    Model = KnownModels.Qwen25_05BInstruct  // 0.5B instead of 3.8B
+};
+```
+
+**Model download fails?**
+- Check your internet connection
+- For private HuggingFace models, set the `HF_TOKEN` environment variable
+
+For detailed troubleshooting, see [docs/troubleshooting-guide.md](docs/troubleshooting-guide.md).
+
+## Supported Models
+
+| Tier | Model | Parameters | ONNX | ID |
+|------|-------|-----------|------|----|
+| ⚪ Tiny | TinyLlama-1.1B-Chat | 1.1B | ✅ Native | `tinyllama-1.1b-chat` |
+| ⚪ Tiny | SmolLM2-1.7B-Instruct | 1.7B | ✅ Native | `smollm2-1.7b-instruct` |
+| ⚪ Tiny | Qwen2.5-0.5B-Instruct | 0.5B | ✅ Native | `qwen2.5-0.5b-instruct` |
+| ⚪ Tiny | Qwen2.5-1.5B-Instruct | 1.5B | ✅ Native | `qwen2.5-1.5b-instruct` |
+| ⚪ Tiny | Gemma-2B-IT | 2B | ✅ Native | `gemma-2b-it` |
+| ⚪ Tiny | Gemma-4-E2B-IT | 5.1B (2B active) | 🔄 Convert | `gemma-4-e2b-it` |
+| ⚪ Tiny | StableLM-2-1.6B-Chat | 1.6B | ✅ Native | `stablelm-2-1.6b-chat` |
+| 🟢 Small | Phi-3.5 mini instruct | 3.8B | ✅ Native | `phi-3.5-mini-instruct` |
+| 🟢 Small | Qwen2.5-3B-Instruct | 3B | ✅ Native | `qwen2.5-3b-instruct` |
+| 🟢 Small | Llama-3.2-3B-Instruct | 3B | ✅ Native | `llama-3.2-3b-instruct` |
+| 🟢 Small | Gemma-2-2B-IT | 2B | ✅ Native | `gemma-2-2b-it` |
+| 🟢 Small | Gemma-4-E4B-IT | 8B (4B active) | 🔄 Convert | `gemma-4-e4b-it` |
+| 🟡 Medium | Qwen2.5-7B-Instruct | 7B | ✅ Native | `qwen2.5-7b-instruct` |
+| 🟡 Medium | Qwen2.5-Coder-7B-Instruct | 7B | ✅ Native | `qwen2.5-coder-7b-instruct` |
+| 🟡 Medium | Llama-3.1-8B-Instruct | 8B | ✅ Native | `llama-3.1-8b-instruct` |
+| 🟡 Medium | Mistral-7B-Instruct-v0.3 | 7B | ✅ Native | `mistral-7b-instruct-v0.3` |
+| 🟡 Medium | Gemma-2-9B-IT | 9B | ✅ Native | `gemma-2-9b-it` |
+| 🟡 Medium | Gemma-4-12B-IT | 12B | 🔄 Convert | `gemma-4-12b-it` |
+| 🟡 Medium | Phi-4 | 14B | ✅ Native | `phi-4` |
+| 🟡 Medium | DeepSeek-R1-Distill-Qwen-14B | 14B | ✅ Native | `deepseek-r1-distill-qwen-14b` |
+| 🟡 Medium | Mistral-Small-24B-Instruct | 24B | ✅ Native | `mistral-small-24b-instruct` |
+| 🔴 Large | Qwen2.5-14B-Instruct | 14B | ✅ Native | `qwen2.5-14b-instruct` |
+| 🔴 Large | Qwen2.5-32B-Instruct | 32B | ✅ Native | `qwen2.5-32b-instruct` |
+| 🔴 Large | Llama-3.3-70B-Instruct | 70B | ✅ ONNX | `llama-3.3-70b-instruct` |
+| 🔴 Large | Mixtral-8x7B-Instruct-v0.1 | 8x7B | ✅ Native | `mixtral-8x7b-instruct-v0.1` |
+| 🔴 Large | DeepSeek-R1-Distill-Llama-70B | 70B | ✅ Native | `deepseek-r1-distill-llama-70b` |
+| 🔴 Large | Command-R (35B) | 35B | ✅ Native | `command-r-35b` |
+| 🔴 Large | Gemma-4-26B-A4B-IT | 25.2B (3.8B active) | 🔄 Convert | `gemma-4-26b-a4b-it` |
+| 🔴 Large | Gemma-4-31B-IT | 30.7B | 🔄 Convert | `gemma-4-31b-it` |
+| 🟣 Next-Gen | Qwen3-14B-Instruct | 14.77B | ✅ Native | `qwen3-14b-instruct` |
+| 🧠 GPT-OSS | GPT-OSS 20B (CPU INT4) | 21B (3.6B active, MoE) | ✅ Native | `gpt-oss-20b` |
+| 🧠 GPT-OSS | GPT-OSS 20B (CUDA INT4) | 21B (3.6B active, MoE) | ✅ Native | `gpt-oss-20b-cuda` |
+| 🤖 Agentic | MagenticBrain | ~14.77B | ✅ Native | `magentic-brain` |
+| 👁️ VLM | Fara 1.5-9B | ~9.4B | ✅ Native | `fara-1.5-9b` |
+
+> **🔄 Convert** = Use the conversion scripts in `scripts/` to export ONNX locally before running the model.
+>
+> **¹ MagenticBrain ONNX:** Native ONNX hosted at `elbruno/MagenticBrain-onnx` (INT4 quantized). Auto-downloads when `EnsureModelDownloaded=true`.
+>
+> **² Fara 1.5-9B ONNX:** `elbruno/Fara1.5-9B-onnx` now includes the validated multimodal package (`qwen3vl-vision.onnx`, `qwen3vl-embedding.onnx`, patched `genai_config.json`, and ORT-compatible `processor_config.json`). See [ONNX Conversion — Fara](docs/onnx-conversion-fara.md).
+>
+> **³ GPT-OSS 20B:** Apache-2.0, from the official `onnxruntime/gpt-oss-20b-onnx` repository. The CPU INT4 variant is a **~12 GB download**, and because GPT-OSS is a mixture-of-experts model, CPU inference is slow — prefer `gpt-oss-20b-cuda` with `Microsoft.ML.OnnxRuntimeGenAI.Cuda` when a GPU is available. GPT-OSS reasons before answering; that chain-of-thought is filtered out and never surfaced, per the model card. Reasoning depth is controlled by `LocalLLMsOptions.ReasoningEffort`.
+
+### Fine-Tuned Models
+
+Pre-trained variants optimized for specific tasks. A fine-tuned 0.5B model often matches or exceeds a base 1.5B on its specialized task.
+
+| Model | Size | Task | HuggingFace ID |
+|-------|------|------|----------------|
+| Qwen2.5-0.5B-ToolCalling | ~1 GB | Tool/function calling | `elbruno/Qwen2.5-0.5B-LocalLLMs-ToolCalling` |
+| Qwen2.5-0.5B-RAG | ~1 GB | RAG with citations | `elbruno/Qwen2.5-0.5B-LocalLLMs-RAG` |
+| Qwen2.5-0.5B-Instruct | ~1 GB | General-purpose | `elbruno/Qwen2.5-0.5B-LocalLLMs-Instruct` |
+
+See the [Supported Models Guide](docs/supported-models.md) for detailed model cards, performance benchmarks, and selection guidance.
+
+## Samples
+
+| Sample | Description |
+|--------|-------------|
+| [HelloChat](src/samples/HelloChat) | Minimal console chat |
+| [StreamingChat](src/samples/StreamingChat) | Token-by-token streaming |
+| [MultiModelChat](src/samples/MultiModelChat) | Switch models at runtime |
+| [DependencyInjection](src/samples/DependencyInjection) | ASP.NET Core DI registration |
+| [ToolCallingAgent](src/samples/ToolCallingAgent) | Function calling and tool use |
+| [FineTunedToolCalling](src/samples/FineTunedToolCalling) | Fine-tuned model for improved tool calling |
+| [RagChatbot](src/samples/RagChatbot) | RAG pipeline with document retrieval |
+| [ZeroCloudRag](src/samples/ZeroCloudRag) | Zero-cloud RAG pipeline with real local embeddings and LLM inference |
+| [BitNetChat](src/samples/BitNetChat) | BitNet 1.58-bit model chat completion |
+| [BitNetPerformance](src/samples/BitNetPerformance) | Performance benchmark: BitNet vs ONNX models |
+| [MagenticBrainAgent](src/samples/MagenticBrainAgent) | Multi-agent orchestration loop using Qwen3/MagenticBrain |
+| [FaraVisionAgent](src/samples/FaraVisionAgent) | Vision-language model (Fara 1.5-9B) image+text inference |
+| [GptOssChat](src/samples/GptOssChat) | GPT-OSS 20B chat, streaming, reasoning effort, and tool calling |
+| [MagenticUIServer](src/samples/MagenticUIServer) | ASP.NET Core + SignalR multi-agent server (FileSurfer, WebFetcher, Coder) |
+| [ConsoleAppDemo](src/samples/ConsoleAppDemo) | Interactive console application |
+| [LocalDecisions](src/samples/LocalDecisions) | Support-ticket triage with a local System One decision model |
+| [DecisionCalibration](src/samples/DecisionCalibration) | Calibration clamping and fp16 batch variance, made visible |
+
+> 🌐 **Reference App:** [ElBruno.MagenticUI](https://github.com/elbruno/ElBruno.MagenticUI) — full Blazor Server port of [microsoft/magentic-ui](https://github.com/microsoft/magentic-ui) running locally with this library.
+
+## Requirements
+
+- .NET 10.0
+- CPU (default), NVIDIA GPU (CUDA), or Windows GPU (DirectML)
+- ~2-8 GB disk space per model (depending on size and quantization)
+
+## Building from Source
+
+```bash
+git clone https://github.com/elbruno/ElBruno.LocalLLMs.git
+cd ElBruno.LocalLLMs
+dotnet restore ElBruno.LocalLLMs.slnx
+dotnet build ElBruno.LocalLLMs.slnx
+dotnet test ElBruno.LocalLLMs.slnx
+```
+
+**Run integration tests** (downloads real models — requires internet):
+
+```bash
+RUN_INTEGRATION_TESTS=true dotnet test ElBruno.LocalLLMs.slnx
+```
+
+Integration tests validate the full lifecycle (download → infer → cache hit → delete) for all 35 supported models. See [docs/tests/README.md](docs/tests/README.md) for details.
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — installation, first steps, configuration
+- [Supported Models](docs/supported-models.md) — full model reference with tiers, specs, decision tree
+- [BitNet Guide](docs/bitnet-guide.md) — setup and usage of 1.58-bit BitNet models
+- [Cancellation Guide](docs/cancellation.md) — streaming cancellation semantics and voice barge-in usage
+- [Observability](docs/observability.md) — OpenTelemetry, lifecycle events, metrics, Aspire wiring
+- [Blazor Components Guide](docs/blazor-components.md) — the 7 Razor components and how to wire them
+- [Local Decisions Guide](docs/decisions-guide.md) — typed decision models, calibration caveats, thresholds
+- [Architecture](docs/architecture.md) — design decisions and internal structure
+- [Samples Guide](docs/samples.md) — walkthrough of each sample application
+- [Benchmarks](docs/benchmarks.md) — how to run and interpret performance benchmarks
+- [Fine-Tuning Guide](docs/fine-tuning-guide.md) — using and training fine-tuned models
+- [ONNX Conversion](docs/onnx-conversion.md) — converting HuggingFace models to ONNX format
+- [ONNX Conversion — Fara VLM](docs/onnx-conversion-fara.md) — converting Fara 1.5-9B vision-language model
+- [Blog: Fara End-to-End Support](docs/blog/blog-fara-support.md) — TL;DR, motivation, and C# usage for Fara 1.5-9B
+- [Blog Companion: Fara Assets](docs/blog/blog-fara-support-assets.md) — suggested titles/tags and image prompts
+- [Publishing](docs/publishing.md) — NuGet package publishing with OIDC
+- [Contributing](docs/CONTRIBUTING.md) — how to contribute
+- [Integration Test Reports](docs/tests/README.md) — how to run E2E lifecycle tests and interpret per-run markdown reports
+- [Changelog](docs/CHANGELOG.md) — version history
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+## 👋 About the Author
+
+Hi! I'm **ElBruno** 🧡, a passionate developer and content creator exploring AI, .NET, and modern development practices.
+
+**Made with ❤️ by [ElBruno](https://github.com/elbruno)**
+
+If you like this project, consider following my work across platforms:
+
+- 📻 **Podcast**: [No Tienen Nombre](https://notienenombre.com) — Spanish-language episodes on AI, development, and tech culture
+- 💻 **Blog**: [ElBruno.com](https://elbruno.com) — Deep dives on embeddings, RAG, .NET, and local AI
+- 📺 **YouTube**: [youtube.com/elbruno](https://www.youtube.com/elbruno) — Demos, tutorials, and live coding
+- 🔗 **LinkedIn**: [@elbruno](https://www.linkedin.com/in/elbruno/) — Professional updates and insights
+- 𝕏 **Twitter**: [@elbruno](https://www.x.com/elbruno/) — Quick tips, releases, and tech news
+
+## 🙏 Acknowledgments
+
+- [ONNX Runtime GenAI](https://github.com/microsoft/onnxruntime-genai) — inference engine
+- [BitNet / bitnet.cpp](https://github.com/microsoft/BitNet) — 1.58-bit ternary model inference
+- [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai) — IChatClient interface
+- [Hugging Face](https://huggingface.co/) — model hosting and community

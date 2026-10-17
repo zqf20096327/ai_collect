@@ -1,0 +1,232 @@
+# Clipcat Skill — AI Selling Videos for TikTok Shop
+
+**Turn any AI agent into a TikTok Shop video producer.** Find viral TikTok videos, research TikTok Shop products, shops, creators and live rooms, break down why a video sells, generate a ready-to-shoot viral selling prompt from the library of real high-GMV AI selling videos, replicate a winning video with your own product, turn product photos into AI selling / UGC / talking-head videos, generate e-commerce images from a text prompt, publish the finished video to your own TikTok account, and download TikTok or Douyin videos — all from one CLI.
+
+Works with **any AI agent that can run shell commands** — Claude Code, Codex, WorkBuddy, OpenClaw, Cursor, or your own. It ships as a single cross-platform `clipcat` CLI plus a `SKILL.md` manifest: the agent reads the manifest, runs `clipcat` commands and parses the JSON output.
+
+For the latest guide and examples, see: [https://clipcat.ai](https://clipcat.ai)
+
+中文文档：[README_ZH.md](README_ZH.md)
+
+## How It Works
+
+Clipcat is just a small CLI binary and a `SKILL.md` skill manifest, so any agent that can run shell commands can drive it:
+
+- The agent reads `SKILL.md` to learn the available commands and conventions.
+- It runs `clipcat <command>` and parses the JSON output (default).
+- Async tasks (video / image generation) submit immediately and are polled across turns.
+
+OpenClaw auto-installs the skill from the manifest; any other agent installs the CLI manually (see below). Either way the runtime is the same `clipcat` binary.
+
+## Core Capabilities
+
+- **TikTok E-commerce Data Intelligence**: Query 6 entity domains — creators, products, shops, videos, lives, and keyword/image search — covering leaderboards, multi-filter discovery, trends, detail, reviews, comments, and cross-entity relationships (the agent picks the exact command via `clipcat <entity> -h`)
+- **Viral Selling-Prompt Generator**: Search the largest library of real AI selling videos and their reverse-engineered prompts (every TikTok market and category, entries that actually drove sales), match the ones relevant to your product, and turn the closest one into a ready-to-shoot selling-video prompt — cited back to the real video it came from
+- **Video Analysis**: Extract scripts, scenes, hooks, and music from TikTok or Douyin videos
+- **Viral Replication**: Recreate proven viral structures with your own product assets — reference a TikTok/Douyin link, a direct video URL, or a local video file (up to 100MB)
+- **Product to Video**: Turn product images into UGC-style TikTok videos
+- **AI Image Generation**: Generate AI images from text prompts using GPT Image 2 / GPT Image 2.5 (Flare / Sunburst), with optional reference images (up to 5)
+- **Super-Resolution**: Upscale a generated video to 720p, 1080p or 2K with `--enhance`
+- **Reusable Characters**: Keep the same on-screen character across videos via `--character-id`
+- **Publish to TikTok**: Push a finished video to your own connected TikTok account — post it now, schedule it up to 30 days ahead, or drop it into the drafts inbox and finish it in the app (publishing costs no credits)
+- **Video Download**: Download TikTok or Douyin videos through the Clipcat API
+
+## Installation
+
+### 1. Install the CLI
+
+**OpenClaw** — auto-installed from the skill manifest; no manual step needed.
+
+**Any other agent / manual** — install the CLI binary:
+
+```bash
+# Install the clipcat CLI
+curl -fsSL https://clipcat.ai/cli | bash
+```
+
+### 2. Get Your API Key
+
+Sign up or log in, then generate an API key in your personal center:
+
+[Generate API Key](https://clipcat.ai/workspace?modal=settings&tab=apikeys)
+
+### 3. Configure Your API Key
+
+Configure the key once on the machine the agent runs on:
+
+```bash
+clipcat config --api-key your_api_key_here --base-url https://clipcat.ai
+```
+
+Agents that manage secrets via environment variables can instead set `CLIPCAT_API_KEY` (e.g. OpenClaw: `openclaw env set CLIPCAT_API_KEY your_api_key_here`).
+
+## Usage
+
+Once installed, you can ask your agent to:
+
+- "Search viral TikTok videos about lip gloss this week"
+- "Search TikTok Shop for trending pet products and show me competitor shops"
+- "I sell a portable blender — find matching viral selling videos and write me a ready-to-shoot prompt"
+- "Replicate this TikTok video with my product images"
+- "Generate a product video from these images"
+- "Generate an AI image of a model holding my product"
+- "Publish this video to my TikTok account tomorrow at 8pm"
+- "Analyze this video and extract the script"
+- "Show me this TikTok user's recent videos with engagement stats"
+- "Download this TikTok video"
+- "Fetch TikTok Shop product detail and review highlights for this product URL"
+
+## Important Notes
+
+- Video generation tasks are asynchronous and may take several minutes
+- Before a video task consumes credits, the agent submits once for free to get a confirmation checklist (model / duration / resolution / full prompt / credits), shows it to you, and waits for your explicit yes before confirming it
+- Publishing to TikTok needs a one-time account authorization (`clipcat tiktok connect`) and costs no credits — your plan caps how many accounts you can connect, and only watermark-free videos can be published
+- Nothing goes live on your account until you approve it: the agent submits once for free to get the full post checklist (account / caption / who can view / comments / schedule) and waits for your explicit yes
+- Do not retry tasks manually; Clipcat already includes retry handling
+- Preserve complete TikTok or Douyin URLs, including signed parameters when present
+
+## What's Inside the Viral Library
+
+`clipcat prompt search` doesn't invent a script — it retrieves from a real, searchable
+library of AI selling videos that actually sold on TikTok Shop:
+
+| Asset | What it gives you |
+| ----- | ----------------- |
+| **5000+ real AI viral selling videos** | Every one actually sold on TikTok Shop — not demos, not concepts |
+| **15 markets online** | US, UK, and every other TikTok Shop market, so prompts match your target region |
+| **30 primary categories online** | Beauty, home, electronics, food… matched to your product's category |
+| **Copy-ready prompts** | Each viral video ships with the exact prompt that produced it — copy it, or replicate the video in one step |
+| **Real sales proof** | Every entry carries the original video's real GMV / sales / views, so you build on what already won |
+| **Updated daily** | New winners land every day — the US market is ingested daily, the other markets weekly |
+| **Semantic search** | Describe the effect you want ("cozy home, handheld close-up, real person on camera") and retrieve the matching winners |
+
+Because every prompt is grounded in a video that already sold, `clipcat prompt search`
+gives you a ready-to-shoot prompt built on a proven best-seller — not a guess. Each hit
+comes back with the source video and its public detail page, so you can always see what
+the prompt was reverse-engineered from.
+
+## Supported Models
+
+Trial models are open to all users; standard models require a paid plan.
+
+| Model ID             | Duration            | Resolution        | Notes                                                     |
+| -------------------- | ------------------- | ----------------- | --------------------------------------------------------- |
+| `grok_imagine`       | 10s, 15s            | 480p, 720p        | **Trial**, default. xAI Grok Imagine 1.5, 9:16 only       |
+| `veo3.1fast`         | 8s, 16s, 24s        | 720p              | **Trial**. Google Veo 3.1 Fast, balanced quality and cost |
+| `omini_flash`        | 10s, 20s            | 720p, 1080p       | **Trial**. Gemini Omni Flash, Google's newest model       |
+| `seedance2_mini`     | 4-15s (any integer) | 480p, 720p        | **Trial**. Seedance 2 Mini, value tier (free plans: 480p) |
+| `mmh3_promo`         | 10s, 15s            | 480p, 720p, 2K    | **Trial**. Subsidized MiniMax H3, open to free plans      |
+| `seedance2`          | 4-15s (any integer) | 480p, 720p, 1080p | Paid. ByteDance Seedance 2, top quality                   |
+| `seedance2_5`        | 4-30s (any integer) | 480p, 720p        | Paid. ByteDance Seedance 2.5, clips up to 30s             |
+| `seedance2_fast`     | 4-15s (any integer) | 480p, 720p        | Paid. ByteDance Seedance 2 Fast, fast variant             |
+| `wan30`              | 5-30s (any integer) | 480p, 720p, 1080p | Paid. Alibaba Wan 3.0, clips up to 30s                    |
+| `minimax_h3`         | 10s, 15s            | 768p, 2K          | Paid. MiniMax H3                                          |
+| `happyhorse10`       | 3-15s (any integer) | 720p, 1080p       | Paid. Alibaba HappyHorse 1.1                              |
+
+The table is what each model *offers*; run `clipcat models` for the live listing with the exact per-combination credit cost and your balance — it is the authority on which models still exist, and `-h` lags behind it between releases. Prefer `mmh3_promo` over `minimax_h3` whenever it is listed: same model, subsidized channel, a fraction of the credits.
+
+## Supported Languages
+
+English, Chinese, French, German, Malay, Vietnamese, Thai, Japanese, Korean, Indonesian, Filipino, Spanish
+
+## Supported Regions
+
+`US` `GB` `DE` `ES` `FR` `IT` `JP` `MX` `BR` `ID` `MY` `PH` `SG` `TH` `VN`
+
+All monetary values in e-commerce data responses are USD-converted regardless of region.
+
+## Usage Examples
+
+### Example 0: Generate a Viral Selling Prompt
+
+```
+I sell a portable blender (image: /path/to/juicer.jpg), target market US.
+Search the viral prompt library for relevant proven videos, rewrite the best match
+into a selling-video prompt for my product, tell me which video it came from,
+and generate an 8s video once I approve.
+```
+
+The agent runs `clipcat prompt search` over prompts reverse-engineered from real high-GMV videos, keeps the original hook, shot pacing and voiceover tone, swaps in your product and selling points, and cites the source video's page before spending any credits.
+
+### Example 1: Search for Viral TikTok Videos
+
+```
+Search for viral TikTok videos about lip gloss in the US market this week.
+Show me the top 10 results sorted by likes.
+```
+
+Returns a ranked list of relevant viral videos, including core metrics and source links for further analysis.
+
+### Example 2: Replicate a TikTok Video
+
+```
+Please use Clipcat’s replication feature to fully replicate the original video’s script and visuals, replacing only the original product with my product. If there is voiceover in the original video, please adapt it to match my product; if there is no voiceover, then no voiceover is needed. The replicated video should not include subtitles. The duration of the new script must be controlled within 15 seconds. Please use the model seedance2.0, and the voiceover language should be English.
+This is the TikTok link to replicate:https://www.tiktok.com/@username/video/123456789
+```
+
+The agent will display the parameters and wait for confirmation before submitting the task.
+
+### Example 3: Generate Product Video from Scratch
+
+```
+Create a 10-second OOTD video featuring a British girl showcasing my product.
+Product image: /path/to/dress.jpg
+Use veo3.1fast model, 9:16 aspect ratio, English language.
+```
+
+### Example 4: Analyze a Video
+
+```
+Analyze this video and extract the script, scenes, and music information:
+https://www.tiktok.com/@username/video/987654321
+```
+
+Returns structured data including scene-by-scene breakdown, visual descriptions, voiceover content, and background music.
+
+### Example 5: Download a TikTok Video
+
+```
+Download this TikTok video:
+https://www.tiktok.com/@username/video/111222333
+```
+
+Synchronous operation, returns direct video URL immediately.
+
+### Example 6: Publish to TikTok
+
+```
+Publish video task 4211 to my TikTok account @mystore.
+Caption "New drop, link in bio", public, allow comments,
+and schedule it for tomorrow 8pm Beijing time.
+```
+
+The agent connects the account once via `clipcat tiktok connect`, checks what the account allows with `creator-info`, then shows you the full post checklist and waits for your yes before anything goes live. Use `--mode draft` instead to send the video to TikTok's drafts inbox and finish the post in the app.
+
+## Tips
+
+- Always provide complete TikTok/Douyin URLs
+- Be specific with prompts for better results
+- Wait for task completion - video generation takes time
+- Preserve complete video URLs with all signed parameters
+- Choose appropriate models based on duration and quality needs
+
+## Repository Structure
+
+This repo follows the Agent Skills convention — one skill per directory under `skills/`, each containing a `SKILL.md` manifest:
+
+```
+clipcat-skill/
+├── README.md                  # this file
+├── README_ZH.md               # Chinese version
+├── docs/
+│   └── SKILL_ZH.md            # Chinese translation of the skill manifest
+└── skills/
+    └── clipcat/
+        └── SKILL.md           # the skill manifest agents load
+```
+
+## Links
+
+- Homepage: https://clipcat.ai
+- OpenClaw one-click install: https://clipcat.ai/tiktok/openclaw
+- Command reference: [`skills/clipcat/SKILL.md`](skills/clipcat/SKILL.md)

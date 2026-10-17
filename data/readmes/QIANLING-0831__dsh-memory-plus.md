@@ -1,0 +1,284 @@
+<h1 align="center">DSH Memory Plus · 中文检索与跨会话记忆</h1>
+
+<p align="center">为 DeepSeek Harness 补齐中文与扩展汉字检索、跨会话记忆、工具去重与技能管理。</p>
+
+![真实 CJK 检索演示：中文混排、扩展汉字、短查询和 ASCII](docs/demo-cjk-search.svg)
+
+<p align="center">真实搜索引擎输出 · 扩展汉字 1／2／3 码点 · 短查询回退 · ASCII 与通配符对照</p>
+
+扩展汉字以 Unicode 转义显示，避免字体缺字；实际查询使用原始码点。演示使用内存索引和合成会话，由 [演示脚本](scripts/demo-cjk-search.mjs) 的实际输出生成。[CJK 宿主验证](docs/CJK-HOST-VERIFICATION.md)覆盖真实持久化、冷重启、分页和 Web 界面；[完整记忆套件验证](docs/MEMORY-HOST-VERIFICATION.md)覆盖安装、真实会话召回、固定记忆、原生技能和数据库完整性。119 项自动测试、8 个包检查通过，macOS／Windows 桌面壳尚待社区验证。
+
+<p align="center"><img src="https://img.shields.io/badge/docs-%E4%B8%AD%E6%96%87-22d3ee?style=flat-square&amp;labelColor=172033" alt="docs: 中文"> <img src="https://img.shields.io/badge/maintainer-QIANLING--0831-22d3ee?style=flat-square&amp;labelColor=172033" alt="maintainer: QIANLING-0831"> </p>
+
+<p align="center"><a href="#0-为什么不是第-16-个记忆插件">0. 为什么不是&quot;第 16 个记忆插件&quot;</a> &nbsp; · &nbsp; <a href="#1-插件一览">1. 插件一览</a> &nbsp; · &nbsp; <a href="#2-背景dsh-记忆链路的现状与缺陷">2. 背景：DSH 记忆链路的现状与缺陷</a> &nbsp; · &nbsp; <a href="#3-架构三层记忆数据库--词条索引--增量驱动">3. 架构：三层记忆数据库 + 词条索引 + 增量驱动</a></p>
+
+---
+
+## 项目概览
+
+| 方向 | 内容 |
+| --- | --- |
+| **中文召回** | FTS5 trigram 与短查询回退 |
+| **记忆分层** | 会话归档、跨会话事实与混合检索 |
+| **用户控制** | 带来源记录的固定记忆与技能保护 |
+
+DeepSeek Harness（DSH）的社区记忆插件集，共 8 个包：让中文子串、中英混排和扩展汉字可检索，并提供工具结果去重、向量与全文混合召回、跨会话核心记忆、可追溯压缩和技能管理。用户固定的记忆与技能带来源记录，模型工具与后台进化无法改写。Phase 0–3 已实现；CJK 后端已通过完整 `0.2.0-rc.2` Web 宿主的活会话与冷历史验证。
+
+> **宿主版本要求**：DSH **`>=0.1.5-rc.3 <0.3.0`**（cordis `^4.0.1`），已在 **0.1.5-rc.3 与 0.2.0-rc.2** 上验证。`ctx.sessionQuery` 由本仓的 CJK 插件作为上游 `SessionQueryEngine` 的**继承子类**提供，必须与宿主解析成同一份 `@deepseek-ai/dsh-session-query`，否则宿主会拿到缺少 `observeSession()` 的服务实例——详见 [issue #1](https://github.com/QIANLING-0831/dsh-memory-plus/issues/1) 与 `packages/dsh-session-query-sqlite-cjk/README.md` 的「宿主版本契约」。
+
+---
+
+## 0. 适合什么场景
+
+如果你遇到中文历史难以搜索、压缩后细节难找回，或每个新会话都要重新说明项目规则，这套插件把检索、常驻事实和可复用技能接到 DSH 的现有服务中。
+
+主要能力：
+
+1. **中文子串检索**：trigram 双表 + 1–2 字 LIKE 回退，支持中英混排与扩展汉字；具体查询对照见下文；
+2. **技能自我进化**：`skill_write/delete/list` + 后台反思蒸馏（Hermes 式学习循环，请求路径零开销）；
+3. **用户专属层（模型写不到）**：技能与常驻记忆都带**来源 provenance**；用户手写/`/skill-pin` `/memory-pin` 固定的内容，模型工具与后台进化一律拒绝改写，拒绝还进审计日志；
+4. **按场景区分的记忆**：事实 / 约定 / 环境 / 决策之外，`lesson` `correction` 是正式分类（"哪里错了"不被埋进 general）；
+5. **Token 去重**：工具结果哈希去重，纯省输入 Token；
+6. **KV-safe 稳定注入**：基于源码级验证（`buildRequest` deepFreeze / KV 前缀缓存 / 持久化路径）的注入纪律；
+7. **compaction 来源定位**：为压缩摘要附上原始事件和文件定位符，便于追溯细节。
+
+历史生态调研与 license 核对：[`docs/DSH-MEMORY-ECOSYSTEM.md`](docs/DSH-MEMORY-ECOSYSTEM.md)。
+
+---
+
+## 1. 插件一览
+
+| 包 | 作用 | 阶段 |
+|---|---|---|
+| [`dsh-session-query-sqlite-cjk`](packages/dsh-session-query-sqlite-cjk) | 中文可用的会话全文检索 provider：FTS5 双 tokenizer 双表（unicode61 + trigram），按查询是否含 CJK 自动路由 | Phase 0 |
+| [`dsh-tool-result-dedup`](packages/dsh-tool-result-dedup) | 工具结果哈希去重：重复结果（git status / ls / 重复 read）替换为指针，节省输入 Token | Phase 0 |
+| [`dsh-memory-index`](packages/dsh-memory-index) | 混合记忆检索服务 `ctx.memorySearch`：sqlite-vec 向量臂 + FTS5 词法臂 → RRF 融合；事件级增量嵌入；file 词条过滤 | Phase 1 |
+| [`dsh-memory-tool`](packages/dsh-memory-tool) | 模型可调用的 `memory_search` 工具：会话旧内容混合召回，输出有界 | Phase 1 |
+| [`dsh-compaction-locator`](packages/dsh-compaction-locator) | 近无损压缩：每个 `<compacted-summary>` 追加 Exact Sources 定位符（spill 路径 / 文件路径 / seq 区间） | Phase 2 |
+| [`dsh-memory-core`](packages/dsh-memory-core) | 跨会话核心记忆：workspace 事实库 + 稳定 system-prompt section 注入（KV 安全）+ `memory_remember` 工具 + **用户固定的 `[pinned]` 层（模型改不动）** + `/memory-pin` `/memory-unpin` `/memory-list` 命令 | Phase 2 |
+| [`dsh-memory-skills`](packages/dsh-memory-skills) | 技能管理器 + 后台自我进化：`skill_write/delete/list` 写 DSH 原生技能文件；定时反思从完成回合蒸馏可复用技能（Hermes 式学习循环）；**provenance + `/skill-pin` 固定层，模型改不动用户技能** | Phase 3 |
+| [`dsh-memory-bundle`](packages/dsh-memory-bundle) | 元 bundle：一键安装以上全部插件，自动禁用 base 的 session-query / compaction 行 | 集成 |
+
+---
+
+## 2. 背景：DSH 记忆链路的现状与缺陷
+
+### 2.1 `unicode61` tokenizer 对中文基本不可用（上游缺陷）
+
+`dsh-session-query-sqlite` 用 FTS5 `unicode61` tokenizer，对 CJK 文本**不切词**：连续汉字被索引为单个 token。实测（node:sqlite + FTS5）：
+
+| 场景（文档 `索引优化减少Token消耗的句子`） | unicode61（上游） | trigram（本插件） |
+|---|---|---|
+| 查询 `Token消耗` | ❌ 0 命中 | ✅ 命中 |
+| 查询 `"索引优化"`（整句短语） | ❌ 0 命中（必须完整复现整句） | ✅ 命中 |
+
+### 2.2 记忆链路是"只出不进"
+
+- **compaction**：有损摘要，旧细节在摘要后丢失（除非当时被 spill）；
+- **spill**：大结果移出上下文，但召回靠模型自己 `read`/`grep` 猜路径；
+- **索引**（FTS5）只服务调用方主动搜索，**从未接回模型上下文**。
+
+**核心洞察**：把"索引变成记忆 → 上下文的通道"——旧内容可精确找回，上下文尾部就能留短、压缩频率下降、相同内容不重复发送。
+
+---
+
+## 3. 架构：三层记忆数据库 + 词条索引 + 增量驱动
+
+### 3.1 三层分层
+
+| 层 | 内容 | 写语义 | 存储 |
+|---|---|---|---|
+| working | 当前上下文（surface 游标） | 每步滑动 | 不建库，就是上下文本身 |
+| archival | 旧事件全文（shadowed/log-only） | **只追加**（日志不可变，派生 tag 可更新） | 派生 SQLite：chunks + vec0 向量 + FTS5 |
+| core | 跨会话蒸馏事实（偏好/约定/环境/决策） | **CRUD**：哈希去重 + 相似度合并 | 派生 SQLite：core_facts |
+| dedup | 工具结果哈希表 | 命中即指针化 | 进程级内存（Phase 0 MVP） |
+
+> 为什么 archival 只追加：DSH 事件日志是事实源，surface fold 对替换/删除有引用完整性校验；对历史事件的"更新"只允许发生在派生层。
+
+### 3.2 词条（Entry）标记 —— 全部来自事件自带元数据，零额外 LLM 成本
+
+| 标记 | 来源 | 用途 |
+|---|---|---|
+| `tool:<name>` | 事件 toolName | 按工具类型过滤 |
+| `file:<path>` | tool/call 的 `path`/`file_path` 参数（JSON 字符串） | **实体级定位**（"改过 src/a.ts 的所有内容"） |
+| `type:<eventType>` | 事件类型 | 层内分流 |
+| `surface:<...>` | surface fold 分类 | 检索范围 |
+| `hash:<sha256>` | 内容规范化哈希 | 去重键 |
+| `seq:<n-m>` | 日志区间 | 指针化、追溯 |
+
+### 3.3 增量驱动的建立/更新参数（与 token 压力压缩解耦）
+
+| 参数 | 默认 | 含义 |
+|---|---|---|
+| `index.batchEvents` / `index.batchBytes` | `16` / `64KB` | 事件增量批量落库 |
+| `index.embedBatch` | `8` | 嵌入批量（异步、脱热路径） |
+| `core.extractEveryTurns` | `5` | core 层提取节奏（当前为显式写入） |
+| `core.similarityMerge` | `0.92` | 相似事实合并阈值 |
+| `recall.injectBudgetRatio` | `0.04` | 注入预算（当前未启用自动注入，见 §6.3） |
+
+### 3.4 查询管线（两级检索 + 注入前去重）
+
+```
+Stage 1  词条精确过滤（file:/tool:/hash: 零嵌入）→ 候选集
+Stage 2  混合检索：FTS5 词法 + 向量语义 → RRF 融合 → 重排
+Stage 3  合并候选 → 已在上下文的替换为指针 → 预算裁剪
+```
+
+---
+
+## 4. 安装
+
+> **尚未发布到 npm**。三种方式均可下载/安装；Release 源码包见 [Releases](https://github.com/QIANLING-0831/dsh-memory-plus/releases)（Source code zip）。
+
+### 方式一：克隆 + 一键脚本（推荐）
+
+```sh
+git clone https://github.com/QIANLING-0831/dsh-memory-plus.git
+cd dsh-memory-plus
+# Windows：
+.\scripts\install.ps1 -Profile headless
+# Linux/macOS：
+bash scripts/install.sh headless
+```
+
+### 方式二：克隆 + 手动安装
+
+```sh
+git clone https://github.com/QIANLING-0831/dsh-memory-plus.git
+cd dsh-memory-plus
+dsh plugin --profile <profile> add ./packages/dsh-memory-bundle
+dsh plugin --profile <profile> add ./packages/dsh-session-query-sqlite-cjk ./packages/dsh-tool-result-dedup ./packages/dsh-memory-index ./packages/dsh-memory-tool ./packages/dsh-compaction-locator ./packages/dsh-memory-core ./packages/dsh-memory-skills
+cd $env:DSH_HOME/profiles/<profile> && pnpm install
+```
+
+> 注意：`dsh plugin add` 的本地路径参数必须带 `./` 前缀（裸写 `packages/...` 会被 pnpm 当成 git 依赖）。需要 `dsh` 和 `pnpm` 都在 PATH（pnpm 可用 `corepack pnpm` 桥接）。
+
+> **宿主版本要求：DSH `>=0.1.5-rc.3 <0.3.0`（cordis `^4.0.1`），已在 0.1.5-rc.3 与 0.2.0-rc.2 上验证。**
+> 上界停在 `<0.3.0` 是有意的：0.2.0 起宿主新增了**安装/启动前的 peer 门禁**（`evaluatePluginCompatibility`），声明范围不匹配会直接拒绝加载整棵树（issue #3）。实际跑过的版本只有 0.1.5-rc.3 与 0.2.0-rc.2，所以未来 0.3.0 应该**报错让人来验证**，而不是被静默当作兼容。装完后如宿主版本不符，插件会因 peer 不匹配报警——请以报警为准，不要降级 peer 声明。细节见 [`packages/dsh-session-query-sqlite-cjk/README.md`](packages/dsh-session-query-sqlite-cjk/README.md) 的「宿主版本契约」。
+
+### 方式三：下载 Release 源码包
+
+到 [Releases](https://github.com/QIANLING-0831/dsh-memory-plus/releases) 下载 `Source code (zip)` → 解压 → 按方式二从解压目录安装。
+
+安装后各插件默认配置见 [`packages/dsh-memory-bundle/cordis.patch.yml`](packages/dsh-memory-bundle/cordis.patch.yml)。生产嵌入需在 `memory-index` 配置 `embedder.kind: transformers` 并安装 `@huggingface/transformers`（当前默认 `char-overlap` 评估嵌入；国内模型下载用 `remoteHost: https://hf-mirror.com`）。
+
+### 数据库位置与升级
+
+四个数据库的 `path` 都可省略，优先级为：显式配置 → 当前工作目录已有的 `.dsh-verify/<name>.db` → `$DSH_HOME/<name>.db`（`DSH_HOME` 未设置或为空时用 `~/.dsh`）。默认路径在插件初始化时解析成绝对路径；新安装不会创建 `.dsh-verify`。已有 profile 的显式路径继续生效；此次路径调整复用旧文件，不自动搬移或清空已有记忆。持久数据库启用 WAL 和 5 秒锁等待；CJK 包仍支持显式 `journalMode`。
+
+`memory-core.db` 保存普通记忆和用户固定记忆，`memory-skills.db` 保存技能审计日志与进化进度，不能当作可丢弃的索引。若需要把旧库集中到 `$DSH_HOME`，先停止使用这些库的所有 DSH 进程，再备份并迁移数据库及尚存在的 `-wal` / `-shm` 文件，最后在 profile 的 patch 中设置绝对 `config.path`。不要只删旧路径后指望记忆自动重建。更换启动目录前，也应将旧库路径设为绝对路径。
+
+同一 `$DSH_HOME` 下的新 profile 默认共享数据库；需要隔离时按插件 id 覆盖绝对 `config.path`。常驻记忆的提示缓存会在其他连接写入后失效。共享 `memory-index.db` 的实例须使用相同的嵌入模型与 `dims`。
+
+---
+
+## 5. 使用
+
+模型获得五个记忆/技能工具：
+
+- `memory_search(query, limit, max_chars, file?)`：对本会话旧内容做混合（词法 + 语义）召回，snippet 严格有界；
+- `memory_remember(content, topic?)`：写入跨会话持久事实，自动出现在该 workspace 后续请求的系统提示顶部（`## Persistent Memory` 区块）；`topic` 含 `preference` / `convention` / `environment` / `decision` / **`lesson`** / **`correction`** / `general`；
+- `skill_write(name, description, whenToUse?, content)`：创建/更新**模型自己写的**可复用技能（写 DSH 原生技能文件，**立即进入会话技能目录**）；
+- `skill_delete(name)` / `skill_list()`：删除 / 列出技能（`skill_list` 标注来源：`(managed:model)` / `(managed:evolve)` / `(human)` / `(pinned)`）。
+
+**用户专属层（斜杠命令，模型够不到）**：`/skill-pin <name>` `/skill-unpin <name>` 固定或解除固定一个技能；`/memory-pin [topic] <text>` `/memory-unpin <id|text>` `/memory-list` 管理常驻固定记忆。命令走 `ctx.commands`——只对 agent 执行、不会变成模型消息，也没有任何模型工具能派发它；被固定或被用户手写的内容，模型工具与后台进化一律拒绝（拒绝原因写进 `skill_events` 审计日志）。设计与实测见 [`docs/PROVENANCE-AND-PIN.md`](docs/PROVENANCE-AND-PIN.md)。
+
+**后台自我进化**：`dsh-memory-skills` 定时（默认 60s）扫描已完成回合，按每会话水位线 + 冷却期 + 启发式门槛触发一次 LLM 反思（"这段回合是否产生可复用技能？"），命中即自动写入技能文件——fire-and-forget，请求路径零开销，全部动作记入派生库 `skill_events` 日志。
+
+`<compacted-summary>` 压缩块自带定位符（`## Exact Sources (locators)`），模型可用 `read <spill file>` 或 `memory_search` 恢复精确内容。
+
+---
+
+## 6. 真机验证（`dsh --profile headless`，独立测试 profile）
+
+### 6.1 结果
+
+| 项目 | 结果 |
+|---|---|
+| 整树启动（7 插件全部加载） | ✅ |
+| `memory_remember` 写入 | ✅ 返回「已记住 (uuid)」 |
+| `memory_search` 混合召回（中文查询） | ✅ 命中 3 条真实会话记录 |
+| **跨会话持久化**（新会话系统提示注入） | ✅ 逐字可见 |
+| 技能工具 + 后台自我进化（`dsh-memory-skills`） | ✅ |
+| **来源守卫（2026-10-01 真机 e2e）**：模型改写/删除用户手写技能、改写被固定技能 | ✅ 三次全部拒绝且文件未被改动，拒绝记录进 `skill_events` |
+| `lesson` topic 经真机 `memory_remember` 落库 | ✅ `topic=lesson, source=model` |
+
+跨会话实测输出（新会话）：
+
+```
+## Persistent Memory (workspace: C:\Users\钱铃\Desktop\ai\DSH\plus)
+- [preference] 用户偏好中文回复
+```
+
+### 6.2 集成中发现的 3 个问题（单测覆盖不到，对官方/插件开发者有参考价值）
+
+1. **Service 注册模式**：cordis `Service` 构造器签名是 `(ctx, name)`——把 config 当 name 传会注册成 `[object Object]` 并冲突；正确写法 `super(ctx, "name")` + `ctx.plugin(Class, config)`；
+2. **工具注册时机**：类插件的构造器里 `ctx.tools` 尚未解析——需用函数插件入口（apply）注册工具；
+3. **同步渲染要求**：system-prompt section 的 `text` 是**同步**调用——派生库需在构造器同步打开，否则新进程区块为空。
+
+### 6.3 自动注入的接缝分析（v0.1-rc.7，源码实证，三条路径不可行）
+
+| 候选注入点 | 否决原因 |
+|---|---|
+| `agent/pre-step` messages | 会被 `session.append("user/message", {surfaceOp:"append"})` 变成**持久化历史**，每步重发，Token 反膨胀 |
+| `llm/stream` 改 messages | 请求被 `deepFreeze`，且 waterfall 默认闭包锁死原对象，无法替换/变更 |
+| system-prompt section 注入易变内容 | 非持久化内容只能进 system prompt（请求最前），**每次变化让 KV 前缀缓存整段失效** |
+
+因此采用"模型主动调用 `memory_search` + **稳定的** core section"形态（Letta 式分层）；**稳定性 = 注入安全性**（内容不变则 KV 前缀不变）。
+
+---
+
+## 7. 开发
+
+本仓库是 pnpm workspace：
+
+```sh
+corepack pnpm install
+corepack pnpm test        # 119 项自动测试，包含多进程数据库与安装脚本回归
+```
+
+> 若受限沙箱拦截测试文件的子进程（`spawn EPERM`），可尝试 `corepack pnpm test:single`。多进程数据库与安装脚本测试仍需创建子进程；如果沙箱也拦截它们，应在允许测试子进程的环境运行完整套件。
+
+每个插件遵循 DSH 插件形态（`name` / `inject` / `Config` / `apply`，或 Service 类 + `super(ctx, name)`），测试覆盖检索、去重、压缩定位符、事实库、技能管理与后台进化等核心逻辑。
+
+---
+
+## 8. 发布状态
+
+- **尚未发布到 npm，请以 Git 方式安装**（上面的安装章节）。截至 2026-09-30 实测：`dsh-memory-bundle` 在 npmjs.org 上不可用（2026-09-15 被 unpublish，当前 name owner 是另一个 npm 账号），其余 7 个包从未发布过。
+- `.github/workflows/publish.yml` 是 tag 触发（`v*`）的发布流水线，**目前会在“Publish packages”这一步失败**——因为仓库里既没有 `NPM_TOKEN` secret，npm 侧也没为各包配置 Trusted Publisher。v0.1.0 与 v0.2.0 两次 tag 都是同一原因（红叉是预期状态，不影响任何人的 git 安装）。
+- 要打通发布链路，二选一：
+  1. **Trusted Publishing（推荐，无长期令牌）**：先在本地用有权限的账号手动 `pnpm -r publish --access public` 建出各包，再到 npmjs.org 每个包的 Settings → Trusted Publishers 添加本仓库 + workflow 名 `publish`；
+  2. **令牌**：在仓库 Secrets 添加 `NPM_TOKEN`（granular token，需 publish 权限），`publish.yml` 会自动使用。
+- 流水线现在带两道自检：发布前先确认存在可用凭证（否则**明确报错**而不是含糊失败），发布后逐个 `npm view` 校验每个包的版本真的上了 registry（`pnpm -r publish` 对“版本已存在”会报成功但实际没上传）。
+- deepseek-ai/deepseek-harness 官方仓库暂不接受外部 PR，本仓库以独立插件生态方式贡献；上游 `unicode61` 中文检索缺陷可在官方 Discussions 反馈。
+
+---
+
+## 9. 开源参照
+
+| 项目 | 借鉴点 | 对应实现 |
+|---|---|---|
+| [Mem0](https://github.com/oligodendrocyte/mem0) | 混合检索（BM25+向量）、记忆条目增删改、去重 | 词条过滤、core 事实库、RRF 融合 |
+| [Letta / MemGPT](https://deepwiki.com/letta-ai/letta/3-memory-system)（[Memory is not recall](https://forum.letta.com/t/memory-is-not-recall/70/3)） | core / archival / recall 三层分离；召回靠模型主动调用 | §3.1 分层 + `memory_search` 工具 |
+| [Anthropic Contextual Retrieval](https://www.anthropic.com/engineering/contextual-retrieval) | 上下文化切块（事件 + 工具/文件元数据，零额外 LLM 成本） | embedding 的语境前缀 |
+| [Zep（时态知识图谱）](https://arxiv.org/html/2501.13956v1) | 实体/关系随对话增量维护 | file 词条索引（简化版） |
+| [sqlite-vec](https://github.com/asg017/sqlite-vec) | SQLite 内嵌向量检索（契合单 owner 派生库） | 向量臂 |
+| [Hermes Agent](https://github.com/NousResearch)（经 [pi2dsh](https://github.com/weijiafu14/pi2dsh) 维护者在 [discussion #3898](https://github.com/deepseek-ai/deepseek-harness/discussions/3898#discussioncomment-18204894) 的评论转述） | **永久置顶内容结构性挡在模型写入路径之外**：`/memory-pin` 做成斜杠命令而非工具（源码注释：*makes model-authored standing instructions structurally impossible rather than merely forbidden by prompt*） | `dsh-memory-core` 的 `[pinned]` 层与 `dsh-memory-skills` 的 provenance + `/skill-pin`；详见 [`docs/PROVENANCE-AND-PIN.md`](docs/PROVENANCE-AND-PIN.md) |
+
+---
+
+## 10. 路线图与遗留
+
+- ✅ Phase 0：CJK 检索修复 + 工具结果去重
+- ✅ Phase 1：混合检索服务 + `memory_search` 工具
+- ✅ Phase 2：近无损压缩 + 跨会话核心记忆 + file 实体索引
+- ✅ Phase 3：技能管理器 + 后台自我进化（Hermes 式学习循环落地，见 `dsh-memory-skills`）
+- ✅ Phase 3.1：来源 provenance + 用户专属固定层（技能 `/skill-pin`、记忆 `/memory-pin`）+ `lesson`/`correction` 分类 + 加列式 schema 迁移
+- ⏳ 遗留：compaction-locator / dedup 的真机触发验证（见 [`docs/VERIFICATION.md`](docs/VERIFICATION.md)）；bge 真嵌入验证；斜杠命令的真机交互验证（headless profile 无命令适配器，见 `docs/VERIFICATION.md` §6）；自动 recall 注入待 DSH 提供"非持久化 + 尾部追加"接缝
+
+---
+
+## License
+
+MIT。`dsh-session-query-sqlite-cjk` 为 `@deepseek-ai/dsh-session-query-sqlite`（MIT）的 fork。

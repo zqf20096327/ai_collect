@@ -1,0 +1,61 @@
+<p align="center">
+  <picture>
+    <source srcset="docs/src/assets/logo-dark.svg" media="(prefers-color-scheme: dark)">
+    <img src="docs/src/assets/logo.svg" alt="mpstime logo" height="200"/>
+  </picture>
+</p>
+
+
+<h1 align="center"><em>MPSTime.jl</em>: Matrix-Product States for Time-Series Analysis</h1>
+
+
+<p align="center">
+  <a href="https://hugopstackhouse.github.io/MPSTime.jl/dev/">
+    <img src="https://img.shields.io/badge/docs-latest-2ea44f?" alt="docs - latest">
+  </a>
+    <img src="https://img.shields.io/badge/version-0.2.0-blue?" alt="version - 0.2.0-DEV">
+  </a>
+    <img src="https://github.com/hugopstackhouse/MPSTime.jl/actions/workflows/CI.yml/badge.svg">
+  </a>
+  <a href="https://github.com/JuliaTesting/Aqua.jl">
+    <img src="https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg">
+</p>
+
+__MPSTime__ is a Julia package for learning the joint probability distribution of time series directly from data using matrix-product state (MPS) methods inspired by quantum many-body physics. 
+It provides a unified formalism for classifying unseen data, as well as imputing gaps in time-series data, which regularly occur in real-world datasets due to sensor failure, routine maintenance, or other problems.
+
+## Installation
+MPSTime can be installed using the Julia package manager:
+
+```julia
+julia> ]
+pkg> add MPSTime
+```
+
+## Usage and Documentation
+We provide [tutorials](https://hugopstackhouse.github.io/MPSTime.jl/dev/classification/) and basic usage examples in the documentation:
+- [LATEST DOCS](https://hugopstackhouse.github.io/MPSTime.jl/) -- the latest documentation.
+
+## Citation
+If you use this software in your work, please read and cite the [published paper](https://journals.aps.org/prresearch/abstract/10.1103/61h8-8qr5):
+```
+@misc{MPSTime2025,
+  title = {Using matrix-product states for time-series machine learning},
+  author = {Moore, Joshua B. and Stackhouse, Hugo P. and Fulcher, Ben D. and Mahmoodian, Sahand},
+  journal = {Phys. Rev. Res.},
+  volume = {7},
+  issue = {4},
+  pages = {043010},
+  numpages = {31},
+  year = {2025},
+  month = {Oct},
+  publisher = {American Physical Society},
+  doi = {10.1103/61h8-8qr5},
+  url = {https://link.aps.org/doi/10.1103/61h8-8qr5}}
+```
+
+## Contributing to MPSTime
+We welcome contributions from the community! 
+MPSTime is under active development and research, making it an exciting opportunity for collaboration.
+Whether you are interested in adding new features, improving existing documentation, fixing bugs, or sharing ideas, your input is valuable.
+Feel free to submit a [PR](https://github.com/hugopstackhouse/MPSTime.jl/pulls) or open an [issue](https://github.com/hugopstackhouse/MPSTime.jl/issues) for discussion.

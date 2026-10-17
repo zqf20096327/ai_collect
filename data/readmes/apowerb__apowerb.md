@@ -1,0 +1,1157 @@
+<div align="center">
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-thaink%C2%B2-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/company/thaink2)
+[![YouTube](https://img.shields.io/badge/YouTube-@thaink2-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/@thaink2)
+[![GitHub stars](https://img.shields.io/github/stars/apowerb/apowerb?style=social)](https://github.com/apowerb/apowerb/stargazers)
+[![PyPI version](https://img.shields.io/pypi/v/apowerb?logo=pypi&logoColor=white)](https://pypi.org/project/apowerb/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+
+<br>
+
+[![Join our Discord](https://img.shields.io/badge/Join%20our%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/channels/1470717940075597896)
+[![Read the Docs](https://img.shields.io/badge/Read%20the%20Docs-6E56CF?style=for-the-badge&logo=readthedocs&logoColor=white)](https://docs.apowerb.com)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/hero-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/hero-light.png">
+  <img alt="apowerb, the open-source runtime for humans and AI agents" src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/hero-light.png" width="100%">
+</picture>
+
+<br>
+
+**Build, run and govern AI agents that work while you don't.**
+
+The open-source agentic framework to build, orchestrate, and operate production AI agents.
+
+<p align="center">
+  <a href="https://docs.apowerb.com/">Documentation</a> •
+  <a href="https://docs.apowerb.com/quickstart">Quickstart</a> •
+  <a href="https://docs.apowerb.com/api-reference/introduction">API Reference</a> •
+  <a href="https://docs.apowerb.com/deployment/dockercompose">Deployment</a> •
+  <a href="https://thaink2.com">thaink2</a>
+</p>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/features-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/features-light.png">
+  <img alt="RAG, Text-to-SQL, Orchestration, Email triggers, Multi-LLM, REST API + UI" src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/features-light.png" width="100%">
+</picture>
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/workflow-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/workflow-light.png">
+  <img alt="Step 1, build: define the agent in the UI or the database. Step 2, equip: give it knowledge and tools. Step 3, run: watch every step." src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/workflow-light.png" width="100%">
+</picture>
+
+</div>
+
+---
+
+apowerb is an open-source platform to build, run and govern AI agents in
+production. It covers multi-agent orchestration, RAG and Text-to-SQL, MCP servers
+and built-in business tools, email- and schedule-triggered runs, token quotas and
+session audit. You can self-host it with Docker Compose or Helm. The core is
+Apache-2.0; a few enterprise modules (billing, identity-provider sign-in, MFA,
+agent evaluation, the supervision screen) are sold separately by thaink².
+
+- **Build agents** from the web interface or the REST API — instructions, model,
+  tools, knowledge bases — and compose them: sequential, parallel, loop, sub-agents.
+- **Connect them to your systems**: any MCP server, plus built-in tools for Google
+  Workspace, Microsoft 365, GitHub, HubSpot, Pipedrive, Odoo, SQL databases,
+  Oracle, MongoDB, S3, web search, OCR, speech and sandboxed Python.
+- **Ground them in your data** with built-in RAG (files, URLs, databases, S3)
+  and Text-to-SQL.
+- **Run them without you**: on a schedule, or triggered by a new Gmail or
+  Outlook message.
+- **Operate them in production**: streaming responses, auditable session
+  traces, per-user token quotas, revocable sessions, encrypted secrets, users,
+  groups and permissions.
+
+Built on **FastAPI**, **Google ADK** and **LiteLLM**, so it works with Anthropic,
+OpenAI, Mistral, Gemini, Azure AI Foundry, OVHcloud and any other LiteLLM provider.
+Bring your own model key.
+
+### What people build with it
+
+- **Inbox triage**: a new Outlook or Gmail message triggers an agent that reads it,
+  classifies it, looks up the customer in the CRM and drafts the reply.
+- **Morning reports**: a scheduled agent asks the database in plain language
+  (Text-to-SQL), turns the result into a chart and mails the summary.
+- **Document assistants**: agents answer from your contracts, procedures or
+  SharePoint files through RAG.
+- **Back-office automation**: create deals in HubSpot or Pipedrive, update Odoo
+  records, file documents in OneDrive or Drive — from a conversation or unattended.
+
+### How it differs
+
+- **Unattended by design**: webhooks and schedules start agents without anyone in
+  the chat, and every run leaves an auditable session trace.
+- **Business systems first**: Microsoft 365, Google Workspace, ERPs, CRMs and SQL
+  databases are built-in tools, not a plugin hunt.
+- **Production controls in the open-source core**: users, groups, permissions,
+  per-user token quotas, revocable sessions, encrypted secrets.
+- **Not a canvas**: agents are defined in the web interface or through the REST
+  API, stored in PostgreSQL and run on Google ADK — scriptable, reviewable and
+  reproducible.
+
+### See it in action
+
+<table>
+<tr>
+<td width="33%" align="center">
+<img src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/gif-build.gif" alt="Creating an agent in the Agent Factory" width="100%"><br>
+<b>Build an agent</b><br>
+Define it in the UI or through the REST API
+</td>
+<td width="33%" align="center">
+<img src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/gif-knowledge.gif" alt="Connecting a database and asking it questions" width="100%"><br>
+<b>Add tools and knowledge</b><br>
+RAG, Text-to-SQL, 44 tool modules
+</td>
+<td width="33%" align="center">
+<img src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/gif-run.gif" alt="Running the agent and turning answers into a dashboard" width="100%"><br>
+<b>Run and watch</b><br>
+See exactly what it did
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+<a href="https://cdn.jsdelivr.net/gh/apowerb/apowerb@main/.github/assets/readme/jev-demo.mp4"><img src="https://raw.githubusercontent.com/apowerb/apowerb/main/.github/assets/readme/jev-demo-poster.jpg" alt="Watch the 75-second demo: a decision workflow powered by Jev" width="80%"></a>
+
+<sub>Build a decision workflow in a few clicks: trigger, classify, route.</sub>
+
+[▶ More demos on YouTube](https://www.youtube.com/@thaink2)
+
+</div>
+
+---
+
+## Quick start
+
+Three commands, a database included, and **nothing to fill in**:
+
+```bash
+git clone https://github.com/apowerb/apowerb-hosting.git && cd apowerb-hosting
+cp .env.example .env && ./scripts/generate-secrets.sh
+docker compose -f docker-compose/docker-compose.yml --env-file .env up -d
+```
+
+The interface is on [http://localhost:3000](http://localhost:3000), the API on
+port `8000`. `generate-secrets.sh` writes the random values the stack needs, and
+Postgres runs inside the stack — there is no external database to provide.
+
+Agents need a model to answer, and that is the one thing this cannot invent for
+you. Add your own key in the interface, or declare a shared one in `.env`
+(`DEFAULT_LLM_MODEL` and `DEFAULT_LLM_API_KEY`). Until then everything else
+works and the model simply does not appear in the list.
+
+[`apowerb-hosting`](https://github.com/apowerb/apowerb-hosting) holds this
+stack, plus Kubernetes manifests, a Helm chart and a Traefik overlay.
+[Installation from source](#installation-from-source) below is the other path:
+it wants your own PostgreSQL.
+
+## Table of Contents
+
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Open-source core and commercial bricks](#open-source-core-and-commercial-bricks)
+- [Prerequisites](#prerequisites)
+- [Installation from source](#installation-from-source)
+- [Configuration](#configuration)
+- [Running](#running)
+- [CLI](#cli)
+- [Architecture](#architecture)
+- [API Reference](#api-reference)
+- [Available Tools](#available-tools)
+- [Integrations](#integrations)
+- [Webhooks](#webhooks)
+- [RAG (Retrieval-Augmented Generation)](#rag-retrieval-augmented-generation)
+- [Text-to-SQL](#text-to-sql)
+- [SSE Streaming](#sse-streaming)
+- [Token metering and quotas](#token-metering-and-quotas)
+- [Scheduled runs](#scheduled-runs)
+- [Agent Hub](#agent-hub)
+- [Supported Models](#supported-models)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Features
+
+**Agents**
+- **Google ADK** (Agent Development Kit) for agent definition and execution
+- **LiteLLM** for multi-model compatibility (Anthropic, OpenAI, Mistral, Google, Azure AI Foundry, OVHcloud, and more)
+- **Multi-pattern orchestration**: base, parallel, sequential, loop
+- **Sub-agents** for hierarchical composition, and **skills** and **workflows** for reusable steps
+- **Persistent sessions** with conversation context and history compaction
+- **Guardrails** on inputs and outputs, and admission control for runs
+- **Artifact generation**: agents can create and execute code files
+- **Agent Hub**: publish and clone agents across organizations
+
+**Data and integrations**
+- **MCP servers**: attach your own over HTTP; the `stdio` transport is opt-in (`MCP_STDIO_ENABLED=1`) because it runs a command on the host
+- **Modular tool system**: Google Workspace, Microsoft 365, GitHub, CRMs, databases, RAG, and more — see [Available Tools](#available-tools)
+- **RAG as a Service**: index files, URLs, databases, and S3 into knowledge bases
+- **Text-to-SQL**: natural language to SQL query conversion
+- **BI**: charts, dashboards and datasets built from agent results
+- **OAuth workspace integrations**: Google, Microsoft, GitHub
+
+**Automation**
+- **Webhooks**: Gmail (Pub/Sub) and Outlook (Graph API) push notifications trigger agents
+- **Scheduled runs**: cron-based agent execution, driven by an external orchestrator
+- **SSE streaming**: real-time agent responses, RAG progress, and notifications
+
+**Operations and security**
+- **REST API** based on FastAPI, with a CLI for agent and server management
+- **Administration panel**: users, groups, permissions, and a per-user MFA requirement once the MFA brick is loaded
+- **Session audit**: an auditable session list and traces, scoped to what the caller may read
+- **Token metering** with a monthly per-user quota on the shared model
+- **Revocable sessions**: a per-account cut-off that refuses tokens minted before it
+- **Encryption** for API keys, tokens, and sensitive data
+- **Bug reports**: any user files a defect from the app; the server attaches the server
+  log lines of the failing request (correlated by `X-Request-ID`), where the user was,
+  and an optional consented screenshot. Reviewed in a triage screen before any issue
+  is created — and the GitHub sink refuses a public repository
+- **PostgreSQL database** with auto-migrations
+
+---
+
+## Open-source core and commercial bricks
+
+This repository is the **open-source core**, and everything listed above is in it.
+thaink² sells a few additional capabilities as separate **bricks** that plug into
+the core through documented hooks:
+
+| Brick | What it adds on top of the core |
+|-------|--------------------------------|
+| Billing | Credit packages, Stripe checkout, crediting logic |
+| Consumption analysis | Usage broken down per agent, per tool and per user (the metering itself is in the core) |
+| Supervision screen | The supervision UI (session list and traces are served by the core) |
+| Agent evaluation | Evaluation of agents |
+| Prospection | Prospection and campaigns |
+| Identity-provider sign-in | Sign-in with GitHub, Google, Microsoft, LinkedIn |
+| Multi-factor authentication | MFA enrolment and challenge (`/api/auth/mfa/*`). The core stores and enforces the per-user requirement, and refuses it (`409 mfa_not_available`) while no second factor can be enrolled |
+| Organisation management | Creating, renaming, deleting organisations and moving people between them |
+
+On a core-only install, the routes of an absent brick answer `404`: that means
+"not in this edition", not "object not found". Bricks are loaded through
+`TH2_EXTENSIONS` (see [Extensions](#extensions)).
+
+---
+
+## Prerequisites
+
+The [quick start](#quick-start) above needs **Docker and Docker Compose**, and
+nothing else. What follows is for running the core from its sources:
+
+- Python 3.10+ (CI runs on 3.13)
+- PostgreSQL
+- UV (package manager)
+
+---
+
+## Installation from source
+
+1. **Install UV and create virtual environment**:
+
+```bash
+pip install uv
+uv venv
+```
+
+2. **Activate the virtual environment**:
+
+```bash
+# Windows
+.venv\Scripts\activate
+
+# macOS/Linux
+source .venv/bin/activate
+```
+
+3. **Install dependencies**:
+
+```bash
+uv sync
+uv pip install .
+```
+
+4. **Configure environment**:
+
+```bash
+cp .env.example .env
+```
+
+---
+
+## Configuration
+
+### Required Variables
+
+**On the [quick start](#quick-start) path, none of these are yours to fill in**
+— the Compose stack wires the database and generates the key. This section is
+for an installation that brings its own PostgreSQL.
+
+Five settings, and the server refuses to boot without them
+(`RUNTIME_REQUIRED_FIELDS` in `configs/settings.py`):
+
+| Variable | Description |
+|----------|-------------|
+| `DB_HOST` | PostgreSQL database host |
+| `DB_NAME` | Database name |
+| `DB_USER` | Database username |
+| `DB_PASSWORD` | Database password |
+| `ENCRYPT_KEY` | Encryption key for secrets and JWT signing — a url-safe base64 32-byte key, `Fernet.generate_key()` |
+
+Two more are read from the same block and are **not** required, each having a
+default: `DB_PORT` (`5432`) and `DB_SCHEMA` (`public`).
+
+`TEST_TOKEN` is **not** required either, and has not been since 0.2.x. The only
+middleware that reads it is mounted nowhere, so demanding it forced every
+deployment to invent one. An `.env` that still carries it is harmless.
+
+### Optional Variables
+
+#### Security & JWT
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `WORKING_MODE` | `development` | `development` or `production` |
+| `ALGORITHM` | `HS256` | JWT signing algorithm |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `120` | JWT token lifetime |
+
+#### Public URLs
+
+Where this installation is reached, and where it sends people. Each one ships
+with a `localhost` default, which is right on a laptop and wrong everywhere
+else — a value handed to a browser or written into a mail points at the
+*reader's* machine, not at the server.
+
+**Set `APP_PUBLIC_URL` and four others follow.**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `APP_PUBLIC_URL` | `http://localhost:3000` | Public URL of the front app. **Password-reset and e-mail-verification links are built from it**, and the settings below are deduced from it |
+| `PUBLIC_BASE_URL` | `http://localhost:8000` | Public URL of this API, for the callback URLs it hands out to webhooks |
+| `ROOT_PATH` | `http://localhost:8000` | Base of the HTTP calls this API makes to **itself**. Usually an internal address, not the public one |
+
+Declaring `APP_PUBLIC_URL` fills these in, their paths being fixed by the
+pages that serve them — only the origin varies:
+
+| Deduced | Becomes |
+|---|---|
+| `GITHUB_INTEGRATION_REDIRECT_URI` | `<APP_PUBLIC_URL>/integrations/github/callback` |
+| `GOOGLE_INTEGRATION_REDIRECT_URI` | `<APP_PUBLIC_URL>/integrations/google/callback` |
+| `FRONTEND_URLS` | `<APP_PUBLIC_URL>` |
+| `CORS_ALLOWED_ORIGINS` | `<APP_PUBLIC_URL>` |
+
+**Anything you set yourself always wins** — deducing only fills a blank, and
+only from a base that is a single absolute URL, scheme included. A base
+declared but empty, or holding a comma-separated list, deduces nothing and is
+reported by the startup warning below. An installation that configures none of
+these behaves exactly as before.
+
+⚠️ `CORS_ALLOWED_ORIGINS` deduced from your front URL **widens** what the
+browser is allowed to call from, compared with the `localhost` default. That
+is the intent — but it is a security setting, so set it yourself if your
+policy is narrower than "the front I just declared".
+
+⚠️ `GITHUB_REDIRECT_URI` and `GOOGLE_REDIRECT_URI` are **not** deduced, and not
+read either: the front computes its own sign-in callback from the browser's
+origin and sends it with the code exchange. Setting them changes nothing.
+
+#### CORS
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:3000` | The origin whitelist CORS actually uses (comma-separated) |
+| `FRONTEND_URLS` | `http://localhost:3000` | Despite the name, **not** read by CORS — only used to derive the Outlook mail OAuth callback |
+
+#### OAuth — User Login (identity-provider brick)
+
+| Variable | Description |
+|----------|-------------|
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth (login) |
+| `GITHUB_REDIRECT_URI` | GitHub login callback |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth (login) |
+| `GOOGLE_REDIRECT_URI` | Google login callback |
+| `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` | Microsoft OAuth (login) |
+| `MICROSOFT_TENANT_ID` | Microsoft tenant (`common` for multi-tenant) |
+| `LINKEDIN_CLIENT_ID` / `LINKEDIN_CLIENT_SECRET` | LinkedIn OAuth (login) |
+
+#### OAuth — Workspace Integrations
+
+| Variable | Description |
+|----------|-------------|
+| `GOOGLE_INTEGRATION_CLIENT_ID` | OAuth app for Google Workspace (Drive, Gmail, Calendar, Sheets, Docs) |
+| `GOOGLE_INTEGRATION_CLIENT_SECRET` | Google integration secret |
+| `GOOGLE_INTEGRATION_REDIRECT_URI` | Google integration callback |
+| `MICROSOFT_INTEGRATION_CLIENT_ID` | OAuth app for Microsoft 365 (Outlook, Teams, OneDrive, SharePoint) |
+| `MICROSOFT_INTEGRATION_CLIENT_SECRET` | Microsoft integration secret |
+| `MICROSOFT_INTEGRATION_TENANT_ID` | Microsoft integration tenant |
+| `MICROSOFT_INTEGRATION_REDIRECT_URI` | Microsoft integration callback |
+| `OUTLOOK_MAIL_REDIRECT_URI` | Callback for the Outlook Mail tool connection. Deduced from `APP_PUBLIC_URL` |
+| `GITHUB_INTEGRATION_CLIENT_ID` | OAuth app for GitHub workspace integration |
+| `GITHUB_INTEGRATION_CLIENT_SECRET` | GitHub integration secret |
+| `GITHUB_INTEGRATION_REDIRECT_URI` | GitHub integration callback |
+
+#### Gmail Pub/Sub Webhooks
+
+| Variable | Description |
+|----------|-------------|
+| `GMAIL_PUBSUB_PROJECT_ID` | Google Cloud project ID |
+| `GMAIL_PUBSUB_TOPIC` | Pub/Sub topic name (just the name, not the full path) |
+
+#### RAG
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RAG_WEBHOOK_SECRET` | `th2-webhook-default-secret` | HMAC-SHA256 secret for RAG webhooks (change in production!) |
+| `RAG_BASE_URL` | — | RAG API base URL (th2llm) |
+
+The RAG service calls back on `PUBLIC_BASE_URL` (see [Public URLs](#public-urls)).
+
+#### Stripe (billing brick)
+
+`settings` still declares these, and `user` still carries `stripe_customer_id`, but the
+billing routes and the credit logic live in the **billing brick**. Setting them changes
+nothing in a core-only install.
+
+| Variable | Description |
+|----------|-------------|
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+
+#### S3 Storage (optional)
+
+| Variable | Description |
+|----------|-------------|
+| `STORAGE_MODE` | `local` or `s3` |
+| `S3_REGION` | AWS region |
+| `S3_ACCESS_KEY` / `S3_ACCESS_KEY_SECRET` | S3 credentials |
+| `S3_ENDPOINT` | S3 endpoint URL |
+| `S3_BUCKET_NAME` | Bucket name |
+
+#### Orchestrator (scheduled runs, optional)
+
+Two backends drive scheduled runs. `ORCHESTRATOR` selects one; the code still defaults to
+`mage`, the historical backend, so an instance that wants th2etl must say so explicitly.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ORCHESTRATOR` | `mage` | `mage` or `th2etl` |
+
+With `ORCHESTRATOR=th2etl`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TH2ETL_BASE_URL` | `http://localhost:8009` | th2etl instance |
+| `TH2ETL_API_KEY` | — | Must equal the `API_KEY` of that th2etl instance — its business routes require `Authorization: Bearer <key>` |
+
+With `ORCHESTRATOR=mage`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BASE_URL` | `http://localhost:6789` | Mage AI scheduler URL |
+| `API_KEY` | — | Mage API key |
+| `OAUTH_TOKEN` | — | Mage OAuth token |
+| `PROJECT_NAME` | `default_repo` | Mage project name |
+
+#### Extensions
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TH2_EXTENSIONS` | — | Comma-separated modules to load as bricks |
+
+Installing a brick and loading it are two different steps: a package present in the
+environment but absent from `TH2_EXTENSIONS` behaves exactly like one that was never
+installed. Check the loaded set, not the installed set, when a capability seems missing.
+
+<!-- Naming: the variable predates the rename from th2agent to apowerb and is read
+     verbatim by the deploy workflow, so it keeps its name. -->
+
+
+---
+
+## Running
+
+### Via CLI
+
+```bash
+apowerb serve
+```
+
+### Via Uvicorn
+
+```bash
+uv run uvicorn apowerb.main:app --reload
+```
+
+Server starts at **http://127.0.0.1:8000/**
+
+`/docs`, `/redoc` and `/openapi.json` are **removed from the served routes by default**:
+they hand the full route inventory to an unauthenticated caller, which is enough to
+fingerprint a deployment from the outside. Opt in with `PUBLISH_API_SCHEMA=true` for a
+browsable Swagger; `WORKING_MODE=production` overrides that flag as a second lock.
+
+The published reference is at [docs.apowerb.com](https://docs.apowerb.com/api-reference).
+
+---
+
+## CLI
+
+```bash
+# Start server
+apowerb serve --host 0.0.0.0 --port 8000
+
+# Manage agents
+apowerb agents list
+apowerb agents create
+apowerb agents delete <agent_id>
+
+# Manage tools
+apowerb tools list
+
+# Manage runs
+apowerb runs list
+```
+
+---
+
+## Architecture
+
+```
+apowerb/
+├── src/apowerb/
+│   ├── main.py              FastAPI entry point, middleware, router mounting, startup
+│   ├── models.py            SQLAlchemy ORM models
+│   │
+│   ├── auth/                Email/password login, JWT dependencies, session cut-off
+│   ├── users/               User CRUD
+│   ├── routers/             HTTP endpoints, one module per family
+│   ├── core/                Business logic behind the routers
+│   │   ├── adk_runner.py        ADK execution
+│   │   ├── adk_agent_builder.py agent Python file generation
+│   │   ├── extensions/         brick loader and registry hooks
+│   │   ├── guardrails.py       input/output guardrails
+│   │   ├── run_gate.py         admission control for runs
+│   │   └── history_compaction.py  conversation trimming
+│   ├── tools_store/         Tool registry + portfolio of tool modules
+│   ├── skills_store/        Reusable agent skills
+│   ├── agent_store/         Agent templates and seeds
+│   ├── bi/                  Charts, dashboards, datasets
+│   ├── sqlgen/              Text-to-SQL generation
+│   ├── integrations/        OAuth workspace integrations
+│   ├── artifacts/           Artifact storage and execution
+│   ├── scheduler/           Orchestrator clients (th2etl, mage), background workers
+│   ├── storage/             Local and S3 storage abstraction
+│   ├── middleware/          Request middleware
+│   ├── helpers/             Database, security, encryption, notification bus, migrations
+│   ├── schema/              Pydantic schemas
+│   ├── configs/             Settings and logging
+│   └── cli/                 Typer CLI (`apowerb`)
+│
+├── agents_pool/             Generated agent code (runtime)
+├── artifacts_store/         Artifacts written by agents (runtime, local mode)
+├── uploads/                 Uploaded files (runtime, local mode)
+├── tests/
+└── pyproject.toml
+```
+
+Routers that arrive with the bricks are not in this tree — see
+[Open-source core and commercial bricks](#open-source-core-and-commercial-bricks).
+
+### Startup Sequence
+
+On application start, apowerb:
+1. Creates required directories (`agents_pool/`, `artifacts_store/`, `uploads/`)
+2. Runs auto-migrations (`ensure_*` functions) for all database tables
+3. Generates agent Python modules from database
+4. Starts the webhook renewal background task (every 6 hours)
+5. Mounts the Google ADK FastAPI sub-application
+
+---
+
+## API Reference
+
+The full reference — every route, parameter and response shape — is generated from the
+code and published at [docs.apowerb.com/api-reference](https://docs.apowerb.com/api-reference).
+It is not duplicated here: a hand-maintained route table in this file went stale within
+two weeks last time, and a stale reference is worse than none.
+
+Route families in this edition, all under `/api` unless noted:
+
+| Family | What it covers |
+|--------|----------------|
+| `auth` | Email/password login, refresh, logout, password reset, email verification |
+| `users` | User CRUD, `me` |
+| `admin` | Users, groups, permissions, MFA requirement |
+| `bug-reports` | In-app defect reports, triage, and the reviewed GitHub issue sink |
+| `agents` | Agent CRUD, reload, status, template resync, run |
+| `adk` | ADK execution: run, streaming (`run_sse`), sessions, titles, traces |
+| `tools`, `tools_config` | Tool registry and per-agent tool configuration |
+| `skills`, `workflows` | Reusable skills, multi-step flows |
+| `superagents` | Templates composing several agents |
+| `rag` | Indexing files, URLs, databases, S3; status and progress stream |
+| `artifacts` | Files produced by agents, listing, download, execution, library |
+| `files` | Upload (including chunked), download, delete |
+| `data-lake` | Pin storage read/write/list |
+| `hub` | Publish and clone agents |
+| `integrations` | OAuth workspace connections (Google, Microsoft, GitHub) |
+| `emailing` | Outlook mail OAuth flow, shared mailboxes |
+| `webhooks` | Subscription CRUD and inbound push dispatch |
+| `notifications` | User notifications and SSE stream |
+| `supervision` | Session list and session trace for audit (`/api/adk/sessions*`), scoped to what the caller may read |
+| `scheduler` | Scheduled runs through the configured orchestrator |
+| `charts`, `dashboards`, `bi-*` | BI: charts, dashboards, datasets, refresh, stats |
+| `share` | Shareable conversation links |
+| `api-keys` | Saved provider keys |
+| `config`, `health` | Public configuration, liveness |
+
+Served by bricks, and answering `404` here: `billing`, `usage`, `prospection`,
+`campaigns`, MFA (`/api/auth/mfa/*`), identity-provider sign-in
+(`/api/users/{github,google,microsoft,linkedin}`), evaluation, and organisation
+management (`/api/admin/organizations*`).
+
+Who may read another account's session is answered by the core
+(`register_supervision_scope`, wired to the superadmin check); the supervision
+**screen** is what the brick provides.
+
+### Upgrading: organisation management left the core
+
+Since the release that carries this note, the five `/api/admin/organizations*` routes are
+served by a brick rather than by the core. **The mechanism stayed**, deliberately:
+
+- the `admin_organization` and `admin_org_member` tables are still created here, and
+  existing rows are left untouched;
+- an administrator is still bounded by the organisation they belong to, so a boundary
+  drawn before the upgrade keeps being enforced after it;
+- a user's organisation is still reported by `/api/admin/users` and `/api/admin/me`.
+
+What an install without the brick loses is the ability to **create, rename, delete** an
+organisation or to move somebody between two. If you never created one, nothing changes:
+with no organisation to belong to, an administrator who is not a superadmin administers
+only their own account — which is what this build already did.
+
+## Available Tools
+
+### Google Workspace
+| Tool Module | Functions |
+|-------------|-----------|
+| `google_drive` | List, search, read, download files |
+| `google_gmail` | List, search, read, send emails |
+| `google_calendar` | List, search, create events |
+| `google_sheets` | Get spreadsheet info, read, write cells |
+| `google_docs` | Create, read, append to documents |
+
+### Microsoft 365
+| Tool Module | Functions |
+|-------------|-----------|
+| `outlook_mail` | List, search, read, send emails, list folders, download attachments |
+| `onedrive_read`, `onedrive_write` | List, search, read, download, upload, update files, create folders, delete, shared files |
+| `teams` | List chats, get/send messages, reply, search, create group chats, list members |
+| `sharepoint` | Find sites, browse and search document libraries, read files (text, CSV, Excel, Word, PDF) — read-only, `Sites.Read.All` |
+
+### Developer & Business Apps
+| Tool Module | Functions |
+|-------------|-----------|
+| `github` | List repositories, read files, search code, read pull requests, index repository docs |
+| `hubspot`, `marketing` | HubSpot contacts and deals, sales leads |
+| `pipedrive` | Create and search Pipedrive deals and people |
+| `odoo` | Search, read, create and update Odoo records |
+| `datadog` | Send application logs to Datadog |
+
+### Data & Database
+| Tool Module | Functions |
+|-------------|-----------|
+| `database`, `database_mcp` | Generic database queries, SQL execution |
+| `oracle` | Read-only SQL on Oracle Database (single `SELECT` / `WITH`, read-only transaction), list tables |
+| `mongodb` | List collections, find, count and aggregate documents — read-only (`$out` / `$merge` refused) |
+| `text_to_sql` | Natural language to SQL, schema introspection |
+| `db_to_rag` | Index database query results into RAG |
+| `data_handler` | Data filtering, aggregation, transformation |
+| `business_intelligence`, `bi_datasets` | Charts, dashboards and datasets |
+| `tabpfn` | Tabular classification and regression (Prior Labs API) |
+
+### RAG & Knowledge
+| Tool Module | Functions |
+|-------------|-----------|
+| `rag` | Create, list, search, delete knowledge bases |
+| `memory` | Save/search user memory, tool usage patterns |
+| `ocr` | Extract text (markdown) from documents and images |
+
+### Communication
+| Tool Module | Functions |
+|-------------|-----------|
+| `emailing` | Send emails (SMTP) |
+| `audio` | Speech-to-text, text-to-speech, audio analysis and generation |
+
+### Utilities
+| Tool Module | Functions |
+|-------------|-----------|
+| `basic` | Read files, data loader, image conversion, bearer tokens |
+| `api_call` | Generic API calls, Thaink² forecast |
+| `python_script` | Run Python in a confined subprocess |
+| `image_generation` | Generate images (multi-provider) |
+| `s3_tools` | Read S3 PDFs, search S3 files |
+| `visualization` | Chart generation, CSV to chart export |
+| `web_search_mcp` | Web search via MCP |
+| `thaink2` | Custom Thaink² RAG tools |
+
+`apowerb tools list` prints the registry of the running install.
+
+---
+
+## Integrations
+
+### OAuth Providers
+
+apowerb supports two categories of OAuth:
+
+1. **User Login** — Sign up / log in via OAuth (GitHub, Google, Microsoft, LinkedIn). Provided by the identity-provider brick.
+2. **Workspace Integrations** — Connect external services as tools for agents. In the core.
+
+#### Connecting a Workspace Integration
+
+1. User calls `GET /api/integrations/{provider}/{service}/connect` to get the OAuth URL
+2. User authorizes the app on the provider's consent screen
+3. Provider redirects to `POST /api/integrations/{provider}/callback`
+4. apowerb stores the access/refresh tokens encrypted in the `integrations` table
+5. Agent tools can now use the integration tokens
+
+#### Supported Services
+
+| Provider | Services | Scopes |
+|----------|----------|--------|
+| **Google** | Drive, Gmail, Calendar, Sheets, Docs | Service-specific (e.g., `gmail.readonly`, `drive.readonly`) |
+| **Microsoft** | Outlook, Teams, OneDrive, SharePoint | Service-specific (e.g., `Mail.Read`, `Files.ReadWrite`) |
+| **GitHub** | Repositories, Gists | `repo`, `gist`, `read:user` |
+
+---
+
+## Webhooks
+
+apowerb can automatically trigger agents when events occur in connected services (new email, etc.). Two providers are supported: **Gmail** (via Google Pub/Sub) and **Outlook** (via Microsoft Graph subscriptions).
+
+### How It Works
+
+```
+Email arrives → Provider pushes notification → apowerb receives it
+     → Fetches new email content → Runs associated agent → Logs result
+```
+
+### Webhook Subscription API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/webhooks/subscriptions` | Create subscription |
+| GET | `/api/webhooks/subscriptions` | List subscriptions |
+| PATCH | `/api/webhooks/subscriptions/{id}` | Update (agent, template, change_type) |
+| DELETE | `/api/webhooks/subscriptions/{id}` | Delete and unsubscribe |
+| POST | `/api/webhooks/subscriptions/{id}/renew` | Manually renew |
+| GET | `/api/webhooks/logs` | View execution logs |
+
+**Create a subscription:**
+
+```json
+POST /api/webhooks/subscriptions
+{
+  "provider": "google_gmail",
+  "resource": "INBOX",
+  "agent_id": "AGENT_ID",
+  "change_type": "created",
+  "agent_message_template": "New email from {{ sender }}: {{ subject }}\n\n{{ body }}"
+}
+```
+
+### Automatic Renewal
+
+- **Gmail watches** expire after 7 days
+- **Outlook subscriptions** expire after 3 days
+- A background task runs every **6 hours** and renews subscriptions expiring within 12 hours
+
+### Gmail Webhook Setup (Pub/Sub)
+
+#### Architecture
+
+```
+Gmail  ──push──▶  Google Pub/Sub  ──HTTP POST──▶  apowerb
+                  (topic)                         /api/webhooks/gmail/notifications
+                                                        │
+                                                        ▼
+                                                  Fetch new emails via Gmail API
+                                                        │
+                                                        ▼
+                                                  Run associated agent
+```
+
+#### Prerequisites
+
+- A **Google Cloud project** with billing enabled
+- **Gmail API** and **Cloud Pub/Sub API** enabled
+- A **Google OAuth 2.0 application** for workspace integration
+- A **publicly accessible URL** for apowerb
+
+#### Step 1 — Enable Google APIs
+
+```bash
+gcloud services enable gmail.googleapis.com pubsub.googleapis.com \
+  --project=YOUR_PROJECT_ID
+```
+
+#### Step 2 — Create a Pub/Sub Topic
+
+```bash
+gcloud pubsub topics create gmail-notifications \
+  --project=YOUR_PROJECT_ID
+```
+
+#### Step 3 — Grant Gmail Permission to Publish
+
+Gmail uses the service account `gmail-api-push@system.gserviceaccount.com` to push notifications. Grant it the **Pub/Sub Publisher** role:
+
+```bash
+gcloud pubsub topics add-iam-policy-binding gmail-notifications \
+  --project=YOUR_PROJECT_ID \
+  --member="serviceAccount:gmail-api-push@system.gserviceaccount.com" \
+  --role="roles/pubsub.publisher"
+```
+
+> **Note:** In the Google Cloud Console UI, the "Publisher" role may not appear in the dropdown by default — type "publisher" in the search bar to find it, or use the CLI command above.
+
+#### Step 4 — Create a Push Subscription
+
+```bash
+gcloud pubsub subscriptions create gmail-notifications-push \
+  --topic=gmail-notifications \
+  --push-endpoint=https://YOUR_DOMAIN/api/webhooks/gmail/notifications \
+  --project=YOUR_PROJECT_ID
+```
+
+#### Step 5 — Configure OAuth 2.0
+
+In [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials):
+
+1. Create an **OAuth 2.0 Client ID** (type: Web application)
+2. Add authorized redirect URI: `https://YOUR_DOMAIN/integrations/google/callback`
+3. Add scope: `https://www.googleapis.com/auth/gmail.readonly`
+
+#### Step 6 — Set Environment Variables
+
+```bash
+GOOGLE_INTEGRATION_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_INTEGRATION_CLIENT_SECRET=GOCSPX-xxxxxxxxxx
+GOOGLE_INTEGRATION_REDIRECT_URI=https://YOUR_DOMAIN/integrations/google/callback
+
+GMAIL_PUBSUB_PROJECT_ID=your-gcp-project-id
+GMAIL_PUBSUB_TOPIC=gmail-notifications
+
+PUBLIC_BASE_URL=https://YOUR_DOMAIN
+```
+
+#### Step 7 — Connect Gmail Account
+
+In the apowerb-ui UI: **Integrations → Connect Google (Gmail)**
+
+#### Step 8 — Create Webhook Subscription
+
+Via UI (Webhook Manager) or API:
+
+```bash
+curl -X POST https://YOUR_DOMAIN/api/webhooks/subscriptions \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "google_gmail",
+    "resource": "INBOX",
+    "agent_id": "AGENT_ID",
+    "change_type": "created"
+  }'
+```
+
+### Outlook Webhook Setup
+
+#### Prerequisites
+
+- A registered **Microsoft Azure AD application**
+- **Microsoft Graph API** permissions: `Mail.Read`
+- A publicly accessible HTTPS URL
+
+#### Setup
+
+1. Configure `MICROSOFT_INTEGRATION_*` environment variables
+2. Connect Outlook integration in the UI
+3. Create a webhook subscription with `"provider": "microsoft_outlook"`
+
+The Outlook handler uses Microsoft Graph change notifications with `clientState` validation.
+
+### Webhook Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `403 — User not authorized` | Gmail can't publish to Pub/Sub topic | Grant `gmail-api-push@system.gserviceaccount.com` the Publisher role on your topic |
+| `404 — Topic not found` | Topic missing or wrong project | Verify `GMAIL_PUBSUB_PROJECT_ID` and `GMAIL_PUBSUB_TOPIC` |
+| Notifications not arriving | Push subscription misconfigured | Verify the push endpoint URL is correct and publicly accessible |
+| `401 — Invalid credentials` | OAuth token expired | Reconnect the integration from the UI |
+| Watch expired | Auto-renewal failed | Check scheduler logs, manually renew via API |
+
+---
+
+## RAG (Retrieval-Augmented Generation)
+
+RAG lets agents answer questions based on documents you provide — PDFs, web pages, database exports, or S3 files.
+
+### How It Works
+
+```
+Upload documents → Documents get indexed (via th2llm) → Agent searches them when answering
+```
+
+### Indexing Sources
+
+| Source | Endpoint | Description |
+|--------|----------|-------------|
+| Files | `POST /api/rag/index-files` | Upload PDF, CSV, TXT, DOCX, etc. (max 50 MB/file) |
+| URL | `POST /api/rag/index-url` | Crawl and index a web page |
+| Database (SQL) | `POST /api/rag/index-db` | Index query results using a SQL query |
+| Database (NL) | `POST /api/rag/index-db-nl` | Index query results using natural language |
+| S3 | `POST /api/rag/index-s3` | Index files from an S3 bucket |
+
+### Tracking Progress
+
+- **Poll**: `GET /api/rag/status/{knowledge_id}`
+- **Stream (SSE)**: `GET /api/rag/stream/{agent_id}?session_id=xxx`
+
+### Security
+
+- Path traversal prevention on session/agent IDs
+- SSRF protection on URL indexing (blocks localhost, private IPs)
+- Session ownership validation
+- HMAC-SHA256 signature verification on th2llm webhooks
+
+---
+
+## Text-to-SQL
+
+Agents can connect to relational databases and convert natural language questions into SQL queries.
+
+1. Create a database tool config with connection parameters
+2. Create an agent with `text_to_sql` tool enabled
+3. Ask questions — the agent introspects the schema, generates SQL, executes it, and returns results
+
+---
+
+## SSE Streaming
+
+Three SSE streaming channels are available:
+
+| Channel | Endpoint | Events |
+|---------|----------|--------|
+| **Agent response** | `POST /api/adk/run_sse` | Token-by-token agent output |
+| **RAG progress** | `GET /api/rag/stream/{agent_id}` | `connected`, `status`, `complete` |
+| **Notifications** | `GET /api/notifications/stream` | Real-time user notifications |
+
+---
+
+## Token metering and quotas
+
+Token metering is in the core. `register_core_usage()` is wired when the app is built,
+**before** `load_overlay()`, and the recorder writes one `llm_usage` row per completed
+model turn. `GET /api/config/default-llm/usage` serves the caller their own gauge.
+
+The cap covers **only the shared `thaink2/default` model**
+(`llm_usage.billed_to_thaink2`): a personal API key is paid for by whoever supplies it, so
+it is never capped. A run over the cap is refused with a `402` before the answer starts,
+never cut mid-stream. `DEFAULT_LLM_MONTHLY_TOKEN_QUOTA` is the per-user allowance for the
+current Europe/Paris calendar month, and `0` means unlimited — the kill-switch to use
+without a redeploy if the guard blocks wrongly. `DEFAULT_LLM_USER_TOKEN_CAP` and
+`DEFAULT_LLM_GLOBAL_TOKEN_CAP` (sliding window of `DEFAULT_LLM_CAP_WINDOW_HOURS`, `0` =
+unlimited) are the fallback cap, per account and for the whole deployment; they apply only
+when no scale is registered on `register_default_llm_cap`, and the core registers one, so
+a standard install is capped by the monthly quota.
+
+Credits and payments are not in this edition. The `user` row carries a credit balance and
+`transactions` / `credit_purchases` exist in the schema, but the packages, the Stripe
+checkout and the crediting logic belong to the **billing brick**, and `/api/billing/*`
+answers `404` here. The per-agent, per-tool and per-user breakdown is the **consumption
+analysis** brick.
+
+---
+
+## Scheduled runs
+
+Agent runs can be automated on a schedule. The core does not run the cron itself: it
+registers the schedule with an external orchestrator, selected by `ORCHESTRATOR`
+(`th2etl`, or the historical `mage` which is still the code default).
+
+```json
+POST /api/adk/schedule_run
+{
+  "agent_id": "agent42",
+  "user_id": "user@example.com",
+  "session_id": "session_scheduled",
+  "new_message": {
+    "role": "user",
+    "parts": [{ "text": "Generate the daily report" }]
+  },
+  "schedule_interval": "@daily",
+  "start_time": "2026-03-10T08:00:00"
+}
+```
+
+### Schedule Presets
+
+| Preset | Cron |
+|--------|------|
+| `@hourly` | `0 * * * *` |
+| `@daily` | `0 0 * * *` |
+| `@weekly` | `0 0 * * 0` |
+| `@monthly` | `0 0 1 * *` |
+| Custom | e.g., `*/15 * * * *` |
+
+---
+
+## Agent Hub
+
+Agents can be published to a shared Hub and cloned by other users:
+
+- `POST /api/hub/publish` — Publish an agent (copies config, tools, instructions)
+- `POST /api/hub/clone` — Clone a Hub agent into your workspace
+- `GET /api/hub` — Browse available agents
+
+---
+
+## Database Models
+
+| Table | Description | Key Fields |
+|-------|-------------|------------|
+| `user` | User accounts | email, password, role, credits, stripe_customer_id, OAuth IDs, `mfa_enabled`, `mfa_required`, `sessions_valid_from` |
+| `integrations` | Connected OAuth services | user_id, provider, access_token, refresh_token, scopes, meta |
+| `webhook_subscriptions` | Active webhook watches | user_id, integration_id, provider, subscription_id, resource, agent_id, status, expiration |
+| `webhook_logs` | Webhook execution history | subscription_id, trigger_event, email_subject, agent_response, duration_ms, status |
+| `notifications` | User notifications | user_id, title, message, type (webhook/info/warning/error), is_read |
+| `transactions` | Credit movements | user_id, type (purchase/usage/refund/bonus), amount, balance_after, stripe IDs |
+| `credit_purchases` | Stripe purchase sessions | user_id, stripe_session_id, credits_amount, price_paid, status |
+| `llm_usage` | Per-call token accounting | agent_id, owner_id, invocation_id, model, token counts, created_at |
+| `business_intelligence` | BI charts, dashboards, datasets | owner, definition, refresh state |
+| `shared_conversations` | Shareable conversation links | share_id, session, owner |
+| `oauth_states` | Short-lived OAuth state tokens | state, provider, expiry |
+
+Sessions, events and ADK artifacts live in the tables Google ADK owns (`sessions`,
+`events`), which supervision reads directly rather than fanning out one HTTP call per
+agent.
+
+Some columns here serve bricks rather than the core: `credits`, `stripe_customer_id`,
+`mfa_enabled` and the `transactions` / `credit_purchases` tables are declared so a brick
+can use them, and stay untouched without one. `mfa_required` is set by the core's admin
+panel, and `llm_usage` is written by the core itself (see
+[Token metering and quotas](#token-metering-and-quotas)).
+
+---
+
+## Supported Models
+
+apowerb calls models through [LiteLLM](https://docs.litellm.ai/docs/providers), so any
+provider LiteLLM supports works: Anthropic, OpenAI, Mistral, Google Gemini, Azure AI
+Foundry, OVHcloud, and more. A model is named with its LiteLLM provider prefix, for
+example `anthropic/<model>`, `openai/<model>`, `mistral/<model>`, `gemini/<model>`,
+`azure_ai/<deployment>` or `ovhcloud/<model>`.
+
+### Azure AI Foundry
+
+For a Foundry serverless endpoint, set the model name with the `azure_ai/`
+provider prefix and pass the endpoint settings in `agent_model_params`:
+
+```json
+{
+  "agent_model": "azure_ai/llama-3-3-70b-instruct",
+  "agent_model_params": {
+    "model_api_base": "https://<resource>.models.ai.azure.com",
+    "model_api_key": "<api-key>",
+    "model_api_version": "2025-04-01-preview"
+  }
+}
+```
+
+`model_api_version` is optional and is also accepted as `api_version`.
+For Microsoft Entra ID, resolve a bearer token with `DefaultAzureCredential`
+in the deployment environment and provide that token as `model_api_key`; LiteLLM
+passes it through the same `api_key` argument. Tool schemas and tool calls remain
+enabled through the normal ADK `LiteLlm` path.
+
+---
+
+## Development
+
+```bash
+# Install development dependencies
+uv sync --group dev
+
+# Run tests
+pytest
+
+# Linting
+ruff check .
+ruff format .
+```
+
+---
+
+## Troubleshooting
+
+### Common Errors
+
+| Code | Meaning |
+|------|---------|
+| `400` | Bad request — check your request body |
+| `401` | Unauthorized — missing or invalid token |
+| `402` | The monthly token quota on the shared model is exhausted |
+| `403` | Forbidden — you don't own this resource |
+| `404` | Not found — or a route served by a brick this install does not load |
+| `413` | File too large — max 50 MB per file |
+| `422` | Unprocessable — e.g., query returned no data |
+| `500` | Internal server error |
+| `503` | Service temporarily unavailable |
+
+### Detailed API Guide
+
+Guides, quickstart and the generated API reference are at
+[docs.apowerb.com](https://docs.apowerb.com). Their source lives in
+[apowerb/apowerb-docs](https://github.com/apowerb/apowerb-docs).
+
+---
+
+## Contributing
+
+Contributions are welcome. [CONTRIBUTING.md](./CONTRIBUTING.md) covers the
+development setup, the branch and commit conventions this repository actually
+uses, and what makes a pull request reviewable.
+
+Security issues take a different path: see [SECURITY.md](./SECURITY.md), and do
+not open a public issue for one.
+
+## Support
+
+Ask on [Discord](https://discord.com/channels/1470717940075597896), or open an
+issue on this repository.
+
+## License
+
+apowerb is distributed under the [Apache License 2.0](./LICENSE).
+Copyright 2025-2026 thaink².
+
+The commercial bricks listed in
+[Open-source core and commercial bricks](#open-source-core-and-commercial-bricks)
+are distributed separately under commercial terms and are not covered by this
+licence. The token metering and the cap live in this repository, so they are
+covered by it.
+
+"apowerb" and the apowerb logo are trademarks of thaink². The licence covers the
+code, not the marks — see [TRADEMARK.md](./TRADEMARK.md).

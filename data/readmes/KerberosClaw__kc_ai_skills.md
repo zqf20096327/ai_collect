@@ -1,0 +1,147 @@
+# AI Skills That Actually Do Things
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+[正體中文](README_zh.md)
+
+A collection of AI agent skills that solve real problems — not "summarize this PDF" kind of skills, but "scan my repo for leaked API keys before I push" kind of skills. Works with any LLM client that supports skill/prompt loading, cloud or local.
+
+> Skills follow the [Claude Code skill convention](https://code.claude.com/docs/en/skills) (SKILL.md + scripts/), but the concepts are framework-agnostic. Think of them as reusable checklists your AI actually follows.
+
+> **Security Notice:** These skills are designed for local development and trusted LAN environments. Skills that interact with external services (e.g., `searxng`) default to secure settings (TLS verification enabled), but do not implement additional authentication layers. Review each skill's configuration before deploying in sensitive environments.
+
+## Plugins
+
+Some skills now ship as **plugins** in [kc_ai_plugins](https://github.com/KerberosClaw/kc_ai_plugins): a plugin bundles the skills for one job together with the MCP servers they need, and installs in one step on both Claude Code and Codex.
+
+| Plugin | Skills | Install |
+|---|---|---|
+| [doc-qa](https://github.com/KerberosClaw/kc_ai_plugins/tree/main/plugins/doc-qa) | `project-docs`, `qa`, `md2pdf` | `/plugin marketplace add KerberosClaw/kc_ai_plugins` then `/plugin install doc-qa@kc-ai-plugins` |
+
+Skills that moved into a plugin are still listed below, marked 📦, with links to their new home. You can also copy a single skill folder from there, as before.
+
+## Skills
+
+Grouped by what you're trying to get done — every skill is still a self-contained top-level folder, the grouping is just a map.
+
+**Start here:** [Workflow diagrams, document roles, and the complete skill map](workflow-router/docs/workflow.md). One maintained guide covers the 26 skills in this repo and the 3 skills in the separate doc-qa plugin; the bundle is a menu, not a requirement to run everything.
+
+### Workflow entrypoint
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [workflow-router](workflow-router/) | The front door for the confusing middle: PRD, SD, FR, AC, ADR, tickets, implementation, release, or unattended runs. It asks at most one clarifying question, tells you which specialist skill to use, explains why in plain language, then hands off. It deliberately does not write the PRD/spec/ADR itself |
+| [align](align/) | Bring existing docs up to date with verified implementation and hotfixes. Run manually or after QA in an unattended task. A manual run first asks whether to align only what a specific change touched or rescan the whole repo; unattended runs default to the whole repo. Follow cross-repo references for evidence. Edit only authorized repo docs, annotate conflicting history, and keep deployed systems read-only. Report drift in other repos and obtain explicit permission before editing them. Supports unattended runs without adding schedules |
+| 📦 [project-docs](https://github.com/KerberosClaw/kc_ai_plugins/tree/main/plugins/doc-qa/skills/project-docs) | *Moved to the `doc-qa` plugin.* Turn an existing codebase into documentation someone can actually use — for two different readers. Maintainers get evidence-mapped technical docs: architecture, contracts, data models, operations, release handoff, diagrams as Mermaid source. End users and administrators get an operations manual instead: what you must have before you start, step-by-step screens, and what to do when you get stuck. Reuses templates and updates incrementally without changing product code. Defaults to Traditional Chinese technical prose with English summaries for GitHub |
+
+### Generate & create
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [gpt-image-gen](gpt-image-gen/) | Turns a loose request into a tight bilingual prompt, iterates until you give an explicit go, then uses the host-native executor: Codex calls its built-in `image_gen` tool directly, while Claude Code keeps the background Codex CLI workflow. The hard confirmation gate exists because "looks good" is not "yes" and every generation costs real quota. Supports text-to-image, img2img, and precise edits with preservation constraints and local pixel verification when artifacts are available; edits stay png so transparency is never destroyed. |
+| [character-lora](character-lora/) | Take an original character from "an idea + one reference look" to a trained LoRA that holds its identity across every angle and scene. Orchestrates the whole pipeline — define → multi-angle dataset (delegating image-gen to gpt-image-gen) → caption → base-specific homework → train on a local GPU → verify — and gates every expensive step. The hard rule: read the base model's own training docs *before* you train, because improvising the settings is how characters come out "rolling the dice" on every generation |
+| [rewrite-tw](rewrite-tw/) | A Traditional Chinese (Taiwan) copy editor with a high bar: it only flags grammar that genuinely misleads the reader (missing subject, broken predicate, wrong measure word, connectives pointing the wrong way), plus wording that no Taiwanese engineer would actually say. Pure style nits, punctuation preferences and unavoidable loanwords get waved through. Quoted source terms are surfaced, never silently "corrected". Read-only report first; it touches your files only after you say so |
+| [rewrite-tone](rewrite-tone/) | Turn your dry technical docs into something people actually want to read. War stories > whitepapers |
+
+### Docs & decks
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| 📦 [md2pdf](https://github.com/KerberosClaw/kc_ai_plugins/tree/main/plugins/doc-qa/skills/md2pdf) | *Moved to the `doc-qa` plugin.* Turn your Markdown into a PDF that doesn't look like it was generated by a computer from 2003. Handles Mermaid diagrams, CJK fonts, ASCII art conversion, and table column widths that aren't all mysteriously equal — because we already mass-debugged all the cursed edge cases so you don't have to |
+| [md2ppt](md2ppt/) | md2pdf's louder sibling. Turn your Markdown report into a presentation-quality .pptx via interactive design dialogue + a reusable Python build script. Generic markdown→pptx tools (Marp, pandoc) produce slides that are syntactically correct but visually broken — md2ppt walks per-slide layout decisions with you, then emits a hand-coded script you can re-run in 5 seconds after content edits. Optional self-check via LibreOffice. Brand template integration via ad-hoc helpers — we tried prescribing a workflow, pulled it back after 5 rounds of "wait that's not the cover layout" |
+| [conference-report](conference-report/) | You went to a conference, recorded the talks, photographed the slides, and came home with a pile of audio, blurry photos, and a vague promise to "write it up someday". This rebuilds faithful per-session notes (slide visuals + speaker transcript, with Whisper hallucinations flagged so you do not quote a robot daydream), then actually asks what report you need -- one talk, a full day, or a multi-day synthesis -- before writing a single word |
+
+### Spec & delivery
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [prd-create](prd-create/) | Turn a pile of meeting notes, scattered chat messages, and hand-waved feature requests into a structured PRD that follows your org's guideline — it quizzes you for the gaps instead of fabricating them, surfaces stakeholder conflicts instead of silently picking a side, then sanitizes and publishes to ADO Wiki. Pure prompt-driven, no Python. First half of the prd-create → prd-breakdown → ADO chain |
+| [prd-breakdown](prd-breakdown/) | Take a finished PRD and slice it into Azure DevOps work items along vertical slices (HITL/AFK tags + blocked_by dependencies), then push them via the az CLI — idempotent re-runs via fingerprint markers, so re-running won't duplicate items. Second half of the prd-create → prd-breakdown → ADO chain |
+| [spec](spec/) | Spec-driven development workflow — from fuzzy idea to verified deliverable. One command, auto-detects project state, walks you through: requirements → review → implement → verify → report. Because "just start coding" is how you end up rewriting everything |
+| [goal-engineer](goal-engineer/) | For when you want an agent to grind on something overnight without you hovering over it. Interview-style, it pins down a goal-driven evaluator-optimizer loop of the generate-and-select kind (generate candidates -> grade against a rubric -> iterate by reason-code -> you pick the winner), then emits a self-contained dispatch doc a fresh session runs blind while you just watch the green/yellow/red pings roll in. It is the upstream *spec author*, not the engine -- hand the dispatch to Claude Code's built-in `/goal`, a headless `claude -p`, or any unattended agent. NOT `/goal` itself, NOT a build-to-spec PRD writer (that's prd-create), NOT a cron timer. One narrow exception: if your build spec is *already frozen* (approved ADR, locked design, machine-checkable AC) and all you're missing is the unattended-run wrapper, it packages a lean build dispatch instead of making you write a full PRD for a decision you already made. Channel-agnostic notifications (Telegram/Discord/Slack/iMessage), and it bakes in a "want an adversarial review before we ship?" gate -- because we got tired of remembering to ask ourselves |
+
+> Existing docs lag behind implementation or hotfixes? Use `align`. Need a new documentation suite or manual? Use `project-docs`.
+
+`project-docs` can also update existing docs while assessing missing technical docs, manuals, and handoff material. `align` is the focused maintenance pass: check existing docs against implementation and fix drift without designing a new documentation suite. Both read code and can update docs; you do not need to run both for every change.
+
+QA derives its cases from approved requirements/specs, so `project-docs` is not a mandatory step before QA; it can also consume QA evidence afterwards for manuals. Personal features can go straight to `spec`; `prd-create` is for a product PRD deliverable and `prd-breakdown` for work-item/ADO planning, regardless of whether people or agents implement the work. Record an ADR only for a settled decision that qualifies, link it back to the plan, and return to the original stage. ADRs do not replace requirements, AC, or an implementation plan.
+
+Operating manuals describe versioned, usable behavior and known limitations; approved requirements/AC and optional blind acceptance scripts keep the intended behavior. Align does not rewrite expectations to excuse defects. Historical ADR text stays intact, with dated, evidence-backed current-state notes allowed; changed decisions still need a new ADR. Incomplete feature specs return to `spec`, without forcing a product PRD.
+
+Calling `spec` also creates the implementation plan and tasks. Simple features keep the plan in `spec.md`; complex ones use a separate `plan.md`. Requirements/FR and acceptance criteria remain in the spec, progress remains in `tasks.md`, and the plan references requirements instead of copying them. Existing approved layouts stay intact.
+
+> Not sure which one fits? Start with `workflow-router`. The shortest rule of thumb: product requirements go to `prd-create`; repo-local software design / engineering AC / implementation goes to `spec`; existing docs versus implementation goes to `align`; new technical docs / manuals go to `project-docs` (in the `doc-qa` plugin); one durable technical decision goes to `adr`; approved PRD tickets go to `prd-breakdown`; a new unattended dispatch for frozen work goes to `goal-engineer`. Already approved documentation work continues with its existing `align` or `project-docs` route without another requirements interview.
+
+### Engineering discipline
+
+> These are behavior guardrails used before, during, or after the delivery workflows. `grill`, `diagnose`, and `adr` adapt discipline mechanics from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT), rewritten in Chinese and fitted to this repo's conventions.
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [grill](grill/) | "Let's discuss first," institutionalized. You drop a fuzzy idea, it refuses to touch code, asks you one question at a time — each with a suggested answer — until shared understanding is confirmed. Its sharpest rule: anything answerable by grep may not be asked. It interrogates the filesystem before it interrogates you. When vocabulary drifts, it also grows a CONTEXT.md glossary for the repo |
+| [diagnose](diagnose/) | Build the lie detector before the interrogation. Until there's one command that reproduces the symptom, no root-cause theory is allowed; and even then you list 3-5 ranked hypotheses with falsifiable predictions before testing the first one. Cures the age-old habit — in AIs and humans — of reading code for two minutes and declaring "found it" |
+| [adr](adr/) | Records architecture decisions, but its first job is talking you out of it. Three gates (hard to reverse / confusing without context / real trade-off) must all pass before it writes anything, and the default format is a title plus three sentences — an ADR's value is in recording *why*, not in filling out a template. It watches for two things especially: deliberate departures from the obvious path, and explicit no's |
+| [prep-repo](prep-repo/) | Release checks matched to what you actually ship: secrets, usable setup, docs and rendered diagrams, relevant tests and CI. Separates blockers from polish and checks the reviewed files through commit, push and publication — without rewriting history over an ordinary byline. Checks the agreed language format, including English summaries with Traditional Chinese technical prose |
+
+### Research & security
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [searxng](searxng/) | Give your local LLM the ability to search the web without sending your queries to Google |
+| [repo-scan](repo-scan/) | Security scan a GitHub repo before you install it. Static analysis, dependency audit, supply chain risks, issue-reported vulnerabilities, maintainer health — because `npm install random-package` shouldn't require a leap of faith |
+| [ctf-kit](ctf-kit/) | Battle-tested playbook for bypassing Windows app authentication — VMProtect, Themida, network verification, you name it. Born from 67+ failed attempts so you don't have to repeat them. Includes ready-to-use Frida recon scripts and a zero-dependency PE analyzer. Pairs well with [ljagiello/ctf-skills](https://github.com/ljagiello/ctf-skills) for broader CTF coverage |
+| [job-scout](job-scout/) | Research a company before you waste time applying. Salary, reviews, red flags, financials — the due diligence you should've done before that last interview |
+
+### AI knowledge hygiene
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [memory-lint](memory-lint/) | Your AI's memory directory accumulates duplicate rules, stale "active" projects, and orphan files over time. This skill scans for all of that and reports before Claude confidently quotes the wrong rule back at you. Three phases: the scan is read-only and is the default; it only edits files for findings you explicitly approve, then has an independent process verify the result and rolls back if that fails |
+| [llm-wiki-lint](llm-wiki-lint/) | Karpathy's LLM Wiki pattern has a blind spot — past ~15 pages, stale claims, orphan cross-refs, and missing topics silently rot your knowledge base. This skill is the lint pass: contradictions, source traceability, data gaps, frontmatter completeness, index drift. For three-tier `raw/` + `wiki/` + `schema` repos. Read-only. Pair with [memory-lint](memory-lint/) for full-stack AI knowledge hygiene |
+| [llm-benchmark](llm-benchmark/) | Find out which Ollama model actually fits in your GPU — before you waste 30 minutes downloading one that doesn't |
+| [wrap-up](wrap-up/) | That thing you spent six hours figuring out yesterday? After compaction it's one line of summary — so today's session re-derives it from scratch, except the base image it needs is still sitting on your Desktop, waiting for next week's cleanup to delete it. This skill harvests the session into the repo before you leave (moving media by *your* project's rules, wiring two-way refs, folding draft conclusions back into the SSOT), then sends in a sub-agent with no idea any of this happened and makes it sit an exam starting from the entry file. The bar is behavioural: not "the links resolve" but "a stranger can pick this up". Correct isn't enough — if it can't name the file the answer came from, next time nobody will find it either. We wrote that rule after re-stepping on our own landmine |
+
+### Automation & watch
+
+| Skill | What It Actually Does |
+|-------|----------------------|
+| [skill-cron](skill-cron/) | One manager to schedule them all. Register any skill for crontab execution + Telegram push — because `claude -p` doesn't support `/skill` syntax, so somebody had to build the bridge. Config in `~/.claude/configs/`, logs auto-rotate, crontab entries self-managed |
+| [ios-resign](ios-resign/) | Apps signed with a free Apple ID ship with an undocumented feature: on day seven they turn into crash-on-launch machines. This skill makes re-signing a one-liner — say "re-sign" in the project folder and it builds, signs, installs onto the iPhones you listed, and launches the app. Project settings live in a committed `resign.yaml`; the phones live in an untracked `resign.local.yaml`, so a new Mac never means editing the Xcode project. It only signs with a free Personal Team, so the company team sitting under the same Apple ID never gets used by accident, and it counts the self-signed apps on the phone *before* building, because finding out about the three-app limit after a five-minute build is no fun. Every failure maps to a fixed exit code with a plain-language next step, and "the phone hasn't trusted the developer yet" counts as a successful deploy, not a failure (that false alarm fooled us once). First time? Setup mode reads the Xcode project, drafts the config for you to confirm, and walks you through the parts only a human can do — Apple ID login, tapping Trust on the phone. Works in Claude Code and Codex; App Store and TestFlight are someone else's problem |
+
+## Installation
+
+Grab what you need, leave what you don't:
+
+```bash
+git clone https://github.com/KerberosClaw/kc_ai_skills.git
+
+# Example: install for Claude Code (user-level)
+cp -r kc_ai_skills/prep-repo ~/.claude/skills/
+
+# Example: install for OpenClaw (workspace-level)
+cp -r kc_ai_skills/searxng ~/.openclaw/workspace/skills/
+```
+
+> **Documentation alignment:** Call `/align` directly in a repo. For a frozen build run, the full unattended handoff is `spec` approval → `goal-engineer` dispatch → implementation / AC checks → `doc-qa:qa` → `align` → final task report. Install the complete `align` folder and the `doc-qa` plugin on the execution host; the dispatch records skill locations, QA environment/roles/authority, and evidence outputs. Unit tests do not replace real QA. This adds no ticketing, closure, or archive gates.
+
+> **QA runner:** Prefer Codex for mixed Web/desktop QA. Web uses Playwright MCP; native desktop/cross-app QA requires a Codex session with suitable computer-use tools. This workflow requires doc-qa plugin 0.2.1+ / QA skill 0.5.1+ for applicability and exit rules. Claude Code bg/headless agents testing a Web product still use Playwright. Verified product scope with no UI reports UI QA as not applicable, retains original AC/integration evidence, then continues to align and the final report. Missing tools for an existing UI remain untested; blocked cases cannot count as passed. Check actual capabilities: the plugin does not supply a computer-use server or make every target accessible.
+
+> **Naming tip:** Feel free to rename the skill folder with your own prefix when copying (e.g. `my_prep-repo`). It won't break anything. Probably.
+
+> **Other clients:** Start with SKILL.md and make its referenced files available as needed. A skill folder may also contain references, scripts or assets; copying only SKILL.md can omit required guidance or tools. The client must support the capabilities needed by the selected skill.
+
+## Skill Structure
+
+Every skill follows a dead-simple convention. If you can write markdown, you can write a skill:
+
+```
+skill-name/
+├── SKILL.md          # Frontmatter (name, description, version, status, triggers) + instructions
+└── scripts/          # Executable scripts (optional)
+    └── script.py
+```
+
+## Related Projects
+
+- [kc_tradfri_mcp](https://github.com/KerberosClaw/kc_tradfri_mcp) — "Turn on the living room lights" — yes, we made an AI do that
+- [kc_openclaw_local_llm](https://github.com/KerberosClaw/kc_openclaw_local_llm) — We tested 13 local LLMs. Only 2 could reliably call tools. Here's the full report.

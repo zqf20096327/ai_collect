@@ -1,0 +1,144 @@
+<p align="center">
+  <img src="logo.svg" width="120" alt="TunD logo">
+</p>
+
+<p align="center">
+  <a href="https://github.com/danterolle/tund/actions/workflows/build.yml"><img src="https://github.com/danterolle/tund/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://github.com/danterolle/tund/releases"><img src="https://img.shields.io/github/v/release/danterolle/tund" alt="Release"></a>
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
+  <img src="https://img.shields.io/badge/C-C11-informational" alt="C11">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
+
+# TunD
+
+TunD does one thing: it creates a virtual LAN. Built for LAN-party sessions, unreliable physical LANs and direct-IP multiplayer with friends.
+
+It is self-hosted and cross-platform. The C core stays dependency-light: Linux and macOS use system networking APIs, while Windows uses Wintun for TUN support.
+
+> **Scope:** TunD encrypts traffic in transit between each endpoint and the TunD server. It is not end-to-end against the server itself. Use a long random shared key.
+
+<p align="center">
+  <img src="web/assets/gui-preview.png" width="760" alt="TunD desktop GUI running on Windows">
+</p>
+
+## Table of contents
+
+- [Project rationale](#project-rationale)
+- [How it works](#how-it-works)
+- [Quick start](#quick-start)
+- [Features](#features)
+- [Game compatibility](#game-compatibility)
+- [Documentation](#documentation)
+- [License](#license)
+
+## Project rationale
+
+### Why not use WireGuard/Tailscale/ZeroTier?
+
+Those are better choices for general secure networking, especially when confidentiality or production-grade trust matters.
+
+TunD is deliberately narrower: a small, self-hosted virtual LAN tool with a fixed virtual IPv4 subnet, automatic peer assignment and enough broadcast support for LAN-style games.
+
+A wrapper around another networking tool would still need to build most of that product workflow: simple hosting, peer assignment, routing setup, platform permissions and game-focused guidance around a tool designed for a broader purpose.
+
+Do not use TunD when you need end-to-end confidentiality from the relay server.
+
+### Why C?
+
+The core talks directly to the operating-system interfaces involved:
+
+- UDP sockets
+- TUN devices
+- platform routing APIs
+- Wintun on Windows
+
+C keeps that layer small, explicit and dependency-light. It also made the project useful as a learning exercise rather than just glue around a larger stack.
+
+### AI-assisted development
+
+AI was used as a pair-programming assistant during development. The C core matches my own experience and was reviewed, refactored and tested accordingly.
+
+The Flutter GUI is different: I do not know Flutter well. It exists because it was the quickest practical way to provide a cross-platform launcher, so that part relied more heavily on AI assistance and follow-up testing.
+
+## How it works
+
+```
+┌──────────┐         ┌─────────────┐         ┌──────────┐
+│ Client A │ ──UDP──▶│  TunD Hub   │◀──UDP── │ Client B │
+│ 10.9.0.2 │         │  10.9.0.1   │         │ 10.9.0.3 │
+└──────────┘         └─────────────┘         └──────────┘
+     ▲                                              ▲
+     └──────────── Virtual LAN: 10.9.0.0/24 ────────┘
+```
+
+1. One machine runs TunD in **server** mode. On the same physical LAN it only needs to be reachable by the other PCs; over the Internet it needs a reachable UDP port.
+2. Other machines connect as **clients**
+3. All clients automatically discover each other
+4. Traffic is tunneled over UDP through the server
+5. Each client gets a virtual IP in the `10.9.0.0/24` range
+
+## Quick start
+
+On the machine that should host the virtual LAN:
+
+```bash
+openssl rand -base64 24 > tund.key
+chmod 600 tund.key
+sudo ./tund-cli server --key-file tund.key
+```
+
+On every machine that should join the LAN:
+
+```bash
+sudo ./tund-cli client -s <server_ip> --key-stdin
+```
+
+Generate a long random key first and use the same key everywhere. Clients can paste or type it when prompted. The GUI sends the key through stdin so it does not appear in the process list. The CLI still requires administrator/root privileges for TUN setup. See the [GUI README](gui/README.md) for details.
+
+Pre-built binaries are available on the [releases page](https://github.com/danterolle/tund/releases). See [Usage](docs/USAGE.md) for full instructions.
+
+> **Version compatibility:** TunD 3.0 uses protocol version 5 and cannot connect to 2.x. Upgrade
+> the server and every client together.
+
+## Features
+
+- **Zero registration** — no accounts or external service
+- **NAT-friendly clients** — clients only need outbound UDP to a reachable server
+- **Cross-platform** — Windows/macOS/Linux
+- **Flutter desktop GUI** — optional launcher for non-terminal users, documented in [`gui/README.md`](gui/README.md)
+- **Single CLI binary** — server and client modes in one program
+- **IPv4 broadcast support** — useful for LAN-style discovery in compatible games
+- **Automatic reconnect** — clients recreate the tunnel after temporary server interruptions
+- **Encrypted transport** — datagrams are encrypted in transit; replayed TunD datagrams are rejected
+
+## Game compatibility
+
+TunD transports IPv4 traffic, including the IPv4 subnet broadcast address. It is suitable for direct-IP games and games such as Artemis that use ordinary IPv4 networking.
+
+It is not an Ethernet bridge. Games may need direct IP entry when they require unsupported discovery. Some of those games may not work.
+
+- Layer-2 discovery
+- IPv6
+- multicast discovery
+
+Traffic is encrypted in transit between each endpoint and the TunD server. The server still decrypts packets to route them, so TunD is not end-to-end encrypted against the host.
+
+Artemis setup is straightforward. Start the server first. Connect every station with the same key. Use the assigned `10.9.0.x` addresses where the game asks for a host address. Verify first with `ping 10.9.0.1` from each client. If automatic discovery does not appear, prefer entering the host IP manually.
+
+If every machine is already on the same physical LAN and can reach the game host directly, you probably do not need TunD.
+
+## Documentation
+
+- [Usage](docs/USAGE.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Technical documentation](docs/TECHNICAL.md)
+- [Release checklist](docs/RELEASE.md)
+- [Changelog](CHANGELOG.md)
+- [GUI README](gui/README.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+
+## License
+
+[MIT](LICENSE)

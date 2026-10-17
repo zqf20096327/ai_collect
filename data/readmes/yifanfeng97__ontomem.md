@@ -1,0 +1,528 @@
+# 🧠 OntoMem: The Self-Consolidating Memory
+
+<div align="center">
+
+[中文版本](README_ZH.md)
+
+</div>
+
+**OntoMem** is built on the concept of *Ontology Memory*—structured, coherent knowledge representation for AI systems.
+
+> **Give your AI agent a "coherent" memory, not just "fragmented" retrieval.**
+
+
+<p align="center">
+  <img src="docs/assets/fw.png" alt="OntoMem Framework Diagram" width="800" />
+</p>
+
+<div align="center">
+
+<a href="https://pypi.org/project/ontomem/"><img src="https://img.shields.io/pypi/v/ontomem?style=for-the-badge&logo=pypi&logoColor=white&labelColor=1a1a2e&color=3776ab" alt="PyPI Version"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.11%2B-3776ab?style=for-the-badge&logo=python&logoColor=white&labelColor=1a1a2e" alt="Python Version"></a>
+<a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/license-Apache%202.0-06b6d4?style=for-the-badge&labelColor=1a1a2e" alt="License"></a>
+<a href="https://yifanfeng97.github.io/ontomem/"><img src="https://img.shields.io/badge/docs-online-3b82f6?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=1a1a2e" alt="Docs"></a>
+<a href="https://github.com/yifanfeng97/ontomem/actions/workflows/test.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/yifanfeng97/ontomem/test.yml?branch=main&style=for-the-badge&logo=github&labelColor=1a1a2e&label=Tests" alt="Tests"></a>
+<a href="https://pypi.org/project/ontomem/"><img src="https://img.shields.io/pypi/dm/ontomem?style=for-the-badge&logo=pypi&logoColor=white&labelColor=1a1a2e&color=facc15" alt="PyPI Downloads"></a>
+
+</div>
+
+Traditional RAG (Retrieval-Augmented Generation) systems retrieve text fragments. **OntoMem** maintains **structured entities** using Pydantic schemas and intelligent merging algorithms.
+
+It excels at **Time-Series Consolidation**: effortlessly merging streaming observations (like logs or chat turns) into coherent "Daily Snapshots" or "Session Summaries" simply by defining a composite key (e.g., `user_id + date`).
+
+**It doesn't just store data—it continuously "digests" and "organizes" it.**
+
+## 📰 News
+<details>
+<summary>Details</summary>
+
+- **[2026-09-29] 🔒 v0.6.1: Safe Merging — KeyExtractionError, Warning Aggregation & Mechanical Re-merge**:
+  - **`KeyExtractionError`**: when every item fails key extraction (typically a key-extractor vs schema mismatch), `merge()` now raises an aggregate error naming the failure count and first cause — instead of silently returning an empty result
+  - **Aggregated warnings**: `key_extraction_failed` logs one line per distinct error with a count (`x118`), not one line per item
+  - **Mechanical re-merge**: `remove_source()`/`upsert_source()` accept `remerge="mechanical" | "auto" | "llm"` — exact rollbacks on large shared keys fall back to the deterministic field merge (seconds, no LLM) instead of unbounded LLM merge calls
+  - **Bounded batches**: tournament merge caps pairs per `batch_merge()` call (default 40) so prompts cannot grow without bound
+- **[2026-09-04] 🎉 v0.6.0: Source Tags & Scoped Search**:
+  - **`tag_source()` / `source_tags()`**: tag documents in the ledger (persisted with dump_sources)
+  - **Scoped search**: `search(query, source_ids=[...], tags=[...])` — retrieve only within a subset of documents, with automatic over-fetch
+  - **Union semantics**: a key matches when ANY of its contributing sources fits the filter
+
+- **[2026-09-04] 🎉 v0.5.0: `record_source()`**:
+  - **Ledger-only capture**: record raw items without merging them into storage — built for pipelines that merge separately (chunk-level extraction + custom merge)
+
+- **[2026-09-05] 🎉 v0.4.0: Attributed Memory (Source Ledger)**:
+  - **Per-document rollback**: `add(items, source_id=...)` records raw pre-merge results; `remove_source()` rolls back exactly (re-merging surviving sources), `upsert_source()` replaces a document in one step
+  - **Opt-in ledger**: `track_sources=True`; ~1.5-2x storage overhead, bounded (only the current version per source is kept)
+  - **`suspended_index()`**: batch mutations without dropping the vector index
+  - **Embedder fingerprint**: indexes record the embedder signature and refuse vectors from a different embedding space
+
+- **[2026-09-04] 🎉 v0.3.0: Incremental Index Maintenance & Semantic Editing**:
+  - **`sync_index()`**: Patch the FAISS index in place — delete/re-embed only the affected vectors instead of dropping the whole index (up to 200× fewer embedding calls on small edits)
+  - **`remove_many()` / `upsert()`**: Batch removal and replace-by-key semantics that preserve the index
+  - **`edit()`**: LLM-assisted single-item semantic editing — remove one wrong fact while keeping the rest, with key-invariance validation, dry-run, and in-place vector refresh
+  - **`index_built`**: Property alias for `has_index()`
+
+- **[2026-01-28] 🎉 v0.2.0: Lookups Feature Released**:
+  - **Multi-dimensional Indexing**: Create O(1) secondary indices for fast queries by custom keys (name, location, time, etc.)
+  - **Auto-maintained**: Indices automatically update when items merge or are removed
+  - **Memory Efficient**: Stores only references (primary keys), not data copies
+  - **Example**: Build a time-series database where primary key includes timestamp, but query by character name using Lookups!
+  - [Learn more →](docs/en/user-guide/lookups.md) | [中文](docs/zh/user-guide/lookups.md)
+
+- **[2026-01-21] v0.1.5 Released**:
+  - **🎯 Production Safety**: Added `max_workers` parameter to control LLM batch processing concurrency
+  - **⚡ Rate Limit Protection**: Prevents hitting API rate limits from providers like OpenAI, preventing account throttling
+  - **🔧 Fine-Grained Control**: Customize concurrency per merge strategy (default: 5 workers)
+  - [Learn more →](docs/en/user-guide/merge-strategies.md#controlling-llm-concurrency)
+
+- **[2026-01-19] v0.1.4 Released**:
+  - **API Improvement**: Renamed `merge_strategy` parameter to `strategy_or_merger` for better clarity and flexibility
+  - **Enhancement**: Added `**kwargs` support to directly pass merger-specific parameters (like `rule` and `dynamic_rule` for `CUSTOM_RULE`) through `OMem` without pre-configuration
+  - **Benefit**: Cleaner API and more intuitive usage patterns for advanced merging scenarios
+  - [Learn more →](docs/en/user-guide/merge-strategies.md)
+
+- **[2026-01-19] v0.1.3 Released**:
+  - **New Feature**: Added `MergeStrategy.LLM.CUSTOM_RULE` strategy for user-defined merge logic. Inject static rules and dynamic context (via functions) directly into the LLM merger!
+  - **Breaking Change**: Renamed legacy strategies for clarity:
+    - `KEEP_OLD` → `KEEP_EXISTING`
+    - `KEEP_NEW` → `KEEP_INCOMING`
+    - `FIELD_MERGE` → `MERGE_FIELD`
+  - [Learn more about Custom Rules](docs/en/user-guide/merge-strategies.md#custom-merge-rules)
+
+</details>
+
+## ✨ Why OntoMem?
+
+### 🧩 Schema-First & Type-Safe
+Built on **Pydantic**. All memories are strongly-typed objects. Say goodbye to `{"unknown": "dict"}` hell and embrace IDE autocomplete and type checking.
+
+### ⏱️ Temporal Consolidation (Time-Slicing)
+OntoMem isn't just about ID deduplication. By using **Composite Keys** (e.g., `lambda x: f"{x.user}_{x.date}"`), you can automatically aggregate a day's worth of fragmented events into a **Single Daily Record**.
+- **Input**: 1,000 fragmented logs/observations throughout the day.
+- **Output**: 1 structured, LLM-synthesized "Daily Summary" object.
+
+### 🔄 Auto-Evolution
+When you insert new data about an existing entity, OntoMem doesn't create duplicates. It intelligently merges them into a **Golden Record** using configurable strategies (Conflict Resolution, List Appending, or **LLM-powered Synthesis**).
+
+### 🔍 Hybrid Search
+- **Key-Value Lookup**: O(1) exact access (e.g., "Get me Alice's summary for 2024-01-01").
+- **Vector Search**: Semantic similarity search across your entire timeline (e.g., "When was Alice frustrated?").
+
+### 🔎 Multi-Dimensional Lookups
+Create secondary indices for ultra-fast queries across custom dimensions without vector overhead. Perfect for time-series data where you need both temporal and cross-sectional queries.
+
+<details>
+<summary><b>Learn more about Lookups →</b></summary>
+
+**Problem**: If your primary key includes timestamp (for time-series), how do you query by character name?  
+**Solution**: Use **Lookups** for O(1) exact-match queries on any field!
+
+```python
+# Create lookups for different dimensions
+memory.create_lookup("by_character", lambda x: x.char_name)
+memory.create_lookup("by_location", lambda x: x.location)
+
+# Query - automatic sync with merges
+character_events = memory.get_by_lookup("by_character", "Alice")
+location_events = memory.get_by_lookup("by_location", "Kitchen")
+```
+
+**Key Features:**
+- ✨ **Auto-maintained**: Lookups update when items merge or are removed
+- ✨ **Memory efficient**: Stores only references, not data copies
+- ✨ **Consistent**: Merge operations automatically sync lookups
+
+[Full Documentation →](docs/en/user-guide/lookups.md) | [中文文档 →](docs/zh/user-guide/lookups.md)
+
+</details>
+
+### 💾 Stateful & Persistent
+Save your complete memory state (structured data + vector indices) to disk and restore it in seconds on next startup.
+
+
+## 🧠 OntoMem vs. Other Memory Systems
+
+Most memory libraries store **Raw Text** or **Chat History**. OntoMem stores **Consolidated Knowledge**.
+
+| Feature | **OntoMem** 🧠 | **Mem0** / Zep | **LangChain Memory** | **Vector DBs** (Pinecone/Chroma) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Core Storage Unit** | ✅ **Structured Objects** (Pydantic) | Text Chunks + Metadata | Raw Chat Logs | Embedding Vectors |
+| **Data "Digestion"** | ✅ **Auto-Consolidation & merging** | Simple Extraction | ❌ Append-only | ❌ Append-only |
+| **Time Awareness** | ✅ **Time-Slicing** (Daily/Session Aggregation) | ❌ Timestamp metadata only | ❌ Sequential only | ❌ Metadata filtering only |
+| **Conflict Resolution**| ✅ **LLM Logic** (Synthesize/Prioritize) | ❌ Last-write-wins | ❌ None | ❌ None |
+| **Type Safety** | ✅ **Strict Schema** | ⚠️ Loose JSON | ❌ String only | ❌ None |
+| **Ideal For** | **Long-term Agent Profiles, Knowledge Graphs** | Simple RAG, Search | Chatbots, Context Window | Semantic Search |
+
+### 💡 The "Consolidation" Advantage
+
+- **Traditional RAG**: Stores 50 chunks of "Alice likes apples", "Alice likes bananas". Search returns 50 fragments.
+- **OntoMem**: Merges them into 1 object: `User(name="Alice", likes=["apples", "bananas"])`. Search returns **one complete truth**.
+
+
+## 🚀 Quick Start
+
+Build a structured memory store in 30 seconds.
+
+### 1. Define & Initialize
+
+```python
+from pydantic import BaseModel
+from ontomem import OMem
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# 1. Define your memory schema
+class UserProfile(BaseModel):
+    name: str
+    skills: list[str]
+    last_seen: str
+
+# 2. Initialize with LLM merging and concurrency control (v0.1.5+)
+memory = OMem(
+    memory_schema=UserProfile,
+    key_extractor=lambda x: x.name,
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    max_workers=3  # 🆕 Control LLM batch concurrency to prevent rate limits
+)
+```
+
+### 2. Add & Merge (Auto-Consolidation)
+
+OntoMem automatically merges data for the same ID.
+
+```python
+# First observation
+memory.add(UserProfile(name="Alice", skills=["Python"], last_seen="10:00"))
+
+# Later observation (New skill added, time updated)
+memory.add(UserProfile(name="Alice", skills=["Docker"], last_seen="11:00"))
+
+# Retrieve the consolidated "Golden Record"
+alice = memory.get("Alice")
+print(alice.skills)     # ['Python', 'Docker'] (Lists merged!)
+print(alice.last_seen)  # "11:00" (Updated!)
+```
+
+### 3. Search & Retrieve
+
+```python
+# Exact retrieval
+profile = memory.get("Alice")
+
+# All keys in memory
+all_keys = memory.keys
+
+# Clear or remove
+memory.remove("Alice")
+```
+
+
+## 💡 Advanced Examples
+
+<details>
+<summary><b>Example 1: The "Self-Improving" Debugger (Logic Evolution)</b></summary>
+
+An AI agent that doesn't just store errors—it **synthesizes** debugging wisdom over time using `LLM.BALANCED` strategy.
+
+```python
+from ontomem import OMem, MergeStrategy
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+class BugFixExperience(BaseModel):
+    error_signature: str
+    solutions: list[str]
+    prevention_tips: str
+
+memory = OMem(
+    memory_schema=BugFixExperience,
+    key_extractor=lambda x: x.error_signature,
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    strategy_or_merger=MergeStrategy.LLM.BALANCED
+)
+
+# Day 1: Pip install
+memory.add(BugFixExperience(
+    error_signature="ModuleNotFoundError: pandas",
+    solutions=["pip install pandas"],
+    prevention_tips="Check requirements.txt"
+))
+
+# Day 2: Docker container (Different solution!)
+memory.add(BugFixExperience(
+    error_signature="ModuleNotFoundError: pandas",
+    solutions=["apt-get install python3-pandas"],  # Added to list!
+    prevention_tips="Use system packages in containers"  # LLM merges both tips
+))
+
+# Result: Single record with merged solutions + synthesized advice
+guidance = memory.get("ModuleNotFoundError: pandas")
+print(guidance.prevention_tips)
+# >>> "In standard environments, check requirements.txt. 
+#      In containerized environments, prefer system packages..."
+```
+
+</details>
+
+<details>
+<summary><b>Example 2: Temporal Memory & Daily Consolidation (Time-Series)</b></summary>
+
+Turn a stream of fragmented events into a single "Daily Summary" record using **Composite Keys**.
+
+```python
+from ontomem import OMem, MergeStrategy
+
+class DailyTrace(BaseModel):
+    user: str
+    date: str
+    actions: list[str]  # Accumulates all day
+    summary: str        # LLM synthesizes entire day
+
+memory = OMem(
+    memory_schema=DailyTrace,
+    key_extractor=lambda x: f"{x.user}_{x.date}",  # <-- THE MAGIC KEY
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    strategy_or_merger=MergeStrategy.LLM.BALANCED
+)
+
+# 9:00 AM event
+memory.add(DailyTrace(user="Alice", date="2024-01-01", actions=["Login"]))
+
+# 5:00 PM event (Same day → Merges into SAME record)
+memory.add(DailyTrace(user="Alice", date="2024-01-01", actions=["Logout"]))
+
+# Next day (New date → NEW record)
+memory.add(DailyTrace(user="Alice", date="2024-01-02", actions=["Login"]))
+
+# Results:
+# - alice_2024-01-01: actions=["Login", "Logout"], summary="Active trading day..."
+# - alice_2024-01-02: actions=["Login"], summary="Brief session..."
+
+# Semantic search across time
+results = memory.search("When was Alice frustrated?", top_k=1)
+```
+
+For a complete working example, see [examples/06_temporal_memory_consolidation.py](examples/06_temporal_memory_consolidation.py)
+
+</details>
+
+
+## 🔍 Semantic Search
+
+Build an index and search by natural language:
+
+```python
+# Build vector index
+memory.build_index()
+
+# Semantic search
+results = memory.search("Find researchers working on transformer models and attention mechanisms")
+
+for researcher in results:
+    print(f"- {researcher.name}: {researcher.research_interests}")
+```
+
+
+## 🛠️ Merge Strategies
+
+Choose how to handle conflicts:
+
+| Strategy | Behavior | Use Case |
+|----------|----------|----------|
+| `MERGE_FIELD` | Non-null overwrites, lists append | Simple attribute collection |
+| `KEEP_INCOMING` | Latest data wins | Status updates (current role, last seen) |
+| `KEEP_EXISTING` | First observation stays | Historical records (first publication year) |
+| `LLM.BALANCED` | **LLM-driven semantic merging** | Complex synthesis, contradiction resolution |
+| `LLM.PREFER_INCOMING` | **LLM merges semantically, prefers new data on conflict** | New information should take priority when contradictions arise |
+| `LLM.PREFER_EXISTING` | **LLM merges semantically, prefers existing data on conflict** | Existing data should take priority when contradictions arise |
+| `LLM.CUSTOM_RULE` | **User-defined merge logic with dynamic context** | Domain-specific rules, context-aware merging |
+
+```python
+# Example: LLM intelligently merges conflicting information
+memory = OMem(
+    ...,
+    strategy_or_merger=MergeStrategy.LLM.BALANCED  # or LLM.PREFER_INCOMING, LLM.PREFER_EXISTING, LLM.CUSTOM_RULE
+)
+```
+
+<details>
+<summary><b>🔧 Custom Merge Rules (Advanced)</b></summary>
+
+**Inject your own merge logic** with static rules and dynamic context:
+
+```python
+from datetime import datetime
+
+# Define a dynamic rule function (evaluated at merge time)
+def get_time_context():
+    hour = datetime.now().hour
+    if hour >= 9 and hour <= 17:
+        return "Business hours: Prefer stable, verified data"
+    else:
+        return "After-hours: Prioritize recent updates"
+
+# Use CUSTOM_RULE with static rule + dynamic context
+memory = OMem(
+    memory_schema=BugFixExperience,
+    key_extractor=lambda x: x.error_signature,
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    strategy_or_merger=MergeStrategy.LLM.CUSTOM_RULE,
+    rule="""
+    Merge debugging experiences intelligently:
+    - Combine all unique solutions into a list
+    - Synthesize prevention tips, incorporating domain context
+    - Keep the most recent solution as primary recommendation
+    """,
+    dynamic_rule=get_time_context  # Evaluated at merge time!
+)
+
+# Example use: Errors evolve over time
+memory.add(BugFixExperience(
+    error_signature="ModuleNotFoundError: pandas",
+    solutions=["pip install pandas"],
+    prevention_tips="Check requirements.txt first"
+))
+
+memory.add(BugFixExperience(
+    error_signature="ModuleNotFoundError: pandas",
+    solutions=["Use conda-forge mirror"],
+    prevention_tips="In restricted networks, try conda"
+))
+
+# Result: LLM merges both, considering time context from dynamic_rule
+result = memory.get("ModuleNotFoundError: pandas")
+print(result.prevention_tips)
+# >>> "Check requirements.txt first. For restricted networks, use conda-forge mirror..."
+```
+
+**When to use CUSTOM_RULE**:
+- Complex domain-specific merging logic
+- Time/context-aware decisions (e.g., "prefer old data at 2 AM, new data during day")
+- Environment-specific rules (e.g., "production mode: conservative, staging: aggressive")
+- Multi-factor decision making that LLM strategies don't cover
+
+</details>
+
+
+<details>
+<summary><b>⚡ Controlling LLM Concurrency (v0.1.5+)</b></summary>
+
+When using **LLM-based merge strategies** (`LLM.BALANCED`, `LLM.PREFER_INCOMING`, `LLM.PREFER_EXISTING`, `LLM.CUSTOM_RULE`), OntoMem makes batch API calls to your LLM provider. By default, these can run concurrently, which may hit rate limits or API throttling.
+
+### The `max_workers` Parameter
+
+Control the maximum number of concurrent LLM requests using the `max_workers` parameter:
+
+```python
+memory = OMem(
+    memory_schema=UserProfile,
+    key_extractor=lambda x: x.uid,
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    strategy_or_merger=MergeStrategy.LLM.BALANCED,
+    max_workers=3  # Limit to 3 concurrent requests
+)
+```
+
+### Configuration Guidelines
+
+| Scenario | Recommended `max_workers` | Rationale |
+|----------|---------------------------|-----------|
+| **Development/Testing** | `2-3` | Conservative, prevents API errors |
+| **Production (Small)** | `3-5` | Default: 5. Balanced speed/safety |
+| **Production (Large)** | `5-10+` | Depends on your LLM provider tier |
+| **Rate-Limited Accounts** | `1-2` | Safest: processes serially or semi-serially |
+
+### Tuning Tips
+
+1. **Start Conservative**: Begin with `max_workers=2` to ensure stability
+2. **Monitor Performance**: Check merge times and error rates
+3. **Gradually Increase**: If stable, try `max_workers=5`, then higher
+4. **Check Provider Limits**: Verify your OpenAI tier's rate limits (requests per minute)
+5. **Observe Errors**: If you see `RateLimitError`, reduce `max_workers`
+
+**Example: Production Setup**
+```python
+import os
+
+# Read from environment
+max_workers = int(os.getenv("ONTOMEM_MAX_WORKERS", 3))
+
+memory = OMem(
+    memory_schema=UserProfile,
+    key_extractor=lambda x: x.uid,
+    llm_client=ChatOpenAI(model="gpt-4o"),
+    embedder=OpenAIEmbeddings(),
+    strategy_or_merger=MergeStrategy.LLM.BALANCED,
+    max_workers=max_workers  # Easy to adjust without code changes
+)
+```
+
+> **Note**: The `max_workers` parameter only affects LLM-based merge strategies. Classic strategies (`MERGE_FIELD`, `KEEP_INCOMING`, `KEEP_EXISTING`) do not use LLM and are not affected.
+
+</details>
+
+## 💾 Save & Load
+
+Snapshot your entire memory state:
+
+```python
+# Save (structured data → memory.json, vectors → FAISS indices)
+memory.dump("./researcher_knowledge")
+
+# Later, restore instantly
+new_memory = OMem(...)
+new_memory.load("./researcher_knowledge")
+```
+
+
+## 🔧 Installation & Setup
+
+### Basic Installation
+
+```bash
+pip install ontomem
+```
+
+Or with `uv`:
+```bash
+uv add ontomem
+```
+
+<details>
+<summary><b>📦 For Developers</b></summary>
+
+To set up the development environment with all testing and documentation tools:
+
+```bash
+uv sync --group dev
+```
+
+**Core Requirements:**
+- Python 3.11+
+- LangChain (for LLM integration)
+- Pydantic (for schema definition)
+- FAISS (for vector search)
+
+</details>
+
+
+## 👨‍💻 Author
+
+**Yifan Feng** - [evanfeng97@gmail.com](mailto:evanfeng97@gmail.com)
+
+
+## 🤝 Contributing
+
+We're building the next generation of AI memory standards. PRs and issues welcome!
+
+
+## 📝 License
+
+Licensed under the Apache License, Version 2.0 - See [LICENSE](LICENSE) file for details.
+
+You are free to use, modify, and distribute this software under the terms of the Apache License 2.0.
+
+
+**Built with ❤️ for AI developers who believe memory is more than just search.**

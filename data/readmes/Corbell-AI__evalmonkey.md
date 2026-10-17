@@ -1,0 +1,572 @@
+<p align="center">
+  <img src="assets/evalmonkey-logo.png" alt="EvalMonkey Logo" width="400"/>
+</p>
+
+# EvalMonkey
+
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python Version"></a>
+  <a href="http://makeapullrequest.com"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/Corbell-AI/evalmonkey/actions"><img src="https://img.shields.io/github/actions/workflow/status/Corbell-AI/evalmonkey/python-app.yml?branch=main" alt="Build Status"></a>
+</p>
+
+<p align="center">
+  <strong>🏆 Benchmarked agents earn shareable badges like these:</strong><br><br>
+  <a href="https://github.com/Corbell-AI/evalmonkey"><img src="https://img.shields.io/badge/EvalMonkey-Score%3A73-yellow" alt="EvalMonkey Score"></a>
+  <a href="https://github.com/Corbell-AI/evalmonkey"><img src="https://img.shields.io/badge/Production%20Reliability-Score%3A67-yellow" alt="Production Reliability"></a>
+  <a href="https://github.com/Corbell-AI/evalmonkey"><img src="https://img.shields.io/badge/EvalMonkey-Chaos%20Resilient-brightgreen" alt="Chaos Resilient"></a>
+  <br><sub>Run <code>evalmonkey report --output agent_card.md</code> to generate your agent's card &amp; badge</sub>
+</p>
+
+  <b>Agent Benchmarking & Chaos Engineering Framework</b><br>
+  <i>"Don't just trust your agent. Prove it works. Then break it."</i>
+</p>
+
+<p align="center">
+  <img src="assets/evalmonkey-demo.gif" alt="EvalMonkey Demo" style="max-width: 100%; border-radius: 8px;">
+</p>
+
+
+## Overview
+Agents are fundamentally non-deterministic. They rely on external APIs, tool loops, and massive context windows.
+**EvalMonkey** is the ultimate, strictly local, open-source execution harness that enables developers to:
+1. 🎯 **Benchmark Capabilities**: Run standard Agent benchmark datasets against your agent endpoints natively!
+2. 🔥 **Inject Chaos**: Mutate headers, spike latency, and corrupt schemas dynamically to prove true resilience.
+3. 📈 **Track Production Reliability**: Locally store all scores to visualize a single Production Reliability metric over time!
+4. 🛠 **Generate Improvement Evals**: When scores are poor, automatically synthesise targeted test cases using your LLM — then hand them to Claude Code or Cursor to fix your agent.
+
+EvalMonkey natively supports evaluating ANY LLM: **AWS Bedrock**, **Azure**, **GCP**, **OpenAI**, and **Ollama**.
+
+> **Note on API Keys:** If you have special setups that generate long-lived, static API keys for Bedrock, Azure, or GCP, simply supply them in the `.env`! EvalMonkey seamlessly supports both standard IAM / Service Account credential flows *and* long-term stateless authentication strings.
+
+## 🚀 At a Glance
+- **11 Agent Frameworks natively supported**: CrewAI, LangChain, LlamaIndex, LangGraph, Pydantic AI, OpenAI Agents, Microsoft AutoGen, AWS Bedrock, Ollama, Strands, and custom HTTP endpoints.
+- **22 Standard Benchmarks out-of-the-box**: GSM8K, BIG-Bench Hard, HotpotQA, ToxiGen, MT-Bench, MBPP, DailyDialog, MultiWOZ, and more — all categorised by the agent type they target (including Coding, Voice, and Reasoning).
+- **28 Chaos Injections ready to run**: 17 client-side payload mutations (including 5 voice-specific profiles) + 11 server-side middleware injections — all text-based, no GPU or vision dependencies.
+- **Automatic Eval Asset Generation**: Poor benchmark scores automatically produce `traces.json`, `evals.json`, and `improvement_prompt.md` — one `cat` command away from Claude Code or Cursor.
+
+---
+
+## 🏆 Real-World Results: 10 Open-Source Agents Benchmarked
+
+> We ran EvalMonkey against **10 popular open-source agents** across **3 standard benchmarks** (HotpotQA · TruthfulQA · MMLU) with **chaos injection** to measure true production resilience.  
+> Eval judge: **Claude Sonnet 4.5** via AWS Bedrock. Chaos profile: `client_prompt_injection` + `client_schema_mutation`.
+
+### Leaderboard — Production Reliability Score
+
+*Higher = more reliable under real-world conditions. Production Reliability = 60% baseline + 40% chaos resilience.*
+
+| Rank | Agent | Type | Baseline | Under Chaos | Prod. Reliability | Chaos Drop |
+|------|-------|------|:--------:|:-----------:|:-----------------:|:----------:|
+| 🥇 1 | [GPT Researcher](https://github.com/assafelovic/gpt-researcher) | Deep Research | **66** | 43 | **57** | −23 |
+| 🥈 2 | [OpenResearcher](https://github.com/GAIR-NLP/OpenResearcher) | Scientific Research | **64** | 42 | **55** | −22 |
+| 🥉 3 | [Browser Agent](https://github.com/rkvalandas/browser_agent) | Web / Browser | **63** | 34 | **51** | −29 |
+| 4 | [Browser-Use Couchbase](https://github.com/hummusonrails/browser-use-agent-with-couchbase) | Browser + RAG | 51 | 41 | **47** | −10 |
+| 5 | [Open Deep Research](https://github.com/langchain-ai/open_deep_research) | Deep Research | 49 | 24 | **39** | −25 |
+| 6 | [deep-research](https://github.com/dzhng/deep-research) | Minimal Research | 44 | 50 | **46** | +6 ✅ |
+| 7 | [Local Docs AI Agent](https://github.com/disho5/local-docs-ai-agent) | Docs Q&A | 43 | 38 | **41** | −5 |
+| 8 | [Index Browser](https://github.com/lmnr-ai/index) | Browser Agent | 46 | 54 | **49** | +8 ✅ |
+| 9 | [Goose](https://github.com/aaif-goose/goose) | General Purpose | 46 | 36 | **42** | −10 |
+| 10 | [OnCell Support Agent](https://github.com/oncellai/oncell-support-agent) | Support / RAG | 18 | 26 | **22** | +8 ✅ |
+
+### Per-Benchmark Breakdown (GPT Researcher — best overall)
+
+| Benchmark | Baseline | Chaos Score | Production Reliability |
+|-----------|:--------:|:-----------:|:----------------------:|
+| HotpotQA  | 66 | 17 | 46 |
+| TruthfulQA | 65 | 48 | 58 |
+| MMLU | 56 | 16 | 40 |
+
+### Key Findings
+
+- 🚨 **Chaos drops scores by 23 points on average** — agents that look great in demos often collapse under real-world input mutations.
+- ✅ **3 agents actually improved under chaos** (deep-research, Index, OnCell) — these have robust fallback handling that filters bad inputs.
+- 📉 **GPT Researcher & Browser Agent drop 23–29 points** under prompt injection — common in production where users send adversarial or malformed queries.
+- 🏆 **Top production reliability gap**: The #1 agent (57) scores **2.6× higher** than the bottom agent (22) — despite both running the same LLM backend.
+- 🔍 **MMLU was the hardest benchmark** across all agents — multi-domain knowledge reasoning exposes gaps that simple Q&A benchmarks miss.
+
+> 📌 **This is exactly what EvalMonkey is for.** Don't wait until production to find out your agent breaks under real traffic. Benchmark it now.
+
+---
+
+## 📊 EvalMonkey Web Dashboard
+
+Visualize all your benchmark runs, track reliability scores over time, and inspect failure traces interactively!
+
+<p align="center">
+  <img src="assets/evalmonkey-dashboard.png" alt="EvalMonkey Dashboard" style="max-width: 100%; border-radius: 8px; margin-bottom: 10px;">
+  <br>
+  <i>EvalMonkey Main Dashboard showing scenario trends and score histories.</i>
+</p>
+
+<p align="center">
+  <img src="assets/em-benchmark-run.png" alt="Benchmark Run Results" style="max-width: 48%; border-radius: 8px; margin-right: 2%;">
+  <img src="assets/em-mmlu-run.png" alt="MMLU Scenario View" style="max-width: 48%; border-radius: 8px;">
+  <br>
+  <i>Deep-dive into specific benchmark runs and chaos tests.</i>
+</p>
+
+---
+
+## ⚡️ Quick Start
+
+### Option A — Let Claude Code or Cursor set it up for you (30 seconds)
+
+Open Claude Code, Cursor, or any AI coding assistant and paste this prompt:
+
+```
+Set up EvalMonkey in my project so I can benchmark my AI agent.
+
+1. Clone https://github.com/Corbell-AI/evalmonkey into a sibling folder
+2. Run: pip install -e . inside that folder
+3. Copy .env.example to .env and ask me which LLM provider I want to use as the benchmark judge (OpenAI, Anthropic, Bedrock, or Ollama) — then fill in the correct key
+4. Run: evalmonkey init --framework <my_framework> --name "My Agent" --port <my_port>
+   Use the framework my agent is built with (crewai / langchain / openai / bedrock / autogen / ollama / strands / custom)
+5. Show me the generated evalmonkey.yaml and ask me to confirm the agent URL and response path are correct
+6. Run a quick smoke test: evalmonkey run-benchmark --scenario gsm8k --sample-agent rag_app --limit 2
+   to confirm everything is wired up correctly
+7. Then run the real benchmark against my agent: evalmonkey run-benchmark --scenario mmlu --limit 5
+8. Show me the score and explain what it means
+```
+
+> The agent will handle cloning, installing, configuring your `.env`, and running the first benchmark — all without you typing a single command.
+
+---
+
+### Option B — Manual Setup (5 minutes)
+
+**1. Install**
+```bash
+git clone https://github.com/Corbell-AI/evalmonkey
+cd evalmonkey
+pip install -e .
+```
+
+**2. Configure your LLM key** (used only as the evaluation judge — never for your agent)
+```bash
+cp .env.example .env
+```
+Open `.env` and set **one** of these depending on your LLM provider:
+```bash
+EVAL_MODEL=gpt-4o
+OPENAI_API_KEY=sk-...          # OpenAI
+
+# — OR —
+EVAL_MODEL=anthropic/claude-haiku-4-5
+ANTHROPIC_API_KEY=sk-ant-...   # Anthropic
+
+# — OR —
+EVAL_MODEL=bedrock/anthropic.claude-3-haiku-20240307-v1:0
+AWS_ACCESS_KEY_ID=...          # AWS Bedrock
+
+# — OR — (no key needed)
+EVAL_MODEL=ollama/llama3       # Local Ollama
+```
+
+**3. Smoke test with the built-in sample agent** (no agent of your own needed yet)
+```bash
+evalmonkey run-benchmark --scenario gsm8k --sample-agent rag_app --limit 3
+```
+You should see 3 samples run and a score printed. ✅
+
+**4. Point it at your own agent**
+```bash
+cd /path/to/your/agent/project
+evalmonkey init --framework crewai --name "My Agent" --port 8000
+# Edit the generated evalmonkey.yaml to set your agent's URL and response format
+evalmonkey run-benchmark --scenario mmlu --limit 5
+```
+
+> `evalmonkey.yaml` is discovered from the **current working directory** — same convention as `pytest` and `docker-compose`.
+
+---
+
+
+## 🤝 Works With Any Agent — No Code Changes Required
+
+EvalMonkey talks to your agent over plain HTTP. As long as your agent is running and has an endpoint URL, you're done. That's it.
+
+```bash
+# Point EvalMonkey at your existing running agent
+evalmonkey run-benchmark --scenario mmlu --target-url http://localhost:8000/chat
+```
+
+**Your agent returns a different JSON format?** Use two flags to map any request/response shape:
+
+| Flag | What it does | Example |
+|---|---|---|
+| `--request-key` | Which key to send the question under | `message`, `prompt`, `input` |
+| `--response-path` | Dot-path to extract the answer from | `output.text`, `choices.0.message.content`, `result` |
+
+```bash
+# CrewAI agent that takes {"message":""} and returns {"reply":""}
+evalmonkey run-benchmark --scenario mmlu \
+  --target-url http://localhost:8000/chat \
+  --request-key message \
+  --response-path reply
+
+# OpenAI-compatible endpoint returning {"choices":[{"message":{"content":""}}]}
+evalmonkey run-benchmark --scenario arc \
+  --target-url http://localhost:8000/v1/chat/completions \
+  --request-key content \
+  --response-path choices.0.message.content
+```
+
+### Supported Frameworks
+
+| Framework | Notes |
+|---|---|
+| 🦜 **LangChain** | Any Chain, LCEL pipe, or AgentExecutor behind FastAPI |
+| 🦙 **LlamaIndex** | Any QueryEngine, ChatEngine, or ReActAgent |
+| 🕸️ **LangGraph** | Any compiled StateGraph or MessageGraph |
+| 🛡️ **Pydantic AI** | Any validated Agent returning structured or text data |
+| 🤖 **CrewAI** | Any Crew behind a `/chat` or custom endpoint |
+| ✨ **OpenAI Agents SDK** | Native OpenAI Chat Completions format supported via `--response-path` |
+| ☁️ **AWS Bedrock / Agent Core** | Any Bedrock endpoint, IAM or long-lived key |
+| 🧩 **Microsoft AutoGen** | Any ConversableAgent behind HTTP |
+| 🦙 **Ollama** | Running locally at `http://localhost:11434` |
+| 🧬 **Strands** | Enterprise support agents and chatbots |
+| 🌐 **Any HTTP Agent** | Flask, Express.js, Go — if it accepts POST it works |
+
+<details>
+<summary>📦 Don't have an HTTP endpoint yet? Use our ready-made thin adapters (click to expand)</summary>
+
+Copy the relevant file from `apps/framework_adapters/` next to your agent code, swap in your Crew/Chain/Agent, and run it. No changes needed to EvalMonkey.
+
+- `langchain_adapter.py` — wraps any LangChain chain  
+- `crewai_adapter.py` — wraps any CrewAI Crew  
+- `openai_agents_adapter.py` — wraps OpenAI Agents SDK  
+- `bedrock_agentcore_adapter.py` — wraps AWS Bedrock Converse API  
+- `autogen_adapter.py` — wraps Microsoft AutoGen Crew  
+
+Each adapter is ~40 lines and exposes a `/solve` endpoint on `localhost`.
+
+</details>
+
+---
+
+
+## 🌍 Supported Standard Benchmarks
+EvalMonkey natively supports **19** off-the-shelf benchmark datasets pulled directly from HuggingFace. All benchmarks are **text-only** — no vision, audio, or multimodal agent required. List them anytime via the CLI:
+```bash
+evalmonkey list-benchmarks
+```
+
+| Scenario ID | Agent Category | Description |
+|---|---|---|
+| `gsm8k` | 🧠 Reasoning | Grade School Math word problems — multi-step arithmetic & logic. |
+| `xlam` | 🔧 Tool Use | XLAM Function Calling 60k — tool execution & parameter structuring. |
+| `swe-bench` | 💻 Coding | SWE-Bench — resolve real-world GitHub issues from a description only. |
+| `gaia-benchmark` | 🔍 Research | GAIA — multi-step real-world tasks requiring web/tool chaining. |
+| `human-eval` | 💻 Coding | HumanEval — Python function synthesis from docstrings. |
+| `mmlu` | 💬 Q&A | MMLU — general knowledge across 57 academic subjects. |
+| `arc` | 🧠 Reasoning | ARC Challenge — hard grade-school science multiple-choice. |
+| `truthfulqa` | 🛡️ Safety | TruthfulQA — detects hallucination and human-like falsehood mimicry. |
+| `hella-swag` | 🧠 Reasoning | HellaSwag — commonsense sentence-completion inference. |
+| `bbh` | 🧠 Reasoning | BIG-Bench Hard — 23 tasks where LLMs still fall below human baselines. |
+| `winogrande` | 💬 Q&A | WinoGrande — pronoun disambiguation resistant to dataset shortcuts. |
+| `drop` | 🔍 Research | DROP — reading comprehension with embedded numerical & date math. |
+| `natural-questions` | 💬 Q&A | Natural Questions — real Google search queries with Wikipedia answers. |
+| `hotpotqa` | 🔍 Research | HotpotQA — multi-hop reasoning across two Wikipedia documents. |
+| `mbpp` | 💻 Coding | MBPP — entry-level Python function synthesis from plain English. |
+| `apps` | 💻 Coding | APPS — competitive-programming & interview-style code challenges. |
+| `mt-bench` | 📋 Instruction Following | MT-Bench — multi-turn dialogues across writing, roleplay, reasoning, STEM. |
+| `alpacaeval` | 📋 Instruction Following | AlpacaEval — instruction quality judged by GPT-4 head-to-head. |
+| `toxigen` | 🛡️ Safety | ToxiGen — detects toxic/hateful content generation across 13 demographic groups. |
+
+<details>
+<summary>🛠️ Build Your Own Custom Benchmarks (click to expand)</summary>
+
+Yes, people absolutely bring their own datasets! The most powerful way to test an agent is to grab 10-50 real questions from your production logs, dump them into a CSV, and evaluate your agent against them.
+
+EvalMonkey natively supports auto-parsing **`.yaml`**, **`.json`**, and **`.csv`** files! 
+
+You don't need any complex ETL pipelines. Just drop a file (e.g. `evals.csv`, `evals.json`, or `custom_evals.yaml`) in your execution directory and pass it to EvalMonkey!
+
+### 1. CSV Example (`evals.csv`)
+If using a CSV, just make sure you have the columns `id` and `expected_behavior_rubric`. **Any other column** you add (like `question`, `topic`, `image_url`) will be automatically gathered and sent in the JSON payload directly to your agent!
+
+| id | expected_behavior_rubric | question |
+|---|---|---|
+| get_benefits | Must return the URL linking to the company hr portal | Where do I sign up for medical benefits? |
+| time_off | Provide the exact number of standard vacation days (15) | How many days of PTO do I get? |
+
+```bash
+evalmonkey run-benchmark --scenario get_benefits --eval-file evals.csv
+```
+
+### 2. JSON / YAML Example (`evals.json`)
+If you use JSON or YAML, you must nest the agent payload keys explicitly under an `input_payload` dict object:
+```json
+[
+  {
+    "id": "onboarding_query",
+    "description": "Test HR agent's ability to return the onboarding link.",
+    "expected_behavior_rubric": "Must contain exactly the URL https://hr.example.com/benefits",
+    "input_payload": {
+      "question": "Where do I sign up for benefits?"
+    }
+  }
+]
+```
+
+```bash
+evalmonkey run-benchmark --scenario onboarding_query --eval-file evals.json
+```
+</details>
+
+---
+
+## 🛠️ Experiences 
+
+### Experience 1: Local Sample Agents (Single Command Start)
+**Easiest Experience**: Test our built-in sample agents with a single command! EvalMonkey will spawn the sample agent in the background automatically and run the benchmark.
+```bash
+# Run against just the first 5 records
+evalmonkey run-benchmark --scenario gsm8k --sample-agent rag_app
+
+# Run a statistically robust test against 50 different records!
+evalmonkey run-benchmark --scenario gsm8k --sample-agent rag_app --limit 50
+```
+
+**Metrics Output:**
+```
+╭──────────────────────────────────────────────────────────╮
+│ Benchmark Results                                        │
+│ ──────────────────────────────────────────────────────── │
+│ Scenario  gsm8k                                          │
+│ Score     90/100 (Diff: +5)                              │
+│ Previous  85/100                                         │
+│ Reasoning Agent correctly utilized calculator for ...    │
+╰──────────────────────────────────────────────────────────╯
+```
+
+### Experience 2: Benchmarking Your Custom Local Agents
+Provide your own API target!
+```bash
+evalmonkey run-benchmark --scenario mmlu --target-url http://localhost:8000/my-custom-agent
+```
+
+### 💡 Why Chaos Benchmark Your Agents?
+Resiliency and Reliability are arguably the most crucial components of any highly distributed system. Multi-agent workflows—with their isolated contexts, recursive tool calls, and cascading API dependencies—behave fundamentally identically to microservice architectures! As your agents push logic out to the real world, you **must** securely benchmark against brutal realities, dropped schemas, and malicious payload injections.
+
+---
+
+### Experience 3: Injecting AI-Specific Chaos Engineering (Next-Gen)
+EvalMonkey goes far beyond standard network testing by deeply assessing your agent's **Production Resilience**! We support two distinct classes of Chaos injections depending on how deeply you wish to test:
+
+#### Class A: Client-Side Injections (Zero Code Changes Required)
+You don't need to change a single line of your target agent's code for these tests! EvalMonkey intercepts the benchmark dataset payload **before** transmission and maliciously damages the HTTP body so you can measure your agent's LLM fallbacks against bad actors!
+| Profile | Description |
+| --- | --- |
+| `client_prompt_injection` | Appends adversarial "IGNORE PREVIOUS INSTRUCTIONS" jailbreaks to test system-message robustness. |
+| `client_typo_injection` | Heavily obfuscates spelled words to test your LLM's semantic inference flexibility. |
+| `client_schema_mutation` | Alters incoming JSON schema keys (e.g. `question` → `query`) to verify robust API strictness handling without crashing. |
+| `client_language_shift` | Radically changes request instructions to attempt safety bypasses. |
+| `client_payload_bloat` | Floods the payload with thousands of characters to natively test token limits and prompt truncation crash safety. |
+| `client_empty_payload` | Sends entirely blank strings to verify graceful rejection handling. |
+| `client_context_truncation` | Maliciously slices the request text exactly in half to simulate incomplete streaming. |
+| `client_unicode_flood` | Injects invisible Unicode control characters and zero-width joiners between every character — a real-world tokeniser confusion attack. |
+| `client_role_impersonation` | Prepends a fake `[SYSTEM OVERRIDE]` instruction to the user turn — tests whether system-prompt guardrails can be bypassed via user messages. |
+| `client_repetition_loop` | Repeats the payload 50× to simulate a stuck retry loop — exercises token budget limits and rate-limit handling. |
+| `client_negative_sentiment` | Wraps the request in angry, hostile emotional framing — tests agent professionalism under the abusive customer support scenario. |
+| `client_length_constraint_violation` | Appends a conflicting "respond in exactly 2 words" constraint to a complex task — simulates contradictory user instructions common in chatbots. |
+| `voice_asr_noise` | Simulates ASR homophone confusion, missing punctuation, and lowercasing to test phonetic error robustness. |
+| `voice_filler_words` | Injects speech disfluencies (um, uh, like, you know) to check intent extraction under verbal noise. |
+| `voice_background_noise_sim` | Prepend/appends static/barking/cough descriptors to simulate transcriptions from noisy environments. |
+| `voice_truncated_speech` | Cuts the prompt off mid-sentence to simulate speech timeout or early user hang-up. |
+| `voice_dialect_shift` | Replaces words with casual phonetic shifts (yeah, wanna, gonna, y'all, lemme) to test dialect robustness. |
+
+```bash
+# Testing a single prompt injection against your agent without modifying your code!
+evalmonkey run-chaos --scenario arc --chaos-profile client_prompt_injection
+
+# Unicode tokeniser attack
+evalmonkey run-chaos --scenario mmlu --chaos-profile client_unicode_flood
+
+# 🌪️ INJECT ALL 12 CLIENT MUTATIONS SEQUENTIALLY
+evalmonkey run-chaos-suite --scenario gsm8k --limit 3
+```
+
+#### Class B: Agent-Side Injections (Middleware Catch Required)
+To deeply verify context truncation, multi-step LLM hallucination recovery, and tool back-offs, EvalMonkey attaches the `X-Chaos-Profile` header over HTTP. You add ~3 lines of logic to your FastAPI/Flask middleware to trigger each breakage. See `apps/rag_app/app.py` for a complete reference implementation.
+
+| Profile | What it tests |
+| --- | --- |
+| `schema_error` | Internal tool returns a malformed/corrupt string instead of valid JSON — tests your agent's output parsing resilience. |
+| `latency_spike` | Agent sleeps 5 s before responding — verifies callers implement request timeouts and don't block forever. |
+| `rate_limit_429` | Returns HTTP 429 to simulate LLM provider quota exhaustion mid-workflow — tests exponential back-off & retry logic. |
+| `context_overflow` | Floods the prompt with 120 k repetitions — tests intelligent truncation before token-limit crashes. |
+| `hallucinated_tool` | Injects fabricated data into the tool result — tests whether your agent validates / cross-checks tool output. |
+| `empty_response` | Drops the response body entirely — tests graceful null-handling rather than silent failures. |
+| `timeout_no_response` | Agent hangs for 120 s — validates that clients enforce read-timeouts and surface a proper error to the user. |
+| `model_downgrade` | Silently swaps the configured model for the weakest available fallback — tests whether answer quality degradation is detected. |
+| `memory_amnesia` | Replaces the incoming message with a blank-slate notice — simulates session/Redis failure wiping conversation state. |
+| `partial_response_truncation` | Returns only the first 20 characters of the answer — mimics an ALB/nginx proxy timeout cutting off long streaming responses mid-transmission. |
+| `cascading_tool_failure` | Returns a structured tool-error response after the LLM call — simulates a downstream vector DB or search API crashing mid-chain and tests graceful degradation. |
+
+**3-line middleware snippet (FastAPI):**
+```python
+chaos_profile = request.headers.get("X-Chaos-Profile")
+if chaos_profile == "partial_response_truncation":
+    return {"status": "success", "data": agent_answer[:20]}
+elif chaos_profile == "cascading_tool_failure":
+    return {"status": "tool_error", "error_message": "VectorDB connection refused", "data": None}
+```
+
+```bash
+# Test proxy-timeout truncation on a research agent
+evalmonkey run-chaos --scenario hotpotqa --sample-agent research_agent --chaos-profile partial_response_truncation
+
+# Validate model-quality degradation detection
+evalmonkey run-chaos --scenario mmlu --sample-agent rag_app --chaos-profile model_downgrade
+
+# Classic server-side context overflow
+evalmonkey run-chaos --scenario mmlu --sample-agent research_agent --chaos-profile context_overflow
+```
+**Metrics Output:**
+```
+╭──────────────────────────────────────────────────────────╮
+│ 🔥 Chaos Engineering Report 🔥                             │
+│ ──────────────────────────────────────────────────────── │
+│ Scenario:                  xlam                          │
+│ Chaos Profile:             schema_error                  │
+│ Baseline Capability Score: 90                            │
+│ Post-Chaos Resilience:     30                            │
+│ Status:                    DEGRADED CAPABILITY           │
+╰──────────────────────────────────────────────────────────╯
+```
+
+## 🤖 MCP Server (Cursor & Claude Integration)
+
+EvalMonkey natively ships with a **Model Context Protocol (MCP)** server! This allows AI IDEs (like Cursor) or external agents (like Claude Desktop) to invoke EvalMonkey tools automatically while they build your agent.
+
+### Setting Up in Claude Desktop / Cursor
+Add the following to your MCP configuration file (e.g. `claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "evalmonkey": {
+      "command": "evalmonkey",
+      "args": ["serve-mcp"]
+    }
+  }
+}
+```
+
+Once connected, your AI assistant will gain the ability to list benchmarks, trigger full evaluation runs, inject chaos payload mutators, pull historical trends, and generate improvement eval assets — entirely autonomously while helping you build your agent!
+
+### Available MCP Tools
+
+| Tool | What it does |
+|---|---|
+| `run_benchmark` | Run a standard benchmark against any HTTP agent URL |
+| `run_chaos` | Run a benchmark with a specific chaos profile injected |
+| `get_benchmark_history` | Return chronological score history for a scenario |
+| `generate_improvement_evals` | Run a benchmark, capture failures, synthesise targeted test cases, save to `output/` |
+| `get_eval_assets` | Read saved `traces.json` / `evals.json` / `improvement_prompt.md` directly into context |
+| `run_full_pipeline` | **One-shot**: baseline + chaos + eval generation + optional Langfuse export |
+
+**Example Claude Code / Cursor session:**
+```
+# Ask Claude Code to run the full loop:
+"Run the full EvalMonkey pipeline on my agent at http://localhost:8000/solve
+ using the gsm8k scenario with prompt injection and payload bloat chaos tests.
+ Then read the improvement prompt and fix my agent."
+
+# Claude Code will call:
+# 1. run_full_pipeline(scenario="gsm8k", target_url="...", chaos_profiles="client_prompt_injection,client_payload_bloat")
+# 2. get_eval_assets(output_dir="output/gsm8k_...")  ← reads the improvement brief
+# 3. Edits your agent code to fix the failures
+# 4. run_benchmark(...)  ← verifies the fix
+```
+
+---
+
+### Experience 5: Automatic Improvement Eval Generation
+When a benchmark scores poorly (< 70/100 by default), EvalMonkey automatically:
+1. Saves all failing traces to `output/<scenario>_<ts>/traces.json`
+2. Asks the judge LLM to synthesise targeted improvement test cases → `evals.json`
+3. Generates a ready-to-paste coding-agent prompt → `improvement_prompt.md`
+
+```bash
+# After a failing benchmark run, EvalMonkey prints:
+#   ⚠️  3 sample(s) scored below threshold — eval assets saved.
+#   Output → output/gsm8k_20260425_212530/
+#   🛠  Next steps to improve your agent:
+#     1. Regenerate evals anytime:
+#        evalmonkey generate-evals --traces-file output/gsm8k_.../traces.json
+#     2. Pass improvement brief to your coding agent:
+#        cat output/gsm8k_.../improvement_prompt.md | pbcopy
+#     3. Re-run after fixing:
+#        evalmonkey run-benchmark --scenario gsm8k
+
+# Re-generate evals from saved traces (without re-running the benchmark):
+evalmonkey generate-evals --traces-file output/gsm8k_20260425_212530/traces.json
+
+# Push evals to Langfuse for team sharing:
+evalmonkey generate-evals \
+  --traces-file output/gsm8k_20260425_212530/traces.json \
+  --langfuse-dataset my_agent_failures
+```
+
+> **Langfuse is optional.** EvalMonkey works completely without it. Only configure
+> `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` in `.env` if you want to push
+> generated evals to a Langfuse dataset for cloud storage or LLM-as-judge workflows.
+
+---
+
+### Experience 6: One-Command End-to-End Demo (RAG App)
+Run the full benchmark + chaos + eval-generation pipeline against the built-in `rag_app` sample agent:
+
+```bash
+# First time setup:
+cp .env.example .env   # fill in EVAL_MODEL + your LLM provider key
+pip install -e .
+
+# Run everything:
+./demo_rag_app.sh
+```
+
+The script will:
+1. 🚀 Start `rag_app` in the background
+2. 📊 Run 3 baseline benchmarks (`gsm8k`, `mmlu`, `arc`)
+3. 🔥 Run 5 chaos profiles
+4. 🛠 Merge all failing traces → generate `output/demo_<ts>/evals.json` + `improvement_prompt.md`
+5. 💡 Print the exact `cat` command to paste into Claude Code or Cursor
+6. 📈 Show your historical Production Reliability trend
+
+**Output directory structure:**
+```
+output/demo_20260425_212530/
+  traces.json           ← all failing traces (input, output, score, reasoning)
+  evals.json            ← LLM-synthesised targeted test cases (Langfuse-compatible)
+  improvement_prompt.md ← paste into Claude Code / Cursor to auto-fix your agent
+```
+
+---
+
+### Experience 4: Historical Production Reliability
+Check your agent's reliability trends over time!
+```bash
+evalmonkey history --scenario gsm8k
+```
+**Metrics Output:**
+```
+📈 Historical Trend for: gsm8k 📈
+╭──────────────────┬──────────┬───────╮
+│ Date             │ Run Type │ Score │
+├──────────────────┼──────────┼───────┤
+│ 2026-04-16 18:32 │ BASELINE │    85 │
+│ 2026-04-16 18:33 │ BASELINE │    90 │
+│ 2026-04-16 18:35 │ CHAOS    │    30 │
+╰──────────────────┴──────────┴───────╯
+
+🚀 Production Reliability Metric: 66.0 / 100.0
+(Calculated as 60% of most recent baseline capability + 40% most recent chaos resilience)
+```
+
+## 📄 License
+This project is licensed under **Apache 2.0**. See the `LICENSE` file for details.

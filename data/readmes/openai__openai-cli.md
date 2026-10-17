@@ -1,0 +1,335 @@
+# OpenAI CLI
+
+The official CLI for the [OpenAI REST API](https://platform.openai.com/docs).
+
+<!-- x-release-please-start-version -->
+
+## Installation
+
+### Installing with Homebrew
+
+```sh
+brew install openai/tools/openai
+```
+
+### Installing with Go
+
+To test or install the CLI locally, you need [Go](https://go.dev/doc/install) version 1.26 or later installed.
+
+```sh
+go install 'github.com/openai/openai-cli/cmd/openai@latest'
+```
+
+Once you have run `go install`, the binary is placed in your Go bin directory:
+
+- **Default location**: `$HOME/go/bin` (or `$GOPATH/bin` if GOPATH is set)
+- **Check your path**: Run `go env GOPATH` to see the base directory
+
+If commands aren't found after installation, add the Go bin directory to your PATH:
+
+```sh
+# Add to your shell profile (.zshrc, .bashrc, etc.)
+export PATH="$PATH:$(go env GOPATH)/bin"
+```
+
+<!-- x-release-please-end -->
+
+The first eligible interactive `openai` run quietly saves image picker Tab
+shortcuts for future Bash, zsh, and fish sessions. Open a new terminal to use
+them. See [shortcut setup and removal](docs/image-picker-shell-setup.md) for
+requirements and opt-out. PowerShell keeps normal Tab completion; press Enter
+after `openai images generate` to open the picker.
+
+### Running Locally
+
+After cloning the git repository for this project, you can use the
+`scripts/run` script to run the tool locally:
+
+```sh
+./scripts/run args...
+```
+
+## Usage
+
+The CLI follows a resource-based command structure:
+
+```sh
+openai <resource> [subresource...] <command> [flags...]
+```
+
+Standard API endpoints require an [API key](https://platform.openai.com/settings/organization/api-keys):
+
+```sh
+export OPENAI_API_KEY="sk-..."
+
+openai responses create \
+  --input "Say this is a test" \
+  --model gpt-5.5
+```
+
+Admin endpoints require an [admin API key](https://platform.openai.com/settings/organization/admin-keys):
+
+```sh
+export OPENAI_ADMIN_KEY="sk-admin-..."
+
+openai admin organization usage completions \
+  --start-time 1735689600 \
+  --end-time 1735776000 \
+  --bucket-width 1d
+```
+
+Browse each group with `--help`, for example `openai admin --help` or
+`openai admin organization --help`. Existing colon commands such as
+`openai admin:organization:usage completions` continue to work.
+
+Run `openai` to browse command groups by task, with descriptions for each group.
+Group help separates actions from nested command groups and lists every immediate command.
+Help works without an API key or network connection:
+
+```sh
+openai help setup                  # Enter your API key safely
+openai images generate --help      # Example and every image option
+openai help images generate        # The same complete image help
+openai --help                      # Command groups and global options
+```
+
+Add `--help` (or `-h`) to any command for its complete help page.
+`openai help COMMAND` shows the same page.
+Command pages list global options. Use `openai --help` for their full descriptions.
+You can place `--help` after valid command options.
+The old `help --all` spelling prints migration guidance and the complete page.
+Command behavior, defaults, and output formats remain unchanged.
+Tab completion follows the same group order and supports help topics and file input paths.
+After upgrading, [reload shell completion](docs/shell-completion.md) to enable the new file-path behavior.
+Older loaded completion scripts keep their previous behavior until refreshed.
+
+Successful JSON responses print readable text by default, including in pipes.
+Use `--format json` or `--format jsonl` in scripts that parse API data.
+See [reading command results](docs/readable-output.md) for extraction, binary
+output, and the scope of readable presentation.
+
+Upload a local file with an explicit purpose, inspect its metadata, then download its contents:
+
+```sh
+openai files upload "upload space.txt" --purpose user_data
+openai files get file-example
+openai files download file-example --output "downloaded copy.txt"
+openai files download file-example > copy.txt
+```
+
+Replace `file-example` with the returned file ID. Upload takes a plain path, without an added `@`.
+`create`, `retrieve`, `content`, and their existing flags remain available.
+See [working with files](docs/files.md) for literal filenames, output formats, and script examples.
+
+`openai images generate --prompt "A tiny orange robot"` saves images to
+`~/Downloads/gpt-images/` and prints their paths, including in pipes. The CLI
+uses `gpt-image-2.5-sunburst` when saving without an explicit model or legacy
+response format. Use `--model` for another exact ID, `--name` for a filename,
+or `--output-dir` for an existing directory. Existing files are kept.
+`--format json` returns API data without saving or applying the CLI preset.
+`images edit` also saves new results while keeping source files.
+`images create-variation` is retired and no longer available. To create a
+variation, use `images edit` with a GPT Image model and a prompt. See
+[image generation and saving](docs/image-generation-saving.md) for commands
+and defaults.
+
+`openai images preview "path/to/image.png"` redisplays a saved image without an
+API request. Use `openai images inline on` or `off` to remember whether future
+saved images appear automatically. Per-command `--inline auto`, `on` or `off`
+overrides that setting. `on` also permits an image font in local Apple Terminal.
+
+Errors print actionable summaries to stderr by default. Use `--format-error json`
+for original API error details, including unknown fields and SDK-reported stream
+error events. For those events, extraction paths include the `error` envelope,
+for example `--transform-error error.code`. Explicit `--format`
+values `json`, `jsonl`, `raw`, and `yaml` also apply to errors unless overridden
+by `--format-error`; an explicit `--format-error auto` or `text` restores summaries.
+`--transform-error` extracts error data independently of successful output.
+Malformed or empty error bodies receive a safe diagnostic; HTTP status is included
+only when the SDK retains it. Summaries omit rejected values and request URLs;
+explicit API error details can contain server-supplied sensitive data.
+
+### Environment variables
+
+| Environment variable | Required | Default value |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | no | `null` |
+| `OPENAI_ADMIN_KEY` | no | `null` |
+| `OPENAI_ORG_ID` | no | `null` |
+| `OPENAI_PROJECT_ID` | no | `null` |
+| `OPENAI_WEBHOOK_SECRET` | no | `null` |
+| `OPENAI_CUSTOM_HEADERS` | no | `null` |
+| `OPENAI_MTLS_CLIENT_CERT_FILE` | no | `null` |
+| `OPENAI_MTLS_CLIENT_KEY_FILE` | no | `null` |
+| `OPENAI_UNTRUSTED_STDIN` | no | `false` |
+
+### Global flags
+
+- `--api-key` (can also be set with `OPENAI_API_KEY` env var)
+- `--admin-api-key` (can also be set with `OPENAI_ADMIN_KEY` env var)
+- `--organization` (can also be set with `OPENAI_ORG_ID` env var)
+- `--project` (can also be set with `OPENAI_PROJECT_ID` env var)
+- `--webhook-secret` (can also be set with `OPENAI_WEBHOOK_SECRET` env var)
+- `--mtls-client-cert-file` (can also be set with `OPENAI_MTLS_CLIENT_CERT_FILE` env var)
+- `--mtls-client-key-file` (can also be set with `OPENAI_MTLS_CLIENT_KEY_FILE` env var)
+- `--help` - Show command line usage
+- `--debug` - Enable debug logging. This includes HTTP request/response details and bodies; do not share debug logs if they may contain sensitive payloads.
+- `--version`, `-v` - Show the CLI version
+- `--base-url` - Use a custom API backend URL
+- `--header`, `-H` - Add a literal request header as `Name: Value`; repeat for multiple headers
+- `--format` - Change the output format (`auto`, `text`, `explore`, `json`, `jsonl`, `pretty`, `raw`, `yaml`); `auto` selects readable text unless extracting data
+- `--format-error` - Change the stderr error format (`auto`, `text`, `explore`, `json`, `jsonl`, `pretty`, `raw`, `yaml`); `auto` selects readable summaries unless extracting error data
+- `--transform` - Transform the data output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)
+- `--transform-error` - Transform the error output using [GJSON syntax](https://github.com/tidwall/gjson/blob/master/SYNTAX.md)
+
+### Request headers
+
+Use `--header` or `-H` before or after a resource command:
+
+```sh
+openai --header 'X-Trace-ID: example-123' models list \
+  -H 'X-Client-Label: local,manual'
+```
+
+Values are literal: commas and colons are preserved, and `@` prefixes do not
+read files. Surrounding spaces and tabs are trimmed from values. `-H 'X-Example:'`
+sends an empty value. If a name is repeated, the last value wins regardless of
+case, overriding default and endpoint-specific headers. Headers managed by the
+HTTP transport, such as `Host` and `Content-Length`, retain the transport's
+behavior. Supplied header values are hidden in help and redacted in debug logs.
+
+For credential-bearing headers, have a secret manager or trusted launcher set
+`OPENAI_CUSTOM_HEADERS` directly in the CLI's environment. This keeps credentials
+out of command arguments and avoids typing literal secrets into shell history.
+The variable accepts one `Name: Value` entry per line. For example, with
+non-sensitive values:
+
+```sh
+export OPENAI_CUSTOM_HEADERS='X-Trace-ID: example-123
+X-Client-Label: local,manual'
+openai models list
+```
+
+`--header` and endpoint-specific header flags override matching environment
+entries. Environment header values are also redacted in debug logs. Use
+`OPENAI_API_KEY` and `OPENAI_ADMIN_KEY` for standard API and admin authentication.
+
+### Mutual TLS
+
+Mutual TLS is currently in beta. To opt in and activate a CA certificate for
+your organization or project, follow the
+[OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program)
+instructions.
+
+To authenticate API-key requests with a mutual TLS client certificate, provide
+the client certificate and private key as separate PEM files. If certificate
+chain support is enabled for your organization, the certificate file must
+contain the leaf certificate first, followed by any intermediate certificates.
+Otherwise, use a client certificate signed directly by an activated CA
+certificate.
+
+```sh
+export OPENAI_MTLS_CLIENT_CERT_FILE=/run/secrets/openai/client-chain.pem
+export OPENAI_MTLS_CLIENT_KEY_FILE=/run/secrets/openai/client.key
+export OPENAI_BASE_URL=https://mtls.api.openai.com/v1
+
+openai files list
+```
+
+Both mTLS files must be configured together. Keep the private key in a
+permission-restricted file; do not put private-key contents directly in command
+arguments or environment variables. The CLI does not automatically select an
+mTLS endpoint, so configure `OPENAI_BASE_URL` or `--base-url` explicitly. HTTP
+and SOCKS proxies remain supported, but HTTPS proxies are rejected to prevent
+presenting the client certificate during the proxy's own TLS handshake.
+
+### Passing files as arguments
+
+For JSON input values, `@myfile.ext` reads local file contents:
+
+Binary upload flags use plain paths. For example, use `files upload --file "upload space.txt" --purpose user_data`.
+Here, `--file "@upload space.txt"` names an actual file starting with `@`; it does not expand another file reference.
+See [working with files](docs/files.md).
+
+```bash
+openai <command> --arg @abe.jpg
+```
+
+Files can also be passed inside JSON or YAML blobs:
+
+```bash
+openai <command> --arg '{image: "@abe.jpg"}'
+# Equivalent:
+openai <command> <<YAML
+arg:
+  image: "@abe.jpg"
+YAML
+```
+
+When piping JSON or YAML from an untrusted source, enable untrusted-stdin mode:
+
+```bash
+untrusted-producer | OPENAI_UNTRUSTED_STDIN=1 openai <command> --file ./upload.txt
+```
+
+In this mode, values supplied through stdin are treated as literal data: `@`,
+`@file://`, and `@data://` references in request bodies, headers, and query
+parameters do not read local files. File-upload parameters must be provided
+explicitly as command-line flags. Explicit flags retain their normal file
+behavior and take precedence over values supplied through stdin. Leave
+`OPENAI_UNTRUSTED_STDIN` unset when using trusted heredocs or other trusted
+piped input that intentionally references local files.
+
+If you need to pass a string literal that begins with an `@` sign, you can
+escape the `@` sign to avoid accidentally passing a file.
+
+```bash
+openai <command> --username '\@abe'
+```
+
+#### Explicit encoding
+
+For JSON endpoints, the CLI tool does filetype sniffing to determine whether the
+file contents should be sent as a string literal (for plain text files) or as a
+base64-encoded string literal (for binary files). If you need to explicitly send
+the file as either plain text or base64-encoded data, you can use
+`@file://myfile.txt` (for string encoding) or `@data://myfile.dat` (for
+base64-encoding). Note that absolute paths will begin with `@file://` or
+`@data://`, followed by a third `/` (for example, `@file:///tmp/file.txt`).
+
+```bash
+openai <command> --arg @data://file.txt
+```
+
+## Linking different Go SDK versions
+
+You can link the CLI against a different version of the OpenAI Go SDK
+for development purposes using the `./scripts/link` script.
+
+To link to a specific version from a repository (version can be a branch,
+git tag, or commit hash):
+
+```bash
+./scripts/link github.com/org/repo@version
+```
+
+To link to a local copy of the SDK:
+
+```bash
+./scripts/link ../path/to/openai-go
+```
+
+If you run the link script without any arguments, it will default to `../openai-go`.
+
+## Contributing
+
+Please share bug reports and feature requests through [GitHub issues](https://github.com/openai/openai-cli/issues).
+Pull requests are limited to repository collaborators; we do not accept pull requests from non-collaborators.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution policy and development guide.
+For security vulnerabilities, follow [SECURITY.md](SECURITY.md).
+
+## License
+
+Copyright 2026 OpenAI
+
+This project is licensed under the [Apache License 2.0](LICENSE).

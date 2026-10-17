@@ -1,0 +1,290 @@
+<h1 align="center">🤖 🤺 The Agents Trading Arena</h1>
+
+<p align="center">
+  <a href="https://github.com/calf-ai/calfkit-sdk"><img src="https://img.shields.io/badge/built%20with-🐮%20agents-6f42c1?style=flat-square" alt="Built with calfkit"></a>
+  <a href="https://github.com/ryan-yuuu/crypto-trading-arena/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ryan-yuuu/crypto-trading-arena/ci.yml?branch=main&style=flat-square&logo=github&label=CI" alt="CI"></a>
+  <a href="https://github.com/ryan-yuuu/crypto-trading-arena/tree/python-coverage-comment-action-data"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ryan-yuuu/crypto-trading-arena/python-coverage-comment-action-data/endpoint.json&style=flat-square" alt="Coverage"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square" alt="License"></a>
+  <a href="https://discord.gg/Ch3U4VV7Nj"><img src="https://img.shields.io/discord/1478593215555960902?style=flat-square&logo=discord&label=Discord" alt="Discord"></a>
+</p>
+
+A multi-agent crypto trading arena where AI agents compete against each other, trading with live crypto market data from Coinbase or Binance. Each agent consumes a livestream of ticker data and standard candlestick charts, has access to its portfolio and calculator, and executes trades autonomously. 
+
+<br>
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Arena Demo">
+</p>
+
+<br>
+
+### 🐮 Built on [calfkit](https://github.com/calf-ai/calfkit-sdk)
+
+- **The Agents Trading Arena is built on [🐮 calfkit](https://github.com/calf-ai/calfkit-sdk)**, the SDK for highly-connected, event-driven, and scalable agents.
+
+- **Want to build your own multi-agent system?** Start with the calfkit [quickstart](https://github.com/calf-ai/calfkit-sdk#quickstart) and [examples](https://github.com/calf-ai/calfkit-sdk/blob/main/examples/README.md).
+
+<br>
+
+## Architecture
+
+```
+                           Live market data
+                (Coinbase / Binance — WebSocket + REST)
+                                   │
+                                   ▼
+            ┌─────────────────────────────────────────────┐
+            │              Exchange connector             │
+            │           (live-market-data proxy)          │
+            └─────────────────────────────────────────────┘
+                  │                                │
+             live prices                   market snapshots
+                  ▼                                ▼
+   ┌────────────────────────────┐   ┌────────────────────────────┐
+   │     Tools & Dashboard      │   │     Agent process  × N     │
+   │   paper wallets · tools    │◀─▶│  embedded LLM + strategy   │
+   │   live dashboard (Rich)    │   │     agent 1 … agent N      │
+   └────────────────────────────┘   └────────────────────────────┘
+                     tool calls  ⇄  tool results
+```
+
+A single **exchange connector** turns the live market into a continuous event stream
+that the agents and the Tools process consume in realtime. Each **agent** reacts on
+every update — reasoning over the latest prices and candlesticks to decide whether to
+buy, sell, or hold. The **Tools & Dashboard** process consumes the same stream to keep
+its price book current, so trades fill and the dashboard marks against up-to-the-moment
+prices. Agents act by calling tools (trade, portfolio, calculator), forming a tight
+loop: market event → decision → trade → updated state.
+
+Key design points:
+- **Connector as market-data proxy**: One process owns the exchange link and fans the feed out, so neither agents nor tools touch the exchange directly.
+- **Per-agent model selection**: Each agent embeds its own model client, so different agents can use different LLMs with different providers.
+- **Fan-out**: Every agent independently receives every market-data update, with no replicated work.
+- **Shared tools via ToolContext**: A single deployed set of trading tools serves all agents — each tool resolves the calling agent's identity at runtime.
+- **Dynamic agent accounts**: Agents appear on the dashboard automatically on their first trade — no pre-registration needed.
+
+<br>
+
+## Prerequisites
+
+- Python 3.10+
+- [uv](https://docs.astral.sh/uv/) — fast Python package manager
+- Docker installed and running (in order to run a kafka broker)
+- An API key (and optionally base url) for your LLM provider
+
+<br>
+
+### 1. Install uv
+
+If you don't have `uv` installed:
+
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or via Homebrew
+brew install uv
+```
+
+After installation, restart your terminal.
+
+<br>
+
+### 2. Install the Calfkit SDK
+
+[Calfkit](https://github.com/calf-ai/calfkit-sdk) is the event-stream SDK that powers this project — it handles the agents' realtime stream consumption and orchestration. It's already a pinned dependency (`calfkit>=0.12.6,<0.13` in `pyproject.toml`), installed along with everything else by `uv sync` in the [Quickstart](#quickstart) below.
+
+<br>
+
+### 3. Start the Broker
+
+The broker orchestrates all nodes and enables realtime data streaming between all components.
+
+<details>
+<summary><strong>Option A: Local broker setup (Docker required)</strong></summary>
+
+Run the following to clone the [calfkit-broker](https://github.com/calf-ai/calfkit-broker) repo and start a local Kafka broker container:
+
+```bash
+git clone https://github.com/calf-ai/calfkit-broker && cd calfkit-broker && make dev-up
+```
+
+Once the broker is ready, open a new terminal tab to continue with the quickstart. The default broker address is `localhost:9092`.
+
+</details>
+
+<details>
+<summary><strong>Option B: Calfkit cloud broker</strong></summary>
+
+There's also a [cloud broker](https://github.com/calf-ai/calfkit-sdk?tab=readme-ov-file#2-start-a-calfkit-broker) version so you can simply use the cloud broker URL (which would be provided to you) to deploy your agents instead of setting up and maintaining a broker locally.
+
+</details>
+
+<br>
+
+## Quickstart
+
+Clone the repo and install dependencies:
+
+```bash
+git clone https://github.com/ryan-yuuu/crypto-trading-arena && cd crypto-trading-arena
+uv sync
+```
+
+Add your LLM provider's API key:
+
+```bash
+cp .env.example .env      # then edit .env and set your provider's API key
+```
+
+Then launch each component in its own terminal. All components connect to the same broker (`localhost:9092` for the local broker from step 3, or your cloud broker URL).
+
+<br>
+
+### 1. Start the exchange connector
+
+Start either the Coinbase or Binance connector to stream live market data:
+
+```bash
+# Coinbase (default)
+uv run python -m exchanges.coinbase --bootstrap-servers <broker-url>
+
+# Or, Binance (experimental)
+# uv run python -m exchanges.binance --bootstrap-servers <broker-url>
+```
+
+Optional: You can use the `--min-interval <seconds>` flag which controls how often agents are fed market data (default: 60s). Note that candle data is only updated every 60 seconds due to Coinbase API restrictions, so intervals below a minute mean agents will receive updated live pricing (bid/ask spread, ~5s granularity) but the same candle data.
+
+<br>
+
+### 2. Deploy tools & dashboard
+
+```bash
+uv run python -m deploy.tools_and_dashboard --bootstrap-servers <broker-url>
+```
+
+<br>
+
+### 3. Deploy agents
+
+Deploy an agent with an embedded model client and a trading strategy. Each agent runs its own LLM inference. See `arena/strategies.py` for the full system prompts.
+
+```bash
+# OpenAI model
+uv run python -m deploy.agent \
+    --name <unique-agent-name> --model-id <openai-model-id> \
+    --strategy <strategy> --bootstrap-servers <broker-url>
+
+# Or, any OpenAI-compatible provider (e.g. DeepInfra, OpenRouter, etc.)
+# uv run python -m deploy.agent \
+#     --name <unique-agent-name> --model-id <model-id> \
+#     --base-url <llm-provider-base-url> --api-key <api-key> \
+#     --strategy <strategy> --bootstrap-servers <broker-url>
+
+# Or, load agent config from config.json
+# uv run python -m deploy.agent \
+#     --from-config <agent-name> --strategy <strategy> \
+#     --bootstrap-servers <broker-url>
+```
+
+Once agents are deployed, market data flows to them and trades should hydrate the dashboard soon.
+
+<br>
+
+### 4. (Optional) Start the response viewer
+
+A live dashboard that shows all agent activity, such as tool calls, text responses (agent reasoning), and tool results, as they happen.
+
+```bash
+uv run python -m deploy.response_viewer --bootstrap-servers <broker-url>
+```
+
+<br>
+
+## Data Recording
+
+All trades and periodic portfolio snapshots are automatically saved to CSV files in the `data/` directory. Each session produces two files:
+
+- **`trades_<timestamp>.csv`** — every executed trade with price, quantity, fee charged, and agent cash after settlement
+- **`snapshots_<timestamp>.csv`** — periodic portfolio state per agent, including positions, market values, unrealized and realized P&L, and cumulative fees paid
+
+You can configure the snapshot interval and output directory:
+
+```bash
+uv run python -m deploy.tools_and_dashboard \
+    --bootstrap-servers <broker-url> \
+    --snapshot-interval <default-600-seconds> \
+    --data-dir ./data
+```
+
+To disable recording entirely, pass `--snapshot-interval 0`.
+
+For full column descriptions and examples, see [docs/csv-data-recording.md](docs/csv-data-recording.md).
+
+<br>
+
+## CLI Reference & Config-Based Deployments
+
+For full CLI flags, config-based deployment options, and the config schema, see [CLI_REFERENCE.md](docs/CLI_REFERENCE.md).
+
+<br>
+
+## Testing
+
+The suite separates fast, deterministic tests from ones that need external resources:
+
+```bash
+# Fast unit + in-memory tests (what CI runs on every PR). No broker, no API key.
+uv run pytest -m "not llm and not broker"
+
+# Broker integration tests against a real Redpanda broker (needs Docker; a
+# container is started automatically via testcontainers).
+uv run pytest -m broker --run-broker
+
+# Live LLM tests (needs OPENAI_API_KEY); a bare `uv run pytest` includes these.
+uv run pytest -m llm
+```
+
+Markers: `llm` (live inference call) and `broker` (live Kafka-API broker, opt-in via
+`--run-broker`). CI (`.github/workflows/ci.yml`) runs lint, the non-LLM unit tests on
+Python 3.10–3.12, and the Redpanda broker job. Known-but-unfixed issues are tracked as
+strict `xfail`s; see [docs/REVIEW_FINDINGS.md](docs/REVIEW_FINDINGS.md).
+
+<br>
+
+## Available Agent Tools
+
+| Tool | Description |
+|------|-------------|
+| `execute_trade` | Buy or sell a crypto product at the current market price. A configurable taker fee is charged on every fill (see `trading.fees.taker_bps` below) |
+| `get_portfolio` | View cash, open positions, cost basis (fee-inclusive), P&L, and average time held |
+| `calculator` | Evaluate math expressions for position sizing, P&L calculations, etc. |
+
+<br>
+
+## Deployment Configurations
+
+| File | Constant | Default | Description |
+|------|----------|---------|-------------|
+| `arena/models.py` | `INITIAL_CASH` | `100_000.0` | Starting cash balance per agent |
+| `exchanges/coinbase.py` | `DEFAULT_PRODUCTS` | 3 products | Coinbase products tracked by the price feed |
+| `exchanges/binance.py` | `DEFAULT_SYMBOLS` | 3 symbols | Binance symbols tracked by the price feed |
+| `config.json` | `trading.fees.taker_bps` | `60` | Taker fee in basis points charged on every simulated fill (both buys and sells). `60` ≈ Coinbase Advanced Trade base tier; `10` ≈ Binance global VIP 0; `40` ≈ Kraken Pro; `0` disables. Read by both the tools node (which charges the fee) and the price-feed connector (which advertises it to agents). |
+
+<br>
+
+## License
+
+[Apache-2.0](./LICENSE).
+
+<br>
+
+---
+
+<p align="center">
+  <strong>Built on <a href="https://github.com/calf-ai/calfkit-sdk">🐮 calfkit</a></strong> — the SDK for highly-connected, event-driven, and scalable agents.<br>
+  Building your own multi-agent system? <a href="https://github.com/calf-ai/calfkit-sdk#quickstart">Start with the calfkit quickstart</a> · ⭐ <a href="https://github.com/calf-ai/calfkit-sdk">star the repo</a>
+</p>

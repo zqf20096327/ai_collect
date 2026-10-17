@@ -1,0 +1,250 @@
+# Pipiclaw
+
+**简体中文** | [English](./README.en.md)
+
+**把钉钉变成一个能持续工作的 AI 工程入口。**
+
+Pipiclaw 是一个面向个人和团队的 AI coding assistant runtime。它让 AI 助手不只回答一轮问题，而是能留在你的钉钉里理解上下文、操作工作区、记住长期约定、按计划继续任务，还能把重活委派给 Claude Code、Codex CLI 或你自己的执行器。
+
+你看到的是一个助手，背后可以是一支分工明确的 AI 工程团队：主智能体负责理解目标和交付结果，轻量子智能体负责检索与整理，外部智能体负责跨文件实现、独立评审和运行验收。所有工作都有状态、有产物、有控制入口，而不是散落在几个终端窗口里的临时对话。
+
+- npm：[`@oyasmi/pipiclaw`](https://www.npmjs.com/package/@oyasmi/pipiclaw)
+- 运行环境：Node.js `>= 22.19.0`，Linux / macOS；Windows 请使用 WSL2
+- 许可证：[GNU AGPL v3](./LICENSE)
+
+## 为什么用 Pipiclaw
+
+### 一个入口，协调多个智能体
+
+Pipiclaw 同时支持两类委派：内置子智能体在进程内完成检索、日志筛查等轻量工作；外部智能体则启动真实的 Claude Code、Codex CLI 或任意脚本，处理需要长时间运行、跨多个文件和反复自测的重型任务。
+
+在钉钉常驻模式中，外部任务派发后在后台继续执行，完成时自动唤醒原频道。你可以随时用 `/subagents` 查看运行状态、实际命令和产出，用 `/subagents cancel` 直接终止，也可以让主智能体在已结束的 Claude Code / Codex 会话上继续追问。仓库附带按能力与成本组织的推荐条目，以及可参考的早期岗位角色模板。
+
+### 工作不会随着一次对话结束
+
+每个频道都有独立的持久会话、长期记忆索引和按天日志。任务是一次性项目，用 Markdown 保存目标、完成标准和工作项，用 JSONL 循环日志记录步骤、派发与结算；内建 task driver 推进可运行任务、兑现到期等待票并处理兜底超时，周期与定时工作由事件模板每次生成独立任务实例，预算耗尽、空转或连续无法兑现等待时会停止并告诉你。
+
+### 原生工作在钉钉里
+
+Pipiclaw 使用钉钉 Stream Mode，不需要自建消息中转服务或公网 IP。AI Card 可以持续显示思考、工具执行和状态更新；任务进行中仍可用 `/steer` 调整方向、`/followup` 排队下一件事、`/stop` 中止当前回合。生成的报表、截图和导出文件可以作为钉钉原生附件直接交付。
+
+同一个机器人实例可以同时服务多个私聊和群聊：私聊按用户、群聊按群分别建立 channel，不同 channel 的模型回合可以并行推进；同一 channel 内则串行执行，避免一段对话的上下文被多个回合同时修改。需要注意的是，会话隔离不等于代码目录隔离；如果多个 channel 指向同一个项目目录，仍应避免让主智能体同时修改同一批文件，或为并行实现准备独立的 Git worktree。完整边界见[并发与容量](https://github.com/oyasmi/pipiclaw/blob/main/docs/scaling-and-concurrency.md)。
+
+### 能自主，也能随时接管
+
+定时事件适合提醒、周期检查和零 token 的条件传感器；任务台账适合跨小时、跨会话的长期工作。运行状态、模型用量、任务、记忆和委派 run 都有不经过 LLM 的控制命令，即使模型不可用或当前回合卡住，你仍能查看和干预。
+
+### 配置、数据和工作方式归你所有
+
+模型支持内置 provider、OpenAI-compatible 网关、API key 和订阅登录。记忆、任务、角色、事件与团队规则都保存在本机可阅读文件中。Pipiclaw 提供命令、路径和网络守卫以及审计记录；需要更强隔离时，可把整个进程放进独立账号或容器。
+
+## 适合做什么
+
+- 在钉钉中提供长期在线的研发助手、内部技术支持或运维协作入口
+- 把需求分析、实现、评审、验证、文档整理交给不同 AI 智能体协作完成
+- 跟进跨小时或跨天的编码、调查、迁移、报告和周期性工作
+- 在多个群和私聊中保留彼此隔离的上下文与记忆
+- 复用现有模型网关、Claude Code / Codex CLI 账号和团队工作规范
+
+Pipiclaw 当前定位是个人与小团队、自托管、单实例运行。它不是强多租户 SaaS，也不提供 OS 级沙箱；外部智能体拥有的真实权限由目标 CLI 的 sandbox 参数、运行账号和宿主环境共同决定。
+
+## 快速开始
+
+下面按顺序完成本地验证、钉钉接入和外部智能体配置；已经有明确目标时可以直接跳到对应部分。
+
+### 1. 安装并确认 CLI
+
+```bash
+npm install -g @oyasmi/pipiclaw
+pipiclaw tui --help
+```
+
+首次实际启动 `pipiclaw` 或 `pipiclaw tui` 时会创建：
+
+```text
+~/.pipiclaw/
+├── channel.json      # 钉钉应用
+├── auth.json         # 模型凭据
+├── models.json       # 自定义模型提供方
+├── settings.json     # 默认模型与运行设置
+├── tools.json        # Web 工具、任务等能力开关
+├── security.json     # 命令、路径与网络守卫
+└── workspace/        # 记忆、任务、事件、skills、智能体角色和频道数据
+```
+
+设置 `PIPICLAW_HOME=/your/path` 可以整体迁移这个目录。
+
+### 2. 最快体验：先在终端跑通
+
+终端模式不需要钉钉凭据，只需要一个可用模型。任选一种方式：
+
+```bash
+# 方式 A：使用 API key
+export ANTHROPIC_API_KEY=sk-ant-...
+
+# 方式 B：登录 SDK 支持的订阅 provider
+pipiclaw auth login
+```
+
+然后启动：
+
+```bash
+pipiclaw tui
+```
+
+也可以用于脚本化的一次性请求：
+
+```bash
+pipiclaw tui --print "只回复：Pipiclaw 模型调用成功"
+```
+
+看到模型实际回复才表示调用链路已经跑通；`pipiclaw tui --help` 或 `/model` 只能证明 CLI 或模型目录可见。正式工作前可用 `/project` 确认当前项目目录。如需接入企业网关、本地模型或指定默认模型，请看[配置速查](https://github.com/oyasmi/pipiclaw/blob/main/docs/configuration.md)。
+
+### 3. 接入钉钉
+
+在[钉钉开放平台](https://open-dev.dingtalk.com/)创建企业内部应用：
+
+1. 获取 `Client ID` 和 `Client Secret`
+2. 开启机器人能力
+3. 启用 Stream Mode
+4. 推荐创建 AI Card 模板并取得 `Card Template ID`
+
+编辑 `~/.pipiclaw/channel.json`：
+
+```json
+{
+  "clientId": "your-dingtalk-client-id",
+  "clientSecret": "your-dingtalk-client-secret",
+  "robotCode": "",
+  "cardTemplateId": "",
+  "cardTemplateKey": "content",
+  "allowFrom": []
+}
+```
+
+- 硬性必填只有 `clientId` 和 `clientSecret`。
+- `robotCode` 留空时回退到 `clientId`。
+- `cardTemplateId` 可暂时留空；正式使用建议配置 AI Card。
+- `allowFrom: []` 表示允许所有发送者，灰度期建议填测试人员 staff ID。
+- 文件中不能保留任何 `your-*` 占位值。
+
+启动常驻进程：
+
+```bash
+pipiclaw
+```
+
+先在钉钉里发送 `/model` 检查模型引用，再发送一条普通消息验证真实调用：
+
+```text
+请介绍一下你自己，并说明你现在能做什么
+```
+
+如果第一条消息没有成功，请从[部署与排障](https://github.com/oyasmi/pipiclaw/blob/main/docs/deployment-and-operations.md)开始检查。
+
+### 4. 启用外部智能体委派
+
+先在运行 Pipiclaw 的同一账号下安装并登录目标 CLI，然后复制需要的能力条目。下面启用 Claude Code 与 Codex 的两个主力条目：
+
+```bash
+mkdir -p ~/.pipiclaw/workspace/sub-agents
+PIPICLAW_PACKAGE_DIR="$(npm root -g)/@oyasmi/pipiclaw"
+cp "$PIPICLAW_PACKAGE_DIR"/examples/sub-agents/agents/{claude-main,codex-main}.md \
+  ~/.pipiclaw/workspace/sub-agents/
+```
+
+角色文件变更会在运行时重新发现。发送：
+
+```text
+/subagents roles
+```
+
+确认条目显示为可用后，直接描述目标和验收要求，由主智能体选择执行器：
+
+```text
+请把这个跨模块实现交给合适的执行器，完成后独立检查最终改动。
+```
+
+常用控制入口：
+
+```text
+/subagents                         # 运行中和最近完成的委派
+/subagents show <runId>            # 状态、实际 argv、产物目录、stderr
+/subagents output <runId>          # 查看文本产出
+/subagents cancel <runId|all>      # 不经过模型，直接终止
+/subagents roles [name]            # 查看角色目录和单个角色配置
+```
+
+外部智能体不会经过 Pipiclaw 的命令和路径守卫。上述推荐条目使用放开权限的 CLI 参数；使用前必须阅读[智能体委派指南](https://github.com/oyasmi/pipiclaw/blob/main/docs/sub-agents.md)中的授权、安全边界和 sandbox 说明。
+
+长时间外部委派应运行在钉钉 daemon 中；TUI 当前不提供外部 run 的完成通知和退出后的重新认领。
+
+### 5. 可选：启用 Web 工具
+
+`web_search` / `web_fetch` 默认关闭。编辑 `~/.pipiclaw/tools.json`，设置 `tools.web.enable: true` 并配置搜索 provider。支持 DuckDuckGo、Brave、Tavily、Jina 和 SearXNG；完整字段见[配置速查](https://github.com/oyasmi/pipiclaw/blob/main/docs/configuration.md)。
+
+<details>
+<summary>让你常用的 AI Agent 帮忙安装</summary>
+
+把下面的要求交给 Claude Code、Codex 或其他本机 AI Agent：
+
+```text
+请帮我安装并初始化 Pipiclaw：
+
+1. 检查 Node.js >= 22.19.0，不满足就停止并说明。
+2. 执行 npm install -g @oyasmi/pipiclaw；权限失败时不要自行 sudo。
+3. 运行一次 pipiclaw 初始化 ~/.pipiclaw/；它因 channel.json 仍是模板而提示补全并退出是正常现象。
+4. 询问我要使用 API key、自定义 provider，还是 pipiclaw auth login 支持的订阅登录；不要编造缺失值。
+5. 如果我要接入钉钉，逐项收集 clientId、clientSecret、可选的 cardTemplateId 和 allowFrom，写入 channel.json，并清除所有 your-* 占位值。
+6. 配置完成后先询问是否启动。终端模式用 pipiclaw tui；钉钉模式用 pipiclaw。
+7. 如实列出做过的操作、修改的文件、验证结果和仍缺少的信息，不要假装成功。
+```
+
+</details>
+
+## 常用命令
+
+| 命令 | 作用 |
+|---|---|
+| `/help` | 查看当前版本的完整命令帮助 |
+| `/stop` | 停止当前回合；任务驱动的回合会同时暂停对应任务 |
+| `/steer <消息>` | 调整正在执行的回合 |
+| `/followup <消息>` | 排队下一条请求 |
+| `/status` | 查看执行状态、模型、上下文、运行时长和版本 |
+| `/usage [7d\|month]` | 查看本频道与全局的模型用量和成本 |
+| `/tasks ...` | 查看、诊断和控制长期任务 |
+| `/subagents ...` | 查看、控制委派 run 和角色目录 |
+| `/memory ...` | 查看当前频道的长期记忆 |
+| `/model [引用]` | 查看或切换模型 |
+
+`/help`、`/stop`、`/steer`、`/followup`、`/events`、`/tasks`、`/status`、`/usage`、`/context` 和 `/subagents` 由运行时直接处理，回合进行中也能使用。`/stop` 不会取消已经派发的委派 run；请使用 `/subagents cancel`。
+
+完整交互说明见[交互与命令](https://github.com/oyasmi/pipiclaw/blob/main/docs/interaction-and-commands.md)。
+
+## 文档
+
+完整索引见 **[docs/README.md](https://github.com/oyasmi/pipiclaw/blob/main/docs/README.md)**。建议从这些入口开始：
+
+| 我想了解 | 文档 |
+|---|---|
+| 钉钉、TUI、AI Card 和控制命令 | [交互与命令](https://github.com/oyasmi/pipiclaw/blob/main/docs/interaction-and-commands.md) |
+| Claude Code / Codex / 内置子智能体委派 | [智能体委派](https://github.com/oyasmi/pipiclaw/blob/main/docs/sub-agents.md) |
+| 配置模型、工具和工作区 | [配置速查](https://github.com/oyasmi/pipiclaw/blob/main/docs/configuration.md) |
+| 记忆、定时事件和长期任务 | [记忆](https://github.com/oyasmi/pipiclaw/blob/main/docs/memory.md) · [事件与任务](https://github.com/oyasmi/pipiclaw/blob/main/docs/events-and-tasks.md) |
+| 默认安全边界和外部智能体授权 | [安全指南](https://github.com/oyasmi/pipiclaw/blob/main/docs/security.md) |
+| 部署、升级、备份和排障 | [部署与运维](https://github.com/oyasmi/pipiclaw/blob/main/docs/deployment-and-operations.md) |
+| 多群、多私聊的并发模型与容量边界 | [并发与容量](https://github.com/oyasmi/pipiclaw/blob/main/docs/scaling-and-concurrency.md) |
+
+## 开发
+
+```bash
+npm install
+npm run build
+npm run check    # lint + typecheck + deadcode + test
+```
+
+最小验证：`npm run typecheck` 和 `npm run test`。`npm run test:e2e` 是离线、无凭据的确定性全栈测试；少量真实模型 smoke 使用 `npm run test:e2e:live`。
+
+## 许可证
+
+GNU Affero General Public License v3.0。见 [LICENSE](./LICENSE)。

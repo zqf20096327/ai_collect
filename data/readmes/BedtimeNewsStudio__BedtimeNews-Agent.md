@@ -1,0 +1,324 @@
+<h1 align="center">睡前消息知识库</h1>
+
+<p align="center">
+  <a href="https://github.com/BedtimeNewsStudio/BedtimeNews-Agent/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/BedtimeNewsStudio/BedtimeNews-Agent/ci.yml?branch=main&amp;label=CI&amp;logo=githubactions&amp;logoColor=white&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+  <a href="https://github.com/BedtimeNewsStudio/BedtimeNews-Agent/actions/workflows/release.yml"><img alt="Release" src="https://img.shields.io/github/actions/workflow/status/BedtimeNewsStudio/BedtimeNews-Agent/release.yml?label=release&amp;logo=githubactions&amp;logoColor=white&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+  <a href="https://github.com/orgs/BedtimeNewsStudio/packages?repo_name=BedtimeNews-Agent"><img alt="ghcr.io" src="https://img.shields.io/github/v/tag/BedtimeNewsStudio/BedtimeNews-Agent?sort=semver&amp;label=ghcr.io&amp;logo=docker&amp;logoColor=white&amp;color=2563eb&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/BedtimeNewsStudio/BedtimeNews-Agent?color=6e7781&amp;style=for-the-badge&amp;labelColor=1f2328"></a>
+</p>
+
+<p align="center">
+  <a href="README.md">中文</a> |
+  <a href="README.en.md">English</a> |
+  <a href="README.es-ES.md">Español</a>
+</p>
+
+睡前消息知识库网站：既能向智能体提问，也能在站内浏览与阅读全部节目文稿。
+问答由智能 RAG（检索增强生成）系统提供——自动路由、语义搜索、检索文稿
+上下文与节目引用。
+
+[![睡前消息知识库演示视频（YouTube）](https://img.youtube.com/vi/9_SlMaqBvcU/maxresdefault.jpg)](https://www.youtube.com/watch?v=9_SlMaqBvcU)
+
+> 视频无法播放？可直接访问 [bedtime.blog](https://bedtime.blog) 体验。
+
+## 概述
+
+文稿原文与智能系统分属两个仓库：文稿原文在
+[睡前消息文稿库（BedtimeNews-Transcripts）](https://github.com/BedtimeNewsStudio/BedtimeNews-Transcripts)中维护；本仓库（BedtimeNews-Agent）索引这些文稿，并运行同时提供聊天问答与站内文稿阅读的网站——索引到的文稿直接作为站内内容供浏览，回答中的引用也跳转到应用内阅读器。基于 LangGraph、任意 OpenAI-compatible 的对话/嵌入端点（默认模板使用 DeepSeek 对话模型与 SiliconFlow 的 Qwen3 embedding）以及 PostgreSQL + pgvector 构建。
+
+**核心功能：**
+
+- 自动查询路由（档案检索 vs 受限的直接处理）
+- 查询优化与语义搜索
+- 基于LLM的文档相关性评分
+- 将检索文稿作为回答上下文，并提供 Markdown 引用与引用修复
+- 自动化文档索引与增量更新，以不可变快照发布：原子、可回滚，Agent 无需重启即可切换
+- 网页界面：聊天提问 + 站内浏览/阅读文稿（引用直接跳转到应用内阅读器）
+
+## 架构
+
+![睡前消息系统架构](docs/diagrams/system-architecture.svg)
+
+**组件说明：**
+
+- **[Frontend](frontend/README.md)**：自定义聊天与文稿阅读 UI（静态 HTML/CSS/JS，
+  由轻量 FastAPI 服务托管；站内托管文稿列表与正文阅读器，文稿内容来自索引数据库）
+- **[Agent](agent/README.md)**：基于 LangGraph 的智能 RAG 服务
+- **[Indexer](indexer/README.md)**：自动化文档 embedding 流水线
+- **Database**：PostgreSQL + pgvector 扩展的向量数据库。Indexer 是唯一的写入方，把知识库发布为
+  不可变、带版本的快照（每次构建一个 `rag_s<id>` schema，登记在 `rag_meta` 中）；Agent 通过只读角色
+  `rag_agent` 读取最新的兼容快照，并在 15 秒内切换到新快照
+
+索引范围：每篇文稿仅 `## 正文` 进入检索；`## 附录`（事实订正、核对记录）与
+`发布日期 YYYY-MM-DD | ...` 元数据行不索引。引用的标签是标准化标题（如睡前消息123），链接打开正文里对应的 `##`；没有话题锚点时，链接打开文稿开头。
+
+整个服务栈仅提供纯 HTTP（8080 端口），不做 TLS。公网暴露与 TLS 终止由本仓库之外的工作处理。
+
+## 快速开始
+
+### 前置要求
+
+- Docker 及 Docker Compose 2.24.6 或更高版本（compose 文件使用了 `include`；更早的版本会拒绝共用的网络声明或对被包含服务的覆盖）
+- 生成与嵌入端点的 API 密钥——填入 `config.yml`（任意 OpenAI-compatible 供应商；
+  模板默认以 DeepSeek 对话、SiliconFlow Qwen3 embedding 为例）
+
+### 安装步骤
+
+1. **克隆仓库**
+
+   ```bash
+   git clone https://github.com/BedtimeNewsStudio/BedtimeNews-Agent.git
+   cd BedtimeNews-Agent
+   ```
+
+2. **配置 `config.yml`**
+
+   复制[`config.example.yml`](config.example.yml)为 `config.yml` 并填写（已被
+   `.gitignore`，不会入库）：
+
+   ```bash
+   cp config.example.yml config.yml
+   # 编辑 config.yml —— 填入 generation / embedding 两组端点：
+   # api_key + base_url + model（任意 OpenAI-compatible 供应商，如
+   # DeepSeek、SiliconFlow、OpenAI 或自建网关）
+   ```
+
+   同时复制 `.env.example` 为 `.env`（部署布线：端口、镜像 tag、postgres 凭据、
+   `EMBEDDING_DIM` 等，仅这些内容仍走环境变量）：
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   - `EMBEDDING_DIM` 是 embedding 模型的输出维度（默认模型 `Qwen/Qwen3-Embedding-4B` 为 `2560`）。
+     它与模型一起确定 Indexer 构建快照、Agent 读取快照所用的向量空间；不再决定数据库列的类型，
+     之后修改它会让 Indexer 构建一个新快照，而不需要迁移。
+   - `POSTGRES_AGENT_PASSWORD`（可选，推荐）让 Agent 以只读角色 `rag_agent` 连接，无法修改任何数据。
+     未设置时 Agent 回退到超级用户并记录警告。
+
+   > **优先级：进程环境变量 > `config.yml`**（嵌套键用双下划线，如
+   > `GENERATION__API_KEY`）。密钥等应用配置以 `config.yml` 为准，不再需要导出密钥。
+
+3. **启动服务**
+
+   ```bash
+   docker compose up -d
+   ```
+
+4. **访问界面**
+
+   打开 `http://localhost:8080`（纯 HTTP；可在 `.env` 中通过 `FRONTEND_PORT` 修改宿主机端口）。
+
+   默认运行已发布的镜像。如果你修改了代码，请加 `--build`——参见
+   [已发布镜像与本地代码](#已发布镜像与本地代码)。
+
+   全新数据库上，在 Indexer 的第一次构建发布之前 Agent 处于未就绪状态（`/health` 返回 `503`），
+   之后会自动变为就绪。
+
+### 验证安装
+
+```bash
+# 检查服务状态
+docker compose ps
+
+# 查看日志
+docker compose logs -f
+
+# Indexer 发布的快照，以及 Agent 的就绪状态
+docker compose exec indexer python -m src.snapshots list
+docker compose exec agent curl -s http://localhost:8000/health
+
+# 经 web 服务查看整个服务栈的就绪状态（有快照可服务后为 200，此前为 503；响应体给出快照）
+curl -s localhost:8080/readyz
+```
+
+### 测试与覆盖率
+
+根目录的测试命令会在相互隔离的进程中运行 agent、indexer 与 frontend：
+
+```bash
+uv run pytest
+uv run pytest --cov
+```
+
+选项会转发给每个组件。如需只运行单个组件，请进入对应目录执行：
+
+```bash
+cd agent  # 或 indexer / frontend
+uv run pytest --cov
+```
+
+快照构建/发布与快照选择的测试需要带 pgvector 的 PostgreSQL，否则会被跳过。请指向一个
+允许当前用户创建数据库的服务器（每个测试使用各自的临时数据库）：
+
+```bash
+PGTEST_HOST=localhost PGTEST_PORT=5432 PGTEST_USER=postgres PGTEST_PASSWORD=postgres uv run pytest
+```
+
+## 发布版本
+
+推送版本标签后，[`release.yml`](.github/workflows/release.yml) 会构建多架构
+（amd64 + arm64）镜像并发布到 GHCR：
+
+- `ghcr.io/bedtimenewsstudio/bedtimenews-agent-agent`
+- `ghcr.io/bedtimenewsstudio/bedtimenews-agent-indexer`
+- `ghcr.io/bedtimenewsstudio/bedtimenews-agent-frontend`
+
+要部署已发布的版本，先在 `.env` 中用 `IMAGE_TAG` 固定版本（默认 `latest`），
+再拉取镜像。`IMAGE_TAG` 固定 indexer 的版本，并作为应用（`agent` 与 `web`）的回退版本；
+`APP_IMAGE_TAG` 只覆盖应用的版本，蓝绿部署正是借此让两个版本并行运行（参见[零停机升级](#零停机升级)）：
+
+```bash
+# .env 中： IMAGE_TAG=0.1.0
+docker compose pull
+docker compose up -d
+```
+
+### 已发布镜像与本地代码
+
+`docker compose up` **不会自动构建**，即使在有本地改动的源码目录中也是如此。
+真正决定运行内容的是 `image:`：
+
+| 情况                        | `docker compose up` 的行为   |
+| --------------------------- | ---------------------------- |
+| 本地已有该标签的镜像        | 直接复用——不拉取、不构建     |
+| 本地没有该标签的镜像        | **从 GHCR 拉取**已发布的镜像 |
+| `docker compose up --build` | 从本地源码构建               |
+
+因此改完代码后必须显式重新构建，否则运行的仍是旧镜像：
+
+```bash
+docker compose up -d --build agent web
+```
+
+注意本地构建的镜像与已发布的版本共用同一个标签，后创建的会覆盖先前的：
+`docker compose pull` 会覆盖本地构建，`--build` 会覆盖拉取到的发布版本。因此蓝绿部署中从源码构建的应用实例
+要使用独立的 tag（如 `APP_IMAGE_TAG=0.4.0-<sha>`），并在同一次 `up` 中加 `--build`，否则 compose 会去拉取一个不存在的 tag。
+
+发布新版本：推送 `v*` 标签即可（镜像标签会去掉前缀 `v`）：
+
+```bash
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+> 发布说明应重点写明运维相关变更：新增/更名的环境变量、挂载，以及是否会触发全量构建。
+> 数据库结构由 Indexer 自动创建和接管，不再需要手动迁移。Agent 读取的表发生变化时，
+> 会作为新的快照 `format_version` 与旧格式并行构建。
+
+### 升级到 RAG 快照
+
+支持快照的 Indexer 首次启动时会自动接管已有数据库——无需手动步骤，Agent 与 Indexer 的升级顺序不限：
+
+- 已有的 `rag` schema 登记为快照 `legacy`；审计日志移到 `rag_state`，`rag.indexing_history`
+  改名为 `rag.index_state`。
+- 第一次构建是全量构建，复用全部已有向量（通常不调用 embedding，耗时几分钟），并发布第一个常规快照。
+- `legacy` 保留 7 天，期间旧版 Agent 继续可用，也可以用
+  `python -m src.snapshots retire <id>` 回滚数据。
+- 接管后不支持把 **Indexer** 回滚到快照之前的版本；Agent 可以自由回滚，直到 `legacy` 被回收。
+- Indexer 新增对 `POSTGRES_DATA_DIR` 的只读挂载（磁盘预检），`POSTGRES_AGENT_PASSWORD` 为可选项——
+  二者都已写入 compose 文件（`compose.data.yml`、`compose.app.yml`）。
+
+详见 [indexer/README.md](indexer/README.md#从旧版-schema-升级) 与
+[设计文档](docs/designs/20261007_rag-snapshot-architecture.md)。`docker-compose.sample.yml`
+提供固定小样本，本地运行时必须设置隔离的 `POSTGRES_DATA_DIR` / `INDEXER_DATA_DIR`。
+
+### 零停机升级
+
+服务栈分为两层（[设计文档](docs/designs/20261008_blue-green-deployment.md)）：
+
+| 层     | Compose 文件       | 服务                | 升级方式                            |
+| ------ | ------------------ | ------------------- | ----------------------------------- |
+| 数据层 | `compose.data.yml` | `postgres`、indexer | 原地升级                            |
+| 应用层 | `compose.app.yml`  | `agent`、`web`      | 蓝绿部署：每个实例一个 compose 项目 |
+
+`docker-compose.yml` 包含这两层，自托管时 `docker compose up -d` 运行的就是它，用法不变。蓝绿升级时，
+新版本作为第二个应用项目在另一个端口上启动，与正在运行的实例共用同一个数据库；待其 `/readyz` 就绪后切换边缘代理，
+让旧实例排空，再用 `down -v` 退役。由于对外服务的数据是各 Agent 自行选择的不可变快照，两个版本可以同时运行，
+无需任何 schema 兼容规则。
+
+本项目向部署工具提供：按实例传入的参数（`APP_IMAGE_TAG`、`APP_PORT`、`APP_INSTANCE`、`BEDTIMENEWS_NET_NAME`、
+`BEDTIMENEWS_NET_EXTERNAL`，以及可选的 `RAG_SNAPSHOT`、`EMBEDDING_DIM`、`APP_CONFIG_FILE`），在命令行传入、
+从不写入 `.env`；`GET /healthz`（`web` 的存活状态，含版本与实例）与 `GET /readyz`（就绪状态，含快照）；
+以及让进行中的 `/chat` 流完整结束的优雅停止。对外的要求：边缘代理能原子地切换上游、让进行中的流完成、
+并按上游报告进行中的请求数（Caddy 三者都满足）；部署工具按设计文档第 3 节的步骤执行。生产环境中，VM 的
+`.env` 设置 `COMPOSE_FILE=compose.data.yml`，使不带 `-f` 的 `docker compose ...` 只作用于数据层。
+
+只做原地重启的自托管用户不会有任何损失，但有聊天流尚未结束时，`agent` 或 `web` 的停止或重建最多会等待 5 分钟
+（每个 `/chat` 上限 240 秒；uvicorn 等待 270 秒；compose 等待 300 秒）。
+
+## 服务专属文档
+
+- **[Frontend](frontend/README.md)**：UI定制
+- **[Agent](agent/README.md)**：API端点、Agentic RAG实现
+- **[Indexer](indexer/README.md)**：文档处理
+
+## 数据持久化
+
+数据在重启后持久保存：
+
+- **PostgreSQL 数据**（RAG 快照、注册表、审计日志）：绑定挂载到 `./storage/postgres/volume`
+- **服务日志**：Indexer 的运行日志在 Docker 命名卷 `bedtimenews_indexer_logs`（数据层）中；Agent 与 Web 只输出到 stdout（`docker compose logs`）。`bedtimenews_agent_logs`（每个应用项目各一个）只在仓库路径不可写时保存 `eval_retriever` 的评估结果
+
+## 项目结构
+
+```plaintext
+BedtimeNews-Agent/
+├── .github/workflows/  # CI（ruff、compose 配置、pytest）、发布、Dependabot 自动合并
+├── agent/              # LangGraph 智能RAG服务
+│   ├── src/
+│   ├── tests/
+│   ├── eval_results/   # 检索评估历史（eval_retriever）
+│   ├── pyproject.toml
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── README.en.md
+│   └── README.es-ES.md
+├── frontend/           # 自定义 Web UI（静态 + FastAPI）
+│   ├── server.py       # FastAPI：静态界面、服务端渲染页面、/chat SSE 与文稿 API 代理、robots/sitemap/短链接、/healthz 与 /readyz
+│   ├── starters.py     # 示例提问数据
+│   ├── static/         # index.html、styles.css、app.js、markdown-it、logo、Bing 站点验证
+│   ├── tests/
+│   ├── pyproject.toml
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── README.en.md
+│   └── README.es-ES.md
+├── indexer/            # 文稿 embedding 流水线
+│   ├── src/
+│   ├── tests/
+│   ├── data/           # 默认的 INDEXER_DATA_DIR：文稿仓库克隆与运行锁
+│   ├── index_config.yml         # 选择要索引的文稿文件
+│   ├── index_config.sample.yml  # 固定的本地小样本
+│   ├── pyproject.toml
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── README.en.md
+│   └── README.es-ES.md
+├── docs/
+│   ├── designs/        # 设计文档
+│   └── diagrams/       # SVG 架构图与工作流图
+├── storage/
+│   └── postgres/       # init.sh（启用 pgvector）；migrations/ 仅作历史参考
+├── docker-compose.yml  # 总入口：包含两层（自托管、开发）
+├── compose.data.yml    # 数据层：postgres + indexer（原地升级）
+├── compose.app.yml     # 应用层：agent + web（每个实例一个项目）
+├── docker-compose.sample.yml  # 仅限本地的小样本覆盖文件
+├── config.yml          # 应用与密钥配置（不在 git 中，由 example 复制）
+├── config.example.yml  # 应用配置模板
+├── .env                # 部署布线配置（不在 git 中，由 .env.example 复制）
+├── .env.example        # 部署布线模板
+├── pyproject.toml      # uv workspace 根（开发工具、ruff 配置）
+├── uv.lock
+├── conftest.py         # 在仓库根目录按组件分别运行 pytest
+├── LICENSE
+├── THIRD_PARTY_NOTICES.md  # 第三方组件许可证
+├── README.md           # 默认自述文件（中文，本文件）
+├── README.en.md        # 英文版自述文件
+└── README.es-ES.md     # 西班牙语版自述文件
+```
+
+## 许可证
+
+MIT License — 详见 [LICENSE](LICENSE) 文件。
+
+本项目内置的第三方组件保留其各自许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

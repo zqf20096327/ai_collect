@@ -1,0 +1,324 @@
+<!-- [20260907_Spec299_BilingualSplit] T3 (Spec #299) split the single
+     bilingual README: this file is now the English front door (standard-readme:
+     "README.md is reserved for English"); Chinese lives in README.zh-CN.md.
+     The 9 en-half gaps found by the audit (§3) are filled here: mascot
+     blurb, screenshot archive link, environment requirements, dev commands,
+     first-install tips, roadmap reference links, hotkey details, 10-minute
+     timeout note, provider table, Project Status section. -->
+<!-- [20260907_Spec299_BilingualSplit] END -->
+
+<!-- [20260907_Spec299_P0Facts] Factual-sync provenance for the lines in this
+     file: Electron 36→39, FTS5 → client-side filtering, Python 3.11+,
+     GPU CUDA > CPU (MPS intentionally skipped), macOS Dictation marked
+     not open source. Full rationale lives in git history (T1, #300). -->
+
+<div align="center">
+
+<img src="assets/icon.png" width="120" height="120" alt="Murmur Logo" />
+
+# Murmur
+
+**Open Source · Local · AI Speech-to-Text**
+
+Speak to type, convert audio to text, AI auto-polish. Powered by FunASR, all on your device.
+
+English · [简体中文](./README.zh-CN.md)
+
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)](#-install)
+
+<!-- [20260731_README_DynamicBadge] Replaced hardcoded "tests-672 passing" /
+     "coverage-95%" badges (which were stale — the 95% figure used the old
+     narrow coverage scope of ~40 helper files; current full-src scope is
+     ~46%, see CHANGELOG [1.1.0]) with a dynamic CI status badge. Coverage
+     badge removed entirely because no codecov/coveralls uploader is wired
+     into CI yet — to restore it, add codecov-action to .github/workflows
+     and then link a codecov badge. -->
+
+[![CI](https://img.shields.io/github/actions/workflow/status/TeFuirnever/Murmur/ci.yml?branch=main&label=CI&style=flat)](https://github.com/TeFuirnever/Murmur/actions/workflows/ci.yml)
+
+<!-- [20260731_README_DynamicBadge] END -->
+
+<!-- [20260907_Spec299_ReleaseBadge] T5 (Spec #299): complete the industry
+     badge trio (license + CI + release) — release was the missing one. -->
+<!-- [20260907_Spec299_ReleaseBadge] END -->
+
+[![Release](https://img.shields.io/github/v/release/TeFuirnever/Murmur)](https://github.com/TeFuirnever/Murmur/releases/latest)
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Stars](https://img.shields.io/github/stars/TeFuirnever/Murmur?style=social)](https://github.com/TeFuirnever/Murmur)
+
+<!-- [20260916_README_AzhouHero] README refresh: the hero now leads with the
+     Azhou-brand cover (assets/azhou/readme-hero-v1, 1280x720) produced and
+     review-passed under the azhou-covers workflow — promise headline + real
+     AI-polish screenshot + fox brand anchor. The EN front door uses the
+     approved English copy variant cover-a-en; the raw screenshot it replaces
+     moves to the new Screenshots section (heading parity with
+     README.zh-CN.md preserved for tests/unit/readme-contract.test.ts). The
+     archived Spec #299 media comment is kept below for provenance. -->
+<!-- [20260907_Spec299_EmbedMedia] END -->
+
+<img src="assets/azhou/readme-hero-v1/candidates/cover-a-en.png" width="720" alt="Murmur brand hero — a hand-drawn sound wave turns into clean text at the cursor, next to a real screenshot of the AI-polished result, with the Azhou fox on the right" />
+
+🦊 Brand cover by [Azhou](assets/azhou/readme-hero-v1/cover-bundle.json) · [Screenshot archive](docs/promotion/screenshots/)
+
+</div>
+
+---
+
+## Why Murmur?
+
+**Murmur is a local-first speech-to-text tool optimized for Chinese.** It's more than "voice input" — press a hotkey to dictate and text appears at your cursor; import audio files for batch transcription and export; then let AI remove filler words or turn the transcript into meeting notes or a Xiaohongshu post. Everything happens on your computer, no internet, no uploads.
+
+> **Positioning**: Murmur doesn't compete head-on with macOS/Windows system dictation on real-time latency. It focuses on three things system dictation can't do — **file transcription**, **AI post-processing**, and **fully local + customizable models**. Real-time streaming is on the roadmap (see [Roadmap](#-roadmap)).
+
+### 🆚 Comparison
+
+<!-- [20260907_Spec299_VerifiableTable] T5 (Spec #299, benchmark §B6): the
+     star-self-rating row is gone — 0/5 benchmark projects publish a
+     competitor table with graded self-ratings. Replaced with the
+     verifiable "Desktop (macOS/Windows)" attribute. The fairness caveat
+     below is retained. -->
+<!-- [20260907_Spec299_VerifiableTable] END -->
+
+| Capability                  | Murmur | macOS Dictation | iFlytek | Whisper Desktop |
+| --------------------------- | :----: | :-------------: | :-----: | :-------------: |
+| **File Transcription**      |   ✅   |       ❌        |   ✅    |       ✅        |
+| **AI Post-processing**      |   ✅   |       ❌        |   ❌    |       ❌        |
+| **Fully Local**             |   ✅   |       ✅        |   ❌    |       ✅        |
+| **Custom Prompts**          |   ✅   |       ❌        |   ❌    |       ❌        |
+| **11+ AI Models**           |   ✅   |       ❌        |   ❌    |       ❌        |
+| **Desktop (macOS/Windows)** |   ✅   |   macOS only    |   ❌    |  Windows only   |
+| Open Source                 |   ✅   |       ❌        |   ❌    |       ✅        |
+
+> System dictation wins on real-time latency (streaming); Murmur wins on "what you can do after transcription" (AI polish + batch files + privacy). They can coexist.
+
+## ✨ Features
+
+| 🎤 Accurate Chinese     | 🤖 AI Polish                   | 📁 File Transcription  | 🔒 Fully Local   |
+| ----------------------- | ------------------------------ | ---------------------- | ---------------- |
+| FunASR Paraformer-large | Filler removal, fix, summarize | wav/mp3/m4a/flac batch | Zero data upload |
+
+| ⌨️ Global Hotkey  | 🌐 11+ AI Models                | 💾 History               | 🌍 i18n         |
+| ----------------- | ------------------------------- | ------------------------ | --------------- |
+| `Cmd+Shift+Space` | OpenAI/DeepSeek/Qwen/GLM/Ollama | SQLite + search + export | zh-CN / English |
+
+> 🤖 **Meet the animated Bot mascot** — the little fellow in the title bar morphs with app state: eyes wide open while recording, thinking dots while recognizing, a comet when a transcription finishes. The engine is ported from [bloub](https://github.com/jeremy-prt/bloub) (MIT) with frame-by-frame measured animation constants, replicated with zero drift. Pick its shape / color / expression under Settings → General.
+
+## 🖼 Screenshots
+
+<!-- [20260916_README_AzhouHero] Real product UI moved here from the hero so the
+     first screen leads with the brand cover; both real screenshots stay one
+     click away. -->
+
+AI polish pipeline (transcript → Xiaohongshu-style post):
+
+<img src="docs/promotion/screenshots/screenshot-xhs-mode.jpg" width="640" alt="Murmur app: a raw transcript is polished into a Xiaohongshu-style post through the AI polish pipeline" />
+
+macOS app UI:
+
+<img src="docs/promotion/screenshots/screenshot-macos.jpg" width="640" alt="Murmur macOS app UI" />
+
+## 🎬 Demo Video
+
+<!-- [20261006_README_IntroVideo] 15s product intro; the inline player is a
+     GitHub user-attachments upload (issue attachment), so the video plays
+     right in the README. The MP4 is also archived in-repo at
+     docs/promotion/intro-video/ (production project & asset licenses in that
+     folder's README). Music: "Deep Urban" by Eugenio Mininni — Mixkit
+     License (free commercial use, no attribution required); source
+     checksum-verified. -->
+
+https://github.com/user-attachments/assets/5c6f1292-9494-4188-b419-083dc0e463da
+
+**▶ Watch the 15-second intro** — speak to type, AI polish, fully local. Also archived in-repo: [MP4](docs/promotion/intro-video/murmur-intro-15s.mp4) and a [no-BGM version](docs/promotion/intro-video/murmur-intro-15s-nobgm.mp4) for your own soundtrack.
+
+## 🚀 Install
+
+<!-- [20260803_InstallHonesty] Homebrew/Winget are planned (see docs/homebrew, docs/winget)
+     but not yet submitted upstream — only GitHub Releases works today. -->
+
+Download the latest build from [Releases](https://github.com/TeFuirnever/Murmur/releases/latest):
+
+- **macOS**: `Murmur-<version>-arm64.dmg`
+- **Windows**: `Murmur.Setup.<version>.exe`
+
+> **Package managers (planned):** Homebrew (`brew install --cask murmur`) and Winget (`winget install TeFuirnever.Murmur`) are coming soon — cask/manifest definitions live in `docs/homebrew/` and `docs/winget/` but are not yet submitted upstream.
+>
+> **Linux**: no official packages for now (limited maintainer capacity — macOS/Windows quality comes first). Community contributions for Linux packaging and maintenance are welcome (issues / PRs).
+
+<!-- [20260803_InstallHonesty] END -->
+
+> **First install notes**
+>
+> - **macOS**: if macOS reports "cannot verify the developer", right-click the app → **Open**
+> <!-- [20260911_Fix_DamagedAppWorkaround] Issue #337: the v1.5.0 dmg shipped with a broken ad-hoc seal, which Gatekeeper reports as "damaged" — a DIFFERENT scenario from "unverified developer"; right-click → Open does not bypass it. -->
+> - **macOS**: if macOS says the app "is damaged and can't be opened" (v1.5.0 ships with a broken signature seal), run in Terminal: `xattr -cr /Applications/Murmur.app && codesign --force --deep --sign - /Applications/Murmur.app` — details in [Troubleshooting](docs/troubleshooting.md)
+> <!-- [20260911_Fix_DamagedAppWorkaround] END -->
+> - **Windows**: if SmartScreen blocks the installer, click **More info** → **Run anyway**
+
+## ⚡ Quick Start
+
+<!-- [20261006_Docs_423_T10] spec #412 (T10): size aligned to the ONNX int8
+     model pin (scripts/onnx-export/model-pin.json; was ~1GB fp32 torch). -->
+
+1. Launch Murmur and wait for the model download (~671 MB the first time, instant afterwards)
+2. Press `Cmd+Shift+Space` (macOS) or `Ctrl+Shift+Space` (Windows) and start speaking
+3. Text appears at your cursor
+
+**AI Polish** (optional): Settings → choose provider (DeepSeek, Qwen, Ollama, etc.) → enter API key or use a local model. A built-in Quick Start guide helps you get a free API key (DeepSeek / SiliconFlow grant free credits on sign-up).
+
+## 🤖 Supported AI Models
+
+| Provider              | Base URL               | Needs API Key |   Free tier    |
+| --------------------- | ---------------------- | :-----------: | :------------: |
+| OpenAI                | api.openai.com/v1      |      ✅       |       —        |
+| **DeepSeek** ⭐       | api.deepseek.com/v1    |      ✅       | Sign-up bonus  |
+| Qwen (通义千问)       | dashscope.aliyuncs.com |      ✅       |   New users    |
+| Zhipu GLM (智谱)      | open.bigmodel.cn       |      ✅       | Sign-up bonus  |
+| **SiliconFlow** ⭐    | api.siliconflow.cn     |      ✅       | Sign-up bonus  |
+| Groq                  | api.groq.com           |      ✅       |   Free tier    |
+| Moonshot              | api.moonshot.cn        |      ✅       |       —        |
+| MiniMax               | api.minimaxi.com       |      ✅       |       —        |
+| OpenRouter            | openrouter.ai/api/v1   |      ✅       | Partially free |
+| **Ollama (local)**    | localhost:11434        |      ❌       |      Free      |
+| **LM Studio (local)** | localhost:1234         |      ❌       |      Free      |
+
+> ⭐ Providers marked with a star are beginner-friendly — free credits on sign-up, stable access within mainland China.
+
+Just pick a provider — Murmur fills in the base URL and models automatically.
+
+---
+
+## Build from Source
+
+### Requirements
+
+- **Node.js** 22.5+ and [pnpm](https://pnpm.io)
+- **Python** 3.11+ (for FunASR, matching the `pyproject.toml` requires-python)
+
+### Quick start
+
+```bash
+git clone https://github.com/TeFuirnever/Murmur.git
+cd Murmur
+pnpm install
+
+# Python setup (choose one)
+# Option A: uv (recommended, manages the virtualenv for you)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync
+
+# Option B: system Python
+# [20261006_Docs_423_T10] spec #412 (T10): install exactly what
+# pyproject.toml declares (modelscope arrives transitively via funasr).
+uv pip install -r pyproject.toml
+
+# [20261006_Docs_423_T10] spec #412 (T10): ONNX models need NO manual
+# download — the first `pnpm dev` fetches the pin-anchored onnx-int8 set
+# in-app (~671MB, resumable). `uv run python download_models.py` would only
+# pre-seed the LEGACY fp32 torch fallback cache, which the new engine never
+# reads; it stays available solely to seed that one-version-cycle rollback.
+
+pnpm dev
+```
+
+### Development commands
+
+```bash
+pnpm dev          # start dev mode
+pnpm test         # unit tests (coverage gate enforced by ci:check)
+pnpm lint         # linting (0 warnings)
+pnpm typecheck    # TypeScript type check
+pnpm ci:check     # run all CI gates locally
+```
+
+---
+
+## 🛠 Tech Stack
+
+| Layer    | Technology                                             |
+| -------- | ------------------------------------------------------ |
+| Desktop  | Electron 39                                            |
+| Frontend | React 19, Tailwind CSS 4, Vite                         |
+| Speech   | FunASR (Paraformer-large + FSMN-VAD + CT-Transformer)  |
+| AI       | 11+ OpenAI-compatible models + custom prompt templates |
+| Storage  | SQLite (node:sqlite, safeStorage encryption)           |
+
+## 📚 Documentation
+
+<!-- [20260916_README_DocsHub] Best-practice "docs hub" section: the README is the
+     front door, but FAQ/Troubleshooting/CONTRIBUTING/SECURITY/CHANGELOG were
+     only reachable from the Contributing paragraph — easy to miss. One
+     glanceable table routes every reader. -->
+
+| Document                                   | What it covers                          |
+| ------------------------------------------ | --------------------------------------- |
+| [FAQ](docs/faq.md)                         | Common questions                        |
+| [Troubleshooting](docs/troubleshooting.md) | Install, launch, and audio issues       |
+| [CONTRIBUTING.md](CONTRIBUTING.md)         | Dev setup, code standards, PR process   |
+| [Security Policy](SECURITY.md)             | How to report vulnerabilities privately |
+| [CHANGELOG.md](CHANGELOG.md)               | Full release history                    |
+
+## 📋 Roadmap
+
+**Done:**
+
+- [x] Local FunASR speech recognition (Paraformer-large)
+- [x] AI text optimization (11+ models, incl. local Ollama/LM Studio)
+- [x] Custom AI prompt templates
+- [x] Audio file transcription (wav/mp3/m4a/flac)
+- [x] History search (instant client-side filtering) and export (TXT/SRT/Markdown/DOCX)
+- [x] Global hotkey (`Cmd+Shift+Space`)
+- [x] Multi-language (Chinese/English)
+- [x] Semi-auto update (SHA256 verified)
+- [x] Accessibility (ARIA + keyboard nav)
+- [x] GPU auto-detection (CUDA > CPU; MPS intentionally skipped — FunASR float64 unsupported)
+- [x] TypeScript strict mode (full-src coverage gated, see CI)
+- [x] File config support (`~/.murmur.json`)
+- [x] AI Provider quick-start guide (free API key)
+
+**In Progress / Planned:**
+
+- [ ] Real-time streaming transcription (target 200ms latency)
+- [ ] CLI mode (`murmur transcribe --file`)
+- [ ] Multi-engine ASR (whisper.cpp / SenseVoice)
+- [ ] Long audio chunked transcription (solves the 10-minute timeout)
+- [ ] AI streaming response
+
+See [docs/follow-ups.md](docs/follow-ups.md) (open items) and [CHANGELOG.md](CHANGELOG.md) (shipped). `docs/strategic-plan-gap-analysis.md` is a historical strategy snapshot, kept for reference only.
+
+## 🤝 Contributing
+
+<!-- [20260907_Spec299_HelpLinks] T4 (Spec #299): GitHub's README guidance
+     expects "where to get more help" and opensource.guide's pre-launch
+     checklist requires linking CONTRIBUTING/SECURITY from the README.
+     FAQ, Troubleshooting and SECURITY.md existed but were orphaned. -->
+
+<!-- [20260907_Spec299_HelpLinks] END -->
+
+PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, code standards, and the PR process.
+
+**Help & community**: questions → [FAQ](docs/faq.md) · troubleshooting → [Troubleshooting](docs/troubleshooting.md) · security issues → [Security Policy](SECURITY.md) (please report vulnerabilities privately, not as public issues).
+
+<!-- [20260917_README_RemoveCommunity] Owner request (2026-09-17): drop the
+     WeChat community section from both front doors; QR asset stays in
+     assets/ and can be re-linked later. -->
+
+## 📊 Project Status
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=TeFuirnever/Murmur&type=Date)](https://star-history.com/#TeFuirnever/Murmur&Date)
+
+</div>
+
+## Acknowledgments
+
+- [QuQu](https://github.com/yan5xu/ququ) — Upstream project
+- [FunASR](https://github.com/modelscope/FunASR) — Alibaba open-source speech recognition
+- [shadcn/ui](https://ui.shadcn.com/) — UI components
+
+## License
+
+[Apache License 2.0](LICENSE)

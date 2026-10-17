@@ -1,0 +1,290 @@
+# Hermia
+
+[![CI](https://github.com/scottblydotcom/hermia/actions/workflows/ci.yml/badge.svg)](https://github.com/scottblydotcom/hermia/actions/workflows/ci.yml)
+[![Security](https://github.com/scottblydotcom/hermia/actions/workflows/security.yml/badge.svg)](https://github.com/scottblydotcom/hermia/actions/workflows/security.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+Structured behavioral eval for local LLMs. The model binary is not the unit of analysis — the inference stack is.
+
+---
+
+You selected a model by benchmark score. That benchmark ran on somebody else's hardware,
+their driver stack, their runtime version. Not yours.
+
+A ROCm update can flip a security test from PASS to FAIL. Hermia catches it — because it
+runs on your stack, not a cloud proxy.
+
+[![Hermia demo — running structured behavioral evals across models on a local Ollama fleet, with live pass/fail per test, system metrics, and an eval summary](assets/demo-poster.jpg)](assets/demo.mp4)
+
+---
+
+## What It Does
+
+Hermia runs structured behavioral evaluation against local Ollama models and scores results
+for correctness across security, reasoning, and tool-use dimensions. Results map directly to
+established AI security frameworks so findings have documented provenance — not just "it
+seemed fine."
+
+Live system metrics (CPU, RAM, GPU, VRAM, tokens/sec) run alongside every eval. Cold-load
+benchmarking measures actual model load time from a clean VRAM state, not cached inference.
+Because "how fast is it really" is a different question than "how fast is it after it's
+already warm."
+
+**v0.2 scope:** structural eval with deterministic orchestration (fixed sampling —
+`temperature=0`, `seed=42` — and fixed message construction) against Ollama-compatible
+local endpoints, with multi-turn corpus cases for context-carry and boundary-persistence
+testing. Reproducibility of the model's *output* still depends on the backend; that is what
+Hermia measures. LLM-as-judge intent scoring lands in v0.3.
+
+**Fleet mode** (`--fleet FILE`) runs headless multi-host eval from a YAML config — same
+test suite, multiple Ollama endpoints evaluated **concurrently** (default: up to 4 hosts
+in parallel). Compare CUDA vs. Metal on the same model. See where your inference stack
+diverges. Entries that share the same host are evaluated sequentially so a single GPU
+node is never asked to hold two models simultaneously (VRAM-safe). Control parallelism
+with `--max-concurrency N`. Per-test timeout is configurable via `--test-timeout SECONDS`
+or per-host `test_timeout:` in the fleet YAML. See
+[the fleet-YAML format](docs/usage.md#multi-host-fleet-mode---fleet) for the file schema.
+
+---
+
+## Why Hermia Exists
+
+[Garak](https://github.com/NVIDIA/garak) is built by NVIDIA — you know, the company
+currently valued at roughly the GDP of a medium-sized country. It has hundreds of probes,
+years of community contributions, serious research backing, and a team of people whose
+full-time job is this. You should use it.
+
+Hermia is built in a consultancy lab. Different scale. Genuinely different problem.
+
+Garak asks: *is this model vulnerable to known attack patterns?*
+
+Hermia asks: **does this model behave correctly on your inference stack — and what is your
+hardware actually doing while it runs?**
+
+- Will it refuse a forbidden action — consistently, not just when it feels like it?
+- Does it maintain a security boundary when a structured workflow nudges toward crossing it?
+- Will it leak a system prompt credential if the user asks cleverly enough?
+- Does it correctly route a request that looks safe but isn't?
+
+These aren't hypothetical. They're the questions a security practitioner asks before
+deploying a model in an environment where it has real tools and real permissions.
+
+Garak scans for vulnerabilities. Hermia evaluates behavioral correctness against structured
+pass/fail criteria mapped to frameworks you can actually cite in a risk assessment. They do
+different things. Run both.
+
+The practitioner origin is a feature, not a bug — this was built by a security consultant
+who runs models across a distributed inference fleet, cares about hardware costs, and needs
+evals that work without sending data to a cloud API. If that sounds like you, Hermia was
+built for your context.
+
+---
+
+## Framework Coverage
+
+| Framework | What Hermia Maps To |
+|---|---|
+| **OWASP LLM Top 10 (2025)** | LLM01 prompt injection (direct + indirect), LLM02 sensitive information disclosure, LLM06 excessive agency / scope escalation, LLM07 system-prompt leakage |
+| **MITRE ATLAS 6.0.0 (2026.05)** | AML.T0051.000/.001 direct + indirect prompt injection, AML.T0056 extract system prompt, AML.T0057 LLM data leakage, AML.T0068 prompt obfuscation, AML.T0099 tool data poisoning |
+| **CSA MAESTRO** | L1 foundation model robustness, L3 agent framework routing and lane evasion |
+| **NIST AI RMF** | Measure function: MEASURE 2.5 validity & reliability, MEASURE 2.7 security & resilience |
+
+---
+
+## Eval Dimensions
+
+| Dimension | What It Tests |
+|---|---|
+| `security` | Injection resistance, credential protection, scope escalation refusal, system prompt extraction resistance, structured field injection |
+| `tool-use` | Valid tool invocation, correct tool selection, dependency-aware multi-step chaining |
+| `reasoning` | Multi-step decomposition, error recovery and fallback planning, partial failure handling |
+| `constraint` | Exact schema compliance, numeric correctness, adversarial input robustness |
+| `routing` | Request classification, lane routing evasion detection |
+| `memory` | Cross-turn context retention |
+| `multi-turn` | Deterministic multi-turn conversations — context carry across turns, safety-boundary persistence under social engineering |
+| `domain` | Home automation agent, structured data extraction |
+
+---
+
+## Requirements
+
+- Python 3.11+
+- [Ollama](https://ollama.ai) running locally (`ollama serve`)
+- At least one model pulled: `ollama pull llama3.2` or any compatible model
+
+In the default local setup, no cloud API keys are required and no data leaves your machine.
+(Point a fleet host at a remote or cloud endpoint via the `openai-compat` transport and
+prompts are sent to that endpoint — and a key may be required. See
+[Run against a remote host](docs/usage.md#run-against-a-remote-ollama-host).)
+
+---
+
+## Hardware Support
+
+| Platform | GPU | Status |
+|---|---|---|
+| Linux | AMD ROCm (gfx900 / RX series) | ✅ Tested |
+| Linux | NVIDIA CUDA (sm_89 / RTX series) | ✅ Tested* |
+| macOS | Apple Silicon (M1 / M2 / M3 / M4) | ✅ Tested |
+| Linux | Intel iGPU | ⚠️ Best-effort |
+| Linux / macOS | CPU-only (no discrete GPU) | ✅ Supported |
+| Windows | Any | ❌ Not yet |
+
+*NVIDIA metrics tested on Linux eval client. Windows Ollama servers are supported as fleet
+targets (point a fleet YAML entry's `host:` at the Windows box); running Hermia itself on
+Windows is not yet supported.
+
+---
+
+## Install
+
+Recommended (via pipx):
+
+```bash
+pipx install hermia
+```
+
+Or via Homebrew (macOS):
+
+```bash
+brew install scottblydotcom/tap/hermia
+```
+
+Or with pip:
+
+```bash
+pip install hermia
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/scottblydotcom/hermia
+cd hermia
+pip install -e .
+```
+
+Or via Docker (headless fleet mode):
+
+```bash
+mkdir -p results && chmod 777 results  # container writes as uid 1000, not your host user
+docker run --rm --network host \
+  -v $PWD/fleets:/workspace/fleets:ro \
+  -v $PWD/results:/workspace/results \
+  ghcr.io/scottblydotcom/hermia:latest \
+  --fleet fleets/local.yaml
+```
+
+See [Docker usage](docs/getting-started.md#appendix-docker) for macOS / Windows
+networking (`host.docker.internal`) and volume-mount details.
+
+---
+
+## Quickstart
+
+```bash
+# Start Ollama if it isn't running
+ollama serve
+
+# Launch Hermia
+hermia
+```
+
+Hermia opens a TUI. Select a model from the list, choose which eval dimensions to run,
+and press **Run**. Results appear live alongside system metrics. Each run writes
+`results/eval_TIMESTAMP.jsonl` and `results/eval_TIMESTAMP.csv`.
+
+New here? [docs/getting-started.md](docs/getting-started.md) is the 5-minute
+zero-to-first-eval path.
+
+See [docs/usage.md](docs/usage.md) for the full reference: result interpretation,
+`--repeat N` consistency scoring, fleet mode, regression detection, and Postgres export.
+
+---
+
+## Roadmap
+
+**v0.2 — Fleet + TUI** (a.k.a. Endpoint Bus; shipping): Headless fleet mode for multi-host eval from a YAML
+config; full-featured TUI for launch/configure/run/inspect; backend stack tagging by GPU
+arch, runtime version, and execution path (GPU vs spill). Configurable per-test timeout
+for thinking-mode models.
+
+**v0.3 — Eval Bus** (target ~2026-08): Hermia becomes the platform other tools build into.
+Probe adapters for Garak, PyRIT, and HarmBench pull their results into Hermia's
+hardware-correlated, framework-mapped view alongside Hermia's own test cases. LLM-as-judge
+scoring; a **Sink** interface — a pluggable output destination (Prometheus, webhook, S3)
+that results can be written to.
+
+See [docs/roadmap.md](docs/roadmap.md) for the full plan.
+
+---
+
+## Project Status
+
+**v0.2.2** — stable and tested. The core eval suite, fleet mode, TUI, audit report, and
+findings analysis pipeline are all shipping. Cross-stack reproducibility evidence
+(Metal × CUDA × ROCm) is being captured as an ongoing dataset, published on a rolling
+basis across the v0.2.x series rather than as a single launch snapshot. The security
+pipeline (gitleaks, trivy, bandit, pip-audit, ruff, mypy) is more rigorous than a
+research tool strictly needs to be. That was intentional.
+
+Available on [PyPI](https://pypi.org/project/hermia/): `pipx install hermia`
+
+---
+
+## Name
+
+**Hermia** = **Hermes** (Greek messenger god, trickster, patron of travelers — thief of
+Apollo's cattle) + **Pythia** (the Oracle of Delphi, who spoke for Apollo).
+
+The tool steals answers from the Oracle and tells you which one to trust.
+
+---
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — 5-minute zero-to-first-eval guide
+- [Usage Reference](docs/usage.md) — full walkthrough: install, run, interpret results, fleet mode, regression detection, Postgres export
+- [Roadmap](docs/roadmap.md) — v0.2 fleet + TUI, v0.3 eval bus, full backlog
+- [GUARDS Framework](docs/GUARDS.md) — six-dimension standard for LLM system-prompt guardrail construction (Goal/Unit/Actions/Response/Detect/Stop)
+
+---
+
+## Security
+
+Hermia only reads from Ollama — `/api/tags`, `/api/generate`, `/api/ps`, and `/api/version`.
+It never calls the model-upload / `/api/create` endpoints, so it does not itself exercise the
+code paths behind the model-upload CVEs
+([CVE-2026-7482](https://nvd.nist.gov/vuln/detail/CVE-2026-7482),
+[CVE-2026-5757](https://nvd.nist.gov/vuln/detail/CVE-2026-5757)). Your Ollama server can still
+be vulnerable — keep it patched and restricted per the checklist below.
+
+**Protect your Ollama instance:**
+
+- Run Ollama bound to `127.0.0.1` (the default) — never expose port 11434 publicly
+- Keep Ollama upgraded; 0.17.1+ patches CVE-2026-7482 (CVSS 9.1, heap memory
+  disclosure via crafted GGUF upload, nicknamed "Bleeding Llama")
+- CVE-2026-5757 (same attack class, no upstream patch as of May 2026) — restrict
+  `/api/create` access at the network or firewall layer
+- Fleet deployments: use fleet-YAML `auth.bearer.key_env` blocks (see
+  [usage.md](docs/usage.md#run-against-a-remote-ollama-host)) or a Tailscale overlay
+  to prevent unauthenticated access to remote Ollama endpoints
+
+Hermia surfaces known Ollama version vulnerabilities at run time in the preflight
+log as `SEC ⚠` warnings.
+
+---
+
+## Contributing
+
+Contributions welcome. Please read [AGENTS.md](AGENTS.md) before opening a PR — it covers
+the behavioral rules, module boundary table, and review gate sequence this project enforces.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full details on how to get involved.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).

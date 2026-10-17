@@ -1,0 +1,284 @@
+# TODOforAI Bridge
+
+Native bridge runtime. Connects user machines, Firecracker sandboxes, and
+cloud VMs to the TODOforAI backend over an encrypted WebSocket channel.
+
+The same binary runs everywhere. Location is a deployment detail; the
+protocol is uniform.
+
+## Design principle
+
+Bridges are **islands by default.** One guaranteed capability: "accept
+commands from the backend over WebSocket and execute them." Everything
+else — SSH, port exposure, overlay networking, language runtimes — is
+configured by the AI at the user's request by running commands through
+this same channel.
+
+
+## Wire protocol
+
+```
+TCP → WebSocket → Noise_NX_25519_ChaChaPoly_BLAKE2b → JSON
+```
+
+No TLS. No OpenSSL. All crypto handled by Noise (monocypher + blake2b,
+vendored in `noise/`).
+
+After the Noise handshake, each binary WS frame carries one encrypted
+JSON message. First encrypted message from edge is auth:
+
+```json
+{"type":"auth","deviceId":"dev_...","secret":"..."}
+```
+
+Device credentials are provisioned via `todoforai-bridge login` (stored on disk by
+the shared c-core login helper). Then the v2 multi-session protocol:
+- `identity` (→ server, once)
+- `exec` / `input` / `resize` / `signal` / `kill` (← server)
+- `output` / `exit` / `error` (→ server)
+
+Server side: `backend/src/api/ws/handlers/BridgeHandler.ts`.
+
+## Layout
+
+| File                  | Purpose                                              |
+|-----------------------|------------------------------------------------------|
+| `main.c`              | Event loop, session table, command dispatch         |
+| `subcmd.c` / `.h`     | CLI subcommands: `login` / `enroll` / `whoami`      |
+| `conn.c` / `conn.h`   | TCP + WS client handshake + Noise_NX initiator      |
+| `util.c` / `util.h`   | Base64 + SHA-1 (for WS-Accept)                      |
+| `pty.c` / `pty.h`     | `forkpty` session: read/write/resize/signal         |
+| `identity.c` / `.h`   | Host identity gathering (`uname`, `pwd`, cwd)       |
+| `tools.c` / `.h`      | Probe installed CLI tools via `scan_tools` function-call |
+| `policy.c` / `.h`     | Device policy: workspace confinement + Landlock jail |
+
+| `ws.c` / `ws.h`       | RFC 6455 WebSocket client (sync connect, poll loop) |
+| `json.c` / `json.h`   | Minimal JSON parser/writer + base64                 |
+| `noise/`              | Vendored `noise.c` + `monocypher` (BLAKE2b)         |
+
+## Build
+
+Only libc + `libutil` (for `forkpty`, in libc on macOS).
+
+```sh
+# Dynamic build (default system cc) — ~190 KB stripped, libc only
+make
+./build/todoforai-bridge --help
+
+# Static musl build via `zig cc` — ~260 KB, single-file, zero deps
+make static
+
+# Windows x64 build via `zig cc` (mingw-w64) — ~240 KB
+make release-windows-x64
+```
+
+## Run
+
+```sh
+# First time: provision device credentials (opens browser / device flow)
+./build/todoforai-bridge login [--device-name NAME]
+
+# Then connect — defaults to api.todofor.ai:80 (Noise is end-to-end;
+# no TLS on the wire — typically Cloudflare/nginx terminates 443 in front)
+./build/todoforai-bridge
+
+# Custom server
+./build/todoforai-bridge --host 127.0.0.1 --port 4000
+
+# Local-dev: point at a backend on a different host/port
+# (Noise TCP RPC port — defaults to api.todofor.ai:4100; for `bun run dev` use 14100)
+./build/todoforai-bridge login  --host 127.0.0.1 --port 14100
+./build/todoforai-bridge enroll --host 127.0.0.1 --port 14100
+
+# Firecracker sandbox: presence of enroll.token=... in /proc/cmdline
+# routes to DeviceType.SANDBOX path (?deviceType=SANDBOX).
+
+# Show version / help
+./build/todoforai-bridge --version
+./build/todoforai-bridge --help
+```
+
+The backend's Noise static public key (the trust anchor for the encrypted
+channel) is **learned during `login`** via the Noise_NX handshake and persisted
+to `credentials.json` as `backendPubkey`. All later connections (daemon run,
+`enroll`) pin against it. No flag, no env, no hardcoded default — same flow in
+dev, prod, and self-hosted. If the server's identity changes (key rotation,
+new deployment), `login` again to re-learn.
+
+## Environment variables
+
+CLI flags take precedence; env vars are fallbacks for non-interactive
+deployments (sandbox init, systemd units, CI).
+
+| Variable             | Used by              | Equivalent flag | Purpose                                          |
+|----------------------|----------------------|-----------------|--------------------------------------------------|
+| `NOISE_BACKEND_HOST` | run, login, enroll   | `--host`        | Backend hostname (default `api.todofor.ai`)      |
+| `NOISE_BACKEND_PORT` | login, enroll        | `--port`        | Noise TCP RPC port (default `4100`, dev `14100`) |
+| `BRIDGE_PORT`        | run                  | `--port`        | Bridge HTTP/WS port (default `80`, dev `4000`)   |
+
+## Updates
+
+The bridge has no HTTP/download logic of its own. Updates ride on the
+existing RUN channel (see `DeviceService.updateBridge` in the backend):
+the server sends a shell command that re-runs the sha256-verified
+installer over the running binary (`rename()` over a running binary is
+fine on POSIX) with `--service` — so a systemd/launchd supervisor is
+ensured; the installer exits nonzero when none is available, stopping
+the chain before the kill — then kills the bridge; the supervisor
+relaunches it on the new binary.
+
+Command shape (authoritative version lives in `DeviceService.updateBridge`) —
+note `$PPID` (the bridge) is the reliable way to find the executable;
+inside the RUN shell, `$0` is the shell itself:
+
+```sh
+exe=$(readlink -f /proc/$PPID/exe 2>/dev/null || readlink -f "$(command -v todoforai-bridge)" 2>/dev/null || command -v todoforai-bridge) \
+  && [ -x "$exe" ] \
+  && i=$(mktemp) && curl -fsSL https://todofor.ai/bridge -o "$i" \
+  && sh "$i" --prefix "$(dirname "$exe")" --service \
+  && kill $PPID
+```
+
+No new protocol messages, no in-binary HTTP client, no extra dependencies.
+
+## Skills (`SKILL.md`)
+
+The TODOforAI agent discovers local skills on a bridge the same way it does on
+an edge — by walking well-known locations and reading `SKILL.md` files. Both
+`.agents/skills` and `.claude/skills` are scanned, per scope:
+
+| Scope  | Path                                                            | Source                        |
+|--------|----------------------------------------------------------------|-------------------------------|
+| `repo` | `<workspace-root>/{.agents,.claude}/skills/**`                  | one per workspace root        |
+| `user` | `$HOME/{.agents,.claude}/skills/**`                             | resolved on the bridge device |
+
+Discovery rules (mirror `edge/bun/src/skills.ts`):
+
+- Priority order: repo `.agents` → repo `.claude` → user; skills are deduped by
+  `name`, first match wins.
+- Walk depth: `find -maxdepth 6`; hidden entries (`.*`) are pruned.
+- Only files literally named `SKILL.md` are accepted.
+- Only the first 8 KiB of each file is read for metadata.
+- Frontmatter (YAML between leading `---` lines) provides:
+  - `name` — skill identifier (falls back to parent directory name)
+  - `description` — full description
+  - `metadata.short-description` — optional shorter line preferred in the prompt
+
+On a bridge there's no `get_skills` RPC: the agent runs `find` + `head` over
+the same `machine_exec` channel used for shell tools, base64-encoding paths and
+file heads so the wire stays ASCII-clean. The full body is fetched on demand via
+the `Skill` tool, which reads the file via `base64 < <path>` like `ReadTool`.
+
+Required tools on the bridge: `sh`, `find`, `head`, `base64`. Standard on
+GNU/BSD/macOS userspace; no extra installation needed.
+
+## Notes
+
+- POSIX + Windows (ConPTY, Win10 1809+). Windows build via
+  `make release-windows-x64` (zig cc + mingw-w64). On Windows the bridge
+  spawns a POSIX shell inside ConPTY — set `BRIDGE_SHELL` to override,
+  otherwise it prefers Git for Windows (`bash.exe` or `sh.exe`, the same msys2
+  binary, so an install whose `bash.exe` was renamed still works), then a PATH
+  `bash.exe`/`sh.exe` (skipping the System32 WSL launcher, which isn't a
+  usable POSIX shell here), then a pinned busybox-w32 it provisions itself
+  into `%USERPROFILE%\.todoforai\shell\sh.exe`, falling back to `cmd.exe`
+  (RUN/tool catalog assume bash semantics — install Git for Windows).
+  `step_paused` works on Linux, macOS, and Windows; on Windows the
+  `passwordPrompt` flag is always 0 (the child's ECHO state isn't exposed
+  through the ConPTY API).
+- Session cap defaults to 256 concurrent PTYs. When full, RUNs evict the
+  least-recently-used idle session (running sessions are never evicted).
+- WebSocket uses plain `ws://` — TLS is replaced by Noise end-to-end.
+  Typically deployed behind nginx/Cloudflare which terminates external
+  TLS on 443 and forwards plain WS to the backend; the Noise channel
+  runs through it unchanged.
+
+## Device policy (optional)
+
+Confines the backend to listed workspaces on this machine. Local-only file,
+never written by the wire. No file ⇒ full user access (today's behaviour).
+
+```sh
+todoforai-bridge policy init            # allow cwd
+todoforai-bridge policy add ~/repo/x
+todoforai-bridge policy list            # restart bridge to apply
+```
+
+`~/.config/todoforai/policy.json` (or `/etc/todoforai/policy.json`, wins):
+
+```json
+{ "jail": true, "workspaces": ["/home/me/repo/x"] }
+```
+
+- `read_file` / `write_file` / RUN `cwd` must be inside a workspace
+  (`openat2 RESOLVE_BENEATH` — symlink swaps can't escape).
+- Linux 6.2+: RUN shells and tool probes are Landlock-jailed. `$HOME` is
+  dark except workspaces, toolchain/cache dirs (RW) and shell rc files (RO).
+  `"jail": false` disables (needed on older kernels).
+- macOS / Windows: path checks only; the shell is not confined.
+- Fail closed: bad policy file ⇒ all paths denied, no shells, reason on
+  stderr.
+
+## Keep awake while agents work (optional, off by default)
+
+While at least one task runs (a RUN step, incl. parked ones, or an open adb
+relay stream) the bridge holds an OS **system-sleep** inhibitor, and drops it
+~2 min after the last task ends. Display sleep and screen lock are never
+touched, nothing wakes a sleeping machine, and nothing is held while idle.
+
+```sh
+todoforai-bridge config keep-awake on    # or off; `config` shows the state
+```
+
+Or the HostCard menu → "Keep awake while agents work". Stored in
+`<config dir>/config.json` (`{"keep_awake": true}`, next to `credentials.json`).
+The backend may write this file (the UI toggle), so it never holds anything
+security-relevant — that is `policy.json`'s job.
+
+| OS | Mechanism |
+|----|-----------|
+| Linux | `systemd-inhibit --what=sleep --mode=block` child (logind). No logind ⇒ log line, no hold. |
+| macOS | `caffeinate -i` child (PreventUserIdleSystemSleep). **Lid closed on battery still sleeps.** |
+| Windows | `SetThreadExecutionState(ES_CONTINUOUS \| ES_SYSTEM_REQUIRED)` |
+
+The helper's stdin is a pipe only the bridge holds, so the hold dies with the
+bridge, even on SIGKILL. State goes to the backend as
+`{"type":"keep_awake_state","enabled":b,"active":b}` (→ `metadata.keepAwake`).
+Keep-awake grants no new access: tasks still run as your user. Lock your
+screen; Stop in the app ends the task and releases the hold. Check on Linux
+with `systemd-inhibit --list` during a task. The hold is also dropped while
+the bridge is disconnected, and `--mayfly` sessions (`tfa-cli --isolated`)
+don't take one.
+
+## Native cloud SSH (`ssh tfa-cloud`)
+
+On a durable PC bridge the backend can set up plain OpenSSH access to the
+user's cloud sandbox (no VPN, no proxy). Advertised as `identity.cloudSsh:
+true`; the backend offers it unless switched off (globally `CLOUD_SSH_ENABLED=0`, or per PC by the owner in the device menu).
+
+Flow: `cloud_ssh_offer` → bridge ensures `~/.ssh/tfa_cloud` (ed25519, created
+once by `ssh-keygen`, never overwritten) → `cloud_ssh_key` → `cloud_ssh_config`
+(strictly validated: DNS/IP host, port 1–65535, user `root`, canonical
+`ssh-ed25519` key of 68 base64 chars, uuid) → writes `~/.ssh/tfa_cloud_config`
++ `~/.ssh/tfa_cloud_known_hosts` (pinned under `HostKeyAlias
+tfa-cloud-<uuid>`), prepends one `Include` to `~/.ssh/config`, checks `ssh -G
+tfa-cloud`, probes `ssh -o BatchMode=yes -o ConnectTimeout=5 tfa-cloud true`
+→ `cloud_ssh_ready {ready:true|false}`. All disk/ssh work runs in `__job`
+workers (never on the event loop); one of each kind at a time.
+
+Enabled only for: persistent daemon (not `--mayfly`), stored/pinned backend
+key, no device policy file, POSIX with `ssh` + `ssh-keygen` on PATH.
+`TODOFORAI_CLOUD_SSH=0` opts out.
+
+Limitations (v1):
+- POSIX only. Windows never advertises the capability (fails closed).
+- Refuses (ready:false, nothing written) when: `~/.ssh/config` already
+  mentions `tfa-cloud` in a `Host`/`Match` line, is a symlink or not owned by
+  you; `tfa_cloud_config` wasn't written by the bridge or belongs to another
+  credential profile (first profile wins); the key pair is half-present or
+  the private key is not 0600; `~/.ssh` is group/world-writable.
+- `ssh -G` must resolve to exactly the managed settings. User globals that
+  would also apply to `tfa-cloud` (a global/`Host *` `IdentityFile`, a proxy
+  for all hosts) make it not ready instead of being overridden.
+- `~/.ssh` is taken from the passwd entry (as ssh does), not `$HOME`.
+- Removal is manual: delete the `Include` line and `~/.ssh/tfa_cloud*`.

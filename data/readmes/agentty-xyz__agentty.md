@@ -1,0 +1,222 @@
+<div align="center">
+
+<h1>Agentty ADE</h1>
+
+![NPM Version](https://img.shields.io/npm/v/agentty)
+[![codecov](https://codecov.io/gh/agentty-xyz/agentty/graph/badge.svg?token=YRGKGTM0HP)](https://codecov.io/gh/agentty-xyz/agentty)
+[![Postsubmit](https://github.com/agentty-xyz/agentty/actions/workflows/postsubmit.yml/badge.svg?branch=main)](https://github.com/agentty-xyz/agentty/actions/workflows/postsubmit.yml)
+
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=agentty-xyz_agentty&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=agentty-xyz_agentty)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=agentty-xyz_agentty&metric=bugs)](https://sonarcloud.io/summary/new_code?id=agentty-xyz_agentty)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=agentty-xyz_agentty&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=agentty-xyz_agentty)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=agentty-xyz_agentty&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=agentty-xyz_agentty)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=agentty-xyz_agentty&metric=coverage)](https://sonarcloud.io/summary/new_code?id=agentty-xyz_agentty)
+
+Agentty is an **ADE (Agentic Development Environment) for structured, controllable
+AI-assisted software development**. Built with Rust and [Ratatui](https://ratatui.rs),
+and refined through its own day-to-day use, it brings agents, review, and iteration into
+one focused terminal workflow.
+
+[Installation](#installation) · [Supported CLI Agents](#supported-cli-agents) ·
+[Usage](#usage) · [Documentation](#documentation) · [Contributing](#contributing) ·
+[License](#license)
+
+<img src="docs/site/static/demo/demo.gif" alt="Agentty demo" width="900" />
+
+</div>
+
+______________________________________________________________________
+
+Codex, Claude, Gemini, and Antigravity sessions show compact tool status and command
+previews, with output previews for failed calls. Explicit Claude skill invocations
+appear alongside them, and answers retain saved usage counts.
+
+## Installation
+
+### npm (recommended)
+
+The `npm`, Bun, and `pnpm` packages require Node.js on your `PATH`. Global installs
+support automatic updates through the original package manager when Agentty can identify
+it.
+
+```sh
+npm install -g agentty
+```
+
+### Other methods
+
+<details>
+<summary>Bun</summary>
+
+```sh
+bun add --global agentty
+```
+
+</details>
+
+<details>
+<summary>pnpm</summary>
+
+```sh
+pnpm add --global agentty
+```
+
+If `pnpm` reports a global bin-directory error, run `pnpm setup`, reopen your terminal,
+and retry.
+
+</details>
+
+<details>
+<summary>npx (run without installing)</summary>
+
+```sh
+npx agentty
+```
+
+</details>
+
+<details>
+<summary>Shell</summary>
+
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/agentty-xyz/agentty/releases/latest/download/agentty-installer.sh | sh
+```
+
+</details>
+
+<details>
+<summary>Cargo</summary>
+
+macOS source builds require Xcode Command Line Tools for native process bindings.
+
+```sh
+cargo install agentty
+```
+
+</details>
+
+## Supported CLI Agents
+
+Agentty currently supports Codex, Claude, Antigravity, and Gemini. Install and
+authenticate at least one provider CLI before starting a session:
+
+- Codex (`codex`, recommended; supports subscription usage): install the
+  [Codex CLI](https://github.com/openai/codex) and run `codex login`.
+
+> [!NOTE]
+>
+> Codex is the recommended CLI agent for Agentty when you want subscription-backed
+> usage. Codex supports signing in with ChatGPT for subscription access, including in
+> the CLI, and Agentty uses the Codex `app-server` integration surface. Usage remains
+> subject to the [OpenAI Terms of Use](https://openai.com/policies/terms-of-use/).
+> OpenClaw documents ChatGPT/Codex subscription sign-in as the normal
+> [Codex harness](https://docs.openclaw.ai/plugins/codex-harness) path, and opencode
+> recommends ChatGPT Plus or Pro authentication for its
+> [OpenAI provider](https://opencode.ai/docs/providers/#openai).
+
+- Claude (`claude`): install [Claude Code](https://github.com/anthropics/claude-code)
+  and run `claude auth login`.
+
+> [!WARNING]
+>
+> For Agentty usage through `claude -p`, use API key authentication through Claude
+> Console or a supported cloud provider instead of a Claude Free, Pro, or Max
+> subscription sign-in. Anthropic's
+> [Claude Code legal and compliance docs](https://code.claude.com/docs/en/legal-and-compliance)
+> describe subscription OAuth as intended for ordinary use of Claude Code and native
+> Anthropic applications, while developer integrations should use API keys or supported
+> cloud providers. Theo's
+> [explanation video](https://www.youtube.com/watch?v=RIkSlHgQYog) discusses the same
+> uncertainty, but commentary does not guarantee that subscription-backed usage is safe
+> for third-party tool invocation.
+
+- Antigravity (`agy`): install version 1.1.18 or newer of the
+  [Antigravity CLI](https://github.com/google-antigravity/antigravity-cli) and run `agy`
+  to sign in when prompted.
+
+> [!WARNING]
+>
+> For Agentty usage through `agy` headless mode, use authentication backed by a Google
+> Cloud project or an API key when available for your Antigravity setup, rather than a
+> Google Account subscription sign-in. The
+> [Antigravity terms](https://antigravity.google/terms) do not yet clearly describe how
+> subscription access applies when `agy` headless mode is invoked by third-party tools.
+
+- Gemini (`gemini`): install the
+  [Gemini CLI](https://github.com/google-gemini/gemini-cli) and authenticate with an API
+  key or Vertex AI.
+
+> [!WARNING]
+>
+> "Sign in with Google" (Google Account OAuth) no longer works for the Gemini CLI after
+> Google's
+> [transition of the Gemini CLI to the Antigravity CLI](https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/).
+> API key (`GEMINI_API_KEY`) and Vertex AI authentication still work, so use one of
+> those for the Gemini backend, or use the Antigravity (`agy`) backend instead.
+
+Agentty uses each provider's official non-interactive CLI or app-server surface
+(`claude -p`, `agy --input-format stream-json`, `codex app-server`, or `gemini --acp`)
+after you authenticate with that provider's CLI. It does not implement OAuth flows, read
+provider OAuth tokens directly, or call private provider APIs. You are responsible for
+choosing an authentication method that is permitted for your account, plan, and usage
+pattern.
+
+## Usage
+
+Launch Agentty from the repository you want to work in. Project discovery is opt-in: the
+startup suggestion defaults to **Skip**, and the **Projects** tab supports adding a
+repository by path (`a`) or scanning a chosen folder (`d`).
+
+```sh
+agentty              # Launch with auto-update enabled (default)
+agentty --no-update  # Launch without automatic updates
+agentty --otlp-endpoint http://localhost:4318/v1/traces  # Export session traces
+agentty --experimental-harness  # Offer preview Harness sessions
+agentty --help       # Show supported command-line options
+agentty --version    # Show the installed Agentty version
+```
+
+`--experimental-harness` adds a preview **Harness** session type that runs Agentty's
+built-in agent loop against Muse, Kimi, or Qwen using `MODEL_API_KEY`, `KIMI_API_KEY`
+with `KIMI_BASE_URL`, or `DASHSCOPE_API_KEY` with `DASHSCOPE_BASE_URL`. Its edit mode
+runs unsandboxed shell commands. See
+[Harness sessions](https://agentty.xyz/docs/agents/backends/#backends-harness).
+
+Session tracing is disabled unless `--otlp-endpoint` supplies a complete OTLP
+HTTP/protobuf traces URL. Authentication headers can come from
+`OTEL_EXPORTER_OTLP_TRACES_HEADERS` or `OTEL_EXPORTER_OTLP_HEADERS`. Traces contain step
+timings, tool identities, available executable names, exit codes, and output sizes. Add
+`--otlp-capture-content` to include tool commands, arguments, and results as previews of
+at most 4 KiB each. Common credential markers suppress the entire affected preview;
+arbitrary secrets may still appear. Prompts and reasoning are excluded. See the
+[session tracing documentation](https://agentty.xyz/docs/usage/workflow/#session-traces)
+for provider limitations.
+
+Only one Agentty instance can use a given Agentty root at a time. Close the running
+instance before launching another. Separate `AGENTTY_ROOT` directories can run
+independently.
+
+Telemetry is enabled by default: release builds send events to the Agentty PostHog
+project. Set `AGENTTY_TELEMETRY_ENABLED=0` to disable it. See the
+[telemetry details](docs/site/content/docs/usage/workflow.md#telemetry) for the exact
+events and fields.
+
+## Documentation
+
+Documentation for installation and workflows is available at
+[agentty.xyz/docs](https://agentty.xyz/docs/).
+
+> [!WARNING]
+>
+> Agentty is in active development. While releases follow Semantic Versioning, the
+> current `0.y.z` series may still introduce breaking changes between releases as
+> workflows, integrations, and safeguards evolve. Always review and verify the changes
+> Agentty proposes or applies in your repositories before you rely on them.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
+
+## License
+
+Apache-2.0

@@ -1,0 +1,1162 @@
+<h1 align="center">OpenBSP API</h1>
+<p align="center">
+  <strong>Open-source WhatsApp and Instagram Business Platform</strong>
+</p>
+<p align="center">
+  Self-hostable, multi-tenant, AI-agent ready. Built with Deno 🦕 and Postgres 🐘, powered by Supabase ⚡
+</p>
+
+<p align="center">
+  <a href="https://web.openbsp.dev"><img src="https://img.shields.io/badge/%F0%9F%9A%80_try_it-web.openbsp.dev-C26A3D" alt="Try it"></a>&nbsp;
+  <a href="https://unlicense.org/"><img src="https://img.shields.io/badge/license-Unlicense-blue.svg" alt="License: Unlicense"></a>&nbsp;
+  <a href="https://github.com/matiasbattocchia/open-bsp-api/stargazers"><img src="https://img.shields.io/github/stars/matiasbattocchia/open-bsp-api" alt="GitHub Stars"></a>&nbsp;
+  <a href="https://github.com/matiasbattocchia/open-bsp-api/commits/main"><img src="https://img.shields.io/github/last-commit/matiasbattocchia/open-bsp-api" alt="Last Commit"></a>&nbsp;
+  <a href="https://chat.whatsapp.com/Ch6AwZizSDt5quzHodcYh5"><img src="https://img.shields.io/badge/Community-25D366?logo=whatsapp&logoColor=white" alt="Community"></a>
+</p>
+
+OpenBSP is designed for both individual businesses and service providers. You
+can use it to manage your own WhatsApp and Instagram messaging, or leverage its
+features to become a
+[Meta Business Partner](https://developers.facebook.com/docs/whatsapp/solution-providers)
+and offer messaging services to other organizations.
+
+## Table of contents
+
+- [Quickstart](#quickstart)
+- [User interface](#user-interface)
+- [n8n](#n8n)
+- [Claude Code plugin](#claude-code-plugin)
+- [Description](#description)
+
+#### Platforms
+
+- [Hosted version](#hosted-version)
+- [Migrating from another platform](#migrating-from-another-platform)
+- [Self-host deployment](#self-host-deployment)
+
+#### Channels
+
+- [WhatsApp integration](#whatsapp-integration)
+- [Instagram integration](#instagram-integration)
+- [App review](#app-review)
+- [WhatsApp Web integration (unofficial API)](#whatsapp-web-integration-unofficial-api)
+- [Slack integration](#slack-integration)
+
+#### Development
+
+- [Architecture](#architecture)
+- [Local development](#local-development)
+
+#### Community
+
+- [Related open-source projects](#related-open-source-projects)
+- [Acknowledgments](#acknowledgments)
+- [Community](#community)
+
+## Quickstart
+
+Receive and send WhatsApp messages in two steps. Before you start (once): sign
+up at [web.openbsp.dev](https://web.openbsp.dev), connect your WhatsApp number
+(Integrations → WhatsApp), and create an API key (Settings → API Keys). Every
+call below sends two headers: `apikey` (the public Supabase key) and `api-key`
+(your secret key).
+
+The API is [PostgREST](https://postgrest.org) over the database, every table is
+an endpoint, so you can use plain REST or any
+[Supabase SDK](https://supabase.com/docs/reference) (JS, Python, Dart, …).
+
+**1. Receive messages** — register a webhook; OpenBSP POSTs every new message to
+your URL:
+
+```bash
+curl -X POST 'https://nheelwshzbgenpavwhcy.supabase.co/rest/v1/webhooks' \
+  -H 'apikey: <PUBLISHABLE_KEY>' -H 'api-key: <API_KEY>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organization_id": "<ORG_ID>",
+    "table_name": "messages",
+    "operations": ["insert"],
+    "url": "https://your-app.com/webhook"
+  }'
+```
+
+Your endpoint receives the **`messages` table row as is**, wrapped in a thin
+envelope:
+
+```jsonc
+{
+  "entity": "messages",
+  "action": "insert",
+  "data": {
+    // the row, exactly as stored
+    "id": "9b2d…",
+    "organization_id": "…",
+    "conversation_id": "…",
+    "external_id": "wamid.…",
+    "service": "whatsapp",
+    "organization_address": "<PHONE_NUMBER_ID>",
+    "conversation_address": "5491155551234",
+    "sender_address": "5491155551234",
+    "content": {
+      "version": "1",
+      "type": "text",
+      "kind": "text",
+      "text": "Hi!"
+    },
+    "status": { "delivered": "2026-07-17T12:00:00Z" },
+    "timestamp": "2026-07-17T12:00:00Z"
+  }
+}
+```
+
+Reply when `data.sender_address` is set — the contact authored it; it is null on
+your own outgoing rows, which the webhook also fires for (and, with `"update"`,
+for status changes).
+
+**2. Send a message** — insert a row; OpenBSP dispatches it to WhatsApp:
+
+```bash
+curl -X POST 'https://nheelwshzbgenpavwhcy.supabase.co/rest/v1/messages' \
+  -H 'apikey: <PUBLISHABLE_KEY>' -H 'api-key: <API_KEY>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "organization_id": "<ORG_ID>",
+    "organization_address": "<PHONE_NUMBER_ID>",
+    "conversation_address": "5491155551234",
+    "service": "whatsapp",
+    "content": {
+      "version": "1",
+      "type": "text",
+      "kind": "text",
+      "text": "Hello from OpenBSP!"
+    }
+  }'
+```
+
+The same insert through the Supabase JS SDK:
+
+```js
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://nheelwshzbgenpavwhcy.supabase.co",
+  "<PUBLISHABLE_KEY>",
+  { global: { headers: { "api-key": "<API_KEY>" } } },
+);
+
+await supabase.from("messages").insert({
+  organization_id: "<ORG_ID>",
+  organization_address: "<PHONE_NUMBER_ID>",
+  conversation_address: "5491155551234",
+  service: "whatsapp",
+  content: {
+    version: "1",
+    type: "text",
+    kind: "text",
+    text: "Hello from OpenBSP!",
+  },
+});
+```
+
+That's it. Media, templates, locations and the full message schema are covered
+in [MIGRATING_FROM_TWILIO.md](MIGRATING_FROM_TWILIO.md); third-party onboarding
+and credential capture in [INTEGRATING.md](INTEGRATING.md).
+
+## User interface
+
+For a complete web-based interface to manage conversations check out the
+companion project:
+
+**🖥️ [OpenBSP UI](https://github.com/matiasbattocchia/open-bsp-ui)** — A modern,
+responsive web interface built with React and Tailwind.
+
+https://github.com/user-attachments/assets/1ef30dde-9de1-4f5a-856a-db34ca2e3063
+
+## n8n
+
+Trigger on incoming messages and delivery-status changes. Every event can carry
+the **full conversation context**, so your AI node replies with history.
+
+Send text, media, templates, locations, and contacts; read conversations,
+contacts, and templates.
+
+**🔌
+[OpenBSP n8n nodes](https://github.com/matiasbattocchia/n8n-nodes-openbsp)** —
+The official n8n community node package for OpenBSP.
+
+## Claude Code plugin
+
+The OpenBSP plugin gives Claude Code full API access and optionally bridges
+WhatsApp messages in real-time. Claude can query contacts, conversations,
+templates, and more via the `query` tool, and reply to WhatsApp messages via the
+`reply` tool.
+
+Install the plugin:
+
+```
+/plugin marketplace add matiasbattocchia/open-bsp-api
+/plugin install openbsp@matiasbattocchia-open-bsp-api
+```
+
+Sign in with Google (same account as the web UI) — Claude walks you through it
+in the terminal:
+
+```
+/openbsp:config login
+```
+
+Then configure allowed contacts for the WhatsApp channel:
+
+```
+/openbsp:config contacts add 5491155551234
+```
+
+No contacts are forwarded until explicitly added (secure by default). API access
+works regardless of channel configuration. See
+[`plugin/README.md`](plugin/README.md) for full documentation.
+
+## Description
+
+OpenBSP API is a multi-tenant platform that connects to the official WhatsApp
+and Instagram APIs to receive and send messages, storing them in a
+Supabase-backed database.
+
+### Core features
+
+- 🤝 **Meta Business Partner ready**: Built to facilitate the transition to an
+  official solution provider.
+- 🔗 **WhatsApp account Coexistence**: Connect existing WhatsApp Business
+  accounts via
+  [Embedded Signup](https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users).
+- 🏢 **Multi-tenant architecture**: Native support for multiple organizations
+  with isolated environments.
+- 🔌 **External integration**: Seamlessly connect with external services using
+  webhooks and the API.
+
+### AI agents
+
+Create lightweight agents or connect to external, more advanced agents using
+different protocols like `chat-completions` and
+[`responses`](https://openresponses.org). Lightweight agents can use built-in
+tools:
+
+- MCP client
+- SQL client
+- HTTP client
+- Calculator
+
+> [!IMPORTANT]
+> This project prioritizes a decoupled architecture between communication and
+> agent logic. Advanced agents built with frameworks like the OpenAI SDK or
+> Google ADK should be deployed as external services.
+
+### Media processing
+
+Interpret and extract information from media and document files, including:
+
+- Audio
+- Images
+- Video
+- PDF
+- Other text-based documents (CSV, HTML, TXT, etc.)
+
+### MCP server
+
+The `mcp` Edge Function exposes an [MCP](https://modelcontextprotocol.io) server
+over Streamable HTTP, giving agentic access to the WhatsApp API from clients
+like Claude Code, Claude Desktop, ChatGPT, or other agent platforms.
+
+For the hosted version at [web.openbsp.dev](https://web.openbsp.dev), the MCP
+server URL is:
+
+```
+https://nheelwshzbgenpavwhcy.supabase.co/functions/v1/mcp
+```
+
+Two authentication methods:
+
+- **OAuth (humans, recommended)** — just add the server URL; the MCP client
+  discovers Supabase Auth's OAuth 2.1 server (dynamic client registration),
+  opens the browser, and you sign in with your OpenBSP account and approve on
+  the consent page. Access is scoped to your user via RLS.
+- **API key (servers and bots)** — send an `api-key: <API_KEY>` header
+  (`Authorization: Bearer <API_KEY>` also works). Get it from OpenBSP > Settings
+  > API Keys. Optionally, `Allowed-Contacts` and `Allowed-Accounts` headers
+  > restrict which phone numbers the key can access.
+
+Claude Code (then authenticate from the `/mcp` panel):
+
+```bash
+claude mcp add --transport http openbsp https://nheelwshzbgenpavwhcy.supabase.co/functions/v1/mcp
+```
+
+In Claude Desktop or ChatGPT, add it as a custom connector with the same URL —
+OAuth kicks in automatically. For headless clients, use an API key instead
+(`claude_desktop_config.json` shown as an example):
+
+```json
+{
+  "mcpServers": {
+    "openbsp": {
+      "url": "https://nheelwshzbgenpavwhcy.supabase.co/functions/v1/mcp",
+      "headers": {
+        "api-key": "<API_KEY>"
+      }
+    }
+  }
+}
+```
+
+Available tools:
+
+| Tool                 | Description                                                   |
+| -------------------- | ------------------------------------------------------------- |
+| `list_accounts`      | List connected WhatsApp accounts                              |
+| `list_conversations` | Get recent active conversations                               |
+| `fetch_conversation` | Fetch messages and service window status for a contact        |
+| `search_contacts`    | Find contacts by name or phone number                         |
+| `send_message`       | Send a text or template message (enforces 24h service window) |
+| `list_templates`     | List available WhatsApp templates                             |
+| `fetch_template`     | Fetch details of a specific template                          |
+
+## Hosted version
+
+A managed instance is available at
+**[web.openbsp.dev](https://web.openbsp.dev)** — same codebase as this repo,
+running on Supabase. Sign up with a Google or GitHub account.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="meta-business-partner-dark.png">
+  <img src="meta-business-partner-light.png" alt="Meta Business Partner" width="200">
+</picture>
+
+The hosted instance is operated by Matías Battocchia, a registered **Meta Tech
+Partner**.
+
+### Quotas
+
+| Resource      | Included         |
+| ------------- | ---------------- |
+| Messages      | 5,000 / month    |
+| Conversations | Unlimited        |
+| Storage       | 1 GB             |
+| AI Credits    | $1.00 (one-time) |
+
+Need higher limits or a special feature? [Get in touch](#community).
+
+AI Credits apply only when agents use the built-in LLM gateway. Configuring an
+agent with your own provider API key (`AgentExtra.api_key`) bypasses credit
+consumption.
+
+### Data portability
+
+Your data is yours. You can export your organization's data from the hosted
+instance and load it into a self-hosted deployment — both run the same schema,
+and all data is scoped by organization with no cross-org dependencies.
+
+### Data deletion
+
+Deleting an organization is immediate and irreversible: all of its database rows
+(contacts, conversations, messages, agents, addresses, billing) are removed in a
+single cascading delete. Media files in Storage have no foreign key to the
+organization, so they are not deleted in that transaction — instead an hourly
+background sweep (`storage-gc`) removes the files of any organization that no
+longer exists. Expect attachments to linger for up to an hour after deletion;
+they are inaccessible in the meantime (Storage RLS denies reads for orgs you
+don't belong to).
+
+## Migrating from another platform
+
+If you're moving an existing WhatsApp integration to OpenBSP, two guides cover
+the most common starting points:
+
+- **[Migrating from Twilio](MIGRATING_FROM_TWILIO.md)** — for teams on Twilio's
+  Programmable Messaging API. Mostly a direct port: same Meta Cloud API
+  underneath, different BSP. Templates need to be re-registered against your own
+  WABA; everything else maps one-to-one.
+- **[Migrating from whatsapp-web.js](MIGRATING_FROM_WHATSAPP_WEB_JS.md)** — for
+  teams using the unofficial Puppeteer-based library. This is a platform change,
+  not just a code change: you move from a personal WhatsApp account to a
+  registered WhatsApp Business Account, and some features (group management,
+  polls, communities, status) don't exist on the Cloud API at all. Read the
+  compatibility matrix before deciding.
+
+Both guides use HTTP + JSON examples and assume no prior OpenBSP knowledge.
+
+## Self-host deployment
+
+> [!NOTE]
+> **Deploy your own instance in under 15 minutes** — no local environment
+> required.
+
+1. [Fork](https://github.com/matiasbattocchia/open-bsp-api/fork) this repo (1
+   min)
+2. Create a [Supabase](https://supabase.com) project (5 min)
+3. Connect the project to your fork via the
+   [Supabase GitHub Integration](https://supabase.com/docs/guides/deployment/branching/github-integration)
+   (5 min)
+
+You are live! 🚀 Pushes to your default branch will automatically deploy
+database migrations and Edge Functions.
+
+<details>
+<summary>
+Option A: deploy via Supabase GitHub Integration
+</summary>
+
+##### Connection
+
+0. Navigate to your
+   [Supabase project's Dashboard](https://supabase.com/dashboard)
+1. Go to **Project Settings** > **Integrations**
+2. Under **GitHub Integration**, click **Authorize GitHub**
+3. On the GitHub authorization page, click **Authorize Supabase**
+4. Back on the Integrations page, choose your forked **open-bsp-api** repository
+5. Set the **Working directory** to `.`
+6. Enable **Deploy to production**
+7. Set the **Production branch** to `main`
+8. Click **Enable integration**
+
+##### Vault secrets
+
+> Create the secrets at Supabase Dashboard > Integrations > Vault > Secrets >
+> Add new secret
+
+- **edge_functions_url**:
+  `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1`
+- **edge_functions_token**: the `SUPABASE_SERVICE_ROLE_KEY`
+
+##### Release
+
+> From GitHub > ➕ (the button near the `<> Code` button) > Create new file >
+> Name it something like `.trigger_deploy` > Commit changes... > Commit directly
+> to the `main` branch > Commit changes
+
+A one-time push to your fork is required to trigger the very first deploy. After
+that it is no longer needed — every time you sync your fork with this
+repository, the deploy happens automatically.
+
+Please upvote [this request](https://github.com/orgs/supabase/discussions/45554)
+to help Supabase improve this process.
+
+</details>
+
+<details>
+<summary>
+Option B: deploy via GitHub Actions
+</summary>
+
+The repository also ships with a `Release` GitHub Actions workflow that performs
+the same deployment from inside CI. The workflow is set to `workflow_dispatch:`
+only — it does **not** run on push. This path is **optional** and useful if you
+mirror this repo to another host (e.g. GitLab) or prefer keeping deployments
+self-contained in GitHub Actions instead of relying on Supabase's integration.
+
+##### Secrets
+
+> Create the secrets at GitHub > Repository > Settings ⚙️ > Secrets and
+> variables \*️⃣ > Actions > Secrets
+>
+> <!-- `https://github.com/{github_account}/open-bsp-api/settings/secrets/actions` -->
+
+- **SUPABASE_ACCESS_TOKEN**: A
+  [personal access token](https://supabase.com/dashboard/account/tokens)
+- **SUPABASE_DB_PASSWORD**
+  <!-- Get it at Supabase > Project > Database > Settings > Database password `https://supabase.com/dashboard/project/{project_id}/database/settings` -->
+- **SUPABASE_SERVICE_ROLE_KEY**: you can use a secret key instead of the legacy
+  service role key
+  <!-- Get it at Supabase > Project > Project Settings > API keys > API Keys > Secret keys `https://supabase.com/dashboard/project/{project_id}/settings/api-keys/new` -->
+
+##### Variables
+
+> Create the variables at GitHub > Repository > Settings ⚙️ > Secrets and
+> variables \*️⃣ > Actions > Variables
+>
+> <!-- `https://github.com/{github_account}/open-bsp-api/settings/variables/actions` -->
+
+- **SUPABASE_PROJECT_ID**
+  <!-- the `{project_id}` in `https://supabase.com/dashboard/project/{project_id}` -->
+- **SUPABASE_SESSION_POOLER_HOST**: it is like
+  `aws-0-us-east-1.pooler.supabase.com`
+  <!-- Found at Supabase > Project > Connect 🔌 > Session pooler > View parameters > Host `https://supabase.com/dashboard/project/{project_id}/database/schemas?showConnect=true` -->
+
+##### Release
+
+> Go to GitHub > Repository > Actions ▶️ > Release
+>
+> <!-- `https://github.com/{github_account}/open-bsp-api/actions/workflows/release.yml` -->
+
+1. Click **Run workflow**
+
+</details>
+
+## WhatsApp integration
+
+To connect your OpenBSP project to the WhatsApp API, you'll need to setup a Meta
+App with the WhatsApp product and configure the following Edge Functions
+secrets. You can set these up in two ways:
+
+- **Direct configuration**: Add them directly in your Supabase dashboard at
+  Supabase > Project > Edge Functions > Secrets.
+  <!-- `https://supabase.com/dashboard/project/{project_id}/functions/secrets` -->
+- **GitHub Actions**: Set them as GitHub Actions secrets in your repository
+  settings and re-run the _Release_ action to automatically deploy them.
+
+#### Secrets
+
+- **META_SYSTEM_USER_ID**
+- **META_SYSTEM_USER_ACCESS_TOKEN**
+- **META_APP_ID**
+- **META_APP_SECRET**
+- **WHATSAPP_VERIFY_TOKEN**
+
+Follow these steps to obtain the required credentials.
+
+<details>
+<summary>
+Step 0: Overview
+</summary>
+
+There is quiet a Meta nomenclature of entities that you might want to get in
+order to not to get lost in the platform.
+
+- **Business profile** - This is the top-level entity, represents a business.
+  Has users and assets.
+- **User** - Real or system users. System users can have access tokens. Users
+  belong to a business portfolio and can have assigned assets.
+- **Asset** - WhatsApp accounts, Instagram accounts, Meta apps, among others.
+  Assets belong to a business portfolio and are assigned to users.
+- **App** - An asset that integrates Meta products such as the WhatsApp Cloud
+  API.
+- **WhatsApp Business Account (WABA)** - A WhatsApp account asset, can have many
+  phone numbers.
+- **Phone number** - A registered phone number within the WhatsApp Cloud API.
+  Belongs to a WABA.
+
+> For more details, refer to
+> [Cloud API overview](https://developers.facebook.com/docs/whatsapp/cloud-api/overview).
+
+</details>
+
+<details>
+<summary>
+Step 1: Create a Meta app (skip if you already have one)
+</summary>
+
+1. Navigate to [My Apps](https://developers.facebook.com/apps)
+2. Click **Create App**
+3. Select the following options:
+   - **Use case**: Other
+   - **App type**: Business
+4. Add the **WhatsApp** product to your app
+5. Click **Add API**
+6. Disregard the screen that appears next and proceed to the next step
+
+</details>
+
+<details>
+<summary>
+Step 2: Create a system user
+</summary>
+
+1. Get into the [Meta Business Suite](https://business.facebook.com). If you
+   have multiple portfolios, select the one associated with your app
+2. Go to Settings > Users > System users
+   <!-- `https://business.facebook.com/latest/settings/system_users` -->
+3. Add an **admin system user**
+4. Copy the **ID** → **META_SYSTEM_USER_ID**
+5. Assign your app to the user with **full control** permissions
+6. Generate a token with these permissions:
+   - `business_management`
+   - `whatsapp_business_messaging`
+   - `whatsapp_business_management`
+7. Copy the **Access Token** → **META_SYSTEM_USER_ACCESS_TOKEN**
+
+> For detailed instructions on system user setup, refer to the
+> [WhatsApp Business Management API documentation](https://developers.facebook.com/docs/whatsapp/business-management-api/get-started).
+
+</details>
+
+<details>
+<summary>
+Step 3: Get the app credentials
+</summary>
+
+1. Navigate to [My Apps](`https://developers.facebook.com/apps`) > App Dashboard
+   <!-- `https://developers.facebook.com/apps/{app_id}` -->
+2. Go to App settings > Basic
+   <!-- `https://developers.facebook.com/apps/{app_id}/settings/basic` -->
+3. Copy the following values:
+   - **App ID** → **META_APP_ID**
+   - **App secret** → **META_APP_SECRET**
+
+> Multiple Meta apps are supported by separating values with `|` (pipe)
+> characters. For example: `META_APP_ID=app_id_1|app_id_2` and
+> `META_APP_SECRET=app_secret_1|app_secret_2`.
+
+</details>
+
+<details>
+<summary>
+Step 4: Configure the WhatsApp Business Account webhook
+</summary>
+
+### Part A
+
+1. Within the App Dashboard
+2. Go to WhatsApp > Configuration
+   <!-- `https://developers.facebook.com/apps/{app_id}/whatsapp-business/wa-settings` -->
+3. Set the **Callback URL** to:
+   `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/whatsapp-webhook`
+4. Choose a secure token for **WHATSAPP_VERIFY_TOKEN** → Set it as the **Verify
+   token**, but **do not** click **Verify and save** yet!
+5. Ensure your Edge Functions environment variables are up-to-date
+   - If you configured secrets directly in your Supabase dashboard, no further
+     action is needed at this point
+   - If you set secrets via GitHub Actions, re-run the _Release_ action now to
+     deploy them to your Edge Functions
+6. Click **Verify and save**
+7. Disregard the screen that appears next and proceed to the next step
+
+> Multiple Meta apps are supported by appending the query param
+> `?app_id={META_APP_ID}` to the callback URL. For example:
+> `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/whatsapp-webhook?app_id=app_id_2`.
+
+### Part B
+
+1. Within the App Dashboard
+2. Go to WhatsApp > Configuration
+   <!-- `https://developers.facebook.com/apps/{app_id}/whatsapp-business/wa-settings` -->
+3. Subscribe to the following **Webhook fields**:
+   - `account_update`
+   - `messages`
+   - `history`
+   - `smb_app_state_sync`
+   - `smb_message_echoes`
+   - `user_id_update`
+
+> Optionally, test the configuration so far. In the `messages` subscription
+> section, click **Test**. You should see the request in Supabase > Project >
+> Edge Functions > Functions > whatsapp-webhook > Logs.
+>
+> <!-- `https://supabase.com/dashboard/project/{project_id}/functions/whatsapp-webhook/logs` -->
+>
+> You might observe an error in the logs. This is an expected outcome at this
+> stage; the simple fact that a log entry appears confirms that the webhook is
+> successfully receiving events.
+
+</details>
+
+<details>
+<summary>
+Step 5: Add a phone number
+</summary>
+
+If you decide to add the **test number**,
+
+1. Within the App Dashboard
+2. Go to WhatsApp > API Setup
+   <!-- `https://developers.facebook.com/apps/{app_id}/whatsapp-business/wa-dev-console` -->
+3. Click **Generate access token** (you can't use the one you got from step 2
+   here)
+4. Copy these values:
+   - **Phone number ID**
+   - **WhatsApp Business Account ID**
+5. Select a recipient phone number
+6. Send messages with the API > **Send message**
+
+> The test number doesn't seem to fully activate to receive messages unless you
+> send a test message at least once.
+
+In order to add a **production number**,
+
+1. Click **Add phone number**
+2. Follow the flow
+3. Navigate to
+   [WhatsApp Manager](https://business.facebook.com/latest/whatsapp_manager/overview)
+4. Go to Account tools > Phone numbers
+   <!-- `https://business.facebook.com/latest/whatsapp_manager/phone_numbers` -->
+5. Copy these values:
+   - **Phone number ID**
+   - **WhatsApp Business Account ID**
+
+### For any number you add
+
+Create an organization if you haven't done that already.
+
+```sql
+insert into public.organizations (name, extra) values
+  ('Default', '{}')
+;
+```
+
+Note the **organization ID**.
+
+Register the phone number with your organization in the system.
+
+```sql
+insert into public.organizations_addresses (
+    organization_id,
+    service,
+    address,
+    status,
+    extra
+  ) values (
+    '<Organization ID>',                     -- ID from the previous step
+    'whatsapp',
+    '<Phone number ID>',                     -- Meta's phone_number_id (NOT the phone number)
+    'connected',                             -- 'connected' | 'disconnected'
+    jsonb_build_object(
+      'waba_id',       '<WhatsApp Business Account ID>', -- WhatsApp Business Account ID
+      'phone_number',  '<Phone number>',      -- bare E.164 digits, no '+', no spaces
+      'verified_name', 'Acme Inc.',           -- Optional: display name shown to recipients
+      'business_id',   '<Meta Business Portfolio ID>', -- Optional: Meta Business Portfolio ID (parent of the WABA)
+      'flow_type',     'new_phone_number',    -- 'new_phone_number' | 'existing_phone_number'
+      'access_token',  '<System User Token>'  -- Optional: per-WABA token; if not provided, the system user token is used
+    )
+  );
+```
+
+</details>
+
+## Instagram integration
+
+To connect your OpenBSP project to the Instagram API, you'll need to setup a
+Meta App with the Instagram product and configure the following Edge Functions
+secrets.
+
+Please go through the WhatsApp integration step 1 if you haven't got a Meta App
+yet.
+
+> [!IMPORTANT]
+> OpenBSP integrates with Instagram using **Instagram login** (not Facebook
+> login).
+
+#### Secrets
+
+- **INSTAGRAM_APP_ID**
+- **INSTAGRAM_APP_SECRET**
+- **INSTAGRAM_VERIFY_TOKEN**
+
+<details>
+<summary>
+Configure the Instagram app
+</summary>
+
+1. Within the App Dashboard
+2. Go to Instagram > API setup with Instagram login
+3. Copy the following values:
+   - **Instagram app ID** → **INSTAGRAM_APP_ID**
+   - **Instagram app secret** → **INSTAGRAM_APP_SECRET**
+
+### Configure webhooks
+
+4. Set the **Callback URL** to:
+   `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/instagram-webhook`
+5. Choose a secure token for **INSTAGRAM_VERIFY_TOKEN** → Set it as the **Verify
+   token**, but **do not** click **Verify and save** yet!
+6. Ensure your Edge Functions environment variables are up-to-date
+   - If you configured secrets directly in your Supabase dashboard, no further
+     action is needed at this point
+   - If you set secrets via GitHub Actions, re-run the _Release_ action now to
+     deploy them to your Edge Functions
+7. Click **Verify and save**
+
+### Set up Instagram business login
+
+8. Click **Business login settings**
+9. Set the following fields:
+   - OAuth redirect URIs: `{PUBLIC_URL}/oauth/instagram` and
+     `{PUBLIC_URL}/onboard-instagram/callback`
+   - Deauthorize callback URL:
+     `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/instagram-management/deauthorize`
+   - Data deletion request URL:
+     `https://{SUPABASE_PROJECT_ID}.supabase.co/functions/v1/instagram-management/data-deletion`
+10. Click **Save**
+
+> Note that `PUBLIC_URL` is _your_ app/UI public domain. For example, mine is
+> https://web.openbsp.dev.
+
+</details>
+
+## App review
+
+> [!NOTE]
+> You can skip this step if you're a direct developer who only builds for your
+> own WhatsApp/Instagram businesses and don't plan to create solutions for
+> clients.
+
+1. App review > Permissions and Features
+2. Request advanced access for permissions
+   - **WhatsApp**
+     - `whatsapp_business_management`
+     - `whatsapp_business_messaging`
+   - **Instagram**
+     - `instagram_business_basic`
+     - `instagram_business_manage_messages`
+3. App review > Requests > Click **Next**
+
+### Allowed usage
+
+<details>
+<summary>
+whatsapp_business_management
+</summary>
+
+#### Description
+
+We request this permission to read and/or manage WhatsApp business assets we own
+or have been granted access to by other businesses.
+
+#### Screen recording
+
+https://github.com/user-attachments/assets/dd064fd6-b06c-4fff-986e-578269fdf6d2
+
+</details>
+
+<details>
+<summary>
+whatsapp_business_messaging
+</summary>
+
+#### Description
+
+We request this permission to view, manage and respond to messages.
+
+#### Screen recording
+
+https://github.com/user-attachments/assets/7e0394c8-0d08-4048-8a02-ca215c365a49
+
+</details>
+
+<details>
+<summary>
+instagram_business_basic
+</summary>
+
+#### Description
+
+We are requesting instagram_business_basic permission as a dependent permission
+for instagram_business_manage_messages.
+
+#### Screen recording
+
+https://github.com/user-attachments/assets/bc7a0ac7-7522-4c29-abc4-fe638fe7dc38
+
+</details>
+
+<details>
+<summary>
+instagram_business_manage_messages
+</summary>
+
+#### Description
+
+We request this permission to view, manage and respond to messages.
+
+#### Screen recording
+
+https://github.com/user-attachments/assets/d86cf719-250d-4e3d-8c15-873daa6707d6
+
+</details>
+
+## WhatsApp Web integration (unofficial API)
+
+If you don't want to go through Meta (app review, business verification, Cloud
+API pricing), OpenBSP also supports plain WhatsApp accounts over the **WhatsApp
+Web multidevice protocol** via a companion bridge service:
+[open-bsp-whatsmeow](https://github.com/matiasbattocchia/open-bsp-whatsmeow).
+
+> [!WARNING]
+> This is an unofficial channel: you pair a regular WhatsApp account by QR code
+> or pairing code, the phone must stay registered, there are no templates and no
+> business features, and the ban risk is on you.
+
+### Self-hosting the bridge
+
+1. Run the bridge next to your OpenBSP stack:
+
+   ```yaml
+   # docker-compose excerpt
+   services:
+     whatsmeow-bridge:
+       build: https://github.com/matiasbattocchia/open-bsp-whatsmeow.git
+       environment:
+         DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+         OPENBSP_URL: http://kong:8000/functions/v1
+         BRIDGE_TOKEN: <generate a long random secret>
+       ports: ["8081:8081"]
+   ```
+
+   `DATABASE_URL` can point at the same Postgres as OpenBSP (the bridge keeps to
+   its own `whatsmeow` schema) or a separate one. On hosted Supabase use the
+   Supavisor pooler (port 6543).
+
+2. Tell the edge functions where the bridge is (`supabase/functions/.env`
+   locally, or `supabase secrets set` on hosted):
+
+   ```bash
+   WHATSAPP_WEB_URL=http://whatsmeow-bridge:8081
+   WHATSAPP_WEB_TOKEN=<the same secret>
+   ```
+
+3. Pair a number: `POST /whatsapp-web-management/sessions` with
+   `{organization_id}` returns a QR code string (add `phone_number` to get a
+   pairing code instead); poll
+   `GET /whatsapp-web-management/sessions/pending/:session_id` while the user
+   scans/types it. Once paired, the number appears as a `whatsapp-web` address
+   and conversations flow like any other service.
+
+One bridge instance serves many organizations/numbers, but runs as a single
+replica by design (a WhatsApp session is one WebSocket).
+
+## Slack integration
+
+Slack is OpenBSP's first **intra-org** channel. It connects two ways, and a
+workspace may use either or both:
+
+- **As a member** (`xoxp` user token) — each member connects their own account.
+  Their DMs, group DMs and channels mirror into OpenBSP, visible only to them
+  and whoever else is in that conversation on Slack. Messages sent from OpenBSP
+  post genuinely as them. There is no role bypass: owners and admins cannot read
+  a member's conversations.
+- **As a bot** (`xoxb` bot token) — the workspace-wide install, and the direct
+  equivalent of connecting a shared WhatsApp number. Everything the bot is in
+  belongs to the whole organization, private channels included; being invited is
+  the sanctioning act. Messages with no member behind them (API keys,
+  automations, AI agents) go out as the bot.
+
+Both land in the same conversations, so a channel holding the bot and a member
+is org-wide, while that member's DMs stay private. Editing, deleting, reacting,
+threads and files all flow in either direction.
+
+### Create the Slack app
+
+The app's configuration is version-controlled in
+[`slack-app-manifest.yaml`](./slack-app-manifest.yaml) — scopes, event
+subscriptions and settings, with the reasoning inline. It is the source of
+truth; the steps below say what to do with it.
+
+1. Create an app at [api.slack.com/apps](https://api.slack.com/apps) with **From
+   an app manifest**, and paste `slack-app-manifest.yaml` after replacing the
+   `<ui-host>` and `<project-ref>` placeholders. The manifest declares both user
+   and bot scopes; a `mode=user` install still requests only the user ones (see
+   "Connecting members"). Bot event subscriptions are commented out on purpose —
+   read the note above them before enabling.
+2. Check the OAuth **redirect URL** matches your UI's callback, and that **Event
+   Subscriptions** verified your `slack-webhook` URL (Slack pings it with a
+   `url_verification` challenge, which the function answers).
+3. Keep the scope lists in sync with `USER_SCOPES` / `BOT_SCOPES` in
+   `supabase/functions/_shared/slack.ts` whenever either changes.
+4. Set the edge function secrets:
+
+   ```bash
+   SLACK_CLIENT_ID=<from Basic Information>
+   SLACK_CLIENT_SECRET=<from Basic Information>
+   SLACK_SIGNING_SECRET=<from Basic Information>
+   SLACK_APP_TOKEN=<xapp- app-level token>
+   ```
+
+   `SLACK_APP_TOKEN` lets the webhook resolve the full list of installed members
+   when a brand-new channel/DM shows up (`apps.event.authorizations.list`).
+   Generate it under **Basic Information → App-Level Tokens** with the
+   `authorizations:read` scope.
+
+### Connecting
+
+`GET /slack-management/authorize-url?redirect_uri=…&mode=` composes the OAuth
+URL. `mode` is `user` (default), `bot` or `both` — they map to Slack's
+`user_scope` and `scope`, and one flow can carry both. The callback exchanges
+the code via `POST /slack-management/connect` (user JWT; API keys cannot own a
+connection). Connecting runs the initial sync: the workspace directory becomes
+contacts, and the conversations of whatever connected — the member's, or the
+bot's — become conversations. After that the webhook keeps up.
+
+`POST /slack-management/sync` re-syncs. `DELETE /slack-management/connect`
+disconnects: the token is revoked and cleared, but history stays readable,
+frozen, until reconnect.
+
+Address rows per workspace: the **anchor** (`T…`, ownerless) holds the bot token
+if there is one and is what conversations hang off; a **personal** row (`T…:U…`)
+per connected member holds their user token. An org may install only the bot and
+never connect a member — then the bot token serves every workspace read.
+
+One Slack workspace maps to one organization. Token rotation is enabled: rotated
+tokens refresh inline on send and via the `/slack-management/refresh-tokens`
+cron.
+
+## Architecture
+
+New to Supabase? In one sentence: it's a hosted Postgres platform that
+auto-exposes your tables over a REST and realtime API, runs Deno-based Edge
+Functions for server-side logic, and handles auth and file storage on top.
+OpenBSP leans heavily on those primitives — most business logic lives as SQL
+triggers and Edge Functions, and clients (the web UI, the Claude Code plugin,
+custom integrations) talk to Postgres directly through a
+[Supabase client library](https://supabase.com/docs/guides/api/rest/client-libs)
+rather than through a separate backend layer.
+
+<img src="./architecture.png" alt="Architecture diagram" width="600">
+
+In the image, green boxes are external services, red are Edge Functions and
+blue, database tables. White boxes are clients.
+
+The system uses a reactive, function-based architecture:
+
+1. A request from the WhatsApp API is received by the `whatsapp-webhook`
+   function.
+2. `whatsapp-webhook` processes the incoming message and stores it in the
+   `messages` table.
+3. An insert trigger on the `messages` table forwards the message to the
+   `agent-client` function (incoming trigger).
+4. `agent-client` builds the conversation context and sends a request to an
+   agent API using the
+   [Chat Completions](https://platform.openai.com/docs/api-reference/chat)
+   format.
+5. `agent-client` waits for the agent's response and saves it back to the
+   `messages` table.
+6. An outgoing trigger on the `messages` table forwards the new message to the
+   `whatsapp-dispatcher` function.
+7. `whatsapp-dispatcher` processes the message and sends a request to the
+   WhatsApp API to deliver it.
+
+This event-driven flow ensures that each component is decoupled and scalable.
+
+### Edge Functions
+
+#### WhatsApp
+
+- `whatsapp-webhook`: Handles incoming webhook events from the
+  [WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api).
+- `whatsapp-dispatcher`: Sends outbound messages to the WhatsApp Cloud API.
+- `whatsapp-manager`: Integrates with the
+  [WhatsApp Business Management API](https://developers.facebook.com/docs/whatsapp/business-management-api)
+  for business and phone number management.
+
+#### Agent
+
+- `agent-client`: Orchestrates agent interactions, builds conversation context,
+  and communicates with external agent APIs over
+  [Chat Completions](https://platform.openai.com/docs/api-reference/chat) or
+  [Open Responses](https://openresponses.org) protocols.
+
+### Database models
+
+- **users**: Registered user in the application (mapped to Supabase Auth).
+- **organizations**: Tenant entity; holds organization metadata.
+- **organizations_addresses**: An organization's connected addresses per service
+  — e.g. a WhatsApp phone number. Belongs to an `organization`.
+- **contacts_addresses**: The address-book entries — an address a contact can be
+  reached at (e.g. a phone number for WhatsApp), with its display name in
+  `extra`. Each row is an entry in one connection's address book — it belongs to
+  an `organization_address`, and its visibility follows that account's (a
+  personal connection's contacts are the owner's). There is deliberately no
+  cross-service contact identity: openbsp is a comm layer, and who-is-who across
+  services belongs to the consumer.
+- **conversations**: A channel between an `organization_address` and an
+  `address` (a phone number, a WhatsApp group JID, a Slack channel id) for a
+  given service; belongs to an `organization`. Its `type` says which shape it
+  is: `direct`, `group` or `channel`. Except on the internal `local` service, it
+  mirrors state owned by the external service and is read-only to members.
+- **messages**: Messages within a `conversation`; carry authorship, type,
+  payload, status, and timestamps.
+- **agents**: Human or AI agents for an `organization`; optionally linked to an
+  auth `user`.
+- **api_keys**: API access keys scoped to an `organization`.
+- **webhooks**: Outbound webhook subscriptions per `organization`.
+- **conversations_agents**: Who is in a `conversation` — membership mirrored
+  from the external service, or managed by members on the internal `local` chat.
+  Also carries each member's own state for the conversation.
+- **logs**: Application-level log entries (errors, warnings) written by Edge
+  Functions.
+
+## Local development
+
+Requires Node 🐢 and Docker 🐋.
+
+### Database
+
+```
+npx supabase start
+```
+
+After editing the schema files, generate a migration
+
+```
+npx supabase db diff -f <migration_name>
+```
+
+Apply the migration to the local database
+
+```
+npx supabase migration up
+```
+
+Finally, update the types
+
+```
+npx supabase gen types typescript --local > supabase/functions/_shared/db_types.ts
+```
+
+### Edge Functions
+
+```
+npx supabase functions serve
+```
+
+### REST API docs
+
+Fetch the OpenAPI spec from PostgREST (requires the service role key):
+
+```
+curl "https://<project-id>.supabase.co/rest/v1/" -H "apikey: <service_role_key>" > openapi.json
+```
+
+## Related open-source projects
+
+### Official (Meta Cloud API)
+
+Connect through Meta's official WhatsApp Business Cloud API. Compliant with
+WhatsApp Business policies, production-ready, requires Meta verification.
+
+- [EvolutionAPI/evolution-api](https://github.com/EvolutionAPI/evolution-api) —
+  open-source WhatsApp integration API.
+- [shridarpatil/whatomate](https://github.com/shridarpatil/whatomate) —
+  open-source WhatsApp integration that runs on pure Postgres — a great
+  alternative to OpenBSP if you don't want to use Supabase.
+
+### Unofficial (WhatsApp Web)
+
+Reverse-engineered WhatsApp Web protocols. Work without Meta approval and
+support personal accounts, but at risk of bans and not suited for high-volume
+production.
+
+- [wwebjs/whatsapp-web.js](https://github.com/wwebjs/whatsapp-web.js) — NodeJS
+  client library that connects through the WhatsApp Web browser app.
+- [WhiskeySockets/Baileys](https://github.com/WhiskeySockets/Baileys) —
+  socket-based TS/JavaScript API.
+- [rmyndharis/OpenWA](https://github.com/rmyndharis/OpenWA) — free, self-hosted
+  WhatsApp API gateway.
+- [devlikeapro/waha](https://github.com/devlikeapro/waha) — WhatsApp HTTP API
+  with three engines: browser, NodeJS websocket, Go websocket.
+- [tulir/whatsmeow](https://github.com/tulir/whatsmeow) — Go library for the
+  WhatsApp Web multidevice API.
+- [open-wa/wa-automate-nodejs](https://github.com/open-wa/wa-automate-nodejs) —
+  NodeJS tool for chatbots with advanced features.
+
+OpenBSP is in the first category. If you need to talk to personal accounts, work
+without Meta verification, or prefer a library/SDK to a platform, the projects
+in the second category are better fits.
+
+## Acknowledgments
+
+- [@diegoparma](https://github.com/diegoparma) — for years of feedback, design
+  input, and being one of the project's earliest power users.
+- [@rolox05](https://github.com/rolox05) — first UI, PoC and kickstart partner.
+
+## Community
+
+Questions, ideas, or feedback? Join our
+[WhatsApp Community](https://chat.whatsapp.com/Ch6AwZizSDt5quzHodcYh5) or open
+an [issue](https://github.com/matiasbattocchia/open-bsp-api/issues). We'd love
+to hear from you.

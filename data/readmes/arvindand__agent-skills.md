@@ -1,0 +1,170 @@
+# Agent Skills
+
+Portable skills for AI coding assistants. Primarily tested with Claude Code and leverages Claude Code-specific features (hooks, context forking), but core functionality works with any [Agent Skills](https://agentskills.io)-compatible tool including GitHub Copilot, OpenCode, and Cursor.
+
+## Installation
+
+### Option 1: Install as Plugin (Recommended - For Claude Code)
+
+```bash
+# Add the marketplace
+/plugin marketplace add arvindand/agent-skills
+
+# Install the plugin
+/plugin install agent-skills@arvindand-skills
+```
+
+Or test locally:
+
+```bash
+claude --plugin-dir /path/to/agent-skills
+```
+
+### Option 2: Copy to Skills Directory
+
+```bash
+# Clone and copy skills
+git clone https://github.com/arvindand/agent-skills.git
+cp -r agent-skills/skills/* ~/.claude/skills/
+```
+
+Works with Claude Code, GitHub Copilot, OpenCode, Cursor, and VS Code with Copilot.
+
+## Available Skills
+
+| Skill | Description | Use For |
+|-------|-------------|---------|
+| [context7](skills/context7/) | Library documentation lookup via Context7 REST API | Getting up-to-date docs for React, Next.js, Prisma, etc. |
+| [github-navigator](skills/github-navigator/) | GitHub operations via gh CLI with deep analysis mode | All GitHub operations + codebase analysis via cloning |
+| [maven-tools](skills/maven-tools/) | JVM dependency intelligence via [Maven Tools MCP server](https://github.com/arvindand/maven-tools-mcp) | Version checks, POM-aware upgrade planning, JVM dependency bot replacement flows, CVE scanning, license compliance |
+| [skill-crafting](skills/skill-crafting/) | Create, fix, validate skills + generate from session history | Creating skills, fixing issues, CSO compliance, session-to-skill conversion |
+| [ui-ux-design](skills/ui-ux-design/) | Create production-grade interfaces with strong UX foundations | Building functional, accessible, visually distinctive UI/UX |
+
+## Output Styles
+
+Customize Claude's response style via `/config` → **Output style** (the standalone `/output-style` command was removed in v2.1.91):
+
+| Style | Description |
+|-------|-------------|
+| [socratic](output-styles/socratic.md) | Teaches through questions. Backs off when you ask for direct answers. |
+| [speed-run](output-styles/speed-run.md) | Max 3 sentences. Code first, explanations on request. |
+| [pair-programmer](output-styles/pair-programmer.md) | Thinks aloud, invites interruption. Best for complex problems. |
+| [deep-focus](output-styles/deep-focus.md) | Calm, methodical. Accuracy over speed. Best for hard problems. |
+
+## Usage
+
+Once installed, skills activate automatically when relevant to your prompt:
+
+```txt
+You: "How do I use React hooks?"
+→ context7 fetches up-to-date React hooks documentation
+
+You: "Show me open issues in facebook/react"
+→ github-navigator uses gh CLI to list issues
+
+You: "Analyze the architecture of vercel/next.js"
+→ github-navigator clones repo for deep codebase analysis
+
+You: "Should I upgrade Spring Boot from 2.7 to 3.2?"
+→ maven-tools analyzes versions, CVEs, same-major safe fallback paths, and documentation handoff
+
+You: "Build me a login form with dark mode"
+→ ui-ux-design creates accessible component with proper states
+
+You: "Create a skill from this session"
+→ skill-crafting evaluates patterns and generates reusable skill
+```
+
+No manual invocation needed — the AI determines when each skill is relevant.
+
+## Documentation
+
+See [skill-crafting/REFERENCES.md](skills/skill-crafting/REFERENCES.md) for best practices and patterns.
+
+### Cross-Platform Design
+
+Skills use **progressive enhancement**:
+
+- **Spec fields** (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`) work everywhere
+- **Claude Code extensions** (`context`, `background`, `hooks`) are additive; the spec-only paths — claude.ai skill uploads, the Skills API, `package_skill.py` — reject unknown keys rather than ignoring them, so these skills keep their frontmatter to the six fields plus the extensions Claude Code needs
+
+### Claude Code Enhancements
+
+When running in Claude Code, these skills leverage additional features:
+
+| Feature | Skills | What It Does |
+|---------|--------|--------------|
+| Context forking | github-navigator | Runs in isolated subagent to avoid polluting main context, with `background: false` so the result lands in the invoking turn |
+| Stop hooks | skill-crafting, ui-ux-design | Verifies task completion before declaring done |
+| Tool pre-approval | All | `allowed-tools` skips permission prompts for the invoking turn. It does not restrict anything — every tool stays callable and your permission settings still apply |
+
+Other platforms get core functionality without these enhancements.
+
+## Contributing
+
+**Skills I'm looking to collect:**
+
+- Frequent operations with zero context overhead
+- CLI tools that can be discovered via `--help`
+- Discovery patterns that teach AI dynamically
+
+> Note: Would appreciate contributions or references to implementations for other useful skills, especially geared toward helping senior devs focused on backend, architecture, and DevOps.
+
+## Why Skills over MCP?
+
+I'm biased towards skills over MCP. Here's why.
+
+### Skills are cheaper and at least as effective as MCP tools when done well
+
+MCP loads all tool schemas into every conversation whether you use them or not. Ten tools? That's roughly 1,000 tokens added to every single request. Update (2026): Anthropic's [tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool) now defers schemas and loads them on demand — but it's default-on only in Claude Code, opt-in elsewhere, and most MCP clients still preload. The overhead is reduced, not gone.
+
+Skills are free until you need them. When a skill triggers, you pay for ~100 words of metadata. That's it.
+
+> Anthropic found that using code execution patterns (what skills enable) cut token usage from >150,000 to 2,000. That's a 98.7% reduction. <https://www.anthropic.com/engineering/code-execution-with-mcp>
+
+### If there's a CLI, use a skill
+
+AI models already know how to read `--help` output. You don't need to write MCP schemas for things like `gh`, `npm`, or `curl`.
+
+Instead, teach the pattern:
+
+- "Run `gh issue --help` to see what's available"
+- "Check `npm --help` for commands"
+
+The skill stays current as the CLI evolves. No maintenance needed.
+
+> See Simon Willison, ["Claude Skills are awesome, maybe a bigger deal than MCP"](https://simonwillison.net/2025/Oct/16/claude-skills/) (Oct 2025) — the source of the CLI-over-MCP argument.
+
+### When the line is blurry, optimize for cost
+
+Sometimes both approaches work. When in doubt, ask: will I use this frequently? If yes, a skill costs you nothing when idle. An MCP costs you tokens on every request.
+
+### When MCP makes sense
+
+Use MCP when:
+
+- Works and well maintained and doesn't contain a gazillion tools
+- You need bidirectional communication (push updates, subscriptions)
+- Carries complex state and sophisticated caching
+- No CLI exists and you can't easily wrap the API
+
+Skills and MCP can work together. You can write a skill that teaches the AI how to use your MCP servers effectively.
+
+The `maven-tools` skill is a good example of that hybrid model: the MCP server does the dependency intelligence work, and the skill keeps the orchestration patterns lean, portable, and easier to evolve.
+
+### What's changed (2026)
+
+The skills-vs-MCP split has aged toward convergence:
+
+- **OpenAI adopted the [Agent Skills standard](https://agentskills.io) in Codex** and uses skills internally — so a single `SKILL.md` now travels across Claude Code, Copilot, Cursor, OpenCode, and Codex.
+- **Anthropic donated MCP to the vendor-neutral [Agentic AI Foundation](https://blog.modelcontextprotocol.io/posts/2025-12-09-mcp-joins-agentic-ai-foundation)** (Linux Foundation, co-founded with OpenAI and Block).
+
+Skills and MCP are becoming shared, cross-vendor infrastructure — which is why I reach for skills first but keep both.
+
+## License
+
+MIT License — See individual skill LICENSE files for details.
+
+**Author:** Arvind Menon
+
+---

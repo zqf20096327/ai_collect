@@ -1,0 +1,75 @@
+# SWE-QA-Pro: A Representative Benchmark and Scalable Training Recipe for Repository-Level Code Understanding
+
+[**📖 arXiv**](https://arxiv.org/abs/2603.16124) | [**🤗 SWE-QA-Pro Bench**](https://huggingface.co/datasets/TIGER-Lab/SWE-QA-Pro-Bench) | [**🤗 SWE-QA-Pro-SFT Trajectories**](https://huggingface.co/datasets/TIGER-Lab/SWE-QA-Pro-SFT-Trajectories)
+
+---
+
+## 📢 News
+
+- **🤖 [2026-06-24] The training code and training dataset are released. See [`train/`](train/README.md) for the two-stage SFT and RL recipe.**
+- **🚀 [2026-05-19] The evaluation code is released. See [`eval/`](eval/README.md) for setup and reproduction instructions.**
+- **🎉 [2026-04-07] Our paper has been accepted to the Findings of ACL 2026!**
+- **🔥 [2026-03-20] SWE-QA-Pro Bench is publicly released! See our [paper](https://arxiv.org/abs/2603.16124) and [benchmark](https://huggingface.co/datasets/TIGER-Lab/SWE-QA-Pro-Bench).**
+
+
+## 📘 Introduction
+**SWE-QA-Pro** is a benchmark and training framework for **agentic repository-level code understanding**, enabling models to explore, reason over, and verify real-world codebases. This work targets key limitations in existing evaluations:
+
+- Limited diversity: benchmarks focus on popular repositories, missing long-tail software tasks
+- Knowledge leakage: many questions can be solved without interacting with the codebase
+- Weak tool necessity: unclear whether agentic workflows are actually required
+
+To address these challenges, we introduce two key components:
+1. **SWE-QA-Pro Benchmark:**
+
+    ![Alt text](assets/benchmark_main_figure.png)
+    A repository-level QA benchmark built from diverse long-tail repositories with executable environments.
+
+    - Questions are seeded from real issues and grouped via clustering to ensure topic diversity
+    - Each item is grounded in actual code with human verification
+    - A difficulty calibration pipeline filters out questions solvable by direct-answer models
+
+    This results in a benchmark where agentic exploration is necessary, with up to a **~13-point** performance gap between tool-using agents and direct answering.
+
+
+2. **Agentic Training Pipeline & Models:**
+
+    ![Alt text](assets/training_receipt.png)
+    A scalable framework for learning repository-level agentic reasoning.
+
+    - Generates synthetic tool-use trajectories and grounded supervision
+    - Trains models with a two-stage recipe (SFT → RLAIF)
+    - Enables small open models to learn multi-step reasoning, tool usage, and code navigation
+
+    Models trained with this pipeline achieve strong performance, with our SWE-QA-Pro 8B model surpassing GPT-4o by **+2.3 points** on SWE-QA-Pro and substantially narrowing the gap to state-of-the-art proprietary models.
+
+
+## ⚙️ Train & Eval
+
+- **Training**: the two-stage recipe (SFT then RL) lives under [`train/`](train/README.md). Stage 1 fine-tunes Qwen3-8B on agentic trajectories with [ms-swift](https://github.com/modelscope/ms-swift); Stage 2 runs agentic RL (GRPO) on top of the SFT checkpoint with [verl-tool](https://github.com/TIGER-AI-Lab/verl-tool), against a repository tool server and an LLM judged rubric reward. See [`train/README.md`](train/README.md) for setup and run instructions.
+- **Evaluation**: code for running both Direct mode and Agent mode on the SWE-QA-Pro Bench (with a unified OpenAI/DeepSeek judge) lives under [`eval/`](eval/README.md). The runner supports GPT-4o, GPT-4.1, Claude Sonnet 4.5, Gemini 2.5 Pro, DeepSeek v4, and local vLLM models (Qwen3, Devstral, Llama 3.3); backends are configured in `eval/configs/models.yaml`. See [`eval/README.md`](eval/README.md) for installation, supported models, run commands, and the package layout.
+
+
+## 📬 Contact
+- **Songcheng Cai**: songcheng.cai@uwaterloo.ca  
+- **Zhiheng Lyu**: z63lyu@uwaterloo.ca
+- **Wenhu Chen**: wenhu.chen@uwaterloo.ca  
+
+---
+
+## 📖 Citation
+
+**BibTeX:**
+
+```bibtex
+@article{cai2026sweqapro,
+      title={SWE-QA-Pro: A Representative Benchmark and Scalable Training Recipe for Repository-Level Code Understanding}, 
+      author={Songcheng Cai and Zhiheng Lyu and Yuansheng Ni and Xiangchao Chen and Baichuan Zhou and Shenzhe Zhu and Yi Lu and Haozhe Wang and Chi Ruan and Benjamin Schneider and Weixu Zhang and Xiang Li and Andy Zheng and Yuyu Zhang and Ping Nie and Wenhu Chen},
+      journal={arXiv preprint arXiv:2603.16124},
+      year={2026},
+}
+```
+
+## 🙏 Acknowledgement
+
+We thank the authors of [SWE-QA-Bench](https://github.com/peng-weihan/SWE-QA-Bench) for open-sourcing their codebase, which served as a useful implementation reference for this project.

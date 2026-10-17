@@ -1,0 +1,172 @@
+# OpenEAGO - Enterprise Agent Governance and Orchestration
+
+<br />
+<div align="center">
+  <img src="docs/images/eago_gs.png" alt="OpenEAGO" width="800">
+</div>
+<br /><br / >
+
+<div align="center" style="display: flex; gap: 10px; justify-content: center;">
+  <img src="https://user-images.githubusercontent.com/327285/230928932-7c75f8ed-e57b-41db-9fb7-a292a13a1e58.svg" alt="badge-labs">
+  <img src="https://img.shields.io/github/commit-activity/m/finos-labs/open-eago?style=flat-square" alt="commit activity">
+  <img src="https://img.shields.io/github/last-commit/finos-labs/open-eago?style=flat-square" alt="last commit">
+  <img src="https://img.shields.io/github/license/finos-labs/open-eago?style=flat-square" alt="license">
+</div>
+
+---
+
+**Enterprise Agent Governance & Orchestration (OpenEAGO)** is an open specification for the **governance and compliance control plane** of regulated agentic systems — the layer that A2A, MCP, AGNTCY/OASF, and SPIFFE each explicitly decline to own.
+
+- Authors: Jan Rock (<jan.rock@citi.com>), Denis Urusov (<denis.urusov@citi.com>), Paul Groves (<paul.groves@citi.com>)
+- Date: 05/03/2026 - Version: 0.1
+
+## Overview
+
+A2A handles agent-to-agent communication mechanics. MCP handles tool access. AGNTCY/OASF handles agent discovery and schema. SPIFFE handles workload identity. None of them does jurisdiction-aware policy enforcement, human-in-the-loop approval gates, cross-border data clearance, composite risk scoring, or audit anchoring for regulated workflows. OpenEAGO owns that gap — riding the winners on the wire, adding the control plane they don't provide.
+
+OpenEAGO is not a parallel protocol stack. It is a **profile and governance overlay** that runs on top of A2A transport and MCP tool invocation, delegating wire mechanics to those standards while adding the compliance machinery that regulated industries require.
+
+The specification enables:
+
+- **Jurisdiction-Aware Policy Enforcement** - Real-time compliance checks against GDPR, DORA, EU AI Act, SR 11-7, BCBS 239, and PCI-DSS applied before and during execution
+- **Human-in-the-Loop Gates** - Mandatory HITL approval workflow for high-risk and regulated tasks, with structured audit artifacts
+- **Cross-Border Data Clearance** - Automated data residency validation and sovereignty enforcement during planning
+- **Composite Risk Scoring** - Four-dimension risk model (financial, operational, compliance, security) computed at Phase 3 with hard stop thresholds
+- **KYC/AML and Credit-Risk Negotiation** - Regulatory feasibility checks as a first-class phase in execution planning
+- **Audit Anchoring** - Traceable, tamper-evident records across all six phases, structured for regulator review
+- **SLA/SLO Enforcement** - Quantitative feasibility checks during planning with a breach state machine at runtime
+- **Framework-Agnostic Transport** - Delegates wire protocol to A2A; supports LangChain, LangGraph, custom agents, and legacy system wrappers
+
+## Architecture
+
+OpenEAGO orchestrates multi-agent workflows through a comprehensive architecture:
+
+**Client Interface:**
+
+- **Request** - Client applications (API, CLI, SDK) submit business requests to work contracts
+
+**Specification:**
+
+- **Contract Management** - Validates inputs, establishes terms, and manages agent capabilities.
+- **Planning & Negotiation** - Discovers optimal agents, determines the execution pattern, and performs negotiation (authorization, SLA/SLO feasibility, cross-border data clearance, KYC, AML, policy constraints, credit risk).
+- **Validation & Compliance** - Validates the execution plan against policy, risk, and regulatory requirements, including Human-in-the-Loop approval where required.
+- **Execution & Resilience** - Runs tasks according to the plan with resilience controls, managing dependencies, fallbacks, and compensating actions.
+- **Context & State Management** - Captures and maintains hierarchical state across session, conversation, agent, and task layers.
+- **Communication & Delivery** - Delivers messages using standardized formats with routing integrity, security, and audit anchoring.
+
+### Capability Mapping — What OpenEAGO Adds vs. What It Delegates
+
+OpenEAGO is additive, not duplicative. This table shows exactly what each phase contributes versus what it delegates to the underlying standards.
+
+| Phase | Delegates to | Net-new OpenEAGO contribution |
+| --- | --- | --- |
+| **1 · Contract Management** | A2A (wire transport), MCP (tool interface) | Input validation against compliance profiles; traceable contract artifact with jurisdiction, regulatory scope, and capability classification metadata |
+| **2 · Planning & Negotiation** | AGNTCY/OASF (agent discovery and schema) | KYC/AML checks; cross-border data clearance; credit-risk scoring; SLA/SLO feasibility against all four SLO dimensions; ACU-based cost/risk thresholds — all before execution begins |
+| **3 · Validation & Compliance** | OPA/Rego (policy evaluation engine); SPIFFE (identity attestation) | Mandatory HITL approval gate; four-dimension composite risk score with hard-stop thresholds; regulatory profile enforcement (GDPR, DORA, EU AI Act, SR 11-7, BCBS 239); risk tier escalation rules |
+| **4 · Execution & Resilience** | A2A (agent-to-agent transport); MCP (tool invocation) | SLA breach state machine; circuit breaker triggered by multi-indicator runtime risk; compensating transactions; structured execution audit trail |
+| **5 · Context & State Management** | — | Hierarchical context propagation (`session → conversation → agent → task`); cross-agent lineage tracking; risk context forwarded across all phase transitions |
+| **6 · Communication & Delivery** | A2A (transport); SPIFFE/mTLS (mutual auth) | Jurisdiction-aware routing; audit-anchored delivery records; delivery status semantics structured for regulator review |
+
+## Prerequisites
+
+In the OpenEAGO framework, **Agent Identity** serves as a **core building block** for ensuring secure and reliable communication between AI agents. The identity management system, in conjunction with the **Agent Registry**, establishes a robust foundation for trust and security. By leveraging advanced mechanisms such as mutual TLS (mTLS), certificate-based authentication, and continuous monitoring, the framework ensures that only verified agents can participate in the ecosystem.
+
+The **Agent Registry** acts as a centralized service discovery and capability management hub, enabling seamless integration and orchestration of AI agents. Together, the identity and registry components form a secure and scalable infrastructure that prevents unauthorized access, ensures compliance with regulatory requirements, and fosters trust in multi-agent interactions.
+
+## Documentation
+
+### Getting Started
+
+- [Documentation Index](docs/README.md) - Specification introduction and navigation
+- [Overview](docs/overview/overview.md) - Comprehensive specification overview
+- [Architecture](docs/overview/architecture.md) - High-level architecture overview
+- [Security Considerations](docs/overview/security.md) - Security architecture and requirements
+
+### Core Specification
+
+- [Contract Capability](docs/capabilities/01_contract/contract.md) - Contract negotiation and management
+- [Planning Capability](docs/capabilities/02_planning/planning.md) - Execution planning and optimization  
+- [Validation Capability](docs/capabilities/03_validation/validation.md) - Validation and compliance checking
+- [Execution Capability](docs/capabilities/04_execution/execution.md) - Task execution and orchestration
+- [Context Capability](docs/capabilities/05_context/context.md) - Context management and sharing
+- [Communication Capability](docs/capabilities/06_communication/communication.md) - Agent communication standards
+
+### Advanced Topics
+
+- [OpenEAGO Proposal](docs/overview/openeago_proposal.md) - Detailed proposal with distinctive features
+- [Identity Management](docs/overview/identity.md) - Agent identity and trust establishment
+
+## Why OpenEAGO
+
+OpenEAGO addresses the critical gap in enterprise AI infrastructure by providing a universal communication standard that preserves framework choice while enabling seamless integration across regulatory boundaries. As organizations scale their AI deployments beyond single agents to complex multi-agent systems, OpenEAGO provides the foundation for secure, observable, and compliant agent ecosystems that operate within the constraints of global data protection and privacy regulations.
+
+The specification's design prioritizes real-world enterprise requirements—regulatory compliance, data sovereignty, cross-border governance, security, and operational resilience—while maintaining the flexibility needed to support diverse implementation approaches and evolving AI technologies. By incorporating data localization, consent management, and automated compliance validation into its core architecture, OpenEAGO enables organizations to deploy AI agents globally while meeting local regulatory requirements.
+
+By adopting OpenEAGO, organizations can build agent networks that transcend departmental, vendor, and jurisdictional boundaries while maintaining strict compliance with data protection regulations.
+
+## Philosophy
+
+OpenEAGO is built on the principles of transparency, collaboration, and user empowerment. We believe in creating an open ecosystem where AI agents can interact seamlessly while respecting user privacy and data sovereignty. Our approach emphasizes the importance of regulatory compliance and ethical considerations in AI development and deployment.
+
+**Our goal is to create an enterprise-grade specification for AI agent interoperability that fosters innovation while ensuring security and regulatory compliance, building upon existing open source projects and industry standards.**
+
+## Linked Projects
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <a href="https://google.github.io/A2A/">
+        <b>A2A</b><br>Agent2Agent Protocol
+      </a>
+    </td>
+    <td style="width: 36px;"></td>
+    <td align="center">
+      <a href="https://agntcy.org/">
+        <img src="docs/images/agntcy.svg" alt="AGNTCY" height="80">
+      </a>
+    </td>
+    <td style="width: 36px;"></td>
+    <td align="center">
+      <a href="https://schema.oasf.outshift.com/">
+        <img src="docs/images/oasf.png" alt="OASF Schema" height="80">
+      </a>
+    </td>
+    <td style="width: 36px;"></td>
+    <td align="center">
+      <a href="https://spiffe.io/">
+        <img src="docs/images/spiffe.png" alt="SPIFFE" height="80">
+      </a>
+    </td>
+  </tr>
+</table>
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for the detailed development roadmap.
+
+## Contributing
+
+**All commits** must be signed with a DCO signature to avoid being flagged by the DCO Bot. This means that your commit log message must contain a line that looks like the following one, with your actual name and email address:
+
+```sh
+Signed-off-by: John Doe <john.doe@example.com>
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
+
+**Community Resources:**
+
+- [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+- [GitHub - Signing Commits](https://docs.github.com/en/github/authenticating-to-github/signing-commits)
+
+## License & Legal
+
+- **Copyright** 2026 FINOS
+- **License** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+- **SPDX-License-Identifier** [Apache-2.0](https://spdx.org/licenses/Apache-2.0)
+
+## Contact
+
+- **Project Team** - <jan.rock@citi.com> / <rock@linux.com>
+- **FINOS** - [finos.org](https://www.finos.org/)
+- **GitHub** - [github.com/finos-labs/open-eago](https://github.com/finos-labs/open-eago)

@@ -1,0 +1,109 @@
+# dsh-desktop
+
+[中文](README.zh.md) · [Website / 官网](https://dsh-desktop.com)
+
+A dependable Electron desktop shell for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`): the official WebUI, packaged for your desktop — download, install, and use. Functionally identical to `npx @deepseek-ai/dsh web`. Community-maintained, MIT-licensed, no affiliation with DeepSeek AI; DeepSeek Harness is a DeepSeek trademark and this repo only repackages it under MIT.
+
+<p align="center"><img src="site/assets/shots/app-main-en-dark.png" alt="dsh-desktop main window" width="880" /></p>
+
+## Why the desktop shell instead of `npx`?
+
+Same kernel, same WebUI — the shell removes the environment work and adds the desktop surface:
+
+| Capability | `npx @deepseek-ai/dsh web` | dsh-desktop |
+|---|---|---|
+| Node.js / pnpm | Install and maintain yourself | Bundled, pinned Node.js 24 — zero setup |
+| Launching | Terminal + command | Click the icon, or summon from anywhere (`Ctrl/Cmd + Shift + Space`) |
+| Window & tray | One more browser tab | Native window; closing quits and stops services |
+| Crash recovery | Restart by hand | Auto-restart with backoff, error-page retry |
+| Broken plugins | Can wedge the WebUI | Safe Mode quarantines third-party plugins and still boots |
+| Diagnostics | Read terminal logs | One-click health check, exportable sanitized report |
+| Updates | Upgrade the npm package manually | Windows in-place auto-update; macOS release-page check |
+
+CLI and desktop can coexist — see [why-desktop](https://dsh-desktop.com/en/docs/why-desktop) for details, or the [changelog](https://dsh-desktop.com/en/changelog) for release notes.
+
+## Product scope
+
+`dsh-desktop` is a community-maintained personal project focused on a reliable Electron shell plus an out-of-the-box experience. It adds the desktop surface around the official Harness WebUI — runtime packaging, native window and tray behavior, supervision, recovery, diagnostics, updates, and practical desktop entry points — without becoming a separate Agent workspace or chat product.
+
+Community plugins are always installed manually by the user. The installer contains no community plugins and does not seed them on first launch; install `dsh-market` from Settings → Desktop settings → Plugin market only when needed, then choose other plugins yourself. Installers are currently unsigned: expect the right-click → Open prompt on macOS and "More info → Run anyway" on Windows, and verify downloads with the published `.sha256` files.
+
+**Website**: [dsh-desktop.com](https://dsh-desktop.com) — product intro, downloads (GitHub and the verified GitCode mirror, in whichever order is usable), and a FAQ covering unsigned-macOS first launch, SmartScreen, checksum & provenance verification. The site syncs with GitHub Releases automatically.
+
+## What you get
+
+- **No runtime setup** — bundles a pinned Node.js 24 runtime and the complete `@deepseek-ai/dsh` dependency closure; no separate Node install or terminal bootstrap.
+- **Feishu tasks from chat** — bundled cc-connect connects one saved bot application to a local workspace. Settings → Feishu connections or Desktop tools → Connect → Feishu connections opens one manager for QR creation, explicit open/close and message/card preferences; the floating panel also separates the selected application, desktop process and Feishu channel status, with explicit start/stop/reconnect. Model credentials remain in Harness. Long connections need no public IP or LAN sharing. See the [connection guide](docs/cc-connect.md).
+- **Isolated by default** — its own data home (`~/.dsh-desktop`) keeps settings, sessions, API keys, and plugins away from your CLI. `DSH_HOME=~/.dsh` shares them again.
+- **Dependable** — crash auto-restart with backoff, error-page retry, tray with live harness status, single-instance lock, window geometry persistence, and an exportable diagnostic report. On Windows, desktop actions remain reachable from Desktop tools, the window context menu, or the tray even when the menu bar is hidden.
+- **Quick to return to** — press the configurable summon shortcut from anywhere to show and focus a minimized or startup-hidden desktop app. It defaults to `Ctrl/Cmd + Shift + Space`; if another app owns it, the tray and context-menu fallbacks remain available. Closing the main window quits the app and stops its services, including Feishu and LAN access.
+- **A clear first-success path** — a lightweight, dismissible main-screen guide tracks runtime → workspace → model → first completed task and then gets out of the way. The plugin market is explicitly optional.
+- **One-click health check** — Settings → Desktop settings checks the bundled runtime, writable data folders and disk, Harness loopback, profile, plugins, and versions. Optional proxy/registry/update probes require an explicit opt-in; results stay local and sanitized, with no automatic repair.
+- **Fits your desktop** — Settings → Desktop settings lets you record the shortcut, opt into launch at login and start hidden, and enable local status notices. These preferences stay in the shell's own data file.
+- **Out-of-the-box plugin path** — the installer keeps community plugins out of the bundle. Install the market manually from Settings → Desktop settings → Plugin market; the panel reports each install phase, the actual installed version, and a retryable, sanitized cause when the registry, proxy, profile, or install script fails.
+- **Recovers from a broken plugin** — when startup fails on an incompatible community plugin, the error page lists each suspect with one-click **Update** (pull the latest version) or **Disable** (remove it from the boot list; files stay and it is reversible from Settings → Plugins), plus Update-all-and-restart. Safe Mode (the error page, Desktop tools, or Desktop settings) remains the fallback: third-party plugins are quarantined while official and built-in extensions keep running, and the diagnostic report names the suspected failing plugin. Official bundles are never touchable from these actions.
+- **Portable agent presets** — Settings → Desktop settings exports a preset as one `.dshpreset` file and imports it elsewhere with conflict checks (skip / replace / clone) and a trust warning.
+- **Constrained renderer** — sandbox and context isolation stay on, Node integration stays off, and camera/location/Web notifications/filesystem are denied by default. Optional desktop notices use only public Harness status and never read the screen; clicking a notice focuses the app.
+- **Desktop trash** — deleted sessions and presets stay recoverable from Settings → Trash; agent deletion commands are intercepted into the trash first, with ambiguous deletions blocked and explained. Entries are kept for 30 days.
+- **Updates** — Windows updates in place; unsigned macOS checks for releases and opens the exact release page.
+
+## Download
+
+Installers per platform (plus `latest.yml` and `.exe.blockmap` in the release for Windows updates):
+
+| Platform | Asset |
+|---|---|
+| macOS (Apple Silicon, unsigned) | `dsh-desktop-<version>-arm64-mac.dmg` |
+| Windows | `dsh-desktop-setup-<version>.exe` (NSIS) |
+| Linux | `dsh-desktop-<version>-amd64.deb` (Debian/Ubuntu/UOS/Deepin/麒麟) |
+
+Get installers from the [website](https://dsh-desktop.com) (shows GitHub and the GitCode mirror), [GitHub Releases](https://github.com/citrusli2026/dsh-desktop/releases), or the [GitCode mirror releases](https://gitcode.com/citrusli2026/dsh-desktop/releases). If the website is unreachable from your network (some networks have unstable routes to the hosting edge), use the release pages directly. Verify what you downloaded with the sibling `.sha256`, or `gh attestation verify <file> -R citrusli2026/dsh-desktop` for provenance — full steps per platform in the [website FAQ](https://dsh-desktop.com/#faq).
+
+## FAQ
+
+- **A plugin breaks the app and Harness will not start.** The error page lists the suspect plugins: **Update** pulls the latest published version through the same install path as the plugin market, **Disable** removes only the boot bundle entry (files stay on disk; re-enable from Settings → Plugins), and **Update all and restart** fixes every suspect in one go. Official bundles are refused. Safe Mode from the error page (`Start in Safe Mode`) or Desktop tools / Desktop settings remains the fallback, and the exported diagnostic report flags the suspected culprit.
+- **Something looks unhealthy but Harness still opens.** Run Settings → Desktop settings → Run health check. Local checks do not make network requests; opt in separately when proxy, registry, or update-source connectivity also needs checking. The report stays on the device and does not modify user files.
+- **The plugin market does not install.** Desktop settings distinguishes network, proxy, timeout, profile, install-script, and bundled-tool failures. Expand the sanitized technical detail or export diagnostics, fix the reported environment issue, and retry; a failed attempt never marks the market as installed.
+- **Share an agent preset with a teammate or another machine.** Settings → Desktop settings → Agent presets exports the selected preset as one `.dshpreset` file; the other side imports it from the same panel. Imports check for a name conflict (skip / replace / clone) and install as a *user* preset — never replacing a built-in one.
+- **Where are desktop preferences stored?** In the shell's own `shell-preferences.json` under the Electron user-data directory — separate from Harness `settings.yaml` and from CLI data (`DSH_HOME`).
+- **Diagnostic report?** The error page or `⋮` → Export diagnostics writes a local-only report (recent harness output, plugin inventory, suspected failing plugins, shell/harness versions) to a path you choose.
+
+## Versioning
+
+Versions and tags are composite: `<dsh version>.shell.<shell rev>` — e.g. `0.2.1-alpha.5.shell.0` bundles `@deepseek-ai/dsh` 0.2.1-alpha.5 at shell revision 0. `scripts/version.mjs` owns the version field; a daily `dsh-watch` workflow checks upstream npm and opens a verified bump PR automatically. A source version is not a published download; the website lists released builds only.
+
+## Development
+
+Requires Node `^22.19.0 || >=24.0.0` and pnpm 10.33.2:
+
+```sh
+pnpm install         # deps + Electron binary
+pnpm run bootstrap   # materialize the harness closure + bundled Node 24.21.0
+pnpm run dev         # run locally
+pnpm run smoke       # smoke: harness ready -> window loads -> verify page -> exit
+pnpm run verify      # typecheck, unit tests + coverage, site checks, build
+pnpm run dist        # build installers for the current platform (into dist/)
+```
+
+- **LAN Web connection**: "Desktop tools → Connect a mobile device" starts an isolated mobile-shell Web proxy and one-time pairing QR. The shell only stages the other repo's Web artifact (`dsh-mobile-shell`, immutable tag `v1.0.2`); paired sessions survive Harness/proxy restarts, and `DSH_LAN_IP` selects an adapter when needed.
+- **Android emulator gate**: boot an AVD with Chrome, then run `DSH_E2E_ANDROID_SERIAL=<adb-serial> pnpm run test:e2e:android`. It drives the real emulator browser through pairing, background/resume, sharing restart, and a full desktop relaunch.
+- The bundled Node is pinned in `manifest/node-runtime.json` with per-platform SHA-256, so bootstrap is reproducible from the committed values.
+
+## Layout
+
+```
+src/main/        Electron main: supervision, window, pages, tray
+src/preload/     sandboxed bridge (manual harness retry for the error page)
+scripts/         fetch-node / deploy-harness / install-electron / build / gen-icons
+manifest/        dependency pin for @deepseek-ai/dsh and its closure
+docs/decisions/  ADR-style decision records
+```
+
+## Documentation
+
+- [Documentation index & governance](docs/README.md) · [Decision records](docs/decisions/README.md)
+- [CONTEXT.md](CONTEXT.md) — domain vocabulary for agents · [HANDOFF.md](HANDOFF.md) — release log and operational history
+
+## License
+
+[MIT](LICENSE). The bundled DeepSeek Harness runtime comes from [@deepseek-ai/dsh](https://www.npmjs.com/package/@deepseek-ai/dsh) (MIT).

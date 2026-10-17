@@ -1,0 +1,258 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="virtuallyView" width="360">
+</p>
+
+<p align="center">
+  <strong>They rent you the library. Build your own.</strong>
+</p>
+
+<p align="center">
+  <a href="LICENSE">MIT</a> &middot; <a href="docs/getting-started.md">Getting started</a> &middot; <a href="CONTRIBUTING.md">Contributing</a> &middot; <a href="#feed-the-keep">Feed the keep</a>
+</p>
+
+<p align="center">
+  <a href="https://www.producthunt.com/products/virtuallyview?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-virtuallyview" target="_blank" rel="noopener noreferrer"><img alt="virtuallyView - Your Radarr/Sonarr/Lidarr stack, one clean interface | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1258258&amp;theme=light&amp;t=1790240850191"></a>
+</p>
+
+A self-hosted home for your movies, TV shows and music. One command, one page, and it sets itself up: no technical knowledge needed, and nothing to install or configure by hand. Everything underneath (the search engines, the download manager, the subtitle finder) wires itself together automatically on first start. You never touch them unless you want to.
+
+**Host it. Change it. Keep the keys.**
+
+**If you can copy-paste one command, you can run this.** No server experience required. See it done start to finish in [install for beginners](docs/install-for-beginners.md).
+
+<p align="center">
+  <img src="docs/screenshots/home.jpg" alt="Home" width="880">
+</p>
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/search.jpg" alt="Search and request with quality choice"></td>
+    <td><img src="docs/screenshots/player.jpg" alt="Player with chapters, subtitles, quality and next episode"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/series.jpg" alt="TV show page"></td>
+    <td><img src="docs/screenshots/appearance.jpg" alt="Fifteen themes with live previews"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/midnight.jpg" alt="Midnight theme"></td>
+    <td><img src="docs/screenshots/glass.jpg" alt="Glassmorphism theme"></td>
+  </tr>
+</table>
+
+## The quiet war
+
+Somewhere a licence expired last night and a film you loved is gone. A price went up. A show you were halfway through moved behind another paywall. An app you paid for changed its rules, and you found out from the notice you clicked past.
+
+None of that is an accident. Renting culture instead of letting you own it is the business model. The catalogue is theirs, the menu is theirs, the record of everything you watch is theirs. You are the tenant, and tenants get notice.
+
+virtuallyView is the other side of that line. One small server in your house. Your library, your accounts and your history in a folder you can copy to a drive and carry away. No account with us, because there is no us holding one. No telemetry. No switch anyone else can flip.
+
+### The Keepers
+
+People who run their own server are called keepers here. Nobody enrols, nothing is sold, and there is no ranking. A keeper is anyone who decided that what they watch and listen to should still be there tomorrow, and who is willing to plug in a box to make it true.
+
+The oath, if you want one:
+
+1. **Host it.** The server lives where you can touch it.
+2. **Change it.** The code is MIT. Read it, break it, fork it.
+3. **Keep the keys.** Your accounts and your data never leave your hands.
+4. **Pass it on.** Set one up for a friend who is still renting.
+
+It does not supply media and it does not replace the tools behind it. It is the interface to the setup you already run, or the one it helps you build. Use media and services you have the right to use.
+
+**Status: early release.** The features below work in the source and were exercised in a browser against the bundled stack, but not every combination of services, formats and devices has been tried. Bug reports with reproduction steps help more than anything else.
+
+## What you get
+
+- **Library.** Movies, TV and music from Radarr, Sonarr and Lidarr, with sort, filters (genre, studio, collection), A-Z jump, Continue Watching, Next Up and a personal My List. Music has lyrics, instant mix and a full track list with missing tracks marked. Concerts and music videos you download file themselves under the artist (created if new) in Concerts and Videos sections ([how](docs/concerts-and-videos.md)).
+- **Player.** Direct play where the browser can, live conversion with ffmpeg where it cannot (MKV, HEVC, DTS). Seek bar with chapter marks, Skip intro and Skip credits, speed, fullscreen, picture in picture, subtitles (sidecar files, text tracks and picture tracks such as PGS), audio track and quality choice while converting, and next episode with an episode picker.
+- **Requests.** One search across your library and everything you can request, with posters. Pick the exact match and the quality profile (for example Ultra-HD if you have a 4K screen). Requesting a film that is still in cinemas warns that only camera copies exist and offers to wait for a proper release. Follow progress from search to download to import, and manage failed requests in bulk.
+- **Downloads.** The qBittorrent and NZBGet queue, with pause, resume and remove. A setup checklist and one-click public indexers (Settings > Indexers) make sure requests actually find something. A short starting set of lawful sources is connected automatically; one click in Settings > Indexers adds every public, non-adult source that answers (a bundled FlareSolverr helps with Cloudflare-protected ones), so one being slow or blocked does not leave requests stuck.
+- **Accounts.** Several users, an administrator role, per-person watch progress and lists, profile pictures, age limits per person, a list of signed-in devices, sign in another device with a code, and sign-up closed unless you open it. Optional request approval and per-person limits. Other devices on your network sign in at the same address.
+- **Refresh.** A button in the top bar of every page reloads what you are looking at and asks the server to forget its short-lived caches and re-check requests and downloads now (it is hidden while a video plays).
+- **Notifications.** A bell in the top bar, desktop pop-ups, and channels for Discord, Slack, Telegram, ntfy, Gotify, webhooks and email.
+- **Backups.** Daily automatic backup, one-click download and restore, and an admin command line for when you are locked out.
+- **Themes.** Fifteen themes with live previews, chosen per device, plus a theme creator. Light, dark or follow the system.
+- **Live TV, photos and books.** Live channels from any M3U playlist with record-now, seek-bar preview thumbnails in the player, a photo browser with slideshow, and a book shelf. Cast to a TV with Chromecast, AirPlay or DLNA, no account needed ([casting](docs/casting.md)).
+- **Wiki and other apps.** Offline Wikipedia, medical and survival libraries through Kiwix, and links to Immich, Audiobookshelf and Kavita, each one command away ([wiki](docs/kiwix.md), [apps](docs/apps.md)).
+- **Optional assistant.** A local model through Ollama that can answer questions and act on your library, with confirmation for anything destructive.
+- **Privacy.** A VPN for downloads with no account (VPN Gate) or with your own provider, and Tor for search ([privacy](docs/privacy.md)). Optional automatic updates ([updates](docs/updates.md)).
+- **Optional proxy.** Route the server's public lookups (metadata, covers, trailers) through Tor, SOCKS5 or HTTP.
+
+### Limits
+
+SABnzbd, Plex and Emby are not supported. virtuallyView plays files itself and needs no other media server. Scheduled live TV recording, a programme guide, an EPUB reader and plugins are planned for [phase 2](docs/roadmap.md). Picture subtitles (PGS, VobSub) are drawn onto the video, so they only work while the file is being converted. Missing metadata or an offline service limits what a page can show, and the pages say so.
+
+## Privacy
+
+Self-hosted does not mean nothing leaves the machine.
+
+- Library actions talk to the services you configured. Those services make their own metadata, indexer and download requests.
+- Posters, trailers and cast photos are loaded from public sites (TMDB, YouTube, MusicBrainz, Wikipedia). Those sites see the request. The outbound proxy setting can hide the server's own lookups.
+- Search suggestions send your query text to Wikipedia. Ollama model downloads need the network; a local model runs inference on your machine.
+
+Read your service settings before pointing this at anything sensitive. For routing search or downloads through Tor or a VPN, see [privacy](docs/privacy.md).
+
+## Quick start
+
+### Docker or Podman (recommended)
+
+```bash
+git clone https://github.com/VirtuallyTrue12/virtuallyView.git && cd virtuallyView
+docker compose -f docker-compose.yml -f docker-compose.release.yml up -d
+```
+
+This pulls the published, versioned image and starts virtuallyView with the services underneath it, already connected to each other. Prefer to build it yourself from this folder? `docker compose up -d` does that instead (a few minutes longer on the first run). It needs Docker with Compose 2.24 or newer, or Podman with a compatible Compose; plan for about 2 GB of images, 4 GB of RAM and free disk for your media. If you have never touched Docker before, [install for beginners](docs/install-for-beginners.md) walks through every step, screenshots included.
+
+Under the hood it brings up a small stack of open-source engines that do the actual finding and downloading (Radarr, Sonarr, Prowlarr, Lidarr, Bazarr, qBittorrent and NZBGet) and connects them to each other and to virtuallyView automatically: root folders, the download client, the indexer connections, all of it. You never need to open their pages or know what they are. They share a private network, but the ports published on your computer are reachable by anything that can reach it, so read [deployment](docs/deployment.md) before exposing them.
+
+Each new install gets its own generated service keys ([docker/seed/README.md](docker/seed/README.md)); the one shared default left is qBittorrent's login, which only this machine can reach. Read [security](SECURITY.md) before exposing anything beyond your home network.
+
+Open http://localhost:3000 and create the first account. It becomes the administrator. Then:
+
+- **Indexers.** Without one, requests find nothing. Add public indexers in one click under Settings > Indexers in virtuallyView (private trackers are added in Prowlarr, http://localhost:9696, with your own login). Choose sources you are entitled to use; none are added for you. The Home page checklist tells you when this is missing.
+- **Bazarr.** Open http://localhost:6767, finish its setup, copy the API key and enter the URL and key under Settings > Services. Use an address the app container can reach, not `localhost`.
+
+If a root folder or download client is missing after first boot:
+
+```bash
+docker compose run --rm --no-deps provision
+```
+
+To run only the app against services you already have:
+
+```bash
+docker compose up -d app
+```
+
+Then connect them under Settings > Services.
+
+New to Docker? Follow the [install guide for beginners](docs/install-for-beginners.md).
+
+It worked? Tell one friend still renting, and if it saved you a subscription, the [keep](#feed-the-keep) is fed by people like you.
+
+The published image is `ghcr.io/virtuallytrue12/virtuallyview`, tagged with each release version (and `latest`).
+
+The bundled stack keeps its library and downloads in named volumes, not in this folder. To use an existing library, change the `media-movies`, `media-tv`, `media-music` and `downloads` volumes in `docker-compose.yml` to bind mounts. The *arr containers run as `PUID=0`/`PGID=0` to avoid volume permission trouble; see [the seed guide](docker/seed/README.md) for how to run unprivileged.
+
+On Podman, a few things behave differently after a reboot. See [troubleshooting](docs/troubleshooting.md).
+
+### Other devices
+
+Anyone on your network can open `http://<this-computer's-ip>:3000`. Add their accounts under Settings > Users, or switch on sign-up under Settings > Server. Settings > Server also has the address to share and a note about the firewall. To watch on a TV, follow [watching on your TV](docs/tv.md): the TV's browser, casting, or a TV the server finds by itself.
+
+### From source
+
+Requires Node.js 22.5 or newer (the server uses the built-in SQLite module; the Docker image runs Node 24).
+
+```bash
+npm install
+npm run dev --workspace=apps/server   # API on :3000
+npm run dev --workspace=apps/web      # web app on :3001, proxies /api
+```
+
+### Assistant (optional)
+
+The assistant is not installed by default, because it adds a download of about 5 GB. To add it to the Docker stack:
+
+```bash
+docker compose --profile ai up -d
+```
+
+A small model (`qwen2.5:0.5b`) is pulled on first use, or pick one under Settings > AI Assistant. Everyday questions (downloads, problems, retries) are answered without the model, so a small one is enough. Small models make mistakes: read what the assistant proposes before you confirm it.
+
+Running from source instead: install Ollama from https://ollama.com, start it with `ollama serve`, and the server finds it at `127.0.0.1:11434`.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev --workspace=apps/server` | API server with reload, port 3000 |
+| `npm run dev --workspace=apps/web` | Vite dev server, port 3001 |
+| `npm run typecheck` | Typecheck server and web |
+| `npm run lint` | Lint server and web |
+| `npm test` | Unit and integration tests |
+| `npm run test:browser` | Browser tests (needs a build and Chromium) |
+| `npm run admin -- <command>` | Reset a password, list or promote accounts |
+| `npm run build` | Build server and web |
+| `npm start --workspace=apps/server` | Production server (also serves the built web app) |
+
+## Layout
+
+```
+apps/web/               React + Vite frontend
+apps/server/            Fastify API and services
+packages/integrations/  Radarr, Sonarr, Prowlarr, Lidarr, Bazarr, qBittorrent, NZBGet adapters
+packages/themes/        Theme token schema and validation
+packages/ai/            Assistant provider contract and tools
+packages/types/         Shared types
+themes/                 Bundled themes
+docker/seed/            Seed configuration for the bundled stack
+scripts/                Setup and provisioning
+```
+
+## Documentation
+
+- [Architecture](ARCHITECTURE.md)
+- [Install for beginners](docs/install-for-beginners.md)
+- [Getting started](docs/getting-started.md)
+- [API](docs/api.md)
+- [Requests](docs/requests.md)
+- [Integrations](docs/integrations.md)
+- [Themes](docs/themes.md)
+- [Assistant](docs/ai.md) and [tools](docs/ai-tools.md)
+- [Features](docs/features.md)
+- [Administration](docs/administration.md): indexers, approvals, notifications, backup, locked-out recovery
+- [Watching on your TV](docs/tv.md)
+- [Casting](docs/casting.md)
+- [Privacy: anonymous search and downloads (Tor, VPN)](docs/privacy.md)
+- [Rights and acceptable use](docs/acceptable-use.md)
+- [Compatibility](docs/compatibility.md) and [using services you already run](docs/existing-services.md)
+- [Automatic updates](docs/updates.md)
+- [Start and stop buttons (the helper)](docs/services-helper.md)
+- [Wiki (offline Wikipedia via Kiwix)](docs/kiwix.md)
+- [Other apps (Immich, Audiobookshelf, Kavita)](docs/apps.md)
+- [Roadmap](docs/roadmap.md)
+- [HTTPS](docs/https.md) and [reaching it from outside your home](docs/remote-access.md)
+- [Development](docs/development.md)
+- [Deployment](docs/deployment.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Security](SECURITY.md)
+
+## Tech
+
+React 18, React Router 7, Vite 6, TypeScript, Fastify 5, SQLite (`node:sqlite`), ffmpeg for conversion, optional Ollama. npm workspaces.
+
+## Contributing
+
+Bug reports with steps to reproduce, setup guide fixes, tested integration notes, themes and code are all welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Never paste credentials or private library details into an issue.
+
+## Feed the keep
+
+The big platforms have advertising budgets, lawyers and thousands of engineers. This project has spare evenings. Every bug fixed, every device tested and every server bill comes out of them.
+
+If virtuallyView is running in your house and has saved you a subscription, add to the fire. Five dollars is a real contribution. Ten is a good month. Nothing is required, and nobody sees who gave.
+
+**What it pays for:** test hardware, hosting, and the time to answer issues and fix things.
+
+**What it buys you:** nothing. No priority, no features, no vote on the roadmap. It buys the project's survival, which is the point.
+
+**Other ways to be a keeper, free:** star the repository, report a bug with steps to reproduce, host one for a friend, or send a fix.
+
+**Why crypto:** no bank, no payment processor and no platform sits between you and a small open project, able to freeze it or take a cut. Bitcoin donations show on the public chain, so anyone can check that the address is live. Monero is private by design. Crypto is irreversible and not an investment: check the address and the network yourself, and send a small test first.
+
+**Bitcoin:**
+
+![BTC QR](assets/btc-qr.png)
+
+`bc1q5twatnq2vpqtg3nj86tfzyncxjh42zz2razjhp`
+
+**Monero:**
+
+![XMR QR](assets/xmr-qr.png)
+
+`45Sb3B4iELhCL8vE1hrN6u9yDyPb5fgcYgXzG9ZKWCWfe4BS7HpLHGpFE2wdka9vutaAkSeNoykvLAx2dQTbcXh4RcLiq8b`
+
+## License
+
+MIT. See [LICENSE](LICENSE).

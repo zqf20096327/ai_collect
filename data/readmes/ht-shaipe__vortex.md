@@ -1,0 +1,389 @@
+<p align="center">
+  <img src="src-tauri/icons/logo.png" width="120" alt="Vortex Logo" />
+</p>
+
+# Vortex AI Gateway
+
+> 统一的 AI 网关 — 将多家 AI 提供商聚合为 OpenAI / Anthropic 兼容 API
+
+Vortex 是一个基于 **Rust (Actix-Web) + Vue 3** 构建的 AI 网关应用。它在本地启动一个 OpenAI 兼容的 API 服务器，将请求路由到多个 AI 提供商（OpenAI、Anthropic、Google Gemini、DeepSeek 等），支持弹性重试、API 密钥管理和用量统计。
+
+支持两种运行模式：
+- **桌面模式** — 基于 Tauri 2 的桌面应用，内嵌 HTTP 服务器 + 系统托盘 + IPC 命令
+- **Web 模式** — 纯 actix-web 服务器（`vortex-server`），不依赖 Tauri，适合服务器部署
+
+## 特性
+
+- **多家内置 AI 提供商** — OpenAI、Anthropic、Google Gemini、DeepSeek、Groq、xAI、Mistral、OpenRouter、NVIDIA NIM、Cloudflare AI、Ollama、SiliconFlow、HuggingFace、Qwen、MiniMax、Z.AI (GLM)、火山方舟、商汤日日新，以及自定义 OpenAI 兼容端点
+- **OpenAI / Anthropic 双协议入口** — `/v1/chat/completions` 与 `/v1/messages` 两套端点，无需修改客户端代码，直接替换 `base_url` 即可
+- **本地 HTTPS 双端口** — 设置页一键开启，在保留 HTTP 的同时另开 HTTPS 端口（默认 10169）；首次启用自动生成本地 CA 与服务器证书（SAN 含 localhost / 127.0.0.1 / ::1 / 主机名），macOS 自动装入钥匙串，支持外部证书覆盖；HTTPS 端口被占用时自动降级仅 HTTP，不影响主服务
+- **智能体一键接入** — 自动检测本机已安装的 AI 编程智能体（Claude Code、Codex、OpenCode、Qwen Code 等 12 种），预览将要写入的配置变更后一键接入 Vortex 网关；写入前自动备份，支持一键恢复到配置前状态
+- **跨格式转换** — 自动将 Anthropic/Gemini 请求和响应转换为 OpenAI 格式，包括 SSE 流式响应
+- **弹性机制** — 连接级与模型级双层熔断器 + 指数退避重试：连接连续失败 5 次熔断 60 秒，单个模型连续失败 3 次独立熔断（下线/无权限等确定性故障更快隔离）；熔断期间下游收到 503 与友好提示，冷却后自动探测恢复
+- **上游错误透传** — 上游返回 4xx/5xx 时原样透传状态码与错误响应体，客户端可直接看到上游真实报错，便于排查
+- **模型映射 + 故障转移** — 自定义虚拟模型名映射到多个真实模型目标，按优先级自动故障转移，免费额度组成"永动机"
+- **模型自动归纳** — 按模型家族自动将同族模型（如 gpt-4o、gpt-4o-2024-08-06、glm-5.3-flash:free）归纳为虚拟名，单模型家族同样生成同名别名保证全覆盖；开启「隐藏已映射的真实模型」后 `/v1/models` 仅输出虚拟模型列表，减少使用者选择负担
+- **安全存储** — API 密钥使用 AES-256-GCM 加密存储
+- **访问令牌开箱即用** — 首次启动默认开启 Token 鉴权并自动生成访问令牌，接入指南页一键复制并代入示例代码；多数客户端要求 API Key 字段非空才能发起请求，无需额外配置即可接入
+- **用量统计** — 按提供商、模型、时间维度记录请求数、Token 用量和成本；缓存创建/读取与推理 Token 从上游真实提取落库，不再恒为 0；上游未返回用量时自动按文本长度估算（中文 1 字 ≈ 1 token，其他 4 字符 ≈ 1 token），日志与统计中标记估算请求数，区分估算值与真实值
+- **免费 Token 目录** — 内置 43 个可申请免费额度的 AI 平台（国内 / 海外 / 本地部署），标注是否支持 API、是否需绑卡与实名，支持自行提交推荐并保存到本地
+- **内置对话** — 应用内直接对话测试，支持会话分支树、模型选择、流式输出，数据持久化到 localStorage
+- **模型选择对话框** — 获取远程模型后弹出对话框，checkbox 多选批量管理，支持搜索与全选
+- **自动更新** — 基于 tauri-plugin-updater，启动时静默检查 GitHub Releases，运行期间每 6 小时自动复查（同一版本不重复提醒），发现新版本提示下载安装
+- **通知系统** — 从远程通知中心拉取站内通知，未读通知弹出桌面提示，已读状态持久化到本地
+- **桌面应用** — 系统托盘常驻（显示窗口 / 启动代理 / 停止代理 / 退出），Vue 3 管理界面，多窗口支持（主窗口 + 状态面板小窗口）
+
+## 快速开始
+
+### 直接下载
+
+预编译安装包发布在 [GitHub Releases](https://github.com/ht-shaipe/vortex/releases/latest)：
+
+| 平台 | 产物 |
+|---|---|
+| Windows 10 / 11 · x64 | `Vortex_<版本>_x64-setup.exe`（NSIS）、`Vortex_<版本>_x64_en-US.msi` |
+| macOS · Apple 芯片 | `Vortex_<版本>_aarch64.dmg` |
+| macOS · Intel | `Vortex_<版本>_x64.dmg` |
+| Linux · x64 | `Vortex_<版本>_amd64.AppImage`、`Vortex_<版本>_amd64.deb` |
+
+产物由 `.github/workflows/release.yml` 在推送 `v*` tag（或手动触发 workflow_dispatch）时构建并发布。
+官网的下载区会在运行时拉取最新 Release，把按钮直接指向上述文件，因此**文件名带版本号不需要手工维护**。
+
+> macOS 产物未做 Apple 公证，首次打开需右键 → 打开；Windows 若弹 SmartScreen 提示，选「更多信息 → 仍要运行」。
+
+#### macOS 提示「已损坏，无法打开」
+
+从浏览器下载的 `.dmg` 安装后，macOS Gatekeeper 会给应用打上隔离属性（`com.apple.quarantine`），导致打开时提示 **「"Vortex"已损坏，无法打开。你应该将它移到废纸篓。」**。应用本身没有损坏，清除隔离属性即可：
+
+```bash
+xattr -cr /Applications/Vortex.app
+```
+
+在终端中执行上述命令后，再双击打开 Vortex 即可正常运行。如果仍无法打开，前往 **系统设置 → 隐私与安全性**，在底部找到关于 Vortex 的提示，点击「仍要打开」。
+
+### 环境要求
+
+- [Rust](https://rustup.rs/) 1.70+ (stable)
+- [Bun](https://bun.sh/)（仓库带 `bun.lock`，推荐）或 [Node.js](https://nodejs.org/) 20.19+ / 22.12+
+- [Tauri 2 CLI](https://v2.tauri.app/) 前置依赖（参见 [Tauri 官方文档](https://v2.tauri.app/start/prerequisites/)）
+
+### 从源码安装与运行
+
+```bash
+# 安装前端依赖
+bun install        # 或 npm install / pnpm install
+
+# 开发模式（同时启动前端和 Rust 后端）
+bun run tauri dev
+
+# 构建生产版本
+bun run tauri build
+```
+
+开发模式下：
+- 前端开发服务器：`http://localhost:1420`
+- API 网关服务器：`http://localhost:10168`
+
+### Web 模式部署
+
+不依赖 Tauri，纯 actix-web 服务器，适合服务器/无桌面环境部署：
+
+```bash
+# 编译并运行
+cargo run -p vortex-gateway --bin vortex-server
+
+# 或先编译再运行
+cargo build -p vortex-gateway --bin vortex-server --release
+./target/release/vortex-server
+```
+
+启动后监听 `0.0.0.0:10168`，提供 `/api/*` 管理端点和 `/v1/*` 代理端点。按 `Ctrl+C` 优雅关闭。
+
+> Web 模式下前端需单独部署（如 nginx 托管 `vite build` 产物），通过 `runtime.kind === 'web'` 自动切换到 HTTP API 通道。
+
+### 使用网关
+
+启动后，将你的 AI 客户端的 `base_url` 指向 Vortex：
+
+```
+http://localhost:10168/v1
+```
+
+**示例 — 使用 OpenAI Python SDK：**
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:10168/v1",
+    api_key="vx-4f2a9c1e8b7d4a6f9c3e2b1a8d5f7c40"  # 通过 POST /api/keys 创建的网关密钥
+)
+
+response = client.chat.completions.create(
+    model="openai/gpt-4o",        # 使用 provider/model 格式
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+```
+
+**示例 — 使用 cURL：**
+
+```bash
+curl http://localhost:10168/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer vx-4f2a9c1e8b7d4a6f9c3e2b1a8d5f7c40" \
+  -d '{
+    "model": "deepseek/deepseek-chat",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'
+```
+
+### 模型指定方式
+
+| 格式 | 示例 | 说明 |
+|------|------|------|
+| `provider/model` | `openai/gpt-4o` | 显式指定提供商和模型 |
+| `alias-model` | `ds-deepseek-chat` | 使用提供商别名前缀 |
+
+## 内置提供商
+
+| 提供商 | 别名 | API 格式 | 服务类型 | 免费层 |
+|--------|------|----------|----------|--------|
+| OpenAI | `oa` | openai | llm, embedding, image | - |
+| Anthropic | `an` | anthropic | llm | - |
+| Google Gemini | `gm` | gemini | llm, embedding | ✓ |
+| DeepSeek | `ds` | openai | llm | ✓ |
+| Groq | `gq` | openai | llm | ✓ |
+| xAI (Grok) | `xa` | openai | llm | - |
+| Mistral | `ml` | openai | llm, embedding | - |
+| OpenRouter | `or` | openai | llm, image | ✓ |
+| NVIDIA NIM | `nv` | openai | llm, embedding | ✓ |
+| Cloudflare AI | `cf` | cloudflare | llm, embedding, image | ✓ |
+| Ollama (Local) | `ol` | openai | llm, embedding | ✓ (无认证) |
+| SiliconFlow | `sf` | openai | llm, image | ✓ |
+| HuggingFace | `hf` | openai | llm, embedding | ✓ |
+| Qwen (通义千问) | `qw` | openai | llm, embedding | ✓ |
+| MiniMax | `mm` | openai | llm | - |
+| Z.AI (GLM) | `zi` | openai | llm | - |
+| 火山方舟 Code Plan | `vc` | openai | llm | - |
+| 火山方舟 Agent Plan | `va` | openai | llm | - |
+| 商汤日日新 | `sn` | openai | llm | - |
+| Custom | `cx` | openai | llm, embedding | - |
+
+## 配置
+
+### 环境变量
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `VORTEX_PORT` | `10168` | API 服务器端口 |
+| `VORTEX_DATA_DIR` | 系统数据目录/vortex | 数据存储目录 |
+| `VORTEX_ENCRYPTION_KEY` | 自动生成 | API 密钥加密密钥（32 字节十六进制） |
+| `VORTEX_REQUIRE_API_KEY` | `false` | 是否要求客户端提供 API Key |
+| `VORTEX_FREE_TOKENS_REMOTE` | `https://hub.htui.cc/api/cms/token_site` | 免费 Token 提交 / 删除接口地址 |
+| `VORTEX_FREE_TOKENS_PAGE_URL` | `https://hub.htui.cc/api/cms/token_site/page` | 免费 Token 分页列表接口（POST） |
+| `VORTEX_HUB_TOKEN` | 空 | hub 管理接口认证令牌（可选，Bearer 方式携带） |
+| `VORTEX_LOG_LEVEL` | `info` | 日志级别 |
+| `VORTEX_TLS` | `false` | 启用本地 HTTPS（双端口，见下方 [HTTPS 访问](#https-访问)） |
+| `VORTEX_TLS_HTTPS_PORT` | `VORTEX_PORT + 1` | HTTPS 监听端口（双端口模式） |
+| `VORTEX_TLS_CERT` / `VORTEX_TLS_KEY` | 自动生成 | 外部证书 / 私钥 PEM 路径（设置后跳过自动生成） |
+
+### HTTPS 访问
+
+同一端口只能承载一种协议，因此 Vortex 采用**双端口并存**：主端口（默认 10168）始终提供 HTTP，兼容全部客户端；开启 HTTPS 后另在 `主端口 + 1`（默认 10169）提供 HTTPS，两者同时可用。
+
+启用方式二选一：
+
+1. **设置页开关**（推荐）：设置 → 通用 → 「HTTPS 访问」，保存后按提示重启应用生效，开关持久化到本地数据库；
+2. **环境变量**：启动时设置 `VORTEX_TLS=1`（显式设置时优先于数据库开关），临时调试用。
+
+证书管理：
+
+- 未提供外部证书时，首次启用自动生成本地 CA（10 年有效期）+ 服务器证书（SAN 覆盖 `localhost` / `127.0.0.1` / `::1` / 本机主机名），持久化到 `<数据目录>/tls/`（私钥 0600）；
+- macOS 上启动后自动尝试将 CA 装入用户登录钥匙串（可能弹出系统授权确认）；若自动安装未完成，可手动信任：
+
+  ```bash
+  security add-trusted-cert -r trustRoot -k ~/Library/Keychains/login.keychain-db \
+    ~/Library/Application\ Support/vortex/tls/ca.pem
+  ```
+
+- 需要使用正式证书时设置 `VORTEX_TLS_CERT` / `VORTEX_TLS_KEY` 指向 PEM 文件即可；
+- 客户端兼容性提示：部分 CLI（如基于 Node.js 的工具）只信任内置根证书、不读系统钥匙串，连不上 HTTPS 时改用 HTTP 主端口即可。
+
+### 管理界面
+
+打开桌面应用可访问以下页面（左侧导航，从上到下）：
+
+| 页面 | 路由 | 说明 |
+|------|------|------|
+| 接入指南 | `/guide` | 客户端接入示例与模型指定方式，展示 HTTP / HTTPS 双协议地址与访问令牌（均可复制）并代入示例代码；下方自动检测本机 AI 编程智能体并支持一键接入 / 恢复配置 |
+| 实时路由 | `/live-routing` | 网关拓扑、Base URL、API 端点一览（默认首页） |
+| 订阅 | `/subscriptions` | 提供商连接管理 —— 添加 API Key、测试连接；含新建 / 自定义 / 编辑子页 |
+| 模型映射 | `/model-aliases` | 虚拟模型名与多目标故障转移配置 |
+| 免费 Token | `/free-tokens` | 免费额度站点目录 —— 卡片 / 表格双视图、按区域与「是否支持 API」筛选、提交与删除本地推荐 |
+| 请求日志 | `/request-log` | 请求流水与用量明细 |
+| 统计 | `/statistics` | 端点统计（KPI / 热力图 / 趋势 / 端点表）、用量统计（应用来源 / 日模型明细） |
+| 同步 | `/sync` | cc-switch 迁移、WebDAV 云备份、本地配置导出与导入 |
+| 对话 | `/chat` | 内置对话客户端 —— 会话分支树、模型选择、流式输出 |
+| 设置 | `/settings` | 通用设置（含 HTTPS 开关）/ 安全与访问（Token 鉴权、访问令牌、CORS）/ 高级设置 |
+| 关于 | `/about` | 版本与项目信息、检查更新 |
+
+> **同步页现状**：cc-switch 迁移与本地配置导出 / 导入已可用；WebDAV 的测试、备份、恢复与云端备份列表需要后端命令支持，当前 UI 已就绪，调用会提示「后端未接入」。适配层位于 `src/api/sync.ts`，接入后只需替换其中的桩函数。
+
+## API 端点
+
+浏览器直接访问网关根路径（`/` 及任意未匹配路径）返回纯文本版本标识 `vortex vX.Y.Z`，可作连通性确认。
+
+### OpenAI 兼容端点 (`/v1`)
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | `/v1/chat/completions` | 聊天补全（支持流式） |
+| POST | `/v1/messages` | Anthropic Messages 兼容（协议转换，支持流式） |
+| GET | `/v1/models` | 模型列表 |
+| POST | `/v1/embeddings` | 文本嵌入 |
+| POST | `/v1/images/generations` | 图像生成 |
+
+### 管理端点 (`/api`)
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET/POST | `/api/providers` | 提供商连接列表/创建 |
+| GET/PATCH/DELETE | `/api/providers/{id}` | 单个提供商连接操作 |
+| POST | `/api/providers/{id}/test` | 测试提供商连接 |
+| GET | `/api/providers/{id}/apikey` | 获取解密后的真实 API 密钥（用于前端复制） |
+| POST | `/api/providers/preview-models` | 预览远程可用模型列表（无需先保存连接） |
+| GET/POST | `/api/keys` | API 密钥列表/创建 |
+| GET/DELETE | `/api/keys/{id}` | 单个 API 密钥操作 |
+| GET | `/api/usage` | 用量记录 |
+| GET | `/api/usage/stats` | 用量统计 |
+| GET/PATCH | `/api/settings` | 设置 |
+| GET/POST | `/api/free-tokens` | 免费 Token 站点列表 / 提交推荐 |
+| DELETE | `/api/free-tokens/{id}` | 删除用户提交的推荐（内置条目不可删） |
+| GET/POST | `/api/model-aliases` | 模型别名列表/创建 |
+| GET/PATCH/DELETE | `/api/model-aliases/{id}` | 单个模型别名操作 |
+| GET | `/api/system/status` | 系统运行状态快照 |
+| POST | `/api/system/proxy/start` | 启动代理服务器 |
+| POST | `/api/system/proxy/stop` | 停止代理服务器 |
+| GET | `/api/agents/detect` | 检测已安装智能体 |
+| POST | `/api/agents/preview` | 预览智能体配置变更 |
+| POST | `/api/agents/apply` | 应用智能体配置 |
+| POST | `/api/agents/restore` | 恢复智能体配置 |
+| GET | `/api/agents/backups` | 列出配置备份 |
+| POST | `/api/chat/cancel` | 取消流式对话 |
+| GET | `/api/health` | 健康检查 |
+
+详细架构与内部实现参见 [ARCHITECTURE.md](./ARCHITECTURE.md)。
+
+## 技术栈
+
+### 后端 (Rust)
+- **Workspace 4 crate** — `vortex-store`（数据层）← `vortex-router`（路由引擎）← `vortex-gateway`（HTTP 网关 + services）← `src-tauri`（Tauri 桌面应用）
+- Actix-Web 4 — HTTP 服务器（桌面模式内嵌 / Web 模式独立 `vortex-server` binary）
+- rusqlite + r2d2 — SQLite 数据库（WAL 模式，连接池）
+- awc + openssl — 统一 HTTP 客户端（管理链路与上游链路共用，OpenSSL 3 指纹兼容 + HTTP/2）
+- aes-gcm — API 密钥加密
+- tokio — 异步运行时
+- Tauri 2 — 桌面应用框架（仅 `src-tauri`，Web 模式不依赖）
+- tauri-plugin-updater — 自动更新
+- tauri-plugin-process — 进程管理（重启应用）
+- tauri-plugin-autostart — 开机自启
+
+### 前端 (Vue 3)
+- Vue 3.5 + TypeScript (strict) — UI 框架
+- Element Plus — UI 组件库
+- Ant Design Vue — 辅助组件库（a-card、a-timeline 等）
+- UnoCSS — 原子化 CSS
+- Pinia — 状态管理
+- Vue Router — 路由（Web 端 hash / Tauri 端 history 模式）
+- ECharts 6 + vue-echarts — 图表可视化
+- highlight.js — 语法高亮
+- Vite — 构建工具
+
+## 项目结构
+
+```
+vortex/
+├── crates/                         # Rust workspace crates
+│   ├── vortex-store/               # 数据层 — config / db / encryption / migrations / error
+│   ├── vortex-router/              # 路由引擎 — proxy / providers / routing / translator / context
+│   └── vortex-gateway/             # HTTP 网关 — api / services / agent_integrations / AppState
+│       └── src/bin/vortex-server.rs  # Web 模式独立 binary（不依赖 Tauri）
+├── src-tauri/                      # Tauri 桌面应用（薄壳）— tauri_cmds 薄包装 + run() + main
+├── src/                            # 前端源代码 (Vue 3 + TypeScript)
+│   ├── api/                        # 请求层与双通道适配 (client / providers / keys / usage / settings / stats / chat / sync / freeTokens / notifications / system / agents)
+│   ├── components/                 # Vue 组件 (layout / chat / stats / sync / ui)
+│   ├── composables/                # 组合式函数 (useTheme / useThemeColors / useUpdater / useNotifications)
+│   ├── lib/                        # 工具函数 (range / dateRange / format / usageChart / runtime)
+│   ├── router/                     # 路由配置
+│   ├── stores/                     # Pinia 状态管理
+│   ├── styles/                     # 设计系统 (cc-theme.css / cc-components.css)
+│   ├── types/                      # 类型定义
+│   └── views/                      # 页面视图 (16 个 .vue 文件)
+├── docs/                           # 项目官网与文档
+│   ├── index.html                  # 官网落地页（原生 HTML/CSS/JS 零依赖）
+│   ├── wechat/                     # 公众号系列文章
+│   └── promo/                      # 视频脚本等宣传材料
+├── Cargo.toml                     # workspace 根配置
+├── package.json                   # 前端配置
+└── src-tauri/Cargo.toml           # Tauri 桌面应用配置
+```
+
+依赖链：`vortex-store ← vortex-router ← vortex-gateway ← src-tauri`。Web 项目复用前三个 crate，不需要 `src-tauri`。
+
+详细架构参见 [ARCHITECTURE.md](./ARCHITECTURE.md)。
+
+## 开发
+
+```bash
+# 前端开发
+bun run dev          # Vite 开发服务器 (http://localhost:1420)
+bun run build        # 类型检查 (vue-tsc) + 构建
+bun run preview      # 预览构建产物
+
+# 后端开发（workspace）
+cargo build                          # 编译所有 crate
+cargo check                          # 快速类型检查
+cargo clippy                         # 代码检查
+cargo test                           # 运行测试
+
+# 单 crate 操作
+cargo build -p vortex-store          # 仅编译数据层
+cargo build -p vortex-router         # 仅编译路由引擎
+cargo build -p vortex-gateway        # 仅编译 HTTP 网关
+
+# Web 模式（独立 binary，不依赖 Tauri）
+cargo run -p vortex-gateway --bin vortex-server
+cargo build -p vortex-gateway --bin vortex-server --release
+
+# 桌面模式（完整开发）
+bun run tauri dev                    # 同时启动前端 + Tauri 后端
+bun run tauri build                  # 构建桌面安装包
+```
+
+> **类型检查的已知问题**：`bun run build` 会先跑 `vue-tsc --noEmit`。当前 `typescript@7` 与 `vue-tsc@3` 组合会抛 `ERR_PACKAGE_PATH_NOT_EXPORTED: './lib/tsc' is not defined by "exports"`，属于依赖版本兼容问题而非代码错误。需要验证构建产物时直接执行 `npx vite build`（跳过类型检查）。
+
+## 官网
+
+`docs/index.html` 是项目的独立静态落地页，原生 HTML/CSS/JS 实现、零构建依赖，配色沿用应用主题（`src/styles/cc-theme.css`）的深紫强调色。
+
+```bash
+# 直接打开
+open docs/index.html
+
+# 或起一个本地静态服务
+python3 -m http.server 8080 --directory docs
+```
+
+页面结构：Hero → 数据概览 → 接入范围 → 特性 → 界面预览 → 快速开始 → 请求流程 → 下载安装 → FAQ。
+截图位于 `docs/assets/screens/`，取自本机开发实例，更新 UI 后可重新截取替换。
+
+> 下载区的按钮由 `docs/assets/app.js` 在运行时请求 `api.github.com` 解析最新 Release 的产物地址，
+> 静态 HTML 里只放「指向 Releases 页面」的兜底链接 —— 因为安装包文件名带版本号，写死必然过期。
+
+> 官网刻意不逐个列出上游平台的厂商名：站点只讲接入能力（云端 API / 聚合中转 / 本地推理 / 自定义端点）与协议兼容性，具体清单以应用内「订阅」页和本 README 的「内置提供商」表为准，避免站点与注册表脱节。
+
+## 许可证
+
+本项目基于 [MIT 许可证](./LICENSE) 开源。你可以自由使用、修改、分发和商用本软件，但须保留版权声明与许可证文本。
+
+> Copyright (c) 2026 Vortex

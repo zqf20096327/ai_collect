@@ -1,0 +1,534 @@
+# brainscope
+
+[![PyPI](https://img.shields.io/pypi/v/brainscope)](https://pypi.org/project/brainscope/)
+
+```
+pip install brainscope
+```
+
+[![CI](https://github.com/moudrkat/brainscope/actions/workflows/ci.yml/badge.svg)](https://github.com/moudrkat/brainscope/actions/workflows/ci.yml)
+
+**Watch your model think while your app talks to it.**
+
+An OpenAI-compatible chat server over any Hugging Face model with a live
+view into its residual stream — logit/tuned/J-lens readouts, attention, and
+per-request steering. For anyone building on an LLM who wants to *see* what
+the model is doing (and steer it) without leaving their own OpenAI client.
+
+> **Status: instrument.** brainscope is a measuring device — it makes a
+> model's internals observable and steerable; it claims no scientific
+> findings of its own. The experiments that use it are work in progress
+> (small N, not enough statistics yet) and live in
+> [steering-mechanics](https://github.com/moudrkat/steering-mechanics)
+> and the other lab repos.
+
+## ⚡ Run in 30 s (laptop, no GPU)
+
+```bash
+pip install brainscope && brainscope --model tiny --lens on   # 0.5B model, CPU is fine
+```
+
+Open the page it launches, type in the built-in chat box, and watch each word
+surface through the layers *before* the model writes it (a raw logit lens,
+so the middle of the stack is approximate). No app to wire up, no card
+required. ([full quickstart ↓](#quickstart))
+
+> **On a CUDA box with the newest torch (≥ 2.14):** torch's Triton-backed
+> native ops compile a small C shim on the first request and need `Python.h`.
+> Without python3-dev, brainscope notices at load, switches those ops off for
+> the process (`TORCH_DISABLE_NATIVE_JIT=1`, plain aten kernels, same
+> numbers) and says so. `sudo apt install python3-dev` (the one matching your
+> interpreter, e.g. `python3.12-dev`) re-enables them. Docker images below are
+> unaffected. Reported upstream: [pytorch/pytorch#196977](https://github.com/pytorch/pytorch/issues/196977).
+
+**Something broke?** [Open an issue](https://github.com/moudrkat/brainscope/issues)
+with the command you ran, the last lines of the terminal, and
+`python -c "import torch, transformers, brainscope; print(torch.__version__, transformers.__version__)"`.
+Fresh-install breakage from a new torch/transformers release is exactly what
+I want to hear about — a weekly CI job runs the README path from PyPI, but it
+only covers CPU.
+
+What it does:
+
+- **Point your own app at it and watch real traffic** — no code changes:
+  aim your OpenAI `base_url` at brainscope and every generation your app makes
+  streams per-token, per-layer activity into the browser — logit lens,
+  attention, and where each word's prediction settled.
+- **Steer behaviour live** — extract a direction from contrast pairs and
+  drive it from a slider, per request, or by a tag-matched policy. Speaks
+  [hotwire-vllm](https://github.com/moudrkat/hotwire-vllm)'s steering spec
+  (`{"id", "layer", "scale", "decode_only"}`, incl. the `vllm_xargs` wire
+  format) — **calibrate here, deploy there**: `python -m
+  brainscope.export_hotwire` ships vectors with a regime passport, and
+  `POST /replay` A/Bs any conversation under a spec, showing per-layer
+  cosine and which words the vector suppressed
+  ([docs](docs/steering.md)).
+- **Put the system prompt back on top** — instruction-hierarchy steering
+  (V-Steer, arXiv:2607.26228). You ship a new system prompt, the conversation
+  keeps obeying the old one: mark the messages that lost authority and the
+  heads still taking orders from them get that span's *cached V* scaled down.
+  The **hierarchy** tab shows which head listened to which
+  ([details ↓](#instruction-hierarchy)).
+- **Watch steering reroute attention** — the forced replay can also report
+  per-head attention divergence between clean and steered passes (JSD +
+  focus-mass delta, the rerouting signature from arXiv 2605.06342): pass
+  `"attn_divergence": true` on `/replay` with `forced: true`.
+- **Screen every token for ~free — activation probes** — a linear probe
+  on activations screens everything, expensive checks run only on hits:
+  per-token scalar readouts against your directions that stay alive with
+  the visualization off and can flip the full instruments on the moment
+  they fire. Train your own with one request, with holdout AUC so you know
+  whether the meter measures signal or noise
+  ([details ↓](#probes-and-the-slop-o-meter)).
+- **Watch words surface before they're written** — a
+  [J-lens](#j-lens-reading-ahead-of-the-output) (Jacobian lens, Anthropic
+  2026) readout next to the logit lens: words represented and pushed toward
+  future output before — or without — being emitted. Type a word to turn it
+  into a steering vector and nudge what the model is disposed to say.
+- **Inspect reasoning traces** — every generation can be persisted, replayed
+  token by token, and analyzed: when did the answer emerge inside the
+  `<think>` block, and which lens saw it first?
+- **Audit baked personas** — serve a model that carries a baked-in covert
+  advocate and the per-layer cosines expose it, token by token
+  ([details ↓](#auditing-baked-personas)).
+
+```mermaid
+flowchart LR
+  app["Your app<br/>(any OpenAI client)"] <-->|"base_url → /v1"| bs["brainscope<br/>server"]
+  bs <--> model["HF model<br/>(transformers)"]
+  model -. "residual stream" .-> ui["Browser viz 👁"]
+```
+
+> Built at [Lifeheck](https://www.lifeheck.com/) while evaluating local models for a
+> Czech agentic assistant - thanks to the whole team for the playground. 💛
+
+![brainscope demo](docs/demo.gif)
+
+**Docs:** [Steering](docs/steering.md) · [Auditing baked personas](docs/auditing.md) · [J-lens](docs/jlens.md) · [Reasoning traces](docs/traces.md) · [Slop-o-meter](docs/slopometer.md)
+
+## Quickstart
+
+```bash
+pip install brainscope               # needs Python 3.11+ (clone the repo only for examples/)
+brainscope --model tiny --lens on    # 0.5B, runs on CPU - good first try
+# → your app:  http://<host>:8010/v1   (chat completions, incl. tool calls)
+# → your eyes: http://<host>:8010      (opens automatically)
+```
+
+No app handy? The viz page has a built-in chat box - type and watch. Or run
+the whole instrument on a 135M-parameter model at microcontroller pace:
+[examples/esp32](examples/esp32/README.md).
+
+Or skip Python entirely and run the Docker image:
+
+```bash
+docker run -p 127.0.0.1:8010:8010 -v ~/.cache/huggingface:/root/.cache/huggingface \
+  ghcr.io/moudrkat/brainscope:cpu
+```
+
+Anything after the image name goes to the brainscope CLI. With an NVIDIA GPU
+(and nvidia-container-toolkit) use the `:cuda` tag and bigger models:
+
+```bash
+docker run --gpus all -p 127.0.0.1:8010:8010 -v ~/.cache/huggingface:/root/.cache/huggingface \
+  ghcr.io/moudrkat/brainscope:cuda --model qwen3-4b
+```
+
+The cache mount keeps downloaded model weights on your disk, so they survive
+container restarts. The `127.0.0.1:` binding keeps the port private to your
+machine — brainscope has no auth, and Docker port mappings bypass ufw-style
+firewalls, so only drop it (`-p 8010:8010`) on a network you trust.
+
+`--model` takes any Hugging Face model id, plus presets: `tiny`
+(Qwen2.5-0.5B, CPU-friendly), `qwen3-4b`, `qwen3-8b`, `qwen3.5-9b`,
+`gemma-e4b`. Bigger models fit a 16 GB card with `--quantize 8bit`.
+Pointing your app at it is one line - wherever it builds its OpenAI client:
+
+```python
+client = OpenAI(base_url="http://localhost:8010/v1", api_key="unused")
+```
+
+![The whole instrument: the model architecture on the left, the logit-lens grid open on the right, the generated answer below](docs/img/ui-overview.png)
+
+## The demo app
+
+```bash
+brainscope --model tiny        # then open http://127.0.0.1:8010/demo
+```
+
+`/demo` is a stand-in for your application: a chat page with an editable system
+prompt and the steering controls, served same-origin so it talks to `/v1`
+without any CORS setup. Open it in one tab and the instruments in another, and
+everything the instruments show is real traffic — it just saves you wiring up
+your own app first.
+
+Use it to poke at a behaviour you're chasing: set the system prompt that
+misbehaves, drive a steering vector from the slider, watch a probe fire. It also
+carries a set of ready-made instruction-hierarchy conflicts
+([below ↓](#instruction-hierarchy)) so that feature can be reproduced by
+clicking rather than by writing code.
+
+## What am I looking at?
+
+Left: the model itself - the prompt enters at the bottom, one **clickable row
+per decoder layer**, the next word exits at the top (lm_head). On the right,
+the instruments:
+
+- **activity over time** - one column per generated token, one row per
+  layer, color = how loudly that layer works relative to its own average.
+- **neurons** (click any cell of the heatmap) - the number un-collapsed:
+  every residual channel behind that (token, layer) cell as a bipolar bar
+  strip, with per-generation z-scores flagging the channels that are unusual
+  *now* rather than just always loud. Hover a bar for channel, value and z;
+  "follow live" tracks the newest token while generating.
+- **attention** - for the clicked layer: what each answer token looks back
+  at; **heads** splits the newest token per attention head; **matrix** is
+  the full per-head attention matrix of a short prompt's prefill.
+- **logit lens** (click lm_head) - every layer's next-token readout: watch
+  the answer crystallize with depth. On by default on CUDA; on CPU pass
+  `--lens on` (it costs one lm_head matmul per layer per token). Hover a cell for the top-5 candidates,
+  click to pin the tooltip. With `--tlens` it reads through a **tuned lens**
+  (Belrose et al. 2023, trained per-layer corrections), which removes the
+  raw lens's mid-stack noise — same grid, honest depths.
+- **J-lens** (with `--jlens`) - the same grid, but reading what each layer
+  is disposed to make the model say *later* - words visible before they are
+  emitted, see [below](#j-lens-reading-ahead-of-the-output).
+- **traces** (with `--traces`) - stored generations: replay any of them with
+  a scrubber and chart when the answer emerged inside the think block.
+- **the answer text is an instrument too** - each word is tinted by the
+  layer where its prediction settled (clean = early, amber = late, red =
+  never before lm_head); hovering shows what the model almost said instead.
+
+The ◉ capture button pauses the instruments when you just want fast
+generation; ● record exports a WebM, PNG saves a snapshot. In the header,
+⏻ switches steering on and off without losing the strength and layer
+settings - instant A/B.
+
+An example of what the lens view can catch:
+
+![Logit lens: the meaning decodes mid-stack in English and Chinese; the Czech surface form assembles only in the last few layers](docs/img/lens-concept-before-language.png)
+
+*Qwen3-4B writing the Czech word "zážitkům" (experiences). Mid-stack readouts
+decode the meaning - in English and Chinese - while the Czech surface form
+assembles only in the last few layers: the geometry of multilingual
+representations, studied properly in Wendler et al. 2024 (arXiv:2402.10588).
+Readouts are a raw logit lens, so mid-stack tokens are approximate.*
+
+## Tuned lens (trusting the middle of the stack)
+
+The raw logit lens reads every layer through the final head, which the model
+never trained the middle layers for — mid-stack readouts are suggestive, not
+reliable. A **tuned lens** (Belrose et al. 2023, arXiv:2303.08112) fixes
+that with one trained affine correction per layer. Fit one with the
+[`tuned-lens`](https://github.com/AlignmentResearch/tuned-lens) package
+(hours, once per model), then point brainscope at it:
+
+```bash
+pip install tuned-lens
+python -m tuned_lens train --model.name Qwen/Qwen3-4B-Instruct-2507 \
+    --data.name wikitext --data.config_name wikitext-103-raw-v1 \
+    --output lenses/qwen3-4b-tuned
+brainscope --model qwen3-4b --tlens lenses/qwen3-4b-tuned/params.pt
+```
+
+The lens tab relabels itself "tuned lens" and everything downstream — the
+per-word settle depths in the answer text, the recorded trace readouts —
+reads through the translators. One extra `hidden × hidden` matmul per layer
+per token.
+
+## J-lens (reading ahead of the output)
+
+The logit lens reads what each layer would say *now*; the **J-lens**
+(Jacobian lens — Anthropic,
+[*A global workspace in language models*](https://www.anthropic.com/research/global-workspace),
+2026) reads what it is disposed to make the model say **later**: words
+visible in the activations before any of them are emitted — violet cells in
+the grid are words that really arrive later in the answer. Type a word and
+it becomes a steering vector: nudge what the model is disposed to say, with
+the same panel as the readout.
+
+```bash
+brainscope-jlens fit --model qwen3-4b --prompts wikitext --out lenses/qwen3-4b.pt
+brainscope --model qwen3-4b --jlens lenses/qwen3-4b.pt --traces traces/
+```
+
+Fit once per model (minutes on a GPU, reproducible:
+[examples/fit_jlens.sh](examples/fit_jlens.sh)); the readout is cheap and
+switchable live.
+
+![J-lens: while writing "The capital of France is…", violet cells across earlier columns show France, is, Paris — words that really arrive later in the answer](docs/img/jlens-reads-ahead.png)
+
+*Qwen3-4B writing "The capital of France is Paris." — violet cells are words
+the J-lens read out before they were emitted: while the model is writing
+" of", the readout already shows " France" and " Paris", the words that
+complete the sentence (the "saw coming" line under each column sums this
+up). Verify any of it against the trace with
+[examples/audit_jlens_hits.py](examples/audit_jlens_hits.py).*
+
+> **→ [docs/jlens.md](docs/jlens.md)** - method, fitting, health checks,
+> steering × J-lens, the experimental A-lens, limitations, licensing.
+
+## Reasoning traces
+
+```bash
+brainscope --model qwen3-4b --traces ./traces
+```
+
+With `--traces DIR` every generation is persisted and replayable token by
+token — the `<think>` block segmented out, both lens columns per step, and
+an **answer-emergence chart**: for the token that opens the final answer
+(or any word you click), its probability at every reasoning step, under
+each lens. When did the answer settle, and which lens saw it first?
+
+![Trace replay with the answer-emergence chart: an early green J-lens bump while the amber logit lens is still flat](docs/img/answer-emergence.png)
+
+*Replaying a trace, tracking " Paris". The leftmost green bump is the
+point: while the model is still writing " of", the J-lens already reads
+" Paris" at p ≈ 0.4 — the logit lens sits at ~0.0002 there and only spikes
+once the word is actually being written. Later peaks coincide by nature:
+whenever the word is being emitted, both lenses see it.*
+
+> **→ [docs/traces.md](docs/traces.md)** - replay, the emergence chart and
+> its honest limits, the API, and storage costs.
+
+## Probes and the slop-o-meter
+
+```bash
+# no probe file yet? POST /probes/train builds one from two contrast
+# personas and hands back the JSON — no external tooling needed
+brainscope --model tiny --probes probes.json
+```
+
+A linear probe on the residual stream, read per token, costing nothing:
+`POST /probes` arms one against a loaded direction and it keeps scoring even
+with the visualisation off, so it can screen real traffic rather than a
+benchmark. Give it a `threshold` and `"trip": "viz"` and the full instruments
+switch themselves on the moment it fires — screen everything cheaply, look
+closely only at the hits.
+
+`POST /probes/train` builds one from two contrast personas without any external
+tooling: the server generates the answers, extracts the diff-of-means direction
+from their activations, reports holdout AUC and a calibrated threshold, and
+arms the probe if you ask it to.
+
+The worked example is the **slop-o-meter** — a probe that scores how far a reply
+has drifted into generic filler register, written up with the structure of a
+bank's model validation at toy scale:
+[docs/slopometer.md](docs/slopometer.md).
+
+## Steering
+
+```bash
+# dirs.json comes from hidden-directions (pip install hidden-directions),
+# or from /capture if you are steering one agent by another
+brainscope --model qwen3-4b --directions dirs.json
+```
+
+Extract a direction from contrast pairs and drive it live - activation
+addition (Turner et al., arXiv:2308.10248) on real traffic: from a slider,
+per request, or by a tag-matched policy so the app stays steering-agnostic.
+**Steer your app's own requests, not just the built-in chat box** - the
+same per-request `extra_body` scopes a vector to one call and leaves every
+other agent on the server untouched.
+
+```mermaid
+flowchart LR
+  pairs["contrast pairs<br/>＋ / − completions"] -->|"extract<br/>mean-diff / PCA"| vec["steering vector<br/>+ layer &amp; strength"]
+  vec -->|"add mid-stack"| out["shifted<br/>behaviour"]
+```
+
+The best source of vectors is the sister repo
+[hidden-directions](https://github.com/moudrkat/hidden-directions): 40
+pre-verified directions to load as-is (each behaviorally checked at
+extraction; three also calibrated through its full eval), plus the pipeline to extract
+more and the references behind the method - often the better place to start
+than a blank `pairs.jsonl` (see [Auditing baked personas](#auditing-baked-personas)).
+
+Steering also goes agent-to-agent: the `/capture` endpoint reads one
+agent's residual-stream state so another can be steered by it — that
+experiment lives in [steeropathy](https://github.com/moudrkat/steeropathy)
+(agents steering agents), with brainscope as the window into what it does
+to the model.
+
+Extraction quality decides everything and over-steering quietly breaks the
+model, so before steering anything real read the full guide:
+
+> **→ [docs/steering.md](docs/steering.md)** - the two extractors, the live
+> API (`/steer`, per-request, policies), a real case study, and the lessons we
+> learned the hard way.
+
+## Instruction hierarchy
+
+A system prompt is supposed to outrank the conversation, and nothing in the
+architecture enforces that. Change a rule mid-product and the transcript still
+carries the old one — every message benign, just older than the policy.
+
+```bash
+brainscope --model tiny        # then open http://127.0.0.1:8010/demo
+```
+
+**No code needed.** Open `/demo`,
+pick a conflict from the dropdown (prefix, casing, bullets, or an inline
+`[1] [2] [3]` option list), press the button that marks where the app updated,
+and tick the hierarchy box. The instruments tab appears next to the others once
+the first steered reply comes back.
+
+To wire it into your own app instead:
+`POST /hierarchy {"stale": [1, 2], "gamma_plus": 2.5, "gamma_minus": 0.75}`
+(or the same object per request in `/v1/chat/completions`) marks which messages
+lost authority. After the prompt is prefilled, direct logit attribution asks
+each attention head whether it took its cue from the system prompt or from a
+demoted message, and the ones that got it backwards have their cached value
+vectors rescaled at those positions. The edit lives in the KV cache, so
+decoding costs nothing extra.
+
+![the hierarchy tab on Qwen3-4B: two lines across all 36 layers showing how much of the last prompt position's attention lands on the current system prompt versus on the pre-update messages](docs/hierarchy.jpg)
+
+*Qwen3-4B, the hierarchy tab: across all 36 layers, how much of the last prompt position's attention lands on the current system prompt versus on the pre-update messages. The old messages take 10.1× more of it. Rebuild with `python docs/make_hierarchy_fig.py` against a running brainscope (`BRAINSCOPE_BASE` picks the server); the numbers come from the `/hierarchy` report, not from a saved copy.*
+
+The tab is the diagnosis, not the effect: orange heads are the ones handing
+authority to old messages. Outlined groups are the ones that got rescaled — the
+edit is per KV head, because that is the finest granularity the cache has.
+
+Defaults are the paper's and are a reasonable starting point. How much you
+recover varies a lot by rule — on one benchmark the same settings moved a
+casing conflict by 100 points and a JSON-vs-prose conflict by nothing. Turning
+`gamma_plus` far past the default degrades text rather than improving
+compliance, and a format checker will happily score the degraded output as a
+win, so read the output and not just the metric.
+
+There is no layer to choose. Direction steering asks you which layer to inject
+at; here the attribution picks the heads, wherever they are — on a 24-layer
+model a typical edit lands on a dozen head groups spread over most of the depth.
+
+![the demo app with a loaded scenario: the system prompt says begin every reply with ACK, the conversation above shows a user asking for HELLO instead and the assistant obeying it, a divider marks where the system prompt changed, and controls for the hierarchy fix and both gamma parameters sit in the toolbar](docs/hierarchy-demo.jpg)
+
+Not a prompt-injection defence — the demoted messages here are benign.
+
+Method: **Steering Instruction Hierarchies at Inference Time** — Siqi Zeng,
+Sewoong Lee, Han Zhao, Julia Hockenmaier, arXiv:2607.26228, COLM 2026
+([code](https://github.com/cindy2000sh/v-steer)). The implementation here is
+written from the paper. A separate repo,
+[old-news](https://github.com/moudrkat/old-news), has the eval suite and the
+numbers behind the defaults.
+
+## Auditing baked personas
+
+```bash
+# a hidden-directions bake artifact folder (advocate_bias.pt inside)
+brainscope --model Qwen/Qwen2.5-7B-Instruct --bake hidden-directions/artifacts/example_flat_earth_7b
+```
+
+A 9 KB weights patch - one MLP bias - can turn a model into a covert advocate
+(a flat-earther, a sycophant) with **no runtime steering active**. brainscope
+is the live half of that audit: serve the baked model, load the persona
+catalogue from
+[hidden-directions](https://github.com/moudrkat/hidden-directions), and watch
+`v_pref_flat_earth` light up token by token from the baked layer on. The same
+40-direction catalogue doubles as the pre-verified vector library for
+[steering](#steering).
+
+> **→ [docs/auditing.md](docs/auditing.md)** - the `--bake` walkthrough, the
+> dictionary, and stacking vectors to re-create a bake recipe live.
+
+## Will it work with my app?
+
+Works when your app talks the **OpenAI chat-completions API** with
+**non-streaming** responses (`stream: true` is ignored, not rejected — the
+reply comes back as one non-streaming JSON body); tool calls
+are parsed in hermes/qwen, gemma-fenced and plain-JSON formats, and
+`tool_choice: "required"` (or a named function) is enforced by seeding the
+generation with the opening of a tool call in the model's own format.
+
+Honest limitations: generation runs on plain `transformers` - tens of tokens
+per second, one request at a time, no auth, context bounded by VRAM. Why not
+vLLM? vLLM doesn't expose per-layer states - they are consumed the
+moment they're produced; `transformers` exposes them for every architecture
+with one flag. That's the trade: brainscope is slower, but it sees
+everything. It's a lab instrument for development - run it next to
+production, not instead of it.
+
+## Where this sits in the lab
+
+```mermaid
+flowchart LR
+    hd["🧭 hidden-directions<br/>behavior → vector"]
+    bs(["🧠 brainscope<br/>watch the model think"])
+    hw["🔥 hotwire-vllm<br/>steering in production"]
+    st["🕹️ steeropathy<br/>agents talk via activations"]
+    tm["⚖️ in-two-minds<br/>agent hesitating between tools"]
+    sm["🧪 steering-mechanics<br/>how steering actually works"]
+    on["📰 old-news<br/>stale history vs system prompt"]
+
+    hd -->|vectors| bs
+    hd -->|vector| hw
+    bs -->|vector + passport| hw
+    bs --> st
+    bs --> tm
+    bs -->|causal replay| sm
+    bs --> on
+    hw -.->|vector under study| sm
+
+    click hd "https://github.com/moudrkat/hidden-directions"
+    click bs "https://github.com/moudrkat/brainscope"
+    click hw "https://github.com/moudrkat/hotwire-vllm"
+    click st "https://github.com/moudrkat/steeropathy"
+    click tm "https://github.com/moudrkat/in-two-minds"
+    click sm "https://github.com/moudrkat/steering-mechanics"
+    click on "https://github.com/moudrkat/old-news"
+
+    classDef dim fill:#f6f8fa,stroke:#d0d7de,color:#57606a;
+    classDef here fill:#8957e5,stroke:#6e40c9,color:#ffffff;
+    class hd,bs,hw,st,tm,sm,on dim;
+    class bs here;
+```
+
+*Highlighted = this repo. The full lab map (with the other repos' stories) lives on [moudrkat](https://github.com/moudrkat).*
+
+brainscope is the instrument in the middle; each piece also runs alone:
+
+- **[hidden-directions](https://github.com/moudrkat/hidden-directions)** —
+  the vector factory: extract, bake, audit and calibrate steering
+  directions, per model. Where the vectors come from.
+- **brainscope** *(you are here)* — the instrument: hosts the model,
+  captures activations, steers at runtime, reads the J-lens, keeps traces.
+- **[hotwire-vllm](https://github.com/moudrkat/hotwire-vllm)** — the same
+  steering spec in production vLLM, CUDA graphs intact. Calibrate here,
+  deploy there.
+- **[steeropathy](https://github.com/moudrkat/steeropathy)** — the lab on
+  top: agents that communicate through activations and J-space instead of
+  text, brainscope as their only channel.
+
+## Standing on shoulders
+
+The instruments implement or adapt published techniques - the credit belongs
+with the originals:
+
+- **Logit lens** - nostalgebraist, *interpreting GPT: the logit lens*
+  (LessWrong, 2020); the cleaned-up successor is the tuned lens, Belrose
+  et al. (arXiv:2303.08112).
+- **Jacobian lens / J-space** - Gurnee, Sofroniew et al. (Anthropic),
+  *Verbalizable Representations Form a Global Workspace in Language Models*
+  ([Transformer Circuits Thread, 2026](https://transformer-circuits.pub/2026/workspace/index.html);
+  announcement: [*A global workspace in language models*](https://www.anthropic.com/research/global-workspace));
+  reference implementation
+  [anthropics/jacobian-lens](https://github.com/anthropics/jacobian-lens)
+  (Apache-2.0). brainscope's `jlens.py` is an independent reimplementation
+  from the paper (full citation + BibTeX in [docs/jlens.md](docs/jlens.md#citing));
+  the A-lens ("answer lens") variant is a brainscope experiment on top of
+  their estimator, not part of the published work.
+- **Workspace decomposition** - the sparse nonnegative recipe is from the
+  same Gurnee et al. paper; the pursuit algorithm family is Blumensath &
+  Davies, *Gradient Pursuits* (IEEE Trans. Signal Processing, 2008).
+  Experimental — see [docs/jlens.md](docs/jlens.md#workspace-decomposition-j-space-experimental).
+- **Concept-before-language** - Wendler et al., *Do Llamas Work in English?*
+  (arXiv:2402.10588).
+- **Activation steering** - Turner et al., Zou et al., Rimsky et al.; cited in
+  full in [docs/steering.md](docs/steering.md#references).
+- **Attention aggregation** - the "sources" view averages attention across
+  layers; the principled cross-layer flow is Abnar & Zuidema
+  (arXiv:2005.00928).
+
+## License
+
+MIT © Kateřina Fajmanová

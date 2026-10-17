@@ -1,0 +1,184 @@
+# LLM ISO 27001
+
+[![Use this template](https://img.shields.io/badge/GitHub-Use%20this%20template-2ea44f?logo=github)](https://github.com/kriss-b/llm-iso27001/generate)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kriss-b/llm-iso27001/blob/main/LICENSE.md)
+[![GitHub stars](https://img.shields.io/github/stars/kriss-b/llm-iso27001)](https://github.com/kriss-b/llm-iso27001/stargazers)
+[![Contributions welcome](https://img.shields.io/badge/Contributions-welcome-brightgreen.svg)](https://github.com/kriss-b/llm-iso27001/blob/main/CONTRIBUTING.md)
+
+This repository is a lightweight and LLM-maintainable Information Security Management System (ISMS) — covering policies, operational records, and executable compliance checks — aligned with **ISO 27001**, with optional overlays for **ISO 42001** (AI Management System - AIMS) and **NIS 2**. It is designed to be cloned and immediately customised by any LLM Agent of your choice (e.g. Mistral Vibe, OpenAI Codex, Claude Code, OpenCode / Pi, or etc.) for any company seeking ISO 27001 certification or a structured approach to information security.
+
+Inspired by Andrej Karpathy's [llm-wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) and [Is Grep All You Need?](https://arxiv.org/abs/2605.15184) paper, applied here to an ISMS.
+
+Everything is plain markdown, version-controlled with git, and intentionally kept free of tooling, build steps, or proprietary formats. Because nothing is locked in, the LLM agent can also draw on the tools you already use — Jira, Confluence, your GRC platform, etc... The LLM can read it, understand it, modify it, and maintain it - preferably with the supervision of a human security expert.
+
+---
+
+## See it in action
+
+Watch an LLM agent stand up a working ISMS from this template — not just editing documents, but *operating* it. In one session it replaces the placeholder company, rewrites the ISMS policy to the real context, populates the risk and supplier registers, extends the ISO 42001 AI overlay, and **runs the compliance checks live** to report what passes, fails, or is out of scope — then proposes **concrete next steps to close the gaps and keep iterating**. The result is an ISMS that runs, not a static document pack.
+
+This does not replace a security expert — it accelerates one. Nothing here is magic or "done": every change lands as a git commit, so the whole ISMS stays visible, reviewable, and reversible, and a human reviews and signs off on all of it. The agent does the heavy lifting; the expert stays in control.
+
+https://github.com/user-attachments/assets/d9a2c3dd-6715-413c-82f9-41401dc1e554
+
+The full ISMS produced in this demo is public in the companion repo: **[kriss-b/mistral-demo](https://github.com/kriss-b/mistral-demo)**.
+
+> *Condensed from a ~12-minute session to ~3 minutes. Illustrative demo built from publicly available information about Mistral AI — not affiliated with, nor endorsed by, Mistral AI.*
+
+---
+
+## What's in here
+
+A full ISO 27001 ISMS (+ ISO 42001, NIS2 and AIUC-1): policies and procedures, living operational state (logs, registers, and records), and executable compliance checks — one per control when relevant. The placeholder company is **ACME CORP**. Policies, procedures and templates follow the same structure and end with a Changelog so nothing is ambiguous about ownership, approver, version, or history.
+
+| Directory | Contents |
+|---|---|
+| `policies/` | Information security policies — the rules |
+| `procedures/` | Step-by-step operational procedures and templates |
+| `risks/` | Risk assessment procedure and register |
+| `incidents/` | Incident log, response plan, and report template |
+| `run/` | Operational state: logs, registers, and completed records, updated as the ISMS runs |
+| `checks/` | Automated compliance checks, one per control when relevant |
+| `iso42001/` | Optional ISO 42001 AI Management System (AIMS) overlay, with its own SoA and checks |
+| `nis2/` | Optional NIS 2 overlay — national transpositions (France: **ReCyF**), each with its own SoA and checks |
+| `aiuc-1/` | Optional **AIUC-1** overlay — AI agent certification, with its own SoA and checks |
+| `statement_of_applicability.md` | Master index mapping all 93 controls to implementation status and documents |
+
+The `statement_of_applicability.md` is the master index. It maps every ISO 27001 clause and Annex A control to its implementation status and the document that covers it. Start there to understand what exists and what gaps remain. Every control starts at ❓ TBC (not yet assessed), deliberately: nothing is presumed compliant until you have reviewed it.
+
+---
+
+## How to use this with an LLM Agent
+
+Click [**Use this template**](https://github.com/kriss-b/llm-iso27001/generate) on GitHub to create your own repository under **YOUR_GITHUB_USERNAME**, name it **my-company-isms**, then clone it locally:
+
+```bash
+git clone https://github.com/YOUR_GITHUB_USERNAME/my-company-isms.git
+cd my-company-isms
+claude  # or any other LLM agent
+```
+
+Then provide to your LLM Agent context about your company. The more context, the better the output. For example:
+
+> We are **[YOUR COMPANY NAME]**, find information about us on **[YOUR COMPANY WEBSITE]** and on the internet. We operate from [country], in the [industry] sector. We have [N] employees. Our tech stack: [cloud provider, IdP, code repo, key SaaS tools]. We handle [customer PII / financial / health / other sensitive data]. We are subject to [GDPR / HIPAA / PCI-DSS / none]. We are [remote-first / hybrid / office-based]. We [develop / use / do not use] AI systems.
+>
+> 1. Replace ACME CORP with our company name across all documents.
+> 2. Rewrite the ISMS Policy — context, scope, internal/external issues, interested parties — to reflect our actual situation.
+> 3. Update roles and responsibilities based on our team structure.
+> 4. Populate the assets register from our tech stack — systems, data stores, SaaS, and their owners.
+> 5. Populate the suppliers register with our key suppliers.
+> 6. Populate the security feeds register with feeds relevant to our tech stack and sector.
+> 7. Run all checks and report which pass, which fail, and which are not applicable.
+
+From there, iterate. The LLM can update policies and the SoA, run checks, maintain operational logs, refine risks, and keep cross-references in sync as your ISMS evolves.
+
+---
+
+## Design principles
+
+**One source of truth per topic.** Every control maps to one document. Cross-references use relative markdown links so they work in any markdown renderer and an agent can follow them.
+
+**No redundancy.** Documents don't repeat each other. The SoA is the index; the policies are the detail. If something needs updating, there is exactly one place to update it.
+
+**LLM-maintainable.** All documents are self-contained markdown with a standard structure. The LLM that reads the Changelog at the end of any file knows the owner, approver, version, and history without needing to parse free-form text.
+
+**Git is the audit trail.** Per-document Changelog tables exist for human readability, but git history is the authoritative record. Don't fight it.
+
+**Overlays, not parallel systems.** Additional frameworks extend the ISMS rather than duplicating it. The `iso42001/` directory adds AI-specific controls; the `nis2/` directory adds only the delta a national NIS 2 transposition (France's ReCyF) requires beyond ISO 27001. Everything else is handled by cross-referencing existing ISO 27001 documents. This keeps the frameworks in sync without maintaining redundant content.
+
+**Works with your existing tools.** Your documentation, tickets, evidence, etc... may already live somewhere — Confluence, Notion, Jira, Probo, CISO Assistant, etc... Through MCP connectors the LLM Agent can read from them and reconcile them into this structure — typically importing them so git becomes the source of truth, or leaving the external tool as the reference when that fits better. A deliberate choice, made per source.
+
+---
+
+## Tips & Tricks
+
+Beyond the initial setup, the real leverage is in day-to-day operations. Here are patterns that work well in practice,
+organised by type of task.
+
+### Updating the ISMS
+
+- **Add risks conversationally.** Don't fill in the risk register yourself. The LLM will prompt you for the right fields, then write the entry and update the SoA cross-reference in one pass.
+
+> Add the following risk to our list and tell me what information I should provide.
+
+- **Log incidents the same way.** A brief description is enough. The LLM will extract the relevant fields, format the entry, and flag any Annex A controls the incident implies are weak or missing.
+
+> Add this incident to the log: [brief description]
+
+- **Ask what's missing before writing.** The LLM asks the right questions first; the resulting entry will be far more defensible in an audit.
+
+> What do you need from me to add this entry?
+
+### Exporting documents
+
+- **Export a policy to Word.** `brew install pandoc`, then `pandoc policies/my_policy.md -o my_policy.docx`. Bulk export: `for f in policies/*.md; do pandoc "$f" -o "${f%.md}.docx"; done`
+
+- **Export to PDF.** Same as above with `--pdf-engine=weasyprint` (requires `brew install weasyprint`).
+
+### Quick lookups
+
+- **Use the LLM as a search layer.** Faster than grepping markdown by hand. The LLM scans across the supplier list, SoA, procedures, and risk register simultaneously — and tells you exactly where something appears, or doesn't.
+
+> Is this supplier already referenced anywhere in the ISMS?
+
+### Running checks
+
+- **Run a check by name.** Point the LLM at any file in `checks/` and ask it to execute the check. It will read the referenced procedure for thresholds, verify the relevant log, and report pass/fail with findings.
+
+> Run the check in checks/a08_13_backup_completion_check.md and tell me the result.
+
+- **Run all checks at once.** Useful before a management review or audit to get a full compliance picture.
+
+> Run all checks in the checks/ directory and summarise the results.
+
+### Open-ended tasks
+
+- **Ask "what should I do next?" at the start of every session.** The LLM reads the SoA, open action items, and the most recent management review, and surfaces the highest-priority gaps. More useful than a static checklist as the ISMS matures.
+
+> What should I do next to improve our ISMS?
+
+- **Run a consistency check periodically.** The LLM cross-references controls, flags broken links, identifies risks with no treatment decision, and surfaces controls referenced in procedures but absent from the SoA. Think of it as a pre-audit lint pass.
+
+> Look for any inconsistency in the ISMS.
+
+---
+
+
+## Staying up to date with the template
+
+If you cloned this repo to create your own ISMS, you can track upstream improvements over time — new policies, updated controls, structural refinements — and let an agent decide what is worth adopting.
+
+**Add the template as a remote (one-time setup):**
+
+```bash
+git remote add upstream https://github.com/kriss-b/llm-iso27001.git
+```
+
+**First time — mark your starting point:**
+
+```bash
+git tag last-upstream-check upstream/main
+```
+
+**When you want to check for updates:**
+
+```bash
+git fetch upstream
+git log --oneline last-upstream-check..upstream/main > upstream_changes.log
+git tag -f last-upstream-check upstream/main  # move the marker forward after review
+```
+
+Then open a session with your LLM Agent and say something like:
+
+> The file `upstream_changes.log` lists commits made to the upstream ISMS template since my last review. Our company is [brief context reminder]. Please:
+> 1. Summarise what has changed in the template (new policies, updated controls, structural improvements).
+> 2. For each change, assess whether it is relevant to us given our context.
+> 3. Propose concrete updates to our local ISMS where the upstream change adds value, adapting the content to our specific situation rather than applying it blindly.
+
+The LLM should not merge blindly. Your instantiated ISMS has been customised for your company; upstream changes are suggestions, not patches. The log gives the agent the raw material — your company context guides what gets adopted.
+
+---
+
+## What this is not
+
+This is a LLM friendly template, not a certification. Achieving ISO 27001 certification requires an accredited external audit, evidence of the ISMS operating over time (logs, completed reviews, incident records), and demonstrated continual improvement. The `checks/` directory and `run/` are the start of your evidence base. An ISMS that runs its checks and keeps its logs current is evidence of an *operating* system, not just a documented one.

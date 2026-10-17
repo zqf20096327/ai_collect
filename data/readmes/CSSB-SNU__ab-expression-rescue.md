@@ -1,0 +1,168 @@
+# Expression Rescue Pipeline
+
+ProteinMPNN-based analysis to propose CDR single-point mutations that may rescue antibody expression without disrupting antigen binding. Takes one antibody–antigen complex at a time.
+
+**View the example run with full styling** (GitHub strips `<style>` blocks, so pandas dashboards render plain on github.com):
+
+[![View example on nbviewer](https://img.shields.io/badge/nbviewer-view_example_result-F37626?logo=jupyter&logoColor=white)](https://nbviewer.org/github/CSSB-SNU/ab-expression-rescue/blob/main/example/expression_rescue_example_result.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CSSB-SNU/ab-expression-rescue/blob/main/example/expression_rescue_example_result.ipynb)
+
+<p align="center">
+<img width="70%" height="70%" alt="Image" src="https://github.com/user-attachments/assets/78993180-b3f5-4e32-a530-602e044a1a9c">
+</p>
+
+## Overview
+
+Antibodies obtained from *in silico* design, phage-display, or directed evolution can bind their target well yet still express poorly in cell culture. Some CDR residues are preferred for **binding** (stabilized by the antigen contact) while others are preferred only for **expression / solubility** of the antibody alone. Distinguishing the two guides safe rescue mutations: keep the binding residues, change the rest.
+
+This pipeline uses [ProteinMPNN](https://github.com/dauparas/LigandMPNN)'s single-AA conditional logits as a proxy for residue preference. For each input complex we score two states:
+
+- **bound**: the complex as provided
+- **unbound**: the same coordinates with the antigen chain(s) removed
+
+Residues where the wild-type amino acid is strongly preferred in the bound state (but not in the unbound state) are **key binding residues**. Residues where another amino acid out-scores the wild-type in the unbound state are **rescue candidates**.
+
+### Key outputs
+
+The **final output is a short list of rescue mutations** (e.g. `V52S, S108L, T100L`) shown in a prominent green panel at the end of Step 6 and stored in `rescue_ranking.csv` under `top_k=True`. Everything else the notebook produces — heatmaps, logit-colored PDBs, per-residue CSVs, inline 3-D views — is **additional information** that helps you understand how those mutations were selected. 
+
+### ⚠ Output quality depends on input structure quality
+
+This pipeline reads per-residue structural context (backbone geometry + local environment) to produce the logits that drive every downstream decision. If the input complex has low resolution, misfolded regions, poor quality, etc., the resulting rescue mutations may be unreliable. Prefer high-resolution crystal/cryo-EM structures, or high-quality predicted structures with energy-minimization whose binding interface has been validated. 
+
+## How mutations are picked
+
+The notebook runs an automated 3-stage selection (this is the protocol used in the companion paper):
+
+1. **Score both states.** ProteinMPNN single-AA scoring on the input complex (bound) and on the same coordinates with the antigen chain(s) removed (unbound). Yields per-residue 21-AA logits for each state.
+2. **Protect key-binding residues.** Positions with Δ = logit_bound − logit_unbound > `binding_logit_threshold` are flagged as binding-critical. Optionally merged with user-supplied residues via `user_key_binding_mode` (`"union"` or `"user_only"`). These positions are **excluded** from the candidate pool — mutating them would risk the antigen interface.
+3. **Rank the rest and pick top-K.** Remaining residues are sorted ascending by the WT amino acid's unbound logit (worst-preferred WT first — the strongest rescue targets). The top `top_k_rescue` positions (default 3) are selected, and at each one the amino acid with the highest unbound logit (`best_aa`) becomes the proposed substitution.
+
+The final list appears in the green "Final rescue mutations" panel at the end of Step 6 and in `rescue_ranking.csv` rows with `top_k=True`.
+
+**Note on reproducibility.** ProteinMPNN scoring involves stochastic elements (random decoding order), so the exact logit values may differ slightly between runs. We have verified that the overall results — which positions are flagged as key-binding and which mutations are selected — remain consistent across repeated runs. For details on the scoring mechanism, see the [LigandMPNN repository](https://github.com/dauparas/LigandMPNN) and the ProteinMPNN paper (Dauparas et al., *Science*, 2022).
+
+## Directory layout
+
+```
+expression_rescue_pipeline/
+├── README.md                          # This file
+├── expression_rescue.ipynb            # End-to-end pipeline notebook (local Jupyter)
+├── expression_rescue_colab.ipynb      # Same pipeline, adapted for Google Colab (pip install + repo clone)
+├── ProteinMPNN/                       # Minimal scoring slice of LigandMPNN
+│   ├── README.md                      # What this is, upstream link, deviations
+│   ├── LICENSE                        # MIT
+│   ├── requirements.txt               # Python deps for scoring
+│   ├── score.py                       # Scoring entry point
+│   ├── data_utils.py                  # PDB parsing + featurization
+│   ├── model_utils.py                 # ProteinMPNN model definition
+│   └── model_params/
+│       └── proteinmpnn_v_48_020.pt    # Pre-trained weights (6.4 MB)
+└── example/
+    ├── HALP_example.pdb                          # Example antibody-antigen complex
+    ├── inputs_example.txt                        # Example user-inputs for the notebook
+    ├── expression_rescue_example_result.ipynb    # Frozen example run (outputs preserved, read-only reference)
+    └── example_output/                           # Artifacts produced by the example run:
+        ├── heatmap.png                               #   3-panel logit heatmap
+        ├── rescue_ranking.csv                        #   residues ranked by WT unbound logit
+        ├── key_binding_residues.csv                  #   Δ = bound − unbound per residue
+        ├── HALP_example_unbound.pdb                  #   antigen-removed complex
+        ├── HALP_example_logits.pdb                   #   bound PDB colored by bound logit (B-factor)
+        └── HALP_example_unbound_logits.pdb           #   unbound PDB colored by unbound logit (B-factor)
+```
+
+## Installation
+
+Tested with Python 3.10 and CUDA 12.1.
+
+```bash
+conda create -n expression_rescue python=3.10 -y
+conda activate expression_rescue
+pip install -r ProteinMPNN/requirements.txt
+pip install jupyter matplotlib seaborn pandas nbformat py3Dmol "setuptools<81"
+```
+The model weights ship with the repo under `ProteinMPNN/model_params/proteinmpnn_v_48_020.pt` — no separate download needed.
+
+## Usage
+
+### Option A — Local Jupyter (recommended for HPC clusters)
+
+1. Allocate a GPU (The scoring step requires a GPU. CPU-only execution works but it may be slow).
+2. Open `expression_rescue.ipynb` in Jupyter.
+3. Edit the **User inputs** cell:
+   - `bound_pdb_path`: path to the antibody–antigen complex PDB
+   - `antigen_chain_ids`: list of chain letters that make up the antigen, e.g. `["A"]`
+   - `rescue_residues`: list of `"<chain><resnum>"` strings to evaluate, e.g. `["B30", "B31", ...]`
+   - `output_dir`: where results will be written
+   - `binding_logit_threshold`: Δ above which Step 5 flags a position as key-binding (default `1.0`)
+   - `top_k_rescue`: how many top-ranked positions Step 6 highlights as the mutations to introduce (default `3`)
+   - `user_key_binding_residues` *(optional)*: positions you already know are binding-critical from experiments / prior knowledge; leave empty `[]` to rely solely on the pipeline's Δ-based detection
+   - `user_key_binding_mode`: `"union"` (default — pipeline ∪ user) or `"user_only"` (trust only user input). Ignored when `user_key_binding_residues` is empty.
+4. **Run all cells.** When it finishes, scroll to Step 6: the **green "Final rescue mutations" box** shows the substitutions the pipeline recommends.
+
+The notebook is self-contained: each step generates the inputs for the next, so re-running from the top is safe.
+
+### Option B — Google Colab (no local setup needed)
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CSSB-SNU/ab-expression-rescue/blob/main/expression_rescue_colab.ipynb)
+
+1. Click the badge above (or open `expression_rescue_colab.ipynb` in Colab manually).
+2. **Runtime → Change runtime type → T4 GPU** (or any available GPU).
+3. Run the first two cells — they `pip install` missing packages and `git clone` the repo.
+4. Edit the **User inputs** cell (same variables as above), then **Run all remaining cells**.
+5. Download your output files before the session ends — Colab storage is ephemeral.
+
+The Colab notebook is functionally identical to the local version; only the setup cells differ.
+
+**Typical runtime on Colab (T4 GPU):** dependency installation finishes in **under 1 minute**. The full pipeline — install, repo clone, and the bundled example case end-to-end — completes in **under 5 minutes**.
+
+## Input format
+
+- **PDB file** — standard ATOM records. Chain letters matter: antibody and antigen chains must differ. Multi-model files are not supported (pass the first model only).
+- **Residue spec** — `"<chain_letter><resnum>"`, e.g. `"B30"` = residue 30 on chain B. Insertion codes or chain ID with more than 1 character are not supported by this selector; if your PDB uses them, renumber or rechain first.
+- **Pre-specified key-binding residues** *(optional)* — if you already know certain positions are binding-critical (experimental mutagenesis, epitope mapping, prior literature, etc.), supply them as `user_key_binding_residues` using the same `"<chain><resnum>"` syntax, e.g. `["D52", "D53"]`. They merge with the Δ-based detection per `user_key_binding_mode` (`"union"` or `"user_only"` — see [How mutations are picked](#how-mutations-are-picked) for the exact semantics). Leave the list empty `[]` to skip this option entirely. Residues listed here but not in `rescue_residues` are ignored with a warning.
+
+## Outputs
+
+Major outputs also render inline in the notebook cells. All raw files are written to `<output_dir>/`, listed below. **The only file most users need is `rescue_ranking.csv`** (rows with `top_k=True`); the rest support deeper analysis or downstream visualization.
+
+### Key output
+
+| File | Contents |
+|------|----------|
+| `rescue_ranking.csv` | All rescue residues ranked by WT unbound logit ascending. **Rows with `top_k=True` are the selected mutations** — the same ones shown in the green Step 6 panel. `is_key_binding=True` rows were skipped. |
+
+### Additional outputs
+
+| File | Contents |
+|------|----------|
+| `key_binding_residues.csv` | Per-residue Δ table + flags (`is_key_binding`, `user_specified`, `is_final_key_binding`) |
+| `heatmap.png` | Three-panel heatmap: bound / unbound / Δ |
+| `<stem>_logits.pdb` | Bound PDB with B-factor set to the WT bound logit (open in PyMOL with `spectrum b, red_white_blue`) |
+| `<stem>_unbound_logits.pdb` | Unbound PDB with B-factor set to the WT unbound logit |
+| `<stem>_unbound.pdb` | Antigen-removed complex used for unbound scoring |
+| `bound/<stem>.pt`, `unbound/<stem>.pt` | ProteinMPNN raw scoring output (tensors) |
+
+Step 8 renders both logit-colored structures inline in the notebook via `py3Dmol` using a **red-white-blue** gradient (low logit → red = WT disfavored; high logit → blue = WT preferred). For a higher-fidelity view, open either file in PyMOL:
+
+```
+spectrum b, red_white_blue
+```
+
+## How to read the outputs
+
+- **`rescue_ranking.csv`** — every rescue residue listed, sorted by `WT_unbound_logit` ascending. The top rows are the positions where the antibody-alone model is least happy with the current residue. `best_aa` is the amino acid with the highest unbound logit at that position, and `logit_diff = best_unbound_logit − WT_unbound_logit`. `top_k=True` flags the positions the pipeline selected for mutation.
+- **`key_binding_residues.csv`** — residues with large positive Δ are binding-critical and were excluded from rescue selection. The `is_final_key_binding` column reflects the final protected set (Δ-based + user-supplied, combined per `user_key_binding_mode`).
+- **`heatmap.png`** — rows are residues (sorted chain → resnum), columns are the 21-letter alphabet. The red `*` marks the current WT. Dark cells = high logit on the first two panels. The difference panel is diverging red-white-blue centered at 0: **blue** cells next to the WT `*` mark potential binding contacts (antigen favors that AA); **red** cells mark amino acids the antigen disfavors.
+
+## Citations
+
+- Chun, C., Sohn, B.-K., Ki, H., Jo, J. H., et al. *Landscape-scale navigation unlocks antibody CDR structural logic 
+for AI-guided rescue and therapeutic optimization.* **bioRxiv** https://doi.org/10.64898/2026.04.21.719857 (2026).
+- Dauparas, J. et al. *Robust deep learning-based protein sequence design using ProteinMPNN.* **Science** 378, 49–56 (2022).
+- Dauparas, J. et al. *Atomic context-conditioned protein sequence design using LigandMPNN.* **Nature Methods** (2025).
+
+## License
+
+- Pipeline code (`expression_rescue.ipynb`, `README.md`, `example/*`): **MIT**, © 2026 Kiheesoo. See `LICENSE`.
+- Bundled ProteinMPNN scoring slice (`ProteinMPNN/`): **MIT**, © 2024 Justas Dauparas, redistributed from [LigandMPNN](https://github.com/dauparas/LigandMPNN). See `ProteinMPNN/LICENSE`.

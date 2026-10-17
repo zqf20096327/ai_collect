@@ -1,0 +1,251 @@
+# Skytrax Reviews Analytics Platform
+
+End-to-end airline review analytics: scrape AirlineQuality.com → stage on S3 → load Snowflake → dbt star schema (medallion) → Mode dashboards.
+
+> **Source status:** [AirlineQuality.com](https://www.airlinequality.com/) (Skytrax) is **permanently closed**. This platform was built from historical scrapes collected while the site was live; the EL path is a replayable S3/Snowflake archive, not an ongoing feed from that domain.
+
+This repo is the **umbrella** — project narrative, architecture, and links into the part repos. Implementation lives in the extract-load, transformation, and dashboard repositories below.
+
+<p align="center">
+  <img src="assets/platform-overview.gif" alt="21-second platform overview: a counter runs to 117,000 airline reviews, the pipeline assembles (Python scrape - S3 - Snowflake - dbt - Mode), the star schema resolves to one row per review_id, and Delta / Spirit / Frontier score 2.49 / 1.59 / 1.43 against a 2.59 industry baseline" width="100%" />
+</p>
+
+<p align="center"><sub><em>The platform in 21 seconds — scale, governance, verdict. Silent by format; the full walkthrough is the deck linked below.</em></sub></p>
+
+**[Platform walkthrough](https://markphamm.github.io/skytrax_reviews/)** — Show → Why → What-if deck (`index.html`) covering modeling, transformation, governance, insight, and DataOps.
+
+**[Demo runbook](docs/demo-runbook.md)** — live commands per pillar (including break-it-live branches `demo/contract-break` and `demo/bad-data` on the transformation repo).
+
+> **Self-selection bias:** Skytrax reviews are self-reported. Passengers with extreme experiences are more likely to post, so KPIs are *directional*, not population-level.
+
+---
+
+## Repositories
+
+| Part | Repository | Owner | Purpose |
+| --- | --- | --- | --- |
+| 1 · Extract & Load | **[skytrax_reviews_extract_load](https://github.com/MarkPhamm/skytrax_reviews_extract_load)** | MarkPhamm | Scrape 4 review types → S3 (`raw/` / `processed/`) → Snowflake `COPY INTO` + quality gates + Terraform |
+| 2 · Transform & DataOps | **[skytrax_reviews_transformation](https://github.com/MarkPhamm/skytrax_reviews_transformation)** | MarkPhamm | dbt Kimball star schema, incremental fact, slim CI/CD, OIDC, Terraform RBAC, hosted dbt docs |
+| 3 · Insight · Delta | **[airline_customer_exp_analysis](https://github.com/alyssaqle/airline_customer_exp_analysis)** | alyssaqle | Mode dashboard — Delta cabin-class satisfaction drivers |
+| 3 · Insight · Frontier | **[frontier-reviews-dashboard](https://github.com/gwenniehub/frontier-reviews-dashboard)** | gwenniehub | Mode dashboard — Frontier ULCC peer benchmark |
+| 3 · Insight · Spirit | **[spirit_airlines_dashboard](https://github.com/MiaTran1112/spirit_airlines_dashboard)** | MiaTran1112 | Mode dashboard — Spirit chronic dissatisfaction deep-dive |
+| — | **[Skytrax_Reviews_Dashboard](https://github.com/nguyentienTCU/Skytrax_Reviews_Dashboard)** | nguyentienTCU | Broader Next.js dashboard / explorer (parallel viz surface) |
+
+**Live dbt docs:** [https://d38l3fc9bckvbz.cloudfront.net](https://d38l3fc9bckvbz.cloudfront.net/#!/overview/ba_transformation?g_v=1)
+
+---
+
+## North-star metrics
+
+Same governed logic in dbt (`average_rating`, `rating_band`, `recommended`) on `MARTS.AGG_AIRLINES_REVIEW` (Mode grain: unweighted avg across airlines) — industry bar + three Mode slices.
+
+**KPI snapshot (2026-07-30):** deck / Mode baseline numbers below. Re-verify live with the SQL in [`docs/demo-runbook.md`](docs/demo-runbook.md) before the interview if the warehouse has moved.
+
+| Carrier | Reviews | Avg rating | Would recommend | Distinctive signal |
+| --- | ---: | ---: | ---: | --- |
+| **Industry** (553 airlines) | 117k | **2.59** | **40%** | Mode baseline · VFM 2.63 · food 2.62 · cabin 3.02 · Wi‑Fi 1.62 · seat 2.7 |
+| **Delta** | 2,912 | **2.49** (vs 2.59) | **29.0%** (vs 40%) | Below industry · Economy vs Premium drivers diverge |
+| **Spirit** | 4,698 | **1.59** (vs 2.59) | **12.1%** (vs 40%) | Chronic lows; IFE/Wi‑Fi ~1.1 |
+| **Frontier** | 3,533 | **1.43** (vs 2.59) | **5.7%** (vs 40%) | Weakest of set · ULCC peer gap |
+
+> Volume note: Part 1 lands **~160k+ rows across four review types** (airline / seat / lounge / airport). The **~117k** figure is the **airline-review** grain in marts / Mode industry bar — not the full scrape.
+
+---
+
+## Architecture
+
+<p align="center">
+  <img src="assets/architecture.png" alt="Skytrax Reviews end-to-end architecture: AirlineQuality (permanently closed; historical scrape) → Python scrape/clean → S3 → Snowflake + dbt → Mode / dbt Docs / Analysts, with Terraform·GHA·OIDC control plane and Airflow orchestration" width="100%" />
+</p>
+
+```text
+Source                 Extract              Lake                 Load                 Warehouse + Transform              Consumers
+────────               ───────              ────                 ────                 ────────────────────              ─────────
+AirlineQuality.com  →  Python scraper  →   S3 raw/<type>/   →  COPY INTO        →   Snowflake RAW                   →  Mode (Delta · Frontier · Spirit)
+  (site closed;          + cleaner            processed/<type>/   + LOAD_AUDIT         SOURCE → INTERMEDIATE → MARTS      dbt Docs (CloudFront)
+   historical HTML)      (Airflow tasks)      quality gate                             dbt: stg → int → dims + fct        Analyst DEV_* 
+
+Orchestration (spans extract → load → transform)
+  Airflow (Astronomer) · Dataset-chained crawl → process → snowflake · cosmos DbtDag
+
+Control plane (provisions + ships)
+  Terraform (AWS + Snowflake) · GitHub Actions slim CI / defer-favor-state CD · OIDC (keyless GHA → AWS)
+```
+
+### Medallion mapping
+
+| Layer | Where | What |
+| --- | --- | --- |
+| Bronze | S3 + `RAW` | Landed files + warehouse raw tables (`AIRLINE_REVIEWS`, …, `LOAD_AUDIT`) |
+| Silver | `SOURCE` → `INTERMEDIATE` | Staging views (dedup, hash keys) + cleaned business logic |
+| Gold | `MARTS` | Star schema dims + incremental `fct_review` for BI |
+
+---
+
+## Stack
+
+| Layer | Technology | Why |
+| --- | --- | --- |
+| Extract | Python 3.12, BeautifulSoup, pandas | No public API — custom scrape of AirlineQuality.com (site now permanently closed; historical archive) |
+| Orchestration | Apache Airflow (Astronomer) + Datasets + cosmos | Event-driven DAG chaining; dbt as first-class tasks |
+| Lake | AWS S3 (type + date partitions) | Replayable, cheap, decoupled from Snowflake |
+| Warehouse | Snowflake | `COPY INTO`, RBAC, tag-based masking, separate compute |
+| Transform | dbt Core (dbt-snowflake), SQLFluff | Tests, contracts, incremental, defer/state, docs |
+| BI | Mode Analytics | Warehouse-direct SQL; Delta / Frontier / Spirit Mode slices on the same marts |
+| IaC | Terraform (AWS + Snowflake) | S3, IAM, CloudFront, OIDC, schemas, warehouses, roles, masking |
+| CI/CD | GitHub Actions | Slim CI (`state:modified+`); CD `--defer --favor-state` |
+| Auth | AWS IAM OIDC | Keyless GHA → artifact bucket / CloudFront invalidate |
+
+---
+
+## Part 1 — Extract & Load
+
+**Repo:** [skytrax_reviews_extract_load](https://github.com/MarkPhamm/skytrax_reviews_extract_load)
+
+Three Airflow DAGs chained via **Datasets** (no cron guesswork between stages):
+
+| DAG | Trigger | What it does |
+| --- | --- | --- |
+| `skytrax_crawl` | Daily schedule (or `full_scrape=True`) | Scrapes 4 review types with per-entity parallelism → S3 `raw/` |
+| `skytrax_process` | Dataset `raw` | Clean → upload `processed/` → validate (schema / null-rate / ratings) |
+| `skytrax_snowflake` | Dataset `processed` | `COPY INTO` per type (skips quality-rejected dates) + reconcile → `LOAD_AUDIT` |
+
+**S3 layout**
+
+```text
+s3://skytrax-reviews-landing-<account-id>/
+  raw/<type>/YYYY/MM/raw_data_YYYYMMDD.csv
+  processed/<type>/YYYY/MM/clean_data_YYYYMMDD.csv
+```
+
+`<type>` ∈ `airlines` | `seats` | `lounges` | `airports`
+
+- Versioning, AES256, lifecycle (IA after 30d), public access blocked
+- Idempotent daily files + Snowflake file-level `COPY INTO` dedupe
+- PII: tag-based masking on `CUSTOMER_NAME` / `NATIONALITY` (Terraform)
+- All landing + RAW objects managed with Terraform
+
+---
+
+## Part 2 — Transformation & DataOps
+
+**Repo:** [skytrax_reviews_transformation](https://github.com/MarkPhamm/skytrax_reviews_transformation)
+
+### Star schema (Kimball)
+
+**Grain:** one row per `review_id` (one customer review submission).
+
+| Model | Type | Description |
+| --- | --- | --- |
+| `fct_review` | Fact (incremental merge) | Ratings, `average_rating`, `rating_band`, FKs to dims (Mode joins dims for labels) |
+| `dim_customer` | Dimension | Reviewer (+ PII hash mask for analysts) |
+| `dim_airline` | Dimension | Airline |
+| `dim_aircraft` | Dimension | Model, manufacturer, capacity |
+| `dim_location` | Dimension | City + airport (role-playing: origin / dest / transit) |
+| `dim_date` | Dimension | Calendar + fiscal (role-playing: submitted / flown) |
+
+### Schemas (Terraform)
+
+| Schema | Purpose |
+| --- | --- |
+| `RAW` | From Part 1 |
+| `SOURCE` | Staging views |
+| `INTERMEDIATE` | Cleaned logic |
+| `MARTS` | Dims + facts |
+| `STAGING` | CI scratch |
+| `DEV_*` | Per-user local sandboxes |
+
+### CI/CD + OIDC
+
+- **CI (PR):** merge-base state → SQLFluff → `dbt clone` → build/test `state:modified+` / `state:new+`
+- **CD (main):** OIDC → download prod manifest → `dbt build --select state:modified+ --defer --favor-state` → upload docs/manifest to S3 → CloudFront invalidate
+- **IaC:** Snowflake RBAC/warehouses/schemas + AWS artifacts bucket, CloudFront, OIDC provider — all Terraform
+
+---
+
+## Part 3 — Insight
+
+Same mart (`AGG_AIRLINES_REVIEW` / `FCT_REVIEW`), three Mode dashboards — each with one distinctive insight and one action. KPIs match the Mode industry baseline above (avg rating **2.59**, recommend **40%**).
+
+### Delta — cabin-class drivers
+
+**Repo:** [airline_customer_exp_analysis](https://github.com/alyssaqle/airline_customer_exp_analysis) (Mode)
+
+| Signal | Value |
+| --- | --- |
+| Reviews | 2,912 |
+| Average rating | **2.49** (vs industry 2.59) |
+| Median | **2.17** |
+| Would recommend | **29.0%** (vs 40%) |
+| Insight | Economy vs Premium satisfaction drivers diverge (Economy → staff / food / value; Premium → seat / dining / value) |
+| Action | Cabin-specific plays: keep staff strength; fix Wi‑Fi; Economy value/pitch; Premium dining/comfort at ATL / JFK / LAX |
+
+### Frontier — ULCC peer gap
+
+**Repo:** [frontier-reviews-dashboard](https://github.com/gwenniehub/frontier-reviews-dashboard) (Mode)
+
+| Signal | Value |
+| --- | --- |
+| Reviews | 3,533 |
+| Average rating | **1.43** (vs industry 2.59) |
+| Median | **1.00** |
+| Would recommend | **5.7%** (vs 40%) |
+| Insight | Among ULCCs, Frontier underperforms peers on recommendation rate (Allegiant > Spirit > Frontier) |
+| Action | Close the ULCC value gap: prioritize Economy entertainment + seat comfort (majority of volume) |
+
+### Spirit — chronic dissatisfaction
+
+**Repo:** [spirit_airlines_dashboard](https://github.com/MiaTran1112/spirit_airlines_dashboard) (Mode)
+
+| Signal | Value |
+| --- | --- |
+| Reviews | 4,698 |
+| Average rating | **1.59** (vs industry 2.59) |
+| Median | **1.00** |
+| Would recommend | **12.1%** (vs 40%) · not recommended **~87.9%** |
+| Insight | Chronic dissatisfaction; IFE/Wi‑Fi ~1.1; Business Class the worst segment |
+| Action | Connectivity/IFE SLAs, rebuild Business value prop, airport ops at MIA / MEX / GOT |
+
+---
+
+## Governance (cross-cutting)
+
+| Concern | Where |
+| --- | --- |
+| File quality gates | EL — validate after upload; quarantine bad dates |
+| Load reconciliation | EL — `RAW.LOAD_AUDIT` |
+| dbt tests | unique / not_null / relationships / accepted_values / expectations + unit + singular |
+| Source freshness | warn 3d / error 7d on `updated_at` (laptop-paced loads) |
+| PII | Snowflake masking (RAW tags + marts `PII_HASH_MASK` on `dim_customer`) |
+| Access | Terraform RBAC: ADMIN > TRANSFORMER + ANALYST; service users `PROD_DBT`, `DBT_CICD` |
+
+---
+
+## Team
+
+### Leadership
+
+* **Mentor / Stakeholder:** [Nhan Tran](https://www.linkedin.com/in/panicpotatoe/)
+* **Team Lead / Analytics Engineer:** [Mark Pham](https://www.linkedin.com/in/minhbphamm/)
+
+### Members
+
+* **Data Analysts:** [Trang Dam](https://www.linkedin.com/in/thuytrangdam/), [Gwennie Nguyen](https://www.linkedin.com/in/gwennienguyen/), [Jenny Tran](https://www.linkedin.com/in/jennytranuyen/), [Mia Tran](https://www.linkedin.com/in/miatran1207/), [Alyssa Le](https://www.linkedin.com/in/alyssaqle/)
+* **Data Engineers:** [Leonard Dau](https://www.linkedin.com/in/leonard-dau-722399238/), [Thieu Nguyen](https://www.linkedin.com/in/thieunguyen1402/), [Viet Lam Nguyen](https://www.linkedin.com/in/lam-nguyen-viet-051a57305)
+* **Software Engineers:** [Tien Nguyen](https://www.linkedin.com/in/tien-nguyen-598758329), [Anh Duc Le](https://www.linkedin.com/in/duc-le-517420205/)
+* **Data Scientists:** [Robin Tran](https://www.linkedin.com/in/robin-tran/), [Trung Dam](https://www.linkedin.com/in/trung-dam-86962a235/)
+* **Scrum Master:** [Hien Dinh](https://www.linkedin.com/in/hiendinhq)
+
+---
+
+## Next steps
+
+1. Expand sources — on-time performance / DOT complaints alongside reviews  
+2. Conformed facts for seat / lounge / airport review types (already in RAW)  
+3. Allegiant Mode slice (complete the ULCC peer set already used in Frontier’s benchmark)
+
+Done (no longer “next”): MetricFlow semantic layer on `avg_rating` / `pct_recommended` (and airline-prefixed agg metrics) — see Insight / MetricFlow slides and `dbt/models/marts/*_semantic.yml`.
+
+---
+
+*Skytrax Global Airlines Analytics Project*

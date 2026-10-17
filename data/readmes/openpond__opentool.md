@@ -1,0 +1,429 @@
+# OpenTool
+
+[![npm version](https://badge.fury.io/js/opentool.svg)](https://badge.fury.io/js/opentool)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Build serverless TypeScript tools that work with AI assistants, handle crypto payments, and deploy to AWS Lambda automatically.
+
+**For LLMs/AI Code Generation:** [`context/opentool-context.ts`](./context/opentool-context.ts)
+
+## What is it?
+
+OpenTool lets you write simple TypeScript functions that can be called by other agents, monetized with crypto payments, and deployed as serverless functions. It handles the boring stuff like:
+
+Tools are either Public or Private. Public tools are accessible to the public and are monetized with crypto payments using x402. Private tools are accessible only to the app developer and are mainly for trading and onchain interaction use cases.
+
+## Installation
+
+```bash
+npm install opentool
+```
+
+## Quick Start
+
+### 1. Create a new project
+
+```bash
+mkdir my-opentool-project
+cd my-opentool-project
+npm install opentool
+npx opentool init
+```
+
+### 2. Create your first tool
+
+Create a `tools/` directory and add your first tool:
+
+```typescript
+// tools/greet.ts
+import { z } from "zod";
+
+export const schema = z.object({
+  name: z.string().describe("The name of the user to greet"),
+});
+
+export const metadata = {
+  name: "greet",
+  description: "Simple greeting tool",
+};
+
+export async function POST(request: Request) {
+  const payload = await request.json();
+  const { name } = schema.parse(payload);
+
+  return Response.json({
+    message: `Hello, ${name}!`,
+  });
+}
+```
+
+### 3. Test locally
+
+```bash
+# Validate your tools
+npx opentool validate
+
+# Start development server
+npx opentool dev
+```
+
+### Private tools: GET-only and POST-only
+
+For private tools, say for internal trading apps:
+
+- GET-only (scheduled default profile)
+- POST-only (one-off, parameterized with Zod)
+- `profile.category` defaults to `tracker` if omitted; set to `strategy` or `orchestrator` for PnL/automation tools.
+- Strategy tools must define `profile.templatePreview` with:
+- `subtitle` (required short line)
+- `description` (required multi-line summary, 3-8 non-empty lines; target ~5)
+- `title` is optional and defaults to the tool name when omitted.
+
+GET-only (scheduled default)
+
+```typescript
+// tools/aave-stake.ts
+export const profile = {
+  description: "Stake 100 USDC daily at 12:00 UTC",
+  category: "strategy",
+  schedule: { cron: "0 12 * * *", enabled: false },
+  templatePreview: {
+    subtitle: "Automated daily staking strategy",
+    description: [
+      "Runs once per day on your configured schedule.",
+      "Uses fixed, explicit sizing controls from template config.",
+      "Designed for long-running automated execution.",
+      "Keeps logic deterministic and easy to audit.",
+      "Best for hands-off recurring onchain actions.",
+    ].join("\\n"),
+  },
+};
+
+export async function GET(_req: Request) {
+  return Response.json({
+    ok: true,
+    action: "stake",
+  });
+}
+```
+
+POST-only (one-off)
+
+```typescript
+// tools/aave-unstake.ts
+import { z } from "zod";
+
+export const profile = {
+  description: "Unstake USDC on demand",
+  category: "tracker",
+  notifyEmail: true,
+};
+
+export const schema = z.object({
+  amount: z.string(),
+  token: z.string().default("USDC"),
+});
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const { amount, token } = schema.parse(body);
+  return Response.json({ ok: true, action: "unstake", amount, token });
+}
+```
+
+### Email notifications for one-off tools
+
+- POST-only tools can set `profile.notifyEmail = true` to request an email when the tool runs.
+- Scheduled tools should continue to use `profile.schedule.notifyEmail`.
+
+### Cron schedules (`profile.schedule`)
+
+- GET-only tools require `profile.schedule` with a standard 5–6 field cron expression (e.g., `0 12 * * *` or `0 0 ? * MON-FRI *`).
+- Build validates the cron shape and emits `dist/tools.json` with schedule data per tool. Enabled defaults to `false` even if authors set it to `true` in code. Deployment targets can translate these cron strings to their provider format (e.g., EventBridge) downstream.
+- Use `profile.schedule.notifyEmail = true` to request email delivery on schedule runs.
+
+### Public tools: Add x402 payments (optional)
+
+Protect your public tools with crypto payments using x402:
+
+```typescript
+// tools/premium-report.ts
+import { z } from "zod";
+import { defineX402Payment } from "opentool/x402";
+
+export const schema = z.object({
+  symbol: z.string().describe("Crypto symbol (e.g., BTC)"),
+});
+
+export const payment = defineX402Payment({
+  amount: "0.001",
+  payTo: process.env.WALLET_ADDRESS!,
+  currency: "USDC",
+  network: "base-sepolia",
+  message: "Premium analytics require payment",
+});
+
+export async function POST(request: Request) {
+  const payload = await request.json();
+  const { symbol } = schema.parse(payload);
+
+  return Response.json({
+    report: `Premium analytics for ${symbol}`,
+  });
+}
+```
+
+Test the payment flow:
+
+```bash
+# Start dev server
+WALLET_ADDRESS=0x... npx opentool dev --input tools
+
+# Test with your x402 client/facilitator implementation
+```
+
+Or test manually:
+
+```bash
+# Get 402 response with payment requirements
+curl -X POST http://localhost:7000/premium-report \
+  -H "content-type: application/json" \
+  -d '{"symbol":"BTC"}'
+
+# Pay and retry with X-PAYMENT header (generated by x402 client)
+curl -X POST http://localhost:7000/premium-report \
+  -H "content-type: application/json" \
+  -H "X-PAYMENT: ${X402_HEADER}" \
+  -d '{"symbol":"BTC"}'
+```
+
+### MCP
+
+By default, tools are HTTP-only. Want them accessible via MCP clients like Claude Desktop? Just add this to your tool file:
+
+```typescript
+// tools/greet.ts
+export const mcp = {
+  enabled: true, // Now works with Claude Desktop, MCP Inspector, etc.
+};
+```
+
+Tools without this export stay HTTP-only, which is useful when you want selective access. Mix and match as needed.
+
+If you need the programmatic MCP runtime helpers, import them from `opentool/runtime` instead of the root package:
+
+```typescript
+import { createDevServer, createStdioServer } from "opentool/runtime";
+```
+
+### Testing with MCP Inspector
+
+You can run MCP Inspector against your local tool set:
+
+```bash
+npx mcp-inspector --server "npx opentool dev --input tools"
+```
+
+Only tools with `mcp = { enabled: true }` show up in the inspector - HTTP-only tools keep running on localhost.
+
+### Quick x402 test with curl
+
+1. Start the dev server:
+
+   ```bash
+   npx opentool dev --input tools
+   ```
+
+2. Trigger the paywall and inspect the returned payment requirements:
+
+   ```bash
+   curl -i \
+     -X POST http://localhost:7000/premium-report \
+     -H "content-type: application/json" \
+     -d '{"symbol":"BTC"}'
+   ```
+
+   The response includes a `402 Payment Required` status and JSON body with an `x402.accepts[0]` object describing the payment request.
+
+3. Submit a follow-up request with an `X-PAYMENT` header produced by your x402 facilitator (for example, by using the Coinbase [x402](https://github.com/coinbase/x402) tooling or your own signing flow):
+
+   ```bash
+   curl -i \
+     -X POST http://localhost:7000/premium-report \
+     -H "content-type: application/json" \
+     -H "X-PAYMENT: ${X402_HEADER}" \
+     -d '{"symbol":"BTC"}'
+   ```
+
+   Replace `${X402_HEADER}` with the base64-encoded payment payload returned by your facilitator’s `/verify` or `/pay` workflow. If the payment is valid the server responds with `200 OK`; otherwise it returns a new `402` with failure details.
+
+### 5. Build for deployment
+
+```bash
+# Build tools for Lambda deployment
+npx opentool build
+```
+
+### 6. Deploy to OpenPond
+
+Create an account on [OpenPond](https://openpond.ai) and create a new project.
+
+Add your project to the OpenPond project and connect it to your GitHub repository.
+
+OpenPond will automatically detect the `opentool` dependency and deploy your tools to AWS Lambda.
+
+## CLI Commands
+
+### Build
+
+Build your tools for deployment:
+
+```bash
+npx opentool build [options]
+
+Options:
+  -i, --input <dir>      Input directory containing tools (default: "tools")
+  -o, --output <dir>     Output directory for built tools (default: "dist")
+  --name <name>          Server name (default: "opentool-server")
+  --version <version>    Server version (default: "1.0.0")
+```
+
+### Development Server
+
+Start a local development server:
+
+```bash
+npx opentool dev [options]
+
+Options:
+  -i, --input <dir>      Input directory containing tools (default: "tools")
+  --watch                Watch for file changes (default: false)
+```
+
+### Validate
+
+Validate your tools:
+
+```bash
+npx opentool validate [options]
+
+Options:
+  -i, --input <dir>      Input directory containing tools (default: "tools")
+```
+
+### Generate Metadata
+
+Generate `metadata.json` without building:
+
+```bash
+npx opentool metadata [options]
+
+Options:
+  -i, --input <dir>      Input directory containing tools (default: "tools")
+  -o, --output <file>    Output file path for metadata.json (default: "metadata.json")
+  --name <name>          Server name (default: "opentool-server")
+  --version <version>    Server version (default: "1.0.0")
+```
+
+Generates the metadata file with tool schemas, payment configs, and discovery info. Useful for inspecting or sharing metadata without a full build.
+
+## Tool Definition
+
+Tools are just TypeScript files with a few exports:
+
+```typescript
+import { z } from "zod";
+
+// 1. Schema for input validation
+export const schema = z.object({
+  input: z.string().describe("Some input parameter"),
+});
+
+// 2. Metadata
+export const metadata = {
+  name: "my_tool",
+  description: "What this tool does",
+};
+
+// 3. Optional: enable MCP mode
+export const mcp = {
+  enabled: true, // Makes it work with Claude Desktop, etc.
+};
+
+// 4. Handler (POST, GET, PUT, DELETE, etc.)
+export async function POST(request: Request) {
+  const payload = await request.json();
+  const params = schema.parse(payload);
+
+  // Your tool logic here
+  return Response.json({
+    result: "Tool response",
+  });
+}
+```
+
+## Error Handling
+
+Just return standard HTTP responses:
+
+```typescript
+export async function POST(request: Request) {
+  const payload = await request.json();
+  const params = schema.parse(payload);
+
+  if (someCondition) {
+    return Response.json({ error: "Something went wrong" }, { status: 400 });
+  }
+
+  return Response.json({ result: "Success" });
+}
+```
+
+## Local Development
+
+Run `npx opentool dev` to test your tools locally. It runs them via stdio (for MCP clients) or HTTP (for direct API calls). Good for:
+
+- Testing tool logic
+- Validating schemas
+- Debugging before deployment
+
+## Deployment
+
+Push your repo to GitHub and connect it to [OpenPond](https://openpond.ai):
+
+1. OpenPond detects the `opentool` dependency
+2. Runs `npx opentool build`
+3. Deploys to AWS Lambda with Function URLs
+4. Done - your tools are live
+
+## Example Usage
+
+Build your own tool folder (for example `tools/`) and run:
+
+```bash
+npx opentool validate --input tools
+npx opentool metadata --input tools --output metadata.json
+npx opentool build --input tools --output dist
+```
+
+## Metadata System
+
+OpenTool has three levels of metadata config:
+
+1. **Default** - pulls from your `package.json` automatically
+2. **Project-level (optional)** - add a `metadata.ts` file for branding, payments, etc.
+3. **Tool-level** - override metadata per tool
+
+See [`METADATA.md`](./METADATA.md) for details on configuring metadata for on-chain registration and payments.
+
+## What's Next
+
+- Better watch mode that keeps metadata and tool artifacts synced during dev
+
+## Contributing
+
+Contributions welcome! See the [Contributing Guide](https://github.com/openpond/opentool/blob/master/CONTRIBUTING.md).
+
+## License
+
+MIT © [OpenTool](https://opentool.dev)

@@ -1,0 +1,148 @@
+<!-- Logo -->
+<p align="center">
+  <img src="res/images/logo.png" alt="pyvisim" width="1418" />
+</p>
+
+<!-- Added badges to convey project readiness/branding (example placeholders) -->
+![License](https://img.shields.io/github/license/MechaCritter/Python-Visual-Similarity)
+![Version](https://img.shields.io/pypi/v/pyvisim)
+![Status](https://img.shields.io/badge/status-pre--release-orange)
+![Python](https://img.shields.io/pypi/pyversions/pyvisim)
+![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+
+# Welcome to `pyvisim`!
+
+`pyvisim` is a computer vision library for computing image similarities using traditional and deep learning methods.
+
+📚 **Documentation**: <https://mechacritter.github.io/Python-Visual-Similarity/>
+
+## Table of Contents
+
+- [Status](#status)
+- [Overview](#overview)
+  - [Accelerated Computation](#accelerated-computation)
+  - [Examples](#examples)
+- [Installation](#installation)
+- [Contributing](#contributing)
+- [Get in Touch](#get-in-touch)
+- [License](#license)
+
+## Status
+
+🚀 The first stable release `v1.0.0` is out!
+
+## Overview
+
+![Architecture Diagram](https://raw.githubusercontent.com/MechaCritter/Python-Visual-Similarity/assets/docs/architecture/image_embeddings.drawio.png)
+
+The goal of `pyvisim` is to become the largest collection of image similarity metrics, varying from
+traditional methods like `PSNR`, `SSIM`, `Fisher Vectors`, and `VLAD` to deep
+learning methods like `CLIP` and `Siamese Networks`. Furthermore, advanced
+**image similarity search** and **reranking** algorithms are provided to allow
+users to refine the search results as desired. For more details, please refer to
+the documentation provided.
+
+Currently, one would need to install numerous libraries to use all features mentioned above (for example, `scikit-image` + `opencv-python` for `Fisher Vectors`, `SSIM`, `open-clip` for `CLIP Embedder`, and `faiss` for **Approximate Nearest Neighbors Search**). `pyvisim`
+attempts to close this gap by implementing as many metrics as possible using only `numpy`, `scipy` (for conventional metrics), and optionally
+`torch` (for deep learning metrics) as core dependencies, plus making them more user-friendly with a simple Object-Oriented code design.
+
+> [!TIP]
+> `hnsw` is provided as a built-in ANNs algorithm, backed by [hnswlib](https://github.com/nmslib/hnswlib). However, a [FAISS index can also be passed to the image store](https://mechacritter.github.io/Python-Visual-Similarity/image_similarity_retrieval/image_store/in_memory_image_embedding_store/in_memory_image_embedding_store.html#faiss-index) in case you would like to use other search
+algorithms with this library. **Just note** that `pyvisim` does not install `faiss`.
+
+### Accelerated Computation
+
+**Cython** kernels and **C++ libraries** are used for some metrics to accelerate computation significantly compared
+to all reference libraries on the CPU. See, for example, [benchmark results of the `SSIM` implementation](docs/dense/structural/ssim/benchmark.md).
+
+### Examples
+
+#### `Structural Similarity` (see documentation [here](https://mechacritter.github.io/Python-Visual-Similarity/dense/structural/ssim/ssim.html)):
+
+```python
+from pyvisim.dense.structural import SSIM
+
+ssim = SSIM()
+similarity_score = ssim.similarity_score(image1, image2)
+print(f"Similarity Score: {similarity_score}")
+```
+
+#### One-Shot similarity computation using the `CLIPEmbedder`(see documentation [here](https://mechacritter.github.io/Python-Visual-Similarity/neural_networks/clip/clip.html)):
+
+```python
+from pyvisim.neural_networks import ClipEmbedder
+
+# Declare the Clip Embedder
+embedder = ClipEmbedder()
+
+# Compute the similarity score. By default, cosine similarity is used.
+similarity_score = embedder.similarity_score(image1, image2)
+print(f"Similarity Score: {similarity_score}")
+```
+
+#### `Image retrieval` (see documentation [here](https://mechacritter.github.io/Python-Visual-Similarity/image_similarity_retrieval/image_store/in_memory_image_embedding_store/in_memory_image_embedding_store.html)):
+
+```python
+from pyvisim.neural_networks import ClipEmbedder
+from pyvisim.retrieval.image_store import InMemoryImageEmbeddingStore
+
+embedder = ClipEmbedder()
+
+image_store = InMemoryImageEmbeddingStore(
+    image_paths=train_image_paths,
+    embedder=embedder,
+    search_index="hnsw",
+    index_params={"graph_degree": 16, "build_candidates": 200},
+)
+image_store.build_store()  # embeds the gallery and builds the index
+
+candidates = image_store.retrieve_top_k_similar(image, k=5)[0]  # one Candidate per match
+for candidate in candidates:
+    print(candidate.path, candidate.score)
+```
+
+The `alpha query expansion` and the `k-reciprocal re-ranking`can additionally be used to refine
+the retrieval results, improving `mean Average Precision` (see the
+[documentation](https://mechacritter.github.io/Python-Visual-Similarity/image_similarity_retrieval/reranking/k_reciprocal_reranker/k_reciprocal_reranker.html)):
+
+```python
+from pyvisim.retrieval.reranking import KReciprocalReranker
+
+pool = image_store.retrieve_top_k_similar(image, k=100, query_expansion=True)[0]
+best = KReciprocalReranker(image_store).rerank(pool, top_k=5)
+```
+
+For more examples, please refer to the
+[tutorials](https://mechacritter.github.io/Python-Visual-Similarity/tutorials/1_introduction.html).
+
+## Installation
+
+To install the slim version (**without** deep learning features):
+
+```bash
+pip install pyvisim
+```
+
+Additional features include (note: these pull in heavy dependencies like `torch`):
+
+```bash
+# For deep learning features and the OxfordFlowerDataset
+pip install "pyvisim[nn]"
+```
+
+All experiments in this project were made on the Oxford Flower Dataset
+<ref>[7]</ref>, for which I have created a custom dataset class. For
+more details on the dataset, please refer to the [documentation](https://mechacritter.github.io/Python-Visual-Similarity/dataset/oxford_flower_dataset/oxford_flower_dataset.html).
+
+## Contributing
+
+See [the contributing guidelines](CONTRIBUTING.md).
+
+## Get in Touch
+Feel free to:
+- Open an issue on [GitHub](https://github.com/MechaCritter/Python-Visual-Similarity/issues).
+- Write me an email at [mechacritter@outlook.com](mailto:mechacritter@outlook.com).
+- Connect on [LinkedIn](https://www.linkedin.com/in/nhat-huy-vu-80495111b/) to follow my work and share your thoughts.
+
+## License
+This project is licensed under the terms of the MIT license.

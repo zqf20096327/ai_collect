@@ -1,0 +1,497 @@
+# AgentBridge (codename "AGENT") — AI personal assistant that promises to replace humans in office work
+
+Add agentic power to your work! An **AI personal assistant** that automates tasks and your work without sacrificing privacy.
+We're happy to put this powerful tool in your hands to automate your business while reducing staff costs, providing you with the most advanced AI technology in the office automation industry.
+
+AgentBridge is a self-hosted server that runs its own AI agents behind two primary interfaces in a single process: a full-screen chat terminal (TUI) and an HTTP API that speaks the standard OpenAI protocol, so any OpenAI-compatible client drives the same agents.
+
+Chat in the terminal while scripts, bots, and apps use the same agents on the same port:
+same process, same conversations, no bridges, no synchronization.
+
+To be explicit about what the compatibility is and is not: AgentBridge is OpenAI-standard on the outside, not on the inside. It *is* a standard OpenAI server to any OpenAI client — SDKs, bots and scripts talk plain `POST /v1/chat/completions` and reach the same agents. It does **not** run on a standard agent system: the agent core is our own engine (AIOrchestrator/AgentHarness), and its defining concept is that an agent's abilities are **compiled .NET assemblies** loaded as plugins from the `Tools/` folder and driven in-process — no interpreters, no remote tool servers, no standard agent glue between the agent and its actions. That is the Universal Tool System described below, and it is the architectural difference that sets this product apart.
+
+It is the first **agentic** **harness** system for next-generation artificial intelligence that introduces significant innovations, raising the bar for all competitors in the industry. The system encapsulates agentic functions in a well-designed sandbox that prevents companies from suffering damage from an AI that is not properly controlled, while at the same time allowing them to entrust real business tasks to the AI, with a very high level of privacy and confidentiality.
+
+![Replace humans in offices](media/agent-bridge-poster.png)
+
+> **Why teams choose this architecture**
+> AgentBridge is built on the AIOrchestrator library model: one runtime, one agent core, and one consistent operational flow across terminal and API. The result is faster execution, lower integration overhead, and stronger control than traditional multi-server MCP setups. Read the white paper: [Why the AIOrchestrator Library Model Outperforms Traditional MCP Deployments](docs/AIORCHESTRATOR-WHITEPAPER.md).
+
+## Install & download
+
+[![Download for your OS](https://img.shields.io/badge/Download%20for%20your%20OS-238636?style=for-the-badge&logo=download&logoColor=white)](https://graphenelab.it/AgentBridge/download/)
+[![Latest release](https://img.shields.io/github/v/release/Graphene-Lab/AgentBridge?style=for-the-badge&color=1f6feb)](https://github.com/Graphene-Lab/AgentBridge/releases/latest)
+
+The **Download for your OS** button detects your platform and starts the right archive
+(~460 MB, self-contained — no .NET installation needed, Kokoro TTS voices included).
+Prefer the terminal? One line is enough:
+
+| Platform | One-line install |
+|---|---|
+| **Windows** (PowerShell) | `irm https://graphenelab.it/AgentBridge/install.ps1 \| iex` |
+| **Linux / macOS** | `curl -fsSL https://graphenelab.it/AgentBridge/install.sh \| bash` |
+
+The one-liners download the latest release for your platform into `~/.agentbridge`
+(`%LOCALAPPDATA%\AgentBridge` on Windows) and print how to start it. Direct links:
+
+[![Windows 64-bit](https://img.shields.io/badge/Windows%2064--bit-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/Graphene-Lab/AgentBridge/releases/latest/download/agentbridge-win-x64.tar.gz)
+[![Linux x64](https://img.shields.io/badge/Linux%20x64-FCC624?style=flat-square&logo=linux&logoColor=black)](https://github.com/Graphene-Lab/AgentBridge/releases/latest/download/agentbridge-linux-x64.tar.gz)
+[![Linux ARM64](https://img.shields.io/badge/Linux%20ARM64-FCC624?style=flat-square&logo=linux&logoColor=black)](https://github.com/Graphene-Lab/AgentBridge/releases/latest/download/agentbridge-linux-arm64.tar.gz)
+[![macOS Intel](https://img.shields.io/badge/macOS%20Intel-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/Graphene-Lab/AgentBridge/releases/latest/download/agentbridge-osx-x64.tar.gz)
+[![macOS Apple Silicon](https://img.shields.io/badge/macOS%20Apple%20Silicon-000000?style=flat-square&logo=apple&logoColor=white)](https://github.com/Graphene-Lab/AgentBridge/releases/latest/download/agentbridge-osx-arm64.tar.gz)
+
+### Linux also as a desktop app (Flatpak)
+
+AgentBridge is published for Linux as a **Flatpak desktop application** — the engine plus
+the bundled Giraffe AI web client in its own window (WebKitGTK), with an application
+icon in the launcher. Builds are **automatic at every release** (x86_64 & aarch64):
+
+[![Linux Flatpak x86_64](https://img.shields.io/badge/Flatpak%20x86__64-1f6feb?style=flat-square&logo=flatpak&logoColor=white)](https://github.com/Graphene-Lab/AgentBridge-Linux/releases/latest/download/agentbridge-linux-x86_64.flatpak)
+[![Linux Flatpak aarch64](https://img.shields.io/badge/Flatpak%20ARM64-1f6feb?style=flat-square&logo=flatpak&logoColor=white)](https://github.com/Graphene-Lab/AgentBridge-Linux/releases/latest/download/agentbridge-linux-aarch64.flatpak)
+
+```bash
+# one time: add the Flathub remote (shared runtime)
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+# install the latest desktop bundle (x86_64; use the -aarch64 asset on ARM64)
+flatpak install --user -y \
+  https://github.com/Graphene-Lab/AgentBridge-Linux/releases/latest/download/agentbridge-linux-x86_64.flatpak
+```
+
+Launcher entries: **AgentBridge** (desktop chat window, engine auto-started headless) and
+**AgentBridge (Terminal)** (classic TUI). Releases are published automatically in
+[Graphene-Lab/AgentBridge-Linux](https://github.com/Graphene-Lab/AgentBridge-Linux)
+(dual-arch bundles for x86_64 & ARM64). A listing on the Flathub store is under
+evaluation.
+
+Built on the [AIOffice](https://github.com/Graphene-Lab/AIOffice) agent orchestrator
+(`AIOrchestrator`), AgentBridge brings the agents to **everything**:
+
+- **You, in the terminal** — a modern chat UI (Terminal.Gui) with streaming replies, a `/`
+  command palette, file attachments, voice dictation and in-process neural text-to-speech.
+- **Any OpenAI-compatible client** — SDKs, bots and scripts talk plain
+  `POST /v1/chat/completions` to the same agents. No plugin, no custom SDK, no lock-in.
+
+**OfficeManager — watch your AI team work (and give the lazy ones a nudge)**
+
+Every agent becomes a little person in a 16-bit office, so you can actually **see what your
+AI team is doing** instead of reading logs: they walk in through the door, sit at a desk and
+get to work — the tool they are using appears in a speech bubble over their head (a web
+search, a file lookup, a document…). Talk to an agent from the chat to give it a new task or
+ask how it is going, and when it finishes it gets up and leaves through the door. A roaming
+employee with "nothing to do" is always available: give it a task and it becomes a brand-new
+agent on the spot. Great for keeping an eye on many agents at once — and for spotting anyone
+who seems to be working very hard… at pretending. 😉
+
+![OfficeManager — the agents' office](media/office-manager-demo.gif)
+
+## Demo gallery
+
+A visual showcase — new demos are added here as they are produced.
+
+**Terminal UI** — streaming agent replies, the `/` command palette with live filtering, and
+the status bar that follows the server, model, session and context window:
+
+![AgentBridge terminal UI demo](media/demo.gif)
+
+**PowerPoint-style presentations generated by the agent** — describe the deck you need and
+the agent designs the slides for you:
+
+![AgentBridge presentation demo 1](media/demo1.gif)
+
+![AgentBridge presentation demo 2](media/demo2.gif)
+
+**Detailed PDF market & financial analysis reports generated by the agent** — request a market analysis, financial analysis, or report of any kind and the agent will use proprietary "AI Exoskeleton" augmented artificial intelligence algorithms to generate accurate PDF documents with authoritative sources such as Deloitte, KPMG, E&Y, etc.:
+
+![Market & financial analysis](media/enanced_doc_demo.gif)
+
+**Real office documents generated from a plain prompt** — ask for an invoice or an employment contract, attach the data, and the agent produces the finished document from the official templates, ready to use in the office. These two were generated end-to-end by the agent (material check → DOCX) in a real use case:
+
+![Invoice generated by the agent on request](media/invoice.png)
+
+This is an employment contract in Word format, completely generated by the agent with a simple request. The AI agent has no limitations; it can create any type of document, remember the style and maintain it for future use, or modify it if necessary to customize it or add new elements.
+
+![Employment contract generated by the agent on request](media/contract.png)
+
+An Excel spreadsheet (data table + chart, single A4 page) created by the agent on request from a plain prompt — the user asks for a workbook in English, the agent builds it with the SpreadsheetTool (data, styles, chart, A4 page setup) and delivers the finished file:
+
+![Excel spreadsheet generated by the agent on request](media/spreadsheet-demo.png)
+
+**WebTool — the agent's hands on the web** — WebTool is the instrument that lets an agent
+carry out complex tasks directly in a real, visible browser: navigate, sign in, fill forms,
+click, publish, research. Publishing to a social network is just **one** of the possible use
+cases. The animation below shows a real example executed end to end: the agent opens
+LinkedIn, signs in with its saved credentials and publishes a post announcing that
+AgentBridge is now fully open-source under AGPL v3.0 — every step verified deterministically
+(composer open → text read back → post confirmed on the profile).
+
+![Agent publishing a real LinkedIn post via WebTool](media/linkedin-post-demo.gif)
+
+**Podcast episodes generated by the agent** — ask for a podcast on any topic and the agent does
+the whole production: research (recent international news for news/event topics, general
+material for evergreen ones), a three-act narrative, the ~30-minute script, the narration
+recorded with the in-process Kokoro TTS, and the assembly — welcome intro, jingle, body on a
+soft ducked background bed, host farewell and a closing stinger — into a ready-to-publish
+**MP3 plus its RSS feed** (iTunes-compatible) under `/podcast/`. Sample episode (English,
+generated end-to-end by the agent):
+
+[![Podcast sample episode — click to play (MP4, English, ~42 s)](https://raw.githubusercontent.com/Graphene-Lab/AgentBridge/master/media/podcast-player.png)](https://raw.githubusercontent.com/Graphene-Lab/AgentBridge/master/media/podcast-example.mp4)
+
+**Parametric 3D CAD — the agent designs real mechanical parts in FreeCAD** — with the
+[FreeCADTool](https://github.com/Graphene-Lab/FreeCADTool) plugin the agent drives a live
+[FreeCAD](https://www.freecad.org) instance to build parametric 3D models: primitives,
+PartDesign bodies with sketches, pad / pocket / revolve / groove, linear / polar / mirror
+patterns, fillet / chamfer, boolean fuse / cut / common, real involute and helical gears
+(FCGear), and import / export of the standard CAD formats (STEP, STL, 3MF, OBJ, IGES). The
+animation shows a turbine impeller — a 12-blade rotor with a revolved hub, top cap, mounting
+flange, outer shroud, central bore and a bolt circle — built as a single solid and rendered by
+orbiting the FreeCAD camera. The tool sets itself up: it auto-starts a headless FreeCAD and
+auto-installs the gear add-on in the background, telling you what is happening with a desktop
+notification in your own language.
+
+![Parametric CAD — a turbine impeller built by the agent in FreeCAD](media/freecad-demo.gif)
+
+## Agent Bridge: Your AI Assistant for Office Work
+
+Agent Bridge is a tool that allows you to connect to your preferred AI, transforming it into your personal assistant: a tireless worker capable of handling office tasks such as drafting complex documents, working with spreadsheets, interacting with email, and performing internet-based activities—all while having full awareness of your company's knowledge base: clients, documents, products, and everything stored in your archive.
+
+Agent Bridge positions itself as an enterprise-grade AI automation platform for businesses or private individuals seeking AI solutions. It runs on your own hardware — a laptop, a mini PC, or a dedicated AI box — and the knowledge base it reads is a plain folder on disk, not a cloud upload: everything you already store there becomes part of the AI's understanding, enabling it to work as a tireless employee and carry out office work. The product fits within the enterprise segment, capable of indexing and managing even several terabytes of data — while your files never leave your machine — and can generate PDF documents with a level of detail and precision that is unmatched.
+
+Our **Agentic AI** is designed to be installed on standalone devices, such as mini PCs and dedicated AI hardware, effectively transforming them into truly autonomous agents. An agentic system, in fact, is not simply meant to execute a task on command but is built to pursue a complex objective with full autonomy, and its key characteristics go well beyond running a single instruction. First and foremost, it possesses planning and reasoning capabilities: when faced with a request like "organize a trip to Tokyo," the system does not merely react but breaks the goal down into a series of logical sub-goals, such as booking a flight, selecting a hotel, and creating a coherent itinerary. This planning phase is then put into action through the active use of external tools: the agent is capable of calling APIs, executing code, searching the internet, and interacting with databases or other applications to independently gather information and take action. To manage this level of complexity, the system maintains a structured memory, both short-term and long-term, of the actions taken and the information collected, allowing it to adapt its plan along the way. Its operation is based on a continuous loop of execution and feedback: it performs an action, observes the result – for instance, an error during a flight search – evaluates whether this result is bringing it closer to the final goal, and accordingly adjusts its next step. This cycle of action, observation, and adaptation continues until the objective is fully achieved. Our hardware support strategy targets a range of devices, starting with high-performance processors like the **Xiaomi AI Cube**, the **16-core AMD Ryzen AI Max+ 395**, the **12-core AMD Ryzen AI 9 HX 370**, the **NVIDIA GB10 Grace Blackwell Superchip**, the **14-core Arm-based NVIDIA Jetson T5000**, and the **20-core NVIDIA RTX Spark**. For the entry-level segment, we maintain compatibility with ARM-based technology, specifically supporting the **Rockchip RK3588**, **Rockchip RK3576**, **Qualcomm Snapdragon 865**, **Qualcomm Snapdragon X2 Elite**, **MediaTek Genio 420**, and **MediaTek Genio 360** chipsets.
+
+## Innovative Features
+
+- **Proprietary Deterministic Memory — the Agent Never Forgets**
+  A proprietary deterministic memory keeps the agent permanently aware of the things, facts,
+  people and documents it has already handled: every conversation leaves a trace, and every new
+  request instantly brings back the precise relevant context. No other system on the market does
+  this: conventional agents try to "remember" by re-elaborating context through the model itself,
+  while our memory retrieves deterministically — zero reasoning iterations wasted on recollection,
+  a faster workflow, and an agent that is always lucid and grounded in everything it has already
+  worked on. This original, proprietary algorithm is exclusive to AgentBridge and places it at
+  the top of the agentic sector with highly innovative technology.
+  Five complementary mechanisms make it up — deterministic NameOrKey memory, the
+  document archive with its streaming index, skills memory, scheduler memory, and the
+  chat history in the context window. The streaming index is hardware-optimized: its
+  vector is built from 8-byte (64-bit) elements — the native block size of x64 and
+  arm64 chips — read as a single linear stream, with no semantic trees or graph
+  correlations to juggle. Context is selected deterministically from the prompt and
+  handed to the model ready-made, at zero token cost and with no LLM call spent on
+  recollection. This is what lets AgentBridge surface context from **terabytes of
+  data on an ordinary home computer, with no GPU and no dedicated indexing model** —
+  and, offered trustlessly so your data never leaves your machine, makes it a genuine
+  **privacy-first** system with no real analog in the enterprise space.
+  How this holds up under measurement — including a reproducible enterprise-scale
+  retrieval benchmark and an architecture-faithful LongMemEval-S run, with an honest
+  comparison against published systems — is documented in
+  [Memory Benchmark](docs/MEMORY-BENCHMARK.md); the runnable harnesses are in
+  [`benchmark/`](benchmark/README.md).
+
+- **AI Assistant Available 24/7 via SIP Protocol**
+  The system provides a fully integrated AI agent that can be reached at any time through SIP‑based telephone access. It operates as a dedicated personal assistant capable of natural voice interaction, immediate task execution, and uninterrupted availability. Unlike a human secretary who may be distracted or unavailable, this assistant remains consistently focused, reliable, and committed to carrying out assigned duties with precision.
+
+- **Full Telegram Integration — Your Agents on Your Messenger**
+  AgentBridge connects to Telegram as a user account (WTelegramClient, MTProto) and behaves like any other chat client: send a private message — text or files — and the agents reply in the same chat, including the documents they produce. Attachments are supported both ways, first login is guided from the TUI (verification code), an optional allow-list restricts who can talk to the agent, and the configuration lives in `telegram.json` (editable from the TUI, by hand, or with the guided setup scripts). See [docs/telegram.md](docs/telegram.md).
+
+  ![Telegram agent chat](media/telegram-agent.png)
+
+- **AI‑Exoskeleton Technology for Enhanced Model Performance**
+  Our proprietary AI‑Exoskeleton framework significantly amplifies the capabilities of AI models while reducing bias in complex document processing. Just as an exoskeleton enables a human to lift weights far beyond natural limits, AI‑Exoskeleton empowers smaller models to outperform frontier‑scale systems in specific office workflows. It strengthens analytical consistency, improves the accuracy of business reports and technical documentation, and produces ready‑to‑use PDF outputs with exceptional reliability. This technology transforms artificial intelligence into a genuinely augmented professional tool capable of sustaining cognitive workloads that would normally require specialized human teams.
+
+- **True Application‑Level Sandbox — Agents Cannot Act Outside Their Tools**
+  Every agent operates inside a virtual workspace path that acts as a real sandbox: a limited action perimeter that no tool method can breach. The agent's only way to touch the world is through its tool methods — no shell, no OS API, no direct network, no filesystem access beyond what a tool explicitly exposes — so the perimeter is enforced structurally by code, not by prompt instructions that a crafted input could bypass. Competing systems either trust the prompt alone (defeatable by injection) or require expensive OS‑level sandboxes (chroot, Docker, VMs) that a common user cannot set up. Here the sandbox is application‑level and zero‑infrastructure, yet absolute: powerful inside its perimeter, harmless outside it.
+
+- **GDPR‑Ready Anonymization — Privacy by Design for External Providers**
+  A robust anonymization service protects personal data — names, keys and sensitive identifiers — before any request reaches an external LLM provider (Copilot, Gemini, ChatGPT, DeepSeek and more), and restores it seamlessly in the reply. It is enabled with a single switch, adds no perceptible latency to agentic interactions, and is completely transparent to the user: the agent keeps its full power while the machine never exposes what should stay private. This makes the platform a strong fit for the European market, where GDPR compliance is a hard requirement.
+
+- **Universal Tool System (UTS) — Tools That Run Natively, Not as Scripts**
+  Our Universal Tool System gives the AI its abilities through **plugins that are compiled .NET assemblies** the agent drives directly — no Python, no Node, no interpreter, and no framework stack to install. Deterministic intelligence (UISupportGeneric) reads the compiled code and builds the tool interface **on the fly**, exactly and without hallucination; the generative AI then picks and drives the right tool. The result is a **faster, more responsive AI**: tools run as native machine code — modern .NET compilers rival hand-tuned C/C++ — and are called **in-process with zero overhead**, with no interpreters, no HTTP and no serialization between the agent and its actions. The machine stays light, answers come back sooner, and the heaviest jobs finish faster — all inside a **native application‑level sandbox** (a structural action perimeter that no tool method can breach) that needs no chroot, Docker or VMs. Tools are **universal** — a single AnyCPU binary runs on Windows, Linux, macOS and iOS — and are installed by simply dropping a folder into `Tools/`, with **hot‑add**: new plugins are activated live, 30 seconds after they appear, without a restart. End‑user guide: [Universal Tool System (UTS)](https://github.com/Graphene-Lab/AgentHarness/blob/master/docs/universal-tool-system.md).
+
+- **Native MCP Interoperability — One Agent, Standard Control**
+  AgentBridge now exposes its autonomous runtime through a native MCP interface, so the same production agent can be controlled from standard MCP clients without external adapter layers. This means one orchestrator, one memory flow and one operational perimeter across terminal chat, OpenAI-compatible integrations and MCP ecosystems. In practice, teams can adopt AgentBridge as a high-capability agent core while preserving protocol-level compatibility and reducing integration complexity.
+
+- **Autonomous Task Scheduling — Your Agent Keeps Working on Its Own**
+  AgentBridge doesn't just act on command: it can plan work ahead and continue on its own, according to the real needs of your business. Tell it what matters, and it remembers deadlines, decides when it is time to act, and handles recurring duties on a preset cadence — day after day, without anyone having to ask twice. Reports, checks, follow-ups and scheduled activities all proceed on time, even while you are away: the agent schedules the work, carries it out automatically and records the outcome. A true always-on colleague, not a tool that waits for instructions.
+
+- **ERP Integration — The Agent Runs the Company's Core Business**
+  AgentBridge connects to [AI ERP](https://github.com/Graphene-Lab/AI-ERP), a free open-source ERP, through the [ErpTool](https://github.com/Graphene-Lab/ErpTool) plugin. Once it is installed and turned on, the agent can run the real daily operations of a company end to end: create a quote, turn it into an order, deliver it, issue the invoice and record the payment; or the whole purchase cycle — raise a request, make the purchase order, receive the goods, match the supplier bill to the order and the receipt, and pay it; plus stock transfers, reservations, cycle counts, and reports such as sales by customer and the receivables aging. The agent works as a normal ERP user through a JWT-secured API, so every company rule and permission still applies — it never writes to the database directly. Paired with the scheduling feature above, routine business runs by itself: *"every morning, invoice what was delivered yesterday and tell me what is overdue."* This is what turns the agent from a chat and document assistant into a digital office worker that drives the systems the business actually runs on. Setup: [Install the AI ERP ecosystem](https://github.com/Graphene-Lab/AI-ERP/wiki).
+
+- **Text-to-speech that works the moment you run it — no setup, no drivers, no accounts**
+  Every archive ships the Kokoro neural TTS engine with its voices and model included, so the
+  agent talks immediately — in the terminal, over the API and on the phone — with zero
+  configuration. The podcast tool speaks with the same engine, out of the box. GPU is
+  automatic too: on machines with an NVIDIA CUDA-capable GPU the engine uses it without any
+  manual setup; everywhere else it simply runs on CPU. The engine catalog is designed to
+  grow — future engines appear in `/ttsengine`. Full details in the
+  [Text-to-speech guide](docs/TTS.md).
+
+## Your documents area: the company's brain and memory
+
+Think of the documents area as your company's brain. It is a simple folder on disk — nothing special, just a place where your files already live. Whatever you put in it, the AI can read, remember and use: contracts, invoices, client files, product sheets, emails, spreadsheets, technical drawings... everything. It does not matter how much data you have or how big the files are: the more you store, the smarter your AI becomes, because it answers using *your* real documents, not guesses. You never upload anything into the chat — you just keep working with your normal folders, and the AI reaches into them directly.
+
+### How to configure the documents area
+
+1. Open AgentBridge and type `/setup` (menu **Settings → Main settings**).
+2. In the **General** tab, set **Documents path** to the folder that holds your documents. The default is your personal Documents folder — you can change it at any time.
+3. Press **Save**. AgentBridge starts reading that area in the background: the first indexing of a large archive takes a few minutes, but you can keep working while it runs.
+4. From now on, ask the AI anything about your documents — it searches the whole area and answers from your data. If you move to a different folder, just change the path again: AgentBridge automatically re-indexes the new area.
+
+### How to configure the LLM provider and API keys
+
+1. Open AgentBridge and type `/setup` (menu **Settings → Main settings**).
+2. In the **LLM & Providers** tab, pick the active provider; use **Add…** / **Edit…** to
+   create or edit a provider. The provider dialog includes an **API key** field (masked on
+   screen) — every cloud provider (DeepSeek, Z.ai, Gemini, Anthropic, …) needs its key;
+   local providers (Ollama, ExLlamaV2, bridges on `localhost`/`127.0.0.1`) leave it empty.
+3. Press **Save**. Keys are stored per-provider in `providers.json` next to the executable
+   (the single source of truth, excluded from updates) — you can also edit that file
+   directly. The manual ([§3 — Configure the JSON files](docs/MANUAL.md#3-configure-the-json-files))
+   documents every field.
+
+## Comparison with Main Alternative Products
+
+AgentBridge belongs to the category of **personal AI agent assistants**. The table is an honest,
+feature-by-feature comparison with the closest alternatives in that space.
+
+| **Aspect** | **AgentBridge** | **OpenHuman** | **Claude Cowork** | **OpenClaw** | **Hermes Agent** |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **One‑line positioning** | Self‑hosted AI personal assistant built to **replace humans in office work** — chat terminal and OpenAI‑compatible server in one process | Personal AI super‑intelligence – desktop "AI workstation" | AI colleague bringing Claude Code to non‑technical knowledge work | "Digital employee" – autonomous agent from chat to execution | Self‑evolving agent with built‑in learning loop |
+| **Developer / backer** | Andrea Bruno (Graphene‑Lab) | tinyhumansai team | Anthropic | Peter Steinberger | Nous Research |
+| **Open‑source / license** | ✅ Open‑source (**AGPL v3.0**) — core and plugin tool engine fully open | ✅ Open‑source (GNU) | ❌ Proprietary | ✅ Open‑source (MIT) | ✅ Open‑source (MIT) |
+| **Target audience** | Businesses & professionals who want to automate **real office work** on their own hardware; privacy‑sensitive individuals | Knowledge workers who want out‑of‑the‑box UX & data sovereignty | Paid Claude users (Mac/Windows) needing complex file tasks | Developers & tech enthusiasts seeking flexibility & control | Developers & technical users wanting a long‑term self‑improving assistant |
+| **Ease of setup** | **Low** – one self‑contained archive (no .NET install) or one‑line installer; run the executable and chat | **Low (UI‑first)** – graphical desktop, one‑click OAuth | **Medium** – requires Claude desktop app | **High (CLI‑first)** – terminal, API keys, manual config | **High (CLI‑first)** – command‑line install & config |
+| **Key differentiator** | **Deterministic memory** (never forgets, zero wasted recall) + **structural sandbox** enforced by code, not prompts; one process = TUI + OpenAI API + MCP | Proactive pre‑loading; **Memory Tree** (hierarchical KG); TokenJuice compression (up to 80% cost saving) | Cloud‑persistent sessions (tasks continue after device close); sub‑agent coordination | Powerful execution (files, code, browser); 20+ messaging channels | **Closed learning loop** (creates/refines skills); cross‑session FTS5 memory |
+| **Memory system** | **Proprietary Deterministic Memory** – indexes people, facts, documents, style & sessions into your own folders; exact‑context retrieval, no model re‑elaboration | **Memory Tree** – local SQLite + Obsidian‑compatible Markdown vault | **Projects** – persistent, isolated workspaces | Layered memory (transient, short‑term, long‑term, procedural) | Agent‑curated memory with periodic reminders & cross‑session recall |
+| **Tools / integrations** | DocumentTool (Word), SpreadsheetTool (Excel), PresentationTool, PDF reports, podcasts, WebTool, EMailTool (own SMTP/IMAP), FileTool, GitTool, TaskSchedulerTool, MapTool, FreeCADTool (parametric 3D CAD); MCP connector + any OpenAI client | 118+ third‑party services (one-click); built‑in web search, code tools | Local file ops (read/edit/create); spreadsheets & presentations | Plugin‑based skills; built‑in sandbox | Multi‑channel messaging (Telegram, Discord, etc.); cron‑like scheduled tasks |
+| **Platform support** | Self‑hosted: Windows x64, Linux x64/ARM64, macOS (Intel / Apple Silicon); mini‑PC & edge class (RK3588 → Ryzen AI Max+ 395) | Desktop: macOS, Linux, Windows | Desktop: macOS, Windows; Web, mobile (iOS/Android), Chrome sidebar | Self‑hosted (local or private server) | $5 VPS, GPU clusters, serverless |
+| **Pricing model** | **Free** & fully open‑source (**AGPL v3.0**) — no subscription, BYOK/BYOM | **Freemium** – free OSS + optional unified subscription (auto‑routing) | **Subscription** – included in Claude Pro ($20/mo) and Max ($100–200/mo) | **100% free** – open‑source, BYOK | **100% free** – open‑source, BYOK |
+| **Security / privacy** | **Local‑first & trustless** – files, memory and the agent run on your machine; fully offline with a local model; GDPR‑ready anonymisation before any cloud model call; structural sandbox | **Local‑first** – data encrypted locally, fully offline capable | Folder‑level authorisation; commercial hosted service | **Local‑first** – all data on your machine, offline capable | Self‑hosted – full data sovereignty |
+| **Where execution happens (trust model)** | **On your machine** – agent loop, tools, files and memory run locally; a cloud model call happens only if you choose one (anonymised); **no vendor cloud can reach your data** | Hybrid – app & data on your device, but inference defaults to **routed cloud models**; one‑switch Privacy Mode forces on‑device (Ollama, LM Studio, MLX) | **Anthropic cloud** – desktop agent acts on granted local folders; web/mobile tasks execute in Anthropic's cloud (or your Bedrock/Vertex/Foundry); permissioned, **not trustless** | **On your machine** – local Gateway, state on your device; hosted or local model providers; sandboxing opt‑in | **On your infrastructure** – local, Docker, SSH, serverless; BYO keys or local Ollama for full privacy |
+| **End‑to‑end office deliverables** | **Built‑in from a plain prompt** – invoices & contracts (DOCX), spreadsheets with charts (XLSX), detailed PDF market/financial reports, slide decks, podcasts (MP3 + RSS feed) | Consumes documents & email into memory; no native finished‑document generation claimed | Creates & edits real Word, Excel, PowerPoint, PDF files in the folders you grant — not templated business documents from your own archive | File read/write & shell; office‑document production is not a built‑in core feature | Not a built‑in core feature – general file/shell/automation skills |
+| **Headless control / API** | ✅ Native `POST /v1/chat/completions` on `localhost` — any OpenAI SDK, script or bot drives the same agents; native MCP connector included | Desktop app; no local OpenAI‑compatible server documented | Hosted product – no local OpenAI‑compatible endpoint for consumers | CLI, local Gateway & chat channels; no OpenAI‑compatible server documented | CLI/terminal + remote backends; no OpenAI‑compatible endpoint documented |
+
+> **Why AGPL v3.0?** The choice is deliberate. Permissive licenses (MIT/Apache) let anyone take a
+> community's work, close it, and run it as proprietary software or a proprietary service. AGPL v3.0
+> bans that *enclosure*: any derivative work — including one offered over a network (section 13) —
+> must stay open source. Nobody wants to contribute to a project that someone else will lock up
+> somewhere else. AGPL keeps the work of this community the work of this community, while still
+> granting the four freedoms (use, study, modify, share) and leaving full room for business — as long
+> as the code stays open.
+
+## What you can do with it
+
+- **Chat with AI agents from the terminal** — streaming replies, `@` file attachments,
+  prompt history, sessions, all in a full-screen UI with a command palette.
+- **Multilingual UI** — the terminal UI runs in the system language when supported
+  (English, Italian, French, Spanish, German, Russian) and falls back to English otherwise;
+  system messages from the orchestrator are localised too (see [docs/TUI.md](docs/TUI.md#localisation)).
+- **Open the web GUI in one keystroke** — `/web` (menu **Web → GUI**) launches the Giraffe AI
+  web client in the browser, already connected to this server (the client installs itself next
+  to the executable on first run from its latest GitHub release and stays up to date).
+- **Expose the agents as a local OpenAI server** — point any OpenAI client at
+  `http://localhost:5290/v1` and it drives the agents without modification (see the
+  [manual](docs/MANUAL.md#connecting-a-client-to-localhost)).
+- **Expose the agents through the native MCP connector** — use standard MCP clients with
+  the same runtime already used by terminal and OpenAI API flows (technical setup in
+  [manual](docs/MANUAL.md#mcp-connector-standard-json-rpc)).
+- **Switch the LLM on the fly** — DeepSeek, Z.ai, Gemini, Ollama, ExLlamaV2 and more, with
+  a context-window guard that refuses an overflow and explains why.
+- **Per-provider agent interaction mode** — each provider can drive the agent tools via the
+  JSON tool-calling API (`API`) or the application CLI (`CLI`), or leave it `Default` (CLI
+  for small models, API for large ones). Set it in the provider dialog under **Settings →
+  Main settings**; the active mode is shown on the status page and reported by `GET /v1/models`
+  as `interaction_mode`.
+- **Configure models & providers from the UI** — `/setup` (alias `/modelsetup`, menu
+  **Settings → Main settings**) adds, edits or removes providers, picks the persistent
+  **default provider** new chats start from, sets the per-provider API keys, SMTP/IMAP and
+  documents path — no JSON editing required.
+- **Voice in the terminal** — dictate from the server microphone (Windows; the release
+  ships the speech-recognition component) and hear the replies spoken by Kokoro neural
+  TTS, in the UI and over the API.
+- **SIP telephony** — the server becomes a phone endpoint: auto-answer behind a DTMF PIN
+  (3 attempts, 24 h lockout), outgoing calls, and full voice conversations with the agents
+  over RTP (whisper STT + Kokoro TTS). See [docs/sip.md](docs/sip.md).
+- **Telegram chat** — private-chat messaging with the agents, attachments both ways,
+  allow-list access control and TUI-guided first login (WTelegramClient userbot).
+  See [docs/telegram.md](docs/telegram.md).
+- **Upload-and-attach files** — documents and images converted to Markdown server-side,
+  attached to chat requests as `file_ids`.
+- **Agents with tools** — web, search, research, document, spreadsheet, office, email and
+  multi-files sets; pick the right tools per chat with `/tools` (alias `/agent`) or the API
+  `model` field
+  (any custom tool combination via the additive `tools` field).
+- **One conversation everywhere** — messages from the terminal go through the exact same
+  endpoint any client uses, so you can chat in the TUI while a script keeps driving the
+  agents on the same port, simultaneously.
+- **Map tool** — this tool represents a versatile solution for exploring the surrounding territory, offering professionals and individuals the ability to access detailed geographic information with remarkable simplicity. For businesses, it becomes a valuable strategic ally, enabling the identification of specific commercial activities in any geographic area while supporting market analysis through the mapping of competitors and services present in a given region. Sales teams can leverage it to generate new business contacts, while corporate logistics benefits from optimized route planning for deliveries or technical interventions. For private users, the tool transforms into a daily guide for discovering restaurants, pharmacies, ATMs, parks, museums, and tourist attractions nearby, facilitating the search for essential services and leisure venues. The platform supports various search methods: category-based search allows quick identification of all establishments of a particular type, while name-based search enables finding a specific place by typing its address or business name. An advanced search function applies precise filters, such as locating restaurants with a specific cuisine type, wheelchair-accessible facilities, or establishments open 24 hours a day. Route calculation completes the experience by providing detailed driving directions with distances and travel times, adaptable to different transportation modes including driving, cycling, or walking. With global coverage extending to every country worldwide, this search engine proves to be a powerful and reliable tool both for those making strategic business decisions and for those simply looking for a good restaurant or essential service nearby.
+
+## Quick start
+
+Run the one-line install above — or download the archive for your platform from the
+[Releases page](https://github.com/Graphene-Lab/AgentBridge/releases), extract and run
+`agent.exe` / `agent`.
+No .NET installation needed; each archive already includes the Kokoro TTS voices and model,
+so text-to-speech works on the first run with nothing to configure.
+
+```bash
+curl http://localhost:5290/health   # {"status":"healthy","timestamp":"..."}
+```
+
+The full step-by-step guide — installation, JSON configuration, the terminal UI and how a
+client connects to localhost — is in the **[user manual](docs/MANUAL.md)**.
+
+## Documentation
+
+| Document | Audience / contents |
+|---|---|
+| [User manual](docs/MANUAL.md) | **Start here.** Install, configure the JSON files, use the terminal UI, connect a client |
+| [How AgentBridge works](docs/guide/00-How-It-Works.md) | Plain-language basics: what an AI agent is, what its tools are and how to enable them, the documents area, attachments |
+| [Text-to-speech](docs/TTS.md) | The two TTS engines, what each machine supports, platform prerequisites (Windows/Linux/macOS) and troubleshooting |
+| [Terminal UI reference](docs/TUI.md) | Every command, shortcut and mouse action |
+| [HTTP API reference](docs/API.md) | All endpoints: chat, sessions, LLM switching, TTS, voice, files, MCP connector |
+| [SIP telephony](docs/sip.md) | Phone-gate the agents: config, PIN/allow-list security, NAT/trunk, STT deployment |
+| [Telegram chat](docs/telegram.md) | Connect the agents to Telegram: config, first login, allow-list, attachments |
+| [Architecture & operations](docs-dev/ARCHITECTURE.md) | *(developers — not shipped)* Launch modes, configuration keys, build & publish, project layout |
+| [Releases & NuGet pipeline](docs-dev/RELEASING.md) | *(developers — not shipped)* how updates and releases work |
+| [Full architecture diagram](diagram.md) | *(repository)* Mermaid component map of the whole system — every node names the source file behind it |
+
+The user guides above (`docs/`) ship next to the executable in every release archive;
+the developer guides (`docs-dev/`) stay in the repository only.
+
+## How it works
+
+`AIOrchestrator` is a .NET library — it cannot run alone. AgentBridge hosts it and exposes
+its chat pipeline as a standard web API. **One process. Your machine. Your agents.**
+
+```mermaid
+flowchart LR
+    subgraph Clients["You — however you prefer"]
+        A["Terminal UI<br/>(/tools)"]
+        B["Any OpenAI client<br/>(SDKs, bots, scripts)"]
+        C["Web GUI"]
+    end
+    subgraph Server["AgentBridge — one process on your machine"]
+        API["OpenAI-compatible API"]
+        AGENT["Your agents<br/>AgentHarness + tools"]
+    end
+    subgraph Models["Your models"]
+        LOCAL["Local<br/>Ollama · ExLlamaV2<br/>DeepSeekBridge"]
+        CLOUD["Cloud<br/>DeepSeek · Z.ai<br/>Gemini · Anthropic"]
+    end
+    A --> API
+    B --> API
+    C --> API
+    API --> AGENT
+    AGENT --> LOCAL
+    AGENT --> CLOUD
+```
+
+**The agents do the work — locally, under your control:**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as You (TUI / client)
+    participant A as Agent (on your machine)
+    participant T as Tools (web · search · docs · sheets · email)
+    participant M as LLM (local or cloud)
+    U->>A: "Analyse the market, draft the report"
+    loop Agent loop — plan, act, verify
+        A->>M: next step?
+        M-->>A: call the web tool
+        A->>T: gather the data
+        T-->>A: sources found
+        A->>M: reason over the result
+    end
+    A-->>U: PDF report ready
+```
+
+**Your data stays yours.** Agents run on your machine inside an application-level sandbox;
+only the model call leaves it — and only when you pick a cloud provider. With local models,
+nothing leaves at all.
+
+**Built for one machine you own — not for a cloud cluster.** Most agent frameworks are designed
+for a data centre: they run several agents in parallel, each on its own API connection, and pay
+per token. AgentBridge targets the opposite case — a private assistant on the computer you
+already have (an office PC, a mini-PC, or a machine like the
+[Ryzen AI Max+ 395](https://github.com/Graphene-Lab/Ryzen-AI-Max-395-SUPERFAST) setup this
+project is tested on), very often with a local model. That goal drives two decisions. They are
+honest trade-offs for that goal, not universal truths:
+
+- **One agent at a time — no parallel fan-out.** A local model has one set of weights and one
+  KV cache. Parallel branches share them, so they do not really run at the same time: they
+  evict each other's cache, and the delays grow far worse than doing the same work one step
+  after the other. Parallel agents also multiply token use several times over, because every
+  branch re-sends the shared context — the resource we have the least of. Complex work is
+  delegated to a **subagent that runs in sequence**, with its own isolated context.
+- **A small tool surface on every turn.** The tool list is part of the prompt prefix, and the
+  prefix is what the model caches (and, with a local model, re-reads into VRAM). So the agent
+  in front keeps only the **system tools** — file, git, scheduled tasks, web, email — which
+  answer simple requests immediately; the **plugin tools** (Word, Excel, PowerPoint, PDF, CAD,
+  podcasts, maps…) reach the model through the subagent, only when complex work needs them.
+  Measured on the full 9-plugin set, the tool list sent on every turn falls from 146,330 to
+  32,122 characters (**−78 %**), while the plugin tools stay fully reachable.
+
+If you run on a cloud cluster with per-request billing, a parallel design can be the better
+choice — we do not claim otherwise. But for a private assistant on hardware you own, keeping
+one model busy and the prompt prefix small is what makes it usable.
+
+**Full component map.** The simplified view above is one slice of the system. The complete
+architecture — every module, the source file behind it and the connections that really
+exist between them (terminal UI, HTTP API, the OfficeManager web office, Telegram and SIP
+bridges, shared session store, plugin loader, update services and the AIOrchestrator
+engine) — is in the [architecture diagram](diagram.md).
+
+## Our team
+
+![The LLM agent team behind AgentBridge](media/our_team.png)
+
+Anyone reviewing this project might object that it has no team, and that this
+weakens its credibility. That assessment would be wrong: it comes from a bias
+inherited from a pattern repeated across millions of repositories, so common that
+it has become the de facto standard. Applied to a project whose purpose is to
+**replace human work**, that very standard is a contradiction in terms — a project
+that promises to replace humans, yet could only be built by a large human
+organization, would be denying the feasibility of its own goal, and with it its
+own effectiveness.
+
+Assembling a project of this kind with hundreds of contributors would make it
+not only unbelievable relative to its purpose, but also fragile: each individual
+contribution is a potential source of bugs, whether accidental or deliberate,
+and no single contributor can ever hold a complete view of what everyone else is
+doing. AgentBridge is instead built the way it preaches — by the small team of
+LLM agents pictured above, with minimal human resources — proving that the very
+work it automates can indeed be automated.
+
+## FAQ
+
+- **What is AgentBridge?** A self-hosted server that runs AI agents behind a full-screen
+  terminal chat and an HTTP API speaking the standard OpenAI protocol — one process, your
+  machine, your agents, plus a native MCP connector for standard MCP clients. The OpenAI
+  compatibility is protocol-level only: the product *is* a standard OpenAI server to any
+  client, but it does not use a standard agent system — the agents run on the proprietary
+  harness whose tools are compiled .NET assemblies driven as plugins.
+- **Is AgentBridge free?** Yes — fully open-source under the
+  [GNU Affero General Public License v3.0](LICENSE.md). The **plugin tools** — the agent's
+  action engine — ship under the same **AGPL v3.0** license (each `*Tool` repository).
+- **Which LLMs does it support?** DeepSeek, Z.ai, Gemini, Anthropic and any
+  OpenAI-compatible endpoint — plus local models via Ollama, ExLlamaV2 or a local bridge,
+  switchable on the fly.
+- **Does it work offline?** Yes — with a local model, nothing leaves your machine at all.
+- **Do my documents leave my machine?** No. The documents area is a plain local folder the
+  agent reads; only the model call leaves the machine, and only when you pick a cloud
+  provider. A GDPR-ready anonymization switch strips names and identifiers before any
+  external call and restores them in the reply.
+- **How is it different from an MCP server?** It exposes a native MCP connector and goes
+  further: tools run in-process as compiled .NET plugins inside an application-level
+  sandbox, with no separate servers, interpreters or HTTP hops.
+- **What hardware does it need?** From a Raspberry Pi / Rockchip RK3588-class device up to
+  a Ryzen AI Max+ 395, NVIDIA GB10 or Jetson — see the
+  [hardware section](#agent-bridge-your-ai-assistant-for-office-work).
+- **Is the Xiaomi AI Cube supported?** Yes, it is particularly suitable for this device, transforming it into a very powerful standalone agent machine.
+- **Do I need to install .NET?** No — every archive is self-contained (~460 MB) and
+  already includes the Kokoro TTS voices and model.
+
+---
+
+Built on the [AIOffice](https://github.com/Graphene-Lab/AIOffice) ecosystem ·
+[AgentBridge](https://github.com/Graphene-Lab/AgentBridge) repository.

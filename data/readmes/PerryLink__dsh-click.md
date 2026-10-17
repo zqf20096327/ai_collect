@@ -1,0 +1,267 @@
+<div align="center">
+
+# 🖱️ dsh-click
+- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-click` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-click)
+[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-click?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-click?ref=badge)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-click/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-click)
+
+**Cross-platform native desktop control for DeepSeek Harness — Windows first.**
+
+*Look at the screen, then act — every click gated, every action audited.*
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-click.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-click/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-click/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-click?label=version)](https://github.com/PerryLink/dsh-click/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-click)](https://www.npmjs.com/package/dsh-click)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-click)](https://www.npmjs.com/package/dsh-click)
+
+[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
+</div>
+
+---
+
+**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+
+
+## What is dsh-click?
+
+Cross-platform native desktop control for DeepSeek Harness — Windows first.
+
+Look at the screen, then act — every click gated, every action audited.
+
+![Terminal demo of dsh-click: dsh-click — 8 native desktop tools, freshness-checked and approval-gated](https://raw.githubusercontent.com/PerryLink/dsh-click/main/docs/assets/dsh-click-demo.png)
+
+![Animated terminal demo of dsh-click](https://raw.githubusercontent.com/PerryLink/dsh-click/main/docs/assets/dsh-click-demo.gif)
+
+*The same run, animated.*
+
+## Compatibility
+
+| Surface | Status |
+|---|---|
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (GitHub tag, verified 2026-09-25). Verified 2026-09-11 against the dsh-v0.1.7-alpha.1 master checkout (full gate chain + profile install smoke). |
+| Node | `^22.19.0 \|\| >=24.0.0` |
+| Platforms | **Windows first** (UIAutomation + Win32 input, via a bundled PowerShell helper); macOS/Linux backends are reserved and fail closed with a clear reason |
+| Model | Text-only models fully supported (`screen_read` returns structured text); vision models additionally get `screen_shot` images |
+
+## What you get
+
+`dsh-click` gives the harness a complete observe → act loop over native desktop applications:
+
+- **`screen_shot`** — screenshot of a window (or the primary screen), downscaled to a configurable bound. With a vision-capable model the result carries the image; otherwise a text description keeps text-only models working.
+- **`screen_read`** — the structured observation: the window's accessibility tree (element ids, types, names, rectangles, supported patterns) plus pixel-location hints with colors — plain text, no image model required.
+- **`click` / `type` / `scroll` / `key`** — window-scoped actions addressed by element id or coordinates. Delivery prefers UIA invoke, falls back to posted window messages — and **never steals foreground focus**.
+- **`app_list` / `app_launch`** — enumerate running applications and their windows; launch one by name or path.
+
+Every mutating action crosses one safety boundary:
+
+1. **Freshness** — the action must cite a `basedOn` observation; the window is re-captured right before acting and the action is refused if the screen changed (pixel-hash check + max-age bound).
+2. **Approval** — `ctx.approval` gates every action by default; window-title/executable regexes can allowlist specific windows (still audited).
+3. **Process identity** — the owning process's pid and executable path are verified before **and** after the act; a change refuses the outcome loudly.
+4. **Audit** — observations and actions land in the session log as `dsh-click/observed` / `dsh-click/action` events (sanitized, log-only).
+
+```text
+model                           harness
+  │ screen_read ──▶ observationId (+ elements, pixels)         ← structured text
+  │ click {basedOn, target} ──▶ freshness check ──▶ approval ──▶ helper (UIA)
+  │                             pixel hash changed? ── refuse + re-observe
+  │                             pid/exe changed after act? ── PROCESS_CHANGED
+  │ ◀── canonical JSON + audit events (dsh-click/action)
+```
+
+## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-click
+```
+
+```sh
+# 1. install the bundle into your profile
+dsh plugin --profile web add github:PerryLink/dsh-click
+
+# or from npm (published releases)
+dsh plugin --profile web add dsh-click
+
+# 2. restart and verify the row
+dsh --profile web --dump-config | grep -A2 'id: dsh-click'
+```
+
+Then ask the agent to look at a window and act — the approval prompt appears for every mutating action:
+
+```
+> Open Notepad, type "hello", then read back what is on screen.
+```
+
+## Install & uninstall
+
+- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-click` — the `prepare` script builds with production dependencies only.
+- **npm channel** (published releases): `dsh plugin --profile web add dsh-click`.
+- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-click-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-click` (or remove the row from the profile patch).
+
+> If pnpm reports `ERR_PNPM_IGNORED_BUILDS` for this package (esbuild's harmless platform-binary validation), add `allowBuilds: { esbuild: true }` to your `pnpm-workspace.yaml` — the `dsh` CLI prints the exact snippet.
+
+## Configuration
+
+All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id-targeted override replaces the whole row — restate every key you need. `cordis.patch.yml` documents each key inline.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `requireApproval` | `true` | Gate every mutating action behind approval; observers never ask |
+| `autoApproveWindows` | `[]` | Window-title/executable regexes that skip the approval ask (still freshness-checked and audited) |
+| `auditSessionEvents` | `true` | Append `dsh-click/observed` / `dsh-click/action` session audit events. The adaptive gate already skips the append on envelope-less hosts (rc.6–rc.8, 0.1.1-rc.2, and 0.1.2-rc.1, which fails closed on unknown types at read); set `false` to stop audit appends entirely 0.1.2-rc.1 (adapted 2026-09-02): the session envelope keeps its ignorable field for stored-log read compatibility only - Session.append still cannot stamp it, so audit-gate behavior is unchanged. |
+| `focusFallback` | `never` | Whether an action may bring the target window to the foreground as a last resort (`never` / `allow`) |
+| `imageMode` | `auto` | `screen_shot` rendering: `auto` (image when the model accepts images, text otherwise) or `text` |
+| `helperTimeoutMs` | `30000` | Per-helper-call timeout in ms (1..300000) |
+| `maxHelperOutputBytes` | `25165824` | Cap on one helper response in bytes (1024..67108864) |
+| `maxScreenshotSide` | `2560` | Longest screenshot side in pixels (320..7680); larger captures are downscaled |
+| `staleCheckPixels` | `true` | Compare a fresh pixel hash before every action and refuse on change |
+| `maxObservationAgeMs` | `30000` | Maximum age in ms of an observation an action may cite (1000..600000) |
+| `maxCachedObservations` | `8` | LRU cap on cached observations (1..64) |
+| `maxElements` | `500` | Cap on accessibility elements per `screen_read` (1..2000) |
+| `maxTreeDepth` | `32` | Maximum accessibility tree-walk depth (1..64) |
+| `maxTextLength` | `200` | Truncation length for sanitized model-visible strings (16..10000) |
+| `rollbackEnabled` | `true` | Back up and restore control text when `type` fails |
+| `ocr.enabled` / `command` / `language` | `true` / `tesseract` / `eng` | Optional OCR for the `screen_find` path (probed at mount; degrades to unavailable when tesseract is absent) |
+
+Example override in your profile patch:
+
+```yaml
+- insert:
+    - id: dsh-click
+      name: dsh-click
+      config:
+        requireApproval: true
+        autoApproveWindows: ['^Notepad']
+        focusFallback: never
+```
+
+## Tools & surfaces
+
+| Tool | Read-only | Needs approval | Notes |
+|---|---|---|---|
+| `screen_shot` | ✅ | — | Returns an `observationId` later actions cite in `basedOn`; image attachment when the model accepts images |
+| `screen_read` | ✅ | — | Accessibility tree + pixel hints; element ids are what actions address |
+| `click` | | ✅ | Exactly one of `elementId` or `(x, y)`; UIA invoke preferred, posted messages fallback |
+| `type` | | ✅ | Value-pattern elements only; backs up and restores control text on failure |
+| `scroll` | | ✅ | Element (scroll pattern) or window (posted wheel) |
+| `key` | | ✅ | Posted key combinations (`"Ctrl+S"`); apps that ignore posted input refuse loudly |
+| `app_list` | ✅ | — | Running applications and their visible windows |
+| `app_launch` | | ✅ | By name or executable path, with optional arguments |
+
+## Permissions & data
+
+- **Permissions**: mutating actions cross the official `ctx.approval` seam — the plugin never re-implements or bypasses it. The allowlist only ever *skips the ask for specific windows*; it cannot disable the freshness or process-identity checks.
+- **Data**: the plugin stores nothing on disk except the screenshots the attachment store keeps (content-addressed, under the harness's own attachment policy). Observations are cached in memory (LRU, bounded). No network requests, no credential storage.
+- **Session log**: `dsh-click/observed` and `dsh-click/action` are log-only audit events carrying sanitized window/process facts — titles, paths, and free text are redacted and length-capped before they are written or shown.
+
+## Security boundaries
+
+- **Observe before act, every time.** Actions must cite a fresh observation; a changed screen (pixel hash) or an expired observation is refused with a model-readable reason demanding re-observation.
+- **Approval is the default.** `requireApproval: true` unless you explicitly opt specific windows in; every action — allowed or not — is audit-logged.
+- **No foreground stealing.** The helper never brings a target window to the foreground (`focusFallback: 'never'` by default); input is delivered through UIA or posted messages so background windows are not disturbed.
+- **Process identity is re-verified** immediately before and after each action; a mid-act process swap fails the outcome (`PROCESS_CHANGED`).
+- **Sanitized output.** Control characters are stripped, tabs collapse, credential-shaped values (keys, tokens, JWTs, bearer headers) are redacted before anything reaches the model or the log.
+- **Fail closed.** Unsupported platforms, a missing subprocess service, or an unavailable helper refuse every call loudly — profiles keep booting everywhere.
+
+## Known limitations
+
+- **Windows first.** macOS and Linux backends are reserved; on those platforms every call fails closed with a clear reason.
+- **Text-only fidelity.** `screen_read` depends on the application exposing UIAutomation; apps without an accessible tree yield pixel hints only. Coordinate clicks remain available.
+- **Posted-input apps.** Some applications ignore posted window messages (games, some Electron surfaces); `key` reports this honestly instead of pretending success.
+- **Session audit on envelope-less harness builds.** The audit events ride an adaptive gate: hosts that know the vocabulary append plainly, hosts with the `ignorable` envelope append with the marker, and envelope-less hosts — `0.1.0-rc.6`–`0.1.0-rc.8`, `0.1.1-rc.2`, and `0.1.2-rc.1` (which cannot stamp the ignorable marker — the envelope field is retained for stored-log read compatibility only — and fails closed on unknown types at read) — get no audit append; the tool results remain the reconstructable audit trail. Set `auditSessionEvents: false` to stop audit appends entirely.
+
+## Development
+
+```sh
+pnpm install        # node ^22.19 || >=24
+pnpm run typecheck  # tsc: src + tests against the local harness checkout
+pnpm run typecheck:ci  # tsc against the published 0.1.7-rc.2 types (no paths)
+pnpm test           # vitest: 79 tests, 13 files (helper smoke runs on Windows)
+pnpm run build      # tsdown bundle + tsc declarations (lib/)
+pnpm run verify:self-contained  # dependency specs resolve from the registry
+pnpm run verify:artifacts       # built ESM face + native helper present
+pnpm pack           # the published tarball
+```
+
+## Topics
+
+`dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `computer-use`, `windows-automation`, `uiautomation`, `desktop-control`, `screen-reader`
+
+## Contributors
+
+- [@PerryLink](https://github.com/PerryLink) — creator and maintainer: tool surface, action safety boundary, Windows native helper, sanitizers, and the five-language docs.
+- [@Mchsd](https://github.com/Mchsd) — added the `auditSessionEvents` opt-out for harnesses whose session reader rejects the `dsh-click` audit events (#2).
+
+## PerryLink DSH Plugin Family
+
+This project is one of the **34 actively maintained** DeepSeek Harness plugins from [PerryLink](https://github.com/PerryLink) — the roster is **42**, of which **5** are frozen and **3** retired; every one keeps its row below, with the reason in the Status column. If this one helps you, the others likely will too:
+
+| Plugin | One-liner | Status |
+|---|---|---|
+| **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | 🧊 FROZEN — see the repo README |
+| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | 🧊 FROZEN — see the repo README |
+| **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
+| **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
+| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
+| **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
+| **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
+| **[dsh-industry-research](https://github.com/PerryLink/dsh-industry-research)** | Industry research orchestration that seals its deliverables through this plugin's `ctx.researchReport.assemble` | |
+| **[dsh-laya](https://github.com/PerryLink/dsh-laya)** | Laya typed decisions (`noul`/`choice`/`score`) as a first-class Cordis service and model-visible tools | |
+| **[dsh-library](https://github.com/PerryLink/dsh-library)** | Local document knowledge base for DeepSeek Harness. | |
+| **[dsh-local-ai](https://github.com/PerryLink/dsh-local-ai)** | Local-model (Ollama) integration for DeepSeek Harness. | |
+| **[dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions)** | LSP diagnostics, formatting, completion, code actions and rename over language servers | |
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII masking middleware: anonymize at the model boundary, restore at the display layer | |
+| **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors | |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | |
+| **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
+| **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
+| **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
+| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
+| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill | |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | One-package, one-corridor-index plugin upgrade skill: routes a repository to the matching closed corridor card | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | 🚫 RETIRED — corridors carried by `dsh-plugin-upgrade` |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | 🧊 FROZEN — see the repo README |
+| **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
+| **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
+| **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
+| **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
+| **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
+| **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
+| **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
+
+### Install from the DSH Desktop Market
+
+All PerryLink plugins are browsable in the built-in DSH Desktop Market: **Market → Sources → add source → paste** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ select it**. Installation still goes through the Market's npm-identity verification and your confirmation.
+
+## License
+
+[Apache License 2.0](LICENSE) © 2026 dsh-click contributors

@@ -1,0 +1,1526 @@
+# AI DIAL workflows
+
+- [AI DIAL workflows](#ai-dial-workflows)
+  - [Overview](#overview)
+  - [Usage](#usage)
+    - [Repository configuration](#repository-configuration)
+      - [Repository variables](#repository-variables)
+      - [Repository secrets](#repository-secrets)
+    - [Branching](#branching)
+      - [Skipping Release Candidates (RC)](#skipping-release-candidates-rc)
+    - [Changelog Generation](#changelog-generation)
+      - [Filters and transformers](#filters-and-transformers)
+    - [NodeJS (npm)](#nodejs-npm)
+      - [Requirements](#requirements)
+      - [PR Workflow](#pr-workflow)
+      - [Release Workflow](#release-workflow)
+    - [Java (gradle)](#java-gradle)
+      - [Requirements](#requirements-1)
+      - [PR Workflow (Docker)](#pr-workflow-docker)
+      - [Release Workflow (Docker)](#release-workflow-docker)
+      - [Dependency Review](#dependency-review)
+    - [Python (Poetry)](#python-poetry)
+      - [Requirements](#requirements-2)
+      - [PR Workflow (Docker)](#pr-workflow-docker-1)
+      - [Release Workflow (Docker)](#release-workflow-docker-1)
+      - [PR Workflow (package)](#pr-workflow-package)
+      - [Release Workflow (package)](#release-workflow-package)
+    - [Python (UV)](#python-uv)
+      - [Requirements](#requirements-3)
+      - [PR Workflow (Docker)](#pr-workflow-docker-2)
+      - [Release Workflow (Docker)](#release-workflow-docker-2)
+      - [PR Workflow (package)](#pr-workflow-package-1)
+      - [Release Workflow (package)](#release-workflow-package-1)
+    - [Generic Docker](#generic-docker)
+      - [Requirements](#requirements-4)
+      - [PR Workflow](#pr-workflow-1)
+      - [Release Workflow](#release-workflow-1)
+    - [Others](#others)
+      - [Validate PR title](#validate-pr-title)
+      - [Deploy review environment](#deploy-review-environment)
+        - [End-to-end tests](#end-to-end-tests)
+          - [Test Repository Structure](#test-repository-structure)
+          - [Skipping E2E Tests](#skipping-e2e-tests)
+      - [Cleanup untagged images in GHCR](#cleanup-untagged-images-in-ghcr)
+      - [Trigger deployment of development environment in GitLab](#trigger-deployment-of-development-environment-in-gitlab)
+      - [Trivy additional configuration](#trivy-additional-configuration)
+      - [Dependabot](#dependabot)
+        - [Dependabot Pull Requests Automation](#dependabot-pull-requests-automation)
+      - [ORT](#ort)
+        - [Control switches](#control-switches)
+        - [Configuration](#configuration)
+          - [Global config repository](#global-config-repository)
+          - [.ort.yml](#ortyml)
+  - [Contributing](#contributing)
+
+## Overview
+
+Continuous Integration instrumentation for [AI DIAL](https://dialx.ai) components.
+
+Contains reusable workflows for AI-DIAL group of repositories under EPAM GitHub organization.
+
+## Usage
+
+These workflows could be imported to any repository under EPAM GitHub organization as standard `.github/workflows` files. See examples below (replace `@main` with specific version tag).
+
+### Repository configuration
+
+#### Repository variables
+
+> [!tip]
+> [Creating configuration variables for a repository](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables#creating-configuration-variables-for-a-repository)
+
+| Name                | Example value                                        | Required | Description                         |
+| ------------------- | ---------------------------------------------------- | -------- | ----------------------------------- |
+| `ACTIONS_BOT_NAME`  | `ai-dial-actions`                                    | false    | Git user name for CI/CD automation  |
+| `ACTIONS_BOT_EMAIL` | `149404362+ai-dial-actions@users.noreply.github.com` | false    | Git user email for CI/CD automation |
+
+#### Repository secrets
+
+> [!tip]
+> [Creating secrets for a repository](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-a-repository)
+
+| Name                | Example value                    | Required | Description                                                                          |
+| ------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------ |
+| `ACTIONS_BOT_TOKEN` | `ghp_1234567890abcdef1234567890` | true     | Personal access token for CI/CD automation user with `repo`, `write:packages` scopes |
+
+### Branching
+
+We expect consumer repositories to follow the given branching strategy:
+
+1. A `development` is the branch for all new work
+1. All code changes are merged from feature branches to `development` via pull requests
+1. When there's enough changes in `development` for a new release, maintainer cuts `release-X.Y` branch. Release enters stabilization phase, the branch produce numbered RC artifacts (`X.Y.0-rc.N`)
+1. Once the maintainer decides the release is stable, he manually (`workflow_dispatch`) triggers `Release Workflow` for `release-X.Y` branch with `promote` option set. Stable `X.Y.0` is published
+1. Since that moment, `release-X.Y` enters maintenance phase, and any subsequent pushes to that branch produce patches (`X.Y.1`, `X.Y.2`, ...)
+1. Fixes to maintenance branches must be backported from `development` branch via cherry-picks
+
+More details can be found in [Branching Strategy](docs/BRANCHING_STRATEGY.md)
+
+#### Skipping Release Candidates (RC)
+
+In some cases, maintainers may want to skip Release Candidate (RC) phase and produce stable versions directly from `release-X.Y` branches. For example, if repository produce package(s) as build artifacts, and no strict QA/verification process is required.
+
+To achieve that, replace `workflow_dispatch` input approach with static `true` value for `promote` input in `Release Workflow`
+
+<details>
+<summary>Example</summary>
+
+```diff
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+-   inputs:
+-     promote:
+-       type: boolean
+-       default: false
+-       description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/python_package_release.yml@main
+    with:
+-     promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
++     promote: true
+    secrets: inherit
+```
+
+</details>
+
+### Changelog Generation
+
+Changelog is automatically generated based on git commit history (commit messages) and added to git tags and GitHub releases description
+
+| Scenario                          | Baseline                   | Scope                                                                      |
+| --------------------------------- | -------------------------- | -------------------------------------------------------------------------- |
+| First RC (`X.Y.0-rc.0`)           | Latest global stable tag   | Commits since latest stable tag (full history if no stable tag exists)     |
+| Subsequent RC (`X.Y.0-rc.N`, N>0) | Previous RC tag            | Commits since previous RC tag only                                         |
+| Stable promotion (`X.Y.0`)        | Latest global stable tag   | Commits on release branch since cut (full history if no stable tag exists) |
+| Patch version (`X.Y.1+`)          | Previous patch version tag | Commits since previous patch only                                          |
+
+#### Filters and transformers
+
+- Deduplication: the changelog uses two layers to prevent duplicate changelog entries:
+  - patch-ID comparison (`git log --cherry-pick`): catches cherry-picks with identical changes
+  - commit-message matching: catches conflict-resolved or amended cherry-picks
+- `[skip ci] Update version` commits are excluded from the changelog. They are typically generated by the release workflow and don't contain user-facing changes
+- `Merge branch` commits are excluded from the changelog
+- Changelog entries are grouped by type: `Features`, `Fixes`, `Other`. `Breaking changes` are highlighted as a separate section at the top
+
+### NodeJS (npm)
+
+> [!tip]
+> Workflows allow independent choices of build artifacts: container image, npm package, or both (default). Can be controlled via `docker-build-enabled` and `publish-enabled` inputs respectively. Set inputs values to match your repository needs.
+
+#### Requirements
+
+Consumer repository **must** have:
+
+- `package.json` file with `format`, `lint`, `test`, `build` scripts defined. We require scripts to exist, but not restrict their implementation - you can use any tools you like.
+
+  <details>
+    <summary>Example</summary>
+
+    ```json
+    {
+      "name": "@scope/my-package",
+      "version": "0.0.0",
+      "scripts": {
+        "format": "prettier --check .",
+        "lint": "eslint .",
+        "test": "jest",
+        "build": "nx run-many -t build",
+      }
+    }
+    ```
+
+    > [!warning]
+    > The `version` value is updated by CI/CD automation - please do not modify it manually. See more details in [Branching](#branching) section
+
+    > [!tip]
+    > If a `build:publishable` script exists, it takes precedence over `build` for building the package. Useful in monorepos to avoid building the whole repository when only subset should be published, e.g. `"build:publishable": "nx run-many -t build --projects=tag:publishable"`
+
+    > [!tip]
+    > If a `publish:npm` script exists, it takes precedence over regular `npm publish` command for publishing the package. This allows to implement any custom publish logic. The custom script will receive desired distribution tag as a `--tag` argument
+  </details>
+
+- Authentication to npm registry
+
+  While publishing a package to [npm registry](https://npmjs.com), we support 2 options how to provide credentials.
+
+  - (recommended) [Trusted publishing](https://docs.npmjs.com/trusted-publishers): grant release GitHub workflow `id-token: write` permission (see [example](#release-workflow))
+  - [Granular access token](https://docs.npmjs.com/creating-and-viewing-access-tokens): create a token and store it as `NPM_TOKEN` [repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+
+#### PR Workflow
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/node_pr.yml@main
+    secrets: inherit
+```
+
+#### Release Workflow
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+  security-events: write
+  id-token: write
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/node_release.yml@main
+    with:
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+### Java (gradle)
+
+#### Requirements
+
+Consumer repository **must** have:
+
+- `build.gradle` with `check`, `checkstyleMain` and `build` tasks exposed
+
+  <details>
+    <summary>Example</summary>
+
+  ```groovy
+  plugins {
+      id "java" // exposes `check`, `build` tasks
+      id "checkstyle" // exposes `checkstyleMain` task
+  }
+
+  group = "org.example"
+  version = "0.0.0"
+  ```
+
+  > [!warning]
+  > The `version` value is updated by CI/CD automation - please do not modify it manually. See more details in [Branching](#branching) section
+  </details>
+
+#### PR Workflow (Docker)
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/java_pr.yml@main
+    secrets: inherit
+```
+
+#### Release Workflow (Docker)
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/java_release.yml@main
+    with:
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+#### Dependency Review
+
+Without a dependency graph, GitHub has no visibility into what packages the Java project uses - so it can't warn when one of them has a known vulnerability (CVE).\
+The dependency graph snapshot is generated automatically as part of [PR Workflow](#pr-workflow-docker) and [Release Workflow](#release-workflow-docker) via integration with the [GitHub Dependency Graph Gradle Plugin](https://plugins.gradle.org/plugin/org.gradle.github-dependency-graph-gradle-plugin), and submitted via the [GitHub Dependency Submission API](https://docs.github.com/en/rest/dependency-graph/dependency-submission).\
+The generated dependency graph includes all of the dependencies, and is used by GitHub to generate [Dependabot Alerts](https://docs.github.com/en/code-security/dependabot/dependabot-alerts/about-dependabot-alerts) for vulnerable dependencies, as well as to populate the [Dependency Graph insights view](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/exploring-the-dependencies-of-a-repository#viewing-the-dependency-graph).
+
+Configuration:
+
+1. Navigate to "Settings -> Advanced Security" and enable `Dependency graph`, `Dependabot alerts`, `Dependabot security updates` features
+
+Additionally, repository maintainers can benefit from getting automated comments to PRs with insights on dependency changes:
+<!-- markdownlint-disable-next-line no-inline-html -->
+<img width="850" alt="GitHub job summary showing Dependency Review output" src="https://github.com/actions/dependency-review-action/assets/2161/42fbed1d-64a7-42bf-9b05-c416bc67493f">
+
+Configuration:
+
+1. Ensure dependency graph is enabled as described above
+1. Navigate to "Settings -> Actions -> General" and set "Workflow permissions" to `Read and write permissions`
+1. Commit a workflow file to default branch
+
+`dependency-review.yml`
+
+```yml
+name: Dependency Review
+
+on:
+  workflow_run:
+    workflows: ["PR Workflow"]
+    types:
+      - completed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read # to download dependency graph artifact
+  contents: write # to submit dependency graph
+  pull-requests: read # to resolve PR info for fork PRs
+
+jobs:
+  dependency-review:
+    if: |
+      !github.event.repository.private &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          disable-telemetry: true
+          disable-sudo-and-containers: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            api.deps.dev:443
+            api.securityscorecards.dev:443
+      - name: Get PR
+        id: get-pr
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          retries: 3
+          script: |
+            const wfRun = context.payload.workflow_run;
+            const pr = wfRun.pull_requests[0];
+            let number, base_sha, head_sha;
+            if (pr) {
+              number = pr.number;
+              base_sha = pr.base.sha;
+              head_sha = pr.head.sha;
+            } else {
+              // Fork PR: pull_requests[] is empty, resolve via head branch filter
+              const headLabel = `${wfRun.head_repository.owner.login}:${wfRun.head_branch}`;
+              const { data: prs } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                head: headLabel,
+              });
+              const matched = prs[0];
+              if (!matched) throw new Error(`No open PR found for head ${headLabel}`);
+              number = matched.number;
+              base_sha = matched.base.sha;
+              head_sha = wfRun.head_sha;
+            }
+            core.info(`is_fork:  ${pr ? 'false' : 'true'}`);
+            core.info(`number:   ${number}`);
+            core.info(`base_sha: ${base_sha}`);
+            core.info(`head_sha: ${head_sha}`);
+            core.setOutput('is_fork', pr ? 'false' : 'true');
+            core.setOutput('number', number);
+            core.setOutput('base_sha', base_sha);
+            core.setOutput('head_sha', head_sha);
+      - name: Download and submit dependency graph
+        uses: gradle/actions/dependency-submission@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
+        with:
+          dependency-graph: download-and-submit
+      - id: dependency-review
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          retry-on-snapshot-warnings: true
+          retry-on-snapshot-warnings-timeout: 600 # let GitHub process both graphs up to 10 minutes
+          base-ref: ${{ steps.get-pr.outputs.base_sha }}
+          head-ref: ${{ steps.get-pr.outputs.head_sha }}
+          warn-only: true # we don't want to fail the workflow, just to report the issues via comment
+          show-patched-versions: true
+      - if: ${{ steps.dependency-review.outputs.comment-content != null }}
+        name: Save dependency review output report
+        run: |
+          cat << 'EOF' > openssf-report.html
+          ${{ steps.dependency-review.outputs.comment-content }}
+          EOF
+      - if: ${{ steps.dependency-review.outputs.comment-content != null }}
+        # Use separate action to comment because the original one can't do it without PR context
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          number: ${{ steps.get-pr.outputs.number }}
+          header: dependency-review
+          hide_and_recreate: true
+          path: openssf-report.html
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_BOT_TOKEN }}
+      - if: failure()
+        # If the review fails, we still want to "outdate" the comment to avoid stale information
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          number: ${{ steps.get-pr.outputs.number }}
+          header: dependency-review
+          hide_and_recreate: true
+          message: "⚠️ Dependency review workflow failed - results may be outdated. [Check logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_BOT_TOKEN }}
+```
+
+### Python (Poetry)
+
+#### Requirements
+
+Consumer repository **must** have:
+
+- `Makefile` file with `lint`, `build` (only for Python packages), `test`, `publish` (only for Python packages) targets defined
+
+  <details>
+    <summary>Example</summary>
+
+  ```makefile
+  PORT ?= 5001
+
+  .PHONY: install lint build test publish
+
+  install:
+    poetry install --all-extras
+
+  lint: install
+    poetry run ruff check .
+    poetry run ruff format --check .
+
+  build: install # Required only for Python packages
+    poetry build
+
+  test: install
+    if [ -n "$(PYTHON)" ]; then poetry env use "$(PYTHON)"; fi
+    poetry run pytest
+
+  publish: # Required only for Python packages
+    poetry publish --username __token__ --password $(PYPI_TOKEN) --skip-existing
+  ```
+
+  > [!note]
+  > `build` and `publish` Makefile targets are required only for repositories that produce Python packages as build artifacts
+
+  > [!tip]
+  > `test` target receives Python version, e.g. `make test PYTHON=<version>`, where `<version>` is the one defined in `code-checks-python-versions` workflow input. If multiple versions are defined, the workflow will run tests for each of them in parallel
+  </details>
+
+- `pyproject.toml` file with `name` and `version` defined
+
+  <details>
+    <summary>Example</summary>
+
+  ```toml
+  [project]
+  name = "my-package"
+  version = "0.0.0"
+  ```
+
+  > [!warning]
+  > The `version` value is updated by CI/CD automation - please do not modify it manually. See more details in [Branching](#branching) section
+  </details>
+
+#### PR Workflow (Docker)
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/python_docker_pr.yml@main
+    secrets: inherit
+```
+
+#### Release Workflow (Docker)
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/python_docker_release.yml@main
+    with:
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+#### PR Workflow (package)
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/python_package_pr.yml@main
+    secrets: inherit
+```
+
+#### Release Workflow (package)
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/python_package_release.yml@main
+    with:
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+### Python (UV)
+
+> [!note]
+> UV support is enabled by setting the `python-package-manager` workflow input to `uv` (defaults to `poetry`)
+
+> [!note]
+> [ORT](https://github.com/oss-review-toolkit/ort) doesn't support analyzing UV projects directly. When `python-package-manager` is set to `uv`, the `ort` job automatically exports `uv.lock` to a `requirements.txt` file (via `uv export --frozen`) before running ORT, and analyzes it as a PIP project instead. This is transparent and requires no changes to the consumer repository, aside from having `uv.lock` committed (see [Requirements](#requirements-3) below)
+
+#### Requirements
+
+Consumer repository **must** have:
+
+- `Makefile` file with `lint`, `build` (only for Python packages), `test`, `publish` (only for Python packages) targets defined
+
+  <details>
+    <summary>Example</summary>
+
+  ```makefile
+  PORT ?= 5001
+
+  .PHONY: install lint build test publish
+
+  install:
+    uv sync --all-extras
+
+  lint: install
+    uv run ruff check .
+    uv run ruff format --check .
+
+  build: install # Required only for Python packages
+    uv build
+
+  test: install
+    if [ -n "$(PYTHON)" ]; then uv python pin "$(PYTHON)"; fi
+    uv run pytest
+
+  publish: # Required only for Python packages
+    uv publish --username __token__ --password $(PYPI_TOKEN)
+  ```
+
+  > [!note]
+  > `build` and `publish` Makefile targets are required only for repositories that produce Python packages as build artifacts
+
+  > [!tip]
+  > `test` target receives Python version, e.g. `make test PYTHON=<version>`, where `<version>` is the one defined in `code-checks-python-versions` workflow input. If multiple versions are defined, the workflow will run tests for each of them in parallel
+  </details>
+
+- `pyproject.toml` file with `name` and `version` defined
+
+  <details>
+    <summary>Example</summary>
+
+  ```toml
+  [project]
+  name = "my-package"
+  version = "0.0.0"
+  ```
+
+  > [!warning]
+  > The `version` value is updated by CI/CD automation - please do not modify it manually. See more details in [Branching](#branching) section
+  </details>
+
+- `uv.lock` file committed to the repository (generated by running `uv lock`/`uv sync` locally)
+
+#### PR Workflow (Docker)
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/python_docker_pr.yml@main
+    with:
+      python-package-manager: uv
+    secrets: inherit
+```
+
+#### Release Workflow (Docker)
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/python_docker_release.yml@main
+    with:
+      python-package-manager: uv
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+#### PR Workflow (package)
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/python_package_pr.yml@main
+    with:
+      python-package-manager: uv
+    secrets: inherit
+```
+
+#### Release Workflow (package)
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/python_package_release.yml@main
+    with:
+      python-package-manager: uv
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+### Generic Docker
+
+#### Requirements
+
+Consumer repository **must** have:
+
+- `Makefile` with `lint` target defined
+
+  <details>
+    <summary>Example</summary>
+
+    ```makefile
+    .PHONY: all lint build run help
+
+    all: lint build
+
+    build:
+      docker build -t my-image .
+
+    run:
+      docker run my-image
+
+    lint:
+      docker run --rm -i hadolint/hadolint < Dockerfile
+
+    help:
+      @echo '===================='
+      @echo 'lint                         - lint the Dockerfile'
+      @echo 'build                        - build docker image'
+      @echo 'run                          - run docker image'
+    ```
+
+  </details>
+
+- `Dockerfile`
+
+#### PR Workflow
+
+`pr.yml`
+
+```yml
+name: PR Workflow
+
+on:
+  pull_request:
+    branches: [development, release-*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/generic_docker_pr.yml@main
+    secrets: inherit
+```
+
+#### Release Workflow
+
+`release.yml`
+
+```yml
+name: Release Workflow
+
+on:
+  push:
+    branches: [development, release-*]
+  workflow_dispatch:
+    inputs:
+      promote:
+        type: boolean
+        default: false
+        description: Promote release to stable (for release-* branches only)
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    uses: epam/ai-dial-ci/.github/workflows/generic_docker_release.yml@main
+    with:
+      promote: ${{ github.event_name == 'workflow_dispatch' && inputs.promote }}
+    secrets: inherit
+```
+
+### Others
+
+#### Validate PR title
+
+`pr-title-check.yml`
+
+```yml
+name: "Validate PR title"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title-check:
+    uses: epam/ai-dial-ci/.github/workflows/pr-title-check.yml@main
+    secrets:
+      ACTIONS_BOT_TOKEN: ${{ secrets.ACTIONS_BOT_TOKEN }}
+```
+
+#### Deploy review environment
+
+`slash-command-dispatch.yml`
+
+```yml
+name: Slash Command Dispatch
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.issue.pull_request &&
+      github.event.issue.state == 'open'
+    steps:
+      - name: Slash Command Dispatch
+        id: scd
+        uses: peter-evans/slash-command-dispatch@9bdcd7914ec1b75590b790b844aa3b8eee7c683a # v5.0.2
+        with:
+          token: ${{ secrets.ACTIONS_BOT_TOKEN }}
+          reaction-token: ${{ secrets.ACTIONS_BOT_TOKEN }}
+          config: >
+            [
+              {
+                "command": "deploy-review",
+                "permission": "write",
+                "issue_type": "pull-request",
+                "repository": "epam/ai-dial-ci",
+                "static_args": [
+                  "application=${{ github.event.repository.name }}"
+                ]
+              }
+            ]
+```
+
+##### End-to-end tests
+
+The E2E testing system for review environments enables automated testing of pull request changes in isolated, short-lived environments. When a developer comments `/deploy-review` on a PR, the system deploys the PR code to a review environment and runs E2E tests against it. See [Skipping E2E Tests](#skipping-e2e-tests) section to disable this feature.
+
+<details>
+  <summary>Flowchart diagram</summary>
+
+```mermaid
+flowchart-elk TD
+    A[Developer comments /deploy-review on PR] --> B[Slash Command Dispatch triggers repository_dispatch in epam/ai-dial-ci]
+
+    subgraph workflow["deploy-review-command workflow run"]
+        subgraph deploy["deploy-review job"]
+            B --> C[deploy-review job]
+            C --> D{Validate dispatch repository against whitelist}
+            D -->|Invalid| E[Fail with error]
+            D -->|Valid| F{Validate required payload values}
+            F -->|Missing| E
+            F -->|Present| G[Trigger GitLab deployment pipeline]
+        end
+
+        subgraph e2e["e2e-test job (matrix for each application)"]
+            G --> I{Does skip-e2e label on PR exist or argument been passed?}
+            I -->|Yes| J[Skip E2E tests]
+            I -->|No| K[Wait for application be available]
+            K --> L[Checkout test repository]
+            L --> M[Run test action]
+        end
+
+        subgraph monitor["monitor job"]
+            O[Periodically update PR comment with status]
+        end
+
+        M --> Q[Workflow complete]
+        J --> Q
+    end
+
+    Q --> R[Final status updated in PR comment]
+```
+
+</details>
+
+###### Test Repository Structure
+
+A test repository must provide [composite actions](https://docs.github.com/en/actions/tutorials/create-actions/create-a-composite-action) with the following layout:
+
+```text
+.github/
+  actions/
+    test-<application>/
+      action.yml <-- Composite action that runs tests
+```
+
+> [!important]
+> One composite action should be designed to test one application only
+
+> [!tip]
+> By default, [chat](https://github.com/epam/ai-dial-chat) tests are executed. To define custom applications (with corresponding test code sources), pass `test-applications` argument in `static_args` of the `slash-command-dispatch` action. Format: `application[:test-repository],application[:test-repository]`, e.g. `chat,admin:epam/ai-dial-admin-perf` will result in running tests from `epam/ai-dial-chat` (default tests code source) against `chat` application and tests from `epam/ai-dial-admin-perf` against `admin` application
+
+The action must have inputs:
+
+- `application-url`: URL of the deployed review environment. Points to specific test application, e.g. chat - `https://chat-ai-dial-core-pr-123.example.com`, admin - `https://admin-ai-dial-core-pr-123.example.com`, etc
+- `environment-fqdn`: FQDN of the deployed review environment (formed of repository + PR number + base domain, without protocol or application-specific prefix), e.g. `ai-dial-core-pr-123.example.com`. Useful to build additional application URLs (by prepending with protocol and well-known application prefix) on the spot besides the main one provided in `application-url`
+- `report-prefix`: Environment identifier that can be used (but not limited) to prefix test reports, e.g. `ai-dial-core-pr-123`, etc
+- `test-branch`: Branch name of GitHub repository with tests source code. If tests are triggered from the test repository itself, `test-branch` equals PR source branch, e.g. `feat-something-new`, otherwise empty. This behavior allows QA team to verify changes in tests before rolling them out
+
+Besides inputs, the action will have access to environment variables:
+
+- `E2E_ADMIN`
+- `E2E_OVERLAY_USERNAME`
+- `E2E_PASSWORD`
+- `E2E_USERNAME`
+- `NEXT_PUBLIC_OVERLAY_USER_BUCKET`
+- `ADMIN_LOGIN`
+- `ADMIN_PASSWORD`
+- `INFLUX_HOST`
+- `INFLUX_TOKEN`
+- `AUTH0_DOMAIN`
+- `DIAL_ADMIN_CLIENT_ID`
+- `DIAL_ADMIN_NEXTAUTH_SECRET`
+
+> [!important]
+> Checkout in the composite action should be performed with great caution to avoid executing untrusted code from PRs. After checkout, `working-directory` usage is mandatory in all supported steps. See example below for recommended approach
+
+<details>
+  <summary>Example of composite action.yml</summary>
+
+```yml
+name: Example test action
+description: Dummy action to demonstrate how to work with review environment context
+
+inputs:
+  # Required inputs
+  application-url:
+    description: "URL of the deployed review environment (specific application)"
+    required: true
+  environment-fqdn:
+    description: "FQDN of the deployed review environment, useful to build additional application URLs"
+    required: true
+  report-prefix:
+    description: "Prefix for report files generated by the action"
+    default: ""
+  test-repository:
+    description: "GitHub repository with tests source code"
+    default: "epam/ai-dial-chat" # TODO: modify this according to your use case
+  test-branch:
+    description: "Branch name of GitHub repository with tests source code"
+    default: "development" # TODO: modify this according to your use case
+  # Custom inputs
+  working-directory:
+    description: "Working directory for anything happening in the current action. Note: this is not actually an input, but a HACK to store common value as `env` is unavailable in composite actions"
+    default: "tests"
+
+runs:
+  using: "composite"
+  steps:
+    # Checkout repository with test source code into a separate directory
+    # Never use default path, otherwise you'll overwrite action code and parent workflow will fail to complete
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        repository: ${{ inputs.test-repository }}
+        ref: ${{ inputs.test-branch }}
+        path: ${{ inputs.working-directory }}
+        lfs: true
+        persist-credentials: false
+    # Dummy tests trigger
+    - name: Running tests
+      run: |
+        echo "Running tests against ${{ inputs.application-url }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+    # Example of saving test artifacts
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: ${{ inputs.report-prefix }}-test-artifacts
+        path: |
+          ${{ inputs.working-directory }}/*.log
+        retention-days: 7
+```
+
+</details>
+
+###### Skipping E2E Tests
+
+If you need to disable E2E tests execution:
+
+- for the **whole repository**: add `skip-e2e` argument to `static_args` list
+
+  ```yml
+                "static_args": [
+                  "application=${{ github.event.repository.name }}",
+                  "skip-e2e"
+                ]
+  ```
+
+- for the **specific PR**: assign `skip-e2e` label to PR
+- **once**: use `/deploy-review skip-e2e` command in PR comment
+
+#### Cleanup untagged images in GHCR
+
+When using "rolling" tags for container images, like `development` or `latest`, the GitHub Container Registry (GHCR) will accumulate untagged images over time. Since they're essentially useless, it's a good practice to clean them up periodically. The workflow below will delete untagged images from GHCR once a day.
+
+> [!important]
+> The workflow uses `GITHUB_TOKEN` to authenticate with GHCR by default, therefore requires **Admin** [package permissions](https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#github-actions-access-for-packages-scoped-to-organizations) granted to the repository.
+
+`cleanup-untagged-images.yml`
+
+```yml
+name: Cleanup untagged images
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  clean:
+    name: Delete untagged images
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: dataaxiom/ghcr-cleanup-action@d52806a0dc70b430571a37da1fde39733ffd640f # v1.2.2
+        with:
+          delete-untagged: true
+          delete-ghost-images: true # Delete indexes with no manifests
+          delete-partial-images: true # Delete indexes which refer to at least one non-existent manifest
+          delete-orphaned-images: true # Delete dangling referrers, e.g. SBOMs, signatures, etc. that refer to non-existent digest
+```
+
+#### Trigger deployment of development environment in GitLab
+
+A common case is to trigger development environment(s) update from GitHub to GitLab, e.g. each time a `development` branch produces a new artifact. Also, it could be not single, but several environments, representing different configuration presets of a single app. To use the example below:
+
+1. add a new [repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with name `DEPLOY_HOST` and value of the gitlab host, e.g. `gitlab.example.com`
+1. create a new [environment](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment#creating-an-environment), e.g. `development`
+1. for the environment, add [environment secrets](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment#environment-secrets) with names `DEPLOY_ACCESS_TOKEN` and `DEPLOY_TRIGGER_TOKEN` and values of the gitlab access token and trigger token respectively.
+1. use the example workflow file below
+
+`deploy-development.yml`
+
+```yml
+name: Deploy development
+
+on:
+  workflow_dispatch: # manual run
+  registry_package: # on new package version (main path)
+  workflow_run: # HACK: redundant trigger to mitigate GitHub's huge delays in registry_package event processing
+    workflows: ["Release Workflow"]
+    types:
+      - completed
+
+jobs:
+  gitlab-dev-deploy:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.registry_package.package_version.container_metadata.tag.name == 'development' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'development')
+    uses: epam/ai-dial-ci/.github/workflows/deploy-development.yml@main
+    with:
+      gitlab-project-id: "1487"
+    secrets:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_ACCESS_TOKEN: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+      DEPLOY_TRIGGER_TOKEN: ${{ secrets.DEPLOY_TRIGGER_TOKEN }}
+```
+
+In case of multiple environments, continue creating multiple GitHub environments named after e.g. feature sets, each with its own secrets, then use matrix approach as shown below.
+
+`deploy-development.yml`
+
+```yml
+name: Deploy development
+
+on:
+  workflow_dispatch: # manual run
+  registry_package: # on new package version (main path)
+  workflow_run: # HACK: redundant trigger to mitigate GitHub's huge delays in registry_package event processing
+    workflows: ["Release Workflow"]
+    types:
+      - completed
+
+jobs:
+  trigger:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.event.registry_package.package_version.container_metadata.tag.name == 'development' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'development')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - environment-name: "development"
+            gitlab-project-id: "1487"
+          - environment-name: "feature-1"
+            gitlab-project-id: "1489"
+          - environment-name: "feature-2"
+            gitlab-project-id: "1984"
+          - environment-name: "feature-3"
+            gitlab-project-id: "1337"
+
+    name: Deploy to ${{ matrix.environment-name }}
+    uses: epam/ai-dial-ci/.github/workflows/deploy-development.yml@main
+    with:
+      gitlab-project-id: ${{ matrix.gitlab-project-id }}
+      environment-name: ${{ matrix.environment-name }}
+    secrets:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_ACCESS_TOKEN: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+      DEPLOY_TRIGGER_TOKEN: ${{ secrets.DEPLOY_TRIGGER_TOKEN }}
+```
+
+#### Trivy additional configuration
+
+We use [Trivy](https://trivy.dev/) for vulnerability scanning of container images and packages.
+
+To change predefined Trivy parameters or set up additional [configuration options](https://trivy.dev/docs/latest/guide/references/configuration/config-file/), create `trivy.yaml` file in root of your repository. E.g., use the configuration below to add fallback sources for Trivy databases, thus mitigate rate limit issues.
+
+`trivy.yaml`
+
+```yaml
+# Trivy configuration file
+# https://aquasecurity.github.io/trivy/latest/docs/references/configuration/config-file/
+db:
+  no-progress: true
+  repository:
+    - mirror.gcr.io/aquasec/trivy-db:2
+    - public.ecr.aws/aquasecurity/trivy-db:2
+    - ghcr.io/aquasecurity/trivy-db:2
+  java-repository:
+    - mirror.gcr.io/aquasec/trivy-java-db:1
+    - public.ecr.aws/aquasecurity/trivy-java-db:1
+    - ghcr.io/aquasecurity/trivy-java-db:1
+misconfiguration:
+  checks-bundle-repository: mirror.gcr.io/aquasec/trivy-checks:1
+```
+
+#### Dependabot
+
+It's strongly recommended to enable at least [Dependabot security updates](https://docs.github.com/en/code-security/dependabot/dependabot-security-updates/about-dependabot-security-updates) for your repositories to stay protected from known vulnerabilities in dependencies. To do that, create `.github/dependabot.yml` file in your repository.
+
+> [!note]
+> The example for `java` with `gradle` as a package manager given. Adjust repo's **primary** [package-ecosystem](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file#package-ecosystem) accordingly. Keep `github-actions` ecosystem as is
+
+`dependabot.yml`
+
+```yml
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    # Disable version updates, keep security updates only
+    open-pull-requests-limit: 0
+    commit-message:
+      # Prefix all commit messages with "chore: "
+      prefix: "chore"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    commit-message:
+      prefix: "ci"
+      include: scope
+    groups:
+      ai-dial-ci:
+        applies-to: version-updates
+        patterns:
+          - "epam/ai-dial-ci/*"
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "epam/ai-dial-ci/*"
+    open-pull-requests-limit: 10
+```
+
+##### Dependabot Pull Requests Automation
+
+Repository maintainers may want to automate approval/merging of Dependabot PRs to reduce manual effort. The example below will automatically approve all Dependabot PRs, and merge those that belong to `ai-dial-ci` group and are **not major** version updates.
+
+> [!warning]
+> The workflow requires [auto-merge](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-auto-merge-for-pull-requests-in-your-repository#managing-auto-merge) option in repository settings enabled
+
+> [!tip]
+> You can modify the conditions to fit your needs, e.g remove `steps.metadata.outputs.dependency-group == 'ai-dial-ci'` condition to enable auto-merging for **all** Dependabot PRs except major version updates
+
+`dependabot-automation.yml`
+
+```yml
+name: Dependabot Automation
+
+on: pull_request_target
+
+permissions: {}
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository_owner == 'epam'
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+      - name: Approve PR
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.ACTIONS_BOT_TOKEN }}
+      - name: Merge PR
+        if: |
+          steps.metadata.outputs.dependency-group == 'ai-dial-ci' &&
+          steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.ACTIONS_BOT_TOKEN }}
+```
+
+#### ORT
+
+We use [OSS Review Toolkit (ORT)](https://oss-review-toolkit.org/ort/) to analyze dependencies and flag potential license compliance issues.
+
+##### Control switches
+
+Edit workflows inputs to control ORT behavior:
+
+| Input          | Default | Effect                                             |
+| -------------- | ------- | -------------------------------------------------- |
+| `ort-enabled`  | `true`  | If set to `false`, the scan will be skipped        |
+| `ort-bypassed` | `false` | If set to `true`, findings won't fail the pipeline |
+
+<details>
+  <summary>Example</summary>
+
+```yml
+jobs:
+  run_tests:
+    uses: epam/ai-dial-ci/.github/workflows/generic_docker_pr.yml@main
+    with:
+      ort-bypassed: true
+    secrets: inherit
+```
+
+</details>
+
+Alternatively, while working with PRs it's may be more convenient to set `ort-bypassed` label - same effect as `ort-bypassed: true`.
+
+> [!tip]
+> Prefer bypassing over disabling to keep visibility into compliance issues
+
+##### Configuration
+
+ORT is configured on two levels: a shared **global config repository** and a per-repository **`.ort.yml`**
+
+###### Global config repository
+
+Holds org-wide policy rules, license classifications, curations and resolutions shared across all repositories.
+
+> [!note]
+> We've forked [the upstream](https://github.com/oss-review-toolkit/ort-config) at [epam/ai-dial-ort-config](https://github.com/epam/ai-dial-ort-config) and maintain it with our own policy rules and additional curations.
+
+ Controlled via workflow inputs (or repository variables):
+
+| Workflow Input          | Repository variable       | Default                                          |
+| ----------------------- | ------------------------- | ------------------------------------------------ |
+| `ort-config-repository` | `ORT_CONFIG_VCS_URL`      | `https://github.com/epam/ai-dial-ort-config.git` |
+| `ort-config-revision`   | `ORT_CONFIG_VCS_REVISION` | Git tag matching the pinned `ort-version`        |
+
+> [!important]
+> `ort-config-revision` must point to a git reference (SHA/tag/branch) where `org.ossreviewtoolkit:version-catalog` version matches `ort-version` in use - the config schema evolves with ORT, so a mismatched revision can break the scan. When bumping one, bump the other too.
+
+###### .ort.yml
+
+Add an `.ort.yml` to the repository root for [project-specific configuration](https://oss-review-toolkit.org/ort/docs/configuration/ort-yml). For example:
+
+- to exclude dev/test dependencies and build tooling scopes, which are not included in distributed build, thus not relevant for license compliance checks:
+
+  <details>
+    <summary>Node (npm)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    skip_excluded: true
+  excludes:
+    paths:
+      - pattern: "package-lock.json"
+        reason: "BUILD_TOOL_OF"
+    scopes:
+      - pattern: "devDependencies"
+        reason: "DEV_DEPENDENCY_OF"
+        comment: "Packages for development only."
+  ```
+
+  </details>
+
+  <details>
+    <summary>Python (Poetry)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    skip_excluded: true
+  excludes:
+    scopes:
+    - pattern: "dev"
+      reason: "DEV_DEPENDENCY_OF"
+      comment: "Packages for development only."
+    - pattern: "lint"
+      reason: "DEV_DEPENDENCY_OF"
+      comment: "Packages for static code analysis only."
+    - pattern: "test"
+      reason: "TEST_DEPENDENCY_OF"
+      comment: "Packages for testing only."
+  ```
+
+  </details>
+
+  <details>
+    <summary>Java (Gradle)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    skip_excluded: true
+  excludes:
+    scopes:
+      - pattern: "annotationProcessor"
+        reason: "BUILD_DEPENDENCY_OF"
+        comment: "Packages to process code annotations only."
+      - pattern: "checkstyle"
+        reason: "DEV_DEPENDENCY_OF"
+        comment: "Packages for static code analysis only."
+      - pattern: "lombok"
+        reason: "DEV_DEPENDENCY_OF"
+        comment: "Packages from Project Lombok only."
+      - pattern: "test.*"
+        reason: "TEST_DEPENDENCY_OF"
+        comment: "Packages for testing only."
+  ```
+
+  </details>
+
+- to resolve [policy rule violations](https://oss-review-toolkit.org/ort/docs/configuration/ort-yml#resolving-policy-rule-violations) that can't be fixed, by matching the violation `message` with a regular expression:
+
+  <details>
+    <summary>Python (Poetry)</summary>
+
+  ```yml
+  ---
+  resolutions:
+    rule_violations:
+      - message: ".*LicenseRef-scancode-nvidia-cuda-supplement-2020.*"
+        reason: "LICENSE_ACQUIRED_EXCEPTION"
+        comment: "NVIDIA CUDA supplemental license reviewed and approved for use in this project."
+  ```
+
+  </details>
+
+  > [!tip]
+  > Prefer adding [package curations](https://oss-review-toolkit.org/ort/docs/configuration/package-curations) over resolving violations when `NO_LICENSE_IN_DEPENDENCY` (or other fixable) findings are reported. To do that, create a new issue in [epam/ai-dial-ort-config](https://github.com/epam/ai-dial-ort-config) repository with error message(s) from the ORT scan report.
+
+- to set [package-manager-specific](https://oss-review-toolkit.org/ort/docs/category/package-managers) options. Each package manager defines its own options, e.g.:
+
+  <details>
+    <summary>Node (npm)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    package_managers:
+      NPM:
+        options:
+          # https://oss-review-toolkit.org/ort/docs/plugins/package-managers/NPM
+          legacyPeerDeps: false
+  ```
+
+  </details>
+
+  <details>
+    <summary>Python (Poetry)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    package_managers:
+      Poetry:
+        options:
+          # https://oss-review-toolkit.org/ort/docs/plugins/package-managers/Poetry
+          operatingSystem: "linux"
+  ```
+
+  </details>
+
+  <details>
+    <summary>Java (Gradle)</summary>
+
+  ```yml
+  ---
+  analyzer:
+    package_managers:
+      Gradle:
+        options:
+          # https://oss-review-toolkit.org/ort/docs/plugins/package-managers/Gradle
+          gradleVersion: "10.3"
+  ```
+
+  </details>
+
+## Contributing
+
+This project contains reusable workflows under [`.github/workflows`](.github/workflows) directory, and composite actions under [`actions`](actions) directory.
+
+Check [contribution guidelines](CONTRIBUTING.md) for details.

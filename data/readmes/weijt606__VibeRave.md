@@ -1,0 +1,970 @@
+<h1 align="center">VibeRave</h1>
+
+<p align="center">
+  <img src="docs/images/viberave-banner.png" alt="VibeRave — multimodal music engine" width="100%" />
+</p>
+
+<p align="center">
+  <strong>Vibe-code rave music — speak it, type it, or click it.</strong>
+</p>
+
+<p align="center">
+  Multimodal live coding for <a href="https://strudel.cc">Strudel</a>: hold a key
+  to talk, hit Enter to type, or click a preset chip.<br/>
+  Same agent loop, same hot-swap — no broken beats.
+</p>
+
+<p align="center">
+  <a href="#quickstart"><img src="https://img.shields.io/badge/Quickstart-ec4899?style=for-the-badge" alt="Quickstart"></a>
+  <a href="#input-modes"><img src="https://img.shields.io/badge/Input%20modes-22d3ee?style=for-the-badge" alt="Input modes"></a>
+  <a href="#ui-guide"><img src="https://img.shields.io/badge/UI%20guide-ec4899?style=for-the-badge" alt="UI guide"></a>
+  <a href="#prompt-cookbook"><img src="https://img.shields.io/badge/Prompt%20cookbook-22d3ee?style=for-the-badge" alt="Prompt cookbook"></a>
+  <a href="#backend-matrix"><img src="https://img.shields.io/badge/Backends-ec4899?style=for-the-badge" alt="Backends"></a>
+  <a href="#architecture"><img src="https://img.shields.io/badge/Architecture-22d3ee?style=for-the-badge" alt="Architecture"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-ec4899?style=for-the-badge" alt="License: AGPL-3.0"></a>
+</p>
+
+<p align="center">
+  <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/lang-中文-ec4899?style=flat-square" alt="中文"></a>
+  <a href="https://github.com/weijt606/VibeRave/stargazers"><img src="https://img.shields.io/github/stars/weijt606/VibeRave?style=flat-square&color=ec4899" alt="GitHub stars"></a>
+  <a href="https://strudel.cc"><img src="https://img.shields.io/badge/built%20on-Strudel-22d3ee?style=flat-square" alt="Built on Strudel"></a>
+  <img src="https://img.shields.io/badge/node-%E2%89%A520.6-22d3ee?style=flat-square" alt="Node ≥ 20.6">
+  <img src="https://img.shields.io/badge/PRs-welcome-ec4899?style=flat-square" alt="PRs welcome">
+</p>
+
+<br/>
+
+VibeRave is a fork of [Strudel](https://strudel.cc) that adds a multimodal
+agent loop on top — voice, text, and one-click chip presets are all
+first-class entry points to the same code-generation pipeline. It is fully
+open source: every backend can be swapped between **local-only** (offline,
+free) and **cloud** (faster, more accurate) — you can run the whole stack
+with no paid services.
+
+```
+       you (in your room or on stage)
+            ├─ 🎙  voice  →  STT (whisper · vosk · any OpenAI-compat /audio API)
+            │                       │
+            ├─ ⌨   typing  ─────────┤
+            │                       ▼
+            └─ 🔘  chip click  →  LLM (any OpenAI-compat chat API · or Ollama)
+                                     │
+                                     ▼
+                              Strudel code
+                                     │
+                                     ▼
+                       hot-swap into the in-browser scheduler
+
+            the music keeps playing — your edit lands on the next cycle
+```
+
+<br/>
+
+---
+
+<br/>
+
+## Features
+
+- **Multimodal input** — voice (push-to-talk), text (typing), and one-click
+  chip presets are all first-class. Mix and match in the same session — voice
+  for fast generation, typing for precise edits, chips for the most-used
+  commands. All three feed into the same LLM agent loop.
+- **Hot-swap live coding** — every command edits the pattern that's currently
+  playing; the audio scheduler keeps the beat across the swap.
+- **Protected master bus** — a transparent brickwall limiter on the
+  superdough master output stops stacked layers from hard-clipping into
+  digital harshness (auto-bypassed for multichannel/surround output), and
+  envelope declick floors remove note-on clicks on synth voices.
+- **Pluggable STT** — three speech-to-text backends, switchable per request:
+  `whisper` (local), `vosk` (local, sub-15 ms on a closed grammar), or
+  `api` (any OpenAI-compatible `/audio/transcriptions` endpoint, including
+  Qwen DashScope's native paraformer / fun-asr path).
+- **Pluggable LLM** — `api` (any OpenAI-compatible Chat Completions endpoint)
+  or `ollama` (local, no API key, runs on your laptop). Configure both from
+  the in-app **API Settings** panel — no `.env` editing required.
+- **Multi-track** — independent tracks with per-track visualizers
+  (**11 modes**: pianoroll / waveform / spectrum / scope / chromatic /
+  6 audioMotion-inspired bar viz / spiral). All tracks share one global
+  cycle clock so beats stay aligned. Each viz canvas is **drag-resizable
+  per track** (40-480 px), and the **per-track RMS level meter** shows
+  which row is making sound at a glance.
+- **Command queue** — submit while a previous prompt is still generating;
+  prompts queue and fire in order. Drop one with × before its turn.
+- **Click-to-prompt chips** — 10 canonical commands above the input. Click
+  fills the textarea (does not auto-send), so you can edit before sending.
+- **Configurable auto-send** — after a voice take lands, fire to the LLM
+  immediately (`0 s`, no review window) or wait 2-10 s for a chance to
+  override by typing. Set it from the api panel.
+- **Lite + full install profiles** — default `pnpm install` ships only
+  what VibeRave needs (~715 MB); `pnpm install:full` adds Csound,
+  TidalCycles, Gamepad / Motion / MQTT / Serial outputs, and the Tauri
+  desktop bridge (~1.1 GB). One command switches either way.
+- **Per-take metrics + stage dumps** (optional) — every voice take can be
+  persisted as `raw.wav` + transcript + JSON metrics so you can A/B
+  different STT backends offline.
+
+<br/>
+
+<p align="center">
+  <img src="docs/images/demo-1.gif" alt="VibeRave — live demo (voice → LLM → hot-swap → music)" width="100%" />
+</p>
+
+<br/>
+
+---
+
+<br/>
+
+## Input modes
+
+VibeRave is **dual-input by design**. Pick whichever feels right for the moment
+— or switch mid-session.
+
+| Mode | How | When to use |
+|---|---|---|
+| 🎙 **Voice (push-to-talk)** | Hold the configured PTT key (default <kbd>Space</kbd>) anywhere on the page, speak a command, release | Live performance, hands-on-controller flow, "make it dubby" while watching the dancefloor |
+| ⌨ **Text (typing)** | Type directly into the textarea, press <kbd>Enter</kbd> | Precise prompts ("Berghain techno at 132 bpm with sidechain on the bass"), debugging when STT mis-hears, quiet rooms |
+| 🔘 **Chip presets** | Click any of the 10 prompt chips above the textarea | First-run discoverability, sub-second canned commands during a demo, when you forget the exact phrase |
+
+All three feed the same backend pipeline. Voice goes through STT first; text
+and chips skip that hop entirely. **The LLM doesn't know or care which mode
+fired the prompt.**
+
+A common workflow is *voice for speed, text for precision*: start a track
+with "lo-fi beat at 80 bpm" by voice, then type a precise iteration like
+"raise lpf on the bass to 1200, add 1/4-dotted delay on the rhodes."
+
+<br/>
+
+---
+
+<br/>
+
+## Quickstart
+
+> **Goal: from `git clone` to your first track in under 5 minutes.**
+
+### 0. Prerequisites
+
+| | Requirement |
+|---|---|
+| Runtime | **Node ≥ 20.6** &nbsp;·&nbsp; **pnpm ≥ 9** &nbsp;·&nbsp; Chrome / Edge / Firefox 118+ |
+| Disk | **~715 MB** for the lite install (default), **~1.1 GB** for the full install ([see profiles below](#choose-your-install-profile)) |
+| Hardware | A microphone — only required if you want voice input. Text input works on any device |
+| Account (pick one) | An API key from any OpenAI-compatible provider (free tiers exist for Groq, OpenAI, OpenRouter, Qwen, Gemini), **or** [Ollama](https://ollama.com/) running locally with a model pulled |
+
+### 1. Clone + install + start
+
+```bash
+git clone https://github.com/weijt606/VibeRave.git
+cd VibeRave
+pnpm install                # default: lite profile (~715 MB)
+cp .env.example .env        # leave the placeholders — config happens in-app
+pnpm dev
+```
+
+You should see two URLs in the terminal:
+```
+[web]  http://localhost:4321/
+[api]  Server listening at http://localhost:4322
+```
+
+#### Choose your install profile
+
+| Profile | Command | Disk | What's included |
+|---|---|---|---|
+| 🪶 **Lite** *(default)* | `pnpm install` | **~715 MB** | Everything VibeRave needs: multimodal voice/text/chip input → LLM → multi-track Strudel hot-swap, all 11 visualisations, MIDI / OSC outputs, persistent sessions |
+| 🎛 **Full** *(complete Strudel)* | `pnpm install:full` | **~1.1 GB** | Lite + every upstream Strudel package: **Csound** audio engine (~280 MB Closure compiler), **TidalCycles** `.tidal` parser (~46 MB tree-sitter-haskell), **Gamepad / Motion / MQTT / Serial** I/O, **Tauri desktop bridge** |
+
+> **Pick lite if** you want voice/text/chip-driven Strudel livecoding — that's
+> ~95% of VibeRave use cases. **Pick full if** you want to write `csound("...")`
+> patterns, import `.tidal` files, drive a hardware MIDI rig over serial, or
+> hook a gamepad / phone gyroscope into your patterns.
+>
+> Switching is one command — no code edits, no manual file changes:
+> ```bash
+> pnpm install:full   # → swap to full
+> pnpm install:lite   # → swap back to lite (and reclaim ~385 MB)
+> ```
+
+### 2. Configure your provider in the browser
+
+1. Open <http://localhost:4321/>.
+2. Click the **api** tab in the right-hand panel.
+3. **Language Model** section → pick a preset chip (OpenAI / Groq / OpenRouter / Qwen / Ollama / Custom), paste your API key.
+4. Click **Test LLM** → you should see `✓ <ms> · <model>`. If you see ✗, fix the error before continuing — almost always wrong key, wrong base URL, or wrong model name.
+5. **Speech-to-Text** section → leave it on **Whisper** for the first run (zero config, downloads automatically).
+6. Click **Test STT** → `✓ <ms> · base.en`.
+
+> Settings persist in your browser's localStorage. They never leave your machine except as headers on requests to your own backend, which forwards them to the chosen provider.
+
+### 3. Drive it — voice, text, or chips
+
+Click the `+` at the top of the left column to create your first track. Then
+pick whichever input mode feels right:
+
+**Voice** (push-to-talk):
+1. Hold **Space** anywhere on the page, say *"lo-fi beat at eighty BPM"*, release.
+2. The transcript appears in the textarea, auto-sends after ~2 seconds, the editor fills with Strudel code, the music starts playing.
+3. Hold Space again, say *"more reverb"*. The new pattern hot-swaps on the next cycle.
+
+> Want zero review delay? Set **auto-send after = 0s** in the api panel —
+> the LLM fires the moment STT returns. Want longer to override by typing
+> instead? Pick 5-10 s. Typing in the textarea cancels the pending timer.
+
+**Text** (typing):
+1. Click in the textarea, type *"lo-fi beat at 80 bpm"*, press <kbd>Enter</kbd>.
+2. Same agent loop, just no STT hop. Lower latency, perfect recognition.
+
+**Chips** (one click):
+1. Click any chip above the textarea (`lo-fi beat`, `Berghain techno`, `add reverb`, …) — it fills the prompt.
+2. Edit if you want, then press <kbd>Enter</kbd> or click **Send**.
+
+> Don't know what to say? Jump straight to the [Prompt cookbook](#prompt-cookbook) — it has session walkthroughs and one-liners for lo-fi, Berghain techno, jazz progressions, hyperpop, and more.
+
+**Things to watch as you play:**
+- **Cycle indicator bar** at the top of the right panel — 1 px gradient
+  scans 0% → 100% once per Strudel cycle. Tells you exactly when your
+  next edit will land.
+- **Track row status dot** — cyan + pulse = playing · pink = LLM
+  generating · grey = idle.
+- **Level meter** on each track header — 60 × 4 px deep-cyan bar shows
+  live RMS so you can see which track is currently making sound (or
+  silently broken).
+- **Code-flash** — when the LLM applies new code, the changed lines in
+  the open code editor briefly tint cyan with a 3 px diff-gutter bar
+  on the left. Open the bottom **Code** panel to see exactly what it
+  rewrote.
+
+**Stop / spotlight / clear:**
+- **Stop one track** — click the ▶/■ button on its row (other tracks
+  keep playing).
+- **Spotlight** ⚡ on a track row — fade the others over ~1.5 s, leave
+  only this one.
+- **Stop all** — header button at the top of the track column (panic
+  stop, all tracks).
+- **Clear all** 🗑 — wipes every track, asks for confirmation first.
+
+### Switching STT backends later
+
+The fastest path is the **api** tab; the table below describes when to pick which.
+
+| Backend | Best for | Setup |
+|---|---|---|
+| **Whisper** (default) | Privacy / offline / no setup | Auto-downloads `base.en` (~150 MB) on first record. Edit `WHISPER_MODEL` in `.env` for `medium.en` / `large-v3-turbo`. |
+| **VOSK** | Sub-15 ms latency on the canonical command vocabulary | One-time model download — see "Optional: VOSK setup" below. |
+| **API** (OpenAI Whisper / Groq Whisper / self-hosted) | Best free-form accuracy | Pick the preset, paste a key, **Test STT**. |
+| **Qwen DashScope native** | DashScope ASR (paraformer / fun-asr) | Native adapter, separate from the OpenAI-compatible path. |
+
+#### Optional: VOSK setup
+
+```bash
+cd services/api/models
+curl -LO https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
+unzip vosk-model-small-en-us-0.15.zip && rm vosk-model-small-en-us-0.15.zip
+```
+
+Then pick **VOSK (local, ~10ms)** in the api panel. The matched vocabulary
+mirrors the prompt-chip list (`DEMO_GRAMMAR` in
+`services/api/src/infrastructure/vosk-transcriber.mjs`) — add phrases there
+to expand what VOSK will accept.
+
+### Troubleshooting
+
+| Symptom | Likely cause / fix |
+|---|---|
+| **Test LLM ✗ HTTP 401** | Wrong API key or you pasted into the wrong provider preset. |
+| **Test LLM ✗ HTTP 404** | Wrong base URL or model name. Double-check the preset filled the right URL — some providers nest the path (e.g. `/v1` vs `/openai/v1`). |
+| **Test STT ✗ HTTP 404 on DashScope** | DashScope's OpenAI-compat shim has no `/audio/transcriptions`. Use the **Qwen (DashScope native)** preset instead of plain Custom. |
+| **First voice take takes 5+ seconds** | Whisper's `medium.en` model is downloading or pre-warming. Subsequent takes are ~700-900 ms. |
+| **No mic prompt / "Could not start recording"** | Browser blocked microphone access. Click the lock icon in the URL bar → allow Microphone. Reload. |
+| **Tracks drift / beats don't align** | Should not happen on `main` — sync is hard-coded on. If you see it, file an issue with browser + Strudel pattern code. |
+| **Browser console shows CORS errors** | The web app is not on `localhost:4321` (or wherever the API expects). The API has CORS open by default; check your reverse proxy rewrites if you've fronted it with one. |
+| **`csound("...")` / `.tidal` import / gamepad / serial / MQTT doesn't work** | These features ship in the **full** profile only. Run `pnpm install:full` to enable them. The lite profile loads pattern code referencing these packages without errors but the calls become no-ops. |
+| **`pnpm install` is failing with workspace errors after switching profiles** | The profile-swap scripts (`pnpm install:lite` / `:full`) handle this automatically. If you copied a YAML by hand and got it wrong, run `pnpm install:lite` to reset to a known-good state. |
+
+---
+
+## UI guide
+
+The interface has four regions. If you've used the Strudel REPL, the
+left and bottom areas will look familiar; the right panel and the
+multi-track UI are VibeRave-specific.
+
+```
+ ┌──────────────────────────────────────────────────────────────────────┐
+ │  ◐  VIBERAVE                                                         │  ← header (logo only)
+ ├────────────────────────────────────┬─────────────────────────────────┤
+ │  + New track  ■ Stop all  🗑 Clear │  [vibe] [api] [sounds] ...      │  ← tabs row
+ ├────────────────────────────────────┤▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  │  ← cycle indicator (1px, scans per cycle)
+ │ ▶ ⚡ ● Track 1 ┃ABC┃ ▮▮▮ 🗑 │ Piano roll ▼  │                         │
+ │ ┌────────── viz canvas ─────────┐  │   (drag bottom edge to resize)  │
+ │ │ ▓▓▓▓ ▓▓▓ ▓▓▓▓▓ (per-track)    │  │                                 │
+ │ └───────────────────────────────┘  │     Vibe / API / Settings panel │
+ │ ▶ ⚡ ● Track 2 ┃ABC┃ ▮▮▮ 🗑 │Scope ▼│                                 │
+ │ ┌─── viz canvas ───┐               │                                 │
+ │ │ ~~~~~~~~~~~~~    │               │                                 │
+ │ └──────────────────┘               │                                 │
+ ├────────────────────────────────────┤                                 │
+ │  </>  CODE · TRACK 1   ▼   ▶ APPLY │                                 │  ← collapsible code panel
+ │  // CodeMirror editor for selected track                             │
+ └──────────────────────────────────────────────────────────────────────┘
+```
+
+### Track row
+
+Each track has its own row with:
+
+| Element | Function |
+|---|---|
+| ▶ / ■ | Play / stop **just this track** (other tracks keep playing) |
+| ⚡ | **Spotlight** — fade other playing tracks down over ~1.5 s, leave only this one |
+| ● dot | Status: cyan glow + pulse = playing · magenta = LLM generating · grey = idle |
+| Name | Double-click to rename |
+| `ACTIVE` badge | Visible only on the selected track (yellow hazard-tape row) |
+| Level bar | 60 × 4 px deep-cyan bar — live RMS of this track's audio output |
+| 🗑 | Delete this track (asks confirmation) |
+| Viz dropdown | Top-right — pick the visualization style (see below) |
+
+Selected track gets a **yellow hazard-tape** background; unselected
+tracks have a subtle white card overlay so they don't blend into the
+dark theme.
+
+### Visualization modes
+
+11 per-track modes, all reading from the same per-track `AnalyserNode`.
+**Drag the bottom edge of the canvas** to resize a row's viz height
+(40–480 px, persisted per track). Square-shape modes don't resize.
+
+| Mode | Style | Best for |
+|---|---|---|
+| **Piano roll** | Strudel-native scrolling notes | Melodic patterns; drum-only loops show as a single bar |
+| **Waveform** | Scrolling peak history (~3 s) | Seeing dynamics over time |
+| **Spectrum** | Log-frequency spectrogram | Frequency content over time |
+| **Scope** *(default)* | 1024-sample triggered oscilloscope | Wave shape — clean for synths |
+| **Chromatic** | Scope with magenta / cyan offset (logo-style aberration) | Brand-flavoured demo |
+| **AM Bars** | 64 log-frequency bars, rainbow gradient | Classic spectrum analyser |
+| **AM Octaves** | 24 wider bars, magenta→cyan gradient | Less noisy than AM Bars on melodic content |
+| **AM LED** | 32 bars × 12 LED rows, Winamp-style | Retro club look |
+| **AM Mirror** | Bars symmetric around mid-line | Stereo-meter feel |
+| **AM Curve** | Smooth curve through 96 bars, gradient fill | Continuous flowing shape |
+| **AM Radial** | 64 coloured spokes from canvas centre (square) | Eye-catcher; needs the square slot |
+| **Spiral** | Strudel's radial cycle viz (square) | Cyclical structure |
+
+### Top of right panel: cycle indicator
+
+A 1 px magenta→cyan gradient bar at the top of the panel scans
+0% → 100% once per Strudel cycle, synced to the global clock. It
+freezes when nothing is playing. Toggle from
+**Settings → Vibe → Show cycle indicator bar**.
+
+### Vibe tab (right panel)
+
+The default tab — multimodal prompt entry plus a chat history.
+
+- **Push-to-talk button** — hold (or hold the configured key, default
+  Space) to record. Border + glow turn cyan; the glow size pulses with
+  your live mic level. Release to send. Configure the key in
+  **Settings → Vibe → Push-to-talk key**.
+- **Style picker (top row)** — 12 filled cyan pills for the most-common
+  genres (`lo-fi`, `house`, `techno`, `acid`, `drum and bass`, `dub`,
+  `trap`, `IDM`, `ambient`, `jazz chill`, etc.). Click to toggle —
+  multi-select is allowed and styles always render at the front of the
+  prompt as `lo-fi + ambient: ...`.
+- **Edit chips (second row)** — 18 outlined tags for common mutations
+  (`add hi-hat`, `more reverb`, `harder kick`, `darker`, `brighter`,
+  `glitch it`, …). Multi-select is allowed; selected chips appear after
+  the styles, separated by commas. Free-typed text is preserved
+  alongside the chips.
+- **Clear (×) button** — top-right of the textarea; one click empties
+  the prompt and deselects every style + edit chip.
+- **Auto-send after** — on PTT release, wait this long before firing
+  the LLM. **0 s** = instant send (no review window). 2-10 s gives
+  you time to read the transcript and override by typing (typing
+  cancels the timer).
+- **Command queue** — submit while a previous prompt is still
+  generating; prompts queue and fire in order. Drop one with × before
+  its turn.
+- **Code-flash** — when the LLM applies new code, the changed lines
+  in the open code editor briefly tint cyan with a 3 px diff-gutter
+  bar on the left, fading over 0.8 s.
+- **Background image** — the chat area runs a full-bleed brand image
+  behind a dim gradient. Swap it from **Settings → Vibe → Background
+  image URL** — paste any URL (`https://...`) or any path the web
+  app serves (e.g. `/img/strudel-themes.png`, or drop a file into
+  `website/public/` and reference it as `/your-file.png`). Empty = the
+  default `viberave-bg.png`. Handy for themed demos, classroom use,
+  or matching the room's projector mood. Setting persists in
+  `localStorage` per browser.
+
+### API Settings tab
+
+BYO LLM + STT keys, base URLs, and models. Settings live in
+`localStorage` and travel as `x-llm-*` / `x-stt-*` headers per
+request — never persisted on the server. **Chinese-English mixed
+input** checkbox under STT enables bilingual bias prompts and
+`lang=auto` on transcribe calls. See [Backend matrix](#backend-matrix).
+
+### Differences from native Strudel
+
+If you're coming from strudel.cc, here's what's new — and what's optional.
+
+**Always on (both lite and full):**
+- **Multi-track** instead of one global editor — each track has its
+  own scheduler instance, viz canvas, level meter, and code state.
+- **Per-track viz** — every track shows its own analyser-driven viz
+  (11 modes); no need to sprinkle `.scope()` / `.pianoroll()` in
+  your code.
+- **Sync is always on** — `isSyncEnabled = true` at the editor level
+  regardless of the saved setting. Multiple tracks sharing one cycle
+  clock is a hard requirement, not a preference.
+- **Line wrapping is always on** — long method chains never overflow
+  horizontally.
+- **Right panel** carries the multimodal Vibe + API + Sounds + Settings
+  tabs that drive the LLM agent loop. The bottom code panel is a
+  collapsible CodeMirror editor for the selected track only.
+- **Cycle indicator + per-track level meter + drag-resizable viz** —
+  small live-coding ergonomics on top of the Strudel base.
+
+**Lite-only (the default install):**
+- Skips the upstream Strudel packages VibeRave's voice/LLM pipeline
+  doesn't exercise — Csound, TidalCycles parser, Gamepad / Motion /
+  MQTT / Serial, Tauri desktop bridge.
+- Saves ~385 MB on disk + ~30 s on install.
+- Code referencing those packages still loads fine — `loadModules()`
+  guards each optional import and falls back to a no-op silently.
+
+**Need the upstream-Strudel feature set?** Run
+[`pnpm install:full`](#choose-your-install-profile). All upstream
+Strudel packages and pattern features become available immediately —
+no further changes needed.
+
+---
+
+## Backend matrix
+
+### STT
+
+| `STT_PROVIDER` | Latency (warm) | Accuracy | Where audio runs | Best for |
+|---|---|---|---|---|
+| `whisper` (default) | 700–900 ms | medium | Local CPU/GPU | Privacy / offline |
+| `vosk` | **~10 ms** | high on grammar | Local CPU | Live performance / canonical commands |
+| `api` | ~1–2 s | high (free-form) | Your chosen provider | Free-form natural prompts |
+
+The `api` mode targets any endpoint that implements OpenAI's
+`/audio/transcriptions` shape — OpenAI Whisper, Groq Whisper, Qwen DashScope's
+OpenAI-compatible mode, self-hosted whisper.cpp servers, and so on.
+
+### LLM (code generation)
+
+| `LLM_PROVIDER` | Where it runs | Notes |
+|---|---|---|
+| `api` (default) | Your chosen provider | Any OpenAI-compatible Chat Completions endpoint |
+| `ollama` | Local daemon | Requires `ollama pull <model>` first; verified with `qwen2.5:14b`, `qwen3:8b` |
+
+<br/>
+
+---
+
+<br/>
+
+## Architecture
+
+```
+services/api/                          Fastify backend (Node ≥ 20.6, ESM)
+  src/
+    application/                       Use cases — depend only on ports
+      transcribe-audio.mjs             voice → text (any STT backend; only
+                                       hit when input mode is voice)
+      generate-strudel.mjs             text → Strudel code (any LLM backend;
+                                       hit by voice / text / chip alike)
+      validate-strudel.mjs             syntactic guard pre-hot-swap
+      transcript-normalizer.mjs        optional LLM cleanup of STT output
+      chat-session.mjs                 persisted conversation per session
+    domain/                            Pure value objects + errors + WER
+    infrastructure/                    Adapters
+      whisper-transcriber.mjs          smart-whisper local STT
+      vosk-transcriber.mjs             VOSK closed-grammar STT (~10 ms)
+      openai-compatible-stt.mjs        any OpenAI-compatible STT API
+      openai-compatible-client.mjs     any OpenAI-compatible LLM API
+      file-{session,metrics}-store.mjs
+      stage-dump-store.mjs
+    interface/http/                    Fastify routes
+      override-headers.mjs             reads x-llm-* / x-stt-* per request
+    skills/strudel/                    composable LLM prompt package
+
+website/                               Astro / React Strudel REPL
+  src/repl/
+    components/panel/
+      VibeTab.jsx                      multimodal prompt input (voice + text
+                                       + chips) + chat UI + command queue
+      ApiSettingsTab.jsx               BYO key + base URL UI
+    tracks/                            multi-track UI + per-track visualizers
+```
+
+The backend follows a clean-architecture layering: HTTP routes call use
+cases, use cases depend on **ports** (interfaces in `application/ports.mjs`),
+and infrastructure provides adapter implementations. Adding a new STT
+backend is one new file in `infrastructure/` plus a branch in
+`index.mjs#buildTranscriber`.
+
+---
+
+## Prompt cookbook
+
+What kinds of prompts produce what kinds of music? VibeRave is opinionated:
+the skill prompt that drives the LLM has 22+ hand-tuned genre
+templates — including a full **dubstep family** (dubstep / brostep /
+riddim / future garage) — plus 6 complex level-4/5 reference patterns
+(including the eddyflux "coastline" benchmark), explicit chord /
+mode / FM / vowel knowledge, genre-aware lushness rules so trap and
+dubstep stay dry while ambient stays huge, a **style-fidelity rule**
+that treats a named genre as a contract (per-genre fingerprints:
+tempo range / drum feel / signature element, checked before emitting),
+anti-homogenization diversity rules (rotate keys, BPMs, kits, and
+registers between turns — templates ship in different keys on purpose),
+a 1–5 **complexity dial** triggered by EN+ZH keywords, and a mutation
+cheatsheet for common iteration commands. Use this section as a
+starting menu.
+
+The on-wire prompt format compiled by the Vibe tab is:
+
+```
+<styleA + styleB + ...>: <chipA, chipB, ..., free text>
+```
+
+Both halves are optional — `lo-fi` alone, `add hi-hat, more reverb` alone,
+and `lo-fi + ambient: more reverb, slow it down` are all valid. The LLM
+treats the styles as the seed genre(s) and the right-hand side as edits
+applied on top.
+
+### Vocabulary at a glance
+
+| Category | Phrases the system handles cleanly |
+|---|---|
+| **Genre / vibe** | `lo-fi beat at 80 bpm`, `Berghain techno`, `minimal techno`, `house at 120`, `drum and bass at 174`, `acid bass`, `ambient pad`, `dub at 76 bpm`, `trap, half-time`, `dubstep at 140`, `brostep, FM growl`, `riddim`, `future garage at 134`, `IDM broken beats`, `chiptune / 8-bit`, `hyperpop`, `dark drone`, `funky disco`, `jazzy chill at 90` |
+| **Style mixing** | `lo-fi + ambient`, `dub + minimal techno`, `house + jazz chill`, `acid + IDM` — combine two of the 12 style-picker genres for hybrid moods |
+| **Drums** | `add hi-hat`, `mute kick`, `more snare`, `double drums`, `swap drums for a 909 kit`, `swap to LinnDrum`, `harder kick` |
+| **Effects** | `add reverb`, `more delay`, `make it dubby`, `make it darker`, `more crush`, `add a phaser` |
+| **Stems / synths** | `more bass`, `deeper bass`, `harder bass` (FM), `bring back the lead`, `mute the pad`, `add an arp`, `vocal-y filter` (formant) |
+| **Harmony** | `Cm7 to Am7 to Fmaj7`, `play in dorian`, `phrygian feel`, `ii-V-I in C`, `darker / brooding` (minor + low lpf) |
+| **Energy** | `more energetic`, `more minimal`, `make it faster / slower`, `fast(2)`, `half-time` |
+| **Texture / granularity** | `more atmospheric`, `more lush`, `more space`, `warmer`, `vintage feel` (lush by default) — vs. `grittier`, `rawer`, `drier`, `8-bit`, `chiptune`, `NES-style`, `crush it` (must opt in; defaults steer away from these) |
+| **Complexity** | `complex`, `layered`, `rich`, `dense`, `intricate`, `polyphonic`, `polyrhythmic`, `sophisticated`, `maximalist`, `复杂`, `丰富`, `有层次`, `密集`, `立体`, `饱满` — pushes to level 4–5 (nested stacks, polyrhythm, voice leading). Inverse: `minimal`, `sparse`, `stripped`, `极简`, `简单` |
+| **Transport** | `play`, `pause`, `stop all`, `restart`, `open a new track`, `kill it` |
+
+### By occasion / mood
+
+Not every session is a Berghain set. Pick the row that matches the
+room you're in. These prompts steer the LLM toward warmer, slower,
+or more atmospheric defaults — all use Tier A lushness rules so they
+breathe properly.
+
+#### Cafe / coffee shop (warm, jazzy, conversational background)
+
+| Prompt | What you get |
+|---|---|
+| *"lo-fi hip-hop at 80 with rhodes chords and rain"* | LinnDrum brushed kit + Rhodes + saw bass + small room |
+| *"bossa nova jazz at 110, brushed drums, walking bass"* | `swing(4)`, `gm_acoustic_bass` walking, `gm_epiano2` chords |
+| *"neo-soul groove at 95, 7th chords, gentle swing"* | `Cm9 Fm9 Bb7 Ebmaj7` voicings, soft kick, jazzy hat |
+| *"smooth jazz in dorian at 90, walking bass, gentle pad"* | `chord(...).voicing()` + `gm_acoustic_bass` walk + low-gain `gm_pad_warm` |
+| *"city pop at 105, slap bass feel, 80s warmth"* | `gm_electric_bass_finger` + `gm_pad_warm` + `.crush(13)` for tape feel |
+| *"chill bossa with vibraphone at 100"* | `gm_vibraphone` melody + brushed drums + walking bass |
+
+#### Study / focus (predictable, low-stimulation, gentle motion)
+
+| Prompt | What you get |
+|---|---|
+| *"ambient drone in c minor, slow filter sweep, lots of reverb"* | Single chord tone with `perlin` LPF + `room(0.95)` |
+| *"minimal piano in d minor, slow, sparse"* | `gm_grand_piano` with soft attack, `.slow(4)`, no surprise transforms |
+| *"lo-fi study beat at 75, no surprises, predictable loop"* | LinnDrum brushed + Rhodes + saw bass, no `.sometimes()` |
+| *"tape-loop ambient in c lydian, slow filter movement"* | `gm_pad_warm` + `.crush(12)` warmth + `.lpf(perlin.range(...).slow(32))` |
+| *"generative ambient in c phrygian, evolving slowly"* | `irand` walk through chord tones, multiple slow LFOs |
+| *"erik satie style minimal piano in g minor"* | `gm_grand_piano`, single melodic line, `.slow(3)`, sparse left hand |
+
+#### Party / gathering (warm, danceable, never too dark)
+
+| Prompt | What you get |
+|---|---|
+| *"funky disco at 118 with slap bass and brass stabs"* | `gm_brass_section` + `gm_electric_bass_finger` + 4-on-floor + `.swing(4)` |
+| *"nu-disco at 115, side-chain feel, italo-style chord stabs"* | Sawtooth bass + `gm_synth_strings_1` stabs + sidechain envelope |
+| *"deep house at 122 with warm pad and 7th chords"* | `gm_pad_warm` + `chord("<Cm7 Fm7 ...>").voicing()` + sidechain pad |
+| *"afrobeat at 110 with conga, kalimba, electric piano"* | `gm_marimba` / `gm_kalimba` + `gm_epiano2` + percussive groove |
+| *"feel-good house at 120 with vocal-y filter"* | `gm_synth_strings_1` chord stab + `.vowel("<a e i o>")` |
+| *"funky boogie at 108 with synth bass and clavinet"* | `gm_clavinet` + sawtooth synth bass + `.swing(4)` |
+
+#### Atmospheric / cinematic (wide, evolving, suspends time)
+
+| Prompt | What you get |
+|---|---|
+| *"dark cinematic ambient in c phrygian with slow filter sweep"* | Sawtooth drone + `perlin.range(200,1200).slow(32)` LPF + `room(0.95)` |
+| *"dub techno at 100, deep delays, sparse drums"* | `bd ~ ~ ~` + heavy `delay(0.6).delaytime(0.375).delayfeedback(0.65)` on chord |
+| *"vaporwave at 90, slowed jazz chords, tape warmth"* | `chord(...).voicing()` + `.crush(13)` + `.slow(2)` |
+| *"trip-hop at 88, dusty drums, melancholy 7th chords"* | `AkaiMPC60` broken kit + minor 7th progression + `.crush(13)` |
+| *"downtempo cinematic in d minor, breathing pads"* | `gm_choir_aahs` + slow attack/release + `.lpf(sine.range(...).slow(24))` |
+| *"shoegaze pad in g lydian, washed out, layered"* | Detuned 5-osc supersaw + `room(0.9)` + `.phaser(2)` |
+
+> **Tip:** all four occasions support the complexity dial. Add
+> *"layered"* / *"complex"* / *"丰富"* to push any of these to level 4–5
+> — e.g. *"complex chill bossa with vibraphone, voice-led 9th chords,
+> chunked arpeggio at 100"* gives you a richly orchestrated cafe track.
+
+### Complexity dial — orchestrating richer tracks
+
+Plain genre prompts default to **level 3** (rich: 4–5 layers, voice
+leading, polyrhythmic hat). Add a complexity keyword to unlock more.
+
+| Level | What you'll hear | Trigger words (EN + ZH) |
+|---|---|---|
+| **1** | 1–2 layers, single motion device, single chord | *minimal, sparse, stripped, raw, naked, 极简, 简单* |
+| **2** | 3–4 layers, 1–2 variation devices, 2-chord alt | *bare, simple, classic-skeleton* (rare — most prompts go ≥ 3) |
+| **3** *(default)* | 4–5 layers, polyrhythmic hat, 4-chord progression, counter-bass | (no keyword needed) |
+| **4** | 5–6 layers, voice-led extended chords, polyrhythm, probabilistic mutation, ONE sound-design move | *complex, layered, rich, dense, intricate, polyphonic, polyrhythmic, sophisticated, 复杂, 丰富, 有层次, 密集, 立体, 饱满* |
+| **5** | 6+ layers, multi-section `arrange()`, polymeter, nested transforms, multiple sound-design moves | *maximalist, baroque, IDM-density, hyperpop-density, kitchen-sink, 极致, 满, 最大化* |
+
+**The keywords stack with the genre.** Level-4 trap is still trap (no
+auto pad) — it gets density through hi-hat polyrhythm, 808 pitch
+movement, and a counter-melodic stab layer. Level-4 minimal techno is
+still minimal — it gets polymetric percussion, slowly-evolving filter
+sweeps on the bass, and chord motion on a ghost layer (allowed at
+level 4 because the user asked).
+
+#### What unlocks at level 4–5
+
+Beyond just "more layers," level 4–5 unlocks compositional techniques
+the simple templates don't reach for:
+
+- **Nested `stack(...)`** — drum sub-group with bank applied to all 4 percussion lines, then a master mask gates whole sections in/out
+- **`.late("[0 .01]*4")` master groove tail** — humanizing micro-swing that gives the mix its "produced" feel
+- **`.mask("<...>/16")` sectional gating** — layers fade in/out across 16-cycle blocks so the loop has macro-structure
+- **`chord(...).dict('ireal').voicing()`** — jazz-rich extended voicings (9ths, 11ths, sus4) instead of bare triads
+- **`.set(chords)` for inherited voice leading** — bass automatically follows the chord progression's roots
+- **`sine.range(low, high).slow(N)` continuous modulation** on `.fm`, `.lpf`, `.gain` simultaneously — three modulators routed to three params
+- **Polymeter** — one layer in 7/8 or `slow(3)` against a 4-cycle base, creating phase interplay that "never quite repeats"
+- **Probabilistic transforms** — `.rarely(ply(2))`, `.chunk(4, fast(2))`, `.degradeBy(0.15)` for unpredictability
+- **Granular processing** — `.segment(4).clip(rand.range(0.4, 0.8))` for IDM-style micro-loops
+
+#### Prompts that produce coastline-level richness
+
+The skill ships with the eddyflux ["coastline"](https://strudel.cc) pattern
+as its level-5 reference. To get close to that quality:
+
+| Prompt | What you get |
+|---|---|
+| *"complex deep house at 122 with rich layers and voice-led 9th chords"* | Nested drum stack, `chord("<Cm9 Fm11 Bb7sus Ebmaj9>").dict('ireal').voicing()`, polyrhythmic hats, supersaw chord pad, masked counter-melody |
+| *"layered IDM, polyrhythmic, intricate, chunked breakbeats"* | Broken drums with `.chunk(4, fast(2)).sometimes(rev)`, bass with `.fmi(sine.range(2,12).slow(11))`, 7-against-3-against-5 phase interplay |
+| *"dense ambient drone, evolving, breathing, c minor"* | 5-osc detuned supersaw drone bed, slow phaser on pad, random walk through chord tones, masked sub pulse, sparse air sparkle |
+| *"sophisticated jazz-techno at 130, polyrhythmic, with phaser and chunked arpeggio"* | Coastline-style: chord dict, segmented arp with FM modulation, granular clip, 9th voicings |
+| *"复杂的 deep house, 有层次, voice leading"* | Same as English — Chinese keywords trigger the same level-4 logic |
+| *"give me a coastline-style chill house at 70 bpm with 9th chords and chunked arpeggio"* | Direct reference to the canonical example — should produce the closest match to the eddyflux output |
+
+#### Iteration to ratchet complexity up or down
+
+Already have something playing? Push the dial:
+
+| You say | What changes |
+|---|---|
+| *"make it more complex"* / *"more layers"* / *"加点层次"* | +1 level: adds polyrhythmic perc, counter-melody, or modulation route |
+| *"add voice leading"* / *"jazzier chords"* | Swaps bare `note("[c3,eb3,g3]")` for `chord("<...>").dict('ireal').voicing()` |
+| *"add a polyrhythmic hat"* | Inserts `s("hh*16").struct("1 0 1 1 0 1 0 1...")` |
+| *"add modulation routing"* | Continuous `sine.range().slow()` on filter / FM / gain on existing layers |
+| *"chunked arpeggio"* | Wraps a melodic layer in `.segment(4).chunk(4, fast(2))` |
+| *"sectional gating"* | Adds `.mask("<0 1 1 1>/16")` so layers cycle in/out across 16 bars |
+| *"groove tail"* / *"humanize the timing"* | Appends `.late("[0 .01]*4").late("[0 .01]*2")` to the outer `stack` |
+| *"strip it down"* / *"make it minimal"* / *"简化"* | −1 or −2 levels: removes counter-melody, sparkle, ghost pad |
+
+### Session walkthroughs
+
+#### Build a lo-fi study beat (3 turns)
+
+| Turn | Prompt | What you hear |
+|---|---|---|
+| 1 | *"lo-fi beat at eighty bpm"* | LinnDrum kit + saw bass + Rhodes chords (C–Am–G–Eb), slow swing, ~80 BPM |
+| 2 | *"add reverb on the rhodes"* | Same pattern, `room(0.7)` on the Rhodes layer; drums + bass untouched |
+| 3 | *"make it sleepier"* | LPF drops, attack/release lengthen, slight slow |
+
+#### Berghain → minimal techno → drum and bass (multi-track)
+
+| Turn | Prompt | What you hear |
+|---|---|---|
+| 1 | *"Berghain techno at one thirty-eight"* | 132 BPM dark/hypnotic — 909 kick, delay-drowned clap, minimal hats, sub bass |
+| 2 | *"harder bass"* | Bass swaps from sawtooth+lpf to FM synth (`.s("sine").fmh(2).fmi(...)`) — metallic, more aggressive |
+| 3 | *"open a new track. minimal techno"* | Track 2 starts in sync — sparse 130 BPM, just kick + ticks |
+| 4 | *"open a new track. drum and bass at one seventy-four"* | Track 3 — 174 BPM breakbeat, Amen-style chops |
+| 5 | *"stop all"* | All three tracks stop on the next cycle |
+
+#### Jazz harmonic exploration (chord + mode prompts)
+
+| Turn | Prompt | What you hear |
+|---|---|---|
+| 1 | *"Cm7 to Fm7 to Bb7 to Ebmaj7, dorian, ninety bpm"* | `chord(...).voicing().anchor("c4")` over LinnDrum brushes + walking acoustic bass |
+| 2 | *"make the chord more dubby"* | `delay(0.5)` + `delaytime(0.375)` + `delayfeedback(0.6)` on the chord layer; bass and drums untouched |
+| 3 | *"add a walking bass in c minor"* | `gm_acoustic_bass` scale walk added to the `stack` |
+
+#### Hyperpop sound design
+
+| Turn | Prompt | What you hear |
+|---|---|---|
+| 1 | *"hyperpop at one sixty bpm"* | 160 BPM, square lead, triangle bass, F major, `.crush(8)` on the master |
+| 2 | *"more crush"* | Crush bit-depth drops to 4-5 |
+| 3 | *"vocal-y filter on the lead"* | `.vowel("<a e i o>")` cycling on the square lead |
+
+#### Building complexity from scratch (4 turns)
+
+Same prompt, ratcheting the complexity dial each turn. Useful for
+demos where you want to show density evolving live.
+
+| Turn | Prompt | What you hear |
+|---|---|---|
+| 1 | *"deep house at 122"* | Level 3 default — 4-5 layers, polyrhythmic hat, voice-led 4-chord progression |
+| 2 | *"make it more complex, add chunked arpeggio"* | Adds a 5th `chord(...).dict('ireal').voicing()` layer with `.segment(4).chunk(4, fast(2))` and `.fm(sine.range(...).slow(8))` modulation |
+| 3 | *"sectional gating, 16-bar mask"* | Wraps the chord + counter-melody in `.mask("<0 1 1 1>/16")` so they cycle in/out across the loop instead of repeating every cycle |
+| 4 | *"groove tail and stereo size"* | Appends `.late("[0 .01]*4").late("[0 .01]*2").size(4)` to the outer `stack` — humanized timing + wider stereo image, the eddyflux "coastline" finishing touch |
+
+By turn 4 you've gone from a clean 4-layer house track to a level-5
+maximalist arrangement with everything the skill knows how to do.
+
+#### Style mixing (UI-driven)
+
+Click two style pills in the picker — they compile into the prompt as
+`<styleA + styleB>:`. The right-hand chips and free text apply on top.
+
+| Compiled prompt | What you hear |
+|---|---|
+| *`lo-fi + ambient: more reverb`* | Slow swing LinnDrum + Rhodes from lo-fi, but with a `gm_pad_warm` ghost layer (~0.25 gain, room 0.7) carrying the chord — atmospheric without losing the beat |
+| *`dub + minimal techno`* | 130 BPM minimal kit, but the chord stab gets `delay(0.5).delaytime(0.375).delayfeedback(0.65)` from the dub template — long echo trails over a sparse pulse |
+| *`house + jazz chill`* | 120 BPM four-on-the-floor, but chords use ii-V-I motion + `gm_epiano2` voicings instead of the usual house stab |
+| *`acid + IDM`* | 303-style `.lpf(sine.range(...)).lpq(15)` bass, but drum pattern uses broken `.struct("1 0 1 0 0 1 0 1")` instead of straight 4/4 |
+| *`techno + ambient: more space`* | 132 BPM kick + hat skeleton with a long-tail pad on top, room(0.85), most non-essential layers thinned out |
+
+The two genres are seeds, not equal halves — the LLM picks the rhythm
+backbone from one and the harmonic / atmospheric character from the
+other. If the result leans wrong, swap the order or add an explicit
+chip (e.g. `lo-fi + ambient: more bass` to anchor more lo-fi-ness).
+
+### Single-shot one-liners
+
+Drop these into the textarea (or speak them) for instant results.
+
+| Prompt | Style |
+|---|---|
+| *"give me a chill lo-fi beat at 80 bpm with rhodes chords"* | Lo-fi hip-hop |
+| *"deep house at 120, sidechain on the pad"* | Deep house with the classic ducking pad |
+| *"Berghain techno at 132 with FM bass"* | Dark / industrial |
+| *"jungle at 174 with amen break and sub bass"* | DnB / jungle |
+| *"ambient pad in c minor, slow, lots of reverb"* | Drone / dark ambient |
+| *"acid 303 bassline, lpf swept, lpq high"* | Acid |
+| *"trap at 140 half-time, 808 sub, hi-hat rolls"* | Trap |
+| *"dubstep at 140 with half-note wobble and deep sub"* | Classic dubstep — `.lpf(sine.range(180,1600).slow(0.5))` wobble + sub < 150 Hz |
+| *"brostep, Skrillex-style FM growl bass at 140"* | Brostep — `.fmh(2.5).fmi(sine.range(2,14).slow(0.5))` + distorted kit |
+| *"riddim with triplet wobble at 140"* | Riddim — sparser dubstep, `.slow(0.333)` wobble, no chord layer |
+| *"future garage at 134, dubby chord, 2-step kit"* | Future garage — UK 2-step, atmospheric pad with delay |
+| *"complex dubstep with multi-lfo wobble and ghost snares"* | Level-4 dubstep — desynced LFOs on lpf + fmi, masked drop/breakdown sections |
+| *"chiptune in F major at 160 with crush"* | 8-bit (explicit) |
+| *"NES-style boss music in C minor at 150"* | 8-bit (explicit) — bare square + triangle, hard `.crush(8)` |
+| *"raw, gritty 8-bit punk in F at 170, no reverb"* | 8-bit (explicit) — opts out of all atmosphere |
+| *"phrygian techno at 138, minor feel"* | Modal techno |
+| *"jazz progression Cm7-Am7-Fmaj7-G7 with walking bass at 90"* | Modal jazz |
+| *"lush deep house at 122 with warm pad and side-chain"* | Atmospheric / lush — supersaw pad, gm_pad_warm, full ducking |
+| *"vintage warm techno at 132, tape feel, gentle saturation"* | Vintage — `.crush(13)` + `.shape(0.3)`, no harsh aliasing |
+| *"smooth ambient drone in c minor, deep reverb, slow filter sweep"* | Maximum atmosphere — single sweep, `room(0.9)` |
+
+### Iteration patterns (when something is already playing)
+
+The LLM **always sees the current pattern** in a `<current>` block, so
+iterations preserve whatever you don't ask to change.
+
+| You say | What changes | What stays |
+|---|---|---|
+| *"more reverb"* | `room(0.7-0.9)` on the most-prominent melodic layer | drums, kick, structure |
+| *"make it dubby"* | `delay` / `delaytime` / `delayfeedback` on a non-drum layer | tempo, kit, melody |
+| *"swap to RolandTR808"* | `.bank("RolandTR808")` on drum lines | melody, structure, tempo |
+| *"darker"* | LPF drops, room rises, soundfont swaps to a darker one | rhythm, harmony |
+| *"harder bass"* | `.s("sine").fmh(2).fmi(...)` swap (FM synth) | drums, melody |
+| *"vocal-y filter"* | `.vowel("<a e i o>")` added to lead/synth | drums, bass, harmony |
+| *"every 4 bars flip the hihats"* | `.every(4, rev)` on the hh layer | everything else |
+| *"quieter overall"* | Outer `.gain(0.6)` or per-layer gain reductions | structure |
+| *"more energetic"* | `.fast(2)` somewhere, optional `hh*16` layer added | core idea |
+| *"more atmospheric / more lush"* | Reverb tail (`.room(0.7)`) + soft-attack pad layered in if missing | tempo, kit, structure |
+| *"warmer / vintage"* | `.crush(12-14)` + `.shape(0.3)` saturation; replaces bare saws with detuned supersaw stack | rhythm, harmony |
+| *"more 8-bit / chiptune-y"* | Hard `.crush(8)`, mono center-pan, drops reverb/delay, swaps gm voices for bare square/triangle | tempo, structure |
+| *"drier / rawer"* | Strips reverb + delay tails; tightens attacks | rhythm, kit |
+| *"strip everything except drums and bass"* | The chord/pad/lead `stack` items removed | drums, bass |
+
+### Things the system will refuse politely
+
+The LLM is told not to invent — when a request can't be turned into a
+pattern, it returns a "Couldn't generate" sentinel and the editor stays
+unchanged. Triggers:
+
+- Off-topic ("write me a poem", "what's the weather")
+- Genre / instrument the skill doesn't know (very obscure regional styles)
+- Requests that would need code outside Strudel's verified API surface
+
+### Tips
+
+- **Voice is fastest** for short canned commands (`"more reverb"`, `"stop all"`).
+- **Typing is best** for precise tweaks the LLM might mis-interpret from
+  speech: *"raise lpf to 1200 on the bass layer"* is much safer typed.
+- **Chips are first** for discovery — click style + edit chips, optionally
+  edit the compiled prompt, then send. Multi-select toggles, so a second
+  click on the same pill removes it.
+- **Modern-electronic by default** — the lushness + sound-design rules
+  steer generic prompts away from bare saws, mono mixes, and `.crush(8)`.
+  If you actually want chiptune, ask for it explicitly (`"8-bit"`,
+  `"chiptune"`, `"NES-style"`, `"crush it"`) — those keywords flip the
+  rule off.
+- **Named genres are contracts** — the style-fidelity rule checks tempo
+  range, drum feel (four-on-floor vs breakbeat vs half-time vs 2-step),
+  and each genre's signature element before code is returned, and the
+  diversity rules rotate keys and BPMs between turns so consecutive
+  generations don't all collapse into the same C-minor four-on-floor.
+- **Multi-track sessions stay in beat** automatically (one global cycle
+  clock). Open a new track at any time without disturbing the others.
+
+Above the textarea: 12 style pills (cyan, multi-select) on top, 18
+edit chips (outlined, multi-select) below — they compile down to
+`<styles>: <chips, free text>` before sending. The × button on the
+textarea clears everything in one click. The skill prompts driving the
+LLM live in `services/api/src/skills/strudel/` (rules, reference,
+recipes, examples) — add new genre templates, mutation recipes, or
+sound-design rules there and the LLM picks them up on the next request
+(no restart needed; skill files are re-read per `/generate` call).
+
+---
+
+## Development
+
+```bash
+pnpm dev           # web + api together
+pnpm dev:web       # web only
+pnpm dev:api       # api only
+pnpm test          # vitest
+pnpm lint          # eslint
+pnpm format-check  # prettier
+pnpm build         # production web build
+```
+
+`services/api` runs under `node --watch` so source-file edits restart
+the server automatically; the web side is Astro's standard HMR.
+
+<br/>
+
+---
+
+<br/>
+
+## Contributing
+
+PRs are welcome. A few conventions to keep things sane:
+
+### How to add a new STT or LLM backend
+
+The whole pipeline is one-file-per-adapter. To add a backend:
+
+1. Create the adapter in `services/api/src/infrastructure/<name>-stt.mjs`
+   (or `<name>-client.mjs` for an LLM). It must conform to the
+   `Transcriber` / `LlmClient` shape declared in
+   `services/api/src/application/ports.mjs`.
+2. Wire it into `services/api/src/index.mjs#buildTranscriber` (or
+   `buildLlmClient`) plus the per-request `transcriberFor` /
+   `llmClientFor` cache.
+3. Add a preset to `website/src/settings.mjs` so users can pick it
+   from the API tab in one click.
+
+That's it — no plugin system, no registry, no config schema. Each
+backend is a small file. See `vosk-transcriber.mjs` and
+`dashscope-stt.mjs` for examples that follow non-OpenAI protocols.
+
+### How to extend the voice grammar (VOSK)
+
+VOSK runs in closed-grammar mode. To make a new phrase recognisable:
+
+1. Add it to `DEMO_GRAMMAR` in
+   `services/api/src/infrastructure/vosk-transcriber.mjs`.
+2. If the phrase contains a word missing from the small-en
+   pronunciation lex (Berghain, lo-fi, hi-hat), spell it phonetically
+   in the grammar and add a regex to `CANONICALISE` that renames it
+   back to the canonical form before the LLM sees it.
+3. Optionally add it to the chip row in
+   `website/src/repl/components/panel/VibeTab.jsx#PROMPT_CHIPS` so
+   users can discover it.
+
+### Pull requests
+
+- Branch off `main`. Keep PRs small and focused — one concern per PR.
+- Run `pnpm format-check` and `pnpm lint` before pushing.
+- Don't add new dependencies casually. The repo intentionally has a
+  small dependency surface; pitch the use case in the PR description.
+- For changes to user-visible UI, attach a before / after screenshot
+  in the PR description.
+- Don't commit anything under `services/api/data/` (PII recordings)
+  or `services/api/models/` (multi-GB binaries). Both are gitignored.
+
+### Code style
+
+- ESM throughout. No CommonJS. No mixed `require` + `import`.
+- Prefer small files with single responsibility. The clean-architecture
+  layering (`application` / `domain` / `infrastructure` / `interface`)
+  is intentional — adapter code goes in `infrastructure`, business
+  logic goes in `application`, neither touches the other.
+- Comments explain *why*, not *what*. Naming should make the *what*
+  obvious; comments are reserved for non-obvious constraints, hidden
+  invariants, or workaround context.
+
+### Filing issues
+
+Useful repro info:
+- **Browser + version + OS** (Chrome 120 / macOS 14, etc.)
+- **STT and LLM provider** picked in the API tab
+- **The exact phrase you said** + what the chat / textarea ended up showing
+- A copy-paste of the relevant `[api]` log line, or the failing request shown in the browser DevTools network tab
+- Whether `pnpm test` and `pnpm lint` pass on `main`
+
+<br/>
+
+---
+
+<br/>
+
+## Built on
+
+- [Strudel](https://strudel.cc) — pattern language + audio scheduler (AGPL-3.0).
+- [smart-whisper](https://github.com/JacobLinCool/smart-whisper) — Node binding for whisper.cpp (Metal / CUDA accelerated).
+- [vosk-koffi](https://github.com/tocha688/vosk-koffi) — modern FFI binding for the [VOSK](https://alphacephei.com/vosk/) toolkit.
+- [openai](https://github.com/openai/openai-node) — official Node SDK for OpenAI-compatible HTTP shapes (works against any compatible provider).
+- [Ollama](https://ollama.com/) — local LLM runtime (offline alternative, no API key needed).
+
+---
+
+## License
+
+VibeRave is licensed under [**AGPL-3.0-or-later**](LICENSE), inherited from
+upstream [Strudel](https://github.com/tidalcycles/strudel) (which is also
+AGPL-3.0). Because Strudel is the strongest copyleft license in the
+dependency graph, the combined work has to ship under AGPL-3.0.
+
+### Dependency licenses
+
+| Component | License | Compatible |
+|---|---|---|
+| **Strudel** (in `packages/`) | AGPL-3.0-or-later | inherited |
+| **openai** (Node SDK for OpenAI-compatible APIs) | Apache-2.0 | ✓ |
+| **smart-whisper** (whisper.cpp binding) | MIT | ✓ |
+| **vosk-koffi** (VOSK FFI binding) | MIT | ✓ |
+| **wavefile** | MIT | ✓ |
+| **fastify** | MIT | ✓ |
+
+All runtime dependencies are MIT/Apache-2.0 (permissive, compatible with
+AGPL). External services we *connect to over the network* (OpenAI, Groq,
+DashScope, your Ollama instance, etc.) are governed by their own terms —
+not bundled, not redistributed, not affected by VibeRave's license.
+
+### What AGPL-3.0 means in practice
+
+Because of the AGPL "network use is distribution" clause, **if you run a
+modified version of VibeRave as a public network service, you must make
+your modified source available to the users of that service**. Forks for
+private use don't have to publish — only public deployments. See the
+[full license text](LICENSE).

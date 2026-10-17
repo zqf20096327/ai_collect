@@ -1,0 +1,353 @@
+# Oracle AI Data Platform Workbench Samples
+
+This repository contains a curated collection of sample notebooks demonstrating how to build data pipelines, run machine learning workloads, and integrate AI capabilities using **Oracle AI Data Platform (AIDP) Workbench** — a unified, governed workspace for data engineering, ML, and AI development powered by Apache Spark.
+
+## What is Oracle AI Data Platform Workbench?
+
+Oracle AI Data Platform Workbench is a unified, governed workspace for building, managing, and deploying AI and data-driven solutions. It brings together notebooks, agent development, orchestration, and catalog management in a single collaborative platform — empowering teams to explore data, fine-tune models, and operationalize AI with trust and speed.
+
+[Learn more about AIDP Workbench →](https://www.oracle.com/ai-data-platform/workbench/)
+
+---
+
+## Repository Structure
+
+```
+oracle-aidp-samples/
+├── getting-started/          # Foundational notebooks for new users
+│   ├── Delta_Lake/           # Delta Lake feature walkthroughs
+│   └── migration/            # Migrating workloads to AIDP
+├── data-engineering/
+│   ├── ingestion/            # Connectors and data loading patterns
+│   └── transformation/       # Pipeline architectures and table formats
+│       ├── liquid-clustering/
+│       ├── medallion-lake/
+│       ├── scd/
+│       └── streaming/
+├── ai/
+│   ├── agent-hub/            # Agent Hub code-first agent samples
+│   │   └── agent-samples/
+│   ├── agent-flows/          # Agent orchestration and scheduling
+│   ├── ml-datascience/       # ML, LLM, and AI service integrations
+│   └── skills/               # Agent Skills (SKILL.md packages) by product domain
+│       └── analytics/        # Oracle Analytics skills
+└── shared-utils/             # Reusable utilities and data generators
+```
+
+---
+
+## Sample Catalog
+
+### Getting Started
+
+Foundational examples to help you get up and running on AIDP Workbench.
+
+| Notebook | Description |
+|---|---|
+| [Access ALH Data](getting-started/Access_ALH_Data.ipynb) | Write and query data in Oracle Autonomous AI Lakehouse (ALH) using PySpark `insertInto` and SQL `INSERT` statements with external catalogs. |
+| [Access Object Storage Data](getting-started/Access_Object_Storage_Data.ipynb) | Read and write data from OCI Object Storage using direct access, external volumes, and external tables. |
+| [Analyse Data Using PySpark](getting-started/Analyse_Data_Using_PySpark.ipynb) | PySpark fundamentals: catalog and schema setup, table creation, data insertion, schema exploration, and matplotlib visualizations. |
+| [Analyse Data Using SQL](getting-started/Analyse_Data_Using_SQL.ipynb) | Core SQL operations on AIDP including DataFrame creation, transformations, aggregations, and simple visualizations. |
+| [ALH External Catalog MERGE](getting-started/ALH_ExternalCatalog_Merge.ipynb) | End-to-end MERGE workflow into an ALH table via an AIDP external catalog: insert/update/delete with merge keys and OOS-staging skip optimization. |
+| [Native Apache Iceberg Table](getting-started/Native_Iceberg_Table.ipynb) | Create a native Iceberg table in a Standard catalog, then explore schema and partition evolution, MERGE, snapshots, and time travel. |
+| [Parameterize Notebooks with Native Widgets](getting-started/Native_Notebook_Widgets.ipynb) | Native notebook widgets (text, dropdown, combobox, multiselect), job and `notebook.run` parameter overrides, and a fail-fast check for job parameters a widget silently ignores. |
+
+The native Iceberg sample uses an existing AIDP Standard catalog. The Hadoop catalog sample under Data Engineering registers a separate Spark catalog on OCI Object Storage. Delta UniForm samples create Delta tables that publish Iceberg-compatible metadata.
+
+#### Delta Lake
+
+| Notebook | Description |
+|---|---|
+| [Use Delta Lake Table](getting-started/Delta_Lake/Use_Delta_Lake_Table.ipynb) | Comprehensive guide covering Delta table operations: updates, merges, time travel, liquid clustering, and vacuuming. |
+| [Delta Change Data Feed](getting-started/Delta_Lake/Delta_Change_Feed.ipynb) | Capture row-level changes (inserts, updates, deletes) from Delta tables for CDC, incremental processing, and streaming pipelines. |
+| [Handle Schema Evolution](getting-started/Delta_Lake/Handle_Schema_Evolution.ipynb) | Add and evolve columns in Delta tables without rewriting existing data, leveraging automatic schema evolution. |
+| [Delta UniForm Tables](getting-started/Delta_Lake/DeltaUniformTables.ipynb) | Create Delta UniForm tables that automatically synchronize Apache Iceberg metadata for cross-format interoperability. |
+
+#### Migration
+
+| Notebook | Description |
+|---|---|
+| [Migrate Files from Databricks to AIDP](getting-started/migration/databricks_to_aidp/recursive-files-to-aidp.ipynb) | Recursively export notebooks and files from a Databricks workspace to AIDP using the `databricks-sdk` library. |
+| [Download from Git to AIDP](getting-started/migration/git_download_and_extract_to_aidp.ipynb) | Download notebooks and files from a Git repository as a ZIP archive and extract them directly into an AIDP workspace volume. |
+
+---
+
+### Data Engineering — Ingestion
+
+Patterns for connecting to and loading data from a wide range of sources.
+
+| Notebook | Description |
+|---|---|
+| [Read/Write Oracle Ecosystem Connectors](data-engineering/ingestion/Read_Write_Oracle_Ecosystem_Connectors.ipynb) | Connect to Oracle Database, Oracle Exadata, ALH, and ATP with external catalog support and SQL pushdown. |
+| [Read/Write External Ecosystem Connectors](data-engineering/ingestion/Read_Write_External_Ecosystem_Connectors/) | Per-database read/write ingestion notebooks — Apache Hive Metastore, Microsoft SQL Server, Azure SQL, PostgreSQL, MySQL, and IBM Db2 (4.1) — each with SQL pushdown and a connector-options reference. |
+| [Read-Only Ingestion Connectors](data-engineering/ingestion/Read_Only_Ingestion_Connectors.ipynb) | Use read-only connectors for MySQL HeatWave, REST APIs, Oracle Fusion BICC, Apache Kafka, and other sources. |
+| [Connect Using Custom JDBC Driver](data-engineering/ingestion/Connect_Using_Custom_JDBC_Driver.ipynb) | Integrate custom JDBC drivers (e.g., SQLite, Snowflake) with Spark for connecting to databases not bundled by default. |
+| [Execute Oracle ALH SQL](data-engineering/ingestion/Execute%20Oracle%20ALH%20SQL.ipynb) | Execute SQL statements directly against Oracle ALH using the `oracledb` Python package. |
+| [Ingest Data Using YAML](data-engineering/ingestion/Ingest_data_using_yaml/Ingest_data_using_YAML.ipynb) | Config-driven ingestion from cloud storage (CSV, JSON) and JDBC sources with schema validation and data quality checks. |
+| [Ingest from Multi-Cloud](data-engineering/ingestion/Ingest_from_Multi_Cloud.ipynb) | Ingest data from Azure Data Lake Storage (ADLS) and Amazon S3 with proper JAR configuration and credential management. |
+| [Apache Iceberg with an OCI Hadoop Catalog](data-engineering/ingestion/Ingest_into_iceberg_hadoop_catalog_oci_native.ipynb) | Register a Spark Hadoop catalog on OCI Object Storage, then create, query, and evolve an Iceberg table. |
+| [Pipe-Delimited File Ingestion](data-engineering/ingestion/PipeDelimited.ipynb) | Read pipe-delimited (`\|`) files from OCI Object Storage and register them as external tables. |
+| [Read Excel Files](data-engineering/ingestion/Read_excel_data/read_excel.ipynb) | Read Excel (`.xlsx`) files using the Spark Excel connector and convert them to Spark DataFrames or CSV. |
+| [Streaming from OCI Streaming Service](data-engineering/ingestion/Streaming/StreamingFromOCIStreamingService.ipynb) | Consume messages from OCI Streaming (Kafka-compatible) using Spark Structured Streaming with SASL/OAUTHBearer authentication. |
+| [Streaming from Volume Path](data-engineering/ingestion/Streaming/StreamingFromVolumePath.ipynb) | Process CSV files from a workspace volume using one-time micro-batch streaming with `Trigger.Once()`. |
+
+---
+
+### Data Engineering — Transformation
+
+Architectural patterns and pipeline templates for data transformation at scale.
+
+#### Medallion Architecture
+
+Implements the Bronze → Silver → Gold lakehouse pattern with data quality checks and aggregations. Industry variants available:
+
+| Notebook | Industry |
+|---|---|
+| [Education](data-engineering/transformation/medallion-lake/education_medallion_architecture_demo.ipynb) | Education analytics pipeline |
+| [Energy](data-engineering/transformation/medallion-lake/energy_medallion_architecture_demo.ipynb) | Energy consumption and reporting |
+| [Financial Services](data-engineering/transformation/medallion-lake/financial_services_medallion_architecture_demo.ipynb) | Financial transactions and risk |
+| [Healthcare](data-engineering/transformation/medallion-lake/healthcare_medallion_architecture_demo.ipynb) | Patient records and clinical data |
+| [Hospitality](data-engineering/transformation/medallion-lake/hospitality_medallion_architecture_demo.ipynb) | Hotel bookings and guest analytics |
+| [Insurance](data-engineering/transformation/medallion-lake/insurance_medallion_architecture_demo.ipynb) | Policy and claims processing |
+| [Manufacturing](data-engineering/transformation/medallion-lake/manufacturing_medallion_architecture_demo.ipynb) | Production line and quality data |
+| [Media](data-engineering/transformation/medallion-lake/media_medallion_architecture_demo.ipynb) | Content engagement and subscriptions |
+| [Real Estate](data-engineering/transformation/medallion-lake/real_estate_medallion_architecture_demo.ipynb) | Property listings and transactions |
+| [Retail](data-engineering/transformation/medallion-lake/retail_medallion_architecture_demo.ipynb) | Sales, inventory, and customer data |
+| [Telecommunications](data-engineering/transformation/medallion-lake/telecommunications_medallion_architecture_demo.ipynb) | Network usage and customer churn |
+| [Transportation](data-engineering/transformation/medallion-lake/transportation_medallion_architecture_demo.ipynb) | Logistics and fleet tracking |
+
+#### Delta Liquid Clustering
+
+Demonstrates Delta Lake liquid clustering for automatic query optimization and data layout management. Industry variants available:
+
+| Notebook | Industry |
+|---|---|
+| [Education](data-engineering/transformation/liquid-clustering/education_delta_liquid_clustering_demo.ipynb) | Student performance analytics with ML prediction |
+| [Energy](data-engineering/transformation/liquid-clustering/energy_delta_liquid_clustering_demo.ipynb) | Smart grid monitoring and anomaly detection |
+| [Financial Services](data-engineering/transformation/liquid-clustering/financial_services_delta_liquid_clustering_demo.ipynb) | Transaction analytics and reporting |
+| [Healthcare](data-engineering/transformation/liquid-clustering/healthcare_delta_liquid_clustering_demo.ipynb) | Patient data access patterns |
+| [Hospitality](data-engineering/transformation/liquid-clustering/hospitality_delta_liquid_clustering_demo.ipynb) | Booking and occupancy analytics |
+| [Insurance](data-engineering/transformation/liquid-clustering/insurance_delta_liquid_clustering_demo.ipynb) | Claims and policy data optimization |
+| [Manufacturing](data-engineering/transformation/liquid-clustering/manufacturing_delta_liquid_clustering_demo.ipynb) | Production and quality metrics |
+| [Media](data-engineering/transformation/liquid-clustering/media_delta_liquid_clustering_demo.ipynb) | Content and engagement data |
+| [Real Estate](data-engineering/transformation/liquid-clustering/real_estate_delta_liquid_clustering_demo.ipynb) | Property and transaction data |
+| [Retail](data-engineering/transformation/liquid-clustering/retail_delta_liquid_clustering_demo.ipynb) | Sales and inventory analytics |
+| [Telecommunications](data-engineering/transformation/liquid-clustering/telecommunications_delta_liquid_clustering_demo.ipynb) | Network and customer usage data |
+| [Transportation](data-engineering/transformation/liquid-clustering/transportation_delta_liquid_clustering_demo.ipynb) | Fleet and logistics optimization |
+
+#### Delta UniForm Liquid Clustering
+
+Combines Delta liquid clustering with UniForm-generated Iceberg metadata for cross-engine reads. These samples write Delta tables. Industry variants available:
+
+| Notebook | Industry |
+|---|---|
+| [Education](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/education_iceberg_liquid_clustering_demo.ipynb) | Student performance data |
+| [Energy](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/energy_iceberg_liquid_clustering_demo.ipynb) | Grid and sensor data |
+| [Financial Services](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/financial_services_iceberg_liquid_clustering_demo.ipynb) | Transaction and risk data |
+| [Healthcare](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/healthcare_iceberg_liquid_clustering_demo.ipynb) | Clinical and patient records |
+| [Hospitality](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/hospitality_iceberg_liquid_clustering_demo.ipynb) | Booking and revenue data |
+| [Insurance](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/insurance_iceberg_liquid_clustering_demo.ipynb) | Policy and claims data |
+| [Manufacturing](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/manufacturing_iceberg_liquid_clustering_demo.ipynb) | Production and IoT data |
+| [Media](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/media_iceberg_liquid_clustering_demo.ipynb) | Content delivery data |
+| [Real Estate](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/real_estate_iceberg_liquid_clustering_demo.ipynb) | Property listings data |
+| [Retail](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/retail_iceberg_liquid_clustering_demo.ipynb) | Sales and inventory data |
+| [Telecommunications](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/telecommunications_iceberg_liquid_clustering_demo.ipynb) | Network usage data |
+| [Transportation](data-engineering/transformation/liquid-clustering/iceberg_uniform_liquid_clustering/transportation_iceberg_liquid_clustering_demo.ipynb) | Fleet and route data |
+
+#### Other Transformation Patterns
+
+| Notebook | Description |
+|---|---|
+| [Slowly Changing Dimensions (SCD Type 2)](data-engineering/transformation/scd/slowly_changing_dimension_template.ipynb) | Track historical changes to dimension records using SCD Type 2 with Jinja2-templated merge logic. |
+| [Streaming — Energy Delta Liquid Clustering](data-engineering/transformation/streaming/energy_delta_streaming_liquid_clustering_demo.ipynb) | Real-time smart grid monitoring with streaming Delta tables, anomaly detection, and statistical baselines for energy consumption. |
+| [Streaming — Manufacturing Delta Liquid Clustering](data-engineering/transformation/streaming/manufacturing_delta_streaming_liquid_clustering_demo.ipynb) | Continuous ingestion and clustering of manufacturing sensor data using Spark Structured Streaming and Delta Lake. |
+
+#### Cross-Format & External Table Interop
+
+| Sample | Description |
+|---|---|
+| [ADW External Table on Delta UniForm](data-engineering/adw-ext-table-on-uniform/README.md) | Automates recreating an ADW Iceberg external table against the latest UniForm-generated metadata file when a UniForm-enabled Delta table evolves — ADW + Python + a stored procedure that resolves the newest `vN.metadata.json`. Start here to learn the pattern on one table; to automate a whole catalog across a fleet of ADWs on a schedule, see [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md). |
+| [ADW Iceberg External Table Sync](data-engineering/adw-iceberg-external-table-sync/README.md) | Scheduled, fleet-scale automation that keeps an entire AIDP catalog queryable from N Autonomous Databases as read-only Iceberg external tables — no data copy, no catalog service in the read path. Runs as an AIDP job parameterized by catalog: fingerprints the Iceberg metadata so only schema-drifted tables are recreated (steady state issues zero DDL against the fleet), reads every credential through the AIDP Credential Store (the service account natively, the per-ADW secrets from OCI Vault), reinstalls the ADW-side credential when the API key rotates, connects with or without an mTLS wallet, preserves consumer grants across recreates, and keeps sync state in a per-catalog registry. Measured at 4,777 tables × 2 ADWs. Start from the single-table sample above if the pattern is new to you. |
+
+#### Other Utilities
+
+| Sample | Description |
+|---|---|
+| [DataFrame PII Masking with AI](data-engineering/transformation/masking/README.md) | PySpark utility that detects and masks PII columns using a pluggable `PIIChecker` abstraction — supports Anthropic Claude (Haiku/Sonnet/Opus) and OCI native models via Spark `query_model()`. |
+| [Partition-Aware Merge Generator](data-engineering/transformation/merge/README.md) | Helper utility for partition-aware merge operations on Spark DataFrames: PK-based updates, configurable update policies, deletes, and schema evolution — Delta-MERGE-like behaviour without requiring Delta. |
+| [Streaming Metrics to OCI Monitoring](data-engineering/streaming-metrics-to-oci-monitoring/README.md) | Publish Spark Structured Streaming metrics (input/processing rate, trigger latency, watermark lag, state size) from AIDP to a custom OCI Monitoring namespace with a `StreamingQueryListener`, for Metrics Explorer charts and alarms. |
+
+#### Miscellaneous
+
+| Sample | Description |
+|---|---|
+| [Working with Table Properties](data-engineering/miscellaneous/README.md) | Manage Spark SQL table properties on a managed Delta table — set, read, overwrite, and remove properties, and store structured JSON metadata as a property value. |
+
+---
+
+### AI & Machine Learning
+
+Notebooks covering generative AI, NLP, ML model training, and LLM-powered analytics.
+
+| Notebook | Description |
+|---|---|
+| [Sentiment Analysis with OCI GenAI](ai/ml-datascience/ai-services/OCI_Gen_AI_Sentiment_Analysis.ipynb) | Perform sentiment analysis on text data using OCI Generative AI (Llama model) via the AIDP `query_model` function. |
+| [OCI Language Service Translation](ai/ml-datascience/ai-services/OCI_LanguageService_Example.ipynb) | Translate text using OCI AI Language Service via REST API, demonstrated with a round-trip English ↔ Spanish translation. |
+| [Customer Churn Prediction (GPU)](ai/ml-datascience/churn-analysis/CustomerChurn_ModelTraining_GPU.ipynb) | Train a TensorFlow neural network on GPU for customer churn prediction, including preprocessing, training, and evaluation. |
+| [LLM Model Output Parser](ai/ml-datascience/llm-utils/llm_model_output_parser.ipynb) | Use an LLM to parse and translate statistical model outputs into business-friendly insights and plain-language summaries. |
+| [Natural Language to SQL (NL2SQL)](ai/ml-datascience/nl2sql/nl2sql.ipynb) | Introspect a database schema and generate accurate SQL queries from natural language questions using an LLM, with result summarization. |
+| [Multi-Table NL2SQL with Grouped Analysis](ai/ml-datascience/nl2sql/multi_table_nl2sql_analysis.ipynb) | Extend NL2SQL to multi-table scenarios with grouped LLM analysis for complex procurement and supplier-item intelligence. |
+| [Retrieval-Augmented Generation (RAG)](ai/ml-datascience/rag/rag_implementation.ipynb) | End-to-end RAG pipeline: ingest documents from OCI Object Storage, chunk and embed text, retrieve relevant context, and generate answers with an LLM. |
+| [Movie Recommendation System](ai/ml-datascience/recommendation-systems/Pyspark_ML_Movie_Recommendation.ipynb) | Build a collaborative filtering recommendation engine using PySpark ML's ALS algorithm, trained and evaluated on movie rating data. |
+| [Linear Mixed Effects Model](ai/ml-datascience/statistical-modeling/Statsmodels_LME_Demo.ipynb) | Apply a Linear Mixed Effects Model (LME) with `statsmodels` and PySpark to analyze student test scores across schools, accounting for fixed and random effects. |
+
+#### Agent Flows
+
+| Sample | Description |
+|---|---|
+| [Agent Flow Schedule Trigger](ai/agent-flows/misc/agent-flow-schedule-trigger/task_notebook.ipynb) | Invoke AIDP agent flows via REST API using OCI request signing, demonstrating programmatic agent orchestration with custom message handling. |
+| [Invoke Agent Flows from APEX](ai/agent-flows/misc/invoke-agent-flows-from-apex/README.md) | Oracle APEX region plugin that adds a chat UI for AIDP agents, with persistent conversation history, async Oracle AQ-backed response processing, and conversation summarization. |
+| [Invoke Agent Flows from Streamlit](ai/agent-flows/misc/invoke-agent-flows-from-streamlit/README.md) | Streamlit chat app for AIDP agents with streaming responses, trace/span visualization, multiple auth modes (API key, security token, resource principal), and OCI Container Instance deployment. |
+| [APEX to AIDP with Per-User Authentication](ai/agent-flows/misc/apex-aidp-per-user-auth/) | Oracle APEX app that calls an AIDP agent as the real end user: SSO login, a per-user OAC token minted in-database and passed in the chat request body so OAC enforces per-user authorization, plus token injection and scheduler-based auto-refresh. |
+
+#### Agent Hub Samples
+
+| Sample | Description |
+|---|---|
+| [A2UI Component Gallery](ai/agent-hub/agent-samples/a2ui-component-gallery/README.md) | Demonstrate a code-first Agent Hub agent that negotiates A2UI v0.8 or v0.9 and renders schema-validated component previews with interactive actions. |
+| [Weekly Business Review](ai/agent-hub/agent-samples/weekly-business-review/README.md) | Build a SQLTool-backed Weekly Business Review agent that reasons across governed business data and renders interactive A2UI v0.9 dashboards. |
+
+#### Visual (No-Code) Agent Flows
+
+End-to-end labs showing the AIDP visual flow canvas authoring experience.
+
+| Sample | Description |
+|---|---|
+| [Hello World Agent](ai/agent-flows/visual-flow/hello-world/README.md) | Minimal conversational agent built on the visual flow canvas — the starting template that grounds answers on the model's training data. |
+| [Entertainment Industry Analyst](ai/agent-flows/visual-flow/entertainment-analyst/README.md) | Release & performance analyst combining RAG over internal playbooks/policies with strictly-defined parameterized SQL tools for read-only analytics. |
+| [ACME Pet Insurance Customer Support](ai/agent-flows/visual-flow/acme-insurance/README.md) | RAG-based customer support agent answering policy questions from PDF documents in a Knowledge Base. |
+
+#### Custom Tools
+
+Python tool packages that extend agent flows with user-authored capabilities. Upload the ZIP to a workspace volume and wire it into any agent flow. See the [Custom Tools User Guide](ai/agent-flows/custom-tools/USER_GUIDE.md) for the full authoring contract.
+
+| Sample | Description |
+|---|---|
+| [Hello Tool](ai/agent-flows/custom-tools/hello-tool/) | The minimal `CustomToolBase` tool — one class, one parameter, no dependencies. The starting template for new tools. |
+| [Developer Toolkit](ai/agent-flows/custom-tools/developer-toolkit/) | Three tools in one package — bash execution, file I/O, and Python subprocess execution — demonstrating multi-tool packages and a shared `utils/` module. |
+| [ORDS Database Tool](ai/agent-flows/custom-tools/ords-database-tool/) | Query Oracle Autonomous Database via the ORDS REST API with basic auth. Executes SQL, lists tables/views, and describes columns. |
+
+#### Agent Chat Clients
+
+| Sample | Description |
+|---|---|
+| [AIDP Chat Client — Python Library](ai/aidp_chat_client/README.md) | Reusable Python client for AIDP Chat Agent endpoints: streaming & non-streaming responses, API Key + Security Token auth, typed APIs, and a standalone test script for quick endpoint verification. |
+| [AIDP Agent Chat — Web UI](ai/aidp_chat_client/web_ui/README.md) | Browser chat UI for any deployed AIDP agent: a Flask proxy that handles OCI request signing plus a single-page HTML frontend. Includes a one-command deploy script for OCI Container Instances. |
+| [APEX Chat with Inline Charts (over OAC via MCP)](ai/agent-flows/misc/apex-chat-charts-over-oac-mcp/) | Render an AIDP agent's answers as inline charts inside an Oracle APEX chat, driven by an agent-agnostic chart marker that both low-code and high-code agents emit. |
+
+#### Code-First Agent Flows
+
+| Sample | Description |
+|---|---|
+| [Multi-MCP Chat Agent](ai/agent-flows/code-first/multi-mcp-chat-agent/README.md) | Natural-language chat agent that fans out across Oracle Autonomous Database (Select AI MCP), Oracle Analytics Cloud (Logical SQL MCP), and Oracle Integration Cloud (project-scoped MCP). Each integration can be enabled or disabled independently via config. |
+| [ReAct Agent with RAG Tool](ai/agent-flows/code-first/react-with-rag-tool/README.md) | Simple code-authored ReAct agent that uses a RAG tool over PDFs stored in an AIDP Knowledge Base — runs as a code-first agent flow with the standard playground/test loop. |
+| [Supply Chain Agent](ai/supply_chain_agent/README.md) | Multi-agent system for supply-chain operations using OCI Generative AI (Grok-4) over AIDP catalog tables — data generation, table provisioning, and agent configuration walkthrough included. |
+
+#### Agent Skills
+
+Agent Skills (`SKILL.md` packages) that give AI coding agents product-specific, source-backed workflows.
+
+| Skill | Description |
+|---|---|
+| [Oracle Analytics skills](ai/skills/analytics/SKILL.md) | Routing entry point for Oracle Analytics skills; directs workbook and visualization requests to the nested skill below. |
+| [Workbook Authoring](ai/skills/analytics/workbook-authoring/README.md) | Generate, validate, and make supported edits to Oracle Analytics Cloud workbook JSON from natural-language requirements: deterministic template-first composition, runtime validation against per-release compatibility profiles, and optional save/export through the Oracle Analytics MCP server. |
+
+---
+
+### Shared Utilities
+
+| Notebook | Description |
+|---|---|
+| [Data Code Generator](shared-utils/data_generator/data_code_generator_Example.ipynb) | Generate realistic multi-table synthetic datasets from a YAML configuration file, with CSV and JSON export support for testing and prototyping. |
+| [Data Quality Checker](shared-utils/data_quality/data_quality_example.ipynb) | Run comprehensive data quality checks including null, uniqueness, range, pattern, foreign key, and AI-powered semantic validation across single and multiple tables. |
+| [OCI Vault Secret Retrieval](shared-utils/oci_vault/OCI_Vault_Secret_Retrieval.ipynb) | Securely retrieve secrets (passwords, API keys, connection strings) from OCI Vault using auto-detected authentication — Resource Principal on AI Data Platform or OCI config file locally. |
+| [AIDP Customer Workbench Usage UI](shared-utils/aidp-customer-admin-ui/README.md) | Browser UI and read-only local proxy for viewing AIDP Workbench workspaces, compute clusters, notebooks, workflows, and cluster libraries from fixture data or live Workbench REST APIs. |
+| [AIDP Workbench Migration Toolkit](shared-utils/aidp-workspace-bundles/README.md) | Parameterized archive and Bundle-based migration process for AIDP Workbench metadata, workspace files, jobs, and agent flows. |
+
+---
+
+### Developer Tooling
+
+| Sample | Description |
+|---|---|
+| [Claude Code Plugins for AIDP](ai/claude-code-plugins/README.md) | Anthropic Claude Code plugins published by the Oracle AIDP team. Includes Ask AIDP for 43-tool Workbench operations through `aidp-cli`, signed REST, and native SDK clients, plus connector, engineering, migration, and Fusion-to-OAC workflow plugins. |
+
+---
+
+## Running the Samples
+
+### Prerequisites
+
+Before running any sample, ensure you have:
+
+- An active **Oracle AI Data Platform Workbench** environment with a compute cluster.
+- The required **IAM policies** configured for the services used (Object Storage, ALH, AI Services, etc.).
+- Cluster libraries installed from the `requirements.txt` file included in the relevant sample folder, where applicable.
+
+### General Steps
+
+1. Open your AIDP Workbench notebook environment.
+2. Clone or import the samples into your workspace.
+3. Navigate to the notebook of your choice and open it.
+4. Follow the instructions and prerequisites described in the notebook's opening cells.
+5. Attach the notebook to a running compute cluster and execute the cells.
+
+### MLflow Tracking Server
+
+Several ML samples integrate with **MLflow** for experiment tracking. Ensure your AIDP environment has an MLflow Tracking Server configured. Refer to the AIDP documentation for setup instructions.
+
+---
+
+## Documentation
+
+- [Oracle AI Data Platform Workbench](https://www.oracle.com/ai-data-platform/workbench/)
+- [OCI Documentation](https://docs.oracle.com/en-us/iaas/Content/home.htm)
+
+---
+
+## Get Support
+
+If you encounter issues with these samples, please open an issue in this repository. For questions about Oracle AI Data Platform itself, refer to the [OCI Support](https://www.oracle.com/support/) portal.
+
+---
+
+## Security
+
+Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process.
+
+---
+
+## Contributing
+
+This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md).
+
+---
+
+## License
+
+See [LICENSE](./LICENSE.txt)
+
+## Trademarks
+
+Oracle, Java, MySQL, and NetSuite are registered trademarks of Oracle and/or
+its affiliates. Other names may be trademarks of their respective owners.
+Apache, Apache Spark, Spark, Apache Iceberg, Iceberg, Apache Kafka, and Kafka
+are either registered trademarks or trademarks of The Apache Software
+Foundation in the United States and/or other countries. Delta Lake is a
+trademark of LF Projects, LLC. Other third-party product names in this
+repository (for example Databricks, Snowflake, Microsoft Fabric, Amazon Web
+Services, Informatica, Claude Code, and Codex) are trademarks of their
+respective owners and are used only to identify the products the samples work
+with. Oracle is not affiliated with, sponsored by or endorsed by their owners,
+and no endorsement by The Apache Software Foundation is implied. Each plugin's
+NOTICE file names the marks it uses.

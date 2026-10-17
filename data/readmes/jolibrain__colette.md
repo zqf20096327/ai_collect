@@ -1,0 +1,423 @@
+<div align="center">
+<a href="https://www.colette.chat/">
+<img src="https://www.colette.chat/img/colette_logo.png" width="320" alt="colette logo">
+</a>
+</div>
+
+<p align="center">
+<b>Search and interact locally with technical documents of any kind</b>
+</p>
+
+## What is Colette?
+
+Colette is an open-source self-hosted RAG and LLM serving software. It is well-suited for searching and interacting with technical documents that cannot be leaked to external APIs.
+
+As the main core feature, Colette embeds a Vision-RAG (V-RAG) that transforms and analyzes all documents as images. This allows to conserve and handle all visual elements such as images, figures, schemas, visual highlights and layouts in documents. This is based on the idea that most documents are targeted at human eyes, and thus can be more thoroughtly analyzed by vision and multimodal LLMs.
+
+Colette was co-financed by [Jolibrain](https://www.jolibrain.com/), [CNES](https://www.cnes.fr/) and [Airbus](https://www.airbus.com/en/products-services/space).
+
+## Demo
+
+https://github.com/user-attachments/assets/7e36b4af-880a-4260-af61-3041b7d60439
+
+## Key Features
+
+- 📊 **Vision RAG (V-RAG)** — treats every document page as an image; preserves tables, figures, diagrams and spatial layout that text extraction loses. Powered by vision embedding models (e.g. `gme-Qwen2-VL`) and VLMs (e.g. `Qwen3-VL`).
+
+- 🔍 **Hybrid retrieval** — runs vector embedding search and BM25 lexical search (Tantivy) in parallel. Especially effective for technical documents with product codes, part numbers, or rare identifiers.
+
+- 💡 **HyDE (Hypothetical Document Embeddings)** — optionally generates a short hypothetical answer passage before retrieval (`llm.use_hyde: true`). The passage is embedded instead of the raw question, landing closer in vector space to real document content.
+
+- 📚 **Text RAG** — classical text-extraction pipeline using `unstructured` + `langchain` for text-only documents.
+
+- 🚀 **Multi-backend support** — `huggingface`, `vllm`, `ollama`, `vllm_client` for LLM inference; `chromadb` or `coldb` for vector storage.
+
+- 🎨 **Image generation** integration with diffusers.
+
+- 🧩 **Layout detection** — automatically segments pages into typed crops (`text`, `figure`, `table`, `full_page`) for fine-grained retrieval filtering.
+
+- 🚀 **Effortless setup** — Dockerised; decent out-of-the-box results on technical documentation corpora.
+
+
+## System Architecture
+
+![](https://www.colette.chat/img/colette_archi.png)
+
+## Get Started
+
+### Prerequisites
+
+* Python >= 3.12
+* CUDA >= 12.1
+* GPU >= 24GB
+* RAM >= 16GB
+* Disk >= 50GB
+* Docker >= 24.0.0 & Docker Compose >= v2.26.1
+  > If you have not installed Docker on your local machine (Windows, Mac, or Linux),
+  > see [Install Docker Engine](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+
+NOTE: Colette requires a GPU with at least 24GB of VRAM to run the default models. If you have less VRAM, you can try to change the models to lighter ones in the configuration files, but performance may be impacted.
+
+Also the default config file is `vrag_default_lite.json` which is designed to run on 24GB VRAM GPUs. If you have multiples GPUs, you can try `vrag_default.json` which uses larger models and should provide better results and also needs multiple GPUs
+
+### Docker (recommended)
+Easiest way to get started uses Docker. If you with to install from sources, see [Developer Setup](https://colette.chat/doc/developers/setup.html)
+
+For rebuilding images after local code changes, see [Container Rebuild Guide](https://colette.chat/doc/developers/container_rebuild.html).
+
+### Jenkins (Container Publish)
+
+Use the dedicated pipeline file `Jenkinsfile.images` for container build/push automation.
+
+For a Jenkins Multibranch Pipeline job:
+
+1. Set `Script Path` to `Jenkinsfile.images`.
+2. Keep the root `Jenkinsfile` for test CI only.
+3. The image pipeline builds `colette_gpu`, `colette_gpu_server`, and `colette_ui` with a short SHA tag.
+4. Push runs only on `main` and `release/*` branches; `latest` is refreshed on `main` only.
+5. Optional `RUN_INTEGRATION=true` runs containerized integration tests via `ci/container_integration.sh` before push.
+
+1. Pull the Docker image
+
+```bash
+docker pull docker.jolibrain.com/colette_gpu:latest
+```
+
+2. Create folders for models and app_colette
+
+```bash
+mkdir -p models
+mkdir -p app_colette
+```
+
+This is to ensure that your user is the owner of these folders and files that will be created inside when we run the docker containers.
+
+3. Index your data
+
+```bash
+docker run --gpus all --user $(id -u):$(id -g) \
+  -e HOME=/tmp \
+  -v $PWD:/rag \
+  -v $PWD/docs:/data \
+  -v $PWD/models:/app/models \
+  docker.jolibrain.com/colette_gpu \
+  bash -c "git config --global --add safe.directory /app && colette_cli index --app-dir /rag/app_colette --data-dir /data/pdf --config-file src/colette/config/vrag_default_lite.json --models-dir /app/models"
+```
+
+4. Test by sending a question
+
+```bash
+docker run --gpus all --user $(id -u):$(id -g) \
+  -e HOME=/tmp \
+  -v $PWD:/rag \
+  -v $PWD/app_colette:/app/app_colette \
+  -v $PWD/models:/models \
+  docker.jolibrain.com/colette_gpu \
+  bash -c "git config --global --add safe.directory /app && colette_cli chat --app-dir app_colette --models-dir /models --msg \"What are the identified sources of errors of a RAG?\""
+```
+
+### Activate `venv_colette` for Command line & Developer Setup (Python API)
+
+1. Clone the repo:
+
+```bash
+git clone https://github.com/jolibrain/colette.git
+```
+
+2. Create a virtual environment and install dependencies
+
+```bash
+cd colette
+chmod +x create_venv_colette.sh
+./create_venv_colette.sh
+source venv_colette/bin/activate
+```
+
+NOTE: This process may take a while, as there are many dependencies to install and some of them require compilation.
+
+For platform-specific source setup, use:
+- `create_venv_colette_ARM.sh` for ARM machines (see `docs/source/users/get_started_ARM_machine.md`)
+- `create_venv_colette_DGX.sh` for DGX machines (see `docs/source/users/get_started_DGX_machine.md`)
+
+#### Command Line Interface (CLI)
+
+(don't forget to activate the virtual environment, see above)
+
+##### Index the data
+
+Let's index a PDF slidedeck from docs/pdf
+
+```bash
+colette_cli index --app-dir app_colette --data-dir docs/pdf/ --config-file src/colette/config/vrag_default_lite.json
+```
+
+##### Test with a question
+
+```bash
+colette_cli chat --app-dir app_colette --msg "What are the identified sources of errors ?" #--crop-label "text"
+```
+
+### Python API
+
+(don't forget to activate the virtual environment, see above)
+
+The example below is also available in `examples/get_start_python_api.py`.
+There is also a Jupyter notebook version in `examples/get_start_python_api.ipynb`.
+For text-search-only examples, see `examples/text_search_demo.py` and `examples/text_search_demo.ipynb`.
+
+#### Example notebooks
+
+The `examples/` directory contains several Jupyter notebooks for exploring and debugging a colette index:
+
+| Notebook | Description |
+|---|---|
+| `get_start_python_api.ipynb` | End-to-end quickstart: index PDFs, run a RAG query via the Python API |
+| `retrieval_debugger.ipynb` | Step-by-step retrieval debugger: embedding search, HyDE comparison, BM25 inspection, PCA visualisation |
+| `crop_viewer.ipynb` | Browse every indexed image crop by page and crop type |
+| `visualize_embeddings.ipynb` | PCA scatter of the full ChromaDB embedding index |
+
+All notebooks default to `app_colette/` and `docs/pdf/` — run `get_start_python_api.ipynb` first to populate the index.
+
+##### Index PDFs and query
+
+```Python
+import json
+import re
+import base64
+from io import BytesIO
+from PIL import Image
+
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+from colette.jsonapi import JSONApi
+from colette.apidata import APIData
+
+# Get the root path of the colette package
+import os
+colette_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+print(f'Colette root path: {colette_root}')
+
+documents_dir = os.path.join(colette_root, 'docs/pdf') # where the input documents are located
+app_dir = os.path.join(colette_root, 'app_colette') # where to store the app
+models_dir = os.path.join(colette_root, 'models') # where the models are located
+
+# If the app already has a saved config (query-only run), use it.
+# On a fresh install fall back to the default template.
+_app_config = os.path.join(app_dir, 'config.json')
+config_file = _app_config if os.path.exists(_app_config) else os.path.join(colette_root, 'src/colette/config/vrag_default.json')
+index_file = os.path.join(colette_root, 'src/colette/config/vrag_default_index.json')
+
+app_name = 'app_colette' # name of the app
+
+colette_api = JSONApi()
+
+with open(config_file, 'r') as f:
+    create_config = json.load(f)
+with open(index_file, 'r') as f:
+    index_config = json.load(f)
+
+create_config['app']['repository'] = app_dir
+create_config['app']['models_repository'] = models_dir
+index_config['parameters']['input']['data'] = [documents_dir]
+
+# Index once in hybrid mode so vector + text-search data are both available.
+# Then per-request retrieval_mode can be 'embedding_retrieval', 'text_search_retrieval', or 'hybrid'
+# without a second service_index call.
+index_config['parameters']['input']['rag']['retrieval_mode'] = 'hybrid'
+#index_config['parameters']['input']['rag']['reindex'] = False # if True, the RAG will be reindexed
+
+
+# Clean up any service from a previous cell run in this session, then (re)create
+try:
+    colette_api.service_delete(app_name)
+except Exception:
+    pass  # no-op if service doesn't exist yet
+
+# Create the service
+api_data_create = APIData(**create_config)
+colette_api.service_create(app_name, api_data_create)
+
+# uncomment the following line to index the documents, only if they have not been indexed yet. 
+# It may take a while depending on the number of documents and their size.
+api_data_index = APIData(**index_config)
+colette_api.service_index(app_name, api_data_index)
+
+# Query the service with a question
+question = 'What are the identified sources of errors ?'
+
+# Note the optional 'crop_label' parameter to filter the sources by crop label
+# The default crop labels are: 'text', 'table', 'figure'
+
+# Query the vision RAG
+query_api_msg = {
+    'parameters': {
+        'input': {
+            'message': question
+            # 'crop_label': 'text'
+        }
+    }
+}
+query_data = APIData(**query_api_msg)
+response = colette_api.service_predict(app_name, query_data)
+
+# Get the text output
+print(response.output)
+
+# Get the image sources
+for item in response.sources['context']:
+    print(f"Key: {item['key']}, Distance: {item['distance']}")
+
+    # Extract base64 string (remove 'data:image/png;base64,' prefix)
+    base64_data = re.sub('^data:image/.+;base64,', '', item['content'])
+
+    # Decode base64 string
+    image_data = base64.b64decode(base64_data)
+    
+    # Create PIL Image
+    image = Image.open(BytesIO(image_data))
+
+    # Export image (optional)
+    image_filename = f"{item['key']}.png"
+    image.save(image_filename)
+    print(f"Image saved as: {image_filename}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Retrieval mode examples
+# ─────────────────────────────────────────────────────────────────────────────
+# Colette supports three retrieval modes:
+#   "embedding_retrieval"  - (default) visual embedding retrieval in ChromaDB / ColDB only
+#   "text_search_retrieval" - lexical text search (BM25) only
+#   "hybrid"    - hybrid retrieval (vector + text search)
+#
+# The mode can be set:
+#   A) In the index config so all queries default to it, or
+#   B) Per-request via the predict payload (overrides the service default).
+
+# A) Index mode -----------------------------------------------------------------
+# This script already indexed with retrieval_mode='hybrid' above. That mirrors
+# production usage and avoids a second service_index call.
+
+# B) Per-request override -------------------------------------------------------
+# Even if the service was indexed with mode="embedding_retrieval" you can switch at query time.
+# Only the fields you explicitly set in the request 'rag' block override the
+# service default; everything else inherits from the service config.
+
+# Query using text search only (keyword/BM25 search)
+# Only retrieval_mode is overridden here; text_search_engine_* values are inherited from
+# the service/index JSON defaults unless you explicitly set them.
+
+query_text_search_only = {
+    'parameters': {
+        'input': {
+            'message': question,
+            'rag': {
+                'retrieval_mode': 'text_search_retrieval',
+            }
+        }
+    }
+}
+
+# response_text_search = colette_api.service_predict(app_name, APIData(**query_text_search_only))
+#
+# Note: for retrieval_mode='text_search_retrieval', embedding context is empty and text hits are
+# returned in response_text_search.sources['text_context'].
+#
+# for text_hit in response_text_search.sources.get('text_context', []):
+#     print(f"Source: {text_hit['source']}  page: {text_hit.get('page_number')}")
+#     print(f"Score : {text_hit.get('score', 'n/a')}")
+#     print(text_hit['content'][:200])
+#     print()
+
+# Query using hybrid mode (visual image crops + injected text context)
+
+query_both_modes = {
+    'parameters': {
+        'input': {
+            'message': question,
+            'rag': {
+                'retrieval_mode': 'hybrid',
+            }
+        }
+    }
+}
+
+# response_both = colette_api.service_predict(app_name, APIData(**query_both_modes))
+
+# Inspect text_context sources --------------------------------------------------
+# When retrieval_mode includes "text_search_retrieval", the response sources include a
+# 'text_context' list alongside the image 'context' list.
+#
+# for text_hit in response_both.sources.get('text_context', []):
+#     print(f"Source: {text_hit['source']}  page: {text_hit.get('page_number')}")
+#     print(f"Score : {text_hit.get('score', 'n/a')}")
+#     print(text_hit['content'][:200])
+#     print()
+```
+
+### Retrieval modes
+
+`parameters.input.rag.retrieval_mode` supports:
+
+- `embedding_retrieval` — vector embedding search only (default)
+- `text_search_retrieval` — BM25 keyword search only
+- `hybrid` — both in parallel
+
+See [Text Search Engine](https://colette.chat/doc/users/text_search_engine.html) for details.
+
+### HyDE — Hypothetical Document Embeddings
+
+Enable with `llm.use_hyde: true`. The LLM generates a short hypothetical answer passage before retrieval; that passage is embedded instead of the raw question, improving recall on technical queries where question phrasing differs greatly from document language.
+
+```json
+"llm": {
+    "use_hyde": true,
+    "hyde_num_tokens": 256,
+    "disable_thinking": true
+}
+```
+
+See [Configuration](https://colette.chat/doc/users/configuration.html) for the full option reference.
+
+## Configurations
+
+Colette uses JSON files for every RAG service configuration.
+
+- Example of default V-RAG configuration in `src/colette/config`.
+- Full JSON configuration reference: [API](https://colette.chat/doc/api/api.html)
+
+For more details on how to handle and customize configurations, see [Configuration](https://colette.chat/doc/users/configuration.html)
+
+## Documentation
+
+The main documentation is available from [Colette documentation](https://www.colette.chat/doc/)
+
+## FAQ
+
+The main FAQ is [Colette FAQ](https://www.colette.chat/doc/faq)
+
+- What to do if/when Colette returns incorrect answers ?
+
+  First you must know Colette will never work for everything. But there are ways to understand the difficulties, and work around them, most of the time.
+
+  While Colette is designed on the theoritical and technical levels to work `correctly` on average, RAG pipelines suffer from multiple potential error sources (see https://colette.chat/documents/COLETTEv2_Restitution_2025_03_07_v0.3_JB_light.pdf on page 7 for a list).
+
+  Below are a few steps to apply to identify causes of bad answers:
+
+   1. Is the answer in one of the returned document sources ? If not, this is a `retrieval error`. This is the most probable RAG error. To address it:
+
+      a. Make sure the relevant documents are in your corpus, and identify them
+      b. Setup an independent RAG by indexing only those relevant documents, and checks whether the answer appears to be correct and the relevant documents are returned as sources
+      c. If answer is correct, culprit is either indexing or retrieval, try a larger/different indexing model
+      d. If answer is not correct but the relevant documents are returned as sources, culprit is the inference LLM, try a larger/different one
+      e. If answer is not correct and the relevant documents are not returned as sources, culprit is the indexing model, try a larger/different one
+
+   2. The returned document sources are correct, the answer is not, culprit is the inference LLM, try a larger/different one
+
+  If this doesn't work, report the issue to us, make sure to be able to share a document if not private, so that we can look at it more closely.
+ 
+
+- Colette generates errors, or you have difficulties installing it ?
+
+  Look at the list of [issues](https://github.com/jolibrain/colette/issues), and if your problem is not listed already, write a new one.

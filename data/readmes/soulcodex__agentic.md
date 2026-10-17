@@ -1,0 +1,151 @@
+# 🧩 agentic
+
+**Vendor-agnostic configs. Production-minded architecture.**
+
+An opinionated library of composable AGENTS, profiles, skills, and vendor adapters.
+Pick a profile, run one command, and every AI tool in your project reads the same
+clear, maintainable source of truth.
+
+![CI](https://github.com/soulcodex/agentic/actions/workflows/validate.yml/badge.svg)
+![Coverage](https://codecov.io/gh/soulcodex/agentic/graph/badge.svg?branch=main)
+
+---
+
+## The Problem
+
+**Without agentic**
+
+```
+my-project/
+├── CLAUDE.md
+├── .github/
+│   └── copilot-instructions.md
+├── .cursor/rules/
+│   └── *.mdc
+└── .gemini/
+    └── system.md
+```
+
+**With agentic**
+
+```
+my-project/
+├── AGENTS.md                        ← source of truth
+├── CLAUDE.md                        ← symlink
+├── GEMINI.md                        ← symlink
+├── .github/
+│   ├── copilot-instructions.md      ← symlink
+│   └── instructions/                ← symlink
+├── .cursor/
+│   └── rules/                       ← symlink
+├── .gemini/
+│   ├── system.md                    ← symlink
+│   └── skills/                      ← symlink
+├── .claude/
+│   └── skills/                      ← symlink
+├── .agents/
+│   └── skills/                      ← symlink
+├── .opencode/
+│   ├── skills/                      ← symlink
+│   └── agents/                      ← symlink (if agents enabled)
+├── .codex/
+│   └── agents/                      ← symlink (if agents enabled)
+└── .agentic/
+    ├── config.yaml                  ← locked config
+    ├── profile.yaml                 ← customize per-project
+    ├── mcp.yaml                     ← optional (created via init/custom flow)
+    ├── providers.yaml               ← optional (created via init/custom flow)
+    ├── agents.yaml                  ← optional (created via init/custom flow)
+    ├── project-skills/              ← optional (project-local custom skills)
+    ├── fragments/                   ← on-demand context
+    ├── skills/                      ← deployed skills
+    ├── agents/                      ← optional generated provider artifacts
+    └── vendor-files/                ← generated once
+        ├── claude/
+        ├── copilot/
+        ├── codex/
+        ├── gemini/
+        └── cursor/
+```
+
+Instructions drift and contradict each other. Every new project starts from scratch. Adding a new AI tool means updating N files manually.
+
+---
+
+## Install
+
+```bash
+curl -sSL https://raw.githubusercontent.com/soulcodex/agentic/main/install.sh | bash
+```
+
+Installs the `agentic` CLI to `~/.local/bin`. Requires `bash`, `just`, `yq`, `jq` — run `just setup` from the library directory to check prerequisites.
+
+---
+
+## Deploy to a project
+
+```bash
+# See what profiles are available
+agentic list profiles
+
+# Deploy — assembles AGENTS.md, generates vendor files, deploys skills
+agentic deploy typescript-hexagonal-microservice ~/code/my-api claude
+```
+
+Run `agentic sync` from within any project to regenerate from the local profile.
+
+---
+
+## Commands
+
+```bash
+agentic deploy <profile> [target] <vendors>   # full deploy pipeline
+agentic compose <profile> [target]            # assemble AGENTS.md only
+agentic init [target]                         # scaffold local .agentic skeleton
+agentic switch [target] <vendors>             # switch active AI tool
+agentic sync [target]                         # regenerate from local profile
+agentic list profiles|skills|vendors          # list available resources
+```
+
+→ [Full command reference](https://agentic.soulcodex.link/commands)
+
+---
+
+## Profiles
+
+24 ready-made profiles covering TypeScript, Go, Python, PHP, HCL — frontend SPAs, microservices, CLIs, full-stack, Module Federation, and AWS Terraform modules.
+
+→ [Browse all profiles](https://agentic.soulcodex.link/profiles)
+
+---
+
+## Supported AI Tools
+
+Claude, GitHub Copilot, Gemini CLI, OpenAI Codex, Opencode, Cursor (rules-only) — all from one `AGENTS.md`.
+
+→ [Vendor details](https://agentic.soulcodex.link/vendors)
+
+---
+
+## Customise
+
+Edit `.agentic/profile.yaml` and run `agentic sync` to update your project.
+Edit `.agentic/mcp.yaml` to declare MCP servers once and seed vendor formats.
+Add project-specific skills in `.agentic/project-skills/`.
+
+→ [Customization guide](https://agentic.soulcodex.link/customization) · [Custom rules](https://agentic.soulcodex.link/custom-rules)
+
+---
+
+## Contributing
+
+Contributions are welcome — new fragments, profiles, and skills.
+See the contributing guide for authoring rules, quality checks, and commit conventions.
+
+→ [Contributing guide](.github/CONTRIBUTING.md)
+
+---
+
+## License
+
+[MIT](LICENSE)

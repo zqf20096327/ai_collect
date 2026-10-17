@@ -1,0 +1,165 @@
+# Qingshan's Dotfiles
+
+Dotfiles are for macOS and Linux to setup my development environment.
+
+## Installation
+
+Install dotfiles, run:
+
+```shell
+git clone https://github.com/qingshan/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+make
+```
+
+For macOS or Debian desktop, one more step:
+
+```shell
+make desktop
+```
+
+For AI CLI tools, run:
+
+```shell
+make ai
+```
+
+## Demos
+
+Terminal shortcuts:
+![demo alacritty shortcuts](https://qingshan.dev/images/demo_alacritty_shortcuts.gif)
+
+## Features
+
+Suitable for all kinds of purpose:
+- Desktops
+- Development Environments
+- Servers/VMs
+- Containers
+
+### Desktops
+
+- [macOS](macos/README.md)
+- [Omarchy](omarchy/README.md): Hyprland-based Arch Linux desktop
+
+Both desktops use same key bindings, go to [Desktop Cheatsheet](docs/desktop_cheatsheet.md).
+
+### Development Environments
+
+IDEs:
+- IntelliJ IDEA with IdeaVim for Java
+- Zed for Rust and Python
+
+Languages:
+- Rust: cargo
+- Python: mise, uv
+- Java: ant, maven
+- Nodejs: mise
+- Go: mise
+
+Containers:
+- Apple Container
+- Docker
+
+Version Control:
+- Git
+- LazyGit
+- Github CLI
+
+### Servers
+
+- Debian 13, Ubuntu 24.04
+- Rocky Linux 8+, CentOS 8+
+
+### Shells
+
+- bash
+- zsh
+- fish
+
+zsh as default shell on macOS:
+- `~/.zprofile` and `~/.profile` is sourced in login shell.
+- `~/.zshrc` is sourced in interactive shell.
+
+bash as default shell on macOS:
+- `~/.bash_profile` and `~/.profile` is sourced in login shell.
+- `~/.bashrc` is sourced in interactive shell.
+
+fish as interactive shell in interactive mode of zsh or bash, without setting it as user's default shell.
+
+so update `~/.profile` for user environment which will be available for all shells.
+
+### Fish Shell and Tools
+
+Fish shell integration with:
+- starship
+- fzf
+- zoxide
+- lsd
+- bat
+- fd
+- ripgrip
+- jq
+- just
+
+### Terminals
+
+- alacritty, ghostty, ssh runs user's default shell as interactive login shell.
+- tmux, herdr runs inside an existing shell session, runs fish as interactive non-login shell.
+- tmux integrated in alacritty works as default terminal.
+- herdr integrated in ghostty works as AI agent terminal.
+- ghosttty works as quick terminal.
+
+Both alacritty and ghostty use iTerm2-like key bindings, go to [Terminal Cheatsheet](docs/terminal_cheatsheet.md).
+
+### SSH
+
+- `ssh server` starts interactive login shell.
+- `ssh server command` non-interactive non-login shell.
+- `echo command | ssh server` starts non-interactive login shell. You can also start one with `ssh server bash -l -c command`.
+
+### AI Tools
+
+- Claude Code
+- Github Copilot
+- OpenAI Codex
+- Grok Build
+- Muse Code
+
+### Fonts
+
+- JetBrains Mono Nerd Font
+
+### Notes
+
+- zk for cli notes: journal/inbox/notes
+- Obsidian for tech notes
+- Apple Notes for personal notes
+- mdbook for publish notes: [qingshan/notes](https://github.com/qingshan/notes)
+
+### Folders
+
+- `~/work` for work projects.
+- `~/code` for personal projects.
+- `~/Documents` for cloud sync documents.
+- `~/Public` for local grouped resources.
+
+### Vim
+
+- [Vim Cheatsheet](docs/vim_cheatsheet.md)
+- [Vim Plugins](docs/vim_plugins.md)
+- [IdeaVim](docs/ideavim.md)
+
+## Test
+
+Use Docker on Linux or Apple container on macOS to build `linux/debian/Dockkerfile` to test dotfiles on latest version of Debian.
+
+run server test
+```shell
+make server-test
+```
+
+or run desktop test
+```shell
+make deskop-test
+```

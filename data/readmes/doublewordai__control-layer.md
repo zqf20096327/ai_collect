@@ -1,0 +1,345 @@
+# The Doubleword Control Layer (dwctl)
+
+[Announcement](https://www.doubleword.ai/resources/doubleword-open-sources-the-worlds-fastest-ai-gateway) | [Benchmarking](https://fergusfinn.com/blog/control-layer-benchmarking) | [Technical Blog](https://fergusfinn.com/blog/control-layer/) |
+[Documentation](https://doublewordai.github.io/control-layer/)
+
+The Doubleword Control Layer (dwctl) is the world’s fastest AI model gateway (450x less overhead than LiteLLM). It provides a single, high-performance interface for routing, managing, and securing inference across model providers, users and deployments - both open-source and proprietary.
+
+- Seamlessly switch between models
+- Turn any model (self-hosted or hosted) into a production-ready API with full auth and user controls
+- Centrally govern, monitor, and audit all inference activity
+
+To get a sense of how the control layer works, visit our interactive [demo](https://control-layer.pages.dev?flags=demo).
+
+## Getting started
+
+The Doubleword Control Layer requries Docker to be installed. For information on how to get started with Docker see the docs [here](https://docs.docker.com/get-started/).
+
+There are two ways to set up the Control Layer:
+
+1. **Docker Compose** - All-in-one setup with pre-configured Postgres and dwctl. This method automatically provisions a containerized Postgres database with default credentials and connects it to the Control Layer.
+2. **Docker Run** - Bring-your-own-database setup. Use this method to connect the Control Layer to an existing Postgres instance of your choice.
+
+### Option 1. Docker Compose
+
+With docker compose installed, the commands below will start the Control Layer.  
+
+```bash
+wget https://raw.githubusercontent.com/doublewordai/control-layer/refs/heads/main/docker-compose.yml
+docker compose -f docker-compose.yml up -d
+```
+
+Navigate to `http://localhost:3001` to get started. When you get to the login page you will be prompted to sign in with a username and password. Please refer to the configuration section below for how to set up an admin user. You can then refer to the documentation [here](https://doublewordai.github.io/control-layer/getting-started.html) to start playing around with Control Layer features.
+
+To upgrade to new versions of the control layer as they come out, run the following from the same directory:
+
+```bash
+docker compose pull
+docker compose up -d
+``` 
+
+### Option 2. Docker Run
+
+The Doubleword Control Layer requires a PostgreSQL database to run. You can read the documentation [here](https://postgresapp.com/) on how to get started with a local version of Postgres. After doing this, or if you have one already (for example, via a cloud provider), run:
+
+```bash
+docker run -p 3001:3001 \
+    -e DATABASE_URL=<your postgres connection string here> \
+    -e DWCTL_SECRET_KEY="mysupersecretkey" \
+    ghcr.io/doublewordai/control-layer:latest
+```
+
+Your DATABASE_URL should match the following naming convention `postgres://username:password@localhost:5432/database_name`.  Make sure to replace the secret key with a secure random value in production.
+
+Navigate to `http://localhost:3001` to get started. When you get to the login page you will be prompted to sign in with a username and password. Please refer to the configuration section below for how to set up an admin user. You can then refer to the documentation [here](https://doublewordai.github.io/control-layer/getting-started.html) to start playing around with Control Layer features.  
+
+## Configuration
+
+Control Layer can be configured by a `config.yaml` file. To supply one, mount
+it into the container at `/app/config.yaml`, like follows:
+
+```bash
+docker run -p 3001:3001 \
+  -e DATABASE_URL=<your postgres connection string here> \
+  -e SECRET_KEY="mysupersecretkey"  \
+  -v ./config.yaml:/app/config.yaml \
+  ghcr.io/doublewordai/control-layer:latest
+```
+
+The docker compose file will mount a
+`config.yaml` there if you put one alongside `docker-compose.yml`
+
+The complete default config is below.
+
+You can override any of these settings by
+either supplying your own config file, in which case your config file will be
+merged with this one, or by supplying environment variables prefixed with
+`DWCTL_`.
+
+Nested sections of the configuration can be specified by joining
+the keys with a double underscore, for example, to disable native
+authentication, set `DWCTL_AUTH__NATIVE__ENABLED=false`.
+
+```yaml
+# dwctl configuration
+# Secret key for jwt signing.
+# TODO: Must be set in production! Required when native auth is enabled.
+# secret_key: null  # Not set by default - must be provided via env var or config
+
+# Admin user email - will be created on first startup
+admin_email: "test@doubleword.ai"
+# TODO: Change this in production!
+admin_password: "hunter2"
+
+# Authentication configuration
+auth:
+  # Native username/password authentication. Stores users in the local #
+  # database, and allows them to login with username and password at
+  # http://<host>:<port>/login
+  native:
+    enabled: true # Enable native login system
+    # Whether users can sign up themselves. Defaults to false for security.
+    # If false, the admin can create new users via the interface or API.
+    allow_registration: false
+    # Constraints on user passwords created during registration
+    password:
+      min_length: 8
+      max_length: 64
+    # Parameters for login session cookies.
+    session:
+      timeout: "24h"
+      cookie_name: "dwctl_session"
+      cookie_secure: true
+      cookie_same_site: "strict"
+    # Email configuration for password resets and notifications
+    email:
+      # Email transport - either 'file' (for development) or 'smtp' (for production)
+      type: file
+      path: "./emails" # Directory for file-based email (when type=file)
+      # For SMTP (production), use:
+      # type: smtp
+      # host: "smtp.example.com"
+      # port: 587
+      # username: "noreply@example.com"
+      # password: "your-smtp-password"
+      # use_tls: true
+      from_email: "noreply@example.com"
+      from_name: "Control Layer"
+      password_reset:
+        token_expiry: "30m" # How long reset tokens are valid
+        base_url: "http://localhost:3001" # Frontend URL for reset links
+
+  # Proxy header authentication
+  # Accepts user identity from HTTP headers set by an upstream authentication proxy
+  # (e.g., oauth2-proxy, Vouch, Authentik, Auth0)
+  #
+  # Two modes:
+  #   Single header: Send only header_name with user's email (must be unique)
+  #   Dual header: Send both header_name (IdP identifier) and email_header_name (email)
+  #                Allows multiple accounts per email from different identity providers
+  proxy_header:
+    enabled: false
+    # header_name: User identifier or email
+    # Single header mode: User's email (e.g., "user@example.com")
+    # Dual header mode: Unique identifier from IdP (e.g., "github|user123", "google-oauth2|456")
+    header_name: "x-doubleword-user"
+    # email_header_name: User's email address (optional, enables dual header mode)
+    # If provided: Enables federated identity with (email, external_user_id) uniqueness
+    # If omitted: Uses header_name value as email (single header mode, email must be unique)
+    email_header_name: "x-doubleword-email"
+    # Groups and SSO provider headers (optional)
+    groups_field_name: "x-doubleword-user-groups"
+    provider_field_name: "x-doubleword-sso-provider"
+    import_idp_groups: false # Import IdP groups
+    blacklisted_sso_groups: []  # SSO groups to ignore
+    # auto_create_users: Automatically create users on first login
+    auto_create_users: true
+
+  # Security settings
+  security:
+    # How long session cookies are valid for. After this much time, users will
+    # have to log in again. Note: this is related to the
+    # auth.native.session.timeout # value. That one configures how long the browser
+    # will set the cookie for, this one how long the server will accept it for.
+    jwt_expiry: "24h"
+    # CORS Settings. In production, make sure your frontend URL is listed here.
+    cors:
+      allowed_origins:
+        - "http://localhost:3001" # Default - Control Layer server itself
+      allow_credentials: true
+      max_age: 3600 # Cache preflight requests for 1 hour
+
+# Model sources - the default inference endpoints that are shown in the UI.
+# These are seeded into the database on first boot, and thereafter should be 
+# managed in the UI, rather than here.
+model_sources: []
+
+# Example configurations:
+# model_sources:
+#   # OpenAI API
+#   - name: "openai"
+#     url: "https://api.openai.com"
+#     api_key: "sk-..."  # Required for model sync
+#
+#   # Internal model server (no auth required)
+#   - name: "internal"
+#     url: "http://localhost:8080"
+
+# Frontend metadata. This is just for display purposes, but can be useful to
+# give information to users that manage your Control Layer deployment.
+metadata:
+  region: "UK South"
+  organization: "ACME Corp"
+
+
+# Server configuration
+# To advertise publically, set to "0.0.0.0", or the specific network interface
+# you've exposed.
+host: "0.0.0.0"
+port: 3001
+
+# Database configuration
+database:
+  # By default, we connect to an external postgres database
+  type: external
+  # Override this with your own database url. Can also be configured via the
+  # DATABASE_URL environment variable.
+  url: "postgres://localhost:5432/control_layer"
+
+  # Optional: Read replica URL for read-heavy operations
+  # replica_url: "postgres://replica:5432/control_layer"
+
+  # Main database connection pool settings
+  # pool:
+  #   max_connections: 10
+  #   min_connections: 0
+  #   acquire_timeout_secs: 30
+  #   idle_timeout_secs: 600
+  #   max_lifetime_secs: 1800
+
+  # Component databases: fusillade (batch processing) and outlet (request logging)
+  # By default, these use separate schemas within the main database.
+  # You can optionally configure them to use dedicated databases.
+
+  # Fusillade - batch processing database
+  # Default: uses "fusillade" schema in main database
+  # fusillade:
+  #   mode: schema
+  #   name: fusillade
+  #   pool:
+  #     max_connections: 20
+  #
+  # Alternative: use a dedicated database
+  # fusillade:
+  #   mode: dedicated
+  #   url: postgres://localhost:5432/fusillade
+  #   replica_url: postgres://replica:5432/fusillade
+  #   pool:
+  #     max_connections: 20
+
+  # Outlet - request logging database
+  # Default: uses "outlet" schema in main database
+  # outlet:
+  #   mode: schema
+  #   name: outlet
+  #   pool:
+  #     max_connections: 5
+
+  # Alternatively, you can use embedded postgres (requires compiling with the
+  # embedded-db feature, which is not present in the default docker image)
+  # type: embedded
+  # data_dir: null  # Optional: directory for database storage
+  # persistent: false  # Set to true to persist data between restarts
+
+
+# By default, we log all requests and responses to the database. This is
+# performed asynchronously, so there's very little performance impact. # If
+# you'd like to disable this (if you have sensitive data in your
+# request/responses, for example), toggle this flag.
+enable_request_logging: true # Enable request/response logging to database
+
+# Batches API configuration
+# The batches API provides OpenAI-compatible batch processing endpoints
+# Batches can be sent containing requests to any model configured in the
+# control layer, and they'll be executed asynchronously over the course of 24
+# hours.
+batches:
+  # Enable batches API endpoints (/ai/v1/files, /ai/v1/batches)
+  # When disabled, these endpoints will not be available (default: true).
+  enabled: true
+  pending_capacity_counts_enabled: false # Include committed pending requests in batch submission capacity checks (default: false)
+
+  # Files configuration for batch file uploads/downloads
+  files:
+    max_file_size: 2147483648 # 2 GB - maximum size for file uploads
+    upload_buffer_size: 100 # Buffer size for file upload streams
+    download_buffer_size: 100 # Buffer size for file download streams
+
+background_services:
+  # Daemon configuration for processing batch requests
+  batch_daemon:
+    # Controls when the batch processing daemon runs
+    # - "always": Run on all instances (default)
+    # - "leader": Only run on the elected leader instance
+    # - "never": Never run the daemon
+    enabled: always
+
+    # Performance & Concurrency Settings
+    claim_batch_size: 100 # Maximum number of requests to claim in each iteration
+    default_model_concurrency: 10 # Default concurrent requests per model
+    claim_interval_ms: 1000 # Milliseconds to sleep between claim iterations
+
+    # Retry & Backoff Settings
+    # All retry parameters are optional and default to fusillade's built-in defaults
+    # min_retries: 3 - Minimum retries guaranteed regardless of other limits
+    # max_retries: None - No cap on retries (only limited by deadline if set)
+    stop_before_deadline_ms: 0 # When to stop retrying/escalating relative to the batch completion window
+
+    backoff_ms: 1000 # Initial backoff duration in milliseconds
+    backoff_factor: 2 # Exponential backoff multiplier
+    max_backoff_ms: 10000 # Maximum backoff duration in milliseconds
+
+    # Timeout Settings
+    # timeout_ms: 600000 # DEPRECATED: splits into 90% first_chunk_timeout_ms, 10% body_timeout_ms
+    first_chunk_timeout_ms: 86400000 # Max time waiting for response headers (24 hours)
+    chunk_timeout_ms: 86400000 # Max idle time between response body chunks (24 hours)
+    body_timeout_ms: 86400000 # Max total time for entire response body (24 hours)
+    claim_timeout_ms: 60000 # Max time in "claimed" state before auto-unclaim (1 minute)
+    processing_timeout_ms: 600000 # Max time in "processing" state before auto-unclaim (10 minutes)
+    pending_request_counts_timeout_ms: 60000 # Statement timeout for pending request count queries (1 minute)
+
+    # Optional retained-response lifecycle. It has no implicit retention
+    # period; movement and retirement default off. Current scheduled support
+    # covers terminal batchless response tiers only. Each configured tier
+    # requires an explicit positive duration and late-writer fence. Scheduled
+    # file and file-backed batch retention is rejected at startup.
+    # retention:
+    #   batchless_seconds_by_service_tier:
+    #     flex: <seconds>
+    #   max_late_writer_seconds: <seconds>
+    # batchless_archive_sweep_enabled: false
+    # batchless_archive_backfill_enabled: false
+    # retained_response_retirement_enabled: false # Reserved; true is rejected until retirement ships
+
+    # Observability
+    status_log_interval_ms: 2000 # Interval for logging daemon status (set to null to disable)
+```
+
+### Initial Credit Grant
+
+The Control Layer has a credit system which allows you to assign budgets to users and prices to models. You can set the initial grant given to standard users in `config.yaml`:
+
+```yaml
+credits:
+  initial_credits_for_standard_users: 50
+```
+
+## Production Checklist
+
+1. Setup a production-grade Postgres database, and point Control Layer to it via the
+   `DATABASE_URL` environment variable.
+2. Make sure that the secret key is set to a secure random value. For example, run
+   `openssl rand -base64 32` to generate a secure random key.
+3. Make sure user registration is enabled or disabled, as per your requirements.
+4. Make sure the CORS settings are correct for your frontend.
+5. If using native auth, configure SMTP email transport for password resets (the default `file` transport is only suitable for development/testing). Update `email.type` to `smtp` and provide your SMTP credentials.

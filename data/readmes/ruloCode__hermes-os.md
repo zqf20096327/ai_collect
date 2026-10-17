@@ -1,0 +1,176 @@
+# ⚡ Hermes OS
+
+<p align="center">
+  <a href="https://code.claude.com/docs/en/agent-sdk"><img alt="Claude Agent SDK" src="https://img.shields.io/badge/Claude%20Agent%20SDK-local--first-D97757?logo=anthropic&logoColor=white"></a>
+  <a href="https://github.com/ruloCode/hermes-os/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/ruloCode/hermes-os?style=flat&color=D97757"></a>
+  <a href="LICENSE"><img alt="Licencia MIT" src="https://img.shields.io/badge/licencia-MIT-555"></a>
+  <img alt="macOS · Node 22 · pnpm" src="https://img.shields.io/badge/macOS%20%C2%B7%20Node%2022%20%C2%B7%20pnpm-informational?color=555">
+</p>
+
+<p align="center">
+  <img src="docs/img/readme/oficina-aerea-oscuro.jpg" alt="La Oficina de agentes de Hermes OS: un personaje por agente vivo, agrupados por proyecto, con su estado y lo que está haciendo" width="900">
+</p>
+
+Sistema operativo de IA personal, **local-first** y en español: un dashboard estilo "AGENTIC OS" con voz en tiempo real, un agente ejecutor que corre en tu máquina con el **Claude Agent SDK** (sin API key: usa tu suscripción de Claude Code) y memoria persistente en Supabase. Conoce tu vault de Obsidian, tus tareas de Linear, tus reuniones, tu calendario y tu producción de contenido — y todo lo que muestra es real.
+
+> **English** — Hermes OS is a local-first personal AI operating system (UI and docs in Spanish, code in English): real-time voice, an executor agent that runs on your machine with the **Claude Agent SDK** (no API key — it uses your Claude Code subscription), persistent memory in Supabase/pgvector, a live meeting copilot, Linear-first tasks, a content studio and hand-gesture control. Everything on screen is real data.
+
+```
+Browser (dashboard :31415)  ─┬─ Voz: ElevenLabs Agents (WebRTC) → client tools en el browser
+                             ├─ Consola: contrato Hermes (SSE OpenAI-compatible)
+                             └─ Paneles: actividad en vivo, conocimiento, juntas, tareas, estudio…
+                                              │
+                                              ▼
+Agent server (apps/agent, Hono :8650) ── Claude Agent SDK ── spawnea el CLI `claude` (tu login)
+        │                                   └─ tools MCP "hermes" + guardrails (canUseTool)
+        ├─ Supabase (pgvector): memoria, conocimiento unificado, tareas, juntas, presencia
+        ├─ Vault de Obsidian (opcional): verdad de proyectos, notas de ejecución
+        └─ Integraciones opcionales: Linear · Google Calendar · AssemblyAI · OpenMontage · Kasa
+```
+
+## Mira un agente por dentro: la Oficina
+
+<p align="center">
+  <img src="docs/img/readme/tarima-tools-dark.jpg" alt="Modo tarima de la Oficina: la traza del loop con dos errores corregidos, el escritorio del agente en 3D y sus tools con su permiso real" width="900">
+</p>
+
+`/oficina` es una oficina 3D donde cada sesión viva del Agent SDK o run de `claude -p` es un personaje en su escritorio. Le hablas por voz o con un control de Xbox, levanta la mano cuando va a hacer algo con efectos y, con **P**, entras al **modo tarima**: la traza completa del loop (qué lee, qué tool llama, qué le devuelve, dónde se equivoca y en qué paso se corrigió), las tools que tiene con su permiso real, el system prompt exacto con el porqué de cada sección y el log completo. Una **vista pública** tapa secretos, correos, teléfonos y proyectos de clientes antes de que lleguen a la pantalla.
+
+| | |
+|---|---|
+| ![Caminando junto a un agente: su tarjeta dice qué tool usa y "E" abre su panel](docs/img/readme/oficina-cerca-claro.jpg) | ![El system prompt exacto que recibió el agente, por secciones, con el porqué de cada una](docs/img/readme/tarima-prompt-light.jpg) |
+| **Explorar**: caminas entre tus agentes (teclado o control de Xbox) y le hablas a cualquiera por voz | **System prompt**: el string exacto que recibió, por secciones y con el porqué de cada una |
+| ![El log completo del agente: cada evento con su contenido entero](docs/img/readme/tarima-log-dark.jpg) | ![El café del segundo piso con la ciudad de fondo a la hora real](docs/img/oficina-v8/despues-aerea2-dia-oscuro.jpg) |
+| **Log**: cada evento del loop con su contenido entero, descargable | **Tres pisos**: equipos, café y azotea, con gente, minijuegos y el cielo de la hora real |
+
+Probarla sin gastar tokens: abre `localhost:31415/oficina`, presiona **P** y luego **R** (repite una traza real grabada, marcada como repetición). Con agentes de verdad: `scripts/demo-proyectos.sh prepare` arma cinco proyectos de práctica con bugs reales para contratar agentes en ellos. Todo en [docs/oficina-de-agentes.md](docs/oficina-de-agentes.md).
+
+## Requisitos
+
+| Qué | Versión / nota |
+|---|---|
+| macOS (recomendado) o Linux/WSL2 | Las features de sistema (gestos, Chrome por AppleScript, luces, ventanas) son mac-only y se apagan solas en otros SO |
+| Node | 22+ (probado con 24/25 vía nvm) |
+| pnpm | 10+ |
+| **Claude Code** | ≥ 2.1.247, **logueado con tu cuenta** (Pro/Max/Team). `claude --version` · `claude` → `/login` |
+| Supabase | Un proyecto propio (plan gratis basta) |
+| `rg` (ripgrep), `ffmpeg` | ffmpeg solo para reuniones y Estudio |
+
+## Cómo consume Claude (y por qué no hay API key)
+
+```
+Hermes → @anthropic-ai/claude-agent-sdk → query() → spawnea el CLI `claude`
+       → el CLI usa el login OAuth de tu cuenta (Keychain en macOS) → Anthropic
+```
+
+El agente **nunca** recibe una key: [session.ts](apps/agent/src/agent/session.ts) llama `query()` y el CLI resuelve la credencial. Todo el consumo sale de tu suscripción. **Si `ANTHROPIC_API_KEY` existe en el entorno, el CLI la prefiere y cobra por API** — no la configures. El uso (tokens por turno) se cuenta desde el evento `result` del CLI y se muestra en el dashboard; es conteo, no factura.
+
+Verifica tu login en macOS:
+
+```bash
+security find-generic-password -s "Claude Code-credentials" -w \
+  | python3 -c "import sys,json;print(json.load(sys.stdin)['claudeAiOauth']['subscriptionType'])"
+```
+
+## Setup por máquina
+
+```bash
+git clone git@github.com:ruloCode/hermes-os.git ~/dev/side/hermes-os
+cd ~/dev/side/hermes-os
+./hermes setup            # pnpm install (+ agente de voz de ElevenLabs si hay key)
+cp .env.example .env      # y completa el mínimo (abajo)
+```
+
+**1. Supabase.** Crea un proyecto y aplica **todas** las migraciones de [supabase/migrations/](supabase/migrations/) en orden numérico:
+
+```bash
+supabase login && supabase link --project-ref <ref> && supabase db push
+# o pega cada .sql en el SQL Editor del dashboard, en orden
+```
+
+**2. `.env` mínimo** (en la raíz del monorepo; el resto es opcional y degrada solo):
+
+```
+HERMES_OWNER_NAME=<tu nombre>          NEXT_PUBLIC_HERMES_OWNER_NAME=<tu nombre>
+MACHINE_NAME=<único por máquina>       HERMES_API_KEY=<openssl rand -hex 24>
+NEXT_PUBLIC_SUPABASE_URL=…             NEXT_PUBLIC_SUPABASE_ANON_KEY=…
+SUPABASE_SERVICE_ROLE_KEY=…            VAULT_PATH=<ruta del vault o vacío>
+```
+
+**3. Tu persona (opcional, recomendado).** Copia [docs/SOUL.example.md](docs/SOUL.example.md) a `~/.hermes-os/SOUL.md` y escríbelo en primera persona: Hermes lo inyecta a su system prompt y a los prompts especializados. Vive fuera del repo.
+
+**4. Arranca.**
+
+```bash
+./hermes                  # desarrollo: web :31415 + agente :8650
+./hermes doctor           # requisitos, puertos, autostart, salud
+./hermes install          # producción: build + autostart al login (launchd com.hermes-os.*)
+```
+
+Prueba desde la terminal (misma ruta que usa el dashboard):
+
+```bash
+KEY=$(grep -o "^HERMES_API_KEY=.*" .env | cut -d= -f2-)
+curl -s -N -X POST localhost:8650/v1/chat/completions \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"Di hola y dime en qué máquina corres"}],"stream":true}'
+```
+
+## Estructura
+
+```
+apps/web        Next.js 15 — dashboard (shell único, providers, design system en src/components/ui)
+apps/agent      Hono — agente (Agent SDK, tools MCP, guardrails, jobs, rutas /v1 /tasks /meetings /content …)
+packages/shared Tipos y lógica compartida (contrato Hermes, etapas de contenido, beats de guion)
+mobile/         App Expo (Android): chat, grabación de juntas a prueba de red, tablero Linear
+supabase/       Migraciones (001 → 025)
+docs/           Guías: oficina de agentes, aprendizaje y tareas, multi-máquina, flujo de contenido, SOUL.example.md
+scripts/        Servicios (launchd, túnel), demos de la Oficina y utilidades
+hermes          Lanzador: dev · install · uninstall · doctor · stop · typecheck
+```
+
+La guía de arquitectura para trabajar en el código está en [CLAUDE.md](CLAUDE.md) (la lee Claude Code al abrir el repo).
+
+## Qué hace
+
+- **Voz en tiempo real** (ElevenLabs): client tools en el browser → agente local, sin túnel. Segundo agente "tutor de inglés" con reportes y vocabulario.
+- **Consola**: chat con memoria de sesión (`X-Hermes-Session-Id`), runs de Claude Code por proyecto con stop y continuación.
+- **Conocimiento unificado**: `match_knowledge` busca en memorias, reuniones, ejecuciones, conversaciones y vault (pgvector).
+- **Reuniones**: ingest de grabaciones (resumen + accionables → Linear) y **junta EN VIVO** con transcripción diarizada, copiloto rápido (~2 s) y coach.
+- **Tareas Linear-first**: tablero, detalle, "Copy prompt" por issue y ejecución headless con métricas.
+- **Estudio de contenido**: pipeline por etapas con criterios reales, teleprompter, checklist de captura contra el disco, voz en off, edición automática (OpenMontage) y métricas de YouTube.
+- **Vida**: finanzas (COP/USD) y hábitos por voz; agenda de Google Calendar con escritura por voz.
+- **Sistema (macOS)**: control por gestos con MediaPipe, navegación web agéntica en un Chrome dedicado, luces Kasa, multi-monitor.
+- **Oficina de agentes 3D**: un personaje por agente vivo, aprobaciones reales, modos de Claude Code, traza del loop, tools, system prompt y modo tarima con vista pública.
+- **Aprendizaje**: perfil que Hermes mantiene (USER.md), skills como memoria procedimental, propuestas de aprendizaje que apruebas y tareas programadas con cron en español.
+- **Multi-máquina y móvil**: un dashboard, un agente por PC (descubrimiento por heartbeat); túnel cloudflared + login Supabase para la app.
+
+## Comandos
+
+| Comando | Qué hace |
+|---|---|
+| `./hermes` | Web + agente en desarrollo |
+| `./hermes install` / `uninstall` | Build de producción + autostart (launchd) / quitarlo |
+| `./hermes doctor` | Diagnóstico: requisitos, puertos, servicios, salud |
+| `pnpm typecheck` · `pnpm test` | Typecheck y tests de todo el monorepo (obligatorios antes de commitear) |
+| `pnpm setup:elevenlabs` | Crea/actualiza los agentes de voz y sus client tools |
+| `pnpm backfill:knowledge` | Indexa el conocimiento existente (idempotente) |
+| `launchctl kickstart -k gui/$UID/com.hermes-os.agent` | Reinicia el agente de producción (`.web` para el dashboard) |
+
+Logs de producción: `~/.hermes-os/logs/`.
+
+## Seguridad
+
+- El agente escucha solo en `127.0.0.1` sin `HERMES_API_KEY`; con key se abre a la red y exige Bearer (o JWT de Supabase Auth para el móvil).
+- Bash/Write/Edit pasan por `canUseTool` ([guardrails.ts](apps/agent/src/agent/guardrails.ts)); el navegador y las luces reciben solo acciones semánticas de una allowlist.
+- `.env`, `SOUL.md`, `.data/` y los binarios generados están fuera de git. Nunca commitees credenciales.
+
+## Convenciones
+
+Español en UI, comentarios y mensajes; código en inglés. **Todo dato visible es real**: sin métricas inventadas ni placeholders. Ningún nombre propio en el código — la identidad del dueño vive en `.env` + `SOUL.md`.
+
+## Contribuir
+
+Issues y PRs bienvenidos. Antes de abrir un PR: `pnpm typecheck` y `pnpm test` en verde, y si tocas la Oficina, sus QA de Playwright (`apps/web/scripts/oficina-*-qa.py`, sin gastar tokens). La guía de arquitectura y los "ojo" de cada parte están en [CLAUDE.md](CLAUDE.md). Hermes es un proyecto personal que corre en mi máquina: muchas features suponen macOS y tus propias cuentas (Supabase, ElevenLabs, Linear), y todas se apagan solas, con un mensaje, si falta la configuración.
+
+Licencia [MIT](LICENSE).

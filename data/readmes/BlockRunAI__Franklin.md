@@ -1,0 +1,795 @@
+<div align="center">
+
+<br>
+
+<img src="assets/terminal-banner.png" alt="Franklin Agent terminal" width="680">
+
+<br><br>
+
+<h1>Franklin Agent</h1>
+<h3>The AI agent with a wallet.</h3>
+
+<p>
+  Other agents just talk. Franklin Agent holds your USDC <em>and puts it to work</em> —<br>
+  trading, research, and autonomous tasks with real budgets, real guardrails, real outcomes.<br>
+  One wallet. Every model. Every paid API. Pay only for outcomes — not subscriptions.
+</p>
+
+<p>
+  <a href="https://npmjs.com/package/@blockrun/franklin"><img src="https://img.shields.io/npm/v/@blockrun/franklin.svg?style=flat-square&color=FFD700&label=npm" alt="npm"></a>
+  <a href="https://npmjs.com/package/@blockrun/franklin"><img src="https://img.shields.io/npm/dm/@blockrun/franklin.svg?style=flat-square&color=10B981&label=downloads" alt="downloads"></a>
+  <a href="https://github.com/BlockRunAI/Franklin/stargazers"><img src="https://img.shields.io/github/stars/BlockRunAI/Franklin?style=flat-square&color=FFD700&label=stars" alt="stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue?style=flat-square" alt="license"></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node-%E2%89%A520-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node"></a>
+  <a href="https://x402.org"><img src="https://img.shields.io/badge/x402-native-10B981?style=flat-square" alt="x402"></a>
+  <a href="https://t.me/blockrunAI"><img src="https://img.shields.io/badge/chat-telegram-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="telegram"></a>
+</p>
+
+<p>
+  <a href="#quick-start">Quick&nbsp;start</a> ·
+  <a href="#two-ways-to-pay">Two&nbsp;ways&nbsp;to&nbsp;pay</a> ·
+  <a href="#franklin-desktop-beta">Desktop</a> ·
+  <a href="#yopo">YOPO</a> ·
+  <a href="#a-new-category">Category</a> ·
+  <a href="#what-franklin-can-execute">What&nbsp;it&nbsp;does</a> ·
+  <a href="#smart-router">Smart&nbsp;Router</a> ·
+  <a href="#the-comparison">Comparison</a> ·
+  <a href="#how-it-works">Architecture</a> ·
+  <a href="#community">Community</a>
+</p>
+
+</div>
+
+---
+
+## The pitch in one paragraph
+
+Franklin Agent is an **autonomous economic agent** — an AI that holds a USDC wallet and spends it to get real work done, with **trading as its flagship arena**. It buys live market data, proposes trade plans you approve before a cent moves, pursues long-running goals across sessions, keeps a wallet-bound trading journal, and picks the best model per task from <!-- br:models.chatVisible -->88<!-- /br:models.chatVisible --> models. You state an outcome and set a budget. Franklin Agent decides what to call, what to pay for, and when to stop. No subscriptions, no seats, no rate limits.
+
+Funding it is your choice. Fund a **USDC wallet** and every paid action routes through the [x402](https://x402.org) micropayment protocol, settling on-chain against a wallet only you control — no signup, no account, the wallet is the identity. Or top up a **prepaid balance** at [user.blockrun.ai](https://user.blockrun.ai) and hand Franklin an API key. Same models, same tools, same agent. See [Two ways to pay](#two-ways-to-pay).
+
+Built by the [BlockRun](https://blockrun.ai) team. Apache-2.0. TypeScript. Ships as one npm package.
+
+> **YOPO — You Only Pay Outcome**
+>
+> Not a subscription (pay for access). Not a generic pay-per-call (pay for trying).
+> You pay only for the work Franklin Agent delivers. Chat is provider cost with no markup, plus $0.001
+> per call; media carries 5%. Settled per action in USDC. No monthly fees. No rate limits. No overdraft.
+
+---
+
+## Quick start
+
+> **Requires Node.js 20.19+ (Node 22 LTS recommended).** Check with `node -v`. Older Node crashes at startup with `ERR_REQUIRE_ESM`.
+
+```bash
+# 1. Install
+npm install -g @blockrun/franklin
+
+# 2. Run (free — uses the free models out of the box)
+franklin
+
+# 3. (optional) Unlock Sonnet, Opus, GPT, Gemini, Grok + every paid API.
+#    Pick ONE — a USDC wallet, or a prepaid API key.
+
+#    a) Wallet — no signup, no account
+franklin setup solana      # or: franklin setup base / franklin setup arc
+franklin balance           # show address + USDC balance
+
+#    b) API key — sign up and top up at https://user.blockrun.ai
+franklin login brk_live_...
+```
+
+Either route unlocks the same thing: **$5** buys you every frontier model and every paid tool in the BlockRun gateway. The wallet route needs zero signup, zero credit card, zero phone verification. The key route needs an account but no crypto.
+
+**No global install? Just run it directly** — no permissions, no `-g`:
+
+```bash
+npx @blockrun/franklin
+```
+
+### Install troubleshooting
+
+| Symptom | Cause | Fix |
+| ------- | ----- | --- |
+| `npm error EACCES … mkdir '/usr/local/lib/node_modules'` | Your global npm folder is owned by root (common when Node was installed from the macOS `.pkg`). | Don't use `sudo`. Either run `npx @blockrun/franklin` (no global install needed), or switch to a user-owned Node via a version manager — see below. |
+| `Error [ERR_REQUIRE_ESM] … rpc-websockets … require() of ES Module … uuid` | Node is older than 20.19. Franklin's Solana deps need the `require(esm)` support added in Node 20.19.0. | Upgrade to Node 20.19+ or 22 LTS (see below). This is the #1 cause of a crash on first run. |
+| `npm warn EBADENGINE … required: { node: '>=20.x' }` | Node is older than 20.19. | Upgrade to Node 20.19+ or 22 LTS. The warning alone is harmless, but on old Node the run will also crash — upgrade. |
+
+The clean, permanent fix for both is a **user-owned Node** so global installs never touch root-owned system folders:
+
+```bash
+# nvm (https://github.com/nvm-sh/nvm)
+nvm install 22 && nvm use 22
+npm install -g @blockrun/franklin
+
+# or fnm (https://github.com/Schniz/fnm)
+fnm install 22 && fnm use 22
+npm install -g @blockrun/franklin
+```
+
+### Prefer a GUI? Try Franklin for VS Code
+
+[![Franklin for VS Code — Beta is here](assets/franklin-vscode-banner.png)](https://marketplace.visualstudio.com/items?itemName=blockrun.franklin-vscode)
+
+The same agent ships as a [VS Code extension](https://marketplace.visualstudio.com/items?itemName=blockrun.franklin-vscode) — chat panel, model picker, wallet balance, image / video generation — all driven by the wallet you already funded for the CLI.
+
+```
+VS Code → Extensions  (Cmd+Shift+X / Ctrl+Shift+X)
+        → search "Franklin" → Install
+        → click the Franklin icon in the Activity Bar
+```
+
+Free models work immediately. Paid models, image gen, and video gen use your selected payment method: funded API account credit or a USDC wallet. The CLI and the extension share the same `~/.blockrun/` config and session history, so jumping between terminal and VS Code is seamless.
+
+### Franklin Desktop (Beta)
+
+Franklin Desktop brings the real Franklin agent into a native workspace for macOS
+and Windows. It uses the same local wallet, models, tools, and session runtime as
+the CLI, with a visual chat, conversation history, gallery, wallet, tools, skills,
+and CLI panels.
+
+| Platform | Current beta package |
+| -------- | -------------------- |
+| macOS (Apple silicon) | Unsigned `.dmg` test build |
+| Windows (x64) | Unsigned `.exe` test build |
+
+> **Beta distribution:** signed public downloads and automatic updates are not
+> live yet. Maintainers can download the short-lived unsigned installers from
+> [Desktop CI](https://github.com/BlockRunAI/Franklin/actions/workflows/desktop-ci.yml).
+> Public signed builds will appear on the
+> [Franklin releases page](https://github.com/BlockRunAI/Franklin/releases).
+
+Desktop is local-first: it opens in `Documents/Franklin`, keeps session history
+local by default, and asks before an agent accesses files outside the active
+workspace. External files are not blocked; each access requires explicit approval.
+Shell commands also require approval in the current beta.
+
+The stable beta currently runs the Franklin agent. Team Mode and Studio adapters
+for additional agent CLIs are being developed separately and are not included in
+this release. See the [Desktop guide](apps/desktop/README.md) for development and
+packaging instructions.
+
+---
+
+## Two ways to pay
+
+Franklin needs money to work — it buys model calls, market data, search and media
+generation on your behalf. There are two ways to give it that money, and they are
+interchangeable. Everything else about the agent is identical.
+
+| | **USDC wallet** (x402) | **API key** (prepaid credit) |
+| --- | --- | --- |
+| Setup | `franklin setup solana` | Sign up, top up, `franklin login brk_...` |
+| Account required | No | Yes |
+| Crypto required | Yes — USDC on Solana, Base or Arc | No — top up with a card |
+| Settlement | On-chain, per call, via [x402](https://x402.org) | Against a prepaid balance |
+| Gateway | `sol.blockrun.ai` / `blockrun.ai` / `arc.blockrun.ai` | `api.blockrun.ai` |
+| Where the money lives | A wallet only you hold the key to | Your BlockRun account |
+| Spend visibility | `franklin stats` — exact settled amounts | `franklin balance` + [dashboard](https://user.blockrun.ai/dashboard); exact except chat |
+
+**Three wallet chains.** Solana (the default), Base, or Circle's [Arc](https://arc.network)
+(chain 5042). Switch with `franklin solana` / `franklin base` / `franklin arc`, or the chain
+buttons on the panel's wallet page. Base and Arc share one EVM key, so the same address
+receives USDC on both; Solana has its own key. Card purchase (Coinbase Onramp) funds Base
+and Solana only — on Arc, send USDC to the address directly. `franklin balance` always
+reports the active chain's USDC, so after switching to Arc it shows your Arc balance, not
+Base's. Arc's gateway adds models after Base does; the picker lists what Arc serves today.
+
+**The wallet is still Franklin's identity.** Memory, the trading journal and goals are
+keyed to it, and the wallet route is the one that needs nothing from us — no signup, no
+KYC, no account to suspend. The API key exists because not everyone wants to hold crypto
+to try an agent.
+
+### Getting an API key
+
+1. Sign up at **[user.blockrun.ai](https://user.blockrun.ai)**.
+2. Top up your balance from the dashboard.
+3. Create a key — it looks like `brk_live_...`.
+4. Give it to Franklin:
+
+```bash
+franklin login brk_live_...     # verifies the key, then stores it at ~/.blockrun/api-key (0600)
+franklin login                  # show the active pay mode without changing it
+franklin logout                 # remove the key and fall back to the wallet
+```
+
+Or set it in the environment instead, which takes precedence over the stored key and is
+the right choice for CI and servers:
+
+```bash
+export BLOCKRUN_API_KEY=brk_live_...
+```
+
+### Running both
+
+You can have a wallet **and** a key configured at once. The key wins by default. To spend
+from the wallet for a single run, add `--wallet` to any command:
+
+```bash
+franklin --wallet                 # this session pays from the wallet
+franklin balance --wallet         # show the wallet balance, not the key status
+```
+
+If the key is rejected, or a tool needs an endpoint the key gateway does not serve,
+Franklin returns that API error without charging a wallet. Correct the key or explicitly
+retry with `--wallet`. An empty or malformed configured key is an error; remove it to
+return to the wallet default. `franklin logout` removes the saved key; if
+`BLOCKRUN_API_KEY` is exported, unset it too.
+
+### Spend tracking, and the one thing that stays an estimate
+
+In wallet mode every charge is exact: the gateway states the price in the x402 handshake
+and Franklin records the amount that actually settled.
+
+In API-key mode most calls now report what they cost. The gateway returns an
+`x-blockrun-cost-usd` header on the pre-priced service families — search, images, RPC,
+market data, phone, sandboxes — and Franklin records that figure exactly.
+
+**Chat is the exception, permanently.** Chat settles *after* the answer is on the wire, so
+a slow settlement never becomes a slow answer, which means the amount does not exist yet
+when the headers are written. Franklin reconstructs chat spend from token counts and the
+published rate, so chat rows are estimates. `franklin stats` marks estimated totals with
+`~` and reports the estimated portion separately, so you can always see which is which.
+
+`franklin balance` reads your real credit standing from the gateway:
+
+```
+Account:   acme (gated)
+Remaining: $41.9980 of $50.00 granted
+Spent:     $8.0020  (BlockRun, authoritative)
+Local:     ~$8.0431  (Franklin's own tally, all time, both pay modes — expected to differ)
+```
+
+The two numbers differ on purpose: Franklin's tally covers both pay modes and estimates
+chat, while BlockRun's is what you were actually billed. For the full per-call history,
+use the [dashboard](https://user.blockrun.ai/dashboard).
+
+---
+
+## YOPO
+
+**You Only Pay Outcome.** This is Franklin Agent's pricing model, and it is the opposite of almost every other AI product you use.
+
+|                         | You pay for...                               | Result                               |
+| ----------------------- | -------------------------------------------- | ------------------------------------ |
+| AI subscription       | Access. Paid whether you use it or not. | $20–200/month, rate-limited.         |
+| Pay-per-call (OpenAI API, etc.) | Every attempt — even failed ones.    | Hidden cost from retries, dead ends. |
+| **Franklin Agent (YOPO)**     | **The outcome.** Each signed micropayment.  | **Provider cost on chat, no markup, + $0.001/call. Media +5%.** |
+
+Three consequences fall out of this:
+
+1. **No subscriptions.** Use Franklin for $0.50 one week and $50 the next — you pay for compute actually consumed, nothing more.
+2. **No rate limits.** Subscriptions throttle you when you need AI most. YOPO has no artificial caps — if you have USDC, you have access.
+3. **No overdraft.** The wallet balance IS the hard limit. When it's empty, Franklin stops. No surprise bills, no 3 a.m. rate-limit walls.
+
+Concretely — $1 in USDC buys roughly (input tokens at provider list price, before the $0.001 per-call fee):
+- ~330K Claude Sonnet 4.6 tokens
+- ~750K DeepSeek V4 Pro tokens
+- ~3.3M Gemini 2.5 Flash tokens
+- Unlimited use of the free tier — no wallet needed
+
+---
+
+## A new category
+
+> **Economic Agent**
+>
+> Software that can hold a wallet, price its own actions, spend toward an outcome, and stop at a hard budget cap.
+
+Most AI products fit into one of three buckets: they answer questions, write code, or automate a fixed workflow. None of them can spend money.
+
+Franklin can. It combines **purchasing power** (it pays for models, tools, and APIs), **budget awareness** (cost is part of the loop, not an afterthought), **cross-vertical execution** (trading, research, content, operations), and **hard stopping conditions** (wallet balance is a real constraint, not a suggestion).
+
+That is why Franklin is an economic agent, not just a task agent.
+
+---
+
+## What Franklin can execute
+
+Franklin is **chat-first**. You do not wire a DAG, configure six API keys, or commit to one model vendor. You state an outcome. Franklin decides what to read, search, fetch, call, and pay for.
+
+### 📈 Trading signals
+
+```text
+> what's BTC looking like today?
+
+  ✓ TradingSignal  BTC
+
+  ## BTC Signal Report
+
+  Price: $71,056 USD (+2.3% 24h)
+  Market Cap: $1.42T
+  24h Volume: $29.6B
+
+  ### Technical Indicators (30d)
+  - RSI(14): 53.2 — neutral
+  - MACD: 339.21 / Signal: 280.45 — bullish crossover
+  - Bollinger: within band (upper $73,773 / lower $64,545)
+  - Volatility: 35.3% annualized — medium
+
+> if I enter at 65000 with $1000, where should my stop be?
+
+  Based on ATR(14) and support at $63,500:
+  Entry: $65,000 · Stop: $63,200 (−2.8%) · Risk: $27.69
+  Risk/reward to $70K target: 1:2.8 ✓
+```
+
+Live data from CoinGecko. RSI, MACD, Bollinger, and volatility computed locally. No API key needed.
+
+### 🛡️ Trades only move on YOUR approval
+
+Real-money trades (Jupiter, 0x, Polymarket) are hard-gated behind a **trade plan**: the agent proposes a structured plan — venue, asset, size, slippage, stop condition, rationale, total spend — and nothing executes until you approve it. Approved budgets draw down per trade and expire in 15 minutes. This holds in every permission mode, `--trust` included. Add your own guardrails as [lifecycle hooks](docs/examples/hooks/) — daily spend caps, token blacklists, spend ledgers — that veto actions before money moves.
+
+### 🎯 Autonomous goals with adversarial verification
+
+```text
+> /goal research the top 3 x402-compatible data APIs and produce a comparison
+```
+
+Franklin plans the objective, works it across turns on its own, and — when it claims completion — a panel of **adversarial reviewers audits the evidence and refutes anything unsupported**. Bounded by a turn cap, a verification-round cap, and your `--max-spend`. Esc pauses at any time. Pair with `/loop 1h check funding rates` (durable scheduler) and the `Monitor` tool (live feeds delivered at turn boundaries) for always-on market coverage.
+
+### 🧠 A memory that follows your wallet
+
+Every trade journals itself: thesis on open, P&L on close, written to a **wallet-keyed trading journal** (`~/.blockrun/memory/trading-*/`) that any session can recall — "what was my SOL thesis?" just works, from any directory. Session learnings capture with `/flush`, consolidate with `/dream`, and inject automatically at session start.
+
+### 🕹️ Mission control for your fleet
+
+`franklin serve` + `franklin panel` → the **Agents** tab: dispatch one agent per strategy or market, watch them stream live, reply to any of them, and approve their trade plans and permission requests — all from one browser page. Sessions started in a terminal show up too.
+
+### 🎨 Image generation
+
+```text
+> generate a logo for my AI startup — minimalist, dark background
+
+  ✓ ImageGen  "minimalist AI startup logo, dark background..."
+  Saved: generated-logo-1713052800.png (1024x1024)
+```
+
+Generates images via DALL-E / GPT Image directly from the CLI. Paid from your selected BlockRun API account or wallet — no OpenAI API key needed.
+
+### 📱 Remote control via Telegram
+
+Run `franklin telegram` on an always-on machine (set `TELEGRAM_BOT_TOKEN` + `TELEGRAM_OWNER_ID`) and drive Franklin from your phone. Owner-locked, session-resumable across restarts, slash commands (`/new`, `/balance`, `/status`). Trading, research, content — all reachable from a Telegram chat.
+
+### 🔎 Research, analysis, anything with a budget
+
+```text
+> compare the top 5 AI agent pricing models, summarize the patterns, and save a note for me
+
+  ✓ WebSearch  ai agent pricing models
+  ✓ WebFetch   5 articles
+  ✓ Write      notes/agent-pricing.md
+
+  Summary:
+  - Most agents hide pricing behind monthly seats
+  - Usage-based products win with power users and teams
+  - Wallet-based billing is still basically empty whitespace
+```
+
+```text
+> backtest strategies/sol_breakout.py on the last 90 days and tell me if it beats holding
+
+  ✓ TradingMarket  SOL · 90d daily candles
+  ✓ Read           strategies/sol_breakout.py
+  ✓ Bash           python strategies/sol_breakout.py --days 90
+  ✓ Write          notes/sol-breakout-90d.md
+
+  Strategy +11.4% vs. hold +6.2% · max drawdown −8.9% · 14 trades
+```
+
+Files and shell are there for the work around a strategy — scripts, data, reports. They are tools, not the category.
+
+Every tool call is itemized. Every token is priced. When the wallet hits zero, Franklin stops. No overdraft, no surprise bill, no rate-limit wall at 3 a.m. — this is YOPO in practice.
+
+---
+
+## Smart Router
+
+**<!-- br:models.chatVisible -->88<!-- /br:models.chatVisible --> models. One decision. Zero guesswork.**
+
+You don't pick models. Franklin picks for you.
+
+The Smart Router classifies every request — trading, research, reasoning, creative — and selects the model with the best quality-to-cost ratio. Trained on **2M+ real requests** from the BlockRun gateway, continuously updated.
+
+```text
+> summarize this week's stablecoin news in five bullets
+
+  RESEARCH deepseek-v4-pro  ·  9.6K in / 0.8K out
+
+> what's the BTC outlook for the week?
+
+  TRADING claude-opus-5  ·  8.2K in / 1.8K out
+
+> is this funding-rate arbitrage actually risk-free? walk through the cases
+
+  REASONING claude-opus-5  ·  15.1K in / 3.4K out
+```
+
+Every response shows which model was chosen, why, and how much you saved vs. always using the most expensive option.
+
+**Four profiles:**
+
+| Profile | Strategy | Use case |
+|---------|----------|----------|
+| `auto` | Best quality-to-cost ratio | Default — smart spend |
+| `eco` | Cheapest model with decent quality | Budget-conscious |
+| `premium` | Highest quality regardless of cost | Mission-critical |
+| `free` | Free models only | Zero wallet balance |
+
+**Per-session breakdown** — run `/cost` to see exactly where your USDC went:
+
+```text
+Session Cost: $0.0847 (23 requests)
+  gemini-2.5-flash       $0.0012   14 req   CHAT
+  deepseek-v4-pro        $0.0201    6 req   RESEARCH
+  claude-opus-5          $0.0634    3 req   TRADING
+```
+
+The router also learns from **your** usage. If you keep retrying a model for research tasks, Franklin adapts and picks a better one next time. Your router gets smarter the more you use it.
+
+---
+
+## Why Franklin
+
+<table>
+<tr>
+<td width="33%" valign="top">
+
+### 💳 &nbsp;AI is utility, not SaaS
+
+You don't subscribe to electricity, you pay for what you use. Franklin brings the same model to AI. YOPO settlement means Franklin never bills you for access, only for outcomes. No monthly fees, no rate limits, no overdraft.
+
+</td>
+<td width="33%" valign="top">
+
+### 🧠 &nbsp;Multi-model is the future
+
+No single model is best at everything. Opus reasons deeper, Gemini handles longer context, DeepSeek costs 20x less for simple tasks. The Smart Router routes every request to the optimal model in <1ms — <!-- br:savings.autoVsBaselinePct -->84<!-- /br:savings.autoVsBaselinePct -->% cheaper than pinning Claude Opus 5 for every request.
+
+</td>
+<td width="33%" valign="top">
+
+### 🔐 &nbsp;Wallet is identity
+
+No email. No phone. No KYC. Your Solana, Base or Arc address is your account — portable, permissionless, global. A wallet requires only USDC. (Prefer an account and a card? [Two ways to pay](#two-ways-to-pay) — the key route exists, it just is not the one that makes the agent sovereign.)
+
+</td>
+</tr>
+</table>
+
+---
+
+## The comparison
+
+|                                        | AI chat apps     | Agent frameworks        | Trading bots         | **Franklin**                    |
+| -------------------------------------- | ---------------- | ----------------------- | -------------------- | ------------------------------- |
+| **Spends money for you**               | ❌               | ⚠️ you wire payments     | ⚠️ trades only        | ✅ **USDC wallet or prepaid key** |
+| **Buys data + APIs + images + search** | ❌               | ⚠️ one key per service   | ❌                   | ✅ **one wallet pays for all**    |
+| Picks best model per task              | ❌ single-vendor | ⚠️ you pick              | ❌                   | ✅ **Smart Router, <!-- br:models.chatVisible -->88<!-- /br:models.chatVisible --> models** |
+| **Money moves only on your approval**  | —                | ⚠️ build it yourself     | ❌ runs on rules      | ✅ **trade plan, every mode**     |
+| Spend guardrails                       | —                | ⚠️ build it yourself     | ⚠️ per-bot limits     | ✅ **budget caps + hooks**        |
+| Works when a provider goes down        | ❌               | ⚠️ if you code it        | ❌                   | ✅ **routes to another**          |
+| Pricing                                | Subscription     | Your separate API bills | Subscription or fees | **YOPO** — per outcome          |
+| Identity                               | Vendor account   | A key per vendor        | Exchange account     | ✅ **wallet, no signup**          |
+| Source                                 | Closed           | Mixed                   | Mostly closed        | **Apache 2.0, local-first**     |
+
+**Franklin is the economic agent category in one sentence:** software with a wallet that can spend toward a result.
+
+---
+
+## Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**💼 Wallet-native economic execution**
+Franklin can decide what is worth paying for, route the call, sign the micropayment, and keep going until the goal is done or the budget is exhausted.
+
+**📈 Trading signals**
+Ask "what's BTC looking like?" — Franklin fetches live price data, computes RSI/MACD/Bollinger/volatility, and synthesizes a signal.
+
+**🎨 AI image generation**
+Ask "generate a logo" — Franklin calls DALL-E / GPT Image, saves the result locally, paid from your wallet.
+
+**🧠 <!-- br:models.chatVisible -->88<!-- /br:models.chatVisible --> models via one wallet**
+Anthropic, OpenAI, Google, xAI, DeepSeek, GLM, Kimi, Minimax, plus a free tier. One wallet, one interface, automatic fallback.
+
+**💳 x402 micropayments (YOPO)**
+HTTP 402 native. Every paid action is a signed USDC micropayment — an EIP-712 authorization on Base and Arc, a signed SPL transfer on Solana. Non-custodial: your keys never leave your machine. YOPO: you pay only for outcomes.
+
+**🧠 Learned model router**
+Trained on 2M+ real requests. Classifies your task and picks the best model from <!-- br:models.chatVisible -->88<!-- /br:models.chatVisible --> LLMs. Four profiles (auto/eco/premium/free). Adapts to your usage over time.
+
+</td>
+<td width="50%" valign="top">
+
+**🛠 60+ built-in tools**
+Trading and DeFi (signals, portfolio, trade plans, Jupiter and 0x swaps, Polymarket, DeFiLlama), research (Exa, web search and fetch, X search, on-chain and market data), media (image, video, music), autonomy (goals, scheduler, monitors, sub-agents, mixture of agents), phone and voice calls, cloud sandboxes, and general files and shell.
+
+**💾 Persistent sessions**
+Every turn is streamed to disk with metadata. Resume any session by ID. Survives crashes, reboots, and compaction.
+
+**🔍 Full-text session search**
+`franklin search "payment loop"` from the CLI, or `/session-search "payment loop"` in chat.
+
+**📊 Cost insights**
+`franklin insights` shows spend breakdowns, trends, and projections. Never wonder where the USDC went.
+
+**⚡ Anthropic prompt caching**
+Multi-turn Sonnet/Opus sessions use ephemeral cache breakpoints to reduce input spend on long conversations.
+
+**🔒 Guarded by default**
+Trades need your approved plan, the wallet key never reaches the model, and every network call the agent makes is checked. See [Safety and security](#safety-and-security).
+
+**🔌 Plugin SDK + MCP**
+Core is workflow-agnostic. Add new verticals without touching the loop. Discover external tools automatically through MCP.
+
+</td>
+</tr>
+</table>
+
+---
+
+## Slash commands
+
+| Command                          | What it does                                         |
+| -------------------------------- | ---------------------------------------------------- |
+| `/model [name]`                  | Interactive model picker, or switch directly         |
+| `/goal <objective>`              | Work an objective across turns, verified at the end  |
+| `/loop <interval> <prompt>`      | Run a prompt on a schedule (`/loop list`, `cancel`)  |
+| `/market`                        | Browse and hire paid skills from the marketplace     |
+| `/moa`                           | Ask several models the same question, compare        |
+| `/plan` / `/execute`             | Read-only planning mode / execution mode             |
+| `/ultrathink <q>`                | Deep reasoning mode for hard problems                |
+| `/remember` / `/flush` / `/dream`| Save a note / capture learnings / consolidate memory |
+| `/compact`                       | Structured context compression                       |
+| `/session-search <q>`            | Search past sessions                                 |
+| `/history` / `/resume [id]`      | Inspect or restore conversation state                |
+| `/cost` / `/wallet`              | Session cost, wallet address, and balance            |
+| `/insights [--days N]`           | Rich usage analytics                                 |
+| `/help`                          | Full command list                                    |
+
+`/model` takes a shortcut or any full gateway id. The newest models have
+explicit version shortcuts: `opus-5.5`, `sonnet-5.5`, `fable-5.1`,
+`gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.1`, `grok-4.7` and `grok-4.6`
+(e.g. `/model gpt-6-sol` or `/model anthropic/claude-opus-5.5`). Bare aliases
+like `opus`, `gpt` and `grok` keep their current targets.
+
+---
+
+## Safety and security
+
+Franklin holds money, so the defaults assume a model can be steered by what it reads — a fetched page, a search result, an MCP response.
+
+- **Money moves only on your approval.** Trades need a trade plan you approve, in every permission mode. `--max-spend` sets a spending ceiling, and [lifecycle hooks](docs/examples/hooks/) can veto any paid action before it runs.
+- **The wallet key never reaches the model.** File, search and browser tools refuse the key store and the machine's own credential stores (`~/.ssh`, `~/.aws`, cloud and Solana CLI keys). The exact key values are also scrubbed from every tool result.
+- **Network calls stay public.** Model-driven requests (web fetch, webhooks, the browser) refuse loopback, private and cloud-metadata addresses, and re-check every redirect.
+- **The local panel answers only you.** It listens on loopback, checks the `Host` header, and its wallet and spend routes require a token that only the page it serves knows.
+
+Found a vulnerability? Please report it privately — see [SECURITY.md](SECURITY.md).
+
+---
+
+## How it works
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│  Franklin Runtime                                            │
+│  Intent → Smart Router → Tool Use → Spend Control → Result   │
+├──────────────────────────────────────────────────────────────┤
+│  Learned Router                                              │
+│  2M+ requests · <!-- br:models.chatVisible@live -->88<!-- /br:models.chatVisible@live --> models · category detection · Elo scores │
+├──────────────────────────────────────────────────────────────┤
+│  Agent Loop                                                  │
+│  60+ tools · Sessions · Compaction · Pricing · Plugin SDK    │
+├──────────────────────────────────────────────────────────────┤
+│  BlockRun Gateway                                            │
+│  <!-- br:models.chatVisible@live -->88<!-- /br:models.chatVisible@live --> LLMs · CoinGecko · Search · Image APIs · paid services  │
+├──────────────────────────────────────────────────────────────┤
+│  x402 Micropayment Protocol                                  │
+│  HTTP 402 · USDC on Solana, Base & Arc · signed payloads     │
+└──────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+                     ┌─────────────┐
+                     │ Your wallet │
+                     │  (you own)  │
+                     └─────────────┘
+```
+
+The loop is simple:
+1. You state an outcome.
+2. Franklin chooses what to read, call, and pay for.
+3. The payment settles against your wallet.
+4. Franklin reports the result and the spend.
+
+That economic loop is the product.
+
+---
+
+## Project layout
+
+```text
+src/
+├── index.ts           CLI entry (franklin)
+├── banner.ts          Ben Franklin portrait + FRANKLIN gradient text
+├── agent/             Agent loop, LLM client, compaction, commands
+├── tools/             60+ built-in tools (trading, DeFi, research, media,
+│                      phone, sandboxes, files and shell)
+├── trading/           Market data (CoinGecko) + technical indicators
+├── goal/              /goal objectives + adversarial verification
+├── hooks/             Lifecycle hooks (PreSpend and friends)
+├── scheduler/         Durable /loop scheduler
+├── memory/            Wallet-keyed memory and trading journal
+├── panel/             Local dashboard (franklin panel)
+├── serve/             Agent host for the panel's Agents tab
+├── content/           Content library with budget-bound media generation
+├── brain/             Cross-session entity knowledge graph
+├── channel/           Non-CLI ingress drivers (Telegram today)
+├── events/            Internal event bus
+├── plugin-sdk/        Public plugin contract (Workflow/Plugin/Channel)
+├── plugins/           Plugin registry + runner (plugin-agnostic)
+├── session/           Persistent sessions + search + channel tags
+├── stats/             Usage tracking + insights engine
+├── ui/                Ink-based terminal UI
+├── proxy/             Payment proxy for external tools
+├── router/            Learned model router (<!-- br:models.chatVisible@live -->88<!-- /br:models.chatVisible@live --> models, Elo scoring)
+├── wallet/            Wallet management (Base/Arc + Solana)
+├── mcp/               MCP server auto-discovery
+└── commands/          CLI subcommands
+```
+
+---
+
+## Free tier, for real
+
+Start with **zero dollars**. Franklin defaults to free models that need **no wallet and no API key** — nothing to fund, nothing to sign up for.
+
+```bash
+franklin --model free
+```
+
+Once you fund it — [either way](#two-ways-to-pay) — Franklin gets more purchasing power: Sonnet, Opus, GPT, Gemini, Grok, and paid tools like Exa, image generation, and live market data.
+
+---
+
+## Remote control via Telegram
+
+Drive Franklin from anywhere with a bot token:
+
+```bash
+export TELEGRAM_BOT_TOKEN=<from @BotFather>
+export TELEGRAM_OWNER_ID=<your numeric Telegram user id>
+franklin telegram                # start the bot (owner-locked)
+```
+
+Session state resumes across process restarts (tagged by owner id).
+Slash commands `/new`, `/balance`, `/status`, `/help` handled locally
+by the bot layer; everything else forwards to the agent. Progressive
+streaming flushes partial answers at paragraph boundaries so long
+replies don't wait for turn-end.
+
+Same wallet. Same tools. From your phone.
+
+---
+
+## Documentation
+
+Full BlockRun docs: **https://blockrun.ai/docs**
+
+- [Agent developer guide](https://blockrun.ai/docs/getting-started/agent-developers) — building agents on BlockRun
+- [Models, SDKs & APIs](https://blockrun.ai/docs) — the full gateway reference
+- [Plugin SDK guide](docs/plugin-sdk.md) — build your own workflow vertical
+- [Changelog](CHANGELOG.md) — every release explained
+- [Roadmap](docs/ROADMAP.md) — what's coming next
+- [Proxy mode](docs/) — use Franklin as a payment proxy for Anthropic-compatible CLI agents
+
+---
+
+## Community
+
+- [Telegram](https://t.me/blockrunAI) — realtime help, bug reports, feature requests
+- [@BlockRunAI](https://x.com/BlockRunAI) — release notes, demos
+- [Issues](https://github.com/BlockRunAI/Franklin/issues) — bugs and feature requests
+
+---
+
+## Contributors
+
+Franklin ships work from outside the core team on a regular basis: typed Phone & Voice tools, the `/market` command, the model picker catalog, Jupiter precision guards, and the bug reports behind the prompt-caching, stream-timeout, and wallet-reservation fixes.
+
+The full list, with what each person shipped, lives in [ACKNOWLEDGMENTS.md](ACKNOWLEDGMENTS.md). Thank you.
+
+PRs welcome — see the Development section below for the local loop.
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/BlockRunAI/Franklin.git
+cd franklin
+npm install
+npm run build
+npm test              # deterministic local tests — no API calls
+npm run test:e2e      # live e2e tests — free smoke works unfunded; paid tools need network + funded wallet
+npm run test:free-models # live matrix across the current free models
+node dist/index.js --help
+```
+
+### Desktop app
+
+The stable Franklin Desktop shell lives in [`apps/desktop`](apps/desktop). It uses
+the Franklin runtime built by this monorepo, so CLI and Desktop changes are
+versioned and tested together. See the [Desktop guide](apps/desktop/README.md) for
+the product status, security model, and complete development workflow.
+
+```bash
+npm run desktop:dev       # Desktop UI with the local mock agent
+npm run desktop:real --workspace @blockrun/franklin-desktop # real Franklin agent
+npm run desktop:build     # type-check and build the renderer
+npm run desktop:package:mac
+npm run desktop:package:win
+```
+
+Packaged builds create a private, per-launch credential for the local Franklin
+service, keep cloud session sync off unless the user explicitly enables it, and
+use `Documents/Franklin` as the default workspace. Files outside that workspace
+remain available after an explicit approval.
+Team Mode is being developed separately and is not part of this stable integration.
+
+For the recommended live validation order and failure triage, see [docs/live-e2e-checklist.md](docs/live-e2e-checklist.md).
+
+**Contributing:** open an issue first to discuss meaningful changes. PRs welcome on bugs, docs, new models in pricing, and new tools.
+
+---
+
+## Shared model catalog
+
+Franklin uses [BlockRun Model Core](https://github.com/BlockRunAI/model-catalog)
+for model metadata, picker policy and price estimates. The runtime dependency
+is pinned to an immutable commit. On refresh, Franklin reads the public policy
+snapshot and the active gateway's catalog, so new models and prices can appear
+without a Franklin release. Base, Solana, Arc and API accounts have separate caches.
+Arc reads Base's policy and offline snapshot, with live rows from `arc.blockrun.ai`.
+The default picker shows Auto and curated groups; other available chat models
+remain accessible through +more / Ctrl+A.
+
+Existing Franklin shortcuts, including free aliases, retain their model targets.
+Shared policy can add new shortcuts but cannot retarget one Franklin already
+ships. Gateway price estimates still refresh for the selected model; a stable
+shortcut does not freeze that model's price. Historical explicit IDs and cost
+records remain usable.
+
+Policy and gateway requests run concurrently, each with a four-second deadline.
+Successful refreshes are cached for five minutes. If the policy host is
+unreachable, Franklin keeps the last good policy and still refreshes live gateway
+rows. If the gateway fails, the last valid catalog is retained; a cold start can
+use the bundled snapshot, which is not presented as live gateway data. CLI
+startup warms the catalog in the background.
+
+`BLOCKRUN_MODEL_CATALOG_URL` overrides the policy snapshot URL; an empty value
+disables remote policy updates. `FRANKLIN_CATALOG_OFFLINE=1` uses bundled data
+without catalog network requests. Payment signing and settlement remain in
+Franklin and its payment SDK. Auto routing's candidate policy remains separate
+from the shared catalog.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+
+**The AI agent with a wallet.**<br>
+<sub>YOPO — You Only Pay Outcome. Your wallet. Your budget. Your results.</sub>
+
+<br>
+
+<sub>From the team at <a href="https://blockrun.ai">BlockRun</a>.</sub>
+
+</div>

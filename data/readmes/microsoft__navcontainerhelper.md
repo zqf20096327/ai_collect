@@ -1,0 +1,290 @@
+# BcContainerHelper
+
+BcContainerHelper is a PowerShell module designed to simplify the management of Business Central and Dynamics NAV containers on Docker. As a work-in-progress project, it welcomes contributions through pull requests and ideas. Comprehensive documentation is available in the [NavContainerHelper.md](NavContainerHelper.md).
+
+# Getting Started
+
+There are two primary methods for running these Docker containers: as a [VM on Azure](#vm-on-azure) or [locally](#local-installation).
+
+Using a **VM on Azure** provides a ready-to-go environment within approximately 30 minutes, eliminating the need for manual installation. If you have Azure credits as part of a Visual Studio subscription, you can use them for these VMs, making it a cost-effective option.
+
+While **local installation** requires more initial setup, it offers a fully configured local environment where you can work with Business Central containers even offline.
+
+## VM on Azure
+
+To set up a VM on Azure, follow the steps provided at [aka.ms/getbc](https://aka.ms/getbc).
+
+## Local Installation
+
+Local installation depends on whether you use [Windows 10 or 11](#local-installation-on-windows-10-or-11) or [Windows Server](#local-installation-on-windows-server).
+
+You can choose between Hyper-V isolation or Process isolation:
+
+| Feature                        | Hyper-V Isolation                                                      | Process Isolation                                             |
+|--------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------|
+| **Isolation Level**            | High: Uses a separate hypervisor-based virtual machine                 | Moderate: Uses namespace and resource control to isolate containers within the same OS instance |
+| **Performance**                | Lower: Due to the overhead of running a full VM                        | Higher: Less overhead, as it runs directly on the host OS kernel  |
+| **Compatibility**              | Can run different OS versions from the host                            | Limited to running containers that share the same OS and kernel version as the host |
+| **Resource Requirements**      | Higher: Requires more CPU and memory due to full VM overhead           | Lower: More efficient use of CPU and memory resources           |
+| **Startup Time**               | Slower: Takes longer to start due to VM initialization                 | Faster: Quick startup as it leverages the host OS directly      |
+| **Host OS Requirements**       | Requires Windows or Windows Server with Hyper-V enabled                | Requires Windows or Windows Server with container support enabled |
+
+If you can use Process isolation, choose Hyper-V only if necessary due to compatibility issues like using Windows 10.
+
+For more details on setting up your environment, visit the [official documentation](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment).
+
+### Local Installation on Windows 10 or 11
+
+You can choose between Docker Desktop and installing the Docker Engine via PowerShell.
+
+Before installing Docker, ensure your system meets the following requirements:
+- Windows 11 Pro, Enterprise, or Education edition.
+- Recommended minimum of 16 GB memory (more is better for running multiple containers simultaneously).
+
+For Hyper-V:
+- More memory is recommended as the whole OS runs inside the Docker container VMs.
+- A 64-bit processor with Second Level Address Translation (SLAT).
+- CPU support for VM Monitor Mode Extension (VT-c on Intel CPUs). Enable hardware virtualization support in the BIOS settings.
+
+#### 1.a Install Docker Desktop
+
+**Note:** Docker Desktop may require a license. Please review the licensing rules before installing and also check out the [System Requirements](https://docs.docker.com/desktop/install/windows-install/#system-requirements).
+
+Download and install Docker Desktop from [docker.com](https://docs.docker.com/desktop/install/windows-install). It will install the Windows Features Containers and Hyper-V.
+
+By default, the Windows Subsystem for Linux (WSL) is enabled, which runs Linux instead of Windows containers.
+
+During installation, set the default container type to Windows containers. To switch after installation, open the system tray, right-click on the Docker icon, and select **Switch to Windows containers...**.
+
+For more details, visit this [Microsoft guide](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=dockerce#windows-10-and-11-1).
+
+#### 1.b Alternative: Install Docker Engine using PowerShell
+
+Install the Windows Feature Containers and optionally Hyper-V.
+
+1. **Open Control Panel:**
+   - Press `Win + R` to open the Run dialog box.
+   - Type `Control Panel` and press `Enter`.
+
+2. **Navigate to Programs and Features:**
+   - In the Control Panel, click on `Programs`.
+   - Under `Programs and Features`, click `Turn Windows features on or off`.
+
+3. **Enable Containers:**
+   - In the Windows Features dialog, scroll down and locate `Containers`.
+   - Check the box next to `Containers` to enable it.
+
+3. **(Optionally) Enable Hyper-V:** 
+   - In the Windows Features dialog, scroll down and locate `Hyper-V`.
+   - Check the box next to `Hyper-V` to enable it.
+
+4. **Apply Changes and Restart:**
+   - Click `OK` to apply the changes.
+   - Windows will begin installing Containers and Hyper-V, which might take a few minutes.
+   - After the installation is complete, you will be prompted to restart your computer. Click `Restart now` to complete the installation.
+
+Your computer will restart.
+
+Run PowerShell as an administrator:
+```PowerShell
+Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/microsoft/nav-arm-templates/main/InstallOrUpdateDockerEngine.ps1' -OutFile (Join-Path $ENV:TEMP 'installOrUpdateDocker.ps1')
+. (Join-Path $ENV:TEMP 'installOrUpdateDocker.ps1')
+```
+
+#### 2. Install BcContainerHelper
+
+Run PowerShell as an administrator:
+```PowerShell
+Install-PackageProvider -Name NuGet -Force
+Install-Module BcContainerHelper -Force
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
+**Note:** On Windows 11, you also need to allow running modules with `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`. For more details, see [this link](https://go.microsoft.com/fwlink/?LinkID=135170).
+
+#### 3. Create Your First Container
+
+Run PowerShell as an administrator:
+```PowerShell
+$url = Get-BCArtifactUrl -Select Latest -Type OnPrem -Country w1
+$cred = Get-Credential
+New-BcContainer -accept_eula -artifactUrl $url -Credential $cred -auth UserPassword
+```
+
+With these steps, you should be able to set up your environment and start using BcContainerHelper to create and manage Business Central containers on Docker.
+
+### Local Installation on Windows Server
+
+#### 1. Install Docker
+
+Before installing Docker, ensure your system meets the following requirements:
+- Windows Server 2016, 2019, or 2022 Standard or Datacenter Edition.
+- Recommended minimum of 16 GB memory (more is better for running multiple containers simultaneously).
+
+For Hyper-V:
+- More memory is recommended as the whole OS runs inside the VM.
+- A 64-bit processor with Second Level Address Translation (SLAT).
+- CPU support for VM Monitor Mode Extension (VT-c on Intel CPUs). Enable hardware virtualization support in the BIOS settings.
+
+Run PowerShell as an administrator:
+```PowerShell
+Install-WindowsFeature Containers -Restart
+```
+If you want to use Hyper-V, run `Install-WindowsFeature Hyper-V, Containers -Restart` instead. More details on using Hyper-V can be found in the [Business Central Generic Images](#business-central-generic-images) section.
+
+Your computer will restart.
+
+Run PowerShell as an administrator:
+```PowerShell
+Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/microsoft/nav-arm-templates/main/InstallOrUpdateDockerEngine.ps1' -OutFile (Join-Path $ENV:TEMP 'installOrUpdateDocker.ps1')
+. (Join-Path $ENV:TEMP 'installOrUpdateDocker.ps1')
+```
+
+#### 2. Install BcContainerHelper
+
+Run PowerShell as an administrator:
+```PowerShell
+Install-PackageProvider -Name NuGet -Force
+Install-Module BcContainerHelper -Force
+```
+
+#### 3. Create Your First Container
+
+Run PowerShell as an administrator:
+```PowerShell
+$url = Get-BCArtifactUrl -Select Latest -Type OnPrem -Country w1
+$cred = Get-Credential
+New-BcContainer -accept_eula -artifactUrl $url -Credential $cred -auth UserPassword
+```
+
+With these steps, you should be able to set up your environment and start using BcContainerHelper to create and manage Business Central containers on Docker.
+
+### Business Central Generic Images
+
+Business Central Generic images are named `mcr.microsoft.com/businesscentral:osversion`, where `osversion` is the version of the Operating System.
+
+BcContainerHelper attempts to find the best matching generic image for your OS. A new generic image is created monthly for all supported long-term servicing channels (LTSC). Currently, this includes three images:
+- `mcr.microsoft.com/businesscentral:ltsc2016`
+- `mcr.microsoft.com/businesscentral:ltsc2019`
+- `mcr.microsoft.com/businesscentral:ltsc2022`
+
+These images will also be tagged with the `osversion`, but BcContainerHelper's `Get-BestGenericImage` will (by default) always return one of the three images above.
+- Windows 10 will always get `ltsc2019` and will need Hyper-V isolation to run these.
+- Windows 11 will always get `ltsc2022` and can still run process isolation.
+- Windows Server 2019 can run process isolation with a matching image.
+- Windows Server 2022 can run process isolation with the latest image
+
+# Building and Testing Locally
+
+This section is for contributors who want to build (load) the module from source and run the automated tests on their own machine. BcContainerHelper is a **PowerShell script module**, so there is no compilation step - "building" simply means importing the module from the cloned repository into your PowerShell session.
+
+## Prerequisites
+
+Before you start, make sure the following are in place:
+
+- **Windows 10/11 or Windows Server** with **Docker** installed and switched to **Windows containers** (the tests create Business Central containers). See [Local Installation](#local-installation) above for setting up Docker.
+- **PowerShell 5.1** and/or **PowerShell 7** (the CI runs the test suite on both).
+- **[Pester](https://pester.dev) v5 or later** - install with `Install-Module Pester -Force`.
+- **Git** to clone the repository.
+- **Two Business Central license files (`.flf`)**: a runtime license (`licenseFile`) and a build license (`buildLicenseFile`). The tests need these to create and build inside the containers.
+- Enough disk space and memory to pull Business Central artifacts and run containers (16 GB memory recommended).
+
+## Step 1: Clone the repository
+
+```PowerShell
+git clone https://github.com/microsoft/navcontainerhelper.git
+cd navcontainerhelper
+```
+
+## Step 2: Build (import) the module locally
+
+From the repository root, dot-source the import script to load the module into your current session:
+
+```PowerShell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+. .\Import-BcContainerHelper.ps1
+```
+
+`Import-BcContainerHelper.ps1` unblocks the downloaded files and imports `BcContainerHelper.psd1`. To load the split `BC.*` sub-modules instead, dot-source `. .\Import-BC.ps1`.
+
+Verify the module loaded and its functions are available:
+
+```PowerShell
+Get-Command -Module BcContainerHelper | Measure-Object
+```
+
+## Step 3: Run the tests locally
+
+The Pester tests live in `Tests\*.Tests.ps1`. Each test re-imports `BcContainerHelper.psm1` and creates the containers it needs, so you do not have to build anything separately - you only need Docker running and your two license files. Point the commands below at your own `.flf` files.
+
+Run the tests exactly the way CI does, with `New-PesterContainer` + `Invoke-Pester`. This uses Pester 5's discovery/run lifecycle and, with `-Passthru`, returns a result object so you can detect failures.
+
+**Run a single test file**
+
+Faster while iterating on one area:
+
+```PowerShell
+$pesterContainer = New-PesterContainer -Path ".\Tests\Misc.Tests.ps1" -Data @{
+    licenseFile      = "C:\temp\license.flf"
+    buildLicenseFile = "C:\temp\build.flf"
+}
+$result = Invoke-Pester -Container $pesterContainer -Passthru
+if ($result.FailedCount -gt 0) { throw "$($result.FailedCount) test(s) failed" }
+```
+
+**Run the full test suite**
+
+Point `-Path` at the whole `Tests` folder to discover and run every `*.Tests.ps1`:
+
+```PowerShell
+$pesterContainer = New-PesterContainer -Path ".\Tests" -Data @{
+    licenseFile      = "C:\temp\license.flf"
+    buildLicenseFile = "C:\temp\build.flf"
+}
+$result = Invoke-Pester -Container $pesterContainer -Passthru
+if ($result.FailedCount -gt 0) { throw "$($result.FailedCount) test(s) failed" }
+```
+
+> The `Tests\_TestRunner.ps1`, `Tests\_TestRunOne.ps1`, and `Tests\_DoRunOne.ps1` scripts are older local helpers. Prefer the `New-PesterContainer` invocation above, which matches CI and reliably reports test failures under Pester 5.
+
+## Step 4 (optional): Run the Linux tests
+
+A subset of tests under `LinuxTests\*.Tests.ps1` runs on **PowerShell 7** (and on Linux in CI). Run one the same way as above from a `pwsh` session:
+
+```PowerShell
+$pesterContainer = New-PesterContainer -Path ".\LinuxTests\Auth.Tests.ps1" -Data @{
+    licenseFile      = "C:\temp\license.flf"
+    buildLicenseFile = "C:\temp\build.flf"
+}
+$result = Invoke-Pester -Container $pesterContainer -Passthru
+if ($result.FailedCount -gt 0) { throw "$($result.FailedCount) test(s) failed" }
+```
+
+## Notes and troubleshooting
+
+- **License files are required.** The tests cannot create or build the containers without valid Business Central `.flf` license files.
+- **The first run is slow.** Business Central artifacts and generic images are downloaded and cached the first time, which can take a while. Subsequent runs are much faster.
+- **Docker must be in Windows-container mode** for the Windows tests. Verify with `docker version -f "{{.Server.Os}}"` (it should report `windows`).
+- **Clean up leftover containers** if a run is interrupted: `Get-BcContainers | Remove-BcContainer`.
+- **Source of truth for the test invocation** is [`.github/workflows/CI.yaml`](.github/workflows/CI.yaml) - refer to it if you need to reproduce exactly what the automated pipeline does.
+
+# Branches
+
+**NavContainerHelper** is the main branch for the NavContainerHelper PowerShell module on PowerShell Gallery. **NavContainerHelper** is no longer supported.
+
+**main** is the main branch for the BcContainerHelper PowerShell module on PowerShell Gallery. **BcContainerHelper** will from August 1st 2020 ship as release and pre-release.
+
+Please report issues in the issues list.
+
+# Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.microsoft.com.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

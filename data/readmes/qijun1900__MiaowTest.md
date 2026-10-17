@@ -1,0 +1,473 @@
+# 题喵喵 (MiaowTest)
+
+> 基于 Uni-app + Vue3 + Express + MongoDB + LangChain 的跨平台智能刷题与学习系统
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
+  <img src="https://img.shields.io/badge/frontend-UniApp%20%2B%20Vue3-42b883.svg" alt="Frontend">
+  <img src="https://img.shields.io/badge/backend-Express-black.svg" alt="Backend">
+  <img src="https://img.shields.io/badge/AI-LangChain%20%2B%20DashScope-ff6b00.svg" alt="AI">
+</p>
+
+## 小程序扫码体验(平台限制AI相关功能未展示)
+
+<p align="center">
+  <img src="https://free.picui.cn/free/2026/04/18/69e3960545c05.jpg" alt="题喵喵微信小程序扫码体验" width="220">
+</p>
+
+
+
+## 项目概览
+
+题喵喵是一个面向学习与训练场景的跨平台智能刷题系统，基于 **Uni-app + Vue3 + Express + MongoDB + LangChain** 构建，采用前后端分离架构，一套代码覆盖微信小程序、H5、App 等多端。
+
+项目由三大子系统组成：
+
+| 子系统 | 技术栈 | 定位 |
+|--------|--------|------|
+| **用户端** | Uni-app + Vue3 + Pinia + uView Plus | 面向学员的移动端，支持刷题、AI 对话、错题沉淀、学习统计 、多种学习工具|
+| **管理端** | Vue3 + Vite + Element Plus + Pinia | 面向管理者的 Web 后台，支持题库管理、Agent 配置、数据看板 ,知识库检索与管理|
+| **后端服务** | Express + Mongoose + JWT + LangChain | 统一 API 入口，承载鉴权、业务编排、AI 推理、文件存储等核心能力 |
+
+核心亮点：**AI 深度集成** — 基于 LangChain 构建多轮对话链与推理链，支持流式输出（SSE / WebSocket / 分块传输自适应）、深度思考过程展示、会话标题自动生成，并预留 RAG、Agent 工具调用等扩展能力。
+
+- 服务端部署补充：见 [Express-node/CLOUD_DEPLOY.md](Express-node/CLOUD_DEPLOY.md)
+
+## 文档导航
+
+- [核心能力](#核心能力)
+- [LLM/AI 架构](#llm-ai-架构)
+- [外观系统架构](#外观系统架构)
+- [技术架构](#技术架构)
+- [仓库结构](#仓库结构)
+- [快速开始](#快速开始)
+- [运行与构建脚本](#运行与构建脚本)
+- [环境变量说明](#环境变量说明)
+- [部署指南](#部署指南)
+- [平台支持矩阵](#平台支持矩阵)
+- [安全与运维建议](#安全与运维建议)
+- [开发计划](#开发计划)
+- [贡献指南](#贡献指南)
+
+## 核心能力
+
+### 用户端 (Uni-app)
+
+| 模块 | 功能 |
+|------|------|
+| **AI 对话 (Mio)** | 基于 LangChain 的多轮 AI 对话，支持流式输出（SSE / WebSocket / 小程序分块传输自适应） |
+| **深度思考** | 接入 DeepSeek等推理模型，实时展示思考过程与最终答案的分离渲染 |
+| **会话管理** | 会话创建、重命名、删除、收藏、搜索（标题 + 消息预览模糊匹配） |
+| **消息分页** | 历史消息分页加载，支持骨架屏与竞态防护 |
+| **刷题与练习** | 选择题、填空题、判断题、简答题等题型能力 |
+| **学习资产** | 收藏、错题、词库等可持续复习链路 |
+| **学习工具** | 计时器、TODO、错题本、笔记本等训练辅助模块 |
+| **账号体系** | 登录态管理（邮箱和微信小程序一键登录）、个人信息与学习数据展示 |
+| **外观系统** | 多主题预设（极光蓝 / Claude 暖橙）× 深浅模式（跟随系统 / 浅色 / 深色）× 四档字号（小 / 标准 / 大 / 特大），全局一键切换，偏好持久化 |
+| **自定义导航** | CustomNavBar（页面顶部）+ CustomTabBar（底部 Tab），支持主题 token 自适应配色 |
+
+### 管理端 (Vue3)
+
+| 模块 | 功能 |
+|------|------|
+| **Agent 管理** | AI Agent 定义的 CRUD，配置系统提示词、默认模型、能力标签 |
+| **题库管理** | 题目 CRUD、AI 批量一键导入与分类管理 |
+| **AI 题目分析** | 调用 DashScope 百炼应用自动分析题目质量与知识点 |
+| **用户管理** | 账号信息、学习记录、行为统计 |
+| **数据看板** | 图表化展示活跃度、使用趋势等指标 |
+| **资源管理** | 设立静态资源管理中心 |
+
+### 后端服务 (Express)
+
+| 模块 | 功能 |
+|------|------|
+| **LLM 引擎** | LangChain.js + DashScope（阿里云）统一模型接入层 |
+| **Agent 链** | 多轮对话链（LCEL 管道）、流式 token 回调、会话标题自动生成 |
+| **推理链** | DeepSeek-R1 等推理模型支持，思考内容与回答内容分离输出 |
+| **对话持久化** | 会话 + 消息双表模型，支持分页、收藏、软删除、token 统计 |
+| **REST API** | 用户端与管理端统一服务入口 |
+| **认证鉴权** | JWT + 中间件体系（token 刷新、可选鉴权、UID 提取） |
+| **数据存储** | MongoDB + Mongoose 数据模型（30+ 模型） |
+| **文件能力** | 本地上传 + OSS + 云托管文件链路 |
+| **部署适配** | 本地开发、Docker、云托管模式 |
+
+## LLM/AI 架构
+
+后端 LLM 模块位于 `Express-node/llm/`，基于 LangChain.js 构建，使用 LCEL（LangChain Expression Language）管道语法。
+
+### 模块结构
+
+```
+llm/
+├── index.js                   # 模块入口，统一导出
+├── models/
+│   └── factory.js             # ModelFactory — 统一模型工厂（DashScope OpenAI 兼容接口）
+├── chains/
+│   └── agent/
+│       └── agentChat.js       # 多轮 Agent 链（历史解析 + 流式 + 标题生成）
+├── prompts/
+│   └── templates/
+│       ├── index.js           # 提示词模板入口与注册
+│       └── wordListPrompts.js # 单词本相关提示词模板
+├── admin/
+│   └── ModelApp/
+│       ├── analysis.js        # DashScope 百炼应用 — 题目分析
+│       └── Iaa.js             # DashScope 百炼应用 — AI 导题
+├── vectorstores/
+│   └── stores/
+│       └── chromaManager.js   # ChromaDB 向量存储管理（RAG 基础设施）
+└── examples/                  # 示例与调试脚本
+    ├── testchat.js            # 基础对话测试
+    ├── ThinkChat.js           # 推理模型（DeepThink）测试
+    └── unified-simple.js      # 统一接口简化示例
+```
+
+### 对话链路
+
+```
+用户消息 → LLMController → LLMService
+  ├── ensureConversation()       — 自动创建/更新会话
+  ├── saveUserMessage()          — 持久化用户消息
+  ├── fetchHistory()             — 加载最近 20 条历史
+  ├── streamAgentChain()         — LangChain 流式推理
+  │     └── ModelFactory.getModel()  → DashScope API
+  ├── saveAIReply()              — 持久化 AI 回复
+  └── maybeGenerateTitle()       — 异步生成会话标题（fire-and-forget）
+```
+
+
+### 前端流式传输
+
+用户端实现了跨平台统一流式传输层 (`streamTransport.js`)：
+
+| 平台 | 传输方式 |
+|------|---------|
+| H5 | SSE (Server-Sent Events) |
+| 微信小程序 | 分块传输 (Chunked Response) |
+| APP | WebSocket |
+
+## 外观系统架构
+
+用户端的主题 / 深浅模式 / 字号是一套统一的 token 体系，分层定义、一键切换、跨端一致。
+
+### 三维偏好
+
+| 维度 | 取值 | 持久化 |
+|------|------|--------|
+| 主题预设 (themePreset) | `aurora`（极光蓝） / `claude`（暖橙纸质） | ✅ |
+| 深浅模式 (darkMode) | `auto`（跟随系统） / `light` / `dark` | ✅ |
+| 字号档位 (fontSizeIndex) | 0 小 (0.85×) / 1 标准 (1×) / 2 大 (1.15×) / 3 特大 (1.3×) | ✅ |
+
+### Token 分层
+
+```
+TDesign 原子 token (--td-*)        ← 三方组件库色板
+        ↓ 通过 mixin 桥接
+业务语义 token (--app-*)            ← 业务代码只引用这一层
+        ↓ 配合根 class
+最终样式 (theme-xxx mode-xxx font-xxx)
+```
+
+- `_app-tokens.scss`：定义 `--app-bg-page` / `--app-text-primary` / `--app-brand` 等业务语义变量
+- `_aurora-light.scss` / `_aurora-dark.scss` / `_claude-light.scss` / `_claude-dark.scss`：每个预设 × 模式覆盖 td 色板
+- `_font-sizes.scss`：定义 `--app-font-scale` 与 `--app-font-xs/sm/base/md/lg/xl` 六档语义字号
+
+### 注入机制
+
+| 端 | 注入位置 |
+|----|---------|
+| H5 | `documentElement.className = "theme-xxx mode-xxx font-xxx"` |
+| 小程序 / APP | `ThemeProvider` 组件给页面根 view 挂同样的 class |
+
+`AppearanceStore.applyTheme()` 统一负责：H5 直接写 DOM，跨端通过 `uni.$emit('app:theme-change')` 通知 `ThemeProvider` 订阅者更新。
+
+### 业务代码规范
+
+- **颜色**：禁止颜色字面量，一律 `var(--app-bg-page)` / `var(--app-text-primary)` 等
+- **字号**：禁止写死 `font-size: 28rpx`，统一 `font-size: calc(28rpx * var(--app-font-scale, 1))`，原数值保留，按档自动缩放
+- **页面包裹**：每个 `.vue` 页面用 `<ThemeProvider>` 包根节点，保证小程序端 class 命中
+
+## 技术架构
+
+| 层级 | 技术方案 |
+|------|---------|
+| 用户端 | Uni-app + Vue3 + Vite + Pinia + uView Plus + uni-ui |
+| 管理端 | Vue3 + Vite + Element Plus + Pinia + Chart.js |
+| 服务端 | Node.js + Express + Mongoose + JWT + Multer |
+| 数据层 | MongoDB |
+| AI 引擎 | LangChain.js + DashScope（阿里云通义千问） |
+| 部署 | Docker / Docker Compose / 微信云托管 |
+
+### 架构关系
+
+1. 用户端与管理端通过 HTTP 调用后端 API。
+2. 后端统一处理鉴权、业务编排、数据持久化。
+3. LLM 调用通过 LangChain 管道统一封装，支持同步与流式两种模式。
+4. 文件资源根据环境走本地存储、OSS 或云托管链路。
+5. AI 能力由后端统一接入并向前端提供业务化接口。
+
+## 仓库结构
+
+```text
+.
+├── User-uniapp/           # 用户端（Uni-app）
+│   ├── src/components/
+│   │   ├── core/ThemeProvider.vue   # 主题/字号 class 注入根节点
+│   │   ├── common/CustomNavBar.vue  # 自定义顶部导航
+│   │   └── tabbar/CustomTabBar.vue  # 自定义底部 Tab
+│   ├── src/stores/modules/AppearanceStore.js  # 主题/深浅/字号 store
+│   └── src/static/themes/           # 多主题 + 字号 token 体系
+├── Admin-web/             # 管理端（Vue3）
+├── Express-node/          # 后端服务（Express）
+│   ├── llm/               # LLM 引擎（LangChain + DashScope）
+│   ├── models/            # Mongoose 数据模型（30+）
+│   ├── services/          # 业务服务层
+│   ├── controllers/       # 控制器层
+│   ├── routes/            # 路由定义
+│   └── config/            # 配置（数据库、LLM、OSS 等）
+├── Img/                   # 项目图片资源
+├── LICENSE
+├── package.json           # 根目录脚本（聚合启动）
+└── README.md
+```
+
+## 快速开始
+
+### 环境要求
+
+- Node.js >= 18（建议与 Dockerfile 保持一致）
+- npm >= 8
+- MongoDB >= 6（或外部可访问 MongoDB 实例）
+
+### 1) 安装依赖
+
+```bash
+# 根目录
+npm install
+
+# 后端
+cd Express-node
+npm install
+
+# 用户端
+cd ../User-uniapp
+npm install
+
+# 管理端
+cd ../Admin-web
+npm install
+```
+
+### 2) 配置环境变量
+
+后端模板文件： [Express-node/.env.example](Express-node/.env.example)
+
+Windows PowerShell:
+
+```powershell
+cd Express-node
+Copy-Item .env.example .env
+```
+
+macOS/Linux:
+
+```bash
+cd Express-node
+cp .env.example .env
+```
+
+关键配置项：
+
+```env
+# 数据库
+MONGO_PROVIDER=local          # local / 1panel / cloud
+MONGO_URI=mongodb://localhost:27017/miaowtest
+
+# AI / LLM
+DASHSCOPE_API_KEY=sk-xxx      # 阿里云 DashScope API Key
+DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+DASHSCOPE_MODEL=qwen-plus     # 默认对话模型
+
+# 微信小程序
+WECHAT_APPID=xxx
+WECHAT_SECRET=xxx
+```
+
+### 3) 初始化数据库
+
+```bash
+cd Express-node
+node script/init-database.js
+```
+
+### 4) 启动项目
+
+方式 A：按子项目分别启动
+
+```bash
+# 后端
+cd Express-node
+npm run dev
+
+# 管理端
+cd ../Admin-web
+npm run dev
+
+# 用户端（微信小程序）
+cd ../User-uniapp
+npm run dev:mp-weixin
+
+# 用户端（H5）
+npm run dev:h5
+```
+
+方式 B：根目录一键启动（Windows）
+
+```bash
+npm run serve
+```
+
+## 运行与构建脚本
+
+### 根目录脚本
+
+| 命令 | 说明 |
+|------|------|
+| npm run start:node | 启动后端 |
+| npm run start:admin | 启动管理端开发服务 |
+| npm run start:uniapp | 启动用户端微信小程序开发服务 |
+| npm run start:uniapp:h5 | 启动用户端 H5 开发服务 |
+| npm run serve | Windows 下一键并行启动多个服务窗口 |
+
+### 后端脚本 (Express-node/package.json)
+
+| 命令 | 说明 |
+|------|------|
+| npm run dev | 开发模式启动（node-dev 热重载） |
+| npm run start | 同 dev |
+| npm run prod | 生产模式启动 |
+| npm run migrate:oss | 迁移资源到 OSS |
+
+### 用户端脚本 (User-uniapp/package.json)
+
+- 开发：dev:h5、dev:mp-weixin、dev:mp-alipay、dev:mp-baidu 等
+- 构建：build:h5、build:mp-weixin、build:mp-alipay、build:mp-baidu 等
+- 代码质量：lint
+
+### 管理端脚本 (Admin-web/package.json)
+
+| 命令 | 说明 |
+|------|------|
+| npm run dev | 本地开发 |
+| npm run build | 生产构建 |
+| npm run build:analyze | 构建并分析包体积 |
+| npm run preview | 预览构建产物 |
+| npm run lint | ESLint 修复 |
+
+## 环境变量说明
+
+完整模板见 [Express-node/.env.example](Express-node/.env.example)。
+
+重点分组：
+
+- 基础服务：NODE_ENV、PORT、HOST
+- 数据库：MONGO_PROVIDER 及 local/1panel/cloud 对应变量
+- 微信能力：WECHAT_APPID、WECHAT_SECRET、CLOUD_ENV
+- AI / LLM：DASHSCOPE_API_KEY、DASHSCOPE_BASE_URL、DASHSCOPE_MODEL
+- 对象存储：OSS_REGION、OSS_ACCESS_KEY_ID、OSS_ACCESS_KEY_SECRET、OSS_BUCKET 等
+- 邮件服务：EMAIL_PROVIDER、EMAIL_USER、EMAIL_PASS
+
+安全建议：
+
+1. 禁止提交 .env 到代码仓库。
+2. 生产环境全部使用强随机密钥。
+3. 优先使用云平台密钥管理服务，不在文档中硬编码敏感信息。
+
+## 部署指南
+
+### Docker Compose（后端 + MongoDB）
+
+Docker 相关文件位于 [Express-node/Dockerfile](Express-node/Dockerfile) 与 [Express-node/docker-compose.yml](Express-node/docker-compose.yml)。
+
+```bash
+cd Express-node
+docker compose up -d
+```
+
+应用默认健康检查端点：
+
+```text
+GET /health
+```
+
+## 平台支持矩阵
+
+| 平台 | 状态 | 说明 |
+|------|------|------|
+| 微信小程序 | 稳定 | 当前主力端，AI 对话完整支持 |
+| H5 | 稳定 | 移动端浏览器场景，SSE 流式输出 |
+| 其他小程序平台 | 可构建 | 需按平台规则调试与验收 |
+| App (uni-app plus) | 持续适配中 | WebSocket 流式传输，已具备基础代码路径 |
+
+## 安全与运维建议
+
+1. 为登录与高频接口配置限流策略。
+2. 使用 helmet、输入清洗、参数校验降低攻击面。
+3. 开启日志分级与请求链路追踪，监控 /health 与数据库连通性。
+4. 上传链路统一限制文件类型、大小与鉴权范围。
+5. 对 AI 调用增加配额控制与失败重试策略。
+6. LLM 接口密钥（DASHSCOPE_API_KEY）仅存于服务端环境变量，禁止暴露给前端。
+
+## 开发计划
+
+### 已完成
+
+| 模块 | 功能 | 状态 |
+|------|------|------|
+| LLM 引擎 | ModelFactory 统一模型工厂（DashScope OpenAI 兼容接口） | ✅ 已完成 |
+| LLM 引擎 | 多轮 Agent 链（agentChat，历史解析 + 流式 + 标题生成） | ✅ 已完成 |
+| LLM 引擎 | RAG 检索增强生成链（ragChain + ChromaDB 向量存储） | ✅ 已完成 |
+| LLM 引擎 | Embedding 向量嵌入模型（embedding.js） | ✅ 已完成 |
+| LLM 引擎 | 文档解析器（LlamaParse Wrapper） | ✅ 已完成 |
+| LLM 引擎 | 提示词模板系统（index + wordListPrompts） | ✅ 已完成 |
+| LLM 引擎 | DashScope 百炼应用集成（题目分析 / AI 导题） | ✅ 已完成 |
+| LLM 引擎 | 工具层（contentBuilder / errorHandler / tokenEstimator） | ✅ 已完成 |
+| LLM 引擎 | 示例与调试脚本（testchat / ThinkChat / unified-simple） | ✅ 已完成 |
+| 用户端 | AI 智能对话页面（Mio） | ✅ 已完成 |
+| 用户端 | 流式输出（SSE / Chunked / WebSocket 自适应） | ✅ 已完成 |
+| 用户端 | 会话管理（创建 / 重命名 / 删除 / 收藏） | ✅ 已完成 |
+| 用户端 | 会话搜索（标题 + 消息预览模糊匹配） | ✅ 已完成 |
+| 用户端 | 消息分页加载 + 骨架屏 | ✅ 已完成 |
+| 用户端 | 深度思考模式（思考过程 / 回答分离渲染） | ✅ 已完成 |
+| 用户端 | 多主题切换（极光蓝 / Claude，token 化色板） | ✅ 已完成 |
+| 用户端 | 深浅模式切换（跟随系统 / 浅色 / 深色） | ✅ 已完成 |
+| 用户端 | 全局字号切换（四档 0.85× / 1× / 1.15× / 1.3×） | ✅ 已完成 |
+| 用户端 | 自定义 NavBar + 自定义 TabBar（主题自适应） | ✅ 已完成 |
+| 后端 | 对话持久化（会话表 + 消息表，token 统计） | ✅ 已完成 |
+| 后端 | Agent 定义管理（CRUD + 发布状态） | ✅ 已完成 |
+| 管理端 | Agent 管理页面 | ✅ 已完成 |
+
+
+## 贡献指南
+
+欢迎通过 Issue / PR 参与贡献。
+
+建议流程：
+
+1. Fork 仓库并创建分支。
+2. 在对应子项目目录完成开发与自测。
+3. 提交前执行必要构建验证。
+4. 提交 PR
+
+## License
+
+项目基于 MIT 协议开源，见 [LICENSE](LICENSE)。
+
+## 联系方式
+
+- 邮箱：3308837335@qq.com / qijun1900@gmail.com
+- 微信：18756810208
+- 问题反馈：GitHub Issue
+
+<p align="center"><strong>如果项目对你有帮助，欢迎 Star 支持。</strong></p>

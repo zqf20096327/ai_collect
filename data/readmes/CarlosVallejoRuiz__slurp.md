@@ -1,0 +1,1417 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/CarlosVallejoRuiz/slurp/main/assets/logo.png" alt="slurp logo" width="120">
+</p>
+
+# slurp
+
+![tests](https://img.shields.io/badge/tests-2273%20passed-brightgreen)
+![python](https://img.shields.io/badge/python-3.12%2B-blue)
+![license](https://img.shields.io/badge/license-MIT-lightgrey)
+![pypi](https://img.shields.io/badge/PyPI-slurp--graph-orange)
+
+> *graphify builds the bowl. slurp serves exactly the noodles your LLM needs.*
+
+A knowledge graph is a bowl of ramen — thousands of nodes tangled together. Your LLM doesn't need the whole bowl. Slurp scores every node against your query, then greedily selects the highest-relevance subgraph that fits within your token budget — and tells you exactly what it picked and why. Works standalone or as a companion to graphify.
+
+---
+
+## Benchmark
+
+Tested on a real **PrismaStats** codebase: 2,111 nodes, 28,412 tokens total.
+
+| Query | Budget 2k | Budget 4k | Budget 8k |
+|---|---|---|---|
+| `"auth flow"` | **97.1%** saved | 96.3% saved | 95.2% saved |
+| `"prisma schema"` | 95.8% saved | 94.2% saved | 93.8% saved |
+| `"database pool"` | 93.1% saved | 89.1% saved | 85.1% saved |
+
+**Mean savings: 93.3% · p50: 94.2% · Best case: 97.1%**
+
+Even the worst case — `"database pool"` at budget 8k — injects 85% fewer tokens than the full graph.
+
+---
+
+## Performance
+
+Measured on the same PrismaStats graph (2,111 nodes, 3,421 edges), 10 hot queries
+through the real MCP handler with `time.perf_counter`:
+
+| Optimization | Before | After | Improvement |
+|---|---|---|---|
+| PageRank cache | 8.32 ms | 0.002 ms | **4000×** |
+| Token count cache | ~50 ms | 0.174 ms | **280×** |
+| Greedy heap (O(n log n)) | 63.78 ms | 10.69 ms | **6×** |
+| End-to-end latency | 86.41 ms | 10.69 ms | **8.1×** |
+| Graph staleness | silent | auto-reload | ✅ |
+
+**PageRank cache** — PageRank depends only on the graph, never on the query, so
+it is computed once per graph object instead of once per query.
+
+**Token count cache** — per-node token costs are memoised across queries, keyed
+by `(node_id, encoding)`. The graph's text does not change between queries, so
+neither does its token cost.
+
+**Greedy heap** — the subgraph selector used to scan every remaining candidate on
+each iteration, which is `O(n²)`. It now uses a lazy max-heap: scores still mutate
+as neighbors get boosted, so a boost pushes a fresh entry and superseded entries
+are discarded when they surface. Ties break by node id, which also makes the
+selection **deterministic** — the previous scan broke ties by set iteration order,
+so the same query could return a different subgraph on every process start.
+
+**Graph staleness** — the MCP server records the graph file's mtime and reloads it
+when it changes on disk, invalidating both caches. Before, a server started before
+a re-index would keep answering from the graph it read at boot, with no way for the
+client to know. Responses that triggered a reload carry `"graph_reloaded": true`.
+
+---
+
+## Install
+
+**Quick reference:**
+
+| Situation | Command |
+|---|---|
+| Any project, fastest setup | `uv tool install slurp-graph` |
+| Non-Python project (pipx user) | `pipx install slurp-graph` |
+| Simple global install | `pip install slurp-graph` |
+| Python project (adds to `pyproject.toml`) | `uv add slurp-graph` |
+| Better TypeScript/TSX indexing | `pip install "slurp-graph[ts]"` |
+| `slurp explain` with OpenAI models | `pip install "slurp-graph[llm-openai]"` |
+
+**Requires Python 3.12+.** Don't have Python? [Install uv](https://docs.astral.sh/uv/) — it bundles a Python runtime and is the fastest path.
+
+---
+
+**Install uv (if you don't have Python yet):**
+
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Then: `uv tool install slurp-graph`
+
+---
+
+**Non-Python projects** (JS, TypeScript, Go — install slurp globally so it's on your PATH):
+
+```bash
+uv tool install slurp-graph     # recommended: isolated environment, no conflicts
+pipx install slurp-graph        # same idea if you already have pipx
+pip install slurp-graph         # works if Python's bin/Scripts dir is on your PATH
+```
+
+> **Windows:** `pip install` places `slurp.exe` in Python's `Scripts` folder, which may not be on PATH by default. If `slurp` is not found after install, see [adding Python Scripts to PATH](https://docs.python.org/3/using/windows.html#excursus-setting-environment-variables), or use `uv tool install` instead (it handles PATH automatically).
+
+---
+
+**Python projects** (adds slurp as a project dependency):
+
+```bash
+uv add slurp-graph
+# or
+pip install slurp-graph
+```
+
+> When using `uv add`, run slurp as `uv run slurp` or activate the virtual environment first. For the MCP server with `uv add`, see the note in [MCP Integration](#mcp-integration).
+
+---
+
+> PyPI package: `slurp-graph` — CLI command: `slurp`
+
+Check what you have with `slurp --version`.
+
+📖 **Full usage guide (automatic MCP mode + manual CLI):** [USAGE.md](USAGE.md)
+
+---
+
+## Quickstart
+
+**New to slurp?** Run `slurp init` in your project root — it detects your language, indexes your codebase, and configures the MCP server in one step.
+
+```bash
+slurp init
+```
+
+Then query it:
+
+```bash
+slurp "player stats" --graph graph.json --budget 4000
+```
+
+Real output, on a 2,111-node graph of a Next.js codebase:
+
+```
+╭─ Slurp — Subgraph for: "player stats" (budget: 4,000 tokens) ╮
+│ Selected 402/2111 nodes · 4,000/4,000 tokens used (19.0%)    │
+╰──────────────────────────────────────────────────────────────╯
+
+## Relevant Nodes
+
+### recalcularPlayerStats() · score: 0.91
+→ File: lib/supabase/admin-actions.ts
+
+### getPlayerStatsAdmin() · score: 0.91
+→ File: lib/supabase/admin-actions.ts
+
+### PlayerStats · score: 0.91
+→ File: types/database.ts
+
+### PlayerScatterPoint · score: 0.77
+→ File: lib/supabase/dashboard-actions.ts
+
+### PlayerScatter() · score: 0.76
+→ File: components/dashboard/player-scatter.tsx
+
+## Key Relationships
+- contact_route → imports → supabase_admin_createadminclient
+- supabase_admin_actions_savematchlineup → calls → supabase_admin_actions_requireadmin
+- supabase_admin_actions_savematchlineup → calls → supabase_admin_createadminclient
+
+---
+💡 1709 additional connected nodes available — increase --budget to include them
+```
+
+Nodes are ordered by relevance, and each carries the score that put it there.
+A node's one-line description appears under its heading when the graph has
+one — `slurp index` does not write descriptions, so the line is absent above.
+
+Add `--inject-code` to embed the actual function body next to each node:
+
+```bash
+slurp "recalcularPlayerStats" --graph graph.json --budget 2000 --inject-code --min-score 0.8
+```
+
+````
+### recalcularPlayerStats() · score: 0.91
+→ File: lib/supabase/admin-actions.ts
+
+```typescript
+export async function recalcularPlayerStats(playerNombre: string, clubId: string, temporada: string) {
+    const adminClient = await createAdminClient();
+
+    // 1. Buscar jugador en players
+    const { data: player } = await adminClient
+        .from("players")
+        .select("id")
+        .eq("nombre", playerNombre)
+        .eq("club_id", clubId)
+        .eq("temporada", temporada)
+        .single();
+    ...
+}
+```
+````
+
+> The language tag is inferred from the file path, so the block is fenced as
+> `typescript` here without being told. Add `--project-root` when the graph does
+> not sit at the root of the source tree.
+
+Pipe the output directly into your LLM prompt, save it to a file, or use `slurp export` to format it as a ready-to-paste system prompt block.
+
+---
+
+## Commands
+
+### `slurp init`
+
+Guided one-command setup. **New to slurp?** Run `slurp init` in your project root — it detects your language, indexes your codebase, and configures the MCP server in one step.
+
+```bash
+slurp init          # from your project root — no flags needed
+slurp init --yes    # accept every prompt (CI / scripting)
+```
+
+It shows you a plan and asks for confirmation before touching anything:
+
+1. **Detects the dominant language** by counting `.py`, `.ts`, `.tsx`, `.js`, `.jsx` and `.go` files, ignoring vendored trees like `node_modules/` and `.venv/`.
+2. **Indexes the project** into `graphify-out/graph.json` with a live progress bar. If a graph already exists, it offers to reuse it instead of re-indexing.
+3. **Writes `.mcp.json`** pointing at the slurp binary it detected — works with both `uv tool install` and `pip install` layouts. An existing `.mcp.json` is never clobbered: slurp asks first, and other MCP servers in the file are preserved.
+
+Finish by restarting your AI coding assistant to activate slurp.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--yes`, `-y` | off | Accept every confirmation prompt. Useful for CI and scripting. |
+
+### `slurp QUERY`
+
+The main command. Scores all graph nodes against your query and selects the optimal subgraph within the token budget.
+
+```bash
+slurp "auth flow" --graph graph.json --budget 4000
+slurp "payment processing" --format json
+slurp "JWT validation" --explain
+slurp "database schema" --inject-code --min-score 0.3
+slurp "prisma models" --backend openai
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--graph`, `-g` | auto-discover | Path to `graph.json`. Repeatable — see [federation](#multi-graph-federation). |
+| `--graph-label` | derived from path | Project name for each `--graph`, in the same order. |
+| `--budget`, `-b` | `4000` | Token budget for subgraph selection. |
+| `--format`, `-f` | `markdown` | Output format: `markdown`, `json`, or `yaml`. |
+| `--model`, `-m` | `cl100k_base` | Tiktoken encoding for token counting. |
+| `--explain` | off | Print per-node score breakdown: final / structural / semantic. |
+| `--no-audit` | off | Skip writing to `.slurp/audit.jsonl`. |
+| `--neighbor-decay` | `0.7` | Score multiplier applied to neighbors of each selected node. |
+| `--min-score` | `0.15` | Minimum relevance score; nodes below this are excluded before selection. |
+| `--viz` | off | Open an interactive graph visualization in the browser. |
+| `--viz-output PATH` | — | Save visualization HTML to file (without opening browser). |
+| `--ignore-file` | `.slurpignore` | Path to node exclusion rules. |
+| `--backend` | `tfidf` | Scoring backend: `tfidf` (default), `openai`, or `anthropic`. |
+| `--inject-code` | off | Embed source code blocks for each selected node (requires ≤30 nodes). |
+| `--project-root` | graph dir | Root directory for resolving `source_file` paths. |
+
+**Auto-discovery** (when `--graph` is omitted):
+
+1. `./graph.json`
+2. `./graphify-out/graph.json`
+3. `./.graphify/graph.json`
+
+---
+
+### Multi-graph federation
+
+Query across multiple codebases simultaneously.
+
+A system split across repos is still one system, but slurp normally sees one graph at
+a time — a question about "auth flow" stops at the boundary of whichever repo you
+pointed it at. Pass `--graph` more than once to merge them into a single queryable
+graph:
+
+```bash
+slurp "auth flow" --graph services/auth/graph.json --graph services/api/graph.json
+```
+
+```
+Federated: 2 graphs · 4,521 nodes total
+
+╭─ Slurp — Subgraph for: "auth flow" (budget: 4,000 tokens) ─╮
+│ Selected 12/4521 nodes · 1,204/4,000 tokens used (0.3%)    │
+╰────────────────────────────────────────────────────────────╯
+```
+
+**Node ids are namespaced automatically.** Two services can both define `main` or
+`authenticate_user` without one silently overwriting the other — every id is prefixed
+with its project, as `auth::authenticate_user`. If any original ids did appear in more
+than one graph, slurp says so:
+
+```
+  3 node ids appeared in more than one graph — namespaced by project, none lost.
+```
+
+**Project names** come from the graph paths by default. Since most projects keep their
+graph at `<project>/graphify-out/graph.json` — where every file stem is just `graph` —
+slurp walks up the path for a name that actually identifies the project. Override it
+with `--graph-label`, one per `--graph`, in the same order:
+
+```bash
+slurp "auth flow" \
+  --graph services/auth/graphify-out/graph.json \
+  --graph services/api/graphify-out/graph.json \
+  --graph apps/web/graphify-out/graph.json \
+  --graph-label auth --graph-label api --graph-label frontend
+```
+
+The MCP server federates too, so your AI assistant can query every service at once
+through the same `slurp_query` tool. Responses carry `graphs_count` when more than one
+graph is being served:
+
+```bash
+slurp serve --graph services/auth/graph.json --graph services/api/graph.json
+```
+
+In `--viz`, federated nodes show a **Project** field in the detail panel, and the legend
+gains a **Projects** section listing every project on screen.
+
+> **One graph behaves exactly as before** — no prefixes, no `_project` attribute, no
+> federation header. Federation only engages from the second `--graph` onward.
+>
+> Merging does not invent edges *between* projects: if `api` imports `auth`, that
+> relationship exists in neither `graph.json`, so slurp does not fabricate it. Each
+> project stays internally connected, and neighbor expansion does not cross project
+> boundaries.
+
+---
+
+### `slurp stats`
+
+Print node and edge counts for a graph file.
+
+```bash
+slurp stats --graph graph.json
+```
+
+```
+Graph: graph.json
+Nodes: 2111
+Edges: 3421
+```
+
+---
+
+### `slurp audit`
+
+Show the history of queries logged to `.slurp/audit.jsonl`, plus the most frequently selected nodes.
+
+```bash
+slurp audit
+slurp audit --top-nodes 20
+slurp audit --audit-dir /custom/.slurp
+```
+
+```
+                           Query History (last 5 of 5)
+┏━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+┃ #    ┃ Timestamp           ┃ Query                 ┃ Nodes ┃ Tokens ┃ Savings ┃
+┡━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+│ 1    │ 2026-09-15T09:01:07 │ budget selection      │   131 │   2999 │     98% │
+│ 2    │ 2026-09-15T09:01:07 │ graph loader          │   139 │   2999 │     98% │
+│ 3    │ 2026-09-15T09:01:07 │ mcp server            │   130 │   3000 │     98% │
+│ 4    │ 2026-09-15T09:01:08 │ token counting        │   135 │   3000 │     98% │
+│ 5    │ 2026-09-15T09:01:08 │ call graph extraction │   143 │   2995 │     98% │
+└──────┴─────────────────────┴───────────────────────┴───────┴────────┴─────────┘
+                        Top 10 Most Selected Nodes
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Rank  ┃ Node                                    ┃ Times Selected ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+│ 1     │ tests.test_cli._runner                  │              5 │
+│ 2     │ tests.test_cli.TestAutoDiscovery.test…  │              5 │
+│ 3     │ tests.test_cli.TestExportCommand.test…  │              4 │
+│ 9     │ slurp.formatter.format_subgraph         │              3 │
+│ 10    │ slurp.indexer._BaseVisitor._recurse     │              3 │
+└───────┴─────────────────────────────────────────┴────────────────┘
+```
+
+Every query is appended as a JSON line (unless `--no-audit` is passed). Useful for tracking which parts of your codebase an AI agent visits most.
+
+---
+
+### `slurp advisor`
+
+Recommends the optimal token budget based on your query history.
+
+Guessing at `--budget` costs you either way: too low truncates the answer, too high pays
+for nodes the LLM never reads. Once `.slurp/audit.jsonl` holds a few dozen entries, the
+right number is already in your data — the advisor finds the past queries that resemble
+the new one and reads the budget off what they actually used.
+
+```bash
+slurp advisor "auth flow" --graph graph.json
+```
+
+```
+╭────────────── Budget Advisor — "budget selection" ───────────────╮
+│ Based on 5 similar past queries                                  │
+╰──────────────────────────────────────────────────────────────────╯
+
+Recommended budget:  3,999 tokens
+Expected coverage:   93.3% of similar queries' selections
+Estimated cost:      $0.0120  (claude-sonnet-5)
+Confidence:          MEDIUM  (5 similar queries)
+
+Similar past queries:
+  "budget selection"      → 2,999 tokens · 98.4% savings
+  "budget selection heap" → 1,497 tokens · 99.2% savings
+  "budget selection heap" → 2,498 tokens · 98.7% savings
+  "budget selection heap" → 3,999 tokens · 97.9% savings
+  "budget selection heap" → 6,000 tokens · 96.9% savings
+
+Run with recommended budget:
+  slurp "budget selection" --graph graph.json --budget 3999
+```
+
+```
+╭──────────────── Budget Advisor — "auth flow" ────────────────╮
+│ Based on 12 similar past queries                             │
+╰──────────────────────────────────────────────────────────────╯
+
+Recommended budget:  2,840 tokens
+Expected coverage:   99.3% of similar queries' selections
+Estimated cost:      $0.0085  (claude-sonnet-5)
+Confidence:          HIGH  (12 similar queries)
+
+Similar past queries:
+  "auth flow cookie" → 2,770 tokens · 97.4% savings
+  "auth flow guard"  → 2,680 tokens · 97.5% savings
+  "auth flow jwt"    → 2,750 tokens · 97.4% savings
+  "auth flow login"  → 2,650 tokens · 97.5% savings
+  "auth flow logout" → 2,620 tokens · 97.5% savings
+  … and 7 more
+
+Run with recommended budget:
+  slurp "auth flow" --graph graph.json --budget 2840
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--graph`, `-g` | auto-discovered | Path to graph.json, used in the suggested command line. |
+| `--audit-dir` | `.slurp` | Directory containing audit.jsonl. |
+| `--price-model` | `claude-sonnet-5` | Pricing model for the cost estimate (same models as `slurp benchmark`). |
+| `--min-similar` | `3` | Similar queries needed before a recommendation is considered confident. |
+
+**How it works.** Past queries are tokenized with the same tokenizer used to score nodes —
+so `authFlow`, `auth_flow` and `auth flow` are one ask — and compared by TF-IDF cosine
+similarity. Anything at or above `0.3` counts as similar. The recommended budget is the
+**75th percentile** of what those queries actually consumed: it fits three out of four
+comparable queries, where the mean would under-serve the heavier half and the max would
+pay for one outlier every time.
+
+| Confidence | Meaning |
+|---|---|
+| `HIGH` | 10+ similar queries |
+| `MEDIUM` | at least `--min-similar` (default 3) |
+| `LOW` | fewer than `--min-similar` — still recommends, with a warning |
+| `NONE` | no similar history — falls back to the 4,000-token default |
+
+> Savings percentages are estimated against a baseline of ~50 tokens per node, the same
+> baseline the visualizer uses. The audit log records outcomes, not the full-graph token
+> count, so no historical graph needs to still exist on disk.
+
+---
+
+### `slurp explain`
+
+Explains any node in natural language — what it does, its architecture, and the risk of
+changing it. With `--no-llm`, or whenever no provider is configured, it answers from the
+graph alone: an architectural role inferred from the node's position, its immediate
+neighbourhood, the share of the project that depends on it, and two or three commands
+that continue the investigation. No API key, no network.
+
+```bash
+slurp explain "recalcularPlayerStats" --graph graph.json
+```
+
+```
+╭──────────────── slurp explain — recalcularPlayerStats() ────────────────╮
+│ code · lib/supabase/admin-actions.ts · score: 0.910                     │
+╰─────────────────────────────────────────────────────────────────────────╯
+
+EXPLANATION
+recalcularPlayerStats() is an internal admin-side helper in admin-actions.ts
+that likely recomputes aggregate player statistics after match events
+change, using an admin Supabase client (via createAdminClient()) to bypass
+row-level security and write updated stats directly. It exists to keep
+player stats consistent whenever match events are mutated, rather than
+requiring each mutation function to duplicate that recalculation logic. It's
+invoked by the three admin actions that alter match event data — deleting,
+inserting, and inserting substitution events — suggesting it acts as a
+shared consistency-repair step after any event-level change.
+
+If this function's behavior or signature changed, it would directly risk
+breaking deleteMatchEventAdmin(), insertMatchEventAdmin(), and
+insertSubstitutionEventAdmin(), since all three depend on it to keep player
+stats accurate after modifying match events.
+
+CONTEXT
+Part of:     admin-actions.ts
+Used by:     deleteMatchEventAdmin(), insertMatchEventAdmin(), insertSubstitutionEventAdmin()
+Depends on:  createAdminClient()
+
+ARCHITECTURE
+→ Called by: deleteMatchEventAdmin(), insertMatchEventAdmin(),
+             insertSubstitutionEventAdmin()
+← Calls: createAdminClient()
+
+RISK IF CHANGED: MEDIUM
+3 nodes depend on this code — 0.1% of the project.
+Check each caller before changing the signature.
+
+EXPLORE FURTHER
+  slurp "recalcularPlayerStats admin-actions.ts"  — the surrounding context
+  slurp explain 'deleteMatchEventAdmin'  — its most connected caller
+
+─────────────────────────────────────────────────────────────────────
+Provider: anthropic (claude-sonnet-5) · Context: 440 tokens
+```
+
+**Without an LLM** — the model writes the prose and nothing else, so every section below
+it is identical. Only EXPLANATION changes:
+
+```bash
+slurp explain "recalcularPlayerStats" --graph graph.json --no-llm
+```
+
+```
+EXPLANATION
+recalcularPlayerStats() is a code node defined in lib/supabase/admin-actions.ts:1140.
+Leaf — focused, with a small surface. It is called by 3 places in the project, chiefly
+deleteMatchEventAdmin(), insertMatchEventAdmin(), insertSubstitutionEventAdmin(). It
+depends on createAdminClient(). Relevance to your query: 0.910.
+
+... CONTEXT, ARCHITECTURE, RISK and EXPLORE FURTHER exactly as above ...
+
+─────────────────────────────────────────────────────────────────────
+Provider: structural · Context: 440 tokens
+```
+
+The role is read off the graph: more than ten callers make a **central utility**, many
+callers with few dependencies a **shared utility**, callers and callees both high an
+**orchestrator**, none of either **isolated**. Callers that live in test files are counted
+separately, so a helper exercised by sixty tests and two modules is not reported as having
+sixty-two dependants.
+
+
+| Flag | Default | Description |
+|---|---|---|
+| `--graph`, `-g` | auto-discovered | Path to `graph.json`. |
+| `--provider` | auto-detected | `anthropic`, `openai`, `ollama`, or `openai-compatible`. |
+| `--model`, `-m` | per-provider default | Model name. |
+| `--endpoint` | — | Base URL for the `openai-compatible` provider. |
+| `--no-llm` | off | Skip the LLM and show the structural analysis only. |
+| `--hops` | `2` | Neighbourhood radius used to build the explanation context. |
+| `--config-dir` | `.slurp` | Directory holding `config.json`. |
+
+**Providers.** With no `--provider`, slurp auto-detects in this order:
+
+| Provider | Detected via | Default model | Notes |
+|---|---|---|---|
+| `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-5` | Needs `pip install anthropic`. |
+| `openai` | `OPENAI_API_KEY` | `gpt-4o-mini` | Needs the `llm-openai` extra: `pip install "slurp-graph[llm-openai]"`. |
+| `ollama` | server answering on `localhost:11434` | `llama3.2` | Fully local, no API key. |
+| `openai-compatible` | `SLURP_LLM_ENDPOINT` (+ optional `SLURP_LLM_API_KEY`) | `local-model` | LM Studio, Together, Groq, vLLM, anything speaking the OpenAI API. |
+
+If none are present, slurp uses the **structural** explanation — a deterministic description
+built from the graph alone. It is always produced first, so a missing SDK, an absent API key,
+or an unreachable endpoint degrades to it rather than failing:
+
+```
+Provider: structural · Context: 198 tokens
+Note: openai-compatible unavailable (Could not reach http://localhost:1234/v1/chat/completions:
+      [Errno 61] Connection refused); showed structural analysis
+```
+
+Force it with `--no-llm` to get an offline, zero-cost explanation.
+
+> **Architecture and risk are always computed from the graph, never written by the model.**
+> The LLM contributes only the prose under `EXPLANATION`; callers, callees, and blast radius
+> are facts slurp already has, so the model is explicitly told not to restate them.
+
+> Works best with graphs that include call edges (graphify). With `slurp index` graphs,
+> callers are inferred from `contains` edges — a symbol's only "caller" is the module that
+> declares it, so the risk level will read `LOW` for almost everything.
+
+---
+
+### `slurp config`
+
+Saves LLM settings to `.slurp/config.json` so you don't pass flags every time.
+
+```bash
+slurp config set provider openai-compatible
+slurp config set model qwen2.5-coder
+slurp config set endpoint http://localhost:1234/v1
+slurp config set api_key sk-...        # stored, never echoed back
+slurp config show
+```
+
+```
+   slurp config — .slurp/config.json
+┏━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Key      ┃ Value                    ┃
+┡━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ api_key  │ ********                 │
+│ endpoint │ http://localhost:1234/v1 │
+│ model    │ qwen2.5-coder            │
+│ provider │ openai-compatible        │
+└──────────┴──────────────────────────┘
+
+Effective provider: openai-compatible
+Effective model:    qwen2.5-coder
+Effective endpoint: http://localhost:1234/v1
+```
+
+Keys: `provider`, `model`, `endpoint`, `api_key`, `temperature`. Precedence is **flags →
+saved config → environment auto-detection**, so an explicit flag is never overridden by a
+stored preference. `slurp config show` prints both what is saved and what slurp would
+actually use right now.
+
+> `api_key` is masked in all output but stored in plain text in `.slurp/config.json` — keep
+> `.slurp/` out of version control, or leave the key in an environment variable instead.
+
+---
+
+### `slurp diff`
+
+**Know exactly what changed — and what it affects.**
+
+A `git diff` tells you which lines moved. It cannot tell you that the helper you
+just renamed is called from eleven other modules, or that the function you deleted
+was the only caller keeping a service alive. `slurp diff` compares two versions of
+your knowledge graph and reports the **blast radius**: what changed, what sits
+downstream of it, and which nodes are central enough that a reviewer should look
+at them by hand.
+
+#### The workflow: before you merge
+
+Index both sides of the change and diff them:
+
+```bash
+git checkout main       && slurp index . --output main.json
+git checkout feature/auth-refactor && slurp index . --output feature.json
+
+slurp diff main.json feature.json --viz
+```
+
+The `--viz` flag opens an interactive graph where the change is colour-coded:
+**green** for added nodes, **red** for removed, **yellow** for modified, and
+**grey** for untouched neighbors that are still connected to the change. You can
+see at a glance whether your refactor touched one isolated corner or pulled on a
+thread running through half the codebase.
+
+#### Text output
+
+Without `--viz` you get a Markdown impact report — pipe it into a PR description,
+a review checklist, or your AI assistant:
+
+```
+# Slurp Diff — Impact Analysis
+
+## Summary
+- **✅ Low impact change**
+- **Impact score:** 0.0048 (🟢 low)
+- 1 nodes added · 2 removed · 0 modified
+- 2 edges added · 13 removed
+- 2 nodes in risk neighborhood
+
+## Added Nodes (1)
+
+### choose_subgraph (function)
+→ File: slurp/budget.py
+
+## Removed Nodes (2)
+
+### slurp.budget.select_subgraph
+
+### slurp.formatter._format_yaml
+
+## Affected Edges
+
+**Added (2):**
+- slurp.budget → contains → slurp.budget.choose_subgraph
+- slurp.budget.choose_subgraph → calls → slurp.budget._node_token_cost
+
+**Removed (13):**
+- slurp.benchmark.run_benchmark → slurp.budget.select_subgraph
+- slurp.budget → slurp.budget.select_subgraph
+- slurp.budget.select_subgraph → slurp.budget._node_token_cost
+- slurp.cli.diff_cmd → slurp.budget.select_subgraph
+- slurp.cli.export_cmd → slurp.budget.select_subgraph
+- slurp.cli.run → slurp.budget.select_subgraph
+- slurp.evaluator.build_slurp_context → slurp.budget.select_subgraph
+
+## What to review
+Most connected nodes in the blast radius — review these first:
+
+1. cli (module) · centrality: 0.0326 · slurp/cli.py
+2. mcp (module) · centrality: 0.0203 · slurp/mcp.py
+3. run (function) · centrality: 0.0155 · slurp/cli.py
+4. evaluator (module) · centrality: 0.0128 · slurp/evaluator.py
+5. suggester (module) · centrality: 0.0128 · slurp/suggester.py
+```
+
+> The change above is a rename of `select_subgraph`: one node added, two removed, and
+> **thirteen edges gone** — every caller of the old name. The impact *score* stays low
+> because it is a share of the whole graph, not a severity verdict; the thirteen removed
+> edges are the number that matters.
+
+The run finishes with a colour-coded summary panel and, if you did not pass
+`--viz`, the exact command to see the full picture:
+
+```
+╭─────────────────────────── Impact Summary ───────────────────────────╮
+│                                                                      │
+│  ✅ Low impact change  (impact score 0.0048)                         │
+│                                                                      │
+│  +1 added  -2 removed  ~0 modified                                   │
+│                                                                      │
+│  See the full blast radius:                                          │
+│    slurp diff old.json new.json --viz                                │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+```
+
+#### Flags
+
+```bash
+slurp diff old.json new.json
+slurp diff old.json new.json --hops 2 --viz
+slurp diff old.json new.json --budget 4000
+slurp diff old.json new.json --viz-output reports/impact.html
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--hops` | `2` | Depth of impact neighborhood expansion. |
+| `--viz` | off | Open an interactive visualizer of the affected area in the browser. |
+| `--viz-output PATH` | — | Save visualization HTML to file (without opening browser). |
+| `--budget`, `-b` | none | Token budget; selects the most relevant nodes from the affected area. |
+
+Impact score is computed from the centrality of the changed nodes — changing a
+leaf scores near zero, changing a hub scores high. `--hops` controls how far the
+blast radius is traced; `--budget` narrows the affected area down to what fits a
+token budget, so you can hand exactly the relevant slice to a reviewer or an LLM.
+
+> **This is the only tool that shows you the blast radius of your code changes before you merge.**
+
+---
+
+### `slurp export`
+
+Export a context block ready to paste into an AI system prompt.
+
+```bash
+slurp export "auth flow" --format claude     # <context> XML tags
+slurp export "auth flow" --format chatgpt    # [CODEBASE CONTEXT] block
+slurp export "auth flow" --format claudemd   # ## Codebase Context for CLAUDE.md
+slurp export "auth flow" --output context.md
+```
+
+All three formats include query, nodes selected/total, tokens used/budget, and coverage %.
+
+---
+
+### `slurp serve`
+
+Start an MCP stdio server (JSON-RPC 2.0) exposing five tools — `slurp_query`,
+`slurp_explain`, `slurp_diff`, `slurp_suggest` and `slurp_impact`.
+
+```bash
+slurp serve --graph graph.json
+slurp serve --graph graph.json --no-log
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--graph`, `-g` | auto-discover | Path to `graph.json`. Repeatable — see [federation](#multi-graph-federation). |
+| `--graph-label` | derived from path | Project name for each `--graph`, in the same order. |
+| `--log` / `--no-log` | `--log` | Append served queries to `.slurp/session.log` (only if `.slurp/` exists). |
+
+See [MCP Integration](#mcp-integration) for configuration.
+
+---
+
+### `slurp impact`
+
+Analyzes the blast radius of editing a file before making changes — no second snapshot
+needed. Where [`slurp diff`](#slurp-diff) answers this after the fact by comparing two
+graphs, `slurp impact` answers it beforehand from the graph you already have.
+
+```bash
+slurp impact lib/supabase/admin.ts --graph graph.json
+```
+
+```
+╭─ Impact Analysis — lib/supabase/admin.ts ─────╮
+│ 2 definitions · RISK: HIGH · affects 69 files │
+╰───────────────────────────────────────────────╯
+
+HIGHEST RISK NODE
+  createAdminClient() — 130 direct dependents (6.2% of codebase)
+
+AFFECTED FILES (top 10)
+  lib/supabase/admin-actions.ts       31 dependents
+  lib/supabase/cantera-actions.ts     14 dependents
+  lib/supabase/dashboard-actions.ts   11 dependents
+  lib/supabase/reports-actions.ts      7 dependents
+  app/api/mis-partidos/route.ts        6 dependents
+  … and 24 more files
+
+RECOMMENDATION
+  Add integration tests before editing. 130 nodes depend on functions in this file.
+
+─────────────────────────────────────────────────────────────────────
+Direct: 130 · Transitive: 48 · Impact score: 0.0843
+```
+
+A **SAFE TO EDIT** block lists the definitions in the file that nothing depends on at all —
+the other half of the question. A node called only from inside the same file is not listed
+there: contained is not the same as safe.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--hops` | `2` | How far to follow dependants outward. |
+| `--output` | `text` | `json` emits the full result for CI gating on `risk_level`. |
+| `--viz` / `--viz-output` | off | Interactive view of the affected nodes only. |
+
+The path is matched on a normalised suffix, so `slurp impact admin.ts` finds
+`lib/supabase/admin.ts` without you having to know how the indexer spelled its paths. An
+exact match always wins over a suffix. A file with no nodes in the graph is answered, not
+refused: it reports that nothing was found and suggests re-indexing if the file is new.
+
+> Also exposed over MCP as **`slurp_impact(file_path, hops=2)`** — the tool an agent should
+> reach for before editing anything.
+
+---
+
+### `--suggest`
+
+Suggests related queries to explore after a query — drill down, sibling exploration, and
+high-risk dependency detection. It reads the nodes that sat *just outside* the token
+budget: connected enough to be neighbours, not relevant enough to be selected, which is
+exactly the shape of something you have not looked at yet.
+
+```bash
+slurp "player stats" --graph graph.json --budget 4000 --suggest
+```
+
+```
+SUGGESTED QUERIES
+  slurp "props table skill"               — explore the connected area the budget left out
+  slurp explain 'GSAP Animation Library'  — high-risk dependency — 38 nodes depend on it
+```
+
+Three kinds of suggestion, each fired only when the graph supports it:
+
+| Kind | Fires when | Reads as |
+|---|---|---|
+| **Drill down** | the subgraph's most relevant node has neighbours that were left out | `drill down into what surrounds recalcularPlayerStats` |
+| **Sibling exploration** | a themed cluster sits on the frontier | `explore the connected area the budget left out` |
+| **Risk exploration** | a frontier node has six or more dependants | `high-risk dependency — 38 nodes depend on it` |
+
+| Flag | Default | Description |
+|---|---|---|
+| `--suggest` | off | Append suggestions to the normal output. |
+| `--n`, `--suggest-n` | `3` | How many suggestions to show. |
+
+Query text is built from the tokens that set the frontier apart from the rest of the
+graph, weighted by how rare each one is graph-wide — a term common inside the frontier and
+uncommon outside it wins. Import placeholders are excluded: they carry the name of what
+they import, so they describe wiring rather than subject matter. A suggestion that says
+nothing the original query did not is dropped, and when the budget already covers the
+neighbourhood the list is simply empty.
+
+> Also exposed over MCP as **`slurp_suggest(query, budget=4000)`**, so an agent can ask
+> what else is worth looking at without a second round trip through the terminal.
+
+---
+
+### `slurp session`
+
+Shows queries processed by the MCP server in real time.
+
+```bash
+slurp session --last 10
+slurp session --tail
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--last N` | `20` | Number of most recent entries to show. |
+| `--tail` | off | Follow the log in real time (Ctrl+C to stop). |
+| `--log-dir PATH` | `.slurp` | Directory containing `session.log`. |
+
+```
+             MCP Session Log — last 2 (.slurp/session.log)
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━━┓
+┃ Time                ┃ Query      ┃ Budget ┃ Nodes ┃ Tokens ┃ Savings ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━━┩
+│ 2026-08-15T12:13:58 │ auth flow  │  4,000 │   171 │  4,000 │   94.6% │
+│ 2026-08-15T12:13:58 │ mcp server │  2,000 │    94 │  1,995 │   97.3% │
+└─────────────────────┴────────────┴────────┴───────┴────────┴─────────┘
+```
+
+Use it to confirm your AI assistant is actually calling slurp. The log is written
+only when `.slurp/` already exists — running any query manually creates it, and
+`slurp serve --no-log` turns logging off entirely.
+
+---
+
+### `slurp benchmark`
+
+Measure real token savings across queries and budgets.
+
+```bash
+slurp benchmark \
+  --graph graph.json \
+  --queries "auth flow" --queries "schema validation" \
+  --budget 2000 --budget 4000 --budget 8000
+# Windows CMD: remove the backslashes and write on one line
+```
+
+```
+        Benchmark Results — pricing: default ($3/MTok input)
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┓
+┃ Query           ┃ Budget ┃ Tokens used ┃ Full graph ┃ Savings ┃ Cost (slurp) ┃ Cost (full) ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━┩
+│ select subgraph │  2,000 │       1,998 │    271,093 │   99.3% │      $0.0060 │     $0.8133 │
+└─────────────────┴────────┴─────────────┴────────────┴─────────┴──────────────┴─────────────┘
+                            Summary
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Metric             ┃                                   Value ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Mean savings       │                                   99.3% │
+│ p50 savings        │                                   99.3% │
+│ Mean precision     │                                   2.22% │
+│ Best case          │ 99.3% ('select subgraph', budget 2,000) │
+│ Cost with slurp    │                                 $0.0060 │
+│ Cost without slurp │                                 $0.8133 │
+│ Money saved        │                         $0.8073 (99.3%) │
+└────────────────────┴─────────────────────────────────────────┘
+```
+
+> One query at one budget, run against slurp's own graph. The real table also carries
+> `Nodes sel.`, `Nodes total`, `Coverage` and `Precision`, elided here for width.
+
+Outputs a per-run table and aggregate stats: mean savings, p50/p90/p95, best/worst case, and precision (fraction of relevant nodes captured).
+
+---
+
+### `slurp eval`
+
+Measures response quality with and without slurp context, using an LLM judge.
+
+`slurp benchmark` measures how many tokens the selector saves. It says nothing about
+whether the answer is still correct. `slurp eval` closes that loop: each question is
+answered twice — once from a budgeted subgraph, once from the entire graph — and an LLM
+judge scores both against a known ground truth.
+
+```bash
+slurp eval --graph graph.json --budget 4000 --provider anthropic
+slurp eval --graph graph.json --questions my-questions.json --output results.json
+slurp eval --dry-run          # list the questions, call no LLM
+```
+
+Real run against a 1,796-node Next.js codebase, 15 questions, budget 4,000:
+
+```
+slurp win rate:         46.7% (7/15)
+Mean score with slurp:  0.770
+Mean score baseline:    0.784
+Token savings:          79.9%
+Quality/token slurp:    0.000061
+Quality/token baseline: 0.000012
+```
+
+> **The honest conclusion: slurp does not improve quality when the model has unlimited
+> context.** With the whole 62,810-token graph in the prompt, a large-context model finds
+> the answer on its own — the baseline scored marginally higher (0.784 vs 0.770).
+>
+> What slurp improves is **efficiency, radically: 5× more quality per token**, at 12,865
+> tokens per question instead of 62,810. And it improves *quality* when the budget is
+> restrictive or the graph is too large to fit at all — which is the case slurp exists for.
+>
+> Per-question, slurp won the multi-hop flow questions ("what is the full call chain
+> from…") and lost the whole-graph aggregation ones ("which files concentrate the most
+> functions") — exactly what pruning to a subgraph would predict.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--graph`, `-g` | auto-discovered | Path to `graph.json`. |
+| `--budget`, `-b` | `4000` | Token budget for the slurp context. |
+| `--questions` | built-in set | JSON file of questions (list, or `{"questions": [...]}`). |
+| `--provider` | auto-detected | LLM provider — same four as [`slurp explain`](#slurp-explain). |
+| `--output`, `-o` | — | Write full results, including both answers, as JSON. |
+| `--dry-run` | off | List the questions and exit without calling any LLM. |
+
+Each question costs **three LLM calls** (answer with slurp, answer from the full graph,
+judge). The built-in set of 15 questions is therefore 45 calls; budget accordingly. The
+baseline context is built once and reused across questions.
+
+> `--budget` caps the *node selection*, not the rendered prompt. Budget 4,000 produced a
+> 12,865-token context on the graph above, because the serializer adds the relationships
+> section and headers on top of the selected nodes.
+
+---
+
+### `slurp index`
+
+Index the project's source code and generate `graph.json` without graphify or any LLM.
+
+```bash
+slurp index .                              # index current directory
+slurp index /path/to/project              # specific path
+slurp index . --output custom/graph.json  # custom output path
+slurp index . --watch                     # re-index on file changes
+slurp index . --smart                     # only re-index what changed
+```
+
+```
+Indexing /path/to/project ...
+✓ 312 nodes · 487 edges · 41 files
+  Parsers: Python (ast), TypeScript (tree-sitter), Go (regex)
+  Saved: /path/to/project/graphify-out/graph.json
+
+Next: slurp "your query" --graph /path/to/project/graphify-out/graph.json
+```
+
+> **Call graph — five languages** (Python, TypeScript/JavaScript, Go, Java, Rust):
+> `slurp index` extracts `calls` edges between functions, within a file and across them,
+> enabling accurate risk analysis in [`slurp explain`](#slurp-explain) and impact
+> propagation in [`slurp diff`](#slurp-diff).
+>
+> | | Python | TypeScript / JavaScript | Go | Java | Rust |
+> |---|---|---|---|---|---|
+> | Direct calls | `helper()` | `helper()` | `helper()` (same package) | `helper()` | `helper()` |
+> | Own methods | `self.m()`, `cls.m()` | `this.m()` | `p.m()` on the receiver | `this.m()` | `self.m()` in an `impl` |
+> | Inherited methods | ✅ base class in the same file | ✅ tree-sitter only | — | ✅ incl. `super.m()` | ✅ traits `impl`d in the file |
+> | Constructors | `ClassName()` | `new ClassName()` | `&Struct{}`, `Struct{}` | `new ClassName()` | `Type::new()` |
+> | Typed local variable | `x = ClassName()` | `const x = new C()`, `const x: C = …` | `x := &S{}`, `var x S` | `C x = …` (declared) | `let x: T`, `let x = T {…}` |
+> | Static calls | — | — | — | `ClassName.method()` | `Type::assoc()`, `Self::assoc()` |
+> | Fields | — | — | — | ✅ declared type, incl. `@Autowired` | ✅ declared type |
+> | Parameters | — | — | — | — | ✅ declared type |
+> | Cross-file | ✅ | ✅ | ✅ | ✅ | ✅ |
+> | Parser | stdlib `ast` | tree-sitter, with a regex fallback | regex | tree-sitter, with a regex fallback | tree-sitter, with a regex fallback |
+>
+> **Return type propagation**: `srv := NewServer()` followed by `srv.Start()` now
+> generates a call edge for Go, Rust, Java and TypeScript. The return type must be
+> declared and must name a type defined in the project — an inferred TypeScript
+> return, or one naming a third-party type, still emits nothing.
+>
+> **Anything that cannot be resolved with certainty emits no edge** — stdlib and
+> third-party calls, a method on an object of unknown type, a chained or computed callee.
+> A missing edge is a gap; a wrong edge is a lie about the codebase, so ambiguity always
+> resolves to silence. Both endpoints of every `calls` edge are guaranteed to be nodes that
+> exist in the graph.
+>
+> **Cross-file calls resolved in all five languages** — an imported symbol followed by a
+> call generates a direct `calls` edge to the real definition, not a dead end at the import
+> placeholder. Resolution runs after every file is indexed, so it sees the whole project.
+>
+> - **Python**: `from X import f` followed by `f()`, plus `import X as m` + `m.f()`.
+> - **TypeScript/JavaScript**: named, namespace, default and aliased imports resolved.
+>   `type`-only imports ignored. `@/` aliases and barrel exports supported.
+> - **Java**: import statements resolved to their target class. Static imports and
+>   wildcard imports with unique candidates supported.
+> - **Rust**: `use crate::`, `use super::`, and `{A, B, C}` multi-symbol imports
+>   resolved. Glob imports with unique candidates supported.
+> - **Go**: package imports resolved by directory matching. Explicit and automatic
+>   aliases supported. Dot imports with unique candidates. `package main` excluded
+>   from the index.
+>
+> An import only resolves when its *module* is part of the project. That single rule is what
+> keeps `from pathlib import Path` from binding to a local class of the same name, and
+> `import { useState } from 'react'` from binding to a local `react.ts`.
+>
+> **Go** methods are nested under their receiver, so a method's node id is
+> `pkg.Struct.Method`. A package is a *directory*, not a file, so `auth.Login()` is
+> answered by every file in `auth/`, and `package main` is excluded from the index
+> because it is never importable. A local variable typed by a struct literal or a `var`
+> declaration resolves.
+>
+> **Java** declares every variable and field type, so nothing has to be inferred from an
+> initialiser — a field resolves whenever its declared type is a class this file can
+> name, which is what makes dependency-injected collaborators navigable. Method
+> parameters are not yet read, and inheritance does not cross files: a method inherited
+> from a base class in another file resolves to nothing.
+>
+> **Rust** methods live in `impl` blocks, not in the `struct`, so a method's node id is
+> `module.Type.method` and every `impl Type` block — including `impl Trait for Type` —
+> contributes to the same type. The
+> `self` receiver (`self`, `&self`, `&mut self`) resolves to the enclosing `impl`, `Self::`
+> and `Type::` to an associated function, and a trait's default method resolves through
+> `impl Trait for Type` when the trait is declared in the same file. Types are *declared* in
+> Rust — parameters, struct fields and `let` annotations — so nothing is inferred from an
+> initialiser; `Type::new()` also resolves through a return type declared as `Self`.
+>
+> Two things are deliberately silent. **Macros never produce an edge**, including the calls
+> written inside them: `println!`, `vec!` and `format!` are macro invocations, and even
+> `assert_eq!(build(), 1)` yields nothing, because a macro body is an opaque token tree
+> whose contents are not parsed as code. **External traits are ignored** — `to_string()`,
+> `clone()` and `into()` resolve to nothing, as does any receiver whose type is not declared
+> in the file. A bare `helper()` never resolves to a method either: Rust has no implicit
+> receiver, so inside `impl Gateway` a bare `submit()` is a free function, not `self.submit`.
+>
+> **A return type only propagates within one file.** `srv := NewServer()` resolves when
+> `NewServer` is declared in the same file as the call. A constructor imported from
+> elsewhere does not carry its type across, so `srv.Start()` emits nothing there. An
+> explicit type — a `var` declaration, a `let x: T` annotation, a parameter or a field —
+> always resolves, cross-file included. Rust is the one place a wrapper is deliberately
+> not unwrapped: `Option<Engine>` is an Option, and `e.run()` on it does not compile, so
+> binding through it would invent an edge the compiler rejects. Go's `(T, error)` *is*
+> destructured at the assignment, so it binds.
+>
+> Without the `ts` extra, TypeScript falls back to regex, which blanks comments and string
+> literals before scanning and resolves everything above **except** methods inherited from a
+> base class. Without the `java` extra, Java falls back to regex, which resolves everything
+> above, including static imports across files. Without the `rust` extra, Rust falls back
+> to regex, which also resolves everything above: across 600 files from crates.io the two
+> branches agree exactly on 589 of them. Every regex fallback is anchored on declaration
+> lines, so two declarations sharing a single line leave the second one unseen.
+> The remaining 11 languages still emit `contains` and `imports_from` only.
+
+| Flag | Default | Description |
+|---|---|---|
+| `--output`, `-o` | `<path>/graphify-out/graph.json` | Output path for graph.json. |
+| `--watch` | off | Re-index on file changes (requires watchdog, installed by default). |
+| `--smart` | off | Git-aware incremental re-index — only re-indexes changed files and their dependents. |
+| `--dry-run` | off | Show what `--smart` would re-index without making changes. |
+| `--ignore-file` | `.slurpignore` | Path to .slurpignore rules. |
+
+#### Incremental re-indexing with `--smart`
+
+Re-parsing every file after a two-line edit is wasted work. `--smart` asks git which
+files changed since the last commit — unstaged, staged, and untracked — widens that
+set to the files that import them (2 hops), and rewrites only that slice of the graph.
+
+```bash
+slurp index . --smart
+# → Detected 1 changed file (git diff)
+# ✓ Updated 47 nodes · 46 edges in 0.1s
+#   Full index would take: ~2.2s (21× faster)
+```
+
+The resulting graph is identical to a full index — nodes from re-parsed files are
+replaced, nodes from deleted files are dropped, and no dangling edges are left behind.
+
+`--dry-run` lists the files it would touch and exits without writing:
+
+```bash
+slurp index . --smart --dry-run
+```
+
+It falls back to a full index, with a message, when there is no git repository or no
+existing graph to update. Speedup depends on what you touched: editing a leaf module
+is near-instant, while editing something the whole project imports pulls in most of it.
+
+#### Supported languages
+
+| Language | Parser |
+|---|---|
+| Python | stdlib `ast` |
+| TypeScript / JavaScript | tree-sitter |
+| Java | tree-sitter |
+| Rust | tree-sitter |
+| C# | tree-sitter |
+| Ruby | tree-sitter |
+| PHP | tree-sitter |
+| Kotlin | tree-sitter ⚠️ |
+| Scala | tree-sitter |
+| Swift | tree-sitter |
+| C | tree-sitter |
+| C++ | tree-sitter |
+| Go | regex |
+| Lua | regex |
+| Elixir | regex |
+| PowerShell | regex |
+
+> ⚠️ **Kotlin:** the `tree-sitter-kotlin` grammar has known parsing issues — it
+> fails on a class with a body followed by an `object` declaration, which is
+> ordinary Kotlin. Slurp detects the broken parse tree and the regex fallback is
+> active in practice. The extra is still declared so a fixed grammar release
+> takes effect without a code change.
+
+Every tree-sitter language falls back to a regex parser when its grammar is not
+installed. The fallback extracts strictly less — it cannot nest inner classes or
+reach into method bodies — so `slurp index` always prints which parser it used:
+
+```
+✓ 312 nodes · 487 edges · 41 files
+  Parsers: Python (ast) · Java (tree-sitter) · Ruby (regex fallback)
+  Install the 'ts' extra for full TypeScript support: uv sync --extra ts
+```
+
+Python needs no extra (it uses the standard library). **Go, Lua, Elixir and
+PowerShell are indexed by regex as their primary parser** — no grammar is wired
+up for them, so their regex parser is the design rather than a degradation and
+is never reported as a fallback.
+
+#### Optional extras
+
+| Extra | Languages | Install |
+|---|---|---|
+| `ts` | TypeScript, JavaScript | `uv sync --extra ts` |
+| `java` | Java | `uv sync --extra java` |
+| `rust` | Rust | `uv sync --extra rust` |
+| `csharp` | C# | `uv sync --extra csharp` |
+| `ruby` | Ruby | `uv sync --extra ruby` |
+| `php` | PHP | `uv sync --extra php` |
+| `kotlin` | Kotlin | `uv sync --extra kotlin` |
+| `scala` | Scala | `uv sync --extra scala` |
+| `swift` | Swift | `uv sync --extra swift` |
+| `cpp` | C, C++ | `uv sync --extra cpp` |
+| `all-languages` | All of the above | `uv sync --extra all-languages` |
+
+Each language records what matters for navigating that ecosystem: Java and C#
+annotations/attributes (`@Service`, `[HttpGet]`) plus access modifiers, Rust
+lifetimes and `pub` visibility, Ruby class methods and accessors, PHP magic
+methods (`__get`, `__call`), Kotlin `data`/`sealed`/`suspend` and extension
+receivers, Scala `case` classes and `implicit`, Swift computed properties and
+`async`. Relationships become typed edges — `extends`, `implements` (including
+Rust's `impl Trait for Type`), `with` (Scala), `conforms_to` (Swift), and
+`mixin` for Ruby's `include`/`extend`/`prepend` and PHP's trait `use`, Elixir's
+`use`/`import`/`alias`/`require`, and PowerShell's `requires`.
+
+**Broken-grammar guard.** A tree-sitter grammar that returns a parse tree
+containing `ERROR` nodes silently drops whole declarations. Slurp checks for that
+after every parse and treats it as a parser failure: it warns on stderr and falls
+back to regex, which extracts less per declaration but does not lose most of the
+file.
+
+After indexing, the full query pipeline works as usual:
+
+```bash
+slurp "auth flow" --graph graphify-out/graph.json --budget 4000
+```
+
+---
+
+## Works with graphify
+
+Slurp is the query layer for [`graphify`](https://github.com/CarlosVallejoRuiz/graphify). Run graphify on your codebase, point slurp at the output.
+
+```bash
+graphify .                                        # generates graphify-out/graph.json
+slurp "auth flow" --budget 4000                   # auto-discovers graphify-out/graph.json
+```
+
+**Supported node fields:**
+
+```json
+{
+  "id": "authenticate_user",
+  "label": "authenticate_user",
+  "type": "function",
+  "description": "Validates credentials and returns JWT.",
+  "importance": 9,
+  "source_file": "src/auth/service.py",
+  "source_location": "L42"
+}
+```
+
+The `type`, `description`, `importance`, `source_file`, and `source_location` fields are optional but improve scoring and enable `--inject-code`. Any graph with `id` + `label` on nodes and `source`/`target` on edges will work.
+
+Both `links` (graphify/NetworkX serialization) and `edges` are supported. Additional formats are auto-detected by extension:
+
+| Extension | Format |
+|---|---|
+| `.json` | graphify or generic JSON |
+| `.graphml` | GraphML (NetworkX / yEd / Gephi) |
+| `.csv` | Neo4j export (nodes CSV + sibling relationships CSV) |
+
+Use `slurp convert` or the `convert_graph()` API to export between formats.
+
+---
+
+## MCP Integration
+
+Run slurp as an MCP server so Claude Code (or any MCP-compatible agent) can query the graph directly.
+
+**`.mcp.json`** — for global installs (`uv tool install`, `pipx`, `pip`):
+
+```json
+{
+  "mcpServers": {
+    "slurp": {
+      "command": "slurp",
+      "args": ["serve", "--graph", "/absolute/path/to/graphify-out/graph.json"]
+    }
+  }
+}
+```
+
+**`.mcp.json`** — if you installed with `uv add` inside a Python project:
+
+```json
+{
+  "mcpServers": {
+    "slurp": {
+      "command": "uv",
+      "args": ["run", "slurp", "serve", "--graph", "graphify-out/graph.json"]
+    }
+  }
+}
+```
+
+> **Windows:** Use forward slashes or escaped backslashes in the graph path: `"C:/Users/you/project/graphify-out/graph.json"`. If `slurp` isn't found, replace `"command": "slurp"` with the full path — find it with `where slurp` (CMD) or `Get-Command slurp | Select-Object Source` (PowerShell).
+
+**Five tools exposed.** Claude Code calls them automatically, each answering a different
+question. The server runs over stdio and returns formatted markdown — no HTTP, no ports.
+
+| Tool | Answers | Claude Code reaches for it when… |
+|---|---|---|
+| `slurp_query(query, budget=4000)` | *Where is the code that does X?* | it needs to orient itself in an unfamiliar codebase, or find the code behind a feature — before reading any files |
+| `slurp_explain(node_name, no_llm=true)` | *What is this, and what breaks if I change it?* | a query has pointed it at a function and it is about to modify it. Structural by default: no API key, no cost |
+| `slurp_diff(old_graph, new_graph, hops=2)` | *What does this change affect?* | it is reviewing a change or preparing a merge and needs the blast radius |
+| `slurp_suggest(query, budget=4000)` | *What else should I look at?* | an answer felt incomplete and it wants the queries that would reach what the budget left out |
+| `slurp_impact(file_path, hops=2)` | *What breaks if I edit this file?* | it is about to edit a file and wants the blast radius first — no second snapshot required |
+
+All five are declared `readOnlyHint` and `idempotentHint`, so clients can auto-approve
+them. `slurp_explain` reads the same graph `slurp_query` serves, reload check included, so
+the two never answer from different snapshots in one session.
+
+A failure inside a tool comes back as `isError: true` with a readable message; it never
+takes the server down, and the next call still works.
+
+---
+
+## .slurpignore
+
+Exclude nodes by type, file path, or ID pattern. Create `.slurpignore` in your project root:
+
+```
+# Exclude documentation nodes
+type:document
+type:markdown
+
+# Exclude test files
+file:tests/**
+file:**/*.test.ts
+
+# Exclude generated code
+id:generated_*
+```
+
+Pass a custom path with `--ignore-file path/to/.slurpignore`.
+
+---
+
+## Design decisions
+
+**Power-iteration PageRank without numpy.** `nx.pagerank()` requires numpy. Slurp implements a 20-line pure-Python power-iteration algorithm (convergence: `Σ|rank_new − rank_old| < N × tol`). Same result, no heavy dependency.
+
+**TF-IDF without scikit-learn.** Hand-rolled TF-IDF with smoothed IDF (`log((N+1)/(df+1)) + 1`) and cosine similarity. The tokenizer splits camelCase and snake_case, so `authenticate_user` scores on both `authenticate` and `user`. The `score_nodes()` interface is backend-agnostic — swap to real embeddings with `--backend openai` or `--backend anthropic` without touching any caller.
+
+**YAML serializer without PyYAML.** `_yaml_scalar()` renders Python primitives as valid YAML scalars using `json.dumps()` for strings that need quoting (JSON string literals are valid YAML 1.1). No PyYAML dependency.
+
+**`lru_cache` on the tiktoken encoder.** `tiktoken.get_encoding()` reads tokenizer data from disk on first call. Caching with `lru_cache(maxsize=8)` means repeated token-counting calls within a single run hit memory, not disk.
+
+**`+0.3` score boost for `file_type == "code"` nodes (clamped to 1.0).** Documentation nodes compete unfairly with code in technical queries. The boost is bounded so it cannot override a genuinely high structural+semantic score.
+
+**`--inject-code` capped at 30 nodes.** Code blocks are 50–200 tokens each. At 30 nodes, that's up to 6,000 extra tokens — manageable. At 200 nodes it would explode the context budget. The cap is enforced in both the CLI (warning message) and `inject_code()` (hard guard), so the formatter never receives oversized input.
+
+---
+
+## Roadmap
+
+- ✅ **v0.1.0** — `loader`, `scorer`, `budget`, `formatter`, `audit` — core pipeline, full tests, `slurp QUERY` + `slurp stats`
+- ✅ **v0.2.0** — `--explain`, `.slurpignore`, `--viz` interactive HTML, `--min-score`, camelCase/snake_case tokenizer, `--neighbor-decay`
+- ✅ **v0.3.0** — `slurp serve` (MCP stdio), `slurp diff`, `slurp export` (claude/chatgpt/claudemd), PyPI publish as `slurp-graph`
+- ✅ **v0.4.0** — `--backend openai|anthropic` (optional embeddings), `slurp benchmark`, GraphML + Neo4j CSV loader, `convert_graph()`
+- ✅ **v0.5.0** — `--inject-code`: extract real function bodies from source files and embed them in the context output
+- ✅ **v0.6.0** — `slurp index .`: standalone static indexer (Python ast, TypeScript/JS, Go) — graphify is now optional
+- ✅ **v0.6.1** — `slurp init`: guided one-command setup — language detection, indexing and MCP config in one step
+- ✅ **v0.6.2** — `slurp benchmark` cost estimation in USD per model, `--price-model`
+- ✅ **v0.6.3** — `--viz-output`: save the interactive HTML to a file without opening a browser
+- ✅ **v0.6.4** — MCP session log, `slurp session`, `--log` — every query the server answered, on the record
+- ✅ **v0.6.5** — `slurp diff` impact headline, "what to review" section, CLI summary panel
+- ✅ **v0.7.0** — MCP performance: 8.1× faster end-to-end, PageRank and token caches, deterministic greedy heap, auto-reload on a stale graph
+- ✅ **v0.8.0** — 16-language indexer (Java, Rust, C#, Ruby, PHP, Kotlin, Scala, Swift, C, C++, Lua, Elixir, PowerShell), `_BaseVisitor` refactor, broken-tree guard on every grammar
+- ✅ **v0.8.1** — premium `--viz` redesign: type colors, glow, smart label inference, quiet nodes, legend, project panel
+- ✅ **v0.9.0** — `slurp index --smart` (git-aware incremental, 21× faster), `slurp advisor`, multi-graph federation, sdist 98.7% smaller
+- ✅ **v0.9.1** — `slurp explain`: LLM node explanations across 4 providers with a structural fallback, `slurp config`
+- ✅ **v0.9.2** — Python call graph: `calls` edges between functions, real risk levels in `slurp explain`
+- ✅ **v0.9.3** — TypeScript/JavaScript call graph, tree-sitter with a regex fallback
+- ✅ **v0.9.4** — Python and TypeScript/JavaScript cross-file call resolution — imports followed to the real definition
+- ✅ **v0.9.5** — `slurp eval`: LLM-judge quality benchmark, 5× better quality per token
+- ✅ **v0.9.6** — Go call graph: receiver methods, struct initialisers, package-local resolution
+- ✅ **v0.9.7** — Java and Rust call graphs: DI fields and `super`/`this`/static for Java, `impl` blocks, `self` receiver and trait resolution for Rust
+- ✅ **v0.9.8** — Java and Rust cross-file call resolution: static and wildcard imports, `use crate::`/`super::`, multi-symbol and glob imports
+- ✅ **v0.9.9** — Go cross-file call resolution: package aliases, dot imports, `package main` excluded — all five call-graph languages now resolve across files
+- ✅ **v1.0.0** — Production release: complete call graph for Python, TypeScript/JS, Go, Java and Rust with cross-file resolution. `slurp explain`, `slurp eval`, `slurp advisor`, `slurp init`, federation, smart reindex, premium viz.
+- ✅ **v1.0.1** — Return type propagation: `srv := NewServer()` followed by `srv.Start()` resolves for Go, Rust, Java and TypeScript, within a file
+- ✅ **v1.0.2** — Structural `slurp explain`: architectural role, neighbourhood context, risk as a share of the project, and follow-up commands — 90 lines down to 28
+- ✅ **v1.0.3** — MCP gains `slurp_explain` and `slurp_diff`
+- ✅ **v1.0.4** — `--suggest`: follow-up queries read off the subgraph's frontier, plus the `slurp_suggest` MCP tool
+- ✅ **v1.0.5** — `slurp impact`: blast radius of editing a file before you edit it, no second snapshot needed, plus the `slurp_impact` MCP tool
+
+---
+
+## License
+
+MIT © [Juan Carlos Vallejo Ruiz](https://github.com/CarlosVallejoRuiz)

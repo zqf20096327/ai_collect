@@ -1,0 +1,241 @@
+# nanojudge
+
+NanoJudge quantifies the relative strengths of arbitrary items under a criterion you define, using LLMs as judges. Provide the criterion (e.g., "Which is healthier?") and your item list of any length (e.g., "Eggs", "Butter", "Spinach", ...), and get a ranking with confidence intervals.
+
+Instead of overwhelming an LLM with one massive prompt, NanoJudge breaks the task down into a series of small lineup judgements. Operating like an intelligent matchmaking league, it adaptively places similarly strong items into lineups as results come in, efficiently producing an accurate leaderboard. The resulting edges are combined using Bradley-Terry statistics into a transparent ranking.
+
+Works with any OpenAI-compatible API endpoint.
+
+[nanojudge.ai](https://nanojudge.ai) is a hosted version built on this engine, wrapped in a web UI with managed GPU infrastructure.
+
+See the [NanoJudge glossary](docs/glossary.md) for precise definitions of
+judgements, edges, refits, coverage, and the adaptive-selection terms used below.
+
+## How it works
+
+Think of it as a tournament. Suppose you want to rank foods by "which is healthiest?"
+
+1. **Every item is a competitor.** Your list of eggs, butter, spinach, olive oil, and the rest enters as players.
+
+2. **They face off head-to-head.** NanoJudge gives two items to the LLM at a time and asks one focused question: *"Which is healthier, eggs or butter?"* The judge reasons it through and picks a winner. A single run is potentially thousands of these matchups.
+
+3. **The matchups are chosen intelligently.** NanoJudge doesn't compare every pair blindly. It uses the results so far to decide what to ask next, choosing comparisons that maximise how much we learn from the outcome. By default it concentrates on the top of the list since that's usually what you care about, but you can switch it to spread attention evenly if the whole order matters.
+
+4. **Wins become a ranking.** All those individual verdicts are combined into one ranking using Bradley-Terry statistics, the model behind the Elo ratings used in chess. It comes with confidence intervals showing how sure it is about each position. Keep winning and you rise; keep losing and you fall to the bottom.
+
+5. **Bias is handled.** LLMs tend to favour whichever option they see first. NanoJudge measures positional bias across the whole run and corrects for it automatically.
+
+## Install
+
+Download a prebuilt binary from [GitHub Releases](https://github.com/nanojudge/nanojudge/releases), or build from source:
+
+```bash
+cargo install --path nanojudge-cli
+```
+
+## Usage
+
+First, create a config file with your judge panel:
+
+```bash
+nanojudge init   # creates ~/.config/nanojudge/config.toml
+```
+
+Example config with multiple judges:
+
+```toml
+judgements_per_item = 10
+logprobs = true
+
+[[judge]]
+endpoint = "http://localhost:8000"
+model = "Qwen/Qwen3-4B-Instruct-2507"
+weight = 2
+temperature = 0.8
+max_tokens = 2048
+
+[[judge]]
+endpoint = "https://api.openai.com/v1"
+model = "gpt-4o"
+api_key_env = "OPENAI_API_KEY"
+weight = 3
+temperature = 1.0
+max_tokens = 2048
+concurrency = 5
+```
+
+Each `[[judge]]` block defines a judge in the panel. Judgements are distributed across judges according to their `weight`. All judges share the same `logprobs` mode.
+
+Before using a judge for the first time, NanoJudge sends it a few short test requests to check that the endpoint does what the judge's settings ask. If it doesn't, the run is prevented from starting. Pass `--skip-probe` to skip the check. See [Endpoint probe](docs/probe.md).
+
+Then run:
+
+```bash
+# Rank items from a file (one per line)
+nanojudge rank \
+  --criterion "Which fruit is healthier?" \
+  --items fruits.txt
+
+# Inline items
+nanojudge rank \
+  --criterion "Which fruit is healthier?" \
+  --item "Guava" --item "Blueberries" --item "Mango" --item "Kiwi"
+
+# Point at a directory — each text file becomes one item
+nanojudge rank \
+  --criterion "Which essay is more persuasive?" \
+  --items essays/
+
+# Pipe items from stdin
+cat papers.txt | nanojudge rank \
+  --criterion "Which paper is more impactful?"
+```
+
+CLI flags like `--judgements-per-item` override config file values.
+
+Output with criterion "Which fruit is healthier?":
+
+```
+ # | Item          |   Score | 95% CI Low | 95% CI High | Edges
+---|---------------|---------|------------|-------------|------
+ 1 | guava         |  6.0797 |       5.54 |        6.73 |    13
+ 2 | raspberries   |  5.3125 |       4.73 |        5.91 |    13
+ 3 | blueberries   |  5.2954 |       4.72 |        5.85 |    11
+ 4 | kiwi          |  3.5773 |       3.02 |        4.15 |    13
+ 5 | pomegranate   |  2.9892 |       2.41 |        3.51 |    13
+ 6 | passion fruit |  2.4649 |       1.90 |        2.99 |    13
+ 7 | mango         |  1.2804 |       0.67 |        1.90 |    12
+ 8 | persimmon     |  0.7152 |       0.17 |        1.21 |    14
+ 9 | pineapple     | -0.0699 |      -0.67 |        0.50 |    13
+10 | figs          | -0.8494 |      -1.42 |       -0.29 |    13
+11 | dragon fruit  | -1.2148 |      -1.74 |       -0.65 |    14
+12 | tangerines    | -1.4400 |      -1.95 |       -0.93 |    13
+13 | bananas       | -1.7869 |      -2.41 |       -1.21 |    12
+14 | cherimoya     | -1.9670 |      -2.45 |       -1.43 |    14
+15 | watermelon    | -2.0843 |      -2.63 |       -1.54 |    13
+16 | durian        | -2.3493 |      -2.91 |       -1.72 |    14
+17 | peaches       | -3.2823 |      -3.90 |       -2.65 |    11
+18 | lychees       | -3.9726 |      -4.51 |       -3.43 |    14
+19 | coconut       | -4.2377 |      -4.77 |       -3.73 |    14
+20 | starfruit     | -4.4602 |      -5.00 |       -3.85 |    13
+```
+
+Add `--output-format json` for machine-readable output. Add `-v` for progress during execution.
+
+### Other commands
+
+- `nanojudge score`: re-scores a saved judgements file without calling any endpoints.
+- `nanojudge benchmark`: measures an endpoint's throughput, latency and reliability.
+- `nanojudge probe`: re-checks every judge's endpoint (see [Endpoint probe](docs/probe.md)).
+
+### Saving and reusing judgements
+
+`--save-successful-judgements` writes each judgement to a JSONL file as the run goes, so you can inspect it or follow it with `tail -f`. `--load-judgements` feeds a saved file into a new run, which builds on it instead of starting from scratch.
+
+```bash
+nanojudge rank ... --save-successful-judgements results.jsonl
+nanojudge rank ... --load-judgements results.jsonl
+```
+
+See [Saved judgements](docs/saved-judgements.md) for the options, the record format, and re-scoring with `nanojudge score`.
+
+## Recommended models
+
+| Model | Input per 1M | Output per 1M |
+|---|---|---|
+| `deepseek/deepseek-v4-flash-0731` | $0.10 | $0.20 |
+| `google/gemma-4-31b-it` | $0.12 | $0.37 |
+| `z-ai/glm-5.3-flash` | $0.075 | $0.25 |
+| `xiaomi/mimo-v2.5` | $0.119 | $0.238 |
+| `qwen/qwen3.5-9b` | $0.10 | $0.15 |
+
+## Workspace structure
+
+This repo is a Cargo workspace with three crates:
+
+| Crate | What it does |
+|---|---|
+| `nanojudge-core` | Pure-computation ranking engine. No IO — just math. Use this as a Rust dependency. |
+| `nanojudge-cli` | Command-line tool that wires the engine to an OpenAI-compatible API. |
+| `nanojudge-bench` | Synthetic benchmark harness that measures ranking accuracy against known ground truth. |
+
+## The bigger picture
+
+### A universal engine for subjective sorting
+
+Computer science already has sorting algorithms for numerical data (e.g. QuickSort) and search engines for authority (PageRank) or semantic similarity (Vector Search).
+
+What we've been missing is an engine for subjective criteria - a way to programmatically sort lists by "which is more rewatchable," "which aged the best," or "which code is cleaner."
+
+NanoJudge is **LLM-Sort**. It takes the chaotic, inherently subjective opinions of small, cheap LLMs, runs optimized two-item judgements, and uses Bayesian inference. It is a general-purpose algorithm that turns fuzzy "vibes" into quantified rankings.
+
+### A coprocessor for agentic systems
+
+NanoJudge is a fundamental building block for AI. When a large LLM needs to choose between 100+ options, stuffing them into a massive context window is expensive, slow, and prone to "lost in the middle" failures.
+
+Instead, the main LLM can act as the orchestrator: it fetches the candidates, passes the list and the subjective criteria to NanoJudge, uses a much smaller efficient LLM to judge the lineups, and gets back a mathematically grounded ranking.
+
+Every time an AI agent makes a decision, a travel app recommends an itinerary, or a feed ranks content, it is solving a subjective ranking problem. NanoJudge makes that universal process mathematically explicit and can scale to hundreds of thousands of options without running into context length limits.
+
+### Scales with AI progress
+
+NanoJudge is model-agnostic. It uses whatever LLM you point it at as a raw compute engine. That means it surfs the wave of AI progress directly: when a faster, cheaper, smarter LLM releases, changing one config line is all that's needed to make NanoJudge stronger.
+
+## Benchmark
+
+We pitted NanoJudge against the strongest competitor we could find: **REALM** ([Wang et al. 2025](https://arxiv.org/abs/2508.18379)), a recent LLM re-ranker that sorts candidates with a quicksort-style recursion and TrueSkill ratings. The task is **RELIC** from the [BIRCO](https://github.com/BIRCO-benchmark/BIRCO_dataset) benchmark: find the passage that fills a masked quotation in a piece of literary analysis. Each query comes with a pool of about 51 passages, and exactly one of them is correct. Both methods use the same judge model (Qwen3-4B-Instruct-2507) on the same 100 queries. REALM has no deliberation step, so NanoJudge was also run with deliberation off.
+
+REALM has no budget setting of its own, so for REALM (4x) we run REALM four times per query from different starting orders and rank each passage by its average position. That brings it to approximately the same number of LLM calls as NanoJudge (4x).
+
+| Method | Calls per query | nDCG@10 | MRR@10 | Recall@5 |
+|---|---|---|---|---|
+| REALM (1x) | 49.45 | 0.5986 | 0.5380 | 0.6800 |
+| NanoJudge (1x) | 50.59 | 0.4683 | 0.3746 | 0.5800 |
+| REALM (4x) | 199.90 | 0.6458 | 0.5859 | 0.7000 |
+| NanoJudge (4x) | 202.36 | **0.6940** | **0.6227** | **0.8100** |
+
+_Higher is better for all three metrics._
+
+At the smallest budget REALM leads. Given four times the calls, REALM improves only modestly (nDCG@10 +0.047), while NanoJudge improves by +0.226 and overtakes REALM on every metric.
+
+## Config file
+
+The config file lives at `~/.config/nanojudge/config.toml`. Run `nanojudge init` to create one with defaults and documentation for all available options.
+
+Key settings:
+
+| Setting | Description |
+|---|---|
+| `judgements_per_item` | Average judgements per item. Total budget = `ceil(judgements_per_item * num_items / lineup_size)`. |
+| `judgements_per_refit` | Number of judgement attempts scheduled between scoring refits, including during uniform pairing. Lower values choose comparisons more efficiently, but send fewer requests at once, so runs are slower. |
+| `lineup_size` | Items in each judgement. `2` is the default pairwise mode, and up to `9` is supported. |
+| `logprobs` | `true` to read verdict confidence from logprobs, `false` to parse the verdict from text. Not all endpoints support logprobs. Use it when you can, as it gives NanoJudge more information to estimate strengths with. |
+| `judgement_distribution` | `"uniform"` or `"top-heavy"`. Top-heavy concentrates judgements on the contenders for the top spots. |
+| `selection_sharpness` / `cutoff` | Top-heavy tuning. `selection_sharpness` controls how sharply pairing weight concentrates on items near the anchor (lower = more exploration; default `0.7`). `cutoff` drops items below a minimum uncertainty ratio, keeping at least two (`[0,1)`, default `0` = off). |
+| `anchor_index` | Which rank anchors top-heavy selection, 0-based best-first (default `0` = leader). `9` = 10th-best, for "find the top ten." Fractional values interpolate between adjacent ranks. |
+| `stop_confidence` | Early stop for top-heavy runs: end once the probability that every item is on its correct side of the anchor reaches this value. In `(0.5, 1.0)`, e.g. `0.95`. Off by default. |
+
+Per-judge settings (in `[[judge]]` blocks):
+
+| Setting | Required | Description |
+|---|---|---|
+| `endpoint` | Yes | OpenAI-compatible API base URL |
+| `model` | Yes | Model ID |
+| `temperature` | Yes | Sampling temperature |
+| `weight` | No | Relative weight for pair assignment (default: 1) |
+| `concurrency` | No | Max concurrent requests (default: 16) |
+| `max_tokens` | Unless `reasoning_effort = "none"` | Max tokens in response. Reasoning length varies too much between models for a default, so it's only optional with reasoning off (default: 2048, or just enough for the verdict without deliberation) |
+| `api_key_env` | No | Environment variable containing the API key |
+| `reasoning_effort` | No | Controls the model's reasoning (e.g. `"none"` to turn it off) |
+| `min_logprob_coverage` | No | Min fraction of verdict-token logprob mass required to trust a verdict, > 0.0 and ≤ 1.0 (default: 0.95) |
+| `verdict_temperature` | No | Softens (> 1) or sharpens (< 1) this judge's verdicts before scoring. Also settable top-level (default: 3.0 with deliberation, 1.0 without) |
+| `chat_template_kwargs` | No | Extra options passed to the model's chat template, e.g. `{ enable_thinking = false }` |
+| `provider` | For OpenRouter | Pins the OpenRouter provider that serves the judge, e.g. `{ only = ["xiaomi"], allow_fallbacks = false }` |
+
+## Related work
+
+Qin et al. (2023) showed that pairwise prompting significantly outperforms pointwise and listwise approaches for LLM-based ranking. [Large Language Models are Effective Text Rankers with Pairwise Ranking Prompting](https://arxiv.org/abs/2306.17563)
+
+## License
+
+MIT

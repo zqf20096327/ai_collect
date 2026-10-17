@@ -1,0 +1,123 @@
+# Outfitter
+
+**[How AI Outfitter fits together →](./docs/documentation/ai-outfitter.md)** —
+the mission, adoption ramp, end-to-end workflow, and relationship between the
+projects.
+
+Outfitter is the toolchain for [`.agents`](./docs/documentation/concepts.md#the-agents-protocol): it resolves agent configuration from local and remote `.agents` trees, composes agents, skills, and knowledge by slug, and launches the result through wrapped agent CLIs like [`pi`](https://github.com/earendil-works/pi-coding-agent), Claude Code, and Codex CLI.
+
+Outfitter does not own a configuration format. Your `.agents/` directory is the source of truth — useful without Outfitter, committed and reviewed like any other code.
+
+## Why
+
+Your agent setup is configuration: prompts, skills, MCP servers, model choices, permissions. Left alone it lives per tool and per laptop, gets pasted between repos, and drifts. Outfitter treats it like the rest of your infrastructure — layered, composed by slug, pinned by SHA, reviewed through pull requests.
+
+That turns one person's improvement into everyone's default. On Monday a platform engineer writes a `grafana-alert-investigate` skill in their own `~/.agents` tree and uses it at their desk. By Friday it is merged into the org catalog, pinned by SHA, and selected by slug from an agent that also runs on a CI schedule and in the cluster. Nobody else configured anything — their next run composes the new skill, and it costs their context window one line of routing metadata until it activates.
+
+Two conventions do most of that work:
+
+- Iterate on it in your own `~/.agents` against real work, then share it by pull request — to the project, your org's catalog, or a community catalog. Everyone composes the shared version back by slug, and anything they need different they override in their own layer instead of copying. See [Conventions](./docs/documentation/conventions.md).
+
+- The same composition runs everywhere work happens: interactively at your desk, [in GitHub Actions](./docs/documentation/actions.md) on any trigger, as [recurring loops](./docs/documentation/recurring-runs.md) — locally, on a CI cron, or on a cluster schedule — and as resident or job-based agents [in Kubernetes](./docs/documentation/in-cluster.md). Surface availability varies by release; each page notes its status.
+
+For the full argument, read the [Philosophy](./docs/philosophy.md).
+
+## Quick start
+
+Requires Node 22.19 or newer (the bundled Pi's floor). Older Node installs without error but
+crashes when Pi starts, so Outfitter refuses to run and prints an upgrade hint instead.
+
+Run without installing:
+
+```bash
+npx @ai-outfitter/outfitter
+```
+
+Full install:
+
+```bash
+npm install -g @ai-outfitter/outfitter
+outfitter
+```
+
+Pi is bundled and also hosts Outfitter's setup walkthrough. Install other runtime harnesses, such as
+Claude Code and Codex CLI, separately. For the full walkthrough, see [Getting started](./docs/documentation/getting-started.md).
+
+## Climb the ramp
+
+Three runbooks, one per rung of [the adoption ramp](./docs/philosophy.md#the-ramp-to-an-autonomous-lifecycle). Each starts where the previous one ended and closes with the one concrete step that begins the next rung. Their success checks are the signals an [SDLC assessment](./docs/documentation/usecases/org-onboarding-sdlc-report.md) reports, so "done" is something you run rather than something you judge.
+
+1. [**Share one catalog**](./docs/runbooks/share-one-catalog.md) — one pinned catalog the organization shares, instead of per-laptop configuration. → **delegated**
+2. [**Run it without your laptop**](./docs/runbooks/run-without-your-laptop.md) — an event triggers the workflow, its output lands through review, and the session is captured. → **automated**
+3. [**Give the agent a residence**](./docs/runbooks/give-the-agent-a-residence.md) — a named, assignable agent with an account and somewhere to live. → **governed**
+
+## Already have a `.agents/` directory?
+
+Then you already have Outfitter configuration. Each agent's loadout references your existing skills, subagents, MCP, knowledge, and commands by slug with zero porting:
+
+```
+<!-- .agents/agents/engineer/agent.md -->
+---
+name: engineer
+skills: [wiki, research]
+subagents: [code-reviewer]
+mcp: [github]
+---
+```
+
+```yaml
+# .agents/settings.yml
+default_agent: engineer
+```
+
+`outfitter setup` runs the Pi-native walkthrough on top of `.agents`: choose a profile from the
+default Outfitter catalog or import a different `.agents` catalog, then pick the home/project target
+and default CLI agent. For a custom profile, write `.agents/agents/<id>/agent.md` and set
+`default_agent`. The default picker is fetched from the immutable
+`ai-outfitter/community-profiles` Release Please tag pinned by Outfitter—never from a sibling checkout.
+Managed porting and persistent harness symlinks are deferred to
+[#187](https://github.com/ai-outfitter/outfitter/issues/187).
+
+## The `.agents` protocol in 30 seconds
+
+```text
+.agents/
+  agents.md            # shared operating context
+  system-prompt.md     # base system prompt
+  mcp.json             # MCP servers
+  models.json          # model configuration
+  agents/<id>/agent.md # identities + loadouts — run directly or as subagents
+  skills/<id>/...      # capability packages
+  knowledge/           # reference documents
+  commands/            # slash commands
+```
+
+Layers merge by ID: `<project>/.agents/` over `~/.agents/` over pinned remote [catalogs](./docs/documentation/catalogs.md). An [agent](./docs/documentation/agents.md) carries both its identity and its loadout — an [agent profile](./docs/documentation/profiles.md) — and is what you run; a [persona](./docs/documentation/personas.md) is one portable Markdown document a shared review agent adopts at launch; a [subagent](./docs/documentation/subagents.md) is an agent a run delegates to, across [four delegation boundaries](./docs/documentation/subagents.md#the-four-delegation-boundaries) from an in-session helper to a Kubernetes Job.
+
+## Documentation
+
+The [documentation index](./docs/documentation/README.md) covers setup, core concepts, organization-wide sharing, automation, and contribution:
+
+- **Climb:** [Share one catalog](./docs/runbooks/share-one-catalog.md) · [Run it without your laptop](./docs/runbooks/run-without-your-laptop.md) · [Give the agent a residence](./docs/runbooks/give-the-agent-a-residence.md)
+- **Start:** [Getting started](./docs/documentation/getting-started.md) · [First-time CLI agent users](./docs/documentation/first-time-cli-agent-users.md) · [Switching to Outfitter](./docs/documentation/switching-to-outfitter.md)
+- **Understand:** [Concepts](./docs/documentation/concepts.md) · [Agents](./docs/documentation/agents.md) · [Skills](./docs/documentation/skills.md) · [Personas](./docs/documentation/personas.md) · [Subagents and delegation](./docs/documentation/subagents.md)
+- **Share:** [Catalogs](./docs/documentation/catalogs.md) · [Conventions](./docs/documentation/conventions.md) · [Organization catalog](./docs/documentation/usecases/organization-profile-catalog.md) · [Best practices](./docs/documentation/best-practices.md)
+- **Automate:** [GitHub Actions](./docs/documentation/actions.md) · [Recurring runs](./docs/documentation/recurring-runs.md) · [Cost estimation](./docs/documentation/cost-estimation.md) · [In-cluster agents](./docs/documentation/in-cluster.md) · [Hooks](./docs/documentation/hooks.md) · [State persistence](./docs/documentation/state.md)
+- **Reference:** [CLI](./docs/documentation/cli.md) · [Settings](./docs/documentation/settings.md) · [Adapter support matrix](./docs/documentation/support-matrix.md) · [Philosophy](./docs/philosophy.md)
+
+Use cases, story first:
+
+- [Shared conventions without duplication](./docs/documentation/usecases/shared-conventions.md)
+- [Flaky-test post-mortems in CI](./docs/documentation/usecases/flaky-test-postmortems.md)
+- [Grafana alert investigations in-cluster](./docs/documentation/usecases/grafana-alert-investigator.md)
+- [Self-improving skills](./docs/documentation/usecases/self-improving-skills.md)
+- [Resident agents: a researcher wiki](./docs/documentation/usecases/resident-agents.md)
+- [Persona reviews](./docs/documentation/usecases/persona-reviews.md)
+- [Organization catalog](./docs/documentation/usecases/organization-profile-catalog.md)
+- [Engineering catalog](./docs/documentation/usecases/engineering.md)
+
+For local development, repository structure, and release workflow details, see [Contributing](./CONTRIBUTING.md).
+
+## License
+
+Outfitter is [MIT licensed](./LICENSE.md), except for code in `code/enterprise/`, which is under the [Unsupervised Enterprise license](./code/enterprise/LICENSE). Production use of that code requires a valid Unsupervised Enterprise license.

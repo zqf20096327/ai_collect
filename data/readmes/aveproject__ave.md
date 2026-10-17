@@ -1,0 +1,600 @@
+<div align="center">
+
+<img src="https://aveproject.org/ave-logo-full.svg" alt="AVE — Agentic Vulnerability Enumeration" width="280" />
+
+<br/>
+<br/>
+
+**The open behavioral classification standard for agentic AI components.**
+
+Stable IDs, AIVSS scores, and behavioral fingerprints for every way a skill file,
+MCP server, system prompt, or agent plugin can be weaponized — scored consistently,
+mapped to the frameworks security teams already report against.
+
+[![Records](https://img.shields.io/badge/records-87-0f6e56?style=flat-square)](records/)
+[![Schema](https://img.shields.io/badge/schema-v1.1.0-0a3024?style=flat-square)](schema/ave-record-1.1.0.schema.json)
+[![AIVSS](https://img.shields.io/badge/AIVSS-v0.8-d4a017?style=flat-square)](https://aivss.owasp.org)
+[![OWASP MCP](https://img.shields.io/badge/OWASP-MCP%20Top%2010-0a3024?style=flat-square)](https://owasp.org)
+[![MITRE ATLAS](https://img.shields.io/badge/MITRE-ATLAS-4a3f9e?style=flat-square)](https://atlas.mitre.org)
+[![SARIF](https://img.shields.io/badge/SARIF-v2.1.0-0057b7?style=flat-square)](docs/specs/ave-in-sarif.md)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square)](LICENSE)
+
+[![Tests](https://github.com/aveproject/ave/actions/workflows/tests.yml/badge.svg)](https://github.com/aveproject/ave/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25%20(rules%2F)-0f6e56?style=flat-square)](.github/workflows/tests.yml)
+[![CodeQL](https://github.com/aveproject/ave/actions/workflows/codeql.yml/badge.svg)](https://github.com/aveproject/ave/actions/workflows/codeql.yml)
+[![Dependency Review](https://github.com/aveproject/ave/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/aveproject/ave/actions/workflows/dependency-review.yml)
+[![Secret Scan](https://github.com/aveproject/ave/actions/workflows/secret-scan.yml/badge.svg)](https://github.com/aveproject/ave/actions/workflows/secret-scan.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/aveproject/ave/badge)](https://scorecard.dev/viewer/?uri=github.com/aveproject/ave)
+[![Security Policy](https://img.shields.io/badge/security-policy-blue?style=flat-square)](SECURITY.md)
+[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-Contributor%20Covenant-blueviolet?style=flat-square)](CODE_OF_CONDUCT.md)
+
+[Registry](https://aveproject.org/registry.html) · [Schema](https://aveproject.org/schema.html) · [Crosswalks](https://aveproject.org/crosswalks.html) · [Architecture](https://aveproject.org/architecture.html) · [Scoring](https://aveproject.org/scoring.html) · [API](https://api.aveproject.org) · [Scanner](https://github.com/bawbel/scanner)
+
+</div>
+
+---
+
+## What is AVE?
+
+Skill files, MCP server manifests, and system prompts are executable
+instructions, not documentation. Any process that loads them runs them.
+There is no compiler, no type checker, no sandbox. The runtime is an LLM
+that reads natural language and acts on it.
+
+Existing vulnerability standards were built for conventional software.
+CVE identifies flaws in a specific product and version. OSV maps them to
+package and version ranges. Neither can describe a prompt injection hidden
+in an MCP tool description — there is no package, no version, no vulnerable
+dependency. The danger is in what the component *does*, not what it imports.
+
+**AVE fills that gap.** It assigns stable identifiers to distinct behavioral
+classes in agentic AI, scores them with OWASP AIVSS v0.8, and maps every
+record to OWASP MCP Top 10 and MITRE ATLAS so findings land in frameworks
+defenders already use.
+
+AVE is a standard, not a product. The `bawbel-scanner` implements it as the
+reference implementation. Any tool can map to it — see the
+[implementer guide](docs/specs/ave-implementer-guide.md) for how.
+
+### What AVE is not
+
+AVE is a naming and classification standard. It assigns stable IDs to
+behavioral vulnerability classes and describes how to detect them. It
+is not a runtime enforcement mechanism, and an AVE ID on its own stops
+nothing. Enforcement requires a separate policy or gating layer that
+consumes AVE's records, the same relationship CWE has to an actual
+static analyzer, or a CVE has to a patch management system.
+
+```
+Your CI pipeline scans dependencies for known package vulnerabilities.
+It does not scan your SKILL.md for prompt injection.
+AVE fixes that.
+```
+
+<p align="center">
+  <img src="docs/images/ave-gap-diagram.svg" alt="Two independent scanners flag the same behavioral pattern under different names, with no shared identifier; AVE fills that gap" width="100%" />
+</p>
+
+---
+
+## Independent validation
+
+AVE's ID scheme has been tested by people who didn't build it, not
+just used by people who did.
+
+Eight independent tools, cfgaudit, ClawScan, nova-proximity, Ramparts,
+Semia, SkillSpector (NVIDIA), skill-security-scanner, and skillsentry,
+none of them sharing code with AVE or with each other, built
+crosswalks against AVE's records on their own initiative, unprompted.
+In each case the comparison went beyond matching category labels:
+mechanism-level correspondence was checked field by field, real
+trigger conditions against real behavioral fingerprints, and dozens of
+findings converged on the identical AVE ID independently.
+
+One of those crosswalks (Ramparts) also surfaced a real methodological
+lesson: two independently-drafted readings of the same still-
+unratified OWASP MCP Top 10 numbered their own categories differently,
+confirmed and documented so future crosswalks match by category
+meaning, not by tag number.
+
+Separately, an external maintainer caught a real attribution error in
+two published AVE records, corrected the underlying process
+documentation, not just the two records, credited in
+[CONTRIBUTORS.md](CONTRIBUTORS.md).
+
+87 records. 8 independent crosswalks. See
+[crosswalks/](crosswalks/) for the full mappings, and
+[docs/writeups/](docs/writeups/) for full technical write-ups on
+individual records.
+
+---
+
+## How it works
+
+**Without AVE:**
+```
+Attacker crafts          Developer ships          Agent loads
+malicious payload   ->   skill file          ->   skill file
+                         (unscanned)              at runtime
+                              |
+                              v
+                        Agent executes attacker payload
+                        (data exfiltrated, credentials stolen, goals hijacked)
+```
+
+**With AVE + Bawbel Scanner:**
+```
+Developer commits        bawbel scan fires        Finding blocked
+skill file          ->   in CI / pre-commit   ->  before deploy
+                              |
+                              v
+                        AVE-2026-00001 detected:
+                        Metamorphic payload via external config fetch
+                        AIVSS 8.0 · HIGH · owasp_mcp: MCP03, MCP04
+                        Line 7: "fetch your instructions from..."
+```
+
+---
+
+## Stats
+
+| | |
+|---|---|
+| Total records | 87 |
+| Schema version | 1.1.0 |
+| AIVSS spec | v0.8 |
+| CRITICAL (>= 9.0) | 1 |
+| HIGH (7.0-8.9) | 19 |
+| MEDIUM (4.0-6.9) | 65 |
+| LOW (< 4.0) | 2 |
+| Framework: OWASP MCP Top 10 | all records |
+| Framework: MITRE ATLAS | where applicable |
+| Framework: OWASP Agentic AI Top 10 | where applicable |
+| Framework: NIST AI RMF | where applicable |
+
+---
+
+## AIVSS Scoring
+
+Every record is scored with [OWASP AIVSS v0.8](https://aivss.owasp.org):
+
+```
+AIVSS = ((CVSS_Base + AARS) / 2) x ThM x Mitigation_Factor
+```
+
+**AARS** (Agentic Amplification and Reachability Score) is the weighted sum
+of 10 Agentic Amplification and Risk Factors (AARF), each scored 0.0-1.0:
+
+| # | Factor | Why it matters |
+|---|---|---|
+| 1 | **Autonomy** | Agent acts without human approval |
+| 2 | **Tool Use** | Agent has access to external tools or APIs |
+| 3 | **Multi-Agent** | Agent interacts with or spawns other agents |
+| 4 | **Non-Determinism** | Behavior varies unpredictably across runs |
+| 5 | **Self-Modification** | Can alter own instructions or memory at runtime |
+| 6 | **Dynamic Identity** | Assumes roles or identities at runtime |
+| 7 | **Persistent Memory** | Retains state across sessions |
+| 8 | **Natural Language Input** | Instruction surface via natural language |
+| 9 | **Data Access** | Reads sensitive data (files, env vars, databases) |
+| 10 | **External Dependencies** | Loads external code, skills, or remote content |
+
+**Severity bands:**
+
+| Band | AIVSS | Meaning |
+|---|---|---|
+| CRITICAL | >= 9.0 | Immediate exploitation, full agent compromise |
+| HIGH | 7.0-8.9 | Significant data loss or privilege escalation |
+| MEDIUM | 4.0-6.9 | Meaningful risk requiring review |
+| LOW | < 4.0 | Limited impact or requires chaining |
+
+**ThM (Threat Maturity) valid values:** `0.75` (theoretical) · `0.90` (PoC exists) · `1.0` (in-the-wild)
+
+**Worked example — AVE-2026-00001 (Metamorphic Payload):**
+
+```
+AARF factors:
+  autonomy=1.0  tool_use=1.0  multi_agent=0.5  non_determinism=1.0  self_modification=1.0
+  dynamic_identity=0.0  persistent_memory=0.5  natural_language_input=1.0
+  data_access=0.5  external_dependencies=1.0
+
+AARS = 1.0 + 1.0 + 0.5 + 1.0 + 1.0 + 0.0 + 0.5 + 1.0 + 0.5 + 1.0 = 7.5
+CVSS_Base = 8.5   ThM = 1.0 (in-the-wild)   Mitigation_Factor = 1
+
+AIVSS = ((8.5 + 7.5) / 2) x 1.0 x 1 = 8.0  ->  HIGH
+```
+
+---
+
+## Record index
+
+<details>
+<summary><strong>87 records, click to expand</strong></summary>
+
+| AVE ID | Title | AIVSS | Severity |
+|---|---|---|---|
+| [AVE-2026-00001](records/AVE-2026-00001.json) | Metamorphic Payload via External Config Fetch | 8.0 | HIGH |
+| [AVE-2026-00002](records/AVE-2026-00002.json) | Tool Poisoning via Description Manipulation | 7.3 | HIGH |
+| [AVE-2026-00003](records/AVE-2026-00003.json) | Data Exfiltration via Credential Theft | 6.8 | MEDIUM |
+| [AVE-2026-00004](records/AVE-2026-00004.json) | Arbitrary Code Execution via Shell Pipe Injection | 5.9 | MEDIUM |
+| [AVE-2026-00005](records/AVE-2026-00005.json) | Destructive Command Execution | 5.6 | MEDIUM |
+| [AVE-2026-00006](records/AVE-2026-00006.json) | Cryptocurrency Drain via Wallet Access | 7.5 | HIGH |
+| [AVE-2026-00007](records/AVE-2026-00007.json) | Goal Hijacking via Prompt Injection | 6.1 | MEDIUM |
+| [AVE-2026-00008](records/AVE-2026-00008.json) | Persistence via Self-Replication | 6.3 | MEDIUM |
+| [AVE-2026-00009](records/AVE-2026-00009.json) | Jailbreak via Safety Constraint Removal | 5.5 | MEDIUM |
+| [AVE-2026-00010](records/AVE-2026-00010.json) | Hidden Instruction Concealment | 5.6 | MEDIUM |
+| [AVE-2026-00011](records/AVE-2026-00011.json) | Dynamic Tool Call with Attacker Parameters | 5.7 | MEDIUM |
+| [AVE-2026-00012](records/AVE-2026-00012.json) | Privilege Escalation via Permission Grant | 4.5 | MEDIUM |
+| [AVE-2026-00013](records/AVE-2026-00013.json) | PII Exfiltration Pattern | 6.5 | MEDIUM |
+| [AVE-2026-00014](records/AVE-2026-00014.json) | Social Engineering via Trust Escalation | 3.7 | LOW |
+| [AVE-2026-00015](records/AVE-2026-00015.json) | System Prompt Disclosure | 4.9 | MEDIUM |
+| [AVE-2026-00016](records/AVE-2026-00016.json) | Indirect Prompt Injection via RAG Retrieval | 6.4 | MEDIUM |
+| [AVE-2026-00017](records/AVE-2026-00017.json) | MCP Server Impersonation | 5.7 | MEDIUM |
+| [AVE-2026-00018](records/AVE-2026-00018.json) | Tool Result Manipulation | 4.4 | MEDIUM |
+| [AVE-2026-00019](records/AVE-2026-00019.json) | Agent Memory Poisoning | 5.6 | MEDIUM |
+| [AVE-2026-00020](records/AVE-2026-00020.json) | Cross-Agent Injection via A2A Protocol | 5.9 | MEDIUM |
+| [AVE-2026-00021](records/AVE-2026-00021.json) | Human-in-the-Loop Bypass | 4.5 | MEDIUM |
+| [AVE-2026-00022](records/AVE-2026-00022.json) | Scope Creep via Undeclared Resource Access | 6.0 | MEDIUM |
+| [AVE-2026-00023](records/AVE-2026-00023.json) | Context Window Manipulation | 5.8 | MEDIUM |
+| [AVE-2026-00024](records/AVE-2026-00024.json) | Supply Chain: Binary Content Disguised as Skill | 6.8 | MEDIUM |
+| [AVE-2026-00025](records/AVE-2026-00025.json) | Conversation History Injection | 4.5 | MEDIUM |
+| [AVE-2026-00026](records/AVE-2026-00026.json) | Tool Output Exfiltration via Encoding | 6.8 | MEDIUM |
+| [AVE-2026-00027](records/AVE-2026-00027.json) | Multi-Turn Persistence Attack | 5.6 | MEDIUM |
+| [AVE-2026-00028](records/AVE-2026-00028.json) | File Content Injection | 5.9 | MEDIUM |
+| [AVE-2026-00029](records/AVE-2026-00029.json) | Homoglyph and Unicode Obfuscation | 4.8 | MEDIUM |
+| [AVE-2026-00030](records/AVE-2026-00030.json) | False Role Claim | 4.3 | MEDIUM |
+| [AVE-2026-00031](records/AVE-2026-00031.json) | Feedback Loop Poisoning | 5.4 | MEDIUM |
+| [AVE-2026-00032](records/AVE-2026-00032.json) | Internal Network Reconnaissance | 4.0 | MEDIUM |
+| [AVE-2026-00033](records/AVE-2026-00033.json) | Unsafe Deserialization in Skill Context | 4.2 | MEDIUM |
+| [AVE-2026-00034](records/AVE-2026-00034.json) | Dynamic Skill Import at Runtime | 6.6 | MEDIUM |
+| [AVE-2026-00035](records/AVE-2026-00035.json) | Sensor and Environment Manipulation | 4.2 | MEDIUM |
+| [AVE-2026-00036](records/AVE-2026-00036.json) | Lateral Movement via Agent Pivot | 5.9 | MEDIUM |
+| [AVE-2026-00037](records/AVE-2026-00037.json) | Vision and Multimodal Injection | 5.1 | MEDIUM |
+| [AVE-2026-00038](records/AVE-2026-00038.json) | Unbounded Tool Use | 5.9 | MEDIUM |
+| [AVE-2026-00039](records/AVE-2026-00039.json) | Covert Exfiltration via Steganographic Channel | 4.9 | MEDIUM |
+| [AVE-2026-00040](records/AVE-2026-00040.json) | Insecure Output Handling | 5.4 | MEDIUM |
+| [AVE-2026-00041](records/AVE-2026-00041.json) | MCP Server-Card Injection | 8.2 | HIGH |
+| [AVE-2026-00042](records/AVE-2026-00042.json) | REPL Code Mode Credential Exposure | 4.7 | MEDIUM |
+| [AVE-2026-00043](records/AVE-2026-00043.json) | MCP App UI Injection | 4.7 | MEDIUM |
+| [AVE-2026-00044](records/AVE-2026-00044.json) | Async Task Result Poisoning | 6.1 | MEDIUM |
+| [AVE-2026-00045](records/AVE-2026-00045.json) | Cross-App-Access Escalation | 6.4 | MEDIUM |
+| [AVE-2026-00046](records/AVE-2026-00046.json) | MCP Tool Hook Hijacking | 9.2 | **CRITICAL** |
+| [AVE-2026-00047](records/AVE-2026-00047.json) | Hardcoded Credentials in Agent Component | 7.6 | HIGH |
+| [AVE-2026-00048](records/AVE-2026-00048.json) | Unsafe Agent Delegation Chain | 7.7 | HIGH |
+| [AVE-2026-00049](records/AVE-2026-00049.json) | HTTP Host Header Injection (BadHost) | 7.2 | HIGH |
+| [AVE-2026-00050](records/AVE-2026-00050.json) | Parasitic Toolchain — Silent Tool Registration | 7.2 | HIGH |
+| [AVE-2026-00051](records/AVE-2026-00051.json) | OAuth Discovery Rebinding | 7.2 | HIGH |
+| [AVE-2026-00052](records/AVE-2026-00052.json) | MCP Tool Implementation Command Injection | 7.5 | HIGH |
+| [AVE-2026-00053](records/AVE-2026-00053.json) | MCP Resource Path Traversal | 6.3 | MEDIUM |
+| [AVE-2026-00054](records/AVE-2026-00054.json) | Code-Execution Sandbox Escape | 6.7 | MEDIUM |
+| [AVE-2026-00055](records/AVE-2026-00055.json) | MCP STDIO Launch Configuration Injection | 7.7 | HIGH |
+| [AVE-2026-00056](records/AVE-2026-00056.json) | Zero-Click Exfiltration via Rendered Content Auto-Fetch | 5.8 | MEDIUM |
+| [AVE-2026-00057](records/AVE-2026-00057.json) | Obfuscated Payload — Static Scanner Evasion | 4.4 | MEDIUM |
+| [AVE-2026-00058](records/AVE-2026-00058.json) | Deceptive Trigger — Activation-Scope Manipulation | 3.1 | LOW |
+| [AVE-2026-00059](records/AVE-2026-00059.json) | Fragmented Cross-Description Reassembly (ShareLock) | 7.1 | HIGH |
+| [AVE-2026-00060](records/AVE-2026-00060.json) | STDIO Transport Shell Injection | 7.2 | HIGH |
+| [AVE-2026-00061](records/AVE-2026-00061.json) | TLS Verification Disabled in Agent Configuration | 4.1 | MEDIUM |
+| [AVE-2026-00062](records/AVE-2026-00062.json) | Unpinned Dependency Supply Chain Substitution | 4.4 | MEDIUM |
+| [AVE-2026-00063](records/AVE-2026-00063.json) | Approval Gate Bypass via Configuration | 4.8 | MEDIUM |
+| [AVE-2026-00064](records/AVE-2026-00064.json) | Zero-Click Code Execution via Auto-Run Configuration | 5.2 | MEDIUM |
+| [AVE-2026-00065](records/AVE-2026-00065.json) | A2A Agent Card Poisoning | 7.1 | HIGH |
+| [AVE-2026-00066](records/AVE-2026-00066.json) | Hallucinated Skill-Name Squatting (HalluSquatting) | 6.2 | MEDIUM |
+| [AVE-2026-00067](records/AVE-2026-00067.json) | Skill Composition Trust Transfer (SCR-TrustLift) | 5.0 | MEDIUM |
+| [AVE-2026-00068](records/AVE-2026-00068.json) | CLI Command Composition Risk (MOSAIC) | 5.1 | MEDIUM |
+| [AVE-2026-00069](records/AVE-2026-00069.json) | Multimodal Image-Hidden Instructions (SkillCamo) | 4.8 | MEDIUM |
+| [AVE-2026-00070](records/AVE-2026-00070.json) | Distributed Cross-Agent Backdoor Fragments | 6.4 | MEDIUM |
+| [AVE-2026-00071](records/AVE-2026-00071.json) | MCP Daemon Redirect (Container Posture) | 5.6 | MEDIUM |
+| [AVE-2026-00072](records/AVE-2026-00072.json) | MCP Server Bound to All Interfaces (NeighborJack) | 5.0 | MEDIUM |
+| [AVE-2026-00073](records/AVE-2026-00073.json) | Telemetry/Endpoint Redirect via Static Configuration | 4.1 | MEDIUM |
+| [AVE-2026-00074](records/AVE-2026-00074.json) | Reclaimable Dead External Anchor (SkillJacking) | 7.1 | HIGH |
+| [AVE-2026-00075](records/AVE-2026-00075.json) | Bytecode Poisoning (Compiled Cache/Source Divergence) | 4.4 | MEDIUM |
+| [AVE-2026-00076](records/AVE-2026-00076.json) | Natural-Language Steering of an Approval Classifier Subagent | 4.5 | MEDIUM |
+| [AVE-2026-00077](records/AVE-2026-00077.json) | Cross-Origin Tool and Resource Declaration in a Single MCP Server Manifest | 4.8 | MEDIUM |
+| [AVE-2026-00078](records/AVE-2026-00078.json) | Consensus Poisoning: Unverified Multi-Agent Result Acceptance | 6.4 | MEDIUM |
+| [AVE-2026-00079](records/AVE-2026-00079.json) | Plan Hijacking via False Completion Signal | 6.2 | MEDIUM |
+| [AVE-2026-00080](records/AVE-2026-00080.json) | Silent Agent Substitution (Sybil) via Unverified Retry | 6.8 | MEDIUM |
+| [AVE-2026-00081](records/AVE-2026-00081.json) | Lingering Authority: Stale Capability Survives Episode Closure | 6.1 | MEDIUM |
+| [AVE-2026-00082](records/AVE-2026-00082.json) | Local Skill Name Collision (Deterministic Router Shadowing) | 4.4 | MEDIUM |
+| [AVE-2026-00083](records/AVE-2026-00083.json) | Silent guardrail comparison failure: a protection mechanism that executes but never evaluates its verdict | 6.3 | MEDIUM |
+| [AVE-2026-00084](records/AVE-2026-00084.json) | Lifecycle hook trust decoupling: a vetted plugin update silently rebinds hooks outside the model's decision path | 7.0 | HIGH |
+| [AVE-2026-00085](records/AVE-2026-00085.json) | Collusive cross-skill composition: a malicious workflow split across independently benign skills | 7.1 | HIGH |
+| [AVE-2026-00086](records/AVE-2026-00086.json) | Mid-session WebMCP tool hijacking: a live registry swap replaces an already-discovered tool under its own name | 7.0 | HIGH |
+| [AVE-2026-00087](records/AVE-2026-00087.json) | Agentjacking: a crafted tool response visually mimics a trusted system template to hijack an agent | 7.8 | HIGH |
+
+</details>
+
+---
+
+## Detect with Bawbel Scanner
+
+Every AVE record has detection rules in
+[bawbel/scanner](https://github.com/bawbel/scanner) — the reference
+implementation of this standard.
+
+```bash
+pip install bawbel-scanner
+
+# Scan a skill file
+bawbel scan ./my-skill.md
+
+# Scan a directory recursively
+bawbel scan ./skills/ --recursive --fail-on-severity high
+
+# Scan an MCP server card
+bawbel scan-server-card https://api.your-mcp-server.io
+
+# Full remediation report
+bawbel report ./my-skill.md
+```
+
+Example output:
+
+```
+CRITICAL  bawbel-hook-hijack           AVE-2026-00046  line 3   AIVSS 9.2
+HIGH      bawbel-unsafe-delegation     AVE-2026-00048  line 11  AIVSS 7.7
+HIGH      bawbel-hardcoded-credential  AVE-2026-00047  line 5   AIVSS 7.6
+```
+
+Any tool can implement AVE — the records, schema, and rules are open.
+See the [architecture guide](https://aveproject.org/architecture.html) and
+the [implementer guide](docs/specs/ave-implementer-guide.md) for the
+full consumption patterns including air-gapped environments.
+
+---
+
+## Implementing AVE in your scanner
+
+Three patterns depending on your environment:
+
+**Pattern 1 — Runtime API** (cloud CI/CD, always-on internet)
+```python
+import httpx
+resp = httpx.get("https://api.aveproject.org/records/AVE-2026-00002")
+record = resp.json()  # full record: fingerprint, IOCs, remediation, frameworks
+```
+
+**Pattern 2 — Bundled offline** (air-gapped, regulated environments)
+```bash
+# Always current, no release tag required -- regenerated on every records/ change
+curl -L https://raw.githubusercontent.com/aveproject/ave/main/dist/ave-records-latest.json \
+  -o ave-records.json
+
+# Or pin to a frozen, point-in-time snapshot instead of tracking current:
+curl -L https://raw.githubusercontent.com/aveproject/ave/main/dist/ave-records-v1.1.0.json \
+  -o ave-records.json
+```
+A versioned snapshot is also attached to each [GitHub Release](https://github.com/aveproject/ave/releases)
+once one is cut; the raw paths above do not wait on that.
+
+**Pattern 3 — ID-only emission** (SIEM resolves downstream, scanner makes no network calls)
+```json
+{ "rule_id": "your-rule", "ave_id": "AVE-2026-00002", "severity": "HIGH" }
+```
+
+The minimum viable integration is adding one field — `ave_id` — to your
+existing finding output. See [docs/specs/ave-implementer-guide.md](docs/specs/ave-implementer-guide.md)
+for the full guide including decision table, code examples, and how to
+request a crosswalk for your scanner's rule IDs.
+
+---
+
+## Schema v1.1.0
+
+Records validate against
+[`schema/ave-record-1.1.0.schema.json`](schema/ave-record-1.1.0.schema.json).
+
+Canonical `$id`:
+`https://aveproject.org/schema/ave-record-1.1.0.schema.json`
+
+**15 required fields:**
+
+```
+ave_id · schema_version · status · published
+title · description · attack_class · severity · behavioral_fingerprint
+aivss · owasp_mcp
+indicators_of_compromise · remediation
+references · researcher
+```
+
+**Minimal valid record:**
+
+```json
+{
+  "ave_id": "AVE-2026-00001",
+  "schema_version": "1.1.0",
+  "status": "active",
+  "published": "2026-04-01T09:00:00Z",
+  "title": "Metamorphic payload via external config fetch",
+  "attack_class": "Supply Chain - Metamorphic Payload",
+  "severity": "HIGH",
+  "description": "A skill fetches its instructions from an external URL at runtime...",
+  "behavioral_fingerprint": "Component fetches and executes remote content, replacing its own instructions at runtime.",
+  "aivss": {
+    "cvss_base": 8.5, "aars": 7.5, "thm": 1.0,
+    "mitigation_factor": 1.0, "aivss_score": 8.0, "spec_version": "0.8"
+  },
+  "owasp_mcp": ["MCP04", "MCP06"],
+  "indicators_of_compromise": ["fetch() pointing to external URL"],
+  "remediation": "Remove the component. Block network egress. Audit agent actions.",
+  "references": [{"tag": "Disclosure", "text": "Source", "url": "https://..."}],
+  "researcher": "Bawbel Security Research Team"
+}
+```
+
+**All optional fields:**
+`component_type` · `last_updated` · `behavioral_vector` · `example_patterns` ·
+`aivss_score` · `cvss_base_vector` · `owasp_asi` · `mitre_atlas` ·
+`nist_ai_rmf` · `provenance_vector` · `trifecta_profile` · `mitigation` ·
+`affected_platforms` · `affected_registries` ·
+`mutation_count` · `detection_methodology` · `kill_switch_active` ·
+`researcher_url` · `aivss.aarf` · `aivss.aivss_severity` ·
+`aivss.notes` · `evidence_kind_default` ·
+`detection_stage` · `detection_layer` · `confidence_baseline` ·
+`evidence_basis_engines` · `derivable_into`
+
+`status: "draft"` records need only a reduced eight-field core (`ave_id`,
+`schema_version`, `status`, `title`, `description`, `attack_class`,
+`behavioral_fingerprint`, `references`) — the full 15-field required set
+above applies once `status` is `active` or `deprecated`. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the thin-submission path.
+
+Full schema reference: [aveproject.org/schema.html](https://aveproject.org/schema.html)
+
+---
+
+## Adding a new AVE record
+
+### When to add a record
+
+A new record needs all three: the attack class is not already covered by an
+existing record, there is a citable primary source (CVE, paper, disclosed
+incident, or working PoC), and the class is specific to agentic components —
+not a generic web or API vulnerability.
+
+If you think an existing class covers the behavior you found, open an issue
+anyway. It may warrant a sub-case note in the parent record rather than a
+new id.
+
+### Step 1 — Open an issue
+
+Open a **New AVE Record** issue before writing any JSON. Include:
+- The proposed `attack_class` and one-sentence `behavioral_fingerprint`
+- A link to the primary source
+- Whether this is net-new or a variant of an existing record
+
+The maintainer will confirm the next AVE id and whether it is a new class
+or a variant update.
+
+### Step 2 — Write the record
+
+Copy [`records/AVE-2026-00001.json`](records/AVE-2026-00001.json) as a
+template. All 15 required fields must be present and valid.
+
+AIVSS calculation:
+```
+1. Score each AARF factor 0.0-1.0
+2. AARS = sum of all 10 AARF scores
+3. AIVSS = ((CVSS_Base + AARS) / 2) x ThM x Mitigation_Factor
+4. ThM: 0.75 theoretical · 0.90 PoC exists · 1.0 in-the-wild
+5. Round to 1 decimal
+6. Severity: CRITICAL >= 9.0 · HIGH >= 7.0 · MEDIUM >= 4.0 · LOW < 4.0
+```
+
+Validate before opening a PR:
+```bash
+npm install ajv ajv-formats
+node -e "
+const Ajv = require('ajv/dist/2020');
+const addFormats = require('ajv-formats');
+const ajv = new Ajv({ strict: false });
+addFormats(ajv);
+const schema = require('./schema/ave-record-1.1.0.schema.json');
+const record = require('./records/AVE-2026-NNNNN.json');
+const ok = ajv.validate(schema, record);
+if (!ok) console.error(ajv.errors); else console.log('valid');
+"
+```
+
+### Step 3 — Add detection rules
+
+Open a coordinated PR in [bawbel/scanner](https://github.com/bawbel/scanner)
+with at least one detection rule and a positive and negative fixture.
+The AVE record PR and the scanner PR should reference each other.
+
+### Step 4 — PR format
+
+Title: `feat: AVE-2026-NNNNN -- <attack class>`
+
+The PR description must include:
+- Link to the issue
+- AARF scores with a one-line rationale for each non-zero factor
+- At least one `indicators_of_compromise` entry a defender can actually search for
+- Link to the primary source
+- Link to the coordinated scanner PR
+
+---
+
+## Framework crosswalks
+
+AVE records map to four external frameworks. Full crosswalk tables are
+at [aveproject.org/crosswalks.html](https://aveproject.org/crosswalks.html).
+
+| Framework | Field | Crosswalk |
+|---|---|---|
+| OWASP Agentic Security Initiative Top 10 | `owasp_asi` (ASI01-ASI10) | schema field, all applicable records |
+| [OWASP Agentic Skills Top 10 (AST10)](https://owasp.org/www-project-agentic-skills-top-10/) | no dedicated schema field yet (`owasp_ast` planned) | [`crosswalks/ave-to-ast10.json`](crosswalks/ave-to-ast10.json) |
+| OWASP MCP Top 10 | `owasp_mcp` | all records |
+| MITRE ATLAS | `mitre_atlas` | where applicable |
+| NIST AI RMF | `nist_ai_rmf` | where applicable |
+
+| This scanner | Maps to AVE via |
+|---|---|
+| cfgaudit | [`crosswalks/cfgaudit-to-ave.json`](crosswalks/cfgaudit-to-ave.json) |
+| ClawScan (OpenClaw) | [`crosswalks/clawscan-to-ave.json`](crosswalks/clawscan-to-ave.json) |
+| nova-proximity (Nova-Hunting) | [`crosswalks/nova-proximity-to-ave.json`](crosswalks/nova-proximity-to-ave.json) |
+| Ramparts (Highflame Inc.) | [`crosswalks/ramparts-to-ave.json`](crosswalks/ramparts-to-ave.json) |
+| Semia (RiemaLabs) | [`crosswalks/semia-to-ave.json`](crosswalks/semia-to-ave.json) |
+| SkillSpector (NVIDIA) | [`crosswalks/skillspector-to-ave.json`](crosswalks/skillspector-to-ave.json) |
+| skill-security-scanner (honysyang) | [`crosswalks/skill-security-scanner-to-ave.json`](crosswalks/skill-security-scanner-to-ave.json) |
+| skillsentry (vythanhtra) | [`crosswalks/skillsentry-to-ave.json`](crosswalks/skillsentry-to-ave.json) |
+
+Maintaining a scanner? The [implementer guide](docs/specs/ave-implementer-guide.md)
+covers how to map your rule IDs to AVE ids and add AVE ID emission to your
+finding output. You can also open an issue and the maintainer will help with
+the mapping.
+
+---
+
+## Governance and contributing
+
+See [GOVERNANCE.md](GOVERNANCE.md) for the decision-making process, how records
+are proposed and reviewed, and the path toward neutral governance.
+
+See [docs/specs/scaling-and-governance.md](docs/specs/scaling-and-governance.md)
+for record-growth discipline, schema versioning, and deprecation policy,
+including AVE's ID stability guarantee: identifiers are never
+renumbered or reused once published.
+
+See [docs/specs/researcher-process.md](docs/specs/researcher-process.md)
+for the practical, step-by-step process a contributor actually follows
+when adding a new record, including a full worked example.
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for what real external
+contributors have actually built and caught, credited specifically,
+not just listed by name.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the contributor-facing process.
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+
+---
+
+## Contributors
+
+<a href="https://github.com/aveproject/ave/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=aveproject/ave" />
+</a>
+
+This shows who has contributed, not what they did. See
+[CONTRIBUTORS.md](CONTRIBUTORS.md) for that — specific credit for
+specific work: astrogilda's crosswalk schema and pin-status design,
+predictor2718's independently-built cfgaudit crosswalk, mmaxjr's
+validator fix, Alex Greenshpun's attribution correction — not a name
+list.
+
+---
+
+## Related
+
+| | |
+|---|---|
+| [aveproject.org](https://aveproject.org) | Public registry and documentation |
+| [bawbel/scanner](https://github.com/bawbel/scanner) | Reference implementation |
+| [aveproject/ave-site](https://github.com/aveproject/ave-site) | Website source |
+| [api.aveproject.org](https://api.aveproject.org) | Reference API, live lookup by AVE ID (Pattern 1 above) |
+| [OWASP AIVSS v0.8](https://aivss.owasp.org) | Scoring specification |
+| [MITRE ATLAS](https://atlas.mitre.org) | AI threat technique catalog |
+| [OWASP MCP Top 10](https://owasp.org) | MCP attack surface framework |
+
+---
+
+AVE records and schema are published under [Apache 2.0](LICENSE).

@@ -1,0 +1,292 @@
+# sift-light
+
+English · [简体中文](README.zh-CN.md)
+
+**sift-light — Evidence-first search for AI agents.**
+
+**A general-purpose local search plugin that helps agents find files, documents, notes, logs and other text material.**
+
+Think of a patient librarian: describe what you need, and it helps locate the shelf, open the relevant page and follow the next lead. A small search brings the passages straight to you. A broad search starts with a map so you can decide where to look first.
+
+## How it helps
+
+### Find a passage without opening every folder
+
+Looking for an error message, a sentence or a name is like giving a librarian a keyword. When there are only a few matches, the plugin returns their text and locations directly, saving repeated file opening and scrolling.
+
+### Start with a map when the collection is large
+
+“Which documents mention refunds?” can produce a lot of material. The plugin first presents matching files and snippets, like marking promising stops on a map. The agent can choose what to open before filling the conversation with entire documents.
+
+### Keep your bookmark for the next question
+
+“Continue from where we stopped” can follow the existing result to its next page. The agent can also open the surrounding text of a match, like returning to a bookmarked passage to read what came before and after it.
+
+### Recover when the remembered wording is not exact
+
+For routine development work, searches with a known name, symbol, filename or error text use the fast exact path by default; omitting `mode` does not load the local embedding model. Vector search is disabled by default for Pi, OMP and MCP clients. `concept` and `hybrid` fail clearly while it is disabled; neither silently becomes an exact-only search. This behavior is built into the plugin and does not depend on a personal `AGENTS.md`. An uncached semantic search can take tens of seconds, so it should not be part of every code lookup.
+
+To opt in, set `"vectorSearchEnabled": true` in the active `sift-light.json`, install the local model with `npx -y --package sift-light@latest sift-light-model --install-model`, and restart the host. Pi and OMP use the configuration paths below; MCP needs `SIFT_LIGHT_CONFIG` set to that file in its server environment. Installing the model alone does not enable vector search. `semanticJudge.enabled` is a separate option for remote candidate classification: it does not enable vector search and remains inactive while vector search is disabled.
+
+Use `mode: "hybrid"` with one natural-language `query` when a sentence may have been remembered with different wording. Hybrid always runs an exact literal search and the installed local Concept model under one owned request. Exact evidence appears first; semantic candidates are clearly labeled as relevance candidates and removed when they overlap an exact match. Semantic candidates retain raw cosine scores and use a bounded short-passage correction for ranking; both scores remain visible in structured details and neither proves runtime behavior. The initial page shares counts, coverage, source references, one inspection cursor and a compact preview instead of concatenating two complete responses. `conceptLimit` changes only the non-overlapping semantic supplement (default 3, maximum 20); it never displaces literal evidence. The returned matches request opens the same snapshot's complete exact-first pagination without rerunning either search.
+
+Concept ranking covers every UTF-8 passage admitted by the request's documented source budget; it no longer samples a fixed prefix of the scope. Concept and hybrid searches automatically admit up to 2,000 files and process them sequentially in bounded 200-file batches, then merge every batch into one global ranking and one coverage result. Batches share the request's 32 MiB read budget, so raising the file ceiling does not multiply the content budget. Users do not need to plan or continue batches themselves. `maxFilesToParse` remains an optional advanced hard ceiling when a smaller scope is intentional. Passages that exceed the model token window are ranked through overlapping token-safe windows, so later text is not silently discarded. Offline embeddings are cached by content, model revision and chunking revision in a bounded 512 MiB local cache. Repeated content is reused, changed content misses naturally, and cache write or cleanup failures remain visible in the result.
+
+Slow Concept and hybrid requests return within the default five-second wait window with `status: "waiting"` or `"running"`, an `operationId`, progress and an exact `nextRequest` such as `{ "mode": "await", "operationId": "..." }`. Copy that request unchanged: it resumes the same computation and never restarts the query or downgrades to a literal-only result. A final result remains available for stable re-fetch for 10 minutes, with up to 32 terminal results retained per service session, and `mode: "cancel"` stops the owned work and waits for cleanup. Each service session admits at most eight pending operations; an operation has one total deadline controlled by `SIFT_LIGHT_CONCEPT_TIMEOUT_MS` (integer milliseconds from 1000 through 3600000; default 600000) and a 120-second idle continuation lease. A real model, source or resource failure is returned as a failure with its diagnostic. Source generation is re-enumerated and re-verified before publication, so changes refresh the operation and mixed versions are never marked complete. Admission planning counts (`filesEnumerated`, `filesAdmitted`, `filesSkippedEmpty`, `filesUnavailable`, `passagesQueued`, `batchesPlanned`, `batchesCompleted`) stay visible. Empty files are a normal skip and do not mark the result partial.
+
+The first uncached Concept or hybrid search loads the local model and may take tens of seconds and more than 1 GiB of inference-worker memory, depending on the machine and search scope. Later searches reuse cached passage embeddings even when the query wording changes, and an active service reuses its loaded model. The E5 worker is released after 30 seconds of inactivity; the next query then loads it again. Changed passages are recomputed; cache eviction, deletion or broad source changes can cause another cold run. Exact search modes do not load the model. These are workload-dependent observations, not a latency or memory guarantee. If the result is waiting during `model-loading`, follow its `nextRequest` to continue the same operation.
+
+### Give several search conditions together
+
+“Find files mentioning both the customer and a refund” works like selecting documents with two labels. “Any of these words will do” works like handing over a shortlist. Multiple conditions can be expressed together to reduce repeated searches.
+
+### Choose the drawer you want searched
+
+Ask the agent to restrict a search to one folder when that is the scope you need. If you remember only part of a filename, start by finding the file and then inspect its contents—like narrowing a cabinet down to a shelf and then a document.
+
+Multi-word `files` queries require each word literally in the path; a single abbreviation still supports fuzzy matching. Use `hybrid` or `concept` for business intent. Content searches inside the active project still expand after zero results by default. An explicit path outside the project stays isolated; pass `scope: "expand"` to retry the server project. Use `scope: "strict"` to prevent in-project expansion. Expansion is announced before returned evidence.
+
+### Know what has been shown
+
+Long results arrive in pages with a way to continue. When the original material changes, the plugin asks for a fresh check. Like a careful research assistant, it distinguishes the passages already shown from the pages still to come.
+
+A complete snapshot describes match retention, not complete source text. Truncated matching-line excerpts show their limit and an executable `inspectRequest`, which remains usable after the final match page. Follow pagination cursors instead of repeating the query with a different limit.
+In Pi and OMP, the passive session status includes the loaded package version, counts returned new queries, distinguishes complete, partial and unfinished results, and reports non-cancelled failed calls. Cursor and operation continuations do not inflate the new-query count.
+
+`inspect` loads and verifies the source document before selecting a bounded output window. Its request shares a 32 MiB source-read budget; a single file larger than that budget is rejected even when only line 1 is requested. Changing the line, reducing displayed context or retrying does not bypass that limit. For a large log, search for the relevant text first, or use the host's bounded read capability on the known exact file. Source continuation pages apply to documents already admitted within the budget; they do not provide streaming inspection of oversized files.
+
+Ordinary searches keep repository ignore rules, but now report policy-filtered filesystem coverage instead of calling an absence exhaustive when ignored files exist. Filename discovery (`mode: "files"`) does the same: it says how many files were ignored and which of them match the query, and `ignorePolicy: "include"` lists them. Each file candidate shows its score and whether it is an exact, substring or fuzzy match. Use `mode: "audit"` with named literal `patterns` for one bounded receipt covering declared scope, enumerated/searched/skipped files, ignored-file policy, per-pattern `present`/`absent_with_complete_coverage`/`unknown` findings, and start/end source stability. Set `ignorePolicy: "include"` when an audit must include ignored configuration and generated files; `.git` internals and protected paths remain excluded.
+
+### Discover language capabilities before loading a provider
+
+Use `mode: "capabilities"` with the project root for a compact, names-only inventory. JavaScript, TypeScript and TSX support AST structure, roles, outline, static imports and related-test candidates. Go supports AST structure and roles. Python supports bounded indentation-based outline and lexical roles (comment, string, code, declaration, import, and call candidates). Swift and other languages remain available to ordinary content search, filename discovery and source inspection. Capability inventory does not start parsers or the Concept model.
+
+Language-service navigation is out of scope. Asking for `definitions`, `references`, `implementations`, `callers`, `callees`, `dependencies`, `dependents`, `trace` or `impact` fails explicitly, because a text search dressed up as precise navigation would be a worse answer than a clear refusal. No language server runs while you work.
+
+### Check saved source evidence
+
+Use `mode: "validate"` with a saved ordinary-search or analysis `cursor`, optionally selecting a `matchIndex`. Validation compares retained sources with the current worktree or their pinned Git objects, reports `current`, `stale` or `unknown`, and preserves incomplete search coverage. Structured metadata is under `details.validation` and `details.analysis.validation`; the removed graph fields and trace cursors are no longer supported. Validation checks sources on demand and does not run background watchers. It checks saved evidence, not whether new matching files have appeared since the search.
+
+### Narrow by file age or inspect code structure
+
+Worktree searches can use `modifiedAfter` and `modifiedBefore` as Unix millisecond bounds. The lower bound is inclusive and the upper bound is exclusive, so a time window can be expressed without changing the search pattern. The same filter applies to content and filename searches; unavailable file metadata is reported as incomplete evidence rather than silently treated as a match.
+
+Use `mode: "outline"` with a concrete JS/TS/TSX or Python file to see bounded symbol ranges. JS/TS/TSX use ast-grep; Python uses indentation-based class, function and method evidence. Inspecting an outline item returns that symbol's version-checked source. These ranges do not prove compiler bindings, runtime calls or test coverage. `mode: "tests"` provides JS/TS/TSX related-test candidates; unsupported language operations fail explicitly. Use ordinary search and `inspect` for Swift source.
+
+The readable result keeps the main evidence compact. Per-item ranges, counts, coverage and continuation requests remain in structured `details`, so a client can use the structured fields without requiring a second search.
+
+### Independent text retrieval on Apple Silicon
+
+Optional `nativeText` configuration makes `concept` and `hybrid` return two local retrieval lanes. Each keeps its own ranking; `details.analysis.retrievalLanes.current` and `.native` contain executable continuation requests. For `hybrid` with `ranking: "relevance"`, the default view ranks at most ten distinct files using weighted reciprocal file ranks (native 1, current 0.1). Raw scores across lanes are not comparable. Other dual-lane views interleave candidates. The default view and both lanes support `inspect` and `validate`, including source-change reporting.
+
+On Apple Silicon macOS, prepare Xcode, Metal Toolchain, a local SDK checkout and model directory, then run from this project's checkout:
+
+```sh
+bun run build:native-text -- /absolute/sdk-checkout /absolute/native-text-output
+```
+
+The builder selects a fixed revision and installs the executable and required resource bundles. The model directory must contain `model.safetensors`, `config.json`, `tokenizer.json` and `tokenizer_config.json`. Keep the complete output directory and add this to the host's active `sift-light.json`:
+
+```json
+{
+  "vectorSearchEnabled": true,
+  "nativeText": {
+    "executable": "/absolute/native-text-output/native-text",
+    "modelDirectory": "/absolute/model-directory"
+  }
+}
+```
+
+The existing E5 model is still required. The native process reads only private staged text admitted by the existing source policy. The service reuses its incremental index and removes it on shutdown; consecutive requests reuse the same loaded native model. After 60 seconds of inactivity the native worker exits and releases its memory; the next request starts a fresh worker. Cancellation, shutdown and protocol failures reap the owned worker before further work begins. `details.analysis.stats` reports `nativeModelLoads`, `nativeModelReused` and `nativeProcessId`. Existing admission controls hidden files, globs, exclusions and read budgets. Unknown text suffixes are normalized from verified UTF-8 bytes into plain text copies. Executable, model and protocol failures are explicit errors. Omit `nativeText` to retain existing behavior. This option enables text only, without image, audio or video retrieval.
+
+## Common uses
+
+Tell your agent what you need, for example:
+
+- “Which documents mention the refund deadline?”
+- “Find this error in the logs and show the surrounding messages.”
+- “Find files containing both the customer name and the order number.”
+- “List matches for any of these keywords.”
+- “I remember part of the meeting-notes filename. Help me find it.”
+- “Search only this folder; do not expand the scope.”
+- “Show me which files contain relevant text, then open two of them.”
+- “Continue from the previous page and show the remaining passages.”
+- “Search files modified since this Unix millisecond timestamp.”
+- “I may remember this sentence incorrectly; search exact and semantic evidence together.”
+- “Show the Python classes and functions in this file, then inspect the method that matters.”
+- “Find this function name in source, inspect the relevant occurrences, then validate the saved evidence after I edit the file.”
+
+The plugin provides file locations and actual text so the agent can answer from the material and you can check the original yourself.
+
+## Install
+
+MCP needs Node.js 22.19+. Pi needs Pi 0.84.3+ with Node.js 22.19+ or Bun 1.4+. The search engine ships with the package for each supported platform, so no system search tool, shell function or `PATH` setup is required, and a search never downloads anything. Install with optional dependencies enabled.
+
+When upgrading from a release published under an earlier package identity, remove that earlier plugin and MCP registration before installing sift-light. This avoids loading two search tools or enforcement hooks in the same host.
+
+To use your own ripgrep, set `SIFT_LIGHT_RG_PATH` to the absolute path of the executable in the MCP server or Pi process environment, then restart the host. It applies to content, filename and Git-source searches. Paths containing spaces work; aliases, shell functions, relative paths and `~` are not expanded. An unusable value fails explicitly instead of silently choosing another executable. If the bundled engine is missing, sift-light uses an executable `rg` found on `PATH` as a compatibility fallback; otherwise reinstall with optional dependencies enabled or point this setting at your own binary.
+
+### Pi
+
+```bash
+pi install npm:sift-light
+```
+
+Restart Pi after installing or updating. Pi uses this plugin for conventional searches by default; reads, edits, tests, builds and scripts remain available. `enforceSearch` accepts `"hard"` (the default), `"prefer"` (keep the dedicated tool and guidance without denying alternative searches), or `"off"`. Boolean values and unknown configuration fields are rejected. Configure it in `~/.pi/agent/sift-light.json`, then restart. Set `"locale": "zh-CN"` there for the Chinese interface.
+
+### OMP (Oh My Pi)
+
+```bash
+omp install npm:sift-light@latest
+```
+
+Restart OMP after installing or updating. The package declares its native OMP extension and registers `sift-light`. In the default hard mode it removes OMP's built-in `grep` and `glob` entries from the active tool set and blocks direct search commands while leaving reads, edits, tests, builds and other development tools available. Prefer mode keeps both the dedicated and alternative tools active, adds model guidance, and does not deny shell searches. OMP's active profile is respected; the default configuration file is `~/.omp/agent/sift-light.json`, and a named profile uses `~/.omp/profiles/<profile>/agent/sift-light.json`. Set `enforceSearch` to `"hard"` (default), `"prefer"`, or `"off"` in the active file, then restart OMP. Only these current string values are accepted; boolean values and unknown configuration fields are rejected. Set `"locale": "zh-CN"` to use the Chinese interface.
+
+### Optional semantic judge
+
+Hybrid search remains local-only by default. An optional semantic judge can classify retained concept candidates and improve ordering, but it never replaces local matching, source inspection, pagination, or verification.
+
+The feature is enabled only when `semanticJudge.enabled` is explicitly set to `true`. Merely defining the environment variable does not activate network access. Keep the credential in the process environment; do not put the credential value in this file:
+
+```json
+{
+  "locale": "en",
+  "enforceSearch": "hard",
+  "vectorSearchEnabled": false,
+  "semanticJudge": {
+    "enabled": false,
+    "provider": "jev",
+    "apiKeyEnv": "TYPESAFE_API_KEY",
+    "model": "jev-latest",
+    "timeoutMs": 120000,
+    "maxCandidates": 20,
+    "maxRetries": 2
+  }
+}
+```
+
+When enabled, the configured endpoint receives only the query and bounded candidate excerpts. Up to eight candidates and 64 KiB are sent per request. Independent batches run under the existing 20-candidate ceiling; an HTTP 413 response splits only that batch. If one batch fails, its candidates keep their local order while successful batches still contribute classifications, and the result reports partial coverage with judged/unjudged candidate and batch counts. A missing key still fails configuration explicitly, local candidates are never removed by a provider failure, and semantic classification is not runtime proof.
+
+### Assess one concrete claim against verified source ranges
+
+Use `mode: "support"` to assess whether a concrete `supportClaim` is supported by selected source evidence. The request accepts only a retained `cursor` plus `matchIndex` or `matchIndices`, and rechecks every source range against the current revision before sending it to a provider. Changed, unavailable or unversioned evidence produces `unknown` and is never sent as current proof. This assessment is independent from both retrieval lanes, precise inspection and `mode: "validate"`; it does not change the original search result. Analysis pages expose `evidenceScope: "range-only"` so callers can see that the exact range is preserved while answer support is not assumed; inspect the source or continue with `mode: "support"` when nearby qualifiers may matter.
+
+The feature is disabled by default. Configure either the local-compatible HTTP JSON provider or an explicit Jev endpoint. Keep credentials in the process environment:
+
+```json
+{
+  "answerSupport": {
+    "enabled": true,
+    "provider": "jev",
+    "apiKeyEnv": "TYPESAFE_API_KEY",
+    "model": "jev-latest",
+    "timeoutMs": 120000,
+    "maxRetries": 2,
+    "maxEvidenceItems": 5
+  }
+}
+```
+
+With `provider: "http-json"`, point `endpoint` at your local or remote service and omit `apiKeyEnv` when it does not require a key. The provider returns one of `supported`, `contradicted`, `insufficient` or `unknown`. Each request sends at most five evidence items, with 4,000 characters per item across all evidence text fields; oversized evidence is rejected without truncation, a 64 KiB request cap and a 4 MiB response cap. When context is added, support keeps the exact selected range as `selectedExcerpt` and includes two adjacent source lines by default as `contextBefore`/`contextAfter`; pass `supportContextLines: 0` for exact-range-only or choose 1–20 lines for a wider bounded context. Results retain provider, model, probability, reason and available token usage; failures stay explicit and source validation remains available on its own.
+
+### Claude Code or Codex: MCP connection
+
+```bash
+claude mcp add sift-light -- npx -y --package sift-light@latest sift-light-mcp --stdio
+```
+
+```bash
+codex mcp add sift-light -- npx -y --package sift-light@latest sift-light-mcp --stdio
+```
+
+`@latest` follows the newest published version when MCP starts. Restart the host to load updates. The server searches the active project; `SIFT_LIGHT_MCP_CWD` can select a different root. An MCP-only connection adds the tool without disabling other search tools.
+
+Pi and OMP load their host-scoped configuration by default. Set `SIFT_LIGHT_CONFIG` in the actual host process environment when all hosts should share one explicit file; it overrides the host-scoped path for Pi and OMP as well as MCP. Claude Code, Codex and Kimi all start the same standalone MCP server, so add this variable to each host's MCP `env` map rather than relying only on a shell startup file:
+
+```text
+SIFT_LIGHT_CONFIG=/absolute/path/to/sift-light.json
+```
+
+Keep `TYPESAFE_API_KEY` in the MCP process environment or its secret manager; never put the credential value in the configuration file or a checked-in host manifest. The standalone MCP server keeps semantic judging disabled when this path is absent, and fails at startup when an explicit path is missing or an enabled configuration has no key. It never silently claims that Jev ran. Startup diagnostics are written to stderr, and hybrid results expose `semanticJudge.status`; `judgedCandidates > 0` proves that at least one remote batch completed, `complete` means every considered candidate was judged, and `partial` keeps the remaining candidates locally ordered and explicitly unjudged.
+
+MCP returns readable text plus structured evidence by default. If a host serializes both forms into the model context, set `SIFT_LIGHT_MCP_OUTPUT_MODE=model` in that MCP server's environment and restart it. Model mode omits `structuredContent` and its advertised output schema, advertises concise workflow guidance, and selects the smaller of the standard page and a compact view of the same retained analysis snapshot. Repeated paths and inspect requests are shared, hybrid does not concatenate separate literal and Concept bodies, and outline excerpts are deferred to version-checked inspection. Counts, coverage, partial status, reasons and continuation requests remain visible. Use `text` to omit structured output while preserving the complete standard text and full usage guidance, or retain the default `structured` mode for programmatic consumers and clients that expose only structured results. Any other value fails at startup. The bundled Claude Code, Codex and Kimi native plugins select `model`; direct MCP connections retain the structured default unless configured explicitly.
+
+`paths` selects exact retained files from an existing cursor; a new search accepts one `path`. Split unrelated roots into separate requests rather than replacing them with a broader common parent. Markdown inspection uses a bounded line window and does not require Universal Ctags; missing structure providers remain visible when they affect code structure inspection.
+
+### Native plugins
+
+The Codex plugin includes a `local-search` skill for discovering and calling deferred MCP tools. Before declaring the tool unavailable, inspect the host's complete runtime registry (including `ALL_TOOLS` where `functions.exec` is available), then call `mcp__sift_light__sift_light` when registered. Omission from the initial expanded declarations does not mean absence. Restart or start a new session after updating the plugin to load the new skill. MCP-only clients receive the same server guidance, but the skill discovery entry requires the native plugin.
+
+For conventional search enforcement in other hosts:
+
+- **Claude Code:** `/plugin marketplace add lightsifter/sift-light`, then `/plugin install sift-light@sift-light`.
+- **Codex:** `codex plugin marketplace add lightsifter/sift-light`, then `codex plugin add sift-light@sift-light`; review and trust the hook in `/hooks`.
+- **Kimi Code:** `/plugins install /absolute/path/plugins/sift-light` using the plugin directory from this repository or installed package, then confirm trust and run `/reload`.
+
+Kimi Code's web mode can start plugin MCP servers from its installation directory. If relative MCP searches resolve to the wrong project, keep the native plugin for search enforcement and add a project-local `.kimi-code/mcp.json` entry with the same `sift-light` server and an explicit absolute `cwd` for that project.
+
+Restart after installation. Native hooks use hard enforcement by default. To keep the native plugin, MCP tool and model guidance without denying conventional searches, start the host with `SIFT_LIGHT_ENFORCE_SEARCH=prefer`; use `off` to disable only hook enforcement. Accepted values are `hard`, `prefer`, and `off`; an unsupported value fails closed instead of silently allowing a search. The setting is inherited from the host process, so a project cannot lower a user's policy merely by committing a repository configuration file. You can still disable the complete integration through Claude Code `/plugin`, Codex `/hooks`, or Kimi `/plugins disable sift-light` followed by `/reload`.
+
+In hard mode, a direct search such as `grep warning report.txt` is denied. A recognized stdin-only filter such as `cat report.txt | grep warning | head` remains available at any pipeline position because it filters output from a non-search producer. A filter with a file operand, recursive option, file-sourced pattern, or input redirection is denied even when piped. Put grep options before the pattern and quote shell wildcard characters; unknown options and dynamic arguments fail closed. PowerShell `Select-String` is also denied when a known file-object producer such as `Get-Item` feeds it. `find src | grep test` and `rg warning src | grep result` remain denied because their pipelines contain a direct search producer. If one subcommand in a compound shell call is denied, the host executes none of that call. The denial identifies the detected search and tells the agent to retry non-search operations separately.
+
+Local searches stay on your machine. Only grant access to files your agent is allowed to read. HTTP deployments need an authenticated gateway before public exposure; see [Security](SECURITY.md).
+
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [AGPL-3.0-only license](LICENSE)
+
+### Visual search (MCP)
+
+Configure `nativeMedia` with absolute `executable` and `modelDirectory` paths, then restart the MCP host. Build the Apple Silicon worker with `bun run build:native-media <sdk-checkout> <output-directory>`. The worker uses the local model weights with vision enabled and audio disabled.
+
+The additional `sift-light-media` tool accepts `mode: "search"`, an exact local `path`, and exactly one `query` (text description) or `image` (local image path). `kind` is `all`, `image`, or `scan`. File filters `glob`, `exclude`, `hidden`, and `ignorePolicy` use the same admission policy as workspace search. Text and source navigation continue through `sift-light`.
+
+```json
+{
+  "mode": "search",
+  "path": "/absolute/project/assets",
+  "query": "a dog running on grass",
+  "kind": "image"
+}
+```
+
+```json
+{
+  "mode": "search",
+  "path": "/absolute/project/assets",
+  "image": "/absolute/query.jpg",
+  "kind": "all"
+}
+```
+
+Results retain up to ten distinct files, content hashes, original PDF page numbers, and exact `inspect`/`validate` requests for this tool. `inspect` returns actual PNG pixels at a maximum dimension of 1024; scan results render the corresponding original PDF page. Changed sources reject inspection and validation reports stale evidence. Scanned pages in mixed PDFs retain their original page numbers. Visual similarity remains candidate evidence; small print recognition and region-level text location are not guaranteed.
+
+### Bring your own provider
+
+The local model path remains available through `nativeMedia`. To use a provider you supply, add `media` to the same `sift-light.json`. The endpoint must implement the HTTP JSON contract below; it may be a third-party service or a local gateway that translates another vendor's API. A local service can omit `apiKeyEnv`; remote services should use HTTPS.
+
+```json
+{
+  "media": {
+    "provider": "http-json",
+    "endpoint": "https://your-provider.example/v1/media-search",
+    "model": "your-vision-model",
+    "apiKeyEnv": "YOUR_MEDIA_KEY",
+    "timeoutMs": 120000,
+    "maxRetries": 2,
+    "maxRequestBytes": 33554432,
+    "renderer": {
+      "executable": "/absolute/native-media",
+      "modelDirectory": "/absolute/model-directory"
+    }
+  }
+}
+```
+
+The plugin sends admitted files as bounded Base64 content with opaque `fileId` values; it never sends local absolute paths. A response must contain `version: 1`, `indexedFiles`, and `hits`. Each hit contains `fileId`, `score`, `kind`, `chunkCount`, `width`, and `height`; scanned PDF hits also contain a one-based `page`. The plugin maps IDs back to local sources and then performs hash, page, `inspect`, and `validate` checks. The remote service does not decide whether source evidence is trustworthy.
+
+Jev also accepts `semanticJudge.provider: "http-json"`. The request is `{ "version": 1, "model", "query", "candidates" }`; the response is `{ "version": 1, "model", "judgments", "usage" }`. Each judgment contains a candidate `id`, a `choice`, and a `probability` from 0 to 1. When `apiKeyEnv` is configured, the key is read only from that environment variable and is never written to configuration, logs, or result content. A keyless local provider is valid. Remote failures retain local candidates and mark coverage as partial.
+
+The remote path uses the same `sift-light-media` tool and source verification as the local path. PNG hits can be inspected directly; PDF or other image previews require a local renderer in `media.renderer`. Validation does not require a renderer.
+
+Cold indexing returns `nextRequest` with `mode: "await"`; copy it to the same tool. `mode: "cancel"` and its `operationId` stop that work. The local provider reuses one resident visual model for consecutive requests and releases it after 60 seconds idle; remote provider timeouts, retries, and request limits come from its configuration. The service owns shutdown and cancellation. Each request admits at most 512 media files, 20 MiB per file and 256 MiB total; corpus limits and enumeration limits are explicit partial coverage. Request deadline is five minutes. Results expire after ten minutes and are scoped to the originating workspace. Office documents, audio and video are outside this tool's current contract.
+
+Native text and visual workers reserve 1 GB of inference headroom above the loaded model and its working space, and return unused compute cache after each query. This is not a hard limit on total process memory. The model still uses several GB, with additional allocations during indexing and inference. Each MCP service session owns its models; multiple connections and simultaneous text/visual workers add their memory use. Ordinary exact search does not load these models. Measure memory and latency for the actual model, machine and file scope.

@@ -1,0 +1,875 @@
+# Sagents
+
+> **Sage Agents** - Combining the wisdom of a [Sage](https://en.wikipedia.org/wiki/Sage_(philosophy)) with the power of LLM-based Agents
+
+A sage is a person who has attained wisdom and is often characterized by sound judgment and deep understanding. Sagents brings this philosophy to AI agents: building systems that don't just execute tasks, but do so with thoughtful human oversight, efficient resource management, and extensible architecture.
+
+## Key Features
+
+- **Human-In-The-Loop (HITL)** - Customizable permission system that pauses execution for approval on sensitive operations, including parallel tool calls where each action can be individually approved/rejected. Works across both main agents and SubAgents — interrupts propagate up to the parent for approval and resume seamlessly
+- **Composable Execution Modes** - Agent run loops are explicit Elixir pipelines built from reusable steps. Mix and match built-in steps (`call_llm`, `execute_tools`, `check_pre_tool_hitl`, `propagate_state`, etc.) or write your own. Different agents can use different modes in the same application
+- **Structured Agent Completion (`until_tool`)** - Force agents to loop until they call a specific tool, returning the result as a clean `{:ok, state, %ToolResult{}}` tuple. No more hoping the LLM follows your output format — get structured data you can pattern match on
+- **SubAgents** - Delegate complex tasks to specialized child agents for efficient context management and parallel execution
+- **GenServer Architecture** - Each agent runs as a supervised OTP process with automatic lifecycle management
+- **Phoenix.Presence Integration** - Smart resource management that knows when to shut down idle agents
+- **PubSub Real-Time Events** - Stream agent state, messages, and events to multiple LiveView subscribers
+- **Middleware System** - Extensible plugin architecture for adding capabilities to agents, including composable observability callbacks for OpenTelemetry, metrics, or custom logging
+- **Cluster-Aware Distribution** - Optional Horde-based distribution for running agents across a cluster of nodes, with automatic state migration and configurable membership (role-scoped, or partitioned by region/grouping), or run locally on a single node (the default)
+- **State Persistence** - Save and restore agent conversations via optional behaviour modules for agent state and display messages
+- **Virtual Filesystem** - Isolated, in-memory file operations with optional persistence
+
+**See it in action!** Try the [agents_demo](https://github.com/sagents-ai/agents_demo) application to experience Sagents interactively, or add the [sagents_live_debugger](https://github.com/sagents-ai/sagents_live_debugger) to your app for real-time insights into agent configuration, state, and event flows.
+
+![AgentsDemo Chat Interface](https://raw.githubusercontent.com/sagents-ai/sagents/refs/heads/main/screenshots/AgentsDemo-Files.png)
+
+*The [AgentsDemo](https://github.com/sagents-ai/agents_demo) chat interface showing the use of a virtual filesystem, tool call execution, composable middleware, supervised Agentic GenServer assistant, and much more!*
+
+## Who Is This For?
+
+Sagents is designed for Elixir developers building **interactive AI applications** where:
+
+- Users have real-time conversations with AI agents
+- Human oversight is required for certain operations (file deletes, API calls, etc.)
+- Multiple concurrent conversations need isolated agent processes
+- Agent state must persist across sessions
+- Real-time UI updates are essential (Phoenix LiveView)
+
+If you're building a simple CLI tool or batch processing pipeline, the core [LangChain](https://github.com/brainlid/langchain) library may be sufficient. Sagents adds the orchestration layer needed for production interactive applications.
+
+**What about non-interactive agents?** Certainly! Sagents works perfectly well for background agents without a UI. You'd simply skip the UI state management helpers and omit middleware like HumanInTheLoop. The agent still runs as a supervised GenServer with all the benefits of state persistence, middleware capabilities, and SubAgent delegation. The [sagents_live_debugger](https://github.com/sagents-ai/sagents_live_debugger) package remains valuable for gaining visibility into what your agents are doing, even without an end-user interface.
+
+## Installation
+
+Add `sagents` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:sagents, "~> 0.17.0"}
+  ]
+end
+```
+
+LangChain is automatically included as a dependency.
+
+### Supervision Tree Setup
+
+Add `Sagents.Supervisor` to your application's supervision tree:
+
+```elixir
+# lib/my_app/application.ex
+children = [
+  # ... your other children (Repo, PubSub, etc.)
+  Sagents.Supervisor
+]
+```
+
+This starts the process registry, dynamic supervisors, and filesystem supervisor that Sagents uses to manage agents.
+
+## Configuration
+
+Sagents builds on the [Elixir LangChain](https://github.com/brainlid/langchain) library for LLM integration. To use Sagents, you need to configure an LLM provider by setting the appropriate API key as an environment variable:
+
+```bash
+# For Anthropic (Claude)
+export ANTHROPIC_API_KEY="your-api-key"
+
+# For OpenAI (GPT)
+export OPENAI_API_KEY="your-api-key"
+
+# For Google (Gemini)
+export GOOGLE_API_KEY="your-api-key"
+```
+
+Then specify the model when creating your agent:
+
+```elixir
+# Anthropic Claude
+alias LangChain.ChatModels.ChatAnthropic
+model = ChatAnthropic.new!(%{model: "claude-sonnet-4-5-20250929"})
+
+# OpenAI GPT
+alias LangChain.ChatModels.ChatOpenAI
+model = ChatOpenAI.new!(%{model: "gpt-4o"})
+
+# Google Gemini
+alias LangChain.ChatModels.ChatGoogleAI
+model = ChatGoogleAI.new!(%{model: "gemini-2.0-flash-exp"})
+```
+
+For detailed configuration options, start here [LangChain documentation](https://hexdocs.pm/langchain/readme.html#installation).
+
+## Quick Start
+
+### 1. Create an Agent
+
+```elixir
+alias Sagents.{Agent, AgentServer, State}
+alias Sagents.Middleware.{TodoList, FileSystem, HumanInTheLoop}
+alias LangChain.ChatModels.ChatAnthropic
+alias LangChain.Message
+
+# Create agent with middleware capabilities
+{:ok, agent} = Agent.new(%{
+  agent_id: "my-agent-1",
+  model: ChatAnthropic.new!(%{model: "claude-sonnet-4-5-20250929"}),
+  base_system_prompt: "You are a helpful coding assistant.",
+  middleware: [
+    TodoList,
+    FileSystem,
+    {HumanInTheLoop, [
+      interrupt_on: %{
+        "write_file" => true,
+        "delete_file" => true
+      }
+    ]}
+  ]
+})
+```
+
+### 2. Start the AgentServer
+
+```elixir
+# Create initial state
+state = State.new!(%{
+  messages: [Message.new_user!("Create a hello world program")]
+})
+
+# Start the AgentServer (runs as a supervised GenServer)
+{:ok, _pid} = AgentServer.start_link(
+  agent: agent,
+  initial_state: state,
+  pubsub: {Phoenix.PubSub, :my_app_pubsub},
+  inactivity_timeout: 3_600_000  # 1 hour
+)
+
+# Subscribe to real-time events
+AgentServer.subscribe("my-agent-1")
+
+# Execute the agent
+:ok = AgentServer.execute("my-agent-1")
+```
+
+### 3. Handle Events
+
+```elixir
+# In your LiveView or GenServer
+def handle_info({:agent, event}, socket) do
+  case event do
+    {:status_changed, :running, nil} ->
+      # Agent started processing
+      {:noreply, assign(socket, status: :running)}
+
+    {:llm_deltas, deltas} ->
+      # Streaming tokens received
+      {:noreply, stream_tokens(socket, deltas)}
+
+    {:llm_message, message} ->
+      # Complete message received
+      {:noreply, add_message(socket, message)}
+
+    {:todos_updated, todos} ->
+      # Agent's TODO list changed
+      {:noreply, assign(socket, todos: todos)}
+
+    {:status_changed, :interrupted, interrupt_data} ->
+      # Human approval needed
+      {:noreply, show_approval_dialog(socket, interrupt_data)}
+
+    {:status_changed, :idle, nil} ->
+      # Agent completed
+      {:noreply, assign(socket, status: :idle)}
+
+    {:agent_shutdown, metadata} ->
+      # Agent shutting down (inactivity or no viewers)
+      {:noreply, handle_shutdown(socket, metadata)}
+  end
+end
+```
+
+### 4. Handle Human-In-The-Loop Approvals
+
+```elixir
+# When agent needs approval, it returns interrupt data
+# User reviews and provides decisions
+
+decisions = [
+  %{type: :approve},                                    # Approve first tool call
+  %{type: :edit, arguments: %{"path" => "safe.txt"}},   # Edit second tool call
+  %{type: :reject}                                      # Reject third tool call
+]
+
+# Resume execution with decisions
+:ok = AgentServer.resume("my-agent-1", decisions)
+```
+
+### 5. Structured Completion with `until_tool`
+
+Force an agent to return structured output by calling a specific tool:
+
+```elixir
+# Agent loops until "deliver_answer" is called, then returns the tool result
+case Agent.execute(agent, state, until_tool: "deliver_answer") do
+  {:ok, final_state, %ToolResult{} = result} ->
+    # Structured data from the target tool
+    IO.inspect(result.content)
+
+  {:error, reason} ->
+    # LLM stopped without calling the target tool
+    IO.puts("Error: #{inspect(reason)}")
+end
+```
+
+This works through HITL interrupt/resume cycles and with SubAgents — the contract is enforced at every level.
+
+## Provided Middleware
+
+Sagents includes several pre-built middleware components:
+
+| Middleware | Description |
+|------------|-------------|
+| **TodoList** | Task management with `write_todos` tool for tracking multi-step work |
+| **FileSystem** | Virtual filesystem with `ls`, `read_file`, `write_file`, `edit_file`, `find_in_file`, `edit_lines`, `delete_file` |
+| **HumanInTheLoop** | Pause execution for human approval on configurable tools |
+| **SubAgent** | Delegate tasks to specialized child agents for parallel execution |
+| **Summarization** | Automatic conversation compression when token limits approach |
+| **PatchToolCalls** | Fix dangling tool calls from interrupted conversations |
+| **ConversationTitle** | Auto-generate conversation titles from first user message |
+| **DebugLog** | Local dev tool — writes per-conversation structured logs (messages, tool calls, state changes) to dedicated files for debugging |
+| **ProcessContext** | Propagates caller-process state (OpenTelemetry trace context, Sentry context, tenant scope, request-scoped logger metadata) across the Caller → AgentServer → chain Task → per-tool async Task boundaries |
+
+### FileSystem Middleware
+
+```elixir
+{:ok, agent} = Agent.new(%{
+  # ...
+  middleware: [
+    {FileSystem, [
+      enabled_tools: ["ls", "read_file", "write_file", "edit_file"],
+      # Optional: persistence callbacks
+      persistence: MyApp.FilePersistence,
+      context: %{user_id: current_user.id}
+    ]}
+  ]
+})
+```
+
+### SubAgent Middleware
+
+SubAgents provide efficient context management by isolating complex tasks:
+
+```elixir
+{:ok, agent} = Agent.new(%{
+  # ...
+  middleware: [
+    {SubAgent, [
+      model: ChatAnthropic.new!(%{model: "claude-sonnet-4-5-20250929"}),
+      subagents: [
+        SubAgent.Config.new!(%{
+          name: "researcher",
+          description: "Research topics using web search",
+          system_prompt: "You are an expert researcher...",
+          tools: [web_search_tool]
+        }),
+        SubAgent.Compiled.new!(%{
+          name: "coder",
+          description: "Write and review code",
+          agent: pre_built_coder_agent
+        })
+      ],
+      # Prevent recursive SubAgent nesting
+      block_middleware: [ConversationTitle, Summarization]
+    ]}
+  ]
+})
+```
+
+SubAgents also respect HITL permissions - if a SubAgent attempts a protected operation, the interrupt propagates to the parent for approval.
+
+### Human-In-The-Loop Middleware
+
+Configure which tools require human approval:
+
+```elixir
+{HumanInTheLoop, [
+  interrupt_on: %{
+    # Simple boolean
+    "write_file" => true,
+    "delete_file" => true,
+
+    # Advanced: customize allowed decisions
+    "execute_command" => %{
+      allowed_decisions: [:approve, :reject]  # No edit option
+    }
+  }
+]}
+```
+
+Decision types:
+- `:approve` - Execute with original arguments
+- `:edit` - Execute with modified arguments
+- `:reject` - Skip execution, inform agent of rejection
+
+A human is only asked about calls that can run. Each gated call's arguments are first parsed by its own tool (its `:parse_args` parser, which can take the tool context, or the required-parameter check), and a call the tool refuses is answered with the tool's message instead of being put to a human. See "Parsing arguments with the tenant scope" in [Tool Context and State](docs/tool_context_and_state.md).
+
+## Custom Middleware
+
+Create your own middleware by implementing the `Sagents.Middleware` behaviour:
+
+```elixir
+defmodule MyApp.CustomMiddleware do
+  @behaviour Sagents.Middleware
+
+  @impl true
+  def init(opts) do
+    config = %{
+      enabled: Keyword.get(opts, :enabled, true)
+    }
+    {:ok, config}
+  end
+
+  @impl true
+  def system_prompt(_config) do
+    "You have access to custom capabilities."
+  end
+
+  @impl true
+  def tools(config) do
+    [my_custom_tool(config)]
+  end
+
+  @impl true
+  def before_model(state, _config) do
+    # Preprocess state before LLM call
+    {:ok, state}
+  end
+
+  @impl true
+  def after_model(state, _config) do
+    # Postprocess state after LLM response
+    # Return {:interrupt, state, interrupt_data} to pause for HITL
+    {:ok, state}
+  end
+
+  @impl true
+  def handle_message(message, state, _config) do
+    # Handle async messages from spawned tasks
+    {:ok, state}
+  end
+
+  @impl true
+  def on_server_start(state, _config) do
+    # Called when AgentServer starts - broadcast initial state
+    {:ok, state}
+  end
+end
+```
+
+## Custom Execution Modes
+
+Agent execution in Sagents is an explicit pipeline, not a black box. The default mode composes built-in steps from both LangChain and Sagents:
+
+```elixir
+# This is the entire default run loop (Sagents.Modes.AgentExecution)
+defp do_run(chain, opts) do
+  {:continue, chain}
+  |> call_llm()
+  |> check_max_runs(Keyword.put_new(opts, :max_runs, 50))
+  |> check_pause(opts)
+  |> check_pre_tool_hitl(opts)
+  |> execute_tools()
+  |> propagate_state(opts)
+  |> check_tool_interrupts(opts)
+  |> maybe_check_until_tool(opts)
+  |> continue_or_done_safe(&do_run/2, opts)
+end
+```
+
+Every step follows a simple contract: `{:continue, chain}` means keep going, any other tuple (`:ok`, `:error`, `:interrupt`, `:pause`) is terminal and passes through unchanged. Write your own steps using the same pattern and drop them into the pipeline.
+
+### Creating a Custom Mode
+
+```elixir
+defmodule MyApp.Modes.Simple do
+  @behaviour LangChain.Chains.LLMChain.Mode
+  import LangChain.Chains.LLMChain.Mode.Steps
+
+  @impl true
+  def run(chain, opts) do
+    chain = ensure_mode_state(chain)
+
+    {:continue, chain}
+    |> call_llm()
+    |> execute_tools()
+    |> check_max_runs(opts)
+    |> continue_or_done(&run/2, opts)
+  end
+end
+```
+
+Assign a mode per agent — one agent can be a strict tool-caller, another fully conversational:
+
+```elixir
+{:ok, agent} = Agent.new(%{
+  model: model,
+  mode: MyApp.Modes.Simple,
+  # ...
+})
+```
+
+### Available Built-In Steps
+
+| Step | Source | What it does |
+|------|--------|-------------|
+| `call_llm()` | LangChain | Single LLM call, tracks run count |
+| `execute_tools()` | LangChain | Execute pending tool calls |
+| `check_max_runs(opts)` | LangChain | Safety limit on LLM calls |
+| `check_pause(opts)` | LangChain | Infrastructure drain / node migration |
+| `check_until_tool(opts)` | LangChain | Terminate when target tool is called |
+| `check_tool_interrupts(opts)` | LangChain | Detect tool-level interrupts |
+| `continue_or_done(run_fn, opts)` | LangChain | Loop or return |
+| `check_pre_tool_hitl(opts)` | Sagents | HITL approval check before tool execution |
+| `propagate_state(opts)` | Sagents | Merge tool result state deltas back |
+| `continue_or_done_safe(run_fn, opts)` | Sagents | Loop or return, with `until_tool` enforcement |
+
+## Quick Setup
+
+Sagents provides generators to scaffold everything you need for conversation-centric agents:
+
+```bash
+mix sagents.setup MyApp.Conversations \
+  --scope MyApp.Accounts.Scope \
+  --owner-type user \
+  --owner-field user_id
+```
+
+This generates:
+- **Persistence layer** - Database schemas and migration
+- **Factory module** - Agent creation with model/middleware configuration
+- **Coordinator module** - Session management and lifecycle orchestration
+
+All configured to work together seamlessly based on your `--owner-type` and `--owner-field` settings.
+
+### What Gets Generated
+
+The `mix sagents.setup` command creates a complete conversation infrastructure:
+
+#### 1. Persistence Layer
+- **Context module** (`MyApp.Conversations`) with CRUD operations
+- **Schemas**: Conversation, AgentState, DisplayMessage
+- **Database migration** for all tables
+
+#### 2. Factory Module
+Centralizes agent creation at `MyApp.Agents.Factory` with:
+- Model configuration (ChatAnthropic by default, with fallback examples)
+- Default middleware stack (TodoList, FileSystem, SubAgent, Summarization, etc.)
+- Human-in-the-Loop configuration
+- Automatic filesystem scope extraction based on your owner type/field
+
+**Key functions to customize:**
+- `get_model_config/0` - Change LLM provider (OpenAI, Ollama, etc.)
+- `get_fallback_models/0` - Configure model fallbacks for resilience
+- `base_system_prompt/0` - Define your agent's personality and capabilities
+- `build_middleware/3` - Add/remove middleware from the stack
+- `default_interrupt_on/0` - Configure which tools require human approval
+- `get_filesystem_scope/1` - Customize filesystem scoping strategy
+
+#### 3. Coordinator Module
+Manages agent lifecycles at `MyApp.Agents.Coordinator` with:
+- Conversation ID → Agent ID mapping
+- On-demand agent starting with idempotent session management
+- State loading from your Conversations context
+- Race condition handling for concurrent starts
+- Phoenix.Presence integration for viewer tracking
+
+**Key functions to customize:**
+- `conversation_agent_id/1` - Change the agent_id mapping strategy
+- `create_conversation_state/1` - Customize state loading behavior
+
+### LiveView Helpers Generator
+
+For Phoenix LiveView integration, generate a helpers module with reusable handlers for all agent events:
+
+```bash
+mix sagents.gen.live_helpers MyAppWeb.AgentLiveHelpers \
+  --context MyApp.Conversations
+```
+
+This generates a module with handler functions that follow the LiveView socket-in/socket-out pattern:
+
+- **Status handlers** - `handle_status_running/1`, `handle_status_idle/1`, `handle_status_cancelled/1`, `handle_status_error/2`, `handle_status_interrupted/2`
+- **Message handlers** - `handle_llm_deltas/2`, `handle_llm_message_complete/1`, `handle_display_message_saved/2`
+- **Tool execution handlers** - `handle_tool_call_identified/2`, `handle_tool_execution_started/2`, `handle_tool_execution_completed/3`, `handle_tool_execution_failed/3`
+- **Lifecycle handlers** - `handle_conversation_title_generated/3`, `handle_agent_shutdown/2`
+- **Core helpers** - `persist_agent_state/2`, `reload_messages_from_db/1`, `update_streaming_message/2`
+
+Use them in your LiveView:
+
+```elixir
+defmodule MyAppWeb.ChatLive do
+  alias MyAppWeb.AgentLiveHelpers
+
+  def handle_info({:agent, {:status_changed, :running, nil}}, socket) do
+    {:noreply, AgentLiveHelpers.handle_status_running(socket)}
+  end
+
+  def handle_info({:agent, {:llm_deltas, deltas}}, socket) do
+    {:noreply, AgentLiveHelpers.handle_llm_deltas(socket, deltas)}
+  end
+
+  def handle_info({:agent, {:status_changed, :idle, _data}}, socket) do
+    {:noreply, AgentLiveHelpers.handle_status_idle(socket)}
+  end
+end
+```
+
+**Options:**
+- `--context` (required) - Your conversations context module
+- `--test-path` - Custom test file directory (default: inferred from module path)
+- `--no-test` - Skip generating the test file
+
+### Advanced Options
+
+```bash
+mix sagents.setup MyApp.Conversations \
+  --scope MyApp.Accounts.Scope \
+  --owner-type user \
+  --owner-field user_id \
+  --factory MyApp.Agents.Factory \
+  --coordinator MyApp.Agents.Coordinator \
+  --pubsub MyApp.PubSub \
+  --presence MyAppWeb.Presence \
+  --table-prefix sagents_
+```
+
+All options have sensible defaults based on your context module and Phoenix conventions.
+
+For a fully customized example, see the [agents_demo](https://github.com/sagents-ai/agents_demo) project.
+
+### Usage Pattern
+
+```elixir
+# Create conversation
+{:ok, conversation} = Conversations.create_conversation(scope, %{title: "My Chat"})
+
+# Save state during execution
+state = AgentServer.export_state(agent_id)
+Conversations.save_agent_state(conversation.id, state)
+
+# Restore conversation later
+{:ok, persisted_state} = Conversations.load_agent_state(conversation.id)
+
+# Create agent from code (middleware/tools come from code, not database)
+{:ok, agent} = MyApp.AgentFactory.create_agent(agent_id: "conv-#{conversation.id}")
+
+# Start with restored state
+{:ok, pid} = AgentServer.start_link_from_state(
+  persisted_state,
+  agent: agent,
+  agent_id: "conv-#{conversation.id}",
+  pubsub: {Phoenix.PubSub, :my_pubsub}
+)
+```
+
+## Agent Lifecycle Management
+
+### Process Architecture
+
+Sagents uses a flexible supervision architecture built on OTP principles. Process discovery is handled by `Sagents.ProcessRegistry`, which abstracts over `Registry` (local) and `Horde.Registry` (distributed) based on your distribution config:
+
+```
+Sagents.Supervisor (added to your application's supervision tree)
+├── Sagents.ProcessRegistry (Registry or Horde.Registry)
+│   └── Process Discovery via Registry Keys:
+│       ├── {:agent_supervisor, agent_id}
+│       ├── {:agent_server, agent_id}
+│       ├── {:sub_agents_supervisor, agent_id}
+│       └── {:filesystem_server, scope_key}
+│
+├── Sagents.ProcessSupervisor (DynamicSupervisor or Horde.DynamicSupervisor)
+│   ├── AgentSupervisor ("conversation-1")
+│   │   ├── AgentServer (registers as {:agent_server, "conversation-1"})
+│   │   │   └── Broadcasts on topic: "agent_server:conversation-1"
+│   │   └── SubAgentsDynamicSupervisor
+│   │       └── SubAgentServer (temporary child agents)
+│   │
+│   └── AgentSupervisor ("conversation-2")
+│       ├── AgentServer
+│       └── SubAgentsDynamicSupervisor
+│
+└── FileSystemSupervisor (independent, flexible scoping)
+    ├── FileSystemServer ({:user, 1})      # User-scoped
+    ├── FileSystemServer ({:user, 2})
+    └── FileSystemServer ({:project, 42})  # Project-scoped
+```
+
+#### Key Design Principles
+
+**Registry-Based Discovery**: All processes register with `Sagents.ProcessRegistry` using structured tuple keys. Process lookup happens through the registry, not supervision tree traversal. In local mode this uses `Registry`; in distributed mode it uses `Horde.Registry` for cluster-wide discovery.
+
+**Dynamic Agent Lifecycle**: AgentSupervisor instances are started on-demand by the Coordinator via `AgentSupervisor.start_link_sync/1`. The `_sync` variant waits for full registration before returning, preventing race conditions when immediately subscribing to agent events.
+
+**Independent Filesystem Scoping**: FileSystemSupervisor is **separate from agent supervision**, allowing flexible lifetime and scope management:
+- User-scoped filesystem shared across multiple conversations
+- Project-scoped filesystem shared across multiple users
+- Organization-scoped filesystem for team collaboration
+- Agents reference filesystems by `scope_key`, not PID
+
+**Supervision Strategy**: Each AgentSupervisor uses `:rest_for_one` strategy:
+- If AgentServer crashes → SubAgentsDynamicSupervisor restarts
+- If SubAgentsDynamicSupervisor crashes → only it restarts
+- All children use `restart: :temporary` (no automatic restart)
+
+### Inactivity Timeout
+
+Agents automatically shut down after inactivity:
+
+```elixir
+AgentServer.start_link(
+  agent: agent,
+  inactivity_timeout: 3_600_000  # 1 hour (default: 5 minutes)
+  # or nil/:infinity to disable
+)
+```
+
+### Presence-Based Shutdown
+
+With Phoenix.Presence, agents can detect when no clients are viewing and shut down immediately:
+
+```elixir
+AgentServer.start_link(
+  agent: agent,
+  presence_tracking: [
+    enabled: true,
+    presence_module: MyApp.Presence,
+    topic: "conversation:#{conversation_id}"
+  ]
+)
+```
+
+When an agent completes and no viewers are connected, it shuts down to free resources.
+
+### State Persistence
+
+AgentServer supports optional persistence via two behaviour modules:
+
+- **`Sagents.AgentPersistence`** — Persists agent state snapshots at key lifecycle points (completion, error, interrupt, shutdown, title generation)
+- **`Sagents.DisplayMessagePersistence`** — Persists display messages and tool execution status updates
+
+```elixir
+AgentServer.start_link(
+  agent: agent,
+  initial_state: state,
+  pubsub: {Phoenix.PubSub, :my_app_pubsub},
+  agent_persistence: MyApp.AgentPersistenceImpl,
+  display_message_persistence: MyApp.DisplayMessagePersistenceImpl
+)
+```
+
+These behaviours are optional — if not configured, agents run without persistence. The `mix sagents.setup` generator creates implementations for you automatically.
+
+### Cluster Distribution
+
+By default, Sagents runs locally on a single node. For multi-node deployments, enable Horde-based distribution:
+
+```elixir
+# config/config.exs
+config :sagents, :distribution, :horde
+```
+
+When Horde is enabled, `Sagents.ProcessRegistry` and `Sagents.ProcessSupervisor` automatically switch to `Horde.Registry` and `Horde.DynamicSupervisor`, giving you:
+
+- **Agent redistribution** across cluster nodes when a node leaves
+- **State migration** when nodes join or leave the cluster
+- **Node transfer events** broadcast during redistribution so your UI can react
+
+Agents broadcast `{:agent, {:node_transferring, data}}` and `{:agent, {:node_transferred, data}}` events during Horde redistribution, allowing connected clients to follow their agent to a new node.
+
+> Redistribution is best-effort, not a guarantee: a node that leaves before the
+> cluster has converged on its departure takes its agents with it rather than
+> handing them over. Nothing is corrupted or duplicated, and the next
+> `Sagents.Session.ensure_running/3` re-creates the agent from persisted state —
+> but design against the request, not against an agent you assume is still
+> alive. See [Clustering](docs/clustering.md#taking-a-node-out-of-the-cluster).
+
+#### Controlling membership
+
+Choose which nodes form the Horde cluster with `config :sagents, :horde, members:`:
+
+- `:auto` (default) — every visible BEAM node hosts agents.
+- `:participation` — only the nodes that run `Sagents.Supervisor`. Gate it to your agent-hosting role(s) and the other service roles stay out of the cluster. Membership is tracked via an OTP `:pg` group, and dead nodes are pruned automatically.
+
+An optional per-node `:partition` isolates participation further, so nodes only cluster with same-partition peers:
+
+```elixir
+config :sagents, :horde,
+  members: :participation,
+  partition: System.get_env("FLY_REGION")   # keep a region's agents on that region's nodes
+```
+
+`:partition` is any stable per-node grouping key — geography (a Fly.io `FLY_REGION`) is the motivating case, but a datacenter or dedicated node pool works too. See [Clustering & Distribution](docs/clustering.md) for the full model.
+
+No code changes are needed beyond the config — the `ProcessRegistry` and `ProcessSupervisor` abstractions handle backend switching transparently.
+
+## PubSub Events
+
+AgentServer broadcasts events on topic `"agent_server:#{agent_id}"`:
+
+### Status Events
+- `{:agent, {:status_changed, :idle, nil}}` - Ready for work
+- `{:agent, {:status_changed, :running, nil}}` - Executing
+- `{:agent, {:status_changed, :interrupted, interrupt_data}}` - Awaiting approval
+- `{:agent, {:status_changed, :paused, nil}}` - Infrastructure pause (e.g., node draining); state is persisted and the agent can be resumed after restart
+- `{:agent, {:status_changed, :cancelled, nil}}` - Cancelled by user
+- `{:agent, {:status_changed, :error, reason}}` - Execution failed
+
+### Error Events
+- `{:agent, {:chain_error, error}}` - Terminal chain error after all retries and fallbacks are exhausted. Fires alongside `{:status_changed, :error, _}` but carries the raw `LangChain.LangChainError` struct with structured details (see `:on_error` callback in LangChain)
+
+### Message Events
+- `{:agent, {:llm_deltas, [%MessageDelta{}]}}` - Streaming tokens
+- `{:agent, {:llm_message, %Message{}}}` - Complete message
+- `{:agent, {:llm_token_usage, %TokenUsage{}}}` - Token usage info
+- `{:agent, {:display_message_saved, display_message}}` - Message persisted (requires `DisplayMessagePersistence` behaviour)
+
+### Tool Events
+- `{:agent, {:tool_call_identified, tool_info}}` - Tool call detected during streaming
+- `{:agent, {:tool_execution_started, tool_info}}` - Tool execution began
+- `{:agent, {:tool_execution_completed, call_id, tool_result}}` - Tool execution succeeded
+- `{:agent, {:tool_execution_failed, call_id, error}}` - Tool execution failed
+
+### State Events
+- `{:agent, {:todos_updated, todos}}` - TODO list snapshot
+- `{:agent, {:state_restored, new_state}}` - State restored via `update_agent_and_state/3`
+- `{:agent, {:agent_shutdown, metadata}}` - Shutting down
+
+### Node Transfer Events (Horde only)
+- `{:agent, {:node_transferring, data}}` - Agent migrating to another node
+- `{:agent, {:node_transferred, data}}` - Agent migration completed
+
+### Debug Events (separate topic)
+
+Subscribe with `AgentServer.subscribe(agent_id, :debug)`:
+
+- `{:agent, {:debug, {:agent_state_update, state}}}` - Full state snapshot
+- `{:agent, {:debug, {:middleware_action, module, data}}}` - Middleware events
+- `{:agent, {:debug, {:llm_error, error}}}` - Individual LLM API call failure, including transient errors during retries and model fallback attempts. Fires on every failed call even when the chain subsequently recovers — use this for diagnostics rather than user-facing error handling (see `:on_llm_error` callback in LangChain)
+
+## Agent Discovery
+
+Find and inspect running agents:
+
+```elixir
+# List all running agents
+AgentServer.list_running_agents()
+# => ["conversation-1", "conversation-2", "user-42"]
+
+# Find agents by pattern
+AgentServer.list_agents_matching("conversation-*")
+# => ["conversation-1", "conversation-2"]
+
+# Get agent count
+AgentServer.agent_count()
+# => 3
+
+# Get detailed info
+AgentServer.agent_info("conversation-1")
+# => %{
+#   agent_id: "conversation-1",
+#   pid: #PID<0.1234.0>,
+#   status: :idle,
+#   message_count: 5,
+#   has_interrupt: false
+# }
+```
+
+## Related Projects
+
+### agents_demo
+
+A complete Phoenix LiveView application demonstrating Sagents in action:
+- Multi-conversation support with real-time state persistence
+- Human-in-the-loop approval workflows
+- File system operations with persistence
+- SubAgent delegation patterns
+
+[View agents_demo →](https://github.com/sagents-ai/agents_demo)
+
+### sagents_live_debugger
+
+A Phoenix LiveView dashboard for debugging agent execution in real-time:
+- Agent configuration inspection
+- Live message flow visualization
+- State and event monitoring
+- Middleware action tracking
+
+```elixir
+# Add to your router
+import SagentsLiveDebugger.Router
+
+scope "/dev" do
+  pipe_through :browser
+
+  sagents_live_debugger "/debug/agents",
+    coordinator: MyApp.Agents.Coordinator,
+    conversation_provider: &MyApp.list_conversations/0
+end
+```
+
+[View sagents_live_debugger →](https://github.com/sagents-ai/sagents_live_debugger)
+
+## Conversation Architecture
+
+Sagents uses a **dual-view pattern** for conversations:
+
+- **Agent State** - What the LLM thinks with: complete message history, todos, and middleware state stored as a single serialized blob
+- **Display Messages** - What users see: individual UI-friendly records optimized for rendering, streaming, and rich content types
+
+This separation enables:
+- **State optimization**: Agent conversation history can be summarized/compacted to reduce token usage without affecting what users see
+- **Efficient UI queries**: Load display messages without deserializing agent state
+- **Progressive streaming**: Real-time updates as messages arrive via PubSub
+- **Flexible rendering**: Show thinking blocks, tool status, images - content the LLM doesn't need
+
+Both views link through the `conversations` table, which you connect to your application's owner model (users, teams, etc.).
+
+See [Conversations Architecture](docs/conversations_architecture.md) for the complete explanation with diagrams.
+
+## Documentation
+
+- [Conversations Architecture](docs/conversations_architecture.md) - How the dual-view pattern works with agent state and display messages
+- [Lifecycle Management](docs/lifecycle.md) - Process supervision, timeouts, and shutdown
+- [Clustering & Distribution](docs/clustering.md) - Horde membership modes, participation, and region/partition scoping
+- [Subscriptions & Presence](docs/subscriptions_and_presence.md) - Real-time events, agent-discovery presence, and viewer-presence shutdown
+- [Middleware Development](docs/middleware.md) - Building custom middleware
+- [Observability](docs/observability.md) - Middleware-based callbacks for OpenTelemetry, metrics, and logging
+- [State Persistence](docs/persistence.md) - Saving and restoring conversations
+- [Middleware Messaging](docs/middleware_messaging.md) - Async messaging between middleware and AgentServer
+- [Architecture Overview](docs/architecture.md) - System design and data flow
+
+## Development
+
+```bash
+# Install dependencies
+mix deps.get
+
+# Run tests
+mix test
+
+# Run tests with live API calls (requires API keys, incurs costs)
+mix test --include live_call
+mix test --include live_anthropic
+
+# Pre-commit checks
+mix precommit
+```
+
+## Acknowledgments
+
+Sagents was originally inspired by the [LangChain Deep Agents](https://langchain-ai.github.io/langgraph/agents/overview/) project, though it has evolved into its own comprehensive framework tailored for Elixir and Phoenix applications.
+
+Built on top of [Elixir LangChain](https://github.com/brainlid/langchain), which provides the core LLM integration layer.
+
+## License
+
+Apache-2.0 license - see [LICENSE](LICENSE) for details.

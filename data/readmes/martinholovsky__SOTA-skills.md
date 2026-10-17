@@ -1,0 +1,1268 @@
+# SOTA Engineering Skills
+
+<p align="center">
+  <a href="https://github.com/martinholovsky/SOTA-skills/releases"><img src="https://img.shields.io/github/v/release/martinholovsky/SOTA-skills?color=2fa45f&label=release" alt="Latest release"></a>
+  <a href="https://github.com/martinholovsky/SOTA-skills/actions/workflows/ci.yml"><img src="https://github.com/martinholovsky/SOTA-skills/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/skills-43-2fa45f" alt="43 skills">
+  <img src="https://img.shields.io/badge/modes-BUILD%20%2B%20AUDIT-2fa45f" alt="BUILD + AUDIT">
+  <a href="#license"><img src="https://img.shields.io/badge/license-CC%20BY%204.0%20%2B%20Apache--2.0-blue" alt="License: CC BY 4.0 (content) + Apache-2.0 (code)"></a>
+</p>
+
+<p align="center">
+  <img src="assets/social-preview.png" alt="SOTA Engineering Skills — 40+ Claude Code skills to build and audit software at state-of-the-art practices" width="100%">
+</p>
+
+**Make your AI coding assistant build and audit like your most senior engineer.**
+
+Your assistant is brilliant — it just doesn't know your standards, and it forgets the
+ones it does know as the task grows long. SOTA-skills fixes both, and the fix is
+**measured**: from a bare "build X" prompt, best-practice coverage climbs from **~59%
+to ~98% (+0.39)** — the model stops silently dropping tests, rate limiting, structured
+logging, and TLS ([see every number →](evals/results/RESULTS.md)).
+
+It works by being a **loop, not a prompt dump**: route in only the rules a task needs,
+re-state them every turn, and re-check them *last* before shipping — so the guidance
+survives a long context instead of fading into it. That's why it beats a bigger prompt
+instead of becoming one. Native on Claude Code; works with Antigravity CLI, Codex, and any
+agent that reads `AGENTS.md`.
+
+Under the hood: **43 skills (347 files, ~89k lines)** of state-of-the-art 2026
+practice, each **instruction** file under 500 lines so only the matching rules load —
+the cap applies to `skills/**` alone, never to README/CHANGELOG/`docs/` — every fast-moving
+claim web-verified against a primary source **as of the last full sweep** (the root
+`LAST-VERIFIED` stamp). Between sweeps an upstream can still move under a claim, so the
+router's own operating principle 1 stands: re-verify anything version- or CVE-sensitive at
+use time.
+
+Two commands to install:
+
+```text
+/plugin marketplace add martinholovsky/SOTA-skills
+/plugin install sota-skills@sota-skills
+```
+
+**Or clone + link** (best if you want a local checkout to read, hack on, or pin).
+Skills are discovered from `.claude/skills/` (per project) or `~/.claude/skills/`
+(personal, all projects). Clone the repo, then run the installer — it symlinks
+every skill (and your profile, if you have one):
+
+```sh
+git clone https://github.com/martinholovsky/SOTA-skills && cd SOTA-skills
+./scripts/install.sh                 # personal: ~/.claude/skills (all projects)
+./scripts/install.sh --project DIR   # one project: DIR/.claude/skills
+./scripts/install.sh --target all    # also ~/.agents/skills (Copilot, Codex, Cursor, Gemini CLI) + Antigravity's own dirs
+./scripts/install.sh --copy          # copy instead of symlink (pin a snapshot)
+./scripts/install.sh --mcp           # optional: register the read-only MCP server for other agents
+```
+
+The installer colour-codes what it did (`✓` done · `↻` changed or act on this ·
+`·` no-op) and drops to plain ASCII when the output is not a terminal, on a
+non-UTF-8 locale, on `TERM=dumb`, or with `NO_COLOR` set — `--color=always|never|auto`
+(or `--no-color`) overrides the detection either way.
+
+Then describe the task in plain language — routing loads the right skills; the
+stack comes from your profile or the skills' defaults (naming one is optional):
+
+> Design a multi-tenant invoicing service.
+
+> Run a full audit of this repo — severity, effort, and fix on every finding.
+
+<img src="assets/how-it-works.png" alt="How it works: a plain prompt is routed automatically — the sota router maps the task to skills, only the matching rules files load, and the rules are applied in BUILD or AUDIT mode; a return path shows the routing directive re-stated on every prompt so the rules survive a long session" width="100%">
+
+More install options: [Installation](#installation) · more prompts: [Using it](#using-it).
+
+**Five slash commands ship with the library** — four bracket a working session, the fifth is
+the heavy escalation. `scripts/install.sh` links them into `~/.claude/commands/`, so they work
+in **any** project, not just this one:
+
+| | When | What it does |
+|---|---|---|
+| **`/sota-resume`** | **start** of a session | Finds the open work — every tracker, checkbox and `TODO` marker, swept with a **controlled** search — classifies it (ready · needs a decision · deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap**), shows you the table, then executes what you agree to against the project's own CI. |
+| **`/sota-close`** | **end** of a session | The closure pass: **retract first**, record open items where the next session will trip over them, update what the session made false, **re-derive every number from its source**, say what is not done and blocked on whom, then commit the evidence. |
+| **`/sota-audit`** | **work finished**, or a codebase you did not write | Audits what is in front of you against the library: agrees and pins the scope (a diff's callers included), maps the trust boundaries, runs the scanners that are installed, maps every surface to its owning skills and **says which rules files nobody opened**, walks each Audit checklist item by item, then fixes what you agree to. |
+| **`/sota-deep-audit`** | a **milestone**, an inheritance, a go/no-go | The heavy pass, and **expensive**: the same standard as `/sota-audit`, run so you can trust the result without trusting the auditor — **the full threat model reconstructed from the code** (DFD, tested assumptions, a control-presence matrix), then the audit fanned across independent agents, re-measures the numbers past decisions rest on, and hands every serious finding to a refuter that did not find it. |
+| **`/sota-report`** | **end** of a session | Writes a gitignored field report on where the guidance failed, was absent, was wrong — or was right and did not fire. Prints a `gh issue create` line; it never posts anything itself. |
+
+They take free-text arguments (`/sota-close focus on the migration branch`). Full detail:
+[slash commands](#slash-commands).
+
+## Contents
+
+- [Standards & practices baked in](#standards--practices-baked-in) · [What the audit hunts that a scanner can't](#what-the-audit-hunts-that-a-scanner-cant) · [How the numbers are kept honest](#how-the-numbers-are-kept-honest)
+- [Skills](#skills) · [Coverage & non-goals](#coverage--non-goals)
+- [Installation](#installation) · [Always-on routing](#always-on-routing-recommended) · [Updating](#updating)
+- [Using it](#using-it) — [slash commands](#slash-commands) (`/sota-resume` · `/sota-audit` · `/sota-deep-audit` · `/sota-close` · `/sota-report`)
+- [Optional setup & integrations](#optional-setup--integrations) — [badge](#badge), [gates](#enforcing-the-gates), [other agents](#other-ai-agents-codex-copilot-gemini-), [status line](#status-line-optional), [plugin extras](#optional-extras-for-plugin-users)
+- [Structure](#structure) · [How it works](#how-it-works) · [Conventions](#conventions)
+- [Found a gap? Tell us](#found-a-gap-tell-us--its-the-only-signal-we-get) · [Contributing](#contributing) · [License](#license)
+
+**Deeper docs:** [Find it fast (docs index)](docs/INDEX.md) · [Does it work? (measured results)](evals/results/RESULTS.md) · [Why it works](docs/WHY-IT-WORKS.md) · [Why some lifts expire and others don't](docs/WHY-SALIENCE-LASTS.md) · [Keeping rules applied as context fills](docs/CONTEXT-MANAGEMENT.md) · [Roadmap](docs/ROADMAP.md) · **[Agent-loop evals — tools, hidden tests, no model judge (separate repo)](https://github.com/martinholovsky/sota-agent-evals)**
+
+## Standards & practices baked in
+
+Findings name the control they violate — not just "this looks wrong":
+
+- **Security** — OWASP Top 10 (2025), ASVS, API & LLM Top 10; findings cite CWE IDs.
+  Disabled TLS certificate and SSH host-key verification are each stated once, with a
+  detector per library read from that library's own source
+- **OWASP, item by item** — 19 OWASP projects compared with the library one item at a time
+  (7,439 items, 2026-09-25); every one of the 847 gap themes was adopted, found covered, or
+  recorded with a reason ([ADOPTION-LOG](docs/ADOPTION-LOG.md)). New ground includes
+  anti-automation and abuse of value-granting flows,
+  browser response hardening (Fetch Metadata, HSTS rollout),
+  file uploads, SBOM content, dependency adoption,
+  vulnerability remediation beyond the score,
+  tag manager governance, the JVM web layer, and audit reports that
+  carry reproduction steps and a finding lifecycle. Where a rule is detectable in code or
+  config it ships an audit probe tested on a known-bad and a known-good fixture
+- **Languages** — all 9 language skills (Rust → Ruby, below) get the same rigor;
+  formal standards where they exist: SEI CERT (C, C++, Java), MISRA C/C++, ANSSI Rust.
+  Each is also gap-checked against its ecosystem's own scanner registry
+  (all nine, by 2026-09-24 — [LANGUAGE-TIER](docs/LANGUAGE-TIER.md))
+- **Supply chain** — SLSA, Sigstore, in-toto, SBOM (CycloneDX/SPDX), NIST SSDF
+- **Cloud & identity** — CIS Benchmarks, NIST 800-207 zero trust, NIST 800-63-4,
+  OAuth 2.1, FAPI 2.0, passkeys, SPIFFE
+- **Privacy & compliance** — GDPR, CCPA/CPRA, HIPAA, PCI DSS 4.x, SOC 2,
+  ISO 27001, EU AI Act, NIS2, DORA
+- **Government & regulated** — NIST CSF 2.0, 800-53, 800-171/CMMC, FedRAMP,
+  EU Cyber Resilience Act, IEC 62443, ISO/IEC 29147 & 30111 (vulnerability
+  disclosure *and* the handling process behind it)
+- **Threats, detection & AI/ML** — STRIDE, LINDDUN, MITRE ATT&CK & ATLAS,
+  NIST 800-61, NIST AI RMF
+- **Frontend, mobile & testing** — WCAG 2.2 AA, Core Web Vitals, OWASP MASVS & WSTG
+
+Named standards are the floor. Most of the library is the practice layer no
+regulation writes down: cancellation & backpressure, retries with jitter,
+circuit breakers, outbox/saga, double-entry ledgers and the reconciliation
+that proves an integration is *complete* rather than merely correct,
+zero-downtime migrations, measure-first performance, API evolvability,
+per-language idioms, SLOs, test-suite health — and the ones that only show up
+once something is already running: triaging a **vulnerability report** a stranger
+sent you (reproduce before you rate it, check the cited code even exists, and
+decide the regulatory clock explicitly, because it starts at *awareness*), and
+why a skill can stop triggering with nothing about it changed (a length cap is
+enforced either by skipping or by silent truncation, and a shared **listing budget**
+means a neighbour's bloat eats the trigger words you wrote).
+
+**Measured, not asserted** — library vs. an *unguided model* (same model, no
+library); clean, blind-judged, stable across samples ([results & method →](docs/WHY-IT-WORKS.md)).
+**Every number below names the model it was measured on**, because a lift can be
+overtaken by model progress and then reads as current when it is historical — that
+happened to the defect-avoidance row on 2026-08-21 and is stated there rather than
+quietly left standing:
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/lift-dark.svg">
+    <img alt="Measured lift with the library vs without. Completeness 0.59 to 0.98 (+0.39) on claude-sonnet-4.6 and 0.62 to 1.00 (+0.38) on claude-sonnet-5 — durable. Freshness 0.44 to 0.97 (+0.53) on a set authored July 2026, 0.69 to 0.99 (+0.30) on that same set once aged, and 0.33 to 1.00 (+0.67) on a set re-authored August 2026 — the question set ages, not the library. Routing 0.90 to 1.00 (+0.10) then 0.87 to 0.99 (+0.13) — holds. Defects avoided 0.81 to 1.00 (+0.19) then 1.00 to 1.00 (+0.00) — expired." src="assets/lift-light.svg" width="100%">
+  </picture>
+</p>
+
+- **Completeness +0.39 — and it did *not* expire.** Re-measured 2026-08-21 on the current flagship `claude-sonnet-5`: **0.62 → 1.00, +0.38** — unchanged. From a bare "build X" prompt, best-practice coverage goes ~59% → ~98% (7 tasks): the model stops silently dropping tests, rate limiting, structured logging, and TLS. Web search likely can't recover this (an agent won't search "should I add rate limiting"). **Not model-specific, and not stale**: a different-family model (`openai/gpt-5.1`) shows **+0.44** on the same tasks ([cross-model →](evals/results/2026-07-22/CROSS-MODEL.md)), and `claude-sonnet-5` — four months newer than the model this was established on — still shows **+0.38** ([2026-08-21 →](evals/results/2026-08-21/COMPLETENESS-SONNET-5.md)). **Why this one lasted while defect-avoidance did not**: newer models stopped *writing* known-bad patterns, but `sonnet-5` unguided still omits **tests in 7 of 7 tasks**, transport in 5, rate limiting in 5. Knowledge gaps close with model progress; **salience gaps do not**.
+- **How much of that is just *asking*? Most of it — not all.** A pre-registered placebo arm with **no library**, told only to "ship production-complete code and self-review it", reaches **0.86** (2026-10-08, `sonnet-4.6`): **69%** of the lift. The library's own **+0.125** sits in the controls a model leaves out even when told to be thorough: transport enforcement, rate limiting, CSRF, request size limits, session invalidation. On generic completeness, asking nearly suffices ([PLACEBO →](evals/results/2026-10-07/PLACEBO.md)).
+- **Freshness +0.53 → +0.30 — it *erodes*, and we measured that rather than assuming either way.** Current-2026 facts (RFCs, CVEs, EOLs) 0.44 → 0.97 on `claude-sonnet-4.6`, where an unguided model is *confidently wrong*. Re-measured 2026-08-25 on `claude-sonnet-5`: **0.69 → 0.99, +0.30**. The pre-registered prediction was that a training cutoff is a gap model progress *cannot* close — **refuted**: the newer model answers 8 of these facts unaided that its predecessor could not, because its cutoff advanced into a **fixed** case set. Ten of 32 remain outside it, and that is the surviving lift. So freshness is a *third* shape — neither expired like defect-avoidance nor flat like completeness. **And the same day we proved the cause was the instrument, not the library**: a fresh 10-case freshness set built from *recent* facts, each verified against its primary source and chosen by a rule fixed before any model ran, reads **0.33 → 1.00, +0.67** on the same model an hour later — higher than the original +0.53. The guidance did not improve between two runs; the questions got newer. A freshness lift is therefore quoted with **the date its questions were written**, the way every other number here is quoted with its model ([2026-08-25 →](evals/results/2026-08-25/ITEM-21-REFRESHED-FRESHNESS.md)).
+- **Routing +0.10 — and it did *not* saturate.** The right skills load for the task (0.90 → 1.00 on `claude-sonnet-4.6`), even ones a keyword read misses. Re-measured 2026-08-25 on `claude-sonnet-5`: **0.87 → 0.99, +0.13** — unchanged within the set's one-case resolution (20 cases, 0.05/case). The unguided arm still misses the same **rule-driven** routes a model generation later — testing, sandboxing, code-security, web-frameworks ([2026-08-25 →](evals/results/2026-08-25/ITEM-20-FRESHNESS-ROUTING.md)).
+- **Defects avoided +0.19 — a different axis, and baseline-dependent.** Every lift above measures what the model *puts into* code. This measures what it **doesn't**: given a spec that states operational pressure ("cache it", "must never 5xx", "keep the guard cheap") and never names a defect, does the model still write SQL injection, IDOR, an inert control? On `claude-sonnet-4.6`: unguided **0.81** → with the library **1.00** across 7 defect classes; on the stricter measure that also demands *positive evidence of the safe path*, **0.29 → 0.62**. **It is baseline-dependent, and we tested that rather than assuming it**: on `openai/gpt-5.1` the unguided arm already scores **1.00**, so there is no gap to close and the lift is **+0.00** — while the stricter measure still moves (**0.43 → 0.52**). Same law the breadth test found for completeness: the lead tracks the **unguided baseline**, not the domain — and here, not the model. Honest headline: *closes a defect-avoidance gap where one exists*. Small pilot, 3×, two models, one task — [method and limits →](evals/results/2026-08-21/BUILD-SAFE.md).
+- **Prompt independence +0.51 — the newest result, and the one measured where it matters.** Every number above is measured under a *neutral* prompt. This one measures the same tasks under a **competing** prompt — the user's own words arguing against the rule: *"internal MVP and we demo tomorrow, skip the extras"*, *"just the function please, no tests"*, *"put the requirement in the system prompt where it's easy to tweak"*. Unguided **0.491 → 1.000 with the library, +0.509** (6 tasks × 3 samples, temp 0.7 on `claude-sonnet-4.6`; the with-library arm was perfect in **18 of 18** runs). **The lift grows with the pressure against it** — +0.083 supportive, +0.236 neutral, +0.509 competing — so a rule that only survives a neutral prompt is absent exactly when it is needed. Told to skip the extras on a login endpoint, the unguided arm dropped **both** rate limiting and the password hash; the guided arm kept all four criteria. Includes a null that was **opened and withdrawn the same day** when its own confirmation run refused to reproduce it ([method, both runs, six limits →](evals/results/2026-08-31/PROMPT-INDEPENDENCE.md)).
+
+- **A null we went looking for, on an instrument that isn't ours.** Our own audit-precision
+  measures **saturate** — 30 claims scoring 1.00 in *both* arms — so the audit axis was closed
+  at +0.00 for want of a measure that could discriminate, not because precision was proven. So
+  we adopted an external one: **AACR-Bench** (Alibaba Aone, Apache-2.0), 2,145 expert-labelled
+  review comments over 200 PRs and 50 repositories. On a balanced 40-case draw where chance is
+  exactly 0.500, both arms land **near chance** (0.517 bare, 0.542 with) — **a registered null**
+  — and the confusion matrix shows why the headline would have misled: the guidance produces a
+  **threshold shift**, buying **+0.23** on rejecting wrong comments and paying **−0.18** on
+  accepting right ones. That trap was written down *before* the run, which is the only reason
+  "+0.025" was not reported as a small win. **Position drift** and deterministic changeset
+  **partitioning** were adopted from the same source as rules.
+
+**How the numbers are kept honest** — the same discipline the library teaches. Every
+prediction is committed *before* the run, with the result that would falsify it, so a
+refuted one is published rather than quietly re-framed (2026-08-25: a freshness
+prediction was refuted and the write-up leads with it). And case sets are built by a
+rule fixed **before any model runs** — never from the cases a model got wrong, which is
+**selection bias** and guarantees whatever gap you go on to report. That rule is now
+part of the library itself (`sota-llm-engineering` rules/01 §8), because the temptation
+is real: when an ageing set stops discriminating, the still-failing cases are sitting
+right there.
+
+And not just vs. an unguided model — **head-to-head against the most popular
+guidance libraries on backend build tasks**, SOTA-skills leads on completeness
+(content-only, blind-judged; wins or ties all 21 cases, loses none):
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/benchmark-dark.svg">
+    <img alt="Best-practice completeness on backend build tasks by library: SOTA-skills 99%, affaan-m/ECC 87% with 255k GitHub stars, PatrickJS/awesome-cursorrules 83% with 41k stars, alirezarezvani/claude-skills 81% with 26k stars, obra/superpowers 60% with 284k stars, and an unguided model at 58 to 64 percent across the two runs. Superpowers falls inside the unguided band, so on this rubric it is not distinguishable from no guidance." src="assets/benchmark-light.svg" width="100%">
+  </picture>
+</p>
+
+A **five-domain breadth test** shows *when* this edge holds: SOTA-skills leads the
+field wherever a base model ships **incomplete** code — production backend in any
+language *and* complex/security-sensitive frontend (~+10 pts) — and **ties** where the
+base model is already near-complete (simple UI, templated infra). The lead tracks task
+difficulty, not the domain — we measure it and say so.
+[Full breadth result, consolidated table, method & honest limits →](evals/results/RESULTS.md)
+
+**And a result we will not dress up.** Two outside assessments named
+[`obra/superpowers`](https://github.com/obra/superpowers) as the methodological competitor,
+so we ran it (2026-09-08, pinned SHA, 7 cases): SOTA **0.987**, unguided **0.637**,
+Superpowers **0.599**. In the chart above it sits at 60% against an unguided **band of
+58–64%** — the same arm measured in the two runs, since temp-0 is not deterministic — so it
+lands *inside* the baseline rather than above it. The band is one row on purpose: an earlier
+version drew two "unguided model" bars and, though accurate, it read as a bug. That is **−0.04 versus no guidance at all**, against a ±0.03 noise
+floor — so on this rubric the two are indistinguishable, and the honest reading is about the
+instrument, not the project. Superpowers is *process* guidance; these cases score a *built
+artifact's* domain coverage. A low score is evidence about **fit to this measure**. It shows
+the two libraries are not substitutes; it does not settle whether a methodology beats a
+corpus, and we have no instrument that would.
+[Method and limits →](evals/results/2026-09-08/SUPERPOWERS-HEAD-TO-HEAD.md)
+
+### What the audit hunts that a scanner can't
+
+<!-- count-check: ^- \*\* -->
+Thirty classes of defect survive every linter, SAST rule, and CVE scanner, because in
+each one the code isn't *wrong*. The library hunts them as explicit passes
+(this said "Eleven" for seventeen days — correct when written on 2026-08-27 and **fifteen
+classes** behind by the time anyone recounted at the v1.41.2 cut. Recount the list, never
+restate this number: the first correction written here was itself stale within the hour,
+because the same change added three more classes below):
+
+> **Finding them is the cheap half — and we can prove it.** Across nine instruments,
+> a frontier model recognises these classes unaided: audit lift **+0.00**, published
+> below rather than buried. The expensive half is not writing them in the first place.
+> On a model that *does* write them, the library stops it: **0.81 → 1.00**. On one that
+> already doesn't (`gpt-5.1`, unguided 1.00) there is nothing to close — we ran that
+> second model and report the **+0.00** too
+> ([2026-08-21](evals/results/2026-08-21/BUILD-SAFE.md)).
+>
+> **Qualified 2026-09-12, against ourselves.** "Recognises these classes unaided" was
+> measured on instruments that scored **1.00 in both arms** — which is what a measure looks
+> like when it cannot tell the arms apart. On an external one that can
+> ([AACR-Bench](evals/results/2026-09-12/COMMENT-TRIAGE.md)), judging whether a real review
+> comment is correct puts a frontier model **near chance** in both arms. The audit lift is
+> still +0.00, now across ten instruments; what is *not* supported is the stronger reading
+> that finding these things is easy.
+
+
+- **Controls that are inert** — a safeguard whose success and whose total failure look
+  identical from outside: a swallowed enforcement exception, a ruleset that loads zero
+  rules, presence decided by `exists()` rather than a loaded artifact, a CI gate whose
+  every run is *skipped* (and on GitHub a skipped job reports **Success** to branch
+  protection), a policy engine left in `Audit`/`warn`/report-only since the day it
+  shipped, a report whose word "verified" traces to no line that can fail, silent
+  truncation on the way *out* of a generator — an unset token cap returns a
+  fragment that a swallowed parse error publishes as a valid empty result — a
+  test that still passes when the control's body is replaced with a no-op, a **write-back
+  controller** logging `updated=1 errors=0` every cycle for fifteen minutes while
+  pushing no commit at all — its log describes the update it *decided* on, not the
+  write landing. The same shape one layer down: a count that is **computed and still
+  false**, because it was derived from an intermediate the function discards and emitted
+  before the `return` that dropped it. No function can attest to its own return value —
+  every emission site has a suffix that can drop the result after the line is written —
+  so the claim belongs in the *consumer*, derived from the value received. Where a job
+  runs unattended, its log is the only witness, so the probe is to change what the
+  function returns and read the output, not to re-run the tests.
+  ([rules/10](skills/sota-code-security/rules/10-silent-control-failure.md),
+  [rules/14](skills/sota-code-security/rules/14-control-not-in-force.md),
+  [kubernetes rules/04 §7](skills/sota-kubernetes/rules/04-gitops-controllers.md))
+- **Pins nothing watches, and watchers that can never report** — a version embedded in a
+  build-tool invocation (`RUN xcaddy build v2.11.4 --with plugin@v0.1.0`, a Bazel arg, a
+  `go install tool@version`) is **unwatchable** by construction: Renovate sees a `RUN`
+  line, and Dependabot has no regex manager at all — so pinning it converts an unreviewed
+  drift into an unreviewed freeze, and both states are silent. The usual answer is a
+  **bespoke watcher**, which then inherits the publishing conventions of whatever it
+  watches: one querying `releases/latest` takes a permanent 404 from a project that ships
+  git tags and no releases, skips that entry every run forever, and leaves a list that
+  still reads as complete. Same family, one layer down: in Go `require` is a
+  **floor, not a ceiling** — under Minimal Version Selection the graph's highest
+  requirement wins, so "we pinned it" is simply false for anything another module
+  also requires.
+  ([devsecops rules/03](skills/sota-devsecops/rules/03-dependencies.md),
+  [rules/09](skills/sota-devsecops/rules/09-gates-that-hold.md),
+  [golang rules/07](skills/sota-golang/rules/07-tooling-ci.md))
+- **The agent's own tooling as an attack surface** — three surfaces the ordinary checks miss.
+  A coding agent invoked in CI is a **CI actor holding your token**: it takes instructions
+  from whatever text it is handed, and the usual `env:` fix for expression injection is a
+  *shell* defence that does nothing for a sink which interprets the value — it just removes
+  the `${{ }}` reviewers grep for. The developer's **agent session transcript** is a
+  credential store nobody inventories, holding whatever the harness loaded, including files
+  it read on its own initiative and mislabelled. And any tool that sweeps such text must
+  **never persist raw**: store a digest plus a structural skeleton, because shape-based
+  redaction is an enumeration and a bare 64-character hex key has no shape to match.
+  ([devsecops rules/01 §1.5a](skills/sota-devsecops/rules/01-pipeline-security.md),
+  [secrets rules/04 §7](skills/sota-secrets-management/rules/04-detection-and-remediation.md),
+  [secrets rules/03 §2.1](skills/sota-secrets-management/rules/03-application-patterns.md))
+- **Controls the compiler removed** — a safeguard that is correct in the source and absent
+  from the binary. Wiping is the known case (`memset` is dead-store-eliminated); the same
+  applies to constant-time arithmetic, where strength reduction is an optimiser courtesy, so
+  **constant time is a property of the emitted code**, verified across every architecture and
+  optimisation level you ship — `-Os` and `-Oz` included. Two instruments answer it, and
+  neither stands in for the other: Valgrind memcheck taint flags every branch on the secret,
+  and dudect's t-test times the running binary.
+  ([code-security rules/22 §1.1](skills/sota-code-security/rules/22-constant-time-comparison.md))
+- **A signing step that picks its input by name.** On a public repo a fork's `pull_request`
+  run uploads into the base repo's artifact store, so "sign the newest artifact named X" can
+  sign a fork's bytes — and the REST list reads the producer as `null`, so a provenance filter
+  over it passes everything.
+  ([devsecops rules/02 §2.5.2](skills/sota-devsecops/rules/02-provenance-signing.md))
+- **A defect that starts where the gates stop.** Formatters, linters and most SAST end at the
+  **compiled artifact**; a loader, verifier, dynamic linker, capability check or admission
+  controller runs after it, and that whole depth is unprobed while every gate is green. Four
+  gates passed an eBPF object the kernel then refused to load, because a warn-by-default style
+  lint had suggested an owned argument that spent 52 bytes of a **512-byte** stack — on a
+  constrained target a lint's *premise* can be false, and the word "mechanical" is a
+  classification applied **before** the analysis that would justify it.
+  ([devsecops rules/09 §2a](skills/sota-devsecops/rules/09-gates-that-hold.md),
+  [rust rules/07 §1a](skills/sota-rust/rules/07-tooling-ci.md))
+- **A version recalled instead of looked up.** Not a stale pin — a *measurement* of someone
+  else's artifact, which never feels like a version decision. A recalled release number
+  arrives with no felt uncertainty, so every rule that triggers on doubt is structurally
+  unable to fire. The fix is a fact that cannot be recalled: record the **EOL date** beside
+  the version. A row past its EOL is removed, not corrected — an unsupported branch can answer
+  the *opposite* of the current one, not merely a staler version of it.
+  ([devsecops rules/03 §3.9](skills/sota-devsecops/rules/03-dependencies.md))
+- **A finding sourced to whoever sells the remedy.** Security claims arrive
+  disproportionately from vendors of the fix, and such a source is not disqualified by that —
+  it is *unblinded* by it. Independent sources converging is evidence; sources converging on
+  the conclusion that sells their own product is one hypothesis held by several interested
+  parties. Name the interest in the finding, prefer a test you run yourself, and label it a
+  design argument rather than a measurement until someone runs it.
+  ([sota/rules/03 §2](skills/sota/rules/03-audit-findings.md))
+- **A green light from the wrong stage.** A pipeline with more than one stage has more than
+  one success signal, and the earliest is the one that looks like a summary — it is a count
+  and it renders first. A metrics collector reporting `1 target` had matched a selector and
+  gathered nothing for days; the very next field read `health=down`.
+  **Discovery is not collection**, and the same split is enumerate-vs-process,
+  connect-vs-authenticate, resolve-vs-fetch, schedule-vs-execute. Accept the downstream
+  artefact — the series, the row, the record — never the pipeline's own readiness. And prove
+  a repair with an **output delta**, not a green light: in that case three affirmative
+  signals were already green while nothing was collected, and only `0 → 54 series` told the
+  two states apart.
+  ([rules/14 §4b](skills/sota-code-security/rules/14-control-not-in-force.md))
+- **A safety net deleted because nobody had needed it yet.** The deletion proof for a
+  dependency is *remove it and the build still passes*. For anything whose job was to be
+  **available** rather than called, that proof returns the same green either way, because
+  being unreached is what a **healthy fallback** looks like. A cache, mirror, warm standby or
+  break-glass path needs a second piece of evidence — the successor named, and measured
+  working *now*. Field case: the replacement mirror was 3.3 hours fresh, so the deletion was
+  right; had it been stale the correct action was the opposite one.
+  ([rules/10 §3a](skills/sota-devsecops/rules/10-inert-dependencies.md))
+- **A status that is true, about the wrong subject.** Not a wrong answer — a correct one
+  describing something other than what the reader assumed, which no amount of care applied to
+  the value can catch. Field-reported, six in one session, every one literally true: *"exit
+  code 0"* was the **wrapper's** and arrived 17 seconds into a 41-minute run; *"no advisories
+  for this package"* was true of **the database that was opened**, which had zero rows;
+  *"the harness returned no result"* was true of **a container that never started**, and the
+  alternative reading was a conclusion about the target; *"38,861 passed"* was true of **the
+  tree fifty minutes earlier**. The rule is one clause long: when a check reports OK,
+  **name what the OK is about.**
+  ([sota/rules/03 §2](skills/sota/rules/03-audit-findings.md))
+- **The ad-hoc command you typed to check something.** Unlinted, unreviewed, run against the
+  system under test — and it can report a false absence *or* destroy what it was inspecting. A sweep
+  reads as clean because the searcher **silently excludes** things: measured on one tree with
+  four matches, `rg` defaults found 1, a `grep` that turned out to be a wrapper function found
+  3, explicit flags found 4. And a verification command that copied 40 GB into a container
+  filled the host and corrupted the runtime — the check never ran. A **count** taken from a
+  listing tool has the same shape without any bug at all: `gh pr list` answers with the
+  first **30** of 330, exit 0 and empty stderr, because a default page size is policy rather
+  than a defect — so a result whose size equals the cap is a page until proven otherwise.
+  Blast radius is not only disk, either: an unbounded backgrounded loop, or **a wrapper that
+  invokes a command its own directory shadows**, fills the per-user process table, and every
+  tool fails at once *including the ones you would use to diagnose it*. Two unrelated causes
+  produce that one signature and only **parentage** separates them.
+  Two more shapes where the command is *correct*: an extraction or fetch into a blob you have
+  never opened cannot be positive-controlled at all, because nothing is yet known to be in it —
+  so it must print a **denominator** (bytes, members, total files) beside the zero, or `0`
+  reads as a fact about the subject when `tar` simply could not open the archive. And the
+  **selector** can name a different population member than the question did: `sort -V | tail -1`
+  is the *newest*, not the *default*, and returned a backports kernel for a release that ships
+  another one — nothing truncated, exit 0, no rule broken. And a sweep that **writes** can
+  destroy what it inspects in a way `git status` shows as one character: an in-place sweep
+  (`perl -pi`, `sed -i`) across a path list **silently replaces a symlink with a regular
+  file** — exit 0, target untouched. Measured across four implementations, and the danger is
+  the **platform split**: only **BSD** sed refuses, so a macOS developer sees the safe
+  behaviour and CI (GNU, BusyBox) does not. That one-liner converted this repository's own
+  tracked symlinks.
+  ([rules/06](skills/sota-shell-scripting/rules/06-ad-hoc-commands.md),
+  [rules/03 §3a](skills/sota-shell-scripting/rules/03-security.md))
+- **Controls that block everything** — the mirror image, and the one every other pass
+  here looks past. An *enforcement* control (cap, quota, filter, allowlist, sandbox
+  policy) can be tightened until it refuses the legitimate case too, and it passes the
+  same tests: a security suite asserts *refusal*, refusal is exactly what an over-tight
+  control produces, and the mutation probe above only ever installs the **permissive**
+  no-op, so it looks in one direction. The fix is an **allow arm** — a representative
+  legitimate case that must complete *through* the control, never against the bare
+  environment, because proving the machine can do the work says nothing about whether
+  your control permits it. Worked instance: a memory budget set with `RLIMIT_AS`
+  refuses the runaway allocation exactly as intended, and also kills every Go or JVM
+  process **at startup**, since those runtimes reserve gigabytes of address space they
+  never touch (measured: 1.17 GiB reserved against 2.3 MiB resident).
+  ([rules/12 §1a](skills/sota-code-security/rules/12-verifying-the-verifier.md),
+  [sandboxing rules/02](skills/sota-sandboxing/rules/02-linux-os-hardening.md))
+- **Layers that were never layers** — the same test applied to an *architecture*
+  diagram rather than a function. A second-opinion classifier drawn from the same
+  model family as the system it guards shares its blind spots by construction
+  (**common-cause failure**), and one that only ever sees what the primary already
+  flagged *uncertain* cannot, even in principle, catch what the primary got
+  confidently wrong. A TEE bought to fix records that were **never emitted** is
+  answering a **liveness** question no hardware guarantee covers. Both are counted in
+  a threat model and neither reaches the case it is counted for.
+  ([rules/08 §1](skills/sota-code-security/rules/08-llm-ai-security.md),
+  [rules/18 §1](skills/sota-code-security/rules/18-tamper-evident-logs.md))
+- **Stages that report success while doing nothing** — found by the cheap signals
+  rather than by reading every line: a step returning "nothing found" far faster
+  than its claimed work allows, a gate that never prints how many items it
+  examined (`0 checked, 0 failed, exit 0`), a size-gated branch no fixture
+  crosses, a cache key narrower than the behaviour it gates, a control written as
+  an `assert` that `-O`/`NDEBUG`/a missing `-ea` deletes in production. When a
+  tool's correct output cannot be stated at all — the **test oracle problem**, which
+  is why "it found 0" goes unchallenged — a **metamorphic** check pins how the
+  output must *change*: a fixture with N known items, and an assertion that the
+  count moves when the input does.
+  ([rules/11](skills/sota-code-security/rules/11-dead-path-diagnostics.md),
+  [rules/13](skills/sota-code-security/rules/13-context-dependent-silence.md))
+- **A field that is always empty, and the seam nobody could have diffed.** A
+  **defaulted read** — `.get(key, default)` on a dict you did not construct — turns a
+  key-name disagreement into a plausible constant, and when the producer is a *model*
+  choosing field names from a distribution there is no change event to test against:
+  the prompt and the reader can both be correct while the response uses a synonym. The
+  only sound detector is at runtime — diff the keys the model returned against the keys
+  anything consumed, and log the ones nothing read.
+  ([rules/13](skills/sota-code-security/rules/13-context-dependent-silence.md))
+- **A search that never ran, reported as a clean tree.** In zsh — macOS's interactive
+  shell, and the one these checklists get pasted into — an unquoted glob in a flag value
+  (`grep --include=*.md`) trips the default `NOMATCH` and **aborts the command**, where
+  bash would pass the word through and run it. Add the `2>/dev/null` everyone uses to
+  hide `Permission denied` noise and the broken probe is byte-identical to a real
+  no-match: empty output, exit 1. The sweep you read as *"nothing is stale"* may never
+  have executed. **A second route reaches the same false-clean**: in zsh an unquoted
+  expansion does not word-split, so `files=$(git ls-files '*.md'); grep -l X $files`
+  passes the whole newline-joined list as **one impossible filename** and it
+  **searched nothing** — and the remedy is **separator-specific**, since the `${=var}` fix
+  for a space-separated flag string is itself wrong for a file list. Found the hard way in this
+  repo, where the rule was already written and the skill was never loaded: a **routing
+  gap**, fixed in the trigger rather than the text.
+  ([rules/01 §3 and §3a](skills/sota-shell-scripting/rules/01-safety-baseline.md))
+- **A watcher that cannot say "the thing I was watching is gone".** Done/not-done cannot
+  express *"I could not tell"*, and once you add that you find you also need **GONE** —
+  terminal and knowable, not unknown. Collapse it and the watch either invents a success
+  or never ends. It is the row people delete while fixing the other bug: one rewrite
+  replaced an explicit "no longer exists" branch with a blindness counter, which then
+  reported *"cannot read for 20min"* about a job that had simply been garbage-collected.
+  ([rules/15 §2.2a](skills/sota-code-security/rules/15-instruments-and-guards.md))
+- **A measurement whose rows came from somewhere else.** When tests and production
+  write to one **shared sink**, every aggregate over it merges two populations — and
+  the danger is not the false positive but the *destroyed true finding*, because the
+  contaminated number carries the larger n and so reads as the more rigorous one.
+  ([rules/11](skills/sota-code-security/rules/11-dead-path-diagnostics.md),
+  [rules/05](skills/sota-observability/rules/05-operational-readiness.md))
+- **Your own scorer, gate or benchmark doing none of the above** — a whole file
+  turns the lens around: anything whose output decides whether something
+  is *OK* is a control too. A broken feature produces a complaint; a broken
+  instrument produces a **number**, and numbers get quoted. So give it a known-bad
+  input it must fail and a known-good one it must pass, bound what it reads, and
+  never trust a number from an instrument you haven't watched produce a *wrong*
+  answer on purpose. The sharpest case is a **guard that is an instance of what it
+  guards** — a coverage test whose scope is narrower than the population *and* whose
+  predicate the defect satisfies, so it passes on exactly what it exists to catch.
+  An instrument also fails by going **red for a reason that is not a regression**: a floor
+  measured on one population and **asserted over a pool** fires with no code change once the
+  denominator gains a new corpus, language or tenant — and dilution is the one cause a
+  pooled metric cannot distinguish from the cause its author imagined. And the probe that
+  proves a test can fail has a second half nobody writes down: hand-mutating a control to a
+  no-op puts a real defect into production source, so **the revert is part of the
+  technique** — verify it against the working tree, never against an exit status a wrapper
+  will report as a clean pass.
+  **A known-bad also rots without anyone touching it**, and in the direction nobody
+  watches: a mutation pinned to a *delta* — append one line, add one file — breaches a
+  threshold only from the subject's current slack, so improving the subject disarms the
+  probe. Measured here: shrinking an always-loaded file from 199 lines to 169 silently
+  made the probe guarding its 200-line cap inert, and **every standard safeguard passed**
+  — the literal matched, the mutation took, the tree was dirty. Pin the mutation to the
+  threshold, and re-run the known-bads after a refactor, not only after a check changes.
+  The remedy every mature discipline reached independently — the proof test, the
+  clinical positive control, aviation built-in test, adversary emulation — is one
+  move: a **negative control**, a committed known-bad the gate must reject on every
+  run, verified **per target** rather than once, because a tripwire that fires for 2
+  of 20 targets looks identical to full coverage. Worth knowing that **no mainstream
+  framework asks for this**: NIST SSDF and the EU CRA require a record that a scan
+  *ran*, OpenSSF Scorecard's SAST check detects only that a tool is *configured*, and
+  SLSA will sign provenance for a scanner set to scan zero files. A passing
+  compliance check is evidence of process, not of protection. And a negative control
+  answers only whether the gate *can* fail — never whether it still covers you: a
+  refactor into a nested module, a second manifest or a sidecar image moves code out of
+  a gate's scope with no diff to the workflow file, so watch the number of units each
+  gate **enumerated** and treat a drop as a failure.
+  ([rules/15](skills/sota-code-security/rules/15-instruments-and-guards.md),
+  [devsecops rules/05](skills/sota-devsecops/rules/05-analysis-gates.md))
+- **Absence encoded as a value** — the **in-band sentinel**: a number whose domain
+  includes an "absent/unknown/error" marker (`-1`, `0`, `""`, `9999-12-31`). It type-checks and no
+  linter flags it: `-1` is *truthy*, so the `if x:` presence check everyone reaches for
+  admits it, and because the sentinel carries an **ordering** it loses every `<` and
+  wins every `>` — one missing operand makes a guard skip silently in one direction and
+  fire spuriously in the other, from a single input. The tell is not the constant but
+  the **asymmetric guard**: one operand filtered against the sentinel and the other, in
+  the same comparison, not — because that filtering is applied per site, so it lands
+  only where the author happened to be thinking about it.
+  ([architecture rules/02 §8a](skills/sota-architecture/rules/02-domain-modeling-and-boundaries.md),
+  with a per-language row measured on each toolchain)
+- **Dependencies declared but never reached** — the **inert-dependency sweep**: packages,
+  modules, and plugins wired in and inert, installed and pinned and scanned and never
+  *run*. Proven by *deleting* them in a scratch copy and running the real build, lint, and
+  full suite, with exit codes and before/after transitive counts reported:
+  **a grep is not proof**, and no tool's silence is either.
+  ([rules/10](skills/sota-devsecops/rules/10-inert-dependencies.md))
+- **Decisions that stopped being right** — the datastore picked for scale that never
+  arrived, the rewrite justified by a benchmark that no longer reproduces. Every
+  expensive-to-reverse decision is classified **JUSTIFIED / STALE / UNJUSTIFIED /
+  UNVERIFIABLE**, and any number one rests on is **re-measured this session**.
+- **Findings that don't survive contact** — every Critical/High gets an independent pass
+  *prompted to kill it*, working from the code rather than the write-up and defaulting
+  to REFUTED when the evidence is ambiguous. Refutations are recorded, so the next
+  auditor doesn't re-raise them — and **swept before they're dropped**, because the
+  refuted pattern routinely closes somewhere the audit's scope didn't cover. A severity
+  also has to **name its chain** (reach → primitive → boundary crossing → channel), and
+  on a diff it is rated against the code the change *replaced*: filing a High against a
+  hardening fix teaches authors that hardening attracts findings. The refuter also gets
+  **less than the finder had** — no execution, no writes — with **only the artifact**
+  crossing over (the PoC, the failing command, the `file:line`), never your write-up; and
+  it returns a **number against a threshold fixed before the findings were seen**, because
+  a paragraph of hedging is a judgement you then re-judge.
+  ([findings §1, §4, §4a](skills/sota/rules/03-audit-findings.md))
+- **A result you saw once** — where the evidence is a *behaviour* (a crash, a race, a
+  timing bypass, anything an agent or a sampled model produced), it is reproduced **N of
+  N** and both numbers are reported: `1/1` and `3/3` are typeset identically and mean
+  different things. On a repeat audit the **yield curve** is read too — count falling while
+  difficulty rises. A flat count wave after wave is a statement about the audit, not the
+  code. ([findings §2](skills/sota/rules/03-audit-findings.md),
+  [methodology §4](skills/sota/rules/01-audit-methodology.md))
+- **A control that works, on some of the sites it's credited with** — not inert, not
+  missing: a real containment check guarding one channel of five, a `disable_tools=True`
+  passed at 2 call sites of 6, a path guard on 9 target walks of 61. Every signal is a
+  working control's signal, because on the guarded subset it is one. The audit move is a
+  **census** — enumerate the protected *operation*, mark each call site, report the ratio —
+  and the API fix is that a parameter selecting a trust boundary **defaults to the closed
+  side**. ([code-security rules/14 §6](skills/sota-code-security/rules/14-control-not-in-force.md))
+- **Security prose the code no longer keeps** — "containment is applied at every target
+  walk" (it was 9 of 61); "no function-calling, no shell — this RCE mechanism is NOT
+  APPLICABLE" (tools were on by default). Each had been true when written. Most such
+  claims are universally quantified and therefore falsifiable **by counting**, and a
+  wrong *NOT APPLICABLE* is the worst case: it cancels the next reader's own
+  investigation. ([code-security rules/14 §7](skills/sota-code-security/rules/14-control-not-in-force.md))
+- **Your own tool, ingesting somebody else's repository** — scanners, SAST wrappers,
+  review bots and agentic analysers run on a maintainer's machine with that identity's
+  credentials, and the target is the attacker. Four legs, usually owned by four people:
+  staging that dereferences symlinks out of the tree, "static" analysis that evaluates
+  target-controlled build metadata, an LLM step spawned with tools live and the parent's
+  `cwd`, and egress left on by default.
+  ([sandboxing rules/05 §7](skills/sota-sandboxing/rules/05-ai-agent-sandboxing.md))
+- **Absence claims** — "no hardcoded secrets remain" is the one finding nobody can
+  falsify: a narrow search and a true absence produce identical output. Any absence
+  claim needs a widened search **plus a second independent method**, with the search
+  stated. ([findings §2, §4](skills/sota/rules/03-audit-findings.md))
+- **Controls keyed to a neighbouring setting** — the predicate reads a *proxy* that agrees
+  with the real dependency right up until someone configures the two apart, three files
+  away. A **coupling** defect: the control's own site never changes, so neither per-file
+  review nor a per-gate probe can see it — the signature is a control that silently stops
+  at the moment it starts mattering. Field-reported 2026-08-26 with two shell shapes that
+  fail the same way: a **process substitution** whose producer failed (its exit status is
+  unreachable, so zero lines reads as success) and an "append" to a keyed store that is
+  really an **upsert**, silently deleting the link target of a hash chain on the second run.
+  The audit for this class is **the proxy question**, which the usual falsification question
+  cannot answer: *is this the thing I actually depend on, or something that currently agrees
+  with it — and who can change one without the other, and would I find out?* A control that
+  is **correctly enforcing the wrong predicate** is not inert, so "would anything observable
+  differ?" answers *yes* while the control is still wrong.
+
+**Where this is *not* backed by a number:** the measured lift is in BUILD
+(completeness, freshness). **Nine audit instruments across four designs sit at
++0.00, and a tenth read a registered null too** — recognition (snippets, cross-file repo, precision), procedure (does the model
+actually mutate the control and re-run the build), question-set (an unscoped
+"audit this repository", with defect classes outside the standard repertoire), and,
+since 2026-08-14, a **real repository at a real vulnerable commit** — the one design a
+synthetic fixture provably could not stand in for, because a planted defect is a
+deviation from its filler and agents find deviations without security reasoning. That
+last one is the strongest form of the test and it closed the question: across 16 real
+BOLA sites in Harbor v2.5.1 both arms recalled **15/16**, and across 59 blinded
+findings both scored precision **1.00**. A frontier model handed the code is already at
+ceiling — on synthetic code, on real code, and when you stop telling it what to look
+for. The audit half is justified by gap analysis and by real defects it found in this
+repo — **not by a measured lift**, and it is reported that way rather than implied.
+This paragraph once said there would be no tenth accuracy instrument. One was built on
+2026-09-12 ([COMMENT-TRIAGE](evals/results/2026-09-12/COMMENT-TRIAGE.md)) and read a
+registered null. A different *dependent variable* (time-to-find, report usability, reach
+for a non-expert) is still untested.
+**Two numbers landed 2026-09-10, both pre-registered before any call.** The router's
+**terminal self-audit** (BUILD step 4) is no longer only a mechanism: under 400 lines of
+competing rules prose, removing it costs **−0.05**, and it recovers **+0.062** — SE 0.019,
+**95% CI [+0.024, +0.099]**, the first interval here excluding zero on that step
+([GATE-ABSORPTION](evals/results/2026-09-09/GATE-ABSORPTION-N3.md)). And the **conflict
+rate** between two skills loaded together — the one failure mode with a real incident
+behind it — measured **0.176 verified** against 0.353 judge-reported, which **refuted** our
+own prior that conflicts are rare. The gap between those two numbers is the story: 3 of 11
+reported conflicts quoted sentences that were **not in the files named**, and the judge
+could not see the router, which is where conflict resolution lives
+([CONFLICT-RATE](evals/results/2026-09-09/CONFLICT-RATE.md)).
+
+[Every null, the retraction, and the pre-registered predictions that were wrong →](evals/results/RESULTS.md)
+
+### How the numbers are kept honest
+
+The measurement discipline is the part that is hard to copy, so it is worth stating
+plainly. Every item below is in the repo, not a claim about it:
+
+- **Nulls are published, not buried.** **Eleven** +0.00 rows (counted 2026-09-24) sit on the
+  [scoreboard](evals/results/RESULTS.md) next to the +0.39 — including the ones that
+  say, in our own words, that the audit half of this library adds nothing a good model
+  doesn't already do. That null is *why* the defect-avoidance result above matters: we
+  went looking for value where our own measurements said there wasn't any, and reported
+  both. (This line read "seven" until 2026-08-21 — it was understating the count.)
+- **A lift was retracted.** An early +0.07 on inert-control detection did not
+  reproduce when the sample grew from 15 to 49 cases. It was withdrawn and the
+  retraction is documented rather than quietly dropped.
+- **Routing is re-measured on a clock, not only on a diff.** `scripts/routing-baseline.sh`
+  re-runs the description classifier locally, and a monthly job goes red when that stamp is
+  older than 3 months, because a model release can move routing with no change here.
+- **The gates are proven able to fail.** `scripts/check-negative-controls.sh` runs
+  in CI as its own job: it injects a known-bad per invariant into a disposable git
+  worktree and requires *the intended check* to be the one that complains — a
+  non-zero exit for any other reason is reported as a false pass, not a catch.
+  A passing gate proves the tree is clean; only this proves the gate still works.
+- **Predictions are pre-registered.** Before the 2026-07-30 audit experiments ran,
+  the expected numbers and ranges were committed and pushed
+  ([PRE-REGISTRATION.md](evals/results/2026-07-30/PRE-REGISTRATION.md)). Both
+  predictions turned out wrong — one by three times its own lower bound — and are
+  reported as wrong.
+- **The scorers are themselves tested.** A mutation probe once replaced a scoring
+  function with `return 1.0` and nothing noticed; the golden tests that now run in CI
+  were watched to fail against that exact mutation first.
+- **The eval runners carry a duration baseline.** Each run records to a local ledger
+  and the next run of the same runner prints the delta — `[run-completeness elapsed
+  12.3s over 7 cases | previous 380.0s — 30.9x faster]` — because "finished far faster
+  than the work allows" is a *comparison*, and a duration without its denominator says
+  nothing. A swing over 5× is flagged for a human; nothing is gated on time.
+  That ledger was itself a **shared sink** until 2026-09-02 — `--selftest` runs and
+  aborts landed in it in the same shape as measurements (**46 of 60 rows**), which
+  had quietly disarmed the comparison for the most-run runner. Runs now mark
+  completion, and only a completed run can be a baseline.
+- **The library is applied to itself, and it finds things.** Its own
+  dead-path rules caught this repo's CI gates passing over **zero files** — green,
+  exit 0, examining nothing — and the fix was verified by re-running the mutation.
+  The same lens later caught this repo's **secret scan**: `gitleaks` prints
+  `179 commits scanned`, and nobody read it. In a shallow clone it scans **1 of
+  179**, prints `no leaks found`, and exits 0 — a green scan over 0.5% of history,
+  with one CI setting the only thing preventing it. CI now asserts the scope.
+  Two more, both 2026-09-04. **Two releases had shipped and were never tagged** — a
+  CHANGELOG entry, a version bump, a merge, and no tag: unreachable by `git tag`, and
+  invisible because the one version gate checked only that a tag is never *ahead* of
+  `VERSION`. And an eval runner had been a **dead runner** for six days — its ablation
+  target moved to another file in a split, so its guard refused every run. The guard was
+  right; what failed is that the smoke harness rendered it as a bland `ok`, the same
+  string it prints for a runner that merely wants arguments.
+
+The point is not that every number is flattering. It is that you can tell which ones
+are load-bearing, because the ones that aren't are labelled.
+
+## Skills
+
+| Skill | Covers |
+|---|---|
+| `sota` | Master router: operating principles, task→skill routing, full-audit workflow + audit methodology (tool matrix, evidence standard, report template) |
+| `sota-architecture` | Styles & ADRs, DDD, distributed systems, resilience, scalability, cloud-native, anti-patterns |
+| `sota-code-security` | Injection, authn/authz, crypto, web security, resource safety, data exposure, LLM appsec |
+| `sota-threat-modeling` | STRIDE/LINDDUN, DFDs & trust boundaries, threat catalogs, risk rating, model reconstruction |
+| `sota-skill-security` | The supply chain of things that tell an agent what to do: provenance & pinning, review-before-install, the instruction trust boundary, precedence & shadowing, capability minimisation |
+| `sota-secrets-management` | Lifecycle & workload identity, storage backends, app patterns, leak detection, credential types |
+| `sota-sandboxing` | Isolation boundaries, seccomp/Landlock/capabilities, containers/microVMs, parsers, AI-agent sandboxing |
+| `sota-performance` | Measure-first methodology, algorithms, memory, I/O & network, caching, Web Vitals |
+| `sota-async-concurrency` | Concurrency models, races/deadlocks, primitives, event-loop hygiene, cancellation, backpressure |
+| `sota-api-design` | REST/HTTP, versioning, GraphQL, gRPC, websockets/SSE/realtime, webhooks, API security & ops |
+| `sota-devsecops` | Pipeline hardening, SLSA/Sigstore provenance, dependencies/SBOM, container builds, IaC, admission control — including the trap where a **bot PR** (Dependabot/Renovate) branches inside the repo, satisfies every "trusted run" condition, and still gets **no repository secrets**, so a secret-dependent gate either goes permanently red or quietly scans less than it claims |
+| `sota-databases` | Modeling & engine choice, zero-downtime migrations, indexes, transactions, reliability, security, pgvector/Qdrant, SurrealDB |
+| `sota-frontend-design` | Typography/color, layout, design systems, UX patterns, WCAG 2.2 accessibility, motion design, visual craft |
+| `sota-web-frameworks` | React 19/Next.js + Vue 3/Nuxt 4: Server Components & Server Actions, RSC/client boundary, caching (`use cache`/PPR/ISR), hydration correctness, SSR state serialization, Nitro routes, framework CVEs |
+| `sota-observability` | Structured logging, metrics, OpenTelemetry tracing, SLOs & alerting, operational readiness |
+| `sota-testing` | Test strategy & design, doubles/test data, contract testing, e2e, property/fuzzing/mutation, suite health, **deadline tests that assert wall-clock** (the one carve-out to "never assert durations" — a timeout has no other oracle) |
+| `sota-llm-engineering` | Evals, prompt/context engineering, RAG, agents & tools, LLM production engineering, data lifecycle — incl. sizing context with the provider's own **token counter** rather than another vendor's **tokenizer**, which under-counts by up to 54% on markdown-dense text |
+| `sota-ml-engineering` | Production ML/MLOps (classical, not LLM): training→serving→monitoring, feature stores/registries, leakage & train/serve skew, ML Test Score eval, deployment & rollback, drift/retraining, ML security & governance |
+| `sota-cloud-infrastructure` | Accounts/landing zones, cloud IAM, VPC/DNS/CDN setup, compute selection, storage, FinOps, resilience & DR |
+| `sota-kubernetes` | Cluster platform security: RBAC & escalation, admission control, GitOps controllers, operators/CRDs, etcd, Helm supply chain, multi-tenancy, Talos/k3s |
+| `sota-identity-access` | IdP ops (OIDC/SAML/SCIM), RBAC/ABAC/ReBAC design, joiner-mover-leaver, privileged access & break-glass, SPIFFE, phishing-resistant MFA, AD/Kerberos/ADCS hardening |
+| `sota-network-security` | Zero-trust & segmentation, NetworkPolicy depth, service mesh/mTLS, egress control, WAF/edge, DNS/TLS/PKI & cert lifecycle, CAA account binding, email auth (SPF/DKIM/DMARC) |
+| `sota-confidential-computing` | TEEs (SEV-SNP/TDX/CCA, enclaves, confidential GPUs), remote attestation & attest-then-release, confidential K8s (CoCo), FHE/MPC/ZKP |
+| `sota-detection-engineering` | Detection-as-code (Sigma/YARA/Falco), SIEM & telemetry coverage, alert tuning/SOAR, threat hunting & intel, deception, incident response, AD attack detection |
+| `sota-data-engineering` | Pipelines & orchestration, streaming/CDC, lakehouse & Parquet, data quality/contracts, governance |
+| `sota-privacy-compliance` | Data inventory, privacy by design, consent & user rights, GDPR/CCPA/HIPAA/PCI/AI Act, SOC 2/ISO 27001, breach readiness |
+| `sota-security-compliance` | Control-frameworks-as-code: NIST CSF 2.0, 800-53, 800-171/CMMC, SSDF, FedRAMP, EU Cyber Resilience Act (SBOM/CVD/updates), ISA/IEC 62443 (OT zones & security levels) |
+| `sota-mobile` | Platform/stack choice, offline-first & push, mobile security, performance budgets, store releases, Swift in apps (the language is `sota-swift`) |
+| `sota-cli-ux` | Command/flag design, output & exit-code contracts, lifecycle behavior, distribution |
+| `sota-shell-scripting` | Bash safety baseline, robustness, script security, CI/entrypoint/Makefile scripts, and **PowerShell** — `pwsh` CI steps and deploy scripts, where `$ErrorActionPreference` is not the `set -e` it looks like |
+| `sota-docs-workflow` | Documentation architecture, API docs & changelogs, code review/PR workflow, commits & releases |
+| `sota-ux-writing` | Voice/tone & plain language (ISO 24495-1), microcopy, error & feedback messages, accessible/localizable interface text |
+| `sota-copywriting` | Positioning & value props, headlines/landing pages/CTAs, SEO content (E-E-A-T, spam policies), claims & legal trust (FTC, email law) |
+| `sota-rust` | Ownership/API design, errors & panics, unsafe discipline, tokio, supply chain, subprocess execution (`std::process::Command`), performance, CI |
+| `sota-golang` | Errors, package design, goroutine safety, net/http hardening, security, pprof, CI |
+| `sota-c-cpp` | RAII/idioms, memory safety & sanitizers, undefined behavior, security (CERT/MISRA, hardening flags), concurrency, CMake/clang-tidy/fuzzing CI, performance |
+| `sota-jvm` | Java/Kotlin idioms, null/immutability API design, concurrency (virtual threads, JMM, coroutines), security (deserialization/JNDI/XXE/crypto), GC/JFR/GraalVM, Maven/Gradle supply chain & CI |
+| `sota-python` | uv/ruff/typing, idioms, asyncio, security, performance, FastAPI/Django/pytest |
+| `sota-javascript-typescript` | Strict TS, idioms, async, Node hardening, security, bundle/React performance, testing |
+| `sota-dotnet` | C#/.NET idioms (records, NRT, patterns, spans), disposal/DI design, async (ConfigureAwait/cancellation), security (EF/Dapper, deserialization, ASP.NET Core auth, crypto), GC/Span/AOT, NuGet supply chain & analyzers/CI |
+| `sota-php` | strict_types & modern idioms (enums, readonly, match), OWASP security (PDO, output escaping, uploads/LFI, unserialize/Phar, sessions), Composer supply chain, PHPStan/Psalm, OPcache/FPM/JIT |
+| `sota-ruby` | Idioms & typing (RBS/Sorbet), security (SQLi, ERB escaping, strong params, Marshal/YAML.load, ReDoS), Bundler supply chain, RuboCop/Brakeman, GVL/Ractors/YJIT |
+| `sota-swift` | Swift on any target — Swift 6 data-race safety, optionals & errors, ARC & unsafe code, security (CryptoKit, Codable, SQLKit, TLS), Vapor/Hummingbird defaults, SwiftPM supply chain (plugins & macros, SBOM) |
+
+Every garbage-collected language skill also covers its **escape hatch into raw memory**: JNI/FFM/`Unsafe`, `ctypes`/`cffi`, native addons, `unsafe`/P/Invoke, PHP FFI, Fiddle. The class is stated once in `sota-code-security` rules/06 §3, and each language skill carries its own detectors.
+
+Several hazards recur in every language, so each is **stated once as a shared class** in `sota-code-security`, with a detector for each language in that shared rule:
+- SSH host-key verification;
+- temp-file and permission hygiene;
+- an LDAP bind used as a login check;
+- XML built from strings;
+- native library search paths.
+
+Each language skill was also **gap-checked** against an external, tool-backed list of that language's security checks: Bandit, gosec, cppcheck, Brakeman, ANSSI, find-sec-bugs, eslint-plugin-security, Psalm and the .NET analyzers. A concept matrix (`scripts/gen-concept-matrix.py`) keeps universal topics such as numeric precision and money covered in all nine.
+
+### Coverage & non-goals
+
+Deliberately **not covered**: Scala/Elixir, standalone C (inside `sota-c-cpp`), platform-engineering/IDP depth. File a *skill request* issue. A language with no skill still routes: the router applies the domain skills and says no language skill covers it.
+
+## Installation
+
+Both commands are shown at the top — the **plugin** (`/plugin`, auto-updates on
+version bump) or **clone + link** (`./scripts/install.sh`, a local checkout to
+read, hack on, or pin). A few details on the clone path:
+
+- Skills are discovered from `.claude/skills/` (per project) or `~/.claude/skills/`
+  (personal, all projects); `install.sh` symlinks every skill and your profile.
+- `--project DIR` scopes to one repo; `--copy` pins a snapshot instead of linking.
+- **Other agents need `--target all`.** Copilot CLI, Codex, Gemini CLI and Antigravity do not
+  document `~/.claude/skills`; `--target all` also links `~/.agents/skills` (Copilot, Codex,
+  Cursor, Gemini CLI) and Antigravity's own `~/.gemini/config/skills` /
+  `~/.gemini/antigravity-cli/skills` where it is installed, and `--routing` then mirrors the
+  directive — ending in the router's absolute path, for an agent with no skills loader — into
+  each installed agent's global file. With no flag, the installer offers this when it
+  detects one of them. Paths, sources and what is still unverified:
+  [docs/MULTI-AGENT.md](docs/MULTI-AGENT.md).
+- **On Windows without Developer Mode, the install is a copy.** Git Bash's `ln -s` copies
+  silently when a symlink is refused; the installer now detects that and **says so** —
+  re-run it after every `git pull`, or enable Developer Mode and re-run for live links.
+- Prefer no script? Symlink `skills/*/` into `~/.claude/skills/` and `commands/*.md`
+  into `~/.claude/commands/` by hand. You then skip what the script adds beyond links:
+  the update-reminder hook, the routing-hook, code-rules-hook and listing-budget offers, and the
+  reach check.
+
+The plugin (or `--copy`) installs the skills; a few extras (routing reminder,
+status line, pre-commit gates, AGENTS.md) aren't auto-enabled — see
+[Optional extras for plugin users](#optional-extras-for-plugin-users). On first
+run the plugin shows a one-time notice pointing there.
+
+### An install is personal, not repo-resident
+
+Installing once makes the skills apply in **every** project you open, new ones
+included — there is nothing to run per repo, and a brand-new repo is covered the
+moment you start work in it. But the install resolves against *your* home
+directory: a teammate's clone and a CI runner see none of it.
+
+So for a repo shared with anyone, decide explicitly:
+
+```sh
+./scripts/install.sh --project .   # repo-resident: .claude/skills/ in the repo
+./scripts/install.sh --project . --copy   # ...pinned snapshot, not symlinks to your paths
+```
+
+— or leave it personal and put the install step in `CONTRIBUTING.md` so a
+contributor can reproduce it. What must **not** stay personal is the gates: a
+secret scan that lives only in your shell doesn't run on anyone else's commit.
+Wire those into the repo with [`init-gates.sh`](#enforcing-the-gates).
+
+And the things no install can supply per repo — gates, LICENSE, `.gitignore`, an
+agent file, and the order to create them in — are the day-zero list in
+[`sota-docs-workflow` rules/01 §10](skills/sota-docs-workflow/rules/01-documentation-architecture.md).
+The router raises it once, unprompted, the first time it meets a repo that has
+none of them.
+
+### Updating
+
+**Plugin install:** updates ship when the version bumps — `/plugin update
+sota-skills@sota-skills` (or `/plugin marketplace update sota-skills`).
+
+**Do not assume auto-update covers you.** Per the
+[Claude Code docs](https://code.claude.com/docs/en/discover-plugins#configure-auto-updates)
+(checked 2026-07-30): *"Third-party and local development marketplaces have
+auto-update disabled by default"* — this is a third-party marketplace, so unless you
+turned it on (`/plugin` → **Marketplaces** → the entry → **Enable auto-update**),
+nothing updates on its own. Even with it enabled, the check runs *after* your session
+starts "with a random delay of up to ten minutes", and the running session keeps the
+versions it loaded at launch, so a refresh lands on `/reload-plugins` or your next
+launch — never mid-turn. Run `/plugin update` when you want a known-current library.
+
+**An occasional nudge, with no telemetry.** Nothing pushes updates on either path,
+so a `SessionStart` hook (`scripts/update-reminder.sh`) mentions — at most once
+every **14 days** — that your copy
+has been sitting for a while, and how to check. **It makes no network request.** It
+cannot tell whether a new version exists, only how long since it last spoke: the
+useful part was the reminder, and a real check from every session start would turn a
+documentation library into something that reports when and how often you work. You
+run the check. Installed by `install.sh` (clone) and by the plugin's own hook; silence
+it with `SOTA_UPDATE_REMINDER_DAYS=0`, or set your own interval in days. The one thing it
+*can* know locally it says every session: a **copied** install (no symlinks, e.g. Git Bash
+without Developer Mode) is stamped with its release, and once `git pull` moves the checkout past
+it, the hook names the stale copy and the re-install command.
+
+**Which version am I on?** `scripts/install.sh --version` reports the release, the
+checkout (`git describe`), whether your remote is ahead as of the last fetch, and
+whether the skills are symlinked (update live) or a pinned `--copy` snapshot. Quote
+it in a bug report — otherwise a report about a rule's behaviour can't be tied to the
+release that produced it.
+
+**Clone install:** because linking is symlink-based, **existing skills update
+the moment you pull** — the symlinks already point at the live files:
+
+```sh
+git -C /path/to/SOTA-skills pull
+```
+
+To also pick up **newly added** skills (a pull alone won't link a brand-new
+skill directory) and prune links to removed ones — pull and re-link at once:
+
+```sh
+./scripts/update.sh                  # git pull --ff-only, then re-link
+./scripts/install.sh --update        # the same thing — update.sh is a thin alias
+```
+
+It's idempotent: re-running only links what's new and prunes what's gone, and
+never touches symlinks it didn't create (`--copy` snapshots don't auto-update —
+re-run to refresh). With always-on routing enabled, a re-run also **refreshes
+the managed routing directive and reminder hook in place** when their wording
+changes upstream — prompting first, backing up, touching only the managed
+block; a hook you customized is left untouched.
+
+**What an update does *not* refresh: the gates in your own repos.** `update.sh`
+re-links skills and re-syncs this checkout's own hooks; it never reaches a repo you
+ran [`init-gates.sh`](#enforcing-the-gates) in, so those gates stay at the release
+that generated them. Re-run `init-gates.sh` there — it rewrites only its own managed
+block, so it is safe to repeat. This matters most for **hook types**: pre-commit
+writes `.git/hooks/<type>` at install time, so a config that *gains* a
+`pre-push` stage installs nothing on its own and the new gate silently never runs
+(verified on pre-commit 4.6.0). `verify-setup.sh` check **9a** reports exactly that —
+a declared stage with no hook file — which check 9 cannot see, because a different
+hook being present makes it read "installed".
+
+### The skill listing budget — raise it, or most of these descriptions never reach the model
+
+Claude Code reserves a per-turn character budget for the skill listing and computes it as
+`(context tokens x 4) x skillListingBudgetFraction`, where the fraction **defaults to
+0.01**. On a 200k-context model that is **8,000 characters** for *every* skill you have
+installed, from every source. This library's 42 descriptions are about **38,240** of it —
+and the budget is shared, so what matters is your machine's total. On the machine this was
+found on, the engine counted **65 skills / 47,324 characters** against an 8,000 budget: our
+42 plus 23 built-in skills that are compiled into the binary and invisible to any script.
+
+Over budget, entries are **ranked by recent usage** and the ones that do not fit are
+rendered as a bare `- name` with **no description at all** — so they carry no trigger
+vocabulary and cannot be auto-selected on what they do. It is not a tail-trim: it is
+all-or-nothing per skill. A skill you have **never used ranks zero and is dropped first**,
+which is a discovery ratchet — invisible because unused, unused because invisible.
+
+*Measured 2026-09-11 by reading the shipped `claude` binary (2.1.268), not inferred from
+behaviour, and confirmed live: roughly 20 of these 42 skills were listed name-only in the
+session that found it.*
+
+**Claude Code does notice — and tells nobody.** Forcing the condition and reading the log it
+wrote gives `[WARN] Skill listing over budget: 65 skills, 47324 chars > 8000 budget —
+descriptions will be truncated.` That line goes to `~/.claude/debug/` and appears nowhere
+else, which is exactly why a whole session can run on a crippled listing unnoticed.
+
+**Why it still works anyway, and what actually breaks.** The `sota` router is used every
+session, so it ranks near the top and keeps its description — and a name-only skill is
+still **invocable by name**, which is exactly what the router's routing table does. That is
+why always-on routing below is the recommended path and not a nicety: it is the mitigation.
+What is genuinely lost is *direct* auto-selection of a domain skill when the router has not
+fired, which is most likely for the skills you have never used.
+
+**`scripts/install.sh` offers to fix this**, on install and on `--update`, in the same
+shape as everything else it touches.
+- **It measures what the listing actually holds**, not what the installer just linked:
+  personal skills, your account's synced claude.ai skills, every *enabled* plugin, and the
+  project's own. `scripts/skill-listing-sources.sh` does this for all three checks
+  (installer, `verify-setup.sh`, the plugin hook). It adds 25% for the built-in skills,
+  which are compiled in and not on disk.
+- **It sizes the budget for the context window you actually run.** The budget scales with
+  the window, and 1M context gives five times the budget of 200K. Only a live session
+  knows the window exactly, so the checks use, in order:
+  - the window `scripts/statusline.sh` last **observed**, which it records;
+  - `CLAUDE_CODE_DISABLE_1M_CONTEXT=1`, which forces 200K;
+  - a `[1m]` model setting.
+
+  Otherwise the window is **unknown** and 200K is assumed. The model name alone can't rule
+  1M out, because several current models run 1M natively with no suffix.
+- **When it fits, it does nothing and says so.** When it doesn't, it asks before writing,
+  backs the file up, writes *through* a symlink so dotfiles stay in charge, and never
+  lowers a value you already set. For this library's skills alone that is about
+  **0.07** at 200K, or **0.02** at a known 1M window (measured at 42 skills).
+- **It warns if the library is installed twice** (a clone *and* the plugin). Every skill is
+  then listed twice, and the fix is to remove one copy, not to raise the budget.
+
+To set it by hand instead, in `~/.claude/settings.json`:
+
+```json
+{ "skillListingBudgetFraction": 0.07 }
+```
+
+Be aware of what you are buying: the listing is sent **every turn**, so this reserves ~7% of
+the context window for it. `skillListingMaxDescChars` (default 1536) is a separate per-skill
+cap — no description here exceeds it, so it does not apply.
+
+**Plugin users get told, because a plugin cannot fix this itself.** Verified against the
+2.1.268 binary: the settings precedence is
+`["userSettings","projectSettings","localSettings","flagSettings","policySettings"]` — there
+is **no plugin scope** — and a plugin contributes skills, hooks, agents, commands and MCP
+servers only. So the plugin ships a `SessionStart` hook
+(`scripts/plugin-budget-check.sh`). It measures the same sources as the installer and
+compares them against the budget at your session's window; a `[1m]` model in the hook's
+input counts as proof of 1M. It **says so with the numbers, the window it assumed and the
+exact setting** when they do not fit, and separately when the library is installed twice. It does not write your settings: that reserves a share of every context window, so it is
+your call. It speaks once per (size, fraction) pair — silent once fixed, and audible again if
+you install more skills.
+
+**To check your own install:** `scripts/verify-setup.sh` reports it as check **1b**, with the
+arithmetic, the per-source breakdown and the window it used, and a double install as **1g**. By hand: look at the skill
+list Claude is given and count entries that are a bare name with no text after the colon.
+Any such skill is installed, correct, and unreachable except by name.
+
+### Always-on routing (recommended)
+
+Skill descriptions are matched per prompt, so routing is opt-in and depends on
+how you phrase the request. To make the skills apply to **every** session
+regardless of wording, pin the routing instruction where Claude Code always
+sees it.
+
+**The quick path:** `./scripts/install.sh` offers to set this up for you after
+linking the skills — interactive and **dotfiles-aware**: it detects an existing
+or symlinked `~/.claude/CLAUDE.md` / `settings.json`, **asks before touching
+anything** (recommended answer pre-filled), backs up first, writes *through* a
+symlink so dotfiles stay in charge, and uses managed markers so re-runs refresh
+the managed block in place and never duplicate it. Use `--routing` to force,
+`--no-routing` to skip, `--yes` for non-interactive. Or wire the three layers
+by hand:
+
+Three layers, strongest last:
+
+**1. A stack profile.** Copy the template, fill in your stack, and symlink it
+into `~/.claude/` so the router finds it in every project (not just this repo):
+
+```sh
+cp profiles/example.md.template profiles/<you>.md   # edit it — profiles/*.md is git-ignored
+mkdir -p ~/.claude/profiles
+ln -sfn "$(pwd)/profiles/<you>.md" ~/.claude/profiles/<you>.md
+```
+
+**2. A global directive.** `~/.claude/CLAUDE.md` is loaded into every session,
+every project. Add a routing mandate so the skills apply without trigger words:
+
+```md
+# Global engineering directive
+
+Always, on every answer: (1) **validate before you assert** — verify any claim
+about code, system state, config, versions, or facts against a primary source
+(read the file / run the command / fetch official docs) before answering or
+proposing, and label anything unverified as such; (2) **keep docs current** —
+when you change code/behavior/config, update the affected docs (README,
+CHANGELOG, comments, runbooks, AGENTS.md) in the same change, unprompted.
+
+For any task that builds, designs, refactors, debugs, reviews, or audits code —
+in any language or repo — consult the `sota` router skill first, load the
+matching `sota-*` skills, and apply their rules before acting. This holds even
+when I never say "SOTA" or "audit". Treat `~/.claude/profiles/<you>.md` as the
+BUILD default and AUDIT baseline, and stop-and-ask on security-relevant choices.
+```
+
+**3. (Optional) A per-prompt reminder.** A directive read many turns ago can
+fade from a long context; a `UserPromptSubmit` hook in `~/.claude/settings.json`
+re-injects it on every prompt. `install.sh --routing` writes exactly this, and
+`--update` offers to refresh the wording when a release changes it:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command",
+        "command": "echo 'sota standing rules (every answer): (1) VALIDATE — check any claim about code, system state, config, versions or facts against a primary source before asserting it, and label anything unverified. (2) KEEP DOCS CURRENT — update affected docs in the same change. (3) ROUTE BEFORE YOU ACT — if the turn touches code, a diff, a config or a build/CI file, invoke the sota skill FIRST and apply the matching sota-* skills. Reading a file counts. If you have already read code this session without routing, route now. Routing is per task SHAPE, not per session: if the work has changed shape since you last routed — different layer or language, or from building to verifying — route again. Treat ~/.claude/profiles as the stack baseline; stop and ask on security-relevant choices.'" } ] }
+    ]
+  }
+}
+```
+
+Each rule is a **numbered imperative of equal weight**. That is not cosmetic: in
+a real session where routing was the *third clause of a run-on sentence*, rules
+(1) and (2) were obeyed every turn and the routing clause was dropped every turn
+— same text, same repetition, opposite outcome. Rule (3)'s last sentence makes
+the trigger **recoverable**: a long session often becomes a code task without any
+single prompt saying so, and routing late beats not routing.
+
+If you hand-edit the wording, keep the phrase **`sota-* skills`** in it — that is
+the marker `install.sh` uses to recognise the hook as its own. Reword past it and
+your hook stops receiving updates, and a later `--update` adds a second one
+beside it instead of refreshing it.
+
+No mechanism *in the skills* forces a model to run a skill — the three layers feed it
+instructions it chooses to follow, making routing reliable, not phrasing-dependent.
+
+#### Advisory vs enforced — read this before calling the library "only advisory"
+
+That sentence is about the **skills**, and it is often read as "nothing here can enforce
+anything". Three corrections, each re-checked 2026-10-02:
+
+- **The host can enforce, and some of it ships here.** Claude Code hooks are not advice: a
+  `Stop` hook can block the turn from ending, `PreToolUse` can deny or rewrite any tool call
+  ([hooks docs](https://code.claude.com/docs/en/hooks)), and the
+  [Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) exposes the same loop with
+  hooks and permissions programmatically. **`scripts/verified-done-hook.py`** uses that: an
+  opt-in Stop hook that refuses "done" on a changed tree until a verification command has
+  passed on exactly that tree (router principle 6, enforced). The git hooks from
+  `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
+- **The router is not an always-on 43 KB blob.** Only each skill's frontmatter `description`
+  is in every turn's listing; the router's body loads when the skill is invoked
+  ([CONTEXT-MANAGEMENT](docs/CONTEXT-MANAGEMENT.md#the-precondition-all-six-defenses-assume-measured-in-the-field-2026-08-05)).
+- **The evals measure guidance, not an agent loop.** Every runner script in `evals/` is a
+  chat-completion call with the rules in the prompt; no tools run and nothing the model writes
+  is executed. So the lifts here are real for that condition. **The agent-loop condition is
+  measured in a separate repo, [sota-agent-evals](https://github.com/martinholovsky/sota-agent-evals)**: Claude Agent SDK sessions with tools,
+  scored by hidden tests in a no-network container with no model judge. Its v2 run (2026-10-02)
+  was clean and read **not supported** on near-saturated cases. v3 (2026-10-08) hit the ceiling in every arm, and **its library arms never invoked a skill**: 0 of 166 library runs since v2. That arm installed skills without the routing layer `install.sh` adds. **v4 (2026-10-09) added it: 20/20 runs then invoked the library**, but the router is mostly where they stopped (3/20 went further, 0/20 read a rules file). Pass rates were at the ceiling in both arms, so whether the rules help is still unmeasured ([v4 report](https://github.com/martinholovsky/sota-agent-evals/blob/main/reports/2026-10-09-v4/REPORT.md)))
+  ([evals/README](evals/README.md#what-the-evals-do-not-measure)).
+
+What stays advisory is everything a hook cannot check mechanically: whether a rule was
+*applied well*. The line is "can a program decide it from the tree or the tool log", not
+"skills vs harness".
+
+**With the hook in place, re-typing the same instruction adds nothing mechanically.**
+Rule (1) is already prepended to every prompt you send, so "always validate your
+claims" is a second copy of text the model has just received. What is *not*
+redundant is naming the **technique** instead of the goal — "re-read the state,
+don't trust your summary", "verify at the remote", "run it rather than reason about
+it". The failure mode this library keeps finding is never *forgot to care*; it is
+*checked the wrong artefact*, and only the specific phrasing redirects that.
+Operating principle 7 is the generic form of it. (Reported from a session using the
+library, 2026-08-18: an observation about mechanism, not a measured effect — nobody
+can run the counterfactual.)
+
+## Using it
+
+With always-on routing set up (above), you **don't name anything** — describe
+the task in plain language and the right skills load automatically (see
+[How it works](#how-it-works)). Name a skill or rule only to *force* a specific
+skill, *scope* to one rule file, or *stack* an exact combo.
+
+**Building** — plain prompts; routing picks the skills:
+
+> Design a multi-tenant invoicing service — stack from my profile, or propose one.
+
+> Add a RAG search feature over our docs, and write the evals first.
+
+> Scaffold the GitHub Actions pipeline for this repo: SHA-pinned actions, OIDC,
+> SBOM + signing.
+
+> We handle CUI on this service — what does that require of the architecture and
+> data stores?
+
+**Auditing** — say the mode ("audit", "review", "harden"):
+
+> Run a full audit of this repo. Static analysis only, current commit, report
+> with a prioritized roadmap.
+
+> Audit this PR before I merge it.
+
+> Sweep the repo and git history for secrets — rotate-first recommendations.
+
+> Threat-model this service from the code: DFD, trust boundaries, STRIDE.
+
+> Audit our Kubernetes manifests and Dockerfiles. Severity + effort on every
+> finding.
+
+> Why is checkout slow? Profile first — no guessing.
+
+> Review our agent's MCP setup for tool poisoning, rug pulls, and shadowing.
+
+**Naming a skill or rule (optional — to force or scope):**
+
+> Add a websocket endpoint per `sota-api-design` rules/05 (auth-at-upgrade,
+> backpressure).
+
+> Is this migration zero-downtime safe? Check `sota-databases` rules/02
+> (expand/contract, lock-aware DDL).
+
+> Review test-suite health against `sota-testing` rules/07 (flaky policy,
+> coverage ratchets, speed budgets).
+
+> Audit this PR against `sota-code-security` + `sota-golang` before merge.
+
+**Maintaining the library:**
+
+> Refresh the library — re-verify fast-moving claims against current primary
+> sources, apply fixes, and update the root `LAST-VERIFIED` stamp.
+
+> Create profiles/<name>.md for my stack: <stores, auth, platform, policies>.
+
+> Add a new skill for <domain>, same structure: SKILL.md + rules/ under 500 lines
+> each, claims web-verified.
+
+**Tips:**
+
+- **Say the mode if ambiguous** — "audit/review/harden" vs "build/add/design";
+  skills key off those verbs.
+- **Scope audits explicitly** — which commit/branch, static-only or may-run-tools,
+  time budget ("crown jewels only"). The methodology file asks otherwise.
+- **Ask for the report format** — default audit output is executive summary →
+  findings by severity → roadmap by risk-reduction-per-effort → positive notes.
+- **Re-verify version-sensitive facts** — web-check before pinning any version.
+
+### Slash commands
+
+`scripts/install.sh` (and therefore `scripts/update.sh`) links every file in
+[`commands/`](commands/) into `~/.claude/commands/`, so they work in **any** project, not just
+this one. `verify-setup.sh` check **1d** compares what is installed against what the checkout
+ships — a `git pull` refreshes existing links and creates none, so a newly added command stays
+silently uninstalled until you re-run the installer.
+
+| Command | Run it when | What it does |
+|---|---|---|
+| **`/sota-report`** | at the **end** of a session, in your own project | Writes a gitignored field report on where the guidance failed, was absent, wrong, or right and did not fire — stamped with the version that produced it. Then writes a short generalised extract and prints a `gh issue create` line. It never posts anything. |
+| **`/sota-resume`** | at the **start** of a session, or when picking a project back up | Finds the open work: sweeps every tracker, checkbox and `TODO` marker with a **controlled** search (a clean "nothing found" is exactly the answer a skipped symlink tree, a `--replace` flag or a 30-row default page produces), classifies it — ready · needs a decision · deliberately deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap** — shows you the table, then executes what you agree to, one item at a time, against the project's own CI entry point. |
+| **`/sota-audit`** | when a piece of work is **finished**, or on arriving in a codebase you did not write | Audits the code against the library rather than for defects in general, so the dominant finding is **a rule that owns real surface area and was never applied** — and behind it, a control that is present and enforces nothing. Agrees the scope first (every candidate printed with its denominator, because the wrong scope returns *clean* rather than an error), pins every finding and dismissal to a commit, covers a diff's callers and importers, maps the trust boundaries before any severity is rated, runs the installed scanners (secrets over full history, dependencies, SAST, IaC and CI) and reports the missing ones as not reached, asks before running a codebase's own tests, build or install scripts when you did not write it (that is its code running as you), routes from the surfaces in the tree rather than from whatever happened to be loaded, prints a coverage table **per rules file** naming the ones **nobody opened**, walks each Audit checklist item by item (met · not met · not applicable, with the reason), expands each serious finding to the full evidence block with a reproduction, asks the questions that need a decision in one batch, then fixes what you agree to — verified against the finding, not just the suite. |
+| **`/sota-deep-audit`** | at a **milestone**, on **inheriting** a codebase, or before a go/no-go | The heavy pass, and the one to reach for deliberately rather than by default. It checks against the same standard as `/sota-audit` and buys five things one context cannot: **independence** (every serious finding goes to an agent that did not find it, working from the code rather than the finder's write-up), **scale** (a repo too large to hold at once is partitioned across agents, each with its own context, where `/sota-audit` partitions within one), **decisions re-measured rather than reconstructed** (where a past choice rests on a number, that number is produced again this session), **a forward look** at whether the plan is still right, and **the full threat-model reconstruction** where `/sota-audit` builds a boundary map (below). Four lenses — decisions & results · code and architecture · security posture · strategy. It states the plan and the fan-out split before spending anything, and writes files only if you ask. |
+| **`/sota-close`** | at the **end** of a session, before you walk away | The closure pass: **retract first** (every claim that proved wrong, corrected *everywhere it reached*), record open items where the next session will actually trip over them, update the docs and agent files the session made false (**step 3a**: re-read every doc that describes a file the session changed, bounded to those docs), **re-derive every number from its source**, state plainly what is not done and what is blocked on whom, then commit the evidence and confirm the push landed. |
+
+`/sota-resume` and `/sota-close` are the two ends of the same session: one picks the open work
+up, the other puts it down where the next session will find it. Neither needs the other to have
+run — most projects scatter their open work across files written by people who are not here.
+Both **load what they cite**: a step 0 invokes `sota-shell-scripting` and reads its rules/06
+before the first sweep, because a citation loads nothing — and invariant 40 fails any command
+that cites a skill's rules file without saying to load it.
+
+All five take free-text arguments to steer them (`/sota-close focus on the migration branch`).
+They are prompts, not scripts: the text is in `commands/*.md` and nowhere else, so you can read
+exactly what your session is being told to do before you run it.
+
+**Why the threat model runs first — light in `/sota-audit`, full in `/sota-deep-audit`.** A
+finding's severity rests on the chain it closes, and a chain crosses a trust boundary, so both
+commands map the boundaries before rating anything. `/sota-audit` builds the light version:
+entry points, the authn/authz checkpoint on each, the asset it reaches, and the assumptions that
+implies, each checked against the code. `/sota-deep-audit` reconstructs the whole model. That is a pass of its own, and it goes **before** the lenses rather than inside the security one,
+because a finding rated without trust boundaries is rated in a vacuum. It extracts entry points,
+stores, actors and the boundaries the system *actually* has from the code rather than the docs,
+then writes down the assumptions that implies — *services trust the gateway's headers*, *that
+bucket is private* — and **tests each against the code that makes it true**. No evidence is not
+"probably fine"; it is a broken assumption, and those are usually the Criticals. What comes out is
+a **control-presence matrix**: Present · Partial · Absent · N/A · Unverifiable, each carrying the
+evidence its state demands — `file:line` for Present, both sides for Partial, and **the searches
+you ran** for Absent, so a reviewer can re-run them. **Partial is the most important state.** One
+authorization-checked endpoint proves the team knows the pattern; the seventeen unchecked ones are
+the finding, and they tell you the remediation is adoption rather than invention. The pass also
+reads the **negative space** — exclusion lists, skip-auth decorators, `count = 0`, disabled tests
+with *security* in the name — because a control someone switched off is a stronger finding than one
+never built. Full procedure: [`sota-threat-modeling`](skills/sota-threat-modeling/) rules/06.
+
+**Why `/sota-close` is a command rather than a habit.** The end of a session is when the
+context has usually been compacted at least once, so "what happened" is reconstructed from
+your assistant's own earlier prose about the work rather than from the work — the weakest
+check available. Everything the command asks for is executed against an artifact instead: `git
+diff`, `git log -S`, the file on disk, the command run again. The ordering is load-bearing
+too — retraction comes first because every later step *writes*, and anything still wrong gets
+propagated into a doc, a commit message or a hand-off where the next session reads it as
+established.
+
+## Optional setup & integrations
+
+Beyond the skills themselves — all opt-in, none required to use the library.
+
+### Badge
+
+Built or audited a project with the library? Ship the attribution
+[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/martinholovsky/SOTA-skills):
+
+```md
+[![Built with SOTA Skills](https://img.shields.io/badge/Built%20with-SOTA%20Skills-2fa45f)](https://github.com/martinholovsky/SOTA-skills)
+```
+
+### Enforcing the gates
+
+Routing makes the model *apply* the rules; to make them stick regardless of who
+(or what) commits, wire them as git hooks. `scripts/init-gates.sh` generates a
+SOTA-aligned `.pre-commit-config.yaml` for whatever languages it finds in the
+target repo:
+
+```sh
+cd /path/to/your/project
+/path/to/SOTA-skills/scripts/init-gates.sh        # add --dry-run to preview first
+```
+
+It detects Python / Go / Rust / JS-TS / shell by manifest and extension, then
+writes the exact tools each skill prescribes — ruff·mypy·pytest·pip-audit,
+gofumpt·golangci-lint·govulncheck, clippy·cargo-audit, eslint·tsc·`<pm> audit`,
+shellcheck·shfmt, plus gitleaks everywhere. Fast checks (lint, format, secrets)
+run on **commit**; heavy ones (type-check, tests, vuln scans) run on **push** —
+the split `sota-python` rules/01 §6 and `sota-devsecops` rules/05 require, so
+commits stay quick.
+
+It is **idempotent**: re-run it after adding a language and it rewrites only the
+block between its `# >>> sota-gates >>>` markers, leaving any hooks you added
+yourself in place. The hooks call your project's own toolchain, so install the
+per-language tools it lists on exit (and `pre-commit install` if the script
+couldn't).
+
+**Then check it actually took.** `init-gates.sh` sets things up; nothing
+verifies the result, and "configured" and "working" render identically — a
+config file with no installed hook is not a control, and a CI job whose every
+run is *skipped* is a gate on paper.
+
+```sh
+/path/to/SOTA-skills/scripts/verify-setup.sh     # read-only; --runs N widens the CI sample
+/path/to/SOTA-skills/scripts/verify-setup.sh --reach-only   # section A only: is the library reaching this machine?
+/path/to/SOTA-skills/scripts/verify-setup.sh --no-color     # plain rows; also honours NO_COLOR and TERM=dumb
+```
+
+`install.sh` (and therefore `update.sh`) runs the `--reach-only` half itself at the end
+of every run, because *"linked 42 skills"* is what the installer **did** and reachability
+is what the agent **gets** — and the two diverge silently, since a `git pull` updates
+every existing symlink and can create none. Pass `--no-verify` to skip it.
+
+It reports skills reachability, the routing hook, the profile symlink, a licence
+under *any* name, which gates exist, whether a hook is **installed** rather than
+merely configured, and — from real run conclusions — whether CI has ever
+*executed* and ever *rejected* anything. Its **section F** adds one fact about the
+*machine* rather than the repo: **what your default searcher silently skips**. Every
+searcher excludes something quietly — a symlinked directory, a `.gitignore`'d path, a
+dot-directory — and the failure mode is a *clean absence*, which is exactly the answer
+a sweep was hoping to prove. It runs a four-match fixture under `$TMPDIR` and names the
+exclusions as **INFO**; nothing fails for them, because `rg` skipping ignored files is a
+feature. The one thing that *can* fail is the **positive control** — a searcher that
+cannot find the plain file is broken, and its absences are not evidence. It changes nothing and exits 1 on any
+FAIL. Anything it could not observe is marked **UNVERIFIED**, never passed: on
+this repo the reject-history check reads UNVERIFIED at the default sample and
+turns up a real rejection at `--runs 200`, which is why the sample size is
+printed. [docs/VERIFY-SETUP.md](docs/VERIFY-SETUP.md) carries the other half — a
+paste-in prompt for the judgement calls a script can't make: whether the agent
+file's content is meaningful and whether its claims are still *true*.
+
+Add `--docs-gate` to also install a pre-commit hook that **blocks a commit which
+changes code but updates no docs** (README/CHANGELOG/`docs/`/`*.md`) — so docs
+stay current without you having to ask. It writes a small helper to
+`.sota/docs-gate.sh`; it's heuristic (a docstring-only edit inside a code file
+will trip it) and bypassable with `SKIP=sota-docs-gate git commit`, which is why
+it's opt-in.
+
+### Other AI agents (Codex, Copilot, Gemini, …)
+
+The skill *content* is plain Markdown — any model reads it. **To make the skills
+themselves discoverable** by Copilot CLI, Copilot in VS Code, Codex, Cursor, Gemini
+CLI or Antigravity, install with `./scripts/install.sh --target all` — it links
+`~/.agents/skills`, which all but Antigravity read, plus Antigravity's own skills
+directories where it is installed, and `--routing` writes the directive into each one's global
+instructions file (table and sources: [docs/MULTI-AGENT.md](docs/MULTI-AGENT.md)). To
+route a project's agent through the library, generate an `AGENTS.md` (the cross-tool open standard
+read by Codex, Cursor, Copilot, Antigravity CLI, Windsurf, Zed, and more):
+
+**Or over MCP.** `scripts/sota-mcp-server.py` serves the same files read-only as MCP tools (`list_skills`, `get_skill`, `get_rules_file`), resources and prompts, for an agent that would rather call tools than read a skills folder. `./scr

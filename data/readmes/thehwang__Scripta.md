@@ -1,0 +1,311 @@
+<p align="center">
+  <img src="screenshots/scripta-icon-256.png" width="128" alt="Scripta icon">
+</p>
+
+<h1 align="center">Scripta</h1>
+
+<p align="center">
+  <strong>Privacy-first meeting transcription & AI summary for macOS</strong>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#requirements">Requirements</a> •
+  <a href="#building-from-source">Build</a> •
+  <a href="CONTRIBUTING.md">Contributing</a> •
+  <a href="#license">License</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-macOS%2014%2B-blue" alt="macOS 14+">
+  <img src="https://img.shields.io/badge/swift-5.9-orange" alt="Swift 5.9">
+  <img src="https://img.shields.io/badge/AI-Ollama-green" alt="Ollama">
+  <img src="https://img.shields.io/badge/whisper.cpp-local%20ASR-blueviolet" alt="whisper.cpp">
+  <img src="https://img.shields.io/github/license/thehwang/Scripta" alt="MIT License">
+  <a href="https://github.com/thehwang/Scripta/releases/latest"><img src="https://img.shields.io/github/v/release/thehwang/Scripta?label=release" alt="Latest release"></a>
+</p>
+
+### What's new in v3.4.7 — Scheduled recordings
+
+Plan named meetings, set **start** and **end** (or start + duration), and Scripta **auto-starts and auto-stops** capture while the app is running — still **100% on your Mac**. Sessions are saved with **titles** in history (not just timestamps). Overlapping schedules are blocked; scheduled runs **do not** pop the summary sheet automatically (summarize manually when you want).
+
+<p align="center">
+  <img src="screenshots/schedule/Screenshot-schedule-status.png" width="720" alt="Scheduled recordings — upcoming meeting with Pending status, Edit and Cancel actions">
+</p>
+
+<p align="center">
+  <img src="screenshots/schedule/Screenshot-add-schedule.png" width="350" alt="Open Scheduled Recordings from the toolbar calendar icon">
+  &nbsp;
+  <img src="screenshots/schedule/Screenshot-edit-schedule.png" width="350" alt="New schedule — name, start/end or duration, language, notification option">
+</p>
+<p align="center">
+  <sub>Open the scheduler → add a meeting → Scripta records automatically at start time (app running, permissions granted).</sub>
+</p>
+
+<p align="center">
+  <strong><a href="https://github.com/thehwang/Scripta/releases/tag/v3.4.7">Release notes v3.4.7</a></strong> ·
+  <a href="#scheduled-recordings">Feature details</a> ·
+  <a href="#installation">Install</a>
+</p>
+
+<p align="center">
+  <img src="screenshots/full_mode.png" width="720" alt="Scripta — Full mode with live dual-channel transcription">
+</p>
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=owW2F3VU_n0">
+    <img src="https://img.youtube.com/vi/owW2F3VU_n0/maxresdefault.jpg"
+         width="720" alt="Watch the Scripta demo on YouTube">
+  </a>
+  <br>
+  <em>▶ <a href="https://www.youtube.com/watch?v=owW2F3VU_n0">90-second walkthrough: dual-channel capture → local AI summary</a></em>
+</p>
+
+---
+
+Scripta is a native macOS app that captures **both your microphone and system audio** during meetings, transcribes them in real-time, and generates AI-powered summaries — all running **100% locally** on your Mac. No cloud. No subscriptions. No data leaves your machine.
+
+- **Mic** transcription powered by [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (Metal-accelerated, on-device)
+- **System audio** transcription via Apple `SFSpeechRecognizer` (on-device)
+- **AI summaries & chat** via [Ollama](https://ollama.com) (local LLM)
+
+## Features
+
+<a id="scheduled-recordings"></a>
+
+**Scheduled recordings** *(v3.4.7+)*
+- Toolbar **calendar** icon or menu **Scheduled Recordings…** — list upcoming meetings, **Edit** / **Cancel**, status labels (e.g. Pending, Recording now)
+- **New schedule** sheet: meeting **name**, **start** & **end** or **duration**, language, optional **notify if app is not open** at start time
+- **Auto-start** and **auto-stop** while Scripta is open and Screen Recording / mic / speech permissions are already granted
+- **No overlapping** schedules; conflict dialog if a manual recording is already running at start time
+- **Named sessions** in history (`session.json` title) — search by meeting name, not only timestamp
+- **Awake** toggle (bottom bar): optional idle **system + display** sleep prevention during recording/transcription
+- Scheduled completions **skip** the auto-summary panel — summarize from history when you want
+
+**Dual-Channel Real-time Transcription**
+- Mic ("You") via whisper.cpp — 100% local, Metal-accelerated on Apple Silicon
+- System audio ("Remote") via Apple on-device speech recognition
+- Supports 10+ languages (English, Chinese, Japanese, Korean, Spanish, French, German, and more)
+- Mic mute button — instantly pause/resume mic recording during a session
+
+**AI-Powered Summaries**
+- Local AI summaries powered by [Ollama](https://ollama.com)
+- Key points + action items extraction
+- Streaming responses displayed in real-time
+
+**AI Chat Panel**
+- Ask questions about your meeting transcript
+- Multi-turn conversation with context
+- Works during recording or on completed sessions
+
+**Live Translation** *(macOS 15+)*
+- Real-time bilingual transcript using Apple Translation framework
+- Context-aware translation for improved quality
+
+**Meeting History**
+- Browse and search all past sessions
+- View transcripts, summaries, and re-generate with AI
+- Audio recordings saved alongside transcripts
+- Sessions stored in `~/Documents/ScriptaScripts/`
+
+**Two Display Modes**
+- **Full mode**: complete UI with transcript, summary, chat, and controls
+- **Minimal mode**: floating live captions bar — stays on top while you work
+
+**Privacy by Design**
+- All processing happens on your Mac
+- No internet connection required (except for initial model downloads)
+- No account, no telemetry, no tracking
+
+## Screenshots
+
+### Scheduled recordings
+
+<p align="center">
+  <img src="screenshots/schedule/Screenshot-add-schedule.png" width="720" alt="Scheduled Recordings panel — empty state with Add schedule">
+</p>
+
+<p align="center">
+  <em>Empty scheduler — click <strong>Add schedule</strong> or the <strong>+</strong> button.</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/schedule/Screenshot-edit-schedule.png" width="720" alt="New schedule form — Test meeting, start/end times, English, notify if app closed">
+</p>
+
+<p align="center">
+  <em>Set name, window, language, and whether to notify you if Scripta is not open at start time.</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/schedule/Screenshot-schedule-status.png" width="720" alt="Upcoming schedule Test with Pending status">
+</p>
+
+<p align="center">
+  <em>Upcoming list with status — at start time Scripta auto-records; use <strong>Retry start</strong> if permissions were fixed after the slot began.</em>
+</p>
+
+Grant **Screen Recording**, **Microphone**, and **Speech Recognition** in **Permissions Setup** before the meeting window so auto-start does not interrupt you with system dialogs.
+
+### Full Mode — Live Recording with Translation
+
+<p align="center">
+  <img src="screenshots/full_mode.png" width="720" alt="Full mode — live dual-channel transcription with real-time Chinese translation">
+</p>
+
+Live dual-channel transcription with bilingual translation. The "Remote" channel captures system audio from any meeting app (Teams, Zoom, Meet, etc.) while "You" captures your microphone via whisper.cpp.
+
+### AI Summary & Chat
+
+<p align="center">
+  <img src="screenshots/AI_summary.png" width="720" alt="AI summary with action items and Ask AI chat panel">
+</p>
+
+After recording, generate an AI summary with key points and action items using a local Ollama model. The Ask AI chat panel lets you query your transcript in natural language.
+
+### AI Model Setup — Pick your local LLM
+
+<p align="center">
+  <img src="screenshots/model-select.png" width="540" alt="Scripta model picker — Gemma 4 E2B with NEW badge and 128K ctx indicator">
+</p>
+
+Choose between Qwen 2.5 (fast, 1.8 GB) for everyday meetings or Gemma 4 (high quality, 7.2 GB) for hour-long sessions. Each row surfaces the model's **true context window** — Scripta now passes that value to Ollama via `num_ctx`, so a 60-minute meeting actually gets summarized end-to-end rather than the last five minutes. Recommended models can be pulled with one click.
+
+### Minimal Mode — Floating Captions
+
+<p align="center">
+  <img src="screenshots/minimal_mode.png" width="720" alt="Minimal mode — compact floating caption bar with bilingual subtitles">
+</p>
+
+A compact floating caption bar that stays on top of your other windows — perfect for following along during a meeting without switching apps.
+
+### Meeting History
+
+<p align="center">
+  <img src="screenshots/history.png" width="720" alt="Meeting history — browse past sessions with search">
+</p>
+
+Browse all past sessions with duration, entry count, and audio availability. Search transcripts and re-generate summaries at any time. Scheduled meetings appear by **title** when set.
+
+## Articles & benchmarks
+
+- **v3.2 + Gemma 4 writeup:** [*"I asked Gemma 4 to summarize. It said the transcript looked truncated. It was right."*](https://dev.to/thehwang/i-asked-gemma-4-to-summarize-it-said-the-transcript-looked-truncated-it-was-right-4pff) — [Dev.to Gemma 4 challenge](https://dev.to/challenges/google-gemma-2026-05-06)
+- **Follow-up ablation:** [*"Gemma 4 wrote three summaries in one response…"*](https://dev.to/thehwang/gemma-4-wrote-three-summaries-in-one-response-the-middle-one-was-a-self-disclaimer-3pj9) — harness in [`benchmarks/calibration-ablation/`](benchmarks/calibration-ablation/)
+- **Companion replication:** [@wildeconforce](https://dev.to/wildeconforce) — [*Production Deployment of Gemma 4 on an 8GB GPU*](https://dev.to/wildeconforce/production-deployment-of-gemma-4-on-an-8gb-gpu-what-thehwang-and-i-reproduced-across-two-hosts-2783)
+
+## Installation
+
+### One-Line Install (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/thehwang/Scripta/main/scripts/install.sh | bash
+```
+
+This single command will:
+- Download the latest release for your macOS version
+- Install `Scripta.app` to `/Applications`
+- Install [Ollama](https://ollama.com) via Homebrew (if not already installed)
+- Start Ollama as a background service
+- Pull the default AI model (`qwen2.5:3b`)
+- Download the Whisper speech model (`ggml-base.bin`, ~142 MB)
+- Launch Scripta
+
+### One-Line Install — with Gemma 4 (recommended for long meetings)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/thehwang/Scripta/main/scripts/install.sh | SCRIPTA_INSTALL_GEMMA4=1 bash
+```
+
+Same as above but also pulls **Gemma 4 E2B** (~7.2 GB extra). Recommended if your meetings frequently exceed 30 minutes — Gemma 4's **128K context window** summarizes the full transcript in one pass with no chunking. The default `qwen2.5:3b` is still installed alongside, so you can switch between them anytime in Settings → AI Model.
+
+### Manual Install
+
+1. Download the latest `.zip` from [Releases](https://github.com/thehwang/Scripta/releases)
+2. Extract and move `Scripta.app` to `/Applications`
+3. Clear quarantine: `xattr -cr /Applications/Scripta.app`
+4. Install Ollama: `brew install ollama && brew services start ollama`
+5. Pull a model: `ollama pull qwen2.5:3b`
+6. Launch Scripta — it will prompt to download the Whisper model on first run
+
+## Requirements
+
+| Component | Requirement |
+|-----------|------------|
+| macOS | 14.0 (Sonoma) or later |
+| Chip | Apple Silicon (M1/M2/M3/M4) or Intel |
+| Ollama | Required for AI summaries and chat |
+| Disk | ~2 GB for AI model + ~142 MB for Whisper model |
+| Translation | macOS 15+ (Sequoia) for live translation |
+
+## Building from Source
+
+```bash
+git clone https://github.com/thehwang/Scripta.git
+cd Scripta
+make run
+```
+
+This will build whisper.cpp as a static library, build the app with Swift Package Manager, sign it with an ad-hoc certificate, and launch it.
+
+### Project Structure
+
+```
+Scripta/
+├── Sources/
+│   ├── Scripta/              # Main app
+│   │   ├── AppDelegate.swift
+│   │   ├── ContentView.swift        # Main UI (full + minimal modes)
+│   │   ├── MeetingRecorder.swift     # Recording orchestration
+│   │   ├── WhisperEngine.swift       # whisper.cpp integration for mic ASR
+│   │   ├── SystemAudioCapture.swift  # ScreenCaptureKit system audio
+│   │   ├── SummaryService.swift      # Ollama AI summary
+│   │   ├── ChatPanel.swift           # AI Q&A sidebar
+│   │   ├── HistoryPanel.swift        # Meeting history browser
+│   │   ├── SchedulePanel.swift       # Scheduled recordings UI
+│   │   ├── ScheduleCoordinator.swift # Auto-start/stop scheduler
+│   │   ├── TranslationService.swift  # Apple Translation wrapper
+│   │   ├── MeetingStore.swift        # Session persistence
+│   │   └── ...
+│   ├── ScriptaCore/          # Shared types (TranscriptEntry, logging)
+│   └── CWhisper/             # whisper.cpp C bridging (systemLibrary)
+├── benchmarks/               # Reproducible model + context-window benchmarks
+│   ├── synthetic-transcript.md  # Fixture: 60-min fictional all-hands meeting
+│   └── findings.md           # Qualitative analysis of each model's output
+├── demo/                     # Hammerspoon automation that drives the UI
+│   ├── scripta-demo.lua      # through the v3.2 launch demo (timing-synced
+│   └── README.md             # to a pre-recorded voiceover for repeatable takes)
+├── screenshots/              # App screenshots for README
+├── scripts/
+│   ├── install.sh            # One-line installer
+│   └── benchmark_models.sh   # Run any installed Ollama model against fixture
+├── Resources/
+│   └── AppIcon.icns
+├── Makefile                  # Build, install, deploy targets
+└── Package.swift
+```
+
+## Permissions
+
+Scripta requires the following macOS permissions (prompted on first launch):
+
+- **Microphone** — to capture your voice
+- **Screen Recording** — to capture system/meeting audio via ScreenCaptureKit
+- **Speech Recognition** — for on-device transcription
+
+## Legal Notice
+
+> **Recording Disclaimer:** Recording conversations may be subject to local, state, or national consent laws. Many jurisdictions (including parts of the United States, Canada, and the European Union) require **all participants** to be informed and to consent before a conversation is recorded. **You are solely responsible for complying with all applicable laws when using this software.** Scripta does not record by default — recording is explicitly initiated by the user. The developers of Scripta assume no liability for misuse or non-compliance with recording consent laws.
+
+> **Privacy:** Scripta processes all audio and transcription data **entirely on your device**. No audio, transcript, or personal data is transmitted to any external server. AI summaries are generated locally via [Ollama](https://ollama.com). The only network activity is the one-time download of AI and speech models.
+
+## License
+
+[MIT](LICENSE) — free for personal and commercial use.
+
+---
+
+<p align="center">
+  Made with ❤️ on a Mac
+</p>

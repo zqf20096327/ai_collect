@@ -1,0 +1,106 @@
+# Skills
+
+这是徐望瀚在日常工作中使用和维护的一组可复用 skills。每个 skill 使用独立子文件夹，并按 Anthropic/Claude Skills 风格提供 `SKILL.md`。
+
+每个 skill 的基本结构：
+
+```text
+skill-name/
+  SKILL.md
+  scripts/      # 可选，放可执行脚本
+  references/   # 可选，放按需读取的参考资料
+  assets/       # 可选，放模板、图片、示例文件等素材
+```
+
+## Skill 列表
+
+| Skill | 入口文档 | 用途 |
+| --- | --- | --- |
+| `agent-orchestration` | [`agent-orchestration/SKILL.md`](agent-orchestration/SKILL.md) | 组织主 Codex、中层原生子 agent 或 Claude Code/Atria 陪跑者与底层确定性管线，覆盖临时凭据注入、长期会话、异常接管、资源并发和证据验收。 |
+| `agents-md-maintenance` | [`agents-md-maintenance/SKILL.md`](agents-md-maintenance/SKILL.md) | 创建、整理、拆分和维护仓库级 `AGENTS.md` 与 `AGENTS.local/`，覆盖常驻上下文边界、公开/私有跟踪策略、同步校验和安全编辑。 |
+| `ai-conference-paper-writing` | [`ai-conference-paper-writing/SKILL.md`](ai-conference-paper-writing/SKILL.md) | 撰写、重构和打磨 AI conference paper，覆盖 research story、核心包装关键词、Introduction、Related Work、Method、Experiments、图表布局、case study、citation 和 reviewer-risk 检查。 |
+| `browser-render-visualization` | [`browser-render-visualization/SKILL.md`](browser-render-visualization/SKILL.md) | 使用 Playwright 渲染网页前端并保存桌面/移动端截图，检查 GitHub Pages、本地静态页面、Canvas/Three.js 空白渲染、布局溢出和浏览器报错。 |
+| `codex-app-troubleshooting` | [`codex-app-troubleshooting/SKILL.md`](codex-app-troubleshooting/SKILL.md) | 排查 Codex App 登录、代理、CLI/WSL 后端、项目迁移与 MCP 故障，收录 CC Switch、Claude/Gemini 和 IDE 相关经验，保护认证、活动对话与历史。 |
+| `codex-history-sync` | [`codex-history-sync/SKILL.md`](codex-history-sync/SKILL.md) | 使用保守的一向同步脚本，把一个 `.codex` 的 Codex 会话记录、`history.jsonl`、`sessions/` 和 thread title 元数据同步到另一个用户或目录，默认排除敏感配置并要求先 dry-run。 |
+| `context-overlay` | [`context-overlay/SKILL.md`](context-overlay/SKILL.md) | 配置和验证 OpenAI-compatible context overlay proxy，覆盖 rule matching、prompt/context 注入、prompt patch、routing、reject、skill_dir 检索和转发安全。 |
+| `docx-splitting` | [`docx-splitting/SKILL.md`](docx-splitting/SKILL.md) | 在 Windows + Microsoft Word 环境中，通过 [`scripts/split_docx.py`](docx-splitting/scripts/split_docx.py) 按页无损拆分 `.docx` 文档。 |
+| `feishu-bot` | [`feishu-bot/SKILL.md`](feishu-bot/SKILL.md) | 创建、配置、调用和排查飞书/Lark 机器人，区分自定义机器人 webhook 单向群通知、Markdown 表格卡片渲染与应用机器人收发消息、事件订阅、卡片交互和资源上传。 |
+| `frontend-markdown-rendering` | [`frontend-markdown-rendering/SKILL.md`](frontend-markdown-rendering/SKILL.md) | 在前端只渲染最终 assistant Markdown，保留工具过程为纯文本/JSON，并支持表格、代码块、图片、KaTeX 公式、Mermaid 和 workspace 图片安全访问。 |
+| `github-readme-writing` | [`github-readme-writing/SKILL.md`](github-readme-writing/SKILL.md) | 创建或优化 GitHub 项目 README，包含居中标题、badge、teaser、highlights、news、Mermaid、GitHub 公式渲染、目录结构、quick start、联系方式、citation 和 star history。 |
+| `huggingface-dataset-publishing` | [`huggingface-dataset-publishing/SKILL.md`](huggingface-dataset-publishing/SKILL.md) | 创建、上传、验证和维护 Hugging Face Dataset，尤其是图片/多图字段、JSON metadata、`push_to_hub`、回读验证和 dataset card。 |
+| `lab-cluster-1` | [`lab-cluster-1/SKILL.md`](lab-cluster-1/SKILL.md) | 在 lab cluster 1 / PJLAB 上处理开发机登录、路径和环境、网络代理、模型权重、`rlaunch`/`rjob`、服务部署和排错等集群工作流。 |
+| `lab-cluster-1-web-portal` | [`lab-cluster-1-web-portal/SKILL.md`](lab-cluster-1-web-portal/SKILL.md) | 访问、登录和只读查询 lab-cluster-1 的 `h.pjlab.org.cn` 集群管理网站，覆盖 OIDC 会话、token 安全、Prometheus/DCGM 监控、pod/rjob 映射和报告数据分层。 |
+| `latex-compiling` | [`latex-compiling/SKILL.md`](latex-compiling/SKILL.md) | 使用系统级 `latexmk` + `pdflatex` 编译 LaTeX，并隔离 build 目录与 TeX 缓存。 |
+| `latex-template-migration` | [`latex-template-migration/SKILL.md`](latex-template-migration/SKILL.md) | 将 arXiv、旧会议、旧期刊或自定义 LaTeX 论文工程迁移到目标投稿模板，覆盖全匿名检查、只换模板、页数判断、压页、压行、文本/图表/公式守恒和 PDF 可视化检查。 |
+| `llm-deploy-training` | [`llm-deploy-training/SKILL.md`](llm-deploy-training/SKILL.md) | 部署和训练 LLM/VLM，覆盖 vLLM OpenAI-compatible 服务、多模态限制、Qwen3.5 工具调用、thinking/reasoning 控制、CUDA Graph 策略，以及 ms-swift SFT/DPO/GRPO full training、Megatron 长序列训练和 messages loss/loss mask。 |
+| `llm-image-generation` | [`llm-image-generation/SKILL.md`](llm-image-generation/SKILL.md) | 通过 OpenAI-compatible LLM 网关生成图片，优先读取 `LLM_API_KEY`/`LLM_BASE_URL`，覆盖图像模型选择、长等待时间、base64/URL 保存和排错。 |
+| `markdown-to-docx` | [`markdown-to-docx/SKILL.md`](markdown-to-docx/SKILL.md) | 使用 [`scripts/build_docx.py`](markdown-to-docx/scripts/build_docx.py) 将 Markdown 文档转为 Word `.docx`，支持本地图片、caption、标题样式、列表、引用、图文块表格和可见字数估算。 |
+| `markdown-to-pdf` | [`markdown-to-pdf/SKILL.md`](markdown-to-pdf/SKILL.md) | 使用 [`scripts/md_to_pdf.py`](markdown-to-pdf/scripts/md_to_pdf.py) 将 Markdown 转为 PDF，支持表格、代码块、图片路径和基础 CSS。 |
+| `overleaf-project-sync` | [`overleaf-project-sync/SKILL.md`](overleaf-project-sync/SKILL.md) | 从 Overleaf 网页端获取项目 ZIP 下载链接和 Cookie，检查本地 LaTeX/论文目录与远端项目是否一致，并按需从远端覆盖同步本地文件。 |
+| `paper-figure-style-1` | [`paper-figure-style-1/SKILL.md`](paper-figure-style-1/SKILL.md) | 绘制浅桃紫渐变风格的论文流程图与统计图，覆盖柱状图、区间曲线、Pareto 散点、横条矩阵、训练仪表盘和双环图；包含可复用 Python 组件、17 个独立示例、10 款模型 logo 及文字可复制的 PDF 输出，可直接浏览 [8 张效果预览](paper-figure-style-1/SKILL.md#效果预览)。 |
+| `paper-figure-style-2` | [`paper-figure-style-2/SKILL.md`](paper-figure-style-2/SKILL.md) | 绘制浅彩分区架构图、生命周期泳道及白底蓝青统计图，覆盖能力径向图、响应曲线、54 面板柱状图、热力图、饼图、界面与任务证据表；包含可复用组件、9 个独立示例及文字可复制的矢量 PDF，可直接浏览 [成品预览](paper-figure-style-2/SKILL.md#效果预览)。 |
+| `paper-review-injection-audit` | [`paper-review-injection-audit/SKILL.md`](paper-review-injection-audit/SKILL.md) | 分别检查现有论文 PDF 与解析 Markdown，两者都有就都检查；识别指定或暗示词语、词组、符号、评分和可识别输出的注入，拒绝“不告知人类”等隐瞒要求，提供本地证据采集脚本和页码/行号报告模板。 |
+| `paper-review-writing` | [`paper-review-writing/SKILL.md`](paper-review-writing/SKILL.md) | 仔细阅读论文，在对应目录写简洁匿名的双语审稿 MD；完整中文在前、完整英文在后，一个优点、两个具体深入的缺点与逐项对应的问题，用原文、章节标题和表格描述定位，避免数字引用及模板化表达。 |
+| `pdf-parsing` | [`pdf-parsing/SKILL.md`](pdf-parsing/SKILL.md) | 使用 `structai.read_pdf` 将 PDF 解析为本地 Markdown，并处理图片抽取、代理重试和解析质量检查。 |
+| `pdf-to-images` | [`pdf-to-images/SKILL.md`](pdf-to-images/SKILL.md) | 使用系统级 Ghostscript (`gs`) 或 Poppler `pdftoppm` 将 PDF 页面导出为 PNG/JPEG 图片，支持单页、页码范围、整篇导出和论文排版可视化检查。 |
+| `rebuttal-writing` | [`rebuttal-writing/SKILL.md`](rebuttal-writing/SKILL.md) | 撰写、重构和压缩 AI/ML conference rebuttal、reviewer response 或 AC response，覆盖匿名性、开头感谢、问题弱化改写、Markdown Q&A、强证据回答、小表格、引用和礼貌结尾。 |
+| `researchharness` | [`researchharness/SKILL.md`](researchharness/SKILL.md) | 使用 InternScience ResearchHarness 作为轻量 tool-using LLM agent runtime，覆盖安装配置、CLI、本地前端、OpenAI-compatible API、Python API、工具选择、workspace、trace 和测试。 |
+| `ssh-remote-troubleshooting` | [`ssh-remote-troubleshooting/SKILL.md`](ssh-remote-troubleshooting/SKILL.md) | 排查终端能 SSH 但 VS Code 失败、Windows 临时目录权限、Profile 与服务安装、系统盘缓存及挂载遮蔽，支持保留任务的迁移与连接验收。 |
+| `structai` | [`structai/SKILL.md`](structai/SKILL.md) | 使用 StructAI Python 工具箱搭建 LLM workflow，覆盖 `LLMAgent`、结构化输出、Judge、并发、文件/PDF 工具、文本解析、私网 no_proxy 和 timeout。 |
+| `wave-mosaic-web-theme` | [`wave-mosaic-web-theme/SKILL.md`](wave-mosaic-web-theme/SKILL.md) | 复刻 black-yt 风格前端主题，覆盖 canvas wave-mosaic 动态方块背景、4 种背景颜色切换、Space Grotesk 字体、顶部圆角导航栏、论文筛选滑块和高级卡片/表格视觉。 |
+| `wsl-bash-windows` | [`wsl-bash-windows/SKILL.md`](wsl-bash-windows/SKILL.md) | 在 Windows + WSL 项目中坚持使用 WSL bash 执行命令，覆盖 `/mnt/c`/`/mnt/d` 路径、沙箱启动失败、提权执行、GitHub/Hugging Face push、DNS/代理排障和避免误切 PowerShell/cmd。 |
+
+## 下载 Skill 文件夹
+
+GitHub 网页不支持直接下载指定文件夹。可以先下载本目录下的 `download_skill.py`，之后用它下载本仓库中的一个或多个 skill 文件夹。
+
+### 下载脚本
+
+```bash
+curl -L -o download_skill.py https://raw.githubusercontent.com/black-yt/skills/main/download_skill.py
+```
+
+### 下载单个 Skill
+
+```bash
+python download_skill.py docx-splitting
+```
+
+下载后会生成同名目录：
+
+```text
+docx-splitting/
+  SKILL.md
+  scripts/
+    split_docx.py
+```
+
+指定输出目录：
+
+```bash
+python download_skill.py docx-splitting -o my_skills/docx-splitting
+```
+
+### 一次下载多个 Skill
+
+```bash
+python download_skill.py docx-splitting pdf-parsing markdown-to-pdf -o skills
+```
+
+多个 skill 同时下载时，`-o` 表示父目录。上面的命令会生成：
+
+```text
+skills/
+  docx-splitting/
+  pdf-parsing/
+  markdown-to-pdf/
+```
+
+默认不会覆盖已存在文件；需要覆盖时加 `--overwrite`。
+
+如果 GitHub API 触发限流，可以设置 `GITHUB_TOKEN` 后重试：
+
+```bash
+export GITHUB_TOKEN=<your_github_token>
+python download_skill.py docx-splitting
+```

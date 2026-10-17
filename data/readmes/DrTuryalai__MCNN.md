@@ -1,0 +1,15 @@
+# A modified convolutional neural network with rectangular filters for frequency-hopping spread spectrum signals
+Classification of frequency-hopping spread spectrum (FHSS) signal in a complex electromagnetic environment is essential due to security concerns associated with its applications, such as drones. Traditional convolutional neural networks (CNNs) include square-designed filters and pooling operators at several layers, which are appropriate for two-dimensional images. Nevertheless, the information encoded in time-frequency representation (TFR) produced by the spectrogram method is different. The time and frequency of the FHSS signal are represented along the x- and y-axis, respectively, whereas the intensity at a specific spot indicates the amplitude, thereby producing it in a rectangular form. Therefore, in this study, a modified convolutional neural network (MCNN) with rectangular filters is proposed to classify FHSS signals, with a background signal and additive white Gaussian noise being present as interference. Rectangular filters of varying shapes and sizes with max-pooling in their regions are used to extract differentiative features from the TFR using MCNN. A problem of an unbalanced dataset occurred because of the unequal observations amongst the classes, which is solved by employing the random erasing method. The developed method efficaciously acquires distinguished features from the TFR and performs better than traditional CNN with 80.44% accuracy at −2 dB of signal-to-noise ratio (SNR).
+
+# Instructions
+To test the trained MCNN, open the Trained MCNN file in MATLAB and follow the instructions given with the file.
+The trained MCNN must be verified corresponding to its test data. For example, the Trained MCNN for Event-I must be verified on the Test data of Event-I.
+
+# FHSS_codes
+Run the main files for different FHSS signals generation that can be used to generate the FHSS dataset.
+
+# FHSS Dataset
+The FHSS dataset comprising TFR images is available at: https://drive.google.com/file/d/1zdal5ZHB_6DX0s2GNINkhqVLvqLeno4i/view?usp=drive_link.
+
+# Cite this work if you find it useful
+Khan, M. T. (2024). A modified convolutional neural network with rectangular filters for frequency-hopping spread spectrum signals. Applied Soft Computing, 150, 111036. DOI: https://doi.org/10.1016/j.asoc.2023.111036

@@ -1,0 +1,279 @@
+<div align="center">
+<table>
+<tr>
+<td valign="top">
+<img src="./ascii.svg" width="370" alt="ASCII Portrait"/>
+</td>
+<td valign="top">
+<img src="./info-card.svg" width="490" alt="Terminal Info Card"/>
+</td>
+</tr>
+</table>
+  
+# Gautam N Chipkar
+
+### AI Engineer • Generative AI • LLMs • Computer Vision
+
+
+
+<a href="https://www.linkedin.com/in/gautam-n-chipkar-348b092a5/">
+  <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+</a>
+  <img src="https://img.shields.io/badge/Portfolio-Live%20Website-0d1117?style=for-the-badge&logo=vercel&logoColor=white)(https://gautamnc-portfolio.vercel.app"/)
+&nbsp;
+<img src="https://img.shields.io/badge/Open%20to%20Work-Remote%20AI%20%2F%20ML%20Roles-brightgreen?style=for-the-badge&logo=googlemeet&logoColor=white"/>
+&nbsp;
+<img src="https://komarev.com/ghpvc/?username=gee-46&label=Profile+Views&color=0e75b6&style=for-the-badge"/>
+
+<br/>
+
+
+
+## 🧠 Who I Am
+
+</div>
+
+<table>
+<tr>
+<td>
+
+Final-year **AI & Data Science** student at SGBIT, Belagavi — building systems that make LLMs actually useful: grounded, retrieval-aware, and production-ready.
+
+I don't just use frameworks — I build under them to understand every layer. Currently focused on **RAG systems, Computer Vision pipelines**, and getting them to production with FastAPI.
+
+**3× National Hackathon Finalist** 🏆
+
+**Looking for:** Remote roles as AI Engineer · ML Engineer · AI Research Intern
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+---
+
+## 💼 Currently
+
+</div>
+
+<table>
+<tr>
+<td>
+
+**AI/ML Intern @ Samruddhi Organics** — leading the tech team and building **NutriPalm AI**, an AI-powered precision agriculture platform.
+
+> 🌱 **NutriPalm AI**
+> *AI-Powered Precision Agriculture Platform*
+> Digital Twins for every farm. Smarter decisions for every farmer.
+> **Built by Samruddhi Organics**
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+---
+
+## 🚀 Featured Projects
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🏙️ <a href="https://github.com/gee-46/SlumSafe-AI">SlumSafe AI</a></h3>
+      <img src="https://img.shields.io/badge/4th%20Place-INNOVATEx%204.0-FFD700?style=flat-square"/>
+      <img src="https://img.shields.io/badge/100%2B%20Teams-International%20Hackathon-blue?style=flat-square"/>
+      <br/><br/>
+      AI-driven urban safety assessment that identifies risk zones in informal settlements using computer vision + geospatial data. Built end-to-end in 24 hours at Presidency University's International Tech Fest.
+      <br/><br/>
+      <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
+      <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=flat-square&logo=opencv&logoColor=white"/>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🚢 <a href="https://github.com/gee-46/NEURAL-CAPITALS-HarborPulse">HarborPulse</a></h3>
+      <img src="https://img.shields.io/badge/Top%208-BIT%20Techverse%2026-FF6B35?style=flat-square"/>
+      <img src="https://img.shields.io/badge/140%2B%20Teams-24hr%20Hackathon-blue?style=flat-square"/>
+      <br/><br/>
+      AI-powered smart harbor coordination platform — vessel scheduling, anomaly detection, port operations optimization. Built with Team Neural Capitals at BIT Mangalore.
+      <br/><br/>
+      <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
+      <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🌊 <a href="https://github.com/gee-46/-Disaster-VQA-Response-System">Disaster VQA System</a></h3>
+      <img src="https://img.shields.io/badge/Multimodal-Vision%20%2B%20NLP-8B5CF6?style=flat-square"/>
+      <br/><br/>
+      Ask natural language questions about disaster imagery and get answers grounded in what the model sees — not what it was trained to assume. Built on BLIP with a modular model-swap architecture.
+      <br/><br/>
+      <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white"/>
+      <img src="https://img.shields.io/badge/HuggingFace-FFD21E?style=flat-square&logo=huggingface&logoColor=black"/>
+      <img src="https://img.shields.io/badge/BLIP-Transformer-7C3AED?style=flat-square"/>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🖐️ <a href="https://github.com/gee-46/gesture-volume-control">Gesture Volume Control</a></h3>
+      <img src="https://img.shields.io/badge/Real--Time-30fps%20on%20CPU-22C55E?style=flat-square"/>
+      <br/><br/>
+      Control system volume with hand gestures — no keyboard, no mouse. Real-time hand landmark tracking via MediaPipe mapped to system audio using PyCAW. Works out of the box on CPU.
+      <br/><br/>
+      <img src="https://img.shields.io/badge/OpenCV-5C3EE8?style=flat-square&logo=opencv&logoColor=white"/>
+      <img src="https://img.shields.io/badge/MediaPipe-0097A7?style=flat-square&logo=google&logoColor=white"/>
+      <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🛠️ Tech Stack
+
+<img src="https://skillicons.dev/icons?i=python,pytorch,tensorflow,fastapi,flask,opencv,git,github,linux,vscode&perline=10&theme=dark"/>
+
+<br/>
+
+| Area | Tools |
+|---|---|
+| **AI / ML** | PyTorch · TensorFlow · scikit-learn · SentenceTransformers · HuggingFace Transformers |
+| **Retrieval & Search** | FAISS · Semantic Chunking · Embedding Pipelines · Ollama |
+| **Computer Vision** | OpenCV · MediaPipe · BLIP |
+| **Backend** | FastAPI · REST APIs |
+| **Data** | Pandas · NumPy · Matplotlib |
+| **Languages** | Python · SQL |
+
+---
+
+## 🏅 Recognition
+
+| | Event | Result |
+|---|---|---|
+| 🥉 | **INNOVATEx 4.0** — International Tech Fest, Presidency University Bangalore | **4th Place** / 100+ teams |
+| 🏅 | **BIT Techverse'26** — 24hr Hackathon, BIT Mangalore | **Top 8** / 140+ teams |
+| ⭐ | **Summerschool Hackathon** — Organized by Skilstation | **Best Performance Recognition** · Top 500 / 2000+ teams · Advanced to Round 2 |
+
+---
+
+## 🎖️ Certifications & Badges
+
+<table align="center" border="0" cellpadding="16">
+  <tr>
+    <td align="center">
+      <img src="https://github.com/gee-46/gee-46/raw/main/ai-skills-fest-2026.png" width="100" title="Microsoft AI Skills Fest 2026"/><br/>
+      <img src="https://img.shields.io/badge/Microsoft-AI%20Skills%20Fest%202026-0078D4?style=flat-square&logo=microsoft&logoColor=white"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/gee-46/gee-46/raw/main/badge.png" width="100" title="Solution Challenge Badge — Build with AI, Hack2Skill India"/><br/>
+      <img src="https://img.shields.io/badge/Hack2Skill-Build%20with%20AI%20Challenge-FF4500?style=flat-square&logo=devpost&logoColor=white"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/gee-46/gee-46/raw/a6ce8def44f92473a3be19c32a2c694a8571a789/IMG_5751.png" width="100" title="IBM Skill Badge — AI & Data Science"/><br/>
+      <img src="https://img.shields.io/badge/IBM-AI%20%26%20Data%20Science-054ADA?style=flat-square&logo=ibm&logoColor=white"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/gee-46/gee-46/raw/adfa44737e7b42f4576cd2935ffbaeeb64768b04/IMG_5748.jpeg" width="100" title="IBM Skill Badge"/><br/>
+      <img src="https://img.shields.io/badge/IBM-Skill%20Badge-054ADA?style=flat-square&logo=ibm&logoColor=white"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/gee-46/gee-46/raw/24d3e079312f2fc34cf075c221f4fc24c47ba7c0/IMG_5749.jpeg" width="100" title="IBM Skill Badge"/><br/>
+      <img src="https://img.shields.io/badge/IBM-Skill%20Badge-054ADA?style=flat-square&logo=ibm&logoColor=white"/>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
+### 🤖 Microsoft AI Skills Fest 2026 — *Develop Your First Agent with Microsoft Foundry*
+
+</div>
+
+<table>
+<tr>
+<td>
+
+> Completed Microsoft's official learning path on building AI agents — going beyond content generation into **intelligent systems that reason, act, and assist**.
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+| Area | What I Learned |
+|---|---|
+| 🧠 **Generative AI & Agents** | Fundamentals of GenAI, agent architectures, and how AI agents differ from traditional models |
+| 🏗️ **Microsoft Foundry** | Platform capabilities, how it enables end-to-end agent development at scale |
+| 🛠️ **Developer Tools & SDKs** | Agent-building workflows, toolchains, and SDK usage for building production-ready agents |
+| ⚙️ **AI-Powered App Design** | Designing and building applications where AI agents drive core functionality |
+| 🚀 **Real-World Automation** | How agents can automate tasks, enhance productivity, and solve practical challenges |
+
+**Key takeaway:** AI is no longer just about generating content — it's about creating intelligent systems that can **reason, act, and assist users effectively**.
+
+---
+
+## 📊 GitHub Stats 
+
+<p>
+  <a href="https://github.com/gee-46">
+    <img
+      height="180em"
+      src="https://github-readme-stats-eight-theta.vercel.app/api?username=gee-46&cache_seconds=7200&layout=compact&theme=dracula&border_radius=10"
+      alt="gee-46's GitHub Stats"
+    />
+  </a>
+</p>
+
+## 🔥 Contribution Streak
+
+[![GitHub Streak](https://streak-stats.vercel.app/?user=gee-46&theme=tokyonight)](https://git.io/streak-stats)
+
+---
+
+## 🐍 Contribution Activity
+
+<img src="https://raw.githubusercontent.com/gee-46/gee-46/output/github-contribution-grid-snake.svg#gh-light-mode-only"/>
+<img src="https://raw.githubusercontent.com/gee-46/gee-46/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only"/>
+
+---
+
+## 🏆 GitHub Trophies
+
+<img src="https://github-profile-trophy.vercel.app/?username=gee-46&theme=tokyonight&no-frame=true&no-bg=true&margin-w=6&column=7"/>
+
+---
+
+## 📝 Latest Gists
+
+</div>
+
+<table>
+<tr>
+<td>
+
+- 🚀 **[Top 5 AI Tools Every Student & Working Professional Should Use in 2026](https://gist.github.com/gee-46/08a78628eb5deaf1475471b4894b23f6)**
+  <br/>A quick roundup of the AI tools I actually use day-to-day — for coding, research, and getting things done faster.
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+---
+
+## 📬 Let's Talk
+
+I'm actively looking for **remote roles** — AI Engineer, ML Engineer, Research Intern.
+If you're building something where understanding the system matters, let's connect.
+
+<a href="https://www.linkedin.com/in/gautam-n-chipkar-348b092a5/">
+  <img src="https://img.shields.io/badge/Connect%20on%20LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
+</a>
+
+<br/>
+
+> I debug for fun. That's either a green flag or a red flag depending on your team culture.
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f0c29,50:302b63,100:24243e&height=100&section=footer"/>
+
+</div>

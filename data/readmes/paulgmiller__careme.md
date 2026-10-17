@@ -1,0 +1,262 @@
+Careme is your personal chef and sommilier. It will
+
+1. Take your favorite grocery store based on location
+2. Check the stores inventory for fresh meat and seasonal produce
+3. Generate a weekly meal plan from a variety of cuisines and cooking styles.
+
+Learn way more at https://careme.cooking/about or go generate a recipe https://careme.cooking. 
+
+## Development
+
+
+![Go](https://img.shields.io/badge/Go-1.26-blue)
+[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-blue.svg)](https://github.com/paulgmiller/careme/blob/master/LICENSE)
+![Last Commit](https://img.shields.io/github/last-commit/paulgmiller/careme)
+[![CI](https://github.com/paulgmiller/careme/actions/workflows/go.yml/badge.svg)](https://github.com/paulgmiller/careme/actions/workflows/go.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/paulgmiller/careme)
+
+See agents.md for some more but 
+go test ./... on any go change 
+and 
+```
+bash tailwind/generate.sh
+```
+if you change input css or any *.html
+
+
+## Configuration
+
+The application is configured via environment variables:
+### Mandatory 
+- `KROGER_CLIENT_ID` - Kroger API client ID (required)
+- `KROGER_CLIENT_SECRET` - Kroger API client secret (required)
+- `AI_API_KEY` - OpenAI API key for recipe generation and chat (required)
+  - Email and campaign recipe/menu generation requests use flex processing. Each email delivery and campaign location has a 10-minute budget covering generation and retries. Interactive requests retain their existing processing tier.
+  - Images continue to use standard image generation; the Images API does not expose a flex service tier. Text spend logs include the returned service tier and apply flex rates when served on flex.
+### Optional 
+- `KROGER_CART_TOKEN_KEY` - base64-encoded 32-byte encryption key enabling Kroger cart transfer. Register `${PUBLIC_ORIGIN}/kroger/callback` as a redirect URI with Kroger and grant `cart.basic:write`; keep this key stable so existing connections remain usable.
+- `OPENROUTER_API_KEY` - OpenRouter API key for cached recipe critique generation
+- `OPENROUTER_CRITIQUE_MODEL` - OpenRouter model slug for recipe critique (defaults to `google/gemini-4-argon`)
+- `CLARITY_PROJECT_ID` - Microsoft Clarity project ID for web analytics (optional)
+- `GOOGLE_TAG_MANAGER_ID` - Google Tag Manager container ID for web analytics and ad conversion tags (optional); see `docs/gtm-ads.md` for conversion setup
+- `OTEL_EXPORTER_OTLP_ENDPOINT` - OTLP HTTP endpoint. For Grafana Cloud, use the endpoint from the OpenTelemetry connection tile.
+- `OTEL_EXPORTER_OTLP_HEADERS` - OTLP headers. For Grafana Cloud, use the generated `Authorization=Basic ...` header value from the OpenTelemetry connection tile.
+- `SENDGRID_API_KEY` - To allow sending weekly recipe lists via email
+- `ALBERTSONS_SEARCH_SUBSCRIPTION_KEY` - Albertsons-family pathway search subscription key
+- `ALBERTSONS_SEARCH_REESE84` - fallback Albertsons-family `reese84` cookie when cache is empty or stale
+- `BRIGHTDATA_BROWSER_WS_ENDPOINT` - Bright Data Browser API websocket endpoint for `cmd/reese84` and `cmd/publixabck`; may include embedded credentials
+- `AZURE_STORAGE_ACCOUNT_NAME` and `AZURE_STORAGE_PRIMARY_ACCOUNT_KEY` - enable Azure Blob-backed cache storage
+
+For Grafana Cloud, the direct OTLP setup uses standard upstream OpenTelemetry env vars. Grafana's docs provide generated values for `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS`.
+
+if you're
+- `ENABLE_MOCKS` - For testing if you have none of the above
+
+## Adding a provider
+
+Add a store integration in this sequence: **locations → staples → optional
+ordering**. These are separate interfaces so location discovery can work before
+a catalog is available, and recipe generation can work without ordering. Keep
+the implementations together in `internal/providers/<provider>` and share one
+location-ID namespace and `IsID` implementation across them.
+
+### 1. Add locations
+
+Implement `locations.LocationBackend`: `IsID`, `GetLocationByID`,
+`GetLocationsByCoordinates`, and `HasInventory`. Use stable location IDs and
+return the store or delivery-area details needed by location selection. Keep
+`HasInventory` false until the location has a supported recipe catalog.
+
+Register the backend in `providerregistry.Factory.NewLocationBackends` in
+`internal/providerregistry/locations.go`. Delivery providers can represent a
+service area instead of physical stores; Smith Brothers Farms and MNFoodClub
+are examples. Optionally implement `CachePolicy() (version string, cacheable bool)`
+to version location cache entries or disable caching when results depend on the
+search point. Backends without this method use the default unversioned cache.
+
+### 2. Add staples
+
+Implement `recipes.StaplesBackend`: `IsID`, `Signature`, `FetchStaples`, and
+`FetchWines`. Staples supply the ingredient catalog used to generate recipes;
+they do not add products to a cart. Return `ai.InputIngredient` entries with
+stable product IDs, descriptions, and available size, price, and aisle details.
+Wine lookup is part of the current interface; providers without it should return
+an explicit unsupported error. `FetchPantry` is an optional additional interface.
+
+Register the backend in `providerregistry.Factory.NewStaplesBackends` in
+`internal/providerregistry/staples.go`, and its identity in
+`internal/providerregistry/identity.go` so ingredient and recipe cache keys use
+the provider's `Signature`. Change that signature when catalog definitions or
+parsing rules require cached ingredients to be refreshed. Enable `HasInventory`
+for supported locations once staples are available.
+
+Update [cache layout](docs/cache-layout.md) if cache keys or prefixes change.
+
+### 3. Optionally add ordering
+
+Give each destination its own HTTP workflow, such as `POST /kroger/order`.
+The shopping list submits its displayed items, store hints, stable list key,
+and return URL. The destination owns authentication, matching, cart writes,
+duplicate prevention, and the redirect back with a review link and brief status.
+Register its routes independently of the recipe handler in `cmd/careme/web.go`.
+Add its location-ID match and form builder to `providerregistry.Factory.OrderView`;
+the recipe page renders the returned action, fields, and copy generically.
+
+Kroger is currently the only ordering destination. Future destinations can own
+routes such as `/instacart/order` or `/bigcommerce/order` without implementing
+a shared Go provider interface. Users review and complete checkout with the
+provider. See [Ordering handoffs](docs/ordering.md) for the current form contract
+and OAuth continuation behavior.
+
+### Verify the integration
+
+Test location lookup and service-area filtering, consistent ID routing, catalog
+request/response shapes, parsing failures, and cache signatures. For ordering,
+also test matching gaps, submission failures, duplicate prevention or link reuse,
+and rendered results. Use deterministic fixtures and explicit fake clients.
+
+Run `./task.sh verify-go -- -cover`; run `./task.sh verify-ui` and inspect the UI
+when templates change.
+
+## Mail placement tests
+
+Send today's real recipe email through the production sender to test Gmail placement:
+
+```sh
+go run ./cmd/mailtest -to you@gmail.com
+```
+
+This requires `SENDGRID_API_KEY` and an existing Careme profile for the address with a favorite store. It sends only to the requested address, ignoring the profile's opt-in, shopping day, and previous-send record without changing the next scheduled send.
+
+## Ingredient grade review
+
+Run the small local review app with:
+
+```sh
+go run ./cmd/ingredientreview
+```
+
+Then open `http://127.0.0.1:8090/grader`. It shows cached ingredient grades one at a time and records each as too high, correct, or too low.
+
+
+## Cache Key Layout
+See [docs/cache-layout.md](docs/cache-layout.md) for the authoritative cache key/prefix layout and backend notes.
+
+## Frontend Approach
+- Prefer server-rendered HTML and HTMX for interactive behavior.
+- Avoid SPA-style architecture for routine page interactions.
+- Keep custom JavaScript minimal and focused on browser-only APIs.
+- Migration plan: [docs/htmx-migration-plan.md](docs/htmx-migration-plan.md)
+
+## Live site
+
+* Uptime https://stats.uptimerobot.com/ehEFlvlNM9
+* Cloudflare for dns and https proxying
+
+### Advertised recipe cronjob
+
+Run `careme -campaigns` to generate recipes and images for advertised stores with `Generate: true` once. Smith Brothers Farms and MNFoodClub generation is disabled for now while we consider a weekly schedule; their campaign redirects remain active. The job creates its own flex AI client and exits with an error if any enabled store fails. It reuses cached shopping lists and images, and retries incomplete work even when parameters were saved by an earlier attempt.
+
+`deploy/cronjob-careme-advertised-recipes.yaml` runs the application image directly on `ADVERTISED_RECIPES_SCHEDULE`, with the same store, AI, auth, storage, and telemetry credentials used by the mail job. It no longer calls the web server's generation endpoint. Kubernetes prevents overlapping runs and allows one job retry.
+
+Automatic campaign runs are temporarily suspended in `caremetest` by `deploy/deploy.sh`; production still runs daily. To manually run generation-enabled advertised stores in test using the deployed image and credentials, create a Job from the suspended CronJob:
+
+```sh
+kubectl create job -n caremetest --from=cronjob/careme-advertised-recipes "careme-advertised-recipes-manual-$(date +%s)"
+```
+
+Manual Jobs do not change the suspension and are not protected by the CronJob's overlap prevention, so wait for an existing run to finish before starting another. To restore automatic test runs on the 1st and 15th of each month, set `advertised_recipes_suspend="false"` in the `caremetest` block of `deploy/deploy.sh` and deploy.
+
+### MNFoodClub ingredients
+
+Nearby location search includes MNFoodClub home delivery within an approximate
+rectangle from the supplied coverage map: latitude 43.90–45.65 and longitude
+-94.30–-92.35. This is a rough discovery area, not the exact delivery boundary.
+Search results use `mnfoodclub_<latitude>_<longitude>` IDs, with the delivery
+coordinates retained for distance filtering and store dates.
+
+Fetch all visible, available, in-stock catalog products across every category,
+plus the static weekly produce-share contents, and display their prices:
+
+```sh
+INGREDIENT_GRADING_ENABLE=false go run ./cmd/ingredients -location mnfoodclub_delivery -verbose
+```
+
+Set `MNFOODCLUB_API_PATH` to the supplied store API URL
+(`https://api.bigcommerce.com/stores/<store_hash>/v3/`, including the trailing slash) and
+`MNFOODCLUB_ACCESS_TOKEN` to the store access token. The token needs Products
+read access; client ID, client secret, and account names are not used. These
+environment variables can later be supplied through kage or Kubernetes secrets.
+The local `secrets/bigcommerce` credential note is ignored by Git and is not loaded
+automatically. To use that note locally without printing its credentials:
+
+```sh
+export MNFOODCLUB_API_PATH="$(sed -n 's/^API PATH[:=][[:space:]]*//p' secrets/bigcommerce)"
+export MNFOODCLUB_ACCESS_TOKEN="$(sed -n 's/^ACCESS TOKEN[:=][[:space:]]*//p' secrets/bigcommerce)"
+```
+
+Any store ID starting with `mnfoodclub_` routes to the same BigCommerce catalog.
+The provider fetches every page (up to 250 products per request), resolves brands
+and category names, and uses the lowest-priced purchasable variant for each
+product. Zero stock excludes items only when inventory tracking is enabled.
+Prices are standard catalog prices, without custom membership discounts. Sizes
+come from product names, not shipping weights or unverified custom fields.
+Missing credentials fail client construction when the staples backends are
+assembled. Failed API pages fail the import without partial results.
+With grading disabled,
+the displayed 10/10 scores are placeholders, not quality assessments. Enable
+grading with `INGREDIENT_GRADING_ENABLE=true` and configure `AI_API_KEY` to use
+the existing grading and nearest-ingredient lookup. Wine candidates include every
+page of the Wine & Wine Alternatives category (BigCommerce category 178), using
+the same stock and pricing rules. Requested wine styles do not restrict this list.
+
+### Smith Brothers Farms ingredients
+
+Nearby search includes Smith Brothers Farms home delivery in two approximate
+urban-corridor boxes: Puget Sound (latitude 46.95–48.05, longitude -122.80–-121.90)
+and Greater Portland (latitude 45.30–45.80, longitude -122.95–-122.35).
+These are rough discovery areas from the [service-area map](https://www.smithbrothersfarms.com/our-service-area),
+not exact delivery boundaries, and exclude some outer delivery routes.
+Search results use the stable `smithbrothersfarms_delivery` ID at the current
+search coordinates; delivery locations bypass the location cache. Lookup by ID
+uses the Kent headquarters coordinates.
+
+```sh
+INGREDIENT_GRADING_ENABLE=false go run ./cmd/ingredients -location smithbrothersfarms_delivery -verbose
+```
+
+The provider fetches the public produce and meat/poultry pages through the existing
+Bright Data client. The organic and standard produce-box products are replaced
+with individual ingredients from the live bullet lists on their product pages.
+Each box ingredient includes its box name and a preassigned 10/10 produce-share
+grade; individual quantities and prices are unspecified. Seasonal contents update
+on the next uncached store-day ingredient fetch. No Smith Brothers Farms account
+credentials are required. Wine lookup is unsupported.
+
+### Ingredient embedding lookup
+
+Ingredient grading and wine pairing default to `gpt-6-luna` with reasoning
+disabled. Set `INGREDIENT_GRADING_MODEL=decisions` to use the OpenAI Decisions API
+with `gpt-6-luna` instead of the former JEV integration. It uses the same ten-level
+rubric, rounding its zero-based score and adding one for a 1–10 ingredient grade,
+and requires `AI_API_KEY`. Each uncached ingredient gets its own Decisions
+request, with up to 64 concurrent requests per grader instance. Explicit model names select the
+Responses grader; recipe generation and meal planning continue to use `gpt-6.1-sol`.
+
+With `AI_API_KEY` configured and `INGREDIENT_GRADING_ENABLE=1`, grading stores an
+OpenAI `text-embedding-3-small` embedding of each ingredient description alongside
+its grade, using a separate embedding cache keyed by model, dimensions, and
+description. Existing grades are reused when missing embeddings are filled in;
+changing the grader does not invalidate embeddings.
+
+Find the nearest ingredient in a store's current staple catalog:
+
+```sh
+INGREDIENT_GRADING_ENABLE=1 go run ./cmd/ingredients -location 70100023 -ingredient "broccoli"
+```
+
+Add `-limit 10` for more neighbors. Results are JSON with ingredient metadata,
+grade, and cosine similarity, ordered from closest to furthest. The first lookup
+may fetch and grade the store catalog; subsequent lookups reuse cached product
+grades and embeddings. Store provider credentials are the same as for the
+existing ingredients command. Recipe generation context is unchanged.

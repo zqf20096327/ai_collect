@@ -1,0 +1,559 @@
+<h1 align="center">
+    <img width="1100" height="259" alt="Tensorlake — sandbox-native cloud for AI agents" src="https://github.com/user-attachments/assets/ac9adfc2-53cb-427e-ad6a-91394cdee961" />
+
+</h1>
+
+<p align="center">Build agents with sandboxes and serverless orchestration runtime</p>
+<div align="center">
+
+
+[![PyPI Version](https://img.shields.io/pypi/v/tensorlake)](https://pypi.org/project/tensorlake/)
+[![Python Support](https://img.shields.io/pypi/pyversions/tensorlake)](https://pypi.org/project/tensorlake/)
+[![License](https://img.shields.io/github/license/tensorlakeai/tensorlake)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-tensorlake.ai-blue)](https://docs.tensorlake.ai)
+[![Slack](https://img.shields.io/badge/slack-TensorlakeCloud-purple?logo=slack)](https://join.slack.com/t/tensorlakecloud/shared_invite/zt-32fq4nmib-gO0OM5RIar3zLOBm~ZGqKg)
+
+</div>
+
+Tensorlake is a compute infrastructure platform for building agentic applications with sandboxes. 
+
+The Sandbox API creates MicroVM sandboxes which you can use to run agents, or use them as an isolated environment for running tools or LLM generated code.
+
+In addition to stateful VMs, you can also add long running orchestration capabilities to Agents using a serverless function runtime with fan-out capabilities.
+
+## Sandboxes
+
+Tensorlake Sandboxes provide instant, stateful execution environments for AI agents — spin up millions of sandboxes with near-SSD filesystem performance.
+
+### Key capabilities
+* **Fastest Filesystem I/O** — Block-based storage achieving near-SSD speeds inside virtual machines. In SQLite benchmarks (2 vCPUs, 4 GB RAM), Tensorlake completes in **2.45s** vs Vercel 3.00s (1.2×), E2B 3.92s (1.6×), Modal 4.66s (1.9×), and Daytona 5.51s (2.2×).
+* **Fast startup** — Sandboxes created in under a second via Lattice, a dynamic cluster scheduler.
+* **Snapshots & cloning** — Snapshot at any point to create durable memory and filesystem checkpoints; clone running sandboxes instantaneously across machines.
+* **Auto suspend/resume** — Sandboxes suspend when idle and resume in under a second without losing any memory or filesystem state.
+* **Live migration** — Sandboxes automatically move between machines during updates with only a brief pause of a few seconds.
+* **Scale** — Supports up to 5 million sandboxes in a single project.
+
+### Python SDK Installation
+
+```bash
+pip install tensorlake
+```
+
+### CLI Installation
+
+The `tl` CLI is distributed as a standalone binary, not through PyPI or npm.
+Install it with the install script:
+
+```bash
+curl -fsSL https://tensorlake.ai/install | sh
+```
+
+### Setup
+
+Sign up at [cloud.tensorlake.ai](https://cloud.tensorlake.ai/) and get your API key.
+
+```bash
+export TENSORLAKE_API_KEY="your-api-key"
+tl login
+```
+
+### Work in More Than One Project (CLI)
+
+`tl login` saves a context named `default`. A context is one organization, one
+project, and one token. Each token comes from its own browser login and works for
+that one project only. Log in once for each project you use, then switch between
+the saved contexts with no new login:
+
+```bash
+tl login --context staging                        # browser login; pick the staging project there
+tl context list                                   # the current context is marked with *
+tl context use staging                            # switch; no network
+tl --context default sbx ls                       # run one command in another context
+TENSORLAKE_CONTEXT=staging tl sbx ls
+tl context delete staging                         # forget its token and remove it
+tl logout                                         # forget the token of the current context
+tl logout --all                                   # forget every saved token
+```
+
+With `--context` or `TENSORLAKE_CONTEXT` set, `tl login` saves into that context, so
+`TENSORLAKE_CONTEXT=staging tl login` creates or refreshes `staging`. `tl login`,
+`tl logout --all`, and `tl context` run even when the named context does not exist.
+
+`tl profile` is an alias for `tl context`. `tl whoami` shows the active context and
+where it came from. Contexts live in `~/.config/tensorlake/contexts.toml` (no secrets).
+Tokens go to the OS keychain: the macOS Keychain, the Windows Credential Manager, or
+the Secret Service on Linux. Where there is no keychain, for example in CI or in a
+container, the token goes to `credentials.toml`, which only you can read. Set
+`TENSORLAKE_TOKEN_STORAGE=file` to keep tokens in that file, for example over SSH to
+a Mac. `tl context list` shows where each token is.
+
+### Create Your First Sandbox (CLI)
+
+Create a sandbox, run a command, and clean up:
+
+```bash
+# Create a sandbox (one blocking request; a timeout leaves it queued, never cancels it)
+tl sbx create
+
+# Queue a sandbox and return at once, then collect it later
+tl sbx create --queue
+tl sbx wait <sandbox-id> --timeout 1800
+
+# Run a command inside it
+tl sbx exec <sandbox-id> -- sh -lc "printf 'Hello from the sandbox!\n'"
+
+# Copy a file into the sandbox
+tl sbx cp ./my_script.py <sandbox-id>:/tmp/my_script.py
+
+# Open an interactive terminal
+tl sbx ssh <sandbox-id>
+
+# Block all outbound internet access on a running sandbox
+tl sbx update <sandbox-id> --no-internet
+
+# Allow outbound traffic only to selected destinations
+tl sbx update <sandbox-id> --network-allow api.example.com
+
+# Remove the network policy and restore unrestricted outbound access
+tl sbx update <sandbox-id> --clear-network
+
+# Terminate when done
+tl sbx terminate <sandbox-id>
+```
+
+Omit `--image` to use Tensorlake's default managed environment. To select a
+custom environment, pass the name of a registered Sandbox Image; arbitrary
+Docker image references are not supported.
+
+### Create a Sandbox Programmatically
+
+```python
+from tensorlake.sandbox import SandboxClient
+
+client = SandboxClient.for_cloud(api_key="your-api-key")
+
+# Create a sandbox and connect to it
+with client.create_and_connect() as sandbox:
+    # Run a command
+    result = sandbox.run("sh", ["-lc", "printf 'Hello from the sandbox!\\n'"])
+    print(result.stdout)  # "Hello from the sandbox!"
+
+    # Write and read files
+    sandbox.write_file("/tmp/data.txt", b"some data")
+    content = sandbox.read_file("/tmp/data.txt")
+
+    # Start a long-running process
+    proc = sandbox.start_process("sleep", ["300"])
+    print(proc.pid)
+
+# Sandbox is automatically terminated when the context manager exits
+```
+
+`create_and_connect()` (and `Sandbox.create()`) send the create with
+`wait=False`, so the server acknowledges the sandbox at once, and then poll it
+until it runs. **If the wait runs out, the sandbox is not deleted**: a
+`SandboxPending` is raised with its `sandbox_id`, and the sandbox keeps its
+place in the queue until capacity arrives. Collect it later with
+`Sandbox.connect(sandbox_id)`, or request sandboxes ahead of capacity with
+`Sandbox.create(..., wait=False)`, which returns a `PendingSandbox` handle, and
+call `pending.ready()` on each one when you need it. Pass
+`cancel_on_timeout=True` for the previous delete-then-raise behaviour, or
+`max_pending_secs` to let the server give up after a bound. See
+[wait-free create and readiness by polling](docs/sandbox-create-and-wait.md).
+
+```python
+from tensorlake.sandbox import Sandbox, SandboxPending
+
+pending = Sandbox.create(
+    name="job-17", image="tensorlake/ubuntu-minimal", max_pending_secs=45 * 60, wait=False
+)
+try:
+    sandbox = pending.ready(timeout=30)
+except SandboxPending as still:
+    print(still.pending_reason)  # still queued; call ready() again
+```
+
+Running CPU-only CAS sandboxes support live CPU, memory, and root-disk updates
+through `tl sbx update` and every Sandbox SDK. Running GPU CAS sandboxes support
+root-disk growth; CPU and memory changes are rejected. Non-CAS sandboxes do not
+support live resize. Resource arguments match create, and updates wait for
+confirmed completion by default.
+See [sandbox resource resize](docs/sandbox-resize.md).
+
+### Registry credentials for image builds and imports
+
+Supply Docker `config.json` contents per operation when importing private images
+or building Dockerfiles with private base images. Each call keeps its own
+configuration, so concurrent calls can use different credentials without changing
+`DOCKER_CONFIG`.
+
+```ts
+import { readFile } from "node:fs/promises";
+import { createSandboxImage, importSandboxImage } from "@tensorlakeai/tensorlake";
+
+const dockerConfigJson = await readFile("/credentials/config.json", "utf8");
+await importSandboxImage("registry.example.com/team/image:latest", { dockerConfigJson });
+await createSandboxImage("./Dockerfile", { dockerConfigJson });
+// Image.build({ dockerConfigJson }) accepts the same option.
+```
+
+```python
+from pathlib import Path
+from tensorlake import import_sandbox_image
+from tensorlake.image.sandbox_builder import build_sandbox_image
+
+config_json = Path("/credentials/config.json").read_text(encoding="utf-8")
+import_sandbox_image("registry.example.com/team/image:latest", docker_config_json=config_json)
+build_sandbox_image("./Dockerfile", docker_config_json=config_json)
+# image.build(docker_config_json=config_json) accepts the same option.
+```
+
+Omitting the option preserves local Docker-config discovery. Configuration is
+captured and credentials are resolved at the start of the build/import, before
+provisioning. Supplied contents replace discovery entirely; pass `"{}"` to use no
+registry credentials. Empty strings and malformed configurations are errors.
+Credential helpers (`credHelpers` and `credsStore`) run locally using the captured
+configuration; only resolved registry credentials are forwarded to the builder.
+Both CAS and non-CAS image builds use this behavior.
+
+The CLI captures Docker configuration immediately after parsing a build/import or
+deploy command, before authentication and application loading. It looks for
+`$DOCKER_CONFIG/config.json`, then `~/.docker/config.json`, and passes the captured
+contents to every image operation in that invocation. A missing config supplies
+an explicit empty document. Credential changes during a running invocation do not
+cause the CLI to reread the config file.
+
+Python deployers that advertise pipe support receive this snapshot through a
+dedicated anonymous pipe before loading application code. Credentials are never
+written to temporary files, command-line arguments, or environment variables, and
+stdin remains available to the application. Older protocol-v1 deployers continue
+using their existing Docker-config discovery behavior.
+
+Rust callers must now supply the additional `Option<String>` argument:
+`build_sandbox_image(options, docker_config_json, emit)` and
+`import_sandbox_image(options, docker_config_json, emit)`. Use `None` for discovery
+or `Some(contents)` for explicit configuration. Python and TypeScript callers that
+omit the option continue to work unchanged.
+
+### Snapshots
+
+Save the state of a sandbox and restore it later:
+
+```python
+# Snapshot a running sandbox
+snapshot = client.snapshot_and_wait(sandbox_id)
+
+# Later, create a new sandbox from the snapshot
+with client.create_and_connect(snapshot_id=snapshot.snapshot_id) as sandbox:
+    # Picks up right where you left off
+    result = sandbox.run("ls", ["/tmp"])
+    print(result.stdout)
+```
+
+### Sandbox Pools
+
+Pre-warm containers for fast startup:
+
+```python
+from tensorlake.sandbox import FileSystemMount, NetworkConfig
+
+# Create a pool with warm containers and no internet access
+pool = client.create_pool(
+    image="tensorlake/ubuntu-minimal",
+    warm_containers=3,
+    network=NetworkConfig(allow_internet_access=False),
+)
+
+# Claim a sandbox instantly from the pool. Claim-specific file systems are
+# mounted before the sandbox is reported as running.
+resp = client.claim(
+    pool.pool_id,
+    file_systems=[
+        FileSystemMount(
+            file_system_id="file_system_abc",
+            mount_path="/mnt/skills",
+        )
+    ],
+)
+sandbox = client.connect(resp.sandbox_id)
+
+# Named sandboxes can be reconnected later by name
+named = client.create(name="stable-name")
+sandbox = client.connect("stable-name")
+```
+
+Pool root disks default to the registered image's size. Pass `disk_mb` to grow
+a filesystem-only image; a pool disk cannot be smaller than its image.
+
+GPU CAS pools allocate GPUs per container. Use a CAS image and pass `gpus=1`
+with `gpu_model="A10"` (or `gpu=GpuRequest(count=1, model=GpuModel.A10)`) to
+`create_pool` and `update_pool`. The asynchronous Python API accepts the same
+arguments; TypeScript uses `gpus`, `gpuModel`, or `gpu` in its pool options.
+Passing only `gpu_model` / `gpuModel` allocates one GPU per container for
+both standalone sandbox creation and pool APIs, matching `tl sbx create --gpu`.
+Claimed sandboxes inherit the pool's GPU allocation. Include that allocation
+on each pool update; omitting it configures a CPU-only CAS pool. Changing the
+allocation recycles unclaimed warm containers while claimed sandboxes keep
+their original allocation. Set `max_containers=1` and `warm_containers=1` for
+a single-GPU pool; it can replenish warm capacity after the claim releases
+its GPU.
+
+Pool responses expose the allocation as `pool.resources.gpu_configs` in
+Python and Rust, and `pool.resources.gpuConfigs` in TypeScript.
+Python response allocations use `GpuAllocation`, whose `model` preserves the
+server's exact identifier, such as `H100-PCIe-80GB`. Typed requests use
+`GpuRequest` with a supported `GpuModel`. When updating a pool, pass the
+reported count and the corresponding supported request model.
+
+Inspect a claimed sandbox's GPU allocation with `tl sbx describe <sandbox-id>`
+or the `GPUs` column in `tl sbx ls`. Both show count and model, such as
+`2 x H100`; sandboxes without a GPU allocation show `-`. Archived sandboxes
+show the same information with `tl sbx ls --archived`.
+
+Set the pool network policy when you create the pool, replace it later with a
+pool update, or pass `CLEAR_NETWORK_POLICY` (Python) / `null` (TypeScript) to
+remove it. On a change the service recycles the pool's unclaimed warm
+containers onto the new policy, while containers already claimed by sandboxes
+keep the policy they booted with.
+
+Sandbox startup errors include the server's reason and actionable diagnostic.
+The Python and TypeScript `RemoteAPIError` exposes structured failure fields;
+the CLI shows the same details in create/copy errors and `tl sbx describe`.
+See [sandbox failure diagnostics](docs/sandbox-errors.md) for error handling examples.
+
+---
+
+## Cloud Volumes
+
+`FilesystemClient` manages durable, versioned file trees without mounting them. SDK writes hash
+files locally, upload missing 64 MiB parts directly to checksum-bound object-store URLs, and then
+atomically publish metadata. Reads resolve an authenticated immutable plan and fetch the selected
+records directly from signed object-store URLs. File payloads normally do not pass through the
+Tensorlake API service.
+
+```ts
+import { FilesystemClient } from "@tensorlakeai/tensorlake";
+
+const client = new FilesystemClient({
+  apiKey: "your-api-key",
+});
+const fs = await client.create("agent-artifacts");
+
+// In-memory data; all changes become visible atomically.
+await fs.writeFiles({
+  "run/config.json": JSON.stringify({ model: "gpt-5" }),
+  "run/input.txt": "hello",
+});
+
+// Multi-GiB files use bounded memory and stream directly to object storage.
+await fs.writeFileFromPath("models/weights.bin", "./weights.bin");
+
+// These reuse immutable content references and transfer no payload bytes.
+await fs.copyFile("run/input.txt", "run/input-copy.txt");
+await fs.moveFile("run/config.json", "archive/config.json");
+
+// One request returns only the selected bytes plus full-file identity/size.
+const read = await fs.readFileWithMetadata("models/weights.bin", {
+  range: { offset: 0, length: 1024 * 1024 },
+});
+
+// Snapshot retention and forks are metadata-only operations.
+const snapshot = await fs.snapshot("ready for evaluation");
+const fork = await client.fork("agent-artifacts-eval", fs.name, snapshot.id);
+await fork.writeFile("results/score.txt", "0.98");
+
+await fs.deleteSnapshot(snapshot.id);
+```
+
+Choose storage placement when creating a filesystem in an enabled region. The API endpoint stays
+the same; uploads and read plans use the selected region's object store:
+
+```python
+from tensorlake.filesystem import FilesystemClient
+
+client = FilesystemClient(api_key="your-api-key")
+fs = client.create("frankfurt-artifacts", region="eu-central-1")
+```
+
+```ts
+const fs = await client.create("frankfurt-artifacts", { region: "eu-central-1" });
+```
+
+Rust callers use `artifact_storage.create_filesystem(project, name, Some("eu-central-1"))`.
+Omitting `region` keeps the legacy location. Placement is fixed for the filesystem's storage
+network: forks inherit it, and changes to a project's region do not move existing files.
+An unsupported region is rejected; the SDK never silently substitutes another region.
+The compatibility `create_file_system(..., region="eu-central-1")` and
+`createFileSystem(name, description, { region: "eu-central-1" })` helpers accept the same choice.
+
+`writeFile()` and `writeFiles()` accept bytes already in memory. Prefer `writeFileFromPath()` or
+`writeFilesFromPaths()` for large local files so neither JavaScript nor Rust retains the complete
+payload. A successful write is durable before it returns, but only the live head is retained
+automatically; `snapshot()` pins the current head permanently in one client/server round trip.
+`readFileWithMetadata()` returns immutable content identity and total size with the bytes; its
+optional range downloads only overlapping immutable records. The SDK bounds every response,
+verifies stored and logical content checksums, and falls back to the authenticated service only
+when the object store cannot honor the signed range.
+Deleting a snapshot releases that retention root, while bytes still reachable from a live head,
+another snapshot, a fork, or a mount remain durable.
+
+---
+
+## Orchestrate
+
+Create orchestration APIs on a distributed runtime with automatic scaling, fan-out capabilities and built-in tracking. The orchestration APIs can be invoked using HTTP requests or using the Python SDK.
+
+### Quickstart
+
+Decorate your entrypoint with `@application()` and functions with `@function()`. Each function runs in its own isolated sandbox.
+
+**Example**: City guide using OpenAI Agents with web search and code execution:
+
+```python
+from agents import Agent, Runner
+from agents.tool import WebSearchTool, function_tool
+from tensorlake.applications import application, function, Image
+
+# Define the image with necessary dependencies
+FUNCTION_CONTAINER_IMAGE = Image(base_image="python:3.11-slim", name="city_guide_image").run(
+    "pip install openai openai-agents"
+)
+
+@function_tool
+@function(
+    description="Gets the weather for a city using an OpenAI Agent with web search",
+    secrets=["OPENAI_API_KEY"],
+    image=FUNCTION_CONTAINER_IMAGE,
+)
+def get_weather_tool(city: str) -> str:
+    """Uses an OpenAI Agent with WebSearchTool to find current weather."""
+    agent = Agent(
+        name="Weather Reporter",
+        instructions="Use web search to find current weather in Fahrenheit for the city.",
+        tools=[WebSearchTool()],  # Agent can search the web
+    )
+    result = Runner.run_sync(agent, f"City: {city}")
+    return result.final_output.strip()
+
+@application(tags={"type": "example", "use_case": "city_guide"})
+@function(
+    description="Creates a guide with temperature conversion using function_tool",
+    secrets=["OPENAI_API_KEY"],
+    image=FUNCTION_CONTAINER_IMAGE,
+)
+def city_guide_app(city: str) -> str:
+    """Uses an OpenAI Agent with function_tool to run Python code for conversion."""
+
+    @function_tool
+    def convert_to_celsius_tool(python_code: str) -> float:
+        """Converts Fahrenheit to Celsius - runs as Python code via Agent."""
+        return float(eval(python_code))
+
+    agent = Agent(
+        name="Guide Creator",
+        instructions="Using the appropriate tools, get the weather for the purposes of the guide. If the city uses Celsius, call convert_to_celsius_tool to convert the temperature, passing in the code needed to convert the temperature to Celsius. Create a friendly guide that references the temperature of the city in Celsius if the city typically uses Celsius, otherwise reference the temperature in Fahrenheit. Only reference Celsius or Fahrenheit, not both.",
+        tools=[get_weather_tool, convert_to_celsius_tool],  # Agent can execute this Python function
+    )
+    result = Runner.run_sync(agent, f"City: {city}")
+    return result.final_output.strip()
+```
+
+#### Deploy to Tensorlake
+
+1. Set your API keys:
+```bash
+export TENSORLAKE_API_KEY="your-api-key"
+tl secrets set OPENAI_API_KEY "your-openai-key"
+```
+
+2. Deploy:
+```bash
+tl deploy examples/readme_example/city_guide.py
+```
+
+`tl deploy` builds a version-scoped runtime image for every function and stores
+its registered sandbox-template name in the application manifest. The image
+contains the dependencies declared by `Image`, the language runner, and the native
+function-agent core. Application source remains a separate ZIP that is uploaded
+with the manifest; it is not copied into the runtime image. Reusing an
+application version with different code or configuration is rejected; an
+identical redeploy is idempotent.
+Image and application requests normally route through `TENSORLAKE_API_URL` so
+ingress can authenticate them and attach trusted project identity. Application
+deployment, invocation, output, listing, and inspection all use that same
+origin. Trusted split local installations can set `TENSORLAKE_IMAGE_SERVICE_URL`
+and `TENSORLAKE_FUNCTION_SERVICE_URL` independently.
+
+Sandbox create, list, snapshot and pool requests go to the sandbox API, which
+is derived from `TENSORLAKE_API_URL` (`api.tensorlake.ai` becomes
+`sandbox.tensorlake.ai`). Set `TENSORLAKE_SANDBOX_API_URL` to an absolute
+`http(s)` origin (no query string, fragment or credentials) to send them
+elsewhere, for example to a dedicated BYOC proxy
+such as `https://byoc-<customer>.tensorlake.ai`. The CLI, the Python SDK and the
+TypeScript SDK all honor it; `tl whoami --output json` shows the resolved value
+as `sandboxApi`. `TENSORLAKE_SANDBOX_PROXY_URL` is different: it only affects
+per-sandbox connections when the server did not return a sandbox URL.
+
+#### Call via HTTP
+
+```bash
+# Invoke the application
+curl https://api.tensorlake.ai/applications/city_guide_app \
+  -H "Authorization: Bearer $TENSORLAKE_API_KEY" \
+  --json '"San Francisco"'
+# Returns: {"request_id": "beae8736ece31ef9"}
+
+# Get the result
+curl https://api.tensorlake.ai/applications/city_guide_app/requests/{request_id}/output \
+  -H "Authorization: Bearer $TENSORLAKE_API_KEY"
+
+# Stream results with SSE
+curl https://api.tensorlake.ai/applications/city_guide_app \
+  -H "Authorization: Bearer $TENSORLAKE_API_KEY" \
+  -H "Accept: text/event-stream" \
+  --json '"San Francisco"'
+
+```
+
+---
+
+## FAQ
+
+**What is Tensorlake?**
+Tensorlake is the sandbox-native cloud for AI agents — a compute platform for securely running untrusted, LLM-generated code in isolated sandboxes and orchestrating agentic applications at scale.
+
+**How do I run untrusted or LLM-generated code safely?**
+Each Tensorlake sandbox provides an isolated environment for running untrusted or LLM-generated code. Create a CPU-only CAS or GPU CAS sandbox with the Python or TypeScript SDK, or the CLI, in a few lines.
+
+**How is Tensorlake different from E2B, Modal, or Daytona?**
+Tensorlake is built for heavy filesystem I/O, fast startup, and large-scale fan-out. In SQLite benchmarks (2 vCPUs, 4 GB RAM) it completes in 2.45s versus E2B (3.92s), Modal (4.66s), and Daytona (5.51s), and it supports snapshots, auto suspend/resume, live migration, and up to 5 million sandboxes per project.
+
+**Can I checkpoint and resume an AI agent?**
+Yes. Snapshot a running sandbox at any point to capture both memory and filesystem state, then create a new sandbox from that snapshot to pick up exactly where you left off. Sandboxes also auto-suspend when idle and resume in under a second without losing state.
+
+**How fast do sandboxes start?**
+Sandboxes are created in under a second via Lattice, a dynamic cluster scheduler. For even faster starts, use sandbox pools to keep warm containers ready to claim instantly.
+
+**How do I run code interpreter / tool execution for an LLM agent?**
+Spin up a sandbox as an isolated execution environment for an agent's tools or generated code, run commands or processes inside it, read and write files, and terminate it when done — all from the Python or TypeScript SDK, or the CLI.
+
+**What languages and interfaces are supported?**
+Tensorlake provides a Python SDK, a TypeScript SDK, and a standalone CLI (`tl`), plus an HTTP API for invoking orchestration applications.
+
+**How do I get started?**
+Sign up at [cloud.tensorlake.ai](https://cloud.tensorlake.ai/), run `pip install tensorlake` for the Python SDK, install the CLI with `curl -fsSL https://tensorlake.ai/install | sh`, set your `TENSORLAKE_API_KEY`, and create your first sandbox. See the [documentation](https://docs.tensorlake.ai) for full guides.
+
+## Learn More
+
+* [Sandbox Documentation](https://docs.tensorlake.ai/sandboxes/introduction)
+* [Orchestrate Documentation](https://docs.tensorlake.ai/applications/quickstart)
+* [`tl git mount` repository and subtree workflow](docs/git-mount.md)
+
+### GPU model names
+
+Sandbox GPU requests also accept `RTX-PRO-6000` and `L40`
+in the Python, TypeScript, and Rust SDKs and the CLI `--gpu` option.
+Python exposes `GpuModel.RTX_PRO_6000` and `GpuModel.L40`.
+`RTX-PRO-6000` selects the 96 GB Blackwell Server Edition, not the workstation
+editions. These names request exact models; L40 does not select L40S. The server and
+dataplane must support the requested model and have matching capacity.

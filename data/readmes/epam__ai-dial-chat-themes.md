@@ -1,0 +1,214 @@
+<h1 align="center">
+         DIAL Chat Themes
+    </h1>
+    <p align="center">
+        <p align="center">
+        <a href="https://dialx.ai/">
+          <img src="https://dialx.ai/logo/dialx_logo.svg" alt="About DIALX">
+        </a>
+    </p>
+<h4 align="center">
+    <a href="https://discord.gg/ukzj9U9tEe">
+        <img src="https://img.shields.io/static/v1?label=DIALX%20Community%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
+    </a>
+</h4>
+
+- [Overview](#overview)
+- [OTEL Integration](#otel-integration)
+- [Set Up Developer Environment](#set-up-developer-environment)
+  - [Build](#build)
+  - [Run](#run)
+- [Helm Deployment and Configuration](#helm-deployment-and-configuration)
+- [Working with Themes](#working-with-themes)
+  - [Add Theme](#add-theme)
+  - [Customize Image URLs](#customize-image-urls)
+  - [Customize Theme Colors](#customize-theme-colors)
+  - [Colors for the Sign in Page (authColors)](#colors-for-the-sign-in-page-authcolors)
+  - [Customizing Banner Images (banners)](#customizing-banner-images-banners)
+
+## Overview
+
+> [!NOTE]
+> A theme is a collection of static resources including images, fonts, and color palettes that you can utilize to personalize the appearance of your [AI DIAL Chat](https://github.com/epam/ai-dial-chat) application. These resources can be stored anywhere and accessed by the chat application via the internet. We provide the AI DIAL Chat Themes service as a convenient method for hosting these static resources and making them accessible for the chat application(s). However, you have the flexibility to choose your own method for accomplishing this.
+>
+> This approach, having static resources externally, enables developers and designers to work concurrently and implement changes to themes without having to rebuild the chat application Docker image.
+
+> [!IMPORTANT]
+> **Note**: after making changes into themes, it is necessary to restart the chat application to apply changes.
+
+> [!TIP]
+> Chat application users can then select themes in [user settings](https://github.com/epam/ai-dial/blob/main/docs/user-guide.md#user-settings).
+
+## OTEL Integration
+
+Added for your Env variables the next variables with the proper values. Trigger a redeploy of your Themes instance.
+
+```bash
+  OTEL_EXPORTER_OTLP_ENDPOINT: "<otlp_endpoint_url>" # OTEL endpoint URL
+  OTEL_SERVICE_NAME: "<service_name>" # Key-value pairs to be used as resource attributes, default values ai-dial-chat-themes. The value can be overridden if necessary.
+```
+
+> [!TIP]
+> Refer to the Official [OTLP Exporter Configuration](https://opentelemetry.io/docs/languages/sdk-configuration/otlp-exporter/) documentation for more details.
+
+> [!TIP]
+> Refer to the DIAL [Observability and Monitoring](https://docs.dialx.ai/tutorials/devops/observability-config) documentation for more details.
+
+> [!TIP]
+> Refer to the Official [Module ngx_otel_module](https://nginx.org/en/docs/ngx_otel_module.html#variables) documentation for more details.
+
+## Set Up Developer Environment
+
+The HTTP server is run in Docker container. All you need is to [install the latest Docker engine](https://docs.docker.com/engine/install/).
+
+### Build
+
+Run the `build` command to build a Docker image with the tag `dial-chat-themes:latest`
+
+```bash
+make build
+```
+
+### Run
+
+Execute this command to run the Docker container available at `http://localhost:8080`:
+
+```bash
+make run
+```
+
+## Helm Deployment and Configuration
+
+1. You can deploy AI DIAL Chat Themes service using a common [dial](https://github.com/epam/ai-dial-helm/tree/main/charts/dial) Helm chart or using a stand-alone chart [dial-extension](https://github.com/epam/ai-dial-helm/tree/main/charts/dial-extension).
+
+    > [!TIP]
+    > Refer to [AI DIAL Helm](https://github.com/epam/ai-dial-helm) to learn about the deployment options and view the examples of charts.
+
+1. In the [config.json](./static/config.json) file, you can define and configure custom themes or use (edit) default ones. Images can be stored in the **static** folder as well. However, you can store images anywhere and provide URLs in the config file.
+1. Further, it is necessary to configure AI DIAL Chat to access the static resources and the themes configuration. To do that, add `THEMES_CONFIG_HOST` to the chat configuration - refer to [documentation](https://github.com/epam/ai-dial-chat/blob/development/apps/chat/README.md) for details. `THEMES_CONFIG_HOST` environment variable contains the URL to your nginx server with the configuration and images (this is the case when you use AI DIAL Chat Themes to provide static resources for the chat application). This ensures that the application fetches your configuration file during loading. If the environment variable is not provided, [default themes and model icons]((./static/config.json)) will be applied.
+1. After applying changes, it is necessary to redeploy the themes server. Changes will take effect automatically on the chat UI after 24hrs or upon the page reload. All the configured themes will be available in the chat application in [user settings](https://github.com/epam/ai-dial/blob/main/docs/user-guide.md#user-settings).
+
+## Working with Themes
+
+### Add Theme
+
+> [!NOTE]
+> In the [config.json](./static/config.json) file you can find two default themes: light☀️ and dark🌒 (default theme).
+
+> [!TIP]
+> To declare a new theme, create an object inside the `themes` property and fill all the required fields as shown on the example:
+
+> [!IMPORTANT]
+> **Note**: if you create a list of custom themes, the first theme in the `themes` array will be used as a default one for **new** users. For other users, the theme will be fetched from a local storage.
+
+```json
+  // defined themes as an array
+  "themes": [
+    {
+      "displayName": "Light",   // Displayed name in settings modal on UI
+      "id": "light",            // Some kebab case id name
+      "colors": {
+        // Semantic colors which commonly used across entire application.
+        // See default configuration to check available colors
+      },
+      "font-family":"Inter" //Font for the theme
+    },
+    // Other themes
+  ],
+```
+
+### Customize Image URLs
+
+> [!NOTE]
+> You can provide image URLs in the configuration file [config.json](./static/config.json). To achieve this, create the following structure:
+
+```json
+{
+  "themes": [
+    // defined themes as an array
+  ],
+  "images": {
+    // common for all themes image urls
+    "default-model": "", //default icon for applications without a custom icon configured
+    "default-addon": "", //default icon for addons without a custom icon configured
+    
+    "admin-logo-light": "", //light theme logo for DIAL Admin
+    "admin-logo-dark": "", //dark theme logo for DIAL Admin
+    "admin-favicon": "", //favicon for DIAL Admin
+    "chat-logo-light": "", //light theme logo for DIAL Chat
+    "chat-logo-dark": "", //dark theme logo for DIAL Chat
+    "chat-favicon": "", //favicon for DIAL Chat
+  }
+}
+```
+
+> [!IMPORTANT]
+> Specify a full path to your images (e.g. `https://some-path.svg`) if you are hosting them at the external source; otherwise, a path will be recognized as a relative URL and transformed into `{{host}}/icon.svg`.
+
+### Customize Theme Colors
+
+> [!NOTE]
+> Specify a hex value in colors. Refer to [Hex Color](https://developer.mozilla.org/en-US/docs/Web/CSS/hex-color) for reference.
+>
+> You can customize color palettes in the `colors` property for each object in the list of `themes`:
+
+> [!IMPORTANT]
+> **Note**, in the [config.json](./static/config.json) file you can find default color palettes for both dark and light themes.
+
+```json
+{
+  "themes": [
+    {
+      "displayName": "Dark",
+      "colors": {...}
+    },
+    {
+      "displayName": "Light",
+      "colors": {...}
+    }
+  ]
+}
+```
+
+### Colors for the Sign in Page (authColors)
+
+> [!NOTE]
+> The `authColors` property allows you to define custom color palettes specifically for the Sign in page. These colors can be used to style login, registration, and other authentication screens.
+
+```json
+{
+  "themes": [
+    {
+      "displayName": "Dark",
+      "colors": {...}
+    },
+    "authColors": {
+      "bg-auth-layer-0": "#FFFFFF",
+      "bg-auth-layer-1": "#EFEFEF"
+      }
+  ]
+}
+```
+
+### Customizing Banner Images (banners)
+
+> [!NOTE]
+> To customize banner images, you can provide image URLs inside the desired theme object:
+>
+> 1. Locate or create the `banners` property inside the desired theme object in config.json.
+> 1. Update or add values for `my-workspace-banner` and `marketplace-banner` with the relative path or full URL of your custom images.
+
+```json
+{
+  "themes": [
+    {
+      "displayName": "Dark",
+      "colors": {...}
+    },
+    "banners":{
+      "my-workspace-banner": "welcome-dark-my-apps.jpg",
+      "marketplace-banner": "welcome-dark.jpg"
+      }
+  ]
+}
+```

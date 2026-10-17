@@ -1,0 +1,155 @@
+# 考研管综 199 真题题库(2009–2026)
+
+199 管综历年真题(试卷 + 答案解析)的结构化 Markdown 题库 + RAG 切分库(JSONL),
+每年一卷、57 题,每题附原卷切片图。2009–2026 各卷 md 已逐题人工/多模态校核,
+**md 是本题库的唯一内容源**。
+
+## 目录结构
+
+```
+真题部分/                          各年原始试卷 PDF(每年一个,单文件)
+答案部分/                          各年答案解析 PDF(四种版式混合)
+199管综真题_Markdown题库/
+  {year}年/
+    {year}年199管综真题试卷.md     试卷正文(人工校核过)
+    {year}年199真题_chunks.jsonl   该年 57 条 RAG 切分
+    images/                        {year}_q01..q57.png + {year}_shared_{a}_{b}.png
+  199管综历年真题_全量RAG切分库.jsonl  18 年共 1026 条汇总
+199管综答案_Markdown题库/
+  {year}年/
+    {year}年199管综真题解析.md        答案解析(OCR 提取 + VLM 逐页对照原 PDF 校核,
+                                       公式已 LaTeX 化;2026 年为人工整理:
+                                       原 PDF 只给答案字母,第 1~55 题解析
+                                       系据真题推演补全;2022 精简版 Q40 的
+                                       解析同系推演补全并经穷举复核)
+    {year}年199真题解析_chunks.jsonl  该年答案 RAG 切分(55 条主切分 +
+                                       写作题板块子切分,共 57~64 条)
+  199管综历年真题_全量RAG切分库_答案.jsonl  2009–2026 年 1069 条汇总
+ocr_cache/                         RapidOCR 行框缓存(真题 _ocr_lines / 答案 _answer_ocr_lines,可删)
+scripts/                           构建脚本(仓库根目录执行;脚本按 __file__ 定位根,任意目录亦可)
+  build_rag_chunks_from_md.py        真题 md → RAG 切分库(当前唯一生成入口)
+  build_answer_md.py                 答案解析 PDF → 逐年 md(全量 RapidOCR,幂等)
+  build_answer_rag_chunks.py         答案解析 md → RAG 切分库
+  reslice_images.py                  原卷切片图重建 + 共享题干图片行(幂等)
+docs/                              项目文档与实战指南
+  199_management_exam_comprehensive_guide.md    199 管综历年真题全景复习指南
+  199_exam_points_trends_and_tricks.md          考点考频、演进趋势与高分实战技巧报告
+  199_math_core_formulas_and_theorems.md        数学高频考点、核心公式与定理速查宝典
+  analytical_reasoning_mastery_guide.md         综合分析推理全解剖与极速通关专项宝典
+  199管综真题PDF转Markdown与切分优化实战指南.md  题库构建与切片技术总结
+  199管综真题图形纯文本化与矢量绘制实战指南.md    图形纯文本化与 SVG 绘制实战指南
+```
+
+## 当前工作流
+
+日常只需四条命令,都在仓库根目录执行:
+
+1. **重建 RAG 切分库**(md 有改动后跑):
+
+   ```bash
+   python3 scripts/build_rag_chunks_from_md.py            # 全量
+   python3 scripts/build_rag_chunks_from_md.py 2024       # 指定年份
+   ```
+
+   校验标准:18 年 × 57 题 = 1026 条、零告警(题干为空/选项不齐/缺图会告警
+   并非 0 退出)。2024/2025/2026 试卷 md 中的 SVG 重绘图块仅供人读,
+   解析时剔除、不进 chunk 文本。护栏:年份参数非数字或题库中不存在时直接报错退出、不写
+   任何文件;指定年份只重建该年,汇总库仍合并全部 18 年(逐年 jsonl 缺失
+   则报错);所有写盘为原子写(临时文件 + rename),不会留下半截 jsonl。
+
+2. **重建答案解析 md**(答案部分 PDF 有变时跑;RapidOCR 全量,带缓存、幂等):
+
+   ```bash
+   python3 scripts/build_answer_md.py             # 2009–2025 全量
+   python3 scripts/build_answer_md.py 2016 2024   # 指定年份
+   ```
+
+   4 种版式(2009–2021 文都"速查+详解"、2022 精简版、2023 清晰扫描、
+   2024/2025)统一输出:答案速查(原书有则收录)+ 四大板块,每年 57 题,
+   每题 `### 第 N 题` + `**答案**：X`。校验:57 题锚点缺失 / 答案字母缺失 /
+   与速查表不符 / 内容过短均告警,锚点缺失非 0 退出。脚本输出为 OCR 原文
+   (不做 LaTeX 转换),2009–2025 的公式 LaTeX 化已完成;`--force` 重建后
+   需重新校核与 LaTeX 化,核对请对照原 PDF。
+   注:2026 年无独立答案解析 PDF,其解析为人工整理(原 PDF 只给答案字母,
+   第 1~55 题解析系据真题推演并经程序穷举复核补全,第 51 题原 E 已更正为 C),
+   不要对 2026 运行本脚本。
+   护栏:逐年 md 已存在时默认拒绝覆盖(已校核,重跑会用 OCR 原文冲掉校核
+   结果),确需重建加 `--force`(重建后必须重新逐页校核);指定的年份缺
+   PDF 或参数非数字直接报错退出。
+
+3. **重建答案 RAG 切分库**(答案解析 md 有改动后跑):
+
+   ```bash
+   python3 scripts/build_answer_rag_chunks.py            # 全量
+   python3 scripts/build_answer_rag_chunks.py 2013 2018  # 指定年份
+   ```
+
+   字段:year / question_no / category / answer / part / parts / part_label /
+   explanation。category 与真题库一致(1-15 问题求解、16-25 条件充分性判断、
+   26-55 逻辑推理、56/57 写作);answer 为 1-55 题的 A-E 字母,写作题为 null。
+   与真题库按 (year, question_no) 关联。1-55 题每题 1 条切分
+   (part=parts=1、part_label 为空串);写作题按板块细分为多条切分——以
+   "参考范文"行和独占一行的【…】标题(【谬误分析】【参考立意】【参考范文】
+   【高分范文 N】等)为分界,2025 写作题中穿插原文的【谬误 N】整句标注不算
+   分界——分界前的引导段(如 2026 的材料概述)part_label 为空串,各年写作
+   子切分数从 2 条(2022 无标记)到 9 条(2026)不等。消费方按 part 升序
+   拼接即得解析全文。校验:每年 57 个题目块齐整、1-55 题必须有 A-E 答案
+   字母(缺失非 0 退出);汇总库必须覆盖题库内全部年份;解析为空仅告警
+   (2022 精简版个别题目原书仅一行简注)。护栏同真题库:年份参数报错、
+   局部重建不缩小汇总范围、原子写。
+
+4. **重建原卷切片图**(需要改图时跑,幂等):
+
+   ```bash
+   python3 scripts/reslice_images.py            # 2009–2026 全量
+   python3 scripts/reslice_images.py 2013 2022  # 指定年份
+   ```
+
+   行级题号锚点 + 归属划分,文本层优先、RapidOCR 补缺(缓存 ocr_cache/),
+   两源皆丢的题号按相邻题缺口修复;切图按"题目全部行 ±4pt、跨页拼接",
+   只可能略伸入相邻题、不会少切;切边切断的图形/表格线墨迹按深色带
+   回收扩展(跨切分拆开的图形按整图扩),浅灰笔画(如立体图隐藏边)
+   按续行回收。同时把共享题干("N~M 题基于以下题干")
+   单独切图,并在 md 对应引用块后插入图片行(已存在则跳过)。
+
+## 注意
+
+- **不要重跑 `scripts/legacy/batch_optimize_all_199.py`**。它是 md 最初生成时的批量流水线,
+  输出会覆盖已校核的 md,仅留作历史参考。
+- 答案 md 为 RapidOCR 自动提取(答案 PDF 内嵌文本层同样是低质 OCR),
+  2009–2025 已由 VLM 逐页对照原 PDF(200–400dpi 渲染)校核,OCR 错误
+  已就地修正、布局与答案字母以原书为准;个别 PDF 印刷本身模糊处保留
+  原文并记入校核报告的存疑清单,使用仍请对照原 PDF 核对。
+  2009–2026 的公式均已转换为 `$...$` LaTeX 行内式(2026 为人工整理,
+  其余为 OCR 原文逐字保留、仅数学符号 LaTeX 化)。
+- **不要重跑 `scripts/build_answer_md.py`**:它会用 OCR 原文整体覆盖答案 md,
+  冲掉已就地修正的 VLM 校核结果与 LaTeX 化;脚本现已加护栏——逐年 md
+  已存在时拒绝覆盖,确需重建(仅当答案 PDF 本身更换)加 `--force`,
+  且重跑后需重新逐页校核与重新 LaTeX 化。
+- 2022 答案书为精简版,第 37、39 题原书仅一行简注;第 40 题原书无解析,
+  系据真题题干推演并经程序穷举复核补全(已在该文件头部注明);
+  2023/2025 没有"答案速查"板块。
+- `2022/2023/2025/2026` 年的 md 处于持续人工修订中,脚本只做增量(图片行),
+  不要整体重写。
+- 切片图原则:内容必须完整,允许少量切到相邻题的行距,禁止少切。
+- 2010 年原卷没有共享题干,其余 17 年共有 52 组。
+
+## 依赖
+
+- Python 3 + `PyMuPDF`(fitz)
+- `rapidocr_onnxruntime`(仅 scripts/reslice_images.py 遇到纯扫描/乱码年份时需要)
+- `Pillow`(scripts/reslice_images.py 跨页拼接用)
+
+安装:`pip install PyMuPDF rapidocr_onnxruntime Pillow`
+
+## 详细方法与实战指南
+
+### 1. 备考与解题专项指南
+- **全景复习指南**：[199_management_exam_comprehensive_guide.md](docs/199_management_exam_comprehensive_guide.md)（三科知识体系、题型演进、思维导图与备考规划）
+- **考点考频与趋势报告**：[199_exam_points_trends_and_tricks.md](docs/199_exam_points_trends_and_tricks.md)（18 年 1026 题量化统计、高分秒杀技巧与避坑全景）
+- **数学公式与定理速查宝典**：[199_math_core_formulas_and_theorems.md](docs/199_math_core_formulas_and_theorems.md)（八大核心模块高频考点与必背公式）
+- **综合分析推理通关专项**：[analytical_reasoning_mastery_guide.md](docs/analytical_reasoning_mastery_guide.md)（大题组、信息提取、六大经典模型与解题范式）
+
+### 2. 工程规范与技术总结
+- **题库构建与 PDF 切片优化**：[199管综真题PDF转Markdown与切分优化实战指南.md](docs/199管综真题PDF转Markdown与切分优化实战指南.md)
+- **图形纯文本化与矢量绘制（SVG / Unicode / Markdown 表格）**：[199管综真题图形纯文本化与矢量绘制实战指南.md](docs/199管综真题图形纯文本化与矢量绘制实战指南.md)

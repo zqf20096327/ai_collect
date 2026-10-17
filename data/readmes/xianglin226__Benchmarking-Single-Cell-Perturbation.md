@@ -1,0 +1,118 @@
+![](https://github.com/xianglin226/Benchmarking-Single-Cell-Perturbation/blob/master/mach.jpg)
+Many perturbation models are coming out!
+## Models developed for genetic/chemical perturbation data  
+| Name   | Year          | Journal/Conf.  | Title |
+| -------|:-------------:| -----:|--------:|
+| [Rachel et al](https://psb.stanford.edu/psb-online/proceedings/psb18/hodos.pdf)  |2018  |Pacific Symposium on Biocomputing 2018|Cell-specific prediction and application of drug-induced gene expression profiles  
+| [scGEN](https://www.nature.com/articles/s41592-019-0494-8)|2019    |Nature Method|scGen predicts single-cell perturbation responses
+| [DTD](https://dl.acm.org/doi/abs/10.1145/3308558.3313476) |2019         |The World Wide Web Conference, 2019|Modeling Relational Drug-Target-Disease Interactions via Tensor Factorization with Multiple Web Sources 
+| [CPA](https://www.embopress.org/doi/full/10.15252/msb.202211517)|2021 |Molecular system biology|Predicting cellular responses to complex perturbations in high‐throughput screens 
+| [CellBox](https://www.cell.com/cell-systems/pdf/S2405-4712(20)30464-6.pdf)|2021  |Cell systems|CellBox: Interpretable Machine Learning for Perturbation Biology with Application to the Design of Cancer Combination Therapy 
+| [CellDrift](https://academic.oup.com/bib/article/23/5/bbac324/6673850)|2022         |BIB | CellDrift: inferring perturbation responses in temporally sampled single-cell data
+| [MultiCPA](https://www.biorxiv.org/content/10.1101/2022.07.08.499049v1.abstract)|2022          || MultiCPA: Multimodal Compositional Perturbation Autoencoder
+| [PerturbNet](https://www.biorxiv.org/content/10.1101/2022.07.20.500854v2.abstract)|2022          || PerturbNet predicts single-cell responses to unseen chemical and genetic perturbations
+| [scINSIGHT](https://link.springer.com/article/10.1186/s13059-022-02649-33)|2022        |Genome biology |scINSIGHT for interpreting single-cell gene expression from biologically heterogeneous data
+| [scpregan](https://academic.oup.com/bioinformatics/article/38/13/3377/6593485)|2022    |Bioinformatics |scPreGAN, a deep generative model for predicting the response of single-cell expression to perturbation
+| [Gears](https://www.nature.com/articles/s41587-023-01905-6)|2023          |Nature Biotech| Predicting transcriptional outcomes of novel multigene perturbations with GEARS
+| [cycleCDR](https://arxiv.org/abs/2311.10315)|2023          || Interpretable Modeling of Single-cell perturbation Responses to Novel Drugs Using Cycle Consistence Learning
+| [scVIDR](https://www.cell.com/patterns/pdf/S2666-3899(23)00186-1.pdf)|2023          |Patterns| Generative modeling of single-cell gene expression for dose-dependent chemical perturbations
+| [Unagi](https://www.researchsquare.com/article/rs-3676579/v1)|2023           ||Unagi: Deep Generative Model for Deciphering Cellular Dynamics and In-Silico Drug Discovery in Complex Diseases
+| [CINEMA-OT](https://www.nature.com/articles/s41592-023-02040-5)| 2023        |Nature Method| Causal identification of single-cell experimental perturbation effects with CINEMA-OT
+| [ChemCPA](https://proceedings.neurips.cc/paper_files/paper/2022/hash/aa933b5abc1be30baece1d230ec575a7-Abstract-Conference.html)|2023        |NeurIPS 2022 |Predicting Cellular Responses to Novel Drug Perturbations at a Single-Cell Resolution 
+| [DREEP](https://link.springer.com/article/10.1186/s12916-023-03182-1)| 2023        |BMC Medicine|Predicting drug response from single-cell expression profiles of tumours 
+| [ontoVAE](https://academic.oup.com/bioinformatics/article/39/6/btad387/7199588)|2023         |Bioinformatics|  Biologically informed variational autoencoders allow predictive modeling of genetic and drug-induced perturbations
+| [scDiff](https://www.biorxiv.org/content/10.1101/2023.10.13.562243v1.abstract)| 2023         || A GENERAL SINGLE-CELL ANALYSIS FRAMEWORK VIA CONDITIONAL DIFFUSION GENERATIVE MODELS
+| [ContrastiveVI](https://www.nature.com/articles/s41592-023-01955-3)| 2023         |Nature Method|Isolating salient variations of interest in single-cell data with contrastiveVI 
+| [sVAE](https://proceedings.mlr.press/v213/lopez23a.html)| 2023       |PMLR | Learning Causal Representations of Single Cells via Sparse Mechanism Shift Modeling
+| [CellOT](https://www.nature.com/articles/s41592-023-01969-x)|2023         |Nature Method |Learning single-cell perturbation responses using neural optimal transport 
+|[MOASL](https://www.sciencedirect.com/science/article/abs/pii/S0010482523013185)| 2023| Computers in Biology and Medicine | MOASL: Predicting drug mechanism of actions through similarity learning with transcriptomic signature  
+| [samsVAE](https://proceedings.neurips.cc/paper_files/paper/2023/hash/0001ca33ba34ce0351e4612b744b3936-Abstract-Conference.html)| 2024       |Advances in Neural Information Processing Systems| Modelling Cellular Perturbations with the Sparse Additive Mechanism Shift Variational Autoencoder 
+| [Biolord](https://www.nature.com/articles/s41587-023-02079-x)| 2024        |Nature Biotech| Disentanglement of single-cell data with biolord
+| [PDGrapher](https://www.biorxiv.org/content/10.1101/2024.01.03.573985v2.abstract)|  2024 | Nature Biomedical Engineering | Combinatorial prediction of therapeutic perturbations using causally-inspired neural networks
+| [TAT](https://pubs.acs.org/doi/full/10.1021/acs.jcim.3c01855)| 2024        |Journal of Chemical Information and Modeling| Compound Activity Prediction with Dose-Dependent Transcriptomic Profiles and Deep Learning 
+| [scVAE](https://www.biorxiv.org/content/10.1101/2024.01.05.574421v1.abstract)|  2024      | | A Supervised Contrastive Framework for Learning Disentangled Representations of Cell Perturbation Data 
+| [Cell PaintingCNN](https://www.nature.com/articles/s41467-024-45999-1)|2024        |NC |  Learning representations for image-based profiling of perturbations
+| [scDisInFact](https://www.nature.com/articles/s41467-024-45227-w)| 2024       |NC| scDisInFact: disentangled learning for integration and prediction of multi-batch multi-condition single-cell RNA-sequencing data  
+| [CellCap](https://www.biorxiv.org/content/10.1101/2024.03.14.585078v1.abstract)| 2024         || Modeling interpretable correspondence between cell state and perturbation response with CellCap
+| [CODEX](https://academic.oup.com/bioinformatics/article/40/Supplement_1/i91/7700898) | 2024 | Bioinformatics | CODEX: COunterfactual Deep learning for the in silico EXploration of cancer cell line perturbations
+| [scFM](https://www.biorxiv.org/content/10.1101/2024.10.02.616248v1) | 2024 |  | PertEval-scFM: Benchmarking Single-Cell Foundation Models for Perturbation Effect Prediction
+| [STAMP](https://www.nature.com/articles/s43588-024-00698-1) | 2024 | NCS | Toward subtask-decomposition-based learning and benchmarking for predicting genetic perturbation outcomes and beyond  
+| [PrePR-CT](https://www.biorxiv.org/content/10.1101/2024.07.24.604816v1.full.pdf) |2024| |  PrePR-CT: Predicting Perturbation Responses in Unseen Cell Types Using Cell-Type-Specific Graphs  
+|[PRnet](https://www.nature.com/articles/s41467-024-53457-1) |2024| NC | Predicting transcriptional responses to novel chemical perturbations using deep generative model for drug discovery  
+|[TranSiGen](https://www.nature.com/articles/s41467-024-49620-3)|2024|NC|Deep representation learning of chemical-induced transcriptional profile for phenotype-based drug discovery  
+|[BioDiscoveryAgent](https://arxiv.org/abs/2405.17631)| 2024| | BioDiscoveryAgent: An AI Agent for Designing Genetic Perturbation Experiments  
+|[DRSPRING](https://www.sciencedirect.com/science/article/pii/S0010482524005201)| 2024| Computers in Biology and Medicine| DRSPRING: Graph convolutional network (GCN)-Based drug synergy prediction utilizing drug-induced gene expression profile  
+|[PertKGE](https://www.biorxiv.org/content/10.1101/2024.04.08.588632v1.abstract)|2024|| Identify compound-protein interaction with knowledge graph embedding of perturbation transcriptomics  
+|[scRank](https://www.cell.com/cell-reports-medicine/fulltext/S2666-3791(24)00260-X)| 2024| Cell Reports Medicine | scRank infers drug-responsive cell types from untreated scRNA-seq data using a target-perturbed gene regulatory network  
+|[CellFlow](https://www.biorxiv.org/content/10.1101/2025.04.11.648220v1)| 2025 | | CellFlow enables generative single-cell phenotype modeling with flow matching   
+|[IMPA](https://www.nature.com/articles/s41467-024-55707-8) |2025| NC | Predicting cell morphological responses to perturbations using generative modeling  
+|[PS](https://www.nature.com/articles/s41556-025-01626-9) |2025| Nature Cell Biology | Decoding heterogeneous single-cell perturbation responses  
+|[TRADE](https://www.nature.com/articles/s41588-025-02169-3) |2025| Nature Genetics | Transcriptome-wide analysis of differential expression in perturbation atlases  
+|[UNAGI](https://doi.org/10.1038/s41551-025-01423-7) |2025| Nature Biomedical Engineering | A deep generative model for deciphering cellular dynamics and in silico drug discovery in complex diseases    
+|[STATE](https://arcinstitute.org/manuscripts/State) |2025|  | Predicting cellular responses to perturbation across diverse contexts with State   
+|[scAgent](https://openreview.net/forum?id=HGJQvwGtfJ) |2025|  | scAgents:AMulti-AgentFramework forFullyAutonomousEnd-to-EndSingle-Cell PerturbationAnalysis  
+|[CONCERT](https://www.biorxiv.org/content/10.1101/2025.11.08.686890v2.abstract) |2025|  | CONCERT predicts niche-aware perturbation responses in spatial transcriptomics     
+|[Cradle-VAE](https://ojs.aaai.org/index.php/AAAI/article/view/33695) |2025| AAAI Conference on AI | Cradle-VAE: Enhancing Single-Cell Gene Perturbation Modeling with Counterfactual Reasoning-based Artifact Disentanglement  
+|[Pertpy](https://www.nature.com/articles/s41592-025-02909-7) |2025| NM | Pertpy: an end-to-end framework for perturbation analysis    
+|[Scouter](https://www.nature.com/articles/s43588-025-00912-8) |2025| NCS | Scouter predicts transcriptional responses to genetic perturbations with large language model embeddings  
+|[PertAdapt](https://www.biorxiv.org/content/10.1101/2025.11.21.689655v1) |2025|  | PertAdapt: Unlocking Single-Cell Foundation Models for Genetic Perturbation Prediction via Condition-Sensitive Adaptation  
+|[CausalGRN](https://www.biorxiv.org/content/10.64898/2025.12.30.692369v1.abstract) |2025|  | CausalGRN: deciphering causal gene regulatory networks from single-cell CRISPR screens  
+|[Systema](https://www.nature.com/articles/s41587-025-02777-8) |2025| Nature Biotechnology | Systema: a framework for evaluating genetic perturbation response prediction beyond systematic variation  
+|[Stack](https://www.biorxiv.org/content/10.64898/2026.01.09.698608v1) |2026|  | Stack: In-Context Learning of Single-Cell Biology    
+|[AlphaCell](https://www.biorxiv.org/content/10.64898/2026.03.02.709176v1.abstract) |2026|  | Towards building a World Model to simulate perturbation-induced cellular dynamics by AlphaCell  
+|[XPert](https://www.nature.com/articles/s42256-025-01165-w) |2026| NMI | Modelling drug-induced cellular perturbation responses with a biologically informed dual-branch transformer  
+|[PrePR-CT](https://www.nature.com/articles/s42256-026-01202-2) |2026| NMI | Predicting and interpreting cell-type-specific drug responses in the small-data regime using inductive priors  
+|[SequenTx](https://www.nature.com/articles/s42256-026-01192-1) |2026| NMI | Reinforcement learning-based design of sequential drug treatment targeting the evolving tumour landscape with SequenTx  
+|[TxPert](https://www.nature.com/articles/s41587-026-03113-4)| 2026 | NBT | TxPert: using multiple knowledge graphs for prediction of transcriptomic perturbation effects  
+|[scPert](https://www.biorxiv.org/content/10.64898/2026.04.24.720560v1.abstract)| 2026 |  | A Multi-modal LLM-Knowledge Fusion Framework for Predicting Single-cell Genetic Perturbation Effects  
+|[X-Cell](https://www.biorxiv.org/content/10.64898/2026.03.18.712807v1.abstract)| 2026 | | X-Cell: Scaling Causal Perturbation Prediction Across Diverse Cellular Contexts via Diffusion Language Models 
+|[RegVelo](https://www.cell.com/cell/fulltext/S0092-8674(26)00457-5)| 2026 | Cell | RegVelo: Gene-regulatory-informed dynamics of single cells   
+|[UniPert-G2CP](https://www.sciencedirect.com/science/article/pii/S0092867426006549)| 2026 | Cell | UniPert-G2CP bridges genetic and chemical screens from molecular representation to phenotype modeling    
+## Review
+|2026|Nature Reviews Genetics| [Interpretation, extrapolation and perturbation of single cells](https://www.nature.com/articles/s41576-025-00920-4)
+
+## Benchmark and Challenges
+|2025|BMC genomics| [Benchmarking foundation cell models for post-perturbation RNA-seq prediction](https://link.springer.com/article/10.1186/s12864-025-11600-2)  
+|2025| NM | [Deep-learning-based gene perturbation effect prediction does not yet outperform simple linear baselines](https://www.nature.com/articles/s41592-025-02772-6)  
+|2025| Communications Biology | [A large-scale benchmark for network inference from single-cell perturbation data](https://www.nature.com/articles/s42003-025-07764-y)  
+|2025| Bioinformatics | [Simple controls exceed best deep learning algorithms and reveal foundation model effectiveness for predicting genetic perturbations](https://academic.oup.com/bioinformatics/article/41/6/btaf317/8142305)  
+|2026|NeurIPS| [PerturBench: Benchmarking Machine Learning Models for Cellular Perturbation Analysis](https://proceedings.neurips.cc/paper_files/paper/2025/file/8aee537279a66ced96319dfca3c00002-Paper-Datasets_and_Benchmarks_Track.pdf)  
+
+## Perturbation Datasets  
+[SC-perturb](http://projects.sanderlab.org/scperturb/)  
+[C-MAP](https://clue.io/)  
+[PerturbBase](http://www.perturbase.cn/)  
+[PerturDB](http://research.gzsys.org.cn/perturbdb/#/home)  
+[Tahoe-100M](https://huggingface.co/datasets/tahoebio/Tahoe-100M)  
+[Multiome Perturb-seq](https://www.biorxiv.org/content/10.1101/2024.07.26.605307v1.full.pdf) (paper)  
+[Multiome: CRISPRmap](https://www.nature.com/articles/s41587-024-02386-x) (paper)  
+[Spatial: Perturb-Fish](https://www.cell.com/cell/fulltext/S0092-8674(25)00197-7) (paper)  
+[Spatial: PerturbView](https://www.nature.com/articles/s41587-024-02391-0) (paper)  
+[Spatial: Perturb-map](https://www.cell.com/cell/fulltext/S0092-8674(22)00195-7?) (paper)   
+[Spatial: Perturb-DBiT](https://www.nature.com/articles/s41587-026-03127-y) (paper - NBT)  
+[Spatial: Spatial-perturb-seq](https://www.biorxiv.org/content/biorxiv/early/2024/12/20/2024.12.19.628843.full.pdf) (paper)  
+[Spatial: NIS-seq](https://www.nature.com/articles/s41587-024-02516-5.pdf) (paper)  
+[Spatial: PERTURB-CAST](https://www.nature.com/articles/s41551-025-01437-1) (paper)  
+[Spatial: SPAC-seq](https://www.cell.com/cell/fulltext/S0092-8674(26)00516-7)(paper)  
+
+### List of [scFM](https://github.com/xianglin226/Benchmarking-Single-Cell-Perturbation/blob/master/scFM/README.md)  
+### These tables will be periodically updated. 
+### We will build APIs for some of these models on [TDC](https://tdcommons.ai/) for benchmarking. 
+### Find single-cell data from [CZI](https://cellxgene.cziscience.com/) database
+
+## FastPert  
+A tool to quickly check:  
+- DEGs of perturbations: [FastPert](https://benchmarking-single-cell-perturbation-cxpnztwdkmkuhrqv555ut8.streamlit.app/)  
+- Enriched pathways of perturbations: [FastPert](https://benchmarking-single-cell-perturbation-h6zgs5utz5cbk9ckdavgxf.streamlit.app/)  
+
+## Questions, ideas, comments, ...
+Please contact Xiang Lin (xiang_lin@hms.harvard.edu).
+
+## Citation is appeciated
+@misc{pertogether2025,  
+  title  = {PerTogether: A tool for perturbation research and modeling},  
+  author = {Xiang Lin, Zhenxing Li, Chenyi Li, Hengyu Zhang},  
+  year   = {2025},  
+  url    = {https://github.com/xianglin226/Benchmarking-Single-Cell-Perturbation/},  
+  note   = {Version 1.0}  
+}

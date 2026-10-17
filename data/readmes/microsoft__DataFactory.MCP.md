@@ -1,0 +1,231 @@
+# Microsoft Data Factory MCP Server
+
+A Model Context Protocol (MCP) server for Microsoft Fabric resource discovery and information retrieval. This server provides tools for authentication and accessing Microsoft Fabric resources through a standardized MCP interface.
+
+[![NuGet Version](https://img.shields.io/nuget/v/Microsoft.DataFactory.MCP)](https://www.nuget.org/packages/Microsoft.DataFactory.MCP)
+[![.NET](https://img.shields.io/badge/.NET-10.0-blue)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/microsoft/DataFactory.MCP/blob/main/LICENSE.txt)
+
+
+## Features
+
+- **Azure AD Authentication**: Interactive and service principal authentication
+- **Gateway Management**: List, retrieve, and create Microsoft Fabric gateways (including VNet gateways)
+- **Connection Management**: List, retrieve, and create Microsoft Fabric connections (cloud, on-premises, and VNet)
+- **Workspace Management**: List and retrieve Microsoft Fabric workspaces
+- **Dataflow Management**: List, create, and retrieve Microsoft Fabric dataflows
+- **Pipeline Management**: List, create, update, run, monitor, and schedule Microsoft Fabric pipelines
+- **Copy Job Management**: List, create, update, run, monitor, and schedule Microsoft Fabric copy jobs
+- **Apache Airflow Job Management**: List, create, update, delete, and manage definitions for Microsoft Fabric Apache Airflow Jobs
+- **Capacity Management**: List and retrieve Microsoft Fabric capacities
+- **Microsoft Fabric Integration**: Support for on-premises, personal, and virtual network gateways
+- 📦 **NuGet Distribution**: Available as a NuGet package for easy integration
+- 🔧 **MCP Protocol**: Built using the official MCP C# SDK
+
+## Available Tools
+
+- **Authentication**: `authenticate_interactive`, `authenticate_service_principal`, `get_authentication_status`, `get_access_token`, `sign_out`
+- **Gateway Management**: `list_gateways`, `get_gateway`, `create_virtualnetwork_gateway`
+- **Connection Management**: `list_supported_connection_types`, `list_connections`, `get_connection`, `create_connection`
+- **Workspace Management**: `list_workspaces`
+- **Dataflow Management**: `list_dataflows`, `create_dataflow`, `get_dataflow_definition`, `add_connection_to_dataflow`, `add_or_update_query_in_dataflow`, `save_dataflow_definition`
+- **Dataflow Refresh**: `refresh_dataflow_background`, `refresh_dataflow_status`
+- **Dataflow Query Execution**: `execute_query` *(Preview)*
+- **Capacity Management**: `list_capacities`
+- **Pipeline Management**: `list_pipelines`, `create_pipeline`, `get_pipeline`, `update_pipeline`, `get_pipeline_definition`, `update_pipeline_definition`, `run_pipeline`, `get_pipeline_run_status`, `create_pipeline_schedule`, `list_pipeline_schedules`, `set_pipeline_schedule_enabled` *(Preview)*
+- **Copy Job Management**: `list_copy_jobs`, `create_copy_job`, `get_copy_job`, `update_copy_job`, `get_copy_job_definition`, `update_copy_job_definition`, `run_copy_job`, `get_copy_job_run_status`, `create_copy_job_schedule`, `list_copy_job_schedules` *(Preview)*
+- **Apache Airflow Job Management**: `list_airflow_jobs`, `create_airflow_job`, `get_airflow_job`, `update_airflow_job`, `delete_airflow_job`, `get_airflow_job_definition`, `update_airflow_job_definition` *(Preview)*
+
+## Available Resources
+
+The server exposes interactive UI forms as MCP App resources, rendered directly inside VS Code chat:
+
+| Resource URI | Description |
+|---|---|
+| `ui://datafactory/create-connection` | Guided wizard for creating a new data source connection ([details](docs/connection-management.md#create-connection-wizard)) |
+
+## Quick Start
+
+### Using from NuGet (Recommended)
+
+1. **Configure your IDE**: Create an MCP configuration file in your workspace:
+
+   **VS Code**: Create `.vscode/mcp.json`
+   **Visual Studio**: Create `.mcp.json` in solution directory
+
+   ```json
+   {
+     "servers": {
+       "DataFactory.MCP": {
+         "type": "stdio",
+         "command": "dnx",
+         "args": [
+           "Microsoft.DataFactory.MCP",
+           "--version",
+           "#{VERSION}#",
+           "--yes"
+         ]
+       }
+     }
+   }
+   ```
+
+2. **Start using**: The server will be automatically downloaded and available in your IDE's MCP-enabled chat interface.
+
+### Development Setup
+
+To run the server locally during development:
+
+```json
+{
+  "servers": {
+    "DataFactory.MCP": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "path/to/DataFactory.MCP"
+      ]
+    }
+  }
+}
+```
+
+## Configuration
+
+### Prerequisites
+
+- .NET 10.0 or later
+- Azure AD tenant and application registration with appropriate permissions
+- Environment variables for authentication (see [Authentication Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/authentication.md) for setup details)
+
+
+## Usage Examples
+
+See the detailed guides for comprehensive usage instructions:
+- **Authentication**: See [Authentication Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/authentication.md)
+- **Gateway Management**: See [Gateway Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/gateway-management.md)
+- **Connection Management**: See [Connection Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/connection-management.md)
+- **Workspace Management**: See [Workspace Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/workspace-management.md)
+- **Dataflow Management**: See [Dataflow Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/dataflow-management.md)
+- **Capacity Management**: See [Capacity Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/capacity-management.md)
+- **Pipeline Management**: See [Pipeline Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/pipeline-management.md)
+- **Copy Job Management**: See [Copy Job Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/copyjob-management.md)
+- **Apache Airflow Job Management**: See [Apache Airflow Job Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/airflow-job-feature.md)
+
+## Development
+
+### Building the Project
+
+```bash
+# Restore dependencies
+dotnet restore
+
+# Build the project
+dotnet build
+
+# Create NuGet package
+dotnet pack -c Release
+````
+
+### Testing Locally
+
+1. Configure your IDE with the development configuration shown above
+2. Run the project: `dotnet run`
+3. Test the tools through your MCP-enabled chat interface
+
+## Claude Skills (Optional)
+
+Enhance your Claude experience with pre-built Data Factory skills that provide operational tips and best practices.
+
+### Installation
+
+Upload the skill files from the [`claude-skills/`](claude-skills/) folder to your Claude Project:
+
+1. Go to your Claude Project settings
+2. Add these files to **Project Knowledge**:
+   - `datafactory-SKILL.md` - Index file (always loaded)
+   - `datafactory-core.md` - M basics, MCP tools overview
+   - `datafactory-performance.md` - Query optimization, timeouts, chunking
+   - `datafactory-destinations.md` - Output configuration, programmatic setup
+   - `datafactory-advanced.md` - Fast Copy, Action.Sequence, Modern Evaluator
+
+### What's Covered
+
+| Skill | Topics |
+|-------|--------|
+| **Core** | M (Power Query) fundamentals, Dataflow Gen2 overview, MCP tool reference, connection management |
+| **Performance** | Query timeouts, chunking strategies, filter optimization, connector selection |
+| **Destinations** | Lakehouse architecture, schema settings, programmatic destination configuration |
+| **Advanced** | `Action.Sequence` for writes, Fast Copy, Modern Evaluator |
+
+### Usage
+
+Once installed, Claude will automatically reference these skills based on your questions:
+- *"My query is timing out"* → loads performance tips
+- *"How do I set the output destination programmatically?"* → loads destination guide
+- *"What's Fast Copy?"* → loads advanced features
+
+## ChatGPT Skills (Optional)
+
+Create a Custom GPT or use ChatGPT Projects with pre-built Data Factory knowledge.
+
+### Installation
+
+1. Go to [ChatGPT](https://chat.openai.com) → **Explore GPTs** → **Create**
+2. Copy instructions from [`chatgpt-skills/gpt-instructions.md`](chatgpt-skills/gpt-instructions.md)
+3. Upload knowledge files from [`chatgpt-skills/`](chatgpt-skills/):
+   - `knowledge-core.md` - M basics, Dataflow Gen2 overview
+   - `knowledge-performance.md` - Query optimization, timeouts
+   - `knowledge-destinations.md` - Output configuration
+   - `knowledge-advanced.md` - Fast Copy, Action.Sequence
+
+See [`chatgpt-skills/README.md`](chatgpt-skills/README.md) for detailed setup options.
+
+## Documentation
+
+For complete documentation, see our **[Documentation Index](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/index.md)**.
+
+### Quick Links
+- **[Authentication Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/authentication.md)** - Complete authentication setup and usage
+- **[Gateway Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/gateway-management.md)** - Gateway operations and examples
+- **[Connection Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/connection-management.md)** - Connection operations and examples
+- **[Workspace Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/workspace-management.md)** - Workspace operations and examples
+- **[Dataflow Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/dataflow-management.md)** - Dataflow operations and examples
+- **[Capacity Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/capacity-management.md)** - Capacity operations and examples
+- **[Pipeline Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/pipeline-management.md)** - Pipeline operations and examples
+- **[Copy Job Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/copyjob-management.md)** - Copy job operations and examples
+- **[Apache Airflow Job Management Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/airflow-job-feature.md)** - Airflow job operations, definition management, and testing guide
+- **[Architecture Guide](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/ARCHITECTURE.md)** - Technical architecture and design details
+
+## Contributing
+
+We welcome contributions! To get started:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+Please follow standard .NET coding conventions and ensure all tests pass before submitting.
+
+### Extension Points
+
+The server is designed for extensibility. For detailed information on extending functionality, see the [Extension Points section](https://github.com/microsoft/DataFactory.MCP/blob/main/docs/ARCHITECTURE.md#extension-points) in our architecture documentation, which covers:
+
+- **Adding New Tools**: Create custom MCP tools for additional operations
+- **Adding New Services**: Implement new services following our patterns
+- **Service Registration**: Proper dependency injection setup
+
+This modular architecture makes it easy to add support for additional Azure services or custom business logic.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For issues and questions:
+- Create an issue in this repository
+- Review the [MCP documentation](https://modelcontextprotocol.io/)

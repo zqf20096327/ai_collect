@@ -1,0 +1,316 @@
+# OCR-VLM 多模态个人资料库
+
+面向通用个人图片与文档的本地多模态检索原型：将图片、ZIP、PDF、DOCX和PPTX统一转换为页面，结合OCR文本、视觉语言向量、OCR质量门控与视觉语言重排，完成自然语言到资料页面的检索。项目强调本地隐私、分库隔离、证据溯源和人工质量裁决，不依赖商业大模型API。
+
+## 当前工程版本：V19
+
+V19把复合查询中的“必要条件必须在同一页成立”做成选择性检索路线。对于能够从查询文本中提取至少两个显式必要条件的请求，系统先在全库OCR中查找完整同页证据；没有完整精确证据时保守拒答。其他受支持的实体/主题契约使用ColQwen2多向量晚交互召回Top-10后再核验；未形成完整条件契约的普通查询自动回退到稳定的V18 `quality_hybrid`链路，不改变既有行为。
+
+开发阶段使用12个全新来源家族、48条机器生成正例/近邻强负例，且与V18、V19和V19.1来源页零重叠。冻结方法后又运行两轮未参与选型的句式压力测试，共96条查询：两轮的端到端正确率均为48/48、强负例FAR均为0；原始ColQwen2正例R@3分别为87.5%和95.83%，完整证据优先后R@1/R@3/R@10均为100%。显式条件的本机全库快路径正例与拒答烟雾测试分别耗时0.625秒和0.612秒，约为先前8.8秒模型冷路径的1/14。
+
+这些数字是**机器构造、机器核验的开发与锁定压力测试**，不是新的真人独立留出结果，也不证明视觉对象、颜色或关系条件已获得同等提升。项目最新的独立真人评测仍是下述V18；V19作为工程正式版发布，研究结论仍遵守这一边界。方法、失败消融、哈希和限制见`records/experiments/retrieval_v19_2_automatic_optimization_2026-08-13.md`与`config/studies/v19_2_release_method_lock.json`。
+
+## 最新独立真人评测：V18
+
+V18 在冻结方法后只运行一次 80 条查询、40 个来源配对组的真人留出集。校准选择的 L1 `max_verifier_score` 使用 Qwen3-VL-Reranker-2B 验证 Top-3，并以 0.63 为接受阈值；留出标签没有参与调参。
+
+| 池条件指标 | L0 | L1 |
+|---|---:|---:|
+| 端到端准确率 | 43.75% | **55.0%** |
+| 来源组配对准确率 | 15.0% | **25.0%** |
+| 单条件强负例误接受率 | 77.5% | **65.0%** |
+| 正例 Top-3 转化率 | 62.5% | **72.5%** |
+
+端到端差值为 +11.25 个百分点，按来源组进行 10,000 次配对 Bootstrap 的 95% CI 为 +3.75～+20.0 个百分点；强负例误接受率差值为 -12.5 个百分点，95% CI 为 -22.5～-2.5 个百分点。第一审核者完整审核，第二审核者独立复核 30%，3 条冲突由第三位审核者盲裁决；候选级一致率 99.17%，Cohen κ=0.853。
+
+研究结论必须保守表述：留出集支持的是 Top-3 内保守全查询验证 L1，不是属性级 L3。L3 在校准中没有胜出，因此不能宣称属性级必要条件覆盖方法已经验证成功。完整协议、限制和指纹见 `records/experiments/retrieval_v18_independent_holdout_2026-08-09.md`，机器可读摘要见 `data/evaluation/v18/final_holdout_summary.json`。
+
+## V18.1 本地 LLM 结构化意图路由预览
+
+V18.1新增“确定性高置信直通 + 歧义查询调用本地Qwen3-1.7B + JSON Schema校验 + 确定性映射 + 异常回退”的可选混合路由。LLM只输出检索所需的证据类型，不控制检索权重、拒答阈值或最终答案；产品和CPU演示默认保持关闭。
+
+该阶段最终以**v18.1.0工程预览**发布。120条一次性路由留出查询上，B2.1的Accuracy为62.50%、Macro-F1为62.86%，相对旧规则分别提升25.00和25.50个百分点；LLM调用率33.33%，路由P95为1399.5 ms。30%家族由两名不同审核者独立复核，原始一致率100%、Cohen's κ=1.000。
+
+该成绩只证明**查询路由改善**。V18冻结下游回归中的正例Hit@1/3/10与强负例FAR@1/3/10均未退化，但当时尚未证明新的端到端检索Top-1增益，因此没有直接升级V19。完整边界与Bootstrap区间见`records/experiments/retrieval_v19_one_shot_holdout_2026-08-11.md`。
+
+后续开发默认采用安全干预边界：`off`保持冻结V18；`shadow`只记录候选路线；`guarded`禁止事实型查询切换为探索拒答、禁止删除V18必要证据分支，并拒绝无法提取精确词的`entity_exact`；裸`active`只允许受控诊断。新的V19研究主指标改为同查询A/B的E2E Top-1、Recall@3、强负例FAR、正确拒答率和wall-clock P95，协议草案见`records/experiments/retrieval_v19_selective_intervention_protocol_draft_2026-08-12.md`。
+
+新的端到端数据草案使用50个来源家族、每家族4种查询角色，共200条；开发与最终留出各25个家族。生成器会排除既有V18来源及其近邻组，所有正式草案和人工修正只保存在Git忽略的`records/private/`。人工审核、开发集诊断、参数锁与最终一次性授权相互独立；V19发布没有重新使用旧V18/V19一次性留出集调参，也没有把机器压力测试冒充真人最终评测。
+
+V17 现为上一稳定研究版本。其一次性 40 条留出结果与公开复算仍保留在 `records/experiments/retrieval_v17_independent_holdout_2026-08-08.md`、`records/experiments/V17_HYPOTHESIS_DISPOSITION.md` 和标签 `v17.0.1`，历史结果不回写。
+
+此前 V16 使用与历史目标零重叠、路线均衡的 50 条校准查询选择配置，并在锁定配置后首次运行另一组 50 条来源核验独立留出查询：
+
+V16 留出结果没有用于回改 V16：
+
+| 指标 | 结果 |
+|---|---:|
+| 可回答查询 Recall@1 / Recall@10 | 86.67% / 96.67% |
+| 可回答接收率 | 100.00% |
+| 无答案拒绝率 | 95.00% |
+| 端到端 Top-1 | 90.00% |
+| 热缓存 P95 | 1.261 秒 |
+
+标签由 AI 根据公开来源与 OCR 核验，不是人工金标准。完整的数据隔离、失败样例和配置指纹见 `records/experiments/retrieval_v16_independent_holdout_2026-08-07.md`；锁定配置以原始 SHA-256 保存在 `config/selected_retrieval_config_v16.json`。
+
+## V17-Compositional-80 复合视觉查询试验
+
+V17-Compositional-80 Pilot 针对“一个高相似属性掩盖其他必要条件”的失败，引入属性计划解析和候选级 Qwen3-VL 交叉编码验证。严格单向量属性合取在校准中退化为全拒答，因此没有被包装成成功结果；随后只在校准集比较 K=1/3/5、四种聚合和方向关系正反事实 margin，并明确禁止全拒答方案入选。
+
+在 39 条有效校准查询的模型辅助审计标签上，V17 质量混排 Recall@3 为 69.6%。新的候选验证消融把旧 Top-1 候选的端到端 51.3% 提升到 56.4%，同时把池条件误接收率从 31.3% 降到 25.0%；相对 V16 的端到端配对差值为 +33.3 个百分点，分组 Bootstrap 95% CI 为 +18.9～+50.0。冻结的“近最优中选最小 K”规则最终选择 K=3、阈值 0.51，并按原检索顺序返回第一个通过者。
+
+方向反事实方案在最佳点把误接收率压到 18.8%，但同时损失相关查询覆盖，因此没有被选择；K=5 也没有稳定优于 K=3。OCR 精确/模糊证据优先级已经实现，但本轮查询没有显式给出待匹配文字，不能估计 OCR 分支增益。独立 parser 诊断使用 Codex 辅助校准参考（不是人工金标准），需求级 F1 为 82.7%，方向关系查询准确率 77.5%，属性绑定准确率 75.0%。
+
+这些数字是基础 20 候选池加 7 个显式 Top-5 校准扩展候选条件下的模型辅助校准结果，不是语料库级开放集结论；原 20 候选池及其哈希未被改写。K=3 方法已写入 `config/v17_method_lock.json`，最终 40 条留出已经按 one-shot receipt 完成且禁止重跑。代码、检索依赖、提示词、模型全目录、推理参数、数据、真人裁决和执行输入均受 SHA-256 约束。原始协议、追加修正、机器可读汇总和当前状态分别见 `data/evaluation/v17/protocol_frozen_v1.json`、`data/evaluation/v17/amendments/`、`data/evaluation/v17/final_holdout_summary.json` 和 `data/evaluation/v17/study_status.json`。
+
+V17 现在把评测拆成两个独立任务：20 项池只标注 `pooled_relevance` 并报告 R@1、R@3 和 MRR@3；语料库可回答性必须另建 Dense、BM25、全局视觉、V16、V17 的 Top-100 与候选验证器 Top-50 高召回池，再加入同来源、近重复、类别近邻和反事实候选。只有两名独立审核者完成并裁决后，才允许使用 `corpus_no_answer_after_high_recall_pooling`。审核界面默认只显示候选编号和图像。
+
+## 当前状态
+
+- [x] PP-OCRv5单图与manifest批量推理
+- [x] 24张异构图片OCR基线：24/24无程序异常
+- [x] OCR文字切块：20张有文字图片，共38个片段
+- [x] BGE-M3 + FAISS文本语义检索
+- [x] 中英文混合分词BM25稀疏检索
+- [x] 人工审核24条查询真值与正式Recall@K评测
+- [x] Qwen3-VL-Embedding-2B视觉大模型语义分支
+- [x] OCR质量感知的多模态融合
+- [x] Streamlit可视化实验结果浏览器
+- [x] 任意自然语言实时检索与查询缓存
+- [x] 图片、ZIP、PDF、DOCX、PPTX批量导入与页面级溯源
+- [x] 批量OCR并更新Dense、BM25和视觉索引
+- [x] Qwen3-VL-Reranker-2B候选重排
+- [x] Dense + BM25 + Image三路召回、RRF消融与查询感知校准
+- [x] 建立1500页异构公开资料库
+- [x] 内容哈希去重、感知近重复分组和隐私复核标记
+- [x] 多资料库严格隔离：独立原图、OCR、BM25和双路向量索引
+- [x] 新数据AI生成内容人工声明不超过5%
+- [x] 1500页批量OCR、Dense/BM25文本索引和视觉索引
+- [x] 质量中心将541个类别或质量风险页面路由给人工审核
+- [x] 隔离18张同底图变体，当前1482页参与检索
+- [x] 清空旧人工类别与查询裁决，支持从零重新标注和再次训练反馈分类器
+- [x] 将类别审核按关联组冻结为训练351页、验证95页、测试95页
+- [x] 完成601条人工类别/质量裁决与三轮主动学习
+- [x] 冻结“规则 + 0.80高置信模型纠错”，最终测试Accuracy 0.8632
+- [x] 三路索引物理压缩至1482个有效页面，失效重复页不再占用召回空间
+- [x] 类别体系升级为7个主内容类别与11项独立质量标签
+- [x] 检索结果展示主导分支、分支分数、OCR字面命中与来源证据
+- [x] 视觉描述查询自动路由，并在原始相似度不足时拒绝返回伪匹配
+- [x] 独立盲测工作台：自然查询无结果采集、冻结指纹、多路候选池与人工qrels
+- [x] 导入阶段状态、来源证据、查询缓存和标准化自动测试
+- [x] V18.1可选本地LLM结构化意图路由、30%独立复核与一次性路由留出评测
+- [x] 默认关闭的常驻回环服务、失败规则回退与独立V18.1缓存
+
+当前24张`dataset_v1`结果：
+
+| 方法 | Recall@1 | Recall@3 | MRR |
+|---|---:|---:|---:|
+| OCR文本 | 0.7083 | 0.7917 | 0.7490 |
+| Qwen3-VL视觉 | 0.9167 | 0.9583 | 0.9435 |
+| 固定融合 | 0.7917 | 0.7917 | 0.8090 |
+| OCR质量自适应融合 | **0.9583** | **0.9583** | **0.9643** |
+| BM25 | 0.7500 | 0.7917 | 0.7841 |
+| Dense + BM25 + Image等权RRF | 0.7500 | 0.7917 | 0.7908 |
+| 查询感知三路混合 | **0.9583** | **1.0000** | **0.9722** |
+| 查询感知三路混合 + Qwen3-VL重排 | **1.0000** | **1.0000** | **1.0000** |
+
+等权RRF发生负迁移，因为Dense和BM25都依赖OCR，相当于文字证据重复投票。项目因此保留RRF作为消融负结果，并采用“质量自适应Dense/Image分数 + 查询长度校准BM25”的三路混合：保持Recall@1，Recall@3升至1.0000，MRR由0.9643升至0.9722。重排进一步将低清OCR页`q009`从第3名提升到第1名。数据量仍小，指标只代表当前24页试运行集，不能外推到1500页。
+
+![任意自然语言实时检索](records/screenshots/live_search_demo.png)
+
+## 已实现流程
+
+```text
+图片/ZIP/PDF/DOCX/PPTX
+  → 安全解压、Office/PDF页面化与来源溯源
+  → PP-OCRv5检测与识别
+  → 结构化JSON（文字、位置、置信度）
+  → OCR文字切块
+  → BGE-M3/FAISS语义检索 + BM25关键词检索
+  → Qwen3-VL 2048维图像检索
+  → RRF基线或查询感知的OCR质量混合召回
+  → Qwen3-VL-Reranker重排
+  → Top-K页面、OCR文字、原文件和页码证据
+```
+
+视觉分支：
+
+```text
+图片 → Qwen3-VL-Embedding-2B → 2048维视觉向量
+查询 → Qwen3-VL-Embedding-2B → 查询向量
+Dense + BM25 + Image → RRF基线与查询感知混合 → 候选Top-K
+候选页面 + OCR文本 + 查询 → Qwen3-VL-Reranker-2B → 最终Top-K
+```
+
+批量导入：
+
+```text
+上传多个文件或ZIP
+  → 先选择严格隔离的目标资料库
+  → 人工声明AI生成内容比例不超过5%
+  → 路径穿越、压缩炸弹、重复内容与页数校验
+  → PDF/Word/PPT按页转换为统一PNG检索单元
+  → 一次加载PP-OCRv5完成整批OCR
+  → 构建BGE-M3、BM25和Qwen3-VL三个个人索引
+  → 自动路由低置信度、隐私与类别风险页面
+  → 人工执行接受、重分类、重做OCR或隔离
+  → 纠错反哺分类器并生成下一批主动复核样本
+  → 保存原文件、页码、来源许可和人工审计记录
+```
+
+## 与官方Demo的区别
+
+- 使用manifest管理异构样本，而不是只运行单张图片。
+- 生成逐样本耗时、字符数、置信度汇总和失败日志。
+- 主动保留无文字自然图像与低清晰度文字图，分析纯OCR方案的边界。
+- 建立人工真值查询集，使用Recall@1、Recall@3和MRR评价检索效果。
+- 实现视觉大模型分支，并根据每张候选图的OCR置信度动态调整文本/视觉权重。
+- 支持图片、压缩包和办公文档批量入库，并保留来源文件和页码。
+- 在双路召回后加入视觉语言交叉重排，而不是只比较独立向量相似度。
+- 实现三路召回并用消融证明等权RRF的重复文字投票问题，再设计查询感知BM25校准。
+- 保留简单图像增强无效的负结果，不选择性删除困难样本。
+- 把自动质量规则限制为“候选路由”，最终数据裁决由本人完成并留下时间与理由。
+- 将人工重分类反馈与Qwen3-VL图像向量、BGE-M3文本向量、OCR质量特征联合学习，形成主动复核队列。
+- 重建只包含有效页面的紧凑索引，重复变体既保留原始审计证据，也不会继续参与召回。
+- 每条结果解释主导检索分支和OCR字面证据，分支分数明确限制为单次查询内比较。
+- 1500页压力库同时包含文档、表格、幻灯片、网页截图、场景文字、退化页和视觉负样本。
+
+## 1500页当前资料库
+
+| 类别 | 页数 |
+|---|---:|
+| 普通文本型文档 | 170 |
+| 学术/技术文档 | 224 |
+| 证件/表格/表单/票据 | 431 |
+| PPT/海报/课件 | 188 |
+| 软件/网页/代码 | 150 |
+| 场景文字 | 187 |
+| 自然图像 | 150 |
+
+1500页均来自RVL-CDIP、RICO-SCA、TextVQA、Caltech-101、FUNSD和XFUND等公开来源，许可和原始记录逐页保留。18张同底图标注或算法结果变体保持隔离，当前1482页参与检索。
+
+taxonomy v2不再把“清晰”和“退化”当作内容类别：页面必须在7个主类别中选择一个，再独立标记清晰、模糊、倾斜、阴影、反光、低分辨率、遮挡、低对比度、扫描噪声、压缩失真或其他退化。旧人工类别与查询裁决已按要求清空；当前375页需要重新确认，1125页由原公开来源类别直接保留。FUNSD、XFUND和明确`form_layout/real_form`来源的205页由高精度来源规则预归为表单类，但仍等待人工确认。
+
+紧凑化后视觉索引为1482个向量，Dense和BM25均为4685个文本块；三个索引都已验证不含18个隔离ID。类别质量流程累计保存601条人工裁决：原541页审核队列全部完成，并通过两轮主动学习补充60页困难样本。冻结反馈模型使用406条有效训练反馈；独立测试中，当前规则基线Accuracy为0.8526，反馈模型单独分类为0.7474，规则加0.80高置信模型纠错为0.8632、Macro-F1为0.7015。测试集只执行一次，实际比规则多纠正1/95页，不宣称统计显著。
+
+实时检索不再把归一化Top 1当作可信度。系统先识别视觉描述查询，再使用未归一化的Qwen3-VL余弦相似度执行开放集拒答。视觉阈值初始设为0.450：已有24条真值中，视觉Top 1正确样本的最低分为0.492；“海边日落和水面倒影”在当前库中最高仅0.357，因此返回“没有可靠匹配”，而不是硬展示三个结果。阈值需随新真值继续校准。
+
+## 快速运行
+
+项目在 Python 3.11、Windows 11、RTX 4060 Laptop GPU 8GB 上验证。无需模型即可先运行 CPU 单元测试：
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-ci.txt
+.\.venv\Scripts\python.exe scripts\check_public_release.py .
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+完整 OCR、文本向量和视觉模型使用隔离环境，安装命令与已验证版本见 `records/COMMANDS.md`。模型权重、原始资料、OCR 全文和索引均不随公开仓库分发。
+
+```powershell
+# 1. 合并本人审核的数据与查询
+.\.venv-paddle\Scripts\python.exe scripts\build_dataset_v1.py
+
+# 2. 正式批量OCR
+.\.venv-paddle\Scripts\python.exe scripts\batch_ocr.py --manifest data\manifest\dataset_v1_manifest.jsonl --output outputs\ocr_dataset_v1 --device gpu --force
+
+# 3. 模型只需下载一次
+.\.venv\Scripts\python.exe scripts\download_bge_m3.py
+
+# 4. 构建OCR语料与文本索引
+.\.venv\Scripts\python.exe scripts\build_text_corpus.py --manifest data\manifest\dataset_v1_manifest.jsonl --ocr-dir outputs\ocr_dataset_v1\json --output data\processed\dataset_v1_corpus.jsonl --summary outputs\text_corpus_dataset_v1\summary.json
+.\.venv\Scripts\python.exe scripts\build_text_index.py --corpus data\processed\dataset_v1_corpus.jsonl --output artifacts\text_index_dataset_v1
+
+# 5. 获取锁定版本的官方视觉模型代码
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\fetch_qwen3_vl_code.ps1
+
+# 6. 视觉索引
+.\.venv-vl\Scripts\python.exe scripts\build_visual_index.py --manifest data\manifest\dataset_v1_manifest.jsonl --output artifacts\visual_index_dataset_v1
+
+# 7. 启动可视化界面
+.\.venv\Scripts\python.exe -m streamlit run app.py
+
+# 8. 单独启动内部图片与OCR纠错中心（仅本机8502端口）
+powershell.exe -ExecutionPolicy Bypass -File .\scripts\run_correction_site.ps1
+
+# 9. 首次实验时冻结人工审核划分（已有文件时不要覆盖）
+.\.venv\Scripts\python.exe scripts\build_category_review_splits.py
+
+# 10. 审核训练集后训练反馈分类器
+.\.venv\Scripts\python.exe scripts\train_feedback_category_model.py
+
+# 11. 使用冻结模型独立验证（不会重新训练；测试集默认锁定）
+.\.venv\Scripts\python.exe scripts\evaluate_feedback_category_model.py --split validation
+
+# 12. 复现24条查询的重排实验
+.\.venv\Scripts\python.exe scripts\evaluate_bm25_rrf.py
+.\.venv-vl\Scripts\python.exe scripts\evaluate_reranker.py --candidate-source query_hybrid --output outputs\evaluation_dataset_v1\hybrid_reranker_retrieval.json
+```
+
+产品界面包含以下模式：
+
+- 智能检索：保留OCR文字、图片语义、智能混合和智能混合精排四种核心模式；相同问题读取缓存，低于原始证据阈值时明确拒答。
+- 独立盲测：只采集真实自然查询，封存前不运行检索、不显示结果；冻结、候选生成与相关性审核在8502内部站完成。
+- 批量入库：文件只进入当前资料库；支持多选图片、ZIP、PDF、DOCX和PPTX。
+- 资料库：创建公开研究库、学习科研库或私人敏感库；各库独立建立OCR和向量索引。
+
+图片类别与质量纠错、反馈学习、消融实验与查询真值审核属于内部数据治理流程，保留在离线脚本、审计CSV和研究记录中，不进入对外产品主菜单。主站每条检索结果只提供“纠正此页分类”跳转，表单在8502内部站完成。实时检索不调用商业API，原图和查询不会上传网络。数据规则见`data/DATA_POLICY.md`，分类规则见`data/TAXONOMY_V2.md`。
+
+## 公开仓库边界
+
+- 公开：应用代码、可复用脚本、单元测试、最小查询回归集、冻结配置、聚合实验报告和界面截图。
+- 不公开：原始图片与文档、OCR 全文、人工/模型审核包、自然查询日志、模型权重、缓存、向量索引及私人实验记录。
+- 发布前运行 `scripts/check_public_release.py`；公开发行副本由 `scripts/export_public_release.py` 按白名单生成，不直接推送内部开发仓库历史。
+- 第三方数据与模型继续受各自上游条款约束，详见 `THIRD_PARTY_DATA.md`。
+
+内部纠错中心是独立的Streamlit站点，默认只监听`127.0.0.1:8502`。它与主产品站点共享资料库和审计记录，但不会出现在主产品导航中；发布质量决定仍需要二次确认。当前541页人工审核队列已按关联组固定为训练集351页、验证集95页、测试集95页；同源、近重复和困难负例组不会跨集合。反馈分类器只读取训练集，验证集用于检查方案，测试集仅用于最终报告。
+
+## 目录
+
+```text
+data/
+  manifest/       样本清单
+  evaluation/     来源清单、自动审计、质量路由和公开评测元数据
+records/          环境、每日进展、实验和个人贡献证据
+scripts/          OCR、语料、索引、检索和评测脚本
+app.py            对外Streamlit检索、上传与分库产品界面
+correction_app.py 内部图片分类、OCR纠错与反馈学习站点
+outputs/          本地生成结果（默认不提交）
+models/           本地模型权重（不提交）
+artifacts/        本地向量索引（不提交）
+```
+
+## 40 页最小公开复现
+
+无需内部 1500 页资料库或模型权重即可验证生成、入库、BM25 检索、必要条件拒答和评测链路：
+
+```powershell
+python scripts/minimal_repro.py ingest
+python scripts/minimal_repro.py evaluate --backend cpu
+```
+
+脚本会生成 40 页自行设计、CC0-1.0 授权的合成页面和 16 条查询，CPU 预期结果见 `repro/expected_results.json`。可选 GPU 视觉模式及其限制见 `repro/README.md`。CPU 模式使用生成器已知文本，不把它表述成 OCR 或 VLM 效果复现。
+
+### GHCR CPU 演示镜像
+
+V18.0.1 起提供不含模型权重和内部资料库的轻量容器；V18.1仍保持CPU规则模式，不把可选意图模型塞进镜像：
+
+```bash
+docker pull ghcr.io/noyce6983981-max/ocr-vlm-local-retrieval-demo:v19.0.0
+docker run --rm --network none ghcr.io/noyce6983981-max/ocr-vlm-local-retrieval-demo:v19.0.0
+```
+
+容器会在无网络、非 root 用户环境中生成 40 页资料库，构建 BM25 索引，运行正例及强负例查询，并严格对比冻结结果。结果不一致时进程返回非零状态。该镜像验证公开 CPU 工程链路，不复现 PaddleOCR 或 Qwen3-VL 推理质量，也不包含 V18 私有真人留出评测数据。
+
+V17 已完成一次性独立留出评测，但仍作为显式启用的研究路线，不会静默覆盖产品默认 V16；下一阶段重点是扩大真人评测集、补足池内无相关候选样本，并独立执行语料库级高召回答案性审核。
+
+## 说明
+
+当前指标均为本机真实运行结果。24页人工审核数据用于验证检索方法链路，不足以支撑检索泛化结论；1500页资料库尚未建立大规模查询真值，因此不报告1500页正式Recall、MRR或nDCG。类别反馈实验使用按关联组隔离的351/95/95划分并已完成一次最终测试，但类别分布不均衡，学术/技术文档测试集仅1页。当前定位是接近商业工作流的科研原型，不宣称已具备商业SaaS所需的多用户权限、并发、灾备和合规认证。
+
+公开版本定位为可审查的本地科研原型，不包含个人申请材料。
+
+## 许可证
+
+项目源代码采用 MIT License。第三方数据、模型、权重和上游代码不在该许可的重新授权范围内，具体边界见 `THIRD_PARTY_DATA.md`。

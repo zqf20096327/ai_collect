@@ -1,0 +1,206 @@
+<p align="center">
+  <img src="assets/logo.png" alt="intentKeeper" width="180">
+</p>
+
+<h1 align="center">intentKeeper</h1>
+
+<p align="center"><strong>Labels what a post is doing to you, not what it is about.</strong></p>
+
+<p align="center">
+  <!-- Project -->
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/version-0.7.0-green.svg" alt="Version: 0.7.0">
+  <a href="https://github.com/Olawoyin007/intentKeeper/actions/workflows/ci.yml"><img src="https://github.com/Olawoyin007/intentKeeper/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+<p align="center">
+  <!-- Platforms -->
+  <img src="https://img.shields.io/badge/platform-Twitter%2FX-1DA1F2.svg" alt="Platform: Twitter/X">
+  <img src="https://img.shields.io/badge/platform-YouTube-FF0000.svg" alt="Platform: YouTube">
+  <img src="https://img.shields.io/badge/platform-Reddit-FF4500.svg" alt="Platform: Reddit">
+</p>
+<p align="center">
+  <!-- Tech -->
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python: 3.10+">
+  <img src="https://img.shields.io/badge/local--first-Ollama-orange.svg" alt="Local-First: Ollama">
+  <img src="https://img.shields.io/badge/browser-Chrome%20%7C%20Brave%20%7C%20Edge%20%7C%20Opera%20%7C%20Firefox-4285F4.svg" alt="Browser: Chrome, Brave, Edge, Opera, Firefox">
+</p>
+
+intentKeeper reads posts on Twitter/X, YouTube and Reddit and labels the ones using ragebait, fearmongering, hype, divisive framing or engagement bait. It judges the patterns a post uses, not the topic it covers.
+
+Classification runs on your own machine via Ollama. Nothing is sent anywhere and nothing is tracked.
+
+By default it hides nothing. You see the post and the label together, and decide for yourself.
+
+---
+
+<details>
+<summary><strong>Why this exists</strong></summary>
+<br>
+
+Platforms rank posts by engagement, and emotional posts tend to engage. Outrage, fear and tribal identity are among the cheapest emotions to manufacture, so a feed ranked this way tends to carry more of them. That is a property of the ranking, not a conspiracy.
+
+intentKeeper does not change any of that. It puts a name on what a post is doing, so you can notice it rather than only feel it.
+
+</details>
+
+## The Idea
+
+> "The content isn't the problem. The intent behind it is."
+
+https://github.com/user-attachments/assets/8982dc1c-227b-4695-97ef-4fdfd91cf45c
+
+A post about politics can be thoughtful analysis or manufactured outrage. A health tip can be genuine advice or fearmongering. Same topic, opposite effect on your wellbeing.
+
+intentKeeper classifies the **framing** a post uses, not its subject. It does not filter topics. It marks the patterns associated with ragebait, fearmongering, divisive content and hype, and leaves the post in place.
+
+**Accuracy**: up to 96% on a 105-example labeled eval set (measured 2026-07-13 with `llama3.1:8b`). The set has grown harder over time - most remaining misses are deliberately included boundary cases, like alarming-but-sourced facts labeled genuine. Classification confidence is shown alongside each label so you know when the model is uncertain. This number measures loud manipulation only; it does not test false positives on jokes, sarcasm, or banter, where the classifier is weak - see [`KNOWN_LIMITS.md`](KNOWN_LIMITS.md).
+
+## Quick Start
+
+### Part 1 - Server
+
+**Option A: Docker (recommended)**
+
+```bash
+git clone https://github.com/Olawoyin007/intentKeeper.git
+cd intentKeeper
+docker compose up
+```
+
+This starts Ollama and the classification server together. The model pulls automatically on first run. The server binds to `127.0.0.1:8420` by default; set `APP_BIND`/`APP_PORT` to change that.
+
+Already running Ollama on the host? Use the server-only compose file instead:
+
+```bash
+docker compose -f docker-compose.host-ollama.yml up
+```
+
+**Option B: Manual**
+
+```bash
+git clone https://github.com/Olawoyin007/intentKeeper.git
+cd intentKeeper
+pip install -e .
+cp .env.example .env
+intentkeeper-server
+```
+
+**Ollama powers the classification.** Set your model in `.env` and the server pulls it automatically on first start:
+
+```bash
+OLLAMA_MODEL=your-model-name
+```
+
+**Recommended models** (accuracy from the full 105-example sweep, 2026-07-13 - see [`docs/model-benchmark.md`](docs/model-benchmark.md); latency figures indicative):
+
+| Min VRAM | Model | Accuracy | Latency |
+|:--------:|-------|:--------:|:-------:|
+| 4 GB | `llama3.2:latest` | 92% | 1.5s |
+| 8 GB | `mistral:7b-instruct` | 94% | 0.9s |
+| 8 GB | `llama3.1:8b` | 96% | 1.8s |
+| 12 GB | `qwen2.5:14b-instruct-q4_K_M` | 97% | 2.6s |
+
+On the current set the 8B+ models lead at ~96-97%; `llama3.1:8b` is the best all-round default. `llama3.2` (2 GB) is the lightest option at 92% - a few points behind on the harder boundary cases but fine for low-VRAM machines. `mistral:7b-instruct` is the fastest if latency matters most.
+
+Don't have Ollama yet? [Install it here](https://ollama.com) - it runs entirely on your hardware, no cloud required.
+
+### Part 2 - Extension
+
+**Chrome, Brave, Edge, Opera**
+
+1. Open your browser and go to the extensions page:
+   - Chrome: `chrome://extensions`
+   - Brave: `brave://extensions`
+   - Edge: `edge://extensions`
+   - Opera: `opera://extensions`
+2. Enable **Developer mode** (top right toggle)
+3. Click **Load unpacked** and select the `extension/` folder
+
+**Firefox**
+
+Firefox needs a separate build, since it uses an event page rather than a
+service worker:
+
+```bash
+cd extension && npm install && npm run build   # writes dist/chrome and dist/firefox
+```
+
+Then open `about:debugging#/runtime/this-firefox`, click **Load Temporary
+Add-on**, and select `extension/dist/firefox/manifest.json`.
+
+The Firefox build is newer than the others: it is confirmed to install and run,
+but has had less real-world use. Report anything that misbehaves.
+
+Then open [Twitter/X](https://twitter.com), [YouTube](https://youtube.com), or [Reddit](https://reddit.com) and scroll your feed. Intent labels appear on content automatically.
+
+See [docs/usage.md](docs/usage.md) for the full setup guide and troubleshooting.
+
+## What It Detects
+
+| Intent | What It Looks Like | What Happens |
+|--------|-------------------|--------------|
+| **Ragebait** | "This is EXACTLY why I hate [group]. Every. Single. Time." | Tagged with label (optional blur, off by default) |
+| **Fearmongering** | "Society is COLLAPSING. Get out while you still can." | Tagged with label |
+| **Hype** | "This AI tool changes EVERYTHING. You're missing out!" | Tagged with label |
+| **Engagement bait** | "Reply with your favorite X and I'll tell you Y!" | Tagged with label (optional hide, off by default) |
+| **Divisive** | "People who don't do X are just lazy. Winners have discipline." | Tagged with label |
+| **Genuine** | "I've dealt with anxiety for 10 years. Here's what helped me." | Passes through unmodified |
+
+## How It Works
+
+```
+You open Twitter/X, YouTube, or Reddit
+        │
+        ▼
+Extension reads the posts on the page        
+        │
+        ▼
+Local LLM classifies the intent (via Ollama)
+        │
+        ▼
+Content is tagged or passes through (blur/hide are opt-in)
+        │
+        ▼
+You decide what to engage with
+```
+
+All processing happens on your machine. No cloud. No data collection. No tracking.
+
+<details>
+<summary><strong>Principles</strong></summary>
+<br>
+
+**Intent over topic.** We classify the framing, not the subject matter.
+
+**Fail-open.** When classification fails, content passes through unchanged.
+
+**Local-first.** All classification on your device. Nothing leaves your machine.
+
+**User sovereignty.** You control what gets filtered and how aggressively.
+
+**Transparency.** Every classification shows *why* content was flagged.
+
+See [MANIFESTO.md](MANIFESTO.md) for the full principles.
+
+</details>
+
+## Documentation
+
+- [docs/architecture.md](docs/architecture.md) - System diagram, classification flow, component relationships
+- [docs/usage.md](docs/usage.md) - Full setup guide and troubleshooting
+- [CLAUDE.md](CLAUDE.md) - Contributor process guide: pre-merge gates, eval rules, key patterns
+- [THREAT_MODEL.md](THREAT_MODEL.md) - Trust boundary and known security gaps
+- [ROADMAP.md](ROADMAP.md) - Phased implementation plan
+- [CHANGELOG.md](CHANGELOG.md) - Release history
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
+- [MANIFESTO.md](MANIFESTO.md) - Core principles
+
+Also built alongside [empathySync](https://github.com/Olawoyin007/empathySync) - a local-first AI wellness assistant sharing the same philosophy.
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+---
+
+*"Protect your attention. Notice what a post is doing to you, not just what it's about."*

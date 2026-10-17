@@ -1,0 +1,381 @@
+<p align="center">
+  <a href="https://www.robinreview.dev/"><img src="https://www.robinreview.dev/brand/repository.png?v=feee03b10ca6" width="100%" alt="Robin — The Robin Hood of code review. Free AI code reviews for every pull request." /></a>
+</p>
+
+# Robin
+
+Free AI code reviews for every pull request. You bring an API key; Robin reviews show up like a teammate left comments.
+
+[![Self-Test](https://github.com/antongulin/robin/actions/workflows/self-test.yml/badge.svg)](https://github.com/antongulin/robin/actions/workflows/self-test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node 24](https://img.shields.io/badge/runtime-node24-brightgreen.svg)](action.yml)
+
+![A Robin review on a pull request — summary, severity-tiered findings, and a teammate-style note](docs/assets/robin-review.png)
+
+## What you get
+
+- A review when you open a pull request (or when someone comments `/robin`)
+- A short summary plus inline comments on changed lines, with one-click suggested fixes when the model can pin one down
+- Optional reviews that check the rest of your repo (callers, definitions) when you enable agent mode and your model supports tool calling
+- Your choice of AI provider — including **free** options
+
+When there's nothing worth flagging, Robin says so instead of inventing nitpicks:
+
+![A clean Robin pass on a pull request — no issues found](docs/assets/robin-review-clean.png)
+
+You are **not** signing up for a separate review bot service. The workflow runs in your repo and calls the AI URL you configure.
+
+## For AI coding agents
+
+Using Cursor, Copilot, Claude Code, or similar? Copy this prompt after secrets are set:
+
+```text
+Add Robin to this repository.
+- Workflow file: .github/workflows/robin.yml
+- Reusable workflow: antongulin/robin/.github/workflows/review.yml@main
+- Action ref if needed: antongulin/robin@main
+- Secrets: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
+- Do NOT use @v0 or any v0 tag
+- Do NOT use pull_request_target
+Read AGENTS.md in the robin repo for full rules.
+```
+
+## Quick install
+
+> [!IMPORTANT]
+> Run the installer from the root of the Git repository you want Robin to review — not
+> from your home directory. The workflow and secrets are configured once per repository;
+> the companion agent skill is installed globally once per machine.
+
+From the target repository, run either:
+
+```bash
+npx robin-review
+```
+
+or, without Node.js:
+
+```bash
+curl -fsSL https://robinreview.dev/install.sh | bash
+```
+
+Either one keeps a single canonical `.github/workflows/robin.yml` and installs or updates
+the [companion chat skill](#robin-in-your-editor) in your coding agents. If it finds an
+older Robin or Universal Code Reviewer workflow under another name, it moves that file to
+`.github/robin-workflow-archive/` (where GitHub cannot trigger it) before creating the
+canonical workflow. Inspect the archived copy, then remove it after confirming the
+migration. An unrelated file already using the canonical path is never overwritten.
+Run an installer separately in every repository that should use Robin. Re-running it is
+safe and idempotent — your pinned version and any `with:` overrides (for example
+`llm-temperature`) are preserved.
+You still need to add the three secrets — do **Steps 1 and 2** below, then commit and push.
+You can **skip Step 3**: the installer already did it.
+
+**Auto-updates:** the generated workflow references
+`antongulin/robin/.github/workflows/review.yml@main`, so every
+review runs the latest Robin automatically — nothing to bump or re-install. Prefer fixed
+versions? Pin a tag with `ROBIN_REF=v2 npx robin-review` (see [Version pins](#version-pins)).
+
+Prefer to do it by hand, or read the installer first? It's
+[bin/robin-review.js](bin/robin-review.js) (npm) / [scripts/install.sh](scripts/install.sh)
+(curl) — or follow the manual 3 steps instead.
+
+## Setup in 3 steps
+
+### Step 1 — Get an API key (free option)
+
+The easiest free setup uses [OpenRouter](https://openrouter.ai/):
+
+1. Create an account at [openrouter.ai](https://openrouter.ai/).
+2. Create an API key in the dashboard.
+3. Use these values for your GitHub secrets:
+
+| Secret name | Value |
+| --- | --- |
+| `LLM_API_KEY` | Your OpenRouter key (`sk-or-...`) |
+| `LLM_BASE_URL` | `https://openrouter.ai/api/v1` |
+| `LLM_MODEL` | `openrouter/free` |
+
+> [!TIP]
+> `openrouter/free` picks a free model for each review — **$0 from OpenRouter**. OpenRouter rotates which model runs; **leave this secret as `openrouter/free`** — the action retries and uses provider fallbacks when a route is temporarily unavailable. You only spend [GitHub Actions](https://docs.github.com/en/billing/concepts/product-billing/github-actions) minutes while the job runs. Review duration depends on the model, diff, review mode and retries.
+>
+> Check [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions) for included minutes and runner charges. See [Review timing](docs/ADVANCED.md#review-timing) to distinguish queue time from the review itself.
+
+Other providers (OpenAI, Groq, Ollama, etc.) work too. See [Supported providers](#supported-providers) or [docs/ADVANCED.md](docs/ADVANCED.md).
+
+### Step 2 — Add secrets on GitHub
+
+1. Open **your** repository on GitHub (not this one).
+2. Go to **Settings** → **Secrets and variables** → **Actions**.
+3. Click **New repository secret** and add each name from the table above.
+
+> [!WARNING]
+> Never put API keys inside workflow files, pull request comments, or chat with an AI. Only use GitHub Secrets.
+
+### Step 3 — Add the workflow file
+
+> [!NOTE]
+> **Ran the Quick install one-liner above?** Skip this step — the script already created
+> this file. Just finish Steps 1 and 2 (the secrets), then commit and push.
+
+Create a new file in your repo:
+
+**Path:** `.github/workflows/robin.yml`
+
+**Contents:** copy this exactly:
+
+```yaml
+name: Robin
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    uses: antongulin/robin/.github/workflows/review.yml@main
+    secrets:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_MODEL: ${{ secrets.LLM_MODEL }}
+```
+
+Commit and push, then open a pull request. Follow the run in **Actions**; [review timing](docs/ADVANCED.md#review-timing) varies with the workload and provider.
+
+By default Robin reviews when the PR opens (and on `/review`), not on every push. To also review each push, add `synchronize` to the `pull_request` `types:` and set `review-on-synchronize: true` in the job's `with:` block.
+
+> [!IMPORTANT]
+> Use **`@main`** for the latest fixes, or pin a release tag (for example `@v2` or `@v2.7.0`) from [releases](https://github.com/antongulin/robin/releases). Do **not** use `@v0`. See [Version pins](#version-pins) below.
+
+## Running on a self-hosted runner
+
+By default, the reusable workflow runs on GitHub's hosted `ubuntu-latest` runner:
+
+```yaml
+with:
+  runner: '"ubuntu-latest"'
+```
+
+To run reviews on your own machine, Mac mini, home server, local Linux box, or Coolify runner, pass `runner` as valid JSON. Use a JSON string for one label or a JSON array for multiple labels.
+
+To create a local runner, go to:
+
+```text
+Repository Settings -> Actions -> Runners -> New self-hosted runner
+```
+
+Then add labels such as `local`, `linux`, `mac`, or `coolify`, and reference those labels through the `runner` input.
+
+### Does the runner need to run all the time?
+
+A matching self-hosted runner must be online when GitHub starts the review job. It can be a local runner process (`./run.sh`), a service (`./svc.sh start`), a Docker container, or a Coolify-managed service. Docker is optional; it is just one way to run the GitHub Actions runner.
+
+If no matching runner is online, GitHub queues the job until one comes online. It will not fall back to `ubuntu-latest` unless you add a separate fallback job. For reliable PR reviews, keep an always-on runner available, such as a Mac mini, home server, VPS, or Coolify service. A laptop runner only works while the laptop is awake and the runner process or service is running.
+
+> [!WARNING]
+> Self-hosted runners can execute arbitrary workflow code.
+> Do not use them for untrusted public pull requests.
+> Prefer repo-owned private repos or trusted collaborators only.
+> Consider ephemeral runners for stronger isolation.
+
+Local machine runner:
+
+```yaml
+jobs:
+  review:
+    uses: antongulin/robin/.github/workflows/review.yml@main
+    with:
+      runner: '["self-hosted", "local"]'
+    secrets:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_MODEL: ${{ secrets.LLM_MODEL }}
+```
+
+Coolify runner:
+
+```yaml
+jobs:
+  review:
+    uses: antongulin/robin/.github/workflows/review.yml@main
+    with:
+      runner: '["self-hosted", "linux", "coolify"]'
+    secrets:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+      LLM_MODEL: ${{ secrets.LLM_MODEL }}
+```
+
+## Optional: your own review identity
+
+Robin uses `github-actions[bot]` by default. Existing workflows and the three-secret
+setup need no changes. To post as your own GitHub App, create its token and run the
+direct Robin action in the same job. Reusable-workflow callers can opt in by passing
+the optional `ROBIN_TOKEN` secret, for example a fine-grained PAT.
+
+See [Custom review identity](docs/ADVANCED.md#custom-review-identity) for complete
+examples, permissions, PAT limitations, and installer behavior. Custom identity
+workflows stay intact when you rerun either installer; update their refs manually.
+
+## Using it day to day
+
+| When | What happens |
+| --- | --- |
+| You open a PR | Review runs once automatically |
+| You push more commits | No new review (saves time and API usage) |
+| You want another review | Comment `/robin` on the PR (first line of the comment) |
+| You want a short overview only | Comment `/summary` |
+| You need help | Comment `/help` |
+
+`/review` still works as an alias for `/robin`. Only people with **write** access (or higher) on the repo can run these commands by default.
+
+## Example
+
+The bot posts a status comment, then a review with severity counts:
+
+```md
+## 🏹 Robin
+
+🚨 **1 High** | ⚠️ **1 Medium** | 💡 **2 Suggestions**
+
+### Summary
+Focused change. Main risk: timeout errors are not handled clearly.
+
+### Findings Not Posted Inline
+**1 (`src/example.ts:24`)** — Retries exist but timeout failures lack context.
+```
+
+## Agent mode: reviews with repository context
+
+Robin doesn't only look at the diff. When you enable agent mode (`agent-mode: auto`) and your
+model supports tool calling, the review is a short multi-turn investigation: the model can
+read full files, grep for callers of a changed function, and list directories at the PR's
+head commit before it decides what's a bug. Findings can come with a one-click GitHub
+**suggested change** containing the exact fix.
+
+- Nothing to set up: Robin downloads a read-only snapshot of the PR through the GitHub API (no checkout, and PR code is never run).
+- If the model doesn't support tools (some free OpenRouter routes, many small Ollama models), Robin quietly falls back to the classic diff-only review.
+- Agent mode is opt-in: set `agent-mode: auto` in `.github/robin.yml`, and cap the investigation with `agent-max-turns` (default 40). Unset keeps the single-shot diff review.
+- Long investigations don't hit a wall: when the context fills up, Robin has the model summarize what it has found so far and keeps going, like Cursor's context compaction.
+
+Details: [Agent mode](docs/ADVANCED.md#agent-mode-multi-turn-review-with-repository-context).
+
+## Robin in your editor
+
+The one-line installer also installs a small **companion skill** into every coding agent
+on your machine (Claude Code, Cursor, Copilot, Windsurf, …) via the cross-platform
+[skills CLI](https://skills.sh) —
+`npx -y skills add https://github.com/antongulin/robin --skill robin --agent '*' --global --yes`. It
+ships with Robin; there's nothing separate to sign up for. (Skip it with `ROBIN_SKILL=0`,
+or install it by hand with that command.) Once installed, the skill activates for ordinary
+pull-request work: the agent detects Robin on the base branch, so you do not need to ask
+for Robin explicitly. Explicit requests still work too:
+
+> "create a pull request" · "review this PR with Robin" · "fix the Robin feedback"
+
+The agent drives a bounded review → verify → fix → reply → resolve → re-review loop. It
+fixes only findings confirmed against the full repository and skips noise with a factual
+reply. Five completed Robin reviews are approved by default; above five, the agent asks
+for one additional review at a time unless you explicitly enabled full-auto review for
+that PR. Merge is a separate permission and remains manual by default. After an authorized
+merge, the agent verifies base-branch sync and task-branch cleanup. Release preparation is
+never automatic; when the repository already publishes releases, the final report may
+offer it as a separate next step. Source: [skills/robin/SKILL.md](skills/robin/SKILL.md).
+
+## Supported providers
+
+| Provider | `LLM_BASE_URL` | `LLM_MODEL` example |
+| --- | --- | --- |
+| **OpenRouter (free)** | `https://openrouter.ai/api/v1` | `openrouter/free` |
+| OpenAI | `https://api.openai.com/v1` | `gpt-4o`, `gpt-5-mini`, `o4-mini` |
+| Anthropic (Claude) | `https://api.anthropic.com/v1` | `claude-sonnet-4-5` |
+| OpenCode Go | `https://opencode.ai/zen/go/v1` | a model ID supported by OpenCode Go |
+| Groq | `https://api.groq.com/openai/v1` | `llama-3.3-70b-versatile` |
+| Ollama (your server) | `http://YOUR_SERVER:11434/v1` | `llama3.2` |
+
+Anthropic works through its OpenAI-compatible endpoint with your regular Anthropic API key; pasting `https://api.anthropic.com` without `/v1` is fine too. Keep your existing OpenCode Go `LLM_API_KEY` and provider settings; Robin supplies the required User-Agent and a stable session ID automatically when the official Go endpoint is configured. OpenAI reasoning models (`o1`/`o3`/`o4-mini`, `gpt-5*`, `codex-*`) are sent without `temperature` and with `max_completion_tokens` automatically. See [Provider notes](docs/ADVANCED.md#provider-notes).
+
+GitHub’s servers cannot reach `localhost` on your laptop. For Ollama at home, use a public server, a tunnel, or a [self-hosted runner](docs/ADVANCED.md#save-github-actions-minutes).
+
+## Optional: config and custom rules
+
+Copy [`.github/robin.yml.example`](.github/robin.yml.example) to `.github/robin.yml` to set `max-diff-size`, skip extra paths, and more. The same file is the normal place to change `reasoning-effort` for providers that expose reasoning controls; when it is unset Robin sends no reasoning control and the provider/model decides, and `off` is an explicit way to send nothing. Details: [docs/ADVANCED.md](docs/ADVANCED.md#repository-config-file) and [Reasoning effort](docs/ADVANCED.md#reasoning-effort-provider-dependent).
+
+Add `.github/code-reviewer.md` in your repo:
+
+```md
+# Reviewer rules
+
+- Focus on bugs and security, not formatting.
+- Ask for tests when business logic changes.
+```
+
+## Something went wrong?
+
+| Problem | What to try |
+| --- | --- |
+| Workflow fails immediately | Check all three secrets exist and the workflow uses `@main` |
+| `Input required: model` or `llm-base-url` | Add missing secrets (Step 2) |
+| Review never appears | Open **Actions** tab → open the failed run → read the error |
+| `/robin` does nothing | Put `/robin` on the **first** line; you need write access on the repo. On `@v1`, pin `@v1.4.0`+ or use `/review` if the tag predates v1.4.0 |
+| Review is very short | PR may be huge — see [docs/ADVANCED.md](docs/ADVANCED.md) (`max-diff-size`) |
+| `Empty response from LLM` | Free routers sometimes return no text — the action retries automatically; comment `/robin` again |
+| `OpenRouter stall` / job runs 45 min with no review | Auto-router hung — action now aborts after 45s with no stream and retries | Watch Actions log for `LLM resolved model` (routing OK); pin `@v2` or `@main` for the fix |
+| `404 Provider returned error` | Normal for `openrouter/free` when one provider is down — the action retries up to 5 times; keep `LLM_MODEL=openrouter/free` |
+| `temperature` / `max_tokens` rejected by the model | The action warns, retries once with the parameter renamed or dropped (or with `max_completion_tokens`), and keeps that shape for the run. If the endpoint rejects both token-cap spellings, the provider error surfaces rather than running uncapped. To pin a value some models insist on (Kimi requires `1`), set `llm-temperature` in your workflow's `with:` block, see [docs/ADVANCED.md](docs/ADVANCED.md#models-that-require-a-fixed-temperature) |
+| `reasoning-effort` rejected as unsupported or invalid | The action warns, retries once with no reasoning override, and completes the review when that retry succeeds. If you set the value yourself, the final status comment tells you to update `reasoning-effort` in `.github/robin.yml` or the workflow `with:` block. With no value configured Robin sends no reasoning control at all, so nothing is rejected. Set `reasoning-effort: off` to be explicit |
+
+More fixes: [docs/ADVANCED.md#troubleshooting](docs/ADVANCED.md#troubleshooting)
+
+## Version pins
+
+| Pin | When to use |
+| --- | --- |
+| `@main` | Latest changes on the default branch |
+| `@v2` | Latest `2.x` release (updated on each release) |
+| `@v2.7.0` | Exact version (most predictable) |
+| Full commit SHA | Maximum supply-chain safety |
+
+```yaml
+uses: antongulin/robin/.github/workflows/review.yml@v2
+```
+
+Releases and notes are published automatically from [CHANGELOG.md](CHANGELOG.md) when changes land on `main`. See [CONTRIBUTING.md](CONTRIBUTING.md) for commit message format.
+
+## Learn more
+
+- [docs/ADVANCED.md](docs/ADVANCED.md) — all settings, strict mode, manual-only reviews, security notes
+- [CONTRIBUTING.md](CONTRIBUTING.md) — run tests and send pull requests
+- [CHANGELOG.md](CHANGELOG.md) — release history
+
+## Support
+
+Robin is free and open source (MIT). If it saves you money on code review, you can help keep it maintained:
+
+- ⭐ Star the repo — it's the cheapest way to help others find it.
+- 💛 [Sponsor the project](https://github.com/sponsors/antongulin) to support ongoing work.
+- 🐛 [Open an issue](https://github.com/antongulin/robin/issues) for bugs or ideas.
+
+Built by [Anton Gulin](https://github.com/antongulin), AI Architect building AI systems, agent workflows, and software automation. Need a custom AI agent, code-review pipeline, or QA automation? Visit [Anton.QA](https://www.anton.qa).
+
+## Development
+
+```bash
+git clone https://github.com/antongulin/robin.git
+cd robin
+npm ci
+npm run lint
+npm test
+npm run build
+```
+
+Runtime code lives in `dist/index.js`; run `npm run build` before releasing. A full build removes intermediate files under `dist/` after bundling so only `index.js` remains locally (same file CI checks against).
+
+If you ran `tsc` alone and see extra files under `dist/`, run `npm run clean`.

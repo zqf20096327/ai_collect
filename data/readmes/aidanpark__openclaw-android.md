@@ -1,0 +1,666 @@
+# OpenClaw on Android
+
+[한국어](README.ko.md) | [中文](README.zh.md) | [日本語](README.ja.md)
+
+<img src="docs/images/openclaw_android.jpg" alt="OpenClaw on Android">
+
+![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-brightgreen)
+![Termux](https://img.shields.io/badge/Termux-Required-orange)
+![No proot](https://img.shields.io/badge/proot--distro-Not%20Required-blue)
+![License MIT](https://img.shields.io/github/license/AidanPark/openclaw-android)
+![GitHub Stars](https://img.shields.io/github/stars/AidanPark/openclaw-android)
+
+Because Android deserves a shell.
+
+## No Linux install required
+
+The standard approach to running OpenClaw on Android requires installing proot-distro with Linux, adding 700MB-1GB of overhead. OpenClaw on Android eliminates this by installing just the glibc dynamic linker (ld.so), letting you run OpenClaw without a full Linux distribution.
+
+**Standard approach**: Install a full Linux distribution in Termux via proot-distro.
+
+```
+┌───────────────────────────────────────────────────┐
+│ Linux Kernel                                      │
+│ ┌───────────────────────────────────────────────┐ │
+│ │ Android · Bionic libc · Termux                │ │
+│ │ ┌───────────────────────────────────────────┐ │ │
+│ │ │ proot-distro · Debian/Ubuntu              │ │ │
+│ │ │ ┌───────────────────────────────────────┐ │ │ │
+│ │ │ │ GNU glibc                             │ │ │ │
+│ │ │ │ Node.js → OpenClaw                    │ │ │ │
+│ │ │ └───────────────────────────────────────┘ │ │ │
+│ │ └───────────────────────────────────────────┘ │ │
+│ └───────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────┘
+```
+
+**This project**: No proot-distro — just the glibc dynamic linker.
+
+```
+┌───────────────────────────────────────────────────┐
+│ Linux Kernel                                      │
+│ ┌───────────────────────────────────────────────┐ │
+│ │ Android · Bionic libc · Termux                │ │
+│ │ ┌───────────────────────────────────────────┐ │ │
+│ │ │ glibc ld.so (linker only)                 │ │ │
+│ │ │ ld.so → Node.js → OpenClaw                │ │ │
+│ │ └───────────────────────────────────────────┘ │ │
+│ └───────────────────────────────────────────────┘ │
+└───────────────────────────────────────────────────┘
+```
+
+| | Standard (proot-distro) | This project |
+|---|---|---|
+| Storage overhead | 1-2GB (Linux + packages) | ~200MB |
+| Setup time | 20-30 min | 3-10 min |
+| Performance | Slower (proot layer) | Native speed |
+| Setup steps | Install distro, configure Linux, install Node.js, fix paths... | Run one command |
+
+## <img src="docs/images/claw-icon.svg" width="28" alt="Claw icon"> Claw App
+
+A standalone Android app is also available. It bundles a terminal emulator and a WebView-based UI into a single APK — no Termux required.
+
+- One-tap setup: bootstrap, Node.js, and OpenClaw installed from within the app
+- First install in the app (v0.4.5 or later): the app runs the first install itself and shows its progress in 7 steps; you can cancel during any step. An unfinished install (cancelled, the app was closed, or Android stopped it) is continued from where it stopped on the Continue the installation screen. Reinstall the base system repairs a broken base system without clearing the app's data (the home folder is kept). When the setup is done, a button types `openclaw onboard` into the terminal; press Enter to start onboarding
+- Built-in dashboard for gateway control, runtime info, and tool management
+- Tool installation: Settings → Additional Tools installs tmux, ttyd, dufs, Android Tools, Playwright, Claude Code, Gemini CLI, and Codex CLI through the setup script (`post-setup.sh --tools-only`); tmux, ttyd, dufs, and Android Tools are checked against the signed Termux package list. A tool whose install failed or whose `--version` check fails is shown as not working, with a Reinstall button. code-server, OpenCode, the SSH server, and Chromium cannot be installed from the app yet; code-server can be installed in the app's terminal with `oa --install`
+- Install & Update: Settings → Install & Update runs `oa --update` from the app and shows its progress and result. It can be cancelled only in the early steps (before step 3, replacing the core files). The screen also shows the OpenClaw and Node.js versions, the result of the last update run from the app, and the gateway status with a Stop gateway button (only for a gateway started in the app's terminal)
+- Works independently of Termux — installing the app does not affect an existing Termux + `oa` setup
+- The app and an existing Termux setup are independent installs, but both start the OpenClaw gateway on the same default port (18789). Run the gateway in only one of them at a time
+
+Download the APK from the [Releases](https://github.com/AidanPark/openclaw-android/releases) page.
+
+## Requirements
+
+- Android 7.0 or higher (Android 10+ recommended)
+- ~2GB free storage (2000 MB; checked before a new install and before an update that changes the pinned versions)
+- Wi-Fi or mobile data connection
+
+## What It Does
+
+The installer automatically resolves the differences between Termux and standard Linux. There's nothing you need to do manually — the single install command handles all of these:
+
+1. **glibc environment** — Installs the glibc dynamic linker (via pacman's glibc-runner) so standard Linux binaries run without modification. The package list is verified against the Termux signing key before anything is installed
+2. **Node.js (glibc)** — Downloads official Node.js linux-arm64 and wraps it with an ld.so loader script (no patchelf, which causes segfault on Android)
+3. **Path conversion** — Automatically converts standard Linux paths (`/tmp`, `/bin/sh`, `/usr/bin/env`) to Termux paths
+4. **Temp folder setup** — Configures an accessible temp folder for Android
+5. **Service manager bypass** — Configures normal operation without systemd
+6. **OpenCode integration** — If selected, installs OpenCode using proot + ld.so concatenation for Bun standalone binaries
+
+## Step-by-Step Setup (from a fresh phone)
+
+1. [Prepare Your Phone](#step-1-prepare-your-phone)
+2. [Install Termux](#step-2-install-termux)
+3. [Initial Termux Setup](#step-3-initial-termux-setup)
+4. [Install OpenClaw](#step-4-install-openclaw) — one command
+5. [Start OpenClaw Setup](#step-5-start-openclaw-setup)
+6. [Start OpenClaw (Gateway)](#step-6-start-openclaw-gateway)
+
+### Step 1: Prepare Your Phone
+
+Configure Developer Options, Stay Awake, charge limit, and battery optimization. See the [Keeping Processes Alive guide](docs/disable-phantom-process-killer.md) for step-by-step instructions.
+
+### Step 2: Install Termux
+
+> **Important**: The Play Store version of Termux is discontinued and will not work. You must install from F-Droid.
+
+1. Open your phone's browser and go to [f-droid.org](https://f-droid.org)
+2. Search for `Termux`, then tap **Download APK** to download and install
+   - Allow "Install from unknown sources" when prompted
+
+### Step 3: Initial Termux Setup
+
+Open the Termux app and paste the following command to install curl (needed for the next step).
+
+```bash
+pkg upgrade -y && pkg install -y curl
+```
+
+> You may be asked to choose a mirror on first run. Pick any — a geographically closer mirror will be faster.
+>
+> During the upgrade you may see questions about configuration files (`(Y/I/N/O/D/Z) [default=N] ?`). Press **Enter** to keep the default.
+>
+> Don't skip the upgrade: installing curl alone on a fresh Termux can leave curl broken (`CANNOT LINK EXECUTABLE "curl"`). If that already happened, see [Troubleshooting](docs/troubleshooting.md#curl-is-broken-after-step-3-cannot-link-executable).
+
+### Step 4: Install OpenClaw
+
+> **Tip: Use SSH for easier typing**
+> From this step on, you can type commands from your computer keyboard instead of the phone screen. See the [Termux SSH Setup Guide](docs/termux-ssh-guide.md) for details.
+
+Paste the following command in Termux.
+
+```bash
+curl -sL https://myopenclawhub.com/install | bash && source ~/.bashrc
+```
+
+Everything is installed automatically with a single command. This takes 3–10 minutes depending on network speed and device. Wi-Fi is recommended.
+
+Once complete, the OpenClaw version is displayed along with instructions to run `openclaw onboard`.
+
+### Step 5: Start OpenClaw Setup
+
+As instructed in the installation output, run:
+
+```bash
+openclaw onboard
+```
+
+Follow the on-screen instructions to complete the initial setup.
+
+![openclaw onboard](docs/images/openclaw-onboard.png)
+
+### Step 6: Start OpenClaw (Gateway)
+
+Once setup is complete, start the gateway:
+
+> **Important**: Run `openclaw gateway` directly in the Termux app on your phone, not via SSH. If you run it over SSH, the gateway will stop when the SSH session disconnects.
+
+The gateway occupies the terminal while running, so open a new tab for it. Tap the **hamburger icon (☰)** on the bottom menu bar, or swipe right from the left edge of the screen (above the bottom menu bar) to open the side menu. Then tap **NEW SESSION**.
+
+<img src="docs/images/termux_menu.png" width="300" alt="Termux side menu">
+
+In the new tab, run:
+
+```bash
+openclaw gateway
+```
+
+<img src="docs/images/termux_tab_1.png" width="300" alt="openclaw gateway running">
+
+> To stop the gateway, press `Ctrl+C`. Do not use `Ctrl+Z` — it only suspends the process without terminating it.
+
+## Keeping Processes Alive
+
+Android may kill background processes or throttle them when the screen is off. See the [Keeping Processes Alive guide](docs/disable-phantom-process-killer.md) for all recommended settings (Developer Options, Stay Awake, charge limit, battery optimization, and Phantom Process Killer).
+
+## Access the Dashboard from Your PC
+
+See the [Termux SSH Setup Guide](docs/termux-ssh-guide.md) for SSH access and dashboard tunnel setup.
+
+The dashboard itself is at `http://127.0.0.1:18789/`. If it asks for a token (or shows "unauthorized"), print the token and open the dashboard with it:
+```bash
+node -p "require(process.env.HOME + '/.openclaw/openclaw.json').gateway.auth.token"
+```
+Then paste it into the dashboard's auth field, or open `http://127.0.0.1:18789/#token=<token>`. Keep the token private. Details: [Dashboard asks for a token](docs/troubleshooting.md#dashboard-asks-for-a-token-or-shows-unauthorized).
+
+## Managing Multiple Devices
+
+If you run OpenClaw on multiple devices on the same network, use the <a href="https://myopenclawhub.com" target="_blank">Dashboard Connect</a> tool to manage them from your PC.
+
+- Save connection settings (IP, token, ports) for each device with a nickname
+- Generates the SSH tunnel command and dashboard URL automatically
+- **Your data stays local** — Connection settings (IP, token, ports) are saved only in your browser's localStorage and are never sent to any server.
+
+## CLI Reference
+
+After installation, the `oa` command is available for managing your installation:
+
+| Option | Description |
+|--------|-------------|
+| `oa --update` | Update OpenClaw and Android patches |
+| `oa --install` | Install optional tools (tmux, code-server, AI CLIs, etc.) |
+| `oa --uninstall` | Remove OpenClaw on Android |
+| `oa --backup` | Create a full backup of OpenClaw data |
+| `oa --restore` | Restore from a backup (`--force-no-safety`: even if the safety backup cannot be saved) |
+| `oa --status` | Show installation status and all installed components (including the state of the hard-link patch) |
+| `oa --version` | Show version |
+| `oa --help` | Show available options |
+
+## Update
+
+```bash
+oa --update && source ~/.bashrc
+```
+
+This single command updates all installed components at once:
+
+- **OpenClaw** — Core package, kept at the pinned, verified version (currently 2026.10.2 — not always the newest release)
+- **code-server** — Browser IDE
+- **OpenCode** — AI coding assistant
+- **AI CLI tools** — Claude Code, Gemini CLI, Codex CLI (Termux)
+- **Android patches** — Compatibility patches from this project
+
+Already up-to-date components are skipped. Components you haven't installed are not touched — only what's already on your device gets updated. Safe to run multiple times.
+
+If the gateway was running during the update, restart it afterwards (stop it and run `openclaw gateway` again, or restart the app) so it picks up the updated runtime.
+
+Only one setup, update or tools run happens at a time (a new install, `oa --update` and a tool install from the Claw app share one lock). If another run is in progress, `oa --update` prints `[FAIL] Another update, setup or tools run is in progress. Try again when it has finished.` and exits with code 2 without changing the installation (see [Troubleshooting](docs/troubleshooting.md)).
+
+**When an update changes the pinned versions** (for example the move to Node.js 24.21.0 and OpenClaw 2026.9 in Script v1.2.0), `oa --update` adds these safeguards:
+
+- It needs 2000 MB of free space. If there is not enough, it stops before changing anything and shows the space needed and the space left.
+- If the OpenClaw gateway is running, it stops without changing anything. Stop the gateway (Ctrl+C) and run `oa --update` again. In the Claw app, you can stop a gateway started in the app's terminal with Settings → Install & Update → Stop gateway; the app's Update button also stops such a gateway first. If the app stopped the gateway for the update, start it again from the Dashboard afterwards.
+- It first creates a data backup in `~/.openclaw-android/backup/pre-update/` (only the latest 3 are kept). If Node.js does not answer while this backup is made, the update stops before Node.js and OpenClaw are changed; run it again, or set `OA_SKIP_PRE_UPDATE_BACKUP=1` to update without the backup (your data is then not migrated automatically).
+- After the install, it checks the OpenClaw configuration and data. If a data migration is needed and this run made the backup, it runs `openclaw doctor --fix` once automatically (up to 2 minutes). If that fails, it shows the backup location and the manual steps (stop the gateway, then run `openclaw doctor --fix`) and ends as a failure.
+
+Set `OA_SKIP_AUTO_DOCTOR=1` to turn off the automatic migration, or `OA_SKIP_PRE_UPDATE_BACKUP=1` to skip the automatic backup.
+
+`oa --update` never moves Node.js or OpenClaw to a lower version (for example when an older file is served right after a release). To lower them on purpose, set both `OA_ALLOW_OPENCLAW_DOWNGRADE=1` and `OA_ALLOW_NODE_DOWNGRADE=1`. `oa --restore` restores data only, not the programs.
+
+**Note**: `openclaw update` (and `openclaw --update`) is intentionally blocked — a guard keeps OpenClaw pinned to the version verified by this project. The gateway's "update available" notice is turned off for you (`update.checkOnStart=false`; if you turned it back on, it may print something like `update available … Run: openclaw update` — use `oa --update` instead). `openclaw update status` (read-only) still works. OpenClaw 2026.10.2 can also start its own update from the dashboard's Update button, from the agent's gateway tool, and from `openclaw gateway call update.run`; these paths do not go through the `openclaw` command guard, so the Node.js wrapper blocks OpenClaw's own update as well (`[BLOCKED]`). Its messages may suggest `openclaw update --yes` or `openclaw update repair`; both are blocked, so use `oa --update`.
+
+> If the `oa` command is not available (older installations), run it with curl:
+> ```bash
+> curl -sL https://myopenclawhub.com/update | bash && source ~/.bashrc
+> ```
+
+## Backup & Restore
+
+OpenClaw's built-in backup command (`openclaw backup create`) relies on hardlinks, which Android blocks in app-private storage; the hard-link patch that OpenClaw on Android applies lets it copy instead (see the hard-link patch paragraph below). The `oa --backup` command archives your whole OpenClaw data folder (`~/.openclaw`) with `tar` and takes consistent snapshots of the SQLite databases. It then checks the archive with `openclaw backup verify` when OpenClaw accepts it, and otherwise with a `gzip` and `tar` check (OpenClaw 2026.9 and later reject archives that contain its absolute `plugin-skills` link; backups made since script v1.3.4 leave that link out, and restoring older ones works normally). If Node.js does not answer within the time limit (`OA_NODE_PROBE_TIMEOUT`, 30 s for quick calls; `OA_NODE_WORK_TIMEOUT`, 300 s for each database snapshot), the command stops with exit code 75 and creates no archive, instead of saving a copy that may be incomplete.
+
+To create a backup:
+```bash
+oa --backup
+```
+Backups are stored in `~/.openclaw-android/backup/` with a timestamped filename (e.g., `2026-03-14T00-00-00.000Z-openclaw-backup.tar.gz`). You can also specify a custom path: `oa --backup ~/my-backups/`. Each backup includes your configuration, state, conversation history, workspaces, and agents (logs, temporary files, plugin dependency folders and the generated `plugin-skills` links are left out).
+
+> **Keep backups private.** A backup contains your API keys and login credentials. The file is created so that only you can read it (shared storage such as `/sdcard` may ignore that); do not share it or upload it anywhere public.
+>
+> **Claw app:** if `oa --backup` says `backup.sh not found` (apps installed before this feature), run `oa --update` once.
+
+Before an update that changes the pinned versions, `oa --update` also creates a backup in `~/.openclaw-android/backup/pre-update/` automatically (the latest 3 are kept). See [Update](#update).
+
+To restore from a backup:
+```bash
+oa --restore
+```
+This command lists all available backups in the default backup directory, including the `pre-update/` ones. Simply select the number of the backup you wish to restore. The tool automatically detects the platform from the backup manifest and restores into `~/.openclaw/` on this device (backups made on another device work too). Stop the OpenClaw gateway first; the command refuses to run while it is up. Before overwriting anything, it saves a safety backup of your current data in `~/.openclaw-android/backup/pre-restore/`. Files created after the backup was made are kept. A confirmation is required. If the backup was made with a newer OpenClaw version than the one installed, it warns you and asks for confirmation (the default is No). If the backup was made with an older OpenClaw version, it tells you to run `openclaw doctor --fix` after the restore. `oa --restore` restores data only, not the programs. If the safety backup cannot be saved (for example, no free space), the restore stops without changing anything; free some space and try again, or run `oa --restore --force-no-safety` to restore without one.
+
+**Data moved from another environment.** After a move between the Claw app and Termux, between a debug and a release app, or a restore of a backup from another device, OpenClaw's data can still contain the home path of the other app (`/data/data/<other package>/files/home/...`). Android answers an access to another app's folder with a permission error (EACCES), and OpenClaw 2026.9's data migration stops there. `oa --update` (just before the configuration check) and every `oa --restore` (a restore on the same environment included) now rewrite those paths in the agent database registrations and stale lease rows of OpenClaw's state database and in the agent `workspace` and `agentDir` values of `openclaw.json`. Before changing anything, they save copies named `~/.openclaw/state/openclaw.sqlite.oa-before-repair-<timestamp>` and `~/.openclaw/openclaw.json.oa-before-repair-<timestamp>` (the latest 3 are kept). If a value cannot be repaired automatically, a warning says so; edit that path in `openclaw.json` to a location under your current home (`$HOME`). See the [Troubleshooting Guide](docs/troubleshooting.md).
+
+## Troubleshooting
+
+See the [Troubleshooting Guide](docs/troubleshooting.md) for detailed solutions.
+
+## Performance
+
+CLI commands like `openclaw status` may feel slower than on a PC. This is because each command needs to read many files, and the phone's storage is slower than a PC's, with Android's security processing adding overhead.
+
+However, **once the gateway is running, there's no difference**. The process stays in memory so files don't need to be re-read, and AI responses are processed on external servers — the same speed as on a PC.
+
+## Local LLM on Android
+
+OpenClaw's local LLM support used [node-llama-cpp](https://github.com/withcatai/node-llama-cpp). The pinned OpenClaw version no longer lists node-llama-cpp among its dependencies (its documentation describes a managed llama-server instead), and we have not tested local inference on a phone with this version — the notes below describe general limits, not a verified setup.
+
+However, there are practical constraints:
+
+| Constraint | Details |
+|------------|---------|
+| RAM | GGUF models need at least 2-4GB of free memory (7B model, Q4 quantization). Phone RAM is shared with Android and other apps |
+| Storage | Model files range from 4GB to 70GB+. Phone storage fills up fast |
+| Speed | CPU-only inference on ARM is very slow. Android does not support GPU offloading for llama.cpp |
+| Use case | OpenClaw primarily routes to cloud LLM APIs (OpenAI, Gemini, etc.) which respond at the same speed as on a PC. Local inference is a supplementary feature |
+
+For experimentation, small models like TinyLlama 1.1B (Q4, ~670MB) can run on the phone. For production use, cloud LLM providers are recommended.
+
+> **Why `--ignore-scripts`?** The installer uses `npm install -g openclaw@2026.10.2 --ignore-scripts` (the pinned version) because install scripts of native dependencies (node-gyp builds, prebuilt-binary downloads) mostly fail in Termux, and a single failure stops the whole installation. OpenClaw's essential parts work without them, so the scripts are skipped and only what is needed is restored explicitly.
+
+<details>
+<summary>Technical Documentation for Developers</summary>
+
+## Installed Components
+
+The installer sets up infrastructure, platform packages, and optional tools across multiple package managers. Core infrastructure and platform dependencies are installed automatically; optional tools are individually prompted during install.
+
+### Core Infrastructure
+
+| Component | Role | Install Method |
+|-----------|------|----------------|
+| git | Version control, npm git dependencies | `pkg install` |
+
+### Agent Platform Runtime Dependencies
+
+These are controlled by the platform's `config.env` flags. For OpenClaw, all are installed:
+
+| Component | Role | Install Method |
+|-----------|------|----------------|
+| [pacman](https://wiki.archlinux.org/title/Pacman) | Package manager for glibc packages | `pkg install` |
+| [glibc-runner](https://github.com/termux-pacman/glibc-packages) | glibc dynamic linker — enables standard Linux binaries on Android | `pacman -Sy` |
+| [Node.js](https://nodejs.org/) 24.21.0 (linux-arm64) | JavaScript runtime for OpenClaw, pinned version verified via sha256 | Direct download from nodejs.org |
+| python | Build scripts for native C/C++ addons (node-gyp) | `pkg install` |
+| make | Makefile execution for native modules | `pkg install` |
+| cmake | CMake-based native module builds | `pkg install` |
+| clang | C/C++ compiler for native modules | `pkg install` |
+| binutils | Binary utilities (llvm-ar) for native builds | `pkg install` |
+
+### OpenClaw Platform
+
+| Component | Role | Install Method |
+|-----------|------|----------------|
+| [OpenClaw](https://github.com/openclaw/openclaw) | AI agent platform (core), pinned to a verified version (2026.10.2) | `npm install -g` |
+| [clawdhub](https://github.com/AidanPark/clawdhub) | Skill manager for OpenClaw | `npm install -g` |
+| [PyYAML](https://pyyaml.org/) | YAML parser for `.skill` packaging | `pip install` |
+
+### Optional Tools (prompted during install)
+
+Each tool is offered via an individual Y/n prompt. You choose which ones to install. A failed optional-tool install is reported and skipped — it never aborts the rest of the setup.
+
+| Component | Role | Install Method |
+|-----------|------|----------------|
+| [tmux](https://github.com/tmux/tmux) | Terminal multiplexer for background sessions | `pkg install` |
+| [ttyd](https://github.com/tsl0922/ttyd) | Web terminal — access Termux from a browser | `pkg install` |
+| [dufs](https://github.com/sigoden/dufs) | HTTP/WebDAV file server for browser-based file transfer | `pkg install` |
+| [android-tools](https://developer.android.com/tools/adb) | ADB for disabling Phantom Process Killer | `pkg install` |
+| [code-server](https://github.com/coder/code-server) | Browser-based VS Code IDE, pinned to 4.117.0 (verified with this setup) | Direct download from GitHub |
+| [OpenCode](https://opencode.ai/) | AI coding assistant (TUI). Auto-installs [Bun](https://bun.sh/) and [proot](https://proot-me.github.io/) as dependencies | `bun install -g` |
+| [Chromium](https://www.chromium.org/) | Browser automation for OpenClaw (~400MB) | Custom install script |
+| [Playwright](https://playwright.dev/) | Browser automation library (requires Chromium). Auto-configures `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` | Custom install script |
+| [Claude Code](https://github.com/anthropics/claude-code) (Anthropic) | AI CLI tool — its native binary is started through the bundled glibc loader, and the npm wrapper restores that launcher after `npm install -g` updates it (verified in the Claw app) | `npm install -g` |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) (Google) | AI CLI tool | `npm install -g` |
+| [Codex CLI](https://github.com/DioNanos/codex-termux) (Termux fork of OpenAI Codex) | AI CLI tool | `npm install -g` |
+
+## Project Structure
+
+```
+openclaw-android/
+├── bootstrap.sh                # curl | bash one-liner installer (downloader)
+├── install.sh                  # Platform-aware installer (entry point)
+├── oa.sh                       # Unified CLI (installed as $PREFIX/bin/oa)
+├── post-setup.sh               # Claw App post-bootstrap setup (OTA delivery)
+├── update.sh                   # Thin wrapper (downloads and runs update-core.sh)
+├── update-core.sh              # Lightweight updater for existing installations
+├── uninstall.sh                # Clean removal (orchestrator)
+├── patches/
+│   ├── glibc-compat.js        # Node.js runtime patches (os.cpus, networkInterfaces)
+│   ├── argon2-stub.js          # JS stub for argon2 native module (code-server)
+│   ├── termux-compat.h         # C header for Bionic native builds (sharp)
+│   ├── spawn.h                 # POSIX spawn stub header
+│   ├── systemctl               # systemd stub for Termux
+│   ├── apply-patches.sh        # Legacy patch orchestrator (v1.0.2 compat)
+│   └── patch-paths.sh          # Legacy path fixer (v1.0.2 compat)
+├── scripts/
+│   ├── lib.sh                  # Shared function library (colors, platform detection, prompts)
+│   ├── check-env.sh            # Pre-flight environment check
+│   ├── install-infra-deps.sh   # Core infrastructure packages (L1)
+│   ├── install-glibc.sh        # glibc-runner installation (L2 conditional)
+│   ├── install-nodejs.sh       # Node.js glibc wrapper installation (L2 conditional)
+│   ├── install-build-tools.sh  # Build tools for native modules (L2 conditional)
+│   ├── backup.sh               # Backup and restore OpenClaw data (oa --backup/--restore)
+│   ├── build-sharp.sh          # Build sharp native module (image processing)
+│   ├── install-chromium.sh     # Install Chromium for browser automation
+│   ├── install-playwright.sh   # Install Playwright browser automation library
+│   ├── install-code-server.sh  # Install/update code-server (browser IDE)
+│   ├── install-opencode.sh     # Install OpenCode
+│   ├── setup-env.sh            # Configure environment variables
+│   └── setup-paths.sh          # Create directories and symlinks
+├── platforms/
+│   ├── openclaw/               # OpenClaw platform plugin
+│   │   ├── config.env          # Platform metadata and dependency declarations
+│   │   ├── env.sh              # Platform-specific environment variables
+│   │   ├── install.sh          # Platform package install (npm, patches, clawdhub)
+│   │   ├── update.sh           # Platform package update
+│   │   ├── openclaw-shim.sh    # Writes the `openclaw update` version-pin guard
+│   │   ├── uninstall.sh        # Platform package removal
+│   │   ├── limits.sh           # Time limits for node/npm calls (update, verify, status)
+│   │   ├── status.sh           # Platform status display
+│   │   ├── verify.sh           # Platform verification checks
+│   │   └── patches/            # Platform-specific patches
+│   │       ├── openclaw-apply-patches.sh
+│   │       ├── openclaw-patch-paths.sh
+│   │       ├── openclaw-patch-hardlink.sh  # Android hard-link/reflink fallback for OpenClaw
+│   │       └── openclaw-build-sharp.sh
+├── tests/
+│   └── verify-install.sh       # Post-install verification (orchestrator + platform)
+└── docs/
+    ├── disable-phantom-process-killer.md    # Keeping Processes Alive guide (EN)
+    ├── disable-phantom-process-killer.ko.md # Keeping Processes Alive guide (KO)
+    ├── termux-ssh-guide.md     # Termux SSH setup guide (EN)
+    ├── termux-ssh-guide.ko.md  # Termux SSH setup guide (KO)
+    ├── troubleshooting.md      # Troubleshooting guide (EN)
+    ├── troubleshooting.ko.md   # Troubleshooting guide (KO)
+    └── images/                 # Screenshots and images
+```
+
+## Architecture
+
+The project uses a **platform-plugin architecture** that separates platform-agnostic infrastructure from platform-specific code:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Orchestrators (install.sh, update-core.sh, uninstall.sh)  │
+│  ── Platform-agnostic. Read config.env and delegate.       │
+├─────────────────────────────────────────────────────────────┤
+│  Shared Scripts (scripts/)                                  │
+│  ── L1: install-infra-deps.sh (always)                     │
+│  ── L2: install-glibc.sh, install-nodejs.sh,               │
+│         install-build-tools.sh (conditional on config.env) │
+│  ── L3: Optional tools (user-selected)                     │
+├─────────────────────────────────────────────────────────────┤
+│  Platform Plugins (platforms/<name>/)                       │
+│  ── config.env: declares dependencies (PLATFORM_NEEDS_*)  │
+│  ── install.sh / update.sh / uninstall.sh / ...            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Dependency layers:**
+
+| Layer | Scope | Examples | Controlled by |
+|-------|-------|----------|---------------|
+| L1 | Infrastructure (always installed) | git, `pkg update` | Orchestrator |
+| L2 | Platform runtime (conditional) | glibc, Node.js, build tools | `config.env` flags |
+| L3 | Optional tools (user-selected) | tmux, code-server, AI CLIs | User prompts |
+
+Each platform declares its L2 dependencies in `config.env`:
+
+```bash
+# platforms/openclaw/config.env
+PLATFORM_NEEDS_GLIBC=true
+PLATFORM_NEEDS_NODEJS=true
+PLATFORM_NEEDS_BUILD_TOOLS=true
+```
+
+The orchestrator reads these flags and conditionally runs the corresponding install scripts. A platform that doesn't need certain dependencies simply sets the corresponding flags to `false` and those heavy dependencies are skipped entirely.
+
+## Detailed Installation Flow
+
+Running `bash install.sh` executes the following 8 steps in order.
+
+### [1/8] Environment Check — `scripts/check-env.sh`
+
+Validates that the current environment is suitable before starting installation.
+
+- **Termux detection**: Checks for the `$PREFIX` environment variable. Exits immediately if not in Termux
+- **Architecture check**: Runs `uname -m` to verify CPU architecture (aarch64 recommended, armv7l supported, x86_64 treated as emulator)
+- **Disk space**: Ensures at least 2000MB free on the `$PREFIX` partition. Errors if insufficient, showing the space needed and the space left
+- **Existing installation**: If `openclaw` command already exists, shows current version and notes this is a reinstall/upgrade
+- **Node.js pre-check**: If Node.js is already installed, shows version and warns if below 24
+- **Phantom Process Killer** (Android 12+): Shows an informational note about the Phantom Process Killer with a link to the [disable guide](docs/disable-phantom-process-killer.md)
+
+### [2/8] Platform Selection
+
+Selects the platform to install. Currently hardcoded to `openclaw`. Future versions will present a selection UI when multiple platforms are available.
+
+Loads the platform's `config.env` via `load_platform_config()` from `scripts/lib.sh`, which exports all `PLATFORM_*` variables for use by subsequent steps.
+
+### [3/8] Optional Tools Selection (L3)
+
+Presents 11 individual Y/n prompts (via `/dev/tty`) for optional tools:
+
+- tmux, ttyd, dufs, android-tools
+- Chromium, Playwright
+- code-server, OpenCode
+- Claude Code, Gemini CLI, Codex CLI (Termux)
+
+All selections are collected upfront before any installation begins. This allows the user to make all decisions at once and walk away during the install.
+
+### [4/8] Core Infrastructure (L1) — `scripts/install-infra-deps.sh` + `scripts/setup-paths.sh`
+
+Always runs regardless of platform selection.
+
+**install-infra-deps.sh:**
+- Runs `pkg update -y && pkg upgrade -y` to refresh and upgrade packages
+- Installs `git` (required for npm git dependencies and repo cloning)
+
+**setup-paths.sh:**
+- Creates `$PREFIX/tmp` and `$HOME/.openclaw-android/patches` directories
+- Displays standard Linux path mappings (`/bin/sh`, `/usr/bin/env`, `/tmp`) to Termux equivalents
+
+### [5/8] Platform Runtime Dependencies (L2)
+
+Conditionally installs runtime dependencies based on the platform's `config.env` flags:
+
+| Flag | Script | What it installs |
+|------|--------|-----------------|
+| `PLATFORM_NEEDS_GLIBC=true` | `scripts/install-glibc.sh` | pacman, glibc-runner (provides `ld-linux-aarch64.so.1`) |
+| `PLATFORM_NEEDS_NODEJS=true` | `scripts/install-nodejs.sh` | Node.js 24.21.0 linux-arm64 (sha256-verified), grun-style wrapper scripts |
+| `PLATFORM_NEEDS_BUILD_TOOLS=true` | `scripts/install-build-tools.sh` | python, make, cmake, clang, binutils |
+
+Each script is self-contained with pre-checks and idempotent behavior (skips if already installed).
+
+**Node.js wrapper defaults:** OpenClaw 2026.9.x requires Node.js 24.16 or newer. Its file-safety module (`@openclaw/fs-safe`) has a native helper that uses the `openat2` system call, and Android's app seccomp policy kills the process with SIGSYS (Bad system call) on that call. The wrapper therefore sets `FS_SAFE_TEST_NO_OPENAT2=1` by default, which keeps the native helper but stops it from using `openat2` (only the exact value `1` is recognized). Setting `FS_SAFE_NATIVE_MODE=off` turns the native helper off entirely, but then some OpenClaw data migrations may be refused. The wrapper also sets `OPENCLAW_NO_AUTO_UPDATE=1` and blocks OpenClaw's own update (see [Update](#update)).
+
+**Hard-link patch:** Android blocks hardlinks and reflink (`FICLONE`) copies in app data storage, in the app and in Termux alike (error `EACCES`). OpenClaw 2026.10.2 tries a hardlink first and moves on to copying only on a "not supported" error, which `EACCES` is not. It also uses only a hardlink when it moves the original chat history to the archive folder after migrating it. Without a fix, the data migration of a user coming from 7.35 would fail. Every time OpenClaw is installed or updated (app install, Termux install, `oa --update`, and a reinstall with `npm install -g openclaw@<pinned version>`), `platforms/openclaw/patches/openclaw-patch-hardlink.sh` patches that part of OpenClaw: `EACCES` now leads to a copy, and the archive move falls back to a rename within the same file system when the hardlink is refused. `openclaw backup create` can then copy instead of linking as well. `oa --status` shows a `Hard-link patch: applied (…)` or `not complete (…)` line. If a 7.35 user with saved chat history runs an update that changes the pinned version, the update first checks that the patch fits the OpenClaw it is about to install, and stops without changing anything if it does not (see [Troubleshooting](docs/troubleshooting.md)). OpenClaw 2026.10 also reads the process namespace file `/proc/self/ns/pid` for its gateway lock, which many Android kernels do not offer to apps (the lookup fails with `ENOENT` or `EACCES`); the same patch makes OpenClaw treat that file as unavailable instead of refusing to start the gateway.
+
+**Known limitation:** OpenClaw's desktop automation tool (`@trycua/cua-driver`) may not work on Android 10 or lower (API 29 or lower), because some of the system calls it needs are blocked there.
+
+### [6/8] Platform Package Install (L2) — `platforms/<platform>/install.sh`
+
+Delegates to the platform's own install script. For OpenClaw, this:
+
+1. Sets `CPATH` for glib-2.0 headers (needed for native module builds)
+2. Installs PyYAML via pip (for `.skill` packaging)
+3. Copies `glibc-compat.js` to `~/.openclaw-android/patches/` (the Node.js wrapper loads its own copy from `~/.openclaw-android/lib/`, installed with Node.js — the app never overwrites that one)
+4. Installs `systemctl` stub to `$PREFIX/bin/`
+5. Runs `npm install -g openclaw@2026.10.2 --ignore-scripts` (the pinned version in `config.env`)
+6. Runs OpenClaw's own postinstall script (`postinstall-bundled-plugins.mjs`), which `--ignore-scripts` skipped
+7. Applies platform-specific patches via `openclaw-apply-patches.sh`
+8. Installs the `openclaw update` guard (`openclaw-shim.sh`) so the pinned version holds
+9. Installs `clawdhub` (skill manager) and `undici` dependency if needed
+10. Turns off the gateway's "update available" notice (`openclaw config set update.checkOnStart false`), unless you already set that value yourself
+
+**If an earlier install was cut off:** the installers record that an install is under way and remove that record only after the install, the postinstall, the patches and the checks have all passed. When OpenClaw is incomplete after the install, the Termux installer stops with `[FAIL] OpenClaw <version> was installed but is incomplete (files are missing or it does not start).` followed by `Run the installer again.` The Claw app's setup (`post-setup.sh`) detects an unfinished earlier install (`[WARN] OpenClaw <version> is incomplete (an earlier install was cut off): installing it again`) and installs OpenClaw again even when the version matches; your data is not touched. If OpenClaw is still incomplete after that, the setup stops with an error: `OpenClaw <version> is still incomplete (files are missing or it does not start). Restart the app to try again.` The Claw app (v0.4.5 or later) shows this failure on its setup screen with a button to try again.
+
+**[6.5] Environment Variables + CLI + Marker:**
+
+After platform install, the orchestrator:
+- Runs `setup-env.sh` to write the `.bashrc` environment block
+- Evaluates the platform's `env.sh` for platform-specific variables
+- Writes the platform marker file (`~/.openclaw-android/.platform`)
+- Installs `oa` CLI and `oaupdate` wrapper to `$PREFIX/bin/`
+- Copies `lib.sh`, `setup-env.sh`, and the platform directory to `~/.openclaw-android/` for use by the updater and uninstaller
+
+### [7/8] Install Optional Tools (L3)
+
+Installs the tools selected in Step 3:
+
+- **Termux packages**: tmux, ttyd, dufs, android-tools — installed via `pkg install`
+- **code-server**: Browser-based VS Code IDE with Termux-specific workarounds (replace bundled node, patch argon2, handle hard link failures)
+- **OpenCode**: AI coding assistant using proot + ld.so concatenation for Bun standalone binaries
+- **Chromium**: Browser automation support for OpenClaw (~400MB)
+- **Playwright**: Browser automation library (`playwright-core` via npm). Auto-sets `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` and `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` environment variables. Installs Chromium automatically if not already present
+- **AI CLI tools**: Claude Code, Gemini CLI, Codex CLI (Termux) — installed via `npm install -g`; a failed install is reported and skipped rather than aborting setup (Claude Code runs through the glibc loader. Codex CLI is installed with `--force` in the Claw app because its package declares `os: android` while this Node.js reports `linux`; in Termux it may still be skipped with a warning)
+
+### [8/8] Verification — `tests/verify-install.sh`
+
+Runs a two-tier verification:
+
+**Orchestrator checks (FAIL level):**
+
+| Check Item | PASS Condition |
+|------------|---------------|
+| Node.js version | `node -v` equals the pinned version (`platforms/openclaw/config.env`) |
+| npm | `npm` command exists |
+| TMPDIR | Environment variable is set |
+| OA_GLIBC | Set to `1` |
+| glibc-compat.js | File exists in `~/.openclaw-android/lib/` (the copy the Node.js wrapper loads; falls back to `patches/`) |
+| .glibc-arch | Marker file exists |
+| glibc dynamic linker | `ld-linux-aarch64.so.1` exists |
+| glibc node wrapper | Wrapper script at `~/.openclaw-android/bin/node` |
+| Directories | `~/.openclaw-android`, `$PREFIX/tmp` exist |
+| .bashrc | Contains environment variable block |
+
+**Orchestrator checks (WARN level, non-critical):**
+
+| Check Item | PASS Condition |
+|------------|---------------|
+| code-server | `code-server --version` succeeds |
+| opencode | `opencode` command available |
+
+**Platform verification** — delegates to `platforms/<platform>/verify.sh`:
+
+| Check Item | PASS Condition |
+|------------|---------------|
+| openclaw | `openclaw --version` succeeds |
+| openclaw package version | Matches the pinned version in `config.env` |
+| openclaw update guard | Installed at `$PREFIX/bin/openclaw` |
+| CONTAINER | Set to `1` |
+| clawdhub | Command available |
+| ~/.openclaw | Directory exists |
+
+All FAIL-level items pass → PASSED. Any FAIL → shows reinstall instructions. WARN items do not cause failure.
+
+## Lightweight Updater Flow — `oa --update`
+
+Running `oa --update` (or `oaupdate` for backward compatibility) downloads the latest release tarball from GitHub and executes the following 5 steps.
+
+### [1/5] Pre-flight Check
+
+Validates the minimum conditions for updating.
+
+- Checks `$PREFIX` exists (Termux environment)
+- Checks `curl` is available
+- Detects platform from `~/.openclaw-android/.platform` marker file
+- Detects architecture: glibc (`.glibc-arch` marker) or Bionic (legacy)
+- Migrates old directory name if needed (`.openclaw-lite` → `.openclaw-android` — legacy compatibility)
+- **Phantom Process Killer** (Android 12+): Shows an informational note with a link to the [disable guide](docs/disable-phantom-process-killer.md)
+- **One run at a time**: only one setup, update or tools run happens at a time. A second run prints `[FAIL] Another update, setup or tools run is in progress. Try again when it has finished.` and exits with code 2 without changing the installation
+
+### [2/5] Download Latest Release
+
+Downloads the full repository tarball from GitHub and extracts to a temp directory. Validates that all required files exist:
+
+- `scripts/lib.sh`
+- `scripts/setup-env.sh`
+- `platforms/<platform>/config.env`
+- `platforms/<platform>/update.sh`
+
+### [3/5] Update Core Infrastructure
+
+Updates shared files used by the updater, uninstaller, and CLI. If this update changes the pinned Node.js or OpenClaw, three safeguards run first, before anything is changed: the free-space check (2000 MB), the check that the OpenClaw gateway is not running, and the data backup in `~/.openclaw-android/backup/pre-update/` (details in [Update](#update)).
+
+- Checks that the update script itself is the latest. If an old cached copy was downloaded (possible for a few minutes after a release), the update stops before changing anything; run `oa --update` again after a few minutes
+- Copies the latest platform directory to `~/.openclaw-android/platforms/`
+- Updates `lib.sh` and `setup-env.sh` in `~/.openclaw-android/scripts/`
+- Updates patch files (`glibc-compat.js`, `argon2-stub.js`, `spawn.h`, `systemctl`)
+- Updates `oa` CLI and `oaupdate` wrapper in `$PREFIX/bin/`
+- Updates `uninstall.sh` in `~/.openclaw-android/`
+- If Bionic architecture detected, performs automatic glibc migration
+- Converges Node.js to the pinned version (sha256-verified download, atomic swap — the previous install is restored if anything fails). It never moves Node.js to a lower version unless `OA_ALLOW_NODE_DOWNGRADE=1` is set
+- Runs `setup-env.sh` to refresh `.bashrc` environment block
+- **Node gate**: if Node.js isn't at the pinned version afterward, the update stops here — OpenClaw ([4/5]) is not touched. Run `oa --update` again
+
+### [4/5] Update Platform
+
+Delegates to `platforms/<platform>/update.sh`. For OpenClaw, this:
+
+- If the pinned versions changed: after the install, checks the OpenClaw configuration and data, and runs `openclaw doctor --fix` once when a data migration is needed and this run made the backup (details in [Update](#update))
+- Repairs paths that point into another app's folder, after the install and just before the configuration check (details in [Backup & Restore](#backup--restore))
+- Final data check (`openclaw config validate` and `openclaw doctor --non-interactive`): if the gateway is using OpenClaw's data and this run did not replace OpenClaw, the check is skipped instead of failing, and the update continues with `[WARN] The gateway is using the OpenClaw state, so the data check was skipped. Stop the gateway, then run: openclaw doctor`
+- Installs `binutils` (for native module builds)
+- Re-checks the Node.js pin as a safety net (defense in depth — [3/5] already gates on this)
+- Converges `openclaw` to the pinned version — installs it when the installed version is lower. It never moves OpenClaw to a lower version unless `OA_ALLOW_OPENCLAW_DOWNGRADE=1` is set
+- If OpenClaw is incomplete (an earlier install was cut off, so files are missing although the version matches), installs it again even when the version is the pinned one: `[WARN] openclaw <version> is incomplete (an earlier install was cut off): installing it again`. If the final data check reports that OpenClaw's own files are missing (`Cannot find module` or `Cannot find package` with a path inside the OpenClaw package), installs it again once: `[WARN] OpenClaw <version> is missing some of its own files (an earlier install was cut off): installing it again`. Your data is not touched in either case. If OpenClaw is still incomplete after an install in this run, the update stops with `[FAIL] OpenClaw <version> was installed but is incomplete (files are missing or it does not start).`
+- Re-applies platform-specific patches
+- Refreshes the `openclaw update` guard (`openclaw-shim.sh`) so `openclaw update`/`--update` stay blocked (the Node.js wrapper blocks OpenClaw's own update paths as well)
+- Updates/installs `clawdhub` (skill manager)
+- Installs `undici` for clawdhub if needed (Node.js v24+)
+- Turns off the gateway's "update available" notice (`update.checkOnStart=false`) if you have not set that value yourself
+- Migrates skills from `~/skills/` to `~/.openclaw/workspace/skills/` if needed
+- Installs PyYAML if missing
+
+### [5/5] Update Optional Tools
+
+Updates tools that are already installed:
+
+- **code-server**: Runs `install-code-server.sh` in update mode — keeps code-server at the pinned 4.117.0 (a newer version installed earlier is moved back). Skipped if not installed
+- **OpenCode**: Updates if installed; offers to install if not. Requires glibc architecture
+- **Chromium**: Updates if installed. Skipped if not installed
+- **AI CLI tools** (Claude Code, Gemini CLI, Codex CLI (Termux)): Compares installed vs latest npm version, updates if needed. Tools not installed are not offered for installation
+
+</details>
+
+## License
+
+MIT
+
+The Claw app's terminal libraries (`android/terminal-emulator`, `android/terminal-view`) come from [Termux](https://github.com/termux/termux-app) and are under the Apache License 2.0.

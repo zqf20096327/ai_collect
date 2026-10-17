@@ -1,0 +1,137 @@
+[![AIDD](https://img.shields.io/badge/🧬%20AIDD-Synthetic%20Accessibility-4CAF50?style=flat)](https://github.com/simmzx/SynFrag)
+[![PyPI](https://img.shields.io/badge/PyPI-synfrag%20v1.0.0-306998?style=flat&logo=pypi&logoColor=white)](https://pypi.org/project/synfrag/)
+[![GitHub](https://img.shields.io/badge/simmzx💤-181717?style=flat&logo=github&logoColor=white)](https://github.com/simmzx)[![Email](https://img.shields.io/badge/📧Email-1E88E5?style=flat)](mailto:zhangxiang@simm.ac.cn)
+[![WeChat](https://img.shields.io/badge/WeChat-07C160?style=flat&logo=wechat&logoColor=white)](https://github.com/simmzx/simmzx/blob/main/QRcode.jpg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) <img align="right" src="https://komarev.com/ghpvc/?username=Shrichackran&label=Views&color=blue" />
+
+<h1 align="center">  SynFrag  </h1>
+<h3 align="center"> Synthetic Accessibility Predictor based on Fragment Assembly Generation  <br>
+  in Drug Discovery </h3>
+
+<p align="center">
+  📃 <a href="https://doi.org/10.1021/acs.jcim.5c02450" target="_blank">DOI</a> · 📕 <a href="https://simmzx.github.io/SynFrag_JCIM.pdf" target="_blank">PDF</a>
+</p>
+
+<p align="center">
+  <img style="float: center" src="SynFrag.png" alt="alt text" width="1000px" align="center"/>
+</p>
+
+## 💗 What Makes SynFrag Different?
+> Predict the **Synthetic Accessibility (SA)** of molecules like an experienced synthetic chemist
+
+To mirror chemist thinking, SynFrag revolutionizes SA prediction through **Frament Assembly autoregressive Generation pretraining**, transfer the synthesis workflow that chemists start with commercially available building blocks and perform stepwise assembly through systematic reactions to a machine learning task for SA prediction. SynFrag shows not just great performance domenstrated by SOTA across three benchmarks and two real-word scenario test set, but also chemical interpretability by fragment assembly patterns and attentive heatmap corresponding to reactive sites, demonstrated ability, the key to bridging in silico and in lab drug discovery, in identify "synthetic difficulty cliff" and relative SA of intermediates in multi-step synthetic reactions.
+### SA-aware Learning:
+* **Stage 1**: Pretrain on 9.18M unlabeled molecules to learn fragment assembly patterns.
+* **Stage 2**: Finetune on 800K labeled molecules to transfer the knowledge in SA prediction.
+
+## 🎇 Key Features
+* ⚡ Accuracy and Robustness in High-speed.
+* 🧩 Chemical Intuition and Interpretability.
+* 📦 Easy Integration Online platform.
+
+## 🌐 [SynFrag Online Service](https://synfrag.simm.ac.cn)
+> A free, open-access web platform combining rapid SA screening with interpretable attention heatmap and integrated retrosynthetic tool.
+
+<p align="center">
+  <a href="https://synfrag.simm.ac.cn/">
+    <img src="SynFrag_web.png" alt="SynFrag" width="960px"/>
+  </a>
+</p>
+
+## 🚀 Quick Start
+### 1. Installation
+```python
+    # Clone repository
+    git clone https://github.com/simmzx/SynFrag.git
+
+    # Create environment and install dependencies
+    conda create -n SynFrag python=3.8
+    conda activate SynFrag
+    pip install -r requirements.txt
+```
+### 2. Prepare Data
+Create CSV file with "smiles" field:
+molecule_id  | SMILES|
+:---------: | :--------:|
+Palbociclib  | CC1=C(C(=O)N(C2=NC(=NC=C12)NC3=NC=C(C=C3)N4CCNCC4)C5CCCC5)C(=O)C |
+(+)-Eburnamonine  | [C@]12(C3=C4CCN1CCC[C@@]2(CC(=O)N3C1C4=CC=CC=1)CC)[H] |
+### 3. Run Prediction
+CSV Mode
+```python
+    cd ../SynFrag/model/
+    python synfrag.py --input_file example.csv
+```
+SMILES Mode
+```python
+    # Single molecule
+    python synfrag.py --smiles "CCO"
+    # Multiple molecules
+    python synfrag.py --smiles "CCO" "CC(=O)O" "c1ccccc1"
+```
+### 4. View Results
+Output file will contain "SynFrag" perditions:
+| molecule_id | SMILES  | SynFrag |
+| :------------: |:---------------:|:-----:|
+| Palbociclib      | CC1=C(C(=O)N(C2=NC(=NC=C12)NC3=NC=C(C=C3)N4CCNCC4)C5CCCC5)C(=O)C | 0.9453 |
+| (+)-Eburnamonine | [C@]12(C3=C4CCN1CCC[C@@]2(CC(=O)N3C1C4=CC=CC=1)CC)[H]        |    0.0286 |
+
+**SynFrag Interpretation:**
+* **Score ≥ 0.5**: **Easy to Synthesize (ES)**
+- **Score < 0.5**: **Hard to Synthesize (HS)**
+* **Score close to 0.5**: **decision-boundary molecules**
+> note: While 0.5 serves as the default binary cutoff, users can adjust thresholds based on application needs:
+* High-throughput screening (0.3-0.4): Prioritize recall, reduce false negatives of synthesizable candidates.
+- Resource-limited synthesis (0.6-0.7): Prioritize precision, avoid investing in difficult targets.
+
+## 🛸 Advanced Usage
+**Custom Pretraining and Finetuning Workflow** <br />
+For researchers working with specialized chemical spaces or proprietary compound libraries, SynFrag supports custom training pipelines.
+### 1. Pretrain
+```python
+    python synfrag_pretrain.py \
+        --dataset smiles.txt \
+        --vocab fragment.txt 
+```
+**Input:**
+* `smiles.txt`: Text file containing one SMILES string per line. These molecules are unlabeled, no any annotations required.
+- `fragment.txt`: Fragment vocabulary file generated by BRICS+2 fragmentation. Create using:
+```python
+    python ./scripts/utils/mol/cls.py --input smiles.txt
+```
+This vocabulary defines the label space for the autoregressive assembly task, capturing common structural motifs in your dataset.
+
+**Output:** <br />
+* Pretrained AttentiveFP encoder saved as `gnn_pretrained.pth`, ready for downstream finetuning.
+### 2. Finetune
+```python
+    python synfrag_finetune.py \
+        --input_model_file gnn_pretrained.pth \
+        --dataset dataset.csv
+```
+**Input:**
+* `gnn_pretrained.pth`: Model checkpoint from pretraining stage containing molecular representations with fragment assembly patterns.
+- `dataset.csv`: CSV file with columns 'smiles' and binary label for your specific task.
+
+**Output:** <br />
+* Finetuned model saved as `synfrag_finetuned.pth`, ready for inference on target chemical space.
+## 🛠️ Requirements
+* Python ≥ 3.8
+* 4 V100 GPUs (revised)
+* Key dependencies: [_PyTorch_](https://pytorch.org/), [_Miniforge_](https://github.com/conda-forge/miniforge), [_RDKit_](https://www.rdkit.org/), [_DGL_](https://www.dgl.ai/), [_DGL-Life_](https://lifesci.dgl.ai/), [_DeepChem_](https://deepchem.io/about/)
+
+## 🤗 Citation
+If you find this repository and our paper useful, we kindly request to cite our work.
+```BibTex
+@article{zhang2026synfrag,
+  title={SynFrag: Synthetic Accessibility Predictor based on Fragment Assembly Generation in Drug Discovery},
+  author={Zhang, Xiang and Liu, Jia and Xu, Bufan and Zhang, Zihan and Huang, Zifu and Chen, Kaixian and Wang, Dingyan and Li, Xutong},
+  journal={Journal of Chemical Information and Modeling},
+  publisher={ACS Publications}
+}
+```
+
+
+## 💌 Contact
+For technical support, please contact: Xiang Zhang (Email: zhangxiang@simm.ac.cn)
+______________________________________________________________________________________________________
+⭐ **Like this project? Give us a Star**

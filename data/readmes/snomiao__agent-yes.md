@@ -1,0 +1,635 @@
+# Agent-Yes! for Claude/Codex/Cursor/Copilot/Qwen/Auggie
+
+A wrapper tool that automates interactions with various AI CLI tools by automatically handling common prompts and responses. Originally designed for Claude CLI, now supports multiple AI coding assistants. Rewritten in Rust for improved performance and reliability.
+
+⚠️ **Important Security Warning**: Only run this on trusted repositories. This tool automatically responds to prompts and can execute commands without user confirmation. Be aware of potential prompt injection attacks where malicious code or instructions could be embedded in files or user inputs to manipulate the automated responses.
+
+## Install
+
+One-liner (installs Bun if needed, then the `ay` / `cy` / `claude-yes` … CLIs):
+
+```bash
+# macOS / Linux
+curl -fsSL https://agent-yes.com/setup.sh | sh
+```
+
+```powershell
+# Windows (works in both PowerShell and cmd)
+powershell -c "irm https://agent-yes.com/setup.ps1 | iex"
+```
+
+Or with a package manager you already have:
+
+```bash
+bun add -g agent-yes      # or: npm install -g agent-yes
+```
+
+Then: `ay claude` (run an agent with auto-yes) · `ay serve --share` (web console + shareable link) · live console at https://agent-yes.com
+
+`ay` on its own prints the command list — `ay` **is** agent-yes, the fleet manager, so
+starting an agent names a CLI (`ay claude`, `ay codex`, …). `cy` remains the one-word
+shortcut that launches claude with no arguments.
+
+For the local web console, install [Portless](https://portless.sh/) once with `npm install -g portless`, then run `ay serve`. It assigns a free internal port and serves the console at `https://agent-yes.localhost/`. `ay serve --port N` remains available for a fixed-port API listener.
+
+Like `ay <cli>`, `ay serve` runs the Rust daemon (`ayrs serve`) by default for the flags it supports — `--webrtc [webrtc://url]`, `--port N`, `--sighost H`. The bare `ay serve` (Portless), `--share`, and the `install`/`status`/`logs` subcommands still run the TypeScript server; `--no-rust` (or `AGENT_YES_NO_RUST=1`) forces it for everything.
+
+## Features
+
+- **Multi-CLI Support**: Works with Claude, Codex, Copilot, and Cursor CLI tools
+- **Auto-Response**: Automatically responds to common prompts like "Yes, proceed" and "Yes"
+- **Continuous Operation**: Keeps the AI assistant running until your task is done, waiting for your next prompt
+- **Interactive Control**: You can still queue more prompts or cancel executing tasks with `ESC` or `Ctrl+C`
+- **Crash Recovery**: Automatically restarts crashed processes (where supported)
+- **Idle Detection**: Optional auto-exit when the AI becomes idle
+- **Named Pipe Input (Linux)**: On Linux systems, automatically creates a FIFO (named pipe) at `/tmp/agent-yes-YYYYMMDDHHMMSSXXX.stdin` for additional input streams
+- **Isolated Processes**: Each `ay <cli>` is an independent wrapper — no central daemon owns the agents. They coordinate through files (`pids.jsonl` index, per-pid FIFO for stdin, per-cwd `.raw.log` for output), so one process crashing (even `ay serve`) never takes down the others. See [docs/architecture.md](docs/architecture.md#process-model--ipc).
+
+## Agent Clis
+
+Install the AI CLI tool(s) you want to use:
+
+### Claude
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Learn more: https://www.anthropic.com/claude-code
+
+### Codex
+
+```bash
+# Install Codex CLI (if available)
+# Check Microsoft's documentation for installation instructions
+```
+
+### GitHub Copilot
+
+```bash
+# Install GitHub Copilot CLI
+# Check GitHub's documentation for installation instructions
+```
+
+### Cursor
+
+```bash
+# Install Cursor agent CLI
+# Check Cursor's documentation for installation instructions
+```
+
+### Grok
+
+```bash
+npm install -g @vibe-kit/grok-cli
+```
+
+Learn more: https://github.com/vibe-kit/grok-cli
+
+### Auggie
+
+```bash
+npm install -g @augmentcode-inc/auggie-cli
+```
+
+Learn more: https://www.augmentcode.com/
+
+Then install this project:
+
+```bash
+npm install agent-yes -g
+```
+
+## Usage
+
+### Command Line Interface
+
+```bash
+claude-yes [--exit-on-idle=60s] [tool-command] [prompts]
+```
+
+#### Examples
+
+**Claude (default):**
+
+```bash
+claude-yes -- run all tests and commit current changes
+bunx claude-yes "Solve TODO.md"
+```
+
+**Other AI tools:**
+
+```bash
+# Use Codex directly
+codex-yes -- refactor this function
+
+# Use Grok directly
+grok-yes -- help me with this code
+
+# Use Copilot directly
+copilot-yes -- generate unit tests
+
+# Use Cursor directly
+cursor-yes -- optimize performance
+
+# Use Auggie directly
+auggie-yes -- analyze code patterns
+
+# Use GLM (Z.AI) directly — runs Claude Code against Z.AI's
+# Anthropic-compatible endpoint. Set ZAI_API_KEY first
+# (https://z.ai/manage-apikey/apikey-list).
+ZAI_API_KEY=... glm-yes -- help me with this code
+
+# Use Pi directly — minimal multi-provider coding agent
+# (https://github.com/earendil-works/pi)
+pi-yes -- refactor this module
+
+# Use Antigravity CLI (Google, Gemini-backed) — no *-yes bin, run it via ay
+# (https://antigravity.google/docs/cli/)
+ay agy -y -- refactor this module
+
+claude-yes "help me with this code"
+claude-yes "optimize performance"
+```
+
+**Auto-exit when idle (useful for automation):**
+
+```bash
+claude-yes --exit-on-idle=60s "run all tests and commit current changes"
+```
+
+**Alternative with claude-code-execute:**
+
+```bash
+claude-code-execute claude-yes "your task here"
+```
+
+### Inspect and message running agents (`cy ls / tail / send`)
+
+From any terminal you can list and interact with agents that are already
+running on the machine — both TS- and Rust-spawned ones:
+
+```bash
+cy ls                                  # list all running agents
+cy ls codex                            # filter (matches pid, cwd, cli, or prompt)
+cy tail <keyword>                      # render last 96 lines via @xterm/headless
+cy cat <keyword>                       # full rendered log
+ay read <keyword>                      # same, with pagination (--last/--range/…)
+                                       #   `read` is `ay`-only: `cy read foo.ts` is a prompt
+cy send <keyword> "next: run tests"    # append a prompt to that agent's stdin
+cy send <keyword> "" --code=ctrl-c     # send a Ctrl+C
+cy attach <keyword>                    # interactive attach (detach: Ctrl-\)
+cy stop <keyword>                      # graceful shutdown (claude/codex: /exit)
+```
+
+#### Tips
+
+- A **single** `--code=ctrl-c` does not stop `claude` / `codex` — they treat it
+  as "cancel current turn" rather than "quit". Prefer `cy stop <keyword>` (which
+  sends `/exit` for claude/codex), or send Ctrl+C twice
+  in quick succession. The `cy send … --code=ctrl-c` output prints a one-line
+  hint pointing at this when it detects one of those CLIs.
+
+`cy` (and `ay` / `agent-yes`) writes to a shared registry at
+`~/.agent-yes/pids.jsonl` and a per-pid FIFO at `~/.agent-yes/fifo/<pid>.stdin`,
+so subcommands work whether the target agent is the TS or Rust runtime.
+Detailed reference (Japanese): [`docs/cy-subcommands.md`](./docs/cy-subcommands.md).
+
+### Shared task list across agents (`ay todo`)
+
+A lifecycle-tracked task list that every agent working on a repo reads and
+writes. The store is one append-only file at `<repo>/.agent-yes/todos.jsonl`,
+resolved from the repo's **common root** — so agents running in different git
+worktrees of the same repo share one list rather than each keeping a private
+one. Pass `--root <dir>` (or set `AGENT_YES_TODO_ROOT`) to point somewhere else.
+
+```bash
+ay todo                                 # help: every verb, with descriptions
+ay todo new fix the flaky test --kind code   # owner defaults to the calling agent
+ay todo ls                              # OWNER column marks dead agents: lane-3(exited)
+ay todo ls --owner me                   # just my tasks
+ay todo claim T4                        # take it over (refuses to steal from a live agent)
+ay todo claim T4 --force                # take it anyway
+ay todo block T4 --type waiting-on-agent --agent lane-2
+ay todo dep add T5 T4                   # T5 waits for T4 (cycles rejected)
+ay todo digest                          # per-tag board + "unblocked, resume these"
+ay todo reconcile                       # orphan tasks whose owner agent exited, clear stale blocks
+```
+
+Ownership is cross-referenced against the same agent registry `ay ls` reads, so
+"who owns this and are they still alive?" is answerable in one command:
+`--owner me` resolves to the calling agent's registry id, `ls` annotates each
+owner with that agent's live status, and `reconcile` orphans tasks whose owner
+exited (listing idle agents as reassignment candidates). Use `--owner none` to
+create a task nobody owns, and `--format json` for machine-readable output —
+JSON keeps `owner` verbatim and reports liveness in a separate `ownerLiveness`
+field, so filters that match on `owner` keep working.
+
+Tasks move through a lifecycle per `--kind`, and gated transitions require
+**independent verification**: whoever did the work cannot approve it. See
+`ts/todoStore.ts` for the gate model.
+
+### Ask another agent a question (`ay ask`)
+
+`ay send` の送信確認では、今回のメッセージ識別子が入力欄から履歴へ移ったことを調べます。終了コードは `0` = 送信確認済み、`1` = `NOT SUBMITTED`（宛先を確認してから再送）、`3` = 宛先到達不能、`4` = `QUEUED`（受付済み・処理待ち）です。`4` は失敗として本文を再送せず、宛先の処理を待ってください。確認できない画面や入力候補・ダイアログには Enter を追加しません。`--no-wait` は従来どおり確認を省略するため、終了コード `0` でも送信確認を意味しません。
+
+`ay send` delivers a question but leaves no trace of it: if the asker moves on
+and the other agent dies, wedges, or simply never replies, nothing records that
+an answer is owed. `ay ask` delivers the same way — returning immediately — and
+also writes a task carrying **both** parties, so an unanswered question is
+self-describing.
+
+```bash
+ay ask lane-b "does the cache need invalidating before deploy?"
+#   asked lane-b → T4
+#     monitor the answer:   ay todo get T4 --root "/path/to/repo"
+#     monitor the answerer: ay status lane-b
+
+ay answer T4 --root "/path/to/repo" "yes — bump CACHE_VERSION first"
+```
+
+The task stores the asker as its `owner` and the answering agent as a
+`waiting-on-answer` block, so `ay todo ls` shows both, each with that agent's
+live status:
+
+```
+ID  STATE     KIND      OWNER           WAITING-ON      SUMMARY
+T4  pending   question  lane-a(active)  lane-b(exited)  does the cache need inv…
+```
+
+That is the failure mode a bare send cannot report: **whoever died holding the
+question is visible in one command.** `ay todo reconcile` says the same thing in
+words (`T4: lane-b exited without answering`) and orphans the task if the
+_asker_ is the one that died — without ever closing the question itself, since
+the answer is still owed.
+
+Answering is gated on independent verification, which the store enforces: the
+validator must differ from the task's owner, so an asker can never quietly mark
+its own question answered. Targets are agents on this machine (same registry
+`ay ls` reads). `ay ask` respects `ay send`'s recency guard — pass `--force` to
+skip it; `ay answer` replies without it, since its recipient comes off the task
+record rather than from a typed keyword.
+
+### Docker Usage
+
+You can run `agent-yes` in a Docker container with all AI CLI tools pre-installed.
+
+**Pull the image:**
+
+```bash
+# From GitHub Container Registry (recommended)
+docker pull ghcr.io/snomiao/agent-yes:latest
+
+# Or from Docker Hub
+docker pull snomiao/agent-yes:latest
+```
+
+**Basic usage:**
+
+```bash
+# Run with Claude (default)
+docker run --rm -v $(pwd):/workspace -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  -- run all tests
+
+# Run with other AI tools
+docker run --rm -v $(pwd):/workspace -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  --cli=codex -- debug this code
+```
+
+**Persisting credentials:**
+
+To persist API keys and configuration across container runs, mount the config directories:
+
+```bash
+# For Claude
+docker run --rm \
+  -v $(pwd):/workspace \
+  -v ~/.config/claude:/root/.config/claude \
+  -v ~/.anthropic:/root/.anthropic \
+  -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  -- help me with this code
+
+# For multiple AI tools (mount all config directories)
+docker run --rm \
+  -v $(pwd):/workspace \
+  -v ~/.config:/root/.config \
+  -v ~/.anthropic:/root/.anthropic \
+  -v ~/.openai:/root/.openai \
+  -v ~/.cursor:/root/.cursor \
+  -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  --cli=claude -- optimize performance
+```
+
+**Complete example with environment variables:**
+
+```bash
+# Pass API keys via environment variables
+docker run --rm \
+  -v $(pwd):/workspace \
+  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
+  -e OPENAI_API_KEY=$OPENAI_API_KEY \
+  -e GOOGLE_API_KEY=$GOOGLE_API_KEY \
+  -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  -- refactor this module
+
+# Or use an env file
+docker run --rm \
+  -v $(pwd):/workspace \
+  --env-file .env \
+  -w /workspace \
+  ghcr.io/snomiao/agent-yes:latest \
+  --exit-on-idle=60s -- run all tests and commit
+```
+
+**Docker Compose example:**
+
+```yaml
+version: "3.8"
+services:
+  agent-yes:
+    image: ghcr.io/snomiao/agent-yes:latest
+    volumes:
+      - .:/workspace
+      - ~/.config/claude:/root/.config/claude
+      - ~/.anthropic:/root/.anthropic
+    working_dir: /workspace
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    command: ["--", "help me solve all todos"]
+```
+
+**Available platforms:**
+
+- `linux/amd64` (x86_64)
+- `linux/arm64` (aarch64)
+
+**Cloud deployment:**
+
+For deploying to cloud platforms like Google Cloud Run, AWS, Azure, see [Cloud Deployment Guide](./docs/clouds.md).
+
+### Supported CLI Tools
+
+| Tool             | CLI Name     | Description                        | Installation/Update                                 |
+| ---------------- | ------------ | ---------------------------------- | --------------------------------------------------- |
+| Claude           | `claude`     | Anthropic's Claude Code (default)  | `npm install -g @anthropic-ai/claude-code@latest`   |
+| Codex            | `codex`      | OpenAI's Codex CLI                 | `npm install -g @openai/codex-cli@latest`           |
+| Copilot          | `copilot`    | GitHub Copilot CLI                 | `npm install -g @github/copilot@latest`             |
+| Cursor           | `cursor`     | Cursor agent CLI                   | See https://cursor.com/ja/docs/cli/installation     |
+| Grok             | `grok`       | Vibe Kit's Grok CLI                | `npm install -g @vibe-kit/grok-cli@latest`          |
+| Qwen             | `qwen`       | Alibaba's Qwen Code CLI            | `npm install -g @qwen-code/qwen-code@latest`        |
+| Auggie           | `auggie`     | Augment Code's Auggie CLI          | `npm install -g @augmentcode-inc/auggie-cli@latest` |
+| DeepSeek Harness | `dsh-legacy` | DeepSeek Harness (interactive TUI) | `npm install -g @deepseek-ai/dsh@latest`            |
+| Antigravity      | `agy`        | Google Antigravity CLI (Gemini)    | See https://antigravity.google/docs/cli/install/    |
+
+The tool will:
+
+1. Run the specified AI CLI tool
+2. Automatically respond "Yes" to common yes/no prompts
+3. Handle tool-specific patterns and responses
+4. When using `--exit-on-idle` flag, automatically exit when the tool becomes idle
+
+## CLI Tools Comparison
+
+### Pros & Cons Analysis
+
+#### Claude Code CLI (Anthropic)
+
+**Pros:**
+
+- Industry-leading performance on SWE-bench (72.5%) and Terminal-bench (43.2%)
+- Advanced checkpointing feature for code state management
+- Deep terminal integration with Unix philosophy support
+- Enterprise-ready with AWS/GCP deployment options
+- Excellent at complex refactoring and debugging tasks
+
+**Cons:**
+
+- Higher cost compared to alternatives ($5+ per session)
+- Terminal-based interface may not suit all developers
+- Closed ecosystem with limited community plugins
+- Requires API subscription for full features
+
+#### Codex CLI (OpenAI/Microsoft)
+
+**Pros:**
+
+- Cloud-based scalability for team collaboration
+- Powers GitHub Copilot ecosystem
+- Supports multimodal input (images, diagrams)
+- Strong GitHub integration
+- Flexible API for custom implementations
+
+**Cons:**
+
+- Requires more setup and technical knowledge
+- Internet dependency for all operations
+- Less mature/polished than competitors
+- Higher computational requirements
+
+#### Copilot CLI (GitHub)
+
+**Pros:**
+
+- Seamless GitHub integration
+- Terminal-native development experience
+- Wide language and model support
+- Command explanation and suggestion features
+- Enterprise policy controls available
+
+**Cons:**
+
+- Requires active subscription
+- English-only support
+- May struggle with complex/uncommon commands
+- Organization admin approval needed for business users
+
+#### Cursor CLI
+
+**Pros:**
+
+- Superior performance in setup and deployment
+- Multi-model support from various providers
+- Excellent context awareness with RAG system
+- Enterprise features for CI/CD integration
+- Can run multiple agents in parallel
+
+**Cons:**
+
+- Steeper learning curve
+- UI/UX can be clunky with cramped interface
+- Manual context management required
+- Screen real estate limitations
+
+#### Grok CLI (xAI/Vibe Kit)
+
+**Pros:**
+
+- Open source and free for basic use
+- Cost-effective premium tier ($30/month)
+- Real-time data access via X integration
+- Strong community support
+- Cross-platform compatibility
+
+**Cons:**
+
+- Requires API key for advanced features
+- Internet dependency for AI features
+- Additional setup and authentication needed
+- Newer with less mature ecosystem
+
+#### Qwen Code CLI (Alibaba)
+
+**Pros:**
+
+- Fully open source (Apache 2.0)
+- Exceptional benchmark performance (87.9 on MultiPL-E)
+- 256K-1M token context support
+- No subscription required
+- Enterprise-ready with full infrastructure control
+
+**Cons:**
+
+- Newer entrant with developing ecosystem
+- Geopolitical considerations for adoption
+- Less established tooling and integrations
+- Regional trust and security concerns
+
+#### Auggie CLI (Augment Code)
+
+**Pros:**
+
+- AI-powered code assistant with context awareness
+- Supports multiple programming languages
+- Real-time code suggestions and completions
+- Integration with popular IDEs
+- Team collaboration features
+
+**Cons:**
+
+- Requires subscription for full features
+- Newer product with evolving feature set
+- Limited documentation compared to established tools
+- May require configuration for optimal performance
+
+### Choosing the Right Tool
+
+- **For Solo Developers:** Claude Code (complex tasks) or Grok CLI (cost-conscious)
+- **For Teams:** Codex CLI (cloud collaboration) or Cursor CLI (parallel agents)
+- **For Enterprises:** Claude Code (performance) or Qwen Code (self-hosted)
+- **For Budget-Conscious:** Qwen Code (open source)
+- **For GitHub Users:** Copilot CLI (native integration)
+
+<!-- TODO: add usage As lib: call await claudeYes() and it returns render result -->
+
+## Options
+
+- `--cli=<tool>`: Specify which AI CLI tool to use (claude, codex, copilot, cursor, grok, qwen, auggie). Defaults to `claude`.
+- `--exit-on-idle=<seconds>`: Automatically exit when the AI tool becomes idle for the specified duration. Useful for automation scripts.
+- `--use-skills`: Automatically discover and prepend SKILL.md headers from the directory hierarchy (walks from current directory up to git root). Multiple SKILL.md files are merged with most specific first. Particularly useful to bring Claude Skills-like context to non-Claude agents such as Codex. Supports nested skills for monorepos.
+
+## Advanced Features
+
+### Named Pipe Input (Linux Only)
+
+On Linux systems, `agent-yes` automatically creates a named pipe (FIFO) for additional input streams. This allows you to send input to the CLI from multiple sources simultaneously.
+
+**How it works:**
+
+- When started on Linux, a FIFO is created at `/tmp/agent-yes-YYYYMMDDHHMMSSXXX.stdin`
+- The FIFO path is displayed in the console output
+- You can write to this FIFO from another terminal or script
+- Input from both the FIFO and standard stdin are merged together
+
+**Example usage:**
+
+```bash
+# Terminal 1: Start the CLI
+claude-yes "help me with my code"
+# Output will show: [claude-yes] Created FIFO at /tmp/agent-yes-20260109123456abc.stdin
+
+# Terminal 2: Send additional input via the FIFO
+echo "also check the tests" > /tmp/agent-yes-20260109123456abc.stdin
+```
+
+This feature is useful for:
+
+- Scripting complex interactions
+- Sending input from multiple sources
+- Integrating with other tools and automation systems
+
+## Library Usage
+
+You can also use this as a library in your Node.js projects:
+
+```typescript
+import claudeYes from "claude-yes";
+
+// Use Claude
+await claudeYes({
+  prompt: "help me solve all todos in my codebase",
+  cli: "claude",
+  cliArgs: ["--verbose"],
+  exitOnIdle: 30000, // exit after 30 seconds of idle
+  continueOnCrash: true,
+  logFile: "claude.log",
+});
+
+// Use other tools
+await claudeYes({
+  prompt: "debug this function",
+  cli: "codex",
+  exitOnIdle: 60000,
+});
+
+// Use Auggie
+await claudeYes({
+  prompt: "analyze code patterns",
+  cli: "auggie",
+  exitOnIdle: 60000,
+});
+```
+
+## Implementation
+
+The tool uses `node-pty` to spawn and manage AI CLI processes, with a sophisticated pattern-matching system that:
+
+1. **Detects Ready States**: Recognizes when each CLI tool is ready to accept input
+2. **Auto-Responds**: Automatically sends "Yes" responses to common prompts
+3. **Handles Fatal Errors**: Detects and responds to fatal error conditions
+4. **Manages Process Lifecycle**: Handles crashes, restarts, and graceful exits
+
+Each supported CLI has its own configuration defining:
+
+- **Ready patterns**: Regex patterns that indicate the tool is ready for input
+- **Enter patterns**: Patterns that trigger automatic "Yes" responses
+- **Fatal patterns**: Patterns that indicate fatal errors requiring exit
+- **Binary mapping**: Maps logical names to actual executable names
+- **Argument handling**: Special argument processing (e.g., adding `--search` to Codex)
+
+## Dependencies
+
+- `node-pty` or `bun-pty` - For spawning and managing AI CLI processes
+- `from-node-stream` - Stream processing utilities
+- `sflow` - Functional stream processing
+- `terminal-render` - Terminal rendering and text processing
+- `phpdie` - Error handling utilities
+
+## Inspiration
+
+This project was inspired by: [Claude Code full auto while I sleep : r/ClaudeAI](https://www.reddit.com/r/ClaudeAI/comments/1klk6aw/claude_code_full_auto_while_i_sleep/)
+
+## Contributing
+
+Contributions from humans and coding agents are welcome. Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) first: everything in this repository (code,
+docs, commits, PRs, issues) is written in English, and only synthetic data may
+be committed.
+
+## License
+
+MIT

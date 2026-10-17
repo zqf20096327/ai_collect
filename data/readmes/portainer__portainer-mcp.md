@@ -1,0 +1,224 @@
+# Portainer MCP
+
+MCP server for Portainer, generated from the Portainer OpenAPI spec via [FastMCP](https://github.com/PrefectHQ/fastmcp).
+
+> [!IMPORTANT]
+> **Portainer MCP is no longer the supported way to use an LLM with Portainer.** That is [Portainer Command](https://portainer.ai/products/portainer-command), available to Portainer Business Edition customers (including the free 3-node license).
+>
+> This server remains available as-is for people who want to keep using it, but it is provided without support, warranty or SLA, and is **not recommended for production environments**. This repository may be archived in the future.
+
+## Overview
+
+This MCP server exposes the Portainer REST API as MCP tools: list and inspect environments, manage GitOps workflows, troubleshoot Docker and Kubernetes resources. It also supports proxying requests to the underlying Docker and K8s APIs of each environment.
+
+Match the MCP server's minor version to your Portainer instance's minor — e.g. MCP server 2.45.x with Portainer 2.45.x. See [Version compatibility](#version-compatibility) for details.
+
+## Intended use
+
+Portainer MCP is intended for evaluation, homelabs, and other non-production use. It is not supported in business, production, or any other environment where uptime, security posture, or data integrity matter. There is no SLA, no guaranteed response to issues, no further feature development, and no roadmap commitment. If you run it, you are choosing to self-support.
+
+For a supported way to use an LLM with Portainer, use [Portainer Command](https://portainer.ai/products/portainer-command) (Business Edition, including the free 3-node license).
+
+## Getting started
+
+The MCP server supports different deployment scenarios:
+* execute it locally via `uvx`
+* install it as a MCP bundle
+* deploy it as a container
+
+Use the `uvx` approach or the MCP bundle to explore the MCP capabilities locally and deploy it inside your infrastructure as a container for a team based deployment setup.
+
+> [!NOTE]
+> Before using the MCP, make sure to generate an API key in Portainer under **My Account → Access tokens** first as both paths need it.
+
+### MCP bundle (one-click install)
+
+A convenient way to try the MCP server locally. Your client must support [MCP bundles](https://github.com/modelcontextprotocol/mcpb):
+
+1. Fetch the self-contained `.mcpb` bundle for your platform from the [latest release](https://github.com/portainer/portainer-mcp/releases/latest)
+2. Double-click to install
+3. Enter your Portainer URL and API key.
+
+### Single user (stdio via `uvx`)
+
+The other way to test the MCP server locally. Runs as a stdio process on your machine and connects directly to the Portainer instance.
+
+> [!NOTE]
+> `uv` must be installed and available on `PATH`.
+> See [the uv install docs](https://docs.astral.sh/uv/getting-started/installation/).
+>
+> Set `PORTAINER_TLS_VERIFY=0` if your Portainer instance uses self-signed TLS certificates.
+
+Register with Claude Code:
+
+````bash
+claude mcp add portainer \
+  -e PORTAINER_URL=https://portainer.example.com \
+  -e PORTAINER_API_KEY=ptr_xxxxxxxxxxxxxxxx \
+  -- uvx --from "mcp-portainer~=2.45.0" mcp-portainer
+````
+
+For other clients, see
+[`docs/distribution/`](https://github.com/portainer/portainer-mcp/tree/main/docs/distribution).
+
+### Team deployment (container)
+
+A way to have multiple users interacting with your Portainer instance via MCP. Deployed as a [`container`](https://hub.docker.com/r/portainer/portainer-mcp) inside your infrastructure, accessed by users from their workstations over HTTPS. A shared secret gates the MCP server and every client also forwards its own Portainer API key so that each user acts under their own Portainer identity.
+
+> [!IMPORTANT]
+> Both the gate secret and each user Portainer API key are sent across the wire. The container deployment requires you to declare a transport posture: bring your own TLS certificates, attest a TLS-terminating reverse proxy setup or explicitly opt-in to plaintext. 
+> 
+> Plaintext is a deliberate, dangerous choice — see the three options below.
+> 
+> It is **NOT** recommended to expose this MCP server on the public internet, host it inside your private infrastructure even behind a TLS proxy.
+
+See more info below about the different deployment scenarios. For any of these scenarios:
+* Set `PORTAINER_MCP_ALLOWED_HOSTS` to the hostname or IP address that users will use to reach the MCP — otherwise the DNS-rebinding allowlist 421-rejects the request.
+* `PORTAINER_MCP_AUTH_TOKEN` is **required** in HTTP mode. It's the shared front-gate secret you distribute to your users; their MCP client sends it via the `Authorization` header. It only admits the request — what each user can *do* is governed by their own Portainer API key. The one exception: behind an identity-aware proxy that owns the `Authorization` header, use `PORTAINER_MCP_TRUST_PROXY_AUTH=1` instead (see Option D).
+
+
+#### Option A - BYO certificates
+
+> [!NOTE]
+> The server will warn if using self-signed certificates. Using a private CA cert won't warn, but in both cases you will likely need to jump through some hoops to configure the MCP clients to accept it.
+
+Deploy the container to use your own set of TLS certificates:
+
+````bash
+TOKEN=$(openssl rand -hex 32)
+docker run -d --name portainer-mcp -p 17717:17717 \
+	-v /etc/portainer-mcp/tls:/tls:ro \
+	-e PORTAINER_URL=https://portainer.example.com \
+	-e PORTAINER_MCP_AUTH_TOKEN="$TOKEN" \
+	-e PORTAINER_MCP_ALLOWED_HOSTS=mcp.example.com:17717 \
+	-e PORTAINER_MCP_TLS_CERT=/tls/cert.pem \
+	-e PORTAINER_MCP_TLS_KEY=/tls/key.pem \
+	portainer/portainer-mcp:2.45
+````
+
+Then connect your client:
+
+````bash
+claude mcp add portainer --transport http https://mcp.example.com:17717/mcp \
+  --header "Authorization: Bearer <gate-token>" \
+  --header "X-Portainer-API-Key: <ptr_user_key>"
+````
+
+#### Option B - TLS-terminated reverse proxy
+
+> [!NOTE]
+> Don't publish the container port when using a reverse proxy in front of the MCP container, only the proxy should be able to reach it.
+>
+> Use your proxy exact IP if stable for `PORTAINER_MCP_FORWARDED_ALLOW_IPS`.
+>
+> Make sure that your proxy forwards the original `Host` and the `X-Forwarded-Proto: https` headers.
+
+BYO proxy and set up a TLS-terminated proxy in front of the container:
+
+````bash
+TOKEN=$(openssl rand -hex 32)
+docker run -d --name portainer-mcp \
+	-e PORTAINER_URL=https://portainer.example.com \
+	-e PORTAINER_MCP_AUTH_TOKEN="$TOKEN" \
+	-e PORTAINER_MCP_ALLOWED_HOSTS=mcp.example.com \
+	-e PORTAINER_MCP_TRUST_PROXY_TLS=1 \
+	-e PORTAINER_MCP_FORWARDED_ALLOW_IPS=172.18.0.0/16 \
+	portainer/portainer-mcp:2.45
+````
+
+Then connect your client:
+
+````bash
+claude mcp add portainer --transport http https://mcp.example.com/mcp \
+  --header "Authorization: Bearer <gate-token>" \
+  --header "X-Portainer-API-Key: <ptr_user_key>"
+````
+
+#### Option C - Plaintext HTTP
+
+> [!WARNING]
+> It is **NOT** recommended to use this outside of a trusted private network deployment.
+
+Use the `PORTAINER_MCP_DANGEROUSLY_ALLOW_PLAINTEXT_HTTP=1` flag to start the server with HTTP only.
+
+````bash
+TOKEN=$(openssl rand -hex 32)
+docker run -d --name portainer-mcp -p 17717:17717 \
+	-e PORTAINER_URL=https://portainer.example.com \
+	-e PORTAINER_MCP_AUTH_TOKEN="$TOKEN" \
+	-e PORTAINER_MCP_ALLOWED_HOSTS=mcp.example.com:17717 \
+	-e PORTAINER_MCP_DANGEROUSLY_ALLOW_PLAINTEXT_HTTP=1 \
+	portainer/portainer-mcp:2.45
+````
+
+Then connect your client:
+
+````bash
+claude mcp add portainer --transport http http://mcp.example.com:17717/mcp \
+  --header "Authorization: Bearer <gate-token>" \
+  --header "X-Portainer-API-Key: <ptr_user_key>"
+````
+
+#### Option D - Identity-aware proxy (MCP OAuth)
+
+If your users authenticate through an identity-aware proxy that speaks the MCP OAuth flow (such as [Pomerium in MCP server mode](https://www.pomerium.com/docs/capabilities/mcp)), the proxy mints its own access token and **owns** the `Authorization` header. Declare the trust-proxy auth posture instead of `PORTAINER_MCP_AUTH_TOKEN`:
+
+> [!NOTE]
+> Same rules as Option B: don't publish the container port (only the proxy may reach it), and make sure the proxy forwards the original `Host` and `X-Forwarded-Proto: https` headers.
+>
+> Each request still needs the caller's own Portainer API key in `X-Portainer-API-Key` — have the proxy inject it per-user, or have each client send it. The proxy handles *who gets in*; the Portainer key governs *what they can do*.
+
+````bash
+docker run -d --name portainer-mcp \
+	-e PORTAINER_URL=https://portainer.example.com \
+	-e PORTAINER_MCP_TRUST_PROXY_AUTH=1 \
+	-e PORTAINER_MCP_ALLOWED_HOSTS=mcp.example.com \
+	-e PORTAINER_MCP_TRUST_PROXY_TLS=1 \
+	-e PORTAINER_MCP_FORWARDED_ALLOW_IPS=172.18.0.0/16 \
+	portainer/portainer-mcp:2.45
+````
+
+No gate token is configured: the request is admitted by proxy attestation (it must arrive from `PORTAINER_MCP_FORWARDED_ALLOW_IPS` — inherited as the trust boundary, `*` refuses to boot) and by the caller's validated Portainer key. If the MCP server terminates TLS itself instead of the proxy, set `PORTAINER_MCP_TRUSTED_PROXY_AUTH_IPS=<proxy ip/cidr>` in place of the two `TRUST_PROXY_TLS`/`FORWARDED_ALLOW_IPS` lines. See [`docs/configuration.md`](https://github.com/portainer/portainer-mcp/blob/main/docs/configuration.md#auth-posture-identity-aware-proxies) for the full posture rules.
+
+## Restricting and expanding the MCP server capabilities
+
+The MCP server comes with the following capabilities enabled by default:
+* Basic Portainer operation support (settings, version, environments...)
+* Docker operation support
+* Kubernetes operation support
+* Docker and Kubernetes proxy support
+* Redacting environment variables values (enabled by default)
+
+For restricting or expanding this set of capabilities, see [`docs/profiles.md`](https://github.com/portainer/portainer-mcp/blob/main/docs/profiles.md).
+
+## Version compatibility
+
+**Match the MCP server's minor to your Portainer minor.** The major+minor tracks the Portainer API version the embedded spec targets.
+
+| Server version | Portainer (CE / EE) |
+| -------------- | ------------------- |
+| `2.45.x`       | `2.45.x`            |
+| `2.44.x`       | `2.44.x`            |
+| `2.43.x`       | `2.43.x`            |
+| `2.42.x`       | `2.42.x`            |
+| `2.41.x`       | `2.41.x`            |
+
+For more information about the versioning policy, see [`docs/versioning.md`](https://github.com/portainer/portainer-mcp/blob/main/docs/versioning.md).
+
+## Configuration
+
+The MCP server exposes different capabilities such as:
+* Enable different set of tools based on specific profile configuration
+* Widen the API coverage by specifying extra tags to cover
+* Expose only read-only capabilities
+* Disable proxy capabilities
+* Tuning the transport capabilities and configuring the TLS posture
+* Logging configuration
+
+For more information about the MCP server configuration, refer to [`docs/configuration.md`](https://github.com/portainer/portainer-mcp/blob/main/docs/configuration.md).
+
+## Getting help
+
+Portainer MCP has no official support channel. Issues may be filed on GitHub, but doing so does not create any obligation on the project to respond, triage, or fix them.
+
+There is no supported version of Portainer MCP; it is provided as-is and without warranty.

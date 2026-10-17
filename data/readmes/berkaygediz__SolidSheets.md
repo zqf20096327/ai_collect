@@ -1,0 +1,72 @@
+# SolidSheets
+
+![Screenshot](images/banner/solidsheets_banner_3.png)
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/berkaygediz/solidsheets)
+![GitHub repo size](https://img.shields.io/github/repo-size/berkaygediz/solidsheets)
+![GitHub](https://img.shields.io/github/license/berkaygediz/solidsheets)
+
+SolidSheets offers a user-friendly interface and powerful features to manage and analyze your data. Easily open, edit, and print CSV, SSFS/SSFS64, and XLSX files. With advanced formulas, charts, and machine learning algorithms, accelerate your workflow. Efficient and energy-friendly!
+
+## Features
+
+- [x] **File Operations**: Open and save CSV, SSFS/SSFS64 (SolidSheets Files) & XLSX (partial).
+- [x] **Printing**: Print or export tables to PDF format.
+- [x] **Editing**: Modify tables with options to delete, edit rows, and columns.
+- [x] **Formula Support**: Includes functions like avg, sum, min, max, count, similargraph, pointgraph, bargraph, piegraph & histogram.
+- [x] **Customizable Toolbar**: Tailor the interface to your needs.
+- [x] **Performance**: Fast and lightweight with threading support.
+- [x] **User Experience**: Alerts for unsaved changes and supports dark/light mode.
+- [x] **Real-Time Statistics**: Displays live updates on row count, column count, and cell count.
+- [x] **Multilingual**: Available in English, Turkish, German, Spanish, Azerbaijani, Chinese, Korean, Japanese, Arabic, Russian, French, Greek, Kinyarwanda & Hebrew.
+- [x] **Cross-Platform**: Compatible with Windows, macOS (experimental), and Linux (experimental).
+- [x] **Efficiency**: Designed for power-saving and utilizes hardware acceleration.
+- [x] **Machine Learning**: Integrated machine learning algorithms for linear regression.
+
+## Prerequisites
+
+- Python 3.12+
+- PySide6
+- matplotlib
+- psutil
+- pandas
+- openpyxl
+- statsmodels
+- xlrd
+- pyinstaller
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/berkaygediz/SolidSheets.git
+   ```
+
+2. Install requirements:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Creating a executable file (Unsigned):
+
+   ```bash
+   pyinstaller --noconfirm --noconsole --onedir --windowed --icon "solidsheets_icon.ico" --name "SolidSheets" --clean --optimize "2" "SolidSheets.py"
+   ```
+
+## Usage
+
+Launch SolidSheets from the command line:
+
+```bash
+python SolidSheets.py
+```
+
+## Contributing
+
+Contributions to the SolidSheets project are welcomed. Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute and our code of conduct.
+
+## License
+
+This project is licensed under GNU GPLv3, GNU LGPLv3, and Mozilla Public License Version 2.0.

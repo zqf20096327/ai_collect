@@ -1,0 +1,229 @@
+<!--
+SPDX-FileCopyrightText: 2025 Mercator Ocean International <https://www.mercator-ocean.eu/>
+
+SPDX-License-Identifier: EUPL-1.2
+-->
+
+<div align="center">
+  <img src="https://s3.waw3-1.cloudferro.com/oceanbench-bucket/public/logo/oceanbench-logo-light.png" alt="OceanBench logo" height="200"/>
+</div>
+
+# OceanBench
+[![The latest version of OceanBench can be found on PyPI.](https://img.shields.io/pypi/v/oceanbench.svg)](https://pypi.org/project/oceanbench)
+[![Link to discover EDITO](https://dive.edito.eu/badges/Powered-by-EDITO.svg)](https://dive.edito.eu)
+[![Information on what versions of Python OceanBench supports can be found on PyPI.](https://img.shields.io/pypi/pyversions/oceanbench.svg)](https://pypi.org/project/oceanbench)
+[![Information on what kind of operating systems OceanBench can be installed on.](https://img.shields.io/badge/platform-linux-lightgrey)](https://en.wikipedia.org/wiki/Linux)
+[![Information on the OceanBench licence.](https://img.shields.io/badge/licence-EUPL-lightblue)](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
+[![REUSE status](https://api.reuse.software/badge/github.com/mercator-ocean/oceanbench/)](https://api.reuse.software/info/github.com/mercator-ocean/oceanbench/)
+[![Documentation](https://img.shields.io/readthedocs/oceanbench/latest?logo=readthedocs)](https://oceanbench.readthedocs.io)
+
+OceanBench is a benchmarking tool to evaluate ocean forecasting systems against reference ocean analysis datasets (such as 2024 [GLORYS reanalysis](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030) and [GLO12 analysis](https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024)) as well as observations.
+
+## Citation
+
+OceanBench's scientific paper is published in [NeurIPS 2025](https://neurips.cc/virtual/2025/loc/san-diego/poster/121394) and is accessible at [https://openreview.net/forum?id=wZGe1Kqs8G](https://openreview.net/forum?id=wZGe1Kqs8G).
+```
+@inproceedings{
+  aouni2025oceanbench,
+  title={OceanBench: A Benchmark for Data-Driven Global Ocean Forecasting systems},
+  author={Anass El Aouni and Quentin Gaudel and Juan Emmanuel Johnson and REGNIER Charly and Julien Le Sommer and van Gennip and Ronan Fablet and Marie Drevillon and Yann DRILLET and Pierre Yves Le Traon},
+  booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+  year={2025},
+  url={https://openreview.net/forum?id=wZGe1Kqs8G}
+}
+```
+
+## Score table and system comparison
+
+The official score table is available on the [OceanBench website](https://oceanbench.edito.eu).
+
+## Open GLORYS dataset to train your ocean forecasting system
+
+You can train your model with [GLORYS reanalysis](https://data.marine.copernicus.eu/product/GLOBAL_MULTIYEAR_PHY_001_030) from 1993 to 2019 (included).
+The years covered by the benchmark must not be used for training.
+From an environment with OceanBench installed, run:
+
+```python
+import oceanbench
+
+oceanbench.datasets.training.glorys_reanalysis()
+```
+
+to open the 1/12° GLORYS dataset as a lazy [`xarray.Dataset`](https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html), through the Copernicus Marine Toolbox (see [Dependency on the Copernicus Marine Service](#dependency-on-the-copernicus-marine-service)):
+```
+<xarray.Dataset> Size: 140TB
+Dimensions:    (depth: 50, latitude: 2041, longitude: 4320, time: 9861)
+Coordinates:
+  * depth      (depth) float32 200B 0.494 1.541 2.646 ... 5.275e+03 5.728e+03
+  * latitude   (latitude) float32 8kB -80.0 -79.92 -79.83 ... 89.83 89.92 90.0
+  * longitude  (longitude) float32 17kB -180.0 -179.9 -179.8 ... 179.8 179.9
+  * time       (time) datetime64[ns] 79kB 1993-01-01 1993-01-02 ... 2019-12-31
+Data variables:
+    thetao     (time, depth, latitude, longitude) float64 35TB dask.array<chunksize=(50, 1, 512, 2048), meta=np.ndarray>
+    so         (time, depth, latitude, longitude) float64 35TB dask.array<chunksize=(50, 1, 512, 2048), meta=np.ndarray>
+    uo         (time, depth, latitude, longitude) float64 35TB dask.array<chunksize=(50, 1, 512, 2048), meta=np.ndarray>
+    vo         (time, depth, latitude, longitude) float64 35TB dask.array<chunksize=(50, 1, 512, 2048), meta=np.ndarray>
+    zos        (time, latitude, longitude) float64 696GB dask.array<chunksize=(50, 512, 2048), meta=np.ndarray>
+```
+
+For training on the [1 degree track](https://oceanbench.readthedocs.io/en/latest/one-degree-track.html), OceanBench also exposes the 1 degree GLORYS dataset, covering the same years:
+
+```python
+import oceanbench
+
+oceanbench.datasets.training.glorys_reanalysis_1_degree()
+```
+
+## Evaluate your system with OceanBench
+
+The evaluation of a system consists of the sequential execution of a Python notebook that runs several evaluation methods against a set of forecasts (produced by the system), namely the _challenger dataset_, opened as an [xarray Dataset](https://xarray.pydata.org/en/v2023.11.0/generated/xarray.Dataset.html).
+
+The OceanBench documentation describes [the shape a challenger dataset](https://oceanbench.readthedocs.io/en/latest/shape-of-the-challenger-dataset.html) must have, as well as [the definitions of the methods used to evaluate systems](https://oceanbench.readthedocs.io/en/latest/evaluation-methods.html).
+
+### Official evaluation
+
+All official challenger notebooks are maintained and remain executable in order to update the scores with new OceanBench versions (all official challengers are re-evaluated with each new version).
+
+To officially submit your system to OceanBench, please open an issue on this repository attaching one of the following:
+
+1. A way to access the system output data in a standard format (e.g. Zarr or NetCDF).
+2. A way to execute the system code or container, so that the maintainers can reproduce the output, along with clear instructions for how to run it (e.g., input/output format, required dependencies, etc.).
+
+Optionally, attach the executed notebook resulting from an [interactive](#interactive-evaluation) or [programmatic](#programmatic-evaluation) evaluation.
+
+In addition, please provide the following metadata:
+- The organization that leads the construction or operation of the system.
+- A link to the reference paper of the system.
+- The system method. For example, "Physics-based", "ML-based" or "Hybrid".
+- The system type. For example, "Forecast (deterministic)" or "Forecast (ensemble)".
+- The system initial conditions. For example, "GLO12/IFS".
+- The approximate horizontal resolution of the system. For example, "1/12°" or "1/4°".
+
+### Interactive evaluation
+
+Checkout [this notebook](https://github.com/mercator-ocean/oceanbench/blob/main/assets/glonet_sample.global.report.ipynb) that evaluates a sample (two forecasts) of the GLONET system on OceanBench.
+The resulting executed notebook is used as the evaluation report of the system, and its content is used to fulfill the OceanBench score table.
+
+You can replace the cell that opens the challenger datasets with your code and execute the notebook.
+
+#### Execute on your own resources
+
+You will need to install OceanBench manually in your environment.
+
+##### Installation
+
+###### Using pip via PyPI
+
+```bash
+pip install oceanbench
+```
+
+###### From sources
+
+```bash
+git clone git@github.com:mercator-ocean/oceanbench.git && cd oceanbench/ && pip install --editable .
+```
+
+#### Execute on EDITO
+
+You can open and manually execute the example notebook in EDITO datalab by clicking here:
+[![Link to open resource in EDITO](https://dive.edito.eu/badges/Open-in-EDITO.svg)](https://datalab.dive.edito.eu/launcher/ocean-modelling/jupyter-python-ocean-science?name=jupyter-oceanbench&resources.requests.cpu=«4000m»&resources.requests.memory=«8Gi»&resources.limits.cpu=«7200m»&resources.limits.memory=«28Gi»&init.personalInit=«https%3A%2F%2Fraw.githubusercontent.com%2Fmercator-ocean%2Foceanbench%2Frefs%2Fheads%2Fmain%2Fedito%2Fopen-jupyter-notebook-url-edito.sh»&init.personalInitArgs=«https%3A%2F%2Fraw.githubusercontent.com%2Fmercator-ocean%2Foceanbench%2Frefs%2Fheads%2Fmain%2Fassets%2Fglonet_sample.global.report.ipynb»)
+
+### Programmatic evaluation
+
+Once [installed](#installation), you can evaluate your system from the command line or using python.
+
+#### CLI
+
+
+```bash
+oceanbench evaluate path/to/challenger.py
+```
+
+To evaluate multiple challengers in parallel:
+
+```bash
+oceanbench evaluate challenger_a.py challenger_b.py
+```
+
+By default, OceanBench evaluates the global domain. To evaluate an official region, pass its identifier:
+
+```bash
+oceanbench evaluate path/to/challenger.py --region ibi
+```
+
+To evaluate a custom region, write its bounding box in a JSON file:
+
+```json
+{
+  "id": "western_med",
+  "display_name": "Western Mediterranean",
+  "bounds": {
+    "minimum_latitude": 34.0,
+    "maximum_latitude": 44.5,
+    "minimum_longitude": -1.0,
+    "maximum_longitude": 18.0
+  }
+}
+```
+
+Then pass it to the CLI:
+
+```bash
+oceanbench evaluate path/to/challenger.py --region-file path/to/region.json
+```
+
+To upload the resulting notebooks to an S3 bucket:
+
+```bash
+oceanbench evaluate path/to/challenger.py --output-bucket my-bucket --output-prefix results/
+```
+
+The output notebook name is automatically derived from the challenger file name and region (e.g. `challenger.py` produces `challenger.global.report.ipynb` for the global benchmark and `challenger.ibi.report.ipynb` for the IBI benchmark).
+
+To run OceanBench on an HPC compute node without internet access, see [Run OceanBench offline](https://oceanbench.readthedocs.io/en/latest/run-offline.html).
+
+#### Python
+
+
+```python
+import oceanbench
+
+oceanbench.evaluate_challenger("path/to/file/opening/the/challenger/datasets.py")
+```
+
+More details in the [documentation](https://oceanbench.readthedocs.io/en/latest/source/oceanbench.html#oceanbench.evaluate_challenger).
+
+### Dependency on the Copernicus Marine Service
+
+Running OceanBench to evaluate systems with 1/12° resolution uses the [Copernicus Marine Toolbox](https://github.com/mercator-ocean/copernicus-marine-toolbox/) and therefore requires authentication with the [Copernicus Marine Service](https://marine.copernicus.eu/).
+
+> If you're running OceanBench in a non-interactive way, please follow the [Copernicus Marine Toolbox documentation](https://toolbox-docs.marine.copernicus.eu) to login to the Copernicus Marine Service before running the bench.
+
+## Contribution
+
+Your help to improve OceanBench is welcome.
+Please first read contribution instructions [here](CONTRIBUTION.md).
+
+## License
+
+Licensed under the [EUPL-1.2](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12) license.
+
+## About
+
+Implemented by:
+
+<a href="https://www.mercator-ocean.eu/"><img src="https://www.nemo-ocean.eu/wp-content/uploads/MOI.png" alt="Mercator Ocean International logo" height="100"/></a>
+
+As part of a fruitful collaboration with:
+
+<a href="https://www.ocean-climat.fr"><img src="https://oceansconnectes.org/wp-content/uploads/2023/02/VISU-PPRsmol.jpg" alt="PPR logo" height="100"/></a>
+<a href="https://www.imt-atlantique.fr"><img src="https://www.imt-atlantique.fr/sites/default/files/ecole/IMT_Atlantique_logo.png" alt="IMTA logo" height="100"/></a>
+<a href="https://www.univ-grenoble-alpes.fr"><img src="https://www.grenoble-inp.fr/medias/photo/logo-uga-carrousel_1575017090994-png" alt="UGA logo" height="100"/></a>
+<a href="https://igeo.ucm-csic.es/"><img src="https://igeo.ufrj.br/wp-content/uploads/2022/10/image-1.png" alt="IGEO logo" height="100"/></a>
+
+Powered by:
+
+<a href="https://edito.eu">
+  <img class="only-light" src="https://s3.waw3-1.cloudferro.com/oceanbench-bucket/public/logo/EDITO_Full_Logo.png" alt="EDITO logo"  height=100  />
+</a>

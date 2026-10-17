@@ -1,0 +1,405 @@
+# ShellGuard
+
+Stop copy-pasting terminal output into your AI. Let your LLM SSH in and look around.
+
+ShellGuard is an [MCP](https://modelcontextprotocol.io/) server that gives LLM agents controlled bash access to remote servers over SSH. Connect your AI to production, staging, or dev servers and let it run diagnostics, inspect logs, query databases, and troubleshoot -- hands-free.
+
+---
+
+ShellGuard is the open-source security layer built by the team at [Fawdy](https://fawdy.com). It powers Fawdy's AI-powered Linux server investigation tool that delivers plain-English root cause analysis.
+
+You can use ShellGuard standalone with any MCP-compatible AI agent, or try the full investigation experience with [Fawdy](https://fawdy.com).
+
+---
+
+## Why ShellGuard?
+
+AI agents are powerful, but giving them unrestricted shell access to production servers is risky. ShellGuard solves this by enforcing read-only access at the command level. Every command is parsed, validated against an allowlist, and reconstructed before execution. If an agent tries something destructive, ShellGuard blocks it and tells the agent what to do instead.
+
+Commands are restricted to a curated set of observation and diagnostic tools. Destructive operations are blocked with actionable suggestions so the LLM can self-correct and keep investigating:
+
+- `wget -r` -> `"Recursive downloading is not allowed"`
+- `tail -f` -> `"Follow mode hangs until timeout. Use tail -n 100 for recent lines."`
+- `sed` -> `"Stream editing can modify files -- read-only access only. Use grep for searching."`
+- `$HOME/file` -> `"Variable expansion will not expand. Use absolute paths."`
+
+## Quick Start
+
+### Install
+
+```bash
+brew install fawdyinc/tap/shellguard
+```
+
+Or download the latest binary:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fawdyinc/shellguard/main/install.sh | sh
+```
+
+Or with Go:
+
+```bash
+go install github.com/fawdyinc/shellguard/cmd/shellguard@latest
+```
+
+### Configure with an MCP Client
+
+ShellGuard starts as a stdio MCP server -- no arguments needed. Add it to your MCP client of choice:
+
+<details>
+<summary><b>Cursor</b></summary>
+
+Go to: `Settings` -> `Cursor Settings` -> `MCP` -> `Add new global MCP server`
+
+Or paste this into your `~/.cursor/mcp.json` file. You can also install per-project by creating `.cursor/mcp.json` in your project folder. See [Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol) for more info.
+
+```json
+{
+  "mcpServers": {
+    "shellguard": {
+      "command": "shellguard"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Claude Desktop</b></summary>
+
+Add the following to your Claude Desktop config file. See [Claude Desktop MCP docs](https://modelcontextprotocol.io/quickstart/user) for more info.
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "shellguard": {
+      "command": "shellguard"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+Run this command. See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/claude-code/mcp) for more info.
+
+```sh
+claude mcp add shellguard -- shellguard
+```
+
+</details>
+
+<details>
+<summary><b>OpenCode</b></summary>
+
+Add this to your OpenCode configuration file. See [OpenCode MCP docs](https://opencode.ai/docs/mcp-servers) for more info.
+
+```json
+{
+  "mcp": {
+    "shellguard": {
+      "type": "local",
+      "command": ["shellguard"],
+      "enabled": true
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>VS Code / GitHub Copilot</b></summary>
+
+Add the following to your VS Code `settings.json` or `.vscode/mcp.json`. See [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
+
+#### User settings (`settings.json`)
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "shellguard": {
+        "type": "stdio",
+        "command": "shellguard"
+      }
+    }
+  }
+}
+```
+
+#### Workspace config (`.vscode/mcp.json`)
+
+```json
+{
+  "servers": {
+    "shellguard": {
+      "type": "stdio",
+      "command": "shellguard"
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Zed</b></summary>
+
+Add the following to your Zed settings file (`~/.config/zed/settings.json`). See [Zed MCP docs](https://zed.dev/docs/assistant/model-context-protocol) for more info.
+
+```json
+{
+  "context_servers": {
+    "shellguard": {
+      "command": {
+        "path": "shellguard",
+        "args": []
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><b>Roo Code</b></summary>
+
+Go to: `Roo Code Settings` -> `MCP Servers` -> `Edit MCP Settings`
+
+Or add the following to your Roo Code MCP settings file. See [Roo Code MCP docs](https://docs.roocode.com/features/mcp/using-mcp-in-roo) for more info.
+
+```json
+{
+  "mcpServers": {
+    "shellguard": {
+      "command": "shellguard"
+    }
+  }
+}
+```
+
+</details>
+
+## What It Does
+
+ShellGuard exposes 6 tools to the LLM:
+
+| Tool            | Description                                                   |
+| --------------- | ------------------------------------------------------------- |
+| `connect`       | Establish an SSH connection to a remote host                  |
+| `execute`       | Run a validated shell command on the remote host              |
+| `disconnect`    | Close SSH connection(s)                                       |
+| `sleep`         | Wait between diagnostic checks (max 15s)                      |
+| `provision`     | Deploy diagnostic tools (`rg`, `jq`, `yq`) to the remote host |
+| `download_file` | Download a file from the remote host via SFTP (50MB limit)    |
+
+`provision`, `download_file`, and `sleep` can be disabled via the `disabled_tools` config option or `SHELLGUARD_DISABLED_TOOLS` environment variable.
+
+The LLM connects to a server, runs commands, and reads the output -- the same workflow you'd do manually, but without the context-switching.
+
+## How It Works
+
+Every command goes through a pipeline before reaching the remote host:
+
+1. **Parse** -- bash is parsed into an AST. Shell tricks (semicolons, redirections, command substitution, etc.) are rejected at the syntax level.
+2. **Validate** -- commands, flags, and arguments are checked against a curated allowlist of commands (with an explicit denylist). Default-deny.
+3. **Reconstruct** -- arguments are re-quoted to prevent injection.
+4. **Execute** -- the command runs over SSH with per-command timeouts and output truncation.
+
+For full details, see [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## SSH Configuration
+
+### Authentication
+
+ShellGuard tries authentication methods in this order, stopping at the first success:
+
+| Priority | Method | Source | On failure |
+| -------- | ------ | ------ | ---------- |
+| 1 | Explicit key | `identity_file` parameter in `connect` | **Fatal** -- connection fails immediately |
+| 2 | ssh-agent | `SSH_AUTH_SOCK` unix socket | Silent -- skipped |
+| 3 | Default keys | `~/.ssh/id_ed25519`, `id_ecdsa`, `id_rsa` | Silent -- skipped |
+
+Passphrase-protected keys are silently skipped during default key discovery. If you specify a passphrase-protected key via `identity_file`, the connection will fail. Add the key to your agent first: `ssh-add ~/.ssh/my_key`.
+
+### SSH Modes
+
+ShellGuard supports two SSH modes:
+
+| Mode | Description |
+| ---- | ----------- |
+| `native` | **(Default)** Uses Go's built-in SSH library. Reads `~/.ssh/config` for `HostName`, `User`, `Port`, and `IdentityFile`. Lightweight, no external dependencies. |
+| `system` | Uses the local `ssh` binary. Full `~/.ssh/config` support including `ProxyJump`, `ProxyCommand`, `Match` blocks, and all other OpenSSH features. Requires `ssh` to be installed. |
+
+If you connect through bastion hosts, use `ProxyJump`, or rely on `Match` blocks in your SSH config, enable system mode:
+
+```yaml
+ssh:
+  mode: system
+```
+
+```bash
+export SHELLGUARD_SSH_MODE=system
+```
+
+If `mode` is set to `system` but the `ssh` binary is not found, ShellGuard logs a warning and falls back to native mode.
+
+**Native mode limitations:** `Match` directives, `ProxyJump`, `ProxyCommand`, and `ForwardAgent` are not supported. Use `system` mode if your infrastructure requires these features.
+
+**System mode notes:**
+- Host key verification is handled entirely by OpenSSH. The `host_key_checking` and `known_hosts_file` settings only apply in native mode.
+- Connections are multiplexed using OpenSSH `ControlMaster`, so only the first connection per host pays the SSH handshake cost.
+
+### Host Key Verification
+
+ShellGuard verifies SSH host keys using `~/.ssh/known_hosts`. Three modes are available:
+
+| Mode | Behavior |
+| ---- | -------- |
+| `accept-new` | **(Default)** Trust-on-first-use. Unknown hosts are accepted and written to `known_hosts`. Key changes are rejected. |
+| `strict` | Require the host key to already exist in `known_hosts`. Unknown hosts are rejected. |
+| `off` | Disable host key verification entirely. |
+
+If a host key has changed, remove the old entry from your `known_hosts` file.
+
+### Configuration
+
+Settings can be specified in a YAML config file or via environment variables. Environment variables take precedence.
+
+**Config file location:** `$XDG_CONFIG_HOME/shellguard/config.yaml` (default: `~/.config/shellguard/config.yaml`)
+
+```yaml
+ssh:
+  mode: "native"                   # native | system
+  connect_timeout: "10s"           # default 10s
+  retries: 2                       # default 2
+  retry_backoff: "250ms"           # default 250ms
+  host_key_checking: "accept-new"  # accept-new | strict | off (native mode only)
+  known_hosts_file: "~/.ssh/known_hosts"  # native mode only
+```
+
+| YAML field | Environment variable | Default | Description |
+| ---------- | -------------------- | ------- | ----------- |
+| `ssh.mode` | `SHELLGUARD_SSH_MODE` | `native` | SSH mode: `native` (built-in) or `system` (uses local `ssh` binary) |
+| `ssh.connect_timeout` | `SHELLGUARD_SSH_CONNECT_TIMEOUT` | `10s` | TCP + SSH handshake timeout |
+| `ssh.retries` | `SHELLGUARD_SSH_RETRIES` | `2` | Connection/execution retry attempts |
+| `ssh.retry_backoff` | `SHELLGUARD_SSH_RETRY_BACKOFF` | `250ms` | Base backoff (exponential: `backoff * 2^attempt`) |
+| `ssh.host_key_checking` | `SHELLGUARD_SSH_HOST_KEY_CHECKING` | `accept-new` | Host key verification mode (native mode only) |
+| `ssh.known_hosts_file` | `SHELLGUARD_SSH_KNOWN_HOSTS_FILE` | `~/.ssh/known_hosts` | Path to known_hosts file (native mode only) |
+
+## Toolkit Provisioning
+
+Remote servers don't always have the tools you want. On `connect`, ShellGuard probes for `rg`, `jq`, and `yq`. If any are missing, the LLM can call `provision` to deploy them:
+
+| Tool           | Version | Architectures   |
+| -------------- | ------- | --------------- |
+| `rg` (ripgrep) | 14.1.1  | x86_64, aarch64 |
+| `jq`           | 1.7.1   | x86_64, aarch64 |
+| `yq`           | 4.52.2  | x86_64, aarch64 |
+
+Binaries are downloaded from GitHub Releases with SHA-256 verification, cached locally, and deployed to `~/.shellguard/bin/` on the remote host.
+
+## Library Usage
+
+ShellGuard can be used as a Go library:
+
+```go
+package main
+
+import (
+    "context"
+    "log/slog"
+    "os"
+
+    "github.com/fawdyinc/shellguard"
+)
+
+func main() {
+    ctx := context.Background()
+    logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+
+    err := shellguard.RunStdio(ctx, shellguard.Config{Logger: logger})
+    if err != nil {
+        os.Exit(1)
+    }
+}
+```
+
+See the [Custom Configuration](#custom-configuration) and [Custom Executor](#custom-executor-backend) sections below for advanced usage.
+
+### Custom Configuration
+
+```go
+import (
+    "github.com/fawdyinc/shellguard"
+    "github.com/fawdyinc/shellguard/manifest"
+    "github.com/fawdyinc/shellguard/server"
+)
+
+manifests, _ := manifest.LoadEmbedded()
+// Add or remove commands as needed
+
+core, err := shellguard.New(shellguard.Config{
+    Manifests: manifests,         // Custom registry (nil = embedded defaults)
+    Executor:  myCustomExecutor,  // Custom backend (nil = SSH)
+    Name:      "my-server",       // MCP server name
+    Version:   "1.0.0",          // MCP server version
+})
+```
+
+### Custom Executor Backend
+
+Implement the `server.Executor` interface to use non-SSH backends:
+
+```go
+type Executor interface {
+    Connect(ctx context.Context, params ssh.ConnectionParams) error
+    Execute(ctx context.Context, host, command string, timeout time.Duration) (ssh.ExecResult, error)
+    ExecuteRaw(ctx context.Context, host, command string, timeout time.Duration) (ssh.ExecResult, error)
+    SFTPSession(host string) (ssh.SFTPClient, error)
+    Disconnect(host string) error
+}
+```
+
+## Testing
+
+```bash
+make test          # Run all tests
+make test-race     # Run with race detector
+make lint          # Run go vet
+```
+
+## Project Structure
+
+```
+shellguard/
+  shellguard.go          # Top-level constructor (New, RunStdio)
+  cmd/shellguard/        # CLI entrypoint
+  server/                # MCP server core, tool registration, Executor interface
+  parser/                # Shell AST parser (mvdan.cc/sh/v3)
+  validator/             # Command/flag/SQL validation engine
+  manifest/              # YAML command registry (embed.FS)
+    manifests/           # allowed command manifests
+    manifests/denied/    # denied command manifests
+  ssh/                   # SSH manager, ShellQuote, ReconstructCommand
+  output/                # Output truncation (64KB cap)
+  toolkit/               # Diagnostic tool provisioning (rg, jq, yq)
+```
+
+## Try the Full Experience
+
+ShellGuard is great on its own, but if you want automated incident investigation with plain-English root cause reports, check out [Fawdy](https://fawdy.com). It connects to your Linux servers via ShellGuard and investigates incidents automatically. 10-minute setup.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE) for details.

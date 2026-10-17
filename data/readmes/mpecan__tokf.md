@@ -1,0 +1,2328 @@
+# tokf
+
+[![CI](https://github.com/mpecan/tokf/actions/workflows/ci.yml/badge.svg)](https://github.com/mpecan/tokf/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/tokf)](https://crates.io/crates/tokf)
+[![crates.io downloads](https://img.shields.io/crates/d/tokf)](https://crates.io/crates/tokf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**[tokf.net](https://tokf.net)** — reduce LLM context consumption from CLI commands by 60–90%.
+
+Commands like `git push`, `cargo test`, and `docker build` produce verbose output packed with progress bars, compile noise, and boilerplate. tokf intercepts that output, applies a TOML filter, and emits only what matters — so your AI agent sees a clean signal instead of hundreds of wasted tokens.
+
+---
+
+## Before / After
+
+**`cargo test` — 61 lines → 1 line:**
+
+<table>
+<tr>
+<th>Without tokf</th>
+<th>With tokf</th>
+</tr>
+<tr>
+<td>
+
+```
+   Compiling tokf v0.2.0 (/home/user/tokf)
+   Compiling proc-macro2 v1.0.92
+   Compiling unicode-ident v1.0.14
+   Compiling quote v1.0.38
+   Compiling syn v2.0.96
+   Compiling serde_derive v1.0.217
+   Compiling serde v1.0.217
+   ...
+running 47 tests
+test config::tests::test_load ... ok
+test filter::tests::test_skip ... ok
+test filter::tests::test_keep ... ok
+test filter::tests::test_extract ... ok
+...
+test result: ok. 47 passed; 0 failed; 0 ignored
+  finished in 2.31s
+```
+
+</td>
+<td>
+
+```
+✓ 47 passed (2.31s)
+```
+
+</td>
+</tr>
+</table>
+
+**`git push` — 8 lines → 1 line:**
+
+<table>
+<tr>
+<th>Without tokf</th>
+<th>With tokf</th>
+</tr>
+<tr>
+<td>
+
+```
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 10 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 312 bytes | 312.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To github.com:user/repo.git
+   a1b2c3d..e4f5a6b  main -> main
+```
+
+</td>
+<td>
+
+```
+ok ✓ main
+```
+
+</td>
+</tr>
+</table>
+
+---
+
+
+## Quickstart
+
+```sh
+brew install mpecan/tokf/tokf   # or: cargo install tokf
+tokf setup                      # detect your AI tools and install hooks
+```
+
+That's it. Every command your AI agent runs is now automatically filtered.
+
+Run `tokf gain` to see how many tokens you've saved, or `tokf setup --refresh` to re-run detection.
+
+---
+
+
+## Installation
+
+### Homebrew (macOS and Linux)
+
+```sh
+brew install mpecan/tokf/tokf
+```
+
+### cargo
+
+```sh
+cargo install tokf
+```
+
+### Build from source
+
+```sh
+git clone https://github.com/mpecan/tokf
+cd tokf
+cargo build --release
+# binary at target/release/tokf
+```
+
+---
+
+## How it works
+
+```
+tokf run git push origin main
+```
+
+tokf looks up a filter for `git push`, runs the command, and applies the filter. The filter logic lives in plain TOML files — no recompilation required. Anyone can author, share, or override a filter.
+
+Compressing output is not the only thing being in the middle is good for. A pipeline reports its *last* stage's exit code, so `just check 2>&1 | tail -8` reports `tail`'s success even when the tests failed — and the shortcuts an agent reaches for to keep output small are exactly the ones that discard the failure signal. Opt into [pipeline capture](#pipeline-capture) and tokf runs the first stage itself, so it can tell you when a pipeline hid a command's verdict.
+
+---
+
+## Set up automatic filtering
+
+If you use an AI coding tool, install the hook so every command is filtered automatically — no `tokf run` prefix needed:
+
+```sh
+# Claude Code (recommended: --global so it works in every project)
+tokf hook install --global
+
+# OpenCode
+tokf hook install --tool opencode --global
+
+# OpenAI Codex CLI
+tokf hook install --tool codex --global
+```
+
+Drop `--global` to install for the current project only. See [Claude Code hook](#claude-code-hook) for details on each tool, the `--path` flag, and optional extras like the filter-authoring skill.
+
+---
+
+## Usage
+
+### Run a command with filtering
+
+```sh
+tokf run git push origin main
+tokf run cargo test
+tokf run docker build .
+```
+
+### Apply a filter to a fixture
+
+```sh
+tokf apply filters/git/push.toml tests/fixtures/git_push_success.txt --exit-code 0
+```
+
+### Verify filter test suites
+
+```sh
+tokf verify                    # run all test suites
+tokf verify git/push           # run a specific suite
+tokf verify --list             # list available suites and case counts
+tokf verify --json             # output results as JSON
+tokf verify --require-all      # fail if any filter has no test suite
+tokf verify --list --require-all  # show coverage per filter
+tokf verify --scope project    # only project-local filters (.tokf/filters/)
+tokf verify --scope global     # only user-level filters (~/.config/tokf/filters/)
+tokf verify --scope stdlib     # only built-in stdlib (filters/ in CWD)
+tokf verify --safety           # run safety checks (prompt injection, shell injection, hidden unicode)
+tokf verify git/push --safety  # safety check a specific filter
+```
+
+### Task runner filtering
+
+tokf automatically wraps `make` and `just` so that each recipe line is individually filtered:
+
+```sh
+make check    # each recipe line (cargo test, cargo clippy, ...) is filtered
+just test     # same — each recipe runs through tokf
+```
+
+See [Rewrite configuration](#rewrite-configuration-rewritestoml) for details and customization.
+
+### Explore available filters
+
+```sh
+tokf ls                    # list all filters
+tokf which "cargo test"    # which filter would match
+tokf show git/push         # print the TOML source
+```
+
+### Customize a built-in filter
+
+```sh
+tokf eject cargo/build            # copy to .tokf/filters/ (project-local)
+tokf eject cargo/build --global   # copy to ~/.config/tokf/filters/ (user-level)
+```
+
+This copies the filter TOML and its test suite to your config directory, where it shadows the built-in. Edit the ejected copy freely — tokf's priority system ensures your version is used instead of the original.
+
+### Flags
+
+| Flag | Description |
+|---|---|
+| `--timing` | Print how long filtering took |
+| `--verbose` | Show which filter was matched (also explains skipped rewrites) |
+| `--no-filter` | Pass output through without filtering |
+| `--no-cache` | Bypass the filter discovery cache |
+| `--no-mask-exit-code` | Disable exit-code masking. By default tokf exits 0 and prepends `Error: Exit code N` on failure. Also propagates into hook-emitted `tokf run` rewrites (`tokf hook --no-mask-exit-code handle`), including each segment of compound `&&`/`;`/`\|\|` commands |
+| `--preserve-color` | Preserve ANSI color codes in filtered output (env: `TOKF_PRESERVE_COLOR=1`). See [Color passthrough](#color-passthrough) below |
+| `--baseline-pipe` | Pipe command for fair baseline accounting (injected by rewrite) |
+| `--prefer-less` | Compare filtered vs piped output and use whichever is smaller (requires `--baseline-pipe`) |
+
+### Color passthrough
+
+By default, filters with `strip_ansi = true` permanently remove ANSI escape codes. The `--preserve-color` flag changes this: tokf strips ANSI **internally** for pattern matching (skip, keep, dedup) but restores the original colored lines in the final output. When `--preserve-color` is active it overrides `strip_ansi = true` in the filter config.
+
+tokf does **not** force commands to emit color — you must ensure the child command outputs ANSI codes (e.g. via `FORCE_COLOR=1` or `--color=always`):
+
+```sh
+# Node.js / Vitest / Jest
+FORCE_COLOR=1 tokf run --preserve-color npm test
+
+# Cargo
+tokf run --preserve-color cargo test -- --color=always
+
+# Or set the env var once for all invocations
+export TOKF_PRESERVE_COLOR=1
+FORCE_COLOR=1 tokf run npm test
+```
+
+**Limitations:** color passthrough applies to the skip/keep/dedup pipeline (stages 2–2.5). The `match_output`, `parse`, and `lua_script` stages operate on clean text and are unaffected by this flag. `[[replace]]` rules run on the raw text before the color split, so when `--preserve-color` is enabled their patterns may need to account for ANSI escape codes, similar to branch-level `skip` patterns, which also match against the restored colored text.
+
+---
+
+## Built-in filter library
+
+| Filter | Command |
+|---|---|
+| `git/add` | `git add` |
+| `git/commit` | `git commit` |
+| `git/diff` | `git diff` — runs the real `git diff` and summarises it as one line per file (`src/main.rs \| +4 -3`) plus a totals line, so the full patch stays recoverable with `tokf raw`. Pass `-p`/`--patch`/`--stat`/`-U<n>`/`--name-only`/`--name-status`/`--numstat`/`--shortstat`/`--raw` to skip the filter and get the requested format instead |
+| `git/log` | `git log` — runs the real `git log` and renders one line per commit (`<short-sha> <subject>`), capped at 20; the full history stays recoverable with `tokf raw`. Pass `-p`/`--patch`/`--format`/`--pretty`/`--graph`/`--stat`/`--shortstat`/`--dirstat`/`--oneline`/`--name-only`/`--name-status`/`-L` to skip the filter. Empty results emit a one-line hint pointing at common causes (untracked pathspec, missing `--all`, missing `--follow`) instead of nothing — this stops agents looping through flag variations trying to escape a non-existent filter |
+| `git/push` | `git push` |
+| `git/show` | `git show` — runs the real `git show` and renders the commit's sha, subject, author and date plus one line per file with change counts; the full patch stays recoverable with `tokf raw`. Pass `-p`/`--patch`/`--stat`/`--format`/`--pretty`/`--numstat`/`--shortstat`/`--raw` to skip the filter |
+| `git/status` | `git status` — runs `git status --porcelain=v1 -b -uall --find-renames`; shows branch + upstream sync state (`[synced]`, `[ahead N]`, `[behind N]`, `(no upstream)`) and one porcelain line per changed file (`M  src/main.rs`, `?? scratch.rs`, `R  old.rs -> new.rs`). `-uall` lists every untracked file individually instead of collapsing newly-created directories. When 3+ files share a directory prefix the listing is restructured into a directory tree (see [`[tree]`](writing-filters.md#tree-restructuring)), writing each shared prefix once. Measured 24.4% averaged token reduction across the bundled test fixtures |
+| `cargo/build` | `cargo build` |
+| `cargo/check` | `cargo check` |
+| `cargo/clippy` | `cargo clippy` |
+| `cargo/fmt` | `cargo fmt` |
+| `cargo/install` | `cargo install *` |
+| `cargo/test` | `cargo test` |
+| `docker/*` | `docker build`, `docker compose`, `docker images`, `docker ps` |
+| `npm/run` | `npm run *` |
+| `npm/test` | `npm test`, `pnpm test`, `yarn test` (with vitest/jest variants) |
+| `pnpm/*` | `pnpm add`, `pnpm install` |
+| `go/*` | `go build`, `go vet` |
+| `gradle/*` | `gradle build`, `gradle test`, `gradle dependencies` |
+| `gh/*` | `gh pr list`, `gh pr view`, `gh pr checks`, `gh issue list`, `gh issue view` |
+| `kubectl/*` | `kubectl get pods` |
+| `next/*` | `next build` |
+| `prisma/*` | `prisma generate` |
+| `pytest` | Python test runner — runs `pytest` as typed and keeps the failing assertion lines (`>` / `E`) plus the pass/fail summary; the full tracebacks stay recoverable with `tokf raw`. Pass `-q`/`--tb`/`-v`/`-x`/`--collect-only`/`--pdb` to skip the filter |
+| `tsc` | TypeScript compiler |
+| `ls` | `ls` |
+
+---
+
+
+## Generic Commands
+
+When no dedicated filter exists for a command, three built-in subcommands provide useful compression for arbitrary output:
+
+| Command | Purpose | Default context |
+|---------|---------|----------------|
+| `tokf err <cmd>` | Extract errors and warnings | 3 lines |
+| `tokf test <cmd>` | Extract test failures | 5 lines |
+| `tokf summary <cmd>` | Heuristic summary | 30 lines max |
+
+### `tokf err` — Error extraction
+
+Scans output for error/warning patterns across common toolchains (Rust, Python, Node, Go, Java) and shows only the relevant lines with surrounding context.
+
+```sh
+# Show only errors from a build
+tokf err cargo build
+
+# Adjust context lines around each error
+tokf err -C 5 cargo build
+
+# Works with any command
+tokf err python train.py
+tokf err npm run build
+```
+
+**Patterns matched:** `error:`, `warning:`, `FAILED`, `Traceback`, `panic`, `npm ERR!`, `fatal:`, Python/Java exception types, and more.
+
+**Behaviour:**
+- Empty output: `[tokf err] no errors detected (empty output)`
+- Short output (< 10 lines): shows `[tokf err]` header with full output
+- No errors + exit 0: prints `[tokf err] no errors detected`
+- No errors + exit ≠ 0: includes full output (something failed but no recognized pattern)
+
+### `tokf test` — Test failure extraction
+
+Extracts test failure details and always includes summary/result lines.
+
+```sh
+# Show only test failures
+tokf test cargo test
+tokf test go test ./...
+tokf test npm test
+tokf test pytest
+```
+
+**Patterns matched:** `FAIL`, `FAILED`, `panicked`, assertion mismatches, Jest `✕` markers, Go `--- FAIL:`, and more.
+
+**Summary lines always included:** `test result:`, `Tests:`, `passed`, `failed` counts, pytest/RSpec summary lines.
+
+**Behaviour:**
+- Output < 10 lines: passed through unchanged
+- All pass + exit 0: prints `[tokf test] all tests passed`
+- Failures detected: shows failure lines with context + summary
+
+### `tokf summary` — Heuristic summary
+
+Produces a budget-constrained summary by identifying header, footer/summary, and repetitive middle sections.
+
+```sh
+# Summarize a long build log
+tokf summary cargo build
+
+# Limit to 15 lines
+tokf summary --max-lines 15 make all
+```
+
+**Algorithm:**
+1. Header (first 5 lines) and footer/summary (last lines matching keywords like "total", "finished", "result")
+2. Middle section is sampled; highly repetitive content shows a count + samples
+3. Extracted statistics (pass/fail counts, timing) appended as `[tokf summary]` line
+
+### Common flags
+
+All three commands support:
+
+| Flag | Description |
+|------|-------------|
+| `--baseline-pipe <cmd>` | Fair baseline accounting (as with `tokf run`) |
+| `--no-mask-exit-code` | Propagate the real exit code instead of masking to 0 |
+| `--timing` | Show how long filtering took |
+
+### Using generic commands with rewrites
+
+Generic commands can be integrated with the [rewrite system](rewrites-config.md) so they trigger automatically through the hook. Add rules to `.tokf/rewrites.toml` for commands that don't have dedicated filters:
+
+```toml
+# Route build commands without filters through tokf err
+[[rewrite]]
+match = "^mix compile"
+replace = "tokf err {0}"
+
+[[rewrite]]
+match = "^cmake --build"
+replace = "tokf err {0}"
+
+# Route test runners without filters through tokf test
+[[rewrite]]
+match = "^mix test"
+replace = "tokf test {0}"
+
+[[rewrite]]
+match = "^ctest"
+replace = "tokf test {0}"
+
+# Summarize long-running commands
+[[rewrite]]
+match = "^terraform plan"
+replace = "tokf summary {0}"
+```
+
+**Important:** User rewrite rules are checked *before* filter matching. Don't add rules for commands that already have dedicated filters (like `cargo build`, `npm test`) — the dedicated filter will produce better output than the generic command.
+
+To check whether a command already has a filter: `tokf which "cargo build"`.
+
+### Tracking and history
+
+Generic commands record to the same tracking database and history as `tokf run`, using filter names `_builtin/err`, `_builtin/test`, and `_builtin/summary`. Use `tokf raw last` to see the full uncompressed output.
+
+---
+
+
+Filters are TOML files placed in `.tokf/filters/` (project-local) or `~/.config/tokf/filters/` (user-level). Project-local filters take priority over user-level, which take priority over the built-in library.
+
+## Minimal example
+
+```toml
+command = "my-tool"
+
+[on_success]
+output = "ok ✓"
+
+[on_failure]
+tail = 10
+```
+
+## Command matching
+
+tokf matches commands against filter patterns using two built-in behaviours:
+
+**Basename matching** — the first word of a pattern is compared by basename, so a filter with `command = "git push"` will also match `/usr/bin/git push` or `./git push`.  This works automatically; no special pattern syntax is required.
+
+**Transparent global flags** — flag-like tokens between the command name and a subcommand keyword are skipped during matching.  A filter for `git log` will match all of:
+
+```
+git log
+git -C /path log
+git --no-pager -C /path log --oneline
+/usr/bin/git --no-pager -C /path log
+```
+
+The skipped flags are preserved in the command that actually runs — they are only bypassed during the pattern match.
+
+> **Note on `run` override and transparent flags:** If a filter sets a `run` field, transparent global flags are *not* included in `{args}`.  Only the arguments that appear after the matched pattern words are available as `{args}`.
+
+**Local environment wrappers** — you don't need to do anything special for your filter to match through a local wrapper like `nix develop -c cargo test`. tokf strips the wrapper prefix and matches the inner command (`cargo test`) against your existing patterns. See [Local environment wrappers](rewrites-config.md#local-environment-wrappers) for the configurable list.
+
+## Common fields
+
+```toml
+command = "git push"          # command pattern to match (supports wildcards and arrays)
+run = "git push {args}"       # override command to actually execute
+description = "Compact git push output"  # human-readable description (shown in `tokf ls`)
+
+skip = ["^Enumerating", "^Counting"]  # drop lines matching these regexes
+keep = ["^error"]                      # keep only lines matching (inverse of skip)
+
+# Per-line regex replacement — applied before skip/keep, in order.
+# Capture groups use {1}, {2}, … . Invalid patterns are silently skipped.
+[[replace]]
+pattern = '^(\S+)\s+\S+\s+(\S+)\s+(\S+)'
+output = "{1}: {2} → {3}"
+
+dedup = true                  # collapse consecutive identical lines
+dedup_window = 10             # optional: compare within a N-line sliding window
+
+strip_ansi = true             # strip ANSI escape sequences before processing
+trim_lines = true             # trim leading/trailing whitespace from each line
+strip_empty_lines = true      # remove all blank lines from the final output
+collapse_empty_lines = true   # collapse consecutive blank lines into one
+truncate_lines_at = 120       # truncate lines longer than N chars (with trailing …)
+
+tail = 30                     # keep last N lines regardless of exit code (branch tail overrides)
+on_empty = "git push: ok"     # message when filter produces empty output (all lines stripped)
+
+show_history_hint = true      # append a hint line (`tokf raw <id>`) pointing to the full output in history
+inject_path = true            # inject shims into PATH so sub-processes (e.g. git hooks) are filtered
+
+passthrough_args = ["--watch", "--web", "-w"]  # skip filter when user passes these flags
+
+# Lua escape hatch — for logic TOML can't express (see Lua Escape Hatch section)
+[lua_script]
+lang = "luau"
+source = 'return output:upper()'    # inline script
+# file = "transform.luau"           # or reference a local file (auto-inlined on publish)
+
+match_output = [              # whole-output substring checks, short-circuit the pipeline
+  { contains = "rejected", output = "push rejected" },
+]
+
+[on_success]                  # branch for exit code 0
+output = "ok ✓ {2}"          # template; {output} = pre-filtered output
+
+[on_failure]                  # branch for non-zero exit
+tail = 10                     # keep the last N lines (overrides top-level tail)
+```
+
+## The `run` override
+
+`run` makes tokf execute a *different* command than the user typed. It is a sharp
+tool, and there is one rule:
+
+> **`run` must not lose information.** It may re-encode the same data more densely
+> (`--porcelain`, `--format json`, `-o json`). It must never truncate, cap, or
+> otherwise answer a narrower question than the user asked.
+
+The reason is recoverability. tokf only ever sees the output of the command it
+actually ran, so that is what lands in history and what `tokf raw <id>` gives
+back. If `run` throws data away before tokf sees it, **nothing can recover it** —
+not `tokf raw`, not anything else. Reductions that drop content belong in the
+filter pipeline (`skip`, `chunk`, `max_lines`, templates), which runs *after*
+the full output has been captured.
+
+Substitutions are recorded and shown. `tokf history show` prints an `Executed:`
+line, `tokf raw` prints a note to stderr (stdout stays pure output, so pipes are
+unaffected), and `--verbose` reports the substitution as it happens:
+
+```
+$ tokf run --verbose -- git status
+[tokf] executing: git status --porcelain=v1 -b -uall --find-renames
+[tokf]   (substituted by `run` for: git status)
+
+$ tokf history last
+Command: git status
+Executed: git status --porcelain=v1 -b -uall --find-renames
+```
+
+Note that savings for a `run`-override filter are measured against the
+substituted command's output — that is the only baseline tokf ever observes.
+The `Executed:` line tells you which command the figure refers to.
+
+### The cost of capturing everything
+
+Reducing in the pipeline rather than in `run` means tokf captures the command's
+full output, holds it in memory, and writes it to the history database. That is
+what makes `tokf raw` able to give it back, and it is not free: `tokf run -- git
+log` on a repository with a few thousand commits captures hundreds of KB per
+invocation, where `git log --oneline -n 20` captured about a kilobyte.
+
+History keeps `history.retention` entries per project (default 10) with no
+per-entry size cap, so the database grows with the largest output you filter.
+`tokf history clear` resets it. Prefer a `passthrough_args` entry over a `run`
+override when a flag means the user wants the unreduced output anyway — that
+skips both the reduction and the capture.
+
+## Passthrough args
+
+Some filters inject flags like `--json` or `--format` via the `run` field. When users pass conflicting flags (e.g. `--watch`), the combined command fails. The `passthrough_args` field declares flag prefixes that trigger passthrough mode — tokf skips the filter entirely and runs the original command as-is.
+
+```toml
+command = "gh pr checks *"
+run = "gh pr checks {args} --json name,state,workflow"
+passthrough_args = ["--watch", "--web", "-w"]
+```
+
+**Matching semantics**: each user arg is checked with `starts_with` against each prefix. This handles `--format=table` matching `--format`, while `-w` does **not** match `--watch` (correct — they are different flags). Short-flag prefixes like `-o` also match concatenated forms like `-oyaml` (common in tools like `kubectl`). Empty-string prefixes are ignored. When any arg matches, no `run` override is applied and no filter pipeline runs.
+
+**Variant interaction**: passthrough is checked on the resolved filter config after file-based and args-based variant detection. If a parent filter delegates to a variant (via file detection or `args_pattern`), the variant's own `passthrough_args` apply — not the parent's. Output-pattern variants (post-execution) are not resolved when passthrough is active.
+
+Use `--verbose` to see when passthrough activates:
+
+```
+$ tokf run gh pr checks 142 --watch --verbose
+[tokf] passthrough: user args match passthrough_args, skipping filter
+```
+
+## Template pipes
+
+Output templates support pipe chains: `{var | pipe | pipe: "arg"}`.
+
+| Pipe | Input → Output | Description |
+|---|---|---|
+| `join: "sep"` | Collection → Str | Join items with separator |
+| `each: "tmpl"` | Collection → Collection | Map each item through a sub-template |
+| `truncate: N` | Str → Str | Truncate to N characters, appending `…` |
+| `lines` | Str → Collection | Split on newlines |
+| `keep: "re"` | Collection → Collection | Retain items matching the regex |
+| `where: "re"` | Collection → Collection | Alias for `keep:` |
+
+Example — filter a multi-line output variable to only error lines:
+
+```toml
+[on_failure]
+output = "{output | lines | keep: \"^error\" | join: \"\\n\"}"
+```
+
+Example — for each collected block, show only `>` (pointer) and `E` (assertion) lines:
+
+```toml
+[on_failure]
+output = "{failure_lines | each: \"{value | lines | keep: \\\"^[>E] \\\"}\" | join: \"\\n\"}"
+```
+
+## Sections
+
+Sections collect lines into named buckets using a state-machine model. They are processed on the raw output (before skip/keep filtering) so structural markers like blank lines are available.
+
+```toml
+[[section]]
+name = "failures"
+enter = "^failures:$"        # regex that starts collecting
+exit = "^failures:$"         # regex that stops collecting (second occurrence)
+split_on = "^\\s*$"          # split collected lines into blocks at blank lines
+collect_as = "failure_blocks" # name used in templates: {failure_blocks}
+
+[[section]]
+name = "summary"
+match = "^test result:"      # stateless: collect any matching line
+collect_as = "summary_lines"
+```
+
+**Stateful sections** (with `enter`/`exit`) toggle on/off as the state machine hits the enter/exit patterns. **Stateless sections** (with `match` only) collect every matching line regardless of state.
+
+Section data is available in templates:
+- `{failure_blocks}` — the collected items
+- `{failure_blocks.count}` — number of items (blocks if `split_on` is set, otherwise lines)
+- `{failure_blocks | each: "..." | join: "\\n"}` — iterate over items
+
+## Aggregates
+
+Aggregates extract numeric values from section items and produce named variables for templates.
+
+**Single aggregate** (backwards compatible):
+
+```toml
+[on_success]
+output = "{passed} passed ({suites} suites)"
+
+[on_success.aggregate]
+from = "summary_lines"
+pattern = 'ok\. (\d+) passed'
+sum = "passed"
+count_as = "suites"
+```
+
+**Multiple aggregates** — use `[[on_success.aggregates]]` (plural) to define several rules:
+
+```toml
+[on_success]
+output = "✓ {passed} passed, {failed} failed, {ignored} ignored ({suites} suites)"
+
+[[on_success.aggregates]]
+from = "summary_lines"
+pattern = 'ok\. (\d+) passed'
+sum = "passed"
+count_as = "suites"
+
+[[on_success.aggregates]]
+from = "summary_lines"
+pattern = '(\d+) failed'
+sum = "failed"
+
+[[on_success.aggregates]]
+from = "summary_lines"
+pattern = '(\d+) ignored'
+sum = "ignored"
+```
+
+Each rule scans the named section's items. `sum` accumulates the first capture group as a number. `count_as` counts the number of matching lines. Both singular `aggregate` and plural `aggregates` can be used together — they are merged at runtime.
+
+## Chunk processing
+
+Chunks split raw output into repeating structural blocks, extract structured data per-block, and produce named collections for template rendering. Use chunks when you need per-block breakdown (e.g., per-crate test results in a Cargo workspace).
+
+> **Note:** Like sections, chunks operate on the raw (unfiltered) command output. Skip/keep patterns do not affect chunk processing. This ensures structural markers are available for splitting.
+
+```toml
+[[chunk]]
+split_on = "^\\s*Running "   # regex that marks the start of each chunk
+include_split_line = true     # include the splitting line in the chunk (default: true)
+collect_as = "suites_detail"  # name for the structured collection
+group_by = "crate_name"       # merge chunks sharing this field value
+
+[chunk.extract]
+pattern = 'deps/([\w_-]+)-'  # extract a field from the split (header) line
+as = "crate_name"
+
+[[chunk.aggregate]]
+pattern = '(\d+) passed'     # aggregates run within each chunk's own lines
+sum = "passed"
+
+[[chunk.aggregate]]
+pattern = '(\d+) failed'
+sum = "failed"
+
+[[chunk.aggregate]]
+pattern = '^test result:'
+count_as = "suite_count"
+```
+
+**Fields**:
+
+| Field | Description |
+|---|---|
+| `split_on` | Regex marking the start of each chunk |
+| `include_split_line` | Whether the splitting line is part of the chunk (default: `true`) |
+| `collect_as` | Name for the resulting structured collection |
+| `extract` | Extract a named field from the header line (`pattern` + `as`) |
+| `body_extract` | Extract fields from body lines (`pattern` + `as`, first match wins) |
+| `aggregate` | Per-chunk aggregation rules (run within each chunk's own lines) |
+| `group_by` | Merge chunks sharing the same field value, summing numeric fields |
+| `children_as` | When set with `group_by`, preserve original items as a nested collection under this name |
+| `carry_forward` | On `extract` or `body_extract`: inherit value from the previous chunk when the pattern doesn't match |
+
+The resulting structured collection is available in templates as `{suites_detail}` and supports field access in `each` pipes.
+
+### Structured collections in templates
+
+When a chunk produces a structured collection, each item has named fields. Use `each` to iterate with field access:
+
+```toml
+[on_success]
+output = """✓ cargo test: {passed} passed ({suites} suites)
+{suites_detail | each: "  {crate_name}: {passed} passed ({suite_count} suites)" | join: "\\n"}"""
+```
+
+Inside the `each` template, all named fields from the chunk item are available as variables (`{crate_name}`, `{passed}`, `{suite_count}`), plus `{index}` (1-based) and `{value}` (debug representation).
+
+`{suites_detail.count}` returns the number of items in the collection.
+
+### Carry-forward fields
+
+When a chunk's `extract` or `body_extract` rule has `carry_forward = true`, chunks that don't match the pattern inherit the value from the most recent chunk that did. This is useful when boundary markers (like `Running unittests`) identify a group, and subsequent chunks (like integration test suites) should inherit that identity.
+
+```toml
+[chunk.extract]
+pattern = 'unittests.+deps/([\w_-]+)-'
+as = "crate_name"
+carry_forward = true
+```
+
+### Tree-structured groups (children_as)
+
+When `children_as` is set alongside `group_by`, the grouped collection preserves each group's original items as a nested collection. Inside an `each` template, the children are accessible by the `children_as` name and support their own `each`/`join` pipes:
+
+```toml
+[[chunk]]
+split_on = "^\\s*Running "
+collect_as = "suites_detail"
+group_by = "crate_name"
+children_as = "children"
+
+[on_success]
+output = """✓ {passed} passed ({suites} suites)
+{suites_detail | each: "  {crate_name}: {passed} passed\n{children | each: \"    {suite_name}: {passed}\" | join: \"\\n\"}" | join: "\\n"}"""
+```
+
+This produces tree output like:
+
+```
+✓ 565 passed (2 suites)
+  tokf: 565 passed
+    unittests src/lib.rs: 550
+    tests/cli_basic.rs: 15
+```
+
+## JSON extraction
+
+When commands produce JSON output (e.g. `kubectl get pods -o json`, `gh api`, `docker inspect`), use the `[json]` block to extract values via `JSONPath` (RFC 9535) instead of line-based parsing.
+
+```toml
+command = "kubectl get pods -o json"
+
+[json]
+
+# Array of objects → structured collection (usable with |each: pipe)
+# Auto-generates {pods_count} with the number of matched items.
+[[json.extract]]
+path = "$.items[*]"
+as = "pods"
+
+# Sub-field extraction from each matched object (dot-path, not JSONPath)
+[[json.extract.fields]]
+field = "metadata.name"
+as = "name"
+
+[[json.extract.fields]]
+field = "status.phase"
+as = "phase"
+
+[on_success]
+output = "Pods ({pods_count}):\n{pods | each: \"  {name}: {phase}\" | join: \"\\n\"}"
+```
+
+**Result mapping**:
+
+| JSONPath result | Behavior |
+|---|---|
+| Single scalar (string/number/bool/null) | `vars["as_name"] = string_value` |
+| Array of scalars | `ChunkData::Flat` with `{value}` key per item; auto-generates `{as_name_count}` |
+| Array of objects (with `fields`) | `ChunkData::Flat` with named field keys; auto-generates `{as_name_count}` |
+| Array of objects (without `fields`) | All top-level scalar fields auto-flattened; auto-generates `{as_name_count}` |
+
+**Pipeline position**: JSON extraction runs after `lua_script` (step 2c) and replaces `parse`/`sections`/`chunks` — when `[json]` is configured, those line-based structural steps are skipped. The extracted vars and chunks flow into branch selection (`on_success`/`on_failure`) and template rendering.
+
+**Dot-path syntax** for `[[json.extract.fields]]`: uses simple dot-separated paths (not JSONPath). Supports array indices: `containers.0.name` traverses `obj["containers"][0]["name"]`.
+
+**Error handling**: if the input is not valid JSON, extraction is skipped and tokf falls back to raw output (templates are not rendered). Invalid JSONPath or dot-path expressions are silently skipped.
+
+## Tree restructuring
+
+When a filter emits a list of file paths, common directory prefixes are repeated on every line. The `[tree]` section restructures the output into a directory tree, writing each shared prefix once. Reusable across any path-shaped filter (`git status`, `git diff --name-only`, etc.).
+
+```toml
+command = "git status"
+
+[tree]
+# Regex with two capture groups: (1) decoration to keep on the leaf
+# (e.g. "M  ", "?? "), (2) the path itself.
+pattern = '^(.. )(.+)$'
+
+# Lines that don't match (e.g. "main [synced]" branch headers) are kept
+# verbatim: unmatched lines before the first matched path stay in place
+# above the tree, and any later unmatched lines are emitted after the
+# tree. Set to false to drop them.
+passthrough_unmatched = true
+
+# Engagement gates — when not satisfied, the original flat output is
+# returned unchanged. Tuned per filter.
+min_files = 3            # require at least N matched paths
+min_shared_depth = 1     # require at least N common directory levels
+
+# Visual style. "indent" is the cheapest in token count (plain 2-space
+# indent, no connectors). "unicode" uses ├─ │ └─ box-drawing characters
+# (prettier but each char is 3 bytes in UTF-8 — measurably more expensive
+# on deep trees). "ascii" uses |- | `-.
+style = "indent"
+
+# Collapse single-child internal directories. Without this, narrow-deep
+# paths like a/b/c/d/foo.rs render as four separate dir nodes.
+collapse_single_child = true
+
+# Sort children alphabetically. Off by default — source order is stable
+# and predictable for LLMs.
+sort = false
+```
+
+### Example
+
+Before (`git status` raw porcelain):
+
+```text
+## main...origin/main
+M  crates/tokf-cli/src/config/cache.rs
+M  crates/tokf-cli/src/config/types.rs
+M  crates/tokf-cli/src/main.rs
+M  crates/tokf-cli/filters/git/diff.toml
+M  crates/tokf-cli/filters/git/status.toml
+?? crates/tokf-filter/src/filter/tree.rs
+```
+
+After (with `[tree]` enabled, indent style):
+
+```text
+main [synced]
+crates/
+  tokf-cli/
+    src/
+      config/
+        M  cache.rs
+        M  types.rs
+      M  main.rs
+    filters/git/
+      M  diff.toml
+      M  status.toml
+  ?? tokf-filter/src/filter/tree.rs
+```
+
+The shared `crates/tokf-cli/` prefix is written once. The single-child chain `tokf-filter/src/filter/` collapses into one leaf. The model sees at a glance which directories cluster work.
+
+### Pipeline position
+
+The tree transform runs **after** `dedup` and **before** `on_success.output` / `max_lines`. Specifically: stage 2.6 in `apply_internal`, between dedup (2.5) and the lua/json/parse/section pipeline (2b–4).
+
+### Constraints
+
+- **Color restoration is bypassed** when `[tree]` is active. Tree-rendered lines are synthesized from path components, so per-line ANSI color spans from the original output don't survive structural rearrangement. If you need both colored output and tree structuring, you'll have to pick one.
+- **Engagement is opt-in.** Without a `[tree]` section, filters behave exactly as before — no magic detection.
+- **Engagement gates fail closed.** If `min_files` or `min_shared_depth` aren't met, the original flat lines pass through unchanged. There's no half-rendered intermediate state.
+- **Rename arrows** like `R  old.rs -> new.rs` are handled: the path is split on ` -> ` and the suffix stays attached to the leaf. The trie key is the *old* path.
+- **`[parse]` takes precedence.** A filter that declares both `[parse]` and `[tree]` will run parse and skip tree entirely. The two solve different problems (tree restructures path-list output, parse structures arbitrary text) and don't compose, so the precedence is fixed at parse-wins.
+
+## Filter variants
+
+Some commands are wrappers around different underlying tools (e.g. `npm test` may run Jest, Vitest, or Mocha). A parent filter can declare `[[variant]]` entries that delegate to specialized child filters based on project context:
+
+```toml
+command = ["npm test", "pnpm test", "yarn test"]
+
+strip_ansi = true
+skip = ["^> ", "^\\s*npm (warn|notice|WARN|verbose|info|timing|error|ERR)"]
+
+[on_success]
+output = "{output}"
+
+[on_failure]
+tail = 20
+
+[[variant]]
+name = "vitest"
+detect.files = ["vitest.config.ts", "vitest.config.js", "vitest.config.mts"]
+filter = "npm/test-vitest"
+
+[[variant]]
+name = "jest"
+detect.files = ["jest.config.js", "jest.config.ts", "jest.config.json"]
+filter = "npm/test-jest"
+```
+
+Detection has three modes, checked in order:
+
+1. **File detection** (Phase A, before execution) — checks if config files exist in the current directory. First match wins.
+2. **Args pattern** (Phase A.5, before execution) — regex-matches the remaining command-line arguments (joined with spaces). Fires after file detection but before the `passthrough_args` check, so a matched variant's own `passthrough_args` apply instead of the parent's.
+3. **Output pattern** (Phase B, after execution) — regex-matches command output. Used as a fallback when no file or args pattern matched.
+
+Args-pattern example — route `git diff --name-only` to a tree-structured child filter:
+
+```toml
+[[variant]]
+name = "name-list"
+detect.args_pattern = '--(name-only|name-status)'
+filter = "git/diff-name-list"
+```
+
+When no variant matches, the parent filter's own fields (`skip`, `on_success`, etc.) apply as the fallback.
+
+The `filter` field references another filter by its discovery name (relative path without `.toml`). Use `tokf which "npm test" -v` to see variant resolution.
+
+> **TOML ordering**: `[[variant]]` entries must appear **after** all top-level fields (`skip`, `[on_success]`, etc.) because TOML array-of-tables sections capture subsequent keys.
+
+## Filter resolution
+
+1. `.tokf/filters/` in the current directory (repo-local overrides)
+2. `~/.config/tokf/filters/` (user-level overrides)
+3. Built-in library (embedded in the binary)
+
+First match wins. Use `tokf which "git push"` to see which filter would activate.
+
+## Writing test cases
+
+Filter tests live in a `<stem>_test/` directory adjacent to the filter TOML:
+
+```
+filters/
+  git/
+    push.toml          <- filter config
+    push_test/         <- test suite
+      success.toml
+      rejected.toml
+```
+
+Each test case is a TOML file specifying a fixture (inline or file path), expected exit code, and one or more `[[expect]]` assertions:
+
+```toml
+name = "rejected push shows pull hint"
+fixture = "tests/fixtures/git_push_rejected.txt"
+exit_code = 1
+
+[[expect]]
+equals = "✗ push rejected (try pulling first)"
+```
+
+For quick inline fixtures without a file:
+
+```toml
+name = "clean tree shows nothing to commit"
+inline = "## main...origin/main\n"
+exit_code = 0
+
+[[expect]]
+contains = "clean"
+```
+
+**Assertion types**:
+
+| Field | Description |
+|---|---|
+| `equals` | Output exactly equals this string |
+| `contains` | Output contains this substring |
+| `not_contains` | Output does not contain this substring |
+| `starts_with` | Output starts with this string |
+| `ends_with` | Output ends with this string |
+| `line_count` | Output has exactly N non-empty lines |
+| `matches` | Output matches this regex |
+| `not_matches` | Output does not match this regex |
+
+Exit codes from `tokf verify`: `0` = all pass, `1` = assertion failure, `2` = config/IO error or uncovered filters (`--require-all`).
+
+### Richness checks
+
+Every assertion above is *positive*: it checks a string the author remembered to think about. Nothing observes what a filter dropped that nobody asserted. That is the failure mode that hurts — someone widens a `skip` regex to suppress a noisy line, it also swallows a panic backtrace, and every test still passes. **Richness** is the counterweight: a rarity-weighted measure of how much irreplaceable information survived filtering.
+
+`tokf verify` prints it on every case line:
+
+```
+    ✓ rejected push (1240 → 88 tokens, 92.9% reduction, richness 0.31 [12/97 atoms])
+```
+
+`kept/atoms` are counts of **distinct** atoms, which is what makes the scalar interpretable — 12/97 on a small fixture means something quite different from 12/997.
+
+**How it is computed:**
+
+1. Split raw and filtered output on whitespace.
+2. Trim non-alphanumeric characters from each token's edges (`(hello_world),` → `hello_world`); interior punctuation is kept, so `src/main.rs` stays intact.
+3. Keep tokens of 6 or more characters (counted in characters, not bytes). Matching is case-sensitive — hashes and paths are case-significant.
+4. Weight each **distinct** atom by its self-information, `-log2(count / total)`, where `total` counts all atom occurrences including repeats. The 400th `Compiling` is worth almost nothing; a unique path, hash, or error code is worth a lot.
+5. Score = surviving weight / total weight. An atom counts as surviving if it appears anywhere in the filtered output, either as a standalone token or as a substring of a rewritten line.
+
+Empty or atom-free input scores `1.0` (nothing irreplaceable existed, so nothing could be lost). If the raw output contains only one distinct atom, its self-information is zero and the weighted ratio is undefined, so the score falls back to the plain `kept / atoms` ratio — dropping that atom still scores `0.0`.
+
+> **There is no default threshold, and richness never fails a build on its own.** tokf is *deliberately* lossy. `cargo check` succeeding and collapsing to `✓ cargo check: ok` scores near zero, and that is **correct**. A low score is information, not a defect.
+
+**The opt-in assertion.** A case can declare a floor with the top-level `min_richness` field (a whole-case scalar, not an `[[expect]]` field), taking a value in `0.0`–`1.0`:
+
+```toml
+name = "panic backtrace survives filtering"
+fixture = "tests/fixtures/cargo_test_panic.txt"
+exit_code = 101
+min_richness = 0.4
+
+[[expect]]
+contains = "panicked at"
+```
+
+When the score falls below the declared floor, the case fails — exit code `1`, and therefore CI via `tokf verify --require-all`. Cases that do not declare `min_richness` are never failed on richness grounds, no matter how low they score.
+
+To pick a value: run `tokf verify <filter>` first, read the printed score, and set the threshold a little under the observed value. It then acts as a ratchet against future skip-pattern widening.
+
+The same assertion is honoured by registry publish validation, so a published filter must satisfy its own declared `min_richness`.
+
+### Safety checks
+
+Add `--safety` to detect potential security issues in your filter:
+
+```sh
+tokf verify --safety
+tokf verify my-filter --safety --json
+```
+
+Safety checks scan for:
+
+- **Prompt injection** — templates containing patterns like "ignore previous instructions", "you are now", "system prompt", etc. Both static config text and filtered output are checked (NFKC-normalized to handle compatibility/fullwidth forms; cross-script homoglyphs are not fully covered).
+- **Shell injection** — `run`, `step[].run`, and rewrite replacement strings containing shell metacharacters (`$(...)`, backticks, `;`, `&&`, pipes, redirections). Known-safe templates like `tokf run {0}` are allowlisted.
+- **Hidden Unicode** — zero-width spaces, RTL overrides, and other invisible characters that could smuggle content.
+
+Safety warnings do **not** block publishing — filters with issues are published with `safety_passed = false` and the registry shows a warning badge. Use `--safety` locally to catch issues before publishing.
+
+### Determinism
+
+`tokf verify` runs every test case's filter pipeline **twice** against the identical input and asserts the two outputs are byte-for-byte identical. This is not behind a flag — it always runs, for every case, in every `tokf verify` invocation. Determinism is a correctness invariant of a filter, not an opt-in preference.
+
+If a filter fails this check, `tokf verify` reports it like any other assertion failure — it names the filter and shows the first differing byte offset with context from both runs:
+
+```
+✗ my-filter (0 → 12 tokens, 100.0% reduction)
+    ✗ shows recent count
+        my-filter: output is not byte-stable across repeated runs (first differing byte at offset 14)
+            run 1: "3 files changed"
+            run 2: "5 files changed"
+```
+
+The context window is 20 bytes on each side of the differing byte. A leading or trailing `...` appears only when output was actually clipped there — short outputs, like the one above, are shown whole.
+
+**Why this matters more than it looks like it should.** Tool results get resent on every subsequent turn of a session — the same filtered output is retransmitted as conversation history grows. The provider's prompt cache matches on the request prefix byte-for-byte. If a filter's output for the same input differs between invocations, the bytes at that point shift, and *everything after it* in the prompt misses cache and re-bills at full input rate instead of the cached discount. A filter that trims 200 tokens but knocks 40k tokens of suffix out of cache is a large net loss — and it's invisible in any single local test run, because a single run only ever sees one version of the output.
+
+**Input variance is fine. Output variance is not.** `cargo test` genuinely printing `Finished in 20.81s` on one run and `21.04s` on the next, with the filter passing that duration through unchanged, is correct behavior — not a bug. The invariant under test is that the filter is a **pure function of its input**: same bytes in, same bytes out, every time. The double-run check holds the input constant (the same fixture, fed through `filter::apply` twice) specifically so it isolates the filter's own behavior from legitimate variance in what the underlying command printed.
+
+**The `HashMap`-ordering trap.** Rust's default `HashMap`/`HashSet` hasher is randomly seeded per process, so iteration order is stable *within* a single run — a filter can look perfectly deterministic in one `cargo test` or one `tokf verify` invocation and still vary from run to run of the compiled binary. This is why the check performs two independent `filter::apply` calls rather than comparing a value to itself, and why the filter engine avoids exposing `HashMap`/`HashSet` iteration order to rendered output: sorted collections (`BTreeMap`) or an explicit sort-before-join are used wherever a collected or keyed value reaches the final template. The same trap applies to the Lua escape hatch — a `lua_script` step that iterates a table with `pairs()` should build and iterate an explicit `order` array instead, the way `crates/tokf-cli/filters/docker/images.toml` and `crates/tokf-cli/filters/cargo/clippy.toml` already do, rather than relying on Luau's table iteration order.
+
+The stdlib was audited against this check as part of introducing it. No stdlib filter needed changes — the check exists to hold the invariant going forward, not because a stdlib filter was found broken.
+
+**Enforced at publish time, too.** The identical byte-stability check now runs **server-side** when you [`tokf publish`](publishing-filters.md) a filter: during publish validation the server runs each test case's filter pipeline twice and rejects the upload — with the same failure-message shape shown above — if the two outputs differ. A nondeterministic filter therefore cannot enter the registry even if a contributor skipped running `tokf verify` locally, so nobody downstream silently pays the prompt-cache cost. The same across-process caveat applies (a single-process double run cannot see `HashMap`-seed drift), so the `BTreeMap`/explicit-ordering discipline above remains the real defence.
+
+---
+
+
+## Configuration files
+
+tokf uses TOML files for configuration. Files can live at two levels:
+
+| File | Global path | Project-local path | Purpose |
+|------|-------------|---------------------|---------|
+| `config.toml` | `~/.config/tokf/config.toml` | `.tokf/config.toml` | History retention, sync settings, telemetry |
+| `rewrites.toml` | `~/.config/tokf/rewrites.toml` | `.tokf/rewrites.toml` | Shell rewrite rules |
+| `auth.toml` | `~/.config/tokf/auth.toml` | — | Registry authentication (managed by `tokf auth`) |
+| `machine.toml` | `~/.config/tokf/machine.toml` | — | Machine UUID for remote sync |
+
+> Paths shown are for Linux/macOS. On macOS, the global directory is `~/Library/Application Support/tokf`. On Windows, it is `%APPDATA%/tokf`.
+
+Set `TOKF_HOME` to redirect **all** user-level paths to a single directory (like `CARGO_HOME` or `RUSTUP_HOME`):
+
+```sh
+export TOKF_HOME=/opt/tokf   # all config, data, and cache under /opt/tokf
+```
+
+Run `tokf info` to see which paths are active.
+
+---
+
+## config.toml
+
+### `[history]`
+
+Controls how many filtered outputs are retained in the local history database.
+
+```toml
+[history]
+retention = 10   # number of history entries to keep (default: 10)
+```
+
+### `[sync]`
+
+Settings for remote filter-usage sync (requires `tokf auth login`).
+
+```toml
+[sync]
+auto_sync_threshold = 100   # sync after this many unsynced records (default: 100)
+upload_usage_stats = true   # upload anonymous usage statistics (default: not set)
+```
+
+### `[shims]`
+
+Controls PATH-based shim injection for sub-process filtering. When filters use `inject_path = true`, tokf generates shim scripts and prepends them to `PATH` so that sub-processes (e.g. commands inside git hooks) are automatically filtered.
+
+```toml
+[shims]
+enabled = true   # generate and use shims for inject_path filters (default: true)
+```
+
+Set to `false` to disable shim generation and PATH injection globally. This overrides any per-filter `inject_path = true` setting — no shims will be generated or used.
+
+```sh
+tokf config set shims.enabled false
+```
+
+Shim scripts are stored in `~/.cache/tokf/shims/` (or `$TOKF_HOME/shims/`). Disabling shims via `config set` immediately removes any existing shim scripts.
+
+> **Note:** `shims.enabled` is read from the global config only — project-local overrides are not checked, to avoid filesystem scanning on every command invocation.
+
+### `[telemetry]`
+
+Export metrics via OpenTelemetry OTLP. Disabled by default.
+
+```toml
+[telemetry]
+enabled = true
+endpoint = "http://localhost:4318"   # OTLP collector endpoint
+protocol = "http"                    # "http" (default) or "grpc"
+service_name = "tokf"                # service.name resource attribute
+
+[telemetry.headers]
+x-api-key = "your-secret"
+```
+
+Default endpoints by protocol: HTTP uses port `4318`, gRPC uses port `4317`.
+
+Environment variables override config-file values for telemetry — see the [Environment variables](#environment-variables) section below.
+
+### Priority order
+
+For all `config.toml` settings:
+
+1. **Project-local** `.tokf/config.toml` (highest priority)
+2. **Global** `~/.config/tokf/config.toml`
+3. **Built-in defaults**
+
+### Managing config via CLI
+
+```sh
+tokf config show              # show all effective config with source paths
+tokf config show --json       # machine-readable JSON output
+tokf config get <key>         # print a single value (for scripting)
+tokf config set <key> <value> # set a value in the global config
+tokf config set --local <key> <value>  # set in project-local .tokf/config.toml
+tokf config print             # print raw config file contents
+tokf config path              # show config file paths with existence status
+```
+
+Available keys: `history.retention`, `shims.enabled`, `sync.auto_sync_threshold`, `sync.upload_stats`.
+
+---
+
+## rewrites.toml
+
+Rewrite rules let tokf intercept and transform commands before execution — wrapping task runners, stripping pipes, and injecting baselines. See the [Rewrite Configuration](#rewrite-configuration-rewritestoml) section for the full reference.
+
+---
+
+## Environment variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| **Paths** | | |
+| `TOKF_HOME` | Redirect all user-level tokf paths (config, data, cache) to a single directory | Platform config dir |
+| `TOKF_DB_PATH` | Override the tracking database path only (takes precedence over `TOKF_HOME`) | Platform data dir |
+| **Runtime** | | |
+| `TOKF_DEBUG` | Enable debug output (set to `1` or `true`) | unset |
+| `TOKF_NO_FILTER` | Skip filtering in shell mode (set to `1`, `true`, or `yes`) | unset |
+| `TOKF_VERBOSE` | Print filter resolution details in shell mode | unset |
+| `TOKF_PRESERVE_COLOR` | Preserve ANSI color codes in filtered output | unset |
+| `TOKF_PIPE_CAPTURE` | Force [pipeline capture](#pipeline-capture) on (`1`) or off (`0`), overriding `[pipe] capture` | unset |
+| `TOKF_HTTP_TIMEOUT` | HTTP request timeout in seconds (for remote operations) | `5` |
+| `NO_COLOR` | Disable colored output in `tokf gain` (per [no-color.org](https://no-color.org/)) | unset |
+| **Telemetry** | | |
+| `TOKF_TELEMETRY_ENABLED` | Enable telemetry export (`true`, `1`, or `yes`) — overrides config file | unset |
+| `TOKF_OTEL_PIPELINE` | Pipeline label attached to telemetry metrics | unset |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint — overrides config file | `http://localhost:4318` |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http` or `grpc` — overrides config file | `http` |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Comma-separated `key=value` header pairs — overrides config file | empty |
+| `OTEL_RESOURCE_ATTRIBUTES` | Comma-separated `key=value` resource attributes; `service.name` is extracted | empty |
+| **Registry (CI)** | | |
+| `TOKF_REGISTRY_URL` | Registry base URL for `tokf regenerate-examples` | — |
+| `TOKF_SERVICE_TOKEN` | Service token for registry authentication | — |
+
+---
+
+## CLI flags
+
+### Global flags
+
+Available on all `tokf run` invocations and most subcommands:
+
+| Flag | Description |
+|------|-------------|
+| `--timing` | Print how long filtering took |
+| `--verbose` | Show filter resolution details |
+| `--no-filter` | Pass output through without filtering |
+| `--no-cache` | Bypass the binary filter discovery cache |
+| `--no-mask-exit-code` | Propagate real exit code instead of masking to 0 |
+| `--preserve-color` | Preserve ANSI color codes in filtered output |
+| `--otel-export` | Export metrics via OpenTelemetry OTLP for this invocation |
+
+### Run-specific flags
+
+| Flag | Description |
+|------|-------------|
+| `--baseline-pipe <cmd>` | Pipe command for fair baseline accounting (injected by rewrite rules) |
+| `--prefer-less` | Compare filtered vs piped output and use whichever is smaller |
+| `--pipe-through <cmd>` | Run this pipeline on the command's output and report any exit-code mismatch (injected by [pipeline capture](#pipeline-capture)) |
+| `--merge-stderr` | Feed combined stdout+stderr into `--pipe-through` (the command used `2>&1`) |
+| `--propagate-exit` | Exit with the command's code rather than the pipeline's |
+
+---
+
+## Filter resolution order
+
+tokf searches for matching filters in three tiers, stopping at the first match:
+
+1. **Project-local** — `.tokf/filters/` in the project root
+2. **User-level** — `~/.config/tokf/filters/` (or `$TOKF_HOME/filters/`)
+3. **Standard library** — built-in filters shipped with tokf
+
+To override a built-in filter, eject it to your project or user directory:
+
+```sh
+tokf eject cargo/test              # copy to .tokf/filters/ (project-local)
+tokf eject --global cargo/test     # copy to ~/.config/tokf/filters/ (user-level)
+```
+
+The ejected copy takes priority on subsequent runs. See `tokf eject --help` for details.
+
+---
+
+## Directory layout
+
+```
+~/.config/tokf/                    # global config directory ($TOKF_HOME overrides)
+├── config.toml                    # history, sync, telemetry settings
+├── rewrites.toml                  # shell rewrite rules
+├── auth.toml                      # registry credentials (managed by tokf auth)
+├── machine.toml                   # machine UUID for remote sync
+└── filters/                       # user-level filter overrides
+    └── cargo/
+        └── test.toml
+
+~/.local/share/tokf/               # data directory
+└── tracking.db                    # token savings database ($TOKF_DB_PATH overrides)
+
+~/.cache/tokf/                     # cache directory
+├── manifest.bin                   # binary filter discovery cache
+└── shims/                         # generated shim scripts for inject_path
+
+<project>/
+└── .tokf/                         # project-local overrides
+    ├── config.toml                # project-specific settings
+    ├── rewrites.toml              # project-specific rewrite rules
+    └── filters/                   # project-specific filters
+        └── custom/
+            └── lint.toml
+```
+
+---
+
+
+For logic that TOML can't express — numeric math, multi-line lookahead, conditional branching — embed a [Luau](https://luau.org/) script:
+
+```toml
+command = "my-tool"
+
+[lua_script]
+lang = "luau"
+source = '''
+if exit_code == 0 then
+    return "passed"
+else
+    return "FAILED: " .. output:match("Error: (.+)") or output
+end
+'''
+```
+
+Available globals: `output` (string), `exit_code` (integer — the underlying command's real exit code, unaffected by `--no-mask-exit-code`), `args` (table).
+Return a string to replace output, or `nil` to fall through to the rest of the TOML pipeline.
+
+### Sandbox
+
+All Lua execution is sandboxed — both in the CLI and on the server:
+
+- **Blocked libraries:** `io`, `os`, `package` — no filesystem or network access.
+- **Instruction limit:** 1 million VM instructions (prevents infinite loops).
+- **Memory limit:** 16 MB (prevents memory exhaustion).
+
+Scripts that exceed these limits are terminated and treated as a passthrough (the TOML pipeline continues as if no Lua script was configured).
+
+### External script files
+
+For local development you can keep the script in a separate `.luau` file:
+
+```toml
+[lua_script]
+lang = "luau"
+file = "transform.luau"
+```
+
+Only one of `file` or `source` may be set — not both. When you run `tokf publish`, file references are automatically inlined (the file content is embedded as `source`) so the published filter is self-contained. The script file must reside within the filter's directory — path traversal (e.g. `../secret.txt`) is rejected.
+
+---
+
+
+tokf records input/output byte counts per run in a local SQLite database:
+
+```sh
+tokf gain              # summary: total bytes saved and reduction %
+tokf gain --daily      # day-by-day breakdown
+tokf gain --by-filter  # breakdown by filter
+tokf gain --json       # machine-readable output
+```
+
+## How tokens are estimated
+
+tokf does not run a tokenizer. Token counts are derived from byte counts with one constant:
+
+```
+tokens ≈ bytes / 3.5
+```
+
+That is why every token figure `tokf gain` prints is labelled **`est.`**, and why it will keep being labelled that way for as long as this estimator ships. It is a heuristic, not a measurement.
+
+### Where 3.5 comes from
+
+The constant used to be `4`, and nothing had ever checked it. It was measured against a real cl100k tokenizer across the whole tokf corpus — every filter `_test/` case (both the raw input and the filtered output) plus every fixture under `tests/fixtures/` — which gives the *implied* divisor, i.e. bytes per real token:
+
+| corpus | implied divisor |
+|---|---|
+| raw command output | 3.67 |
+| filtered output | 2.98 |
+| combined (byte-weighted) | 3.53 |
+| spread across items | p10 2.72 · median 3.39 · p90 4.62 |
+
+`3.5` is the combined figure rounded. The old `4` undercounted real cl100k tokens by roughly 8% on raw output and 25% on filtered output; `3.5` lands within 1% of the corpus aggregate.
+
+Two honest caveats:
+
+- **cl100k is not Claude's tokenizer.** Even the "real" numbers we calibrated against are an approximation of the thing users actually care about. The goal was removing a large systematic bias, not achieving exactness.
+- **The corpus is what it is** — heavily weighted toward `cargo`, `git`, `npm` and `docker` output. The p10/p90 spread above shows the per-item divisor genuinely ranges from under 2.8 to over 4.6 depending on output shape: prose is cheap per byte to tokenize, dense symbolic output is expensive. One constant cannot capture that, and tokf deliberately does not try. It says `est.` instead.
+
+### Percentages are more reliable than absolute counts — except when filters rewrite
+
+The savings *percentage* divides two counts that share the divisor, so most of the error cancels out. That holds well for filters that mostly **delete** lines:
+
+| case | est. reduction | real reduction | error |
+|---|---|---|---|
+| `cargo/check` (successful check collapses) | 84.4% | 84.6% | −0.2 pt |
+| `cargo/clippy` (grouped by lint rule) | 78.5% | 78.2% | +0.3 pt |
+| `cargo/build` (failure output) | 23.3% | 24.2% | −0.9 pt |
+
+It stops holding for filters that **rewrite** content — replacing English prose with a dense symbolic summary. Prose tokenizes cheaply per byte; the summary does not, so the byte ratio overstates the token ratio and the filter flatters itself:
+
+| case | est. reduction | real reduction | error |
+|---|---|---|---|
+| `docker/ps` (no running containers → zero count) | 0.0% | −300.0% | +300 pt |
+| `git/push` (up-to-date → friendly message) | 33.3% | −50.0% | +83 pt |
+| `git/status` (clean repo → branch marker) | 50.0% | 0.0% | +50 pt |
+
+Those are worst cases on tiny outputs, where a handful of tokens swings the percentage wildly — but the direction of the bias is consistent, and it is upward. **Treat reduction percentages on rewriting filters as indicative, not as a claim.**
+
+### Verifying the estimate yourself
+
+The tokenizer is a contributor tool, not a runtime feature. It sits behind an optional cargo feature that is **off by default**, so normal builds take no tokenizer dependency at all:
+
+```sh
+cargo test -p tokf --features tokenizer --test calibration -- --ignored --nocapture
+```
+
+That prints the full per-item table and the aggregates above, and fails if the shipped constant drifts more than 25% from what the corpus implies. There is no way to enable a real tokenizer at runtime, and no plan to add one — carrying a vocabulary table in the shipping binary to serve a statistic is not a trade tokf wants to make.
+
+### Estimates changed: a deliberate discontinuity
+
+Changing the divisor changes the numbers. Being explicit about what that means:
+
+- Rows recorded **before** the change keep their old `bytes / 4` token counts. They are not rewritten.
+- Rows recorded **after** use `bytes / 3.5`.
+- `tokf gain` totals spanning the changeover therefore show a **step increase in absolute token counts**. Nothing is being saved differently; the estimate simply got less wrong.
+- Savings **percentages** are essentially unaffected, because both sides of the ratio scale together. That is the reason the discontinuity is tolerable.
+- The same applies to server-side aggregates, which receive already-computed token columns via sync.
+
+We deliberately did **not**: version the estimator in the SQLite schema (real surface area across three crates for a statistic), rewrite historical rows (local history would then diverge from already-synced server rows — worse than one honest step), or recompute tokens at read time (touches every aggregate query and still cannot fix the server side). One documented step change beat all three.
+
+## Remote gain
+
+View aggregate savings across all your registered machines via the tokf server:
+
+```sh
+tokf gain --remote              # summary across all machines
+tokf gain --remote --by-filter  # breakdown by filter
+tokf gain --remote --json       # machine-readable output
+```
+
+Remote gain requires authentication (`tokf auth login`). The `--daily` flag is not available remotely. See [Remote Sharing](#remote-sharing) for the full setup workflow.
+
+## Output history
+
+tokf records raw and filtered outputs in a local SQLite database, useful for debugging filters or reviewing what an AI agent saw:
+
+```sh
+tokf raw last                  # print raw output of last filtered command
+tokf raw 42                    # print raw output of entry #42
+tokf history list              # recent entries (current project)
+tokf history list -l 20        # show 20 entries
+tokf history list --all        # entries from all projects
+tokf history show 42           # full details for entry #42
+tokf history show --raw 42     # print only the raw captured output (long form)
+tokf history search "error"    # search by command or output content
+tokf history clear             # clear current project history
+tokf history clear --all       # clear all history (destructive)
+```
+
+## History hint
+
+When an LLM receives filtered output it may not realise the full output exists. Two mechanisms can automatically append a hint line pointing to the history entry:
+
+**1. Filter opt-in** — set `show_history_hint = true` in a filter TOML to always append the hint for that command:
+
+```toml
+command = "git status"
+show_history_hint = true
+
+[on_success]
+output = "{branch} — {counts}"
+```
+
+**2. Automatic repetition detection** — tokf detects when the same command is run twice in a row for the same project. This is a signal the caller didn't act on the previous filtered output and may need the full content:
+
+```
+🗜️ ✓ cargo test: 42 passed (2.31s)
+🗜️ compressed — run `tokf raw 99` for full output
+```
+
+The `🗜️` prefix appears on all filtered output (disable with `tokf config set output.show_indicator false` or `TOKF_SHOW_INDICATOR=false`). The hint line is appended to stdout so it is visible to both humans and LLMs in the tool output. The history entry itself always stores the clean filtered output, without the hint line, indicator or recovery marker.
+
+## Per-entry recovery markers
+
+When a filtered command is recorded in history, the indicator carries that entry's ID directly:
+
+```
+🗜️#87 ✓ cargo test: 42 passed
+```
+
+`🗜️#87` means the full, unfiltered output is one command away — `tokf raw 87`. Without an ID (`🗜️` alone) the run was not recorded, so there is nothing to recover.
+
+This is **additive**: the filtered body is byte-identical to what tokf printed before, and the ID rides the indicator that was already being printed. It costs roughly three tokens; there is no extra line and no extra newline. Disabling the indicator (`output.show_indicator = false`) removes the marker too — the ID is not smuggled back in on its own line.
+
+### Why the CLI rather than a tool call
+
+Recovery is deliberately a shell command. `tokf raw <id>` composes:
+
+```sh
+tokf raw 87 | grep -n 'error\[' | head -20
+```
+
+A recovered entry can be enormous — a `cargo metadata` capture runs to hundreds of thousands of tokens — so being able to narrow it *before* it reaches the model matters. Output that arrives through a tool call lands in context whole, with no opportunity to filter it first. Piping also means the recovered text can itself be filtered by tokf.
+
+Prefer `tokf raw <id> | ...` over reading an entry whole.
+
+### Why the ID is decimal
+
+Decimal is the cheapest encoding, which is counterintuitive — a shorter string is not a smaller number of tokens. BPE tokenizers pack runs of digits (up to three per token) while mixed-case alphanumerics fragment. Measured against `cl100k`:
+
+| id | decimal | base36 | base62 |
+|---|---|---|---|
+| 142 | **1** | 2 | 2 |
+| 4821 | **2** | 2 | 2 |
+| 51234 | **2** | 3 | **2** |
+| 998877 | **2** | 2 | 3 |
+
+Decimal is never worse and sometimes better, so the ID is printed as-is.
+
+## Pipeline capture is recorded, not credited
+
+When [pipeline capture](#pipeline-capture) is on, a captured run is recorded like any other — but with **no savings attributed to tokf**. The reduction came from your own `| tail`, not from a filter, so claiming it would inflate the numbers.
+
+This falls out of how savings are computed rather than being a special case: they are derived at query time as `input_tokens_est - output_tokens_est`, and a capture row sets both to the size of what the pipeline printed. The difference is exactly zero.
+
+What the row *does* carry is the part worth having:
+
+| Column | Capture row |
+|--------|-------------|
+| `filter_name` | `NULL` — no filter ran |
+| `input_bytes`, `output_bytes` | both the pipeline's output → zero savings |
+| `raw_bytes` | the command's full output, so the discarded volume is visible |
+| `pipeline_tail` | everything after the first pipe; `tokf gain --by-filter` buckets these rows as `pipeline-capture` rather than lumping them in with `passthrough` |
+| `head_exit_code` | the *first stage's* code, while `exit_code` stays the shell-native one |
+
+Those last two make the swallowed-status problem measurable rather than anecdotal: `head_exit_code != exit_code` is exactly the set of runs where a pipeline hid a failure. `tokf gain` counts them:
+
+```
+tokf gain summary
+  total runs:     42
+  input tokens:   12,500 est.
+  output tokens:  3,200 est.
+  tokens saved:   9,300 est. (74.4%)
+  pipe preferred: 5 runs (pipe output was smaller than filter)
+  exit mismatch:  12 runs (a pipeline reported a different verdict than the command)
+```
+
+`tokf gain --by-filter` lists captured runs under their own bucket, so they are never confused with commands tokf simply had no filter for:
+
+```
+tokf gain by filter
+  cargo/test                      runs:   38  saved: 41,200 est. (78.1%)
+  pipeline-capture                runs:   12  saved: 0 est. (0.0%)
+  passthrough                     runs:    4  saved: 0 est. (0.0%)
+```
+
+That names a habit rather than an individual incident.
+
+## Context injection
+
+During `tokf hook install`, tokf creates a `.claude/TOKF.md` file and adds an `@TOKF.md` reference to `.claude/CLAUDE.md`. This gives LLMs a short context explaining what `🗜️` and `🗜️#<id>` mean, how to retrieve full output (`tokf raw <id>`, or `tokf raw last`), and that an `Error:` line reporting an exit-code mismatch overrides the pipeline's own verdict. Use `--no-context` to skip this step.
+
+---
+
+
+## Setup
+
+```sh
+tokf auth login            # authenticate via GitHub device flow
+tokf remote setup          # register this machine
+tokf sync                  # upload pending usage events
+tokf gain --remote         # view aggregate savings across all machines
+```
+
+## Authentication
+
+tokf uses the [GitHub device flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps#device-flow) so no secrets are handled locally. Tokens are stored in your OS keyring (Keychain on macOS, Secret Service on Linux, Credential Manager on Windows).
+
+```sh
+tokf auth login    # start device flow — prints a one-time code, opens browser
+tokf auth status   # show current login state and server URL
+tokf auth logout   # remove stored credentials
+```
+
+## Machine registration
+
+Each machine gets a UUID that links usage events to a physical device. Registration is idempotent — running it again re-syncs the existing record.
+
+```sh
+tokf remote setup    # register this machine with the server
+tokf remote status   # show local machine ID and hostname (no network call)
+```
+
+Machine config is stored in `~/.config/tokf/machine.toml` (or `$TOKF_HOME/machine.toml`).
+
+## Syncing usage data
+
+`tokf sync` uploads pending local usage events to the remote server. Events are deduplicated by cursor — re-syncing the same events is safe.
+
+```sh
+tokf sync              # upload pending events
+tokf sync --status     # show last sync time and pending event count (no network call)
+```
+
+A file lock prevents concurrent syncs. Both `tokf auth login` and `tokf remote setup` must be completed before syncing.
+
+## Viewing remote gain
+
+View aggregate token savings across all your registered machines:
+
+```sh
+tokf gain --remote              # summary: total runs, tokens saved, reduction %
+tokf gain --remote --by-filter  # breakdown by filter
+tokf gain --remote --json       # machine-readable output
+```
+
+> **Note:** `--daily` is not available with `--remote`. Use local `tokf gain --daily` for day-by-day breakdowns.
+
+## Backfill
+
+Usage events recorded before hash-based tracking was added may be missing filter hashes. Backfill resolves them from currently installed filters:
+
+```sh
+tokf remote backfill             # update events with missing hashes
+tokf remote backfill --no-cache  # skip binary config cache during discovery
+```
+
+Backfill runs locally — no network call required.
+
+---
+
+For discovering and installing community filters, see [Community Filters](#community-filters). To publish your own, see [Publishing Filters](#publishing-filters). For the full server API reference, see [`docs/reference/api.md`](docs/reference/api.md).
+
+---
+
+
+## Claude Code hook
+
+tokf integrates with [Claude Code](https://claude.ai/code) as a `PreToolUse` hook that **automatically filters every `Bash` tool call** — no changes to your workflow required.
+
+```sh
+tokf hook install          # project-local (.tokf/)
+tokf hook install --global # user-level (~/.config/tokf/)
+```
+
+Once installed, every command Claude runs through the Bash tool is filtered transparently. Track cumulative savings with `tokf gain`.
+
+### Custom binary path
+
+By default the generated hook script calls bare `tokf`, relying on PATH at runtime. If `tokf` isn't on PATH in the hook's execution environment (common with Linuxbrew or `cargo install` when PATH is only set in interactive shell profiles), pass `--path` to embed a specific binary location:
+
+```sh
+tokf hook install --global --path ~/.cargo/bin/tokf
+tokf hook install --tool opencode --path /home/linuxbrew/.linuxbrew/bin/tokf
+```
+
+tokf also ships a filter-authoring skill that teaches Claude the complete filter schema:
+
+```sh
+tokf skill install          # project-local (.claude/skills/)
+tokf skill install --global # user-level (~/.claude/skills/)
+```
+
+## Gemini CLI
+
+tokf integrates with [Gemini CLI](https://github.com/google-gemini/gemini-cli) as a `BeforeTool` hook that automatically filters `run_shell_command` tool calls.
+
+```sh
+tokf hook install --tool gemini-cli          # project-local (.gemini/)
+tokf hook install --tool gemini-cli --global # user-level (~/.gemini/)
+```
+
+This registers a hook shim in `.gemini/settings.json` (or `~/.gemini/settings.json` for `--global`). When `--no-context` is not set, it also creates `.gemini/TOKF.md` and patches `.gemini/GEMINI.md` with context about the compression indicator.
+
+## Cursor
+
+tokf integrates with [Cursor](https://cursor.com) via a `beforeShellExecution` hook that automatically filters shell commands.
+
+```sh
+tokf hook install --tool cursor          # project-local (.cursor/)
+tokf hook install --tool cursor --global # user-level (~/.cursor/)
+```
+
+This registers a hook in `.cursor/hooks.json` (or `~/.cursor/hooks.json` for `--global`). When `--no-context` is not set, it also creates `.cursor/rules/TOKF.md` with context about the compression indicator.
+
+## Cline
+
+tokf integrates with [Cline](https://cline.bot) via a rules file that instructs the agent to prefix supported commands with `tokf run`.
+
+```sh
+tokf hook install --tool cline          # project-local (.clinerules/)
+tokf hook install --tool cline --global # user-level (~/Documents/Cline/Rules/)
+```
+
+This writes `.clinerules/tokf.md` (or `~/Documents/Cline/Rules/tokf.md` for `--global`), which Cline auto-discovers. The rules file uses `alwaysApply: true` frontmatter.
+
+## Windsurf
+
+tokf integrates with [Windsurf](https://windsurf.com) via a rules file.
+
+```sh
+tokf hook install --tool windsurf          # project-local (.windsurf/rules/)
+tokf hook install --tool windsurf --global # user-level (appends to global rules)
+```
+
+Project-local creates `.windsurf/rules/tokf.md`. Global mode appends a tokf section (with `<!-- tokf:start/end -->` markers for idempotent updates) to `~/.codeium/windsurf/memories/global_rules.md`.
+
+## GitHub Copilot
+
+tokf integrates with [GitHub Copilot](https://github.com/features/copilot) via instruction files. Copilot only supports repo-level instructions (no `--global` option).
+
+```sh
+tokf hook install --tool copilot
+```
+
+This creates `.github/instructions/tokf.instructions.md` (with `applyTo: "**"` frontmatter) and appends a tokf section to `.github/copilot-instructions.md`.
+
+## Aider
+
+tokf integrates with [Aider](https://aider.chat) via conventions files.
+
+```sh
+tokf hook install --tool aider          # project-local (CONVENTIONS.md)
+tokf hook install --tool aider --global # user-level (patches ~/.aider.conf.yml)
+```
+
+Project-local appends a tokf section to `CONVENTIONS.md` (which Aider auto-discovers). Global mode writes a conventions file and adds it to `~/.aider.conf.yml`'s `read:` list.
+
+## OpenCode
+
+tokf integrates with [OpenCode](https://opencode.ai) via a plugin that applies filters in real-time before command execution.
+
+**Requirements:** OpenCode with Bun runtime installed.
+
+**Install (project-local):**
+```sh
+tokf hook install --tool opencode
+```
+
+**Install (global):**
+```sh
+tokf hook install --tool opencode --global
+```
+
+This writes `.opencode/plugins/tokf.ts` (or `~/.config/opencode/plugins/tokf.ts` for `--global`), which OpenCode auto-loads. The plugin uses OpenCode's `tool.execute.before` hook to intercept `bash` tool calls and rewrites the command in-place when a matching filter exists. **Restart OpenCode after installation for the plugin to take effect.**
+
+If tokf rewrite fails or no filter matches, the command passes through unmodified (fail-safe).
+
+## OpenAI Codex CLI
+
+tokf integrates with [OpenAI Codex CLI](https://github.com/openai/codex) via a Codex `PreToolUse` hook plus skills for guidance and discovery.
+
+**Install (project-local):**
+```sh
+tokf hook install --tool codex
+```
+
+**Install (global):**
+```sh
+tokf hook install --tool codex --global
+```
+
+This writes a Codex `PreToolUse` hook to `.codex/hooks.json` (or `~/.codex/hooks.json` for `--global`) and installs `.agents/skills/tokf-run/SKILL.md` (or `~/.agents/skills/tokf-run/SKILL.md` for `--global`), which Codex auto-discovers.
+
+Codex CLI 0.124.0 and newer enable lifecycle hooks by default. tokf's Codex integration uses `PreToolUse`, which first appeared in Codex 0.117.0.
+
+If the installed hook does not run, upgrade Codex or check that hooks are enabled, then restart Codex. Codex 0.129.0+ prefers `[features].hooks = true`; older builds used the legacy alias `[features].codex_hooks = true`.
+
+Codex CLI 0.131.0 and newer support `PreToolUse` `updatedInput`, so tokf transparently rewrites matching Bash commands in-place. During installation, tokf checks the local `codex --version` output and installs a conservative deny-and-rerun fallback for older or unknown Codex versions so the original command does not fail open. After upgrading Codex, rerun `tokf hook install --tool codex` so tokf can refresh the generated shim mode. Commands without a matching tokf filter pass through unchanged.
+
+## Permission engines
+
+tokf supports pluggable permission engines that analyse commands and decide whether to allow, deny, or prompt. This is useful for auto-approving safe commands without manual confirmation.
+
+[Dippy](https://github.com/ldayton/Dippy) is an open-source permission engine with deep semantic analysis of bash commands — 34 CLI handlers covering git, aws, kubectl, docker, and more. See the [external permission engine](rewrites-config.md#external-permission-engine) section for configuration.
+
+### Hook handle command
+
+All hook-based integrations (Claude Code, Gemini CLI, Cursor, Codex) call `tokf hook handle` internally. The `--format` flag tells tokf which response protocol to use:
+
+```sh
+tokf hook handle                    # default: claude-code
+tokf hook handle --format gemini    # Gemini CLI protocol
+tokf hook handle --format cursor    # Cursor protocol
+tokf hook handle --format codex     # Codex CLI protocol
+```
+
+The hook scripts generated by `tokf hook install` set `--format` automatically — you don't need to pass it manually. The format also determines which JSON field the external permission engine should set (see [hook JSON reference](rewrites-config.md#hook-json-reference-for-engine-developers)).
+
+## Creating Filters with Claude
+
+tokf ships a Claude Code skill that teaches Claude the complete filter schema, processing order, step types, template pipes, and naming conventions.
+
+**Invoke automatically**: Claude will activate the skill whenever you ask to create or modify a filter — just describe what you want in natural language:
+
+> "Create a filter for `npm install` output that keeps only warnings and errors"
+> "Write a tokf filter for `pytest` that shows a summary on success and failure details on fail"
+
+**Invoke explicitly** with the `/tokf-filter` slash command:
+
+```
+/tokf-filter create a filter for docker build output
+```
+
+The skill is in `.claude/skills/tokf-filter/SKILL.md`. Reference material (exhaustive step docs and an annotated example TOML) lives in `.claude/skills/tokf-filter/references/`.
+
+## Task runners
+
+tokf also integrates with task runners like `make` and `just` by injecting itself as the task runner's shell. Each recipe line is individually filtered while exit codes propagate correctly. See [Rewrite configuration](#rewrite-configuration-rewritestoml) for details.
+
+---
+
+
+## Rewrite configuration (`rewrites.toml`)
+
+tokf looks for a `rewrites.toml` file in two locations (first found wins):
+
+1. **Project-local**: `.tokf/rewrites.toml` — scoped to the current repository
+2. **User-level**: `~/.config/tokf/rewrites.toml` — applies to all projects
+
+This file controls custom rewrite rules, skip patterns, and pipe handling. All `[pipe]`, `[skip]`, and `[[rewrite]]` sections documented below go in this file.
+
+## Task runner integration (make, just)
+
+Task runners like `make` and `just` execute recipe lines via a shell (`$SHELL -c 'recipe_line'`). By default, only the outer `make`/`just` command is visible to tokf — child commands (`cargo test`, `uv run mypy`, etc.) pass through unfiltered.
+
+tokf solves this with **built-in wrapper rules** that inject tokf as the task runner's shell. Each recipe line is then individually matched against installed filters:
+
+```sh
+# What you type:
+make check
+
+# What tokf rewrites it to:
+make SHELL=tokf check
+
+# What make then does for each recipe line:
+tokf -c 'cargo test'          → filter matches → filtered output
+tokf -c 'cargo clippy'        → filter matches → filtered output
+tokf -c 'echo done'           → no filter → delegates to sh
+```
+
+For `just`, the `--shell` flag is used instead:
+
+```sh
+just test  →  just --shell tokf --shell-arg -cu test
+```
+
+### Exit code preservation
+
+Shell mode (`tokf -c '...'`) always propagates the **real exit code** — no masking, no "Error: Exit code N" prefix. This means `make` sees the actual exit code from each recipe line and stops on failure as expected.
+
+### Shell mode (`tokf -c`)
+
+When invoked as `tokf -c 'command'` (or with combined flags like `-cu`, `-ec`), tokf enters **string mode**. The command string is passed through the rewrite system, which rewrites matching commands to `tokf run --no-mask-exit-code ...`. The rewritten command is then delegated to `sh -c` for execution. If no filter matches, the command is delegated to `sh` unchanged.
+
+When invoked with multiple arguments after `-c` (e.g. `tokf -c git status`), tokf enters **argv mode**. Each argument is shell-escaped and joined into a command string, which is then processed the same way as string mode. This form is used by PATH shims.
+
+Shell mode is not typically invoked directly; it is called by task runners (make, just) and PATH shims.
+
+### Compound and complex recipe lines
+
+Compound commands (`&&`, `||`, `;`) are split at chain operators and each segment is individually rewritten. This means both halves of `git add . && cargo test` can be filtered. Pipes, redirections, and other shell constructs within each segment are handled by the rewrite system's pipe stripping logic (see [Piped commands](#piped-commands)) or passed through to `sh` unchanged.
+
+### Debugging task runner rewrites
+
+Use `tokf rewrite --verbose "make check"` to confirm the wrapper rewrite is active and see which rule fired.
+
+Shell mode also respects environment variables for diagnostics (since it has no access to CLI flags like `--verbose`):
+
+```sh
+TOKF_VERBOSE=1 make check     # print filter resolution details for each recipe line
+TOKF_NO_FILTER=1 make check   # bypass filtering entirely, delegate all recipe lines to sh
+```
+
+### Overriding or disabling wrappers
+
+The built-in wrappers for `make` and `just` can be overridden or disabled via `[[rewrite]]` or `[skip]` entries in `.tokf/rewrites.toml`:
+
+```toml
+# Override the make wrapper with a custom one:
+# "make check" → "make SHELL=tokf .SHELLFLAGS=-ec check"
+# Note: use (?:[^\\s]*/)? prefix to also match full paths like /usr/bin/make
+[[rewrite]]
+match = "^(?:[^\\s]*/)?make(\\s.*)?$"
+replace = "make SHELL=tokf .SHELLFLAGS=-ec{1}"
+
+# Or disable it entirely:
+[skip]
+patterns = ["^make"]
+```
+
+### Adding wrappers for other task runners
+
+You can add wrappers for other task runners via `[[rewrite]]`. The exact mechanism depends on how the task runner invokes recipe lines — check its documentation for shell override options:
+
+```toml
+# Example: if your task runner respects $SHELL for recipe execution
+[[rewrite]]
+match = "^(?:[^\\s]*/)?mise run(\\s.*)?$"
+replace = "SHELL=tokf mise run{1}"
+```
+
+## Git commands inside worktrees
+
+When the working directory is inside a **linked** git worktree — one created by
+`git worktree add` — tokf leaves `git` commands unrewritten:
+
+```sh
+# In the main checkout:
+git status          →  tokf run git status
+
+# In a linked worktree:
+git status          →  git status          (unchanged)
+cargo test          →  tokf run cargo test (still filtered)
+```
+
+This exists because of agent harnesses that isolate an agent to its own
+worktree. They verify that git operations stay inside that worktree by reading
+the command string, and once tokf rewrites `git status` to
+`tokf run git status` the leading word is an opaque wrapper — the check can no
+longer see the git invocation it was meant to inspect, so it refuses to run the
+command at all. Leaving `git` alone keeps those commands legible. Every other
+command in the worktree is still filtered normally.
+
+Detection reads git's own on-disk layout, not a path convention: a linked
+worktree's `.git` is a *file* containing `gitdir: <common-dir>/worktrees/<id>`,
+where the main worktree's `.git` is a directory. So it holds for any worktree
+wherever it lives, and submodules — whose `.git` file points at
+`<common-dir>/modules/<name>` — are correctly left out.
+
+The guard applies per segment, so a compound command keeps the filters it can:
+
+```sh
+git add . && cargo test   →  git add . && tokf run cargo test
+```
+
+It applies only where something re-reads the rewritten command: the hook, and
+`tokf rewrite`, which exists to show what the hook would emit. Shell mode
+(`tokf -c`, used by the `make` and `just` wrappers) and the PATH shims hand
+their result straight to `sh`, so a `just` recipe running `git log` inside a
+worktree keeps its filter.
+
+To turn it off and filter git inside worktrees as well:
+
+```toml
+# .tokf/rewrites.toml
+[worktree]
+skip_git = false
+```
+
+Run `tokf rewrite --verbose "git status"` from inside a worktree to see whether
+the guard is active.
+
+## Routing to generic commands
+
+For commands that don't have a dedicated filter, you can route them through [generic commands](generic-commands.md) (`tokf err`, `tokf test`, `tokf summary`) via rewrite rules:
+
+```toml
+# .tokf/rewrites.toml
+
+# Build commands → error extraction
+[[rewrite]]
+match = "^mix compile"
+replace = "tokf err {0}"
+
+# Test runners → failure extraction
+[[rewrite]]
+match = "^mix test"
+replace = "tokf test {0}"
+
+# Long-running commands → heuristic summary
+[[rewrite]]
+match = "^terraform plan"
+replace = "tokf summary {0}"
+```
+
+**Note:** User rewrite rules fire *before* filter matching. Only add these for commands that don't already have a filter — check with `tokf which "<command>"`. Commands with dedicated filters (e.g. `cargo build`, `git status`) produce better output through `tokf run`.
+
+## Piped commands
+
+When a command is piped to a simple output-shaping tool (`grep`, `tail`, or `head`), tokf **strips the pipe automatically** and uses its own structured filter output instead. The original pipe suffix is passed to `--baseline-pipe` so token savings are still calculated accurately.
+
+```sh
+# These ARE rewritten — pipe is stripped, tokf applies its filter:
+cargo test | grep FAILED
+cargo test | tail -20
+git diff HEAD | head -5
+```
+
+Multi-pipe chains, pipes to other commands, or pipe targets with unsupported flags are left unchanged:
+
+```sh
+# These are NOT rewritten — tokf leaves them alone:
+kubectl get pods | grep Running | wc -l   # multi-pipe chain
+cargo test | wc -l                        # wc not supported
+cargo test | tail -f                      # -f (follow) not supported
+```
+
+If you want tokf to wrap a piped command that wouldn't normally be rewritten, add an explicit rule to `.tokf/rewrites.toml`:
+
+```toml
+[[rewrite]]
+match = "^cargo test \\| tee"
+replace = "tokf run {0}"
+```
+
+Use `tokf rewrite --verbose "cargo test | grep FAILED"` to see how a command is being rewritten.
+
+### Disabling pipe stripping
+
+If you prefer tokf to never strip pipes (leaving piped commands unchanged), add a `[pipe]` section to `.tokf/rewrites.toml`:
+
+```toml
+[pipe]
+strip = false   # default: true
+```
+
+When `strip = false`, commands like `cargo test | tail -5` pass through the shell unchanged. Non-piped commands are still rewritten normally.
+
+### Prefer less context mode
+
+Sometimes the piped output (e.g. `tail -5`) is actually smaller than the filtered output. The `prefer_less` option tells tokf to compare both at runtime and use whichever is smaller:
+
+```toml
+[pipe]
+prefer_less = true   # default: false
+```
+
+When a pipe is stripped, tokf injects `--prefer-less` alongside `--baseline-pipe`. At runtime:
+1. The filter runs normally
+2. The original pipe command also runs on the raw output
+3. tokf prints whichever result is smaller
+
+When the pipe output wins, the event is recorded with `pipe_override = 1` in the tracking DB. The `tokf gain` command shows how many times this happened:
+
+```
+tokf gain summary
+  total runs:     42
+  input tokens:   12,500 est.
+  output tokens:  3,200 est.
+  tokens saved:   9,300 est. (74.4%)
+  pipe preferred: 5 runs (pipe output was smaller than filter)
+```
+
+(With [pipeline capture](#pipeline-capture) on, an `exit mismatch:` line joins these — see [token tracking](#pipeline-capture-is-recorded-not-credited).)
+
+Note: `strip = false` takes priority — if pipe stripping is disabled, `prefer_less` has no effect.
+
+### Pipeline capture
+
+**Opt-in.** A pipeline reports its *last* stage's exit code, so `just check 2>&1 | tail -8` reports `tail`'s success even when the tests failed:
+
+```sh
+$ just check 2>&1 | tail -8
+test result: FAILED. 118 passed; 9 failed
+$ echo $?
+0            # ← reads as a pass
+```
+
+This is not bad luck. The operations you reach for to keep output small — `| tail`, `| head`, `| grep` — are the same operations that discard the failure signal, so every shortcut errs toward a false green.
+
+Pipeline capture closes that gap for the pipelines tokf would otherwise leave alone entirely:
+
+```toml
+[pipe]
+capture = true   # default: false
+```
+
+With it on, tokf runs the *first* stage itself, feeds its output through the rest of the pipeline, and prints the result verbatim — so you still get exactly what you asked for. What tokf adds is that it is the only thing that sees **both** exit codes:
+
+```sh
+$ just check 2>&1 | tail -8
+Error: `just check` exited 1 but the pipeline reported 0 — this is NOT a pass.
+test result: FAILED. 118 passed; 9 failed
+[tokf] full output: tokf raw 4711 (~14200 bytes discarded)
+$ echo $?
+0            # ← unchanged; see below
+```
+
+The discarded output is recorded, so `tokf raw 4711` gets back everything the pipe threw away.
+
+#### Difference is the signal
+
+The rule is not "detect false greens" — it is that whenever the two exit codes **differ**, tokf says so. The direction decides the wording and where the line goes, never whether to speak:
+
+| First stage | Pipeline | Meaning | Result |
+|-------------|----------|---------|--------|
+| *equal* | *equal* | agreement | silent |
+| non-zero | `0` | **false green** | `Error:` line on stdout |
+| `0` | non-zero | the pipeline matched nothing, or the consumer failed | note |
+| non-zero | non-zero, different | both failed; the first stage's code is the verdict | note |
+
+Empty output is also labelled whenever the command itself failed — an empty result reading as "no problems found" is the same mistake one layer down:
+
+```sh
+$ ./check.sh | grep FAILED
+[tokf] no output — `./check.sh` exited 1; the pipeline matched nothing.
+```
+
+#### The exit code is not changed
+
+By default the process exit code stays exactly what the shell would have produced. That is deliberate: rewriting it to the first stage's code would break every caller that consumes the pipeline's status on purpose, such as `cargo build | grep -q warning && echo found`. Reporting changes nothing downstream, so capture is safe to leave on.
+
+If you want the stricter behaviour:
+
+```toml
+[pipe]
+capture = true
+capture_exit = "propagate"   # default: "report"
+```
+
+In `propagate` mode tokf exits with the first stage's code, and declines to capture pipelines whose status is clearly being consumed (`&&`/`||` chains, and `grep -q`, `test`, `[` as the final stage).
+
+#### What capture does not touch
+
+Capture applies only where tokf declines today — multi-pipe chains, unsupported pipe targets, and pipelines whose base command has no filter. The existing `--baseline-pipe` stripping keeps priority. Beyond that, these are left alone:
+
+| Left alone | Why |
+|------------|-----|
+| `set -o pipefail; …`, `${PIPESTATUS[0]}` | You already handle the status |
+| `tail -f app.log \| grep ERROR`, `docker logs -f`, `yes`, `watch` | Capture buffers, so a producer that never ends would show nothing at all |
+| `cargo test \| less`, `\| fzf`, `\| vim` | Pagers and interactive tools cannot be fed a buffer |
+| `cargo test 2>/dev/null \| grep x` | tokf forwards the command's stderr, which would resurrect what you silenced |
+| `cargo test \| tail -5 > out.txt` | Output redirects are skipped before rewriting |
+
+Add your own with `capture_deny`, and cap what gets recorded with `capture_max_bytes`:
+
+```toml
+[pipe]
+capture = true
+capture_deny = ["mytool"]
+capture_max_bytes = 2097152   # default: 2 MiB; above this, no history row
+```
+
+Set `TOKF_PIPE_CAPTURE=0` to turn capture off without editing config, or `=1` to turn it on.
+
+#### `2>&1` is handled structurally
+
+`cargo test 2>&1 | grep error` and `cargo test | grep error` are different questions — cargo writes most of its output to stderr — so tokf feeds the pipeline the combined stream only when you asked for it. The distinction comes from a real bash AST, not a regex: a regex that splits on shell operators cuts `2>&1` in half at the `&`, which is how this exact command evades naive checks.
+
+## External permission engine
+
+By default, tokf does **no** permission checking — the AI tool (Claude Code, Gemini, Cursor) handles its own deny/ask rules natively. tokf only rewrites commands that match a filter and auto-allows them.
+
+You can optionally delegate permission decisions to an external process — a "sub-hook" that performs deeper semantic analysis of commands. When configured, the engine is consulted on **every** command, not just ones tokf has a filter for. This lets the engine auto-approve safe commands without the user being prompted.
+
+### Configuration
+
+Add a `[permissions]` section to `.tokf/rewrites.toml`:
+
+```toml
+[permissions]
+engine = "external"
+
+[permissions.external]
+command = "dippy"
+args = ["hook", "handle", "--mode", "{format}"]
+timeout_ms = 3000    # default: 5000
+on_error = "builtin" # what to do if the engine fails
+```
+
+### Tool format (`{format}`)
+
+The `{format}` placeholder in `args` is replaced with the AI tool identifier before spawning:
+
+| Tool | Default value |
+|---|---|
+| Claude Code | `claude-code` |
+| Gemini CLI | `gemini` |
+| Cursor | `cursor` |
+
+If the engine expects different names, add a `format_map`:
+
+```toml
+[permissions.external]
+command = "my-engine"
+args = ["check", "--tool", "{format}"]
+format_map = { "claude-code" = "claude", "gemini" = "google" }
+```
+
+### Protocol
+
+1. tokf spawns the engine process (`command` + `args`, with `{format}` resolved)
+2. The original hook JSON (from the AI tool) is written to the engine's **stdin**
+3. The engine returns a standard hook response JSON on **stdout** — the same format the AI tool expects
+4. tokf extracts the permission decision from the response and applies it to its own rewritten command
+
+The engine sees the **original** command (not the rewritten one). tokf controls the rewrite; the engine controls the permission decision. Engines that exit with a non-zero status but still produce valid JSON will have their JSON verdict honoured — this supports engines like Dippy that use exit codes for signalling alongside a valid response.
+
+### Hook JSON reference (for engine developers)
+
+The engine receives the AI tool's hook JSON verbatim on stdin. The format depends on the tool:
+
+**Claude Code** (`--mode claude-code`):
+
+```json
+{"tool_name": "Bash", "tool_input": {"command": "git push --force"}}
+```
+
+Expected response — set `permissionDecision` to `"allow"`, `"deny"`, or `"ask"` (or omit for ask):
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "allow",
+    "updatedInput": {"command": "git push --force"}
+  }
+}
+```
+
+**Gemini CLI** (`--mode gemini`):
+
+```json
+{"tool_name": "run_shell_command", "tool_input": {"command": "git push --force"}}
+```
+
+Expected response — set `decision` to `"allow"`, `"deny"`, or `"ask"`:
+
+```json
+{
+  "decision": "allow",
+  "hookSpecificOutput": {
+    "tool_input": {"command": "git push --force"}
+  }
+}
+```
+
+**Cursor** (`--mode cursor`):
+
+```json
+{"command": "git push --force"}
+```
+
+Expected response — set `permission` to `"allow"`, `"deny"`, or `"ask"`:
+
+```json
+{
+  "permission": "allow",
+  "updated_input": {"command": "git push --force"}
+}
+```
+
+### Error handling (`on_error`)
+
+When the engine fails (crash, timeout, invalid output), the `on_error` field determines the fallback:
+
+| Value | Behaviour |
+|---|---|
+| `"ask"` (default) | Fail closed — prompt user for permission |
+| `"allow"` | Fail open — auto-allow the command |
+| `"builtin"` | Fall back to built-in deny/ask rule matching |
+
+### Example: Dippy integration
+
+[Dippy](https://github.com/ldayton/Dippy) is a permission engine that performs deep semantic analysis of bash commands — auto-approving safe commands while blocking dangerous ones.
+
+```toml
+[permissions]
+engine = "external"
+
+[permissions.external]
+command = "dippy"
+args = ["hook", "handle", "--mode", "{format}"]
+timeout_ms = 3000
+on_error = "builtin"
+```
+
+## Environment variable prefixes
+
+Leading `KEY=VALUE` assignments are automatically stripped before matching, so env-prefixed commands are rewritten correctly:
+
+```sh
+# These ARE rewritten — env vars are preserved, the command is wrapped:
+DEBUG=1 git status              → DEBUG=1 tokf run git status
+RUST_LOG=debug cargo test       → RUST_LOG=debug tokf run cargo test
+A=1 B=2 cargo test | tail -5   → A=1 B=2 tokf run --baseline-pipe 'tail -5' cargo test
+```
+
+The env vars are passed through verbatim to the underlying command; tokf only rewrites the executable portion.
+
+### Skip patterns and env var prefixes
+
+User-defined skip patterns in `.tokf/rewrites.toml` match against the **full** shell segment, including any leading env vars. A pattern `^cargo` will **not** skip `RUST_LOG=debug cargo test` because the segment doesn't start with `cargo`:
+
+```toml
+[skip]
+patterns = ["^cargo"]   # skips "cargo test" but NOT "RUST_LOG=debug cargo test"
+```
+
+To skip a command regardless of any env prefix, use a pattern that accounts for it:
+
+```toml
+[skip]
+patterns = ["(?:^|\\s)cargo\\s"]   # matches "cargo" anywhere after start or whitespace
+```
+
+## Implicit skip rules
+
+Three implicit skip rules are always active and can't be disabled. They cover cases where rewriting would silently corrupt the agent's data, so there's no plausible reading under which the rewrite would be correct.
+
+### Heredocs
+
+Commands that contain a top-level heredoc (`<<EOF`, `<<-EOF`) are passed through unchanged. Wrapping them with `tokf run` would break the lexical binding between the command and its heredoc body.
+
+```sh
+# Not rewritten — heredoc body would be cut off:
+cat <<EOF > /tmp/cfg.yaml
+key: value
+EOF
+```
+
+### Heredocs inside command substitution
+
+Commands that contain a heredoc anywhere inside a `$(...)` (or backtick) command substitution are also skipped — even when the substitution is buried deep inside an argument like `git commit -m "$(cat <<'EOF' … EOF)"`. The heredoc body lives in a logically-separate region of the source from the surrounding command, and downstream re-tokenization (clap argv parsing in `tokf run`, second-pass shell parsers, byte-offset pipe stripping) can slice through it. The canonical failure mode this prevents is `git commit -m "$(cat <<'EOF' … EOF)" 2>&1 | tail -10` mangling `-m`'s value into `git: error: switch 'm' requires a value`.
+
+```sh
+# Not rewritten — multi-line commit messages, gh PR bodies, etc.:
+git add foo && git commit -m "$(cat <<'EOF'
+feat: a thing
+
+with multi-line body
+EOF
+)" && git push
+
+gh pr create -b "$(cat <<EOF
+## Summary
+…
+EOF
+)"
+```
+
+Unlike the output-redirect skip below, this rule fires for the **whole compound**: if any segment contains a substitution-nested heredoc, sibling `git add` / `git push` segments are also passed through. This is intentionally conservative — re-emitting *any* part of a compound that contains this construct risks downstream byte-offset slicing into the heredoc body.
+
+### Output redirection
+
+Commands that redirect output to a file (`>`, `>>`, `&>`, `&>>`, `>|`, `1>`, `2>`, `<>`, etc.) are also passed through unchanged. The agent explicitly redirected to a file because they want the **raw** output for downstream processing — interposing tokf's filter would write filtered bytes into the file and silently corrupt what the agent reads back.
+
+```sh
+# These are NOT rewritten — tokf leaves them alone:
+git diff > /tmp/diff.txt          # explicit output redirect — a

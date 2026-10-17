@@ -1,0 +1,193 @@
+# Tech Interview Curriculum
+
+**Interview prep for LLM post-training, machine learning, system design, and coding — in one repo, organized by the job you're actually interviewing for.**
+
+[![Stars](https://img.shields.io/github/stars/mostofashakib/tech-interview-curriculum?style=flat&color=blue)](https://github.com/mostofashakib/tech-interview-curriculum/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/mostofashakib/tech-interview-curriculum?style=flat)](https://github.com/mostofashakib/tech-interview-curriculum/commits)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat)](LICENSE)
+
+Most interview repos are one giant undifferentiated list. This one is four
+routes: **pick your career path below, follow the route it gives you, and ignore
+everything else.**
+
+> If this saves you time, **star the repo** — it's how other people
+> preparing for the same interviews find it.
+
+---
+
+## Start here — pick your path
+
+<table>
+<tr><th>If you're targeting…</th><th>Study, in this order</th></tr>
+<tr>
+<td><b>Software Engineer</b><br><sub>product, backend, full-stack</sub></td>
+<td>1. <a href="dsa/">DSA</a> &nbsp;&rarr;&nbsp; 2. <a href="software-engineering/">Software Engineering</a> &nbsp;&rarr;&nbsp; 3. <a href="behavioral/">Behavioral</a></td>
+</tr>
+<tr>
+<td><b>ML Engineer / Data Scientist</b></td>
+<td>1. <a href="machine-learning/">Machine Learning</a> &nbsp;&rarr;&nbsp; 2. <a href="machine-learning/ml-system-design/">ML System Design</a> &nbsp;&rarr;&nbsp; 3. <a href="dsa/">DSA</a> &nbsp;&rarr;&nbsp; 4. <a href="behavioral/">Behavioral</a></td>
+</tr>
+<tr>
+<td><b>AI Lab / Research Engineer</b><br><sub>post-training, alignment, RL</sub></td>
+<td>1. <a href="machine-learning/deep-learning/">Deep Learning</a> &nbsp;&rarr;&nbsp; 2. <a href="llm-post-training/">Post-Training</a> &nbsp;&rarr;&nbsp; 3. <a href="dsa/">DSA</a> &nbsp;&rarr;&nbsp; 4. <a href="behavioral/">Behavioral</a></td>
+</tr>
+<tr>
+<td><b>ML Infra / Inference</b></td>
+<td>1. <a href="llm-post-training/inference/">Inference</a> &nbsp;&rarr;&nbsp; 2. <a href="software-engineering/system-design/">System Design</a> &nbsp;&rarr;&nbsp; 3. <a href="llm-post-training/">Post-Training</a> &nbsp;&rarr;&nbsp; 4. <a href="dsa/">DSA</a></td>
+</tr>
+</table>
+
+Every route has its own README with a suggested order and a question bank. Open
+the first link in your row and start there.
+
+**Seniority changes the weighting, not the material.** An intern and a staff
+engineer read the same folders in different proportions — see
+[what each level is tested on](software-engineering/README.md#what-each-level-is-tested-on)
+for how the rounds shift from intern through staff, and where to spend your time
+at each.
+
+Before any of it, there's [resume-tips.pdf](resume-tips.pdf) — you have to get
+the interview before you can prepare for it.
+
+---
+
+## The five routes
+
+### [dsa/](dsa/) — Data Structures & Algorithms
+The coding round. Hand-written implementations, ~1000 solved problems organized
+by company, a multi-month study curriculum, and reference books.
+
+### [behavioral/](behavioral/) — Behavioral & Reverse Interview
+Story bank method, STAR structure, a phone-screen cheat sheet, and the questions
+you ask them.
+
+### [software-engineering/](software-engineering/) — System Design & CS Fundamentals
+System design framework and templates, OS / networks / databases / OOP /
+architecture, language-specific questions, and web fundamentals.
+
+### [machine-learning/](machine-learning/) — Classical ML
+Foundations, supervised and unsupervised learning, deep learning, feature
+engineering, model evaluation, ML system design, and the math underneath.
+
+### [llm-post-training/](llm-post-training/) — LLM Post-Training
+SFT, reward modeling, RLHF / DPO / GRPO, RL environments, evaluation and
+LLM-as-a-judge, and inference optimization. Includes written notes derived from
+[mostofashakib.com/blog](https://www.mostofashakib.com/blog).
+
+---
+
+## Repository map
+
+```
+resume-tips.pdf                 read this before anything else
+
+dsa/
+├── implementations/            arrays, strings, graphs, trie, pattern search
+├── practice-problems/          ~1000 Java solutions by company and source
+├── study-plan/                 Coding Interview University curriculum
+├── google-interview/           "Hacking a Google Interview" handouts
+└── references/                 cheat sheets, CP Handbook, EPI
+
+behavioral/
+├── behavioral-questions.docx
+├── phone-interview-cheat-sheet.jpg
+└── reverse-interview/          what to ask them
+
+software-engineering/
+├── system-design/              framework, template, curated references
+├── cs-fundamentals/            OS, networks, databases, OOP, architecture
+├── languages/                  java, javascript, python
+└── web/                        frontend fundamentals
+
+machine-learning/
+├── math/                       linear algebra, probability, stats, optimization
+├── foundations/                bias-variance, regularization, validation, leakage
+├── supervised-learning/        regression, trees, ensembles, SVM, kNN, NB
+├── unsupervised-learning/      clustering, PCA, anomaly detection
+├── deep-learning/              backprop, CNNs, RNNs, transformers, optimizers
+├── feature-engineering/        encoding, imputation, leakage, imbalance
+├── model-evaluation/           metrics, ROC/PR, calibration, significance
+├── ml-system-design/           end-to-end design rounds
+└── interview-questions/        49-question bank
+
+llm-post-training/
+├── glossary.md                 policy, trajectory, KL, Fisher information
+├── fundamentals/           [N] the 5-stage LLM pipeline — start here
+├── data/                   [N] taxonomies, synthetic data, rubrics
+├── sft/                    [N] instruction tuning, LoRA, QLoRA
+├── reward-modeling/            preference data, Bradley-Terry, failure modes
+├── preference-optimization/[N] DPO, RLHF, RLVR · TRPO, PPO, GRPO
+├── rl-environments/            environment & reward design, anti-gaming
+├── evals/                  [N] benchmarks, LLM-as-judge, agentic evaluation
+├── inference/                  KV cache, quantization, speculative decoding
+└── interview-questions/        derivations, debugging, design
+
+[N] = contains written notes
+```
+
+---
+
+## How this repo is meant to be used
+
+**Every folder has a README** that tells you what's in it, what order to study
+it in, and what you'll be asked. You should never have to guess what a directory
+is for.
+
+**Checklists are the unit of study.** Most folders are a checkbox list of what to
+know plus a question bank. Work down the list; if you can't answer a question out
+loud, that's your next study session.
+
+**Write your notes into the folder you're studying.** Each README ends with a
+Notes section for exactly this. The repo gets more valuable the more of your own
+work is in it.
+
+**Follow the cross-links.** Routes reference each other where topics connect —
+KL divergence in `machine-learning/math/` links to `llm-post-training/`, agentic
+evaluation links to RL environments. The connections are where interview
+questions come from.
+
+---
+
+## Topics covered
+
+**Coding interview / DSA** — arrays, strings, linked lists, stacks, queues,
+hash tables, trees, tries, heaps, graphs, sorting, searching, recursion,
+backtracking, dynamic programming, greedy algorithms, bit manipulation, Big-O
+analysis, LeetCode and Cracking the Coding Interview problems by company.
+
+**System design** — scalability, load balancing, caching, sharding,
+replication, CAP theorem, consistent hashing, message queues, rate limiting,
+CDNs, microservices, API design.
+
+**CS fundamentals** — operating systems, concurrency, computer networks, TCP/IP,
+HTTP, SQL and NoSQL databases, indexing, transactions, OOP and design patterns.
+
+**Machine learning** — linear algebra, probability, statistics, optimization,
+bias-variance, regularization, cross-validation, data leakage, linear and
+logistic regression, decision trees, random forests, gradient boosting, SVM,
+kNN, naive Bayes, k-means, PCA, anomaly detection, feature engineering,
+precision/recall, ROC-AUC, calibration, ML system design.
+
+**Deep learning** — backpropagation, CNNs, RNNs, LSTMs, transformers, attention,
+batch/layer norm, dropout, Adam and other optimizers.
+
+**LLM post-training** — the pretraining → SFT → alignment pipeline, instruction
+tuning, LoRA and QLoRA, quantization, synthetic data and rubrics, reward
+modeling, Bradley-Terry, RLHF, DPO, RLVR, PPO, TRPO, GRPO, RL environment and
+reward design, reward hacking, benchmarks, LLM-as-a-judge, agentic evaluation,
+KV cache, speculative decoding, inference optimization.
+
+**Behavioral** — STAR method, story bank, phone screen prep, reverse-interview
+questions.
+
+---
+
+## Contributing
+
+Corrections, better explanations, and new question banks are welcome — open an
+issue or a PR. If a folder's checklist is missing something an interviewer
+actually asked you, that's the highest-value contribution there is.
+
+## License
+
+[MIT](LICENSE)

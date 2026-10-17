@@ -1,0 +1,227 @@
+<div align="center">
+   <h1>QUAYNOR</h1>
+</div>
+
+<p align="center">
+  <img src="https://res.cloudinary.com/diekemzs9/image/upload/v1777823779/hairy_gloam_dmnflg.png" alt="quaynor Logo" width="200"/>
+</p>
+
+<div align="center">
+<p><b>A lightweight, blazing fast AI inference engine written in Rust.</b></p>
+</div>
+
+Embed **local LLMs** in your app: load GGUF checkpoints, chat on-device or on the GPU, and keep data off the cloud. Usable natively from **Rust**, with bindings for **Python**, **Flutter**, **React Native**, **Swift**, and **Kotlin/Android**.
+
+**Documentation:** [www.quaynor.site](https://www.quaynor.site)
+
+### At a glance
+
+- **Runtime:** Rust core that loads **GGUF** models and using **Vulkan** or **Metal** where the platform enables GPU backends.
+- **Features:** Chat with streaming completions, **Minijinja** chat templates, tokenizer helpers, optional **embeddings** and **cross-encoder** reranking, and **GBNF** grammar-based tool calling—surfaced consistently across bindings where supported.
+- **This repo:** Shared engine and most bindings live under [`quaynor/`](quaynor/) as a **Cargo workspace**; the **Swift** layer is a separate **SwiftPM** package under [`quaynor/swift/`](quaynor/swift/), and the **Kotlin** layer a separate **Gradle** package under [`quaynor/kotlin/`](quaynor/kotlin/). For module layout and contribution workflow, see **[dev_guide.md](dev_guide.md)**.
+
+---
+
+## Why use it
+
+- **Offline inference** - No inference API keys; models stay on disk or load from URLs / Hugging Face paths you choose.
+- **One chat-style API across bindings** - `Chat`/`ask` patterns align so you can move ideas between Python, Flutter, React Native, Swift, and Kotlin without relearning primitives.
+- **Production-oriented features** - Streaming replies, bounded context sizing, embeddings and cross-encoder reranking where supported, grammar-based tool calling wired from native functions (Python) or equivalents in mobile bindings.
+
+**Rough capability map:**
+
+| Area | Notes |
+|------|--------|
+| Chat & streaming | Token streaming and full-string completion helpers (e.g. `.completed()`). |
+| Tool calling | Grammar-constrained tool use; decorate Python functions or declare tools in RN/Flutter per docs. |
+| Hardware | Vulkan (desktop/Android where applicable), Metal (Apple). |
+| Modalities | Vision and audio pipelines where the model supports them; see docs for model quirks. |
+
+---
+
+## Rust
+
+[`quaynor` on crates.io](https://crates.io/crates/quaynor)
+
+The engine itself is a Rust crate — no FFI layer, just the same API that powers every binding.
+
+```sh
+cargo add quaynor
+```
+
+```rust
+use quaynor::chat::ChatBuilder;
+use quaynor::llm::get_model;
+use std::sync::Arc;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let model = Arc::new(get_model(
+        "hf://bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf",
+        true,
+        None,
+    )?);
+    let chat = ChatBuilder::new(model).build();
+
+    let mut stream = chat.ask("Is a zebra black or white?");
+    while let Some(token) = stream.next_token() {
+        print!("{token}");
+    }
+    Ok(())
+}
+```
+
+`ChatBuilder::build_async()` gives the Tokio-friendly `ChatHandleAsync` variant; embeddings, reranking, tokenizer helpers, and grammar-based tool calling live in the same crate. See the [Rust docs](docs/markdown/rust/index.md) and [docs.rs/quaynor](https://docs.rs/quaynor).
+
+---
+
+## Flutter
+
+[`quaynor` on pub.dev](https://pub.dev/packages/quaynor)
+
+```sh
+flutter pub add quaynor
+```
+
+```dart
+import 'package:quaynor/quaynor.dart' as quaynor;
+
+void main() async {
+  await quaynor.Quaynor.init();
+  final chat = await quaynor.Chat.fromPath(
+    modelPath: 'huggingface:bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf',
+  );
+  final msg = await chat.ask('Is a zebra black or white?').completed();
+  print(msg);
+}
+```
+
+---
+
+## React Native
+
+[`react-native-quaynor` on npm](https://www.npmjs.com/package/react-native-quaynor)
+
+```sh
+npm install react-native-quaynor
+```
+
+```typescript
+import { Chat } from "react-native-quaynor";
+
+const chat = await Chat.fromPath({
+  modelPath: "hf://bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf",
+});
+
+const msg = await chat.ask("Is a zebra black or white?").completed();
+console.log(msg);
+```
+
+---
+
+## Python
+
+[`quaynor` on PyPI](https://pypi.org/project/quaynor/)
+
+```sh
+pip install quaynor
+```
+
+```python
+from quaynor import Chat
+
+chat = Chat("huggingface:bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf")
+for token in chat.ask("Is a zebra black or white?"):
+    print(token, end="", flush=True)
+```
+
+Wait for the full string with `.completed()`:
+
+```python
+full = chat.ask("Why is the sky blue?").completed()
+```
+
+**Tool calling:**
+
+```python
+import math
+from quaynor import tool, Chat
+
+@tool(description="Area of a circle from radius")
+def circle_area(radius: float) -> str:
+    return f"{math.pi * radius ** 2:.2f}"
+
+chat = Chat("./path/to/model.gguf", tools=[circle_area])
+```
+
+---
+
+## Platforms
+
+Desktop (Windows, Linux, macOS): Python, Flutter, React Native, and Kotlin/JVM. Swift package distribution is available for Apple platforms through Swift Package Manager. **Android**: Flutter, React Native, and Kotlin bindings. **iOS**: Flutter, React Native, and Swift bindings (Metal on Apple, Vulkan where enabled on Android).
+
+---
+
+## Swift
+
+[Swift Package docs](docs/markdown/swift/index.md)
+
+SwiftPM is Apple's package manager for Swift and Xcode projects.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/iBz-04/quaynor.git", from: "0.1.2")
+]
+```
+
+```swift
+import Quaynor
+
+let model = try await Model.fromPath(
+    path: "huggingface:bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf"
+)
+let chat = Chat(model: model)
+let text = try await chat.ask("Is a zebra black or white?").completed()
+print(text)
+```
+
+The Swift package is distributed through Swift Package Manager for iOS and macOS using the published `QuaynorFFI.xcframework` release artifact. The public Swift API includes `Model`, `Chat`, `TokenStream`, `Encoder`, `CrossEncoder`, `Prompt`, `SamplerPresets`, `Tool`, `CachedModel`, and `ChatStats`. `Model` also supports Hugging Face downloads, cache inspection with `getCachedModels()`, and cache deletion with `deleteCachedModel(modelPath:)`.
+
+---
+
+## Kotlin / Android
+
+Gradle package under [`quaynor/kotlin/`](quaynor/kotlin/), built with [UniFFI](https://mozilla.github.io/uniffi-rs/) and loaded through JNA.
+
+```kotlin
+// Android
+implementation("site.quaynor:quaynor-android:0.1.0")
+
+// Desktop JVM
+implementation("site.quaynor:quaynor:0.1.0")
+```
+
+```kotlin
+import ai.quaynor.Chat
+import ai.quaynor.Model
+
+val model = Model.load("hf://bartowski/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf")
+val chat = Chat(model = model)
+println(chat.ask("Is a zebra black or white?").completed())
+
+// Or stream tokens as they arrive
+chat.ask("Tell me a joke").asFlow().collect { print(it) }
+```
+
+The public Kotlin API includes `Model`, `Chat`, `TokenStream`, `Encoder`, `CrossEncoder`, `Prompt`, `Tool`, `SamplerPresets`, `buildSampler`, `Message`, `CachedModel`, and `ChatStats`. Suspend functions and `Flow` are used throughout, and tools are declared by passing an ordinary Kotlin function reference — parameter names, types, and JSON schema are derived by reflection. Build and publishing details live in [`quaynor/kotlin/BUILD_SETUP.md`](quaynor/kotlin/BUILD_SETUP.md) and [`quaynor/kotlin/DEVELOPMENT.md`](quaynor/kotlin/DEVELOPMENT.md).
+
+---
+
+## Contributing
+
+Issues, discussions, and PRs are welcome. For codebase layout and conventions, see **[dev_guide.md](dev_guide.md)**. Setup and binding-specific guides live on **[www.quaynor.site](https://www.quaynor.site)** and in repo labels.
+
+---
+
+## License
+
+[GNU GENERAL PUBLIC LICENSE](LICENSE)

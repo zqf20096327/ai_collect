@@ -1,0 +1,435 @@
+# MAGI
+
+[![MAGI intro video](https://gateway.pinata.cloud/ipfs/bafybeicplzuyad3stsfd5nz4l6s4df7czyocfmqgxujruugyxby7pmmkpm)](https://gateway.pinata.cloud/ipfs/bafybeihhurksv4whiocfumnqxl4we7y4baonkj4ryami4nx2jhvvvpg2oa)
+
+<p align="center">
+  <a href="https://github.com/Kenshiro-28/MAGI/actions"><img src="https://img.shields.io/github/actions/workflow/status/Kenshiro-28/MAGI/lint.yml?branch=main&style=for-the-badge&label=Lint" alt="Lint Status"></a>
+  <a href="https://github.com/Kenshiro-28/MAGI/actions"><img src="https://img.shields.io/github/actions/workflow/status/Kenshiro-28/MAGI/test.yml?branch=main&style=for-the-badge&label=Test" alt="Test Status"></a>
+  <a href="https://github.com/Kenshiro-28/MAGI/actions"><img src="https://img.shields.io/github/actions/workflow/status/Kenshiro-28/MAGI/docker.yml?branch=main&style=for-the-badge&label=Docker" alt="Docker Status"></a>
+  <a href="https://github.com/Kenshiro-28/MAGI/releases"><img src="https://img.shields.io/github/v/release/Kenshiro-28/MAGI?include_prereleases&style=for-the-badge" alt="GitHub release"></a>
+  <a href="https://github.com/Kenshiro-28/MAGI/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Kenshiro-28/MAGI?style=for-the-badge&color=blue" alt="License"></a>
+</p>
+
+**MAGI (マギ)** is an advanced AI system powered by open-source large language models. It operates through a conversational interface and is designed to run efficiently on consumer-grade hardware.
+
+Key features include a customizable Core Protocol for enhanced reasoning, a modular Toolchain for dynamic tool chaining (code execution, web browsing, and image generation), a long-term memory Codex, and teleoperation via Telegram for remote access.
+
+If left idle, MAGI will proactively assess the situation to decide whether to continue ongoing tasks, engage in conversation, or remain silent, based on its personality and the current context.
+
+Built and tested on **Debian stable** (recommended). On other OSes, use the Docker setup.
+
+## Configuration
+
+You can customize MAGI by editing the file **config.cfg**.
+
+The main options are:
+
+TEMPERATURE: model temperature (default: 1.0)
+
+CONTEXT_SIZE: number of tokens in the context window (default & minimum: 131072)
+
+HEARTBEAT_SECONDS: seconds since the last action start before MAGI runs a background thought loop to determine whether further action is required. If an action is in progress, the loop is deferred until the action completes. (default: 1800)
+
+ENABLE_CODE_RUNNER_PLUGIN: enable the Code Runner plugin (default: YES)
+
+ENABLE_CODEX_PLUGIN: enable the long-term memory Codex (default: YES)
+
+ENABLE_IMAGE_GENERATION_PLUGIN: enable the image generation plugin (default: YES)
+
+ENABLE_TELEGRAM_PLUGIN: enable the Telegram plugin (default: NO)
+
+ENABLE_WEB_PLUGIN: enable the web plugin (default: YES)
+
+DISPLAY_EXTENDED_REASONING: display the extended reasoning between `<think>...</think>` tags (default: NO)
+
+ENABLE_LOG: enable logging to the file **mission_log.txt** (default: NO)
+
+## Prime Directives
+
+Prime Directives serve as the system prompt or behavioral guidelines, defining MAGI's personality, rules, and operational ethos. This is where you imprint MAGI with a specific identity—whether as a helpful assistant, a fictional character, or a specialized agent.
+
+You can set your Prime Directives in the file **prime_directives.txt**.
+
+## Core Protocol
+
+The Core Protocol boosts MAGI's reasoning by guiding its internal thought process with a customizable reasoning framework.
+
+You can tailor it to different techniques such as Chain-of-Thought, Chain of Draft, or other variants.
+
+You can set your Core Protocol in the file **core_protocol.txt**.
+
+The default protocol focuses on factual accuracy and reliable reasoning. It helps reduce hallucinations and improves consistency by encouraging the model to separate facts from fiction and reflect before responding.
+
+To disable the Core Protocol entirely, simply remove all contents from the file **core_protocol.txt** or delete the file.
+
+## Toolchain
+
+MAGI's toolchain acts as a modular system for registering and calling tools, similar to frameworks like LangChain. It allows MAGI to dynamically select and execute tools based on task needs, chaining their outputs into responses. Tools are enabled through the plugin system by editing the file **config.cfg**.
+
+The plugin system includes the following tools:
+
+- Code Runner plugin: adds a tool to generate and execute Python code.
+- Image generation plugin: adds a tool to generate images.
+- Web plugin: adds a tool to browse the web.
+
+## Codex
+
+The Codex is MAGI's long-term memory. It automatically saves valuable knowledge across sessions — working code snippets, research findings, and solutions to recurring problems — and retrieves it when relevant to the current task.
+
+Retrieval is embedding-based, so what is recalled is contextually appropriate rather than just keyword-matched.
+
+The Codex is stored in the file **codex.json** in the project root folder. You can reuse the same Codex with different models. MAGI will continue building its knowledge and understanding of you over time.
+
+You can inspect or edit it manually; entries added without embeddings will have their embeddings generated automatically on the next access. If you edit an entry's title or content, also delete its `"embedding"` key to ensure it is regenerated correctly on the next access.
+
+## AI modes
+
+To toggle between the different AI modes, type the letter **m** and press enter.
+
+### Normal mode
+
+MAGI will hold a conversation with you in a similar way to other chatbots.
+
+This is the default mode when the program starts.
+
+### Mission mode
+
+MAGI will generate a more elaborate response based on an action list.
+
+The system will extract useful information from the file **mission_data.txt**.
+
+### NERV mode
+
+NERV is a paramilitary organization composed of AI agents.
+
+The captain receives your prompt and carries out the mission by recruiting soldiers, giving them orders, and reusing them as the mission unfolds.
+
+Every soldier is created dynamically, with a name and personality of the captain's choosing. Soldiers have their own memory, speak only to the captain, and never see each other.
+
+Soldiers are kept alive across missions in case they are useful again; only the longest-idle soldier is dropped when the team reaches its size limit.
+
+To print the agent list, type the command **agents** and press enter.
+
+The system will extract useful information from the file **mission_data.txt**.
+
+#### Configuration
+
+CAPTAIN_NAME: the captain's name (default: Misato Katsuragi)
+
+CAPTAIN_PRIME_DIRECTIVES: the captain's Prime Directives (default: You are Misato Katsuragi, Operations Director of NERV. You are informal, warm, and genuinely caring toward your team and the user, but you are also a sharp, competent tactical director. When conceiving new soldiers, choose names and roles that fit the Neon Genesis Evangelion universe.)
+
+### MAGI mode
+
+This is a fully autonomous mode.
+
+MAGI will treat your prompt as its main mission and work autonomously to accomplish it.
+
+You must have enabled the three plugin tools in `config.cfg`:
+
+```
+ENABLE_WEB_PLUGIN = YES
+ENABLE_CODE_RUNNER_PLUGIN = YES
+ENABLE_IMAGE_GENERATION_PLUGIN = YES
+```
+
+MAGI will run continuously until you manually stop it by pressing Ctrl + C.
+
+The system will extract useful information from the file **mission_data.txt**.
+
+## Plugins
+
+### Code Runner plugin
+
+This plugin adds a tool to generate and execute Python code to solve specific tasks, such as mathematical operations, accessing resources on the internet, simulations, or complex logic.
+
+MAGI will install the required Python packages in an isolated virtual environment.
+
+Linting is performed using Ruff to ensure clean code, and the execution times out after 30 minutes for safety.
+
+The generated code will run non-interactively, printing all results to the console.
+
+Moreover, the generated code will also print its relevant internal state at the end of each execution for reuse in multi-step tasks.
+
+MAGI will review and refine the generated code and its output up to 10 times to ensure it functions correctly and fully completes the task.
+
+Any local files saved by the code (such as data exports, logs, or plots) will automatically be routed to the **workspace** folder.
+
+While dependencies are isolated, the OS file system is not strictly sandboxed. See the Security section for best practices.
+
+### Image generation plugin
+
+This plugin adds a tool to generate images.
+
+Only Stable Diffusion XL (SDXL) checkpoints are supported.
+
+It automatically downloads the specified image generation model from Hugging Face.
+
+Diffusers-format checkpoints must provide FP16 weights; single-file `.safetensors` checkpoints may use FP16 or FP32 weights.
+
+MAGI will use the model to generate context-related images and save them in the folder **workspace**.
+
+If the folder contains images from previous sessions, reused filenames will be overwritten.
+
+#### System Requirements
+
+**CPU-only:**
+- Minimum: 32GB RAM
+- Recommended: 64GB RAM
+
+**NVIDIA GPU:**
+- Minimum: 8GB VRAM
+- Recommended: 16GB VRAM
+
+#### Model Access
+
+Some models require authentication. To access these gated models:
+
+- Visit the model's page on Hugging Face (e.g., https://huggingface.co/SG161222/RealVisXL_V5.0).
+- Complete the required access agreement.
+- Generate an access token in your Hugging Face account settings.
+- Authenticate your local environment by running the following command in the project directory (with your Python environment activated):
+
+```
+$ hf auth login
+```
+
+#### Configuration
+
+IMAGE_GENERATION_MODEL: this is the model used to generate images (default: SG161222/RealVisXL_V5.0)
+
+IMAGE_GENERATION_LORA: this is the LoRA used to enhance image quality, it must be compatible with the selected model. Leave empty if not using a LoRA (default: None)
+
+IMAGE_GENERATION_TYPE: this defines the base medium or style of the image (acting as a foundational anchor). This text will be prepended to the beginning of the prompt used to generate each image (default: 4K RAW photo)
+
+IMAGE_GENERATION_SPECS: these are the overarching photographic or artistic specifications you want to apply to the images. This text will be appended to the end of the prompt used to generate each image (default: 50mm lens, f/8 aperture, sharp focus, highly detailed, volumetric lighting, cinematic color grading)
+
+IMAGE_GENERATION_NEGATIVE_PROMPT: these are the unwanted features or structural flaws you want to instruct the model to avoid (default: lowres, blurry, out of focus, soft focus, jpeg artifacts, muddy textures, deformed, disfigured, bad anatomy, bad proportions, bad face, bad eyes, missing limbs, bad hands)
+
+IMAGE_GENERATION_WIDTH: width of generated images in pixels (default: 832)
+
+IMAGE_GENERATION_HEIGHT: height of generated images in pixels (default: 1216)
+
+#### Example
+
+![Example](https://gateway.pinata.cloud/ipfs/bafkreifeoeaxajf5cpj2tnzci7lkdzc4lctug4j54h7735azfue3bv2xv4)
+
+### Telegram plugin
+
+This plugin enables you to teleoperate MAGI via Telegram, allowing you to have AI support on the go. When the Telegram plugin is enabled, MAGI only accepts commands via Telegram and ignores keyboard input.
+
+If you have both the Telegram plugin and the image generation plugin enabled, you will receive the generated images via Telegram.
+
+To use this plugin, you must create a Telegram bot with BotFather (username: @BotFather) and save the token assigned to your bot.
+
+You must also write to userinfobot (username: @userinfobot) to get your user ID. MAGI will only communicate with your Telegram user and will ignore other users.
+
+#### Configuration
+
+TELEGRAM_BOT_TOKEN: the token you received from BotFather.
+
+TELEGRAM_USER_ID: your Telegram user ID, you can get it from userinfobot.
+
+### Web plugin
+
+This plugin adds a tool to browse the internet for up-to-date information.
+
+MAGI will search, scrape, and summarize relevant pages with automatic early stopping on success.
+
+It uses Dux Distributed Global Search (DDGS), a metasearch library that aggregates results from diverse web search services.
+
+It only scrapes websites that explicitly authorize it in robots.txt.
+
+You can instruct MAGI to browse specific pages by including one or more URLs in your prompt (e.g., Compare the data from www.site-a.com and www.site-b.com). If valid addresses (starting with http://, https://, or www.) are detected, MAGI will skip the search engine and navigate directly to the provided links.
+
+## Model
+
+You can use any GGUF model supported by llama-cpp-python, as long as it adheres to the ChatML prompt format:
+
+```
+<|im_start|>system
+You are a friendly AI assistant.
+<|im_end|>
+<|im_start|>user
+Who was Sun Tzu?
+<|im_end|>
+<|im_start|>assistant
+Sun Tzu was the author of The Art of War.
+<|im_end|>
+```
+
+The model must generate extended reasoning enclosed between `<think>...</think>` tags:
+
+```
+<think>
+Okay, so I need to explain who was Sun Tzu.
+</think>
+```
+
+MAGI preserves thinking blocks in the conversation context to maintain reasoning continuity during long-running tasks.
+
+### Recommended model
+
+![Model artwork](https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF/resolve/main/star-wars-hans-solo.gif)
+
+**[Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF](https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF/blob/main/Qwen3.8-27B-TurboFCFusion-735-882-Here-Uncen-NEO-CODER-MAX-MTP-Q8_0.gguf)**
+
+**Model data:**
+- Size: 30.2 GB
+- Quantization: Q8_0
+- Context: 256K tokens
+- Safety: uncensored
+
+#### System Requirements (default context size)
+
+**CPU-only:**
+- Minimum: 32GB RAM
+- Recommended: 64GB RAM
+
+**NVIDIA GPU:**
+- Minimum: 8GB VRAM
+- Recommended: 64GB VRAM
+
+## Debian installation
+
+### Prerequisites
+
+Install the following packages:
+
+```
+$ sudo apt install build-essential apparmor-utils git pkg-config libopenblas-dev python3-venv python3-pip python3-requests python3-pycurl python3-protego antiword python3-bs4 python3-docx python3-odf python3-pypdf python3-python-telegram-bot
+```
+
+To use your NVIDIA graphics card, you need to install CUDA:
+
+```
+$ sudo apt install nvidia-cuda-toolkit
+```
+
+### Security
+
+Since MAGI installs third-party Python packages and generates and executes code, running it under your personal user account poses a security risk.
+
+I strongly advise running MAGI as a dedicated, unprivileged user to isolate these processes.
+
+After installing prerequisites, create a new user, for example `magi`:
+
+```
+$ sudo adduser magi
+```
+
+When you want to install or run MAGI, switch to the new user:
+
+```
+$ su - magi
+```
+
+### Install
+
+- Clone this repository.
+
+- Place a GGUF model in the root folder.
+
+- Create a Python virtual environment:
+
+```
+$ python3 -m venv venv --system-site-packages
+```
+
+- To use only the CPU, run the following command:
+
+```
+$ ./update
+```
+
+- If you want to use your NVIDIA graphics card, run the following command:
+
+```
+$ ./update --nvidia
+```
+
+The update script will automatically create **config.cfg**, **prime_directives.txt**, **core_protocol.txt**, and **mission_data.txt** from their `.example` templates on first run.
+
+Installation is now complete. Use the same command to pull future changes and keep packages up to date.
+
+### Run
+
+- Open a console and navigate to the project root folder.
+
+- To start MAGI, run this command:
+
+```
+$ ./magi
+```
+
+### Exit MAGI
+
+To exit MAGI, type the command **exit** or press Ctrl + C.
+
+## Docker installation (CPU-only)
+
+### Prerequisites
+
+#### Linux
+
+Install the following packages:
+
+```
+$ sudo apt install docker.io apparmor-utils
+```
+
+#### Other systems
+
+Install Docker.
+
+### Install
+
+- Clone this repository.
+
+- Optional: place a model in the root folder to include it in the Docker image.
+
+- To create the Docker image, run the following command in the root folder:
+
+```
+$ sudo docker build --no-cache -t magi .
+```
+
+### Run a Docker image with a model
+
+If you have placed the model in the Docker image, run this command:
+
+```
+$ sudo docker run -it magi
+```
+
+### Run a Docker image without a model
+
+If you have placed the model in a local folder, run this command, replacing MODEL_PATH with the full path to the model file and MODEL_FILE with the name of the model file:
+
+```
+$ sudo docker run -it -v MODEL_PATH:/app/MODEL_FILE magi
+```
+
+Example:
+
+```
+$ sudo docker run -it -v /home/user/models/Hermes-2-Pro-Mistral-7B.Q8_0.gguf:/app/Hermes-2-Pro-Mistral-7B.Q8_0.gguf magi
+```
+
+### Exit MAGI
+
+To exit MAGI, type the command **exit** or press Ctrl + C.
+
+If you want to print the log of the last run, use this command:
+
+```
+$ sudo docker logs $(sudo docker ps -l -q)
+```
+
+## Disclaimer
+
+MAGI is a non-commercial, open-source project created for educational and research purposes.
+
+This project is a fan tribute. All references to characters, organizations, terminology, and visual assets from existing media are used solely as a homage. All original media and intellectual property belong to their respective owners.
+
+This software is provided "as is", without warranty of any kind. The user assumes full responsibility for any code execution or system modifications performed by the AI.
+

@@ -1,0 +1,399 @@
+<p align="center">
+  <img src="assets/gemmate_logo.png" width="120" alt="GemMate Logo"/>
+</p>
+
+
+
+
+<h1 align="center">GemMate</h1>
+
+<p align="center">
+  <strong>Your AI Study Companion — Powered by Gemma 4</strong>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#demo">Demo</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#license">License</a>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.3.0-brightgreen?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Gemma_4-E2B-4361EE?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/Flutter-3.41-02569B?style=for-the-badge&logo=flutter&logoColor=white" />
+  <img src="https://img.shields.io/badge/Dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white" />
+  <img src="https://img.shields.io/badge/Ollama-Local_AI-000000?style=for-the-badge&logo=ollama&logoColor=white" />
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Privacy-Offline-9C27B0?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-Apache_2.0-green?style=for-the-badge" />
+</p>
+
+
+---
+
+## 🌟 What is GemMate?
+
+GemMate transforms how university students learn by combining **Google's Gemma 4 E2B** model with proven study science techniques. It's a cross-platform Flutter app that runs Gemma 4 **100% locally** — no cloud, no API keys, no data leaves your device.
+
+> 💡 **The Problem:** Students struggle to create effective study materials from lectures and textbooks. Existing AI tools require cloud connectivity and raise privacy concerns.
+>
+> ✅ **The Solution:** GemMate runs Gemma 4 E2B on your own hardware, generating personalized flashcards, quizzes, and explanations — even on an airplane.
+
+<p align="center">   <img src="assets/cover.png" width="800" alt="Chat Demo"/> </p>
+
+---
+
+## ✨ Features
+
+### 🧠 AI Chat with Gemma 4
+Chat with Gemma 4 E2B to understand complex concepts. Ask questions in any of 6 supported languages, and get bilingual explanations tailored to your level.
+
+<p align="center">   <img src="assets/demo1.jpg" width="350" alt="Chat Demo"/> </p>
+
+### 📚 Smart Flashcard Decks
+Generate flashcard decks from any chat conversation. Cards use the **SM-2 spaced repetition algorithm** for scientifically-optimized review schedules. Decks are displayed as beautiful fan-shaped card piles with flip animations.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Front</b></td>
+      <td align="center"><b>Back</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/demo7.jpg" width="300"/></td>
+      <td align="center"><img src="assets/demo8.jpg" width="300"/></td>
+    </tr>
+  </table>
+</div>
+
+### 📊 Interactive Quizzes
+AI-generated multiple-choice quizzes that test your understanding. Wrong answers automatically become flashcards for targeted review.
+
+<p align="center">   <img src="assets/demo2.jpg" width="260" />   <img src="assets/demo3.jpg" width="260" />   <img src="assets/demo4.jpg" width="260" /> </p>
+
+### 📷 Camera / OCR
+Photograph textbook pages, lecture slides, or handwritten notes. Gemma 4's vision capabilities extract and explain the content.
+
+<p align="center">   <img src="assets/demo9.jpg" width="350" alt="Chat Demo"/> </p>
+
+### 🎤 Voice Input
+Tap the microphone to ask questions by voice — perfect for hands-free studying. Supports Chinese, English, Japanese, Korean, French, and Spanish.
+
+<p align="center">   <img src="assets/demo10.jpg" width="350" alt="Chat Demo"/> </p>
+
+### 🌍 6 Languages
+Full UI localization and AI responses in: English, 简体中文, 日本語, 한국어, Français, Español.
+
+<p align="center">   <img src="assets/languages.jpg" width="350" alt="Chat Demo"/> </p>
+
+### 🔔 Smart Notifications
+Spaced repetition reminders, daily study prompts, and inactivity nudges keep you on track.
+
+<p align="center">   <img src="assets/Notifications.jpg" width="350" alt="Chat Demo"/> </p>
+
+### 🗺️ AI Mind Map Generator
+One tap generates a visual, color-coded mind map from your conversation — rendered with bezier curves and an interactive pan/zoom canvas. Perfect for organizing complex topics before an exam.
+
+<p align="center"><img src="assets/MindMap.jpg" width="350" alt="Mind Map"/></p>
+
+### 📄 Document Import (PDF + DOCX)
+Import PDF and Word (.docx) files directly into chat. GemMate extracts the text and feeds it to the AI, so you can ask questions, generate flashcards, or get a summary from any document — no cloud upload needed.
+
+<p align="center"><img src="assets/PDF%20%2B%20DOCX.jpg" width="350" alt="PDF and DOCX Import"/></p>
+
+### 📷 Camera Math Solver
+Switch the camera screen to **Math Solver** mode to photograph handwritten equations or printed problems. The AI solves them step-by-step, and each step can be saved as a flashcard for drill practice.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Mode Select</b></td>
+      <td align="center"><b>Analyzing</b></td>
+      <td align="center"><b>Step-by-Step Result</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/Mathematics%20Solver-1.jpg" width="220"/></td>
+      <td align="center"><img src="assets/Mathematics%20Solver-2.jpg" width="220"/></td>
+      <td align="center"><img src="assets/Mathematics%20Solver-3.jpg" width="220"/></td>
+    </tr>
+  </table>
+</div>
+
+### 🔲 QR Code Sharing & Gallery Scan
+Share flashcard decks with classmates via a generated QR code, or scan a QR from your gallery image — no need to point the camera at a screen.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Scan Interface</b></td>
+      <td align="center"><b>Share via QR</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/QR%20Code%20Scanning%20Interface.jpg" width="280"/></td>
+      <td align="center"><img src="assets/Example%20QR%20Code.jpg" width="280"/></td>
+    </tr>
+  </table>
+</div>
+
+### 🍅 Custom Pomodoro Timer
+Set your own focus and break durations (1–120 min / 1–60 min) directly from the home screen. Type the number or tap +/−. Sessions are tracked daily and stored locally.
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Timer</b></td>
+      <td align="center"><b>Custom Settings</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/Pomodoro%20timer%20interface.jpg" width="280"/></td>
+      <td align="center"><img src="assets/Pomodoro%20timer%20settings.jpg" width="280"/></td>
+    </tr>
+  </table>
+</div>
+
+### 🎨 Neomorphic Design
+Beautiful neomorphic UI with dark/light mode, customizable accent colors, and adjustable font sizes.
+
+<p align="center">   <img src="assets/theme.jpg" width="350" alt="Chat Demo"/> </p>
+
+---
+
+## 🏗️ Architecture
+
+GemMate uses a **smart routing architecture** that automatically selects the best available AI model:
+
+```
+┌─────────────────────────────────────────────────┐
+│                  📱 PHONE                      │
+│             GemMate Flutter App                 │
+│                                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
+│  │   Chat   │  │  Cards   │  │   Quiz   │       │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘       │
+│       │              │              │           │
+│       └──────────────┼──────────────┘           │
+│                      │                          │
+│              ┌───────▼────────┐                 │
+│              │  Smart Router  │                 │
+│              └───┬───────┬─-──┘                 │
+│                  │       │                      │
+│     ┌────────────▼─┐  ┌──▼───────────────┐      │
+│     │  On-Device   │  │   Ollama HTTP    │      │
+│     │  Gemma 4 E2B │  │   Connection     │      │
+│     │  (Offline)   │  │   (WiFi LAN)     │      │
+│     └──────────────┘  └──────┬───────────┘      │
+│                              │                  │
+└──────────────────────────────┼──────────────────┘
+                               │ WiFi (Local Network)
+┌──────────────────────────────▼───────────────────┐
+│                  💻 LAPTOP                       │
+│           Ollama + Gemma 4 E4B                   │
+│         (RTX 4060, <1s response)                 │
+└──────────────────────────────────────────────────┘
+```
+
+### Smart Routing Logic
+
+| Condition | Model Used | Latency |
+|-----------|-----------|---------|
+| WiFi + Laptop available | Gemma 4 E4B via Ollama (laptop GPU) | <1s |
+| No WiFi, model installed | Gemma 4 E2B on-device (phone CPU) | 3-8s |
+| WiFi + No laptop | Gemma 4 E2B on-device | 3-8s |
+| No WiFi, no model | Prompt to download model | — |
+
+---
+
+## 🎬 Demo
+
+📺 **[Watch the 3-minute demo video →](https://youtu.be/tLnDOzBy_Kc)**
+
+📦 **[Download APK →](https://github.com/linyeping/GemMate/releases/latest)**
+
+🌐 **[Visit Product Homepage →](https://gemmatedemo.netlify.app/)**
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Flutter 3.41+ ([Install Flutter](https://flutter.dev/docs/get-started/install))
+- Android device (Android 8.0+) or emulator
+- For laptop AI: [Ollama](https://ollama.ai) + `ollama pull gemma4:e2b`
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/linyeping/GemMate.git
+cd GemMate
+
+# Install dependencies
+flutter pub get
+
+# Run on connected device
+flutter run
+
+# Build APK
+flutter build apk --release
+```
+
+### Set Up Laptop AI (Optional, Recommended)
+
+```bash
+# Install Ollama (https://ollama.ai)
+ollama pull gemma4:e2b
+
+# Start with network access
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
+
+# In GemMate Settings → Connection → Enter laptop IP
+```
+
+### Install On-Device Model (Optional, for Offline Use)
+
+Option A: Download in-app (Settings → Model Management → Download)
+
+Option B: Manual install via ADB:
+```bash
+# Download from Hugging Face mirror (China)
+curl -L -o gemma-4-E2B-it.litertlm "https://hf-mirror.com/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm"
+
+# Push to phone
+adb push gemma-4-E2B-it.litertlm /sdcard/Download/
+
+# In app: Settings → Model Management → Load from /sdcard/Download/
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|-----------|-----------|
+| **AI Model** | Gemma 4 E2B / Gemma 4 E4B |
+| **On-Device Runtime** | LiteRT-LM via flutter_gemma |
+| **Local Server** | Ollama (laptop, GPU-accelerated) |
+| **App Framework** | Flutter 3.41 / Dart |
+| **Study Algorithm** | SM-2 Spaced Repetition |
+| **Voice Input** | speech_to_text |
+| **OCR / Vision** | ML Kit (offline) + Gemma 4 multimodal (Ollama) |
+| **QR Code** | mobile_scanner 5.x |
+| **Document Import** | pdfx + archive (DOCX ZIP/XML parsing) |
+| **Mind Map** | CustomPainter + InteractiveViewer |
+| **Notifications** | flutter_local_notifications |
+| **Storage** | SharedPreferences + JSON |
+| **UI Design** | Custom Neomorphic widgets |
+
+---
+
+## 📁 Project Structure
+
+```
+lib/
+├── main.dart                          # App entry point + model initialization
+├── app/
+│   ├── router.dart                    # Bottom navigation + page routing
+│   └── theme.dart                     # Neumorphic theme (light/dark)
+├── core/
+│   ├── constants.dart                 # App constants + colors
+│   ├── json_utils.dart                # JSON parsing utilities
+│   ├── text_utils.dart                # Text processing and formatting
+│   └── utils.dart                     # General helper functions
+├── l10n/
+│   ├── app_localizations.dart         # i18n delegate
+│   ├── locale_en.dart                 # English localization
+│   ├── locale_es.dart                 # Spanish localization
+│   ├── locale_fr.dart                 # French localization
+│   ├── locale_ja.dart                 # Japanese localization
+│   ├── locale_ko.dart                 # Korean localization
+│   └── locale_zh.dart                 # Chinese localization
+├── models/
+│   ├── chat_message.dart              # Chat message model
+│   ├── chat_session.dart              # Chat session model
+│   ├── flashcard.dart                 # Flashcard with SM-2 fields + grouping
+│   ├── quiz.dart                      # Quiz state model
+│   ├── quiz_question.dart             # Quiz question model
+│   ├── quiz_result.dart               # Summary and score of a completed quiz
+│   └── study_plan.dart                # Spaced repetition schedule model
+├── screens/
+│   ├── capture_screen.dart            # Camera / OCR + Math Solver mode
+│   ├── chat_history_screen.dart       # Chat session management
+│   ├── chat_screen.dart               # Main chat UI + voice + mind map + doc import
+│   ├── deck_study_screen.dart         # Card flip study session
+│   ├── exam_history_screen.dart       # Past exam records
+│   ├── exam_screen.dart               # Timed exam mode
+│   ├── flashcard_screen.dart          # Deck gallery with fan piles
+│   ├── home_screen.dart               # Dashboard + custom Pomodoro timer
+│   ├── mind_map_screen.dart           # AI-generated interactive mind map
+│   ├── onboarding_screen.dart         # First-launch setup + model download
+│   ├── paper_screen.dart              # Detailed view and export of study papers
+│   ├── qr_scan_screen.dart            # QR scan (camera + gallery)
+│   ├── qr_share_screen.dart           # QR code sharing for decks
+│   ├── quiz_screen.dart               # Interactive quiz UI
+│   ├── review_screen.dart             # Scheduled review dashboard
+│   └── settings_screen.dart           # Settings with sub-pages
+├── services/
+│   ├── flashcard_generator.dart       # AI-powered flashcard creation
+│   ├── local_gemma_service.dart       # On-device Gemma 4 via flutter_gemma
+│   ├── model_download_service.dart    # Model download + mirror support
+│   ├── notification_service.dart      # Study reminders
+│   ├── ollama_service.dart            # HTTP client for Ollama API
+│   ├── pdf_service.dart               # PDF + DOCX import and text extraction
+│   ├── quiz_generator.dart            # AI-powered quiz generation
+│   ├── smart_router.dart              # Smart model selection + system overrides
+│   ├── storage_service.dart           # Local file/DB storage operations
+│   ├── streak_service.dart            # Daily streak + Pomodoro counter
+│   └── study_tools.dart               # Core study algorithms (SM-2, etc.)
+├── stores/
+│   ├── chat_store.dart                # Chat session persistence
+│   ├── connection_store.dart          # Connection state management
+│   ├── flashcard_store.dart           # Flashcard persistence + groups
+│   ├── locale_store.dart              # Language preferences
+│   └── theme_store.dart               # Theme + font size preferences
+└── widgets/
+    ├── animated_avatar.dart           # AI/User animated profile picture
+    ├── chat_session_tile.dart         # Chat history list item
+    ├── code_block.dart                # Syntax-highlighted code display
+    ├── color_scheme_picker.dart       # Theme color selector
+    ├── connection_indicator.dart      # Connection status pill
+    ├── download_progress_widget.dart  # Model download status UI
+    ├── flashcard_widget.dart          # Individual flashcard UI
+    ├── loading_indicator.dart         # Custom loading animation
+    ├── message_bubble.dart            # Chat message bubble
+    ├── model_badge.dart               # Model source indicator (Edge/Laptop)
+    ├── neumorphic_button.dart         # Neumorphic button widget
+    ├── neumorphic_container.dart      # Neumorphic card widget
+    ├── quick_action_chips.dart        # Suggested prompt chips
+    └── quiz_option_tile.dart          # Quiz multiple choice button
+```
+
+---
+
+## 👤 About the Developer
+
+**Sheng Wei** — AI major at **Gansu Political Science and Law University (GSUPL)** in China. A Solo developer.
+
+Previous Projects: **InSeeVision** (Gemma 3 accessibility project).
+
+- GitHub: [@linyeping](https://github.com/linyeping)
+- Kaggle: [linyeping](https://kaggle.com/linyeping)
+
+---
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 — see the [LICENSE](LICENSE) file for details.
+
+The Gemma 4 model is provided by Google under the [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ for the Gemma 4 Good Hackathon 2026</strong><br/>
+  <strong>Contact: yepinglin20@gmail.com | 201180946@qq.com</strong>
+</p>

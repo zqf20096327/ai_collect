@@ -1,0 +1,88 @@
+# [AI Makerspace](https://github.com/DigitalProductschool/AI-Makerspace) 
+## We support rapid prototyping of scalable user-centered AI applications. 🤝
+
+Advances in innovation of AI tools and technologies enable us to solve problems faster, easier, and more effectively. As the technologies grow in complexity and diversity, we experience a growing need for guiding innovation teams through rapid prototyping, scaling and user-centred development. 
+
+The code templates and use case examples provided in this repository are intended to guide development of AI applications. It is a support for cross-functional innovation teams throughout their journey in AI Design Thinking, Lean AI Engineering, Explainable AI (XAI), Responsible and Ethical AI, as well as User Experience (UX) of machine learning products.
+
+In addition, we are on an exciting journey to develop scalable coaching solutions through our 🚀 [Agentic AI Coaching project](https://github.com/DigitalProductschool/AgenticAICoach) 🚀, and we warmly invite you to contribute and be a part of this initiative.
+
+:octocat: Each folder of our GitHub repository is self-explanatory for using the blueprint templates of selected technologies and AI use cases. Here is the list of some of the tools, platforms, and applications that we have explored:
+
+### Platforms
+1. HuggingFace
+2. GKE-Autopilot
+3. Heroku
+4. CloudRun
+5. VertexAI
+6. FastAPI
+7. Cloudflare Workers
+8. AWS SageMaker
+9. Tableau
+11. Claude Code
+12. Claudeflare
+
+### Tools and Frameworks
+1. MCP
+2. CrewAI for building multi-agent systems
+3. Open Source LLM
+4. OpenAI GPT
+5. Streamlit
+6. Gradio
+7. PyCaret
+8. Data Version Control
+9. Docker
+10. Assembly AI
+11. PyTorch
+12. TensorFlow
+13. Flask
+14. Microservices
+15. Agno for building multi-modal agents
+16. Model Context Protocol
+
+### Applications
+
+1. [Agentic AI Coaching](https://github.com/DigitalProductschool/AgenticAICoach)
+2. Rapid Prototyping Agent: Tool Research and Use Case Coding Assistant
+3. Retrieval-Augmented Generation (RAG)
+4. 3D Maps, AR & 3D Geo AI interactive applications
+5. Chatbot
+6. Emotion detection
+7. Offensive speech detection
+8. Keyword extraction
+9. PDF question-answering
+10. Text translation
+11. Text auto-completion
+12. Text to Speech
+13. Summarization
+14. Speech recognition
+15. Image Generation
+16. Image Caption Generation
+17. Neural style transfer
+18. Synthetic data generation
+19. Accident prediction
+20. Serverless MCP servers
+
+
+:boom: In addition, you can find our curated list of resources to help AI prototyping on our Wiki page: [Curated AI Resources](https://github.com/DigitalProductschool/AI-Makerspace/wiki/Welcome-to-Curated-AI-Resources!-%F0%9F%9A%80)
+
+📫 For any questions and if you are interested in receiving our exclusive community offers, fill out this [application form](https://forms.gle/2Yh1DNZyR97f5w4q6).
+
+Enjoy & Rock!
+
+### Acknowledgments 
+AI Makerspace is an initiave by [Afsaneh Asaei](https://www.linkedin.com/in/dr-afsaneh-asaei/) dedicated to empowering a **user-centered AI Engineering community**. Our goal is to leverage the expertise of the **Digital Product School (DPS)** alumni from **UnternehmerTUM**. These experienced professionals contribute through mentorship and support in the development of cutting-edge, user-centric AI products.
+
+We would like to extend our deepest gratitude to the DPS alumni who played a pivotal role in the advancement of this initiative. Their contributions and dedication have been vital to the growth of our thriving DPS family. In particular, the long-standing involvement of
+
+* [Devansh Srivastav](https://www.linkedin.com/in/devanshsrivastav/)
+* [Mahmoud Fazeli](https://www.linkedin.com/in/mahmoud-fazeli-034654103/)
+* [Diksha Shrivastava](https://www.linkedin.com/in/diksha-shrivastava13/)
+* [Mann Acharya](https://www.linkedin.com/in/mann-acharya/)
+* [Ali Hussainia](https://github.com/alihussainia) 
+* [Sudhanshu Kumar](https://www.linkedin.com/in/sudhanshublaze/)
+
+---
+
+### 🤝 Join Us
+We invite **ALL** human-centered AI developers to share their use cases and development workflows. Let's build the future of AI together!

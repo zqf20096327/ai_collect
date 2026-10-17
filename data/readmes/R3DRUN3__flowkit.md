@@ -1,0 +1,365 @@
+# Flowkit
+
+[![ci](https://github.com/R3DRUN3/flowkit/actions/workflows/ci.yml/badge.svg)](https://github.com/R3DRUN3/flowkit/actions/workflows/ci.yml)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](./compose/compose.yaml)  
+[![n8n](https://img.shields.io/badge/n8n-workflows-FF6D5A?logo=n8n&logoColor=white)](./workflows/)
+[![Bash](https://img.shields.io/badge/Bash-Script-4EAA25?logo=gnubash&logoColor=white)](./scripts/)
+
+<img src="./media/logo.png" alt="logo" style="width:350px; height:310px;"/>
+
+
+Flowkit is a self-hosted environment for building and managing n8n automation workflows, (also) with Dockerized tools.  
+
+It provides a portable and reproducible orchestration layer, with workflows versioned in Git for a GitOps-based development and deployment model.  
+Tools remain isolated, versioned, and independently replaceable, while the platform can be extended to virtually any automation use case, including [AI-driven agentic workflows](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent).   
+
+
+
+## Table of Contents
+
+- [Flowkit](#flowkit)
+  - [Table of Contents](#table-of-contents)
+  - [Use cases](#use-cases)
+  - [Prerequisites](#prerequisites)
+  - [Architecture](#architecture)
+  - [Instructions](#instructions)
+    - [Make this repository your deployment baseline](#make-this-repository-your-deployment-baseline)
+    - [First deployment](#first-deployment)
+      - [TLS cert generation](#tls-cert-generation)
+      - [Create SSH-enabled user](#create-ssh-enabled-user)
+      - [Configure env vars](#configure-env-vars)
+      - [Download docker tool images (optional)](#download-docker-tool-images-optional)
+      - [Deploy](#deploy)
+    - [Workflows](#workflows)
+      - [Create your first docker-based workflow](#create-your-first-docker-based-workflow)
+      - [Bonus: create your first AI workflow](#bonus-create-your-first-ai-workflow)
+      - [Manage workflows](#manage-workflows)
+      - [Programmatically calling workflows](#programmatically-calling-workflows)
+
+
+## Use cases  
+Some use cases for Flowkit are:  
+- Managing a home lab  
+- Operating a central automation platform  
+- Orchestrating Dockerized tools and services in a simple way
+- Building reusable internal workflows  
+- Managing infrastructure operations  
+- Automating security and IT tasks  
+- Connecting APIs, applications, and command-line tools  
+- Running AI-assisted operational workflows  
+- Versioning workflows with Git  
+- Deploying automation consistently across environments  
+
+Read [this article](https://www.neteye-blog.com/blog/2026/01/27/architecting-a-portable-red-team-engine/) for a real world case study.  
+
+
+## Prerequisites  
+- Linux host (tested on arch-linux and debian-based distros)  
+- Docker
+- Docker Compose
+- sshd (listening on port 22)
+- Python3
+
+
+
+## Architecture 
+The n8n container acts as the control plane, defining and orchestrating workflows without requiring their dependencies:  
+no need to create/update a custom n8n image.      
+Workloads that need specific tooling are executed on the host via SSH and Docker, while standard workflows run directly inside the n8n docker container.   
+This keeps dependencies isolated and reproducible while keeping the n8n host clean:       
+
+```console
+                         ┌─────────────────────────┐
+External scripts ──────► │                         │
+CLI tools ─────────────► │          n8n            │
+Applications ──────────► │   Workflow Engine/API   │
+Services ──────────────► │          │              │
+Integrations ──────────► │          ├──► Normal    │
+                         │          │    workflows │
+                         └──────────┼──────────────┘
+                                    │
+                                   SSH
+                                    │
+                                    ▼
+                              ┌───────────┐
+                              │  Flowkit  │
+                              │   host    │
+                              └─────┬─────┘
+                                    │
+                                  Docker
+                                    │
+                            ┌───────┼───────┐
+                            ▼       ▼       ▼
+                          Tool A  Tool B  Tool C
+```
+
+
+
+
+## Instructions  
+
+### Make this repository your deployment baseline  
+Clone or fork this repository, It will serve as the baseline for managing your n8n instance.  
+Once you have cloned this base, you can extend it as needed by adding scripts, automations, workflows, tools, and anything else suited to your specific context.  
+
+> [!NOTE]
+> This repository includes a GitHub Action that opens a pull request to update the Docker Compose file to the latest stable release of n8n.  
+> If you are using a version control system other than GitHub, you will need to adapt it accordingly.  
+
+For enterprise projects, I recommend copying the repository to your organization’s official internal version-control system and keeping it private.  
+For personal projects, the choice is up to the individual.  
+ 
+No plain-text secrets are committed to git: workflow credentials are encrypted using the `N8N_ENCRYPTION_KEY` environment variable, which is stored in the `.env` file (excluded from version control).  
+
+
+### First deployment  
+
+#### TLS cert generation  
+
+
+First of all, generate a self signed TLS cert for your n8n instance:  
+
+```bash
+bash scripts/create-certs.sh
+```  
+
+> [!TIP]
+> **Why self-signed TLS?**  
+> Flowkit is structured to keep n8n private and off the public Internet, so a publicly trusted Let's Encrypt certificate isn't necessary.  
+> If remote access is needed, I prefer [Tailscale](https://tailscale.com/) and its HTTPS certificates instead of exposing n8n publicly.
+
+#### Create SSH-enabled user  
+
+From the repo root create the linux user `flowkit`, **this is the user that will run n8n SSH nodes on the host**:  
+```bash
+sudo bash scripts/create-flowkit-user.sh
+```  
+
+> [!TIP]
+> Keep track of the SSH password, you will need it in order to configure n8n credential for SSH node execution.  
+
+#### Configure env vars  
+
+Create the `.env` file by copying the content of `.env.example` and modify the env vars with your desired values.  
+
+#### Download docker tool images (optional)  
+
+If you want to pre-seed the Flowkit host with every tool image referenced by the versioned workflows, run:  
+```bash
+bash ./scripts/get-docker-tools.sh
+```
+
+#### Deploy  
+
+Now you are ready for the deploy, run:  
+```bash
+bash scripts/deploy.sh
+```  
+
+> [!TIP]
+> If this is the first deployment it will take some times as it will also pull all the required docker images.   
+> Subsequent deployments will be much faster.  
+
+
+
+  
+Once the deployment has completed and n8n is ready, open your browser at `https://flowkit.local:6789` and configure n8n user for UI authentication, for example:  
+
+![ui-user](./media/ui_user_registration.png)  
+
+
+> [!TIP]
+> Keep track of email and password as you will need them later to login again.  
+
+
+Now try to stop the deployment and restart it:  
+```bash
+bash scripts/stop.sh
+bash scripts/deploy.sh
+```  
+
+You should now be able to login with the user you previously created and you'll have a working n8n instance deployed.  
+
+
+### Workflows  
+
+#### Create your first docker-based workflow  
+
+In this section, we will explore how to build an automation workflow based on an SSH node.  
+
+[SSH nodes](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.ssh) can be particularly useful for executing commands directly on the host system.  
+This enables workflows to perform tasks such as starting and managing Docker containers on the host, effectively turning n8n into an orchestration layer  
+capable of integrating and controlling virtually any tool, service, or command-line operation required by the workflow.  
+
+Create a simple workflow with a manual trigger and an SSH node, call it `demo-ssh-workflow`:    
+![w1](./media/ssh_workflow_1.png)  
+
+Click on the SSH node and configure it, set the following as the command:  
+```bash
+docker run --rm curlimages/curl:8.22.0 -s https://httpbin.org/json
+```  
+![w2](./media/ssh_workflow_2.png)  
+
+> [!TIP]
+> By specifying the Docker image tag, we ensure reproducibility across different machines.
+> We apply this practice to both the main containers in the architecture (e.g., n8n) and the tools defined in the workflows.
+  
+
+
+
+Now click on `Connect to SSH Password` and configure authentication with the `flowkit` ssh user you created at the beginning of the deployment.  
+**Always put `host.docker.internal` as the host and 22 as the port**:     
+![w3](./media/ssh_workflow_3.png)  
+
+>[!TIP]
+> With the above config, SSH connection will work out of the box.  
+> In case it does not work, you have probably a firewall rule enabled on the flowkit host.  
+
+Add a code node to your workflow with this javascript inside:  
+```javascript
+return [
+  {
+    json: JSON.parse($json.stdout)
+  }
+];
+```
+
+Now run the workflow ad observe the output:  
+![w4](./media/ssh_workflow_4.png)  
+Congrats, you succesfully ran your first docker workflow !! 
+
+#### Bonus: create your first AI workflow  
+One of n8n's key strengths is its ability to integrate a wide range of third-party services through a large library of ready-to-use nodes.  
+Among these integrations are several AI providers (n8n also supports the integration of self-hosted models).  
+This makes it possible to design workflows that incorporate AI-powered capabilities as well as agentic behaviors, where an AI model can interact with external tools and services or other n8n workflows to accomplish a specific task.  
+
+In this section, we will see how to introduce an AI component into a workflow through a deliberately simple use case:  
+
+Our scenario assumes that Tailscale is running both on the Flowkit host and on our own smartphone.  
+Tailscale allows the two devices to communicate directly over a private network, even when they are connected to different local networks:  
+Your Flowkit host might be in a VPC in Australia and your smartphone might be connected to your home wifi in Italy.  
+
+The goal is to create a workflow that allows us to ask an AI, through a chat interface, whether our smartphone is currently reachable.  
+
+To implement this scenario, we split the functionality into two separate workflows:  
+
+* **phone-check**: performs a connectivity check by sending an ICMP ping to the smartphone's Tailscale IP address and returns the result.  
+* **ai-phone-checker**: provides the conversational AI interface and has access to the `phone-check` workflow as a tool, this allows the AI agent to invoke the connectivity check whenever required.  
+
+The resulting architecture is:
+
+![ai-arch](./media/ai_use_case_arch.png)  
+
+
+
+Create the `phone-check` workflow with these nodes:  
+![phone-check1](./media/pc1.png)  
+
+Configure the SSH command `ping phone` node to ping your smartphone's tailnet IP:  
+![phone-ping](./media/pc2.png)   
+
+>[!NOTE]
+> In this case we dont need docker as we can directly call `ping` on the Flowkit host.    
+
+Put this javascript code in the `ping output` node:  
+```javascript
+const result = $input.first().json;
+
+const reachable = result.code === 0;
+
+let latency_ms = null;
+
+if (reachable) {
+  const match = result.stdout.match(/time[=<]([\d.]+)\s*ms/);
+  if (match) {
+    latency_ms = Number(match[1]);
+  }
+}
+
+return [
+  {
+    json: {
+      reachable,
+      latency_ms,
+      exit_code: result.code,
+      error: result.stderr || null,
+    },
+  },
+];
+```  
+
+Test and publish this workflow.  
+Now let's create the `ai-phone-checker` workflow like this:  
+![ai1](./media/ai1.png)  
+In this example I use an [Azure Foundry](https://ai.azure.com/home) deployment but you can use other providers or self-hosted models.  
+Configure required connection and api keys for your AI provider and add the `phone-check` workflow we created previously as the agent tool.  
+
+Now start chatting with the AI, notice how it will call the `phone-check` workflow only when you ask it about your phone:  
+![ai2](./media/ai2.png)  
+
+
+
+
+
+
+#### Manage workflows  
+
+One of the key advantages of using n8n via Flowkit is the ability to version workflows, enabling a **GitOps-based approach** to workflow development and deployment.  
+
+This allows multiple team members to develop and test workflows independently on their local n8n instances, then commit and version their changes in Git for the rest of the team.  
+Other members can subsequently synchronize those workflows from Git to their own test environments or deploy them to the production instance, providing a consistent and traceable workflow lifecycle.  
+
+
+To support this GitOps workflow, Flowkit provides two Bash scripts for exporting and importing n8n workflows.  
+
+`./scripts/export-workflows.sh` creates a version-controlled snapshot of the current n8n instance:  
+It exports each workflow as a separate, human-readable JSON file named after the workflow, making changes easy to review and track through Git.  The script also identifies the credentials referenced by the exported workflows and stores them in `credentials/credentials.json` using n8n's built-in encrypted credential format.
+
+`./scripts/import-workflows.sh` performs the reverse operation: It first restores the encrypted credentials and then imports the workflows from the `workflows/` directory.  
+Because the original credential IDs are preserved, the imported workflows automatically retain their references to the corresponding credentials.  
+
+This makes Git the synchronization layer between Flowkit instances: workflows can be developed locally, committed to the repository, reviewed and shared with the team, and then imported into test or production environments when required.  
+
+> [!WARNING]
+> The `N8N_ENCRYPTION_KEY` used to encrypt the credentials must be kept in `.env`, outside the Git repository and must be preserved across deployments.  
+> Without the original encryption key, encrypted credentials cannot be restored.  
+
+#### Programmatically calling workflows  
+
+n8n can also be used as a central automation engine that exposes an API through which workflows can be triggered programmatically.  
+A workflow can be made externally callable by adding a Webhook node, which exposes an HTTP endpoint that can be invoked by other applications, scripts, or automation systems.  
+
+This effectively turns n8n into a central orchestration layer:  
+external systems send a request to n8n, n8n executes the corresponding workflow, and the workflow can then orchestrate containers, tools, APIs, and other services.  
+
+
+As an example of this, let's make the SSH workflow created earlier (`demo-ssh-workflow`) callable through an HTTP request.  
+
+Open the workflow from n8n UI and add a **Webhook** node before the SSH node.  
+
+Configure the Webhook node like this:  
+![webhook](./media/webhook.png)  
+
+
+The workflow now exposes a webhook endpoint that can be called programmatically (remember to publish the workflow in order to test this).  
+
+When the workflow is active, n8n exposes the production webhook URL:
+
+```text
+https://flowkit.local:6789/webhook/docker-ssh-test
+```  
+
+For example, the workflow can now be triggered from the command line:
+
+```bash
+curl -k -X POST https://flowkit.local:6789/webhook/docker-ssh-test
+```  
+
+![run](./media/workflow_via_webhook.png)  
+
+
+> [!NOTE]
+> The `-k` option is required in this example because Flowkit uses a self-signed TLS certificate. If the certificate is trusted by the client, `-k` is not required.
+
+> [!TIP]
+> For production deployment is reccommended to add [webhook authenticaton](https://docs.n8n.io/integrations/builtin/credentials/webhook).

@@ -1,0 +1,695 @@
+<p align="center">
+  <img src="docs/logo.png" alt="openai-oxide" width="480">
+  <br>
+  <p align="center">
+    Feature-complete OpenAI client for <strong>Rust</strong>, <strong>Node.js</strong>, and <strong>Python</strong>.<br>Streaming, WebSockets, structured outputs, WASM. Built for agentic workflows.
+  </p>
+  <p align="center">
+    <a href="https://crates.io/crates/openai-oxide"><img src="https://img.shields.io/crates/v/openai-oxide.svg" alt="crates.io"></a>
+    <a href="https://www.npmjs.com/package/openai-oxide"><img src="https://img.shields.io/npm/v/openai-oxide.svg" alt="npm"></a>
+    <a href="https://pypi.org/project/openai-oxide/"><img src="https://img.shields.io/pypi/v/openai-oxide.svg" alt="PyPI"></a>
+    <a href="https://docs.rs/openai-oxide"><img src="https://docs.rs/openai-oxide/badge.svg" alt="docs.rs"></a>
+    <a href="https://fortunto2.github.io/openai-oxide/"><img src="https://img.shields.io/badge/docs-mdbook-blue.svg" alt="Guide"></a>
+    <a href="https://socket.dev/npm/package/openai-oxide"><img src="https://badge.socket.dev/npm/package/openai-oxide" alt="Socket"></a>
+    <a href="https://github.com/fortunto2/openai-oxide/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+    <a href="https://github.com/fortunto2/openai-oxide"><img src="https://img.shields.io/github/stars/fortunto2/openai-oxide?style=social" alt="GitHub stars"></a>
+  </p>
+</p>
+
+`openai-oxide` implements the full [Responses API](https://platform.openai.com/docs/api-reference/responses), [Chat Completions](https://platform.openai.com/docs/api-reference/chat), and 20+ other endpoints with **persistent WebSockets**, **hedged requests**, **early-parsing for function calls**, and **type-safe Structured Outputs**. Types are provided by the standalone [`openai-types`](https://crates.io/crates/openai-types) crate (1100+ types, auto-synced from the Python SDK).
+
+## Why openai-oxide?
+
+Included:
+
+- **Structured Outputs (`parse::<T>()`):** Auto-generates JSON schema from Rust types via `schemars` and deserializes the response in one call. `parse::<MyStruct>()`. Works with Chat and Responses APIs.
+- **Stream Helpers:** High-level `ChatStreamEvent` with automatic text/tool-call accumulation, typed `ContentDelta`/`ToolCallDone` events, `get_final_completion()`, and `current_content()` snapshots. No manual chunk stitching.
+- **Streaming:** Incremental SSE parser with buffered line extraction and standard anti-buffering headers (`Accept: text/event-stream`, `Cache-Control: no-cache`).
+- **WebSocket Mode + Connection Pool:** Persistent `wss://` connection for the [Responses API](https://platform.openai.com/docs/guides/websocket-mode) with built-in connection pooling (`WsPool`). OpenAI reports [up to ~40% faster](https://platform.openai.com/docs/guides/websocket-mode) end-to-end for 20+ tool call chains. Our preliminary measurements (29-44%, n=5) align with this. The only Rust client that implements this endpoint.
+- **Stream FC Early Parse:** Yields function calls the exact moment `arguments.done` is emitted, letting you start executing local tools before the overall response finishes.
+- **Hardware-Accelerated JSON (`simd`):** Opt-in AVX2/NEON vector instructions for faster JSON parsing of large payloads (agent histories, complex tool calls).
+- **Hedged Requests:** Send redundant requests and cancel the slower ones. Trades extra tokens for lower tail latency (technique from Google's "The Tail at Scale").
+- **Webhook Verification:** HMAC-SHA256 signature verification with timestamp tolerance check (rejects stale requests).
+- **HTTP Tuning:** gzip, TCP_NODELAY, HTTP/2 keep-alive with adaptive window, connection pooling, all enabled by default.
+- **WASM Support:** Compiles to `wasm32-unknown-unknown`. Streaming, JSON request retries, and early-parsing work in Cloudflare Workers and browsers. Limitations: no multipart uploads, no gzip/HTTP/2 (browser handles these), streaming retries are not yet implemented. [Live demo](https://cloudflare-worker-dioxus.nameless-sunset-8f24.workers.dev).
+- **Node.js & Python bindings:** Native napi-rs (Node) and PyO3 (Python) bindings as separate packages. Structured outputs via Zod (Node) and Pydantic v2 (Python). On mock benchmarks, the Node bindings show 2-3x faster SDK overhead vs official `openai` npm (p<0.001).
+
+### One Rust core, every platform
+
+The Rust crate is the single source of truth. Bindings for other platforms are thin wrappers:
+
+| Platform | Binding | Status |
+|----------|---------|--------|
+| **Rust** | native | stable |
+| **Node.js / TypeScript** | napi-rs | stable |
+| **Python** | PyO3 + maturin | stable |
+| **Browser / Edge / Dioxus / Leptos** | WASM (`wasm32-unknown-unknown`) | stable |
+| **iOS / macOS** | UniFFI (Swift) | planned |
+| **Android** | UniFFI (Kotlin) | planned |
+
+This means the same HTTP tuning, WebSocket pool, streaming parser, and retry logic run everywhere. No reimplementation per language, no behavior drift. When we add a feature to the Rust core, all platforms get it.
+
+The practical consequence: you can embed `openai-oxide` as the AI layer in a cross-platform app. For example, [rust-code](https://github.com/fortunto2/rust-code) uses [sgr-agent](https://github.com/fortunto2/rust-code/tree/master/crates/sgr-agent) (built on openai-oxide) as a TUI coding agent today, and the same crate can be compiled to WASM and run in a browser.
+
+### When SDK speed starts to matter
+
+On today's OpenAI API (200ms-2s per call), SDK overhead is <1% of wall time. But that's changing:
+
+- **Fast inference providers** (Cerebras, Groq, local models) return responses in 10-50ms. At those speeds, SDK overhead (0.1-5ms) becomes 5-30% of wall time.
+- **Agent farms** running hundreds of parallel agents create thousands of requests per second. Per-request overhead compounds fast.
+- **Structured outputs + function calling** add serialization and schema generation on every call. In Rust, this runs without GC pauses.
+
+The mock benchmarks show the trajectory: oxide's SDK overhead is 2-3x lower than the official JS SDK on small payloads (p<0.001). As APIs get faster, that gap becomes the bottleneck.
+
+### WebSocket Mode for Agent Loops
+
+OpenAI offers a [WebSocket mode](https://platform.openai.com/docs/guides/websocket-mode) for the Responses API at `wss://api.openai.com/v1/responses`. The connection stays open across multiple turns, and the server uses connection-local caching to speed up continuations. Requests are sequential (one in-flight at a time per connection), but each turn benefits from the server keeping the previous response state in memory.
+
+```text
+HTTP (warm connection — TLS reused via pool)
+Request 1 (ls)   : [HTTP/2 req] -> [Server loads ctx] -> [Generate] -> [Parse] -> [Exec Tool]
+Request 2 (cat)  : [HTTP/2 req] -> [Server loads ctx] -> [Generate] -> [Parse] -> [Exec Tool]
+
+WebSocket (persistent connection — server caches context)
+Connection       : [WS Upgrade] (once)
+Request 1 (ls)   : [Send JSON] -> [Generate] -> [Parse] -> [Exec Tool]
+Request 2 (cat)  : [Send JSON] -> [Ctx cached] -> [Generate] -> [Parse] -> [Exec Tool]
+```
+
+The speed improvement comes primarily from the **server side** (connection-local caching, reduced continuation overhead), not from saving a few bytes of HTTP/2 framing on the client. OpenAI reports [up to ~40% faster](https://platform.openai.com/docs/guides/websocket-mode) for chains with 20+ tool calls.
+
+Our preliminary measurements (gpt-5.4, warm connections, n=5):
+- **Plain text:** 710ms WS vs 1011ms HTTP (29% faster)
+- **Multi-turn (2 reqs):** 1425ms vs 2362ms (40% faster)
+- **Rapid-fire (5 calls):** 3227ms vs 5807ms (44% faster)
+
+*Preliminary at n=5 — direction matches OpenAI's published numbers.*
+
+WebSocket mode is compatible with Zero Data Retention (ZDR) and `store: false`. Context is cached in-memory only for the lifetime of the connection, with no disk persistence.
+
+Separately, **Stream FC Early Parse** (works on both HTTP and WebSocket) lets you start executing tool calls the moment arguments are complete, before the stream closes, saving additional time in function-calling loops.
+
+---
+
+## Installation
+
+### Rust
+```bash
+cargo add openai-oxide tokio --features tokio/full
+```
+
+### Node.js / TypeScript
+```bash
+npm install openai-oxide
+# or
+pnpm add openai-oxide
+# or
+yarn add openai-oxide
+```
+Supported platforms: macOS (x64, arm64), Linux (x64, arm64, glibc & musl), Windows (x64).
+
+### Python
+```bash
+pip install openai-oxide
+# or
+uv pip install openai-oxide
+```
+
+| Package | Registry | Link |
+|---------|----------|------|
+| `openai-oxide` | crates.io | [crates.io/crates/openai-oxide](https://crates.io/crates/openai-oxide) |
+| `openai-types` | crates.io | [crates.io/crates/openai-types](https://crates.io/crates/openai-types) |
+| `openai-oxide` | npm | [npmjs.com/package/openai-oxide](https://www.npmjs.com/package/openai-oxide) |
+| `openai-oxide` | PyPI | [pypi.org/project/openai-oxide](https://pypi.org/project/openai-oxide/) |
+| `openai-oxide-macros` | crates.io | [crates.io/crates/openai-oxide-macros](https://crates.io/crates/openai-oxide-macros) |
+
+---
+
+## Quick Start
+
+### Rust
+
+```rust
+use openai_oxide::{OpenAI, types::responses::*};
+
+#[tokio::main]
+async fn main() -> Result<(), openai_oxide::OpenAIError> {
+    let client = OpenAI::from_env()?; // Uses OPENAI_API_KEY
+
+    let response = client.responses().create(
+        ResponseCreateRequest::new("gpt-5.4")
+            .input("Explain quantum computing in one sentence.")
+            .max_output_tokens(100)
+    ).await?;
+
+    println!("{}", response.output_text());
+    Ok(())
+}
+```
+
+### Node.js
+
+```javascript
+const { Client } = require("openai-oxide");
+
+const client = new Client(); // Uses OPENAI_API_KEY
+const text = await client.createText("gpt-5.4-mini", "Hello from Node!");
+console.log(text);
+```
+
+### Python
+
+```python
+import asyncio, json
+from openai_oxide import Client
+
+async def main():
+    client = Client()  # Uses OPENAI_API_KEY
+    res = json.loads(await client.create("gpt-5.4-mini", "Hello from Python!"))
+    print(res["text"])
+
+asyncio.run(main())
+```
+
+---
+
+## Benchmarks
+
+- **Environment:** macOS (M-series), release mode.
+- **Model:** `gpt-5.4` via the official OpenAI API.
+- **Protocol:** TLS + HTTP/2 with connection pooling (warm connections).
+- **Methodology:** n=5 per run, 3 runs, median of medians. At n=5, differences <15% are within API jitter. Date: 2026-03-24.
+
+### Rust Ecosystem
+
+`openai-oxide` vs [`async-openai`](https://crates.io/crates/async-openai) 0.34 vs [`genai`](https://crates.io/crates/genai) 0.6-beta. All via Responses API (genai uses Chat API, it's a multi-provider adapter).
+
+| Test | `openai-oxide` | `async-openai` | `genai` | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Plain text** | 1011ms | **960ms** | **835ms** | oxide slower |
+| **Structured output** | 1331ms | N/A | **1197ms** | within noise |
+| **Function calling** | **1192ms** | 1748ms | **1030ms** | genai fastest |
+| **Multi-turn (2 reqs)** | 2362ms | 3275ms | **1641ms** | genai fastest |
+| **Streaming TTFT** | **645ms** | 685ms | 670ms | within noise |
+| **Parallel 3x** | 1165ms | **1053ms** | **866ms** | oxide slower |
+
+At n=5 with live API calls, no single SDK consistently wins. Differences <15% are API jitter. genai is fastest on plain text (it skips full response deserialization). oxide wins function calling and streaming TTFT. On today's API latencies (800-1100ms), SDK overhead is negligible for all three. The difference grows with faster backends and higher concurrency (see "When SDK speed starts to matter" above).
+
+**Feature comparison:**
+
+| Feature | `openai-oxide` | `async-openai` 0.34 | `genai` 0.6 |
+| :--- | :---: | :---: | :---: |
+| SSE streaming | yes | yes | yes |
+| Stream helpers (typed events) | **yes** | no | no |
+| [WebSocket mode](https://platform.openai.com/docs/guides/websocket-mode) for Responses API | **yes** | no | no |
+| Structured `parse::<T>()` with schema gen | **yes** | no | no |
+| WASM (streaming, no multipart) | **yes** | partial (no streaming) | no |
+| Node.js / Python bindings | **yes** | no | no |
+| Hedged requests | **yes** | no | no |
+| Stream FC early parse | **yes** | no | no |
+| Webhook verification | yes | yes | no |
+
+*Reproduce: `cd benchmarks/rust-compare && cargo run --release`*
+
+<br>
+
+<!-- BENCH:python:START -->
+### Python Ecosystem (`openai-oxide-python` vs `openai`)
+
+Native PyO3 bindings vs `openai` (openai 2.29.0).
+
+| Test | `openai-oxide` | `openai` | Diff | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **Plain text** | **845ms** | 997ms | +15% | |
+| **Structured output** | **1367ms** | 1379ms | +1% | within API noise |
+| **Function calling** | **1195ms** | 1230ms | +3% | within API noise |
+| **Multi-turn (2 reqs)** | **2260ms** | 3089ms | +27% | |
+| **Web search** | **3157ms** | 3499ms | +10% | within API noise |
+| **Nested structured** | 5377ms | **5339ms** | -1% | within API noise |
+| **Agent loop (2-step)** | **4570ms** | 5144ms | +11% | within API noise |
+| **Rapid-fire (5 calls)** | **5667ms** | 6136ms | +8% | within API noise |
+| **Prompt-cached** | **4425ms** | 5564ms | +20% | |
+| **Streaming TTFT** | **626ms** | 638ms | +2% | within API noise |
+| **Parallel 3x** | 1184ms | **1090ms** | -9% | within API noise |
+| **Hedged (2x race)** | **893ms** | 995ms | +10% | within API noise |
+
+*median of medians, 3x5 iterations (n=5 per measurement). Model: gpt-5.4. Date: 2026-03-24. Not re-measured since — results may have shifted. Differences <15% are within API jitter at this sample size and should not be treated as statistically significant.*
+
+Reproduce: `cd openai-oxide-python && uv run python ../examples/bench_python.py`
+<!-- BENCH:python:END -->
+
+---
+
+<!-- BENCH:node:START -->
+### Node.js Ecosystem (`openai-oxide` vs `openai`)
+
+Native napi-rs bindings vs official `openai` npm. n=5 per run, 3 runs — differences <15% are within API noise.
+
+| Test | `openai-oxide` | `openai` | Diff | Note |
+| :--- | :--- | :--- | :--- | :--- |
+| **Plain text** | 1075ms | 1311ms | -18% | |
+| **Structured output** | 1370ms | 1765ms | -22% | |
+| **Function calling** | 1725ms | 1832ms | -6% | within API noise |
+| **Multi-turn (2 reqs)** | 2283ms | 2859ms | -20% | |
+| **Rapid-fire (5 calls)** | 6246ms | 6936ms | -10% | within API noise |
+| **Streaming TTFT** | 534ms | 580ms | -8% | within API noise |
+| **Parallel 3x** | 1937ms | 1991ms | -3% | within API noise |
+| **WebSocket hot pair** | 2181ms | N/A | — | preliminary, needs reproducible script |
+
+*median of medians, 3×5 iterations. Model: gpt-5.4. Date: 2026-03-24. At n=5 with ~200ms API jitter, only >15% differences are meaningful.*
+
+Reproduce: `cd openai-oxide-node && BENCH_ITERATIONS=5 node examples/bench_node.js`
+<!-- BENCH:node:END -->
+
+### SDK Overhead (synthetic, Node.js)
+
+The live benchmarks above include network latency and model inference, which adds noise.
+To isolate **pure SDK overhead**, we also run a synthetic benchmark with a localhost mock
+server (zero network, zero inference). Fixtures are captured from a real coding agent session
+(320 messages, 42 tools, 718KB request body).
+
+| Test | `openai-oxide` | `openai` npm | oxide faster | sig |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiny req → Tiny resp | 172µs | 443µs | **+61%** | *** |
+| Tiny req → Structured 5KB | 161µs | 499µs | **+68%** | *** |
+| Medium 150KB → Tool call | 1.1ms | 1.7ms | **+37%** | *** |
+| Heavy 657KB → Real agent resp | 4.9ms | 6.2ms | **+21%** | *** |
+| SSE stream (114 real chunks) | 283µs | 742µs | **+62%** | *** |
+| Agent 20x sequential (tiny) | 2.1ms | 5.4ms | **+61%** | *** |
+| Agent 10x sequential (heavy) | 51.7ms | 62.2ms | **+17%** | *** |
+
+*50 iterations, 20 warmup, `--expose-gc`, Welch's t-test — all p<0.001.*
+
+Note: the mock server uses HTTP/1.1, so these results measure SDK serialization/parsing overhead, not HTTP/2 multiplexing benefits.
+
+**Where oxide is faster:** everything on mock, 17-68% depending on payload size. SSE streaming 62% faster. Agent loops compound: 20 tiny calls save 3.3ms, 10 heavy calls save 10.5ms.
+
+**When it matters:** today, with 200ms-2s API latency, SDK overhead is <1% of wall time. But with fast inference (Cerebras, Groq, local models at 10-50ms) or agent farms running hundreds of concurrent sessions, these savings add up. The mock benchmarks show the floor: oxide's overhead is consistently 2-3x lower.
+
+Reproduce: `node --expose-gc benchmarks/bench_science.js`
+
+---
+
+## Python Usage
+
+```python
+import asyncio
+from openai_oxide import Client
+
+async def main():
+    client = Client()
+    
+    # 1. Standard request
+    res = await client.create("gpt-5.4", "Hello!")
+    print(res["text"])
+    
+    # 2. Streaming (Async Iterator)
+    stream = await client.create_stream("gpt-5.4", "Explain quantum computing...", max_output_tokens=200)
+    async for event in stream:
+        print(event)
+
+asyncio.run(main())
+```
+
+---
+
+## Advanced Features Guide
+
+### WebSocket Mode
+The server caches context locally for WebSocket connections, speeding up continuations. Both HTTP and WebSocket reuse TCP+TLS via connection pooling. The speed gain is server-side, not from saving HTTP/2 framing bytes.
+
+```rust
+let client = OpenAI::from_env()?;
+let mut session = client.ws_session().await?;
+
+// All calls route through the same wss:// connection
+let r1 = session.send(
+    ResponseCreateRequest::new("gpt-5.4").input("My name is Rustam.").store(true)
+).await?;
+
+let r2 = session.send(
+    ResponseCreateRequest::new("gpt-5.4").input("What's my name?").previous_response_id(&r1.id)
+).await?;
+
+session.close().await?;
+```
+
+### Streaming FC Early Parse
+Start executing your local functions instantly when the model finishes generating the arguments, rather than waiting for the entire stream to close.
+
+```rust
+let mut handle = client.responses().create_stream_fc(request).await?;
+
+while let Some(fc) = handle.recv().await {
+    // Fires immediately on `arguments.done`
+    let result = execute_tool(&fc.name, &fc.arguments).await;
+}
+```
+
+### Hedged Requests
+Protect your application against random network latency spikes.
+
+```rust
+use openai_oxide::hedged_request;
+use std::time::Duration;
+
+// Sends 2 identical requests with a 1.5s delay. Returns whichever finishes first.
+let response = hedged_request(&client, request, Some(Duration::from_secs(2))).await?;
+```
+
+### Parallel Fan-Out
+Send 3 concurrent requests; the total wall time is equal to the slowest single request. Uses HTTP/2 multiplexing when connecting to OpenAI (the real API supports HTTP/2), but note that local mock servers typically use HTTP/1.1.
+
+```rust
+let (c1, c2, c3) = (client.clone(), client.clone(), client.clone());
+let (r1, r2, r3) = tokio::join!(
+    async { c1.responses().create(req1).await },
+    async { c2.responses().create(req2).await },
+    async { c3.responses().create(req3).await },
+);
+```
+
+---
+
+
+### `#[openai_tool]` Macro
+Auto-generate JSON schemas for your functions.
+
+```rust
+use openai_oxide_macros::openai_tool;
+
+#[openai_tool(description = "Get the current weather")]
+fn get_weather(location: String, unit: Option<String>) -> String {
+    format!("Weather in {location}")
+}
+
+// The macro generates `get_weather_tool()` which returns the `serde_json::Value` schema
+let tool = get_weather_tool();
+```
+
+### Node.js / TypeScript Native Bindings
+Native NAPI-RS bindings. Requests and stream events execute in Rust and cross into the V8 event loop with minimal overhead.
+
+```javascript
+const { Client } = require("openai-oxide");
+
+(async () => {
+  const client = new Client();
+  const session = await client.wsSession();
+  const res = await session.send("gpt-5.4-mini", "Say hello to Rust from Node!");
+  console.log(res);
+  await session.close();
+})();
+```
+
+At the moment, the Node bindings expose Chat Completions, Responses, streaming helpers, and WebSocket sessions. The full API matrix below refers to the Rust core crate.
+
+
+## Implemented APIs
+
+| API | Method |
+|-----|--------|
+| **Chat Completions** | `client.chat().completions().create()` / `create_stream()` |
+| **Responses** | `client.responses().create()` / `create_stream()` / `create_stream_fc()` |
+| **Responses Tools** | Function, WebSearch, FileSearch, CodeInterpreter, ComputerUse, Mcp, ImageGeneration |
+| **WebSocket** | `client.ws_session()` — send / send_stream / warmup / close |
+| **Hedged** | `hedged_request()` / `hedged_request_n()` / `speculative()` |
+| **Embeddings** | `client.embeddings().create()` |
+| **Models** | `client.models().list()` / `retrieve()` / `delete()` |
+| **Images** | `client.images().generate()` / `edit()` / `create_variation()` |
+| **Audio** | `client.audio().transcriptions()` / `translations()` / `speech()` |
+| **Files** | `client.files().create()` / `list()` / `retrieve()` / `delete()` / `content()` |
+| **Fine-tuning** | `client.fine_tuning().jobs().create()` / `list()` / `cancel()` / `list_events()` |
+| **Moderations** | `client.moderations().create()` |
+| **Content Provenance** | `client.content_provenance_checks().create()` / `from_path()` |
+| **Batches** | `client.batches().create()` / `list()` / `retrieve()` / `cancel()` |
+| **Uploads** | `client.uploads().create()` / `add_part()` / `cancel()` / `complete()` |
+| **Conversations** | `client.conversations()` CRUD + items CRUD |
+| **Videos (Sora)** | `client.videos()` create / list / retrieve / delete / content / edit / extend / remix |
+| **Pagination** | `list_page()` / `list_auto()` — cursor-based, async stream |
+| **Webhooks** | `Webhooks::new(secret).verify()` / `.unwrap()` (feature: `webhooks`) |
+| **Assistants** (beta) | Full CRUD + `list_page()` / `list_auto()` |
+| **Threads** (beta) | `client.beta().threads()` CRUD + messages `list_page()` / `list_auto()` |
+| **Runs** (beta) | `client.beta().runs(thread_id)` CRUD + steps + `submit_tool_outputs` |
+| **Vector Stores** (beta) | `client.beta().vector_stores()` CRUD + `search()` + `list_page()` / `list_auto()` |
+| **Realtime** (beta) | `client.beta().realtime().sessions().create()` |
+
+---
+
+## Cargo Features & WASM Optimization
+
+Every endpoint is gated behind a Cargo feature. If you are building for **WebAssembly (WASM)** (e.g., Cloudflare Workers, Dioxus, Leptos), you can significantly **reduce your `.wasm` binary size and compilation time** by disabling default features and only compiling what you need.
+
+```toml
+[dependencies]
+# Example: Compile ONLY the Responses API (removes Audio, Images, Assistants, etc.)
+openai-oxide = { version = "0.11", default-features = false, features = ["responses"] }
+```
+
+### Available API Features:
+- `chat` — Chat Completions
+- `responses` — Responses API (Supports WebSocket)
+- `embeddings` — Text Embeddings
+- `images` — Image Generation (DALL-E)
+- `audio` — TTS and Transcription
+- `files` — File management
+- `fine-tuning` — Model Fine-tuning
+- `models` — Model listing
+- `moderations` — Moderation API
+- `batches` — Batch API
+- `uploads` — Upload API
+- `beta` — Assistants, Threads, Vector Stores, Realtime API
+
+### Ecosystem Features:
+- `structured` — Enables `parse::<T>()` with auto-generated JSON schema via `schemars`
+- `webhooks` — Enables webhook signature verification (HMAC-SHA256)
+- `macros` — Enables `#[openai_tool]` proc macro for tool schema generation
+- `websocket` — Enables Realtime API over WebSockets (Native: `tokio-tungstenite`)
+- `websocket-wasm` — Enables Realtime API over WebSockets (WASM: `gloo-net` / `web-sys`)
+- `simd` — Enables `simd-json` for hardware-accelerated JSON deserialization (AVX2/NEON, stable Rust)
+
+Check out our **[Cloudflare Worker Examples](https://github.com/fortunto2/openai-oxide/tree/main/examples/cloudflare-worker-dioxus)** showcasing a Full-Stack Rust app with a Dioxus frontend and a Cloudflare Worker Durable Object backend holding a WebSocket connection to OpenAI.
+
+---
+
+## OpenAI Docs → openai-oxide
+
+OpenAI's official guides apply directly. Here's how each maps to `openai-oxide`:
+
+| OpenAI Guide | Rust | Node.js | Python |
+|---|---|---|---|
+| [Chat Completions](https://platform.openai.com/docs/guides/chat-completions) | `client.chat().completions().create()` | `client.createChatCompletion({...})` | `await client.create(model, input)` |
+| [Responses API](https://platform.openai.com/docs/api-reference/responses) | `client.responses().create()` | `client.createText(model, input)` | `await client.create(model, input)` |
+| [Streaming](https://platform.openai.com/docs/api-reference/streaming) | `client.responses().create_stream()` | `client.createStream({...}, cb)` | `await client.create_stream(model, input)` |
+| [Function Calling](https://platform.openai.com/docs/guides/function-calling) | `client.responses().create_stream_fc()` | `client.createResponse({model, input, tools})` | `await client.create_with_tools(model, input, tools)` |
+| [Structured Output](https://platform.openai.com/docs/guides/structured-outputs) | `client.chat().completions().parse::<T>()` | `client.createChatParsed(req, name, schema)` | `await client.create_parsed(model, input, PydanticModel)` |
+| [Embeddings](https://platform.openai.com/docs/guides/embeddings) | `client.embeddings().create()` | via `createResponse()` raw | via `create_raw()` |
+| [Image Generation](https://platform.openai.com/docs/guides/images) | `client.images().generate()` | via `createResponse()` raw | via `create_raw()` |
+| [Text-to-Speech](https://platform.openai.com/docs/guides/text-to-speech) | `client.audio().speech().create()` | via `createResponse()` raw | via `create_raw()` |
+| [Speech-to-Text](https://platform.openai.com/docs/guides/speech-to-text) | `client.audio().transcriptions().create()` | via `createResponse()` raw | via `create_raw()` |
+| [Fine-tuning](https://platform.openai.com/docs/guides/fine-tuning) | `client.fine_tuning().jobs().create()` | via `createResponse()` raw | via `create_raw()` |
+| [Conversations](https://platform.openai.com/docs/guides/conversational-agents) | `client.conversations()` CRUD + items | via raw | via raw |
+| [Video Generation (Sora)](https://developers.openai.com/api/docs/guides/video-generation) | `client.videos()` create/edit/extend/remix | via raw | via raw |
+| [Webhooks](https://platform.openai.com/docs/guides/webhooks) | `Webhooks::new(secret).verify()` | — | — |
+| [Realtime API](https://platform.openai.com/docs/guides/realtime) | `client.ws_session()` | `client.wsSession()` | — |
+| [Assistants](https://platform.openai.com/docs/assistants) | `client.beta().assistants()` | via raw | via raw |
+
+> **Tip:** Parameter names match the official Python SDK exactly. If OpenAI docs show `model="gpt-5.4"`, use `.model("gpt-5.4")` in Rust or `{model: "gpt-5.4"}` in Node.js.
+>
+> **Note:** Node.js and Python bindings have typed helpers for Responses, Chat, Streaming, Function Calling, and Structured Output. All other endpoints are available via the raw JSON methods (`createResponse()` / `create_raw()`) which accept any OpenAI API request body.
+
+---
+
+## Configuration
+
+```rust
+use openai_oxide::{OpenAI, config::ClientConfig};
+use openai_oxide::azure::AzureConfig;
+
+let client = OpenAI::new("sk-...");                             // Explicit key
+let client = OpenAI::with_config(                               // Custom config
+    ClientConfig::new("sk-...").base_url("https://...").timeout_secs(30).max_retries(3)
+);
+let client = OpenAI::azure(AzureConfig::new()                   // Azure OpenAI
+    .azure_endpoint("https://my.openai.azure.com").azure_deployment("gpt-4").api_key("...")
+)?;
+```
+
+
+## Structured Outputs
+
+Get typed, validated responses directly from the model. No manual JSON parsing.
+
+### Rust (feature: `structured`)
+
+```rust
+use openai_oxide::parsing::ParsedChatCompletion;
+use schemars::JsonSchema;
+use serde::Deserialize;
+
+#[derive(Deserialize, JsonSchema)]
+struct MathAnswer {
+    steps: Vec<String>,
+    final_answer: String,
+}
+
+// Chat API
+let result: ParsedChatCompletion<MathAnswer> = client.chat().completions()
+    .parse::<MathAnswer>(request).await?;
+println!("{}", result.parsed.unwrap().final_answer);
+
+// Responses API
+let result = client.responses().parse::<MathAnswer>(request).await?;
+```
+
+The SDK auto-generates a strict JSON schema from your Rust types, sends it as `response_format` (Chat) or `text.format` (Responses), and deserializes the response. The API guarantees the output matches your schema.
+
+### Node.js
+
+```javascript
+// With raw JSON schema
+const { parsed } = await client.createChatParsed(request, "MathAnswer", jsonSchema);
+
+// With Zod (optional: npm install zod-to-json-schema)
+const { zodParse } = require("openai-oxide/zod");
+const Answer = z.object({ steps: z.array(z.string()), final_answer: z.string() });
+const { parsed } = await zodParse(client, request, Answer);
+```
+
+### Python (Pydantic v2)
+
+```python
+from pydantic import BaseModel
+
+class MathAnswer(BaseModel):
+    steps: list[str]
+    final_answer: str
+
+result = await client.create_parsed("gpt-5.4-mini", "What is 2+2?", MathAnswer)
+print(result.final_answer)  # Typed Pydantic instance, not dict
+```
+
+---
+
+## Stream Helpers
+
+High-level streaming with typed events and automatic delta accumulation.
+
+```rust
+use openai_oxide::stream_helpers::ChatStreamEvent;
+
+// Option 1: Just get the final result
+let stream = client.chat().completions().create_stream_helper(request).await?;
+let completion = stream.get_final_completion().await?;
+
+// Option 2: React to typed events
+let mut stream = client.chat().completions().create_stream_helper(request).await?;
+while let Some(event) = stream.next().await {
+    match event? {
+        ChatStreamEvent::ContentDelta { delta, snapshot } => {
+            print!("{delta}");  // Print as it arrives
+            // snapshot = full text accumulated so far
+        }
+        ChatStreamEvent::ToolCallDone { name, arguments, .. } => {
+            // Arguments are complete — execute the tool
+            execute_tool(&name, &arguments).await;
+        }
+        ChatStreamEvent::ContentDone { content } => {
+            // Final text, fully assembled
+        }
+        _ => {}
+    }
+}
+```
+
+No manual chunk stitching. Tool call arguments are automatically assembled from index-based deltas.
+
+---
+
+## Webhook Verification
+
+Verify OpenAI webhook signatures (feature: `webhooks`).
+
+```rust
+use openai_oxide::resources::webhooks::Webhooks;
+
+let wh = Webhooks::new("whsec_your_secret")?;
+let event: MyEvent = wh.unwrap(payload, signature_header, timestamp_header)?;
+```
+
+---
+
+## Built With AI
+
+Built in days, not months, using [Claude Code](https://claude.ai/claude-code): pre-commit quality gates, OpenAPI spec as ground truth, official Python SDK as reference. Planning and code intelligence via [solo-factory](https://github.com/fortunto2/solo-factory) skills and [solograph](https://github.com/fortunto2/solograph) MCP server.
+
+---
+
+## Roadmap
+
+Full OpenAI API coverage from a single codebase — Rust core with native bindings for every major platform.
+
+- [x] **Rust Core**: Typed client covering Chat, Responses, Realtime, Assistants, and 20+ endpoints.
+- [x] **WASM Support**: Cloudflare Workers and browser execution (with limitations noted above).
+- [x] **Python Bindings**: Native PyO3 integration published on PyPI.
+- [ ] **Tauri Integrations**: Dedicated examples/guides for building AI desktop apps with Tauri + WebSockets.
+- [ ] **HTMX + Axum Examples**: Showcasing how to stream LLM responses directly to HTML with zero-JS frontends.
+- [ ] **Swift Bindings (UniFFI)**: Native iOS/macOS integration for Apple ecosystem developers.
+- [ ] **Kotlin Bindings (UniFFI)**: Native Android integration via JNI.
+- [x] **Node.js/TypeScript Bindings (NAPI-RS)**: Native Node.js bindings for the TS ecosystem.
+
+PRs welcome.
+
+## Keeping up with OpenAI
+
+OpenAI changes their API often. We built an automated sync pipeline to keep up.
+
+Types are strictly validated against the [official OpenAPI spec](https://github.com/openai/openai-openapi) and cross-checked directly with the [official Python SDK](https://github.com/openai/openai-python)'s AST.
+
+```bash
+make sync       # downloads latest spec, diffs against local schema, runs coverage
+```
+
+`make sync` automatically:
+1. Downloads the latest OpenAPI schema from OpenAI.
+2. Displays a precise `git diff` of newly added endpoints, struct fields, and enums.
+3. Runs the `openapi_coverage` test suite to statically verify our Rust types against the spec.
+
+Coverage is enforced on every commit via pre-commit hooks (currently **96%** — missing `stream` and `partial_images` on Images). Types are auto-synced from the Python SDK via `py2rust.py`, so new OpenAI fields land with a single `make sync-types` run.
+
+
+## Used In
+
+`openai-oxide` is designed to be an **agent infrastructure crate** — the OpenAI layer that any Rust agent framework can build on. Not tied to a specific agent architecture.
+
+- **[sgr-agent](https://github.com/fortunto2/rust-code/tree/master/crates/sgr-agent)** — LLM agent framework with structured output, function calling, and agent loops. Uses `openai-oxide` as the OpenAI backend. The same crate compiles to WASM for browser-based agents.
+- **[rust-code](https://github.com/fortunto2/rust-code)** — AI-powered TUI coding agent built on sgr-agent.
+
+
+
+## AI Agent Skills
+
+This repo includes an [Agent Skill](https://agentskills.io/) — a portable knowledge pack that teaches AI coding assistants how to use `openai-oxide` correctly (gotchas, patterns, API reference).
+
+Works with Claude Code, Cursor, GitHub Copilot, Gemini CLI, VS Code, and [30+ other agents](https://agentskills.io/).
+
+```bash
+# Context7
+npx ctx7 skills search openai-oxide
+npx ctx7 skills install /fortunto2/openai-oxide
+
+# skills.sh
+npx skills add fortunto2/openai-oxide
+```
+
+---
+
+## See Also
+
+- [openai-python](https://github.com/openai/openai-python) — Official Python SDK (our benchmark baseline)
+- [async-openai](https://github.com/64bit/async-openai) — Alternative Rust client (mature, 1800+ stars)
+- [genai](https://github.com/jeremychone/rust-genai) — Multi-provider Rust client (Gemini, Anthropic, OpenAI)
+
+## License
+
+[MIT](LICENSE)

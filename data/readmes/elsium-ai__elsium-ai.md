@@ -1,0 +1,396 @@
+<p align="center">
+  <a href="https://elsiumai.com" target="_blank"><img src="assets/logo.png" width="320" alt="ElsiumAI Logo" /></a>
+  <br><br>
+  <strong>Reliability. Governance. Reproducible AI.</strong>
+  <br>
+  The TypeScript framework for AI systems you can trust in production.
+  <br><br>
+  <a href="https://elsiumai.com"><strong>Website</strong></a>
+  ·
+  <a href="https://elsiumai.com/#demos"><strong>Live Demos</strong></a>
+  ·
+  <a href="https://github.com/elsium-ai/elsium-ai"><strong>GitHub</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://elsiumai.com/#demos"><img src="assets/demo.gif" alt="ElsiumAI demo — agent runtime, governance, replay, capability tokens" width="860" /></a>
+</p>
+
+<p align="center">
+  Every demo is interactive and runnable: <a href="https://elsiumai.com/#demos"><strong>elsiumai.com/#demos</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/elsium-ai/elsium-ai/actions"><img src="https://github.com/elsium-ai/elsium-ai/workflows/CI/badge.svg" alt="CI"></a>
+  <a href="https://github.com/elsium-ai/elsium-ai/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <img src="https://img.shields.io/badge/tests-2620%20passing-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/bundle-504KB%20minified-blue" alt="Bundle Size">
+  <img src="https://img.shields.io/badge/runtime-Node%20%C2%B7%20Bun%20%C2%B7%20Deno%20%C2%B7%20Workers%20%C2%B7%20Edge-blueviolet" alt="Cross-runtime">
+</p>
+
+---
+
+> **AI systems must fail predictably.**
+> **AI systems must be auditable.**
+> **AI systems must be reproducible.**
+> **AI systems must be governed by policy, not hope.**
+>
+> Every feature in ElsiumAI exists to serve one of these principles.
+> If it doesn't, it doesn't ship.
+
+---
+
+## The Problem
+
+Every AI framework helps you call an LLM. None of them help you trust the result.
+
+ElsiumAI is built on three pillars that most frameworks ignore entirely:
+
+| Pillar | The guarantee |
+|--------|--------------|
+| **Reliability** | Your system stays up when providers break — circuit breakers, bulkhead isolation, request dedup, graceful shutdown |
+| **Governance** | You control who does what, and you can prove it — policy engine, RBAC, approval gates, hash-chained audit trail, agent identity, runtime policy enforcement, memory integrity, MCP trust framework, compliance reporting (OWASP Agentic, EU AI Act, Colorado AI Act) |
+| **Reproducible AI** | Tools to measure, pin, and trace AI outputs — seed propagation, output pinning, provenance tracking, determinism assertions (see caveats below) |
+
+It also does everything you'd expect — multi-provider gateway, agents, tools, RAG, workflows, MCP, streaming, cost tracking. But those are table stakes. The three pillars are what make ElsiumAI different.
+
+---
+
+## Quick Start
+
+```bash
+npm install @elsium-ai/core @elsium-ai/gateway @elsium-ai/agents
+```
+
+```typescript
+import { gateway } from '@elsium-ai/gateway'
+import { defineAgent } from '@elsium-ai/agents'
+import { env } from '@elsium-ai/core'
+
+const llm = gateway({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-6',
+  apiKey: env('ANTHROPIC_API_KEY'),
+})
+
+const agent = defineAgent(
+  { name: 'assistant', system: 'You are a helpful assistant.' },
+  { complete: (req) => llm.complete(req) },
+)
+
+const result = await agent.run('What is TypeScript?')
+```
+
+---
+
+## Cross-Runtime Support
+
+Since **0.13.0**, every governance and reliability primitive in ElsiumAI loads on any modern JS runtime. The framework no longer depends on `node:crypto` for hash chains, agent identity, signed replay, idempotent checkpoints, or auth middleware — all use the Web Crypto API (`globalThis.crypto`) instead.
+
+| Runtime | Status | Notes |
+|---|---|---|
+| **Node.js ≥ 20** | ✅ fully supported | The reference runtime |
+| **Bun ≥ 1** | ✅ fully supported | Toolchain target |
+| **Deno** | ✅ supported | Web Crypto native |
+| **Cloudflare Workers** | ✅ supported | Web Crypto native; SQLite memory store and the CLI stay Node-only by design |
+| **Vercel Edge** | ✅ supported | Same caveats as Workers |
+| **Browser** | ✅ supported for non-server modules | Use the gateway behind your own proxy for API-key safety |
+
+The published `elsium-ai` umbrella bundle is **504 KB** minified (548 KB unpacked) and contains zero `node:*` imports across the governance pillar. Edge deployments work out of the box.
+
+The umbrella re-exports every package, so it grows with the framework; import the individual packages and tree-shaking keeps only what you use.
+
+---
+
+## Reliability
+
+Providers go down. Rate limits hit. Costs spiral. ElsiumAI treats failure as a first-class concern.
+
+```typescript
+import { createProviderMesh } from '@elsium-ai/gateway'
+import { env } from '@elsium-ai/core'
+
+const mesh = createProviderMesh({
+  providers: [
+    { name: 'anthropic', config: { apiKey: env('ANTHROPIC_API_KEY') } },
+    { name: 'openai', config: { apiKey: env('OPENAI_API_KEY') } },
+  ],
+  strategy: 'fallback',
+  circuitBreaker: {         // Provider failing? Circuit opens, traffic reroutes
+    failureThreshold: 5,
+    resetTimeoutMs: 30_000,
+  },
+})
+```
+
+| Feature | What it does |
+|---------|-------------|
+| **Circuit Breaker** | Detects failing providers, stops sending traffic, auto-recovers. Scoped per `(provider, model)` so a flaky model never trips a healthy peer. |
+| **Bulkhead Isolation** | Bounds concurrency — one slow consumer can't starve the rest |
+| **Fair Queuing Per Agent** | Token-bucket rate limiter with per-agent buckets — one greedy agent can't drain a shared LLM quota |
+| **Request Dedup** | Identical in-flight calls coalesce into one API request |
+| **Idempotent Checkpoints** | Workflow steps with `idempotent: true` never re-run after a crash recovery. Failures are cached and replayed verbatim. |
+| **Graceful Shutdown** | Drains in-flight operations before process exit |
+| **Retry with Backoff** | Exponential backoff with jitter, respects `Retry-After` headers |
+| **Stream Failover** | Provider stream fails mid-request? Automatically switches to next provider |
+
+---
+
+## Governance
+
+Who called which model? Did they have permission? Can you prove the audit log hasn't been tampered with?
+
+```typescript
+import { createPolicySet, policyMiddleware, modelAccessPolicy, costLimitPolicy, env } from '@elsium-ai/core'
+import { createAuditTrail, auditMiddleware } from '@elsium-ai/observe'
+import { createRBAC } from '@elsium-ai/app'
+
+// Policy: what's allowed
+const policies = createPolicySet([
+  modelAccessPolicy(['claude-sonnet-4-6', 'gpt-4o-mini']),
+  costLimitPolicy(5.00),
+])
+
+// Audit: what happened (hash-chained, tamper-proof)
+const audit = createAuditTrail({ hashChain: true })
+
+// RBAC: who can do it
+const rbac = createRBAC({
+  roles: [{ name: 'analyst', permissions: ['model:use:gpt-4o-mini'], inherits: ['viewer'] }],
+})
+
+const llm = gateway({
+  provider: 'anthropic',
+  apiKey: env('ANTHROPIC_API_KEY'),
+  middleware: [policyMiddleware(policies), auditMiddleware(audit)],
+})
+```
+
+| Feature | What it does |
+|---------|-------------|
+| **Declarative Policy Engine** | Policies as data (`PolicyDocument` YAML/JSON), not closures — hot-reload, version-control independent of code, compliance-team-readable |
+| **Policy Engine (legacy closures)** | Original declarative rules — deny by model, cost, token count, or content pattern. Coexists with the data-driven form. |
+| **Runtime Policy Enforcement** | Enforce policies inside the agent loop — check permissions before every tool call |
+| **RBAC** | Role-based permissions with inheritance and wildcard matching |
+| **Multi-Stage Approval Chain** | Sequential approval stages with role/user/callback approvers, per-stage timeouts, escalation, persistent state. Skipped stages, denied stages, timeouts — all auditable. |
+| **Approval Gates** | Single-callback gate for high-stakes tool calls (legacy; new chains preferred) |
+| **Agent Identity** | HMAC-SHA256 signed agent requests with replay protection and cross-agent verification |
+| **Memory Integrity** | SHA-256 hash-chained message stores — detect tampering in agent memory |
+| **Audit Trail** | SHA-256 hash-chained events with tamper-proof integrity verification, pluggable sinks (webhook, Splunk, Datadog) |
+| **Cost Attribution per Tenant** | Eight cost dimensions (model / agent / user / feature / tenant / workflow / workflowStep / traceId), reserve/commit/release for concurrent writers |
+| **Jurisdiction Routing** | PII classifier → JurisdictionRouter intersects allowed providers per data class. EU email never reaches a US-only model. |
+| **Compliance Reporting** | Generate reports against OWASP Agentic, EU AI Act, Colorado AI Act frameworks |
+| **AI-BOM** | Signed manifest of what the agent is made of — models, prompts, tools, MCP servers, datasets, policies, thresholds. `elsium bom diff` fails CI when composition drifts from what was approved. |
+| **Policy Simulation** | Replay a candidate policy over recorded `ExecutionProof`s and see what it would have blocked — with traceIds — before enabling it. `terraform plan` for governance. |
+| **Information-Flow Control** | Provenance labels travel with the data and join as it merges; sinks are checked against the accumulated label. Blocks the *lethal trifecta* — sensitive data + untrusted content + an outbound channel — so a prompt injection can succeed and still fail to exfiltrate. |
+| **MCP Trust Framework** | Server allowlists, tool filtering, output validation, manifest integrity for MCP |
+| **PII Detection** | Redacts emails, phones, addresses, API keys on both input (opt-in: `redactInput` / `redactInputPii`) and model output |
+
+---
+
+## Reproducible AI
+
+LLMs are non-deterministic by nature. ElsiumAI gives you the tools to constrain, measure, and track output consistency — but the framework cannot make a hosted model deterministic on its own. See the caveats below.
+
+```typescript
+import { assertDeterministic } from '@elsium-ai/testing'
+import { createProvenanceTracker } from '@elsium-ai/observe'
+
+// Measure: how stable is the output across N runs?
+const result = await assertDeterministic(
+  (seed) => llm.complete({
+    messages: [{ role: 'user', content: [{ type: 'text', text: 'Classify: spam' }] }],
+    temperature: 0,
+    seed,  // Forwarded to provider API where supported
+  }).then(r => extractText(r.message.content)),
+  { runs: 5, seed: 42, tolerance: 0 },
+)
+// { deterministic: true | false, variance: number, uniqueOutputs: number }
+
+// Prove: who/what/when produced this output
+const provenance = createProvenanceTracker()
+provenance.record({ prompt, model, config, input, output, traceId })
+```
+
+| Feature | What it does |
+|---------|-------------|
+| **Seed Propagation** | Forwards `seed` to providers that accept it (OpenAI, Google). Anthropic does not expose a seed parameter; calls without one rely on `temperature: 0` alone. |
+| **Output Pinning** | Locks expected outputs — model update changes your classifier? CI catches it |
+| **Determinism Assertions** | Runs N times and reports variance. Does not *enforce* determinism — it surfaces drift so you fail builds before users see it. |
+| **Drift Detection** | Compare yesterday's model snapshot against today's: exact-match rate, length delta, tool-call divergence, semantic similarity (with pluggable provider). Runs in production against sampled traffic, not only in CI. |
+| **Audit-Grade Signed Replay** | HMAC-SHA256 hash-chained recorder of every LLM call. `verifyReplay` returns the exact `invalidAtIndex` on tampering. Legal-citable evidence with the right secret management. |
+| **Streaming Replay** | Record and replay token-level `StreamEvent` sequences for deterministic UI / partial-result tests |
+| **Trace Replay With Overrides** | Side-by-side cost / latency / contentChanged for the same inputs run under a different model / temperature / system prompt |
+| **Per-Case Regression Budgets** | Each baseline case carries its own `tolerance` + `maxDelta`. Critical cases get tight budgets; open-ended cases get loose ones. CI fails on `critical` outcome. |
+| **Provenance Tracking** | SHA-256 hashes every prompt/config/input/output — full lineage per traceId |
+| **Request-Matched Fixtures** | Replay test fixtures by content hash, not sequence order |
+
+> **Reproducibility caveats.** True bit-exact reproducibility against a hosted provider requires `temperature: 0` AND a stable `system_fingerprint` (OpenAI rotates these between deploys, so identical `(prompt, seed, temperature)` calls can still differ across days). Tool calls that hit external APIs are not seedable. For full reproducibility, pair these primitives with `mockProvider` from `@elsium-ai/testing` or replay-recorder fixtures — the determinism assertions then catch real drift instead of provider noise.
+
+---
+
+## Everything Else
+
+The three pillars are what make ElsiumAI unique. These are the fundamentals it also delivers:
+
+- **Multi-provider gateway** — X-Ray mode, middleware, smart routing (fallback, cost-optimized, latency-racing, capability-aware)
+- **Agents** — Memory, semantic guardrails, confidence scoring, state machines, multi-agent orchestration, ReAct reasoning loop
+- **Multimodal** — Text, image, audio, and document content across all providers
+- **Structured output** — Native JSON mode per provider (OpenAI json_schema, Anthropic tool-use, Google responseSchema)
+- **RAG** — Document loading, PDF loading, chunking, embeddings, vector search, PgVector store, plugin registries
+- **Workflows** — Retries, parallel execution, branching, checkpointing, resumable workflows
+- **MCP** — Bidirectional client/server bridge, resources, prompts
+- **Custom providers** — OpenAI-compatible adapter for Ollama, Groq, Together, any OpenAI-compatible API
+- **Caching** — LRU response cache with TTL, custom adapters, streaming bypass
+- **Output guardrails** — PII/secret detection in responses, content policy, block/redact/warn modes
+- **Batch processing** — Concurrent LLM requests with semaphore control, per-item retry, progress callbacks
+- **Token counting & context management** — Model-aware estimation, truncate/summarize/sliding-window strategies
+- **SSE streaming** — Server-Sent Events for HTTP endpoints, real-time response streaming
+- **Multi-tenant** — Tenant extraction, per-tenant rate limiting, tier-based access control
+- **A/B experiments** — Weight-based variant assignment, deterministic user hashing, metrics aggregation
+- **Client SDK** — TypeScript HTTP client with SSE parsing for consuming ElsiumAI servers
+- **Persistent storage** — SQLite memory stores for agents, PgVector for RAG
+- **Cost intelligence** — Budgets, projections, loop detection
+- **Testing** — Mock providers, evals, classification metrics (precision/recall/F1 + confusion matrix), RAG eval (faithfulness, answer relevancy, context precision/recall), structured rubric LLM-as-judge, **signed hash-chained eval attestation** (verifiable proof, not just a score), **eval-as-policy gates** with compliance-control mapping (EU AI Act / NIST / OWASP) and recorded sign-off overrides, prompt versioning, regression suites, dataset loading (JSON/CSV/JSONL), baseline comparison, multi-turn conversation testing, tool call assertions, automated red-teaming (44 adversarial probes including multi-turn), agent metrics (efficiency, recovery, cost), unified agent eval runner, CI reporters (JUnit XML, GitHub Actions, Markdown)
+- **Structured extraction** — Zod schema → typed output, auto-retry on validation failure
+- **Dev Studio** — Local web dashboard for live traces, X-Ray, costs, streaming events
+- **AI Proxy** — OpenAI-compatible proxy with cost tracking, caching, audit — any language, zero code changes
+
+---
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                          @elsium-ai/app                           │
+│                  HTTP server · RBAC · auth · routes               │
+├────────────────────┬────────────────┬────────────────────────────┤
+│  @elsium-ai/agents │ @elsium-ai/mcp │       @elsium-ai/cli       │
+│  memory · approval │ client · server│  init · dev · eval · studio│
+│  guardrails · multi│ resources      │  proxy                     │
+│  ReAct             │ prompts        │                            │
+├──────────┬─────────┼────────┬───────┼───────────┬────────────────┤
+│  gateway │  tools  │observe │  rag  │ workflows │   client      │
+│ providers│ define  │ trace  │ load  │   steps   │  HTTP+SSE     │
+│   mesh   │ toolkit │ audit  │ chunk │  parallel │   parsing     │
+│ security │         │ prove- │ embed │  branch   │               │
+│ bulkhead │         │ nance  │vector │checkpoint │               │
+│  cache   │         │ experi-│pgvect │ resumable │               │
+│guardrail │         │  ment  │regist │           │               │
+│  batch   │         │        │  PDF  │           │               │
+│ openai-  │         │        │       │           │               │
+│  compat  │         │        │       │           │               │
+├──────────┴─────────┴────────┴───────┴───────────┴───────────────┤
+│                         @elsium-ai/core                           │
+│    types · errors · stream · logger · config · retry · result    │
+│    circuit breaker · dedup · policy engine · shutdown manager     │
+│    tokens · context manager · registry · schema · multimodal     │
+└──────────────────────────────────────────────────────────────────┘
+                          ·  ·  ·  ·  ·  ·
+┌──────────────────────────────────────────────────────────────────┐
+│                       @elsium-ai/testing                          │
+│    mocks · evals · fixtures · pinning · determinism · snapshots  │
+└──────────────────────────────────────────────────────────────────┘
+
+Three Pillars — where each feature lives:
+
+  Reliability             Governance              Determinism
+  ───────────             ──────────              ───────────
+  circuit breaker  [core] policy engine    [core] seed propagation [gw]
+  request dedup    [core] RBAC             [app]  output pinning   [test]
+  shutdown manager [core] approval gates   [agt]  determinism test [test]
+  retry + backoff  [core] audit trail      [obs]  provenance       [obs]
+  bulkhead         [gw]   PII detection    [gw]   req-match fixts  [test]
+  provider mesh    [gw]   content classify [gw]   crypto hashing   [test]
+```
+
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| [`@elsium-ai/core`](./packages/core) | Types, errors, streaming, circuit breaker, dedup, policy engine, shutdown, tokens, context manager, registry, schema |
+| [`@elsium-ai/gateway`](./packages/gateway) | Multi-provider gateway, X-Ray, provider mesh, OpenAI-compatible provider, bulkhead, PII detection (input + output), evasion-resistant injection/jailbreak detection, caching, output guardrails, batch processing |
+| [`@elsium-ai/agents`](./packages/agents) | Agents, ReAct agent, memory, persistent stores (in-memory, SQLite), input guardrails (PII/secret redaction + pluggable injection classifier), approval gates, seed propagation, multi-agent |
+| [`@elsium-ai/tools`](./packages/tools) | Tool definitions with Zod validation |
+| [`@elsium-ai/rag`](./packages/rag) | Document loading, PDF loading, chunking, embeddings, BM25, hybrid search, vector search, PgVector store, plugin registries |
+| [`@elsium-ai/workflows`](./packages/workflows) | DAG workflows, sequential, parallel, branching, checkpointing, resumable workflows |
+| [`@elsium-ai/observe`](./packages/observe) | Tracing, cost intelligence, audit trail, provenance tracking, A/B experiments, **AI-BOM (signed agent composition + release gate)**, **policy simulation** |
+| [`@elsium-ai/mcp`](./packages/mcp) | Bidirectional MCP client and server, resources, prompts |
+| [`@elsium-ai/app`](./packages/app) | HTTP server, CORS, auth, rate limiting, RBAC, SSE streaming, multi-tenant |
+| [`@elsium-ai/client`](./packages/client) | TypeScript HTTP client with SSE parsing for consuming ElsiumAI servers |
+| [`@elsium-ai/testing`](./packages/testing) | Mocks, evals, classification metrics, RAG eval (faithfulness + retrieval), rubric LLM-judge, **judge alignment (Cohen's/Fleiss kappa + self-consistency)**, signed eval attestation, **Ed25519 eval proofs (offline-verifiable)**, **dataset provenance (inter-annotator agreement + content hash)**, eval-as-policy + compliance gates, multi-turn agent testing, tool assertions, red-teaming (single + multi-turn), agent metrics, CI reporters |
+| [`@elsium-ai/cli`](./packages/cli) | Scaffolding, dev server, X-Ray inspection |
+
+---
+
+## Built-In Capabilities
+
+Beyond agents, tools, RAG, and multi-provider routing, ElsiumAI ships production infrastructure out of the box:
+
+| Category | Feature |
+|----------|---------|
+| **Reliability** | Circuit Breaker, Bulkhead Isolation, Request Dedup, Graceful Shutdown, Retry with Backoff, Stream Failover |
+| **Governance** | Policy Engine, Runtime Policy Enforcement, RBAC, Approval Gates, Agent Identity, Memory Integrity, Hash-Chained Audit, Compliance Reporting, Ed25519 Eval Proofs, AI-BOM + Release Gate, Information-Flow Control (taint labels + lethal-trifecta blocking), Policy Simulation, MCP Trust Framework, PII Detection (input + output), Input/Output Guardrails, Multi-Tenant |
+| **Determinism** | Seed Propagation, Output Pinning, Determinism Assertions, Judge Alignment (kappa), Dataset Provenance, Provenance Tracking, A/B Experiments |
+| **Performance** | Response Caching, Batch Processing, Token Counting, Context Management |
+| **Multimodal** | Text, Image, Audio, Document across Anthropic, OpenAI, Google |
+| **Structured Output** | Native JSON mode per provider, Zod schema validation |
+
+---
+
+## Performance
+
+Measured with zero-latency mock provider to isolate framework cost. Full methodology and reproduction steps in [`benchmarks/`](./benchmarks/).
+
+### Framework Cost (Isolated)
+
+| Metric | P50 | P95 | Conditions |
+|---|:---:|:---:|---|
+| Core completion path | 2.3μs | 5.5μs | Agent, no middleware |
+| Full governance stack | 6.2μs | 9.5μs | Security + audit + policy + cost + xray + logging |
+| Under concurrency | 5.0μs | 6.4μs | 100 parallel requests, full stack |
+
+### Real-World Context
+
+| | |
+|---|---|
+| Typical LLM network latency | 200–800ms |
+| ElsiumAI overhead at P95 | <10μs |
+| Framework cost contribution | <0.01% of total request time |
+
+### Resource Footprint
+
+| Metric | Value |
+|---|---|
+| Cold start | <3ms |
+| Bundle size (minified, umbrella) | 504 KB |
+| Memory per 10K requests | ~10 MB (full stack + tracing + audit, all in-memory, capped) |
+| Per-request heap growth | ~1 KB |
+| Circuit breaker throughput | >5M ops/sec |
+
+Baselines are frozen per release and checked for regressions in CI. See [`benchmarks/results/`](./benchmarks/results/) for historical data.
+
+---
+
+## Principles
+
+1. **Fail predictably** — handle failure before you see it
+2. **Trust but verify** — every call auditable, every output traceable
+3. **Reproducible by design** — testable AI is trustworthy AI
+4. **Zero magic** — `createX(config)` everywhere, no hidden behavior
+5. **Type safety end-to-end** — from config to LLM output
+6. **Modular** — use what you need, tree-shake the rest
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
+
+## Author
+
+Created and maintained by **Eric Utrera** ([@ebutrera9103](https://github.com/ebutrera9103)).
+
+## License
+
+[MIT](./LICENSE) - Copyright (c) 2026 Eric Utrera

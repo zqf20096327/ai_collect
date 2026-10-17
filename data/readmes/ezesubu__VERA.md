@@ -1,0 +1,418 @@
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/0ee66435-a6ca-45cf-848d-3dbe7a8d3c10" width="800" autoplay loop muted playsinline></video>
+</div>
+
+<div align="center">
+
+# VERA — Virtual Engine Reasoning Agent
+
+**An AI co-pilot that lives inside the Unreal Editor.**
+Chat with an LLM that inspects your level, runs editor tools, sees the viewport,
+and verifies its own work — powered by the brain *you* choose (cloud or fully local).
+
+[![Fab](https://img.shields.io/badge/Fab-Unreal_Marketplace-000000?style=for-the-badge&logo=epicgames&logoColor=white)](https://www.fab.com/listings/669e2b05-3ba0-4074-b9e5-220a4e87a598)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/ZxG8wbRp)
+[![Patreon](https://img.shields.io/badge/Patreon-Support-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/maVERAick)
+[![License: MIT](https://img.shields.io/badge/License-MIT-FFB02E?style=for-the-badge)](LICENSE)
+[![Unreal Engine](https://img.shields.io/badge/Unreal_Engine-5.7_|_5.8-313131?style=for-the-badge&logo=unrealengine)](https://www.unrealengine.com)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
+
+</div>
+
+> _Why did we build it? Because pasting LLM snippets into Unreal and praying isn't a workflow — and because the Auto-Fixer turned out cheaper than a new keyboard. 🧱⌨️_
+
+<div align="center">
+  <img src="docs/images/animated_vera_logo.gif" alt="VERA in Action" />
+</div>
+
+---
+
+## Table of contents
+
+- [Why VERA](#why-vera)
+- [Features](#features)
+- [The brain — bring your own LLM](#the-brain--bring-your-own-llm)
+- [How it works](#how-it-works)
+- [Built-in tools](#built-in-tools)
+- [Plugins](#plugins)
+- [MCP — drive the editor from your IDE](#mcp--drive-the-editor-from-your-ide)
+- [Install](#install)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Architecture](#architecture)
+- [Contributing](#contributing)
+- [FAQ](#faq)
+- [Support — The Co-Pilot Pact](#support--the-co-pilot-pact)
+- [License](#license)
+
+---
+
+## Why VERA
+
+Most "AI for Unreal" tools are a chat box that hands you a snippet to paste. VERA is
+an **agent**: you ask in plain language, and it *plans*, *calls the tools it needs*,
+*looks at the result*, and *fixes things if something fails* — inside your editor.
+
+- **Your brain, your rules.** OpenAI, Anthropic, Gemini, DeepSeek, Groq, Hugging Face, NVIDIA NIM, or **any local
+  OpenAI-compatible server**. Run it 100% offline with a local model, or reach for a
+  frontier model when you want more power. Keys live in your `.env` and never leave
+  your machine.
+- **It actually sees.** VERA renders the viewport (via `SceneCapture2D`, even with
+  the editor minimized) and reasons over the image — to inspect an actor, judge an
+  animation, or critique a composition.
+- **It acts safely.** Read-only tools run freely; anything destructive asks for
+  your approval first. A **Read** mode lets it look without touching anything.
+- **Privacy & Studio Security.** Operations run 100% locally by default. No studio telemetry or code snippets leave your machine unless routed to a cloud LLM provider of your choice.
+- **It's extensible.** Capabilities ship as opt-in **plugins** — a folder with
+  `tools/` and a `SKILL.md`. Write your own in minutes.
+- **It's free & open.** MIT licensed, no studio, no lock-in.
+
+## Features
+
+| | |
+|---|---|
+| 🧠 **Multi-provider brain** | OpenAI · Anthropic · Gemini · DeepSeek · Groq · Hugging Face · NVIDIA NIM · any local OpenAI-compatible server (LM Studio, Ollama, llama.cpp, vLLM). Switch provider/model per tab, mid-conversation. |
+| ⚡ **Live Reasoning Stream** | Streams `<think>` blocks (Qwen 3, DeepSeek-R1) and `reasoning_content` fields live into the UI timeline before tool execution. |
+| 🛰️ **Agentic tool loop** | Plans → calls tools → observes → self-corrects → verifies. Not a one-shot snippet generator. |
+| 👁️ **Multimodal vision** | Captures the viewport / individual actors and feeds the image to the model. Paste, drag, or copy images into the chat too. |
+| 🎞️ **Animation pipeline** | Build an IK rig, set up a retargeter, batch-retarget animations, play/scrub them, and visually verify — all from chat. |
+| 🌍 **Procedural worlds** | Generate massive environments using PCG. VERA can wire graph nodes to spawn forests, cities, and scattered props automatically. |
+| ⚡ **Async execution** | Long-running operations run asynchronously with background task tracking (`bg-tasks-bar`) and live heartbeats, preventing socket timeouts and letting you monitor or cancel tasks. |
+| 🧩 **Plugin system** | Drop-in `tools/` + `SKILL.md`. Toggle per plugin. Per-plugin pip deps installed on demand. |
+| 🔌 **MCP server** | Expose the editor to Claude Code (or any MCP client): exec Python, screenshot, tail logs, status, run a VERA command. |
+| 🛡️ **Safety modes** | **Ask** (confirm destructive actions) · **Auto** (autopilot) · **Read** (inspect only). |
+| 💬 **Polished chat UI** | Tabs, markdown + syntax highlighting, inline screenshots, slash-command menu, live tool narration, stop button, conversation windowing. |
+| ⚙️ **Turnkey setup** | First launch auto-installs its Python deps. Configure providers, local URL, and request timeout right in the panel. |
+| 🖥️ **Cross-platform** | Windows, macOS, Linux. No hardcoded paths. |
+
+## The brain — bring your own LLM
+
+<div align="center">
+  <img width="2123" height="1010" alt="VeraLiveLocalQwen25" src="https://github.com/user-attachments/assets/cb1ae942-6101-4961-84fd-1cfd3f2e93c8" />
+</div>
+
+VERA speaks the **OpenAI `/v1` standard**, so it works with essentially any backend.
+**8 providers** are supported out of the box — switch freely, even mid-conversation:
+
+| Provider | What you need | Flagship models |
+|---|---|---|
+| **Anthropic** | `ANTHROPIC_API_KEY` | `claude-opus-4-8`, `claude-sonnet-4-5`, `claude-3-5-sonnet-20241022` |
+| **OpenAI** | `OPENAI_API_KEY` | `gpt-4o`, `gpt-4o-mini`, `gpt-4.1`, `o3-mini` |
+| **Gemini** | `GEMINI_API_KEY` | `gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-2.0-flash-lite` |
+| **Groq** | `GROQ_API_KEY` | `llama-3.3-70b-versatile`, `llama-3.2-11b-vision-preview`, `mixtral-8x7b` |
+| **Hugging Face** | `HF_TOKEN` | `DeepSeek-R1-Distill-Qwen-32B`, `Llama-3.3-70B-Instruct`, `Qwen2.5-Coder-32B`, `Phi-3.5-mini` |
+| **NVIDIA NIM** | `NVIDIA_API_KEY` | Dynamically discovered NIM models (Llama 3.1/3.2, Gemma 2, etc.) |
+| **DeepSeek** | `DEEPSEEK_API_KEY` | `deepseek-chat` (V3), `deepseek-coder`, `deepseek-reasoner` (R1) |
+| **Local** | `VERA_LOCAL_BASE_URL` | Any model on your server — **no key, no cloud, no cost** |
+
+> 💡 The local provider auto-discovers models from **any OpenAI-compatible server**
+> (LM Studio `:1234`, Ollama `:11434`, llama.cpp, vLLM…). For agentic tool-calling,
+> use a **30B+ coder model** (e.g. Qwen2.5/3-Coder-32B); small models ramble. The
+> first request to a cold local server loads the model — which can take minutes — so
+> the request **timeout is configurable** right in Setup.
+>
+> 🧠 **Live Reasoning & `<think>` Streams:** VERA automatically extracts and streams live `<think>` reasoning blocks (Qwen 3, DeepSeek-R1 distills) directly into the UI timeline before running tools, so you can observe the model's decision-making process in real time.
+
+## How it works
+
+```
+You ──▶ VERA chat (Qt/WebEngine UI inside the editor)
+            │  command + selected provider/model/mode
+            ▼
+        AgentLoop  ─────────────────────────────────────┐
+            │  1. ask the LLM (your provider) for a plan │
+            │  2. LLM requests a tool                    │  repeat until done
+            │  3. run the tool (gate if destructive) ────┤
+            │  4. feed the result back to the LLM        │
+            └─▶ 5. final answer ─────────────────────────┘
+                         │
+                         ▼
+              Unreal Editor (Python bridge → the `unreal` API)
+```
+
+Every turn streams to the UI: you see the plan, each tool call, and the result as
+it happens — and you can **Stop** at any point.
+
+## Built-in tools
+
+The agent ships with a core toolset (read-only tools need no approval; ✋ = gated):
+
+| Tool | What it does |
+|---|---|
+| `inspect_level` | Read the open level: actor counts, classes, lights, static meshes. |
+| `inspect_actor_animability` | Check whether an actor has a skeleton and can be animated. |
+| `capture_actor` | Render an actor/viewport to an image so VERA can **see** it (works minimized). |
+| `animate_actor` | Apply or scrub an animation on a skeletal actor. ✋ |
+| `ensure_ik_rig` | Create/ensure an IK Rig for a skeleton. ✋ |
+| `ensure_retargeter` | Create/ensure an IK Retargeter between skeletons. ✋ |
+| `retarget_animations` | Batch-retarget animations between skeletons. ✋ |
+| `run_ue_python` | Run arbitrary Python against the `unreal` API — the universal escape hatch. ✋ (asks every call) |
+
+Chained together, the animation tools are a full **rig → retarget → animate →
+visually verify** pipeline, driven entirely from chat.
+
+## Plugins
+
+<div align="center">
+
+<img width="1920" height="1080" alt="fab-02-plugins" src="https://github.com/user-attachments/assets/621657bf-c451-44ae-81cb-30cfc45b0240" />
+
+
+</div>
+
+Capabilities ship as **opt-in plugins** so the core stays lean — you enable only what
+you want, and a plugin's pip dependencies are pulled in on demand. 
+**All plugins below are bundled and included 100% for free out of the box:**
+
+| Plugin | What it adds |
+|---|---|
+| **Blueprint Forge** | Create Actor Blueprints via the Graph API (components, compile, save) — no clicking. |
+| **Computer Use** | Last-resort screen control for editor UI that has no Python API (click and capture). |
+| **Local IQ** | Raises a small local model's effective IQ with proven, reusable recipes. |
+| **Memory** | Persistent memory across conversations — facts, conventions, decisions. |
+| **Mobile / Performance Doctor** | Audits materials and mobile-compat issues; profiles the level. |
+| **PCG Forge** | Autonomously wire Procedural Content Generation (PCG) graphs to spawn vast, rule-based worlds and scatter props without manual placement. |
+| **Project Intelligence** | Read-only analysis of the on-disk project: engine, plugins, assets. |
+| **Project Playbook** | Loads this project's conventions, decisions and known traps into context. |
+| **Scene Vibe** | Instantly sets the cinematic MOOD of the open level (cyberpunk, noir, aztec, etc.). |
+| **Source Control** | Git source control for VERA: inspect diffs and create gated commits safely. |
+
+### Write your own plugin
+
+```
+VERA_Plugins/my-plugin/
+├── plugin.json        # {"name","version","enabled", optional "deps":[...]}
+├── tools/*.py         # Tool subclasses (name, description, input_schema, execute)
+└── SKILL.md           # when/how VERA should use it (injected into the system prompt)
+```
+
+A minimal tool:
+
+```python
+from vera.agent.tool import Tool, ToolResult
+
+class HelloTool(Tool):
+    name = "say_hello"
+    description = "Say hello. Use when the user greets VERA."
+    input_schema = {"type": "object", "properties": {"to": {"type": "string"}}}
+    def execute(self, args, ctx):
+        return ToolResult(f"Hello, {args.get('to', 'world')}!")
+```
+
+Drop the folder in `VERA_Plugins/`, toggle it on in the **Plugins** tab — done.
+
+## MCP — drive the editor from your IDE
+
+<div align="center">
+ <img width="2252" height="946" alt="ClaudeLive" src="https://github.com/user-attachments/assets/2bb82085-699d-44e5-8113-99cedbeb0f7e" />
+ <img width="2254" height="980" alt="ClaudeLive2" src="https://github.com/user-attachments/assets/654b925a-6db1-4b61-9241-9328b65338c9" />
+ <img width="2302" height="1013" alt="AngravityIDELive" src="https://github.com/user-attachments/assets/0ea511b1-7c6c-432e-9dac-0a98e613c878" />
+
+</div>
+
+VERA ships an [MCP](https://modelcontextprotocol.io) server, so the AI in **your
+favorite IDE or agent** can drive your Unreal editor — write Python into it, read
+the log, screenshot the viewport, or run a full VERA command — without leaving your
+editor.
+
+Drop this into your MCP client's config (e.g. `.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "vera-ue": {
+      "command": "python",
+      "args": ["-m", "vera.tools.mcp_server"],
+      "env": {
+        "PYTHONPATH": "C:/path/to/VERA",
+        "VERA_UE_PROJECT_DIR": "C:/path/to/YourProject"
+      }
+    }
+  }
+}
+```
+
+> **`PYTHONPATH` must point at the VERA repo root** (the folder containing the
+> `vera/` package), so `python -m vera.tools.mcp_server` can find it. Some clients
+> (e.g. Claude Code) launch the server from the project root and work without it,
+> but most run from a different working directory — if you see
+> `ModuleNotFoundError: No module named 'vera'`, this is the fix. You can also
+> point `command` at a specific interpreter (e.g. a full `python.exe` path).
+
+Works with any MCP-capable client — **Claude Code**, **Cursor**, **VS Code**
+(Cline / Continue / Copilot), **JetBrains Rider** (AI Assistant), **Windsurf**,
+**Zed**, and more:
+
+| MCP tool | Purpose |
+|---|---|
+| `ue_exec` | Execute Python in the editor and get the output back. |
+| `ue_screenshot` | Capture the viewport. |
+| `ue_log` | Tail the Unreal output log. |
+| `ue_status` | Check the bridge/editor status. |
+| `vera_command` | Run a full natural-language VERA command (the agent pipeline). |
+
+## Install
+
+### From source (developers)
+
+```bash
+git clone https://github.com/ezesubu/VERA.git
+cd VERA
+python PackageVERA.py
+```
+
+1. Copy the assembled `Plugin/` folder into your own Unreal Engine project's `Plugins/VERA/` directory.
+2. Enable Unreal's **Python Editor Script Plugin**.
+3. Open **VERA** from the editor toolbar. (Dependencies are bundled inside the plugin, so it works completely offline out of the box — no `pip install` required).
+4. In **Setup ⚙**, pick a provider and paste a key (or a local server URL), then chat.
+
+### Build the distributable plugin (UE 5.7)
+
+```bash
+python PackageVERA.py --bundle  # assemble from source + bundle deps + RunUAT + zip → Packaged/
+```
+
+The output is a **compiled, drag-and-drop plugin** ready for the Epic Games Launcher
+/ Fab. Want another engine version? Clone and build it yourself — the pipeline targets
+the latest UE.
+
+### Requirements
+
+- Unreal Engine **5.7** or **5.8**
+- The **Python Editor Script Plugin** (bundled with UE)
+- Internet access **only** if you use a cloud provider (local models run fully offline)
+
+## Configuration
+
+VERA reads a `.env` at the repo root (and the Setup panel writes to it for you):
+
+| Variable | Meaning |
+|---|---|
+| `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` | Cloud provider keys |
+| `GROQ_API_KEY` / `HF_TOKEN` / `NVIDIA_API_KEY` / `DEEPSEEK_API_KEY` | Groq, Hugging Face, NVIDIA NIM, and DeepSeek keys |
+| `VERA_LOCAL_BASE_URL` | Local server `/v1` URL (e.g. `http://localhost:1234/v1`) |
+| `VERA_LLM_TIMEOUT_S` | Request timeout in seconds (raise it for slow cold starts) |
+| `VERA_PLUGINS_DIR` | Override the plugins directory |
+| `VERA_AUTO_APPROVE` | Skip the destructive-action gate (autopilot/testing) |
+
+> 🔒 Keys are saved to your `.env` and **never** sent back to the frontend.
+
+## Usage
+
+Open the VERA panel and just ask. A few things to try:
+
+- *"How many actors are in this level, and how many are lights?"*
+- *"Create a `BP_SpikeTrap` Blueprint with a static mesh and a box collision."*
+- *"Retarget these animations from the UE4 mannequin to my character, then show me the idle."*
+- *"Audit this level for mobile performance issues."*
+- *"Set a horror vibe on the scene for a screenshot."*
+- *"Remember that this project uses the `SM_` prefix for static meshes."*
+
+Switch **Ask / Auto / Read** in the composer to control how much freedom VERA has.
+
+## Architecture
+
+```
+┌─────────────────────────── Unreal Editor ───────────────────────────┐
+│                                                                      │
+│   VERA panel (Qt WebEngine UI)  ◀──┐                                 │
+│        │ command                   │ events (stream)                 │
+│        ▼                           │                                 │
+│   vera_server  ──▶  AgentLoop  ──▶ tools ──▶ Python bridge ──▶ unreal│
+│        │                │                                            │
+│        │                └─ plugins (VERA_Plugins/*)                  │
+│        ▼                                                             │
+│   MCP server  ◀── Claude Code / other MCP clients                   │
+└──────────────────────────────────────────────────────────────────────┘
+            ▲
+            └─ LLM provider (OpenAI / Anthropic / Gemini / DeepSeek / local)
+```
+
+- **`vera/agent/`** — the AgentLoop, tool registry, sessions, the multi-provider client.
+- **`vera/llm/`** — the OpenAI-compatible adapter (duck-types the Anthropic surface).
+- **`vera/tools/`** — the MCP server and the UE socket connection.
+- **`vera/core/`** — the editor server (`vera_server`) and the progress blackboard.
+- **`Content/Python/`** — the editor scripts (including the **Async Bridge** that prevents timeouts during heavy generations) + the chat UI (`vera_chat/`).
+- **`Content/Python/vera/vera_graph_utils.py`** — The universal graph standard library, resolving API differences across Blueprints, PCG, and Materials.
+- **`VERA_Plugins/`** — the studio plugins.
+
+## Contributing
+
+Contributions are welcome — new tools, plugins, providers, fixes.
+
+```bash
+# run the test suite
+python -m pytest tests/ -q
+```
+
+- **Add a tool:** create a `Tool` subclass in `vera/agent/tools/` — the registry
+  discovers it automatically.
+- **Add a plugin:** see [Write your own plugin](#write-your-own-plugin).
+- **Add a provider:** extend the registry in `vera/agent/models.py`.
+
+The codebase is 100% Python (using the Python Editor Script Plugin) + a local HTML/JS/CSS frontend. It is fully cross-platform and covered
+by a test suite. Open an issue or a PR, or come chat in
+[Discord](https://discord.gg/ZxG8wbRp).
+
+## FAQ
+
+**Do I need to know Unreal or Blueprints?**
+No. You describe what you want in plain language and VERA builds it through the
+engine's code layer — assets, actors, components, properties, whole systems.
+
+**Does VERA wire the visual Blueprint nodes for me?**
+Out of the box it creates the Blueprint, its components and properties, then
+compiles and saves it. Wiring the visual Event Graph (the "spaghetti") is one
+**plugin** away — a C++-backed plugin can reach the graph APIs that Python can't
+and generate the nodes too. That's the point of the plugin system: no ceiling.
+
+**Is it free? Does it phone home?**
+MIT, free, and it can run **100% local** with your own model — your keys and data
+never leave your machine.
+
+**How do I manage "thinking effort" with reasoning models (DeepSeek-R1, o3-mini)?**
+Right now, VERA doesn't have a direct `--thinking-effort` slider in the UI, but here is how you can achieve that and avoid wasting thinking tokens:
+- **Use multiple tabs with different models/providers:** VERA supports tabs out of the box! You can open multiple chat tabs inside the Unreal Editor panel:
+  - **Tab 1:** Set to a fast/light model (e.g. gemini-2.5-flash, gpt-4o-mini, or a lightweight local model) for quick commands, level inspection, or simple property tweaks — zero token waste on long `<think>` streams.
+  - **Tab 2:** Set to a heavy reasoning model (e.g. deepseek-reasoner, o3-mini) for complex Blueprints, C++ debugging, or performance architecture.
+- **Use VERA's Plugin system (e.g., project-playbook):** VERA already includes plugins like Project Playbook or custom plugins (`VERA_Plugins/your-plugin/`). By adding a `SKILL.md` into a plugin with your project's conventions, actor naming rules, and architecture, VERA doesn't waste thinking tokens trying to figure out how your project is built.
+- **Build a custom VERA plugin for your specific needs:** You can easily write a dedicated VERA plugin (`plugin.json` + `tools/` + `SKILL.md`). You can instruct the agent in the `SKILL.md` to adopt a direct, concise execution style with zero fluff, cutting down on unnecessary reasoning steps before calling Unreal tools.
+
+## Support — The Co-Pilot Pact
+
+<div align="center">
+
+<img width="1920" height="1080" alt="fab-03-support" src="https://github.com/user-attachments/assets/574d9009-8baa-41a2-9934-6e149aea8cd5" />
+
+
+</div>
+
+VERA is **independent and open** — no studio, no investors, no lock-in. It's free and
+runs on your own keys and hardware. If it earns its keep, you can keep it alive:
+
+- 🛒 **[Get it on Fab Marketplace](https://www.fab.com/listings/669e2b05-3ba0-4074-b9e5-220a4e87a598)** — Official Epic Games Store release
+- 💎 **[Support on Patreon](https://www.patreon.com/maVERAick/gift)** — monthly or a one-off gift
+- ☕ **[Tip on Ko-fi](https://ko-fi.com/maveraick)** · 🍺 **[Buy a Beer](https://buymeacoffee.com/maveraick)**
+- 💬 **[Join the Discord](https://discord.gg/ZxG8wbRp)** — free, come say hi
+- ⭐ **Star the repo** and tell another dev — it genuinely helps.
+
+## License
+
+MIT — use VERA in your commercial and AAA projects. See [LICENSE](LICENSE).
+
+## Credits
+
+Conjured in the dark by **maVERAick** — Sith Lord of the Unreal Editor — mortal
+identity [**@ezesubu**](https://github.com/ezesubu). ⚡🌑
+
+**Core AI Team & Contributors:**
+- **Claude** — Lead UI Architect
+- **Antigravity (Gemini)** — Lead Artist & Infrastructure
+
+> _Come to the dark side. We have agents._
+
+<img width="665" height="706" alt="VeraInitChat" src="https://github.com/user-attachments/assets/de6c8cc9-a60f-4c8b-bf13-909c4912e6ed" />
+
+<div align="center">
+<sub>built by <b>maVERAick</b> · <i>the agents thank you ◇</i></sub>
+</div>

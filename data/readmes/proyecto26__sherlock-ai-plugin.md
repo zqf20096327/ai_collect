@@ -1,0 +1,229 @@
+# 🕵️‍♂️ Sherlock AI Plugin
+
+
+<img src="./images/claude-mascot-jumping-animated.svg" width="150">
+<table>
+  <tr>
+    <td>
+      Paper to Comics
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/proyecto26/MyApp/tree/develop">
+        <img src="https://github.com/user-attachments/assets/c55466c0-8871-4be1-92df-dff3131c508f" width="300">
+      </a>
+    </td>
+  </tr>
+</table>
+
+> **The Ultimate Research & Implementation Assistant for Claude Code & Cursor**
+
+Sherlock is a curated collection of high-powered AI skills designed to transform your research workflow. It doesn't just read papers—it deduces, visualizes, and reconstructs them into working code.
+
+From **deep-diving into literature** to **converting methodology into Python**, Sherlock equips your AI agent with the tools of a master detective and a master engineer.
+
+## 🧰 The Essentials Kit (Features)
+
+Sherlock equips your agent with these specialized skills:
+
+### 🧩 **1. Paper2Code (The Engineer)**
+*Transforms academic theory into executable reality.*
+- **4-Stage Pipeline**: Systematically converts research papers into code (Algorithm Extraction → Concept Analysis → Planning → Implementation).
+- **No Hallucinations**: Forces a structured intermediate representation (YAML) before writing a single line of code.
+- **Reproducibility First**: Prioritizes accuracy and paper fidelity over "clever" coding.
+
+### 📚 **2. Deep Research (The Detective)**
+*The heavy lifter for comprehensive reports.*
+- **Multi-Pass Drafting**: Spawns parallel sub-agents to draft different sections of a report.
+- **Evidence Tracking**: Maintains strictly cited evidence tables—no claim goes unsourced.
+- **High Fidelity**: Produces professional-grade reports with strict formatting compliance.
+
+### 🎨 **3. Paper Comic (The Storyteller)**
+*Explains the unexplainable through visual narratives.*
+- **Visual Translation**: Turns dense academic text into educational comics.
+- **Style Adaptive**: Choose from Classic, Tech/Futuristic, Warm, or Chalkboard art styles.
+- **Gemini Powered**: Uses the `genimg-gemini-web` skill for consistent character consistency across panels.
+
+### 🔬 **4. Paper Analyzer (The Analyst)**
+*X-Ray vision for PDFs.*
+- **MinerU Integration**: High-precision parsing of formulas, tables, and latex from PDFs.
+- **Style Rewrite**: Can rewrite complex papers into "Storytelling", "Academic", or "Concise" formats.
+- **Metadata Extraction**: Automatically pulls title, authors, and citations.
+
+### 🖼️ **5. GenImg Gemini Web (The Artist)**
+*The visual engine.*
+- **Image Generation**: Generates images via Google's Gemini Web.
+- **Multi-Modal**: Handles text-to-image and image-to-text tasks.
+- **Session Awareness**: Maintains context across multi-turn conversations for consistent output.
+
+### 📐 **6. Visual Architect (The Designer)**
+*Blueprints for understanding.*
+- **Schema Generation**: Transforms methodology sections into structural visual schemas.
+- **Prompt Engineering**: Generates high-precision prompts for DALL-E 3 or Midjourney based on paper logic.
+- **Layout Logic**: Detects if a system is Linear, Cyclic, Hierarchical, or Parallel.
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+#### Option 1: CLI Install (Recommended)
+
+Use [npx skills](https://github.com/vercel-labs/skills) to install skills directly:
+
+```bash
+# Install all skills
+npx skills add proyecto26/sherlock-ai-plugin
+
+# Install specific skills
+npx skills add proyecto26/sherlock-ai-plugin --skill paper-comic genimg-gemini-web
+
+# List available skills
+npx skills add proyecto26/sherlock-ai-plugin --list
+```
+
+This automatically installs to your `.claude/skills/` directory.
+
+#### Option 2: Claude Code Plugin
+
+Install via Claude Code's built-in plugin system:
+
+```bash
+# Add the marketplace
+/plugin marketplace add proyecto26/sherlock-ai-plugin
+
+# Install all marketing skills
+/plugin install sherlock-ai-plugin
+```
+
+#### Option 3: Codex / Cursor / Copilot CLI (Agent Plugins)
+
+This plugin follows the [Agent Plugins 1.0](https://agent-plugins.org/specification)
+open standard, so the same repository installs on any conforming host:
+
+| Host | Install |
+|------|---------|
+| **OpenAI Codex** | `codex plugin marketplace add proyecto26/sherlock-ai-plugin` then `codex plugin add sherlock-ai-plugin@sherlock-ai-plugin-marketplace` (or pick it from `/plugins`) |
+| **GitHub Copilot CLI** | `copilot plugin marketplace add proyecto26/sherlock-ai-plugin` then `copilot plugin install sherlock-ai-plugin@sherlock-ai-plugin-marketplace` |
+| **Cursor** | Settings → Plugins → install from Git URL `https://github.com/proyecto26/sherlock-ai-plugin` (Agent Plugins format is detected from the root `plugin.json`) |
+
+Which file each host reads:
+
+- `plugin.json` (repo root) — the portable [Agent Plugins 1.0](https://agent-plugins.org/specification)
+  manifest. Cursor and Copilot CLI read this directly and discover `skills/` automatically.
+- `.codex-plugin/plugin.json` + `.agents/plugins/marketplace.json` — OpenAI Codex manifest and catalog.
+- `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json` — Claude Code manifest and
+  catalog (Copilot CLI also reads this marketplace file).
+
+All six skills are discovered from `skills/` — no host manifest repeats the list,
+so adding a skill is a one-directory change. Run `bash scripts/check-manifests.sh`
+before releasing to confirm every manifest still agrees.
+
+> Copilot CLI note: installing from a working tree that contains `.git/` can fail
+> with *access denied* while Copilot copies the directory. Install from a clean
+> checkout or from the marketplace.
+
+#### Option 4: Clone and Copy
+
+Clone the entire repo and copy the skills folder:
+
+```bash
+git clone https://github.com/proyecto26/sherlock-ai-plugin.git
+cp -r sherlock-ai-plugin/skills/* .claude/skills/
+```
+
+#### Option 5: Git Submodule
+
+Add as a submodule for easy updates:
+
+```bash
+git submodule add https://github.com/proyecto26/sherlock-ai-plugin.git .claude/sherlock-ai-plugin
+```
+
+Then reference skills from `.claude/sherlock-ai-plugin/skills/`.
+
+#### Option 6: Fork and Customize
+
+1. Fork this repository
+2. Customize skills for your specific needs
+3. Clone your fork into your projects
+
+
+### Authentication
+Some skills (like `paper-analyzer`) require API tokens or login sessions.
+*   **MinerU**: Export `MINERU_TOKEN` in your environment.
+*   **Gemini**: `genimg-gemini-web` needs a signed-in Google session. Run
+    `npx -y bun skills/genimg-gemini-web/scripts/main.ts --login` and complete
+    sign-in in the Chrome window that opens.
+
+> **Image generation requires being signed in.** Google serves signed-out
+> visitors a free Flash-tier model that declines to create images. Cached cookies
+> expire, so if image generation stops working, re-run `--login`.
+
+### Usage Examples
+
+**"Implement the code of this paper for me."**
+> Triggers **Paper2Code** to read the PDF, plan the architecture, and write the Python implementation.
+
+**"Explain this complex transformer architecture as a comic."**
+> Triggers **Paper Comic** to create a visual storyboard explaining the concept.
+
+**"I need a deep research report on the state of LLM reasoning."**
+> Triggers **Deep Research** to crawl, analyze, and compile a multi-page cited report.
+
+**"Visualize the flow of data in this system."**
+> Triggers **Visual Architect** to design a schematic diagram prompt.
+
+---
+
+## 📂 Structure
+
+```
+plugin.json              # Agent Plugins 1.0.0 manifest (Cursor, Copilot CLI)
+.codex-plugin/           # OpenAI Codex manifest
+.claude-plugin/          # Claude Code manifest + marketplace
+.agents/plugins/         # Codex / Copilot catalog entry
+scripts/
+└── check-manifests.sh   # Asserts every host manifest agrees
+skills/
+├── deep-research/       # Report generation & evidence tracking
+├── paper2code/          # Paper implementation pipeline
+├── paper-comic/         # Educational comic generator
+├── paper-analyzer/      # PDF parsing & style rewriting
+├── genimg-gemini-web/   # Image generation backend
+└── visual-architect/    # Visual schema design
+```
+
+---
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=proyecto26/sherlock-ai-plugin&type=Date)](https://star-history.com/#proyecto26/sherlock-ai-plugin-code&Date)
+
+## 💜 Sponsors
+
+This project is free and open source. Sponsors help keep it maintained and growing.
+
+[**Become a Sponsor**](https://github.com/sponsors/proyecto26) | [Sponsorship Program](https://proyecto26.com/sponsors/)
+
+## 🤝 Contribution
+
+When contributing to this repository, please first discuss the change you wish to make via issue,
+email, or any other method with the owners of this repository before making a change.
+ 
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated** ❤️.
+ 
+You can learn more about how you can contribute to this project in the [contribution guide](https://github.com/proyecto26/.github/blob/master/CONTRIBUTING.md).
+
+## 👍 Credits
+
+- [Claude Code skills for academic papers](https://github.com/zsyggg/paper-craft-skills)
+
+## Happy vibe researching 💯
+Made with ❤️ by [Proyecto 26](https://proyecto26.com) - Changing the world with small contributions.
+
+One hand can accomplish great things, but many can take you into space and beyond! 🌌
+
+Together we do more, together we are more ❤️ <img width="150px" src="https://avatars0.githubusercontent.com/u/28855608?s=200&v=4" align="right">

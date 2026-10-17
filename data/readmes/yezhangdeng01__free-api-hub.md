@@ -1,0 +1,167 @@
+# API Hub · 大模型聚合网关
+
+自用免费token小工具，发出来给有需要的朋友。如果有帮助的话给点个star给个反馈。
+
+把多个免费的大模型 API 聚合成一个 OpenAI 兼容接口：统一模型列表、自动排序可用模型、剩余额度显示、失败自动切换渠道、调用量统计。桌面程序（Windows），本地运行，数据不出本机。
+
+## 功能
+
+- **统一网关**：统一API地址 `http://127.0.0.1:8787/v1`，OpenAI 兼容（`/v1/models`、`/v1/chat/completions`、`/v1/responses`、`/v1/messages`、`/v1/embeddings`），任何支持自定义 OpenAI 地址的工具都能直连
+- **Responses 协议兼容**：`/v1/responses` 把 Responses 协议（Codex CLI、新版 OpenAI SDK 只认这个端点）翻译成 chat 完成请求，`instructions` / `input` / `tools` / 流式事件流全部对齐；路由、冷却、失败换路、用量统计与 chat 入口共用同一套
+- **Anthropic 协议兼容**：`/v1/messages` 把 Anthropic Messages 协议（Claude Code、Anthropic SDK）翻译成 chat 完成请求，`system` / 块数组 / `tool_use` / `tool_result` / 流式事件流全部对齐；同样复用 chat 入口的渠道路由与记账。`/v1/messages/count_tokens` 也能用（给的是本地估算，见「已知限制」）
+- **智能路由**：四种路由策略（均衡/智能优先/稳定优先/速度优先），按成功率评分 + 延迟 EMA + 能力档位排序，失败自动换路；429/401/5xx 分类冷却（429 尊重 Retry-After，401 自动停用渠道）
+- **模型别名**：把不同平台同一模型归并成组，组内故障切换
+- **模型主动探测**：定期对近期用过的模型发 1-token 探测，提前发现下线模型
+- **可用性排序**：健康检查定期拉取各渠道模型列表，可用模型置顶，收藏模型优先
+- **额度显示**：OpenRouter（官方 `/credits`）、智谱（社区逆向接口）、硅基流动（`/user/info`）；其余平台显示本地统计用量
+- **用量统计**：SQLite 记录每次调用的模型、渠道、token、延迟、成败，界面图表 + 请求明细
+- **密钥加密**：API Key 与网关 Token 经 Windows DPAPI 加密后落盘
+- **桌面体验**：pywebview 原生窗口 + 系统托盘常驻 + 开机自启；`API Hub.vbs` 静默启动（无控制台）
+- **支持平台（预设 15 个）**：智谱 GLM、OpenRouter、Google Gemini（兼容层）、OpenAI、NVIDIA NIM、硅基流动、Groq、Cerebras、Mistral、Cohere、魔搭 ModelScope、HuggingFace、Together AI、智谱国际 Z.ai、可添加任意 OpenAI 兼容自定义源
+
+## 平台支持
+
+- **Windows**：完整支持 —— DPAPI 密钥加密、pywebview 原生窗口、系统托盘常驻
+- **macOS / Linux**：网关后端可运行（依赖见 requirements.txt），两处自动降级：
+  - 密钥**不加密落盘**（无 Windows DPAPI，`app/vault.py` 自动降级为明文存储并记录日志——自行权衡）
+  - 桌面壳需按 pywebview 官方文档装对应系统依赖；无桌面/无托盘环境可改用 `server.py` 或 `desktop.py` 的浏览器降级模式
+
+## 快速开始
+
+1. 双击 `API Hub.vbs`（首次运行前先双击一次 `run.bat` 完成依赖安装）
+2. 打开「渠道」标签页，添加至少一个渠道（选平台 → 粘贴 API Key → 保存）
+3. 在其他工具里把 Base URL 设为 `http://127.0.0.1:8787/v1`，API Key 填界面顶部的**网关 Token**（点击复制）
+
+- 关闭窗口 = 最小化到系统托盘（服务不中断），托盘右键可显示/隐藏、开关开机自启、退出
+- 调试模式用 `run.bat`（保留控制台日志）；纯后台常驻用 `server.bat`
+- 排障/看日志：`data/api-hub.log`
+
+### 用 Responses 协议的客户端（Codex CLI 等）
+
+把 base URL 指向 `http://127.0.0.1:8787/v1`、API Key 填网关 Token 即可，模型名直接写渠道里的模型 ID
+或用 `auto-balanced` 这类自动路由名（路由/换路/统计与 chat 入口完全同一套）。
+
+```bash
+curl http://127.0.0.1:8787/v1/responses \
+  -H "Authorization: Bearer <网关 Token>" -H "Content-Type: application/json" \
+  -d '{"model":"auto-balanced","instructions":"你是助手","input":"你好"}'
+```
+
+支持 `instructions`、字符串/数组两种 `input`、多轮工具调用（`function_call` / `function_call_output` 往返
+的 `call_id` 原样保留）、`tools` / `tool_choice`、`text.format`（含 `json_schema`）、`stream` 流式事件流。
+⚠️ **无状态**：不实现服务端会话记忆，`previous_response_id` 会被忽略（客户端每轮回传完整 `input` 就不受影响）。
+
+### 用 Anthropic 协议的客户端（Claude Code、Anthropic SDK）
+
+把 base URL 指向 `http://127.0.0.1:8787`、API Key 填网关 Token 即可。Anthropic 客户端发的是
+`x-api-key` 头（不是 `Authorization: Bearer`），网关两种都认。
+
+```bash
+curl http://127.0.0.1:8787/v1/messages \
+  -H "x-api-key: <网关 Token>" -H "Content-Type: application/json" \
+  -d '{"model":"auto-balanced","max_tokens":256,"system":"你是助手","messages":[{"role":"user","content":"你好"}]}'
+```
+
+支持 `system`（字符串或块数组）、`messages` 的块数组（`text` / `image` / `tool_result`）、
+`tools` + `tool_choice`（`auto` / `any` / `tool` / `none`）、`stop_sequences`、`temperature` / `top_p` / `top_k`、
+`stream` 流式事件流（`message_start` → `content_block_*` → `message_delta` → `message_stop`），
+多轮工具调用的 `tool_use.id` ↔ `tool_use_id` 原样保留。
+⚠️ **`max_tokens` 必填**（Anthropic 协议如此）：缺了直接 400 —— 不替客户端猜一个值，猜小了会把答案截断而它看不到提示。
+⚠️ **无状态**：不保存任何会话，客户端每轮把完整对话放进 `messages`。
+
+## 配置
+
+所有配置存在 `config.json`（密钥字段为 DPAPI 密文），界面改不了的可直接编辑后重启。全新部署：首次启动会自动生成默认 `config.json`，也可参考仓库内的 `config.example.json`（两者结构一致，后者为空模板）：
+
+```json
+{
+  "port": 8787,
+  "check_interval_minutes": 10,
+  "quota_interval_minutes": 5,
+  "auth_enabled": true,
+  "route_strategy": "balanced",
+  "probe_used_models": true,
+  "model_tiers": {}
+}
+```
+
+- `route_strategy`：`balanced` / `quality` / `stability` / `speed`
+- `model_tiers`：能力档位正则覆盖，如 `{"qwen.*max": 3, ".*-flash": 1}`
+- `auth_enabled` 设为 `false` 可关闭网关 Token 鉴权（不建议）
+- `/v1/responses`、`/v1/messages` 专用（见下）：
+  - `responses_stream_usage`（默认 `true`）：流式时给上游加 `stream_options.include_usage`，好让
+    `response.completed` 带 token 用量。**哪个渠道因此返回 400 就改成 `false`**（只影响用量显示）
+  - `responses_reasoning_effort`（默认 `false`）：把 `reasoning.effort` 译成 chat 的 `reasoning_effort`
+    传给上游。默认关是因为个别渠道不认这个字段会整条 400，而少了它只是丢掉一个提示
+
+## 目录结构
+
+```
+api-hub/
+├── app/
+│   ├── main.py        # FastAPI：对外 API + 管理 API + 后台健康检查/探测
+│   ├── dialects/      # 下游协议方言注册表（内部形状统一是 chat completions）
+│   │   ├── chat.py       # 恒等映射（本体就是 chat）
+│   │   ├── responses.py  # /v1/responses 翻译层（Responses 协议 ↔ chat 请求/响应/流式事件）
+│   │   └── messages.py   # /v1/messages 翻译层（Anthropic 协议 ↔ chat 请求/响应/流式事件）
+│   ├── gateway.py     # 运行时状态：健康、评分、failover 排序、分类冷却
+│   ├── providers.py   # 各平台模型列表与额度查询
+│   ├── config.py      # 配置读写（加解密）与平台预设
+│   ├── vault.py       # Windows DPAPI 密钥加密
+│   ├── capability.py  # 模型能力档位启发式（供智能路由）
+│   └── store.py       # SQLite 用量统计
+├── frontend/index.html  # 界面（单文件，暗色主题）
+├── desktop.py         # 桌面入口：pywebview 窗口 + 系统托盘 + 开机自启
+├── server.py          # 无窗口模式
+├── API Hub.vbs        # 静默启动（无控制台，日常使用双击它）
+├── run.bat            # 调试模式（首次安装/带控制台）
+├── tests/             # pytest 单元测试（离线）
+├── scripts/           # 运维脚本（gen_third_party_licenses.py：生成第三方许可汇总）
+├── .github/workflows/ # ci.yml（PR/push 跑测试）、release.yml（打 tag 发 Windows 绿色版）
+├── config.json        # 配置（密钥为 DPAPI 密文）
+└── data/              # usage.db 用量记录 + api-hub.log 运行日志
+```
+
+## 安全说明
+
+- 服务只监听 `127.0.0.1`，不对外网开放；
+- 网关接口（`/v1/*`）需要 Bearer Token 鉴权，Token 首次启动自动生成，界面上可一键复制
+- **密钥加密存储**：渠道 API Key 与网关 Token 落盘前经 Windows DPAPI 加密（见 `app/vault.py`），config.json 中只有 `dpapi:` 密文。加密绑定当前用户与本机，文件被复制到别的机器解不开（届时需重新填写 Key）；非 Windows 环境自动降级为明文
+- 拒绝跨域请求与异常 Host 头（防浏览器侧 CSRF / DNS rebinding 攻击）
+- 运行日志滚动写入 `data/api-hub.log`（保留 3MB），日志中不含任何密钥，排障时可直接发送
+
+## 已知限制
+
+- 智谱额度接口为社区逆向，平台改版会失效（失效时自动降级为本地统计，不影响网关功能）
+- Gemini 免费层无余额概念，显示的是本地统计的调用量
+- 流式请求的 token 统计依赖上游响应中的 `usage` 字段，部分渠道不返回时记 0
+- **`/v1/responses` 无状态**：不实现 `store` 的服务端会话记忆，`previous_response_id` 会被忽略并记日志
+  （客户端每轮回传完整 `input` 就不受影响，Responses 协议本来也是这么用的）
+- **`/v1/messages/count_tokens` 给的是本地估算**：网关下游是 chat completions 兼容渠道，
+  既没有 `count_tokens` 可以透传，也没有上游的分词器。做法是按 `/v1/messages` 同一套翻译
+  得到 chat body，再估它的大小（中文按字、其余按 4 字符约 1 token，图片按固定值）。
+  量级够客户端判断上下文预算；要官方口径的精确值只能直连 Anthropic
+- **`/v1/messages` 不处理思考块**：Anthropic 的 `thinking` / `redacted_thinking` 块要求服务端签名，
+  网关给不出合法签名，硬塞假块会被客户端判为协议错误 —— 所以请求里的思考块会被忽略（记日志），
+  上游的推理内容也不译成思考块。要思考内容请走 chat 入口（那边是 `reasoning_content`）
+- **`/v1/responses` 的内置托管工具不支持**：`web_search_preview` / `file_search` / `computer_use_preview`
+  这类由 OpenAI 服务端执行的工具网关服务不了，翻译时会丢掉（会记进日志）；客户端自定义的 function tool 正常
+- 带 `file_id` 的图片 / 文件（`input_image` / `input_file`）无法解析 —— 网关没有文件存储服务，
+  会降级成 `[图片 file_id=…]` 这样的文本占位，不会把消息丢掉
+- 「能力档位」是按模型名关键词的启发式估算，不是跑分数据；免费层模型是实验资源，无 SLA，可能随时变动
+
+## 开发与测试
+
+```bash
+.venv\Scripts\python.exe -m pytest tests/ -q   # 离线单元测试
+```
+
+## 许可
+
+MIT License —— 详见 [LICENSE](LICENSE)。欢迎 issue / PR。
+
+打包分发的绿色版里附带 `THIRD-PARTY-LICENSES.md`（第三方依赖的许可与版权声明汇总）。
+清单集合 = `requirements.txt` 的依赖 + 其传递依赖（构建期工具不计入），由
+`scripts/gen_third_party_licenses.py` 生成；依赖升级后重新跑一次再打包。
+**要在 Windows 上生成** —— `pythonnet` / `clr_loader` 这类只在 Windows 装得到，
+在别的系统上跑出来的清单会缺项。

@@ -1,0 +1,163 @@
+# RestrictedBoltzmannMachines.jl
+
+[![Docs (stable)](https://img.shields.io/badge/docs-stable-blue.svg)](https://cossio.github.io/RestrictedBoltzmannMachines.jl/stable)
+[![Docs (dev)](https://img.shields.io/badge/docs-dev-blue.svg)](https://cossio.github.io/RestrictedBoltzmannMachines.jl/dev)
+[![Coverage](https://codecov.io/gh/cossio/RestrictedBoltzmannMachines.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/cossio/RestrictedBoltzmannMachines.jl)
+
+A Julia package for training and sampling [Restricted Boltzmann Machines](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine) (RBMs) — a class of probabilistic generative models with a bipartite structure of visible and hidden units. This package supports a wide range of unit types (binary, spin, Potts, Gaussian, ReLU variants), GPU acceleration via CUDA, and advanced techniques like centered and standardized RBMs.
+
+## Installation
+
+This package is registered. Install with:
+
+```julia
+import Pkg
+Pkg.add("RestrictedBoltzmannMachines")
+```
+
+This package does not export any symbols. Since the name is long, we recommend importing it as:
+
+```julia
+import RestrictedBoltzmannMachines as RBMs
+```
+
+## Quick start
+
+Train a Binary RBM on binarized MNIST digits and generate samples:
+
+```julia
+import RestrictedBoltzmannMachines as RBMs
+import MLDatasets
+
+# Load and binarize MNIST data (28×28 images)
+train_x = Array{Float32}(MLDatasets.MNIST(split=:train)[:].features .≥ 0.5)
+
+# Create a Binary RBM with 400 hidden units and initialize from data
+rbm = RBMs.BinaryRBM(Float32, (28, 28), 400)
+RBMs.initialize!(rbm, train_x)
+
+# Train with Persistent Contrastive Divergence
+RBMs.pcd!(rbm, train_x; iters=10000, batchsize=256)
+
+# Generate new samples via Gibbs sampling
+fantasy = RBMs.sample_v_from_v(rbm, train_x[:, :, 1:100]; steps=3000)
+```
+
+## Supported layer types
+
+RBMs can be constructed from any combination of the following visible and hidden layer types:
+
+| Layer | Values | Parameters | Description |
+|-------|--------|------------|-------------|
+| `Binary` | {0, 1} | θ | Binary units |
+| `Spin` | {-1, +1} | θ | Spin units |
+| `Potts` | one-hot vectors | θ | Categorical units |
+| `Gaussian` | ℝ | θ, γ | Gaussian units |
+| `ReLU` | [0, ∞) | θ, γ | Rectified linear units |
+| `dReLU` | ℝ | θ⁺, θ⁻, γ⁺, γ⁻ | Double ReLU |
+| `pReLU` | ℝ | θ, γ, Δ, η | Parametric ReLU |
+| `xReLU` | ℝ | θ, γ, Δ, ξ | Extended ReLU |
+| `nsReLU` | ℝ | θ, Δ, ξ | Fixed-scale xReLU (γ = 1) |
+
+`dReLU`, `pReLU`, and `xReLU` are interconvertible parameterizations of the same
+asymmetric piecewise-quadratic unit; `nsReLU` is `xReLU` with the scale fixed at γ = 1,
+which removes the gauge freedom between hidden-unit scale and weights. Every `pReLU.η`
+must be finite and strictly inside `(-1, 1)`; for unconstrained learned asymmetry, prefer
+`xReLU` or `nsReLU`.
+
+Construct an RBM with any pair of layer types using `RBM(visible, hidden, weights)`, or use convenience constructors like `BinaryRBM`, `HopfieldRBM`, etc.
+
+## Key functionality
+
+- **Training**: `pcd!` — Persistent Contrastive Divergence with customizable optimizer (via [Optimisers.jl](https://github.com/FluxML/Optimisers.jl)), regularization (L1, L2 on weights/fields), and callbacks. `ptt!` — equilibrium training by [Parallel Trajectory Tempering](https://arxiv.org/abs/2607.27077), which also estimates the log-likelihood along training.
+- **Sampling**: `sample_v_from_v`, `sample_h_from_v`, `sample_v_from_h` — Gibbs sampling; `metropolis` — Metropolis-Hastings sampling at arbitrary temperature.
+- **Evaluation**: `free_energy`, `log_pseudolikelihood`, `log_likelihood`, `reconstruction_error`.
+- **Partition function**: `log_partition` (exact, for small RBMs), `aise` / `raise` (Annealed Importance Sampling estimates).
+- **Initialization**: `initialize!(rbm, data)` — match single-site statistics of the data.
+- **Gauge transforms**: `zerosum!`, `rescale_weights!` — impose gauge constraints (useful for Potts layers).
+
+## GPU support (CUDA)
+
+Move an RBM to/from the GPU using `gpu` and `cpu` (requires [CUDA.jl](https://github.com/JuliaGPU/CUDA.jl)):
+
+```julia
+import CUDA
+using RestrictedBoltzmannMachines: BinaryRBM, cpu, gpu
+
+rbm = BinaryRBM(randn(5), randn(3), randn(5, 3))
+rbm_gpu = gpu(rbm)       # transfer to GPU
+# ... train or sample on GPU ...
+rbm_cpu = cpu(rbm_gpu)   # transfer back to CPU
+```
+
+Layers and RBMs also implement the [Adapt.jl](https://github.com/JuliaGPU/Adapt.jl) interface, so generic transfers like `adapt(CuArray, rbm)` work with any GPU array backend.
+
+See this [Google Colab notebook](https://colab.research.google.com/drive/1lfY5t6m-j8n19EXHLnV-lRBBfJ_jLk8y?usp=sharing) for a full GPU training example.
+
+The [executed Binary–nsReLU MNIST notebook](https://drive.google.com/file/d/13dmCDwYiLQBflkreJogAD-5_aWhYPhov/view?usp=sharing) shows a long GPU training run, equilibrated samples, and first-, second-, and third-order moment-matching diagnostics.
+
+## Centered and Standardized RBMs
+
+**CenteredRBM** introduces offset parameters that track mean unit activities, improving training stability ([Melchior et al., 2016](https://jmlr.org/papers/v17/14-237.html); [Montavon & Müller, 2012](#references)):
+
+$$E(\mathbf{v},\mathbf{h}) = -\sum_i a_i v_i - \sum_\mu b_\mu h_\mu - \sum_{i\mu} w_{i\mu} (v_i - c_i)(h_\mu - d_\mu)$$
+
+**StandardizedRBM** further adds scaling parameters that track unit standard deviations:
+
+$$
+E(\mathbf{v},\mathbf{h}) =
+-\sum_i \theta_i v_i
+-\sum_\mu \theta_\mu h_\mu
+-\sum_{i\mu} w_{i\mu}
+\frac{v_i - \lambda_i}{\sigma_i}
+\frac{h_\mu - \lambda_\mu}{\sigma_\mu}
+$$
+
+Here $\lambda$ tracks offsets (unit means) and $\sigma$ tracks scales (unit standard deviations), for both visible and hidden units.
+
+The standardized model is gauge-equivalent to an ordinary RBM (same $P(\mathbf{v},\mathbf{h})$), with effective parameters:
+
+$$
+\tilde w_{i\mu} = \frac{w_{i\mu}}{\sigma_i\sigma_\mu},\qquad
+\tilde \theta_i = \theta_i - \sum_\mu \tilde w_{i\mu}\lambda_\mu,\qquad
+\tilde \theta_\mu = \theta_\mu - \sum_i \tilde w_{i\mu}\lambda_i.
+$$
+
+In the code this correspondence is available via `unstandardize(rbm)`, which converts a `StandardizedRBM` to an equivalent plain `RBM`.
+
+A `CenteredRBM` is the special case of a `StandardizedRBM` whose scales are fixed to one. Both support all standard RBM operations (training, sampling, and evaluation).
+
+## Documentation
+
+Full documentation with API reference and worked examples (MNIST, Metropolis sampling, AIS partition function estimation, layer-specific guides):
+
+**[https://cossio.github.io/RestrictedBoltzmannMachines.jl/stable](https://cossio.github.io/RestrictedBoltzmannMachines.jl/stable)**
+
+## Related packages
+
+- [AdvRBMs.jl](https://github.com/cossio/AdvRBMs.jl) — Adversarially constrained RBMs
+- [StackedTempering.jl](https://github.com/2024stacktemperingrbm/StackedTempering.jl) — Stacked tempering for RBMs
+
+## Publications using this package
+
+- [Spherical Boltzmann machines: a solvable theory of learning and generation in energy-based models](https://arxiv.org/abs/2605.09031) — [NeurIPS](https://neurips.cc/virtual/2026/loc/paris/poster/148834) (2026)
+- [Cross-individual translation of spontaneous zebrafish brain activity through a shared latent representation](https://www.pnas.org/doi/abs/10.1073/pnas.2529064123) — *PNAS* (2026)
+- [Design and experimental characterization of specificity-switching mutational paths of WW domains](https://elifesciences.org/reviewed-preprints/110491) - *eLife* (2026)
+- [Designing molecular RNA switches with Restricted Boltzmann machines](https://www.nature.com/articles/s41467-025-66265-y) — *Nature Communications* 16, 11223 (2025)
+- [Generative Modeling of RNA Sequence Families with Restricted Boltzmann Machines](https://link.springer.com/protocol/10.1007/978-1-0716-4079-1_11) — *Methods in Molecular Biology* 2847, 163–175 (2025)
+- [Replica symmetry breaking and clustering phase transitions in undersampled restricted Boltzmann machines](https://hal.science/hal-04447899/) — HAL preprint (2024)
+- [Accelerated Sampling with Stacked Restricted Boltzmann Machines](https://openreview.net/forum?id=kXNJ48Hvw1) — ICLR (2024)
+- [Disentangling Representations in Restricted Boltzmann Machines without Adversaries](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.13.021003) — *Physical Review X* 13, 021003 (2023)
+
+## Citation
+
+If you use this package in a publication, please cite:
+
+> Jorge Fernandez-de-Cossio-Diaz, Simona Cocco, and Rémi Monasson. "Disentangling Representations in Restricted Boltzmann Machines without Adversaries." [Physical Review X 13, 021003 (2023)](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.13.021003).
+
+Citation metadata is available in [CITATION.cff](CITATION.cff).
+
+## References
+
+- Montavon, G. & Müller, K.-R. "Deep Boltzmann machines and the centering trick." *Neural Networks: Tricks of the Trade*, Springer, 2012, pp. 621–637.
+- Melchior, J., Fischer, A. & Wiskott, L. "How to center deep Boltzmann machines." *JMLR* 17(1), 2016, pp. 3387–3447.

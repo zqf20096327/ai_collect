@@ -1,0 +1,100 @@
+<p align="center">
+  <img src="./assets/imgs/diffulex_logo_new.png" alt="Diffulex" />
+</p>
+
+<div align="center">
+
+# Diffulex
+
+[![Documentation](https://img.shields.io/badge/Documentation-Read%20the%20Docs-0A66C2?logo=readthedocs&logoColor=white)](https://sjtu-deng-lab.github.io/Diffulex/)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?logo=discord&logoColor=white)](https://discord.gg/NSa9WH4EKu)
+
+</div>
+
+Diffulex is a Diffusion Language Model Serving Engine built on
+PagedAttention-style runtime primitives. It provides a unified runtime for KV
+cache management, block scheduling, prefix reuse, MoE execution, CUDA graph
+replay, HTTP serving, and model-specific diffusion samplers.
+
+Diffulex is also the runtime engine behind the **Multi-Block Diffusion Language
+Models (MBD-LMs)** line of work. Native Block Diffusion LMs perform
+**Single-Block Diffusion (SingleBD)**: one noisy block per forward pass,
+creating a store bubble where no new output is produced. **Multi-Block
+Diffusion (MultiBD)** removes this bottleneck with a bounded running-set of
+consecutive blocks, enabling decode-store overlap and inter-block parallelism.
+MBD-LMs are BD-LMs post-trained with **Multi-block Teacher Forcing (MultiTF)**
+to handle practical MultiBD states, and Diffulex executes them with an optimized
+**Block Buffer** runtime that preserves static shapes for CUDA Graph replay.
+In the engine, this is exposed as `decoding_strategy=multi_bd`.
+
+## Start Here
+
+The README is intentionally brief. Use the documentation for installation,
+configuration, benchmarks, serving, and development notes:
+
+| Goal | Go to |
+|---|---|
+| Read the full documentation | [Diffulex Documentation](https://sjtu-deng-lab.github.io/Diffulex/) |
+| Install Python, CUDA, and the tested `vllm==0.23.0` dependency | [Installation](https://sjtu-deng-lab.github.io/Diffulex/get_started/installation.html) |
+| Run the first LLaDA2-mini command | [Quickstart](https://sjtu-deng-lab.github.io/Diffulex/get_started/quickstart.html) |
+| Check supported models and strategy combinations | [Models](https://sjtu-deng-lab.github.io/Diffulex/user_guide/models.html) |
+| Tune runtime and YAML parameters | [Configuration](https://sjtu-deng-lab.github.io/Diffulex/user_guide/configuration.html) |
+| Run GSM8K and other benchmark workflows | [Benchmark](https://sjtu-deng-lab.github.io/Diffulex/user_guide/benchmark.html) |
+| Start HTTP serving and the local demo visualization | [Server](https://sjtu-deng-lab.github.io/Diffulex/user_guide/server.html) |
+| Use Diffulex as a research backend | [Research Engine](https://sjtu-deng-lab.github.io/Diffulex/developer_guide/research_engine.html) |
+| Add a model, decoding strategy, or kernel | [Developer Guide](https://sjtu-deng-lab.github.io/Diffulex/developer_guide/index.html) |
+
+## Branches
+
+For reproducing the MBD-LMs experiments, use the Diffulex
+[`mbd-lms`](https://github.com/SJTU-DENG-Lab/Diffulex/tree/mbd-lms) branch
+(CUDA 12).
+
+For engine development, open-source contributions, or exploring new decoding
+algorithms and turning them into runnable systems, use the
+[`main`](https://github.com/SJTU-DENG-Lab/Diffulex/tree/main) branch. `main`
+contains ongoing runtime and model-specific optimizations, so its behavior and
+performance profile may differ from the experiment reproduction branch.
+**The `main` branch requires CUDA 13.**
+
+Diffulex `main` is built for researchers who want a real backend for block-level
+dLLM inference ideas. Its Block Buffer backend separates logical block state,
+running-set/cache policy, and paged KV plus Triton kernel execution, so new
+SingleBD, MultiBD, TokenMerge, edit, uniform diffusion, or cache-oriented
+algorithms can be implemented as bounded strategy changes instead of full
+serving-system rewrites.
+
+## Current Scope
+
+Diffulex focuses on cache-aware block-wise dLLM decoding through a **single core
+backend** that supports multiple main strategies: MultiBD (SingleBD at BufSz=1,
+full MultiBD at BufSz&ge;2), Token Merge + Edit (DMax), Edit Sampling / T2T
+(LLaDA2.1), D2F MultiBD, Fast-dLLM-v2 Dual Cache, and DiffusionGemma. The most
+complex part of adding a strategy is modifying the request state machine —
+sampler-only strategies like DMax require no state machine changes at all.
+
+Supported model families include Dream/DiffuCoder-style dense dLLMs, Dream
+reasoner, Stable-DiffCoder, LLaDA, Fast-dLLM-v2, SDAR, SDAR-MoE, LLaDA2, and
+DiffusionGemma. See the [Models documentation](https://sjtu-deng-lab.github.io/Diffulex/user_guide/models.html)
+for the up-to-date compatibility matrix.
+
+## Discussion
+
+For questions, development discussion, and collaboration, join the Discord or our WeChat group:
+
+[![Join our Discord](https://img.shields.io/badge/Discord-Join%20Us-blue?logo=discord&style=for-the-badge)](https://discord.gg/NSa9WH4EKu)
+
+<p align="center">
+  <img src="./assets/imgs/wechat_group.jpg" alt="WeChat Group" width="300" />
+</p>
+
+## Acknowledgments
+
+We would like to thank [Nano-vLLM](https://github.com/GeeeekExplorer/nano-vllm),
+[vLLM](https://github.com/vllm-project/vllm),
+[mini-sglang](https://github.com/sgl-project/mini-sglang),
+[SGLang](https://github.com/sgl-project/sglang), and
+[dInfer](https://github.com/inclusionAI/dInfer), whose designs informed parts
+of Diffulex's early backend, paged attention, serving architecture, and dLLM
+inference optimizations. Diffulex is developed by the DENG Lab at Shanghai Jiao
+Tong University.

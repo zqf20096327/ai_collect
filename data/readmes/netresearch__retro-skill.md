@@ -1,0 +1,347 @@
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
+
+# retro — session retrospectives for Claude Code
+
+**LLM-driven session retrospection for Claude Code agents.** After a session, `/retro` reads the conversation transcript, detects friction, and routes each finding to one of seven homes — with per-proposal approval and no silent writes.
+
+[![License: MIT AND CC-BY-SA-4.0](https://img.shields.io/badge/License-MIT%20AND%20CC--BY--SA--4.0-blue.svg)](LICENSE-MIT)
+[![lint](https://github.com/netresearch/retro-skill/actions/workflows/lint.yml/badge.svg)](https://github.com/netresearch/retro-skill/actions/workflows/lint.yml)
+![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-555.svg)
+
+> Where continuous friction-detection hooks pile up write-only noise nobody triages, `/retro` reads what actually happened and hands you a short list of approved, durable learnings — a global rule, project rules, or skill PRs.
+
+## Contents
+
+- [What it does](#what-it-does)
+- [Why](#why)
+- [Requirements](#requirements)
+- [Install](#install)
+- [Usage — the six modes](#usage--the-six-modes)
+- [A worked example](#a-worked-example)
+- [The seven destinations](#the-seven-destinations)
+- [How it works](#how-it-works)
+- [How it stays safe](#how-it-stays-safe)
+- [Honest limitations](#honest-limitations)
+- [Optional auto-trigger](#optional-auto-trigger)
+- [Repository layout](#repository-layout)
+- [Related projects](#related-projects)
+- [Tests](#tests)
+- [Dependencies](#dependencies)
+- [Governance and policies](#governance-and-policies)
+- [Contributing](#contributing)
+- [License](#license)
+
+## What it does
+
+`/retro` analyzes the current Claude Code session directly from the conversation transcript — no continuous background hooks. It detects friction (tool errors, repeated mistakes, skills that should have triggered but didn't, convention violations), classifies each finding into exactly one of seven destinations — asking first *who should own this truth* — and materializes the approved learnings. Every write is gated behind explicit per-proposal approval.
+
+A single sweep returns at most ten actionable proposals, grouped by destination, each with a short *why* and a *how-to-apply*.
+
+## Why
+
+The prior approach — the Coach plugin — used continuous friction-detection hooks that turned out to be write-only noise. The field evidence was stark:
+
+- `~/.claude-coach/candidates.json` held **1011 pending / 0 approved / 0 rejected**.
+- A **35 MB** `events.sqlite` produced roughly **35× duplicate fingerprints** of the same issue.
+
+An LLM reading the *actual* transcript classifies friction more accurately and far more cheaply, and returns **≤10** actionable proposals instead of 1011 candidates nobody triages. That is the entire premise of `/retro`: one efficient pass over what really happened, not a firehose of background candidates.
+
+## Requirements
+
+| Tool | Used for |
+|---|---|
+| Claude Code | The host that runs the plugin and the `/retro` command |
+| `python3` | Mechanical pre-pass and the cross-session scan |
+| `uv` | Session scope and review feedback (`derive-session-scope.py`, `collect-review-findings.py`): installs the shell parser tree-sitter-bash the scripts declare; the first run downloads it |
+| `jq` | Skill discovery, manifest parsing, and the optional hook |
+| `gh` and/or `glab` | Creating pull/merge requests for skill updates |
+| `git` | Cloning source repos and materializing changes |
+
+## Install
+
+`/retro` ships as a Claude Code plugin, distributed through the [Netresearch marketplace](https://github.com/netresearch/claude-code-marketplace). Add the catalog once, then install `retro` from it — both steps inside Claude Code:
+
+```text
+/plugin marketplace add netresearch/claude-code-marketplace
+/plugin install retro@netresearch-claude-code-marketplace
+```
+
+The catalog entry points back at this repository as its source, so the code still comes from here. `marketplace add` needs a `.claude-plugin/marketplace.json` catalog, which this repo does not ship — pointing it at `netresearch/retro-skill` fails with `Marketplace file not found`.
+
+### Without a marketplace
+
+Since Claude Code 2.1.157, a plugin directory under your personal skills directory loads on its own:
+
+```bash
+mkdir -p ~/.claude/skills
+git clone https://github.com/netresearch/retro-skill.git ~/.claude/skills/retro
+```
+
+It loads as `retro@skills-dir` on the next session, hooks and commands included. Update with `git -C ~/.claude/skills/retro pull` and start a new session; remove it by deleting the directory. There is no `claude plugin update` on this route.
+
+Alternatively, install via Composer (the skill-repo convention):
+
+```bash
+composer require netresearch/retro-skill
+```
+
+## Usage — the six modes
+
+| Command | Mode | When to use |
+|---|---|---|
+| `/retro` | **Sweep** — analyze the entire current session; returns ≤10 proposals grouped by destination | At session end, or when friction has accumulated |
+| `/retro "<problem>"` | **Spotlight** — focus on one described issue; fewer tokens than a full sweep | Mid-session, for a direct fix |
+| `/retro outcome [session-id\|--since N]` | **Outcome** (layer D) — replay a *past* session through what happened to its output afterwards (reverted commits, rejected PRs, CI failures, follow-up fix sessions) | Periodically, e.g. monthly. **Do not run within 24h of the session** — the outcomes have not landed yet |
+| `/retro audit [--scope project\|repo\|skill]` | **Constitutional audit** — cross-session architectural review (design drift, convention erosion) over weeks/months | Monthly or quarterly health check |
+| `/retro promote` | **Promote** — inventory accumulated project-local memory (all slugs) and re-home each note upward (canonical-source › skill-update › project-rule › personal-rule; never project-local memory), draining the source only after the upward write is verified | When local memory has piled up and you want it shared and emptied |
+| `/retro done` | **Done** — definition-of-done gate: seven evidence-backed checks (task, findings, retro, cleanup, questions, tickets, time) | As the last command of a session, before calling it finished |
+
+Sweep and Spotlight answer *"what went wrong this session?"*. Outcome and Audit answer *"did our past decisions survive contact with reality?"* and *"is the system still on track?"* — friction that does not show up inside a single session.
+
+## A worked example
+
+The following is an **illustrative example** of a Sweep, not a captured transcript — your output will differ.
+
+```text
+> /retro
+
+Analyzed session (4200 words). Mechanical pre-pass + LLM enrichment found 3 findings.
+
+[skill-update] git-workflow — DCO sign-off missing
+  Why:  Two commits this session were rejected by the DCO check; the skill
+        never mentions `git commit -s`.
+  How:  PR to the git-workflow SOURCE repo adding a sign-off rule + eval stub.
+
+[project-rule] AGENTS.md — use bun, not npm
+  Why:  You corrected the assistant twice ("we use bun here").
+  How:  Append a titled rule to <project>/AGENTS.md.
+
+[personal-rule] CLAUDE.md — always fetch before reasoning about origin/<branch>
+  Why:  A stale ref caused a rejected push, then a forced retry.
+  How:  Append a titled rule to ~/.claude/CLAUDE.md.
+
+Approve / edit / reject each? [1] a  [2] e  [3] r
+> ...
+
+Report
+  PRs opened:   1  (git-workflow: feat: require DCO sign-off)
+  Files written: 2 (<project>/AGENTS.md, ~/.claude/CLAUDE.md)
+```
+
+Each finding is one approval decision. Nothing is written, no PR is opened, until you say so.
+
+## The seven destinations
+
+Every finding routes to exactly one destination — chosen authority-first: before asking where to *store* a learning, retro asks who should *own* the truth. A fact about the world (tool behaviour, an API, a standard) belongs to its canonical owner outside the agent system; a skill is the canonical source only for agent behaviour and its own procedure:
+
+| Destination | When | Materializes to |
+|---|---|---|
+| `canonical-source` | The fact's canonical owner is an artefact outside the agent system (upstream docs, code, schema, handbook) | Open a PR/patch against the owning artefact; the skill keeps a reference + agent-specific delta |
+| `personal-rule` | A personal, cross-project preference | Append a titled rule to `~/.claude/CLAUDE.md` (the always-loaded global rules file) |
+| `project-rule` | A convention for *this* project | Append a titled rule to `<project>/AGENTS.md` |
+| `skill-update` | An existing skill is wrong, weak, under-triggering, or carries an obsolete instruction (removal is a valid edit) | Open a PR against the skill's **source repo** (never the plugin cache) |
+| `new-skill` | A skill-shaped gap no skill covers | Scaffold a brand-new skill repo via the `skill-repo` convention |
+| `checkpoint` | A mechanical check worth gating on | Add a YAML entry to the target skill's `checkpoints.yaml` |
+| `harness-artefact` | A repo-infrastructure gap | Bootstrap a hook / CI / template via `agent-harness` |
+
+`personal-rule` was called `user-memory` in earlier versions. The old name stays valid as input — a user's phrasing, an older proposal, an archived report — and is always reported back as `personal-rule`. It materializes a durable instruction in the always-loaded global rules file, which is not a memory of past sessions, and the name said otherwise.
+
+## How it works
+
+The pipeline is built in layers (the project calls them *Schicht* A/B/C/D — layer A/B/C/D). The deterministic layer runs first to cut token cost; the LLM is always the primary classifier.
+
+1. **Mechanical pre-pass (layer A)** — `skills/retro/scripts/detect-mechanical.py` parses the transcript for exactly **20** deterministic signals (A1–A20): tool errors, retry clusters, output verbosity, tool-call inefficiency, sequential-vs-parallel, user-correction phrases, prompt/prompt-sequence/tool-sequence repetition, skill-reminder-vs-invoke, wrong-tool choice, re-read-same-file, skipped verification, work on `main`/`master`, bot attribution in commits, outdated-tool warnings, upstream failure, permission re-approval, repeated command shapes, and wait-loop polling. Deterministic; it does **not** classify.
+   Then `skills/retro/scripts/collect-review-findings.py` reads native PR/MR review threads and linked issue feedback, including issues a GitHub PR names as `GH-N` in its title or description (GitHub's own reference syntax). Other tracker integrations supply normalized local evidence with `--feedback-file`. Short branch/title/tool references remain contextual hints until explicitly resolved; they never select a tracker. See [the feedback contract](skills/retro/references/feedback-contract.md) for delegation, coverage states and migration from the removed Jira CLI flags.
+2. **LLM enrichment (layer B)** — adds **20** inferential signals, B16–B20 of them reusable-learning signals (wrong skill choice, skill capability gap, hallucination, convention violation, missing skill, repeated mistake, assumption-without-asking, doc drift, …) and filters layer-A false positives. Includes a trigger-coverage sweep over every installed skill's description.
+3. **Cross-session enrichment (layer C, optional)** — scans `~/.claude/projects/<slug>/*.jsonl` across projects via `skills/retro/scripts/scan-cross-session.py`. **6** signals: same-friction-again, cross-project pattern, memory drift, ineffective skill update, follow-up-fix session, written rule violated repeatedly.
+4. **Skill discovery (runtime)** — `skills/retro/scripts/find-org-skills.py` lists every skill in every configured marketplace, installed or not, to match the friction topic against its description and resolve the source-repo URL; `skills/retro/scripts/find-installed-skills.sh` adds on-disk paths and git remotes of installed skills.
+5. **Classification** — map each finding to one of the seven destinations, authority first (`skills/retro/references/classification-heuristic.md`), using the catalogue from step 4.
+6. **Eval consultation** — if the matched skill has an `evals/` directory, read it for context and propose an eval stub (TDD style). retro ships its **own** evals under `skills/retro/evals/` testing its classification, validated by `skills/retro/scripts/validate-evals.py`.
+7. **Proposal generation** — per finding: a *Why* paragraph and a *How-to-apply* paragraph, grouped by destination, ≤10 items.
+8. **Per-proposal approval** — approve / edit / reject, one decision per materialization.
+9. **Materialization** — per-destination convention. PRs use Conventional Commits with DCO sign-off (`git commit -s`; without it the PR is **BLOCKED** even when all checks pass), preserve GPG signing, and require per-private-repo confirmation.
+10. **Report** — a summary table of created PRs and written files.
+
+The full signal catalog lives in [`skills/retro/references/friction-catalog.md`](skills/retro/references/friction-catalog.md).
+
+## How it stays safe
+
+- **No silent writes.** Every materialization needs explicit, per-proposal approval.
+- **Patches target the source repo, never the cache.** `~/.claude/plugins/cache/` is overwritten on every plugin update; edits there would be lost. `/retro` clones the source repo (or uses an existing worktree) and opens a PR via `gh` / `glab`.
+- **The LLM classifies; the pre-pass only saves tokens.** The deterministic layer A never decides a destination.
+- **What the scripts read, write and send** — and where masking of transcript text stops — is set out in the [security assurance case](docs/SECURITY-ASSURANCE.md).
+- **Never:** auto-merge; harness-invented attribution in commits or PRs ("Generated with Claude Code", `Co-Authored-By: Claude`) — a disclosure trailer the user's own rules prescribe is required rather than banned; `--no-verify`; patching the cache; hardcoding a static skill list; generating 1000+ candidates.
+
+## Honest limitations
+
+`/retro` detects friction **observable in or near the session**. It does **not** detect:
+
+- **Silent badness** — choices that "work" but are wrong and generate no friction signal.
+- **External signals outside forge and tracker** — customer complaints, production alerts, Slack/Matrix/Sentry feedback. Native PR/MR and linked-issue feedback is read; other tracker feedback is supplied through its owning integration.
+- **Constitutional drift over time** *without* `audit` mode — per-session retro can't see slow erosion.
+- **Outcomes the agent never saw** — unless work was reverted, a PR rejected, or a follow-up session occurred.
+
+For the last two, use `/retro outcome` (post-hoc) or `/retro audit` (cross-session). Ingesting error trackers, monitoring and chat is a **future direction**, not a shipped feature.
+
+## Optional auto-trigger
+
+There is an opt-in `SessionEnd` hook (`hooks/session-end.json`) that **only prints a reminder** for sessions over 1000 words — it never auto-runs `/retro`:
+
+```text
+Session was non-trivial (4200 words). Run /retro to extract learnings.
+```
+
+It is **off by default**. Claude Code does **not** load hooks from a `~/.claude/hooks/` directory — hooks are read only from `settings.json`. To enable the reminder, copy the `hooks` object out of `hooks/session-end.json` and **merge** it into `~/.claude/settings.json` (all projects) or `.claude/settings.json` (one project):
+
+```json
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'tp=$(jq -r \".transcript_path // empty\" 2>/dev/null); [ -z \"$tp\" ] || [ ! -r \"$tp\" ] && exit 0; tokens=$(wc -w < \"$tp\" 2>/dev/null || echo 0); if [ \"${tokens:-0}\" -gt 1000 ]; then printf \"Session was non-trivial (%s words). Run /retro to extract learnings.\\n\" \"$tokens\"; fi'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Do not rename the file to `hooks/hooks.json` — that would make Claude Code auto-load it and break the off-by-default contract.
+
+## Repository layout
+
+```text
+retro-skill/
+├── skills/retro/                     # the self-contained skill subtree (ships via npx-skills)
+│   ├── SKILL.md                  # main skill definition (all modes)
+│   ├── checkpoints.yaml          # skill quality gates
+│   ├── references/               # 11 reference docs
+│   │   ├── feedback-contract.md
+│   │   ├── friction-catalog.md
+│   │   ├── destination-taxonomy.md
+│   │   ├── classification-heuristic.md
+│   │   ├── skill-discovery.md
+│   │   ├── patch-workflow.md
+│   │   ├── eval-integration.md
+│   │   ├── project-harness-inspection.md
+│   │   ├── promote-mode.md
+│   │   ├── done-mode.md
+│   │   └── workflow.md
+│   ├── evals/                    # retro's own classification evals (dogfood)
+│   │   ├── README.md
+│   │   └── *.md                  # validated by skills/retro/scripts/validate-evals.py
+│   └── scripts/
+│       ├── detect-mechanical.py      # layer-A pre-pass
+│       ├── derive-session-scope.py   # repositories, artefacts and days a session touched
+│       ├── collect-review-findings.py # review, issue and ticket feedback on the session's PRs/MRs
+│       ├── feedback-contract.py      # validates supplied tracker feedback (--feedback-file)
+│       ├── mask-secrets.py           # credential masking for the text five scripts quote
+│       ├── opencode-transcript.py    # renders an opencode session as layer-A JSONL
+│       ├── scan-memory-inventory.py  # Promote: memory backlog pre-pass
+│       ├── scan-cross-session.py     # layer-C JSONL scanner
+│       ├── find-org-skills.py        # runtime skill discovery (catalogue + installed)
+│       ├── find-installed-skills.sh  # installed-only detail (paths, remotes)
+│       ├── check-upstream-sources.py # canonical-source drift check
+│       ├── materialize-pr.sh         # skill-update PR helper
+│       ├── check-eval-samples.py     # refuses a new or tightened eval without samples
+│       └── validate-evals.py         # validates retro's own evals (RT-40..42)
+├── commands/retro.md             # /retro slash command (Claude Code plugin only)
+├── hooks/session-end.json        # optional SessionEnd reminder (off by default; plugin-level, outside skills/retro/)
+├── tests/                        # test_*.py, run with python -m unittest discover -s tests
+├── docs/specs/                   # retro-skill.md (original spec, superseded), retro-promote-mode.md
+├── docs/opencode-live-test.md    # checking the opencode adapter against a real, isolated opencode 2.x
+├── .github/workflows/            # lint.yml, validate.yml, release.yml, auto-merge-deps.yml, security.yml, scorecard.yml, labeler.yml, check-template-drift.yml, eval-validate.yml, harness-verify.yml
+├── AGENTS.md
+├── composer.json
+├── .claude-plugin/plugin.json
+├── LICENSE-MIT
+└── LICENSE-CC-BY-SA-4.0
+```
+
+## Related projects
+
+`/retro` materializes into conventions defined by sibling skills:
+
+| Project | Role |
+|---|---|
+| [agent-harness-skill](https://github.com/netresearch/agent-harness-skill) | Verifies integration points; bootstraps `harness-artefact` materializations |
+| [agent-rules-skill](https://github.com/netresearch/agent-rules-skill) | Feedback-memory schema for `project-rule` materialization |
+| [skill-repo-skill](https://github.com/netresearch/skill-repo-skill) | PR/branch convention for `skill-update`; scaffolding for `new-skill` |
+| [automated-assessment-skill](https://github.com/netresearch/automated-assessment-skill) | Checkpoint YAML schema for `checkpoint` materialization |
+
+Deeper reading: the [`skills/retro/references/`](skills/retro/references/) docs, [`AGENTS.md`](AGENTS.md), and the original spec at [`docs/specs/retro-skill.md`](docs/specs/retro-skill.md), which is superseded and kept as a historical record.
+
+## Tests
+
+The behavioural tests live in `tests/test_*.py` and use the standard library's `unittest`. Run them from the repository root with the commands CI runs (CI adds `--python <version>` to each `uv run`):
+
+```bash
+uv run --with tree-sitter==0.26.0 --with tree-sitter-bash==0.25.1 python -m unittest discover -s tests -v
+uv run python -m py_compile skills/retro/scripts/*.py
+uv run python skills/retro/scripts/validate-evals.py
+```
+
+The tests need `python3` 3.10 or later, `bash`, `git` and `jq` on `PATH`, and no network: `gh` is either a stub script on `PATH` (`tests/test_materialize_pr.py`) or replaced by an injected runner that returns recorded responses (`tests/test_collect_review_findings.py`, `tests/test_tracker_neutrality.py`). Transcripts, opencode databases, memory stores, plugin caches and git repositories are built in temporary directories.
+
+Each script under `skills/retro/scripts/` except `feedback-contract.py` has its own test file, named after it (`detect-mechanical.py` → `tests/test_detect_mechanical.py` and `tests/test_detect_mechanical_review.py`); `feedback-contract.py` is exercised through `tests/test_tracker_neutrality.py`, and the two shell scripts are run for real by `tests/test_find_installed_skills.py` and `tests/test_materialize_pr.py`. `check-upstream-sources.py` is tested on its offline paths only. `skills/retro/evals/*.md` are scenarios for grading a retro transcript; `validate-evals.py` checks their structure, it does not run them.
+
+A failing test is reported by `unittest` as `FAIL` (an assertion did not hold) or `ERROR` (the test raised), each with the test's id and a traceback, and the run exits non-zero.
+
+In CI, the `lint` workflow (`.github/workflows/lint.yml`, calling `netresearch/skill-repo-skill`'s `ci-python.yml`) runs these three commands on every pull request to `main` and every push to `main`, on Python 3.12, 3.13 and 3.14.
+
+Branch coverage of the Python scripts can be measured with coverage.py; the `patch = subprocess` setting also counts the scripts the tests start as subprocesses:
+
+```bash
+printf '[run]\nbranch = True\nparallel = True\npatch = subprocess\ndata_file = /tmp/retro-coverage.data\nsource = skills/retro/scripts\n' > /tmp/retro.coveragerc
+COVERAGE_RCFILE=/tmp/retro.coveragerc uv run --with coverage --with tree-sitter==0.26.0 --with tree-sitter-bash==0.25.1 python -m coverage run -m unittest discover -s tests
+COVERAGE_RCFILE=/tmp/retro.coveragerc uv run --with coverage python -m coverage combine
+COVERAGE_RCFILE=/tmp/retro.coveragerc uv run --with coverage python -m coverage report
+COVERAGE_RCFILE=/tmp/retro.coveragerc uv run --with coverage python -m coverage json -o /tmp/retro-coverage.json
+```
+
+`coverage report` prints a combined statement and branch figure; the branch count alone is `totals.covered_branches` of `totals.num_branches` in the JSON report.
+
+Measured on 2026-09-30 at commit `fbc99ca`: 1584 of 1804 branches (87.8 %) of the twelve Python scripts; the two shell scripts are not measured. CI does not measure coverage.
+
+A pull request that adds or changes behaviour in a script adds or updates a test in `tests/` that fails without the change.
+
+## Dependencies
+
+- **Runtime:** the scripts need `python3` (3.10 or later) and use only the standard library, except `derive-session-scope.py` and `collect-review-findings.py`, which declare `tree-sitter==0.26.0` and `tree-sitter-bash==0.25.1` in an inline script-metadata block (PEP 723). `uv run --script` installs exactly those versions from the configured package index (PyPI by default) into a cached environment on first use. The shell scripts need `bash`, `git` and `jq`; `materialize-pr.sh` also needs `gh`. The tools a `/retro` run uses are listed under [Requirements](#requirements); they are installed by the user and not declared in any manifest.
+- **Packaging:** `composer.json` requires `netresearch/composer-agent-skill-plugin`, which registers the skill in a consuming Composer project. `composer.lock` is ignored (`.gitignore`); the skill-repo convention publishes no lock file. The Claude Code plugin manifests (`plugin.json`, `.claude-plugin/plugin.json`) declare no dependencies.
+- **Development and CI:** the pre-commit hooks are pinned by `rev:` in `.pre-commit-config.yaml`. The test command pins the tree-sitter packages with `--with` in `.github/workflows/lint.yml`, matching the scripts' inline metadata. The workflows call reusable workflows from `netresearch/skill-repo-skill`, `netresearch/.github` and (`security.yml`) `netresearch/typo3-ci-workflows` at `@main`; the third-party actions inside those are pinned to commit SHAs there.
+- **Selection and tracking:** a third-party package is added only when the standard library cannot do the job, and it is pinned to an exact version. The tree-sitter packages are the only ones so far: they replaced regular expressions for reading the structure of shell commands in `derive-session-scope.py`, after review rounds kept finding defects in the regex splitting (commit `6f05551`). Renovate (`renovate.json`, `config:recommended` with the pre-commit manager enabled) opens update pull requests, and `.github/workflows/auto-merge-deps.yml` hands Renovate and Dependabot pull requests to the organisation's auto-merge workflow. Licence and vulnerability rules for dependencies are those of the organisation's security policy linked below.
+
+## Governance and policies
+
+This repository follows the Netresearch organisation policies:
+
+- [Governance](https://github.com/netresearch/.github/blob/main/GOVERNANCE.md): ownership, roles, how decisions are made and disputes resolved, and continuity.
+- [Roadmap](https://github.com/netresearch/.github/blob/main/ROADMAP.md): planned and explicitly excluded work for the coming year.
+- [Handling of dependency and code analysis findings](https://github.com/netresearch/.github/blob/main/SECURITY.md#handling-of-dependency-and-code-analysis-findings): thresholds, deadlines and the exception process for dependency (SCA) and static analysis (SAST) findings.
+- [Secret management](https://github.com/netresearch/.github/blob/main/SECURITY.md#secret-management): how CI and release credentials are stored, accessed and rotated.
+- [Access roster](https://github.com/netresearch/.github/blob/main/docs/access-roster.md): who holds administrative access to this repository and the organisation.
+
+The security assurance case of this repository (what the scripts read, write and send, trust boundaries, countermeasures and limits) is [docs/SECURITY-ASSURANCE.md](docs/SECURITY-ASSURANCE.md).
+
+Checks that run on every pull request to `main` in this repository: `Validate` (`.github/workflows/validate.yml`: skill structure, plugin manifest sync, markdownlint, yamllint, actionlint, JSON syntax, plugin and SKILL.md version checks, ShellCheck at style severity, ruff lint and format check, checkpoint schema) and `lint` (`.github/workflows/lint.yml`: Python compile, the unit tests on three Python versions, eval validation; its Bandit job is skipped because `run-bandit` is not set). Also on every pull request: `Security` (`.github/workflows/security.yml`: Betterleaks secret scanning of the git history, zizmor on the workflow files, Dependency Review, and Composer Audit plus Opengrep static analysis through `netresearch/typo3-ci-workflows`), `Eval Validation` (`.github/workflows/eval-validate.yml`), `Harness Verification` (`.github/workflows/harness-verify.yml`: `AGENTS.md` of at most 150 lines with resolvable relative links), `Template drift` (`.github/workflows/check-template-drift.yml`: fails when a file governed by the organisation's `skill` template differs from it; `lint.yml` is recorded as intentional drift in `.github/template.yaml`), `Labeler` (`.github/workflows/labeler.yml`: a `pull_request_target` workflow that applies the labels of `.github/labeler.yml` and checks out no pull request code), Auto-merge dependency PRs (`.github/workflows/auto-merge-deps.yml`), skipped unless Renovate or Dependabot opened it and for pull requests labelled `deps-major` or `deps-no-automerge`, and, configured outside the workflow files, CodeQL default setup (actions, python), SonarCloud Code Analysis (SonarCloud automatic analysis), the DCO check and the CodeRabbit review status. OpenSSF Scorecard (`.github/workflows/scorecard.yml`) does not run on pull requests: it runs on pushes to `main` and `master`, weekly and on manual dispatch. Code scanning reports the CodeQL and SonarCloud results again as the `CodeQL` and `SonarCloud` check runs. GitHub secret scanning with push protection is enabled as a repository setting. No Bandit workflow runs in this repository; static analysis comes from CodeQL, SonarCloud and Opengrep, whose findings follow the organisation's [static analysis rule](https://github.com/netresearch/.github/blob/main/SECURITY.md#static-analysis-sast).
+
+## Contributing
+
+Issues and PRs are welcome at <https://github.com/netresearch/retro-skill/issues>.
+
+- **DCO sign-off is required** — commit with `git commit -s`. Without the `Signed-off-by` trailer the PR is blocked even when all checks pass.
+- Use **Conventional Commits** (`feat:`, `fix:`, `chore:`, …).
+- The `lint` workflow runs python compile, the unit tests and `validate-evals.py`; the `validate` workflow runs validate-skill, markdownlint, yamllint, plugin/SKILL version parity, actionlint, JSON syntax, manifest sync, ShellCheck, ruff and the checkpoint-schema check — run them locally before pushing.
+
+## License
+
+Code is licensed under [MIT](LICENSE-MIT); content under [CC-BY-SA-4.0](LICENSE-CC-BY-SA-4.0). SPDX: `(MIT AND CC-BY-SA-4.0)`.
+
+Maintained by **Netresearch DTT GmbH** · <https://www.netresearch.de/>

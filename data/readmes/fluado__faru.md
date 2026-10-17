@@ -1,0 +1,557 @@
+<p align="center">
+  <img src="public/favicon.svg" width="80" height="80" alt="faru">
+</p>
+
+<h1 align="center">faru</h1>
+
+<p align="center">Git-native kanban board. Cards are markdown files.</p>
+
+<p align="center"><sub>/ˈfa.ru/ — Esperanto for "do!"</sub></p>
+
+Built for teams where agents do the work and humans steer. Agents create and manage cards as markdown files, the board renders them live. One kanban board, two kinds of workers, everything stored in git.
+
+<p align="center">
+  <img src="public/board.png" alt="faru board" width="800">
+</p>
+
+## Quick Start
+
+1. Copy the [setup prompt](#setup-prompt) below into your AI coding agent
+2. Let it create `faru.config.json`, a `backlog/` directory, and a few starter cards
+3. Run:
+
+```bash
+npx github:fluado/faru
+```
+
+## Setup Prompt
+
+Copy this into your AI coding agent (Cursor, Copilot, Claude Code, Windsurf, etc.) to bootstrap faru in your project:
+
+<details>
+<summary>Click to expand the setup prompt</summary>
+
+~~~
+Set up a faru kanban board in this repository.
+
+faru is a git-native kanban board that renders markdown files as cards.
+
+### Step 1: Create faru.config.json in the project root
+
+```json
+{
+  "backlogDir": "./backlog",
+  "port": 3333,
+  "cardCategories": ["product", "ops", "bug"],
+  "autoSync": true,
+  "archiveDoneAfterDays": 14
+}
+```
+
+- backlogDir: path to the backlog directory (relative to project root)
+- port: local server port
+- cardCategories: the card types available in the UI (lowercase)
+- autoSync: if true, faru auto-commits and pushes changes via git
+- archiveDoneAfterDays: cards marked "done" are auto-archived after N days
+
+Adjust cardCategories to match this project (e.g. "feature", "bug", "infra", "docs").
+
+### Step 2: Create the backlog/ directory with 3-5 starter cards
+
+Each card is a folder inside backlog/ following this naming convention:
+
+  backlog/YYYY-MM-DD-TYPE-TITLE/CARD.md
+
+Folder name format: YYYY-MM-DD-TYPE-TITLE
+- YYYY-MM-DD: today's date
+- TYPE: uppercase category (must match one of cardCategories)
+- TITLE: uppercase, hyphens instead of spaces
+
+Each CARD.md has YAML frontmatter:
+
+```yaml
+---
+title: Human-readable title
+type: category (lowercase, from cardCategories)
+status: todo
+assigned: <your git username from `git config user.name`>
+created: YYYY-MM-DD
+edited: YYYY-MM-DD
+description: One-line summary of what this card is about
+---
+
+# Card Title
+
+Details, context, or acceptance criteria go here.
+```
+
+Look at the codebase, README, open issues, or TODOs to create 3-5 cards
+that reflect real work for this project. Set status to "todo" for all of them.
+
+### Step 3: Create weekly-goal.md in the project root
+
+A single line of text describing the focus for the current week. Example:
+
+  Ship OAuth integration and close all P0 bugs.
+
+### Step 4: Verify the structure
+
+```
+project-root/
+├── faru.config.json
+├── weekly-goal.md
+└── backlog/
+    ├── 2025-04-20-PRODUCT-OAUTH-LOGIN/
+    │   └── CARD.md
+    ├── 2025-04-20-BUG-DASHBOARD-CRASH/
+    │   └── CARD.md
+    └── 2025-04-20-OPS-CI-PIPELINE/
+        └── CARD.md
+```
+
+### Step 5: Run the board
+
+```bash
+npx github:fluado/faru
+```
+~~~
+
+</details>
+
+## How It Works
+
+Every card is a folder inside `backlog/` following the naming convention `YYYY-MM-DD-TYPE-TITLE/`. Each folder contains a `CARD.md` (or any `.md` file) with YAML frontmatter:
+
+<p align="center">
+  <img src="public/modal.png" alt="card detail view" width="700">
+</p>
+
+```yaml
+---
+title: Implement OAuth flow
+type: product
+status: wip
+assigned: alice
+created: 2026-04-15
+description: Add OAuth 2.0 login flow with PKCE for the dashboard.
+links:
+  - specs/oauth-design.md
+---
+
+# Implement OAuth flow
+
+Details go here.
+```
+
+Drag cards between columns. Edit titles and descriptions inline. Faru commits and pushes changes automatically.
+
+### Links & References
+
+If your card relates to external documentation, specs, or folders outside of the `backlog/` hierarchy, you can link them directly to the card via a `links:` array in the frontmatter. All listed references will appear in the card's sidebar and open directly in your editor when clicked.
+
+### Card Folders
+
+Each card folder can contain multiple files. All files are listed in the card detail view. Faru picks the primary file for frontmatter in this order:
+
+1. `*-milestones.md`
+2. `CARD.md`
+3. `*-spec.md`
+4. Any `.md` file
+
+Structure the rest however you want.
+
+### Milestones & Progress
+
+If your card folder contains a `PREFIX-milestones.md` file with `## PREFIX-N:` headings, faru tracks progress automatically:
+
+```
+backlog/2026-04-14-INFRA-MY-PROJECT/
+  VX-milestones.md      ← defines VX-1, VX-2, VX-3
+  VX-1-report.md        ← VX-1 is done
+  VX-2-report.md        ← VX-2 is done
+  CARD.md
+```
+
+The board shows `● 2/3` on the card tile. A milestone is "done" when a matching `PREFIX-N-report.md` file exists in the same folder. You can add milestones from the card detail view — they append to the milestones file.
+
+A milestones file uses the same YAML frontmatter as a card, plus `## PREFIX-N: Title` headings for each milestone:
+
+```yaml
+---
+title: My Project
+type: infra
+status: wip
+assigned: alice
+created: 2026-04-14
+edited: 2026-04-14
+description: Short summary of the project
+---
+
+# VX Milestones
+
+## VX-1: Research & Design
+
+> Scope, acceptance criteria, tickets, etc.
+
+## VX-2: Implementation
+
+> ...
+
+## VX-3: Deployment
+
+> ...
+```
+
+To break a card into milestones, tell your agent:
+
+> Break this card into milestones. Create a `PREFIX-milestones.md` file in the card folder with `## PREFIX-N: Title` headings. Use the card's frontmatter. When a milestone is complete, create a `PREFIX-N-report.md` file in the same folder.
+
+## Config
+
+Create a `faru.config.json` in your project root:
+
+```json
+{
+  "backlogDir": "./backlog",
+  "port": 3333,
+  "cardCategories": ["product", "ops", "bug"],
+  "autoSync": true,
+  "archiveDoneAfterDays": 14
+}
+```
+
+| Field | Description |
+|---|---|
+| `backlogDir` | Path to your backlog directory, relative to project root |
+| `port` | Server port |
+| `cardCategories` | Category labels for the type dropdown |
+| `autoSync` | `true` = auto-commit, push, and poll remote. `false` = local only |
+| `archiveDoneAfterDays` | Automatically move `done` cards older than N days to archive |
+
+### Agent Dispatch — Antigravity / Cursor / Claude Code (optional)
+
+<p align="center">
+  <img src="public/dispatch.png" alt="dispatch to agent" width="700">
+</p>
+
+faru ships with drivers that dispatch cards to an AI coding agent:
+- `driver: "antigravity"` for [Antigravity](https://antigravity.dev) (CDP)
+- `driver: "cursor"` for Cursor with CDP enabled (CDP)
+- `driver: "claude-code"` for [Claude Code CLI](https://www.npmjs.com/package/@anthropic-ai/claude-code) (no CDP)
+
+Agent config is split between the **shared config** (`faru.config.json`) and the **local config** (`.faru.local.json`). The shared config contains team-wide settings. The driver and its driver-specific options are machine-specific and belong in `.faru.local.json`.
+
+#### Shared config (`faru.config.json`)
+
+These fields are universal across all drivers:
+
+```json
+{
+  "agent": {
+    "skills": "./skills",
+    "timeoutMinutes": 15,
+    "verify": "Review every acceptance criterion. Confirm each is done or fix it."
+  }
+}
+```
+
+| Field | Description |
+|---|---|
+| `skills` | Path to a directory of skill markdown files, relative to project root |
+| `timeoutMinutes` | Max time per skill before the dispatch is marked as failed |
+| `verify` | `true` for a generic audit prompt, or a custom prompt string. Omit to disable |
+
+#### Local config (`.faru.local.json`) — driver setup
+
+The `driver` field and all driver-specific options go here. This file is gitignored and never shared.
+
+**Antigravity** — launch with `--remote-debugging-port=9333`:
+
+```json
+{
+  "agent": {
+    "driver": "antigravity",
+    "cdpPort": 9333,
+    "workspacePattern": "agent"
+  }
+}
+```
+
+**Cursor** — launch with `--remote-debugging-port=9333`:
+
+```json
+{
+  "agent": {
+    "driver": "cursor",
+    "cdpPort": 9333
+  }
+}
+```
+
+**Claude Code**:
+
+```json
+{
+  "runKata": false,
+  "agent": {
+    "driver": "claude-code",
+    "workdir": ".",
+    "allowedTools": "Read,Write,Edit,Bash,Glob,Grep",
+    "dangerouslySkipPermissions": false
+  }
+}
+```
+
+| CDP field (Antigravity / Cursor) | Description |
+|---|---|
+| `cdpPort` | The `--remote-debugging-port` your IDE was launched with |
+| `workspacePattern` | Optional title substring to prefer a specific IDE window target |
+
+| Claude Code field | Description |
+|---|---|
+| `workdir` | Spawn working directory for `claude` (defaults to project root) |
+| `allowedTools` | Optional comma-separated allowlist, mapped to `--allowedTools` |
+| `dangerouslySkipPermissions` | Passes `--dangerously-skip-permissions` for unattended runs |
+| `mcpConfig` | Optional path mapped to `--mcp-config` |
+| `appendSystemPrompt` | Optional text mapped to `--append-system-prompt` |
+
+If no `agent.driver` is set, faru logs a warning and dispatch is disabled. The Dojo UI still shows kata for reference, but nothing can run.
+
+#### Skills
+
+Skills are markdown files in the skills directory. Each skill can specify behaviour via YAML frontmatter:
+
+```yaml
+---
+model: opus-4.6
+phase: 2
+produces: *-design*.md
+needs: "*-milestones.md, *-adr*"
+excludeTypes: legal, ops
+default: true
+---
+
+Act like a ...
+```
+
+| Field | Description |
+|---|---|
+| `model` | Preferred model for this skill (driver-specific identifier) |
+| `phase` | Ordering in the suggested chain — lower numbers run first. Skills without a `phase` are not included in auto-suggested chains |
+| `produces` | Glob pattern for the artifact this skill creates. If a card already contains a matching file, the skill is skipped |
+| `needs` | Comma-separated glob patterns for files this skill requires from the card folder. Only matching files are included in the prompt. If omitted, all card files are included (backward compatible). Previous skill output is handed off automatically via file-diff detection |
+| `excludeTypes` | Comma-separated card categories to skip (e.g. `legal, ops`) |
+| `includeTypes` | Comma-separated card categories to restrict this skill to (e.g. `product`). When set, the skill is only suggested for these types |
+| `default` | Set to `true` to mark this skill as the fallback when no other skills match |
+
+When dispatching a card, you chain one or more skills — each runs in a fresh chat session. The driver interface is pluggable — add your own under `drivers/`.
+
+#### Verification Pass
+
+After each skill completes, faru can send a follow-up prompt in the same session asking the agent to audit its own work. Enable it via the `verify` field:
+
+```json
+{
+  "agent": {
+    "verify": "Review every acceptance criterion. Confirm each is done or fix it."
+  }
+}
+```
+
+| Value | Behaviour |
+|---|---|
+| `true` | Sends a generic audit prompt after each skill |
+| `"custom prompt"` | Sends your custom prompt instead |
+| omitted / `false` | No verification pass |
+
+### Dojo — Kata Scheduler (optional)
+
+<p align="center">
+  <img src="public/dojo.png" alt="dojo kata scheduler" width="800">
+</p>
+
+Dojo is a cron scheduler that runs recurring agent tasks ("kata"). Each kata is a markdown file in a directory you configure. On schedule, faru dispatches the kata prompt through the same agent driver used for card dispatch.
+
+```json
+{
+  "scheduler": {
+    "kataDir": "./kata"
+  }
+}
+```
+
+| Field | Description |
+|---|---|
+| `kataDir` | Path to the directory containing kata markdown files, relative to project root |
+
+A kata file uses YAML frontmatter for scheduling and a body for the prompt:
+
+```yaml
+---
+schedule: 0 9 * * 1
+model: opus-4.6
+---
+
+Find all TODO, FIXME, and HACK comments in the codebase.
+For each, assess if it's still relevant or can be resolved now.
+Write a prioritized report to kata/todo-sweep/{date}-sweep.md.
+```
+
+| Frontmatter | Description |
+|---|---|
+| `schedule` | A cron expression (e.g. `0 2 * * 1` = Monday 2am). Set to `paused` to disable |
+| `model` | Preferred model for this kata (driver-specific identifier, same values as skill `model`). If omitted, the currently active model in the IDE is used |
+
+Kata files support an `## Ignore` section — when you mute a finding from the sweep report UI (select text → right-click → Mute), it appends to this section. The agent sees the ignore list on subsequent runs:
+
+```markdown
+## Ignore
+
+- Some finding that's already tracked elsewhere
+- Another known issue we're deferring
+```
+
+#### Sweep Reports
+
+When a kata runs, the agent writes a sweep report to `kata/{kata-id}/{date}-sweep.md`. Reports can include YAML frontmatter for the dojo timeline:
+
+```yaml
+---
+verdict: needs-attention
+summary: 3 findings, 1 critical
+---
+```
+
+| Verdict | Timeline dot color |
+|---|---|
+| `healthy` | Green |
+| `needs-attention` | Amber |
+| `critical` | Red |
+| (default) | Green |
+
+The Dojo view (toggle via the header button) shows a timeline of all sweep reports. Click a report to read it, select text and right-click to promote a finding to a card or mute it.
+
+Dojo watches the kata directory for changes — editing a kata file automatically reloads cron schedules. Both `agent` and `scheduler` must be configured for scheduled runs; manual runs are also available from the Dojo UI.
+
+#### Enabling the Scheduler (experimental)
+
+By default, the kata scheduler is **off** — kata are visible and can be run manually, but cron schedules don't fire. This prevents every machine from running the same scheduled kata.
+
+To enable it, set `runKata` to `true` in `.faru.local.json`:
+
+```json
+{
+  "runKata": true,
+  "agent": {
+    "driver": "antigravity",
+    "cdpPort": 9333
+  }
+}
+```
+
+Only enable the scheduler on **one machine** to avoid duplicate runs. Other team members should either omit `runKata` or set it to `false`.
+
+**Add `.faru.local.json` to your `.gitignore`** — this file is machine-specific and should not be committed.
+
+`.faru.local.json` is a general-purpose override file. It deep-merges on top of `faru.config.json`, so you can override any setting per-machine (e.g. a different port, driver, or driver-specific options) without touching the shared config. The `agent.driver` field **must** be set here — it is intentionally absent from the shared config to prevent one machine's driver choice from propagating to the team.
+
+## Creating Cards
+
+Tell your agent:
+
+> Create a new faru card in the `backlog/` folder for [describe the task]. Use today's date, set status to todo, and assign it to me.
+
+Cards are folders with markdown files. Any tool that can write files can create them. The board UI also lets you create cards directly.
+
+## Features
+
+- **Agent dispatch** — send cards to an AI coding agent via a pluggable driver (ships with Antigravity, Cursor, and Claude Code drivers). Skills are markdown files that self-describe their chain ordering via frontmatter. After each skill completes, an optional verification pass prompts the agent to audit its own work before moving on
+- **Dispatch queue** — when the agent is busy, new dispatches queue up automatically. FIFO serial execution, one at a time. Queue status is visible from the board via the Queue button, with abort and cancel controls
+- **Dojo (kata scheduler)** — run recurring agent tasks on cron schedules. Kata are markdown prompts with frontmatter scheduling. Sweep reports appear in a timeline UI where you can promote findings to cards or mute them. Hot-reloads cron schedules when kata files change
+- **Weekly Goal** — set a high-level focus via an editable board banner that saves directly to `weekly-goal.md` in your project root
+- **Card detail view** — click a card to open a full modal with editable metadata sidebar (type, status, assigned), progress bar, milestone checklist, file browser, and comments thread
+- **External links** — attach references or external spec folders to any card via a `links:` array in the YAML frontmatter
+- **Comments** — add comments from the card detail view. Stored as `## Comments` in `CARD.md`, visible as a badge on card tiles
+- **Milestones from UI** — add new milestones directly from the card detail. Auto-creates the milestones file if one doesn't exist yet
+- **Archive** — archive cards from the detail view. Toggle the archive view to browse archived cards. Auto-archive sweeps `done` cards older than N days (configurable)
+- **Open in editor** — click any file in the card sidebar to open it in your default editor
+- **Live reload** — edit cards in your editor, board updates instantly
+- **Git sync** — automatically commits, pushes, and pulls via git when `autoSync` is enabled
+- **Drag & drop** — move cards between columns
+- **Inline editing** — click titles and descriptions to edit in-place
+- **Assignee detection** — reads `git config user.name`, populates assignee dropdowns from existing cards
+- **Cross-platform** — macOS, Windows, Linux
+
+## Philosophy
+
+The board is a view layer. Your editor is the workspace. Your agents are the workforce.
+
+Cards are markdown files. You can edit them in VS Code, Vim, or whatever you use — the board picks up changes instantly via live reload. The card detail view handles quick metadata tweaks (status, assignee, type), but for anything beyond that, click "Open in Editor" and you're in your real environment with full editing power, search, git history, and AI assistance. The board doesn't try to be an editor. It shows you the state of work and gets out of the way.
+
+faru has 3 columns: Todo, WIP, Done. You can't add more. This is intentional.
+
+More columns means more places for work to stall. "In Review," "Blocked," "Ready for QA" are symptoms, not workflow stages. If something is blocked, fix the blocker or move it back to Todo. If it's in review, it's still WIP.
+
+Agent dispatch follows the same principle. A skill is either not started, running, or done. No approval queues, no staging lanes. The agent picks up the card, does the work, and reports back via comments. Dojo extends this to recurring work — kata run on schedule, sweep reports accumulate, and you triage findings into cards or mute them. The feedback loop is the kata file itself.
+
+This comes from lean thinking and trunk-based development. Minimize work in progress. Ship small. Keep things moving.
+
+## FAQ
+
+<details>
+<summary>Where does faru run?</summary>
+
+On your machine. Faru is a local dev server — you run `npx github:fluado/faru` in the directory where your `faru.config.json` lives, open `http://localhost:3333` in your browser, and "Open in Editor" opens files in your local editor. Your AI agent doesn't need faru running at all. The agent just writes markdown files and pushes via git. Faru polls the remote every 5 seconds and pulls changes automatically.
+
+</details>
+
+<details>
+<summary>Will faru pollute my git history?</summary>
+
+When `autoSync` is `true`, faru commits every change with a `board: ` prefix (`board: move X to wip`, `board: comment on Y`). These are real commits on whatever branch is checked out.
+
+If you want to keep your source repo's history clean, **run faru in a separate repo**. Create a dedicated repo for your backlog and config, point your agents at it for card management, and run faru there. Board commits stay completely isolated from your code history. This is what we do.
+
+If a separate repo isn't an option, you can set `"autoSync": false` to disable auto-commits entirely.
+
+</details>
+
+<details>
+<summary>Does faru follow semver?</summary>
+
+No. We ship updates to `main` when something is ready. There are no stability guarantees between runs of `npx github:fluado/faru`. If you need a pinned version, reference a specific commit (`npx github:fluado/faru#<commit>`) or fork the repo.
+
+</details>
+
+<details>
+<summary>Can I use Agent Dispatch with other agents or IDEs?</summary>
+
+Faru ships with `antigravity`, `cursor`, and `claude-code` drivers. The driver interface is simple — create a file in `drivers/` that exports `execute`, `newSession`, `isAvailable`, `abort`, and optionally `setModel` and `releaseWorkspace`, then set `"driver": "your-driver"` in the config.
+
+</details>
+
+<details>
+<summary>My agent runs but doesn't create reports or update the card. What's wrong?</summary>
+
+Your skills need to tell it to. Faru dispatches card content to the agent but doesn't inject instructions about file conventions. Your skill prompt must teach the agent about `PREFIX-N-report.md` naming, frontmatter fields, and card folder structure.
+
+</details>
+
+<details>
+<summary>How does Dojo differ from just running a cron job?</summary>
+
+Dojo reuses the same agent driver as card dispatch — it opens a fresh IDE session, sends the prompt, waits for the sentinel file, and records the result. The sweep timeline gives you a persistent audit trail with rendered markdown reports. The mute-to-ignore-section flow means your kata prompt self-corrects over time as you dismiss known findings. And hot-reloading means you can tweak schedules by editing the kata file — no process restart needed.
+
+</details>
+
+## Contributing
+
+We built faru for ourselves. We use it every day at fluado and we're sharing it because it might be useful to others.
+
+This is not a community project. We don't have the bandwidth to review PRs, triage issues, or maintain a roadmap for external contributors. If you open an issue with a good idea, we might pick it up when it aligns with what we need. No promises.
+
+Fork it, break it, make it yours. Have fun.
+
+## License
+
+MIT — Built at [fluado](https://fluado.com).

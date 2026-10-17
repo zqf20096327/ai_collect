@@ -1,0 +1,70 @@
+# Uimori
+
+긴 원고를 읽고 다음 장면을 이어 쓰는 개인용 창작 웹앱이에요. 봇별 채팅·폴더, Risu 원본 봇·페르소나·모듈, 프롬프트와 모델의 독립 설정, 원문·번역 편집, 독립 채팅 복사, 이야기 기억과 백업을 제공해요.
+
+이 소스의 앱 버전은 **`v0.10.6`**예요. Anthropic에서 일부 Risu 프롬프트의 메시지 배치를 전송 단계에서 보정하고, 수정하지 않은 과거 장면의 모델 전달 형식을 유지해요. 저장된 원고·프롬프트·실행 기록과 기존 캐시 기준점을 보존해요. 개인용 초기 개발 릴리스이며 기능과 데이터 형식은 앞으로 바뀔 수 있어요. **DB 스키마는 15**로 유지해요. 자세한 변경과 제한은 [릴리스 노트](docs/releases/v0.10.6.md), 설치 절차는 [업데이트 안내](docs/UPDATES.md)를 참고해요.
+
+개인 ChatGPT 구독으로 에이전트를 실행하려면 [Codex 연결 안내](docs/CODEX.md)를 따라 서버 실행기를 준비하고 **설정 → Codex 연결**에서 로그인해요.
+
+## Windows에서 실행
+
+Node **24.14 이상 24.x**, npm, Chrome 또는 Edge가 필요해요. SQLite는 Node에 포함된 기능을 사용해요.
+
+태그 기반 설치는 `v0.10.6`을 사용해요. 설치 전에 [GitHub Releases](https://github.com/woduseh/Uimori/releases)에서 해당 릴리스가 공개됐는지 확인해요.
+
+```powershell
+git clone --branch v0.10.6 --single-branch https://github.com/woduseh/Uimori.git
+cd Uimori
+npm ci
+npm run dev
+```
+
+이미 소스를 받았다면 프로젝트 루트에서 `npm ci`부터 실행해요. 실행 후 [로컬 앱](http://127.0.0.1:4310)을 열어요. `dev`는 빌드 후 서버를 시작하며, 이미 빌드했다면 `npm start`로 실행할 수 있어요. 이전 서버를 사용 중이면 해당 터미널에서 Ctrl+C로 종료한 뒤 다시 시작해요.
+
+1. **서재 → 봇**에서 자료를 만들거나 고른 뒤 **봇으로 새 채팅**, 또는 왼쪽 탐색에서 봇을 고르고 **새 채팅**을 눌러요. 봇은 필수이고, 만든 채팅의 소속 봇은 바꾸지 않아요. 페르소나·프롬프트·창작 프리셋은 선택할 수 있어요.
+2. **설정 → 프로바이더·모델**에서 프로바이더·모델을 등록하고 전역 역할별 모델로 선택해요. 모델 없이 채팅을 만들거나 작성된 시작문을 사용할 수 있지만, 본문 생성·번역 등 모델을 실행하는 역할에는 모델 선택이 필요해요. 프로바이더 추가에서 **TypeSafe AI**를 선택하면 **JEV**가 모델 목록에 등록돼요. 본문·번역 거절 판정, 로어 관련성, 기존 이미지 선택은 JEV가 담당해요. JEV를 사용하는 기능만 키 등록이 필요하며 본문 거절 감지는 기본으로 꺼져 있어요. API 키는 앱에서 바로 입력해요.
+3. 하단 입력창에 장면 요청을 보내요. 기본 전송 키는 Ctrl/Cmd+Enter예요.
+4. 원고의 **번역 보기**를 누르면 번역을 시작해요. 저장된 번역의 보기 전환과 원문·번역 직접 저장은 모델을 호출하지 않아요.
+
+## 개인 Linux 서버에서 사용
+
+[Self-host 안내](docs/SELF-HOST.md)에 Docker Compose와 Nginx HTTPS 구성이 있어요. 도메인·인증서·접속 토큰을 설정하면 PC와 휴대폰에서 같은 작업실에 접속할 수 있어요. SQLite는 영구 volume에 저장해요. 지원하는 수동 업데이트 절차는 [업데이트 안내](docs/UPDATES.md)를 확인해요.
+
+## 버전 확인과 업데이트
+
+**설정 → 앱 정보·라이선스**에서 현재 서버의 앱 버전과 빌드 식별자를 확인해요. 앱 버전은 릴리스 번호이며 DB 스키마 번호와 별개예요. 업데이트 알림·앱 내 설치·무인 자동 업데이트는 제공하지 않아요. 기존 설치는 [수동 업데이트](docs/UPDATES.md#manual-release-update)를 따르고, 운영 중인 Oracle 설치는 [전용 배포 안내](docs/ORACLE-RELEASE.md)를 사용해요. 태그나 GitHub Release를 만드는 것만으로 서버가 업데이트되지는 않아요.
+
+## 사용·설정 안내
+
+| 문서 | 내용 |
+| --- | --- |
+| [사용 안내](docs/USAGE.md) | 봇별 채팅·폴더, 설정 검색, 프롬프트·창작 프리셋, 번역·독립 채팅 복사, 백업 |
+| [구성·집필 작업실](docs/OUTLINE.md) | 계층형 구성, 관련 계획 연결, 선택한 단위 집필과 원문 점검 |
+| [이야기 가이드](docs/STORY-GUIDE.md) | 원작·현재 이야기 분석, 집필 참고문, 원작 질문과 직접 정정 |
+| [도우미 도구](docs/HELPER-TOOLS.md) · [Codex 연결](docs/CODEX.md) | 부분 조회·편집, 설정·작업 제어와 네이티브 실행 |
+| [서재와 프롬프트](docs/LIBRARY.md) · [항목 삭제](docs/DELETION.md) | 자료 분류·폴더·대표 이미지, 삭제 위치와 참조 보호 |
+| [Risu 원본 가져오기](docs/RISU-IMPORT.md) | `.charx` 카드·모듈·`.risup` 프롬프트 원본, CBS·Lua·정규식·CSS 실행과 지원 범위 |
+| [Risu 자료 내보내기](docs/RISU-EXPORT.md) | 저장한 카드·모듈·프롬프트를 CHARX·RISUM·RISUP으로 내보내기 |
+| [앱 설치·완료 알림](docs/PWA.md) | PWA 설치, 원고 캐시 없는 서비스 워커, 명시적 기기별 Web Push |
+| [작업실 사용량](docs/USAGE-REPORT.md) | 일별·모델별·용도별 호출·토큰·보고/추정 비용 |
+| [읽기 위치·책갈피](docs/READING-STATE.md) | 기기별 이어 읽기, 책갈피와 개인 백업 |
+| [원고 검색](docs/MANUSCRIPT-SEARCH.md) | 원문·번역·요청의 본문 검색과 장면 이동 |
+| [자동 백업](docs/AUTOMATIC-BACKUPS.md) | 한국 시간 일일 스냅샷, 검증·보관·다운로드 |
+| [문제 보고용 진단](docs/DIAGNOSTICS.md) | 원문·키를 제외한 보고서 미리보기와 다운로드 |
+| [장면 삽화](docs/ILLUSTRATIONS.md) | Codex 이미지 생성·원격 ComfyUI로 응답별 삽화 생성, 자동 생성·재요청·개수 한도 |
+| [프로바이더](docs/PROVIDERS.md) | Vertex·Google AI Studio Gemini, Responses·Chat 호환, Anthropic 실시간·Batch, Vercel, Codex 프로바이더와 선택형 평가 도구·합성 시험 |
+| [개발과 검증](docs/DEVELOPMENT.md) | 검사·정리 명령, 격리 실행, 코드 구조와 증거 보관 |
+| [개인 서버 배포](docs/SELF-HOST.md) | Docker Compose, HTTPS, 로그인, 영구 데이터, 모델 API 키와 업데이트 |
+| [Oracle 릴리스](docs/ORACLE-RELEASE.md) | 검증·배포 명령, 데이터 보존과 실패 복구 |
+| [코드 지도](docs/CODE-MAP.md) | 기능별 현행 문서와 구현 진입점 |
+
+## 데이터와 접속
+
+- 기본 DB는 `.local/uimori.sqlite`예요. 빈 DB와 [현재 데이터 형식](docs/DATA-MIGRATIONS.md#현재-버전)만 열며 구형 DB는 변경 없이 거절해요. 옛 백업은 당시 앱 버전과 함께 보관해요. 테스트용 개발 DB를 초기화하려면 서버 종료 후 `npm run reset:dev`를 실행해요.
+- **설정 → 데이터 관리 → 내보내기와 복원**에서 SQLite 백업을 저장해요. 개별 자료와 채팅은 새 사본으로 가져올 수 있어요. [백업·격리 DB 사용법](docs/USAGE.md)
+- 기본은 `127.0.0.1` 로컬 모드이며 `UIMORI_ACCESS_TOKEN` 인증을 선택할 수 있어요. 개인 서버 모드는 `UIMORI_PUBLIC_ORIGIN`에 HTTPS 주소 하나를 지정하고 32자 이상 접속 토큰을 필수로 사용해요. `UIMORI_HOST`로 수신 주소를 정하며 외부 수신은 개인 서버 모드에서만 허용해요. [접속 조건](docs/SELF-HOST.md#프록시와-접속-조건)
+- 프로바이더 API 키와 JEV 키는 앱에서 입력하고 DB에 저장해요. 전체 SQLite 백업에는 키와 이미지가 포함돼요. 사용자 DB와 실행 산출물은 Git에서 제외해요.
+
+## 라이선스
+
+Uimori 프로젝트 소스는 [AGPL-3.0-only](LICENSE)로 제공해요. RPack을 포함한 제3자 구성 요소의 원본 조건·저작권은 [제3자 고지](THIRD_PARTY_NOTICES.md)를 확인해요. 사용자 자료·채팅·생성 결과의 권리는 각자의 이용 조건에 따르며 앱 소스 라이선스가 자동 적용되지 않아요. 서버로 제공하거나 수정본을 배포할 때는 [실행 빌드에 맞는 대응 소스 제공 안내](docs/SELF-HOST.md#라이선스와-대응-소스)를 따라요.

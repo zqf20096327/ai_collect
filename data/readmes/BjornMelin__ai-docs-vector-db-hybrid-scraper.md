@@ -1,0 +1,465 @@
+# AI Documentation Vector Database Hybrid Scraper
+
+![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)
+![Vector DB: Qdrant](https://img.shields.io/badge/vector%20db-Qdrant-f24e1e.svg)
+![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
+
+AI-focused documentation ingestion and retrieval stack that combines Firecrawl and
+Crawl4AI powered scraping with a Qdrant vector database. The project exposes both
+FastAPI and MCP interfaces, offers mode-aware configuration (solo developer vs
+enterprise feature sets), and ships with tooling for embeddings, hybrid search,
+retrieval-augmented generation (RAG) workflows, and operational monitoring.
+
+## Overview
+
+The system ingests documentation sources, generates dense and sparse embeddings,
+stores them in Qdrant, and serves hybrid search and RAG building blocks. It is
+built for AI engineers who need reliable documentation ingestion pipelines,
+reproducible retrieval quality, and integration points for agents or
+applications.
+
+## Highlights
+
+- Multi-tier crawling orchestration (`src/services/browser/unified_manager.py`)
+  covering lightweight HTTP, Crawl4AI, browser-use, Playwright, and Firecrawl,
+  plus a resumable bulk embedder CLI (`src/crawl4ai_bulk_embedder.py`).
+- Hybrid retrieval stack leveraging OpenAI and LangChain FastEmbed dense
+  embeddings plus FastEmbedSparse BM25 signals, reranking, and HyDE augmentation
+  through the modular Qdrant
+  service (`src/services/vector_db/` and `src/services/hyde/`).
+- Dual interfaces: REST endpoints in FastAPI (`src/api/routers/v1/`) and a
+  FastMCP server (`src/unified_mcp_server.py`) that registers search, document
+  management, analytics, and content intelligence tools for Claude Desktop /
+  Code.
+- Built-in API hardening with SlowAPI-powered global rate limiting configured
+  through the `SecurityConfig` model and middleware stack.
+- Observability built in: OpenTelemetry tracing, structured logging, health
+  checks, optional Dragonfly cache, and `/metrics` exposure via
+  `prometheus-fastapi-instrumentator` (`src/services/observability/`).
+- Developer ergonomics with uv-managed environments, dependency-injector driven
+  service wiring, Ruff + pytest quality gates, and a unified developer CLI
+  (`scripts/dev.py`).
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Highlights](#highlights)
+- [Architecture](#architecture)
+- [Core Components](#core-components)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Environment variables](#environment-variables)
+  - [Clone & Install](#clone--install)
+  - [Run the FastAPI application](#run-the-fastapi-application)
+  - [Run the MCP server](#run-the-mcp-server)
+  - [Bulk ingestion CLI](#bulk-ingestion-cli)
+  - [Docker Compose](#docker-compose)
+- [Configuration](#configuration)
+- [Testing & Quality](#testing--quality)
+- [Documentation & Resources](#documentation--resources)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph clients["Clients"]
+        mcp["Claude Desktop / MCP"]
+        rest["REST / CLI clients"]
+    end
+
+    subgraph mcp_server["FastMCP server"]
+        registry["Tool registry (register_all_tools)"]
+    end
+
+    subgraph api["FastAPI application"]
+        router["Mode-aware routers"]
+        factory["Service factory"]
+    end
+
+    subgraph processing["Processing layer"]
+        crawl["Unified crawling manager"]
+        embed["Embedding manager"]
+        search["Hybrid retrieval"]
+    end
+
+    subgraph data["Storage & caching"]
+        qdrant[("Qdrant vector DB")]
+        redis[("Redis / Dragonfly cache")]
+        storage["Local docs & artifacts"]
+    end
+
+    subgraph observability["Observability"]
+        metrics["Prometheus exporter"]
+        health["Health & diagnostics"]
+    end
+
+    mcp --> registry
+    registry --> processing
+    rest --> api
+    api --> processing
+    processing --> crawl
+    processing --> embed
+    processing --> search
+    crawl --> firecrawl["Firecrawl API"]
+    crawl --> crawl4ai["Crawl4AI"]
+    crawl --> browseruse["browser-use / Playwright"]
+    embed --> openai["OpenAI"]
+    embed --> fastembed["FastEmbed / optional FlagEmbedding"]
+    search --> qdrant
+    processing --> redis
+    api --> metrics
+    metrics --> observability
+    processing --> health
+    health --> observability
+```
+
+The FastMCP server now registers tool modules directly through
+``register_all_tools``. Dependencies are resolved once from the shared
+``ApplicationContainer`` and provided to the tool registrars without an
+intermediate services layer, keeping the runtime surface minimal and
+maintainable.
+
+The observability surface relies entirely on the OpenTelemetry and Prometheus
+stack: FastAPI and MCP emit spans and metrics that flow into the collector,
+with Grafana dashboards consuming those native feeds. No bespoke analytics
+dashboards or visualization engines ship with the application.
+
+## Core Components
+
+### Infrastructure Orchestration
+
+- `ApplicationContainer` (`src/infrastructure/container.py`) is the single source
+  of truth for wiring clients (OpenAI, Qdrant, Redis, Firecrawl), caches, vector
+  storage, crawling, embeddings, monitoring, and RAG helpers. Runtime surfaces pull
+  dependencies from the container using `dependency-injector` providers rather than
+  instantiating bespoke managers.
+- `src/infrastructure/bootstrap.py` exposes `ensure_container` and
+  `container_session` helpers so FastAPI lifespans, the unified MCP server, CLI
+  utilities, and evaluation scripts share identical lifecycle management without
+  reimplementing startup/shutdown logic.
+- Service initialization is coordinated through container lifecycle hooks with
+  deterministic startup/shutdown ordering, ensuring shared resources (HTTP sessions,
+  vector stores, MCP sessions, monitoring tasks) are initialised once and cleaned up
+  safely.
+
+### Crawling & Ingestion
+
+- AutomationRouter centralizes tier analysis while UnifiedBrowserManager delegates
+  multi-tier scraping and tracks quality metrics.
+- Firecrawl and Crawl4AI adapters plus browser-use / Playwright integrations cover static and dynamic sites.
+- `src/crawl4ai_bulk_embedder.py` streams bulk ingestion, chunking, and embedding into Qdrant with resumable state and progress reporting.
+- `docs/users/web-scraping.md` and `docs/users/examples-and-recipes.md` include tier selection guidance and code samples.
+
+#### LangChain splitter matrix & hybrid retrieval glue
+
+The ingestion stack no longer ships bespoke "basic" or "enhanced" chunkers. Every
+surface—FastAPI, MCP, CLI—calls the shared
+`src/services/document_chunking.chunk_to_documents` helper, which orchestrates a
+matrix of LangChain text splitters selected from document metadata:
+
+- Markdown → `MarkdownHeaderTextSplitter` + recursive refinement for heading-aware
+  segments.
+- HTML → `HTMLSemanticPreservingSplitter` (or header/section splitters when
+  semantic parsing is disabled) with optional whitespace normalisation.
+- Code → `RecursiveCharacterTextSplitter.from_language` seeded from inferred file
+  extensions or crawler metadata.
+- JSON → `RecursiveJsonSplitter` for structured payloads.
+- Token aware → `TokenTextSplitter.from_tiktoken_encoder` for strict token
+  budgets.
+- Plain text → `RecursiveCharacterTextSplitter` using newline/space fallbacks.
+
+All splitter variants preserve inferred `kind` and provenance fields. The
+ingestion document builder assigns canonical chunk positions before storage, so
+downstream services never rely on bespoke schemas.
+See the LangChain text splitter catalogue for implementation details.[^langchain-splitters]
+
+Dense and sparse embeddings are sourced from the LangChain FastEmbed wrappers—
+`FastEmbedEmbeddings` for dense vectors and `FastEmbedSparse` for BM25-compatible
+representations—allowing hybrid searches without vendor SDK drift.[^fastembed]
+`VectorStoreService` wires both outputs into LangChain's `QdrantVectorStore`, so
+ingestion code and documentation examples share a single integration point.[^langchain-qdrant]
+
+```python
+from langchain_community.embeddings import FastEmbedEmbeddings
+from langchain_qdrant import FastEmbedSparse, QdrantVectorStore
+
+from src.services.document_chunking import chunk_to_documents, infer_document_kind
+from src.config.models import ChunkingConfig
+
+config = ChunkingConfig(chunk_size=1600, chunk_overlap=200)
+documents = chunk_to_documents(
+    raw_text,
+    metadata,
+    infer_document_kind(metadata, "text"),
+    config,
+)
+
+store = QdrantVectorStore.from_documents(
+    documents,
+    embedding=FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5"),
+    sparse_embeddings=FastEmbedSparse(model_name="qdrant/bm25"),
+    url="http://localhost:6333",
+    collection_name="documentation",
+)
+```
+
+Toggle dense-only, sparse-only, or hybrid retrieval before startup with
+`AI_DOCS_EMBEDDING__RETRIEVAL_MODE`. Hybrid mode persists both vector modalities
+and enables Qdrant's sparse+dense scoring during search.[^qdrant-hybrid]
+
+### Vector Search & Retrieval
+
+- `src/services/vector_db/` wraps collection management, hybrid search orchestration, adaptive fusion, and payload indexing.
+- Dense embeddings via OpenAI or FastEmbed, optional sparse vectors via SPLADE, and reranking hooks are configurable through Pydantic models (`src/config/models.py`).
+- HyDE augmentation and caching live under `src/services/hyde/`, enabling query expansion for RAG pipelines.
+- Search responses return timing, scoring metadata, and diagnostics suitable for observability dashboards.
+
+### Caching
+
+- The unified `CacheManager` (`src/services/cache/manager.py`) fronts the Dragonfly cache, hashing keys and enforcing TTL policies across embeddings, search, HyDE, and browser flows.
+- Specialized helpers such as the HyDE cache depend on `CacheManager`, ensuring a single entry point for embeddings, search results, and warm-up flows.
+- Configure Dragonfly URLs and TTLs via the cache models in `src/config/models.py`; the manager automatically wires Prometheus metrics when enabled.
+
+### Interfaces & Tooling
+
+- FastAPI routes (`/api/v1/search`, `/api/v1/documents`, `/api/v1/collections`) expose the core ingestion and retrieval capabilities.
+- The FastMCP server (`src/unified_mcp_server.py`) registers search, document, embedding, scraping, analytics, cache, and content intelligence tool modules (`src/mcp_tools/`).
+  MCP tooling now expects dependencies to be supplied explicitly—services resolve
+  once from the dependency-injector container during startup and are passed into
+  the tool ``register_tools()`` functions rather than through intermediate
+  service wrappers.
+- Developer CLI (`scripts/dev.py`) manages services, testing profiles, benchmarks, linting, and type checking.
+- Example notebooks and scripts under `examples/` demonstrate agentic RAG flows and advanced search orchestration.
+
+### Observability & Operations
+
+- `/metrics` endpoints are exposed through
+  `prometheus-fastapi-instrumentator`, while OpenTelemetry spans capture
+  embedding, cache, database, and RAG pipeline telemetry; the database
+  manager emits `db.query.duration` histograms for each session. All
+  analytics are powered by these native observability feeds instead of
+  custom dashboards. See `docs/observability/embeddings_telemetry.md` and
+  `docs/operators/monitoring.md` for configuration details.
+- Health probes for system resources, Qdrant, Redis, RAG configuration, and application metadata are centrally coordinated by the `HealthCheckManager` (`src/services/observability/health_manager.py`), ensuring MCP tools and FastAPI dependencies share the same health state.
+- A single `GET /health` endpoint on the FastAPI and FastMCP servers reports the aggregated system status; per-service health endpoints have been removed.
+- Optional Dragonfly cache, PostgreSQL, Prometheus, and Grafana services are provisioned via `docker-compose.yml` profiles.
+- Structured logging and SlowAPI-based rate limiting are configured through the middleware manager (`src/services/fastapi/middleware/manager.py`) and security helpers (`src/services/fastapi/middleware/security.py`).
+
+#### AI Telemetry Quickstart
+
+1. Enable OTLP export (set in `.env` or deployment secrets):
+   ```bash
+   export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
+   export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <token>"
+   ```
+2. Run an OpenTelemetry Collector that forwards spans/metrics to your backend:
+   ```yaml
+   receivers:
+     otlp:
+       protocols:
+         grpc:
+         http:
+   processors:
+     batch: {}
+   exporters:
+     prometheus:
+       endpoint: "0.0.0.0:9464"
+     otlp:
+       endpoint: "https://observability.example.com:4317"
+       headers:
+         authorization: "Bearer ${OBSERVABILITY_API_TOKEN}"
+   service:
+     pipelines:
+       metrics:
+         receivers: [otlp]
+         processors: [batch]
+         exporters: [prometheus, otlp]
+       traces:
+         receivers: [otlp]
+         processors: [batch]
+         exporters: [otlp]
+   ```
+3. Scrape `/metrics` with Prometheus (the collector exposes the OTLP pipeline
+   to Prometheus in the example above). Helpful PromQL snippets:
+   ```promql
+   sum by (model) (rate(ai_operation_tokens{operation="embedding"}[5m]))
+   sum by (operation) (increase(ai_operation_cost[1h]))
+   histogram_quantile(
+     0.95,
+     sum by (le) (rate(ai_operation_duration_bucket{operation="embedding"}[5m]))
+   )
+   ```
+4. Trace dashboards can group spans with `gen_ai.operation.name`,
+   `gen_ai.request.model`, and `gen_ai.usage.*` attributes to visualize
+   synchronous embeds versus asynchronous batch jobs.
+
+### Security & Validation
+
+- `src/security/ml_security.py` provides the consolidated `MLSecurityValidator` for URL, query, and filename validation alongside dependency and container scanning hooks.
+- FastAPI and MCP flows use the shared validator via dependency helpers, ensuring a single source of truth for sanitization and auditing logic.
+- Rate limiting defaults (`default_rate_limit`, `rate_limit_window`, optional Redis storage) are controlled through `SecurityConfig` and applied via the global SlowAPI limiter.
+
+## Run locally
+
+### Prerequisites
+
+- Python 3.11 and [uv](https://github.com/astral-sh/uv) for dependency management.
+- A running Qdrant instance (local Docker welcome: `docker compose --profile simple up -d qdrant`).
+- API keys only for providers you enable.
+
+### Environment variables
+
+| Variable | Purpose | Example |
+| --- | --- | --- |
+| `AI_DOCS_QDRANT__URL` | Points services at your Qdrant instance. | `http://localhost:6333` |
+| `AI_DOCS_OPENAI__API_KEY` | Enables OpenAI embeddings and HyDE prompts. | `your_openai_api_key_here` |
+| `AI_DOCS_BROWSER__FIRECRAWL__API_KEY` | Authenticates Firecrawl API usage. | `your_firecrawl_api_key_here` |
+| `AI_DOCS_CACHE__DRAGONFLY_URL` | Points distributed caching at Dragonfly. | `redis://localhost:6379` |
+| `FASTMCP_TRANSPORT` | Chooses MCP transport (`streamable-http` or `stdio`). | `streamable-http` |
+| `FASTMCP_HOST` / `FASTMCP_PORT` | Hostname and port for MCP HTTP transport. | `127.0.0.1` / `8000` |
+
+Store secrets in a `.env` file or your secrets manager and export them before
+running the services.
+
+### Clone and install
+
+```bash
+git clone https://github.com/BjornMelin/ai-docs-vector-db-hybrid-scraper
+cd ai-docs-vector-db-hybrid-scraper
+uv sync --dev --frozen
+```
+
+The runtime image excludes Crawl4AI's transformer stack, BGE reranking, and the
+agent-driven browser stack. The development group already includes `browser-use`
+for adapter contract tests. Install the optional BGE reranker only when enabled:
+
+```bash
+uv sync --dev --frozen --extra reranking
+```
+
+Set `AI_DOCS_RERANKING__ENABLED=true` after installing the reranking extra.
+For a non-development installation that enables the `browser_use` provider, use
+`uv sync --frozen --no-dev --extra agentic-browser`.
+
+### Run the FastAPI application
+
+```bash
+docker compose --profile simple up -d qdrant
+uv run uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+```
+
+Visit `http://localhost:8000/docs` for interactive OpenAPI docs.
+
+### Search API payloads
+
+All search endpoints accept the canonical [`SearchRequest`](src/models/search.py) body. Minimal example:
+
+```json
+{
+  "query": "vector databases",
+  "limit": 5
+}
+```
+
+Responses are emitted as [`SearchResponse`](src/contracts/retrieval.py) payloads containing canonical [`SearchRecord`](src/contracts/retrieval.py) entries. Example response payload:
+
+```json
+{
+  "query": "vector databases",
+  "total_results": 2,
+  "processing_time_ms": 12.4,
+  "records": [
+    {
+      "id": "doc-1",
+      "content": "Install Qdrant with Docker...",
+      "score": 0.91,
+      "collection": "documentation"
+    },
+    {
+      "id": "doc-2",
+      "content": "Manage hybrid sparse+dense search pipelines...",
+      "score": 0.88,
+      "collection": "documentation"
+    }
+  ]
+}
+```
+
+### Run the MCP server
+
+```bash
+FASTMCP_TRANSPORT=streamable-http FASTMCP_PORT=8001 \
+  uv run python src/unified_mcp_server.py
+```
+
+The server validates configuration on startup and registers the available MCP tools at `http://127.0.0.1:8001/mcp`. The checked-in Claude Desktop configuration uses stdio instead:
+
+1. Copy `config/claude-mcp-config.example.json` to your Claude settings directory
+   and update the `command` field if you use a virtual environment wrapper.
+2. Replace its `cwd` value with the absolute repository path.
+3. Add canonical `AI_DOCS_*` provider settings only when you enable those providers.
+4. Restart Claude Desktop / Code so it reloads the MCP manifest and tool list.
+
+### Bulk ingestion CLI
+
+```bash
+uv run python -m src.crawl4ai_bulk_embedder --help
+```
+
+Use CSV/JSON/TXT URL lists to scrape, chunk, embed, and upsert into Qdrant with resumable checkpoints.
+
+### Docker Compose
+
+- Simple profile (API + Qdrant): `docker compose --profile simple up -d`
+- Enterprise profile (adds Dragonfly, PostgreSQL, Prometheus, and Grafana): `docker compose --profile enterprise up -d`
+
+Stop with `docker compose down` when finished.
+
+## Configuration
+
+- Configuration is defined with Pydantic models in `src/config/models.py`; explicit constructor values and environment variables override `.env`, activated `config.json`, and model defaults in that order.
+- Typed settings control providers, retrieval, caching, and observability.
+- Detailed configuration guidance lives in `docs/developers/setup-and-configuration.md` and operator runbooks under `docs/operators/`.
+
+## Testing & Quality
+
+```bash
+# Unit and focused integration tests
+uv run python scripts/dev.py test --profile quick
+
+# Full suite with coverage (mirrors CI)
+uv run python scripts/dev.py test --profile ci
+
+# Format, lint, and type-check
+uv run python scripts/dev.py quality
+```
+
+Performance and benchmark suites are available via `uv run python scripts/dev.py benchmark`, load tests run through `uv run python scripts/dev.py load --host http://localhost:8000`, and chaos-focused stress suites live under `tests/` with dedicated markers.
+
+## Documentation & Resources
+
+- User guides: `docs/users/` (quick start, search, scraping recipes, troubleshooting).
+- Developer deep dives: `docs/developers/` (API reference, integration, architecture).
+- Operator handbook: `docs/operators/` (deployment, monitoring, security).
+- Research notes and experiments: `docs/research/`.
+
+Publishable MkDocs output is generated under `site/` when running the documentation pipeline.
+
+## Contributing
+
+Contributions are welcome. Read the [CONTRIBUTING.md](CONTRIBUTING.md) guide for
+development workflow, coding standards, and review expectations. Please include
+tests and documentation updates with feature changes. If this stack accelerates
+your RAG pipelines, consider starring the repository so other developers can
+discover it.
+
+## License
+
+Released under the [MIT License](LICENSE).
+
+[^langchain-splitters]: LangChain text splitter reference – <https://python.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/>
+[^fastembed]: FastEmbed dense and sparse configuration guide – <https://qdrant.tech/documentation/fastembed/>
+[^langchain-qdrant]: LangChain Qdrant vector store integration – <https://python.langchain.com/docs/integrations/vectorstores/qdrant/>
+[^qdrant-hybrid]: Qdrant hybrid sparse+dense search overview – <https://qdrant.tech/articles/hybrid-search/>

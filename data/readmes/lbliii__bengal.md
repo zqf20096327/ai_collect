@@ -1,0 +1,360 @@
+# ᓚᘏᗢ Bengal
+
+[![PyPI version](https://img.shields.io/pypi/v/bengal.svg)](https://pypi.org/project/bengal/)
+[![Build Status](https://github.com/lbliii/bengal/actions/workflows/tests.yml/badge.svg)](https://github.com/lbliii/bengal/actions/workflows/tests.yml)
+[![Python 3.14+](https://img.shields.io/badge/python-3.14+-blue.svg)](https://pypi.org/project/bengal/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](https://pypi.org/project/bengal/)
+
+**The documentation generator built on Python's free-threading future**
+
+Every layer — markdown parsing, syntax highlighting, templates, dev server — is pure Python, scales with your cores, and ships zero npm dependencies.
+
+```bash
+pip install bengal
+bengal new site --name mysite && cd mysite && bengal serve
+```
+
+---
+
+## Why Bengal?
+
+Bengal is a static site generator where the entire stack is Python you can read, debug, and extend. No JavaScript toolchains. No compiled C extensions in the critical path. Every library in the pipeline — [Patitas](https://github.com/lbliii/patitas) (markdown), [Rosettes](https://github.com/lbliii/rosettes) (syntax highlighting), [Kida](https://github.com/lbliii/kida) (templates), [Pounce](https://github.com/lbliii/pounce) (dev server) — is purpose-built for Python 3.14+ free-threading.
+
+**What this gets you:**
+
+- **Scales with cores** — Parallel builds with true thread parallelism on Python 3.14t. No GIL contention.
+- **AI-native output** — Generates [llms.txt](https://llmstxt.org/), agent manifests, per-page JSON, and [Content Signals](https://contentsignals.org/) so AI agents can discover, navigate, and respect your content policies.
+- **Sub-second rebuilds** — Provenance-based incremental builds with content-addressed hashing. Only changed pages rebuild.
+- **Python-native workflows** — Jupyter `.ipynb` rendering, autodoc for Python/CLI/OpenAPI, `pip install` and go.
+- **Batteries included** — Sitemap, RSS, social cards, search indexes, broken link detection, content validation.
+- **Extensible** — Pluggable engines for templates, Markdown, and syntax highlighting. Six ready plugin extension points: directives, roles, template functions, template filters, template tests, and build phase hooks. Content sources, health validators, and shortcodes are pending.
+
+## Use Bengal For
+
+- **Documentation sites** — Versioned docs, API reference, search, and internal linking
+- **Blogs and journals** — Tags, categories, feeds, related content, and social sharing
+- **Knowledge bases** — Markdown-first publishing with validation and JSON search indexes
+- **Product and marketing sites** — Landing pages, content collections, and social cards
+
+---
+
+## Quick Commands
+
+| Command | Description |
+|---------|-------------|
+| `bengal build` | Production build |
+| `bengal serve` | Dev server with live reload |
+| `bengal preview` | Build, then serve completed output locally |
+| `bengal check` | Health checks and validation |
+| `bengal fix` | Auto-fix common issues |
+| `bengal inspect graph` | Site structure analysis |
+
+Aliases: `b` (build), `s` (serve), `v` (check)
+
+---
+
+## Site Scaffolding
+
+<details>
+<summary><strong>Interactive Wizard</strong> — Guided setup with presets</summary>
+
+Run without arguments for a guided experience:
+
+```bash
+bengal new site
+```
+
+The wizard prompts for site name, base URL, and presents preset options:
+
+```
+🎯 What kind of site are you building?
+  📝 Blog            - Personal or professional blog
+  📚 Documentation   - Technical docs or guides
+  💼 Portfolio       - Showcase your work
+  🛒 Product         - Product site with listings and features
+  📄 Resume          - Professional resume/CV site
+  📦 Blank           - Empty site, no initial structure
+  ⚙️  Custom         - Define your own structure
+```
+
+Each preset creates a complete site with appropriate sections, sample content, and configuration.
+
+</details>
+
+<details>
+<summary><strong>Direct Template Selection</strong> — Skip prompts with explicit options</summary>
+
+Create sites non-interactively with `--template`:
+
+```bash
+bengal new site --name my-docs --template docs
+bengal new site --name my-blog --template blog
+bengal new site --name portfolio --template portfolio
+```
+
+**Available templates:**
+
+| Template | Description | Sections Created |
+|----------|-------------|------------------|
+| `default` | Basic site structure | Home page only |
+| `blog` | Personal/professional blog | blog, about |
+| `docs` | Technical documentation | getting-started, guides, reference |
+| `portfolio` | Showcase work | about, projects, blog, contact |
+| `product` | Product site with listings | products, features, pricing, contact |
+| `resume` | Professional CV | Single resume page |
+| `landing` | Single-page landing | Home, privacy, terms |
+| `changelog` | Release notes timeline | Changelog with versions |
+
+</details>
+
+<details>
+<summary><strong>Add Pages and Templates</strong> — Expand without recreating</summary>
+
+Add content and template files to an existing Bengal site:
+
+```bash
+# Add a page under a section
+bengal new page --name getting-started --section docs
+
+# Add template files
+bengal new layout --name docs-page
+bengal new partial --name docs-sidebar
+
+# Add a content type strategy scaffold
+bengal new content-type --name tutorial
+```
+
+Use frontmatter, content type strategies, and section index pages to shape how
+new content is grouped and rendered.
+
+</details>
+
+<details>
+<summary><strong>Content Type Scaffolds</strong> — Python-defined content behavior</summary>
+
+Generate a starter `ContentTypeStrategy` when a section needs custom matching,
+template selection, summaries, or pagination behavior:
+
+```bash
+bengal new content-type --name changelog
+```
+
+The generated file contains TODO markers for matching, template selection,
+excerpt generation, and pagination so custom content behavior stays in Python.
+
+</details>
+
+---
+
+## Features
+
+| Feature | Description | Docs |
+|---------|-------------|------|
+| **SEO & Discovery** | Sitemap, RSS, canonical URLs, Open Graph, social cards, search, JSON/LLM output, [llms.txt](https://llmstxt.org/), [Content Signals](https://contentsignals.org/) | [SEO & Discovery →](https://lbliii.github.io/bengal/docs/ship/seo/) |
+| **Directives** | Tabs, admonitions, cards, dropdowns, code blocks | [Content →](https://lbliii.github.io/bengal/docs/build-sites/) |
+| **Notebooks** | Native Jupyter `.ipynb` rendering, Binder/Colab links | [Notebooks →](https://lbliii.github.io/bengal/docs/build-sites/write/authoring/notebooks/) |
+| **Autodoc** | API docs from Python, CLI, OpenAPI with symbol cross-linking, `@overload` grouping, and inherited-member badges | [Autodoc →](https://lbliii.github.io/bengal/docs/build-sites/extend/sources/autodoc/) |
+| **Remote Sources** | Pull content from GitHub, Notion, REST APIs | [Sources →](https://lbliii.github.io/bengal/docs/build-sites/extend/sources/) |
+| **Image Processing** | Resize, crop, format conversion (WebP/AVIF), srcset generation | [Images →](https://lbliii.github.io/bengal/docs/build-sites/customize/templating/image-processing/) |
+| **Content Collections** | Type-safe frontmatter with dataclass/Pydantic schemas | [Collections →](https://lbliii.github.io/bengal/docs/build-sites/structure/collections/) |
+| **Theming** | Dark mode, responsive, syntax highlighting, search | [Theming →](https://lbliii.github.io/bengal/docs/build-sites/customize/) |
+| **Validation** | Health checks, broken link detection, auto-fix | [Validation →](https://lbliii.github.io/bengal/docs/ship/validate/) |
+| **Performance** | Parallel builds, incremental rebuilds, streaming | [Large Sites →](https://lbliii.github.io/bengal/docs/ship/performance/large-sites/) |
+| **Zero-Config Deploy** | Auto-detects GitHub Pages, Netlify, Vercel | [Deployment →](https://lbliii.github.io/bengal/docs/ship/deployment/) |
+
+📚 **Full documentation**: [lbliii.github.io/bengal](https://lbliii.github.io/bengal/)
+
+---
+
+## Configuration
+
+<details>
+<summary><strong>Single-file</strong> — Simple projects</summary>
+
+```toml
+# bengal.toml
+[site]
+title = "My Site"
+baseurl = "https://example.com"
+```
+
+</details>
+
+<details>
+<summary><strong>Directory-based</strong> — Multi-environment projects</summary>
+
+```
+config/
+├── _default/           # Base configuration
+│   ├── site.yaml
+│   └── build.yaml
+├── environments/       # Environment overrides
+│   └── production.yaml
+└── profiles/           # Build profiles
+    └── dev.yaml
+```
+
+```bash
+bengal build --environment production    # Production environment
+bengal build --profile dev    # Development profile
+```
+
+</details>
+
+📖 **Configuration guide**: [Configuration →](https://lbliii.github.io/bengal/docs/ship/configuration/)
+
+---
+
+## Project Structure
+
+```
+mysite/
+├── content/          # Markdown pages
+├── templates/        # Custom templates (optional)
+├── assets/           # Static files (CSS, JS, images)
+├── data/             # YAML/JSON data files
+├── config/           # Configuration directory
+└── public/           # Build output
+```
+
+---
+
+## Theming
+
+Bengal ships with a modern, accessible default theme:
+
+- Dark mode with system preference detection
+- Responsive design with mobile navigation
+- Syntax highlighting with copy buttons
+- Table of contents with scroll spy
+- Full-text search (Lunr.js)
+
+**Customize templates:**
+
+```html
+{# templates/page.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<article class="prose">
+  <h1>{{ page.title }}</h1>
+  {{ content | safe }}
+</article>
+{% endblock %}
+```
+
+---
+
+## Pluggable Engines
+
+Bengal follows a "bring your own" pattern — swap engines without changing your content.
+
+<details>
+<summary><strong>Template Engine</strong></summary>
+
+| Engine | Description | Install |
+|--------|-------------|---------|
+| **Kida** | Bengal's native engine. AST-native, free-threading safe, Jinja2-compatible syntax | Built-in |
+
+Kida is the built-in template engine. It uses Jinja2-compatible syntax, so existing Jinja2 templates generally work without changes. See the [Kida migration guide](https://lbliii.github.io/bengal/docs/build-sites/customize/templating/kida/migration/from-jinja/) if migrating from Jinja2.
+
+</details>
+
+<details>
+<summary><strong>Markdown Parsers</strong></summary>
+
+| Parser | Description | Install |
+|--------|-------------|---------|
+| **Patitas** (default) | Bengal's native parser. Typed AST, O(n) parsing, thread-safe | Built-in |
+| **Python-Markdown** | Full-featured, extensive extensions | `pip install markdown` |
+| **Mistune** | Removed — selecting it emits a `DeprecationWarning` and falls back to Patitas | Deprecated alias |
+
+```yaml
+# config/_default/content.yaml
+markdown:
+  parser: patitas  # default, or python-markdown (requires: pip install markdown)
+```
+
+</details>
+
+<details>
+<summary><strong>Syntax Highlighters</strong></summary>
+
+| Backend | Description | Install |
+|---------|-------------|---------|
+| **[Rosettes](https://github.com/lbliii/rosettes)** (default) | Lock-free, 55+ languages, O(n) guaranteed | `pip install rosettes` |
+
+```yaml
+# config/_default/theme.yaml
+highlighting:
+  backend: rosettes
+```
+
+Custom backends can be registered via `register_backend()`.
+
+</details>
+
+---
+
+## Requirements
+
+- **Python 3.14+** (uses free-threading and PEP 784 compression)
+- Linux, macOS, Windows
+
+---
+
+## Philosophy
+
+Bengal prioritizes **correctness and clarity over backwards compatibility**.
+
+Each release represents the best solution we know how to deliver. When existing behavior no longer reflects the best design, it changes. Upgrades may require reading release notes and making adjustments.
+
+- **Fail loudly** — Breaking changes produce clear errors
+- **User control** — You choose when to upgrade; we choose what changes
+- **Minimal compatibility layers** — Where a shim, config-key migration, or command alias exists, it emits a clear `DeprecationWarning` with a documented removal horizon — never silent behavior
+
+If you need multi-year stability, pin your version.
+
+---
+
+## Documentation
+
+📚 **[lbliii.github.io/bengal](https://lbliii.github.io/bengal/)**
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/lbliii/bengal.git
+cd bengal
+uv sync --group dev
+pytest
+```
+
+Bengal is a standalone uv project. Run `uv sync` and `uv run ...` from this checkout; sibling repositories are not required for normal development.
+
+---
+
+## The Bengal Ecosystem
+
+A structured reactive stack — every layer written in pure Python for 3.14t free-threading.
+
+| | | | |
+|--:|---|---|---|
+| **ᓚᘏᗢ** | **Bengal** | Static site generator ← You are here | [Docs](https://lbliii.github.io/bengal/) |
+| **∿∿** | [Purr](https://github.com/lbliii/purr) | Content runtime | — |
+| **⌁⌁** | [Chirp](https://github.com/lbliii/chirp) | Web framework | [Docs](https://lbliii.github.io/chirp/) |
+| **=^..^=** | [Pounce](https://github.com/lbliii/pounce) | ASGI server | [Docs](https://lbliii.github.io/pounce/) |
+| **)彡** | [Kida](https://github.com/lbliii/kida) | Template engine | [Docs](https://lbliii.github.io/kida/) |
+| **ฅᨐฅ** | [Patitas](https://github.com/lbliii/patitas) | Markdown parser | [Docs](https://lbliii.github.io/patitas/) |
+| **⌾⌾⌾** | [Rosettes](https://github.com/lbliii/rosettes) | Syntax highlighter | [Docs](https://lbliii.github.io/rosettes/) |
+
+Python-native. Free-threading ready. No npm required.
+
+---
+
+## License
+
+MIT

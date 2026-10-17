@@ -1,0 +1,381 @@
+# mnemiq
+
+**Text-to-SQL you can tune to your database.** */NEM-ik/ — the "m" is silent, as in mnemonic.*
+
+*By [Agentic Fabriq](https://www.agenticfabriq.com) (YC W26) — made with love, from MIT.*
+
+An open-source engine that answers natural-language questions over your database, built so that
+every stage between the question and the SQL is a setting you can read, change, and measure.
+
+![The mnemiq workbench answering two questions and declining a third. Each answer shows the SQL
+that produced it, the tables it read, and how many candidate queries agreed. The declined question
+asks for ticket revenue; the engine states that the tables hold concert years and stadium capacity
+but no ticket price, tickets sold, or revenue column.](docs/workbench.png)
+
+Two answers and a refusal. The third question asks for revenue the database does not hold, and the
+engine says so — naming the columns it would have needed — instead of returning a number that looks
+right. That distinction is the whole design.
+
+**Read more** · [Product page](https://www.agenticfabriq.com/mnemiq) ·
+[Launch article](https://www.agenticfabriq.com/blog/mnemiq/launch) ·
+[Technical report (PDF, DOI 10.5281/zenodo.22806094)](docs/mnemiq-technical-report.pdf) ·
+[Paper (PDF)](docs/mnemiq-paper.pdf) ·
+[beacon](https://github.com/agenticfabriq/beacon) — the grader and results tracker
+
+## Why mnemiq exists
+
+Every text-to-SQL product has an accuracy number. Almost none of them were measured on a database
+that looks like yours.
+
+A system can do well on a benchmark and then struggle on your warehouse because the schema is
+larger, the naming is different, the business definitions live in people's heads, or the
+configuration that suited the benchmark simply doesn't suit your data. When it underperforms, a
+closed system gives you no way to find out why, and nothing to change.
+
+So the question worth asking isn't *how accurate is it*. It's:
+
+> How well will this work on my database — and what can I change if it doesn't?
+
+mnemiq is built to make both halves answerable. It is Apache-2.0, runs inside your own environment
+on models you choose, and exposes the major parts of the pipeline as settings rather than
+internals. No accuracy number applies to your database until you have run it on your database;
+mnemiq is the engine and the evaluation harness for doing that.
+
+## How it works
+
+mnemiq separates writing SQL from deciding to run it. A model proposes a query. A deterministic
+layer then rules on it before anything touches the database. The query has to be read-only, may
+only reference objects the caller is allowed to see, has to compile in the source's own SQL
+dialect, and has to survive an `EXPLAIN`. Fail any of those and you get a refusal with a stated
+reason rather than a plausible number.
+
+Two properties fall out of that ordering. Permissions apply *before* schema retrieval, so the model
+is never shown a table the caller may not see — naming it is useless rather than refused. And every
+answer carries a trace: the SQL as asked, the tables it touched, the enrichment version behind it.
+Where a row or column policy rewrote that SQL, the answer says which tables it narrowed, and the
+statement as executed -- which can name the policy's own tables -- is kept in the audit trace.
+
+![The nine stages of a mnemiq answer: knowledge sources, enrichment, the semantic contract,
+retrieval, generation, the decider, execution, verification, and the answer with its trace.
+Deterministic stages run first and last; the model proposes only in the middle.](docs/pipeline.png)
+
+Read the diagram left to right, top to bottom. The stages in red are the ones that can stop an
+answer: the decider refuses or repairs, execution runs under policy, and verification can defer.
+The model appears once, at stage 05, and everything around it is deterministic.
+
+### The pipeline is settings, not internals
+
+The parts people usually can't reach are the parts mnemiq puts in your hands:
+
+- **Which model writes the SQL** — hosted or local, one candidate or several.
+- **How much schema context is retrieved**, and how it is ranked.
+- **How much semantic enrichment is built**, and whether a human certifies it.
+- **How aggressively the system refuses** — the verifier and its threshold.
+- **What the decider enforces**, including row and column policy applied to the query tree rather
+  than requested of the model.
+
+Each of those is a dial with a cost on the other side, which is why they are dials and not
+defaults. More context is not free. More compute is not automatically better. The right setting
+depends on your data, and the point of the harness is that you can find out rather than guess.
+
+### The semantic layer has tiers
+
+Before any question is asked, mnemiq can inspect the database and build context around the schema:
+
+- **Tier 0** — tables and columns only.
+- **Tier 1** — adds structural information: primary and foreign keys, profiling, value
+  distributions.
+- **Tier 2** — adds meaning an LLM proposes: table and column descriptions, grain, glossary terms,
+  coded-value meanings.
+
+Enrichment is a multiplier on meaning that isn't already in the schema. Where column names already
+say what they hold, richer cards add length without adding signal. Where three columns are all
+called *revenue* by three different teams, the meaning is in a person, not the schema — and that is
+exactly what a certified definition captures. For production use, definitions can be reviewed and
+certified by a named owner, and the operator's dictionary overrides everything the model proposed.
+
+Codes are grounded or left bare, never guessed. `E11` or `NC-17` take their meaning from the data
+itself, from a standard code system (TTL/SKOS/OWL), or from a hand-written dictionary, with the
+source recorded. No evidence, no meaning. See [docs/grounding.md](docs/grounding.md).
+
+## Measure it on your own database
+
+The evaluation harness is part of the engine, not a separate research project. It runs a question
+set against a configuration, grades results by the data returned rather than by string-matching the
+SQL, and reports right, refused, and wrong as three separate numbers — because a system can buy
+accuracy by answering less often, and a single figure hides that.
+
+A useful first pass, on your data:
+
+- Take one meaningful slice of your schema, not the whole warehouse.
+- Write 20–30 questions people actually ask, and tag each one: *answerable from column names*,
+  *needs a definition*, *should be refused*.
+- Run it with enrichment on and off, a local model and a hosted one, the verifier at two
+  thresholds.
+- Read the result by tag. The tags are the diagnosis: if the definition-band questions fail while
+  the schema-band questions pass, you have a glossary problem and documentation will pay for
+  itself. If both already pass, you were about to spend a quarter on something worth very little.
+
+The same harness runs the public benchmarks (BIRD mini-dev, Spider 1.0, Spider 2.0-lite) and the
+warehouse comparison scripts under `scripts/`, so the setup you use on your data is the setup the
+published numbers came from.
+
+Grading itself lives in **[beacon](https://github.com/agenticfabriq/beacon)**, a separate
+Apache-2.0 repository: the grader that decides what counts as correct, and the tracker that holds
+every run behind the published figures. Keeping it out of the engine is deliberate — a system
+should not mark its own homework, and the same grader scores mnemiq, Snowflake Cortex Analyst and
+Databricks Genie in the comparison. Per-question results are published there, so a number in the
+launch article can be traced to the SQL and the rows that produced it.
+
+## Quickstart
+
+Runs on a clean clone with no database of your own and no Docker. The seed step writes a small
+SQLite database plus its source manifest and access policy under `demo/`.
+
+```
+uv sync
+uv run python scripts/seed_demo.py
+
+export MNEMIQ_LLM_BASE_URL=...  MNEMIQ_LLM_API_KEY=...  MNEMIQ_LLM_MODEL=...
+export MNEMIQ_SOURCES_PATH=demo/sources.json
+export MNEMIQ_AUTHZ_PATH=demo/authz.json
+export MNEMIQ_STORE_PATH=demo/store.duckdb
+
+uv run mnemiq enrich      # profile + describe the schema  (~30 s on the demo's 4 tables)
+uv run mnemiq build       # index it for retrieval          (~2 s)
+uv run mnemiq ask "how many customers are there by country?" --roles analyst
+```
+
+`uv sync` pulls about **230 MB** of dependencies on a first run — DuckDB, PyArrow and the OpenAI
+client are the bulk of it — so give it a minute on a normal connection. It is near-instant on any
+subsequent checkout, since uv caches wheels globally.
+
+`mnemiq enrich` is the only slow step: it profiles every column and makes one LLM pass over the
+schema, so expect **roughly 30 seconds for the demo's four tables** and longer in proportion to
+your own. It prints nothing until each table completes — it is working, not hung. The result is
+cached, so you pay it once per schema rather than per question.
+
+Two more worth trying, because they show the parts that aren't the model:
+
+```
+uv run mnemiq ask "how many enterprise customers are there?" --roles analyst
+uv run mnemiq ask "what was our total revenue last quarter?"   --roles analyst
+```
+
+The first joins through a lookup table to resolve a coded column — `segment_cd` holds `A`/`B`/`C`
+and nothing in the name says "enterprise". The second is refused: the demo schema has no price or
+revenue column, and the engine says so instead of returning a number.
+
+Access is fail-closed. A role is required — pass `--roles analyst`, or `export
+MNEMIQ_ROLES=analyst` alongside the other settings above. Without a role the engine grants nothing
+and defers, which is the correct behaviour and the first thing people mistake for a bug. No policy,
+no grants, no snapshot — no data. The policy format, and what row filters do and do not cover, is
+in [docs/access-policy.md](docs/access-policy.md).
+
+### Which LLM endpoints work
+
+**Any OpenAI-compatible `/v1` endpoint.** mnemiq talks to `MNEMIQ_LLM_BASE_URL` through the
+standard OpenAI client, so vLLM, Ollama, llama.cpp's server, LM Studio, vendor gateways and the
+hosted APIs all work — set the base URL, a key (any non-empty string for local servers that
+ignore it) and a model name. Nothing about the engine assumes a hosted provider, which is what
+"runs inside your perimeter" means in practice: point it at a local server, and — as long as
+every configured endpoint is one you've verified stays on your network — no schema, no question
+and no row ever leaves it. Embeddings follow the same setting, or their own via `MNEMIQ_EMBED_*`.
+
+**Size the server's context window for your schema: some servers cut a long prompt without a word.**
+A wide schema makes long prompts; on a 1,500-column schema the generator's prompt runs about 21,000
+tokens. vLLM refuses a prompt longer than `--max-model-len` with an error. Ollama does not: it keeps part
+of the prompt and answers anyway (a recent version keeps about half its window; 0.5.4 keeps the whole
+window and drops the rest). mnemiq reads the token count the server reports. When it looks wrong (far too
+small for the characters sent, or sitting on a window size), mnemiq re-sends the prompt with a little
+padding (about 1.7% of calls, plus the rare prompt of highly repetitive rows); a count that does not grow at all means the server is keeping a fixed window, and
+mnemiq returns a failed answer that names the cut instead of an answer built on a fragment. If that
+check cannot decide (the server refused it, gave no count, or the padding itself reached the window), mnemiq answers and logs a warning, unless the
+ratio is past 12 characters a token, far above anything measured (at most 4.5 over 612 real prompts, 6.2
+for deliberately repetitive rows); then it refuses all the same. Set `OLLAMA_CONTEXT_LENGTH` (or the model's `num_ctx`) to
+cover the largest prompt plus the reply, with headroom: a modest cut to a window that is not a multiple
+of 1,024 tokens can still slip by. At startup mnemiq also measures, for each role in the access policy and from only what that role is shown, the largest prompt its store can produce (the tables that bring the most into it: card, definitions and examples) plus the generator's 4,000-token reply, against the window, and logs a warning when it does not fit: vLLM counts it and reports its window itself; for Ollama, set `MNEMIQ_LLM_CONTEXT_WINDOW` to the window you configured and mnemiq estimates, erring long (`MNEMIQ_LLM_WINDOW_CHECK=0` skips the measurement). `MNEMIQ_LLM_PROMPT_CUT_CHECK=0` turns the cut check off, for a server or
+proxy whose `prompt_tokens` leaves out tokens it reused from a cache (Ollama 0.5.4 counts them: measured).
+
+**Once every column is described, the cards can outgrow the window, and mnemiq trims descriptions rather
+than send a prompt the server refuses.** On that 1,500-column schema, a description per column takes the
+largest prompt from about 23,000 tokens to about 40,000. When a question's prompt would not fit with the
+reply, every column keeps its name and type, and descriptions go first to the columns the question, a
+definition or a measure names, then to join keys, then to columns sharing the question's words, as many as
+fit. A prompt that fits is sent exactly as before. This needs the window: vLLM reports it, and for another
+server set `MNEMIQ_LLM_CONTEXT_WINDOW`; without either, prompts go whole. The startup check says when the
+window fits only by withholding descriptions (`window:trims`); raise the window to send them all.
+
+Set `MNEMIQ_LOCAL_ONLY=1` to make that verification the `mnemiq` command's job instead of yours
+(the standalone scripts under `scripts/` build their own `Settings` and don't call this check, so
+the guarantee below is for `mnemiq` commands specifically): it refuses to run if the chat,
+embedding, judge, or any Verity endpoint is not an IP literal inside loopback, an RFC1918 range,
+or its IPv6 analog (`fc00::/7`, in practice `fd00::/8`) — `localhost` and `localhost.localdomain`
+are trusted by name rather than checked as addresses, and every other DNS name is refused
+outright: this performs no lookups, so it cannot confirm where any name actually points.
+`MNEMIQ_PG_DSN` and `MNEMIQ_CONTROL_DSN` are deliberately **not** checked — libpq accepts keyword
+form (`host=... port=...`), multi-host URIs and Unix-socket targets, none of which a URL parser
+can read a hostname from, so a fail-closed
+check on them would refuse legitimate DSNs rather than catch anything; verify those by hand.
+
+Under `MNEMIQ_LOCAL_ONLY` mnemiq never downloads a DuckDB extension, so pre-seed the ones it loads:
+the store's `vss` and `fts`, and `postgres` or `sqlite` for each source of that kind. Every command
+that touches a source, a store or an endpoint loads them at startup and refuses, naming each one
+missing, before doing anything else. On a connected machine with the same mnemiq release (so the
+same DuckDB), run
+
+```bash
+mnemiq extensions fetch --platform linux_amd64 --out ./duckdb-extensions
+```
+
+with the platform the refusal names, and copy `./duckdb-extensions/v<DuckDB version>/<platform>/`
+into `~/.duckdb/extensions/` for the user mnemiq runs as, keeping those two directory levels. All
+four come to about 89 MB per platform. DuckDB checks each extension's signature when it loads it.
+
+**A local server samples unless told not to.** vLLM answers a request that names no temperature with the
+model's own defaults: Qwen2.5-Coder-32B ships temperature 0.7, and five identical requests came back five
+different ways (one way at temperature 0, measured on vLLM 0.9). So mnemiq sends temperature 0 for the two
+calls that decide what you are shown: the judge that scores whether a result answers the question, and the
+selector that picks among deep mode's candidates. That makes their verdicts far more consistent; it is not a
+guarantee, since a server batching concurrent requests can still vary at temperature 0. Every other call
+samples at the server's default: SQL generation and its corrector, the answer's wording, and enrichment,
+whose descriptions, facts and examples are stored and read by later questions. **Leave the server's default
+temperature above 0 if you use deep mode:** its five candidates cycle through three prompt strategies, so the
+fourth and fifth repeat a prompt and differ only by the sample; at temperature 0 they come back identical and
+inflate the agreement deep mode's confidence gate counts. `MNEMIQ_LLM_SEED` is safe there: mnemiq adds each
+candidate's index to it. Reasoning models that
+refuse any temperature but their own (GPT-5, o1, o3, o4, also behind a gateway prefix such as `openai/o3`) are
+sent none.
+
+## Use it from a browser (workbench)
+
+```
+cd workbench && pnpm install && pnpm build
+uv run mnemiq serve --http     # http://127.0.0.1:8080
+```
+
+One process serves both the workbench and the HTTP API — `POST /v1/ask` (JSON), `POST /v1/chat`
+(SSE, [AG-UI](https://github.com/ag-ui-protocol/ag-ui) event vocabulary), `GET /v1/schema`. Every
+answer shows the SQL that produced it and the tables it read; a question the data cannot support
+comes back as a stated reason, not a guess — that is the interface pictured at the top of this
+file. See [`workbench/README.md`](workbench/README.md).
+
+## Use it from an AI agent (MCP)
+
+`uv run mnemiq serve` exposes two read-only, access-scoped tools over stdio — `db_read(question)`
+(answer + SQL + trace) and `get_schema()`. Point any MCP client at it:
+
+```json
+{ "mcpServers": { "mnemiq": { "command": "mnemiq", "args": ["serve"] } } }
+```
+
+MCP initialization and tool discovery work before database setup is complete. The runtime is
+loaded on the first tool call; configure the source and LLM, then run `mnemiq enrich` and
+`mnemiq build` before querying. Missing setup is returned as a tool error while the MCP
+connection stays open. With a `uv sync` installation, launch from the repository using
+`uv run mnemiq serve` so the command uses the project's environment.
+
+## Sources
+
+Postgres, SQLite, DuckDB, Oracle, Snowflake and Databricks, with DuckDB as the universal executor.
+The semantic model (`mnemiq-contract`) is open, and dbt-semantic-interfaces import/export ships
+with it.
+
+**Enrich only the tables you name.** A source in the manifest at `MNEMIQ_SOURCES_PATH` may carry a
+`tables` list, exact names or shell patterns, matched without regard to case:
+
+```json
+[{"id": "plant", "kind": "oracle", "target": "db.example:1521/PLANT", "catalog": "src",
+  "schema": "MES", "tables": ["WIP_LOT", "WIP_LOT_HIST", "EQP_*"]}]
+```
+
+Enrichment then sees only those tables -- introspection, profiling, cards and descriptions alike,
+foreign keys only between two of them -- so you can point it at a production schema of thousands
+of tables instead of copying the few you need. A name or pattern that matches nothing stops
+`mnemiq enrich` with a message saying which, so a typo cannot shrink the model unnoticed. Without
+`tables`, every table the source reports is enriched, as before.
+
+### Deploying against Oracle
+
+The Oracle read plane refuses writes, but that refusal is partly a property of your **deployment**
+rather than of the engine: a `SELECT` can reach an `AUTONOMOUS_TRANSACTION` function through a
+view, and restricting the caller does not close it, because a view resolves its references with the
+view owner's rights. Pointing the read plane at a database that is open read-only does close it,
+measured, and mnemiq reports at boot whether you are in that deployment or resting on the engine's
+gate alone. See [docs/oracle-deployment.md](docs/oracle-deployment.md) before connecting a
+production source.
+
+## What's commercial
+
+**The engine is Apache-2.0 and always will be — enrichment included.** Nothing here is a
+time-limited or feature-gated build, and no capability is stubbed out pending a licence key.
+
+Specifically open, because these are the parts people assume are held back: the enrichment
+pipeline including the LLM pass and coded-value grounding (`src/mnemiq/enrichment/`), the verifier
+and its judge (`src/mnemiq/verify/`), the access checks (`src/mnemiq/authz/`, `src/mnemiq/sql/`),
+the result grader (`src/mnemiq/eval/grade.py`), and the benchmark harness that produced the
+published numbers (`scripts/`).
+
+Commercial are two things that sit *around* the engine rather than inside it: **Verity**, a managed
+grading and drift service, and the **Agentic Fabriq control plane** — identity, vaulted
+credentials, per-group grants and audit across many sources. Both talk to the engine through the
+open contract (`mnemiq-contract`), so a self-hosted deployment is not a degraded one; it is the
+same read path without a managed service in front of it.
+
+Read the code rather than taking this on trust — that is the point of shipping it.
+
+## Known weaknesses
+
+Filed as open issues rather than left to be discovered, because they are readable in the source
+either way. Contributions and arguments welcome.
+
+All four this list opened with are now closed. The default mode is judged
+([#3](https://github.com/agenticfabriq/mnemiq/issues/3)) — that issue read `Settings.verify`, which
+governs the eval door and not `Runtime.ask`, and concluded a fresh install ran unverified. It did
+not: the product path resolves each mode's own `verify` level, and the deterministic sanity layer
+has always run in all three. What was missing was the LLM judge, which now runs in `thinking` as
+well as `deep`. An unreachable judge withholds the answer instead of passing it
+([#2](https://github.com/agenticfabriq/mnemiq/issues/2)), lineage stopped reporting
+`unconfirmed-function-identity` on ordinary queries
+([#5](https://github.com/agenticfabriq/mnemiq/issues/5)), and the CLI honours `MNEMIQ_ROLES` like
+every other surface ([#4](https://github.com/agenticfabriq/mnemiq/issues/4)).
+
+## Related enterprise implementation
+
+Enterprise Data Agent Governance is an independently maintained, enterprise-focused
+governance framework built on Mnemiq. It explores identity, authorization, safe query
+handling, verification, refusal behavior, evaluation, and auditability for teams
+deploying governed AI data agents.
+
+[Explore Enterprise Data Agent Governance →](https://murraylovecode.github.io/enterprise-data-agent-governance/)
+
+## Contributing
+
+Issues and pull requests are welcome. Fork, branch, and open a PR against `main`.
+
+```
+uv sync --extra dev --extra ontology --extra oracle
+uv run pytest -m "not integration and not live_llm"
+git config core.hooksPath .githooks     # optional: runs the same checks before each commit
+```
+
+**What `repo-guard` checks, and what a green tick means.** It blocks credential shapes and
+hardcoded `/Users/<name>` machine paths — both run in CI on every push and pull request, and both
+are what your PR has to pass. It also blocks a private list of proprietary names, and that one runs
+*only on the maintainer's machine*: enforcing it in CI would publish the list it protects, since a
+flagged word in a public log tells every reader that word is on the blocklist. Your clone has no
+such list and does not need one — you cannot leak names you have never seen.
+
+The hook reads that setting from `.env`, so copy `.env.example` before installing it: the copy
+ships `REPO_GUARD_NAME_PATTERNS=off`, which is how you say *this machine holds no list*, and the
+hook then runs the two checks that matter to you. With no `.env` at all it stops and asks, rather
+than guess whether a missing list means "contributor" or "maintainer whose config broke".
+
+## Status
+
+v0.1: the full read path — enrichment, retrieval, the decider, execution, trace — evaluated on
+ACME, BIRD mini-dev, Spider 1.0 and Spider 2.0-lite, with a local-model program alongside. Tiered
+modes (`instant` / `thinking` / `deep`), row- and column-level security, the governed write path,
+cross-source federation and multi-replica deployment are built and wired behind the same
+interfaces. Next: additional source adapters, the self-maintaining loops, and hardening the write
+plane against a production source.

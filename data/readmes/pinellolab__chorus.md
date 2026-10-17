@@ -1,0 +1,1675 @@
+<div align="center">
+
+<img src="logo.png" alt="Chorus" width="350">
+
+*Accessible Sequence to Function Analyses: Predict how a genetic variant changes gene regulation — chromatin accessibility, transcription factor binding, histone marks, gene expression — across thousands of cell types.* 
+
+*One API over eight state-of-the-art deep-learning models; ask in natural language via Claude or call it from Python!*
+
+</div>
+
+---
+
+## 🚀 Get running in one lunch break
+
+Four steps. Steps 1 + 2 are copy-paste. Step 3 is a runnable snippet. Step 4 hooks chorus up to Claude Code.
+
+**Before you start** — three things you need:
+
+- **Miniforge** (provides `mamba`) from <https://github.com/conda-forge/miniforge>
+- **~100 GB free disk** for the default all-oracle install on Linux x86_64 + CUDA. One oracle only is
+  **~13 GiB** — see [Disk usage breakdown](#disk-usage-breakdown) for the per-asset numbers and
+  [Where chorus puts large files](#where-chorus-puts-large-files) to put it elsewhere.
+- **Linux x86_64 or macOS** (Intel / Apple Silicon)
+
+### 1. Install (5 minutes)
+
+```bash
+git clone https://github.com/pinellolab/chorus.git && cd chorus
+git checkout v0.7.5          # a released tag; omit to track main
+mamba env create -f environment.yml
+mamba activate chorus
+python -m pip install -e .
+```
+
+> **Install a tag, not `main`.** `main` is kept green but moves; this README's numbers, the committed
+> examples and the background CDFs are consistent *as of a tag*. Releases that changed published numbers
+> are called out in [`CHANGELOG.md`](CHANGELOG.md).
+>
+> **Chorus is not on PyPI** — that name belongs to an unrelated project, so `pip install chorus` gets you
+> someone else's package. A source install is the supported path.
+
+### 2. Get every oracle, weight, and reference — batteries included (~55–75 min, unattended)
+
+```bash
+chorus setup
+```
+
+One command, walk away, come back to a complete chorus install. When prompted:
+
+- **HuggingFace token** (required — AlphaGenome is a gated model):
+  1. Create a read token at <https://huggingface.co/settings/tokens>
+  2. Accept the license at <https://huggingface.co/google/alphagenome-all-folds>
+  3. Paste the token when `chorus setup` asks.
+
+- **LDlink token** (optional — only for `fine_map_causal_variant`): register free at <https://ldlink.nih.gov/?tab=apiaccess>, paste when prompted. Press Enter to skip.
+
+> **Running unattended, or have no HuggingFace account?** Both are fine — see
+> [Token plumbing](#token-plumbing) for the one-liner and the no-account path.
+
+### 3. Your first prediction — score a SNP at the β-globin locus
+
+The snippet loads Enformer, predicts DNase accessibility around `chr11:5,247,500` (in the β-globin locus, expressed in K562), then scans **every possible SNP at that one base** to score the effect of A/C/G/T. One real wild-type signal, three counter-factual variants — the same shape every chorus prediction takes.
+
+**About a minute, and no GPU required.** Measured end to end on this snippet: **64 s** on an idle H100, **59 s** CPU-only — near-identical, because the cost is almost entirely TensorFlow import and model load rather than the forward pass, so four 1 kb predictions are cheap either way. (The first run also downloads ~1.9 GiB of Enformer weights.)
+
+```python
+import chorus
+from chorus.utils import get_genome
+
+oracle = chorus.create_oracle(
+    'enformer', use_environment=True,
+    reference_fasta=str(get_genome('hg38')),
+)
+oracle.load_pretrained_model()
+
+# Wild-type: DNase-seq signal at the β-globin locus in K562
+wt = oracle.predict(
+    ('chr11', 5247000, 5248000),
+    ['ENCFF413AHU'],
+)
+# NB: .values is Enformer's FULL output — 896 bins x 128 bp = 114,688 bp centred
+# on the query, not the 1 kb you asked for. This mean is over all of it. To score
+# just the window, use score_region (recipe 5 below).
+print(f"mean over Enformer's 114 kb output: {wt['ENCFF413AHU'].values.mean():.3f}")
+
+# Variant effect: scan every SNV at chr11:5247500 (genome has 'C' here)
+effects = oracle.predict_variant_effect(
+    'chr11:5247000-5248000',
+    'chr11:5247500',
+    ['C', 'A', 'G', 'T'],   # ref first (= genome base), then 3 alts
+    ['ENCFF413AHU'],
+)
+n_alts = len(effects['predictions']) - 1  # minus the reference
+print(f"Variant result: scored {n_alts} alt alleles "
+      f"({list(effects['predictions'].keys())})")
+```
+
+> **Coordinate convention — the two forms differ by one base.** chorus accepts a region either way,
+> and they are *not* interchangeable:
+>
+> | form | convention | `…5247500, 5247504` means |
+> |---|---|---|
+> | `'chr11:5247500-5247504'` (string) | **1-based inclusive** — dbSNP / gnomAD / UCSC / IGV | `CATCA` (5 bases) |
+> | `('chr11', 5247500, 5247504)` (tuple) | **0-based end-exclusive** — BED / pyfaidx | `ATCA` (4 bases, starting one later) |
+>
+> **Prefer the string form** — it is what every variant database you paste from uses. Assembling ref/alt
+> windows by hand? [`get_centered_window`](chorus/utils/sequence.py) converts and validates the ref base
+> against the FASTA, so off-by-one bugs fail loudly.
+
+### 4. Skip the code — drive chorus from Claude in plain English 🤖
+
+Hook chorus up to Claude Code once and then *describe* the analysis you want. Claude figures out which models to load, which tracks to score, and which chorus tool to call.
+
+```bash
+claude mcp add -s user chorus -e CHORUS_NO_TIMEOUT=1 -- mamba run -n chorus chorus-mcp
+```
+
+Now ask, in any Claude Code prompt:
+
+> *"Predict DNase accessibility at chr11:5,247,000–5,248,000 with Enformer for K562, then compute the effect of rs12740374 on SORT1 expression with AlphaGenome."*
+
+> *"Find the cell types where the SNP rs12740374 most strongly opens chromatin."*
+
+> *"Replace the 200 bp endogenous enhancer at chrX:48,782,929–48,783,129 with this synthetic sequence and predict accessibility in HepG2, K562, and GM12878."*
+
+That's it. No more boilerplate, no juggling oracle APIs — chorus exposes **27 MCP tools** ([full list](#mcp-server--chorus-but-you-talk-to-claude)) covering prediction, variant effects, region swaps, multi-layer analysis, in-silico mutagenesis, gene-TSS lookups, and cell-type discovery, and Claude picks the right one for the question.
+
+### What to read next
+
+- [Notebooks](#notebooks--three-sittings-zero-to-confident) — three end-to-end tutorials you can follow start-to-finish (start here)
+- [Worked application examples](#worked-application-examples--seven-things-you-can-do-today) — driven by natural-language prompts; the *what can chorus do?* tour
+- [MCP server](#mcp-server--chorus-but-you-talk-to-claude) — full Claude Code + Claude Desktop setup with all 24 tools
+- [Python API](#python-api) — 9 runnable recipes (region replacement, gene expression, sub-region scoring, variant-to-gene, …)
+- [Pick an oracle](#pick-an-oracle) — hardware matrix, which one to start with
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Learn more
+
+_Everything below is optional — the TLDR above is enough to get running. Sections go from broad context down to model-specific details and the backgrounds appendix._
+
+### What chorus is
+
+**Conversational genomics.** The idea behind Chorus: ask in plain language what DNA does — and what happens when you change it — while an AI agent orchestrates the right sequence-to-function models to predict, compare, and explain the answer. An agent that *predicts* function from sequence, not a chatbot that looks up what is already known. Computation, replaced by conversation.
+
+Eight genomic deep-learning models — Enformer, Borzoi, ChromBPNet/BPNet, Cherimoya/CATv1, Sei, LegNet, EPInformer-seq, AlphaGenome — behind one API. The same five lines of Python predict base-pair chromatin accessibility, TF binding, 5,168 multi-modal tracks at 1 Mb context, or RNA-seq-grade expression.
+
+Every prediction comes with **effect and activity percentiles**, ranked against ~18 k–225 k sampled SNPs and ~19.5 k–320 k genome-wide positions. So a `+0.45 log₂FC` becomes `0.98 effect %ile, 0.96 activity %ile` — interpretable without calibrating it yourself.
+
+Each oracle runs in its own conda environment (no TF/PyTorch/JAX dependency hell), every weight + reference + background is pre-mirrored to a chorus-controlled HuggingFace org (no broken-link surprises), and the **27-tool MCP server** lets you ask Claude to run the analysis in plain English. See [Pick an oracle](#pick-an-oracle) for the per-oracle hardware/cost matrix.
+
+### Key terms
+
+| Term | Meaning |
+|------|---------|
+| **Oracle** | A deep learning model that predicts regulatory activity from DNA sequence (e.g. Enformer, AlphaGenome) |
+| **Track** | A single experimental measurement predicted by an oracle (e.g. DNase-seq in K562 cells) |
+| **assay_id** | The unique identifier for a track, used in API calls (e.g. `"ENCFF413AHU"` or `"DNASE/EFO:0001187 DNase-seq/."`) |
+| **Effect percentile** | How extreme a variant's effect is compared to that track's own reference population of sampled SNPs (≥99th = stronger than 99% of them). See [Variant effect distribution](#1-variant-effect-distribution) for which population each oracle uses |
+| **log2FC** | Log2 fold-change between alternate and reference allele predictions — the raw effect size (most layers). Gene-expression uses **lnFC** (natural log) and MPRA uses **Δ (alt−ref)**; every report states the formula used per layer. |
+
+### Worked application examples — seven things you can do today
+
+Every example below was generated **end-to-end by Claude Code talking to chorus's MCP server**. No code was written by hand — the original natural-language prompt is preserved at the top of every report, so you can read what was asked, look at what came back, and reproduce it by pasting the same prompt into your own Claude session.
+
+| I want to… | Example |
+|---|---|
+| Analyze a GWAS / clinical variant in a specific cell type | [variant_analysis/SORT1_rs12740374](examples/walkthroughs/variant_analysis/SORT1_rs12740374/) |
+| I have a variant but don't know the relevant tissue | [discovery/SORT1_cell_type_screen](examples/walkthroughs/discovery/SORT1_cell_type_screen/) |
+| Fine-map a GWAS locus to the causal SNP | [causal_prioritization/SORT1_locus](examples/walkthroughs/causal_prioritization/SORT1_locus/) |
+| Score a batch of variants from a VCF | [batch_scoring/](examples/walkthroughs/batch_scoring/) |
+| Predict the effect of an engineered sequence edit | [sequence_engineering/region_swap](examples/walkthroughs/sequence_engineering/region_swap/) |
+| Replicate a published regulatory variant finding | [validation/SORT1_rs12740374_with_CEBP](examples/walkthroughs/validation/SORT1_rs12740374_with_CEBP/) |
+| Cross-validate a variant across multiple oracles | [validation/SORT1_rs12740374_multioracle](examples/walkthroughs/validation/SORT1_rs12740374_multioracle/) |
+
+Every report ships in **Markdown + JSON + TSV + HTML with an embedded IGV browser**. Pick the format your downstream pipeline likes; they're consistent. [`examples/walkthroughs/README.md`](examples/walkthroughs/README.md) has the full catalogue with per-persona ("Geneticist", "Bioinformatician", "Clinician", "Computational biologist") starting points.
+
+### Pick an oracle
+
+Start with one or two oracles and add more with `chorus setup --oracle <name>` later. AlphaGenome is the most capable but heaviest; Enformer is the best CPU-friendly starter.
+
+| Oracle | Minimum RAM | GPU needed? | Typical cold-predict | Best for |
+|---|---|---|---|---|
+| **Enformer** | 8 GB | optional | ~10 s (GPU) / ~1 min (CPU) | lightweight multi-track, CPU-friendly starter |
+| **Borzoi** | 12 GB | recommended | ~30 s (GPU) | distal gene-expression effects, longer context |
+| **ChromBPNet** | 4 GB | optional | ~1 s (CPU ok) | base-pair chromatin / motif disruption |
+| **Cherimoya / CATv1** | 4 GB | recommended | ~5 s (GPU, default) — [see note](#cherimoya-timing-depends-on-the-mode-you-run-it-in) | base-pair chromatin accessibility across 1,518 ENCODE DNase/ATAC experiments — the widest biosample coverage in chorus |
+| **LegNet** | 4 GB | optional | <1 s | MPRA / promoter activity |
+| **Sei** | 4 GB | optional | ~2 s | regulatory sequence-class profiling |
+| **EPInformer-seq** | 2 GB | optional | <1 s | per-cell 2-channel enhancer activity (DNase cut-sites + H3K27ac, 3 assays, 11 Roadmap cells, 2114-bp window) |
+| **AlphaGenome** | 16 GB | strongly recommended | ~30 s (GPU) / 2–5 min (CPU) | comprehensive multi-layer (5,168 tracks, 1 Mb window) |
+| **AlphaGenome (PyTorch backend)** ⓘ | 16 GB | recommended (esp. Apple Silicon) | ~3.8 s @524 kb on Mac MPS / ~2 s @1 MB on CUDA | alternative backend with the same weights; see [Two AlphaGenome backends](#two-alphagenome-backends) below |
+
+**GPU detection is automatic** — every oracle picks CUDA / MPS / CPU based on what's available; pass `device='cuda'` / `'cpu'` / `'mps'` to override, or set `CUDA_VISIBLE_DEVICES` to pin to a specific GPU. The platform-by-oracle support matrix and Apple Silicon nuances live in [Installation — detailed](#installation--detailed).
+
+#### Cherimoya timing depends on the mode you run it in
+
+Cherimoya's per-call cost depends on *how many models you ask for*. chorus defaults to
+**fold 0** — one model — and CATv1's 5-fold mean is available as `fold="ensemble"`, which costs
+five forward passes and, in `use_environment=True` mode, five subprocesses. Measured on one
+H200, single 2,114 bp window, `DNASE:ENCSR149XIL`:
+
+| mode | load | 1st predict | 2nd predict |
+|---|---|---|---|
+| `use_environment=True`, `fold=0` — **the default** | 4.4 s | 5.1 s | 5.2 s |
+| `use_environment=True`, `fold="ensemble"` | 5.8 s | 25.8 s | 25.8 s |
+| in-process (`use_environment=False`), fold 0 | 3.8 s | 0.86 s | **0.027 s** |
+
+Nothing is amortised across calls in env mode, so the second prediction costs the same as the
+first; if you are scoring more than a handful of sequences, run in-process inside
+`chorus-cherimoya`. These numbers are ~3.6× better than before v0.7.2, because Triton was
+re-benchmarking its autotune candidates in *every* subprocess to serve one forward pass; chorus
+now enables Triton's on-disk autotune cache ([#165](https://github.com/pinellolab/chorus/pull/165),
+thanks @jmschrei). Predictions are bit-identical either way.
+
+**Which fold to use.** fold 0 is the default because it matches ChromBPNet's default fold — so
+the two are comparable at the percentile level, both nulls being built on the same reference
+sets — and because handling five models complicates and slows most analyses, which is CATv1's
+author's own recommendation for an interactive tool. The ensemble renders a little cleaner and
+is one argument away.
+
+They are not interchangeable, and each has **its own background null**, selected automatically
+from the fold a prediction was made with. A percentile is a rank against a background, so a null
+built from one model cannot rank predictions from another; asking for a fold with no null raises
+rather than returning a plausible wrong number. On the window above:
+
+| fold | 0 | 1 | 2 | 3 | 4 | ensemble |
+|---|---|---|---|---|---|---|
+| peak | 8.24 | 15.47 | 15.34 | 11.08 | 7.65 | **11.10** |
+
+The folds disagree by 2.02× among themselves, so `fold=N` is a different answer, not a cheaper
+approximation. chorus ships nulls for fold 0 and the ensemble; build one for another fold with
+`scripts/build_backgrounds_cherimoya.py --fold N`.
+
+⚠️ **Cherimoya and ChromBPNet are not comparable at raw magnitude.** chorus loads ChromBPNet as
+`chrombpnet_nobias`, which predicts the *bias-corrected* accessibility profile — ChromBPNet
+trains a Tn5/DNase bias model first and regresses its effect out. CATv1 does no such correction
+(`n_control_tracks: 0` in its checkpoints, `controls = None` in its training config, GC-matched
+negatives in place of a control track). Measured over four shared DNase experiments, CATv1 tracks
+**bias-aware** ChromBPNet to 1.02× on peak while differing from `chrombpnet_nobias` by 3.40×.
+Profile shape agrees either way (rank correlation 0.95). Compare the two through
+**percentiles**, which are unaffected because each oracle is ranked against its own null.
+
+**GPU vs CPU, inference step only** (model load, FASTA extraction and subprocess startup excluded). Measured on one H200 vs 8 CPU threads: **1.2 ms GPU / 10.5 ms CPU** for the single 2,114 bp window a 1 kb query needs. The GPU margin widens with query width: **8.5×** at 1 kb, **45×** at 10 kb, **150×** at 100 kb (18 ms vs 2.8 s). So CPU is fine for single-locus work and impractical for wide scans. Note also that the CPU path diverges from the Triton GPU path by ~1e-2 relative on the logits (r = 0.99999), so don't mix devices inside one comparison.
+
+#### Two AlphaGenome backends
+
+Chorus ships **two interchangeable AlphaGenome oracles for the same model with the same weights** — they differ only in the load + forward implementation:
+
+| Oracle | Backend | Weight source | HF gating | Default? | Best for |
+|---|---|---|---|---|---|
+| `alphagenome` | JAX (Google DeepMind reference) | `google/alphagenome-all-folds` | gated (HF token + accept terms) | yes — installed by default `chorus setup` | macOS at any window size, Linux/CUDA at any window size |
+| `alphagenome_pt` | PyTorch ([genomicsxai/alphagenome-pytorch](https://github.com/genomicsxai/alphagenome-pytorch)) | `gtca/alphagenome_pytorch` — *converted from the official JAX checkpoint* (same numbers, safetensors format) | public on HF, but the **non-commercial model terms still apply to the weights** regardless of which mirror you download from — read [Google's AlphaGenome model terms](https://deepmind.google.com/science/alphagenome/model-terms) before commercial-adjacent use | yes — installed by default `chorus setup` (~7.5 GB env + ~880 MB weights on top of the JAX backend — see [Disk usage breakdown](#disk-usage-breakdown)) | macOS at ≤600 kb (5–8× faster than JAX CPU on MPS) |
+
+**The two backends agree to 0.8–4.9 %** (peak-relative, correlation 0.9998–1.0000), measured per head. The residual is fp32 implementation noise, not different weights. Audits: `audits/2026-04-29_alphagenome_pytorch_spike/` and `audits/2026-04-29_alphagenome_pt_stress_test/`.
+
+> ⚠️ **Before 0.7.5 this was false for splice tracks — re-run them if you used `alphagenome_pt`.** See
+> [Caveats](#caveats--what-to-know-before-you-trust-a-number).
+
+**Use `chorus.recommend_alphagenome_backend(window_size_bp)`** (also available as an MCP tool and as `oracle.recommend_backend()` on either oracle) to get a per-host, per-window-size recommendation grounded in the audit numbers. Logic:
+
+- **Linux + CUDA**: prefer `alphagenome` (JAX with CUDA is 1.2–2.8× faster than PyTorch on A100; PT remains useful for portability — smaller install, looser CUDA-version pinning).
+- **macOS + MPS, window ≤600 kb**: prefer `alphagenome_pt` on MPS (5–8× faster than JAX CPU; the JAX backend has no MPS access).
+- **macOS + MPS, window >600 kb**: prefer `alphagenome` on CPU (PyTorch MPS regresses past a GPU on-die cache cliff at ~768→896 kb on M3 Ultra).
+- **No GPU**: prefer `alphagenome` on CPU (JAX CPU is 30–65 % faster than PyTorch CPU for this model).
+
+The recommendation is suggestion-only: chorus never auto-routes between backends. Upstream's PyTorch port also exposes `VariantScoringModel` + 7 scorer classes, LoRA + linear-probe fine-tuning, and CONTACT_MAPS / SPLICE_JUNCTIONS heads — **none of these are wired through the chorus API yet** for either backend; access them via direct `alphagenome_pytorch` import if you need them today.
+
+### Installation — detailed
+
+The TLDR's `chorus setup` does everything you need. This section covers the edge cases: upgrading, per-oracle setup, token plumbing, manual genome management, and backgrounds.
+
+> **Two env files, one source of truth.** The root `environment.yml` is what you install. The per-oracle files in `environments/` are consumed internally by `chorus setup --oracle <name>` — you don't install them directly.
+
+#### Platform & GPU support
+
+| Platform | Default oracle path | Notes |
+|---|---|---|
+| **Linux x86_64 + NVIDIA CUDA** | full GPU acceleration on every oracle | NVIDIA CUDA auto-detected; pass `device='cuda'` / `CUDA_VISIBLE_DEVICES=N` to pin to a specific GPU |
+| **macOS (Apple Silicon)** | TF-backed oracles (Enformer, ChromBPNet) and PyTorch-backed (Borzoi, Sei, LegNet) use Metal automatically; Cherimoya runs **CPU-only** | `tensorflow-metal` for TF; PyTorch MPS for the rest. Cherimoya has no MPS/Metal path in the model, and its `triton>=3.5.1` pin ships no macOS wheel — `chorus setup` installs it with `--no-deps` and the import-guarded pure-PyTorch CPU path runs |
+| **macOS (Intel)** | CPU on every oracle | works, just slower |
+| **AlphaGenome on Apple Silicon** | use the `alphagenome_pt` PyTorch backend (installed by default) for MPS at ≤600 kb windows | the JAX `alphagenome` oracle falls back to CPU on Apple Silicon — JAX-Metal still matures; see [Two AlphaGenome backends](#two-alphagenome-backends) |
+
+#### Disk usage breakdown
+
+The default `chorus setup` (all 8 oracles, both AlphaGenome backends, hg38, all CDF backgrounds) lands at
+**~87 GB**, measured with `du -sh` on a Linux x86_64 + CUDA box after a default setup:
+
+| Bucket | Size |
+|---|---|
+| 7 of the 8 oracle conda envs — Cherimoya's is listed separately below | ~53 GB |
+| AlphaGenome PyTorch backend env (`alphagenome_pt`, default-on so Mac users get MPS speed) | ~7.5 GB |
+| Cherimoya env (PyTorch + CUDA + triton) | ~6.6 GB |
+| Sei weights — the extracted model **plus** the retained `sei_model.tar.gz` it came from | ~6.5 GB |
+| `hg38` reference fasta + index | ~3.1 GB |
+| Base `chorus` env | ~2.7 GB |
+| Per-oracle CDF backgrounds (`<data-dir>/backgrounds/`, 9 files) — Sei is 1.5 GB of that, a consequence of the 0.7.4 rebuild (40 sequence classes → all 21,947) | ~3.4 GB |
+| AlphaGenome weights — PyTorch (~880 MB) + JAX (~700 MB) | ~1.6 GB |
+| Borzoi weights | ~1.4 GB |
+| Enformer weights | ~960 MB |
+| ChromBPNet slim HuggingFace mirror — fast-path pre-cache (K562 + HepG2 DNase) | ~50 MB |
+| LegNet weights | ~41 MB |
+| EPInformer-seq per-cell weights (11 main + 11 bias) | ~8 MB |
+| Cherimoya fast-path weights (DNase + ATAC K562/HepG2) | ~10 MB |
+| **Total default** | **~87 GB** |
+
+**One oracle instead of eight** is ~13 GiB (measured for `enformer`: 2.41 GiB base env + 5.89 GiB oracle
+env + 3.05 GiB hg38 + 0.94 GiB weights + 0.52 GiB backgrounds = 12.81 GiB).
+
+Budget above that: `mamba` also fills a package cache (~4 GB here) shared across envs, which you can
+reclaim afterwards with `mamba clean --all`. Sei's `sei_model.tar.gz` is kept after extraction, so
+deleting it reclaims ~3.1 GB if you are tight.
+
+**Most of it is the envs, not the models.** Each oracle env ships its own CUDA payload and pip does not
+hardlink between envs, so each is a full copy — per-env sizes run 6.1 GB (Enformer) to 11 GB (AlphaGenome).
+Two consequences: **macOS and CPU-only installs are far smaller** (`chorus setup` strips CUDA on
+`macos_arm64`), and `chorus setup --oracle <name>` plus `--no-weights` / `--no-genome` /
+`--no-backgrounds` let you skip whatever you do not need.
+
+All of it is relocatable: see [Where chorus puts large files](#where-chorus-puts-large-files) if `$HOME`
+or the clone's filesystem is the wrong place for it.
+
+Opting in via `chorus setup --all-chrombpnet` pre-caches every fold-0 bias-corrected ChromBPNet model from the slim mirror (+~1.5 GB, ~5 min). Other ChromBPNet cell types download lazily on first `load_pretrained_model(...)` regardless. If you specifically need the full bias-aware `chrombpnet` variant or fold ≠ 0, chorus falls back to the original ENCODE tarball for that specific model (+~1.8 GB on disk per model). See [Where the oracle weights come from](#where-the-oracle-weights-come-from) for the full mirror map.
+
+#### Where chorus puts large files
+
+By default, everything bulky goes in the **chorus installation directory** — *not* `~/.chorus`, and not
+`~/.cache/huggingface`. On a shared cluster node, or any box where the clone sits on a small volume,
+that is usually the wrong filesystem for 85 GB. One switch moves all of it:
+
+```bash
+export CHORUS_DATA_DIR=/data/chorus_data          # per-shell, highest priority
+chorus setup --data-dir /data/chorus_data         # choose at install time
+chorus config data-dir --set /data/chorus_data    # persist for this install
+chorus config data-dir --set PATH --migrate       # move backgrounds you already downloaded
+chorus config data-dir                            # print what resolved, and why
+```
+
+Resolution order: `CHORUS_DATA_DIR` → `<install>/chorus_data_dir.txt` → the install directory →
+`~/.chorus` (only when the install tree is not writable, e.g. a pip install into system
+site-packages). `chorus config data-dir` prints the resolved paths with their sizes, so it is also the
+quickest way to see where your disk went:
+
+```
+Resolved chorus data layout
+  data_dir      /home/you/chorus
+  chosen via    installation directory (default)
+
+  backgrounds   /home/you/chorus/backgrounds  [3.4 GB]
+  downloads     /home/you/chorus/downloads  [14.5 GB]
+  genomes       /home/you/chorus/genomes  [3.1 GB]
+  hf_cache      /home/you/chorus/huggingface  [4.5 GB]
+```
+
+> **One exception, for upgrades.** If `~/.chorus/backgrounds` already holds `*_pertrack.npz` and the
+> resolved directory does not, chorus keeps using the old location and logs that it is doing so, so an
+> upgrade does not silently re-download 1.9 GB. It applies to backgrounds only, and an explicit
+> `CHORUS_DATA_DIR` or `--set` always wins. `chorus config data-dir --set PATH --migrate` moves them for
+> good. This is why `backgrounds` can print a different root from `data_dir` above.
+
+Two things do **not** follow this switch: **credentials** (`~/.chorus/config.toml`, the HuggingFace token)
+stay in `$HOME`, and **conda environments** stay with the installation.
+
+#### Upgrading
+
+After the first install, to upgrade cleanly:
+
+```bash
+cd chorus && git pull
+# Remove all oracle envs, weights, and backgrounds in one command:
+chorus cleanup --all
+# Then remove the base env:
+mamba env remove -n chorus -y
+```
+
+Note that `chorus cleanup --all` leaves the **HuggingFace cache** in place — see
+[Uninstalling](#uninstalling--starting-from-scratch) for how to reclaim that too. For an upgrade that
+is usually what you want, since re-downloading the weights is the slow part.
+
+Then re-run the Fresh Install steps above.
+
+> **Using the MCP server?** Restart Claude Code (or Claude Desktop) after upgrading.
+> A running MCP server keeps the old code loaded in memory, so newly added oracles
+> or tools won't appear until the client relaunches the `chorus-mcp` process.
+
+#### Uninstalling / starting from scratch
+
+```bash
+# Preview what will be deleted (safe — no changes):
+chorus cleanup --all --dry-run
+
+# Remove all oracle envs, downloaded weights, background CDFs, and genomes:
+chorus cleanup --all
+
+# `--all` deliberately leaves the HuggingFace cache, where most oracle weights actually
+# live — ~4.5 GB for the default set, and much more once you have pulled the full
+# 1,518-experiment Cherimoya atlas. Keeping it makes a re-install fast. To reclaim it:
+chorus cleanup --hf-cache --dry-run   # preview first
+chorus cleanup --hf-cache
+
+# Finer-grained options:
+chorus cleanup --oracle enformer          # one oracle only (env + weights)
+chorus cleanup --oracle all               # all oracle envs + weights, keep backgrounds/genomes
+chorus cleanup --backgrounds              # remove <data-dir>/backgrounds/*.npz only
+chorus cleanup --genomes                  # remove downloaded reference genomes only
+```
+
+The base `chorus` environment itself is not removed by `chorus cleanup` — remove it manually with `mamba env remove -n chorus -y` if you want a complete wipe.
+
+#### Setting up oracle environments one-by-one
+
+Chorus uses isolated conda environments for each oracle to avoid dependency conflicts between TensorFlow, PyTorch, and JAX models.
+
+**Which oracle to start with?** See [Pick an oracle](#pick-an-oracle) for the hardware matrix, or the [side-by-side table](examples/walkthroughs/README.md#which-oracle-should-i-use) in the walkthroughs.
+
+```bash
+# Set up each oracle individually (alternative to `chorus setup` which does all 8)
+chorus setup --oracle alphagenome    # JAX-based — default AlphaGenome backend (see AlphaGenome section below for auth)
+chorus setup --oracle enformer       # TensorFlow-based
+chorus setup --oracle borzoi         # PyTorch-based
+chorus setup --oracle chrombpnet     # TensorFlow-based (includes BPNet for TF binding)
+chorus setup --oracle cherimoya      # PyTorch-based (CATv1: 1,518 ENCODE DNase/ATAC experiments; CUDA or CPU)
+chorus setup --oracle sei            # PyTorch-based
+chorus setup --oracle legnet         # PyTorch-based
+chorus setup --oracle epinformerseq  # PyTorch-based (per-cell 2-channel DNase+H3K27ac enhancer activity, 11 Roadmap cells)
+
+# PyTorch backend for AlphaGenome — same model, same weights as the
+# default JAX backend (converted to safetensors). Both AlphaGenome
+# backends install by default in `chorus setup`. This explicit form is
+# only useful if you want to add it after a previous `--oracle <other>`
+# install, or if you ran setup with `--no-weights` and want to add PT
+# weights afterward. (See "Two AlphaGenome backends" below.)
+chorus setup --oracle alphagenome_pt
+
+# List available environments
+chorus list
+```
+
+Check the installation:
+
+```bash
+# Check environment health (use --timeout for first run when models download)
+chorus health --timeout 300
+```
+
+**Note:** `chorus setup` pre-downloads each oracle's default weights + background CDFs + the `hg38` reference at install time, so subsequent `chorus health` / prediction calls are fast. If you opted out via `--no-weights`, the first prediction will still do a lazy download.
+
+**Slow or unstable connection?** Use `--setup-timeout SECONDS` to cap how long each phase (env build and weight download) is allowed to run before aborting with a clear error:
+
+```bash
+chorus setup --oracle borzoi --setup-timeout 3600   # 1-hour cap per phase
+```
+
+Default is unlimited. If a phase times out, re-run the same command — mamba and HuggingFace downloads resume from where they left off.
+
+#### Tokens
+
+Two tokens are relevant. `chorus setup` surfaces both so they aren't a mid-prediction surprise:
+
+| Token | When you need it | How `chorus setup` handles it |
+|---|---|---|
+| `HF_TOKEN` (HuggingFace) | Required for **AlphaGenome** — the `google/alphagenome-all-folds` model is gated. | Resolved via `--hf-token` → `HF_TOKEN` / `HUGGING_FACE_HUB_TOKEN` env → existing `huggingface-cli login` → interactive prompt. `chorus setup` (bare or `--oracle all`) **halts** the whole flow if no working token can be resolved, so the other 7 oracles aren't built for nothing. |
+| `LDLINK_TOKEN` | Optional — only used by `fine_map_causal_variant` (auto-fetch LD proxies from the NIH LDlink REST API). | Non-blocking prompt during `chorus setup`. If provided, stored in `~/.chorus/config.toml`; `chorus.utils.ld` also reads `LDLINK_TOKEN` from env. |
+
+Register an HF read token at <https://huggingface.co/settings/tokens>, then accept the model license at <https://huggingface.co/google/alphagenome-all-folds>. Register a free LDlink token at <https://ldlink.nih.gov/?tab=apiaccess>.
+
+##### Token plumbing
+
+**Unattended runs.** The token is resolved *before* anything is built, and if stdin is not a TTY the run
+aborts immediately — *"No HuggingFace token available and stdin is not a TTY"* — with zero progress and no
+envs. So for `nohup`, CI, Slurm or a tmux-less ssh session, supply it up front:
+
+```bash
+export HF_TOKEN=hf_...        # or: chorus setup --hf-token hf_...
+nohup chorus setup &
+```
+
+**No HuggingFace account.** Only AlphaGenome is gated and the gate is scoped to it, so
+`chorus setup --oracle enformer` never asks for a token ([`main.py`](chorus/cli/main.py#L93) prompts only
+when `alphagenome` is among the requested oracles) and leaves a fully working ~13 GiB install. Every
+snippet in the quick start uses Enformer.
+
+`chorus setup --no-weights` also skips the gate, but it downloads **no** model weights at all, so you
+cannot predict anything afterwards. It provisions envs; it is not the no-account path.
+
+#### Managing reference genomes
+
+Chorus includes built-in support for downloading and managing reference genomes. `chorus setup` pulls hg38 automatically — this section is for other assemblies or manual management.
+
+```bash
+# List available genomes
+chorus genome list
+
+# Download a reference genome (e.g., hg38, hg19, mm10)
+chorus genome download hg38
+
+# Get information about a downloaded genome
+chorus genome info hg38
+
+# Remove a downloaded genome
+chorus genome remove hg38
+```
+
+Supported genomes:
+- **hg38**: Human genome assembly GRCh38
+- **hg19**: Human genome assembly GRCh37
+- **mm10**: Mouse genome assembly GRCm38
+- **mm9**: Mouse genome assembly NCBI37
+- **dm6**: Drosophila melanogaster genome assembly BDGP6
+- **ce11**: C. elegans genome assembly WBcel235
+
+Genomes are stored in the `genomes/` directory within your Chorus installation.
+
+> **The downloader is not the oracles.** Every oracle is trained on **hg38 only**, and a non-hg38
+> reference is refused rather than scored — see [Caveats](#caveats--what-to-know-before-you-trust-a-number).
+> Other assemblies are here for other tooling; [`docs/BACKGROUND_NULL_PROTOCOL.md` §11](docs/BACKGROUND_NULL_PROTOCOL.md)
+> covers what mouse support would require.
+
+#### Per-track background distributions (auto-downloaded)
+
+Chorus converts every raw prediction into an **effect percentile** and **activity percentile** against each track's own sampled-SNP reference population (~17,800–225,000 variants) and ~19,500–320,000 genome-wide positions scored on the same oracle. These pre-computed per-track CDFs are what let a user interpret a `+0.45` log2FC as `0.96 activity %ile`.
+
+**Nothing to configure.** `chorus setup` pre-downloads them; otherwise the first variant analysis for an oracle fetches them from [`lucapinello/chorus-backgrounds`](https://huggingface.co/datasets/lucapinello/chorus-backgrounds) and caches them at `<data-dir>/backgrounds/`. Building your own for a new oracle: see [CONTRIBUTING](CONTRIBUTING.md#you-do-not-need-our-infrastructure-to-develop-or-to-open-the-pr).
+
+> `<data-dir>` defaults to the **chorus installation directory**, not `~/.chorus` — see
+> [Where chorus puts large files](#where-chorus-puts-large-files) to move it.
+
+#### Where the oracle weights come from
+
+Chorus mirrors every oracle's weights to chorus-controlled HuggingFace repos so the install path stays stable even if upstream sources move (TFHub deprecation, Zenodo single-link records, third-party HF accounts). Each loader prefers the chorus mirror and falls back to the original source on any failure — so chorus stays bootable even if the mirror is unreachable.
+
+| Oracle | Chorus mirror | Original source | Mirror size |
+|---|---|---|---|
+| AlphaGenome (JAX) | not mirrored — official source | [`google/alphagenome-all-folds`](https://huggingface.co/google/alphagenome-all-folds) (gated) | — |
+| AlphaGenome (PyTorch) | not mirrored — upstream port | [`gtca/alphagenome_pytorch`](https://huggingface.co/gtca/alphagenome_pytorch) | — |
+| Enformer | [`lucapinello/chorus-enformer`](https://huggingface.co/lucapinello/chorus-enformer) | TFHub `deepmind/enformer/1` (now redirects to Kaggle) | 961 MB |
+| Borzoi | [`lucapinello/chorus-borzoi`](https://huggingface.co/lucapinello/chorus-borzoi) | [`johahi/borzoi-replicate-{0..3}`](https://huggingface.co/johahi/borzoi-replicate-0) | ~6 GB (4 folds) |
+| ChromBPNet | [`lucapinello/chorus-chrombpnet-slim`](https://huggingface.co/lucapinello/chorus-chrombpnet-slim) | ENCODE per-experiment tarballs | 1.49 GB (786 h5's; chorus fetches only the 9 human ATAC/DNase models — the 33 mm10 models are still hosted but no longer offered, see 2026-08-01) |
+| Cherimoya | [`programmable-genomics/CATv1`](https://huggingface.co/programmable-genomics/CATv1) | *is* the primary source (CC-BY-4.0) | ~3.8 GB (1,518 fold-0 checkpoints; ~2.5 MB each, fetched lazily) |
+| Sei | [`lucapinello/chorus-sei`](https://huggingface.co/lucapinello/chorus-sei) | Zenodo [4906997](https://zenodo.org/record/4906997) | 3.28 GB |
+| LegNet | [`lucapinello/chorus-legnet`](https://huggingface.co/lucapinello/chorus-legnet) | Zenodo [17863550](https://zenodo.org/records/17863550) | 38 MB |
+| EPInformer-seq | [`lucapinello/chorus-epinformerseq-v2`](https://huggingface.co/lucapinello/chorus-epinformerseq-v2) | per-cell 2-channel PerCellProfileNetWide + frozen BiasNet, trained on Roadmap DNase-summit peaks (ch0 = 5′ DNase cut-sites, ch1 = H3K27ac) (Pinello Lab) | 11 MB (11 cells × main + bias) |
+
+The chorus mirrors are byte-identical to the originals (verified via md5 / size against upstream metadata where published). License terms applying to the *weights* are unchanged by mirroring — see each mirror's README on HuggingFace for explicit attribution and the upstream model terms.
+
+| Oracle | File size | Tracks covered |
+|---|---|---|
+| AlphaGenome | ~260 MB | 5,168 |
+| Enformer | ~520 MB | 5,313 |
+| Borzoi | ~770 MB | 7,611 |
+| ChromBPNet | ~80 MB | 753 (9 ATAC/DNASE + 744 CHIP) |
+| Cherimoya | ~162 MB | 1,518 (369 ATAC + 1,149 DNASE) |
+| Cherimoya (ensemble) | ~154 MB | 1,518 — the fold-ensemble has its own null; see [Cherimoya folds](#cherimoya--catv1) |
+| Sei | ~1.5 GB | 21,947 tracks (21,907 chromatin profiles + 40 sequence classes) |
+| LegNet | ~210 KB | 3 cell types |
+| EPInformer-seq | ~2.3 MB | 33 tracks (11 cell types × 3 assays: DNase, H3K27ac, composite) |
+> **The backgrounds dataset is public — no HuggingFace token required.** `HF_TOKEN` is only needed for the gated AlphaGenome model itself (see [Tokens](#tokens) above). Causal prioritization with auto-LD-fetch needs a separate free LDlink token.
+
+To pre-download by hand:
+
+```python
+from chorus.analysis.normalization import download_pertrack_backgrounds
+for oracle in ["alphagenome", "enformer", "borzoi", "chrombpnet", "cherimoya",
+               "sei", "legnet", "epinformerseq"]:
+    download_pertrack_backgrounds(oracle)
+```
+
+### Python API
+
+> **Prefer a notebook?** Open [`examples/notebooks/single_oracle_quickstart.ipynb`](examples/notebooks/single_oracle_quickstart.ipynb) for a full walkthrough using Enformer + the GATA1 locus. The recipes below are the minimum viable snippets.
+>
+> **Prerequisite:** you've run `chorus setup` (or at least `chorus setup --oracle enformer`).
+
+#### Minimal working example
+
+```python
+import chorus
+from chorus.utils import get_genome
+
+# 1. Create oracle with reference genome
+genome_path = get_genome('hg38')  # auto-downloads if needed
+oracle = chorus.create_oracle('enformer', use_environment=True,
+                              reference_fasta=str(genome_path))
+oracle.load_pretrained_model()
+
+# 2. Predict DNase accessibility at the beta-globin locus.
+#    'ENCFF413AHU' is the ENCODE track ID for DNase-seq in K562 cells.
+#    See "Discovering tracks" below to find track IDs for other assays /
+#    cell types, or use the `list_tracks` MCP tool from Claude Code.
+predictions = oracle.predict(('chr11', 5247000, 5248000), ['ENCFF413AHU'])
+
+# 3. Check the result
+track = predictions['ENCFF413AHU']
+print(f"Mean signal: {track.values.mean():.2f}, Max: {track.values.max():.2f}")
+```
+
+#### Discovering tracks
+
+Each oracle has thousands of tracks. **`describe_tracks()` is the one call that works on all nine** —
+no model load, no reference genome, no GPU, so it is cheap to explore with:
+
+```python
+oracle = chorus.create_oracle('enformer', use_environment=True)
+
+for t in oracle.describe_tracks(query='K562', limit=3):
+    print(t.track_id, '|', t.assay, '|', t.cell_type, '|', t.description)
+# ENCFF899YDP | DNASE | K562 | DNASE:K562 treated with 1 uM vorinostat for 72 hours
+# ENCFF515UNC | DNASE | K562 | DNASE:K562 G2 phase
+# ENCFF708UIS | DNASE | K562 | DNASE:K562 G1 phase
+
+len(oracle.describe_tracks())        # 5313 — omit query/limit for everything
+```
+
+`query` matches case-insensitively across id, assay, cell type and description. Each record is a
+`TrackRecord` with `.track_id`, `.assay`, `.cell_type`, `.description`, `.extra` (oracle-specific
+fields such as fold or ENCODE accession) and `.as_dict()`. **`track_id` is the contract**: pass it
+straight to `predict()` and it comes back as the key.
+
+```python
+tracks = [t.track_id for t in oracle.describe_tracks(query='DNASE:K562')]
+predictions = oracle.predict(('chr11', 5247000, 5248000), tracks)
+```
+
+Per-oracle metadata is still there when you want a DataFrame or an oracle-specific column, but it
+differs per oracle — `describe_tracks()` exists so you don't have to know which:
+
+```python
+print(oracle.list_assay_types())   # ['ATAC', 'CAGE', 'CHIP', 'DNASE']
+
+from chorus.oracles.enformer_source.enformer_metadata import get_metadata
+k562_tracks = get_metadata().search_tracks('K562')   # DataFrame, 'identifier' column
+```
+
+> **Tip:** track id formats differ per oracle (ENCODE accessions, assay+cell type, `{OutputType}/{Track}/{Strand}`,
+> …). `describe_tracks()` returns the right form for whichever oracle you loaded, so you rarely need to know
+> which; [Model-specific details](#model-specific-details) has them all if you do.
+
+#### 1. Wild-type prediction
+
+```python
+# Predict from genomic coordinates
+predictions = oracle.predict(
+    ('chr11', 5247000, 5248000),  # Beta-globin locus
+    tracks
+)
+
+# Or from DNA sequence
+sequence = 'ACGT' * 98304  # 393,216 bp for Enformer
+predictions = oracle.predict(sequence, tracks)
+```
+
+#### 2. Region replacement
+
+```python
+# Replace a 200bp region with enhancer sequence
+enhancer = 'GATA' * 50  # 200bp GATA motif repeats
+replaced = oracle.predict_region_replacement(
+    'chr11:5247400-5247600',  # Region to replace
+    enhancer,                  # New sequence
+    tracks
+)
+```
+
+#### 3. Sequence insertion
+
+```python
+# Insert enhancer at specific position
+inserted = oracle.predict_region_insertion_at(
+    'chr11:5247500',  # Insertion point
+    enhancer,         # Sequence to insert
+    tracks
+)
+```
+
+#### 4. Variant effect
+
+```python
+# Test SNP effects (e.g., A→G mutation)
+variant_effects = oracle.predict_variant_effect(
+    'chr11:5247000-5248000',  # Region containing variant
+    'chr11:5247500',          # Variant position
+    ['C', 'A', 'G', 'T'],     # ref FIRST and it must match the genome: hg38
+                              # has C at chr11:5247500. strict_ref=True by
+                              # default, so a wrong ref raises rather than
+                              # silently substituting.
+    tracks
+)
+```
+
+#### 5. Sub-region scoring
+
+```python
+# Score a specific peak or promoter within the prediction window
+# (instead of summarizing the entire 114 kb output)
+score = predictions.score_region('chr11', 5247400, 5247600, 'mean')
+# Returns {track_id: score} for all tracks
+
+# Also available on individual tracks with different strategies
+track = predictions['ENCFF413AHU']
+track.score_region('chr11', 5247400, 5247600, 'max')   # peak signal
+track.score_region('chr11', 5247400, 5247600, 'sum')   # total signal
+```
+
+#### 6. Focused variant effect scoring
+
+```python
+from chorus.core.result import score_variant_effect
+
+# Score variant effects at the variant site (±N bins)
+scores = score_variant_effect(variant_effects, at_variant=True, window_bins=2)
+# Returns {allele: {track_id: {ref_score, alt_score, effect}}}
+
+# Or score variant effects at a specific region (e.g. a nearby promoter)
+scores = score_variant_effect(
+    variant_effects,
+    chrom='chr11', start=5247400, end=5247600,
+    scoring_strategy='mean'  # mean, max, sum, median, or abs_max
+)
+```
+
+#### 7. Gene expression analysis
+
+```python
+# Quantify predicted gene expression from CAGE and/or RNA-seq tracks
+# Auto-detects expression tracks and uses appropriate quantification:
+#   CAGE/LentiMPRA → TSS windowed max
+#   RNA-seq → exon sum (Borzoi/AlphaGenome)
+expr = oracle.analyze_gene_expression(predictions, 'GATA1')
+# Returns per-track expression values with quantification method
+
+# Also available: get exon annotations for a gene
+from chorus.utils.annotations import get_gene_exons
+exons = get_gene_exons('GATA1')  # merged exon coordinates
+```
+
+#### 8. Variant effect on gene expression
+
+```python
+# The key question: does this variant change expression of a gene?
+result = oracle.analyze_variant_effect_on_gene(variant_effects, 'GATA1')
+# Returns fold change, log2 fold change, and absolute change per allele per track
+```
+
+#### 9. Save predictions
+
+```python
+# Save as BedGraph for genome browser
+wt_files = predictions.save_predictions_as_bedgraph(output_dir="bedgraph_outputs",
+                                                    prefix='a_wt')
+
+```
+
+### Notebooks — three sittings, zero to confident
+
+Three end-to-end Jupyter notebooks shipped with the repo. Run them in order — by the time you finish notebook 3 you'll have used every oracle, scored a variant across five regulatory layers, and rendered a coolbox track view of your own predictions. All three work as soon as `chorus setup` finishes; no extra downloads needed. One extra step, though —
+register the base env as a Jupyter kernel, which `chorus setup` does **not** do for you:
+
+```bash
+mamba activate chorus
+python -m ipykernel install --user --name chorus --display-name "Python 3 (chorus)"
+```
+
+The shipped notebooks declare kernel name `chorus`, so without this JupyterLab prompts you to choose a
+kernel and `jupyter nbconvert --execute` fails with `NoSuchKernel: No such kernel named chorus`.
+
+| Notebook | Oracles | What you'll build |
+|----------|---------|----------------|
+| `examples/notebooks/single_oracle_quickstart.ipynb` | Enformer | Predictions → region replacement → sequence insertion → variant effect → gene expression → coolbox visualization. The "I get it now" notebook. |
+| `examples/notebooks/comprehensive_oracle_showcase.ipynb` | 6 oracles — Enformer, Borzoi, ChromBPNet/BPNet, Sei, LegNet, AlphaGenome (does not yet include Cherimoya or EPInformer-seq) | Same variant scored by every oracle side-by-side. Cross-model agreement, sub-region scoring, gene-expression layer integration. |
+| `examples/notebooks/advanced_multi_oracle_analysis.ipynb` | Enformer + ChromBPNet/BPNet + LegNet | CHIP-seq TF footprinting, strand-specific tracks, the Interval API, effect-percentile normalization, cell-type switching. The graduate-level notebook. |
+
+> **Need a specific cell type or tissue?** [`cherimoya_quickstart.ipynb`](examples/notebooks/cherimoya_quickstart.ipynb)
+> works the 1,518-experiment CATv1 atlas end-to-end: search, disambiguate a biosample with several
+> experiments, predict, score a variant, compare by activity percentile. Wants a CUDA GPU.
+
+### MCP server — chorus, but you talk to Claude
+
+Chorus's MCP (Model Context Protocol) server is what makes the lunch-break tour Step 4 work. Claude (or any MCP-aware client) loads oracles, predicts variant effects, scores regions, and writes full HTML/MD reports — all from natural-language prompts. Step 4 above gave you the one-liner; this section has every config detail (Claude Code, Claude Desktop, manual testing, the full 27-tool catalogue).
+
+#### Setup for Claude Code
+
+**You do NOT need to run the server manually.** Claude Code manages the MCP server process automatically. You just need a `.mcp.json` file — and it works from **any project folder**, not just the Chorus repo.
+
+**Step 1:** One-liner — run this from any project folder:
+
+```bash
+curl -sL https://raw.githubusercontent.com/pinellolab/chorus/main/.mcp.json -o .mcp.json
+```
+
+Or create `.mcp.json` manually:
+
+```json
+{
+  "mcpServers": {
+    "chorus": {
+      "type": "stdio",
+      "command": "mamba",
+      "args": ["run", "-n", "chorus", "chorus-mcp"],
+      "env": {
+        "CHORUS_NO_TIMEOUT": "1"
+      }
+    }
+  }
+}
+```
+
+The `chorus-mcp` command is installed in the `chorus` conda environment, so `mamba run -n chorus chorus-mcp` works from any directory.
+
+> **Note:** If you use `conda` instead of `mamba`, replace `"command": "mamba"` with `"command": "conda"`. The `CHORUS_NO_TIMEOUT` env var disables prediction timeouts, which is recommended for interactive use.
+
+**Step 2:** Start (or restart) Claude Code from your project:
+
+```bash
+cd /path/to/my-project    # any folder — does NOT need to be the chorus repo
+claude
+```
+
+Claude Code reads `.mcp.json` on startup and launches the MCP server in the background. You should see the Chorus tools available immediately — try asking: *"What oracles are available?"*
+
+**Alternatively**, you can add Chorus to your global Claude Code settings (`~/.claude/settings.json`) so it's available in every project without needing a per-project `.mcp.json`:
+
+```bash
+# Add globally (one-time setup) — note `-s user`:
+claude mcp add -s user chorus -e CHORUS_NO_TIMEOUT=1 -- mamba run -n chorus chorus-mcp
+```
+
+`claude mcp add` defaults to `--scope local`, which registers the server for the **current project
+only**. Without `-s user` you would run this in the chorus clone, then open Claude Code in your actual
+analysis project and find no chorus tools — with nothing in the output to say why.
+
+#### Setup for Claude Desktop
+
+Add this to your Claude Desktop MCP config (`~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "chorus": {
+      "command": "mamba",
+      "args": ["run", "-n", "chorus", "chorus-mcp"],
+      "env": {
+        "CHORUS_NO_TIMEOUT": "1"
+      }
+    }
+  }
+}
+```
+
+Then restart Claude Desktop. Chorus tools will be available in all conversations.
+
+#### Manual testing (optional)
+
+You can verify the server starts correctly by running it directly:
+
+```bash
+mamba run -n chorus chorus-mcp
+# You should see the FastMCP banner. Press Ctrl+C to stop.
+```
+
+#### Available MCP tools
+
+All 27, grouped by what you would reach for them for:
+
+- **Discovery**: `list_oracles`, `list_tracks`, `list_genomes`, `get_genes_in_region`, `get_gene_tss`, `recommend_alphagenome_backend`
+- **Annotations & conservation**: `list_annotations`, `describe_annotation`, `download_annotation` — the GENCODE/conservation/custom catalogue behind `show_conservation` (see [Conservation tracks](#conservation-tracks))
+- **Lifecycle**: `load_oracle`, `unload_oracle`, `oracle_status`
+- **Low-level prediction**: `predict`, `predict_variant_effect`, `predict_region_replacement`, `predict_region_insertion`
+- **Scoring primitives**: `score_prediction_region`, `score_variant_effect_at_region`, `predict_variant_effect_on_gene`
+- **Base-resolution attribution**: `score_ism` — in-silico saturation mutagenesis: sweeps every single-base substitution in a window (default 25 bp) around a position and returns a per-position importance profile you can render as a motif logo, so you can see which bases the oracle actually reads. Works with any loaded oracle
+- **Multi-layer analysis (recommended for most users)**:
+    - `analyze_variant_multilayer` — score a variant across chromatin, TF, histone, CAGE, RNA, splicing in one call
+    - `discover_variant` — find top tracks/cell types for a variant without pre-selecting assays
+    - `discover_variant_cell_types` — screen hundreds of cell types to find where a variant matters most
+    - `score_variant_batch` — rank many variants (VCF / GWAS set / credible set) by effect magnitude
+    - `fine_map_causal_variant` — prioritize the causal SNP in a GWAS locus using multi-layer convergence
+    - `analyze_region_swap`, `simulate_integration` — score sequence engineering edits (promoter swaps, construct insertions)
+
+Every analysis tool accepts an optional `user_prompt` parameter and writes it into the top of the report so an HTML/MD opened later still shows the original question. See [`examples/walkthroughs/`](examples/walkthroughs/) for worked outputs of each tool, or read the [MCP Walkthrough](docs/MCP_WALKTHROUGH.md) for a step-by-step guide showing what you type in Claude and what comes back.
+
+Key features:
+- **Auto-centering**: `region` is optional in variant tools — auto-sized for each oracle's output window
+- **ChromBPNet/BPNet params**: `load_oracle("chrombpnet", assay="CHIP", cell_type="K562", TF="GATA1")`
+- **Cherimoya params**: `load_oracle("cherimoya", assay="DNASE", cell_type="K562")` picks that biosample's default experiment; `load_oracle("cherimoya", assay="ATAC", encode_id="ENCSR483RKN")` pins a specific one. `(assay, cell_type)` is ambiguous across much of the atlas — K562 alone has four ATAC experiments — so search with `list_tracks("cherimoya", query="K562")` and pass the `experiment_accession` you want
+- **TSS warnings**: `predict_variant_effect_on_gene` warns when the target gene TSS is outside the output window
+- **Mixed-resolution**: AlphaGenome's 1bp DNASE + 128bp histone tracks score correctly in a single call
+
+#### Variant analysis with AlphaGenome (recommended)
+
+AlphaGenome (1Mb window, 5,168 tracks) is the recommended primary oracle for variant analysis. It covers DNASE, ATAC, CAGE, RNA-seq, ChIP-seq histone marks, and TF binding in a single model.
+
+Example conversation with Claude:
+
+> **You:** *Load AlphaGenome and predict the effect of rs12740374 (chr1:109274968 G>T) on hepatocyte CAGE expression*
+>
+> Claude will call `load_oracle("alphagenome")`, then `predict_variant_effect(...)` with the right tracks, and return a summary of chromatin and expression effects.
+
+See `docs/variant_analysis_framework.md` for the full 5-layer analysis guide with track selection cheat sheets by disease area.
+
+### Key features
+
+#### 1. Environment isolation
+
+Each oracle runs in its own conda environment to avoid dependency conflicts:
+
+```python
+# TensorFlow-based Enformer runs in isolated environment
+enformer = chorus.create_oracle('enformer', use_environment=True)
+
+# PyTorch-based Borzoi runs in its own isolated environment
+borzoi = chorus.create_oracle('borzoi', use_environment=True)
+```
+
+#### 2. Reference genome integration
+
+For accurate predictions, provide a reference genome to extract proper flanking sequences:
+
+```python
+# Enformer requires 393,216 bp of context
+# Chorus automatically extracts and pads sequences from the reference
+
+from chorus.utils import get_genome
+genome_path = get_genome('hg38')  # auto-downloads if not present
+oracle = chorus.create_oracle('enformer',
+                              use_environment=True,
+                              reference_fasta=str(genome_path))
+
+# Predict using genomic coordinates
+predictions = oracle.predict(('chr1', 1000000, 1001000), ['DNase:K562'])
+```
+
+#### 3. Track support
+
+Track identifiers vary by oracle. Use the metadata search (see [Discovering tracks](#discovering-tracks)) to find the right IDs.
+
+For Enformer and Borzoi, you can use ENCODE identifiers or descriptive names in the Python API:
+```python
+# ENCODE identifier (recommended — works in both Python API and MCP)
+predictions = oracle.predict(sequence, ['ENCFF413AHU'])  # DNase:K562
+
+# Descriptive name (Python API only)
+predictions = oracle.predict(sequence, ['DNase:K562'])
+
+# CAGE identifier
+predictions = oracle.predict(sequence, ['CNhs11250'])  # CAGE:K562
+```
+
+> **MCP users:** The MCP server requires ENCODE identifiers (e.g. `ENCFF413AHU`), not descriptive names. Use `list_tracks(oracle_name, query='K562')` to search and get the `identifier` field. **Cherimoya returns `track_id` instead** (e.g. `DNASE:ENCSR000EOT`) — it keys on the ENCODE *experiment* accession rather than a file accession; see [Cherimoya / CATv1](#cherimoya--catv1).
+
+#### 4. BedGraph output
+
+`predictions.save_predictions_as_bedgraph(output_dir, prefix)` writes one file per track — see
+[recipe 9](#9-save-predictions).
+
+### Core concepts
+
+#### Intervals
+
+A unified interface to genomic coordinates and reference sequences. Intervals track sequence edits alongside their corresponding model predictions, supporting reproducible in silico perturbation workflows and consistent downstream analysis.
+
+#### Environment management
+The `chorus` CLI manages conda environments for each oracle:
+
+```bash
+# Set up environments
+chorus setup --oracle enformer
+
+# Check health
+chorus health
+
+# Clean up
+chorus remove --oracle enformer
+```
+
+#### Managing CDF backgrounds
+
+```bash
+# View background status for all oracles
+chorus backgrounds status
+
+# View details for one oracle (shows ATAC/DNASE vs CHIP breakdown for ChromBPNet)
+chorus backgrounds status --oracle chrombpnet
+
+# Build CDFs for any tracks not yet in the NPZ (e.g. after registering a
+# new ChromBPNet model in chrombpnet_globals.py — see the BYOM walkthrough
+# in docs/NORMALIZATION_GUIDE.md)
+chorus backgrounds build --oracle chrombpnet --only-missing --gpu 0
+
+# Append tracks from a user-built NPZ
+chorus backgrounds add-tracks --oracle chrombpnet --npz my_custom_cdfs.npz
+```
+
+See [`docs/NORMALIZATION_GUIDE.md`](docs/NORMALIZATION_GUIDE.md) for walkthroughs on bringing custom ChromBPNet/LegNet models and adding new oracles.
+
+### Model-specific details
+
+#### Enformer
+
+Enformer (Avsec et al., 2021) is a hybrid convolutional-transformer architecture designed for long-range sequence-to-function modeling of regulatory genomics, with the primary goal of predicting transcriptional and epigenomic activity directly from DNA sequence.
+
+- Sequence length: 393,216 bp input, 114,688 bp output window
+- Output: 896 bins × 5,313 tracks
+- Bin size: 128 bp
+- Track types: Gene expression (CAGE), chromatin accessibility (DNase/ATAC), histone modifications (ChIP-seq)
+- Track identifiers: 
+  - ENCODE IDs (e.g., ENCFF413AHU for DNase:K562)
+  - CAGE IDs (e.g., CNhs11250 for CAGE:K562)
+  - Descriptive names (e.g., 'DNase:K562', 'H3K4me3:HepG2')
+- Track metadata: Included in the package (file with all 5,313 human track definitions)
+
+> **Enformer predictions vary slightly between processes** — the only oracle that does. See
+> [Caveats](#caveats--what-to-know-before-you-trust-a-number).
+
+#### Borzoi
+
+Enhanced Enformer with improved performance and RNA-tracks predictions.
+
+- Sequence length: 524,288 bp input, 196,608 bp output window
+- Output: 6,144 bins × 7,611 tracks
+- Bin size: 32 bp
+- Track types: Gene expression (CAGE, RNA-Seq), chromatin accessibility (DNase/ATAC), histone modifications (ChIP-seq)
+- Track identifiers: 
+  - ENCODE IDs (e.g., ENCFF413AHU for DNase:K562)
+  - CAGE IDs (e.g., CNhs11250 for CAGE:K562)
+  - Descriptive names (e.g., 'DNase:K562', 'H3K4me3:HepG2')
+- Track metadata: Included in the package (file with all 7,611 human track definitions)
+
+
+#### ChromBPNet / BPNet
+
+Base-pair resolution for chromatin accessibility and TF binding predictions. This oracle supports two model types through the same interface:
+
+- **ChromBPNet** (`assay="DNASE"` or `assay="ATAC"`): Predicts chromatin accessibility at base-pair resolution. Models are downloaded from ENCODE.
+- **BPNet** (`assay="CHIP"`, `TF="GATA1"`): Predicts transcription factor binding at base-pair resolution. Models are downloaded from JASPAR.
+
+Specs:
+- Sequence length: 2,114 bp input
+- Output: 1,000 bins at 1 bp resolution
+- Track types: DNase/ATAC accessibility, TF binding (ChIP-seq)
+
+```python
+# ChromBPNet: chromatin accessibility
+oracle = chorus.create_oracle('chrombpnet', use_environment=True,
+                              reference_fasta=str(genome_path))
+oracle.load_pretrained_model(assay="DNASE", cell_type="K562")
+
+# BPNet: TF-specific binding prediction
+oracle.load_pretrained_model(assay="CHIP", cell_type="K562", TF="GATA1")
+```
+
+##### Loading custom models
+
+You can load your own ChromBPNet/BPNet weights (e.g. trained on a new cell type):
+
+```python
+oracle.load_pretrained_model(
+    assay="DNASE",                   # DNASE, ATAC, or CHIP
+    cell_type="HepG2",              # your cell type label
+    weights='path/to/weights',      # path to your model weights
+    is_custom=True                  # enables custom weight paths
+)
+```
+
+#### Cherimoya / CATv1
+
+Cherimoya is a compact (~614 K parameter) ConvNeXt-style convolutional model in the BPNet / ChromBPNet family. **CATv1** — the Cherimoya Accessibility aTlas — is a family of 1,518 per-experiment chromatin accessibility models covering 1,149 ENCODE DNase-seq and 369 ATAC-seq experiments, each trained across five chromosome-held-out folds. That makes it the widest biosample coverage in chorus.
+
+- Sequence length: 2,114 bp input
+- Output: 1,000 bins at 1 bp resolution
+- Bin size: 1 bp
+- Track types: DNase / ATAC chromatin accessibility (`list_assay_types()` → `['ATAC', 'DNASE']`)
+- Track identifiers: `ASSAY:ENCSR` — the ENCODE **experiment** accession, e.g. `DNASE:ENCSR000EOT` (not `ASSAY:cell_type`)
+- Scoring window: 501 bp central window, matching ChromBPNet
+- Assembly: GRCh38 only — CATv1 ships no mouse models
+- Weights: [`programmable-genomics/CATv1`](https://huggingface.co/programmable-genomics/CATv1) (CC-BY-4.0), fold-0 checkpoints ~2.5 MB each, fetched lazily
+- Device: CUDA (Triton kernels) or CPU; **no MPS/Metal path**
+
+One CATv1 model covers exactly one ENCODE experiment, so one experiment is loaded at a time — the same one-model-per-instance contract ChromBPNet uses:
+
+```python
+oracle = chorus.create_oracle('cherimoya', use_environment=True,
+                              reference_fasta=str(genome_path))
+
+# By biosample — resolves through the committed defaults table
+oracle.load_pretrained_model(assay="DNASE", cell_type="K562")
+
+# Or pin one experiment exactly (recommended when the biosample is ambiguous)
+oracle.load_pretrained_model(assay="ATAC", encode_id="ENCSR483RKN")
+```
+
+> **`(assay, cell_type)` is ambiguous for most of the atlas** — 1,188 of the 1,518 experiments share an (assay, biosample) pair, and K562 alone has four ATAC experiments. Ambiguous pairs resolve through `cherimoya_source/catv1_defaults.py` and log which experiment was chosen. To pick deliberately, search the metadata and pass the accession:
+
+```python
+from chorus.oracles.cherimoya_source.catv1_metadata import get_metadata
+meta = get_metadata()
+hits = meta.search_tracks('K562')
+print(hits[['track_id', 'assay', 'biosample', 'experiment_accession']])
+#      track_id            assay  biosample  experiment_accession
+#      ATAC:ENCSR859USB    ATAC   K562       ENCSR859USB
+#      DNASE:ENCSR000EOT   DNASE  K562       ENCSR000EOT
+#      ATAC:ENCSR868FGK    ATAC   K562       ENCSR868FGK
+#      ATAC:ENCSR483RKN    ATAC   K562       ENCSR483RKN
+#      ATAC:ENCSR956DNB    ATAC   K562       ENCSR956DNB
+```
+
+Note the metadata column is `track_id` (Enformer/Borzoi use `identifier`). From Claude, the equivalent is `list_tracks("cherimoya", query="K562")`.
+
+> **Counts are `log(count + 1)`.** Cherimoya's count head predicts `log1p`, so recovering raw counts uses `expm1`. That transform lives in `cherimoya_source/scoring.py`, shared with the background builder so the oracle and the CDFs cannot drift.
+
+#### Sei
+
+Sequence regulatory effect predictions (uses custom track naming for 21,907 profiles)
+
+- Sequence length: 4096 bp input
+- Output: 1 bin 
+- Bin size: 4096 bp
+- Track types: DNase accessibility, TF binding (CHIP-Seq), histone modifications 
+- Track identifiers: 
+  - custom Sei track identifiers
+- Track metadata: Included in the package (files with all 21907 human track definitions and 40 Sei-defined classes)
+
+
+#### LegNet
+
+LegNet is a fully convolutional neural network designed for efficient modeling of short regulatory DNA sequences.
+
+- Sequence length: 200 bp input
+- Output: 1 bin
+- Bin size: 200 bp
+- Track types: Element activity in MPRA experiment
+- Track identifiers:
+  - cell line names
+
+#### AlphaGenome
+
+AlphaGenome (Google DeepMind, Nature 2026) predicts 5,168 human functional genomic tracks
+(its metadata table has 5,731 rows, 563 of which are `padding` placeholders that keep
+`local_index` aligned with the model's output array and carry no assay; `iter_tracks()`
+skips them, and the shipped background has a row for all 5,168 and none for the padding) at single base-pair resolution from up to 1 MB of DNA sequence using a JAX-based model.
+
+- Sequence length: 1,048,576 bp (1 MB) input
+- Output: 1,048,576 bins at single base-pair resolution
+- Bin size: 1 bp (ATAC, CAGE, DNase, RNA-seq, splice sites, PRO-CAP) or 128 bp (ChIP-seq histone/TF)
+- Track types: ATAC, CAGE, ChIP-seq (histone + TF), DNase, RNA-seq, Splice sites, PRO-CAP
+- Track identifiers: `{OutputType}/{TrackName}/{Strand}` (e.g., `ATAC/CL:0000084 ATAC-seq/.`)
+- Weights: Hosted on HuggingFace (gated repository, requires authentication)
+
+##### AlphaGenome setup
+
+AlphaGenome weights are hosted on a **gated HuggingFace repository**. You must authenticate before first use — this is what the interactive prompt in `chorus setup` handles for you. If you want to set it up manually:
+
+1. **Create a HuggingFace account** at <https://huggingface.co/join>
+2. **Accept the model license terms** at <https://huggingface.co/google/alphagenome-all-folds> (click "Agree and access repository")
+3. **Generate a token** at <https://huggingface.co/settings/tokens> (read access is sufficient)
+4. **Authenticate** via one of these methods:
+
+```bash
+# Option A: Set environment variable (recommended — works with automation and across envs)
+export HF_TOKEN="hf_your_token_here"
+
+# Option B: Interactive login (saves token to ~/.cache/huggingface/token)
+mamba run -n chorus-alphagenome huggingface-cli login
+```
+
+> **For MCP users**: Claude Code inherits environment variables from the shell where you start `claude`. Make sure `HF_TOKEN` is exported in that shell (e.g. add the `export` to your `~/.bashrc` or `~/.zshrc`). Option B (cached token) also works without any shell export.
+
+5. **Set up the environment and verify**:
+
+```bash
+chorus setup --oracle alphagenome
+chorus health --oracle alphagenome --timeout 300
+```
+
+##### AlphaGenome usage
+
+```python
+import chorus
+from chorus.utils import get_genome
+
+genome_path = get_genome('hg38')
+
+# Create and load oracle
+oracle = chorus.create_oracle('alphagenome',
+                              use_environment=True,
+                              reference_fasta=str(genome_path),
+                              device='cpu')  # or omit for auto-detect GPU
+oracle.load_pretrained_model()
+
+# Discover available tracks
+print(oracle.list_assay_types())   # ['ATAC', 'CAGE', 'CHIP', 'DNASE', ...]
+print(oracle.get_track_info('ATAC'))  # DataFrame of ATAC tracks
+
+# Predict
+tracks = ['ATAC/CL:0000084 ATAC-seq/.']  # T-cell ATAC-seq
+predictions = oracle.predict(('chr1', 1_000_000, 2_048_576), tracks)
+```
+
+##### AlphaGenome GPU support
+
+AlphaGenome uses JAX, which supports multiple accelerator backends:
+
+- **NVIDIA GPU (Linux)**: Automatically installs `jax[cuda12]` when NVIDIA GPU is detected during `chorus setup`
+- **Apple Silicon (macOS)**: Uses **CPU** by default. `jax-metal` is installed but the Metal backend is experimental and does not yet support all operations AlphaGenome requires (e.g., `default_memory_space`). You can explicitly try `device='metal'` but expect errors.
+- **CPU**: Works everywhere as fallback; pass `device='cpu'` to force CPU
+
+```python
+# Auto-detect best available device (CUDA GPU > CPU; Metal skipped for AlphaGenome)
+oracle = chorus.create_oracle('alphagenome', use_environment=True)
+
+# Force specific device
+oracle = chorus.create_oracle('alphagenome', use_environment=True, device='cpu')
+oracle = chorus.create_oracle('alphagenome', use_environment=True, device='gpu')    # NVIDIA CUDA
+```
+
+### Troubleshooting
+
+#### Device selection
+
+By default, Chorus auto-detects and uses GPU if available. You can explicitly control device selection:
+
+```python
+oracle = chorus.create_oracle('enformer', use_environment=True,
+                              reference_fasta=str(genome_path),
+                              device='cpu')       # Force CPU
+# Or: device='cuda:1' for a specific GPU
+# Or: export CHORUS_DEVICE=cpu
+```
+
+#### Timeout issues
+
+For slower systems or CPU-only environments, you may need to adjust timeouts:
+
+```python
+oracle = chorus.create_oracle('enformer', use_environment=True,
+                              reference_fasta=str(genome_path),
+                              model_load_timeout=1800,  # 30 min (default 600)
+                              predict_timeout=900)      # 15 min (default 300)
+
+# Or disable all timeouts globally
+# export CHORUS_NO_TIMEOUT=1
+```
+
+Common timeout scenarios:
+- **Model loading**: First-time downloads can be slow (~1GB model)
+- **CPU predictions**: GPU is 10-100x faster than CPU
+- **Network filesystems**: Add 50% to timeouts for NFS/shared storage
+
+#### Environment issues
+```bash
+# Check if environment exists
+chorus health
+
+# Recreate environment
+chorus remove --oracle enformer
+chorus setup --oracle enformer
+```
+
+##### Two mamba installs ⇒ `chorus health` reports phantom failures
+
+If you have both `~/.local/share/mamba/` (typical when `mamba` is installed via brew/pip) **and** a `~/miniforge3/` (typical when you originally installed via the Miniforge installer), `mamba env create` may put the new `chorus` env in one root while the per-oracle `chorus-*` envs live in the other. `chorus health` then fails with `mamba list -n chorus-<oracle>` returning non-zero because the running mamba is looking under the wrong root.
+
+**Fix:** point `MAMBA_ROOT_PREFIX` at the root that contains the oracle envs before invoking `chorus`:
+
+```bash
+export MAMBA_ROOT_PREFIX=$HOME/miniforge3   # or wherever your chorus-* envs live
+mamba env list                              # confirm chorus-* envs show up
+chorus health
+```
+
+Add the export to your shell rc file if you want it persistent.
+
+##### Enformer fails with `saved_model.pb` not found after a partial download
+
+TensorFlow Hub caches downloaded models at `/var/folders/.../T/tfhub_modules/` (macOS) or `/tmp/tfhub_modules/` (Linux). **This cache is outside `~/.chorus/` and survives chorus teardowns.** If an earlier Enformer download was interrupted, the cached directory ends up missing `saved_model.pb` and Enformer fails to load with:
+
+```
+Trying to load a model of incompatible/unknown type. ... contains
+neither 'saved_model.pb' nor 'saved_model.pbtxt'.
+```
+
+Clear the stale cache and retry:
+
+```bash
+# macOS
+rm -rf /var/folders/*/*/T/tfhub_modules
+
+# Linux
+rm -rf /tmp/tfhub_modules
+```
+
+Chorus auto-detects the corrupted-cache case and clears it on the next `load_pretrained_model()` call, so this is only an issue if the first attempt after a fresh install fails — the second attempt will recover automatically.
+
+#### Memory issues
+Some oracles require a significant memory (~8-16 GB) for predictions. Solutions:
+- Force CPU usage: `device='cpu'`
+- Use a different GPU: `device='cuda:1'`
+- Reduce batch size if needed
+
+#### AlphaGenome authentication
+AlphaGenome weights are hosted on a gated HuggingFace repository. If you see a `GatedRepoError` or 403 error:
+
+```bash
+# 1. Accept model terms at https://huggingface.co/google/alphagenome-all-folds
+# 2. Authenticate via environment variable (recommended)
+export HF_TOKEN="hf_your_token_here"
+# Or: mamba run -n chorus-alphagenome huggingface-cli login
+```
+
+#### LDlink token (for causal prioritization)
+The `fine_map_causal_variant` tool can auto-fetch LD proxies from LDlink. This requires a free token — register at <https://ldlink.nih.gov/?tab=apiaccess> and pass it via the `ldlink_token` parameter or set:
+
+```bash
+export LDLINK_TOKEN="your_token_here"
+```
+
+Without a token, you can still use fine-mapping by providing LD variants manually via the `ld_variants` parameter (see [causal_prioritization/](examples/walkthroughs/causal_prioritization/)).
+
+#### CUDA / GPU support
+The isolated environments include GPU support. On Linux with NVIDIA GPUs, Chorus auto-detects CUDA and installs GPU-enabled packages during `chorus setup`.
+
+**On macOS with Apple Silicon**, Chorus auto-detects Apple GPU acceleration where supported:
+
+| Oracle | Backend | macOS GPU path |
+|---|---|---|
+| Borzoi, Sei, LegNet | PyTorch | **MPS** auto-detected via `torch.backends.mps.is_available()` |
+| ChromBPNet, Enformer | TensorFlow | **Metal** via `tensorflow-metal` (added automatically by `chorus setup` on macOS arm64) |
+| Cherimoya | PyTorch | **CPU** — the model has no MPS/Metal path, and its `triton` dep ships no macOS wheel; `chorus setup` installs Cherimoya with `--no-deps` and the import-guarded pure-PyTorch CPU path runs |
+| AlphaGenome | JAX | **CPU** — `jax-metal` is installed but Apple's plugin doesn't yet support all ops AlphaGenome needs (e.g. `default_memory_space`); Chorus falls back to CPU |
+
+You can always force a specific device:
+```python
+oracle = chorus.create_oracle('borzoi', use_environment=True, device='mps')   # Apple GPU
+oracle = chorus.create_oracle('borzoi', use_environment=True, device='cpu')   # force CPU
+oracle = chorus.create_oracle('borzoi', use_environment=True, device='cuda:0')  # NVIDIA
+```
+
+To force CPU usage when GPU causes issues:
+```python
+oracle = chorus.create_oracle('enformer',
+                             use_environment=True,
+                             device='cpu')
+```
+
+### Conservation tracks
+
+Optional evolutionary-conservation tracks on any variant report, off by default:
+
+```python
+from chorus.analysis.variant_report import build_variant_report
+
+report = build_variant_report(variant_result, oracle_name="alphagenome",
+                              gene_name="SORT1", show_conservation=True)
+```
+
+From Claude: `analyze_variant_multilayer(..., show_conservation=True)`.
+
+**Worked example**: [examples/walkthroughs/conservation/SORT1_rs12740374/](examples/walkthroughs/conservation/SORT1_rs12740374/)
+— a variant with one of the strongest measured ChromBPNet effects in this repo (+1.376,
+≥99th percentile) at a base with no cross-species conservation signal by any of the three
+scores below, and why that combination isn't a contradiction.
+
+Three hg38 sources are wrapped, each a genome-wide bigwig cached once on first use (like
+oracle weights) rather than streamed per region:
+
+| source | what it shows | download |
+|---|---|---|
+| **GPN-Star** (100-way vertebrate) | a coverage track plus a per-base sequence logo — reference-base letters scaled by `p(base) × (2 − H)` on a 0–2 bit scale | ~9.9 GB, plus **~45 GB** of per-allele LLR bigwigs for the logo track |
+| **phyloP 100-way** | per-base conservation, raw values | ~9.2 GB (UCSC) |
+| **phastCons 100-way** | per-base conserved-element probability | ~5.5 GB (UCSC) |
+
+**Budget ~70 GB if you enable the logo track**, and note it is `hg38`-only — a non-hg38
+report refuses `show_conservation` rather than plotting human scores against other
+coordinates. Positions with no coverage are omitted rather than drawn, so a gap does not
+read as a conserved base.
+
+Manage the downloads without running an analysis:
+
+```bash
+chorus conservation status                     # sources, sizes, what is cached
+chorus conservation download --track gpn_star  # fetch one up front
+chorus annotation list                    # conservation + GENCODE + your own entries
+chorus annotation add my_peaks --genome-build hg38 --local-path ~/work/peaks.bed \
+    --description "ATAC peaks, replicate 1"
+chorus annotation describe my_peaks       # verifies a bigwig's build against its own chr1 length
+```
+
+`chorus annotation` is one interface over three kinds of entry: the conservation bigwigs
+above, GENCODE GTF annotations, and anything you register yourself (a local file, a URL, or
+a pinned HuggingFace file). `remove --delete-file` only deletes files chorus downloaded —
+never one you registered from your own disk.
+
+### Caveats — what to know before you trust a number
+
+Four things that can change a number or a conclusion. Everything else in this README is the happy path.
+
+**Enformer varies between processes; no other oracle does.** Two runs of the same variant on the same GPU
+agree to ~0.02% typically, worst observed **3.4%** on an individual raw value. Within one process they are
+bit-identical. The cause is nondeterministic TensorFlow GPU op scheduling — and ChromBPNet, the other
+TF-backed oracle, is bit-exact across processes, so this is Enformer-specific rather than a TensorFlow
+problem. Aggregate scores move far less than raw values (`quantile_score` ≤0.69%), so conclusions are
+stable; what drift can change is the *membership* of a top-N list when two tracks are nearly tied, which is
+why discovery reports `near_ties_at_cutoff`. For bit-exact reproducibility set
+`TF_DETERMINISTIC_OPS=1 TF_CUDNN_DETERMINISTIC=1` before importing — 4/4 repeat runs identical in testing,
+at some speed cost. The shipped nulls were built without it.
+
+**`alphagenome_pt` splice tracks were wrong before 0.7.5.** It returned pre-activation values for its 4
+splice-site and 734 splice-usage tracks, correlating **0.20** with the JAX backend. Because
+`alphagenome_pt` has no background null of its own and ranks against `alphagenome`'s, those percentiles
+were meaningless rather than merely noisy. Fixed in 0.7.5. **If you ran `alphagenome_pt` on splice tracks before 0.7.5, re-run them.**
+
+**Cherimoya and ChromBPNet are not comparable at raw magnitude** — chorus loads ChromBPNet bias-corrected
+and CATv1 applies no such correction, so they differ ~3.4× on peak while agreeing on shape. Compare them
+through percentiles, which are ranked against each oracle's own null. Details under
+[Cherimoya / CATv1](#cherimoya--catv1).
+
+**hg38 only.** Every oracle is trained on hg38 and every null is a rank within hg38 regions, so a non-hg38
+reference is refused rather than scored. The genome downloader offers other assemblies for other tooling.
+
+### Further reading
+
+After the TLDR and Python API, these documents go deeper:
+
+| Doc | When to read it |
+|---|---|
+| [`docs/MCP_WALKTHROUGH.md`](docs/MCP_WALKTHROUGH.md) | Step-by-step Claude Code conversations with Chorus |
+| [`docs/variant_analysis_framework.md`](docs/variant_analysis_framework.md) | 5-layer scoring strategy, track selection by disease area |
+| [`docs/API_DOCUMENTATION.md`](docs/API_DOCUMENTATION.md) | Full Python API reference (oracles, analysis, utilities, MCP tools) |
+| [`docs/METHOD_REFERENCE.md`](docs/METHOD_REFERENCE.md) | Method-level reference for advanced users |
+| [`docs/NORMALIZATION_GUIDE.md`](docs/NORMALIZATION_GUIDE.md) | Per-oracle CDF normalization, custom models, adding new oracles |
+| [`docs/VISUALIZATION_GUIDE.md`](docs/VISUALIZATION_GUIDE.md) | pyGenomeTracks + IGV visualization patterns |
+| [`docs/IMPLEMENTATION_GUIDE.md`](docs/IMPLEMENTATION_GUIDE.md) | Notes for extending Chorus with new oracles |
+| [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md) | Upstream oracles, papers, and licenses Chorus builds on |
+| [`examples/walkthroughs/`](examples/walkthroughs/) | Worked examples for every MCP tool (variant analysis, batch, causal, discovery, sequence engineering) |
+
+### Contributing
+
+We welcome contributions! Areas needing work:
+
+1. Add more examples and tutorials
+2. Implement batch prediction optimizations
+3. Add more visualization utilities
+4. Add more oracles 
+
+#### Adding new oracles
+
+We've designed Chorus to make it easy to add new genomic prediction models. Each oracle runs in its own isolated conda environment, avoiding dependency conflicts between different frameworks (TensorFlow, PyTorch, JAX, etc.).
+
+**For a complete step-by-step walkthrough, see [`docs/NORMALIZATION_GUIDE.md` → "Adding a new oracle"](docs/NORMALIZATION_GUIDE.md#walkthrough-adding-a-new-oracle).** It covers: creating the oracle class, registering it, creating the conda environment, writing the CDF build script, uploading backgrounds to HuggingFace, and a verification checklist.
+
+Key steps:
+1. Inherit from `OracleBase` and implement `load_pretrained_model()`, `list_assay_types()`, `list_cell_types()`, and `_describe_tracks()` — the hook behind the uniform `describe_tracks()` (added in 0.7.4 precisely so a tenth oracle has one method to implement instead of each exposing its own track listing)
+2. Register in `chorus/oracles/__init__.py`
+3. Create `environments/chorus-myoracle.yml`
+4. Write `scripts/build_backgrounds_myoracle.py` for CDF normalization
+5. Upload backgrounds to `lucapinello/chorus-backgrounds` on HuggingFace
+6. Submit a PR with your implementation
+
+### Citation
+
+If you use Chorus in your research, please cite:
+
+```bibtex
+@software{chorus2026,
+  title = {Chorus: A unified interface for genomic sequence oracles},
+  version = {0.7.5},
+  author = {Penzar, Dmitry and Ruggeri, Lorenzo and Giugno, Rosalba and Pinello, Luca},
+  year = {2026},
+  url = {https://github.com/pinellolab/chorus}
+}
+```
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Acknowledgments
+
+Chorus integrates several groundbreaking models:
+- Enformer (Avsec et al., 2021)
+- Borzoi (Linder et al., 2023)
+- ChromBPNet / BPNet (Agarwal et al., 2021)
+- Cherimoya / CATv1 (Schreiber, 2026 — [code](https://github.com/jmschrei/cherimoya), [weights](https://huggingface.co/programmable-genomics/CATv1); preprint forthcoming)
+- Sei (Chen et al., 2022)
+- LegNet (Penzar et al., 2023)
+- EPInformer-seq (Lin et al., *Nature Communications*, 2026)
+- AlphaGenome (Google DeepMind, 2026)
+
+For visualization tasks we extensively use [coolbox package](https://github.com/GangCaoLab/CoolBox)
+
+---
+
+### Appendix: per-track background distributions
+
+This appendix describes how the per-track CDFs that power Chorus's effect/activity percentiles were computed, what the numbers mean, and how to use them from both the Python API and an MCP/Claude session.
+
+#### What they are and why they exist
+
+A raw `log2FC = +0.45` in a DNase-seq track is hard to interpret. Is it strong? Is the underlying region even active? The per-track backgrounds turn that raw number into two complementary genome-aware percentiles:
+
+| Percentile | What it measures | Computed from |
+|---|---|---|
+| **Effect percentile** | How unusual is *this* variant's effect on this track? | The distribution of variant-effect scores from that track's reference population of sampled SNPs (gene-anchored, cCRE-anchored or uniform — see below) |
+| **Activity percentile** | How active is the reference signal at the variant site, genome-wide? | The distribution of window-summed signal at ~31.5K diverse genomic positions |
+
+Both range `[0, 1]` for unsigned layers (chromatin, ChIP, CAGE, splicing). For signed layers (gene expression, MPRA, Sei), the effect percentile ranges `[-1, 1]` (preserving the direction of effect).
+
+The backgrounds are stored as 10,000-point CDFs per track in NPZ files (one file per oracle, `<data-dir>/backgrounds/{oracle}_pertrack.npz`). Each oracle's NPZ contains three matrices:
+
+- `effect_cdfs (n_tracks × 10000)` — for the effect percentile
+- `summary_cdfs (n_tracks × 10000)` — for the activity percentile
+- `perbin_cdfs (n_tracks × 10000)` — for IGV per-bin rescaling (omitted for the three scalar-output oracles: Sei, LegNet and EPInformer-seq)
+
+#### How they were calculated
+
+The build scripts live in [`scripts/`](scripts/) — one per oracle. Each performs three reservoir-sampled passes:
+
+##### 1. Variant effect distribution
+
+The reference population differs by oracle, and by layer, because a percentile only means something against a population the variant could plausibly have come from.
+
+| oracle | effect reference population |
+|---|---|
+| AlphaGenome, Borzoi, Enformer, Sei, EPInformer-seq | **the base stratified mixture**, sampled from GENCODE v48 protein-coding annotation and ENCODE SCREEN cCREs: **50 % inside cCREs**, 10 % within ±1 kb of a TSS, 10 % at 1–10 kb, 16.5 % within ±100 bp of an exon/intron boundary, 6 % elsewhere in a gene body, 7.5 % uniformly random across `chr1`–`chr22` |
+| **LegNet** | the same mixture **minus the `gene_body` stratum** (`drop_strata: ["gene_body"]`) — a promoter-length model has no gene-body reference class |
+| **ChromBPNet, Cherimoya/CATv1** | the same mixture **minus `gene_body`, plus a 5,000-position `dhs` stratum** sampled from the DHS vocabulary (`add_strata: {"dhs": 5000}`) — base-pair-resolution accessibility models need accessible-site density the base mixture does not provide |
+
+Uniform-random was the original choice everywhere, and it is the wrong reference class for a localised assay: a random position carries almost no CAGE or accessibility signal, so the `+1` pseudocount damps its log-ratio toward zero and the null's body collapses below where real regulatory effects live. The 7.5 % uniform tail in the gene-anchored mixture is deliberate — with no near-zero mass, genuinely small effects would receive artificially *low* percentiles, which is the mirror of the same failure.
+
+Half the mixture is cCRE positions because accessibility was the one layer still saturating against a purely gene-anchored null: measured at SORT1, 50 % of Enformer's accessibility rows exceeded their own track's null maximum, and a cCRE-anchored null takes that to 0 %. That treatment is *not* extended to TF binding or histone marks, which were measured and got no better or worse — a cCRE is defined by accessibility, H3K4me3 or CTCF signal, so a randomly chosen one is often not bound by the particular TF a given ChIP track measures.
+
+For each sampled SNP:
+
+1. Predict reference and alternate alleles across the full output window.
+2. For each track, score the variant effect using the layer-specific formula:
+   - **log2FC** for unsigned signal layers (chromatin, TF binding, histone marks, TSS) — variant effect = `log2((sum_alt + ε) / (sum_ref + ε))` in a layer-appropriate window (501 bp for DNase/ChIP-TF/CAGE, 2001 bp for histone marks, full transcript for RNA).
+   - **lnFC** for gene expression — `ln((mean_alt + ε) / (mean_ref + ε))` (natural log) averaged over GENCODE protein-coding exons of the target gene.
+   - **diff** for promoter MPRA — simple `alt - ref` activity difference.
+3. Add `|effect|` (unsigned) or raw `effect` (signed) to that track's reservoir.
+
+Result: per-track histograms over real human-genome variant effects.
+
+##### 2. Activity (window-sum) distribution
+
+29,500–34,500 positions per track sampled to approximate the genome-wide distribution of regulatory activity:
+
+| Position type | Count | Purpose | oracles |
+|---|---|---|---|
+| Random intergenic | 15,000 | Genome-wide null (most genome is silent) | all |
+| ENCODE SCREEN cCREs (per category) | ~11,500 | PLS, dELS, pELS, CA-CTCF, CA-TF, TF, CA-H3K4me3, CA | all |
+| Protein-coding TSSs | 3,000 | Sharp signals: CAGE, H3K4me3, promoter activity | all |
+| Gene-body midpoints (>10 kb genes) | 2,000 | RNA-seq, H3K36me3, broad gene-body marks | AlphaGenome, Enformer, Borzoi |
+| DHS summits (Meuleman vocabulary) | 5,000 | Peak-centric accessibility | ChromBPNet, Cherimoya, EPInformer-seq |
+
+So there are **three activity populations, not one**: 31,500 positions for the three long-context oracles, 34,500 for the accessibility-family ones, 29,500 for Sei and LegNet — which is what the "Activity samples / track" column below is counting. Each background records the content hash of the mixture it used; [`docs/BACKGROUND_NULL_PROTOCOL.md` §4](docs/BACKGROUND_NULL_PROTOCOL.md) has the per-oracle table and what is and is not comparable across them.
+
+For each position, the layer-appropriate window-sum is added to the track's reservoir.
+
+**RNA-seq exon-precise sampling** (Borzoi, AlphaGenome): RNA tracks only collect bins overlapping merged GENCODE v48 protein-coding exons — intronic bins would distort the activity baseline.
+
+**CAGE summary routing**: CAGE tracks skip cCRE positions for the summary CDF since CAGE biology lives at TSSs, not enhancers.
+
+##### 3. Per-bin distribution (for IGV visualization)
+
+At each of the same positions, **32 random bins** from the full output window are added to the perbin reservoir. This captures the per-bin (not per-window) distribution at the track's native resolution (1 bp for ATAC/CAGE/RNA/PRO-CAP/splice; 128 bp for ChIP-Histone/TF in AlphaGenome).
+
+`rescale_for_display` (in `chorus.analysis._igv_report`, shared by all four rendering paths) maps raw bin values onto a `[0, 3.0]` display scale where `1.0` is the track's top-1% genome-wide bin value and `3.0` is a hard cap. Signed layers (Borzoi RNA, Sei, LentiMPRA) use the normalizer's `signed_floor_rescale_batch`, mapping to `[-3.0, +3.0]` with `±1.0 = p99(|effect|)`. This is what makes overlaid tracks comparable across cell types and renderers.
+
+#### Sample sizes per oracle
+
+<!-- BEGIN GENERATED: background-table -->
+| Oracle | Tracks | Effect samples / track | Activity samples / track | Effect reference population | NPZ size |
+|---|---|---|---|---|---|
+| AlphaGenome | 5,168 | 17,908–225,253 | 19,504–319,642 | gene-anchored + cCRE (17,909) | 279 MB |
+| Enformer | 5,313 | 17,907 | 19,549–31,005 | gene-anchored + cCRE (17,909) | 557 MB |
+| Borzoi | 7,611 | 17,908–51,831 | 19,548–75,021 | gene-anchored + cCRE (17,909) | 804 MB |
+| ChromBPNet | 753 | 18,672–37,344 | 34,004–68,008 | uniform + DHS summits (18,672) | 79 MB |
+| Cherimoya (CATv1) | 1,518 | 18,672 | 34,004 | uniform + DHS summits (18,672) | 162 MB |
+| Sei | 21,947 | 17,909 | 29,004 | gene-anchored + cCRE (17,909) | 1.5 GB |
+| LegNet | 3 | 17,805 | 29,002 | promoter-anchored (17,805) | 200 KB |
+| EPInformer-seq | 33 | 17,909 | 34,002 | gene-anchored + cCRE (17,909) | 2 MB |
+<!-- END GENERATED: background-table -->
+
+Effect and activity reservoirs are converted to 10,000-point CDFs (sorted sample arrays) — so a percentile lookup is a single O(log n) bisect.
+
+#### Using backgrounds from the Python API
+
+Auto-load (downloads from HuggingFace if not cached):
+
+```python
+from chorus.analysis.normalization import get_pertrack_normalizer
+
+norm = get_pertrack_normalizer("alphagenome")
+# → <data-dir>/backgrounds/alphagenome_pertrack.npz (auto-downloaded if missing)
+```
+
+Look up an effect or activity percentile for a single track:
+
+```python
+track_id = "DNASE/EFO:0001187 DNase-seq/."  # HepG2 DNase
+
+# How unusual is a +0.45 log2FC effect? (unsigned: pass abs value)
+eff_pct = norm.effect_percentile("alphagenome", track_id, abs(0.45),
+                                 signed=False)
+# → 0.9811  (stronger than 98.1% of common-variant effects on this track)
+
+# How active is the reference signal at the variant site?
+# third arg is `raw_signal`, positional — there is no `ref_value=` keyword
+act_pct = norm.activity_percentile("alphagenome", track_id, 512.0)
+# → 0.9625  (top ~4% of genome-wide regulatory activity for this track)
+```
+
+Pass it into the analysis layer to get percentiles attached to every report:
+
+```python
+from chorus.analysis.variant_report import build_variant_report
+
+report = build_variant_report(
+    variant_result,
+    oracle_name="alphagenome",
+    gene_name="SORT1",
+    normalizer=norm,    # ← this is what populates the Effect %ile / Activity %ile columns
+)
+```
+
+Or pre-download all eight oracles' backgrounds once:
+
+```python
+from chorus.analysis.normalization import download_pertrack_backgrounds
+for o in ["alphagenome", "enformer", "borzoi", "chrombpnet", "cherimoya",
+          "sei", "legnet", "epinformerseq"]:
+    download_pertrack_backgrounds(o)
+```
+
+This is also how you pick up a rebuilt background: `download_pertrack_backgrounds`
+checks a cached file and refetches it if it predates the current provenance schema,
+rather than keeping whatever is on disk.
+
+(`alphagenome_pt` is deliberately absent — it aliases to `alphagenome`'s NPZ at lookup time, so asking for it returns 0.)
+
+#### Using backgrounds via MCP / Claude
+
+You don't have to do anything. The MCP server auto-attaches the appropriate normalizer when you call any analysis tool (`analyze_variant_multilayer`, `score_variant_batch`, `fine_map_causal_variant`, `analyze_region_swap`, `simulate_integration`, `discover_variant`, `discover_variant_cell_types`).
+
+The first call for a given oracle triggers a one-time HuggingFace download (a few hundred MB), cached at `<data-dir>/backgrounds/`. Subsequent calls reuse the cache.
+
+In the resulting report, every track row gets two extra columns — `Effect %ile` and `Activity %ile` — and the IGV browser uses the per-bin CDFs to rescale bin heights for cross-cell-type comparability.
+
+#### Documented ranges and how to read the numbers
+
+| Column | Range | Reading |
+|---|---|---|
+| **Raw effect** (e.g. log2FC) | unbounded; biologically meaningful units | `+1.0` = alt is 2× ref; `-1.0` = alt is 0.5× ref |
+| **Effect percentile** (unsigned) | `[0, 1]` | `0.95` = stronger than 95% of the same track's reference population |
+| **Effect percentile** (signed) | `[-1, 1]` | `+0.95` = strongly above-baseline gain; `-0.95` = strongly above-baseline loss |
+| **Activity percentile** | `[0, 1]` | `0.95` = reference signal at this site is in the top 5% genome-wide for this track |
+| **Display rescale (unsigned)** | `[0, 3.0]` | `1.0` = top-1% bin value genome-wide; `3.0` = hard cap (3× p99); `0` = below the layer floor (p90 / p95 / p85 depending on layer) |
+| **Display rescale (signed layers)** | `[-3.0, +3.0]` | `±1.0` = p99 of `|effect|` genome-wide; symmetric so repressive (negative) signals stay visible. Used by Borzoi RNA, Sei, LentiMPRA. |
+
+**Sanity-check rule of thumb:** a *biologically interesting* variant typically shows **effect percentile > 0.95** AND **activity percentile > 0.5** in the same track — i.e. an unusually large effect at a site that already has real regulatory activity.
+
+A high effect percentile with very low activity is usually noise (small absolute change at a silent site that just happens to be larger than most random-SNP-at-silent-sites changes).
+
+#### Reproducing or extending the backgrounds
+
+Each oracle has a build script under `scripts/` — `build_backgrounds_<oracle>.py` for seven of the eight, and `build_backgrounds_epinformerseq_v2_percell.py` for EPInformer-seq. Each takes ~4–22 GPU-hours per oracle depending on the track count and output window. To rebuild a single oracle:
+
+```bash
+mamba run -n chorus-alphagenome python scripts/build_backgrounds_alphagenome.py --part variants  --gpu 0
+mamba run -n chorus-alphagenome python scripts/build_backgrounds_alphagenome.py --part baselines --gpu 1
+mamba run -n chorus              python scripts/build_backgrounds_alphagenome.py --part merge
+```
+
+The variants and baselines parts can run in parallel on separate GPUs. The merge step runs CPU-only and combines the interim NPZ files into the final `{oracle}_pertrack.npz`. See [`scripts/README.md`](scripts/README.md) for the full per-oracle commands and runtimes.
+
+If you've rebuilt a background and want to share it: drop the resulting `{oracle}_pertrack.npz` into your data directory (`chorus config data-dir` shows which one resolved — it defaults to the install tree, not `$HOME`). The downloader leaves a local file alone **unless** its provenance says a newer build has superseded it, in which case it is moved to `*.npz.superseded` and refetched — so a corrected background reaches you even if you already had the old one.

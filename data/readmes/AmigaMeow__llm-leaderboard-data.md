@@ -1,0 +1,157 @@
+# 大模型排行榜 · LLM Leaderboard · 模型能力与成本对比
+
+> 📊 **每日自动更新**的大模型排行榜（LLM Leaderboard）：聚合 Arena 人类盲测偏好与 OpenRouter 定价，
+>
+> 数据源：[17nas.com](https://17nas.com/llm-leaderboard.php) ｜ 本仓库抓取于 **2026-10-16**
+>
+> Hugging Face 镜像：[datasets/AmigaMeow/llm-leaderboard](https://huggingface.co/datasets/AmigaMeow/llm-leaderboard) —— 不用克隆，可直接 `load_dataset()` 读取
+>
+> ⚠️ 其中 **Arena 分数取自 LMArena 快照 2026-10-15**（上游自该日起未发布新快照）；
+> 定价、上下文长度与收录名单为每日抓取。
+
+[![Daily Update](https://github.com/AmigaMeow/llm-leaderboard-data/actions/workflows/update.yml/badge.svg)](https://github.com/AmigaMeow/llm-leaderboard-data/actions/workflows/update.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Hugging Face Dataset](https://img.shields.io/badge/%F0%9F%A4%97-Dataset-yellow)](https://huggingface.co/datasets/AmigaMeow/llm-leaderboard)
+
+
+涵盖 **闭源商用模型**（GPT / Claude / Gemini / Grok / Qwen / GLM / Kimi …）与 **开源权重模型**
+（Llama / DeepSeek / Qwen / GLM / Mistral / MiniMax …），可按能力、价格、预算档位与上下文长度对比。
+
+---
+
+## 快照概览
+
+| 指标 | 值 |
+|---|---:|
+| 收录模型 | **86** |
+| 有 Arena 评分 | 69 |
+| 有定价数据 | 72 |
+| 开源权重 | 24 |
+| 覆盖厂商 | 21 |
+| 数据源 | lmarena ok | openrouter ok | arena_agents ok |
+| 最近抓取 | 2026-10-16 |
+| Arena 榜发布日 | 2026-10-15 |
+
+厂商分布：OpenAI (14)、Anthropic (12)、Google (9)、Alibaba (8)、Meta (7)、DeepSeek (6)
+
+---
+
+## 榜单索引（5 个维度的模型对比）
+
+| 榜单 | 说明 | 完整榜 |
+|---|---|---|
+| **Overall** | Arena human preference | [查看](leaderboard/all.md) |
+| **Pick by budget** | Strongest model in each price band | [查看](leaderboard/budget.md) |
+| **Lowest price** | Blended price ascending | [查看](leaderboard/price.md) |
+| **Long context** | Maximum context window | [查看](leaderboard/ctx.md) |
+| **Open weights** | Open-weight models only | [查看](leaderboard/open.md) |
+
+---
+
+## 📈 榜单可视化
+
+![Arena Top 10](docs/charts/arena-top10.svg)
+
+![Arena Top 10 by price band](docs/charts/budget-bands.svg)
+
+> 图表随主题自动切换明暗；由 `scripts/render_charts.py` 每日生成。
+
+---
+
+## 🏆 综合榜 Top 10：Arena 人类偏好评分的模型排名
+
+| # | Model | Org | Arena | Votes |
+|---:|:---|:---|---:|---:|
+| 🥇 | Gemini 4 Argon | Google | 1,523.9 | 4,904 |
+| 🥈 | Muse Wonder | Meta | 1,508.9 | 3,247 |
+| 🥉 | Claude Opus 5.5 | Anthropic | 1,508.2 | 8,300 |
+| 4 | Claude Fable 5 | Anthropic | 1,503.6 | 42,004 |
+| 5 | Claude Opus 4.6 | Anthropic | 1,503.1 | 81,394 |
+| 6 | Claude Fable 5.1 | Anthropic | 1,502.3 | 14,590 |
+| 7 | Claude Opus 4.7 | Anthropic | 1,501.1 | 65,116 |
+| 8 | Gemini 3.8 Flash | Google | 1,496.4 | 37,454 |
+| 9 | Muse Spark 1.3 | Meta | 1,494.4 | 17,561 |
+| 10 | Muse Spark 1.2 | Meta | 1,493.1 | 8,248 |
+
+[→ 完整综合榜](leaderboard/all.md)
+
+## 💰 按预算选：每档价格里最强的模型
+
+> 回答的是「我预算 $X/百万 token，该用哪个」。**Gap to #1** 是相对榜首丢掉的 Arena 分数。
+
+| Budget | Strongest model | Org | Weights | Arena | Gap to #1 | Price |
+|:---|:---|:---|:---|---:|---:|---:|
+| $0.10–0.25 | DeepSeek V4.1 Flash | DeepSeek | open | 1,474.6 | 49.3 | $0.198 |
+| $0.25–0.50 | GPT-5.6 Luna | OpenAI | closed | 1,452.6 | 71.3 | $0.450 |
+| $0.50–1.00 | MiMo-V2.6-Pro | Xiaomi | open | 1,479.2 | 44.7 | $0.544 |
+| $1.00–3.00 | Gemini 3.8 Flash | Google | closed | 1,496.4 | 27.5 | $1.65 |
+| $3.00–10.00 | Gemini 4 Argon | Google | closed | 1,523.9 | — | $4.00 |
+| $10+ | Claude Fable 5 | Anthropic | closed | 1,503.6 | 20.3 | $20.00 |
+
+[→ 完整预算榜](leaderboard/budget.md)
+
+## 📄 长上下文榜 Top 10：最大上下文窗口的模型
+
+| # | Model | Org | Context | Arena | Blended |
+|---:|:---|:---|---:|---:|---:|
+| 🥇 | Grok 4.20 | xAI | 2.0M | 1,471.5 | $1.56 |
+| 🥈 | GPT-6.1 Sol | OpenAI | 1.1M | 1,483.8 | $4.00 |
+| 🥉 | GPT-6 Astra | OpenAI | 1.1M | 1,477.3 | $20.00 |
+| 4 | GPT-6 Sol | OpenAI | 1.1M | 1,459.0 | $4.00 |
+| 5 | GPT-5.6 Sol | OpenAI | 1.1M | 1,484.7 | $8.00 |
+| 6 | MiMo-V2.6-Pro | Xiaomi | 1.1M | 1,479.2 | $0.544 |
+| 7 | GPT-5.5 | OpenAI | 1.1M | 1,481.4 | $11.25 |
+| 8 | GPT-6 Luna | OpenAI | 1.1M | 1,442.8 | $0.200 |
+| 9 | MiMo-V2.6-Flash | Xiaomi | 1.1M | 1,450.9 | $0.175 |
+| 10 | GPT-5.4 | OpenAI | 1.1M | 1,475.1 | $5.62 |
+
+[→ 完整长上下文榜](leaderboard/ctx.md)
+
+---
+
+## 数据说明
+
+- **Arena 分数**：LMArena 人类盲测的 Bradley-Terry 评分，附 95% 置信区间。两个模型的区间重叠时，名次差异不必过度解读。
+- **票数**：参与投票的样本量。票数越高，分数越稳定。
+- **价格**：OpenRouter 公开定价，单位美元 / 百万 token；混合价格按输入:输出 = 3:1 加权。
+- **涨跌**：与上一份快照的名次对比。NEW = 新进榜。
+
+## 常见问题
+
+**这是什么榜单？** 一个每日自动更新的大模型排行榜，用 Arena 人类盲测偏好衡量模型能力，用 OpenRouter 公开定价衡量成本。
+
+**排名依据什么？** 综合榜按 LMArena 的 Bradley-Terry 评分（人类盲测胜率推导）排序，并给出 95% 置信区间。
+
+**为什么不做「性价比分数」？** 试过，但 Arena 分数跨距只有约 6%，而价格跨距高达数百倍，
+两者相除会退化成价格榜（实测 86% 同序）。所以改为**按价格分档取最强者** —— 这更贴近真实决策。
+
+**为什么两个模型分数接近时不宜直接比名次？** 因为评分带有置信区间。区间重叠时，名次差异可能只是采样波动。
+
+**数据多久更新一次？** 每日一次，由 GitHub Actions 自动拉取并提交；历史快照保留在 [`data/history/`](data/history/)。
+
+**可以商用或二次分发吗？** 生成代码为 MIT；Arena 数据为 CC-BY-4.0（需署名）；请勿再分发 Artificial Analysis 数据。
+
+## 更新机制
+
+本仓库由 GitHub Actions **每日自动更新**：拉取聚合数据 → 生成榜单 → 提交。
+历史快照保存在 [`data/history/`](data/history/)，可用于回溯任意一天的榜单。
+
+## 相关项目
+
+| 项目 | 说明 |
+|---|---|
+| [llm-benchmark-leaderboard](https://github.com/AmigaMeow/llm-benchmark-leaderboard) | 自托管的排行榜程序（PHP + 无数据库依赖），可基于本仓库的数据自行部署 |
+| [cpu-benchmark-leaderboard](https://github.com/AmigaMeow/cpu-benchmark-leaderboard) | 自托管的 CPU 性能天梯榜 |
+| [17nas.com/llm-leaderboard.php](https://17nas.com/llm-leaderboard.php) | 在线版榜单（含更多维度与历史趋势） |
+
+## 许可与数据条款
+
+- 本仓库的**榜单生成代码**以 [MIT](LICENSE) 许可开放。
+- **Arena 评分**来自 LMArena（CC-BY-4.0 数据集），**价格数据**来自 OpenRouter 公开 API。
+- 本仓库**不包含** Artificial Analysis 的数据：其 Terms of Use 明确禁止再分发，故未纳入。
+- 完整的条款核查记录（含条款原文引用）见 [docs/UPSTREAM-TOS.md](docs/UPSTREAM-TOS.md)。
+- 原始榜单与更多维度：[17nas.com/llm-leaderboard.php](https://17nas.com/llm-leaderboard.php)
+
+---
+
+*本页由 `scripts/render_readme.py` 自动生成，请勿手工编辑。*

@@ -1,0 +1,115 @@
+# Ask Molty
+
+![Ask Molty banner](docs/assets/readme-banner.jpg)
+
+Ask Molty is the OpenClaw documentation agent.
+
+It owns:
+
+- the Cloudflare Worker behind `docs-chat.openclaw.ai`
+- the system prompt and tool loop
+- static workspace export for docs, source, and GitHub issues/PRs
+- retrieval artifacts consumed by the Worker
+
+The docs mirror stays focused on publishing documentation. Ask Molty owns the agent runtime.
+
+## Architecture
+
+`scripts/export-workspace.ts` builds a flat, read-only workspace:
+
+```text
+dist/ask-molty/
+  docs-search.jsonl
+  source-search.jsonl
+  github-search.jsonl
+  workspace-manifest.json
+  workspace/
+    docs/*.md
+    source/*.md
+    github/*.md
+```
+
+The Worker does deterministic candidate retrieval, mounts the best docs/source/GitHub files into a small in-memory workspace, then lets the model call:
+
+- `search_workspace`
+- `read_workspace`
+- `list_workspace`
+- `run_shell`
+
+Docs are canonical. Source is implementation truth. GitHub issues/PRs are discussion and status evidence.
+
+GitHub URLs returned by workspace search and listing can be passed directly to
+`read_workspace`. Retrieval processes JSONL records independently of network chunk
+sizes, within the existing index byte and unfinished-line limits.
+
+Completed tool-loop answers are returned directly, without a second model request.
+Empty or incomplete results and the four-round tool limit still use a final streamed
+answer. Tool-loop refusals are returned directly; content-filtered results show an error without
+another model request.
+
+Answers compact GitHub citations into readable links. If a source path has
+malformed percent encoding, its label keeps the raw path and the answer continues.
+
+`run_shell` is deliberately fake and read-only. It supports `rg`, `grep`, `cat`, `head`, `ls`, and `find` over mounted files only. No pipes, redirects, writes, network, or process execution.
+
+Malformed JSON or non-object tool arguments return a tool error so the model can
+recover and continue the answer.
+
+## Local Build
+
+```bash
+npm install
+npm run check
+```
+
+The exporter defaults to sibling/local paths:
+
+- docs mirror: `../docs-openclaw`
+- OpenClaw source: `../clawdbot5`
+- gitcrawl store DB: `~/.config/gitcrawl/stores/gitcrawl-store/data/openclaw__openclaw.sync.db`
+
+Override with:
+
+```bash
+ASK_MOLTY_DOCS_REPO=../docs-openclaw \
+ASK_MOLTY_SOURCE_REPO=../clawdbot5 \
+ASK_MOLTY_GITCRAWL_DB=~/.config/gitcrawl/stores/gitcrawl-store/data/openclaw__openclaw.sync.db \
+npm run export
+```
+
+The generated workspace can be large because GitHub threads are sharded into markdown files. The Worker never downloads all of it per request; it loads small JSONL indexes, selects candidates, and only mounts the best matching docs/source/GitHub files.
+
+The public `/ask-molty/github-search.jsonl` proxy gives uncached upstream requests
+60 seconds to return headers. A header timeout returns HTTP 504 with public CORS
+headers so browser clients can read the failure and retry. The deadline ends when
+headers arrive; it does not limit the artifact body's download time.
+
+## Deploy
+
+The Worker expects `OPENAI_API_KEY` as a Cloudflare Worker secret. The default model is
+[`chat-latest`](https://developers.openai.com/api/docs/models/chat-latest), a moving alias
+for the latest Instant model used in ChatGPT.
+
+Docs chat signs in through OpenClaw ID:
+
+- `OPENCLAW_ID_ISSUER` defaults to `https://id.openclaw.ai`.
+- Set `OPENCLAW_ID_CLIENT_ID` and the `OPENCLAW_ID_CLIENT_SECRET` Worker secret for the registered confidential client.
+- Register `/ask-molty/auth/oidc-callback` on each supported docs host as a redirect URI. Sessions are scoped to the host where sign-in completes.
+- Both `docs.clawhub.ai` and `docs.openclaw.ai` use the same Worker and OpenClaw ID flow; existing GitHub session cookies remain valid until they expire.
+- OpenClaw docs and source retrieval read from the durable `openclaw-docs` R2 bucket, with the
+  public docs host as fallback.
+- Set `ASK_MOLTY_AUTH_SECRET` as a Worker secret to sign docs-only session cookies and sign-in state. It is required outside local development.
+
+OpenClaw ID token exchanges have a 60-second deadline covering both response
+headers and the token body. A stalled exchange shows a retryable verification
+timeout without creating a session.
+
+```bash
+npm run deploy
+```
+
+Worker logs retain custom warnings, errors, and uncaught exceptions at full sampling.
+Per-request invocation logs and tracing are disabled to limit routine traffic volume;
+request URL query strings are redacted. Existing chat failures log the public error
+message; this change adds no prompt, answer, or credential logging. It takes effect after Worker deployment;
+it cannot recover errors from periods when logging was disabled.

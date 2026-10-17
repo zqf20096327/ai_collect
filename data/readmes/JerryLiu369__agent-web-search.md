@@ -1,0 +1,937 @@
+<div align="center">
+
+# Agent Web Search
+
+<!-- mcp-name: io.github.JerryLiu369/agent-web-search -->
+
+**Agent-native web search — model-native grounding and agent search APIs behind one provider-neutral contract.**
+
+**English** | [简体中文](https://github.com/JerryLiu369/agent-web-search/blob/main/README.zh-CN.md)
+
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyPI](https://img.shields.io/pypi/v/agent-web-search-mcp.svg)](https://pypi.org/project/agent-web-search-mcp/)
+[![CI](https://github.com/JerryLiu369/agent-web-search/actions/workflows/ci.yml/badge.svg)](https://github.com/JerryLiu369/agent-web-search/actions/workflows/ci.yml)
+[![MCP 2.x](https://img.shields.io/badge/MCP-2.x-6C47FF)](https://modelcontextprotocol.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/JerryLiu369/agent-web-search/blob/main/LICENSE)
+
+<p><strong>One-click remote MCP</strong></p>
+
+<p>
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJerryLiu369%2Fagent-web-search&amp;env=AGENT_WEB_SEARCH_AUTH_TOKEN"><img alt="Deploy with Vercel" src="https://vercel.com/button" height="34"></a>
+  <a href="https://railway.com/new/template?template=https%3A%2F%2Fgithub.com%2FJerryLiu369%2Fagent-web-search&amp;envs=AGENT_WEB_SEARCH_AUTH_TOKEN"><img alt="Deploy on Railway" src="https://railway.com/button.svg" height="34"></a>
+  <a href="https://render.com/deploy?repo=https://github.com/JerryLiu369/agent-web-search"><img alt="Deploy to Render" src="https://render.com/images/deploy-to-render-button.svg" height="34"></a>
+  <a href="https://zeabur.com/templates/8MQZG0?referralCode=JerryLiu369"><img alt="Deploy on Zeabur" src="https://zeabur.com/button.svg" height="34"></a>
+</p>
+
+Works with **Codex CLI**, **Claude Code**, **OpenCode**, **Hermes**, **DeepSeek Harness (DSH)**, ordinary
+shell scripts, Python applications, and remote Streamable HTTP MCP clients.
+
+[Quickstart](#installation--quickstart) · [Use with an agent](#use-with-an-agent) · [Providers](#providers) · [Configuration](#configuration)
+<br>
+[Shared interface](#shared-request-and-response) · [Other interfaces](#other-interfaces) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Architecture](https://github.com/JerryLiu369/agent-web-search/blob/main/ARCHITECTURE.md) · [Development](#development)
+
+</div>
+
+---
+
+Agent Web Search (PyPI: `agent-web-search-mcp`) is an open-source,
+MIT-licensed web search MCP server, CLI, and Python library for AI agents. It
+gives an agent three ways to reach the same provider-neutral search core: a
+native MCP tool, a native plugin (Hermes, DeepSeek Harness), or a CLI taught
+through a standard Agent Skill.
+
+> **If you are an AI agent:** install with `pipx install agent-web-search-mcp`
+> (or try instantly with `uvx --from agent-web-search-mcp agent-web-search "<question>"`),
+> then read [`skills/agent-web-search/SKILL.md`](https://github.com/JerryLiu369/agent-web-search/blob/main/skills/agent-web-search/SKILL.md) —
+> it teaches the CLI pathway only (for MCP setups, follow [Option 1](#option-1-mcp)
+> instead). [`llms.txt`](https://github.com/JerryLiu369/agent-web-search/blob/main/llms.txt)
+> is the machine-readable doc index.
+
+This is not a Google/Bing/Baidu metasearch wrapper. Traditional search
+aggregation fans a keyword query out to conventional engines and merges their
+result pages. Agent Web Search instead aggregates search capabilities built for
+agents: model-native web grounding, agent-oriented search APIs, and context-ready
+sources that accept natural-language questions and return answers, citations, or
+structured evidence in forms an agent can use directly. DDGS is the only
+conventional search backend in the current provider set.
+
+```text
+          Natural-language question
+                      |
+                      v
+                 SearchEngine
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+        DDGS        Model       Agent
+                  grounding     APIs
+                 (Responses,   (Exa,
+                  ARK, Grok,    Parallel,
+                  Gemini...)    Tavily...)
+```
+
+## Installation & Quickstart
+
+Three steps, about a minute: try it instantly, install it once, then connect your agent.
+**Requirements:** Python 3.10+. Default providers (**DDGS, Exa, Parallel**) require **no API key**.
+
+### Try without installing
+
+Test immediate search capabilities using `uvx` (no environment modification):
+
+```bash
+# Direct natural-language search with keyless defaults
+uvx --from agent-web-search-mcp agent-web-search "What changed in the latest OpenAI Codex CLI?"
+
+# Inspect MCP server arguments
+uvx agent-web-search-mcp --help
+```
+
+### Install
+
+Install once into your global user environment (recommended):
+
+```bash
+# Recommended isolated installation
+pipx install agent-web-search-mcp
+
+# Or install into the active Python environment
+python -m pip install agent-web-search-mcp
+```
+
+### Verify
+
+```bash
+# 1. Verify the CLI and run a real search
+agent-web-search --version
+agent-web-search "What changed in the latest OpenAI Codex CLI?"
+
+# 2. Verify the MCP server binary
+agent-web-search-mcp --help
+```
+
+> **Two commands, two roles:**
+> - `agent-web-search`: Direct search CLI for terminals, shell scripts, and Agent Skills.
+> - `agent-web-search-mcp`: Stdio and Streamable HTTP MCP server for MCP clients.
+
+### Pick your agent integration
+
+| Integration | Client / Environment | Setup |
+| :--- | :--- | :--- |
+| **CLI + Skill** *(Recommended)* | Terminal agents (Claude Code, Codex, OpenCode, Hermes) | `npx skills add JerryLiu369/agent-web-search --skill agent-web-search` ([Details](#option-2-cli--agent-skill)) |
+| **MCP (Stdio)** | Codex CLI, Claude Code, Cursor, Cline, Roo Code | `codex mcp add agent-web-search -- agent-web-search-mcp` ([Details](#option-1-mcp)) |
+| **DSH Plugin** | DeepSeek Harness (desktop & web) | `dsh plugin --profile desktop add github:JerryLiu369/agent-web-search` ([Details](#native-deepseek-harness-plugin)) |
+| **Hermes Plugin** | Hermes Agent | `hermes plugins install JerryLiu369/agent-web-search` ([Details](#native-hermes-plugin)) |
+
+> [!TIP]
+> **Why CLI + Skill is recommended for shell-capable agents:** If your agent already has terminal/bash execution capabilities (like Claude Code, Codex CLI, OpenCode, or Hermes), the CLI + Skill pathway offers the lowest friction and highest reliability. No MCP JSON configuration to debug, no background transport lifecycle to manage, and clean stdout JSON output taught through a standard Skill.
+
+## Why Agent Web Search
+
+Traditional search aggregation (Google/Bing/Baidu wrappers, scraped SERPs)
+sends a keyword query to conventional engines and merges result pages. Agent
+Web Search instead aggregates **search capabilities built for agents**: one
+tool call returns structured, citation-ready evidence — or, through
+model-native grounding providers, a synthesized answer with explicit
+citations. A [measured benchmark](https://github.com/JerryLiu369/agent-web-search/blob/main/docs/benchmark-2026-09-06.md) shows the
+practical difference: on a natural-language Chinese query asking for official
+sources, conventional SERP backends returned no government-domain results in
+the top 5, while the grounding provider returned official figures from
+China's General Administration of Customs with a working citation.
+
+- **Agent-native by design.** The primary interface is a complete natural-language
+  question, not a thin keyword fan-out to Google, Bing, or Baidu.
+- **Model-native search backends.** ARK, Gemini, Grok, DeepSeek, Responses,
+  Messages, Zhipu Chat Search, and Codex Alpha can combine web retrieval with
+  model-generated synthesis and explicit citations.
+- **Agent search providers.** Exa, Parallel, Brave, Perplexity, Tavily, You.com,
+  and Zhipu Web Search expose search APIs intended to provide structured,
+  citation-friendly, or context-ready evidence to downstream agents.
+- **One provider-neutral contract.** Every backend is available through the same
+  MCP tool, CLI, Python API, and normalized `results`; model-backed providers may
+  also return an `answer`.
+- **Independent providers.** Selected providers run concurrently, and one
+  provider's failure never discards another provider's successful result.
+- **DDGS remains a simple fallback.** DDGS is the only conventional search
+  backend; it requires no API key and keeps the project usable without paid
+  provider credentials. Exa and Parallel are also keyless by default.
+- **No telemetry, no shared secrets.** Provider keys stay in runtime
+  environment variables; there is no shared API-key service.
+
+## Providers
+
+The provider list is intentionally split by the kind of search capability it
+provides. Only DDGS is a conventional search backend; the other two groups are
+built around model-native grounding or agent-facing search services.
+
+> **Free, keyless defaults:** DDGS, Exa, and Parallel all work without an API
+> key. Exa and Parallel automatically use their free MCP transports until a
+> paid API key is provided.
+
+### Traditional search backend
+
+| Provider | Website | Search backend | API key | Enabled by default |
+| --- | --- | --- | --- | :---: |
+| **DDGS** | [DuckDuckGo](https://duckduckgo.com) | Conventional DuckDuckGo search | **Free · no key required** | Yes |
+
+### Model providers
+
+These providers use a model-native search or grounding surface. Their responses
+can include a model-generated answer together with citations or other explicit
+search evidence.
+
+| Provider | Website | Model-native search surface | API key | Enabled by default |
+| --- | --- | --- | --- | :---: |
+| **ARK** | [Volcengine Ark](https://www.volcengine.com/product/ark) | Responses API with Doubao web-search grounding | `ARK_API_KEY` | No |
+| **Codex Alpha** (experimental) | Alpha Search-compatible gateway | Model-backed Alpha Search surface | `AGENT_WEB_SEARCH_CODEX_ALPHA_API_KEY` | No |
+| **DeepSeek** | [DeepSeek API](https://api-docs.deepseek.com/) | Anthropic Messages API with native web search | `DEEPSEEK_API_KEY` | No |
+| **Gemini** | [Google AI](https://ai.google.dev/gemini-api/docs/google-search) | Gemini Google Search grounding | `GEMINI_API_KEY` | No |
+| **Grok** | [xAI](https://docs.x.ai/docs/guides/tools/overview) | xAI web search and X Search | `XAI_API_KEY` | No |
+| **Responses** | Responses API-compatible gateway | Generic OpenAI Responses API with web search grounding | `AGENT_WEB_SEARCH_RESPONSES_API_KEY` | No |
+| **Messages** | Messages API-compatible gateway | Generic Anthropic Messages API with web search grounding | `AGENT_WEB_SEARCH_MESSAGES_API_KEY` | No |
+| **Zhipu Chat Search** | [Zhipu AI](https://open.bigmodel.cn/) | GLM Chat Completions with native web search | `ZHIPU_CHAT_SEARCH_API_KEY` | No |
+
+### Agent search providers
+
+These providers expose search services for agent consumption: natural-language
+queries, structured source rows, high-signal excerpts, or citation-friendly
+metadata rather than a conventional search-page experience.
+
+| Provider | Website | Agent-facing search surface | API key | Enabled by default |
+| --- | --- | --- | --- | :---: |
+| **Exa** | [Exa](https://exa.ai) | Semantic Search API or free MCP fallback | **Free without key** · optional `EXA_API_KEY` | Yes |
+| **Parallel** | [Parallel](https://parallel.ai) | Context-oriented search API or free MCP | **Free without key** · optional `PARALLEL_API_KEY` | Yes |
+| **Brave** | [Brave Search](https://brave.com/search/api/) | Structured Web Search API | `BRAVE_SEARCH_API_KEY` | No |
+| **Perplexity** | [Perplexity API](https://www.perplexity.ai/api-platform) | Native structured Search API | `PERPLEXITY_API_KEY` | No |
+| **Tavily** | [Tavily](https://tavily.com) | Agent-oriented Search API | `TAVILY_API_KEY` | No |
+| **You.com** | [You.com API](https://you.com/platform/api) | Unified web and news Search API | `YDC_API_KEY` | No |
+| **Zhipu Web Search** | [Zhipu AI](https://open.bigmodel.cn/) | Standalone structured Web Search API | `ZHIPU_WEB_SEARCH_API_KEY` | No |
+
+The provider architecture is intentionally open: another search-capable
+backend can be added without changing the MCP, Hermes, CLI, or Python-facing
+interfaces.
+
+## Use with an agent
+
+> **Prerequisite:** Complete [Installation & Quickstart](#installation--quickstart) first. The sections below provide detailed client configurations and command references for each integration pathway.
+
+### Option 1: MCP<a id="option-1-mcp"></a>
+
+Choose MCP when the agent supports tool servers and you want typed discovery,
+protocol-level errors, or remote access. The same `agent-web-search-mcp`
+command supports local stdio and stateless Streamable HTTP.
+
+#### Local stdio MCP
+
+Install the package once:
+
+```bash
+# Recommended isolated installation
+pipx install agent-web-search-mcp
+
+# Or install into the active Python environment
+python -m pip install agent-web-search-mcp
+```
+
+Then configure the MCP client to launch `agent-web-search-mcp`:
+
+```json
+{
+  "mcpServers": {
+    "agent-web-search": {
+      "command": "agent-web-search-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+If `uvx` is already available, a client can run the package without a
+persistent install by using command `uvx` with args `["agent-web-search-mcp"]`.
+
+<details>
+<summary><strong>Codex CLI, Claude Code, and OpenCode examples</strong></summary>
+
+```bash
+# Codex CLI
+codex mcp add agent-web-search -- agent-web-search-mcp
+
+# Claude Code
+claude mcp add agent-web-search -- agent-web-search-mcp
+```
+
+OpenCode:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "agent-web-search": {
+      "type": "local",
+      "command": ["agent-web-search-mcp"],
+      "enabled": true
+    }
+  }
+}
+```
+
+</details>
+
+#### Remote MCP over HTTPS
+
+Use one of the deployment buttons at the top of this README, or run the same
+server yourself:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+export AGENT_WEB_SEARCH_AUTH_TOKEN="<your-generated-token>"
+agent-web-search-mcp --transport http
+```
+
+The server exposes authenticated `POST /mcp` and public `GET /healthz`. A
+remote MCP client connects like this:
+
+```json
+{
+  "mcpServers": {
+    "agent-web-search": {
+      "url": "https://your-deployment.example/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-deployment-token>"
+      }
+    }
+  }
+}
+```
+
+Every public deployment must set `AGENT_WEB_SEARCH_AUTH_TOKEN` to at least 32
+characters. The server is stateless and does not create `MCP-Session-Id` values.
+
+### Option 2: CLI + Agent Skill<a id="agent-skill"></a>
+
+Choose this shape when the agent already has shell access and supports Agent
+Skills. The Skill teaches the agent how to invoke the CLI, select controls,
+interpret `results`, and handle structured failures; no MCP configuration is
+needed.
+
+1. Install the CLI:
+
+   ```bash
+   pipx install agent-web-search-mcp
+   # Or: python -m pip install agent-web-search-mcp
+   ```
+
+2. Install the included [`agent-web-search` Skill](https://github.com/JerryLiu369/agent-web-search/tree/main/skills/agent-web-search):
+
+   ```bash
+   npx skills add JerryLiu369/agent-web-search --skill agent-web-search
+   ```
+
+   If the agent does not use the `skills` installer, copy
+   `skills/agent-web-search` into that client's Skills directory.
+
+3. Verify the CLI, then let the agent search:
+
+   ```bash
+   agent-web-search --version
+   agent-web-search "What changed in the latest OpenAI Codex CLI?"
+   ```
+
+The CLI writes one JSON document to stdout on success. If every provider fails,
+it writes the shared `all_providers_failed` JSON to stderr and exits with status
+1, so shell-capable agents can distinguish a real failure from empty results.
+
+| CLI option | MCP argument | Values | Default |
+| --- | --- | --- | --- |
+| positional `QUERY` | `query` | 1–4,000 character natural-language question | required |
+| `--provider` (repeatable) | `providers` | enabled provider names | all enabled |
+| `--max-results` | `max_results` | 1–20 | `5` |
+| `--time-range` | `time_range` | `d`, `w`, `m`, `y` | — |
+| `--grok-search-mode` | `grok_search_mode` | `web_search`, `x_search`, `both` | `web_search` |
+
+<details>
+<summary><strong>Install the latest development version from GitHub</strong></summary>
+
+```bash
+pipx install 'git+https://github.com/JerryLiu369/agent-web-search.git'
+```
+
+</details>
+
+> [!IMPORTANT]
+> Do not place API keys in shell history, source code, Git commits, screenshots,
+> or checked-in MCP configuration. Supply them through server-side or local
+> environment variables.
+
+## Shared request and response
+
+MCP exposes one tool named `web_search`; the CLI maps to the same inputs.
+
+| Argument | Type | Required | Default | Description |
+| --- | --- | :---: | --- | --- |
+| `query` | string, 1–4,000 characters | Yes | — | Complete natural-language search question |
+| `max_results` | integer, 1–20 | No | `5` | Desired maximum number of results |
+| `time_range` | `d`, `w`, `m`, `y` | No | — | Past day, week, month, or year |
+| `providers` | string array | No | All enabled | Narrow the request to enabled providers |
+| `grok_search_mode` | `web_search`, `x_search`, `both` | No | `web_search` | Available only when Grok is enabled |
+
+Example call:
+
+```json
+{
+  "query": "What GPU kernel generation papers were published in the past month?",
+  "max_results": 5,
+  "time_range": "m",
+  "providers": ["ddgs", "exa"]
+}
+```
+
+Provider selection has two levels:
+
+1. `AGENT_WEB_SEARCH_PROVIDERS` defines the provider set when the process starts.
+2. The request-level `providers` argument may narrow that set, but cannot enable
+   a provider that was disabled at startup.
+
+### Response format
+
+Each selected provider that succeeds appears under `providers`; failed
+providers are omitted:
+
+```json
+{
+  "query": "What GPU kernel generation papers were published in the past month?",
+  "providers": {
+    "ddgs": {
+      "results": [
+        {
+          "title": "Example result",
+          "url": "https://example.com/paper",
+          "description": "Excerpt of the matching page",
+          "published_at": "2026-08-02"
+        }
+      ]
+    }
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `answer` | Provider-generated prose answer, when the backend produces one; omitted otherwise |
+| `results` | Result rows: `title`, `url`, `description`, plus optional `published_at` and `author` |
+
+If every selected provider fails, MCP returns a tool error. The CLI writes the
+same payload to stderr and exits with status 1. Both use the stable code
+`all_providers_failed` and include per-provider diagnostics:
+
+```json
+{
+  "error": {
+    "code": "all_providers_failed",
+    "message": "All enabled search providers failed. Check provider configuration, credentials, quotas, and network access.",
+    "provider_errors": {
+      "ddgs": "RuntimeError: rate limited"
+    }
+  },
+  "query": "What GPU kernel generation papers were published in the past month?"
+}
+```
+
+## Python API
+
+The CLI, MCP servers, and Hermes plugin are thin wrappers around
+`agent_web_search.SearchEngine`, which is the public Python API.
+`SearchRequest` accepts the same fields as the MCP tool arguments:
+
+```python
+from agent_web_search import SearchEngine, SearchRequest
+
+engine = SearchEngine()  # reads AGENT_WEB_SEARCH_* variables at construction
+
+response = engine.search(
+    SearchRequest(
+        query="What are the latest changes to the MCP specification?",
+        max_results=5,
+        time_range="m",
+    )
+)
+
+for name, provider in response.providers.items():
+    print(f"{name}: searched={provider.searched}, results={len(provider.results)}")
+
+if response.all_providers_failed:
+    print(response.failed_provider_errors)
+```
+
+## Configuration
+
+Configuration is read from environment variables when the CLI, MCP server, or
+Hermes plugin starts. Restart the process after changing provider settings.
+See [.env.example](https://github.com/JerryLiu369/agent-web-search/blob/main/.env.example) for a commented template of every variable.
+
+### General settings
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `AGENT_WEB_SEARCH_PROVIDERS` | `ddgs,exa,parallel` | Comma-separated startup-enabled provider set |
+| `AGENT_WEB_SEARCH_TIMEOUT` | `60` | Socket timeout for a single upstream HTTP call. Multi-step providers multiply it: keyless Parallel makes up to 3 calls (worst case 3×), ARK may append a continuation call (worst case 2×), so the whole search can take up to `3 ×` this value |
+
+Example:
+
+```bash
+export AGENT_WEB_SEARCH_PROVIDERS="ddgs,exa,brave"
+export AGENT_WEB_SEARCH_TIMEOUT="30"
+```
+
+```powershell
+$env:AGENT_WEB_SEARCH_PROVIDERS = "ddgs,exa,brave"
+$env:AGENT_WEB_SEARCH_TIMEOUT = "30"
+```
+
+### HTTP transport settings
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `AGENT_WEB_SEARCH_MCP_TRANSPORT` | `stdio` | `stdio` or `http`; `--transport` may override it |
+| `AGENT_WEB_SEARCH_HTTP_HOST` | `0.0.0.0` | HTTP bind host for container deployments |
+| `AGENT_WEB_SEARCH_HTTP_PORT` | `PORT` or `8000` | HTTP bind port; explicit value overrides platform `PORT` |
+| `AGENT_WEB_SEARCH_AUTH_TOKEN` | — | Required HTTP Bearer Token, at least 32 characters |
+| `AGENT_WEB_SEARCH_ALLOW_ANONYMOUS` | `false` | Explicitly disables HTTP auth for trusted/demo environments |
+| `AGENT_WEB_SEARCH_HTTP_ALLOWED_HOSTS` | — | Optional comma-separated Host allowlist |
+| `AGENT_WEB_SEARCH_HTTP_ALLOWED_ORIGINS` | — | Optional comma-separated Origin allowlist; requires allowed hosts |
+| `AGENT_WEB_SEARCH_HTTP_LOG_LEVEL` | `info` | Uvicorn log level for the container server |
+
+HTTP settings remain environment-only; the deployment files do not introduce
+a second application configuration format.
+
+### Provider settings
+
+Provider-specific settings below include the credential and model controls for
+all providers. The supported-provider overview above is grouped by capability;
+this section is the detailed configuration reference.
+
+#### 1. DDGS
+
+DDGS uses DuckDuckGo and requires no API key or provider-specific environment
+variables. The `ddgs` Python dependency is installed with the package.
+
+#### 2. Exa
+
+Exa supports both paid and keyless modes.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `EXA_API_KEY` | No | Uses the paid Search API when present |
+| `EXA_MCP_URL` | No | Overrides the free MCP endpoint when no API key is set |
+
+Without `EXA_API_KEY`, Exa falls back to its free MCP endpoint on a best-effort
+basis. The paid API generally provides higher quota and reliability.
+
+#### 3. Parallel
+
+Parallel returns information-dense excerpts ranked for LLM context. One
+`parallel` provider automatically selects its transport:
+
+- Without a key, it uses Parallel's free Search MCP.
+- With `PARALLEL_API_KEY`, it uses the paid Search REST API.
+
+Both transports map `excerpts` into the common result description, so the
+calling agent does not need to distinguish `parallel-free` from `parallel`.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `PARALLEL_API_KEY` | No | Enables the paid API; omit it to use the free MCP |
+
+Parallel is enabled by default and its key is optional.
+
+#### 4. ARK (Recommended)
+
+Volcengine ARK uses model-backed search grounding through the Responses API.
+Add `ark` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `ARK_API_KEY` | Yes | One key, or multiple comma/newline-separated keys |
+| `AGENT_WEB_SEARCH_ARK_MODELS` | No | Comma/newline-separated ARK model IDs; defaults to `glm-5-2-260617,doubao-seed-2-1-turbo-260628,deepseek-v4-flash-ga-260731` |
+
+One model stays fixed; multiple models are selected round-robin for successive
+requests. When multiple ARK keys are configured, a key is selected per request.
+
+<details>
+<summary><strong>Optional Volcengine collaboration rewards information</strong></summary>
+
+Agent Web Search does not require participation in a rewards program. ARK users
+may optionally review the official
+[Volcengine Collaboration Rewards Program](https://www.volcengine.com/docs/82379/1391869?lang=zh).
+Quota, supported models, validity periods, and data-authorization terms can
+change. Check the official terms before opting in. Participation is not
+required to use Agent Web Search.
+
+</details>
+
+#### 5. Brave
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `BRAVE_SEARCH_API_KEY` | Yes | Brave Web Search API credential |
+
+Add `brave` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+
+#### 6. Gemini
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `GEMINI_API_KEY` | Yes | Google AI API credential |
+| `AGENT_WEB_SEARCH_GEMINI_MODELS` | No | Comma/newline-separated Gemini model IDs; defaults to `gemini-3.7-flash` |
+
+Gemini maps common result and time controls into best-effort prompt
+constraints. One configured model stays fixed; multiple models are selected
+round-robin for successive requests.
+
+#### 7. Grok
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `XAI_API_KEY` | Yes | xAI API credential |
+| `AGENT_WEB_SEARCH_GROK_MODELS` | No | Comma/newline-separated Grok model IDs; defaults to `grok-4.6` |
+
+One configured model stays fixed; multiple models are selected round-robin for
+successive requests.
+
+When Grok is enabled, the public tool schema adds `grok_search_mode`:
+
+- `web_search` searches the web.
+- `x_search` searches X with native date filters when available.
+- `both` exposes both server-side tools in one request and lets Grok choose; it
+  does not issue two independent model requests.
+
+#### 8. Codex Alpha (experimental)
+
+The `codex_alpha` provider uses only a gateway API key and a complete endpoint
+implementing `/v1/alpha/search` (the provider does not append a path); it does not handle Codex OAuth tokens. Set the
+endpoint, key, and optional model, then add `codex_alpha` to
+`AGENT_WEB_SEARCH_PROVIDERS`:
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `AGENT_WEB_SEARCH_CODEX_ALPHA_ENDPOINT` | Yes | Complete Alpha Search endpoint URL |
+| `AGENT_WEB_SEARCH_CODEX_ALPHA_API_KEY` | Yes | Gateway Bearer API key |
+| `AGENT_WEB_SEARCH_CODEX_ALPHA_MODEL` | No | Model ID, default `gpt-5.6-luna` |
+
+The provider sends a normal `search_query` command and returns standard web
+search results.
+
+#### 9. DeepSeek
+
+DeepSeek uses the official Anthropic-compatible Messages API and the native
+`web_search_20250305` server tool. It preserves the final model-generated text
+and maps only explicit `web_search_result` blocks into normalized results. A
+valid response may therefore have an `answer` with an empty `results` list.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `DEEPSEEK_API_KEY` | Yes | DeepSeek API credential |
+| `AGENT_WEB_SEARCH_DEEPSEEK_BASE_URL` | No | Anthropic API base URL; defaults to `https://api.deepseek.com/anthropic` |
+| `AGENT_WEB_SEARCH_DEEPSEEK_MODELS` | No | Comma/newline-separated model IDs; defaults to `deepseek-v4-flash` |
+
+Add `deepseek` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key. The
+provider appends `/v1/messages` to the configured base URL. Multiple models are
+selected round-robin for successive requests.
+
+#### 10. Perplexity
+
+This provider uses Perplexity's native structured Search API. It returns result
+rows rather than a Sonar-generated prose answer; OpenRouter compatibility is
+intentionally outside this provider's scope.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `PERPLEXITY_API_KEY` | Yes | Perplexity Search API credential |
+
+Add `perplexity` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+
+#### 11. Tavily
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `TAVILY_API_KEY` | Yes | Tavily Search API credential |
+
+Add `tavily` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+
+#### 12. You.com
+
+You.com returns unified web and news sections. Agent Web Search merges both,
+deduplicates URLs, and applies `max_results` to the combined result list.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `YDC_API_KEY` | Yes | You.com Search API credential |
+
+Add `you` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+
+#### 13. Zhipu Web Search
+
+Zhipu Web Search uses the China standalone Web Search API and returns
+structured search rows. It is a separate Provider from Zhipu Chat Search; the
+implementation does not fall back between the two surfaces.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `ZHIPU_WEB_SEARCH_API_KEY` | Yes | Zhipu Web Search API credential |
+| `AGENT_WEB_SEARCH_ZHIPU_WEB_SEARCH_BASE_URL` | No | China API base URL; defaults to `https://open.bigmodel.cn` |
+
+Add `zhipu_web_search` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+The Provider appends `/api/paas/v4/web_search` to the configured base URL.
+
+#### 14. Zhipu Chat Search
+
+Zhipu Chat Search uses the China GLM Chat Completions API with native web
+search. It returns the model answer plus only explicit top-level search rows;
+URLs mentioned in answer prose are not treated as citations. It is a separate
+Provider from Zhipu Web Search and has no API/Chat fallback.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `ZHIPU_CHAT_SEARCH_API_KEY` | Yes | Zhipu Chat Search API credential |
+| `AGENT_WEB_SEARCH_ZHIPU_CHAT_BASE_URL` | No | China API base URL; defaults to `https://open.bigmodel.cn` |
+| `AGENT_WEB_SEARCH_ZHIPU_CHAT_MODELS` | No | Comma/newline-separated GLM model IDs; defaults to `glm-5.3-flash` |
+
+Add `zhipu_chat_search` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+The Provider appends `/api/paas/v4/chat/completions` to the configured base URL.
+Multiple configured models are selected round-robin for successive requests.
+
+#### 15. Responses
+
+Responses is a generic OpenAI Responses API client for gateways that expose a
+server-side web search tool at `POST {base_url}/responses`. It traverses the
+`output` array (never assuming `output[0]` holds results), maps
+`web_search_call` action sources and `url_citation` annotations into normalized
+results, and preserves the model-generated answer. A response with only a
+message and no URLs keeps the answer, returns empty `results`, and marks
+`searched` as false.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `AGENT_WEB_SEARCH_RESPONSES_BASE_URL` | No | Base URL; defaults to `https://api.openai.com/v1`. Appends `/responses`, or `/v1/responses` when the base has no `/v1` suffix |
+| `AGENT_WEB_SEARCH_RESPONSES_API_KEY` | Yes | Bearer credential; falls back to `OPENAI_API_KEY` |
+| `AGENT_WEB_SEARCH_RESPONSES_MODELS` | No | Comma/newline-separated model IDs; defaults to `gpt-5-mini` |
+| `AGENT_WEB_SEARCH_RESPONSES_TOOL_TYPE` | No | Search tool type; defaults to `web_search` |
+| `AGENT_WEB_SEARCH_RESPONSES_TIMEOUT` | No | Per-request timeout in seconds; overrides `AGENT_WEB_SEARCH_TIMEOUT` when set |
+
+Add `responses` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+Multiple configured models are selected round-robin for successive
+requests.
+
+#### 16. Messages
+
+Messages is a generic Anthropic Messages API client for gateways that expose
+a server-side web search tool at `POST {base_url}/v1/messages`. It traverses
+the `content` array (never assuming a single block holds results), maps
+`web_search_tool_result` / `web_search_result` blocks into normalized
+results, backfills missing titles from citations or the result domain, and
+preserves the model-generated answer. A response with only text and no URLs
+keeps the answer, returns empty `results`, and marks `searched` as false.
+
+| Variable | Required | Purpose |
+| --- | :---: | --- |
+| `AGENT_WEB_SEARCH_MESSAGES_BASE_URL` | No | Base URL; defaults to `https://api.anthropic.com`. Appends `/v1/messages` |
+| `AGENT_WEB_SEARCH_MESSAGES_ENDPOINT` | No | Complete endpoint override; takes priority over the base URL |
+| `AGENT_WEB_SEARCH_MESSAGES_API_KEY` | Yes | `x-api-key` credential |
+| `AGENT_WEB_SEARCH_MESSAGES_MODELS` | No | Comma/newline-separated model IDs; defaults to `claude-3-7-sonnet-20250219,claude-3-5-haiku-20241022` |
+| `AGENT_WEB_SEARCH_MESSAGES_TOOL_TYPE` | No | Search tool type; defaults to `web_search_20250305` |
+| `AGENT_WEB_SEARCH_MESSAGES_TOOL_NAME` | No | Search tool name; defaults to `web_search` |
+| `AGENT_WEB_SEARCH_MESSAGES_TIMEOUT` | No | Per-request timeout in seconds; overrides `AGENT_WEB_SEARCH_TIMEOUT` when set |
+
+Add `messages` to `AGENT_WEB_SEARCH_PROVIDERS` after providing the key.
+Multiple configured models are selected round-robin for successive
+requests.
+
+### Common search controls
+
+Each provider maps the shared controls to its native API when possible and
+ignores unsupported controls.
+
+| Provider | `max_results` | `time_range` |
+| --- | --- | --- |
+| DDGS | Native `max_results` | Native `timelimit` |
+| Exa | Native result count | Native publish date |
+| Parallel | REST: native `max_results`; keyless MCP: client-side truncation (`results[:max_results]`) | Ignored |
+| ARK | Native `limit` | Prompt constraint |
+| Brave | Native `count` | Native `freshness` |
+| Gemini | Prompt constraint | Prompt constraint |
+| Grok | Prompt constraint | Prompt; X Search also uses native dates |
+| Codex Alpha | Local result truncation | Ignored |
+| DeepSeek | Local search-result truncation | Prompt constraint |
+| Messages | Local deduplication and cap | Prompt constraint |
+| Perplexity | Native `max_results` | Native recency filter |
+| Tavily | Native `max_results` | Native `time_range` |
+| You.com | Native `count`, combined cap | Native `freshness` |
+| Zhipu Web Search | Native `count`, local deduplication and cap | Native recency filter |
+| Zhipu Chat Search | Native `count`, local deduplication and cap | Native recency filter |
+| Responses | Local deduplication and cap | Prompt constraint |
+
+Prompt-based controls are best-effort and are not strict guarantees.
+
+## Other interfaces
+
+### Native Hermes plugin
+
+Install the native plugin directly from GitHub:
+
+```bash
+pip install 'ddgs>=9.0'
+hermes plugins install JerryLiu369/agent-web-search --no-enable
+hermes plugins enable agent-web-search --allow-tool-override
+```
+
+The plugin intentionally replaces Hermes' built-in `web_search` tool, so the
+explicit `--allow-tool-override` grant is required. Start a new Hermes session
+after enabling it; restart the gateway when using a messaging channel.
+
+Hermes can also connect through its generic MCP integration instead of the
+native plugin.
+
+### Native DeepSeek Harness plugin
+
+Install the native plugin directly from GitHub (desktop and CLI profiles alike —
+the desktop app ships its own `dsh plugin` command, so no manual file
+placement is needed):
+
+```bash
+dsh plugin --profile <profile> add github:JerryLiu369/agent-web-search
+python -m pip install agent-web-search-mcp
+```
+
+The plugin intentionally replaces the implementation behind DSH's native
+`web_search` seam — same model-facing tool name, prompt, normalized sources, and
+citation UI. It does not expose an `mcp__...__web_search` tool. Install the
+`agent-web-search-mcp` Python command in the same environment as DSH, then
+restart DSH if the new provider is not picked up immediately; the bridge
+delegates built-in provider work to that command while DSH retains its native
+settings, history, and diagnostics. Full steps and a copy-paste install prompt
+are in
+[`integrations/dsh/docs/INSTALL.md`](https://github.com/JerryLiu369/agent-web-search/blob/main/integrations/dsh/docs/INSTALL.md).
+
+DSH can also connect through its built-in MCP client instead of the native
+plugin.
+
+## Troubleshooting
+
+- **`all_providers_failed`** — every selected provider errored. MCP marks the
+  call as an error; the CLI writes diagnostics to stderr and exits 1. Check
+  keys, quotas, and network access. A single retry may help a transient limit.
+- **`agent-web-search` is not found** — install the PyPI package with `pipx` or
+  `pip`, then start a new shell so its scripts directory is on `PATH`.
+- **HTTP 401 `invalid_token`** — the `Authorization: Bearer …` header must
+  match `AGENT_WEB_SEARCH_AUTH_TOKEN`, which must be at least 32 characters.
+- **A provider is missing from a response** — failed providers are omitted
+  from successful responses. The Python API exposes the reasons in
+  `response.failed_provider_errors`.
+- **Provider changes have no effect** — provider settings are read once at
+  startup; restart the CLI, MCP server, or Hermes plugin after changing them.
+- **MCP client times out before the tool returns** —
+  `AGENT_WEB_SEARCH_TIMEOUT` bounds a single upstream HTTP call, not the
+  whole search. Keyless Parallel issues up to 3 calls and ARK may append a
+  continuation request, so the worst case is `3 × AGENT_WEB_SEARCH_TIMEOUT`;
+  configure your MCP client's tool timeout accordingly.
+
+## FAQ
+
+### What is Agent Web Search?
+
+Agent Web Search is an open-source web search layer for AI agents. It exposes
+one `web_search` tool through an MCP server (stdio or Streamable HTTP), a CLI,
+and a Python API. Behind that tool it runs model-native search grounding
+providers (ARK, Gemini, Grok, DeepSeek, Zhipu Chat Search, Codex Alpha, and
+generic Responses/Messages gateways), agent search APIs (Exa, Parallel, Brave,
+Perplexity, Tavily, You.com, Zhipu Web Search), and DuckDuckGo as a
+conventional fallback, then returns one normalized JSON response.
+
+### Is there a free web search MCP server that needs no API key?
+
+Yes. The default provider set — DDGS, Exa, and Parallel — works without any API
+key. Exa and Parallel use their free MCP endpoints on a best-effort basis until
+`EXA_API_KEY` or `PARALLEL_API_KEY` is set. Paid providers are opt-in through
+`AGENT_WEB_SEARCH_PROVIDERS`.
+
+### How is it different from a Google/Bing metasearch MCP?
+
+Metasearch servers scrape conventional result pages and merge them. Agent Web
+Search aggregates search services built for agents, including model-native
+grounding that returns a synthesized `answer` with citations. A
+[head-to-head benchmark against open-webSearch](https://github.com/JerryLiu369/agent-web-search/blob/main/docs/benchmark-vs-open-websearch-2026-09-06.md)
+documents the difference, including its caveats: SERP scraping from a
+datacenter IP was frequently bot-walled, while API-backed providers degraded to
+fewer rows instead of none.
+
+### Which agents and clients does it work with?
+
+Any MCP client that supports stdio or Streamable HTTP, including Codex CLI,
+Claude Code, OpenCode, Cursor, Cline, and Claude Desktop. Hermes has a native
+plugin. Shell-capable agents can use the CLI with the included Agent Skill
+instead of MCP.
+
+### Should I use the MCP server or the CLI + Skill?
+
+Use MCP when the client supports tool servers and you want typed tool
+discovery, protocol-level errors, or a remote deployment. Use the CLI + Skill
+when the agent already has a shell and supports Agent Skills; it needs no MCP
+configuration. Both return the same response shape.
+
+### Can I use my own OpenAI- or Anthropic-compatible gateway for search grounding?
+
+Yes. The `responses` provider calls any OpenAI Responses API gateway with a
+server-side web search tool, and the `messages` provider does the same for
+Anthropic Messages API gateways. Set the base URL, key, and models through the
+variables in [Provider settings](#provider-settings).
+
+### Can I host it as a remote MCP server?
+
+Yes. `agent-web-search-mcp --transport http` serves stateless Streamable HTTP
+at `POST /mcp` with Bearer-token authentication. One-click templates are
+provided for Vercel, Railway, Render, and Zeabur, and the repository includes a
+Dockerfile.
+
+### Does it collect telemetry or store my API keys?
+
+No. There is no telemetry and no shared key service. Provider credentials are
+read from environment variables on the machine or server that runs the search
+and are never accepted as tool arguments.
+
+## Development
+
+Using [`uv`](https://docs.astral.sh/uv/) keeps the development environment
+isolated and reproducible:
+
+```bash
+git clone https://github.com/JerryLiu369/agent-web-search.git
+cd agent-web-search
+uv venv
+uv pip install -e '.[dev]'
+uv run --extra dev pytest -q
+uv run ruff check .
+```
+
+<details>
+<summary><strong>Standard venv + pip alternative</strong></summary>
+
+```bash
+python -m venv .venv
+# Linux/macOS: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -e '.[dev]'
+pytest -q
+ruff check .
+```
+
+</details>
+
+[ARCHITECTURE.md](https://github.com/JerryLiu369/agent-web-search/blob/main/ARCHITECTURE.md) is the design source of truth, and
+[AGENTS.md](https://github.com/JerryLiu369/agent-web-search/blob/main/AGENTS.md) lists the non-negotiable invariants. Read both before
+changing transports, configuration, authentication, deployment, providers, or
+tool schemas, keep stdio and HTTP behavior identical, and keep `pytest` and
+`ruff` green in the same change.
+
+## License
+
+[MIT](https://github.com/JerryLiu369/agent-web-search/blob/main/LICENSE)

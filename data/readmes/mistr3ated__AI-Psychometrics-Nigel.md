@@ -1,0 +1,40 @@
+
+<img width="115" height="180" alt="MesureCo--email" src="https://github.com/user-attachments/assets/93576aed-66b1-4e62-acfd-c03e72a7e0fb" />
+
+I am a psychologist interested in how artificial intelligence can help improve psychometric assessment. This repository contains code from an evolving book about my experiences with AI for psychological measurement, available for free at https://psychometrics.ai. I have used AI assistance to better understand deep learning models that I explain how to use in psychological measurement contexts. 
+
+So far, the repo includes:
+- New methods inc. **Semantic Item Alignment**, **Pseudo-Factor-Analysis** and **LLM Convex Hulls**,
+- A **decoupled reconstruction of a MiniLM encoder** with high precision decimal matching,
+- A **decoupled reconstruction of the GPT-2 small decoder** with high precision decimal matching,
+- The code for **Seedling**, an LLM coded from the ground up for education purposes.
+- **RAG item generation** using IPIP database for context injection (includes Re-ranking).
+- **Explainable AI (XAI)** permutation test example (see psychometrics.ai for XAI limitations with decoders)
+- **Ollama with gpt-oss-20b** for local item generation contributed by Michael John Ilagen and Carl Falk
+- **API LLM scoring of the Hewlett ASAP-SAS data** (replicates Q10 cell of Jiang & Bosch, 2024)
+- **Intercepts** shown to be recoverable as dot product projections onto semantic intensity vectors
+- **Measurement invariance demonstration** shows you can check DIF using embeddings before data collection
+
+**NEW: Pseudo configural, metric, and scalar invariance from embeddings**
+The pseudo invariance zip contains a demonstration of how to check measurement invariance using embeddings. In particular, it shows that conceptually interpretable changes in item wording related to construct relevance and intensity are detectable in the item residuals via constraint tests on loadings and intercepts in mean and covariance structures analyses. Fit statistics based on sample size cannot be used because there is no sample of respondents under these methods.
+
+![Transformer Measurement Invariance](https://raw.githubusercontent.com/mistr3ated/AI-Psychometrics-Nigel/main/images/transformer_measurement_invariance.png)
+
+**Seedling** is a GPT-2–style, ~51 million parameter LLM, coded from scratch in PyTorch with AI assistance. You can read more about its architecture and development process on the book's website. The name Seedling reflects both the early inchoate state of this model (loss = 4.63) and the hope that with a bit of TLC, this model will become a strong educational resource for quantitative psychologists. While the loss is still high, the smaller model size and single-file design (with separate testing script) make it accessible. Next steps could include modularizing the code like Andrej Karpathy’s excellent examples (although the single script is accessible as a beginner) and trying optimizations. Potential optimizations might include adjusting the learning rate, attempting learning rate restarts, changing the vocab size to the nearest multiple of 64 after 50k to ensure tensor alignment, and expanding the architecture deeper (more layers) and wider (more dimensions), both with and without greater data exposure. These changes are feasible to try while maintaining the low budget.
+
+**Licensing**
+
+Book Content: The text, examples, and educational materials in this book are shared under a Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0). You're welcome to use the ideas, methods, and concepts in your own work, whether that's product development, internal tools, client services, or research. All I ask is that you don't sell or repackage this content as-is, and you credit psychometrics.ai when using it:
+
+Guenole, N. (2025). Psychometrics.ai: Transforming Behavioral Science with Machine Learning. https://psychometrics.ai.
+
+Software Code: All code examples, scripts, and software tools are licensed under the MIT License, allowing you to use, modify, and distribute them freely in both commercial and non-commercial projects.
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+
+
+
+
+
+

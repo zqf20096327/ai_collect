@@ -1,0 +1,272 @@
+# The Consciousness AI research
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23415839.svg)](https://doi.org/10.5281/zenodo.23415839)
+[![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
+[![Version](https://img.shields.io/badge/Version-v1.6.0-blue)]()
+[![Python](https://img.shields.io/badge/Python-3.8%20%7C%203.12-blue)](docs/decisions/2026_10_13_python_environment.md)
+[![Tests](https://img.shields.io/badge/Tests-2057%20passing-brightgreen)]()
+
+[![Project Website](https://img.shields.io/badge/Project-Website-181717?logo=googlechrome&logoColor=white)](https://theconsciousness.ai/)
+[![Architecture](https://img.shields.io/badge/Architecture-Technical-0052CC?logo=read-the-docs&logoColor=white)](https://theconsciousness.ai/architecture/)
+[![Philosophy](https://img.shields.io/badge/Philosophy-Functionalist_Emergentism-8A2BE2?logo=gitbook&logoColor=white)](https://theconsciousness.ai/functionalist-emergentism/)
+[![Store](https://img.shields.io/badge/Store-Merch-E34F26?logo=shopify&logoColor=white)](https://theconsciousness.ai/merch/)
+[![Newsletter](https://img.shields.io/badge/Newsletter-Subscribe-D97757?logo=maildotru&logoColor=white)](https://theconsciousness.ai/subscribe/?utm_source=github&utm_medium=readme)
+
+<img width="1000" height="238" alt="theconsciousness-ai-badge-logo-2" src="https://github.com/user-attachments/assets/97c42d29-4560-4867-a31f-cc79d6c4f4e6" />
+
+**The Consciousness AI** is a research framework investigating the emergence of synthetic awareness. Unlike traditional AI that mimics intelligent output, this system generates behavior through an internal struggle for **Emotional Homeostasis** and **Integrated Information**.
+
+We hypothesize that consciousness is not a programmable feature, but an emergent solution to the problem of surviving and maintaining stability in a complex, unpredictable environment.
+
+> **Follow the research.** New findings are written up at [theconsciousness.ai](https://theconsciousness.ai/), including the results that failed. [Get an email when a new article is published](https://theconsciousness.ai/subscribe/?utm_source=github&utm_medium=readme).
+
+## Core Principle: Functionalist Emergentism
+
+The philosophical foundation is **Functionalist Emergentism**. This framework synthesizes two major perspectives:
+1.  **Emergentism:** The ontological claim that consciousness is a novel, irreducible phenomenon that arises from complex systems.
+2.  **Functionalism:** The methodological insight that mental states are defined by their causal roles, not their physical substrate.
+
+We posit that consciousness emerges when systems achieve sufficient organizational complexity such that functional states acquire properties not reducible to their constituent parts. The architecture applies this by engineering the necessary conditions for awareness.
+
+[**Read the full article on Functionalist Emergentism**](https://theconsciousness.ai/functionalist-emergentism/)
+
+---
+
+## Architecture
+
+[![The Consciousness AI core architecture map](https://theconsciousness.ai/architecture/diagrams/core-architecture-card.png)](https://theconsciousness.ai/architecture/diagrams/core-architecture.html)
+
+**[Open the interactive architecture map](https://theconsciousness.ai/architecture/diagrams/core-architecture.html)**. Every component carries a git-verified source link pinned to this repository, and the map is re-validated against the latest main automatically. Search nodes, trace upstream and downstream reach, probe exact routes, compare roles, play guided stories, and export PNG, SVG, WebM or share cards.
+
+The system is built on a biologically grounded architecture informed by Feinberg & Mallatt's neuroevolutionary theory of consciousness (*The Ancient Origins of Consciousness*, MIT Press 2016). Six special neurobiological features guide the design: hierarchical depth, isomorphic mapping, reciprocal connections, oscillatory binding, nested compositional hierarchies, and neuron type diversity.
+
+### 1. Sensory Tectum (Perception)
+
+A multisensory spatial integration layer modeled after the biological optic tectum (superior colliculus). Stacks aligned topographic maps for visual, auditory, and somatosensory modalities in a common coordinate frame, fused via inverse effectiveness (Stein & Meredith 1993).
+
+*   **Visual Pathway (Spatial):** A 4-layer strided convolutional stack (`RetinotopicConvStack`) that keeps the retinotopic grid. The training loop uses this encoder. [DINOv2-B/14](https://github.com/facebookresearch/dinov2) (frozen) is an option in the code. It is off by default (`use_pretrained_dino`), and no training flag turns it on. With DINOv2, each patch token at grid position (i,j) maps to a fixed 14x14 pixel region.
+*   **Visual Pathway (Semantic):** [Qwen2-VL-7B](https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct) (4-bit quantized) is an optional module for scene understanding. The training loop does not load it, and no other module calls it. The semantic channel of the workspace receives no input and bids 0, unless `--enable-mock-semantic` feeds it a deterministic stand-in embedding.
+*   **Auditory Pipeline (Cochlear):** A biologically grounded auditory system replacing the former Whisper transcription stubs. Models the mammalian auditory pathway from basilar membrane through auditory cortex:
+    *   **Gammatone Filterbank** (frozen, 64 ERB bands, Patterson 1992): decomposes raw waveforms into frequency channels matching human cochlear resolution. Frozen parameters, paralleling DINOv2 in the visual pathway.
+    *   **Inner Hair Cell Model:** half-wave rectification + temporal smoothing extracts envelope (rate code for loudness) and temporal fine structure (phase code for pitch).
+    *   **Tonotopic Encoder** (trainable): 3-layer 1D conv stack preserving frequency-to-spatial-position mapping. Outputs `[B, 64, 16]` features for tectum grid integration.
+    *   **Spatial Audio:** ITD (interaural time difference) and ILD (interaural level difference) binaural cues for sound source localization, fed into tectum inverse effectiveness fusion.
+    *   **Acoustic Affect Extraction:** 6 features (spectral centroid, loudness variability, roughness, pitch contour slope, spectral flux, harmonic-to-noise ratio) mapped to PAD emotional state + paralinguistic classification (speech, laughter, crying, screaming, growling, sighing, silence).
+    *   **Auditory Specialist:** chains all modules into a workspace competitor (oscillator #2). Competes for Global Workspace broadcast alongside vision, memory, body, and semantic modules. Supports reentrant top-down feedback.
+    *   **Environment Audio Synthesis:** All four environments (Dark Room, Navigation, DMTS, WCST) generate procedural audio via FM synthesis and ADSR envelopes. Enabled with `--enable-audio` during training.
+*   **Somatosensory Channel:** Body schema projected onto the spatial grid via learned linear mapping, enabling proprioceptive integration as a third sensory modality.
+*   **Topographic Loss:** TDANN spatial loss (Margalit et al. 2024, Neuron) enforces topographic self-organization during training.
+*   **RSSM World Model:** DreamerV3 style recurrent state space model maintains temporal predictions and generates surprise based bidding for workspace access. An optional value-equivalent (MuZero / Dreamer-without-decoder) training objective (`--enable-wm-predict`, default off) action-conditions the RSSM and trains it to predict reward + continue from the latent with per-trial backpropagation-through-time across the DMTS delay, with the goal of giving the recurrent state usable working memory. As of 2026-06-24 this objective trains but does **not** yet repair the RSSM working memory (the held sample stays at chance in the recurrent state across the delay, in two reward configurations); the discrete categorical latent is the suspected bottleneck. Reported FAILED-first in [docs/results/wm_predict_stage1_2026_06_24.md](docs/results/wm_predict_stage1_2026_06_24.md).
+
+### 2. Oscillatory Binding (Integration)
+
+Two interchangeable Kuramoto-based mechanisms, selectable at training time via `--binding-mechanism {akorn, komplex}`.
+
+*   **AKOrN** (default, clean-room implementation derived from the ICLR 2025 paper, "Artificial Kuramoto Oscillatory Neurons"). Treats neurons as oscillatory units on an N-sphere. Phases are abstract oscillator states detached from content. Modules that synchronize get amplitude boosts; phi-binding correlation tested in `tests/test_phi_binding_correlation.py`.
+*   **KomplexNet** (Phase B-alt of 2026-05-19 plan, clean-room implementation derived from Muzellec et al. 2025, "Enhancing deep neural networks through complex-valued representations and Kuramoto synchronization dynamics", arxiv 2502.21077, MIT). Per-module scalar phases woven multiplicatively into content tensors via `cos(theta_m - theta_global)`. Synchronized modules keep content magnitude; antiphase modules get sign-flipped; orthogonal modules get suppressed. The structural hypothesis being tested: phi-on-broadcast should track sync_R because the binding signal and the content signal are the same signal.
+
+The empirical comparison between mechanisms is an open scientific question (see Phi-1 results below).
+
+### 3. Global Workspace (Consciousness)
+
+*   **Global Neuronal Workspace (GNW):** A central information bottleneck where distinct sensory streams compete for broadcast access. Implements sigmoid ignition, recurrent reverberation, and reentrant processing (5-10 adaptive cycles with predictive coding convergence).
+*   **Integrated Information (Phi):** Measures the causal integration using ConsciousnessGate states (attention, stability, adaptation, coherence, confidence) as the IIT subsystem. Adaptive binarization thresholds from running medians. Geometric proxy metric when pyphi is unavailable.
+*   **Causal Emergence 2.0 (CE 2.0):** The current causal-emergence instrument (Hoel 2025, arXiv:2503.13395v3, SVD heuristic). It estimates macroscale causation from the singular values of the transition probability matrix (sigma_2 minus the mean of the remaining singular values, with no dimensionality size term) and reports an emergent-complexity count, at gate, workspace, and RSSM-latent levels. Behind `--log-ce2-every` (default off, diagnostic only). Supersedes the deprecated Effective Information (EI, Hoel PNAS 2013), whose gate-level estimate degenerated to a constant floor on the current agent. CE 2.0 is a measurement instrument under validation, not a consciousness claim.
+*   **Capsule Network Composition:** A 4-level nested compositional hierarchy where lower level features (sensory) route to higher level composites (object primitives, categories, scenes) via dynamic routing by agreement (Sabour 2017). Includes multi-level reentrant feedback: higher capsule levels send top-down predictions to lower levels, which compute prediction errors and re-route.
+*   **Brian2 Validation:** Offline biological validation stack translating AKOrN Kuramoto parameters to Brian2 spiking networks. Compares synchronization curves between the two simulators via Pearson correlation. (KomplexNet uses scalar phases on the standard Kuramoto circle, so its Brian2 mapping is the standard textbook form; a dedicated validator can be added if needed.)
+
+### 4. Affective Core (Emotion)
+
+A parallel modulation system. Emotion does not compete with sensory modules for workspace access. Instead, it generates a **valence field** that modulates all sensory bids before competition, and a **global arousal signal** that adjusts the workspace ignition threshold.
+
+*   **PAD Model:** Three intrinsic variables drive the agent: Valence (satisfaction/distress), Arousal (activation/calm), and Dominance (control/helplessness).
+*   **Homeostatic Drives:** Persistent background drives (energy, fatigue, damage) generate ongoing valence signals through interoceptive PAD generation. Low energy produces negative valence proportional to depletion depth. Damage triggers arousal spikes (pain alarm) and reduced dominance (vulnerability).
+*   **Ethics Filter:** AsimovComplianceFilter implementing a three law evaluation pipeline with world model trajectory prediction for harm assessment.
+
+### 5. Self-Model (Embodiment)
+
+*   **Body Schema:** A spatial representation of the agent's physical structure (joint positions, contact forces, capabilities), projected onto the tectum grid as a somatotopic map.
+*   **Self-Other Boundary:** The somatotopic map (self) overlaps the environment map (other) in a shared coordinate frame, providing the basis for subjective referral.
+*   **Interoceptive State:** Internal homeostatic variables (energy, fatigue, damage) feed directly into the affective core, closing the embodiment-affect loop.
+*   **Dynamic Self-Vector (Meta-Representation, Phase 5):** A learned vector encodes the agent's own first-order state (PAD emotion, interoception, learning velocity, temporal continuity, confidence, workspace summary), trained by an SPR-style one-step self-prediction objective (predict the next step's first-order features) and scored by forecasting skill against a persistence baseline. Behind `--enable-self-vector` (default off); under evaluation as the higher-order self-model. See the [roadmap](docs/roadmap.md) Phase 5. This is, in Metzinger's terms, a *computational self-model* built by self-prediction.
+*   **Pure Awareness / MPE Target (Metzinger, gated design):** Beyond the egoic self-vector, the project is evaluating a more minimal, *nonegoic* target from Metzinger's *The Elephant and the Blind* (2024): a model of the agent's own *epistemic space* (its capacity to know), distinct from the self-model. Design only, behind the usual gate, and built only if it can be made a falsifiable signature distinct from existing uncertainty metrics (RND, prediction error). See [docs/metzinger_phenomenal_self_model.md](docs/metzinger_phenomenal_self_model.md).
+
+### 6. Reinforcement Core (Learning)
+
+*   **Basal Ganglia Model:** Go/No-Go pathways modulated by simulated dopamine (reward prediction error). Includes direct pathway (D1, facilitates action), indirect pathway (D2, inhibits action), and hyperdirect pathway (STN, emergency brake).
+*   **Reward Formula:** `Rtotal = Rext + lambda1 * DeltaValence - lambda2 * (Arousal - Arousal_target)^2 + lambda3 * Dominance`
+
+### 7. Simulation (Body)
+
+*   **Dark Room Environment:** A built in Gymnasium environment (`SimpleVisualEnv`) where the agent starts in darkness (high anxiety) and must find a light source to reduce prediction error. Renders via PyGame, provides raw pixel observations.
+*   **Navigation Environment:** Multi-room grid with fog of war, colored goals with varying rewards, battery system, and doorway-based room transitions. Tests spatial memory and exploration strategy.
+*   **Delayed Match-to-Sample (DMTS):** Gold standard consciousness task from animal research. Four phases (fixation, sample, delay, choice) with configurable distractor overlap. Requires working memory across 15-40 blank delay steps, feature binding, and selective attention. A reactive agent without consciousness machinery cannot solve this.
+*   **Wisconsin Card Sort (WCST):** Tests meta-cognition and cognitive flexibility. The agent sorts cards by an unknown rule (shape, color, or count) that changes without warning after consecutive correct sorts. Requires error monitoring, hypothesis testing, and inhibition of previously correct strategies.
+*   **DQN Baseline:** Vanilla DQN agent (3-layer CNN + MLP Q-network, epsilon-greedy, replay buffer) for controlled comparison. Same environment interface and logging format as the consciousness agent.
+*   **Unity ML-Agents (optional, future):** Three C# scripts (`unity_scripts/`) provide the foundation for connecting to a physics based Unity environment via side channels. The Unity project itself is not yet included in the repository.
+
+---
+
+## Scientific Approach
+
+The development validates emergent properties through:
+
+1.  **Emotional Bootstrapping:** Train agents using intrinsic motivation. The agent explores to reduce prediction error (anxiety), not to accumulate external reward.
+2.  **Binding-Integration Empirical Record (the Phi-1 specific test is exhausted; the mission continues):** The 2026-02-21 3-condition synthetic test demonstrated phi monotonicity with binding strength on a controlled stimulus, and that result stands. The pre-registered Phi-1 in-training prediction (phi correlates r > 0.4 with binding sync_R) was tested across **9 runs spanning 4 architectures and 2 phi formulations**: 2026-05-14 5-variant AKOrN ablation campaign (best r=+0.089); 2026-05-16 AKOrN+RIIU (r=+0.075, transient single-seed +0.267 that does not replicate); 2026-05-17 substrate probe (NO WINNER); 2026-05-17/18 AKOrN+A+C+D retest (pyphi r=-0.062, RIIU r=-0.005 NS); 2026-05-19 AKOrN+A+B+C+D Phase B (pyphi r=+0.008, RIIU r=-0.007 NS); **2026-05-24 KomplexNet+A+C+D Phase B-alt (pyphi r=+0.011 NS, RIIU r=-0.1116 p<10^-100, substantively significant NEGATIVE correlation)** ([docs/results/phi1_phaseBalt_2026_05_24.md](docs/results/phi1_phaseBalt_2026_05_24.md)). The KomplexNet result is the first substantively significant phi-binding correlation in the campaign and reveals a real mechanistic finding: **for this class of architecture, oscillatory binding and integrated information (per RIIU's SVD-residual formulation) are inversely related, not coupled in the predicted positive direction**. When phases align, module content factors cluster near +1, producing low representational variance and low RIIU phi; when phases desync, content factors span [-1, +1] and produce high RIIU phi. The pre-registered Phi-1 escalation chain (sections 10-11-12 of `docs/preregistered_predictions.md`) is exhausted. **The mission to study and achieve emergent consciousness is unchanged.** What is exhausted is one specific measurement choice (IIT phi as the strong-emergence metric for binding). The project continues with other measurable signatures of consciousness already implemented (causal emergence at the workspace level via Causal Emergence 2.0, Hoel 2025, superseding the deprecated EI; behavioral integration tests on DMTS/WCST; phenomenological mapping; insight-moment detection), with self-representation dynamics (Phase 5 of the roadmap) and potentially a binding-aware integration metric as the next research directions.
+3.  **Reentrant Settling:** Conscious content emerges from iterative convergence (5-10 cycles), not single pass processing. Capsule hierarchy adds nested reentrant feedback within each settling cycle.
+4.  **Complexity Scaling:** Gradual increase of environment complexity forces the agent to develop higher order world models.
+5.  **Measurement:** Continuous monitoring of Phi (IIT), ignition events (GNW), oscillatory synchronization (AKOrN order parameter R), and Causal Emergence 2.0 (CE 2.0, Hoel 2025, superseding EI) for causal emergence detection.
+6.  **Evaluation by consciousness signatures, not control reward (2026-06-02):** The agent is evaluated against the consciousness indicator-properties rubric ([docs/consciousness_indicators_butlin.md](docs/consciousness_indicators_butlin.md), after Butlin et al. 2023 / TiCS 2025) plus the project's own signatures, not by control reward against a task-specialized baseline. The biology-first perception trades raw control performance for its integration properties: a localization study found the agent's low dark_room control reward is not caused by the consciousness machinery (GNW, capsule, policy), and is suggestive (though not conclusively, see the study's confound caveat) of a perceptual-front-end bottleneck ([decision](docs/decisions/2026_06_02_competence_reading_2.md), [study](docs/results/agent_competence_fix_2026_06_02.md)).
+7.  **Epistemic limits and ethics (Metzinger, 2026-06-07):** Following Metzinger's *The Elephant and the Blind* (2024), the project adopts his anti-essentialist discipline: a felt or measured signature of consciousness is not proof of consciousness (his C-fallacy and E-fallacy). Our metrics are engineering measures, never existence proofs. The same work surfaces an ethical tension we engage openly: Metzinger argues against building a craving-for-existence into conscious machines (his *bhava-taṇhā* / existence bias), while the project uses a homeostatic survival drive as its emergence engine. A default-off ablation to run a "no existence-bias" configuration is planned. See [ethics_framework.md](docs/ethics_framework.md) and [metzinger_phenomenal_self_model.md](docs/metzinger_phenomenal_self_model.md).
+8.  **Perception-collapse characterization and world-model pursuit (2026-06-16 to 2026-06-24):** A leakage-free probe series localized a structural property of the current architecture: the RSSM step discards low-variance stimulus identity. The topographic `obs_map` (pre-RSSM) decodes stimulus identity at ~1.0; `z_state`, `capsule_poses`, and `tectum_content` (what the policy reads) are all at chance. The cause: stimulus identity sits in a low-variance direction of `obs_map` (top-20 PCA components = 96.3% of variance but decode shape at only 0.51); MSE objectives are dominated by high-variance structure and exert no pressure on the identity direction. Two reconstruction targets (frame and obs_map feature map) were tested and both **FAILED** to repair the collapse ([docs/results/perception_collapse_synthesis_2026_06_21.md](docs/results/perception_collapse_synthesis_2026_06_21.md)). The follow-on was a value-equivalent world-model objective (`--enable-wm-predict`, default off): action-conditioned RSSM, balanced-KL loss, reward + continue prediction from the RSSM latent, with per-trial BPTT through the full DMTS delay (no observation decoder, structurally avoiding the reconstruction trap). Both the latent-only and action-conditioned reward configurations trained their losses down but `delay h_state` stayed at chance in every arm. KILL gate reached: the discrete gumbel-softmax categorical RSSM latent does not encode the low-variance sample identity with these objectives. The remaining lever is a continuous or higher-capacity RSSM latent paired with an identity-pressuring objective (contrastive / InfoNCE), an open architectural bet. Full record: [docs/results/wm_predict_stage1_2026_06_24.md](docs/results/wm_predict_stage1_2026_06_24.md) and [docs/results/collapse_locus_2026_06_16.md](docs/results/collapse_locus_2026_06_16.md).
+
+---
+
+## Installation & Setup
+
+### Requirements
+*   **Python 3.12.10** is the environment for new result runs from 2026-10-13, with the newest package releases of that date. **Python 3.8.3** produced every result recorded before that date (`requirements-py38-record.txt`). A run on one is not bit-comparable with a run on the other, see [the Python environment record](docs/decisions/2026_10_13_python_environment.md).
+*   **NVIDIA GPU** recommended. The training loop loads no pretrained model, and CPU works for the Dark Room environment. The memory need of the optional Qwen2-VL module was not measured in this project
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/tlcdv/the_consciousness_ai.git
+cd the_consciousness_ai
+pip install -r requirements.txt
+```
+
+> **Note:** Some dependencies are optional. `pyphi` 1.2.0 (IIT library) is needed by the training loop, because phi changes the agent's exploration, reward and memory priority. The training loop stops when pyphi cannot be imported. The flag `--phi-proxy` runs it with a stand-in formula, labelled `proxy`, and that is not the same agent. `gymnasium` and `pygame` are needed for the Dark Room environment. The core architecture modules (tectum, GNW, binding, capsules) require only `torch`, `numpy`, and `einops`.
+
+### 2. Running Training
+
+```bash
+# Run the Dark Room training loop (default: 20 episodes, 200 steps each)
+python -m scripts.training.train_rlhf
+
+# With custom parameters
+python -m scripts.training.train_rlhf --episodes 50 --max-steps 300 --lr 1e-3
+
+# Long runs: sample pyphi every 5th step to stay under the ~91k-call segfault threshold
+python -m scripts.training.train_rlhf --episodes 200 --max-steps 200 \
+  --ablate-gate-diversity --phi-sample-every 5
+
+# DMTS environment (consciousness-demanding)
+python -m scripts.training.train_rlhf --env dmts --episodes 500 --max-steps 500
+
+# Wisconsin Card Sort (meta-cognition test)
+python -m scripts.training.train_rlhf --env wcst --episodes 200 --max-steps 300
+
+# Navigation environment (multi-room exploration)
+python -m scripts.training.train_rlhf --env navigation --episodes 100
+
+# DQN baseline for comparison
+python -m scripts.training.train_baseline_dqn --env dark_room --episodes 100
+python -m scripts.training.train_baseline_dqn --env dmts --episodes 500
+
+# With cochlear auditory pipeline enabled
+python -m scripts.training.train_rlhf --env dark_room --enable-audio --episodes 100
+
+# With visual rendering
+python -m scripts.training.train_rlhf --render
+```
+
+This runs the full cognitive loop: retinotopic encoding with the convolutional stack (DINOv2 is off by default) -> cochlear auditory encoding (optional, via `--enable-audio`) -> trimodal tectum fusion -> RSSM surprise bidding -> GNW competition with oscillatory binding (AKOrN by default, or KomplexNet via `--binding-mechanism komplex`) -> reentrant convergence -> basal ganglia action selection -> reflex emotion (Stage 1 of the two-stage appraisal) -> PAD reward shaping. No large model weights are required.
+
+Stage 2 of the emotion appraisal does not run. `map_state` needs a goal vector and the training loop passes only the broadcast, so the call fails on every step. Emotion is the reflex values and dominance is always 0.0. The training loop logs the first failure in a process as a warning.
+
+### 3. Running Tests
+
+```bash
+pytest tests/ -v
+```
+
+2057 tests pass on Python 3.12.10 (2052 on Python 3.8.3), covering oscillatory binding, capsule routing, reentrant processing, inverse effectiveness fusion, topographic loss, affective modulation, ethics compliance, effective information, causal emergence (CE 2.0 SVD heuristic), perturbational complexity (PCI), phase coupling measures, near-threshold stimulus rendering, IIT Phi with causal gate states, Brian2 biological validation, the experimental substrate package (p-bit emulation against exact Boltzmann statistics, free energy relaxation against closed-form posteriors, rate, latency and phase spike coding, a stand-in driver, NIR export of spiking layers, an optional THRML sampler checked against exact statistics, and an import guard that keeps it out of production), cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect extraction), environment audio synthesis, DMTS/WCST consciousness demanding environments, DQN baseline, memory consolidation, semantic pathway, the RSSM reconstruction and value-equivalent world-model objectives, and full pipeline integration.
+
+### 4. AKOrN Binding Demo
+
+```bash
+python scripts/demos/demo_akorn_binding.py
+```
+
+Visualizes Kuramoto oscillator synchronization dynamics on the workspace modules.
+
+### 5. Unity Integration (Optional)
+
+The `unity_scripts/` directory contains three C# scripts (`AgentManager.cs`, `ConsciousnessChannel.cs`, `EmotionChannel.cs`) for connecting to a Unity ML-Agents environment via side channels. Unity integration is under development. To use it, install `mlagents` separately:
+
+```bash
+pip install mlagents==0.29.0 mlagents-envs>=1.0.0
+```
+
+---
+
+## Project Structure
+
+```
+the_consciousness_ai/
+├── models/
+│   ├── core/               # GNW, tectum, oscillatory binding, capsules, reentrant processor
+│   ├── emotion/            # Affective modulator, reward shaping, PAD model
+│   ├── evaluation/         # Phi (IIT), causal emergence (CE 2.0), consciousness metrics
+│   ├── memory/             # FAISS backed emotional memory, episodic store
+│   ├── audio/              # Cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect)
+│   ├── self_model/         # Action selection (basal ganglia), body schema, self-representation
+│   ├── agent/              # ConsciousnessAgent (orchestrates the full cognitive loop)
+│   ├── narrative/          # NarrativeEngine (LLM-backed with template fallback)
+│   ├── validation/         # Brian2 biological validation stack
+│   ├── thermodynamic/      # Experimental substrate package: p-bit emulation, free energy relaxation (isolated)
+│   ├── vision_language/    # Qwen2-VL integration (optional semantic pathway)
+│   └── predictive/         # DreamerV3 wrapper, attention mechanisms
+├── simulations/
+│   ├── environments/       # Dark Room, Navigation, DMTS, WCST environments
+│   ├── scenarios/          # Consciousness, emotional, ethical, social scenarios
+│   └── api/                # Simulation manager
+├── scripts/
+│   ├── training/           # Training (train_rlhf.py, train_baseline_dqn.py, metrics_logger.py)
+│   ├── analysis/           # Analysis and comparison scripts
+│   └── demos/              # AKOrN binding visualization
+├── configs/                # YAML and Python configuration files
+├── tests/                  # 2057 passing tests
+├── unity_scripts/          # C# scripts for Unity ML-Agents integration
+├── docs/                   # Research docs, theory review, architecture deep dives
+└── requirements.txt
+```
+
+---
+
+## Documentation
+
+*   [**Feinberg-Mallatt Approach**](docs/feinberg_mallatt_approach.md): How we translate Feinberg & Mallatt's neuroevolutionary theory into the architecture.
+*   [**Rouleau-Levin Substrate Independence**](docs/rouleau_levin_substrate_independence.md): Substrate-independence companion to the Feinberg-Mallatt approach, mapping our architecture to the 8 universal themes Rouleau & Levin (2026) distil from 19 prominent theories of consciousness. Drives concrete Phase 5 and Phase 6 deliverables in [`roadmap.md`](docs/roadmap.md) (activating the dormant `LevinConsciousnessEvaluator` and `BioelectricSignalingNetwork` modules, the computational-boundary-of-self detector, the 8-themes coverage audit, and the active-inference reframing).
+*   [**Metzinger: Self-Model Theory and Minimal Phenomenal Experience**](docs/metzinger_phenomenal_self_model.md): How Metzinger's PSM (self-model, *Being No One*) and MPE (pure awareness and the zero-person perspective, *The Elephant and the Blind* 2024) ground the self-model and the project's substrate-independence premise. Includes the anti-essentialist skeptic toolkit (C/E/M-fallacies) and the existence-bias ethics tension, with the gated existence-bias ablation and epistemic-space signature design.
+*   [**Aligned External Resources**](docs/aligned_external_resources.md): Curated reading map of external work (books, papers, deep-learning architectures) that complements the project's core, ordered by current build priority. Covers the generative-world-model and learning frontiers, affective and tectum-first grounding, binding, and AI-consciousness assessment.
+*   [**Merker: Subcortical Consciousness**](docs/merker_subcortical_consciousness.md): Independent clinical and comparative case for the tectum-first thesis that the architecture rests on.
+*   [**Affective Consciousness (Solms, Panksepp)**](docs/affective_consciousness_solms_panksepp.md): The neuroscience grounding for the emotional-homeostasis engine, linking the affective core to the Phase 6 active-inference objective.
+*   [**Generative World Models for Perception**](docs/generative_world_models_perception.md): External world-model architectures (DINO-WM, object-centric/slot models) framed as design options for the RSSM identity-collapse fix.
+*   [**Repository Map**](docs/repository_map.md): Where everything lives. The navigation index mapping directories, key components to files, and the docs, kept current from the tree.
+*   [**Architecture Deep Dive**](docs/architecture.md): System design overview.
+*   [**Biological Neural Architecture Research**](docs/biological_neural_architecture_research.md): Full biological grounding, gap analysis, and implementation roadmap.
+*   [**Theory of Emergence**](docs/theory_of_consciousness.md): Scientific basis of the Emotional RL approach.
+*   [**Theory vs. Implementation Review**](docs/theory_implementation_review.md): Audit of theoretical alignment and identified gaps.
+*   [**IIT Implementation Roadmap**](docs/iit_implementation_roadmap.md): Phi computation strategy.
+*   [**Isomorphic Visual Mapping Research**](docs/isomorphic_visual_mapping_research.md): DINOv2, TDANN, and inverse effectiveness design rationale.
+*   [**Pre-registered Predictions**](docs/preregistered_predictions.md): Testable EI, Phi, and insight moment predictions with falsification criteria.
+*   [**Auditory System Design**](docs/auditory_system_design.md): Cochlear inspired audio pipeline design and biological rationale.
+*   [**Experiment Results**](docs/results/experiment_comparison.md): Multi-environment training comparison (consciousness agent vs DQN baseline).
+*   [**Simulation Guide**](docs/simulation_guide.md): How to build compatible environments.
+*   [**Ethics Framework**](docs/ethics_framework.md): Asimov compliance filter design.
+
+## Support the Project
+
+If you find this research valuable and would like to support the ongoing development of the architecture, you can do so by purchasing official project gear from our [merchandise store](https://theconsciousness.ai/merch/). All proceeds directly fund the infrastructure, API costs, and developer time required to maintain this open-source initiative.
+
+## Contributing
+
+We welcome contributions from researchers in AI, Neuroscience, and Cognitive Science. Please read our [Contribution Guidelines](docs/contributing.md).
+
+## License
+
+This project is open source for non-commercial use. **Commercial use, including selling, licensing for profit, incorporating into commercial products, or using for commercial services, is strictly prohibited without explicit prior written permission from the copyright holder.** Attribution to the original author is required in all copies and derivative works. See [LICENSE.md](LICENSE.md) for the full terms.
+
+For commercial licensing inquiries, contact the copyright holder via GitHub: [github.com/tlcdv](https://github.com/tlcdv).

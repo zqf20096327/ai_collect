@@ -1,0 +1,538 @@
+# pyruns
+
+![logo](https://raw.githubusercontent.com/LthreeC/pyruns/main/docs/assets/pyruns_logo2.png)
+
+[English](README-en.md) | 简体中文
+
+[![PyPI version](https://img.shields.io/pypi/v/pyruns.svg)](https://pypi.org/project/pyruns/)
+[![Python versions](https://img.shields.io/pypi/pyversions/pyruns.svg)](https://pypi.org/project/pyruns/)
+[![License](https://img.shields.io/pypi/l/pyruns.svg)](https://github.com/LthreeC/pyruns/blob/main/LICENSE)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-2563eb.svg)](https://lthreec.github.io/pyruns/)
+
+Pyruns 是一个磁盘优先、面向复现实验和终端任务的运行管理器。它把命令、配置、日志、环境、运行历史和指标保存在项目的 `_pyruns_` 目录中，并提供 Git 式一次性 CLI 与可选 Web UI。
+
+![Generator](https://raw.githubusercontent.com/LthreeC/pyruns/main/docs/assets/tab_generator.png)
+
+## 30 秒开始
+
+命令示例以 Linux/Bash 为主；其他平台请按实际 Shell 调整引用、变量、续行、路径和标准输入
+写法，详见 `pyr exec --help` 或[跨平台差异](docs/cli-guide.md#exec-platform-notes)。
+
+```bash
+pip install pyruns
+
+# 下面使用短入口 pyr；pyruns 与它完全等价
+pyr --help
+
+# 运行并记录一个命令；shell workspace 会自动创建
+pyr exec -n smoke -c "python -V"
+
+# 查询结果
+pyr ls
+pyr show smoke
+pyr log smoke
+
+# 重跑同一个已保存任务，并保留新的编号运行历史
+pyr run smoke
+```
+
+这里的 task 是可重复运行的保存对象；每次 `run` 都会新增一个编号 run，不会覆盖旧日志。
+
+不需要马上按名称引用任务时，可以完全省略命名参数；Pyruns 会自动生成
+`task_YYYY-MM-DD_HH-MM-SS`。想保留语义前缀并自动附加时间戳时使用 `-nt`：
+
+```bash
+pyr exec -c "python -V"
+pyr exec -nt smoke -c "python -V"  # smoke_YYYY-MM-DD_HH-MM-SS
+```
+
+`-n smoke` 仍表示精确名称 `smoke`，因此 `-n` 与 `-nt` 互斥。
+
+长任务使用 `--detach`，随后用独立命令控制：
+
+```bash
+pyr exec -n train -d -c "python train.py --epochs 100"
+pyr status
+pyr wait train
+pyr log train
+```
+
+前台 `exec` / `run` 被 Ctrl+C 中断时，会请求取消由这次命令提交的任务；`wait`、`log -f` 的 Ctrl+C 或 `wait --timeout` 只停止观察，任务仍继续运行。需要真正停止已有任务时使用 `pyr stop TASK`。
+
+需要 Web UI 时显式启动：
+
+```bash
+pyr ui
+pyr ui train.py
+pyr ui shell
+```
+
+`pyr` 与 `pyruns` 是完全等价的正式入口；前者适合高频输入，后者更容易识别项目名。使用 `pyr --help` 查看全部命令及用途，使用 `pyr COMMAND --help` 查看参数、示例和注意事项。两者都没有需要持续操控的交互式 REPL。
+
+## 为什么它有用
+
+- 每个任务都有稳定目录，不再靠终端滚屏和记忆找结果。
+- 命令、参数、环境变量、日志、指标和 artifacts 一起落盘。
+- Shell 命令与 Python 配置实验使用同一套任务生命周期。
+- `--gpu-wait` 按卡数、每卡空闲显存和空闲率等待 GPU 达标后自动运行。
+- CLI 一次调用完成一件事，适合人、脚本、CI 和 AI agent。
+- 前台执行返回真实结果；批量任务任一失败，整体退出非零。
+- detached runner 独立于调用终端；Windows 上的任务进程和后台探测也不会弹出额外控制台窗口。
+- Web UI 与 CLI 共享磁盘状态，不存在两套数据源。
+
+![Home](https://raw.githubusercontent.com/LthreeC/pyruns/main/docs/assets/tab_home.png)
+
+## 等待 GPU 空闲后自动运行
+
+`exec` 和 `run` 都支持 `--gpu-wait`，按顺序完整填写五项启动条件：
+
+```text
+卡数-每卡空闲GiB-最低GPU空闲率%-连续满足秒数-最长等待小时
+```
+
+```bash
+pyr exec -n gpu-train -d --gpu-wait 2-20-70-15-2 -c "python train.py"
+# 也可保存完整的多行脚本，等待 GPU 后运行
+pyr exec -nt gpu-pipeline -d --gpu-wait 1-8-70-15-2 --stdin < pipeline.sh
+```
+
+`2-20-70-15-2` 表示两张卡同时各自至少空闲 **20 GiB**、GPU 空闲率至少 **70%**，
+连续满足 **15 秒**后启动，最多排队 **2 小时**。空闲率是 `100 - GPU 利用率`；
+超时只限制排队，不限制命令运行时长。五项都必须提供，不能省略尾项。
+`-d` 让排队和运行都在后台进行。
+
+等待输出会逐项显示卡数、每卡空闲显存与空闲率、连续达标时间、排队时长的当前值和要求，
+并标明 `ready` / `blocked` 及原因。例如 GPU 利用率 93% 对应空闲率 7%，未达到 100% 空闲的要求。
+
+CLI 规则仅本次运行生效，再次 `run` 时需要重新传入；不传 `--gpu-wait` 就不进行 GPU 等待。
+UI 的 Runtime 开关只影响之后从 UI 提交的任务。
+用 `pyr show gpu-train` 查看本次规则和等待状态，`pyr metrics` 查看当前 GPU 指标。
+指定卡、单位等完整说明见 [CLI 指南](docs/cli-guide.md) 或 `pyr exec --help`。
+
+## Git 式 CLI
+
+```text
+pyr [GLOBAL OPTIONS] COMMAND [COMMAND OPTIONS]
+```
+
+全局参数必须写在命令前：
+
+```text
+-C, --directory PATH
+-w, --workspace NAME|PATH|SCRIPT.py
+--debug
+--version
+```
+
+子命令自己的参数写在命令后。把每种位置分开看更直观：
+
+```text
+pyr -C path/to/project ls             # -C 在命令前：从另一个目录发现项目
+pyr -w train ls --json                # -w 在命令前；--json 属于 ls
+pyr ui shell -p 8099                  # -p/--port 只属于 ui/dev
+pyr exec -n check -c "python -V"  # -c 后是完整命令字符串
+```
+
+`-w` 只在 `ls`、`run`、`show`、`log` 等任务命令需要消除多 workspace 歧义时使用；项目只有一个 workspace 时可以省略。`exec` 固定使用 shell workspace，Web UI 则直接写成 `pyr ui shell`、`pyr ui train` 或 `pyr ui train.py`，不要写成 `pyr -w shell ui`。`ui` / `dev` 还提供 `-p, --port`、`--browser` 和 `--no-browser`，它们同样必须写在命令后。`--json` 不是全局模式，只在支持它的具体命令后使用，例如 `pyr status --json`。
+
+先记住一条层级即可：`project -> workspace -> task -> run`。项目拥有 `_pyruns_` 数据目录；workspace 收纳一组相关任务；task 是有精确名称的命令或配置；每次执行 task 都产生一个带编号的 run 历史。
+
+正式命令集：
+
+| 命令 | 用途 |
+| --- | --- |
+| `init` | 初始化 shell 或 Python script workspace |
+| `exec` | 创建并运行一个受跟踪的终端命令或 Shell 脚本 |
+| `add` | 从 YAML 添加不可变任务快照 |
+| `run` | 运行精确任务，或从 YAML 创建并立即运行 |
+| `ls` | 稳定过滤和排序任务 |
+| `status` | 查看 workspace 状态汇总 |
+| `show` | 查看任务元数据和路径 |
+| `log` | 打印、跟随或定位日志 |
+| `wait` | 等待已提交任务，返回其最终结果 |
+| `stop` | 向拥有任务的 runner 请求停止；正常停止记为 `cancelled`，失联任务可记为 `failed` |
+| `rm` / `restore` | 软删除与恢复任务 |
+| `mv` / `pin` | 管理任务名称与置顶状态 |
+| `export` | 导出 CSV 或 JSON 记录 |
+| `config` | 查看或修改项目设置 |
+| `metrics` | 输出一次 CPU、内存和 GPU 快照 |
+| `ui` / `dev` | 显式启动 Web UI |
+| `help` | 查看总帮助或子命令帮助 |
+
+每个命令都提供独立的场景化帮助；例如 `pyr exec --help` 会直接说明 `-c`、`--stdin`、
+脚本执行和环境变量持久化。完整说明见
+[CLI 详细指南](docs/cli-guide.md)。
+
+## 两种工作区
+
+### Shell Workspace
+
+用于任意终端命令、仓库复现、安装、预处理、训练、评估和流水线。省略名称时自动生成
+`task_YYYY-MM-DD_HH-MM-SS`；`-nt PREFIX` 自动追加时间戳；`-n NAME` 使用精确名称：
+
+```bash
+pyr init
+pyr exec -c "python -V"
+pyr exec -nt env-check -c "python -V"
+pyr exec -n env-check -c "python -V"
+pyr exec -n install -c "python -m pip install -r requirements.txt"
+pyr exec -n baseline -d -c "python train.py --config baseline.yaml"
+```
+
+执行已有脚本时，在完整命令中写明解释器：
+
+```bash
+pyr exec -n setup -c "bash ./scripts/setup.sh"
+```
+
+`exec` 只有两种命令输入：`-c "完整命令"` 和 `--stdin`。前者保存解释器调用和脚本路径，
+重跑会重新读取原文件；后者保存脚本正文，适合完整记录多行命令。脚本参数也放在完整命令内：
+
+```bash
+pyr exec -n preprocess -c 'bash ./scripts/preprocess.sh "dataset A" --fast'
+pyr exec -n train -c "python train.py --lr 0.001"
+```
+
+短命令及包含管道、重定向、变量展开、通配符或 `&&` 的 Shell 表达式都可以使用 `-c`：
+
+```bash
+pyr exec -n report -c "python eval.py > metrics.txt"
+pyr exec -n pipeline -c "python preprocess.py && python train.py | tee train.log"
+```
+
+将完整命令引用为一个字符串时，Pyruns 选项可以放在 `-c "命令"` 前面或后面，例如
+`pyr exec -c "python train.py --epochs 10" -n train -d`；目标程序的参数放在引号内。
+旧写法 `-c echo hello` 会将后续文本合并成 `echo hello`，此时所有 Pyruns 选项应放在 `-c` 前。
+推荐始终引用完整命令，并遵循调用端 Shell 的引用规则，避免表达式被提前拆分或展开。
+
+需要完整记录已有长脚本时，在 Bash 中运行：
+
+```bash
+pyr exec -nt pipeline -d --stdin < pipeline.sh
+# 等待两张 GPU，每卡空闲 20 GiB、空闲率 70%，持续 15 秒，最多等 2 小时
+pyr exec -nt train -d --gpu-wait 2-20-70-15-2 --stdin < train.sh
+```
+
+这会将全部正文保存为一个带时间戳的任务并后台执行，重跑使用保存的正文。
+要完整记录长命令的显式参数、变量赋值、引号、续行和换行，尤其是交给 AI agent 提交时，
+优先使用 `--stdin`。它保存收到的脚本文本；运行时展开后的实参和外部配置文件内容不会自动保存。
+重跑需要的环境变量请在脚本中显式赋值/export，或通过 `-e` / `--env-file` 保存。
+完整用法和记录核对步骤直接运行 `pyr exec --help` 查看。也可以通过 heredoc 提交：
+
+```bash
+pyr exec -n pipeline -d --stdin <<'BASH'
+set -euo pipefail
+DATA_ROOT=${DATA_ROOT:-./data}
+export TOKENIZERS_PARALLELISM=false
+python preprocess.py --data "$DATA_ROOT"
+python train.py --data "$DATA_ROOT" \
+  --epochs 10 --lr 0.001
+BASH
+
+pyr -w shell show pipeline
+pyr -w shell log pipeline -f
+pyr -w shell run pipeline
+```
+
+`<<'BASH'` 防止调用端提前展开变量，换行、引号和注释会保留。也可使用
+`pyr exec -n pipeline --stdin < pipeline.sh` 或 `cat pipeline.sh | pyr exec -n pipeline --stdin`；
+Pyruns 保存收到的脚本文本，后续源文件变化不影响重跑。`--stdin` 只接受重定向、管道或 heredoc，
+不会等待交互式终端输入；它接收 UTF-8 文本（最多 4 MiB），并使用工作区 Shell 执行。
+详见[标准输入提交多行脚本](docs/cli-guide.md#通过标准输入提交多行脚本)。
+
+普通程序和 Shell 表达式使用带引号的 `-c`，完整脚本使用 `--stdin`。
+
+```bash
+pyr exec -c 'printf "\033[31mred\033[0m\n\033[32mgreen\033[0m\n"'
+```
+
+Shell task 使用跨平台伪终端捕获颜色：Linux/macOS 使用系统 PTY，Windows 在已有控制台时使用原生 ConPTY。没有已附着的 Windows 控制台时，会回退到隐藏的 stdout/stderr 管道，避免弹出控制台窗口，此时颜色可能丢失。伪终端捕获的 SGR 颜色序列会写入日志并在前台还原；清屏、光标定位和窗口标题等界面控制序列会被过滤。
+
+`exec` 始终使用 `<当前目录>/_pyruns_/_shell_`，不会复用父目录中的 shell workspace。启动横幅和 Source 状态会先写入日志，随后才转存命令输出。Source 采集与子进程并行执行；期间 stdout/stderr 会持续读入可落盘缓冲，不会通过休眠或阻塞子进程来换取日志顺序。
+
+少量任务环境变量只需写一次 `-e`，后面连续列出多个 `KEY=VALUE`，再用 `-c` 提供完整命令：
+
+```bash
+pyr exec -n train -e CUDA_VISIBLE_DEVICES=0 TOKENIZERS_PARALLELISM=false SEED=42 -c "python train.py"
+```
+
+`-e` / `--env` 是可重复选项，也可以按变量组分开书写。
+
+Pyruns 已自动为子进程设置 `PYTHONUNBUFFERED=1`、`PYTHONIOENCODING=utf-8` 和 `PYTHONUTF8=1`，通常不需要重复传入。
+
+在 POSIX shell 中，`CUDA_VISIBLE_DEVICES=0 pyr exec ...` 的当前这次运行也会把变量继承给子进程；但该值不会写入任务元数据，之后从另一个终端、Web UI 或 `pyr run` 重跑时不保证仍然存在。需要可复现、可由 `show` 检查的任务配置时使用 `-e` 或 `--env-file`。
+
+变量较多时使用 UTF-8 env 文件：
+
+```dotenv
+# .env.train
+CUDA_VISIBLE_DEVICES=0
+TOKENIZERS_PARALLELISM=false
+```
+
+```bash
+pyr exec -n train --env-file .env.train -e SEED=42 -c "python train.py"
+```
+
+`--env-file` 可重复，后面的文件覆盖前面的文件，命令行 `-e` 最后覆盖所有文件。文件只接受空行、整行 `#` 注释和 `KEY=VALUE`，不会执行 shell 插值。任务环境会明文保存在元数据并由 `show` 显示，因此不要在其中保存密钥。
+
+执行前可做真正无副作用的预览；加入 `--json` 可得到稳定计划对象：
+
+```bash
+pyr exec --dry-run -n report -c "python eval.py"
+pyr exec --dry-run -n report --json -c "python eval.py"
+```
+
+预览不会创建 `_pyruns_`、任务或设置文件，也不会启动用户命令；`--dry-run` 与 `--detach` 互斥。
+
+Shell 任务保存在：
+
+```text
+<project>/_pyruns_/_shell_/tasks/<task>/
+├── task_info.json
+├── config.sh | config.ps1 | config.cmd
+└── run_logs/runN.log
+```
+
+### Script Workspace
+
+用于 `argparse`、`pyruns.load()`、YAML 配置、batch 展开和参数化实验：
+
+```bash
+pyr init train.py
+pyr -w train add configs/quick.yaml
+pyr -w train run quick
+```
+
+创建并立即运行：
+
+```bash
+pyr -w train run --config configs/sweep.yaml -n sweep -j 4
+pyr -w train run --config configs/sweep.yaml -n sweep -j 4 --dry-run
+```
+
+`run --config ... --dry-run` 会验证 YAML 并列出展开后的候选任务，但不创建或运行它们。
+
+Script 任务保存在：
+
+```text
+<project>/_pyruns_/train/tasks/<task>/
+├── task_info.json
+├── config.yaml
+├── run_logs/runN.log
+└── artifacts/runN/
+```
+
+## 工作区选择
+
+查询和管理命令会从当前目录向父目录寻找最近的 `_pyruns_`。只有一个 workspace 时自动选择；存在多个时必须显式传 `-w`，不会猜测。`exec` 是例外：未传显式 workspace 路径时，它固定使用当前目录的 `_pyruns_/_shell_`：
+
+```bash
+pyr -w shell ls
+pyr -w train status
+pyr -w ./train.py show baseline
+pyr -w ./_pyruns_/train log baseline
+```
+
+任务必须使用精确名称，不支持序号和模糊匹配。`show` 与 `log` 支持 `TASK --run RUN`，也可用短写 `TASK@RUN` 选择历史运行，因此 `@` 不能出现在新任务名中。
+
+## Python 脚本接入
+
+### 零侵入 `argparse`
+
+```python
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--lr", type=float, default=1e-3)
+parser.add_argument("--epochs", type=int, default=10)
+args = parser.parse_args()
+```
+
+```bash
+pyr init train.py
+pyr ui train.py
+```
+
+Pyruns 会解析脚本参数并建立默认配置模板。
+
+### `pyruns.load()` 配置
+
+```python
+import os
+
+import pyruns
+
+cfg = pyruns.load()
+print(cfg.training.lr)
+```
+
+首次初始化时传入 YAML：
+
+```bash
+pyr init train.py --config configs/default.yaml
+pyr -w train add configs/default.yaml -n baseline
+pyr -w train run baseline
+```
+
+## 脚本内 API
+
+| API | 用途 |
+| --- | --- |
+| `pyruns.load()` | 加载当前任务配置并返回点号访问对象 |
+| `pyruns.read(path=None)` | 显式读取 YAML / JSON 配置 |
+| `pyruns.record(**kwargs)` | 保存当前 run 的最终指标 |
+| `pyruns.track(**kwargs)` | 追加时间序列指标 |
+| `pyruns.get_task_dir()` | 返回当前任务目录 |
+| `pyruns.get_run_index()` | 返回当前 run 编号 |
+| `pyruns.artifact_dir()` | 创建并返回 `artifacts/runN` |
+
+```python
+import pyruns
+
+cfg = pyruns.load()
+
+for epoch in range(cfg.training.epochs):
+    loss = train_one_epoch()
+    pyruns.track(epoch=epoch, loss=loss)
+
+pyruns.record(final_loss=loss, seed=cfg.training.seed)
+model.save(os.path.join(pyruns.artifact_dir(), "model.pt"))
+```
+
+## 查询、日志和生命周期
+
+```bash
+pyr -w train ls -s running -s queued
+pyr -w train status
+pyr -w train show baseline
+pyr -w train show baseline@2
+pyr -w train show baseline --run 2
+pyr -w train diff baseline@1 baseline@2
+pyr -w train log baseline -f
+pyr -w train log baseline --tail 100 -f
+pyr -w train log baseline@2
+pyr -w train wait baseline --timeout 600
+pyr -w train stop baseline
+pyr -w train mv baseline baseline-lr1e3
+pyr -w train pin baseline-lr1e3
+pyr -w train rm baseline-lr1e3
+pyr -w train ls --trash
+pyr -w train restore baseline-lr1e3
+```
+
+`ls` 会用 `PIN` 标记置顶任务并始终将其排在普通任务之前；`--reverse` 只反转两组各自内部的顺序。JSON 列表和 `show` 都包含明确的 `pinned` 字段。
+
+`log --tail N` 只看最后 N 行，可配合 `-f` 继续跟随；`--tail 0 -f` 仅输出新增内容。省略 `--tail` 则打印完整日志。
+
+`rm` 会立即执行，不询问确认，但它只是可恢复的软删除。
+
+## JSON 与自动化
+
+`--json` 是给脚本、CI 和 agent 使用的机器输出开关，只放在明确支持它的子命令后。
+每个结果都是严格 JSON 对象，顶层包含 `"schema_version": 1`；YAML 日期和时间戳会转换为 ISO 8601 字符串，NaN、Infinity 和不支持的对象会被拒绝，不会生成标准解析器无法读取的伪 JSON：
+
+```bash
+pyr -w shell ls --json
+pyr -w shell status --json
+pyr -w shell show smoke --json
+pyr -w shell show smoke@2 --json
+pyr -w shell show smoke --run 2 --json
+pyr -w shell log smoke --path --json
+pyr -w shell log smoke@2 --path --json
+pyr config list --json
+pyr metrics --json
+pyr doctor --json
+```
+
+日志默认原样写 stdout；需要结构化引用时使用 `log --path`。导出默认写 stdout：
+
+```bash
+pyr -w train export -f csv
+pyr -w train export baseline --format json
+pyr -w train export -s completed -o results.csv
+```
+
+导出记录的格式只由 `--format`（或 `-f`）选择；文件名后缀不会隐式改变格式。
+
+退出码：
+
+```text
+0    命令和等待的任务全部成功
+1    工作区、目标、运行时或任务失败
+2    命令行用法错误
+130  命令被 Ctrl+C 中断
+```
+
+## Web UI
+
+![Manager](https://raw.githubusercontent.com/LthreeC/pyruns/main/docs/assets/tab_manager.png)
+
+```bash
+pyr ui
+pyr ui train.py
+pyr ui train.py --config configs/default.yaml
+pyr ui train
+pyr ui shell
+pyr ui shell -p 8099
+pyr ui shell --no-browser
+pyr dev train.py
+```
+
+这些入口分别对应明确场景：
+
+- `pyr ui` 打开工作区选择器，不会猜测要进入哪个工作区。
+- `pyr ui shell` 打开或创建当前项目的 shell workspace。
+- `pyr ui train.py` 初始化或打开该 Python 脚本的 workspace；首次需要模板时可加 `--config`。
+- `pyr ui train` 或 `pyr ui PATH` 打开已有的精确 workspace 名称或路径。
+- `pyr dev SCRIPT.py` 为 Python 后端启用自动重载；前端热更新需要另外启动 Vite，日常使用选择 `ui`。
+
+`-p, --port` 选择监听端口；`--no-browser` 只启动服务并打印 URL；`--browser` 强制自动打开浏览器。
+
+UI 只监听本机回环地址。每次启动都会生成新的随机访问令牌；启动 URL 首次打开后，
+令牌会换成持久的 `HttpOnly` 会话 cookie，并从地址栏移除。该会话会在使用时续期，
+同一主机、端口和工作区的正常更新或重启不会令其过期。清除浏览器数据或本地
+`~/.pyruns/sessions` 状态后，需要重新打开终端打印的最新完整 URL。不要分享该 URL；
+这个机制用于隔离同机其他进程，不是远程多用户部署的身份系统。
+
+Pyruns 不是代码沙箱。任务命令和 Python 脚本会继承当前用户的系统权限；只运行你信任
+的脚本、配置和命令。
+
+- Home / Dashboard：查看当前 workspace 的 GPU 与系统状态、任务统计和最近任务。
+- Generator：在脚本 workspace 中用 Grid、Tree 或 YAML 编辑配置，或在 shell workspace 中编辑命令正文并创建任务。
+- Manager：搜索、筛选、排序和批量控制任务，也可运行、停止、重命名、置顶或移入回收站。
+- Monitor：查看实时或历史日志、搜索日志、运行或停止任务，并打开详情或导出记录。
+- 侧栏 Workspace 用于切换工作区；Runtime 用于设置 Python、环境变量、GPU 与运行方式。
+- 侧栏底部的语言图标切换简体中文 / English，太阳或月亮图标切换日间 / 夜间主题；也可在偏好设置中选择，刷新后保留。
+
+![Monitor](https://raw.githubusercontent.com/LthreeC/pyruns/main/docs/assets/tab_monitor.png)
+
+## 磁盘是最终状态源
+
+```text
+<project>/_pyruns_/
+├── _pyruns_settings.yaml
+├── _shell_/
+│   ├── script_info.json
+│   └── tasks/
+└── <script_name>/
+    ├── script_info.json
+    ├── config_default.yaml
+    └── tasks/
+```
+
+CLI 和 Web UI 都只是在这套磁盘状态上工作，因此任务不会因为关闭某个界面而消失，也能被版本控制、备份工具和自动化脚本直接检查。
+
+## 文档
+
+- [安装与快速开始](docs/getting-started.md)
+- [CLI 详细指南](docs/cli-guide.md)
+- [配置说明](docs/configuration.md)
+- [Web UI 指南](docs/ui-guide.md)
+- [批量配置语法](docs/batch-syntax.md)
+- [脚本 API](docs/api-reference.md)
+- [架构说明](docs/architecture.md)
+
+## License
+
+MIT

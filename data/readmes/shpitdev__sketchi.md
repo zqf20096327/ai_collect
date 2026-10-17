@@ -1,0 +1,322 @@
+<p align="center">
+  <img src="apps/web/public/icon.svg" alt="Sketchi" width="112" height="112" />
+</p>
+
+<h1 align="center">Sketchi</h1>
+
+<p align="center">
+  <strong>Typed, deterministic diagrams for people and AI agents.</strong><br />
+  Prompt to validated IR to editable Excalidraw and hosted PNG artifacts.
+</p>
+
+<p align="center">
+  <a href="https://sketchi.app/"><img alt="Website" src="https://img.shields.io/badge/sketchi.app-live-765264" /></a>
+  <a href="https://www.npmjs.com/package/sketchi"><img alt="npm version" src="https://img.shields.io/npm/v/sketchi?logo=npm&color=CB3837" /></a>
+  <a href="https://nx.dev/"><img alt="Nx" src="https://img.shields.io/badge/Nx-23-143055?logo=nx" /></a>
+  <a href="https://workers.cloudflare.com/"><img alt="Cloudflare Workers" src="https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white" /></a>
+  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white" /></a>
+  <a href="https://excalidraw.com/"><img alt="Excalidraw" src="https://img.shields.io/badge/output-Excalidraw-6965DB" /></a>
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2F855A" /></a>
+</p>
+
+---
+
+<p align="center">
+  <img src="apps/web/public/media/sketchi-og-card.png" alt="Describe it. Sketchi draws it. A deploy flow connects GitHub push, Docker build, tests pass, and Cloudflare ship steps." width="1000" />
+</p>
+
+Sketchi is the canonical Nx and Cloudflare workspace for generating reliable,
+editable diagrams. Model output is never treated as a finished drawing: it is
+parsed into a typed intermediate representation, validated, laid out by code,
+converted to real Excalidraw elements, and persisted as an artifact with PNG and
+scene representations.
+
+## What Sketchi Does
+
+- Creates hosted flowcharts, mindmaps, and sequence diagrams from natural-language prompts.
+- Produces validated, editable Excalidraw scenes instead of opaque images.
+- Exposes Code Mode through MCP and versioned HTTP artifact endpoints.
+- Keeps layout, bindings, wrapping, and scene conversion deterministic in code.
+- Tests diagram contracts with fixtures, maintained scenarios, real-scene
+  validation, component tests, and Storybook.
+- Converts a curated SVG corpus into native Excalidraw elements and libraries.
+
+## CLI
+
+Install Sketchi from npm, or use the noninteractive installer to install the
+same package and configure Zsh, Bash, or Fish completions:
+
+```sh
+npm install -g sketchi
+
+# Or install and configure completions in one step:
+curl -fsSL https://raw.githubusercontent.com/shpitdev/sketchi/main/install.sh | sh
+```
+
+Turn a prompt into a validated PNG and editable local record:
+
+```sh
+sketchi generate
+
+# Direct and noninteractive:
+sketchi generate --prompt "Map release approval with pass and revise branches"
+```
+
+Bare `sketchi generate` opens a short wizard only in a human text TTY. Scripts,
+pipes, redirects, CI, and JSON output never prompt and must pass `--prompt`.
+Explicit `--type` and file `--dest` values preset their wizard questions;
+interactive generation remains PNG-only, so other formats and `--dest -` also
+require `--prompt`.
+Without `--type`, the model selects a supported native type. Explicit flowchart,
+mindmap, or sequence selection is authoritative; ER, architecture, swimlane, and
+state-machine requests fail clearly instead of being coerced.
+The default file is `<generated-id>.png` in the current directory. Use
+`--format excalidraw` or `--format scene` for another artifact, and `--dest`
+to choose its path or stream bytes with `--dest -`.
+
+For manual offline authoring, create a canonical document, inspect and revise
+it, list the local store, then export another artifact:
+
+```sh
+sketchi create --json '{"type":"flowchart","spec":{"id":"release-flow","title":"Release approval","nodes":[{"id":"start","label":"Change proposed","kind":"start"},{"id":"review","label":"Review evidence","kind":"process"},{"id":"end","label":"Release approved","kind":"end"}],"edges":[{"source":"start","target":"review"},{"source":"review","target":"end"}]}}'
+sketchi show release-flow
+sketchi edit release-flow --json '{"type":"flowchart","spec":{"id":"release-flow","title":"Release approval revised","nodes":[{"id":"start","label":"Change proposed","kind":"start"},{"id":"review","label":"Review complete evidence","kind":"process"},{"id":"end","label":"Release approved","kind":"end"}],"edges":[{"source":"start","target":"review"},{"source":"review","target":"end"}]}}'
+sketchi patch release-flow --json '{"operations":[{"op":"setStyle","selector":{"nodeIds":["review"]},"style":{"fillColor":"#dbeafe","strokeColor":"#2563eb"}}]}'
+sketchi list
+sketchi export release-flow --format excalidraw --dest release-flow.excalidraw
+sketchi export release-flow --format png --dest release-flow.png
+sketchi restore release-flow --revision 1
+```
+
+`create`, `patch`, `show`, `edit`, `list`, `export`, and `restore` are deterministic,
+fully offline, and need no credentials. `generate`, `share`, and `pull` are
+explicit credential-free network commands, each making one HTTPS request.
+Share an immutable encrypted snapshot with `sketchi share release-flow`; after
+browser edits are exported to a new Excalidraw link, apply it with
+`sketchi pull release-flow --link URL`. All commands support `--output json`.
+PNG export renders on demand through Excalidraw plus bundled fonts and WASM when
+no PNG is stored, without modifying the record. PNG file exports include a
+generic inline-Markdown display hint for calling agents; export status uses
+stderr and `--dest -` keeps stdout byte-only.
+Generate completions directly with `sketchi --completions zsh`,
+`sketchi --completions bash`, or `sketchi --completions fish`. See the
+[complete CLI guide](apps/cli/README.md) for file/stdin input, completion setup,
+storage details, and agent-oriented usage.
+The progressive `sketchi --help` leads with prompt-to-PNG and the next human
+actions; `sketchi docs` prints the complete command map plus agent and
+automation contracts from the packaged binary.
+
+See the CLI [changelog](apps/cli/CHANGELOG.md) for what changed, or browse
+published versions on [GitHub Releases](https://github.com/shpitdev/sketchi/releases).
+
+### Shell completions
+
+The installer configures Zsh, Bash, or Fish completions for the detected shell.
+Generated Bash completions require Bash 4 or newer; the installed source block
+silently skips them on the stock macOS Bash 3.2. Bash login shells may not read
+`.bashrc`, so `.bash_profile` may need to source `.bashrc` for completions to be
+available.
+
+## Code Mode
+
+Codex, Claude Code, Agy, and OpenCode can create hosted diagrams through the
+public Code Mode MCP endpoint. The [agent quickstart](docs/code-mode-agent-plugins.md)
+contains installation, verification, and first-diagram instructions for every
+supported harness. The public flow does not require a Sketchi login, API key, or
+local browser installation.
+
+```text
+prompt or revision
+        ↓
+model candidate → typed diagram IR → deterministic scene → Excalidraw artifact
+        ↓                                      ↓                  ↓
+ maintained scenarios                    validation          hosted PNG
+```
+
+## Architecture
+
+| Boundary                      | Responsibility                                                  |
+| ----------------------------- | --------------------------------------------------------------- |
+| `packages/diagram/core`       | Typed diagram contracts, semantic validation, fixtures          |
+| `packages/diagram/generation` | Provider messages, responses, and candidate parsing             |
+| `packages/diagram/agent`      | Canonical build runtime, quality checks, artifact orchestration |
+| `packages/diagram/renderer`   | Deterministic layout and scene generation                       |
+| `packages/diagram/excalidraw` | Persistable Excalidraw conversion and real-scene validation     |
+| `packages/diagram/scenarios`  | Maintained prompts, assertions, and local/live evals            |
+| `packages/diagram/ui`         | Shared React diagram, review, and eval UI states                |
+| `packages/icons/catalog`      | Icon manifest, ranked search, SVG sources, node-logo rules      |
+| `packages/studio/projects`    | Studio project/diagram contracts and object-bucket persistence  |
+| `packages/svg-excalidraw`     | Native SVG-to-Excalidraw conversion and library serialization   |
+
+The first high-reliability target is decision-heavy flowchart generation.
+`flowchart`, `mindmap`, and `sequence` are explicit diagram families; unsupported families do
+not silently fall back to a generic template. See the full
+[architecture guide](docs/architecture.md) and the
+[MCP-first generation boundary](docs/mcp-first-generation.md).
+
+## Product Surfaces
+
+| Surface        | Role                                                               | Local command               |
+| -------------- | ------------------------------------------------------------------ | --------------------------- |
+| `cli`          | Offline local authoring plus credential-free public generation     | `pnpm nx build sketchi-cli` |
+| `web`          | `sketchi.app` home, docs, and setup                                | `pnpm nx dev web`           |
+| `playground`   | Public Playground, Code Mode API/MCP, artifacts, Studio foundation | `pnpm nx dev playground`    |
+| `icons`        | `icons.sketchi.app` curated icon browser                           | `pnpm nx dev icons`         |
+| `eval-harness` | Internal scenario and model-output eval harness                    | `pnpm nx dev eval-harness`  |
+| `excalidraw`   | Internal real-canvas rendering and editing workspace               | `pnpm nx dev excalidraw`    |
+
+The internal harness is `eval-harness`. The public host is `playground`, while
+its durable Worker identity remains `sketchi-studio` and the extracted Studio
+persistence boundary remains `packages/studio/projects`. The completed
+repository migration and its historical before tree are recorded in the
+[repository structure proposal](docs/repository-structure-proposal.html).
+
+## Quick Start
+
+The project-local [mise](https://mise.jdx.dev/) configuration pins Node 26.10.0
+and native pnpm 12.10.1. The workspace uses stable native TypeScript 7.0.2 as
+`tsc` while the `typescript` module and `tsc6` expose the supported TypeScript
+6.0.3 compiler API for Nx and the repository tooling tests through the official
+`@typescript/typescript6@6.0.2` compatibility package. Activate mise in your
+shell, then install the exact tools and dependencies:
+
+```sh
+mise trust
+mise install
+mise exec -- pnpm install
+pnpm dev
+```
+
+Run one surface with `pnpm nx dev <project>`. `pnpm dev` starts every Nx app with
+a `dev` target in parallel through Portless.
+
+## Development
+
+Required workspace proof:
+
+```sh
+pnpm run toolchain:verify
+pnpm run test:deploy-scripts
+pnpm run test:tools
+pnpm nx run-many -t typecheck,test,build
+pnpm run check
+pnpm nx run-many -t typecheck-native
+pnpm run test:wrangler-dry-runs
+pnpm nx build-storybook diagram-ui
+pnpm exec tsc6 -b --pretty false
+```
+
+`pnpm run check` is the local quality gate: lint, format check, and the custom
+lint-rule tests.
+
+- `pnpm run lint` builds the package declarations that type-aware rules resolve,
+  then runs [Oxlint](https://oxc.rs/docs/guide/usage/linter) over the whole
+  repository with zero warnings allowed. `.oxlintrc.json` holds the rule set, the
+  Nx module boundaries, and the Effect and Zod import policy; Sketchi's own rules
+  live in `tools/oxlint` and run with `pnpm run test:lint-rules`. Every
+  suppression is a single-line `oxlint-disable-next-line <rule> -- <reason>`.
+- `pnpm run format` applies [Oxfmt](https://oxc.rs/docs/guide/usage/formatter):
+  tabs, 100 columns, double quotes, semicolons, trailing commas, and spaces in
+  `tsconfig` files, with no import or `package.json` sorting.
+  `pnpm run format:check` verifies it.
+- Oxfmt never touches generated output (route trees, Wrangler types, changeset
+  changelogs, the lockfile, the generated icon catalog), byte-exact fixtures
+  and frozen compatibility corpora, vendored shadcn and AI Elements components,
+  raw icon pipeline artifacts, files rewritten by editor or agent tools, or prose
+  (Markdown and `docs/`). `.oxfmtrc.json` lists the exact paths, and
+  `tools/formatting.test.ts` proves each exclusion matches real files and is never
+  formatted.
+
+The [MCP SDK compatibility note](docs/mcp-sdk-compatibility.md) records the
+bounded server-only exception that keeps the deployed handlers on the patched
+SDK while Cloudflare's exact peer metadata remains stale.
+
+For a CLI change that should ship, run `pnpm changeset` and commit the generated
+changeset with the change. Changesets maintains a Version Packages PR on `main`;
+merging that PR updates the CLI version and causes the existing release workflow
+to publish it.
+
+Run the canonical deterministic scenario:
+
+```sh
+pnpm nx scenario diagram-scenarios -- \
+  --scenario pharma-batch-disposition \
+  --fixture \
+  --out .memory/pharma-batch.excalidraw
+```
+
+Use a local model command by setting `SKETCHI_GENERATOR_COMMAND`; it receives the
+scenario prompt on stdin and writes candidate IR JSON to stdout.
+
+Generate new owned surfaces through the workspace plugin:
+
+```sh
+pnpm nx g @sketchi/generators:ui-component StatusBadge
+pnpm nx g @sketchi/generators:diagram-type mindmap --title "Sketchi mindmap fixture"
+```
+
+## Deployment
+
+Eligible same-repository pull requests build and deploy app-specific Cloudflare
+Workers when Cloudflare credentials are configured, then maintain one preview
+comment per app. Relevant merges to `main` deploy production Workers when those
+credentials are available; custom domain attachment remains an explicit
+operator action. Forks and unconfigured environments retain build proof without
+a Worker deploy. The eval harness and standalone Excalidraw workspace are
+internal surfaces.
+
+Worker builds are isolated under `dist/apps/<app>` and resolved through an
+explicit Nx-project-to-Worker map, so parallel builds and later repository
+renames cannot overwrite or implicitly rename durable Worker deployments.
+
+See [preview deployments](docs/preview-deploys.md) and the guarded
+[production domain runbook](docs/production-domain-cutover.md).
+
+```sh
+pnpm deploy:eval-harness
+pnpm deploy:playground
+pnpm deploy:web
+pnpm deploy:excalidraw
+pnpm deploy:icons
+```
+
+## Repository Map
+
+```text
+apps/
+├── cli/                          local authoring and generation CLI
+├── eval-harness/                 internal scenarios and model-output evals
+├── excalidraw/                   internal real-canvas workspace
+├── icons/                        public icon browser
+├── native-conversion-storybook/ explicit cross-app Storybook composition
+├── playground/                   public Playground, API/MCP, Studio adapter
+└── web/                          public home, docs, and setup
+packages/
+├── diagram/{agent,core,excalidraw,generation,renderer,scenarios,ui}/
+├── studio/projects/              persistence contract and service
+└── svg-excalidraw/               native SVG conversion
+tools/sketchi-generators/         Nx generators and tests
+scripts/                          deploy, cutover, and pipeline operations
+plugins/                          Codex and Claude Code distribution payloads
+docs/                             architecture, boundaries, and runbooks
+```
+
+pnpm, Nx, and the root TypeScript solution all cover the same package-backed
+projects. Nx tags plus Oxlint enforce package/app, runtime/eval, persistence/UI,
+and explicit composition boundaries across source, config, and Storybook
+files. Required CI also dry-runs every mapped Worker from its generated build
+configuration; see the
+[architecture guide](docs/architecture.md#workspace-enforcement).
+
+## Documentation
+
+- [Agent plugin quickstart](docs/code-mode-agent-plugins.md)
+- [Architecture](docs/architecture.md)
+- [Agentic generation](docs/agentic-generation.md)
+- [MCP-first generation](docs/mcp-first-generation.md)
+- [SVG conversion plan](docs/svg-excalidraw-conversion-plan.md)
+- [Repository replacement record](docs/replacement.md)
+
+## License
+
+MIT. See [LICENSE](LICENSE).

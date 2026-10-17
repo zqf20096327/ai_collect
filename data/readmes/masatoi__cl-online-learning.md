@@ -1,0 +1,195 @@
+* Cl-Online-Learning
+
+[[http://quickdocs.org/cl-online-learning/][http://quickdocs.org/badge/cl-online-learning.svg]]
+[[https://github.com/masatoi/cl-online-learning/actions?query=workflow%3ACI][https://github.com/masatoi/cl-online-learning/workflows/CI/badge.svg]]
+
+A collection of machine learning algorithms for online linear classification written in Common Lisp.
+
+** Implemented algorithms
+
+*** Binary classifier
+- Perceptron
+- AROW (Crammer, Koby, Alex Kulesza, and Mark Dredze. "Adaptive regularization of weight vectors." Advances in neural information processing systems. 2009.)
+- SCW-I (Soft Confidence Weighted) (Wang, Jialei, Peilin Zhao, and Steven C. Hoi. "Exact Soft Confidence-Weighted Learning." Proceedings of the 29th International Conference on Machine Learning (ICML-12). 2012.)
+- Logistic Regression with SGD or ADAM optimizer (Kingma, Diederik, and Jimmy Ba. "Adam: A method for stochastic optimization." ICLR 2015)
+- FTRL-Proximal (McMahan, H. Brendan, et al. "Ad click prediction: a view from the trenches." Proceedings of the 19th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. 2013.) -- the only learner here that drives weights to exactly zero, via L1 regularization
+
+*** Multiclass classifier
+- one-vs-rest ( K binary classifier required )
+- one-vs-one ( K*(K-1)/2 binary classifier required )
+- multiclass AROW ( native, K weight vectors in a single learner ) (Crammer, Koby, Alex Kulesza, and Mark Dredze. "Adaptive regularization of weight vectors." Machine Learning 91.2 (2013): 155-187. Figure 3, the top-1 version.)
+- softmax + FTRL-Proximal ( native, multinomial logistic regression with L1 ) -- the only multiclass learner here whose class scores are coupled through a softmax rather than fitted as independent sub-problems; the optimizer is the FTRL-Proximal of McMahan et al., KDD 2013, already cited under Binary classifier
+
+*** Command line tools
+- Implemented as roswell script
+- See https://github.com/masatoi/cl-online-learning/wiki/Using-as-command-line-tools
+
+** Installation
+cl-online-learning is available from Quicklisp.
+#+BEGIN_SRC 
+(ql:quickload :cl-online-learning)
+#+END_SRC
+
+When install from github repository,
+#+BEGIN_SRC 
+cd ~/quicklisp/local-projects/
+git clone https://github.com/masatoi/cl-online-learning.git
+#+END_SRC
+When using Roswell,
+#+BEGIN_SRC 
+ros install masatoi/cl-online-learning
+#+END_SRC
+** Usage
+*** Prepare dataset
+A data point is a pair of a class label (+1 or -1) and a input vector. Both of them have to be declared as single-float.
+
+And dataset is represented as a sequence of data points.
+READ-DATA function is available to make a dataset from a sparse format used in LIBSVM (http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/). This function requires the number of features of that dataset.
+#+BEGIN_SRC lisp
+;; Number of features
+(defparameter a1a-dim 123)
+
+;; Read dataset from file
+(defparameter a1a
+  (clol.utils:read-data
+   (merge-pathnames #P"t/dataset/a1a" (asdf:system-source-directory :cl-online-learning))
+   a1a-dim))
+
+;; A data point
+(car a1a)
+
+; (-1.0
+;  . #(0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0
+;     1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+;     0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+;     1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0
+;     1.0 0.0 1.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+;     0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+;     0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0))
+#+END_SRC
+
+*** Define learner
+A learner object is just a struct, therefore their constructor is available to make it.
+#+BEGIN_SRC lisp
+(defparameter arow-learner (clol:make-arow a1a-dim 10))
+#+END_SRC
+
+*** Update and Train
+To update the model destructively with one data point, use an update function corresponding to the model type.
+#+BEGIN_SRC lisp
+(clol:arow-update arow-learner
+                  (cdar a1a)  ; input
+                  (caar a1a)) ; label
+#+END_SRC
+TRAIN function can be used to learn the dataset collectively.
+#+BEGIN_SRC lisp
+(clol:train arow-learner a1a)
+#+END_SRC
+It may be necessary to call this function several times until learning converges. For now, the convergence test has not been implemented yet.
+
+*** Predict and Test
+#+BEGIN_SRC lisp
+(clol:arow-predict arow-learner (cdar a1a))
+; => -1.0
+
+(clol:test arow-learner a1a)
+; Accuracy: 84.85981%, Correct: 1362, Total: 1605
+#+END_SRC
+
+*** Multiclass classification
+For multiclass data, the label of the data point is an integer representing the index of the class. READ-DATA function with MULTICLASS-P keyword option is available for make such a dataset.
+#+BEGIN_SRC lisp
+(defparameter iris-dim 4)
+
+; A dataset in which a same label appears consecutively need to be shuffled
+(defparameter iris
+  (clol.utils:shuffle-vector
+   (coerce (clol.utils:read-data
+            (merge-pathnames #P"t/dataset/iris.scale"
+                             (asdf:system-source-directory :cl-online-learning))
+            iris-dim :multiclass-p t)
+	   'simple-vector)))
+
+(defparameter iris-train (subseq iris 0 100))
+(defparameter iris-test (subseq iris 100))
+#+END_SRC
+ONE-VS-REST and ONE-VS-ONE are available for multiclass classification by using multiple binary classifiers. In many cases, ONE-VS-ONE is more accurate, but it requires more computational resource as the number of classes increases.
+#+BEGIN_SRC lisp
+;; Define model
+(defparameter arow-1vs1
+  (clol:make-one-vs-one iris-dim      ; Input data dimension
+                        3             ; Number of class
+                        'arow 0.1)) ; Binary classifier type and its parameters
+
+;; Train and test model
+(clol:train arow-1vs1 iris-train)
+(clol:test  arow-1vs1 iris-test)
+; Accuracy: 98.0%, Correct: 49, Total: 50
+#+END_SRC
+MULTICLASS-AROW is a single learner holding K weight vectors rather than a wrapper around binary classifiers, so it takes its regularization parameter directly instead of a binary classifier type. Each update scores every class to find the true class's closest competitor, then writes only those two weight vectors, where ONE-VS-REST writes all K.
+#+BEGIN_SRC lisp
+;; Define model
+(defparameter mc-arow
+  (clol:make-multiclass-arow iris-dim ; Input data dimension
+                             3        ; Number of class
+                             10))     ; gamma, the regularization parameter
+
+;; Train and test model
+(clol:train mc-arow iris-train)
+(clol:test  mc-arow iris-test)
+#+END_SRC
+For sparse data, CLOL:MAKE-SPARSE-MULTICLASS-AROW takes the same three arguments.
+
+*** Sparse data
+For sparse data (most elements are 0), the data point is a pair of a class label and a instance of SPARSE-VECTOR struct, and a learner with SPARSE- prefix is used. READ-DATA function with SPARSE-P keyword option is available for make such a dataset.
+
+For example, news20.binary data has too high dimensional features to handle with normal learners. However, by using the sparse version, the learner can be trained with practical computational resources.
+#+BEGIN_SRC lisp
+(defparameter news20.binary-dim 1355191)
+(defparameter news20.binary (clol.utils:read-data "/path/to/news20.binary" news20.binary-dim :sparse-p t))
+
+(defparameter news20.binary.arow (clol:make-sparse-arow news20.binary-dim 10))
+(time (loop repeat 20 do (clol:train news20.binary.arow news20.binary)))
+;; Evaluation took:
+;;   1.527 seconds of real time
+;;   1.526852 seconds of total run time (1.526852 user, 0.000000 system)
+;;   100.00% CPU
+;;   5,176,917,149 processor cycles
+;;   11,436,032 bytes consed
+(clol:test news20.binary.arow news20.binary)
+; Accuracy: 99.74495%, Correct: 19945, Total: 19996
+#+END_SRC
+
+In a similar way, the sparse version learners are also available in multiclass classification.
+
+#+BEGIN_SRC lisp
+(defparameter news20-dim 62060)
+(defparameter news20-train (clol.utils:read-data "/path/to/news20.scale" news20-dim :sparse-p t :multiclass-p t))
+(defparameter news20-test (clol.utils:read-data "/path/to/news20.t.scale" news20-dim :sparse-p t :multiclass-p t))
+(defparameter news20-arow (clol:make-one-vs-rest news20-dim 20 'sparse-arow 10))
+(loop repeat 12 do (clol:train news20-arow news20-train))
+(clol:test news20-arow news20-test)
+; Accuracy: 86.90208%, Correct: 3470, Total: 3993
+#+END_SRC
+
+# *** Benchimark
+
+*** Save/Restore model
+For saving a learner model to a file or restoring from the model file, SAVE and RESTORE function are available respectively.
+For the above multiclass classification example, saving / restoring code would be:
+
+#+BEGIN_SRC lisp
+;; Save
+(clol:save arow-1vs1 #P"/tmp/iris.model")
+;; Restore
+(defparameter restored-learner (clol:restore #P"/tmp/iris.model"))
+
+(clol:test restored-learner iris-test)
+; Accuracy: 98.0%, Correct: 49, Total: 50
+#+END_SRC
+
+** Author
+Satoshi Imai (satoshi.imai@gmail.com)
+
+** Licence
+This software is released under the MIT License, see LICENSE.txt.

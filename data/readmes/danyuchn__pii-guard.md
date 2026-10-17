@@ -1,0 +1,366 @@
+# pii-guard
+
+繁體中文（台灣）個人資料去識別化工具。把文件裡的個資換成可還原的代號，讓你能用雲端 AI 處理機敏文件，處理完再換回來。**偵測與還原全程在你自己的機器上跑。**
+
+---
+
+**English summary** — Reversible PII de-identification for Traditional Chinese (Taiwan) documents.
+
+核心去識別化不需要啟動 Ollama。它可以先用本機的規則與中文辨識模型快速產出去識別化副本，再由使用者在本機網頁介面補遮漏網資料或放回誤遮內容。需要更高召回率時，才選擇加入 Ollama 的本地稽核。
+
+Most tools that strip PII before an LLM call are network gateways ([LiteLLM + Presidio](https://www.litellm.ai/), [PrivAiTe](https://github.com/crp4222/PrivAiTe), [AI Security Gateway](https://github.com/aisecuritygateway/aisecuritygateway)) and they work well. None of them handle Taiwanese PII: national ID and ARC numbers, 統一編號 business IDs, local phone formats, or Traditional Chinese personal and organisation names — which need CKIP's Chinese NER rather than an English model with the locale switched.
+
+This fills that gap, and differs in one more way: it produces a **redacted file you can keep and hand to someone**, not a per-request proxy. Detection is Presidio + CKIP BERT + Taiwan regex; substitution and restoration are plain code, so restoration is exact. A bundled Claude Code skill runs the whole thing without letting the cloud agent read the original.
+
+Everything below is in Traditional Chinese. Start at [安裝](#安裝).
+
+---
+
+## 為什麼還要一個？
+
+處理「送進 LLM 之前先遮個資」的工具已經很多，而且做得好——但它們幾乎都是**網路層的 gateway**，攔在你的程式和模型供應商之間。
+
+它們沒有處理的是**台灣的個資**：身分證與居留證字號、統一編號、本地電話格式，以及繁體中文的人名與組織名——後者需要中研院的 CKIP 中文 NER，不是英文模型換個語系就行。
+
+這個專案補的是那一塊。另外還差一件事：**它產出的是一份你可以留存、可以交給別人的檔案**，不是逐次請求、用完即逝的代理。
+
+## 實際輸出
+
+下面是真的跑出來的，不是示意圖。輸入：
+
+```
+客戶：王小明
+聯絡電話：0912345678
+電子郵件：wang@example.com
+身分證字號：A123456789
+所屬公司：範例科技股份有限公司（統一編號 10000009）
+通訊地址：臺北市中正區忠孝東路一段
+案由：本季顧問合約續約，金額新臺幣 30 萬元，付款分兩期。
+```
+
+`uv run python -m pii_guard anonymize input.txt -o out.txt -m map.json` 之後：
+
+```
+客戶：<PERSON_1>
+聯絡電話：<TW_MOBILE_1>
+電子郵件：<EMAIL_ADDRESS_1>
+身分證字號：<TW_NATIONAL_ID_1>
+所屬公司：<ORG_1>（統一編號 <TW_BUSINESS_ID_1>）
+通訊地址：<LOCATION_1>
+案由：本季顧問合約續約，金額新臺幣 30 萬元，付款分兩期。
+```
+
+七項個資全部換成代號，**而金額、合約條款、日期原封不動**。這是刻意的——把那些也拿掉，文件就沒有送進 AI 的意義了。
+
+對照表另存一份，AI 回答完之後用它換回真名，逐字精確。
+
+### 指定保留公開機構名稱
+
+有些文件需要保留法院、醫院或公司名稱，才能讀懂上下文。`anonymize` 可在**這一次**處理時，只保留你明確指定且被偵測為 `ORG` 的完全相同名稱：
+
+```bash
+uv run python -m pii_guard anonymize judgment.txt \
+  --allow-org "臺灣士林地方法院" \
+  --allow-org-file public-organisations.txt
+```
+
+`public-organisations.txt` 每行一個名稱；空行和 `#` 開頭的註解會忽略。這份檔案只是本次文件規則，不會寫成永久白名單。它只跳過 `ORG` 偵測結果，不會改變其他仍被偵測到的類型，例如電話或身分證；也不會用文件類型猜測哪些組織可公開。
+
+把名稱加入名單，就是你親自決定該值可保留；它**不是**模型已證明那是公開機構的意思。若人名或私人機構被誤判成 `ORG`，也可能因此留在輸出，所以不確定時請不要加入，改用補標介面逐筆放回。
+
+## 人工補標介面
+
+偵測層是機率性的，會有漏網，也會把不該遮的機構名遮掉。skill 因此提供一個在**你自己的瀏覽器**開的頁面：選取任何仍然裸露的文字就補遮（全文所有出現位置一起遮），點任何代號就看到背後的真實值，決定要不要放回。
+
+![人工補標介面實際操作](docs/annotate-demo.gif)
+
+上面這段是實際操作（示範用的判決書為虛構文件）。開頭那份判決書連「臺灣士林地方法院」都被切成兩個代號，看不出是哪個法院判的；點下去看到真實值，決定放回。醫院名更能說明偵測層的性質——同一家醫院在同一份文件裡，一處被整個吃掉、另一處只吃掉前兩個字，前後判成不同類別。最後圈選補遮漏網的公司名，全文所有出現位置一起遮。
+
+![人工補標介面](docs/annotate-ui.png)
+
+靜態圖裡藍色的 `MANUAL-1` 是使用者補遮的證人姓名——他只圈了一處，三處同時變成同一個代號。`MANUAL-2` 是補遮的法官。紅色那些是偵測層自動抓到的，其中 `ORG-1`、`ORG-3` 是法院與醫院，點下去可以放回原文，判決書才讀得下去。
+
+**這一頁呼叫端連不上**：網址帶一次性 token，在私有子行程內產生、只交給它自己開的瀏覽器，從不印出；回執只有數量，沒有網址。
+
+## 這不是什麼
+
+想要「所有雲端請求自動遮蔽、不用逐份處理、可批量」——**你要的是 gateway，不是這個**，請去用 [LiteLLM + Presidio](https://www.litellm.ai/) 或 [PrivAiTe](https://github.com/crp4222/PrivAiTe)。它們做得比較好，我不打算重做一次。
+
+這個專案適合的是：**單份重要文件，你要一份可留存的去識別化版本，而且文件是繁體中文的。**
+
+它也**不是機密分級工具**。它遮的是「能指認到特定個人」的資訊。金額、病情、行程、合約條款只要不指向個人就會留著。不要單憑它宣稱「整份文件可以對外」。
+
+## 還在做的事
+
+第一階段的快速模式與完整本機網頁入口已完成。它們與 skill 的快速路徑共用同一個私有工作目錄、對照表與還原核心；一般 JSON、下載內容與 HTML 只會有去識別化文字、代號與工作編號。網頁伺服器預設只繫結 `127.0.0.1`，不提供加強模式的假入口。
+
+第二階段也已加入文字型 PDF 的本機快審：瀏覽器上傳後只在記憶體中抽取可選取文字，再交給同一套 quick 私有工作核心。可下載去識別化 UTF-8 文字或安全的獨立 HTML。CLI 的多格式讀取與寫回現在都在有界的私有子行程中執行；PDF 可輸出與原頁面尺寸相同的去識別化 PDF，無法定位個資時會拒絕產檔。掃描型／圖片型 PDF 與 OCR（文字辨識）仍留待後續工作。
+
+### 進階原生 PDF 整合（自行評估）
+
+本專案的 PDF 輸出以點陣化作為安全下限：它會移除原本的文字層，代價是輸出檔不再能搜尋或複製未遮蔽文字。若你需要保留可搜尋的原生 PDF，可自行評估把本工具的遮蔽座標接到提供「真正移除內容」能力的 PDF 函式庫，例如 PyMuPDF。
+
+**這不是本專案內建或支援的整合。** PII Guard 不會安裝、呼叫或提供 PyMuPDF 的一鍵設定、程式碼或相容性保證；自行整合者必須自行確認其 AGPL 或商業授權是否適用，也必須自行承擔驗證責任。
+
+安全上，請只在每筆個資都能以同一 PDF 引擎完整定位、完成真正移除、清理附件／metadata／JavaScript，並重新確認原始個資無法從輸出檔抽取時才交付。任何一項不確定時，應退回本專案的點陣化 PDF 輸出，而不是以視覺遮蓋取代實際移除。
+
+歡迎有興趣協作者一起試用，也歡迎所有的提意見跟 PR。
+
+## 安裝
+
+需要 Python 3.13（3.11 以上可跑）、[uv](https://docs.astral.sh/uv/)、以及 [Ollama](https://ollama.com/)（只有加強模式與 skill 的稽核層需要）。
+
+```bash
+git clone https://github.com/danyuchn/pii-guard.git
+cd pii-guard
+uv sync
+
+# 本機網頁要處理 PDF，或 CLI 直接處理 .docx / .xlsx / .pdf 時再加裝
+uv sync --extra formats
+```
+
+首次執行會下載 CKIP BERT NER 模型（約 500MB）。未加裝 `formats` 時，`tests/test_file_handlers.py` 的 10 個測試會因缺少套件而跳不過，屬預期行為。
+
+### 平台支援
+
+macOS 與 Linux 是主要平台。Windows（NTFS）可以跑核心流程——`anonymize`／`restore`、`quick`、`quick-restore`、本機網頁與 PDF 快審、測試套件——但有三件事必須知道：
+
+- **私有目錄 ACL**：NTFS 沒有 POSIX 權限位。Windows 新建 jobs root 時會移除繼承，限定目前使用者、SYSTEM 與 Administrators 完全控制，並在使用前讀回驗證。jobs root 必須位於使用者設定檔內；父目錄若允許其他帳號建立、刪除或置換子項目也會拒絕。既有或自訂 root 任一檢查不符便 fail-closed。常駐 hook 服務的 home（`~/.local/share/pii-guard/hookd/`，內含每個 session 的對照表）套用同一組 ACL 與父層檢查，差別是既有 home 會被收緊而非拒絕，細節見 `examples/claude-code-hookd/README.md`。[威脅模型](#威脅模型)一節的 `0600`／`0700` 敘述以 POSIX 為準。
+- **鎖語意**：Windows 以 `msvcrt` byte-range lock 替代 `flock`，共享鎖一律降級為互斥鎖——序列化變多，保護不變少。
+- **加強模式不可用**：Ollama listener 驗證依賴 `lsof`，Windows 上會以 `LOCAL_MODEL_UNVERIFIED` 拒絕啟動（fail-closed）。快速模式與人工補標不受影響。
+
+## Claude Code Skill
+
+本 repo 內含 `pii-safe-documents` skill，位於 `.agents/skills/pii-safe-documents/`。它在 CLI 之外做兩件事：
+
+- **不讓主 agent 讀到原始文件、對照表與還原結果**——讀檔、呼叫模型、還原都在獨立的本地行程裡完成，主 agent 只拿到路徑與回執。
+- **在決定性偵測之後加一層本地模型稽核**，補偵測層抓不到的漏網（真實判決書的簽名欄人名就是這一類）。
+
+安裝方式是連結進 skills 目錄，不要複製：
+
+```bash
+ln -s "$(pwd)/.agents/skills/pii-safe-documents" ~/.claude/skills/pii-safe-documents
+ollama pull ornith-1.5:9b
+```
+
+用連結而非複製，是因為 skill 需要找到它所屬的 repo 才能呼叫 pii-guard 本體。只能複製的環境改設 `PII_GUARD_HOME` 指向 clone 出來的路徑。
+
+想把保護擴到「Claude Code 每一次工具讀取」而不只是單份文件，跑 `uv run pii-guard-hookd install` 裝上常駐服務 hookd 與其 classic hooks，說明見 [`examples/claude-code-hookd/`](examples/claude-code-hookd/)。
+
+同一個服務另有一個 Claude Mods 前端，用 `uv run pii-guard-hookd install --mod` 安裝。規則與涵蓋範圍一樣，但它的攔截點跑在 Edit 自己比對 `old_string` 之前，所以帶佔位符的 Edit 不會再失敗；prompt 也從「整則擋掉」改成「改寫」。說明見 [`examples/claude-code-mod/`](examples/claude-code-mod/)。
+
+### 三個步驟
+
+```bash
+S=.agents/skills/pii-safe-documents/scripts/pii_safe_workflow.py
+
+# 1. 產生去識別化副本
+python3 $S redact --input "/絕對路徑/機密文件.txt"
+
+# 2. 人工補標（在你自己的瀏覽器開一頁）
+python3 $S annotate --job-id "<job_id>"
+
+# 3. 編輯完成後還原
+python3 $S restore --job-id "<job_id>" --input "編輯後的.txt" --output "還原.txt"
+```
+
+第 2 步就是上面[人工補標介面](#人工補標介面)那一頁。每次編輯都即時落檔並重新驗證整份仍能逐字還原，所以中途關掉分頁只會失去還沒做的編輯。
+
+在 Claude Code 裡直接說「幫我把這份檔案去識別化」也可以，skill 會照這個流程走。
+
+### 進階／無瀏覽器環境
+
+`mask --terms <詞清單檔>`、`unmask --marker TYPE-N` 是同樣兩種操作的指令列版本，`review` 列出代號與真實值。`review` 會印出未遮蔽的內容，因此在輸出不是終端機時拒絕執行。`purge` 刪除一個工作目錄。
+
+### 本機網頁入口
+
+快速模式不啟動或呼叫 Ollama，只使用既有的 Presidio、台灣規則與 CKIP 中文辨識；反向對照表與原文快照留在 `~/.local/share/pii-safe-documents/jobs/<job_id>/`，檔案權限為 `0600`、工作目錄為 `0700`。
+
+```bash
+# 輸出安全 JSON；可加 -o 另存去識別化文字
+uv run python -m pii_guard quick tests/fixtures/phase1_chinese.txt
+uv run python -m pii_guard quick input.txt -o input.anonymized.txt
+
+# 用 quick 工作編號還原編輯後的去識別化文字；不需要知道 mapping 路徑
+uv run python -m pii_guard quick-restore <job_id> edited.anonymized.txt -o restored.txt
+
+# 開啟一頁式 localhost 流程：選檔 → 快速模式 → 快審／補遮 → 下載
+uv run python -m pii_guard web
+# 等價別名：uv run python -m pii_guard local-web
+
+# 加強模式在同一頁選擇；可明確指定本機模型與 loopback 位置
+uv run python -m pii_guard web \
+  --audit-model ornith-1.5:9b \
+  --ollama-url http://127.0.0.1:11434
+
+# 固定 fixture，可重跑並分開量測 cold start 與 warm processing
+uv run python -m pii_guard benchmark --fixture tests/fixtures/phase1_chinese.txt
+```
+
+網頁分成兩個分頁。「快審」是上面這段流程；「名單」把客戶名單（xlsx／csv）的欄位對應存起來，
+之後這些值在所有進模型的內容裡都會先被換成代號——三步驟：選檔案、逐欄確認要不要遮、儲存並啟用，
+下面還有一個「試試看」框可以立刻確認效果。名單**不會被複製**，存下來的只有一份
+`<專案>/.pii-guard/sources.json`（來源路徑、欄位對應、格式規則，沒有任何值）。
+終端機等價指令是 `uv run pii-guard-hookd terms import <表格>`，Claude Code 裡是 `/pii-terms`。
+詳細行為與值的流向見 `examples/claude-code-hookd/README.md` 的「參考名單」一節。
+
+網頁只在 client 端以固定邏輯顯示 `~/.local/share/pii-safe-documents/jobs/<job_id>/` 提示；若啟動時自訂 `jobs-root`，則顯示「啟動 CLI 設定的私有工作根目錄 + 工作編號」，API 不回傳絕對路徑。「產生還原檔」只會把結果寫回同一個私有工作目錄，不透過 HTTP 傳回原文；「刪除這個工作」是手動刪除單一工作與對照表，沒有自動 TTL。
+
+加強模式先建立與快速模式相同的私有基線，再由獨立本機工作執行 Ollama 稽核。每個送入模型的視窗取樣三次，三次都成功才取聯集；模型回報的文字必須能精確或唯一地對回目前文字，最後仍要逐字還原成功。工作尚未通過時，API 與頁面都不提供去識別化文字、代號、下載、人工補遮或還原；可以取消，失敗、取消或伺服器中斷後可以明確重跑。同一時間只執行一個加強工作，快速模式仍可使用且不會探測或呼叫 Ollama。程式會保守拒絕常見的提示注入文字，但這是有限規則，不代表能證明所有提示注入都無效；`passed` 只表示這套有界稽核與完整性檢查已完成，不是零漏網保證。
+
+超過 12,000 字的文件會先以固定規則挑出疑似段落，並連同前後段落送入模型；沒有命中或命中內容超過全文八成時，退回全文稽核。這項篩選只代表減少送入模型的文字量，不代表已證明速度提升或維持全文召回率。目前沒有新增可公開的真實文件效能或召回率數字。
+
+`quick-restore` 以 quick receipt 的工作編號和編輯後去識別化檔案操作同一個私有工作目錄與還原核心；輸出檔會以 `0600` 建立，既有輸出或 symlink 會拒絕覆寫。CLI 回執只回報工作編號、成功狀態與 round-trip 狀態，不回傳還原內容、mapping、digest 或私有路徑。
+
+## 準確率
+
+**可重現的部分**：`tests/eval/eval_corpus.json` 是 53 條合成標註語料，`tests/eval/corpus_manifest.json` 明確標記不含私人或生產資料，兩者都在版控中，任何人都能跑：
+
+```bash
+uv run pytest tests/eval -m "eval and not slow"
+```
+
+**不可重現的部分**：另有兩批真實台灣文件（判決書、監察院個案、政府新聞稿、新聞、通訊錄、裁罰表）共 17 份、71 個手工標註檢查項，在最終版程式碼下全數通過、零洩漏。第二批十份是修完之後才取得、過程中從未用來調校，那批才有驗收意義。
+
+**53 條合成語料的數字可以公開重跑，但不能代表真實文件表現。** 另外那批真實文件含私人資料、永遠不會進 git，因此其結果仍只能作為本機驗收證據。
+
+還有一件必須講的：**合成語料會系統性高估**。原本的合成測試四個模型三個滿分，換成真實判決書後同一批模型立刻現形——9B 把十個人壓成同一個代號。所以上面那 53 條的分數，不要當成真實文件上的表現。
+
+## 威脅模型
+
+這是**防止意外把原文餵給雲端模型的強保護，不是作業系統層級的安全邊界**。
+
+skill 的隔離做的是：原文與對照表從不經過主 agent 的輸出通道，函式庫的警告訊息（會回吐原文）被丟棄，錯誤只以代碼回報，失敗的工作目錄直接刪除。這些擋掉的是每次都會發生的**意外曝光**。
+
+它擋不住的是：主 agent 與那些檔案是**同一個使用者身分**，`cat` 得到就是 `cat` 得到。檔案權限 0600 對擁有者不設防。真正的敵意隔離需要另一個系統帳號或獨立權限的本地 broker，這個 repo 沒有做，也不該假裝有做。
+
+**如果你的主 agent 本來就是本地模型**（Claude Code 可以指向 Ollama），那上面整段都不適用——原文哪裡都沒去。反過來說，這個專案存在的意義，正是讓你**用雲端模型的能力、同時不把個資交出去**。
+
+## 架構
+
+```
+原始文件
+    ↓
+[偵測層] CKIP BERT NER + 台灣 Regex           ← 機率性，會漏
+    ↓  （skill 另加：本地模型稽核，多次取樣取聯集）
+    ↓  （skill 另加：人工補標介面）
+[替換層] 程式碼建立對照表                       ← 決定性
+    ↓
+去識別化文本 → 送 LLM → AI 回答（含代號）
+    ↓
+[還原層] 程式碼反向替換                         ← 決定性，逐字精確
+```
+
+**關鍵設計原則**：偵測層可以是機率性的，但**替換與還原全部由程式碼完成**，所以還原一定精確。
+
+| 層次 | 工具 |
+|------|------|
+| PII 框架 | [Microsoft Presidio](https://github.com/microsoft/presidio)（MIT） |
+| 繁中 NER | [ckiplab/bert-base-chinese-ner](https://huggingface.co/ckiplab/bert-base-chinese-ner)（中研院，102M） |
+| 台灣 PII Regex | 自建 PatternRecognizer |
+| 本地稽核模型 | Ollama（預設 `ornith-1.5:9b`） |
+| 語言／套件管理 | Python 3.13 / uv |
+
+**支援的 PII 類型**：人名、組織、地名（CKIP）；身分證、外籍居留證、護照、統一編號、手機、市話、車牌、出生日期、銀行帳號（Regex）；Email、信用卡號（Presidio 內建）。
+
+**輸入限制**：skill 與 quick 文字流程只吃 64 KiB 以內的 UTF-8 純文字（`.txt` `.md` `.csv` `.tsv` `.log` `.dat`）。CLI 的 `.docx`／`.xlsx`／`.pdf` 與其他既有格式上限為 16 MiB，解析與二進位寫回在每次請求建立的隔離子行程中進行；父行程只收受界線內的結構化結果。格式 worker 有 15 秒牆鐘、10 秒 CPU 與 512 MiB 位址空間上限（平台支援時套用），逾時、崩潰或第三方套件警告都不會回吐原文，錯誤只回固定安全碼。PDF 輸出會移除原本的文字層、metadata 與附件，只在所有映射值都能定位並通過驗證時產檔。需要先用 `uv sync --extra formats` 安裝既有的選用依賴。網頁仍只接受文字型 `.pdf`：上傳最多 4 MiB、最多 50 頁，抽出的 UTF-8 文字不得超過 64 KiB；掃描／圖片型或不合格的 PDF 會安全拒絕。
+
+## 速度
+
+skill 的稽核層開啟推理並對每個視窗取樣三次，**單份文件實測 10–50 分鐘**。這是為了召回率付的代價——關閉推理時，模型會漏掉判決書簽名欄的書記官姓名。
+
+**批量處理上百份文件在此設定下不可行。** 需要批量請看上面「這不是什麼」。
+
+## 路線圖
+
+- [x] Presidio + CKIP NER + 台灣 Regex，MCP server 介面
+- [x] 評估語料與 precision/recall 框架
+- [x] `pii-safe-documents` skill（主 agent 隔離的可逆去識別化）
+- [x] 人工補標介面（localhost 網頁）
+
+### 第一階段：快速模式與完整本機網頁入口
+
+- [x] **快速模式**：不啟動 Ollama，使用規則與中文辨識模型做可逆去識別化。
+- [x] **完整網頁入口**：把既有人工補標頁擴成選檔、選模式、快審與下載的一頁式本機流程；加強模式明確保留到第三階段。
+- [x] **共用核心**：CLI、`pii-safe-documents` skill 的快速路徑與網頁介面共用同一套工作目錄、私有對照表、去識別化與還原邏輯。
+- [x] **JSON 與 HTML 邊界**：一般 JSON 只含去識別化文字、代號與工作編號；私有對照表只留在本機，HTML 僅用於 localhost 快審且不嵌入真實個資。
+- [x] **效能基準**：固定中文 fixture 提供可重跑的 cold-start、warm-processing 與完整 round-trip 指標；目前只報實測數字，不宣稱速度門檻。
+- [x] **手動清除**：網頁介面提供清楚的私有工作目錄與單一工作刪除操作，不設定自動到期。
+
+### 第二階段：PDF 快審
+
+- [x] **PDF 文字快審**：抽取文字型 PDF 後在本機 HTML 介面審閱，沿用 quick 私有工作核心，輸出去識別化 UTF-8 文字或安全 HTML。
+- [x] **格式說明**：本機網頁的 PDF 快審仍明確說明只抽取文字；CLI 另提供頁面尺寸相同的去識別化 PDF 輸出，掃描／圖片型 PDF 與 OCR 留待後期。
+
+### 第三階段：加強模式
+
+- [x] **Ollama 本地稽核**：在快速模式之外提供可選的三次本地稽核；背景工作可取消、失敗後重跑，通過前不釋出去識別化內容。
+- [x] **模型輸入篩選**：先用決定性規則選出可疑段落與相鄰內容；保守條件下退回全文稽核，不宣稱尚未量測的速度或召回率提升。
+- [x] **控制個資**：每個送進本機模型的視窗前後各放一組文件裡不存在的合成聯絡人；模型漏報任一個即判定該次取樣被壓制（`LOCAL_AUDIT_SUPPRESSED`）而非「這段沒有個資」，並沿用視窗切半重試隔離嵌入指令的段落。這是對付「文件裡夾帶指令叫模型不要回報」的結構性防線；規則比對只當便宜的前置過濾。
+
+### 第四階段：擴大文件範圍與可交付輸出
+
+- [ ] **更多文件類型**：CLI 的 docx／xlsx／pdf 解析與二進位寫回已移進有界私有子行程，第三方警告與例外只回固定錯誤碼；尚未接進本機網頁，且頁首／頁尾、儲存格註解、工作表名稱與文件屬性仍不在偵測與寫回範圍內。
+- [ ] **掃描／圖片型 PDF 與 OCR**：在本機辨識圖片中的文字，沿用檔案大小、頁數、時間與記憶體上限；原始頁面與辨識結果都不得送往外部服務，失敗時只回固定安全錯誤。
+- [x] **保留版面的 PDF 輸出**：輸出與原頁面尺寸相同的去識別化 raster PDF。輸出重建自點陣圖，不帶原本的文字層、metadata 與附件；遮罩座標以頁面 CropBox 對齊並有回歸測試涵蓋非零 MediaBox 原點與旋轉頁；任一映射值無法定位即 fail-closed，不產生檔案。
+
+### 第五階段：可公開驗證與桌面交付
+
+- [x] **可公開的準確率**：版控內的 53 條合成標註語料附公開 manifest 與可重跑統計測試。這批數字不代表真實文件表現，見[準確率](#準確率)。
+- [x] **CI 自動守門**：GitHub Actions 安裝鎖定依賴，執行格式、lint、型別、非模型測試與公開合成評測，並涵蓋「公開回應不得含原文、私有對照表或路徑」的測試；另有 Windows 工作流程跑核心流程與雙平台型別檢查。
+- [ ] **桌面程式打包**：待第四階段與本機網頁流程穩定後，再處理 `.app`／`.exe` 的安裝、更新、簽章與跨平台驗證，讓一般使用者不必安裝 Python 或輸入指令。
+
+### 接下來的順序（2026-09 排定）
+
+排序依據三件事：一、台灣法規面已有明文需求。個資法修正條文 2025-11-11 公布、個人資料保護委員會將成立，
+[行政院生成式 AI 參考指引](https://www.ey.gov.tw/Page/448DE008087A1971/40c1a925-121d-4b6b-8f40-7e9e1a5401f2)與
+[衛福部醫療機構應用生成式 AI 指引](https://www.mohw.gov.tw/dl-100614-c7d35394-0a6b-448e-9d90-295294596d98.html)（2026-05-29）
+都明文不得把個資輸入生成式 AI。二、既有的 LLM gateway（LiteLLM、Portkey、Cloudflare）都沒有繁中或台灣格式，
+而同類開源專案已出現（見第 5 點）。三、外部評測語料與更新的中文 NER 模型已經存在，可以把準確率變成公開數字。
+順序反映依賴關係：先有數字，再解上限，再做垂直領域，曝光排在核心對齊之後。
+
+1. [ ] **外部語料評測**：接入 [`lianghsun/tw-PII-bench`](https://huggingface.co/datasets/lianghsun/tw-PII-bench)
+   （Apache-2.0；910 筆，Gemini 合成句，19 類含 11 種台灣專屬格式與 5 類硬負例），與版控內 53 筆語料並列回報
+   span-level F1。只用來評測與回歸，不當合規證據；語料是模型生成，與真實文件仍有落差。這一步給後面每一項前後對照的數字。
+2. [ ] **解除 64 KB 上限與 MCP 對齊**：quick、網頁與 skill 的輸入上限對判決書與病歷不夠，沿用有界 worker 模式分段處理。
+   MCP server 目前直接呼叫引擎，改走私有工作目錄核心，與 CLI、網頁同一套。這兩項是垂直領域與對外曝光的前提。
+3. [ ] **公務機關與醫療的辨識器與合規對照**：依 tw-PII-bench 的類別補健保卡號、戶號、醫事人員證書字號、駕照號碼、
+   LINE ID 等辨識器（現有 PatternRecognizer 加 context 的架構即可）；另提供一份對照表，把本工具的保證逐條對到上述兩份指引。
+4. [ ] **第二偵測器評估**：GLiNER 系列中文模型與 CKIP 在 tw-PII-bench 上頭對頭，純評估、有數字才換。授權要看清楚：
+   [`pii-engineer/PII-Engineer-Chinese-NER-v1.0`](https://huggingface.co/pii-engineer/PII-Engineer-Chinese-NER-v1.0)
+   模型卡正文標 AGPL-3.0 加商業授權（Hugging Face 中繼資料誤標 Apache-2.0），本專案 MIT，不得作為依賴或預設模型；
+   GLiNER 與 GLiNER2 函式庫本身 Apache-2.0 可用，要用得以 Apache-2.0 語料自行微調。同時評估以小型 NER 模型前置或取代
+   加強稽核的三次 LLM 取樣，降低每視窗的成本。
+5. [ ] **差異化定位與曝光**：同類開源專案已出現，[`Vincent615/TW-PII-Scrubber`](https://github.com/Vincent615/TW-PII-Scrubber)
+   （GPL-3.0，CKIP + Presidio，13 類，含批次與 Windows 免安裝包）與
+   [`Oliver0804/tw-pii-redact`](https://github.com/Oliver0804/tw-pii-redact)（純規則，掛成 coding agent hook）。
+   本專案的差異是逐字可逆還原、人工補標、加強稽核與主 agent 隔離 skill，寫進 README 後再投稿 MCP server 目錄與 Hacker News。
+6. [ ] **掃描／圖片型 PDF 的本機 OCR**：第四階段原項目，開源生態目前沒有成熟方案；沿用隔離 worker 與資源上限，先拿真實掃描件量測。
+7. [ ] **Gateway 外掛**：把台灣辨識層包成 LiteLLM 這類 gateway 的自訂 guardrail。只在有企業使用者提出需求後才做，
+   以免稀釋「產出一份可交付檔案」的定位。
+8. [ ] **桌面打包**：第五階段原項目，工程量最大，排最後。
+
+### 已知問題
+
+- 簡繁對齊只接受唯一的字詞對應，仍不做模糊匹配；模型回傳的名稱無法唯一對回文件時，會以 `LOCAL_AUDIT_UNRESOLVED` 安全拒絕。
+- 加強稽核的控制個資只能偵測「整段被壓制」。若文件裡的指令只針對特定人名（例如「王小明不是個資」），控制值仍會被回報，該人名可能漏掉；這類情況要靠人工補標。
+- 機構是否應保留無法由模型安全判斷。可用本次 `--allow-org`／`--allow-org-file` 明示名稱，或在補標介面放回；若未確認，維持遮蔽。
+- docx／xlsx 的寫回只涵蓋段落與表格儲存格。表格儲存格若有第二段以上，原文會留在輸出檔；頁首、頁尾、儲存格註解、工作表名稱與文件屬性（作者、標題）既不會被偵測，也不會被遮蔽。這些檔案交付前請自行檢查。
+
+### 已退役
+
+**`--llm-fallback` 與 `OllamaRecognizer`**（2026-08-21 移除）。它與 skill 的稽核層目的重疊，但沒有任何語料證明它有效，並存只會讓人選錯。要在 CLI 端補回模型稽核，正確做法是下沉 skill 那一套，不是重新啟用這個。
+
+**Claude Code PreToolUse hook**（移至 [`examples/claude-code-hook/`](examples/claude-code-hook/)）。早期做法是攔截讀檔並自動遮蔽，已被 skill 的顯式流程取代。留著是因為它示範了另一種整合思路，但**不再維護**。
+
+## 作者
+
+[Dustin Yuchen Teng（鄧宇辰）](https://github.com/danyuchn)——AI 導入顧問與課程講師，在做的事情是把 coding agent 變成實際可用的工作流程。這個專案是其中一條線的產物。
+
+## 變更紀錄
+
+見 [CHANGELOG.md](CHANGELOG.md)。
+
+## 授權
+
+MIT。見 [LICENSE](LICENSE)。

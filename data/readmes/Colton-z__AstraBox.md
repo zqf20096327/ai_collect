@@ -1,0 +1,329 @@
+<p align="center">
+  <img src="website/static/img/astrabox-mark.svg" alt="AstraBox" width="72" height="72" />
+</p>
+
+<h1 align="center">AstraBox</h1>
+
+<p align="center">
+  <strong>The open-source, self-hosted alternative to Claude Managed Agents.</strong>
+</p>
+
+<h3 align="center"><a href="https://demo.astrabox.ai/">Try AstraBox online →</a></h3>
+
+<p align="center">
+  No signup. Ask an Agent to write and run code with a free model.<br />
+  Offline sandbox · Sessions last about 2 minutes.
+</p>
+
+<p align="center">
+  Open source · Self-hosted · Apache-2.0
+</p>
+
+<p align="center">
+  <a href="https://github.com/Colton-z/AstraBox/actions/workflows/ci.yml"><img src="https://github.com/Colton-z/AstraBox/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache-2.0" /></a>
+  <a href="https://www.astrabox.ai/"><img src="https://img.shields.io/badge/docs-English-4f46e5" alt="Documentation" /></a>
+  <a href="https://www.astrabox.ai/zh-Hans/"><img src="https://img.shields.io/badge/文档-简体中文-4f46e5" alt="Chinese documentation" /></a>
+</p>
+
+<p align="center">
+  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <img src="docs/img/demo-session.gif" alt="A Session in the AstraBox console: the Agent writes a Python script in its sandbox, runs it, and streams back the output" />
+</p>
+
+AstraBox runs the Agent programs you already use (Claude Code, Codex,
+DeepSeek Harness, Pi and Hermes) as cloud Agents on your own infrastructure,
+with any model. It handles the sandboxes, streaming, state and credentials, so
+you do not have to turn an Agent program into a service yourself.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Colton-z/AstraBox/main/scripts/install.sh | bash
+```
+
+One command on a Linux host or WSL 2 with Docker. The installer asks which
+model service to use and prints the console address, <http://127.0.0.1:8088>.
+See the [Quickstart](#quickstart) for requirements.
+
+- **The vendor's own Agent program** — each Agent runs the real Claude Code,
+  Codex or other program inside its sandbox, so the program's own tools and
+  session format carry over.
+- **Starts in seconds, survives a lost sandbox** — prewarmed sandboxes start
+  conversations quickly, and each program's native session is kept in the
+  platform database and restored into a new sandbox on the next message.
+- **Keys stay outside the sandbox** — credentials are injected at the egress
+  boundary; the Agent only ever sees a placeholder.
+- **Reachable from anywhere** — the web console, HTTP API, CLI, MCP, schedules,
+  signed webhooks, and messaging platforms such as Slack, Discord, Telegram,
+  WhatsApp and LINE.
+
+Already looking at Claude Managed Agents? See
+[how AstraBox compares](docs/compare-claude-code-self-hosted.md).
+
+**One platform for team Agents and personal Assistants.** An
+[Agent](docs/authoring-agents.md) is a reusable cloud Agent for teams and
+automation, started from the web console, the API, schedules, webhooks,
+messaging platforms or an MCP client. An [Assistant](docs/assistants.md) is one
+person's long-lived cloud workspace: all of its conversations share one
+workspace and the Agent program's state.
+
+## Core concepts
+
+| Concept | Description | Analogy |
+| --- | --- | --- |
+| **Agent** | A cloud Agent powered by an installed Agent program | "Cloud teammate" |
+| **Environment** | The Agent program, sandbox, model connection, network access, and lifecycle used for a Session | "Desk and toolbox" |
+| **Session** | One stateful Agent execution, including its messages, Events, and current state | "A specific piece of work" |
+| **Event** | The real-time output and state changes produced by a Session | "Live progress feed" |
+
+Through these resources, developers can run interactive or long-running tasks,
+connect remote or local MCP servers, Plugins, Skills, and repositories, trigger
+Agents from schedules, webhooks, APIs, and messaging platforms, and protect
+access with authentication, authorization, isolated sandboxes, and managed
+credentials.
+
+[Explore AstraBox capabilities →](docs/capabilities.md)
+
+## Enterprise infrastructure included
+
+One deployment brings up the pieces a team usually assembles by hand:
+
+- **Artifacts** — Agents and Assistants publish durable, versioned pages with share links and live data. See the [artifact guide](docs/artifacts.md).
+- **Model gateway** — [LiteLLM](https://github.com/BerriAI/litellm) is bundled
+  and on by default: one route name per model, upstream keys held on the
+  server, budgets and usage logs, and any Anthropic, OpenAI-compatible or local
+  provider behind it. See [Connect a model](docs/models.md).
+- **Team login** — [Casdoor](https://github.com/casdoor/casdoor) is
+  pre-integrated as the identity provider: OIDC, organizations and roles, and
+  sign-in through the identity providers an administrator adds in Casdoor, such
+  as Google, Microsoft Entra ID, Okta, GitHub, SAML or LDAP. The installer turns
+  it on with `ASTRABOX_INSTALL_TEAM_LOGIN=casdoor`, and a clone
+  with one Compose overlay; see [Team login](docs/team-login.md).
+- **Isolated sandboxes** — [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox)
+  on one Docker host or a Kubernetes cluster, with warm capacity so
+  conversations start in seconds.
+- **Credentials outside the sandbox** — Vault credentials are injected at the
+  sandbox's egress boundary; the Agent only ever sees a placeholder.
+- **Channels and triggers** — schedules, signed webhooks and messaging
+  platforms through official [Satori](https://github.com/satorijs/satori)
+  adapters.
+
+## Manage it from a terminal, or let a coding agent do it
+
+The `astrabox` CLI configures and uses a local or remote deployment without the
+web console. Its results can be printed as JSON, so a coding agent such as
+Claude Code or Codex can run the same commands for you.
+
+- **Configuration as code** — `astrabox init --from-deployment` exports a
+  deployment's Environments and Agents to `astrabox.yaml`; `astrabox diff`
+  previews an edit and `astrabox apply` creates or updates resources, never
+  deleting any.
+- **Tasks from the command line** — `astrabox run <agent> "<task>"` starts a
+  Session, sends the task and streams the reply; `--session` continues an
+  existing Session.
+- **Output a program can read** — with `--output json` a command prints one
+  JSON object whether it succeeds or fails, and each kind of failure has its
+  own exit code.
+- **MCP tools** — `astrabox mcp serve` offers schema, get, export, diff, apply,
+  status and run as MCP tools over stdio.
+- **Local or remote** — `astrabox up`, `down` and `logs` run the local Compose
+  deployment from a source checkout; the other commands reach any deployment
+  with `--endpoint` and a bearer token or OAuth client credentials.
+
+Install the CLI from a source checkout with `make install`. Deployments
+(schedule, webhook and messaging triggers) and answers to an Agent's questions
+are managed in the web console or the HTTP API. See the
+[CLI overview](docs/cli/overview.md).
+
+## Included Agent programs
+
+| Agent program | Sandbox image | Used for |
+| --- | --- | --- |
+| Claude Code | `ghcr.io/colton-z/astrabox-sandbox-claude-code` | Agent |
+| Codex | `ghcr.io/colton-z/astrabox-sandbox-codex` | Agent |
+| DeepSeek Harness | `ghcr.io/colton-z/astrabox-sandbox-deepseek-harness` | Agent |
+| pi | `ghcr.io/colton-z/astrabox-sandbox-pi` | Agent |
+| Hermes Agent | `ghcr.io/colton-z/astrabox-sandbox-hermes` | Assistant |
+
+Other Agent programs can be added with a compatible sandbox image. See
+[Add an Agent program](docs/writing-an-engine-adapter.md).
+
+## Built to extend
+
+Each replaceable part of AstraBox is a Python interface with a plugin
+registration point. An installed package registers its implementation under
+the matching entry-point group, and AstraBox selects it by name; an unknown
+name fails with an error instead of falling back to a default.
+
+| Extension point | Entry-point group | Built in |
+| --- | --- | --- |
+| Agent program | `astrabox.providers.engine` | Every included Agent program |
+| Sandbox backend | `astrabox.providers.sandbox` | OpenSandbox on Docker or Kubernetes |
+| Model service | `astrabox.providers.model` | LiteLLM gateway |
+| Messaging platform | `astrabox.providers.channel` | Messaging platform gateway, generic JSON webhook |
+| Identity provider | `astrabox.web.identity` | Local mode, OIDC, verified JWT, trusted identity headers |
+| Secret Store | `astrabox.providers.secrets` | Local encryption, AWS KMS |
+| Workspace storage | `astrabox.providers.storage` | Mounted volume, Amazon EFS |
+| Remote MCP server source | `astrabox.providers.extensions` | Administrator records in AstraBox, LiteLLM MCP gateway |
+| [Runtime preparation integrations](docs/providers/runtime-preparation.md) | `astrabox.providers.runtime_preparation` | Optional deployment-owned Agent resources, Session materials, preparation before each message and user prerequisites |
+| [Channel response judges](docs/providers/channel-response.md) | `astrabox.providers.channel_response` | Built-in title-model judge; deployment-owned judge |
+
+- **Interface version** — a plugin under `astrabox.providers.*` can set
+  `seams_api_version` to the interface version it was built against; AstraBox
+  refuses to load it when that differs from its own.
+- **Conformance suites** — `astrabox.testing` ships reusable test suites for
+  sandbox backends, workspace storage, messaging platforms, Agent programs and
+  schedulers; bind one in the plugin's own tests.
+- **Application extensions** — entry points for API routes, middleware,
+  lifespan hooks and service implementations extend the application itself.
+
+See [Add an Agent program](docs/writing-an-engine-adapter.md),
+[Add a messaging platform](docs/writing-a-channel-provider.md),
+[Use AstraBox from a Python application](docs/embedding.md) and
+[Extensions](docs/architecture.md#plugin-interfaces).
+
+## Workflow
+
+1. **Deploy AstraBox** — run the service and OpenSandbox on one Docker host,
+   Kubernetes, or infrastructure you already operate.
+2. **Configure an Environment** — choose the Agent program, sandbox image, model
+   connection, network access, and lifecycle.
+3. **Create an Agent** — select the Environment and model in the web console,
+   then add a system prompt, MCP servers, Plugins, Skills, or a repository only
+   when the Agent needs them.
+4. **Start a Session** — open the Agent and start a Session.
+5. **Send messages and receive Events** — follow live output, answer questions
+   or approvals, and return later without keeping the original browser open.
+
+## Quickstart
+
+### Prerequisites
+
+- A Linux host (or WSL 2) running Docker Engine 26.0 or later with the Compose
+  plugin 2.17.0 or later, and a user that can use the Docker socket
+- An API key for a model service: Anthropic, DeepSeek, or another Anthropic- or
+  OpenAI-compatible service
+
+Install the latest release with one command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Colton-z/AstraBox/main/scripts/install.sh | bash
+```
+
+The installer asks which model service your Agents use, installs the deployment
+into `~/astrabox`, pulls the published images, starts them, and prints the
+console address once the console answers. Open <http://127.0.0.1:8088>. Select
+an Environment, create an Agent, and start your first Session from the console.
+
+![Create an Agent in the AstraBox console](docs/img/agent-create-console-en.png)
+
+The local deployment listens on loopback and requires no login until you turn
+on team login, which the installer does with `ASTRABOX_INSTALL_TEAM_LOGIN=casdoor`.
+Before exposing it to another network, put it behind an HTTPS proxy as described
+in [Team login](https://www.astrabox.ai/docs/team-login#put-the-login-flow-behind-a-proxy).
+
+Run the installer again to upgrade: it installs the latest release over the
+current one and keeps your Sessions, credentials and settings.
+
+### Run from a clone
+
+Building the images from a checkout takes longer and is the path for changing
+AstraBox itself:
+
+```bash
+git clone https://github.com/Colton-z/AstraBox.git
+cd AstraBox
+
+make build-agent-image
+
+export ANTHROPIC_API_KEY="your-anthropic-api-key"
+export ANTHROPIC_MODEL="your-model-name"
+scripts/compose.sh up --build -d
+```
+
+For the complete setup and API alternative, see the
+[Quickstart](https://www.astrabox.ai/docs/quickstart). For the installer settings,
+Kubernetes, or an existing OpenSandbox service, see
+[Deploy AstraBox](https://www.astrabox.ai/docs/deploy).
+
+Prewarming prepares the Agent runtime before a Session claims it. New Agents
+have it on in the bundled deployments, and each one holds an idle prepared
+sandbox; see [capacity planning](docs/deploy.md#plan-capacity-for-prepared-sandboxes).
+Native conversation state is stored in the platform database; a persistent workspace
+volume is optional and preserves task files separately. For multiple API
+replicas or sandbox nodes, see [distributed deployment](docs/deploy-distributed.md)
+and [workspace storage](docs/deploy.md#where-conversation-workspaces-live).
+
+## When to use AstraBox
+
+- **Long-running asynchronous tasks** — let work continue after the developer's
+  computer or browser disconnects.
+- **API integration** — use an Agent from an application without building and
+  operating a separate Agent runtime.
+- **Batch processing** — run multiple Sessions for independent requests.
+- **Scheduled and event-driven work** — start Agents from a schedule, webhook,
+  external system, or messaging platform.
+
+Local Agent programs remain the best fit for interactive development on one
+computer. AstraBox makes the same kind of Agent available remotely and to other
+systems; the two approaches complement each other.
+
+## Documentation
+
+- [Overview](docs/overview.md)
+- [Quickstart](docs/quickstart.md)
+- [Define an Agent](docs/authoring-agents.md)
+- [Run a Session](docs/sessions.md)
+- [Connect MCP servers, Plugins, and Skills](docs/adding-tools.md)
+- [Automate Agent work](docs/deployments.md)
+- [Connect messaging platforms](docs/channels.md)
+- [Deploy AstraBox](docs/deploy.md)
+- [HTTP API](docs/api.md)
+
+## Development
+
+```bash
+make install
+make build-agent-image
+make build-assistant-image
+make dev
+```
+
+Open <http://127.0.0.1:5173>. See [CONTRIBUTING.md](CONTRIBUTING.md) for the
+maintained workflow.
+
+## Contributing
+
+Issues and pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Acknowledgements
+
+AstraBox stands on the shoulders of these open-source projects:
+[OpenSandbox](https://github.com/opensandbox-group/OpenSandbox),
+[LiteLLM](https://github.com/BerriAI/litellm),
+[Casdoor](https://github.com/casdoor/casdoor),
+[Satori](https://github.com/satorijs/satori),
+[DBOS Transact](https://github.com/dbos-inc/dbos-transact-py),
+[mergerfs](https://github.com/trapexit/mergerfs),
+[AIO Sandbox](https://github.com/agent-infra/sandbox),
+[shadcn/ui](https://github.com/shadcn-ui/ui),
+[Vercel AI SDK and AI Elements](https://github.com/vercel/ai) and
+[Docusaurus](https://github.com/facebook/docusaurus) — and it runs the Agent
+programs [Codex](https://github.com/openai/codex),
+[Hermes Agent](https://github.com/NousResearch/hermes-agent),
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness),
+[Pi](https://github.com/earendil-works/pi) and
+[Claude Code](https://github.com/anthropics/claude-code). [NOTICE](NOTICE) lists
+every attribution and license.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
+
+Claude and Claude Code are trademarks of Anthropic; OpenAI and Codex are
+trademarks of OpenAI. AstraBox is an independent project, not affiliated with
+or endorsed by them. Claude Code is proprietary software used under Anthropic's
+terms; see [NOTICE](NOTICE).

@@ -1,0 +1,370 @@
+<p align="center">
+  <img src="assets/mascot-no-bg.png" width="200" alt="Zippy — ZeptoClaw mascot">
+</p>
+<h1 align="center">ZeptoClaw</h1>
+<p align="center">
+  <strong>Fast, small, secure, and local-first personal AI assistant infrastructure.</strong>
+</p>
+<p align="center">
+  <a href="https://zeptoclaw.com/docs/"><img src="https://img.shields.io/badge/docs-zeptoclaw.com-3b82f6?style=for-the-badge&logo=bookstack&logoColor=white" alt="Documentation"></a>
+</p>
+<p align="center">
+  <a href="https://github.com/qhkm/zeptoclaw/releases/latest"><img src="https://img.shields.io/github/v/release/qhkm/zeptoclaw?color=blue" alt="Release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="License"></a>
+</p>
+
+---
+
+```
+$ zeptoclaw agent --stream -m "Analyze our API for security issues"
+
+🤖 ZeptoClaw — Streaming analysis...
+
+  [web_fetch]        Fetching API docs...
+  [shell]            Running integration tests...
+  [longterm_memory]  Storing findings...
+
+→ Found 12 endpoints, 3 missing auth headers, 1 open redirect
+→ Saved findings to long-term memory under "api-audit"
+
+✓ Analysis complete in 4.2s
+```
+
+ZeptoClaw is one Rust binary for running personal AI agents locally, at the edge, or on a VPS — with tools, memory, channels, providers, and sandboxed autonomy built in. We studied the best AI assistants — and their tradeoffs: OpenClaw's integrations without the large TypeScript app footprint, NanoClaw's container-isolated simplicity without narrowing to a tiny assistant core, NemoClaw's OpenShell guardrails without the Docker/k3s footprint, and PicoClaw's edge efficiency with Rust's safety and runtime controls.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/binary-~6MB-3b82f6" alt="~6MB binary">
+  <img src="https://img.shields.io/badge/startup-~50ms-3b82f6" alt="~50ms startup">
+  <img src="https://img.shields.io/badge/RAM-~6MB-3b82f6" alt="~6MB RAM">
+  <img src="https://img.shields.io/badge/tests-3%2C900%2B-3b82f6" alt="3,900+ tests">
+  <img src="https://img.shields.io/badge/providers-18-3b82f6" alt="18 providers">
+</p>
+
+## Why ZeptoClaw
+
+We studied what works — and what doesn't.
+
+**OpenClaw** proved a personal AI assistant can grow into a broad integration and skills ecosystem. **NanoClaw** proved container isolation can be simple enough to understand and customize. **NemoClaw** proved managed guardrails matter — policy-gated sandboxes, routed inference, credential injection, channel messaging, and digest-verified blueprints. **PicoClaw** proved edge assistants can run on $10 hardware with a Go binary under 10MB of RAM.
+
+**ZeptoClaw** took notes. The integrations, the security, the governance, the size discipline — without the tradeoffs each one made. One 6MB Rust binary that starts in 50ms, uses 6MB of RAM, and ships with container isolation, prompt injection detection, and a circuit breaker provider stack.
+
+| | OpenClaw | NemoClaw | NanoClaw | PicoClaw | **ZeptoClaw** |
+|---|---|---|---|---|---|
+| **Core shape** | Broad TypeScript assistant + skills ecosystem | OpenClaw managed through OpenShell | Small TypeScript Claude assistant | Go edge assistant | **Single Rust binary** |
+| **Footprint focus** | Integration breadth | Docker/k3s guardrails, ~2.4GB sandbox image | ~500-line core | <10MB RAM | **~6MB binary / ~6MB RAM** |
+| **Tools & memory** | 100+ skills | OpenClaw tools in sandbox | Minimal, customizable core | Web search, memory, scheduled tasks | **33 built-ins + plugins + memory** |
+| **Providers** | Multi-provider ecosystem | Routed managed inference | Claude-focused | Multi-LLM | **18 providers** |
+| **Channels** | Broad chat integrations | Telegram/Discord/Slack via OpenShell | WhatsApp-focused | 16+ channels | **10 active built-ins + plugins** |
+| **Isolation** | Skill/user-permission model | OpenShell: Landlock + seccomp + netns | OS containers | Workspace sandbox | **6 runtimes** |
+| **Runs on $10 HW** | Not the target | Not the target | Not the target | Yes | **Yes** |
+
+## Security
+
+AI agents execute code. Most frameworks trust that nothing will go wrong.
+
+The OpenClaw ecosystem has seen CVE-2026-25253 (CVSS 8.8 — cross-site WebSocket hijacking to RCE), ClawHavoc (341 malicious skills, 9,000+ compromised installations), and 42,000 exposed instances with auth bypass. ZeptoClaw was built with this threat model in mind.
+
+| Layer | What it does |
+|-------|-------------|
+| **6 Sandbox Runtimes** | Docker, Apple Container, Landlock, Firejail, Bubblewrap, or native — per request |
+| **Prompt Injection Detection** | Aho-Corasick multi-pattern matcher (17 patterns) + 4 regex rules |
+| **Secret Leak Scanner** | 22 regex patterns catch API keys, tokens, and credentials before they reach the LLM |
+| **Policy Engine** | 7 rules blocking system file access, crypto key extraction, SQL injection, encoded exploits |
+| **Input Validator** | 100KB limit, null byte detection, whitespace ratio analysis, repetition detection |
+| **Shell Blocklist** | Regex patterns blocking reverse shells, `rm -rf`, privilege escalation |
+| **SSRF Prevention** | DNS pinning, private IP blocking, IPv6 transition guard, scheme validation |
+| **Chain Alerting** | Detects dangerous tool call sequences (write→execute, memory→execute) |
+| **Tool Approval Gate** | Require explicit confirmation before executing dangerous tools |
+
+Every layer runs by default. No flags to remember, no config to enable.
+
+## Install
+
+```bash
+# One-liner (macOS / Linux)
+curl -fsSL https://raw.githubusercontent.com/qhkm/zeptoclaw/main/install.sh | sh
+
+# Homebrew
+brew install qhkm/tap/zeptoclaw
+
+# Docker
+docker pull ghcr.io/qhkm/zeptoclaw:latest
+
+# Build from source
+cargo install zeptoclaw --git https://github.com/qhkm/zeptoclaw
+```
+
+The control panel is an optional compile-time feature. To use `zeptoclaw panel` or
+`zeptoclaw serve`, build/install with `--features panel`.
+
+## Uninstall
+
+```bash
+# Remove ZeptoClaw state (~/.zeptoclaw)
+zeptoclaw uninstall --yes
+
+# Also remove a direct-install binary from ~/.local/bin or /usr/local/bin
+zeptoclaw uninstall --remove-binary --yes
+
+# Package-managed installs still use their package manager
+brew uninstall qhkm/tap/zeptoclaw
+cargo uninstall zeptoclaw
+```
+
+## Quick Start
+
+```bash
+# Interactive setup (walks you through API keys, channels, workspace)
+zeptoclaw onboard
+
+# Talk to your agent
+zeptoclaw agent -m "Hello, set up my workspace"
+
+# Stream responses token-by-token
+zeptoclaw agent --stream -m "Explain async Rust"
+
+# Use a built-in template
+zeptoclaw agent --template researcher -m "Search for Rust agent frameworks"
+
+# Process prompts in batch
+zeptoclaw batch --input prompts.txt --output results.jsonl
+
+# Start as a Telegram/Slack/Discord/Webhook gateway
+zeptoclaw gateway
+
+# With full container isolation per request
+zeptoclaw gateway --containerized
+```
+
+## Migrate from OpenClaw
+
+Already running OpenClaw? ZeptoClaw can import your config and skills in one command.
+
+```bash
+# Auto-detect OpenClaw installation (~/.openclaw, ~/.clawdbot, ~/.moldbot)
+zeptoclaw migrate
+
+# Specify path manually
+zeptoclaw migrate --from /path/to/openclaw
+
+# Preview what would be migrated (no files written)
+zeptoclaw migrate --dry-run
+
+# Non-interactive (skip confirmation prompts)
+zeptoclaw migrate --yes
+```
+
+The migration command:
+- Converts provider API keys, model settings, and channel configs
+- Copies skills to `~/.zeptoclaw/skills/`
+- Backs up your existing ZeptoClaw config before overwriting
+- Validates the migrated config and reports any issues
+- Lists features that can't be automatically ported
+
+Supports JSON and JSON5 config files (comments, trailing commas, unquoted keys).
+
+## Deploy
+
+<p align="center">
+  <a href="https://cloud.digitalocean.com/apps/new?repo=https://github.com/qhkm/zeptoclaw/tree/main"><img src="https://img.shields.io/badge/DigitalOcean-0080FF?style=for-the-badge&logo=digitalocean&logoColor=white" alt="Deploy to DigitalOcean"></a>
+  <a href="https://railway.com/deploy?template=https://github.com/qhkm/zeptoclaw"><img src="https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Deploy to Railway"></a>
+  <a href="https://render.com/deploy?repo=https://github.com/qhkm/zeptoclaw"><img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Deploy to Render"></a>
+  <a href="https://fly.io/docs/hands-on/"><img src="https://img.shields.io/badge/Fly.io-6E42C1?style=for-the-badge&logo=fly.io&logoColor=white" alt="Deploy to Fly.io"></a>
+</p>
+
+### Any VPS
+
+```bash
+curl -fsSL https://zeptoclaw.com/setup.sh | bash
+```
+
+Installs the binary and prints next steps. Run `zeptoclaw onboard` to configure providers and channels.
+
+## Providers
+
+ZeptoClaw supports 18 LLM providers. All OpenAI-compatible endpoints work out of the box.
+
+| Provider | Config key | Setup |
+|----------|------------|-------|
+| **Anthropic** | `anthropic` | `api_key` |
+| **OpenAI** | `openai` | `api_key` |
+| **OpenRouter** | `openrouter` | `api_key` |
+| **Google Gemini** | `gemini` | `api_key` |
+| **Google Vertex AI** | `vertex` | ADC or access token |
+| **Groq** | `groq` | `api_key` |
+| **DeepSeek** | `deepseek` | `api_key` |
+| **xAI (Grok)** | `xai` | `api_key` |
+| **NVIDIA NIM** | `nvidia` | `api_key` |
+| **Azure OpenAI** | `azure` | `api_key` + `api_base` |
+| **AWS Bedrock** | `bedrock` | `api_key` |
+| **Kimi (Moonshot)** | `kimi` | `api_key` |
+| **Zhipu (GLM)** | `zhipu` | `api_key` |
+| **Qianfan (Baidu)** | `qianfan` | `api_key` |
+| **Novita AI** | `novita` | `api_key` |
+| **Liquid AI** | `liquid` | `api_key` |
+| **Ollama** | `ollama` | local/keyless |
+| **VLLM** | `vllm` | local/keyless |
+
+Configure in `~/.zeptoclaw/config.json` or via environment variables:
+
+```json
+{
+  "providers": {
+    "openrouter": { "api_key": "sk-or-..." },
+    "ollama": { "api_key": "ollama" }
+  },
+  "agents": { "defaults": { "model": "anthropic/claude-sonnet-4" } }
+}
+```
+
+```bash
+export ZEPTOCLAW_PROVIDERS_GROQ_API_KEY=gsk_...
+```
+
+Any provider's base URL can be overridden with `api_base` for proxies or self-hosted endpoints. See the [provider docs](https://zeptoclaw.com/docs/concepts/providers/) for full details.
+
+## Features
+
+### Core
+
+| Feature | What it does |
+|---------|-------------|
+| **Multi-Provider LLM** | 18 providers with SSE streaming, retry with backoff + budget cap, auto-failover |
+| **33 Tools + Plugins** | Shell, filesystem, grep, find, web, git, stripe, PDF, transcription, Android ADB, and more |
+| **Tool Composition** | Create new tools from natural language descriptions — composable `{{param}}` templates |
+| **Agent Swarms** | Delegate to sub-agents with parallel fan-out, aggregation, and cost-aware routing |
+| **Library Facade** | Embed as a crate — `ZeptoAgent::builder().provider(p).tool(t).build()` for Tauri/GUI apps |
+| **Batch Mode** | Process hundreds of prompts from text/JSONL files with template support |
+| **Agent Modes** | Observer, Assistant, Autonomous — category-based tool access control |
+
+### Channels & Integration
+
+| Feature | What it does |
+|---------|-------------|
+| **Multi-Channel Gateway** | Telegram, Slack, Discord, WhatsApp Web + Cloud API, Lark, Email, Webhook, Serial, ACP, plus plugin channels — unified message bus |
+| **Persona System** | Per-chat personality switching via `/persona` command with LTM persistence |
+| **Plugin System** | JSON manifest plugins auto-discovered from `~/.zeptoclaw/plugins/` |
+| **Hooks** | `before_tool`, `after_tool`, `on_error` with Log, Block, and Notify actions |
+| **Cron & Heartbeat** | Schedule recurring tasks, proactive check-ins, background spawning |
+| **Memory & History** | Workspace memory, long-term key-value store, conversation history |
+
+### Security & Ops
+
+| Feature | What it does |
+|---------|-------------|
+| **6 Sandbox Runtimes** | Docker, Apple Container, Landlock, Firejail, Bubblewrap, or native |
+| **Gateway Startup Guard** | Degrade gracefully after N crashes — prevents crash loops |
+| **Channel Supervisor** | Auto-restart dead channels with cooldown and max-restart limits |
+| **Tool Approval Gate** | Policy-based gating — require confirmation for dangerous tools |
+| **SSRF Prevention** | DNS pinning, private IP blocking, IPv6 transition guard, scheme validation |
+| **Shell Blocklist** | Regex patterns blocking reverse shells, rm -rf, privilege escalation |
+| **Token Budget & Cost** | Per-session budget enforcement, per-model cost estimation for 8 models |
+| **Rich Health Endpoint** | `/health` with version, uptime, RSS, usage metrics, component checks |
+| **Telemetry** | Prometheus + JSON metrics export, structured logging, per-tenant tracing |
+| **Self-Update** | `zeptoclaw update` downloads latest release from GitHub |
+| **Loop Guard** | SHA256 tool-call repetition detection with circuit-breaker stop |
+| **Context Trimming** | Normal/emergency/critical compaction tiers (70%/90%/95%) for context window management |
+| **Session Repair** | Auto-fixes orphan tool results, empty/duplicate messages, and alternation issues |
+| **Config Hot-Reload** | Gateway polls config mtime every 30s and applies provider/channel/safety updates live |
+| **Hands-Lite** | `HAND.toml` agent profiles with bundled presets (researcher, coder, monitor) and `hand` CLI |
+| **Multi-Tenant** | Hundreds of tenants on one VPS — isolated workspaces, ~6MB RAM each |
+
+> **Full documentation** — [zeptoclaw.com/docs](https://zeptoclaw.com/docs/) covers configuration, environment variables, CLI reference, deployment guides, and more.
+
+## Inspired By
+
+ZeptoClaw is inspired by projects in the open-source AI agent ecosystem — OpenClaw, NemoClaw, NanoClaw, and PicoClaw — each taking a different approach to the same problem. NemoClaw's policy model, routed inference, credential boundary, and digest-verified blueprint flow influenced our security thinking. ZeptoClaw's contribution is Rust's memory safety, async performance, and configurable isolation for local-first, edge, and production multi-tenant deployments — all in a 6MB binary that runs where Docker containers can't.
+
+## Usage
+
+```bash
+# CLI agent (one-shot or streaming)
+zeptoclaw agent -m "Summarize this repo"
+zeptoclaw agent --stream -m "Explain async Rust"
+zeptoclaw agent --template coder -m "Add error handling to main.rs"
+
+# Multi-channel gateway
+zeptoclaw gateway                    # Telegram, Slack, Discord, etc.
+zeptoclaw gateway --containerized    # With container isolation per request
+
+# Memory, secrets, profiles
+zeptoclaw memory set project:name "ZeptoClaw" --category project
+zeptoclaw secrets encrypt
+zeptoclaw hand activate researcher
+
+# Batch, diagnostics, self-update
+zeptoclaw batch --input prompts.txt --output results.jsonl
+zeptoclaw doctor                     # Diagnose config/provider issues
+zeptoclaw update                     # Self-update to latest release
+```
+
+## Development
+
+```bash
+# Build
+cargo build
+
+# Run all tests (~3,900 total)
+cargo nextest run --lib
+
+# Lint and format (required before every PR)
+cargo clippy -- -D warnings
+cargo fmt -- --check
+```
+
+See [CLAUDE.md](CLAUDE.md) for full architecture reference, [AGENTS.md](AGENTS.md) for coding guidelines, and [docs/](docs/) for benchmarks, multi-tenant deployment, and performance guides.
+
+## Zepto Stack
+
+ZeptoClaw is part of the Zepto stack — a modular local-first system for running on-device AI agents in production.
+
+```
+ZeptoPM        — orchestration, supervision, retries, job lifecycle
+    │
+    │  create(spec) + spawn(worker, args, env)
+    ▼
+ZeptoCapsule   — capsule creation, process isolation, resource enforcement
+    │
+    │  fork/namespace/microVM + stdio transport
+    ▼
+ZeptoClaw      — LLM calls, tool use, artifact production
+    │
+    └── JSON-line IPC over stdin/stdout back to ZeptoPM
+```
+
+| Layer | Repo | Role |
+|:------|:-----|:-----|
+| **ZeptoPM** | [qhkm/zeptopm](https://github.com/qhkm/zeptopm) | Process manager — config-driven daemon, HTTP API, pipelines, orchestration |
+| **ZeptoCapsule** | [qhkm/zeptocapsule](https://github.com/qhkm/zeptocapsule) | Sandbox — process/namespace/Firecracker isolation, resource limits, fallback chains |
+| **ZeptoRT** | [qhkm/zeptort](https://github.com/qhkm/zeptort) | Durable runtime — journaled effects, snapshot recovery, OTP-style supervision |
+| **ZeptoClaw** | [qhkm/zeptoclaw](https://github.com/qhkm/zeptoclaw) | Personal AI assistant infrastructure — tools, memory, providers, channels, sandboxed autonomy |
+
+## Contributing
+
+We welcome contributions! Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** for:
+
+- How to set up your fork and branch from upstream
+- Issue-first workflow (open an issue before coding)
+- Pull request process and quality gates
+- Guides for adding new tools, channels, and providers
+
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE)
+
+## Disclaimer
+
+ZeptoClaw is a pure open-source software project. It has no token, no cryptocurrency, no blockchain component, and no financial instrument of any kind. This project is not affiliated with any token or financial product.
+
+---
+
+<p align="center">
+  <em>ZeptoClaw — Local-first personal AI assistant infrastructure in one Rust binary.</em>
+</p>
+<p align="center">
+  Built by <a href="https://aisar.ai">Aisar Labs</a>
+</p>
+
+---
+
+For commercial licensing, enterprise support, or managed hosting inquiries: **qaiyyum@aisar.ai**

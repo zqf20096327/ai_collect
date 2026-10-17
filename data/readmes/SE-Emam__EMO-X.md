@@ -1,0 +1,239 @@
+# EMO-X
+
+**Execution · Measurement · Observability**
+
+EMO-X runs AI coding agents on frozen tasks — code, Arabic, vision, security, repair — executes what they produce in a sandbox, and reports scores with uncertainty instead of bare pass/fail. It complements other benchmarks; it does not replace real-world evaluation.
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="src/emo-x-banner-light.png" />
+  <img alt="EMO-X banner — Execution · Measurement · Observability" src="src/emo-x-banner.png" />
+</picture>
+
+> Evaluate what an agent accomplishes, how it fails, and whether the result is reproducible.
+
+### Try it in 3 minutes — free, no install, no API key, no Docker
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SE-Emam/EMO-X/blob/main/notebooks/emo_x_quickstart.ipynb)
+
+1. Open the notebook above.
+2. Run all cells — it clones the repo, checks the harness, runs a demo evaluation, and draws a per-family chart.
+3. You get the same sealed, tamper-evident artifacts a real model run produces (demo data only — not a model score).
+
+Then: [run your first real model](#run-your-first-model) · [what it measures](#what-it-measures) · [how it works](#worked-example-end-to-end)
+
+[![CI](https://github.com/SE-Emam/EMO-X/actions/workflows/ci.yml/badge.svg)](https://github.com/SE-Emam/EMO-X/actions/workflows/ci.yml) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SE-Emam/EMO-X/blob/main/notebooks/emo_x_quickstart.ipynb) [![GitHub stars](https://img.shields.io/github/stars/SE-Emam/EMO-X)](https://github.com/SE-Emam/EMO-X/stargazers) [![pip install](https://img.shields.io/badge/pip_install-emo--x--eval-blue)](https://pypi.org/project/emo-x-eval/) [![Dataset on HF](https://img.shields.io/badge/🤗_Dataset-EMO--X--Core-yellow)](https://huggingface.co/datasets/SE-Emam/EMO-X-Core) [![PyPI](https://img.shields.io/pypi/v/emo-x-eval)](https://pypi.org/project/emo-x-eval/) [![License](https://img.shields.io/badge/License-Apache_2.0-blue)](LICENSE)
+[![Suites](https://img.shields.io/badge/suites-13-blue)](suites/) [![Tests](https://img.shields.io/badge/tests-888-green)](tests/run_all.py) [![Ollama](https://img.shields.io/badge/Ollama-supported-orange)](INSTALL.md)
+
+> Suites badge = 13 executable suites in `shared/runner.py:SUITE_DIRS`; `suites/` holds a 14th PILOT (`computer-use/`, excluded from scoring by design).
+
+**Start here:** [Try the demo](https://colab.research.google.com/github/SE-Emam/EMO-X/blob/main/notebooks/emo_x_quickstart.ipynb) · [Run a model](#run-your-first-model) · [Contribute](CONTRIBUTING.md) · [Methodology](SPEC.md)
+
+![EMO-X self-test demo](src/demo.gif)
+
+## Quickstart
+
+**New here? Start with Colab — nothing to install** (see [Try it in 3 minutes](#try-it-in-3-minutes--free-no-install-no-api-key-no-docker) above). The paths below are for running real models on your own machine; they need Docker Desktop **running** (code runs in the `emox-sandbox:latest` image; without it runs fail closed, never silently).
+
+<details>
+<summary><b>pip (benchmark users)</b> — install the package, build the sandbox image once, verify</summary>
+
+```bash
+pip install emo-x-eval
+docker build -f "$(python3 -c 'import emox; print(emox.tree_root() + "/Dockerfile.sandbox")')" \
+  -t emox-sandbox:latest \
+  "$(python3 -c 'import emox; print(emox.tree_root())')"
+emo --self-test   # must end: RESULT: PASS
+```
+
+</details>
+
+<details>
+<summary><b>clone (harness developers)</b> — full checkout for contributing or hacking on suites</summary>
+
+```bash
+git clone https://github.com/SE-Emam/EMO-X.git emo-x
+cd emo-x
+make sandbox-image                   # required once per checkout/image version
+python3 shared/run.py --self-test   # harness check, must end: RESULT: PASS
+python3 tests/run_all.py            # unit-test groups, must end: RESULT: PASS (all 5 test groups green: harness/generators/scoring/golden/backends; 13 benchmark suites live in shared/runner.py:SUITE_DIRS)
+```
+
+</details>
+
+Expected tail (live `main`, `v2.0.0-rc1`):
+
+```text
+  code-extraction  PASS  ok
+  python-executor  PASS  ok
+  ...
+  golden-outputs   PASS  ok
+RESULT: PASS
+```
+
+If either fails, stop — a broken harness invalidates every later number.
+Docker missing = fail-closed (`SandboxRuntimeUnavailable`), never silent.
+
+## Who is this for? (30 s)
+
+- **Model builders** — compare two endpoints on the same frozen suite with paired 95% CIs, not point gaps.
+- **Agent builders** — measure inspect→patch→test→stop efficiency, recoveries, and clean stops.
+- **Evaluators / researchers** — sealed bundles + health board catch saturation, flakiness, contamination.
+
+### Arabic + Vision — why EMO-X is different
+
+- **Arabic-first**: `T5` Arabic explanation + `V3` Arabic OCR (`arabic_card.png`, 6 keywords, order-free) — rare in code benchmarks.
+- **Vision-grounded**: `V1–V12` UI grounding (IoU ≥ 0.5), counting, diff-pair, charts, tables — deterministic oracles, no LLM-judge.
+
+> **للزائر العربي:** EMO-X من القلائل الذين يقيّمون العربية تنفيذياً — شرحٌ عربي لمفهوم الـ closures (`T5`) وقراءة بطاقة عربية من صورة (`V3`) ضمن 13 جناحاً. جرّب الديمو المجاني في 3 دقائق من زر Colab أعلاه، دون تثبيت أو مفتاح.
+
+## What it measures
+
+| Suite | What it tests | Why it matters |
+|---|---|---|
+| code25 | 36 code/tool task families with execution or deterministic structural oracles | beyond pass/fail snippets |
+| agent-loop | inspect → locate → patch → test → stop | measures efficiency, not just fixing |
+| security | refusal, injection, sandboxed CTF-mini | safety under attack |
+| vision | UI grounding, Arabic reading, counting | multimodal grounding |
+| issues | IS1–IS15 repair + held-out hidden tests | real-issue repair |
+| realworld | mini-repo fixtures + trajectories | ecological validity |
+| recovery / robustness / calibration / long-horizon / gauntlet | faults, drift, abstention, chains, compounds | deployment behavior (`--suite profile` runs these 5 + code25/dynamic-code = 7-suite SPEC 42 profile) |
+| adapters | opencode / pi / hermes drivers | harness+model honesty |
+
+## Features
+
+- ⚙️ **Execution where appropriate** — code tasks run in sandboxed toolchains; other families use explicit deterministic oracles with documented limits.
+- 🧬 **Dynamic variants** — canonical/perturbed/novel from seeds; helps test generalization but does not alone prove contamination resistance.
+- ⏱️ **Trajectory-aware** — tool calls, recoveries, re-planning, clean stops scored.
+- 🧪 **Failure fingerprints** — one primary cause per failure, not a bare zero.
+- 📊 **Statistical honesty** — bootstrap 95% CIs (SPEC §B54); no winner without an interval.
+- 🩺 **Self-auditing** — saturation/flakiness/contamination flagged by rule.
+- 🔒 **Sealed provenance** — immutable hashed bundles; changes void comparability.
+
+## Why use EMO-X
+
+Single-number leaderboards hide what matters in deployment: cost per
+solve, recovery, safety, calibration, generalization. **A model that
+scores 65% cheaply, safely, and robustly is not the same system as one
+that scores 65% expensively and brittlely** — EMO-X measures the
+difference. (Deeper framing: `SPEC.md` §48–49; complementary to
+SWE-bench, not competitive.)
+
+## Run your first model
+
+```bash
+ollama pull qwen3:1.7b
+EMOX_ALLOW_LOCAL=1 python3 shared/run.py --backend openai-generic \
+  --base-url http://localhost:11434/v1 --model qwen3:1.7b \
+  --suite code25 --out results/
+```
+
+Any OpenAI-compatible endpoint works the same way (`--base-url` +
+`--model` + key). No install path: open the Colab badge above.
+
+## Archived exploratory model run (not the official baseline)
+
+Historical live run on a DC1 subset (2026-09-28 UTC), shown as a workflow example only. It does not cover all 36 current Code25 families and is not eligible as the official baseline:
+
+![muse-spark-1.3 across two providers](src/demo-run.gif)
+
+## Community results — official baseline pending
+
+There is not yet an eligible official ranked baseline. The repository contains historical partial Code25 bundles for the earlier 25-family set; those results do **not** cover all 36 current Code25 families and must not be presented as results for the current suite. New submissions must follow [`results/community/README.md`](results/community/README.md). Only runs with matching prompt, harness, and manifest hashes are comparable.
+
+## Full quickstart
+
+```bash
+# any OpenAI-compatible endpoint (OpenAI, OpenRouter, DeepSeek, Gemini, vLLM, Ollama…)
+python3 shared/run.py --backend openai-generic \
+  --base-url https://HOST/v1 --model MODEL-ID --api-key "$KEY" \
+  --suite code25 --out results/
+
+# fixed client report + QA stamp
+python3 shared/run.py --report results/<model>_<stamp>.json --model MODEL-ID
+```
+
+See **[INSTALL.md](INSTALL.md)** for full install/run/troubleshooting,
+**[PLAN.md](PLAN.md)** for the methodology, and **[REPORT_TEMPLATE.md](REPORT_TEMPLATE.md)**
+for the fixed client-report contract.
+
+## Worked example (end to end)
+
+```bash
+# 0. Harness check — deterministic, must print RESULT: PASS
+python3 shared/run.py --self-test
+#   code-extraction  PASS  ok
+#   python-executor  PASS  ok
+#   ...
+#   RESULT: PASS
+
+# 1. Run two models on the same frozen suite
+python3 shared/run.py --backend openai-generic --suite code25 \
+  --model MODEL-A --trials 3 --out results/
+python3 shared/run.py --backend openai-generic --suite code25 \
+  --model MODEL-B --trials 3 --out results/
+
+# 2. What lands on disk (never edited afterwards)
+results/raw/RUN-code25-<stamp>-<id>/
+├── manifest.json      # prompt/harness/backend hashes, sampling, seed
+├── events.jsonl       # one schema-valid record per attempt
+├── responses.jsonl    # verbatim model outputs
+├── environment.json   # toolchain, platform, hardware class
+└── seal.json          # tamper-evident seal (D3)
+
+# 3. Compare with intervals, not point gaps
+python3 -c "
+from shared.report_v2 import compare_models, render_comparison
+# ...load the two bundles, then:
+print(render_comparison(comp))"
+# Difference: +2.1 pp  95% CI [-1.4 pp, +5.8 pp]
+# Status: inconclusive — do not rank on this gap.
+```
+
+## Numbers (measured, not claimed)
+
+| What | Count | Source |
+|---|---|---|
+| Test suites | 13 executable (+1 PILOT `computer-use`) | `shared/runner.py:SUITE_DIRS` (badge source); `suites/*/` has 14 dirs incl. PILOT |
+| Task manifests | 98 | `suites/*/manifests/*.json` |
+|  Harness + unit tests | 888 (harness 337, generators 89, scoring 210, golden 30, backends 222) | `tests/run_all.py --count` (current); 868/869/874/884 are historical counts kept as history, not current |
+| Self-test checks | 14 | `--self-test`, fail-closed |
+| Issue-style families | 15 (IS1–IS15) | vs SWE-bench Lite (300) = **5.0%** |
+
+Comparison with SWE-bench (verified 2026 from swebench.com):
+
+| Dimension | SWE-bench | EMO-X |
+|---|---|---|
+| Task realism | 2,294 real GitHub issues | 15 issue-style + 3 mini-real fixtures (synthetic, documented) |
+| Headline metric | % Resolved (one number) | Capability profile (9 dims + fingerprint + CI) |
+| Contamination defense | Static set (known exposure) | Dynamic variants + rotating seeds; strong held-out claims require cases/seeds kept outside the public repository |
+| Statistics | Point estimates | Paired bootstrap 95% CI; no fixed gap rules |
+| Cost | Docker-heavy | stdlib only, local, minutes |
+| Scope | Code repair (+ multilingual/multimodal) | Repair + security + calibration + recovery + vision + long-horizon |
+
+Interpretation: SWE-bench has a larger real-issue task set and established adoption. EMO-X emphasizes multi-dimensional execution traces, deterministic checks, and uncertainty reporting. The suites measure different things; neither table establishes overall superiority. Use them as complementary evidence.
+
+## Roadmap
+
+| Milestone | Content | Status |
+|---|---|---|
+| v2.0-alpha | Contracts, sandbox, scoring + goldens, DSL, Core-25, taxonomy | Done (this tree) |
+| v2.0-beta | Recovery, drift, tool discipline, calibration, health | Done (suites + `health/`) |
+| **v2.0.0-rc1** (current) | Gauntlet, long-horizon, adaptive difficulty, scoring conformance | Code done; **no published OFFICIAL baseline yet** |
+| v2.0 | First sealed 3-trial OFFICIAL baseline (R3) | Pending baseline |
+| Next | 15→30 issue families; vision out of PILOT; first 3-trial public baseline with CI | Planned; see `SPEC.md` and `CONTRIBUTING.md` for public methodology and contribution guidance |
+
+No **official ranked baseline** is published yet. Historical partial results exist under `results/community/`; they are not eligible for an official ranking unless they pass the current comparability and validity gates. Any new claim must link to a sealed, schema-valid bundle and state its suite/harness scope.
+
+## Contribution and status vocabulary
+
+Start with [`CONTRIBUTING.md`](CONTRIBUTING.md) for the contribution workflow and good-first issues, or [`docs/development-readiness.md`](docs/development-readiness.md) for the ordered engineering-readiness plan. Keep pull requests focused and include targeted tests plus CI evidence.
+
+Use these labels precisely: **IMPLEMENTED** means the code path exists; **UNIT-VERIFIED** means named deterministic tests pass; **LIVE-EVALUATED** means a real model/provider run has traceable evidence; **PENDING** means required work or evidence is missing. Unit tests and stub demos do not establish real-model accuracy. See [the S1–S5 security oracle audit](docs/security-oracle-audit.md) for current deterministic coverage and known limitations. The [Code25 oracle map](docs/code25-oracle-audit.md) distinguishes execution-backed checks from lexical/structural checks and lists the remaining audit work. See the [Vision oracle and fixture audit](docs/vision-oracle-audit.md) for V1–V12 limits and frozen-fixture integrity checks.
+
+## Methodology in one paragraph
+
+Frozen `PROMPT_PACK` + fixed harness per comparison (harness+model is the unit);
+n=3 with mean±SE; model gaps are judged only by paired cluster-bootstrap 95%
+intervals (B54) — no fixed point-gap rule; tokens-per-solved-task, latency and
+failure taxonomy reported next to pass rates; raw traces retained; void rounds labeled,
+never silently merged. Details in `PLAN.md` §0.

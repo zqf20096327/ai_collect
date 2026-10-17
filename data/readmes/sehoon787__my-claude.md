@@ -1,0 +1,486 @@
+[English](./README.md) | [한국어](./docs/i18n/README.ko.md) | [日本語](./docs/i18n/README.ja.md) | [中文](./docs/i18n/README.zh.md) | [Deutsch](./docs/i18n/README.de.md) | [Français](./docs/i18n/README.fr.md)
+
+> [![Codex CLI](https://img.shields.io/badge/Codex_CLI-my--codex-10b981?style=flat-square&logo=openai&logoColor=white)](https://github.com/sehoon787/my-codex) Looking for Codex CLI? → **my-codex** — same orchestration in native TOML format
+
+---
+
+<div align="center">
+
+# my-claude
+
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Agents](https://img.shields.io/badge/agents-32-blue)
+![Skills](https://img.shields.io/badge/skills-107-purple)
+![Rules](https://img.shields.io/badge/rules-48-orange)
+![MCP Servers](https://img.shields.io/badge/MCP-3-green)
+![Hooks](https://img.shields.io/badge/hooks-10-red)
+![LSP Servers](https://img.shields.io/badge/LSP-2-008b8b)
+![Workflows](https://img.shields.io/badge/workflows-2-blueviolet)
+
+**All-in-one agent harness for Claude Code.**
+**One plugin, 32 curated agents ready.**
+
+Boss auto-discovers every agent, skill, and MCP tool at runtime,<br>
+then routes your task to the right specialist. No config files. No boilerplate.
+
+<img src="./assets/owl-claude-social.svg" alt="The Maestro Owl — my-claude" width="700">
+
+</div>
+
+---
+
+## Installation
+
+### For Humans
+
+```bash
+git clone --depth 1 https://github.com/sehoon787/my-claude.git /tmp/my-claude
+bash /tmp/my-claude/install.sh
+rm -rf /tmp/my-claude
+```
+
+The default install is lean on purpose: every installed skill's description is
+re-sent as context on every request. Frontend work needs 18 more skills, so they
+are a separate lane:
+
+```bash
+bash install.sh --skills=web    # add the React/Vue/Nuxt/Nest, motion, a11y and browser-e2e skills
+bash install.sh --full-skills   # every optional lane
+bash install.sh --skills=       # back to the default
+```
+
+The choice is saved to `~/.claude/.my-claude-skills`, so a later plain
+`bash install.sh` keeps it. `MY_CLAUDE_SKILLS=web` does the same thing.
+
+Or install as a Claude Code plugin first, then run the companion installer:
+
+```bash
+# Inside a Claude Code session:
+/plugin marketplace add sehoon787/my-claude
+/plugin install my-claude@my-claude
+```
+
+If you use both routes, `install.sh` also refreshes the `my-claude` plugin (marketplace update + plugin update) so its hooks stay in sync with this script's install. The installer also ensures one shared codeburn dashboard and one shared Headroom proxy for both my-claude and my-codex. A later installer reuses healthy services instead of starting duplicates. State and startup logs live under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-harness-services`; neither installer changes `ANTHROPIC_BASE_URL` or `OPENAI_BASE_URL`.
+
+### For AI Agents
+
+```
+Read https://raw.githubusercontent.com/sehoon787/my-claude/main/AI-INSTALL.md and follow every step.
+```
+
+Before running the installer, the agent will ask which companion tools (Serena, Headroom, codeburn) to install, because the interactive checkbox menu only appears in an interactive terminal.
+
+---
+
+## Open-Source Tools Used
+
+Every project this stack builds on is described once, here. Five MIT-licensed
+upstreams are linked as git submodules pinned to an explicit SHA; the rest arrive
+as version-pinned CLIs, hosted MCP servers, or files vendored with attribution.
+
+| # | Project | What my-claude takes from it | How it arrives |
+|---|---------|------------------------------|----------------|
+| 1 | <img src="https://github.com/Yeachan-Heo.png?size=32" width="20" height="20" align="center"/> **[oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)** (OMC) — Yeachan Heo | 19 specialist agents (architect, debugger, code reviewer, security reviewer, …) that divide work by role, plus 13 orchestration skills — autopilot, ralph, team. Magic keywords like `autopilot:` activate automatic parallel execution. | Submodule `upstream/omc`, SHA-pinned (see [Bundled Upstream Versions](#bundled-upstream-versions)); `install.sh` runs `npm i -g oh-my-claude-sisyphus@latest` and enables the `oh-my-claudecode@omc` plugin. |
+| 2 | <img src="https://github.com/code-yeongyu.png?size=32" width="20" height="20" align="center"/> **[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)** (omo) — code-yeongyu | A multi-platform harness that routes across 8 providers (Claude, GPT, Gemini, …) by category and bridges to Claude Code via `claude-code-agent-loader` and `claude-code-plugin-loader`. Its 9 agents (Sisyphus, Atlas, Oracle, …) are adapted here as standalone `.md` files. | Not a submodule: the 9 agents live in `agents/omo/`; `install.sh` runs `npm i -g oh-my-opencode@latest` for the `omo` CLI. |
+| 3 | <img src="https://github.com/forrestchang.png?size=32" width="20" height="20" align="center"/> **[andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)** — forrestchang | The 4 AI-coding behavioral guidelines — Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution — always active. | `install.sh` curls `CLAUDE.md` at the pinned SHA `aa4467f`, checksum-verifies it, and appends it to `~/.claude/CLAUDE.md`. No code vendored. |
+| 4 | <img src="https://github.com/affaan-m.png?size=32" width="20" height="20" align="center"/> **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** (ECC) — affaan-m | 278 skills + 67 agents + 94 commands + language rules upstream. my-claude installs a curated 61-skill subset (79 with the opt-in `web` lane) — stack patterns, AI/agent engineering, codebase tooling — plus 9 rule sets and slash commands like `/tdd`, `/plan`, `/code-review`, `/build-fix`. | Submodule `upstream/ecc`, SHA-pinned; `install.sh` tries `claude plugin add affaan-m/everything-claude-code` first and falls back to the submodule. |
+| 5 | <img src="https://www.anthropic.com/favicon.ico" width="20" height="20" align="center"/> **[anthropic/skills](https://github.com/anthropics/skills)** — Anthropic | Anthropic's own skill repository: PDF parsing, Word/Excel/PowerPoint manipulation, MCP server creation. | `claude plugin add anthropics/skills`, run by `install.sh`. Deliberately not manifest-tracked. |
+| 6 | <img src="https://github.com/garrytan.png?size=32" width="20" height="20" align="center"/> **[gstack](https://github.com/garrytan/gstack)** — garrytan | Garry Tan's sprint-process harness: 26 skills plus the `gstack` root router (27 total) — browser QA (`/qa`), scope-drift code review (`/review`), security audit (`/cso`), and the full Plan→Review→QA→Ship workflow (Boss P0 lane). Ships a compiled Playwright browser daemon for real-browser testing. | Submodule `upstream/gstack`, SHA-pinned. |
+| 7 | <img src="https://github.com/obra.png?size=32" width="20" height="20" align="center"/> **[superpowers](https://github.com/obra/superpowers)** — Jesse Vincent | Jesse Vincent's dev-process library: 14 of its 15 skills — brainstorming, systematic debugging, TDD, plan writing and execution, code-review etiquette. `dispatching-parallel-agents` is excluded because Boss and Agent Teams already own that path. | Submodule `upstream/superpowers`, SHA-pinned. |
+| 8 | <img src="https://github.com/getagentseal.png?size=32" width="20" height="20" align="center"/> **[codeburn](https://github.com/getagentseal/codeburn)** — getagentseal | Local-first token and cost tracking over the session files Claude Code and Codex already write — no proxy, no API key, nothing leaves the machine. The usage-guard hooks install by default (`--no-codeburn-guard` opts out) with the hard cost cap disabled: it's estimated from the transcript at API list-price rates, so on a subscription plan a normal session reaches the $15 default in minutes and the guard would deny every further tool call. Edit `hardUSD` in `~/.config/codeburn/guard.json` to set a cap of your own. | `npm i -g codeburn@0.9.25`; `install.sh` also starts or reuses one shared cross-harness dashboard — see [Where to See Results](#where-to-see-results). MIT. |
+| 9 | <img src="https://github.com/oraios.png?size=32" width="20" height="20" align="center"/> **[serena](https://github.com/oraios/serena)** — oraios | A language server's symbol graph over MCP: `find_symbol`, `get_symbols_overview`, `find_referencing_symbols`, `replace_symbol_body`, `insert_after_symbol` — the tokens spent scale with the symbol, not the file. | `uv tool install -p 3.13 serena-agent==1.7.0`, registered as a user-scope stdio MCP server (`serena start-mcp-server --context claude-code --project-from-cwd`). The distributed package is GPL-3.0-or-later as a whole (PyPI's MIT classifier is inaccurate); used as an external server, never vendored. |
+| 10 | <img src="https://github.com/headroomlabs-ai.png?size=32" width="20" height="20" align="center"/> **[headroom](https://github.com/headroomlabs-ai/headroom)** — Headroom Labs | Tool-output compression: `headroom mcp serve` exposes `headroom_compress`, `headroom_retrieve`, and `headroom_stats`, so an oversized tool result never lands in the transcript whole. | `uv tool install --python 3.13 "headroom-ai[all]==0.40.0"`, registered as the `headroom` stdio MCP server; `install.sh` also starts or reuses the mutation-free persistent profile `agent-harness-shared`. Apache-2.0. |
+| 11 | <img src="https://github.com/tt-a1i.png?size=32" width="20" height="20" align="center"/> **[archify](https://github.com/tt-a1i/archify)** — tt-a1i | One agent skill that draws architecture, workflow, sequence, data-flow, and lifecycle diagrams as self-contained HTML — inline SVG, a dark/light theme toggle, a PNG/JPEG/WebP/SVG export menu, no runtime dependencies in the generated file. It also accepts pasted Mermaid as an input dialect. | Submodule `upstream/archify`, pinned at tag `v3.0.1`; `install.sh` copies the upstream `archify/` skill directory to `~/.claude/skills/archify`, so no `npx skills add` runs at install time. |
+| 12 | <img src="https://github.com/msitarzewski.png?size=32" width="20" height="20" align="center"/> **[agency-agents](https://github.com/msitarzewski/agency-agents)** — msitarzewski | 3 engineering agents with no equivalent elsewhere in the stack: AI Engineer, DevOps Automator, Multi-Agent Systems Architect. | Submodule removed 2026-07-27; the 3 agents were snapshotted into `agents/vendored/` on that date, each file carrying its upstream attribution header. MIT. |
+| 13 | <img src="https://github.com/ast-grep.png?size=32" width="20" height="20" align="center"/> **[ast-grep](https://github.com/ast-grep/ast-grep)** — ast-grep | Structural, AST-aware code search and rewrite, so agents match code shapes instead of regex. | `npm i -g @ast-grep/cli@0.45.3`. MIT. |
+| 14 | <img src="https://github.com/upstash.png?size=32" width="20" height="20" align="center"/> **[context7](https://github.com/upstash/context7)** — Upstash | Up-to-date, version-accurate library documentation, so an agent reads the real API instead of recalling one. | Hosted MCP server at `https://mcp.context7.com/mcp`, registered by `install.sh`. |
+| 15 | <img src="https://github.com/exa-labs.png?size=32" width="20" height="20" align="center"/> **[exa](https://github.com/exa-labs/exa-mcp-server)** — Exa Labs | Neural (semantic) web search for research that keyword search misses. | Hosted MCP server at `https://mcp.exa.ai/mcp`, registered by `install.sh`. |
+| 16 | <img src="https://github.com/grep-app.png?size=32" width="20" height="20" align="center"/> **[grep.app](https://github.com/grep-app)** — grep.app | Code search across public GitHub repositories, for finding how a pattern is used in the wild. | Hosted MCP server at `https://mcp.grep.app`, registered by `install.sh`. |
+
+---
+
+## How Boss Works
+
+Boss is the meta-orchestrator at the core of my-claude. It never writes code — it discovers, classifies, matches, delegates, and verifies.
+
+| Phase | What Happens |
+|-------|--------------|
+| **0 · Discovery** | Scans agents, skills, MCP tools, and hooks at runtime into a live capability registry |
+| **1 · Intent gate** | Classifies the request (trivial, build, refactor, mid-sized, architecture, research, …) and counter-proposes a skill when one fits better |
+| **2 · Capability matching** | Cascades the priority chain below (P0 gstack skill → P1 exact skill → P2 specialist agent → P3 multi-agent orchestration → P4 general-purpose fallback) |
+| **3 · Delegation** | Sends a 6-section structured prompt to the specialist: TASK / OUTCOME / TOOLS / DO / DON'T / CTX |
+| **4 · Verification** | Reads the changed files independently, runs tests, lint, and build, cross-references the original intent, retries up to 3× on failure |
+
+### Priority Routing
+
+| Priority | Match Type | When | Example |
+|:--------:|-----------|------|---------|
+| **P0** | gstack skill | Ship / QA / deploy / security workflow | `"ship this"` → gstack `/ship` |
+| **P1** | Skill match | Task maps to a self-contained skill | `"merge PDFs"` → pdf skill |
+| **P2** | Specialist agent | Domain-specific agent exists | `"security audit"` → security-reviewer |
+| **P3a** | Boss direct | 2-4 independent agents | `"fix 3 bugs"` → parallel spawn |
+| **P3b** | Sub-orchestrator | Complex multi-step workflow | `"refactor + test"` → Sisyphus |
+| **P3c** | Agent Teams | Peer-to-peer communication needed | `"implement + review"` → Review Chain |
+| **P4** | Fallback | No specialist matches | `"explain this"` → general agent |
+
+### Model Routing
+
+| Complexity | Model | Used For |
+|-----------|-------|----------|
+| Top-level orchestration | `claude-opus-5-5` | Boss |
+| Advisor group (read-only second opinions) | `claude-fable-5-1` | Oracle, Metis, Momus |
+| Deep analysis, architecture | `claude-opus-5-5` | Sisyphus, Atlas, Hephaestus, Prometheus |
+| Standard implementation | `claude-sonnet-5` | Librarian, Multimodal-Looker, OMC specialists |
+| Quick lookup, exploration | `claude-haiku-4-5` | Lightweight OMC agents, simple advisory |
+
+### Effort Tiers
+
+Model choice sets *which* brain runs a task; the `effort:` frontmatter field sets *how hard* it thinks. Every self-owned agent declares one:
+
+| Effort | Agents |
+|--------|--------|
+| `xhigh` | Boss, Oracle, Prometheus, Multi-Agent Systems Architect |
+| `high` | Sisyphus, Hephaestus, Atlas, Metis, Momus |
+| `medium` | Librarian, Multimodal-Looker, AI Engineer, DevOps Automator |
+
+Skills declare effort too — `boss-briefing` runs at `medium`, `briefing-vault` at `low`. `boss-advanced` and `gstack-sprint` deliberately declare none: a skill's effort overrides the session level while it runs, which would quietly downgrade Boss mid-flow.
+
+Precedence is `CLAUDE_CODE_EFFORT_LEVEL` (env) > frontmatter > session effort level. `xhigh` is Fable's supported ceiling; `max` is Opus-class only and silently falls back elsewhere.
+
+### 3-Phase Sprint Workflow
+
+For end-to-end feature implementation, Boss orchestrates a structured sprint:
+
+| Phase | Mode | What Happens |
+|-------|------|--------------|
+| **1 · Design** | interactive | User decides scope · engineering review · confirm "design done" |
+| **2 · Execute** | autonomous | ralph runs execution · auto code review · architect verification |
+| **3 · Review** | interactive | Compare against the design doc · present comparison table · user approves or asks for improvement |
+
+### Structured Final Report
+
+Boss closes every working turn — one that edited files, made commits/PRs, changed configuration, or ran verification — with a structured report the reader can scan without opening a diff. Each table is emitted only when its situation actually occurred (never an empty table):
+
+| Situation | Table | Columns |
+|-----------|-------|---------|
+| Files/settings changed | Changes | Target / Before / After / Rationale |
+| Multiple tasks completed | Work summary | Item / Result / Evidence |
+| Verification was run | Verification | Item / Expected / Actual / Verdict |
+| Commits/PRs produced | Deliverables | PR / Repo / Content / Status |
+| Anything unresolved | Remaining | Item / Status / Next step |
+
+It fires only at the very end of the request — never on a turn that launches or relays background work, never as a mid-task progress update — and pure Q&A turns end normally without it. The spec lives in `boss.md § FINAL REPORT`; the `stop-final-report.js` Stop hook enforces it, judging from the harness-provided `last_assistant_message` plus the turn's origin in the transcript, blocking at most once per turn and failing open on any error.
+
+### Named Workflows
+
+Deterministic multi-agent workflows. `install.sh` copies them to `~/.claude/workflows/`, so they run from any project through the Workflow tool — not just from this repo.
+
+| Workflow | What It Does | Invocation |
+|----------|--------------|------------|
+| **code-review-fanout** | Four dimension reviewers (correctness, security, performance, tests) fan out in parallel, then every finding is adversarially verified before it is reported | `Workflow({name: "code-review-fanout"})` — args: the review target (branch, commit range, paths). Defaults to the working-tree diff |
+| **upstream-audit** | One analyst per upstream — pin delta vs origin, allowlist fit, new overlaps, security signals, health — followed by a synthesized action list | `Workflow({name: "upstream-audit"})` — for quarterly or pre-sync audits |
+
+### How Boss discovers agents and skills
+
+Boss does not have to remember to read anything: routing information is pushed into its context by two hooks.
+
+| Piece | What it does |
+|-------|--------------|
+| **Registry v2** (`hooks/build-registry.js`) | At session start, scans every agent and skill Claude Code can load — `~/.claude/agents/**`, `~/.claude/skills/*`, the project's `.claude/agents/**` and `.claude/skills/*`, and the agents/skills of every **enabled** plugin (addressed as `<plugin>:<name>`, e.g. `oh-my-claudecode:architect`). Writes names, descriptions, models, and scopes (`project` / `global` / `plugin:<name>`) to `~/.omc/state/capability-registry.json`. It rebuilds only when a source file or directory changed, the project changed, or the file predates version 2 |
+| **Routing summary** (SessionStart) | Injects one line per intent with the top 3 candidates, e.g. `Architecture → oracle[advisor], oh-my-claudecode:architect, /architecture-decision-records`. Bare names are agents (Agent tool `subagent_type`), `/name` is a skill, `[advisor]` marks the Advisor Group. Capped at ~1,500 tokens |
+| **Route hint** (`hooks/route-hint.js`, UserPromptSubmit) | Classifies each prompt by keyword (English and Korean) and adds `[RouteHint] intent=<X> → <top 3>`. Silent when nothing matches, for slash commands, and for teammate / task-notification messages. It only reads the cached registry, so it adds no scan time to a prompt |
+| **Advisor gate** (`hooks/advisor-gate.js`, Stop) | Backstop for `boss.md § Advisor Gate`. When the prompt's route-hint intent is Architecture, Ambiguity, or PlanReview, the turn made no Agent/Task call to `oracle` / `metis` / `momus`, and the final message has no `Advisor skipped: <reason>` line, it blocks once and asks Boss to consult the advisor (or state why not) and repeat its answer. Never blocks subagents, task-notification / teammate turns, a continuation after a Stop block, or the same turn twice; fails open on any error |
+
+**Adding your own agents or skills:** drop them in `~/.claude/agents/`, `~/.claude/skills/<name>/SKILL.md`, or the project's `.claude/` equivalents, or enable a plugin that ships them. The next session picks them up automatically. Items not named in the routing map still become candidates when their `name` or `description` contains one of an intent's `description_keywords`, so a clear description is what gets them routed.
+
+**Adjusting routing:** edit `hooks/routing-map.json` (installed to `~/.claude/hooks/`). Each intent has `members` (preferred agents/skills in order; a bare name also matches a plugin item of that name, and missing ones are skipped), `advisor: true` on Advisor Group members, `description_keywords` (classify registry items), and `prompt_keywords` (classify prompts; the highest keyword count wins and ties go to the intent listed first). Set `REGISTRY_OUT` to write or read the registry somewhere else, e.g. for a dry run.
+
+### Adoption: routing learns which results you keep
+
+Boss records whether you **adopt** what an agent or skill produced, per intent, and uses it — gated — to reorder routing candidates. Call counts are never used: running an agent often says nothing about whether its output was any good.
+
+| Piece | What it does |
+|-------|--------------|
+| **Offer** (`hooks/adoption-tracker.js offer`, PostToolUse Agent/Task/Skill) | Remembers the agents/skills the main session ran in the latest turn (one per item, 5 max) with the intent `route-hint.js` classified for that prompt. Subagents' own tool calls are ignored. A background agent or teammate is judged only after its notification has arrived. Process skills listed in `adoption_ignore` in `hooks/routing-map.json` (`using-superpowers`, `boss-briefing`, `briefing-vault`, `cancel`, `artifact-design`, …; a plugin-qualified id matches by its short name) are never offers: they run regardless of whether the advice was good |
+| **Verdict** (`hooks/adoption-tracker.js verdict`, UserPromptSubmit) | Classifies your next reply: accept (`진행해`, `반영해`, `좋아`, `그렇게 해`, `승인`, `머지해`, `go ahead`, `yes`, `lgtm`, `apply it`, `ship it`, …) or reject (`아니`, `틀렸`, `다시 해`, `그만`, `하지 마`, `되돌려`, `no,`, `wrong`, `redo`, `revert`, `stop`, …); reject wins when both match, a question (`…?`) is never an accept, and anything else is neutral (no event). Slash commands and task-notification / teammate messages are not replies. Prints nothing |
+| **Ranking** (`adoptionWeight` in `hooks/build-registry.js`) | Events from the last 180 days, each weighted `0.5^(age_days/90)`. A (id, intent) pair counts only once its weighted sample reaches 5; its accept rate then moves it up or down by at most two slots **within its band** — explicit routing-map members always stay ahead of keyword matches. `Security` and `Ship` keep the map order and ignore adoption and pins. The SessionStart summary shows `(adopted 7/9)` once a pair is counted, and `[pinned]` for pins |
+
+The store is shared by harnesses (my-codex can write to the same files) under `~/.config/agent-harness/`:
+
+- `adoption-ledger.jsonl` — append-only, one event per line:
+  `{"ts": ISO-8601, "harness": "claude", "session": id, "kind": "agent"|"skill", "id": exact subagent_type or skill name, "intent": route-hint intent or "unknown", "verdict": "accept"|"reject", "signal": "reply"|"choice"|"revert", "evidence": first 120 chars of your reply}`.
+  `signal` is `revert` when the reply asked for a revert/rollback, `reply` otherwise; `choice` is reserved for answers to an explicit choice prompt.
+- `adoption-pins.json` — `[{"id", "intent", "ts"}]`; a pin forces that item to the top of that intent.
+- `adoption-archive.jsonl` / `adoption-audit.jsonl` — where `reset`/`undo` move events (nothing is hard-deleted), and a log of every CLI mutation.
+
+Inspect or correct it with `node ~/.claude/hooks/persona-rule.js adoption <cmd>`: `list [--intent X]` (id × intent table of weighted accept/reject/n), `list --events` (raw events with their `ts`), `pin <id> <intent>`, `unpin <id> <intent>`, `reset [<id>]`, `undo <ts> [<id>]`. The ledger and pins are registry sources, so the next session's routing summary reflects any change.
+
+### Learning loop (approved by you)
+
+Over time, Boss turns what you correct and what you keep adopting into rules and skills, but only the ones you approve. Detection runs without an LLM call; nothing is written to your rules or skills until you run `learn approve`.
+
+| Piece | What it does |
+|-------|--------------|
+| **Review** (`hooks/learning-review.js`, SessionEnd) | Reads the session transcript and the adoption ledger, prints nothing, and queues suggestions. **Rule:** a message of yours, after Boss has replied at least once, that states a preference or correction: English `don't …`, `never …`, `always …` at the start of a sentence, or `stop doing`, `from now on`, `instead of` anywhere; Korean `~지 마`, `~지 말고`, `다음부터` anywhere, or `항상` / `앞으로` / `대신` / `말고` with an imperative ending (`…해줘`, `…써`). It skips questions, code blocks, inline code, quoted lines, slash commands, notifications, and messages over 1,500 characters. It queues at most 2 per session, `always`/`앞으로`-style phrasing first, and records the agent or skill that ran just before. **Skill:** an ordered chain of 2–4 agents/skills you accepted back to back in 3 or more sessions within 30 days (a reject in between breaks the chain) |
+| **Queue** | Suggestions are deduped by kind plus normalized text or steps. A key you approved or dismissed is never suggested again. At most 5 are pending: new ones beyond that are refused, and each refusal is audited as `cap_refused` |
+| **Surfacing** (`hooks/session-start.sh`) | Adds at most two `[Learn] <id>: <kind> — <text>. Approve: … learn approve <id> / dismiss: … learn dismiss <id>` lines. Boss asks you about them, at most 2 per session (boss.md Phase 0 Step 4b) |
+| **Approval** | A rule goes to `~/.claude/rules/user/learned-<slug>.md`, which has no `paths` frontmatter, so it loads in every session, with your original sentence quoted (`--as "<English rule>"` adds an imperative English line). A skill goes to `~/.claude/skills/learned-<slug>/SKILL.md`: an ordered procedure whose description names its intent, so the registry routes it. Both paths are user-owned: `install.sh` never lists them in its manifest and never deletes them. At most 20 learned items can be live; approving beyond that is refused until you curate or roll back |
+| **Curator** (`learn curate`, also silently once every 7 days at SessionStart) | Ages items by **last use** only (a `Skill` call of the learned skill, the same correction repeated, a ledger event, or an edit to the file) and never by how often they are used: 30 days unused → `stale`, 90 days → `archived` (moved to `~/.config/agent-harness/learned-archive/`, never deleted). Pinned items are exempt |
+
+State lives next to the adoption store in `~/.config/agent-harness/`: `learning-suggestions.jsonl` (id, kind, status `pending|approved|dismissed`, key, created_at, and the text or steps), `learning-items.json` (approved items, their status, pin, and last use), `learning-audit.jsonl` (one row per mutation, ids `A1`, `A2`, …, with before/after state and paths), and `learned-archive/`.
+
+Commands: `node ~/.claude/hooks/persona-rule.js learn <cmd>`: `list`, `show <id|slug>`, `approve <id> [--as "<rule>"]`, `dismiss <id>`, `pin <slug>`, `unpin <slug>`, `curate [--dry-run]`, `rollback <audit-id>`. Rollback undoes one mutation: an approval moves the file to the archive and puts the suggestion back to pending; an archive moves the file back; a dismiss, pin, or status change is reversed. It refuses when a later mutation changed the same item.
+
+**How this differs from Hermes Agent:** the design follows NousResearch/hermes-agent. A background review looks for your corrections, a curator ages agent-created skills by last use and not by popularity, suggestions go pending → accepted/dismissed with at most 5 pending, every mutation is ledgered and can be rolled back, and size caps refuse writes instead of evicting. The difference is that Hermes rewrites its skills and memory on its own, while here nothing reaches your rules or skills without your explicit `learn approve`.
+
+---
+
+## What's Inside
+
+| Category | Count | Source |
+|----------|------:|--------|
+| **Agents** (always loaded) | 32 | Boss 1 + OMO 9 + OMC 19 + Vendored 3 |
+| **Skills** | 107 | ECC 61 · gstack 27 · Superpowers 14 · Core 4 · Archify 1. ECC's 18-skill `web` lane is opt-in (`--skills=web`); OMC's 13 come from the OMC plugin and are never copied |
+| **Rules** | 48 files / 9 sets | ECC 46 (3 common files + 8 language dirs) + Core 2 |
+| **MCP Servers** | 3 | Context7, Exa, grep.app |
+| **Hooks** | 10 files / 6 events | Delegation guard, telemetry, verification, vault, context budget |
+| **LSP Servers** | 2 | typescript (`typescript-language-server`), python (`pyright-langserver`) |
+| **Named Workflows** | 2 | code-review-fanout, upstream-audit |
+| **Upstream submodules** | 5 | ecc, omc, gstack, superpowers, archify |
+| **CLI Tools** | 7 | omc, omo, ast-grep, comment-checker, codeburn, serena, headroom |
+
+Every agent, skill, and rule above is allowlisted in [`scripts/skill-allowlists.sh`](./scripts/skill-allowlists.sh) and tracked in the install manifest. Anthropic's official document skills (pdf, docx, …) are added separately via `claude plugin add anthropics/skills` and are deliberately not manifest-tracked.
+
+<details>
+<summary><strong>Specialist Agents — 32 across 4 tiers</strong></summary>
+
+Per-agent models are in [Model Routing](#model-routing); where each source comes from is in [Open-Source Tools Used](#open-source-tools-used).
+
+| Agent | Tier | Role | Source |
+|-------|------|------|--------|
+| Boss | core | Dynamic runtime discovery → capability matching → optimal routing. Never writes code. | my-claude |
+| Sisyphus | omo | Intent classification → specialist delegation → verification | [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) |
+| Hephaestus | omo | Autonomous explore → plan → execute → verify | oh-my-openagent |
+| Atlas | omo | Task decomposition + 4-stage QA verification | oh-my-openagent |
+| Oracle | omo | Strategic technical consulting (read-only) | oh-my-openagent |
+| Metis | omo | Intent analysis, ambiguity detection | oh-my-openagent |
+| Momus | omo | Plan feasibility review | oh-my-openagent |
+| Prometheus | omo | Interview-based detailed planning | oh-my-openagent |
+| Librarian | omo | Open-source documentation search via MCP | oh-my-openagent |
+| Multimodal-Looker | omo | Image/screenshot/diagram analysis | oh-my-openagent |
+| analyst | omc | Pre-analysis before planning | [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) |
+| architect | omc | System design and architecture | oh-my-claudecode |
+| code-reviewer | omc | Focused code review | oh-my-claudecode |
+| code-simplifier | omc | Code simplification and cleanup | oh-my-claudecode |
+| critic | omc | Critical analysis, alternative proposals | oh-my-claudecode |
+| debugger | omc | Focused debugging | oh-my-claudecode |
+| designer | omc | UI/UX design guidance | oh-my-claudecode |
+| document-specialist | omc | Documentation writing | oh-my-claudecode |
+| executor | omc | Task execution | oh-my-claudecode |
+| explore | omc | Codebase exploration | oh-my-claudecode |
+| git-master | omc | Git workflow management | oh-my-claudecode |
+| planner | omc | Rapid planning | oh-my-claudecode |
+| qa-tester | omc | Quality assurance testing | oh-my-claudecode |
+| scientist | omc | Research and experimentation | oh-my-claudecode |
+| security-reviewer | omc | Security review | oh-my-claudecode |
+| test-engineer | omc | Test writing and maintenance | oh-my-claudecode |
+| tracer | omc | Execution tracing and analysis | oh-my-claudecode |
+| verifier | omc | Final verification | oh-my-claudecode |
+| writer | omc | Content and documentation | oh-my-claudecode |
+| AI Engineer | vendored | AI/ML engineering, model integration, data pipelines | agency-agents (vendored) |
+| DevOps Automator | vendored | Infrastructure automation, CI/CD, cloud operations | agency-agents (vendored) |
+| Multi-Agent Systems Architect | vendored | Agent topology, context management, failure recovery | agency-agents (vendored) |
+
+</details>
+
+<details>
+<summary><strong>Skills — 107 from 5 sources</strong></summary>
+
+| Source | Count | Key Skills |
+|--------|------:|------------|
+| [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | 61 | coding-standards, fastapi-patterns, agent-architecture-audit, springboot-patterns, kubernetes-patterns |
+| [gstack](https://github.com/garrytan/gstack) | 27 | /qa, /review, /ship, /cso, /investigate, /office-hours |
+| [superpowers](https://github.com/obra/superpowers) | 14 | brainstorming, systematic-debugging, test-driven-development, writing-plans |
+| [my-claude Core](https://github.com/sehoon787/my-claude) | 4 | boss-advanced, boss-briefing, briefing-vault, gstack-sprint |
+| [archify](https://github.com/tt-a1i/archify) | 1 | archify |
+
+**Opt-in `web` lane (+18)** — `accessibility`, `bun-runtime`, `e2e-testing`, `frontend-a11y`, `frontend-patterns`, `motion-*` (3), `nestjs-patterns`, `nextjs-turbopack`, `nuxt4-patterns`, `react-patterns`, `react-performance`, `react-testing`, `ui-to-vue`, `vite-patterns`, `vue-patterns`, `windows-desktop-e2e`. Browser-UI work only; see [Installation](#installation) for the flags.
+
+**OMC skills are not copied.** `install.sh` enables the `oh-my-claudecode@omc` plugin, which already exposes all 13 (`autopilot`, `ralph`, `team`, `execute`, `ralplan`, `verify`, …) as `oh-my-claudecode:<name>`. A local copy would put a second description of the same skill in every session. Routing surfaces use the prefixed name; a bare `ralph` does not resolve.
+
+</details>
+
+<details>
+<summary><strong>MCP Servers (3) + Hooks (10)</strong></summary>
+
+**MCP Servers** — what each one does and how it is registered is in [Open-Source Tools Used](#open-source-tools-used).
+
+| Server | Cost |
+|--------|------|
+| <img src="https://context7.com/favicon.ico" width="16" height="16" align="center"/> [Context7](https://context7.com) | Free |
+| <img src="https://exa.ai/images/favicon-32x32.png" width="16" height="16" align="center"/> [Exa](https://exa.ai) | Free 1k req/month |
+| <img src="https://www.google.com/s2/favicons?domain=grep.app&sz=32" width="16" height="16" align="center"/> [grep.app](https://github.com/grep-app) | Free |
+
+**Behavioral Hooks**
+
+| Hook | Event | Behavior |
+|------|-------|----------|
+| Session Setup | SessionStart | Auto-detects missing tools + injects Briefing Vault context |
+| Delegation Guard | PreToolUse | Blocks Boss from directly modifying files |
+| Agent Telemetry | PostToolUse | Logs agent usage to `agent-usage.jsonl` |
+| Subagent Logger | SubagentStop | Logs agent execution to Briefing Vault |
+| Completion Check | Stop | Runs profile fallback + guards /boss-briefing execution |
+| Vault Reminder | UserPromptSubmit | Suggests /boss-briefing after 5+ messages |
+| Calibrated Response | UserPromptSubmit | Re-injects `rules/common/calibrated-response.md` every turn |
+| Context Budget | UserPromptSubmit | Every 40 prompts since the last compaction (`MY_CLAUDE_COMPACT_EVERY`), suggests `/compact` at the next task boundary |
+| Context Budget reset | SessionStart (`compact`) | Zeroes that counter after a compaction |
+
+**Quiet plugin hooks.** `merge-settings.js` sets `env.OMC_QUIET=2` unless you already set it. OMC's own plugin hooks otherwise append an advisory line ("Use parallel execution…", "Background operation detected…") to nearly every Bash, Edit, and Read call, and every one of those lines is re-sent as context on every later request. Level 2 drops the advisories and the "Completed: N" agent summaries; real failures are still reported.
+
+**Earlier auto-compaction.** `merge-settings.js` also sets `env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=75` unless you already set it, so a long session compacts before the tail of its transcript gets expensive. The variable can only lower the trigger. See the [environment variable reference](https://code.claude.com/docs/en/env-vars).
+
+</details>
+
+<details>
+<summary><strong>LSP Servers (2)</strong></summary>
+
+The plugin declares two language servers in `.lsp.json`. Claude Code starts them on demand, so agents get diagnostics and code navigation instantly instead of paying for a build round-trip. `install.sh` installs both binaries non-fatally — if one is unavailable, only that server is disabled and the rest of the install continues.
+
+| Server | Command | Extensions |
+|--------|---------|------------|
+| typescript | `typescript-language-server --stdio` | `.ts` `.tsx` `.js` `.jsx` `.mjs` `.cjs` |
+| python | `pyright-langserver --stdio` | `.py` |
+
+</details>
+
+---
+
+## <img src="https://obsidian.md/images/obsidian-logo-gradient.svg" width="24" height="24" align="center"/> Briefing Vault
+
+Obsidian-compatible persistent memory. Every project maintains a `.briefing/` directory that auto-populates across sessions. Every path below is created and maintained by hooks:
+
+| Path | Description |
+|------|-------------|
+| `INDEX.md` | Project overview with links to recent decisions and learnings. Auto-created on first session, refreshed by /boss-briefing or Stop hook fallback. |
+| `state.json` | Session metadata: counters (workCounter, messageCount), lastVaultSync timestamp, sessionStartHead. Auto-managed by hooks. |
+| `sessions/` | **Session summaries**, named `YYYY-MM-DD-<topic>.md`. `YYYY-MM-DD-auto.md` — scaffold with git diff stats and agent counts. `<topic>.md` — AI-written summary enforced by Stop hook guard. |
+| `decisions/` | **Architecture and design decisions** with rationale, as `YYYY-MM-DD-<decision>.md`. AI-written, enforced during active work. |
+| `learnings/` | **Patterns, gotchas, non-obvious solutions**, as `YYYY-MM-DD-<pattern>.md`. `*-auto-session.md` — scaffold with file lists. `<topic>.md` — AI-written. |
+| `references/` | **Web research URLs.** `auto-links.md` — auto-collected from WebSearch/WebFetch calls. |
+| `agents/` | **Agent telemetry.** `agent-log.jsonl` — per-call log with enriched fields `{ts, agent_type, phase, seq, task_hint}`. `YYYY-MM-DD-summary.md` — daily usage breakdown. |
+| `persona/` | **User work style profile.** `profile.md` — tool affinity stats. `suggestions.jsonl` — routing recommendations. Workflow sequence patterns in `rules/workflow-*.md`. Run /boss-briefing to analyze. |
+| `archives/` | PARA Archives (flat) — completed sessions (30+ days), superseded decisions, inactive learnings |
+| `wiki/` | LLM-wiki concept pages (`_schema.md` holds the page schema) — distilled knowledge from multiple sessions |
+
+### Knowledge Management (v2)
+
+BriefingVault v2 integrates three knowledge management methodologies:
+
+| Methodology | Applied As |
+|------------|-----------|
+| **PARA** (Tiago Forte) | Directory structure: sessions=Projects, decisions=Areas, references=Resources, archives=Archives |
+| **Zettelkasten** (Luhmann) | Atomic notes in `learnings/`, unique IDs (`YYYYMMDDHHMMSS`), enforced `[[wiki-links]]` |
+| **LLM-wiki** (Karpathy) | Concept pages in `wiki/` — auto-suggested when keywords appear 3+ times |
+
+Claude Code session-end hooks automatically:
+- Suggest archiving notes older than 30 days
+- Propose wiki pages for frequently mentioned concepts
+- Generate unique Zettelkasten IDs for new notes
+
+### Session-Specific Diffs
+
+At session start, the current git HEAD is saved to `state.json` (`sessionStartHead` field). For non-git projects, a `YYYY-MM-DD:cwd` identifier is used instead. At session end, diffs are calculated relative to this saved point — showing only changes from the current session, not accumulated uncommitted changes from previous sessions.
+
+### Using with Obsidian
+
+1. Open Obsidian → **Open folder as vault** → select `.briefing/`
+2. Notes appear in graph view, linked by `[[wiki-links]]`
+3. YAML frontmatter (`date`, `type`, `tags`) enables structured search
+4. Timeline of decisions and learnings builds automatically over sessions
+
+### /boss-briefing
+
+Run `/boss-briefing` during or at the end of a session to:
+- **Sync vault**: Update profile.md, INDEX.md, and agent summaries
+- **Detect workflow patterns**: Analyze temporal agent call sequences across sessions
+- **Recover from gaps**: Generate recovery summaries if days have passed since the last session
+- **Propose persona rules**: Suggest workflow-based routing preferences (not just frequency)
+- **Validate session notes**: Check that today's session has a proper summary
+
+The Stop hook checks whether `/boss-briefing` has run today. If not, it blocks session end with a reminder. The existing `stop-profile-update.js` continues to run as a fallback. A second Stop hook, `stop-final-report.js`, enforces the [Structured Final Report](#structured-final-report).
+
+---
+
+## Where to See Results
+
+Every tool in this stack writes its output somewhere. This is where. What each
+tool is, is in [Open-Source Tools Used](#open-source-tools-used).
+
+| Tool | Open | How to Run | Where to Look |
+|------|------|-----------|---------------|
+| **codeburn** | <http://127.0.0.1:4747/> | `install.sh` starts or reuses `codeburn web --provider all --port 4747 --no-open` · `codeburn` opens the TUI · `codeburn report --format json --period week` emits a non-interactive dump (also `--day`, `--from`/`--to`, `--provider claude`) | The shared dashboard; startup log `${XDG_STATE_HOME:-$HOME/.local/state}/agent-harness-services/logs/codeburn.log`. Session files are read-only and dollar figures are **estimates** at API list rates — on a subscription plan a usage proxy, not a bill. |
+| **codeburn guard** | `codeburn guard status` | Installed by `install.sh` by default (`--no-codeburn-guard` to skip) via `codeburn guard install --global` | The soft cap ($5) and checkpoint nudge ($3) stay on; the hard cap is written as `null` right after install, since its cost estimate is list-price and would otherwise stop a normal subscription session in minutes. Set your own hard cap by editing `hardUSD` in `~/.config/codeburn/guard.json`. |
+| **Serena** | <http://localhost:24282/dashboard/index.html> | Starts automatically as an MCP server; call `get_symbols_overview` / `find_symbol` from any session | The dashboard, while a server is running (logs + per-tool call counts). Per-project memories land in `.serena/` inside the repository you are working on; the global config is `~/.serena/serena_config.yml`. |
+| **Headroom** | <http://127.0.0.1:8787/stats> | MCP tools `headroom_compress` / `headroom_retrieve` / `headroom_stats`; `install.sh` starts or reuses the shared `agent-harness-shared` proxy profile | Compression stats, empty until a client explicitly routes through the proxy; startup log `${XDG_STATE_HOME:-$HOME/.local/state}/agent-harness-services/logs/headroom.log`. |
+| **Archify** | `out.html` | Ask for a diagram and Boss routes to the `archify` skill. Manually, from `~/.claude/skills/archify`: `node bin/archify.mjs render workflow examples/agent-tool-call.workflow.json out.html` | The generated file — open it in any browser. Validate one with `node bin/archify.mjs check out.html`. |
+| **OMC HUD** | Claude Code statusline | Installed as the statusline by `install.sh`; `/oh-my-claudecode:hud` reconfigures it | At the bottom of the session, with a live context, quota, and mode readout. Complements codeburn: the HUD is this session, codeburn is every session. |
+
+---
+
+## GitHub Actions
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **CI** | push, PR | Validates JSON configs, agent frontmatter, skill existence, upstream file counts |
+| **Smoke** | push, PR | 4 jobs — `hooks` (hook execution), `shell` (install script shape), `drift` (model drift), `routing-refs` (dangling agent/skill references) |
+| **Update Upstream** | every 3 days / manual | `git submodule update --remote` → refresh SHA pins in `SOURCES.json` → security scan of the upstream diff → auto-merge only when the scan is clean, otherwise the PR is flagged for human review |
+| **Auto Tag** | push to main | Reads `plugin.json` version and creates git tag if new |
+| **Pages** | push to main | Deploys `docs/index.html` to GitHub Pages |
+| **CLA** | PR | Contributor License Agreement check |
+| **Lint Workflows** | push, PR | Validates GitHub Actions workflow YAML syntax |
+
+---
+
+## my-claude Originals
+
+Features built specifically for this project, beyond what upstream sources provide:
+
+| Feature | Description |
+|---------|-------------|
+| **Boss Meta-Orchestrator** | Dynamic capability discovery → intent classification → 5-priority routing → delegation → verification |
+| **3-Phase Sprint** | Design (interactive) → Execute (autonomous via ralph) → Review (interactive vs design doc) |
+| **Agent Tier Priority** | core > omo > omc > vendored deduplication. Most specialized agent wins. |
+| **Lane Ownership** | Orchestration → OMC, dev process → superpowers, ship/QA/deploy/security → gstack (Boss P0), language and stack knowledge → ECC, AI and domain work → vendored agents |
+| **Curated Allowlists** | `scripts/skill-allowlists.sh` is the single source of truth — 107 skills, 3 always-on common rules and 8 path-scoped language rule sets survive from thousands upstream, so nothing unlisted ever reaches a session's context |
+| **Briefing Vault** | Obsidian-compatible `.briefing/` directory with sessions, decisions, learnings, references |
+| **Agent Telemetry** | PostToolUse hook logs agent usage to `agent-usage.jsonl` |
+| **No-op Sync Skip** | Upstream sync stages the submodule bumps and `SOURCES.json` pins, then opens a PR only when that staged diff is non-empty |
+| **Agent Dedup Detection** | `tests/validate-sync.sh` compares agent filenames across `agents/` and the omc/superpowers submodules and reports collisions |
+
+---
+
+## Bundled Upstream Versions
+
+Linked via git submodules. Pinned commits are tracked natively by `.gitmodules` and mirrored as an AI-BOM in [`upstream/SOURCES.json`](./upstream/SOURCES.json); `install.sh` checks out these exact SHAs rather than tracking `main`.
+
+| Source | SHA | Date | Diff |
+|--------|-----|------|------|
+| [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `4eb71d9` | 2026-10-10 | [compare](https://github.com/affaan-m/everything-claude-code/compare/4eb71d9...HEAD) |
+| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | `454bae0` | 2026-10-10 | [compare](https://github.com/Yeachan-Heo/oh-my-claudecode/compare/454bae0...HEAD) |
+| [gstack](https://github.com/garrytan/gstack) | `20eb620` | 2026-10-10 | [compare](https://github.com/garrytan/gstack/compare/20eb620...HEAD) |
+| [superpowers](https://github.com/obra/superpowers) | `bb92a77` | 2026-10-10 | [compare](https://github.com/obra/superpowers/compare/bb92a77...HEAD) |
+| [archify](https://github.com/tt-a1i/archify) | `2ab3cae` (`v3.0.1`) | 2026-09-28 | [compare](https://github.com/tt-a1i/archify/compare/2ab3cae...HEAD) |
+
+---
+
+## Contributing
+
+Issues and PRs are welcome. When adding a new agent, add a `.md` file to `agents/core/` or `agents/omo/` and update `SETUP.md`.
+
+## Credits
+
+Built on the projects listed in [Open-Source Tools Used](#open-source-tools-used); thank you to every author.
+
+## License
+
+MIT License. See the [LICENSE](./LICENSE) file for details.

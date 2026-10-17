@@ -1,0 +1,295 @@
+<p align="center">
+  <img src="logo.png" alt="Quoin" width="100%" />
+</p>
+
+# Quoin
+
+[![Discord](https://img.shields.io/badge/Discord-Join%20us-5865F2?logo=discord&logoColor=white)](https://discord.gg/k8DVhuYBR2) [![IX Skills](https://github.com/agent-ix/agent-plugins/raw/refs/heads/main/assets/ix-skills.svg)](https://github.com/agent-ix/agent-plugins)
+[![ISO/IEC/IEEE 29148](https://img.shields.io/badge/ISO%2FIEC%2FIEEE-29148%20aligned-0052CC)](https://www.iso.org/standard/72089.html)
+[![Open Knowledge Format](https://img.shields.io/badge/OKF-Open%20Knowledge%20Format-4285F4)](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf)
+
+`quoin` is a bundle of **Quire modules**, **agent skills**, and **workflows** for
+authoring [ISO/IEC/IEEE 29148](https://www.iso.org/standard/72089.html)-aligned software specifications and other technical
+documents. It includes prepackaged modules for the spec vocabulary and ideation/authoring/review/planning
+workflows agents need to write and validate specs directly as Markdown.
+
+`quoin` is built on the [Quire](https://github.com/agent-ix/quire-rs) document standard and validation engine by Agent-IX.
+
+> **Why:** AI agents write code fast but drift from vague intent. Quoin makes the spec the source of truth — your agent authors a validated, traceable spec first, then plans and builds against it.
+
+## Setup
+
+If this plugin is uninitialized or a command fails, follow the [plugin setup guide](setup.md) for its required CLIs, configuration, and local diagnosis.
+
+## Community help
+
+If the setup checks leave a reproducible Agent IX quoin bug that blocks progress, [join the Agent IX Discord](https://discord.gg/k8DVhuYBR2). Community help is a last resort for Agent IX product bugs, not a help desk for local credentials, machine setup, third party tools, or unrelated projects. See [setup.md](setup.md#community-help) for what to include.
+
+## How
+
+In Claude Code, Codex, or the coding agent of your choice:
+
+#### 1. Ideate & Specify
+
+Ideate, then pass your idea to `/specify`. A `specification` containing `user stories`, `functional requirements`,
+`stakeholder requirements`, `non-functional requirements`, and other artifacts will be created.
+
+```
+> /specify an electron app for tracking spice production
+```
+
+#### 2. Spec Review
+
+Use `/spec-review` for agent-assisted review. Multiple analysis tasks will run in parallel and output `Reviews`
+with `Findings` and suggested fixes.
+
+```
+> /spec-review review the specs for the spice production tracker.
+```
+
+#### 3. Convert to plans
+
+Build the `plan`. This skill breaks the work down into a `plan` with multiple `tasks`. There is
+no test matrix to write: `quire matrix` computes it from the acceptance criteria and the trace
+tags on the tests, and `quoin matrix` adds the run evidence.
+
+```
+> /spec-to-plan prep the spice tracking app for coding
+```
+
+#### 4. Implement!
+
+Call `/implement-plan` to trigger your coding agent to begin work on the plan.
+
+```
+> /implement-plan build the spice tracking app
+```
+
+#### 5. Gap review
+
+`/gap-analysis` audits the repository: `UserStory` and `Functional Requirements` implemented and tested,
+using the computed test matrix (`quoin matrix`) as the guide, plus the reverse gap — code with no owning
+requirement — and stubs standing behind a tagged criterion. It is **planless by default**, so a repository whose work predates
+planning can still be audited; the review it emits records `Plan completion: not assessed`.
+`/gap-analysis` will optionally perform a _semantic_ comparison of `spec`, `code`, and `tests`.
+
+```
+> /gap-analysis
+```
+
+Pass a plan to add completion bookkeeping — every `Task` done, done tasks in dependency order, and
+`plan.md` checkboxes matching task status. The repository audit is unchanged by it: a plan never narrows
+the scope or suppresses a finding outside its tasks.
+
+```
+> /gap-analysis --plan Plan-001
+```
+
+## What's included
+
+The default module set defines the spec archetypes and domain-object vocabulary.
+
+**Artifact archetypes** — the document types you author:
+
+| Module                                                                       | Archetypes                                                           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [spec-artifacts-iso](https://github.com/agent-ix/spec-artifacts-iso)         | `StR`, `FR`, `NFR`, `US`, `IT`, `TC`, `Spec`, `master-requirements`  |
+| [spec-artifacts-app](https://github.com/agent-ix/spec-artifacts-app)         | `ApplicationSpec`, `MasterRequirements`                              |
+| [spec-artifacts-process](https://github.com/agent-ix/spec-artifacts-process) | `ADR`, `Plan`, `Task`, `Review`, `Finding`, `TestMatrix`, `Standard` |
+
+**Domain objects** — prefab templates for common objects
+
+| Module                                                                             | Objects                                                                                                                                                                                                                                |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [spec-objects-business](https://github.com/agent-ix/spec-objects-business)         | `domain`, `entity`, `value_object`, `aggregate_root`, `nested_entity`, `repository`, `event`, `state_machine`, `process`, `enumeration`                                                                                                |
+| [spec-objects-architecture](https://github.com/agent-ix/spec-objects-architecture) | `api_endpoint`, `data_schema`, `queue`, `action`, `ui_component`, `interface`, `external_contract`, `extension_point`, `binary_format`, `rate_limit`                                                                                   |
+| [spec-objects-enterprise](https://github.com/agent-ix/spec-objects-enterprise)     | `capability`, `business_function`, `value_stream`, `decision`, `objective`, `principle`, `kpi`                                                                                                                                         |
+| [spec-objects-operational](https://github.com/agent-ix/spec-objects-operational)   | `configuration`, `migration`, `sli`, `slo`, `alert`, `runbook`, `incident`, `deployment`                                                                                                                                               |
+| [spec-objects-security](https://github.com/agent-ix/spec-objects-security)         | `auth_flow`, `permission`, `scope`, `role`, `secret`, `encryption_key`, `session_config`, `data_classification`, `trust_boundary`, `audit_event`, `threat`, `control`, `risk`, `vulnerability`, `asset`, `attack_surface`, `policy`, … |
+
+### Agent Skills
+
+- **`specify`** — create or edit spec files using catalog authoring packs + Quire validation
+- **`spec-review`** — review specification for quality, consistency, and completeness
+- **`spec-matrix`** — read the computed Test Matrix and tag tests with the criteria they assert
+- **`spec-to-plan`** — convert StR/FR/NFR into a TDD project plan
+- **`spec-ideation`** — loose, exploratory drafting before formal authoring
+- **`spec-app-review`** / **`spec-object-review`** — application-spec and domain-object audits
+- Analysis lenses — focused review passes over a spec:
+  - **`spec-integrity-analysis`** — completeness, consistency, and atomicity quality gates
+  - **`spec-scope-boundary-analysis`** — system boundaries and responsibility allocation
+  - **`spec-dependency-analysis`** — separates enablement work from feature work
+  - **`spec-evidence-analysis`** — verification methods and evidence artifacts per requirement
+  - **`spec-failure-domain-analysis`** — unstated failure modes, identity confusion, edge cases
+  - **`spec-risk-complexity-analysis`** — technical risk and volatility before tasking
+  - **`spec-security-analysis`** — applicable security standards and compliance traceability
+
+## Install
+
+Installing quoin is **two steps**: the native CLI (via npm, or from a GitHub Release) and a
+plugin that adds the [skills](#agent-skills) and workflows to your coding agent. The same skill bundle installs
+into **Claude Code, OpenAI Codex, opencode, and GitHub Copilot** — pick your agent below. No
+Anthropic API key is required — your existing agent subscription is used.
+
+**1. Install the CLIs** (`quoin` plus `ix-flow`, which runs the workflow lifecycle commands):
+
+```bash
+npm install -g @agent-ix/quoin @agent-ix/ix-flow@latest
+```
+
+`@agent-ix/quoin` is a launcher that pulls in the native binary for your
+platform (linux-x64, linux-arm64, darwin-arm64, win32-x64) as an
+`optionalDependency`, built from the same GitHub Release assets as the
+manual install below — see [Install with npm](./docs/native-release.md#install-with-npm).
+Later updates are then `npm update -g @agent-ix/quoin`; `quoin update`
+reports this rather than acting, since npm owns the install.
+
+Without npm, download the archive for your host from the stable GitHub
+Release, verify it with `quoin-update-manifest.json`, extract `quoin`, and
+place it on `PATH`; `quoin update` then manages later updates itself.
+Supported native targets and archive names are listed in the [native release
+contract](./docs/native-release.md).
+
+**2. Add the plugin to your coding agent:**
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+Run these inside Claude Code:
+
+```text
+/plugin marketplace add agent-ix/agent-plugins
+/plugin install quoin@agent-ix
+```
+
+</details>
+
+<details>
+<summary><b>OpenAI Codex</b></summary>
+
+```bash
+codex plugin marketplace add agent-ix/agent-plugins
+codex plugin add quoin@agent-ix
+```
+
+Or browse and install quoin from the `/plugins` menu inside the Codex TUI.
+
+</details>
+
+<details>
+<summary><b>opencode</b></summary>
+
+Install the skills with the GitHub CLI. `--all` installs
+the whole bundle; `--scope user` makes it available in every repo:
+
+```bash
+gh skill install agent-ix/quoin --all --scope user --agent opencode
+```
+
+</details>
+
+<details>
+<summary><b>GitHub Copilot</b></summary>
+
+With the Copilot CLI:
+
+```bash
+copilot plugin marketplace add agent-ix/quoin
+copilot plugin install quoin@quoin
+```
+
+Or install the skills with the GitHub CLI:
+
+```bash
+gh skill install agent-ix/quoin --all --scope user --agent github-copilot
+```
+
+</details>
+
+Either way, that registers quoin's spec-authoring skills and workflows so you can drive them
+by asking the agent.
+
+## Usage
+
+### skills & workflows
+
+The primary way users author specs is by asking an agent, which invokes the bundled
+[skills](#agent-skills) and [workflows](#agent-workflows).
+
+### CLI commands
+
+Inspect the spec vocabulary and manage installed modules:
+
+```bash
+quoin catalog list
+quoin catalog show FR
+quoin catalog validate
+quoin plugin install path:../spec-objects-business
+quoin plugin list
+```
+
+Quoin also provides rights-safe, project-owned assurance workflows: evaluate a
+generic ClauseSet with Quire, account for discharge without a score, render an
+authored argument with explicit sufficiency decisions, and publish immutable
+experiment or operational evidence:
+
+```bash
+quire clauses evaluate --module ./modules/widget --authority example.invalid \
+  --set widget-rules --version 1.0.0 \
+  --context product=widget --format json > binding.json
+quoin discharge --binding binding.json --facts discharge-facts.json \
+  --as-of 2026-08-28T00:00:00Z --json
+quoin assurance --argument AA-001 --decisions sufficiency-decisions.json \
+  --as-of 2026-08-28T00:00:00Z
+quoin evidence record-experiment --repo . --input experiment.json
+quoin evidence record-operational --repo . --input operational.json
+```
+
+See [Assurance workflows](./docs/assurance-workflows.md) for the record shapes,
+expiry behavior, and the boundary that leaves existing run records unchanged.
+
+Generic measurement campaigns run each authored procedure through Engineering
+Assurance's bounded executor and retain a separately replayable verdict:
+
+```bash
+quoin measurement campaign run --repo /path/to/clean-measured-checkout \
+  --definition /path/to/campaign-definition.json --run-id trial-1 \
+  --config /path/to/campaign-run-config.json
+quoin measurement campaign verify --repo /path/to/clean-measured-checkout \
+  --definition-digest SHA256_JCS_DIGEST --run-id trial-1 \
+  --sources /path/to/campaign-sources.json
+```
+
+The definition may live outside the measured checkout, allowing it to pin an
+earlier source revision without a self-referential Git commit. The run config
+uses `quoin.campaign-run-config/v1` and selects exact clean source checkouts,
+producer and checker executables, and runtime bindings. Verification reopens
+the retained evidence and the same pinned source revisions. Member dependencies
+require ordering and completion. Quoin retains every selected producer input
+byte string by digest and independently replays its recorded source-file or
+dependency-artifact origin against the exact Git tree or earlier EA result.
+When an authored procedure declares `inputOrigins`, EA rejects mismatched
+runtime selections and Quoin marks the retained inventory `enforced` only after
+matching every declared role. Older procedures without that declaration remain
+explicitly `unclaimed` for authored origin assurance; their selected bytes and
+recorded origins are still replay-checked. A domain checker interprets the
+measurement-specific meaning of those inputs.
+
+## Development
+
+```bash
+make rust-build
+make rust-test
+make rust-lint
+```
+
+### Specification
+
+The technical specification for this library was itself authored with the `spec-artifacts-iso` module — see
+[spec/spec.md](spec/spec.md).
+
+## About
+
+quoin is part of the Agent-IX ecosystem built on these core libraries:
+
+- [quire-cli](https://github.com/agent-ix/quire-cli), the static-binary CLI wrapping the Quire engine

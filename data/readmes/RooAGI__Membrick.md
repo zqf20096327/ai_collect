@@ -1,0 +1,507 @@
+# Membrick
+
+**Open-source agent memory for coding agents.**
+
+> **AI memory that knows what is still true.** Your agent doesn't just forget; it can confidently remember outdated decisions.
+
+Membrick is an open-source **persistent agent memory** layer for Claude Code, Codex, Gemini CLI, Antigravity CLI (AGY), and Muse Code. It turns project history — sessions, documents, decisions, traces, notes, and code — into **current, evidence-backed context** when an agent needs it.
+
+Search can find the right topic. Membrick helps an agent answer the harder question: **is this information still true?** It uses relevance, time, and semantic relationships to distinguish the latest truth from old-but-still-relevant history.
+
+[Agent memory guide](docs/agent-memory.md) · [Quickstart](docs/quickstart.md) · [Reproducible demo](#reproducible-terminal-demo) · [Agent integrations](docs/agents.md) · [Benchmarks](#benchmark-highlights) · [Documentation](https://rooagi.github.io/Membrick/)
+
+**Current benchmark:** 500-question LongMemEval-S. See the
+[latest benchmark results](#benchmark-highlights) for metrics and the source report.
+
+---
+
+## The stale-memory problem
+
+Your project says one thing on Monday and something different on Friday. Both versions remain relevant to the same question.
+
+**Older — `decision-a.md`**
+
+```md
+# Gateway Retry Policy
+
+Gateway timeout retry attempts: 5.
+```
+
+**Newer — `decision-b.md`**
+
+```md
+# Gateway Retry Policy
+
+Gateway timeout retry attempts: 2.
+```
+
+Now ask:
+
+```text
+How many retry attempts should we use for gateway timeouts?
+```
+
+A normal retriever can return either document — or both — and leave the model to guess which value is current.
+
+**Membrick keeps `2` as the current answer and preserves `5` as superseded history.**
+
+That difference matters anywhere project truth changes over time: architecture decisions, API contracts, configuration values, runbooks, ownership, terminology, and implementation plans.
+
+There is no required `supersedes:` frontmatter in this example. For simple configuration/value claims, Membrick can infer chronological replacement when the documents establish the same semantic domain. Inferred supersession is domain-scoped so unrelated settings such as two different services' `timeout` values do not suppress one another. Explicit supersession metadata remains authoritative when you provide it.
+
+```bash
+membrick query \
+  "How many retry attempts should we use for gateway timeouts?" \
+  examples/demo-real-terminal
+```
+
+Current-state retrieval returns the newer decision with `semantic_status: current`, and `membrick context` excludes the stale value.
+
+### Reproducible terminal demo
+
+![Membrick reproducible terminal demo](docs/assets/membrick-real-terminal.gif)
+
+The repository includes a reproducible **asciinema PTY recording** that builds the actual `membrick` binary, sets deterministic file mtimes for a controlled stale-memory scenario, runs the neutral query above, verifies the result, and renders the captured terminal session.
+
+```bash
+bash scripts/run_real_terminal_demo.sh
+```
+
+See [`examples/demo-real-terminal/`](examples/demo-real-terminal/) and [`.github/workflows/demo-real-terminal.yml`](.github/workflows/demo-real-terminal.yml).
+
+---
+
+## Why Membrick?
+
+Agent memory is not only a retrieval problem. It is a **state problem**.
+
+A useful memory layer has to answer:
+
+1. **Relevance** — is this about the question?
+2. **Recency** — when was this evidence true?
+3. **Supersession** — did something newer replace it?
+4. **Temporal intent** — is the user asking about now, last Tuesday, or a historical state?
+5. **Evidence** — where did the answer come from?
+
+| Ordinary retrieval | Membrick |
+|---|---|
+| Finds topically similar text | Ranks relevant **and current** evidence |
+| Can surface stale decisions as if they are current | Tracks time and supersession |
+| Treats relative time as mostly query text | Resolves temporal intent against a reference clock |
+| Returns passages | Returns context with source and relationship evidence |
+| Treats documents mostly in isolation | Connects facts, entities, links, symbols, ownership, and time |
+| Leaves corpus drift hidden | Surfaces contradictions, stale claims, terminology drift, orphan pages, and missing links |
+
+Historical evidence is not deleted. A historical query can still retrieve superseded material as history rather than presenting it as current state.
+
+---
+
+## Quickstart
+
+Install directly from GitHub:
+
+```bash
+cargo install --git https://github.com/RooAGI/Membrick
+```
+
+Check what is currently indexed in a folder without scanning it:
+
+```bash
+membrick status .
+```
+
+Check or index a local corpus:
+
+```bash
+membrick review /path/to/repo
+```
+
+Query it:
+
+```bash
+membrick query "what is the current retry policy?" /path/to/repo/docs
+```
+
+Get LLM-ready context:
+
+```bash
+membrick context "what is the current retry policy?" /path/to/repo/docs
+```
+
+See the [CLI reference](docs/cli.md) and [full quickstart](docs/quickstart.md)
+for Docker, HTTP, Python, Rust, and MCP setup.
+
+---
+
+## Agent integrations
+
+Membrick provides opt-in integrations for major coding-agent clients.
+
+| Integration | Project memory | Lifecycle capture | MCP tools | Replay / comparison |
+|---|---:|---:|---:|---:|
+| [Claude Code](docs/claude-code.md) | Yes | Yes | Yes | Yes |
+| [Codex](docs/codex.md) | Yes | Yes | Yes | Yes |
+| [Gemini CLI](docs/gemini-cli.md) | Yes | Yes | Yes | — |
+| [Antigravity CLI / AGY](docs/agy.md) | Yes | Yes | Yes | — |
+| [Muse Code](docs/muse-code.md) | Yes | Yes | Yes | — |
+
+Build the Claude Code and Codex integrations:
+
+```bash
+cargo build --release --features claude-code,codex
+./target/release/membrick install claude /path/to/project
+./target/release/membrick install codex /path/to/project
+```
+
+All agents share one project-scoped memory store:
+
+```text
+/path/to/project/.membrick/memory/
+```
+
+Upgrading from an older version? Legacy per-provider stores
+(`.membrick/claude-memory/`, `.membrick/codex-memory/`,
+`.membrick/gemini-cli-memory/`, `.membrick/agy-memory/`,
+`.membrick/muse-memory/`) are migrated into `.membrick/memory/` on first run
+and removed once their migration succeeds.
+
+The shared MCP controls include session recording, memory listing, and runtime enable/disable controls:
+
+```text
+mcp__membrick__record_session       {"action":"start|stop|status"}
+mcp__membrick__list_memories        {"limit":20}
+mcp__membrick__enable_membrick       {}
+mcp__membrick__disable_membrick      {}
+mcp__membrick__membrick_status        {}
+```
+
+See [agent integrations](docs/agents.md) and the [MCP guide](docs/mcp.md) for the complete setup.
+
+---
+
+## Benchmark highlights
+
+Membrick is evaluated on **LongMemEval-S**, a public benchmark for long-context agent-memory retrieval over multi-session conversations.
+
+### How to read the benchmark numbers
+
+Separate integration smoke runs use a matched
+`routing-decision-supersession` task template. The one-run Codex result showed
+37.4% fewer reported continuation tokens with Membrick hooks. The Claude run
+is invalid: both legacy `.lint-ai` and current `.membrick` directories were
+present, so its hooks failed open and continuation retrieved no memory. See
+the [Codex](docs/codex-performance-tests.md) and
+[Claude Code](docs/claude-code-performance-tests.md) reports. These are
+diagnostics, not release benchmarks; compare each provider only with its own
+native baseline.
+
+Every result has three independent labels:
+
+1. **Scope:** the 500-question aggregate evaluates the full scoped dataset;
+   the 133-question segmented comparison evaluates only the multi-session
+   slice.
+2. **Metric:** fractional (regular) recall measures the fraction of all gold
+   sessions recovered; any-hit recall counts a question as successful when at
+   least one gold session is recovered.
+3. **Cutoff:** `@5`, `@10`, and `@20` mean the top 5, 10, or 20 returned
+   results. A Recall@5 value must not be compared with Recall@10 without
+   checking both the metric type and benchmark scope.
+
+| Benchmark | Scope | Metric | Cutoffs |
+|---|---|---|---|
+| Aggregate headline | 500 questions | Fractional and any-hit recall | @5, @10, @20 |
+| Segmented comparison | 133 multi-session questions | Any-hit recall (fractional also in raw report) | @5, @10 |
+
+### Why two benchmark tables?
+
+The **500-question aggregate** is the public overall headline. It runs the
+heuristic global path across every LongMemEval-S question category. The
+**133-question segmented comparison** isolates the multi-session category and
+uses the same question subset for fixed segmented, adaptive segmented, and
+single-index baselines. The single-index row is therefore the fair control for
+segmented routing—not a second overall headline.
+
+Because the scopes and query mix differ, their recall and latency values must
+not be compared as a time series or combined into one score.
+
+The current benchmark uses the repository's raw LongMemEval-S dataset, runs 500 question-scoped queries through the heuristic backend, enables structured-fact retrieval, and uses no embedding vectors. This latest result is a release-candidate run, not a tagged-release measurement.
+
+**500 questions · heuristic backend · single CPU · no GPU**
+
+<!-- BEGIN GENERATED LONGMEMEVAL-S 500-QUESTION HEADLINE -->
+**LongMemEval-S, 500 questions · 2026-10-15 · single index · heuristic NER · structured-fact retrieval · no embeddings**
+Working-tree run based on `b204b7e`; not a clean release measurement.
+
+| Metric | Result |
+|---|---:|
+| Fractional Recall@5 / @10 / @20 | 89.78% / 95.20% / 98.34% |
+| Any-hit Recall@5 / @10 / @20 | 96.6% / 98.8% / 100.0% |
+| MRR | 88.85% |
+| NDCG@10 | 87.91% |
+| Mean search time | 3.39 ms |
+
+Source report: [`retrieval-longmemeval-500-2026-10-15-v0.6.0-b204b7e-working-tree.json`](https://github.com/RooAGI/Membrick/blob/main/comparison/results/retrieval-longmemeval-500-2026-10-15-v0.6.0-b204b7e-working-tree.json).
+<!-- END GENERATED LONGMEMEVAL-S 500-QUESTION HEADLINE -->
+
+`Fractional Recall@k` is the average fraction of all correct answer sessions recovered in the top *k*. `Any-hit Recall@k` counts a query as successful when any correct answer session appears in the top *k*.
+
+Search latency measures the `MemoryService::search` call and excludes indexing
+the question's haystack. The older published 13.0 ms figure used a different
+timing scope and is not directly comparable. See the
+[latest 500-question report and benchmark details](docs/benchmark-results.md).
+
+The repository keeps the dataset downloader, production-style benchmark binary, shared AgentMemory scorer, comparison workflow, and temporal-reasoning experiment harnesses so results can be reproduced and changes can be evaluated without silently changing the query path.
+
+See [benchmark methodology](docs/benchmark.md), [benchmark results](docs/benchmark-results.md), and [comparison methodology](docs/comparison.md).
+
+### Latest segmented-index comparison
+
+The v0.6.2 segmented comparison uses all 500 LongMemEval-S questions, Tantivy
+0.25.0, and heuristic NER. It compares the server-default `LocalDistinctiveness`
+router with the experimental `coverage-local` router. Both runs use fixed top-5
+and adaptive expansion up to 12; the server default remains fixed top-3.
+Timings are direct-index measurements and exclude haystack indexing.
+
+| Router | Mode | Any-hit @5 | Any-hit @10 | Fractional @5 | MRR | Mean query latency |
+|---|---|---:|---:|---:|---:|---:|
+| LocalDistinctiveness | Fixed top-3 (server default) | 88.2% | 88.2% | 75.21% | 0.854 | 3.23 ms |
+| LocalDistinctiveness | Fixed top-5 | 92.0% | 92.0% | 82.38% | 0.874 | 4.93 ms |
+| LocalDistinctiveness | Adaptive 5→12, enriched + reranked | 94.0% | 95.2% | 85.35% | 0.872 | 48.55 ms |
+| LocalDistinctiveness | Temporal route fused with all segments | 95.0% | 98.2% | 87.25% | 0.887 | 51.93 ms |
+| coverage-local | Fixed top-3 | 92.6% | 92.6% | 81.51% | 0.887 | 3.82 ms |
+| coverage-local | Fixed top-5 | 94.2% | 94.2% | 86.84% | 0.887 | 11.99 ms |
+| coverage-local | Adaptive 5→12, enriched + reranked | 94.8% | 96.4% | 87.06% | 0.889 | 11.84 ms |
+| coverage-local | Temporal route fused with all segments | **96.2%** | **98.4%** | **89.73%** | **0.895** | 94.58 ms |
+| No router | All segments | 95.8% | 98.0% | 88.92% | 0.892 | — |
+| Single-index control | Global | 95.8% | 98.0% | **88.94%** | 0.885 | 15.00 ms |
+
+The October 5 README value of 86.77% Fractional Recall@5 came from an older
+`coverage-local` run; the latest `coverage-local` rerun is 86.84%. On the
+server-default router, fixed top-5 scored 82.38%. The fused `coverage-local`
+route had the highest retrieval scores in this comparison, with higher mean
+latency. Latency is sensitive to run conditions, so treat it as diagnostic.
+These direct-index timings are not comparable to the standalone MemoryService
+timing above. Dataset SHA-256:
+`08d8dad4be43ee2049a22ff5674eb86725d0ce5ff434cde2627e5e8e7e117894`. See the
+[benchmark results](docs/benchmark-results.md) and
+[segmented-index design](docs/distributed-segment-index.md). Full report:
+[`LocalDistinctiveness`](comparison/results/segment-longmemeval-500-2026-10-16-v0.6.2-db03d0b8-local.json.gz) ·
+[`coverage-local`](comparison/results/segment-longmemeval-500-2026-10-16-v0.6.2-db03d0b8-coverage-local.json.gz).
+
+<details>
+<summary><strong>Experimental rust-bert POS/NER branch</strong></summary>
+
+<br>
+
+An experimental model-backed POS/NER branch has also reached higher retrieval metrics, but it is intentionally kept separate from the audited heuristic release dependency graph. See the benchmark documentation for its results and conditions.
+
+</details>
+
+### Integration smoke measurements
+
+The repository also includes reproducible Claude Code and Codex replay/performance tests. These are diagnostic one-run measurements, **not universal performance guarantees**.
+
+| Provider / arm | Continuation | Input tokens | Tool calls | Scenario recall | Hook time |
+|---|---:|---:|---:|---:|---:|
+| Claude native memory | 22.47 s | 123,536 | 4 | 2/3 | 0 ms |
+| Claude Membrick only | 7.05 s | 15,914 | 0 | 3/3 | 1.40 s |
+| Codex native memory | 38.13 s | 151,000 | 5 | 2/3 | 0 ms |
+| Codex Membrick only | 18.53 s | 62,478 | 2 | 2/3 | 1.33 s |
+
+Read the full conditions and limitations:
+
+- [Claude Code performance tests](docs/claude-code-performance-tests.md)
+- [Codex performance tests](docs/codex-performance-tests.md)
+- [Comparison methodology](docs/comparison.md)
+- [Session metrics](metrics/README.md)
+
+---
+
+## What Membrick can do
+
+- Recover the right past session or project note when an agent needs context
+- Rank current evidence ahead of superseded guidance
+- Infer simple chronological configuration updates inside an established semantic domain
+- Preserve historical evidence for historical questions
+- Resolve relative-time queries against an explicit reference date when one is available
+- Catch contradictions before they spread
+- Detect terminology drift across documents
+- Find orphaned or weakly linked pages
+- Query facts, entities, symbols, ownership, and time
+- Build review packets from changed files and related semantic context
+- Feed grounded context into an LLM instead of raw text blobs
+- Keep agent memory inspectable and local to the project
+
+---
+
+## How it works
+
+Membrick treats project memory as more than a bag of text.
+
+```text
+Sessions · docs · code · traces
+            │
+            ▼
+        1. Ingest
+            │
+            ▼
+ Facts · entities · symbols · time
+            │
+            ▼
+      2. Understand
+            │
+            ▼
+ Links · ownership · supersession
+            │
+            ▼
+       3. Connect
+            │
+            ▼
+ Ranked · sourced · current context
+            │
+            ▼
+       4. Retrieve
+```
+
+Under the hood, Membrick builds a lexical index plus sparse entity/term tables and overlays graph structure for links, symbols, ownership, semantic relations, and time.
+
+A single prepared-query path owns query analysis, augmented search text, temporal context, routing intent, reference-clock handling, semantic suppression, and provenance annotation. The CLI and `IndexStore` use the same semantic/temporal query policy so current-state behavior does not depend on which high-level entry point you call.
+
+The same corpus model powers review-oriented checks such as missing cross-references, orphan pages, low-confidence claims, stale knowledge, and semantic drift.
+
+For implementation details, see:
+
+- [Chunk strategy](docs/chunk-strategy.md)
+- [Lexical data](docs/lexical-data.md)
+- [Artifact indexing](docs/artifact-indexing.md)
+- [Shared integration architecture](src/integrations/README.md)
+
+---
+
+## Use Membrick from your stack
+
+### CLI
+
+```bash
+membrick query "what is the current retry policy?" /path/to/repo
+```
+
+### Docker / HTTP
+
+```bash
+export SERVER_TOKEN=local-dev-token
+docker compose up --build -d
+curl http://127.0.0.1:8080/health
+```
+
+See the [HTTP server guide](docs/server.md).
+
+### Python
+
+Install the PyPI package to get both the Python `MemoryService` API and the
+Rust `membrick` CLI on supported platforms:
+
+```bash
+pipx install membrick
+membrick install codex .
+```
+
+For development from this checkout, build the optional Python extension with
+`uv` and `maturin`:
+
+```bash
+uv venv --python 3.10
+source .venv/bin/activate
+uv pip install "maturin>=1.9.4,<2"
+maturin develop --release --uv
+```
+
+To build a distributable wheel instead, run `maturin build --release`; the
+wheel is written under `target/wheels/`.
+
+```python
+import membrick
+
+memory = membrick.Memory(path="./memory-index")
+memory.add(
+    "request-1",
+    "user-1",
+    "session-1",
+    [{"role": "user", "content": "Docker runs on Ubuntu hosts"}],
+)
+print(memory.search("docker ubuntu", "user-1", 5))
+
+# Use the same API against a running membrick server:
+# NOTE: base_url must be passed by keyword. A positional first argument
+# is `path` and would silently create a local index instead of connecting.
+remote = membrick.Memory(base_url="http://127.0.0.1:8080", api_key="local-token")
+print(remote.search("docker ubuntu", "user-1", 5))
+```
+
+### Rust
+
+`MemoryService` is the only public memory access API. Request, response, document,
+and configuration types are public; stores, indexes, snapshots, builders, and
+persistence modules are internal. See [the API migration guide](docs/memory-service-api.md).
+
+```rust
+use membrick::{MemoryService, PipelineOptions, SourceDocument};
+
+fn main() -> anyhow::Result<()> {
+    let mut memory = MemoryService::in_memory(PipelineOptions::default());
+
+    memory.upsert(SourceDocument::with_stable_doc_id_from_source(
+        "docs/install.md".to_string(),
+        "Docker install guide for Linux hosts".to_string(),
+        "docker install".to_string(),
+        None,
+        vec!["Overview".to_string()],
+        vec![],
+        None,
+        None,
+    ));
+
+    memory.refresh()?;
+    let results = memory.search_with_filters("docker install", "workspace", None, 5, &Default::default())?;
+    println!("{}", serde_json::to_string_pretty(&results)?);
+    Ok(())
+}
+```
+
+See [docs/quickstart.md](docs/quickstart.md) for complete examples.
+
+---
+
+## When is Membrick a good fit?
+
+Membrick is especially useful when you maintain:
+
+- Long-running agent memory over conversations, notes, and decisions
+- Markdown knowledge bases with many cross-links
+- Internal documentation where terminology and decisions drift over time
+- Codebases where symbols, ownership, usage, and review context matter
+- Fast-changing corpora where freshness matters as much as relevance
+
+If your only requirement is simple keyword search over a static set of documents, Membrick is probably more machinery than you need.
+
+---
+
+## Project status
+
+Membrick is under active development. The release query path uses the heuristic backend; experimental model-backed query semantics remain separate from the audited release dependency graph.
+
+The security audit workflow runs `cargo audit`. Binary persistence uses
+`oxicode`, and the lexical index uses Tantivy 0.25 to preserve measured recall.
+Current audits report only
+transitive Tantivy warnings in `lru` and `memmap2`; these are tracked for
+upstream fixes.
+
+Issues, benchmark reproductions, integration feedback, and contributions are welcome.
+
+- [Open an issue](https://github.com/RooAGI/Membrick/issues)
+- [Join a discussion](https://github.com/RooAGI/Membrick/discussions)
+- [Read the documentation](https://rooagi.github.io/Membrick/)
+
+## License
+
+Apache-2.0

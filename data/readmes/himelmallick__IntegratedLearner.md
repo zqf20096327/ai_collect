@@ -1,0 +1,279 @@
+# IntegratedLearner - Integrated machine learning for multi-omics prediction and classification
+
+The repository houses the **`IntegratedLearner`** R package for multi-omics prediction and classification. Binary, multiclass, continuous, and survival outcomes are supported through a single high-level interface.
+
+## Dependencies
+
+`IntegratedLearner` requires the following `R` package: `devtools` (for installation only). Please install it before installing `IntegratedLearner`, which can be done as follows (execute from within a fresh R session):
+
+```r
+install.packages("devtools")
+library(devtools)
+```
+
+Optional dependency for BART workflows:
+- `sl_bart` and BART uncertainty utilities rely on `bartMachine` and a working Java setup.
+- If Java/BART are unavailable, use another continuous/binary learner (`SL.randomForest` is a standard SuperLearner alternative) or a native multiclass learner for multiclass outcomes.
+
+## Installation
+
+Once the dependencies are installed, `IntegratedLearner` can be loaded using the following command:
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("IntegratedLearner")
+```
+
+For the development version, use:
+
+```r
+BiocManager::install("himelmallick/IntegratedLearner")
+```
+
+## Features
+* Uses `MultiAssayExperiment` (`MAE`) as the primary Bioconductor-facing input mode, while retaining `PCL` as a legacy compatibility mode
+* Supports binary, multiclass, continuous, and survival outcomes
+* Supports custom outcome/subject column names via `outcome_col` and `subject_id_col`
+* Supports early and late fusion in one interface
+* Integrates with [SuperLearner](https://cran.r-project.org/web/packages/SuperLearner/index.html) for binary/continuous models, using IntegratedLearner `sl_*` wrappers by default (standard SuperLearner `SL.*` learners are also supported)
+* Includes a native multiclass backend with multiclass learners (`glmnet`, `randomforest`, `ranger`, `xgboost`, `mbart`, `multinom`)
+* Uses a native BioC-friendly survival backend (`ILsurv`) for `surv.*` models
+* Supports optional feature filtering (`filter_method`, `filter_pct`) and supervised screening (`run_screening`, `screen_pct`)
+* Applies screening in a fold-safe way (fit on fold-training only; apply to fold-validation) to avoid leakage
+* Visualization using built-in plotting
+* Built-in layer weights and feature-importance outputs for interpretability
+* Nested cross-validation to estimate prediction performance
+* Multicore and multinode parallelization for scalability (**Not yet available**)
+
+## Quickstart Guide
+
+The package vignette demonstrates binary, multiclass, continuous, and survival workflows using `MultiAssayExperiment` as the primary interface, with `PCL` retained for backward compatibility.
+
+## Background
+
+**`IntegratedLearner`** provides an integrated machine learning framework to 1) consolidate predictions by borrowing information across several longitudinal and cross-sectional omics data layers, 2) decipher the mechanistic role of individual omics features that can potentially lead to new sets of testable hypotheses, and 3) quantify uncertainty of the integration process. Two integration paradigms are supported: early and late.
+
+Within a Bioconductor workflow, the intended pattern is: assemble aligned assays in `MultiAssayExperiment`, inspect the object with `experiments()`, `assay()`, `colData()`, and `sampleMap()`, fit `IntegratedLearner()`, and then pass predictions, layer weights, and feature summaries into downstream interpretation or visualization steps. IntegratedLearner focuses on supervised multi-omics prediction/integration rather than general container management or unsupervised integration.
+
+For binary/continuous outcomes, late fusion proceeds by 1) fitting a machine learning algorithm (`base_learner`) per layer and 2) combining layer-wise cross-validated predictions using a meta model (`meta_learner`). A common default is [BART](https://arxiv.org/abs/0806.3286) as base learner (`base_learner = "sl_bart"`) with `sl_nnls_auc` as the meta-learner.
+
+For multiclass outcomes (`family = binomial()` with more than two outcome classes), `IntegratedLearner` dispatches to a native multiclass backend that performs multiclass probability modeling at layer, stacked, and concatenated levels. Optional filtering and screening are supported via `filter_method`/`filter_pct` and `run_screening`/`screen_pct`.
+
+For survival outcomes, `IntegratedLearner` dispatches to the native survival engine (`ILsurv`) with configurable late-fusion weighting (`COX`/`IBS`). Supported survival learners include Cox, penalized Cox, tree ensembles, boosting, and XGBoost-based survival variants (see full list below).
+
+Naming conventions:
+
+* Use IntegratedLearner's snake_case `sl_*` wrappers for the documented defaults and package-provided learners, such as `sl_bart`, `sl_lasso`, and `sl_nnls_auc`.
+* Standard `SuperLearner` learners remain available with their upstream names (`SL.randomForest`, `SL.glmnet`).
+* Multiclass learners use native IDs without either prefix, such as `randomforest`, `ranger`, `xgboost`, `glmnet`, `mbart`, and `multinom`.
+
+Feature workflow (when enabled):
+1. Filtering happens first (`filter_method`, `filter_pct`) on the training feature table.
+2. Screening happens second (`run_screening = TRUE`, `screen_pct`) within CV folds and again for final model fit.
+
+## Basic Usage
+
+Recommended MAE-first Bioconductor workflow:
+
+```r
+data("PRISM_MAE", package = "IntegratedLearner")
+
+mae_train <- PRISM_MAE
+
+names(MultiAssayExperiment::experiments(mae_train))
+head(as.data.frame(S4Vectors::DataFrame(MultiAssayExperiment::colData(mae_train)))[, 1:4])
+head(MultiAssayExperiment::sampleMap(mae_train))
+
+se <- MultiAssayExperiment::experiments(mae_train)[[1]]
+SummarizedExperiment::assayNames(se)
+```
+
+Then fit the model directly from the MAE:
+
+```r
+# MAE mode (binary/continuous)
+IntegratedLearner(
+  MAE_train = mae_train,
+  experiment = c("metabolome", "species"),
+  assay.type = c("abundance", "abundance"),
+  outcome_col = "Y",
+  subject_id_col = "subjectID",
+  folds = 5,
+  base_learner = "sl_bart",
+  meta_learner = "sl_nnls_auc",
+  filter_method = "prevalence",
+  filter_pct = 40,
+  run_screening = TRUE,
+  screen_pct = 30,
+  family = binomial()
+)
+
+# MAE mode (multiclass)
+IntegratedLearner(
+  MAE_train = mae_train,
+  experiment = c("metabolome", "species"),
+  assay.type = c("abundance", "abundance"),
+  outcome_col = "diseaseCat",   # column in colData(MAE_train)
+  subject_id_col = "sample_id", # subject/sample ID column in colData(MAE_train)
+  folds = 5,
+  base_learner = "randomforest",
+  meta_learner = "randomforest",
+  filter_method = "variance",
+  filter_pct = 50,
+  run_screening = TRUE,
+  screen_pct = 25,
+  family = binomial()
+)
+
+# MAE mode (survival)
+IntegratedLearner(
+  MAE_train = mae_train,
+  MAE_valid = mae_valid,        # optional
+  experiment = c("taxonomy", "pathway"),
+  assay.type = c("relative_abundance", "pathway_abundance"),
+  outcome_col = "surv_outcome", # survival outcome column in colData(MAE_train)
+  subject_id_col = "patient_id",
+  folds = 5,
+  base_learner = "surv.coxph",
+  filter_method = "variance",
+  filter_pct = 40,
+  run_screening = TRUE,
+  screen_pct = 25
+)
+
+# MAE mode (survival with custom metadata column names)
+IntegratedLearner(
+  MAE_train = mae_train,
+  MAE_valid = mae_valid,        # optional
+  experiment = c("taxonomy", "pathway"),
+  assay.type = c("relative_abundance", "pathway_abundance"),
+  outcome_col = "time_to_event_obj",
+  subject_id_col = "participant_id",
+  folds = 5,
+  base_learner = "surv.coxph"
+)
+
+# Legacy PCL mode remains supported for backward compatibility
+IntegratedLearner(
+  PCL_train = pcl_train,
+  PCL_valid = pcl_valid,        # optional
+  outcome_col = "disease_status",
+  subject_id_col = "participant_id",
+  folds = 5,
+  base_learner = "sl_bart",
+  meta_learner = "sl_nnls_auc",
+  filter_method = "prevalence",
+  filter_pct = 40,
+  run_screening = TRUE,
+  screen_pct = 30,
+  family = binomial()
+)
+```
+
+Custom metadata names are optional. If omitted, defaults remain `outcome_col = "Y"` and `subject_id_col = "subjectID"` (backward compatible).
+### Arguments
+
+* `MAE_train` / `MAE_valid`: primary `MultiAssayExperiment` inputs for training and optional validation.
+* `PCL_train` / `PCL_valid`: legacy list inputs (`feature_table`, `sample_metadata`, `feature_metadata`) retained for backward compatibility.
+* `experiment`: Selected MAE experiment names/indices (optional; defaults to all in `MAE_train`).
+* `assay.type`: Assay name per selected MAE experiment.
+* `outcome_col`: Outcome column name in `sample_metadata` / `colData`. Default is `"Y"`.
+* `subject_id_col`: Subject identifier column name in `sample_metadata` / `colData`. Default is `"subjectID"`.
+* `na.rm`: Logical; drop features containing missing values after extraction/prep.
+* `folds`: Integer. Number of folds for cross-validation. Default is `5`.
+* `seed`: Integer seed for reproducibility. Default is `1234`.
+* `base_learner`: Binary/continuous uses IntegratedLearner `sl_*` wrappers by default (standard SuperLearner `SL.*` learners are also supported); multiclass uses native multiclass learners; survival uses supported `surv.*` learners. Not used when `run_intermediate = TRUE`.
+* `base_screener`: Deprecated. Kept for backward compatibility.
+* `filter_method`: Optional feature filtering method (`"prevalence"` or `"variance"`).
+* `filter_pct`: Optional retention percentage in `(0,100]` for filtering.
+* `run_screening`: Logical flag to enable supervised screening (`FALSE` by default).
+* `screen_pct`: Retention percentage in `(0,100]` for screening.
+* `prevalence_pct`: Deprecated alias of `filter_pct` when `filter_method = "prevalence"`.
+* `meta_learner`: Meta learner for non-survival late fusion. Defaults to `"sl_nnls_auc"` in binary/continuous; multiclass supports native learners (for example `glmnet`, `randomforest`, `xgboost`). Not used when `run_intermediate = TRUE`.
+* `run_concat`: Logical; include early-fusion (concatenated) model for non-survival.
+* `run_stacked`: Logical; include late-fusion stacked model for non-survival.
+* `run_intermediate`: Logical; run standalone direct cooperative learning via the `multiview` package. Default is `FALSE`. When `TRUE`, early fusion, late fusion, single-layer base learners, and supervised screening are skipped.
+* `cooperative_rho`: Non-negative agreement-penalty values to evaluate for cooperative learning. Default is `c(0, 0.1, 0.25, 0.5, 1)`.
+* `cooperative_s`: Penalty value used for cooperative predictions. Default is `"lambda.min"`.
+* `cooperative_type_measure`: Optional `multiview` CV loss/score. If `NULL`, IL uses an outcome-appropriate default.
+* `drop_poor_performing_layers`: If `TRUE`, layers with poor single-layer performance are removed from early and late fusion only (`AUC < 0.5` for binary, `R2 < 0.5` for continuous, `C-index < 0.5` for survival). Single-layer outputs are still retained. Ignored when `run_intermediate = TRUE`.
+* `family`: `gaussian()` (continuous), `binomial()` (binary or multiclass), or survival family/metadata.
+* `verbose`: Logical progress flag.
+* `...`: Additional backend parameters. For survival, includes options such as `do_early_fusion` and learner-specific hyperparameters (or `model_args`).
+
+Automatic outcome coercion:
+* `gaussian()`: outcome is coerced to numeric (errors if conversion fails).
+* binary `binomial()`: two classes are mapped internally to `{0,1}`.
+* multiclass `binomial()`: class labels are retained.
+
+Supported model families:
+
+* Binary/continuous non-survival: IntegratedLearner `sl_*` wrappers (or any available standard SuperLearner `SL.*` model).
+* Multiclass non-survival: `glmnet`, `randomforest`, `ranger`, `xgboost`, `mbart`, `multinom`.
+* Survival: `surv.coxph`, `surv.glmnet`, `surv.ranger`, `surv.ranger.extratrees`, `surv.ranger.maxstat`, `surv.ranger.C`, `surv.rfsrc`, `surv.coxboost`, `surv.gbm`, `surv.xgboost.cox`, `surv.xgboost.aft`, `surv.mboost`, `surv.bart`.
+* Direct cooperative learning: standalone `multiview` feature-level fusion for continuous, binary, and survival outcomes. Multiclass cooperative learning is not supported.
+
+Supported fusion modules:
+
+* Continuous/Binary: either standard IL mode with single-layer + early (`run_concat`) + late (`run_stacked`), or standalone cooperative mode (`run_intermediate`).
+* Multiclass: single-layer + early (`run_concat`) + late (`run_stacked`). `run_intermediate` is ignored with a message.
+* Survival: either standard IL mode with single-layer + early (`do_early_fusion`) + late weighted fusion with both `COX` and `IBS`, or standalone cooperative mode (`run_intermediate`).
+
+#### The IntegratedLearner workflow
+
+![Flow Chart](images/Flowchart.png)
+
+#### Value
+
+For continuous/binary fits (`IL_conbin` path):
+
+* `SL_fits`: Fitted SuperLearner objects (layer-wise, stacked, concatenated as applicable in standard IL mode).
+* `model_fits`: Extracted learner objects. In standalone cooperative mode this contains only `model_fits$model_cooperative`.
+* `X_train_layers`, `Y_train`, `yhat.train`: training inputs and predictions. In standalone cooperative mode, `yhat.train` contains only the `cooperative` column.
+* `X_test_layers`, `Y_test`, `yhat.test`: validation inputs and predictions (if validation provided).
+* `weights`: Layer weights in stacked model (`meta_learner = "sl_nnls_auc"` and `run_stacked = TRUE`).
+* `model_fits$model_cooperative`, `yhat.train[, "cooperative"]`, and `yhat.test[, "cooperative"]`: standalone cooperative `multiview` model and predictions when `run_intermediate = TRUE`.
+* `cooperative_feature_importance`, `cooperative_feature_importance_by_layer`, `cooperative_feature_importance_signed`, and `cooperative_feature_importance_signed_by_layer`: coefficient-based feature-importance scores from the selected cooperative `multiview` model when `run_intermediate = TRUE`.
+* `AUC.train`/`AUC.test` (binomial) or `R2.train`/`R2.test` (gaussian).
+* `feature_importance_signed`: Global signed feature importance.
+* `feature_importance_signed_by_layer`: Per-layer signed feature importance.
+
+For multiclass fits (`IL_multiclass` path):
+
+* `model_fits`: Layer-wise, stacked, and concatenated multiclass model objects.
+* `prob.train` / `prob.test`: Per-model class-probability matrices.
+* `class.train` / `class.test`: Predicted class labels.
+* `metrics.train` / `metrics.test`: Accuracy, balanced accuracy, and multiclass log-loss.
+* `selected_features_by_layer`, `selected_features_concat`: Features retained by screening (when used).
+* `feature_importance_signed_by_class`: Signed importance by class.
+
+For survival fits (`ILsurv` path):
+
+* `train_out$single`: Single-layer metrics in standard IL survival mode.
+* `train_out$early`: Early-fusion metrics in standard IL survival mode (if enabled).
+* `train_out$late$IBS` and `train_out$late$COX`: Late-fusion metrics and learned layer weights for both survival fusion strategies in standard IL survival mode.
+* `train_out$single$feature_importance_signed_by_layer`: Per-layer signed survival feature-importance scores from the single-layer survival base models.
+* `train_out$cooperative` / `valid_out$cooperative`: standalone cooperative `multiview` Cox model metrics and risk scores when `run_intermediate = TRUE`.
+* `train_out$cooperative$feature_importance`, `train_out$cooperative$feature_importance_by_layer`, `train_out$cooperative$feature_importance_signed`, and `train_out$cooperative$feature_importance_signed_by_layer`: coefficient-based survival feature-importance scores from the selected cooperative `multiview` Cox model when `run_intermediate = TRUE`.
+* `valid_out$...`: Validation analogs of single/early/late outputs (if validation provided).
+* `train_out$late$IBS$combined_importance`, `train_out$late$COX$combined_importance`, and (if available) `train_out$early$combined_importance`: survival feature-importance outputs.
+
+Citation
+--------
+
+If you use `IntegratedLearner` in your work, please cite the following:
+
+Mallick H et al. (2024). [An Integrated Bayesian Framework for Multi-omics Prediction and Classification](https://onlinelibrary.wiley.com/doi/10.1002/sim.9953). *Statistics in Medicine* 43(5):983–1002.
+
+Issues
+------
+
+We are happy to troubleshoot any issues with the package. Please contact the maintainer via email or [open an issue](https://github.com/himelmallick/IntegratedLearner/issues) in the GitHub repository.
+
+Future Release
+--------------
+
+We are currently in the process of submitting
+**`IntegratedLearner`** to [Bioconductor](https://www.bioconductor.org/). Likewise, please keep an eye out for a future release of **`IntegratedLearner`** as an R/Bioconductor package while this repository remains the development version of the package.

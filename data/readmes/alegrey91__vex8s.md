@@ -1,0 +1,129 @@
+# Vex8s
+
+![vex8s](./vex8s.png)
+(this logo is not AI generated)
+
+Vex8s generates [VEX](https://www.ntia.gov/files/ntia/publications/vex_one-page_summary.pdf) documents by correlating container vulnerabilities with Kubernetes settings to determine which CVEs are actually exploitable in your cluster.
+
+Please note, this is an experimental project. Things might change quickly.
+
+## How It Works
+
+The project aims to assess the exploitability of known CVEs within Kubernetes workloads by combining vulnerability classification and [`securityContext`](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) analysis.
+
+![vex8s-logic](./vex8s-logic.png)
+
+It is based on the following concept:
+
+* Each CVE is categorized into one or more vulnerability classes ([CWE](https://cwe.mitre.org/index.html))
+* CVE description is processed by an embedded ML [model](https://github.com/alegrey91/vex8s-model) to predict its [*exploitation category*](https://github.com/alegrey91/vex8s-model?tab=readme-ov-file#classification).
+* Both the CWEs and the predicted *exploitation categories* are combined to determine if the CVE is mitigable.
+* Each *exploitation category*, maps to a set of Kubernetes settings that can block or reduce the impact.
+* By parsing a Kubernetes manifest, we can inspect the container settings to evaluate whether the relevant settings are in place.
+* Combining both analyses allows the system to determine if a CVE is exploitable in a given workload configuration.
+* If it results in a CVE mitigation, we add this to the final VEX document.
+
+For a more in-depth reading you can consult this paper: [Environment-Aware Vulnerability Suppression Using Kubernetes Security Contexts and VEX](./docs/environmet_aware_vulnerability_suppression_using_kubernetes_security_context_and_vex.pdf)
+
+## Installation
+
+You can download the latest binary from the [release](https://github.com/alegrey91/vex8s/releases) page.
+
+Or you can build it manually:
+
+```
+make build
+```
+
+## Usage
+
+`vex8s` currently supports 2 ways to generate VEX documents:
+
+* **passive-mode**: passing an already generated vulnerability report created by `trivy` or `grype`.
+
+* **active-mode**: actively scanning the images using `trivy` or `grype` engines and then gereating the document based on the results.
+
+### Passive mode (recommended)
+
+Using `trivy`:
+
+```
+# generate vulnerability report.
+trivy image --format json --output nginx.trivy.json nginx:1.21.0
+
+# generate VEX document by processing vulnerability report.
+vex8s generate --manifest examples/nginx.yaml --report nginx.trivy.json --output nginx.vex.json
+
+# scan again with VEX document to suppress vulnerabilities.
+trivy image --vex nginx.vex.json --show-suppressed nginx:1.21.0
+```
+
+The same can be applied using `grype`:
+
+```
+# generate sbom report.
+grype --output cyclonedx-json --file nginx.grype.json nginx:1.21.0
+
+# generate vulnerability report.
+grype sbom:./nginx.grype.json --output json --file nginx.grype-vr.json
+
+# generate VEX document by processing vulnerability report.
+vex8s generate --manifest examples/nginx.yaml --report nginx.grype-vr.json --output nginx.vex.json
+
+# scan sbom with VEX document to suppress vulnerabilities.
+grype sbom:./nginx.grype.json --output table --vex nginx.vex.json --show-suppressed
+```
+
+### Active mode
+
+Using `trivy`:
+
+```
+# scan the image and automatically generate VEX document.
+vex8s generate --manifest examples/nginx.yaml --scan.engine trivy --output nginx.vex.json
+
+# scan again with VEX document to suppress vulnerabilities.
+trivy image --vex nginx.vex.json --show-suppressed nginx:1.21.0
+```
+
+The same can be applied using `grype`:
+
+```
+# generate sbom report.
+grype --output cyclonedx-json --file nginx.grype.json nginx:1.21.0
+
+# scan the image and automatically generate VEX document.
+vex8s generate --manifest examples/nginx.yaml --scan.engine grype --output nginx.vex.json
+
+# scan sbom with VEX document to suppress vulnerabilities.
+grype sbom:./nginx.grype.json --output table --vex nginx.vex.json --show-suppressed
+```
+
+### Classifiers
+
+Each CVE is classified into one or more *exploitation classes*, which drive the
+mitigation decision. `vex8s` supports three classifier engines via `--classifier`:
+
+* **`embedded`** (default): an offline ONNX ML [model](https://github.com/alegrey91/vex8s-model)
+  bundled in the binary. No network access required.
+* **`gemini`**: uses Google's Gemini LLM to classify the CVE description.
+  Requires the `GEMINI_API_KEY` environment variable (optionally `GEMINI_MODEL`).
+* **`ollama`**: uses a locally running [Ollama](https://ollama.com) server to
+  classify the CVE description. Pull a model such
+  as `qwen2.5:3b-instruct` first (optionally set `OLLAMA_HOST` / `OLLAMA_MODEL`).
+
+```
+export OLLAMA_HOST="http://localhost:11434"
+export OLLAMA_MODEL="qwen2.5:3b-instruct"
+
+vex8s generate --manifest examples/nginx.yaml --report nginx.trivy.json \
+  --output nginx.vex.json --classifier ollama
+```
+
+See the [documentation](./docs), in particular the
+[User Guide](./docs/user-guide.md) for a full walkthrough, the Gemini and Ollama
+classifier setup, and a complete flag reference.
+
+## References
+
+This project was inspired by Akihiro Suda's project [vexllm](https://github.com/AkihiroSuda/vexllm).

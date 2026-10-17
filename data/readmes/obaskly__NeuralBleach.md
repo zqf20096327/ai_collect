@@ -1,0 +1,98 @@
+# 🧪 NeuralBleach
+
+> **"If the pixels can dream, they can be made to forget."**
+
+**NeuralBleach** is a proof-of-concept utility for bypassing frequency-domain watermarking. NeuralBleach leverages a generative diffusion pipeline to overwrite hidden signatures by regenerating high-frequency noise. Unlike standard denoising tools, it employs edge-detection (ControlNet) to maintain semantic integrity during the reconstruction process.
+
+---
+
+## Features
+
+### 1. The "Launder" Protocol (Signal Disruption)
+Uses **Realistic Vision V5.1** (a photorealistic finetune of Stable Diffusion) to "re-dream" the image pixels.
+* **Why:** Robust watermarks rely on specific pixel-grid coherence. By regenerating the image with a `strength` of 0.20 - 0.25, we force a new noise distribution that overwrites the original hidden signal without the "potato face" distortion of older models.
+
+### 2. ControlNet "Structure Lock"
+Standard AI tools destroy text and small details. NeuralBleach uses **ControlNet (Canny Edge Detection)** to create a "wireframe" of your image before processing.
+* **Result:** The AI is forced to paint *inside the lines*. Text remains readable, logos stay sharp, and faces maintain their identity, even while the invisible pixel data is scrubbed.
+
+### 3. The "Analog" Humanizer (Visual Spoofing)
+Detectors don't just look for code; they look for "digital perfection." This module injects physical camera imperfections:
+* **Chromatic Aberration:** Micro-shifts Red/Blue channels at the edges to simulate lens light refraction.
+* **Film Grain Simulation:** Adds ISO-400 equivalent luminance noise to break the "AI smoothness."
+
+### 4. Metadata Nuke
+Automatically strips all **EXIF**, **XMP**, and **C2PA** (Content Credentials) headers, ensuring no digital signature remains in the file container.
+
+---
+
+## Quick Start (Google Colab)
+
+**Don't have a GPU?** Run Neural-Bleach in the cloud for free.
+
+1. Open [Google Colab](https://colab.research.google.com/).
+2. Change Runtime to **T4 GPU**.
+3. Copy/Paste the script from `neural_bleach.colab`.
+4. Run and upload your image.
+
+---
+
+## 🛠️ Local Installation
+
+If you have a GPU (NVIDIA RTX 3060 or better recommended), you can run this locally.
+
+### Prerequisites
+
+```bash
+pip install -r requirements.txt
+
+```
+
+### Usage
+
+```python
+# Basic Usage (Default Strength 0.20)
+python neural_bleach.py image.png
+
+# Aggressive Mode (If watermark persists)
+python neural_bleach.py image.png --strength 0.25 --out output_image.jpg
+
+```
+
+---
+
+## Technical Pipeline
+
+| Stage | Process | Technical Goal |
+| --- | --- | --- |
+| **0. Pre-Processing** | `LANCZOS` Upscale (1.2x) | Increase pixel density for better facial reconstruction. |
+| **1. Wireframing** | `OpenCV Canny` | Create a structural map to lock text & edges. |
+| **2. Laundering** | `Realistic Vision` + `ControlNet` | Overwrite frequency-domain watermarks while respecting the wireframe. |
+| **3. Humanization** | `np.roll` + `Gaussian Noise` | Defeat visual "smoothness" classifiers. |
+| **4. Sterilization** | `Image.save(quality=95)` | Strip C2PA/Metadata & Header signatures. |
+
+---
+
+## ⚠️ Disclaimer
+
+**Educational Purposes Only.**
+This tool is intended for cybersecurity research, CTF (Capture The Flag) competitions, and studying the robustness of digital watermarking technologies. The author is not responsible for misuse of this tool to bypass copyright protection or violate Terms of Service of generative AI platforms.
+
+---
+
+## Example
+
+| NanoBanana Pro | NeuralBleach |
+| --- | --- |
+| <img width="1024" height="936" alt="nanobananagenerated" src="https://github.com/user-attachments/assets/c3036b63-c13b-42b8-ba1b-1ab3fec4ec62" /> | ![final_clean_ultimate](https://github.com/user-attachments/assets/3793dfa0-c330-4382-a67a-c9decec52538) |
+| <img width="984" height="593" alt="test1" src="https://github.com/user-attachments/assets/605e48cb-98d5-46de-b640-25ed8b8487e3" /> |<img width="969" height="615" alt="test2" src="https://github.com/user-attachments/assets/e2d31b18-38e8-4a6f-bcef-56224b2addc5" /> |
+
+## POC
+
+https://github.com/user-attachments/assets/639432a4-56c5-4f18-91bf-30915d56817e
+
+---
+
+## License
+
+Distributed under the MIT License.

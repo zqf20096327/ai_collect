@@ -1,0 +1,107 @@
+> 🚀 TNY-360 V2 Kits are available in preorders, shipping early december. [Get your kit here](https://store.tny-robotics.com).
+> 
+> The repository will be updated with the V2 files in a couple of days.
+
+![Banner](./Extras/banner.png)
+
+<div align="center">
+
+# TNY-360 - Open-Source Robot Dog
+
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Platform](https://img.shields.io/badge/Platform-ESP32--S3-blue)](https://espressif.com)
+[![Framework](https://img.shields.io/badge/Framework-ESP--IDF-orange)](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/TNY-Robotics/TNY-360)
+
+**The open-source quadruped you can actually *build*, *repair* and *modify* yourself.**
+
+[🌐 Website](https://tny-robotics.com/tny-360) • [📖 Documentation](https://tny-robotics.com/docs/tny-360/) • [💬 Discord](https://discord.gg/XGABkx5A4y) • [☕ Support Us](https://ko-fi.com/tnyrobotics)
+
+</div>
+
+<br />
+
+# 🛠️ Want to build one?
+
+<div align="center">
+
+> ### **[👉 START HERE: The Official Step-by-Step Guide 👈](https://tny-robotics.com/docs/tny-360/build-it)**
+> *From ordering the first screw to assembling the last part, this guide covers it all.*
+
+</div>
+
+<br />
+
+### 🗂️ Quick Links (For Advanced Makers)
+If you know what you are doing and just want the raw files, here is your toolkit:
+
+* 🛒 **[Bill of Materials](https://tny-robotics.com/docs/tny-360/archive/v1/practical-guides/sourcing/)** - What to buy, tools needed, and where to find them. (coming soon for V2)
+* 📐 **[CAD & 3D Files](./CAD)** - Grab the `.STL` and `.3MF` files for your 3D printer. (coming soon for V2)
+* ⚡ **[PCB Designs (Gerbers)](./PCBs)** - Files to order the custom PCBs used in the robot. (coming soon for V2)
+* 🧠 **[ESP32 Firmware](./Firmware)** - The ESP-IDF C++ firmware & drivers powering the robot.
+* 🛠️ **[Servo Modding Tutorial](https://tny-robotics.com/docs/tny-360/archive/v1/practical-guides/sourcing/motors/)** - Learn the Op-Amp trick to get position-feedback on MG996R servos.
+
+## ✨ Features
+
+* 🧬 **Dual-Core Architecture:**<br> A segregated system using the ESP32-S3. Core 1 ("Reflex") runs a strict 200Hz kinematics/control loop, while Core 0 ("Brain") handles WebSockets, UI, and orchestration.
+* 🔄 **Closed-Loop at 200Hz:**<br> We ditched blind PWM. The TNY-360 uses digital MG996R servos modified with a custom **Op-Amp buffer PCB** for noise-free, high-speed position feedback.
+* ⚡ **Zero Cable Spaghetti:**<br> A fully modular hardware ecosystem. Dedicated PCBs (Control, Sensor, Brain, Power, etc.) communicate cleanly via JST cables and low profile pin headers.
+* 🛠️ **Smart Auto-Calibration:**<br> Features mechanical endstops for assembly validation and runtime algorithms that compensate for backlash and actuator latency.
+* 🧩 **STEM & Expansion Ready:**<br> Program the robot using [TNY-Coder](https://github.com/TNY-Robotics/TNY-Coder) (our block-based web app) or build custom hardware modules using the dorsal I2C/Power expansion port.
+
+## ⚙️ Hardware Specs
+
+### 🧠 Core & Power
+* **MCU:** ESP32-S3 N16R8 Module
+* **Power:** 3S LiPo Battery (6x Samsung INR18650-25R)
+* **Monitoring:** INA219 (Voltage/Current sensor)
+
+### 🦵 Actuators
+* **Legs:** 12x MG996R Servos *(Must be modified for analog feedback)*
+* **Head:** 2x ~~SG-90~~ MG90D Micro Servos (Ears)
+* **Driver:** PCA9685 (16-Channel PWM)
+
+### 📡 Sensors & I/O
+* **Vision:** OV2640 Camera Module
+* **Distance:** VL53L0X Time-of-Flight (Lidar)
+* **Orientation:** ~~MPU6050~~ LSM6DS3 6-axis IMU
+* **Display:** ~~SH1106~~ SSD1306 OLED (128x64) 
+* **Audio:** I2S MEMS Microphone + Speaker
+
+---
+
+## 📂 Repository Structure
+
+* `BOM/` — **Bill of Materials.** Detailed lists of all components, PCBs, screws, and cables, with links.
+* `CAD/` — **Hardware Source.** FreeCAD project files and ready-to-print STLs. (coming soon for V2)
+* `PCBs/` — **PCB Designs.** Gerber files, BOMs, and Pick'n'Place for all PCBs. (coming soon for V2)
+* `Firmware/` — **Codebase.** PlatformIO project (C++/ESP-IDF).
+* `Firmware/components/` — **Drivers.** Custom libraries for sensors/actuators.
+
+## ☕ Support the Project
+
+TNY-360 is, and will always be, 100% free and open-source. 
+
+If you love the project, learned something new, or just want to help us build the next generation of affordable robots, consider supporting our R&D! Your tips help us buy prototyping materials (filament, PCBs, burned servos 😅) and keep the servers running.
+
+<a href='https://ko-fi.com/tnyrobotics' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+*(Even if you can't donate, simply starring this repository or sharing it with a friend is already a massive support!)*
+
+## 🤝 Contributing
+
+We love contributions!
+* **Code:** Please follow the ESP-IDF coding style.
+* **Hardware:** Submit PRs with updated FreeCAD files or improvements.
+* Found a bug? [Open an Issue](https://github.com/TNY-Robotics/TNY-360/issues).
+
+## 📄 License & Authors
+
+**TNY-360** is maintained by the [TNY Robotics Team](https://tny-robotics.com).
+
+Licensed under **CC BY-NC-SA 4.0**.<br>
+*You are free to share and adapt this material for non-commercial purposes, as long as you provide attribution and share alike.*
+
+[![CC BY-NC-SA 4.0](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+Need help? Contact us [by mail](mailto:contact@tny-robotics.com) or join our [Discord](https://discord.gg/XGABkx5A4y).

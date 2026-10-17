@@ -1,0 +1,251 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./docs/lowfat_logo_dark.svg">
+    <img src="./docs/lowfat_logo_light.svg" alt="lowfat logo" width="700">
+  </picture>
+</p>
+
+lowfat is a lightweight CLI tool that reduces AI token costs by filtering CLI output and file content before it reaches your agent.
+
+<p align="center">
+  <img src="docs/demo.gif" alt="lowfat demo: condensing verbose git output (diff, log) before it reaches the agent" width="700">
+</p>
+
+### Core focus
+
+- **Lightweight** — Small core single binary, extensible via plugins.
+- **Local-first** — No telemetry; you should own your data.
+- **Composable**  — UNIX-style pipes, mix built-ins and your own custom filters.
+- **User-owned**  — `lowfat history` shows what you ran most and use it as token saving tuning per your usecase.
+
+### Before / after
+
+`git status` at the `full` level — same signal, less noise.
+
+**Before** — raw `git status`:
+
+```
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   crates/lowfat-cli/src/commands/plugin.rs
+	modified:   crates/lowfat-cli/src/main.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	plugins/git/git-compact/samples/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+**After** — `lowfat git status`:
+
+```
+On branch main
+Changes not staged for commit:
+	modified:   crates/lowfat-cli/src/commands/plugin.rs
+	modified:   crates/lowfat-cli/src/main.rs
+Untracked files:
+	plugins/git/git-compact/samples/
+```
+
+Reduction of **raw command output**, measured on the bundled samples
+(`crates/lowfat-plugin/embedded/*/samples/`). Reproduce with
+`cat <sample> | lowfat filter <plugin>/filter.lf --sub=<sub> --level=<level>`:
+
+| command         | `lite` | `full` | `ultra` |
+| --------------- | -----: | -----: | ------: |
+| `git diff`      |   -16% |   -38% |    -96% |
+| `git log`       |   -53% |   -80% |    -91% |
+| `git status`    |   -62% |   -62% |    -74% |
+| `docker ps`     |   -38% |   -38% |    -85% |
+| `docker images` |   -48% |   -58% |    -86% |
+| `ls -la`        |    -2% |   -75% |    -87% |
+
+> These percentages are the reduction of a single command's output, not your end-to-end agent token usage.
+> savings depend on how much of your context is command output
+> and how lossy a level you pick — higher levels drop more, so verify your agent still has what it needs.
+> treat the table as a ceiling on the output slice, not a promise on the total.
+
+### Install
+
+```sh
+cargo install lowfat
+# or
+brew install zdk/tools/lowfat
+```
+
+Pre-built binaries on [GitHub Releases](https://github.com/zdk/lowfat/releases).
+
+### Setup
+
+Pick one of:
+
+**Claude Code hook** — add to `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "lowfat hook" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [{ "type": "command", "command": "lowfat post-read" }]
+      }
+    ]
+  }
+}
+```
+
+`PreToolUse` rewrites Bash commands through lowfat filters.
+`PostToolUse` compresses file content after Read — strips comments, collapses function bodies, summarizes lock files.
+
+The filtering pattern [Anthropic recommends](https://code.claude.com/docs/en/costs#offload-processing-to-hooks-and-skills), but via lowfat.
+
+**Shell integration** — auto-activates inside agent environments (`CLAUDECODE=1`, `CODEX_ENV`), or set `LOWFAT_ENABLE=1` to force it on any shell:
+
+```sh
+echo 'eval "$(lowfat shell-init zsh)"' >> ~/.zshrc   # or ~/.bashrc
+```
+
+**OpenCode plugin** — one command, no config editing:
+
+```sh
+lowfat opencode install   # v1.x → plugins/lowfat.ts, v2.x → plugins/lowfat-v2/index.js
+```
+
+Installs the plugin matching your OpenCode version (detected via `opencode
+--version`); the v2 variant is required because 2.0.x changed the plugin API and the
+v1 shape loads but silently does nothing there. Restart OpenCode; commands are
+rewritten transparently before they run. Uninstall with `lowfat opencode uninstall`
+(removes whichever variant(s) are present).
+
+**Direct usage** — prefix any command:
+
+```sh
+lowfat git status
+lowfat docker ps
+lowfat ls -la
+```
+
+**Pi agent** — in `~/.pi/agent/settings.json`:
+
+```json
+{ "shellCommandPrefix": "eval \"$(lowfat shell-init zsh)\"; " }
+```
+
+### Usage highlights
+
+```sh
+# See what's configured and how loud each filter is being
+lowfat info                       # status badge + active filters
+lowfat info git                   # pipeline for `git`
+lowfat info --config              # full resolved config
+
+# See what lowfat has saved you
+lowfat stats                      # lifetime token savings
+lowfat stats --audit              # recent plugin executions
+lowfat history                    # rank commands by potential savings
+
+# Dial the aggressiveness
+lowfat level ultra                # max compression
+LOWFAT_LEVEL=lite lowfat git log  # one-off override
+
+# Write a plugin
+lowfat plugin new terraform       # scaffold ~/.lowfat/plugins/terraform/
+lowfat plugin doctor              # check plugins (and pre-install any Python deps)
+
+# Test a plugin against a sample without installing it
+cat samples/git-diff-full.txt | lowfat filter --explain ./filter.lf --sub=diff --level=ultra
+```
+
+### File content compression (`post-read`)
+
+When Claude reads files, `lowfat post-read` compresses the content before it enters the context:
+
+| Content type | What it does |
+|---|---|
+| **Source code** (Rust, Python, Go, Elixir, JS/TS, Java, Ruby, C/C++, Shell) | Strip comments, normalize blanks; at `ultra`: collapse function bodies to signatures |
+| **Markdown** | Strip badges, HTML comments; truncate code blocks and tables |
+| **HTML** / Vue / Svelte | Strip `<style>`, `<script>`, class attributes; at `ultra`: text extraction only |
+| **JSON / JSONC** | Truncate large arrays, collapse deep nesting |
+| **Lock files** (Cargo.lock, package-lock.json, yarn.lock, ...) | Replace with summary: package count + top deps |
+| **Unknown** | Head + tail with line count |
+
+Compression level follows `LOWFAT_LEVEL` (lite/full/ultra). Files with <10% savings pass through unchanged.
+
+### Learn more
+
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — high-level diagram: CLI, Runner, Plugins, Builtins
+- **[docs/CONFIG.md](docs/CONFIG.md)** — `.lowfat` file, env vars, pipeline DSL, built-in processors, the `history` ranking
+- **[docs/PLUGINS.md](docs/PLUGINS.md)** — lf-filter (the `.lf` plugin DSL), named rules, the JSON output guarantee, shell escape hatches, PEP 723 + uv, AI agent prompt
+
+## Alternatives
+
+- [rtk](https://github.com/rtk-ai/rtk)
+- [context-mode](https://github.com/mksglu/context-mode)
+- [lean-ctx](https://github.com/yvgude/lean-ctx)
+- [tokf](https://github.com/mpecan/tokf)
+- [tamp](https://github.com/sliday/tamp)
+- [ecotokens](https://github.com/hansipie/ecotokens)
+- [token-enhancer](https://github.com/xelektron/token-enhancer)
+
+## vs rtk
+
+[rtk](https://github.com/rtk-ai/rtk) is the closest tool but differ in philosophy: rtk is batteries-included; lowfat is a minimal
+core you extend yourself.
+
+|                        | lowfat                                                    | rtk                                               |
+| ---------------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| Built-in commands      | 6 curated (`git`, `docker`, `grep`, `find`, `ls`, `tree`) | 100+ across many ecosystems                       |
+| Custom filters         | `.lf` DSL + shell + Python (PEP 723/uv)                   | TOML DSL                                          |
+| Levels                 | `lite` / `full` / `ultra`                                 | `-l aggressive`, `--ultra-compact`                |
+| File-content filtering | `post-read` hook (code, markdown, HTML, data, lock files)  | `rtk read` / `smart` (signatures, summaries)      |
+| Agent integrations     | Claude Code, OpenCode, shell, Pi                          | 14 tools (Claude Code, Copilot, Gemini, Codex, …) |
+| Telemetry              | None — local-only                                         | Opt-in, off by default (anonymous aggregate)      |
+| Savings analytics      | `lowfat stats` / `history` (local)                        | `rtk gain` / `discover` (local)                   |
+
+### Token savings, head-to-head
+
+Same commands, same repo, same `cwd`, run through both tools. Output tokens
+counted with `tiktoken` (`cl100k_base`); savings are vs the raw command output:
+
+| command      | raw tokens | lowfat `full` | lowfat `ultra` |  rtk |
+| ------------ | ---------: | ------------: | -------------: | ---: |
+| `git status` |         81 |          -91% |           -91% | -79% |
+| `git diff`   |       1241 |          -15% |           -97% |  -9% |
+| `git log`    |       3350 |          -93% |           -97% | -56% |
+| `ls -la`     |        153 |          -77% |           -89% | -86% |
+| `find`       |        535 |           -0% |           -58% | -66% |
+
+Honest read: lowfat compresses git harder; rtk edges out `find`; `ls` is close.
+`find` only engages at lowfat's `ultra` level. rtk's `--ultra-compact` gave
+near-identical numbers to its default here, so the default is shown. This is a
+single small run on one repo — directional, not a benchmark; measure on your own
+workload before trusting any of it.
+
+## License
+
+Apache-2.0
+
+## AI notice
+
+Multiple AI tools were used for this project
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=zdk%2Flowfat&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=zdk/lowfat&type=date&theme=dark&legend=top-left&sealed_token=NB0OcnvnrZARi5bHuUH4zU2fTo24N0xH2RdQKpCWZTc30Kg4nfXwai0bIPhLEhO76gNynjMjZFhB0DpdErgUoDjwtT6igLNum4v-lkMWKIz-uCbLVqEQR673kCYPTjuxCLYhV6shhszvAOX8Dw89gQ0RweWOHVeeNeFSE6fEDEBif_-9lp_PWn8y0iiF" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=zdk/lowfat&type=date&legend=top-left&sealed_token=NB0OcnvnrZARi5bHuUH4zU2fTo24N0xH2RdQKpCWZTc30Kg4nfXwai0bIPhLEhO76gNynjMjZFhB0DpdErgUoDjwtT6igLNum4v-lkMWKIz-uCbLVqEQR673kCYPTjuxCLYhV6shhszvAOX8Dw89gQ0RweWOHVeeNeFSE6fEDEBif_-9lp_PWn8y0iiF" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=zdk/lowfat&type=date&legend=top-left&sealed_token=NB0OcnvnrZARi5bHuUH4zU2fTo24N0xH2RdQKpCWZTc30Kg4nfXwai0bIPhLEhO76gNynjMjZFhB0DpdErgUoDjwtT6igLNum4v-lkMWKIz-uCbLVqEQR673kCYPTjuxCLYhV6shhszvAOX8Dw89gQ0RweWOHVeeNeFSE6fEDEBif_-9lp_PWn8y0iiF" />
+ </picture>
+</a>

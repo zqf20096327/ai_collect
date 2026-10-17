@@ -1,0 +1,160 @@
+# 🎷 THIRI Chord Intelligence — MCP Server
+
+[![npm](https://img.shields.io/npm/v/@bluesprincemedia/thiri-mcp)](https://www.npmjs.com/package/@bluesprincemedia/thiri-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/@bluesprincemedia/thiri-mcp)](https://www.npmjs.com/package/@bluesprincemedia/thiri-mcp)
+[![CI](https://github.com/BluesPrince/thiri-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/BluesPrince/thiri-mcp/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-PolyForm%20NC%201.0.0-blue)](./LICENSE)
+![MCP](https://img.shields.io/badge/MCP-server-black)
+[![Glama score](https://glama.ai/mcp/servers/BluesPrince/thiri-mcp/badges/score.svg)](https://glama.ai/mcp/servers/BluesPrince/thiri-mcp)
+
+**Give your AI real music theory.** THIRI is the deterministic **music theory MCP server + API** for AI builders — it lets Claude, Cursor, or any [MCP](https://modelcontextprotocol.io) agent **analyze chords, run roman-numeral analysis, generate voicings, and reharmonize progressions** with answers that are *computed, not guessed*.
+
+LLMs hallucinate music theory: wrong notes, fake roman numerals, voicings that don't voice-lead. THIRI is a **deterministic** engine (pitch-class-set theory over ℤ/12) behind a hosted API — so `C7sus4` keeps its suspension, `Caug` spells `C E G#`, and "Coltrane changes on Dm7 G7 Cmaj7" returns `Cmaj7 Ab7 Abmaj7 E7`, every time.
+
+**Downstream of Suno / Udio or any generator?** Wrap the output and get a correct chord chart your agent can trust. And unlike `tonal.js` or `music21`, THIRI is hosted and agent-native (no install, any language) — and it *reharmonizes* and *voice-leads*, not just looks chords up.
+
+> ⭐ If this is useful, star the repo — it helps other musicians and agent builders find it.
+
+> 👥 **Join the AI Music Builders**: Want elevated rate limits, direct founder support, and early access to upcoming tools? Join our developer community on **[Skool — T.H.I.R.I. Builders](https://www.skool.com/thiri-builders-6682/about)**.
+
+## Musicians: 2-minute setup (no code)
+
+1. Get a free key at **[build.thiri.ai/keys](https://build.thiri.ai/keys)**
+2. In **Claude**: Settings → **Connectors** → **Add custom connector** → URL `https://mcp.thiri.ai/mcp` → paste your `sk_live_` key
+3. Ask Claude: *"Reharmonize Dm7 G7 Cmaj7 with Coltrane changes."*
+
+That's it — no install, no config file. Builders: full install options (Claude Code, Desktop config, raw HTTP) are [below](#install).
+
+## What you can ask
+> *"Analyze Dm7b5 in C."* → `iiø7`, half-diminished, borrowed predominant, + scale options
+> *"What notes are in C7sus4?"* → `C F G Bb` (the suspension survives)
+> *"Give me a rootless Cmaj7 voicing, then voice-lead into Dm7."* → voicings + a voice-leading score
+> *"Reharmonize Dm7 G7 Cmaj7 with Coltrane changes."* → `Cmaj7 Ab7 Abmaj7 E7`
+
+## Tools
+| Tool | What it does |
+|------|-------------|
+| `analyze_chord` | Chord → root, quality, intervals, roman numeral & harmonic function (secondary dominants, modal-interchange labels) |
+| `resolve_chord` | Chord → spelled notes (enharmonically correct), frequencies, MIDI, scale recommendations |
+| `generate_voicing` | Instrument-ready voicings (rootless/bill_evans, shell, triad, pad, guide-tones, drop-2/3); pass `previousNotes` for a **voice-leading score**; `colorPreferences` for explicit tensions |
+| `reharmonize` | Progression reharmonization — 8 techniques: `tritone_sub`, `ii_v_insertion`, `modal_interchange`, `diminished_passing`, `secondary_dominant`, `chain_of_dominants`, `coltrane_changes`, `backdoor` (or `auto`) |
+| `conduct_band` | Natural-language band conduct → lanes + MIDI (hosted MCP v0.3+) |
+
+> Runs on the **v2 grid engine** — correct sus chords, real triads, enharmonic spelling, all altered dominants — with request timeouts, quota reporting, and structured errors.
+
+### Conductor & composition companions (Desktop only)
+
+For **hear-it** agent loops (conduct → server-side render → WAV through your speakers), add a second local server alongside hosted theory tools:
+
+```json
+{
+  "mcpServers": {
+    "thiri": {
+      "command": "npx",
+      "args": ["-y", "@bluesprincemedia/thiri-mcp"],
+      "env": { "THIRI_API_KEY": "sk_live_your_key" }
+    },
+    "thiri-conductor": {
+      "command": "npx",
+      "args": ["-y", "@bluesprincemedia/thiri-mcp", "thiri-conductor-mcp"],
+      "env": { "THIRI_API_KEY": "sk_live_your_key" }
+    },
+    "thiri-composition": {
+      "command": "npx",
+      "args": ["-y", "@bluesprincemedia/thiri-mcp", "thiri-composition-mcp"]
+    }
+  }
+}
+```
+
+| Bin | Tools |
+|-----|-------|
+| `thiri-conductor-mcp` | `conduct_band`, `render_audio` (server-side Csound via `POST /v2/render`), `play_audio`, `search_corpus` |
+| `thiri-composition-mcp` | Composition IR tools + `play_composition` (fluidsynth preview) |
+
+Rendering runs **server-side** as of v0.5.0 — no Csound install needed. Proof: `npm run test:conductor` · live docs: [build.thiri.ai/lab/conductor-mcp](https://build.thiri.ai/lab/conductor-mcp) · [agent recipes](https://build.thiri.ai/lab/agent-recipes).
+
+### Conductor Agent (vibe compose)
+
+End-to-end persona for local vibe composition — skill, CLI, and Band dashboard panel:
+
+| Entry | Command / path |
+|-------|----------------|
+| **Cursor skill** | Copy `THIRI/lab/skills/thiri-conductor-agent/SKILL.md` → `~/.cursor/skills/thiri-conductor-agent/SKILL.md` |
+| **CLI** | `cd thiri-mcp && npm run conductor:vibe -- "gospel ballad in F minor"` |
+| **Dashboard** | `npm run dev:studio` → [localhost:5173/band](http://localhost:5173/band) → **Vibe Conduct** panel |
+| **Lab proof** | [build.thiri.ai/lab/conductor-agent](https://build.thiri.ai/lab/conductor-agent) |
+
+Dual MCP config above + `mapConductResultToStudioModules` after each `conduct_band`. Last CLI render writes `~/.thiri/conductor-last.json` (local only, not committed).
+
+### Flagship agent recipe (analyze → conduct → render → critique)
+
+Paste in order after dual MCP config above:
+
+1. **Analyze** — *"Analyze Dm7 G7 Cmaj7 in key C with analyze_chord; summarize roman numerals and tension."*
+2. **Conduct** — *"conduct_band: warm Rhodes pad, walking bass, brush drums, 8 bars medium swing in C."*
+3. **Render** — *"render_audio from the conduct result at tempo 120."*
+4. **Critique** — *"play_audio; critique voice-leading and register balance; suggest one revision."*
+
+Full prompts: [build.thiri.ai/lab/agent-recipes](https://build.thiri.ai/lab/agent-recipes)
+
+### Hosted vs local boundary
+
+| Surface | Audio render |
+|---------|--------------|
+| `mcp.thiri.ai` / hosted connector | No — theory + `conduct_band` lanes only |
+| Local `thiri-conductor-mcp` | Yes — WAV rendered server-side (`POST /v2/render`), played locally; no Csound install needed |
+
+## Install
+Get a free key at **[build.thiri.ai/keys](https://build.thiri.ai/keys)**, then pick a path:
+
+**Claude Desktop / web / mobile — hosted (one-click custom connector, nothing to install):**
+Settings → Connectors → **Add custom connector** → URL `https://mcp.thiri.ai/mcp` → paste your `sk_live_` key on the consent page. Same 5 tools, same key, same quota — no config file, no `npx`.
+
+**Claude Code (one line):**
+```sh
+claude mcp add thiri --env THIRI_API_KEY=sk_live_your_key -- npx -y @bluesprincemedia/thiri-mcp
+```
+
+**Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "thiri": {
+      "command": "npx",
+      "args": ["-y", "@bluesprincemedia/thiri-mcp"],
+      "env": { "THIRI_API_KEY": "sk_live_your_key" }
+    }
+  }
+}
+```
+
+## Prefer raw HTTP? (no MCP needed)
+The same engine is a plain REST API:
+```sh
+curl -X POST https://chords.thiri.ai/v2/analyze \
+  -H "Authorization: Bearer YOUR_KEY" -H "content-type: application/json" \
+  -d '{"chord":"Dm7b5","key":"C"}'
+```
+Five endpoints: `/v2/analyze`, `/v2/resolve`, `/v2/voicing`, `/v2/reharmonize`, `/v2/conduct`. See [`openapi.yaml`](./openapi.yaml).
+
+## Environment variables
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `THIRI_API_KEY` | (none) | Bearer token (`sk_live_…`) — get one at build.thiri.ai/keys |
+| `THIRI_API_URL` | `https://chords.thiri.ai` | API base (override only for local dev) |
+
+## Development
+```sh
+npm install && npm run build && npm start
+```
+
+## License
+**PolyForm Noncommercial 1.0.0** — © 2026 Blues Prince Media. Free for personal,
+research, and noncommercial use; commercial use requires a license
+(dennison@bluesprincemedia.com). See [`LICENSE`](./LICENSE). Versions published at or
+before v0.5.0 remain under the MIT/PolyForm dual license they shipped with.
+
+> As of v0.5.0 the composition engine and Csound renderer run server-side behind
+> the hosted API (`POST /v2/compose`, `POST /v2/render`); their source no longer
+> ships in this package.

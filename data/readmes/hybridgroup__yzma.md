@@ -1,0 +1,301 @@
+![yzma logo](./images/yzma-logo-full-color-small.png)
+
+# yzma - Go with your own intelligence
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/hybridgroup/yzma.svg)](https://pkg.go.dev/github.com/hybridgroup/yzma) [![Linux](https://github.com/hybridgroup/yzma/actions/workflows/linux.yml/badge.svg)](https://github.com/hybridgroup/yzma/actions/workflows/linux.yml) [![macOS](https://github.com/hybridgroup/yzma/actions/workflows/macos.yml/badge.svg)](https://github.com/hybridgroup/yzma/actions/workflows/macos.yml) [![Windows](https://github.com/hybridgroup/yzma/actions/workflows/windows.yml/badge.svg)](https://github.com/hybridgroup/yzma/actions/workflows/windows.yml) [![WASM](https://github.com/hybridgroup/yzma/actions/workflows/wasm.yml/badge.svg)](https://github.com/hybridgroup/yzma/actions/workflows/wasm.yml) [![GitHub Release](https://img.shields.io/github/v/release/hybridgroup/llama-cpp-builder?logo=github&logoColor=lightgray&label=llama.cpp)](https://github.com/hybridgroup/llama-cpp-builder/releases) [![Bluesky](https://img.shields.io/badge/bluesky-follow-blue?style=flat&logo=bluesky&logoColor=lightgrey)](https://bsky.app/profile/yzma.ai) [![Mastodon](https://img.shields.io/badge/mastodon-follow-blue?style=flat&logo=mastodon&logoColor=lightgrey)](https://mastodon.social/@yzma_ai)
+
+`yzma` lets you write Go applications that directly integrate [`llama.cpp`](https://github.com/ggml-org/llama.cpp) for fully local inference using hardware acceleration.
+
+- Run the latest Vision Language Models (VLM) and Large/Small/Tiny Language Models (LLM) on Linux, macOS, or Windows.
+- Use any available hardware acceleration such as [CUDA](https://en.wikipedia.org/wiki/CUDA), [Metal](https://en.wikipedia.org/wiki/Metal_(API)), [OpenVINO](https://en.wikipedia.org/wiki/OpenVINO), or [Vulkan](https://en.wikipedia.org/wiki/Vulkan) for maximum performance.
+- Run in a browser as well, with [TinyGo](https://tinygo.org) and WebAssembly, on the CPU or on the GPU with [WebGPU](https://en.wikipedia.org/wiki/WebGPU).
+- `yzma` uses the [`purego`](https://github.com/ebitengine/purego) and [`ffi`](https://github.com/JupiterRider/ffi) packages so CGo is not needed.
+- Works with the newest `llama.cpp` releases so you can use the latest features, performance improvements, and bugfixes.
+
+The documentation is at **[yzma.ai](https://yzma.ai)**.
+
+This example uses the [SmolLM2-135M-GGUF](https://huggingface.co/QuantFactory/SmolLM2-135M-GGUF) model:
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+
+	"github.com/hybridgroup/yzma/pkg/download"
+	"github.com/hybridgroup/yzma/pkg/llama"
+)
+
+var (
+	modelFile            = "SmolLM2-135M.Q4_K_M.gguf"
+	prompt               = "Are you ready to go?"
+	libPath              = os.Getenv("YZMA_LIB")
+	responseLength int32 = 12
+)
+
+func main() {
+	llama.Load(libPath)
+	llama.LogSet(llama.LogSilent())
+
+	llama.Init()
+
+	model, _ := llama.ModelLoadFromFile(filepath.Join(download.DefaultModelsDir(), modelFile), llama.ModelDefaultParams())
+	ctx, _ := llama.InitFromModel(model, llama.ContextDefaultParams())
+
+	vocab := llama.ModelGetVocab(model)
+
+	tokens := llama.Tokenize(vocab, prompt, true, false)
+
+	batch := llama.BatchGetOne(tokens)
+
+	sampler := llama.SamplerChainInit(llama.SamplerChainDefaultParams())
+	llama.SamplerChainAdd(sampler, llama.SamplerInitGreedy())
+
+	for pos := int32(0); pos < responseLength; pos += batch.NTokens {
+		llama.Decode(ctx, batch)
+		token := llama.SamplerSample(sampler, ctx, -1)
+
+		if llama.VocabIsEOG(vocab, token) {
+			fmt.Println()
+			break
+		}
+
+		buf := make([]byte, 36)
+		len := llama.TokenToPiece(vocab, token, buf, 0, true)
+
+		fmt.Print(string(buf[:len]))
+
+		batch = llama.BatchGetOne([]llama.Token{token})
+	}
+
+	fmt.Println()
+}
+```
+
+[Install `yzma`](https://yzma.ai/getting-started/install/), then download the model using the `yzma` command line tool:
+
+```shell
+$ yzma model get -u https://huggingface.co/QuantFactory/SmolLM2-135M-GGUF/resolve/main/SmolLM2-135M.Q4_K_M.gguf
+```
+
+And run the Go program:
+
+```shell
+$ go run ./examples/hello/
+
+
+"Yes, I'm ready to go."
+```
+
+## Installation
+
+```shell
+go install github.com/hybridgroup/yzma@latest
+yzma install --lib /path/to/lib
+export YZMA_LIB=/path/to/lib
+```
+
+The `yzma` command line tool downloads the `llama.cpp` prebuilt libraries for your platform. Your application can also download them itself, with auto-detection for CUDA and ROCm.
+
+Each downloaded file is checked against the SHA-256 digest published with the release, and the `yzma verify` command checks an existing installation.
+
+See **[yzma.ai/getting-started/install](https://yzma.ai/getting-started/install/)** for the instructions for [macOS](https://yzma.ai/getting-started/install/macos/), [Linux](https://yzma.ai/getting-started/install/linux/), [Windows](https://yzma.ai/getting-started/install/windows/), [Raspberry Pi](https://yzma.ai/getting-started/install/raspberry-pi/), [NVIDIA Jetson Orin](https://yzma.ai/getting-started/install/jetson-orin/), the [Arduino UNO Q](https://yzma.ai/getting-started/install/arduino-uno-q/), and a [browser](https://yzma.ai/getting-started/install/browser/).
+
+## Examples
+
+We have several examples of how you can use `yzma` in our [examples](./examples/) directory.
+
+### Vision Language Model (VLM) Multimodal Example
+
+This example uses the [`Qwen2.5-VL-3B-Instruct-Q8_0`](https://huggingface.co/ggml-org/Qwen2.5-VL-3B-Instruct-GGUF) VLM model to process both a text prompt and an image, then displays the result.
+
+```shell
+$ go run ./examples/vlm/ -model ~/models/Qwen2.5-VL-3B-Instruct-Q8_0.gguf -mmproj ~/models/mmproj-Qwen2.5-VL-3B-Instruct-Q8_0.gguf -image ./images/domestic_llama.jpg -p "What is in this picture?"
+
+The image features a white llama standing in a fenced-in area, possibly a zoo or a farm. The llama is positioned in the center of the image, with its body facing the right side. The fenced area is surrounded by trees, creating a natural environment for the llama.
+```
+
+[See the code here](./examples/vlm/main.go).
+
+### Small Language Model (SLM) Interactive Chat Example
+
+You can use `yzma` to do inference on text language models. This example uses the [`qwen2.5-0.5b-instruct-fp16.gguf `](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF) model for an interactive chat session.
+
+```shell
+$ go run ./examples/chat/ -model ./models/qwen2.5-0.5b-instruct-fp16.gguf
+Enter prompt: Are you ready to go?
+
+Yes, I'm ready to go! What would you like to do?
+
+Enter prompt: Let's go to the zoo
+
+
+Great! Let's go to the zoo. What would you like to see?
+
+Enter prompt: I want to feed the llama
+
+
+Sure! Let's go to the zoo and feed the llama. What kind of llama are you interested in feeding?
+```
+
+[See the code here](./examples/chat/main.go).
+
+### WebAssembly Example
+
+`yzma` also runs in a browser, with text or with images. `llama.cpp` runs as its own WebAssembly module, and a Go program compiled by [TinyGo](https://tinygo.org) drives it through the [`pkg/llamawasm`](./pkg/llamawasm) package. The model never leaves the user's machine, and no server does any of the work.
+
+```shell
+$ make download-llama.cpp-wasm
+$ make wasm-example
+$ make wasm-vlm-example
+$ make serve-wasm
+```
+
+Then open http://localhost:8080 for chat, or http://localhost:8080/vlm.html to ask a question about an image. Each page shows which backend it loaded:
+
+```
+backend: webgpu (WebGPU)
+```
+
+There are three builds of `llama.cpp`, and the JavaScript glue picks the best one the browser can run:
+
+| Build | What the browser needs |
+|-------|------------------------|
+| WebGPU | WebGPU with f16 shaders, and JSPI: Chrome or Edge 137 and later, or Firefox 153 and later with two switches in `about:config`. Chrome on Linux needs [three switches](./wasm/README.md#vulkan-in-chrome-on-linux). In Firefox the loader picks the CPU, which is faster there. |
+| Multithreaded | `SharedArrayBuffer`, so a page served with the COOP and COEP headers |
+| Single thread | Nothing. It works everywhere. |
+
+So a browser without WebGPU still works, on the CPU. The GPU helps most with images. Running one through the model's projector takes a second or two on the GPU, compared with half a minute or more on the CPU.
+
+In a browser you use the smaller API in [`pkg/llamawasm`](./pkg/llamawasm), with the calls needed for text generation, embeddings, and images. The call names and order match [`pkg/llama`](./pkg/llama) and [`pkg/mtmd`](./pkg/mtmd), so porting a program only takes a change of import.
+
+[See the code here](./examples/wasm/chat/main.go), or [the image example](./examples/wasm/vlm/main.go).
+
+See [wasm/README.md](./wasm/README.md) for how it works, how fast each build is, and what a page must do to use one.
+
+### Additional Examples
+
+See the [examples](./examples/) directory for more examples of how to use `yzma`.
+
+## yzma in action
+
+Who is using `yzma`? Check out some of the [tools](https://yzma.ai/projects/tools/), [applications](https://yzma.ai/projects/applications/), [examples](https://yzma.ai/projects/tutorials/), and [blog posts and videos](https://yzma.ai/projects/media/)!
+
+## Models
+
+`yzma` uses models in the GGUF format supported by `llama.cpp`. There are many models in GGUF format on Hugging Face (over 201k at last count):
+
+https://huggingface.co/models?library=gguf&sort=trending
+
+You can use the `yzma` command to download models for you! 
+
+For example, this downloads the `gemma-3-1b-it-GGUF` model:
+
+```shell
+$ yzma model get -u https://huggingface.co/ggml-org/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf
+```
+
+Check out the [Models](https://yzma.ai/docs/guides/models/) page for the download and run commands for each model.
+
+## Support
+
+`yzma` currently has support for over 96% of `llama.cpp` functionality. See [ROADMAP.md](./ROADMAP.md) for the complete list.
+
+You can use multimodal models (image/audio) and text language models with full hardware acceleration on Linux, macOS, and Windows.
+
+| OS      | CPU          | GPU                                       |
+| ------- | ------------ | ----------------------------------------- |
+| Linux   | amd64, arm64 | CUDA, Vulkan, HIP, ROCm, SYCL, OpenVINO   |
+| macOS   | arm64        | Metal                                     |
+| Windows | amd64        | CUDA, Vulkan, HIP, SYCL, OpenCL, OpenVINO |
+
+A browser is also a target:
+
+| Target  | CPU          | GPU  |
+| ------- | ------------ | ---- |
+| Browser | wasm32 SIMD, one or more threads | WebGPU |
+
+There you use the smaller API in the [`pkg/llamawasm`](./pkg/llamawasm) package. It covers text generation, embeddings, and images, but not audio, video, LoRA adapters, saved state, or quantization. See the [WebAssembly example](#webassembly-example) above and [wasm/README.md](./wasm/README.md).
+
+Whenever there is a new release of `llama.cpp`, the tests for `yzma` are run automatically. This helps us stay up to date with the latest code and models.
+
+### Required versions of `llama.cpp`
+
+Sometimes there are breaking changes to `llama.cpp` that require an update to `yzma`. Here are the known compatible versions for tagged releases:
+
+| llama.cpp | yzma    |
+| ------- | --------- |
+| v0.3.0 | v1.25.0   |
+| v0.4.0 | v1.26.0 - v1.26.1   |
+| v0.4.1 | v1.27.0   |
+| v0.5.0 | v1.28.0   |
+| v0.6.0 | v1.29.0 - v1.29.1   |
+| v0.7.0 | v1.30.0   |
+
+A tagged release of `yzma` installs its own `llama.cpp` release by default, so `yzma install` without the `-version` flag gets the version in this table. Use `-version latest` to get the most recent nightly build instead. A build from the `main` branch always uses the most recent nightly build.
+
+Here are some of the known compatible versions for the nightly builds of `llama.cpp`:
+
+| llama.cpp | yzma    |
+| ------- | --------- |
+| ? - b8864   | v1.12.0   |
+| b8865 - b9179  | v1.13.0   |
+| b9180 - b9459  | v1.14.1   |
+| b9460 - b9540  | v1.15.0   |
+| b9541 - b9548  | v1.16.0   |
+| b9549 - b9561  | v1.16.1   |
+| b9562 - b9611  | v1.17.0   |
+| b9616 - b9749  | v1.17.1   |
+| b9650 - b9978  | v1.18.0   |
+| b9979 - b10103  | v1.19.0   |
+| b10105 - b10211  | v1.20.0 - v1.21.0   |
+| b10212 - b10257  | v1.22.0   |
+| b10273 - b10544  | v1.23.0   |
+| b10545 - b10779  | v1.24.0 - v1.25.0   |
+| b10780 - b11410  | v1.26.0 - v1.28.0   |
+| b11411 - b11479  | v1.29.0 - v1.29.1   |
+| b11480+  | v1.30.0+   |
+
+## Benchmarks
+
+`yzma` is fast because it calls `llama.cpp` in the same process. No external servers needed!
+
+For example, here is the `Qwen3-VL-2B-Instruct` Visual Language Model (VLM) performing multi-modal inference on an image and text prompt running on a Apple M4 Max with 128 GB RAM:
+
+```shell
+$ go test -run none -benchtime=10s -count=5 -bench BenchmarkMultimodalInference
+goos: darwin
+goarch: arm64
+pkg: github.com/hybridgroup/yzma/pkg/mtmd
+cpu: Apple M4 Max
+BenchmarkMultimodalInference-16		10		1577948683 ns/op	788.9 tokens/s
+BenchmarkMultimodalInference-16		12		1243692014 ns/op	910.8 tokens/s
+BenchmarkMultimodalInference-16		 7		1654741804 ns/op	737.2 tokens/s
+BenchmarkMultimodalInference-16		 7		1568106947 ns/op	771.9 tokens/s
+BenchmarkMultimodalInference-16		10		1704669371 ns/op	706.1 tokens/s
+PASS
+ok  	github.com/hybridgroup/yzma/pkg/mtmd	76.644s
+```
+
+Want to see more benchmarks? Take a look at the [BENCHMARKS.md](./BENCHMARKS.md)
+document, which has one file per platform. To reproduce these numbers on your
+own machine, run `./benchmarks/run.sh`. See
+[how to run the benchmarks](./benchmarks/README.md).
+
+## More Info
+
+`yzma` is now ready to be used to build complete applications that incorporate language models directly into your Golang code.
+
+Here are some advantages of `yzma` with `llama.cpp`:
+
+- Compile Go programs that use `yzma` with the normal `go build` and `go run` commands. No C compiler needed!
+- Use the `llama.cpp` libraries with whatever hardware acceleration is available for your configuration. CUDA, Vulkan, etc.
+- High performance from making function calls from within the same process. No external model servers!
+- Download `llama.cpp` precompiled libraries directly from Github, or include them with your application.
+- Update the `llama.cpp` libraries without recompiling your Go program, as long as `llama.cpp` does not make any breaking changes.
+
+The idea is to make it easier for Go developers to use language models as part of "normal" applications without having to use containers or do anything other than the normal `GOOS` and `GOARCH` env variables for cross-complication.
+
+`yzma` originally started with definitions from the https://github.com/dianlight/gollama.cpp package, but then has gone on to modify them rather heavily. Thank you!

@@ -1,0 +1,476 @@
+# Lisa
+
+<p align="center">
+  <strong>Plan issues. Run agents. Get PRs.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@tarcisiopgs/lisa"><img src="https://img.shields.io/npm/v/@tarcisiopgs/lisa.svg" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@tarcisiopgs/lisa"><img src="https://img.shields.io/npm/dm/@tarcisiopgs/lisa.svg" alt="npm downloads" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
+  <img src="https://img.shields.io/node/v/%40tarcisiopgs%2Flisa" alt="Node.js version" />
+</p>
+
+<p align="center">
+  <img src="assets/demo.gif" alt="Lisa demo" />
+</p>
+
+Lisa has two modes:
+
+- **Autonomous** connects your issue tracker to an AI coding agent and delivers pull requests on its own. Describe a goal, and Lisa decomposes it into issues, picks them up, implements each one, opens PRs and updates your board. No babysitting.
+- **Workspace** keeps your projects in a sidebar, alone or in groups of repositories. It spins up a git worktree from a project's base branch whenever you want and runs any supported agent interactively inside it, in the same terminal. A background daemon keeps agents working when you close the UI. Lisa notifies you when one needs you or finishes.
+
+## Quickstart
+
+```bash
+npm install -g @tarcisiopgs/lisa
+lisa            # choose a mode (Autonomous or Workspace)
+```
+
+Autonomous mode:
+
+```bash
+lisa init       # interactive setup wizard
+lisa run        # start the agent loop
+```
+
+Workspace mode:
+
+```bash
+lisa workspace  # open the Workspace (or pick it in the `lisa` selector)
+```
+
+## How It Works
+
+```
+  Plan → Create issues → Fetch → Implement → Push → Open PR → CI Monitor → Review Monitor → Update board → Next
+```
+
+Lisa starts and shows a Kanban board. If the queue is empty, press `n` to plan — describe a goal and the AI brainstorms with you (asking clarifying questions), presents its understanding for your confirmation, then decomposes the goal into atomic issues created directly in your tracker. You can review, edit, reorder, delete, or regenerate the plan with feedback before approving. Press `r` to start processing. Lisa picks the highest-priority labeled issue, moves it to "In Progress", sends a structured prompt to the AI agent, and monitors execution. The agent works in an isolated git worktree, implements the change, runs tests, and commits. Lisa pushes, opens a PR, moves the ticket to "In Review", and picks up the next one.
+
+If something fails — pre-push hooks, quota limits, stuck processes — Lisa handles it: retries with error context, falls back to the next model, or kills and moves on.
+
+## Features
+
+- **7 issue trackers** — Linear, GitHub Issues, GitLab Issues, Jira, Trello, Plane, Shortcut
+- **10 AI agents** — Claude Code, Gemini CLI, GitHub Copilot CLI, Cursor Agent, Aider, Goose, OpenCode, Codex, Kilo Code, MiMo Code
+- **AI planning** — describe a goal, the AI brainstorms with you, decomposes it into issues with dependencies, created in your tracker
+- **Language-aware** — responds in the same language you write your goal in
+- **Spec compliance** — LLM-verified acceptance criteria check before PR creation, with auto-retry
+- **Concurrent execution** — process multiple issues in parallel, each in its own worktree
+- **Multi-repo** — plans across repos, creates one PR per repo in the correct order
+- **Model fallback** — chain models; transient errors (429, quota, timeout) auto-switch to the next
+- **Real-time TUI** — Kanban board with live provider output, plan mode, merge PRs with `m`
+- **CI monitoring** — polls CI after PR creation, re-invokes the agent to fix failures automatically
+- **Review monitoring** — polls PR reviews after CI, auto-addresses reviewer feedback (GitHub)
+- **Reaction engine** — configurable actions for CI failures, review changes, stuck agents
+- **Session state tracking** — real-time visibility into agent pipeline phase (implementing → validating → CI → review)
+- **Smart activity detection** — reads agent session logs to prevent false stuck kills during analysis phases
+- **Progress comments** — posts real-time status updates on issues as Lisa works through stages
+- **Context enrichment** — greps for issue-related files and surfaces them in the agent prompt
+- **PR reviewers & assignees** — auto-request reviews and assign PRs via config; `self` keyword resolves to the authenticated user. Manage reviewers interactively from the TUI detail view (`r`)
+- **Self-healing** — orphan recovery on startup, push failure retry, stuck process detection
+- **Guardrails** — past failures are injected into future prompts to avoid repeating mistakes
+- **Lineage context** — plan-decomposed issues get sibling task awareness, preventing duplicate work in concurrent mode
+- **Project context** — auto-generates `.lisa/context.md` with your stack, conventions, and constraints
+
+## Providers
+
+| Provider | Key | Provider | Key |
+|----------|-----|----------|-----|
+| Claude Code | `claude` | Cursor Agent | `cursor` |
+| Gemini CLI | `gemini` | Goose | `goose` |
+| GitHub Copilot CLI | `copilot` | Aider | `aider` |
+| OpenCode | `opencode` | OpenAI Codex | `codex` |
+| Kilo Code | `kilo` | MiMo Code | `mimo` |
+
+Configure models and provider-specific options:
+
+```yaml
+provider: claude
+provider_options:
+  claude:
+    models:
+      - claude-sonnet-4-6   # primary
+      - claude-opus-4-6     # fallback
+    effort: high             # optional: low, medium, high, max
+```
+
+Goose requires a backend selection:
+
+```yaml
+provider: goose
+provider_options:
+  goose:
+    goose_provider: gemini-cli   # gemini-cli, anthropic, openai, google, ollama
+    models:
+      - gemini-2.5-pro
+```
+
+## Commands
+
+```bash
+lisa                        # choose a mode (interactive terminal only)
+lisa run                    # start the agent loop (Kanban TUI)
+lisa workspace              # open Workspace mode
+lisa --once                 # process a single issue
+lisa --once --dry-run       # preview config without executing
+lisa --watch                # poll for new issues after queue empties
+lisa -c 3                   # process 3 issues in parallel
+lisa --issue INT-42         # process a specific issue
+lisa --limit 5              # stop after 5 issues
+lisa plan "Add rate limiting" # brainstorm + decompose goal into issues via AI
+lisa plan --issue EPIC-123  # decompose existing issue into sub-issues
+lisa plan --continue        # resume interrupted plan
+lisa plan --no-brainstorm "goal" # skip brainstorming, decompose directly
+lisa plan --yes "goal"      # skip confirmations (CI/scripts)
+lisa init                   # create .lisa/config.yaml interactively
+lisa status                 # show session stats
+lisa config --show           # print current config
+lisa config --get loop.cooldown  # query a specific value
+lisa config --set loop.cooldown=5  # set nested config values
+lisa doctor                 # diagnose setup issues (config, provider, env, git)
+lisa context refresh        # regenerate project context
+lisa feedback --pr URL      # inject PR review feedback into guardrails
+lisa sessions               # list active session states (supports --json)
+```
+
+Append `--json` to any command for machine-readable output. Use `--verbose` / `--quiet` to control log verbosity.
+
+`lisa` without arguments shows the mode selector only when both stdin and stdout are terminals, outside CI and without `LISA_MODE`. Any flag, pipe or CI run keeps the autonomous loop. `LISA_MODE=autonomous|workspace` picks a mode without asking. Scripts should call `lisa run`.
+
+## Configuration
+
+Config lives in `.lisa/config.yaml`. Run `lisa init` to create it interactively.
+
+```yaml
+provider: claude
+source: linear
+workflow: worktree       # "worktree" (isolated) or "branch" (in-place)
+
+source_config:
+  scope: Engineering
+  project: Web App
+  label: ready              # or array: [ready, urgent]
+  remove_label: ready       # label to remove on completion (defaults to label)
+  pick_from: Backlog
+  in_progress: In Progress
+  done: In Review
+
+bell: true                  # terminal bell on issue completion
+
+platform: cli            # "cli" (gh), "token" (GITHUB_TOKEN), "gitlab", "bitbucket"
+base_branch: main
+```
+
+<details>
+<summary><strong>Environment variables</strong></summary>
+
+```bash
+# PR creation (at least one)
+GITHUB_TOKEN=""           # or use `gh` CLI
+GITLAB_TOKEN=""           # for platform: gitlab
+BITBUCKET_TOKEN=""        # for platform: bitbucket
+BITBUCKET_USERNAME=""
+
+# Issue tracker (set the one you use)
+LINEAR_API_KEY=""
+TRELLO_API_KEY="" && TRELLO_TOKEN=""
+PLANE_API_TOKEN=""
+SHORTCUT_API_TOKEN=""
+GITLAB_TOKEN=""
+GITHUB_TOKEN=""
+JIRA_BASE_URL="" && JIRA_EMAIL="" && JIRA_API_TOKEN=""
+
+# Self-hosted instances (optional)
+PLANE_BASE_URL=""         # default: https://api.plane.so
+GITLAB_BASE_URL=""        # default: https://gitlab.com
+PLANE_WORKSPACE=""        # fallback for source_config.scope
+
+# Goose backend (required when provider: goose)
+GOOSE_PROVIDER=""         # gemini-cli, anthropic, openai, google, ollama
+GOOSE_MODEL=""            # model name for the selected backend
+
+# AI provider API keys (used by Aider / Goose / wizard auto-detection)
+ANTHROPIC_API_KEY=""
+OPENAI_API_KEY=""
+GEMINI_API_KEY=""
+GOOGLE_API_KEY=""         # for Goose with goose_provider: google
+```
+
+</details>
+
+<details>
+<summary><strong>Source-specific configuration</strong></summary>
+
+| Field | Linear | Trello | Plane | Shortcut | GitLab Issues | GitHub Issues | Jira |
+|-------|--------|--------|-------|----------|---------------|---------------|------|
+| `scope` | Team name | Board name | Workspace slug | — | Project path | `owner/repo` | Project key |
+| `project` | Project name | — | Project ID | — | — | — | — |
+| `pick_from` | Status name | List name | State name | Workflow state | — | — | Status name |
+| `label` | Label | Label | Label | Label | Label | Label | Label |
+| `remove_label` | Label | Label | Label | Label | — | — | — |
+| `in_progress` | Status | Column | State | Workflow state | Label | Label | Status |
+| `done` | Status | Column | State | Workflow state | Closes issue | Closes issue | Status |
+
+</details>
+
+<details>
+<summary><strong>Multi-repo setup</strong></summary>
+
+```yaml
+repos:
+  - name: my-api
+    path: ./api
+    base_branch: main
+    match: "[API]"        # route issues by title prefix
+  - name: my-app
+    path: ./app
+    base_branch: main
+```
+
+Lisa runs a planning phase, then executes steps sequentially — one worktree and one PR per repo.
+
+</details>
+
+<details>
+<summary><strong>Advanced options</strong></summary>
+
+```yaml
+loop:
+  cooldown: 10             # seconds between issues
+  session_timeout: 0       # max seconds per provider run (0 = disabled)
+  output_stall_timeout: 120  # seconds without stdout before killing provider (0 = disabled)
+
+overseer:
+  enabled: true
+  check_interval: 30       # seconds between git status checks
+  stuck_threshold: 300     # kill provider after this many seconds without changes
+
+lifecycle:
+  mode: auto               # "auto", "skip" (default), "validate-only"
+  timeout: 30
+
+proof_of_work:
+  enabled: true
+  block_on_failure: true   # skip PR when validation fails (default: false)
+  max_retries: 2           # retry agent on validation failure
+  commands:
+    - name: lint
+      run: pnpm run lint
+    - name: typecheck
+      run: pnpm run typecheck
+    - name: test
+      run: pnpm run test
+
+validation:
+  require_acceptance_criteria: true
+
+spec_compliance:
+  enabled: true
+  max_retries: 1             # retry agent to fix unmet criteria (default: 1)
+  block_on_failure: true     # skip PR when criteria aren't met (default: false)
+
+ci_monitor:
+  enabled: true
+  max_retries: 3             # fix attempts on CI failure
+  poll_interval: 30          # seconds between CI status checks
+  poll_timeout: 600          # max seconds to wait for CI
+  block_on_failure: false    # revert issue if CI never passes
+
+# Post-PR review monitoring (GitHub only)
+review_monitor:
+  enabled: true
+  max_retries: 2             # fix attempts on review changes (default: 2)
+  poll_interval: 60          # seconds between review checks (default: 60)
+  poll_timeout: 3600         # max seconds to wait for review (default: 3600)
+
+# Configurable reactions (override defaults)
+reactions:
+  ci_failed:
+    action: reinvoke         # reinvoke | notify | skip
+    max_retries: 3
+    escalate_after: 30m
+  changes_requested:
+    action: reinvoke
+    max_retries: 2
+    escalate_after: 1h
+  approved:
+    action: notify
+  agent_stuck:
+    action: notify
+  validation_failed:
+    action: reinvoke
+    max_retries: 2
+
+progress_comments:
+  enabled: true              # post real-time status on issues
+
+pr:
+  reviewers:                   # auto-request reviews on every PR
+    - octocat
+    - hubot
+  assignees:                   # auto-assign PRs ("self" = authenticated user)
+    - self
+
+hooks:
+  before_run: "./scripts/setup.sh"
+  after_run: "./scripts/cleanup.sh"
+  timeout: 60000             # ms, default 60000
+```
+
+</details>
+
+## Validation Pipeline
+
+After the agent implements an issue, Lisa runs a multi-stage validation pipeline before creating a PR:
+
+```
+Agent implements → Proof of Work (lint/test/typecheck) → Spec Compliance → PR → CI Monitor → Review Monitor
+```
+
+**Proof of Work** runs configured shell commands (lint, typecheck, test). If any fail, the agent is re-invoked with the error output to fix the issue.
+
+**Spec Compliance** extracts acceptance criteria from the issue description (`- [ ]` checklists) and asks the LLM to verify each one against the git diff. The result is a structured JSON with met/not-met verdicts and evidence. If criteria are unmet, the agent is re-invoked to fix them. Results are appended to the PR body as a Markdown table:
+
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Returns 429 on rate limit | Met | Rate limit middleware returns 429 |
+| Headers include X-RateLimit | Not Met | No header injection found |
+
+Both stages support `max_retries` and `block_on_failure` — when blocking is enabled, the PR is skipped entirely on failure.
+
+## Writing Good Issues
+
+Issue quality = PR quality. Lisa validates issues and skips vague ones (labeling them `needs-spec`).
+
+**Include:** acceptance criteria (`- [ ]` checklists), relevant file paths, technical constraints, stack info.
+
+```markdown
+Title: Add rate limiting to /api/users endpoint
+
+Implement rate limiting on `/api/users` to prevent abuse.
+
+Relevant files: src/routes/users.ts, src/middleware/auth.ts
+
+Acceptance criteria:
+- [ ] Requests exceeding 100/min per IP return HTTP 429
+- [ ] Rate limit headers included in responses
+- [ ] Rate limit state stored in Redis (use src/lib/redis.ts)
+- [ ] Existing tests still pass
+```
+
+## Workspace
+
+`lisa workspace` opens a terminal UI. The agent you are working with fills the screen, and a narrow sidebar on the left lists your projects and their worktrees:
+
+- **Projects:** add a project once, from any git repository path. Every new worktree starts from the project's base branch after a fetch, and you can change the base branch later.
+- **Worktrees:** worktrees live in `~/.lisa/workspaces/<project>/<name>`, outside your repository. Each one runs one agent, launched through your login shell, so your PATH and tools resolve as usual.
+- **Task, model and effort:** the new worktree dialog takes an optional task. For Claude Code and Codex you can also pick the model and the reasoning effort, and the agent starts with the task already sent. See [Routing](#routing) for automatic suggestions.
+- **Permissions:** you choose them per worktree. Normal mode lets the agent ask; full autonomy uses the agent's skip-permissions flag.
+- **One state per worktree:**
+
+  | Glyph | State |
+  |---|---|
+  | `◉` | working |
+  | `◆` | needs you |
+  | `✔` | done |
+  | `○` | idle |
+  | `✖` | exited with an error |
+
+- **Notifications:** every time an agent needs you or finishes, Lisa sends a system notification and rings the terminal bell, unless you are looking at that worktree with the terminal focused.
+- **Background daemon:** closing the UI (or the terminal) detaches, and agents keep running. After a reboot your projects and worktrees come back and restarting an agent resumes its previous conversation where the agent supports it.
+- **Safe removal:** removing a worktree is refused while it has uncommitted changes or commits that are not on any remote, unless you force it. Remote branches are never deleted.
+
+| Keys | Action |
+|---|---|
+| `Ctrl-a` | switch between the agent and the sidebar (`Ctrl-a Ctrl-a` sends Ctrl-a to the agent) |
+| `↑↓` / `j k` | move in the sidebar |
+| `⏎` | open the selected worktree / fold a project |
+| `Tab` | jump to the next worktree that needs you or is done |
+| `n` / `p` / `b` | new worktree / add project / change base branch |
+| `d` | remove worktree |
+| `r` / `s` | restart / stop the agent |
+| `?` / `q` | help / detach |
+
+### Routing
+
+With a [TypeSafe](https://typesafe.ai) API key, Lisa asks the Jev model which agent, model and effort fit the task you typed, and fills the dialog with the answer. You confirm with `⏎` or change any field first. Lisa never starts an agent you did not confirm.
+
+```bash
+export TYPESAFE_API_KEY="..."
+```
+
+- **What is sent:** when the key is set, the text of the `Task` field is sent to TypeSafe. Nothing is sent without the key.
+- **What is decided:** the size of the task picks the model, a separate check raises the effort one level for tasks that need extra verification, and the kind of task picks the agent. `max` and `ultra` are never suggested.
+- **Routed agents:** Claude Code and Codex. Other agents keep the manual flow. Gemini CLI, Grok, CodeBuddy, Antigravity, Cursor Agent, OMP and Muse have catalogs written from their documentation that stay off until their command lines are verified on a real install.
+- **Without a key, offline or on any error:** the dialog says why in one line and you choose by hand. The task is still sent to the agent.
+
+Optional preferences live in `~/.lisa/workspace/router.toml`:
+
+```toml
+# Which agent to prefer when the kind of task does not decide
+preference = ["claude", "codex"]
+
+[kinds]
+review = "codex"          # review or audit without changing code
+investigation = "claude"  # unknown cause, architecture decisions
+visual_ui = "gemini"      # interface from an image or mockup
+
+[thresholds]
+depth = 0.7   # above this, effort goes up one level
+kind = 0.5    # below this, the suggestion is marked "unsure"
+size = 0.5    # below this, the larger of the two likeliest sizes wins
+```
+
+Supported agents in Workspace mode: Claude Code, Gemini CLI, OpenCode, GitHub Copilot CLI, Goose, Aider, Codex, Kilo Code and MiMo Code. Cursor Agent is hidden until its interactive mode is verified. Full autonomy is not offered for OpenCode, Goose and MiMo Code, which have no interactive flag for it.
+
+Workspace mode runs on macOS (arm64, x64) and Linux (x64, arm64). It supports Ghostty, iTerm2, kitty and WezTerm; Terminal.app cannot tell Shift+Enter from Enter. It ships as a small native binary (about 3.6 MB per platform) bundled inside the Lisa package, so there is nothing else to install.
+
+## TUI
+
+The real-time Kanban board shows issue progress, streams provider output, and detects PR merges. When the queue is empty, Lisa enters idle mode — plan new issues with `n`, then start processing with `r`.
+
+**Board view**
+
+| Key | Action | Key | Action |
+|-----|--------|-----|--------|
+| `←` `→` | Switch columns | `k` | Kill current issue |
+| `↑` `↓` | Navigate cards | `s` | Skip current issue |
+| `↵` | Open detail view | `n` | Open plan mode |
+| `p` | Pause / resume | `r` | Run (from idle) |
+| `m` | Merge PR (opens detail + triggers merge) | `q` | Quit |
+
+**Detail view**
+
+| Key | Action |
+|-----|--------|
+| `↑` `↓` | Scroll output log |
+| `o` | Open PR in browser |
+| `r` | Toggle reviewer picker (add/remove reviewers on the PR) |
+| `m` | Merge PR (warns if CI not passed) |
+| `Esc` | Back to board |
+
+**Plan chat**
+
+| Key | Action |
+|-----|--------|
+| `↵` | Send message |
+| `↑` `↓` | Scroll chat history |
+| `Esc` | Cancel |
+
+**Plan review**
+
+| Key | Action |
+|-----|--------|
+| `↵` | View issue detail |
+| `e` | Edit issue in $EDITOR |
+| `d` | Delete issue |
+| `a` | Approve and create issues |
+| `Esc` | Back |
+
+In CLI mode, the plan wizard also offers **Regenerate with feedback** — describe what to change and the AI regenerates the entire plan incorporating your feedback.
+
+## License
+
+[MIT](LICENSE)

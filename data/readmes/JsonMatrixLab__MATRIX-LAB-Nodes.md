@@ -1,0 +1,126 @@
+# MATRIX LAB NODES
+
+[![CI](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml/badge.svg)](https://github.com/JsonMatrixLab/MATRIX-LAB-Nodes/actions/workflows/ci.yml)
+
+Twenty-one current ComfyUI nodes for image input, resolution, sampling, masks, finishing,
+output, and assisted prompting, plus four schema-compatible Krea 2 V1 aliases. All
+25 registered class IDs remain in seven consistent `MATRIX LAB` categories.
+
+> **Development package version 0.6.0.dev0.** The pack includes MATRIX WAN 3.0 and
+> MATRIX QWEN IMAGE 2.1 RESOLUTION while retaining all prior nodes and the four Krea 2
+> V1 aliases. Older H3 graphs: read the [H3 guide and migration boundary](docs/nodes/h3-resolution.md).
+
+## MATRIX Krea 2 — AI Influencer 4K (FP8)
+
+Use the included
+[V1 workflow](examples/krea2-v1/MATRIX-Krea-2-AI-Influencer-4K-FP8-V1.ui.json) with
+its [setup and verified scope](docs/krea2-v1.md). The package includes
+`MATRIX_Krea2CLIPLoader`, `MATRIX_Krea2ModelGuard`, the current Metadata Killer,
+and safe handling of valid empty eye masks. Text encoding and diffusion remain on
+GPU. The current RTX 5090 FP8 acceptance is documented in the
+[GPU guard notes](docs/krea2-gpu.md); INT8 is outside that acceptance.
+
+V1 compatibility aliases preserve the saved Spectral, resolution, prompt, and
+image-loader identities. The former two-node finishing chain requires deliberate
+replacement with Photo Finisher; see the [migration guide](docs/migration.md).
+
+## Installation
+
+- **Install it yourself:** follow [INSTALL.md](INSTALL.md).
+- **Ask a coding agent to install it:** provide the repository and require [AGENT-INSTALL.md](AGENT-INSTALL.md).
+
+Install this unified pack as one folder under ComfyUI's `custom_nodes`. Do not enable
+it beside `matrix-krea2-adapter`, the older `MATRIXLAB-Nodes` or
+`MATRIXLAB-UI-Nodes` split packs, a standalone Metadata Killer, or a standalone
+`MATRIX_Wan3` or `MATRIX_QwenImage21Resolution` installation: registrations or
+frontend targeting overlap. Preserve existing packs and workflows, obtain authority
+before disabling them recoverably, and review the [migration guide](docs/migration.md)
+before switching.
+
+## Input & Output (3 current)
+
+- [**MATRIX IMAGE BATCH LOADER**](docs/nodes/image-batch-loader.md) — load and reorder one to ten static input images while preserving each image's dimensions.
+- [**MATRIX METADATA KILLER**](docs/nodes/metadata-killer.md) — save complete image batches as clean JPEG or PNG output without prompt or workflow metadata inputs.
+- [**MATRIX VIDEO METADATA KILLER**](docs/nodes/video-metadata-killer.md) — remux MP4 video/audio into a newly saved native VIDEO while removing descriptive container and stream tags.
+
+## Resolution & Layout (5 current)
+
+- [**MATRIX RESOLUTION**](docs/nodes/resolution.md) — calculate 1K, 2K, 4K, or exact custom pixel dimensions across common aspect ratios.
+- [**MATRIX AI INFLUENCER RESOLUTION**](docs/nodes/ai-influencer-resolution.md) — select 1:1, 9:16, or 3:4 geometry at 1K, 2K, or 4K.
+- [**MATRIX AI INFLUENCER RESOLUTION 2K/4K**](docs/nodes/ai-influencer-resolution-2k4k.md) — use the focused two-tier geometry selector required by current Krea 2 graphs.
+- [**MATRIX H3 RESOLUTION**](docs/nodes/h3-resolution.md) — return exact integer `width` and `height` generation geometry from four canonical widgets.
+- [**MATRIX QWEN IMAGE 2.1 RESOLUTION**](docs/nodes/qwen-image-21-resolution.md) — select one of the seven native Qwen Image 2.1 sizes with a `1:1` default and HALO RESET state.
+
+Resolution nodes return integer geometry. They do not certify that a model supports the selected dimensions.
+
+## Sampling & Detail (4 current)
+
+- [**MATRIX SPECTRAL SAMPLER**](docs/nodes/spectral-sampler.md) — provide a native or spectral progressive ComfyUI sampler from explicit transform and scale controls.
+- [**MATRIX LATENT TAIL**](docs/nodes/latent-tail.md) — run a short latent finishing pass, optionally restricted by a mask.
+- [**MATRIX CROP TAIL PASTE**](docs/nodes/crop-tail-paste.md) — sample a small masked region at crop scale and paste it back into the source image.
+- **MATRIX KREA2 MODEL GUARD** — protect the observed Krea 2 FP8 diffusion-model corruption boundary before compatible LoRAs; see the [GPU guard notes](docs/krea2-gpu.md).
+
+## Masks & Detection (2 current)
+
+- [**MATRIX SKIN MASK**](docs/nodes/skin-mask.md) — build selected human-part masks with an optional person gate and controlled edge finishing.
+- [**MATRIX EYE MASK**](docs/nodes/eye-mask.md) — detect eye boxes and optionally refine them into individual and union masks with SAM.
+
+Model weights are not bundled or downloaded. Both mask nodes require separately acquired, hash-matched assets and compatible runtimes; follow [detector and segmentation setup](docs/detector-setup.md).
+
+## Image Processing (3 current)
+
+- [**MATRIX PHOTO FINISHER**](docs/nodes/photo-finisher.md) — apply deterministic local tone, color, detail, and texture with profile, trim, seed, and optional mask controls.
+- [**MATRIX EASY CROP**](docs/nodes/easy-crop.md) — crop one static ComfyUI input image through visible normalized geometry and return its alpha-derived mask.
+- [**MATRIX OUTPUT STAGE**](docs/nodes/output-stage.md) — resolve an image toward explicit target dimensions through connected model, sampling, VAE, and optional upscale inputs.
+
+Try Photo Finisher without a model or provider using the [included example workflow](examples/README.md).
+
+## Prompting (3 current)
+
+- [**MATRIX AUTO PROMPTER**](docs/nodes/auto-prompter.md) — return an editable saved prompt locally, with an explicit action for assisted prompting from ordered reference images.
+- **MATRIX KREA2 CLIP LOADER** — load the protected Qwen3-VL 4B Krea 2 text encoder for GPU text encoding; see the [GPU guard notes](docs/krea2-gpu.md).
+- [**MATRIX PROMPT**](docs/nodes/prompt.md) — preserve one editable multiline prompt exactly, without AI or provider behavior.
+
+Ordinary graph execution makes no provider request. **Generate Prompt** sends the selected reference images and prompt fields to xAI only after credential setup and explicit paid-use intent; provider charges may apply. Credentials stay outside serialized workflows.
+
+## Video Generation (1 current)
+
+- [**MATRIX WAN 3.0**](docs/nodes/wan3.md) — submit one of five WAN 3.0 operations to WaveSpeed and return a native ComfyUI VIDEO. Every new generation is billable; a user-supplied WaveSpeed key and explicit activation are required.
+
+The WAN node requires ComfyUI 0.37.0, frontend 1.53.6, and PyAV supplied by the
+ComfyUI host. The pack does not install or replace the host's media stack.
+
+## Krea 2 V1 compatibility aliases (4)
+
+Four aliases preserve schema-compatible V1 graph identities:
+`MATRIXSpectralSampler`, `MATRIXLAB_AIInfluencerResolution2K4K`,
+`MATRIXLAB_ImageBatchLoader`, and `MATRIXLAB_PromptDirector`. These registrations
+are included in the 25-ID manifest; they do not add categories or replace the
+current IDs. See [NODES.md](NODES.md) for the exact mapping.
+
+Version 0.4.0 targets both the current and aliased IDs in the unified frontend. The
+exact package was verified in ComfyUI Classic 0.33.3 with frontend 1.49.6 on an RTX
+5090: all 20 IDs loaded from the unified pack, the workflow survived save and fresh
+browser reload, and its frontend export exactly matched the API graph. That evidence predates the H3 addition. The H3 four-widget controls and `width`/`height`
+connections were tested in Classic and Nodes 2.0 on frontend 1.53.6. This H3-specific
+check does not extend the compatibility claims of the other nodes.
+
+The Qwen Image 2.1 resolution controls were verified locally in renderer Classic and
+renderer Nodes 2.0 on ComfyUI 0.37.0/frontend 1.53.6; a Pod run is not tested. The
+Qwen Image 2.1 model is under the Qwen Research License for non-commercial use. This
+geometry table node ships no model and does not change that license.
+
+## Package boundary
+
+The installed `MANIFEST.json` is the machine-readable inventory for the exact
+artifact. The bundled Krea 2 workflow completed 2K with Photo Finisher enabled, 2K
+with it bypassed, and 4K with it enabled on the recorded Classic/RTX 5090 boundary.
+Those runs used a standard manual prompt without a LoRA; the optional Auto Prompter
+provider action was not run. Other hosts, models, LoRAs, provider behavior, and image
+quality choices require their own evaluation.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE); see [NOTICE](NOTICE). The MATRIX LAB
+name and logos are not covered by the license. The bundled Cascadia Mono font has its
+own [SIL Open Font License 1.1](web/assets/CascadiaMono-LICENSE.txt).

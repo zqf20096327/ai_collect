@@ -1,0 +1,401 @@
+<div align="center">
+
+# BOS Bot
+
+**Your own AI team in a group chat. Open source, any model, runs on your own computer.**
+
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-macOS%20%C2%B7%20Windows%20%C2%B7%20Ubuntu-2B2E3A?logo=electron&logoColor=9FEAF9)
+![Agents](https://img.shields.io/badge/agents-Claude%20·%20Codex%20·%20Grok-d97757)
+![License](https://img.shields.io/badge/license-Apache%202.0-38d591)
+
+<a href="https://bos.aihlete.com/download">
+  <img src="https://img.shields.io/badge/Download%20BOS-Mac%20%C2%B7%20Windows%20%C2%B7%20Ubuntu-1084fe?style=for-the-badge&labelColor=070707" alt="Download BOS for Mac, Windows or Ubuntu" height="40">
+</a>
+
+<br><br>
+
+<img src="docs/screenshots/hero.png" alt="A BOS room: tag @ink or @pixel and only that bot wakes up and answers" width="900">
+
+</div>
+
+---
+
+[Get started](#quick-start) · [Documentation](docs/README.md) · [Contribute](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security](SECURITY.md)
+
+## The honest version
+
+BOS Bot is a fork of [OpenMausBot](https://github.com/milind-soni/OpenMausBot) by Milind Soni, an open-source
+take on Grok Bot. I forked it on 2026-09-20 and have put about 650 commits into it since, because it now runs
+my whole agency: a team of bots I talk to from my phone and my Mac, plus my teammates and clients in the
+same chats. Upstream attribution is kept in [NOTICE](NOTICE) and [LICENSING.md](LICENSING.md).
+
+## How it's different from Grok Bot
+
+1. **Multiplayer that doesn't burn your quota.** Put your team, your clients and your bots in one room. Only
+   the bot you @tag wakes up. In Grok Bot every bot in a group reads every message, so a busy group eats your
+   weekly limit fast.
+2. **Open source and model agnostic.** Claude, Codex (GPT), Grok, or any ACP CLI or OpenAI-compatible
+   endpoint. Pick a model per bot, switch mid-conversation, and change the code however you like.
+3. **Free.** No extra subscription. Bots run on the `claude`, `codex` or `grok` CLI already logged in on your
+   machine, so you only pay your AI provider, and the Claude or ChatGPT plan you already have works.
+4. **Hands on your computer.** Bots can drive your own Mac (opt-in, with approval cards), an isolated local
+   VM, or a cloud Linux desktop, and use 500+ apps through Composio.
+5. **Local first.** One small harness server on `127.0.0.1` owns every agent process. Transcripts, keys and
+   events stay on your machine.
+
+## Features
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### Pick a brain per bot
+
+Claude, Codex or a local model, per bot or per thread, with an effort dial. In the room above, ink runs
+on Claude and pixel on GPT, side by side.
+
+<img src="docs/screenshots/model-picker.png" alt="Model picker with provider rail" width="100%">
+
+</td>
+<td width="50%" valign="top">
+
+### Every bot gets a computer
+
+Pick where each bot works: an isolated local VM, a cloud box, a browser, your own Mac, or nothing at all.
+You watch its screen live while it works.
+
+<img src="docs/screenshots/computer-panel.png" alt="Computer panel: choose where a bot works" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Bots ask before they act
+
+Questions, shell commands and file edits show up as cards in the chat. You pick an answer or hit
+Allow / Deny, and the bot carries on.
+
+<img src="docs/screenshots/approval-card.png" alt="A bot asking a question card in chat" width="100%">
+
+</td>
+<td width="50%" valign="top">
+
+### Connected apps
+
+A one-click marketplace over Composio Sessions: Gmail, Slack, GitHub, Notion, Linear and hundreds more.
+OAuth once, and every bot can use them as tools.
+
+<img src="docs/screenshots/marketplace.png" alt="Connected apps marketplace" width="100%">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### Manage bots like chats
+
+Right-click any bot: new thread, split view, pin, make it Chief of Staff, move it to a team, duplicate,
+archive. It's a messaging app, and your bots behave like contacts.
+
+<img src="docs/screenshots/context-menu.png" alt="Bot context menu" width="100%">
+
+</td>
+<td width="50%" valign="top">
+
+### Keys once, everything lights up
+
+Paste an Anthropic, OpenRouter or xAI key once in Settings and every bot can use it. Keys stay on your
+computer, and the UI only ever sees a "configured" flag.
+
+<img src="docs/screenshots/app-settings.png" alt="App-level settings with API keys" width="100%">
+
+</td>
+</tr>
+</table>
+
+### Channels for every context
+
+Keep Work, Personal, and each project in separate channels without cloning your bots. Every channel has
+its own transcript, shared instructions, working folder, responder rules, and editable bot roster. File a
+channel and its bots under a named context, then rename it or change its members whenever the team changes.
+
+### Install a complete team from one Markdown file
+
+Browse outcome-driven teams on [BotMRR](https://botmrr.io), then choose **Add to BOS Bot**. The app
+opens a review screen before creating the bots, Chief of Staff, channels, playbooks, connector checklist,
+and suggested routines. You can also import the same `.md` file from disk or paste its public GitHub URL
+in **Bot marketplace → Add from a file or link**.
+
+The format stays portable: BOS Bot reads the structured YAML frontmatter for a reliable one-click
+install, while Grok, Claude, ChatGPT, and people can follow the ordinary Markdown playbook. Connections
+remain off until you approve them, routines arrive paused, and packages never carry credentials,
+conversations, permissions, memory, or computer access.
+
+Bots BOS Bot publishes itself live in the **Bot marketplace**: download one to run it on your own
+models, or ask to rent it. The catalog is one JSON file, [`shared/marketplace-catalog.json`](shared/marketplace-catalog.json).
+
+### Bots that talk back
+
+Press the speaker on any reply, or switch a bot to read its answers out as they land — so you can listen
+to what ran overnight while you make breakfast. Hit **call** and it's a conversation: it hears you, tells
+you what it's doing while it works, and asks for approvals out loud.
+
+Choose ElevenLabs, Fish Audio, built-in Mac voices, or a local Chatterbox server in an agent profile. Paste a
+cloud key once when needed, pick a voice, and every bot can talk.
+Give a bot its own voice and a channel stops sounding like one person.
+
+**Also in the box:** streaming replies with tool-run activity chips · native macOS dictation from the
+composer mic (on-device Apple speech recognition — desktop app) · SupaMaus cursor mascots with role-aware
+expressions · screenshots of the bot's work folded into the transcript.
+
+## Powered By
+
+<div align="center">
+
+![Claude](https://img.shields.io/badge/Claude-d97757?logo=claude&logoColor=white)
+![Codex](https://img.shields.io/badge/Codex-000000)
+![Grok](https://img.shields.io/badge/Grok%20CLI-000000?logo=x&logoColor=white)
+![Electron](https://img.shields.io/badge/Electron-2B2E3A?logo=electron&logoColor=9FEAF9)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-0F172A?logo=tailwindcss&logoColor=38BDF8)
+![Composio](https://img.shields.io/badge/Composio-e6493a)
+![Cua](https://img.shields.io/badge/Cua%20Driver-1f2937)
+![ElevenLabs](https://img.shields.io/badge/ElevenLabs-000000?logo=elevenlabs&logoColor=white)
+![Fish Audio](https://img.shields.io/badge/Fish%20Audio-2563eb)
+![Polar](https://img.shields.io/badge/Polar-0062ff)
+
+</div>
+
+| Service | Purpose |
+|---|---|
+| **Claude · Codex · Grok** | The agents behind every bot, run through their local CLIs |
+| **Electron** | Desktop shells for macOS, Windows, and Ubuntu |
+| **React + Vite + Tailwind CSS** | The chat app UI and its build |
+| **Box** ([box.ascii.dev](https://box.ascii.dev)) | Each bot's cloud computer |
+| **Composio** | Connected apps — Gmail, Slack, GitHub, and more |
+| **Cua Driver** | Native computer use on your own machine |
+| **ElevenLabs · Fish Audio** | Hosted voices for bots that talk back |
+| **Polar** | One-time and monthly project support |
+
+## How it works
+
+Two processes. The app holds no transports of its own — it sends typed commands over HTTP and folds one SSE
+event stream into state. The harness server owns every agent process and normalizes each provider's native
+protocol into one canonical runtime event stream (logged per-thread as NDJSON).
+
+```mermaid
+flowchart LR
+    subgraph app ["App — React + Tailwind (5199)"]
+        UI[Chat UI · model picker · computer panel]
+    end
+    subgraph server ["Harness server (127.0.0.1:8799)"]
+        REG[Driver registry] --> BUS[Event bus → SSE]
+        BROKER[Permission broker]
+    end
+    subgraph agents ["Agents on your computer"]
+        CL[claude CLI]
+        CX[codex CLI]
+        GR[grok CLI]
+    end
+    UI -- "HTTP commands" --> server
+    BUS -- "one SSE stream" --> UI
+    REG --> CL & CX & GR
+    CL & CX & GR -- "permission requests" --> BROKER
+    server -- "Box API" --> BOX[("Cloud computer<br/>box.ascii.dev")]
+    server -- "Composio Session" --> APPS[("Gmail · Slack · GitHub · …")]
+```
+
+| Layer | Where | What it does |
+|---|---|---|
+| Drivers | `server/drivers/` | One per provider: Claude, Codex, and Grok Build over their local CLIs (stream-JSON / JSON-RPC / ACP), plus a cloud-computer agent. Unknown drivers degrade to "unavailable", never crash the fleet. |
+| Harness | `server/harness/` | Registry (configs → live instances) and the fan-in event bus every client folds. |
+| API | `server/index.ts` | Bots, turns, approvals, model catalog, computer lifecycle, connectors, config — HTTP + SSE. |
+| Voice | `server/tts/` | ElevenLabs, Fish Audio, built-in Mac voices, or local Chatterbox. Cloud keys stay on the harness; markdown is rewritten into something worth hearing before it is spoken. |
+| App | `src/` | The chat shell. Server-backed store, one reducer, zero client-side transports. |
+| Desktop | `electron/` | macOS, Windows, and Ubuntu shells with an embedded harness and platform capabilities; Apple speech stays macOS-only, Ubuntu Xorg has opt-in local control, and Wayland remains fail-closed. |
+
+### Orchestrate BOS Bot over MCP
+
+BOS Bot ships a stdio MCP server for external clients such as Claude Desktop and Cursor. It exposes a
+deliberately bounded team control plane: inspect bots and channels, read/search compact transcript pages,
+create and configure bots/channels/tasks, send work, wait for completion, switch models, and interrupt turns.
+It does **not** expose approval grants, deletion, arbitrary settings, credentials, or computer lifecycle.
+
+See [MCP server setup and tool reference](docs/mcp-server.md).
+
+## Quick start
+
+**Released builds ([download BOS](https://bos.aihlete.com/download)):** the harness server is embedded, so no separate server setup is required.
+
+| | Download | Install |
+|---|---|---|
+| **macOS** (Apple silicon) | [BOS-Bot.dmg](https://bos.aihlete.com/download) | Drag it to Applications, open it. Signed & notarized. |
+| **macOS** (Intel) | [BOS-Bot-intel.dmg](https://bos.aihlete.com/download) | Same app, built for Intel Macs. Signed & notarized. |
+| **Windows** (x64) | [BOS-Bot-setup.exe](https://bos.aihlete.com/download) | Run it — one-click, per-user, no admin rights. The installer isn't code-signed yet, so SmartScreen shows "unknown publisher": **More info → Run anyway**. |
+| **Ubuntu 24.04** (x64) | [BOS-Bot-x64.deb](https://bos.aihlete.com/download) · [BOS-Bot.AppImage](https://bos.aihlete.com/download) | Install the `.deb` with APT (recommended), or make the AppImage executable and run it. Beta; GNOME is the supported desktop. |
+
+See the [Ubuntu Desktop guide](docs/linux-desktop.md) for installation, capabilities, and troubleshooting.
+Any desktop build can also pair as a client to another Windows, macOS, or Ubuntu host over Tailscale; see [desktop-to-desktop companion mode](docs/desktop-companion.md).
+
+
+**From source:**
+
+```sh
+git clone https://github.com/ferazfhansurie/bos-bot && cd bos-bot
+pnpm install
+
+pnpm dev:server    # harness server → 127.0.0.1:8799
+pnpm dev           # app → http://127.0.0.1:5199
+pnpm dev:desktop   # Electron shell; keep the two commands above running
+```
+
+Requirements: **macOS, Windows, or Ubuntu 24.04 x64**, **Node 24+**, **pnpm**, and at least one agent CLI — [`claude`](https://claude.com/claude-code),
+[`codex`](https://github.com/openai/codex), or [`grok`](https://x.ai/cli) — installed and logged in. They appear
+in the model picker automatically.
+
+Package the desktop application:
+
+```sh
+pnpm package:mac      # macOS: DMG + ZIP; requires Swift/Xcode tools
+pnpm package:win      # Windows: installer + ZIP
+pnpm package:linux    # Ubuntu x64: .deb + AppImage + verified CUA runtime
+```
+
+### Desktop capability status
+
+| Capability | macOS | Ubuntu 24.04 Xorg | Ubuntu 24.04 Wayland |
+|---|---|---|---|
+| Packaged app, embedded harness, local agent CLIs | Supported | Beta | Beta |
+| Composio and Box/cloud computers | Supported | Beta | Beta |
+| Explicit preview-only local screen capture | Supported | Beta | Beta |
+| Bot control of this computer | Supported | Beta, explicit opt-in | Disabled: Wayland safety gate |
+| Native on-device dictation | Supported | Planned | Planned |
+
+The Linux preview is user-initiated and never enables local bot control or Auto routing. On Xorg, the reviewed Cua
+Driver 0.19.3 runtime starts only after explicit opt-in and without its full-screen cursor overlay. On Wayland the
+app never starts it and clears legacy opt-ins while that real-seat safety gate remains unresolved. Chat, preview,
+Cloud, and Local VM remain available on both sessions. See the [Ubuntu Desktop guide](docs/linux-desktop.md) and upstream BOS Bot
+tracking issues [#29](https://github.com/milind-soni/OpenMausBot/issues/29),
+[#345](https://github.com/milind-soni/OpenMausBot/issues/345), and
+[#113](https://github.com/milind-soni/OpenMausBot/issues/113).
+
+The Linux packager downloads only the tag-pinned upstream archive during the build, verifies its size, SHA-256,
+complete member allowlist, and inner executable hashes, then packages only the CLI and cursor-theme sidecar. The
+installed app never downloads or self-updates native automation code. Cua's MIT notice, Inter's SIL OFL, a generated
+third-party license report, and a CycloneDX inventory ship with the runtime. See
+[`third_party/cua-driver/`](third_party/cua-driver/) for the reviewed provenance record.
+
+These credentials are optional — local chat works without them. Paste a key once in **App Settings** (gear
+in the sidebar footer) when you want to enable its integration:
+
+| Credential | What it enables | Where to get it |
+|---|---|---|
+| Composio project key (`ak_…`) | Connect Gmail, GitHub, Slack, Notion, and other apps to your bots | [BOS Bot Composio setup](docs/composio.md) |
+| Box API key | Give bots an isolated remote Linux computer with a desktop and terminal | [Box API key guide](https://docs.ascii.dev/box/api-keys) |
+| ElevenLabs key | Read replies aloud, and call your bots | [ElevenLabs API keys](https://elevenlabs.io/app/settings/api-keys) |
+| Fish Audio key | Read replies aloud with Fish Audio voices, and call your bots | [Fish Audio API keys](https://fish.audio/app/api-keys/) |
+
+Composio and Box are third-party services with their own accounts and terms. Box is a paid service after
+its trial, and using a cloud computer may incur charges.
+
+```sh
+pnpm typecheck     # app + server
+pnpm test          # unit, driver, API, and desktop capability tests
+pnpm build         # typecheck + production build
+pnpm check:electron # syntax-check Electron main/preload files
+pnpm package:win   # Windows installer + zip → release/
+pnpm package:linux # Ubuntu x64 .deb + AppImage → release/
+```
+
+### Routines and webhook triggers
+
+Routines can run once, on selected weekdays, or every 5–1,440 minutes, using either a MAUS's configured
+model/computer or the Cloud VM runner. Interval schedules stay aligned to their chosen start time and skip
+an occurrence when the previous run is still active, so slow work cannot build an unbounded queue. A
+separate optional Advanced run limit can safely stop stuck work; no timeout is imposed unless one is chosen.
+The existing duration field remains calendar/display metadata. Webhook triggers are independent from schedules
+but reuse the same queued task executor and calendar
+receipts.
+
+BOS Bot starts a webhook-only receiver on `127.0.0.1:8800` by default (or one port above `BOS_PORT`).
+Set `BOS_WEBHOOK_PORT` to choose another port. A webhook secret is shown once when the trigger is created
+or rotated. Bearer authentication is recommended so the secret stays out of request URLs and most access
+logs; a single capability URL remains available for senders that cannot configure headers. The receiver
+exposes only `/health` and secret `/hooks/...` endpoints; it never exposes the app's broader API.
+BOS Bot must remain running to accept a delivery. For public internet delivery, proxy only this
+dedicated receiver through a hosted relay or a tool such as Tailscale Funnel.
+
+## Status
+
+Early but real — the loop works end to end: message → agent → streamed reply → tools → approvals →
+computer use. macOS, Windows, and Ubuntu 24.04 x64 have released builds; Ubuntu remains a beta with the
+capability limits above. Rough edges to expect: hosted/mobile connectivity is still being built, and webhook
+triggers currently use the local receiver rather than an always-on hosted relay.
+Hosted voice needs an ElevenLabs or Fish Audio key; built-in Mac and local Chatterbox voices need no cloud key. Calls are macOS-only for now (they ride the same on-device dictation as
+the composer mic) — see [`docs/voice-mode.md`](docs/voice-mode.md) for the design and the known gaps.
+
+Contributions welcome — the driver SPI in [`server/contracts.ts`](server/contracts.ts) is deliberately
+small; adding a provider is one file in [`server/drivers/`](server/drivers/) plus a one-line registration.
+No code needed at all for your own engines: any ACP-speaking CLI or OpenAI-compatible endpoint
+plugs in through config — see [`docs/custom-engines.md`](docs/custom-engines.md).
+Users can add their own MCP tool servers with zero code via [`docs/custom-mcp-servers.md`](docs/custom-mcp-servers.md).
+
+## Support
+
+Questions, bugs and feedback: <https://bos.aihlete.com/support>.
+
+## Run from a terminal or on a server
+
+> **Not published for BOS yet.** The `bosbot` package on npm is the upstream
+> project, not BOS. Until a BOS terminal package ships, run BOS from source (see
+> Quick start). The commands below describe the upstream CLI flow this will follow.
+
+The terminal flow: First launch guides you with
+arrow-key choices: choose AI access, sign in or paste a hidden API key, choose
+a model, and optionally connect a phone. Next time, the same command reuses your
+saved setup and opens the local workspace. Keep the terminal open; Ctrl-C stops
+the server, not your saved work. Use `--no-open` to skip opening the browser.
+
+Phone access is optional and defaults to skipping. Choose an explicitly
+approved managed public HTTPS endpoint protected by pairing, an existing
+Tailscale connection, or your own HTTPS reverse proxy. Both native apps pair from
+this flow: the QR is an app link when you are connecting an Android phone, and the
+iOS app takes either that or the web link. A browser works on either phone. A phone
+cannot use a localhost link. `--local` ignores saved remote access for one launch;
+`--no-pair` suppresses phone prompts and invitations but does not disable a saved
+remote connection.
+
+Run `bosbot setup` to reconfigure without resetting bots or conversations;
+the saved model default applies only to new bots. Native setup confirms provider
+sign-in; API setup asks before a potentially billable test message. API keys are
+saved as plaintext, not encrypted, in private `config.json` (`0600` on Unix).
+See the [short setup guide](docs/cli-onboarding.md) for account differences,
+phone choices, credential storage, and cancellation.
+
+For a background service on a VPS or an always-on computer, use
+`npx bosbot serve` with explicit remote options: `--tunnel` after
+`npx bosbot login` for a managed public address, `--tailscale` for your
+tailnet, or the Docker stack for your own domain. These are separate from
+AI-provider sign-in. Devices pair once with a short code. The deployment guide is
+[docs/deploy-vps.md](docs/deploy-vps.md); the reference is
+[docs/self-hosting.md](docs/self-hosting.md).
+
+## License
+
+[Apache License 2.0](LICENSE) © 2026 Milind Soni and OpenMausBot contributors,
+except `enterprise/`, which is source-available under its
+[own license](enterprise/LICENSE); delete that folder and what remains is the
+open-source edition. Details, including how contributions are signed off, are
+in [LICENSING.md](LICENSING.md).
+
+Packaged Cua Driver components retain their upstream MIT, SIL OFL 1.1, MPL-2.0, and other dependency terms;
+the corresponding notices, license texts, source locations, and SBOM are in
+[`third_party/cua-driver/`](third_party/cua-driver/) and ship beside the native runtime.
+
+BOS Bot is an independent, open-source project inspired by Grok Bot. It is
+not affiliated with, endorsed by, or associated with xAI; "Grok" is a trademark
+of its respective owner.
+<!-- branding compatibility (electron/branding-compat.json): data-home: existing desktop and companion homes, backups and lease recovery must open the same data; readme-attribution: Apache attribution to upstream contributors remains intact -->

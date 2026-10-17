@@ -1,0 +1,1167 @@
+# ReqForge
+
+[![version](https://img.shields.io/badge/version-v1.50.0-blue)](CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE) [![English](https://img.shields.io/badge/lang-en-blue)](README.md) [![中文](https://img.shields.io/badge/lang-zh--CN-red)](README.zh-CN.md)
+
+**From requirements to shippable products** — a full AI-guided path for founders, PMs, and indie developers (Spec → Plan → Build → Review → Release).
+
+**Open-source Agent Harness** for Claude Code, Cursor, OpenCode, and Gemini CLI — skills, hooks, memory, and evolution constrain the model so work stays verifiable, not just conversational.
+
+**Harness in one line:** the model is the CPU; the harness is the OS — orchestration, memory, guardrails, and validation so your product **ships**, not just chats. ReqForge targets **requirements → shippable product** (spec, code, release), not consumer “run after you close the chat” life automation. [Maturity checklist →](core/docs/harness-maturity-checklist.md) · [Seven-layer map →](core/docs/agent-harness-seven-layer-map.md) · [Loadout scenarios →](core/docs/loadout-scenarios.md) · [Platform compliance →](core/docs/platform-compliance.md)
+
+> **vs [OpenSpec](https://github.com/Fission-AI/OpenSpec)?** One change at a time. **ReqForge** = **requirements → product** + Harness. [OpenSpec →](core/docs/openspec-comparison.md) · **vs [Superpowers](https://github.com/obra/superpowers)?** TDD/subagents vs full pipeline. [Superpowers →](core/docs/superpowers-comparison.md) · **vs [Open Design](https://github.com/nexu-io/open-design)?** OD = mockups/preview; ReqForge = Spec→code (absorbs discovery checklist). [Open Design →](core/docs/open-design-comparison.md) · **vs [Context7](https://github.com/upstash/context7)?** Library docs injection; use **with** ReqForge. [Context7 →](core/docs/context7-comparison.md) · **vs [RTK](https://github.com/rtk-ai/rtk)?** Shell output compression; optional with ReqForge. [RTK →](core/docs/rtk-comparison.md) · **vs [nanochat](https://github.com/karpathy/nanochat)?** LLM training harness; Forge borrows golden-path / fast-loop discipline. [nanochat →](core/docs/nanochat-comparison.md) · **vs [autoresearch](https://github.com/karpathy/autoresearch)?** Scoped edit + fixed budget + single metric; Forge maps to Spec/Plan lock + Primary metric. [autoresearch →](core/docs/autoresearch-comparison.md) · **vs [llm-council](https://github.com/karpathy/llm-council)?** Multi-LLM peer review; Forge uses role-based council in code-review + spec Step 7. [llm-council →](core/docs/llm-council-comparison.md) · **vs [jobs](https://github.com/karpathy/jobs)?** BLS data + LLM rubric batch scoring (occupations, not job queues); Forge maps to risk_rank + PROJECT-HEALTH. [jobs →](core/docs/jobs-comparison.md) · **vs [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)?** raw/wiki/schema + ingest/query/lint; Forge maps to memory/ + ADR filing. [llm-wiki →](core/docs/llm-wiki-comparison.md) · **Skill self-evolution papers?** [EmbodiSkill](https://arxiv.org/abs/2605.10332) + [SkillEvolver](https://arxiv.org/abs/2605.10500) vs Forge feedback/evolution. [Skill evolution →](core/docs/skill-evolution-comparison.md) · **vs [SkillOpt](https://microsoft.github.io/SkillOpt/)?** Bounded Skill edits + eval validation gate; no in-repo optimizer. [SkillOpt →](core/docs/skillopt-comparison.md) · **Harness as mirror?** Tencent 显形 / 三块石碑 / 不可能三角. [Harness mirror →](core/docs/tencent-harness-mirror-comparison.md) · **vs [Matt Pocock Skills](https://github.com/mattpocock/skills)?** Composable daily engineering vs full pipeline; Light Grill absorbed. [Matt Pocock →](core/docs/mattpocock-skills-comparison.md)
+
+**No npm install required to use the framework** — copy adapter files into your project and open your AI client. Node.js + pnpm are only needed if you contribute to this repo or run `scripts/`.
+
+### Architecture at a glance
+
+```mermaid
+flowchart LR
+  subgraph inputs [You]
+    Idea[Idea / change]
+    DomainIn[Unfamiliar domain]
+    Ambig[Ambiguous request]
+  end
+
+  subgraph forge [ReqForge Harness]
+    Route[request-dispatcher]
+    Domain[domain-mapper]
+    Spec[product-spec-builder]
+    DBr[design-brief-builder]
+    DMk[design-maker]
+    Chg[change-manager]
+    Plan[dev-planner]
+    Build[dev-builder]
+    Rev[code-review / bug-fixer]
+    Rel[release-builder]
+    Hooks[10 hooks + evolution]
+    Mem[memory/ 3-tier]
+  end
+
+  subgraph clients [AI clients]
+    CC[Claude Code]
+    CU[Cursor]
+    OC[OpenCode]
+    GC[Gemini CLI]
+  end
+
+  Ambig --> Route
+  DomainIn --> Domain
+  Domain -.-> Spec
+  Idea --> Spec
+  Spec --> DBr
+  DBr --> DMk
+  DMk -.-> Plan
+  Spec --> Plan
+  Idea --> Chg
+  Chg --> Plan
+  Plan --> Build
+  Build --> Rev
+  Rev --> Rel
+  Hooks -.-> Build
+  Mem -.-> Build
+  forge --> clients
+```
+
+| Section | Description |
+|---------|-------------|
+| [Installation & Usage](#installation--usage) | Clone, copy adapters, hooks, first run |
+| [Workflow](#workflow) | Spec → Plan → Build → Release (brownfield: `/change-manager`) |
+| [Requirements depth](#requirements-depth-pm-frameworks--chain-of-thought) | PM frameworks + CoT in product-spec-builder |
+| [Agent execution discipline](#agent-execution-discipline-8-rules) | Plan-before-act, read-before-edit, minimal diff, tests before done |
+| [Karpathy behavior discipline](#karpathy-behavior-discipline-4-principles) | Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven |
+| [Framework Development](#framework-development) | Tests, sync, `pnpm forge-smoke`, dependency graph (contributors) |
+
+---
+
+## What's New
+
+### v1.51.0 — 2026-07-18 — agents-cli flywheel: skill-eval compare/analyze + shortcuts
+
+- **Quality Flywheel**: `pnpm skill-eval compare|analyze` (+ `--judge`); each run appends `run-history.json`. Inspired by [google/agents-cli](https://github.com/google/agents-cli).
+- **Shortcuts to Resist + 三类证据**: `core/skills/_shared/shortcuts-to-resist.md` — code tests ≠ skill-eval ≠ forge-verify.
+- **Iron Law 10**: Re-read Skill at phase entry (context compaction). Bootstrap + quickref updated.
+- **Docs**: [agents-cli-comparison.md](core/docs/agents-cli-comparison.md).
+
+### Unreleased
+
+#### code-review skill 2.3.0 (contract cleanup)
+
+- **Canonical scoring 1–5**: findings use severity / impact / confidence (each 1–5) → `risk_rank`; thresholds confidence ≥4 confirmed, =3 suspected, ≤2 suppressed. Legacy 0.0–1.0 still accepted via mapping.
+- **Single workflow source**: `references/workflow.md` Steps 1–5 only; aggregator agent no longer embeds a divergent step table. Simple reviews skip Step 2 dispatch but still Scan → Aggregate.
+- **Mode A docs aligned**: workflow no longer claims Cursor/Gemini are sequential-only; matches `multi-perspective-dispatch.md`.
+- **Language-aware verify gate**: prefer `pnpm forge-verify` / `.forge/dev-map.md` — not hardcoded `tsc --noEmit`.
+- **Priority derived** from Must-fix / Should-fix / Insight; performance checks owned by bug dimension; types reviewer is stack-aware; no-UI skips UI Consistency.
+- **Eval**: review cases assert `review-report.md` (verdict / risk_rank / buckets), not only Spec text.
+
+#### Quote `argument-hint` for Copilot CLI ([#11](https://github.com/zxpmail/ReqForge/pull/11), closes [#10](https://github.com/zxpmail/ReqForge/issues/10))
+
+- **Bare `argument-hint: [foo]` is a YAML array** — Copilot CLI ≥1.0.65 validates it as `str` and silently drops the skill. Wrap as `argument-hint: "[foo]"` (thanks [@thejesh23](https://github.com/thejesh23)).
+- **Follow-up**: quote `domain-mapper` as well; `validate-skill` now **errors** on bare `argument-hint: [` so this cannot regress.
+
+#### Smoke gate hardening from [#8](https://github.com/zxpmail/ReqForge/pull/8) (option A only)
+
+- **`skill-fixtures`**: shared `unquote()` for list + scalar YAML values; reference search includes filenames.
+- **`test-demo/todo-cli`**: `fileParallelism: false` to avoid shared-storage races under vitest.
+- HARD-GATE SKILL anchors were already present on main; greenkeeper skill half of #8 superseded by in-tree `/reqforge-greenkeeper`.
+
+#### Audit cleanup (docs + verify + gates honesty)
+
+- **confidence_5 ≥ 4** for bug-fixer / dev-builder handoff from code-review (legacy ≥ 0.6 still accepted).
+- **Overstepping Gate**: CLAUDE.md distinguishes *procedural* enforcement (Step 8.5 / `files_to_modify`) vs *hook-level* deferred detector.
+- **Language-aware compile**: shared `scripts/lib/compile-check.mjs` used by `forge-verify` + `forge-bug-fix`; skill checklists aligned. `pre-commit-check` stays **TS-only by design** (documented); sh/bat README order check now equivalent (exit 2).
+- **forge-verify**: **9** checks documented — #9 `content-quality` is config probe only; semantic pipeline stays `forge-verify-content`.
+- **forge-smoke**: `SMOKES` single source in `lib.mjs`; vitest checks registry only (CI executes via `run-all`); docs **15** items.
+- **loadout-scenarios**: skill counts aligned to JSON (then full +1 for greenkeeper → 15/13/9/9/5).
+- **validate-skill**: slash-command files must declare `argument-hint` (incl. `""`); `request-dispatcher` filled.
+- **Docs**: wiki Home → v1.50.0; karpathy Overstepping honesty; DEV-PLAN/CONTEXT/security-guidance wording.
+
+#### `/reqforge-greenkeeper` (replaces PR #8 skill half)
+
+- New **framework-repo** maintenance Skill: diagnose/fix `pnpm test` / `pnpm forge-smoke` / adapter drift / fixtures — not for user-app bugs.
+- Wired into `full` loadout + CLAUDE Dispatch; Skill count **15**; smoke `skills-complete` / `adapters-sync` expect 15.
+- Closes the unfinished greenkeeper half of [#8](https://github.com/zxpmail/ReqForge/pull/8) (smoke half already on main).
+
+### v1.50.0 — 2026-07-11 — forge-verify LLM layer: protocol-adaptive, honest degradation
+
+- **LLM protocol-adaptive layer**: L2 and C2 route through a unified `llmComplete()` that picks protocol from `ANTHROPIC_BASE_URL` — containing `/anthropic` → Anthropic Messages (e.g. Zhipu GLM's `/api/anthropic` gateway, the same path Claude Code uses), otherwise → OpenAI Chat Completions (e.g. deepseek). One `ANTHROPIC_*` env works across both endpoint families with no code change. Previously every call was hardcoded to OpenAI and stripped `/anthropic`, so under a GLM env every L2/C2 call hit HTTP 403.
+- **C2 honest degradation**: C2 (per-requirement LLM) now records API/parse errors (non-2xx, empty body, network) as non-votes → `UNCLEAR (C2_api_errors)`, never a false `REJECT (execution-lapse)`. An unreachable model no longer reads as "the agent did sloppy work". L2 already behaved this way (`API_ERROR`/`API_PARSE_ERROR` non-votes → L3 UNCLEAR); C2 now matches.
+- **`--runs`/`--task`/`--files` honored under `--from-config`**: the CLI override block sat inside parseConfig's else branch, so `--from-config --runs 1` was silently ignored (always 3). Overrides now apply in both modes.
+- **Tests import production pipeline**: `test-evidence-gate.mjs` imports `evidenceGateCheck`/`contractRegexCheck`/`perRequirementLlmCheck` from `content-verify.mjs` (now exported; `main()` guarded by `import.meta.url`) instead of inline copies that had drifted — the inline C2 was still on the old OpenAI-only protocol. −171 lines, zero drift.
+- **Fixed — content-verify unloadable since v1.49.0**: a duplicate `const trace` (SyntaxError) left by the chain-of-evidence commit meant `content-verify.mjs` could not parse or run at all. Removed.
+
+### v1.49.0 — 2026-07-09 — Weng harness survey: editable surface, failure_class, held-in/held-out, trace, harness search
+
+- **Editable surface**: `.forge/editable-surface.json` defines explicit read/write paths for evolution engine, excluding evaluator code (`scripts/forge-verify/`) and gate config from evolution scope. Inspired by DGM (Zhang et al. 2025): evaluator and permission control must live outside the loop.
+- **failure_class on forge-verify stages**: Each REJECT/UNCLEAR verdict carries failure_class (`execution-lapse`, `skill-defect`, `unset`), bridging verification pipeline to feedback-observer for automatic evolution triggering.
+- **Held-in/held-out proposal validation**: Evolution proposals carry `held_in_files` (target failures) and `held_out_files` (regression check). Both splits must PASS before proposal is finalized. Inspired by Self-Harness (Zhang et al. 2026).
+- **Chain-of-evidence trace**: Each forge-verify stage output includes `evidence` field referencing the source file or evidence file that produced the verdict. Final output includes `trace.chain` with per-stage evidence trail. Inspired by ScientistOne (Meng et al. 2026).
+- **Model staleness detection**: Rules graduated under older model versions can be proposed for retirement when current model no longer needs them. Prevents circular evolution.
+- **Harness search space**: `.forge/harnesses/` directory with candidate registry and template for config-level crossover. Evolution-engine [Harness Search] section defines the pattern for generating and evaluating config variants. Inspired by Meta-Harness (Lee et al. 2026).
+- **Tests**: `test-dfv2-failure-class.mjs` (20 DF v2 scenarios × deterministic layers), `test-evidence-gate.mjs` (EG→C1→C2 pipeline, 12/12 pass).
+
+### v1.48.6 — 2026-06-27 — DESIGN.md token freeze ([Google design.md](https://github.com/google-labs-code/design.md))
+
+- **design-maker v1.1.0**: After mockup verification, freezes root `DESIGN.md` (YAML tokens + design rationale) alongside ephemeral `UI-Spec.md`. Template + workflow: `core/skills/design-maker/templates/design-md-template.md`, `references/design-md-freeze.md`.
+- **dev-builder**: Style priority — `DESIGN.md` > design tool MCP > `Design-Brief.md` (Brief stays direction-only, no hex).
+- **quickref**: New "Design chain & DESIGN.md" section; distinguishes root `DESIGN.md` from OpenSpec `changes/<name>/design.md`.
+- **Optional lint/export**: `npx -p @google/design.md designmd lint DESIGN.md` (Windows: use `designmd` alias).
+
+### v1.48.5 — 2026-06-27 — Per-finding `action` taxonomy (borrowed from [no-mistakes](https://github.com/kunchenguid/no-mistakes))
+
+- **New `action` field on every review finding** (`auto-fix` / `ask-user` / `no-op`) — answers "who fixes this", orthogonal to severity/risk_rank and the Must-fix/Should-fix/Insight buckets. The 4 specialist reviewers assign it; the aggregator (`code-reviewer`) propagates + counts it unchanged.
+- **Intent-sensitive findings stop being auto-fixed**: `dev-builder` Step 14.6 routes by `action` — `ask-user` findings (intent / product-behavior / pre-existing dead-code / S5-aesthetic decisions) trip **immediate escalation** (set `.forge/.retry-counter.json` `state=escalated` *without* consuming a retry round) and surface the existing A/B/C options; only `auto-fix` flows to `bug-fixer`; `no-op` is logged only. Reuses `retry-gate.sh` — no hook or loop code added.
+- **Non-breaking**: a missing `action` is treated as `auto-fix` (fail-open = prior behavior). New shared doc `core/skills/_shared/finding-actions.md`.
+
+### v1.48.4 — 2026-06-25 — `forge-install` Windows auto-detection (dogfood #2)
+
+- **`forge-install` Windows auto-detection broken since v1.14.2**: `parseInstallArgs` defaulted `windows: false`, but the `?? process.platform` fallback never triggered (`false` ≠ `undefined`), so fresh Windows installs got Unix-style `settings.json` (`.sh` + `bash`) — all hooks silently dead for ~1 month — unless `--windows` was passed explicitly. Default is now `process.platform === "win32"` at the CLI parse layer. (`scripts/install.ts`, `scripts/__tests__/install.test.ts`)
+
+### v1.48.3 — 2026-06-19 — Spec-Distillation Mode (issue #7)
+
+- **New optional spec mode — Distillation**: the spec-stage anti-sycophancy step. On a fuzzy one-liner it runs 4-path *inference* (real need / competitors / domain patterns / tech feasibility) instead of Q&A, cross-validates against what the user said, and outputs a `✅/⚠️/❓` Distillation Map → hands off to 0-to-1/Quick. Keyword-gated (`distill` / `蒸馏`); the default path is unchanged. Mirrors critique-gate (post-spec) and plan-critique-check (planning).
+- **forge-spec-distill**: verifier for Distillation Maps (4 paths, evidence-backed `⚠️`, density quota, sycophancy gate).
+
+### v1.48.2 — 2026-06-19 — Post-release audit: fixes + test coverage
+
+- **Documented `forge-*` commands fixed**: `forge-scaffold`, `forge-coverage`, and `forge-skill-retrieve` were advertised in README/CHANGELOG but missing from `package.json` (failed with "Missing script"); now registered.
+- **Broken skill-reference links repaired**: two relative links in `product-spec-builder` and `dev-planner` references were one directory level too shallow and pointed at nonexistent paths.
+- **Test coverage for `sync.ts` agent-transform logic**: 8 new unit tests for `adaptAgentContent` (model-alias normalization) and `AGENT_DIR_SKIP` (suite 154 → 162).
+- **Hygiene**: DEV-PLAN phase count corrected (1–13 → 1–16); wiki Home version/date refreshed; one-off `split-skill-references.mjs` archived to `scripts/archive/`; CONTEXT.md rewritten to current state.
+
+### v1.48.1 — 2026-06-19 — Cross-platform agent dispatch (Mode A) fully delivered
+
+- **Platform→Mode A/B mapping corrected**: verified all four target platforms (Claude Code, OpenCode, Cursor 2.4+, Gemini CLI v0.38.1+) support native isolated subagents as of 2026-06. Cursor/Gemini were previously classed Mode B against pre-subagent versions.
+- **Cursor adapter path fix**: agents now ship to `.cursor/agents/` (Cursor 2.4 subagent location); the 4 code-review reviewers gained cross-platform frontmatter.
+- **Per-platform model normalization**: `sync.ts` normalizes Claude-specific `opus`/`sonnet`/`haiku` → `inherit` for non-Claude adapters (preserves opus pinning on Claude Code). Agent dispatch is now genuinely cross-platform.
+
+### v1.48.0 — 2026-06-18 — Anti-sycophancy hardening + product size detection
+
+- **Critique Gate density quota**: 3 evidence-backed findings required. Below quota → re-scan. 0 findings + proceed → mandatory re-scan. Prevents LLMs from faking critique with adversarial tone but no substance.
+- **Evidence schema**: All three Critique Gate signal tables now require spec citations (`§section` or `"spec quote"`). Findings without evidence don't count toward quota — prevents unfalsifiable criticisms.
+- **critique-of-critique**: `pnpm forge-spec-critique --critique` analyzes critique output for fake-critique phrases vs substantive evidence. Outputs sycophantic/low-critique/shallow/adequate/rigorous verdict.
+- **Plan Critique Check**: Anti-sycophancy gate for dev-planner — challenges Phase Order, MVP Scope, and Tech Stack before writing DEV-PLAN.md.
+- **Product size detection**: `pnpm forge-size-detect <Product-Spec.md>` auto-detects product scope and recommends gate level. Small products (CLI, ≤4 features, no auth/DB) → `light`; medium/large → `full`. Writes to `.forge/gate-config.json` with `--write-gate-config`.
+- **TBD overflow gate**: Hook blocks writes when Spec has >5 `[TBD]` markers — prevents deferring hard decisions as a sycophancy pattern.
+- **Quick Mode density check**: Quick Mode now requires ≥1 substantive concern before presenting Spec.
+- **Gate downgrade risk warning**: `light`/`none` gate levels now presented as risk-bearing, not neutral shortcuts.
+
+### v1.47.0 — 2026-06-18 — Simplification intensity dial + over-engineering check + debt harvesting + safety boundaries
+
+- **Simplification intensity**: `FORGE_SIMPLIFY=off|lite|full|ultra` in `.forge/config` — controls how aggressively the agent applies YAGNI and code simplification. Safety boundaries (input validation, data loss, security, accessibility) never simplified regardless of level.
+- **forge-simplify-check**: `pnpm forge-simplify-check` — light over-engineering review scanning for single-use interfaces, single-method classes, speculative generics, bloated files, and commented-out code. Lighter than `/code-review`.
+- **forge-debt**: `pnpm forge-debt` — harvests `// NOTE:` simplification markers into a structured tech debt ledger at `.forge/debt-ledger.md`.
+
+### v1.46.0 — 2026-06-18 — forge-ecosystem: global library cache
+
+- **forge-ecosystem**: `pnpm forge-ecosystem search|add|refresh|get|status` — global per-language library recommendation cache at `~/.forge/ecosystem/<lang>.json`. Search-on-miss: check cache before Context7/WebSearch. Cold-start defaults for TypeScript, Python, Go, Rust, Java. Pick from `.forge/ecoresult.json`.
+- **Ecosystem Cache First principle**: dev-builder agents now check ecosystem cache before online library lookup. Opt-out via `FORGE_ECOSYSTEM=off` in `.forge/config`.
+
+### v1.45.0 — 2026-06-14 — forge-bug-fix diagnose --scenario + ReqForge-specific debugging strategies
+
+- **forge-bug-fix diagnose --scenario**: Three new scenario-specific diagnostic modes — `compile` (tsc+imports+tsconfig), `config` (git+env+deps+ports), `data` (encoding+JSON+CRLF+large files). Target the right checks without generic overhead.
+- **ReqForge-specific debugging strategies**: debugging-strategy.md enriched beyond generic 4-stage methodology — Stage 1 leverages dep-graph blast radius, trace history, project-memory known pitfalls, and scenario-specific diagnose; Stage 2 uses classify/bisect; Stage 3 adds trace capture and three-strikes stall; Stage 4 adds forge-bug-fix verify.
+- **Multi-language support**: dev-map template now includes a required Tech Stack section (Language/Build/Test/Lint/Source). dev-planner and dev-builder auto-fill it during 0-to-1. dev-builder, code-review, and bug-fixer adapt commands and review dimensions per declared language. forge-install outputs CLAUDE.md (not AGENTS.md) for claude-code client.
+
+### v1.44.0 — 2026-06-09 — Critique Gate + Spec Experiment Tools
+
+- **Spec Critique Gate**: Pre-writing adversarial scan after Multi-Stakeholder Review — three structural signals (Hidden Assumptions, Unchallenged Decisions, Scope That Should Be Cut) counteract LLM sycophancy bias. Validated by three-round experiment: 5:0 blind eval, +5.2 risk visibility, +4.2 rework resistance. 0-to-1 workflow default on.
+- **forge-spec-critique**: Automated spec critique scoring tool. `--critique` mode for critique-of-critique analysis.
+- **forge-size-detect**: Product size detection from Product-Spec.md. Auto-recommends gate level (`light` for small products, `full` for larger).
+- **forge-spec-blind-eval**: Automated A/B blind evaluation experiment for spec quality validation.
+
+### v1.43.0 — 2026-06-08 — Multi-Stakeholder Review + forge-bug-fix bisect/classify
+
+- **Spec Multi-Stakeholder Review**: Pre-writing structured scan across Business, Technical, Experience, and Scope/Risk perspectives — each returning ok/clarify/blocked verdicts. 0-to-1 workflow default on.
+- **forge-bug-fix bisect**: Auto git bisect to find the commit that introduced a bug.
+- **forge-bug-fix classify**: Pattern-based error classification (compile/runtime/logic/data) with severity and fix recommendations.
+
+### v1.42.0 — 2026-06-08 — /domain-mapper Skill
+
+- **/domain-mapper**: New skill for researching and mapping any domain (industry, technology, codebase, market) into structured Markdown databases. Depth levels L1/L2/L3. Independent of the spec→build pipeline — use before writing a spec when entering an unfamiliar domain.
+
+### v1.41.0 — 2026-06-07 — Workflow Cookbook + GC Audit Routing
+
+- **Workflow cookbook**: `core/docs/workflow-cookbook.md` — 7 recipes (熔断循环 / Multi-Modal Sweep / Adversarial Verify / Judge Panel / Pipeline / Completeness Critic / Retry Guard) + 3 assembly examples (review→fix, spec→ship, feedback→evolve).
+- **GC audit routing**: New platform-agnostic decision table for audit depth allocation — Minor/Major/Full GC based on change impact scope. Includes change tracking card (Card Table) and assumption registry formats.
+- **Agent dispatch platform-agnostic proposal**: Issue #6 — moving hardcoded code-review agent names from workflow.md to platform-independent reference docs.
+
+### v1.40.0 — 2026-06-07 — Model-to-Model 2.5 Layer
+
+- **UI-Spec.md — model-to-model 2.5 layer**: design-maker auto-generates a structured UI spec during verification; dev-builder reads it at startup instead of guessing structure from pixels. Ephemeral (not committed). (`core/templates/ui-spec-template.md`)
+- **Machine gate recovery options**: Block messages include numbered recovery steps for spec-before-code, plan-before-build, idea-validation, implementer, and hallucination gates. (`scripts/hooks/spec-before-code-gate.mjs`)
+- **Attention summaries across 7 skills**: Action summaries in first-principles.md for bug-fixer, code-review, change-manager, release-builder, dev-planner, product-spec-builder, design-brief-builder.
+- **Self-review for bug-fixer & release-builder**: Hot-context self-review step in both workflows.
+- **Anti-ai-slop guardrails restored**: 7 removed check items restored across 5 skills.
+- **2.5-layer-manifesto §5.6**: Model-to-model 2.5 layer principle (EN + ZH). (`docs/2.5-layer-manifesto.md`)
+
+### v1.39.0 — 2026-06-06 — The 2.5 Layer Release
+
+**Design philosophy**: From shackles to anchors — working *with* the model's pattern-matching instead of fighting it.
+
+- **Spec difficulty markers** (`## Known Difficult Spots`): 🔴/🟡/🟢 per module. dev-planner propagates to DEV-PLAN Phases. dev-builder adjusts execution speed (🔴 = slow + self-review, 🟢 = fast pass). New difficulties auto-appended via 善刀而藏之.
+- **Anti-slop reform for all 6 skills**: All anti-ai-slop-checklists converted from "10 don't rules" to "3 perfect anchors + light checklist" — dev-builder, bug-fixer, change-manager, code-review, design-brief-builder, release-builder. LLMs are pattern matchers, not rule followers.
+- **Phase 1 catalyst (放下骨架)**: Phase 1 explicitly builds domain models, types, and interfaces as the project's structural anchor. All subsequent Phases naturally continue from this anchor.
+- **Self-review round** (step 9.5): After implementer returns, one self-review pass in the same hot context before external code-review. Catches shallow issues while attention is still warm.
+- **Attention layout optimization**: Critical "what to do NOW" info positioned at the END of each reference file (recency bias). Background principles at the BEGINNING (primacy bias).
+- **善刀而藏之 closing ritual**: Mandatory 5-step Phase completion — review, celebrate, append hidden difficulties to Spec, log decisions, clear context.
+- **Change-manager auto-rollback**: `pnpm forge-change snapshot|restore <name>` — pre-change file snapshotting and automatic restore on verify failure.
+- **Security rules template**: `core/templates/security-rules-template.md` — 3 hard rules: no hardcoded secrets, validate all inputs, audit sensitive operations. + PII-in-logs constraint (GDPR).
+- **Design-maker multi-alternative + gradual refinement**: `--alternatives N` generates N design variants with cross-comparison table. Gradual refinement delivers in 3 tiers (structure → interaction → edge cases).
+- **Benchmark**: Side-by-side comparison of old anti-slop vs new anchor approach on todo-cli. Both pass all tests; new approach produces 15% shorter code.
+- **Design manifesto**: `docs/2.5-layer-manifesto.md` (Chinese) and `.en.md` (English) — full article explaining the philosophy, with anchor selection guide and troubleshooting.
+- **Dashboard Web UI**: Decision not to build — Forge users live in CLI.
+
+### v1.38.0 — 2026-06-06
+- **Template marketplace**: `forge-scaffold init <template> [dir]` — 4 project starters (next-fullstack, cli-tool, express-api, electron-app) with skeleton files + loadout recommendations. `forge-scaffold list-templates` to browse.
+- **Gemini CLI adapter**: `adapters/gemini-cli/` — 4th AI client adapter. `.gemini/GEMINI.md` control file, subagents in `agents/`, skills via `pnpm sync`. All 1052 files in sync across 4 adapters.
+
+### v1.37.0 — 2026-06-05
+- **forge-evolve**: `pnpm forge-evolve status|scan|propose|apply` — evolution engine loop closure. Backfilled 3 feedback entries with failure_class and scores. Level 2 (occurrences >= 3) and Level 3 (low avg scores) candidate detection. Wired into forge-loop completion paths.
+- **forge-change**: `pnpm forge-change init|list|check|archive` — change management automation. Scaffolds change directories from templates, 8 E2E tests.
+- **forge-release**: `pnpm forge-release version|changelog|tag|check|all` — release automation pipeline. Version bump, changelog generation, git tag, pre-release check.
+- **forge-evidence**: three-tier evidence grading (dev/lead/client reports). Always-on in forge-loop.
+- **forge-skill-eval status + judge-all**: centralized eval dashboard + batch judge-config deployment to all 13 skills.
+- **forge-coverage + forge-scaffold + forge-step-capture + forge-skill-retrieve**: new automation scripts for coverage gaps, project scaffolding, trajectory capture, and skill retrieval.
+- **forge-ops 完整化**: Slack/Feishu notifications, auto-deploy mode, baseline comparison.
+
+### v1.36.0 — 2026-06-04
+- **Quality Rubric for all 13 skills**: domain-specific 8-16 item scoring rubric (ship threshold + critical-item-zero rule) for every core Skill. Run `pnpm validate-skill --score core/skills/<name>`.
+- **Dimension checklists for 9 skills**: formal `references/dimension-checklist.md` with Must-Have/Recommended/Optional tiers — bug-fixer, change-manager, dev-builder, release-builder, design-maker, evolution-engine, feedback-writer, request-dispatcher, skill-builder.
+- **Anti-rationalization for 6 skills**: change-manager, design-brief-builder, design-maker, evolution-engine, feedback-writer, release-builder — domain-specific Rationalization|Reality tables to prevent AI from skipping critical steps.
+- **Anti-ai-slop checklists for 5 skills**: bug-fixer, change-manager, dev-builder, code-review, release-builder — 7-9 item pass/fail pre-delivery self-checks wired into workflows.
+- **references/ filled for request-dispatcher and skill-builder**: gained first-principles, output-style, workflow, anti-rationalization files (skill-builder Output Style is new, previously absent).
+- **Eval packs verified**: all 13 skills pass `pnpm skill-eval <name>` static checks.
+
+### v1.35.14 — 2026-06-04
+- **Skill eval packs for all 13 core skills**: every framework Skill now has `.forge/skills/<name>/eval/` with `triggers.json` (2 positive + 2 near-miss negative trigger cases) and `cases.json` (output assertions: fileExists + maxBytes + regexChecks). `pnpm skill-eval <name>` static check passes on all skills. Enables regression detection and trigger accuracy verification for every Skill.
+- **References from lenny-skills**: [RefoundAI/lenny-skills](https://github.com/RefoundAI/lenny-skills) 86-product-skill repo reviewed. Adopted `references/` subdirectory pattern and standalone `[Questions]` section as next quality improvement directions.
+
+### v1.35.13 — 2026-06-03
+- **forge-hashline verify-brief/apply-brief**: `pnpm forge-hashline verify-brief <brief-path>` — parses fix-brief.md `**Hashline**:` entries and checks every hash anchor against current files. `--after-fix` mode verifies AI actually applied the edits (UNCHANGED/MISSING/STALE detection). `pnpm forge-hashline apply-brief <brief-path>` auto-creates files marked as `(新文件)`. Integrated into forge-loop and forge-phase-loop: auto-verify on brief generation, auto-verify on next iteration, auto-create new files. Breaks the string-matching retry deadlock.
+- **forge-hashline**: `pnpm forge-hashline hash|verify|edit <file>` — SHA256 content-hash anchored editing. `hash` prints file hash, `verify` checks integrity, `edit` replaces content only if hash matches (STALE_ANCHOR rejection prevents dirty writes). Supports `--lines N:M` for block hashing. CRLF→LF normalization for cross-platform consistency.
+- **sync --discover**: `pnpm sync:discover` — drift detection between core/ and adapters/. Compares file hashes and reports drifted (same path, different content), orphan (adapter-only), missing (core-only). 624 files in sync across 3 adapters at inception.
+- **forge-loop --strict/--linear**: `--strict` stops on first test failure and outputs `review.md`; `--linear` runs single detect→test→report pass without iteration loop.
+- **skill-eval trigger**: `pnpm skill-eval trigger <skill>` — auto-generates 20 diverse queries from SKILL.md, runs static checker, logs results. Judge scaffolding: `judge-prep` initializes rubric config, `judge` prints AI-readable brief, `judge-record` saves results.
+
+### v1.35.11 — 2026-06-01
+- **forge-phase-check**: `pnpm forge-phase-check <N>` — parses DEV-PLAN.md Phase N checklist, cross-references `git diff` against deliverables/keyfiles/acceptance items. Outputs omission/completion/redundancy report. Pure mechanical comparison, no AI judgment. (`--json` for programmatic use)
+- **forge-phase-loop**: `pnpm forge-phase-loop <N>` — single-iteration auto-completion. Runs check, generates `.forge/phase-loop/fix-brief.md` with structured fix instructions for each omitted item. Supports `--max` (default 5) and `--reset`. Designed for YOLO + loop workflows: iterate check→fix→re-check until clean.
+- **ref-lint**: `skill-eval run` now checks SKILL.md for mismatched numeric references (e.g. "four dimensions" but only 3 items listed). CN/Arabic/EN numeral support with 20+ quantifiers. ([OpenSpec article](https://mp.weixin.qq.com/s/iSWtR665phTo5dv8sHFgqA) inspired)
+- **Windows hook fix**: CRLF `.sh` files caused "cannot execute binary file" on Git Bash. `.gitattributes` enforces `*.sh eol=lf`. Platform-split settings: hooks in `settings.unix.json` (`.sh`) / `settings.windows.json` (`.bat`), `settings.json` empty.
+- **forge-ui-check**: `pnpm forge-ui-check <N>` — scans DEV-PLAN.md for UI checklist items, checks file existence, auto-generates Playwright tests (form/button/input/nav/page assertions) with `--url` for dynamic browser validation.
+- **forge-ui-loop**: `pnpm forge-ui-loop <N>` — UI auto-completion loop. Runs check, generates `.forge/ui-loop/fix-brief.md`, supports `--url`/`--max`/`--reset`. YOLO: check → fix → re-check until UI passes.
+- **forge-loop**: `pnpm forge-loop` — 下班前跑这条命令，第二天来就完事了。
+
+### v1.35.10 — 2026-05-30
+- **Output Status Protocol**: New `_shared/output-status-protocol.md` — every Phase/output ends with `[Decision]` / `[Assumption]` / `[Next]` / `[Status]` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT). Wired into product-spec-builder, dev-planner, bug-fixer, change-manager, dev-builder Output Style sections. ([Digidai/product-manager-skills](https://github.com/Digidai/product-manager-skills) output contract inspired)
+- **ETHOS principles**: Three shared output principles (`Thinking Before Templating`, `Opinions With Tradeoffs`, `Compression Over Completeness`) added to `_shared/output-style-concise.md`
+
+### v1.35.9 — 2026-05-30
+- **Skill Taxonomy (P7-lite)**: Three-tier classification (`workflow` / `interactive` / `component`) + `intent` field added to all 13 `skill.json` files. New `core/docs/skill-taxonomy.md` with classification table, decision criteria, and rationale. `validate-skill.mjs` extended to enforce `tier` (required enum) and `intent` (required string). Propagated to all 3 adapters. ([Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills) taxonomy inspired)
+
+### v1.35.8 — 2026-05-26
+- **Prompt slimming**: `change-manager` SKILL index-only (~11k→~4.7k); brownfield workflow → `references/workflow.md`
+
+### v1.35.7 — 2026-05-26
+- **Prompt slimming (P6)**: `CLAUDE.md` General Rules pointerized (~7.9k→~5.3k); details → `forge-quickref` §通用规则; removed duplicate `[Available Skills]` block
+
+### v1.35.6 — 2026-05-26
+- **`forge-install --loadout`**: install only loadout skills/agents + hooks; writes `.forge/loadout-active.json`
+
+### v1.35.5 — 2026-05-30
+- **Prompt slimming (P4)**: `bug-fixer` (~14k→~5k) and `code-review` (~11k→~4.5k) SKILL index-only; four-stage debug/review workflows → `references/`; retry-gate and parallel reviewers unchanged
+
+### v1.35.4 — 2026-05-30
+- **Prompt slimming (P3)**: `design-brief-builder` (~20k→~4k) and `release-builder` (~18k→~5k) SKILL index-only; interview/release workflows → `references/workflow.md`
+
+### v1.35.3 — 2026-05-30
+- **Prompt slimming (P2)**: `product-spec-builder` SKILL index-only (~17k→~7k); Quick path → `references/workflow-quick-mode.md` (skips full 0-to-1 interview chain)
+
+### v1.35.2 — 2026-05-30
+- **Prompt slimming (P1)**: `dev-planner` SKILL index-only (~28k→~5k); analysis/workflow in `references/`; CLAUDE.md volatile routing → `forge-quickref` §项目状态路由
+- **`lite` loadout**: 8 skills + 8 hooks (change-manager included; no design/release/evolution) — `pnpm apply-loadout lite <client>`
+
+### v1.35.1 — 2026-05-30
+- **Prompt slimming (P0)**: `dev-builder` SKILL index-only (~36k→~7k chars); full workflow → `references/workflow.md`; principles → `references/first-principles.md`; shared pointers in `core/skills/_shared/`; compressed `forge-bootstrap`; deduped Karpathy blocks in `bug-fixer` / `code-review`
+- **Cross-client handoff**: fixed read-order in `forge-quickref` / `AGENTS.md` — switch clients via files, not chat recap
+
+### v1.35.0 — 2026-05-29
+- **AGENTS.md template**: enhanced with parallel worktree workflow — branch naming, dependency sharing, multi-agent coordination. Written to project root by `pnpm forge-install`. ([FreeTodo](https://github.com/FreeU-group/FreeTodo) inspired)
+- **Structured exploration trace**: `pnpm forge-trace` — record Phase decisions, dead ends, and evidence bindings in `.forge/trace/phase-<N>.json`. Hooked into dev-builder Loading Phase and Phase Completion Assessment. Checked by `forge-verify trace-fresh`. ([ARA paper](https://arxiv.org/abs/2604.24658) inspired)
+- **Scope filter (巽)**: `pnpm forge-scope` — declare Phase file boundaries (modify/readonly/outOfScope), enforced by `forge-verify scope-check` against `git diff`. Prevents scope creep during implementation.
+- **Evolution proposals (兌)**: dev-builder Phase Completion triggers evolution-engine scan; presents actionable pattern-based proposals to user as Y/N choices. Closes the feedback→evolution loop proactively. ([八卦信息论 巽兌 protocol audit] inspired)
+- **Skill quality judge**: `pnpm skill-eval judge <name>` — independent sub-agent evaluates Skill quality against a 5-dim rubric (structure/specificity/failure-mode/anti-patterns/effectiveness). Results recorded to `judge-history.json`. ([darwin-skill](https://github.com/alchaincyf/darwin-skill) inspired)
+- **Skill authoring patterns**: [`core/docs/skill-authoring-patterns.md`](core/docs/skill-authoring-patterns.md) — practical reference for SKILL.md authors: workflow design, failure-mode encoding, anti-pattern blacklists, rubric self-check table.
+- **skill-eval ref-lint**: automatic numeric reference consistency check on SKILL.md — detects mismatches like "four dimensions" followed by a 3-item list. Zero-config, runs with `pnpm skill-eval <name>`. ([OpenSpec verify bug](https://mp.weixin.qq.com/s/iSWtR665phTo5dv8sHFgqA) inspired)
+
+### v1.34.0 — 2026-05-28
+- **Matt Pocock Skills 对照**：[mattpocock-skills-comparison.md](core/docs/mattpocock-skills-comparison.md) — Light Grill、zoom-out、架构保健、GitHub issue 切片（吸收思路，不整包合并）
+- **Light Grill Mode**：`/product-spec-builder` —「grill me / 烤问」轻量对齐，不写完整 Spec
+- **Zoom-out / 架构保健**：dev-builder、dev-planner 可选 pass 文档
+- **GitHub issues 模板**：DEV-PLAN 确认后可选垂直切片导出
+
+### v1.33.0 — 2026-05-28
+- **Tencent Harness mirror**: [tencent-harness-mirror-comparison.md](core/docs/tencent-harness-mirror-comparison.md) — legibility, three steles, impossible triangle ↔ Forge
+- **`.forge/project-taste.md`**: team preference statements (soft S3 taste); `forge-install` via `installProjectTaste`; distinct from hard-line `security-guidance.md`
+- **Judgment Spectrum (S1–S5)**: `product-spec-builder`, `code-review`, `dev-builder` Loading Phase
+
+### v1.32.0 — 2026-05-28
+- **SkillOpt comparison**: [skillopt-comparison.md](core/docs/skillopt-comparison.md) — bounded edits, rejected-edit buffer, train/held-out
+- **skill-eval**: `rejected-edits.json` template; evolution-engine ≤3 structured edits per proposal
+
+### v1.31.0 — 2026-05-28
+- **Custom Skill evaluator**: `pnpm skill-eval init <name>` + `pnpm skill-eval <name>`; `.forge/skills/<name>/eval/` (trigger cases + output assertions); see [skill-eval.md](core/docs/skill-eval.md)
+- **skill-builder**: ships eval pack with new Skills; **forge-install** writes `.forge/skills/_template/eval/`
+
+### v1.30.0 — 2026-05-28
+- **Release preflight gate**: `pnpm preflight` — machine checks before publish/deploy (clean git, version field, artifact privacy scan); configurable via `.forge/preflight.json` (includes WeChat draft example).
+- **release-builder**: new Step 3b Preflight Gate — exit code 1 blocks publish; see [external-publish-preflight.md](core/docs/external-publish-preflight.md).
+- **forge-install**: writes `.forge/preflight.json` when missing.
+
+### v1.29.0 — 2026-05-28
+- **`.forge/security-guidance.md`**: team security rules on `pnpm forge-install`; code-review / release-builder / dev-builder read it for sensitive work.
+- **forge-verify** `security-patterns`: lightweight `eval` / `new Function` scan — [comparison doc](core/docs/security-guidance-comparison.md).
+
+### v1.28.0 — 2026-05-27
+- **dev-map**: Project-level navigation index at `.forge/dev-map.md` — AI explores module structure and existing patterns before coding. Maintained by dev-builder (who changes code updates the map). Template installed via `pnpm forge-install`.
+- **forge-verify**: Unified post-verification entry `pnpm forge-verify` with 9 checks (skill-quality, compile, test, no-placeholders, dev-map-fresh, security-patterns, trace-fresh, scope-check, content-quality) and baseline comparison (`--baseline save|compare|check`). Turns "I think I'm done" into "the system confirms I'm done."
+- **forge-verify-content (v1.49)**: Optional semantic content verification `pnpm forge-verify-content` — uses LLM (DeepSeek, configurable) to check whether Phase output files actually satisfy the task requirements. Catches semantic garbage that symbolic checks (file-exists / exit-code) miss. Includes evidence gate pipeline (EG→C1→C2) with chain-of-evidence trace, failure_class for feedback-observer bridging, and held-in/held-out validation. Based on experiment E and Weng (2026) harness survey.
+- **dev-builder integrated**: Loading Phase auto-saves baseline; Phase Completion runs forge-verify + compares baseline + updates dev-map. New Post-Verification Gate principle.
+
+### v1.27.0 — 2026-05-27
+- **CLAUDE.md zone partitioning**: [Immutable/Stable/Volatile](CLAUDE.md#L1) zones — session-varying content at end of prompt preserves prefix for caching.
+- **Hook repair**: PreToolUse/PostToolUse now arrays (was objects); removed invalid events (PreCommit, BeforeCommand, AfterCommand, PostCommit, OnInit); merged BeforeCommand/AfterCommand into PreToolUse/PostToolUse arrays.
+- **Skill quality**: 13/13 PASS, 0 FAIL; 4 skills at perfect 33/33 (dev-planner, release-builder, request-dispatcher, skill-builder). Fixed Gotchas/step-counting cross-contamination, rename Analysis Strategies→Analysis Strategy (plural broke regex).
+- **Feedback cleanup**: Converted stray JSON to proper .md frontmatter, fixed missing FEEDBACK-INDEX.md entries.
+
+### v1.26.0 — 2026-05-27
+- **Verify loop**: Agent discipline rule 8 = fix → re-run checks until green; anti-patterns in [session-execution-discipline.md](core/docs/session-execution-discipline.md).
+- **`.forge/quickref.md`**: one-page gates, 4 principles, Skill commands — written on `pnpm forge-install`.
+- **Idea Validation Gate** + **MVP Scope**: Founder's Playbook — Spec § Idea Stage Exit Criteria; DEV-PLAN scope block; six-step PreToolUse chain.
+- **OpenSpec + Superpowers handoff**: [shuge-openspec-superpowers-comparison.md](core/docs/shuge-openspec-superpowers-comparison.md); change-manager Change-Scoped → dev-builder; Delta Spec + G/W/T templates.
+- **`request-dispatcher`**: meta-skill for ambiguous request routing; HTML knowledge boundaries on all 12 skills.
+
+### v1.25.0 — 2026-05-25
+- **Harness hardening**: `forge-bootstrap` session iron laws; PreToolUse chain (Spec → confirmations → Plan → implementer session); **HARD-GATE** on product-spec, dev-planner, dev-builder; implementer + worktree per Task; forge-smoke **12** items.
+- **PM frameworks (product-spec)**: Optional [pm-skills](https://github.com/phuryn/pm-skills)-inspired references (MIT) — OST, JTBD, assumptions, competitors; see [Requirements depth](#requirements-depth-pm-frameworks--chain-of-thought).
+- **Chain-of-Thought (CoT)**: Step-by-step reasoning before conclusions in spec interviews, implementer, bug-fixer, bootstrap Iron Law 9.
+- **Evolution**: `failure_class` + RED/GREEN/Verify-by on evolution proposals. Editable surface boundary (`.forge/editable-surface.json`) prevents evolution from modifying evaluator code. Harness search space (`.forge/harnesses/`) allows config-level crossover. Model staleness detection graduates rules when newer models no longer need them.
+- **Agent execution discipline (8 rules)**: Plan → approve → act; read before edit; minimal diff; diff approval before commit; **verify loop** (re-run checks until pass) — [full doc](core/docs/session-execution-discipline.md), summary in `forge-bootstrap`, user copy in [agents-template.md](core/templates/agents-template.md); human quickref `.forge/quickref.md` on install.
+
+### v1.24.0 — 2026-05-24
+- **Karpathy comparisons**: [autoresearch](core/docs/autoresearch-comparison.md), [llm-council](core/docs/llm-council-comparison.md), [jobs](core/docs/jobs-comparison.md), [llm-wiki gist](core/docs/llm-wiki-comparison.md) — methodology mapped to Forge Skills, not copied wholesale.
+- **Harness discipline**: Primary metric per DEV-PLAN Phase; dev-builder Spec/Plan read-only + Task micro-cycle; code-review **risk_rank** (S×I×C); **PROJECT-HEALTH-template.md**; product-spec **LLM-as-Judge** + Spec Step 7 quality council.
+- **OpenCode fix**: `pnpm sync` copies root `CLAUDE.md` → `.opencode/AGENTS.md` (was empty template — Skill Dispatch broken). `forge-smoke` `machine-gates-doc` guards OpenCode parity.
+- **Memory**: LLM Wiki pattern cross-ref in `memory-system.md`; dev-builder **Query filing** — important conclusions → ADR / project-memory, not chat-only.
+
+### v1.23.0 — 2026-05-24
+- **forge-smoke**: `pnpm forge-smoke` — 10 static release-gate smokes (includes test-demo golden path); GitHub Actions on push/PR only (no cron).
+- **loadout-scenarios.md**: scenario → loadout → first Skill command; `scenarios[]` tags on built-in loadouts; README Step 3b quick picker.
+- **platform-compliance.md**: GitHub/OSS policy (no central secrets, fork intent, no cron CI); enforced by forge-smoke workflow guards.
+
+### v1.22.2 — 2026-05-23
+- **Completeness**: Windows `settings.windows.json` aligned; `retry-gate` in loadouts/docs; 10-hook count; GitHub URLs for `core/docs` in Skills.
+
+### v1.22.1 — 2026-05-23
+- **Seven-layer Harness map** + **phase-exit-guard** hook (Ralph-style Phase stop); evolution proposals need predicted effect + verify-by.
+
+### v1.22.0 — 2026-05-23
+- **Context7**: comparison doc, library-docs strategy in dev-builder, Context7 ID columns in Spec/Plan templates, optional MCP in `web-app` loadout.
+
+### v1.21.0 — 2026-05-23
+- **Harness maturity checklist**: P0/P1/P2 self-assessment + README positioning (OS analogy, shippable product scope).
+- **Product-Spec**: Integrations / ops / scheduling table; Quick Mode + SKILL 0-to-1 reference fix.
+
+### v1.20.9 — 2026-05-23
+- **Open Design**: comparison doc + design discovery questionnaire, 5 visual presets, anti-slop + 5D self-critique in design skills.
+
+### v1.20.8 — 2026-05-23
+- **superpowers-comparison.md**: vs obra/superpowers (TDD, subagents, when to use which).
+
+### v1.20.7 — 2026-05-23
+- **Positioning**: Hero = requirements → product; subline = Agent Harness; brand **ReqForge** in README titles.
+
+### v1.20.6 — 2026-05-23
+- **Discoverability**: OpenSpec diff + architecture diagram at README top; `pnpm` script to sync GitHub About/topics from `.github/repo-metadata.json`.
+
+### v1.20.5 — 2026-05-23
+- **memory-guard**: PostToolUse bundles context-compaction + check-handoff (10 default hooks).
+
+### v1.20.4 — 2026-05-23
+- **SKILL slimming**: `dev-builder` and `product-spec-builder` detail moved to `references/`; main SKILL files stay under 500 lines.
+
+### v1.20.3 — 2026-05-23
+- **All Skill commands thinned**: Every `commands/*.md` is now an index to `SKILL.md` (no duplicated phase prose).
+- **auto-push off by default**: Removed from adapter `settings.json` and loadouts; enable manually if you want push-after-commit.
+
+### v1.20.2 — 2026-05-23
+- **Spec / change-manager split**: Iteration mode no longer creates `changes/` — use `/change-manager` for scoped features; major edits stay in Product-Spec.md.
+- **Review default**: Parallel 4-agent review only when complexity is moderate/complex; default is quick pass (`change_complexity=simple`).
+- **Commands thinned**: Key slash commands point to SKILL.md sections instead of duplicating workflows.
+
+### v1.20.1 — 2026-05-23
+- **Audit fixes**: CLAUDE.md routes active `changes/` to `/change-manager`; Mission includes brownfield step; `change-verify-template.md` added.
+- **CHANGELOG**: Documents `openhuman-comparison.md` (shipped in prior commit).
+- **Loadouts**: `cli-tool` / `minimal` omit change-manager by design — use `full` or `web-app` for brownfield.
+
+### v1.20.0 — 2026-05-23
+- **change-manager Skill**: For projects that already have `Product-Spec.md` — one feature per `changes/<name>/` folder with **propose → apply → verify → archive** (OpenSpec-aligned). Templates + `/change-manager` command; implementation still delegates to `/dev-planner` and `/dev-builder`.
+- **openspec-comparison.md**: When to use Forge vs OpenSpec CLI, artifact mapping, and workflow diagram — [core/docs/openspec-comparison.md](core/docs/openspec-comparison.md).
+- **openhuman-comparison.md**: Forge vs OpenHuman (memory, context compression, what not to copy) — [core/docs/openhuman-comparison.md](core/docs/openhuman-comparison.md).
+- **12 Skills**: `change-manager` wired into `full` / `web-app` loadouts and all adapter bundles via `pnpm sync`.
+
+### v1.19.1 — 2026-05-23
+- **Hallucination Gate wired**: All adapter `settings.json` register `PreToolUse` → `hallucination-gate`; hook reads `tool_name` from stdin JSON; Windows `.bat` uses Node parsing.
+- **Parallel review docs aligned**: code-review, dev-builder, bug-fixer SKILLs and README workflow unified to parallel 4-agent + aggregation; removed stale Stage 1/2 language; confidence thresholds ≥0.6 / 0.3.
+- **Commands layer complete**: Added `commands/*.md` for design-brief-builder, design-maker, evolution-engine, feedback-writer (all 11 skills with slash commands now have command files).
+- **Loadout cleanup**: Removed ReqForge-only `check-sync` from user-facing loadouts.
+- **Cross-platform tooling**: `pnpm validate-skill` defaults to `scripts/validate-skill.mjs`; added `pnpm apply-loadout <name> <client>`.
+- **Docs & version**: package.json, DEV-PLAN, Product-Spec, core/docs synced to v1.19.1; Sub-Agent count corrected to 10.
+
+### v1.19 — 2026-05-23
+- **Loadout mechanism**: Reusable bundles of skills, agents, hooks, and MCP servers for different project types. 4 built-in loadouts: `full`, `web-app`, `cli-tool`, `minimal`. Validated by `loadout.schema.json`. Synced to all adapters via `pnpm sync`.
+- **loadout.schema.json**: JSON Schema v7 validation for loadout definitions (required fields: name, version, description, skills, agents, hooks).
+
+### v1.18 — 2026-05-23
+- **skill.json metadata**: All 11 skills now ship with machine-readable `skill.json` (name, version, triggers, prerequisites, agents, hooks). Validated by `validate-skill.sh` via Node/Python. JSON Schema at `core/skills/skill.schema.json`.
+- **Commands layer**: All 11 skills with slash commands now have `commands/<name>.md` (v1.19.1 completed the remaining 4). YAML frontmatter + phased workflows. `pnpm validate-skill` uses cross-platform `validate-skill.mjs` by default.
+- **Parallel agent code review**: 4 specialized review agents (design, bug, security, types) run concurrently, each returning structured findings with confidence scores (0.0-1.0). Aggregator applies thresholding (≥0.6 confirmed, 0.3-0.6 suspected, <0.3 suppressed) with cross-agent boost. Replaces the old serial two-stage review.
+- **Hallucination Gate**: PreToolUse hook verifies Write/Edit target directories exist (v1.19.1: registered in all adapter settings).
+- **Project state injection**: `check-evolution.sh` now detects Product-Spec/DEV-PLAN/Code presence on session start and injects routing guidance as `additionalContext`.
+- **validate-skill.sh — skill.json validation**: Added existence check + required field validation (name, version, description, triggers.auto/manual/command).
+- **sub-agent-orchestration.md**: Documented parallel review pattern with all 4 specialist agents and aggregation rules.
+- Propagated to all 3 adapters (claude-code, cursor, opencode) via `pnpm sync`.
+
+### v1.17 — 2026-05-22
+- **Decidable Activation — [Not For] section**: All 11 skills now include a `[Not For]` section specifying when NOT to use the skill and what to use instead. Added as a required section in validate-skill.sh. Updated skill-template.md.
+- **Three-Layer Diagnostic Model**: bug-fixer now goes beyond root cause to ask: Symptom → Design Flaw → Principle Violation. Every fix report includes all three layers to prevent recurrence, not just patch the symptom.
+- **Numeric Quality Rubric**: skill-builder gets a 16-item, 32-point scoring system. Ship threshold ≥ 24 with no critical item at 0. Run `pnpm validate-skill:bash --score` to compute (bash script only).
+- **create-skill.sh scaffold**: CLI tool to generate a new Skill directory from a name. Supports `--minimal` (required sections only) and `--full` (with recommended sections). Run `pnpm create-skill <name>`.
+
+### v1.16 — 2026-05-21
+- **Harness Engineering principles**: dev-builder upgraded with Tool AI-fication Priority (CLI > MCP > Skill > GUI), Substitute Don't Mock (real substitutes over mocks), Environment-First (project must run before features), Minimum Runnable Subset (each Phase delivers an end-to-end core path). Scripted Verification (complex Phases generate `verify-phase-N.sh`).
+- **Machine Gates**: 3-level enforceable gates added to CLAUDE.md — Hallucination Gate (fails on wrong paths/missing deps), Sloppiness Gate (blocks completion without verification evidence), Overstepping Gate (rejects scope creep). Codification principle: gates that can be linted MUST be codified.
+- **Iron Rules**: 8 baseline rules extracted as the Forge foundation (knowledge offloading, no prompt magic, real files, guardrails, etc.). Documented in Product-Spec.md and README.
+- **llms.txt**: AI-searchable project summary at repo root for LLM discoverability.
+- **Per-directory AGENTS.md**: Local operational boundaries for `core/skills/`, `core/agents/`, `core/hooks/`, `core/templates/`, `core/feedback/` — each directory gets MUST/MUST NOT/SHOULD rules.
+- **validate-skill.sh**: Formal SKILL.md specification validator — checks frontmatter, required sections, kebab-case, Gotchas count, file size, placeholder markers. Runs via `pnpm validate-skill`.
+- **Claude Code adapter rules migration**: Per-directory rules converted from AGENTS.md (which Claude Code doesn't read) to `.claude/rules/*.md` with path-scoped `globs` frontmatter. AGENTS.md retained for OpenCode adapter.
+- **SKILL.md structural audit**: All 11 skills validated — 11 missing-section errors and 19 warnings fixed (added [Dependency Check], [File Structure], [Initialization], [Output Style], [Gotchas] sections across design-maker, evolution-engine, feedback-writer, bug-fixer, code-review, dev-builder, dev-planner).
+- **Gotchas in every skill**: `[Gotchas]` section added to all 11 skills capturing domain-specific failure points (vague requirements, privacy leaks, premature evolution, duplicate feedback, etc.). Each skill accumulates hard-won lessons over time.
+- **Skill template updated**: New skills automatically include a `[Gotchas]` section as a recommended component.
+- **CLI best practices in CLAUDE.md**: `/model`, `/compact`, `/context`, `/sandbox` usage guidance encoded as General Rules. Key rules wrapped in `<important if="">` tags for better adherence.
+- **Renamed `[Anti-Rationalization Checklist]` → `[Gotchas: Anti-Rationalization]`** in dev-builder, code-review, bug-fixer for naming consistency.
+- **Glue Code First**: dev-builder's "SDK-First" upgraded to "Glue Code First" — priority chain: framework built-in → open-source library → AI prompt → custom logic only when necessary.
+- **Generator/Optimizer recursion**: evolution-engine now has explicit First Principles — the engine that evolves rules should itself be evolvable through the same feedback loop.
+- **Cross-session audit**: code-review added principle that complex reviews must run in isolated sub-agent sessions to prevent self-confirmation bias.
+- **Prompt remediation**: feedback template now includes a `prompt_remediation` field — each failure can carry a reusable prompt fragment to prevent recurrence.
+
+### v1.14.2 — 2026-05-20
+- **forge-install**: `pnpm forge-install <client> --target <dir>` copies the adapter and writes `.forge/quickref.md`
+- **Safe upgrade**: `--force` merges without overwriting `feedback/` or `settings.local.json`
+
+### v1.14.1 — 2026-05-20
+- **Script unit tests**: `scripts/__tests__/` covers `sync.ts` and `dependency-graph.ts` (Vitest 4.1.6); run `pnpm test` to verify
+- **Dependency graph fix**: Named imports (`import { x } from "./y"`) now resolve correctly for more accurate blast-radius
+- **Engineering alignment**: `package.json` at `1.14.1` with exact patch-pinned devDependencies; `DEV-PLAN.md` progress table added
+
+### v1.14 — 2026-05-19
+- **Exact version pinning**: Every dependency pinned to `major.minor.patch` — no ranges, no `latest`
+- **Dedicated AGENTS.md template**: OpenCode user-project constraints use `templates/agents-template.md` (v1.24.0: adapter control file `.opencode/AGENTS.md` mirrors root `CLAUDE.md` via `pnpm sync`)
+- **Dependency graph**: `scripts/dependency-graph.ts` — file-level import graph for blast-radius analysis. `pnpm dep-graph build | affected | risk | stats`. Integrated into dev-builder review loop: code-reviewer receives `affected_files` for focused review
+
+### v1.13 — 2026-05-19
+- **Planner sub-agent**: Dedicated agent for architecture design and Phase splitting, decoupled from implementer context
+- **Session handoff**: `handoff-template.md` + `check-handoff` hook to generate session summaries before context reset, preventing lost progress
+- **Complexity gate**: `code-reviewer` now skips parallel specialist agents for `change_complexity="simple"`, matching review depth to change scope
+- **Model version tracking**: `feedback-observer` records model version with each feedback, enabling evolution to detect outdated rules
+
+### v1.10–1.12 — 2026-05-19
+- **test-writer sub-agent**: Vitest-based test generator for tools/scripts (v1.14.1 ships the `sync` / `dependency-graph` test suite)
+- **check-sync hook**: Detects `core/` vs `adapters/` divergence after edits
+- **Self-wired settings**: ReqForge's own `.claude/settings.json` with hook events wired; `settings.local.json` pruned 65→32 lines
+
+### v1.9 — 2026-05-19
+- **AI Only for Judgment Tasks**: Deterministic logic is plain code, not AI busywork
+- **Fail Loudly**: Uncertainty must be stated explicitly, never hidden
+- **Token Budget Awareness**: Check context headroom after each Task
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full version history.
+
+---
+
+## Overview
+
+If you've done Vibe Coding, you know the hard part isn't getting AI to write code — it's managing the entire product development process. You tell AI "build me a writing tool," and it starts coding. Halfway through, you realize the direction is wrong and start over. Features finally work, but the UI looks terrible — no design specs, so AI pieced together default styles from training data. Fix the UI, introduce bugs. Fix bugs, introduce more bugs. Context gets long, AI forgets earlier requirements, code starts drifting.
+
+The root cause isn't that models aren't smart enough. It's that there's no **system** around the model.
+
+Forge is an **Agent Harness** — not about optimizing how you talk to AI, but building a complete system of constraints, guidance, and feedback. The AI knows what to do before it starts, automatically verifies results afterward, self-corrects when things go wrong, and never makes the same mistake twice.
+
+**Harness = Guides (feedforward) + Sensors (feedback) + Steering Loop (evolution)**
+
+- **Guides** — Each Skill defines methodology, workflow, and acceptance criteria. Before the agent acts, it knows exactly "how to do it" and "what counts as done."
+- **Sensors** — Hook scripts + Code Review check every critical node after the agent acts. No reliance on the model's self-awareness.
+- **Steering Loop** — Every correction you give is recorded. When the same issue surfaces 3+ times, it's automatically promoted to a formal rule in the Skill.
+- **Multi-language** — Declare your tech stack (Java, Python, Go, Rust, TS) in `.forge/dev-map.md`. dev-builder, code-review, and bug-fixer adapt their commands and review dimensions accordingly. Framework-agnostic.
+
+---
+
+## Installation & Usage
+
+Forge is **copy-to-use**: no package publish, no `npm install` in your app project. You only need a supported AI coding assistant.
+
+### Prerequisites
+
+| Required | Notes |
+|----------|-------|
+| **AI client** (one of) | [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Cursor](https://cursor.com), [OpenCode](https://opencode.ai), or [Gemini CLI](https://geminicli.com/) |
+| **Git** | Clone this repo; optional for your own project |
+| **Empty or existing project folder** | Forge files live at the project root alongside your code |
+
+| Optional (contributors only) | Notes |
+|------------------------------|-------|
+| Node.js 22.x LTS + pnpm 10.x | Run `pnpm test`, `pnpm sync`, `pnpm dep-graph` — see [Framework Development](#framework-development) |
+
+### Step 1 — Clone Forge
+
+```bash
+git clone https://github.com/zxpmail/ReqForge.git
+cd ReqForge
+```
+
+Keep the clone path handy — you will copy files **from** `ReqForge/adapters/...` **into** your app project.
+
+### Step 2 — Install into your project
+
+**Option A — One-command install (recommended)**
+
+From your Forge clone (requires Node.js for `ts-node`):
+
+```bash
+# Install into another project
+pnpm forge-install claude-code --target /path/to/my-app
+
+# Install into current directory
+pnpm forge-install cursor .
+
+# Merge upgrade (keeps your feedback/ and settings.local.json)
+pnpm forge-install claude-code --target ../my-app --force
+
+# Install only a loadout bundle (skills + agents + hooks)
+pnpm forge-install cursor . --loadout lite
+pnpm forge-install claude-code --target ../my-app --loadout minimal --force
+```
+
+Hook scripts and platform settings (`.bat` / `.sh`, `settings.windows.json` on Windows) are applied automatically. Full options: `pnpm forge-install --help`.
+
+`forge-install` also writes into the project root (if missing):
+
+| File | Purpose |
+|------|---------|
+| `.forge/quickref.md` | One-page gates + Skill commands |
+| `.forge/dev-map.md` | Dev navigation map template |
+| `.forge/security-guidance.md` | Team security rules template (hard red lines) |
+| `.forge/project-taste.md` | Team taste / preferences (soft S3 — naming, structure) |
+| `.forge/preflight.json` | Release preflight checklist (editable) |
+| `.forge/preflight-wechat.example.json` | WeChat draft rules example (merge into preflight.json) |
+| `.forge/skills/_template/eval/` | Custom Skill eval templates (`triggers.json` / `cases.json`) |
+| `.forge/loadout-active.json` | Active loadout when installed with `--loadout` |
+
+**Option B — Manual copy**
+
+Create or open your app directory, then copy **only** the adapter folder for your AI client.
+
+| Client | Copy from (inside Forge clone) | Into your project |
+|--------|-------------------------------|-------------------|
+| **Claude Code** | `adapters/claude-code/.claude/` | `<your-project>/.claude/` |
+| **Cursor** | `adapters/cursor/.cursor/` | `<your-project>/.cursor/` |
+| **OpenCode** | `adapters/opencode/.opencode/` | `<your-project>/.opencode/` |
+| **Gemini CLI** | `adapters/gemini-cli/.gemini/` | `<your-project>/.gemini/` |
+
+Then copy hook scripts separately (required for hooks to work):
+
+| Client | Copy from | Into your project |
+|--------|-----------|------------------|
+| **Claude Code** | `core/hooks/` | `<your-project>/.claude/hooks/` |
+| **Cursor** | `core/hooks/` | `<your-project>/.cursor/rules/hooks/` |
+| **OpenCode** | `core/hooks/` | `<your-project>/.opencode/hooks/` |
+| **Gemini CLI** | `core/hooks/` | `<your-project>/.gemini/hooks/` |
+
+**Examples** (replace paths with your actual locations):
+
+```bash
+# macOS / Linux — Claude Code
+cp -R /path/to/ReqForge/adapters/claude-code/.claude /path/to/my-app/.claude
+
+# macOS / Linux — Cursor
+cp -R /path/to/ReqForge/adapters/cursor/.cursor /path/to/my-app/.cursor
+
+# macOS / Linux — OpenCode
+cp -R /path/to/ReqForge/adapters/opencode/.opencode /path/to/my-app/.opencode
+
+# macOS / Linux — Gemini CLI
+cp -R /path/to/ReqForge/adapters/gemini-cli/.gemini /path/to/my-app/.gemini
+```
+
+```powershell
+# Windows — Claude Code (PowerShell)
+Copy-Item -Recurse -Force C:\path\to\ReqForge\adapters\claude-code\.claude C:\path\to\my-app\.claude
+
+# Windows — Cursor
+Copy-Item -Recurse -Force C:\path\to\ReqForge\adapters\cursor\.cursor C:\path\to\my-app\.cursor
+
+# Windows — Gemini CLI
+Copy-Item -Recurse -Force C:\path\to\ReqForge\adapters\gemini-cli\.gemini C:\path\to\my-app\.gemini
+```
+
+> **Gemini CLI** uses `.gemini/GEMINI.md` as the control file — **same Forge dispatch content as root `CLAUDE.md`**. [`/memory reload`](https://geminicli.com/docs/cli/tutorials/memory-management/) after copying to activate. **OpenCode** uses `.opencode/AGENTS.md` — also same Forge content (filename follows OpenCode convention). User-project constraint templates live under `templates/agents-template.md`.
+
+### Step 3 — Enable hooks (Option B manual copy only)
+
+**Option A (`forge-install`)** applies hooks and platform settings automatically — skip this step.
+
+For **manual copy** (Claude Code & Cursor): default `settings.json` registers **10 hooks** (including `hallucination-gate`, `phase-exit-guard`, `retry-gate`; auto-push is optional). After copying `.claude/` or `.cursor/`:
+
+| Platform | Action |
+|----------|--------|
+| **Windows** | In `.claude/` or `.cursor/`: copy `settings.windows.json` → `settings.json` |
+| **Linux / Mac** | Default `settings.json` uses `.sh` hooks — no change needed |
+| **OpenCode** | No `settings.json`; `.sh` / `.bat` hooks work per platform |
+
+### Step 3b — Loadouts (optional)
+
+Adapters ship **4 loadout bundles** under `loadouts/` (`full`, `web-app`, `cli-tool`, `minimal`). Each JSON lists recommended skills, agents, and hooks for a project type.
+
+**Not sure which one?** See **[loadout-scenarios.md](core/docs/loadout-scenarios.md)** — scenario → loadout → first Skill command.
+
+| You want to… | Loadout |
+|--------------|---------|
+| New web app (spec → design → ship) | `web-app` |
+| One feature on existing code | `full` or `web-app` + `/change-manager` |
+| CLI / library | `cli-tool` |
+| Quick spike / script | `minimal` |
+
+- **Trim hooks only** (maintainers, from Forge clone): `pnpm apply-loadout minimal claude-code` merges a lighter hook set into adapter `settings.json`. Add `--dry-run` to preview.
+- **Brownfield** (`/change-manager`): included in `full`, `web-app`, and `lite` only; `cli-tool` and `minimal` omit it — use `--loadout web-app` / `full`, or copy the skill from `core/skills/change-manager/`.
+
+### Step 4 — First run in your AI client
+
+1. Open **your project folder** (the one that now contains `.claude/`, `.cursor/`, `.opencode/`, or `.gemini/`) in the AI client.
+2. Start a new chat. Forge detects progress from files present (`Product-Spec.md`, `DEV-PLAN.md`, code, `memory/`).
+3. Describe your product idea in natural language, or invoke a Skill:
+
+| Goal | Skill command (Claude Code / OpenCode / Gemini CLI style) | Output |
+|------|-----------------------------------------------------------|--------|
+| Ambiguous request routing | `/request-dispatcher` | Recommended target Skill |
+| Framework gate red (ReqForge repo) | `/reqforge-greenkeeper` | Green `sync:discover` + test + forge-smoke |
+| Domain research (optional, unfamiliar domain) | `/domain-mapper` | `domain-map.md` (+ optional competitor/social analysis) |
+| Requirements | `/product-spec-builder` | `Product-Spec.md` (includes Multi-Stakeholder Review + Critique Gate) |
+| Design brief (optional) | `/design-brief-builder` | `Design-Brief.md` |
+| Design mockups (optional) | `/design-maker` | Mockups + ephemeral `UI-Spec.md` + `DESIGN.md` (frozen tokens; [Google design.md](https://github.com/google-labs-code/design.md)) |
+| Dev plan | `/dev-planner` | `DEV-PLAN.md` |
+| Brownfield feature (existing Spec) | `/change-manager propose <name>` → apply → verify → archive | `changes/<name>/` → `changes/archive/` |
+| Implementation | `/dev-builder` | Code + `memory/` (auto-created) |
+| Bug fix | Describe the bug (auto-triggers `/bug-fixer`; `pnpm forge-bug-fix` diagnose --scenario compile|config|data, bisect, classify) | Fix + review loop |
+| Release | `/release-builder` | Build / deploy checklist |
+
+**Cursor**: rules load from `.cursor/rules/` automatically; refer to skills in chat (e.g. “run product-spec-builder”) or use your client’s skill UI if configured.
+
+**Quick Spec**: one sentence like *“A habit tracker with AI coaching”* — the agent can generate a minimal `Product-Spec.md` with `[待确认]` markers for you to refine.
+
+**Reference walkthrough**: [test-demo/](test-demo/) shows **sample output** after Spec + Plan via Forge (`todo-cli/`). **Not** the framework CLI — no install needed. Maintainers run `pnpm test-demo-golden-path`; see [test-demo/README.md](test-demo/README.md).
+
+### After installation — what appears in your project
+
+```
+my-app/
+├── .claude/                    # or .cursor/ or .opencode/  ← adapter bundle
+│   ├── CLAUDE.md               # control file (OpenCode: AGENTS.md)
+│   ├── settings.json           # 10 hooks (Unix .sh); run `pnpm use-platform` on Windows
+│   ├── skills/                 # 15 Skill definitions + commands/
+│   ├── agents/                 # 10 Sub-agent definitions
+│   ├── hooks/                  # .sh + .bat hook scripts
+│   ├── loadouts/               # full | web-app | cli-tool | minimal
+│   ├── feedback/               # evolution fuel (lessons learned)
+│   ├── EVOLUTION.md            # evolution engine levels
+│   └── rules/                  # Claude Code: .claude/rules/*.md; Cursor: .cursor/rules/*.mdc
+├── Product-Spec.md             # after /product-spec-builder
+├── DEV-PLAN.md                 # after /dev-planner
+├── Design-Brief.md             # optional — direction only (no hex)
+├── DESIGN.md                   # optional — after /design-maker (frozen design tokens)
+├── UI-Spec.md                  # optional — ephemeral page structure (not committed)
+├── changes/                    # optional — brownfield iterations (/change-manager)
+│   └── archive/
+├── memory/                     # auto-created on first /dev-builder
+│   ├── project-memory.md
+│   ├── decisions-log.md
+│   └── task-history.md
+├── .forge/                     # written by forge-install (version in git)
+│   ├── quickref.md
+│   ├── preflight.json          # → pnpm preflight
+│   ├── preflight-wechat.example.json
+│   ├── dev-map.md
+│   ├── security-guidance.md
+│   ├── project-taste.md        # team preferences (forge-install)
+│   ├── skills/_template/eval/  # custom Skill eval templates (forge-install)
+│   ├── skills/<name>/eval/     # per-Skill eval pack (`pnpm skill-eval init <name>`)
+│   └── config                  # optional — copy from config.example
+├── eval-output/                # optional — artifact dir for skill-eval assertions
+└── <project-name>/ ...         # your application code (not flat in root)
+```
+
+Forge does **not** modify your `package.json` unless you ask the agent to add dependencies during development.
+
+### Custom Skill eval (skill-eval)
+
+When you add **project-local custom Skills** (via `/skill-builder` or by hand), ship an eval pack:
+
+```bash
+pnpm skill-eval init my-skill       # → .forge/skills/my-skill/eval/
+pnpm skill-eval my-skill            # static checks + assertions on eval-output/
+```
+
+- Templates: `.forge/skills/_template/eval/` (from `forge-install`)
+- Trigger accuracy: run `triggers.json` prompts in your client with Skill on vs off
+- Details: [skill-eval.md](core/docs/skill-eval.md)
+
+### Project taste vs security guidance
+
+| File | Role | Example |
+|------|------|---------|
+| `.forge/security-guidance.md` | **Red lines** (S1–S2) | No `eval`, no secrets in repo |
+| `.forge/project-taste.md` | **Team fingerprint** (S3) | Prefer simple over clever; max 2 inheritance levels |
+
+Written on `pnpm forge-install`. See [tencent-harness-mirror-comparison.md](core/docs/tencent-harness-mirror-comparison.md).
+
+### Preflight (before publish)
+
+From your project root (Node.js only needed to run the check):
+
+```bash
+pnpm preflight                      # built-in: git clean, package.json version
+pnpm preflight --build-dir dist     # scan build output for secrets / .env / dev paths
+pnpm preflight --strict             # treat warnings as failures
+```
+
+- Edit `.forge/preflight.json` for custom rules (env vars, file exists, max bytes, regex).
+- WeChat / external APIs: see `.forge/preflight-wechat.example.json` and [external-publish-preflight.md](core/docs/external-publish-preflight.md).
+- **Exit code 1 = do not publish**; enforced by `release-builder` Step 3b.
+
+### Updating Forge in an existing project
+
+1. Pull the latest `ReqForge` clone (or download a new release).
+2. Re-copy the adapter directory over your project’s `.claude/` / `.cursor/` / `.opencode/` (back up local `feedback/` if you customized it).
+3. Run `pnpm use-platform` on Windows to activate `.bat` hooks.
+
+### YOLO mode (not recommended)
+
+> Forge’s value is **gating** — phases, reviews, and evolution proposals ask for confirmation. YOLO auto-approves them and weakens the harness.
+>
+> If enabled, gates switch to **async write mode** (artifacts under `changes/` and `.claude/.yolo-pending/`). 🔴 red-boundary actions still require explicit approval.
+>
+> Enable (priority: project > global > env):
+> 1. Copy `.forge/config.example` → `.forge/config`, set `FORGE_MODE=yolo`
+> 2. Or `~/.forge/config` / `%USERPROFILE%\.forge\config`
+> 3. Or env `FORGE_MODE=yolo`
+
+More detail: [core/docs/](core/docs/) (behavior boundaries, memory, sub-agents). Comparisons: [OpenSpec](core/docs/openspec-comparison.md) · [Superpowers](core/docs/superpowers-comparison.md) · [Open Design](core/docs/open-design-comparison.md) · [Google design.md](core/docs/design-md-comparison.md) · [OpenHuman](core/docs/openhuman-comparison.md) · [RTK](core/docs/rtk-comparison.md) · [nanochat](core/docs/nanochat-comparison.md) · [autoresearch](core/docs/autoresearch-comparison.md) · [llm-council](core/docs/llm-council-comparison.md) · [jobs](core/docs/jobs-comparison.md) · [llm-wiki](core/docs/llm-wiki-comparison.md).
+
+---
+
+## Core Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Control File (CLAUDE.md / .cursor/rules/reqforge.mdc)      │ ← Orchestration Layer
+│  <60 lines — dispatch map only, details in core/docs/       │
+│  Project state detection, flow routing, Skill dispatch       │
+├─────────────────────────────────────────────────────────────┤
+│  Three-Tier Memory (Context Preservation)                    │ ← Memory Layer
+│  ├─ project-memory.md  Long-term: architecture, constraints │
+│  ├─ decisions-log.md   Mid-term: ADRs, technical decisions  │
+│  └─ task-history.md    Short-term: recent task summaries     │
+├─────────────────────────────────────────────────────────────┤
+│  Sub-Agents × 10 (Context Firewall)                         │ ← Execution Layer
+│  ├─ implementer        Code + compile verify + self-check   │
+│  ├─ code-reviewer      Parallel dispatch + confidence aggregation   │
+│  ├─ code-reviewer-*  4 specialists (design, bug, security, types)│
+│  ├─ feedback-observer  Capture failures + user corrections  │
+│  ├─ evolution-runner   Scan feedback accumulation           │
+│  ├─ test-writer        Generate tests for tools/scripts     │
+│  └─ planner            Analyze Spec, split phases, plan     │
+├─────────────────────────────────────────────────────────────┤
+│  Skills × 15 + Loadouts × 4 (Guides / Feedforward Control)  │ ← Guidance Layer
+│  Inject methodology and standards BEFORE the agent acts     │
+├─────────────────────────────────────────────────────────────┤
+│  Hooks + Review Loop (Sensors / Feedback Control)           │ ← Inspection Layer
+│  Check results AFTER the agent acts, deterministic          │
+├─────────────────────────────────────────────────────────────┤
+│  feedback/ + EVOLUTION.md (Steering Loop)                   │ ← Evolution Layer
+│  Each correction improves the harness. Never repeat errors  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Memory Layer — Three-Tier Project Memory
+
+AI amnesia is real. Every new session, the AI forgets what your project looks like, what decisions were made, and what was built last week. Forge solves this with three tiers of version-controlled memory:
+
+| Tier | File | Retention | Content |
+|------|------|-----------|---------|
+| Long-term | `memory/project-memory.md` | Permanent | Architecture, tech stack, constraints, known pitfalls, dev environment |
+| Mid-term | `memory/decisions-log.md` | Permanent | ADR-format decision records (context → options → decision → impact) |
+| Short-term | `memory/task-history.md` | Last 30 entries | Task summaries (date, phase, type, changed files, notes) |
+
+**How it works**:
+- **Session start**: AI reads all three memory files before any task — mandatory context loading
+- **Task completion**: AI appends to `task-history.md` (always), `decisions-log.md` (if a decision was made), `project-memory.md` (if architecture facts changed)
+- **Initialization**: `memory/` directory is created automatically on first `/dev-builder` invocation, populated from templates using Product-Spec.md and DEV-PLAN.md info
+
+Memory files are plain markdown committed to your project repo — shared across sessions, across team members, and across AI tools.
+
+### Behavior Boundaries — Traffic Light System
+
+Not all AI actions should have the same level of autonomy. Forge classifies every action into three levels:
+
+| Level | Rule | Examples |
+|-------|------|---------|
+| 🟢 Green | Execute without confirmation | Variable naming, code style, tests, bug fixes (obvious), docs, dev deps |
+| 🟡 Yellow | Confirm before proceeding | External deps, DB schema, core business logic, project config, new routes |
+| 🔴 Red | Always require explicit approval | Deleting data, production config, force push, releases, auth changes |
+
+**YOLO mode**: In YOLO mode, 🟢 and 🟡 actions proceed automatically. 🔴 Red actions **always** require confirmation, even in YOLO mode. There is no override for red boundaries.
+
+### Quick Start Mode
+
+Don't want the full interview? Just describe your project in one sentence:
+
+```
+You: "A habit tracker app with AI coaching"
+Forge: ⚡ Quick Spec generated! Items marked [待确认] are my best guesses.
+```
+
+AI infers everything — product type, target users, core features, tech stack, layout. Uncertain items default to the simpler option and are marked for your review. Switch to deep-dive mode anytime with `/product-spec-builder`.
+
+### Requirements depth: PM frameworks & Chain-of-Thought
+
+Beyond the interview flow, **product-spec-builder** ships optional references (no extra Skills to install):
+
+| Layer | What | Where |
+|-------|------|--------|
+| **PM frameworks** | OST, JTBD value prop, assumption table, competitive brief — adapted from [pm-skills](https://github.com/phuryn/pm-skills) (MIT) | `core/skills/product-spec-builder/references/pm-frameworks-*.md` → optional sections in `Product-Spec.md` |
+| **Chain-of-Thought (CoT)** | Think step-by-step before conclusions (tech choice, edge cases, self-critique); analysis vs implementation split | `conversation-strategy.md`; also implementer pre-code step, bug-fixer checklist, forge-bootstrap Iron Law 9 |
+
+You do **not** need to type “think first” in every message — the Skill and session bootstrap apply the structure. See [What's New → v1.25.0](#v1250--2026-05-25).
+
+### Agent execution discipline (8 rules)
+
+**Task-level** rules (how to execute *this* change) — in addition to product-level Iron Laws and HARD-GATEs. Injected in summary on every session via `forge-bootstrap`; **full text** in your project’s `AGENTS.md` from [agents-template.md](core/templates/agents-template.md).
+
+| # | Rule (summary) |
+|---|----------------|
+| 1 | List steps; wait for approval before non-trivial edits |
+| 2 | Read files before Write/Edit |
+| 3 | Minimal diff; reuse abstractions — no stack rewrites |
+| 4 | Ask when there is no precedent — do not invent requirements |
+| 5 | Confirm before user-impacting pivots; replan if scope changes |
+| 6 | Report off-scope issues — do not drive-by fix |
+| 7 | Show diff summary; user approves before commit |
+| 8 | **Verify loop**: run lint / types / tests → fix failures → **re-run** until green; attach last-run output before DONE |
+
+Details, anti-patterns, test placement, role split: [session-execution-discipline.md](core/docs/session-execution-discipline.md). Human one-pager: `.forge/quickref.md` (written by `pnpm forge-install`). Also [harness-maturity-checklist.md](core/docs/harness-maturity-checklist.md).
+
+### Karpathy behavior discipline (4 principles)
+
+ReqForge 的行为层直接继承 [Andrej Karpathy 指出的 LLM 编码通病](https://x.com/karpathy/status/2015883857489522876)。四原则嵌入所有 Skill 的执行过程：
+
+| 原则 | 要对抗什么 | 检验信号 |
+|------|-----------|---------|
+| **Think Before Coding** | 不猜假设就开干、隐藏困惑、不摆 tradeoff | 编码前有无澄清问题？实现是否偏离用户说的范围？ |
+| **Simplicity First** | 200 行抽象工厂解决 10 行问题、投机性灵活度 | diff 是否比预期大很多？有无"以后也许会用"的代码？ |
+| **Surgical Changes** | 修 bug 顺手改格式/注释、重构没坏的代码 | diff 里有无格式/注释变更？提交信息写"顺便修了 XX"？ |
+| **Goal-Driven Execution** | 没有可验证标准就声称完成、不附证据 | 完成声明有无验证命令输出？是先写测试还是先写代码？ |
+
+完整说明 + ❌→✅ 示例 → [behavior-rules.md](core/docs/behavior-rules.md)。与上游 [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) 的同源映射 → [karpathy-skills-comparison.md](core/docs/karpathy-skills-comparison.md)。
+
+### Guidance Layer — 15 Skills
+
+Each Skill is an independent methodology module — composable, extensensible, pluggable. Every skill includes a `[Gotchas]` section documenting common failure points and lessons learned:
+
+| Skill                    | Responsibility                                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **product-spec-builder** | Requirements gathering. Multi-Stakeholder Review (4 perspectives) + **Critique Gate** (3 structural signals against sycophancy bias) + multi-round interviews → Product-Spec.md; optional PM frameworks (OST, JTBD, assumptions, competitors) and CoT templates. Iterative + Quick Mode. |
+| **change-manager**       | Brownfield changes. One feature per `changes/<name>/` folder: propose → apply → verify → archive (OpenSpec-aligned; see [openspec-comparison](core/docs/openspec-comparison.md)). |
+| **design-brief-builder** | Design language. Quantifies vague descriptions ("dark theme, minimal") into concrete direction: color palette, interaction style, information density. |
+| **design-maker**         | Design prototyping. Full page mockups via Pencil or Figma MCP; verification emits ephemeral `UI-Spec.md` (structure) + root `DESIGN.md` (tokens, [Google design.md](https://github.com/google-labs-code/design.md) format). |
+| **dev-planner**          | Development planning. Analyzes dependency relationships, splits into phases, outputs phased development plan.                                          |
+| **dev-builder**          | Implementation. Breaks work into Tasks — each Task goes through "code → review → fix → commit" loop.                                                   |
+| **bug-fixer**            | Four-stage systematic debugging + `pnpm forge-bug-fix` (diagnose --scenario / bisect / classify / trace / verify). Gather evidence → analyze patterns → hypothesize → fix.   |
+| **code-review**          | Parallel agent review — 4 specialists (design, bug+perf, security, types) with S/I/C (1–5) → `risk_rank` aggregation (≥4 confirmed, =3 suspected, ≤2 suppressed). Priority derived from Must-fix/Should-fix/Insight. |
+| **release-builder**      | Build & deploy. Built-in privacy audit and smoke testing.                                                                                              |
+| **domain-mapper**        | Domain mapping (**independent** of spec→build pipeline). Industry/tech/codebase/market → structured `domain-map.md`; L1/L2/L3 depth. Optional before Spec in unfamiliar domains. |
+| **request-dispatcher**   | Ambiguous request routing. When static dispatch cannot pick one Skill, analyzes intent + project state → recommends target Skill (not for every turn). |
+| **feedback-writer**      | Records user corrections and feedback as structured files. Feeds the evolution engine with data.                                                       |
+| **evolution-engine**     | Scans accumulated feedback, identifies patterns (3+ occurrences), generates proposals to upgrade rules or optimize skills.                             |
+| **skill-builder**        | Creates new Skill definitions from scratch using project templates. Triggered by evolution proposals or manual invocation.                             |
+| **reqforge-greenkeeper** | Framework-repo maintenance. When `pnpm test` / `forge-smoke` / adapter drift / fixtures fail on **ReqForge itself** → diagnose, minimal fix, sync, verify. Not for user-app bugs. |
+
+### Execution Layer — Sub-Agent Isolation (Context Firewall)
+
+Every Task gets a **fresh Sub-Agent instance**. No reuse, no inherited context. The orchestrator provides complete task context (spec items, deliverables, files, project structure) but NOT previous task history. This prevents error assumptions from cascading across tasks.
+
+| Sub-Agent | Skill | Responsibility |
+|-----------|-------|----------------|
+| **planner** | dev-planner | Architecture design + Phase splitting |
+| **implementer** | dev-builder | Code + compile verify + self-check |
+| **code-reviewer** | code-review | Aggregate parallel review findings |
+| **code-reviewer-design** | code-review | Spec compliance, UI consistency, drift |
+| **code-reviewer-bug** | code-review | Bug patterns, races, resource leaks, obvious performance |
+| **code-reviewer-security** | code-review | OWASP Top 10, credential leaks, XSS |
+| **code-reviewer-types** | code-review | Type safety (language-aware), nullability, edge cases |
+| **feedback-observer** | feedback-writer | Record failures + user corrections |
+| **evolution-runner** | evolution-engine | Scan feedback → evolution proposals |
+| **test-writer** | dev-builder | Generate Vitest tests for scripts/utilities |
+
+### Inspection Layer — Hook + Review Loop
+
+Code isn't done until it's reviewed:
+
+```
+Feature complete → code-reviewer parallel review
+  ├─ change_complexity="simple" → quick quality check
+  ├─ moderate/complex → 4 agents in parallel (design, bug, security, types)
+  ├─ confirmed spec gaps → re-implement → re-review
+  └─ confirmed quality issues → bug-fixer fix → re-review
+  └─ pass → commit (push when ready) → Task done
+```
+
+Ten hook scripts fire automatically in shipped adapters (plus `check-sync` in the ReqForge repo only — see note below):
+
+> **Comparison docs** (`core/docs/*-comparison.md`, seven-layer map) live in the [ReqForge GitHub repo](https://github.com/zxpmail/ReqForge/tree/main/core/docs) — not inside adapter bundles. Clone the repo or browse online; Skill links use those URLs.
+
+| Hook                   | Trigger            | Action                                  |
+| ---------------------- | ------------------ | --------------------------------------- |
+| hallucination-gate     | Before tool use    | Block Write/Edit to non-existent dirs   |
+| pre-commit-check       | Before commit      | Block commit if compilation fails       |
+| phase-exit-guard       | Before agent stops | Block stop while `.forge/phase-exit-block` exists (incomplete Phase) |
+| stop-gate              | Before agent stops | Block stop if code hasn't been reviewed |
+| retry-gate             | Before agent stops | Block when `.forge/.retry-counter.json` is `escalated` (max retries)   |
+| detect-feedback-signal | On user message    | Auto-detect correction signals          |
+| mark-review-needed     | After file edit    | Mark changes as needing review          |
+| check-evolution        | On session start   | Check feedback accumulation             |
+| memory-check           | After file edit    | Remind to update memory if code changed |
+| memory-guard           | After tool use     | Archive old task-history (>30 rows) + suggest session handoff |
+
+> **Note**: `check-sync` (detects core/ vs adapters/ divergence) ships only in the ReqForge repo's `core/hooks/` — not in installed adapter bundles.
+
+> **Optional — auto-push**: Not enabled by default. To push after every commit, add to `settings.json`: `"PostCommit": { "run": "sh .claude/hooks/auto-push.sh" }` (adjust path for Cursor/OpenCode). Script remains in `hooks/auto-push.sh`.
+
+### Evolution Layer — Steering Loop
+
+A harness that doesn't learn from usage is static. Forge evolves:
+
+1. **Level 0: Harness Foundation** — Context compaction, progressive disclosure, tool-call offloading, auto-scoring on failure — prerequisites for reliable evolution
+2. **Experience accumulation** — Failures and corrections are auto-recorded with inferred Skill scores (Precision/Coverage/Efficiency/Satisfaction). Scored data is the fuel for Level 2+.
+3. **Rule graduation** — Same feedback appears 3+ times → proposed as formal rule in Skill or control file
+4. **Skill optimization** — Skill's feedback scores consistently low → proposed adjustment
+5. **New Skill creation** — Repeated operation pattern without Skill coverage → proposed new Skill
+
+All evolution proposals require your explicit confirmation. No automatic rule changes.
+
+### Iron Rules — Non-Negotiable Baseline
+
+1. Define the problem before writing code
+2. Plan before executing
+3. Every step must be verifiable — "looks right" is not completion
+4. Commit frequently — every progress point should be a rollback checkpoint
+5. Keep docs updated — context loss is the silent killer
+6. Trust only machine evidence (reproducible commands, test output, CI status) — not AI's verbal assurance
+7. Codify rules — if it can be lint/test/schema/hook/CI, it MUST be; natural language alone is not enforcement
+8. Non-compliant output must fail, not rely on humans remembering to check
+
+---
+
+## Control File Philosophy
+
+CLAUDE.md is kept under 60 lines — a dispatch map, not a manual. Detailed procedures live in each Skill's SKILL.md (loaded only when that skill is active). Reference docs (behavior boundaries, memory system, sub-agent orchestration) live in `core/docs/`.
+
+Every rule in CLAUDE.md must be traceable to a specific failure or feedback. Generic best-practice rules belong in SKILL.md, not the control file. This keeps the prompt lean and every rule earns its place.
+
+## Design Priority
+
+```
+Design tool mockups (highest) → DESIGN.md (frozen tokens) → UI-Spec.md (structure) → Design-Brief.md (direction) → Product-Spec.md (functional logic)
+```
+
+When design mockups exist, all UI must match the design. **Exact values** come from `DESIGN.md` when present; conflicts are resolved in favor of the design tool.
+
+---
+
+## Workflow
+
+0. **Domain research (optional)** — Unfamiliar industry/stack → `/domain-mapper` → `domain-map.md`, then write Spec (orthogonal to main pipeline; can run before step 1)
+1. **Describe your idea** — `/product-spec-builder` interviews you (or Quick Mode for one sentence). 0-to-1 default **Multi-Stakeholder Review** (4 perspectives) + **Critique Gate** (3 structural signals against sycophancy bias). For fuzzy ideas, optional **PM discovery** (OST, assumptions) and **CoT** templates improve Spec quality before any code.
+2. **Generate spec** — Outputs `Product-Spec.md` (may include optional JTBD, metrics, competitors, assumptions sections) → user confirms → `.forge/spec-confirmed.json`
+3. **Design brief (optional)** — Invoke /design-brief-builder
+4. **Design mockups (optional)** — Invoke /design-maker → ephemeral `UI-Spec.md` + `DESIGN.md` for dev-builder
+5. **Development plan** — Invoke /dev-planner, outputs DEV-PLAN.md
+6. **Build** — Invoke /dev-builder, works through each Task in each Phase
+7. **Memory auto-update** — After each Task, project memory is updated automatically
+8. **Auto-review** — code-reviewer parallel agent review + confidence aggregation
+9. **Auto-fix** — Failed review triggers bug-fixer automatically
+10. **Commit & push** — Review passes → auto commit + push
+11. **Phase verification** — Cross-Task integration check + compile + functional test
+12. **Iterate** — Request changes in conversation; auto-update Spec → Plan → code → review
+13. **Brownfield feature** (optional, when Spec already exists) — `/change-manager propose <name>` → fill `changes/<name>/` → apply (dev-planner/dev-builder scoped) → verify → archive
+14. **Release** — Invoke `/release-builder`; after build, run `pnpm preflight --build-dir <artifact-dir>` before deploy/tag
+
+## Repository Structure
+
+```
+Forge/
+├── core/                      # Shared core content
+│   ├── skills/                # 15 skill definitions, each in its own directory
+│   ├── agents/                # 10 Sub-agent definitions
+│   ├── loadouts/              # Reusable skill/agent/hook bundles
+│   ├── templates/             # Document templates
+│   │   └── memory/            # Three-tier memory + session handoff templates
+│   ├── hooks/                 # Hook scripts (.sh/.bat/.ps1)
+│   ├── docs/                  # Detailed docs (behavior boundaries, memory system, etc.)
+│   └── feedback/              # Feedback templates
+├── adapters/
+│   ├── claude-code/           # Claude Code adapter (.claude/ + .claude/rules/)
+│   ├── cursor/                # Cursor adapter (.cursor/rules/)
+│   ├── opencode/              # OpenCode adapter (.opencode/)
+│   └── gemini-cli/            # Gemini CLI adapter (.gemini/)
+├── .forge/                    # Forge project config
+│   └── config.example         #     config template (copy to config to activate)
+├── .claude/                   # Forge's own control files (self-wired hooks via settings.json)
+├── CLAUDE.md                  # Main control file
+├── llms.txt                   # AI-searchable project summary
+├── scripts/
+│   ├── sync.ts                # core → adapter sync script
+│   ├── install.ts             # adapter → user project install
+│   ├── dependency-graph.ts    # File-level import graph + blast-radius
+│   ├── validate-skill.mjs     # Cross-platform SKILL.md validator (default pnpm validate-skill)
+│   ├── validate-skill.sh      # Full validator + --score rubric (pnpm validate-skill:bash)
+│   ├── create-skill.sh        # Scaffold new Skill directory (pnpm create-skill)
+│   ├── apply-loadout.ts       # Merge loadout hooks into adapter settings
+│   ├── preflight.ts           # Release preflight gate (pnpm preflight)
+│   ├── skill-eval.ts          # User-project custom Skill eval (pnpm skill-eval)
+│   └── __tests__/             # Vitest unit tests (incl. preflight, skill-eval)
+├── vitest.config.ts           # Test runner config
+├── changes/                   # Change artifacts (proposal/specs/design/tasks)
+│   └── archive/               # Archived implemented changes
+├── EVOLUTION.md               # Evolution engine definition
+├── Product-Spec.md            # Forge's own Product Spec
+├── Product-Spec-CHANGELOG.md  # Spec change log
+├── DEV-PLAN.md                # Forge's own development plan
+├── package.json               # Forge dev dependencies
+├── tsconfig.json
+├── LICENSE                    # MIT license
+└── README.md                  # This file
+```
+
+---
+
+## Framework Development
+
+After editing `core/`, sync to adapters and run tests before committing.
+
+**Requirements**: Node.js 22.x LTS, pnpm 10.x
+
+```bash
+pnpm install          # Dev dependencies (TypeScript, Vitest, etc.)
+pnpm test             # Unit tests (40 cases, incl. preflight, skill-eval, project-taste install)
+pnpm preflight        # Verify release gate locally (see Preflight above)
+pnpm build            # Compile scripts/ to dist/
+pnpm sync             # Sync core/ → adapters/
+pnpm forge-smoke      # Release gate: 15 smokes (~15–40s) — skill-fixtures, skill-bypass, test-demo golden path
+pnpm validate-skill   # Validate core/skills/ (cross-platform .mjs; add --strict)
+pnpm apply-loadout full claude-code  # Write loadout hooks to adapter settings
+pnpm dep-graph build  # Build dependency graph → .forge/graph.json
+pnpm dep-graph stats  # Print graph statistics
+```
+
+| Command | Description |
+|---------|-------------|
+| `pnpm forge-smoke` | Release gate: 12 static smokes (#11 includes `validate-skill`); CI on push/PR to `core/`, `adapters/`, `test-demo/` |
+| `pnpm test:watch` | Run tests in watch mode |
+| `pnpm validate-skill:bash` | Bash validate-skill.sh (requires WSL/Git Bash); add `--score` for 32-point rubric |
+| `pnpm create-skill <name>` | Scaffold new Skill from name (`--minimal` or `--full`) |
+| `pnpm apply-loadout <loadout> <client>` | Merge loadout (full/web-app/cli-tool/minimal) hooks into settings; `--dry-run` to preview |
+| `pnpm set-github-metadata` | Push description + topics from `.github/repo-metadata.json`; put token in `.env.local` as `GITHUB_TOKEN=` (see `.env.local.example`) |
+| `pnpm dep-graph affected [files...]` | Blast-radius: list transitively affected files (git diff if no args) |
+| `pnpm dep-graph risk [files...]` | Risk score for a set of changes |
+| `pnpm forge-loop [<N>] [--all] [--run] [--fde]` | Unified phase completion loop — detect → fix → verify |
+| `pnpm forge-fde <N>` | FDE mode: context-aware loop + `.forge/evidence/` report |
+| `pnpm forge-ops <url> [--interval <sec>]` | Production monitoring — health check → baseline → detect → fix |
+| `pnpm forge-install <client> --target <dir>` | Install adapter + `.forge/quickref.md`, `project-taste.md`, `preflight.json`, `skills/_template/eval/`, etc. |
+| `pnpm forge-install <client> --loadout <name>` | Same, but only loadout skills/agents + loadout hooks + `.forge/loadout-active.json` |
+| `pnpm preflight [--build-dir dist]` | Release gate before publish (see `core/docs/external-publish-preflight.md`) |
+| `pnpm skill-eval init <name>` / `pnpm skill-eval <name>` | Eval pack for user-project custom Skills |
+
+Always run `pnpm sync` after changing `core/skills`, `core/agents`, `core/hooks`, etc. — otherwise the `check-sync` hook will warn about adapter drift.
+
+**Platform compliance** (CI, forks, secrets): [platform-compliance.md](core/docs/platform-compliance.md). Workflows must stay **push/PR-only** — no cron schedules; `forge-smoke` enforces this.
+
+---
+
+## Research & comparisons
+
+External harnesses reviewed for positioning (not dependencies):
+
+| Project | Focus | Forge doc |
+|---------|--------|-----------|
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | Spec-driven `changes/` + CLI | [openspec-comparison.md](core/docs/openspec-comparison.md) — absorbed via `/change-manager` |
+| [Superpowers](https://github.com/obra/superpowers) | Skills + TDD + subagent-driven development | [superpowers-comparison.md](core/docs/superpowers-comparison.md) — skill/TDD discipline absorbed in dev-builder |
+| [Open Design](https://github.com/nexu-io/open-design) | Design artifacts, preview, design systems | [open-design-comparison.md](core/docs/open-design-comparison.md) — discovery/presets/anti-slop in design skills |
+| [Google design.md](https://github.com/google-labs-code/design.md) | DESIGN.md token format + designmd CLI | [design-md-comparison.md](core/docs/design-md-comparison.md) — Brief→mockup→DESIGN.md freeze in design-maker |
+| [OpenHuman](https://github.com/tinyhumansai/openhuman) | Personal AI runtime, Memory Tree, integrations | [openhuman-comparison.md](core/docs/openhuman-comparison.md) — optional memory backends, context rules |
+| [RTK](https://github.com/rtk-ai/rtk) | Shell output compression (PreToolUse bash proxy) | [rtk-comparison.md](core/docs/rtk-comparison.md) — optional layer 5 partner; tee-style verify evidence |
+| [nanochat](https://github.com/karpathy/nanochat) | End-to-end LLM training harness (speedrun, leaderboard) | [nanochat-comparison.md](core/docs/nanochat-comparison.md) — golden path / fast-loop discipline (methodology only) |
+| [autoresearch](https://github.com/karpathy/autoresearch) | Autonomous LLM training experiments (scoped edit, val_bpb) | [autoresearch-comparison.md](core/docs/autoresearch-comparison.md) — Primary metric + Spec/Plan lock + Task micro-cycle |
+| [llm-council](https://github.com/karpathy/llm-council) | Multi-LLM peer review + Chairman synthesis | [llm-council-comparison.md](core/docs/llm-council-comparison.md) — code-review council + spec Step 7 |
+| [jobs](https://github.com/karpathy/jobs) | BLS occupation data + LLM rubric scoring (not task queues) | [jobs-comparison.md](core/docs/jobs-comparison.md) — risk_rank + PROJECT-HEALTH + Spec LLM-judge |
+| [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) | Persistent wiki: raw/schema + ingest/query/lint | [llm-wiki-comparison.md](core/docs/llm-wiki-comparison.md) — memory/ + ADR filing discipline |
+| [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | **4 principles**: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven (154k ★) | [karpathy-skills-comparison.md](core/docs/karpathy-skills-comparison.md) — be

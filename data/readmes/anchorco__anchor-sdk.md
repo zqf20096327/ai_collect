@@ -1,0 +1,87 @@
+# Anchor SDK
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
+![Build Status](https://img.shields.io/github/actions/workflow/status/anchorco/anchor-sdk/ci.yml?branch=main)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/anchorco/anchor-sdk)
+![npm](https://img.shields.io/npm/v/anchorai)
+![pip](https://img.shields.io/pypi/v/anchorai)
+
+**Control what your AI agents store. Audit everything.**
+
+_Block_ bad data before storage.
+
+_Prove_ what happened.
+
+_Rollback_ when things break.
+
+
+## Installation
+
+**Python:** ```pip install anchorai```
+
+**TypeScript/JavaScript:** ```npm install anchorai```
+
+## Quick Start
+
+### 1. Sign Up and Get Credentials
+
+1. **Go to [getanchor.dev](https://getanchor.dev)**
+2. **Sign up** with your email (or log in if you already have an account)
+3. **Copy your API Key** (e.g., `anc_abc123...`)
+
+**Important:** Save this securely - you won't be able to see the API key again!
+
+### 2. Install the SDK
+
+**Python** ([PyPI](https://pypi.org/project/anchorai), [Code](https://github.com/anchorco/anchor-sdk/tree/main/python-sdk)):
+```python
+from anchor import Anchor
+
+# Initialize with your API key
+anchor = Anchor(api_key="your-api-key")
+
+# Create an agent
+agent = anchor.agents.create("support-bot")
+
+# Configure policies
+anchor.config.update(agent.id, {"policies": {"block_pii": True}})
+```
+
+**TypeScript** ([NPM](https://www.npmjs.com/package/anchorai), [Code](https://github.com/anchorco/anchor-sdk/tree/main/typescript-sdk)):
+```typescript
+import { Anchor } from 'anchorai';
+
+// Initialize with your API key
+const anchor = new Anchor({ 
+  apiKey: 'your-api-key'
+});
+
+const agent = await anchor.agents.create('support-bot');
+await anchor.config.update(agent.id, { policies: { block_pii: true } });
+```
+
+| Namespace | Purpose | API coverage |
+|-----------|-----------|-----------|
+| `anchor.agents` | Manage agents | create, get, list, update, delete, suspend, activate|
+| `anchor.config` | Version configurations |get, update, versions, get version, rollback|
+| `anchor.data` | Store data with policy enforcement |write, read, read full, delete, delete prefix, list, search|
+| `anchor.checkpoints` | Create state snapshots and restore |create, list, get, restore, delete|
+| `anchor.audit` | Keep hash-chained audit trail |query, get, verify, export|
+
+## Documentation
+
+[**API Documentation**](https://docs.getanchor.dev)
+
+[Python Reference](https://github.com/anchorco/anchor-sdk/tree/release/v1.1.0/python-sdk)
+  
+[TypeScript Reference](typescript-sdk/README.md)
+  
+**Contributing**: Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**License**: This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## Links
+- Website: **https://getanchor.dev**
+- Docs: **https://docs.getanchor.dev**
+- GitHub Issues: https://github.com/anchorco/anchor-sdk/issues
+- Support: founders@getanchor.dev

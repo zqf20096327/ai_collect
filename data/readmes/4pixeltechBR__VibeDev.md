@@ -1,0 +1,201 @@
+# 🚀 VibeDev + VibeShield Ecosystem / Ecossistema VibeDev + VibeShield
+
+🌍 **Read in / Leia em:** [English](#-english) | [Português](#-português)
+
+---
+
+## 🇺🇸 English
+
+[![VibeDev License](https://img.shields.io/github/license/4pixeltechBR/VibeDev?style=flat-square&color=blue)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/4pixeltechBR/VibeDev?style=flat-square)](https://github.com/4pixeltechBR/VibeDev/stargazers)
+[![Framework Version](https://img.shields.io/badge/version-3.7.0-emerald?style=flat-square)](vibedev/SKILL.md)
+
+**VibeDev** is a lightweight, rigorous governance framework specifically designed for AI-driven software development (Vibe Coding). Coupled with **VibeShield**, it provides automated security audits and native **Layman Mode** support.
+
+### 🗺️ Ecosystem Structure
+
+| Component | Role | When it triggers |
+|---|---|---|
+| **[VibeDev](./vibedev/)** | Development cycle orchestrator. Defines phases, plans, gates, and post-mortems. | Every project session. |
+| **[VibeShield](./vibeshield/)** | Security auditor. Detects authentication, database, API, and deploy actions. | Automatically via triggers G1-G7. |
+
+### 🧭 Two Modes of Operation
+
+The ecosystem automatically detects user profile via the `modo_usuario` field in `PROJECT_STATE.md`:
+- **`modo_usuario: tecnico`** (default): Formal risk registers, C1-C8 vulnerability categories, and OK/REVIEW/BLOCK verdicts.
+- **`modo_usuario: leigo`** (Layman Mode): Auto-translated jargon (Glossary), mandatory cost estimation (Cost Guard), and `/vd-kill` for graceful exit.
+
+*Note: The written state in `PROJECT_STATE.md` always remains technical. Layman Mode only simplifies the conversational rendering.*
+
+### 🆕 What's new in v3.1.0
+
+- 📖 **Glossário Ativo** — auto-translates jargon in Layman Mode (see `vibedev/references/glossario-leigo.md`).
+- 💰 **Guarda de Custo** — mandatory 3-tier monthly cost estimation before leaving Phase 3 (see `vibedev/references/estimativa-custos.md`).
+- 🪦 **`/vd-kill`** — graceful project termination command, archives state to `IDEA_LOG.md` instead of deleting. Anti-guilt.
+
+### 🆕 What's new in v3.2.0
+
+- ⏱️ **Estimativas de Tempo Calibradas** — realistic construction time by project category, surfaced before `/vd-start` (see `vibedev/references/tempo-construcao.md`).
+- 🛡️ **Anti-Feature-Creep** — 3-layer scope containment during `/vd-build`. Ideas land in backlog, not in code (see `vibedev/references/anti-creep.md`).
+- 🎯 **Reconhecimento & Pausa** — embedded rituals for sober progress acknowledgment + pause prompts at phase gates. Anti-burnout, anti-guilt.
+
+### 🆕 What's new in v3.3.0 (Layman Lifecycle Complete)
+
+- ✨ **`/vd-spark`** — pre-Phase-1 discovery for laymen with vague ideas. 4-round conversation extracts idea/persona/transformation/success-signal before `/vd-start` runs. See `vibedev/references/discovery-leigo.md`.
+- 🚀 **`/vd-launch`** — post-Phase-7 communication blocks (elevator pitch, 3 tweet variants, LinkedIn post, landing page structure, beta email, private post-mortem) + 24h pre-launch checklist in `vibedev/assets/launch/`.
+- 🇧🇷 **Modo Brasil** — auto-activated when pt-BR / BR context detected. BRL, Pix-first, LGPD explicit, BR hosting options. See `vibedev/references/brasil.md`.
+
+### 🆕 What's new in v3.4.0 (Layman Total + Country Mode)
+
+- 🌍 **Country Mode generic** — 12 countries auto-detected by signals (TLD + currency + gateway + timezone). Replaces `brasil.md`. See `vibedev/references/modo-pais.md`.
+- 👋 **Onboarding Tour** — 3 messages in the first session for laymen (see `vibedev/references/onboarding-leigo.md`).
+- 📊 **Visual Progress Panel** — `/vd-status` renders an ASCII progress bar + phase checklist for laymen (see `vibedev/references/painel-progresso.md`).
+- 🤝 **Confident Default Decision** — IA chooses with 1-line justification when layman can't evaluate Type 1 options.
+- 🛡️ **Anti-"it's fine" validation** — `/vd-check` refuses vague approval.
+- 🔄 **Automatic Recap** — 7+ days gone = extended `/vd-status` with options.
+- 💬 **Assisted Feature Collection** — `/vd-plan` opens with 3 conversational questions instead of "list 10 testable features."
+
+### 🆕 What's new in v3.4.1 (Country Mode Reoriented)
+
+- 🛠️ **Country Mode reframed** — the framework is **civic technology for native developers** building tools for their own country, with local gateways / hosts / laws / language. Not a guide for foreign companies entering other markets.
+- 🇺🇦 🇷🇺 🇨🇳 **CN / RU / UA reclassified** from "Experimental" to "Stable (community-maintained)" with specific "known gaps — local contributor welcome" blocks per country.
+
+### 🆕 What's new in v3.4.2 (Formal Credits)
+
+- 🛠️ **CREDITS.md** at repository root with formal, dated, traceable record of people and papers that influenced VibeDev.
+- 🔗 **Hyperlinks** to [@sandeco](https://github.com/sandeco) and [arXiv:2607.00038](https://arxiv.org/abs/2607.00038) added across release notes.
+
+### 🆕 What's new in v3.5.0 (Router + Discipline)
+
+- 🧭 **`/vd-help` command** — router that maps the 11 VibeDev commands + emotional situations + main flow one-liner. Inspired by `ask-matt` from mattpocock/skills (cited as **competitive reference**, not academic). See `vibedev/commands/vd-help.md`.
+- 🏛️ **`.agents/adr/`** — 6 Architecture Decision Records documenting past and current design decisions (monolithic skill, country mode, 2 modes, anti-"tá", Sandeco credit, model-invoked-anunciado).
+- 🚫 **`.out-of-scope/`** — 7 documents explaining what VibeDev does NOT do (CI/CD, monorepo, issue tracker, low-code, replacement for VibeShield, stack recommendations, pretending to be VibeShield).
+- 🗣️ **Invocation model in SKILL.md** — explicit classification of all 11 commands + 7 silent rules as either `user-invoked` or `model-invoked-anunciado`. The adaptation twist from Pocock: we **announce** model-triggered actions instead of running them silently, because laymen need to see what the framework is doing.
+
+### 🆕 What's new in v3.6.0 (Changesets + VibeShield v2.0.0)
+
+- ⚙️ **Changesets workflow** at repo root — `pnpm changeset` style, inspired by mattpocock/skills. README at `.changeset/README.md`. First changeset is `initial-setup.md` (this release).
+- 🛡️ **VibeShield v2.0.0** — major version bump for scope change.
+  - **`vibeshield-code-review` skill** at `vibeshield/commands/code-review.md`. User-invoked. Review de diff/PR contra 2 eixos: **Standards** + **Spec**. Inspired by `code-review` de mattpocock/skills, mas adaptado pra revisar contra `PROJECT_STATE.md`.
+  - **`vibeshield/.out-of-scope/`** — 6 documents explaining what VibeShield does NOT do (pentest, replace DPO, replace SAST, runtime race conditions, transitive deps, replace VibeDev).
+
+### 🆕 What's new in v3.7.0 (3rd Satellite Skill — `/vd-arch-review`)
+
+- 🏛️ **`/vd-arch-review` command** — 3ª skill satélite da família VibeDev, user-invoked, para devs. See `vibedev/commands/vd-arch-review.md`. 3 sub-comandos:
+  - `/vd-arch-full` — macro + meso + micro
+  - `/vd-arch-only` — só arquitetura + componentes
+  - `/vd-arch-health` — só saúde + débito técnico
+- 🎯 **Detecta os 3 buracos que faltavam**: separação de camadas (UI/domínio/infra), anti-patterns de código, dependências externas vs código customizado. + acoplamento, vazamento de abstração, cobertura de testes.
+- 📊 **Estado persistente** em `ARCH_MAP.md` + `.arch-review/` (4 sub-relatórios).
+- 🎨 **Diagramas Mermaid** (componentes, sequência, ERD).
+- 🛠️ **Vocabulário de mattpocock/skills `codebase-design`** (deep modules, seams, adapters) referenciado.
+- 📚 **Inspirado em Sandeco Macedo (arXiv:2607.00038)** escada de 5 níveis, adaptada pra 3.
+
+### 🛠️ How to Start
+
+1. Install the skills in your AI environment (see [INSTALL.md](./INSTALL.md)).
+2. Initialize your project with `/vd-start`.
+3. Follow the cycle: `/vd-plan` ➔ approval ➔ `/vd-build` ➔ `/vd-check`.
+4. VibeShield will trigger automatically when security-sensitive code is touched.
+
+---
+
+## 🇧🇷 Português
+
+[![VibeDev License](https://img.shields.io/github/license/4pixeltechBR/VibeDev?style=flat-square&color=blue)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/4pixeltechBR/VibeDev?style=flat-square)](https://github.com/4pixeltechBR/VibeDev/stargazers)
+[![Versão do Framework](https://img.shields.io/badge/vers%C3%A3o-3.7.0-emerald?style=flat-square)](vibedev/SKILL.md)
+
+O **VibeDev** é um framework leve e rigoroso de governança para desenvolvimento assistido por IA (Vibe Coding). Integrado ao **VibeShield**, oferece auditorias automáticas de segurança e suporte nativo a **Modo Leigo**.
+
+### 🗺️ Estrutura do Ecossistema
+
+| Componente | Papel | Quando entra |
+|---|---|---|
+| **[VibeDev](./vibedev/)** | Orquestrador de ciclo de desenvolvimento. Define fases, planos, gates e post-mortems. | Em toda sessão do projeto. |
+| **[VibeShield](./vibeshield/)** | Auditor de segurança. Detecta ações de autenticação, banco de dados, API e deploy. | Automaticamente via gatilhos G1-G7. |
+
+### 🧭 Dois Modos de Operação
+
+O ecossistema detecta automaticamente o perfil do usuário através do campo `modo_usuario` em `PROJECT_STATE.md`:
+- **`modo_usuario: tecnico`** (padrão): Registro de riscos formal, categorias de vulnerabilidade C1-C8 e vereditos OK/REVISAR/BLOQUEAR.
+- **`modo_usuario: leigo`**: Jargão traduzido automaticamente (Glossário), estimativa de custo obrigatória (Guarda de Custo), e `/vd-kill` pra encerramento digno.
+
+*Nota: O estado persistido em `PROJECT_STATE.md` continua técnico. O Modo Leigo altera apenas a renderização conversacional.*
+
+### 🆕 O que tem de novo no v3.1.0
+
+- 📖 **Glossário Ativo** — traduz jargão automaticamente no Modo Leigo (ver `vibedev/references/glossario-leigo.md`).
+- 💰 **Guarda de Custo** — estimativa de custo mensal obrigatório em 3 portes antes de sair da Fase 3 (ver `vibedev/references/estimativa-custos.md`).
+- 🪦 **`/vd-kill`** — comando de encerramento digno do projeto, arquiva o estado em `IDEA_LOG.md` em vez de apagar. Anti-culpa.
+
+### 🆕 O que tem de novo no v3.2.0
+
+- ⏱️ **Estimativas de Tempo Calibradas** — tempo realista de construção por categoria de projeto, apresentado antes do `/vd-start` (ver `vibedev/references/tempo-construcao.md`).
+- 🛡️ **Anti-Feature-Creep** — contenção de escopo em 3 camadas durante `/vd-build`. Ideias vão pro backlog, não pro código (ver `vibedev/references/anti-creep.md`).
+- 🎯 **Reconhecimento & Pausa** — rituais embutidos de reconhecimento sóbrio de progresso + prompts de pausa em gates de fase. Anti-burnout, anti-culpa.
+
+### 🆕 O que tem de novo no v3.3.0 (Ciclo Leigo Completo)
+
+- ✨ **`/vd-spark`** — discovery pré-Fase-1 pra leigos com ideia vaga. Conversa de 4 rodadas extrai ideia/persona/transformação/sinal-de-sucesso antes do `/vd-start` rodar (ver `vibedev/references/discovery-leigo.md`).
+- 🚀 **`/vd-launch`** — blocos de comunicação pós-Fase-7 (elevator pitch, 3 variantes de tweet, post LinkedIn, estrutura de landing, e-mail beta, post-mortem privado) + checklist 24h antes do lançamento em `vibedev/assets/launch/`.
+- 🇧🇷 **Modo Brasil** — auto-ativado quando detecta pt-BR / contexto BR. BRL, Pix-first, LGPD explícita, hospedagem BR. Ver `vibedev/references/brasil.md`.
+
+### 🆕 O que tem de novo no v3.4.0 (Leigo Total + Modo País)
+
+- 🌍 **Modo País genérico** — 12 países auto-detectados por sinais (TLD + moeda + gateway + fuso). Substitui `brasil.md`. Ver `vibedev/references/modo-pais.md`.
+- 👋 **Tour de Onboarding** — 3 mensagens na primeira sessão pro leigo (ver `vibedev/references/onboarding-leigo.md`).
+- 📊 **Painel Visual de Progresso** — `/vd-status` renderiza barra ASCII + checklist de fases pro leigo (ver `vibedev/references/painel-progresso.md`).
+- 🤝 **Decisão Confiante** — IA escolhe com justificativa de 1 linha quando leigo não consegue avaliar opções Tipo 1.
+- 🛡️ **Validação Anti-"tá"** — `/vd-check` recusa aprovação vaga.
+- 🔄 **Recap Automático** — 7+ dias fora = `/vd-status` expandido com opções.
+- 💬 **Coleta Assistida de Features** — `/vd-plan` abre com 3 perguntas conversacionais em vez de "liste 10 features testáveis".
+
+### 🆕 O que tem de novo no v3.4.1 (Modo País Reorientado)
+
+- 🛠️ **Modo País reorientado** — o framework é **tecnologia cívica pra devs nativos** construindo ferramentas pro próprio país, com gateways / hosts / leis / idioma local. Não é guia pra empresas estrangeiras entrando em outros mercados.
+- 🇺🇦 🇷🇺 🇨🇳 **CN / RU / UA reclassificados** de "Experimental" pra "Estável (manutenção comunitária)" com blocos específicos de "lacunas conhecidas — contribuidor local bem-vindo" por país.
+
+### 🆕 O que tem de novo no v3.4.2 (Créditos Formais)
+
+- 🛠️ **CREDITS.md** na raiz do repo com registro formal, datado e rastreável de pessoas e papers que influenciaram o VibeDev.
+- 🔗 **Hyperlinks** pro [@sandeco](https://github.com/sandeco) e pro [arXiv:2607.00038](https://arxiv.org/abs/2607.00038) adicionados nos release notes.
+
+### 🆕 O que tem de novo no v3.5.0 (Router + Disciplina)
+
+- 🧭 **Comando `/vd-help`** — router que mapeia os 11 comandos do VibeDev + situações emocionais + resumo do fluxo principal. Inspirado no `ask-matt` do mattpocock/skills (citado como **referência competitiva**, não acadêmica). Ver `vibedev/commands/vd-help.md`.
+- 🏛️ **`.agents/adr/`** — 6 Architecture Decision Records documentando decisões passadas e atuais (skill monolítica, modo país, 2 modos, anti-"tá", crédito Sandeco, model-invoked-anunciado).
+- 🚫 **`.out-of-scope/`** — 7 documentos explicando o que VibeDev NÃO faz (CI/CD, monorepo, issue tracker, low-code, substituir VibeShield, recomendações de stack, fingir ser VibeShield).
+- 🗣️ **Modelo de invocação no SKILL.md** — classificação explícita dos 11 comandos + 7 regras silenciosas como `user-invoked` ou `model-invoked-anunciado`. A adaptação do Pocock: a gente **anuncia** ações disparadas pelo modelo em vez de rodar silencioso, porque leigos precisam ver o que o framework tá fazendo.
+
+### 🆕 O que tem de novo no v3.6.0 (Changesets + VibeShield v2.0.0)
+
+- ⚙️ **Workflow de Changesets** na raiz do repo — estilo `pnpm changeset`, inspirado em mattpocock/skills. README em `.changeset/README.md`. Primeiro changeset é `initial-setup.md` (esse release).
+- 🛡️ **VibeShield v2.0.0** — bump de major version por mudança de escopo.
+  - **Skill `vibeshield-code-review`** em `vibeshield/commands/code-review.md`. User-invoked. Review de diff/PR contra 2 eixos: **Standards** + **Spec**. Inspirado no `code-review` de mattpocock/skills, mas adaptado pra revisar contra o `PROJECT_STATE.md`.
+  - **`vibeshield/.out-of-scope/`** — 6 documentos explicando o que VibeShield NÃO faz (pentest, substituir DPO, substituir SAST, race conditions em runtime, deps transitivas, substituir VibeDev).
+
+### 🆕 O que tem de novo no v3.7.0 (3ª Skill Satélite — `/vd-arch-review`)
+
+- 🏛️ **Comando `/vd-arch-review`** — 3ª skill satélite da família VibeDev, user-invoked, pra devs. Ver `vibedev/commands/vd-arch-review.md`. 3 sub-comandos:
+  - `/vd-arch-full` — macro + meso + micro
+  - `/vd-arch-only` — só arquitetura + componentes
+  - `/vd-arch-health` — só saúde + débito técnico
+- 🎯 **Detecta os 3 buracos que faltavam**: separação de camadas (UI/domínio/infra), anti-patterns de código, dependências externas vs código customizado. + acoplamento, vazamento de abstração, cobertura de testes.
+- 📊 **Estado persistente** em `ARCH_MAP.md` + `.arch-review/` (4 sub-relatórios).
+- 🎨 **Diagramas Mermaid** (componentes, sequência, ERD).
+- 🛠️ **Vocabulário de mattpocock/skills `codebase-design`** (deep modules, seams, adapters) referenciado.
+- 📚 **Inspirado em Sandeco Macedo (arXiv:2607.00038)** escada de 5 níveis, adaptada pra 3.
+
+### 🛠️ Como Começar
+
+1. Instale as skills no seu ambiente de IA (veja [INSTALL.md](./INSTALL.md)).
+2. Inicie o projeto com `/vd-start`.
+3. Siga o ciclo: `/vd-plan` ➔ aprovação ➔ `/vd-build` ➔ `/vd-check`.
+4. A VibeShield é ativada sozinha quando código sensível for detectado.
+
+---
+
+## 📄 License & Terms / Licença & Termos
+
+MIT License. See [LICENSE](./LICENSE) for details. / Licença MIT. Detalhes em [LICENSE](./LICENSE).

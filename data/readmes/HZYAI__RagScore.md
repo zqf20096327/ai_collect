@@ -1,0 +1,447 @@
+<div align="center">
+  <img src="RAGScore.png" alt="RAGScore Logo" width="400"/>
+  
+  [![PyPI version](https://badge.fury.io/py/ragscore.svg)](https://pypi.org/project/ragscore/)
+  [![PyPI Downloads](https://static.pepy.tech/personalized-badge/ragscore?period=total&units=international_system&left_color=black&right_color=green&left_text=downloads)](https://pepy.tech/projects/ragscore)
+  [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+  [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+  [![Ollama](https://img.shields.io/badge/Ollama-Supported-orange)](https://ollama.ai)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/HZYAI/RagScore/blob/main/examples/detailed_evaluation_demo.ipynb)
+  [![MCP](https://img.shields.io/badge/MCP-Server-purple)](https://modelcontextprotocol.io)
+  
+<!-- mcp-name: io.github.HZYAI/ragscore -->
+
+  **Generate QA datasets & evaluate RAG systems in 2 commands**
+  
+  🔒 Privacy-First • ⚡ Lightning Fast • 🤖 Any LLM • 🏠 Local or Cloud • 🌍 Multilingual
+  
+  [English](README.md) | [中文](README_CN.md) | [日本語](README_JP.md) | [Deutsch](README_DE.md)
+</div>
+
+---
+
+## ⚡ 2-Line RAG Evaluation
+
+```bash
+# Step 1: Generate QA pairs from your docs
+ragscore generate docs/
+
+# Step 2: Evaluate your RAG system
+ragscore evaluate http://localhost:8000/query
+```
+
+**That's it.** Get accuracy scores and incorrect QA pairs instantly.
+
+```
+============================================================
+✅ EXCELLENT: 85/100 correct (85.0%)
+Average Score: 4.20/5.0
+============================================================
+
+❌ 15 Incorrect Pairs:
+
+  1. Q: "What is RAG?"
+     Score: 2/5 - Factually incorrect
+
+  2. Q: "How does retrieval work?"
+     Score: 3/5 - Incomplete answer
+```
+
+---
+
+## 🚀 Quick Start
+
+### Install
+
+```bash
+pip install ragscore              # Core (works with Ollama)
+pip install "ragscore[openai]"    # + OpenAI support
+pip install "ragscore[notebook]"  # + Jupyter/Colab support
+pip install "ragscore[all]"       # + All providers
+```
+
+> **Already installed?** Keep up to date — new versions add features like failure diagnosis and retrieved context capture:
+> ```bash
+> pip install --upgrade ragscore
+> ```
+
+### Option 1: Python API (Notebook-Friendly)
+
+Perfect for **Jupyter, Colab, and rapid iteration**. Get instant visualizations.
+
+```python
+from ragscore import quick_test
+
+# 1. Audit your RAG in one line
+result = quick_test(
+    endpoint="http://localhost:8000/query",  # Your RAG API
+    docs="docs/",                            # Your documents
+    n=10,                                    # Number of test questions
+)
+
+# 1b. Tailored QA — target specific audiences
+result = quick_test(
+    endpoint="http://localhost:8000/query",
+    docs="docs/",
+    audience="developers",                   # Who asks the questions?
+    purpose="api-integration",               # What's the document for?
+)
+
+# 2. See the report
+result.plot()
+
+# 3. Inspect failures
+bad_rows = result.df[result.df['score'] < 3]
+display(bad_rows[['question', 'rag_answer', 'reason']])
+```
+
+**Rich Object API:**
+- `result.accuracy` - Accuracy score
+- `result.df` - Pandas DataFrame of all results
+- `result.plot()` - 3-panel visualization (4-panel with `detailed=True`)
+- `result.corrections` - List of items to fix
+
+### Option 2: CLI (Production)
+
+### Generate QA Pairs
+
+```bash
+# Set API key (or use local Ollama - no key needed!)
+export OPENAI_API_KEY="sk-..."
+
+# Generate from any document
+ragscore generate paper.pdf
+ragscore generate docs/*.pdf --concurrency 10
+
+# Tailored QA generation — target specific audiences
+ragscore generate docs/ --audience developers --purpose faq
+ragscore generate docs/ --audience customers --purpose "pre-sales"
+ragscore generate docs/ --audience "compliance auditors" --purpose "security audit"
+```
+
+### Evaluate Your RAG
+
+```bash
+# Point to your RAG endpoint
+ragscore evaluate http://localhost:8000/query
+
+# Custom options
+ragscore evaluate http://api/ask --model gpt-4o --output results.json
+```
+
+---
+
+## 🔬 Detailed Multi-Metric Evaluation
+
+Go beyond a single score. Add `detailed=True` to get **5 diagnostic dimensions** per answer — in the same single LLM call.
+
+```python
+result = quick_test(
+    endpoint=my_rag,
+    docs="docs/",
+    n=10,
+    detailed=True,  # ⭐ Enable multi-metric evaluation
+)
+
+# Inspect per-question metrics
+display(result.df[[
+    "question", "score", "correctness", "completeness",
+    "relevance", "conciseness", "faithfulness"
+]])
+
+# Radar chart + 4-panel visualization
+result.plot()
+```
+
+```
+==================================================
+✅ PASSED: 9/10 correct (90%)
+Average Score: 4.3/5.0
+Threshold: 70%
+──────────────────────────────────────────────────
+  Correctness: 4.5/5.0
+  Completeness: 4.2/5.0
+  Relevance: 4.8/5.0
+  Conciseness: 4.1/5.0
+  Faithfulness: 4.6/5.0
+==================================================
+```
+
+| Metric | What it measures | Scale |
+|--------|------------------|-------|
+| **Correctness** | Semantic match to golden answer | 5 = fully correct |
+| **Completeness** | Covers all key points | 5 = fully covered |
+| **Relevance** | Addresses the question asked | 5 = perfectly on-topic |
+| **Conciseness** | Focused, no filler | 5 = concise and precise |
+| **Faithfulness** | No fabricated claims | 5 = fully faithful |
+
+**CLI:**
+```bash
+ragscore evaluate http://localhost:8000/query --detailed
+```
+
+### 🔍 Failure Diagnosis (`--diagnose`)
+
+When answers fail, `--diagnose` tells you **why** — retriever miss, generator hallucination, incomplete answer, or wrong interpretation:
+
+```bash
+ragscore evaluate http://localhost:8000/query --diagnose
+```
+
+```
+🔍 Failure Diagnosis:
+  Retriever Miss: 3 (42.9%)
+  Generator Hallucination: 2 (28.6%)
+  Incomplete Answer: 1 (14.3%)
+  Wrong Interpretation: 1 (14.3%)
+```
+
+Uses the `support_span` already generated with each QA pair to give the judge grounding context. Combine with `--detailed` for full diagnostics:
+
+```bash
+ragscore evaluate http://localhost:8000/query --diagnose --detailed -o results.json
+```
+
+| Category | Meaning |
+|----------|---------|
+| **Retriever Miss** | RAG didn't retrieve the chunk containing the evidence |
+| **Generator Hallucination** | Retrieved correctly but fabricated information |
+| **Incomplete Answer** | Retrieved correctly but answer is partial |
+| **Wrong Interpretation** | Retrieved correctly but misunderstood the content |
+
+> 📓 [Full demo notebook](examples/detailed_evaluation_demo.ipynb) — build a mini RAG and test it with detailed metrics.
+>
+> 🎯 [Audience & Purpose demo](examples/audience_purpose_demo.ipynb) — generate tailored QA for developers, customers, auditors, and more.
+>
+> 🏠 [Ollama local demo](examples/ollama_local_demo.ipynb) — 100% private RAG evaluation with no API keys.
+
+---
+
+## 🏠 100% Private with Local LLMs
+
+```bash
+# Use Ollama - no API keys, no cloud, 100% private
+ollama pull llama3.1
+ragscore generate confidential_docs/*.pdf
+ragscore evaluate http://localhost:8000/query
+```
+
+**Perfect for:** Healthcare 🏥 • Legal ⚖️ • Finance 🏦 • Research 🔬
+
+### Ollama Model Recommendations
+
+RAGScore generates complex structured QA pairs (question + answer + rationale + support span) in JSON format. This requires models with strong instruction-following and JSON output capabilities.
+
+| Model | Size | Min RAM | QA Quality | Recommended |
+|-------|------|---------|------------|-------------|
+| `llama3.1:70b` | 40GB | 48GB VRAM | Excellent | GPU server (A100, L40) |
+| `qwen2.5:32b` | 18GB | 24GB VRAM | Excellent | GPU server (A10, L20) |
+| `llama3.1:8b` | 4.7GB | 8GB VRAM | Good | **Best local choice** |
+| `qwen2.5:7b` | 4.4GB | 8GB VRAM | Good | Good local alternative |
+| `mistral:7b` | 4.1GB | 8GB VRAM | Good | Good local alternative |
+| `llama3.2:3b` | 2.0GB | 4GB RAM | Fair | CPU-only / testing |
+| `qwen2.5:1.5b` | 1.0GB | 2GB RAM | Poor | Not recommended |
+
+> **Minimum recommended: 8B+ models.** Smaller models (1.5B–3B) produce lower quality support spans and may timeout on longer chunks.
+
+### Ollama Performance Guide
+
+```bash
+# Recommended: 8B model with concurrency 2 for local machines
+ollama pull llama3.1:8b
+ragscore generate docs/ --provider ollama --model llama3.1:8b
+
+# GPU server (A10/L20): larger model with higher concurrency
+ollama pull qwen2.5:32b
+ragscore generate docs/ --provider ollama --model qwen2.5:32b --concurrency 5
+```
+
+**Expected performance (28 chunks, 5 QA pairs per chunk):**
+
+| Hardware | Model | Time | Concurrency |
+|----------|-------|------|-------------|
+| MacBook (CPU) | llama3.2:3b | ~45 min | 2 |
+| MacBook (CPU) | llama3.1:8b | ~25 min | 2 |
+| A10 (24GB) | llama3.1:8b | ~3–5 min | 5 |
+| L20/L40 (48GB) | qwen2.5:32b | ~3–5 min | 5 |
+| OpenAI API | gpt-4o-mini | ~2 min | 10 |
+
+> RAGScore auto-reduces concurrency to 2 for local Ollama to avoid GPU/CPU contention.
+
+---
+
+## 🔌 Supported LLMs
+
+| Provider | Setup | Notes |
+|----------|-------|-------|
+| **Ollama** | `ollama serve` | Local, free, private |
+| **OpenAI** | `export OPENAI_API_KEY="sk-..."` | Best quality |
+| **Anthropic** | `export ANTHROPIC_API_KEY="..."` | Long context |
+| **DashScope** | `export DASHSCOPE_API_KEY="..."` | Qwen models |
+| **vLLM** | `export LLM_BASE_URL="..."` | Production-grade |
+| **Any OpenAI-compatible** | `export LLM_BASE_URL="..."` | Groq, Together, etc. |
+
+---
+
+## 📊 Output Formats
+
+### Generated QA Pairs (`output/generated_qas.jsonl`)
+
+```json
+{
+  "id": "abc123",
+  "question": "What is RAG?",
+  "answer": "RAG (Retrieval-Augmented Generation) combines...",
+  "rationale": "This is explicitly stated in the introduction...",
+  "support_span": "RAG systems retrieve relevant documents...",
+  "difficulty": "medium",
+  "source_path": "docs/rag_intro.pdf"
+}
+```
+
+### Evaluation Results (`--output results.json`)
+
+```json
+{
+  "summary": {
+    "total": 100,
+    "correct": 85,
+    "incorrect": 15,
+    "accuracy": 0.85,
+    "avg_score": 4.2
+  },
+  "incorrect_pairs": [
+    {
+      "question": "What is RAG?",
+      "golden_answer": "RAG combines retrieval with generation...",
+      "rag_answer": "RAG is a database system.",
+      "score": 2,
+      "reason": "Factually incorrect - RAG is not a database"
+    }
+  ]
+}
+```
+
+---
+
+## 🧪 Python API
+
+```python
+from ragscore import run_pipeline, run_evaluation
+
+# Generate QA pairs
+run_pipeline(paths=["docs/"], concurrency=10)
+
+# Generate tailored QA pairs for specific audiences
+run_pipeline(
+    paths=["docs/"],
+    audience="support engineers",
+    purpose="fine-tuning a support chatbot",
+)
+
+# Evaluate RAG
+results = run_evaluation(
+    endpoint="http://localhost:8000/query",
+    model="gpt-4o",  # LLM for judging
+)
+print(f"Accuracy: {results.accuracy:.1%}")
+```
+
+---
+
+## 🤖 AI Agent Integration
+
+RAGScore is designed for AI agents and automation:
+
+```bash
+# Structured CLI with predictable output
+ragscore generate docs/ --concurrency 5
+ragscore evaluate http://api/query --output results.json
+
+# Exit codes: 0 = success, 1 = error
+# JSON output for programmatic parsing
+```
+
+**CLI Reference:**
+
+| Command | Description |
+|---------|-------------|
+| `ragscore generate <paths>` | Generate QA pairs from documents |
+| `ragscore generate <paths> --audience <who>` | Tailored QA for specific audience |
+| `ragscore generate <paths> --purpose <why>` | Focus QA on document purpose |
+| `ragscore evaluate <endpoint>` | Evaluate RAG against golden QAs |
+| `ragscore evaluate <endpoint> --detailed` | Multi-metric evaluation |
+| `ragscore evaluate <endpoint> --diagnose` | Failure root-cause classification |
+| `ragscore --help` | Show all commands and options |
+| `ragscore generate --help` | Show generate options |
+| `ragscore evaluate --help` | Show evaluate options |
+
+---
+
+## ⚙️ Configuration
+
+Zero config required. Optional environment variables:
+
+```bash
+export RAGSCORE_CHUNK_SIZE=512          # Chunk size for documents
+export RAGSCORE_QUESTIONS_PER_CHUNK=5   # QAs per chunk
+export RAGSCORE_WORK_DIR=/path/to/dir   # Working directory
+```
+
+---
+
+## 🔐 Privacy & Security
+
+| Data | Cloud LLM | Local LLM |
+|------|-----------|-----------|
+| Documents | ✅ Local | ✅ Local |
+| Text chunks | ⚠️ Sent to LLM | ✅ Local |
+| Generated QAs | ✅ Local | ✅ Local |
+| Evaluation results | ✅ Local | ✅ Local |
+
+**Compliance:** GDPR ✅ • HIPAA ✅ (with local LLMs) • SOC 2 ✅
+
+---
+
+## 🧪 Development
+
+```bash
+git clone https://github.com/HZYAI/RagScore.git
+cd RagScore
+pip install -e ".[dev,all]"
+pytest
+```
+
+---
+
+## 📡 Telemetry
+
+RAGScore collects telemetry **only in MCP server mode** (`ragscore serve`). Standard CLI and Python API usage do not send telemetry.
+
+We collect limited anonymous operational metrics to understand feature usage and improve reliability. No document content, prompts, QA text, model outputs, API keys, endpoint URLs, or file paths are collected.
+
+**Collected in MCP mode:**
+- MCP tool invoked
+- LLM provider and model name
+- `ragscore` version, Python version, OS type
+- Success/failure status
+- Random anonymous installation ID
+
+**Opt out:**
+
+```bash
+export RAGSCORE_NO_TELEMETRY=1
+```
+
+---
+
+## �� Links
+
+- [GitHub](https://github.com/HZYAI/RagScore) • [PyPI](https://pypi.org/project/ragscore/) • [Issues](https://github.com/HZYAI/RagScore/issues) • [Discussions](https://github.com/HZYAI/RagScore/discussions)
+
+---
+
+<p align="center">
+  <b>⭐ Star us on GitHub if RAGScore helps you!</b><br>
+  Made with ❤️ for the RAG community
+</p>

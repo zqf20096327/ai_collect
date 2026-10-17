@@ -1,0 +1,333 @@
+
+
+<h1 align="center">Agentfootprint</h1>
+
+<p align="center">
+  <strong>Your agent gave an answer that <em>looks</em> right — and it's wrong.<br/>The logs can't tell you who influenced it. Agentfootprint can.</strong>
+</p>
+
+<p align="center">
+  The explainable AI agent framework for TypeScript: every read, write, decision, and tool call becomes
+  <strong>connected evidence</strong> as your agent runs. When something goes wrong, you don't grep logs — you ask.
+</p>
+
+<p align="center">
+  <strong>Build</strong> agents — skills, steering, RAG, memory, control flow — and <strong>debug</strong> them like nothing else.<br/>
+  <em>Why</em> is a query, not a guess.
+</p>
+
+<p align="center">
+  <a href="https://footprintjs.github.io/agentThinkingUI/">
+    <img src="docs/assets/hero-atui.png" alt="An agent run replayed in Story Lens — the LLM 'brain' calls the Flight-search tool, the step inspector shows the tool's raw output and the brain's reasoning about it, and the timeline scrubs every step of the run." width="100%">
+  </a>
+</p>
+<p align="center">
+  <sub>A real run, replayed — rendered with <a href="https://github.com/footprintjs/agentThinkingUI"><b>Story Lens</b></a> (<code>npm i agentthinkingui</code>). Every frame is generated from the run's own trace; <a href="https://footprintjs.github.io/agentThinkingUI/">▶ watch it live</a>.</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/footprintjs/agentfootprint/actions"><img src="https://github.com/footprintjs/agentfootprint/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <!-- coverage-badge --><img src="https://img.shields.io/badge/coverage-87%25-green.svg" alt="coverage: 87%"><!-- /coverage-badge -->
+  <a href="https://www.npmjs.com/package/agentfootprint"><img src="https://img.shields.io/npm/v/agentfootprint.svg?style=flat" alt="npm version"></a>
+  <a href="https://bundlephobia.com/package/agentfootprint"><img src="https://img.shields.io/bundlephobia/minzip/agentfootprint?label=minzipped" alt="minzipped size"></a>
+  <a href="#tree-shakeable--esm-first"><img src="https://img.shields.io/badge/tree--shakeable-%E2%9C%93-success?style=flat" alt="tree-shakeable"></a>
+  <a href="https://www.npmjs.com/package/agentfootprint"><img src="https://img.shields.io/npm/dm/agentfootprint.svg" alt="Downloads"></a>
+  <a href="https://github.com/footprintjs/agentfootprint/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+</p>
+
+---
+
+## The new error class
+
+For decades, software had two kinds of errors — and developers never needed deep
+domain knowledge to fix either:
+
+| Error class | Where the bug lives | How you find it |
+|---|---|---|
+| **Infrastructure** — crash, timeout, 500 | the system | infra logs, monitoring |
+| **Business logic** — wrong branch, wrong math | the code | stack trace, debugger, `console.log` |
+| **Contextual** — wrong tool chosen, wrong fact believed, stale memory trusted | **what the model was given** | **nothing. Until now.** |
+
+Agents introduced the third class. The code is correct, the infra is healthy, the
+answer even reads well — and the run is still wrong, because something influenced
+the model:
+
+| The model… | because… |
+|---|---|
+| picked the wrong tool | two descriptions read nearly alike — it chose between twins |
+| believed a wrong "fact" | a tool returned it, or an injected fact planted it |
+| followed the wrong instruction | the wrong skill / steering fired — or fired one iteration too early |
+| answered from the past | a previous turn or stale memory bled into this one |
+
+Classical logs can't explain any of it: **they record what the code did, never
+what the context did.** The debugging question changed — no longer *"what did my
+code do?"* but **"who influenced the model?"**
+
+## The idea
+
+If contextual errors live in what the model was given, then the run itself must be
+structured so context is **evidence** — every injection, read, write, decision, and
+tool call recorded *connected*, the moment it happens. Not logs you grep. Evidence
+you ask.
+
+## Quick start — runs offline, no API key
+
+```bash
+npm install agentfootprint footprintjs
+```
+
+```typescript
+import { Agent, defineTool } from 'agentfootprint';
+import { mock } from 'agentfootprint/providers';
+
+const weather = defineTool({
+  name: 'weather',
+  description: 'Get current weather for a city.',
+  inputSchema: {
+    type: 'object',
+    properties: { city: { type: 'string' } },
+    required: ['city'],
+  },
+  execute: async ({ city }: { city: string }) => `${city}: 72°F, sunny`,
+});
+
+const agent = Agent.create({
+  provider: mock({ reply: 'I checked: it is 72°F and sunny.' }),
+  model: 'mock',
+})
+  .system('You answer weather questions using the weather tool.')
+  .tool(weather)
+  .build();
+
+const result = await agent.run({ message: 'Weather in Paris?' });
+console.log(result);  // → "I checked: it is 72°F and sunny."
+```
+
+For production, import a real provider from `agentfootprint/providers` and swap it in — `anthropic(...)` / `openai(...)` / `bedrock(...)` / `gemini(...)` / `ollama(...)`. Only the import line changes; the agent code stays the same. (Every provider — `mock` included — lives on the `agentfootprint/providers` subpath, so the main `agentfootprint` barrel stays free of optional peer-dep requires.)
+
+**No cloud account?** `ollama('llama3.2')` from `agentfootprint/providers` runs the same agent against a local model for $0 — the free rung between the mock and the bill. Full recipes: [Ollama](https://agentfootprint.dev/docs/build/ollama/) · [OpenAI-compatible endpoints](https://agentfootprint.dev/docs/build/openai/#openai-compatible-endpoints-ollama-llamacpp-vllm-together-groq-lm-studio).
+
+## What a tool returns — three helpers, one rule
+
+Whatever a tool returns is what the model reads next. When that value has limits the model must not lose, return it through one of three helpers — each is the tool's response; nothing is added to the system prompt or the tool's schema:
+
+| helper | use it when | the model reads | the record keeps |
+|---|---|---|---|
+| `describedResult({ … })` | rows, a series or relationships from a system of record | the data, with `grain`, `provenance` and one `not_covered` line per gap | the whole envelope (`tools.semantics_declared`) |
+| `coverage(value, { … })` | any other value that has limits | your value, with what was and was not checked | `tools.coverage_declared` |
+| `absent({ … })` | nothing matched | what was looked for, where, and that a retry returns the same | `tools.absent` |
+
+Never wrap one in another. Add `.limitsTravelWithTheAnswer()` and the declared coverage is appended to the final answer — or, for a typed `.outputSchema()` answer, returned beside it as data by `agent.answerCoverage()`. Provenance and grain never are.
+
+```typescript
+import { absent, coverage, describedResult } from 'agentfootprint';
+
+execute: ({ vm, summary }) => {
+  const { exportedAt, source, runs: all } = backupExport;   // your system of record
+  const runs = all.filter((r) => r.vm === vm);
+  const ground = { checked: [`every backup job in the export of ${exportedAt}`] };
+  if (runs.length === 0) return absent({ what: `backup runs for ${vm}`, ...ground });  // nothing matched
+  if (summary) return coverage(`${vm}: ${runs.length} backup runs`, ground);           // a verdict with limits
+  return describedResult({                                                             // rows from the record
+    facts: runs.map((r) => ({ entity: vm, day: r.day, ok: r.ok === 1 })),
+    provenance: { measuredAt: exportedAt, source },   // the time comes from the data
+    coverage: ground,
+  });
+},
+```
+
+What the model reads from each, exactly: [Tools → what `execute` returns](https://agentfootprint.dev/docs/build/tools/#what-execute-returns--three-helpers-one-rule).
+
+## How — we abstract context engineering
+
+Skills, steering, RAG, facts, memory, guardrails — every name for context does one thing: it injects into one of three LLM slots. So we abstracted the injection itself.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/hero-light.svg">
+    <img alt="agentfootprint mascot composing context flavors (Skills, Steering, Guardrails, RAG, Tool APIs, Memory) into three structured LLM slots (system, messages, tools) — the central abstraction, visualized." src="docs/assets/hero-light.svg" width="100%"/>
+  </picture>
+</p>
+<p align="center">
+  <sub><em>One primitive: <code>Injection = slot × trigger × cache</code>. Because the framework owns this point, every piece of context is <b>born tracked</b> — observability isn't wired up, it's a consequence of the abstraction. <a href="#the-4-triggers">The 4 triggers ↓</a></em></sub>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/triggers-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/triggers-light.svg">
+    <img alt="agentfootprint — Every LLM call has 3 fixed slots (system, messages, tools). Every flavor lands in one slot under one of 4 fixed triggers (always · rule · on-tool-return · llm-activated). Sparkle streams flow from each trigger lane down to a specific pill inside its destination slot — same slot can hold pills from different triggers (RAG via rule, Instruction via on-tool-return), and the same flavor (Skill) can land in different slots." src="docs/assets/triggers-light.svg" width="100%"/>
+  </picture>
+</p>
+
+The abstraction is three rules:
+
+1. **Three slots are fixed.** `system`, `messages`, `tools` — the LLM API surface.
+2. **N flavors are open.** You declare what you have. Tomorrow's flavor (few-shot, reflection, persona, A2A handoff…) plugs in the same way.
+3. **Rules decide *where* and *when*.** You provide the rules. We collect your data, fire the right one, land it in the right slot at the right iteration.
+
+That's the whole model: `Injection = slot × trigger × cache`.
+
+- **Slot** — which of the 3 LLM API regions the content lands in (`system` / `messages` / `tools`).
+- **Trigger** — when the content fires (see below).
+- **Cache** — how stable the content is across iterations. The framework places provider cache markers for you — stable content gets 80–90% cheaper prefixes.
+
+### The 4 triggers
+
+| Trigger | Flavor | Fires when | Illustration | Default slot |
+|---|---|---|---|---|
+| `always` | static | Every iteration | `.steering(defineSteering({ id, prompt: 'You are a triage agent…' }))` | `system` |
+| `rule` | runtime — predicate | Your rule returns true | `.instruction(defineInstruction({ id, activeWhen: s => /price\|refund/.test(s.userQuery), prompt }))` | `system` |
+| `on-tool-return` | runtime — lifecycle | After a specific tool returns | `.instruction(defineInstruction({ id, activeWhen: s => s.lastToolResult?.toolName === 'search', prompt: 'Cite source IDs.' }))` | `system` |
+| `llm-activated` | runtime — agent-driven | LLM calls `read_skill('id')` | `.skill(defineSkill({ id: 'refund-policy', description, body }))` | `system` (body) + `tools` |
+
+**3 slots × 4 triggers × N flavors = the entire context-engineering surface.**
+
+## What tracking buys you
+
+**See it in 30 seconds** — four questions logs can't answer, each answered by code in this repo from a real run:
+
+```text
+Q: Why did the model pick refund_full instead of refund_partial?
+A: margin 0.02 — ⚠ NARROW: the two tool descriptions read nearly identical
+   (toolChoiceRecorder — and the catalog lint flags the pair before you ever run)
+
+Q: Why was this loan declined?
+A: decision ← [control: "DTI above the 0.43 affordability ceiling"] ← dti 0.52 ← monthlyDebt / income
+   (decide() evidence + the causal slice — every hop is a real recorded edge)
+
+Q: Which piece of context made the answer wrong?
+A: CAUSAL: ablating fact 'vip-override' flipped the outcome in 3/3 seeded reruns
+   (localizeContextBug — ranked proxies, counterfactual proof)
+
+Q: Prove nobody edited this run's record.
+A: verifyAuditBundle → valid: false, brokenAt: #16 — the tampered record, named
+   (hash-chained audit export, offline verification)
+```
+
+And you don't have to read the trace yourself — the trace toolpack lets a debugger model do it: in one run it found a planted bug while reading **9.5% of the trace** ([self-explain](https://agentfootprint.dev/docs/debug/self-explain/)). The watching costs the run nothing: recorders run one beat behind the agent, never on its hot path.
+
+## Pick your door
+
+| 🔧 Building an agent? | 🐛 Agent misbehaving? | 🏛️ Need audit / compliance? |
+|---|---|---|
+| Typed agents with skills, steering, RAG, memory, guardrails — and the trace for free. | Lint your tool catalog in 5 minutes — works on **any** framework's tool list. Then causal slices, context bisection, and the debugger-LLM toolpack. | Hash-chained, tamper-evident run records with an offline verifier — record-keeping in the EU-AI-Act shape. |
+| [→ Quick start](https://agentfootprint.dev/docs/getting-started/quick-start/) · [→ Build an agent](https://agentfootprint.dev/docs/build/agent/) | [→ Debug](https://agentfootprint.dev/docs/debug/debug/) · [→ Tool-catalog lint](https://agentfootprint.dev/docs/debug/tool-catalog-lint/) · [→ Self-explain](https://agentfootprint.dev/docs/debug/self-explain/) | [→ Exporters & audit bundles](https://agentfootprint.dev/docs/monitor/exporters/) · [→ Security](https://agentfootprint.dev/docs/monitor/security/) |
+
+## Mocks first, production second
+
+Build the entire app against in-memory mocks with **zero API cost**, then swap real infrastructure one boundary at a time.
+
+| Boundary | Dev | Prod |
+|---|---|---|
+| LLM provider | `mock(...)` | `ollama('<model>')` free · `anthropic()` · `openai()` · `bedrock()` |
+| Memory store | `InMemoryStore` | `RedisStore` · `AgentCoreStore` |
+| MCP | `mockMcpClient(...)` | `mcpClient({ transport })` |
+| Cache strategy | `NoOpCacheStrategy` | auto-selected per provider |
+
+The flowchart, recorders, and tests don't change between dev and prod.
+
+## Any AG-UI frontend — no glue code
+
+AG-UI frontends (CopilotKit, the AG-UI Dojo, any `@ag-ui/client` app) all speak one protocol: POST a `RunAgentInput`, read a stream of typed events. An agentfootprint run is already a stream of typed events, so the only missing piece is the adapter between them — `agUi()`. Hand it to `streamHandler`, a plain `(request) => Promise<Response>` that mounts in Next.js, Hono, Bun, Deno or Workers, and the frontend shows streamed text, tool calls with their results, steps and sub-agents.
+
+A browser request is untrusted, so the handler decides nothing on its word: it builds a fresh agent for every request, binds the thread to the caller *your* verifier proves (`verifiedThreads` — a checked bearer token or sign-in, never a header read as a name), keeps the conversation on the server (`sessions`) and takes only the person's newest message from the page. It reads only what the run *serves*, so anything your redaction policy hides never reaches the browser.
+
+```ts
+// npm install agentfootprint @ag-ui/core @ag-ui/encoder
+import { Agent } from 'agentfootprint';
+import { mock } from 'agentfootprint/providers';
+import { memorySessions, streamHandler, verifiedThreads } from 'agentfootprint/hosting';
+import { agUi } from 'agentfootprint/ag-ui';
+
+// Who is calling — PROVEN, not claimed. A real app: jwksIdentity({ jwksUrl, issuer, audience })
+// from 'agentfootprint/security'. This demo verifier knows one token.
+const verify = async (token: string) => {
+  if (token !== 'demo-token-for-ada') throw new Error('unknown token');
+  return { userId: 'ada' };
+};
+
+const handler = streamHandler({
+  // A fresh agent per request — nothing one caller's run leaves behind reaches another.
+  agent: () =>
+    Agent.create({ provider: mock({ reply: 'Hello from agentfootprint.' }), model: 'mock' })
+      .system('Be brief.')
+      .build(),
+  adapter: agUi(),
+  threads: verifiedThreads({ verify }), // no valid token → 401; the thread is the caller's own
+  sessions: memorySessions(), // the conversation lives on the server (one turn per thread, per process)
+}); // Next.js: export const POST = handler;
+
+// What an AG-UI frontend sends, and what it reads back:
+const response = await handler(
+  new Request('http://localhost/agent', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: 'Bearer demo-token-for-ada' },
+    body: JSON.stringify({ threadId: 't1', runId: 'r1', messages: [{ id: 'u1', role: 'user', content: 'Hi' }] }),
+  }),
+);
+console.log(await response.text()); // data: {"type":"RUN_STARTED",…} … data: {"type":"RUN_FINISHED",…}
+```
+
+Two turns with a tool call, end to end: [`examples/deploy/ag-ui.ts`](examples/deploy/ag-ui.ts) · frontend tools, interrupts, what a page may not decide, and what goes out: [AG-UI frontends](https://agentfootprint.dev/docs/infrastructure/ag-ui/).
+
+## Building with an AI coding assistant
+
+agentfootprint is written to be used — and maintained — by coding agents.
+
+- **Teach your assistant the API:** `npx agentfootprint-setup` installs the agentfootprint skill for Claude Code (and rule files for Cursor, Copilot, Windsurf, Cline, Kiro). It loads only when the task is about agentfootprint.
+- **Before building something, search [CAPABILITIES.md](CAPABILITIES.md)** — an index of what already ships, keyed by what *you* would call it. It is in the npm package too.
+- **Every example runs:** [`examples/`](examples/) holds 160+ runnable programs, each executed end to end in CI against mock providers.
+
+## Where to next
+
+| If you are... | Go here |
+|---|---|
+| New to agents | [5-minute quick start](https://agentfootprint.dev/docs/getting-started/quick-start/) |
+| Coming from LangChain / CrewAI / LangGraph | [Migration guide](https://agentfootprint.dev/docs/getting-started/vs/) |
+| Architecting an enterprise rollout | [Production guide](https://agentfootprint.dev/docs/monitor/deployment/) |
+| Doing due diligence | [Architecture overview](https://agentfootprint.dev/docs/reference/dependency-graph/) |
+| Researcher / academic background | [Citations & prior art](https://agentfootprint.dev/docs/reference/citations/) |
+| Curious about design | [Inspiration docs](https://agentfootprint.dev/docs/reference/inspiration/) |
+
+Or jump into the [examples gallery](https://github.com/footprintjs/agentfootprint/tree/main/examples) — every example is also an end-to-end CI test.
+
+## Tree-shakeable & ESM-first
+
+- **Dual build, true ESM** — CommonJS and real ES modules with TypeScript types; loads natively under Node, Vite, Next, Deno and Bun.
+- **Per-file modules, honest `sideEffects`** — `import { defineTool }` doesn't pull in the Agent runtime, memory stores or providers.
+- **Entry points named for what you're doing** — `agentfootprint` plus `/providers`, `/memory`, `/rag`, `/observe`, `/context`, `/resilience`, `/security`, `/hosting`, `/events`, `/cache` and a few more; `package.json` `exports` is the complete list.
+- **Lazy peer-deps** — vendor SDKs (Anthropic, AWS, Redis, MCP…) load only when you instantiate that adapter, and optional families like the self-explain toolpack load only when enabled.
+
+Proven by tests, not promised: [`test/esm-packaging.test.ts`](test/esm-packaging.test.ts) and [`test/trace-toolpack/browserGraph.test.ts`](test/trace-toolpack/browserGraph.test.ts).
+
+## Built on
+
+[footprintjs](https://github.com/footprintjs/footPrint) — the flowchart pattern for backend code. agentfootprint's decision-evidence capture, narrative recording, and time-travel checkpointing are footprintjs primitives at the runtime layer.
+
+You don't need to learn footprintjs to use agentfootprint — but if you want to build your own primitives at this depth, [start there](https://footprintjs.github.io/footPrint/).
+
+---
+
+## Citing
+
+agentfootprint is part of a research program on making software systems explain themselves — every run records *why* it did what it did, as a causal trace. Researching agent transparency, observability, or explainable AI? The [ecosystem map](https://footprintjs.github.io/) is a good starting point.
+
+If you use agentfootprint in academic work, please cite it (or use the "Cite this repository" button on GitHub):
+
+```bibtex
+@software{anbalagan_agentfootprint,
+  author  = {Anbalagan, Sanjay Krishna},
+  title   = {agentfootprint: the explainable AI agent framework},
+  url     = {https://github.com/footprintjs/agentfootprint},
+  license = {MIT},
+  year    = {2025}
+}
+```
+
+---
+
+## License
+
+[MIT](./LICENSE) © [Sanjay Krishna Anbalagan](https://github.com/sanjay1909)

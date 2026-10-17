@@ -1,0 +1,194 @@
+# UntisPlus
+
+<p align="center">
+  <img src="assets/icon.png" alt="UntisPlus Logo" width="120" style="border-radius: 24px;"/>
+</p>
+
+<p align="center">
+  <strong>A sleek, privacy-first companion app for WebUntis.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/ninocss/untisplus?style=for-the-badge&logo=github&color=3182ce" alt="GitHub stars">
+  <img src="https://img.shields.io/github/forks/ninocss/untisplus?style=for-the-badge&logo=github&color=3182ce" alt="GitHub forks">
+  <img src="https://img.shields.io/github/issues/ninocss/untisplus?style=for-the-badge&logo=github&color=e53e3e" alt="GitHub issues">
+  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter">
+</p>
+
+---
+
+## Overview
+
+UntisPlus is a modern, secure, and intuitive Flutter client for students and teachers to manage school schedules, tasks, and communications. Built with privacy as the default: all authentication details, credentials, and schedule data stay strictly on your local device — nothing is ever shared with central servers.
+
+| Aspect | Specification |
+| :--- | :--- |
+| **Data Policy** | Private by default. Credentials and schedule data never leave your device. (If you use Local AI)|
+| **Current Version** | `5.6.2` |
+| **Target Platforms** | Android, iOS |
+
+---
+
+## Features
+
+* **Advanced Timetable** — Fast, fluid, and optimized navigation for daily and weekly class schedules.
+* **Exam & Info Tracker** — Consolidated overview of upcoming exams and direct broadcast announcements from your school.
+* **Homework & Lesson Notes** — Seamless integration of homework and notes straight from WebUntis.
+* **Absences & Change Center** — Offline-first absence history and a deduplicated timeline of cancellations, room, teacher, subject, and time changes.
+* **Multi-Account by Design** — Account-scoped schedules, personal data, widgets, alarms, credentials, and caches.
+* **Smart Utilities** — Built-in free room finder and home screen widgets for immediate status checks.
+* **Local Intelligence** — On-device assistive AI features that manage workflows privately, without sending data to the cloud.
+
+---
+
+## Screenshots
+
+| Welcome | Timetable | Lesson Details |
+| :---: | :---: | :---: |
+| <img src="assets/github/welcome.png" width="240" alt="Welcome" /> | <img src="assets/github/timetable.png" width="240" alt="Timetable" /> | <img src="assets/github/lesson_inspect.png" width="240" alt="Lesson details" /> |
+
+| AI Assistant | Appearance | Ready to Go |
+| :---: | :---: | :---: |
+| <img src="assets/github/AI_assistant.png" width="240" alt="AI assistant" /> | <img src="assets/github/Appearance.png" width="240" alt="Appearance settings" /> | <img src="assets/github/Ready_to_go.png" width="240" alt="Ready to go" /> |
+
+---
+
+## Roadmap
+
+| Feature / Goal | Status |
+| :--- | :---: |
+| Offline-first structured cache foundation | In progress |
+| Absence overview and timetable change center | In progress |
+| Feature-by-feature Riverpod migration | In progress |
+
+---
+
+## Tech Stack & Key Dependencies
+
+| Dependency | Purpose |
+| :--- | :--- |
+| **`http`** | WebUntis API communication |
+| **`flutter_secure_storage`** | Native encrypted storage for credentials and API keys |
+| **`shared_preferences`** | Non-sensitive preferences such as theme, language, and layout |
+| **`hive_ce_flutter`** | Versioned, account-scoped offline data cache |
+| **`flutter_riverpod`** | Testable dependency injection and feature state migration |
+| **`dynamic_color`** | Material You dynamic theme integration |
+| **`home_widget`** | Native Android and iOS widget connectivity |
+| **`flutter_local_notifications`** | Time-critical lesson alerts and schedule update tracking |
+
+---
+
+## Project Structure
+
+```
+.
+├── assets/                    # Graphic elements and app icons
+├── lib/
+│   ├── app/                   # Central application routing configuration
+│   ├── core/                  # State engines, themes, and time utilities
+│   ├── data/                  # Secure storage, cache, and WebUntis transport
+│   ├── features/              # Typed feature data/domain modules
+│   ├── screens/               # System views, settings hub, and setup guides
+│   ├── services/              # Notification, background sync, and backup engines
+│   ├── web/                   # Web-specific platform adaptions
+│   └── widgets/               # Reusable UI elements and background filters
+└── pubspec.yaml               # Package definitions and metadata
+```
+
+---
+
+## Development Setup
+
+### System Prerequisites
+
+Ensure the Flutter SDK is installed and configured in your environment variable path.
+
+### Execution
+
+```bash
+# Clone the codebase
+git clone https://github.com/ninocss/untisplus.git
+
+# Navigate into the project folder
+cd untisplus
+
+# Resolve project dependencies
+flutter pub get
+
+# Launch the application in debug mode
+flutter run
+```
+
+Pure Dart and widget tests can be run without compiling the optional local-AI
+runtime. The wrapper temporarily substitutes a test-only fllama stub and always
+restores the production dependency afterwards:
+
+```powershell
+pwsh -File tool/test_without_local_ai.ps1
+```
+
+### Development Server
+
+Please visit this Repo:
+https://github.com/OseMine/UntisPlus-dev-server
+
+---
+## Installation
+### Android
+1. [Download](https://github.com/ninocss/untisplus/releases) the latest APK from Releases
+2. Install APK
+
+### iOS
+1. Install AltStore Classic Using [Altserver](https://faq.altstore.io/altstore-classic) or [AltStore PAL (EU Only)](https://faq.altstore.io/altstore-pal).
+2. Add UntisPlus Source to AltStore
+```bash
+https://raw.githubusercontent.com/ninocss/untisplus/refs/heads/main/altstore/source.json
+```
+3. Install and Sign using Apple ID(Signing has to be renewt every 7 days when using a non Developer AppleID)
+
+<p align="center">
+  <a href="https://altstore.io/source/raw.githubusercontent.com/ninocss/untisplus/refs/heads/main/altstore/source.json?app=com.ninocss.untisplus">
+    <img src="assets/altstore-download-light.png" alt="Download on AltStore" width="245"/>
+  </a>
+</p>
+
+### iOS (TrollStore)
+TrollStore installs Untis+ permanently — no Apple ID and no 7-day re-signing.
+> [!WARNING]
+> This version and installation method are not actively maintained, as TrollStore is no longer supported on iOS 17+.
+
+> Compatibility: TrollStore relies on the CoreTrust bug and works on **iOS 14.0 – 17.0** on supported devices (not iOS 17.0.1+ or newer). It is **not** a jailbreak. See [ios.cfw.guide](https://ios.cfw.guide/installing-trollstore) for device compatibility and installation of TrollStore itself.
+
+1. [Install TrollStore](https://ios.cfw.guide/installing-trollstore) on your device.
+2. Download the **TrollStore IPA** (`UntisPlus-v5.3.3-trollstore.ipa`) and nightly TrollStore builds from the [Releases](https://github.com/ninocss/untisplus/releases) page.
+3. Tap the downloaded file (visible in the Files app / your Downloads browser).
+4. Choose **Open with TrollStore**, then tap **Install**.
+5. Untis+ is now perma-signed; no signing renewal is ever needed.
+
+The TrollStore build is fake-signed with embedded entitlements (app groups, push) so home screen widgets, shared containers and notifications keep working. If apps stop launching after an OS update/reboot, re-select a **Persistence Helper** in TrollStore settings.
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Clone your fork: `git clone https://github.com/your-username/untisplus.git`
+3. Create a feature branch: `git checkout -b feature/your-feature`
+4. Commit changes with clear messages: `git commit -am 'Add explicit feature description'`
+5. Push to the branch: `git push origin feature/your-feature`
+6. Open a Pull Request against the `main` branch.
+
+Please give credits to UntisPlus (or your forked repo) in your work! ❤️
+
+---
+
+## Disclaimer
+
+UntisPlus is an independent developer project. It is not affiliated, associated, authorized, endorsed by, or in any way officially connected with WebUntis or any of its subsidiaries or affiliates.
+
+---
+
+Developers
+
+- ninocss — Founder & Developer
+- OseMine — Developer

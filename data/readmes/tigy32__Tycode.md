@@ -1,0 +1,174 @@
+# Tycode
+
+Tycode is an AI-powered coding assistant that operates as both a command-line tool and a Visual Studio Code extension. Tycode follows a bring-your-own-key model where you maintain direct control over your AI provider and costs. You pay your AI provider directly (AWS Bedrock or OpenRouter) rather than through a subscription service.
+
+![CI](https://github.com/tigy32/Tycode/actions/workflows/ci.yml/badge.svg)
+
+## Installation
+
+Start by cloning the repository and building the distribution package:
+
+```bash
+git clone https://github.com/tigy32/Tycode
+cd Tycode
+./dev.sh package
+```
+
+This build process produces both the CLI binary and the VSCode extension package.
+
+### Command Line Interface
+
+The CLI can be run directly from the repository using Cargo:
+
+```bash
+cargo run --bin tycode
+```
+
+### Visual Studio Code Extension
+
+The packaging script generates a VSIX file in the tycode-vscode directory. Install it through VSCode by opening the command palette (Cmd+Shift+P or Ctrl+Shift+P), selecting "Extensions: Install from VSIX", and choosing the generated file.
+
+## Configuration
+
+Tycode stores its configuration in `~/.tycode/settings.toml`. While you can edit this file directly, the recommended approach is to use the built-in commands to manage your settings.
+
+### Provider Setup
+
+You must configure an AI provider before using Tycode. Tycode supports token API providers: AWS Bedrock and OpenRouter.
+
+**AWS Bedrock** requires an AWS account with access to Bedrock's LLM services. You'll need an AWS CLI profile configured with appropriate credentials. To configure Bedrock as your provider:
+
+```bash
+/provider add <name> bedrock <profile-name>
+```
+
+For example, if your AWS profile is named "default":
+
+```bash
+/provider add default-bedrock bedrock default
+```
+
+**OpenRouter** provides a simpler alternative and is recommended unless you must run in AWS. OpenRouter aggregates multiple LLM providers under a single API. Configuration follows a similar pattern:
+
+```bash
+/provider add <name> openrouter <api-key>
+```
+
+Tycode provider integrations use token APIs. Local coding-agent CLIs such as Claude Code and Codex CLI are intentionally not wrapped as Tycode providers; those agents work best through their own native tool stacks.
+
+### Cost Controls
+
+You can control the cost and quality of responses by specifying a cost tier:
+
+```bash
+/cost set <tier>
+```
+
+Available tiers include `unlimited` for maximum quality (using top-tier models like Claude Fable/Opus), `low` for budget-conscious usage (currently routing to efficient models like Kimi/Qwen-class models when available), and intermediate options. The `low` tier provides surprisingly capable performance for everyday development tasks while minimizing costs.
+
+### Example Configuration
+
+A typical configuration file looks like this:
+
+```toml
+active_provider = "default"
+model_quality = "unlimited"
+review_level = "None"
+
+[providers.default]
+type = "bedrock"
+profile = "default"
+region = "us-west-2"
+```
+
+This configuration uses AWS Bedrock through the "default" profile and sets quality to unlimited.
+
+## Using Tycode
+
+Tycode defaults commands to the current workspace, and file tools resolve paths through the workspace. The Bash tool is a normal shell command runner, so use normal OS and repository controls when you need stronger isolation.
+
+The model respects your .gitignore file and will treat ignored files as if they do not exist. This prevents the AI from reading build artifacts, dependencies, or other files you've chosen to exclude from version control.
+
+Working with git is strongly recommended. Models can occasionally damage code while attempting to implement features, and having version control makes recovery trivial. A productive workflow starts from a clean git state, lets the AI make progress on a feature, and commits only once the implementation is complete and working. If something goes wrong during development, you can simply revert the changes and try a different approach.
+
+## Skills
+
+Tycode supports Claude Code Agent Skills - modular capabilities that extend the agent with specialized workflows. Skills are automatically discovered and can be invoked when the AI detects a matching request.
+
+### Skill Discovery
+
+Skills are discovered from the following locations (in priority order):
+
+1. `~/.claude/skills/` - User-level Claude Code compatibility
+2. `~/.tycode/skills/` - User-level Tycode skills
+3. `.claude/skills/` in workspace - Project-level Claude Code compatibility
+4. `.tycode/skills/` in workspace - Project-level (highest priority)
+
+### Creating a Skill
+
+Each skill is a directory containing a `SKILL.md` file with YAML frontmatter:
+
+```markdown
+---
+name: my-skill
+description: When to use this skill
+---
+
+# My Skill Instructions
+
+Step-by-step instructions for the AI to follow...
+```
+
+### Using Skills
+
+List available skills:
+```bash
+/skills
+```
+
+Manually invoke a skill:
+```bash
+/skill <name>
+```
+
+View skill details:
+```bash
+/skills info <name>
+```
+
+Skills are also automatically invoked when the AI detects a user request matching a skill's description.
+
+## MCP Server Configuration
+
+Tycode supports MCP servers over both stdio and HTTP transports. You can add or remove MCP servers using slash commands.
+
+To add a stdio MCP server (local command):
+```bash
+/mcp add <name> <command> [--args "args..."] [--env "KEY=VALUE"]
+```
+
+To add an HTTP MCP server (remote URL):
+```bash
+/mcp add <name> --url <url> [--header "Name: Value"]
+```
+
+To remove an MCP server:
+```bash
+/mcp remove <name>
+```
+
+Installed MCP servers are stored in your configuration file. Examples:
+
+```toml
+# Stdio server (local command)
+[mcp_servers.fetch]
+command = "uvx"
+args = ["mcp-server-fetch"]
+
+# HTTP server (remote URL)
+[mcp_servers.remote]
+url = "http://localhost:8000/mcp"
+
+[mcp_servers.remote.headers]
+Authorization = "Bearer your-token"
+```

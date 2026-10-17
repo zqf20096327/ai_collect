@@ -1,0 +1,381 @@
+# OrcaRouter Lite
+
+**Self-hosted LLM router with a managed safety net.**
+OpenAI-compatible. BYOK. Single-workspace. Streaming. `model="auto"`.
+
+![OrcaRouter Lite Logo](https://github.com/Continuum-AI-Corp/OrcaRouter-Lite/blob/main/design/OrcaRouter%20Lite.png?raw=true)
+
+[![tests](https://img.shields.io/badge/tests-403_passing-brightgreen)](#testing)
+[![models](https://img.shields.io/badge/models-100%2B-blue)](#model-catalog)
+[![license](https://img.shields.io/badge/license-MIT-blue)](#license)
+
+![OrcaRouter Lite failover demo](https://github.com/Continuum-AI-Corp/OrcaRouter-Lite/blob/main/demo.gif?raw=true)
+
+*`model="auto"` absorbing a provider outage in real time — no code change. How it was recorded: [DEMO.md](./DEMO.md).*
+
+## Languages
+
+- [English](./README.md)
+- [日本語](./README.ja.md)
+- [中文](./README.zh.md)
+- [한국어](./README.ko.md)
+- [Deutsch](./README.de.md)
+- [Français](./README.fr.md)
+- [Español](./README.es.md)
+- [Italiano](./README.it.md)
+- [Русский](./README.ru.md)
+- [Português](./README.pt.md)
+- [Tiếng Việt](./README.vi.md)
+- [हिन्दी](./README.hi.md)
+
+**Find us:** [All model APIs](https://www.orcarouter.ai/models) · [OrcaCode Review](https://www.orcarouter.ai/code-review) · [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) · [OrcaPromptVault](https://github.com/Continuum-AI-Corp/OrcaPromptVault)
+
+OrcaRouter Lite is the open-source single-workspace edition of [OrcaRouter](https://www.orcarouter.ai). Run it on your laptop, ship it in your product, or use hosted `api.orcarouter.ai` directly for the long tail of models you don't want to manage keys for.
+
+> **Why us?** LiteLLM is a library; OpenRouter is closed-source hosted; Ollama is local-only. We're the **self-hosted server with a managed fallback** — a sentence none of those can say.
+
+## 60-second quickstart
+
+Two ways to use OrcaRouter:
+
+### Path A — Self-hosted (BYOK)
+
+Run Lite on your own machine; bring your own provider keys.
+
+```bash
+git clone https://github.com/Continuum-AI-Corp/OrcaRouter-Lite.git
+cd OrcaRouter-Lite
+cp .env.example .env
+# add at least one: OPENAI_API_KEY=sk-...  (or ORCAROUTER_API_KEY=...)
+
+docker compose up
+# logs: ✓ orcarouter-lite ready. API key: sk-orca-abc123...
+```
+
+Base URL: `http://localhost:8000/v1`. Use the `sk-orca-*` key printed at startup.
+
+### Path B — Hosted (account required)
+
+No clone, no docker. Register, get a key, point any OpenAI SDK at hosted.
+
+```bash
+# 1. Register at https://www.orcarouter.ai and copy your sk-orca-* key
+# 2. Use https://api.orcarouter.ai/v1 as the base URL
+```
+
+**Account required.** Hosted handles routing, billing, and the long tail of providers — billed per-token on your OrcaRouter account. See [docs.orcarouter.ai/introduction](https://docs.orcarouter.ai/introduction).
+
+### Then call it from any OpenAI SDK
+
+Examples below use Path A's localhost base URL — swap for `https://api.orcarouter.ai/v1` if you're on Path B.
+
+<details>
+<summary><b>Python</b></summary>
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="sk-orca-abc123...",
+)
+r = client.chat.completions.create(
+    model="auto",  # or "gpt-4o-mini", "claude-3-5-sonnet-latest", ...
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(r.choices[0].message.content)
+```
+</details>
+
+<details>
+<summary><b>Node.js</b></summary>
+
+```js
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  baseURL: "http://localhost:8000/v1",
+  apiKey: "sk-orca-abc123...",
+});
+
+const r = await client.chat.completions.create({
+  model: "auto",
+  messages: [{ role: "user", content: "Hello!" }],
+});
+console.log(r.choices[0].message.content);
+```
+</details>
+
+<details>
+<summary><b>curl</b></summary>
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Authorization: Bearer sk-orca-abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"model":"auto","messages":[{"role":"user","content":"Hello!"}]}'
+```
+</details>
+
+Open `http://localhost:8000/` for the dashboard — providers, routing, analytics, keys (Path A only).
+
+## Why?
+
+| | OrcaRouter Lite | LiteLLM library | OpenRouter | Ollama |
+|---|---|---|---|---|
+| Self-hosted server | ✓ | as a library | ✗ | ✓ |
+| OpenAI-compatible | ✓ | ✓ | ✓ | ✓ |
+| Multi-provider (OpenAI/Anthropic/Google/…) | ✓ | ✓ | ✓ | ✗ |
+| Built-in dashboard | ✓ | ✗ | ✓ | ✗ |
+| `model="auto"` (cheapest capable) | ✓ | ✗ | ✗ | n/a |
+| Streaming | ✓ | ✓ | ✓ | ✓ |
+| BYOK | ✓ | ✓ | ✗ | n/a |
+| Hosted-as-fallback | ✓ | ✗ | n/a | ✗ |
+| No Postgres / no Redis required | ✓ | n/a | n/a | ✓ |
+
+## `model="auto"` — the headline feature
+
+Send `model="auto"` and OrcaRouter picks the **cheapest** model in your configured providers that meets the request's capability requirements (tools, vision, JSON mode). No manual routing rules; no rate-limit gymnastics; no `if x: ...` cost optimization in your code.
+
+```python
+client.chat.completions.create(
+    model="auto",
+    messages=[{"role": "user", "content": [
+        {"type": "text", "text": "What's in this image?"},
+        {"type": "image_url", "image_url": {"url": "data:..."}},
+    ]}],
+)
+# → routes to the cheapest VISION-capable model your keys cover
+```
+
+The resolved model is exposed back to callers via the `x-orca-resolved-model` response header so you can log/display what was actually used.
+
+## Hosted as upstream (Lite + hosted)
+
+Already running Lite? Set `ORCAROUTER_API_KEY` to your `sk-orca-*` from [www.orcarouter.ai](https://www.orcarouter.ai), and hosted becomes one more provider in the routing chain — covering models your local keys don't:
+
+```bash
+# .env
+ORCAROUTER_API_KEY=sk-orca-hosted-abc...
+```
+
+Use cases:
+- **Try-before-you-buy** — no local provider keys needed
+- **Local logging** — hosted handles routing, Lite stores RequestLog rows for the dashboard
+- **Failover** — local providers fail, hosted is the safety net
+
+## Streaming
+
+OpenAI-compatible SSE format with the standard `data: ... \n\n` framing and a terminal `[DONE]` sentinel — drop-in for any SDK that already streams from OpenAI.
+
+```python
+for chunk in client.chat.completions.create(
+    model="auto",
+    messages=[{"role": "user", "content": "Tell me a story"}],
+    stream=True,
+):
+    print(chunk.choices[0].delta.content or "", end="", flush=True)
+```
+
+## Native protocol endpoints (Anthropic + Gemini)
+
+Lite speaks three inbound protocols against one routing pipeline. Clients that
+only talk Anthropic or Gemini wire formats connect directly — no OpenAI SDK
+required:
+
+```bash
+# Claude Code, pointed at Lite (no /v1 suffix in the base URL)
+export ANTHROPIC_BASE_URL=http://localhost:8000
+export ANTHROPIC_API_KEY=sk-orca-...
+claude
+```
+
+```python
+# google-genai SDK, pointed at Lite
+from google import genai
+from google.genai.types import HttpOptions
+client = genai.Client(api_key="sk-orca-...",
+                      http_options=HttpOptions(base_url="http://localhost:8000"))
+client.models.generate_content(model="auto", contents="Hello!")
+```
+
+Requests are translated at the edge into the same internal pipeline, so
+`model="auto"`, the cross-provider prompt cache (shared across protocols),
+routing strategies, and the analytics dashboard all work identically. Guides:
+[integrations/claude-code.md](./integrations/claude-code.md),
+[integrations/gemini-sdk.md](./integrations/gemini-sdk.md).
+
+## Model catalog
+
+100+ chat models are loaded at startup from [LiteLLM's community-maintained pricing database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json) — no model list to maintain manually. Each entry exposes:
+
+- `id` (e.g. `gpt-4o`, `claude-3-5-sonnet-latest`)
+- `provider` (mapped to your configured keys)
+- Capability flags: `supports_tools`, `supports_vision`, `supports_json_mode`
+- Per-token input/output cost (drives the savings widget + `model="auto"`)
+
+`GET /v1/models` returns the OpenAI-format catalogue.
+
+## Deploy somewhere else
+
+| Platform | One-click |
+|---|---|
+| Railway | [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template) |
+| Fly.io | `fly launch --dockerfile Dockerfile` |
+| Render | Connect repo, root dir = `.` |
+| Bare Docker | `docker run -p 8000:8000 -e OPENAI_API_KEY=... ghcr.io/...` (image coming soon) |
+
+## What's in the box
+
+- `POST /v1/chat/completions` — proxy + streaming + `model="auto"` + cross-provider prompt cache
+- `POST /v1/messages` — **Anthropic Messages API ingress** (Claude Code / Anthropic SDKs connect directly; `+ /count_tokens`)
+- `POST /v1beta/models/{model}:generateContent` — **Gemini API ingress** (google-genai SDK connects directly; `+ :streamGenerateContent`, `GET /v1beta/models`)
+- `GET  /v1/models` — discoverable model catalog (100+ models from `litellm.model_cost`)
+- `GET/PUT/DELETE /v1/providers/{provider}` — set / list / revoke encrypted provider keys (`decryptable` flags rows that no longer open after a `CREDENTIAL_ENCRYPTION_KEY` rotation)
+- `GET/PUT /v1/routing` — change strategy (`balanced` / `cheapest` / `fastest` / `quality`)
+- `GET  /v1/analytics/{recent,spend,latency,savings,unreachable}` — local analytics, no telemetry leaves the box
+- `GET  /v1/hosted` — hosted-fallback status (drives the dashboard's "Get $5 free credit" card)
+- `GET/POST/DELETE /v1/keys/...` — list / rotate / revoke API keys
+- Single-page dashboard at `/`
+- SQLite by default; Postgres opt-in via `DATABASE_URL`; Redis optional
+- Multi-worker safe: set `REDIS_URL` and config changes (provider keys, routing, quality overrides) are invalidated across all workers/replicas via pub/sub. Single worker (the default) needs no Redis.
+
+### Rotating `CREDENTIAL_ENCRYPTION_KEY`
+
+Dashboard-stored provider keys are sealed with AES-256-GCM using `CREDENTIAL_ENCRYPTION_KEY`. Changing that value without a migrate step leaves the ciphertext intact but unreadable: `build_deployments` skips the row, chat returns 503 if nothing else is configured, and the providers list now reports `decryptable: false` instead of a green "Enabled".
+
+To rotate without re-entering every key:
+
+```bash
+# 1. Keep the old key, set the new one
+CREDENTIAL_ENCRYPTION_KEY=<new 64-hex>
+CREDENTIAL_ENCRYPTION_PREVIOUS_KEY=<old 64-hex>
+
+# 2. Restart. Startup re-encrypts stored keys and logs
+#    reencrypted_provider_keys / undecryptable_provider_keys.
+
+# 3. Confirm the dashboard shows Enabled, then unset the previous key
+#    and restart once more.
+```
+
+If you already rotated without `CREDENTIAL_ENCRYPTION_PREVIOUS_KEY`, re-save each provider key in the dashboard (or fall back to env vars). Do not reuse a previous key as the current key after you have already re-saved — that would reseal new ciphertext with the old material.
+
+### Cross-provider prompt cache
+
+Deterministic requests (`temperature=0` or pinned `seed`) are served from cache on repeat — works across **every** provider, not just Anthropic. Backend is Redis when `REDIS_URL` is set, in-process LRU otherwise. Cache hits return instantly with `x-orca-cache: HIT` and cost $0.
+
+```bash
+$ curl ... -d '{"model":"auto","messages":[...], "temperature": 0}' -i
+HTTP/1.1 200 OK
+x-orca-cache: MISS
+x-orca-resolved-model: gpt-4o-mini
+
+$ curl ...  # same payload again
+HTTP/1.1 200 OK
+x-orca-cache: HIT          ← served from cache, no upstream call
+```
+
+### Savings widget
+
+`GET /v1/analytics/savings?baseline=gpt-4o&days=7` reports what your traffic would have cost on always-GPT-4 vs what it actually cost. The dashboard shows it as a tile.
+
+### Integrations
+
+Drop-in configs for [Claude Code](./integrations/claude-code.md), [Gemini SDK](./integrations/gemini-sdk.md), [Continue.dev](./integrations/continue.json), [Aider](./integrations/aider.md), [Cursor](./integrations/cursor.md), [LangChain](./integrations/langchain_orcarouter.py), [LlamaIndex](./integrations/llamaindex_orcarouter.py), [Vercel AI SDK](./integrations/vercel_ai.ts), and any tool that speaks the OpenAI Chat Completions protocol — plus native Anthropic and Gemini wire formats. See [`integrations/`](./integrations/).
+
+## What's deliberately not
+
+This is the **single-workspace** edition. By design, no:
+- multi-tenancy, RBAC, SSO
+- billing, wallets, points, partner program
+- admin console, audit logs, trust & safety
+- multi-pod deployment / Kubernetes
+- email / Slack / webhooks for alerts
+
+For those, see the hosted product or the (forthcoming) Teams edition.
+
+## Testing
+
+Built test-first. Every behaviour shipped here had a failing test first.
+
+```bash
+pip install -e ".[dev]"
+PYTHONPATH=. pytest -v
+# 403 passed
+```
+
+| Slice | Tests | What |
+|---|---|---|
+| 1. Config | 5 | env loading, defaults, `env_provider_keys()` |
+| 2. Seed | 3 | bootstrap workspace + API key + RoutingConfig, idempotent |
+| 3. Auth middleware | 4 | bearer-token validation, 401 on missing/invalid |
+| 4. App factory | 3 | /health, error envelope, /v1/* gating |
+| 5. Provider keys CRUD | 5 | encrypted at rest, plaintext never round-trips |
+| 6. Router cache | 13 | env+DB+hosted deployment assembly with precedence |
+| 7. Chat completion | 5 | OpenAI format, RequestLog, validation |
+| 8. Analytics | 4 | recent / spend / latency p50/p99 |
+| 9. /v1/{models,keys,routing} | 8 | list/create/revoke + strategy update |
+| 10. Streaming | 4 | SSE format, `[DONE]` sentinel, log writeback |
+| 11. Catalog | 7 | 100+ models, capability flags, pricing |
+| 12. `model="auto"` | 21 | capability detection, cheapest-meeting-needs (unit + integration) |
+| 13. Cost savings | 9 | savings vs always-GPT-4 baseline + hosted-auto comparison |
+| 14. Prompt cache | 15 | cross-provider exact-match cache + chat integration |
+| 15. Benchmark | 4 | summarize() + render_markdown() aggregation |
+| 16. Hosted status | 7 | `/v1/hosted` config-source + signup-URL surface |
+| 17. Hosted-auto savings | 3 | `_hosted_auto_savings` edge cases on synthetic catalogs |
+| 18. Unreachable models | 7 | "models you can't reach" tile clears when hosted is on |
+| 19. Multi-protocol auth | 6 | x-api-key / x-goog-api-key / ?key= scoping, /v1beta guard, per-protocol 401 envelopes |
+| 20. Anthropic `/v1/messages` | 53 | request/response/stream translation + ingress integration |
+| 21. Gemini `/v1beta` | 40 | translation incl. schema-enum normalization + generateContent/stream ingress |
+| **Total** | **403** | |
+
+Slice rows show the tests added when each slice shipped; the total is the current full suite.
+
+## Architecture
+
+```
+app/
+├── main.py             FastAPI factory + lifespan + SPA mount
+├── config.py           Settings (~15 fields)
+├── deps.py             DI helpers
+├── seed.py             First-run bootstrap
+├── auto_routing.py     model="auto" capability + cost scoring
+├── router_cache.py     Single-workspace router
+├── prompt_cache.py     Cross-provider exact-match cache (Redis or in-memory LRU)
+├── schemas.py          OpenAI-compatible request schema
+├── middleware/auth.py  sk-orca-* validation
+└── routes/
+    ├── chat.py         /v1/chat/completions  (blocking + streaming)
+    ├── models.py       /v1/models
+    ├── providers.py    BYOK CRUD
+    ├── routing.py      strategy config
+    ├── analytics.py    recent / spend / latency / savings / unreachable
+    ├── keys.py         list / rotate / revoke API keys
+    ├── hosted.py       /v1/hosted — hosted-fallback status for the dashboard
+    └── health.py
+
+packages/
+├── litellm_adapter/    Router wrapper + 100+ model catalog
+├── auth/               hashing + AES-256-GCM
+└── db/                 models + engine + session
+```
+
+## Roadmap
+
+- [x] OpenAI-compatible chat completions
+- [x] Streaming (SSE)
+- [x] `model="auto"` cheapest-capable routing
+- [x] Hosted-as-upstream
+- [x] Encrypted BYOK at rest
+- [x] Local analytics dashboard
+- [x] CI (GitHub Actions)
+- [x] Cross-provider prompt caching
+- [x] Continue.dev / Aider / LangChain / Cursor / Vercel AI SDK integrations
+- [x] Public benchmark + savings claim
+- [ ] Embeddings + image-gen proxy
+
+See [DEMO.md](./DEMO.md) for the failover demo.
+
+## License
+
+MIT. See [LICENSE](./LICENSE).

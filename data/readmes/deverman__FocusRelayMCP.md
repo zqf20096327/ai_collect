@@ -1,0 +1,410 @@
+# FocusRelay — Fast Swift OmniFocus MCP Server and CLI for macOS
+
+## Plan your day and keep OmniFocus up to date with AI
+
+FocusRelay is a fast, native Swift MCP server and CLI that helps AI assistants
+read and safely update OmniFocus using documented OmniFocus APIs.
+
+[Install with Homebrew](#install-the-omnifocus-mcp-server-with-homebrew) ·
+[See what it can do](#ask-review-update) ·
+[Star FocusRelay](https://github.com/deverman/FocusRelayMCP) ·
+[Contribute](#help-shape-focusrelay)
+
+![Demo: Ask an AI assistant about your OmniFocus tasks](imgs/omnifocusaiquery.gif)
+
+Ask about the work already in OmniFocus, review the answer, and make approved
+changes without clicking through long task lists.
+
+## Ask. Review. Update.
+
+FocusRelay is designed for targeted questions and compact answers, so the
+assistant does not need your entire OmniFocus database for routine requests.
+
+Try prompts like:
+
+- “Help me process my OmniFocus inbox in a small batch.”
+- “How many flagged items do I have?”
+- “Show me the first three available tasks in my inbox.”
+- “Find my task called [task name], flag it, and verify the change.”
+- “Set [task name] due tomorrow at 5 PM in my local timezone and verify the
+  change.”
+
+In clients that expose MCP server prompts, select `process_inbox`. In OpenCode,
+run `/focusrelay:process_inbox` to start the guided workflow.
+CLI-based agents can retrieve the exact same instructions with
+`focusrelay workflow get process_inbox`; use `focusrelay workflow list` to
+discover available workflows without loading their full text.
+
+These workflows were tested with multiple MCP-capable models in OpenCode.
+Updates target stable OmniFocus IDs and can verify the saved result. If names
+are duplicated, ask to see the candidates before changing anything.
+
+The current release can:
+
+- guide supported MCP clients and CLI-based agents through a bounded,
+  approval-first inbox workflow;
+- find and count tasks using dates, flags, tags, projects, availability, inbox
+  state, completion, estimates, and text search;
+- review projects, folders, tags, task counts, and stalled work;
+- update names, notes, flags, dates, estimates, tags, project settings, and
+  review intervals;
+- mark active and on-hold projects reviewed using OmniFocus's native review
+  timestamp and next-review semantics;
+- drop, restore, complete, reactivate, and move existing tasks;
+- complete, reactivate, change status, and move existing projects;
+- preview a proposed change and verify the saved result.
+
+The current release updates existing tasks and projects. Creating or
+deleting items is not supported; creation is tracked in
+[#82](https://github.com/deverman/FocusRelayMCP/issues/82) and
+[#83](https://github.com/deverman/FocusRelayMCP/issues/83).
+
+## Why FocusRelay?
+
+On the development branch, Forecast questions support an explicit
+[partial task-only scope](docs/forecast-contract.md). It includes past/today
+scheduled actions, flags, and the configured Forecast tag; it is not the native
+Forecast total and excludes calendar events and native visibility preferences.
+This requires the matching development binary and bridge, not the current
+Homebrew release.
+
+### Keep the assistant focused
+
+FocusRelay exposes nine model-facing tools: seven read tools plus `edit_tasks`
+and `edit_projects` for supported changes. Combining seven editing tools into
+two reduced the full catalog from 14 tools to 9 and cut context usage by
+7–13% in controlled model tests, leaving more room for the user's actual work.
+Internal diagnostics stay in the CLI, count commands avoid returning long item
+lists, and field selection keeps responses compact.
+
+### Native Swift speed at real-library scale
+
+FocusRelay is compiled as native Swift and installed with Homebrew, with no
+Node.js or Python runtime in the request path. Single-pass filtering and
+early-stop pagination keep focused inbox reads near one second in testing at
+thousands-of-tasks scale. The same core powers a CLI for precise, low-context
+queries.
+
+### Run where OmniFocus understands its data
+
+The Swift server dispatches work to a lightweight bridge plug-in that runs
+inside OmniFocus’s Omni Automation context. It uses documented APIs and native
+statuses, keeping results aligned with OmniFocus without reading its private
+database.
+
+### Make changes you can check
+
+Edit tools target stable IDs and support previews, per-item results, compact
+return fields, and optional verification. A failed save, update, or verification
+is reported as a failure—not success.
+
+FocusRelay handles OmniFocus work in order, tells assistants to wait for each
+update, and reports overload clearly instead of letting requests collide.
+When an MCP client disconnects, its FocusRelay process exits cleanly rather
+than remaining in the background.
+
+See the [latest release notes](docs/release-notes-v0.12.0-beta.md) for the
+user-facing changes and upgrade requirements.
+
+## Privacy and security
+
+FocusRelay runs locally on your Mac. Its Swift server communicates on-device
+with a bridge plug-in that accesses OmniFocus through documented APIs.
+FocusRelay has no hosted cloud service and does not send your OmniFocus data to
+a FocusRelay-operated service.
+
+Your MCP client and chosen AI model may transmit tool inputs and results under
+their own privacy terms. Review those settings before using FocusRelay with
+sensitive data.
+
+## Install the OmniFocus MCP server with Homebrew
+
+Requirements:
+
+- macOS 26 or later on Apple silicon;
+- OmniFocus 4;
+- Homebrew;
+- an MCP-compatible assistant or a shell-capable AI agent.
+
+### 1. Install and trust the formula
+
+Homebrew 6 requires explicit trust for formulae from non-official taps. Trust
+only the FocusRelay formula, then install it:
+
+```bash
+brew tap deverman/focus-relay
+brew trust --formula deverman/focus-relay/focusrelay
+brew install focusrelay
+```
+
+Formula-specific trust authorizes FocusRelay without trusting every current or
+future formula in the tap. See Homebrew’s
+[Tap Trust documentation](https://docs.brew.sh/Tap-Trust) for details.
+
+### 2. Run guided setup
+
+Run the installed setup command:
+
+```bash
+focusrelay setup
+```
+
+It finds the Homebrew-bundled plug-in, verifies that its version matches the
+binary, detects every supported OmniFocus plug-in folder, and previews the
+source and destinations before asking permission to copy anything. Existing
+plug-ins remain in place until their replacement has been copied successfully.
+Rerunning setup reports copies that are already current.
+
+Setup also prints the client-neutral MCP command and arguments. Add
+`--client claude-code`, `--client codex`, or `--client opencode` for a known
+client example; FocusRelay prints the configuration but does not edit it.
+
+For automation, review the same plan first and then opt in explicitly:
+
+```bash
+focusrelay setup --dry-run
+focusrelay setup --non-interactive
+```
+
+Building from source? Continue using `./scripts/install-plugin.sh`; it is a
+thin development entry point for this same Swift setup implementation.
+
+### 3. Restart OmniFocus
+
+Quit OmniFocus completely and reopen it so the updated plugin is loaded:
+
+```bash
+osascript -e 'tell application "OmniFocus" to quit'
+sleep 2
+open -a "OmniFocus"
+```
+
+### 4. Check readiness and add FocusRelay to your AI assistant
+
+FocusRelay currently supports terminal-based MCP clients: Claude Code,
+OpenCode, Codex CLI, and other clients launched from a terminal. Desktop
+applications such as Claude Desktop and ChatGPT's desktop app are not yet
+supported: macOS restricts their access to the OmniFocus data FocusRelay
+relies on. Desktop-app support is tracked in
+[#196](https://github.com/deverman/FocusRelayMCP/issues/196).
+
+Configure a local stdio MCP server with:
+
+- command: `/opt/homebrew/bin/focusrelay`
+- arguments: `serve`
+
+<details>
+<summary>Claude Code configuration</summary>
+
+Claude Code registers MCP servers from the command line, so no file editing is
+required:
+
+```bash
+claude mcp add --scope user focusrelay -- /opt/homebrew/bin/focusrelay serve
+```
+
+`--scope user` makes FocusRelay available in every project on your Mac. Use
+`--scope project` instead to share the server with collaborators through a
+checked-in `.mcp.json`, or omit the flag to enable it only in the current
+directory.
+
+Confirm the server is registered and reachable:
+
+```bash
+claude mcp list
+```
+
+FocusRelay should report `✔ Connected`. Remove it later with
+`claude mcp remove --scope user focusrelay`.
+
+</details>
+
+<details>
+<summary>OpenCode configuration example</summary>
+
+```json
+{
+  "mcp": {
+    "focusrelay": {
+      "type": "local",
+      "command": ["/opt/homebrew/bin/focusrelay", "serve"],
+      "enabled": true
+    }
+  }
+}
+```
+
+</details>
+
+On the first query, OmniFocus asks whether to allow the automation. Choose
+**Run Script**. If the prompt is hidden, bring OmniFocus to the front.
+
+After restarting OmniFocus, verify that its loaded plug-in matches the binary:
+
+```bash
+focusrelay setup --check-readiness
+focusrelay list-tasks --fields id,name --limit 1
+```
+
+Then ask:
+
+> How many flagged items do I have in OmniFocus?
+
+<details>
+<summary>Manual download or source build</summary>
+
+Download the latest binary and `FocusRelayBridge.omnijs` from
+[GitHub Releases](https://github.com/deverman/FocusRelayMCP/releases), or build
+on macOS 26 or later with the Swift 6.3.3 toolchain selected by the checked-in
+`.swift-version`:
+
+```bash
+git clone https://github.com/deverman/FocusRelayMCP.git
+cd FocusRelayMCP
+swift build -c release
+./scripts/install-plugin.sh
+```
+
+After installing the plugin, restart OmniFocus completely and run
+`focusrelay setup --check-readiness`.
+
+</details>
+
+## Use FocusRelay as an OmniFocus MCP server or CLI
+
+MCP lets compatible assistants discover FocusRelay and choose the right action.
+The CLI is useful for scripts, debugging, and agents that already have shell
+access.
+
+The examples below target the current Homebrew release and source build.
+
+```bash
+# Discover or retrieve the same workflows exposed as MCP prompts
+focusrelay workflow list
+focusrelay workflow get process_inbox
+
+# Count without returning every matching task
+focusrelay task-counts --flagged true
+
+# Return only three task names
+focusrelay list-tasks \
+  --inbox-only true \
+  --available-only true \
+  --limit 3 \
+  --fields name
+
+# Preview a change without touching OmniFocus
+focusrelay edit-tasks <task-id> \
+  --operation update \
+  --flagged true \
+  --preview-only \
+  --return-fields id,name,flagged
+```
+
+Run `focusrelay --help` for the command list. For write examples and safety
+rules, see [Safe Update Workflows for CLI and MCP](docs/mutation-workflows.md).
+
+## Compare FocusRelay with other OmniFocus MCP servers
+
+FocusRelay combines a native Swift server with a bridge plug-in that executes
+inside OmniFocus. Swift keeps MCP fast and compact; the bridge gets fresh data
+and applies changes through documented OmniFocus APIs.
+
+✅ Available · 🟡 Coming next · 🟠 Backlog · ◇ Project roadmap · — Not currently documented
+
+| Capability | **FocusRelay** | [OmniFocus-MCP](https://github.com/themotionmachine/OmniFocus-MCP) | [Enhanced](https://github.com/jqlts1/omnifocus-mcp-enhanced) | [OmnifocusMCP](https://github.com/vitalyrodnenko/OmnifocusMCP) | [Operator](https://github.com/HelloThisIsFlo/omnifocus-operator) |
+| --- | --- | --- | --- | --- | --- |
+| Runtime | **Native Swift · Homebrew** | TypeScript · npx | TypeScript · npx | Native Rust · Homebrew; Python and TypeScript available | Python · uvx |
+| OmniFocus access | **Bridge plug-in inside Omni Automation; documented APIs** | JXA and Omni Automation through `osascript` | Omni Automation through `osascript` | Omni Automation through `osascript` | Internal SQLite read cache; OmniJS fallback |
+| Public MCP tools | **9, with seven read tools plus `edit_tasks` and `edit_projects`; 11 after planned creation tools [#82](https://github.com/deverman/FocusRelayMCP/issues/82) and [#83](https://github.com/deverman/FocusRelayMCP/issues/83)** | 12 | 18 | 45 | 11 |
+| Find, filter, and count tasks | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Update existing tasks | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Update existing projects | ✅ | ✅ | ✅ | ✅ | ◇ v1.5 roadmap |
+| Preview and post-save verification | ✅ Every write tool; per-target results | — | — | — | — |
+| Drop projects without deleting them | ✅ | ✅ | — | ✅ | — |
+| Create tasks and subtasks | 🟡 [#82](https://github.com/deverman/FocusRelayMCP/issues/82) | ✅ | ✅ | ✅ | ✅ |
+| Create projects | 🟡 [#83, including inbox-task conversion](https://github.com/deverman/FocusRelayMCP/issues/83) | ✅ | ✅ | ✅ | ◇ v1.5 roadmap |
+| Planned-date updates | 🟠 [#16](https://github.com/deverman/FocusRelayMCP/issues/16) | ✅ | ✅ | ✅ | — |
+| Repeating tasks | 🟠 [#93](https://github.com/deverman/FocusRelayMCP/issues/93) | ✅ | — | ✅ | ✅ |
+| Custom perspective contents | 🟠 [#10](https://github.com/deverman/FocusRelayMCP/issues/10) | ✅ | ✅ | — | — |
+| Permanently delete tasks and projects | — | ✅ | ✅ | ✅ | — |
+
+This comparison reflects each project’s public documentation on July 15, 2026;
+“Not documented” is not a claim that a feature is impossible. The other public
+READMEs do not describe an equivalent per-target preview and post-save
+verification contract.
+
+Preview resolves IDs and validates the change without saving it. Verification
+runs after OmniFocus saves, reads the affected values back, and reports a
+mismatch as a failure. These are MCP tool arguments, so Codex, Claude Code,
+OpenCode, and other standard stdio MCP clients can use them; whether a model
+chooses them without being asked depends on the model and client. For important
+changes, ask it to “preview first, then apply with verification.”
+
+## Help shape FocusRelay
+
+See [GitHub Issues](https://github.com/deverman/FocusRelayMCP/issues) for planned
+work. If FocusRelay earns a place in your workflow,
+[star the repository](https://github.com/deverman/FocusRelayMCP) so more
+OmniFocus users can find it.
+
+Want to help? Pick an issue, propose a use case, or open a focused pull request.
+See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+
+## Troubleshooting
+
+### The bridge times out
+
+1. Bring OmniFocus to the front and accept the first **Run Script** prompt.
+2. Confirm FocusRelay Bridge is enabled under **Automation → Configure
+   Plug-ins…**.
+3. Run `focusrelay setup`, quit OmniFocus completely, and reopen it.
+4. Run `focusrelay setup --check-readiness`.
+
+### Results look stale after an upgrade
+
+The plugin JavaScript is cached by OmniFocus. Run `focusrelay setup`, restart
+OmniFocus completely, and check with `focusrelay setup --check-readiness`.
+Project and tag catalogs cache for five minutes; task queries are always fresh.
+
+### The plugin and binary versions do not match
+
+Upgrading the Homebrew formula replaces the binary but leaves the copies of the
+plugin already installed for OmniFocus untouched, so a skipped step 2 can
+strand the plugin many releases behind.
+
+Run guided setup again, restart OmniFocus, and check the loaded version:
+
+```bash
+focusrelay setup
+# Fully restart OmniFocus
+focusrelay setup --check-readiness
+```
+
+Setup checks that every expected copy—including the preferred iCloud location
+when plug-in sync is enabled—is available before changing files, and preserves
+each existing copy until its replacement has been copied and verified. It
+updates destinations one at a time, so if a later destination fails, an earlier
+one may already have been updated. Correct the reported problem and rerun setup
+before restarting OmniFocus. A healthy readiness result means the loaded
+plug-in, every installed copy, and the binary agree.
+
+### A time-based result looks wrong after travel
+
+Restart the MCP client and OmniFocus so FocusRelay picks up the current macOS
+timezone.
+
+## Development
+
+```bash
+swift build
+swift test
+```
+
+FocusRelay uses Swift Testing from the Swift toolchain. Production query changes
+must follow the documented
+[Omni Automation contract](docs/omni-automation-contract.md).
+
+## License
+
+FocusRelay is available under the [MIT License](LICENSE).

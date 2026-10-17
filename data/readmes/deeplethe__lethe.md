@@ -1,0 +1,330 @@
+<p align="center">
+  <img src="assets/logo.png" alt="Lethe" width="320" />
+</p>
+
+<h3 align="center">
+  <i>The first AI memory built to forget.</i>
+</h3>
+
+<p align="center">
+  local-first &nbsp;·&nbsp; 97.4% R@5 on LongMemEval raw &nbsp;·&nbsp; zero API calls
+</p>
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2606.15903"><img src="https://img.shields.io/badge/arXiv-2606.15903-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv" /></a>
+  <a href="https://pypi.org/project/pylethe/"><img src="https://img.shields.io/pypi/v/pylethe.svg?style=flat-square&color=blue&label=PyPI&logo=pypi&logoColor=white" alt="PyPI" /></a>
+  <a href="https://github.com/deeplethe/lethe/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/deeplethe/lethe/ci.yml?style=flat-square&label=tests" alt="tests" /></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="python" />
+  <img src="https://img.shields.io/badge/MCP-ready-7C3AED?style=flat-square&logo=anthropic&logoColor=white" alt="MCP" />
+  <img src="https://img.shields.io/badge/license-MIT-007EC6?style=flat-square" alt="license" />
+</p>
+
+<br />
+
+<br />
+
+**Every memory framework right now is racing the same direction.**
+
+Mem0 promises perfect recall. MemPalace promises verbatim retention.
+Letta hands an LLM the whole context and asks it to manage itself. The
+benchmarks they all compete on — recall@K, hit-rate, MRR — measure one
+thing: *how rarely does your agent lose a fact?*
+
+But agents in production don't die of losing facts. They die of keeping
+them. The password rotated three months ago, still suggested. The
+customer who exercised right-to-deletion, still in the recommender. The
+job title wrong since 2023 because the supersede never landed. The OTP
+from last Tuesday, permanently embedded next to a real preference.
+**Memory systems fail by overgrowth, not by attrition.** And no one is
+benchmarking that side.
+
+The Greeks had a name for the missing operation.
+
+> **Lethe** (Λήθη) — one of the five rivers of Hades. Souls drank from
+> it before reincarnation, leaving the former life behind.
+
+The Greek word for *truth* — `ἀλήθεια` / **aletheia** — derives from
+*lethe* itself.
+
+> *Memory is what survives Lethe. Truth is what survives memory.*
+
+<br />
+
+## The model
+
+In the myth, Lethe is a river — surface, current, bed.  Everything in
+the water has a depth.  A leaf floats; a stone sinks; some things are
+weighed down enough to disappear.
+
+Graph stores answer *what is connected to what.*  Vector stores answer
+*what is semantically similar.*  Neither answers the question agent
+memory actually faces: *how deep is this fact, right now?*
+
+We built the simplest mental model that fits: every fact has one
+number — `depth`.  Every operation is a force on it.
+
+```
+depth     state                          how it got there
+─────────────────────────────────────────────────────────────
++∞        pinned, immune to gravity      .pin()
+= 1.0     just inscribed, on surface     .inscribe()
+∈ (0, 1)  sinking under gravity          .consolidate()
+= 0       submerged, present but mute    .surrender(mode="release")
+< 0       erased from disk               .surrender(mode="purge")
+─────────────────────────────────────────────────────────────
+```
+
+No `weight`. No `alive` flag. No `superseded_at` column. One number,
+one axis, one mental model.
+
+<br />
+
+## Benchmarks
+
+Two axes.  The conventional one: *can a memory system find a fact when
+you need it?*  The one we propose: *can it let go of a fact when you
+ask?*  Most frameworks score on the first; Lethe scores on both.
+
+### LongMemEval-S — retrieval (the conventional axis)
+
+500 questions on MemPalace's own evaluation methodology, same
+`all-MiniLM-L6-v2` embedder, zero API calls.
+
+| System          | R@1       | R@5       | R@10      | Wall   |
+|-----------------|-----------|-----------|-----------|--------|
+| MemPalace (raw) | 80.6%     | 96.6%     | 98.2%     | 12 min |
+| **Lethe v1**    | **85.4%** | **97.4%** | **99.0%** | 14 min |
+
+Lethe leads at every K; the gap is **6× wider at R@1 than at R@5**
+(+4.8 pp vs +0.8 pp).  A single `depth` axis beats a palace of
+wings, rooms, and drawers — most clearly where it matters: at #1.
+
+### ForgetEval — forgetting (the axis we propose)
+
+1000 generated cases across five families — **supersession**,
+**decay**, **amnesia**, **purge**, **drift** — each probing one
+structural property a memory system must exhibit to be safe in
+production.  Pass / fail is exact substring matching on top-k recall,
+no LLM judge, deterministic.  Full methodology:
+**[docs/forgeteval.md](docs/forgeteval.md)**.
+
+| System            | super | decay | amnesia | purge | drift | Overall                       |
+|-------------------|------:|------:|--------:|------:|------:|------------------------------:|
+| **Lethe v1**      | 100%  | 100%  | 98%     | 100%  | 99%   | **99.3%** (993 / 1000)        |
+| LangMem (LangGraph) | 100% | 100% | 98%    | 100%  | 99%   | 99.5% (995 / 1000)            |
+| Mem0 (2.0.2)      | 100%  | 100%  | 70%     | 75%   | 100%  | 88.8%                         |
+| MemPalace         | 0%    | 0%    | 0%      | 0%    | 0%    | 0% (no forgetting primitives) |
+
+The template suite is near-saturated for vector-store-backed
+systems with adaptive eviction: Lethe and LangGraph's `InMemoryStore`
+both clear 99 %.  Mem0's gap is on amnesia (70 %) and purge (75 %),
+the two families that probe width-control and identifier precision.
+MemPalace returns 0 because the API has no deletion primitives.
+
+For more discriminative comparison we run **ForgetEval-Adv**, a
+385-case adversarial layer (132 hand-crafted + 253 LLM-drafted,
+oracle-validated) covering 10 attack categories (substring traps,
+prefix collisions, paraphrase supersession, negation, temporal
+qualifiers, shared attributes, compound facts, identifier
+obfuscation, cross-lingual identifiers, recursive supersession).
+See [docs/forgeteval_adversarial.md](docs/forgeteval_adversarial.md).
+
+| System              | adversarial overall    | trade-off shape                                 |
+|---------------------|-----------------------:|-------------------------------------------------|
+| **Lethe v1**        |  244 / 385 (63.4 %)    | 82 % prefix_collision, 0 % cross_lingual         |
+| Mem0 v2.0.2         |  263 / 385 (68.3 %)    | multi-signal scoring, weaker identifier precision |
+| LangGraph           |  242 / 385 (62.9 %)    | 0 % cross_lingual, no native edit primitive      |
+| MemPalace           |    0 / 385 ( 0.0 %)    | no deletion primitives                           |
+| **Lethe + LLM**     | **353 / 385 (91.7 %)** | recovers cross_lingual + intent-aware deletion   |
+| **LangGraph + LLM** | **359 / 385 (93.2 %)** | same hook, high-recall backbone                  |
+
+The three deterministic systems cluster in a **63–68 % band** with
+mutually overlapping Wilson CIs — the bench reads the trade-off, not
+a winner.  The discriminative signal is per-category: deterministic
+stores hold the lexical/temporal categories but fail canonicalization
+(Lethe 0 % cross_lingual, 5 % identifier_obfuscation).
+
+The +LLM rows use the optional `llm: Callable[[str], str]` hook on the
+adapter, wired to DeepSeek-V3 via SiliconFlow.  Cost: **~$0.17 for a
+full 385-case run**.  The recall hot path stays LLM-free; only the
+three mutation operations (`supersede`, `purge`, `release`) consult
+the model — and the +28 pt lift travels across backends (Lethe and
+LangGraph alike), so it is the *placement* of the hook, not the
+storage engine, that earns it.
+
+For attack categories that need semantic understanding the engine
+deliberately doesn't provide (compound_fact across all 3 systems,
+identifier_obfuscation for Lethe / LangMem), the
+`LetheAdapter(llm=...)` hook routes those decisions to an LLM at
+mutation time; the recall hot path stays LLM-free.
+
+Reproduce: `py bench/forgeteval/run.py --adapter {lethe|mem0|langmem|mempalace} --suite {template,adversarial}`
+
+> ForgetEval is downstream of the depth model — and the depth model
+> is downstream of ForgetEval.  A failing `purge_gdpr` case in early
+> runs forced `recall(lexical=True)` into the core as a first-class
+> primitive.  Both tables above reflect that loop.
+
+<br />
+
+## Architecture
+
+- **One physical axis: `depth`.**  Every state — pinned, surfaced,
+  sinking, submerged, erased — is a numeric region.  No status flags.
+- **Single SQLite file.**  Three sub-tables (`memory`, `memory_vec`,
+  `memory_fts`) keyed by shared `rowid`; plus an append-only `event`
+  log and a `supersession` edge table.  No external services.
+- **Two retrieval primitives.**  `recall(query)` is RRF-blended vec +
+  BM25; `recall(query, lexical=True)` is pure BM25.  Purge uses the
+  second — deleting `alice@acme.io` is a *lexical* lookup by
+  identifier, not a semantic search for "similar customers."
+- **Verifiable forgetting.**  Every signed purge returns an
+  **Ed25519-signed receipt** anchored to a Merkle root over the event
+  log.  Tamper with any past event afterwards → receipt fails
+  verification.  No other open-source memory framework can produce
+  this proof because none of them keep the log to anchor to.
+- **Time-travel built in.**  `recall(query, at=T)` reconstructs depth
+  state at any past timestamp from the event log.
+
+<br />
+
+## Quickstart
+
+```bash
+pip install "pylethe[embed,crypto,mcp]"
+```
+
+The PyPI distribution name is `pylethe` (the `lethe` slot was already
+taken on PyPI by an unrelated package); the import remains
+`from lethe import Lethe`.
+
+**Library**:
+
+```python
+from lethe import Lethe
+
+agent = Lethe("./agent.db")
+mid = agent.inscribe("Alice works at Anthropic.")
+
+agent.surrender(mid, mode="release")            # depth → 0
+agent.surrender({"old": mid, "new": "Alice now at OpenAI."},
+                mode="supersede")               # old sinks, new surfaces
+agent.surrender(mid, mode="purge")              # erased from disk
+agent.pin(mid)                                  # depth → +∞
+```
+
+**CLI** — one subcommand per primitive:
+
+```bash
+lethe inscribe "Alice works at Anthropic."
+lethe recall "Where does Alice work?"
+lethe supersede 1 --new "Alice now at OpenAI."
+lethe blame "Alice's job"
+lethe consolidate
+lethe ingest ~/notes                       # batch: *.md *.txt *.rst
+
+# Verifiable purge
+lethe keygen
+lethe --db agent.db purge --signed 42      # emits receipt JSON
+lethe verify-receipt receipt.json --db agent.db --db-check
+```
+
+DB defaults to `~/.lethe/agent.db`.  Pass `--json` on any subcommand for
+machine-readable output.
+
+**MCP** — eleven tools exposed over stdio (every core operation plus
+signed-purge receipts).  Add to Claude Desktop / Claude Code / Cursor:
+
+```json
+{
+  "mcpServers": {
+    "lethe": {
+      "command": "python",
+      "args": ["-m", "lethe.mcp_server"],
+      "env": {"LETHE_DB": "/absolute/path/to/agent.db"}
+    }
+  }
+}
+```
+
+<br />
+
+## Recipes
+
+Runnable cookbook in [`recipes/`](recipes/) for the common patterns:
+**OTP TTL**, **GDPR purge with cryptographic receipt**, **belief
+revision via supersession**, **pinning user preferences**, and
+**time-travel debugging**.  Each recipe is a self-contained ~40-line
+script that runs without fastembed — `python recipes/02_gdpr_purge_receipt.py`.
+
+<br />
+
+## Status
+
+`v1.0.0-alpha`.  Core implemented and tested:
+
+```
+$ pytest tests
+14 passed in 0.65s
+```
+
+Roadmap (next):
+
+- **Human-curated adversarial ForgetEval.**  Substring traps, prefix
+  collisions, paraphrase chains.  Template-generated 1000-case is the
+  floor, not the ceiling.
+- **Receipt-verification benchmark family.**  Does the system produce
+  auditable proof of deletion?  A new ForgetEval axis no other
+  framework even attempts.
+- **Adaptive consolidation policies.**  `consolidate()` uses one fixed
+  decay law; we want per-domain policies — financial records decay
+  slower than chat memory.
+- **Production-density distractor corpora.**  Synthetic office-trivia
+  fillers replaced with real long-form text (Wikipedia, code, emails)
+  for a tougher recall environment.
+- **Pluggable retrieval backends.**  A `Backend` protocol so the
+  default SQLite + vec0 + FTS5 stack can be swapped for Postgres
+  + pgvector, Pinecone, Weaviate, or a custom store.  The depth axis
+  and surrender / recall semantics stay identical — only the storage
+  layer changes.
+- **Optional LLM hooks at inscribe and consolidation time.**  Entity
+  extraction at inscribe, semantic deduplication, and LLM-guided
+  consolidation policies (which facts to promote, which to release).
+  The **recall path stays LLM-free** — determinism and latency
+  are non-negotiable on the hot path.
+
+<br />
+
+## Paper
+
+📄 **[ForgetEval: Benchmarking the Forgetting Axis of Agent Memory Systems](paper/paper.pdf)** — Dongxu Yang, *DeepLethe*, 2026.
+
+Full methodology, formal model of the depth axis (Propositions 1–4), 1000-case ForgetEval, 5-seed variance, distractor sweep, component ablations, and LongMemEval-S comparison.  23 pages, MIT.
+
+```bibtex
+@misc{yang2026forgeteval,
+  author       = {Yang, Dongxu},
+  title        = {ForgetEval: Benchmarking the Forgetting Axis of
+                   Agent Memory Systems},
+  year         = {2026},
+  howpublished = {\url{https://github.com/deeplethe/lethe/blob/main/paper/paper.pdf}},
+}
+```
+
+<br />
+
+## Star History
+
+<a href="https://star-history.com/#deeplethe/lethe&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=deeplethe/lethe&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=deeplethe/lethe&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=deeplethe/lethe&type=Date" width="640" />
+  </picture>
+</a>
+
+<br />
+
+## License
+
+MIT — see [LICENSE](LICENSE).

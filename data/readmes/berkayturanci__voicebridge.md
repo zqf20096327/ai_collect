@@ -1,0 +1,334 @@
+<p align="center">
+  <img src="docs/hero.svg" alt="voicebridge — hands-free, two-way voice for your coding agent, from your phone" width="100%" />
+</p>
+
+# voicebridge
+
+[![CI](https://github.com/berkayturanci/voicebridge/actions/workflows/ci.yml/badge.svg)](https://github.com/berkayturanci/voicebridge/actions/workflows/ci.yml)
+[![Node ≥ 18](https://img.shields.io/badge/node-%E2%89%A518-3fb950)](package.json)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-1f6feb)](LICENSE)
+[![Agents: Claude · Codex · Antigravity · Ollama · Aider · Gemini](https://img.shields.io/badge/agents-Claude%20%C2%B7%20Codex%20%C2%B7%20Antigravity%20%C2%B7%20Ollama%20%C2%B7%20Aider%20%C2%B7%20Gemini-8b949e)](#agents-sessions--modes)
+
+**Hands-free, two-way voice for your coding agent from your phone — free, source-available, no ElevenLabs.**
+
+**v0.8.2:** Download the Mac host app DMG or Windows preview installer, choose
+one workspace, start the bridge, verify Tailscale, and pair the native mobile
+app by scanning the desktop QR code. Mac and Windows desktop preview builds are
+validated in CI.
+
+You speak **or type** on your phone, a coding agent (running on your Mac,
+Windows PC, or Linux box) does the work, and the reply streams back as chat
+**and** spoken audio — like a phone call with your agent, with a keyboard when
+you want one.
+
+<p align="center"><img src="docs/demo.svg" alt="voicebridge phone UI — a chat with an agent, with a text box and a mic" width="300" /></p>
+<p align="center"><em>Type or speak; the agent replies in chat and aloud.</em></p>
+
+- 🤖 **6 supported agents** — **Claude Code**, **Codex**, **Antigravity**, **Ollama** (fully local), **Aider**, and **Google Gemini CLI**, selectable per session with autonomy modes.
+- 🔄 **Full-duplex WebSocket live sync (`/ws`)** — connect multiple devices (phones, tablets, laptops) simultaneously; live turn streaming, approvals, and session updates sync across all connected clients in real-time.
+- ⚡ **Interactive tool approvals** — in interactive/safe modes, approval cards pop up in the chat and Talking Mode with one-tap Approve / Reject actions for shell commands and tool calls.
+- 🎙️ **WASM / WebAudio Voice Activity Detection (VAD)** — hands-free silence detection with dynamic energy thresholding and configurable silence duration, so it doesn't cut you off mid-sentence.
+- 🔍 **Git changes & diff drawer** — inspect modified/untracked files in the workspace and review syntax-highlighted git diffs right from your phone.
+- 🎧 **MediaSession API & headset controls** — lock screen media controls and Bluetooth headset action integration (play/pause/skip) with background audio keepalive.
+- 📄 **Session transcript export** — export any session's conversation history to formatted Markdown (`.md`) or JSON (`.json`) with native Web Share API and download fallback.
+- 🗂️ **Multiple parallel sessions** — run several conversations in parallel (e.g. "Claude on repo A", "Aider on repo B") and switch between them in the UI.
+- 🎙️ **Speech-to-text** — runs in your phone's browser by default, or through your own local Whisper CLI (`STT_MODE=whisper`) or streaming Whisper WebSocket transcriber (`STT_MODE=whisper-stream`); 🔊 **text-to-speech** stays in the browser — no per-minute voice cost.
+- ⚡ **Streaming** — the reply is spoken **sentence-by-sentence as it's generated**, not after the whole turn finishes, with a **Stop** button to cut it off.
+- 🧩 **Modular Node architecture** — zero-dependency CommonJS architecture under `src/` (adapters, runners, services, routes) for high testability and reliability.
+- 🔒 Reached over **Tailscale** (your private network) with real HTTPS and an optional **shared access token** — your code never touches a third-party voice service.
+
+> Honest scope: for Claude/Codex/Antigravity/Aider/Gemini the **model** runs in its vendor's
+> cloud (that's how those CLIs work); with the **Ollama** backend the model runs
+> fully locally. voicebridge just removes the *voice* middleman (ElevenLabs)
+> and its limits. Speech recognition on iOS uses Apple's free dictation service;
+> text-to-speech is fully on-device.
+>
+> Agent support: **Claude Code**, **Codex**, **Antigravity**, **Ollama**, **Aider**,
+> and **Gemini CLI** are fully implemented, tested, and support session continuity.
+> See [docs/configuration.md](docs/configuration.md) for details.
+
+---
+
+## Quickstart
+
+### Easiest: desktop host app
+
+Download the Apple Silicon DMG:
+
+https://github.com/berkayturanci/voicebridge/releases/download/v0.8.1/voicebridge-0.2.1-arm64.dmg
+
+Or download the Windows x64 preview installer:
+
+https://github.com/berkayturanci/voicebridge/releases/download/v0.8.1/voicebridge-0.2.1-x64-setup.exe
+
+Release checksums are published at:
+
+https://github.com/berkayturanci/voicebridge/releases/download/v0.8.1/checksums.txt
+
+Open it, choose your project folder and agent, set your Tailscale HTTPS URL,
+then scan the pairing QR from the iOS/Android app. The Network panel prepares
+the Tailscale Serve command and explains missing CLI, logged-out Tailscale,
+DNS/network failures, HTTP status, timeouts, and token mismatch. Full
+walkthrough:
+[docs/mac-desktop-host.md](docs/mac-desktop-host.md) and
+[docs/windows-desktop-host.md](docs/windows-desktop-host.md).
+
+<p align="center">
+  <img src="docs/desktop-host-control.png" alt="VoiceBridge desktop host control panel with bridge health, Tailscale diagnostics, and pairing controls" width="760" />
+</p>
+
+### From source
+
+```bash
+git clone https://github.com/berkayturanci/voicebridge.git voicebridge && cd voicebridge && npm install
+cp .env.example .env                                  # set PROJECT_DIR + ACCESS_TOKEN
+CLAUDE_BIN=$(which claude) npm start                  # prints a QR for your phone
+tailscale serve --bg http://127.0.0.1:8787            # expose over HTTPS (separate terminal)
+```
+
+Then open the printed `https://…ts.net` URL in your phone's browser (Safari on
+iOS) and tap 🎤 or just type. New to it? See [Requirements](#requirements),
+[Troubleshooting](#troubleshooting), and the step-by-step
+[mobile voice setup](docs/mobile-voice-setup.md) (why the mic needs HTTPS).
+
+## Requirements
+
+- A computer (macOS/Windows/Linux) with **Claude Code** installed and logged in
+  (`npm i -g @anthropic-ai/claude-code`, then `claude` → `/login`).
+- **Node.js ≥ 18**.
+- **Tailscale** on both the computer and the phone. Free.
+- iPhone/iPad: open in **Safari** (do **not** "Add to Home Screen" — installed PWAs
+  can't use the microphone on iOS).
+
+## Setup
+
+### 1. On your computer
+
+```bash
+git clone https://github.com/berkayturanci/voicebridge.git voicebridge
+cd voicebridge
+npm install            # qrcode-terminal (web-push is optional, for real push)
+
+# Configure with a .env file (or plain env vars):
+cp .env.example .env   # then edit: PROJECT_DIR, ACCESS_TOKEN, …
+
+# Start the bridge (binds to 127.0.0.1:8787 by default)
+npm start
+```
+
+Any variable in `.env` is loaded at startup (real environment variables win).
+
+On startup the bridge prints a **QR code** for the phone URL — scan it to open
+the UI (and, when `ACCESS_TOKEN`/`PUBLIC_URL` are set, to authorize on open).
+
+### 2. Expose it to your phone over HTTPS (Tailscale)
+
+Web Speech needs a secure context (HTTPS) — over plain `http://<lan-ip>` a
+phone's browser disables the mic. Tailscale gives your machine a real HTTPS cert
+automatically:
+
+```bash
+tailscale serve --bg http://127.0.0.1:8787
+tailscale serve status     # shows the https://<your-machine>.<tailnet>.ts.net URL
+```
+
+The **first time** you run `tailscale serve`, you may have to enable the feature
+once for your tailnet — it prints a `login.tailscale.com/f/serve?node=…` link;
+open it and toggle Serve on. Full walkthrough (and the *why*) in
+[docs/mobile-voice-setup.md](docs/mobile-voice-setup.md).
+
+### 3. On your phone
+
+1. Make sure Tailscale is **connected** (same account).
+2. Open the `https://<your-machine>.<tailnet>.ts.net` URL in **Safari**.
+3. Tap the 🎤 button, allow the microphone, and **speak**.
+4. Toggle **Eller serbest / Hands-free** for a continuous back-and-forth loop.
+
+That's it — talk, and Claude Code talks back. 🎧
+
+---
+
+## Configuration
+
+| Env var        | Default              | Meaning                                            |
+|----------------|----------------------|----------------------------------------------------|
+| `PORT`         | `8787`               | Port the bridge listens on                         |
+| `HOST`         | `127.0.0.1`          | Bind address (keep local; expose via `tailscale serve`) |
+| `PUBLIC_URL`   | _(none)_             | Public URL shown in the startup QR (e.g. your Tailscale `https://…ts.net`). Falls back to `http://HOST:PORT`. |
+| `PROJECT_DIR`  | current directory    | Default working directory for new sessions         |
+| `AGENT`        | `claude`             | Default agent for the boot session (`claude`/`codex`/`antigravity`/`ollama`/`aider`/`gemini`) |
+| `CLAUDE_BIN`   | `claude`             | Path to the `claude` executable                    |
+| `CODEX_BIN`    | `codex`              | Path to the `codex` executable                     |
+| `AGY_BIN`      | `agy`                | Path to the Antigravity executable                 |
+| `OLLAMA_BIN`   | `ollama`             | Path to the Ollama executable                      |
+| `OLLAMA_MODEL` | `llama3.2`           | Default Ollama model                               |
+| `OLLAMA_URL`   | `http://127.0.0.1:11434` | Ollama HTTP endpoint                           |
+| `AIDER_BIN`    | `aider`              | Path to the Aider executable                       |
+| `GEMINI_BIN`   | `gemini`             | Path to the Google Gemini CLI executable           |
+| `ACCESS_TOKEN` | _(none)_             | If set, `/api/*` and `/ws` require authentication. The page prompts for it once and stores it. |
+| `STT_MODE`     | `browser`            | `browser` (Web Speech), `whisper` (local batch), or `whisper-stream` (local streaming) |
+| `STT_CMD`      | _(none)_             | Whisper mode: shell command; `{file}` → recorded audio path; must print transcript to stdout |
+| `STT_STREAM_URL` | _(none)_           | Whisper-stream mode: local WebSocket transcriber URL, e.g. `ws://127.0.0.1:8910/listen` |
+| `STT_STREAM_CMD` | _(none)_           | Whisper-stream mode: local streaming subprocess command, e.g. `whisper-stream -m ~/models/ggml-base.bin` |
+
+### Optional: a shared access token
+
+```bash
+export ACCESS_TOKEN="$(openssl rand -hex 16)"
+echo "$ACCESS_TOKEN"   # type this into the phone once when prompted
+npm start
+```
+
+### Optional: fully-local speech-to-text (Whisper)
+
+Keeps transcription on your machine too (nothing goes to Apple). Needs `ffmpeg`
+and a Whisper CLI (e.g. `whisper.cpp`'s `whisper-cli`):
+
+```bash
+export STT_MODE=whisper
+export STT_CMD='ffmpeg -nostdin -i {file} -ar 16000 -ac 1 -f wav - 2>/dev/null | whisper-cli -m ~/models/ggml-base.bin -nt -f - 2>/dev/null'
+npm start
+```
+
+For real-time streaming speech-to-text, run `whisper.cpp` streaming transcriber:
+
+```bash
+export STT_MODE=whisper-stream
+export STT_STREAM_URL='ws://127.0.0.1:8910/listen'
+npm start
+```
+
+In whisper-stream mode the browser streams mic chunks in 250ms timeslices to `/api/stt-stream`; the
+bridge proxies them to the local transcriber and relays partial/final transcript
+JSON back to the UI.
+
+## Agents, sessions & modes
+
+- **Session list home**: the app opens to a list of conversations (mobile
+  Claude-Code style) — each card shows the name, agent · mode · runner badges,
+  and a last-message preview. Tap a card to open it; **←** returns to the list.
+- Create a session with **＋ New Session**: pick an **agent** (Claude / Codex /
+  Antigravity / Ollama / **Aider** / **Gemini**), an autonomy **mode**, a **project folder**, and a name. The
+  folder field has a **📁 Browse** tree browser; save frequent projects as **favorites** (★).
+- **Full-Duplex Live Session Sync (`/ws`)**: all connected devices receive real-time
+  turn deltas, tool approvals, and session updates simultaneously.
+- **Interactive Tool Approvals**: safe/interactive agent turns display prompt
+  cards in the chat and Talking Mode with **Approve** and **Reject** buttons.
+- **Git Changes & Diff Viewer**: tap the Git icon to view changed/untracked
+  files and review syntax-highlighted diffs on your phone.
+- **Voice Activity Detection (VAD)**: dynamic silence sensitivity and auto-commit
+  for hands-free speech input without cutting off speech.
+- **MediaSession API**: lock screen controls and Bluetooth headset action integration.
+- **Session Transcript Export**: 1-tap Markdown (`.md`) and JSON (`.json`) export via Web Share API or download.
+
+### Modes (autonomy)
+
+Each agent exposes modes that map to its CLI's approval/sandbox flags — pick a
+fuller-auto mode for true hands-free use:
+
+| Agent | Modes (flag) |
+|-------|--------------|
+| Claude | `ask` (standard prompt) · `autoEdit` (`--permission-mode acceptEdits`) · `full` (`--dangerously-skip-permissions`) |
+| Codex | `safe` (`-s read-only`) · `auto` (`-s workspace-write -c approval_policy="never"`) · `full` (`--dangerously-bypass-approvals-and-sandbox`) |
+| Antigravity | `safe` (`--sandbox`) · `full` (`--dangerously-skip-permissions`) |
+| Ollama | `default` (local LLM inference with session history) |
+| Aider | `code` (standard coding) · `architect` (`--chat-mode architect`) · `ask` (`--chat-mode ask`) · `auto` (`--auto-commits --chat-mode code`) |
+| Gemini | `default` (standard prompt) · `yolo` (`--yolo` auto-approve) · `sandbox` (`--sandbox` isolated mode) |
+
+> ⚠️ Full-auto modes let the agent change files and run commands without
+> prompting. Use them only on trusted projects over your private tailnet.
+
+## How it works
+
+```
+[ Phone / Tablet / Laptop ]                     [ Your Computer ]
+  mic ─Web Speech or Whisper STT─▶ text ──HTTPS/Tailscale──▶ voicebridge (src/ modular) ──spawn──▶ claude / aider / gemini / codex / agy
+  speaker ◀─speechSynthesis── reply ◀── WebSocket /ws ◀──── delta/activity/approvals ◀──── (agent CLI)
+```
+
+- Each session maps to one agent + project dir. Claude, Codex, Antigravity, and
+  Ollama keep a rolling conversation where the underlying CLI/API supports it;
+  **Yeni sohbet** resets it.
+- For Claude the prompt is passed as a separate argv (no shell); for Codex and
+  Antigravity it's piped on **stdin** — both injection-safe.
+
+## Development
+
+```bash
+npm test       # zero-dependency test suite (node:test): adapters, parser,
+               # session registry, streaming, modes, runners, push, and auth.
+npm run smoke  # end-to-end HTTP smoke test against a stub agent (no real CLI)
+```
+
+### Try it locally without a real agent
+
+You don't need an agent CLI to see the bridge work end to end — point a `*_BIN`
+env var at a stub that emits the expected output:
+
+```bash
+printf '#!/usr/bin/env node\nprocess.stdout.write(JSON.stringify({type:"assistant",message:{content:[{type:"text",text:"hello from the stub."}]}})+"\\n");\n' > /tmp/claude
+chmod +x /tmp/claude
+CLAUDE_BIN=/tmp/claude npm start   # open the printed URL, type or speak
+```
+
+## Security notes
+
+- The server binds to `127.0.0.1` and is only reachable through your **Tailscale**
+  tailnet — it is not exposed to the public internet.
+- iOS speech **recognition** streams audio to Apple for transcription (free, but
+  not local). Speech **synthesis** is fully on-device. If you need fully-local
+  STT too, swap the browser recognizer for a local Whisper endpoint (see ideas
+  below).
+- Anyone on your tailnet who opens the URL can drive an agent in a session's
+  project directory (and create sessions pointing at other directories). Keep
+  your tailnet private and set `ACCESS_TOKEN`.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Mic does nothing / "https required" | Web Speech needs HTTPS — open the `tailscale serve` URL, not `http://…`. |
+| Mic button is **greyed out / disabled** on mobile | You're on a non-HTTPS origin (e.g. `http://<lan-ip>`). Open the `https://…ts.net` URL instead. See [mobile voice setup](docs/mobile-voice-setup.md). |
+| `Serve is not enabled on your tailnet` | One-time: open the printed `login.tailscale.com/f/serve?node=…` link and enable Serve in the admin console. |
+| iOS mic doesn't work | Use the Safari **tab**, not an installed PWA (iOS blocks the mic in installed PWAs). |
+| "Could not find 'claude'…" | Set `CLAUDE_BIN` to the agent's path (`which claude`) and make sure it's logged in. |
+| 401 / keeps asking for a token | `ACCESS_TOKEN` is set — enter it once on the phone, or scan the QR (it carries the token). |
+| Replies don't speak | TTS is unlocked on your first tap (mic/send) — interact once, then replies speak. Still silent? Check the voice/rate options and that the device isn't on silent. |
+| Mic indicator stays on when idle | The recognizer is released on pause/mute/exit, when hands-free is off, and when the tab is backgrounded. iOS may show the dot for a second after release; if it persists, turn **Eller serbest** off (it listens between turns by design). |
+| No notifications | Enable **Bildirim** and allow the permission; real push needs VAPID keys (see configuration). |
+
+## Security checklist
+
+- [ ] Reach the bridge only over **Tailscale** (keep `HOST=127.0.0.1`); never expose it publicly.
+- [ ] Set `ACCESS_TOKEN` (required if it's reachable beyond localhost — the bridge warns otherwise).
+- [ ] Use read-only / ask **modes** on unfamiliar repos; reserve full-auto for trusted projects.
+- [ ] Keep your tailnet private; anyone on it who has the URL + token can drive an agent.
+
+Details in [docs/security.md](docs/security.md).
+
+## Documentation
+
+- [docs/mobile-voice-setup.md](docs/mobile-voice-setup.md) — get the mic working on your phone (HTTPS + Tailscale, step by step).
+- [docs/architecture.md](docs/architecture.md) — components, request flow, and the agent-adapter design.
+- [docs/configuration.md](docs/configuration.md) — full env-var reference, agents, and modes.
+- [docs/security.md](docs/security.md) — threat model, the access token, Tailscale, and full-auto risks.
+- [docs/mac-desktop-host.md](docs/mac-desktop-host.md) — Mac DMG install, Tailscale, and QR pairing setup.
+- [docs/windows-desktop-host.md](docs/windows-desktop-host.md) — Windows installer, Tailscale, and QR pairing setup.
+- [docs/store-publishing-runbook.md](docs/store-publishing-runbook.md) — App Store / Google Play beta and production release checklist.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — dev setup, tests, and how to add an agent.
+- [CHANGELOG.md](CHANGELOG.md) — release notes.
+
+## Roadmap
+
+- A real screen recording to sit beside the UI illustration.
+- ✅ Streaming replies, a Stop button, multiple agents, multiple sessions, a
+  type-or-speak chat UI, per-agent autonomy modes, persisted Codex/Antigravity
+  continuity, local streaming STT, and a startup QR code.
+
+## License
+
+**[PolyForm Noncommercial License 1.0.0](LICENSE)** — free to use, modify, and
+share for any **noncommercial** purpose (personal, research, education,
+nonprofit). **Commercial use is not permitted**, and the required copyright
+notice (`Copyright (c) 2026 Berkay Turancı`) must be kept on copies. Want to use
+voicebridge commercially? Contact the author for a separate license.

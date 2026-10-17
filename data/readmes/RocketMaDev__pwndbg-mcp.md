@@ -1,0 +1,146 @@
+# pwndbg-mcp
+
+[中文说明](README.zh_CN.md)
+
+An MCP tool endows AI agent with the capability to debug ELF. This tool is designed
+for regular CTF challenges, especially pwn ones.
+
+![Python version](https://img.shields.io/badge/Python-3.10%2B-blue)
+![GitHub License](https://img.shields.io/github/license/RocketMaDev/pwndbg-mcp)
+
+> [!IMPORTANT]
+> It's recommended to use a tmux skill and pwndbg skill, and provide AI agent with
+> a tmux session instead. Controlling pwndbg with MCP requires lots of tokens, and
+> it's hard to support debugging with python script. Reference our [0RAYS/codex-pwner].
+> (Though AI agent tends to use raw tools like reading /proc/mem to get information...)
+>
+> [0RAYS/codex-pwner]: https://github.com/0RAYS/codex-pwner
+
+## Quickstart
+
+As currently this repo has not been published on PyPI, clone this repo with 
+
+```bash
+$ git clone https://github.com/RocketMaDev/pwndbg-mcp.git
+```
+
+Then use uv (install it if you don't have it) to pull dependencies and build venv,
+or install it as a tool.
+
+```bash
+$ uv tool install pwndbg-mcp
+$ pwndbg-mcp
+# or clone pwndbg-mcp and run it with uv manually
+```
+
+> [!CAUTION]
+> **DON'T EXPOSE YOUR MCP SERVICE TO PUBLIC IF YOU DON'T DO ISOLATION!**
+> The tool `load_executable`, `execute_command` (GDB command) and `eval_to_send_to_process`
+> may lead to remote code execution.
+
+By default starting pwndbg-mcp without args launch a mcp server at `localhost:8780` with `gdb`
+as main pwndbg binary, `/mcp` as mcp connection end point, and `HTTP streamable` as transport.
+Here is some help information:
+
+```
+usage: main.py [-h] [--transport {stdio,http,sse}] [--host HOST] [--port PORT] [--pwndbg BIN] [--d2dname NAME] [--d2dhost HOST] [--d2dport PORT]
+
+pwndbg-mcp: An MCP tool endows AI agent with the capability to debug ELF
+
+options:
+  -h, --help            show this help message and exit
+  --transport {stdio,http,sse}, -t {stdio,http,sse}
+                        Transport mode: stdio, http (streamable HTTP, default), or sse
+  --host HOST, -H HOST  Host for HTTP/SSE modes (default: localhost)
+  --port PORT, -p PORT  Port for HTTP/SSE modes (default: 8780)
+  --pwndbg BIN, -b BIN  pwndbg binary to launch (default: gdb)
+  --d2dname NAME, -d NAME
+                        Decomp2dbg section display name. Set this to enable decomp2dbg support
+  --d2dhost HOST, -D HOST
+                        Decomp2dbg connection host
+  --d2dport PORT, -P PORT
+                        Decomp2dbg connection port
+```
+
+It is recommended to wrap pwndbg-mcp in minimal container like `bwrap` since some agents
+like *Claude Code* wants to execute binary under the same directory as where it runs.
+Putting pwndbg-mcp in regular container like docker may lead to file path change.
+
+The following line ro-bind your root, map your home as writable but temporary
+(any write action will not affect your home directory on disk), then bind common file
+systems, start a new pid namespace and finally start a bash.
+
+```bash
+$ bwrap --ro-bind / / --overlay-src ~ --tmp-overlay ~ --dev-bind /dev /dev --proc /proc --tmpfs /tmp --unshare-pid bash
+```
+
+## Screenshot
+
+<img width="2560" height="1100" alt="claude code with pwndbg-mcp" src="https://github.com/user-attachments/assets/4ea1508c-9a56-4541-ad93-28c4301dcc62" />
+
+
+## Preview tools
+
+- GDB related
+    1. `load_executable`
+    2. `execute_command`
+    3. `pwndbg_status` (may be incorrect)
+    4. `debug_control`
+    5. `connect_decomp2dbg`
+    6. `pwndbg_hard_reset`
+- Interact with process
+    1. `send_to_process`
+    2. `eval_to_send_to_process` (has access to pwntools)
+    3. `read_from_process`
+    4. `interrupt_process` (the same as press Ctrl-C)
+- pwndbg aliases
+    1. `telescope`
+    2. `context`
+    3. `heap`
+    4. `bins`
+    5. `backtrace`
+    6. `vmmap`
+    7. `xinfo`
+
+Use TOON as return format as it's both human-readable and token-saving.
+
+## Pros & Cons
+
+This project draw some inspiration from [pwno-mcp](https://github.com/pwno-io/pwno-mcp),
+and has some advantages and disadvantages.
+
+### Pros
+
+1. pwndbg-mcp utilizes GDB/MI for direct communication with GDB, no `echo` hacks
+2. Interrupts are sent via tty, just like typing Ctrl-C on keyboard, no need to keep pid
+3. `eval_to_send_to_process` provides AI with the ability to send any binary data
+
+### Cons
+
+1. All communication are encapsulated and user can not observe gdb status
+2. This project targets local debugging, thus each instance only keep one GDB session
+3. Focused on debugging, requires other MCP to work together, e.g. IDA Pro MCP
+4. Sometimes Ctrl-C kills process or can't wake up GDB. No idea how this happens
+
+## Future roadmap
+
+Please click **:star: STAR** and open issues (but don't spam) to push me developing
+these excellent features!
+
+- [x] Integrate with [decomp2dbg](https://github.com/mahaloz/decomp2dbg)
+- [ ] Integrate with pwntools (`gdb.debug`/`gdb.attach`)
+- [ ] Attach to local process (untested)
+- [ ] Attach to remote gdbserver (untested)
+
+## Credits
+
+[pwno-mcp](https://github.com/pwno-io/pwno-mcp): Provides great bootstrap framework for pwndbg-mcp
+
+## Contribution
+
+Contributions are welcome! But no vibe coding (sending content all generated by AI is
+not allowed) and spams.
+
+## LICENSE
+
+Copyright (C) 2025-present, RocketDev, distributed under MIT License.

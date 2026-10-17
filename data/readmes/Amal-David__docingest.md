@@ -1,0 +1,235 @@
+# DocIngest
+
+DocIngest is the [open-source](https://github.com/Amal-David/docingest) engine for turning documentation sites into searchable, MCP-accessible context for humans and coding agents.
+
+It crawls docs, stores them as clean markdown, indexes them for search, and exposes the same corpus through a web UI, CLI, and MCP server. Use it to build a public docs index, self-host an internal corpus, or give coding agents fresher documentation context.
+
+[Quick Start](#quick-start) • [MCP + CLI](#mcp--cli) • [Screenshots](#screenshots) • [Setup Docs](#setup-docs) • [Contributing](#contributing)
+
+## Status
+
+### What works today
+
+- Index documentation sites from the web UI
+- Browse and search indexed docs at `docingest.com`
+- Open docs by domain, copy markdown, and download stored docs
+- Re-index sources when upstream docs change
+- Query docs from MCP-compatible coding tools
+- Use the package as a lightweight CLI for quick lookup
+
+### Hosted corpus
+
+- The live `main` deployment currently serves **1,635 latest documentation sites** on `docingest.com` as of August 16, 2026
+- DocIngest stores versioned snapshots per domain, so one docs site can have multiple historical versions behind the scenes
+- The Git repository does not commit the full hosted corpus; the deployed service holds the actual indexed docs data
+
+### Known limitations
+
+- Search and ranking work, but need deeper tuning
+- Loading, empty, and success states need more polish
+- Version-aware storage exists, but the product UX around versions is still early
+- Not yet a mature enterprise docs platform with permissions, collaboration, and admin workflows
+
+## Screenshots
+
+### Homepage
+
+![DocIngest homepage](docs/screenshots/homepage.png)
+
+### Index a docs site
+
+![DocIngest indexing flow](docs/screenshots/index-docs.png)
+
+### MCP setup guide
+
+![DocIngest MCP guide](docs/screenshots/mcp-guide.png)
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Firecrawl, hosted or self-hosted
+- Redis for fast autocomplete/search
+
+Redis is optional for tiny local tests, but recommended for anything serious.
+
+### Install
+
+```bash
+git clone https://github.com/Amal-David/docingest.git
+cd docingest
+npm install
+cd server && npm install && cd ..
+```
+
+### Configure
+
+Copy `.env.example` to `.env` in the repo root and fill it in. Firecrawl is the only crawl backend, so set either `FIRECRAWL_API_KEY` (hosted) or `FIRECRAWL_API_URL` (self-hosted):
+
+```bash
+FIRECRAWL_API_KEY=fc-your-api-key-here
+FIRECRAWL_API_URL=https://api.firecrawl.dev/v1
+REACT_APP_API_URL=http://localhost:8001/api
+REDIS_HOST=localhost
+REDIS_PORT=6380
+```
+
+For local Docker with self-hosted Firecrawl:
+
+```bash
+FIRECRAWL_API_URL=http://localhost:3002/v1
+REACT_APP_API_URL=http://localhost:8001/api
+REDIS_HOST=localhost
+REDIS_PORT=6380
+```
+
+For setup details, use these guides:
+
+- [Docker run modes](./docs/setup/docker.md)
+- [Firecrawl setup](./docs/setup/firecrawl.md)
+- [Redis setup](./docs/setup/redis.md)
+
+### Run
+
+Choose the local services you want:
+
+Run everything local:
+
+```bash
+docker compose --profile firecrawl --profile tools up -d
+```
+
+Run only Redis:
+
+```bash
+docker compose up -d redis
+```
+
+Run Redis and Firecrawl without the Redis UI:
+
+```bash
+docker compose --profile firecrawl up -d
+```
+
+Run Redis with the Redis UI:
+
+```bash
+docker compose --profile tools up -d
+```
+
+Run the app locally:
+
+```bash
+npm run dev
+```
+
+If port `8001` is already busy, use the alternate local API port:
+
+```bash
+npm run dev:local
+```
+
+Then open `http://localhost:8000`.
+
+After indexing docs, build the Redis search index:
+
+```bash
+cd server
+npm run build-index
+```
+
+## MCP + CLI
+
+Add DocIngest to Claude Code:
+
+```bash
+claude mcp add docingest -- npx -y @docingest/mcp-server
+```
+
+Use the same package as a CLI:
+
+```bash
+npx @docingest/mcp-server find react
+npx @docingest/mcp-server read react.dev --topic hooks --max-tokens 5000
+npx @docingest/mcp-server read react.dev --snapshot-id <immutable-snapshot-id>
+npx @docingest/mcp-server search "server components" --limit 5
+```
+
+MCP tools:
+
+- `find-docs` finds a library or docs domain
+- `read-docs` fetches focused documentation content
+- `query-docs` searches across indexed docs
+
+For editor-specific config, see [the MCP server README](./mcp-server/README.md).
+
+## Corpus integrity upgrade
+
+Existing V1/V2 records are preserved as evidence and are not silently promoted
+to public snapshot retrieval. Before deploying this release, run the backup-first
+audit, inspect its dry-run summary, then apply it deliberately:
+
+```bash
+npm run audit:integrity
+npm run audit:integrity -- --apply
+```
+
+## Snapshot quality backfill
+
+Before the fix in #29, a snapshot was only approved when *every* accepted page
+cleared automatic approval, so a single short page could hold back an entire
+corpus and leave a stored domain answering "Documentation not found". The fix
+applies to new crawls; snapshots already on disk keep the verdict they were
+written with.
+
+This one-time pass re-derives those verdicts from the markdown each snapshot was
+built from, so stored documentation is not stranded until someone re-crawls it.
+It only touches snapshots recorded as `one-or-more-pages-need-review`, the reason
+the old rule wrote — snapshots quarantined for challenge pages, error pages, or
+genuinely thin content are left alone. Dry-run is the default and the existing
+metadata is backed up before any write:
+
+```bash
+npm run backfill:quality
+npm run backfill:quality -- --apply
+```
+
+An apply run stops on any domain that already has a backup from an earlier run,
+so a second pass cannot quietly overwrite the original boundary. The rest of the
+batch still proceeds. Review that backup, then re-run with `--force` to continue;
+the existing backup file is kept as it is.
+
+```bash
+npm run backfill:quality -- --apply --force
+```
+
+## Setup Docs
+
+Use these when you need more than the happy path:
+
+- [Redis setup](./docs/setup/redis.md) for local/self-hosted Redis, indexing, and verification
+- [Firecrawl setup](./docs/setup/firecrawl.md) for hosted or self-hosted crawling
+- [Docker run modes](./docs/setup/docker.md) for all-in-one or partial local services
+- [Nginx setup](./docs/setup/nginx.md) for production reverse proxy configuration
+- [Performance notes](./docs/performance.md) for speedups and next optimization work
+- [Reference](./docs/reference.md) for storage, API, deployment shape, and repo details
+
+## Tech Stack
+
+- React + TypeScript + Tailwind CSS
+- Node.js + Express + TypeScript
+- Firecrawl for crawling
+- Redis for autocomplete, full-text search, and cached docs
+- File-based markdown storage
+
+## Contributing
+
+Contributions are welcome, especially around crawling quality, search/ranking, MCP ergonomics, docs UX, and self-hosting.
+
+- [Issues](https://github.com/Amal-David/docingest/issues)
+- [Discussions](https://github.com/Amal-David/docingest/discussions)
+
+## License
+
+MIT

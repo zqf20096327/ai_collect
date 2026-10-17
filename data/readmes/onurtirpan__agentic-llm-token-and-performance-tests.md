@@ -1,0 +1,329 @@
+# agentic-llm-token-and-performance-tests
+
+**Read the results:
+[onurtirpan.github.io/agentic-llm-token-and-performance-tests](https://onurtirpan.github.io/agentic-llm-token-and-performance-tests/)**
+
+## Ten Languages, One API
+
+**How many tokens does it cost to express the same backend service in each
+language — and does that ratio change with the size of the service? And what
+does each language cost at runtime?**
+
+The question behind the name: if an LLM coding agent has to read and re-read a
+codebase on every task, source size is a recurring context cost. So which
+languages are cheapest to work with — and what do you give up to get that?
+
+The same HTTP service, implemented **30 times**: ten languages at three sizes.
+Every implementation passes its full conformance suite against a live server over
+real HTTP. Then the source is tokenized, and the running service is benchmarked
+for cold start, latency, throughput, CPU and memory.
+
+Two results stand out:
+
+1. **The token gap between languages narrows as the service grows.** The
+   worst-to-best spread falls from 5.05x at 7 routes to 2.80x at 34. The
+   low-level penalty is mostly a fixed cost, not a multiplier.
+2. **The token ranking is close to the inverse of the speed ranking.** Python
+   writes the fewest tokens and places 9th of 10 on latency. C and C++ cost the
+   most tokens and place 1st and 2nd.
+
+Results pages, live on GitHub Pages:
+
+- [short version](https://onurtirpan.github.io/agentic-llm-token-and-performance-tests/benchmark.html)
+  — the headline tables and charts, sortable
+- [full version](https://onurtirpan.github.io/agentic-llm-token-and-performance-tests/benchmark-detailed.html)
+  — every table, every tier, and every mistake we found and fixed
+
+The sources are [`docs/benchmark.html`](docs/benchmark.html) and
+[`docs/benchmark-detailed.html`](docs/benchmark-detailed.html). Each is a single
+self-contained file, so either one opens correctly straight from disk.
+
+## The three tiers
+
+| Tier | Routes | Cases | What it adds |
+| --- | ---: | ---: | --- |
+| small | 7 | 22 | CRUD, validation, a derived field, a two-key sort, an aggregate |
+| mid | 16 | 98 | session auth, roles, row-level access, a middleware chain, structured logging, an error envelope with machine codes, multi-error validation, pagination, whitelisted sorting, a status state machine, cascade delete, conflicts |
+| large | 34 | 139 | a mandated four-module split, optimistic concurrency (`ETag` / `If-Match`), idempotency keys, soft delete and restore, an audit trail, an outbox, per-session quotas, bulk writes, search, grouped reports, metrics by route pattern, comments, user admin, admin-only field visibility |
+
+Specifications: [`SPEC.md`](SPEC.md), [`SPEC_MID.md`](SPEC_MID.md),
+[`SPEC_LARGE.md`](SPEC_LARGE.md). Read in that order; each states only its
+additions.
+
+## Token cost
+
+Application source only, tiktoken `o200k_base`. A second encoder,
+`cl100k_base`, reproduces the same ordering at every tier.
+
+| Language | Framework | small | mid | large |
+| --- | --- | ---: | ---: | ---: |
+| Python | FastAPI | **1.00x** | **1.00x** | **1.00x** |
+| TypeScript | Express | 1.28x | 1.13x | 1.12x |
+| C# | ASP.NET Minimal API | 1.12x | 1.08x | 1.15x |
+| Java | Spring Boot | 1.51x | 1.35x | 1.38x |
+| PHP | no framework | 1.94x | 1.45x | 1.48x |
+| Go | net/http | 1.75x | 1.75x | 1.56x |
+| Rust | Axum | 1.66x | 1.72x | 1.66x |
+| Zig | std.http | 2.08x | 1.87x | 1.84x |
+| C++ | raw winsock | 4.24x | 2.50x | 2.01x |
+| C | raw winsock | 5.05x | 3.43x | 2.80x |
+| | **spread** | **5.05x** | **3.43x** | **2.80x** |
+
+Absolute tokens at the large tier run from 10,558 (Python) to 29,532 (C).
+Full numbers, including line and character counts, are in
+[`results.json`](results.json).
+
+### Why the gap narrows
+
+The growth column explains it. C, C++ and Zig write an HTTP parser, a JSON
+parser, a JSON writer and a socket loop **once**; Python and C# import all of
+that. So the low-level languages start far behind and then grow slowly, while
+the high-level ones start ahead and gain nothing further.
+
+| Language | small &rarr; large growth |
+| --- | ---: |
+| C# | 11.07x |
+| Rust | 10.73x |
+| Python | 10.71x |
+| Java | 9.75x |
+| Go | 9.59x |
+| Zig | 9.49x |
+| TypeScript | 9.43x |
+| PHP | 8.17x |
+| C | 5.93x |
+| C++ | 5.09x |
+
+**The planning consequence:** a ratio measured on a toy service *overstates*
+what a low-level language costs on a real one. Sizing a backend from a
+seven-route comparison over-penalises the low-level option by roughly a factor
+of two.
+
+## Runtime cost
+
+Large tier, 10,000 sequential requests. `p50` is the primary latency figure —
+see the note on p99 below.
+
+| Language | p50 | req/s | CPU ms/req | idle RAM | cold start |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| C++ | **0.218 ms** | **2,543** | 0.070 | 5.2 MB | 58 ms |
+| C | 0.240 ms | 2,084 | **0.059** | 4.2 MB | **47 ms** |
+| Zig | 0.254 ms | 1,986 | 0.069 | **3.3 MB** | 57 ms |
+| Go | 0.311 ms | 1,888 | 0.230 | 8.6 MB | 55 ms |
+| Rust | 0.327 ms | 1,412 | 0.150 | 6.2 MB | 69 ms |
+| TypeScript | 0.441 ms | 1,198 | 0.356 | 67.0 MB | 452 ms |
+| C# | 0.444 ms | 850 | 0.653 | 50.9 MB | 712 ms |
+| Java | 0.595 ms | 760 | 1.613 | 191.0 MB | 5,275 ms |
+| Python | 1.621 ms | 266 | 1.764 | 50.0 MB | 1,012 ms |
+| PHP | 8.636 ms | 62 | 5.097 | 34.5 MB | 166 ms |
+
+`PERF.md` is generated by `tools/report_perf.py` from
+[`perf-results.json`](perf-results.json), so it always matches the committed data
+rather than a hand-copied snapshot. It carries the same tables for all three
+tiers, plus cold start with the harness floor removed and a drift table showing
+whether p50 holds from 100 to 10,000 requests.
+
+### Runtime cost varies far more than source size
+
+| Axis | spread, large tier |
+| --- | ---: |
+| tokens | 2.80x |
+| cold start | 112x |
+| CPU per request | 86x |
+| memory | 57x |
+| throughput | 41x |
+| p50 latency | 40x |
+
+**Source size is the flattest axis in this study.** Token efficiency is real,
+but it is a weak signal next to what the runtime numbers separate.
+
+### The two rankings are close to inverted
+
+Python writes the fewest tokens and places 9th of 10 on latency. C and C++ cost
+the most tokens and place 1st and 2nd. Nothing sits at both extremes, so there is
+no single "best" language in this data — only a trade to pick deliberately.
+TypeScript is the closest to balanced: 2nd on tokens, 6th on speed.
+
+Three notes on the runtime numbers worth knowing before quoting them:
+
+- **PHP numbers are the median of three runs, not one.** They barely needed the
+  median: p50 landed within 1.1% across three runs at the small tier, 0.6% at the
+  mid tier and 4.3% at the large tier, which makes PHP one of the most
+  reproducible implementations here. That is worth stating because an earlier
+  framework-based PHP build swung by a factor of two run to run; the instability
+  belonged to the framework, not to the language.
+- **PHP is the only implementation that degrades under load** — p50 rises from
+  2.36 ms at 100 requests to 8.64 ms at 10,000. After the append-only store fix
+  this is no longer the audit trail (an audit-only test is flat at 1.00x); it is
+  1,000 soft-deleted rows that PHP alone must re-serialize on each request,
+  because a shared-nothing process cannot keep them in memory between requests.
+- **Java is the only one that materially improves** — p50 falls from 1.304 ms to
+  0.595 ms (0.46x) as the JIT compiles the hot path, paid for with a 5,275 ms
+  cold start and 191 MB resident.
+
+## How it was verified
+
+Nothing is measured until it works. Two independent gates:
+
+1. **Conformance.** `tools/conformance*.py` drive a live server over real HTTP.
+   Assertions are exact: status code, the complete top-level key set, every
+   value, list ordering, validation-detail ordering, and specific response
+   headers (`X-Request-Id`, `ETag`, `X-Quota-Remaining`,
+   `Idempotency-Replayed`).
+2. **Structured logging.** From the mid tier on, `tools/check_logs.py` parses the
+   server's stdout and validates every log record — key order, level against
+   status class, no query string in `path`, and field types. Logging is measured
+   as working code, not as a claim.
+
+For each tier: specification written first, conformance suite second, then a
+single Python reference implementation driven to a full pass, and only then the
+other nine. Every implementation was re-verified independently of the report it
+arrived with.
+
+Current state: **30/30 implementations pass — 22, 98 and 139 cases — and every
+mid-tier and large-tier implementation also passes the log check.**
+
+## Fairness corrections
+
+Three of our own choices, not the languages, were distorting the results. All
+three were corrected before publication, and the pre-correction datasets are kept
+so the effect is auditable.
+
+- **PHP had OPcache disabled.** `php -S` runs under the CLI SAPI, where
+  `opcache.enable_cli` defaults to `Off`, so every request recompiled the whole
+  application from source. No production PHP runs that way. Fixing it roughly
+  halved PHP's median latency at the mid tier.
+- **PHP was being measured through a framework.** The first PHP build used Slim 4
+  via Composer. A layered probe then showed that about **94%** of its per-request
+  cost was Slim's container, router and middleware being rebuilt from scratch —
+  roughly **4.2 ms per request** — because PHP's shared-nothing model reconstructs
+  the world on every request. That is a property of one framework, not of PHP. A
+  single `index.php` front controller needs no framework at all, so PHP is now
+  measured the way PHP actually runs: no Composer, no vendor tree, no autoloader.
+  Doing so cut p50 by about 2x and CPU by about 5x, and it also removed the
+  run-to-run instability, which came from the autoloader touching roughly a
+  hundred files per request. The Slim measurements are kept in
+  `perf-variance/removed-slim-run*.json` so the framework cost stays checkable.
+- **PHP's store was accidentally O(n) per request.** The large tier accumulates
+  an audit trail and an outbox, and our `Store` re-serialized the entire dataset
+  on every request. A micro-benchmark located it precisely: file I/O costs
+  0.04 ms to read and 0.33 ms to write, but `json_decode` of a 144 KB store costs
+  **8.58 ms**. So PHP paid O(total accumulated state) per request for an operation
+  every other language performs as an O(1) append to an in-memory list. With a
+  *fresh* store, PHP answers the large tier in 1.66 ms. Fixed by moving audit and
+  outbox to append-only JSON Lines files with counters in `store.json` and a
+  watermark so `delivered` is derived rather than rewritten. An audit-only
+  isolation test went from 2.36x degradation to **1.00x, flat**, and large-tier
+  p50 fell 25.2 → 8.6 ms. The fix costs 1,216 tokens, because O(1) persistence is
+  more code than O(n).
+- **C and C++ were not using keep-alive.** Both sent `Connection: close` on
+  every response, forcing a TCP handshake per request and costing them roughly a
+  tenfold throughput penalty. HTTP/1.1 defaults to persistent connections, and
+  Zig — also hand-written over raw sockets — implements them correctly, which is
+  what identified this as our defect. All six C and C++ implementations now
+  honour the client's `Connection` header. C's small-tier throughput went from
+  276 to 3,333 req/s.
+
+Correcting keep-alive **increased** C and C++ token counts by roughly a quarter,
+because protocol-correct connection handling is real code. The numbers above are
+the post-correction, protocol-correct ones.
+
+Baselines kept for audit: `perf-results-before-opcache.json`,
+`perf-results-before-keepalive.json`.
+
+## Reading the numbers honestly
+
+- **The tokenizer is a proxy.** tiktoken, not Claude's tokenizer. The ratios hold
+  across two independent encoders; absolute counts will move elsewhere. Quote the
+  ratios.
+- **p99 and max are host artifacts.** They cluster on multiples of 15.6 ms, the
+  Windows timer tick, and jump up to fortyfold from p90. That is the sequential
+  client losing its scheduling quantum, not server behaviour. p50 and p90 are
+  stable.
+- **Rank on p50, not on throughput.** Three repeat runs of the same code showed
+  p50 moving about 10% for fast implementations while `req/s` swung by a factor
+  of two — Go measured 580, 1,095 and 1,145 req/s on one tier. Throughput derives
+  from the mean, and for a sub-millisecond server one 15.6 ms stall costs the
+  wall clock of roughly fifty normal requests. **The throughput ordering among C,
+  C++, Zig, Go and Rust is not established by this data.** The slow
+  implementations are the stable ones: PHP repeated within 1.1% on p50 and 7% on
+  throughput, because a millisecond of real work dwarfs a scheduling artifact.
+  Raw repeat data is in `perf-variance/`.
+- **Framework choice measures the ecosystem too.** Every implementation uses what
+  a real team would pick for that language — which for PHP means no framework at
+  all, and for C, C++ and Zig means raw sockets. So this is not a measurement of
+  pure language syntax, and a different framework choice would move a row.
+- **Three deliberate exclusions:** no password hashing, no signed tokens, no
+  wall-clock timestamps in response bodies. Each keeps the workload identical
+  across ten languages, and each is cheap in a high-level language and expensive
+  in C — so excluding them makes the reported ratios *conservative* toward C.
+- **This counts read cost, not write cost.** It does not count the retries a
+  compiler would have caught, which is where static typing repays its tokens.
+- **One machine, one run, sequential client, no concurrency test.** Four
+  implementations are single-threaded by design, so a concurrent benchmark would
+  rank threading models rather than languages.
+
+[`METHODOLOGY.md`](METHODOLOGY.md) has the full method, seven stated threats to
+validity, and a divergence register listing every known place the ten
+implementations are not identical.
+
+## Layout
+
+```
+METHODOLOGY.md                  how it was built and measured, in full
+SPEC.md SPEC_MID.md SPEC_LARGE.md   the three specifications
+results.json                    raw size measurement
+perf-results.json               raw runtime measurement
+PERF.md                         generated runtime tables
+perf-variance/                  repeat runs, for the variance study
+docs/benchmark.html             results page, short
+docs/benchmark-detailed.html    results page, full
+tools/conformance.py            22 cases, small tier
+tools/conformance_mid.py        98 cases, mid tier
+tools/conformance_large.py      139 cases, large tier
+tools/check_logs.py             validates the structured log
+tools/measure.py                size and token measurement, all tiers
+tools/perf.py                   cold start, latency, throughput, CPU, memory
+tools/report_perf.py            turns perf-results.json into tables
+tools/run_all.ps1               build, test and measure the small tier
+tools/run_all_mid.ps1           the same for the mid tier
+tools/run_all_large.ps1         the same for the large tier
+impl/<language>/                small tier
+impl-mid/<language>/            mid tier
+impl-large/<language>/          large tier
+```
+
+## Reproduce
+
+Windows with PowerShell. Requires the ten toolchains listed below.
+
+```powershell
+pwsh -File tools\run_all.ps1          # small: build, serve, test, measure
+pwsh -File tools\run_all_mid.ps1      # mid:   the same, plus the log check
+pwsh -File tools\run_all_large.ps1    # large: the same
+python tools\perf.py --all            # cold start, latency, CPU, memory
+python tools\report_perf.py > PERF.md
+```
+
+Each script builds every implementation, starts each server on port 8080, runs
+the full case list, validates the log, stops the server, and prints the
+measurement table.
+
+| Language | Framework | Toolchain |
+| --- | --- | --- |
+| Python | FastAPI + uvicorn | CPython 3.13 |
+| TypeScript | Express 5 | Node + tsc 5 |
+| C# | ASP.NET Core Minimal API | .NET SDK 10 |
+| Go | net/http | Go 1.26 |
+| PHP | none — plain front controller | PHP 8.5, OPcache on |
+| Java | Spring Boot 3.4 | Temurin JDK 21 + Maven |
+| Rust | Axum 0.8 | rustc stable, GNU host |
+| Zig | std.http | Zig 0.16 |
+| C | raw winsock | gcc 16 (mingw), `-O2 -static` |
+| C++ | raw winsock | g++ 16, C++20, `-O2 -static` |
+
+Rust uses the GNU host toolchain because the test machine has no MSVC linker.
+C and C++ link statically so the binaries run without mingw on `PATH`.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). Change the copyright holder if that is not you.

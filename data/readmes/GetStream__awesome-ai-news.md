@@ -1,0 +1,609 @@
+# Awesome AI News & Tools For Developers
+
+AI is changing faster than developers can keep up. This repo is a monthly collection of AI news and resources for developers.
+
+## October 2026
+- [Introducing Muse Spark Open](https://research.meta.ai/blog/muse-spark-open): The Most Capable US Open‑Weight Model.
+- [Jev Composable Images and Box Type](https://typesafe.ai/blog/jev-1-14): You can send images in a System One request. Jev also supports a box type, a System One question type for finding where something is in an image
+- [Ultramarine 1 Flash](https://www.paperinstruments.com/blog/ultramarine): Scaling Non-Verifiable RL.
+- [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/): Built to solve your hardest problems.
+- [Introducing Muse Wonder](https://research.meta.ai/blog/muse-wonder): Meta AI's new family of frontier models with state-of-the-art performance for personal and professional agentic work.
+- [Reverse Engineer Anything](https://github.com/morluto/rea/): Reverse engineer anything with agents, from app behavior down to native binaries. [REA Tools](https://rea.tools/).
+- [Introducing Microsoft-Decision-1](https://commandline.microsoft.com/microsoft-decision-1-model-foundry/): Microsoft's new model for fast decision-making.
+- [Introducing Claude Dashboards and Claude Motion](https://youtu.be/en0GuyhieQk?si=-XTkrMHbY7-3tqSz): Ask Claude to turn your data into live dashboards and your ideas into animated explainers. [X post](https://x.com/claudeai/status/2108271552991252810?s=20).
+- [Introducing Claude Haiku 5.5](https://x.com/claudeai/status/2107894039626277339?s=20): The cheapest, fastest, and most capable small model Anthropic ever released.
+- [Introducing Unity Spark](https://x.com/unitygames/status/2107805373918835075?s=20): A new way to create a game, iterate on it with others, publish it, and play it - all without writing a line of code.
+- [Artificial Analysis Decision Index](https://artificialanalysis.ai/evaluations/artificial-analysis-decision-index): A composite index testing decision models across classification, tool calling, knowledge and reasoning.
+- [Apple HomeView](https://www.apple.com/apple-homeview/): Comes with a built-in Siri AI integration.
+- [Google Labs Playground](https://labs.google/playground): Create custom games in minutes.
+- [Introducing OpenAI Decisions API](https://developers.openai.com/api/docs/guides/decisions): The Decisions API makes decisions up to 10x faster than GPT-6 Luna through the Responses API.
+- [Introducing EmbeddingGemma 2! 🚀](https://blog.google/innovation-and-ai/technology/developers-tools/embeddinggemma-2/): An open, lightweight multimodal embedding model from Google DeepMind.
+- [Introducing @NanoBanana 2.1 🍌](https://x.com/GoogleAIStudio/status/2107501303890915550): Try it out in [ai.studio](https://ai.studio/).
+- [Claude in Google Docs, Sheets, and Slides](https://workspace.google.com/marketplace/app/claude/12459801340): Claude drafts, edits, and analyzes your work inside Google Docs™, Google Sheets™, and Google Slides™.
+- [Meet Mistral Large 4, aka Le Chonk.](https://mistral.ai/news/mistral-large-4/): A 1T parameters, natively multimodal, 49B active. It is the best open weights model from the US or Europe on aggregated benchmarks.
+- [Introducing Beam](https://reflection.ai/blog/introducing-beam): Reflection’s 501B open-weight model. [X post](https://x.com/reflection_ai/status/2107186849370247235?s=20).
+- [Announcing d1 with vision](https://x.com/liquidai/status/2107161990808674404?s=20): 👁️👁️ Liquid AI's first decision model now supports images, text or both as inputs. 
+- [Introducing HyperFrames Studio](https://x.com/HyperFrames_/status/2107149824189698558?s=20): A video editor built for agents, from scratch.
+- [Kolibri](https://x.com/Aleph__Alpha/status/2106306843052052616?s=20): A Sovereign European Model on the Pareto Frontier. [Tech Report](https://aleph-alpha.com/downloads/tech-report.pdf).
+- [Introducing Strands Decider 2B](https://strandsagents.com/blog/introducing-strands-decider/): A small, open source, decision model.
+- [Decider-2b-vision](https://huggingface.co/mlboydaisuke/decider-2b-vision-CoreAI): A Core AI decision model for photos (Mapika, Apache-2.0).
+- [Cloudflare's Decision Models](https://ollama.com/library/clef-flash): Now available on Ollama.
+- [Jev + Appl Foundation Models](https://github.com/peterfriese/system-one-foundation-models): A lightweight, native Swift 6 bridge integrating TypeSafe AI's Jev System One decision model into Apple's Foundation Models framework.
+- [GLM 5.3 and GLM 5.3 Flash](https://x.com/cursor_ai/status/2105787358557999585?s=20): Now available in Cursor.
+- [Matt MCP](https://x.com/josesaezmerino/status/2105731299516526784?s=20): Use Claude and Codex to animate your project live, and then intervene yourself for all the refinement and human touch.
+- [Introducing Flux 3 Image](https://x.com/bfl_ai/status/2105734605621825738?s=20): Make precise multi-turn edits without changing any other pixel.
+
+## September 2026
+- [Gemini 4 Argon](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/): Google's next era of frontier intelligence.
+- [OpenAI Dev Day 2026](https://openai.com/news/company-announcements/): Recap.
+- [Introducing OpenAI dots](https://openai.com/index/introducing-dots/): Dots are remarkably capable, always-on agents built to handle everything.
+- [GPT-6.1 Sol](https://openai.com/index/introducing-gpt-6-1-sol/): Near-Astra intelligence for a fifth of the price.
+- [Introducing Claude Opus 5.5](https://www.anthropic.com/claude-opus-5-5): Anthropic's first model in the new Claude 5.5 family. It performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5.
+- [Introducing Claude Sonnet 5.5](https://www.anthropic.com/claude-sonnet-5-5): The second model in the Claude 5.5 family.
+- [Introducing MentalHealthBench](https://openai.com/index/introducing-mentalhealthbench/): An open benchmark developed with more than 80 licensed mental health experts to evaluate AI responses in realistic mental health conversations.
+- [Introducing GPT‑6 Sol and Luna](https://openai.com/index/introducing-gpt-6-sol-and-luna/): More ways to bring frontier intelligence into the work you do every day.
+- [Gemini 3.8 Flash TTS and Gemini 3.8 Flash-Lite TTS](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/): Google's most expressive audio generation models.
+- [Introducing Eleven v4 and Eleven v4 Turbo](https://x.com/ElevenLabs/status/2104572127617994917?s=20): ElevenLabs fastest and most emotive voice models.
+- [Introducing Grok 4.7](https://x.ai/news/grok-4-7): SpaceXAI's most powerful model for coding and knowledge work. Twice as fast, at half the price of comparable models.
+- [GPT 6 Astra](https://openai.com/index/gpt-6-astra/): OpenAI's new generation of intelligence and the world’s most aligned model.
+- [GPT-6 Astra](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra): Rethinking skills and prompts.
+- [The Last AI Built by Humans](https://arxiv.org/pdf/2609.11873): Toward Genuine Recursive Self-Improvement.
+- [Dream-RSI](https://www.dream-rsi.com/): Recursive Self-Improvement through Evolving Worlds.
+- [Qwen3.8-LiveTranslate](https://qwen.ai/blog?id=qwen3.8-livetranslate): Qwen's next-generation real-time simultaneous interpretation model! 📢
+- [Introducing Drama 3 ](https://x.com/FishAudio/status/2102805658005635294?s=20): Fish Audio's controllable TTS model. 
+- [Introducing FLUX 3 Action](https://x.com/bfl_ai/status/2102816874782241174?s=20): An open weight 7B World Action Model that achieves first place on the RoboLab benchmark.
+- [Claude Fable 5.1 and Mythos 5.1](https://www.anthropic.com/claude-fable-and-mythos-5-1): The world’s most advanced models for coding and knowledge work.
+- [Introducing Jev](https://typesafe.ai/): The first (public) System One Model. Jev gives AI the properties of code.
+- [Grok 4.7 is Here](https://x.com/SpaceXAI/status/2102069815225586149?s=20): It's a notable improvement over Grok 4.6 at the same price and speed.
+- [CoreAIKit](https://github.com/john-rocky/coreai-kit): Swift SDK for running chat, vision, and speech models on iPhone and Mac with Apple's Core AI. 
+- [Gemini 3.8 Live and 3.5 Transcribe](https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/): Build real-time voice applications.
+- [Introducing Meta One](https://about.fb.com/news/2026/09/introducing-meta-one-subscription-service-more-features-ai/): A Subscription service with features and AI to create and connect.
+- [Introducing DeepSeek-V4.1-Flash](https://x.com/deepseek_ai/status/2097930608790167907?s=20): The smallest model in DeepSeek's new architecture family, with native visual understanding.
+- [Fireship](https://youtu.be/LoLYw--s-5w?si=dAt5uzNLa0jE_y37): Did Google just kickstart the intelligence explosion?
+- [Toward Recursive Self-Improvement](https://z.ai/blog/glm-built-its-inference-infrastructure): How GLM Built Its Own Inference Infrastructure.
+- [GPT-Live-1](https://openai.com/index/introducing-gpt-live-1-in-the-api/): Now available in the API.
+- [Mistral €3B Series D](https://x.com/MistralAI/status/2097188835897586083?s=20): Announcing a €3B Series D, the largest equity round ever raised by a European tech company, just three years after launch.
+- [🚀 Meet Qwen3.8-Omni-Flash](https://qwen.ai/blog?id=qwen3.8-omni-flash): Qwen's first omni-modal model built around agentic capabilities.
+- [9Router](https://github.com/decolua/9router): Unlimited free AI coding. Connect Claude Code, Codex, Cursor, Cline, Copilot, and Antigravity.
+- [Gemini API Docs in AI Studio](https://aistudio.google.com/docs): Get docs right where you’re building.
+- [Introducing Gemini 3.8 Flash and 3.8 Flash Cyber](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/): Google's newest Gemini models deliver next-generation intelligence for agentic workflows and cybersecurity.
+- [Anthropic's Threat Intelligence Report](https://www.anthropic.com/threat-intelligence-report-september-2026): Detecting and countering misuse of AI.
+- [Data Agent in GhatGPT Work](https://openai.com/index/put-data-to-work/): Turn your company’s data into answers, interactive dashboards, and action, just by asking.
+- [MAI-Transcribe-2](https://x.com/MicrosoftAI/status/2095521860184363074?s=20): Microsoft's speech-to-text model to turn any audio into highly accurate text transcripts. [Playground](https://playground.microsoft.ai/).
+- [Inworld Realtime TTS-2](https://x.com/inworld_ai/status/2095186020677353488?s=20): The #1 model on [Artificial Analysis](https://x.com/ArtificialAnlys/status/2095308484967620788?s=20) and the world's fastest TTS.
+- [NVIDIA to Acquire Hugging Face](https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/): NVIDIA has agreed to acquire Hugging Face for $12,930,300,000.
+- [Introducing Muse Voice Transcribe](https://research.meta.ai/blog/introducing-muse-voice-transcribe): The first real-time audio perception model developed by Meta Superintelligence Labs.
+- [Gemini](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-agentic-video-in-gemini): Introducing agentic video understanding in the [Gemini API](https://ai.google.dev/gemini-api/docs/video-understanding#agentic-video-understanding).
+- [Introducing Atlas](https://x.com/theworldlabs/status/2094839756329041984?s=20): The world's first multimodal world model that generates image and video frames with pixel-perfect camera control and reconstructs them in 3D.
+- [Gemini App](https://x.com/Google/status/2098084519320383940?s=20): For Windows.
+- [Introducing SWE-2](https://x.com/cognition/status/2098069235733823965?s=20): Cognition's closest model yet to the frontier.
+
+## August 2026
+- [OpenAI Models](https://openai.com/index/our-decision-on-cursor-following-its-acquisition-by-spacex/): Won't be available in Cursor anymore after November 12, 2026.
+- [Anthropic Model Hardware Standard (MHS)](https://www.anthropic.com/news/model-hardware-standard-research-preview): A new standard for AI agents to safely operate physical equipment in scientific research and advanced manufacturing. 
+- [Introducing Hy4 preview](https://hy.tencent.ai/research/hy4-preview): Tencent AI's Open weights: 770B MoE, 49B active, 1M context. Built for real work: code, docs, and analysis, scientific research.
+- [Build web apps in Cursor](https://x.com/cursor_ai/status/2093077548649570777?s=20): Deploy on Vercel. 
+- [Introducing PhoneLLM](https://x.com/kwindla/status/2093014818647339026?s=20): An open model for voice agents. [Hugging Face](https://huggingface.co/pipecat-ai/phonellm-alpha-1).
+- [Meet Gemini Omni 1.1 Flash ⚡️](https://x.com/GoogleAI/status/2093008998987403303?s=20): Google's newest multimodal model for video generation and editing. 
+- [Nvidia](https://techcrunch.com/2026/08/26/nvidia-closes-in-on-hugging-face-acquisition/): Closes in on Hugging 🤗 Face acquisition.
+- [𝕏 Chat Agents](https://x.com/benjitaylor/status/2092761644451692955?s=20): Developers can now create agents that work directly within 𝕏 Chat.
+- [Introducing H3 Max](https://x.com/fal/status/2092710676431020376?s=20): A new post-trained video model by fal Research.
+- [Gemini 3.5 Transcribe](https://x.com/sundarpichai/status/2092659467284517088?s=20): Build apps that understand user speech / intent, even w/ multiple speakers.
+- [Isaac 0.5](https://x.com/perceptroninc/status/2092678357775442103?s=20): 36B dynamic MoE, open weight 🤗 embodied foundation model.
+- [Breeze TTS 2](https://x.com/BreezeBlueX/status/2092647083132273018?s=20): Now open-weight.
+- [Introducing GLM-5.3-Flash](https://z.ai/blog/glm-5.3-flash): Frontier Intelligence, Flash Cost.
+- [Headless Xcode](https://artemnovichkov.com/blog/headless-xcode-from-prompt-to-simulator-with-mcp): From Prompt to Simulator with MCP.
+- [All New Mac Mini](https://x.com/tim_cook/status/2092253780532486557?s=20): Features M6 and M5 Pro and delivers a massive leap in AI performance.
+- [DeepSeek-V4-Flash-Vision-Exp](https://x.com/deepseek_ai/status/2090730032574631962?s=20): Now live on the DeepSeek API Platform! 🚀.
+- [SpaceXAI's 1-hour Grok Bot Workshop](https://x.com/0xCodez/status/2090535455372595600?s=20): How to automate your life with Grok Bot in 10 Steps.  
+- [Slack Code is live](https://x.com/Benioff/status/2090240159115853956?s=20): Don’t code alone. Code with agents. 
+- [NVIDIA AVO](https://x.com/NVIDIAAI/status/2090786258981466231?s=20): NVIDIA's general-purpose coding agent just scored 100% on the ARC-AGI-3 interactive reasoning benchmark.
+- [Bring VS Code](https://terminal-code.com/): Inside your Terminal.
+- [Introducing fx](https://x.com/vercel_dev/status/2089828083415355806?s=20): A tiny, open, native [coding agent](https://fx.sh/) from Vercel Labs.
+- [Modly](https://modly3d.app/): Turn any image, any prompt into a 3D model.
+- [Ego Lite](https://lite.ego.app/): The Fastest browser for AI agents to run web automation.
+- [Cursor](https://x.com/cursor_ai/status/2088249881718919393?s=20): Officially joins SpaceX.
+- [DeepSeek Harness v0.1](https://x.com/deepseek_ai/status/2087887408440164663?s=20): Now available in [developer preview](https://deepseek.com/harness/en/).
+- [Launching DeepSeek-V4-Pro](https://x.com/deepseek_ai/status/2087864585504305397?s=20): Major Agent upgrades with strong production gains.
+- [Meet Grok Bot](https://x.ai/bot): AI teammates you can give real work to. Now in [beta](https://x.com/bot/status/2087224798078517251?s=20). 
+- [Introducing Grok 4.6](https://x.com/SpaceXAI/status/2087562800982077492?s=20).
+- [Introducing Gemini 3.7 Flash](https://x.com/GoogleAIStudio/status/2087949211564183730?s=20): A workhorse model for coding and agents.
+- [SL2T by Google DeepMind](): A breakthrough sign language-to-text model powering new features for Deaf and hard-of-hearing users on 
+Android.
+- [Delta from Zed](https://zed.dev/blog/introducing-delta): A multiplayer environment for coding with agents and reviewing what they build.
+- [Introducing NVIDIA Nemotron 3.5 Lightning⚡](https://x.com/NVIDIAAI/status/2087162151995629926?s=20): Download and use it in [LM STudio](https://lmstudio.ai/models/nvidia/nemotron-3.5-lightning).
+- [Introducing Muse Glimmer](https://x.com/AIatMeta/status/2086757844544811485?s=20): An open-weight 30B-parameter model optimized for local, always-on agent workflows.
+- [Spotify Xirp](https://x.com/SpotifyEng/status/2086795659651191106?s=20): A vendor-neutral agentic development environment.
+- [Announcing Imagine Image 2.0](https://x.com/grok/status/2085931542262526102?s=20): Next-generation image model with precision editing and crisp text rendering.
+- [MiniMax Code 2.0](https://x.com/MiniMaxAgent/status/2085679716976243045?s=20: Everyday conversations, office work, and long-running complex tasks.
+- [Meet Muse Code](https://developer.meta.com/ai/products/muse-code/): An agent for your most complex coding workstreams. Build, debug, and ship with Muse Code. Now in beta.
+- [Meta Muse Spark 1.2 and Muse Code](https://x.com/MetaforDevs/status/2085090691852664891?s=20).
+- [Text-to-Image](https://arena.ai/leaderboard/text-to-image): Arena rankings.
+- [Alpamayo 2 Super](https://x.com/JensenHuang/status/2084656303046332747?s=20): NVIDIA's frontier open reasoning model for autonomous vehicles.
+- [Liquid AI LFM2.5-2.6B](https://x.com/liquidai/status/2084640701669613906?s=20): An agentic model that runs entirely on-device.
+- [Qwen3.8-Max](https://qwen.ai/blog?id=qwen3.8): Sets a New bar for coding and cowork.
+
+## July 2026
+- [Cursor](https://x.com/cursor_ai/status/2082532273421955513?s=20): Now available on iPad.
+- [Introducing Gemini Robotics ER 2](https://x.com/OfficialLoganK/status/2082847444195553770?s=20): DeepMind's latest robotics embodied reasoning model based on Gemini.
+- [DeepSeek-V4-Flash](https://x.com/deepseek_ai/status/2083084415157022911?s=20): Official API is now live. 
+- [Hugging Face Speech-to-Speech](https://github.com/huggingface/speech-to-speech): Hugging Face just open sourced its complete real-time voice AI pipeline.
+- [Kimi K3](https://x.com/FireworksAI_HQ/status/2081877943530426636?s=20): Now available in Cursor.
+- [Kimi K3](https://x.com/lmstudio/status/2081778763822510155?s=20): Now live in LM Studio Bionic.
+- [Introducing Claude Opus 5](https://www.anthropic.com/news/claude-opus-5).
+- [Mage-VL 4B Tech Report](https://github.com/microsoft/Mage/blob/main/assets/mage_vl_tech_report.pdf).
+- [MetaVoice Mia & Leo](https://metavoice.io/blog/mia-and-leo): AI personalities for revenue calls.
+- [Introducing FLUX 3](https://x.com/bfl_ai/status/2080308988961554582?s=20): One multi-modal model for Image, Video, Audio and Action-Prediction. 
+- [Introducing Cursor Router](https://x.com/cursor_ai/status/2079993729532989500?s=20): Cursor's intelligent model router that selects the right model for the task at hand.
+- [Introducing Vocals on ElevenMusic](https://x.com/ElevenLabs/status/2079960975524913317?s=20): Generate original songs in your own voice or with a voice from our Vocal Library.
+- [NeuTTS-2E](https://x.com/neuphonicspeech/status/2079945803175444700?s=20): A new on-device model for controllable, emotionally expressive speech.
+- [BUZZ](https://x.com/jack/status/2079605800998146171?s=20): A new groupchat platform for teams of people and AI agents.
+- [Claude Code on Desktop](https://x.com/ClaudeDevs/status/2079674432038248611?s=20): Now works with the iOS simulator.
+- [Meet LM Studio Bionic](https://x.com/lmstudio/status/2077836987386429807?s=20)
+- [Kimi K3](https://x.com/Kimi_Moonshot/status/2077821890207547467?s=20)
+- [Introducing ACT-2 Preview](https://x.com/tonyzzhao/status/2077806003308179802?s=20)
+- [Inkling](https://thinkingmachines.ai/news/introducing-inkling/): Thenking Machine's Open-Weights Model.
+- [Introducing Claude for Teachers](https://claude.com/solutions/teachers): Free access to premium Claude capabilities for verified K-12 educators in the US, with a library of teaching skills.
+- [Introducing Cosmos 3 Edge](https://x.com/NVIDIAAI/status/2079236204743053592?s=20): NVIDIA's open frontier world model built to run on-device.
+- [Gemini 3.6 Flash](https://x.com/Google/status/2079589747366724030?s=20): 3 new Gemini models built to be faster, more token efficient, and reliable at scale.
+- [Agent Teams in Antigravity](https://x.com/antigravity/status/2076720528937611363?s=20)
+- [ChatGPT is available again on WhatsApp in the EEA](https://x.com/ChatGPTapp/status/2076654365121855835?s=20)
+- [Introducing Side Chats in Cursor](https://x.com/cursor_ai/status/2075686268113916023?s=20)
+- [GPT-5.6](https://openai.com/index/gpt-5-6/): Frontier intelligence that scales with your ambition. 
+- [Introducing GPT‑Live](https://openai.com/index/introducing-gpt-live/): A new generation of voice models for natural human-AI interaction, now powering ChatGPT Voice.
+- [Introducing Muse Spark 1.1](https://ai.meta.com/blog/introducing-muse-spark-meta-model-api/): The latest model from Meta Superintelligence Labs.
+- [Introducing Grok 4.5](https://x.ai/news/grok-4-5): SpaceXAI's smartest model built for coding, agentic tasks, and knowledge work.
+- [Introducing Muse Image and Muse Video](https://ai.meta.com/blog/introducing-muse-image-muse-video-msl/): The first image/video generation models from Meta Superintelligence Lab.
+- [xAI Voice Agent](https://x.ai/voice): Create your own voice agent
+in under 2 minutes.
+[Robostral Navigate](https://x.com/MistralAI/status/2074856309438980145?s=20): Mistral's first model for embodied navigation: an 8B robotics navigation model that guides robots to autonomously.
+- [Introducing Zcode](https://x.com/Zai_org/status/2072349453361557898?s=20): The official [development environment](https://zcode.z.ai/en) for GLM-5.2.
+
+## June 2026
+- [Introducing Claude Sonnet 5](https://www.anthropic.com/news/claude-sonnet-5)
+- [Introducing TabFM](https://research.google/blog/introducing-tabfm-a-zero-shot-foundation-model-for-tabular-data/?utm_source=twitter&utm_medium=social&utm_campaign=social_post&utm_content=gr-acct): A zero-shot foundation model for tabular data.
+- [Introducing Claude Science](https://claude.com/product/claude-science): Anthropic's new app designed with every stage of research in mind. 
+- [Introducing Nano Banana 2 Lite 🍌 and Gemini Omni Flash 🔮](https://x.com/OfficialLoganK/status/2071988351083921690?s=20)
+- [OpenClaw is now on iOS + Android ](https://x.com/openclaw/status/2071688039114342592?s=20): [iOS](https://apps.apple.com/us/app/openclaw-ai-that-does-things/id6780396132), [Android](https://play.google.com/store/apps/details?id=ai.openclaw.app)
+- [Cursor for iOS](https://x.com/cursor_ai/status/2071641103191998810?s=20).
+- [GPT-5.6 Sol Preview](https://openai.com/index/previewing-gpt-5-6-sol/): OpenAI's next-generation model
+- [Introducing Claude Tag](https://www.anthropic.com/news/introducing-claude-tag): A new way for teams to work with Claude.
+- [LFM2.5-230M](https://www.liquid.ai/blog/lfm2-5-230m): Built to Run Anywhere.
+- [Mistral OCR 4](https://x.com/MistralAI/status/2069420263825895917?s=20). Read the [Blog](https://mistral.ai/news/ocr-4/).
+- [GPT-5.5-Cyber](https://x.com/OpenAI/status/2069104283824640023?s=20): OpenAI's most capable cyber model, designed for advanced, authorized defensive work.
+- [Sakana Fugu](https://sakana.ai/fugu/): One Model to Command Them All.
+- [Introducing Claude Fable 5](https://x.com/claudeai/status/2064394146916229443?s=20): A Mythos-class model that we’ve made safe for general use.
+- [Introducing GLM 5.2](https://z.ai/blog/glm-5.2): [Frontier intelligence](https://docs.z.ai/guides/llm/glm-5.2) and open weights.
+- [Introducing Eve by Vercel](https://vercel.com/blog/introducing-eve): An agent framework. Like Next.js, for agents.
+- [Flue 1.0 Beta](https://flueframework.com/blog/flue-1-0-beta/): An open-source [agent framework](https://flueframework.com/).
+- [v0's New Design Mode](https://x.com/v0/status/2067244493498470736?s=20): An agent with the precision of a design tool.
+- [Codex OSS Mode](https://developers.openai.com/codex/config-advanced#oss-mode-local-providers): Use the Codex App, CLI and SDK with any open source model.
+- [Apple Intelligence](https://www.apple.com/newsroom/2026/06/apple-intelligence-brings-powerful-ai-capabilities-into-everyday-experiences/): New powerful AI capabilities into everyday experiences. 
+- [Siri AI](https://www.apple.com/newsroom/2026/06/apple-introduces-siri-ai-a-profoundly-more-capable-and-personal-assistant/): Apple introduces a profoundly more capable and personal AI assistant.
+- [Apple Foundation Models CLI](https://x.com/amos_gyamfi/status/2064533317878272367?s=20)
+- [Gemini 3.5 Live Translate](https://x.com/GoogleAIStudio/status/2064392392405307855?s=20)
+- [North Mini Code](https://x.com/cohere/status/2064378058329526556?s=20): Cohere's first open-source coding model.
+- [Meet Kimi Work](https://x.com/Kimi_Moonshot/status/2063990409903112344?s=20): A local AI agent on your desktop that does the work for you.
+- [Codex App](https://x.com/PaulSolt/status/2062643955154501761?s=20): Now has a built-in iOS simulator. 
+- [Ollama gemma4:12b](https://x.com/ollama/status/2062679473443725736?s=20)
+- [GPT-Rosalind](https://openai.com/index/introducing-new-capabilities-to-gpt-rosalind/): Introducing new capabilities.
+- [Miso TTS](https://x.com/AodenTeoMT/status/2062204362102100295?s=20): Emotive foundation models for voice. [misolabs.ai](https://www.misolabs.ai/).
+- [Microsoft's 7 New Models](https://microsoft.ai/news/microsoft-build-2026-mai-keynote-transcript/): MAI keynote transcript.
+- [OpenAI launched Sites into Codex](https://x.com/TheRohanVarma/status/2061872164442403139?s=20)
+- [OpenAI Frontier Models & Codex](https://openai.com/index/openai-frontier-models-and-codex-are-now-available-on-aws/): Now available on AWS.
+- [Cursor Composer 2.5](https://x.com/xai/status/2061510464325206163?s=20): Now available inside Grok Build (CLI).
+
+## May 2026
+- [NVIDIA Cosmos 3](https://developer.nvidia.com/blog/develop-physical-ai-reasoning-world-and-action-models-with-nvidia-cosmos-3/): A frontier model for Physical AI.
+- [Opus 4.8](https://www.anthropic.com/news/claude-opus-4-8)
+- [Andrej Karpathy Joins Anthropic](https://x.com/karpathy/status/2056753169888334312?s=20)
+- [Managed Antigravity Agents](https://ai.google.dev/gemini-api/docs/managed-agents-quickstart): In the Gemini API.
+- [Introducing Gemini Omni](https://x.com/OfficialLoganK/status/2056787874260164628?s=20)
+- [Introducing Antigravity 2.0](https://x.com/Google/status/2056789045548896516?s=20)
+- [Cursor Composer 2.5](https://x.com/cursor_ai/status/2056415413077233983?s=20).
+- [Qwen3.7-Max-Preview & Qwen3.7-Plus-Preview](https://x.com/Alibaba_Qwen/status/2056403591464984753?s=20).
+- [Ollama Now Supports Codex App](https://x.com/ollama/status/2055100589428658462?s=20): Select an open Ollama model to use with the Codex App.
+- [Grok Build Beta](https://x.ai/cli): An agentic CLI for coding.
+- [Codex in ChatGPT Mobile](https://openai.com/index/work-with-codex-from-anywhere/): Codex is coming to your phone.
+- [GitHub Copilot App](https://github.blog/changelog/2026-05-14-github-copilot-app-is-now-available-in-technical-preview/): Now available in technical preview.
+- [Thinking Machines Interaction Models](https://thinkingmachines.ai/blog/interaction-models/): A Scalable Approach to Human-AI Collaboration.
+- [Introducing Perceptron Mk1](https://www.perceptron.inc/blog/introducing-perceptron-mk1): Frontier video and embodied reasoning model.
+- [Introducing Googlebook](https://blog.google/products-and-platforms/platforms/android/meet-googlebook/): Gemini-powered laptop.
+- [GPT-Realtime-2, Translate & Transcribe](https://x.com/OpenAI/status/2052438196454379986?s=20): Advancing voice intelligence with [new models in the API](https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/).
+- [Grok Voice](https://x.ai/news/grok-custom-voices): Custom Voices and Voice Library.[Docs](https://docs.x.ai/developers/model-capabilities/audio/custom-voices?campaign=custom-voices-blog), [blog](https://x.ai/news/grok-custom-voices).
+- [Code with Claude](https://claude.com/code-with-claude): Anthropic’s developer conference.
+- [VS Code](https://code.visualstudio.com/updates/v1_119): Agentic browser and OpenTelemetry tracing.
+- [Bitrig](https://x.com/BitrigApp/status/2052106307465875547?s=20): Now works with Xcode projects from GitHub.
+- [Grok Imagine](https://x.com/xai/status/2052193877675983031?s=20): Quality Mode API.
+- [Deepgram Flux Multilingual](https://deepgram.com/learn/introducing-flux-multilingual): Conversational Speech Model for Global Voice Agents.
+- [MoshiRAG](https://kyutai.org/blog/2026-04-30-moshi-rag): Asynchronous Knowledge Retrieval for Full-Duplex Speech Language Models.
+
+
+## April 2026
+- [Vision Agents v0.5.5](https://x.com/visionagents_ai/status/2048919179328422118?s=20): Open-Source framework for building voice/video/vision AI apps. 
+- [Introducing GPT‑5.5](https://openai.com/index/introducing-gpt-5-5/): A new class of intelligence for real work.
+- [Grok Voice Think Fast 1.0](https://x.ai/news/grok-voice-think-fast-1): Realtimew voice agent API like Gemini Live.
+- [Introducing DeepSeek v4](https://x.com/deepseek_ai/status/2047516922263285776?s=20) family of models.
+- [Introducing Soniox Text-to-Speech](https://soniox.com/blog/soniox-text-to-speech):The voice platform for every language.
+- [HyperFrames](https://x.com/HeyGen/status/2048882211022311614?s=20): Plugin for Codex.
+- [Voice-Controlled Apps](https://x.com/OpenAIDevs/status/2048871260512473385?s=20): Using gpt-realtime-1.5.
+- [Meta Sapiens 2](https://openreview.net/pdf?id=IVAlYCqdvW): High-resolution transformers for humancentric vision, focused on generalization.
+- [Bitrig](https://x.com/BitrigApp/status/2046983145656881644?s=20): You can now build iOS, macOS, and watchOS apps with AI.
+- [Introducing ChatGPT Images 2.0](https://openai.com/index/introducing-chatgpt-images-2-0/): A new era of image generation.
+- [Vision Banana](https://vision-banana.github.io/): [Image Generators](https://arxiv.org/abs/2604.20329) are Generalist Vision Learners
+- [Qwen3.6-27B](https://qwen.ai/blog?id=qwen3.6-27b): Coding in a 27B Dense Model. [GitHub](https://github.com/QwenLM/Qwen3.6), [Hugging Face](https://huggingface.co/Qwen/Qwen3.6-27B)
+- [Kimi K2.6](https://www.kimi.com/blog/kimi-k2-6): Advancing Open-Source Coding.
+- [Open Agents](https://open-agents.dev/): Spawn coding agents that run infinitely in the cloud.
+- [Introducing Claude Design by Anthropic Labs](https://x.com/claudeai/status/2045156267690213649?s=20): Make prototypes, slides, and one-pagers by talking to Claude.
+- [Introducing Claude Opus 4.7](https://www.anthropic.com/news/claude-opus-4-7).
+- [Introducing GPT‑Rosalind](https://openai.com/index/introducing-gpt-rosalind/): For life sciences research.
+- [Gemini 3.1 Flash TTS](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-tts/): Google's next generation of expressive AI speech
+- [Meet Qwen3.6-35B-A3B](https://qwen.ai/blog?id=qwen3.6-35b-a3b): Now Open-Source. [X post](https://x.com/Alibaba_Qwen/status/2044768734234243427?s=20) 🚀🚀.
+- [Introducing Gemini Robotics ER 1.6](https://deepmind.google/blog/gemini-robotics-er-1-6/): New SOTA robotics model 🤖 which excels at visual and spacial reasoning.
+- [Moss-TTS](https://mosi.cn/models/moss-tts): TTS foundation model for real-world voice apps.
+- [Gradium Phonon](https://x.com/GradiumAI/status/2039341282598813954?s=20): On-device [text-to-speech](https://gradium.ai/on-device-tts).
+- [Meta Muse Spark](https://x.com/AIatMeta/status/2041910285653737975?s=20): Meta's personal [superintelligence model](https://ai.meta.com/blog/introducing-muse-spark-msl/).
+- [Gemma 4](https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/)
+- [Cursor 3](https://x.com/cursor_ai/status/2039768512894505086?s=20)
+- [Bitrig](https://x.com/BitrigApp/status/2039778176235130939?s=20): You can now build Mac apps with AI
+- [MAI-Transcribe-1](https://microsoft.ai/news/state-of-the-art-speech-recognition-with-mai-transcribe-1/?form=M301FW&OCID=CGE_osocial_Copilot_Free_868j3yepz): State of the Art Speech Recognition.
+- [Qwen3.6-Plus](https://qwen.ai/blog?id=qwen3.6)
+
+## March 2026
+- [Gemini 3.1 Flash Live](https://x.com/OfficialLoganK/status/2037187750005240307?s=20): New realtime model to build voice and vision agents.
+- [Voxtral TTS](https://x.com/MistralAI/status/2037183026539483288?s=20): New text-to-speech model from Mistral.
+- [OpenPencil](https://op.zseven.tech/): Open-source AI-Native design tool. Design as code. 
+- [Blitz](https://x.com/tom_doerr/status/2035515931682586649?s=20): A free, open-source macOS app that gives AI agents full control over iOS and macOS development. [blitz.dev](https://blitz.dev/).
+- [The new Stitch by Google](https://stitch.withgoogle.com/): Transform ideas into UI designs for mobile and web apps.
+- [Composer 2](https://x.com/cursor_ai/status/2034668943676244133?s=20): Now available in Cursor.
+- [Firebase](https://x.com/antigravity/status/2034660592204828687?s=20): In Google AI Studio.
+- [Introducing GPT‑5.4 mini and nano](https://openai.com/index/introducing-gpt-5-4-mini-and-nano/)
+- [Mistral Moderation 2](https://x.com/MistralDevs/status/2033950300902502749?s=20)
+- [Grok Voice](https://x.com/xai/status/2033617157884678507?s=20): API release.
+- [Stich SDK by Google](https://x.com/_davideast/status/2033675516964663318?s=20)
+- [Ollama](https://x.com/ollama/status/2033339501872116169?s=20): Now an official provider for OpenClaw. 
+- [Unsloth Studio](https://x.com/UnslothAI/status/2033926272481718523?s=20): Open-source web UI to train and run LLMs.
+- [Codex App](https://x.com/OpenAIDevs/status/2032222631538409728?s=20): Personalize with themes.
+- [OpenAI Video API](https://x.com/OpenAIDevs/status/2032142448970121468?s=20): Powered by Sora 2.
+- [TADA](https://www.hume.ai/blog/opensource-tada): Hume AI's first open source TTS model.
+- [NVIDIA Nemotron 3 Super](https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/)
+- [Fish Audio S2](https://x.com/FishAudio/status/2031411140820152560?s=20): Expressive TTS with controllable emotion.
+- [ChatGPT](https://x.com/gdb/status/2031535461483614628?s=20): For interactive learning of math and science.
+- [Introducing Expo Agent](https://x.com/Baconbrix/status/2031402262808125675?s=20)
+- [Gemini powered Docs, Sheets, Slides](https://x.com/OfficialLoganK/status/2031374503599567113?s=20)
+- [Claude Code Marketplace](https://claude.com/platform/marketplace)
+- [Introducing GPT‑5.4](https://openai.com/index/introducing-gpt-5-4/)
+- [Gemini 3.1 Flash Lite](https://github.com/GetStream/Vision-Agents/tree/main/plugins/elevenlabs)
+- [Assembly AI Universal-3 Pro Streaming](https://www.assemblyai.com/universal-3-pro-streaming): Real-time transcription model for voice agents.
+- [Qwen 3.5](https://x.com/ollama/status/2028510184788926567?s=20): Small model series
+- [Codex Windows App](https://x.com/OpenAIDevs/status/2029252453246595301?s=20): The OpenAI Codex app is now on Windows.
+- [AssemblyAI Universal-3-Pro](https://x.com/AssemblyAI/status/2028872510599836141?s=20): Real-time transcription for agents.
+- [SwiftUI Agent Skills](https://github.com/twostraws/swiftui-agent-skill)
+
+## February 2026
+- [Tiny Aya by Cohere Labs](https://cohere.com/blog/cohere-labs-tiny-aya): Making Multilingual AI Accessible.
+- [Foundation Models SDK for Python](https://apple.github.io/python-apple-fm-sdk/)
+- [Nano Banana 2](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/)
+- [gpt-realtime-1.5](https://x.com/OpenAIDevs/status/2026014334787461508?s=20): OpenAI's new speech-to-speech model for building voice workflows.
+- [Vercel Chat SDK](https://vercel.com/changelog/chat-sdk): One codebase, every chat platform.
+- [Gemini 3.1 Pro](https://x.com/GoogleDeepMind/status/2024516464892334129?s=20)
+- [Lyria 3](https://blog.google/innovation-and-ai/products/gemini-app/lyria-3/?utm_source=tw&utm_medium=social&utm_campaign=og&utm_content=&utm_term=): Custom music generation with Gemini
+- [Sonnet 4.6](https://www.anthropic.com/news/claude-sonnet-4-6)
+- [OpenClaw Joins OpenAI](https://x.com/sama/status/2023150230905159801?s=20)
+- [Read](https://x.com/mattshumer_/status/2021256989876109403?s=20): Something big is happening.
+- [Qwen 3.5](https://x.com/Alibaba_Qwen/status/2023331062433153103?s=20): Open-weight model in the Qwen3.5 series.
+- [Cursor Composer 1.5](https://cursor.com/blog/composer-1-5)
+- [Agent Skills Launch Party](https://luma.com/5tttu03l): 17th Feb, 2026 by Anthropic.
+- [Introducing GPT-5.3-Codex](https://openai.com/index/introducing-gpt-5-3-codex/)
+- [Introducing Claude Opus 4.6](https://x.com/claudeai/status/2019467372609040752?s=20)
+- [OpenAI Frontier](https://openai.com/index/introducing-openai-frontier/): A platform that helps enterprises build, deploy, and manage AI coworkers that can do real work.
+- [OpenAI Codex macOS app](https://openai.com/index/introducing-the-codex-app/): Quick [start](https://openai.com/codex/)
+- [Codex in Xcode 26.3](https://x.com/OpenAIDevs/status/2018796432443244897?s=20)
+- [Claude Agent SDK in Xcode 26.3](https://www.anthropic.com/news/apple-xcode-claude-agent-sdk): Get the full power of Claude Code directly in Xcode.
+- [Agentic Coding in Xcode](https://developer.apple.com/xcode/?cid=ADC-DM-c00377-M00827)
+- [Voxtral Transcribe 2](https://mistral.ai/news/voxtral-transcribe-2): Mistral Speech-to-Text models with state-of-the-art transcription quality & diarization.
+- [Anthropic Cowork](https://x.com/claudeai/status/2021336313979625910?s=20): For Windows.
+- [Cursor Plugins](https://cursor.com/marketplace): Extend the agent with plugins.
+
+## January 2026
+- [Project Genie](https://blog.google/innovation-and-ai/models-and-research/google-deepmind/project-genie/): Create, edit, and explore virtual worlds.
+- [Qwen3-ASR](https://x.com/Alibaba_Qwen/status/2016900512478875991?s=20): Now open-source.
+- [Grok Imagine API](https://x.ai/news/grok-imagine-api): State-of-the-art video generation.
+- [Kimi Code](https://www.kimi.com/code): Kimi CLI Coding.
+- [Kimi K2.5](https://x.com/Kimi_Moonshot/status/2016021783833673897?s=20): Aesthetic Coding x Agent Swarm.
+- [NVIDIA PersonaPlex](https://research.nvidia.com/labs/adlr/personaplex/): The most Natural speech-to-speech conversational AI.
+- [Introducing Agentic Vision in Gemini 3 Flash](https://blog.google/innovation-and-ai/technology/developers-tools/agentic-vision-gemini-3-flash/?linkId=43682412)
+- [Ollama Launch](https://ollama.com/blog/launch): A new Ollama command that sets up and runs your favorite coding tools like Claude Code, OpenCode, and Codex.
+- [Clawdbot](https://clawd.bot/): The AI that does everything.
+- [Ollama Image Generation:](https://ollama.com/blog/image-generation): Generate images on macOS & Windows.
+- [Ollama + Claude Code](https://ollama.com/blog/claude): Run Claude Code locally with open-source models.
+- [Ollama + OpenAI Codex](https://ollama.com/blog/codex): Run Codex locally with open-source models.
+- [RalphTUI](https://ralph-tui.com/): An AI Agent Loop Orchestrator.
+- [Chroma 1.0](https://x.com/flashlabsdotai/status/2013993446047158550?s=20): Open-source real-time speech-to-speech model. [Quick start](https://cookbook.sglang.io/docs/autoregressive/FlashLabs/Chroma1.0).
+- [GLM-4.7-Flash](https://x.com/Zai_org/status/2013261304060866758?s=20): Local coding and agentic assistant.
+- [Heartmula](https://github.com/HeartMuLa/heartlib): Local and open-source AI music generator. [Tutorial](https://youtu.be/54YB-hjZDR4?si=9Kce4lVWq4eBk3mf). Read the research [paper](https://arxiv.org/pdf/2601.10547). 
+- [Blackbox CLI](https://x.com/blackboxai/status/2012386609845727437?s=20): Run Claude Code, Codex, Gemini CLI, + others in a single CLI.
+- [ChatGPT Go](https://openai.com/index/introducing-chatgpt-go/): Low-cost ChatGPT subscription.
+- [TranslateGemma](https://blog.google/innovation-and-ai/technology/developers-tools/translategemma/): A new suite of open translation models.
+- [openresponses.org](https://www.openresponses.org/): An open-source spec for building multi-provider LLM interfaces. [X post](https://x.com/OpenAIDevs/status/2011862984595795974?s=20).
+- [GPT-5.2 Codex in OpenAI API](https://platform.openai.com/docs/models/gpt-5.2-codex): In [GitHub Copilot](https://github.blog/changelog/2026-01-14-gpt-5-2-codex-is-now-generally-available-in-github-copilot/), [Cursor](https://x.com/cursor_ai/status/2011500027945033904?s=20), [Warp](https://x.com/warpdotdev/status/2011506197279732023?s=20).
+- [The FreeMoCap project](https://github.com/freemocap/freemocap): [X post](https://x.com/freemocap/status/2010845786007875659?s=20). A free [motion capture](https://freemocap.org/) for everyone.
+- [Anthropic Cowork](https://x.com/claudeai/status/2010805682434666759?s=20): Claude Code for non-technical tasks.
+- [Kyutai Pocket TTS](https://x.com/kyutai_labs/status/2011047335892303875?s=20): A high quality [TTS](https://kyutai.org/blog/2026-01-13-pocket-tts) that gives your CPU a voice.
+- [Advancing Claude](https://www.anthropic.com/news/healthcare-life-sciences): Healthcare and the life sciences.
+- [UCP](https://developers.google.com/merchant/ucp): Universal Commerce Protocol on Google.
+- [NVIDIA Alpamayo](https://www.nvidia.com/en-us/solutions/autonomous-vehicles/alpamayo/): Reason-driven AI model for autonomous vehicles.
+- [LTX-2 Model](https://ltx.io/model): Best open-source multimodal AI video generation.
+- [ChatGPT Health](https://openai.com/index/introducing-chatgpt-health/)
+- [NVIDIA New Open Models](https://blogs.nvidia.com/blog/open-models-data-tools-accelerate-ai/)
+- [G0 Plus VLA](https://x.com/GalaxeaDynamics/status/2007665494841799124?s=20): Pick up anything AI model.
+- [FlowDeck](https://flowdeck.studio/): Build and ship SwiftUI apps without leaving Cursor.
+- [skillseekersweb.com/](https://skillseekersweb.com/): Automatically convert documentation websites, GitHub repositories, and PDF files into production-ready skills for any LLM platform—Claude, Gemini, OpenAI
+
+
+## December 2025
+- [Manus joins Meta](https://manus.im/blog/manus-joins-meta-for-next-era-of-innovation)
+- [Minimax 2.1](https://www.minimax.io/news/minimax-m21): Real-world agentic coding
+- [GLM-4.7](https://z.ai/blog/glm-4.7): Advanced AI coding
+- [Grok Voice Agent API](https://x.com/xai/status/2001385958147752255?s=20): Realtime [Speech-to-Speech](https://x.ai/news/grok-voice-agent-api)
+- [Gemini 3 Flash](https://blog.google/products/gemini/gemini-3-flash/)
+- [Introducing GPT-5.2-Codex](https://openai.com/index/introducing-gpt-5-2-codex/)
+- [Qwen Image Layered](https://qwen.ai/blog?id=qwen-image-layered)
+- [Molmo 2](https://allenai.org/blog/molmo2): Video understanding AI model
+- [gpt-image-1.5](https://openai.com/index/new-chatgpt-images-is-here/)
+- [Zoom Federated AI](https://www.zoom.com/en/blog/humanitys-last-exam-zoom-ai-breakthrough/)
+- [SAM Audio](https://ai.meta.com/blog/sam-audio/): Multimodal Model for Audio Separation
+- [Qwen Code v0.5.0](https://x.com/Alibaba_Qwen/status/2000556828690624685?s=20)
+- [Google Code Wiki](https://developers.googleblog.com/en/introducing-code-wiki-accelerating-your-code-understanding/): Auto-generate Architectural diagrams for code
+- [Nemotron 3 Family of Open Models](https://nvidianews.nvidia.com/news/nvidia-debuts-nemotron-3-family-of-open-models)
+- [Gemini Interactions API](https://blog.google/technology/developers/interactions-api/)
+- [Build iPhone apps on iPhone](https://www.bitrig.com/)
+- [GPT-5.2](https://openai.com/index/introducing-gpt-5-2/), [X post](https://x.com/sama/status/1999185784012947900?s=20)
+- [Gemini Text-to-Speech models](https://blog.google/technology/developers/gemini-2-5-text-to-speech/)
+- [Visual editor for Cursor Browser](https://cursor.com/blog/browser-visual-editor), [X post](https://x.com/cursor_ai/status/1999147953609736464?s=20)
+- [Agentic AI Foundation](https://openai.com/index/agentic-ai-foundation/): Anthropic + OpenAI
+- [Devstral 2](https://mistral.ai/news/devstral-2-vibe-cli) and Mistral Vibe CLI
+- [DeepSeek-V3.2](https://x.com/deepseek_ai/status/1995452641430651132?s=20)
+- [Mistral 3](https://mistral.ai/news/mistral-3)
+- [Qwen3-TTS](https://qwen.ai/blog?id=qwen3-tts-1128)
+- [VoxCPM Text-to-Speech](https://x.com/OpenBMB/status/1998377261859582304?s=20)
+
+## November 2025
+- [Claude 4.5 Opus](https://www.anthropic.com/news/claude-opus-4-5): World's best coding model
+- [Gemini 3](https://blog.google/products/gemini/gemini-3-collection/)
+- [Google Antigravity](https://antigravity.google/blog/introducing-google-antigravity): AI-Assisted IDE
+- [Grok 4.1](https://x.ai/news/grok-4-1)
+- [Meta Sam 3](https://ai.meta.com/sam3/): Segment Anything AI Model
+- [GPT-5.1](https://openai.com/index/gpt-5-1/): A smarter, more conversational ChatGPT
+- [Kimi K2 Thinking](https://moonshotai.github.io/Kimi-K2/thinking.html)
+- [Gemini Built-In RAG](https://ai.google.dev/gemini-api/docs/file-search): File Search in the API
+- [ElevenLabs Scribe v2 Realtime](https://x.com/elevenlabsio/status/1988282248445976987?s=20): Speech-to-Text
+- [Vision Agents](https://visionagents.ai/): Build vision/voice/video AI apps in Python
+- [Claude Developer Platform (API): Structured outputs](https://x.com/claudeai/status/1989410368192668037?s=20)
+- [Anthropic is building its own AI infrastructure](https://x.com/AnthropicAI/status/1988624013849935995?s=20)
+
+## October 2025
+- [Cursor 2.0](https://cursor.com/blog/2-0): Redesigned Agentic UI
+- [MiniMax M2](https://www.minimax.io/news/minimax-m2): For Efficient Agentic Coding
+- [Neo](https://www.1x.tech/): Humanoid Robot
+- [ChatGPT Atlas AI Browser](https://openai.com/index/introducing-chatgpt-atlas/)
+- [Gemini Vibe Coding in Google AI Studio](https://aistudio.google.com/vibe-code)
+- [Claude Haiku 4.5](https://www.anthropic.com/news/claude-haiku-4-5)
+- [Qwen3-VL in Ollama Cloud](https://ollama.com/blog/qwen3-vl)
+- [Gemini 2.5 Computer Use model](https://blog.google/technology/google-deepmind/gemini-computer-use-model/)
+- [OpenAI Agent Builder](https://platform.openai.com/agent-builder)
+- [Apps in ChatGPT](https://openai.com/index/introducing-apps-in-chatgpt/)
+- [Apps SDK in ChatGPT](https://openai.com/index/introducing-apps-in-chatgpt/)
+- [Moondream 3 Preview on fal](https://x.com/fal/status/1976682702167228919)
+- [Grok Imagine](https://x.com/elonmusk/status/1975635595360956916)
+- [GPT-5 Pro in the API](https://x.com/OpenAIDevs/status/1975263724551479572)
+- [OpenAI DevDay 2025](https://x.com/edwinarbus/status/1975265332773466173)
+- [Claude Agent SDK](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk)
+- [ElevenLabs Agent Workflow](https://x.com/elevenlabsio/status/1975191207149269214)
+- [OpenAI Sora 2](https://x.com/OpenAI/status/1973075422058623274)
+
+## September 2025
+- [Claude Agents SDK](https://platform.claude.com/docs/en/agent-sdk/overview)
+- [Claude Sonnet 4.5](https://x.com/alexalbert__/status/1972707077182394744)
+- OpenAI + Stripe [Agentic Commerce Protocol](https://x.com/OpenAI/status/1972708279043367238)
+- [ChatGPT Parental Control](https://x.com/OpenAI/status/1972604360204210600)
+- [Gemini Robotics-ER 1.5](https://x.com/googleaidevs/status/1971243798375120982), [Blog](https://developers.googleblog.com/en/building-the-next-generation-of-physical-agents-with-gemini-robotics-er-15/), [Research Paper](https://storage.googleapis.com/deepmind-media/gemini-robotics/Gemini-Robotics-1-5-Tech-Report.pdf)
+- [GitHub Copilot CLI](https://x.com/github/status/1971295695853306059)
+- [Grok 4 Vision](https://x.com/elonmusk/status/1971472472718655974)
+- [OpenAI function calling update ](https://x.com/OpenAIDevs/status/1971618905941856495)
+- [Subagents in Claude Code](https://x.com/claudeai/status/1971666134492696749)
+- [ChatGPT Pulse](https://x.com/OpenAI/status/1971259652684878019)
+- [Kimi Ok Computer](https://x.com/Kimi_Moonshot/status/1971078467560276160): Agent mode for Kimi Chat
+- [Mooondream 3 Preview](https://moondream.ai/blog/moondream-3-preview)
+- [Meta Code World Model (CWM)](https://x.com/AIatMeta/status/1970963571753222319)
+- [Qwen3-VL](https://x.com/Ali_TongyiLab/status/1970665194390220864)
+- [Qwen3-TTS API](https://modelstudio.console.alibabacloud.com/?tab=doc#/doc/?type=model&url=2879134): [X post](https://x.com/Ali_TongyiLab/status/1970160304748437933)
+- [Qwen3-Omni](https://github.com/QwenLM/Qwen3-Omni): Text, image, audio & video model. [X post](https://x.com/Alibaba_Qwen/status/1970181599133344172)
+- [Ollama Cloud Models](https://ollama.com/blog/cloud-models): Run larger models locally with fast, datacenter-grade hardware
+- [DeepSeek-V3.1-Terminus](https://x.com/deepseek_ai/status/1970117808035074215)
+- [OpenAI & NVIDIA partnership](https://x.com/gdb/status/1970173243350008201)
+- [ElevenLabs Studio 3.0](https://x.com/elevenlabsio/status/1968344592740434188)
+- [Google GenKit Go 1.0](https://developers.googleblog.com/en/announcing-genkit-go-10-and-enhanced-ai-assisted-development)
+- [Stitch by Google](https://x.com/stitchbygoogle/status/1968374355890684179): New features
+- [Meta Ray-Ban](https://www.meta.com/en-gb/blog/meta-ray-ban-display-ai-glasses-connect-2025/)
+- [Gemini in Chrome](https://blog.google/products/chrome/new-ai-features-for-chrome)
+- [GPT-5-Codex](https://x.com/OpenAI/status/1967636903165038708), [Blog post](https://openai.com/index/introducing-upgrades-to-codex/): A version of GPT-5 further optimized for agentic coding in Codex
+- [GPT-5 now built-in in Xcode 26](https://x.com/OpenAIDevs/status/1967704919487729753)
+- [AgentScope](https://github.com/agentscope-ai/agentscope): Agent-oriented programming for building LLM apps
+- [sosumi.ai](https://sosumi.ai/): Making Apple docs AI-readable
+- [Kimi K2-0905 update](https://x.com/Kimi_Moonshot/status/1963802687230947698)
+- Google on-device AI: [EmbeddingGemma](https://developers.googleblog.com/en/introducing-embeddinggemma/)
+- [Qwen3-Max-Preview](https://x.com/Alibaba_Qwen/status/1963991502440562976)
+
+## August 2025
+
+- [Claude Sonnet 4 in Xcode 26 Beta 7](https://x.com/claudeai/status/1961122752577908788)
+- [GPT Realtime](https://openai.com/index/introducing-gpt-realtime/)
+- [Google vids.new](https://vids.new/)
+- Gemini 2.5 Flash Image Generation: [Blog](https://blog.google/products/gemini/updated-image-editing-model/), [X](https://x.com/GoogleDeepMind/status/1960341909555011867)
+- [Claude for Chrome](https://www.anthropic.com/news/claude-for-chrome)
+- [VibeVoice](https://microsoft.github.io/VibeVoice/)
+- [Agents.md](https://agents.md/)
+- [GPT 5](https://openai.com/gpt-5/)
+- [Cursor CLI](https://cursor.com/cli)
+- [Codex CLI in Cursor & VS Code](https://x.com/OpenAIDevs/status/1960809816039023029)
+- [Grok Code Fast 1](https://forum.cursor.com/t/grok-code-out-now-free-week/132063) in Cursor & [kilocode.ai](https://blog.kilocode.ai/p/grok-code-fast-get-this-frontier-ai-model-free)
+- [Open models by OpenAI](https://openai.com/open-models/)
+- [GPT-OSS Playground](https://www.gpt-oss.com/)
+- [Claude Opus 4.1](https://www.anthropic.com/news/claude-opus-4-1)
+- [v0.app](https://v0.app/), [X post](https://x.com/v0/status/1954942203471831448)
+- [ElevenLabs Music](https://elevenlabs.io/music)
+- [Genie 3](https://deepmind.google/discover/blog/genie-3-a-new-frontier-for-world-models/), [X post](https://x.com/GoogleDeepMind/status/1952732150928724043)
+- [Gemini Storybook](https://gemini.google/overview/storybook/)
+- [Qwen Image](https://x.com/Alibaba_Qwen/status/1952398250121756992), [Blog](https://qwenlm.github.io/blog/qwen-image/)
+- [Qwen Image Edit](https://x.com/Alibaba_Qwen/status/1957500569029079083)
+- [Gemma 3 270M](https://developers.googleblog.com/en/introducing-gemma-3-270m/)
+- [DINOv3](https://ai.meta.com/dinov3/)
+- [Swift Agent](https://github.com/SwiftedMind/SwiftAgent): Swift SDK for building AI agents
+- [ElevenLabs Next.js Starter Kit](https://github.com/elevenlabs/elevenlabs-nextjs-starter), [Next.js Playground](https://elevenlabs-nextjs.vercel.app/)
+- [Eleven v3](https://elevenlabs.io/v3)
+- [ElevenLabs Video-to-Music](https://elevenlabs.io/studio/video-to-music), [X post](https://x.com/elevenlabsio/status/1956406489356333225)
+- [DeepSeek V3.1](https://huggingface.co/deepseek-ai/DeepSeek-V3.1)
+- [Qoder: Agentic coding platform](https://qoder.com/)
+- [Fireplexity](https://github.com/firecrawl/fireplexity)
+- [Cartesia Line SDK](https://x.com/cartesia_ai/status/1957862421667664216)
+
+## July 2025
+
+- [Google Opal](https://opal.withgoogle.com/landing/): Build mini AI apps
+- [ChatGPT study mode](https://openai.com/index/chatgpt-study-mode/)
+- [GLM-4.5 model](https://z.ai/blog/glm-4.5): Reasoning, Coding, and Agentic model
+- [Ollama for Mac](https://x.com/ollama/status/1950670503376761133)
+- [Introducing GhatGPT Agent](https://openai.com/index/introducing-chatgpt-agent/)
+- [Qwen3 Coder](https://github.com/QwenLM/Qwen3-Coder)
+- [Kiro: Amazon's Agentic IDE](https://x.com/ajassy/status/1944785963663966633), [Kiro.dev](https://kiro.dev/)
+- [Gemini Embedding in the API](https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/)
+- [Kimi K2](https://moonshotai.github.io/Kimi-K2/)
+- [Grok 4](https://x.com/xai/status/1943158495588815072)
+- [Perplexity Comet](https://comet.perplexity.ai/)
+- [Grok 4 in Zed IDE](https://x.com/zeddotdev/status/1945606082551763410)
+- [Mistral Voxtral: Speech Recognition models](https://x.com/MistralAI/status/1945130173751288311)
+
+## June 2025
+
+- [Gemma 3n](https://deepmind.google/models/gemma/gemma-3n/)
+- [Imagen 4](https://developers.googleblog.com/en/imagen-4-now-available-in-the-gemini-api-and-google-ai-studio/)
+- [Andrej Karpathy: Software Is Changing](https://youtu.be/LCEmiRjPEtQ?si=h6v4WsI9wbYAAurd)
+- [Warp 2.0 Agentic Dev](https://www.warp.dev/blog/reimagining-coding-agentic-development-environment)
+- [Gemini CLI](https://blog.google/technology/developers/introducing-gemini-cli-open-source-ai-agent/), [Repo](https://github.com/google-gemini/gemini-cli)
+- [WWDC25: Use ChatGPT in Xcode 26](https://www.apple.com/newsroom/2025/06/apple-supercharges-its-tools-and-technologies-for-developers/)
+- [WWCD25: Apple Foundation Models Framework](https://developer.apple.com/videos/play/wwdc2025/286/)
+- [OpenAI o3 Pro](https://platform.openai.com/docs/models/o3-pro)
+- [WWDC25: MLX for Apple Silicon](https://developer.apple.com/videos/play/wwdc2025/315/)
+
+
+## May 2025
+
+- [Stich by Google: Web/mobile UI vibe coding](https://stitch.withgoogle.com/)
+- [Anthropic Code with Claude live stream](https://x.com/AnthropicAI/status/1925239440420831516)
+- [Jony/Sam AI-Powered Computers](https://x.com/sama/status/1925242282523103408)
+- [Jules Agentic Coding](https://jules.google/)
+- [GitHub Copilot is now open-source](https://code.visualstudio.com/blogs/2025/05/19/openSourceAIEditor)
+- [OpenAI Codex](https://openai.com/index/introducing-codex/)
+- [Anthropic API: Web Search Tool](https://www.anthropic.com/news/web-search-api)
+- [Gemini-powered coding agent](https://deepmind.google/discover/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/)
+- [Windsurf SWE-1 model](https://windsurf.com/blog/windsurf-wave-9-swe-1)
+- [Elevenlabs Soundboard](https://elevenlabs.io/blog/how-we-created-a-soundboard-using-elevenlabs-sfx-api)
+  
+
+## April 2025
+
+- [Introducing Qwen3](https://qwenlm.github.io/blog/qwen3/)
+- [Llama API](https://llama.developer.meta.com/docs/overview/)
+- [OpenAI o3 and o4-mini](https://openai.com/index/introducing-o3-and-o4-mini/)
+- [OpenAI Codex CLI](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
+- [Introducing GPT-4.1 in the API](https://openai.com/index/gpt-4-1/)
+- [GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
+- [AI in Enterprise: OpenAI](https://cdn.openai.com/business-guides-and-resources/ai-in-the-enterprise.pdf)
+- [OpenAI: A Practical Guide to Building Agents](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
+- [Firebase Studio](https://firebase.studio/)
+- [Identifying and Scaling AI Use Cases](https://cdn.openai.com/business-guides-and-resources/identifying-and-scaling-ai-use-cases.pdf)
+- [Google Agent Development Kit](https://google.github.io/adk-docs/)
+- [Gemini Cookbook](https://github.com/google-gemini/cookbook)
+- [Vercel AI Chat SDK](https://vercel.com/blog/introducing-chat-sdk), [Get started](https://chat-sdk.dev/)
+- [The Llama 4 herd](https://ai.meta.com/blog/llama-4-multimodal-intelligence/)
+
+## March 2025
+
+- [OpenAI Image Generation in ChatGPT](https://openai.com/index/introducing-4o-image-generation/)
+- [OpenAI Response API and Agent SDK](https://openai.com/index/new-tools-for-building-agents/)
+- [OpenAI.FM](https://www.openai.fm/)
+- [Gemini 2.5](https://blog.google/technology/google-deepmind/gemini-model-thinking-updates-march-2025/#gemini-2-5-thinking)
+- [DeepSeek-V3-0324](https://huggingface.co/deepseek-ai/DeepSeek-V3-0324)
+- [Manus](https://manus.im/)
+- [Vapi: Voice AI Agents for Developers](https://vapi.ai/)
+- [Gemma 3](https://blog.google/technology/developers/gemma-3/)
+- [QwQ-32B Reasoning Model](https://qwenlm.github.io/blog/qwq-32b/)
+- [Introducing LMStudio SDK](https://lmstudio.ai/blog/introducing-lmstudio-sdk)
+- [FastHTML and MonsterUI](https://www.drewecherd.com/post/hello-fasthtml-monsterui)
+- [Mistral Small 3.1](https://mistral.ai/news/mistral-small-3-1)
+- [Claude Web Search](https://www.anthropic.com/news/web-search)
+- [Krea AI Video Training](https://x.com/krea_ai/status/1902722055759671505)
+- [NotebookLM Mind Maps](https://x.com/tokumin/status/1902251588925915429)
+- [Hunyuan 3D Generation AI](https://huggingface.co/tencent/Hunyuan3D-2mv)
+- [Stability AI New Virtual Camera](https://x.com/StabilityAI/status/1902033312379732171)
+- [Gemini Canvas & Audio Overview](https://gemini.google.com/canvas)
+- ***
+
+## February 2025
+
+- [OpenAI GPT 4.5](https://openai.com/index/introducing-gpt-4-5/)
+- [Claude 3.7 Sonnet and Claude Code](https://www.anthropic.com/news/claude-3-7-sonnet)
+- [Google Gemini Code Assist](https://blog.google/technology/developers/gemini-code-assist-free/)
+- [Grok 3 Beta](https://x.ai/blog/grok-3)
+- [Hugging Face FastRTC](https://fastrtc.org/)
+- [Microsoft Phi-4 Multimodal](https://azure.microsoft.com/en-us/blog/empowering-innovation-the-next-generation-of-the-phi-family/)
+- [ElevenLabs Scribe](https://elevenlabs.io/blog/meet-scribe)
+- [Qwen Chat: Thinking, Web Search, Artifacts, Video](https://chat.qwenlm.ai/)
+- [Alibaba Wan 2.1 AI video](https://x.com/Alibaba_Wan/status/1894391929024152055)
+- [Perplexity Voice Mode with Grok 3](https://x.com/perplexity_ai/status/1894788583770509505)
+- [Amazon Alexa+](https://x.com/amazon/status/1894796967894479141)
+- [Mistral Le Chat app](https://chat.mistral.ai/chat)
+- [Anthropic Jailbreaks](https://www.anthropic.com/research/constitutional-classifiers)
+- [Pika adds Pikaddition](https://x.com/pika_labs/status/1887547042622562646)
+- [Google Gemini 2.0 Pro](https://blog.google/technology/google-deepmind/gemini-model-updates-february-2025/?utm_source=x&utm_medium=social&utm_campaign=&utm_content=)
+- [Replit free text-to-app](https://x.com/dr_cintas/status/1887591534138147052)
+- [ByteDance’s AI avatars](https://omnihuman-lab.github.io/)
+- [OpenAI’s Deep Research](https://openai.com/index/introducing-deep-research/)
+- [HuggingFace AI App Store](https://huggingface.co/spaces)
+
+---
+
+### January 2025
+
+- [DeepSeek R1 and Chat](https://www.deepseek.com)
+- [DeepSeek Janus](https://github.com/deepseek-ai/Janus)
+- [Trae AI Code Editor](https://www.trae.ai/home)
+
+---
+
+## December 2024
+
+- [12 Days of OpenAI](https://openai.com/12-days/)
+  - [Day 1: o1 and ChatGPT Pro](https://openai.com/index/introducing-chatgpt-pro/)
+  - [Day 2: Reinforcement Fine-Tuning](https://openai.com/form/rft-research-program/)
+  - [Day 3: Sora](https://sora.com/)
+  - [Day 4: ChatGPT Canvas](https://openai.com/index/introducing-canvas/)
+  - [Day 5: Apple Intelligence](https://openai.com/12-days/)
+  - [Day 6: Advanced voice with video & Santa mode](https://openai.com/12-days/)
+  - [Day 7: Projects in ChatGPT](https://help.openai.com/en/articles/10169521-using-projects-in-chatgpt)
+  - [Day 8: ChatGPT Search](https://openai.com/index/introducing-chatgpt-search/)
+  - [Day 9: OpenAI o1 and new tools for developers](https://openai.com/index/o1-and-new-tools-for-developers/)
+  - [Day 10: 1-800-CHATGPT](https://openai.com/12-days/)
+  - [Day 11: Work with apps](https://openai.com/12-days/)
+  - [Day 12: o3 Preview](https://openai.com/index/deliberative-alignment/)
+- [Gemini 2.0](https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/#ceo-message)
+  [Grok Image Generation Release](https://x.ai/blog/grok-image-generation-release)
+- [Ollama Structured Outputs](https://ollama.com/blog/structured-outputs)
+- [Llama 3.3](https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3)
+- [ElevenLabs: Build AI Agents That Speak](https://elevenlabs.io/conversational-ai)
+- [PydanticAI](https://ai.pydantic.dev/)
+- [Introducing Amazon Nova Models](https://aws.amazon.com/ai/generative-ai/?gclid=Cj0KCQiA3sq6BhD2ARIsAJ8MRwW_cnH-GVthnqFmh1Wg1rSpSjV6z0eWvu51SP1QSGt-Y1r8kPSwzg4aAvr6EALw_wcB&trk=5052a323-ec6a-44c6-8dc7-f1197cd3a30e&sc_channel=ps&ef_id=Cj0KCQiA3sq6BhD2ARIsAJ8MRwW_cnH-GVthnqFmh1Wg1rSpSjV6z0eWvu51SP1QSGt-Y1r8kPSwzg4aAvr6EALw_wcB:G:s&s_kwcid=AL!4422!3!686122498300!p!!g!!aws%20generative%20ai!20894977914!155892715886)
+- [DeepSeek V3](https://www.deepseek.com)
+
+---

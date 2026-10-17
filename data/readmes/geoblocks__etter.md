@@ -1,0 +1,297 @@
+![etter logo](https://raw.githubusercontent.com/geoblocks/etter/main/images/etter-logo.png)
+
+> **[etter](https://en.wiktionary.org/wiki/Etter#German)** /ˈɛtɐ/ *n.* (Swiss German) — the boundary or enclosure marking the edge of a village or commune; a natural demarcation between settled and unsettled land.
+
+Natural language geographic query parsing using LLMs.
+
+## Overview
+
+etter transforms natural language location queries into structured geographic filters that can be used by search engines and spatial databases.
+It uses Large Language Models (LLMs) to understand multilingual queries and extract spatial relationships.
+
+**Key Principle:** etter's sole purpose is to extract the **geographic filter** from user queries. It does NOT handle feature/activity identification or search execution.
+
+> [!TIP]
+> Documentation available at [https://geoblocks.github.io/etter/](https://geoblocks.github.io/etter/)
+
+## Sponsorship
+
+[![camptocamp logo](https://raw.githubusercontent.com/geoblocks/etter/main/images/camptocamp-logo.png)](https://www.camptocamp.com)
+
+The development of this library is sponsored by [Camptocamp](https://www.camptocamp.com).
+
+## Features
+
+- **Geographic Filters Only**: Extracts spatial relationships from queries, ignoring non-geographic content
+- **Multilingual Support**: Parse queries in English, German, French, Italian, and more
+- **Rich Spatial Relations**: Support for containment, buffer, and directional queries
+- **Structured Output**: Pydantic models with full type safety
+- **Streaming Support**: Real-time feedback with reasoning transparency for responsive UIs
+- **Flexible Configuration**: Customizable spatial relations and confidence thresholds
+- **LLM Provider Agnostic**: Works with OpenAI, Anthropic, or local models
+
+## What etter Does (and Doesn't Do)
+
+**✅ etter extracts:**
+
+- Spatial relations: "north of", "in", "near", etc.
+- Reference locations: "Lausanne", "Lake Geneva", etc.
+- Distance parameters: "within 5km", "around 2 miles", etc.
+
+**❌ etter does NOT handle:**
+
+- Feature/activity identification: "hiking", "restaurants", "hotels"
+- Attribute filtering: "with children", "vegetarian", "4-star"
+- Search execution or database queries
+
+**Integration Pattern:**
+Parent application handles feature/activity filtering and combines it with etter's geographic filter for complete search functionality.
+
+## Installation
+
+```bash
+pip install etter
+```
+
+With PostGIS datasource support:
+
+```bash
+pip install etter[postgis]
+```
+
+### Development setup
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
+
+```bash
+git clone https://github.com/geoblocks/etter.git
+cd etter
+uv sync --extra dev
+```
+
+## Demos
+
+For all the demos, set a valid model name and API key in `.env` file:
+
+```bash
+cat <<EOF > .env
+LLM_API_KEY="sk-..."
+LLM_MODEL="gpt-4o"
+EOF
+```
+
+### REPL
+
+An interactive REPL is available for testing queries interactively:
+
+```bash
+uv run python repl.py
+```
+
+### Demo API Server
+
+A FastAPI demo server is available that combines query parsing with geographic resolution using SwissNames3D data.
+
+```bash
+uv run uvicorn demo.main:app --port 8000 --reload
+```
+
+The API will be available at [http://localhost:8000](http://localhost:8000).
+
+## Quick Start
+
+```python
+from langchain.chat_models import init_chat_model
+from etter import GeoFilterParser
+import os
+
+# Initialize LLM
+llm = init_chat_model(
+    model=os.getenv("LLM_MODEL", "gpt-4o"),
+    temperature=0,
+    api_key=os.getenv("LLM_API_KEY")
+)
+
+# Initialize parser
+parser = GeoFilterParser(
+    llm=llm,
+    confidence_threshold=0.6,
+    strict_mode=False
+)
+
+# Strict mode - raises error on low confidence
+parser = GeoFilterParser(
+    llm=llm,
+    confidence_threshold=0.8,
+    strict_mode=True
+)
+```
+
+### Custom Spatial Relations
+
+```python
+from etter import SpatialRelationConfig, RelationConfig
+
+config = SpatialRelationConfig()
+config.register_relation(RelationConfig(
+    name="close_to",
+    category="buffer",
+    description="Very close proximity",
+    default_distance_m=1000,
+    buffer_from="center"
+))
+
+parser = GeoFilterParser(llm=llm, spatial_config=config)
+```
+
+## API Reference
+
+### GeoFilterParser
+
+Main class for parsing queries.
+
+**Methods:**
+
+- `parse(query: str) -> GeoQuery`: Parse a single query
+- `aparse(query: str) -> GeoQuery`: Async version of `parse` (awaits `ainvoke` on the LLM)
+- `parse_stream(query: str) -> AsyncGenerator[dict]`: Parse with streaming events
+- `parse_batch(queries: List[str], max_concurrency: int = 1) -> List[GeoQuery]`: Parse multiple queries, optionally in parallel threads
+- `aparse_batch(queries: List[str], max_concurrency: int = 1) -> List[GeoQuery]`: Async version of `parse_batch`
+- `get_available_relations(category: Optional[str]) -> List[str]`: List available relations
+- `describe_relation(name: str) -> str`: Get relation description
+
+**Constructor options (selected):**
+
+- `confidence_threshold`: Minimum confidence to accept (0–1, default `0.6`)
+- `strict_mode`: Raise `LowConfidenceError` instead of warning (default `False`)
+- `include_examples`: Include few-shot examples in the prompt (default `True`)
+- `datasource`: `GeoDataSource` instance — informs the LLM of available concrete types
+- `additional_instructions`: Free-form text injected as a system message after the main prompt and before few-shot examples. Use for region-specific endonyms, domain aliases, or organization-specific place names.
+
+### GeoQuery
+
+Structured output model representing the parsed geographic filter.
+
+**Attributes:**
+
+- `query_type`: Type of query (simple, compound, split, boolean)
+- `spatial_relation`: Spatial relationship (e.g., "north_of", "in", "near")
+- `reference_location`: Reference location (e.g., "Lausanne"), or `None` for attribute-only queries
+- `buffer_config`: Buffer parameters (optional)
+- `confidence_breakdown`: Confidence scores
+- `original_query`: Original input text
+
+**Note:** etter is fully implemented with three integrated layers: parsing, geographic resolution via datasources, and spatial operations. The demo API shows a complete end-to-end workflow that resolves locations and computes search areas.
+
+### Composing With Your Own Schema
+
+To extract your own fields from the same query in a single LLM call, nest `GeoQuery` in your output model, reuse etter's prompt, and validate the nested result with `finalize_geo_query`:
+
+```python
+from pydantic import BaseModel
+from etter import GeoQuery, SpatialRelationConfig, build_geo_prompt_template, finalize_geo_query
+
+class Output(BaseModel):
+    geo: GeoQuery
+    language: str
+
+config = SpatialRelationConfig()
+prompt = build_geo_prompt_template(config, additional_instructions="Also return the ISO 639-1 code of the query language.")
+
+result = llm.with_structured_output(Output).invoke(prompt.format_messages(query=query))
+geo = finalize_geo_query(result.geo, config, query)
+```
+
+## Available Spatial Relations
+
+### Containment
+
+- `in`: Exact boundary matching
+
+### Buffer/Proximity
+
+- `near`: Proximity with context-aware distance (default 5km, LLM infers based on activity, feature scale, and intent)
+- `on_shores_of`: 1km ring buffer (excludes water body)
+- `along`: 500m buffer for linear features
+- `left_bank`, `right_bank`: Buffer on one side of a linear feature (river, road) relative to its flow direction
+- `in_the_heart_of`: Erosion for central areas (default -500m, LLM infers based on area size)
+- `bordering`: 2km ring outside the reference boundary, for land-border adjacency queries (e.g. "cities bordering Germany")
+
+### Clipping
+
+- `northern_part_of`, `southern_part_of`, `eastern_part_of`, `western_part_of`: Clips the reference geometry to the corresponding directional half (bbox intersection)
+
+### Directional
+
+- **Cardinal**: `north_of`, `south_of`, `east_of`, `west_of`: 10km sector (90° each)
+- **Diagonal**: `northeast_of`, `southeast_of`, `southwest_of`, `northwest_of`: 10km sector (90° each)
+
+## Error Handling
+
+```python
+from etter import LLMInvocationError, ParsingError, UnknownRelationError, LowConfidenceError
+
+try:
+    result = parser.parse("some query")
+except LLMInvocationError as e:
+    print(f"LLM call failed (retryable): {e.original_error}")
+except ParsingError as e:
+    print(f"Failed to parse: {e}")
+    print(f"Raw LLM response: {e.raw_response}")
+except UnknownRelationError as e:
+    print(f"Unknown relation: {e.relation_name}")
+except LowConfidenceError as e:
+    print(f"Low confidence: {e.confidence}")
+    print(f"Reasoning: {e.reasoning}")
+```
+
+## Demo Examples
+
+Here are some good example queries to try with the demo application:
+
+- `walk in the Gros-de-Vaud`
+- `on the shores of the lac Morat`
+- `near Lausanne`
+- `south west of Lausanne`
+- `5km north of Lausanne`
+- `walking distance from Zurich main railway station`
+- `15 min biking from Zurich main railway station`
+- `along l'Orbe`
+- `2km right bank of the Rhône`
+
+## Architecture
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed system design.
+
+## Development
+
+```bash
+# Install dev dependencies
+uv sync --extra dev
+
+# Run tests
+uv run pytest
+
+# Format code
+uv run ruff format
+
+# Linting
+uv run ruff check
+
+# Type checking
+uv run ty check
+```
+
+### Releases
+
+Releases are automated via [Release Please](https://github.com/googleapis/release-please). The version and changelog are determined by PR titles using the [Conventional Commits](https://www.conventionalcommits.org/) format:
+
+| PR title prefix | Version bump |
+|---|---|
+| `feat: ...` | minor (`0.x.0`) |
+| `fix: ...`, `perf: ...` | patch (`0.0.x`) |
+| `feat!: ...` or `BREAKING CHANGE` | major (`x.0.0`) |
+
+All other prefixes (`chore:`, `docs:`, `refactor:`, `test:`, `ci:`) do not trigger a release.
+
+When a releasable commit lands on `main`, Release Please opens a release PR. Merging it tags the commit and triggers the PyPI publish workflow.

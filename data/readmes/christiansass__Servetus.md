@@ -1,0 +1,377 @@
+# Servetus
+
+**A human-readable memory map for personal knowledge sovereignty.**
+
+> *"There is no trust without truth, and there is no assistant without trust."*
+
+**Current Version: 0.3.5** · [Changelog](CHANGELOG.md) · [Philosophy](Philosophy.md)
+
+---
+
+## What Is Servetus?
+
+Servetus is a **memory map** — not a skill bolted onto an AI, but the sovereign architecture that any AI can read.
+
+- **The map:** Your artifacts, memories, events, projects, arcs — in plain Markdown files you own
+- **The engine:** Any LLM (Claude, GPT, local models) — borrows the map, doesn't own it
+- **The floor:** Deterministic code replacing LLM behavior as each function is proven
+- **The shell:** Conversation — the command interface for now, hardened code over time
+
+When you switch AI vendors, the map remains. When the model hallucinates, the artifacts correct it. When the software fails, you open the folder and your life is still there.
+
+**Servetus is not anti-AI. It is the safety net that makes AI usable without being dangerous.**
+
+---
+
+## Why Servetus?
+
+Modern AI tools store your life in opaque databases, process it through black-box models, and return interpretations you cannot verify.
+
+**When the AI says "you discussed X with Y on Z date" — how do you know that's true?**
+
+You don't. You trust the model. And models hallucinate.
+
+Servetus solves this with a simple principle: every claim traces back to an artifact.
+
+### The Artifact Chain
+
+```
+Reality (what actually happened)
+    ↓
+Artifacts (photos, audio, transcripts, screenshots — the tape)
+    ↓
+Memories (atomized thoughts extracted from artifacts)
+    ↓
+Events / Projects / Arcs (structured, organized, linked)
+    ↓
+AI Processing (interpretation, assistance, synthesis)
+    ↓
+Human Review (you see what was captured, you correct what's wrong)
+    ↓
+Reality Check (you can always go back to the artifact)
+```
+
+The AI sits in the middle of the stack, not at the top. It serves the system. It doesn't rule it.
+
+### Corroboration Scores
+
+Every claim carries a score — the number of independent witnesses and artifacts that point to the same conclusion. The score is a number. It does not reveal identities.
+
+- **Score 1** — Testimony. One account. Handle with care.
+- **Score 2** — Established. Two independent sources align.
+- **Score 3+** — Confirmed. Geometrically solid.
+- **Score 572** — 572 corroborating sources, sources private.
+
+External verification (journalism, court records) gets a separate badge. Three witnesses with aligned artifacts outweigh one newspaper article.
+
+---
+
+## Canonical Rules
+
+These rules govern all time, date, location, and folder decisions across the entire vault. Every spec that touches these domains must reference this section rather than define its own interpretation.
+
+### Calendar
+
+Servetus operates on the **Gregorian calendar**. Day boundaries are **midnight local time**. Weeks begin on Sunday.
+
+### Authoritative Timestamp
+
+The authoritative timestamp for any artifact is the **recording device's clock at the moment of capture** — not the upload time, not the server time, not UTC unless the device was set to UTC. If the device timezone differs from the vault owner's home timezone, both are recorded. The device-local time is authoritative; CST is the display convention.
+
+### Authoritative Location
+
+The authoritative location for any artifact is the **recording device's physical location at the moment of capture** — derived from GPS if available, falling back to BSSID triangulation, then known location anchors, then manual entry.
+
+### Folder Date Naming
+
+Date-based folders use the format: `YYYY/MM-Mon/DD/`
+
+- Year: four digits
+- Month: two-digit number with three-letter name — e.g. `03-Mar`
+- Day: two digits with leading zero
+
+This ensures no folder can be mistaken for another regardless of manual sorting or accidental moves.
+
+**Canonical specs:**
+
+- Time format and timezone: \[\[Toolkit/time-rules\]\]
+- Folder naming and placement: \[\[Toolkit/sorting-and-placement\]\]
+
+---
+
+## File System (Altitude Model)
+
+Folders are numbered by zoom level — ground truth at the bottom, big picture at the top:
+
+```
+Servetus/
+├── 00-Artifacts/         # Evidence locker — copied originals, date-sorted, source-differentiated
+├── 01-Records/           # Markdown field records — faithful transcription + provenance frontmatter
+├── 02-Memories/          # Atomized thoughts extracted from artifacts
+├── 03-Events/            # Discrete moments in time — the manila folder for each event
+├── 04-Projects/          # Work clusters with deliverables
+├── 05-Arcs/              # Long-running narrative threads
+├── 06-Radar/             # Current viewport — what you're tracking now
+├── 07-StoryMap/          # 30,000ft view — your full testimony
+├── 08-Witnesses/         # People whose stories touch yours (private intelligence)
+├── 09-Shared/            # What you publish, federate, or release
+├── 10-System/            # Config, templates, specs, CLI
+├── Toolkit/              # System specs (the instruction set)
+└── config/               # User settings (gitignored for privacy)
+```
+
+**Altitude principle:** Artifacts anchor reality. Memories distill artifacts. Events aggregate memories. Arcs thread events. StoryMap renders everything.
+
+### The Originals / Records Distinction
+
+`00-Artifacts/` **— The Evidence Locker**
+Copied originals in their original format, original filenames. Date is the primary sort; source is the final differentiator within the date: `00-Artifacts/2026/03-Mar/12/otter/`. Nothing is renamed. The root Inbox (`Nextcloud/Obsidian/Inbox/`) holds the true originals permanently — `00-source` holds the vault's working copy.
+
+`01-Records/` **— The Field Records**
+Markdown representations of the originals. Faithful transcription of content, Servetus naming convention, full provenance frontmatter. The artifact record points back to its source in `00-Artifacts/` by original filename and hash. Each artifact may have its own subfolder when multiple file types belong to the same capture event.
+
+The binary file never leaves the inbox. The artifact folder is pure Markdown — human-readable, git-trackable, auditable without proprietary software.
+
+### The Processing Pipeline
+
+```
+Nextcloud/Obsidian/Inbox/<source>/          ← Hopper (transit zone — empty = healthy)
+        ↓ inbox-triage.py identifies + inbox-file.py processes
+Inbox/Claude/<date>-claude-session-<id>/    ← session package (artifact + JSONL witness + images)
+        ↓ inbox-file.py finalize — MOVES on completion
+00-Artifacts/YYYY/MM-Mon/DD/<source>/       ← evidence locker, original names, date-sorted
+        ↓ session-close.py / pipeline
+01-Records/YYYY/MM-Mon/                     ← Markdown record, Servetus naming, provenance hash
+        +
+02-Memories/YYYY/MM-Mon/                    ← atomic thoughts extracted from the artifact
+```
+
+The root Inbox is a Hopper — a transit zone. Files arrive, get triaged, and MOVE to `00-Artifacts/` when filed. Empty Hopper = healthy system.
+
+---
+
+## Core Data Model
+
+| Type     | Purpose                                                                    | Folder |
+|----------|----------------------------------------------------------------------------|--------|
+| **Artifact** | Original source file — the physical evidence, untouched                    | 00     |
+| **Record**   | Markdown field record of an artifact — faithful transcription + provenance | 01     |
+| **Memory**   | One atomized thought extracted from a record                               | 02     |
+| **Event**    | A discrete moment in time                                                  | 03     |
+| **Project**  | Mid-length goal with deliverables                                          | 04     |
+| **Arc**      | A long-running storyline (relationship, chapter, thread)                   | 05     |
+| **Radar**    | Your current lens — what you're actively tracking                          | 06     |
+| **StoryMap** | The full map of your life                                                  | 07     |
+| **Witness**  | A person whose story touches yours                                         | 08     |
+
+All records are **plain Markdown** with **YAML frontmatter** — readable by humans, parseable by machines.
+
+### Frontmatter (v0.2 — flat)
+
+**Artifact** — origin fingerprint lives here, on the raw evidence:
+
+```yaml
+---
+type: artifact
+title: "Session — 2026-03-11"
+slug: "2026-03-11-session"
+date: 2026-03-11T14:30:00-06:00
+
+origin:
+  machine: "my-machine"
+  mac: "aa:bb:cc:dd:ee:ff"
+  ip: "10.0.0.x"
+  os: "Linux Mint 22.x"
+
+circles: []
+published: false
+tags: [session, artifact]
+---
+```
+
+**Memory** — provenance inherited via `source_artifact`, no origin block needed:
+
+```yaml
+---
+type: memory
+title: "One idea, atomized"
+slug: "one-idea-atomized"
+date: 2026-03-11
+
+source_artifact: "2026-03-11-session.md"
+source_offset: "00:12:30"
+
+linked_event: null
+linked_project: null
+linked_arc: null
+
+circles: []
+published: false
+tags: [servetus, example]
+---
+```
+
+---
+
+## LLMs as Prototyping Environment
+
+Servetus uses LLMs for one purpose: **to prototype functions we intend to replace with code.**
+
+```
+LLM obeys spec → behavior proven → spec becomes code → code committed to git
+```
+
+Every spec in `Toolkit/` is a ticket waiting to become a committed function. The vault is the whiteboard. GitHub is the destination. Code cannot hallucinate. Code does not consume tokens at runtime. Trust shifts from probabilistic to deterministic.
+
+---
+
+## Architecture Principles
+
+### 1. Human-Readable Always
+
+No binary blobs. No compiled code. No proprietary formats. Just files.
+
+### 2. Map vs. Engine
+
+Servetus is a memory map, not a skill. The map exists independent of whichever AI reads it. Switch engines without losing memory.
+
+### 3. AI as Prototyping Layer, Not Authority
+
+LLMs prototype behavior. Proven behavior becomes code. Code becomes the system. The AI is scaffolding — useful until the structure can stand without it.
+
+### 4. Sovereignty by Default
+
+Your data lives on your infrastructure. Servetus orchestrates — it doesn't own.
+
+### 5. Artifacts Over Assertions
+
+If there is no artifact, it is not memory. It is confabulation.
+
+### 6. Code Over Prompts
+
+Proven behaviors become scripts. Scripts become the system. Prompts are scaffolding.
+
+### 7. Every Folder Is a Watch Folder
+
+Servetus must be aware of every file modification. Changes made inside Obsidian, on the command line, or by any tool are system events. A future Servetus daemon monitors all vault folders and notifies the system of modifications — so nothing changes silently.
+
+---
+
+## The Name
+
+[Michael Servetus](https://en.wikipedia.org/wiki/Michael_Servetus) (1511–1553) was burned at the stake in Geneva. His crime: reading the biblical text and arriving at conclusions that contradicted the institutional interpretation.
+
+We make no claim about who was right. What we observe: Calvin controlled the interpretation layer. Servetus had evidence and arguments. Calvin had the power.
+
+**When it's one man's word against another, whoever controls the interpretation layer wins.**
+
+Servetus (the system) ensures the interpretation layer is never controlled by a single authority — AI, institution, or otherwise. Artifacts are the check. Corroboration is the standard.
+
+---
+
+## Current Status: v0.3.0
+
+**Implemented:**
+
+- ✅ Altitude-based folder structure (00-Artifacts → 10-System)
+- ✅ Artifact chain — every claim traces to evidence
+- ✅ Machine origin fingerprint on all records (machine/mac/ip/os)
+- ✅ Session bracket — `servetus` opens a bracketed session, `session-close.py` closes it
+- ✅ Full-fidelity session artifacts — JSONL witness + rich Markdown transcript + images
+- ✅ Per-turn timestamps with millisecond precision
+- ✅ Inbox pipeline — triage (`inbox-triage.py`), file, finalize (`inbox-file.py`)
+- ✅ Background Hopper daemon (`inbox-watcher.py`) — announces new files to terminal
+- ✅ Launch brief (`launch-brief.py`) — session-opening intelligence dashboard
+- ✅ Statusline (`statusline.sh`) — KITT edition: running clock, room label, red scanner
+- ✅ Orphan session scanner — detects and surfaces unarchived sessions at next launch
+- ✅ Frontmatter schema with file naming convention (`subject_type.md`)
+- ✅ Cross-platform installers (`install.sh` / `install.ps1`)
+- ✅ Philosophy.md — fully merged and expanded
+- ✅ Toolkit specs (bootloader, export rules, schema, time, spelling, routing)
+
+**In Progress:**
+
+- ⏳ Session context injection — `last-session-brief.md` written at close, read at open
+- ⏳ Corroboration score implementation
+- ⏳ StoryMap visualization
+- ⏳ Voice capture pipeline
+- ⏳ Conversational Traffic Controller — real-time topic detection, session routing
+
+**Ecosystem (separate repos):**
+
+- 🔧 [Nextcloud MCP](https://github.com/colo node/nextcloud-mcp) *(coming)* — MIT-licensed MCP server for CalDAV, CardDAV, and WebDAV. The sovereignty-respecting alternative to Google Calendar/Gmail MCPs. Servetus uses it for calendar corroboration and witness verification.
+
+---
+
+## Integration Points
+
+Servetus works with:
+
+- **Nextcloud** — Files, Contacts (CardDAV), Calendar (CalDAV), federation layer
+- **Obsidian** — Vault storage, graph view, templates, Canvas
+- **Ollama** — Local AI kernel (private, offline-capable)
+- **Any LLM** — Claude, GPT, Grok, Gemini — all treated as engines, not authorities
+- **StoryMap.me** (future) — Web viewer for federated testimonies
+
+---
+
+## Quick Start
+
+```bash
+# macOS / Linux
+bash install.sh
+
+# Windows (PowerShell)
+./install.ps1
+```
+
+1. Clone this repo into your Obsidian vault location
+2. Open in Obsidian
+3. Run `bash install.sh` — deploys `servetus` launcher, statusline, and session bracket
+4. Read `Toolkit/bootloader.md` to understand the system
+5. Customize `config/` with your projects and tags
+6. Type `servetus` (or `sv`) to open a bracketed session
+
+For AI assistants: Read `CLAUDE.md` first — it's gitignored, stays local to your machine.
+
+---
+
+## Ecosystem
+
+Servetus is the brain — the memory map, the artifact chain, the Constitution. It's the open standard anyone can adopt.
+
+**Segundo** is the product built on top. The face. The AI agent personality that customers talk to. Segundo runs on Servetus — same vault, same Constitution, same architecture. Binary Ranch ships Segundo as a commercial product.
+
+| Layer | Name | What it is |
+|-------|------|-----------|
+| Philosophy | Servetus | The brain. The vault, the Constitution, the artifact chain. Open standard. |
+| Product | Segundo | The face. The agent personality. What business owners buy. |
+| Role | Foreman | The executive function. The coordinator sitting in the bridge seat. |
+| Company | Binary Ranch | Ships Segundo. Sells operational intelligence. |
+
+The interfaces — CLI, desktop, mobile, voice, web — are the senses. They all serve the brain. The brain is Servetus. The face is Segundo.
+
+> `...`
+
+---
+
+## Contributing
+
+This is an open standard. We welcome:
+
+- Feedback on the architecture
+- Implementation experiments
+- Integration proposals
+- Philosophy discussions
+
+Open an issue or submit a PR.
+
+---
+
+## License
+
+MIT — because sovereign knowledge should be free.
+
+---
+
+*Servetus: A servant, not a master. A witness, not an authority.*

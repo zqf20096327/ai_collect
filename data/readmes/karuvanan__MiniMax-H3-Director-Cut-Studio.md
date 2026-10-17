@@ -1,0 +1,1168 @@
+# MiniMax H3 Director Cut Studio
+
+一个以 Adobe Premiere Pro 剪辑逻辑为参考的本地 PySide6 导演工作台。它可以管理图片、视频和音频素材，在多轨 Timeline 上规划 Shot、Dialogue、Marker、Ending Hold 与 Prompt，生成 MiniMax H3 Ref2VA 提示词，并把当前有效素材及参数提交到 ComfyUI。
+
+## 首要部署说明
+
+第一次使用请依序完成以下部署说明；副机在对应步骤会自动进入 Client Mode，不需要安装大模型。
+
+1. **所有电脑必须完成**：[`Step 1：部署 Studio Runtime、Qwen3-TTS 与 VoxCPM2`](step1.md)
+2. **规划音乐主机与副机**：[`Step 2：ACE-Step 1.5 Music Workbench 主机／副机部署`](step2.md)
+3. **规划歌声克隆主机与副机**：[`Step 3：SoulX-Singer 主机／副机部署`](step3.md)
+4. **规划人声／伴奏分离主机与副机**：[`Step 4：Audio Separator / Kim_Vocal_2 主机／副机部署`](step4.md)
+5. 完成后统一从项目根目录启动：
+
+   ```powershell
+   .\run_h3_prompt_studio.bat
+   ```
+
+> ACE-Step 规则：完整安装的高显存电脑自动进入 `SERVER MODE` 并启动本机 `127.0.0.1:8001`；未安装的电脑保持 `CLIENT MODE`，不下载任何 ACE-Step 文件，默认连接 `192.168.0.185:8001`。
+
+源码仓库不会包含 Python runtime、FFmpeg、BLIP／Whisper 权重、ComfyUI checkpoint 或生成影片。请先完成 Step 1，不要只复制 `ai_libraries_common`。
+
+## 版本、下载与教程
+
+- 当前应用版本：[`v0.3.6-alpha2`](VERSION)
+- v0.3.6 Shot Visual Editor 与 Timeline Qwen Assistant：[`v0.3.6 readme.md`](v0.3.6%20readme.md)
+- Shot Visual Editor + Ask Qwen 论坛图文教程：[`forum/Shot_Visual_Editor_Ask_Qwen_Step_by_Step.md`](forum/Shot_Visual_Editor_Ask_Qwen_Step_by_Step.md)
+- MTV Singing H3 论坛图文教程：[`forum/MTV_Singing_H3_Step_by_Step.md`](forum/MTV_Singing_H3_Step_by_Step.md)
+- Source Video Cast Remake H3 论坛图文教程：[`forum/Source_Video_Cast_Remake_H3_Step_by_Step.md`](forum/Source_Video_Cast_Remake_H3_Step_by_Step.md)
+- v0.3.5 重点功能：[`v0.3.5 readme.md`](v0.3.5%20readme.md)
+- v0.3.3 AI Movie Making-of / 4DX：[`v0.3.3 readme.md`](v0.3.3%20readme.md)
+- v0.3.2 历史功能与长片流程：[`v0.3.2 readme.md`](v0.3.2%20readme.md)
+- 完整修正记录：[`CHANGELOG.md`](CHANGELOG.md)
+- [MiniMax H3 Director Cut Studio 教程](https://lcz.me/topic/1317/minimax-h3-director-cut-studio-%E6%95%99%E7%A8%8B-%E6%9B%B4%E6%96%B0%E5%9C%A8%E7%AC%AC%E4%B8%80%E6%A5%BC)
+- [完整 Windows runtime（Google Drive）](https://drive.google.com/file/d/1mC_GpmCuYw7zaQPfkaqtQVXTSt6DlRsM/view?usp=drive_link)
+- [示范输出影片（YouTube）](https://www.youtube.com/@imbiplazaASUS/videos)
+
+
+## Studio 预览
+
+<img width="1280" height="720" alt="ezgif-44c9bbaa3fbac75c" src="https://github.com/user-attachments/assets/9884c63e-4bf6-4c90-b276-e17bcb8f6fb3" />
+
+<img width="1280" height="769" alt="MiniMax H3 Director Cut Studio" src="https://github.com/user-attachments/assets/ed7575ea-8868-4b54-8dd1-00a1810f1fcf" />
+
+<img width="1600" height="698" alt="Director Cut Timeline" src="https://github.com/user-attachments/assets/365a0bb0-0a7b-4f64-b323-0b71e34a1847" />
+
+<img width="1474" height="2080" alt="Design workspace" src="https://github.com/user-attachments/assets/345e1d79-455f-4836-bffb-8e138aa20ee4" />
+
+默认主工作流提供每个 Segment 的实体执行容量：**9 张图片、3 段参考视频和 3 段独立音频**。这不是整个项目的 Media Pool 上限；v0.3.1-alpha.2 的 Virtual Media Pool 可保存不限数量的逻辑素材，并在生成时按 Segment 自动换入这些实体插槽：
+
+```text
+video_minimax_h3_r2v_9image_3audio_3video_api.json
+```
+
+Design 页面使用以下工作流生成概念参考图：
+
+```text
+Z-Image_Text2Image_for_webui_t2i_api.json
+```
+
+> 重要：模型权重没有包含在应用源代码中。请先按下方清单准备所有模型，并保持文件名完全一致。模型下载、使用许可及商用权限由使用者自行确认。
+
+## 首次运行前必须准备的模型
+
+### 1. MiniMax H3 Ref2VA 主工作流
+
+以下是默认 `video_minimax_h3_r2v_9image_3audio_3video_api.json` 中所有会直接读取外部模型文件的节点，没有其他隐藏 checkpoint。
+
+| 节点 ID | 节点类型 | 准确文件名 | 建议放置目录 | 用途 | 必需 |
+|---:|---|---|---|---|:---:|
+| 127 | `UNETLoader` | `minimax_h3_ref2va_int8_convrot.safetensors` | `ComfyUI/models/diffusion_models/` | H3 Ref2VA 主扩散模型 | 是 |
+| 128 | `CLIPLoader` | `qwen3vl_32b_h3_ultra_uncensored_heretic_int8_convrot.safetensors` | `ComfyUI/models/text_encoders/` | H3/Qwen3-VL 多模态文字与参考素材编码器 | 是 |
+| 119 | `VAELoader` | `minimax_h3_video_vae_fp16.safetensors` | `ComfyUI/models/vae/` | H3 视频 VAE | 是 |
+| 120 | `VAELoader` | `minimax_h3_audio_vae_fp32.safetensors` | `ComfyUI/models/vae/` | H3 原生音频 VAE | 是 |
+| 150 | `MiniMaxH3TurboLoRA` | `minimax_h3_turbo_v4_step600_ema.safetensors` | `ComfyUI/models/loras/` | H3 Turbo 8-step LoRA | 是 |
+
+当前工作流的主要推理参数：
+
+- Sampler：`res_multistep`
+- Scheduler：`simple`
+- Sampling steps：`8`
+- Denoise：`1.0`
+- 输出：`24 FPS`
+- RTX Video Super Resolution：默认 `2x / ULTRA`
+
+如果你的 ComfyUI 使用旧目录布局，`CLIPLoader` 可能从 `ComfyUI/models/clip/` 读取，`UNETLoader` 也可能从 `ComfyUI/models/unet/` 读取。应以节点下拉菜单实际扫描到的目录为准；也可以在 ComfyUI 的 `extra_model_paths.yaml` 中映射模型目录。现代 ComfyUI 通常使用 `diffusion_models`、`text_encoders`、`vae` 与 `loras`。
+
+### 2. Z-Image Design 概念图工作流
+
+以下是 `Z-Image_Text2Image_for_webui_t2i_api.json` 中所有会读取外部模型文件的节点：
+
+| 节点 ID | 节点类型 | 准确文件名 | 建议放置目录 | 用途 | 必需 |
+|---:|---|---|---|---|:---:|
+| 16 | `UNETLoader` | `z_image_turbo_bf16.safetensors` | `ComfyUI/models/diffusion_models/` | Z-Image Turbo 图像生成模型 | 是 |
+| 18 | `CLIPLoader` | `qwen_3_4b.safetensors` | `ComfyUI/models/text_encoders/` | Z-Image 的 Qwen 文字编码器，类型为 `qwen_image` | 是 |
+| 17 | `VAELoader` | `ae.safetensors` | `ComfyUI/models/vae/` | Z-Image 图像 VAE | 是 |
+
+当前 Z-Image 默认参数：
+
+- Base resolution：`1024 × 576`
+- Sampler：`euler`
+- Scheduler：`simple`
+- Steps：`8`
+- CFG：`1.0`
+- Denoise：`1.0`
+- `ModelSamplingAuraFlow` shift：`3`
+- RTX Video Super Resolution：当前 Z-Image API 已移除；默认输出保持 Base resolution
+
+Design 页面可以在 `Image Generation Checkpoint` 下拉菜单选择 ComfyUI 的 `UNETLoader` 模型。当前工作流仍固定搭配 `qwen_3_4b.safetensors` 与 `ae.safetensors`；换用其他 diffusion checkpoint 时，必须确认它与这组 Z-Image text encoder/VAE 兼容，否则会在采样或解码阶段失败。
+
+### 3. 本地 BLIP 与 Whisper 模型
+
+这两组模型由桌面程序使用，不放入 ComfyUI：
+
+| 功能 | 模型 | 项目内路径 | 必需情况 |
+|---|---|---|---|
+| 图片及视频抽帧描述 | `Salesforce/blip-image-captioning-base` | `ai_libraries_common/models/models--Salesforce--blip-image-captioning-base/` | 使用图片识别、Prompt Tool 自动 caption 或 Design 图像分析时必需 |
+| VAD 后语音识别 | `openai/whisper-small` | `ai_libraries_common/models/openai--whisper-small/` | 使用音频/视频语音识别时必需 |
+
+BLIP 当前固定读取本地 snapshot：
+
+```text
+ai_libraries_common/models/models--Salesforce--blip-image-captioning-base/snapshots/82a37760796d32b1411fe092ab5d4e227313294b
+```
+
+路径定义在 `ai_libraries_common/runtime_config.json`。BLIP 与 Whisper 均使用离线本地文件；缺少权重时不会自动从网络静默下载。
+
+### 4. LM Studio 模型
+
+Design 页面通过 OpenAI-compatible API 连接 LM Studio。公开配置建议先使用本机地址：
+
+```text
+Base URL:
+http://127.0.0.1:1234/v1
+
+Model ID:
+qwen3.8-27b-uncensored-hauhaucs-aggressive-mtp
+```
+
+这里的 Model ID 只是当前验证示例，不是硬编码要求。请在 Design 页面点击 `TEST CONNECTION`，从 LM Studio 实时返回的 `/v1/models` 清单选择任何能够执行 OpenAI-compatible Chat Completions／结构化 JSON 的文本模型。不要把 Windows 文件名或已经删除的完整 GGUF 路径当成永久 Model ID。
+
+若在 LM Studio 中启用所选模型的视觉输入，还需要与该模型匹配的 projection 文件，例如：
+
+```text
+mmproj-Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-BF16.gguf
+```
+
+当前 Design 流程会先用本地 BLIP 把生成图转成 caption，再把文字 caption 交给 LM Studio，因此 **mmproj 对现有纯文字请求不是硬性必需**；只有直接把图片提交给 LM Studio 的视觉模型模式才需要它。GGUF 由 LM Studio 管理，不要放入 ComfyUI 的模型目录。
+
+如果 LM Studio 位于其他电脑，请在 Design 设置或 `design_ai.env` 中改成对应的局域网地址和模型 ID。
+
+Studio 每次 Design／AI Enrich 前都会校验保存的 Model ID。若原 GGUF 已删除、改量化版本或被 LM Studio 改成短 alias，会自动选择同系列可用模型并保存修复后的 ID。生成结束时只卸载 `/api/v1/models` 明确列在 `loaded_instances` 的实际实例；未加载／已删除模型直接视为已释放，不会重复产生 `model_not_found`，也不会误卸载其他模型。
+
+主页顶部的 `UNLOAD ALL` 会一次释放 Studio runtime cache、ComfyUI、LM Studio，以及当前 Server／Client API 所连接的 ACE-Step 1.5 DiT、VAE、文字编码器和 LM；如果 SoulX Server 提供卸载 endpoint，也会一并请求释放 SoulX 模型。ACE-Step API 进程会继续运行；下一次分析或生成时自动重新载入所需模型。若音乐任务仍在排队或生成，服务器会拒绝卸载，避免破坏进行中的成品。
+
+### Audio Separator · Kim_Vocal_2 CUDA 自动模式
+
+主页的 `AUDIO SEPARATOR` 会自动判断本机角色：具有CUDA GPU及完整 `models/audio-separator` 模型与runtime的电脑进入 `SERVER MODE`，隐藏启动本机 `127.0.0.1:7862`；没有本机安装或没有CUDA GPU的电脑进入 `CLIENT MODE`，使用远端局域网API。Server启动器会自动把旧CPU版ONNX Runtime修复为 `onnxruntime-gpu 1.23.2`，并以真实 `Kim_Vocal_2.onnx` Session验证 `CUDAExecutionProvider`；验证失败时按钮保持禁用，不会静默回退CPU。
+
+每次分离由独立worker执行，输出Vocal、Music与原始Mix后立即退出并释放模型。关闭本机Server Mode窗口还会停止项目所属的7862 API进程；Client Mode不会关闭远端Server。需要手动部署或修复Server时执行：
+
+```powershell
+.\install_audio_separator_cuda_runtime.bat
+.\start_audio_separator_server.bat
+```
+
+v0.3.5-alpha.3 另外修复Unicode文件名上传失败，以及双声道浮点Vocal被错误写成双倍时长近静音单声道的问题；成功前会校验Vocal／Music的时长、声道、RMS与峰值。旧版已经产生的无声Vocal必须用新版重新分离。
+
+v0.3.5-alpha.4 修复空人声Track仍可能产生隐藏对白／旁白的问题。每个Full或Batch生成窗口现在只允许当前Timeline中实际存在的Dialogue、Voice-over或Lyrics Text Layer发声；旧Dialogue表单残留不再具有发声权限。没有语音事件时启用`HUMAN VOCAL CHANNEL: EMPTY`，移除从较长Shot继承的说话状态，并禁止H3朗读提示词、标签、文件名或导演说明。环境声、音乐及非人声Foley不会因此被静音。
+
+v0.3.5-alpha.5 加入 `Native Speech–Environment Fusion`。对白或旁白现在叠加在持续的现场环境底噪之上，不得替换、门限静音、重置或淡出环境声；画面同步Foley在说话期间继续存在。只有非叙事背景音乐可以在人声期间降低，环境声与Foley不再套用旧版约6 dB Ducking。该规则同时覆盖H3原生对白、VoxCPM2、Qwen3-TTS、Edge TTS、Full、Batch与长片Segment，并保持纯H3生成、不新增FFmpeg重混、EQ或混响链。
+
+v0.3.5-alpha.6 新增 `comic-talk-show-h3` 动态群像喜剧 Special Skill。Design 会直接读取 P1 像素并估算完整前景主角人数，建立从左到右稳定的 `S1…SN` 身份账本；人数不再固定为五人，普通两人图、多人漫画、照片、3D 与插画都按 P1 实际内容编排。每名主角获得独立、可编辑的对白 Text Layer，只有当前 Speaker 可以开口。P1 同时作为全片人物、排列与原始媒介风格的唯一视觉母版；普通 Talk Show 不再自动申请 P2–P9 人物图，避免 Z-Image 生成陌生角色或把漫画改成真人。视觉模型无法读取图片时会自动退回文字设计并显示人数复核警告，而不会让 Design 整体失败。
+
+v0.3.5-alpha.7 修复短对白占满整个 Shot 时，H3 在台词结束后的空档继续即兴、重复、翻译或生成无来源对白的问题。系统现在把 Dialogue／Voice-over 的“镜头容器时间”和“实际发声授权时间”分开：自动生成的短台词按语速预算收紧发声窗口，但 Shot、表情反应、现场环境声与 Foley 仍持续到原镜头结束；每个生成窗口会明确列出人声静默区间。旧 Project 无需迁移，重新 Preview／Generate 即会使用新编译规则。`comic-talk-show-h3` 另有逐句 Turn-End Lock，当前 Speaker 说完原句后立即闭嘴，其他人物始终只能作无声反应。
+
+v0.3.5-alpha.14 新增全局`CINEMATIC DIALOGUE ACOUSTIC INTEGRATION`强制合约。所有H3 Native及外部TTS对白必须与场景共享空气、距离、方向、遮挡、反射与环境底噪，禁止ADR／配音棚式干声叠加。室内按空间大小、材质与陈设建立早期反射和衰减；室外不虚构室内长混响，但必须保留空气吸收、湿地／地面／建筑短反射、风雨渗漏和距离高频衰减。近、中、远景会改变直达声与环境声比例，人物转头、跑动、格斗或喊叫会同步改变呼吸、投射与方向性，但不会增加未授权台词。外部TTS只作为原文、音色、时序与口型控制，不再作为不可改变的最终干声混音。Render Policy提升至29。
+
+v0.3.5-alpha.16 新增通用“固定演员＋原声重演”合约。Design Requirement明确把两个或以上P Picture设为固定人物，并把Audio设为原声、唯一声音或主时间线时，Audio的实际长度会锁定全片，模型自创的Dialogue／Voice-over／Lyrics Text Layer会被清空，含人物的Z-Image请求会被删除。所有指定P1–Pn都成为全片身份锚点；只允许生成无人环境／道具空镜，周边群众由H3按Shot生成且保持不说话。新Design也会排除上一轮失败计划留下的AI generated Pictures，防止替身演员回流。
+
+v0.3.5-alpha.15 以真实ComfyUI API验证并修复“外部TTS令背景现场声消失”的根因。实测确认：只改Prompt或把TTS／雨声拆成两条Audio Reference都不能阻止H3把对白空档压成静音。现在含画面内Dialogue的外部TTS Segment会先以同一视觉与声景生成一条空人声H3原生环境床，再把精确TTS与该环境床组成一条完整现场录音参考后提交最终H3。环境床按Segment fingerprint缓存；最终MP4仍由H3生成，不在成片后替换音轨。Render Policy提升至30，重新Preview／Generate会重建旧的Policy 29 Segment。
+
+v0.3.5-alpha.13 修复同一份Timeline TTS在Design套用与语音刷新竞态中被登记为两份有效Audio Reference的问题。生成前现在会保留签名最新的一份，把其余重复stem设为`bypass`而不删除备份；H3不会再把两份相同的全片干声误当成完整声轨并压制原生环境声。TTS数字静音区被明确解释为“没有人声，但必须持续雨、风、水面、空间底噪与可见Foley”。同时撤销alpha.12过强的天气音乐压低规则，MUSIC AUTO恢复清晰可闻、对白下约8 dB duck、对白空档自然回升的标准行为；环境声与Foley仍须全程可闻。Render Policy提升至28，重新Preview会重建受影响Segment。
+
+v0.3.5-alpha.12 修复外部TTS对白与H3现场环境声融合的编译漏洞。Shot声学时间不再错误写成`0.00–0.00s`；Foley改用完整英文词／短语匹配，`stands`、`punchline`、`speaker lock`、`close-up`、`open-air`不会再误触发沙石、拳击、门锁或开门声。每个Shot会把A1干净TTS明确声明为“台词、Speaker、时间与口型参考”，并要求H3继续产生持续雨声、风声、水面与可见动作Foley。Render Policy提升至27，重新Preview会重建受影响Segment。
+
+v0.3.5-alpha.11 修复Native H3重试耗尽后错误保留最后一次随机take：现在比较三次结果并保留额外语音风险最低的一次，仍不Hard Block。相同时间、相同文字的明确齐声Text Layer只向H3提交一次共享台词，避免同一句被当成两次发言；不相关改写也会被守卫发现。外部TTS的每条干净对白stem统一到约-16 LUFS与-1.5 dB True Peak，只改善对白可懂度，不提高环境声或音乐。重新Preview会因Render Policy 26及新TTS签名自动重建受影响素材。
+
+v0.3.5-alpha.10 把Speech Guard从“只检查无对白空档”扩展为“空档 + 每句授权对白”。Studio会逐条比较Text Layer原文与本机Whisper转写，在容许简繁体、同音字及少量识别误差的同时，识别H3在合法发声窗口内重复句尾、重说整句或擅自加入额外短句。命中后自动换Seed重生对应Segment，最多两次，不Hard Block整项Job。`two_people_in_a_red_background_with_swords_4`的T1复读已由新规则实际检出。
+
+v0.3.5-alpha.9 加入结构化 `Voice Gender: AUTO / MALE / FEMALE`。每条 Dialogue／Voice-over 都可以独立锁定男声或女声，并把同一个设定传给 H3 Native、Edge TTS、Qwen3-TTS、VoxCPM2 与 SAPI 后备；Design 不再按 S1／S2 奇偶编号猜性别，人物证据不清楚时保留 AUTO，用户选择 MALE／FEMALE 后则覆盖旧的自动声线后备。中文台词会锁定为 `Mandarin Chinese`。Native Speech Guard 也扩展到外部 TTS 和完全没有台词的尾段，能在最后一句之后捕捉日文、旁白、复读或其他无来源人声并自动换 Seed 重生，不 Hard Block 整项 Job。旧的两人 Comic Talk Show 若错误产生 S3，会在重新打开时依实际人数修回有效 Speaker。
+
+v0.3.5-alpha.8 加入 `Native H3 Speech Guard · AUTO RETRY`。每个 Dialogue／Voice-over 事件使用独立可见 Timeline 轨道；普通 `AUTO` 轮流对白会在句间自动保留 1.0 秒闭嘴释放区并顺延后续 Text Layer、Shot 与项目时长，只有明确 `OVERLAP` 才可同时说话。H3 生成完成后，Studio 只用本机 CPU Whisper 检查授权对白以外的静默窗口；发现可辨识的额外对白时，以新 Seed 自动重生同一 Segment，最多两次，不 Hard Block、不停止整项 Job，也不卸载 H3。若重试仍未清除，只显示警告并继续拼接。Lyrics 与 MTV 时序不受此规则改变。
+
+正常由Studio自动启动时无需保留BAT窗口。副机不需要Kim模型，只需能访问Server的7862端口。主机／副机安装、CUDA验收、端口检查和故障排除见 [`Step 4：Audio Separator / Kim_Vocal_2 部署`](step4.md)；完整操作与A1/A2映射见 [`v0.3.5 readme.md`](v0.3.5%20readme.md)。
+
+### SoulX 独立歌声克隆工作流
+
+主页的 `SOULX` 位于 `MUSIC COVER` 左边，默认连接 `http://192.168.0.185:7861`。它只负责调用 Server 上 `SoulX-Singer-main` 的 SVC 服务、试听结果和导出 MP3，不会把未验收的声音自动写进 Media Pool、Timeline 或 MiniMax H3。
+
+1. 在 SoulX Server 启动 `webui_svc.py`，确认局域网可以访问 `7861` 端口。
+2. 点击主页 `SOULX`，先用 `TEST` 验证 `/_start_svc`。
+3. `Voice reference` 选择需要克隆的目标音色，例如老人男声；`Source song` 选择 ACE-Step 或其他来源的原歌曲。
+4. 默认保留 `Separate source-song vocals`、`Auto pitch shift` 和 `Mix original accompaniment`，点击 `CLONE SINGING VOICE`。
+5. 完成后先 `PLAY` 验收，再用 `SAVE AS MP3` 保存。
+6. 打开 MTV Special Skill，把已经验收的 MP3 手动放入 `A1`。Studio 不会替你自动执行这一步。
+
+`Request server model unload after conversion` 默认开启。Studio 会先检查 Server 是否真的公开卸载 endpoint；支持时才会报告已卸载。官方原始 `webui_svc.py` 只公开转换 endpoint，如果状态栏提示 `no unload endpoint`，代表模型仍可能占用 Server VRAM，必须停止／重启 SoulX launcher，或在 Server 版本加入卸载 endpoint 后再运行 MiniMax H3。关闭窗口本身不等于释放远端显存。
+
+#### Windows SoulX 安装失败：`Failed to build webrtcvad==2.0.10`
+
+如果日志停在 `building '_webrtcvad' extension`、`Cannot open compiler generated file`，通常不是 CUDA 或 SoulX 模型损坏，而是上游 `webrtcvad` 在 Windows 项目路径中尝试编译 C 扩展。v0.3.5-alpha.1 已将 Windows 隔离环境改为使用 `webrtcvad-wheels==2.0.14`（仍提供 `webrtcvad` 导入名），Linux/macOS 才使用原始 `webrtcvad==2.0.10`。请重新执行：
+
+```powershell
+.\start_soulx_server.bat
+```
+
+不需要删除已经建立的 Python 3.10 环境；启动器会复用环境并补齐依赖。若仍失败，请查看 `logs/soulx_api.stderr.log`，不要把 SoulX 依赖安装到 Studio 的共用 Python 环境。
+
+#### SoulX 已启动但提示 `endpoint /_start_svc is not available`
+
+这是旧版 Studio wrapper 把 Gradio callback 暴露为 `/lazy_start_svc` 所致，不代表模型缺失。v0.3.5-alpha.1 会按 SVC 的完整参数合约自动发现 `/_start_svc`、`/lazy_start_svc` 或其他兼容 endpoint，同时新启动的 wrapper 会保留官方 `/_start_svc` 名称。更新代码并重新打开 Studio 即可使用；建议同时重启 SoulX Server，让 endpoint 名称恢复为标准格式。
+
+部分 Gradio 部署还会把12个输入错误套用10参数 callback 名称，并把最后两项显示为 `param_10`、`param_11`。这会导致 Pitch 的 `0` 被当成 Device，出现 `Value: 0 is not in the list of choices`。v0.3.5-alpha.1 会按照真实组件顺序重新映射 Device、FP16、Pitch、Steps、CFG 与 Seed，不需要手动修改 Server。
+
+为避免后续 Gradio 版本再次改变合约，新版 Server 另外提供固定的 `/_studio_start_svc` endpoint。它明确命名全部12项输入，并自动适配官方10参数或扩展12参数的 SoulX callback；同时启用详细错误回传。更新 `soulx_server.py` 后必须停止旧 Server 并重新启动，Client 才会优先使用这个稳定 endpoint。
+
+如果网页 `Use via API` 仍只显示 `/lazy_start_svc`，或统计为多次请求 `0% successful`，代表旧进程仍占用7861。请在 Server 项目根目录执行 `restart_soulx_server.bat`；它只会停止命令行属于当前项目、并运行 `soulx_server.py`/`webui_svc.py` 的7861进程，然后启动新版稳定 API。
+
+如果转换进入推理后显示 `CUDA error: no kernel image is available for execution on the device`，代表旧 SoulX runtime 的 PyTorch wheel 没有包含该显卡的 CUDA 架构。新版 `start_soulx_server.bat` 会先执行真实 CUDA tensor 与 capability 检查；发现不兼容时自动把隔离环境升级为 ABI 配对的 `torch/torchaudio 2.7.1` CUDA 12.8 build，再重新验证和启动。模型文件不会删除或重新下载。若升级后仍失败，请先更新 NVIDIA 驱动，再执行 `restart_soulx_server.bat`。
+
+SoulX Server现在采用明确的空载生命周期：API启动完成后先释放官方WebUI预加载的SVC与预处理模型，首次转换才懒加载。SoulX窗口底部会持续显示隔离Runtime、CUDA验证、模型路径、API合约检测等启动阶段，直到显示 `SoulX API ready`；API尚未就绪时不可提交转换。
+
+`Unload server models after conversion (closing always unloads)` 默认开启。每次转换后会调用 `/_unload_svc`，清除完整AppState、Python对象、CUDA cache及IPC cache。关闭SoulX窗口时一定再执行一次释放：如果是本机 `SERVER MODE`，Studio还会停止当前项目的7861隐藏Server进程树，使VRAM/DRAM的回收效果与关闭 `restart_soulx_server.bat` 的CMD一致；再次点击 `SOULX` 会自动重启并显示启动进度。如果是 `CLIENT MODE`，Studio只请求远端卸载模型，不会终止共用的远端Server。Server控制台会显示 `models unloaded` 以及卸载前后的allocated/reserved显存。
+
+## 推荐的模型目录结构
+
+```text
+ComfyUI/
+└─ models/
+   ├─ diffusion_models/
+   │  ├─ minimax_h3_ref2va_int8_convrot.safetensors
+   │  └─ z_image_turbo_bf16.safetensors
+   ├─ text_encoders/
+   │  ├─ qwen3vl_32b_h3_ultra_uncensored_heretic_int8_convrot.safetensors
+   │  └─ qwen_3_4b.safetensors
+   ├─ vae/
+   │  ├─ minimax_h3_video_vae_fp16.safetensors
+   │  ├─ minimax_h3_audio_vae_fp32.safetensors
+   │  └─ ae.safetensors
+   └─ loras/
+      └─ minimax_h3_turbo_v4_step600_ema.safetensors
+```
+
+模型放好后重启 ComfyUI，并逐一检查对应 Loader 节点的下拉菜单。不要只把文件复制进目录而不重启或刷新模型列表。
+
+## 节点与自定义节点依赖
+
+下表来自当前工作流使用的 ComfyUI 节点类型。可以通过 `http://YOUR_COMFYUI_HOST:8189/object_info` 检查自己的节点安装；`comfy_extras.*` 属于较新版本 ComfyUI 的内置扩展，`custom_nodes.*` 需要相应自定义节点包。
+
+| 节点 | Python module | 来源/处理方式 | 额外模型文件 |
+|---|---|---|---|
+| `MiniMaxH3ReferenceToVideo` | `comfy_extras.nodes_minimax_h3` | 更新 ComfyUI；H3 原生节点 | 使用上方 H3 UNET、CLIP、双 VAE |
+| `MiniMaxH3TurboLoRA` | `custom_nodes.comfyui_fearnworksnodes` | 安装当前服务器使用的 FearNWorks 节点包 | H3 Turbo LoRA |
+| `MiniMaxH3MemoryEfficientSolAttentionPatch` | `custom_nodes.comfyui_fearnworksnodes` | 同上 | 无 |
+| `VRAM_Debug` | `custom_nodes.comfyui_fearnworksnodes` | 同上 | 无 |
+| `RTXVideoSuperResolution` | `custom_nodes.comfyui_nvidia_rtx_nodes` | 安装 `Nvidia_RTX_Nodes_ComfyUI`；仅支持 NVIDIA RTX GPU | 无独立 `.safetensors` checkpoint |
+| `RAMCleanup` | `custom_nodes.comfyui_memory_cleanup` | 安装当前服务器使用的 Memory Cleanup 节点包 | 无 |
+| `VRAMCleanup` | `custom_nodes.comfyui_memory_cleanup` | 同上 | 无 |
+| `ResolutionSelector` | `comfy_extras.nodes_resolution` | ComfyUI 内置扩展 | 无 |
+| `LoadVideo` / `GetVideoComponents` / `CreateVideo` / `SaveVideo` | `comfy_extras.nodes_video` | ComfyUI 内置视频节点 | 无 |
+| `VAEDecodeAudio` | `comfy_extras.nodes_audio` | ComfyUI 内置音频节点 | 使用已经加载的 H3 Audio VAE |
+| `ModelAttentionBackend` / `ModelSamplingAuraFlow` | `comfy_extras.nodes_model_advanced` | ComfyUI 内置高级模型节点 | 无 |
+| `ComfyMathExpression` | `comfy_extras.nodes_math` | ComfyUI 内置数学节点 | 无 |
+| `PrimitiveFloat` / `PrimitiveStringMultiline` | `comfy_extras.nodes_primitive` | ComfyUI 内置 primitive 节点 | 无 |
+| `EmptySD3LatentImage` | `comfy_extras.nodes_sd3` | ComfyUI 内置 SD3 latent 节点 | 无 |
+| `UNETLoader` / `CLIPLoader` / `VAELoader` / `KSampler` / `SaveImage` | `nodes` | ComfyUI 核心节点 | Loader 使用上方列出的模型 |
+
+自定义节点建议通过 ComfyUI Manager 的 **Find Missing Nodes** 安装。官方说明：
+
+- [ComfyUI：安装自定义节点](https://docs.comfy.org/installation/install_custom_node)
+- [ComfyUI Manager：查找与管理节点包](https://docs.comfy.org/manager/pack-management)
+- [NVIDIA RTX Video Super Resolution 节点](https://github.com/Comfy-Org/Nvidia_RTX_Nodes_ComfyUI)
+
+### 不需要额外模型的工作流节点
+
+为避免误以为还有遗漏，下面列出两个 API 中其余全部节点类型。这些节点只负责连接、采样、条件处理、媒体 I/O、解码、放大或内存清理，不会再读取新的 checkpoint：
+
+```text
+H3 workflow:
+BasicGuider, BasicScheduler, ComfyMathExpression, CreateVideo,
+GetVideoComponents, KSamplerSelect, LoadAudio, LoadImage, LoadVideo,
+MiniMaxH3MemoryEfficientSolAttentionPatch, MiniMaxH3ReferenceToVideo,
+ModelAttentionBackend, PrimitiveFloat, PrimitiveStringMultiline,
+RAMCleanup, RandomNoise, ResolutionSelector, RTXVideoSuperResolution,
+SamplerCustomAdvanced, SaveVideo, VAEDecode, VAEDecodeAudio,
+VRAM_Debug, VRAMCleanup
+
+Z-Image workflow:
+CLIPTextEncode, ConditioningZeroOut, EmptySD3LatentImage, KSampler,
+ModelSamplingAuraFlow, RAMCleanup, SaveImage,
+VAEDecode, VRAM_Debug, VRAMCleanup
+```
+
+## 旧版 API 的兼容模型
+
+以下文件只在手动载入旧工作流时使用，**默认 9 Image + 3 Audio + 3 Video 工作流不需要它们**：
+
+```text
+video_minimax_h3_r2v api.json
+video_minimax_h3_r2v API 3IMAGE 1AUDIO 1VIDEO.json
+```
+
+| 节点类型 | 旧版文件名 | 目录 |
+|---|---|---|
+| `UNETLoader` | `minimax_h3_ref2va_pruned_fp8_scaled.safetensors` | `ComfyUI/models/diffusion_models/` |
+| `CLIPLoader` | `qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | `ComfyUI/models/text_encoders/` |
+| `VAELoader` | `minimax_h3_video_vae_fp16.safetensors` | `ComfyUI/models/vae/` |
+| `VAELoader` | `minimax_h3_audio_vae_fp32.safetensors` | `ComfyUI/models/vae/` |
+
+旧版 workflow 使用 `20 steps`，没有当前默认工作流中的 `minimax_h3_turbo_v4_step600_ema.safetensors` 节点。
+
+## 安装与运行
+
+### 项目内置运行环境
+
+程序只使用 `ai_libraries_common`，不依赖系统 Python 或系统 PATH。当前已经验证的版本：
+
+| 组件 | 版本/路径 |
+|---|---|
+| Python | `3.11.15` — `ai_libraries_common/python_env/python.exe` |
+| PySide6 | `6.11.2` |
+| Pillow | `12.2.0` |
+| Torch | `2.11.0+cu126` |
+| Torchaudio | `2.11.0+cu126` |
+| CUDA runtime | `12.6` |
+| Transformers | `5.12.1` |
+| Dialogue audio | 默认 `MiniMax H3 Native Dialogue`；Settings／Design 可切换 `VoxCPM2 Local`、`Qwen3-TTS Local` 或 `Edge TTS`，Edge 使用 `edge-tts 7.2.7` |
+| VoxCPM2 runtime | 已兼容 PyPI `voxcpm 2.0.3` 与较新的 GitHub API；权重不随 runtime／GitHub 提供，用户自行下载 `openbmb/VoxCPM2` 到项目 `models/VoxCPM2/`；Studio 自动采用 CUDA 优先、失败后 CPU 重试 |
+| Qwen3-TTS runtime | 官方 `qwen-tts 0.1.1`、`transformers 4.57.3`、`accelerate 1.12.0` 独立放在 `ai_libraries_common/qwen_tts_runtime/`，不会降级 BLIP 共用环境；默认模型为约 2.5GB 的 `Qwen3-TTS-12Hz-0.6B-CustomVoice` |
+| FFmpeg / FFprobe | `ai_libraries_common/engine_ffmpeg/bin/`，2026-05-25 build |
+
+### 完整 Python library 版本清单
+
+以下清单直接读取自当前项目的 `ai_libraries_common/python_env`，共 **154 个已安装 distribution**。这是应用实际运行环境的版本快照，不是建议版本范围：
+
+```text
+accelerate==1.14.0
+addict==2.4.0
+aiohappyeyeballs==2.7.1
+aiohttp==3.14.3
+aiosignal==1.4.0
+aliyun-python-sdk-core==2.16.1
+aliyun-python-sdk-kms==2.16.5
+annotated-doc==0.0.4
+annotated-types==0.8.0
+antlr4-python3-runtime==4.9.3
+anyascii==0.3.3
+anyio==4.14.1
+argbind==0.3.9
+attrs==26.1.0
+audioread==3.1.0
+brotli==1.2.0
+certifi==2026.6.17
+cffi==2.1.1
+charset-normalizer==3.5.1
+click==8.4.2
+colorama==0.4.6
+contourpy==1.3.3
+contractions==0.1.73
+crcmod==1.7
+cryptography==50.0.1
+cycler==0.12.1
+datasets==3.6.0
+decorator==5.3.1
+dill==0.3.8
+docstring_parser==0.18.0
+edge-tts==7.2.7
+einops==0.8.2
+fastapi==0.141.1
+filelock==3.32.4
+fonttools==4.63.0
+frozenlist==1.8.0
+fsspec==2025.3.0
+funasr==1.4.3
+gradio==6.26.0
+gradio_client==2.6.1
+groovy==0.1.2
+h11==0.16.0
+hf-gradio==0.4.1
+hf-xet==1.5.1
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.21.0
+hydra-core==1.3.5
+idna==3.18
+inflect==7.5.0
+jaconv==0.5.0
+jamo==0.4.1
+jieba==0.42.1
+Jinja2==3.1.6
+jmespath==1.1.0
+joblib==1.5.3
+kaldifst==1.8.0
+kaldiio==2.18.1
+kiwisolver==1.5.0
+lazy-loader==0.5
+librosa==0.11.0
+llvmlite==0.49.0
+markdown-it-py==4.2.0
+MarkupSafe==3.0.3
+matplotlib==3.11.1
+mdurl==0.1.2
+modelscope==1.39.1
+modelscope-hub==0.2.0
+more-itertools==11.1.0
+mpmath==1.3.0
+msgpack==1.2.1
+multidict==6.7.1
+multiprocess==0.70.16
+narwhals==2.25.0
+networkx==3.6.1
+numba==0.67.0
+numpy==2.4.6
+omegaconf==2.3.1
+orjson==3.12.0
+oss2==2.19.1
+packaging==26.0
+pandas==3.0.5
+pillow==12.2.0
+pip==26.1.2
+platformdirs==4.11.4
+pooch==1.9.0
+propcache==0.5.2
+protobuf==7.36.0
+psutil==7.2.2
+pyahocorasick==2.3.1
+pyarrow==25.0.1
+pycparser==3.0
+pycryptodome==3.23.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+pydub==0.25.1
+Pygments==2.20.0
+pynndescent==0.6.0
+pyparsing==3.3.2
+PySide6==6.11.2
+PySide6_Addons==6.11.2
+PySide6_Essentials==6.11.2
+python-dateutil==2.9.0.post0
+python-multipart==0.0.32
+pytz==2026.3.post1
+PyYAML==6.0.3
+RapidFuzz==3.14.5
+regex==2026.6.28
+requests==2.34.2
+rich==15.0.0
+safehttpx==0.1.7
+safetensors==0.8.0
+scikit-learn==1.9.0
+scipy==1.17.1
+semantic-version==2.10.0
+sentencepiece==0.2.2
+setuptools==81.0.0
+shellingham==1.5.4
+shiboken6==6.11.2
+simplejson==4.1.1
+six==1.17.0
+sortedcontainers==2.4.0
+soundfile==0.14.0
+soxr==1.1.0
+spaces==0.51.1
+starlette==1.6.0
+sympy==1.14.0
+tabulate==0.10.0
+tensorboardX==2.6.5
+textsearch==0.0.24
+threadpoolctl==3.6.0
+tiktoken==0.14.0
+tokenizers==0.22.2
+tomlkit==0.14.0
+torch==2.11.0+cu126
+torch-complex==0.4.4
+torchaudio==2.11.0+cu126
+torchcodec==0.16.0
+tqdm==4.68.3
+transformers==5.12.1
+typeguard==4.6.0
+typer==0.25.1
+typing_extensions==4.16.0
+typing-inspection==0.4.4
+tzdata==2026.3
+umap-learn==0.5.12
+urllib3==2.7.0
+uvicorn==0.52.4
+voxcpm==2.0.3
+websockets==17.0.1
+wetext==0.1.6
+wheel==0.47.0
+xxhash==4.0.1
+yarl==1.24.5
+```
+
+额外运行环境信息：
+
+```text
+Python build: 3.11.15 | packaged by Anaconda, Inc. | MSC v.1942 64 bit (AMD64)
+Platform: Windows 10.0.26200
+Torch CUDA runtime: 12.6
+FFmpeg: 2026-05-25-git-34dfa8bf2b-full_build-www.gyan.dev
+```
+
+当前环境已经通过依赖一致性检查：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -m pip check
+# No broken requirements found.
+```
+
+日后如果更新 library，可用以下命令重新取得完整清单：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -m pip freeze --all
+```
+
+> `pip freeze --all` 可能把由 Conda 打包的 `pip` 显示为本机 build URI；README 中已将它规范化为实际安装版本 `pip==26.1.2`。不要把开发机的 `file:///...` URI 复制到其他电脑的 requirements 文件。
+
+项目根目录的 [`requirements.txt`](requirements.txt) 是上述主 Studio 环境的完整锁定清单，并包含 PyTorch CUDA 12.6 wheel index。Qwen3-TTS 因为固定使用另一组 Transformers／Accelerate 版本，必须使用独立的 [`requirements-qwen3-tts.txt`](requirements-qwen3-tts.txt)，由 `install_qwen3_tts_runtime.bat` 安装到 `ai_libraries_common/qwen_tts_runtime/`；不要把两份清单合并安装到同一个环境。
+
+在全新 Python 3.11 环境重建主 runtime 时可执行：
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+运行：
+
+```powershell
+.\run_h3_prompt_studio.bat
+```
+
+### VoxCPM2 模型需要用户自行下载
+
+VoxCPM2 权重约数 GB，不放入 `ai_libraries_common`，也不会上传到 GitHub／runtime 压缩包。每台电脑需要自行下载完整的 [`openbmb/VoxCPM2`](https://huggingface.co/openbmb/VoxCPM2) snapshot，并保持以下目录：
+
+```text
+minimax h3 reference r2v/
+└── models/
+    └── VoxCPM2/
+        ├── config.json
+        ├── tokenizer.json
+        ├── tokenizer_config.json
+        ├── special_tokens_map.json
+        ├── tokenization_voxcpm2.py
+        ├── model.safetensors
+        └── audiovae.pth
+```
+
+主模型也可使用 `pytorch_model.bin`，AudioVAE 也可使用 `audiovae.safetensors`。Studio 不会从隐藏的 Hugging Face cache 猜测或联网下载权重，只会检查项目内固定路径：
+
+```text
+models\VoxCPM2
+```
+
+如果目录或必要文件缺失：
+
+- Design 的 `Vox` 按钮会以橙色高亮；点击后在输入区显示 `VOXCPM2 MODEL MISSING`。
+- 主页 Settings 的 `VoxCPM2 model` 状态会列出固定路径与缺少的文件。
+- Apply、Preview 和 Run 会在建立 Audio reference 或启动 TTS worker 前停止并提示，不会长时间等待后才失败。
+- 下载完成后重新打开 Settings 或再次点击 Design 的 `Vox`，Studio 会重新检查。
+
+独立启动 VoxCPM2 WebUI（固定使用 bundled `python_env`，默认仅限本机 `127.0.0.1:8088`）：
+
+```powershell
+.\run_voxcpm2_webui.bat
+```
+
+不要在 `VoxCPM-main` 内直接运行 `app -port 8088`；这会使用系统 Python，而且正确参数是 `--port`。等价的手动命令是：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe .\ai_libraries_common\VoxCPM-main\app.py --host 127.0.0.1 --port 8088 --model-id ".\models\VoxCPM2"
+```
+
+### Qwen3-TTS Local 安装、模型与跨电脑转移
+
+Qwen3-TTS 官方包固定使用 `transformers==4.57.3` 和
+`accelerate==1.12.0`，Studio 共用 BLIP 环境则使用较新的版本。因此不要直接执行
+`python_env\python.exe -m pip install qwen-tts`。项目使用独立目标目录，Torch／Torchaudio
+仍由 bundled `python_env` 提供，不会修改系统 Python、ComfyUI 或现有 VoxCPM／BLIP。
+
+在项目根目录执行：
+
+```powershell
+.\install_qwen3_tts_runtime.bat
+```
+
+脚本会安装以下隔离组件，并下载／校验官方 SoX 14.4.2 Windows runtime：
+
+```text
+ai_libraries_common/qwen_tts_runtime/
+ai_libraries_common/qwen_tts_support/sox-14.4.2/
+```
+
+大型模型不会放进 `ai_libraries_common`。可以执行：
+
+```powershell
+.\download_qwen3_tts_model.bat
+```
+
+这会从官方 [`Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice`](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice)
+下载约 2.5GB 的完整 snapshot 到：
+
+```text
+models/Qwen3-TTS-12Hz-0.6B-CustomVoice/
+```
+
+验证：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe .\qwen3_tts_setup.py verify
+```
+
+看到 `Qwen3-TTS isolated runtime is ready` 与 `Qwen3-TTS model is ready` 才代表完整可用。
+没有安装 `flash-attn` 时会显示官方的性能提示，但 Studio 会使用 PyTorch SDPA／eager
+后备，不影响正确性；Windows 不建议为了这项可选优化自行编译 FlashAttention。
+
+跨电脑有两种做法：
+
+1. 最省时间：复制整个项目，并确认额外复制
+   `ai_libraries_common/qwen_tts_runtime/`、
+   `ai_libraries_common/qwen_tts_support/` 和
+   `models/Qwen3-TTS-12Hz-0.6B-CustomVoice/`。这三个目录被 Git 忽略，必须另外复制。
+2. 最省传输空间：只复制源码与原有 runtime；在新电脑运行
+   `install_qwen3_tts_runtime.bat`，再运行 `download_qwen3_tts_model.bat`。
+
+新电脑可以使用不同的 NVIDIA 驱动／CUDA PyTorch build；隔离目录不包含 Torch，Qwen
+会沿用该电脑 `python_env` 已验证可用的 Torch。Studio 默认先加载 CUDA，加载或单句推理
+失败时释放显存、改用 CPU 重试同一句；完成全部对白后立即卸载模型。S1／S3 等奇数
+Speaker 固定映射为普通话女声，S2／S4 等偶数 Speaker 固定映射为普通话男声。
+
+默认启动 `director_cut_studio.py`。旧 Tkinter 程序保留在 `h3_prompt_studio.py`。
+
+### ComfyUI 设置
+
+主页可以选择 Aspect Ratio，并测试 ComfyUI 连接。设置保存在项目根目录 `.env`：
+
+```dotenv
+H3_COMFYUI_URL=http://127.0.0.1:8189
+H3_ASPECT_RATIO=16:9
+H3_MEGAPIXELS=1.0
+H3_SAMPLING_STEPS=8
+H3_DENOISE=1.0
+H3_RTX_VIDEO_SUPER_RESOLUTION=true
+H3_HISTORY_POLL_INTERVAL=1.0
+H3_GENERATION_TIMEOUT=1800
+H3_HTTP_REQUEST_TIMEOUT=30
+H3_CONNECTION_RECOVERY_TIMEOUT=3600
+H3_DIALOGUE_TTS_ENGINE=h3_native
+H3_BLIP_DEVICE=auto
+H3_WORKSPACE_FREE_DISK_RESERVE_GB=50.0
+```
+
+请把 URL 改成自己的 ComfyUI 地址。`H3_CONNECTION_RECOVERY_TIMEOUT` 默认是 `3600` 秒；ComfyUI 接受任务并返回 `prompt_id` 后，如果远端网络暂时中断，Studio 会保留该 ID、显示橙色 Reconnecting 状态并持续查询同一个 Server Job，不会因为客户端失联而重复排队。网络恢复后会接回真实进度、下载原任务的输出，再继续其余 Segment 与 Master 拼接；输出下载使用 `.part` 临时文件并在完整取得后才发布。可以在 Settings 的 `Connection recovery window` 调整等待时间。
+
+这项恢复适用于“客户端／局域网断线，但远端 ComfyUI 进程和 Queue 仍然存在”的情况。如果 ComfyUI 本身重启并清空 `/history`，旧 `prompt_id` 无法在客户端凭空重建模型计算，必须重新生成该 Segment。`H3_DIALOGUE_TTS_ENGINE` 可设为 `h3_native`、`voxcpm2_local`、`qwen3_tts_local` 或 `edge_tts`；默认 `h3_native` 直接让 MiniMax H3 根据最新 Timeline Text Layer 生成对白，不建立 WAV。`H3_BLIP_DEVICE` 可设为 `auto`、`cuda` 或 `cpu`；主页 Settings 也提供相同选择。默认 `auto` 会先在 CPU 安全载入 BLIP，执行真实 CUDA 探测后才把模型移到 GPU，任何启动或推理错误都会保留原任务并自动切回 CPU。Pre-run Preview 使用 `0.2 MP` 且跳过 RTX upscaling；Accept 会在正式 `1.0 MP` 生成中复用 seed，Reject 会用新 seed 重新生成低分辨率预览。
+
+### Design AI 设置
+
+`design_ai.env` 保存 Design 页面的服务、模型与 Z-Image 参数；API key 不写入该文件。主要配置如下：
+
+```dotenv
+H3_DESIGN_PROVIDER="lm_studio"
+H3_DESIGN_LM_STUDIO_BASE_URL="http://127.0.0.1:1234/v1"
+H3_DESIGN_LM_STUDIO_MODEL="qwen3.8-27b-uncensored-hauhaucs-aggressive-mtp"
+H3_DESIGN_TIMEOUT=900
+H3_DESIGN_AUTO_SEMANTIC_ENRICHMENT=false
+H3_DESIGN_UNLOAD_LM_AFTER_SEMANTIC_ENRICHMENT=true
+H3_DESIGN_GENERATE_COMFY_IMAGES=true
+H3_DESIGN_IMAGE_CHECKPOINT="z_image_turbo_bf16.safetensors"
+H3_DESIGN_IMAGE_WIDTH=1024
+H3_DESIGN_IMAGE_HEIGHT=576
+H3_DESIGN_IMAGE_STEPS=8
+H3_DESIGN_IMAGE_CFG=1.0
+```
+
+## Design 页面执行顺序
+
+点击 `Create Director Design JSON` 后：
+
+1. LM Studio 根据用户构思先建立结构化计划，决定视频秒数、Shot 和需要生成多少张参考图。
+2. 自动卸载 LM Studio 模型，释放显存。
+3. ComfyUI 按 `media_requests` 逐张执行 Z-Image，并在小视窗显示 thumbnail。
+4. 本地 BLIP 分析每张概念图，写回实际视觉 caption 与关键词。
+5. Z-Image 工作流执行 `VRAM_Debug → RAMCleanup → VRAMCleanup`，程序随后请求 ComfyUI unload/free。
+6. LM Studio 根据原计划与 BLIP 结果完成最终 Director Design JSON。
+
+若 LM Studio 把空的 P1–P9 错写成现有素材，Studio 会把它自动修复成 Z-Image 请求，不再阻止 Apply。若视觉 Shot 的图片请求为零或明显不足，Studio 会按约每 5 秒一个有效视觉状态自动补足，最多每个 Shot 一张；整个项目可以继续产生 P10+，但任一 Segment 同时激活的图片仍不可超过 9 张。每张 Z-Image 遇到暂时性 ComfyUI 错误时会自动重试一次。
+7. LM Studio 再次自动 unload。
+8. 点击 `Apply to H3 Workspace` 后关闭 thumbnail 视窗，把素材、时间范围、Shot、主题文字和提示词带回 H3 工作台。
+
+处理期间会显示转圈遮罩及实时阶段。默认 Design timeout 为 900 秒；H3 generation timeout 为 1800 秒。
+
+## Director Cut 工作区
+
+- Virtual Media Pool 固定每行显示三个素材卡片；调整面板宽度时三张卡片会同步缩放，不会自动增加为四列或更多列。紧凑标题栏以 `+I / +V / +A` 添加素材，完整说明可从 hover tooltip 查看。素材使用永久 `P1 / V1 / A1` 简称，并可继续加入 `P10+ / V4+ / A4+`；Design 缺少空卡时也会自动建立新的逻辑素材。
+- Recognition 检查器分为 `RAW ANALYSIS` 与 `AI SEMANTIC` 两页。后者可手动执行，也可开启 `AUTO AI SEMANTIC ENRICHMENT`，并复用 Design 当前选择的 LM Studio／Online GPT 服务与模型。
+- Media Pool 或 Timeline 素材执行 AI Enrich 时，对应 Media Pool 卡片会显示半透明 processing overlay；分析在后台执行，不会冻结主界面。
+- 只有拖入 Timeline 的素材才会连接并激活到 H3 workflow。
+- 同一个 Media Pool Source 可以重复拖入 Timeline。每次重复使用都是独立 Clip Instance，可分别调整时间、轨道、速度、Source In/Out、淡入淡出、转场及 Clip Prompt；它们仍共享同一份识别/AI Enrich 结果，而且在同一 Segment 内只装入一次实体 H3 Picture／Video／Audio reference slot。
+- Studio 与 Design 内统一使用不会改变的素材编号 `@P1 / @V1 / @A1`。每个生成 Segment 提交前，编译器才按该段实际激活的素材转换成 MiniMax H3 所需的 `<Picture N> / <Video N> / <Audio N>`；旧项目中的 angle-bracket 编号会按原始 Media Pool 编号安全迁移，未激活引用不会误指向别的素材。
+- Clip、Shot、Marker 与编辑范围仍以 `0.5s` 为一格执行 snap；播放头和 Program Monitor 播放滑杆不 snap，可按毫秒连续拖动。滑杆使用按下位置作为相对拖动锚点，不会在开始向左或向右时突然跳到端点；拖动期间画面 seek 会轻量 debounce，释放后精确落在所选时间。
+- 支持动态增加/删除 V 与 A 轨、多层视频合成、Opacity、Blend Mode、Mute、Solo、Volume、Pan、锁定和轨道高度。
+- AI Design 可按内容自动建立 V4/V5… 与 A4/A5… 编辑轨：画面／标题使用 V 轨，Dialogue、Voice-over、Lyrics 使用独立 A 轨。编辑轨最多 V16/A16；逻辑素材库没有 9/3/3 的项目总量上限，只有每个实际生成 Segment 仍遵守 9 Picture、3 Video、3 Audio 实体参考槽。
+- Clip 支持速度、源入点/出点、淡入淡出与转场。
+- Selection Tool 可移动 clip 及 Program Monitor 文字；Hand Tool 用于平移 Timeline。
+- Type Tool 支持 On-screen Text、Dialogue、Voice-over 与 Lyrics。On-screen Text 使用独立 V Track；每句 Dialogue、Voice-over 与 Lyrics 都是可见、可拖拽、可修剪和可单独修改类型的 A Track Clip，并分别使用 `D1 / D2...`、`VO1 / VO2...`、`L1 / L2...` 逻辑音轨。修改 Content Role 会自动迁移到正确轨道；旧 Project 中被误放在 V Track 的 Dialogue 也会在载入时自动修复。Speech Text Layer 可编辑 Speaker、Language、Delivery、Overlap Policy 与所属 Shot；Lip Sync 仍只属于 Dialogue。
+- `Overlap Policy` 提供三种行为：`AUTO` 默认保留原时间，并把重叠或相隔不足1秒的语音放到下一条同类型音轨；`OVERLAP` 明确允许两条独立表演同时发生；`SEQUENTIAL` 才会把后一句顺延到前一句结束后，必要时同步延长 Timeline。自动分轨不会合并、删字、缩短或改变用户台词。
+- Design 输入中的带时间码 `对白／普通话对白／旁白／Lyrics／On-screen Text` 会在送入 LM Studio 前由确定性解析器建立逐字 `text_layers`；LM 第一次规划和 BLIP Refinement 都不能删除、改写或翻译这些内容。Qwen 会从故事、Shot 与素材证据判断实际说话角色：女声分配 `S1`，男声分配 `S2`，并跨 Shot 保持一致；若用户明确写了 S1／S2 则以用户指定为准。逐字保护器只保护文字和时间，不会再把 Qwen 的合法 Speaker 选择覆盖回默认 S1。若需求只泛指要有对白／旁白、没有提供可恢复的逐字内容，而 Qwen 重试后仍漏建 Text Layer，Apply 不再中断：Timeline 会出现红色 `⚠ ADD EDITABLE ...` Marker，Summary 与状态栏同时提示，用户可继续整理视觉轨并稍后用 Type Tool 补词；该 UI Marker 永远不会写进 H3 Prompt、TTS 或技术规则。
+- Design Requirement 标题同一排提供四种对白模式按钮：`Ori` = MiniMax H3 Native Dialogue、`Vox` = VoxCPM2 Local、`Qwen` = Qwen3-TTS Local、`Etts` = Edge TTS。默认 `Ori`；按钮选择会随 Apply 成为当前项目设置并写入 `.env`。回到 Timeline 后仍可在主页 Settings 改换，不必重新进入 Design。
+- 同一排的 `LANG` 下拉框提供 `Auto`、中文、English、Arabic、Français、Deutsch、Italiano、日本語、한국어、Português、Русский 与 Español。[MiniMax H3 官方模型卡](https://huggingface.co/MiniMaxAI/MiniMax-H3)列出 11 种稳定对白语言：Arabic、Chinese、English、French、German、Italian、Japanese、Korean、Portuguese、Russian、Spanish；其他语言可能生成，但不属于稳定保证。默认是 `Auto`，由 Studio 在调用 Qwen 前确定；中文 Requirement 会锁定为 `Chinese`。选择结果保存在 `design_ai.env` 的 `H3_DESIGN_DIALOGUE_LANGUAGE`。
+- `SUB OFF / SUB ON` 与 `LANG` 同排，默认 `SUB OFF`。关闭时 Dialogue／Voice-over 仍完整出现在 A Track，但不会建立字幕、烧录字幕或自动主题 hashtag；开启时 Studio 会根据每一条语音 Text Layer 的原文和时间码建立可编辑 V4+ 字幕层。状态保存在 `design_ai.env` 的 `H3_DESIGN_SUBTITLES_ENABLED`。
+- Design Requirement 同排新增 `MUSIC: AUTO / OFF / TIMELINE`，默认 `AUTO`。`AUTO` 让 Qwen 按每个场景的类型、情绪、节奏与转折规划合适配乐，并把实际音乐方向送入 H3 原生音画 Prompt；`OFF` 强制 `non_diegetic_music: N/A`；`TIMELINE` 只有当前 Segment 存在 Music Cue 时才启用音乐。选择会随 Apply 写入项目 `render_settings.music_mode` 及 `.env` 的 `H3_MUSIC_MODE`，旧项目缺少字段时安全使用 `AUTO`。
+- `Ori` 不建立 authored WAV，H3 Prompt 会从当前时间窗内的 `D1+ / VO1+ / L1+` Type Clips 生成独立 `TIMELINE TYPE / SPEECH TRACK EVENTS`，每句只出现一次，按 Clip 的时间码、Track、Speaker、Language、Delivery、Overlap Policy 和 Lip Sync 执行。实际 Prompt 会列出合法的 `AUTHORIZED SPEECH OVERLAPS`，同时禁止合并、换序、重复、翻译或发明台词；逐字台词不再复制或混入 Shot Action Prompt。编辑 Speech Clip 会直接重新编译 Ori Prompt，并令对应 Segment 失效待重算。切换到 `Vox`／`Qwen`／`Etts` 后，Preview／Run 会建立或重建逻辑 Audio 素材（必要时自动成为 A4+），放回 Timeline 并在当前 Segment 动态装入实体 Audio slot；即使 Design 最初使用 Ori 或用户曾删除 A1，也不必重做 Design。Edge 使用 `zh-CN-XiaoxiaoNeural`（S1）／`zh-CN-YunxiNeural`（S2），失败时尝试 Windows SAPI；VoxCPM2 和 Qwen3-TTS 只使用项目 `models/` 内的完整 snapshot，按 Speaker 保持确定性声音，同一批台词只加载一次模型。`auto` 模式只要 PyTorch 检测到 CUDA 就优先在 GPU 加载；若模型加载或任一句对白推理发生 CUDA／显存错误，worker 会释放 CUDA cache、在 CPU 重载模型并自动重试当前对白，不会静默转用其他 TTS。Timeline 中修改对白、Speaker、时间、Delivery 或 Overlap Policy 后，旧 WAV 会自动失效；Preview／Run 只会使用最后一次编辑对应的 WAV。
+- Design 会自动建立三层 Production Mix：连续且符合地点的 diegetic ambience、严格对应画面接触瞬间的 Foley／one-shot SFX，以及位于前景的逐字对白。对白／旁白只叠加在环境底噪之上，环境声和Foley不会在人声开始时降低、静音或重置；只有非叙事配乐会在人声期间降低约8 dB并在句间自然恢复。H3 Native Dialogue直接生成上述声场；外部TTS的画面内Dialogue则从alpha.15起先建立并缓存H3原生空人声环境床，再与精确TTS组成单一完整现场Audio reference供最终H3生成，不额外占用第二个Audio slot，也不会在成片后覆盖音轨。
+- 每个 Shot 都会按照画面和已分析素材生成 `SHOT SPATIAL ACOUSTICS`：小房间／办公室使用短而较明亮的 `0.18–0.45s` 反射；普通室内使用中等扩散；大厅使用受控的 `0.9–1.8s` 长尾；走廊、楼梯间、洞穴使用有方向性的反射；车内使用极短软包空间反射；雨棚／摊位只保留附近屋顶、墙壁和柜台的 `0.12–0.32s` 短反射；户外则接近无混响、没有离散 Echo，并适度减少低中频饱满感。没有换地点的 Close-up／Cut 会继承上一 Shot 声场，真正换景时才平滑 crossfade。
+- Type clip 两端使用高亮边缘进行 trimming，支持 Timeline snap、Undo 与 Redo。
+- Shot Tool 在视觉轨拖出时间范围，定义 Framing、Camera angle、Camera movement、必须完成的 Core Action、必须保持的 Continuity State、Required Environment Response、可以省略的 Optional Flourish、Additional Direction 与 Shot Prompt Preset。
+- Design 与 Shot Tool 共用 H3 动作预算：每 5 秒最多三个必须完成的物理动作、两个必要接触后果和两个可选装饰。超出预算时优先把次要攻击、重复反击与纯装饰降级；最终 Prompt 明确要求先省略 Optional Flourish，不能因此延迟、削弱或重播 Core Action。Design Summary 会列出 `within / optional trimmed / priority compressed` 状态及压缩说明。
+- Prompt Tool 点击图片 clip 时会带入 BLIP visual caption，也可为其他元素加入专属提示词。
+- Marker Tool、Creative Brief、Visual Style、Transition、Ending Hold、Constraints、Soundscape 与 Music 会共同自动生成 Director H3 Prompt。
+- `AUTO SYNC FROM TIMELINE` 启用时会执行 Timeline Prompt Reconcile：以当前素材引用、Shot、Dialogue、Voice-over、Lyrics、Ending Hold 与音频 transcript 为 source of truth，自动重写 Creative Brief 与 Director H3 Prompt，并忽略已被替换的 Design placeholder，不需要重新进入 Design 页面。
+- 项目保存格式为 `.h3director.json`，支持 Undo/Redo。
+- Program Monitor 使用可拖动的左右分割线：左侧 `TIMELINE SOURCE` 显示当前时间轴素材与文字合成，右侧 `GENERATED OUTPUT` 显示最终 MP4。两侧采用 1px 合法最小宽度，分割线可以连续推到视觉上的最左/最右，但不会触发 Qt 自动 collapse、跳边或把手卡死；当前比例会随项目保存，并为后续 Depth / Pose 分析视图保留扩展空间。
+- 播放生成视频时，右侧 MP4 作为主时钟同步 Timeline playhead、时间标签、滑杆及左侧素材画面；拖动 Timeline 或滑杆也会反向定位生成视频。
+- 对大于 1080p、高码率或超过 100MB 的成片，Studio 会在后台建立缓存用的 720p Monitor Proxy，避免 Windows 播放器停在第一帧；Export 与项目归档仍使用未经修改的原始 Master。
+- 生成过程中仍显示进度遮罩；完成后成片保持在右侧，直到点击 New Project，并提供 Export link。
+- 每次 Preview / Run 完成后，Studio 会更新当前 `example` Workspace 根目录中的唯一 `generated_preview.mp4` 或 `generated_output.mp4`，并自动保存 `project/director_project.h3director.json`。不会再为同一份完整 Master 建立额外的 render Take；`segments/SEGMENT_ID/takes/` 每段最多保留 Preview 与 Final 各一份，Shot 只保存引用。使用 Open Project 打开这份项目时，会同时恢复成片、左右分割比例、对应 Timeline 起点及 Preview/Final Segment 状态。
+
+## Smart Long Render（突破 15 秒）
+
+工作区仍然显示一条完整 Timeline，不需要手动切割。生成行为由 Work Area 长度自动决定：
+
+- `≤ 15s`：继续使用原来的单次 H3/ComfyUI 提交流程，不分段、不拼接。
+- `> 15s`：自动启用 Shot-aware Smart Long Render；每个原生生成任务最长 15 秒，Studio 在后台顺序生成并重新组装为一个 Master。
+- 当 Shot Blocks 覆盖至少 80% Work Area 时，Shot 起点／终点成为优先切点；少于 3 秒的微小动作（例如 1 秒 bullet-time）会向后合并，通常形成约 3–6 秒 Render Units。若项目没有完整 Shot 结构，则继续使用稳定的 `0–15 / 14–29 / 28–43…` 规划。
+- Shot Render Unit 与稳定 seed 绑定。修改一秒动作时，只重新生成包含该时间的 Render Unit；continuity handle 内发生的修改不会令下一个已缓存 Shot 连锁失效。
+- 每段的 Shot、Dialogue、Marker 与 Ending 指令会过滤到该段，并从全局时间自动换算成段内 `0–15s` 时间。
+- 全局视觉阶段、Soundscape、Music、Constraints 与空间声学时间表同样会过滤到当前 Segment 并重设为段内时间；较早房间的 Reverb tail 不会泄漏到后续户外段。声音提示只参与该段 Prompt／fingerprint，不会修改 Picture／Video／Audio 动态编号、物理节点连接或 24 帧 continuity mapping。
+- 非第一段会把上一段最后 **24 帧（24 fps，正好 1 秒）**提取成无音频的隐藏 Video reference，只作为动作、人物位置、镜头方向、光线和环境的时间上下文；提示词明确禁止重播上一段动作。Hard Cut 会清空这项上下文。系统会优先使用空闲 Video slot；三个实体 Video slot 都占满时，只临时让出最低优先级的 Auto 参考，不会移除用户强制 Active 的素材。
+- ComfyUI 一次只执行一段，但同一个 Smart Render Job 内保持 H3 模型常驻；单段失败会自动重试，已成功的段会写入 manifest，避免全部重来。全部 Segment 完成或 Job 终止后才统一请求一次 unload/free VRAM。
+- 未改变且 fingerprint 相同的段会直接复用缓存；编辑局部 Shot 或素材后，只重新生成受影响的内部段，再重新组装 Master。
+- Timeline ruler 下方有一条 6px `Render Status` 状态条，并按隐藏 Segment 显示：绿色为已生成且可复用、黄色为编辑后需要重算、蓝色为正在生成、红色为生成失败、灰色为尚未生成。Hover 可查看该 Segment 的真实时间范围和状态。
+- 修改 Shot、Marker、Transition、文字层、Clip Prompt、素材时间／属性时，只把与修改前后时间范围相交的 Segment 标成黄色；修改全局视觉风格、Creative Brief、声音设计或影响合成的轨道属性时，才会把所有 Segment 标成黄色。
+- 生成时当前 Segment 自动变蓝；成功写入 manifest 后立即变绿，失败则保留红色。状态及黄色 dirty Segment 会跟随 Director Project 保存和恢复。
+- Program Monitor 在生成期间不会再被全屏遮罩取代：旧 Master／Timeline Source 会继续显示，上方使用横跨左右两个画面的半透明 spinner 和实时阶段文字；右侧生成视频通过 `QVideoSink` 绘制，避免 Windows 原生视频表面穿透遮罩。每个 Shot Unit 下载完成后会立即在右侧循环预览，同时后台继续生成下一段与组装 Master。
+- FFmpeg 会裁掉重复的重叠区，将所有段重编码为一个带音频的 `master.mp4`。Program Monitor 与 Export 始终只显示完整 Master。
+- Pre-run Preview 会为所有内部段建立稳定 seed；Accept 以 1.0MP 复用同一组 seed。
+
+Smart Long Render 的项目文件格式目前为 **version 20**。version 20 加入 Workspace layout 2 的 Segment Take 索引、可携式相对路径、Shot 的 Preview/Final Segment 引用及旧 Shot Take 哈希验证迁移。运行时首先写入 `.director_cache/generated_outputs/`；当 Master、所有 Segment Take 和项目 JSON 都成功归档并验证后，Studio 才清理该次临时缓存。Design JSON 的 Timeline 长度上限为 600 秒；实际可行长度仍取决于磁盘空间、ComfyUI 稳定性和总生成时间。
+
+Design 页的 `LOAD JSON` 可以载入人工校准或先前保存的 Director Design。若载入的 JSON 尚无预生成图片，点击 Apply 后仍会自动执行所需的 Z-Image reference generation。项目附带的 45 秒长片示范位于：
+
+```text
+example/tang_ting_ci_ying_45s_demo/design_plan.json
+```
+
+## H3 Prompt Skills
+
+Skill 默认使用两层绑定，并支持由 Special Skill 明确声明独立模式：
+
+```text
+skill default/
+└─ h3-prompt-writing/
+   ├─ SKILL.md
+   └─ references/
+
+skill special/
+├─ dark-rescue-h3/
+├─ dark-rescue-h3-no-pov/
+├─ street-fighter-live-action-h3/
+├─ minimalist-product-ad-generator/
+├─ music-video-subtitle-generator/
+├─ long-form-h3-director/
+├─ wuxia-blade-film/
+└─ ...每个含 SKILL.md 的子目录
+```
+
+- Default 固定为 `h3-prompt-writing`，负责 MiniMax H3 官方 Ref2VA 结构。
+- Special 提供场景/风格规则；选择 `None` 时只应用 Default。
+- 一般 Special 采用 `Default + Special`；在 `SKILL.md` 写入 `<!-- h3-studio-binding: standalone -->` 的 Special 会独立送入 Design，不会同时注入 `h3-prompt-writing`。
+- 顶部工具栏的 `CREATOR` 与 Default / Special 选择器位于同一排。它可以新建或编辑 Special Skill、选择 `Default + Special` 或 Standalone 绑定、维护英文 `SKILL.md`、可选中文 `SKILL.cn.md` 及 `DESIGN_REQUIREMENT.txt` 起始模板，并在 `SAVE + APPLY` 后立即刷新及选中该 Skill。选择带模板的 Special Skill 后点击 `DESIGN`，空白的 Design Requirement 会自动填入模板且仍可自由编辑；已有文字不会被覆盖。Folder/key 只允许小写英文字母、数字及单连字符；Default Skill 名称受保护，不能覆盖。
+- Studio 内置的每一个 Special Skill 都附带与自身工作流对应的 `DESIGN_REQUIREMENT.txt`，可作为直接测试的范例，也可以在生成前替换其中的人物、产品、主题、时长、画幅、对白和素材要求。
+- `beat-synced-entrance-18s` 当前执行19秒五段实体因果链：P1走到并绕过第一个走廊转角遇见P2，P2再绕过第二个转角遇见P3，随后由视线切回P1。系统只自动建立一张P5 Z-Image校外生活环境母版，包含校园出口、道路、巴士站及背书包放学、等车、聊天、观察道路和过马路的背景人物。12.00–14.00秒是不可省略的独立过场Segment：P1正面走出校园、显示惊讶，再以墙面／门框遮满画面。14.00–19.00秒由P5独占建筑、地面、日光、镜头轴线与背景生活，P4只锁定前景主体身份、外观、数量及排列并舍弃原背景；过场最后24帧只延续遮挡时机与摄影机运动，不再冒充校园环境。固定生成窗口为0.00–12.00、12.00–14.00及14.00–19.00秒；P4主体以45–60%体感速度、极慢水平横移和最后0.5秒Final Hold收尾，A1始终按Timeline Source Window以1倍速连续播放。
+- `comic-talk-show-h3` 会根据 P1 实际可见的完整前景主角动态建立 `S1…SN`，不会预设一定是五人。角色按画面从左到右登记，跨 Shot 保持身份、脸、服装、排列与原始照片／漫画／3D／插画媒介；裁切边缘残影、海报、反射、雕像及背景路人不计入主角。每名主角各有一个主要喜剧发言 Beat 和独立 Text Layer，非当前 Speaker 只能作无声反应。v0.3.5-alpha.9 起，每条语音还拥有独立 `Voice Gender`，两人项目不会再误建 S3；每个语音事件拥有独立可见轨道，普通 AUTO 对白句间保留 1.0 秒闭嘴释放区。短台词不会再把整段 Shot 都视为可发声，原句结束后禁止即兴、复读、翻译、提早接话、含字笑声、耳语和背景交谈。Studio 会在原生 H3及外部TTS项目的无对白空档与完整静音尾段检查额外人声，并自动重生异常 Segment。普通模式把 P1 作为全片唯一人物母版，不建立人物类 `media_requests`，因此不会用 P2–P9 或 Z-Image 陌生人替换原角色。使用时加载群像图为 P1，选择该 Skill 后点击 `DESIGN`，在自动模板末尾填写主题，再执行 Create JSON；Apply 前检查 Speaker Ledger、`S1…SN` 与每条 Text Layer 的 Voice Gender 即可。
+- `cinematic-story-60s-director` 用于把用户粘贴的长篇故事、背景资料或粗略构思改编成约60秒写实电影短剧。它先提炼核心冲突和反转，再规划8至12个连续Shot，自动生成简洁普通话对白／旁白并写入独立Text Layer；默认使用AUTO多轨，允许真实剧情重叠，语音确实无法继续压缩时同步延长Shot与Timeline，避免出现无Shot Segment。明确指定的Media Pool素材始终高于自动人物／场景设计。
+- `short-drama-h3-director` 是适配 Studio 的短剧 Special Skill，默认采用 `Default + Special`。它把短剧冲突、人物因果、伏笔反转、集尾钩子及竖屏构图转换为完整时间范围的 Shot Blocks，同时逐字保护 `text_layers`，优先复用 `existing_media_uses`，仅为缺失证据建立 `media_requests`，并遵守每 5 秒动作预算、环境因果、声音层与 Final Hold 规则。英文主文件、中文对照版及第三方许可证均位于 `skill special/short-drama-h3-director/`。
+- `long-form-h3-director` 是长片 Default-bound Special Skill。它输出一份覆盖完整总时长的 Design JSON，而不是每批一份 JSON；默认按约 30 秒规划安全批准点，保持 15 秒原生 Segment 的 Incoming／Outgoing State、上一段最后 24 帧运动上下文、逐字对白、稳定 Reference ID 与唯一项目终点 Final Hold。选择它会让主页自动采用 Incremental production；不选择时仍保留 Full Range 一次过处理。
+- `dark-rescue-h3` 是严格第一人称暗场救援 Special Skill，默认采用 `Default + Special`。除了救援者双眼位置的文字锁定，每个Shot还必须出现近镜头手套、前臂/袖口、手电、头盔边缘或救援工具作为POV证明，并使用视线高度、身体运动视差与受困者看向救援者眼睛的互动防止镜头退化为第三人称。它会从五套已验证的场景语法中改编地点，自动建立普通话对白／克制旁白、九镜救援因果链、现场环境声、可解释光源与15秒边界连续性；没有明确 `@P/@V/@A` 时不会虚构Media Pool编号。
+- `drone-fly-on-city`：P1为全程场景母版；P3是0–5秒的低重绘开场锚点，P4起每5秒读取P1实际像素建立场景状态图（35秒为P3–P9，45秒继续至P11）。所有图锁定P1主题建筑、构图、场景、道路、天空、天气、颜色、色温与曝光；BLIP／AI只作补充。H3以P1主题建筑为中心，沿白底红线、绿色起点、蓝色终点验证成功的P2路线完成一圈360度；P2顺序不明确则提示 `ROUTE NEEDS REVIEW` 并暂用静止镜头。静态图不会写入环绕或轨迹词，避免生成发光圆环。图生图只属近似场景保持，不保证隐藏视角像素准确；已取消自动尾图和末秒覆盖。
+- `drone-fly-on-city-fireworks` 继承同一套P1五秒场景链与P2路线受控360度环绕，并加入烟花连续性：离散粒子爆发、烟雾漂移、现有表面反射、曝光响应和距离延迟的原生爆炸声会按Shot保存状态。它不再预设任何城市或地标；烟花与摄影机运动由H3原生生成，已取消本地烟花尾图合成、强制返回P1与末秒冻结。
+- `dark-rescue-h3-no-pov` 是独立的外部摄影机版本：救援者会作为稳定角色出现在画面中，使用中远景双人构图、侧面走廊或三分之四救援机位，不会注入救援者眼睛、头盔摄影机或只见双手的构图规则。两个Skill各有自己的英文/中文规则及Design Requirement模板。
+- `street-fighter-live-action-h3` 用于15至45秒真人街机格斗电影。每个15秒Segment准确安排12个编号近身攻防Beat；45秒模式建立36个动作的全局Action Ledger，并拒绝以换镜头或特效伪装重复动作。P1固定为S1、P2固定为S2，两人默认完全徒手。`v0.3.2-alpha.5` 新增环境格斗状态账本：每个Shot明确记录人物动作、接触物件、主要／次要反馈、延迟观众反应、Incoming／Outgoing Environment State及Location Transition。格斗从同一座香港九龙城寨风格湿货市场持续冲出已打开铁闸，进入相连的室外雨夜后巷；档口凹陷、菜箱位移、碎冰、水迹、铁闸与观众位置跨Shot及Segment延续。室内与室外各使用一张按时间隔离的Z-Image环境／观众图，每段仍直接装入真实P1、P2，不让背景人物替代主角。所有状态会进入实际H3 Segment Prompt，并可在Shot编辑器中修改。
+- 该短剧 Skill 参考并重新设计自 MIT 授权的 [POUND0423/AI-drama-pound](https://github.com/POUND0423/AI-drama-pound)。上游侧重剧本创作；Studio 版本另外加入 H3 Director Design JSON、Timeline、素材映射、对白、音景和可执行 Shot 预算规则。
+- `wuxia-blade-film` 使用标准 `Default + Special` 绑定：`h3-prompt-writing` 负责官方 H3 Ref2VA 结构，它会先诊断并自动改写不适合 H3 的武侠输入，再建立物理连续、武器因果、每 5 秒动作预算、15 秒无重播边界、人物／武器／空间／消耗品账本、写实轻功、碎片式镜头和环境同步。输入修正会自动重新分配缺失或不均匀的 Shot 时间，压缩同镜多招，把气劲捷径、无支点飞行、长时间 Bullet-time、完整 360 度环绕及多个竞争镜头运动改写成可执行的接触、动量和镜头重构，并在输出前以零预算警告为目标再次编译。最新版亦包含断刀内圈贴身流、链索张力轴心、凌空双刀掠食流、“一秒生死”距离判定、肢体／刀身几何／累积伤势锁定，以及单一冻结动作参考图规则。选择此 Skill 后打开 Design，会从 `DESIGN_REQUIREMENT.txt` 自动载入可编辑的45秒唐朝庭院刺杀模板。英文主文件为 `SKILL.md`，中文对照版为 `SKILL.cn.md`。旧版《一叶杀》V2 保留于 `example/one_leaf_kill_45s_design_requirement.txt`；推荐的长枪将军对双短剑刺客 V3 同时提供可贴入 Design 的 `example/one_leaf_kill_45s_design_requirement_v3.txt` 与可直接 Load JSON 的 `example/one_leaf_kill_45s_design_plan_v3.json`。
+
+Preset 分别保存于独立文件，均支持选择、新增、修改、删除及 `SAVE + APPLY`：
+
+```text
+preset_env/creative_brief.env
+preset_env/global_visual_style.env
+preset_env/transition_language.env
+preset_env/constraints_and_technical_rules.env
+preset_env/overall_soundscape.env
+preset_env/non_diegetic_music.env
+```
+
+## 媒体分析与稳定性
+
+- 图片使用 Pillow 与 BLIP；BLIP 对整图和三个有目的的区域各分析一次，自动删除 conditional prompt 回声、合并没有新增视觉证据的相似描述，并只显示一次实际推理设备。若边缘取样确认素材具有高度一致且与边缘连通的单色背景，会自动建立透明 PNG 衍生素材供预览、识别、Design 与 H3 引用，原图保持不变。复杂背景会安全跳过。
+- 视频使用 FFprobe 获取元数据，并抽取开头 10%、中段 50%、结尾 90% 多帧进行 BLIP 分析。
+- 音频按 8 秒分块流式解码，总解码长度不超过 Timeline 秒数。
+- 音频先执行 VAD，再只对语音区间执行 Whisper，并以 FFT 估算节拍。
+- 可选 AI Semantic Enrichment 会在所有基础分析完成后，把有界的原始证据交给 Design 当前的 Qwen/GPT，输出 Summary、Observed Facts、Subjects、Objects、Environment、Camera、Lighting、Temporal Motion、Audio/Speech、H3 Usage 与 Uncertainties。AI 推断独立保存，不会覆盖 BLIP／Whisper 原文。
+- AI Enrich 会先根据素材类型和基础证据决定是否需要多区域 BLIP；需要时会补充主体、环境与细节区域 caption，再交给 Qwen/GPT，避免无条件重复分析整张图片。
+- 如果被分析素材已经位于 Timeline 且存在重叠 Shot，AI 会返回对应 `shot_adaptations`，自动更新 Subject Action、Environment Response 与 Additional Direction；没有现有 Shot 时不会擅自创建新 Shot。
+- Design 后替换 Timeline 素材时，旧素材的 caption、placeholder prompt 与旧 Shot 描述会失效；新素材完成分析后会融合到原有 Shot 和最终 H3 Prompt，而不是被当作额外静态照片叠加。
+- 每次结果都校验素材编号、类型与 SHA-256 evidence fingerprint；换素材、修改 Recognition 或 Clip Prompt 后旧结果会标为 Stale，且不会进入 Design 的有效分析上下文。只发送文件 basename，本机绝对路径会先遮蔽。
+- Online GPT 模式会把有界的 caption／transcript 证据发送至所配置的远端服务；API key 可沿用本次运行中 Design 页输入的值，或读取当前进程的 `OPENAI_API_KEY`，但不会写入 `design_ai.env` 或项目文件。
+- 识别工作在后台 worker 中运行，支持取消、超时与失败回退，不阻塞主界面。
+- thumbnail、抽帧、波形与分析结果缓存于 `.director_cache/`。
+
+## 首次启动检查清单
+
+1. 按本 README 放好 8 个 ComfyUI 模型文件：H3 5 个、Z-Image 3 个。
+2. 在 LM Studio 准备并加载 Qwen GGUF，启动 Local Server。
+3. 启动 ComfyUI，确认启动日志没有 `IMPORT FAILED`。
+4. 在 ComfyUI 分别载入两个 API workflow，确认没有红色 missing node。
+5. 检查每个 Loader 下拉菜单能找到本 README 中的准确文件名。
+6. 在 H3 Studio 首页执行 `Test ComfyUI Connection`。
+7. 在 Design 页面测试 LM Studio 连接，然后运行一次小型概念图计划。
+
+也可以直接检查 ComfyUI 节点接口：
+
+```text
+http://YOUR_COMFYUI_HOST:8189/object_info/UNETLoader
+http://YOUR_COMFYUI_HOST:8189/object_info/CLIPLoader
+http://YOUR_COMFYUI_HOST:8189/object_info/VAELoader
+http://YOUR_COMFYUI_HOST:8189/object_info/MiniMaxH3ReferenceToVideo
+http://YOUR_COMFYUI_HOST:8189/object_info/RTXVideoSuperResolution
+```
+
+## 常见问题
+
+### Loader 下拉菜单没有模型
+
+- 检查文件名是否完全一致，包括大小写、下划线和 `.safetensors`。
+- 检查模型是否放进正确目录，或是否已经通过 `extra_model_paths.yaml` 映射。
+- 重启 ComfyUI；只刷新 H3 Studio 不一定会刷新 ComfyUI 的模型目录缓存。
+
+### `Node ... does not exist`
+
+- 先更新 ComfyUI，取得 `comfy_extras` 内置节点。
+- 使用 ComfyUI Manager 的 Find Missing Nodes 安装缺少的 custom node。
+- 重启后访问相应 `/object_info/节点名`，确认接口可以返回结果。
+
+### ComfyUI 处理视频时报错：`VideoFrame` 没有 `rotation` 属性
+
+典型错误如下：
+
+```text
+AttributeError: 'av.video.frame.VideoFrame' object has no attribute 'rotation'
+```
+
+这是 **ComfyUI 自己的 Python 环境**载入了过旧或不兼容的 PyAV，并不是输入 MP4 损坏。新版 ComfyUI 的视频 Loader 会读取 `VideoFrame.rotation`；只升级系统 Python、Studio 的 `ai_libraries_common/python_env` 或另一套 Python 环境都不会修复它。
+
+先完全关闭 ComfyUI，然后在 Windows CMD 进入发生错误的 ComfyUI `venv\Scripts`。以下路径只是示例，请按自己的 ComfyUI 安装位置修改：
+
+```cmd
+cd /d "C:\ai program\Data\Packages\ComfyUI-GPU-1\venv\Scripts"
+python.exe -m pip install --upgrade --force-reinstall --no-cache-dir "av==16.1.0"
+python.exe -m pip install --upgrade --no-cache-dir "faster-whisper==1.2.1"
+```
+
+不要把 PyAV 降回 `<13`。旧版 `faster-whisper 1.0.3` 会要求 `av>=11,<13`，正好与新版 ComfyUI 的视频 Loader 冲突；升级到 `faster-whisper 1.2.1` 后可以保留 PyAV 16.1.0。
+
+安装后在同一个 CMD 窗口验证实际被 ComfyUI 使用的环境：
+
+```cmd
+python.exe -c "import av, faster_whisper; print('PyAV:',av.__version__); print('Faster Whisper:',faster_whisper.__version__); f=av.VideoFrame(16,16,'rgb24'); print('Rotation supported:',hasattr(f,'rotation')); print('Rotation:',f.rotation)"
+python.exe -m pip check
+```
+
+正确结果应至少包含：
+
+```text
+PyAV: 16.1.0
+Faster Whisper: 1.2.1
+Rotation supported: True
+Rotation: 0
+```
+
+如果命令显示正确，但运行中的 ComfyUI 仍报告同一错误，表示旧进程尚未退出，或启动器实际使用另一套 Python。完全结束所有 ComfyUI／Python 后重新启动，并在 ComfyUI 启动日志确认 Python 路径指向刚才修改的 `venv`。
+
+如果在 CMD 输入 PowerShell 写法后出现：
+
+```text
+& was unexpected at this time.
+```
+
+不要使用 `& $comfyPython ...`；那是 PowerShell 语法。在已经进入 `venv\Scripts` 的 CMD 中直接执行上面的 `python.exe ...` 即可。
+
+#### `pip check` 只剩 `dghs-imgutils` 要求 `numpy<2`
+
+例如：
+
+```text
+dghs-imgutils 0.19.0 has requirement numpy<2, but you have numpy 2.4.6.
+```
+
+这项冲突通常来自 `custom_nodes\comfyui-logicutils` 的图片 Tagger，与 H3 视频 Loader、PyAV `rotation` 和 Faster Whisper 无关。不要为了消除这条警告直接把共享 ComfyUI 环境的 NumPy 降级，因为新版 OpenCV 或其他节点可能需要 NumPy 2。
+
+可先找出安装来源：
+
+```cmd
+cd /d "C:\ai program\Data\Packages\ComfyUI-GPU-1"
+findstr /s /i /m "dghs-imgutils" custom_nodes\*.txt custom_nodes\*.toml custom_nodes\*.py
+```
+
+如果结果指向 `comfyui-logicutils`：
+
+- 使用该节点的 Tagger：保留当前 NumPy，并等待 `dghs-imgutils` 正式支持 NumPy 2；这条依赖声明警告不应阻止 H3 视频工作流运行。
+- 不使用该 Tagger：先在 ComfyUI Manager 禁用相应节点，重启确认其他工作流正常，再执行 `venv\Scripts\python.exe -m pip uninstall dghs-imgutils`。
+- 不确定是否使用：不要卸载，也不要降级 NumPy；先重启 ComfyUI，重新测试原本失败的视频工作流。
+
+最终已验证的可用视频组合为 PyAV 16.1.0、Faster Whisper 1.2.1，并且 `VideoFrame.rotation` 返回 `0`。修复后必须重新启动 ComfyUI 才会生效。
+
+### Load Project 后 ComfyUI 显示 `No such file or directory`，但 Media Pool 有图片
+
+旧版长视频 Segment 只会改写当前时间窗正在使用的 Loader 文件名；没有连接到该 Segment 的孤立 LoadImage 节点仍保留原始 basename。ComfyUI 验证整份 workflow JSON 时可能为这些未激活节点打印 `No such file`，形成素材丢失的假象。项目移动到另一台电脑或磁盘后，旧绝对路径也可能覆盖已经找到的同目录素材。
+
+从 `v0.2.5-alpha.9.2` 开始：
+
+- Load Project 会把旧绝对路径按原 `example_work_dir` 的相对结构重定位到当前 project folder，并支持唯一的同名嵌套素材。
+- 每个 Segment 的全部物理 Loader 都指向本次已经上传的 collision-safe 名称；未使用素材的 H3 reference 仍保持断开，不会改变动态 mapping 或影响画面。
+- 若素材真的不存在，Preview／Run 会在提交 ComfyUI 前列出缺失本地路径并停止，不会再静默跳过上传。
+- 重新打开的项目会继续保存到当前 project folder，不会写回旧电脑的工作目录。
+
+升级后完全关闭并重新启动 Studio，再重新 Open Project 后执行 Preview／Run。无需重新拖入仍然存在于 project folder 的素材。
+
+### 怎样只重新生成 Timeline 的最后一个 Segment？
+
+如果只修改了结尾 Shot，Studio 会自动把与该 Shot 相交的内部 Segment 标记为待重算；前面没有变化且仍有有效 Take／Manifest 的 Segment 会继续使用缓存。
+
+#### `dirty` 是什么？为什么找不到这个按钮？
+
+`dirty` 是 Studio 内部保存的“旧 Take 已失效、这个 Segment 需要重新生成”状态，不是按钮，也不要求用户手动输入这个字。以下 Timeline 操作会自动把相交的 Segment 标记为 dirty：
+
+- 双击最后一个 Shot，修改并确认 `Core Action`、Shot Prompt、Environment Response、Final Combat Resolve 或其他 Shot 内容。
+- 调整最后一个 Shot 的开始、结束或时长。
+- 修改该范围内的对白、旁白、字幕、素材 Mapping 或参考图。
+
+标记只影响与修改范围相交的内部 Segment，不会主动删除前面仍然有效的 Segment Take。若没有修改任何内容，只想用新 seed 重抽结尾，请使用下方的局部 Preview 流程，不需要寻找 dirty 按钮。
+
+#### 为什么 Open Project 后点击 `REJECT` 没有反应？
+
+`REJECT` 只有在本次运行已经完成一个 `PREVIEW 0.2M` 后才会启用。重新 Open Project 时通常没有处于待验收状态的当前 Preview，因此按钮会保持禁用；它不是“开始重算”或“令 Segment 变 dirty”的按钮。
+
+正确顺序是：
+
+1. 把 Generation Work Area 设为最后 Segment 的实际范围，例如 `42.5s → 50.0s`。
+2. 点击 `PREVIEW 0.2M`，等待局部预览完成。
+3. Preview 完成后，`REJECT` 才会亮起。不满意时点击它，Studio 会丢弃当前 Preview seed，并以新 seed 重新生成同一范围；满意时不要点击 `REJECT`。
+
+这个结果只是最后 Segment 的局部预览，不是完整 Master。
+
+#### 修改结尾后重新输出完整影片
+
+建议先保存 Project，再按以下方式操作：
+
+1. 在 Timeline 编辑最后一个 Shot 的动作、Prompt、时长或其他需要修正的内容。即使只改一处，也会令对应的最后 Segment 失效，不会连带清空整条长片缓存。
+2. 把 Generation Work Area 恢复为 `0s → Timeline 总时长`，例如 `0s → 50.0s`。
+3. 点击 `RUN+QUEUE`。长片生产会复用未改变的已完成 Segment，只生成被自动标记为 dirty 的结尾 Segment，然后重新拼接完整 `generated_output.mp4`。
+4. 完成后播放结尾，检查对白是否说完、Final Combat Resolve／Final Hold 是否稳定，以及跨 Segment 的人物位置、环境余波与声音是否连续，再保存 Project。
+
+如果旧 Segment Take、生产 Manifest 或缓存文件已经被删除，Studio 无法凭空复用它们，对应范围会自动重新生成。不要在只选择最后几秒的情况下把局部 `ACCEPT 1.0M` 误当作完整 Master；严格使用 Preview seed 的正式验收流程，应先恢复完整工作区间，再执行 `PREVIEW 0.2M → ACCEPT 1.0M`。
+
+### 删除或更换 LM Studio 模型后出现 `model_not_found`／无法 unload
+
+旧设置可能仍保存已经删除的完整 GGUF 路径，而新版 LM Studio 的 `/v1/models` 只公开较短的模型 alias；对未加载模型调用 `/api/v1/models/unload` 也会返回 `model_not_found`。
+
+`v0.2.6-alpha` 会在 Test Connection、Design 和 AI Semantic Enrichment 时自动处理：
+
+1. 实时读取 LM Studio 当前模型清单。
+2. 精确匹配现有 ID；旧量化文件不存在时优先选择同一模型 family／alias。
+3. 把实际可用 ID 保存回 `design_ai.env`。
+4. 生成结束后只卸载 LM Studio 明确报告为 loaded 的 instance ID。
+5. 模型已经卸载或删除时不再发送猜测的 unload 请求，也不会触碰其他已加载模型。
+
+建议更换模型后点击一次 `TEST CONNECTION`。即使没有点击，开始 Design 时仍会自动验证；如果 LM Studio 完全没有提供可用 Chat 模型，Studio 会保留清楚的连接／生成错误，而不会静默改用另一种 Provider。
+
+### 空间混响／Echo 怎样应用？会不会影响 Segment Mapping？
+
+空间声学在 H3 Prompt 编译时根据当前 Shot 的可见环境、BLIP／AI Enrich 证据和镜头距离自动建立，不是把同一个 FFmpeg Reverb 粗暴套到整条影片：
+
+- Dialogue、Foley 和 ambience 共用同一个可见空间，但各自保持正确距离与 direct/wet 比例。
+- 声学 Echo 只表示墙面、屋顶、洞穴等物理表面的反射，不允许生成第二次表演、重复字句或另一把声音。
+- 同一地点换 Close-up 不会改变空间；明确进入新地点才在边界 crossfade。
+- 旧项目的 `no artificial reverb tails` 自动提示会在重新编译时移除。
+- 已生成的 MP4 不会被原地修改；Open Project 后重新 Preview／Run 才会得到新声场。
+
+空间声学只改变受影响 Segment 的 Prompt 与 fingerprint，不会接触素材 Mapping。标准交叉测试已经验证：修改中间 Shot 的大厅声场为走廊后，只有中间 Segment 需要重算；全部 P/V/A slots、H3 节点输入、有效标签及前后 24 帧 continuity metadata 保持一致。
+
+### RTX Video Super Resolution 失败
+
+- 该节点只支持 NVIDIA RTX GPU，并需要匹配的 NVIDIA 驱动与节点依赖。
+- 可在 Settings 取消 `Enable RTX Video Super Resolution`，先以基础分辨率验证完整生成流程。
+- RTX 节点不需要另行下载 `.safetensors` 模型。
+
+### BLIP 报错 `CUDA error: no kernel image is available for execution on the device`
+
+新电脑显示的 CUDA 版本通常是 NVIDIA 驱动能够支持的最高 CUDA 版本，不代表复制过去的 Python 环境已经换成该版本。比如 Studio 随附的是 `torch 2.11.0+cu126`，即使新电脑显示 CUDA 13.3，BLIP 仍会运行随 Torch 打包的 CUDA 12.6 内核。
+
+此错误通常表示目的电脑的 GPU Compute Capability 不在当前 Torch wheel 编译的内核架构范围内，并不是图片损坏。从 `v0.2.5-alpha.3` 开始，BLIP 在模型载入或单张图片推理遇到这种 CUDA 兼容错误时，会保留原任务、释放 CUDA 模型、自动改用 CPU 并重试；AI Enrich 可以继续完成，但首次 CPU 载入及分析会较慢。
+
+可以用随附环境检查实际组合：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -c "import torch; print(torch.__version__, torch.version.cuda); print(torch.cuda.get_device_name(0)); print(torch.cuda.get_device_capability(0)); print(torch.cuda.get_arch_list())"
+```
+
+如果希望在新电脑继续使用 GPU 加速，应在该电脑单独安装一组官方支持其 GPU 架构的 PyTorch 与 Torchaudio，而不是直接复制来源电脑的机器相关环境。Torch 与 Torchaudio 必须使用彼此匹配的版本；安装前应先备份 `ai_libraries_common/python_env`。
+
+### VoxCPM2 加载在 CPU 很慢，怎样使用 CUDA
+
+在 Design Requirement 选择 `Vox`，或在主页 Settings 把 Dialogue Text Layer 改成 `VoxCPM2 Local`。Studio 直接通过独立的 `tts_service.py` worker 从 `models/VoxCPM2/` 载入 VoxCPM2，不需要另外启动 VoxCPM2 WebUI。
+
+从 `v0.2.5-alpha.7` 开始，`voxcpm_device=auto` 的执行顺序如下：
+
+1. 使用 bundled `python_env` 检查 `torch.cuda.is_available()`。
+2. 检测到 CUDA 时明确使用 `device=cuda` 载入项目 `models/VoxCPM2/` 内的 `openbmb/VoxCPM2` snapshot；不会再因为显存少于 8GB 而预先强制 CPU。
+3. CUDA 模型载入成功后，整批 Dialogue Text Layers 共用同一个 GPU 模型。
+4. 如果模型载入阶段发生 CUDA、显存不足或架构兼容错误，worker 会删除不完整模型、执行 CUDA cache 清理，再以 `device=cpu` 重载。
+5. 如果模型已成功载入 CUDA，但生成某一句对白时才失败，worker 同样会释放 CUDA、载入 CPU，并自动重试当前这句对白；已经确定的逐字内容、Speaker、时间范围不会改变。
+6. 最后一句源 WAV 完成后、进入 FFmpeg 音轨合成前，立即删除 VoxCPM2 模型与张量、执行 Python GC、清空 CUDA cache／IPC，并显示 `model unloaded · VRAM/RAM released`；成功、失败与 CUDA→CPU 回退都走同一释放路径。独立 TTS worker 结束后，Windows 还会回收其剩余进程内存。VoxCPM2 失败不会静默改用 Edge TTS。
+
+Studio 的自动卸载只管理它自己启动的 `tts_service.py` 隔离 worker。如果另外手动运行了 `run_voxcpm2_webui.bat`／`app.py`，那是独立的常驻 WebUI 进程，会继续占用自己的 VRAM／DRAM；完成调试后需要关闭该 WebUI，Studio 不会擅自终止用户手动启动的服务。
+
+Program Monitor 的实时阶段会显示实际路径，例如：
+
+```text
+VoxCPM2 Local · loading model on cuda
+VoxCPM2 Local · model ready on cuda
+```
+
+发生自动回退时会显示：
+
+```text
+VoxCPM2 Local · CUDA model load failed; releasing GPU memory and retrying on CPU (...)
+VoxCPM2 Local · loading model on cpu
+VoxCPM2 Local · model ready on cpu
+```
+
+检查 bundled 环境是否能够看到 GPU：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -c "import torch; print('Torch:', torch.__version__); print('Torch CUDA:', torch.version.cuda); print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU only')"
+```
+
+注意：CUDA 可用不代表模型一定能放进显存。GTX 1050 4GB 会先真实尝试 CUDA，但仍可能因为显存不足自动回退 CPU；这属于正常保护行为。关闭其他占用显存的软件、ComfyUI 正在驻留的模型或浏览器 GPU 页面，可以提高成功使用 CUDA 的机会。若 CUDA 持续失败，请查看阶段信息括号内的原始错误，不要同时手动启动多个 VoxCPM2 实例。
+
+#### `VoxCPM._generate() got an unexpected keyword argument 'seed'`
+
+这是 VoxCPM 官方版本之间的 API 差异：PyPI `voxcpm 2.0.3` 的 `_generate()` 没有 `seed` 参数，较新的 GitHub 源码版本则支持。`v0.2.5-alpha.9` 已兼容两者：Studio 不再传入该关键字，而是在每句对白生成前设置隔离 worker 的 Python、NumPy 和 Torch 随机种子，因此相同 Speaker 仍保持确定性声音。
+
+如果 Qwen／Vox／Edge TTS 在 Design Apply 阶段失败，Studio 不会再令新项目保持空 Timeline：Shots、图片素材、Dialogue／Voice-over／Lyrics Text Layers 会照常 Apply，失败的静音 Audio 占位不会进入 Timeline。随后可以直接到 Settings 改成另一种 TTS，再点击 Preview／Run；Studio 会自动建立新的 Audio reference 和 WAV，不需要重新 Load Design JSON。
+
+GTX 1050 4GB 的实际限制：当前 VoxCPM2 `model.safetensors` 约 4.58GB，`audiovae.pth` 约 0.38GB，尚未计算运行时张量就已经超过 4GB 显存；而模型配置使用 `bfloat16`，GTX 1050 也没有原生 BF16 加速。因此这张卡无法可靠完整运行 VoxCPM2 CUDA，自动回退 CPU 是预期结果。实测 CPU 每个推理 step 约需数秒，一句短对白可能需要二十分钟以上；在该硬件上建议使用 `Etts` 或 `Ori`。要实际使用 VoxCPM2 GPU，建议使用支持 BF16 且至少 8GB（较稳妥为 12GB 以上）显存的较新 NVIDIA GPU。
+
+> **Note — 新电脑找不到 `voxcpm`：** 复制项目到另一台电脑后，如果出现 `ModuleNotFoundError: No module named 'voxcpm'`，请先进入 `ai_libraries_common\python_env\Scripts`，再依次执行以下命令。`..\python.exe` 会明确使用 Studio 自带的 Python，不会修改系统 Python。
+
+```powershell
+..\python.exe -m pip install --upgrade --force-reinstall --no-cache-dir --no-deps voxcpm
+..\python.exe -c "from voxcpm import VoxCPM; print('VoxCPM is ready')"
+..\python.exe -m pip show voxcpm
+```
+
+第二条显示 `VoxCPM is ready`，第三条能够列出 VoxCPM 的版本及安装位置，才表示该电脑的 bundled 环境已经可以导入 VoxCPM。`--no-deps` 只补装 VoxCPM 本体并保留项目已经固定的 Torch、Torchaudio、NumPy 及其他依赖版本；如果随后仍提示缺少其他模块，应按照 README 的完整依赖清单修复 bundled 环境，不要改用系统 Python 启动 Studio。
+
+### Design 超时
+
+- `H3_DESIGN_TIMEOUT` 是单次 Design 流程的总等待上限，当前默认 900 秒。
+- 先检查 LM Studio 是否仍在加载 GGUF、ComfyUI queue 是否有旧任务，以及 Z-Image 是否已经输出图片。
+- 可减少参考图数量、宽高或 steps 后重试。
+
+### 明确要求 30 秒，Design 却压缩成 12 秒
+
+旧版可能把工作区现有的 12 秒 Timeline 当成新 Design 的目标长度，即使需求已经写明“创作30秒的视频”及 `[00:23-00:30]`，仍会让 LM 把四段内容压缩到 12 秒。随后对白保护器也会以错误的 12 秒裁切，令 15 秒之后的 Dialogue／Voice-over 消失。
+
+从 `v0.2.5-alpha.2` 开始，Studio 会在调用 LM 前确定性读取“30秒／2分钟”等明确片长及最后一个时间码，建立不可覆盖的 Duration Contract：
+
+- 用户明确片长与最后时间码优先于当前工作区 Timeline。
+- LM 不得压缩、总结、延长或继承旧 Timeline 时长。
+- 第一次返回错误时长会自动要求 LM 完整重做一次。
+- Refinement 擅改时长时会保留已验证的首次计划。
+- Normalize、Load JSON、Apply 与 Run 都会拦截时长冲突。
+- 逐字对白以用户明确时长为裁切边界，不再使用 LM 返回的错误时长。
+
+已经生成的 12 秒错误 JSON 不能只修改 `duration_seconds`，因为 Shots、参考图范围、Transitions、Markers 和 TTS 都已经被压缩；升级后应把原始 30 秒需求重新执行一次 Design。
+
+### `Image media request N is an action/boundary reference with a neutral, blank or studio background`
+
+这不是 VoxCPM2、ComfyUI 或 Media Pool 编号错误。`Image media request N` 表示 Design JSON 中第 N 个图片生成请求，不一定等于 `@PN`／Media Pool 的 `PN`。
+
+这个提示表示该图片被安排为某个 Shot 或 15 秒 Segment 边界的动作参考，但它的 `prompt` 同时要求 `neutral background`、`blank background`、`plain background` 或 `studio background`。动作／边界参考图必须显示故事真实发生的环境，让 H3 可以判断人物位置、身体动量、武器归属及下一段的连续状态；空白棚拍背景会导致场景跳变、人物或武器复制。自 `v0.3.1-alpha.4.6` 起，Apply Preflight 会自动把这类请求重建为故事实景中的单一冻结瞬间，并在 `AUTO-FIXED` 中显示，不再用弹窗阻止 Apply。
+
+错误示例：
+
+```text
+The assassin holding dual blades, neutral studio background.
+```
+
+唐代庭院故事的正确示例：
+
+```text
+The same black-clad assassin holding exactly two short blades inside the real Tang dynasty courtyard, beside the koi pond and bronze cauldron, with white walls and black tiled roofs visible. Preserve the same character identity, costume, weapons and ownership. Show one frozen physical instant from the relevant Shot, no duplicate character, no extra weapon, no text.
+```
+
+如果你想手动检查或改写自动修复结果：
+
+1. 在 Design JSON 的 `media_requests` 中找到错误所说的第 N 个 `image` 请求。
+2. 从该请求的 `prompt` 删除空白／棚拍背景描述。
+3. 写入故事实际地点，并明确同一人物、服装、道具、武器数量与归属。
+4. 只描述对应 Shot 的一个冻结动作瞬间，然后重新 Validate／Apply。
+
+只有覆盖整个项目的全局人物／产品 Identity Reference 才适合使用纯色或棚拍背景；只要图片具有特定 `start_seconds`／`end_seconds`、负责 Shot 动作或 Segment 接缝，就应放在故事的真实环境中。
+
+## 测试
+
+高风险流程的标准 Release Gate：
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -m unittest -v test_standard_pipeline_regressions.py
+```
+
+这十一项标准测试固定检查：
+
+1. 稀疏 Picture / Video / Audio 素材的稳定 `P/V/A` 编号、Segment 局部编号、Prompt 标签与实际 H3 节点输入完全一致；同时模拟项目由旧电脑盘符搬到新电脑，固定检查 PNG/WEBP 照片、WAV/其他音频及 MP4/其他视频会从当前 Project/Example folder 重新解析、重新上传并重写 Loader。
+2. AI Design Apply 后移动、改轨、改时间或改 Clip Prompt，会立即重绑重叠 Shot、更新 Creative Brief / H3 Prompt，并在 Undo / Redo 后保持一致。
+3. Picture / Video 只能落在 V Track，Audio 只能落在 A Track；错误的 Design track 请求及旧项目错误 lane 会被自动修正。
+4. `0–15 / 15–30 / 30–45s` 原生边界不会重叠生成或重播前段动作；后段只使用无声 24 帧运动上下文，而且不会覆盖当前 Segment 的 Video reference slot。该项同时交叉验证小房间／大厅／户外／走廊空间声学不会跨段泄漏，Shot-local 声学编辑不会改变任何 P/V/A mapping。
+5. 后台找不到素材保护：普通 Preview/Run 与 Smart Render 都必须在上传、查询 `/object_info` 或提交 `/prompt` 之前拦截本机缺失的图片、声音和视频；当前 Segment 未使用的旧电脑 Loader（包括 Ori 模式遗留 authored WAV）必须从编译后的 workflow 移除，不能只在 ComfyUI 后台留下 `[Errno 2]` 警告。
+6. Smart Render 的 `unique_media` 只能作为所有 Segment 的一次性上传联合集，不能反向覆盖任何 Segment Workflow 已选择的本地 Loader 文件。P4、P7、P9 即使动态复用同一个实体 LoadImage 节点，也必须在各 Segment 保留各自的 `upload_name`。
+7. Segment 级 Preview/Final 存储：单 Shot 所属 Segment 重算后只替换对应稳定文件；45 秒自动维持三个 15 秒单元；保存、重新载入、可携式路径、Preview/Final 切换及成功归档后的缓存清理全部保持有效。
+8. AI Design Apply 事务：固定检查时长／Brief／Style／Z-Image／Shot overlap 自动修复、统一 Preflight Report、Apply 过程无连锁弹窗、失败后窗口保留可重试，以及只有 Workspace commit 成功才关闭 Design 页。
+9. Reference Mapping 隔离与无限 Virtual Pool：一个 Project 可拥有 P10、P12 及更多逻辑素材；每个 Segment 只加载时间上有效的参考，Manifest 不得把全局上传联合集误报为当前 Segment 的 active references；人物／环境参考必须带精确人数合约。
+10. 对白延长后的 Shot Coverage：自然语速预算把影片延长越过原结束时间时，最终 Shot 必须同步延长，Text Layer 必须绑定有效 Shot，所有 Render Segment 的 `shot_ids` 均不得为空；旧 Project 的同类损坏必须可自动修复并使旧 Take 失效。
+11. Long Production Recovery／Storage：中断 Job 或 standalone Worker Manifest 引用的恢复缓存不得被 Safe Cleanup 删除；存在未持久化任务时 Archive 必须拒绝；完成持久化后 Archive 必须通过 Hash 验证，OOM 错误也必须进入明确分类。
+
+当前完整验证结果：**411 tests passed**；十一项 Standard Pipeline Release Gate、十项 Timeline Mapping Matrix，以及三项 Storyboard／Smart Cut／Project-scoped Job 隔离模拟全部通过。v0.3.2-alpha.1 修改后另行执行的 **41 项** Workflow／Segment／Storyboard 全局 Mapping 回归也全部通过。
+
+```powershell
+.\ai_libraries_common\python_env\python.exe -m unittest discover -v
+```
+
+```text
+Ran 411 tests
+OK
+```

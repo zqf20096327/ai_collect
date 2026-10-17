@@ -1,0 +1,136 @@
+<p align="center"><img src="assets/banner.svg" alt="AI Traffic Control (ai-tc): intercept, inspect, and govern AI prompts and responses. Open source, Claude Code plugin, local-first." width="100%"></p>
+
+# AI Traffic Control
+
+**AKA Security — We secure agent harnesses at the source.**
+
+AI Traffic Control (`ai-tc`) is an open-source control plane for coding agents. It watches an agent session's traffic (prompts, tool calls, responses, file reads), scans each event against your rule packs, and decides what happens next: monitor, warn, redact, block, or a manual exception. Secrets and regulated data like PCI, PHI, and PII are caught locally: live detection and enforcement never send them to a model or a third party. The one exception is the opt-in `/aka:setup` calibration, which does send what its history scan finds to the model API to be rated.[^egress]
+
+![Open source](https://img.shields.io/badge/Open_source-232F3E?style=flat-square)
+![Local](https://img.shields.io/badge/Local-232F3E?style=flat-square)
+![Claude Code + Claude Desktop](https://img.shields.io/badge/Claude_Code_+_Claude_Desktop-232F3E?style=flat-square)
+[![akasecurity.io](https://img.shields.io/badge/akasecurity.io-00E0B8?style=flat-square&labelColor=232F3E)](https://akasecurity.io)
+
+`ai-tc` works standalone, and governs what a session carries: rule packs, findings, policy, and an audit trail, across Claude Code and Claude Desktop. To harden the harness itself — safe-default permissions, structural command guards, and credential deny rules for Claude Code — pair it with [claude-tools](https://github.com/akasecurity/claude-tools). They compose: claude-tools hardens the harness, `ai-tc` governs the traffic.
+
+## How it works
+
+Every event in a session runs through one control point before it takes effect:
+
+```
+prompt · tool call · response · file read   →   ai-tc policy engine   →   monitor · warn · redact · block · exception
+```
+
+Prompts and tool inputs are checked before they reach the model; tool outputs and file reads are checked after it responds. Each event is scanned against your installed rule packs, every match becomes a finding (rule id, category, severity, matched span), and policy decides the outcome. Everything is logged.
+
+Detection is mostly regex, patterns shaped like an AWS access key, an email address, or a bank routing number, which covers most secrets and PII since they have a predictable shape. A smaller set of rules match on keyword, and some regex matches run through a validator, such as a Luhn checksum for card numbers or a Shannon-entropy check for high-entropy secrets, to cut false positives.
+
+### Policy outcomes
+
+A finding resolves to one of five outcomes:
+
+| Outcome       | What happens                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Monitor**   | Logged only. Most rules ship here; on a new install the vendor-key secrets and risky-command packs start on warn.  |
+| **Warn**      | Surfaces a warning in the session; the content still goes through unchanged.                                       |
+| **Redact**    | The matched value is replaced in place before it reaches the model. Tool inputs and outputs only, not prompt text. |
+| **Block**     | The prompt or tool call is stopped, with a message explaining what fired.                                          |
+| **Exception** | A manually granted, exact-value override that lets one specific match through despite its rule's policy.           |
+
+Promote any detection from monitor to warn, redact, or block from the dashboard, per rule or per category.
+
+Those two warn defaults apply only when a pack is first installed. Upgrading an existing install does not assign them: the packs stay unassigned and follow your category settings, which are on monitor unless you changed them.
+
+## Key concepts
+
+| Term          | What it is                                                                                           |
+| ------------- | ---------------------------------------------------------------------------------------------------- |
+| **Event**     | A prompt, response, tool call, or file read captured from an agent session.                          |
+| **Finding**   | A rule match produced by the detection engine against an event.                                      |
+| **Rule**      | A JSON file describing what to detect: a keyword list, a regex pattern, or a validator.              |
+| **Rule pack** | A directory of rules and their fixtures with a `manifest.json`.                                      |
+| **Policy**    | The decision about what to do when a rule or category fires.                                         |
+| **Plugin**    | The harness extension that intercepts sessions. One package, used by Claude Code and Claude Desktop. |
+
+## Where your data lives
+
+`ai-tc` keeps what it records in a local SQLite store at `~/.aka/data/aka.db`, with your settings beside it under `~/.aka/settings`. There is no database server to run and no schema to manage — the CLI, the plugin, and the dashboard all read and write that one file.
+
+That store is a running log of your agent sessions: prompts, responses, tool calls. What gets masked in it follows the policy assigned to the detection that flagged the span: a flagged span is masked at rest only where that policy is redact or block. Under monitor or warn the value is stored as it was seen, and everything outside a flagged span is stored verbatim and unencrypted either way. No detection ships on redact or block, so on a default install nothing is masked at all and `aka.db` builds up a full local record of what your agent saw, raw secrets included; promoting a detection changes what is stored from then on, not what is already there. Files read by `aka scan` are stored under the same rule. On macOS and Linux the store directories are created owner-only (`0700`) and the files are written `0600`. Those permissions are the only at-rest control there is, and they do nothing on Windows.
+
+That stored content is also what an attached machine sends. `aka attach` registers a machine against a control plane your organization runs — not a service AKA operates — and from then on this machine forwards each captured event to that deployment as it stored it, so the masking rule above is also the rule for what crosses the network: under monitor or warn the matched value reaches that deployment unmasked, and promoting the detection to redact or block masks it before it is stored and so before it is sent. No detection ships on redact or block, so on an attached machine that is the default posture rather than an edge case. A machine attached with `aka attach --scoped`, as a personal device usually is, forwards activity only from the repositories enrolled with `aka enroll` and, from the browser extension, only the replies in a claude.ai account enrolled with `aka enroll --account`, with their tool calls and token usage (a prompt typed into a web chat is not recorded there at all); activity in any other repository or account stays local, and the policy pull and the device report are not limited to what is enrolled. Whenever a session starts anywhere on this machine, in a repository or not (a browser chat included), the machine pulls the deployment's policy (at most every 15 minutes) and sends it a device report (at most hourly): a device identifier, host name, versions, detection packs, policy counts, finding counts and dates for everything recorded on the machine, and, when the machine is attached as a personal device, the fact that it is one. Where a scan is available (the coding-agent plugins, not a browser chat), the same session start also checks it for device commands. The deployment therefore learns when the tool is in use anywhere on this machine. A machine you have not attached forwards none of this.[^egress]
+
+**[SECURITY.md](SECURITY.md)** has the full picture — every file the store spans, what an attached machine forwards, what to do on Windows, and how to report a vulnerability.
+
+## Install
+
+`ai-tc` installs as a plugin through the AKA marketplace. The `aka` CLI installs on its own, with or without a coding agent.
+
+### Claude Code
+
+In Claude Code:
+
+```bash
+/plugin marketplace add akasecurity/marketplace
+/plugin install ai-tc@akasecurity
+```
+
+### Claude Desktop
+
+Claude Desktop is supported too; the [installation guide](https://akasecurity.github.io/ai-tc-docs/getting-started/installation/) covers both. `ai-tc` runs locally alongside your agent. Standalone by default: there's no backend to stand up, and no scanning happens off your machine.[^egress]
+
+### The `aka` CLI (standalone binary)
+
+The CLI carries the dashboard, the local store and `aka scan`. The binary embeds its own runtime, so it needs no Node.js.
+
+macOS / Linux, with [Homebrew](https://brew.sh):
+
+```bash
+brew install akasecurity/tap/aka
+```
+
+Windows, with [Scoop](https://scoop.sh):
+
+```powershell
+scoop bucket add akasecurity https://github.com/akasecurity/scoop-bucket
+scoop install aka
+# or, without adding the bucket:
+scoop install https://github.com/akasecurity/ai-tc/releases/download/bin-latest/aka.json
+```
+
+Or the bootstrap installer, which downloads the same archive:
+
+```bash
+# macOS / Linux
+curl -fsSL https://raw.githubusercontent.com/akasecurity/ai-tc/bin-latest/tools/installer/install.sh | sh
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/akasecurity/ai-tc/bin-latest/tools/installer/install.ps1 | iex
+```
+
+Or download an archive directly — these four links always serve the newest binary release. The binary is ad-hoc signed and not notarized, so a browser download is quarantined and Gatekeeper refuses to run it, while `brew`, `curl` and command-line `tar` don't quarantine what they fetch.
+
+| Platform              | Download                                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| macOS (Apple silicon) | [aka-darwin-arm64.tar.gz](https://github.com/akasecurity/ai-tc/releases/download/bin-latest/aka-darwin-arm64.tar.gz) |
+| Linux x64             | [aka-linux-x64.tar.gz](https://github.com/akasecurity/ai-tc/releases/download/bin-latest/aka-linux-x64.tar.gz)       |
+| Linux arm64           | [aka-linux-arm64.tar.gz](https://github.com/akasecurity/ai-tc/releases/download/bin-latest/aka-linux-arm64.tar.gz)   |
+| Windows x64           | [aka-win32-x64.zip](https://github.com/akasecurity/ai-tc/releases/download/bin-latest/aka-win32-x64.zip)             |
+
+Intel macOS (`darwin-x64`) has no binary build — install the CLI from npm there instead: `npm install -g @akasecurity/cli` (needs Node.js 24+).
+
+Each archive extracts to its own `aka-<platform>-<arch>/` directory; the binary has to stay inside it to find the files it loads at startup. Then run `aka init`.
+
+Check a download against [SHA256SUMS](https://github.com/akasecurity/ai-tc/releases/download/bin-latest/SHA256SUMS) and its build provenance with `gh attestation verify` — [tools/installer/README.md](tools/installer/README.md) sets out the trust chain and what each check does and does not establish. The Homebrew tap and Scoop bucket entries above are published by each binary release.
+
+Upgrade the way you installed: `brew upgrade aka`, `scoop update aka`, or re-run the one-liner.
+
+[^egress]: Detection and enforcement run locally — no AKA server and no account unless you attach to one. Four narrow paths can reach the network. Three of them are child processes: the passive **update notice**, which is on by default and needs no command — after a run, when stdout is a terminal, a stale cache makes `aka` look up three package versions with `npm view` (`--no-update-check` skips it, and `cli/README.md` details what the registry learns); package-manager installs/updates (`npm`/`claude`/`codex`); and the **opt-in** `/aka:setup` calibration. That last one is the only one of those three that carries your data, and the only path anywhere that sends it to a model: to rate false positives and severity, its judge step sends what an initial history scan finds — for each finding, the raw unmasked value including any secret, roughly 120 characters of the surrounding transcript text on either side (re-scanned before it goes, so every secret the rules detect in that window is masked, including the finding's own value where it appears there), the finding's rule, category, severity, masked value and confidence, and a sequential counter the model echoes back so its verdict can be matched to the finding — to the model API through the `claude` CLI. The source file's path is not sent. That's the same model provider your agent already uses, reached with your own credentials, and it takes **two** separate opt-ins: one to read your history at all, and a second, distinct grant to send what was found. Without that second grant the judge does not run. Each is revocable on its own under the dashboard's Settings, which stops future scans — data already sent cannot be recalled. The fourth is **opt-in and off unless you turn it on**, and it is the other path that carries your data: `aka attach` registers this machine against an AKA deployment your organization runs, after which the plugin forwards the activity that deployment is entitled to see and pulls the policy it sets. That covers activity from the moment you attach. On a machine attached with `aka attach --scoped`, what this path forwards of the machine's activity, the history and the scan register described below included, is limited to the repositories enrolled with `aka enroll` (`aka enroll --list` shows them and `aka unenroll` takes one out) and, from the browser extension, to the replies in a claude.ai account enrolled with `aka enroll --account`, with their tool calls and token usage — a prompt typed into a web chat is not recorded there at all — and activity in any other repository or account stays on the machine; under the history opt-in described next, enrolling a repository also queues the captures still kept for it and sends its activity from before the attachment, while what it recorded between attaching and enrolling, other than those captures, stays local. A machine whose connection an administrator manages attaches machine-wide only. Attached either way, the machine sends more than activity, and no repository limits it. Whenever a session starts anywhere on this machine, in a repository or not (a browser chat included), the machine pulls the deployment's policy (at most every 15 minutes) and sends it a device report (at most hourly): a device identifier, host name, versions, detection packs, policy counts, finding counts and dates for everything recorded on the machine, and, when the machine is attached as a personal device, the fact that it is one. Where a scan is available (the coding-agent plugins, not a browser chat), the same session start also checks it for device commands. The deployment therefore learns when the tool is in use anywhere on this machine. What this machine recorded BEFORE the attachment is a **separate opt-in**: `aka attach` asks about it once, it defaults to no, and `aka sync-history --on`/`--off` changes the answer later. It covers the activity already recorded BEFORE the attachment: which sessions ran and when, in which project, repo and branch, token usage and model per call, which tools were called with their inputs truncated and every detected secret already masked, what AKA detected in those inputs, and the prompts, assistant replies and tool results themselves. For a **captured** prompt, assistant reply or tool result, what is sent **includes its text**. What is masked in that text follows the policy assigned to the detection that flagged the value, exactly as it does at rest: masked only where that policy is redact or block, and under monitor or warn the matched value crosses as it was seen, as does everything outside a flagged span. The one exception is a value a **secret**-category detection matches: whatever its policy, it is not sent as it was seen, and the copy kept on this machine is unchanged. With credential-sighting sharing off, which is the default unless the organization's managed settings require it, it leaves only as `[REDACTED:SECRET]`. With sharing on, it leaves as a sighting token instead, a keyed hash of the value under a key the deployment issues (the machine fetches it over the same connection), with the detection's rule and category beside it. The deployment cannot read a value back from its token, but since it holds the key it can test a guessed value against one, so a short or predictable secret is pseudonymous to it rather than hidden. No detection ships on redact or block, so on a default install nothing else in that text is masked. The live path sends a capture the same way, and one it could not deliver at the time — the deployment was unreachable or refused the key, or the capture's secret scan did not finish within the hook's time — is kept and sent later in the background whether or not this opt-in is given. So declining does not stop activity being sent from the attachment onwards; that is part of being attached. It sends in the background over later sessions — on macOS, `aka attach` also installs a per-user LaunchAgent that re-runs the drain on its own schedule, so delivery does not depend on a session ever reopening — and what has been sent cannot be recalled. It is the one path with a network client in the source — `@akasecurity/remote`, the only package permitted to open a socket — and it does nothing until both an endpoint and an access key are on disk. Captured activity is not all it carries: a manual scan on an attached machine — `aka scan`, or the dashboard's Scan page — forwards over that same connection the Data Shares register the scan just recorded, which is the destination hosts and endpoints found in the files it walked plus the file and line of each call site, with no source text and the project key replaced by a digest; while this machine shares credential sightings, each call site also names the credentials it uses — an environment variable it reads, by name, or a secret written in it, as a keyed fingerprint, never the value; `aka scan --no-forward` skips it for one invocation, and an unattached machine forwards nothing. While this machine shares credential sightings, those scans and `/aka:scan` also send, in a request of their own, each secret the scan found, `.env` files included, as a sighting token (a keyed hash under the key the deployment issues) with its rule, the variable it is assigned to, its location class (a project file or a home dotfile), whether git tracks the file, and the project's digest and display name — never the value or a path; `--no-forward` skips that send too. `aka status` says what a machine is attached to and `aka detach` ends it, after which that deployment is sent nothing (the three child-process paths above are unaffected either way). Separately, and not one of the four: the `aka` CLI dispatches an unrecognized subcommand git-style, so `aka <name>` runs an `aka-<name>` program from your own `PATH` (POSIX only; a built-in always wins). That program is yours, not ours — `ai-tc` does not bundle, pin or verify it — so whether it reaches the network is its business, not something this project can describe.
+
+## Docs
+
+Full documentation, architecture, and the built-in detection catalog live at **[akasecurity.github.io/ai-tc-docs](https://akasecurity.github.io/ai-tc-docs/)**.
+
+- [How it works](https://akasecurity.github.io/ai-tc-docs/getting-started/how-it-works/)
+- [Architecture overview](https://akasecurity.github.io/ai-tc-docs/architecture/overview/)
+- [Writing rules](https://akasecurity.github.io/ai-tc-docs/rules/writing-rules/)

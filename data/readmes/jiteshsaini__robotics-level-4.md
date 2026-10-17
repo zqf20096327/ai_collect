@@ -1,0 +1,158 @@
+# Robotics Level 4 : On-board Machine Learning
+
+**Updated to work with the latest Raspberry Pi OS (Trixie, Debian 13).**
+
+<p align="left">
+Visit the website: <a href='https://helloworld.co.in/category/robotics' target='_blank'>
+   <img src='https://raw.githubusercontent.com/jiteshsaini/files/main/img/logo3.gif' height='40px'>
+</a> Youtube Channel:
+<a href='https://www.youtube.com/channel/UC_2OyRNVCWCH8ipgmAoJ1mA' target='_blank'>
+   <img src='https://raw.githubusercontent.com/jiteshsaini/files/main/img/btn_youtube_2.png' height='40px'>
+</a>
+</p>
+
+Building on <a href='https://github.com/jiteshsaini/robotics-level-3'>Robotics Level 3</a>,
+this level runs **machine learning on the robot itself**. The camera feed is
+passed through a TensorFlow Lite model on the Pi — no cloud, no account, no
+network round trip — and what the model sees drives the motors.
+
+Everything from the earlier levels is still here: camera, lights, distance
+sensor, speaker, the direction pad, and the phone-sensor pages.
+
+<p align="center">
+   <img src="https://raw.githubusercontent.com/jiteshsaini/files/main/img/earthrover_control_panel.png">
+</p>
+
+One page drives all of it. The five ML projects run along the top, the live
+camera feed fills the middle, and the direction pad and speed sit on the right,
+with the distance reading, the lights and the speaker around the edges. Reload
+the page and the controls come back as you left them — they report what the
+robot is actually doing, not what was last clicked.
+
+The green badge beside **AI ROBOTICS** says which backend the models will use:
+**Coral USB Accelerator** when one is plugged in, **CPU** when it is not. It
+asks the same code the robot does, so the badge and the rover cannot disagree.
+
+## The five ML projects
+
+| Project | What the robot does |
+|---|---|
+| **Object Detection** | Watches for one chosen object and raises an alarm on the control panel when it appears |
+| **Object Tracking** | Follows a ball, with the camera view visible in a browser while it tracks |
+| **Human Following** | Follows a person |
+| **Image Classification** | Streams the camera view with the model's guess overlaid, and speaks the name of what it recognises |
+| **Gesture Control** | Recognises hand gestures using a model trained with Google's Teachable Machine. Swap the model files in `earthrover/tm/` to teach it something else |
+
+Each folder has its own `README.md` with the detail.
+
+## Hardware
+
+Everything from level 3, plus:
+
+- **Google Coral USB Accelerator** — optional. The models run on the CPU
+  without one; the Coral makes them roughly ten times faster. It is detected
+  at runtime, so the same code works either way, and the badge on the control
+  panel above tells you which one is in use.
+
+Some things worth knowing before you build this level:
+
+- **512 MB boards need the desktop off.** On a Pi 3A+ with the desktop
+  running, the detector ends up in swap and manages about 0.1 FPS instead of
+  10. See *Turning the desktop off* below.
+- Everything from level 3's pin map applies unchanged.
+
+## Install
+
+Two commands on a Raspberry Pi already running Raspberry Pi OS 12 or 13.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jiteshsaini/robotics-level-4/main/earthrover/setup_level4.sh -o setup_level4.sh
+```
+
+```bash
+bash setup_level4.sh
+```
+
+**Not with `sudo`** — the script calls `sudo` itself, and says so if you try.
+
+Downloading first, rather than piping into a shell, lets you read the script
+before it runs.
+
+It fetches the code and the ML models, installs them to
+`/var/www/html/earthrover` and `/var/www/html/all_models`, and sets up
+everything they need. An existing install is moved aside rather than
+overwritten. Then open:
+
+```
+http://<your-pi-ip>/earthrover/
+```
+
+**Allow an hour or more on a first run.** The script brings the whole OS up to
+date before installing the camera and vision packages, so they are not built
+against an older kernel. Nothing reboots by itself — it tells you at the end if
+a restart is needed.
+
+### Turning the desktop off
+
+Worth doing only on a 512 MB board such as the Pi 3A+, where the desktop is
+the difference between a detector that runs and one that lives in swap. The
+installer points this out when it finds such a board, but does not do it for
+you, because it also closes VNC:
+
+```bash
+sudo systemctl set-default multi-user.target
+sudo systemctl disable lightdm
+sudo systemctl disable --now wayvnc
+sudo reboot
+```
+
+### Other ways to run it
+
+| | |
+|---|---|
+| `bash setup_level4.sh --fix-perms` | re-apply web-root ownership without reinstalling |
+| `bash setup_level4.sh --verify` | check everything end to end, change nothing |
+| `bash setup_level4.sh --help` | the notes at the top of the script |
+
+`--verify` is the one to reach for when something misbehaves: it needs no
+password and touches nothing.
+
+Tested on **Raspberry Pi OS Trixie (Debian 13)**, on a Raspberry Pi 3A+ and
+a Raspberry Pi 4 Model B.
+
+## What the script did
+
+1. Brought the OS fully up to date.
+2. Installed Apache, PHP, the GPIO library, the camera stack, and the speech
+   and audio tools.
+3. Installed the TensorFlow Lite runtime (`ai-edge-litert`) and OpenCV.
+4. Fetched the code and models into `/var/www/html`.
+5. Enabled the camera interface — `camera_auto_detect=1` in
+   `/boot/firmware/config.txt`. Along with a new kernel, this is why a run
+   sometimes ends by asking for a reboot.
+6. Generated a self-signed certificate and switched on https, which the
+   phone-sensor pages require.
+7. Installed Coral USB Accelerator support — harmless if you do not have one.
+8. Gave the web server the group memberships and file ownership it needs.
+
+The GPIO library is `rpi-lgpio` rather than the older `RPi.GPIO`, because the
+older one does not work on a Raspberry Pi 5. `raspi-gpio` was removed from
+Raspberry Pi OS and `pinctrl` replaces it.
+
+## Where things live
+
+| Folder | Role |
+|---|---|
+| `control_panel/` | The main UI, direction pad, speed control |
+| `vars.php`, `util.py` | Pin map and movement functions, for PHP and Python |
+| `camera_lights/` | MJPEG video stream and the LED switching |
+| `range_sensor/`, `speaker/` | Distance sensor and text to speech |
+| `accelerometer/`, `compass/`, `voice_control/` | The phone-sensor control pages |
+| `object_detection/`, `object_tracking/`, `human_following/`, `image_classification/`, `tm/` | The five ML projects |
+| `logs/` | Worker output — the first place to look when an ML feature misbehaves |
+| `all_models/` | The `.tflite` models and label files, alongside `earthrover/` |
+| `setup_level4.sh` | The installer above |
+
+Worker logs are written to `logs/` rather than `/tmp` on purpose: Apache gives
+itself a private `/tmp`, so anything written there is invisible from a normal
+shell.

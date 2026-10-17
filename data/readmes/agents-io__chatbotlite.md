@@ -1,0 +1,235 @@
+<p align="center">
+  <img src="packages/chatbotlite/logo.png" width="80" alt="ChatbotLite">
+</p>
+
+<h1 align="center">ChatbotLite</h1>
+
+<p align="center">
+  <strong>AI chatbot in 3 lines of code.</strong><br>
+  Stop burning tokens building chatbots from scratch. We did it for you.<br>
+  <sub>Built for indie hackers and SMB sites that need a working chatbot today, not after a 3-week integration.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/widget-demo.gif" width="440" alt="ChatbotLite widget demo — launcher opens, user asks 'how much is a leak inspection?', bot streams '$95, covers first visit, full diagnostic' with typing cursor.">
+</p>
+
+<p align="center">
+  <a href="https://chatbotlite-demos.vercel.app"><strong>▶ Try it live — landing page with 6 demos, install code, and comparison</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/agents-io/chatbotlite/stargazers"><img src="https://img.shields.io/github/stars/agents-io/chatbotlite?style=social" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/v/chatbotlite.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/chatbotlite"><img src="https://img.shields.io/npm/dw/chatbotlite.svg" alt="npm downloads"></a>
+  <a href="https://bundlephobia.com/package/chatbotlite"><img src="https://img.shields.io/bundlephobia/minzip/chatbotlite.svg" alt="bundle size"></a>
+  <a href="https://github.com/agents-io/chatbotlite/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/agents-io/chatbotlite/test.yml?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/npm/l/chatbotlite.svg" alt="license"></a>
+</p>
+
+<p align="center">
+  <a href="https://chatbotlite-demos.vercel.app">Live demos</a> ·
+  <a href="https://chatbotlite-demos.vercel.app/llms-full.txt">API Reference</a> ·
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="SKILL_MARKER_SPEC.md">SKILL Protocol</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.zh-CN.md">中文</a>
+</p>
+
+---
+
+## 3 lines to chatbot
+
+```tsx
+import { ChatWidget } from "chatbotlite/react";
+
+<ChatWidget endpoint="/api/chat" title="Acme Plumbing" theme={{ primary: "#1e3a8a" }} />
+```
+
+Or plain HTML (Shopify, WordPress, Webflow, anywhere):
+
+```html
+<script src="https://unpkg.com/chatbotlite/dist/embed.global.js"></script>
+<script>
+  chatbotlite.mount({ endpoint: "/api/chat", title: "Acme Plumbing" });
+</script>
+```
+
+Server (`/api/chat`):
+
+```ts
+import { ChatBot } from "chatbotlite/client";
+import { knowledgeFromFile } from "chatbotlite/node";
+
+const bot = new ChatBot({
+  knowledge: knowledgeFromFile("./knowledge.md"),
+  providers: { keys: { openai: process.env.OPENAI_API_KEY } }
+});
+
+export async function POST(req: Request) {
+  const { message, transcript } = await req.json();
+  return new Response(await bot.replyStream(message, { history: transcript }), {
+    headers: { "Content-Type": "text/event-stream" }
+  });
+}
+```
+
+## Zero downtime. Auto-failover.
+
+Add multiple provider keys. If one errors mid-stream, the next provider takes over and the assistant restarts the reply. True token-level replay is on the 0.8 roadmap.
+
+<p align="center">
+  <img src="docs/failover-demo.gif" width="640" alt="Failover demo: OpenAI 503s mid-stream, Groq takes over.">
+</p>
+
+10 providers: OpenAI, Groq, DeepSeek, Gemini, Mistral, Fireworks, Cerebras, SambaNova, OpenRouter, Moonshot.
+
+---
+
+## What's in the box
+
+| | |
+|--|--|
+| **3 lines** | React component or `<script>` tag. No build step needed. |
+| **10 LLM providers + local** | Auto-failover chain across 10 hosted providers, or point a `custom` entry at your own Ollama / LM Studio / vLLM. |
+| **Markdown knowledge** | Write services, hours, pricing in a `.md` file. No vector DB. Anti-hallucination guards built-in. |
+| **13 adapters** | Stripe, PayPal, Calendly, Cal.com, Formspree, and 8 more. Paste a URL, done. |
+| **Tool cards** | Bot triggers payment, scheduling, file upload, picker buttons inline in chat. |
+| **Session persistence** | Pluggable `ChatStorage` interface. localStorage default, wire to your own DB. |
+| **Streaming** | SSE tokens render as the LLM types. Streaming cursor in brand color. |
+| **Defense in depth** | Phrase redlines + optional LLM judges for input/output safety. |
+| **$0/mo forever** | Apache 2.0. No SaaS subscription. No per-conversation pricing. |
+
+---
+
+## Adapters (v0.7)
+
+URL-only adapters. Customer pastes a URL, we open it. Zero backend, zero API keys.
+
+```tsx
+import { stripeLink, calendlyUrl } from "chatbotlite/adapters";
+
+<ChatWidget
+  endpoint="/api/chat"
+  tools={{
+    requestPayment: stripeLink("https://buy.stripe.com/your-link"),
+    scheduleCallback: calendlyUrl("https://calendly.com/your-page/30min"),
+  }}
+/>
+```
+
+**Payment**: `stripeLink`, `paypalLink`, `squareLink`, `lemonSqueezyLink`, `gumroadLink`
+**Scheduling**: `calendlyUrl`, `calcomUrl`, `savvycalUrl`, `acuityUrl`, `msBookingsUrl`, `googleCalendarApptUrl`
+**Lead capture**: `formspreeUrl`, `tallyUrl`
+
+---
+
+## Tool cards
+
+The bot emits `[SKILL:...]` markers. The widget renders interactive cards.
+
+```
+[SKILL:requestPayment amount=4250 currency="cad" reason="deposit"]
+[SKILL:scheduleCallback durationMin=15 timezone="America/Vancouver"]
+[SKILL:uploadForReview purpose="T4 slip" accept="image/*,application/pdf"]
+[SKILL:pickerMessage prompt="Service type?" options="Inspection,Repair,Emergency"]
+```
+
+See the full [SKILL Marker Protocol spec](SKILL_MARKER_SPEC.md).
+
+---
+
+## Provider config
+
+```ts
+providers: {
+  keys: {
+    openai:   process.env.OPENAI_API_KEY,
+    groq:     process.env.GROQ_API_KEY,
+    deepseek: process.env.DEEPSEEK_API_KEY,
+  },
+  chain: [
+    { provider: "openai",   model: "gpt-4o-mini" },
+    { provider: "groq",     model: "llama-3.3-70b-versatile" },
+    { provider: "deepseek", model: "deepseek-chat" }
+  ]
+}
+```
+
+Top-to-bottom = priority. Auto-retry on 429/5xx, then fall to next.
+
+### Local / self-hosted LLM
+
+A chatbot doesn't need a frontier model. If you already run a local model (Ollama, LM Studio, vLLM, llama.cpp) it speaks the same OpenAI-compatible API, so point a `custom` chain entry at it — your data never leaves your machine:
+
+```ts
+providers: {
+  keys: { openai: process.env.OPENAI_API_KEY },   // optional cloud fallback
+  chain: [
+    { provider: "custom", baseUrl: "http://localhost:11434/v1", model: "llama3.2", apiKey: "ollama" },
+    { provider: "openai", model: "gpt-4o-mini" }   // falls over to cloud if local is down
+  ]
+}
+```
+
+`apiKey` is optional for local servers that ignore auth. `baseUrl` can also override a hosted provider (e.g. point `openai` at an internal gateway).
+
+---
+
+## Live demos
+
+6 verticals, all running on the same npm package: [chatbotlite-demos.vercel.app](https://chatbotlite-demos.vercel.app)
+
+| Vertical | Demo |
+|---|---|
+| E-commerce | [Bayside Coffee Co.](https://chatbotlite-demos.vercel.app/shopify-store/) |
+| Service business | [Acme Plumbing](https://chatbotlite-demos.vercel.app/plumber/) |
+| Hospitality | [Bella Italia](https://chatbotlite-demos.vercel.app/restaurant/) |
+| Healthcare | [Smile Care Dental](https://chatbotlite-demos.vercel.app/dentist/) |
+| Professional services | [MaxTax](https://chatbotlite-demos.vercel.app/tax-prep/) |
+| Wellness | [Sunrise Yoga](https://chatbotlite-demos.vercel.app/yoga-studio/) |
+
+---
+
+## MCP server — let your AI agent scaffold it
+
+Building with Claude Code, Cursor, or Cline? Add the [`chatbotlite-mcp`](packages/chatbotlite-mcp) server and your agent can scaffold a working chatbot from a one-line ask ("add a chat widget to my Next.js site, fall back OpenAI → Groq, take Stripe deposits").
+
+```bash
+claude mcp add chatbotlite -- npx -y chatbotlite-mcp
+```
+
+Tools: `scaffold_chatbot` (paste-ready code), `list_providers`, `list_adapters`, `skill_markers`, `about_chatbotlite`. No API key needed.
+
+---
+
+## Documentation
+
+- [Full API Reference](https://chatbotlite-demos.vercel.app/llms-full.txt) (35KB, LLM-readable)
+- [llms.txt summary](https://chatbotlite-demos.vercel.app/llms.txt)
+- [SKILL Marker Protocol](SKILL_MARKER_SPEC.md)
+- [Roadmap](ROADMAP.md)
+- [Design System](DESIGN_SYSTEM.md)
+- [Strategy](STRATEGY.md)
+
+---
+
+## Contributing
+
+PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for what we merge fast and what we usually decline.
+
+For security disclosures, see [SECURITY.md](SECURITY.md) — please do not open a public issue.
+
+## ⭐ If this saved you a weekend
+
+A star helps it reach the next dev who'd otherwise spend the weekend rebuilding a chat widget from scratch. That's basically the entire OSS deal — costs nothing, helps a lot.
+
+[★ Star on GitHub](https://github.com/agents-io/chatbotlite)
+
+## License
+
+Apache 2.0. Use it for whatever, commercial too.
+
+---
+
+Built by [agents-io](https://github.com/agents-io). Also from our team: [Cross-Code Organizer](https://github.com/mcpware/cross-code-organizer) (328★ cross-harness config dashboard — Claude Code, Codex CLI, MCP servers) · [PokeClaw](https://github.com/agents-io/pokeclaw) (875★).

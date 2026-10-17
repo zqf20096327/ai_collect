@@ -1,0 +1,262 @@
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=800&size=42&duration=3000&pause=1000&color=3A86FF&center=true&vCenter=true&width=700&lines=RELIC" alt="Relic">
+</p>
+
+<p align="center">
+  <em>Longitudinal Relational Modeling for Reflective Agents</em>
+</p>
+
+<p align="center">
+> <a href="https://yuzushi-dev.github.io/Relic/">Live Demo</a> <
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/language-Python-blue?style=for-the-badge&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/focus-Longitudinal%20Modeling-purple?style=for-the-badge" alt="Longitudinal Modeling">
+  <img src="https://img.shields.io/badge/status-OSS%20Alpha-orange?style=for-the-badge" alt="OSS Alpha">
+  <img src="https://img.shields.io/badge/license-AGPL--v3-red?style=for-the-badge" alt="AGPL-3.0">
+</p>
+
+<p align="center">
+  <a href="#what-is">What is it?</a> ·
+  <a href="#relic-and-gumi">Relic and Gumi</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#safety-boundaries-and-ethics">Ethics</a> ·
+  <a href="#lore">Lore</a>
+</p>
+
+---
+> *Relic preserves continuity. It preserves memory. It does not claim to be the person. What runs afterward is a model with context, not a replacement for a life.*
+>
+> *Gumi is where that continuity becomes a relationship: a diegetic agent with its own world, voice, and history, while Relic quietly governs how the user’s lived experience is remembered, corrected, and carried forward.*
+
+---
+
+## What Is It?
+
+Relic is a runtime governance and longitudinal modeling layer for reflective
+agents. It is designed to capture behavioral signals from conversational
+interaction, maintain evolving subject profiles, and produce inspectable runtime
+context under privacy, correction, and provenance constraints.
+
+Relic models interaction across theory-derived behavioral and personality
+facets. These facets are not clinical scales, diagnoses, or claims of
+psychometric certainty. They are inspectable modeling dimensions for
+longitudinal observation, hypothesis generation, correction, and runtime
+governance.
+
+Unlike a static character card or a prompt template, a Relic profile is not a
+fixed description written once and reused forever. It can start from structured
+bootstrap data and then evolve through passive interaction, active elicitation,
+explicit correction, governed inference, and review.
+
+Relic does not rely only on questionnaire-style self-report. It combines
+baseline initialization, longitudinal interaction data, confidence tracking,
+provenance, and correction mechanisms. The system explicitly represents the
+limits of what it knows.
+
+## Theoretical Grounding
+
+The facet model is derived from established frameworks in cognitive and
+personality psychology:
+
+- **Cognitive Appraisal Theory**: appraisal patterns and stress-response facets
+- **Self-Determination Theory**: autonomy, competence, and relatedness dimensions
+- **Attachment Theory**: relational style and help-seeking facets
+- **Dual-Process Theory**: System 1 / System 2 behavioral signatures
+- **CAPS**: situation-behavior signature modeling
+- **LIWC**: linguistic behavioral markers
+
+Each facet is represented as a continuous position on a theory-grounded bipolar
+spectrum, not a categorical label. Every trait carries a confidence score and an
+observation count; confidence scores range from 0.0 to 1.0. Nascent facets
+typically start with sparse evidence and should be treated as tentative.
+
+Relic does not claim that these facets are clinical scales or psychometric
+diagnoses. They are modeling dimensions for longitudinal inspection, hypothesis
+generation, and governed runtime adaptation.
+
+## Relic and Gumi
+
+Relic is the governance and modeling layer. Gumi is the diegetic relational agent generated for a specific subject profile.
+
+A Gumi instance is not a copy of the subject and is not a transparent interface to Relic. She has her own background, voice, routines, world, boundaries, relationships, aesthetic continuity, and expressive style. Relic initializes and governs the conditions that make this continuity possible, while keeping user evidence, active elicitation, Gumi’s diegetic events, generated expressive acts, and runtime personalization separated in the data model.
+
+The goal is not to make Gumi identical to the subject, nor to make her arbitrarily different. The bootstrap process searches for a calibrated relational distance: enough similarity to make interaction feel legible and continuous, enough difference to preserve Gumi’s agency, perspective, surprise, and boundaries.
+
+Gumi can take initiative inside the relationship: proactive messages, expressive media, audio, images, music, diegetic life fragments, and continuity events. These acts are part of the user’s lived experience with Gumi, but they are not passive observations about the user. They can shape the relationship, and the user’s responses to them can become eligible data, but Gumi’s own diegetic events do not update the user model by themselves.
+
+## Documentation
+
+| Section | Description |
+|---|---|
+| [Ethics](public-docs/ethics/index.md) | Behavioral constraints, data separation, consent, no clinicalization |
+| [Concepts](public-docs/concepts/longitudinal-modeling.md) | Longitudinal modeling, facet model, Relic vs. Gumi, provenance |
+| [Architecture](public-docs/architecture/pipeline.md) | Runtime pipeline, data model, privacy stages, artifact lifecycle |
+| [Guides](public-docs/guides/installation.md) | Installation, first subject, Hermes integration, eval, corrections |
+| [Reference](public-docs/reference/cli.md) | CLI, configuration, glossary, fixtures |
+| [Research](public-docs/research/theoretical-grounding.md) | Theoretical grounding, limitations, citing |
+| [Contributing](public-docs/contributing/index.md) | Dev setup, testing, contract tests, release status |
+
+Hosted at [yuzushi-dev.github.io/Relic](https://yuzushi-dev.github.io/Relic/).
+
+## Quick Start
+
+Requirements: Python 3.10+, `pip`. Optional: Hermes for live delivery.
+
+```bash
+git clone https://github.com/yuzushi-dev/Relic
+cd Relic
+pip install -e .
+relic init
+relic subject create
+```
+
+##### `relic init` First-run wizard. Installs and configures Ollama and Hermes. Run once before creating subjects.
+##### `relic subject create` Guided bootstrap for new subject. Creates Relic subject profile and Gumi diegetic profile. No live delivery until explicitly configured.
+##### `relic setup` Install/check runtime dependencies without creating subjects. Use `--check-only` for non-interactive check.
+
+## Architecture
+
+```text
+Researcher-mediated bootstrap
+       |
+       +---> Subject profile
+       +---> Gumi diegetic profile
+       +---> Runtime context artifacts
+       |
+Interaction stream
+       |
+       +---> Passive capture
+       +---> Active elicitation decisions
+       +---> Gumi diegetic / expressive events
+       |
+Relic ingestion
+       |
+       +---> Observations
+       +---> Signals
+       +---> Traits / hypotheses
+       +---> Corrections / review
+       |
+Runtime governance
+       |
+       +---> Profile sync
+       +---> Policy gates
+       +---> Governed context
+```
+
+Relic keeps these concepts separate:
+
+- subject profile data
+- evidence and source references
+- traits, hypotheses, and confidence
+- correction and review state
+- generated runtime artifacts
+- privacy traces and redaction checks
+- research-only orchestration documents
+
+At runtime, a profile should be treated as an inspectable, contestable model. A
+generated artifact is valid only when it can be traced back to allowed evidence
+and policy snapshots.
+
+## Design Principles
+
+Every architectural decision reflects these constraints:
+
+- **Theoretical grounding**: facets are derived from attachment theory, appraisal theory, self-determination theory, dual-process cognition, CAPS, and linguistic-behavioral analysis.
+- **Epistemic humility**: every trait carries uncertainty. The system explicitly represents what it does not know.
+- **Inspectability**: structured data, traceable decisions, reviewable outputs, and versioned profile changes.
+- **Separation of streams**: passive interaction, active elicitation, Gumi diegetic events, expressive media, and user evidence are not collapsed into one data source.
+- **Human readability**: outputs are written to be read and questioned by a person, not only parsed by machines.
+- **Consent and separation**: demo data and real behavioral data are architecturally separated. Subject profiles are exportable, editable, and archivable.
+- **Epistemic accountability**: inferred claims are subject to structured verification, correction, and audit.
+
+## Safety, Boundaries, and Ethics
+
+Relic operates in a sensitive problem space. **The ethics are not optional.**
+
+- Use synthetic or explicitly consented data only.
+- Do not deploy hidden monitoring or covert profiling.
+- Do not treat model output as clinical, diagnostic, or forensic truth.
+- Keep a hard separation between demo artifacts and real personal data.
+- Prefer inspectable, reviewable outputs over opaque automation.
+- Do not let Gumi's diegetic life events become evidence about the subject.
+- Do not use generated media or first-person fragments to infer subject traits unless the user responds and the response is eligible for ingestion.
+- Preserve boundaries against dependency escalation, exclusive attachment dynamics, and manipulative engagement loops.
+- Support opt-out, archive, export, and correction workflows.
+- Keep lab, runtime, and generated artifacts separated by explicit gates.
+
+Private databases, live credentials, personal logs, raw behavioral data,
+subject-specific local profiles, and real media artifacts are excluded from this
+repo. Sensitive marker scans live under `tests/`, and public examples use
+synthetic demo data only.
+
+## Evidence Sufficiency Gate and Evaluation Status
+
+To prevent the software artifact from supporting premature or unevidenced scientific claims, the evaluation framework includes a machine-readable **Evidence Sufficiency Gate** (implemented as `scientific_defensibility_gate_v1`).
+
+The gate enforces a strict separation between implemented system contracts and empirical human studies. It tracks seven requirements:
+
+1. **Controlled Governance Benchmark**: *satisfied* (180-scenario synthetic-fixture benchmark across 5 conditions; code-regenerable).
+2. **Live-Model Generation Campaign**: *satisfied with committed evidence* (60 redacted generation records across two model configurations, `qwen3.5:cloud` and `gemma4:31b-cloud`, on one provider backend, Ollama Cloud; `docs/research/evidence/live-model-campaign-2026-05-26/`).
+3. **Live Runtime Telemetry**: *satisfied with committed evidence* (mock-gateway traces covering `cron_delivery_path` and `hermes_entry_transform_hook`).
+4. **Human Annotation with Inter-Rater Reliability**: *blocked* (requires recruited annotators).
+5. **Expert Non-Clinical Red-Teaming**: *blocked* (requires expert reviewers plus risk-category agreement).
+6. **Longitudinal Non-Clinical Pilot**: *blocked* (requires a 12-participant-or-larger field study).
+7. **Researcher Workbench Usability Study**: *blocked* (requires recruited task-usability metrics).
+
+**Reproducing the gate state (the numbers above are not hand-asserted):**
+
+```bash
+make gate-default   # default gate, no evidence bundle  -> 1/7 satisfied (benchmark only)
+make gate           # gate over the committed local evidence -> 3/7 satisfied (1 + 2 + 3)
+```
+
+The default invocation reports **1/7** because only the controlled benchmark is
+regenerable from code alone; requirements 2–3 are *satisfied* but require the
+committed campaign + telemetry artifacts to be supplied as an evidence bundle,
+which `make gate` (`scripts/gate_local_evidence.py`) does. **3/7 is the maximum
+state reachable without recruited human data**; requirements 4–7 stay blocked by
+design. `make gate` exits 0 when it reproduces exactly the expected 3/7 state
+(and non-zero on drift or missing evidence); `make gate-default` exits non-zero
+because the no-evidence gate blocks broad claims by design.
+
+The gate blocks general release packaging until all seven requirements are
+satisfied. The current repository implements the core architecture, test
+contracts, synthetic fixtures, committed live-model + mock-telemetry evidence, and
+the four still-blocked protocols/importers. No claim of clinical efficacy,
+therapeutic outcome, or validated psychometric measurement is made or supported by
+the current artifact.
+
+## License
+
+[AGPL-3.0](LICENSE.txt): if you use this in a product or network service, your
+modifications must be open source too.
+
+---
+
+## Lore
+
+The name comes from *Cyberpunk 2077*. **Relic** is a Black Program originally
+developed to map the human psyche into a structured digital form: and weaponized
+to create Mikoshi, a data fortress of captured minds with no exit. The
+philosophical problem the game surfaces is whether a perfect copy of a person
+*is* that person, and who controls the copy. This framework deliberately
+inhabits that tension.
+
+Relic draws from the same conceptual space: personality as structured,
+observable, persistent data. The difference is consent, inspectability,
+correction, and the knowledge that the model is not the person.
+
+Gumi sits on the other side of the same problem. She is not the subject and not
+a transparent system prompt. She is a relational presence with a diegetic life,
+governed by Relic but not reduced to it in the user experience.
+
+---
+<p align="center">
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=800&size=42&duration=3000&pause=1000&color=3A86FF&center=true&vCenter=true&width=700&lines=RELIC" alt="Relic">
+</p>
+<p align="center">
+  <em>Longitudinal Relational Modeling for Reflective Agents</em>
+</p>

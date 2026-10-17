@@ -1,0 +1,236 @@
+# Aakd
+
+**Turn executed contracts into reviewed, owned actions.**
+
+Aakd is an open-source, self-hostable contract lifecycle management platform
+for reviewed, source-linked contract operations. It helps a team move from an
+executed PDF or DOCX to cited contract facts, assigned obligations, deadlines,
+approvals, and completion evidence.
+
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+
+[Website](https://aakd.app) · [Documentation](docs/) · [Issues](../../issues) · [Discussions](../../discussions) · [Releases](../../releases) · [Security](SECURITY.md) · [Discord community](https://discord.gg/23hntCVty)
+
+> Aakd is an early open-source release. Customer validation is in progress.
+> It is not a hosted service, legal-advice product, compliance certification,
+> or autonomous legal agent.
+
+If Aakd is useful to your team, [star the repository](../../stargazers) to help
+other self-hosting and contract-operations teams find it.
+
+## The workflow
+
+```text
+executed agreement
+        ↓
+source-linked facts and obligations
+        ↓
+human review and correction
+        ↓
+owners, deadlines, approvals, and reminders
+        ↓
+completion evidence
+```
+
+The first useful path is deliberately narrow:
+
+1. Upload an executed PDF or DOCX.
+2. Review extracted fields, obligations, and exact source citations.
+3. Correct anything that is wrong or missing.
+4. Assign owners and due dates.
+5. Track follow-up work, renewals, approvals, and evidence of completion.
+
+AI is optional. When enabled, it assists with extraction, questions, risk
+signals, and obligation suggestions. AI output remains reviewable and is never
+the canonical source of contract truth.
+
+## Demo
+
+This is a real browser recording of the Phase 0 workflow using a disposable
+account and a synthetic contract. It shows account setup, contract upload,
+human review, and contract creation.
+
+![Aakd upload-to-contract workflow](docs/media/aakd-workflow.gif)
+
+The recording contains no real contract data. The workflow continues after
+creation into cited extraction review, obligations, approvals, and reminders.
+
+## What is included today
+
+- Contract repository with PDF/DOCX uploads, OCR, folders, tags, search, and
+  version history.
+- Source-linked metadata and obligation review with page-level evidence.
+- Obligation and renewal views with owners, deadlines, reminders, and audit
+  history.
+- Organization-scoped approvals, comments, notifications, and activity logs.
+- Existing stored DocuSeal signing records remain viewable. Automatic status updates and signed-document intake require an explicitly verified provider binding; historical rows remain unbound after upgrade. New sends, reminders, and resets are temporarily paused.
+- Optional AI through a provider key or local Ollama deployment.
+- REST API and a scoped MCP endpoint for agent-assisted, human-controlled
+  workflows.
+- English, French, German, Spanish, and Arabic RTL interfaces.
+
+## Intentionally out of scope for the first release
+
+Authoring, template management, autonomous agents, billing, hosted Cloud, and
+enterprise identity features are later phases. The code for some of these
+surfaces remains in the repository, but they are not part of the Phase 0
+promise.
+
+See [`docs/`](docs/) for deployment and API documentation.
+
+## Try it locally
+
+### Requirements
+
+- Docker and Docker Compose
+- Git
+- OpenSSL, for generating local secrets
+
+### Start the complete stack
+
+```bash
+git clone https://github.com/aaked-app/aakd.git
+cd aakd
+cp .env.example .env
+
+# Generate values and put them in .env
+openssl rand -base64 32   # BETTER_AUTH_SECRET
+openssl rand -hex 32      # ENCRYPTION_KEY
+openssl rand -hex 32      # NOTIFICATION_ENCRYPTION_KEY
+docker compose up
+```
+
+Open [http://localhost:3000](http://localhost:3000). The first signup creates
+an account and organization. Repository, uploads, manual metadata, approvals,
+obligations, and existing signature records can be reviewed without an AI provider. Add an AI key in
+Settings only if you want AI-assisted features.
+
+The local stack also includes PostgreSQL, Redis, MinIO, Mailpit, and the
+background worker. DocuSeal can be connected for stored signing records, but
+automatic updates require an explicitly verified provider binding. Historical
+rows remain unbound after upgrade. New sends, reminders, and resets are paused.
+
+## Deploy it yourself
+
+For a single Ubuntu VM, the production installer configures the web app, worker,
+PostgreSQL, Redis, S3-compatible storage, Caddy, and backups. E-signature is
+connected separately from the Integrations page:
+
+```bash
+git clone https://github.com/aaked-app/aakd.git ~/aakd
+cd ~/aakd
+chmod +x scripts/*.sh
+AAKD_REF=<reviewed-40-character-commit-sha> bash scripts/deploy.sh
+```
+
+Point DNS to the server and allow ports 80 and 443 before running the installer.
+Email and AI providers are optional. Do not expose the development Compose
+stack or its default MinIO/Mailpit credentials to the internet.
+
+```bash
+AAKD_REF=<reviewed-40-character-commit-sha> bash scripts/update.sh  # update an installation
+bash scripts/doctor.sh                        # diagnose an installation
+bash scripts/backup.sh                        # create a database backup
+bash scripts/restore.sh backups/file.sql.gz --yes-really-restore
+```
+
+Read the complete [self-hosting guide](docs/self-hosting.md) and the
+[Oracle Cloud walkthrough](docs/deploy-oracle-cloud.md) before using Aakd with
+real contracts.
+
+## Screenshots
+
+![Aakd dashboard](docs/screenshots/dashboard.png)
+
+![Aakd contract repository](docs/screenshots/contracts.png)
+
+## Privacy and AI
+
+Self-hosting keeps application data on infrastructure you control. AI is
+opt-in: use Ollama locally or bring your own provider key. Aakd stores the
+source text and citation for AI-derived fields so a reviewer can inspect and
+correct them.
+
+Scanned-PDF OCR runs locally in the worker using a bundled English model.
+English is the only supported OCR language; interface translations do not
+extend OCR language support. Review scanned text and its page citations before
+using extracted facts. See [OCR limits](docs/self-hosting.md#scanned-pdf-ocr).
+
+Do not treat an AI result as legal advice or as an automatic approval. Review
+contract facts and obligations before relying on them.
+
+Provider adapters are not a guarantee that every model works. The current
+candidate has synthetic live OpenAI verification for connection testing,
+extraction, cited questions, clause explanations and risk analysis. Anthropic
+and Ollama adapters have automated coverage, but their live end-to-end paths
+have not been verified for this candidate. Test your chosen provider and model
+with synthetic documents before supplying confidential agreements. Customer
+corpus accuracy and embedding-model compatibility remain separate checks.
+
+## Architecture
+
+- **Web:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS
+- **Data:** PostgreSQL 16, Prisma, pgvector
+- **Auth:** Better Auth with organization-scoped access
+- **Jobs:** BullMQ and Redis, with a separate worker process
+- **Files:** S3-compatible storage, MinIO in the local stack
+- **AI:** Anthropic, OpenAI, or Ollama through the existing provider layer
+- **Signing:** view stored DocuSeal records; verified bindings can process updates, while historical rows remain unbound and new sends, reminders, and resets stay paused
+
+The main application lives in `apps/web`. The worker is
+`apps/web/worker.ts`. Start with [`CONTRIBUTING.md`](CONTRIBUTING.md)
+when contributing.
+
+## Verify a release candidate
+
+Run the Phase 0 verification script before publishing a release:
+
+```bash
+bash scripts/verify-phase-0.sh
+```
+
+This checks Compose configuration, type safety, lint, tests, tenant-isolation
+tests, and the production build. It does not claim customer adoption,
+enterprise compliance, or production security certification.
+
+## Contributing
+
+Start with an issue or discussion describing the user problem, the affected
+workflow, and how it can be verified. Keep changes focused and preserve the
+source-linked, human-reviewable contract model. See the repository's issue and
+pull-request templates for project-specific guidance.
+
+### Start with a focused contribution
+
+- [Document the synthetic demo-verification workflow](../../issues/12).
+- [Write the operator guide to audit history and activity records](../../issues/13).
+- [Help shape the amendment-impact review workflow](../../issues/14).
+
+For setup questions, implementation discussions, and contributor coordination,
+join the [Aakd Discord community](https://discord.gg/23hntCVty). Please avoid
+sharing real contract data or other confidential information in public channels.
+
+To share evaluation feedback without including confidential contract data,
+[open a workflow-feedback issue](../../issues/new?template=workflow_feedback.md).
+
+For security vulnerabilities, use the private reporting process in
+[`SECURITY.md`](SECURITY.md) rather than publishing exploit details in an issue.
+
+## Documentation
+
+- [Self-hosting guide](docs/self-hosting.md)
+- [API reference](docs/api-reference.md)
+- [Analytics and privacy information](docs/analytics-privacy.md)
+
+## License
+
+Aakd is licensed under [AGPL-3.0](LICENSE). Paid hosting, deployment, and
+consulting services are permitted under the AGPL. If you modify Aakd and make
+it available to users over a network, the AGPL requires offering those users
+the corresponding source for that modified version. Alternative proprietary
+license terms are not generally offered at this time.
+
+Bundled third-party assets retain their own licenses. See
+[third-party notices](THIRD_PARTY_NOTICES.md) for the English OCR model.

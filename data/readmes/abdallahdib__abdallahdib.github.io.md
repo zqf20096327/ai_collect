@@ -1,0 +1,245 @@
+<!--
+Title: Abdallah Dib personal website
+  Description: Abdallah Dib Deeb website, computer vision and machine learning scientist (computer graphics, rendering, deep learning, CV, face tracking, motion capture, 3D, game programming, C, C++, pytorch, python, objective-C, OpenGL, 3D graphics)
+  Author: Abdallah Dib
+  -->
+  <meta name='keywords' content='abdallah dib, abdallah deeb, machine learning, computer vision, computer graphics, rendering, deep learning, CV, face tracking, motion capture, 3D, game programming, C, C++, pytorch, python, objective-C, OpenGL, 3D graphics'>
+ 
+ <meta name="description" content="Abdallah Dib Deeb website, computer vision and machine learning scientist (computer graphics, rendering, deep learning, CV, face tracking, motion capture, 3D, game programming, C, C++, pytorch, python, objective-C, OpenGL, 3D graphics)">
+  
+## About me
+I am a research scientist working at **Ubisoft La Forge** (Montreal). Previously, I worked as a Senior Research Scientist at InterDigital R&I (France) and Technicolor Research, and as a Research Engineer at Inria. I obtained my PhD from Inria in 2016.
+
+I develop methods for **face capture**, **facial animation**, and **avatar reconstruction** in video games and interactive entertainment. My research combines **capture systems** (including lightstage capture) and **generative models** to create practical tools that solve production challenges and support artists and creators.
+
+<a href="mailto:deeb.abdallah@gmail.com">I supervise research interns and PhD students, and I am always seeking motivated candidates to contribute to state-of-the-art projects in facial animation and generative models. You can reach me by email: deeb.abdallah AT gmail DOT com
+
+<p align="center">
+<a href="https://www.linkedin.com/in/abdallah-dib-19912b25/"><img src="images/linkedin.png" height="40" ></a>
+<a href="https://scholar.google.fr/citations?user=yb6wpSEAAAAJ&hl=fr"><img src="images/scholar.png" height="40" ></a>
+<a href="https://twitter.com/abdallah_dib"><img src="images/twitter.png" height="40" ></a>
+</p>
+
+
+## News
+* **20/02/2026**  Skullptor paper got accepted to CVPR 2026. Skullptor reconstructs high-fidelity 3D heads in seconds by predicting view-consistent normals from a sparse set of input images and camera poses. More details from [Here](https://ubisoft-laforge.github.io/character/skullptor/)
+* **06/07/2025** A new [blog](https://www.ubisoft.com/en-us/studio/laforge/news/5hypnC0mKU3LY4t4eHxnjR/mosar-gnration-davatars-de-personnage-fiables-partir-dun-simple-portrait-photo) post on Ubisoft website, showcasing our work on the paper [MoSAR](MoSAR), a technique used by artists to streamline their workflow.
+* **25/06/2025**: SEREP paper got accepted to ICCV 2025. We introduce a novel learning-based method for monocular facial expression capture and retargeting. More details from [Here](https://ubisoft-laforge.github.io/character/serep/)
+* **20/05/2025**: One paper accepted to 'AI for Creative Visual Content Generation Editing and Understanding' (CVEU), CVPR  2025. We propose a texture generator model giving artists control over shape, skin tone and fine details. More details from [Here](https://ubisoft-laforge.github.io/character/GeoAwareTextures3D/index.html)
+* **09/03/2024**: We released **FFHQ-UV-Intrinsics** dataset that contains intrinsics texture maps for 10K subjects at HD resolution. Download it from [here](https://github.com/ubisoft/ubisoft-laforge-FFHQ-UV-Intrinsics) 
+* **01/03/2024**: Mosar paper got accepted to CVPR 2024. MoSAR turns a portrait image into a relightable 3D avatar. More details from [Here](https://ubisoft-laforge.github.io/character/mosar/)
+* **05/04/2023**: We published a technical paper showcasing our FaceLab solution, which was used by artists to capture 3D facial performance for the 2019 film [Cats](https://www.imdb.com/title/tt5697572/).
+* **01/02/2023**: S2F2 paper got accepted to FG2023. S2F2 is a robust self-supervised model that esimate 3D shape and reflectance from a monocular image. More details from [Here](https://youtu.be/DiHpZjx1sxc)
+* **18/05/2022**: DeepNextFace is a 3D face reconstruction library from a single monocular RGB image via deep convolutional neural networks and differentiable ray tracing. Check it from [https://github.com/abdallahdib/DeepNextFace]( https://github.com/abdallahdib/DeepNextFace)
+* **21/04/2022**: NextFace is a lightweight open source library, written in pytorch, for high fidelity face reconstruction. Check it from [https://github.com/abdallahdib/NextFace]( https://github.com/abdallahdib/NextFace)
+* **11/10/2021** Our paper on self-supervised monocular 3D face reconstruciton got accepted to ICCV 2021. More details from [Here](https://www.youtube.com/watch?v=VVr_bbXEjxE)
+* **09/03/2021** Our paper on monocular 3D face reconstruction got accepted to EuroGraphics 2021. We achieve realistic 3D face reconstruction from a single image. More details from [Here](https://github.com/abdallahdib/NextFace)
+
+
+## Publications
+<p align="center">
+  <strong>Skullptor: High Fidelity 3D Head Reconstruction in Seconds with Multi-View Normal Prediction</strong><br>
+  <small>Noé Artru, Rukhshanda Hussain, Emeline Got, Alexandre Messier, David Lindell, Abdallah Dib</small><br>
+  <i>IEEE / CVF Computer Vision and Pattern Recognition Conference (CVPR 2026)
+</i><br> 
+	<a href="https://arxiv.org/abs/2602.21100">pre-print</a>|
+	<a href="https://ubisoft-laforge.github.io/character/skullptor/">Project page</a> |
+	<a href="https://ubisoft-laforge.github.io/character/skullptor/">Code</a>
+  
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/skullptor.mp4" type="video/mp4">
+</video>
+</p>
+
+<p align="center">
+  <strong>Geometry-Aware Texture Generation for 3D Head Modeling with Artist-driven Control</strong><br>
+  <small>Amin Fadaeinejad, Abdallah Dib, Luiz Gustavo Hafemann, Emeline Got, Trevor Anderson, Amaury Depierre, Nikolaus F. Troje, Marcus A Brubaker, Marc-Andre Carbonneau</small><br>
+  <i> AI for Creative Visual Content Generation Editing and Understanding (CVEU), CVPR 2025 
+</i><br>
+ <a href="https://arxiv.org/pdf/2505.04387">pre-print</a> |
+  <a href="https://ubisoft-laforge.github.io/character/GeoAwareTextures3D/index.html">Project page</a> 
+  
+  <br><br>
+  <img src="images/geomAware_Fadaeinejad.png" width="500">
+</p>
+
+<p align="center">
+  <strong>SEREP: Semantic Facial Expression Representation for Robust In-the-Wild Capture and Retargeting</strong><br>
+  <small>Arthur Josi, Luiz Gustavo Hafemann, Abdallah Dib, Emeline Got, Rafael MO Cruz, Marc-Andre Carbonneau</small><br>
+  <i> International Conference on Computer Vision (ICCV 2025) 
+</i><br>
+<a href="https://arxiv.org/pdf/2412.14371">pre-print</a> |
+  <a href="https://ubisoft-laforge.github.io/character/serep/">Project page</a> 
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/serep.mp4" type="video/mp4">
+</video>
+</p>
+
+<p align="center">
+  <strong>MoSAR: Monocular Semi-Supervised Model for Avatar Reconstruction using Differentiable Shading</strong><br>
+  <small>Abdallah Dib, Luiz Gustavo Hafemann, Emeline Got, Trevor Anderson, Amin Fadaeinejad, Rafael M. O. Cruz, Marc-Andre Carbonneau</small><br>
+  <i> IEEE / CVF Computer Vision and Pattern Recognition Conference (CVPR 2024)
+</i><br>
+  <a href="https://arxiv.org/abs/2312.13091">pre-print</a> |
+  <a href="https://ubisoft-laforge.github.io/character/mosar/">Project page</a> |
+  <a href="https://github.com/ubisoft/ubisoft-laforge-FFHQ-UV-Intrinsics">Dataset</a>
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/mosar.mov" type="video/mp4">
+</video>
+</p>
+
+<p align="center">
+  <strong>S2F2: Self-Supervised High Fidelity Face Reconstruction From Monocular Image</strong><br>
+  <small>Abdallah Dib, Cedric Thebault, Junghyun Ahn, Philippe-Henri Gosselin, Louis Chevallier</small><br>
+  <i>International Conference on Automatic Face and Gesture Recognition FG 2023
+</i><br>
+  <a href="https://arxiv.org/abs/2203.07732">pre-print</a> |
+  <a href="https://youtu.be/DiHpZjx1sxc">video</a> |
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/s2f2.mp4" type="video/mp4">
+</video>
+
+</p>
+
+<p align="center">
+  <strong>Practical Face Reconstruction via Differentiable Ray Tracing</strong><br>
+  <small>Abdallah Dib, Gaurav Bharaj, Junghyun Ahn, Cédric Thébault, Philippe-Henri Gosselin, Marco Romeo, Louis Chevallier</small><br>
+  <i>Computer Graphics Forum, Eurographics' 2021</i><br>
+  <a href="https://arxiv.org/abs/2101.05356">paper</a> |
+  <a href="https://youtu.be/bPFp0oZ9plg">video</a> |
+  <a href="https://github.com/abdallahdib/NextFace">code</a>
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/practical.mp4" type="video/mp4">
+</video>
+
+</p>
+
+
+<p align="center">
+  <strong>Towards High Fidelity Monocular Face Reconstruction with Rich Reflectance using Self-supervised Learning and Ray Tracing</strong><br>
+  <small>Abdallah Dib, Cedric Thebault, Junghyun Ahn, Philippe-Henri Gosselin, Christian Theobalt, Louis Chevallier</small><br>
+  <i>International Conference on Computer Vision (ICCV 2021) </i><br>
+  <a href="https://arxiv.org/abs/2103.15432">paper</a> |
+  <a href="https://www.youtube.com/watch?v=VVr_bbXEjxE">video</a> |
+  <a href="https://github.com/abdallahdib/DeepNextFace">code</a>
+  <br><br>
+  <video width="100%" preload="auto" muted controls>
+    <source src="images/towards.mp4" type="video/mp4">
+</video>
+</p>
+
+<p align="center">
+  <strong>PhotoApp: Photorealistic Appearance Editing of Head Portraits</strong><br>
+  <small>Mallikarjun B R, Ayush Tewari, Abdallah Dib, Tim Weyrich, Bernd Bickel, Hans-Peter Seidel, Hanspeter Pfister, Wojciech Matusik, Louis Chevallier, Mohamed Elgharib, Christian Theobalt</small><br>
+  <i>ACM Transactions on Graphics (SIGGRAPH Asia 2021)</i><br>
+  <a href="https://arxiv.org/abs/2103.07658">paper</a> |
+  <a href="http://gvv.mpi-inf.mpg.de/projects/PhotoApp/">video</a>
+  <br><br>
+  <img src="images/malikarjun2021photoapp.jpg" width="500">
+</p>
+
+<p align="center">
+  <strong>FaceLab: Scalable Facial Performance Capture for Visual Effects</strong><br>
+  <small>Andrus, Curtis and Ahn, Junghyun and Alessi, Michele and Dib, Abdallah and Gosselin, Philippe and Thébault, Cédric and Chevallier, Louis and Romeo, Marco</small><br>
+  <i>The Digital Production Symposium (DigiPro 2020)</i><br>
+  <a href="https://dl.acm.org/doi/pdf/10.1145/3403736.3403938">paper</a>
+  <br><br>
+  <img src="images/dib2020facelab2.jpg" width="500">
+</p>
+
+
+<p align="center">
+  <strong>Pose Estimation For A Partially Observable Human Body From RGB-D Cameras</strong><br>
+  <small>Abdallah Dib, François Charpillet</small><br>
+  <i>IEEE/RSJ International Conference on Intelligent Robots and Systems  (IROS 2015)</i><br>
+  <a href="https://hal.inria.fr/hal-01203638/document">paper</a> |
+  <a href="https://www.youtube.com/watch?v=fEIChcc0yoY/">video</a>
+  <br><br>
+	
+  <img src="images/dib2015pose.png" width="500">
+</p>
+
+<p align="center">
+  <strong>Robust Dense Visual Odometry For RGB-D Cameras In A Dynamic Environment</strong><br>
+  <small>Abdallah Dib, François Charpillet</small><br>
+  <i>IEEE International Conference on Advanced Robotics (ICAR 2015)</i><br>
+  <a href="https://hal.inria.fr/hal-01212043/file/preprint.pdf">paper</a> |
+  <a href="https://youtu.be/3zotv04RUcs">video</a>
+  <br><br>
+  <img src="images/dib2015robust.jpg" width="500">
+</p>
+
+<p align="center">
+  <strong>Using Hmms for Discriminating Mobile From Static Objects in a 3D Occupancy Grid</strong><br>
+  <small>Dubois, Amandine and Dib, Abdallah and Charpillet, François</small><br>
+  <i>International Conference on Tools with Artificial Intelligence (ICTAI 2011)</i><br>
+  <a href="https://hal.inria.fr/file/index/docid/654041/filename/kinect.pdf">paper</a> |
+	<a href="https://youtu.be/wXQ_DUkHOMc">video</a>
+  <br><br>
+  <img src="images/dib2011hmm.jpg" width="500">
+</p>
+
+##  Personal Devs
+
+Here you find some of my personal projects I did (and continue doing) in spare time. they are related to C++ and Graphics programming (OpenGL/GLSL), and mobile dev (iOS).
+
+<p align="center">
+  <strong>OpenGLES 2.0 tutorials (with source code)</strong><br>
+  <small>In 2013, I wrote educational tutorials on Graphics programming for iOS using OpenGLES shading language. Tutorials were written in C++ with a clean and intuitive API for beginners. It covers: 3D mesh loader, camera movement, normal mappping, gpu skinning, environment mapping, shadow mapping. Code source can be found on my old website from <a href="https://virtual-vision.net/download/tutorials.zip">here</a> </small>
+</p>
+
+<p align="center">
+ <img src="images/ios/waterScene.png" width="350" ><img src="images/ios/fileLoader.png" width="350" >
+<img src="images/ios/sceneWithBump.png" width="350" ><img src="images/ios/gpuSkinning.png" width="350" >
+</p>
+
+<p align="center">
+ <strong>Rendering Engine</strong><br>
+ <small>I Continue developing  and maintaining this graphics engine. It is used mainly for visualizing 3D models. it is written in  C++/OpenGL and i ported it to many platforms: windows/mac/linux/iOS/Android(via JNI)/Web(via Emiscripten). It implements physically based rendering with various BRDF models (Cook-Torrance, Phong), Deferred shading, Shadow and normal mapping. It has built-in 2D GUI support via 'imgui'. </small>
+</p>
+
+<p align="center">
+<img src="images/pbr/pbr1.png" width="300" ><img src="images/pbr/pbr2.png" width="300" >
+</p>
+
+
+<p align="center">
+  <strong>iOS Graphics Programming</strong><br>
+  <small>In 2012, I started developing mobile games and apps. In 2017, I removed these apps from App store (Because i didn't have enough time to maintain them). Below are these apps/games.  <strong>The code source for these apps can be shared upon request.</strong></small>
+</p>
+
+<p align="center">
+  <strong>Jumper Buggy</strong><br>
+  <small>Developed in 2013. A 3D action and car simulation game for iOS. It uses the old OpenDynamics Engine for physics simulation. Written in C++/OpenGL. <a href="https://www.youtube.com/watch?v=I5MDCqC-wmQ">Video from here</a> </small>
+</p>
+
+<p align="center">
+  	<img src="images/ios/jumper1.png" width="200" ><img src="images/ios/jumper2.png" width="200" >
+	<img src="images/ios/jumper3.png" width="200" ><img src="images/ios/jumper3.png" width="200" >
+</p>
+
+
+
+<p align="center">
+  <strong>Mosaic Puzzle</strong><br>
+  <small>Developed in 2014. The goal of  this educational game is to help children develop their eye<->hand coordination skills. Written in C++/OpenGL.</small>
+</p>
+
+<p align="center">
+  <img src="images/ios/mos1.PNG" width="300" ><img src="images/ios/mos2.PNG" width="300" >
+</p>
+
+<p align="center">
+  <strong>Camera Art Effects</strong><br>
+  <small>Developed in 2012. It is  photography application for iOS ( iPhone, iPod and iPad) that lets you apply filter and effects to your camera and in real time. It uses optimized GLSL shaders to run in realtime on an iPhone 3GS. Supported filters: Cartoon; Old Movie, Pencil, Colored Pencil, Bulge, Dent, Rain, ... Written in C++/OpenGL.</small>
+</p>
+
+<p align="center">
+<img src="images/ios/art1.JPG" width="180" ><img src="images/ios/art2.PNG" width="180" >
+<img src="images/ios/art3.JPG" width="180" ><img src="images/ios/art4.PNG" width="180" >
+</p>

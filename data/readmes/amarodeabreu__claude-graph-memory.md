@@ -1,0 +1,504 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude_Code-Compatible-blueviolet?style=for-the-badge" alt="Claude Code Compatible">
+  <img src="https://img.shields.io/badge/NornicDB-Neo4j_Compatible-008CC1?style=for-the-badge" alt="NornicDB">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
+  <img src="https://img.shields.io/badge/100%25-Local_&_Private-success?style=for-the-badge" alt="100% Local">
+</p>
+
+<h1 align="center">Claude Graph Memory</h1>
+
+<p align="center">
+  <strong>Persistent knowledge graph and RAG memory for Claude Code</strong><br>
+  <em>Your AI coding assistant finally remembers everything across sessions</em>
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-features">Features</a> •
+  <a href="#-why-graph-not-vector">Why Graph?</a> •
+  <a href="#-how-it-works">How It Works</a> •
+  <a href="#-commands">Commands</a> •
+  <a href="#-contributing">Contributing</a>
+</p>
+
+---
+
+## The Problem
+
+Claude Code is brilliant—but it's a goldfish. Every session starts from zero.
+
+**The cost of context loss:**
+- 🔄 Re-explaining architectural decisions session after session
+- 🧠 Claude forgetting patterns it followed minutes ago when context compacts
+- 📅 Losing the thread on multi-day refactoring efforts
+- 📈 No "project memory" that compounds over time
+
+> *"Claude Code starts every session with zero context. There is no memory of previous sessions, previous work, or accumulated understanding of the user's projects and preferences."*
+> — [GitHub Issue #14227](https://github.com/anthropics/claude-code/issues/14227)
+
+**Claude Graph Memory fixes this.**
+
+## The Solution
+
+A **100% local** knowledge graph that runs alongside Claude Code, automatically indexing your documentation and code structure. Claude queries this graph to understand your project deeply, and stores learnings that persist forever.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Your Project                                                    │
+│  ├── docs/                     ──────────────────┐              │
+│  │   ├── architecture.md                         │              │
+│  │   ├── decisions/                              ▼              │
+│  │   └── api-specs/            ┌─────────────────────────────┐  │
+│  └── src/                      │      NornicDB Graph         │  │
+│      ├── components/     ───── │  ┌─────┐    ┌──────────┐   │  │
+│      ├── services/             │  │ Doc │───▶│Component │   │  │
+│      └── utils/                │  └─────┘    └──────────┘   │  │
+│                                │      │           │          │  │
+│                                │      ▼           ▼          │  │
+│  Claude Code ◀────────────────▶│  ┌──────┐  ┌────────┐     │  │
+│  (queries & stores memories)   │  │Memory│  │Function│     │  │
+│                                │  └──────┘  └────────┘     │  │
+│                                └─────────────────────────────┘  │
+│                                     ↑                           │
+│                              Never leaves your machine          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## 🎯 Why Graph, Not Vector?
+
+Most local RAG tools use **vector databases** for semantic similarity. But codebases aren't about "similar text"—they're about **relationships**.
+
+| Query Type | Vector DB | Knowledge Graph |
+|------------|:---------:|:---------------:|
+| "Find docs mentioning auth" | ✅ Semantic match | ✅ Semantic match |
+| "What functions are in auth.ts?" | ❌ No structure | ✅ `File → CONTAINS → Function` |
+| "Which decisions affect the API layer?" | ❌ Guesses | ✅ `Decision → MENTIONS → Component` |
+| "Show me everything related to AuthService" | ❌ Similarity only | ✅ Traverses all edges |
+| "Why did Claude suggest X?" | ❌ Black box | ✅ Inspect the exact nodes |
+
+**Graphs preserve the *structure* of your project, not just the *text*.**
+
+Knowledge graphs offer transparent reasoning paths—if Claude gives you a wrong answer based on project context, you can open the graph browser at `localhost:7474` and see *exactly* which node fed the hallucination.
+
+## ✨ Features
+
+### 🔄 Automatic Indexing
+- **Session Start**: Detects new projects and auto-populates the graph
+- **On Every Edit**: Incrementally updates when you modify files
+- **Zero Config**: Works out of the box for any project with a `/docs` folder
+
+### 📚 Documentation Graph
+- Parses all Markdown files in `/docs`
+- Extracts titles, headings, and content
+- Identifies components, concepts, and cross-references
+- Special handling for ADRs (Architecture Decision Records)
+
+### 🔍 Code Structure Graph
+- **Go**: Packages, functions, structs, interfaces, methods
+- **TypeScript/JavaScript**: Functions, classes, interfaces, arrow functions
+- **Python**: Functions, classes, methods
+- Tracks file relationships and containment
+
+### 🧠 Persistent Memory
+- Store learnings that survive across sessions
+- Query past decisions and context
+- Build up project knowledge over time
+
+### 🏷️ Multi-Project Support
+- Each project is isolated by label (`:ProjectName:Document`)
+- Work on multiple projects without data mixing
+- Easy cleanup of old projects
+
+### 🔒 100% Local & Private
+- NornicDB runs in a local Docker container
+- Data stored in a Docker volume on your machine
+- MCP servers communicate via stdio, not network
+- **Nothing ever leaves your machine**
+
+## 📊 Comparison
+
+| | Claude Graph Memory | CLAUDE.md Only | Cloud Memory Services |
+|---|:---:|:---:|:---:|
+| **Privacy** | ✅ 100% local | ✅ Local | ❌ Data leaves machine |
+| **Relationships** | ✅ Graph traversal | ❌ Flat text | Varies |
+| **Auto-indexing** | ✅ Hooks + incremental | ❌ Manual curation | ✅ Usually |
+| **Multi-project** | ✅ Labeled isolation | ❌ Per-folder only | ✅ Usually |
+| **Offline** | ✅ Full function | ✅ Full function | ❌ Requires connection |
+| **Context window** | ✅ Query what's needed | ❌ Loads everything | Varies |
+| **Explainability** | ✅ Inspect graph nodes | ❌ Opaque | ❌ Opaque |
+| **Cost** | Free (OSS) | Free | Subscription |
+
+## ⚡ Performance
+
+| Metric | Typical Value |
+|--------|---------------|
+| Initial indexing | ~5-10 seconds for 100 docs + code files |
+| Incremental updates | Milliseconds (single file re-index) |
+| Query latency | Sub-100ms for typical Cypher queries |
+| Memory footprint | ~100-200MB Docker container |
+| Disk usage | ~1MB per 100 indexed documents |
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Docker**: [Install Docker](https://docs.docker.com/get-docker/)
+- **Python 3.9+**: For populate scripts
+- **Claude Code**: [Anthropic's CLI tool](https://claude.ai/code)
+
+### Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/amarodeabreu/claude-graph-memory.git
+cd claude-graph-memory
+
+# Run the installer
+./install.sh
+```
+
+That's it! The installer will:
+
+1. ✅ Start NornicDB via Docker (auto-restarts on boot)
+2. ✅ Install the `neo4j` Python driver
+3. ✅ Configure MCP servers for Claude Code
+4. ✅ Set up global hooks for all projects
+5. ✅ Create the `claude-graph` CLI command
+
+### Verify Installation
+
+```bash
+./verify.sh
+```
+
+### Restart Claude Code
+
+After installation, restart Claude Code to load the MCP servers. Then navigate to any project with a `/docs` folder—it will auto-populate on session start.
+
+## 💡 Example Workflows
+
+### "Continue where we left off"
+Start a new session; Claude queries the graph for recent decisions and project context without you re-explaining anything.
+
+### "What affects the auth layer?"
+```cypher
+MATCH (d:MyProject:Document)-[:DESCRIBES]->(c:Component {name: 'AuthService'})
+RETURN d.path, d.title
+```
+One query returns all docs, decisions, and code touching authentication.
+
+### "Remember this decision"
+Store a memory node that persists across all future sessions—Claude will know about it tomorrow, next week, forever.
+
+### "Debug a wrong suggestion"
+Open `localhost:7474`, inspect the graph, and see exactly which nodes Claude used to make its recommendation.
+
+## 📖 How It Works
+
+### Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                        Claude Code                                │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  Hooks (in ~/.claude/settings.json)                        │  │
+│  │  ├─ SessionStart  → Check graph, auto-populate if empty    │  │
+│  │  └─ PostToolUse   → Incremental update on file edits       │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  MCP Servers (in ~/.claude.json)                           │  │
+│  │  ├─ neo4j-memory  → Store/retrieve persistent memories     │  │
+│  │  └─ neo4j-cypher  → Run Cypher queries against the graph   │  │
+│  └────────────────────────────────────────────────────────────┘  │
+├──────────────────────────────────────────────────────────────────┤
+│                     NornicDB (Docker)                             │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  Graph Schema                                               │  │
+│  │  ├─ (:ProjectName:Document)  → Indexed documentation       │  │
+│  │  ├─ (:ProjectName:Decision)  → ADRs and decisions          │  │
+│  │  ├─ (:ProjectName:Component) → Extracted components        │  │
+│  │  ├─ (:ProjectName:File)      → Code files                  │  │
+│  │  ├─ (:ProjectName:Function)  → Functions and methods       │  │
+│  │  └─ (:ProjectName:Class)     → Classes and structs         │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│  Ports: 7474 (Browser UI) | 7687 (Bolt Protocol)                 │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### Project Detection
+
+Projects are automatically detected from the directory name and converted to PascalCase:
+
+| Directory | Graph Label |
+|-----------|-------------|
+| `/Projects/trading-engine` | `:TradingEngine` |
+| `/Projects/my-awesome-app` | `:MyAwesomeApp` |
+| `/Projects/api` | `:Api` |
+
+### What Gets Indexed
+
+#### Documentation (Markdown)
+
+| Extracted | Example |
+|-----------|---------|
+| Title | First `# Heading` |
+| Headings | All `##` and `###` |
+| Content | First 2000 chars |
+| Type | overview, architecture, decision, implementation |
+| References | Links to other docs |
+| Components | Mentioned system components |
+| Concepts | Terms in backticks or bold |
+
+#### Code (Go/TypeScript/Python)
+
+| Language | What's Extracted |
+|----------|------------------|
+| **Go** | `package`, `func`, `type struct`, `type interface` |
+| **TypeScript** | `function`, `const fn = () =>`, `class`, `interface` |
+| **Python** | `def`, `class` |
+
+### Incremental Updates
+
+When you edit a file in Claude Code:
+
+1. The `PostToolUse` hook fires
+2. Script checks if it's a `.md`, `.go`, `.ts`, `.tsx`, `.js`, `.jsx`, or `.py` file
+3. Updates just that file's nodes in the graph (background, non-blocking)
+4. Handles deletions automatically
+
+## 🛠️ Commands
+
+After installation, use `claude-graph` from any project directory:
+
+```bash
+# Show current graph statistics
+claude-graph status
+
+# Full re-index (docs + code)
+claude-graph refresh
+
+# Index only documentation
+claude-graph populate-docs
+
+# Index only code
+claude-graph populate-code
+
+# Remove nodes for deleted files
+claude-graph prune
+
+# List all indexed projects
+claude-graph list-projects
+
+# Delete a project from the graph
+claude-graph drop-project OldProjectName
+
+# Show help
+claude-graph help
+```
+
+## 📊 Graph Schema
+
+### Node Types
+
+```cypher
+// Documentation
+(:Document {path, title, type, headings, content, updated_at})
+(:Decision {id, title, status, path, context, decision, consequences})
+(:Component {name})
+(:Concept {name})
+
+// Code
+(:File {path, language, package, updated_at})
+(:Function {name, file})
+(:Struct {name, file})      // Go
+(:Interface {name, file})   // Go, TypeScript
+(:Class {name, file})       // TypeScript, Python
+```
+
+### Relationships
+
+```cypher
+(Document)-[:DESCRIBES]->(Component)
+(Document)-[:MENTIONS]->(Concept)
+(Document)-[:REFERENCES]->(Document)
+(File)-[:CONTAINS]->(Function|Struct|Interface|Class)
+```
+
+### Example Queries
+
+```cypher
+// Find docs about a component
+MATCH (d:MyProject:Document)-[:DESCRIBES]->(c:Component {name: 'AuthService'})
+RETURN d.path, d.title
+
+// What functions are in a file?
+MATCH (f:MyProject:File {path: 'src/auth.ts'})-[:CONTAINS]->(fn:Function)
+RETURN fn.name
+
+// Find all decisions
+MATCH (d:MyProject:Decision)
+RETURN d.id, d.title, d.status
+
+// Trace everything related to a component
+MATCH (n)-[r]-(c:Component {name: 'PaymentService'})
+RETURN n, r, c
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `NEO4J_URI` | `bolt://localhost:7687` | NornicDB connection |
+| `CLAUDE_PROJECT_DIR` | Current directory | Project root |
+
+### Docker Ports
+
+| Port | Service |
+|------|---------|
+| `7474` | NornicDB Browser UI |
+| `7687` | Bolt protocol (queries) |
+
+### Files Installed
+
+```
+~/.claude.json                      # MCP server config (modified)
+~/.claude/settings.json             # Global hooks (modified)
+~/.claude/scripts/
+├── neo4j-context.sh                # Main CLI script
+├── populate-doc-graph.py           # Documentation indexer
+└── populate-code-graph.go          # Go code indexer
+~/.claude-graph-memory/
+└── docker-compose.yml              # NornicDB container config
+~/.local/bin/claude-graph           # CLI symlink
+```
+
+## 🔧 Troubleshooting
+
+### NornicDB not running
+
+```bash
+# Check status
+docker ps | grep nornicdb
+
+# Start it
+docker start nornicdb
+
+# Or use docker-compose
+cd ~/.claude-graph-memory && docker-compose up -d
+
+# View logs
+docker logs nornicdb
+```
+
+### Connection refused
+
+```bash
+# Check if port is open
+nc -z localhost 7687 && echo "OK" || echo "Not running"
+
+# Restart the container
+docker restart nornicdb
+```
+
+### Graph not updating
+
+```bash
+# Force a full refresh
+claude-graph refresh
+
+# Check for errors in the hook
+~/.claude/scripts/neo4j-context.sh session-start
+```
+
+### MCP servers not loading
+
+1. Restart Claude Code completely
+2. Check `~/.claude.json` has the `neo4j-memory` and `neo4j-cypher` entries
+3. Verify uvx is installed: `which uvx`
+
+### Reset everything
+
+```bash
+./uninstall.sh
+./install.sh
+```
+
+## ❓ FAQ
+
+### Does this send my code to the cloud?
+
+**No.** Everything runs locally:
+- NornicDB runs in a local Docker container
+- Data is stored in a Docker volume on your machine
+- MCP servers communicate via stdio, not network
+
+### How much disk space does it use?
+
+Minimal. The graph database is very efficient:
+- ~1MB per 100 documents indexed
+- Code nodes are just metadata (no source code stored)
+
+### Can I use this with multiple machines?
+
+Currently designed for single-machine use. For multi-machine sync, you'd need to:
+- Export/import the Docker volume
+- Or mount a shared volume
+
+### Does it work with private repos?
+
+Yes! It only indexes local files. Nothing leaves your machine.
+
+### What about large monorepos?
+
+Works fine, but initial population may take a minute. Incremental updates are always fast.
+
+### Can I add support for other languages?
+
+Yes! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add language support.
+
+### How is this different from CLAUDE.md?
+
+CLAUDE.md loads everything into the context window every session—competing for precious tokens. Claude Graph Memory provides **targeted retrieval**: Claude queries only what's needed, when needed. Plus, graphs capture relationships that flat markdown can't express.
+
+### Why not just use a vector database?
+
+Vector databases excel at "find similar text." But for code, you often need structural queries: "what functions are in this file," "which decisions affect this component," "show me everything connected to AuthService." Graphs model these relationships explicitly; vectors can only approximate them.
+
+## 🗺️ Roadmap
+
+- [ ] **Semantic search**: Vector embeddings for natural language queries (hybrid approach)
+- [ ] **Rust support**: Add Rust language parsing
+- [ ] **Import graph**: Track dependencies between files
+- [ ] **Git integration**: Index commit history and blame
+- [ ] **Web UI**: Visual graph explorer
+- [ ] **Team sync**: Share graph across team members
+- [ ] **Memory decay**: Relevance scoring over time
+
+## 🤝 Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Quick Links
+
+- [Report a Bug](https://github.com/amarodeabreu/claude-graph-memory/issues/new?template=bug_report.md)
+- [Request a Feature](https://github.com/amarodeabreu/claude-graph-memory/issues/new?template=feature_request.md)
+- [Ask a Question](https://github.com/amarodeabreu/claude-graph-memory/discussions)
+
+## 📜 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🙏 Credits
+
+- [NornicDB](https://github.com/orneryd/NornicDB) - Neo4j-compatible graph database
+- [Claude Code](https://claude.ai/code) - Anthropic's CLI for Claude
+- [mcp-neo4j](https://github.com/neo4j-contrib/mcp-neo4j) - MCP servers for Neo4j
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ for the Claude Code community</strong><br>
+  <sub>If this helps you, give it a ⭐</sub>
+</p>

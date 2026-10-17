@@ -1,0 +1,74 @@
+<p align="center">
+    <img width="160" alt="Piramid" src="apps/website/public/logo_dark.png" />
+</p>
+
+<h1 align="center">Piramid</h1>
+
+Piramid is a Rust-based AI inference systems project investigating how language models can access and use external information directly during computation.
+
+It combines low-level systems engineering with research into model-native knowledge integration, including GPU memory management, KV-cache reuse, retrieval-aware execution, and attention-level integration.
+
+The longer-term goal is to move beyond prompt-based retrieval by investigating how external information can be represented, retained, and integrated into transformer computation.
+
+## Quickstart
+
+```bash
+curl -fsSL https://piramiddb.com/install.sh | sh     # prebuilt, CPU
+cargo install piramid --locked --features inference-candle,gpu-cuda  # or build, with CUDA
+
+hf download Qwen/Qwen2.5-0.5B-Instruct --local-dir ./models/Qwen2.5-0.5B-Instruct
+```
+
+`piramid.yaml`:
+
+```yaml
+startup:
+  hardware:
+    profile: gpu
+  embedding:
+    provider: openai
+    model: text-embedding-3-small
+
+runtime:
+  execution: gpu
+  inference:
+    enabled: true
+    model_path: ./models/Qwen2.5-0.5B-Instruct
+```
+
+```bash
+export OPENAI_API_KEY=...
+piramid serve --config piramid.yaml          # 127.0.0.1:6333
+
+curl -X POST localhost:6333/api/collections/docs/embed -H 'Content-Type: application/json' \
+  -d '{"texts": ["Compaction rewrites the record store without deleted documents."]}'
+
+curl -X POST localhost:6333/api/generate -H 'Content-Type: application/json' \
+  -d '{"messages": [{"role": "user", "content": "What happens to deleted documents?"}],
+       "retrieval": {"collection": "docs", "k": 2}}'
+```
+
+## Docs
+
+| | |
+|---|---|
+| [User docs](apps/website/content/docs/) | install, configuration, providers, HTTP API, console; served at [piramiddb.com/docs](https://piramiddb.com/docs) |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | crates, seams, request flows, KV cache, durability |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | direction, milestones, what is out of scope |
+| [docs/SETUP.md](docs/SETUP.md) | contributor setup, tests, benchmarks, PR rules |
+| [docs/decisions/](docs/decisions/) | why the shape is what it is |
+| [apps/sdk/python](apps/sdk/python) | the Python client, `pip install piramid` |
+| [AGENTS.md](AGENTS.md) | layout, dependency rule, conventions |
+| [config.example.yaml](config.example.yaml) | every setting at its default |
+
+## Development
+
+```bash
+just bootstrap   # .env, git hooks, dependencies
+just check       # the gate: fmt, clippy, tests, layering, website
+just cli         # the console, plus a units view over the repo
+```
+
+## License
+
+Proprietary. All rights reserved; see [LICENSE](LICENSE).

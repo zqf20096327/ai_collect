@@ -1,0 +1,582 @@
+<div align="center" markdown="1">
+
+# Vibe Coding Tracker — AI Coding Assistant Usage Tracker
+
+[![Crates.io](https://img.shields.io/crates/v/vct-cli?logo=rust&style=flat-square&color=E05D44)](https://crates.io/crates/vct-cli)
+[![Crates.io Downloads](https://img.shields.io/crates/d/vct-cli?logo=rust&style=flat-square)](https://crates.io/crates/vct-cli)
+[![npm version](https://img.shields.io/npm/v/vibe-coding-tracker?logo=npm&style=flat-square&color=CB3837)](https://www.npmjs.com/package/vibe-coding-tracker)
+[![npm downloads](https://img.shields.io/npm/dt/vibe-coding-tracker?logo=npm&style=flat-square)](https://www.npmjs.com/package/vibe-coding-tracker)
+[![PyPI version](https://img.shields.io/pypi/v/vibe_coding_tracker?logo=python&style=flat-square&color=3776AB)](https://pypi.org/project/vibe_coding_tracker/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/vibe_coding_tracker?logo=python&style=flat-square)](https://pypi.org/project/vibe-coding-tracker)
+[![rust](https://img.shields.io/badge/Rust-stable-orange?logo=rust&logoColor=white&style=flat-square)](https://www.rust-lang.org/)
+[![tests](https://img.shields.io/github/actions/workflow/status/Mai0313/VibeCodingTracker/test.yml?label=tests&logo=github&style=flat-square)](https://github.com/Mai0313/VibeCodingTracker/actions/workflows/test.yml)
+[![code-quality](https://img.shields.io/github/actions/workflow/status/Mai0313/VibeCodingTracker/code-quality-check.yml?label=code-quality&logo=github&style=flat-square)](https://github.com/Mai0313/VibeCodingTracker/actions/workflows/code-quality-check.yml)
+[![license](https://img.shields.io/badge/License-MIT-green.svg?labelColor=gray&style=flat-square)](https://github.com/Mai0313/VibeCodingTracker/tree/main?tab=License-1-ov-file)
+[![Star on GitHub](https://img.shields.io/github/stars/Mai0313/VibeCodingTracker?style=social&label=Star)](https://github.com/Mai0313/VibeCodingTracker)
+[![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/Mai0313/VibeCodingTracker/pulls)
+
+<img src="assets/social-preview.png" alt="Vibe Coding Tracker social preview" width="640">
+
+</div>
+
+**Track your AI coding costs in real-time.** Vibe Coding Tracker is a lightweight, high-performance CLI tool built in Rust that monitors and analyzes your Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness usage — with detailed cost breakdowns, token statistics, and code operation insights, all while keeping the memory footprint minimal.
+
+[English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md)
+
+> Note: CLI examples use the short alias `vct`. If you installed via npm/pip/cargo, the binary might be named `vibe_coding_tracker` or `vct`. Create an alias or replace `vct` with the full name when running commands if needed.
+
+---
+
+## Why Vibe Coding Tracker?
+
+### Know Your Costs
+
+Stop wondering how much your AI coding sessions cost. Get **real-time cost tracking** with automatic pricing updates from [LiteLLM](https://github.com/BerriAI/litellm).
+
+### Ultra-Lightweight
+
+Built with Rust for minimal resource footprint. The interactive TUI dashboard typically sits at **around 60 MB of resident memory** once the first refresh is done, even with thousands of sessions on disk — no Electron, no bloated runtimes. A persistent per-session ledger under `~/.vct/sessions/` means only new or changed sources are ever parsed again, even across runs.
+
+### Beautiful Visualizations
+
+Choose your preferred view:
+
+- **Interactive Dashboard**: Responsive terminal UI with an immediate loading spinner, background incremental refreshes, a scrollable model list (arrow keys), a live per-process CPU/memory readout, and compact K/M/B number formatting
+- **Static Reports**: Professional tables for documentation
+- **Script-Friendly**: Plain text and JSON for automation
+- **Full Precision**: Export exact costs for accounting
+
+### Zero Configuration
+
+Automatically detects and processes logs from Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness. No setup required — just run and analyze. A `~/.vct/config.toml` is created with sensible defaults on first run if you ever want to tweak behavior (see [Configuration](#configuration)).
+
+### Rich Insights
+
+- Token usage by model and date
+- Cost breakdown by cache types (read / create)
+- File operations tracking (edit, read, write lines)
+- Tool call history (Bash, Edit, Read, Write, TodoWrite)
+- Per-provider totals
+
+---
+
+## Key Features
+
+| Feature               | Description                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| **Multi-Provider**    | Claude Code, Codex, Copilot, Gemini, OpenCode, Cursor, Hermes, Grok, and DeepSeek Harness |
+| **Smart Pricing**     | Fuzzy model matching + daily cache from LiteLLM                                           |
+| **4 Display Modes**   | Interactive TUI, static table, plain text, and JSON                                       |
+| **Dual Analysis**     | Token/cost stats (`usage`) + code operation stats (`analysis`)                            |
+| **Live Quota Panels** | Live quota usage for Claude, Codex, Copilot, Cursor, and Grok                             |
+| **Ultra-Lightweight** | Around 60 MB RSS in the TUI, compact incremental scans — built with Rust                  |
+| **Live Updates**      | Responsive loading and background refreshes with change highlighting                      |
+
+---
+
+## Quick Start
+
+### Installation
+
+Choose the installation method that works best for you:
+
+#### Method 1: Install from npm
+
+**Prerequisites**: [Node.js](https://nodejs.org/) v22 or higher
+
+Choose one of the following package names (they are identical):
+
+```bash
+# Main package
+npm install -g vibe-coding-tracker
+
+# Short alias with scope
+npm install -g @mai0313/vct
+
+# Full name with scope
+npm install -g @mai0313/vibe-coding-tracker
+```
+
+#### Method 2: Install from PyPI
+
+**Prerequisites**: Python 3.8 or higher
+
+```bash
+pip install vibe_coding_tracker
+# Or with uv
+uv pip install vibe_coding_tracker
+
+# Run without installing, straight from PyPI (uv)
+uvx vibe_coding_tracker usage
+```
+
+#### Method 3: Install from crates.io
+
+Install using Cargo from the official Rust package registry:
+
+```bash
+cargo install vct-cli
+```
+
+### First Run
+
+```bash
+# View your usage with the interactive dashboard
+vct usage
+
+# Or run the binary built by Cargo/pip
+vibe_coding_tracker usage
+
+# Analyze code operations across all sessions
+vct analysis
+```
+
+---
+
+## Command Guide
+
+Run `vct --help` to list the commands, and `vct <command> --help` for a command's flags.
+
+Time range flags (shared by `usage` and `analysis`, mutually exclusive, default `--all`):
+
+| Flag          | Window                            |
+| ------------- | --------------------------------- |
+| `--daily`     | Sessions modified today           |
+| `--weekly`    | Current ISO week (Monday → today) |
+| `--monthly`   | Current calendar month            |
+| `-a`, `--all` | Every session on disk (default)   |
+
+---
+
+## Usage Command
+
+**Track your spending across all AI coding sessions.**
+
+### Basic Usage
+
+```bash
+# Interactive dashboard (recommended)
+vct usage
+
+# Static table for reports
+vct usage --table
+
+# Plain text for scripts
+vct usage --text
+
+# JSON for data processing (every row has cost_usd; matched_model only when priced under another model name)
+vct usage --json
+
+# Save enriched JSON with shell redirection
+vct usage --json > report.json
+
+# Combine time range with output format
+vct usage --weekly
+vct usage --table --monthly
+vct usage --json --daily
+
+# Merge same model reported under different provider prefixes
+# (e.g. openai/gpt-5.5 + azure/gpt-5.5 + gpt-5.5 -> one row)
+vct usage --table --merge-providers
+```
+
+> [!NOTE]
+> Model rows are sorted by cost in ascending order, so the highest-spending model is listed last (right above the `TOTAL` row in `--table`). This applies to the interactive dashboard, `--table`, and `--text` output; `--json` lists its rows in no fixed order. The interactive dashboard also hides models with zero usage in the selected range.
+
+> [!TIP]
+> The same model can show up as several rows when it is routed under different provider prefixes (`openai/gpt-5.5`, `azure/gpt-5.5`, plain `gpt-5.5`). `--merge-providers` collapses rows that share the base name after the first `/` (versions like `gpt-5.5` vs `gpt-5.4` stay separate) and sums their already-priced cost. In the interactive dashboard, press `m` to toggle it live (the choice is saved to `~/.vct/config.toml`, so the next launch remembers it); `--merge-providers` opens the dashboard already merged. `--json` is left as the raw per-model export.
+
+### Preview: Interactive Dashboard (`vct usage`)
+
+```
+┌ Models · $79.33 · 49.1M tokens · 3 models ───────────────────────────────────────────────────────────────────────────┐
+│Model                              Input     Output    Cache Read  Cache Write Total     Cost (USD)   Share           █
+│                                                                                                                      █
+│gemini-3.1-pro-preview                  129K     10.3K       66.0K       1.70K      207K        $0.40             0.4%█
+│claude-haiku-4-5-20251001              5.57K     19.8K       5.20M       55.0K     5.28M        $1.34          █ 10.8%█
+│claude-opus-4-8                        25.7K      179K       42.9M        496K     43.6M       $77.59  █████████ 88.8%█
+│                                                                                                                      █
+│                                                                                                                      █
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                              Claude $78.93 · Gemini $0.40
+┌ Claude ──────────────┐┌ Codex ───────────────┐┌ Copilot ─────────────┐┌ Cursor ────────LIMIT ┐┌ Grok ────────────────┐
+│max 20x       just now││plus          just now││individual    just now││free          just now││SuperGrok     just now│
+│5h    ▰▱▱▱▱  13% 1h42m││5h    ▰▰▱▱▱  33% 12m  ││prem  ▰▱▱▱▱   3% 24d0h││total ▰▰▰▰▰  94% 16d0h││week  ▰▰▱▱▱  38% 3d4h │
+│7d    ▰▰▰▱▱  58% 1d23h││7d    ▰▰▱▱▱  36% 1h54m││reqs  ▰▱▱▱▱ 45/1500   ││auto  ▰▰▰▰▰ 100% 16d0h││ondmd $4.20/$50.00    │
+│Fable ▰▰▰▰▱  79% 1d23h││credits 0 · +3 reset  ││                      ││api   ▰▰▰▱▱  44% 16d0h││balance $12.00        │
+│bal - · $0.00 used    ││reset expires 17d0h   ││                      ││                      ││                      │
+└──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘
+                Total Cost: $79.33  |  Total Tokens: 49.1M  |  Models: 3  |  Memory: 4.7 MB  |  CPU: 0.0%
+                    ↑/↓ scroll  m merge  p providers  Q quota  r refresh  q quit  |  Star on GitHub
+```
+
+Both interactive dashboards draw a centered `Loading sessions...` spinner as soon as terminal setup finishes. Loading stays responsive to `q`, Ctrl+C, and resize events. Later scans keep the last successful data visible with a `Refreshing...` footer. A failed refresh keeps the last-known-good view and retries on the next scheduled or manual refresh.
+
+### Preview: Table & JSON (`vct usage`)
+
+`--table` prints the same numbers as a static report with a per-provider summary; `--json` emits one enriched row per model (each with `cost_usd`) for scripting.
+
+```text
+Token Usage Statistics
+
+┌───────────────────────────┬─────────┬─────────┬─────────────┬─────────────┬──────────────┬────────────┐
+│ Model                     ┆   Input ┆  Output ┆  Cache Read ┆ Cache Write ┆ Total Tokens ┆ Cost (USD) │
+╞═══════════════════════════╪═════════╪═════════╪═════════════╪═════════════╪══════════════╪════════════╡
+│ opencode/gemini-3.5-flash ┆  19,421 ┆     254 ┆           0 ┆           0 ┆       19,675 ┆      $0.03 │
+│ gpt-5.5                   ┆ 242,227 ┆  16,229 ┆   2,406,912 ┆           0 ┆    2,665,368 ┆      $5.56 │
+│ claude-opus-4-8           ┆ 401,937 ┆ 936,186 ┆ 138,099,926 ┆   6,057,836 ┆  145,495,885 ┆    $151.29 │
+│ TOTAL                     ┆ 663,585 ┆ 952,669 ┆ 140,506,838 ┆   6,057,836 ┆  148,180,928 ┆    $156.88 │
+└───────────────────────────┴─────────┴─────────┴─────────────┴─────────────┴──────────────┴────────────┘
+
+Totals (by Provider)
+
+┌───────────────┬─────────────┬─────────┐
+│ Provider      ┆      Tokens ┆    Cost │
+╞═══════════════╪═════════════╪═════════╡
+│ Claude        ┆ 145,495,885 ┆ $151.29 │
+│ Codex         ┆   2,665,368 ┆   $5.56 │
+│ OpenCode      ┆      19,675 ┆   $0.03 │
+│ All Providers ┆ 148,180,928 ┆ $156.88 │
+└───────────────┴─────────────┴─────────┘
+```
+
+```json
+// vct usage --json  (one model shown; rows come in no fixed order)
+[
+  {
+    "cost_usd": 151.29,
+    "model": "claude-opus-4-8",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 6057836
+      },
+      "cache_creation_input_tokens": 6057836,
+      "cache_read_input_tokens": 138099926,
+      "input_tokens": 401937,
+      "output_tokens": 936186,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 145495885
+    }
+  }
+]
+```
+
+Every row carries the same flat token fields regardless of provider. A few keys appear only on a row that has something to put in them: `cache_creation` splits the cache writes into their 5-minute and 1-hour TTL shares, `server_tool_use` counts Claude web searches, `above_tier` holds the tokens of requests whose prompt crossed a long-context price tier, and a Gemini row that spent tool tokens carries `tool_tokens`, which LiteLLM has no rate for and which are counted in `total_tokens` alone.
+
+### What It Scans
+
+The tool automatically scans these directories:
+
+- `~/.claude/projects/**/*.jsonl` (Claude Code — recursive, includes subagent logs)
+- `~/.codex/sessions/**/*.jsonl` (Codex — recursive, includes daily subdirectories) plus `~/.codex/archived_sessions/*.jsonl`, the flat directory Codex moves a session's log into when you archive it (a session found in both is counted once)
+- `~/.copilot/session-state/<sessionId>/events.jsonl` (Copilot CLI)
+- `~/.gemini/tmp/<project_hash>/chats/*.jsonl` (Gemini CLI)
+- `~/.local/share/opencode/opencode.db` (OpenCode — SQLite database; honors `$XDG_DATA_HOME`)
+- `~/.cursor/chats/*/*/store.db` (Cursor — SQLite chat stores, used for `analysis` and a local `usage` estimate consistent with the other providers)
+- `~/.hermes/state.db` (Hermes — SQLite database, honors `$HERMES_HOME`; `usage` only)
+- `$GROK_HOME/sessions/*/*/signals.json` (Grok CLI — defaults to `~/.grok`; sibling `updates.jsonl` supplies `analysis` data)
+- `$DSH_HOME/sessions/*/*/session.jsonl.zstd` (DeepSeek Harness — defaults to `~/.dsh`; a root configured with `compression = "none"` writes `session.jsonl` instead, and both are read)
+
+Grok `usage` is one point-in-time local context estimate: vct records `signals.json`'s `contextTokensUsed` as cache-read tokens and estimates cost at the model's cache-read price. It is not cumulative billed usage. `analysis` reconstructs completed Read / Write / Edit / Bash / TodoWrite operations from the sibling `updates.jsonl`. For your actual billed allowance, see the Grok quota panel below.
+
+For noninteractive `usage` and `analysis` scans, vct exits with an error when every discovered source fails. If only some sources fail, it keeps the successful results and prints one diagnostic summary to stderr. The TUI stays best-effort and preserves its last successful payload instead.
+
+### Session Ledger
+
+Every `usage` and `analysis` scan reads and writes a per-session ledger under `~/.vct/sessions/` (one `<provider>.json` per assistant). A session that has not changed is never parsed twice, so one-shot runs and the dashboard's first paint only spend time on what changed. More importantly, a session stays in the ledger after its source is gone: when an assistant prunes its own history (Claude Code keeps 30 days by default) or a whole session directory such as `~/.claude/projects` is deleted, every total still includes it, and noninteractive runs print a one-line note saying how many sessions came from the ledger. A resumed session is re-read when its log changes. The ledger holds only per-day token counts and tool counters in each provider's own shape, never transcripts or prices, and vct never deletes it: an unreadable file is renamed aside and a file written by a newer vct is left alone. Delete the directory to start over from what is on disk. `vct analysis --json` and `vct analysis FILE` parse their files in full and do not use it.
+
+### Live Quota Panels
+
+`vct usage` shows **live quota usage for Claude Code, Codex, GitHub Copilot, Cursor, and Grok right in the dashboard — with zero setup.** No status-line hook, no credentials to enter: vct reads each provider's own credentials, calls its usage API on a background thread, and keeps the panels current while you work. Every gauge is percent **used**, so a full bar means the window is spent, not untouched. (Prefer a quieter dashboard? Trim `panels` under `[usage.quota]` in [`config.toml`](#configuration), or set it to `[]` to hide the quota cards entirely. The per-provider cost line under the table is local scan data, not a quota panel, so it stays whatever you set here.)
+
+```
+┌ Claude ──────────────┐┌ Codex ───────────────┐┌ Copilot ─────────────┐┌ Cursor ────────LIMIT ┐┌ Grok ────────────────┐
+│max 20x       just now││plus          just now││individual    just now││free          just now││SuperGrok     just now│
+│5h    ▰▱▱▱▱  13% 1h42m││5h    ▰▰▱▱▱  33% 12m  ││prem  ▰▱▱▱▱   3% 24d0h││total ▰▰▰▰▰  94% 16d0h││week  ▰▰▱▱▱  38% 3d4h │
+│7d    ▰▰▰▱▱  58% 1d23h││7d    ▰▰▱▱▱  36% 1h54m││reqs  ▰▱▱▱▱ 45/1500   ││auto  ▰▰▰▰▰ 100% 16d0h││ondmd $4.20/$50.00    │
+│Fable ▰▰▰▰▱  79% 1d23h││credits 0 · +3 reset  ││                      ││api   ▰▰▰▱▱  44% 16d0h││balance $12.00        │
+│bal - · $0.00 used    ││reset expires 17d0h   ││                      ││                      ││                      │
+└──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘└──────────────────────┘
+```
+
+- **Claude** — plan tier, 5-hour, weekly, and per-model weekly usage from the official OAuth usage API (`GET /api/oauth/usage`), read from `~/.claude/.credentials.json`, plus your credit balance. Polled about once a minute to stay under the endpoint's rate limit; a red `LIMIT` flag appears in the title when a cap is hit. The per-model weekly row is best-effort and simply hides when that scope is not returned.
+- **Codex** — plan tier, available 5-hour and weekly usage windows, credit balance, and the earliest fetched available earned-reset expiry from the ChatGPT backend (`wham/usage` + `wham/rate-limit-reset-credits`) using `~/.codex/auth.json` (with approximate remaining messages / spend cap when applicable); falls back to the newest `rate_limits` in your Codex session logs when the API is unavailable (the title shows `Codex` vs `Codex (session)`).
+- **Copilot** — plan tier plus your premium-request quota, shown as two gauges: percent used and the used / total request count (e.g. `45/1500`), from GitHub's Copilot API (`GET /copilot_internal/user`), read from `~/.copilot/config.json`. The request impersonates the Copilot CLI. The token is long-lived, so there is no refresh; a `401` / `403` shows a `run: copilot login` hint.
+- **Cursor** — plan tier, total / auto / API percent **used**, and on-demand spend from cursor.com (`GET /api/usage-summary`), using the session token in `~/.config/cursor/auth.json`.
+- **Grok** — plan tier plus your included-allowance usage for the current weekly or monthly period, from the Grok CLI's own billing endpoint (`GET /v1/billing?format=credits`), read from `~/.grok/auth.json`. A prepaid balance is shown only once it is non-zero, and pay-as-you-go spend once you have either spent something or set a cap. The request impersonates the Grok CLI; a `401` / `403` shows a `run: grok login` hint.
+
+**Automatic token refresh.** For Claude, Codex, and Grok, when a token is near expiry or rejected, vct refreshes it and writes the new token back to the provider's own credential file (in that CLI's exact format). For Grok, every other login in the file is preserved on write. If a refresh cannot proceed, the panel shows a `run: <provider> auth login` hint instead of breaking. Copilot (long-lived token) and Cursor (kept fresh by its own client) are read-only — vct never writes their credential files.
+
+A panel appears only for a provider whose credentials are present. Panels are placed on a uniform grid that fits as many cards per row as the terminal allows and wraps the rest onto the next row. On a terminal too short to spend rows on the grid, it folds into a one-line digest showing the gauges that still fit and counting the rest; press `Q` for the full-detail overlay, where every card has room for every line whatever the terminal size, and `p` for the Provider Usage panel with per-provider tokens and share. Quota panels appear only in the interactive TUI; `--table`, `--text`, and `--json` are unchanged.
+
+> **Platform note:** on macOS, Claude Code stores its OAuth credentials in the system Keychain rather than `~/.claude/.credentials.json`, so the Claude panel is not shown on macOS. Cursor's `~/.config/cursor` credential path is Linux-oriented.
+
+---
+
+## Analysis Command
+
+**Deep dive into code operations — see exactly what your AI assistant did.**
+
+See [`tests/fixtures/sessions/`](tests/fixtures/sessions/) for sample inputs and matching JSON outputs for the four JSONL providers, plus the Grok session fixture under [`tests/fixtures/sessions/grok/`](tests/fixtures/sessions/grok/) and the DeepSeek Harness one under [`tests/fixtures/sessions/dsh/`](tests/fixtures/sessions/dsh/).
+
+### Basic Usage
+
+```bash
+# Interactive dashboard for all sessions (default)
+vct analysis
+
+# Static table output with per-provider totals
+vct analysis --table
+
+# Plain text for scripts
+vct analysis --text
+
+# Complete parser results for every session
+vct analysis --json
+
+# Analyze a single conversation file → stdout JSON
+vct analysis ~/.claude/projects/session.jsonl
+
+# Summarize only that conversation
+vct analysis ~/.claude/projects/session.jsonl --table
+
+# Save complete JSON with shell redirection
+vct analysis --json > report.json
+vct analysis ~/.claude/projects/session.jsonl > session-analysis.json
+
+# Combine time range with output format
+vct analysis --weekly
+vct analysis --table --monthly
+vct analysis --json --daily
+vct analysis --json --daily > today.json
+```
+
+### Preview: Interactive Dashboard (`vct analysis`)
+
+```
+┌ Models · 135K lines · 1.80K tool calls · 3 models ───────────────────────────────────────────────────────────────────┐
+│Model                                   Edit Lines  Read Lines  Write Lines Bash    Edit    Read    TodoWrite  Write  █
+│                                                                                                                      █
+│claude-opus-4-8                               12.4K       88.1K       9.02K     412     231     604         96      88█
+│gemini-3.1-pro-preview                        2.10K       14.8K       1.62K      84      44     112         16      15█
+│claude-haiku-4-5-20251001                       840       5.40K         610      31      16      42          6       5█
+│                                                                                                                      █
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌ Providers ───────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│Provider                 Edit Lines  Read Lines  Write Lines  Bash     Edit     Read     TodoWrite   Write    Days    │
+│                                                                                                                      │
+│Claude                   13.2K       93.5K       9.63K        443      247      646      102         93       12      │
+│Gemini                   2.10K       14.8K       1.62K        84       44       112      16          15       3       │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                 Total Lines: 135K  |  Total Tools: 1.80K  |  Models: 3  |  Memory: 4.8 MB  |  CPU: 0.0%
+                                    ↑/↓ scroll  r refresh  q quit  |  Star on GitHub
+```
+
+### Preview: Table & JSON (`vct analysis`)
+
+`--table` renders the per-model breakdown plus a per-provider summary (with an Active Days column). `--text` and `--table` are compact projections of the same normalized parser records. `--json` keeps the complete records, including per-operation details and token usage. With no `<FILE>`, the outer array contains one `CodeAnalysis` object per session; with `<FILE>`, stdout is that single object and matches the corresponding shape under [`tests/fixtures/sessions/`](tests/fixtures/sessions/).
+
+```text
+Analysis Statistics
+
+┌─────────────────┬────────────┬────────────┬─────────────┬──────┬──────┬──────┬───────────┬───────┐
+│ Model           ┆ Edit Lines ┆ Read Lines ┆ Write Lines ┆ Bash ┆ Edit ┆ Read ┆ TodoWrite ┆ Write │
+╞═════════════════╪════════════╪════════════╪═════════════╪══════╪══════╪══════╪═══════════╪═══════╡
+│ gpt-5.5         ┆          0 ┆      3,087 ┆           0 ┆   25 ┆    0 ┆   10 ┆         0 ┆     0 │
+│ claude-opus-4-8 ┆      1,493 ┆     15,564 ┆         970 ┆  123 ┆  134 ┆  144 ┆         0 ┆    12 │
+│ TOTAL           ┆      1,493 ┆     18,651 ┆         970 ┆  148 ┆  134 ┆  154 ┆         0 ┆    12 │
+└─────────────────┴────────────┴────────────┴─────────────┴──────┴──────┴──────┴───────────┴───────┘
+```
+
+```jsonc
+// vct analysis --json  (one abbreviated session shown)
+[
+  {
+    "user": "alice",
+    "extensionName": "Claude-Code",
+    "insightsVersion": "...",
+    "machineId": "...",
+    "records": [
+      {
+        "totalUniqueFiles": 3,
+        "totalReadLines": 120,
+        "readFileDetails": [
+          {
+            "filePath": "/repo/src/main.rs",
+            "lineCount": 120,
+            "characterCount": 4102,
+            "timestamp": 1783872000000
+          }
+        ],
+        "toolCallCounts": { "Bash": 1, "Edit": 0, "Read": 1, "TodoWrite": 0, "Write": 0 },
+        "conversationUsage": { "claude-opus-4-8": { "input_tokens": 42, "output_tokens": 18 } }
+      }
+    ]
+  }
+]
+```
+
+> [!WARNING]
+> Complete analysis JSON can be large and may contain source text, edit bodies, shell commands, absolute paths, repository URLs, user names, machine identifiers, and token metadata. Review it before sharing.
+
+Batch analysis reads live provider stores. If an assistant appends to a session during the scan, later runs can legitimately contain newer data. Unchanged inputs serialize in a deterministic order.
+
+Noninteractive analysis returns an error when every discovered source fails or uses an unrecognized schema. If only some sources fail, successful output is preserved and a warning is written to stderr.
+
+`analysis FILE` follows the same rule for malformed or unsupported records inside one file: parsed JSON/text/table output is preserved on stdout and a generic skipped-record warning is written to stderr.
+
+Codex code-mode sessions expose a completed JavaScript `exec` cell but no structured trace for its nested tools. VCT counts that cell as one Bash call and preserves its source in complete JSON, but does not guess nested Read/Edit/Write operations.
+
+---
+
+## Update Command
+
+**Keep supported direct installations up to date automatically.**
+
+At startup, vct silently checks for a newer release at most once per UTC day. A newer release is downloaded and applied only when the current binary was installed by the official `scripts/install.sh` or `scripts/install.ps1` installer and carries its `.vct-managed` marker. The check, download, and replacement never print to stdout or stderr. A network failure, rate limit, read-only directory, or another running vct process only leaves the current command running; the reason is recorded in the diagnostic log. `VCT_OFFLINE=1` skips the check completely.
+
+After a Unix update, vct re-executes the current command with the new binary. On Windows, the current command finishes and a helper applies the replacement afterwards. The automatic path never modifies installs from cargo, npm, PyPI, a distro package, or an unmarked manual or development build. Update those through their package manager instead. To add automatic updates to an existing direct install, run the current official installer once more so it creates the marker.
+
+Set `general.auto_update = false` in `~/.vct/config.toml` to disable startup checks and automatic updates. The explicit `vct update` command retains its existing manual behavior. `VCT_OFFLINE=1` also applies to it: `--check`, the interactive prompt, and `--force` alike return without contacting GitHub.
+
+### Basic Usage
+
+```bash
+# Check for updates
+vct update --check
+
+# Interactive update with confirmation
+vct update
+
+# Force update — always downloads latest version
+vct update --force
+```
+
+### Preview (`vct update --check`)
+
+```
+Current version: v1.3.0
+Checking for latest release...
+Latest version: v1.3.0 — you are up to date!
+```
+
+---
+
+## Version Command
+
+Report the embedded build metadata (binary version, Rust toolchain, Cargo version):
+
+```bash
+vct version          # Pretty table
+vct version --text   # One-field-per-line, script-friendly
+vct version --json   # Machine-readable JSON
+```
+
+```text
+┌───────────────┬──────────┐
+│ Version       ┆ 1.3.0    │
+│ Rust Version  ┆ 1.96.0   │
+│ Cargo Version ┆ 1.96.0   │
+└───────────────┴──────────┘
+```
+
+---
+
+## Quota Command
+
+**Print a provider's raw quota/usage API response — no parsing, no aggregation.**
+
+Calls the same quota endpoint the `usage` dashboard uses (Claude / Codex / Copilot / Cursor / Grok) exactly once and prints the raw body, so you can inspect the exact API shape or sanity-check your credentials. It reads each provider's stored credentials and does **not** refresh tokens: if a token is expired, re-auth with that provider's own CLI (`claude` / `codex` / `copilot` / `cursor-agent` / `grok`).
+
+> The previous name `vct fetch` is kept as a hidden alias, so existing scripts keep working.
+
+### Basic Usage
+
+```bash
+# Raw JSON (default)
+vct quota claude
+vct quota codex
+vct quota copilot
+vct quota cursor
+vct quota grok
+
+# Flattened plain text
+vct quota codex --text
+
+# Flattened key/value table
+vct quota copilot --table
+```
+
+> [!NOTE]
+> The response body is printed to stdout as-is. On an HTTP error the body is still printed and the process exits non-zero; a 401/403 additionally prints a `run: <cli> login` hint on stderr.
+
+---
+
+## Configuration
+
+vct keeps its user settings in `~/.vct/config.toml`. The file is **created with defaults on first run**, so you never have to write it by hand — edit it only when you want to change a default. It is generated from vct's typed settings and carries a `#:schema` directive on the first line, so a schema-aware TOML editor (taplo / VS Code "Even Better TOML") gives you autocomplete and validation. Print the schema yourself with `vct config schema`. A file written by an older vct is upgraded to the current layout in place the next time vct reads it (or on demand with `vct config migrate`), so an upgrade never leaves you on a stale format. That upgrade also adds a quota panel released after your file was written — once. Remove the name again and it stays removed, and a panel you had already dropped is never brought back.
+
+Run `vct config show` to print the file; its comments explain every setting.
+
+> [!NOTE]
+> Cursor `usage` is a **local estimate** from the chat stores, so it behaves like Claude Code / Codex / Copilot / Gemini (all computed from local session files) and needs no network. It undercounts Cursor's real spend, because much of it is billed under Cursor-internal model names the local data cannot price — treat Cursor cost as approximate.
+
+> [!NOTE]
+> vct writes diagnostics to `~/.vct/logs/vct-YYYY-MM-DD.log` (plain text, file only — never shown in the dashboard). It stays quiet when healthy (default level `warn`) and the file is created lazily, so a healthy run leaves nothing behind. When a quota fetch fails or a session is skipped, that is where the reason is recorded — bump `logging.level` to `debug` for the full detail.
+
+### Managing the file
+
+```bash
+# Print the config file path
+vct config path
+
+# Print the current settings
+vct config show
+
+# Open the file in $VISUAL / $EDITOR (falls back to vi / notepad)
+vct config edit
+
+# Print the JSON schema (regenerate with: vct config schema > vct.schema.json)
+vct config schema
+
+# Upgrade a legacy-format file to the current layout in place
+vct config migrate
+```
+
+---
+
+## Smart Pricing System
+
+### How It Works
+
+1. **Automatic Updates**: Fetches pricing from [LiteLLM](https://github.com/BerriAI/litellm) once per UTC day
+2. **Deterministic Matching**: Finds the most specific model match even for versioned or provider-prefixed names
+3. **Failure Safety**: A failed fetch cannot replace a good cache; vct keeps the previous map and backs off for five minutes before another attempt
+
+### Model Matching
+
+**Priority Order**:
+
+1. **Exact Match**: `claude-sonnet-4` → `claude-sonnet-4`
+2. **Normalized**: `claude-sonnet-4-20250514` → `claude-sonnet-4`
+3. **Substring**: `custom-gpt-4` → `gpt-4`
+4. **Fuzzy**: Uses Jaro-Winkler similarity (70% threshold)
+5. **Fallback**: Shows $0.00 if no match found
+
+Generic placeholder names (e.g. `default`, what cursor-agent records for auto-mode sessions) and very short names never take a substring/fuzzy match — unpriced is safer than a coincidental neighbor's price.
+
+### Cost Details
+
+- **Context tiers are per request**: LiteLLM's "above Nk tokens" rates (e.g. GPT-5.x above 272k, Gemini above 200k) and its Qwen / doubao volume rows alike apply only to requests whose own prompt context crossed the boundary — never to a whole scan's token sum. Each request bills at whichever of the model's published rows its own context reached, so a model priced in four bands charges its top band for the requests that got there. Providers without per-request granularity — and offline scans — bill at the lowest rate, so tiered-model costs are a lower bound there.
+- **Beyond tokens**: Claude web-search tool calls (`server_tool_use.web_search_requests`) are billed per query on top of the token cost; every other model's per-query charge is $0.
+- **OpenCode**: a novel model name is priced from its tokens only on an **exact** LiteLLM match; with no exact match, vct trusts the assistant message's own stored cost instead of guessing from a loosely-similar name.
+- **Hermes**: priced the same way as OpenCode — an **exact** LiteLLM match prices from tokens, otherwise vct uses Hermes's own stored cost.
+- **DeepSeek Harness**: `dsh` records no cost of its own, so every model is priced from LiteLLM through the same lookup chain as the other file-based providers — there is no stored-cost fallback like OpenCode's or Hermes's. It routes to whatever the deployment configures, so expect deployment-defined model names, which land at $0 when nothing in LiteLLM matches.
+- **Grok**: `contextTokensUsed` is priced as cache-read tokens only (falling back to the input rate when the model publishes no cache-read price); this is a point-in-time local context estimate, not cumulative billed usage.
+
+---
+
+## Development
+
+Contributor setup, building from source, tests, code quality, commit conventions, and release and packaging notes live in [CONTRIBUTING.md](./.github/CONTRIBUTING.md).

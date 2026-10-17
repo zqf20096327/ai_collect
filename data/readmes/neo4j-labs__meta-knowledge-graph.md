@@ -1,0 +1,741 @@
+# Meta Knowledge Graph: Self-Learning Memory for AI Agents
+
+The **Meta Knowledge Graph** (MKG) is a self-improving, graph-structured memory
+layer for AI agents, backed by Neo4j. It is **harness-agnostic**: the Neo4j
+store and the MCP server plug into any MCP-capable harness, and the
+capture/injection scripts ride on whatever lifecycle hooks the harness exposes.
+This repo ships ready-made wiring for **Claude Code**
+([`.claude/settings.json`](.claude/settings.json)) and **Codex**
+([`.codex/config.toml`](.codex/config.toml) plus
+[`.codex/hooks.json`](.codex/hooks.json)); plugging a custom harness in means
+pointing its lifecycle events at the same scripts.
+
+It ships as two halves that form a closed capture-and-recall loop:
+
+- **MCP server (`meta-knowledge-graph`)** — surfaces project memory, the underlying
+  graph, the persisted system prompt, and (optionally) a data catalog and
+  warehouse to the agent as tools.
+- **Lifecycle hooks** — plain Python scripts that log every session event,
+  inject scoped project context on prompt submit, and run an LLM memory extraction
+  processor at Stop
+  that distills durable `:Learning` candidates (scoped `project` or `user`,
+  covering durable facts and decisions alike) from what just happened, plus an
+  append-only `:Observation` timeline entry per work window (episodic memory:
+  what happened — headlines recalled by recency at session start, bodies and
+  older history pulled on demand through `episode_fetch` / `episode_search`).
+
+The hooks write to the same graph the MCP tools read from, so each new session
+starts with the most relevant prior learnings already injected — both
+project-scoped memory and durable facts about the user. Everything is tagged
+with a **user id** (see [User identity](#user-identity)): sessions, learnings,
+observations, and the profile all carry the email of the person driving the
+harness, user-scoped memory is recalled per user, and each user gets their own
+`(:UserProfile)`. The persisted **system prompt** is frozen: only the seed
+scripts write it, and it is never rewritten by consolidation. What adapts
+instead is that per-user `(:UserProfile)` node — a compact "user adaptations"
+section a rate-limited Stop/SessionEnd hook distills from accumulated
+**gate-approved** user-profile memory, which the injection hook appends to the
+frozen base at session start (keeping every superseded section as version
+history). The **memory extraction prompt** is a fixed code constant — there is
+no Neo4j-backed self-improvement loop.
+
+A complete end-to-end demo — a B2B sales / customer-success assistant for an
+enterprise car-rental provider — ships in the repo; see
+[Sales agent use case](#sales-agent-use-case) for setup.
+
+## Running MKG
+
+MKG is **harness-agnostic**, and can run in several ways:
+
+- **Claude Code** — install the packaged **plugin** (below). This is the quickest
+  path and the one most users want.
+- **Codex** — install the packaged **plugin** for lifecycle hooks, the MCP server,
+  and Codex skills, or run straight from a **repo checkout** with the committed
+  `.codex/` wiring.
+- **Other harnesses** — any MCP-capable harness with lifecycle hooks can drive the
+  same shared scripts.
+
+Either way MKG is two halves — lifecycle **hooks** (capture + recall) and an
+**MCP server** (Neo4j / BigQuery / neocarta tools) — and the only host
+prerequisites are [`uv`](https://docs.astral.sh/uv/) and a reachable Neo4j
+instance; both halves execute through `uv`.
+
+### Claude Code (plugin)
+
+```
+claude plugin marketplace add neo4j-labs/meta-knowledge-graph
+claude plugin install meta-knowledge-graph@mkg
+```
+
+- The marketplace is named `mkg`; the qualified plugin id is `meta-knowledge-graph@mkg`.
+- On the **first MCP start** after install, the plugin launcher falls back to
+  `uv run --project` to create the plugin cache virtualenv (one-time; that start
+  is slower). Later MCP starts execute the cached `.venv/bin/python -m
+  meta_knowledge_graph` directly, with the venv on `PATH` so optional MCP
+  subprocesses run from the same environment instead of doing their own `uvx`
+  startup install.
+- Verify: `claude plugin list` shows `meta-knowledge-graph@mkg` *enabled*; inside
+  a session the MKG system prompt is injected and `mcp__meta-knowledge-graph__*`
+  tools are available.
+
+```
+claude plugin disable meta-knowledge-graph@mkg
+claude plugin update  meta-knowledge-graph@mkg
+claude plugin details meta-knowledge-graph@mkg     # component inventory + token cost
+```
+
+### Configuring the Claude Code plugin
+
+For an installed Claude Code plugin, the config path is:
+
+```
+~/.config/meta-knowledge-graph/.env
+```
+
+Credentials live in that one user-global file (mode `600`), read by both the
+hooks and the MCP server. It survives plugin updates and is never written into
+the ephemeral plugin cache.
+
+> MKG deliberately does **not** use `/plugin configure` — there is no
+> `userConfig`/keychain schema, so credentials stay file-based and portable
+> across harnesses (Codex, etc.).
+
+Run the wizard in your own terminal (it prompts for secrets):
+
+```
+uv run --project ~/.claude/plugins/marketplaces/mkg meta-knowledge-graph setup
+```
+
+…or write the file by hand. Example `~/.config/meta-knowledge-graph/.env`:
+
+```
+mkdir -p ~/.config/meta-knowledge-graph
+cat > ~/.config/meta-knowledge-graph/.env <<'EOF'
+NEO4J_URI=neo4j+s://xxxx.databases.neo4j.io
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=change-me
+NEO4J_DATABASE=neo4j
+# Who you are to MKG (optional; defaults to your signed-in Claude Code / Codex
+# account email, then git config user.email). Set it explicitly on shared machines.
+MKG_USER_ID=you@example.com
+# LLM for memory extraction (all optional; Claude Code prefers your subscription):
+CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...   # preferred: `claude setup-token`
+OPENAI_API_KEY=sk-...                      # litellm fallback (any provider) + embeddings
+ANTHROPIC_API_KEY=sk-ant-api03-...         # litellm fallback (any provider) also works
+# GEMINI_API_KEY / OPENROUTER_API_KEY / LLM_MODEL / DIFFBOT_TOKEN also honored
+EOF
+chmod 600 ~/.config/meta-knowledge-graph/.env
+```
+
+Resolution order (first existing wins): `MKG_ENV_FILE` → `<project>/.env`
+(repo/demo) → `~/.config/meta-knowledge-graph/.env` (installed/ambient). Override
+the dir with `MKG_CONFIG_DIR` or `XDG_CONFIG_HOME`. Start a new session after
+changing credentials.
+
+### Codex (plugin)
+
+The installable plugin package lives in [`plugin/`](plugin/), following the
+same layout as `claude-mem`: the repo root is the marketplace/catalog checkout,
+and `plugin/` is the versioned payload copied into the host plugin cache.
+
+- [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) is the
+  Codex marketplace catalog and points at `./plugin`.
+- [`plugin/.codex-plugin/plugin.json`](plugin/.codex-plugin/plugin.json)
+  packages the plugin metadata, Codex skills, hooks, and MCP server declaration.
+- [`plugin/hooks/codex-hooks.json`](plugin/hooks/codex-hooks.json) is the Codex
+  hook config. Its commands run the packaged hook scripts with `uv run --script`.
+- [`plugin/codex-skills/`](plugin/codex-skills/) exposes Codex equivalents of
+  the Claude Code commands:
+  `mkg-start`, `mkg-orchestrate`, `mkg-skill-review`, `sales-agent-demo`, and
+  `mkg-recall`.
+- [`plugin/.mcp.json`](plugin/.mcp.json) is shared with the Claude Code plugin
+  and starts the same `meta-knowledge-graph` MCP server from the installed
+  plugin cache or repo checkout. Warm plugin starts bypass `uv` and run the
+  cached virtualenv's Python directly; `uv run --project` remains the fallback
+  when the virtualenv has not been created yet.
+
+Install from the remote marketplace repo:
+
+```
+codex plugin marketplace add neo4j-labs/meta-knowledge-graph
+codex plugin add meta-knowledge-graph@mkg
+```
+
+Command and skill ownership is deliberately split by host:
+
+- [`commands/`](commands/) is the Claude Code slash-command surface and the
+  canonical procedure source.
+- [`plugin/codex-skills/`](plugin/codex-skills/) is the Codex plugin surface.
+  Each Codex skill is a thin adapter that reads the matching packaged
+  `plugin/commands/*.md` file where one exists, then follows that procedure with
+  Codex tools and naming.
+
+Codex also supports a repo-local checkout mode:
+[`.codex/hooks.json`](.codex/hooks.json) wires the same lifecycle capture and
+recall scripts through `git rev-parse --show-toplevel`, which is convenient when
+developing MKG from this repository. Installed plugins use
+[`plugin/hooks/codex-hooks.json`](plugin/hooks/codex-hooks.json) instead, so
+hook commands resolve the plugin cache rather than the user's active project
+checkout. The repo does not use a recursive
+`plugins/meta-knowledge-graph -> ..` symlink.
+
+Start a new Codex thread after install so the plugin hooks, skills, and MCP tools
+are picked up.
+
+### Codex (repo checkout)
+
+Open this repo in Codex and it works out of the box —
+[`.codex/config.toml`](.codex/config.toml) wires the same MCP server (with
+approval gates on the query and write tools) and
+[`.codex/hooks.json`](.codex/hooks.json) wires the recall, capture, and
+Stop-time extraction events:
+
+```toml
+[mcp_servers.meta-knowledge-graph]
+command = "uv"
+args = ["run", "--no-sync", "meta-knowledge-graph"]
+env = { MKG_CLIENT = "codex" }   # read the user id from the Codex account
+
+[mcp_servers.meta-knowledge-graph.tools.bigquery_execute_query]
+approval_mode = "approve"
+
+[mcp_servers.meta-knowledge-graph.tools.project_add_learning]
+approval_mode = "approve"
+```
+
+Credentials are read from `~/.config/meta-knowledge-graph/.env` exactly as for
+Claude Code. Codex doesn't currently document a `SessionEnd` hook, so MKG only
+wires Stop-time extraction for Codex.
+
+### Claude Desktop & other harnesses
+
+Plugins are a Claude *Code* feature, so **Claude Desktop** registers the MCP
+server manually in `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "meta-knowledge-graph": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/meta-knowledge-graph", "run", "meta-knowledge-graph"]
+    }
+  }
+}
+```
+
+Credentials come from `~/.config/meta-knowledge-graph/.env` (or set them inline
+under `env`). For **any other harness**, point it at the same two surfaces:
+spawn `uv run meta-knowledge-graph` as an MCP server, and call the `hooks/`
+scripts from its lifecycle events (JSON payload on stdin, `--client <name>` for
+attribution). The graph and memory-extraction loop are identical regardless of
+which harness produced the events — and packaged plugins for more harnesses will
+follow.
+
+### Developing
+
+Iterate against your working tree without touching the marketplace or cache:
+
+```
+claude --plugin-dir /path/to/meta-knowledge-graph     # loads from the repo, this session only
+codex plugin marketplace add /path/to/meta-knowledge-graph
+codex plugin add meta-knowledge-graph@mkg
+```
+
+In a repo checkout the project-local `.env` takes precedence, so demo creds stay
+scoped to the repo. Exercise a hook directly with a simulated payload:
+
+```
+echo '{"session_id":"dev","hook_event_name":"SessionStart","source":"startup","cwd":"'"$PWD"'"}' \
+  | uv run --project . python hooks/inject_system_prompt.py
+```
+
+Tests and manifest validation:
+
+```
+uv run python -m pytest tests/ -v
+claude plugin validate .
+```
+
+**Publishing a release** (so `claude plugin update` surfaces it — a version bump
+is required):
+
+```
+# bump "version" in .claude-plugin/plugin.json, then:
+git commit -am "release 0.2.0" && git push
+claude plugin tag                                  # creates meta-knowledge-graph--v0.2.0, validates manifest agreement
+```
+
+Consumers pull it with:
+
+```
+claude plugin marketplace update mkg
+claude plugin update meta-knowledge-graph@mkg      # use the qualified id; restart to apply
+```
+
+With `autoUpdate: true` on the `mkg` marketplace, the catalog refresh is
+automatic — but the version bump is still what makes a new release visible.
+
+**Where code runs from** — two directories back the install:
+
+- `~/.claude/plugins/marketplaces/mkg/` — git clone of the repo (the catalog),
+  refreshed by `marketplace update`.
+- `~/.claude/plugins/cache/mkg/meta-knowledge-graph/<version>/` — the
+  version-pinned copy of `plugin/` that `$CLAUDE_PLUGIN_ROOT` resolves to at
+  runtime, with its own `.venv` (re-synced on the first session after each
+  update).
+
+## Architecture
+
+### MCP server
+
+Mounted under the `meta-knowledge-graph` prefix, in four groups:
+
+| Group | Tools | Mounted when |
+|---|---|---|
+| Project memory & graph | `project_get_context`, `project_add_learning`, `project_gate_audit`, `project_resolve_learning`, `episode_fetch`, `episode_search`, `skill_search`, `skill_fetch`, `skill_review_queue`, `project_resolve_skill`, `neo4j_get_schema`, `neo4j_read_cypher` | Always. |
+| Diffbot research | `search_news`, `enhance_entity` | `DIFFBOT_TOKEN` is set. |
+| BigQuery warehouse | `bigquery_execute_query` | `BIGQUERY_MCP_URL` is set. |
+| Neocarta data catalog | `neocarta_*` | `GCP_PROJECT_ID`, `BIGQUERY_DATASET_ID`, and the `EMBEDDING_MODEL`'s provider key (OpenAI by default) are set. |
+
+### Hooks
+
+The hook scripts are harness-agnostic: each reads the lifecycle event's JSON
+payload from stdin, and `log_event.py` tags events with `--client <name>`
+(default `claude_code`), so sessions record which harness produced them. Any
+harness that exposes lifecycle hooks — Claude Code, Codex, Cursor, or a custom
+loop — can drive the same scripts. The table below shows the Claude Code
+wiring from this repo's own `.claude/settings.json`. All hooks swallow their
+own exceptions so a Neo4j outage never blocks the session. A few scripts
+(`inject_system_prompt.py`, `log_event.py`, `seed_system_prompt.py`) are
+exposed under `.claude/hooks/` as symlinks back to the canonical versions in
+`hooks/`.
+
+For installed Claude Code plugins, the scripts resolve project memory from the
+user's active worktree first (`cwd` / `CLAUDE_PROJECT_DIR`, with a git-root
+walk-up) and treat the plugin cache path as the hook implementation root only.
+Detached background processors carry that resolved project through
+`MKG_PROJECT_ROOT` / `MKG_PROJECT_ID` — and the resolved user through
+`MKG_USER_ID` / `MKG_USER_ID_SOURCE` — so Stop-time extraction does not fall
+back to the plugin directory or re-derive a different identity.
+
+### User identity
+
+Every session, learning, observation, and profile is tagged with the id of the
+person driving the harness, and user-scoped memory is recalled **per user**, so
+one graph can serve several people without one person's facts or persona
+surfacing in another's session. The id is an email wherever one can be found.
+Both halves — the hooks and the MCP server — resolve it the same way, first hit
+wins:
+
+1. `MKG_USER_ID` — explicit, from the MKG `.env` or the shell. Recommended on
+   shared or CI machines. Background workers are respawned with it pinned.
+2. The signed-in harness account: Claude Code's `~/.claude.json`
+   (`oauthAccount.emailAddress`) or Codex's `~/.codex/auth.json` (the `email`
+   claim of its id token, decoded, never verified or stored). The active
+   harness goes first — `log_event.py --client`, `MKG_CLIENT`, or the
+   `CLAUDE_*` / `CODEX_*` env markers say which one that is.
+3. `git config user.email`, as seen from the project checkout.
+4. The OS account name — never empty, so every write carries *some* id.
+
+What the id does in the graph:
+
+- `(:User {id})` is the anchor: `(:User)-[:HAS_SESSION]->(:Session)`,
+  `(:User)-[:HAS_LEARNING]->(:Learning {scope: 'user'})` (a user fact hangs
+  off its person the way a project fact hangs off its `(:Project)`), and
+  `(:User)-[:HAS_PROFILE]->(:UserProfile)`.
+- `user_id` is stamped on `:Session`, `:SessionEvent`, `:Learning` (every
+  scope — for a project fact it is authorship, plus `last_user_id` for the
+  last writer), `:Observation`, `:ProjectProcessing`, `:SystemPromptInjection`,
+  `:EventEnrichment`, and `:UserProfileVersion`; human
+  overrides through `project_resolve_learning` add `reviewed_by_user_id`.
+- User facts are keyed per person: `learning:user:<user_id>:<digest>`, so the
+  same sentence about two people never collides on one node.
+- Recall of user-scoped memory (`inject_project_context.py`,
+  `project_get_context`, the extractor's dedup shortlist, the gate's neighbour
+  search for a user fact, the gate audit's user-scoped half, and profile
+  consolidation) filters on the id. Project memory, the episodic timeline, and
+  skills stay shared by the project; observations carry the id as provenance.
+- There is one `(:UserProfile)` per user (`user_id` is unique). The injection
+  hook composes the frozen base prompt with the calling user's section.
+
+Memory written before the user tag existed has no `user_id` and is not
+served by user-scoped recall.
+
+| Hook event | Script | Behavior |
+|---|---|---|
+| `SessionStart` (`startup\|resume\|clear`) | `hooks/inject_system_prompt.py` | Loads `(:SystemPrompt {name: 'default'})` from Neo4j, composes it with the consolidated `(:UserProfile)` "user adaptations" section (appended under a `## User adaptations` header; a profile flagged `needs_revision` carries a caution note until re-consolidated), and injects the result. If the prompt node is missing, injects a tool-agnostic bootstrap prompt telling the agent to discover its tools, recall project memory, and capture user/project facts as scoped learnings. The injection log keeps only a content hash + summary on the `:SystemPromptInjection` node and links it to its source via `[:OF_PROMPT]→(:SystemPrompt)` instead of copying the prompt text. If the same prompt content was already injected into the same session, the hook skips the duplicate (unless the context was wiped by `clear`/`compact`). It also appends a **`## Skill activation`** section stating the live `MKG_SKILL_ACTIVATION` mode (`auto`: screened skills go live on their own; `human`: they wait in `skill_review_queue` for a person), so the agent knows whether a skill needs the user's confirmation. The base prompt explains both modes; the section carries the one in effect, read from the environment at injection like the user adaptations are read from the graph. |
+| `SessionStart` (`startup\|resume\|clear`), `UserPromptSubmit` | `hooks/inject_project_context.py` | Ranks `:Learning` against the new prompt by vector similarity and injects the top hits: project-scoped learnings for the current project, plus durable user-scoped learnings that follow the user across every project. Prompt-driven recall is vector-only and relevance-gated: hits below a cosine-similarity floor (`MKG_INJECT_MIN_SIMILARITY`, default 0.75) are dropped, the fulltext branch is never consulted (a keyword hit has no cosine score to gate), and when nothing clears the bar — or the prompt could not be embedded — the hook injects nothing at all rather than padding the context from the fulltext or recency fallbacks; those remain for the extractor's dedup shortlist and for the no-prompt `SessionStart` path, which stays recency-based by design. Learnings already folded into the user profile or compiled into a skill carry `consolidated = true`, which the vector search pre-filters out **in-index** (Neo4j filtered vector search, `SEARCH … WHERE`), so they cannot come back through this path — while keeping their embedding, so the extractor's dedup shortlist and the gate's neighbour search still see them. Every injected item is linked to the session via `[:INJECTED_IN]`; items already injected earlier in the same session — or first produced during it (`[:FROM_SESSION]`) — are excluded from retrieval, so a conversation never receives the same learning twice, nor has its own freshly-extracted memory echoed back. Marks served learnings as used (`use_count`) and injected (`inject_count`, `last_injected_at`; the MCP `project_get_context` tool keeps the separate `retrieval_count` for on-demand pulls by an agent). At `SessionStart` it additionally injects a "Recent project activity" block — the latest `:Observation` timeline entries by recency (never similarity) as **one-line headlines only**, plus a count of older episodes and a pointer to `episode_fetch` / `episode_search`, so the "previously on this project" recap stays flat and the bodies stay pull-based. |
+| `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `Notification`, `Stop`, `SubagentStop`, `PreCompact`, `SessionEnd` | `hooks/log_event.py` | Persists each event as a `:SessionEvent` node threaded by `:NEXT`. Main-agent events land under the parent `:Session`; subagent events land under a separate `:Session` keyed by the subagent id and linked back to the parent session, spawn event, start event, and stop event. This is the corpus the memory extraction processor later reads. |
+| `Stop` (`--mode turn`) | `hooks/process_project.py` | Runs in the background. Pulls the session's unprocessed events, renders a fixed code-constant memory-extraction prompt, builds a tail-preserving corpus, fetches the closest existing learnings, and asks an LLM to return create/update/ignore actions for `:Learning` nodes (durable facts and decisions alike — a decision's rationale is folded into the learning text). **Failures are learnings too**: the corpus keeps the error text of failed tool calls (successful tool output stays excluded), paired with the later successful call to the same tool when there is one, and the extractor records an error-and-fix as a `kind = 'error'` learning carrying `tool_key`, `error_signature`, and `resolved` (true when the work found the fix; false for a durable failure with no fix yet, which a later session's fix flips to true via `update`). Transient failures — timeouts, rate limits, permissions, interrupts — are never recorded. Error learnings pass the same gate, feed skills, and are recalled like any other learning — at prompt time by `hooks/inject_project_context.py`, tagged as an *error fix* or a *known failure, no fix*. Nothing runs on the failure itself: `PostToolUseFailure` only logs the event. Each learning is classified `project` (a fact about the project/environment) or `user` (a durable fact about the person that holds across projects); user-scoped learnings are keyed on a project-independent namespace so the same fact dedupes everywhere. Writes new nodes with status `candidate` (embedding each so it is searchable), and stores the model used plus `llm_status` (`called`, `skipped`, or `error`) and skip/error reason on `:ProjectProcessing`. `update` actions are ownership-scoped — automation may only rewrite memory this project owns (or a project-independent user fact), never another project's — and a content change to an already-`approved` note demotes it back to `candidate` (clearing its human provenance and re-opening it for the gate), so automation can never silently overwrite the trusted tier. Alongside the selective memory pass, a second, non-evolvable prompt writes the **episodic timeline**: 1–3 `:Observation` records per work window (`type` ∈ change/bugfix/feature/refactor/discovery/decision/problem, `title`, `facts`, `narrative`), append-only, chained per project via `[:NEXT]` + `[:LATEST_OBSERVATION]`, embedded for search, and written in the same transaction as `PROCESSED_EVENT` marking so a processed window can never lose its timeline entry. Observations are never deduplicated, gated, or approved — they record *what happened*, not *what is true*; when the LLM is unavailable the window simply gets no observation. Then runs the **autonomous consistency + safety gate** (`hooks/consistency_gate.py`) over every new candidate in **both scopes**. A **safety screen** goes first: an LLM judge decides whether the candidate is actually a fact or instruction-shaped text laundered in through tool output, a file, or a fetched page — suspected prompt injections, privilege grabs, and secrets are moved to `status = 'blocked'` (a recorded tombstone with the judge's reason, surfaced by `project_gate_audit`) and never queued or served. Survivors are searched against the top-15 `approved` **and fellow `candidate`** learnings in the same project/scope (excluding themselves) — semantically via the vector index when `EMBEDDING_MODEL` is set, else via the fulltext index — and an LLM judge decides genuine contradictions, promoting consistent candidates to `approved`, rejecting the items they supersede (`[:SUPERSEDES]`), vetoing the candidate to `rejected` (`[:CONTRADICTED_BY]`) when an existing item is clearly more reliable, or — when it genuinely cannot tell which side is right — **keeping both** (`consistency_status = 'ambiguous_kept_both'`, the pair linked by a `[:CONTRADICTS]` edge carrying the judge's reason as the visible record). Nothing waits for a human. Resolutions apply per candidate, so restatements extracted in one batch collapse onto one canonical item. Finally a bounded **sweep** pushes remaining candidates — `project_add_learning` MCP writes, rows an earlier judge/safety failure skipped, and rows stranded by the retired review queue — through the same gate, backfilling their embeddings first. |
+| `Stop`, `SessionEnd` | `hooks/consolidate_system_prompt.py` | Runs in the background, rate-limited. The user-profile consolidation service never touches the base `(:SystemPrompt)` — it maintains the separate `(:UserProfile)` "user adaptations" section the injection hook appends at session start. It only does work when **more than 5** user-profile memories are pending consolidation — gate-approved user-scoped learnings not yet folded into the section (`MKG_PROMPT_CONSOLIDATION_THRESHOLD`) — and not more than once per cooldown window (`MKG_PROMPT_CONSOLIDATION_INTERVAL_HOURS`, default 24h, tracked via `last_consolidated_at` on the node). When the gates pass, it sends the current section, the pending user facts, and any retracted facts — fenced as untrusted data — to the LLM, which returns a revised compact section (≤ 12 bullets / ~1500 chars; a runaway reply is discarded), then archives the outgoing section as a `(:UserProfileVersion)` history node before overwriting the active one and bumping its version. Folding is **approved-only**: it counts and folds user-scoped learnings with `status = 'approved'`, never raw candidates — and approval is granted by the autonomous consistency + safety gate, whose safety screen blocks laundered instructions, privilege grabs, and secrets before they can be approved. That screen, not a human queue, is what keeps a poisoned fact out of the cross-project prompt; a human can still retract an approved fact afterwards via `project_resolve_learning` ("forget that"). Folded learnings are stamped `consolidated_at` and flagged `consolidated = true`, so they drop out of the backlog and out of injection (the vector index pre-filters on the flag; the embedding stays so dedup still sees them) — the profile serves the fact from now on. An update to the fact clears the flag and re-enters the backlog. **Staleness repair**: when a fact that was already folded in is later rejected or superseded (by the gate or a human override), the profile goes stale; the next run bypasses threshold *and* cooldown, removes the retracted content, stamps the fact `unfolded_at`, and clears the flag. |
+| `Stop`, `SessionEnd` | `hooks/consolidate_skills.py` | Runs in the background, rate-limited. The skill distillation service compiles clusters of gate-approved, **procedural** project learnings (those carrying a `task_pattern`) into skills served straight from the graph via `skill_search` / `skill_fetch` — skills never touch disk. It only does work when at least `MKG_SKILL_CONSOLIDATION_THRESHOLD` (default 4) eligible learnings are pending and not more than once per `MKG_SKILL_CONSOLIDATION_INTERVAL_HOURS` (default 24h). Learnings are grouped by their `(:TaskPattern)` node — same procedure, not same topic — and each group gets one LLM proposal (create a skill / patch an existing one / ignore), mechanically validated (required sections, every step traced to a source learning, error learnings and other tool failures from the task's sessions folded into *Pitfalls*). Every proposal is then screened by an LLM **safety judge** for hostile payloads laundered in from session material (fetch-and-obey steps, exfiltration, weakened safeguards, embedded secrets); a refusal is stamped `blocked` and surfaced by `project_gate_audit`. What happens to a proposal that passes is **`MKG_SKILL_ACTIVATION`**: `auto` (default) activates it in the same run — the skill becomes `approved`, embedded, and searchable, and its source learnings are stamped `compiled_at` and flagged `consolidated = true` so the skill, not the raw learnings, is what recall serves (`retire` clears the flag), with `project_resolve_skill` (`retire`) as the human override; `human` parks it `pending` with `safety_status = 'passed'` until a person publishes it — see [Human-in-the-loop skill publishing](#human-in-the-loop-skill-publishing). A screened proposal is never judged twice, so switching modes neither re-screens nor loses the backlog. When a source learning is later rejected or superseded, the live skill is flagged `needs_revision` and patched first on the next cycle. |
+
+### Graph model
+
+```
+(:User {id})                                    # the person; id is an email where one exists
+   ├─[:HAS_SESSION]→ (:Session {user_id})
+   ├─[:HAS_LEARNING]→ (:Learning {scope: 'user', user_id})   # facts about this person
+   └─[:HAS_PROFILE]→ (:UserProfile {user_id})                # this person's adaptations
+
+(:Project {id})
+   ├─[:HAS_SESSION]→ (:Session)─[:HAS_EVENT]→ (:SessionEvent)─[:NEXT]→ ...
+   │                            ─[:INJECTED]→ (:SystemPromptInjection {content_sha})─[:OF_PROMPT]→ (:SystemPrompt)
+   │             └─[:HAS_SUBAGENT]→ (:Session {agent_kind: 'subagent'})
+   │                                  ├─[:SUBAGENT_OF]→ (:Session)
+   │                                  ├─[:TRIGGERED_BY]→ (:SessionEvent)  # parent spawn_agent result
+   │                                  ├─[:STARTED_AT]→ (:SessionEvent)    # SubagentStart
+   │                                  └─[:ENDED_AT]→ (:SessionEvent)      # SubagentStop
+   ├─[:HAS_LEARNING]→ (:Learning {scope, status, confidence, user_id, created_by_model, last_llm_model, consolidated, use_count, inject_count, retrieval_count})
+   │                      ─[:INJECTED_IN]→ (:Session)   ─[:FROM_SESSION]→ (:Session)
+   ├─[:HAS_OBSERVATION]→ (:Observation {type, title, facts, narrative, user_id, started_at, ended_at})─[:NEXT]→ ...
+   │                      ─[:FROM_SESSION]→ (:Session)   # episodic timeline: append-only, never gated
+   ├─[:LATEST_OBSERVATION]→ (:Observation)               # tail of the per-project timeline
+   └─[:HAS_PROCESSING]→ (:ProjectProcessing {llm_model, llm_status, llm_skip_reason, llm_error})
+                                            ─[:PROCESSED_EVENT]→ (:SessionEvent)
+                                            ─[:PRODUCED_LEARNING]→ (:Learning)
+                                            ─[:UPDATED_LEARNING]→ (:Learning)
+                                            ─[:PRODUCED_OBSERVATION]→ (:Observation)
+
+# Frozen (read on start; written only by seed scripts):
+(:SystemPrompt {name, version, content})
+   ─[:HAS_VERSION]→ (:SystemPromptVersion {name, version, content, is_current})  # prompt history
+
+# Consolidated user-adaptations section, one per user, appended to the base prompt at injection:
+(:UserProfile {user_id, name, version, content, last_consolidated_at, needs_revision})
+   ─[:HAS_VERSION]→ (:UserProfileVersion {name, version, content, is_current})  # section history
+   │                 ─[:FOLDED_LEARNING]→ (:Learning {scope: 'user'})           # facts folded in
+   │                 ─[:UNFOLDED_LEARNING]→ (:Learning {scope: 'user'})         # retracted facts removed
+   ─[:CONSOLIDATED]→ (:Learning {scope: 'user'})                                # folded-in user facts
+
+# Produced by hooks/enrich_events.py (on demand):
+(:Session)─[:HAS_TURN]→ (:Turn)─[:ISSUED]→ (:ToolCall)─[:USES_TOOL]→ (:Tool)
+                                          ─[:RETURNED]→ (:ToolResult)
+                                          ─[:HAS_RATIONALE]→ (:ToolRationale)
+                                          ─[:TARGETS]→ (:Resource)
+
+# Error learnings — extracted by hooks/process_project.py at Stop from the failed
+# tool calls in the event log (error text paired with the later call that fixed
+# it), gated and recalled like every other learning:
+(:Project)─[:HAS_LEARNING]→ (:Learning {kind: 'error', tool_key, error_signature, resolved})
+(:Skill)─[:INFORMED_BY]→ (:Learning {kind: 'error'})     # pitfalls provenance
+```
+
+Candidate learnings flow through retrieval but are gate-controlled. The
+**autonomous consistency + safety gate** (see the `Stop` hook) resolves every
+candidate itself, in the same run that created it — both scopes, no human
+dependency. The safety screen runs first: an LLM judge decides whether the
+candidate is a *fact* or instruction-shaped text laundered in through tool
+output, a file, or a fetched page. Facts pass; suspected injections, privilege
+grabs, and secrets become `status = 'blocked'` — recorded tombstones carrying
+the judge's category and reason (`blocked_reason` / `blocked_at`), stripped of
+their embedding, never served, never queued. Survivors go through the
+consistency judgement: the gate retrieves the closest `approved` and fellow
+`candidate` learnings in the same project/scope (the item itself excluded) and
+asks an LLM judge whether the candidate genuinely contradicts or merely
+restates any of them — including candidates in retrieval is what lets
+restatements collapse (`[:ALREADY_LEARNED_FROM]`) instead of piling up side by
+side. Retrieval is semantic (a vector index) when the `EMBEDDING_MODEL` is
+available and falls back to the fulltext index when it is not. No
+contradiction, or a contradiction the candidate wins, promotes it to
+`approved` (and rejects the item it supersedes); an existing item that the
+judge finds clearly more reliable vetoes the candidate to `rejected`; a
+genuinely ambiguous conflict **keeps both sides** — the candidate is approved
+with `consistency_status = 'ambiguous_kept_both'` and the pair stays linked by
+a `CONTRADICTS` edge carrying the judge's stated reason, so nothing is lost
+and the undecided conflict remains inspectable.
+
+Autonomous is not unaccountable: `project_gate_audit` is the standing record —
+blocked learnings and skill proposals with the judge's reasons, kept-both
+conflicts with both sides attached, and stale skills awaiting a patch — and a
+SessionStart line reports what the gate blocked recently. The human is an
+override, never a dependency: `project_resolve_learning` retracts a learning
+("forget that" → `reject`), reinstates a wrongly blocked one (`approve`,
+restoring its embedding), fixes wording (`edit_approve`), or settles a
+kept-both conflict (`keep_new` / `keep_existing` / `keep_both`), using the
+same status transitions and edges as the automatic gate and stamping
+`reviewed_by = 'human'` so a later gate run does not silently overturn it;
+`project_resolve_skill` retires a live skill. Candidates that enter the graph
+outside the extractor — the `project_add_learning` MCP tool writes them
+directly (embedding at write time when the provider is available), and a
+judge or safety-screen outage can leave extracted rows unresolved — are picked
+up by a bounded per-turn **sweep** (`MKG_CONSISTENCY_SWEEP_LIMIT`, default 8
+per label, 0 disables) that backfills missing embeddings and runs the exact
+same gate, so MCP-written memory reaches `approved` instead of staying a
+second-class hint forever. Recall everywhere requires
+`status IN ['approved', 'candidate']` — blocked and rejected tombstones are
+never served, and there is no tolerance for status- or scope-less legacy
+nodes. The gate is additive — only the LLM judge is required; with the judge
+unavailable (or `MKG_CONSISTENCY_GATE=0`) candidates stay `candidate` as
+before, and the sweep resolves them once the judge returns.
+
+#### Human-in-the-loop skill publishing
+
+Skills are the one tier where a person can opt back in as a dependency. A
+skill is a procedure an agent will follow verbatim in future sessions, so some
+teams want to read one before it can be served. Set
+
+```
+MKG_SKILL_ACTIVATION=human
+```
+
+in the MKG `.env` (the default, `auto`, is the fully autonomous loop described
+above). In human mode the background service still distills proposals and
+still runs the safety judge over every one of them — a blocked proposal is
+blocked exactly as before — but a proposal that passes is parked `pending`
+with `safety_status = 'passed'` instead of going live. Nothing enters
+`skill_search` / `skill_fetch` or the session-start catalog until a person
+approves it:
+
+- `skill_review_queue` lists the queue with everything a reviewer needs: the
+  full proposed procedure, the live content to diff a patch against, the
+  proposer's rationale, every source learning with its *current* status, the
+  error learnings folded into its pitfalls, and the safety verdict
+  (`passed`, or `unscreened` when the judge was unavailable and the reviewer is
+  the only screen).
+- `project_resolve_skill` publishes (`approve`), publishes with corrections
+  (`edit_approve`), or discards (`reject`) a proposal, stamping the decision
+  `reviewed_by = 'human'`. Discarding never touches a learning.
+- The **`/mkg-skill-review`** command (Codex: the `mkg-skill-review` skill)
+  walks the reviewer through the queue one proposal at a time: it shows the
+  full procedure, runs a validation checklist — every step traces to an
+  approved learning, no stale sources, safe to follow, concrete for this
+  project, retrieval-worthy description, not a duplicate of a live skill, a
+  patch actually improves on the stale version — recommends, applies only what
+  the user explicitly decides, and verifies the result with `skill_fetch`.
+- Session start reports how many proposals are waiting, and
+  `project_gate_audit` carries the count as `pending_skills`.
+- The injected system prompt ends with a `## Skill activation` section naming
+  the live mode, so the agent can tell the user whether a distilled skill is
+  waiting for their approval or already in service.
+
+The mode is read at run time by both the hooks and the MCP server, so a
+screened backlog survives a switch in either direction: flipping back to
+`auto` activates it on the next sweep without a second judgement.
+
+Fulltext indexes
+`project_learning_fulltext` backs the retrieval
+path; the same learning index serves both project-scoped and user-scoped lookups
+(the latter filtered to `scope = 'user'` and unbound from any single project).
+The consistency gate adds the cosine vector index `project_learning_vector`
+over an `embedding` property, with the `SEARCH` clause
+pre-filtering `project_id` / `scope` / `consolidated` in-index (native filtered
+vector search, **Neo4j 2026.02+**; the filterable properties are declared on
+the index with `WITH [...]`, and the gate recreates the index when that list
+grows). There is no status filter at search time: the gate strips the
+`embedding` from items it rejects or folds, so the vector index only ever
+contains live memory — dead items keep their text and provenance edges as
+tombstones but drop out of retrieval. Learnings folded into the user profile or
+compiled into a skill stay in the index (dedup depends on their embedding) but
+carry `consolidated = true`, which prompt-time recall and `project_get_context`
+exclude in-index; the extractor and the gate search without that predicate. Run
+`scripts/backfill_memory_embeddings.py` once after enabling it so pre-existing
+live nodes become retrievable (it skips tombstones). Tunables: `MKG_CONSISTENCY_GATE` (default on),
+`MKG_CONSISTENCY_TOPK` (default 15), `MKG_CONSISTENCY_SWEEP_LIMIT` (default 8),
+and `EMBEDDING_MODEL` / `EMBEDDING_DIMENSIONS`.
+Error learnings (`kind = 'error'`) live in the same indexes and are served by
+the same prompt-time recall as every other learning; there is no separate
+error store, index, consolidation service, recall hook, or tunable.
+The persisted system prompt is frozen — read on session start, written only by
+the seed scripts, never self-modified; the memory-extraction prompt is a fixed
+code constant with no self-improvement loop. Adapting the injected prompt to the
+user is the job of the rate-limited `consolidate_system_prompt.py` service (see
+the hooks table), which folds pending user-profile memory into the separate
+`(:UserProfile)` "user adaptations" section — appended to the frozen base at
+injection time — and keeps every superseded section as a `:UserProfileVersion`.
+It is the only writer of those nodes.
+
+## Sales agent use case
+
+The repo ships a complete demo persona in [`import/sales_agent/`](import/sales_agent/):
+a sales / customer-success intelligence assistant working a book of ~48
+enterprise car-rental customer accounts for **RoadFlex** (a corporate mobility
+provider). The minimum setup needs only Neo4j plus an LLM provider key (OpenAI
+by default): seed a blank Neo4j
+database with the RoadFlex graph, persona, and bootstrap learnings, then start a
+session. BigQuery/Neocarta and Diffbot are optional add-ons for warehouse
+queries, catalog search, firmographics, and live news.
+
+The companion command for walking through this setup is
+[`sales_agent_demo`](commands/sales_agent_demo.md).
+
+### 1. Configure the repo-root `.env`
+
+Create or update **`./.env` at the repo root**. This is the active config for
+the sales-agent demo: both the seeders and the hooks load it, and in a repo
+checkout it takes precedence over the user-global
+`~/.config/meta-knowledge-graph/.env`. Do not edit `.env.example` as the active
+config; copy from it if needed:
+
+```bash
+cp .env.example .env
+chmod 600 .env
+```
+
+Then edit `./.env` with these values:
+
+```bash
+# Required: Neo4j graph
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=<your-password>
+NEO4J_DATABASE=neo4j
+
+# Optional: who you are to MKG (defaults to the signed-in Claude Code / Codex
+# account email, then git config user.email). Tags every session, learning,
+# observation, and profile; user-scoped memory is recalled per user.
+# MKG_USER_ID=you@example.com
+
+# Required: LLM calls for memory extraction. Calls route through litellm.
+# Codex/dev runs default to OpenAI's model (litellm), so set OPENAI_API_KEY.
+# Claude Code hook batches default to a Claude model and PREFER the logged-in
+# Claude subscription (a Claude Code OAuth token from CLAUDE_CODE_OAUTH_TOKEN or
+# the platform credential store). With no subscription token they fall back to
+# litellm on whatever provider is configured here — an LLM_MODEL override, or any
+# provider key below (OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY / ...).
+OPENAI_API_KEY=<your-openai-api-key>
+# Optional: reuse your Claude subscription for Claude Code hook extraction
+# (preferred over any API key). Mint one with: claude setup-token
+# CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...
+# Optional: any litellm provider key also serves as the fallback, e.g.:
+# ANTHROPIC_API_KEY=sk-ant-api03-...
+# Optional explicit model override for every harness (any litellm model):
+# LLM_MODEL=anthropic/claude-haiku-4-5
+
+# Optional: Diffbot live news / firmographic enrichment
+DIFFBOT_TOKEN=<your-diffbot-token>
+
+# Optional: BigQuery warehouse + Neocarta catalog
+GCP_PROJECT_ID=<your-gcp-project>
+BIGQUERY_DATASET_ID=acme_corp
+BIGQUERY_MCP_URL=https://bigquery.googleapis.com/mcp
+GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
+# or:
+# GCP_SERVICE_ACCOUNT_JSON='{"type":"service_account", ...}'
+
+# Optional: Neocarta embedding overrides. With the default model,
+# OPENAI_API_KEY above is also the embedding provider key.
+# EMBEDDING_MODEL=text-embedding-3-small
+# EMBEDDING_DIMENSIONS=1536
+# GCP_BILLING_PROJECT_ID=<billing-project>  # defaults to GCP_PROJECT_ID
+# BIGQUERY_REGION=US
+```
+
+### 2. Seed the minimum graph
+
+You can start from a blank Neo4j database. This path does not require BigQuery
+or Diffbot:
+
+```bash
+uv run python import/sales_agent/seed_neo4j.py
+uv run python import/sales_agent/seed_learnings.py
+uv run python import/sales_agent/seed_system_prompt.py
+```
+
+Each seeder is independently re-runnable. Neo4j seeders MERGE on natural keys;
+seed-owned `USES_PRODUCT` and `HAS_CONTACT` relationships are refreshed so a
+re-run reflects the current deterministic dataset.
+
+Optional add-ons:
+
+- **Diffbot:** set `DIFFBOT_TOKEN` in the repo-root `./.env` and restart the MCP
+  server. No seeding step is required; `search_news` and `enhance_entity` appear
+  when the token is set.
+- **BigQuery + Neocarta:** authenticate to GCP, set `GCP_PROJECT_ID`,
+  `BIGQUERY_DATASET_ID`, `BIGQUERY_MCP_URL`, and one Google auth method in the
+  repo-root `./.env`, then seed the warehouse and catalog. Neocarta also needs
+  the provider key for `EMBEDDING_MODEL`; the default OpenAI embedding model uses
+  `OPENAI_API_KEY`.
+
+```bash
+uv run python import/sales_agent/seed_bigquery.py
+uv run python import/sales_agent/run_neocarta.py
+```
+
+You can also use the orchestrator. It verifies the mandatory Neo4j connection,
+runs the minimum Neo4j-backed seeders, and runs the optional BigQuery/Neocarta
+seeders only when GCP env/auth is available:
+
+```bash
+uv run python import/sales_agent/seed_all.py
+```
+
+`seed_all.py` can run these seeders:
+
+| Seeder | What it loads |
+|---|---|
+| `seed_bigquery.py` | `accounts`, `products`, `account_product_usage` (monthly time series), `account_contacts`, `account_renewals` under `$GCP_PROJECT_ID.$BIGQUERY_DATASET_ID`. |
+| `run_neocarta.py` | Neocarta catalog metadata, then LiteLLM-powered embeddings for the seeded BigQuery dataset. Run after `seed_bigquery.py` so the warehouse tables and descriptions exist. |
+| `seed_neo4j.py` | `:Account` / `:Product` / `:Contact` / `:CSM` nodes plus `USES_PRODUCT` (utilization, revenue), `HAS_CONTACT`, and `OWNS` relationships. |
+| `seed_learnings.py` | Bootstrap `:Learning` nodes (durable facts and decisions alike) so the first session already has scoped project memory. |
+| `seed_system_prompt.py` | Persists `system_prompt.md` (the RoadFlex sales persona) as `(:SystemPrompt {name: 'default'})`. |
+
+To preview the generated dataset without touching any database:
+`uv run python import/sales_agent/seed_data.py`. Dataset design notes live in
+[`import/sales_agent/README.md`](import/sales_agent/README.md).
+
+### 3. Register the MCP server and hooks
+
+See [Running MKG](#running-mkg) above for your harness — Claude Code via the
+plugin, Codex via the plugin's
+[`plugin/hooks/codex-hooks.json`](plugin/hooks/codex-hooks.json) or repo-local
+[`.codex/config.toml`](.codex/config.toml) /
+[`.codex/hooks.json`](.codex/hooks.json), or any custom harness that can spawn
+an MCP server and fire lifecycle hooks.
+The Neo4j-backed memory and graph tools mount in the minimum setup. With
+`DIFFBOT_TOKEN` set, the server mounts `search_news` and `enhance_entity`. With
+`BIGQUERY_MCP_URL` set and Google auth available, it mounts
+`bigquery_execute_query`; with `GCP_PROJECT_ID` / `BIGQUERY_DATASET_ID` set and
+the `EMBEDDING_MODEL`'s provider key available (OpenAI by default), it also
+mounts the `neocarta_*` catalog tools.
+
+### 4. Start a session
+
+On SessionStart the hook injects the persisted RoadFlex persona, and prompt
+submits inject the most relevant seeded learnings. Try:
+
+- *"Which accounts renew in the next 90 days and which of them are at risk?"*
+- *"Where do we have expansion room — accounts running over contracted capacity?"*
+- *"Build me a brief on Accenture: footprint, contacts, and recent news."*
+- *"Roll up the book of business by CSM."*
+
+From there the loop takes over: every session's events are logged, and memory
+extraction distills new learnings (project- and user-scoped, covering durable
+facts and decisions alike) on Stop. Each later session starts with the most
+relevant of those — plus durable facts about the user — already
+injected.
+
+## Configuration
+
+| Env Variable | CLI Flag | Default | Notes |
+|---|---|---|---|
+| `NEO4J_URI` | `--db-url` | `bolt://localhost:7687` | |
+| `NEO4J_USERNAME` | `--username` | `neo4j` | |
+| `NEO4J_PASSWORD` | `--password` | `password` | |
+| `NEO4J_DATABASE` | `--database` | `neo4j` | |
+| `NEO4J_TRANSPORT` | `--transport` | `stdio` | |
+| `MKG_USER_ID` | — | detected | Who you are to MKG: the id every session, learning, observation, and profile is tagged with, and that user-scoped recall filters on. Use an email. When unset, the signed-in Claude Code / Codex account email is used, then `git config user.email`, then the OS user name (see [User identity](#user-identity)). Set it explicitly on shared or CI machines. |
+| `MKG_CLIENT` | — | — | Optional harness hint (`claude_code` / `codex`) telling identity resolution which signed-in account to read first when `MKG_USER_ID` is unset. The Codex hook and MCP wiring set it; Claude Code is detected from its own env markers. |
+| `MKG_SKILL_ACTIVATION` | — | `auto` | Who publishes a safety-screened skill proposal. `auto` lets the background service activate it in the same run that screened it. `human` (also `review` / `hitl` / `manual`) parks it in `skill_review_queue` until a person approves it through `project_resolve_skill` — the `/mkg-skill-review` command walks the reviewer through the queue. See [Human-in-the-loop skill publishing](#human-in-the-loop-skill-publishing). |
+| `OPENAI_API_KEY` | — | — | Default provider key for Codex/dev runs: the hooks call `LLM_MODEL` and Neocarta embeds with `EMBEDDING_MODEL`, both via litellm, and both default to OpenAI models outside Claude Code. Claude Code hook batches can default to Claude subscription OAuth when `LLM_MODEL` is unset. For other providers, set the relevant model var and supply that provider's key. |
+| `DIFFBOT_TOKEN` | — | — | Enables `search_news` and `enhance_entity` when set. |
+| `LLM_MODEL` | — | client-aware | The single model knob for every LLM call (memory extraction), resolved through litellm. Explicit values always win. When unset, Codex/dev runs use `gpt-5.4-mini`; Claude Code hook batches use `anthropic/claude-haiku-4-5`. Any litellm model string works (e.g. `anthropic/claude-haiku-4-5`, `gemini/gemini-2.5-flash`). For Anthropic/Claude models, explicit `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, or `ANTHROPIC_BASE_URL` wins; otherwise MKG tries the Claude Code platform credential store, then `CLAUDE_CODE_OAUTH_TOKEN` as a headless fallback. |
+| `MKG_DEFAULT_LLM_MODEL` | — | — | Optional fallback override used only when `LLM_MODEL` is unset. |
+| `MKG_LLM_BACKEND` | — | `auto` | `auto` uses litellm. Set `claude_cli` only to force the older headless `claude -p` backend. |
+| `EMBEDDING_MODEL` | — | `text-embedding-3-small` | litellm embedding model for the optional Neocarta catalog (seed + runtime). Any litellm embedding model works (e.g. `cohere/embed-english-v3.0`, `gemini/text-embedding-004`); supply the matching provider's key. |
+| `GCP_PROJECT_ID`, `BIGQUERY_DATASET_ID` | — | — | Optional BigQuery/Neocarta settings. Required, with the `EMBEDDING_MODEL` provider key, to mount the Neocarta catalog tools; `GCP_PROJECT_ID` is also the project queried by `bigquery_execute_query`. |
+| `BIGQUERY_MCP_URL` | — | — | Optional. Mounts `bigquery_execute_query` when set, e.g. `https://bigquery.googleapis.com/mcp`. For `googleapis.com` URLs a Google ADC bearer token is fetched automatically. |
+| `BIGQUERY_MCP_AUTH`, `BIGQUERY_MCP_HEADERS` | — | — | Optional explicit bearer token / JSON dict of extra headers for the BigQuery MCP endpoint. |
+| `BIGQUERY_REGION`, `EMBEDDING_MODEL`, `EMBEDDING_DIMENSIONS` | — | — | Optional; forwarded to the Neocarta subprocess when set. `BIGQUERY_REGION` (default `US`) also sets the dataset location when seeding the sales-agent demo. |
+| `GCP_BILLING_PROJECT_ID` | — | falls back to `GCP_PROJECT_ID` | Optional billing project for the sales-agent BigQuery seeder. |
+| `GCP_SERVICE_ACCOUNT_JSON` / `GOOGLE_APPLICATION_CREDENTIALS` | — | — | GCP auth for optional BigQuery seeding and Neocarta when application-default credentials are not already available: inline service-account JSON (written to a temp file) or a credentials file path. |
+
+## TODO / Roadmap
+
+- [ ] **Improving memory** — richer retrieval (semantic + structural search),
+      approval tooling for promoting candidate learnings, and time-decaying
+      confidence with re-validation.
+- [ ] **GDS intelligence engine** — generate intelligence from the accumulated
+      graph: implicit relationship discovery (node similarity), critical
+      decision points (betweenness centrality), and behavior clustering
+      (community detection).

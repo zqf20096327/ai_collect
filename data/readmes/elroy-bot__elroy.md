@@ -1,0 +1,159 @@
+# Elroy
+
+[![Discord](https://img.shields.io/discord/1200684659277832293?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/5PJUY4eMce)
+[![Documentation](https://img.shields.io/badge/docs-elroy.bot-C8C7E8)](https://elroy.bot)
+[![PyPI](https://img.shields.io/pypi/v/elroy)](https://pypi.org/project/elroy/)
+
+Elroy is a scriptable, memory augmented AI personal assistant, accessible from the command line. It features:
+
+- **Long-term Memory**: Automatic memory recall of past conversations
+- **Reminders** Track context based and timing based reminders
+- **Simple scripting interface**: Script Elroy with minimal configuration overhead
+- **CLI Tool interface**: Quickly review memories Elroy creates for you, or jot quick notes for Elroy to remember.
+
+![Reminder demo](./docs/images/reminders_demo.gif)
+
+
+## Quickstart
+
+The fastest way to get started is using the install script:
+
+```bash
+curl -LsSf https://raw.githubusercontent.com/elroy-bot/elroy/main/scripts/install.sh | sh
+```
+
+Or install manually with UV:
+
+```bash
+# Install UV first
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Then install Elroy
+uv pip install elroy
+```
+
+For detailed installation instructions including Docker and source installation options, see the [Installation Guide](docs/installation.md).
+
+## Basic Usage
+
+Once installed, run `elroy` to open the interactive chat interface:
+
+```bash
+elroy
+```
+
+For source development with automatic restart on code changes, use:
+
+```bash
+just dev
+```
+
+This requires `watchexec` and runs Elroy from the local source tree with restart-on-change behavior for `.py`, `.yml`, and `.yaml` files.
+It uses the `elroy` console entrypoint rather than `python -m elroy.ui.app`, which avoids `runpy` module re-execution warnings from the package import layout.
+
+Elroy opens a terminal UI where you can chat, create memories, and manage reminders. Use the Textual command palette with `Ctrl+P` to discover available actions.
+
+## Contrib Plugins
+
+Elroy creates `~/.elroy/contrib` as the default assistant-editable plugin directory. Python files in that directory can define `@tool` functions for assistant tools and `ELROY_PLUGIN = ElroyPlugin(...)` for custom sidebar tabs.
+
+For self-improvements that should not modify core Elroy, ask the assistant to use `edit_contrib_with_codex`. Elroy can run from any source branch; Codex-backed contrib changes run directly in the home contrib repo, which Elroy initializes and manages as git.
+
+## Memory and Reminder Tools
+
+Elroy's tools allow it to create and manage memories and reminders. In the background, redundant memories are consolidated.
+
+As reminders or memories become relevant to the conversation, they are recalled into context. A `Relevant Context` panel makes all information being surfaced to the assistant available to the user.
+
+All commands available to the assistant are also available to the user through the Textual command palette.
+
+For a guide of what tools are available and what they do, see: [tools guide](docs/tools_guide.md).
+
+For a full reference of tools and their schemas, see: [tools schema reference](docs/tools_schema.md)
+
+
+### Configuration
+Elroy is designed to be highly customizable, including appearance and memory consolidation parameters.
+
+Configuration can be provided via environment variables (e.g. `ELROY_CHAT_MODEL=gpt-5`) or a config file at `~/.elroy/elroy.conf.yaml`.
+
+For full configuration options, see [configuration documentation](docs/configuration/index.md).
+
+
+### Supported Models
+
+Elroy supports OpenAI, Anthropic, Google (Gemini), and any OpenAI-compatible API.
+
+The model is selected automatically based on which API key is set, or can be configured explicitly:
+
+```bash
+# Use an Anthropic model
+ELROY_CHAT_MODEL=claude-sonnet-4-5-20250929 elroy
+
+# Use a specific OpenAI model
+ELROY_CHAT_MODEL=gpt-5 elroy
+
+# Use Gemini
+ELROY_CHAT_MODEL=gemini/gemini-2.0-flash elroy
+```
+
+Common model aliases can be used as the `chat_model` config value:
+- `sonnet`: Anthropic's Claude 4.5 Sonnet
+- `opus`: Anthropic's Claude 4.5 Opus
+- `haiku`: Anthropic's Claude 3.5 Haiku
+- `o1`: OpenAI's o1 model
+
+## Claude Code Integration
+
+Elroy provides skills for [Claude Code](https://github.com/anthropics/claude-code) that expose memory management as slash commands:
+
+- `/remember` - Create a long-term memory
+- `/recall` - Search through memories
+- `/list-memories` - List all memories
+- `/remind` - Create a reminder
+- `/list-reminders` - List active reminders
+- `/ingest` - Ingest documents into memory
+
+### Installation
+
+Install the Claude Code skills using the Elroy CLI:
+
+```bash
+elroy install-skills
+```
+
+Or use the just command from the repository:
+
+```bash
+just install-claude-skills
+```
+
+This installs skills to `~/.claude/skills/` making them available in all Claude Code sessions.
+
+**Important**: Restart your Claude Code session after installation to load the new skills.
+
+To uninstall:
+
+```bash
+elroy install-skills --uninstall
+```
+
+For detailed usage and examples, see [claude-skills/README.md](claude-skills/README.md).
+
+## Branches
+
+`main` comes with backwards compatibility and automatic database migrations.
+
+`stable` is sync'd with the latest release branch.
+
+`experimental` is a test branch with upcoming changes. These may contain breaking changes and/or changes that do not come with automatic database migrations.
+
+## License
+
+Distributed under the Apache 2.0 license. See LICENSE for more information.
+
+## Contact
+
+Bug reports and feature requests are welcome via [GitHub](https://github.com/elroy-bot/elroy/issues)
+
+Get in touch on [Discord](https://discord.gg/5PJUY4eMce) or via [email](hello@elroy.bot)

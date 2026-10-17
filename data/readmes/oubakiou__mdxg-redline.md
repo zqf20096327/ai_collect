@@ -1,0 +1,193 @@
+# MDXG Redline
+
+[![MKDN](https://img.shields.io/badge/MKDN-review-red?style=for-the-badge)](https://mkdn.review/?url=https%3A%2F%2Fraw.githubusercontent.com%2Foubakiou%2Fmdxg-redline%2Frefs%2Fheads%2Fmain%2FREADME.md)
+[![npm](https://img.shields.io/npm/v/mdxg-redline.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/mdxg-redline)
+
+[![English](https://img.shields.io/badge/Language-English-blue?style=for-the-badge)](./README.md)
+[![日本語](https://img.shields.io/badge/言語-日本語-lightgrey?style=for-the-badge)](./README_ja.md)
+
+**Select any range in Markdown, leave inline comments, and turn a human's review into structured JSON an LLM can process directly.** A markdown review tool that runs entirely in the browser as a single standalone HTML file.
+
+> Third-party implementation of [vercel-labs/mdxg](https://github.com/vercel-labs/mdxg). Conforms to the MDXG specification, but is not affiliated with Vercel Labs or the upstream repository.
+
+https://github.com/user-attachments/assets/d40ccab2-c7fd-4321-aefc-3e42cc5df9af
+
+https://github.com/user-attachments/assets/4ae15e65-79b9-4384-aef9-6b88ea198ab5
+
+### Quick start
+
+- **Try now** (no install): [open this README in mkdn.review](https://mkdn.review/?url=https%3A%2F%2Fraw.githubusercontent.com%2Foubakiou%2Fmdxg-redline%2Frefs%2Fheads%2Fmain%2FREADME.md#p:mdxg-redline) — one click in the online viewer
+- **Local review**: `npx mdxg-redline draft.md` — generates review.html and opens it in your browser
+- **Agent loop**: install the `md-review` skill and just tell your agent "please request a review"
+- **Privacy**: the standalone / CLI builds never send your pasted body or comments anywhere (fully local). The online build likewise sends nothing outbound — only the `?url=` public raw fetch (allowlisted)
+
+See the [Usage](#usage) section below for details on each path.
+
+Introduction article: [The next bottleneck after AI writes your code is reviewing the docs it writes](https://dev.to/kiou_ouba_afbd120335456f3/the-next-bottleneck-after-ai-writes-your-code-is-reviewing-the-docs-it-writes-3pc7)
+
+## Features
+
+- **Smartphone support**: drive `TOC` / `Comment` / `Search` from the footer
+- **Virtual Pages (Stacked View)**: H1 / H2 boundaries split the document into paper-like sheets stacked vertically; the entire document can be read end-to-end with a single scroll gesture (Word / Pages style)
+- **WASD keyboard navigation**: `a / w / s / d / e / f` cover pane movement, scrolling, activation, and search entirely with the left hand
+- **Syntax highlighting**: Fenced code blocks render for all Shiki-bundled languages (~235 grammars)
+- **Mermaid support**: ` ```mermaid ` blocks render as SVG
+- **Math rendering**: write math with `$...$` / `$$...$$` syntax like `$i\hbar \frac{\partial}{\partial t}\Psi(\mathbf{r}, t) = \hat{H}\Psi(\mathbf{r}, t)$`, rendered via KaTeX as $i\hbar \frac{\partial}{\partial t}\Psi(\mathbf{r}, t) = \hat{H}\Psi(\mathbf{r}, t)$.
+- **Footnotes**: GitHub Flavored Markdown footnote syntax — inline references like `text with reference[^note]` plus definitions like `[^note]: footnote body` at the end of the document. Footnotes embedded in body text[^readme-fn-example] are automatically gathered into a "Footnotes" section at the end of the page.
+- **Swappable markdown preview stylesheet**: Replace the body preview CSS with your own via the CLI `--markdown-css <path>` flag
+- **Read-only**: Rendering conforms to [MDXG Viewer](https://github.com/vercel-labs/mdxg), the read-only renderer profile of the Markdown Experience Guidelines
+- **Location-aware inline comments**: Select any text range, leave a comment, and export JSON that pinpoints each comment with `headingPath` and `sourceLine`
+
+## Usage
+
+### Online edition
+
+Open [`https://mkdn.review/`](https://mkdn.review/) in your browser. Example: [view this README in the online viewer](https://mkdn.review/?url=https%3A%2F%2Fraw.githubusercontent.com%2Foubakiou%2Fmdxg-redline%2Frefs%2Fheads%2Fmain%2FREADME.md#p:mdxg-redline).
+
+#### Self-hosting
+
+Deploy the `dist/hosting/` directory from this repository to any static hosting service to run the online edition on your own domain. No server-side code is required — it works with static file serving alone.
+
+**Customizing the URL allowlist**: To change which hosts are allowed for the `?url=` parameter, rebuild with the `MDXG_ONLINE_CONNECT_SRC` environment variable (defaults are `raw.githubusercontent.com` and `gist.githubusercontent.com`). Added hosts must support CORS.
+
+```bash
+MDXG_ONLINE_CONNECT_SRC="https://example.com,https://cdn.example.com" npm run build
+```
+
+### Standalone build
+
+Download `standalone.html` from [GitHub Releases](https://github.com/oubakiou/mdxg-redline/releases) and open it in your browser.
+
+### CLI (recommended)
+
+#### When a human invokes the CLI directly
+
+```bash
+npx mdxg-redline path/to/draft.md                        # generate review.html in the same directory and open it
+npx mdxg-redline path/to/draft.md ./reviews              # when you want a separate output-dir
+npx mdxg-redline --comments-width 0 path/to/draft.md     # hide the comments panel and open as a plain markdown viewer
+```
+
+#### When an LLM invokes the CLI via a skill
+
+```bash
+# Skill installation example with gh skill install
+gh skill install oubakiou/mdxg-redline md-review --agent claude-code --scope project
+
+# Skill installation example with npx skills add
+npx skills add oubakiou/mdxg-redline --skill md-review --agent claude-code --yes
+```
+
+An LLM agent (e.g. Claude Code) invokes this CLI through the `md-review` skill, ping-ponging markdown between the agent and the reviewer. Each round: the agent generates the review HTML → the reviewer comments → feedback.json is written out → the agent picks it up.
+
+```mermaid
+flowchart LR
+    Agent["Agent (LLM)"]
+    Folder[("Shared folder")]
+    Browser["Browser (MDXG Redline)"]
+    Agent -- "1. Generate &lt;name&gt;-&lt;hash&gt;-review.html<br/>via review-request CLI" --> Folder
+    Folder -- "2. CLI auto-launches default browser" --> Browser
+    Browser -- "3. Write &lt;name&gt;-&lt;hash&gt;-feedback.json<br/>via Write feedback.json" --> Folder
+    Folder -- "4. Agent picks it up" --> Agent
+```
+
+`Write feedback.json` relies on the File System Access API, so only Chromium-based browsers (Chrome / Edge / Arc / Brave / Opera) support it. On Safari / Firefox, fall back to `Comments ▾ → Export as JSON` (download) or `Copy as JSON` (clipboard).
+
+#### CLI options
+
+| Option                                   | Description                                                                                                                                                                                                                                                      | Default              |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `--no-open`                              | Suppress browser launch. The output path is always printed to stdout so CI scripts and agents can capture it                                                                                                                                                     | (launches browser)   |
+| `--show-open-file`                       | Keep the `Open file` item visible in the generated HTML's `Open ▾` menu. Hidden by default (prevents accidentally loading a different markdown, which would discard the current comments)                                                                        | hidden               |
+| `--show-paste-markdown`                  | Keep the `Paste markdown…` item visible in the generated HTML's `Open ▾` menu. Hidden by default for the same reason as `--show-open-file` (paste also replaces the currently loaded markdown and discards comments)                                             | hidden               |
+| `--document-name <name>`                 | Override the document name (used for the `data-name` attribute and the output filename prefix). Recommended when reading from stdin to get a meaningful filename                                                                                                 | input MD basename    |
+| `--theme <system\|light\|dark>`          | Initial theme hint for the generated HTML (`<html data-theme>`)                                                                                                                                                                                                  | unset                |
+| `--comments-width <0\|280-640>`          | Initial width of the comments panel (px). `0` starts with the panel closed (only the right edge tab visible)                                                                                                                                                     | `360` / open         |
+| `--page-nav-width <0\|180-480>`          | Initial width of the left pages panel (px). `0` starts with the panel closed (only the left edge tab visible)                                                                                                                                                    | `220` / open         |
+| `--shiki-langs <auto\|all\|none\|<csv>>` | Shiki grammar injection mode. `auto` scans the markdown for fenced languages, `all` injects all bundled grammars (~235, ~5.5 MB gzipped), `none` skips injection (plain text fallback), `<csv>` takes a list like `ts,js,py`                                     | `auto`               |
+| `--mermaid <auto\|on\|off>`              | Mermaid runtime injection mode. `auto` injects only if the markdown has at least one ` ```mermaid ` block, `on` always injects, `off` never injects (Shiki-highlighted fallback). Approx. +700 KB gzipped when injected                                          | `auto`               |
+| `--math <auto\|on\|off>`                 | KaTeX runtime injection mode. `auto` injects only if the markdown has at least one `$...$` / `$$...$$` expression, `on` always injects, `off` never injects (raw plain text)                                                                                     | `auto`               |
+| `--math-fonts <minimal\|all>`            | Font coverage when KaTeX is injected. `minimal` is 9 families (approx. +250 KB gzipped), `all` is 20 families including `\mathcal` / `\mathfrak` / `\mathscr` etc. (approx. +340 KB). Ignored when `--math off`                                                  | `minimal`            |
+| `--markdown-css <path>`                  | Replace the markdown preview stylesheet. Only the `<style id="markdown-css">` block inside the distributed HTML is swapped; layout / chrome (review.css) is untouched. Author rules under the `#doc` scope. See `dist/markdown.sample.css` for a starting point  | bundled markdown.css |
+| `--lang <auto\|en\|ja>`                  | Output language for CLI help / error messages. `auto` infers from env `$LC_ALL` → `$LC_MESSAGES` → `$LANG`. **Affects CLI output only; the generated HTML resolves its display language independently from the browser's `localStorage` / `navigator.language`** | `auto`               |
+| `--help`                                 | Print the usage help and exit                                                                                                                                                                                                                                    | —                    |
+
+Option examples:
+
+```bash
+npx mdxg-redline <input.md> ./reviews                      # writes into ./reviews
+npx mdxg-redline --no-open <input.md>                      # generate only, do not open browser
+cat spec.md | npx mdxg-redline - --document-name spec.md   # read markdown from stdin
+npx mdxg-redline --help                                    # print full usage and exit
+```
+
+#### Browser auto-launch
+
+- By default the CLI launches the system browser via `$BROWSER` → `open` (macOS) → `xdg-open` (Linux) → `cmd.exe /c start` (Windows), in that order
+- When VS Code Remote Containers / Codespaces is detected, the CLI instead starts a tiny HTTP server on `127.0.0.1` at port `51729` (override with `MDXG_REDLINE_PORT`) and hands the host browser an `http://localhost:<port>/...` URL (since `file://` paths in the container are invisible to the host). If the preferred port is busy, the CLI falls back to a random port and prints a warning to stderr — **note that random ports may not be forwarded to the host browser if `forwardPorts` is not set to `auto`, so pin a known-free `MDXG_REDLINE_PORT` (or register it in `devcontainer.json` `forwardPorts`) for reliable host access**
+
+#### Generated artifacts
+
+- The review HTML filename is auto-derived as `<input-md-basename>-<docHash>-review.html` (per §8 file-naming protocol)
+- The feedback JSON written by the reviewer is `<input-md-basename>-<docHash>-feedback.json`. It shares the same prefix as the review HTML, so pairs match mechanically
+- `output-dir` defaults to the input's directory (or cwd when reading from stdin)
+
+#### Cleanup of generated artifacts
+
+Bulk-remove the review / feedback pairs that accumulate in a distribution folder with the `--clean` subcommand.
+
+```bash
+npx mdxg-redline --clean               # target the current directory (dry-run)
+npx mdxg-redline --clean <dir>         # list deletion candidates (dry-run)
+npx mdxg-redline --clean <dir> --yes   # actually delete
+npx mdxg-redline --clean <dir> -r      # also descend into subdirectories
+```
+
+| Option              | Description                                                                                             | Default        |
+| ------------------- | ------------------------------------------------------------------------------------------------------- | -------------- |
+| `--clean [dir]`     | Target `*-<docHash>-review.html` / `*-<docHash>-feedback.json` directly under `<dir>` (defaults to cwd) | —              |
+| `--yes`             | Perform the deletion (without it, runs as a dry-run that only lists candidates)                         | dry-run        |
+| `-r`, `--recursive` | With `--clean`, also descend into subdirectories                                                        | top level only |
+| `--keep <docHash>`  | Preserve the pair for the given 16-hex docHash (may be repeated)                                        | —              |
+
+#### Excluding generated artifacts from git
+
+When the output directory (the CLI's `output-dir` or the folder chosen via `Write feedback.json`) lives inside a git repository, add the following patterns to `.gitignore` so that review artifacts are not accidentally committed:
+
+```gitignore
+*-review.html
+*-feedback.json
+```
+
+## Development
+
+See [docs/design/development.md](docs/design/development.md) for developer-facing information.
+
+## MDXG compliance status
+
+The [Markdown Experience Guidelines (MDXG)](https://github.com/vercel-labs/mdxg) are currently a preview specification and may change. MDXG Redline embeds an **MDXG Viewer** (the read-only rendering conformance level) and layers inline commenting and structured feedback JSON export on top of it as review-specific features. Viewer features are being adopted incrementally.
+
+| MDXG section             | Required level | Current status |
+| ------------------------ | -------------- | -------------- |
+| §1 Theming               | MUST (Viewer)  | Compliant      |
+| §2 Code Block Rendering  | MUST (Viewer)  | Compliant      |
+| §3 Task Lists            | MUST (Viewer)  | Compliant      |
+| §4 Images                | MUST (Viewer)  | Partial        |
+| §5 Tables                | MUST (Viewer)  | Compliant      |
+| §6 Virtual Pages         | MUST (Viewer)  | Compliant      |
+| §7 Page Navigation       | MUST (Viewer)  | Compliant      |
+| §8 Page Outline          | MUST (Viewer)  | Compliant      |
+| §9 Sequential Navigation | MUST (Viewer)  | Compliant      |
+| §10 Search               | MUST (Viewer)  | Compliant      |
+| §13 Keyboard Navigation  | MUST (Viewer)  | Compliant      |
+| §14 Math Rendering       | SHOULD (Ext.)  | Compliant      |
+| §15 Diagram Rendering    | SHOULD (Ext.)  | Compliant      |
+| §16 Footnotes            | SHOULD (Ext.)  | Compliant      |
+
+For the roadmap ahead (extension candidates), see [docs/design/roadmap.md](docs/design/roadmap.md). For MDXG per-section compliance status and design decisions, see [docs/design/DESIGN.md §12](docs/design/DESIGN.md#12-mdxg-準拠状況と設計判断).
+
+## License
+
+MIT
+
+[^readme-fn-example]: This is an actual footnote that renders inside the README. It ends up in the same "Footnotes" section both on GitHub and inside MDXG Redline.

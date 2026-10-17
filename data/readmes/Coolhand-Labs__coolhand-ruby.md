@@ -1,0 +1,507 @@
+# Coolhand Ruby Monitor
+
+[![Gem Version](https://badge.fury.io/rb/coolhand.svg)](https://badge.fury.io/rb/coolhand)
+
+Monitor and log LLM API calls — OpenAI, Anthropic, Google Gemini, Cohere, and any Faraday-based or Net::HTTP client — to the Coolhand analytics platform. Supports Ruby LLM monitoring, request logging, and feedback collection.
+
+> **Scope**: Coolhand intercepts outgoing HTTP requests to configured LLM API endpoints only. It does not read, scan, or transmit your source code files.
+
+## Installation
+
+```ruby
+gem 'coolhand'
+```
+
+## Getting Started
+
+1. **Get API Key**: Visit [coolhandlabs.com](https://coolhandlabs.com/) to create a free account
+2. **Install**: `gem install coolhand`
+3. **Initialize**: Add configuration to your Ruby application
+4. **Configure**: Set your API key in the configuration block
+5. **Deploy**: Your AI calls are now automatically monitored!
+
+## Quick Start
+
+### Automatic Global Monitoring
+
+🔥 **Set it and forget it! Monitor ALL AI API calls across your entire application with minimal configuration.**
+
+```ruby
+# Add this configuration at the start of your application
+require 'coolhand'
+
+Coolhand.configure do |config|
+  config.api_key = 'your_api_key_here'
+  config.silent = true  # Set to false for debug output
+end
+
+# That's it! ALL AI API calls are now automatically monitored:
+# ✅ OpenAI SDK calls
+# ✅ Anthropic API calls
+# ✅ Direct HTTP requests to AI APIs
+# ✅ Any library making AI API calls via Faraday's default adapter
+
+# NO code changes needed in your existing services!
+```
+
+**✨ Why Automatic Monitoring:**
+- 🚫 **Zero refactoring** - No code changes to existing services
+- 📊 **Complete coverage** - Monitors AI libraries using Net::HTTP or Faraday's default adapter automatically
+- 🔒 **Security built-in** - Automatic credential sanitization
+- ⚡ **Performance optimized** - Negligible overhead via async logging
+- 🛡️ **Future-proof** - Automatically captures new AI calls added by your team
+
+## Self-Hosted Deployments
+
+Point the SDK at your own Coolhand-compatible endpoint via `config.base_url` for compliance or data-residency requirements. See [Self-Hosted Deployments →](docs/configuration.md).
+
+## Feedback API
+
+Collect feedback on LLM responses to improve model performance.
+
+> **Frontend Feedback Widget**: For browser-based feedback collection, see [coolhand-js](https://github.com/Coolhand-Labs/coolhand-js) - an accessible, lightweight JavaScript widget that leverages best UX practices to capture actionable user feedback on any AI output.
+
+```ruby
+require 'coolhand'
+
+# Create feedback for an LLM response
+feedback_service = Coolhand::FeedbackService.new
+
+feedback = feedback_service.create_feedback(
+  llm_request_log_id: 'abc123def456', # hashid from a prior response; a raw integer FK also still works
+  llm_provider_unique_id: 'req_xxxxxxx',
+  client_unique_id: 'workorder-chat-456',
+  creator_unique_id: 'user-789',
+  original_output: 'Here is the original LLM response!',
+  revised_output: 'Here is the human edit of the original LLM response.',
+  explanation: 'Tone of the original response read like AI-generated open source README docs',
+  sentiment: 'dislike'
+)
+```
+
+For a full field reference and matching strategy, see [Feedback API →](docs/feedback.md).
+
+## Reading Templates
+
+Read back the LLM request templates your logs are matched against. Unlike the logging and feedback methods, these require your **private** API key — the public key is write-only on this API and is rejected exactly like an invalid one.
+
+```ruby
+require 'coolhand'
+
+templates = Coolhand.template_service
+
+result = templates.search_templates(search: 'summar', status: 'published')
+result.templates.each { |template| puts "#{template[:name]} (#{template[:log_count]} logs)" }
+result.pagination.total_count
+
+# Prompt patterns come from a single-template fetch only
+detail = templates.get_template(result.templates.first[:id])
+detail[:user_prompt_pattern]
+```
+
+Search is a parameter on the list endpoint, not a route of its own, and the `Unmatched` / `Ignored API Calls` system buckets are hidden unless you pass `include_system: true`. These are read methods, so they **raise** `Coolhand::HttpError` where the write methods log and return `nil`.
+
+For the full filter reference, pagination, and error handling, see [Reading Templates →](docs/template-search.md).
+
+### Cost and performance metrics
+
+Pass `include_metrics: true` to `search_templates` (or `search_workloads`) for the dashboard's cost and performance numbers, over a rolling `days_back` window or an explicit `since:` / `until:` one. `search_logs` carries each log's `cost` and can sort and filter by it.
+
+```ruby
+window = { since: Time.utc(2026, 9, 1), until: Time.utc(2026, 10, 1) }
+
+Coolhand.workload_service.search_workloads(include_metrics: true, **window).workloads
+  .map { |w| [w[:name], w[:metrics][:total_cost]] }
+
+Coolhand.log_service.search_logs(order: 'cost_desc', min_cost: 1.0, per: 10, **window).logs
+```
+
+See [Reading Workloads →](docs/workload-search.md) and [Reading Logs →](docs/log-search.md).
+
+## Linking Feedback to an Optimization
+
+Attach feedback to an optimization as evidence, one at a time or in bulk. These require your **private** API key and **raise** `Coolhand::Error` on failure (`Coolhand::HttpError` for non-2xx responses).
+
+```ruby
+links = Coolhand.optimization_feedback_link_service
+
+link = links.link_feedback('optimizationHashid', 'feedbackHashid', note: 'why')
+links.bulk_link_feedback('optimizationHashid', %w[fb1 fb2 fb3]) # => { linked:, already_linked:, errored:, not_found: }
+links.unlink_feedback('optimizationHashid', link[:id])
+```
+
+For batching, error semantics, and details, see [Linking Feedback →](docs/feedback-links.md).
+
+## Rails Integration
+
+### Configuration
+
+Create an initializer file at `config/initializers/coolhand.rb`:
+
+```ruby
+# config/initializers/coolhand.rb
+Coolhand.configure do |config|
+  # Your Coolhand API Key (Required)
+  # Best practice: Use Rails credentials or environment-specific configuration
+  config.api_key = Rails.application.credentials.coolhand_api_key
+
+  # Set to true to suppress console output
+  config.silent = Rails.env.production?
+
+  # Specify which LLM endpoints to intercept (array of strings)
+  # Optional - defaults to every provider listed under "Supported Libraries" below
+  # config.intercept_addresses = ["api.openai.com", "api.anthropic.com", "api.cohere.com/v2/chat"]
+end
+```
+
+### Rails Controller Example
+
+```ruby
+class ChatController < ApplicationController
+  def create_feedback
+    feedback_service = Coolhand::FeedbackService.new
+
+    feedback = feedback_service.create_feedback(
+      llm_request_log_id: params[:log_id],
+      creator_unique_id: current_user.id,
+      original_output: params[:original_response],
+      revised_output: params[:edited_response],
+      explanation: params[:feedback_text],
+      sentiment: params[:sentiment]
+    )
+
+    if feedback
+      render json: { success: true, message: 'Feedback recorded' }
+    else
+      render json: { success: false, message: 'Failed to record feedback' }, status: 422
+    end
+  end
+end
+```
+
+### Background Job Example
+
+```ruby
+class FeedbackCollectionJob < ApplicationJob
+  def perform(feedback_data)
+    feedback_service = Coolhand::FeedbackService.new
+
+    feedback_service.create_feedback(
+      llm_provider_unique_id: feedback_data[:request_id],
+      creator_unique_id: feedback_data[:user_id],
+      original_output: feedback_data[:original],
+      explanation: feedback_data[:reason],
+      sentiment: feedback_data[:sentiment]
+    )
+  end
+end
+```
+
+## Configuration Options
+
+### Configuration Parameters
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `api_key` | String | `nil` | Your Coolhand API key. If absent, intercepted requests are skipped with a warning log rather than raising at boot time |
+| `enabled` | Boolean | `true` | Set to `false` to disable all patching and validation (e.g. `Rails.env.production?`) |
+| `capture` | Boolean | `true` | Whether to capture and forward intercepted requests. Set to `false` to monitor without forwarding, then use [`Coolhand.with_capture`](#selective-capture) to re-enable selectively |
+| `silent` | Boolean | `false` | Whether to suppress console output |
+| `intercept_addresses` | Array | All [supported providers](#supported-libraries) (`DEFAULT_INTERCEPT_ADDRESSES`) | Array of API hosts to monitor (matched by host, optionally pinned to a port and/or path prefix). This is a required allow-list — `[]` is ignored (a warning is logged) rather than disabling capture; use `enabled` or `capture` for that. See [Configuration](docs/configuration.md) |
+| `intercept_path_patterns` | Array | `[":generateContent", ":streamGenerateContent"]` | Path patterns to additionally monitor on Google API hosts — see [Configuration](docs/configuration.md) |
+| `exclude_api_patterns` | Array | `["/batchPredictionJobs/"]` | Deny-list checked after `intercept_addresses`; matching paths are skipped. Unlike `intercept_addresses`, `exclude_api_patterns = []` genuinely disables exclusion. See [Configuration](docs/configuration.md) |
+| `max_captured_body_bytes` | Integer | `1_000_000` | Maximum size of a captured JSON request body — oversized bodies are replaced with a placeholder. Non-JSON bodies (e.g. file/audio uploads) are always skipped regardless of size — see [Advanced Configuration](docs/configuration.md) |
+| `async_logging` | Boolean | `true` | Send logs to Coolhand from a background thread so a slow Coolhand API never delays your LLM calls. Set to `false` to send inline — see [Advanced Configuration](docs/configuration.md#asynchronous-logging) |
+
+## Usage Examples
+
+### With OpenAI Ruby Client
+
+```ruby
+require 'openai'
+require 'coolhand'
+
+# Configure Coolhand
+Coolhand.configure do |config|
+  config.api_key = 'your_api_key_here'
+end
+
+# Use OpenAI normally - requests are automatically logged
+client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
+
+response = client.chat(
+  parameters: {
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: "These pretzels are making me thirsty!"}],
+    temperature: 0.7
+  }
+)
+
+puts response.dig("choices", 0, "message", "content")
+# The request and response have been automatically logged to Coolhand!
+```
+
+📖 **[Complete Anthropic Integration Guide →](docs/anthropic.md)** - Supports both official and community gems with automatic detection
+
+### Selective Capture
+
+Use `Coolhand.with_capture` and `Coolhand.without_capture` to override the global `capture` setting for a specific block of code, without changing your configuration.
+
+**Capture a specific call when capture is globally disabled:**
+
+```ruby
+Coolhand.configure do |config|
+  config.api_key = 'your_api_key_here'
+  config.capture = false  # disabled globally
+end
+
+Coolhand.with_capture do
+  response = openai_client.chat(parameters: {
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Hello!" }],
+  })
+  # This request is captured and forwarded to Coolhand
+end
+```
+
+**Skip capture for a specific call when capture is globally enabled:**
+
+```ruby
+Coolhand.without_capture do
+  response = openai_client.chat(parameters: { ... })
+  # This request is NOT forwarded to Coolhand
+end
+```
+
+Both methods are thread-safe. Blocks nest correctly — the innermost block takes precedence, and the outer setting is restored when the block exits.
+
+## Logging Inbound Webhooks
+
+For inbound webhooks (like audio transcripts or tool calls), the automatic interceptor won't capture them since they're incoming requests TO your application. In these cases, use the simple `forward_webhook` helper method:
+
+### Webhook Forwarding Example (Recommended)
+
+```ruby
+class WebhooksController < ApplicationController
+  def elevenlabs
+    raw_body = request.body.read
+    webhook_data = JSON.parse(raw_body)
+
+    # Forward to Coolhand with automatic field generation and binary filtering
+    Thread.new do
+      Coolhand.logger_service.forward_webhook(
+        webhook_body: webhook_data,        # Required: webhook payload
+        source: "elevenlabs",              # Required: service name
+        event_type: webhook_data["type"],  # Optional: e.g., post_call_transcription
+        headers: request.headers,          # Optional & recommended
+      )
+    end
+
+    render json: { status: "success" }
+  end
+end
+```
+
+**Required Parameters:**
+- `webhook_body` - The webhook payload (Hash or parsed JSON)
+- `source` - Service name (String, e.g., "elevenlabs", "stripe", "twilio")
+
+**Optional Parameters:**
+- `event_type` - Event type to append to URL (e.g., "post_call_transcription" → `webhook://elevenlabs/post_call_transcription`)
+- `headers` - Request headers (automatically sanitized)
+- `conversation_id`, `agent_id`, `metadata` - Custom fields for your tracking needs
+
+**Error Handling:**
+- **Silent mode = false**: Raises `ArgumentError` if required parameters are missing
+- **Silent mode = true**: Logs warning and returns `false` if required parameters are missing
+
+That's it! The `forward_webhook` method automatically:
+- ✅ Generates unique ID and timestamp
+- ✅ Filters out binary data (audio, images, etc.)
+
+## What Gets Logged
+
+The monitor captures:
+
+- **Request Data**: Method, URL, headers, request body
+- **Response Data**: Status code, headers, response body
+- **Metadata**: Timestamp, protocol used
+- **LLM-Specific**: Model used, token counts, temperature settings
+
+Headers containing API keys are automatically sanitized for security.
+
+## Binary Data Filtering
+
+**Coolhand does not track or store binary data.** The gem automatically filters out:
+
+- Audio files and data (`audio`, `audio_data`, `full_audio`, `raw_audio`)
+- Image data (`image_data`, `image_content`)
+- File content (`file_content`, `binary_content`)
+- Base64 encoded data (`audio_base64`, `base64_data`)
+- Voice samples and audio URLs
+
+This ensures:
+- ✅ **Smaller payloads** - Only text and metadata are sent
+- ✅ **Faster processing** - No bandwidth wasted on binary data
+- ✅ **Privacy focused** - Audio/video content never leaves your infrastructure
+- ✅ **Clean logs** - Focus on conversational data, not media files
+
+The filtering is automatic and applies to all monitored API calls and webhook logging.
+
+## Supported Libraries
+
+The monitor works with multiple transport layers and Ruby libraries:
+
+**Faraday-based libraries** (via Faraday's default `net_http` adapter — a non-Net::HTTP adapter such as `faraday-typhoeus` is not covered):
+- OpenAI Ruby SDK
+- ruby-anthropic gem (community Anthropic gem)
+- ruby-openai gem
+- LangChain.rb
+- Direct Faraday requests using the default adapter
+
+**Native HTTP libraries:**
+- Official Anthropic Ruby SDK (using Net::HTTP)
+- GitHub Models SDK / any client using `models.github.ai`
+- Any library using Net::HTTP directly
+
+**Other providers monitored out of the box:**
+- Google Gemini (`generativelanguage.googleapis.com`)
+- Google Vertex AI (`aiplatform.googleapis.com`) — see the [Vertex AI batch result logging guide](docs/vertex.md) for async batch jobs
+- Azure OpenAI Service, Azure AI Foundry, and Azure Machine Learning managed online endpoints (dedicated hosts, multi-service Azure AI Services hosts, and serverless/MaaS deployments) — see [Configuration](docs/configuration.md) for the full list of covered hosts
+- AWS Bedrock (OpenAI-compatible endpoint)
+- Cloudflare AI Gateway
+- OpenRouter
+- OpenCode Zen (`opencode.ai`)
+- DeepSeek (`api.deepseek.com`)
+- Mistral (`api.mistral.ai`)
+- Perplexity (`api.perplexity.ai`)
+- xAI (`api.x.ai`)
+- Cohere (chat and embed endpoints only, on `api.cohere.com` and `api.cohere.ai`)
+- TypeSafe Jev / System One (`api.typesafe.ai/v1/systemone`)
+- Ollama (self-hosted, default port 11434 — chat, generate and embed endpoints) — see [Configuration](docs/configuration.md) for non-default hosts
+
+**Universal Coverage**: Since most Ruby HTTP libraries use Net::HTTP under the hood, Coolhand's single interceptor provides comprehensive monitoring without needing library-specific integrations.
+
+## How It Works
+
+Coolhand uses a unified Net::HTTP interceptor to capture outgoing requests to configured LLM API endpoints:
+
+### Net::HTTP Interceptor
+- Extends Ruby's `Net::HTTP` using `Module#prepend` (a standard Ruby technique for wrapping library behavior)
+- Covers HTTP libraries that delegate to Net::HTTP under the hood (which is most of them)
+- Handles both standard requests and streaming responses via `read_body` interception
+- Thread-safe design using thread-local storage for streaming buffers
+
+### Request Flow
+When a request matches configured LLM endpoints:
+
+1. The original request executes normally
+2. Request and response data (body, headers, status) are captured by the interceptor
+3. For streaming requests, the complete accumulated response is captured (not individual chunks)
+4. Data is sent to the Coolhand API inline, after the original response is available (bounded by a 5-second connect/read timeout so a slow or unreachable Coolhand backend can't hang your request indefinitely)
+5. Your application continues once the log is sent (or times out) — the original request/response is never blocked on Coolhand being reachable
+
+For non-matching endpoints, requests pass through unchanged.
+
+## Troubleshooting
+
+### Debugging Output
+
+Enable verbose logging to see what's being intercepted:
+
+```ruby
+Coolhand.configure do |config|
+  config.api_key = 'your_api_key_here'
+  config.silent = false  # Enable console output
+end
+```
+
+### Testing
+
+In test environments, you may want to configure differently:
+
+```ruby
+# config/initializers/coolhand.rb
+if Rails.env.test?
+  Coolhand.configure do |config|
+    config.api_key = 'test_key'
+    config.silent = true
+  end
+end
+```
+
+### Non-Rails Applications
+
+For standard Ruby scripts or non-Rails applications:
+
+```ruby
+#!/usr/bin/env ruby
+require 'coolhand'
+
+Coolhand.configure do |config|
+  config.api_key = 'your_api_key_here'  # Store securely, don't commit to git
+  config.environment = 'production'
+  config.silent = false
+end
+
+# Your application code here...
+```
+
+## API Key
+
+🆓 **Sign up for free** at [coolhandlabs.com](https://coolhandlabs.com/) to get your API key and start monitoring your LLM usage.
+
+**What you get:**
+- Complete LLM request and response logging
+- Usage analytics and insights
+- Feedback collection and quality scoring
+- No credit card required to start
+
+## Error Handling
+
+The monitor handles errors gracefully:
+
+- Failed API logging attempts are logged to console but don't interrupt your application
+- Invalid API keys will be reported but won't crash your app
+- Network issues are handled with appropriate error messages
+- The read methods (`search_templates`, `get_template`, `search_workloads`, `search_logs`, `get_log`) and the feedback-link methods are the exception — they raise `Coolhand::Error` (`Coolhand::HttpError` for non-2xx responses); see [Reading Templates →](docs/template-search.md), [Reading Workloads →](docs/workload-search.md), [Reading Logs →](docs/log-search.md) and [Linking Feedback →](docs/feedback-links.md)
+
+## Documentation
+
+- **[Configuration](docs/configuration.md)** — Self-hosted deployments, base_url rules, debug mode, custom intercept addresses
+- **[Feedback API](docs/feedback.md)** — Full field reference, matching strategies, sentiment values
+- **[Reading Templates](docs/template-search.md)** — Search LLM request templates and fetch a single one, prompt patterns included, using the private API key
+- **[Reading Workloads](docs/workload-search.md)** — List workloads with optional cost and performance metrics over a rolling or explicit time window
+- **[Reading Logs](docs/log-search.md)** — Search logs with per-log cost, filter and sort by cost, and fetch one log with its cost breakdown
+- **[Linking Feedback](docs/feedback-links.md)** — Link feedback to an optimization as evidence, singly or in bulk, using the private API key
+- **[Anthropic Integration](docs/anthropic.md)** — Official and community Anthropic Ruby gems, streaming, dual gem handling, and troubleshooting
+- **[ElevenLabs Integration](docs/elevenlabs.md)** — Webhook capture, feedback submission, and Rails integration
+- **[OpenAI Batch Webhook Handler](docs/openai.md)** — Handle OpenAI batch job completion events via webhook interception
+- **[Google Vertex AI Batch Result Logging](docs/vertex.md)** — Log completed Vertex AI batch prediction job results
+- **[Examples](examples/README.md)** — Runnable scripts that make a real provider call through Coolhand, useful as a live smoke test
+
+## Security
+
+- API keys in request headers are automatically redacted
+- No sensitive data is exposed in logs
+- All data is sent via HTTPS to Coolhand servers
+
+## Related Packages
+
+- **Frontend (Feedback Collection Widget)**: [coolhand-js](https://github.com/Coolhand-Labs/coolhand-js) - Frontend feedback widget for collecting user feedback on AI outputs
+- **Node.js**: [coolhand-node package](https://github.com/Coolhand-Labs/coolhand-node) - Coolhand monitoring for Node.js applications
+- **Python**: [coolhand package](https://github.com/Coolhand-Labs/coolhand-python) - Coolhand monitoring for Python applications
+
+## Community
+
+- **Questions?** [Create an issue](https://github.com/Coolhand-Labs/coolhand-ruby/issues)
+- **Contribute?** [Submit a pull request](https://github.com/Coolhand-Labs/coolhand-ruby/pulls)
+- **Support?** Visit [coolhandlabs.com](https://coolhandlabs.com)
+
+## About Coolhand Labs
+
+Coolhand Labs builds LLM observability and feedback tooling so teams can monitor, understand, and improve their AI applications. Learn more at [coolhandlabs.com](https://coolhandlabs.com).
+
+## License
+
+Apache-2.0

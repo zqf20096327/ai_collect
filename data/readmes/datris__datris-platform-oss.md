@@ -1,0 +1,198 @@
+# Datris — The Data Control Plane for AI Agents
+
+[![PyPI](https://img.shields.io/pypi/v/datris-mcp-server)](https://pypi.org/project/datris-mcp-server/)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.datris%2Fdatris-blue)](https://registry.modelcontextprotocol.io/servers/io.github.datris/datris)
+[![Docker Hub](https://img.shields.io/docker/v/datrisai/datris-server?label=Docker%20Hub)](https://hub.docker.com/u/datrisai)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+
+[datris.ai](https://datris.ai) · [Documentation](https://docs.datris.ai) · [MCP Registry](https://registry.modelcontextprotocol.io/servers/io.github.datris/datris) · [PyPI](https://pypi.org/project/datris-mcp-server/)
+
+⭐ If Datris is useful to you, [star the repo](https://github.com/datris/datris-platform-oss) — it helps other people find it.
+
+Agents ask Datris for data. Datris finds it, acquires it, validates it, lands it in the stores you already run, and returns it with provenance — over MCP, without ever holding your keys. It sits beside your warehouse and lake; it doesn't replace them.
+
+**See it in 90 seconds** — describe the data you need, and the Assistant builds the tap, runs it, and lands the data:
+
+https://github.com/user-attachments/assets/4f03dc12-e9d7-4f93-8ba4-d712ab7d3733
+
+🔊 Sound is off by default — click the speaker icon in the player.
+
+
+## Why Datris?
+
+https://github.com/user-attachments/assets/ba3de886-1413-4d92-92bb-99018cfaff38
+
+🔊 Sound is off by default — click the speaker icon in the player, or [watch on YouTube](https://youtu.be/-XCLiLUAaus).
+
+Your agents already acquire, validate, and load data. Without a control plane, they do it badly. Datris puts that work behind one governed surface:
+
+- **One MCP door** — 79 tools behind a single MCP server. Claude, Cursor, and any MCP-compatible agent learn one interface instead of 79 integrations
+- **Vault-brokered credentials** — the agent references a secret by name and never holds a key; agent-written code runs in an isolated container with no keys inside
+- **Scoped keys, approval gates, audit log** — each agent gets its own API key limited to the capabilities you grant; an [agent policy](https://docs.datris.ai/agent-policy) decides per action whether an agent runs it, waits for a person to approve, or is refused; an [audit log](https://docs.datris.ai/audit-log), once you turn it on (`USE_AUDIT_LOG=true`), records who did what, best effort by default and without loss in [strict mode](https://docs.datris.ai/audit-log#strict-mode)
+- **Every run recorded** — job state and row counts for every run, provenance on its rows with stamping on; every generated script versioned in git
+- **Durable state** — pipelines and sync bookmarks live in the platform, not the chat, so regenerating a script never loses its place
+- **The operating loop** — Acquire (AI-generated taps) → Validate (plain-English rules) → Land (multi-destination pipelines) → Observe (provenance and job state) → Explain & Repair (AI error explanation), with the same audit trail every time once the audit log is on (see [strict mode](https://docs.datris.ai/audit-log#strict-mode))
+- **Self-host anywhere** — on-prem, any cloud, or your laptop; 100% open-source infrastructure (MinIO, PostgreSQL, MongoDB, Kafka, Vault), AGPL-3.0, no managed service
+
+## Quick Start
+
+You need Docker and one AI provider key (Anthropic, OpenAI, Grok, Azure OpenAI,
+or Amazon Bedrock). This pulls pre-built images and runtime files, seeds a
+`.env`, and starts the stack into `./datris` — no git checkout required. The
+installer asks for the key:
+
+```bash
+curl -fsSL https://get.datris.ai/install.sh | sh
+```
+
+Installing from a coding agent or a CI job with no terminal attached? Export the key first (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or another provider's): the installer asks nothing and reads it from the environment. Then check `http://localhost:8080/api/v1/version` answers before going on. Full steps: [Install for Agents](https://docs.datris.ai/install-for-agents).
+
+**Minimal install (laptop-friendly).** The default stack runs about ten
+containers and the bundled embedding server downloads a 2.2 GB model on first
+boot. None of that is required. Three settings in `.env` cut it to eight small
+containers, no download, and roughly 3.5 GB of memory (4 GB of Docker memory
+is enough; the full stack wants 8 GB):
+
+```bash
+TEI_ENABLED=0               # skip the local embedding server and its 2.2 GB download
+EMBEDDING_PROVIDER=openai   # semantic search via OpenAI (needs OPENAI_API_KEY); omit if you have no OpenAI key
+POSTGRES_ENABLED=0          # optional: skip bundled Postgres; MongoDB stays as the destination
+```
+
+The installer sets the first two when you choose OpenAI embeddings. The datris
+server itself runs on a 2 GB heap by default. Details: [Installation → Minimal
+install](https://docs.datris.ai/installation#minimal-install).
+
+> The `install.sh` installer is a POSIX shell script (macOS/Linux). On **Windows**, run it from **WSL2** or **Git Bash**, or use the single-file Compose option below, which works natively in PowerShell.
+
+<details>
+<summary>Single file, no installer (works on Windows)</summary>
+
+A fully self-contained Compose file — the init scripts and config are inlined,
+so nothing else is needed (requires Docker Compose ≥ 2.23):
+
+```bash
+# macOS / Linux
+curl -O https://get.datris.ai/docker-compose.standalone.yml
+ANTHROPIC_API_KEY=sk-ant-... docker compose -f docker-compose.standalone.yml up -d
+```
+
+```powershell
+# Windows (PowerShell) — use curl.exe, and set the key with $env:
+curl.exe -O https://get.datris.ai/docker-compose.standalone.yml
+$env:ANTHROPIC_API_KEY="sk-ant-..."
+docker compose -f docker-compose.standalone.yml up -d
+```
+
+</details>
+
+<details>
+<summary>From a git clone</summary>
+
+```bash
+git clone https://github.com/datris/datris-platform-oss.git
+cd datris-platform-oss
+cp .env.example .env       # Add your ANTHROPIC_API_KEY and/or OPENAI_API_KEY (or the AZURE_OPENAI_* trio, XAI_API_KEY, or AI_PROVIDER=bedrock)
+docker compose up -d
+```
+
+</details>
+
+**UI**: [http://localhost:4200](http://localhost:4200) · **API**: [http://localhost:8080](http://localhost:8080)
+
+### Connect an AI Agent
+
+Add to your MCP client config (Claude Desktop, Claude Code, Cursor, etc.). With the Docker stack running, the `npx mcp-remote` stdio bridge connects to the bundled MCP server on port 3000 — your client appears in the Datris UI **Agent Monitor** tab with live tool-call streaming:
+
+```json
+{
+  "mcpServers": {
+    "datris": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://localhost:3000/sse", "--transport", "sse-only"]
+    }
+  }
+}
+```
+
+Paste-and-go for the default local setup — no API key required when `USE_API_KEYS=false` (the OSS default). If your instance enables auth (`USE_API_KEYS=true` or multi-tenant), append `"--header", "x-api-key:<your-key>"` to the `args` array. The Configuration → Connect Your Agent page generates the snippet for you and adds the header automatically when you paste your key.
+
+Requires Node.js on your `PATH` (`brew install node`). For a stdio alternative without Docker, or full Claude Desktop / Claude Code / Cursor walkthroughs, see [Configuring Claude](https://docs.datris.ai/configuring-claude).
+
+To teach the coding agents in your own projects (Claude Code, Codex, and similar) to use Datris for data work, install the `datris-platform` skill from [skills/](skills/) — see [Agent Skill](https://docs.datris.ai/agent-skill).
+
+### CLI
+
+```bash
+brew tap datris/tap
+brew install datris
+datris ingest data.csv --dest postgres
+datris ingest sales.csv --ai-validate "prices > 0" --ai-transform "convert dates to YYYY/MM/DD"
+datris query "SELECT * FROM sales"
+datris search "quarterly revenue" --store pgvector
+datris tap create "Fetch S&P 500 daily prices from yfinance" --pipeline stocks
+datris taps
+datris doctor               # operational self-check; prints the fix for every finding
+```
+
+## What It Does
+
+```
+Source (Tap / File Upload / MinIO Event / Database Pull / Kafka)
+  → Preprocessor (optional REST endpoint)
+  → Field Protection (pseudonymize, mask, redact, encrypt, or drop sensitive fields)
+  → Data Quality (AI rules, header validation, schema validation)
+  → Transformation (AI transformation, destination schema)
+  → Destinations (in parallel):
+      PostgreSQL, MongoDB, Snowflake, Databricks,
+      MinIO / S3 (Parquet, ORC, Apache Iceberg), Kafka, ActiveMQ,
+      REST Endpoint, Qdrant, Weaviate, Milvus, Chroma, pgvector
+  → Notifications (ActiveMQ topic)
+```
+
+### AI-Powered Features
+
+| Feature | Description |
+|---------|-------------|
+| **MCP Server** | 79 tools for AI agents — pipeline CRUD, upload, query, search, profiling, taps, catalogs, provenance |
+| **Taps** | Describe a source in plain English — AI generates a Python script that fetches it on demand or on a schedule, run in an isolated container |
+| **Assistant** | Conversational tap and pipeline creation, operations, and configuration in the UI |
+| **AI Data Quality** | Plain English validation rules — AI generates and runs a validation script |
+| **AI Transformation** | Plain English transformations — AI generates and runs a transformation script |
+| **AI Schema Generation** | Upload a file, get a complete pipeline config |
+| **AI Data Profiling** | Upload a file, get statistics + suggested validation rules |
+| **AI Error Explanation** | Job failures explained in plain English |
+| **Natural Language Query** | Ask questions in English, get SQL results |
+| **RAG Pipeline** | Chunk, embed, and search across 5 vector databases |
+| **Field Protection** | Pseudonymize, mask, redact, encrypt, or drop sensitive fields before any AI stage or destination sees them |
+
+### Supported Formats
+
+CSV, JSON, XML, Excel, PDF, Word (DOCX), PowerPoint, HTML, email, EPUB, plain text
+
+### AI Providers
+
+Anthropic Claude (Fable 5.1 default for chat, Opus 5.5 for CodeGen) · OpenAI (GPT-5.6 Sol default for chat and CodeGen) · Azure OpenAI (bring your Azure resource; models by deployment name) · Amazon Bedrock (Claude through your AWS account — IAM auth, AWS billing, IAM-role support with zero stored keys) · Grok (xAI's models through their OpenAI-compatible API) · Ollama (local models, optional). Embeddings via OpenAI `text-embedding-3-small` (recommended when you have an OpenAI key), Azure OpenAI, the bundled TEI sidecar (BAAI/bge-m3 — fully local, no API key), or Ollama.
+
+## Architecture
+
+| Service | Purpose |
+|---------|---------|
+| **MinIO** | S3-compatible object store for file staging and data output |
+| **PostgreSQL** | Default structured destination, also hosts pgvector for RAG |
+| **MongoDB** | Configuration store, job status tracking, metadata |
+| **ActiveMQ** | File notification queue, pipeline event notifications |
+| **HashiCorp Vault** | Secrets management (database credentials, API keys) |
+| **TEI** | Text Embeddings Inference sidecar (BAAI/bge-m3) — local vector embeddings when you're not using OpenAI embeddings |
+| **Apache Kafka** | Optional streaming source and destination |
+| **Apache Spark** | Local Spark for writing Parquet, ORC, and Iceberg tables to MinIO / S3 |
+| **Tap runner** | Isolated container that runs AI-generated tap scripts with no platform credentials and no route to internal services |
+| **MCP server** | Bundled MCP endpoint (SSE on port 3000) for AI agents |
+
+## Documentation
+
+Full documentation at [docs.datris.ai](https://docs.datris.ai) or locally at `docs/`. Going to production? Start with [Security Architecture](https://docs.datris.ai/production/security-architecture) and [SECURITY.md](SECURITY.md).
+
+## License
+
+[AGPL-3.0](LICENSE)

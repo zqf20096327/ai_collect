@@ -1,0 +1,174 @@
+<div align="center">
+<img alt="FacePlugin" src="https://raw.githubusercontent.com/Faceplugin-ltd/faceplugin-assets/main/brand/logo.png" width="400"/>
+</div>
+
+# Face Recognition SDK Javascript - Fully On Premise
+## Overview
+Experience the epitome of speed and fairness with our `face recognition model` **Top-ranked on NIST FRVT**, coupled with an advanced **iBeta level 2 liveness detection** engine that effectively safeguards against **printed photos, video replay, 3D masks, and deepfake threats**, ensuring top-tier security.
+<br>This is `on-premise SDK` which means everything is processed on the browser and **NO** data leaves the device 
+<br></br>
+
+## Installation
+
+```bash
+npm install faceplugin-face-recognition-js
+```
+
+## Table of Contents
+
+* **[Face Detection](#face-detection)**
+* **[Face Landmark Extraction](#face-landmark-extraction)**
+* **[Face Liveness Detection](#face-expression-detection)**
+* **[Face Expression Detection](#face-expression-detection)**
+* **[Face Pose Estimation](#face-pose-estimation)**
+* **[Eye Closeness Detection](#eye-closeness-detection)**
+* **[Gender Detection](#gender-detection)**
+* **[Age Detection](#age-detection)**
+* **[Face Feature Embedding](#face-recognition)**
+
+## Examples
+
+https://github.com/kby-ai/FaceRecognition-Javascript/assets/125717930/551b6964-0fef-4483-85a7-76792c0f3b56
+
+* [Vue.js Demo](https://github.com/Faceplugin-ltd/FaceRecognition-Vue)
+* [React.js Demo](https://github.com/Faceplugin-ltd/FaceRecognition-React)
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=1aogUPLjdtw" target="_blank">
+ <img src="http://img.youtube.com/vi/1aogUPLjdtw/maxresdefault.jpg" alt="Watch the video" width="960" height="520" border="10" />
+</a>
+
+## List of our Products
+
+* **[Face Recognition with Liveness Detection-Android (Java, Kotlin)](https://github.com/Faceplugin-ltd/FaceRecognition-Android)**
+* **[Face Recognition with Liveness Detection-iOS (Objective C, Swift)](https://github.com/Faceplugin-ltd/FaceRecognition-iOS)**
+* **[Face Recognition with Liveness Detection-React Native](https://github.com/Faceplugin-ltd/FaceRecognition-React-Native)**
+* **[Face Recognition with Liveness Detection-Flutter](https://github.com/Faceplugin-ltd/FaceRecognition-Flutter)**
+* **[Face Recognition with Liveness Detection-Ionic Cordova](https://github.com/Faceplugin-ltd/FaceRecognition-Ionic-Cordova)**
+* **[Face Recognition with Liveness Detection-.Net MAUI](https://github.com/Faceplugin-ltd/FaceRecognition-.Net)**
+* **[Face Recognition with Liveness Detection-.Net WPF](https://github.com/Faceplugin-ltd/FaceRecognition-WPF-.Net)**
+* **[Face Recognition with Liveness Detection-Javascript](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Javascript)**
+* **[Face Recognition with LivenessDetection-React](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-React)**
+* **[Face Recognition with LivenessDetection-Vue](https://github.com/Faceplugin-ltd/FaceRecognition-LivenessDetection-Vue)**
+* **[Face Liveness Detection-Android (Java, Kotlin)](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Android)**
+* **[Face Liveness Detection-iOS (Objective C, Swift)](https://github.com/Faceplugin-ltd/FaceLivenessDetection-iOS)**
+* **[Face Liveness Detection-Linux](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Linux)**
+* **[Face Liveness Detection-Docker](https://github.com/Faceplugin-ltd/FaceLivenessDetection-Docker)**
+* **[Open Source Face Recognition SDK](https://github.com/Faceplugin-ltd/Open-Source-Face-Recognition-SDK)**
+* **[Face Recognition SDK](https://github.com/Faceplugin-ltd/Face-Recognition-SDK)**
+* **[Liveness Detection SDK](https://github.com/Faceplugin-ltd/Face-Liveness-Detection-SDK)**
+* **[Palm Recognition SDK](https://github.com/Faceplugin-ltd/Palm-Recognition)**
+* **[ID Card Recognition](https://github.com/Faceplugin-ltd/ID-Card-Recognition)**
+* **[ID Document Liveness Detection](https://github.com/Faceplugin-ltd/ID-Document-Liveness-Detection)**
+
+## Documentation
+
+Here are some useful documentation
+
+<a name="face-detection"></a>
+### Face Detection
+Load detection model
+```
+loadDetectionModel()
+```
+Detect face in the image
+```
+detectFace(session, canvas_id)
+```
+
+<a name="face-landmark-extraction"></a>
+### Face Landmark Extraction
+Load landmark extraction model
+```
+loadLandmarkModel()
+```
+Extract face landmark in the image using detection result
+```
+predictLandmark(session, canvas_id, bbox)
+```
+
+<a name="face-liveness-detection"></a>
+### Face Liveness Detection
+Load liveness detection model
+```
+loadLivenessModel()
+```
+Detect face liveness in the image using detection result. (Anti-spoofing)
+```
+predictLiveness(session, canvas_id, bbox)
+```
+
+<a name="face-expression-detection"></a>
+### Face Expression Detection
+Load expression detection model
+```
+loadExpressionModel()
+```
+Detect face expression
+```
+predictExpression(session, canvas_id, bbox)
+```
+
+<a name="face-pose-estimation"></a>
+### Face Pose Estimation
+Load pose estimation model
+```
+loadPoseModel()
+```
+Predict facial pose
+```
+predictPose(session, canvas_id, bbox, question)
+```
+
+<a name="eye-closeness-detection"></a>
+### Eye Closeness Detection
+Load eye closeness model
+```
+loadEyeModel()
+```
+Predict eye closeness
+```
+predictEye(session, canvas_id, landmark)
+```
+
+<a name="gender-detection"></a>
+### Gender Detection
+Load gender detection model
+```
+loadGenderModel()
+```
+Predict gender using face image
+```
+predictGender(session, canvas_id, landmark)
+```
+
+<a name="age-detection"></a>
+### Age Detection
+Load age detection model
+```
+loadAgeModel()
+```
+Predict age using face image
+```
+predictAge(session, canvas_id, landmark)
+```
+
+<a name="face-recognition"></a>
+### Face Recognition
+Load feature extraction model
+```
+loadFeatureModel()
+```
+Extract face feature vector in 512 dimension
+```
+extractFeature(session, canvas_id, landmarks)
+```
+
+## Contact
+If you want to get better model, please contact us
+
+<div align="left">
+<a target="_blank" href="mailto:info@faceplugin.com"><img src="https://img.shields.io/badge/email-info@faceplugin.com-blue.svg?logo=gmail " alt="faceplugin.com"></a>&emsp;
+<a target="_blank" href="https://wa.me/+14692784822"><img src="https://img.shields.io/badge/whatsapp-faceplugin-blue.svg?logo=whatsapp " alt="faceplugin.com">
+</div>
+
+

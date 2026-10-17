@@ -1,0 +1,191 @@
+# RL Chess and Snake Lab
+
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/Bouwles/rl-chess-snake-lab?style=for-the-badge&color=16a34a)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/Bouwles/rl-chess-snake-lab?style=for-the-badge&color=16a34a)](https://github.com/Bouwles/rl-chess-snake-lab/commits)
+
+
+[![Tests](https://github.com/Bouwles/rl-chess-snake-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/Bouwles/rl-chess-snake-lab/actions/workflows/tests.yml)
+
+This repo is a small reinforcement learning lab with two game agents: Snake and Chess. The goal is to show the core ideas behind RL in a way that is readable, testable, and honest about what each system can and cannot learn.
+
+Snake is the main DQN experiment because the environment is simple enough for learning behavior to become visible. Chess is included as a harder self-play experiment that uses legal moves and board features, but it is not trying to be a strong chess engine.
+
+## Demo
+
+Snake environment demo:
+
+![Snake demo](docs/media/snake_demo.gif)
+
+Chess self-play demo:
+
+![Chess demo](docs/media/chess_demo.gif)
+
+The GIFs are visual demos of the environments and move flow. They are included so the repo is easy to inspect quickly. The training scripts are separate from these short demos.
+
+## Current Evidence
+
+This project is intentionally test-heavy for a small RL lab. The interesting claim is not that the agents are world-class; it is that the environments, helpers, and training surfaces are reliable enough to experiment with.
+
+| Area | Evidence |
+| --- | --- |
+| Snake rules | Unit tests cover movement, food, death, actions, seeds, and Gym-style wrapping. |
+| RL plumbing | Replay memory, schedules, metrics, logging, checkpoints, and configs have focused tests. |
+| Chess rules | Legal moves, board features, rendering, and environment transitions are tested. |
+| Reproducibility | Seed utilities and sample configs make experiments repeatable. |
+| Demo value | GIFs show both environments running without needing to train first. |
+
+The repo also includes `examples/sample_training_log.csv` so reviewers can inspect the shape of a training run without starting from a blank page.
+
+## What This Project Shows
+
+- a custom Gym-style Snake environment
+- a Gymnasium compatible wrapper for Snake
+- replay memory for off-policy reinforcement learning
+- a PyTorch DQN model for Snake
+- epsilon-greedy exploration
+- a self-play chess environment using `python-chess`
+- chess board feature encoding for neural networks
+- small tests for game rules and RL helpers
+- demo assets that make the project easy to inspect on GitHub
+
+## Why Snake and Chess
+
+Snake is useful for learning RL fundamentals because the state is small, the rewards are clear, and progress can be seen visually.
+
+Chess is much harder because the action space changes every turn, the reward is delayed, and good play requires long-term planning. This project treats chess as an educational self-play experiment rather than pretending it can beat a real engine after a few minutes of training.
+
+## Snake vs Chess
+
+| Area | Snake | Chess |
+| --- | --- | --- |
+| State size | Small 11-value vector | 12 board planes |
+| Actions | 3 fixed actions | Legal moves change every turn |
+| Reward timing | Food and death are immediate | Good moves may pay off much later |
+| Best use here | DQN learning demo | Self-play research experiment |
+
+## Project Structure
+
+```text
+rl_lab/
+  common/
+    dqn.py          Shared PyTorch DQN model
+    replay.py       Replay memory
+  snake/
+    env.py          Snake environment
+    gym_env.py      Gymnasium compatible Snake wrapper
+    train.py        DQN training loop
+    demo.py         Snake demo helper
+  chess_rl/
+    env.py          Chess self-play environment
+    features.py     Board encoding and material score
+    model.py        Small chess value network
+    train.py        Self-play training experiment
+    demo.py         Chess demo helper
+tests/              Unit tests
+scripts/            Demo asset generation
+docs/media/         GIF demos for GitHub
+```
+
+## Suggested Reading Order
+
+If you are reading the code for the first time, start with `rl_lab/snake/env.py`, then `rl_lab/common/replay.py`, then `rl_lab/snake/train.py`. For chess, start with `rl_lab/chess_rl/env.py` and `rl_lab/chess_rl/features.py`.
+
+## Setup
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e ".[dev]"
+```
+
+You can also install from `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Example Configs
+
+The `examples/` folder includes small JSON configs for Snake and Chess training. They are meant to make the training settings easy to inspect before changing the code.
+
+## Run Tests
+
+```bash
+python -m pytest -q
+```
+
+## Run the Snake Experiment
+
+```bash
+python -m rl_lab.snake.train
+```
+
+This trains a small DQN and saves weights to `snake_dqn.pt`.
+
+To compare simple baseline policies:
+
+```bash
+python scripts/evaluate_snake_baseline.py
+```
+
+## Run the Chess Experiment
+
+```bash
+python -m rl_lab.chess_rl.train
+```
+
+This runs a short educational self-play loop and saves weights to `chess_policy.pt`.
+
+To print a short legal-move chess sequence:
+
+```bash
+python scripts/show_chess_demo.py
+```
+
+## Regenerate Demo GIFs
+
+```bash
+python scripts/make_demo_gifs.py
+```
+
+The demos are intentionally lightweight. They are meant to make the repo easy to understand quickly, not to claim the agents are fully trained.
+
+## Notes on Reinforcement Learning
+
+Reinforcement learning is different from normal supervised learning. Instead of learning from labeled examples, an agent learns by taking actions, receiving rewards, and slowly improving its policy.
+
+In this repo:
+
+- the Snake agent receives positive reward for eating food
+- the Snake agent receives negative reward for dying
+- replay memory stores old experiences so the model can learn from them more than once
+- epsilon-greedy exploration lets the agent try random moves early in training
+- the Chess experiment uses legal moves from `python-chess` and simple rewards from material changes and game outcomes
+
+More notes:
+
+- [RL concepts](docs/RL_CONCEPTS.md)
+- [Snake reward design](docs/SNAKE_REWARDS.md)
+- [Chess experiment notes](docs/CHESS_EXPERIMENT_NOTES.md)
+- [Improvement log](docs/IMPROVEMENTS.md)
+- [Roadmap](docs/ROADMAP.md)
+
+## Limitations
+
+The Snake agent can learn useful behavior with enough training, but the default settings are kept small so the code is easy to run.
+
+The Chess agent is a starting point for self-play research, not a competitive chess AI. A strong chess RL system would need a much deeper network, better search, more training time, and a stronger reward design.
+
+## Future Ideas
+
+- add training curves for score over time
+- compare random, heuristic, and trained Snake agents
+- add model checkpoint loading for demos
+- add a stronger chess policy head over legal moves
+- add Monte Carlo tree search for chess
+- log experiments with simple CSV files
+
+## License
+
+MIT — see [LICENSE](LICENSE).

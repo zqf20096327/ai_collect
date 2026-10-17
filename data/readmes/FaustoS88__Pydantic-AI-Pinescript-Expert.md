@@ -1,0 +1,336 @@
+# PineScript Expert
+
+[![GitHub Stars](https://img.shields.io/github/stars/FaustoS88/Pydantic-AI-Pinescript-Expert?style=social)](https://github.com/FaustoS88/Pydantic-AI-Pinescript-Expert)
+[![GitHub Forks](https://img.shields.io/github/forks/FaustoS88/Pydantic-AI-Pinescript-Expert?style=social)](https://github.com/FaustoS88/Pydantic-AI-Pinescript-Expert/network/members)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+A Retrieval-Augmented Generation (RAG) AI Agent built with Pydantic AI that serves as an expert on Pine Script v6, TradingView's programming language for custom indicators and strategies. This agent leverages vector search technology and large language models to provide accurate, context-aware answers and generate working code examples.
+
+## Features
+
+- **Comprehensive Pine Script Knowledge**: Access the entire Pine Script v6 documentation through natural language queries
+- **Code Generation**: Creates custom indicators and strategies based on user requirements
+- **Interactive Interfaces**: Multiple ways to interact with the expert:
+  - Web-based UI built with Streamlit
+  - Interactive command-line interface
+  - Single query execution for scripting
+- **Multi-Provider Support**: Use either OpenAI or OpenRouter models as the LLM backend
+- **Vector Search**: Utilizes pgvector for efficient semantic retrieval of relevant documentation
+- **Full Documentation Processing**: Custom crawler that processes and analyzes TradingView's Pine Script documentation
+- **Persistent Chat History**: Remember conversation context in the Streamlit UI
+- **Extensive API**: Integrate with other systems using the Pydantic AI based architecture
+
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/FaustoS88/Pydantic-AI-Pinescript-Expert/main/assets/asset1.png" alt="Asset 1" width="400"></td>
+    <td><img src="https://raw.githubusercontent.com/FaustoS88/Pydantic-AI-Pinescript-Expert/main/assets/asset2.png" alt="Asset 2" width="400"></td>
+  </tr>
+</table>
+
+## Prerequisites
+
+- **Python 3.9+**
+- **PostgreSQL** with pgvector extension
+- **OpenAI API key** (required for embeddings and default LLM)
+- **OpenRouter API key** (optional, for alternative LLM providers)
+- **Docker** (optional, for running PostgreSQL with pgvector)
+
+## Quick Start
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/FaustoS88/Pydantic-AI-Pinescript-Expert.git
+   cd pinescript-expert
+   ```
+
+2. **Setup PostgreSQL with pgvector using Docker**
+
+```bash
+# Create a directory for Docker volume if it doesn't exist
+mkdir -p ~/pinescript_postgres_data
+
+# Run PostgreSQL with pgvector on port 54322 (different from standard 5432)
+docker run --name pinescript-pgvector \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 54322:5432 \
+  -v ~/pinescript_postgres_data:/var/lib/postgresql/data \
+  -d pgvector/pgvector:pg16
+   ```
+   
+3. **Install requirements and set up the environment**
+
+   ```bash
+   python setup.py
+   # Edit the created .env file with your API keys
+   ```
+
+4. **Initialize the database**
+
+   ```bash
+   python init_db.py
+   ```
+
+5. **Populate the database with Pine Script documentation**
+
+   ```bash
+   python pinescript_crawler.py
+   ```
+
+6. **Start using the Streamlit UI**
+
+   ```bash
+   streamlit run streamlit_ui.py
+   ```
+
+   Or, for CLI interface:
+
+   ```bash
+   python interactive.py
+   ```
+
+## Usage Examples
+
+### Web Interface
+
+Start the Streamlit interface to interact with the agent through a web UI:
+
+```bash
+streamlit run streamlit_ui.py
+```
+
+### Command Line Interface
+
+Launch an interactive shell for conversational access to the agent:
+
+```bash
+python interactive.py
+```
+
+Example session:
+```
+=================================================================
+ Pine Script Expert Agent - Interactive Shell 
+=================================================================
+Ask any question about Pine Script v6 or type 'exit' to quit.
+Type 'clear' to clear the conversation history.
+=================================================================
+
+> How do I create a simple moving average crossover strategy?
+
+Processing your question...
+
+================================================================================
+To create a simple moving average crossover strategy in Pine Script v6, you'll need to:
+
+1. Set up your indicator or strategy
+2. Calculate two moving averages of different lengths
+3. Determine crossover conditions
+4. Generate buy/sell signals
+5. Optionally add plotting for visualization
+
+Here's a complete example:
+
+```pine
+//@version=6
+strategy("Simple MA Crossover Strategy", overlay=true)
+
+// Input parameters
+fastLength = input.int(9, "Fast MA Length")
+slowLength = input.int(21, "Slow MA Length")
+
+// Calculate moving averages
+fastMA = ta.sma(close, fastLength)
+slowMA = ta.sma(close, slowLength)
+
+// Determine crossover conditions
+buySignal = ta.crossover(fastMA, slowMA)
+sellSignal = ta.crossunder(fastMA, slowMA)
+
+// Execute strategy
+if (buySignal)
+    strategy.entry("Buy", strategy.long)
+    
+if (sellSignal)
+    strategy.entry("Sell", strategy.short)
+
+// Plot moving averages
+plot(fastMA, "Fast MA", color=color.blue)
+plot(slowMA, "Slow MA", color=color.red)
+
+// Plot buy/sell signals
+plotshape(buySignal, "Buy Signal", shape.triangleup, location.belowbar, color.green, size=size.small)
+plotshape(sellSignal, "Sell Signal", shape.triangledown, location.abovebar, color.red, size=size.small)
+```
+
+Key components explained:
+- We use `ta.sma()` to calculate the simple moving averages
+- `ta.crossover()` and `ta.crossunder()` detect when the fast MA crosses above or below the slow MA
+- `strategy.entry()` executes buy and sell orders when crossovers occur
+- `plot()` and `plotshape()` visualize the MAs and signals on the chart
+
+You can customize this by changing:
+- MA types (SMA, EMA, WMA, etc.)
+- Length parameters
+- Adding additional conditions
+- Adding stop-loss and take-profit levels
+================================================================================
+
+> 
+```
+
+### Single Query Mode
+
+Use the agent for a one-time query:
+
+```bash
+python run.py query "How do I calculate RSI in Pine Script?"
+```
+
+### Database Inspection
+
+The project includes tools to inspect the vector database:
+
+```bash
+# Count documents in the database
+python db_inspect.py count
+
+# List document titles (first 20)
+python db_inspect.py list
+
+# View a specific document
+python db_inspect.py view 508
+
+# Test search functionality
+python db_inspect.py search "how to use request.security for different timeframes"
+```
+
+## RAG Pipeline — Evaluation Results
+
+The retrieval pipeline has been systematically improved across two tiers and measured with
+[RAGAS](https://docs.ragas.io/) (40-question test set, categories: function lookup, conceptual,
+code generation, complex multi-concept).
+
+| Pipeline | Faithfulness | Context Relevance | vs Baseline |
+|----------|-------------|-------------------|-------------|
+| Baseline (flat chunks, L2 search) | 0.779 | n/a | — |
+| **Tier 1** (hybrid search, MMR, recursive chunking) | 0.774 | — | -0.6% |
+| **Tier 2** (+ Anthropic Contextual Retrieval) | **0.833** | **0.919** | **+6.9%** |
+
+**Code generation improved from 0.51 → 0.64 (+21%)** with Tier 2. Context Relevance 0.919 means
+the retriever finds the right chunks 92% of the time — the remaining gap is a content problem
+(docs lack complete strategy templates), not a retrieval problem.
+
+**Tier 1 improvements** ([docs](docs/RAG_IMPROVEMENTS.md)):
+hybrid BM25+vector search, similarity threshold, cross-encoder reranking, recursive chunking with overlap, MMR deduplication, contextual chunk headers
+
+**Tier 2 improvements** ([docs](docs/RAG_IMPROVEMENTS_TIER2.md)):
+code-aware chunking (fenced blocks never split), Anthropic Contextual Retrieval (LLM prefix per chunk at crawl time), content type detection, metadata columns
+
+**Evaluation details:** [Tier 1](docs/ragas_tier1_comparison.md) | [Tier 2](docs/ragas_tier2_comparison.md)
+
+### Running RAGAS Evaluation
+
+```bash
+# Tier 1 retrieval (hybrid + MMR)
+python tests/ragas_eval.py --retrieval tier1 --output results/tier1_YYYYMMDD.json
+
+# Baseline retrieval (L2 only)
+python tests/ragas_eval.py --retrieval baseline --output results/baseline_YYYYMMDD.json
+```
+
+### Running the Contextual Re-Crawl (Tier 2 activation)
+
+```bash
+# Standard re-crawl (code-aware split, free)
+python pinescript_recrawl_light.py --clear
+
+# Contextual re-crawl (LLM prefix per chunk — ~$8, ~2h for 4,910 chunks)
+python pinescript_recrawl_light.py --contextual --clear
+```
+
+---
+
+## Key Components
+
+- **`agent.py`**: Core agent implementation with RAG capabilities
+- **`pinescript_crawler.py`**: Documentation crawler and vector database population
+- **`db_schema.py`**: Database schema definitions
+- **`streamlit_ui.py`**: Web-based user interface with persistent chat history
+- **`interactive.py`**: Command-line interface
+- **`run.py`**: Convenience runner for various operation modes
+- **`init_db.py`**: Database initialization
+- **`clear_database.py`**: Database cleaning utility
+- **`db_inspect.py`**: Database inspection tools
+
+## Advanced Configuration
+
+### Model Presets
+
+Switch between LLM providers using the `--model` flag. Presets are defined in `config.py`:
+
+| Preset    | Model                           | Temperature | Max Tokens |
+|-----------|---------------------------------|-------------|------------|
+| `default` | `openai/gpt-4.1-mini`           | 0.2         | 2000       |
+| `codex`   | `openai/gpt-5.3-codex`          | 0.1         | 4096       |
+| `opus`    | `anthropic/claude-opus-4-6`     | 0.2         | 4096       |
+| `flash`   | `google/gemini-3-flash-preview` | 0.3         | 2000       |
+
+```bash
+# Use a preset
+python run.py query "How to use request.security?" --model codex
+python run.py interactive --model opus
+
+# Or pass any OpenRouter model ID directly
+python run.py query "Explain ta.sma()" --model "anthropic/claude-sonnet-4.6"
+```
+
+All presets route through [OpenRouter](https://openrouter.ai/) — add your API key to `.env` as `OPENROUTER_API_KEY`. Without it, the agent falls back to the default OpenAI model.
+
+You can also override defaults via environment variables:
+
+```bash
+PINESCRIPT_MODEL=openai:gpt-4o          # default LLM
+PINESCRIPT_TEMPERATURE=0.3              # response creativity
+PINESCRIPT_MAX_TOKENS=4096              # max response length
+PINESCRIPT_VECTOR_SEARCH_LIMIT=12       # RAG retrieval depth
+OPENROUTER_MODEL=anthropic/claude-opus-4-6  # default OpenRouter model
+```
+
+### Custom Database Connection
+
+Configure database settings in the `.env` file:
+
+```
+DATABASE_URL=postgresql://username:password@hostname:port/database
+```
+## Star History
+
+[![Star History Chart](assets/star-history.svg)](https://star-history.com/#FaustoS88/Pydantic-AI-Pinescript-Expert&Date)
+
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=FaustoS88/Pydantic-AI-Pinescript-Expert)](https://github.com/FaustoS88/Pydantic-AI-Pinescript-Expert/graphs/contributors)
+
+## Contributing
+
+Contributions are welcome!
+
+## Related Projects
+
+- [tickerflow](https://github.com/FaustoS88/tickerflow) — One async Python call for crypto, stocks, and forex OHLCV data with automatic provider fallback, pandas DataFrame support, and Pydantic AI agent integration.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Pydantic AI](https://ai.pydantic.dev/) for the agent framework
+- [TradingView](https://www.tradingview.com/) for the Pine Script language and documentation
+- [OpenAI](https://openai.com/) and [OpenRouter](https://openrouter.ai/) for LLM capabilities
+- [pgvector](https://github.com/pgvector/pgvector) for vector search functionality
+- [Streamlit](https://streamlit.io/) for the web interface

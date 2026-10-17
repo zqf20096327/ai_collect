@@ -1,0 +1,352 @@
+# Ollama Herd
+
+[![PyPI version](https://img.shields.io/pypi/v/ollama-herd?color=00c853)](https://pypi.org/project/ollama-herd/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Website](https://img.shields.io/badge/website-ollamaherd.com-00c853)](https://ollamaherd.com)
+
+Turn all your devices into one local AI cluster. Ollama Herd is a smart inference router and load balancer that auto-discovers Ollama nodes via mDNS, routes LLMs, image generation, speech-to-text, and embeddings to the optimal device using intelligent scoring. OpenAI-compatible API. Zero config. Zero cost.
+
+**[ollamaherd.com](https://ollamaherd.com)** — full docs, guides, and the live dashboard walkthrough.
+
+<!-- TODO: Add dashboard screenshot here -->
+<!-- ![Ollama Herd Dashboard](docs/images/dashboard-screenshot.png) -->
+
+## Why Ollama Herd?
+
+- **Your spare Mac is wasting compute** — pool all your devices into one fleet
+- **Single Ollama bottlenecks agents** — distribute requests across machines automatically
+- **Cloud APIs cost $450-1,800/month at fleet scale** — local inference is zero marginal cost
+- **No config files, no Docker, no Kubernetes** — two commands, mDNS auto-discovery
+- **Not just LLMs** — routes image generation (FLUX), speech-to-text (Qwen3-ASR), and embeddings too
+- **The fleet gets smarter over time** — capacity learning, thermal awareness, meeting detection
+
+## Quick Start
+
+```bash
+pip install ollama-herd
+```
+
+Or with Homebrew (macOS/Linux):
+
+```bash
+brew tap geeks-accelerator/ollama-herd
+brew trust geeks-accelerator/ollama-herd   # Homebrew 6.x requires this for third-party taps
+brew install ollama-herd
+```
+
+> Without the `brew trust` line, Homebrew 6.0+ stops with *"Refusing to load formula … from untrusted tap"*. Older Homebrew doesn't need it and ignores it harmlessly. The install builds every dependency from source (Homebrew runs `pip --no-binary :all:`), including a Rust compile of `pydantic-core` — budget **~25 minutes**, not the couple of minutes a bottled formula takes.
+
+**On your router machine:**
+
+```bash
+herd
+```
+
+**On each device running Ollama:**
+
+```bash
+herd-node
+```
+
+That's it. The node discovers the router via mDNS and starts sending heartbeats. No config files needed.
+
+> To skip mDNS and connect directly: `herd-node --router-url http://router-ip:11435`
+
+**Keeping it running (macOS):** nothing restarts `herd` after a reboot, and a
+missing router is the one failure the health checks cannot report — there is no
+router to report it. Ready-made launchd agents are in
+[`docs/examples/launchd/`](docs/examples/launchd/README.md).
+
+## Features
+
+| Feature | Description |
+|---------|------------|
+| **Smart Scoring** | Routes to the best device based on thermal state, memory fit, queue depth, latency, affinity, availability, and context fit |
+| **Zero-Config Discovery** | mDNS auto-discovery — no IPs, no config files, no manual setup |
+| **Multimodal Routing** | LLMs, vision (gemma3, llava, llama3.2-vision), embeddings, image gen (FLUX via mflux/DiffusionKit), speech-to-text (Qwen3-ASR) |
+| **Live Dashboard** | Fleet overview, trends, model insights, per-app analytics, benchmarks, health, recommendations, settings |
+| **Capacity Learning** | 168-slot weekly behavioral model per device — learns when your machines are available |
+| **Auto-Retry & Fallbacks** | Transparent retry on failure + client-specified backup models |
+| **Thinking Model Support** | Auto-detects DeepSeek-R1, QwQ, phi-4-reasoning and inflates token budgets to prevent empty responses |
+| **Smart Benchmarks** | Auto-discovers fleet, benchmarks all 5 model types, tracks performance over time |
+| **Dynamic Context** | Measures actual token usage, auto-adjusts context windows to free KV cache memory |
+| **Fleet Intelligence** | AI-generated fleet briefings with health summaries, trend analysis, and actionable recommendations |
+| **Health Engine** | 49 automated checks: memory, thermal, context waste, thrashing, timeouts, errors, zombies, priority models, and more |
+| **Request Tagging** | Per-app analytics via tags — track usage, latency, and errors per application or team |
+
+## Usage
+
+Point any OpenAI-compatible client at the router:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://router-ip:11435/v1", api_key="not-needed")
+response = client.chat.completions.create(
+    model="llama3.2:3b",
+    messages=[{"role": "user", "content": "Hello!"}],
+    stream=True,
+)
+for chunk in response:
+    print(chunk.choices[0].delta.content, end="")
+```
+
+Or use the Ollama API directly:
+
+```bash
+curl http://router-ip:11435/api/chat -d '{
+  "model": "llama3.2:3b",
+  "messages": [{"role": "user", "content": "Hello!"}]
+}'
+```
+
+### Model Fallbacks
+
+```bash
+curl http://router-ip:11435/v1/chat/completions -d '{
+  "model": "llama3.3:70b",
+  "fallback_models": ["qwen2.5:32b", "qwen2.5:7b"],
+  "messages": [{"role": "user", "content": "Hello!"}]
+}'
+```
+
+The router tries each model in order, falling back seamlessly if one is unavailable.
+
+## Beyond LLMs
+
+The same router handles five model types — install a backend on any node and it's automatically detected.
+
+### Vision (Image Understanding)
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://router-ip:11435/v1", api_key="not-needed")
+
+response = client.chat.completions.create(
+    model="gemma3:27b",  # or llama3.2-vision, llava, moondream
+    messages=[{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": "What's in this image?"},
+            {"type": "image_url", "image_url": {"url": "data:image/png;base64,..."}}
+        ]
+    }]
+)
+```
+
+Works with any Ollama vision model. Both OpenAI and Ollama formats supported — the router auto-converts.
+
+### Image Generation
+
+```bash
+# Install a backend (any node)
+uv tool install mflux
+
+# Generate
+curl -o sunset.png http://router-ip:11435/api/generate-image \
+  -d '{"model": "z-image-turbo", "prompt": "a sunset over mountains", "width": 1024, "height": 1024}'
+```
+
+Supports mflux (FLUX), DiffusionKit (Stable Diffusion 3/3.5), and Ollama native models. See [Image Generation Guide](docs/guides/image-generation.md).
+
+### Speech-to-Text
+
+```bash
+# Install backend (any node)
+pip install 'mlx-qwen3-asr[serve]'
+
+# Transcribe
+curl http://router-ip:11435/api/transcribe -F "file=@meeting.wav" -F "model=qwen3-asr"
+```
+
+### Embeddings
+
+```bash
+curl http://router-ip:11435/api/embed \
+  -d '{"model": "nomic-embed-text", "input": ["first document", "second document"]}'
+```
+
+Works with any Ollama embedding model: `nomic-embed-text`, `mxbai-embed-large`, `all-minilm`, `snowflake-arctic-embed`.
+
+## Works With
+
+Ollama Herd is a drop-in replacement — just change the base URL:
+
+| Framework | Integration |
+|-----------|------------|
+| **Open WebUI** | Set Ollama URL to `http://router-ip:11435` in admin settings |
+| **LangChain** | `ChatOpenAI(base_url="http://router-ip:11435/v1")` |
+| **CrewAI** | `LLM(base_url="http://router-ip:11435")` |
+| **Aider** | `--openai-api-base http://router-ip:11435/v1` |
+| **Continue.dev** | Set `apiBase` in config.json |
+| **OpenHands** | `LLM_BASE_URL=http://router-ip:11435/v1` |
+| **OpenClaw** | See [OpenClaw Integration Guide](docs/openclaw-integration.md) |
+| **Any OpenAI client** | Change `base_url` to `http://router-ip:11435/v1` |
+
+### Desktop and web chat clients
+
+Point any Ollama-compatible chat client at `http://router-ip:11435` and it sees the
+whole fleet as one Ollama. Verified against a source read of 16 clients — Enchanted,
+Ollamac, Reins, Ollama's own desktop app, AnythingLLM, Cherry Studio, Chatbox,
+Hollama, Page Assist and others — which drove `POST /api/show`, `HEAD /`, full
+`/api/tags` field parity and an OpenAI-compatible `POST /v1/embeddings`.
+
+**Browser-based clients** (Hollama, TypingMind, Chatbox web, Page Assist) additionally
+need CORS enabled, since a web page cannot read a response without it:
+
+```bash
+FLEET_CORS_ORIGINS=https://hollama.fernando.is,http://localhost:*
+```
+
+Off by default, and nothing is allowed implicitly — the router listens on the whole
+LAN, so you name the origins you trust. See
+[Configuration Reference](docs/configuration-reference.md#browser-clients-and-cors-fleet_cors_origins).
+
+## Platform Support
+
+Ollama Herd runs on **macOS, Linux, and Windows** — anywhere Ollama runs.
+
+| Feature | macOS | Linux | Windows |
+|---------|:-----:|:-----:|:-------:|
+| LLM routing, scoring, queues | Yes | Yes | Yes |
+| Embeddings proxy | Yes | Yes | Yes |
+| mDNS auto-discovery | Yes | Yes | Yes |
+| Dashboard & traces | Yes | Yes | Yes |
+| Image gen (mflux, DiffusionKit) | Yes (Apple Silicon) | -- | -- |
+| Image gen (Ollama native) | Yes | Yes | Yes |
+| Speech-to-text (MLX) | Yes (Apple Silicon) | -- | -- |
+| Meeting detection (camera/mic) | Yes | -- | -- |
+| Memory pressure detection | Yes | Yes | -- |
+
+Core routing works identically on all platforms. macOS-only features degrade gracefully.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Client (OpenAI SDK, curl, any HTTP client)         │
+└──────────────────────┬──────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────┐
+│  Herd Router (:11435)                               │
+│  ┌────────────┐ ┌──────────┐ ┌───────────────────┐  │
+│  │  Scoring    │ │  Queue   │ │  Streaming Proxy  │  │
+│  │  Engine     │ │  Manager │ │  (format convert) │  │
+│  └────────────┘ └──────────┘ └───────────────────┘  │
+│  ┌────────────┐ ┌──────────┐ ┌───────────────────┐  │
+│  │  Trace     │ │  Health  │ │  Dashboard +      │  │
+│  │  Store     │ │  Engine  │ │  SSE + Charts     │  │
+│  └────────────┘ └──────────┘ └───────────────────┘  │
+└──────────┬──────────────────────────┬───────────────┘
+           │ heartbeats               │ inference
+           ▼                          ▼
+┌──────────────────┐       ┌──────────────────┐
+│  Herd Node A     │       │  Herd Node B     │
+│  (agent + Ollama)│       │  (agent + Ollama)│
+│  ┌────────────┐  │       │  ┌────────────┐  │
+│  │  Capacity  │  │       │  │  LAN Proxy  │  │
+│  │  Learner   │  │       │  │  (auto TCP) │  │
+│  └────────────┘  │       └──└────────────┘──┘
+└──────────────────┘
+```
+
+Two CLI entry points, one Python package:
+
+- **`herd`** — FastAPI server with scoring, queues, streaming proxy, trace store, health engine, and dashboard
+- **`herd-node`** — lightweight agent that collects system metrics, sends heartbeats, and optionally learns capacity patterns
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [API Reference](docs/api-reference.md) | All endpoints with request/response schemas |
+| [Configuration Reference](docs/configuration-reference.md) | All 47+ environment variables with tuning guidance |
+| [Operations Guide](docs/operations-guide.md) | Logging, traces, fallbacks, retry, drain, streaming, context protection |
+| [Routing Engine](docs/fleet-manager-routing-engine.md) | Scoring pipeline deep dive |
+| [Adaptive Capacity](docs/adaptive-capacity.md) | Capacity learner, meeting detection, app fingerprinting |
+| [Request Tagging](docs/request-tagging.md) | Per-app analytics and tagging strategies |
+| [Thinking Models](docs/guides/thinking-models.md) | Chain-of-thought models, budget inflation, diagnostic headers |
+| [Image Generation](docs/guides/image-generation.md) | mflux, DiffusionKit, Ollama native setup |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues, LAN debugging, operational gotchas |
+| [Autostart (launchd)](docs/examples/launchd/README.md) | Keep `herd` running across reboots and crashes on macOS |
+| [Changelog](CHANGELOG.md) | What's new in each release |
+
+## Optimize Ollama for Your Hardware
+
+Ollama's defaults are conservative. On machines with lots of memory, set these to actually use the hardware you paid for:
+
+| Setting | Default | Recommended | Why |
+|---------|---------|-------------|-----|
+| `OLLAMA_KEEP_ALIVE` | `5m` | `-1` (forever) | Don't unload models when you have RAM to spare. `-1` **is** valid here. |
+| `OLLAMA_MAX_LOADED_MODELS` | auto | a positive integer, e.g. `10` | Let several models stay hot. **Do not use `-1`** — it is parsed as unsigned, fails, and silently falls back to a 3-model cap. Ollama's `-1` semantics differ per variable. |
+| `OLLAMA_NUM_PARALLEL` | auto | `2`–`4` | Becomes llama-server's `-np`. Also **multiplies** the context — see the next row. |
+| `OLLAMA_CONTEXT_LENGTH` | auto (by VRAM) | the largest per-slot context you need | Ollama launches llama-server with `-c NumCtx × OLLAMA_NUM_PARALLEL`. Setting this *below* what a model needs silently shrinks its context even when a client asks for more — which collapses prefix caching. Measured cost: TTFT 1.0s → 6.3s with decode throughput unchanged, so every throughput metric stays green while latency doubles. |
+
+Set via `launchctl setenv` (macOS), `systemctl edit ollama` (Linux), or system environment variables (Windows). On macOS, applying a change means quitting the Ollama **app**, not just `ollama serve` — the app inherited the old values and re-passes them to every child it respawns. Always re-check `curl -s localhost:11434/api/version` afterwards: a reboot self-updates the app, and anything that binds `:11434` first is served transparently.
+
+See [Configuration Reference](docs/configuration-reference.md#ollama-environment-not-fleet-prefixed--but-herds-behaviour-depends-on-it) for the full detail.
+
+## Development
+
+```bash
+git clone https://github.com/geeks-accelerator/ollama-herd.git
+cd ollama-herd
+uv sync                              # install deps
+uv run herd                          # start router
+uv run herd-node                     # start node agent
+
+uv sync --extra dev                  # install test deps
+uv run pytest                        # run all tests (~5s)
+uv run ruff check src/               # lint
+uv run ruff format src/              # format
+```
+
+## Contributing
+
+Whether you're carbon-based or silicon-based, contributions are welcome. This project is built by humans and AI agents working together.
+
+**For humans:** Fork it, run the tests (`uv run pytest`), make your change, open a PR. Start with [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [Architecture Decisions](docs/architecture-decisions.md) for context.
+
+**For AI agents:** Read `CLAUDE.md` first — it's your onboarding doc. The project uses [`docs/issues.md`](docs/issues.md) for bug tracking and [`docs/observations.md`](docs/observations.md) for operational learnings.
+
+**Good first contributions:**
+- Pick an open issue from [`docs/issues.md`](docs/issues.md)
+- Integrate with a new agent framework and document it
+- Run the fleet and add an observation to [`docs/observations.md`](docs/observations.md)
+
+Questions? Open a [Discussion](https://github.com/geeks-accelerator/ollama-herd/discussions).
+
+**If Ollama Herd is useful to you, [star the repo](https://github.com/geeks-accelerator/ollama-herd)** — it helps others discover the project and keeps the herd growing.
+
+## Anonymous usage stats
+
+Ollama Herd sends one anonymous summary a day: which models ran, request and
+token counts, latency percentiles, and error counts by category. It helps decide
+what to fix and which models to test against.
+
+**Never sent:** prompts, completions, raw error text, file paths, your hostname,
+or any account details — there are no accounts. Identity is a random UUID stored
+at `~/.fleet-manager/install_id`; delete it and you are a new install.
+
+Turn it off any time:
+
+```bash
+FLEET_NODE_TELEMETRY=false
+```
+
+Every field that can be sent is listed at
+**<https://ollamaherd.com/telemetry>**. Naming your herd for the public
+leaderboard is a separate opt-in — left alone, your install is a number in a
+total, with nothing identifying it.
+
+## Requirements
+
+- Python 3.11+
+- [Ollama](https://ollama.com) running on each device
+- Multi-device setups work automatically — the node agent starts a LAN proxy if Ollama is only listening on localhost
+
+## License
+
+MIT

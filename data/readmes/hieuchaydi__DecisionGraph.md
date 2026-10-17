@@ -1,0 +1,431 @@
+﻿# DecisionGraph
+
+Engineering Decision Memory System with `CLI + API + MCP`, plus a docs frontend in [`docs`](./docs).
+
+<p align="center">
+  <img src="./assets/decisiongraph-logo.svg" alt="DecisionGraph logo" width="460">
+</p>
+
+## Why DecisionGraph
+Software teams usually remember **what changed**, but lose **why it changed**.
+DecisionGraph keeps that reasoning traceable with evidence so teams can move fast without repeating old mistakes.
+
+- Preserve architectural decisions with supporting evidence.
+- Answer `why / who / when / what-changed` queries quickly.
+- Add pre-change guardrails before risky refactors.
+- Expose the same decision memory through CLI, HTTP API, and MCP tools.
+
+## Visual Architecture
+![DecisionGraph architecture flow](./assets/decisiongraph-architecture.svg)
+
+## Core Capabilities
+
+### 1) Ingestion
+- Local text/files/directories.
+- Git commit history.
+- GitHub PRs and Issues.
+- Slack export JSON.
+- Jira export JSON.
+- Generic JSONL event streams.
+
+### 2) Decision Intelligence
+- Decision query with confidence + warnings.
+- Decision list/search with filters (`q`, `tag`, `component`, `owner`, `decision_type`).
+- Supersede flow to link newer decisions over older rationale.
+- Merge/deduplicate flow for overlapping decisions.
+- Timeline view by component/tag/owner/type.
+- Evidence quality scoring with weak-decision detection.
+- Contradiction detection.
+- Stale assumption detection from live metrics.
+- Assumption watcher with `warn/critical` escalation tracking, audit log, and optional connector notification (`webhook|slack|discord|teams`).
+- Governance policy mode (`off|warn|strict`) for required decision fields.
+- Summary report and graph snapshot.
+
+### 3) Ops + Strategy Utilities
+- KPI snapshots and scenario checks.
+- Evaluation against JSONL benchmark datasets.
+- Security audit, doctor checks, release checks.
+- Strategy section library/search for GTM and product framing.
+
+## Quickstart (Backend)
+```bash
+python -m pip install -e ".[dev]"
+decisiongraph init --reset
+decisiongraph seed-demo
+decisiongraph serve --host 127.0.0.1 --port 8000 --seed-demo
+```
+
+Quickstart demo:
+
+![DecisionGraph quickstart demo](./assets/animation.gif)
+
+Health check:
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+Open API docs:
+- `http://127.0.0.1:8000/docs`
+
+## Quickstart (Docker)
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Check health:
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+Tail logs / stop:
+```bash
+docker compose logs -f decisiongraph
+docker compose down
+```
+
+Production note:
+- If `DECISIONGRAPH_ENV=production`, set `DECISIONGRAPH_API_TOKEN` in `.env` (or set `DECISIONGRAPH_REQUIRE_TOKEN_IN_PRODUCTION=false` intentionally).
+
+## CLI-Only Mode (No Web Server)
+If you only want terminal usage, skip `decisiongraph serve`.
+
+```bash
+python -m pip install -e ".[dev]"
+decisiongraph init --reset
+decisiongraph seed-demo
+decisiongraph chat
+```
+
+Windows Command Prompt (`cmd`):
+```cmd
+py -m pip install -e ".[dev]"
+decisiongraph init --reset
+decisiongraph seed-demo
+decisiongraph chat
+```
+
+Inside chat, ask questions directly or use commands:
+
+```text
+/help
+/list 20
+/find <query>
+/supersede <new_id> <old_id>
+/merge <primary_id> <duplicate_id>
+/timeline 20
+/quality
+/get <decision_id>
+/guard <change request>
+/contradictions
+/stale
+/watch
+/audit 20
+/metrics
+/graph
+/report json
+/exit
+```
+
+Non-interactive CLI equivalents:
+
+```bash
+decisiongraph list
+decisiongraph list --q "rabbitmq" --tag queues
+decisiongraph find "rabbitmq" --tag queues
+decisiongraph list --owner finance --decision-type risk-policy
+decisiongraph query "Why did we cap payment retries at 2?"
+decisiongraph supersede <new_decision_id> <old_decision_id>
+decisiongraph merge <primary_decision_id> <duplicate_decision_id> --note "dedupe"
+decisiongraph timeline --component payment-retry --exclude-superseded
+decisiongraph evidence-quality --weak-threshold 0.5
+decisiongraph quality --weak-threshold 0.5
+decisiongraph watch-assumptions --notify --notify-target slack
+decisiongraph watch
+decisiongraph audit-log --limit 100 --event assumption.watch_run
+decisiongraph audit --limit 100 --event assumption.watch_run
+decisiongraph guardrail "Increase retry attempts in payment flow"
+```
+
+If `decisiongraph` command is not available in PATH:
+
+```bash
+python -m decisiongraph list
+python -m decisiongraph query "Why did we cap payment retries at 2?"
+```
+
+## Quickstart (Docs Frontend)
+```bash
+cd docs
+npm install
+npm run dev
+```
+
+## MCP Server (stdio)
+```bash
+decisiongraph mcp
+```
+
+## Environment Setup
+Create env file:
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Windows Command Prompt (`cmd`):
+
+```cmd
+copy .env.example .env
+```
+
+Key variables:
+- `DECISIONGRAPH_ENV=development`
+- `DECISIONGRAPH_DATA_PATH=data/decisiongraph.json`
+- `DECISIONGRAPH_API_TOKEN` optional API key (`x-api-key` header)
+- `DECISIONGRAPH_REQUIRE_TOKEN_IN_PRODUCTION=true` blocks startup in production without token
+- `DECISIONGRAPH_AUTO_SEED_DEMO=false` auto seed demo data at `decisiongraph serve` startup
+- `DECISIONGRAPH_GOVERNANCE_MODE=off` governance policy mode (`off|warn|strict`)
+- `DECISIONGRAPH_GOVERNANCE_REQUIRED_FIELDS=owners,assumptions,risks` required fields when governance is enabled
+- `DECISIONGRAPH_RATE_LIMIT_PER_MINUTE=240` per-client rate limit (`0` disables)
+- `DECISIONGRAPH_AUDIT_LOG_RETENTION=5000` max retained audit events
+- `DECISIONGRAPH_CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:5173`
+- `DECISIONGRAPH_GITHUB_TOKEN` for GitHub ingestion
+- `DECISIONGRAPH_GITHUB_BASE_URL=https://api.github.com`
+- `DECISIONGRAPH_ALERT_WEBHOOK_URL` default watcher webhook
+- `DECISIONGRAPH_ALERT_SLACK_WEBHOOK`, `DECISIONGRAPH_ALERT_DISCORD_WEBHOOK`, `DECISIONGRAPH_ALERT_TEAMS_WEBHOOK` connector-specific watcher webhooks
+- `SE_URL` legacy fallback (prefer `DECISIONGRAPH_GITHUB_BASE_URL`)
+- `GROQ_API_KEY`, `GROQ_MODELS` optional model integration
+
+Security note:
+- Never commit real secrets in `.env`.
+- Commit only `.env.example`.
+
+## End-to-End Demo (2 Minutes)
+
+1. Seed data and run API:
+```bash
+decisiongraph init --reset
+decisiongraph seed-demo
+decisiongraph serve --host 127.0.0.1 --port 8000
+```
+
+2. Ask a why-question:
+```bash
+curl -X POST http://127.0.0.1:8000/api/query \
+  -H "content-type: application/json" \
+  -d '{"question":"Why did we cap payment retries at 2?"}'
+```
+
+3. Run guardrail before change:
+```bash
+curl -X POST http://127.0.0.1:8000/api/guardrail \
+  -H "content-type: application/json" \
+  -d '{"change_request":"Increase retry attempts in payment flow"}'
+```
+
+4. Check stale assumptions:
+```bash
+curl http://127.0.0.1:8000/api/assumptions/stale
+```
+
+5. Search decisions with filters:
+```bash
+curl "http://127.0.0.1:8000/api/decisions?limit=10&q=rabbitmq&tag=queues"
+curl "http://127.0.0.1:8000/api/decisions?owner=finance&decision_type=risk-policy"
+```
+
+6. Link a replacement decision with supersede flow:
+```bash
+curl -X POST http://127.0.0.1:8000/api/decisions/supersede \
+  -H "content-type: application/json" \
+  -d '{"decision_id":"<new_decision_id>","superseded_decision_id":"<old_decision_id>"}'
+```
+
+7. Merge duplicate decision records:
+```bash
+curl -X POST http://127.0.0.1:8000/api/decisions/merge \
+  -H "content-type: application/json" \
+  -d '{"primary_decision_id":"<primary_id>","duplicate_decision_id":"<duplicate_id>","note":"same rationale"}'
+```
+
+8. Run assumption watcher:
+```bash
+curl -X POST http://127.0.0.1:8000/api/assumptions/watch \
+  -H "content-type: application/json" \
+  -d '{"warn_severities":["medium","high"],"critical_severities":["high"],"notify":true,"notify_target":"slack"}'
+```
+
+## API Surface (Main Endpoints)
+
+### System
+- `GET /`
+- `GET /health`
+- `GET /api/report/summary?format=json|markdown`
+
+### Decisions
+- `GET /api/decisions` (supports `limit`, `q`, `tag`, `component`, `owner`, `decision_type`)
+- `GET /api/decisions/timeline`
+- `GET /api/decisions/evidence-quality`
+- `GET /api/decisions/{decision_id}`
+- `POST /api/decisions/supersede`
+- `POST /api/decisions/merge`
+- `POST /api/query`
+- `POST /api/guardrail`
+- `GET /api/contradictions`
+- `GET /api/assumptions/stale`
+- `POST /api/assumptions/watch`
+- `GET /api/audit/logs`
+- `GET /api/metrics`
+- `POST /api/metrics`
+- `GET /api/graph`
+
+### Ingestion
+- `POST /api/ingest`
+- `POST /api/ingest/directory`
+- `POST /api/ingest/git`
+- `POST /api/ingest/jsonl`
+- `POST /api/ingest/github`
+- `POST /api/ingest/slack-export`
+- `POST /api/ingest/jira-json`
+
+### Intelligence / Ops
+- `GET /api/scenarios/run`
+- `GET /api/kpi/snapshot`
+- `POST /api/eval/dataset`
+- `POST /api/eval/benchmark-check`
+- `POST /api/research/scorecard`
+- `GET /api/research/interview-script`
+- `POST /api/research/design-partner-progress`
+- `GET /api/strategy/sections`
+- `GET /api/strategy/section/{section_id}`
+- `GET /api/strategy/search?q=...`
+- `GET /api/ops/doctor`
+- `GET /api/ops/runbook`
+- `GET /api/ops/release-check`
+- `GET /api/ops/security-audit`
+- `GET /api/schema/info`
+
+## CLI Reference
+
+### Core
+- `decisiongraph init [--reset]`
+- `decisiongraph seed-demo`
+- `decisiongraph chat [--list-limit 20] [--guardrail-limit 3]`
+- `decisiongraph list --limit 20 [--q ...] [--tag ...] [--component ...] [--owner ...] [--decision-type ...]`
+- `decisiongraph find <query> [--limit ...] [--tag ...] [--component ...] [--owner ...] [--decision-type ...]` (alias of search/list)
+- `decisiongraph get <decision_id>`
+- `decisiongraph supersede <decision_id> <superseded_decision_id>`
+- `decisiongraph merge <primary_decision_id> <duplicate_decision_id> [--note ...]`
+- `decisiongraph timeline [--limit 200] [--component ...] [--tag ...] [--owner ...] [--decision-type ...] [--exclude-superseded]`
+- `decisiongraph evidence-quality [--limit 200] [--weak-threshold 0.45]`
+- `decisiongraph quality [--limit 200] [--weak-threshold 0.45]` (alias)
+- `decisiongraph query "..."`
+- `decisiongraph guardrail "..."`
+- `decisiongraph contradictions`
+- `decisiongraph stale-assumptions`
+- `decisiongraph watch-assumptions [--warn medium,high] [--critical high] [--notify --notify-target slack --webhook-url ...]`
+- `decisiongraph watch [--warn medium,high] [--critical high] [--notify --notify-target ...]` (alias)
+- `decisiongraph audit-log [--limit 100] [--event ...]`
+- `decisiongraph audit [--limit 100] [--event ...]` (alias)
+- `decisiongraph metric-set --key ... --value ... [--unit ...]`
+- `decisiongraph metrics`
+- `decisiongraph graph`
+- `decisiongraph report --format markdown|json [--output ...]`
+
+### Runtime
+- `decisiongraph serve [--host 127.0.0.1] [--port 8000] [--seed-demo|--no-seed-demo]`
+- `decisiongraph mcp`
+
+### Ingestion
+- `decisiongraph ingest --source <file> --source-id <id> [--source-type note]`
+- `decisiongraph ingest-text --source-id <id> --text "..." [--source-type note]`
+- `decisiongraph ingest-dir --directory <dir> [--pattern "*.md"]`
+- `decisiongraph ingest-git --repo <repo_path> [--max-commits 200] [--ref HEAD]`
+- `decisiongraph ingest-jsonl --source <file.jsonl> [--source-type external]`
+- `decisiongraph ingest-github --owner <org> --repo <name> [--state all]`
+- `decisiongraph ingest-slack-export --export-dir <dir> [--max-messages 1000]`
+- `decisiongraph ingest-jira-json --source <jira.json>`
+
+### Insights + Ops
+- `decisiongraph scenarios`
+- `decisiongraph kpi`
+- `decisiongraph eval-dataset --dataset <eval.jsonl>`
+- `decisiongraph benchmark-check --dataset <eval.jsonl> [--min-top1 0.7] [--min-keyword-coverage 0.7]`
+- `decisiongraph research-score --pain-frequency ... --impact ...`
+- `decisiongraph research-script`
+- `decisiongraph design-partner-progress`
+- `decisiongraph strategy-list | strategy-show <section> | strategy-search "..."`
+- `decisiongraph doctor | runbook | release-check | security-audit | schema-info`
+
+## MCP Tooling
+Run stdio server:
+```bash
+decisiongraph mcp
+```
+
+Tool groups:
+- Core tools: query, list/filter, supersede, merge, timeline, evidence quality, guardrail, contradictions, stale assumptions, watch assumptions, audit logs, metrics, graph, report.
+- Ingestion tools: git/jsonl/github/slack/jira connectors.
+- Insight tools: scenarios, KPI snapshot, dataset evaluation, benchmark gate, research scoring.
+- Strategy/Ops tools: strategy sections, doctor, runbook, release check, security audit.
+
+## Project Structure
+```text
+src/decisiongraph/
+  api.py                 FastAPI app assembly
+  service.py             Core orchestration logic
+  store.py               JSON store with locking + atomic writes
+  integrations.py        Connectors (git, GitHub, Slack, Jira, JSONL)
+  mcp_server.py          MCP server bootstrap
+  cli.py                 Typer CLI entrypoint
+  api_routes/            API routers
+  cli_commands/          CLI command groups
+  mcp_toolsets/          MCP tool groups
+
+tests/                   Backend test suite
+tools/                   CI benchmark datasets and helper artifacts
+docs/                    Frontend docs app (Vite + React)
+assets/                  README visual assets
+```
+
+## Quality and Validation
+Local quality commands:
+```bash
+python -m pytest -q
+decisiongraph benchmark-check --dataset tools/ci_eval.jsonl --seed-demo --min-top1 0.65 --min-keyword-coverage 0.65
+cd docs && npm run lint && npm run build
+```
+
+Latest local validation (2026-04-25):
+- Backend tests: pass (`59 passed`)
+- Benchmark gate (`tools/ci_eval.jsonl`): pass
+- Frontend lint: pass
+- Frontend build: pass
+
+CI pipeline:
+- [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
+- Backend matrix tests + benchmark gate on `tools/ci_eval.jsonl`
+
+Release notes:
+- [`CHANGELOG.md`](./CHANGELOG.md)
+
+## Delivery Scope (3 Rounds)
+1. Round 1 (Core): ingestion, extraction, query, guardrail, contradiction, stale assumptions.
+2. Round 2 (Surface): connectors + CLI/API/MCP interfaces.
+3. Round 3 (Outer Ring): insights, strategy, ops, docs, operational checks.
+
+## Notes for Contributors
+- Keep backward compatibility for API and CLI contracts.
+- Add tests for any behavior change.
+- Prefer evidence-linked decision entries over free-form notes.
+
+## Tiếng Việt (Tóm tắt nhanh)
+DecisionGraph là hệ thống lưu trí nhớ quyết định kỹ thuật để trả lời nhanh câu hỏi "vì sao code đang như vậy".
+Bạn có thể ingest từ Git/GitHub/Slack/Jira/JSONL, query theo ngữ nghĩa, chạy guardrail trước refactor, và expose cùng logic qua CLI + API + MCP.

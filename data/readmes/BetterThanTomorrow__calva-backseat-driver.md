@@ -1,0 +1,115 @@
+# Enabling Native AI Interactive Programming in VS Code
+
+Clojure Tools for VS Code Agent harnesses. (Such as Copilot and Cursor.)
+
+[![VS Code Extension](https://img.shields.io/visual-studio-marketplace/v/betterthantomorrow.calva-backseat-driver)](https://marketplace.visualstudio.com/items?itemName=betterthantomorrow.calva-backseat-driver)
+[![Issues](https://img.shields.io/github/issues/BetterThanTomorrow/calva-backseat-driver)](https://github.com/BetterThanTomorrow/calva-backseat-driver/issues)
+[![License](https://img.shields.io/github/license/BetterThanTomorrow/calva-backseat-driver)](https://github.com/BetterThanTomorrow/calva-backseat-driver/blob/master/LICENSE.txt)
+
+Backseat Driver gives VS Code AI harnesses access to [Calva](https://calva.io)'s Clojure tools these ways:
+
+1. **Copilot**: Zero config. (Using **VS Code LM Tools.**).
+2. **Cursor**, Zero config. (Using Cursor add-MCP-server API).
+3. **Other AI harnesses**: MCP (Requiring [some configuration](MCP-CONFIGURATION.md) per project).
+
+## Features
+
+* Tool: **Evaluate Code** Access to the Clojure REPL to evaluate code at will. All active REPL sessions in Calva are available for targeting (and with shadow-cljs, also builds and runtime).
+* Tool: **Edit Clojure Files** Structural create and edit files, supporting batches. Includes:
+  * **Create Clojure File** Creates Clojure files with automatic bracket balancing
+  * **Append Code** Appends code to Clojure files with automatic bracket balancing
+  * **Replace Top Level Form** Structural editing, including formatting, bracket balancing and linting
+  * **Insert Top Level Form** Structural editing, including formatting, bracket balancing and linting
+* Tool: **Bracket Balancer** Helps the model get the bracket balance right (powered by [Parinfer](https://github.com/parinfer/parinfer.js))
+* Tool: **Load File** Load/evaluate an entire Clojure file through Calva's connected REPL
+* Tool: **Symbol info lookup**, the AI can look up symbols it is interested in, and will get doc strings, argument info etcetera
+* Tool: **clojuredocs.org lookup**, docs, examples, and *see also* information on Clojure core-ish symbols
+* Resource: **Symbol info lookup**, (a bit experimental) same as the tool
+* Resource: **clojuredocs.org lookup**, (a bit experimental) same as the tool
+* Resource: **Skills**, specialized instructions discoverable via `resources/list` and readable via `resources/read`
+
+Please note that for the editing tools there is no UI for reviewing the edits. I suggest using the source
+control tools, and VS Codes's **Timeline** view, for this.
+
+## Agent Instructions: Leveraging Backseat Driver
+
+Backseat Driver gives the AI agent the tools for Clojure Interactive Programming and the skills for using the tools. To allow you to keep the control of how your agents hold Clojure and the REPL, the extension does not provide much in the way of Clojure knowledge, philosophy, nor for REPL methodology.
+
+For truly effective agent Clojure work to happen, it needs to know how you prefer Clojure to be written and how to use the REPL effectively.
+
+To avoid starting with a blank slate, where bad training data and hallucinations about Clojure ruin the day, consider installing the **clojure**, and other plugins from the [Awesome Backseat Driver](https://github.com/BetterThanTomorrow/awesome-backseat-driver) repository.
+
+> [!NOTE]
+> **Awesome Backseat Driver** has plugins for Copilot and Cursor (so far). But if you are using some other haress, you can still copy the skills, custom agents, etc from there. (Or ask your agent to do it for you.)
+
+## Configuring Backseat Driver
+
+### Evaluation result size limiting
+
+To prevent large REPL evaluation results from overwhelming the agent's context window, Backseat Driver automatically limits the size of returned results:
+
+- `calva-backseat-driver.evaluation.maxLength` (default `25`) — maximum number of items to display in collections. Use `0` to disable length limiting.
+- `calva-backseat-driver.evaluation.maxDepth` (default `7`) — maximum nesting depth; deeper structures are replaced with `##`. Use `0` to disable depth limiting.
+
+### Skills
+
+Backseat Driver provides two skills to AI agents:
+
+- `calva-backseat-driver.provideBdSkill` (default `true`) — provide the Backseat Driver skill to agents
+- `calva-backseat-driver.provideEditSkill` (default `true`) — provide the Clojure structural editing skill to agents
+
+### Editor configuration
+
+The structural editing tools for inserting and replacing top level forms respect two Backseat Driver editor settings:
+
+- `calva-backseat-driver.editor.fuzzyLineTargetingPadding` (default `2`) — number of lines on each side of the requested line that the AI is allowed to scan when matching target text. Increase this if forms move around during larger refactorings; set to `0` for exact line targeting. _Trade-off_: higher values tolerate line shifts but raise the risk of matching a nearby, similar form when the agent's copy of the buffer is stale.
+- `calva-backseat-driver.editor.lineContextResponsePadding` (default `10`) — number of lines on each side of the requested line included in the troubleshooting snippet returned when targeting fails. Reduce this to keep responses shorter, or increase it for more surrounding context. _Trade-off_: larger values give the agent more cues for a retry, but can cost extra tokens (or time) compared with sending a focused snippet.
+
+### MCP
+
+See: [Configure Backseat Driver as an MCP server](MCP-CONFIGURATION.md)
+
+## Getting Started
+
+### Prerequisites
+
+- [VS Code](https://code.visualstudio.com/) (or your favorite fork)
+- [Calva](https://marketplace.visualstudio.com/items?itemName=betterthantomorrow.calva)
+- [Calva Backseat Driver](https://marketplace.visualstudio.com/items?itemName=betterthantomorrow.calva-backseat-driver)
+- GitHub Copilot (or some MCP compliant assistant)
+
+### Using
+
+0. Teach the AI Clojure and REPL discipline, e.g. See: [Agent Instructions](#agentt-instructions-leveraging-backseat-driver)
+1. Connect Calva to your Clojure/ClojureScript project
+1. Ask Copilot to help you with things. It will know what you mean when you say: "Please use the REPL to investigate ...".
+  * It will know how to find the right REPL session and how to use it.
+  * Configure Calva to use the terminal for REPL output and monitor the output terminal to see what it tries at the REPL
+
+It works very well will subagents, also parallel subagents. Try something like:
+
+1. "Please task three parallel subagents to use the REPL to investigate how to implement ...”
+  * The REPL output will show you, and the agents, who is trying what at the REPL.
+  * You can participate in the REPL party.
+
+## WIP
+
+As we all are, I am learning to use AI and figuring out one thing at a time. All while the whole space is moving faster than I can learn. Backseat Driver is my very best effort to provide Clojure developers with powerful AI tools that can be used with zero configuration.
+
+The basic design of Backseat Driver has proven to work and be useful over time. But I have also been improving it incrementally as I have learnt new things. **A lot of these things I have learnt from users.**
+
+Please, please let me know how you fare with Backseat Driver, and what features you would like to see. 🙏
+
+## Contributing
+
+Contributions are welcome! Issues, PRs, whatever. Before a PR, I appreciate an issue stating the problem being solved. You may also want to reach out discussing the issue before starting to work on it.
+
+## License 🍻🗽
+
+[MIT](LICENSE.txt)
+
+## Please sponsor my open source work ♥️
+
+You are welcome to encourage my work, using this link:
+
+* https://github.com/sponsors/PEZ

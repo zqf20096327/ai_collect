@@ -1,0 +1,113 @@
+# Palindrome.js
+
+![Palindrome.js](dev/assets/img/Palindrome.js-logo-and-title.jpg "Palindrome.js")
+> ***A palindrome is a word, number, phrase, or other sequence of characters which reads the same backward as forward,
+such as madam, racecar. There are also numeric palindromes, including date/time stamps using short digits 11/11/11 11:11
+and long digits 02/02/2020.***
+
+```Palindrome.js``` is a ```three.js``` based library which provides 3D monitoring for system metrics and KPIs.
+Presented as metrics sets within layers, the 3D information helps to easily identify relations between metrics,
+indicators, behaviors or trends for your realtime systems or any other data source. Custom algorithms, visual behaviors,
+styles and color schemes can easily be modified or added.
+
+```Palindrome.js``` is developed as a research prototype. API changes could occur with new versions.
+
+- 2024/06: Our article "Palindrome.js: 3D monitoring for distributed systems visual analysis" has been published in the [IEEE ECO 2024 workshop](https://ieeexplore.ieee.org/document/10733683/).
+- 2024/11: Palindrome.js was presented at the [OSMC 2024](https://data.europa.eu/en/news-events/events/open-source-monitoring-conference-2024)
+- 2025/09: Plaindrome.js was presented at the [Open Tech Day 2025](https://foss.events/2025/09-23-open-tech-day.html)
+
+<p float="left">
+<img alt="Palindrome.js" desc="Palindrome.js" title="Palindrome.js" src="dev/assets/img/palindromeExamplesV2.png" >
+</p>
+
+## Motivation
+
+The idea behind this project is to go one step further current monitoring and dashboards solutions, by enabling a scalable
+and user oriented, 3D monitoring probe for multi-dimensional and heterogeneous sets of data points. Compatible use cases
+are various, from comparing system metrics with external indicators, to stacking up multi-tenancy informations groups
+for measuring differences or similarities, ```Palindrome.js``` can both be used as a live UI component for a larger BI
+dashboard, or as the signal source for a computer-vision based workflow.
+
+## Requirements
+
+- Node.js version 20 or later
+
+Node.js version can be updated by executing the following commands:
+
+```bash
+sudo apt remove nodejs
+sudo apt remove nodejs-doc
+curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install nodejs
+```
+**Note:** An already built version of Palindrome.js is ready to be integrated without any Node.js setup, two files can be found inside the `/artifacts` folder: `palindrome.dev.js`, which includes a sidebar, and `palindrome.js`, which represents the basic version of Palindrome.js without a sidebar. The [documentation](../../wikis/Single-file-distribution) should be followed for more integration details.
+## Setup
+
+This project uses ```three.js``` as its 3D renderer, ```yarn``` as the dependency manager, ```Storybook``` for
+functional testing and ```parcel-bundler``` as the stand-alone packager.
+
+First install the project dependencies :
+
+```
+yarn install
+```
+
+You can configure your remote data use cases by following the documentation [here](../../wikis/Remote-Data-Integration-(Time-Series-Databases-and-External-APIs)).
+
+## Default HTML
+
+Then, run the default html session for an interactive session :
+
+```
+yarn dev
+```
+
+<img alt="Palindrome HTML" desc="Palindrome HTML" title="Palindrome HTML" src="dev/assets/img/devEnv.png" width="93%">
+
+## Storybook
+
+Alternatively, you can run storybook :
+
+```
+yarn storybook
+```
+
+<img alt="Palindrome Storybook" desc="Palindrome Storybook" title="Palindrome Storybook" src="dev/assets/img/storybookPalindrome.png" width="93%">
+
+## Docker
+
+Palindrome.js can also be run in Docker.
+
+You can optionally start the TSDB servers, as outlined in the [documentation](../../wikis/Remote-Data-Integration-(Time-Series-Databases-and-External-APIs)#quick-setup).
+
+Then, launch Palindrome.js by running:
+
+```
+docker compose up
+```
+
+## Documentation
+
+Click [here](../../wikis/home) to visit our wiki page containing the documentation with all the implementation details.
+
+## Demo Environments
+
+You can explore the following demo environments:
+
+- [Dev Environment](https://smile-sa.github.io/palindrome.js)
+- [Storybook Environment](https://smile-sa.github.io/palindrome.js/storybook)
+
+
+## Contribute
+
+Simply open a pull request over the repository to describe your changes.
+
+## Credits
+
+- Mohamed Ali Yacoubi @yacoubii
+- JonRiv (author) @JonRiv
+- Rnd Team @ SMILE
+
+## License
+
+Licensed under the Apache 2.0 license

@@ -1,0 +1,288 @@
+# OTUI - A Minimalist Agentic TUI
+maintained by: @hkdb
+
+![screenshot](docs/ss.png)
+
+An opinionated, "speed" and "usability" focused agentic TUI with a built-in MCP registry/plugin system.
+
+## 🚀 Features
+
+- 🏗️ **Effortless Setup** - Single command install & intuitive guided setup on first launch
+- 💫 **Minimalist UI** - Clean, distraction-free interface
+- 🚀 **Performance** - Designed to be blazingly fast and responsive
+- 👻 **Terminal transparency** - Respects your terminal's transparency settings
+- ⌨️ **Keyboard-driven** - Everything is keyboard only except to copy via text selection
+- 🖱 **Native text selection** - Highlight and copy any part of the LLM response
+- ✏️ **Text Editor Integration** - Toggle your favorite text editor to compose your more complex prompts
+- 🚰 **Streaming responses** - Real-time AI responses with typewriter effect
+- ⚓ **Markdown Rendering** - Custom performance focused, minimalistic mark-down rendering
+- 📦 **Multiple models** - Effortlessly switch between models
+- 🎬 **Multiple Sessions** - Use different sessions to encapsulate different context and tasks
+- 🗃 **Session history** - Conversations are automatically saved and ready to continue where you left off
+- 🔍 **Session search** - Search and find past conversations easily
+- 🛣️ **Session import/export** - Easily bring sessions to another machine or share context with others
+- ✍🏼  **System Prompts** - Configure system prompts profile-wide or per session
+- 🧳 **Portable** - Migrate everything to a new system or switch between user profiles easily
+- 🖧 **Profile Sync** - Sync profiles and sessions between devices with any file sync provider
+- 💻 **Cross Platform** - Runs on Linux, FreeBSD, Mac, and Windows
+- 🔧 **MCP Plugins** - Automatic & Guided download + installations of MCP Plugins
+- 🛸 **MCP Registry** - A growing list of MCP server plugins to explore
+
+
+## 🤖 Provider Support
+
+- Ollama
+- [OpenRouter](https://openrouter.com)
+- Anthropic
+- OpenAI
+- More coming soon...
+
+Currently, only Ollama and OpenRouter are being tested more extensively.
+
+Of the popular open source models, what's relatively modest in size that seems to work best with this TUI is currently `qwen3.5:9b`. It's not only fairly accurate in general but also makes sound decision on when to use tools and when to directly respond based on its own knownledge.
+
+## 🖥️ OS Support
+
+- GNU/Linux
+- FreeBSD
+- MacOS
+- Windows WSL
+- Windows Native (NOT TESTED)
+
+## 👾 OTUI in Action
+
+Setup:
+![Setup](dist/setup.gif)
+
+Installing MCP plugins:
+![mcp](dist/mcp.gif)
+
+Text Editor Integration:
+![editor](dist/editor.gif)
+
+## 📦 Installation
+
+For Linux, Mac, or FreeBSD, paste the following into your terminal:
+
+```
+curl -sL https://hkdb.github.io/otui/get.sh | bash
+```
+That's it! Now you can launch OTUI in the terminal by typing:
+
+```
+otui
+```
+
+For Windows, download the binary for the latest release:
+- [Windows (x64)](https://github.com/hkdb/otui/releases/latest/download/otui-windows-amd64.exe)
+- [Windows (arm)](https://github.com/hkdb/otui/releases/latest/download/otui-windows-arm64.exe)
+
+## 🐳 Containerized for Sandboxing or running Multiple Instances on the same host
+
+If you want to sandbox OTUI so that it can't touch your host filesystem or you want to run multiple instances of OTUI, you can run it with any OCI container. For the convenience of the majority, you probably already have docker and you can run it by aliasing this command:
+
+```bash
+docker run -ti --rm \
+                -e OTUI_EDITOR=<nano/vim/emacs> \
+                -v </path/to/config/dir/on/host>:/home/otui/.config/otui \
+                -v </path/to/profile/dir/on/host>:/home/otui/.local/share/otui \
+                -v </path/to/encryption/dir/on/host>:/home/otui/.ssh \
+                ghcr.io/hkdb/otui:latest
+```
+You will notice that there are 3 volumes mounted so that your data persists. 
+- Config (Tells OTUI where to find the profile dir) 
+- Data (Profile) 
+- SSH (to encrypt your API keys at rest). 
+
+See the configuration section further down for more details about the config structure.
+
+For more information about running OTUI in a container, see the slightly more comprehensive [guide on running OTUI in containers](docs/CONTAINERIZE.md).
+
+
+## Notifications
+
+You can set otui to send you a desktop notification upon completion of response in the General settings screen. This works out-of-the-box for most modern terminals. However, if you are using a VTE-based terminal, you will need to use [osc-proxy](https://github.com/hkdb/otui/blob/main/scripts/osc-proxy) to listen for `\x1b\\` (ST) which proxies to notify-send(dependency):
+
+```bash
+./osc-proxy otui
+```
+or
+
+```bash
+./osc-proxy <docker command>
+```
+
+## 🏗️ Basic Concepts
+
+OTUI was designed to be hopefully intuitive enough to any user that is already familiar with keyboard driven environments. At the footer of each screen, there will always be reminders of what the keybindings are. The hope is that, aside from reading this README section, users wouldn't HAVE TO read or touch a user guide at all and still be able to pick it up in no time. If the footer reminders are not enough, there's always a cheat sheet `help` screen.
+
+#### ⌨️ Keyboard Shortcuts
+
+At any point in time, users can press Alt+H to bring up the `help` screen to see what the keybindings are:
+
+![keybindings](docs/keybindings-v0.07.00.png)
+
+For those of you who wish to customize your keyboard shortcuts, check out [docs/KEYBINDINGS.md](docs/KEYBINDINGS.md). It's not likely that I will ever implement a UI for customization cause keyboard warriors that want to vear off from the defaults are more than likely well versed in editing text config files.
+
+#### 🗺️ UI Components:
+
+**OTUI is made up of the following main UI components:**
+
+- `Main Chat Screen` = Where users will chat with LLMs. (As shown at the top of this README)
+- `Session Manager`  = Where users can manage sessions (Create, Edit, Search, Import, Export)
+- `Model Selector`   = Where users can select the LLM Model to use in the currently loaded session 
+- `Plugin Manager`  = Where users can manage MCP plugins (See the next section)
+- `Settings`         = Where users can set Data Directory, Default Model, Profile Wide System Prompt, Enable/Disable Plugins System and launch `Provider Settings` to configure providers.
+- `Help`             = Where users can see a cheat sheet of all the keybindings
+- `About`            = Where users can see information about OTUI and check the release version
+
+#### ✏️ Text Editor Integration
+
+No matter how much work you put into a message input field, nothing beats your favorite text editor when composing complex prompts. That's why OTUI's message input field is integrated with your favorite text editor. At any point in time even if you are in the middle of typing a message, you can just press `Alt+I` to bring up your favorite text editor to temporarily take over the screen to finish composing your prompt. When you quit and save, it will automatically insert the text into your message input field awaiting you to hit `Enter` to send.
+
+OTUI is pretty good at detecting your default text editor but if you have a specific one you want to use for OTUI, just set the environment variable:
+
+```
+export OTUI_EDITOR=[ your favorite text editor ]
+```
+
+#### ⚙️ Configuration
+
+Default Configuration Locations:
+
+- Configuration directory: `~/.config/otui/`
+- Default data directory: `~/.local/share/otui`
+- Keys to encrypt your API keys at rest: `~/.ssh`
+
+Pretty much everything is put inside the data directory. The only thing `~/.config/otui/settings.toml` does is it lets OTUI know where the data dir is. You can think of the data dir like an independent user profile with all your configs and sessions stored in it. If you wanted multiple profiles, all you have to do is go to settings and switch your data directory. OTUI will then automatically load your new profile with all the configs and sessions of that profile without having to restart the app.
+
+The single data directory architecture makes OTUI super portable and syncable. Users can:
+- Export the directory into a tar.gz archive directly from within OTUI
+- Copy or move the entire directory to another machine and everything is ready to go
+- Specify the data directory to be stored in a location that's being synced by Syncthing, Google Drive, etc
+
+Addtional Profiles:
+
+To setup a additional new profiles after having setup the first profile already, users can go to Settings and change the data dir to a new directory that doesn't exist, press Alt-Enter to save, and OTUI will run you through the setup screens to get the new profile setup.
+
+A likely future feature is to be able to encrypt session data for better security and privacy which is especially applicable when using major cloud providers to sync.
+
+Last but not least all API keys are stored encrypted at rest with an ssh keypair **if the user chooses to enable it during setup**.
+
+**Environment Variables:**
+
+OTUI falls back on environment variables for configuration (Ollama only) so that one can just set env var without using the TUI to setup:
+
+```bash
+# Set your Ollama server URL (ex: http://localhost:11434)
+export OTUI_OLLAMA_HOST=http://your-ollama-server:11434
+
+# Set your preferred model (ex: llama3.2:latest)
+export OTUI_OLLAMA_MODEL=qwen2.5:latest
+
+# Set your preferred data dir location (ex: ~/.local/share/otui)
+export OTUI_DATA_DIR=/path/to/your/data/dir
+
+# Run OTUI
+./otui
+```
+This can be useful if you wanted to run OTUI in an OCI container by just setting the environment variables on launch.
+
+#### 🤖 MCP Plugins Registry and Plugins System
+
+OTUI comes with a built-in plugins system that enables easy installation of MCP servers as plugins. This plugins system is disabled by default. To enable it, go to the `Settings` screen to enable it. After that, you can press `Alt+P` from anywhere to bring up the `Plugin Manager`.  The `Plugin Manager` will have no plugins by default. Press Alt+R to automatically fetch the Plugins directory from [OTUI MCP Registry](https://github.com/hkdb/otui-registry). User will then see within seconds 4 fully populated plugins lists:
+
+- Curated: Plugins we have at least tried once and known to be working relatively well
+- Official: Plugins from [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers)
+- Automatic: Plugins that can be installed by `Plugin Manager` directly 
+- Manual: Plugins that user has to do some manual installation steps to enable
+
+Users can also add their own MCP servers into `Plugin Manager` in the custom tab.
+
+#### 🔐 MCP Plugins Controls
+
+There are 3 layers of controls to ensure a user truly wanted an MCP server to be used in any specific session. MCPs are very powerful but can be damaging if not handled carefully so we wanted to have the proper controls in place to ensure when a MCP server is used, it was absolutely intentional.
+
+Controls Hierarchy:
+
+```
+OTUI
+  |___ (Enable/Disable) Settings
+          |___ (Enable/Disable) Plugin Manager
+                 |___ (Enable/Disable) Per Session
+```
+
+Each plugin needs to be enabled by the user manually after installation. After a plugin is enabled in the `Plugin Manager`, it will appear in the list of the `Edit Session` screen which the user can get to by either pressing `Alt+E` from the main chat screen or by pressing `e` from `Sessions Manager` while the session is highlighted. The user can then enable the plugin from any session they want.
+
+#### 🥽 MCP Safety
+
+Curated just means we have tried installing and using them ourselves. All other MCP plugins may not have ever been tested by us before. The entry barrier to land in our registry is not high (ie. how popular they are on github, etc). So do your own research and use your own judgement when exploring MCP plugins. We are not responsible for what the MCP plugins do regardless if the cause is related to OTUI's code base or not. 
+
+For more information about the Registry, see [OTUI MCP Registry](https://github.com/hkdb/otui-registry)
+
+## 🛠️ Building From Source
+
+Requires Go 1.22 or later.
+
+```bash
+go mod tidy
+go build
+```
+
+## 🐛 Debug
+
+Set the below environment variable to enable OTUI debug logging (`[path to data dir]`/debug.log)
+
+```bash
+export OTUI_DEBUG=1
+```
+
+## ☠️ Uninstall
+
+```bash
+rm -rf ~/.config/otui
+rm -rf ~/.cache/otui
+rm -rf ~/.local/share/otui # or whatever data dir the user specified. This also deletes the sessions.
+```
+
+## ⏳ Status
+
+**Completed**:
+- ✅ Core Functionality
+- ✅ Ollama Support
+- ✅ [OpenRouter](https://openrouter.com) Support
+- ✅ Anthropic Support
+- ✅ OpenAI Support
+- ✅ Keybindings modifier customization
+- ✅ Keybindings per-action customization
+
+**Work in Progress**:
+- 🚧 Bug Fixes (On-Going)
+- 🚧 Adding Other Providers (Github Copilot, Gemini, Synthetic? TBD)
+- 🚧 More Sophisticated session/context management
+
+**Future Features**:
+- 🪶 Session data encryption
+
+## 🎬 Credits
+
+- A lot of OTUI was made possible with: [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+- Some of OTUI was originally inspired by: [LIT TUI](https://github.com/Positronic-AI/lit-tui)
+- Most of the project was vibe coded with [OpenCode](https://opencode.ai) + [Claude Sonnet 4.5](https://www.anthropic.com/claude/sonnet)
+- The project is currently switched to using Claud Code instead of OpenCode due to recent changes imposed by Anthropic.
+
+## 🦾 Support this Project
+
+If you like what you see and want to show your appreciation:
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/3dfosi)
+
+## 📢 Disclaimer
+
+This software is provided as is with no warranty. The author and contributors of this project are not responsible for any damages that this software may directly or indirectly cause.
+
+This project is not associated or affiliated with [OLLAMA](https://ollama.com).
+
+## 🏛️ License
+
+Apache-2

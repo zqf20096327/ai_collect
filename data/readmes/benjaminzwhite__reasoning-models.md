@@ -1,0 +1,667 @@
+# Reasoning
+
+Reading list and comments/short reviews around reasoning models, training techniques, and related papers
+
+### TODO
+
+- build tag system e.g. Policies {DPO, GRPO, ...} with a view to building reading list, integrate with Zotero/Obsidian
+- use new approach for formatting table and generating summary: test time and cost first
+
+---
+
+## Papers
+
+### Priority
+
+- [**s1: Simple test-time scaling**](https://arxiv.org/abs/2501.19393)
+- [**Can 1B LLM Surpass 405B LLM? Rethinking Compute-Optimal Test-Time Scaling**](https://arxiv.org/abs/2502.06703)
+- [**Competitive Programming with Large Reasoning Models**](https://arxiv.org/abs/2502.06807) - OpenAI, "Our findings show that although specialized pipelines such as o1-ioi yield solid improvements, the scaled-up, general-purpose o3 model surpasses those results without relying on hand-crafted inference heuristics. Notably, o3 achieves a gold medal at the 2024 IOI and obtains a Codeforces rating on par with elite human competitors. Overall, these results indicate that scaling general-purpose reinforcement learning, rather than relying on domain-specific techniques, offers a robust path toward state-of-the-art AI in reasoning domains, such as competitive programming."
+- [**LLMs Can Easily Learn to Reason from Demonstrations Structure, not content, is what matters!**](https://arxiv.org/abs/2502.07374)
+- [**CodeI/O: Condensing Reasoning Patterns via Code Input-Output Prediction**](https://arxiv.org/abs/2502.07316) - DeepSeek
+- [**DAPO: An Open-Source LLM Reinforcement Learning System at Scale**](https://arxiv.org/abs/2503.14476) - ByteDance/Tsinghua
+- [VAPO: Efficient and Reliable Reinforcement Learning for Advanced Reasoning Tasks](https://arxiv.org/abs/2504.05118) - ByteDance
+- [GPG: A Simple and Strong Reinforcement Learning Baseline for Model Reasoning](https://arxiv.org/abs/2504.02546) - Alibaba, simplifies relative to GRPO, fewer models needed during training also
+- [Self-Steering Language Models](https://arxiv.org/abs/2504.07081) - program synthesis related
+- [Skywork-OR1 (Open Reasoner 1)](https://github.com/SkyworkAI/Skywork-OR1) - read the nice Notion technical blog via this Github
+- [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://arxiv.org/abs/2504.11536) - ByteDance, seems to be like a Code Action training but need to read in detail
+- [ToRL: Scaling Tool-Integrated RL](https://arxiv.org/abs/2503.23383) - TODO: create a Tool Use RL general topic
+- [**Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?**](https://arxiv.org/abs/2504.13837) - Tsinghua/SJTU, critical analysis of RLVR reinforcement learning with verifiable rewards
+- [**Generative AI Act II: Test Time Scaling Drives Cognition Engineering**](https://arxiv.org/abs/2504.13828) - 76 pages, really nice overview of all the related topics, has code and mini tutorials also
+- [TTRL: Test-Time Reinforcement Learning](https://arxiv.org/abs/2504.16084)
+- [Enhancing LLM Reasoning with Iterative DPO: A Comprehensive Empirical Investigation](https://arxiv.org/abs/2503.12854) - read this with the Tsinghua/SJTU paper above; seems using a strong base model and some DPO works to boost reasoning performance
+- [Reinforcement Learning for Reasoning in Large Language Models with One Training Example](https://arxiv.org/abs/2504.20571)
+- [WebThinker: Empowering Large Reasoning Models with Deep Research Capability](https://arxiv.org/abs/2504.21776) - nice Deep Research implementation, has Github [https://github.com/RUC-NLPIR/WebThinker](https://github.com/RUC-NLPIR/WebThinker)
+- [100 Days After DeepSeek-R1: A  on Replication Studies and More Directions for Reasoning Language Models](https://arxiv.org/abs/2505.00551) - nice review
+- [RAGEN: Understanding Self-Evolution in LLM Agents via Multi-Turn Reinforcement Learning](https://arxiv.org/abs/2504.20073) - reasoning + agents, has Github and code etc.
+- [Absolute Zero: Reinforced Self-play Reasoning with Zero Data](https://arxiv.org/abs/2505.03335) - has a cool project page also [https://andrewzh112.github.io/absolute-zero-reasoner/](https://andrewzh112.github.io/absolute-zero-reasoner/)
+- [X-Reasoner: Towards Generalizable Reasoning Across Modalities and Domains](https://arxiv.org/abs/2505.03981) - Microsoft Research, they train entirely on text and find that reasoning transfers to multimodal (image) performance
+- [Putting the Value Back in RL: Better Test-Time Scaling by Unifying LLM Reasoners With Verifiers](https://arxiv.org/abs/2505.04842) - jointly train reasoner and verifier
+- [Reinforcement Learning: A Comprehensive Overview](https://arxiv.org/abs/2412.05265) - entire book by Kevin P Murphy (probabilistic machine learning author); not entirely about reasoning models but has nice sections on RL+LLMs and related subjects
+- [Seek in the Dark: Reasoning via Test-Time Instance-Level Policy Gradient in Latent Space](https://arxiv.org/abs/2505.13308) - seems to be training-free, need to re-read to be clear
+- [lmgame-Bench: How Good are LLMs at Playing Games?](https://arxiv.org/abs/2505.15146) - not entirely about reasoning, but all the best performing models are reasoning models (o3 etc.) and I really like the paper, especially the correlation studies with tasks in Table/Figure 3, and the general area
+- [DisCO: Reinforcing Large Reasoning Models with Discriminative Constrained Optimization](https://arxiv.org/abs/2505.12366) - looks like interesting approach/alternative to GRPO, need to implement and test
+- [Enigmata: Scaling Logical Reasoning in Large Language Models with Synthetic Verifiable Puzzles](https://arxiv.org/abs/2505.19914) - cool, training with logic puzzles, shows generalization to coding and mathematics; has a benchmark also
+- [DeepTheorem: Advancing LLM Reasoning for Theorem Proving Through Natural Language and Reinforcement Learning](https://arxiv.org/abs/2505.23754) - Tencent, nice approach and methods
+- [Universal Reasoner: A Single, Composable Plug-and-Play Reasoner for Frozen LLMs](https://arxiv.org/abs/2505.19075) - looks good, approach works with frozen models but I didn't understand training on first reading so need to restudy paper
+- [ProRL: Prolonged Reinforcement Learning Expands Reasoning Boundaries in Large Language Models](https://arxiv.org/abs/2505.24864) - Nvidia/Nemotron team, model is here [https://huggingface.co/nvidia/Nemotron-Research-Reasoning-Qwen-1.5B](https://huggingface.co/nvidia/Nemotron-Research-Reasoning-Qwen-1.5B)
+- [REASONING GYM: Reasoning Environments for Reinforcement Learning with Verifiable Rewards](https://arxiv.org/abs/2505.24760) - nice Python library to check out, Github is here [https://github.com/open-thought/reasoning-gym](https://github.com/open-thought/reasoning-gym)
+- [Spurious Rewards: Rethinking Training Signals in RLVR](https://rethink-rlvr.notion.site/Spurious-Rewards-Rethinking-Training-Signals-in-RLVR-1f4df34dac1880948858f95aeb88872f) - blog for their paper; "We show that you can do RLVR on Qwen2.5-Math models with completely random or incorrect rewards, and still get massive math benchmark gains."
+- [OpenThoughts: Data Recipes for Reasoning Models](https://arxiv.org/abs/2506.04178) - cool project and organization, they have a project page [https://www.openthoughts.ai/](https://www.openthoughts.ai/)
+- [Play to Generalize: Learning to Reason Through Game Play](https://arxiv.org/abs/2506.08011) - nice, they find that just by training on video games you get out of domain performance improvements (i.e. on mathematics); it would be cool to see more of the results about "game feature vs. out of domain improvement" (at the end of the paper - basically it seems that if you train on games that have a "spatial" component, the mathematics improves on "geometry" tasks for example)
+- [Reinforcement Pre-Training](https://arxiv.org/abs/2506.08007) - from the abstract: "Specifically, we reframe next-token prediction as a reasoning task trained using RL, where it receives verifiable rewards for correctly predicting the next token for a given context. RPT offers a scalable method to leverage vast amounts of text data for general-purpose RL, rather than relying on domain-specific annotated answers."
+- [CoRT: Code-integrated Reasoning within Thinking](https://arxiv.org/abs/2506.09820) - USTC/Qwen team
+- [Resa: Transparent Reasoning Models via SAEs](https://arxiv.org/abs/2506.09967)
+- [ComfyUI-R1: Exploring Reasoning Models for Workflow Generation](https://arxiv.org/abs/2506.09790) - Alibaba; really cool
+- [A taxonomy for next-generation reasoning models - Where we've been and where we're going with RLVR](https://www.interconnects.ai/p/next-gen-reasoners) - Nathan Lambert blog; really good overview as of June 2025
+- [Scaling Speculative Decoding with Lookahead Reasoning](https://arxiv.org/abs/2506.19830) - Hao lab UCSD; technical, need to re-read details carefully, code is available. " Our key insight is that reasoning models generate step-by-step, and each step needs only to be semantically correct, not exact token matching. In Lookahead Reasoning, a lightweight draft model proposes several future steps; the target model expands each proposal in one batched pass, and a verifier keeps semantically correct steps while letting the target regenerate any that fail. Token-level SD still operates within each reasoning step, so the two layers *(i.e. standard speculative decoding)* of parallelism multiply."
+- [Thought Anchors: Which LLM Reasoning Steps Matter?](https://arxiv.org/abs/2506.19143) - Interesting "interpretability" paper; Neel Nanda coauthor. Links to a nice interactive tool also [https://www.thought-anchors.com/](https://www.thought-anchors.com/)
+- [WebSailor: Navigating Super-human Reasoning for Web Agent](https://arxiv.org/abs/2507.02592) - awesome, Tongyi Lab Alibaba; "Proprietary agentic systems like DeepResearch have demonstrated superhuman capabilities on extremely complex information-seeking benchmarks such as BrowseComp, a feat previously unattainable. We posit that their success hinges on a sophisticated reasoning pattern absent in open-source models: the ability to systematically reduce extreme uncertainty when navigating vast information landscapes. Based on this insight, we introduce WebSailor, a complete post-training methodology designed to instill this crucial capability. Our approach involves generating novel, high-uncertainty tasks through structured sampling and information obfuscation, RFT cold start, and an efficient agentic RL training algorithm, Duplicating Sampling Policy Optimization (DUPO)."
+- [Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities](https://arxiv.org/abs/2507.06261) - Gemini 2.5 technical report
+- [Reasoning or Memorization? Unreliable Results of Reinforcement Learning Due to Data Contamination](https://arxiv.org/abs/2507.10532) - nice study attemping to clear up some of the confusing results from April-June where people were training models on incorrect or low quality reasoning datasets etc.
+- [Towards Agentic RAG with Deep Reasoning: A Survey of RAG-Reasoning Systems in LLMs](https://arxiv.org/abs/2507.09477) - great review
+- [Scaling Up RL: Unlocking Diverse Reasoning in LLMs via Prolonged Training](https://arxiv.org/abs/2507.12507) - Nvidia, nice technical report on Nemotron-Research-Reasoning-Qwen-1.5B, they talk about improvements to GRPO (basically seems they validate using DAPO and some implementation changes etc.)
+- [**Group Sequence Policy Optimization**](https://arxiv.org/abs/2507.18071) - Qwen team, describes Qwen3 training also
+- [Test-Time Scaling with Reflective Generative Model](https://arxiv.org/abs/2507.01951) - looks good but I didn't understand all the implementation details yet; "MetaStone‑S1 is trained based on our proposed reflective generative form, which combines “Long-CoT Reinforcement Learning” and “Process Reward Learning” into a unified training form. This form enables a single model to simultaneously achieve deep reasoning and high-quality reasoning trajectory selection. By sharing the backbone network between the PRMs and policy models, MetaStone‑S1 significantly reduces the inference cost of PRMs by 99%, resulting in faster and higher-quality responses."; Github is [https://github.com/MetaStone-AI/MetaStone-S1](https://github.com/MetaStone-AI/MetaStone-S1)
+- [GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning](https://arxiv.org/abs/2507.19457)
+- [Beyond Binary Rewards: Training LMs to Reason About Their Uncertainty](https://arxiv.org/abs/2507.16806) - MIT; RLCR (reinforcement learning with calibration rewards), they add calibration term and help model verbalize its confidence (claims it generalizes to out of domain tasks also, need to reread that part)
+- [Is Chain-of-Thought Reasoning of LLMs a Mirage? A Data Distribution Lens](https://arxiv.org/abs/2508.01191) - critical review
+- [GLM-4.5: Agentic, Reasoning, and Coding (ARC) Foundation Models](https://arxiv.org/abs/2508.06471) - the technical report for GLM-4.5 models by Z.ai
+- [MolmoAct: Action Reasoning Models that can Reason in Space](https://arxiv.org/abs/2508.07917) - Allen Institute AI2; really cool and they open source everything (I can't find the training code yet though, maybe ask authors) - there is a blog here also that gives a nice overview [https://allenai.org/blog/molmoact](https://allenai.org/blog/molmoact)
+- [Part I: Tricks or Traps? A Deep Dive into RL for LLM Reasoning](https://arxiv.org/abs/2508.08221) - Alibaba, nice review; "This paper systematically reviews widely adopted RL techniques through rigorous reproductions and isolated evaluations within a unified open-source framework. We analyze the internal mechanisms, applicable scenarios, and core principles of each technique through fine-grained experiments, including datasets of varying difficulty, model sizes, and architectures. Based on these insights, we present clear guidelines for selecting RL techniques tailored to specific setups, and provide a reliable roadmap for practitioners navigating the RL for the LLM domain."
+- [Agentic Reinforced Policy Optimization](https://arxiv.org/abs/2507.19849) - awesome, multi-turn reasoning with tool use etc., lots of interesting sections
+- [Intern-S1: A Scientific Multimodal Foundation Model](https://arxiv.org/abs/2508.15763)
+- [rStar2-Agent: Agentic Reasoning Technical Report](https://arxiv.org/abs/2508.20722) - Microsoft Research; really cool and has Github (it's the updated version of rStar) [https://github.com/microsoft/rStar](https://github.com/microsoft/rStar)
+- [Towards High Data Efficiency in Reinforcement Learning with Verifiable Reward](https://arxiv.org/abs/2509.01321)
+- [Loong: Synthesize Long Chain-of-Thoughts at Scale through Verifiers](https://arxiv.org/abs/2509.03059) - looks like a nice approach; Github is here [https://github.com/camel-ai/loong](https://github.com/camel-ai/loong)
+- [The Landscape of Agentic Reinforcement Learning for LLMs: A Survey](https://arxiv.org/abs/2509.02547) - awesome review
+- [SimpleTIR: End-to-End Reinforcement Learning for Multi-Turn Tool-Integrated Reasoning](https://arxiv.org/abs/2509.02479) - has great Notion blog also [https://simpletir.notion.site/report](https://simpletir.notion.site/report)
+- [A Survey of Reinforcement Learning for Large Reasoning Models](https://arxiv.org/abs/2509.08827) - awesome 100+ pages, good overview of all the major topics
+- [The Illusion of Diminishing Returns: Measuring Long Horizon Execution in LLMs](https://www.arxiv.org/abs/2509.09677) - basically seems to be optimistic about continued scaling of LLMs (test-time/reasoning in general)
+- [Inpainting-Guided Policy Optimization for Diffusion Large Language Models](https://arxiv.org/abs/2509.10396) - I found this useful for understanding some of the advantages of diffusion LLMs for reasoning tasks and technical issues that it can fix
+- [Single-stream Policy Optimization](https://arxiv.org/abs/2509.13232) - Tencent; found the approach quite convincing and talking about some of the limitations of group-based methods (like GRPO) for e.g. training reasoning models. They have a blog also [https://zhongwenxu.notion.site/Single-stream-Policy-Optimization-26a1c4e140e380d78d51fa4567727f50](https://zhongwenxu.notion.site/Single-stream-Policy-Optimization-26a1c4e140e380d78d51fa4567727f50)
+- [FlowRL: Matching Reward Distributions for LLM Reasoning](https://arxiv.org/abs/2509.15207) - really cool; "Recent advanced reasoning models adopt reward-maximizing methods (e.g. PPO and GRPO), which tend to over-optimize dominant reward signals while neglecting less frequent but valid reasoning paths, thus reducing diversity. In contrast, we transform scalar rewards into a normalized target distribution using a learnable partition function, and then minimize the reverse KL divergence between the policy and the target distribution."
+- [FlagEval Findings Report: A Preliminary Evaluation of Large Reasoning Models on Automatically Verifiable Textual and Visual Questions](https://arxiv.org/abs/2509.17177) - a nice and detailed evaluation paper, as of September 2025, with some interesting comments about performance (hallucination of tools etc.); good for quickly seeing and getting a feel for where we are presently
+- [Random Policy Valuation is Enough for LLM Reasoning with Verifiable Rewards](https://arxiv.org/abs/2509.24981) - really interesting; need to read all the appendix stuff to understand why/if(?) this approach is specific to mathematical reasoning, as I didn't understand this aspect on first reading
+- [RLP: Reinforcement as a Pretraining Objective](https://arxiv.org/abs/2510.01265)
+- [RLAD: Training LLMs to Discover Abstractions for Solving Reasoning Problems](https://arxiv.org/abs/2510.02263)
+- [Personalized Reasoning: Just-In-Time Personalization and Why LLMs Fail At It](https://arxiv.org/abs/2510.00177) - U Washington, Allen Institute; cool area - personalization of reasoning
+- [Implicit Reasoning in Large Language Models: A Comprehensive Survey](https://arxiv.org/abs/2509.02350)
+- [LaSeR: Reinforcement Learning with Last-Token Self-Rewarding](https://arxiv.org/abs/2510.14943) - Renmin, Tencent; nice - "...we propose LaSeR (Reinforcement Learning with Last-Token Self-Rewarding), an algorithm that simply augments the original RLVR loss with a MSE loss that aligns the last-token self-rewarding scores with verifier-based reasoning rewards, jointly optimizing the reasoning and self-rewarding capabilities of LLMs. The optimized self-rewarding scores can be utilized in both training and testing to enhance model performance."
+- [Beyond Pipelines: A Survey of the Paradigm Shift toward Model-Native Agentic AI](https://arxiv.org/abs/2510.16720) - nice review; changing approach to reasoning/tool use etc. They have a nice Github here [https://github.com/ADaM-BJTU/model-native-agentic-ai](https://github.com/ADaM-BJTU/model-native-agentic-ai)
+- [Every Step Evolves: Scaling Reinforcement Learning for Trillion-Scale Thinking Model](https://arxiv.org/abs/2510.18855) - Inclusion AI; very cool technical report with nice details
+- [Scaling Latent Reasoning via Looped Language Models](https://arxiv.org/abs/2510.25741) - ByteDance, MILA, lots of other institutions also
+- [DeepSeekMath-V2: Towards Self-Verifiable Mathematical Reasoning](https://arxiv.org/abs/2511.22570) - " Towards self-verifiable mathematical reasoning, we investigate how to train an accurate and faithful LLM-based verifier for theorem proving. We then train a proof generator using the verifier as the reward model, and incentivize the generator to identify and resolve as many issues as possible in their own proofs before finalizing them. To maintain the generation-verification gap as the generator becomes stronger, we propose to scale verification compute to automatically label new hard-to-verify proofs, creating training data to further improve the verifier. Our resulting model, DeepSeekMath-V2, demonstrates strong theorem-proving capabilities, achieving gold-level scores on IMO 2025 and CMO 2024 and a near-perfect 118/120 on Putnam 2024 with scaled test-time compute."
+- [Step-Audio-R1 Technical Report](https://arxiv.org/abs/2511.15848) - Cool area, audio reasoning
+- [DynaAct: Large Language Model Reasoning with Dynamic Action Spaces](https://arxiv.org/abs/2511.08043) - Nice ideas IMHO; NeurIPS 2025
+- [RLVE: Scaling Up Reinforcement Learning for Language Models with Adaptive Verifiable Environments](https://arxiv.org/abs/2511.07317) - Recent from AI2/University of Washington, seems code is public (check the RLVE-Gym).
+- [Every Activation Boosted: Scaling General Reasoner to 1 Trillion Open Language Foundation](https://arxiv.org/abs/2510.22115) - Ling 2.0 Technical Report; nice details
+- [DeepSeek-V3.2: Pushing the Frontier of Open Large Language Models](https://arxiv.org/abs/2512.02556)
+- [On the Interplay of Pre-Training, Mid-Training, and RL on Reasoning Language Models](https://arxiv.org/abs/2512.07783) - nice study
+- [Stabilizing Reinforcement Learning with LLMs: Formulation and Practices](https://arxiv.org/abs/2512.01374) - Qwen team; really nice experimental study etc.
+- [QwenLong-L1.5: Post-Training Recipe for Long-Context Reasoning and Memory Management](https://arxiv.org/abs/2512.12967) - Qwen team; nice technical report
+- [JustRL: Scaling a 1.5B LLM with a Simple RL Recipe](https://arxiv.org/abs/2512.16649)
+- [INTELLECT-3: Technical Report](https://arxiv.org/abs/2512.16144)
+- [Emergent temporal abstractions in autoregressive models enable hierarchical reinforcement learning](https://arxiv.org/abs/2512.20605)
+- [A Survey of Process Reward Models: From Outcome Signals to Process Supervisions for Large Language Models](https://arxiv.org/abs/2510.08049) - TODO: create separate section on reward models
+- [PaCoRe: Learning to Scale Test-Time Compute with Parallel Coordinated Reasoning](https://arxiv.org/abs/2601.05593) - StepFun, Tsinghua, Peking
+- [Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models](https://arxiv.org/abs/2601.07372) - DeepSeek; "Most notably, while the memory module is expected to aid knowledge retrieval (e.g., MMLU +3.4; CMMLU +4.0), we observe even larger gains in general reasoning (e.g., BBH +5.0; ARC-Challenge +3.7) and code/math domains~(HumanEval +3.0; MATH +2.4). Mechanistic analyses reveal that Engram relieves the backbone's early layers from static reconstruction, effectively deepening the network for complex reasoning.", Github page is [https://github.com/deepseek-ai/Engram](https://github.com/deepseek-ai/Engram)
+- [RoboBrain 2.5: Depth in Sight, Time in Mind](https://arxiv.org/abs/2601.14352) - BAAI; really nice reasoning robotics - project page is [https://superrobobrain.github.io/](https://superrobobrain.github.io/)
+- [Agentic Reasoning for Large Language Models](https://arxiv.org/abs/2601.12538) - really nice review
+- [Innovator-VL: A Multimodal Large Language Model for Scientific Discovery](https://arxiv.org/abs/2601.19325) - project page is [https://innovatorlm.github.io/Innovator-VL/](https://innovatorlm.github.io/Innovator-VL/)
+- [Kimi K2.5: Visual Agentic Intelligence](https://arxiv.org/abs/2602.02276) - Kimi K2.5 technical report; figures 11 and 12 in appendix on the visual reasoning and understanding 40 hour game playthrough are cool
+- [Step 3.5 Flash: Open Frontier-Level Intelligence with 11B Active Parameters](https://arxiv.org/abs/2602.10604) - StepFun, technical report
+- [Reasoning Cache: Continual Improvement Over Long Horizons via Short-Horizon RL](https://arxiv.org/abs/2602.03773)
+- [Gaia2: Benchmarking LLM Agents on Dynamic and Asynchronous Environments](https://arxiv.org/abs/2602.11964) - Meta; GAIA 2 benchmark
+- [CL-bench: A Benchmark for Context Learning](https://arxiv.org/abs/2602.03587) - "... we introduce CL-bench, a real-world benchmark consisting of 500 complex contexts, 1,899 tasks, and 31,607 verification rubrics, all crafted by experienced domain experts. Each task is designed such that the new content required to resolve it is contained within the corresponding context. Resolving tasks in CL-bench requires models to learn from the context, ranging from new domain-specific knowledge, rule systems, and complex procedures to laws derived from empirical data, all of which are absent from pre-training."
+- [A Very Big Video Reasoning Suite](https://arxiv.org/abs/2602.20159) - nice resource; also cool project page [https://video-reason.com/](https://video-reason.com/)
+- [daVinci-Env: Open SWE Environment Synthesis at Scale](https://arxiv.org/abs/2603.13023) - not directly reasoning related but really nice infrastructure/organization for generating environments
+- [Demystifing Video Reasoning](https://arxiv.org/abs/2603.16870) - "Reasoning in video generation models happens along diffusion steps, not frames. We discover Chain-of-Steps - a new understanding of how video models think."; cool and nice project page also [https://www.wruisi.com/demystifying_video_reasoning/](https://www.wruisi.com/demystifying_video_reasoning/)
+- [MiroThinker-1.7 & H1: Towards Heavy-Duty Research Agents via Verification](https://arxiv.org/abs/2603.15726)
+- [LongCat-Flash-Prover: Advancing Native Formal Reasoning via Agentic Tool-Integrated Reinforcement Learning](https://arxiv.org/abs/2603.21065) - "We introduce LongCat-Flash-Prover, a flagship 560-billion-parameter open-source Mixture-of- Experts (MoE) model that advances Native Formal Reasoning in Lean4 through agentic tool-integrated reasoning (TIR)."
+- [Intern-S1-Pro: Scientific Multimodal Foundation Model at Trillion Scale](https://arxiv.org/abs/2603.25040)
+- [The Latent Space: Foundation, Evolution, Mechanism, Ability, and Outlook](https://arxiv.org/abs/2604.02029) - nice general review with many relevant sections
+- [Solving  Olympiad via Reinforcement Learning on  Simulators](https://arxiv.org/abs/2604.11805) - nice project page also [https://sim2reason.github.io/](https://sim2reason.github.io/)
+- [Recursive Multi-Agent Systems](https://arxiv.org/abs/2604.25917) - "Scaling Agent Collaboration through Latent-space Recursion" nice project page also [https://recursivemas.github.io/](https://recursivemas.github.io/)
+- [GLM-5V-Turbo: Toward a Native Foundation Model for Multimodal Agents](https://arxiv.org/abs/2604.26752) - tech report, lots of multimodal reasoning
+- [MolmoAct2: Action Reasoning Models for Real-world Deployment](https://arxiv.org/abs/2605.02881) - AI2; project page with videos [https://allenai.org/blog/molmoact2](https://allenai.org/blog/molmoact2)
+- [Achieving Gold-Medal-Level Olympiad Reasoning via Simple and Unified Scaling](https://arxiv.org/abs/2605.13301) - project page [https://simplified-reasoning.github.io/SU-01/](https://simplified-reasoning.github.io/SU-01/)
+- [Generative Recursive Reasoning](https://arxiv.org/abs/2605.19376)
+- [Qwen-VLA: Unifying Vision-Language-Action Modeling across Tasks, Environments, and Robot Embodiments](https://arxiv.org/abs/2605.30280)
+- [VibeThinker-3B: Exploring the Frontier of Verifiable Reasoning in Small Language Models](https://arxiv.org/abs/2606.16140) - "Extending our previous 1.5B work, these findings motivate the Parametric Compression-Coverage Hypothesis, which views verifiable reasoning as compressible into compact reasoning cores, while open-domain knowledge and general-purpose competence require broad parameter coverage over facts, concepts, and long-tail scenarios. This perspective suggests that compact models are not merely deployment-efficient substitutes, but a complementary path toward frontier-level performance in parameter-dense capability regimes."
+- [Nemotron 3 Ultra: Open, Efficient Mixture-of-Experts Hybrid Mamba-Transformer Model for Agentic Reasoning](https://arxiv.org/abs/2606.15007) - Nvidia; nice technical report
+- [Ring-Zero: Scaling Zero RL to a Trillion Parameters for Emergent Reasoning](https://arxiv.org/abs/2607.12395)
+- [AREX: Towards a Recursively Self-Improving Agent for Deep Research](https://arxiv.org/abs/2607.21461)
+- [Kimi K3: Open Frontier Intelligence](https://arxiv.org/abs/2607.24653) - awesome
+- [GPT-Red: Automated Red Teaming via Self-Play at Scale](https://arxiv.org/abs/2607.26115) - OpenAI technical report
+- [Intern-S2-Preview: Scientific Agentic Foundation Model](https://arxiv.org/abs/2608.13505)
+- [On the Design of Qwen3.8-Next Architecture: Evaluation, Efficiency, and Training Stability](https://arxiv.org/abs/2608.30320)
+- [DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression](https://arxiv.org/abs/2609.19969) - DeepSeek technical report
+- [MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement](https://arxiv.org/abs/2610.11959)
+- [A team of Gemini 4 Argon agents beats Minecraft](https://arxiv.org/abs/2610.22319)
+
+#### Topic - General or unsorted
+
+- [Technical Report: Enhancing LLM Reasoning with Reward-guided Tree Search](https://arxiv.org/abs/2411.11694)
+- [Compressed Chain of Thought: Efficient Reasoning Through Dense Representations](https://arxiv.org/abs/2412.13171)
+- [Improving Retrieval Augmented Language Model with Self-Reasoning](https://arxiv.org/abs/2407.19813)
+- [Synergy-of-Thoughts: Eliciting Efficient Reasoning in Hybrid Language Models](https://arxiv.org/abs/2402.02563)
+- [Disentangling Reasoning Tokens and Boilerplate Tokens For Language Model Fine-tuning](https://arxiv.org/abs/2412.14780)
+- [Advancing LLM Reasoning Generalists with Preference Trees](https://arxiv.org/abs/2404.02078v1)
+- [Test-time Computing: from System-1 Thinking to System-2 Thinking](https://arxiv.org/abs/2501.02497)
+- [Scaling of Search and Learning: A Roadmap to Reproduce o1 from Reinforcement Learning Perspective](https://arxiv.org/abs/2412.14135)
+- [BoostStep: Boosting mathematical capability of Large Language Models via improved single-step reasoning](https://arxiv.org/abs/2501.03226)
+- [Towards System 2 Reasoning in LLMs: Learning How to Think With Meta Chain-of-Thought](https://arxiv.org/abs/2501.04682)
+- [Search-o1: Agentic Search-Enhanced Large Reasoning Models](https://arxiv.org/abs/2501.05366)
+- [CoT-based Synthesizer: Enhancing LLM Performance through Answer Synthesis](https://arxiv.org/abs/2501.01668)
+- [REL: Working out is all you need](https://arxiv.org/abs/2412.04645)
+- [Unconstrained Model Merging for Enhanced LLM Reasoning](https://arxiv.org/abs/2410.13699)
+- [MALT: Improving Reasoning with Multi-Agent LLM Training](https://arxiv.org/abs/2412.01928)
+- [Reverse Thinking Makes LLMs Stronger Reasoners](https://arxiv.org/abs/2411.19865)
+- [Proof of Thought : Neurosymbolic Program Synthesis allows Robust and Interpretable Reasoning](https://arxiv.org/abs/2409.17270)
+- [Enhancing Reasoning Capabilities of LLMs via Principled Synthetic Logic Corpus](https://arxiv.org/abs/2411.12498)
+- [Evolving Deeper LLM Thinking](https://arxiv.org/abs/2501.09891)
+- [Reasoning Language Models: A Blueprint](https://arxiv.org/abs/2501.11223)
+- [The Surprising Effectiveness of Test-Time Training for Abstract Reasoning](https://arxiv.org/abs/2411.07279)
+- [Skywork-Reward: Bag of Tricks for Reward Modeling in LLMs](https://arxiv.org/abs/2410.18451)
+- [Generative Verifiers: Reward Modeling as Next-Token Prediction](https://arxiv.org/abs/2408.15240)
+- [Generative Reward Models](https://arxiv.org/abs/2410.12832)
+- [Advancing Language Model Reasoning through Reinforcement Learning and Inference Scaling](https://arxiv.org/abs/2501.11651)
+- [Step-KTO: Optimizing Mathematical Reasoning through Stepwise Binary Feedback](https://arxiv.org/abs/2501.10799)
+- [Table as Thought: Exploring Structured Thoughts in LLM Reasoning](https://arxiv.org/abs/2501.02152)
+- [B-STaR: Monitoring and Balancing Exploration and Exploitation in Self-Taught Reasoners](https://arxiv.org/abs/2412.17256)
+- [Thoughts Are All Over the Place: On the Underthinking of o1-Like LLMs](https://arxiv.org/abs/2501.18585)
+- [GuardReasoner: Towards Reasoning-based LLM Safeguards](https://arxiv.org/abs/2501.18492)
+- [Satori: Reinforcement Learning with Chain-of-Action-Thought Enhances LLM Reasoning via Autoregressive Search](https://arxiv.org/abs/2502.02508)
+- [QLASS: Boosting Language Agent Inference via Q-Guided Stepwise Search](https://arxiv.org/abs/2502.02584)
+- [LongDPO: Unlock Better Long-form Generation Abilities for LLMs via Critique-augmented Stepwise Information](https://arxiv.org/abs/2502.02095)
+- [LLM+AL: Bridging Large Language Models and Action Languages for Complex Reasoning about Actions](https://arxiv.org/abs/2501.00830)
+- [Sample, Scrutinize and Scale: Effective Inference-Time Search by Scaling Verification](https://arxiv.org/abs/2502.01839)
+- [ZebraLogic: On the Scaling Limits of LLMs for Logical Reasoning](https://arxiv.org/abs/2502.01100)
+- [Process Reinforcement through Implicit Rewards](https://arxiv.org/abs/2502.01456) - see also their [HuggingFace blog](https://huggingface.co/blog/ganqu/prime)
+- [Towards Learning to Reason: Comparing LLMs with Neuro-Symbolic on Arithmetic Relations in Abstract Reasoning](https://arxiv.org/abs/2412.05586)
+- [BOLT: Bootstrap Long Chain-of-Thought in Language Models without Distillation](https://arxiv.org/abs/2502.03860)
+- [TypedThinker: Typed Thinking Improves Large Language Model Reasoning](https://arxiv.org/abs/2410.01952)
+- [ReasonFlux: Hierarchical LLM Reasoning via Scaling Thought Templates](https://arxiv.org/abs/2502.06772)
+- [Exploring the Limit of Outcome Reward for Learning Mathematical Reasoning](https://arxiv.org/abs/2502.06781)
+- [CoT-Valve: Length-Compressible Chain-of-Thought Tuning](https://arxiv.org/abs/2502.09601)
+- [LLM Pretraining with Continuous Concepts](https://arxiv.org/abs/2502.08524) - follow-up to Coconut paper (Training Large Language Model to Reason in a Continuous Latent Space, see below)
+- [LIMO: Less is More for Reasoning](https://arxiv.org/abs/2502.03387)
+- [Diverse Inference and Verification for Advanced Reasoning](https://arxiv.org/abs/2502.09955)
+- [CRANE: Reasoning with constrained LLM generation](https://arxiv.org/abs/2502.09061)
+- [AdaptiveStep: Automatically Dividing Reasoning Step through Model Confidence](https://arxiv.org/abs/2502.13943)
+- [OctoTools: An Agentic Framework with Extensible Tools for Complex Reasoning](https://arxiv.org/abs/2502.11271)
+- [Thinking Preference Optimization](https://arxiv.org/abs/2502.13173)
+- [S2R: Teaching LLMs to Self-verify and Self-correct via Reinforcement Learning](https://arxiv.org/abs/2502.12853)
+- [Logic-RL: Unleashing LLM Reasoning with Rule-Based Reinforcement Learning](https://arxiv.org/abs/2502.14768)
+- [Reasoning with Reinforced Functional Token Tuning](https://arxiv.org/abs/2502.13389)
+- [SIFT: Grounding LLM Reasoning in Contexts via Stickers](https://arxiv.org/abs/2502.14922)
+- [How to Get Your LLM to Generate Challenging Problems for Evaluation](https://arxiv.org/abs/2502.14678) - maybe useful for making reasoning datasets
+- [Cognitive Behaviors that Enable Self-Improving Reasoners, or, Four Habits of Highly Effective STaRs](https://arxiv.org/abs/2503.01307)
+- [General Reasoning Requires Learning to Reason from the Get-go](https://arxiv.org/abs/2502.19402)
+- [CODI: Compressing Chain-of-Thought into Continuous Space via Self-Distillation](https://arxiv.org/abs/2502.21074)
+- [START: Self-taught Reasoner with Tools](https://arxiv.org/abs/2503.04625)
+- [Sketch-of-Thought: Efficient LLM Reasoning with Adaptive Cognitive-Inspired Sketching](https://arxiv.org/abs/2503.05179)
+- [R1-Searcher: Incentivizing the Search Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2503.05592)
+- [An Empirical Study on Eliciting and Improving R1-like Reasoning Models](https://arxiv.org/abs/2503.04548)
+- [Optimizing Test-Time Compute via Meta Reinforcement Fine-Tuning](https://arxiv.org/abs/2503.07572)
+- [ϕ-Decoding: Adaptive Foresight Sampling for Balanced Inference-Time Exploration and Exploitation](https://arxiv.org/abs/2503.13288)
+- [Reinforcement Learning for Reasoning in Small LLMs: What Works and What Doesn't](https://arxiv.org/abs/2503.16219)
+- [Deconstructing Long Chain-of-Thought: A Structured Reasoning Optimization Framework for Long CoT Distillation](https://arxiv.org/abs/2503.16385)
+- [Code to Think, Think to Code: A Survey on Code-Enhanced Reasoning and Reasoning-Driven Code Intelligence in LLMs](https://arxiv.org/abs/2502.19411) -TODO: make a "code enhances reasoning" tag
+- [CodeSteer: Symbolic-Augmented Language Models via Code/Text Guidance](https://arxiv.org/abs/2502.04350)
+- [I Have Covered All the Bases Here: Interpreting Reasoning Features in Large Language Models via Sparse Autoencoders](https://arxiv.org/abs/2503.18878)
+- [SimpleRL-Zoo: Investigating and Taming Zero Reinforcement Learning for Open Base Models in the Wild](https://arxiv.org/abs/2503.18892)
+- [A Probabilistic Inference Approach to Inference-Time Scaling of LLMs using Particle-Based Monte Carlo Methods](https://arxiv.org/abs/2502.01618)
+- [Planning In Natural Language Improves LLM Search For Code Generation](https://arxiv.org/abs/2409.03733)
+- [ReSearch: Learning to Reason with Search for LLMs via Reinforcement Learning](https://arxiv.org/abs/2503.19470)
+- [MCTS-RAG: Enhancing Retrieval-Augmented Generation with Monte Carlo Tree Search](https://arxiv.org/abs/2503.20757)
+- [Unlocking Efficient Long-to-Short LLM Reasoning with Model Merging](https://arxiv.org/abs/2503.20641)
+- [CPPO: Accelerating the Training of Group Relative Policy Optimization-Based Reasoning Models](https://arxiv.org/abs/2503.22342)
+- [Token Assorted: Mixing Latent and Text Tokens for Improved Language Model Reasoning](https://arxiv.org/abs/2502.03275)
+- [Open-Reasoner-Zero: An Open Source Approach to Scaling Up Reinforcement Learning on the Base Model](https://arxiv.org/abs/2503.24290)
+- [Crossing the Reward Bridge: Expanding RL with Verifiable Rewards Across Diverse Domains](https://arxiv.org/abs/2503.23829)
+- [Z1: Efficient Test-time Scaling with Code](https://arxiv.org/abs/2504.00810)
+- [Recitation over Reasoning: How Cutting-Edge Language Models Can Fail on Elementary School-Level Reasoning Problems?](https://arxiv.org/abs/2504.00509) - critical of reasoning results, similar to SimpleBench
+- [Reasoning-SQL: Reinforcement Learning with SQL Tailored Partial Rewards for Reasoning-Enhanced Text-to-SQL](https://arxiv.org/abs/2503.23157)
+- [JudgeLRM: Large Reasoning Models as a Judge](https://arxiv.org/abs/2504.00050)
+- [When More is Less: Understanding Chain-of-Thought Length in LLMs](https://arxiv.org/abs/2502.07266)
+- [OpenCodeReasoning: Advancing Data Distillation for Competitive Coding](https://arxiv.org/abs/2504.01943) - mainly a dataset but interesting paper also
+- [Bag of Tricks for Inference-time Computation of LLM Reasoning](https://arxiv.org/abs/2502.07191) - looks nice, practical stuff
+- [GenPRM: Scaling Test-Time Compute of Process Reward Models via Generative Reasoning](https://arxiv.org/abs/2504.00891)
+- [Sample, Don't Search: Rethinking Test-Time Alignment for Language Models](https://arxiv.org/abs/2504.03790)
+- [Rethinking Reflection in Pre-Training](https://arxiv.org/abs/2504.04022)
+- [Generative Evaluation of Complex Reasoning in Large Language Models](https://arxiv.org/abs/2504.02810) - synthetic benchmark/evaluation
+- [MastermindEval: A Simple But Scalable Reasoning Benchmark](https://arxiv.org/abs/2503.05891) - benchmark
+- [A Sober Look at Progress in Language Model Reasoning: Pitfalls and Paths to Reproducibility](https://arxiv.org/abs/2504.07086) - critical of some benchmarks, evals and methodology
+- [Large Language Models Meet Symbolic Provers for Logical Reasoning Evaluation](https://arxiv.org/abs/2502.06563) - ICLR 2025
+- [Seed-Thinking-v1.5: Advancing Superb Reasoning Models with Reinforcement Learning](https://github.com/ByteDance-Seed/Seed-Thinking-v1.5) - ByteDance, paper is available via this Github
+- [TextGames: Learning to Self-Play Text-Based Puzzle Games via Language Model Reasoning](https://arxiv.org/abs/2502.18431)
+- [Complex LLM Planning via Automated Heuristics Discovery](https://arxiv.org/abs/2502.19295) - code enhanced reasoning related, generates heuristics as Python functions
+- [Reasoning Models Can Be Effective Without Thinking](https://arxiv.org/abs/2504.09858) - basically skip the thinking step in a thinking model
+- [RARE: Retrieval-Augmented Reasoning Modeling](https://arxiv.org/abs/2503.23513) - no code/examples yet in preprint
+- [Efficient Reasoning Models: A Survey](https://arxiv.org/abs/2504.10903)
+- [A Minimalist Approach to LLM Reasoning: from Rejection Sampling to Reinforce](https://arxiv.org/abs/2504.11343)
+- [Climbing the Ladder of Reasoning: What LLMs Can-and Still Can't-Solve after SFT?](https://arxiv.org/abs/2504.11741)
+- [SWE-RL: Advancing LLM Reasoning via Reinforcement Learning on Open Software Evolution](https://arxiv.org/abs/2502.18449)
+- [Language Models can Self-Improve at State-Value Estimation for Better Search](https://arxiv.org/abs/2503.02878)
+- [SWEET-RL: Training Multi-Turn LLM Agents on Collaborative Reasoning Tasks](https://arxiv.org/abs/2503.15478) - not directly about a reasoning model but nice RL and task area, collaborating with reasoning system etc.
+- [Learning to Reason under Off-Policy Guidance](https://arxiv.org/abs/2504.14945)
+- [FlowReasoner: Reinforcing Query-Level Meta-Agents](https://arxiv.org/abs/2504.15257)
+- [ToolRL: Reward is All Tool Learning Needs](https://arxiv.org/abs/2504.13958) - not directly reasoning model, but GRPO for tool use; general "tool use RL" area interesting
+- [OTC: Optimal Tool Calls via Reinforcement Learning](https://arxiv.org/abs/2504.14870) - see above, "tool use RL"
+- [Learning Adaptive Parallel Reasoning with Language Models](https://arxiv.org/abs/2504.15466)
+- [Stop Summation: Min-Form Credit Assignment Is All Process Reward Model Needs for Reasoning](https://arxiv.org/abs/2504.15275)
+- [Tina: Tiny Reasoning Models via LoRA](https://arxiv.org/abs/2504.15777)
+- [Process Reward Models That Think](https://arxiv.org/abs/2504.16828)
+- [Offline Reinforcement Learning for LLM Multi-Step Reasoning](https://arxiv.org/abs/2412.16145)
+- [Zero-shot Robotic Manipulation with Language-guided Instruction and Formal Task Planning](https://arxiv.org/abs/2501.15214) - not directly about reasoning models, it's symbolic reasoning for robotics and the "reasoning plan" general area; TODO: search for reasoning models in robotics and create Topic for it
+- [SPC: Evolving Self-Play Critic via Adversarial Games for LLM Reasoning](https://arxiv.org/abs/2504.19162)
+- [Toward Evaluative Thinking: Meta Policy Optimization with Evolving Reward Models](https://arxiv.org/abs/2504.20157)
+- [Phi-4-reasoning Technical Report](https://arxiv.org/abs/2504.21318) - Microsoft
+- [DeepCritic: Deliberate Critique with Large Language Models](https://arxiv.org/abs/2505.00662)
+- [reWordBench: Benchmarking and Improving the Robustness of Reward Models with Transformed Inputs](https://arxiv.org/abs/2503.11751)
+- [Toward Evaluative Thinking: Meta Policy Optimization with Evolving Reward Models](https://arxiv.org/abs/2504.20157) - nice area, but code not available yet it seems
+- [Llama-Nemotron: Efficient Reasoning Models](https://arxiv.org/abs/2505.00949) - Nvidia, goes into technical details and implementation
+- [Optimizing Chain-of-Thought Reasoners via Gradient Variance Minimization in Rejection Sampling and RL](https://arxiv.org/abs/2505.02391)
+- [ZeroSearch: Incentivize the Search Capability of LLMs without Searching](https://arxiv.org/abs/2505.04588)
+- [Scalable Chain of Thoughts via Elastic Reasoning](https://arxiv.org/abs/2505.05315)
+- [LIMR: Less is More for RL Scaling](https://arxiv.org/abs/2502.11886)
+- [The First Few Tokens Are All You Need: An Efficient and Effective Unsupervised Prefix Fine-Tuning Method for Reasoning Models](https://arxiv.org/abs/2503.02875)
+- [Retro-Search: Exploring Untaken Paths for Deeper and Efficient Reasoning](https://arxiv.org/abs/2504.04383)
+- [MiMo: Unlocking the Reasoning Potential of Language Model -- From Pretraining to Posttraining](https://arxiv.org/abs/2505.07608) - Xiaomi, claims 7B performance >= to o1-mini
+- [Learning from Peers in Reasoning Models](https://arxiv.org/abs/2505.07787)
+- [AM-Thinking-v1: Advancing the Frontier of Reasoning at 32B Scale](https://arxiv.org/abs/2505.08311)
+- [Insights into DeepSeek-V3: Scaling Challenges and Reflections on Hardware for AI Architectures](https://arxiv.org/abs/2505.09343) - DeepSeek, not directly about reasoning but nice technical comments
+- [Kalman Filter Enhanced GRPO for Reinforcement Learning-Based Language Model Reasoning](https://arxiv.org/abs/2505.07527)
+- [The CoT Encyclopedia: Analyzing, Predicting, and Controlling how a Reasoning Model will Think](https://arxiv.org/abs/2505.10185)
+- [ImagineBench: Evaluating Reinforcement Learning with Large Language Model Rollouts](https://arxiv.org/abs/2505.10010) - nice approach, added since may be useful for reasoning models and RL
+- [How Difficulty-Aware Staged Reinforcement Learning Enhances LLMs' Reasoning Capabilities: A Preliminary Experimental Study](https://arxiv.org/abs/2504.00829)
+- [Beyond 'Aha!': Toward Systematic Meta-Abilities Alignment in Large Reasoning Models](https://arxiv.org/abs/2505.10554)
+- [AdaptThink: Reasoning Models Can Learn When to Think](https://arxiv.org/abs/2505.13417)
+- [Optimizing Anytime Reasoning via Budget Relative Policy Optimization](https://arxiv.org/abs/2505.13438)
+- [Reward Reasoning Model](https://arxiv.org/abs/2505.14674)
+- [General-Reasoner: Advancing LLM Reasoning Across All Domains](https://arxiv.org/abs/2505.14652)
+- [Tool-Star: Empowering LLM-Brained Multi-Tool Reasoner via Reinforcement Learning](https://arxiv.org/abs/2505.16410)
+- [Training Step-Level Reasoning Verifiers with Formal Verification Tools](https://arxiv.org/abs/2505.15960)
+- [The Unreasonable Effectiveness of Entropy Minimization in LLM Reasoning](https://arxiv.org/abs/2505.15134) - they claim a training-free approach that uses inference-time modifications to logits that boosts "reasoning" dataset performance, amongst other things
+- [QwenLong-L1: Towards Long-Context Large Reasoning Models with Reinforcement Learning](https://arxiv.org/abs/2505.17667)
+- [VeriThinker: Learning to Verify Makes Reasoning Model Efficient](https://arxiv.org/abs/2505.17941)
+- [ARM: Adaptive Reasoning Model](https://arxiv.org/abs/2505.20258)
+- [ShorterBetter: Guiding Reasoning Models to Find Optimal Inference Length for Efficient Reasoning](https://arxiv.org/abs/2504.21370)
+- [SynLogic: Synthesizing Verifiable Reasoning Data at Scale for Learning Logical Reasoning and Beyond](https://arxiv.org/abs/2505.19641)
+- [rStar-Coder: Scaling Competitive Code Reasoning with a Large-Scale Verified Dataset](https://arxiv.org/abs/2505.21297) - Microsoft, but code/dataset isn't available yet
+- [RL Tango: Reinforcing Generator and Verifier Together for Language Reasoning](https://arxiv.org/abs/2505.15034)
+- [Skywork Open Reasoner 1 Technical Report](https://arxiv.org/abs/2505.22312)
+- [Are Reasoning Models More Prone to Hallucination?](https://arxiv.org/abs/2505.23646)
+- [LIMOPro: Reasoning Refinement for Efficient and Effective Test-time Scaling](https://arxiv.org/abs/2505.19187)
+- [R2R: Efficiently Navigating Divergent Reasoning Paths with Small-Large Model Token Routing](https://arxiv.org/abs/2505.21600) - Tsinghua, cool test-time scaling approach using SLM and larger LLM
+- [The Entropy Mechanism of Reinforcement Learning for Reasoning Language Models](https://arxiv.org/abs/2505.22617) - theoretical paper, need to reread carefully
+- [Pitfalls of Rule- and Model-based Verifiers -- A Case Study on Mathematical Reasoning](https://arxiv.org/abs/2505.22203) - they study the pros and cons of different verifiers when doing RL; the focus in on mathematical dataset/examples but it seems broadly applicable to RLVR
+- [System-1.5 Reasoning: Traversal in Language and Latent Spaces with Dynamic Shortcuts](https://arxiv.org/abs/2505.18962) - CoCoNut paper related, see also review paper Reasoning Beyond Language linked below
+- [Beyond the 80/20 Rule: High-Entropy Minority Tokens Drive Effective Reinforcement Learning for LLM Reasoning](https://arxiv.org/abs/2506.01939)
+- [AReaL: A Large-Scale Asynchronous Reinforcement Learning System for Language Reasoning](https://arxiv.org/abs/2505.24298)
+- [Incentivizing Reasoning for Advanced Instruction-Following of Large Language Models](https://arxiv.org/abs/2506.01413)
+- [R1-Code-Interpreter: Training LLMs to Reason with Code via Supervised and Reinforcement Learning](https://arxiv.org/abs/2505.21668)
+- [RuleReasoner: Reinforced Rule-based Reasoning via Domain-aware Dynamic Sampling](https://arxiv.org/abs/2506.08672)
+- [Multiverse: Your Language Models Secretly Decide How to Parallelize and Merge Generation](https://arxiv.org/abs/2506.09991)
+- [MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention](https://arxiv.org/abs/2506.13585)
+- [AceReason-Nemotron 1.1: Advancing Math and Code Reasoning through SFT and RL Synergy](https://arxiv.org/abs/2506.13284) - Nvidia; nice improvements since 1.0 model (still 7B based on Qwen 2.5)
+- [Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs](https://arxiv.org/abs/2506.14245)
+- [ProtoReasoning: Prototypes as the Foundation for Generalizable Reasoning in LLMs](https://arxiv.org/abs/2506.15211) -  ByteDance; "... we propose ProtoReasoning, a framework that enhances the reasoning ability of LLMs by leveraging scalable and verifiable prototypical representations (Prolog for logical reasoning, PDDL for planning) ... Significantly, our ablation studies confirm that learning in prototype space also demonstrates enhanced generalization to structurally similar problems compared to training solely on natural language representations, validating our hypothesis that reasoning prototypes serve as the foundation for generalizable reasoning in large language models."
+- [Revisiting Reinforcement Learning for LLM Reasoning from A Cross-Domain Perspective](https://arxiv.org/abs/2506.14965) - links to nice Github pages also [https://guru-reasoning.github.io/](https://guru-reasoning.github.io/) and [https://github.com/LLM360/Reasoning360](https://github.com/LLM360/Reasoning360)
+- [Reward-SQL: Boosting Text-to-SQL via Stepwise Reasoning and Process-Supervised Rewards](https://arxiv.org/abs/2505.04671)
+- [ReasonFlux-PRM: Trajectory-Aware PRMs for Long Chain-of-Thought Reasoning in LLMs](https://arxiv.org/abs/2506.18896)
+- [Robust Reward Modeling via Causal Rubrics](https://arxiv.org/abs/2506.16507) - Google DeepMind; "We introduce Crome (Causally Robust Reward Modeling), a novel framework grounded in an explicit causal model designed to mitigate reward hacking.", has some results on reasoning benchmarks that seem good
+- [OctoThinker: Mid-training Incentivizes Reinforcement Learning Scaling](https://arxiv.org/abs/2506.20512)
+- [Reinforcement Learning Teachers of Test Time Scaling](https://arxiv.org/abs/2506.08388) - Sakana AI; Github [https://github.com/SakanaAI/RLT](https://github.com/SakanaAI/RLT) and blog [https://sakana.ai/rlt/](https://sakana.ai/rlt/)
+- [Fractional Reasoning via Latent Steering Vectors Improves Inference Time Compute](https://arxiv.org/abs/2506.15882)
+- [SPIRAL: Self-Play on Zero-Sum Games Incentivizes Reasoning via Multi-Agent Multi-Turn Reinforcement Learning](https://arxiv.org/abs/2506.24119)
+- [Does Math Reasoning Improve General LLM Capabilities? Understanding Transferability of LLM Reasoning](https://arxiv.org/abs/2507.00432) - "Math reasoning has become the poster child of progress in large language models (LLMs), with new models rapidly surpassing human-level performance on benchmarks like MATH and AIME. But as math leaderboards improve week by week, it is worth asking: do these gains reflect broader problem-solving ability or just narrow overfitting? To answer this question, we evaluate over 20 open-weight reasoning-tuned models across a broad suite of tasks, including math, scientific QA, agent planning, coding, and standard instruction-following. We surprisingly find that most models that succeed in math fail to transfer their gains to other domains."
+- [Fast and Simplex: 2-Simplicial Attention in Triton](https://arxiv.org/abs/2507.02754) - Meta; this is mainly an architecture/technical paper, but the claims are related specifically to improving performance on reasoning tasks - not clear to me yet, need to take notes carefully
+- [Pre-Trained Policy Discriminators are General Reward Models](https://arxiv.org/abs/2507.05197) - not strictly about reasoning models but applicable and relevant
+- [R1-RE: Cross-Domain Relationship Extraction with RLVR](https://arxiv.org/abs/2507.04642) - nice, classic NLP task; claim 7B model reaches 4o performance
+- [Decoder-Hybrid-Decoder Architecture for Efficient Reasoning with Long Generation](https://arxiv.org/abs/2507.06607) - Microsoft, this is the technical paper for the Phi 4 mini flash reasoning model (3.8B) with some nice architecture ideas. The blogpost is also here: [Reasoning reimagined: Introducing Phi-4-mini-flash-reasoning](https://azure.microsoft.com/en-us/blog/reasoning-reimagined-introducing-phi-4-mini-flash-reasoning)
+- [First Return, Entropy-Eliciting Explore](https://arxiv.org/abs/2507.07017) - ByteDance
+- [Test-Time Scaling with Reflective Generative Model](https://arxiv.org/abs/2507.01951)
+- [REST: Stress Testing Large Reasoning Models by Asking Multiple Problems at Once](https://arxiv.org/abs/2507.10541)
+- [Logit Arithmetic Elicits Long Reasoning Capabilities Without Training](https://www.arxiv.org/abs/2507.12759) - reminds me a bit of The Unreasonable Effectiveness of Entropy Minimization in LLM Reasoning (see link above)
+- [Beyond Context Limits: Subconscious Threads for Long-Horizon Reasoning](https://arxiv.org/abs/2507.16784)
+- [MegaScience: Pushing the Frontiers of Post-Training Datasets for Science Reasoning](https://arxiv.org/abs/2507.16812) - has nice explanation of data filtering and processing also
+- [Can One Domain Help Others? A Data-Centric Study on Multi-Domain Reasoning via Reinforcement Learning](https://arxiv.org/abs/2507.17512)
+- [LAPO: Internalizing Reasoning Efficiency via Length-Adaptive Policy Optimization](https://arxiv.org/abs/2507.15758)
+- [Re:Form -- Reducing Human Priors in Scalable Formal Software Verification with RL in LLMs: A Preliminary Study on Dafny](https://arxiv.org/abs/2507.16331) - formal methods
+- [KV Cache Steering for Inducing Reasoning in Small Language Models](https://arxiv.org/abs/2507.08799) - it is a one-shot method, seems cool: " Our approach leverages GPT-4o-generated reasoning traces to construct steering vectors that shift model behavior toward more explicit, multi-step reasoning without fine-tuning or prompt modifications."; examples on the Github [https://github.com/MaxBelitsky/cache-steering](https://github.com/MaxBelitsky/cache-steering)
+- [UloRL:An Ultra-Long Output Reinforcement Learning Approach for Advancing Large Language Models' Reasoning Abilities](https://arxiv.org/abs/2507.19766) - Tencent, nice results/performance; code is available
+- [Beyond the Trade-off: Self-Supervised Reinforcement Learning for Reasoning Models' Instruction Following](https://arxiv.org/abs/2508.02150)
+- [CompassVerifier: A Unified and Robust Verifier for LLMs Evaluation and Outcome Reward](https://arxiv.org/abs/2508.03686)
+- [R-Zero: Self-Evolving Reasoning LLM from Zero Data](https://arxiv.org/abs/2508.05004)
+- [Learning to Reason for Factuality](https://arxiv.org/abs/2508.05618) - FAIR/Meta
+- [OmniEAR: Benchmarking Agent Reasoning in Embodied Tasks](https://arxiv.org/abs/2508.05614)
+- [Train Long, Think Short: Curriculum Learning for Efficient Reasoning](https://arxiv.org/abs/2508.08940)
+- [Pass@k Training for Adaptively Balancing Exploration and Exploitation of Large Reasoning Models](https://arxiv.org/abs/2508.10751)
+- [SSRL: Self-Search Reinforcement Learning](https://arxiv.org/abs/2508.10874) - cool, haven't read references but can't remember seeing this idea before; basically using the LLM as a web simulator for search/tool use during reasoning etc.
+- [NVIDIA Nemotron Nano 2: An Accurate and Efficient Hybrid Mamba-Transformer Reasoning Model](https://arxiv.org/abs/2508.14444) - "We introduce Nemotron-Nano-9B-v2, a hybrid Mamba-Transformer language model designed to increase throughput for reasoning workloads while achieving state-of-the-art accuracy compared to similarly-sized models. Nemotron-Nano-9B-v2 builds on the Nemotron-H architecture, in which the majority of the self-attention layers in the common Transformer architecture are replaced with Mamba-2 layers, to achieve improved inference speed when generating the long thinking traces needed for reasoning."
+- [Deep Think with Confidence](https://arxiv.org/abs/2508.15260)
+- [Beyond Pass@1: Self-Play with Variational Problem Synthesis Sustains RLVR](https://arxiv.org/abs/2508.14029)
+- [TreePO: Bridging the Gap of Policy Optimization and Efficacy and Inference Efficiency with Heuristic Tree-based Modeling](https://arxiv.org/abs/2508.17445) - ByteDance
+- [ThinkDial: An Open Recipe for Controlling Reasoning Effort in Large Language Models](https://arxiv.org/abs/2508.18773)
+- [StepWiser: Stepwise Generative Judges for Wiser Reasoning](https://arxiv.org/abs/2508.19229) - FAIR Meta
+- [Think in Games: Learning to Reason in Games via Reinforcement Learning with Large Language Models](https://arxiv.org/abs/2508.21365)
+- [Beyond Correctness: Harmonizing Process and Outcome Rewards through RL Training](https://arxiv.org/abs/2509.03403)
+- [InternBootcamp Technical Report: Boosting LLM Reasoning with Verifiable Task Scaling](https://arxiv.org/abs/2508.08636)
+- [Bootstrapping Task Spaces for Self-Improvement](https://arxiv.org/abs/2509.04575) - Meta Superintelligence; some nice results across multi-turn tool use, machine learning (MLE benchmark), and mathematics
+- [Reverse-Engineered Reasoning for Open-Ended Generation](https://arxiv.org/abs/2509.06160) - work backwards from "good" samples to try to produce the reasoning; they use on e.g. artistic domain (writing for ex.) where "forward" approach to reasoning might not work as well
+- [Scaling up Multi-Turn Off-Policy RL and Multi-Agent Tree Search for LLM Step-Provers](https://arxiv.org/abs/2509.06493) - I like the general RL approach; indeed the abstract says "While demonstrated in the domain of formal mathematics, the RL and inference techniques presented in this work are of broader interest and may be applied to other domains requiring long-horizon multi-turn reasoning and complex search"
+- [Parallel-R1: Towards Parallel Thinking via Reinforcement Learning](https://arxiv.org/abs/2509.07980)
+- [The Majority is not always right: RL training for solution aggregation](https://arxiv.org/abs/2509.06870) - FAIR Meta; "In this work, we propose to learn aggregation as an explicit reasoning skill: given a set of candidate solutions, we train an aggregator model to review, reconcile, and synthesize a final, correct answer using reinforcement learning from verifiable rewards." - this part is interesting: "Furthermore, it generalizes effectively to solutions from differing models, including stronger ones than contained in the training data, all while requiring substantially fewer tokens than majority voting with larger numbers of solutions."
+- [On the Generalization of SFT: A Reinforcement Learning Perspective with Reward Rectification](https://arxiv.org/abs/2508.05629) - not a reasoning-specific article but has lots of relevant comments and results
+- [THOR: Tool-Integrated Hierarchical Optimization via RL for Mathematical Reasoning](https://arxiv.org/abs/2509.13761) - code results also, not just mathematical reasoning
+- [Compute as Teacher: Turning Inference Compute Into Reference-Free Supervision](https://arxiv.org/abs/2509.14234) - a different approach to using test time computation
+- [What Characterizes Effective Reasoning? Revisiting Length, Review, and Structure of CoT](https://arxiv.org/abs/2509.19284)
+- [SciReasoner: Laying the Scientific Reasoning Ground Across Disciplines](https://arxiv.org/abs/2509.21320) - seems to be mainly biology focused (SMILES, protein properties etc.)
+- [Quantile Advantage Estimation for Entropy-Safe Reasoning](https://arxiv.org/abs/2509.22611)
+- [Variational Reasoning for Language Models](https://arxiv.org/abs/2509.22637) - actually OK to follow despite all the theory; I hadn't heard of "importance-weighted autoencoder (IWAE)" before either (page 2) and it's interesting
+- [Beyond the Exploration-Exploitation Trade-off: A Hidden State Approach for LLM Reasoning in RLVR](https://arxiv.org/abs/2509.23808)
+- [Thinking Sparks!: Emergent Attention Heads in Reasoning Models During Post Training](https://arxiv.org/abs/2509.25758) - nice mechanistic/explainability; "In this work, we use circuit analysis to demonstrate that post-training for complex reasoning sparks the emergence of novel, functionally specialized attention heads."
+- [Knapsack RL: Unlocking Exploration of LLMs via Optimizing Budget Allocation](https://arxiv.org/abs/2509.25849) - ByteDance Seed; TODO - create a section for "intelligent/informed sample selection" and related approaches to improving reasoning model training
+- [DeepSearch: Overcome the Bottleneck of Reinforcement Learning with Verifiable Rewards via Monte Carlo Tree Search](https://arxiv.org/abs/2509.25454)
+- [ExGRPO: Learning to Reason from Experience](https://arxiv.org/abs/2510.02245)
+- [Large Reasoning Models Learn Better Alignment from Flawed Thinking](https://arxiv.org/abs/2510.00938) - Meta Superintelligence Labs; basically seems to be including a few "flawed" (wrong chain of thoughts for ex) samples and promote self-reflection to correct these "bad starts" during completion
+- [Front-Loading Reasoning: The Synergy between Pretraining and Post-Training Data](https://arxiv.org/abs/2510.03264) - Nvidia; "We conduct the first systematic study of how reasoning data-varying in scale, diversity, and quality-affects LLM performance when introduced at different stages of training. We find that front-loading reasoning data into pretraining is critical (19% avg gain), establishing foundational capabilities that cannot be fully replicated by later-stage SFT, even with more data."
+- [In-the-Flow Agentic System Optimization for Effective Planning and Tool Use](https://arxiv.org/abs/2510.05592) - website is [https://agentflow.stanford.edu/](https://agentflow.stanford.edu/)
+- [Scaling Code-Assisted Chain-of-Thoughts and Instructions for Model Reasoning](https://arxiv.org/abs/2510.04081) - reasoning dataset generation with automatic validation steps
+- [Low-probability Tokens Sustain Exploration in Reinforcement Learning with Verifiable Reward](https://arxiv.org/abs/2510.03222)
+- [ACADREASON: Exploring the Limits of Reasoning Models with Academic Research Problems](https://arxiv.org/abs/2510.11652) - nice benchmark; "50 expert-annotated academic problems across five high-reasoning domains, including computer science, economics, law, mathematics, and philosophy. All questions are sourced from top-tier publications in recent years and undergo rigorous annotation and quality control to ensure they are both challenging and answerable."
+- [Bag of Tricks for Subverting Reasoning-based Safety Guardrails](https://arxiv.org/abs/2510.11570) - nice "red teaming"/security kind of approach
+- [Beyond Accuracy: Dissecting Mathematical Reasoning for LLMs Under Reinforcement Learning](https://arxiv.org/abs/2506.04723)
+- [LoongRL: Reinforcement Learning for Advanced Reasoning over Long Contexts](https://arxiv.org/abs/2510.19363)
+- [Every Attention Matters: An Efficient Hybrid Architecture for Long-Context Reasoning](https://arxiv.org/abs/2510.19338) - Ling team, Ant Group; nice technical paper
+- [Open-o3 Video: Grounded Video Reasoning with Explicit Spatio-Temporal Evidence](https://arxiv.org/abs/2510.20579) - ByteDance
+- [Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm](https://arxiv.org/abs/2511.04570)
+- [Reasoning with Sampling: Your Base Model is Smarter Than You Think](https://arxiv.org/abs/2510.14901)
+- [DynaAct: Large Language Model Reasoning with Dynamic Action Spaces](https://arxiv.org/abs/2511.08043) - NeurIPS 2025
+- [Critique-RL: Training Language Models for Critiquing through Two-Stage Reinforcement Learning](https://arxiv.org/abs/2510.24320) - interesting for developing critique models for reasoning training
+- [Reasoning with Confidence: Efficient Verification of LLM Reasoning Steps via Uncertainty Heads](https://arxiv.org/abs/2511.06209)
+- [SPICE: Self-Play In Corpus Environments Improves Reasoning](https://arxiv.org/abs/2510.24684)
+- [RefineBench: Evaluating Refinement Capability of Language Models via Checklists](https://arxiv.org/abs/2511.22173)
+- [Think-at-Hard: Selective Latent Iterations to Improve Reasoning Language Models](https://arxiv.org/abs/2511.08577)
+- [ATLAS: A High-Difficulty, Multidisciplinary Benchmark for Frontier Scientific Reasoning](https://arxiv.org/abs/2511.14366)
+- [Nemotron Elastic: Towards Efficient Many-in-One Reasoning LLMs](https://arxiv.org/abs/2511.16664) - Nvidia; interesting twist on efficient reasoning/model pruning, uses Mamba architectures also.
+- [P1: Mastering  Olympiads with Reinforcement Learning](https://arxiv.org/abs/2511.13612) - "... Further equipped with an agentic framework PhysicsMinions, P1-235B-A22B+PhysicsMinions achieves overall No.1 on IPhO 2025, and obtains the highest average score over the 13 physics competitions."
+- [Real-Time Reasoning Agents in Evolving Environments](https://arxiv.org/abs/2511.04898) - Cool study, introducing urgency/time constraints in reasoning tasks
+- [VeriCoT: Neuro-symbolic Chain-of-Thought Validation via Logical Consistency Checks](https://arxiv.org/abs/2511.04662) - neurosymbolic approach to validate reasoning, outside of mathematics/code domain; also TODO make a section for neurosymbolic/DSL stuff
+- [Teaching Pretrained Language Models to Think Deeper with Retrofitted Recurrence](https://arxiv.org/abs/2511.07384) - intriguing; "In this work, we study how to convert existing pretrained non-recurrent language models into depth-recurrent models. We find that using a curriculum of recurrences to increase the effective depth of the model over the course of training preserves performance while reducing total computational cost. In our experiments, on mathematics, we observe that converting pretrained models to recurrent ones results in better performance at a given compute budget than simply post-training the original non-recurrent language model."
+- [RLoop: An Self-Improving Framework for Reinforcement Learning with Iterative Policy Initialization](https://arxiv.org/abs/2511.04285)
+- [When Visualizing is the First Step to Reasoning: MIRA, a Benchmark for Visual Chain-of-Thought](https://arxiv.org/abs/2511.02779) - sketchpad type approaches; seen several papers on this before but seems to work OK here?
+- [Terra Nova: A Comprehensive Challenge Environment for Intelligent Agents](https://arxiv.org/abs/2511.15378) - not strictly reasoning, but a nice environment for RL; it's a Civilization V kind of game and you need to reason about strategies also
+- [Towards Robust Mathematical Reasoning](https://arxiv.org/abs/2511.01846) - Google DeepMind; IMO-Bench "... played a crucial role in our historic achievement of the gold-level performance at IMO 2025 with Gemini Deep Think"
+- [PretrainZero: Reinforcement Active Pretraining](https://arxiv.org/abs/2512.03442)
+- [SpaceTools: Tool-Augmented Spatial Reasoning via Double Interactive RL](https://arxiv.org/abs/2512.04069)
+- [SPARK: Stepwise Process-Aware Rewards for Reference-Free Reinforcement Learning](https://arxiv.org/abs/2512.03244) - process reward models
+- [Long-horizon Reasoning Agent for Olympiad-Level Mathematical Problem Solving](https://arxiv.org/abs/2512.10739)
+- [OPV: Outcome-based Process Verifier for Efficient Long Chain-of-Thought Verification](https://arxiv.org/abs/2512.10756)
+- [V-REX: Benchmarking Exploratory Visual Reasoning via Chain-of-Questions](https://arxiv.org/abs/2512.11995)
+- [MMGR: Multi-Modal Generative Reasoning](https://arxiv.org/abs/2512.14691)
+- [Nemotron-Cascade: Scaling Cascaded Reinforcement Learning for General-Purpose Reasoning Models](https://arxiv.org/abs/2512.13607)
+- [TraPO: A Semi-Supervised Reinforcement Learning Framework for Boosting LLM Reasoning](https://arxiv.org/abs/2512.13106)
+- [Can LLMs Guide Their Own Exploration? Gradient-Guided Reinforcement Learning for LLM Reasoning](https://arxiv.org/abs/2512.15687)
+- [NVIDIA Nemotron 3: Efficient and Open Intelligence](https://arxiv.org/abs/2512.20856)
+- [Nemotron 3 Nano: Open, Efficient Mixture-of-Experts Hybrid Mamba-Transformer Model for Agentic Reasoning](https://arxiv.org/abs/2512.20848)
+- [Rethinking Sample Polarity in Reinforcement Learning with Verifiable Rewards](https://arxiv.org/abs/2512.21625)
+- [Meta-RL Induces Exploration in Language Agents](https://arxiv.org/abs/2512.16848)
+- [Scaling Open-Ended Reasoning to Predict the Future](https://arxiv.org/abs/2512.25070)
+- [Dynamic Large Concept Models: Latent Reasoning in an Adaptive Semantic Space](https://arxiv.org/abs/2512.24617)
+- [From Trial-and-Error to Improvement: A Systematic Analysis of LLM Exploration Mechanisms in RLVR](https://arxiv.org/abs/2508.07534)
+- [MarsRL: Advancing Multi-Agent Reasoning System via Reinforcement Learning with Agentic Pipeline Parallelism](https://arxiv.org/abs/2511.11373) - Tencent
+- [DiffThinker: Towards Generative Multimodal Reasoning with Diffusion Models](https://arxiv.org/abs/2512.24165)
+- [Youtu-LLM: Unlocking the Native Agentic Potential for Lightweight Large Language Models](https://arxiv.org/abs/2512.24618) - Tencent Youtu Lab; nice performance on reasoning tasks for small model
+- [Recursive Language Models](https://arxiv.org/abs/2512.24601) - not directly reasoning related but they test the approach on several long-context/reasoning datasets and tasks
+- [Atlas: Orchestrating Heterogeneous Models and Tools for Multi-Domain Complex Reasoning](https://arxiv.org/abs/2601.03872)
+- [GDPO: Group reward-Decoupled Normalization Policy Optimization for Multi-reward RL Optimization](https://arxiv.org/abs/2601.05242)
+- [ReasoningBank: Scaling Agent Self-Evolving with Reasoning Memory](https://arxiv.org/abs/2509.25140)
+- [Lost in the Noise: How Reasoning Models Fail with Contextual Distractors](https://arxiv.org/abs/2601.07226)
+- [VLingNav: Embodied Navigation with Adaptive Reasoning and Visual-Assisted Linguistic Memory](https://arxiv.org/abs/2601.08665) - cool, nice project page also [https://wsakobe.github.io/VLingNav-web/](https://wsakobe.github.io/VLingNav-web/)
+- [Beyond Static Tools: Test-Time Tool Evolution for Scientific Reasoning](https://arxiv.org/abs/2601.07641)
+- [Rewarding the Rare: Uniqueness-Aware RL for Creative Problem Solving in LLMs](https://arxiv.org/abs/2601.08763)
+- [MatchTIR: Fine-Grained Supervision for Tool-Integrated Reasoning via Bipartite Matching](https://arxiv.org/abs/2601.10712)
+- [PRL: Process Reward Learning Improves LLMs' Reasoning Ability and Broadens the Reasoning Boundary](https://arxiv.org/abs/2601.10201)
+- [A^3-Bench: Benchmarking Memory-Driven Scientific Reasoning via Anchor and Attractor Activation](https://arxiv.org/abs/2601.09274)
+- [Your Group-Relative Advantage Is Biased](https://arxiv.org/abs/2601.08521)
+- [SIN-Bench: Tracing Native Evidence Chains in Long-Context Multimodal Scientific Interleaved Literature](https://arxiv.org/abs/2601.10108) - nice approach to formulating tasks that require reasoning
+- [Spurious Rewards Paradox: Mechanistically Understanding How RLVR Activates Memorization Shortcuts in LLMs](https://arxiv.org/abs/2601.11061)
+- [Reasoning Models Generate Societies of Thought](https://arxiv.org/abs/2601.10825) - has some nice things on mechanistic interpretability of reasoning traces also
+- [rSIM: Incentivizing Reasoning Capabilities of LLMs via Reinforced Strategy Injection](https://arxiv.org/abs/2512.08300) - "... this paper proposes a novel reinforced strategy injection mechanism (rSIM), that enables any LLM to become an RLM by employing a small planner to guide the LLM's CoT through the adaptive injection of reasoning strategies. To achieve this, the planner (leader agent) is jointly trained with an LLM (follower agent) using multi-agent RL (MARL), based on a leader-follower framework and straightforward rule-based rewards."
+- [MemoBrain: Executive Memory as an Agentic Brain for Reasoning](https://arxiv.org/abs/2601.08079)
+- [Teaching Models to Teach Themselves: Reasoning at the Edge of Learnability](https://arxiv.org/abs/2601.18778)
+- [DeepPlanning: Benchmarking Long-Horizon Agentic Planning with Verifiable Constraints](https://arxiv.org/abs/2601.18137) - Qwen team; "...we introduce DeepPlanning, a challenging benchmark for practical long-horizon agent planning. It features multi-day travel planning and multi-product shopping tasks that require proactive information acquisition, local constrained reasoning, and global constrained optimization. Evaluations on DeepPlanning show that even frontier agentic LLMs struggle with these problems, highlighting the importance of reliable explicit reasoning patterns and parallel tool use for achieving better effectiveness-efficiency trade-offs. Error analysis further points to promising directions for improving agentic LLMs over long planning horizons. We open-source the code and data to support future research."
+- [AdaReasoner: Dynamic Tool Orchestration for Iterative Visual Reasoning](https://arxiv.org/abs/2601.18631)
+- [Harder Is Better: Boosting Mathematical Reasoning via Difficulty-Aware GRPO and Multi-Aspect Question Reformulation](https://arxiv.org/abs/2601.20614)
+- [Reinforcement Learning via Self-Distillation](https://arxiv.org/abs/2601.20802)
+- [Exploring Reasoning Reward Model for Agents](https://arxiv.org/abs/2601.22154)
+- [Spark: Strategic Policy-Aware Exploration via Dynamic Branching for Long-Horizon Agentic Learning](https://arxiv.org/abs/2601.20209)
+- [Pushing the Boundaries of Natural Reasoning: Interleaved Bonus from Formal-Logic Verification](https://arxiv.org/abs/2601.22642)
+- [ASTRA: Automated Synthesis of agentic Trajectories and Reinforcement Arenas](https://arxiv.org/abs/2601.21558)
+- [Good SFT Optimizes for SFT, Better SFT Prepares for Reinforcement Learning](https://arxiv.org/abs/2602.01058)
+- [Rethinking the Trust Region in LLM Reinforcement Learning](https://arxiv.org/abs/2602.04879)
+- [Likelihood-Based Reward Designs for General LLM Reasoning](https://arxiv.org/abs/2602.03979)
+- [Reinforced Attention Learning](https://arxiv.org/abs/2602.04884)
+- [ProAct: Agentic Lookahead in Interactive Environments](https://arxiv.org/abs/2602.05327) - "... we introduce Grounded LookAhead Distillation (GLAD), where the agent undergoes supervised fine-tuning on trajectories derived from environment-based search. By compressing complex search trees into concise, causal reasoning chains, the agent learns the logic of foresight without the computational overhead of inference-time search. ..."
+- [LatentChem: From Textual CoT to Latent Thinking in Chemical Reasoning](https://arxiv.org/abs/2602.07075)
+- [P1-VL: Bridging Visual Perception and Scientific Reasoning in Physics Olympiads](https://arxiv.org/abs/2602.09443) - cool project page, they have some nice visualizations [https://prime-rl.github.io/P1-VL/](https://prime-rl.github.io/P1-VL/)
+- [When to Memorize and When to Stop: Gated Recurrent Memory for Long-Context Reasoning](https://arxiv.org/abs/2602.10560)
+- [Internalizing Meta-Experience into Memory for Guided Reinforcement Learning in Large Language Models](https://arxiv.org/abs/2602.10224)
+- [Effective Reasoning Chains Reduce Intrinsic Dimensionality](https://arxiv.org/abs/2602.09276)
+- [ECHO-2: A Large-Scale Distributed Rollout Framework for Cost-Efficient Reinforcement Learning](https://arxiv.org/abs/2602.02192)
+- [GeoAgent: Learning to Geolocate Everywhere with Reinforced Geographic Characteristics](https://arxiv.org/abs/2602.12617)
+- [InnoEval: On Research Idea Evaluation as a Knowledge-Grounded, Multi-Perspective Reasoning Problem](https://arxiv.org/abs/2602.14367)
+- [Empty Shelves or Lost Keys? Recall Is the Bottleneck for Parametric Factuality](https://arxiv.org/abs/2602.14080) - thinking/inference time computation to enhance recall of facts
+- [Language-based Trial and Error Falls Behind in the Era of Experience](https://arxiv.org/abs/2601.21754)
+- [Does Your Reasoning Model Implicitly Know When to Stop Thinking?](https://arxiv.org/abs/2602.08354)
+- [From Perception to Action: An Interactive Benchmark for Vision Reasoning](https://arxiv.org/abs/2602.21015)
+- [AI Gamestore: Scalable, Open-Ended Evaluation of Machine General Intelligence with Human Games](https://arxiv.org/abs/2602.17594) - nice project page also [https://aigamestore.org/](https://aigamestore.org/)
+- [POPE: Learning to Reason on Hard Problems via Privileged On-Policy Exploration](https://arxiv.org/abs/2601.18779)
+- [LongVideo-R1: Smart Navigation for Low-cost Long Video Understanding](https://arxiv.org/abs/2602.20913) - CVPR 2026
+- [PRISM: Pushing the Frontier of Deep Think via Process Reward Model-Guided Inference](https://arxiv.org/abs/2603.02479)
+- [V_1: Unifying Generation and Self-Verification for Parallel Reasoners](https://arxiv.org/abs/2603.04304)
+- [BeamPERL: Parameter-Efficient RL with Verifiable Rewards Specializes Compact LLMs for Structured Beam Mechanics Reasoning](https://arxiv.org/abs/2603.04124)
+- [Interactive Benchmarks](https://arxiv.org/abs/2603.04737)
+- [Learn Hard Problems During RL with Reference Guided Fine-tuning](https://arxiv.org/abs/2603.01223)
+- [CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation](https://arxiv.org/abs/2602.24286) - ByteDance Seed
+- [Mario: Multimodal Graph Reasoning with Large Language Models](https://arxiv.org/abs/2603.05181) - CVPR 2026
+- [Thinking to Recall: How Reasoning Unlocks Parametric Knowledge in LLMs](https://arxiv.org/abs/2603.09906)
+- [Decoupling Reasoning and Confidence: Resurrecting Calibration in Reinforcement Learning from Verifiable Rewards](https://arxiv.org/abs/2603.09117)
+- [GRADE: Benchmarking Discipline-Informed Reasoning in Image Editing](https://arxiv.org/abs/2603.12264) - project page is [https://grade-bench.github.io/](https://grade-bench.github.io/)
+- [Automatic Generation of High-Performance RL Environments](https://arxiv.org/abs/2603.12145)
+- [Examining Reasoning LLMs-as-Judges in Non-Verifiable LLM Post-Training](https://arxiv.org/abs/2603.12246)
+- [TERMINATOR: Learning Optimal Exit Points for Early Stopping in Chain-of-Thought Reasoning](https://arxiv.org/abs/2603.12529)
+- [MHPO: Modulated Hazard-aware Policy Optimization for Stable Reinforcement Learning](https://arxiv.org/abs/2603.16929)
+- [CCTU: A Benchmark for Tool Use under Complex Constraints](https://arxiv.org/abs/2603.15309)
+- [TerraScope: Pixel-Grounded Visual Reasoning for Earth Observation](https://arxiv.org/abs/2603.19039) - CVPR 2026, nice project page [https://shuyansy.github.io/terrascope/](https://shuyansy.github.io/terrascope/)
+- [ThinkJEPA: Empowering Latent World Models with Large Vision-Language Reasoning Model](https://arxiv.org/abs/2603.22281)
+- [Can LLM Agents Be CFOs? A Benchmark for Resource Allocation in Dynamic Enterprise Environments](https://arxiv.org/abs/2603.23638) - interesting long horizon reasoning task
+- [Reaching Beyond the Mode: RL for Distributional Reasoning in Language Models](https://arxiv.org/abs/2603.24844)
+- [Demystifying Reinforcement Learning for Long-Horizon Tool-Using Agents: A Comprehensive Recipe](https://arxiv.org/abs/2603.21972)
+- [Trace2Skill: Distill Trajectory-Local Lessons into Transferable Agent Skills](https://arxiv.org/abs/2603.25158)
+- [Make Geometry Matter for Spatial Reasoning](https://arxiv.org/abs/2603.26639)
+- [FIPO: Eliciting Deep Reasoning with Future-KL Influenced Policy Optimization](https://arxiv.org/abs/2603.19835)
+- [MuSEAgent: A Multimodal Reasoning Agent with Stateful Experience](https://arxiv.org/abs/2603.27813)
+- [LatentUM: Unleashing the Potential of Interleaved Cross-Modal Reasoning via a Latent-Space Unified Model](https://arxiv.org/abs/2604.02097)
+- [LightThinker++: From Reasoning Compression to Memory Management](https://arxiv.org/abs/2604.03679)
+- [Beyond Accuracy: Unveiling Inefficiency Patterns in Tool-Integrated Reasoning](https://arxiv.org/abs/2604.05404)
+- [Rethinking Generalization in Reasoning SFT: A Conditional Analysis on Optimization, Data, and Model Capability](https://arxiv.org/abs/2604.06628)
+- [PokeGym: A Visually-Driven Long-Horizon Benchmark for Vision-Language Models](https://arxiv.org/abs/2604.08340)
+- [SideQuest: Model-Driven KV Cache Management for Long-Horizon Agentic Reasoning](https://arxiv.org/abs/2602.22603)
+- [Process Reward Agents for Steering Knowledge-Intensive Reasoning](https://arxiv.org/abs/2604.09482)
+- [Nemotron 3 Super: Open, Efficient Mixture-of-Experts Hybrid Mamba-Transformer Model for Agentic Reasoning](https://arxiv.org/abs/2604.12374) - NVIDIA; nice technical report
+- [SpatialEvo: Self-Evolving Spatial Intelligence via Deterministic Geometric Environments](https://arxiv.org/abs/2604.14144)
+- [LongAct: Harnessing Intrinsic Activation Patterns for Long-Context Reinforcement Learning](https://arxiv.org/abs/2604.14922)
+- [PersonaVLM: Long-Term Personalized Multimodal LLMs](https://arxiv.org/abs/2604.13074) - multi-turn reasoning for retrieval/relevance of memories in VLM context
+- [EvoMaster: A Foundational Evolving Agent Framework for Agentic Science at Scale](https://arxiv.org/abs/2604.17406)
+- [Reward Hacking in the Era of Large Models: Mechanisms, Emergent Misalignment, Challenges](https://arxiv.org/abs/2604.13602)
+- [Co-Evolving LLM Decision and Skill Bank Agents for Long-Horizon Tasks](https://arxiv.org/abs/2604.20987)
+- [Reuse your FLOPs: Scaling RL on Hard Problems by Conditioning on Very Off-Policy Prefixes](https://arxiv.org/abs/2601.18795)
+- [PRL-Bench: A Comprehensive Benchmark Evaluating LLMs' Capabilities in Frontier Physics Research](https://arxiv.org/abs/2604.15411)
+- [Rewarding the Scientific Process: Process-Level Reward Modeling for Agentic Data Analysis](https://arxiv.org/abs/2604.24198)
+- [Large Language Models Explore by Latent Distilling](https://arxiv.org/abs/2604.24927)
+- [Web2BigTable: A Bi-Level Multi-Agent LLM System for Internet-Scale Information Search and Extraction](https://arxiv.org/abs/2604.27221)
+- [HeavySkill: Heavy Thinking as the Inner Skill in Agentic Harness](https://arxiv.org/abs/2605.02396)
+- [RemoteZero: Geospatial Reasoning with Zero Human Annotations](https://arxiv.org/abs/2605.04451) - cool kind of self-supervised approaches to geospatial reasoning
+- [OpenSearch-VL: An Open Recipe for Frontier Multimodal Search Agents](https://arxiv.org/abs/2605.05185)
+- [LLMs Improving LLMs: Agentic Discovery for Test-Time Scaling](https://arxiv.org/abs/2605.08083)
+- [Your Language Model is Its Own Critic: Reinforcement Learning with Value Estimation from Actor's Internal States](https://arxiv.org/abs/2605.07579)
+- [Beyond Reasoning: Reinforcement Learning Unlocks Parametric Knowledge in LLMs](https://arxiv.org/abs/2605.07153)
+- [MAP: A Map-then-Act Paradigm for Long-Horizon Interactive Agent Reasoning](https://arxiv.org/abs/2605.13037) - "MAP consists of three stages: (1) Global Exploration, acquiring environment-general priors; (2) Task-Specific Mapping, constructing a structured cognitive map; and (3) Knowledge-Augmented Execution, solving tasks grounded on the map. Experiments show consistent gains across benchmarks and LLMs. On ARC-AGI-3, MAP enables frontier models to surpass near-zero baseline performance in 22 of 25 game environments."
+- [NanoResearch: Co-Evolving Skills, Memory, and Policy for Personalized Research Automation](https://arxiv.org/abs/2605.10813)
+- [Nudging Beyond the Comfort Zone: Efficient Strategy-Guided Exploration for RLVR](https://arxiv.org/abs/2605.15726)
+- [CopT: Contrastive On-Policy Thinking with Continuous Spaces for General and Agentic Reasoning](https://arxiv.org/abs/2605.20075)
+- [From Reasoning Chains to Verifiable Subproblems: Curriculum Reinforcement Learning Enables Credit Assignment for LLM Reasoning](https://arxiv.org/abs/2605.22074)
+- [ACC: Compiling Agent Trajectories for Long-Context Training](https://arxiv.org/abs/2605.21850)
+- [SkillOpt: Executive Strategy for Self-Evolving Agent Skills](https://arxiv.org/abs/2605.23904)
+- [Language Models Need Sleep](https://arxiv.org/abs/2605.26099) - "Transformer-based large language models are increasingly used for long-horizon tasks; however, their attention mechanism scales poorly with context length. To handle this, we study a sleep-like consolidation mechanism in which a model periodically converts recent context into persistent fast weights before clearing its key-value cache."
+- [Efficient Agentic Reinforcement Learning with On-Policy Intrinsic Knowledge Boundary Enhancement](https://arxiv.org/abs/2605.26952) - routing related maybe; "In this paper, we propose AKBE (Agentic Knowledge Boundary Enhancement), an on-policy method that dynamically probes the model's intrinsic knowledge boundary through dual-path (with-tool and no-tool) rollouts during training. We define the knowledge boundary as the per-instance determination of whether tools are required and the minimum tool calls necessary. By comparing correctness across paths, AKBE categorizes trajectories and constructs targeted supervisory signals that guide efficient tool-use patterns for each question."
+- [DenoiseRL: Bootstrapping Reasoning Models to Recover from Noisy Prefixes](https://arxiv.org/abs/2605.28421)
+- [QUEST: Training Frontier Deep Research Agents with Fully Synthetic Tasks](https://arxiv.org/abs/2605.24218)
+- [LongTraceRL: Learning Long-Context Reasoning from Search Agent Trajectories with Rubric Rewards](https://arxiv.org/abs/2605.31584)
+- [Harness-1: Reinforcement Learning for Search Agents with State-Externalizing Harnesses](https://arxiv.org/abs/2606.02373)
+- [OmniOPD: Logit-Free On-Policy Distillation via Speculative Verification](https://arxiv.org/abs/2606.01476)
+- [Reproducing, Analyzing, and Detecting Reward Hacking in Rubric-Based Reinforcement Learning](https://arxiv.org/abs/2606.04923)
+- [AdaPlanBench: Evaluating Adaptive Planning in Large Language Model Agents under World and User Constraints](https://arxiv.org/abs/2606.05622)
+- [Latent Reasoning with Normalizing Flows](https://arxiv.org/abs/2606.06447)
+- [SCOPE: Signal-Calibrated On-Policy Distillation Enhancement with Dual-Path Adaptive Weighting](https://arxiv.org/abs/2604.10688)
+- [Reinforcement Learning from Rich Feedback with Distributional DAgger](https://arxiv.org/abs/2606.05152)
+- [On the Geometry of On-Policy Distillation](https://arxiv.org/abs/2606.07082)
+- [Rethinking the Divergence Regularization in LLM RL](https://arxiv.org/abs/2606.09821)
+- [Verifiable Environments Are LEGO Bricks: Recursive Composition for Reasoning Generalization](https://arxiv.org/abs/2606.12373)
+- [Demystifying Hidden-State Recurrence: Switchable Latent Reasoning with On-Policy Reinforcement Learning](https://arxiv.org/abs/2606.13106)
+- [MaxProof: Scaling Mathematical Proof with Generative-Verifier RL and Population-Level Test-Time Scaling](https://arxiv.org/abs/2606.13473)
+- [Breaking Entropy Bounds: Accelerating RL Training via MTP with Rejection Sampling](https://arxiv.org/abs/2606.12370)
+- [APPO: Agentic Procedural Policy Optimization](https://arxiv.org/abs/2606.12384)
+- [SciOrch: Learning to Orchestrate Expert LLMs for Solving Frontier Multimodal Scientific Reasoning Tasks](https://arxiv.org/abs/2606.15872)
+- [Context-Aware RL for Agentic and Multimodal LLMs](https://arxiv.org/abs/2606.17053)
+- [Multi-Turn Reflective Masking Elicits Reasoning in Mask Diffusion Models](https://arxiv.org/abs/2606.16700)
+- [Deep Research in Physical Sciences: A Multi-Agent Framework and Comprehensive Benchmark](https://arxiv.org/abs/2606.18648) - physics reasoning still difficult June 2026
+- [NatureBench: Can Coding Agents Match the Published SOTA of Nature-Family Papers?](https://arxiv.org/abs/2606.24530) - "Evaluating ten frontier agent configurations under a strict web-search-disabled protocol, we find that the strongest model surpasses SOTA on only 17.8% of tasks under the g>0.1 criterion. Analysis of method pathways reveals that agents succeed primarily through methodological translation, converting scientific tasks into familiar supervised prediction problems, rather than through genuine scientific invention. Failures are dominated by wrong method choice and insufficient compute budget, not by task misunderstanding."
+- [Information-Aware KV Cache Compression for Long Reasoning](https://arxiv.org/abs/2606.26875)
+- [OPID: On-Policy Skill Distillation for Agentic Reinforcement Learning](https://arxiv.org/abs/2606.26790)
+- [AGORA: An Archive-Grounded Benchmark for Agentic Workplace Document Reasoning](https://arxiv.org/abs/2606.24526)
+- [CoffeeBench: Benchmarking Long-Horizon LLM Agents in Heterogeneous Multi-Agent Economies](https://arxiv.org/abs/2606.16613) - Sakana AI; nice business simulation and reasoning setup, they have project page also [https://pub.sakana.ai/coffeebench/index.html](https://pub.sakana.ai/coffeebench/index.html)
+- [Scaling the Horizon, Not the Parameters: Reaching Trillion-Parameter Performance with a 35B Agent](https://arxiv.org/abs/2606.30616)
+- [DOPD: Dual On-policy Distillation](https://arxiv.org/abs/2606.30626)
+- [Graph-Native Reinforcement Learning Enables Traceable Scientific Hypothesis Generation through Conceptual Recombination](https://arxiv.org/abs/2607.00924)
+- [EvoPolicyGym: Evaluating Autonomous Policy Evolution in Interactive Environments](https://arxiv.org/abs/2607.02440)
+- [When Search Agents Should Ask: DiscoBench for Clarification-Aware Deep Search](https://arxiv.org/abs/2606.27669) - "... we introduce DiscoBench, a benchmark for clarification-aware deep search, designed to evaluate whether search agents can proactively identify ambiguity, ask effective clarification questions, and recover correct reasoning paths through user interaction."
+- [The Mirage of Optimizing Training Policies: Monotonic Inference Policies as the Real Objective for LLM Reinforcement Learning](https://arxiv.org/abs/2606.29526)
+- [EdgeBench: Unveiling Scaling Laws of Learning from Real-World Environments](https://arxiv.org/abs/2607.05155) - cool study and findings, reinforcement learning etc.
+- [Is One Layer Enough? Training A Single Transformer Layer Can Match Full-Parameter RL Training](https://arxiv.org/abs/2607.01232)
+- [Single-Rollout Asynchronous Optimization for Agentic Reinforcement Learning](https://arxiv.org/abs/2607.07508)
+- [Trust Region Policy Distillation](https://arxiv.org/abs/2607.04751)
+- [Demystifying On-Policy Distillation: Roles, Pathologies, and Regulations](https://arxiv.org/abs/2607.13399)
+- [Spectral Rewiring for Exploration, Purification, and Model Merging](https://arxiv.org/abs/2607.03065)
+- [Tailoring Teaching to Aptitude: Direction-Adaptive Self-Distillation for LLM Reasoning](https://arxiv.org/abs/2605.22263)
+- [S1-Omni: A Unified Multimodal Reasoning Model for Scientific Understanding, Prediction, and Generation](https://arxiv.org/abs/2607.15686) - nice AI for science model, see project page also [https://scienceone-ai.github.io/S1-Omni/](https://scienceone-ai.github.io/S1-Omni/)
+- [DeepSearch-World: Self-Distillation for Deep Search Agents in a Verifiable Environment](https://arxiv.org/abs/2607.07820)
+- [ISO: An RLVR-Native Optimization Stack](https://arxiv.org/abs/2607.19331)
+- [Evoflux: Inference-Time Evolution of Executable Tool Workflows for Compact Agents](https://arxiv.org/abs/2606.12674) - SLMs ideas
+- [Skill Self-Play: Pushing the Frontier of LLM Capability with Co-Evolving Skills](https://arxiv.org/abs/2607.22529)
+- [The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation](https://arxiv.org/abs/2607.24720)
+- [Flux-OPD: On-Policy Distillation with Evolving Contexts](https://arxiv.org/abs/2607.28022)
+- [Beacon: Knowing When and How to Perform Agentic Visual Reasoning](https://arxiv.org/abs/2607.28595)
+- [Frontis-MA1: Training an AI4AI Model towards Recursive Self-Improvement in Machine Learning Engineering](https://arxiv.org/abs/2607.28568)
+- [Enhancing Rubric-based RL via Self-Distillation](https://arxiv.org/abs/2607.18082)
+- [LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks](https://arxiv.org/abs/2608.01964)
+- [When Teachers Mislead: Spurious-Signal-Aware On-Policy Distillation](https://arxiv.org/abs/2608.03632)
+- [ChronoVision: Temporal Reasoning via Latent State Reconstruction](https://arxiv.org/abs/2608.05631)
+- [Reasoning Denoiser: Denoising Reasoning Traces for Hallucination Detection in Large Reasoning Models](https://arxiv.org/abs/2607.22098)
+- [Internalizing the Future: A Unified Agentic Training Paradigm for World Model Planning](https://arxiv.org/abs/2606.27483) - has reasoning for search applications examples, nice paper
+- [Stealing Reasoning Traces from Proprietary LLM APIs](https://arxiv.org/abs/2608.09867)
+- [Co-Evolution in Agentic Systems: Toward Self-Directed Evolution Beyond Human Design](https://arxiv.org/abs/2608.10299)
+- [OpenART: Scaling Agent Red Teaming via Open-Ended Environment Evolution](https://arxiv.org/abs/2608.00677)
+- [Learning to Orchestrate Agents in Natural Language with the Conductor](https://arxiv.org/abs/2512.04388) - Sakana AI, ICLR 2026
+- [Evo-Bench: Can Language Models Improve Agent Harness?](https://arxiv.org/abs/2608.09096)
+- [Intern-S2-Mobius: Foundation Model with Decoupled Knowledge and Reasoning](https://arxiv.org/abs/2608.14290)
+- [How Do Agents Fail on AutoResearch: End-to-End Diagnostic Evaluation on 100 Real-World Frontier Research Tasks](https://arxiv.org/abs/2608.14905)
+- [Agentic ESOpt: Fine-Tuning Long-Horizon LLM Agents with Minimal GPU Requirements](https://arxiv.org/abs/2608.17310) - evolution strategies
+- [SPADE: Self-Play in Adaptive Synthetic Executable Environments](https://arxiv.org/abs/2608.19197)
+- [SWE-bench Science: Can Coding Agents Resolve Engineering Tasks in Science?](https://arxiv.org/abs/2608.19799)
+- [From Solvers to Research: Large Language Model-Driven Formal Mathematics at the Research Frontier](https://arxiv.org/abs/2607.07779) - AI for Math, Terence Tao
+- [Evidence-Informed LLM Beliefs for Continual Scientific Discovery](https://arxiv.org/abs/2606.29182)
+- [Every Coin Has Two Sides: On the Dual Nature of Generalization in On-Policy Distillation of Large Language Models](https://arxiv.org/abs/2608.16647)
+- [Beyond Imitation: Filtering On-Policy Distillation by Reasoning Progress](https://arxiv.org/abs/2608.19408)
+- [On-policy Distillation with Verifiable Reward](https://arxiv.org/abs/2608.24696)
+- [Is Next-Chunk Reasoning RL Really Better than SFT? Revisiting Training Strategies under no-CoT Data](https://arxiv.org/abs/2608.23256)
+- [Prefix Sliding for efficient test-time scaling](https://arxiv.org/abs/2608.26070)
+- [TTPO: Test-Time Policy Optimization](https://arxiv.org/abs/2608.27448)
+- [D 3 MOPD: Adaptive Dynamic Domain ScheDuling for Efficient Multi-Teacher Distillation](https://arxiv.org/abs/2608.24987)
+- [Understanding Evolution Strategies for LLM Reasoning: Broader Reasoning Coverage than GRPO](https://arxiv.org/abs/2608.27351)
+- [WarpSAC: Towards the Pinnacle of Scalable Off-policy RL by Rethinking Exploration and Exploitation](https://arxiv.org/abs/2608.24479)
+- [On-Policy Self-Distillation without Any Supervision](https://arxiv.org/abs/2608.06296)
+- [Language Models Can Control Their Own Attention](https://arxiv.org/abs/2609.02737)
+- [Random Attention: Rethinking KV Cache Eviction for Efficient Reasoning](https://arxiv.org/abs/2609.03430)
+- [Post-Training Language Models for Gold-Medal Performance in Coding Competitions](https://arxiv.org/abs/2609.02849)
+- [Does On-Policy Distillation Really Distill? From Noisy Teacher to Self-Improvement](https://arxiv.org/abs/2608.31046)
+- [RISE: Recursive Improvement via Self-Extrapolating Policy Distillation](https://arxiv.org/abs/2609.05295)
+- [MemoryWalker: Stop Training Agents on Contexts They Never Saw](https://arxiv.org/abs/2609.00865)
+- [BeaconKV: Key-Value Cache Compression Guided by Beacon Queries for Efficient Large Reasoning Model Inference](https://arxiv.org/abs/2609.04971)
+- [PARSER: Read in Parallel, Reason in Depth for Long-Context LLM Agents](https://arxiv.org/abs/2609.06702)
+- [SAEScientist-Bench: Can AI Agents Conduct Autonomous SAE Interpretability Research?](https://arxiv.org/abs/2609.09113)
+- [Benchmark Radar: A Living Database and Search Engine for AI Benchmarks and Evaluation](https://arxiv.org/abs/2609.11115)
+- [Expert-Space Exploration in MoE Reinforcement Learning](https://arxiv.org/abs/2609.13058)
+- [When Agents Slow Down: Understanding LLM Agents' Test-Time Strategies via Elo-per-token Analysis](https://arxiv.org/abs/2609.15309)
+- [Confidence Comes from Experience: Experiential Confidence Estimation from Reasoning to Agents](https://arxiv.org/abs/2609.17708)
+- [An Empirical Study of Harness Design for Coding Agents](https://arxiv.org/abs/2609.20804)
+- [EvoHarness-RL: Learning Self-Evolving Runtime Harness for Long-Horizon LLM Agents](https://arxiv.org/abs/2608.05446)
+- [CodeMidas: Scaling Agentic Coding RL Environments from Code Itself](https://arxiv.org/abs/2609.22068)
+- [Harness-Zero: Harness Distillation via Agent-as-Harness](https://arxiv.org/abs/2609.24974)
+- [Agensh: Scaling Organizational Intelligence to 1,024 Agents](https://arxiv.org/abs/2609.26781)
+- [Agent-Editing World Model: Rethinking World Modeling for LLM Agents](https://arxiv.org/abs/2609.28416)
+- [ExplorationBench: Measuring AI Systems' Exploration in Verifiable Alien Worlds](https://arxiv.org/abs/2609.30199)
+- [Rufus-Air: An Open LLM Post-Training Recipe](https://arxiv.org/abs/2609.29421) - nice end-to-end descriptions and tech report
+- [SLCA-GRPO: Resolving Cross-Segment Credit Misattribution in Tool-Calling RL](https://arxiv.org/abs/2609.29050)
+- [Knowing When Thinking Is Not Enough: Teaching Small Reasoning Models to Reason Beyond Their Parametric Knowledge](https://arxiv.org/abs/2609.34327)
+- [EasyPPO: Stabilizing the Critic Is Key](https://arxiv.org/abs/2609.36802)
+- [Marathoner: Ultra-Long-Horizon Autonomous Intelligence](https://arxiv.org/abs/2609.34378)
+- [QwenGyre: An Elastic Reinforcement Learning Framework for Training xLong-Horizon Agents](https://arxiv.org/abs/2609.33848)
+- [Mid-Harness: Scaling Actions Between Model and Harness for Terminal Agents](https://arxiv.org/abs/2609.39982)
+- [Language Models that Play Chess and Explain Their Moves](https://arxiv.org/abs/2610.03695)
+- [OmniReasoning: Pushing the Limits of Audio-Visual Joint Reasoning](https://arxiv.org/abs/2609.39490)
+- [OPD Before RL: Warm-Starting Rubric-Based RL with On-Policy Distillation](https://arxiv.org/abs/2610.02781)
+- [Gains and Collapse in On-Policy Distillation:A Reinforcement Learning Perspective](https://arxiv.org/abs/2610.03185)
+- [Scaling to Tens of Thousands of Test-Time Iterations with Loop-Native Attention Residuals](https://arxiv.org/abs/2610.11570)
+- [SatNav: A Scalable Benchmark for Long-Horizon UAV Vision-Language Navigation from Satellite Imagery](https://arxiv.org/abs/2609.31507) - NeurIPS 2026 Evaluations and Datasets
+- [When Do Biological Reasoning Models Use Their Biological Inputs?](https://arxiv.org/abs/2610.00898)
+- [Stateless Language Agents: Scaling Long-Horizon Automated Research](https://arxiv.org/abs/2610.07625) - deep research
+- [PANINI-DR: Controlled Deep Research through Generative Semantic Workspaces](https://arxiv.org/abs/2610.15208)
+- [Tev: Scaling Long-Horizon Agentic Environments with Dense Progress Rewards](https://arxiv.org/abs/2610.18868)
+- [Hybrid Reasoning Agents](https://arxiv.org/abs/2610.18861)
+
+#### Topic - Audio Reasoning
+
+- [Reinforcement Learning with Evolving Rubrics as Rewards for Audio Reasoning](https://arxiv.org/abs/2608.02831)
+
+#### Topic - Routing
+
+- [When to Reason: Semantic Router for vLLM](https://arxiv.org/abs/2510.08731)
+- [TCAndon-Router: Adaptive Reasoning Router for Multi-Agent Collaboration](https://arxiv.org/abs/2601.04544)
+- [ThinkRouter: Efficient Reasoning via Routing Thinking between Latent and Discrete Spaces](https://arxiv.org/abs/2602.11683)
+
+#### Topic - Reasoning in Diffusion Models
+
+- [Video Models Reason Early: Exploiting Plan Commitment for Maze Solving](https://arxiv.org/abs/2603.30043)
+
+#### Topic - Parallel Reasoning
+
+Start with the first-linked survey.
+
+- [A Survey on Parallel Reasoning](https://arxiv.org/abs/2510.12164)
+- [Native Parallel Reasoner: Reasoning in Parallelism via Self-Distilled Reinforcement Learning](https://arxiv.org/abs/2512.07461)
+- [ThreadWeaver: Adaptive Threading for Efficient Parallel Reasoning in Language Models](https://arxiv.org/abs/2512.07843)
+- [Parallel-Probe: Towards Efficient Parallel Thinking via 2D Probing](https://arxiv.org/abs/2602.03845)
+
+#### Topic - Verifier-free RL and approaches without External Rewards
+
+**Emerging topic, seen a few papers around this theme recently.**
+
+- [Learning to Reason without External Rewards](https://arxiv.org/abs/2505.19590) - "We propose Intuitor, an RLIF method that uses a model's own confidence, termed self-certainty, as its sole reward signal. Intuitor replaces external rewards in Group Relative Policy Optimization (GRPO) with self-certainty scores, enabling fully unsupervised learning. Experiments demonstrate that Intuitor matches GRPO's performance on mathematical benchmarks while achieving superior generalization to out-of-domain tasks like code generation, without requiring gold solutions or test cases."
+- [NOVER: Incentive Training for Language Models via Verifier-Free Reinforcement Learning](https://arxiv.org/abs/2505.16022)
+- [Reinforcing General Reasoning without Verifiers](https://arxiv.org/abs/2505.21493)
+- [RLPR: Extrapolatin

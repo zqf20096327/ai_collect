@@ -1,0 +1,302 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <img src="assets/logo.svg" alt="CoursePilot" width="218" height="60">
+</picture>
+
+### 可追溯、会进化的课程学习助手
+
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![License](https://img.shields.io/badge/License-MIT-3DA639)](LICENSE)
+
+**简体中文** · [English](README.en.md)
+
+</div>
+
+**上传这门课的教材，得到一个记得你学到哪的学习 agent。** 每句结论都能落回教材页码，做过的题按概念沉淀成掌握度，计划按掌握度调整。
+
+它自己决定这一轮查什么、加载哪份规程、要不要写计划写笔记写记忆，信息不够时反问你；该做没做的步骤由服务端检出来补上。底下是一套完整的 agent harness，[清单在这里](#4-harness-里有什么)。
+
+个人开源项目，本地运行。接任何说 OpenAI Chat Completions 或 Responses 协议的模型服务。
+
+![对话取证](Docs/images/chat-citation.png)
+
+## 目录
+
+1. [和「把教材喂给聊天工具」有什么不同](#1-和把教材喂给聊天工具有什么不同) — 三件决定它是 agent 的事
+2. [安装](#2-安装) — 五行命令跑起来，含模型配置
+3. [能做什么](#3-能做什么) — 取证问答 · 知识页 · 计划 · 档案 · 开发者模式
+4. [Harness 里有什么](#4-harness-里有什么) — 工具循环 · 权限 · 上下文预算 · 可观测
+5. [边界](#5-边界) — 明确不做的事
+6. [开发](#6-开发) — 检查脚本与文档索引
+
+---
+
+## 1. 和「把教材喂给聊天工具」有什么不同
+
+三件事决定了它是 agent 而不是问答框：
+
+**一、回答有出处，而且出处可核对。** 每句结论标到教材文件名与页码，点开看原文片段。
+教材里没有的内容会明确标出「以下不是当前教材结论」，联网查来的资料带独立标记。
+三类来源统一编号，底部「依据」面板一行一条列出，左侧色条区分类别、出处右对齐成列——带页码的教材原文、标了概念名的知识页转述
+（点开还能看到它依据的教材页），以及网页链接。你永远知道这句话是从哪来的。
+
+**二、掌握度是算出来的，不是模型说的。** 做过的题按概念沉淀成证据事件，数值走确定性
+算法，模型只负责判断这道题考的是哪个概念。证据不够的概念显示「数据不足」而不是编一个
+百分比。答题记录只增不改，掌握度随时能从记录重算。
+
+两个算法都是现成的，不是自研——教育测量与间隔重复这两个领域各有多年积累，重新发明只会
+更差。这里用的是它们的简化版，参数固定、逐步可追：
+
+| 算法 | 出处 | 在这里做什么 |
+| --- | --- | --- |
+| **BKT**（Bayesian Knowledge Tracing） | Corbett & Anderson, *Knowledge tracing: Modeling the acquisition of procedural knowledge*, 1994（[原文](https://doi.org/10.1007/BF01099821)） | 四参数版本，答对答错都不直接下结论，更新「已掌握」的概率 |
+| **FSRS**（Free Spaced Repetition Scheduler） | 开源项目 [open-spaced-repetition](https://github.com/open-spaced-repetition/fsrs4anki)，DSR 模型 | 用 Difficulty / Stability / Retrievability 三个量算遗忘与下次复习日 |
+
+实现取舍与已知边界见[掌握度建模](Docs/工程文档/掌握度建模.md)。**参数没有在真实答题数据上标定过**，
+所以那个分数在同一门课内横向比较有意义，「掌握了 88%」这种绝对解读没有依据——文档里写明了这一点。
+
+**三、规程由服务端兜底，不只靠提示词。** 提示词能表达要求，不能保证执行——实测只靠
+SKILL.md 约束时，9 条冒烟用例里练题闭环只过了 6 条：模型会跳过概念归因、漏写题目、批改完不闭合状态。
+所以出题、评分、归因这些必须发生的副作用由服务端校验，漏了就补救。
+
+---
+
+## 2. 安装
+
+在 Claude Code 或 Codex 里打开这个项目链接，说：
+
+```
+帮我安装这个项目
+```
+
+仓库里的 [AGENTS.md](AGENTS.md) 写清了步骤、依赖和配置要点，Agent 照着做即可。
+
+环境依赖：Python 3.11+、Node 18+、pnpm：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r backend/requirements.txt
+cd frontend && pnpm install && cd ..
+cp .env.example .env        # 填入你的模型服务信息
+./scripts/dev.sh
+```
+
+打开 `http://127.0.0.1:5173`，输任意用户名进入。每个用户名一份独立的数据。
+
+![登录](Docs/images/login.png)
+
+### 2.1 配置模型
+
+`.env` 里这五项决定能不能真的调模型：
+
+```
+TEXT_PROVIDER=            # 显示用的名字，随便填
+TEXT_BASE_URL=            # 填到 /chat/completions 之前那一段
+TEXT_API_KEY=             # 你自己的 key
+TEXT_MODEL=               # 模型 id
+COURSEPILOT_ENABLE_REMOTE_LLM=1
+```
+
+任何说 OpenAI Chat Completions 或 Responses 协议的服务都能接入。后者要加 `TEXT_PROTOCOL=responses`，`TEXT_BASE_URL` 填到 `/responses` 之前那一段。两条协议都要求支持流式和 function calling，否则工具循环跑不起来。厂商私有参数走 `TEXT_EXTRA_BODY`：
+
+```
+TEXT_EXTRA_BODY={"thinking":{"type":"disabled"}}
+```
+
+没配齐或开关是 0 时服务照样启动，回答由本地兜底生成并明确标注——避免误耗你的额度。
+
+`VISION_*` 配好才支持拍照提问和扫描版 PDF 转文字；`RESEARCH_SERPAPI_API_KEY` 配好才会把
+联网工具下发给模型。两者都可选。`VISION_CHAT_MODEL` 单独留给拍照提问，留空就复用
+`VISION_MODEL`——专用 OCR 模型擅长逐页抄字，看懂手写、图表与版面要靠通用多模态模型。
+
+### 2.2 想先看看效果
+
+```bash
+.venv/bin/python scripts/example_setup.py
+```
+
+下载一份公开教材（约 120 KB）、建课、建索引，落在 `example` 这个用户名下。
+用它登录就有东西可问。教材不在仓库里，脚本从各自官网下载。
+
+---
+
+## 3. 能做什么
+
+**取证问答。** 每轮先解析这个问题属于哪门课，再在那门课的资料里检索。
+解析不出唯一课程时会先问你，不跨课程猜。检索是语义向量 + 关键词混合，
+中文问题能命中英文教材；而且一次检索同时覆盖两处——教材原文与这门课自己的知识页，
+各占固定名额，谁也挤不掉谁。
+
+**模型给自己写的知识页。** 给一门课打开它，教材自己的目录会被自底向上走一遍：
+最细的小节页只读它那几页的原文，往上的章节页读它下面的小节页，根节点写课程首页。
+这条路径上没有任何检索，所以不会因为相似度低而漏掉哪一节。写成的页面成为第三类可引用来源，
+课程结构也常驻在每一轮的上下文里——「这门课整体分成哪几部分」不用去查就答得出。
+开始构建之前会先告诉你这次要花多少次模型调用。
+
+![知识页](Docs/images/library-wiki.png)
+
+**看得见它在做什么。** 用了哪个工具、查了什么、命中几段、耗时多久，都显示出来。
+失败的那一步也显示，不悄悄跳过。
+
+![工具链](Docs/images/chat-tools.png)
+
+**开发者模式。** 在设置里打开开关，Agent 回复开头的名字就变成可点的；二次确认之后
+从右侧滑出一块面板，装着这一轮完整的 trace。它先讲 ReAct 循环——逐轮列出
+`reasoning_content`、`assistant.content`、发出的 `tool_calls`，以及厂商真正返回的
+`finish_reason`——统计那部分（课程判定、usage、原始字段）折在下面。工具的 `content`
+只在你点开那一步时才去取，所以列表本身是两 KB 左右，而不是三百 KB。
+开关关掉时那个名字就是普通文本，页面上根本没有按钮。
+
+![开发者模式](Docs/images/dev-trace.png)
+
+**五个内置 Skill。** 说出对应的话会自动加载，不用手动选：
+
+| 能力 | 什么时候用 |
+| --- | --- |
+| `practice` | 练题、提交作答、要讲评或变式题 |
+| `flashcards` | 学习卡片、抽认卡、知识点清单 |
+| `diagram` | 流程图、思维导图、时序图 |
+| `mistake_review` | 复盘错题、找薄弱环节 |
+| `research` | 查教材外的资料，深度研究 |
+
+也能导入自己写的 skill：单个 `SKILL.md`、含它的 zip，或直接选一个目录。
+带的参考文件会一起并进规程；导入的 skill 默认关着，权限按白名单收窄。
+
+图示直接渲染成 SVG，可以下载：
+
+![图示](Docs/images/chat-diagram.png)
+
+**学习计划。** 在对话里说要排计划，助手写进来。每次改动升一版，过去的条目不动。
+顶部一张周网格看这周排满了没、今天要做什么，下面按天分段列出完整条目。
+
+![学习计划](Docs/images/plan.png)
+
+**学习档案。** 按概念看掌握度与它背后的每一条证据，还有一本按概念记账的错题本——
+同一个概念连续答对两次就从里面清掉。
+
+![学习档案](Docs/images/archive.png)
+
+**课程笔记。** 整理好的卡片和梳理稿存成 markdown，界面里能直接看。
+
+![课程笔记](Docs/images/library-notes.png)
+
+**上下文透明。** 输入框旁边显示这一轮占了窗口的多少，展开能看到每一段的 token 估算。
+六个分区各有自己的限额，某一段再长也吃不掉别人的地方。历史太长会自动压缩成摘要。
+
+![上下文](Docs/images/context.png)
+
+**使用说明页。** 清单和能力都读自当前实例的实际状态。
+
+![使用说明](Docs/images/help.png)
+
+**随时换模型和思考档位。** 底部状态栏四个下拉：模型、思考（关 / 自动 / 开）、
+思考深度、界面语言。想配几个模型就在 `.env` 里往下加编号，同一家的第二个模型只要写一行
+model id。语言下拉只换界面外壳，回答仍然跟着你提问用的语言走。
+
+![模型切换](Docs/images/model-picker.png)
+
+**数据可以删干净。** 会话在侧栏悬停就能改名或删除；教材在知识库里删；课程在管理页删。注意：删除前会列出连带影响——删一门课会带走它的教材、概念、掌握度、计划、笔记与会话。
+
+![删除确认](Docs/images/delete-confirm.png)
+
+---
+
+## 4. Harness 里有什么
+
+学习这件事只是场景。下面这些是让 agent 在真实任务上可靠的部分，换个领域照样要有。
+
+**工具循环。** 注册了 22 个工具，按副作用分六档能力：读课程、写状态、写笔记、联网、派子任务、
+无副作用；连上 MCP server 之后，它带来的工具统一落在第七档。
+花钱的和会改用户数据的单独设次数上限。同一轮里参数相同的读工具复用结果、写工具不复用——
+连答三道同概念的题，写证据的参数就是逐字相同的。轮次用满时要明确告诉模型「别再调了，
+用手上的资料收尾」，不然它会把工具调用当正文吐出来。
+
+**权限是整体替换，不是并集。** skill 激活后用它声明的完整工具集，声明即权限。
+两个基座工具（写记忆、反问用户）每份 profile 都补上——它们跨规程通用，又不碰任何数据。
+导入的第三方 skill 按白名单收窄，越权在注册期报错而不在运行期静默降权。
+
+**外部工具按同一套规矩进来。** 连一台 Streamable HTTP 的 MCP server，它的工具就以
+`mcp__<slug>__<tool>` 的命名空间进入模型的工具集，单独占一档能力。工具清单在连接那一刻
+拍了快照，所以 server 事后换不成别的东西；它自己的描述与 annotation 一律当作不可信文本，
+URL 在发出任何请求之前先对着私有网段与云元数据端点核一遍。
+
+**服务端兜底规程。** 上面第三点讲的那件事在四处都用了同一个套路：练题规程有步骤没做完、
+用户要求改计划却没调写计划的工具、用户说了「记住」却没调写记忆的工具、出了选择题却没把选项
+摆成按钮——都由服务端检出来补一轮。每处只补一次，避免和模型互相顶住。
+
+**跨轮状态。** artifacts 分公开与模型私有两档（标准答案存私有档，界面永不显示）；
+长期记忆是 markdown 的受管区块，模型只能改自己那部分。
+
+**上下文预算。** 窗口切成六个分区——系统、当前问题、历史、知识、证据、skill——各有自己的
+token 限额，且都由同一个配置推导出来，换成窗口更小的模型只改一行。工具定义与模型自己的
+思考内容都要计入总量：实测一轮里厂商回的 prompt_tokens 是 4726，而补上它们之前我们只报 3424，
+工具定义本身是系统提示的 2.2 倍。
+每一段都上报给界面，历史超阈值先压缩成摘要而不是丢弃；整轮总量在工具循环的每一轮重新核一次，
+因为每一轮都会往上下文里追加东西。
+
+**反问走新回合。** 选项渲染成按钮，点一下等于发一条新的用户消息。做不到「暂停这一轮等人」——
+一个会话同时只允许一个活跃 turn，60 秒心跳过期就会被抢占。
+
+**可观测与评测。** 每轮一条 JSONL trace，带 `prompt_version`、每个工具的决策，以及
+ReAct 每一轮厂商原样返回的内容，大 payload 分离存放；工具自己的输出留在消息表里，按需回读。
+评测分几层：冒烟 benchmark、judge 抽样、掌握度回放、一份带硬约束的固定样本集，
+以及三个端到端脚本——一个从空库走完整旅程，一个把同一件事拆到几轮里验多轮任务，
+一个跑资料库链路（上传 → 索引 → 结构 → 知识页）。要比一个功能开与不开的差别，
+另有一套三臂对照评测与一份不花额度的浏览器验证脚本。断言只看结构化行为，不断言回答措辞，
+模型换个说法不该让测试假失败。要测一个功能有没有收益时，判据是能确定性判定的事实锚点——
+「那个远处的事实有没有出现在回答里」——而不是让模型给文字打分。
+
+**边界由测试守着。** 分层是 `app → modules/adapters → contracts/core`，模块之间只通过
+`modules.X.api` 里的 Port 互相看见，跨层引用会让 `test_module_boundaries.py` 挂掉。
+装配只在 `backend/app/bootstrap.py` 一处，换模型、换检索、换存储都是改这一个文件。
+
+---
+
+## 5. 边界
+
+- **没有 shell 执行。** 学习助手没有理由执行命令，导入的 skill 里的脚本一律不收；
+  MCP server 也只走 Streamable HTTP，stdio 那种传输意味着要起一个进程。
+- 工具按副作用分级准入，导入的第三方 skill 拿不到笔记与联网，能读计划但不能改；
+  记忆工具是所有 skill 共用的基座，导入的也有
+- 回看会话历史只回放当前课程的轮次，换了课就读不到上一门的教材原文
+- 不做整卷模拟考试、社交对战、多租户商业化
+- 不含任何发布或部署链路
+
+---
+
+## 6. 开发
+
+```bash
+./scripts/check.sh
+```
+
+跑后端全部测试、Python 编译检查、前端类型检查与生产构建。不需要 API key，
+不发网络请求。
+
+后端 FastAPI + SQLite（标准库，显式 migration），前端 React 19 + TypeScript + Vite。
+数据库改动一律新增 migration，不改已有条目。
+
+| 文档 | 内容 |
+| --- | --- |
+| [项目介绍](Docs/overview.md) | 各模块的设计思路与取舍 |
+| [产品设计](Docs/coursepilot-2.0.md) | 定位、功能模块、分期规划 |
+| [技术架构](Docs/coursepilot-2.0-architecture.md) | 模块边界、Skill 体系、存储、评测分层 |
+| [工程文档](Docs/工程文档/README.md) | 按子系统各一篇：Agent 循环、工具、上下文、知识库、记忆、模型接入、评测、安全 |
+| [前端设计](Docs/coursepilot-2.0-frontend-design.md) | 视觉方案、信息架构、组件与状态 |
+| [开发中](Docs/development.md) | 当前进度、优先级、踩过的坑 |
+| [端到端测试](Docs/coursepilot-2.0-e2e-browser-test.md) | 浏览器回归清单 |
+
+截图由 `scripts/screenshots.py` 生成，UI 改了重跑即可。评测与端到端脚本见
+[开发中](Docs/development.md)。
+
+---
+
+## 7. License
+
+[MIT](LICENSE)

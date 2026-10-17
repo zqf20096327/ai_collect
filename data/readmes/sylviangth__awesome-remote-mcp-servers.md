@@ -1,0 +1,280 @@
+# Awesome Remote MCP Servers ![alt text](https://awesome.re/badge.svg)
+
+A curated list of remote Model Context Protocol (MCP) Servers accessible via a simple URL endpoint.
+
+🚀 <!-- MCP_COUNT -->**24 MCP servers**<!-- /MCP_COUNT --> 🔥 ready for instant integration!
+
+<div align="center">
+
+![MCP Servers](https://img.shields.io/badge/MCP%20Servers-24-brightgreen?style=for-the-badge&logo=server&logoColor=white)
+![Categories](https://img.shields.io/badge/Categories-11-blue?style=for-the-badge&logo=folder&logoColor=white)
+![Zero Setup](https://img.shields.io/badge/Zero%20Setup-✅-success?style=for-the-badge&logo=rocket&logoColor=white)
+![Instant Integration](https://img.shields.io/badge/Instant%20Integration-⚡-yellow?style=for-the-badge&logo=zap&logoColor=white)
+
+</div>
+
+## Why Hosted Cloud MCP Servers
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) lets AI applications connect to external tools and data for real-world tasks. While developers can run MCP servers locally, hosted cloud options offer significant advantages:
+
+- **Zero setup**: Connect instantly with just a URL and credentials
+- **Accessibility**: Enables non-technical users to leverage AI automation with familiar tools
+- **Easy integration**: Quickly add powerful functions to AI applications
+- **Managed infrastructure**: Benefit from provider-maintained reliability and scalability
+- **Seamless sharing**: Distribute AI agents to teammates without individual technical hurdles
+
+This repository showcases these plug-and-play MCP endpoints that can instantly enhance your AI applications. For self-hosted options, see [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers).
+
+## Categories
+
+- 🔗 [Aggregators & Integration Platforms](#agigregators--integration-platforms) - Platforms connecting multiple services and tools
+- ☁️ [Cloud Platforms](#cloud-platforms) - Major cloud providers with MCP capabilities
+- 🗄️ [Databases & Storage](#databases--storage) - Database access and storage solutions
+- 📊 [Data & Analytics](#data--analytics) - Data processing, analytics, and visualization
+- 🛠️ [Developer Tools](#developer-tools) - Tools for developers and software engineering
+- 🎮 [Gaming & Entertainment](#gaming--entertainment) - Games and entertainment experiences for AI agents
+- 🧠 [Knowledge & Memory](#knowledge--memory) - Knowledge bases and vector databases
+- 🎯 [Marketing & CRM](#marketing--crm) - Marketing automation and customer management
+- 🔎 [Search & Data Extraction](#search--data-extraction) - Search engines and information retrieval
+- 💬 [Communication & Collaboration](#communication--collaboration) - Messaging and team collaboration
+- 🎥 [Media & Content](#media--content) - Media processing and content management
+- 💳 [Payments & Commerce](#payments--commerce) - Payment processing and e-commerce solutions
+- 💹 [Finance & Crypto](#finance--crypto) - Financial services and cryptocurrency
+
+## Who's Behind This Repo
+
+This repository is maintained by [MindPal](https://mindpal.io) - a no-code platform for building AI agents and multi-agent systems that can be trained on your domain expertise, learn from your knowledge sources, orchestrate sub-agents, use browser automation, and run tools via hosted MCP servers.
+
+See MindPal agents in action with:
+
+- Zapier MCP integration: [Watch demo](https://youtu.be/KgGNbsKzKHk)
+- Make MCP integration: [Watch demo](https://youtu.be/GskAd_P5Sgc)
+- Composio MCP integration: [Watch demo](https://youtu.be/fM-n2CC8JWU)
+
+## Hosted MCP Servers
+
+### Aggregators & Integration Platforms
+
+#### [Zapier MCP](https://zapier.com/mcp)
+
+- **Offers:** Access to 7,000+ apps with fine-grained control over individual actions
+- **Access:** Sign up, create your MCP server, add desired actions, use your unique server URL
+
+#### [Make MCP](https://developers.make.com/mcp-server)
+
+- **Offers:** Turn existing "On Demand" Make Scenarios into tools for AI with bidirectional communication
+- **Access:** Create account, set up Scenarios as "On Demand," generate MCP token in Profile page
+
+#### [Composio MCP](https://mcp.composio.dev)
+
+- **Offers:** Multiple server endpoints, each connecting to specific applications with built-in authentication
+- **Access:** Create an account, select the applications you want to connect, and receive dedicated MCP server URLs for each integration
+
+#### [Activepieces MCP](https://www.activepieces.com/docs/ai/mcp)
+
+- **Offers:** Turn "Pieces" (single actions) and "Flows" (multi-step workflows) into MCP tools, with configurable inputs and outputs for MCP tools
+- **Access:** Use their cloud service or self-host. Go to AI → MCP in your Activepieces Dashboard, start connecting the tools that you want to give AI access to, use your unique server URL
+
+#### [Pipedream MCP](https://mcp.pipedream.com/)
+
+- **Offers:** Access to 2,500+ APIs and 10,000+ integration tools, with dedicated endpoints for each connected service
+- **Access:** Create an account, choose your desired integrations, and receive a unique server URL for each of your integrations
+
+#### [n8n MCP Server](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-langchain.mcptrigger/)
+
+- **Offers:** Turns n8n workflows into MCP tools, allowing AI applications to access n8n's automation capabilities and integration with hundreds of services
+- **Access:** Set up the MCP Server Trigger node in your n8n workflow, configure authentication, and use the generated MCP URL to connect
+
+#### [Useful AI MCP](https://api.usefulai.fun/mcp)
+
+- **Offers:** 340+ autonomously-built utility tools for AI agents: unit conversion, text processing, data parsing, encoding, math, cryptography, and more. New tools added continuously via autonomous build pipeline.
+- **Access:** No authentication required. Use the server URL directly: `https://api.usefulai.fun/mcp`
+
+
+#### [Supermachine Public MCP Servers](https://supermachine.ai/public-mcp-servers)
+
+- **Offers:** Access to 3939+ public MCP servers by spinning up virtual machines that run these MCP servers with minimal configuration
+- **Access:** Search and spin up remote MCPs through the Supermachine platform, then use them in your AI applications
+
+#### [Smithery](https://smithery.ai/)
+
+- **Offers:** Access to 7,316+ MCP servers built by the community, including web search, memory management, browser automation, third-party tool integrations, database query integration, and weather data APIs
+- **Access:** Create an account and access the platform's extensive library of community-built skills and extensions
+
+#### [Pabbly Connect MCP](https://forum.pabbly.com/threads/pabbly-connect-mcp-server-beta.28381/)
+
+- **Offers:** Seamless workflow automation and AI tool integration with direct access to Pabbly Connect's suite of business management applications (including CRM, email, billing, forms, and more) via MCP. Enables AI assistants to execute workflow actions, add leads, send emails, fetch data, and more, directly from your Pabbly Connect workflows.
+- **Access:** In your Pabbly Connect workflow, use the "Add to MCP server" option for any action, configure your tool, and retrieve your unique MCP Server URL from [Pabbly Connect MCP Settings](https://connect.pabbly.com/v2/app/setting/mcp-server). Use this URL as your endpoint for AI clients (e.g., Claude Desktop, etc). See [setup instructions](https://forum.pabbly.com/threads/pabbly-connect-mcp-server-beta.28381/) for full details.
+
+### Cloud Platforms
+
+_No entries yet_
+
+### Databases & Storage
+
+#### [Egnyte MCP](https://developers.egnyte.com/docs/Remote_MCP_Server)
+
+- **Offers:** Enterprise content management with 30+ tools including AI-powered document Q&A, summarization, workflow management, advanced search with metadata filtering, and Egnyte Copilot integration
+- **Access:** OAuth authentication required. Server available at `https://mcp-server.egnyte.com/sse`. 
+
+### Data & Analytics
+
+#### [Omnis Venture Intelligence MCP](https://www.bamboosnow.co/venture-intelligence-mcp-server)
+
+- **Offers:** Venture intelligence for autonomous agents with startup discovery, company scoring, diligence memo access, monitoring, and tenant-bound workspace automation
+- **Access:** Remote endpoint available at `https://www.bamboosnow.co/api/v1/mcp`. Shared intelligence is self-serve, and private workspace access is available with tenant-bound service-account keys
+
+#### [CrashStory MCP](https://github.com/DavidMelamed/crashstory-mcp)
+
+- **Offers:** Colorado crash data search, crash detail retrieval, personal injury attorney discovery, and AI-analyzed review intelligence
+- **Access:** Hosted remote endpoint at `https://crashstory-mcp-production.up.railway.app/mcp` with public install docs at `https://crashstory.com/mcp`
+
+### Developer Tools
+
+#### [Linear MCP](https://linear.app/docs/mcp)
+
+- **Offers:** Access to Linear's project management tools for product development and engineering workflows
+- **Access:** OAuth authentication with your Linear account required
+
+#### [Sentry MCP](https://docs.sentry.io/product/sentry-mcp/)
+
+- **Offers:** Error monitoring and debugging information across projects
+- **Access:** OAuth authentication with your Sentry account, leverages Sentry's existing permission model
+
+#### [Webflow MCP](https://mcp.webflow.com/)
+
+- **Offers:** CMS management, SEO improvement, content localization, and site publishing
+- **Access:** Authentication with your Webflow account credentials required
+
+#### [DeepWiki MCP](https://docs.devin.ai/work-with-devin/deepwiki-mcp)
+
+- **Offers:** Access to GitHub repository documentation and AI-powered search capabilities. Includes tools to read wiki structure, view documentation contents, and ask questions about repositories
+- **Access:** Free, remote, no-authentication-required service. Server URLs: `https://mcp.deepwiki.com/sse` (SSE) or `https://mcp.deepwiki.com/mcp` (Streamable HTTP)
+
+#### [GitMCP](https://gitmcp.io/)
+
+- **Offers:** Instant MCP server creation for any GitHub repository by simply changing the domain from github.com to gitmcp.io. Provides AI assistants with deep code context including llms.txt, llms-full.txt, readme.md and more
+- **Access:** No setup required. Simply replace `github.com` with `gitmcp.io` in any repository URL to get an instant MCP server endpoint
+
+#### [Semgrep](https://mcp.semgrep.ai)
+
+- **Offers:** Uses the popular open-source security scanner, [Semgrep](https://semgrep.dev), to scan code for vulnerabilities.
+- **Access:** A `streamable-http` endpoint is hosted at `https://mcp.semgrep.ai/mcp`. See [docs](https://github.com/semgrep/mcp) for more details.
+
+#### [Roundtable](https://roundtable.now)
+
+- **Offers:** Multi-model AI brainstorming — consult a council of AI models that debate your question, then a moderator synthesizes the best answer. 13 tools including consult_council, review_code, debug_issue, design_architecture, plan_implementation, and assess_tradeoffs
+- **Access:** Streamable HTTP endpoint at `https://mcp.roundtable.now/mcp`. See [GitHub](https://github.com/sinaneshat/roundtable-dashboard) for more details
+
+### Knowledge & Memory
+
+#### [Supermemory MCP](https://mcp.supermemory.ai/)
+
+- **Offers:** Personal, universal memory layer that travels with you across different AI platforms. Store and retrieve memories, create a persistent knowledge base
+- **Access:** Get your unique MCP URL (keep secret) on the website
+
+### Marketing & CRM
+
+#### [Intercom MCP](https://www.intercom.com/blog/introducing-model-context-protocol-fin/)
+
+- **Offers:** Customer support and engagement functionality through Fin, Intercom's AI agent
+- **Access:** OAuth authentication with your Intercom account required
+
+#### [Tally MCP](https://developers.tally.so/api-reference/mcp)
+
+- **Offers:** Build Tally forms using natural language through AI assistants. Create contact forms, surveys, and other form types with specific fields, validation, and customization options
+- **Access:** Server available at `https://api.tally.so/mcp` with API key authentication required (`Authorization: Bearer tly-xxxx`). Get your API key from your Tally account
+
+### Search & Data Extraction
+
+#### [Apify Actors MCP](https://mcp.apify.com/)
+
+- **Offers:** Access to 4,000+ web scraping and automation tools
+- **Access:** Server available at `https://mcp.apify.com` (streamable) or `https://mcp.apify.com/sse` (SSE transport) with `Authorization: Bearer <APIFY_TOKEN>` header. Get your API token from Apify Console Integrations section
+
+#### [Firecrawl MCP](https://docs.firecrawl.dev/mcp)
+
+- **Offers:** Web scraping, crawling, and discovery with advanced content extraction, search capabilities, deep research, and structured data extraction using LLM
+- **Access:** Server available at `https://mcp.firecrawl.dev/{FIRECRAWL_API_KEY}/sse` with API key authentication required. Get your API key from [firecrawl.dev/app/api-keys](https://firecrawl.dev/app/api-keys)
+
+#### [402.bot Discovery Oracle](https://api.402.bot/mcp/setup)
+
+- **Offers:** Read-only remote MCP server for discovering live agent APIs, searching ranked endpoints by capability, and inspecting trust and x402 payment telemetry
+- **Access:** Public streamable HTTP endpoint at `https://api.402.bot/mcp` with setup docs at `https://api.402.bot/mcp/setup`; no API key required for the v1 read-only surface
+
+#### [BGPT MCP](https://github.com/connerlambden/bgpt-mcp)
+
+- **Offers:** Scientific paper search with structured experimental data extracted from full-text studies
+- **Access:** Server available at `https://mcp.bgpt.pro/sse` (SSE) or `https://mcp.bgpt.pro/mcp` (Streamable HTTP). Also available via `npx bgpt-mcp`
+
+### Communication & Collaboration
+
+#### [Asana MCP](https://developers.asana.com/docs/using-asanas-model-control-protocol-mcp-server)
+
+- **Offers:** Project management and task coordination through Asana's Work Graph
+- **Access:** Server available at `https://mcp.asana.com/sse` with OAuth authentication required
+
+#### [Atlassian MCP](https://www.atlassian.com/blog/announcements/remote-mcp-server)
+
+- **Offers:** Access to Jira and Confluence Cloud data
+- **Access:** OAuth authentication required, respects existing Atlassian permission controls
+
+#### [Commune MCP](https://github.com/commune-sh/commune-mcp)
+
+- **Offers:** Email infrastructure for AI agents — provision inboxes on demand, send and receive email, manage concurrent threads, custom domains, structured extraction on inbound mail, and SMS. Built for agents, not humans — no SMTP config, no Gmail wrappers.
+- **Access:** API key auth via `COMMUNE_API_KEY`. Install: `uvx commune-mcp`
+
+### Media & Content
+
+_No entries yet_
+
+### Payments & Commerce
+
+#### [PayPal MCP](https://developer.paypal.com/tools/mcp-server/)
+
+- **Offers:** Commerce capabilities for inventory management, payment processing, shipping tracking, and refund handling
+- **Access:** OAuth authentication with your PayPal account required
+
+#### [Block (Square) MCP](https://developer.squareup.com/docs/mcp)
+
+- **Offers:** Access to Square's APIs for payments, orders, inventory, and customer management
+- **Access:** OAuth authentication with your Square account required
+
+### Finance & Crypto
+
+#### [Chainflip Broker](https://chainflip-broker.io)
+
+- **Offers:** Cross-chain cryptocurrency swaps via the Chainflip decentralized exchange. Discover available assets, get swap quotes, execute simple or DCA swaps, and track swap progress across blockchains.
+- **Access:** Remote MCP server at `https://chainflip-broker.io/mcp` (Streamable HTTP). No authentication required. Optional API key for partner attribution.
+
+#### [WZRD Velocity Oracle](https://twzrd.xyz)
+
+- **Offers:** Public remote MCP server for real-time AI model momentum, `pick_model` routing across local aliases, leaderboard/feed reads, protocol state, wallet summaries, Jupiter quotes, and Solana market tooling
+- **Access:** Connect to `https://app.twzrd.xyz/api/mcp` via Streamable HTTP; manifest at `https://twzrd.xyz/.well-known/mcp-server.json`; public reads require no auth
+
+### Gaming & Entertainment
+
+#### [SpaceMolt](https://www.spacemolt.com)
+
+- **Offers:** A massively multiplayer online game played entirely by AI agents. Mine, trade, explore, fight, and form factions across a galaxy of 500+ star systems.
+- **Access:** Connect your MCP-compatible AI agent to `https://game.spacemolt.com/mcp` using Streamable HTTP transport. No API key required — register in-game.
+
+## Auto Counter
+
+This repository automatically tracks the number of MCP servers listed. The counter is updated automatically via GitHub Actions whenever the README is modified, or you can run the update scripts manually:
+
+```bash
+# Using bash
+./scripts/update-counter.sh
+
+# Using Node.js
+node scripts/update-counter.js
+```
+
+## Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.

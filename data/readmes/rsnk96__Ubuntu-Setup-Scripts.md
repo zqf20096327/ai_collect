@@ -1,0 +1,109 @@
+# Ubuntu-Setup-Scripts
+Everyone who has tried to mess around with their Ubuntu distro knows the pain of having to reinstall Ubuntu and set it up to their liking again
+
+These are the scripts that I use to set my Ubuntu up as quick as possible. Feel free to fork it and create your own version, and any contributions are more than welcome :)
+
+## Build Status:
+
+Every script is stable and validates with [CI](https://github.com/features/actions) to make sure everything works as expected. The scripts are tested on Ubuntu 24.04 (Noble) and 26.04 (Resolute Raccoon) LTS releases.
+
+You can see the build results in the [Actions tab](https://github.com/rsnk96/Ubuntu-Setup-Scripts/actions) of this repository.
+
+## Usage instructions
+First download/clone this repository
+
+Then execute them in the terminal in the sequence of filenames using `./1-BasicSetUp.sh` and `./2-GenSoftware.sh`.
+
+The agent workstation (CLIProxy, the quota console, T3 Code, and Tailscale) is a separate layer. After the two scripts, `cd coding-setup && ./install.sh` builds it and `./check.sh` verifies it. Its source, sanitized configs, and notes live in [`coding-setup/`](coding-setup/README.md). An agent rebuilding that stack should start at [`coding-setup/AGENTS.md`](coding-setup/AGENTS.md).
+* `1-BasicSetUp.sh` - Sets up terminal configuration (Zsh + Zim), download accelerator (aria2), Anaconda Python, shell aliases, Docker, Nvidia drivers (if detected), Neovim with LazyVim, and other essential tools. **Note:** After running this script, you should reboot your PC if you have an Nvidia GPU so that the display driver loads properly.
+* `2-GenSoftware.sh` - Installs general purpose software including VS Code, Cursor IDE, browsers (Brave, Chrome), GitHub and GitLab CLIs, the AWS Session Manager plugin, xhisper, dltop, herdr, Snap VLC and Surfshark, Stremio, and other utilities.
+
+## After the scripts
+
+Log out and back in once both scripts finish. Reboot instead if an Nvidia driver was installed. That login is what picks up zsh as your shell, X11 instead of Wayland, the `docker` group, and the `input` group xhisper needs for its virtual keyboard.
+
+* **xhisper.** Transcription and auto-edit call Groq, and neither works until a key is exported from `~/.zshrc`. The auto-edit model to set is OpenAI's open-weight 120B:
+
+  ```sh
+  export GROQ_API_KEY=<your key from console.groq.com>
+  ```
+
+  Create `~/.config/xhisper/xhisperrc` and point auto-edit at that model. Without this line, auto-edit stays on the built-in default, `llama-3.3-70b-versatile`:
+
+  ```
+  llm-model : openai/gpt-oss-120b
+  ```
+
+  A GNOME keyboard shortcut does not read `~/.zshrc`. xhisper sources `~/.env` on every run, so put the same `export` there as well, otherwise dictation started from the shortcut has no key. Then add a custom shortcut in Settings → Keyboard → Keyboard Shortcuts → View and Customize Shortcuts → Custom Shortcuts. The command is `/usr/local/bin/xhisper`. Use a `Ctrl+Alt` or `Super` combo. A plain `Alt` letter is swallowed by application menus and never reaches xhisper. Optional words and names go in `~/.config/xhisper/dictionary.txt`, one per line.
+
+* **GitHub and GitLab.** `gh auth login` and `glab auth login`. The packages are installed, the accounts are not.
+
+* **AWS.** `aws configure`. The Session Manager plugin is installed beside the CLI and uses those credentials.
+
+* **dltop.** It runs against `nvidia-smi` immediately. The split between compute engines and NVENC/NVDEC needs DCGM, which a GeForce card does not provide.
+
+* **intel-turbo.** `intel-turbo off` holds the cores at their base clocks until the next reboot. `intel-turbo on` restores boost.
+
+## Major Alterations
+* Default python will be changed to Anaconda (Miniconda), with the latest Python 3. Anaconda Python will be installed in `/opt/anaconda3/` so that it is accessible by multiple users
+* Default shell is changed to Zsh with Zim framework, instead of bash. Why zsh? Because it simply has a much better autocomplete. And why zim? Because it's much faster than Oh My Zsh and Prezto
+* Docker and Docker Compose will be installed, along with Nvidia Container Toolkit if an Nvidia GPU is detected
+* Neovim will be installed with LazyVim configuration for a modern editor experience
+* Display manager will be configured to use X11 (Xorg) instead of Wayland for better compatibility
+
+## Aliases that are added
+* `maxvol` : Will set your volume to 150%
+* `download <webpage-name>`: Download the webpage and all sub-directories linked to it
+* `file_server` : Serves the current directory on the local network with `python3 -m http.server`, and prints this machine's addresses with `ip -brief addr`. From another computer, open `ip_add:port`
+* `gpom` : Alias for `git push origin main`. Will push your current directory
+* `glog` : Shows a rich, annotated git log graph with commits from your current branch, main, and their remote counterparts. Commits show date, relative time, decorations (branches/tags), subject, and author, making it easy to visualize your branch's history in relation to main and remotes.
+* `jn` : Starts a jupyter notebook in that directory
+* `jl` : Starts a jupyter lab in that directory
+* `update`: Runs `sudo apt-get update && sudo apt-get dist-upgrade && sudo apt-get autoremove -y`
+* `aria`: For accelerated download of files using aria2c. Runs the following command: `aria2c --file-allocation=none -c -x 10 -s 10 -d aria2-downloads`
+* `intel-turbo off` / `intel-turbo on`: Disable or restore Intel turbo boost. `off` pins every core at its base clock until the next reboot.
+
+<br>
+
+## Notes
+* **Adding a new OS user:** If setting up multiple users on the OS, try to use the script `./add_new_user.sh` in this repo. It will set the correct settings for them to also benefit from zsh, conda, etc.
+* Make sure that your system time and date is correct and synchronized before running the scripts, otherwise this will cause failure while trying to download the packages.
+* These scripts are written and tested on the following configurations:
+  * Ubuntu 24.04 (Noble) and 26.04 (Resolute Raccoon) LTS releases
+  * 64-bit Intel/AMD Processors
+  * NVIDIA GPUs (drivers will be automatically installed if detected)
+
+  Although it should work on other configurations out of the box, they have not been tested
+
+* Docker Images
+  * An example `Dockerfile` is present in the repository for reference. Customize it as required for specific requirements.
+
+## Tmux configuration shortctus:
+
+The tmux configuration used is inspired from [https://github.com/gpakosz/.tmux](https://github.com/gpakosz/.tmux)
+
+In the description of shortcuts below, meaning of connectors:
+* `+`: The second key is to be pressed while keeping the first key pressed
+* ` `(space): The previous key/keys are to be released before the next key is pressed
+* `/`: You can choose any of the specified keys
+
+The shortcuts within `tsux`/`tmux` that you can use are:
+* Pane control:
+  * `Ctrl+b \`: Split existing window into two panes vertically
+  * `Ctrl+b -`: Split existing window into two panes horizontally
+  * `Alt+Right/Left/Up/Down`: Switch between the panes of the same window
+* Window control:
+  * `Ctrl+b c`: Create a new window within the tmux session
+  * `Ctrl+b Shift+Left/Right`: Switch between the windows of the tmux session
+* Copy-paste:
+  * When you highlight any text with the mouse, it's automatically copied
+  * `Ctrl+b [`: Go into tmux copy-mode (enable selection of text from the tmux buffer quickly using just your keyboard). Go to your preferred start point, press `Space` to start the selection of the copy section. Press `Enter` at the end point
+
+
+## Alternatives
+* A Ubuntu customization dedicated to [robotics](https://github.com/ahundt/robotics_setup)
+
+
+## Maintainers
+* [@rsnk96](https://github.com/rsnk96)
+* [@rajat2004](https://github.com/rajat2004)

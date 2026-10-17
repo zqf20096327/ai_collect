@@ -1,0 +1,75 @@
+# FusionGCN (Expert Systems With Applications, 2025)：
+  
+#### 欢迎参考和引用我们的工作(Welcome to refer to and cite our work)  
+#### 文章发表在Expert Systems with Applications Volume 262, 1 March 2025上
+#### Code for paper [“FusionGCN: Multi-focus image fusion using superpixel features generation GCN and pixel-level feature reconstruction CNN”](https://www.sciencedirect.com/science/article/pii/S0957417424025326).  
+  
+# My related work in MFF ※
+
+<div align="center">
+
+| **Method** | **Code** | **Paper** | **Status** |
+|:----------:|:--------:|:---------:|:----------:|
+| **MSI-DTrans (2024)** | [<img src="https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github" alt="GitHub"/>](https://github.com/ouyangbaicai/MSI-DTrans) | [<img src="https://img.shields.io/badge/Paper-DISPLAYS-blue?style=for-the-badge" alt="Paper"/>](https://www.sciencedirect.com/science/article/abs/pii/S0141938224002014) | ✅ Published |
+| **FusionGCN (2025)** | [<img src="https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github" alt="GitHub"/>](https://github.com/ouyangbaicai/FusionGCN) | [<img src="https://img.shields.io/badge/Paper-ESWA-blue?style=for-the-badge" alt="Paper"/>](https://www.sciencedirect.com/science/article/pii/S0957417424025326) | ✅ Published |
+| **Frame-MFF (N/A)** | [<img src="https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github" alt="GitHub"/>](https://github.com/ouyangbaicai/Frame-MFF) | [<img src="https://img.shields.io/badge/(N/A)-Private-orange?style=for-the-badge" alt="(N/A)"/>](https://github.com/ouyangbaicai/Frame-MFF) | 🙅‍ Unrevealed |
+| **Text-MFF (2026）** | [<img src="https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github" alt="GitHub"/>](https://github.com/ouyangbaicai/Text-MFF) | [<img src="https://img.shields.io/badge/Paper-ESWA-blue?style=for-the-badge" alt="Paper"/>](https://www.sciencedirect.com/science/article/abs/pii/S0957417426002824) | ✅ Published |
+
+</div>
+  
+# Delivery timeline  
+-   Received 27 July 2024;
+-   Received in revised form 27 October 2024;
+-   Accepted 29 October 2024;
+-   Available online 7 November 2024
+  
+# Highlights  
+-   To our knowledge, this is the first time that GCN has been used to solve the problem of multi-focus image fusion.
+-   Compared with existing methods, FusionGCN provides a new solution for multi-focus image fusion tasks running on devices with limited computing resources.
+-   FusionGCN has achieved good results on multiple datasets.
+  
+# Reference information ※  
+```  
+@article{Ouyang2025FusionGCN,
+  title={FusionGCN: Multi-focus image fusion using superpixel features generation GCN and pixel-level feature reconstruction CNN},  
+  author={Yuncan Ouyang and Hao Zhai and Hanyue Hu and Xiaohang Li and Zhi Zeng},  
+  journal={Expert Systems with Applications},  
+  pages={125665},  
+  year={2025},  
+  publisher={Elsevier}  
+}
+```
+  
+### Or  
+  
+```
+Ouyang Y, Zhai H, Hu H, et al. FusionGCN: Multi-focus image fusion using superpixel features generation GCN and pixel-level feature reconstruction CNN[J]. Expert Systems with Applications, 2025: 125665.
+```
+  
+# Dependencies  
+-   python >= 3.6
+-   pytorch >= 1.5.0
+-   CUDA >= 12.0
+-   train.py -- 训练我们的网络(Train our network)
+-   inference.py -- 利用训练好的网络参数进行图像融合(Fusion images through network)
+
+# How to use ※
+-   代码提供Lytro, MFFW, MFI-WHU和GrayScale4个数据集进行测试
+-   The code provides four datasets for testing: Lytro, MFFW, MFI-WHU and GrayScale
+-   仅需替换inference.py中的数据集名称即可一键运行
+-   Simply replace the dataset name in the inference.py to run with one click
+  
+# Results  
+The output results will be stored in `./Result/(datasetname)`.
+
+Our results in Lytro, MFFW, MFI-WHU, GrayScale datasets can be downloaded.
+
+# Acknowledgments ※  
+以上代码在 [MFFT(EAAI, 2024)](https://www.sciencedirect.com/science/article/abs/pii/S0952197624001258) 的基础上构建而来  
+感谢他的杰出工作  
+  
+The above code is built upon the foundation of [MFFT(EAAI, 2024)](https://www.sciencedirect.com/science/article/abs/pii/S0952197624001258)  
+Thank you for his outstanding work  
+  
+# Contact information  
+E-mail addresses: yuncanouyang@mail.nwpu.edu.cn (Y. Ouyang)

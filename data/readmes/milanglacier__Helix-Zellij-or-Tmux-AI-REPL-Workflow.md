@@ -1,0 +1,434 @@
+# Helix + Zellij/Tmux + AI + REPL Workflow
+
+This repository provides a complete workflow integration for modern development
+using Helix editor, Zellij or Tmux terminal multiplexers, AI CLI apps, and REPL
+environments. The workflow is built around a small set of scripts with minimal
+dependencies:
+
+## Overview
+
+- **`haico`** - AI-powered code completion for Helix editor supporting OpenAI,
+  Gemini, Codestral and Claude providers
+- **`qantara`** - Smart REPL bridge router that detects Zellij or Tmux and forwards
+  commands to `zqantara` or `tqantara` (use this in Helix configs)
+- **`zqantara`** - Zellij REPL backend with bracketed paste support for tabs,
+  floating panes, and panes by position or name
+- **`tqantara`** - Tmux REPL backend with bracketed paste support for windows
+  and panes
+- **`symbol-search`** - Workspace-wide symbol (word) completion using command line tools
+
+This workflow enables seamless integration between:
+
+- Code editing in Helix with AI-powered completions
+- REPL interaction for Python, R, Shell, and other languages
+- AI CLI applications like Aider and Claude Code
+- Multiplexing: Manage multiple REPLs and processes efficiently using Zellij's
+  tabs/panes/floating windows or Tmux windows/panes.
+
+All scripts are designed with minimal dependencies and focus on providing
+efficient, keyboard-driven workflows.
+
+> **💡 Tip**: Use `haico --help`, `qantara --help`, and `symbol-search --help` to view the complete
+> documentation of all supported command-line arguments and options. Use
+> `zqantara --help` or `tqantara --help` for backend-specific details.
+
+## Installation
+
+1. Clone this repository
+2. Copy the scripts from the `bin/` folder (`haico`, `qantara`, `zqantara`,
+   `tqantara`, `symbol-search`, and `picker`) to your PATH
+3. Set up the required API keys for `haico`
+4. Configure Helix with the provided key bindings
+5. Ensure Zellij or Tmux is installed and running
+
+## Video Showcase
+
+See the workflow in action:
+
+### AI Code Completion
+
+https://github.com/user-attachments/assets/f1d1c159-94da-4fd9-8ea7-986738e7ac33
+
+### Claude Code Integration
+
+https://github.com/user-attachments/assets/dc7085c1-6a74-4943-b417-879697996b09
+
+### Zellij Tab REPL
+
+https://github.com/user-attachments/assets/7a585708-d6b7-4eaf-83c2-5ea4c411b815
+
+### Zellij Pane REPL
+
+https://github.com/user-attachments/assets/cfbe4f99-937d-4130-b8ae-937d4ad58fda
+
+### Zellij Floating REPL
+
+https://github.com/user-attachments/assets/9f644b01-cbdc-4ac1-bdfd-079ab54d2592
+
+## haico - Helix AI COmpletion
+
+`haico` provides AI-powered code completion that integrates seamlessly with
+Helix editor, offering intelligent code suggestions using various AI providers.
+
+### Features
+
+- Multi-provider support: Works with OpenAI, Gemini, Codestral, FIM, and Claude APIs
+- Recommended model: `gemini-2.0-flash` or `codestral` for optimal performance and speed
+- Minimal dependencies: Only requires `jq` and standard Unix tools
+- Context-aware: Understands cursor position, file context, and programming language
+- Two-step workflow: Designed to work around Helix's limitations with buffer content and cursor position handling
+
+### Dependencies
+
+- `jq` - JSON processor (only external dependency)
+- Standard Unix tools (`curl`, `grep`, `awk`, `sed`)
+
+### Setup
+
+Set the appropriate API key based on your chosen provider:
+
+```bash
+# For Gemini (recommended)
+export GEMINI_API_KEY="your-api-key"
+
+# For OpenAI
+export OPENAI_API_KEY="your-api-key"
+export OPENAI_BASE_URL="https://openrouter.ai/api/v1"  # optional, for custom endpoints
+
+# For Claude
+export ANTHROPIC_API_KEY="your-api-key"
+
+# For Codestral
+export CODESTRAL_API_KEY="your-api-key"
+```
+
+If you do not pass `--model`, `haico` defaults to:
+
+- `gemini`: `gemini-3.1-flash-lite-preview`
+- `openai`: `gpt-5.4-nano`
+- `claude`: `claude-haiku-4.5`
+- `openai-fim`: `gpt-3.5-turbo-instruct`
+- `codestral`: `codestral-latest`
+
+Use `--thinking-level` when you want the provider to spend more or less effort on
+reasoning:
+
+```bash
+haico --thinking-level low ...
+haico --thinking-level high ...
+haico --thinking-level FALSE ...   # omit reasoning config entirely
+```
+
+`--thinking-level` is currently forwarded to Gemini as `thinkingConfig.thinkingLevel`
+and to OpenAI-compatible chat completions as `reasoning_effort`.
+
+### Helix Integration
+
+Add these key bindings to your Helix configuration:
+
+```toml
+[keys.insert]
+# long completion
+A-y = [
+    "save_selection",
+    "select_all",
+    ":pipe-to haico --prepare --file ~/.cache/haico/data.txt",
+    "jump_backward",
+    """:insert-output \
+            haico \
+            --cursor-line %{cursor_line} \
+            --cursor-column %{cursor_column} \
+            --language %{language} \
+            --buffer-name %{buffer_name} \
+            --max-tokens 128 \
+            --file ~/.cache/haico/data.txt
+    """,
+    "align_view_center"
+]
+
+# short (single-line) completion
+"A-'" = [
+    "save_selection",
+    "select_all",
+    ":pipe-to haico --prepare --file ~/.cache/haico/data.txt",
+    "jump_backward",
+    """:insert-output \
+            haico \
+            --provider codestral \
+            --cursor-line %{cursor_line} \
+            --cursor-column %{cursor_column} \
+            --language %{language} \
+            --buffer-name %{buffer_name} \
+            --file ~/.cache/haico/data.txt \
+            --stop '["\\n"]'
+    """,
+    "align_view_center"
+]
+```
+
+**Note**: Claude models do not support newline/whitespace as stop sequences, so
+single-line completion is not available with Claude.
+
+## qantara - Smart Multiplexer Router
+
+`qantara` detects your current multiplexer context and forwards all arguments
+to the correct backend:
+
+- If `$ZELLIJ` is set, it runs `zqantara`
+- If `$TMUX` is set, it runs `tqantara`
+
+This means you can keep one set of Helix key bindings that work in both Zellij
+and Tmux. Use `qantara` in your Helix config unless you want to target a
+specific backend directly.
+
+> [!NOTE]
+> `--floating` is now Zellij-only. `qantara --floating ...` still works when
+> routed to `zqantara`, but it will fail deliberately when routed to
+> `tqantara`. For tmux, use `--pane` or `--tab`.
+
+## zqantara - Zellij REPL Bridge
+
+Named after the Arabic "qantara" meaning bridge, `zqantara` bridges the gap
+between your Helix editor and REPL environments in Zellij, enabling seamless
+code execution and AI CLI tool integration. It is the Zellij backend used by
+`qantara`.
+
+
+> [!IMPORTANT]
+> Sending content to a named pane or named floating pane with `--name` requires
+> Zellij `0.44+`.
+
+### Features
+
+- Bracketed paste mode support: **Essential feature** for REPL integration utility
+- Complete Zellij mode support: Works with all Zellij window types:
+  - Tab mode: Routes content to named tabs, creating them if needed
+  - Floating window mode: Routes content to floating panes by position or name
+  - Pane mode: Routes content to panes by position or name
+- Zero dependencies: Uses only standard Unix tools (`grep`, `bash`)
+- Handle REPL creation: This script can also handle creating new
+  tabs/panes/windows with specified programs, optionally naming new panes
+- CLI integration: Can also used for for Non REPL CLI tools like yazi, lazygit,
+  Aider and Claude Code
+
+### Dependencies
+
+- Zero external dependencies - uses only standard Unix tools
+- Zellij must be running for `zqantara`
+- Sending content directly to a named pane or named floating pane requires
+  Zellij `0.44+`
+
+### Helix Integration (use `qantara`)
+
+#### Opening REPL Programs and AI Tools
+
+```toml
+# Open in tabs
+[keys.normal.space.o]
+g = ":sh qantara --tab --name lazygit --program lazygit"
+p = ":sh qantara --tab --name ipython --program 'uv run ipython'"
+r = ":sh qantara --tab --name radian --program radian"
+c = ":sh qantara --tab --name aichat --program 'aichat -s'"
+C = ":sh qantara --tab --name claude --program claude"
+a = ":sh qantara --tab --name aider --program aider"
+
+# Open in floating windows
+[keys.normal.space.o.f]
+p = ":sh qantara --floating --name ipython-float --program 'uv run ipython'"
+t = ":sh qantara --floating --program $SHELL"
+c = ":sh qantara --floating --program aichat"
+
+# Open in panes (embedded windows)
+[keys.normal.space.o.w]
+# --name is optional
+p = ":sh qantara --pane --pos down --name ipython --program ipython"
+t = ":sh qantara --pane --pos right --program $SHELL"
+c = ":sh qantara --pane --pos stacked --name aichat --program aichat"
+```
+
+#### Sending Content to REPLs and AI Tools
+
+Named pane and named floating-pane targets in the examples below require
+Zellij `0.44+`.
+
+```toml
+[keys.normal.space.space]
+# Send to named tabs
+p = ":pipe-to qantara --tab --name ipython"
+r = ":pipe-to qantara --final-return false --tab --name radian"
+c = ":pipe-to qantara --tab --name aichat"
+C = ":pipe-to qantara --final-return 0.1 --tab --name claude"
+t = ":pipe-to qantara --tab --name shell"
+
+# Send to floating windows by position or name
+# 'current' means use current floating window without switching position
+"1" = ":pipe-to qantara --floating --pos current"
+"2" = ":pipe-to qantara --floating --pos up"
+"3" = ":pipe-to qantara --floating --pos down"
+"f" = ":pipe-to qantara --floating --name ipython-float"
+
+# Send to panes by position or name
+"l" = ":pipe-to qantara --pane --pos 'down right'"
+"h" = ":pipe-to qantara --pane --pos 'down left'"
+"i" = ":pipe-to qantara --pane --name ipython"
+"s" = ":pipe-to qantara --pane --name shell"
+"A" = ":pipe-to qantara --pane --name aichat"
+
+[keys.select.space.space]
+# Send to named tabs
+p = ":pipe-to qantara --tab --name ipython"
+r = ":pipe-to qantara --final-return false --tab --name radian"
+c = ":pipe-to qantara --tab --name aichat"
+C = ":pipe-to qantara --final-return 0.1 --tab --name claude"
+t = ":pipe-to qantara --tab --name shell"
+
+# Send to floating windows by position or name
+# 'current' means use current floating window without switching position
+"1" = ":pipe-to qantara --floating --pos current"
+"2" = ":pipe-to qantara --floating --pos up"
+"3" = ":pipe-to qantara --floating --pos down"
+"f" = ":pipe-to qantara --floating --name ipython-float"
+
+# Send to panes by position or name
+"l" = ":pipe-to qantara --pane --pos 'down right'"
+"h" = ":pipe-to qantara --pane --pos 'down left'"
+"i" = ":pipe-to qantara --pane --name ipython"
+"s" = ":pipe-to qantara --pane --name shell"
+"A" = ":pipe-to qantara --pane --name aichat"
+```
+
+`--final-return` controls the extra `Return` sent after bracketed paste
+finishes. You generally do not need to pass it, because most REPLs work well
+with the default behavior. Only change it if a specific tool needs different
+timing. For example, Claude Code may ignore an immediate trailing `Return` if
+it arrives too quickly after the pasted text, so `--final-return 0.1` adds a
+short delay before submitting. Other REPLs such as `radian` may behave better
+with `--final-return false` to avoid an unwanted extra prompt or duplicate
+submit.
+
+### Recommended Zellij Configuration
+
+If you're using a terminal emulator that supports the Kitty keyboard protocol
+(such as Kitty or Ghostty), I recommend add the following line to your
+`config.kdl`:
+
+```kdl
+support_kitty_keyboard_protocol false
+```
+
+Without this configuration, certain Helix keybindings that require `Alt+Shift`
+combinations will not work properly. This includes keys like `Alt+C` (typed as
+`Alt+Shift+c`) and `Alt+*` (typed as `Alt+Shift+8`). For technical details
+about this issue, see Zellij Issue #4148.
+
+### Why we need Bracketed Paste Mode?
+
+<details>
+
+Bracketed-paste mode wraps pasted text in escape sequences, letting terminals
+distinguish it from typed input. Most modern REP Ls and command-line
+applications support this feature, which offers several advantages:
+
+- Ensures multi-line code blocks are pasted as a single unit
+- Prevent REPLs from misinterpreting pasted newlines or special characters.
+- Maintains proper indentation and formatting
+
+</details>
+
+## tqantara - Tmux REPL Bridge
+
+`tqantara` is the Tmux backend used by `qantara`. It supports the same CLI
+options as `zqantara` except for floating mode, and routes content to Tmux
+windows and panes. If you want a single Helix config that works in both
+multiplexers, use `qantara`.
+
+> [!IMPORTANT]
+> Breaking change: `tqantara --floating` is no longer supported.
+> Tmux popup windows keep keyboard input captured inside the popup, which means
+> you cannot move focus back to the embedded pane or switch to another tab
+> while it is open. In practice that makes the floating workflow awkward enough
+> that this mode is better left disabled.
+
+### Features
+
+- Bracketed paste mode support for reliable REPL interaction
+- Window and pane targeting (with automatic creation when requested)
+- Zero external dependencies beyond standard Unix tools
+
+## symbol-search - Workspace Symbol (Word) Completion
+
+`symbol-search` provides workspace-wide symbol (word) completion for Helix editor
+through command line tools integration. While it can work with only standard
+Unix tools, it's designed to leverage advanced command line utilities like
+`universal-ctags`, `ripgrep`, and `fzf` for better user experience.
+
+It supports multiple search backends: `universal-ctags` for tag-based symbol
+indexing, `ripgrep` for fast text searching, and `grep` as a fallback.
+
+The script gracefully falls back to standard Unix tools using the included
+`picker` script when `fzf` are unavailable.
+
+### Features
+
+- **Adaptive toolchain**: Leverages ripgrep, fzf, and universal-ctags when
+  available; falls back to grep and the dependency-free `picker` script
+- **Workspace-wide completion**: Symbol search across the entire project, not
+  limited to the current file
+- **Zero external dependencies**: Complete functionality using only standard
+  Unix tools when needed
+
+### Comparison with simple-completion-language-server
+
+| Feature          | symbol-search                                    | simple-completion-language-server                    |
+| ---------------- | ------------------------------------------------ | ---------------------------------------------------- |
+| **Dependencies** | Standard Unix tools or established CLI utilities | Requires Rust toolchain for compilation              |
+| **Installation** | Ready-to-use shell script                        | Binary compilation required (Nix packages available) |
+| **Scope**        | Workspace-wide symbol completion                 | Files opened in editor session                       |
+| **Integration**  | External picker via `:pipe` command              | Native LSP auto-completion                           |
+| **Features**     | Symbol completion only                           | Symbol + snippet completion, more LSP features       |
+| **Portability**  | Works anywhere with basic Unix tools             | Requires pre-built binary or compilation             |
+
+### Helix Integration
+
+Configure symbol completion with these polished key bindings:
+
+```toml
+[keys.insert.C-x]
+# Macro ensures proper word selection before symbol search
+"C-x" = "@<esc>hmiw<C-x>a"
+
+[keys.normal]
+"C-x" = [
+    ":pipe symbol-search --rg",
+    # Use grep if ripgrep is unavailable
+    # ":pipe symbol-search --grep",
+]
+
+# If `fzf` is unavailable and the fallback picker script is used, add `:redraw`
+# to ensure the screen is properly refreshed after the command executes.
+# "C-x" = [":pipe symbol-search --rg", ":redraw"]
+
+[keys.select]
+"C-x" = [
+    ":pipe symbol-search --rg",
+]
+
+# If `fzf` is unavailable and the fallback picker script is used, add `:redraw`
+# to ensure the screen is properly refreshed after the command executes.
+# "C-x" = [":pipe symbol-search --rg", ":redraw"]
+```
+
+The insert mode configuration uses a macro (`@<esc>hmiw<C-x>a`) to ensure
+complete word selection under the cursor before triggering symbol search. This
+approach provides more reliable completion context than command sequences,
+which cannot accurately select word boundaries (`miw` operation).
+
+## Complete Workflow
+
+This setup provides a comprehensive development environment:
+
+1. Code in Helix with AI-powered completions via `haico`
+2. Execute code in REPLs via `qantara` with proper bracketed paste
+3. Access AI tools like Aider and Claude Code through organized multiplexer sessions
+4. Manage multiple CLI apps with Zellij tabs/panes/floating windows or Tmux windows/panes
+5. Maintain context across all tools with minimal context switching

@@ -1,0 +1,533 @@
+# Awesome MLSecOps: Machine Learning and AI Security Resources 🛡️🤖
+
+Maintained by the author of [The MLSecOps Hacker](https://themlsecopshacker.com) newsletter → [subscribe](https://themlsecopshacker.com/subscribe?utm_source=github&utm_medium=readme)
+
+## What is MLSecOps?
+
+**MLSecOps (Machine Learning Security Operations)** is the practice of integrating security throughout the machine learning lifecycle—from data collection and model development to deployment, monitoring, and incident response. It applies security testing, threat modeling, supply-chain protection, access controls, and continuous monitoring to machine learning models, MLOps pipelines, LLM applications, and AI agents.
+
+This curated catalog helps security engineers, ML practitioners, developers, and AI red teams discover open-source MLSecOps tools, adversarial machine learning research, AI security frameworks, threat-modeling resources, and practical learning materials.
+
+⭐ If this catalog is useful, [star the repository](https://github.com/RiccardoBiosas/awesome-MLSecOps) or read the [contribution guidelines](CONTRIBUTING.md) to suggest a resource.
+
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-green.svg)](https://github.com/RiccardoBiosas/awesome-MLSecOps/graphs/commit-activity)
+![License](https://img.shields.io/badge/License-MIT-lightgrey.svg)
+[![Newsletter](https://img.shields.io/badge/Newsletter-The%20MLSecOps%20Hacker-FF6719?logo=substack&logoColor=white)](https://themlsecopshacker.com)
+[![X](https://img.shields.io/badge/X-%40MLSecOpsHacker-000000?logo=x&logoColor=white)](https://x.com/MLSecOpsHacker)
+[![Instagram](https://img.shields.io/badge/Instagram-%40aisecurity.hacker-E4405F?logo=instagram&logoColor=white)](https://www.instagram.com/aisecurity.hacker/)
+
+![MLSecOps Banner](https://github.com/user-attachments/assets/966affca-442a-4859-b450-774b8d48c6cc)
+
+
+## The MLSecOps Hacker Newsletter
+
+[The MLSecOps Hacker](https://themlsecopshacker.com) is the maintainer's newsletter on AI security for engineers: model supply-chain security (serialization, signing, provenance), prompt injection, and agent and MCP security, where new articles on MLSecOps tooling are published first.
+
+**[Subscribe](https://themlsecopshacker.com/subscribe?utm_source=github&utm_medium=readme)** · [Archive](https://awesomemlsecops.com/newsletter/) · [RSS](https://awesomemlsecops.com/rss.xml)
+
+Latest articles:
+
+<!-- newsletter-issues:start -->
+- [Safetensors Won. Model Serialization Attacks Didn’t Stop.](https://themlsecopshacker.com/p/safetensors-won-model-serialization) — August 28, 2026
+- [AI Security: Model Serialization Attacks](https://themlsecopshacker.com/p/ai-security-model-serialization-attacks) — November 4, 2024
+- [What is MLSecOps?](https://themlsecopshacker.com/p/what-is-mlsecops) — October 8, 2024
+<!-- newsletter-issues:end -->
+
+## Table of Contents
+- [What is MLSecOps?](#what-is-mlsecops)
+- [The MLSecOps Hacker Newsletter](#the-mlsecops-hacker-newsletter)
+- [Open Source Security Tools](#open-source-security-tools)
+- [Commercial MLSecOps and AI Security Tools](#commercial-mlsecops-and-ai-security-tools)
+- [Data Privacy and Anonymization Tools](#data-privacy-and-anonymization-tools)
+- [ML Code Security](#ml-code-security)
+- [AI Security and MLSecOps Beginner Resources](#ai-security-and-mlsecops-beginner-resources)
+- [Threat Modeling](#threat-modeling)
+- [Attack Vectors](#attack-vectors)
+- [Blogs and Publications](#blogs-and-publications)
+- [MLOps Infrastructure Vulnerabilities](#mlops-infrastructure-vulnerabilities)
+- [MLSecOps Pipeline](#mlsecops-pipeline)
+- [Adversarial Machine Learning Research Repositories](#adversarial-machine-learning-research-repositories)
+- [Community Resources](#community-resources)
+- [Books](#books)
+- [Infographics](#infographics)
+- [Contributions](#contributions)
+- [Contributors](#contributors-)
+- [Repository Stats](#repository-stats)
+- [Activity](#activity)
+- [Support Us](#support-us)
+- [Cite This Repository](#cite-this-repository)
+- [License](#license)
+
+
+## Open Source Security Tools
+
+Open-source MLSecOps tools help practitioners test, monitor, and protect machine learning models, data, pipelines, LLM applications, and AI agents. The resources below include active projects and proofs of concept; evaluate maintenance status, licensing, threat coverage, and deployment suitability before production use.
+
+### Model and Artifact Security
+
+Model and artifact security tools detect unsafe serialization, malicious payloads, integrity failures, and other risks in machine learning model files.
+
+| Tool | Description |
+|------|-------------|
+| [ModelScan](https://github.com/protectai/modelscan) | Protection Against ML Model Serialization Attacks |
+| [Safetensors](https://github.com/huggingface/safetensors) | Tensor storage format designed to avoid executable deserialization; it does not establish model provenance or behavioral safety |
+
+### Adversarial Machine Learning Testing
+
+Adversarial machine learning testing tools evaluate model robustness against evasion, poisoning, extraction, inversion, and other adversarial techniques.
+
+| Tool | Description |
+|------|-------------|
+| [Adversarial Robustness Toolbox](https://github.com/IBM/adversarial-robustness-toolbox) | Library of defense methods for ML models against adversarial attacks |
+| [Foolbox](https://github.com/bethgelab/foolbox) | Python toolbox for creating and evaluating adversarial attacks and defenses |
+
+### Embodied AI and Robotics ML Security
+
+Embodied AI and robotics ML security tools test policies that emit actions rather than text, where a successful attack moves a robot out of its safe envelope rather than changing a prediction. Results below are simulation unless a project states otherwise.
+
+| Tool | Description |
+|------|-------------|
+| [BadVLA](https://github.com/Zxy-MLlab/BadVLA) | Backdoor attacks on vision-language-action models via objective-decoupled optimization; reference implementation for the paper |
+| [Provael](https://github.com/provael/provael) | Adversarial testing for vision-language-action robot policies in simulation; reports attack success rate with a 95% Wilson interval against a benign-control false-positive floor |
+| [roboticAttack](https://github.com/William-wAng618/roboticAttack) | Untargeted and targeted adversarial attacks on vision-language-action models; code for "Exploring the Adversarial Vulnerabilities of VLA Models in Robotics" |
+
+### LLM Security and Red Teaming
+
+LLM security and red-teaming tools test prompts, model behavior, application controls, and safeguards against attacks such as prompt injection and jailbreaks.
+
+| Tool | Description |
+|------|-------------|
+| [Garak](https://github.com/NVIDIA/garak) | LLM vulnerability scanner |
+| [Promptfoo Scanner](https://github.com/promptfoo/promptfoo) | An open-source LLM red teaming tool |
+| [API Relay Audit](https://github.com/toby-bridges/api-relay-audit) | Local CLI probing third-party LLM relays for prompt-injection signals, package-command changes, error leakage, and SSE anomalies. |
+
+### AI Agent Security
+
+AI agent security tools assess memory, tools, permissions, workflows, and runtime boundaries used by autonomous and tool-enabled AI systems.
+
+| Tool | Description |
+|------|-------------|
+| [Agent Memory Guard](https://github.com/OWASP/www-project-agent-memory-guard) | OWASP project providing a runtime defense layer that screens AI agent memory reads and writes against prompt injection, secret leakage, and memory poisoning |
+| [Agent-Wiz](https://github.com/Repello-AI/Agent-Wiz) | Python CLI by Repello AI for extracting agentic workflows from LangChain/LangGraph/CrewAI/AutoGen and running automated threat modeling |
+| [HOL Guard](https://github.com/hashgraph-online/hol-guard) | Open-source local-first runtime security layer for AI agents that evaluates supported tool actions and local artifacts for prompt injection, secret exposure, unsafe commands, package risks, and MCP threats |
+| [Prismor](https://github.com/PrismorSec/prismor) | Self-hosted runtime control plane that screens AI coding-agent tool calls against a signed policy before execution, blocking or routing to human approval secret exfiltration, prompt-injection-driven actions, and destructive commands across Claude Code, Codex, and MCP servers |
+| [Bifrost](https://github.com/maximhq/bifrost) | Go-native AI gateway that enforces guardrails, rate limits, and fine-grained access controls across LLM and MCP traffic. |
+| [Humanbound](https://github.com/humanbound/humanbound) | Open-source CLI that sends LLM-generated adversarial attacks to an agent's HTTP endpoint and scores results against OWASP LLM Top 10, OWASP Agentic Top 10, NIST, and EU AI Act mappings |
+| [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) | Apache-2.0 CLI that records an agent's model-provider exchange at the wire level for post-incident analysis, then replays the recorded run offline so a captured prompt injection becomes a repeatable test case against a candidate guardrail |
+
+### Rogue Agents and Autonomous Agent Security
+
+Rogue AI agents act outside their intended scope, ownership, or objectives without needing an external attacker: through goal drift, agentic misalignment, covert side tasks, orphaned or shadow deployments, and collusion between agents. OWASP tracks this risk as ASI10 Rogue Agents in the [Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications/); the research literature calls it agentic misalignment, sabotage, or AI insider threat. The AI Agent Security tools above harden an agent against hostile input. The tools below treat the agent itself as the threat: they elicit misaligned behaviour under test, monitor live actions and reasoning against a declared remit, and enforce deterministic policy, audit, and shutdown controls.
+
+| Tool | Description |
+|------|-------------|
+| [Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) | MIT-licensed Microsoft toolkit, in public preview, that intercepts every agent tool call, message, and delegation in deterministic code against a YAML policy, adds per-agent identity, sandboxing, and tamper-evident audit trails, and maps its controls to all ten OWASP Agentic Top 10 risks including ASI10 rogue agents |
+| [Adrian](https://github.com/secureagentics/Adrian) | Apache-2.0 runtime monitoring and control engine that judges an agent's tool calls, outputs, and reasoning traces against its declared remit to detect misaligned, off-policy, or out-of-remit behaviour and block or hold actions in flight, with self-hosted deployment and SDKs for LangChain, Anthropic, TypeScript, and Claude Code |
+| [ControlArena](https://github.com/UKGovernmentBEIS/control-arena) | MIT-licensed library from the UK AI Security Institute and Redwood Research for AI control experiments that pair benign main tasks with covert sabotage side tasks and measure how monitors, defer-to-trusted protocols, and audit-and-shutdown procedures contain an untrusted, possibly misaligned agent |
+| [Petri](https://github.com/meridianlabs-ai/inspect_petri) | MIT-licensed alignment auditing agent released by Anthropic and built on Inspect that runs multi-turn audits of a target model with simulated users and tools and scores transcripts for deception, oversight subversion, power-seeking, and other misaligned agentic behaviour |
+| [Agentic Misalignment Research Framework](https://github.com/anthropic-experimental/agentic-misalignment) | MIT-licensed harness behind Anthropic's agentic misalignment study that generates fictional corporate scenarios with blackmail, leaking, and replacement-threat conditions, runs them across 40+ models, and classifies whether the agent carried out the harmful insider action |
+
+### Privacy-Preserving Machine Learning
+
+Privacy-preserving machine learning tools help limit sensitive-data exposure through differential privacy, encrypted computation, anonymization, and privacy testing.
+
+| Tool | Description |
+|------|-------------|
+| [TensorFlow Privacy](https://github.com/tensorflow/privacy) | Library of privacy-preserving machine learning algorithms and tools |
+| [OpenDP](https://github.com/opendp/opendp) | The core library of differential privacy algorithms powering the OpenDP Project |
+
+### AI Supply-Chain Security
+
+AI supply-chain security tools protect model artifacts, provenance, dependencies, signatures, bills of materials, and deployment pipelines.
+
+| Tool | Description |
+|------|-------------|
+| [Model Transparency](https://github.com/sigstore/model-transparency) | Generate model signing metadata for provenance verification |
+| [BomLens](https://github.com/sktelecom/bomlens) | Local-first SBOM generator that builds CycloneDX ML-BOMs for Hugging Face models, with license and known-vulnerability reports |
+| [k8s-aibom](https://github.com/GoogleCloudPlatform/k8s-aibom) | Unprivileged Kubernetes controller that generates CycloneDX 1.6 ML-BOMs for AI workloads at runtime, with evidence-based confidence tiers and Sigstore model-signature verification |
+
+### Model Testing, Monitoring, and Evaluation
+
+These projects support model validation, monitoring, robustness, safety, and comparative evaluation, including both general-purpose and security-focused assessment workflows.
+
+| Tool | Description |
+|------|-------------|
+| [TensorFlow Model Analysis](https://github.com/tensorflow/model-analysis) | A library for analyzing, validating, and monitoring machine learning models in production|
+| [CircleGuardBench](https://github.com/whitecircle/circle-guard-bench)| A full-fledged benchmark for evaluating protection capabilities of AI models|
+
+### Additional Open-Source Tools
+
+The following tools and research prototypes address additional MLSecOps testing, monitoring, defense, and assurance use cases pending more granular classification.
+
+| Tool | Description |
+|------|-------------|
+| [MLSploit](https://github.com/mlsploit/) | Cloud framework for interactive experimentation with adversarial machine learning research |
+| [Advertorch](https://github.com/BorealisAI/advertorch) | Python toolbox for adversarial robustness research |
+| [MITRE ATLAS](https://atlas.mitre.org/) | Knowledge base of adversary tactics and techniques against AI systems; successor to the deprecated Adversarial ML Threat Matrix |
+| [CleverHans](https://github.com/cleverhans-lab/cleverhans) | A library of adversarial examples and defenses for machine learning models|
+| [AdvBox](https://github.com/advboxes/AdvBox) | Advbox is a toolbox to generate adversarial examples that fool neural networks in PaddlePaddle、PyTorch、Caffe2、MxNet、Keras、TensorFlow|
+| [Audit AI](https://github.com/pymetrics/audit-ai) | Bias Testing for Generalized Machine Learning Applications|
+| [Deep Pwning](https://github.com/cchio/deep-pwning) | Deep-pwning is a lightweight framework for experimenting with machine learning models with the goal of evaluating their robustness against a motivated adversary|
+| [Privacy Meter](https://github.com/privacytrustlab/ml_privacy_meter) | An open-source library to audit data privacy in statistical and machine learning algorithms|
+| [PromptInject](https://github.com/agencyenterprise/PromptInject) | A framework that assembles adversarial prompts|
+| [TextAttack](https://github.com/QData/TextAttack) | TextAttack is a Python framework for adversarial attacks, data augmentation, and model training in NLP|
+| [OpenAttack](https://github.com/thunlp/OpenAttack) | An Open-Source Package for Textual Adversarial Attack|
+| [TextFooler](https://github.com/jind11/TextFooler) | A Model for Natural Language Attack on Text Classification and Inference|
+| [Flawed Machine Learning Security](https://github.com/EthicalML/fml-security) | Practical examples of "Flawed Machine Learning Security" together with ML Security best practice across the end to end stages of the machine learning model lifecycle from training, to packaging, to deployment|
+| [Adversarial Machine Learning CTF](https://github.com/arturmiller/adversarial_ml_ctf) | CTF challenge demonstrating adversarial-image attacks against neural-network image classifiers |
+| [Damn Vulnerable LLM Project](https://github.com/harishsg993010/DamnVulnerableLLMProject) | A Large Language Model designed for getting hacked|
+| [Gandalf Lakera](https://gandalf.lakera.ai/) | Prompt Injection CTF playground|
+| [Vigil](https://github.com/deadbits/vigil-llm) | LLM prompt injection and security scanner|
+| [PALLMs (Payloads for Attacking Large Language Models)](https://github.com/mik0w/pallms) | list of various payloads for attacking LLMs collected in one place|
+| [AI-exploits](https://github.com/protectai/ai-exploits) | Exploits for MLOps systems, extending beyond inputs provided to LLMs such as ChatGPT |
+| [Offensive ML Playbook](https://wiki.offsecml.com/Welcome+to+the+Offensive+ML+Playbook) | Offensive ML Playbook. Notes on machine learning attacks and pentesting|
+| [AnonLLM](https://github.com/fsndzomga/anonLLM) | Anonymize Personally Identifiable Information (PII) for Large Language Model APIs|
+| [AI Goat](https://github.com/dhammon/ai-goat) | vulnerable LLM CTF challenges|
+| [Pyrit](https://github.com/Azure/PyRIT) | The Python Risk Identification Tool for generative AI|
+| [Raze to the Ground: Query-Efficient Adversarial HTML Attacks on Machine-Learning Phishing Webpage Detectors](https://github.com/advmlphish/raze_to_the_ground_aisec23) | Source code of the paper "Raze to the Ground: Query-Efficient Adversarial HTML Attacks on Machine-Learning Phishing Webpage Detectors" accepted at AISec '23|
+| [Giskard](https://github.com/Giskard-AI/giskard) | Open-source testing tool for LLM applications|
+| [Model-Inversion-Attack-ToolBox](https://github.com/ffhibnese/Model-Inversion-Attack-ToolBox) | A framework for implementing Model Inversion attacks|
+| [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails) | NeMo Guardrails allow developers building LLM-based applications to add programmable guardrails between the application code and the LLM |
+| [AugLy](https://github.com/facebookresearch/AugLy) | Multimodal data-augmentation library for evaluating and improving model robustness; it is not an adversarial-attack generator |
+| [Knockoffnets](https://github.com/tribhuvanesh/knockoffnets) | Proof of concept for training a functional surrogate from black-box model queries |
+| [VGER](https://github.com/JosephTLucas/vger) | Jupyter Attack framework |
+| [AIShield Watchtower](https://github.com/bosch-aisecurity-aishield/watchtower) | An open-source tool from AIShield for studying AI models and scanning for vulnerabilities |
+| [PS-fuzz](https://github.com/prompt-security/ps-fuzz) | tool for scanning LLM vulnerabilities|
+| [Mindgard CLI](https://github.com/Mindgard/cli/) | Evaluate the security of AI systems through a CLI |
+| [Purple Llama](https://meta-llama.github.io/PurpleLlama/)| Meta's umbrella suite of LLM safety and security tooling, including Llama Guard, Code Shield, and CyberSecEval |
+| [ARTkit](https://github.com/BCG-X-Official/artkit)|Automated prompt-based testing and evaluation of Gen AI applications|
+| [LangBiTe](https://github.com/SOM-Research/LangBiTe) | A Bias Tester framework for LLMs|
+| [TF Encrypted](https://github.com/tf-encrypted/tf-encrypted)| Framework for encrypted deep learning in TensorFlow using secure multi-party computation|
+| [Agentic Security](https://github.com/msoedov/agentic_security)| Agentic LLM Vulnerability Scanner / AI red teaming kit|
+| [skill-audit-mcp](https://github.com/eltociear/skill-audit-mcp) | Static security scanner for MCP servers, AI agent skills, and plugins, with SARIF output and CI integration |
+| [AIsbom](https://github.com/Lab700xOrg/aisbom) | Disassembles Pickle bytecode and parses SafeTensors/GGUF binary headers to detect malware and license risks in ML model files before load. Generates CycloneDX/SPDX SBOMs. |
+| [AI-Scan-Interceptor](https://github.com/mshirakawa-ssp/ai-scan-interceptor) | Self-hostable DLP gateway for enterprise prompts to ChatGPT/Claude/Gemini (Squid + Go ICAP + mTLS, AGPL-3.0) |
+| [NB Defense](https://github.com/protectai/nbdefense) | Jupyter notebook security scanner from Protect AI (now part of Palo Alto Networks) |
+| [TrustGate](https://github.com/NeuralTrust/TrustGate) | An open-source Generative Application Firewall (GAF) |
+| [Whistleblower](https://github.com/Repello-AI/whistleblower) | Open-source offensive tool by Repello AI for testing LLM apps against system prompt leakage |
+| [IronClaw](https://github.com/IronSecCo/ironclaw) | Self-hosted runtime that sandboxes autonomous AI agents with isolated execution, restricted networking, and human-approval gating |
+
+
+<a id="commercial-tools"></a>
+## Commercial MLSecOps and AI Security Tools
+
+Commercial MLSecOps and AI security tools support model protection, application testing, monitoring, governance, and incident response. Evaluate technical documentation, deployment options, integrations, and independent evidence before adoption.
+
+| Tool | Description |
+|------|-------------|
+| [Citadel Lens](https://citadel-ai.com/products/lens/) | Commercial model-testing platform; verify supported standards and security checks in current product documentation |
+| [Cisco AI Defense (formerly Robust Intelligence)](https://www.cisco.com/site/us/en/products/security/ai-defense/index.html) | Commercial platform for AI model validation and runtime protection; Robust Intelligence was acquired by Cisco |
+| [HiddenLayer AI Detection and Response](https://www.hiddenlayer.com/platform) | Commercial AI detection and response platform from HiddenLayer |
+| [Guardian](https://protectai.com/guardian) | Model protection in CI/CD |
+| [NeuralTrust](https://neuraltrust.ai) | Tools to protect, secure and test GenAI Applications |
+| [SourceryKit](https://github.com/ProvablyAI/sourcerykit) | Verifies an AI agent's outbound requests and MCP handoffs against a source of truth using zero-knowledge proofs, so a call only goes out if its claims check out; hooks the HTTP libraries, logs each outbound call, and blocks endpoints not on the trusted allow-list |
+| [Trent AI](https://trent.ai) | Agentic AI security platform that continuously assesses AI agents, MCP servers, LLM and AI-native applications, and code shipped with AI coding tools, traces attack chains, and verifies proposed fixes landed |
+
+
+<a id="data"></a>
+## Data Privacy and Anonymization Tools
+
+Data privacy and anonymization tools help reduce exposure of personal or sensitive information in machine learning datasets, images, videos, and model interactions.
+
+| Tool | Description |
+|------|-------------|
+| [ARX - Data Anonymization Tool](https://arx.deidentifier.org/) | Tool for anonymizing datasets |
+| [Data-Veil](https://veil.ai/) | Data masking and anonymization tool |
+| [Tool for IMG anonymization](https://github.com/PacktPublishing/Adversarial-AI---Attacks-Mitigations-and-Defense-Strategies/blob/main/ch10/notebooks/Image%20Anonymization.ipynb)| Image anonymization|
+| [Tool for DATA anonymization](https://github.com/PacktPublishing/Adversarial-AI---Attacks-Mitigations-and-Defense-Strategies/blob/main/ch10/notebooks/Data%20Anonymization.ipynb)| Data anonymization|
+| [BMW Anonymization API](https://github.com/BMW-InnovationLab/BMW-Anonymization-API) | This repository allows you to anonymize sensitive information in images/videos. The solution is fully compatible with the DL-based training/inference solutions that we already published/will publish for Object Detection and Semantic Segmentation |
+| [DeepPrivacy2](https://github.com/hukkelas/deep_privacy2)| A Toolbox for Realistic Image Anonymization |
+
+## ML Code Security
+
+ML code security resources help practitioners identify vulnerable dependencies, unsafe model formats, insecure library behavior, and model-extraction risks in machine learning software.
+
+- [lintML](https://github.com/JosephTLucas/lintML) - Security linter for ML training code, maintained by a member of the NVIDIA AI red team
+- [HiddenLayer: Model as Code](https://hiddenlayer.com/research/models-are-code/) - Research article on executable model formats and unsafe deserialization paths in ML libraries
+- [Copycat CNN](https://github.com/jeiks/Stealing_DL_Models) - Proof of concept for training a surrogate convolutional neural network from black-box queries
+- [differential-privacy-library](https://github.com/IBM/differential-privacy-library) - Library designed for differential privacy and machine learning
+
+<a id="101-resources"></a>
+## AI Security and MLSecOps Beginner Resources
+
+These foundational resources explain how adversaries attack AI systems and how defenders secure models, prompts, data, and MLOps workflows.
+
+- [AI Security 101](https://www.nightfall.ai/ai-security-101)
+- [Web LLM attacks](https://portswigger.net/web-security/llm-attacks)
+- [Microsoft AI Red Team](https://learn.microsoft.com/en-us/security/ai-red-team/)
+- [AI Risk Assessment for ML Engineers](https://learn.microsoft.com/en-us/security/ai-red-team/ai-risk-assessment)
+- [Microsoft - Generative AI Security for Beginners](https://github.com/microsoft/generative-ai-for-beginners/blob/main/13-securing-ai-applications/README.md)
+
+### AI Security Study Map
+
+[![AI Security Study Map](https://i.postimg.cc/G2QdqnK6/map.png)](https://postimg.cc/sQvkg8tJ)
+
+[Full size map in this repository](https://github.com/wearetyomsmnv/AI-LLM-ML_security_study_map)
+
+## Threat Modeling
+
+AI threat modeling identifies assets, trust boundaries, attack paths, and security controls across models, data, prompts, pipelines, infrastructure, and agent capabilities.
+
+- [AI Village: LLM threat modeling](https://aivillage.org/large%20language%20models/threat-modeling-llm/)
+
+- [JSOTIRO/ThreatModels](https://github.com/jsotiro/ThreatModels/tree/main)
+
+![image](https://github.com/user-attachments/assets/367a50da-c93d-4c91-a69f-9a6de8d48f91)
+
+![image](https://github.com/user-attachments/assets/eae84861-945b-4a2e-8037-f5ccfc92e5d0)
+
+![image](https://github.com/user-attachments/assets/9f366c92-3e5a-4375-b967-ac35801151c1)
+
+![image](https://github.com/user-attachments/assets/db78c3e7-8e41-4097-8f71-30b69eb70e55)
+
+![image](https://github.com/user-attachments/assets/2cc30071-7ec2-4f09-bf80-29d6b1a008ba)
+
+
+More in **Adversarial AI Attacks, Mitigations, and Defense Strategies: A cybersecurity professional's guide to AI attacks, threat modeling, and securing AI with MLSecOps**.
+
+
+## Attack Vectors
+
+Machine learning systems can be attacked through poisoned data, adversarial inputs, model extraction, privacy attacks, compromised artifacts, excessive agent permissions, and vulnerable MLOps infrastructure. The resources below explain individual attack classes and their defensive implications.
+
+- [Data Poisoning](https://github.com/ch-shin/awesome-data-poisoning)
+- [Adversarial Prompt Exploits](https://research.nccgroup.com/2022/12/05/exploring-prompt-injection-attacks)
+- [Model Inversion Attacks](https://blogs.rstudio.com/ai/posts/2020-05-15-model-inversion-attacks/)
+- [Model Evasion Attacks](https://www.ibm.com/docs/en/watsonx/saas?topic=atlas-evasion-attack)
+- [Membership Inference Exploits](https://arxiv.org/abs/2103.07853)
+- [Model Stealing Attacks](https://arxiv.org/abs/2206.08451)
+- [ML Supply Chain Attacks](https://owasp.org/www-project-machine-learning-security-top-10/docs/ML06_2023-AI_Supply_Chain_Attacks)
+- [Model Denial Of Service](https://genai.owasp.org/llmrisk/llm04-model-denial-of-service/)
+- [Gradient Leakage Attacks](https://ieeexplore.ieee.org/document/10107713)
+- [Cloud Infrastructure Attacks](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7931962/)
+- [Architecture and Access-control attacks](https://genai.owasp.org/llmrisk/llm08-excessive-agency/)
+- [OWASP Top 10 for Agentic Applications 2026 (ASI10 Rogue Agents)](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications/)
+
+
+## Blogs and Publications
+
+These publications cover MLSecOps practices, adversarial machine learning research, LLM security, AI red teaming, privacy, and security measurement.
+
+- 📚 [What is MLSecOps](https://themlsecopshacker.com/p/what-is-mlsecops)
+- 🛡️ [Red-Teaming Large Language Models](https://huggingface.co/blog/red-teaming)
+- 🔍 [Google's AI red-team](https://blog.google/technology/safety-security/googles-ai-red-team-the-ethical-hackers-making-ai-safer/)
+- 🔒 [The MLSecOps Top 10 vulnerabilities](https://ethical.institute/security.html)
+- 🏴‍☠️ [Token Smuggling Jailbreak via Adversarial Prompt](https://www.piratewires.com/p/gpt4-token-smuggling)
+- ☣️ [Just How Toxic is Data Poisoning? A Unified Benchmark for Backdoor and
+Data Poisoning Attacks](https://arxiv.org/pdf/2006.12557.pdf)
+- 📊 [We need a new way to measure AI security](https://blog.trailofbits.com/2023/03/14/ai-security-safety-audit-assurance-heidy-khlaaf-odd/)
+- 🕵️ [PrivacyRaven: Implementing a proof of concept for model inversion](https://blog.trailofbits.com/2021/11/09/privacyraven-implementing-a-proof-of-concept-for-model-inversion/)
+- 🧠 [Adversarial Prompts Engineering](https://github.com/dair-ai/Prompt-Engineering-Guide/blob/main/guides/prompts-adversarial.md)
+- 🔫 [TextAttack: A Framework for Adversarial Attacks, Data Augmentation, and Adversarial Training in NLP](https://arxiv.org/abs/2005.05909)
+- 📋 [Trail Of Bits' audit of Hugging Face's safetensors library](https://github.com/trailofbits/publications/blob/master/reviews/2023-03-eleutherai-huggingface-safetensors-securityreview.pdf)
+- 🔝 [OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/descriptions/)
+- 🔐 [LLM Security](https://llmsecurity.net/)
+- 🔑 [Is your MLOps infrastructure leaking secrets?](https://hackstery.com/2023/10/13/no-one-is-prefect-is-your-mlops-infrastructure-leaking-secrets/)
+- 🚩 [Embrace The Red, blog where show how u can hack LLM's.](https://embracethered.com/)
+- 🎙️ [Audio-jacking: Using generative AI to distort live audio transactions](https://securityintelligence.com/posts/using-generative-ai-distort-live-audio-transactions/)
+- 🌐 [HADESS - Web LLM Attacks](https://hadess.io/web-llm-attacks/)
+- 🧰 [WTF-blog - MLSecOps frameworks ... Which ones are available and what is the difference?](https://blog.wearetyomsmnv.wtf/articles/mlsecops-frameworks-...-which-ones-are-available-and-what-is-the-difference)
+- 📚 [DreadNode Paper Stack](https://dreadnode.notion.site/2582fe5306274c60b85a5e37cf99da7e?v=74ab79ed1452441dab8a1fa02099fed)
+- 🛡️ [CircleGuardBench: New Standard for Evaluating AI Moderation Models](https://huggingface.co/blog/whitecircle-ai/circleguardbench)
+- 🕴️ [Agentic Misalignment: How LLMs Could Be Insider Threats](https://www.anthropic.com/research/agentic-misalignment) ([paper](https://arxiv.org/abs/2510.05179))
+- 🕶️ [SHADE-Arena: Evaluating Sabotage and Monitoring in LLM Agents](https://arxiv.org/abs/2506.15740)
+- 🐀 [MOLE: Detecting Insider Threats in AI Agents](https://arxiv.org/abs/2609.06966)
+- 📐 [AgentMisalignment: Measuring the Propensity for Misaligned Behaviour in LLM-Based Agents](https://arxiv.org/abs/2506.04018)
+- 🗂️ [Taxonomy of Failure Modes in Agentic AI Systems](https://www.microsoft.com/en-us/security/blog/2025/04/24/new-whitepaper-outlines-the-taxonomy-of-failure-modes-in-ai-agents)
+
+## MLOps Infrastructure Vulnerabilities
+
+MLOps infrastructure introduces security risks across notebooks, training pipelines, model registries, artifact formats, cloud services, Kubernetes workloads, and inference endpoints. These resources document vulnerabilities, exploits, and defensive controls affecting the operational ML lifecycle.
+
+- [SILENT SABOTAGE](https://hiddenlayer.com/research/silent-sabotage/) - Study on bot compromise for converting Pickle to SafeTensors
+- [NOT SO CLEAR: HOW MLOPS SOLUTIONS CAN MUDDY THE WATERS OF YOUR SUPPLY CHAIN](https://hiddenlayer.com/research/not-so-clear-how-mlops-solutions-can-muddy-the-waters-of-your-supply-chain/) - Study on vulnerabilities for the ClearML platform
+- [Uncovering Azure's Silent Threats: A Journey into Cloud Vulnerabilities](https://www.youtube.com/watch?v=tv8tei97Sv8) - Study on security issues of Azure MLAAS
+- [The MLOps Security Landscape](https://hackstery.com/wp-content/uploads/2023/11/mlops_owasp_oslo_2023.pdf)
+- [Confused Learning: Supply Chain Attacks through Machine Learning Models](https://blackhat.com/asia-24/briefings/schedule/#confused-learning-supply-chain-attacks-through-machine-learning-models-37794) 
+
+## MLSecOps Pipeline
+
+![image](https://github.com/user-attachments/assets/8ce8400b-804b-4ce0-9241-30ad5b42b55f)
+
+
+<a id="repositories"></a>
+## Adversarial Machine Learning Research Repositories
+
+These research repositories provide implementations, experiments, benchmarks, attacks, and defenses for adversarial machine learning, model privacy, extraction, inversion, robustness, and LLM security.
+
+| Repository | Category | Security focus |
+|---|---|---|
+| <a id="agentpoison"></a>[AgentPoison](https://github.com/BillChan226/AgentPoison) | LLM agent backdoor poisoning | Red-teaming LLM agents via memory or knowledge-base poisoning attacks. |
+| <a id="deeppayload"></a>[DeepPayload](https://github.com/yuanchun-li/DeepPayload) | Neural trojan research | Explores embedding malicious payload behaviors into deep neural networks. |
+| <a id="backdoor"></a>[backdoor](https://github.com/bolunwang/backdoor) | Backdoor attacks | Investigates hidden-trigger backdoor attacks in deep learning models. |
+| <a id="stealing_dl_models"></a>[Stealing_DL_Models](https://github.com/jeiks/Stealing_DL_Models) | Model stealing | Demonstrates model-stealing techniques against deep learning systems. |
+| <a id="datafree-model-extraction"></a>[datafree-model-extraction](https://github.com/cake-lab/datafree-model-extraction) | Model extraction | Studies data-free extraction of target model behavior. |
+| <a id="llmmap"></a>[LLMmap](https://github.com/pasquini-dario/LLMmap) | LLM attack-surface mapping | Maps and analyzes LLM behavior to support security-oriented assessment. |
+| <a id="googlecloud-federated-ml-pipeline"></a>[GoogleCloud-Federated-ML-Pipeline](https://github.com/raj200501/GoogleCloud-Federated-ML-Pipeline) | Federated learning pipelines | Implements a federated machine-learning pipeline using Google Cloud infrastructure. |
+| <a id="class_activation_mapping_ensemble_attack"></a>[Class_Activation_Mapping_Ensemble_Attack](https://github.com/DreamyRainforest/Class_Activation_Mapping_Ensemble_Attack) | Adversarial evasion attacks | Uses CAM-based ensemble methods to craft adversarial examples. |
+| <a id="cold-attack"></a>[COLD-Attack](https://github.com/Yu-Fangxu/COLD-Attack) | Adversarial optimization attacks | Implements constrained optimization attacks against deep models. |
+| <a id="pal"></a>[pal](https://github.com/chawins/pal) | Adaptive adversarial attacks | Research code for adaptive attack strategies against defended models. |
+| <a id="zeroshotknowledgetransfer"></a>[ZeroShotKnowledgeTransfer](https://github.com/polo5/ZeroShotKnowledgeTransfer) | Model extraction | Zero-shot knowledge-transfer methods relevant to model-stealing risk. |
+| <a id="gmi-attack"></a>[GMI-Attack](https://github.com/AI-secure/GMI-Attack) | Model inversion attacks | Implements generative model inversion attacks against trained models. |
+| <a id="knowledge-enriched-dmi"></a>[Knowledge-Enriched-DMI](https://github.com/SCccc21/Knowledge-Enriched-DMI) | Model inversion attacks | Extends deep model inversion with auxiliary knowledge priors. |
+| <a id="vmi"></a>[vmi](https://github.com/wangkua1/vmi) | Model inversion attacks | Implements variational model inversion attacks to recover private training information. |
+| <a id="plug-and-play-attacks"></a>[Plug-and-Play-Attacks](https://github.com/LukasStruppek/Plug-and-Play-Attacks) | Black-box attack methods | Provides plug-and-play attack pipelines for black-box ML models. |
+| <a id="snap-sp23"></a>[snap-sp23](https://github.com/johnmath/snap-sp23) | Privacy extraction attacks | Implements SNAP poisoning attacks for private-property extraction from models. |
+| <a id="privacy-vs-robustness"></a>[privacy-vs-robustness](https://github.com/inspire-group/privacy-vs-robustness) | Privacy vs. robustness research | Evaluates trade-offs between differential privacy and adversarial robustness. |
+| <a id="ml-leaks"></a>[ML-Leaks](https://github.com/AhmedSalem2/ML-Leaks) | Membership inference attacks | Implements membership-inference attacks to test privacy leakage. |
+| <a id="blindmi"></a>[BlindMI](https://github.com/hyhmia/BlindMI) | Membership inference attacks | Studies label-only and blind membership-inference techniques. |
+| <a id="python-dp-dl"></a>[python-DP-DL](https://github.com/NNToan-apcs/python-DP-DL) | Privacy defenses | Differential privacy utilities for protecting training data in deep learning. |
+| <a id="mmd-mixup-defense"></a>[MMD-mixup-Defense](https://github.com/colaalex111/MMD-mixup-Defense) | Adversarial defenses | Defense approach designed to improve robustness against adversarial attacks. |
+| <a id="memguard"></a>[MemGuard](https://github.com/jinyuan-jia/MemGuard) | Membership inference defenses | Defends model outputs against membership-inference attacks. |
+| <a id="unsplit"></a>[unsplit](https://github.com/ege-erdogan/unsplit) | Split-learning attacks | Demonstrates model inversion, model stealing, and label inference against split learning. |
+| <a id="face_attribute_attack"></a>[face_attribute_attack](https://github.com/koushiksrivats/face_attribute_attack) | Biometric adversarial attacks | Explores attacks on face-attribute recognition systems. |
+| <a id="fvb"></a>[FVB](https://github.com/Sanjana-Sarda/FVB) | Biometric adversarial attacks | Attack methods targeting face-verification models. |
+| <a id="malware-gan"></a>[Malware-GAN](https://github.com/yanminglai/Malware-GAN) | Malware evasion research | Uses GAN-generated variants to study ML-based malware-detection evasion. |
+| <a id="generative_adversarial_perturbations"></a>[Generative_Adversarial_Perturbations](https://github.com/OmidPoursaeed/Generative_Adversarial_Perturbations) | Adversarial example generation | Generates adversarial perturbations with generative models. |
+| <a id="adversarial-attacks-with-relativistic-advgan"></a>[Adversarial-Attacks-with-Relativistic-AdvGAN](https://github.com/GiorgosKarantonis/Adversarial-Attacks-with-Relativistic-AdvGAN) | Adversarial example generation | Implements AdvGAN-based adversarial attacks for deep models. |
+| <a id="llm-attacks"></a>[llm-attacks](https://github.com/llm-attacks/llm-attacks) | LLM jailbreak research | Research code for adversarial prompting and jailbreak attacks on LLMs. |
+| <a id="llms-finetuning-safety"></a>[LLMs-Finetuning-Safety](https://github.com/LLM-Tuning-Safety/LLMs-Finetuning-Safety) | LLM safety defenses | Studies safer LLM fine-tuning under harmful-behavior and leakage risks. |
+| <a id="decodingtrust"></a>[DecodingTrust](https://github.com/AI-secure/DecodingTrust) | Trust and safety benchmarking | Benchmark suite for evaluating trust, safety, and robustness dimensions in LLMs. |
+| <a id="promptbench"></a>[promptbench](https://github.com/microsoft/promptbench) | Prompt robustness benchmarking | Benchmarking framework for evaluating prompt robustness and reliability. |
+| <a id="rome"></a>[rome](https://github.com/kmeng01/rome) | Model editing and reliability | Implements factual model-editing methods used in reliability and safety research. |
+| <a id="llmprivacy"></a>[llmprivacy](https://github.com/eth-sri/llmprivacy) | LLM privacy attacks | Research on privacy leakage and protection in large language models. |
+
+## Community Resources
+
+MLSecOps communities and security frameworks connect practitioners with threat knowledge, standards, incident data, research, and peer collaboration.
+
+- [MLSecOps](https://mlsecops.com/)
+- [MLSecOps Podcast](https://mlsecops.com/podcast)
+- [MITRE ATLAS™](https://atlas.mitre.org/) and [SLACK COMMUNITY](https://join.slack.com/t/mitreatlas/shared_invite/zt-10i6ka9xw-~dc70mXWrlbN9dfFNKyyzQ)
+- [Slack community](https://mlsecops.slack.com/)
+- [MITRE ATLAS™ (Adversarial Threat Landscape for Artificial-Intelligence Systems)](https://atlas.mitre.org/)
+- [OWASP AI Exchange](https://owaspai.org)
+- [OWASP Machine Learning Security Top Ten](https://owasp.org/www-project-machine-learning-security-top-10/)
+- [OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+- [OWASP LLMSVS](https://owasp.org/www-project-llm-verification-standard/)
+- [OWASP Periodic Table of AI Security](https://owaspai.org/goto/periodictable/)
+- [OWASP SLACK](https://owasp.org/slack/invite)
+- [Awesome LLM Security](https://github.com/corca-ai/awesome-llm-security)
+- [Hackstery](https://hackstery.com/)
+- [PWNAI](https://t.me/pwnai)
+- [AiSec_X_Feed](https://t.me/aisecnews)
+- [HUNTR Discord community](https://discord.com/invite/GBmmty82CM)
+- [AIRSK](https://airisk.io)
+- [AI Vulnerability Database](https://avidml.org/)
+- [Incident AI Database](https://incidentdatabase.ai/)
+- [Defcon AI Village CTF](https://www.kaggle.com/competitions/ai-village-ctf/overview)
+- [Awesome AI Security](https://github.com/ottosulin/awesome-ai-security)
+- [MLSecOps Reference Repository](https://github.com/disesdi/mlsecops_references)
+- [Awesome LVLM Attack](https://github.com/liudaizong/Awesome-LVLM-Attack)
+- [Awesome MLLM Safety](https://github.com/isXinLiu/Awesome-MLLM-Safety)
+
+
+## Books
+
+These books provide in-depth guidance on adversarial AI, privacy-preserving machine learning, threat modeling, and generative AI security.
+
+- [Adversarial AI Attacks, Mitigations, and Defense Strategies: A cybersecurity professional's guide to AI attacks, threat modeling, and securing AI with MLSecOps](https://www.amazon.com/Adversarial-Attacks-Mitigations-Defense-Strategies/dp/1835087981)
+- [Privacy-Preserving Machine Learning](https://www.ebooks.com/en-cg/book/211334202/privacy-preserving-machine-learning/srinivasa-rao-aravilli/)
+- [Generative AI Security: Theories and Practices (Future of Business and Finance) ](https://www.amazon.com/Generative-AI-Security-Theories-Practices/dp/3031542517)
+
+## Infographics
+
+### MLSecOps Lifecycle
+[![MLSecOps Lifecycle](https://github.com/RiccardoBiosas/awesome-MLSecOps/assets/65150720/236cd3f4-bce8-4659-b43f-8d4002df65a5)](https://www.conf42.com/DevSecOps_2022_Eugene_Neelou_ai_introducing_mlsecops_for_software_20)
+
+### AI Security Market Map
+[![Market Map](https://i.postimg.cc/15ZxH0q9/marketmap.png)](https://menlovc.com/perspective/security-for-ai-genai-risks-and-the-emerging-startup-landscape/)
+
+## Contributions
+
+All contributions to this list are welcome! Please feel free to submit a pull request with any additions or improvements.
+
+Notable additions are featured in [The MLSecOps Hacker](https://themlsecopshacker.com) newsletter, so a merged entry also reaches its subscribers.
+
+## Contributors ✨
+
+As of **July 28, 2026**, this project recognizes **19 contributors**:
+
+<table>
+	<tr>
+		<td align="center"><a href="https://github.com/RiccardoBiosas"><img src="https://github.com/RiccardoBiosas.png" width="100px;" alt="@RiccardoBiosas"/><br /><sub><b>@RiccardoBiosas</b></sub></a></td>
+		<td align="center"><a href="https://github.com/wearetyomsmnv"><img src="https://github.com/wearetyomsmnv.png" width="100px;" alt="@wearetyomsmnv"/><br /><sub><b>@wearetyomsmnv</b></sub></a></td>
+		<td align="center"><a href="https://github.com/apps/copilot-swe-agent"><img src="https://avatars.githubusercontent.com/in/1143301?v=4" width="100px;" alt="@Copilot"/><br /><sub><b>@Copilot</b></sub><br /><sub>GitHub Copilot coding agent</sub></a></td>
+		<td align="center"><a href="https://github.com/badarahmed"><img src="https://github.com/badarahmed.png" width="100px;" alt="@badarahmed"/><br /><sub><b>@badarahmed</b></sub></a></td>
+		<td align="center"><a href="https://github.com/haksungjang"><img src="https://github.com/haksungjang.png" width="100px;" alt="@haksungjang"/><br /><sub><b>@haksungjang</b></sub></a></td>
+	</tr>
+	<tr>
+		<td align="center"><a href="https://github.com/deadbits"><img src="https://github.com/deadbits.png" width="100px;" alt="@deadbits"/><br /><sub><b>@deadbits</b></sub></a></td>
+		<td align="center"><a href="https://github.com/alespignaNT"><img src="https://github.com/alespignaNT.png" width="100px;" alt="@alespignaNT"/><br /><sub><b>@alespignaNT</b></sub></a></td>
+		<td align="center"><a href="https://github.com/alexcombessie"><img src="https://github.com/alexcombessie.png" width="100px;" alt="@alexcombessie"/><br /><sub><b>@alexcombessie</b></sub></a></td>
+		<td align="center"><a href="https://github.com/aryaman-titan"><img src="https://github.com/aryaman-titan.png" width="100px;" alt="@aryaman-titan"/><br /><sub><b>@aryaman-titan</b></sub></a></td>
+		<td align="center"><a href="https://github.com/typpo"><img src="https://github.com/typpo.png" width="100px;" alt="@typpo"/><br /><sub><b>@typpo</b></sub></a></td>
+	</tr>
+	<tr>
+		<td align="center"><a href="https://github.com/Igralino"><img src="https://github.com/Igralino.png" width="100px;" alt="@Igralino"/><br /><sub><b>@Igralino</b></sub></a></td>
+		<td align="center"><a href="https://github.com/eltociear"><img src="https://github.com/eltociear.png" width="100px;" alt="@eltociear"/><br /><sub><b>@eltociear</b></sub></a></td>
+		<td align="center"><a href="https://github.com/mik0w"><img src="https://github.com/mik0w.png" width="100px;" alt="@mik0w"/><br /><sub><b>@mik0w</b></sub></a></td>
+		<td align="center"><a href="https://github.com/omerzamir"><img src="https://github.com/omerzamir.png" width="100px;" alt="@omerzamir"/><br /><sub><b>@omerzamir</b></sub></a></td>
+		<td align="center"><a href="https://github.com/robvanderveer"><img src="https://github.com/robvanderveer.png" width="100px;" alt="@robvanderveer"/><br /><sub><b>@robvanderveer</b></sub></a></td>
+	</tr>
+	<tr>
+		<td align="center"><a href="https://github.com/clubanderson"><img src="https://github.com/clubanderson.png" width="100px;" alt="@clubanderson"/><br /><sub><b>@clubanderson</b></sub></a></td>
+		<td align="center"><a href="https://github.com/lab700xdev"><img src="https://github.com/lab700xdev.png" width="100px;" alt="@lab700xdev"/><br /><sub><b>@lab700xdev</b></sub></a></td>
+		<td align="center"><a href="https://github.com/mshirakawa-ssp"><img src="https://github.com/mshirakawa-ssp.png" width="100px;" alt="@mshirakawa-ssp"/><br /><sub><b>@mshirakawa-ssp</b></sub></a></td>
+		<td align="center"><a href="https://github.com/anmorgan24"><img src="https://github.com/anmorgan24.png" width="100px;" alt="@anmorgan24"/><br /><sub><b>@anmorgan24</b></sub></a></td>
+	</tr>
+</table>
+
+## Repository Stats
+
+![GitHub stars](https://img.shields.io/github/stars/RiccardoBiosas/awesome-MLSecOps?style=social)
+![GitHub forks](https://img.shields.io/github/forks/RiccardoBiosas/awesome-MLSecOps?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/RiccardoBiosas/awesome-MLSecOps?style=social)
+![GitHub last commit](https://img.shields.io/github/last-commit/RiccardoBiosas/awesome-MLSecOps)
+![GitHub issues](https://img.shields.io/github/issues/RiccardoBiosas/awesome-MLSecOps)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/RiccardoBiosas/awesome-MLSecOps)
+
+## Activity
+
+![Repo activity](https://img.shields.io/github/commit-activity/m/RiccardoBiosas/awesome-MLSecOps)
+![Contributors](https://img.shields.io/github/contributors/RiccardoBiosas/awesome-MLSecOps)
+
+## Support Us
+
+If you find this project useful, please consider giving it a star ⭐️ and [subscribing to The MLSecOps Hacker](https://themlsecopshacker.com/subscribe?utm_source=github&utm_medium=readme) 📬, the maintainer's free newsletter that funds the time spent curating this list.
+
+[![GitHub Sponsor](https://img.shields.io/github/sponsors/RiccardoBiosas?style=social)](https://github.com/sponsors/RiccardoBiosas)
+
+## Cite This Repository
+
+Awesome MLSecOps is a citable, machine-readable catalog. Citation metadata lives in [CITATION.cff](CITATION.cff), which GitHub exposes through the **Cite this repository** button on the repository page (APA and BibTeX). Reference managers such as Zotero and Zenodo read the same file.
+
+If you reference this catalog in a paper, blog post, course, or internal security guideline, please cite it as:
+
+> Biosas, R., & Awesome MLSecOps contributors. (2023). *Awesome MLSecOps: Machine Learning and AI Security Resources* [Dataset]. GitHub. https://github.com/RiccardoBiosas/awesome-MLSecOps
+
+```bibtex
+@misc{biosas2023awesomemlsecops,
+  author    = {Biosas, Riccardo and {Awesome MLSecOps contributors}},
+  title     = {Awesome {MLSecOps}: Machine Learning and {AI} Security Resources},
+  year      = {2023},
+  publisher = {GitHub},
+  url       = {https://github.com/RiccardoBiosas/awesome-MLSecOps},
+  note      = {Curated catalog of MLSecOps and AI security resources. Canonical site: https://awesomemlsecops.com}
+}
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+---
+
+<p align="center">Made with ❤️ · <a href="https://themlsecopshacker.com/subscribe?utm_source=github&utm_medium=readme">Subscribe to The MLSecOps Hacker</a></p>
+
+
+
+

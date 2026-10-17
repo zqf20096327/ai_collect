@@ -1,0 +1,315 @@
+<file-attachment-contents filename="README.md">
+
+<h1 align="center">
+  <br>
+  <a href="/"><img src=".github/media/bg_1.gif" alt="..." width="900"></a>
+  <br>
+</h1>
+
+<h4 align="center">🤖 Use open and free AI models to generate reusable nodes for Minecraft bots.</h4>
+
+<p align="center">
+  <br>
+  <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+  <br>
+  or donate on <a href="https://www.paypal.com/donate/?hosted_button_id=24FFQ9FFJCC76" taget="_blank">PayPal</a>
+  <br>
+  <br>
+  <br>
+    <img alt="Node version" src="https://img.shields.io/static/v1?label=node&message=%20%3E=18.0.0&logo=node.js&color=2334D058" />
+  <a href="https://github.com/reworkd/AgentGPT/blob/master/docs/README.zh-HANS.md"><img src="https://img.shields.io/badge/JavaScript-323330?logo=minecraft&logoColor=F7DF1E" alt="javascript"></a>
+  <a href="soon!"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Hungarian"></a>
+</p>
+
+<p align="center">
+  <a href="#about-">About</a> •
+  <a href="#docker-">Docker</a> •
+  <a href="#freature-and-plugins-">Features</a> •
+  <a href="#how-to-install-">Install</a>
+</p>
+
+## About 📬
+
+Project KnowledgeBook is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
+
+**AI Stuff**
+More info and docs about the new AI features will be added soon!
+
+<h1>
+  <a href="/"><img src=".github/media/node_example.png" alt="..." width="100%"></a>
+</h1>
+
+## YouTube Demo
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tEXtJFuGw8Y/0.jpg)](https://www.youtube.com/watch?v=tEXtJFuGw8Y)
+
+## Getting Started
+
+Check our (soon) [Wiki](link-to-wiki) for detailed guides on:
+
+- Setting up Project Skyview
+- Creating and managing bots
+- Using the item delivery system
+- Accessing the 2D map view
+- Building an custom bot using nodes
+- And more!
+
+## Roadmap
+
+- Add checkboxes to nodes (booleans)
+- Add an way in export and import flows.
+- Auto save flows to browser.
+
+## Ready to download flows🕹
+
+| Flow name             | Description                                          | Download                                                                                    |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/KnowledgeBook/blob/main/flows/crafting_table.json) |
+|                       |                                                      |                                                                                             |
+
+## How To Install 📥
+
+### 🐳 Docker (Recommended)
+
+The easiest way to run KnowledgeBook. Pre-built images are published to the GitHub Container Registry on every push to `main` — no Node.js or build tools required.
+
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) with Compose plugin
+
+```bash
+git clone https://github.com/SilkePilon/KnowledgeBook.git
+cd KnowledgeBook
+docker compose up -d
+```
+
+| Service  | URL                      | Protocol                                           |
+| -------- | ------------------------ | -------------------------------------------------- |
+| Frontend | `http://localhost:3000`  | HTTP                                               |
+| Backend  | `https://localhost:3001` | HTTPS (self-signed — accept the cert warning once) |
+| Backend  | `http://localhost:4500`  | HTTP                                               |
+
+That's it! To stop: `docker compose down`
+
+#### Pull pre-built images manually
+
+```bash
+docker pull ghcr.io/silkepilon/knowledgebook-backend:latest
+docker pull ghcr.io/silkepilon/knowledgebook-frontend:latest
+```
+
+#### Run the backend only
+
+```bash
+docker run -d \
+  -p 3001:3001 \
+  -p 4500:4500 \
+  --name knowledgebook-backend \
+  ghcr.io/silkepilon/knowledgebook-backend:latest
+```
+
+#### Build images locally
+
+```bash
+docker build --target backend -t knowledgebook-backend .
+docker build -f Dockerfile.frontend -t knowledgebook-frontend .
+```
+
+#### Environment variables
+
+| Variable              | Default      | Description                                |
+| --------------------- | ------------ | ------------------------------------------ |
+| `NODE_ENV`            | `production` | Node environment                           |
+| `PORT`                | `3001`       | HTTPS port for the backend                 |
+| `HTTP_PORT`           | `4500`       | HTTP port for the backend                  |
+| `IP_ADDRESS`          | `0.0.0.0`    | Interface the backend binds to             |
+| `NEXT_PUBLIC_API_URL` | —            | Backend URL for the frontend to connect to |
+
+---
+
+### Manual Install
+
+> Use this if you want to contribute or run without Docker.
+
+**Prerequisites:**
+
+- [Node.js](https://nodejs.org/) 22.0.0 or above
+- [pnpm](https://pnpm.io/) 9.0.0 or above (`npm install -g pnpm`)
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/SilkePilon/KnowledgeBook.git
+cd KnowledgeBook
+```
+
+2. Install dependencies:
+
+```bash
+pnpm install --ignore-scripts && node scripts/build-pathfinder.mjs
+```
+
+> **Note:** `--ignore-scripts` is required because `@nxg-org/mineflayer-pathfinder` (2026-rewrite) has a failing upstream TypeScript build step. The `build-pathfinder.mjs` script compiles and links it correctly.
+
+3. Set up HTTPS for development:
+
+```bash
+cd backend
+pnpm run setup-https
+```
+
+4. Start the application:
+
+```bash
+# Run both frontend and backend together
+pnpm run dev
+
+# Or separately
+pnpm run frontend
+pnpm run backend
+```
+
+The frontend will be available at `http://localhost:3000` and the backend at `http://localhost:3001`.
+
+## Adding Custom Nodes to the Project
+
+<h1>
+  <a href="/"><img src=".github/media/custom_node2.png" alt="..." width="100%"></a>
+</h1>
+
+Welcome to the project! This guide will walk you through the steps to add custom nodes. Follow these instructions to contribute your custom functionality.
+
+### 1. Clone the Repository
+
+First, make a local copy of the repository:
+
+```bash
+git clone https://github.com/SilkePilon/KnowledgeBook.git
+```
+
+Open the cloned repository in your preferred IDE.
+
+### 2. Create a New Node File
+
+Navigate to the `flow_functions` folder in the project directory. Create a new file for your node with the following naming conventions:
+
+- **Name Format:** `your_node_name.js`
+- **Rules:**
+  - Use lowercase letters
+  - Use underscores (`_`) to separate words
+  - Do not include numbers in the file name
+
+For example, if you want to create a node for crafting planks, you might name the file `craft_planks.js`.
+
+### 3. Update `functions.json`
+
+In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:
+
+```json
+{
+  "YOUR_NODE_NAME": {
+    "name": "YOUR_NODE_NAME",
+    "file": "YOUR_NODE_NAME.js",
+    "id": "YOUR_NODE_NAME",
+    "label": "DISPLAY NAME",
+    "hasInput": true,
+    "description": "YOUR NODE DESCRIPTION",
+    // example of input
+    "input": { "amount": "number", "message": "text", "sneak": "switch" },
+    "author": "YOUR NAME"
+  }
+}
+```
+
+**Replace the placeholders:**
+
+- `YOUR_NODE_NAME` - The name of your node (in lowercase with underscores)
+- `DISPLAY NAME` - The name displayed in the UI
+- `YOUR NODE DESCRIPTION` - A description of what your node does
+- `YOUR NAME` - Your GitHub username
+- `{ "NAME": "number", "NAME": "text" }` - Your input fields.
+
+**Available input options:**
+
+- `text` - An general text input box
+- `number` - An input box limited to numbers only
+- `switch` - An switch that can be set to true or false
+
+### 4. Implement the Node
+
+Open your newly created file and implement your node using the following structure:
+
+```javascript
+const { getBot } = require("../main.js");
+
+function main(data) {
+  // Get the bot object
+  const bot = getBot();
+  // Your function logic here
+  console.log("Executing test_node with data:", data);
+}
+
+module.exports = { main };
+```
+
+**Key Points:**
+
+- Require `bot` from `../main.js`.
+- The `main` function should be defined and exported. This function is executed when the node runs.
+- Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
+
+**Accessing input fields**
+In order to the get values from the input field of a node you can use the `data` argument in the `main` function
+an example:
+in `functions.json` I've added an function with the following input:
+`{ "Amount": "number", "Message": "text" }`
+now i can access them in the `main` function by doing: `data.amount` and `data.message`
+the parameter name is based on the key provided in the input.
+
+**Examples**
+
+You can also checkout some of the already made nodes:
+
+- [Chat](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/chat.js)
+- [Wait for chat message](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/wait_for_chat_message.js)
+- [Walk to](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/walk_to.js)
+
+**Limitations**
+
+- no way of outputting custom data from a node.
+
+### 5. Submit a Pull Request
+
+Once you’ve added your node and updated the `functions.json` file, push your changes to a new branch and open a pull request on GitHub.
+
+```bash
+git checkout -b your-feature-branch
+git add .
+git commit -m "Add custom node YOUR_NODE_NAME"
+git push origin your-feature-branch
+```
+
+Go to the GitHub repository and create a pull request. Your changes will be reviewed, and if everything looks good, they will be merged!
+
+## Thank You!
+
+Thank you for contributing to the project! If you have any questions or need further assistance, feel free to reach out.
+
+Happy coding! 🚀
+
+## Star History
+
+<a href="https://star-history.com/#SilkePilon/KnowledgeBook&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline" />
+ </picture>
+</a>
+
+<!--
+![alt text](https://i.imgur.com/RRHOgzp.png) -->
+
+## Sponsor me
+
+`<a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" />``</a>`
+
+</file-attachment-contents>

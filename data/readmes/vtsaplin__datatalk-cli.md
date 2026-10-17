@@ -1,0 +1,317 @@
+# DataTalk CLI
+
+[![PyPI version](https://badge.fury.io/py/datatalk-cli.svg)](https://badge.fury.io/py/datatalk-cli)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Chat with your data in plain English. Right from your terminal.
+
+> A **natural language interface** for your **CSV**, **Excel (.xlsx)**, and **Parquet** files. **Fast**, **local**, and **private**.
+
+Skip SQL and complex syntax. Just ask **“What are the top 5 products?”**<br>
+Get instant answers from your **local data**.
+
+**Privacy First:** Your data never leaves your machine.  
+**Formats:** CSV, Excel (.xlsx), Parquet  
+**Performance:** Local analytics engine for **instant results**.
+
+![Demo](docs/demo.gif)
+
+**⭐ If you find this useful, please star the repo. It helps a lot!**
+
+## Why DataTalk?
+
+**The Problem:** You have a CSV file and a simple question. What do you do?
+- Open Excel? Slow for large files, and you have to leave the terminal
+- Use command-line tools (awk, csvkit)? Need to remember complex flags and syntax
+- Write SQL? Overkill for "show me the top 5 products"
+
+**The Solution:** Just ask your question naturally.
+
+```bash
+dtalk sales.csv
+> What are the top 5 products by revenue?
+> Show me sales by region for Q4
+> Which customers made orders over $1000?
+```
+
+## Features
+
+- **Natural Language** - Ask questions in plain English, no SQL required
+- **Interactive Mode** - Ask multiple questions with ↑↓ history
+- **100% Local Processing** - Data never leaves your machine, only schema is sent to LLM
+- **100% Offline Option** - Use local Ollama models for complete offline operation, no internet required
+- **Fast** - DuckDB processes gigabytes locally in seconds
+- **100+ LLM Models** - Powered by [LiteLLM](https://docs.litellm.ai) - OpenAI, Anthropic, Google, Ollama (local), and more
+- **Multiple File Formats** - Supports CSV, Excel (.xlsx, .xls), and Parquet files
+- **Scriptable** - JSON and CSV output formats for automation and pipelines
+- **Simple Configuration** - Just set `LLM_MODEL` and API key environment variables
+- **Transparent** - SQL queries shown by default, use `--no-sql` to hide
+
+## Installation
+
+```bash
+pip install datatalk-cli
+```
+
+**Requirements:** Python 3.9+ and either an API key for cloud models (OpenAI, Anthropic, etc.) OR local Ollama for offline use
+
+## Quick Start
+
+```bash
+# Option 1: Use cloud models (OpenAI, Anthropic, Google, etc.)
+export LLM_MODEL="gpt-4o"
+export OPENAI_API_KEY="your-key-here"
+
+# Option 2: Use local Ollama (100% offline, fully private, no API key needed!)
+export LLM_MODEL="ollama/llama3.1"
+# No API key needed - works completely offline!
+
+# Start interactive mode - ask multiple questions
+dtalk sales_data.csv
+
+# You'll get a prompt where you can ask questions naturally:
+# > What are the top 5 products by revenue?
+# > Show me monthly sales trends
+# > Which customers made purchases over $1000?
+
+# Or use single query mode for quick answers
+dtalk sales_data.csv -p "What are the top 5 products by revenue?"
+```
+
+## Configuration
+
+DataTalk uses [LiteLLM](https://docs.litellm.ai) to support 100+ models from various providers through a unified interface.
+
+### Required Environment Variables
+
+Set two environment variables:
+
+```bash
+# 1. Choose your model
+export LLM_MODEL="gpt-4o"
+
+# 2. Set the API key for your provider
+export OPENAI_API_KEY="your-key"
+```
+
+### Supported Models
+
+**OpenAI:**
+```bash
+export LLM_MODEL="gpt-4o"  # or gpt-4o-mini, gpt-3.5-turbo
+export OPENAI_API_KEY="sk-..."
+```
+
+**Anthropic Claude:**
+```bash
+export LLM_MODEL="claude-3-5-sonnet-20241022"
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+**Google Gemini:**
+```bash
+export LLM_MODEL="gemini-1.5-flash"  # or gemini-1.5-pro
+export GEMINI_API_KEY="..."
+```
+
+**Ollama (100% Offline - fully private, no internet required!):**
+```bash
+# Install Ollama from https://ollama.ai
+# Start Ollama: ollama serve
+# Pull a model: ollama pull llama3.1
+
+export LLM_MODEL="ollama/llama3.1"  # or ollama/mistral, ollama/codellama
+# No API key needed! Works completely offline - your data and queries never leave your machine.
+```
+
+**Azure OpenAI:**
+```bash
+export LLM_MODEL="azure/gpt-4o"  # Use your deployment name
+export AZURE_API_KEY="..."
+export AZURE_API_BASE="https://your-resource.openai.azure.com"
+export AZURE_API_VERSION="2024-02-01"
+```
+*Note: Replace `gpt-4o` with your actual Azure deployment name*
+
+**And 100+ more models!** See [LiteLLM Providers](https://docs.litellm.ai/docs/providers) for the complete list including Cohere, Replicate, Hugging Face, AWS Bedrock, and more.
+
+### Optional Configuration
+
+**MODEL_TEMPERATURE** - Control LLM response randomness (default: 0.1)
+```bash
+export MODEL_TEMPERATURE="0.5"  # Range: 0.0-2.0. Lower = more deterministic, Higher = more creative
+```
+
+### Using .env file
+
+Create a `.env` file in your project directory:
+
+```bash
+LLM_MODEL=gpt-4o
+OPENAI_API_KEY=your-key
+```
+
+## Usage
+
+**Interactive mode** - ask multiple questions:
+```bash
+dtalk sales_data.csv
+```
+
+**Direct query** - single question and exit:
+```bash
+dtalk sales_data.csv -p "What were total sales in Q4?"
+# or using long form:
+dtalk sales_data.csv --prompt "What were total sales in Q4?"
+```
+
+### Examples
+
+```bash
+# Basic queries
+dtalk data.csv "How many rows?"
+dtalk data.csv "Show first 10 rows"
+dtalk data.csv "What is the average order value?"
+
+# Filtering & sorting
+dtalk data.csv "Show customers from Canada"
+dtalk data.csv "Top 10 products by revenue"
+
+# Aggregations
+dtalk data.csv "Total revenue by category"
+dtalk data.csv "Monthly revenue trend for 2024"
+
+# Excel files work the same way
+dtalk report.xlsx "What is the average salary?"
+dtalk budget.xls "Show expenses by department"
+
+# Parquet files work the same way
+dtalk data.parquet "Count distinct users"
+```
+
+## Options
+
+### Query Modes
+
+```bash
+# Interactive mode (default) - ask multiple questions
+dtalk data.csv
+
+# Non-interactive mode - single query and exit
+dtalk data.csv -p "What are the top 5 products?"
+dtalk data.csv --prompt "What are the top 5 products?"
+```
+
+### Output Formats (with `-p` only)
+
+DataTalk supports multiple output formats for different use cases:
+
+```bash
+# Human-readable table (default)
+dtalk data.csv -p "Top 5 products"
+
+# JSON format - for scripting and automation
+dtalk data.csv -p "Top 5 products" --json
+# Output: {"sql": "SELECT ...", "data": [...], "error": null}
+
+# CSV format - for export and further processing
+dtalk data.csv -p "Top 5 products" --csv
+# Output: product_name,revenue
+#         Apple,1000
+#         Orange,500
+```
+
+### Debug & Display Options
+
+```bash
+# SQL queries are shown by default
+dtalk data.csv -p "query"
+
+# Hide generated SQL
+dtalk data.csv -p "query" --no-sql
+
+# Show only SQL without executing (for debugging/validation)
+dtalk data.csv -p "query" --sql-only
+
+# Hide column details table when loading data
+dtalk data.csv --no-schema
+
+# Combine options
+dtalk data.csv -p "query" --no-sql --no-schema    # Hide both SQL and schema
+```
+
+### Scripting
+
+DataTalk supports structured output formats for integration with scripts and pipelines:
+
+```bash
+# JSON output for scripting
+REVENUE=$(dtalk sales.csv -p "total revenue" --json | jq -r '.data[0].total_revenue')
+echo "Total Revenue: $REVENUE"
+
+# CSV output for further processing
+dtalk sales.csv -p "sales by region" --csv | \
+  awk -F',' '{sum+=$2} END {print "Grand Total:", sum}'
+
+# Process multiple files
+for file in data_*.csv; do
+  COUNT=$(dtalk "$file" -p "row count" --json | jq -r '.data[0].count')
+  echo "$file: $COUNT rows"
+done
+
+# Generate SQL for external tools
+SQL=$(dtalk sales.csv -p "top 10 products" --sql-only)
+echo "$SQL" | duckdb production.db
+
+# Export filtered data
+dtalk sales.csv -p "sales from Q4 2024" --csv > q4_sales.csv
+
+# Combine with other tools
+dtalk sales.csv -p "top products" --json | \
+  jq '.data[] | select(.revenue > 1000)'
+```
+
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, making releases, and contribution guidelines.
+
+## Exit Codes
+
+DataTalk returns standard exit codes for use in scripts and automation:
+
+| Exit Code | Meaning | Example |
+|-----------|---------|---------|
+| `0` | Success | Query completed successfully |
+| `1` | Runtime error | Missing API key, query failed, file not found |
+| `2` | Invalid arguments | `--json` without `-p`, invalid option combination |
+
+**Example usage in scripts:**
+```bash
+if dtalk sales.csv -p "total revenue" --json > result.json; then
+    echo "Success!"
+else
+    echo "Failed with exit code $?"
+fi
+```
+
+## FAQ
+
+**Q: Can I use this completely offline?**  
+A: Yes! Use local Ollama models and DataTalk works 100% offline with no internet connection required. Your data and queries never leave your machine.
+
+**Q: Is my data sent to the LLM provider?**  
+A: With cloud models, only schema (column names and types) is sent - your actual data stays local. With local Ollama models, nothing leaves your machine at all.
+
+**Q: What file formats are supported?**  
+A: CSV, Excel (.xlsx, .xls), and Parquet files.
+
+**Q: How large files can I query?**  
+A: DuckDB handles multi-gigabyte files. Parquet is faster for large datasets.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+Built with [DuckDB](https://duckdb.org/), [LiteLLM](https://docs.litellm.ai), and [Rich](https://rich.readthedocs.io/).

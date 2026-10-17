@@ -1,0 +1,1007 @@
+# cyllama - Fast, Pythonic AI Inference
+
+cyllama is a no-dependencies Python library for local AI inference built on the `.cpp` inference stack:
+
+- **[llama.cpp](https://github.com/ggml-org/llama.cpp)** - Text generation, chat, embeddings, and text-to-speech
+
+- **[whisper.cpp](https://github.com/ggml-org/whisper.cpp)** - Speech-to-text transcription and translation
+
+- **[stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp)** - Image and video generation
+
+It combines the performance of compiled Cython wrappers with a simple, high-level Python API for cross-modal AI inference.
+
+**[Documentation](https://shakfu.github.io/cyllama/)** | **[PyPI](https://pypi.org/project/cyllama/)** | **[Changelog](CHANGELOG.md)**
+
+## Features
+
+- High-level API -- `complete()`, `chat()`, `LLM` class for quick prototyping / text generation.
+
+- Streaming -- token-by-token output with callbacks
+
+- Batch processing -- process multiple prompts in parallel
+
+- GPU acceleration -- Metal (macOS), CUDA (NVIDIA), ROCm (AMD), Vulkan (cross-platform), SYCL (Intel)
+
+- Speculative decoding -- 2-3x speedup with draft models
+
+- Agent framework -- ReActAgent, ConstrainedAgent, ContractAgent with tool calling; multi-agent composition (`agent_as_tool`, `TieredAgentTeam`); JSON-Schema constraints on tool args via `Annotated[]` markers; per-tool timeouts and coercion
+
+- RAG -- retrieval-augmented generation with local embeddings and [sqlite-vector](https://github.com/sqliteai/sqlite-vector)
+
+- Speech recognition -- whisper.cpp transcription and translation
+
+- Image/Video generation -- stable-diffusion.cpp handles image, image-edit and video models.
+
+- OpenAI-compatible servers -- EmbeddedServer (cpp-httplib) and PythonServer, with streamed chat completions and embeddings endpoints
+
+- Framework integrations -- OpenAI API client, LangChain LLM interface
+
+## Installation
+
+### From PyPI
+
+```sh
+pip install cyllama
+```
+
+This installs the cpu-backend for linux and windows. For MacOS, the Metal backend is installed by default to take advantage of Apple Silicon.
+
+### GPU-Accelerated Variants
+
+GPU variants are available on PyPI as separate packages (dynamically linked). All four cover Linux x86_64; CUDA and Vulkan also ship Windows x86_64 wheels, and Vulkan additionally covers macOS Intel -- see the [availability table](#platform--gpu-availability) below:
+
+```sh
+pip install cyllama-cuda12   # NVIDIA GPU (CUDA 12.4)
+pip install cyllama-rocm     # AMD GPU (ROCm 6.3, requires glibc >= 2.35)
+pip install cyllama-sycl     # Intel GPU (oneAPI SYCL 2025.3)
+pip install cyllama-vulkan   # Cross-platform GPU (Vulkan)
+```
+
+All variants install the same `cyllama` Python package -- only the compiled backend differs. Install one at a time (they replace each other). GPU variants require the corresponding driver/runtime installed on your system.
+
+`cyllama-sycl` has two host prerequisites it does not vendor: the [Intel oneAPI](https://www.intel.com/content/www/us/en/developer/tools/oneapi/oneapi-toolkit.html) userspace runtimes, pinned to 2025.3 (`intel-oneapi-compiler-dpcpp-cpp-runtime-2025.3`, `intel-oneapi-openmp-2025.3`, `intel-oneapi-mkl-core-2025.3`, `intel-oneapi-mkl-sycl-blas-2025.3` -- needed for `import` to succeed) and an Intel GPU with its OpenCL or Level Zero driver (there is no CPU fallback; without a GPU, backend registration aborts the process). See [`docs/installation.md`](docs/installation.md#cyllama-sycl-host-prerequisites) for the full breakdown and links to Intel's install guides.
+
+You can verify which backend is active after installation:
+
+```sh
+cyllama info
+```
+
+You can also query the backend configuration at runtime:
+
+```python
+from cyllama._internal import build_config
+
+print(build_config.backend_enabled("cuda"))   # True if built with CUDA
+print(build_config.backend_enabled("metal"))  # True if built with Metal
+print(build_config.backend())                 # full per-backend config dict
+```
+
+### Python version & wheels
+
+From **v0.3.0** onwards, cyllama publishes **abi3** wheels (CPython stable ABI) that require **Python 3.12+** -- a single wheel per platform works on 3.12, 3.13, and 3.14+. This replaces the earlier per-version wheels that covered Python 3.10-3.14, and is done to overcome pypi storage constrains and efficiency: one abi3 wheel instead of five per platform substantially cuts the number of artifacts and keeps each project within PyPI's per-project size limit.
+
+If you are on **Python 3.10 or 3.11**, install the last pre-abi3 release, which shipped per-version (non-abi3) wheels across 3.10-3.14:
+
+```sh
+pip install "cyllama==0.2.18"   # or: pip install "cyllama<0.3.0"
+```
+
+Otherwise, build from source (see below), which works on any supported Python.
+
+### Optional integrations
+
+cyllama has zero hard dependencies beyond its compiled core. Features built on third-party libraries discover them lazily at runtime, so you install only what you actually use.
+
+**PDF parsing** (`cyllama.rag.PDFLoader`) supports four pluggable backends. Install whichever fits your needs:
+
+| Backend    | Install                          | Strengths                                      | Capabilities                                  |
+|------------|----------------------------------|------------------------------------------------|-----------------------------------------------|
+| `pypdf`    | `pip install pypdf`              | Pure-Python, lightweight, per-page text        | `per_page`                                    |
+| `pymupdf`  | `pip install pymupdf`            | Fast, per-page text, table/image awareness     | `per_page`, `tables`, `images`                |
+| `pdfminer` | `pip install pdfminer.six`       | Pure-Python, layout-aware extraction           | `layout`                                      |
+| `docling`  | `pip install docling`            | Highest quality; OCR, tables, layout, markdown | `ocr`, `tables`, `images`, `layout`, `markdown` (heavy; pulls in torch + CV stack) |
+
+`PDFLoader(backend="auto")` (the default) picks the first installed backend in the order above (lightest-first). Select explicitly with `PDFLoader(backend="docling")`, or filter by capability with `PDFLoader(require={"ocr"})`. See `cyllama.rag.available_pdf_backends()` and `pdf_backend_info(name)` for runtime introspection.
+
+**Other optional integrations** -- install directly when needed:
+
+| Feature             | Install                          |
+|---------------------|----------------------------------|
+| Qdrant vector store | `pip install qdrant-client`      |
+| Chroma vector store | `pip install chromadb`           |
+| sqlite-vec vector store | `pip install sqlite-vec`     |
+| pgvector vector store | `pip install "psycopg[binary]" pgvector` |
+
+### Build from source with a specific backend
+
+A source install has two phases. The sdist excludes the static `llama.cpp`, `whisper.cpp`, and `stable-diffusion.cpp` libraries (`sdist.exclude` in `pyproject.toml`), so build them first, then build the extension against them:
+
+```sh
+# 1. Clone and build the third-party deps in place.
+git clone https://github.com/shakfu/cyllama && cd cyllama
+GGML_CUDA=1 python scripts/manage.py build --all --deps-only --no-sd-examples
+
+# 2. Build and install against the prebuilt deps.
+GGML_CUDA=1 pip install . --no-build-isolation
+```
+
+`pip install cyllama --no-binary cyllama` does **not** work: an sdist-only install has no step that builds the deps. CI runs the same `manage.py build --deps-only` step in cibuildwheel's `before-all` / `before-build` hooks.
+
+A plain source build produces a version-specific extension. See [Build Commands](#build-commands) for the abi3 wheel target.
+
+## Command-Line Interface
+
+cyllama provides a unified CLI for all major functionality:
+
+```bash
+# Text generation
+cyllama gen -m models/llama.gguf -p "What is Python?" --stream
+cyllama gen -m models/llama.gguf -p "Write a haiku" --temperature 0.9 --json
+
+# Chat (single-turn or interactive)
+cyllama chat -m models/llama.gguf -p "Explain gravity" -s "You are a physicist"
+cyllama chat -m models/llama.gguf                      # interactive mode
+cyllama chat -m models/llama.gguf -n 1024              # interactive, up to 1024 tokens per response
+cyllama chat -m models/llama.gguf --stats              # show session stats on exit
+
+# Embeddings
+cyllama embed -m models/bge-small.gguf -t "hello world" -t "another text"
+cyllama embed -m models/bge-small.gguf --dim                        # print dimensions
+cyllama embed -m models/bge-small.gguf --similarity "cats" -f corpus.txt --threshold 0.5
+
+# Other commands
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf -d docs/ -p "How do I configure X?"
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf -f file.md   # interactive mode
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf -d docs/ --db docs.sqlite -p "..."  # index to persistent DB
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf --db docs.sqlite -p "..."           # reuse existing DB, no re-indexing
+cyllama server -m models/llama.gguf --port 8080
+cyllama transcribe -m models/ggml-base.en.bin -f audio.wav
+cyllama tts -m models/tts.gguf -mv models/vocoder.gguf -p "Hello world"
+cyllama sd txt2img --model models/sd.gguf --prompt "a sunset"
+cyllama agent run -m models/llama.gguf -p "What is 25 * 4?"   # run a tool-calling agent
+cyllama info       # build and backend information
+cyllama version    # print the installed version
+cyllama memory models/llama.gguf     # GPU memory estimation
+```
+
+Run `cyllama --help` or `cyllama <command> --help` for full usage. See [CLI Cheatsheet](docs/cli-cheatsheet.md) for the complete reference.
+
+## Quick Start
+
+```python
+from cyllama import complete
+
+# One line is all you need
+response = complete(
+    "Explain quantum computing in simple terms",
+    model_path="models/llama.gguf",
+    temperature=0.7,
+    max_tokens=200
+)
+print(response)
+```
+
+## Key Features
+
+### Simple by Default, Configurable When Needed
+
+**High-Level API** - Get started in seconds:
+
+```python
+from cyllama import complete, chat, LLM
+
+# One-shot completion
+response = complete("What is Python?", model_path="model.gguf")
+
+# Multi-turn chat
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "What is machine learning?"}
+]
+response = chat(messages, model_path="model.gguf")
+
+# Reusable LLM instance (faster for multiple prompts)
+llm = LLM("model.gguf")
+response1 = llm("Question 1")
+response2 = llm("Question 2")  # Model stays loaded!
+```
+
+**Streaming Support** - Real-time token-by-token output:
+
+```python
+for chunk in complete("Tell me a story", model_path="model.gguf", stream=True):
+    print(chunk, end="", flush=True)
+```
+
+### Performance Optimized
+
+**Batch Processing** - Process multiple prompts 3-10x faster:
+
+```python
+from cyllama import batch_generate
+
+prompts = ["What is 2+2?", "What is 3+3?", "What is 4+4?"]
+responses = batch_generate(prompts, model_path="model.gguf")
+```
+
+**Speculative Decoding** - 2-3x speedup with draft models:
+
+```python
+from cyllama.llama.llama_cpp import Speculative, SpeculativeParams
+
+# n_max=3 / p_min=0.0 are the defaults, matching upstream llama.cpp
+params = SpeculativeParams(n_max=3, p_min=0.0)
+
+# A draft context is required -- it is the smaller model doing the drafting
+spec = Speculative(params, ctx_target, ctx_draft)
+draft_tokens = spec.draft(params, prompt_tokens, last_token)
+```
+
+**Memory Optimization** - Smart GPU layer allocation:
+
+```python
+from cyllama import estimate_gpu_layers
+
+estimate = estimate_gpu_layers("model.gguf", gpu_memory_mb=8000)
+print(f"Recommended GPU layers: {estimate.layers}")
+```
+
+**N-gram Cache** - 2-10x speedup for repetitive text:
+
+```python
+from cyllama.llama.llama_cpp import NgramCache
+
+cache = NgramCache()
+cache.update(tokens, ngram_min=2, ngram_max=4)
+draft = cache.draft(input_tokens, n_draft=16)
+```
+
+**Response Caching** - Cache LLM responses for repeated prompts:
+
+```python
+from cyllama import LLM
+
+# Enable caching with 100 entries and 1 hour TTL
+llm = LLM("model.gguf", cache_size=100, cache_ttl=3600, seed=42)
+
+response1 = llm("What is Python?")  # Cache miss - generates response
+response2 = llm("What is Python?")  # Cache hit - returns cached response instantly
+
+# Check cache statistics
+info = llm.cache_info()  # ResponseCacheInfo(hits=1, misses=1, maxsize=100, currsize=1, ttl=3600)
+
+# Clear cache when needed
+llm.cache_clear()
+```
+
+Note: Caching requires a fixed seed (not the default random sentinel) since random seeds produce non-deterministic output. Streaming responses are not cached.
+
+### Framework Integrations
+
+**OpenAI-Compatible API** - Drop-in replacement:
+
+```python
+from cyllama.integrations import OpenAIClient
+
+client = OpenAIClient(model_path="model.gguf")
+
+response = client.chat.completions.create(
+    messages=[{"role": "user", "content": "Hello!"}],
+    temperature=0.7
+)
+print(response.choices[0].message.content)
+```
+
+**LangChain Integration**:
+
+```python
+from cyllama.integrations import CyllamaLLM
+from langchain.chains import LLMChain
+
+llm = CyllamaLLM(model_path="model.gguf", temperature=0.7)
+chain = LLMChain(llm=llm, prompt=prompt_template)
+result = chain.run(topic="AI")
+```
+
+### Agent Framework
+
+Cyllama includes a zero-dependency agent framework with three agent architectures:
+
+**ReActAgent** - Reasoning + Acting agent with tool calling:
+
+```python
+from cyllama import LLM
+from cyllama.agents import ReActAgent, tool
+from simpleeval import simple_eval
+
+@tool
+def calculate(expression: str) -> str:
+    """Evaluate a math expression safely."""
+    return str(simple_eval(expression))
+
+llm = LLM("model.gguf")
+agent = ReActAgent(llm=llm, tools=[calculate])
+result = agent.run("What is 25 * 4?")
+print(result.answer)
+```
+
+**ConstrainedAgent** - Grammar-enforced tool calling for 100% reliability:
+
+```python
+from cyllama.agents import ConstrainedAgent
+
+agent = ConstrainedAgent(llm=llm, tools=[calculate])
+result = agent.run("Calculate 100 / 4")  # Guaranteed valid tool calls
+```
+
+**ContractAgent** - Contract-based agent with C++26-inspired pre/post conditions:
+
+```python
+from cyllama.agents import ContractAgent, tool, pre, post, ContractPolicy
+
+@tool
+@pre(lambda args: args['x'] != 0, "cannot divide by zero")
+@post(lambda r: r is not None, "result must not be None")
+def divide(a: float, x: float) -> float:
+    """Divide a by x."""
+    return a / x
+
+agent = ContractAgent(
+    llm=llm,
+    tools=[divide],
+    policy=ContractPolicy.ENFORCE,
+    task_preconditions=[lambda task: len(task) > 10],
+    answer_postconditions=[lambda ans: len(ans) > 0],
+)
+result = agent.run("What is 100 divided by 4?")
+```
+
+**Schema constraints via `Annotated[]`** -- attach JSON-Schema bounds directly to type hints (`Ge`, `Le`, `MultipleOf`, `MinLen`, `MaxLen`, `Pattern`); the dispatch layer enforces them before the tool runs:
+
+```python
+from typing import Annotated, Literal
+from cyllama.agents import tool, Ge, Le, Pattern
+
+@tool
+def fetch(
+    table: Annotated[str, Pattern(r"^[a-z_]+$")],
+    limit: Annotated[int, Ge(1), Le(1000)],
+    mode: Literal["preview", "full"] = "preview",
+) -> list[dict]: ...
+```
+
+**Multi-agent composition** -- wrap any agent as a tool for supervisor / worker setups; pair smaller worker LLMs with a larger planner via `TieredAgentTeam`:
+
+```python
+from cyllama.agents import agent_as_tool, AgentRole, TieredAgentTeam
+
+team = TieredAgentTeam(
+    supervisor=ReActAgent(llm=LLM("models/strong.gguf"), tools=[]),
+    workers=[
+        AgentRole("researcher", researcher, "Find facts."),
+        AgentRole("coder", coder, "Modify code."),
+    ],
+)
+result = team.run("Refactor X using technique Y.")
+```
+
+See [Agents Overview](docs/agents_overview.md) for detailed agent documentation, plus [Contract Recipes](docs/agents/contracts.md) for nine worked patterns of when to use schema vs contracts.
+
+### Speech Recognition
+
+**Whisper Transcription** - Transcribe audio files with timestamps:
+
+```python
+from cyllama.whisper import WhisperContext, WhisperFullParams
+
+# Load model and audio
+ctx = WhisperContext("models/ggml-base.en.bin")
+samples = load_audio_as_16khz_float32("audio.wav")  # Your audio loading function
+
+# Transcribe
+params = WhisperFullParams()
+ctx.full(samples, params)
+
+# Get results
+for i in range(ctx.full_n_segments()):
+    start = ctx.full_get_segment_t0(i) / 100.0
+    end = ctx.full_get_segment_t1(i) / 100.0
+    text = ctx.full_get_segment_text(i)
+    print(f"[{start:.2f}s - {end:.2f}s] {text}")
+```
+
+See [Whisper docs](docs/whisper.md) for full documentation.
+
+### Stable Diffusion
+
+**Image Generation** - Generate images from text using stable-diffusion.cpp:
+
+```python
+from cyllama.sd import text_to_image
+
+# Simple text-to-image
+image = text_to_image(
+    model_path="models/sd_xl_turbo_1.0.q8_0.gguf",
+    prompt="a photo of a cute cat",
+    width=512,
+    height=512,
+    sample_steps=4,
+    cfg_scale=1.0
+)
+image.save("output.png")
+```
+
+**Advanced Generation** - Full control with SDContext:
+
+```python
+from cyllama.sd import SDContext, SDContextParams
+
+params = SDContextParams()
+params.model_path = "models/sd_xl_turbo_1.0.q8_0.gguf"
+params.n_threads = 4
+
+ctx = SDContext(params)
+# sample_method / scheduler / eta / wtype default to auto-resolve
+# sentinels (SD C-library defaults) -- pass explicitly only to override.
+images = ctx.generate(
+    prompt="a beautiful mountain landscape",
+    negative_prompt="blurry, ugly",
+    width=512,
+    height=512,
+)
+```
+
+**CLI Tool** - Command-line interface:
+
+```bash
+# Text to image
+cyllama sd txt2img \
+    --model models/sd_xl_turbo_1.0.q8_0.gguf \
+    --prompt "a beautiful sunset" \
+    --output sunset.png
+
+# Image to image
+cyllama sd img2img \
+    --model models/sd-v1-5.gguf \
+    --init-img input.png \
+    --prompt "oil painting style" \
+    --strength 0.7
+
+# Show system info
+cyllama sd info
+```
+
+Supports SD 1.x/2.x, SDXL, SD3, FLUX, FLUX2, z-image-turbo, video generation (Wan/CogVideoX), LoRA, ControlNet, inpainting, and ESRGAN upscaling. See [Stable Diffusion docs](docs/stable_diffusion.md) for full documentation.
+
+### RAG (Retrieval-Augmented Generation)
+
+**CLI** - Query your documents from the command line:
+
+```bash
+# Single query against a directory of docs
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf \
+    -d docs/ -p "How do I configure X?" --stream
+
+# Interactive mode with source display
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf \
+    -f guide.md -f faq.md --sources
+
+# Persistent vector store: index once, reuse across runs
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf \
+    -d docs/ --db docs.sqlite -p "How do I configure X?"   # first run: indexes to docs.sqlite
+cyllama rag -m models/llama.gguf -e models/bge-small.gguf \
+    --db docs.sqlite -p "Another question?"                # later runs: reuse index, no re-embedding
+```
+
+**Simple RAG** - Query your documents with LLMs:
+
+```python
+from cyllama.rag import RAG
+
+# Create RAG instance with embedding and generation models
+rag = RAG(
+    embedding_model="models/bge-small-en-v1.5-q8_0.gguf",
+    generation_model="models/llama.gguf"
+)
+
+# Add documents
+rag.add_texts([
+    "Python is a high-level programming language.",
+    "Machine learning is a subset of artificial intelligence.",
+    "Neural networks are inspired by biological neurons."
+])
+
+# Query
+response = rag.query("What is Python?")
+print(response.text)
+```
+
+**Load Documents** - Support for multiple file formats:
+
+```python
+from cyllama.rag import RAG, load_directory
+
+rag = RAG(
+    embedding_model="models/bge-small-en-v1.5-q8_0.gguf",
+    generation_model="models/llama.gguf"
+)
+
+# Load all documents from a directory
+documents = load_directory("docs/", glob="**/*.md")
+rag.add_documents(documents)
+
+response = rag.query("How do I configure the system?")
+```
+
+**Hybrid Search** - Combine vector and keyword search:
+
+```python
+from cyllama.rag import RAG, HybridStore, Embedder
+
+embedder = Embedder("models/bge-small-en-v1.5-q8_0.gguf")
+store = HybridStore("knowledge.db", embedder)
+
+store.add_texts(["Document content..."])
+
+# Hybrid search with configurable weights
+results = store.search("query", k=5, vector_weight=0.7, fts_weight=0.3)
+```
+
+**Embedding Cache** - Speed up repeated queries with LRU caching:
+
+```python
+from cyllama.rag import Embedder
+
+# Enable cache with 1000 entries
+embedder = Embedder("models/bge-small-en-v1.5-q8_0.gguf", cache_size=1000)
+
+embedder.embed("hello")  # Cache miss
+embedder.embed("hello")  # Cache hit - instant return
+
+info = embedder.cache_info()
+print(f"Hits: {info.hits}, Misses: {info.misses}")
+```
+
+**Agent Integration** - Use RAG as an agent tool:
+
+```python
+from cyllama import LLM
+from cyllama.agents import ReActAgent
+from cyllama.rag import RAG, create_rag_tool
+
+rag = RAG(
+    embedding_model="models/bge-small-en-v1.5-q8_0.gguf",
+    generation_model="models/llama.gguf"
+)
+rag.add_texts(["Your knowledge base..."])
+
+# Create a tool from the RAG instance
+search_tool = create_rag_tool(rag)
+
+llm = LLM("models/llama.gguf")
+agent = ReActAgent(llm=llm, tools=[search_tool])
+result = agent.run("Find information about X in the knowledge base")
+```
+
+Supports text chunking, multiple embedding pooling strategies, LRU caching for repeated queries, async operations, reranking, and SQLite-vector for persistent storage. See [RAG Overview](docs/rag_overview.md) for full documentation.
+
+### Common Utilities
+
+**GGUF File Manipulation** - Inspect and modify model files:
+
+```python
+from cyllama.llama.llama_cpp import GGUFContext
+
+ctx = GGUFContext.from_file("model.gguf")
+metadata = ctx.get_all_metadata()
+print(f"Model: {metadata['general.name']}")
+```
+
+**Structured Output** - JSON schema to grammar conversion (pure Python, no C++ dependency):
+
+```python
+from cyllama.llama.llama_cpp import json_schema_to_grammar
+
+schema = {"type": "object", "properties": {"name": {"type": "string"}}}
+grammar = json_schema_to_grammar(schema)
+```
+
+**Huggingface Model Downloads**:
+
+```python
+from cyllama.llama.llama_cpp import download_model, list_cached_models, get_hf_file
+
+# Download from HuggingFace (saves to ~/.cache/llama.cpp/)
+download_model("bartowski/Llama-3.2-1B-Instruct-GGUF:latest")
+
+# Or with explicit parameters
+download_model(hf_repo="bartowski/Llama-3.2-1B-Instruct-GGUF:latest")
+
+# Download specific file to custom path
+download_model(
+    hf_repo="bartowski/Llama-3.2-1B-Instruct-GGUF",
+    hf_file="Llama-3.2-1B-Instruct-Q8_0.gguf",
+    model_path="./models/my_model.gguf"
+)
+
+# Get file info without downloading
+info = get_hf_file("bartowski/Llama-3.2-1B-Instruct-GGUF:latest")
+print(info)  # {'repo': '...', 'gguf_file': '...', 'mmproj_file': '...'}
+
+# List cached models
+models = list_cached_models()
+```
+
+## What's Inside
+
+### Text Generation (llama.cpp)
+
+- [x] **Full llama.cpp API** - Cython wrapper with strong typing
+
+- [x] **High-Level API** - Simple, Pythonic interface (`LLM`, `complete`, `chat`)
+
+- [x] **Streaming Support** - Token-by-token generation with callbacks
+
+- [x] **Batch Processing** - Efficient parallel inference
+
+- [x] **Multimodal** - LLAVA and vision-language models
+
+- [x] **Speculative Decoding** - 2-3x inference speedup with draft models
+
+- [x] **LoRA Adapters** - Apply adapters to a context (binding layer, see API reference)
+
+- [x] **Text-to-Speech** - `cyllama tts` and `cyllama.llama.tts`
+
+### Speech Recognition (whisper.cpp)
+
+- [x] **Full whisper.cpp API** - Cython wrapper
+
+- [x] **CLI** - `cyllama transcribe`, with SRT/VTT output
+
+- [x] **WAV input, no dependencies** - 8/16/24/32-bit PCM decoded via the stdlib; convert other formats with ffmpeg first
+
+- [x] **Language Detection** - Automatic or specified language
+
+- [x] **Timestamps** - Word and segment-level timing
+
+### Image & Video Generation (stable-diffusion.cpp)
+
+- [x] **Full stable-diffusion.cpp API** - Cython wrapper
+
+- [x] **Text-to-Image** - SD 1.x/2.x, SDXL, SD3, FLUX, FLUX2, Z-Image
+
+- [x] **Image-to-Image** - Transform existing images
+
+- [x] **Inpainting** - Mask-based editing
+
+- [x] **ControlNet** - Guided generation with edge/pose/depth
+
+- [x] **Video Generation** - Wan, CogVideoX models
+
+- [x] **Upscaling** - ESRGAN 4x upscaling
+
+### Retrieval-Augmented Generation
+
+- [x] **End-to-end RAG** - chunking, embedding, retrieval and generation in one `RAG` class
+
+- [x] **Pluggable vector stores** - sqlite-vector (default, bundled), sqlite-vec, Chroma, Qdrant, pgvector behind one `VectorStoreProtocol`
+
+- [x] **Hybrid search** - dense + FTS5 keyword search with configurable weights
+
+- [x] **Reranking** - cross-encoder reranking in the pipeline via `RAGConfig.rerank`
+
+- [x] **Document loaders** - four pluggable PDF backends, plus text and markdown
+
+### Cross-Cutting Features
+
+- [x] **GPU Acceleration** - Metal, CUDA, ROCm, Vulkan, SYCL backends
+
+- [x] **Memory Optimization** - Smart GPU layer allocation
+
+- [x] **Agent Framework** - ReActAgent, ConstrainedAgent, ContractAgent
+
+- [x] **Framework Integration** - OpenAI-compatible client, LangChain
+
+## Why Cyllama?
+
+**Performance**: Compiled Cython wrappers with minimal overhead
+
+- Strong type checking at compile time
+
+- Zero-copy data passing where possible
+
+- Efficient memory management
+
+- Native integration with llama.cpp optimizations
+
+**Simplicity**: From 50 lines to 1 line for basic generation
+
+- Pythonic API
+
+- Automatic resource management
+
+- Sensible defaults, full control when needed
+
+**Well-tested** with broad api coverage
+
+- Extensive test coverage across the API surface
+
+- Documentation and examples for each module
+
+- Proper error handling and logging
+
+- Framework integration for real applications
+
+**Up-to-Date**: Tracks bleeding-edge llama.cpp
+
+- Regular updates with latest features
+
+- All high-priority APIs wrapped
+
+- Performance optimizations included
+
+## Status
+
+**Build System**: scikit-build-core + CMake
+
+See `pyproject.toml` for the current cyllama version and `CHANGELOG.md` for the pinned llama.cpp / whisper.cpp / stable-diffusion.cpp revisions.
+
+### Platform & GPU Availability
+
+Pre-built wheels on PyPI:
+
+| Package | Backend | Platform | Arch | Linking |
+|---|---|---|---|---|
+| `cyllama` | CPU | Linux | x86_64 | static |
+| `cyllama` | CPU | Windows | x86_64 | static |
+| `cyllama` | Metal | macOS | arm64 (Apple Silicon) | static |
+| `cyllama` | Metal | macOS | x86_64 (Intel) | static |
+| `cyllama-cuda12` | CUDA 12.4 | Linux | x86_64 | dynamic |
+| `cyllama-cuda12` | CUDA 12.4 | Windows | x86_64 | dynamic |
+| `cyllama-rocm` | ROCm 6.3 | Linux | x86_64 | dynamic |
+| `cyllama-sycl` | Intel SYCL (oneAPI 2025.3) | Linux | x86_64 | dynamic |
+| `cyllama-vulkan` | Vulkan | Linux | x86_64 | dynamic |
+| `cyllama-vulkan` | Vulkan | Windows | x86_64 | dynamic |
+| `cyllama-vulkan` | Vulkan | macOS | x86_64 (Intel) | dynamic |
+
+ROCm and SYCL remain Linux-only, and there are no arm64 GPU wheels beyond macOS Metal. Any combination not listed builds from source.
+
+Build from source (any platform with a C++ toolchain):
+
+| Backend | macOS | Linux | Windows |
+|---|---|---|---|
+| CPU | `make build-cpu` | `make build-cpu` | `make build-cpu` |
+| Metal | `make build-metal` (default) | -- | -- |
+| CUDA | -- | `make build-cuda` | `make build-cuda` |
+| ROCm (HIP) | -- | `make build-hip` | -- |
+| Vulkan | `make build-vulkan` | `make build-vulkan` | `make build-vulkan` |
+| SYCL | -- | `make build-sycl` | -- |
+| OpenCL | `make build-opencl` | `make build-opencl` | `make build-opencl` |
+
+All source builds support both static (`make build-<backend>`) and dynamic (`make build-<backend>-dynamic`) linking.
+
+### Release History
+
+See [CHANGELOG.md](CHANGELOG.md) -- it is the single source of truth for what changed in each release, and for the pinned llama.cpp / whisper.cpp / stable-diffusion.cpp revisions.
+
+## Building from Source
+
+To build `cyllama` from source:
+
+1. Python 3.12+
+
+2. Git clone the latest version of `cyllama`:
+
+    ```sh
+    git clone https://github.com/shakfu/cyllama.git
+    cd cyllama
+    ```
+
+3. We use [uv](https://github.com/astral-sh/uv) for package management:
+
+   If you don't have it see the link above to install it, otherwise:
+
+    ```sh
+    uv sync
+    ```
+
+4. Type `make` in the terminal.
+
+   This will:
+
+    1. Download and build `llama.cpp`, `whisper.cpp` and `stable-diffusion.cpp`
+
+    2. Install them into the `thirdparty` folder
+
+    3. Build `cyllama` using scikit-build-core + CMake
+
+### Build Commands
+
+```sh
+# Full build (default: static linking, builds llama.cpp from source)
+make              # Build dependencies + editable install
+
+# Dynamic linking (downloads pre-built llama.cpp release)
+make build-dynamic  # No source compilation needed for llama.cpp
+
+# Build wheel for distribution
+make wheel        # Version-specific wheel in dist/
+make wheel-abi3   # cp312-abi3 wheel in dist/, the format published to PyPI
+make dist         # Creates sdist + wheel in dist/
+
+# Backend-specific builds (static)
+make build-cpu    # CPU only
+make build-metal  # macOS Metal (default on macOS)
+make build-cuda   # NVIDIA CUDA
+make build-vulkan # Vulkan (cross-platform)
+make build-hip    # AMD ROCm
+make build-sycl   # Intel SYCL
+make build-opencl # OpenCL
+
+# Backend-specific builds (dynamic -- shared libs)
+make build-cpu-dynamic
+make build-cuda-dynamic
+make build-vulkan-dynamic
+make build-metal-dynamic
+make build-hip-dynamic
+make build-sycl-dynamic
+make build-opencl-dynamic
+
+# Backend-specific wheels (static and dynamic)
+make wheel-cuda           # Static wheel
+make wheel-cuda-dynamic   # Dynamic wheel with shared libs
+
+# Clean and rebuild
+make clean        # Remove build artifacts + dynamic libs
+make reset        # Full reset including thirdparty and .venv
+make remake       # Clean rebuild with tests
+
+# Code quality
+make lint         # Lint with ruff (auto-fix)
+make format       # Format with ruff
+make typecheck    # Type check with mypy
+make qa           # Run all: lint, typecheck, format
+
+# Memory leak detection
+make leaks        # RSS-growth leak check (10 cycles, 20% threshold)
+
+# Publishing
+make check        # Validate wheels with twine
+make publish      # Upload to PyPI
+make publish-test # Upload to TestPyPI
+```
+
+### GPU Acceleration
+
+By default, cyllama builds with Metal support on macOS and CPU-only on Linux. To enable other GPU backends (CUDA, Vulkan, etc.):
+
+```sh
+# Static builds (all libs compiled in)
+make build-cuda
+make build-vulkan
+
+# Dynamic builds (shared libs installed alongside extension)
+make build-cuda-dynamic
+make build-vulkan-dynamic
+
+# Multiple backends
+export GGML_CUDA=1 GGML_VULKAN=1
+make build
+```
+
+See [Build Backends](docs/build_backends.md) for comprehensive backend build instructions.
+
+### Multi-GPU Configuration
+
+For systems with multiple GPUs, cyllama provides full control over GPU selection and model splitting:
+
+```python
+from cyllama import LLM, GenerationConfig
+
+# Use a specific GPU (GPU index 1)
+llm = LLM("model.gguf", main_gpu=1)
+
+# Multi-GPU with layer splitting (default mode)
+llm = LLM("model.gguf", split_mode=1, n_gpu_layers=-1)
+
+# Multi-GPU with tensor parallelism (row splitting)
+llm = LLM("model.gguf", split_mode=2, n_gpu_layers=-1)
+
+# Custom tensor split: 30% GPU 0, 70% GPU 1
+llm = LLM("model.gguf", tensor_split=[0.3, 0.7])
+
+# Full configuration via GenerationConfig
+config = GenerationConfig(
+    main_gpu=0,
+    split_mode=1,          # 0=NONE, 1=LAYER, 2=ROW
+    tensor_split=[1, 2],   # 1/3 GPU0, 2/3 GPU1
+    n_gpu_layers=-1
+)
+llm = LLM("model.gguf", config=config)
+```
+
+**Split Modes:**
+
+- `0` (NONE): Single GPU only, uses `main_gpu`
+
+- `1` (LAYER): Split layers and KV cache across GPUs (default)
+
+- `2` (ROW): Tensor parallelism - split layers with row-wise distribution
+
+## Testing
+
+The `tests` directory in this repo provides extensive examples of using cyllama.
+
+However, as a first step, you should download a smallish llm in the `.gguf` model from [huggingface](https://huggingface.co/models?search=gguf). A good small model to start and which is assumed by tests is [Llama-3.2-1B-Instruct-Q8_0.gguf](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/067b946cf014b7c697f3654f621d577a3e3afd1c/Llama-3.2-1B-Instruct-Q8_0.gguf). `cyllama` expects models to be stored in a `models` folder in the cloned `cyllama` directory. So to create the `models` directory if doesn't exist and download this model, you can just type:
+
+```sh
+make download
+```
+
+This basically just does:
+
+```sh
+cd cyllama
+mkdir models && cd models
+wget https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/067b946cf014b7c697f3654f621d577a3e3afd1c/Llama-3.2-1B-Instruct-Q8_0.gguf
+```
+
+Run the full test suite:
+
+```sh
+make test
+```
+
+You can also explore interactively:
+
+```python
+python3 -i -c "import cyllama"
+
+>>> from cyllama import complete
+>>> response = complete("What is 2+2?", model_path="models/Llama-3.2-1B-Instruct-Q8_0.gguf")
+>>> print(response)
+```
+
+## Documentation
+
+Full documentation is available at [https://shakfu.github.io/cyllama/](https://shakfu.github.io/cyllama/) (built with MkDocs).
+
+To serve docs locally: `make docs-serve`
+
+- **[User Guide](docs/user_guide.md)** - Comprehensive guide covering all features
+
+- **[CLI Cheatsheet](docs/cli-cheatsheet.md)** - CLI reference for all commands
+
+- **[API Reference](docs/api_reference.md)** - API documentation
+
+- **[RAG Overview](docs/rag_overview.md)** - Retrieval-augmented generation guide
+
+- **[Cookbook](docs/cookbook.md)** - Practical recipes and patterns
+
+- **[Changelog](CHANGELOG.md)** - Release history
+
+- **Examples** - See `tests/examples/` for working code samples
+
+## Contributing
+
+Contributions are welcome! Please see the [User Guide](docs/user_guide.md) for development guidelines.
+
+## License
+
+cyllama is MIT-licensed. It wraps [llama.cpp](https://github.com/ggml-org/llama.cpp), [whisper.cpp](https://github.com/ggml-org/whisper.cpp) and [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp), which are MIT-licensed.
+
+Wheels also bundle code under other permissive licenses:
+
+- [sqlite-vector](https://github.com/sqliteai/sqlite-vector): Apache-2.0
+- [cpp-httplib](https://github.com/yhirose/cpp-httplib): MIT
+- code compiled into the libraries above: nlohmann/json, utf8proc and rotate-bits (MIT), xxHash and oniguruma (BSD-2-Clause), darts-clone (BSD-3-Clause)
+- vendored Python packages Jinja2 and MarkupSafe (BSD-3-Clause)
+
+Their license texts ship in the wheel under `*.dist-info/licenses/`, and in `cyllama/_vendor/` for Jinja2 and MarkupSafe.
+
+## Note on PyPI Release History
+
+Due to the size of cyllama wheels and PyPI's 10GB per-project storage limit, we have had switch to releasing only `.abi3` wheels and also to delete some earlier versions and known-buggy versions from PyPI to make space for new releases. Specifically, all releases below version 0.2.7 have been deleted from PyPI, and release 0.2.16 has been deleted because it included a bug that broke stable-diffusion.
+
+All of the deleted versions remain fully available in cyllama's [GitHub releases](https://github.com/shakfu/cyllama/releases) section. Note that PyPI does not allow deleted versions to be re-uploaded under the same version number, so these versions will not reappear on PyPI. Going forward, cyllama will continue to publish dual releases of wheels to both PyPI and GitHub.

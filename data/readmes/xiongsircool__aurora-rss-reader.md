@@ -1,0 +1,399 @@
+# Aurora RSS Reader
+
+![Banner](images/banner_sharp_aurora.png)
+
+<p align="center">
+  <a href="https://github.com/xiongsircool/aurora-rss-reader">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/xiongsircool/aurora-rss-reader?style=social">
+  </a>
+  <a href="https://github.com/xiongsircool/aurora-rss-reader">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/xiongsircool/aurora-rss-reader?style=social">
+  </a>
+  <a href="https://github.com/xiongsircool/aurora-rss-reader/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/xiongsircool/aurora-rss-reader">
+  </a>
+  <a href="https://github.com/xiongsircool/aurora-rss-reader/blob/main/LICENSE">
+    <img alt="License: GPL v3" src="https://img.shields.io/badge/License-GPLv3-blue.svg">
+  </a>
+</p>
+
+<p align="center">
+  <a href="README_ZH.md">🇨🇳 中文</a> • <a href="README.md">🇺🇸 English</a>
+</p>
+
+<div align="center">
+  <img alt="Aurora RSS Reader" src="images/带版本号和软件名图标.png" height="120" />
+</div>
+
+## One Repo, Two Clients
+
+|  | 🖥️ Desktop | 📱 Mobile |
+|---|---|---|
+| Version | v0.2.0 | v0.1.2 |
+| Platform | Windows · macOS · Linux | Android (iOS verified on device) |
+| Stack | Electron + Vue 3 + Fastify | Flutter · local-first |
+| Data | Local SQLite, optional backend | 100% on-device SQLite |
+| Download | [Releases](https://github.com/xiongsircool/aurora-rss-reader/releases) | [mobile-v0.1.2 APK](https://github.com/xiongsircool/aurora-rss-reader/releases/tag/mobile-v0.1.2) |
+
+---
+
+## 📱 Aurora Mobile v0.1.2
+
+A **local-first** RSS reader: no account, no server, no telemetry. Feeds, articles and AI settings live only on your device.
+
+<p align="center">
+  <img src="rss-mobile/docs/screenshots/inbox.png" width="180" alt="Inbox"/>
+  <img src="rss-mobile/docs/screenshots/reader.png" width="180" alt="Reader"/>
+  <img src="rss-mobile/docs/screenshots/dark-reader.png" width="180" alt="Dark reader"/>
+  <img src="rss-mobile/docs/screenshots/dark.png" width="180" alt="Dark mode"/>
+</p>
+
+**Highlights**
+- 📡 Full-format parsing — RSS 1.0/2.0, Atom, Media RSS, podcasts; UTF-8/16, GBK, Big5, Shift-JIS encodings
+- 🤖 AI with your own key (SiliconFlow / DeepSeek) — summaries, bilingual full-text translation, live title translation
+- 🎧 Podcast player — speed control, position memory
+- 📺 Video cards for YouTube / Bilibili links
+- 📤 Share suite — link / text / Markdown / screenshot / branded share-card image
+- 🔍 FTS5 full-text search · OPML import/export · groups · dark mode
+- 🔔 Local notifications · background refresh
+
+📥 **Install**: grab `Aurora-mobile-v0.1.2-arm64.apk` (ARM64 devices) or the universal APK from the [release page](https://github.com/xiongsircool/aurora-rss-reader/releases/tag/mobile-v0.1.2). **Upgrading from the GitHub v0.1.0 APK requires special care: its signing certificate differs; do not uninstall without a data migration plan. OPML only backs up subscriptions.** iOS public distribution is deferred. Details: [rss-mobile/README.md](rss-mobile/README.md).
+
+---
+
+## 🖥️ Desktop — v0.2.0 Latest Release | 最新版本
+
+**Reading Analytics, Feed Reliability & Mobile API Foundation | 阅读统计、订阅稳定性与移动 API 基础**
+
+- 📊 **Reading Analytics** - Added totals, read rate, 30-day activity, top feeds, and tag visualizations
+- 🕒 **Read Activity Tracking** - Read timestamps now accumulate locally for meaningful trends without uploading reading data
+- 📰 **More Reliable Feed Parsing** - Rejects HTML/non-RSS responses early and extracts more direct and Media RSS images
+- 🎬 **Video Feed Polish** - Improved video extraction and timeline card presentation
+- 📱 **Mobile API Foundation** - Added cursor-paginated presentation endpoints for future LAN or self-hosted mobile clients
+- 🧩 **v0.2 Roadmap Complete** - Reading analytics ships in-app; the AI-assisted RSSHub browser tool lives in [rsshub-rule-generator](https://github.com/xiongsircool/rsshub-rule-generator)
+
+---
+
+## Introduction
+
+Aurora RSS Reader is a cross-platform desktop RSS reader integrated with AI translation and summarization features. It supports multiple layout modes, local data storage, and rich customization options.
+
+**Current Version: v0.2.0**
+
+## Key Features
+
+### Reading Experience
+- **Multiple Layout Modes** - Support for three-column and single-column layouts
+- **Group Management** - Organize RSS feeds by categories
+- **Full-text Search** - Quick search in titles and content
+- **Favorites Feature** - Bookmark important articles for later reading
+- **Time Filtering** - Filter articles by publication date
+
+### Smart Features
+- **Article Summaries** - Automatically generate key points for quick understanding
+- **Multi-language Translation** - Support full-text and title translation for barrier-free reading
+- **Multi-language Interface** - Chinese, English, Japanese, Korean interface support
+- **Flexible Configuration** - Support multiple translation and summarization services
+
+### System Features
+- **Local Storage** - SQLite database, offline available
+- **OPML Import/Export** - Easy data migration
+- **Auto Refresh** - Periodically fetch latest articles
+- **Dark Mode** - Support dark and light themes
+- **RSSHub Support** - Extend RSS feed coverage
+
+## Interface Preview
+
+### Current UI Highlights
+<div align="center">
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v.0.1.9/MCP功能升级.png" alt="Dedicated MCP settings" style="width:440px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Dedicated MCP Settings</figcaption>
+  </figure>
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v.0.1.9/增加支持后台summary.png" alt="Background summary queue" style="width:440px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Background Summary Queue</figcaption>
+  </figure>
+</div>
+
+<div align="center">
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v.0.1.9/支持单个订阅和分组的日报功能.png" alt="Scope summary and digest" style="width:280px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Scope Summary & Digest</figcaption>
+  </figure>
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v.0.1.9/增加rsshub预选.png" alt="RSSHub preset selection" style="width:280px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>RSSHub Preset Selection</figcaption>
+  </figure>
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v.0.1.9/AI摘要支持makedown渲染.png" alt="Markdown summary rendering" style="width:280px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Markdown Summary Rendering</figcaption>
+  </figure>
+</div>
+
+### Media Feed Support
+<div align="center">
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v0.1.6/视频订阅显示增强.png" alt="Video feed display" style="width:440px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Video Feed Display</figcaption>
+  </figure>
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;vertical-align:bottom;">
+    <img src="images/v0.1.6/图像订阅显示增强.png" alt="Image feed display" style="width:440px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Image Feed Display</figcaption>
+  </figure>
+</div>
+
+### Blog & Article Enhancement
+<div align="center">
+  <img src="images/v0.1.6/博客订阅增强.png" alt="Blog feed enhancement" style="width:88%;max-width:980px;border-radius:14px;box-shadow:0 6px 28px rgba(15,17,21,.18);" />
+</div>
+
+### Context Menu & Collections
+<div align="center">
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;">
+    <img src="images/v0.1.6/右键功能增强feeds.png" alt="Feed context menu" style="width:320px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Feed Context Menu</figcaption>
+  </figure>
+  <figure style="display:inline-block;margin:0 12px 18px;text-align:center;">
+    <img src="images/v0.1.6/右键将订阅记录添加到书签组.png" alt="Add to collection" style="width:320px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+    <figcaption>Add to Collection</figcaption>
+  </figure>
+</div>
+
+### MCP Status Display
+<div align="center">
+  <img src="images/v0.1.6/MCP服务显性检测.png" alt="MCP status indicator" style="width:320px;border-radius:12px;box-shadow:0 6px 24px rgba(15,17,21,.18);" />
+</div>
+
+### Zotero Integration
+<div align="center">
+  <img src="images/v0.1.6/发送到zotero支持.png" alt="Send to Zotero" style="width:88%;max-width:980px;border-radius:14px;box-shadow:0 6px 28px rgba(15,17,21,.18);" />
+</div>
+
+### Workspace Advanced Search
+<div align="center">
+  <img src="images/v0.1.6/工作区域高级检索标签组.png" alt="Workspace advanced search" style="width:88%;max-width:980px;border-radius:14px;box-shadow:0 6px 28px rgba(15,17,21,.18);" />
+</div>
+
+## Quick Start
+
+### System Requirements
+- Node.js 22
+- pnpm 8+
+
+### Installation and Running
+```bash
+# Clone the repository
+git clone https://github.com/xiongsircool/aurora-rss-reader.git
+cd aurora-rss-reader
+
+# Recommended: Node.js backend
+cd backend-node
+npm install
+cd ../rss-desktop
+pnpm install
+pnpm dev
+
+# Quick start (Node.js backend)
+cd ..
+chmod +x start.sh
+./start.sh
+```
+
+### Development Setup (Manual)
+Recommended (backend-node):
+- `cd backend-node && npm install`
+- `cd rss-desktop && pnpm install`
+- `pnpm dev` (from `rss-desktop`)
+
+### Troubleshooting
+### macOS Compatibility
+**Initial Setup:**
+1. **Download the `.zip` version** if the `.dmg` fails to mount (common on some systems for unsigned apps).
+2. Unzip and drag `Aurora RSS Reader.app` to your Applications folder.
+3. If you see **"App is damaged and can't be opened"** (or "cannot open"):
+   - This is normal for unsigned open-source apps on macOS.
+   - Open Terminal and run:
+     ```bash
+     sudo xattr -rd com.apple.quarantine /Applications/AuroraRSSReader.app
+     ```
+   - Then open the app again.
+
+**Update Limitation:**
+1. The current macOS build is still distributed as an unsigned app.
+2. Built-in version checking can work, but automatic in-place installation through ShipIt may fail signature validation.
+3. For macOS users, the recommended update path is still to download the latest `.dmg` or `.zip` from GitHub Releases manually.
+
+### Performance
+**Q: The app is slow to start?**
+A: Check the backend service logs if possible. First launch may take longer to initialize the database.
+- Initialize database
+- Launch Electron application
+
+### Access URLs
+- **Desktop App**: Electron window opens automatically
+- **Web Interface**: http://localhost:5173
+- **API Service**: http://127.0.0.1:15432
+
+### Configuration
+Set environment variables for the Node.js backend to configure AI and RSSHub:
+
+```env
+# RSSHub
+RSSHUB_BASE_URL=https://rsshub.app
+
+# AI Configuration
+GLM_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+GLM_MODEL=glm-4-flash
+GLM_API_KEY=your_api_key_here
+```
+
+## 🐳 Docker Deployment
+
+```bash
+# Quick start with Docker Compose
+git clone https://github.com/xiongsircool/aurora-rss-reader.git
+cd aurora-rss-reader
+docker-compose up -d
+
+# Access Web UI: http://localhost:8080
+# Access Backend API: http://localhost:15432/api
+# Access MCP Endpoint: http://localhost:15432/mcp
+```
+
+For detailed Docker configuration, see [Docker README](docker/README.md).
+
+> **Note**: Docker image only supports `linux/amd64` architecture.
+
+## Build and Release
+
+```bash
+# Build installation package
+chmod +x build-release-app.sh
+./build-release-app.sh
+```
+
+Generated files:
+- macOS: `AuroraRSSReader-Mac-0.2.0.dmg`
+- Windows: `AuroraRSSReader-Windows-0.2.0-x64-Setup.exe`
+- Linux: `AuroraRSSReader-Linux-0.2.0-x64.AppImage`
+
+### Public Packaging Notes
+- Bump `rss-desktop/package.json` to the target release version before any public packaging or tagging.
+- Run the packaging preflight on `main` first with `workflow_dispatch`; this validates the build without creating a GitHub Release.
+- Only create the public tag after macOS, Windows, and Linux builds all pass.
+- Use a fresh tag such as `v0.2.0`; do not reuse an occupied release tag like `v0.1.9`.
+- Auto-update continues to work only after the public GitHub Release is created with installers and `latest*.yml`.
+- For the current unsigned macOS build, in-app version checking is available, but users should still update via GitHub Releases manually.
+
+## 📋 Documentation | 文档
+
+- **[Chinese Version](README_ZH.md)** - Complete documentation in Chinese | 中文完整文档
+
+## Tech Stack
+
+- **Frontend**: Vue 3 + Vite + Pinia + TypeScript
+- **Backend**: Fastify + TypeScript + SQLite
+- **Desktop App**: Electron
+- **Mobile App**: Flutter (Dart) · Drift/SQLite · FTS5
+- **Build Tools**: electron-builder
+
+## Project Structure
+
+```
+aurora-rss-reader/
+├── rss-desktop/          # Desktop frontend (Vue 3)
+│   ├── src/             # Vue source code
+│   └── electron/        # Electron main process
+├── backend-node/        # Node.js backend (Fastify)
+├── rss-mobile/          # Flutter mobile client (local-first)
+├── images/              # Image resources
+└── start.sh            # Startup script
+```
+
+## Support
+
+- **Issue Reporting**: [GitHub Issues](https://github.com/xiongsircool/aurora-rss-reader/issues)
+- **Feature Suggestions**: [GitHub Discussions](https://github.com/xiongsircool/aurora-rss-reader/discussions)
+- **Email Contact**: 1666526339@qq.com
+
+## License
+
+This project uses [GNU General Public License v3.0](LICENSE), which is a copyleft open source license requiring derivative works to also be open source.
+
+---
+
+## 🎯 Future Roadmap
+
+### Short-term Plans (v0.2)
+- [x] **AI Daily Briefing / Scope Summary** - Tag digest, feed/group scope summaries, automation and rerun flows are already available ✅
+- [x] **Podcast Support** - Support for audio podcast subscription and playback ✅
+- [x] **Reading Analytics** - Subscription totals, read rate, 30-day trends, top feeds, and tag visualizations are available ✅
+- [x] **RSSHub Support** - RSSHub URL configuration, mirror switching and RSSHub feed access are already supported ✅
+- [x] **Browser Extension** - AI-assisted RSSHub rule generation is available in the separate [rsshub-rule-generator](https://github.com/xiongsircool/rsshub-rule-generator) project ✅
+
+### Mid-term Plans (v0.3)
+- [ ] **Data Synchronization** - Cross-device data sync and cloud backup
+- [ ] **Plugin System** - Support for third-party plugin extensions
+
+### Mobile (v0.1.x)
+- [x] **v0.1.0 Android release** - local-first Flutter client ✅
+- [ ] **Refresh reliability** - failure reporting and retry for individual feeds
+- [ ] **iPad layout** - adaptive navigation and two-pane reading
+- [ ] **iOS distribution** - TestFlight, pending developer account
+
+---
+
+Give it a ⭐ if you find it useful!
+## Changelog
+
+### mobile-v0.1.0
+**First public mobile release — local-first Flutter RSS reader (Android)**
+
+- Multi-encoding feed parsing (RSS 1.0/2.0, Atom, Media RSS, podcasts; GBK/Big5/Shift-JIS)
+- AI summaries, bilingual full-text translation and live title translation with your own API key
+- Podcast player with speed control and position memory; video cards for YouTube/Bilibili
+- FTS5 search, OPML import/export, groups, dark mode, share-card generation, background refresh
+
+### v0.2.0 (Current Version)
+**Reading Analytics + Feed Reliability + Mobile API Foundation**
+
+- Added a localized reading statistics dashboard with totals, read rate, 30-day activity, top feeds, and top tags
+- Added local `read_at` tracking and an idempotent migration for existing databases
+- Improved feed validation, Media RSS image extraction, video URL extraction, and timeline video cards
+- Added cursor-paginated `/api/mobile` endpoints for future LAN or self-hosted mobile clients
+- Completed the v0.2 roadmap; the AI-assisted browser tool is maintained separately as [rsshub-rule-generator](https://github.com/xiongsircool/rsshub-rule-generator)
+
+### v0.1.9 (Previous Version)
+**Background Summary Queue + MCP Modernization + Docker Access**
+
+- Background summary queue can persist generated summaries locally and reuse them after restart
+- Added queue runtime status panel in settings for live inspection of summary jobs
+- MCP moved out of AI provider config into a dedicated settings section
+- MCP tool surface modernized with grouped recommended tools, deprecation hints and cursor-based search pagination
+- MCP time defaults now follow the app's current date range and time field settings
+- Docker deployment now exposes the backend directly on `15432` for local `/api` and `/mcp` access
+
+### v0.1.8 (Previous Version)
+**Published release baseline before the current packaging cycle**
+
+### v0.1.7
+**Digest Intelligence, Tag Workflow Polish & Update Experience**
+
+- Digest 2.0 with history, manual regenerate and locale-aligned language
+- Latest + Week digest modes
+- Analyze-all full pagination fix
+- Summary prompting quality upgrade
+- Manual update-check entry in settings
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=xiongsircool/aurora-rss-reader&type=Date)](https://www.star-history.com/#xiongsircool/aurora-rss-reader&Date)
+
+## Community
+
+If you want to discuss product ideas, report usage feedback, or join the user community, you can scan the QQ code below.
+
+<div align="center">
+  <img src="images/二维码/QQ537546690.jpeg" alt="Aurora RSS Reader QQ community" width="260" />
+</div>

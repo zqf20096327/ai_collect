@@ -1,0 +1,119 @@
+![NobodyWho](./preview.png)
+
+[![Discord](https://img.shields.io/discord/1308812521456799765?logo=discord&style=flat-square)](https://discord.gg/qhaMc2qCYB)
+[![Matrix](https://img.shields.io/badge/Matrix-000?logo=matrix&logoColor=fff)](https://matrix.to/#/#nobodywho:matrix.org)
+[![Mastodon](https://img.shields.io/badge/Mastodon-6364FF?logo=mastodon&logoColor=fff&style=flat-square)](https://mastodon.gamedev.place/@nobodywho)
+[![Docs](https://img.shields.io/badge/Docs-lightblue?style=flat-square)](https://docs.nobodywho.ooo)
+
+# NobodyWho React Native Starter App
+
+This starter app demonstrates the capabilities of **[NobodyWho](https://github.com/nobodywho-ooo/nobodywho)**, a library designed to run LLMs locally and efficiently on any device.
+
+## Features
+
+- **Chat** — stream responses from a local LLM
+- **Tool calling** — give the model access to custom functions (e.g. weather, calculator)
+- **Vision & Hearing** — image & audio ingestion with a multimodal model
+- **Embeddings & RAG** — semantic search with an embedding model and cross-encoder reranker
+- **Speech to Text** — transcribe audio into text (STT)
+- **Text to Speech** — generate natural-sounding speech from text (TTS)
+
+## 1. Getting Started
+
+First, you will need to run `npm install` to install dependencies.
+
+For iOS, install pods `cd ios && pod install && cd ..`
+
+### 2. Download Models
+
+In production, we recommend downloading models on demand — only when needed — using a library like `@dr.pogodin/react-native-fs` for advanced options, or our built-in download method. This keeps your app size small. For development, the simplest approach is to download the models ahead of time and bundle them directly in your assets folder (see script below).
+
+#### Automated (Recommended)
+
+**Chat only**
+Minimal setup - fast inference, even on old/budget phone.
+
+| Platform      | Command                       |
+| ------------- | ----------------------------- |
+| macOS / Linux | `./scripts/download_chat.sh`  |
+| Windows       | `.\scripts\download_chat.ps1` |
+
+**All features**
+Chat + vision + hearing + embeddings + reranker
+Downloads Gemma 4, which runs well on flagship phone, but might not work or be slow on old/budget phone
+
+| Platform      | Command                                                                           |
+| ------------- | --------------------------------------------------------------------------------- |
+| macOS / Linux | `./scripts/download_chat_multimodal.sh && ./scripts/download_embedding_rerank.sh` |
+| Windows       | `.\scripts\download_chat_multimodal.ps1; .\scripts\download_embedding_rerank.ps1` |
+
+The scripts download models from Hugging Face, rename them, and place them in the `assets/` folder.
+
+#### Download with NobodyWho
+
+Load models directly from Hugging Face using `hf://` URLs (e.g. `hf://owner/repo/model.gguf`). Also supports plain HTTP/HTTPS URLs. Models are cached locally and re-used on subsequent loads. Works on Android with proper cache directory selection.
+
+Example:
+
+```ts
+// Download from HuggingFace (cached automatically)
+const model = await Model.load({
+  modelPath: 'hf://NobodyWho/Qwen_Qwen3-0.6B-GGUF/Qwen_Qwen3-0.6B-Q4_K_M.gguf',
+});
+```
+
+The STT and TTS features use this method as an example. Besides showcasing another way to download and use a model, direct download suits small models well: the cache is cleared whenever the dev app is deleted, so every model is re-downloaded on the next launch — which is okay when the file is small.
+
+#### Manual Download
+
+For LLMs, you can use any `.gguf` model from [Hugging Face](https://huggingface.co/models). If it's a multimodal model, remember to also download the corresponding projection model, also in `.gguf` format.
+
+**Chat models** — some worth considering: Qwen, Gemma, LFM, and Ministral, available in [this collection](https://huggingface.co/unsloth/collections).
+
+**Multimodal models** — some examples by modality: [Vision](https://huggingface.co/LiquidAI/LFM2-VL-450M-GGUF/tree/main), [Hearing](https://huggingface.co/ggml-org/ultravox-v0_5-llama-3_2-1b-GGUF/tree/main), [Vision + Hearing](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/tree/main)
+
+TTS and STT work a bit differently: download the model's files while preserving their relative paths (its folder structure), then pass that folder as the `source`.
+
+**TTS**: NobodyWho supports [Kokoro](https://huggingface.co/NobodyWho/Kokoro-82M), [Pocket TTS](https://huggingface.co/KevinAHM/pocket-tts-onnx) and [Supertonic 3](https://huggingface.co/Supertone/supertonic-3).
+
+**STT**: NobodyWho supports Whisper and you can find many models on [Hugging Face](https://huggingface.co/models?library=onnx&search=whisper). We are using this [one](https://huggingface.co/onnx-community/whisper-base) in this example app, that supports many languages.
+
+Compatibility notes:
+
+- Most GGUF models will work, but some may fail due to formatting issues. Here are some [models](https://huggingface.co/NobodyWho/collections) we have made sure they work perfectly.
+- For mobile devices, models under 1 GB tend to run smoothly. As a general rule, the device should have at least twice the available RAM as the model file size. Note that available RAM differs from total RAM — iOS typically reserves around 1–2 GB for the kernel and system processes, while Android overhead varies by manufacturer: roughly 2 GB on stock Android (e.g. Pixel devices), and between 2–4 GB on Samsung, Xiaomi, and Oppo devices due to additional services.
+
+### 3. Run the App
+
+```sh
+# Android
+npm run android
+
+# iOS
+npm run ios
+```
+
+**Note:** For iOS, if you have issues with metro, run `npm start` and then run the project on Xcode.
+
+#### Miscellaneous
+
+iOS cleanup
+
+```sh
+make ios-clean
+```
+
+Watchman cleanup
+
+```sh
+make clean
+```
+
+---
+
+## Feedback & Contributions
+
+We welcome your feedback and ideas!
+
+- **Bug Reports & Improvements**: Open an issue on the **[Issues](https://github.com/nobodywho-ooo/react-native-starter-example/issues)** page.
+- **Feature Requests & Questions**: Join the discussion on **[Discussions](https://github.com/nobodywho-ooo/react-native-starter-example/discussions)**.

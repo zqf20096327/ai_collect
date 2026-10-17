@@ -1,0 +1,195 @@
+# Dots TTS ComfyUI
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Python](https://img.shields.io/badge/python-3.10+-blue)](https://www.python.org/)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/collections/rednote-hilab/dotstts)
+
+**English** | [中文](./README_ZH.md)
+
+ComfyUI custom nodes for [rednote-hilab/dots.tts](https://github.com/rednote-hilab/dots.tts).
+
+<img width="1555" height="1146" alt="Screenshot 2026-06-06 054154" src="https://github.com/user-attachments/assets/ffbcd3be-fe89-4d38-85eb-5872635f34f2" />
+
+## What's New in v0.1.3
+
+- Added an opt-in `compile` toggle to the bottom of Dots TTS Load Model using native PyTorch Inductor/Triton compilation.
+- Added CUDA, Triton, Inductor, compile-length, and `cudaMallocAsync` compatibility guards. CUDA Graph Trees are disabled automatically with `cudaMallocAsync` while Triton compilation remains active.
+- Compile works with SDPA and Flash Attention. Changing compile, model, device, dtype, or attention fully unloads the previous bundle before reloading.
+- Fixed streaming vocoder LSTM compilation without enabling global Dynamo settings that could affect other ComfyUI nodes.
+- Compiled graphs and static generation workspaces are cleared during manual unload.
+- The terminal now displays `Preparing/compiling` until the first audio patch is ready. The first run for each length bucket is slower while PyTorch compiles it.
+
+## Nodes
+
+- Dots TTS Load Model
+- Dots TTS Generate
+- Dots TTS Voice Clone
+- Dots TTS Whisper Transcribe
+
+## Models
+
+The loader catalog shows the official Rednote checkpoints first, then the drbaph BF16 conversions:
+
+1. `dots.tts Base FP32 (auto-download)` - [rednote-hilab/dots.tts-base][hf-base]
+2. `dots.tts SOAR FP32 (auto-download)` - [rednote-hilab/dots.tts-soar][hf-soar]
+3. `dots.tts MF FP32 (auto-download)` - [rednote-hilab/dots.tts-mf][hf-mf]
+4. `dots.tts Base BF16 (auto-download)` - [drbaph/dots.tts-base-bf16][hf-base-bf16]
+5. `dots.tts SOAR BF16 (auto-download)` - [drbaph/dots.tts-soar-bf16][hf-soar-bf16]
+6. `dots.tts MF BF16 (auto-download)` - [drbaph/dots.tts-mf-bf16][hf-mf-bf16]
+
+## dots.tts Models (Quick Reference)
+
+| Model | Recommended Steps (NFE) | CFG / Guidance Scale | Primary Use Case |
+|---------|-----------------------|----------------------|------------------|
+| **dots.tts-base** | 10–32 | 1.2 (adjustable) | Fine-tuning, research, full quality/latency control |
+| **dots.tts-soar** | 10–32 | 1.2 (adjustable) | Highest-quality zero-shot voice cloning, best speaker similarity |
+| **dots.tts-mf** | 4 | 0 | Low-latency production inference |
+
+### Simple Recommendation
+
+- **Quality first** → `dots.tts-soar`
+- **Speed first** → `dots.tts-mf`
+- **Training / fine-tuning** → `dots.tts-base`
+
+Downloaded model files are placed like this:
+
+```text
+ComfyUI/
+└── models/
+    ├── dotstts/
+    │   ├── common/
+    │   │   ├── speaker_encoder.safetensors
+    │   │   └── vocoder.safetensors
+    │   ├── dots.tts-base/
+    │   │   └── model.safetensors
+    │   ├── dots.tts-soar/
+    │   │   └── model.safetensors
+    │   ├── dots.tts-mf/
+    │   │   └── model.safetensors
+    │   ├── dots.tts-base-bf16/
+    │   │   └── dots.tts-base-bf16.safetensors
+    │   ├── dots.tts-soar-bf16/
+    │   │   └── dots.tts-soar-bf16.safetensors
+    │   └── dots.tts-mf-bf16/
+    │       └── dots.tts-mf-bf16.safetensors
+    └── audio_encoders/
+        ├── openai_whisper-large-v3-turbo/
+        ├── openai_whisper-large-v3/
+        ├── openai_whisper-medium/
+        ├── openai_whisper-small/
+        └── openai_whisper-tiny/
+```
+
+Small tokenizer/config assets are bundled in this custom node and separated by source model:
+
+```text
+ComfyUI/
+└── custom_nodes/
+    └── Dots-TTS-ComfyUI/
+        └── assets/
+            ├── dots.tts-base/
+            │   ├── added_tokens.json
+            │   ├── chat_template.jinja
+            │   ├── config.json
+            │   ├── latent_stats.pt
+            │   ├── llm_config.json
+            │   ├── merges.txt
+            │   ├── special_tokens_map.json
+            │   ├── tokenizer.json
+            │   ├── tokenizer_config.json
+            │   └── vocab.json
+            ├── dots.tts-soar/
+            │   └── same small-file set
+            └── dots.tts-mf/
+                └── same small-file set
+```
+
+BF16 entries use the matching source-model assets. For example, [drbaph/dots.tts-base-bf16][hf-base-bf16] uses `assets/dots.tts-base/`.
+
+Shared heavy assets come from [drbaph/dots.tts-common][hf-common] and are stored under `ComfyUI/models/dotstts/common/`. The common repo files live at the repo root:
+
+```text
+drbaph/dots.tts-common/speaker_encoder.safetensors
+drbaph/dots.tts-common/vocoder.safetensors
+```
+At load time the node assembles an upstream-compatible runtime cache under `runtime/` using links/copies from node assets, shared heavy assets, and the selected model weight. The loader uses Hugging Face directly and does not use HF mirrors.
+
+## Generation Limits
+
+`max_audio_patches` on both Generate and Voice Clone is the maximum audio patch budget for that generation, not a text-token limit. The default is `500`. With the bundled configs, one patch is about `0.32` seconds, so `500` is about `160` seconds of audio budget. The model can stop earlier when it reaches EOS; very long text can hit the cap and end early. Voice Clone prompt audio paired with `reference_text` also consumes part of this budget.
+
+Generation uses a live `tqdm` terminal progress bar with percentage, elapsed time, estimated remaining time, and iteration speed. Since Dots TTS decides its final length by EOS during generation, the live total is the configured `max_audio_patches` ceiling; after a successful early stop, the completed bar is normalized to the actual emitted chunk count.
+
+## Performance
+
+The loader's optional `compile` toggle uses upstream's native `torch.compile` path with PyTorch Inductor and Triton. It is CUDA-only, requires a working Triton installation, and is compatible with both SDPA and Flash Attention. When ComfyUI uses the `cudaMallocAsync` allocator, the node automatically disables incompatible CUDA Graph Trees while keeping Inductor/Triton compilation enabled. Compilation is lazy: the first generation for each `max_audio_patches` length bucket is slower while the graph is compiled, then later generations reuse it. Compiled mode supports up to `1024` audio patches. Changing the model, device, dtype, attention, or compile setting fully unloads the active bundle before loading the new one; manual unload also clears compiled graphs and generation workspaces.
+
+For the fastest model path, use the MF BF16 checkpoint with `steps=4`. Smaller `max_audio_patches` values can also select a smaller compile bucket and reduce compile time and workspace memory. Upstream recommends splitting long text into shorter segments and keeping voice-clone reference audio around 10 seconds.
+
+## Languages
+
+Officially benchmarked: 24 languages — Chinese, English, Cantonese, Japanese, Korean, Arabic, Spanish, Turkish, Indonesian, Portuguese, French, Italian, Dutch, Vietnamese, German, Russian, Ukrainian, Thai, Polish, Romanian, Greek, Czech, Finnish, and Hindi. It may be able to do more languages but those are the ones officially benchmarked. Not all languages produce high quality results — you may need to experiment for yourself to see.
+
+The language dropdown is kept to those 24 languages, plus `auto` and `none`: `AR`, `YUE`, `ZH`, `CS`, `NL`, `EN`, `FI`, `FR`, `DE`, `EL`, `HI`, `ID`, `IT`, `JA`, `KO`, `PL`, `PT`, `RO`, `RU`, `ES`, `TH`, `TR`, `UK`, `VI`.
+
+## Install
+
+**ComfyUI-Manager (recommended):** Open ComfyUI-Manager, search for **Dots TTS**, and click Install. ComfyUI-Manager will handle everything automatically.
+
+Manual helper install with uv:
+
+```bash
+python -m uv pip install -r requirements.txt
+```
+
+Manual helper install with pip:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+The installer protects ComfyUI's core runtime packages and will not automatically upgrade `torch`, `torchaudio`, `torchvision`, `transformers`, or `pydantic`.
+
+## Notes
+
+Dots upstream recommends recent `transformers` and pydantic v2. This node warns about those versions instead of changing them automatically, because surprise upgrades can break other ComfyUI nodes.
+
+Audio file I/O uses `soundfile` first. Dots' speaker feature path has a torchaudio-free fallback for broken torchaudio installs, though the original torchaudio/Kaldi fbank path is used when available.
+
+## References
+
+- [Dots TTS upstream repository][dots-repo]
+- [Official Dots TTS Base model][hf-base]
+- [Official Dots TTS SOAR model][hf-soar]
+- [Official Dots TTS MF model][hf-mf]
+- [drbaph Dots TTS Base BF16 model][hf-base-bf16]
+- [drbaph Dots TTS SOAR BF16 model][hf-soar-bf16]
+- [drbaph Dots TTS MF BF16 model][hf-mf-bf16]
+- [drbaph Dots TTS shared common files][hf-common]
+- [OpenAI Whisper large-v3-turbo][hf-whisper-turbo]
+
+[dots-repo]: https://github.com/rednote-hilab/dots.tts
+[hf-base]: https://huggingface.co/rednote-hilab/dots.tts-base
+[hf-soar]: https://huggingface.co/rednote-hilab/dots.tts-soar
+[hf-mf]: https://huggingface.co/rednote-hilab/dots.tts-mf
+[hf-base-bf16]: https://huggingface.co/drbaph/dots.tts-base-bf16
+[hf-soar-bf16]: https://huggingface.co/drbaph/dots.tts-soar-bf16
+[hf-mf-bf16]: https://huggingface.co/drbaph/dots.tts-mf-bf16
+[hf-common]: https://huggingface.co/drbaph/dots.tts-common
+[hf-whisper-turbo]: https://huggingface.co/openai/whisper-large-v3-turbo
+
+## Citation
+
+```bibtex
+@article{dotstts2026,
+  title   = {dots.tts Technical Report},
+  author  = {dots.tts Team},
+  journal = {arXiv preprint},
+  year    = {2026},
+}
+```
+
+## License
+
+Released under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+

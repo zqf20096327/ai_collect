@@ -1,0 +1,415 @@
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![LangChain](https://img.shields.io/badge/LangChain-1C3C3C.svg?logo=langchain&logoColor=white)](https://www.langchain.com/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C.svg?logo=langchain&logoColor=white)](https://langchain-ai.github.io/langgraph/)
+[![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063.svg?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Lint](https://github.com/WSzP/cv-warlock/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/WSzP/cv-warlock/actions/workflows/lint.yml)
+
+[![codecov](https://codecov.io/gh/WSzP/cv-warlock/graph/badge.svg?token=VWQVK7DE9K)](https://codecov.io/gh/WSzP/cv-warlock)
+[![Type Check](https://github.com/WSzP/cv-warlock/actions/workflows/typecheck.yml/badge.svg?branch=main)](https://github.com/WSzP/cv-warlock/actions/workflows/typecheck.yml)
+[![Unit Tests](https://github.com/WSzP/cv-warlock/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/WSzP/cv-warlock/actions/workflows/test.yml)
+[![E2E Tests](https://github.com/WSzP/cv-warlock/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/WSzP/cv-warlock/actions/workflows/e2e.yml)
+[![Dependabot Updates](https://github.com/WSzP/cv-warlock/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/WSzP/cv-warlock/actions/workflows/dependabot/dependabot-updates)
+
+<p><img src="assets/cv-warlock-logo-md.webp" width="200" height="188" alt="CV Warlock Logo"></p>
+
+# CV Warlock
+
+**RLM-powered CV tailoring for job applications.** Takes your generic CV and a job posting, then uses Recursive Language Models (RLMs) to generate a tailored CV that emphasizes your most relevant experience and skills. The solution also emulates the CV scoring of an enterprise-grade Applicant Tracking System (ATS). The ATS is used by many companies and filters out CVs with a score below a certain threshold. Our aim is to maximize that ATS score and land you an interview.
+
+This is an opinionated, model-agnostic, quality-assured CV improver. It is nontrivial to detect the output automatically. If you have no idea what the last sentence means, that is perfectly fine. I just added it to make the solution fancier. In simpler words, you can use it with any AI, even OpenAI models, if you have an API key. If you have no idea what an API key is, you need to wait until this becomes a full product. It is also hard to catch, should someone use an AI detector. In even simpler words: Waaagh!
+
+## Is this cheating?
+
+*tl;dr* NO
+
+CV Warlock is an experiment in resume sorcery, brewed purely for research and giggles. Think of it as a toy wand from a wizard’s gift shop, fun to wave around, but definitely not something to bring to a real duel (read: do NOT use this tool to apply for real jobs). It’s like a science-fair project that looks like a cheat code, but hey, we’re all just playing in the sandbox here.
+
+In true over-the-top disclaimer fashion (imagine this in a fast-talking auctioneer voice): “For research purposes only! Do not taunt real ATS systems in the wild!” Yes, the whole idea of charming those keyword-crunching HR bots is a bit absurd – and that’s exactly the joke. CV Warlock exists to poke fun at the absurdity of trying to game résumé algorithms, not to help you hoodwink your next recruiter. So enjoy the enchanted shenanigans, have a laugh at the madness of modern hiring, but leave the spellbook at home when you venture into the actual job hunt. The real humans behind the curtain (a.k.a. hiring managers) will thank you, and we’ll sleep better knowing we didn’t unleash any resume-related chaos on the world. No actual warlocks or ATS bots were harmed in the making of this experiment.
+
+But please share the results of your experiments with me and the world on LinkedIn and other social media.
+
+## Features
+
+- **Smart CV Tailoring**: Analyzes job requirements and rewrites your CV to highlight relevant experience
+- **Chain-of-Thought Reasoning**: High quality generation with CoT method (REASON → GENERATE → CRITIQUE → REFINE)
+- **RLM (Recursive Language Model)**: Handles arbitrarily long CVs and job specs through recursive orchestration
+- **Match Analysis**: Shows how well your CV matches the job, including gaps and transferable skills. See [Hybrid ATS Scoring](docs/SCORING.md) for details on the scoring algorithm
+- **Assume All Tech Skills**: Checkbox option (enabled by default) that assumes you have all technical skills from the job posting
+- **Multi-Provider LLM Support**: Works with OpenAI, Anthropic Claude, and Google Gemini
+- **CLI & Web UI**: Use via command line or Streamlit web interface
+- **LangGraph Workflow**: Robust multi-step processing with state management
+- **Real-Time Progress**: Live timing display during CV generation
+- **Markdown to PDF Converter**: Turn any markdown CV into a polished, professional PDF
+
+### Markdown to PDF Converter
+
+Got a CV in markdown format? *Of course you do.* It's 2026 and every AI assistant on the planet outputs markdown like it's going out of style (spoiler: it's not). Whether Claude wrote it, ChatGPT drafted it, or you actually typed it yourself like some kind of artisan, CV Warlock can transform that markdown into a beautiful, ATS-friendly PDF.
+
+**Two stunning styles:**
+
+- **Modern** (default): Contemporary design with a navy accent bar, horizontal section dividers, accent-colored bullets, and a refined visual hierarchy that says "I'm a professional who also has taste"
+- **Plain**: Classic, clean layout for the traditionalists who believe less is more
+
+**Features:**
+
+- Full Unicode support (Romanian diacritics, accents, special characters—the works)
+- Clickable links for email, phone, LinkedIn, and publications
+- Proper heading hierarchy and bullet formatting
+- Embedded Poppins font for consistent rendering everywhere
+
+Access it via the **"Markdown to PDF"** tab in the web UI, or use the PDF export button after tailoring your CV.
+
+## RLM (Recursive Language Model)
+
+CV Warlock includes an advanced **RLM mode** (enabled by default) for handling arbitrarily long CVs and job specifications. **This project is probably the first real-world implementation of Recursive Language Models (RLMs).** RLM uses a recursive orchestration pattern where the model can explore context through code execution and spawn sub-calls to analyze specific chunks.
+
+### Recursive Language Model?
+
+RLMs are a novel inference strategy (published on the 31st of December, 2025 by [Zhang et al.](https://arxiv.org/abs/2512.24601v1)) that allows an LLM to handle essentially unbounded input sizes by recursively calling itself on portions of the input context. Instead of ingesting an entire lengthy prompt (like a multi-page CV or job spec) in one go, an RLM treats the prompt as an external environment (e.g. a scratchpad or REPL with the text stored as a variable) which the model can programmatically inspect and decompose. This gives the model a form of near-infinite context, enabling it to parse very long documents without hitting fixed context window limits or suffering the usual “context rot” (degradation on long inputs). In fact, RLMs have been shown to successfully process inputs far beyond standard context limits (on the order of millions of tokens) with minimal performance degradation, and to outperform base LLMs and other long-context methods by significant margins. All while keeping inference costs comparable to a normal model call. Adopting RLMs in CV Warlock is thus a technically innovative decision that brings cutting-edge long-context handling into production, allowing accurate and efficient analysis of full-length CVs and detailed job descriptions that would exceed traditional LLM limits.
+
+### Key Features of our Implementation
+
+| Feature | Description |
+|---------|-------------|
+| **REPL Environment** | Sandboxed Python execution where CV/job spec are stored as variables |
+| **Smart Chunking** | Parses documents by section (experience, skills, education, requirements) |
+| **RLM Orchestrator** | Root model plans analysis, spawns sub-calls for chunk analysis |
+| **Dual-Model Strategy** | Strong model for root orchestration, faster model for sub-calls (based on your provider selection) |
+| **Automatic Routing** | Uses RLM only when document size exceeds threshold (8K chars default, configurable) |
+| **Graceful Fallback** | Falls back to direct calls if RLM fails |
+| **Full Observability** | Trajectory logging, iteration counts, sub-call tracking |
+
+### How RLM Works
+
+1. **Root Model** orchestrates the analysis without seeing the full CV/job spec in its prompt
+2. **Environment** stores documents as variables (`cv_text`, `job_text`) accessible via code
+3. **Smart Chunking** pre-parses documents into sections for targeted analysis
+4. **Sub-Calls** analyze specific chunks when needed (e.g., "Does this experience match requirement X?")
+5. **Dual-Model Strategy** uses your selected provider's strongest model for root and fastest model for sub-calls
+
+### Disabling RLM
+
+RLM is enabled by default. To disable it:
+
+- **CLI**: Use the `--no-rlm` flag
+- **Web UI**: Uncheck "Enable RLM" in the sidebar
+- **Environment**: Set `CV_WARLOCK_RLM_ENABLED=false`
+
+For detailed technical documentation on RLM architecture and implementation, see [docs/RLM_INTEGRATION.md](docs/RLM_INTEGRATION.md).
+
+## Requirements
+
+- **Python 3.11+** (minimum required)
+- **Python 3.13+** (recommended for best performance)
+- **[uv](https://docs.astral.sh/uv/)** - Fast Python package manager (recommended)
+
+## Installation
+
+```bash
+# Install uv (if not already installed)
+# macOS/Linux:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows:
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Clone the repository
+git clone https://github.com/WSzP/cv-warlock.git
+cd cv-warlock
+
+# Install dependencies with uv
+uv sync
+```
+
+## Configuration
+
+Create a `.env.local` file in the project root (copy from `.env.example`):
+
+```bash
+# At least one API key is required
+OPENAI_API_KEY=sk-your-openai-key-here
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
+GOOGLE_API_KEY=your-google-api-key-here
+
+# Optional: Default provider (model is auto-selected via Dual-Model Strategy)
+CV_WARLOCK_PROVIDER=anthropic
+```
+
+### RLM Configuration
+
+RLM (Recursive Language Model) is enabled by default. You can customize its behavior with these environment variables:
+
+```bash
+# Enable/disable RLM (default: true)
+CV_WARLOCK_RLM_ENABLED=true
+
+# Character count threshold to trigger RLM mode (default: 8000)
+# Documents smaller than this use direct LLM calls
+CV_WARLOCK_RLM_SIZE_THRESHOLD=8000
+
+# Maximum orchestrator iterations per analysis (default: 20)
+CV_WARLOCK_RLM_MAX_ITERATIONS=20
+
+# Maximum sub-LLM calls per analysis (default: 15)
+CV_WARLOCK_RLM_MAX_SUB_CALLS=15
+
+# Total timeout for RLM analysis in seconds (default: 300)
+CV_WARLOCK_RLM_TIMEOUT_SECONDS=300
+
+# Sandbox mode for code execution: local, docker, modal (default: local)
+CV_WARLOCK_RLM_SANDBOX_MODE=local
+```
+
+### Testing API Keys
+
+You can validate your API keys using the included test script:
+
+```bash
+# Test all configured keys
+uv run python scripts/test_api_keys.py
+
+# Test a specific provider
+uv run python scripts/test_api_keys.py openai
+uv run python scripts/test_api_keys.py anthropic
+uv run python scripts/test_api_keys.py google
+```
+
+The script will:
+
+- Check which API keys are configured in `.env.local`
+- Make a test request to each configured provider
+- Report success or failure with detailed messages
+
+You can also test API keys directly in the Web UI by clicking the **Test API Key** button in the sidebar (appears when an API key is loaded from `.env.local`).
+
+## Usage
+
+### Web UI (Streamlit)
+
+```bash
+uv run warlock-streamlit
+```
+
+Then open http://localhost:8501 in your browser.
+
+### CLI
+
+```bash
+# Tailor your CV for a job
+uv run cv-warlock tailor my_cv.md job_posting.txt --output tailored_cv.md
+
+# Analyze CV-job fit without generating a tailored CV
+uv run cv-warlock analyze my_cv.md job_posting.txt
+
+# Use a specific provider (model is auto-selected)
+uv run cv-warlock tailor my_cv.md job.txt --provider openai
+
+# Disable RLM mode (enabled by default)
+uv run cv-warlock tailor my_cv.md job.txt --no-rlm
+
+# Show version
+uv run cv-warlock version
+```
+
+## How It Works?
+
+CV Warlock uses a [LangGraph](https://langchain-ai.github.io/langgraph/) workflow to process your CV in stages:
+
+1. **Extract**: Parse CV and job spec into structured data
+2. **Analyze**: Find matches, gaps, and transferable skills
+3. **Plan**: Create a tailoring strategy
+4. **Tailor**: Rewrite summary, experiences, and skills
+5. **Assemble**: Generate the final tailored CV
+
+**+** For best results, ensure your base CV follows modern best practices. See our [CV Best Practices Guide](docs/CV_BEST_PRACTICE.md) for 2026 tech-focused recommendations on layout, ATS compatibility, and content structure.
+
+**+** Writing a cover letter? Check our [Cover Letter Best Practices Guide](docs/COVER_LETTER_BEST_PRACTICE.md) for 2026 tech leadership tips on structure, key qualities to highlight, and a full example. Or have the AI generate one for you based on those best practices.
+
+## Assume All Tech Skills
+
+The **"Assume all requested tech skills"** checkbox (enabled by default) is a key feature designed for software developers and technical professionals.
+
+### Why This Feature Exists
+
+1. **The "thousands of libraries" problem**: In software development, there are thousands of libraries, frameworks, tools, and technologies. No CV can realistically list every technology a developer knows or has used. If your CV mentions "Python" and "FastAPI", you probably also know pip, pytest, Pydantic, and dozens of other Python ecosystem tools—but listing them all would make your CV unwieldy.
+
+2. **LinkedIn skill limitations**: Not everyone has LinkedIn connected or has taken the time to add all their skills. Even if you have, LinkedIn's skill list may not include every technology the job requires.
+
+3. **Implicit knowledge**: Senior developers often have implicit knowledge that isn't explicitly listed. If you've worked with React for 5 years, you almost certainly know JavaScript, npm, webpack/vite, JSX, CSS, and related technologies—even if they're not all listed on your CV.
+
+### What It Does
+
+When enabled (the default), CV Warlock assumes you possess all technical skills mentioned in the job posting's requirements. The system:
+
+- Adds all required and preferred skills from the job spec to your skill list before analysis
+- This prevents false "gaps" for technologies you likely know but didn't list
+- Results in a tailored CV that confidently includes all relevant technical skills
+- Produces higher match scores that better reflect your actual capabilities
+
+### When to Disable It
+
+Turn off this checkbox if:
+
+- You want an honest assessment of skill gaps based only on what's explicitly in your CV
+- You're applying for a role requiring technologies you genuinely don't know
+- You want to identify areas where you need to upskill before applying
+
+## RLM CoT Reasoning
+
+CV Warlock uses Chain-of-Thought (CoT) reasoning, supercharged with RLM, to produce higher-quality, tailored CVs through explicit multi-step reasoning.
+
+### How CoT Works
+
+Removing the RLM layer, to ease understanding, you can think of CoT as if each CV section went through a 4-phase process:
+
+1. **REASON**: Analyze the job requirements and plan the approach
+2. **GENERATE**: Create content based on the reasoning
+3. **CRITIQUE**: Evaluate quality against specific criteria
+4. **REFINE**: Improve if quality is below threshold (max 2 iterations)
+
+### Benefits
+
+- **Higher Quality Output**: Self-critique catches issues like missing metrics, weak verbs, or keyword gaps
+- **Consistent Formatting**: Explicit reasoning ensures all sections follow best practices
+- **Better ATS Optimization**: Critique phase verifies keyword inclusion and exact terminology matching
+- **Transparency**: All reasoning is stored and can be inspected for debugging
+
+### Trade-offs
+
+- **Slower Generation**: CoT mode makes 3-4x more LLM calls per section
+- **Higher Cost**: More API calls mean higher token usage
+
+### When to Disable CoT
+
+**Disabling CoT is not recommended** and only possible by passing `use_cot=False` in CLI/code.
+
+Turn off CoT reasoning only if:
+
+- You need quick iterations and are willing to trade quality for speed
+- You're testing or debugging the workflow
+- Cost is a concern, and you want minimal API usage
+
+## Supported Models
+
+### Anthropic (Recommended)
+
+| Model | Description |
+|-------|-------------|
+| `claude-sonnet-4-5-20250929` | Best balance of quality and speed (default) |
+| `claude-haiku-4-5-20251001` | Fastest, most cost-efficient |
+| `claude-opus-4-5-20251101` | Most capable, highest quality |
+
+### OpenAI
+
+| Model | Description |
+|-------|-------------|
+| `gpt-5.2` | Latest flagship model |
+| `gpt-5.2-instant` | Fast version of GPT-5.2 |
+| `gpt-5-mini` | Cost-efficient option |
+| `gpt-4o` | Previous generation flagship |
+
+### Google
+
+| Model | Description |
+|-------|-------------|
+| `gemini-3-flash-preview` | Fast and capable (recommended) |
+| `gemini-3-pro-preview` | Most capable Gemini model |
+
+## Project Structure
+
+```
+cv-warlock/
+├── src/cv_warlock/          # Main package
+│   ├── models/              # Pydantic data models
+│   ├── llm/                 # LLM provider abstraction
+│   ├── extractors/          # CV and job extraction
+│   ├── processors/          # Matching and tailoring logic
+│   ├── scoring/             # Hybrid ATS scoring system
+│   ├── graph/               # LangGraph workflow
+│   ├── rlm/                 # RLM orchestration (chunking, environment, orchestrator)
+│   ├── prompts/             # Prompt templates
+│   └── output/              # Output formatters
+├── app/                     # Streamlit web UI
+├── examples/                # Sample CV and job files
+└── tests/                   # Test suite
+```
+
+## Development
+
+```bash
+# Install with dev dependencies
+uv sync --all-extras
+
+# Run tests
+uv run pytest
+
+# Run linting
+uv run ruff check .
+
+# Run type checking
+uv run mypy src/cv_warlock
+```
+
+### Test Output Naming Convention
+
+**IMPORTANT**: All test output files MUST follow this naming format to track solution evolution:
+
+```text
+YYYY-MM-DD_HH-MM_provider.md
+```
+
+Examples:
+
+- `2026-01-17_14-30_anthropic.md`
+- `2026-01-17_09-15_openai.md`
+- `2026-01-17_16-45_google.md`
+
+Example test commands (model is auto-selected via Dual-Model Strategy):
+
+```bash
+# Test with Anthropic
+uv run cv-warlock tailor examples/sample_cv.md examples/sample_job_posting.md -o 2026-01-17_14-30_anthropic.md -p anthropic -v
+
+# Test with OpenAI
+uv run cv-warlock tailor examples/sample_cv.md examples/sample_job_posting.md -o 2026-01-17_14-30_openai.md -p openai -v
+
+# Test with Google
+uv run cv-warlock tailor examples/sample_cv.md examples/sample_job_posting.md -o 2026-01-17_14-30_google.md -p google -v
+```
+
+This naming convention helps track the evolution of the solution across different providers and time.
+
+## Fonts
+
+CV Warlock uses the **Poppins** font family throughout the application:
+
+- **Web UI**: Loaded from Google Fonts CDN for fast, consistent rendering
+- **PDF Export**: Embedded from local `fonts/` directory for offline generation
+
+Poppins is a geometric sans-serif typeface that provides excellent readability and a modern, professional appearance.
+
+The Poppins font is included in the `fonts/` directory and is licensed under the **SIL Open Font License, Version 1.1**. This is a free, open-source license that permits:
+
+- Free use in personal and commercial projects
+- Modification and redistribution
+- Bundling with software
+
+See `fonts/OFL.txt` for the full license text.
+
+**Font Credit**: Poppins was designed by Indian Type Foundry and Jonny Pinhorn.
+
+## Brand Colors
+
+CV Warlock uses the following brand colors:
+
+| Color                  | Hex       | Usage                                  |
+|------------------------|-----------|----------------------------------------|
+| **Primary (Green)**    | `#a9e53f` | "CV" in logo, accents, success states  |
+| **Secondary (Purple)** | `#4b2d73` | "Warlock" in logo, headings, buttons   |
+
+These colors are defined in the Streamlit app CSS. Feel free to customize them to match your preferences by editing [app/app.py](app/app.py).
+
+## License
+
+Apache License 2.0

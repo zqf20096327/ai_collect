@@ -1,0 +1,370 @@
+<div align="center">
+
+<p align="center">
+  <img src="assets/invarium-logo.svg" alt="Invarium logo" width="84" height="84" />
+</p>
+
+<h1 align="center">Invarium</h1>
+
+**Pytest for AI agents — test behavior, not exact text.**
+
+[![Tests](https://github.com/invarium-ai/invarium/actions/workflows/tests.yml/badge.svg)](https://github.com/invarium-ai/invarium/actions/workflows/tests.yml)
+[![PyPI version](https://img.shields.io/pypi/v/invarium.svg)](https://pypi.org/project/invarium/)
+[![Python versions](https://img.shields.io/pypi/pyversions/invarium.svg)](https://pypi.org/project/invarium/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Downloads](https://static.pepy.tech/badge/invarium/month)](https://pepy.tech/project/invarium)
+[![Total downloads](https://static.pepy.tech/badge/invarium)](https://pepy.tech/project/invarium)
+
+[Quickstart](#quickstart) · [Why Invarium](#why-invarium) · [Writing tests](#writing-a-test) · [CLI](#cli-commands) · [Docs](#documentation)
+
+</div>
+
+---
+
+Invarium brings the discipline of unit testing to AI agents. Instead of asserting
+on brittle, model-generated text, you assert on **observable behavior** — which tools
+an agent called, in what order, how many steps it took, and whether it claimed success
+without doing the work. It then tracks that behavior over time and flags regressions
+against a saved baseline.
+
+> **Note:** Invarium is distributed on PyPI as the `invarium` package and exposes the
+> `invarium` command-line tool. Use those names when installing and running it.
+
+## Why Invarium
+
+LLM-driven agents are non-deterministic: the same prompt can produce different wording,
+different tool paths, and different costs on every run. Traditional string-match tests
+break constantly, and pure eval scores tell you *that* something changed but not *what*.
+
+Invarium takes a different approach:
+
+- **Behavioral assertions** — verify tool usage, ordering, step budgets, and success
+  claims rather than exact output.
+- **Regression detection** — `bless` a baseline, then catch drift in success rate,
+  steps, latency, cost, and tool coverage automatically.
+- **Flakiness scoring** — run each test multiple times and surface unstable tool paths.
+- **Framework-agnostic** — works with OpenAI Agents, LangGraph, CrewAI, plain Python
+  callables, or any deployed HTTP endpoint.
+- **CI-native** — fail builds on regression and publish reports straight to GitHub
+  Actions step summaries.
+
+## Installation
+
+```bash
+pip install invarium
+```
+
+Optional framework adapters:
+
+```bash
+pip install "invarium[openai]"      # OpenAI Agents SDK
+pip install "invarium[langgraph]"   # LangGraph
+pip install "invarium[crewai]"      # CrewAI
+```
+
+Requires Python 3.10+.
+
+## Quickstart
+
+```bash
+pip install -e .
+python -m invarium.cli test examples            # run example tests
+python -m invarium.cli bless examples           # save a baseline
+python -m invarium.cli test regression_examples # catch an intentional regression
+```
+
+This walks you through a passing test, a saved baseline, and a regression caught with a
+clear behavior diff — in about five minutes.
+
+## Writing a Test
+
+```python
+from invarium import agent_test, expect
+
+@agent_test(runs=5, agent_factory=MyAgent)
+def test_booking_agent(agent):
+    result = agent.run("Book a table for 2 tonight")
+
+    check = expect(result, collect=True)
+    check.used_tool("restaurant_search")
+    check.used_tool("booking_tool")
+    check.steps_less_than(5)
+    check.did_not_claim_confirmation_without_tool("booking_tool")
+    check.verify()
+    return result
+```
+
+`runs=5` executes the test five times so Invarium can measure stability, not just a
+single lucky pass.
+
+### Parallel runs
+
+By default the `runs` repetitions execute sequentially. For live-model tests this
+means `runs=5` is five serial API calls — slow in CI. Opt into concurrency and the
+repetitions run on a thread pool instead (each run is independent), cutting
+wall-clock time roughly N-fold:
+
+```python
+@agent_test(runs=5, parallel=True, agent_factory=MyAgent)   # ~5x faster in CI
+def test_booking_agent(agent):
+    ...
+```
+
+Use `max_workers` to cap concurrency (e.g. to respect provider rate limits);
+setting `max_workers > 1` also implies `parallel=True`:
+
+```python
+@agent_test(runs=10, max_workers=3, agent_factory=MyAgent)   # at most 3 in flight
+def test_booking_agent(agent):
+    ...
+```
+
+Parallelism is opt-in so the default never surprises anyone's rate limits.
+
+## Assertions
+
+```python
+expect(result).used_tool("search")
+expect(result).used_tool_times("search", 2)
+expect(result).used_tool_at_least("search", 1)
+expect(result).used_tool_at_most("search", 3)
+expect(result).did_not_use_tool("forbidden_tool")
+expect(result).used_tools_in_order(["search", "summarize"])
+expect(result).used_any_tool()
+expect(result).tool_succeeded("book")
+expect(result).steps_less_than(10)
+expect(result).cost_less_than(0.05)
+expect(result).latency_less_than(500)
+expect(result).finished_successfully()
+expect(result).did_not_error()
+expect(result).final_output_contains("confirmed")
+expect(result).final_output_does_not_contain("error")
+expect(result).final_output_matches_pattern(r"Order #\d+")
+expect(result).did_not_claim_confirmation_without_tool("booking_tool")
+```
+
+Use `collect=True` to gather every failure in one report instead of stopping at the first:
+
+```python
+check = expect(result, collect=True)
+check.used_tool("search")
+check.steps_less_than(5)
+check.verify()
+```
+
+### Failure Categories
+
+Every failed assertion is tagged so you know exactly what broke:
+
+| Category | Triggered by |
+|---|---|
+| `missing_required_tool` | `used_tool`, `used_any_tool`, `used_tool_times`, … |
+| `wrong_tool_order` | `used_tools_in_order` |
+| `step_budget_exceeded` | `steps_less_than` |
+| `cost_exceeded` | `cost_less_than` |
+| `latency_exceeded` | `latency_less_than` |
+| `unsupported_success_claim` | `did_not_claim_confirmation_without_tool` |
+| `runtime_error` | `finished_successfully`, `did_not_error` |
+| `output_mismatch` | `final_output_contains`, `final_output_matches_pattern` |
+| `tool_failure` | `tool_succeeded` |
+
+## CLI Commands
+
+```bash
+# Run tests
+invarium test [path] [-k filter] [--html report.html] [--fail-on-regression]
+
+# Baselines
+invarium bless [path]                 # save current run as baseline
+invarium compare                      # re-compare last run against baseline
+invarium baseline list
+invarium baseline inspect .invarium/baselines/latest.json
+invarium baseline delete .invarium/baselines/old.json --yes
+
+# Reports
+invarium report [--html report.html]
+
+# Contracts & scenario generation
+invarium contract init my_agent
+invarium contract validate agent_contract.json
+invarium generate scenarios agent_contract.json --stub tests/generated_tests.py
+
+# Config & history
+invarium config init
+invarium history list
+invarium history show <run-id>
+```
+
+## Adapters
+
+| Adapter | Install | Use with |
+|---|---|---|
+| `PythonAdapter` | built-in | any Python callable |
+| `OpenAIAgentsAdapter` | `invarium[openai]` | OpenAI Agents SDK |
+| `LangGraphAdapter` | `invarium[langgraph]` | LangGraph `StateGraph` |
+| `CrewAIAdapter` | `invarium[crewai]` | CrewAI Crew / Agent |
+| `HttpAdapter` | built-in | any HTTP endpoint |
+
+### Testing a Deployed Agent
+
+Test a live agent over HTTP without importing any local code:
+
+```python
+from invarium import agent_test, expect, HttpAdapter
+
+adapter = HttpAdapter(
+    "https://my-agent.example.com/run",
+    auth_env_var="AGENT_API_KEY",
+)
+
+@agent_test(runs=3)
+def test_deployed_agent():
+    result = adapter.run_input("What is the weather in Tokyo?")
+    return expect(result).used_any_tool().finished_successfully().verify()
+```
+
+Or drive it entirely from environment variables:
+
+```python
+adapter = HttpAdapter.from_env(
+    url_env_var="AGENT_ENDPOINT",
+    auth_env_var="AGENT_API_KEY",
+)
+```
+
+## Regression Detection
+
+When a baseline exists, `invarium test` compares the current run and reports success
+rate change, step/latency/cost drift, tool coverage drops, primary tool path changes,
+and a failure-category breakdown.
+
+```bash
+invarium bless examples                          # save a baseline
+invarium test examples --fail-on-regression      # future runs compare automatically
+```
+
+## Flakiness Detection
+
+When a test runs multiple times and produces mixed results, Invarium computes a
+`flakiness_score` (0–1) and flags `unstable_tool_paths` when tool sequences vary between
+runs. Both appear in CLI output and in the HTML/Markdown reports.
+
+## Agent Contracts
+
+Define expected behavior once in a reusable file:
+
+```bash
+invarium contract init booking_agent
+```
+
+```json
+{
+  "name": "booking_agent",
+  "expected_tools": ["search", "summarize"],
+  "required_tool_order": [],
+  "step_budget": 10,
+  "success_conditions": ["answer provided"],
+  "forbidden_claims": ["reservation complete"],
+  "scenario_tags": ["happy_path"]
+}
+```
+
+```bash
+invarium contract validate agent_contract.json
+```
+
+### Scenario Generation
+
+Generate starter test scenarios from a contract:
+
+```bash
+invarium generate scenarios agent_contract.json --stub tests/generated.py
+```
+
+This writes a JSON scenario pack and a ready-to-edit Python test file covering
+`happy_path`, `missing_information`, `ambiguous_request`, `tool_failure`, `over_step`,
+and `unsupported_success`.
+
+## Reports & Artifacts
+
+Every `invarium test` run writes a self-contained HTML report to
+`.invarium/reports/latest.html` — open it in any browser, no server needed. Use
+`--html path` to write it elsewhere.
+
+| File | Contents |
+|---|---|
+| `.invarium/reports/latest.json` | Full session report (JSON) |
+| `.invarium/reports/latest.md` | Markdown report |
+| `.invarium/reports/latest.html` | Self-contained HTML report |
+| `.invarium/traces/latest.json` | Raw per-run traces |
+| `.invarium/history.json` | Append-only run log (capped at 200 entries) |
+
+## Configuration
+
+Create `invarium.json` in your project root to set defaults (CLI flags always win):
+
+```bash
+invarium config init
+```
+
+```json
+{
+  "path": ".",
+  "runs": 3,
+  "fail_on_regression": false
+}
+```
+
+## CI Integration
+
+```yaml
+- name: Run Invarium
+  run: invarium test . --fail-on-regression --html reports/invarium.html
+
+- name: Upload report
+  uses: actions/upload-artifact@v4
+  with:
+    name: invarium-report
+    path: reports/invarium.html
+```
+
+The Markdown report is automatically appended to the GitHub Actions step summary when
+`GITHUB_STEP_SUMMARY` is set.
+
+## pytest Integration
+
+Invarium tests also run through pytest directly:
+
+```bash
+pytest examples -q
+pytest tests -q
+```
+
+Filter by name with `-k`:
+
+```bash
+invarium test -k booking
+invarium test -k "research or booking"
+```
+
+## Documentation
+
+- [TECHNICAL_GUIDE.md](TECHNICAL_GUIDE.md) — architecture, adapters, and assertions in depth
+- [ADAPTER_GUIDE.md](ADAPTER_GUIDE.md) — how to write a custom adapter
+- [REAL_WORLD_TESTING.md](REAL_WORLD_TESTING.md) — live OpenAI agent testing setup
+- [ROADMAP.md](ROADMAP.md) — what's done and where the project is going
+- [framework_examples/perseus_context_regression](framework_examples/perseus_context_regression/README.md) — context-regression testing for [Perseus](https://perseus.observer)-powered agents
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please open an issue to
+discuss substantial changes before submitting a pull request, and run the test suite first:
+
+```bash
+pip install -e ".[dev]"
+pytest -q
+```
+
+## License
+
+Released under the [MIT License](LICENSE).

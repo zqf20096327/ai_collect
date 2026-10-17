@@ -1,0 +1,456 @@
+# SceneGen — AI 短剧生成平台 · AI Short-Drama Video Generator
+
+> **从剧本到成片的一站式 AI 短剧生产平台** —— 剧本解析 → 智能分镜 → 资产管理 → @引用提示词 → 多模型生成 → 节点画布 → 在线剪辑 → 成片发布，全流程可视化。
+>
+> A full-pipeline AI short-drama production workbench: LLM script parsing, AI storyboard, @-reference prompt editor, multi-model video generation (MiniMax-H3 r2va), React-Flow node canvas, CapCut-style multi-track online editor, SMS-verified auth, team collaboration & credits billing.
+>
+> 项目代号：**SceneGen**（场景生成） · 仓库：`super_gen` · 状态：v1.1.0（核心链路已上线运营，三轮安全加固完成）
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React_18-TypeScript-blue" alt="React 18 + TypeScript">
+  <img src="https://img.shields.io/badge/FastAPI-Python_3.12-green" alt="FastAPI + Python 3.12">
+  <img src="https://img.shields.io/badge/PostgreSQL-Redis-9cf" alt="PostgreSQL + Redis">
+  <img src="https://img.shields.io/badge/MiniMax--H3-r2va_多模态-orange" alt="MiniMax H3 r2va">
+  <img src="https://img.shields.io/badge/ArcoDesign-Vite-ff7d00" alt="ArcoDesign + Vite">
+</p>
+
+| | |
+|---|---|
+| 🏢 **公司官网** | https://app.sdprcq.cc:8888 （AI 短剧定制 · 漫剧制作 · 广告制作 · 短剧培训 · 餐饮 SaaS） |
+| 🖥️ **在线平台** | https://ai.sdprcq.cc:8443 （注册即用，含免费积分） |
+| 📚 **开发文档** | [docs/OVERVIEW.md](docs/OVERVIEW.md) · [架构设计](docs/architecture.md) · [部署指南](deploy/README.md) |
+
+## 🔍 Keywords / 检索关键词
+
+`AI短剧` `短剧生成` `AI视频生成` `文生视频` `图生视频` `AI分镜` `剧本解析` `剧本转分镜` `漫剧` `动态漫画` `在线剪辑` `视频剪辑` `节点画布` `提示词编辑器` `多模态生成` `参考图生成` `AI短剧制作` `短剧工具` —
+`ai-video-generator` `text-to-video` `image-to-video` `storyboard-generator` `ai-short-drama` `ai-filmmaking` `llm-script-parsing` `video-editor` `prompt-editor` `multi-model-generation` `minimax-h3` `comfyui-workflow` `react-flow` `fastapi` `sms-verification` `multi-tenant`
+
+---
+
+## 📸 功能预览
+
+### 用户端
+
+| 用户工作台（统计/趋势/快捷入口） | 我的项目（搜索/状态筛选/批量归档） |
+|:---:|:---:|
+| ![用户工作台](docs/screenshots/workbench.png) | ![我的项目](docs/screenshots/projects.png) |
+
+| 项目详情工作台（统计卡 / 剧本区 / 九宫格入口） | 我的画布（跨项目聚合视图，无需先选项目） |
+|:---:|:---:|
+| ![项目详情工作台](docs/screenshots/project-detail.png) | ![我的画布](docs/screenshots/canvas.png) |
+
+| 我的素材（排序 / 拖拽上传 / 批量同步项目） | 我的积分（流水搜索 / 七日趋势 / 配额） |
+|:---:|:---:|
+| ![我的素材](docs/screenshots/materials.png) | ![我的积分](docs/screenshots/credits.png) |
+
+**在线剪辑器 —— 三轨道时间轴（视频 / 音频 / 字幕），逐帧预览、变速裁剪、字幕烧录、导出成片**
+
+<p align="center">
+  <img src="docs/screenshots/editor.png" alt="在线剪辑器" width="960">
+</p>
+
+### 管理后台
+
+| 后台仪表盘（用户 / 项目 / 任务三态监控） | 任务队列（状态筛选 / 批量操作 / 详情抽屉） |
+|:---:|:---:|
+| ![后台仪表盘](docs/screenshots/admin-dashboard.png) | ![任务队列](docs/screenshots/admin-tasks.png) |
+
+| 媒体资源管理（五来源聚合 / 搜索 / 视频缩略图） | ComfyUI 工作流库（JSON 导入 / 占位符 / 格式转换） |
+|:---:|:---:|
+| ![媒体资源管理](docs/screenshots/admin-media.png) | ![ComfyUI 工作流](docs/screenshots/comfyui-workflows.png) |
+
+---
+
+## 📋 项目简介
+
+SceneGen 是面向内容创作者、短视频制作团队与 MCN 机构的**专业级 AI 短剧生成平台**：把 **剧本 → 分镜 → 资源 → 提示词 → 图片/视频生成 → 在线剪辑 → 成片发布** 的完整生产链路收敛到一套现代化 Web 工具中。
+
+- **AI 剧本解析**：LLM 自动拆分镜（时长/运镜/景别/台词），角色、场景、道具一键提取入库
+- **@引用提示词编辑器**：`@角色/@场景/@道具/@音频/@视频` 直接引用资源，参考媒体自动随请求发送
+- **多模态参考生成**：参考图片 + 参考视频 + 参考音频混合驱动，768P/2K 高清，双渠道兼容
+- **画布节点编排 · 一键成片 · 剪映式在线剪辑 · 团队协作与积分计费 · 作品画廊**（详见下方核心特性）
+
+### 核心特性
+
+- ✅ **全流程覆盖**：剧本导入 → AI 智能解析（角色/场景/道具/分镜）→ 资源管理 → 画布/面板生成 → 一键成片 → 作品画廊发布
+- ✅ **@引用系统**：创新的提示词编辑器，用 `@角色 / @场景 / @道具 / @音频 / @视频` 直接引用资源；发送给模型的提示词**原文直发**，用户编辑的是什么就发什么
+- ✅ **多模态参考生成（r2va）**：MiniMax-H3 官方渠道支持参考图片（≤9）+ 参考视频（≤3）+ 参考音频（≤3）混合驱动视频生成
+- ✅ **画布节点编排**：React Flow 节点画布，拖拽组合 提示词/生成/上传/首尾帧/输出 节点，连线即引用，纯手搓完整视频
+- ✅ **一键成片**：集（Episode）维度智能分流合并/生成，分镜成片直接发布画廊
+- ✅ **在线剪辑器（剪映式多轨道时间轴）**：
+  - 三轨道时间轴：视频轨（拖动换序/边缘裁剪/拆分 S 键/变速 0.5~2x）、音频轨（多段定位/循环铺满/淡入淡出）、字幕轨（拖动移动/边缘调起止）
+  - 播放头逐帧预览：拖红线实时显示对应画面帧，播放跨片段连续播放（倍速/图片段平滑推进），音频预览混音同步
+  - 字幕：中文字幕烧录，字号/颜色/上下间距自定义，按分镜台词预填
+  - 图片片段：导入图片设显示时长；本地导入视频/音频旁路 15s 参考素材规范化，保留完整素材
+  - 草稿云端自动保存（防抖 1.5s），重进自动加载；导出为后台 ffmpeg 任务（进度轮询）
+- ✅ **ComfyUI 工作流库**：导入 ComfyUI 工作流 JSON（UI/API 格式自动识别），UI→API 格式自动转换（可直接 `POST /prompt` 执行），`{{prompt}}/{{seed}}` 等占位符体系，一键导出两种格式
+- ✅ **参考素材自动规范化**：上传音视频自动截取（单段 ≤15s）并转码为渠道合规格式（音频 MP3 / 视频 H.264+AAC MP4）；生成时对超限素材兜底截取
+- ✅ **多模型兼容**：智谱 GLM/CogView/CogVideoX、MiniMax H3（官方 / 优云智算 CompShare / 自部署 Ref2VA）+ ComfyUI 工作流预留
+- ✅ **团队与积分**：多组织（Organization）多租户、成员/权限组、企业素材库、积分账户与按量扣费；团队管理精简为「数据看板 / 成员管理 / 权限管理」三模块（旧路由自动重定向）
+- ✅ **作品画廊**：成片发布、公开/私有、点赞、我的作品管理（搜索 / 最新·点赞·播放排序）
+- ✅ **手机短信验证码认证**：注册强制绑定手机号 + 验证码（阿里云短信，60s 冷却 / 每日限额 / GETDEL 一次性消费防重放），忘记密码凭手机验证码自助重置；历史邮箱用户兼容（phone 可空唯一索引）
+- ✅ **合规内置**：用户服务协议与隐私政策页（/terms /privacy），注册/登录强制勾选，法律页内容按平台实际功能定制（短信收集手机号 / 模型调用传输提示词素材 / 作品发布 / 团队协作）
+- ✅ **三轮安全加固**（已上线）：
+  - 资源级 IDOR 收口：scripts/scenes/resources/creation/tasks 60+ 端点接入统一归属断言（读=项目成员，写=owner/manager/editor），生成链路项目级校验、跨团队扣费修正
+  - 任务系统：列表按「自己创建 or 所在项目」过滤、轮询端点任务归属校验、WebSocket 补 token 鉴权（4401/4403 关闭）
+  - 会话安全：登出 refresh_token 进 Redis 黑名单即时撤销、refresh 轮换（单次使用 + 60s 多标签页宽限）、access token 24h
+  - 其他：通用上传每用户日配额（300 个/天 + 5GB/天）、ILIKE 搜索通配符转义（16 处）、生产启动硬检查（默认 SECRET_KEY 拒绝启动）
+- ✅ **用户端工作台体验**：项目详情工作台化（封面横幅 + 四统计卡 + 剧本区 + 九宫格工作流入口）、我的画布默认跨项目聚合视图（项目标签标注、统计卡随视图联动）、我的素材支持排序 / 全页拖拽上传 / 批量同步到项目资源、积分流水真分页搜索 + 七日趋势图 + 配额卡
+- ✅ **通知中心（统一消息通道）**：顶栏铃铛 + 未读数（30s 轮询）+ 下拉面板 / 列表页；生成完成与失败、充值到账、发票审核结果全走同一通道；SMTP 邮件联动（后台「邮件与支付」配置，未配置静默跳过，失败不影响主流程）
+- ✅ **在线充值（套餐化）**：体验版/创作者/工作室套餐后台可维护（价格分存储/加赠积分/权益点/角标/排序）；订单状态机 pending→paid 幂等入账（行锁防重复，重复确认/重复回调只生效一次）；当前走 manual 人工对账通道（资质未到位兜底），微信/支付宝/IAP 回调接口已预留（`/notify/{channel}`），IAP 类目与商户号资质办理中、与 ICP 备案进度联动（`payment_enabled` 总开关 + 筹备文案）；发票申请（一单一票、企业/个人抬头、税号校验）+ 管理端审核开票，结果通知用户
+- ✅ **后台管理**：
+  - 用户/项目/任务队列（统计卡 + 服务端分页搜索筛选 + 批量启停/删除 + 富信息详情抽屉）、模型配置（API Key 脱敏回显、含出站代理 http/socks5）、提示词模板（搜索/复制）、计价规则（复制 / 批量删除 / 命中测试预估扣费）、积分管理（充值/流水/趋势导出）
+  - 仪表盘：今日新增/活跃、任务成功率、积分消耗、模型使用 Top6、近 7 日趋势图、最近失败任务
+  - **统一媒体资源管理**：生成任务输出/素材库/项目资产/画布节点媒体五来源合并（搜索/来源筛选/禁用 403/删除/重命名，视频列表带缩略图）
+  - 存储统计与孤立文件扫描清理、操作审计日志、系统设置（文件服务器连通性测试等）
+
+---
+
+## 🏗️ 技术架构
+
+### 后端（Python）
+
+| 组件 | 技术 | 说明 |
+|------|------|------|
+| Web 框架 | FastAPI 0.110+ | 高性能异步框架，自动 OpenAPI 文档 |
+| ORM | SQLAlchemy 2.0（async） | 异步数据库操作 |
+| 数据库 | PostgreSQL 16（JSONB/ARRAY） | 关系型数据 + 画布图/任务元数据 |
+| 任务队列 | Celery + Redis（预留） | 当前生成任务以后台协程 + 轮询追踪为主 |
+| 缓存/会话 | Redis 7（异步连接池） | 短信验证码与限频、登出会话撤销黑名单、refresh 轮换宽限、上传日配额 |
+| 迁移工具 | Alembic（开发环境 `create_all` 自动建表） | 数据库版本管理 |
+| 认证 | JWT（access 24h + refresh 轮换） | 无状态认证 + Redis 黑名单登出撤销 + 短信验证码（阿里云） |
+| 配置 | pydantic-settings | 环境变量驱动的类型安全配置 |
+| 媒体处理 | imageio-ffmpeg（随 pip 依赖自动安装） | 参考素材探测/截取/转码、封面抽帧、成片合成 |
+
+### 前端（React）
+
+| 组件 | 技术 | 说明 |
+|------|------|------|
+| 框架 | React 18 + TypeScript | 类型安全 |
+| 构建工具 | Vite 5 | 极速 HMR |
+| UI 组件库 | Arco Design Web React | 现代简洁风格 |
+| 状态管理 | Zustand | 轻量级状态管理 |
+| 富文本编辑 | Tiptap | 提示词编辑器核心（自定义 Mention 扩展 + `[类型:名]` 芯片） |
+| 画布 | @xyflow/react（React Flow 12） | 节点画布编排 |
+| 路由 | React Router v6 | 声明式路由 |
+| HTTP 客户端 | Axios | 请求拦截 / Token 刷新 / 统一错误提示 |
+
+### 基础设施
+
+| 组件 | 用途 |
+|------|------|
+| PostgreSQL 16 | 业务数据存储（`docker-compose.yml` 一键拉起） |
+| Redis 7 | 缓存 + 短信验证码/会话撤销/上传配额 + Celery Broker/Backend |
+| 独立文件服务器（`fileserver/`，可选） | 视频/音频转传拿公网直链，供生成渠道下载参考素材 |
+| 自部署 GPU 推理（`h3-deploy/`，可选） | 单卡跑 MiniMax-H3 Ref2VA 多图参考生视频，对外 HTTP API |
+
+### AI 模型对接
+
+| 能力 | 支持模型 | 说明 |
+|------|---------|------|
+| 剧本解析 / Agent 决策 | 智谱 GLM-4 系列（OpenAI 兼容端点） | 拆分镜、提角色/场景/道具、生成完整提示词 |
+| 文生图 / 角色人设 | 智谱 CogView、glm-image | 角色四视图模板（16:9 正/侧/背人设图） |
+| 图生视频 / 文生视频 | **MiniMax-H3 官方 V2**、优云智算 CompShare、自部署 Ref2VA、智谱 CogVideoX | i2va / t2va / r2va（多模态参考） |
+| 参考视频/音频 | MiniMax-H3 官方（r2va） | 视频 MP4/MOV ≤50MB、音频 WAV/MP3 ≤15MB，单段 [2,15]s，自动截取/转码 |
+| 语音合成 (TTS) | 硅基流动 CosyVoice 等（OpenAI TTS 兼容端点） | 已接入：后台配置 `tts` 类型模型即可用，文本直接落库为项目音频资产；ASR 预留
+
+> 模型适配器统一抽象在 `backend/app/adapters/`，通过 `factory.py` 按后台「配置模型」或环境变量实例化，方便接入新厂商。MiniMax 官方 / CompShare 渠道协议一致，子类仅覆盖差异（分辨率档位、水印、参考能力开关）。
+
+---
+
+## 📁 项目结构
+
+```
+super_gen/
+├── backend/                          # Python 后端
+│   ├── app/
+│   │   ├── main.py                   # FastAPI 应用入口（含 /uploads 静态挂载与禁用媒体拦截）
+│   │   ├── core/                     # 配置 / 数据库 / 安全 / 异步Redis连接池 / 异常 / 媒体禁用拦截(media_guard)
+│   │   ├── models/                   # SQLAlchemy 数据模型（画布/集/积分/素材/作品/媒体状态…）
+│   ├── schemas/                      # Pydantic 请求/响应模型
+│   │   ├── api/v1/                   # RESTful 路由（auth/projects/scripts/scenes/episodes/
+│   │   │                             #   resources/materials/canvas/creation/tasks/credits/admin…）
+│   │   ├── adapters/                 # AI 模型适配器（智谱 / MiniMax 官方 / CompShare / ref2va / TTS…）
+│   │   ├── services/                 # 业务逻辑（剧本解析 / 提示词构建 / 一键成片管道 /
+│   │   │                             #   短信验证码(sms_service) / 文件服务器转传 /
+│   │   │                             #   上传规范化(media_prep) / 素材库…）
+│   │   └── tasks/                    # Celery 异步任务（预留）
+│   ├── alembic/                      # 数据库迁移
+│   ├── requirements.txt
+│   └── .env.example                  # 环境变量样例（复制为 .env 后填写）
+│
+├── frontend/                         # React 前端
+│   └── src/
+│       ├── api/                      # Axios 客户端与服务封装
+│       ├── stores/                   # Zustand 状态管理
+│       ├── components/
+│       │   ├── canvas/nodes/         # 画布节点（提示词/图片视频生成/上传素材/首尾帧/输出…）
+│       │   ├── editor/               # 提示词编辑器（Tiptap @引用 + 预览面板 + 资源面板）
+│       │   └── material/             # 企业素材选择器（选素材/新建并同步项目资源）
+│       └── pages/                    # 工作台/画布/项目/剧本/集/资源/素材库/画廊/团队/后台
+│
+├── fileserver/                       # 独立文件服务器（可选部署，FastAPI + Bearer 鉴权）
+├── h3-deploy/                        # MiniMax-H3 Ref2VA 自部署 GPU 服务（可选，见 h3-deploy/deploy.md）
+├── site/                             # 公司官网静态站（含 nginx 配置与部署说明，可选部署）
+├── docs/                             # 设计文档（OVERVIEW / architecture / 方案）
+├── docker-compose.yml                # 本地基础设施（PostgreSQL 16 + Redis 7）
+├── .gitignore
+└── README.md
+```
+
+---
+
+## ✨ 核心功能模块
+
+### 1. 提示词编辑器（PromptEditor）⭐ 核心
+
+基于 Tiptap 富文本编辑器的 @ 引用系统：
+
+- `@角色 / @场景 / @道具 / @音频 / @视频` 芯片引用，底部资源面板点击/搜索插入
+- 实时预览展开后的完整提示词（芯片 → `[角色:名]` 简洁标签，细节由参考图承载）
+- 引用的图片/音频/视频自动作为参考素材（reference_image / reference_video / reference_audio）随请求发送
+- **提示词原文直发**：适配器不注入任何自动绑定语，所见即所发
+
+### 2. 剧本 → 分镜 → 集
+
+- **AI 剧本解析**（`script_analyzer.py`）：LLM 拆分镜（时长/运镜/景别/台词/完整提示词），提取角色（含外貌描述）、场景、道具；解析结果人工确认后入库，资源自动关联来源剧本
+- **角色生图**：四视图人设图模板（16:9 大半身 + 正/侧/背全身，同一人物一致性约束）
+- **集（Episode）**：剧本下按集管理分镜，状态机流转，一键成片智能分流（合并/生成缺项 → 合成 → 发布）
+
+### 3. 画布节点编排（Canvas）
+
+- React Flow 画布：提示词节点、文生图/图生图/图生视频/文生视频/首尾帧/转绘/对口型/TTS 等生成节点、上传素材节点、输出节点
+- **连线即引用**：上游节点输出自动作为下游输入（图→视频首帧、音频→参考等）
+- 生成图一键存企业素材库；上传素材节点支持图片/音频/视频并可同步为项目资源
+- **画布列表聚合视图**：默认展示全部项目的画布（项目标签标注归属），可搜索、按更新/创建/名称排序，统计卡随当前视图联动；进入单项目后可新建/重命名/复制
+
+### 4. 多模态参考生成（MiniMax H3 r2va）
+
+- 分镜/画布/创作面板的 @引用 → 自动组包为官方 V2 `content` 数组（text + reference_image/video/audio）
+- **上传即规范化**（`media_prep.py`）：音视频上传入库/转传云端前自动截取前 15s 并转码 MP3/MP4，格式/大小/时长全部预校验
+- **生成时兜底**（`minimax_adapter.py`）：公网 URL 与本地文件均探测时长，超限自动 ffmpeg 截取；格式不符自动转码；不合规且无法处理的跳过并写入任务日志，避免整单被拒
+- data URI 按官方格式名词声明（`audio/mp3` / `video/mov`），多条参考按 15s÷条数分配时长预算
+
+### 5. 团队 / 积分 / 素材库 / 画廊
+
+- **组织（Organization）**：多租户顶层容器，注册即自动创建"个人团队"；团队管理三模块——数据看板（时间范围切换 + 积分明细）、成员管理（角色/状态筛选、配额分配）、权限管理（成员组/权限组/素材库权限）
+- **积分系统**：积分账户、按任务类型/模型计价扣费、失败自动退款、充值与流水（搜索 / 七日趋势 / CSV 导出）
+- **企业素材库**：团队级共享素材（图片分类 character/scene/prop + 音视频），存储配额条、目录、权限矩阵；支持按名称/大小/时间排序、全页拖拽上传、批量删除与批量同步到项目资源
+- **作品画廊（Showcase）**：成片发布、公开/私有、点赞、浏览、我的作品管理（搜索 + 最新/点赞/播放排序）
+
+### 6. 后台管理系统
+
+- 用户管理（CRUD、启停、重置密码、批量启停）、项目监控（搜索/状态筛选/归档）、任务队列（实时进度/取消/重试/批量删除，详情抽屉含耗时与完整参数）
+- 模型配置（provider/endpoint/API Key 脱敏回显/参数）、提示词模板（剧本解析等 system prompt 可视化编辑、搜索/复制）
+- 计价配置（复制 / 批量删除 / 命中测试——输入 token 即预估扣费）、积分管理（账户/充值/流水/趋势）、系统设置（含文件服务器配置与连通性测试）
+- 各列表页统一为「统计卡 + 工具栏（搜索/筛选/排序）+ 服务端分页 + 批量操作 + 详情抽屉」的信息架构
+- **媒体资源管理**：统一媒体库聚合 生成任务输出 / 素材库上传 / 项目音视频资产 / 角色·场景·道具主图 / 画布节点媒体 五类来源，按 URL 去重；支持关键词搜索（文件名/提示词/项目/用户）、类型与来源筛选、重命名、禁用（本地文件即刻 403 拦截）、删除（删底层文件 + 跨来源清理引用，含画布 JSON 递归摘除）
+
+---
+
+## 🚀 快速开始
+
+### 环境要求
+
+| 依赖 | 版本 |
+|------|------|
+| Python | 3.11+（推荐 3.12+） |
+| Node.js | 18+ |
+| Docker | 用于一键拉起 PostgreSQL + Redis |
+
+> ffmpeg 无需单独安装——后端依赖 `imageio-ffmpeg` 会自带可执行文件（参考素材截取/转码、封面抽帧、成片合成均用它）。
+
+### 1. 启动基础设施（PostgreSQL + Redis）
+
+```bash
+docker compose up -d
+docker compose ps   # 确认 scenegen-postgres / scenegen-redis 为 healthy
+```
+
+### 2. 启动后端
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+cp .env.example .env                # 编辑 .env：至少填 LLM_API_KEY；SECRET_KEY 生产必改
+
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+启动后访问：
+
+- API 文档（Swagger）：http://localhost:8000/docs
+- 健康检查：http://localhost:8000/health
+
+> 开发环境启动时自动 `create_all` 建表；默认管理员 `ADMIN_DEFAULT_EMAIL / ADMIN_DEFAULT_PASSWORD`（首启后务必改密）。
+>
+> ⚠️ 注册走手机短信验证码（阿里云）。未配置 `ALIYUN_SMS_*` 时新用户可在后台「用户管理」手动创建；已有账号不受影响。
+
+### 3. 启动前端
+
+```bash
+cd frontend
+npm install
+npm run dev                          # http://localhost:5173
+```
+
+开发服务器已配置 `/api`、`/uploads`、`/ws` 反向代理指向 `http://localhost:8000`。
+
+### 4.（可选）配置模型渠道
+
+后台「配置模型」添加启用模型：
+
+| 渠道 | provider | endpoint | 说明 |
+|------|----------|----------|------|
+| MiniMax 官方 | `minimax` | `https://api.minimaxi.com` | 支持 r2va 参考图/视频/音频，data URI 内嵌本地素材 |
+| 优云智算 CompShare | `minimax_compshare` | `https://cp.compshare.cn/minimax` | 协议同官方；768P/2K（2K 视渠道支持，失败自动降级 768P）、无水印；已实测支持音视频参考（URL/data URI） |
+| 智谱 | `zhipu` | — | glm-image / cogview 文生图、CogVideoX 视频 |
+
+### 5.（可选）部署独立文件服务器
+
+音视频素材需要被生成渠道公网下载时部署 `fileserver/`（见其目录内说明）：后台上传的视频/音频会自动转传拿公网直链，未部署则本地存储 + base64 内嵌。
+
+---
+
+## 🔧 环境变量说明
+
+后端配置在 `backend/.env`（从 `.env.example` 复制），关键项：
+
+| 变量 | 说明 | 默认 / 示例 |
+|------|------|------------|
+| `DATABASE_URL` | PostgreSQL 异步连接串 | `postgresql+asyncpg://postgres:postgres@localhost:5432/scenegen` |
+| `REDIS_URL` | Redis 连接 | `redis://localhost:6379/0` |
+| `SECRET_KEY` | JWT 签名密钥（**生产必改**，≥32 字符） | 占位串 |
+| `LLM_PROVIDER` / `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL` | 智谱 LLM（剧本解析） | `zhipu` / 申请：https://open.bigmodel.cn/ / `glm-4-flash` |
+| `CREDITS_ENABLED` | 积分扣费开关（联调可 `False`） | `True` |
+| `CREDITS_INITIAL_BALANCE` | 个人团队初始积分 | `1000` |
+| `FILE_SERVER_URL` / `FILE_SERVER_API_KEY` | 独立文件服务器（后台系统设置可覆盖） | 空 = 不转传 |
+| `ALIYUN_ACCESS_KEY_ID` / `ALIYUN_ACCESS_KEY_SECRET` | 阿里云短信 AK（不配则注册/找回密码短信不可用） | 空 = 停用 |
+| `ALIYUN_SMS_SIGN_NAME` / `ALIYUN_SMS_TEMPLATE_CODE_REGISTER` / `ALIYUN_SMS_TEMPLATE_CODE_RESET` | 短信签名与验证码模板（注册/重置各一） | 空 = 停用 |
+| `SMS_CODE_EXPIRE_SECONDS` / `SMS_SEND_COOLDOWN_SECONDS` / `SMS_DAILY_LIMIT` | 验证码有效期/重发冷却/每日上限 | `300` / `60` / `10` |
+| `ADMIN_DEFAULT_EMAIL` / `ADMIN_DEFAULT_PASSWORD` | 首启默认管理员 | `admin@scenegen.com` |
+
+完整配置项见 [`backend/app/core/config.py`](backend/app/core/config.py)。
+
+---
+
+## 📦 构建与部署
+
+> **生产部署完整指南**（Ubuntu 单机实测：PostgreSQL/Redis、systemd、Nginx+HTTPS、
+> 文件服务器、备案/证书续期常见问题）：见 [`deploy/README.md`](deploy/README.md)，
+> 配套模板 `deploy/nginx-scenegen.conf.template`、`deploy/sg-backend.service.template`、
+> `backend/.env.production.example`。
+
+### 前端打包
+
+```bash
+cd frontend
+npm run build      # tsc 类型检查 + vite 打包，产物在 frontend/dist/
+```
+
+产物为纯静态文件，由 Nginx 或任意静态服务器托管；`/api`、`/uploads`、`/ws` 反代到后端。
+
+### 后端部署要点
+
+- **生产环境**：`ENVIRONMENT=production`、`DEBUG=False`，关闭文档端点
+- **SECRET_KEY** 与默认管理员密码必改；CORS 白名单收紧到实际域名
+- **数据库**：`alembic upgrade head` 管理表结构（开发环境才会 `create_all`）
+- **更新部署**：`git pull` → `pip install -r requirements.txt`（有新依赖时）→ 重启 uvicorn；前端重新 `npm run build`
+- **反向代理**：Nginx + HTTPS，启用 Gzip；静态与上传目录建议 CDN
+
+```
+Nginx (443, HTTPS)
+  ├── /            → frontend/dist（静态）
+  ├── /api         → uvicorn (8000)
+  ├── /uploads     → uvicorn (8000)（含禁用媒体 403 拦截）或对象存储
+  └── /ws          → uvicorn (8000, WebSocket)
+```
+
+---
+
+## 🗄️ 数据库与迁移
+
+```bash
+cd backend
+alembic upgrade head                                # 应用迁移
+alembic revision --autogenerate -m "描述本次变更"    # 修改 models 后生成
+```
+
+---
+
+## 🔌 API 概览
+
+主要路由前缀 `/api/v1`，完整接口见运行后的 `/docs`：
+
+| 模块 | 路径 | 说明 |
+|------|------|------|
+| 认证 | `/auth` | 注册（手机号+短信验证码）/ 登录 / 刷新（轮换）/ 登出撤销 / 短信验证码发送 / 忘记密码重置 / 站点配置 |
+| 项目 | `/projects` | 项目 CRUD、成员管理 |
+| 剧本 | `/scripts` | 剧本 CRUD、AI 解析、解析确认入库 |
+| 分镜 | `/scenes` | 分镜 CRUD、提示词预览、生成 |
+| 集 | `/episodes` | 集管理、向导式一键成片 |
+| 资源 | `/resources` | 角色（四视图生图）/ 场景 / 道具 / 音频 / 视频资产 |
+| 素材库 | `/materials` | 企业素材、目录、配额、同步 |
+| 画布 | `/projects/{id}/canvas` | 画布 CRUD、图数据保存 |
+| 创作 | `/creation` | 创作面板 / 分镜生成（多模态参考组包） |
+| 任务 | `/tasks` | 生成任务、批量、取消/重试、`WS /ws/tasks/{id}` 进度 |
+| 积分 | `/credits` | 账户、扣费、充值、流水、计价、**生成前费用预估 `POST /credits/estimate`**（与真实扣费同链路，返回余额与是否足够） |
+| 通知 | `/notifications` | 站内消息中心（铃铛未读数 / 列表 / 单条与全部已读）：生成完成/失败、充值到账、发票审核结果统一通道，可选邮件联动 |
+| 支付 | `/payments` | 充值套餐（体验版/创作者/工作室）、订单（manual 人工确认通道 + 渠道回调预留 `/notify/{channel}`）、发票申请与记录 |
+| 画廊 | `/works` | 发布、点赞、我的作品 |
+| ComfyUI | `/comfyui` | 直连执行收尾：工作流提交执行、队列查询、执行结果、`WS /comfyui/progress` 进度转发、输出文件代理（前置 COMFYUI_ENABLED） |
+| 分享落地页 | `/share` | 作品免登录 view-only 落地页 `/share/works/{id}`（SSR HTML + og/twitter 卡片 + JSON-LD，浏览器数自增，「免费创作同款」获客 CTA） |
+| 上传 | `/upload` | 图片/视频/音频上传（自动规范化 + 转传文件服务器 + 每用户日配额） |
+| 后台管理 | `/admin` | 统计、用户、项目、任务、模型、模板、计价、积分、设置、**媒体资源管理** |
+
+---
+
+## 🛡️ 安全设计与部署检查
+
+内置安全机制（三轮安全审计后落地，随代码持续维护）：
+
+- **资源级越权（IDOR）收口**：剧本/分镜/资源/生成/任务 60+ 端点统一归属断言——读需项目成员、写需 owner/manager/editor；私密作品防 UUID 直链泄露；邀请链接不可自授管理权
+- **任务系统隔离**：任务列表与轮询按创建者/项目过滤，生成任务信息（提示词/产物直链）不跨用户可见；WebSocket 进度连接需 token + 读权限
+- **会话安全**：登出即撤销（refresh_token 入 Redis 黑名单）、refresh 轮换单次使用（60s 并发宽限）、access token 24 小时
+- **防滥用**：短信验证码冷却 + 每日限额 + 一次性消费、上传每用户日配额、搜索通配符转义、注册/登录协议强制勾选
+- **启动硬检查**：生产环境检测到默认 `SECRET_KEY` 拒绝启动，默认管理员弱口令 ERROR 告警
+
+生产环境部署前务必：
+
+1. 修改 `SECRET_KEY` 为强随机字符串（≥ 32 字符）
+2. 修改默认管理员账号 / 密码（`ADMIN_DEFAULT_*`）
+3. 配置 HTTPS 与 CORS 白名单
+4. 关闭 `DEBUG` 与文档端点
+5. 配置数据库备份策略
+6. 文件服务器 API Key 与后端 `.env` 均勿入库（已在 `.gitignore` 忽略）
+7. 配置 `ALIYUN_SMS_*`（或关闭公开注册、由管理员创建账号）
+8. **作品分享落地页**：nginx 需将 `/share/` 反代到后端（`location /share/ { proxy_pass http://127.0.0.1:8000; }`），否则 SPA 兜底路由会吞掉分享页
+9. **ComfyUI 直连**：`.env` 配置 `COMFYUI_ENABLED=true` + `COMFYUI_API_URL`（默认关闭，API 层直接 503 不暴露）
+8. 在后台「系统设置 → 邮件与支付」配置 SMTP（生成完成/充值/发票邮件推送）与支付开关
+   （`payment_enabled` 与 IAP 类目/商户号资质、ICP 备案进度联动；未开启时充值页仅展示套餐与筹备文案）
+
+---
+
+## 📑 开发文档
+
+更详细的设计文档位于 [`docs/`](docs/)：
+
+- [`OVERVIEW.md`](docs/OVERVIEW.md) — 项目总览
+- [`architecture.md`](docs/architecture.md) — 系统架构设计
+- [`PLAN_jurilu_features.md`](docs/PLAN_jurilu_features.md) — 功能复刻与扩展方案
+- [`h3-deploy/deploy.md`](h3-deploy/deploy.md) — MiniMax-H3 Ref2VA 自部署 GPU 服务指南
+
+> 工作日报（`docs/日报_*.md`）为私有记录，不纳入版本库。
+
+---
+
+## 📝 License
+
+待定（MIT）。
+
+---
+
+> 🎬 让 AI 短剧创作变得简单而强大。

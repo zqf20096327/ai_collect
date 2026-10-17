@@ -1,0 +1,105 @@
+# Open Business Agents
+
+**An open ecosystem of specialized AI agents for real business work.**
+
+Discover agents for video, image, and voice production, YouTube growth, SEO, social media, advertising, sales, research, analytics, go-to-market orchestration, and more — powered by real APIs, not just prompts. The same agents can be used directly by businesses or deployed repeatedly by agencies for their clients.
+
+Open Business Agents is a curated directory of AI agents, organized as broad, focused **umbrella repositories** (one per capability area) rather than hundreds of one-off micro-repos. Each umbrella repo bundles several related sub-agents so it's easy to browse, easy to maintain, and actually rankable on GitHub search.
+
+The catalog supports two operating modes: a business can run an agent in its own workspace, or an agency can deploy the same agent across multiple client workspaces with its own processes, approvals, and delivery model.
+
+This project is independent of, but built to work with, the [Muapi API](https://muapi.ai) — a unified API for generative-media models and selected business-data capabilities. Agents here reference Muapi's public API surfaces for execution; no Muapi source code or private implementation details live in this catalog.
+
+## Related Projects
+
+- [MuAPI](https://muapi.ai) — the unified generative-media API this catalog's Blueprint agents are built on.
+- [MuAPI Quick Start](https://muapi.ai/docs/quick-start) — create the API key every agent in this catalog needs.
+- [MuAPI MCP docs](https://muapi.ai/docs/mcp) — connect any agent's `SKILL.md` to Claude, Cursor, Windsurf, or another MCP client.
+- [MuAPI Agent Skills](https://muapi.ai/docs/agent-skills) — background on the `SKILL.md` pattern every umbrella repo in this catalog uses.
+- [Open-Generative-AI](https://github.com/Anil-matcha/Open-Generative-AI) — MuAPI's broader open-source generative-media ecosystem hub.
+- [awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) — Typed decision, routing, and guardrail patterns for business-agent workflows.
+
+## Why umbrella repos, not micro-repos
+
+A directory of 100+ single-purpose repos (`email-verification-agent`, `funding-signals-agent`, ...) is hard to browse, duplicates maintenance overhead, and doesn't rank for anything. Instead, each umbrella repo is a broad, high-search-volume category (e.g. "AI video agent," "AI SEO agent") that houses several narrower sub-agents as sections inside itself. A sub-agent is promoted to its own umbrella only once its own search volume and capability set justify it.
+
+## Categories
+
+| Category | Umbrella repo | Status |
+|---|---|---|
+| YouTube growth (VidIQ-style) | [`open-ai-youtube-agent`](https://github.com/SamurAIGPT/open-ai-youtube-agent) | Blueprint |
+| Video production | [`open-ai-video-agent`](https://github.com/SamurAIGPT/open-ai-video-agent) | Blueprint |
+| Image / creative production | [`open-ai-image-agent`](https://github.com/SamurAIGPT/open-ai-image-agent) | Blueprint |
+| Voice, narration, dubbing, calling | [`open-ai-voice-agent`](https://github.com/SamurAIGPT/open-ai-voice-agent) | Blueprint |
+| Go-to-market strategy & orchestration | [`open-ai-gtm-agent`](https://github.com/SamurAIGPT/open-ai-gtm-agent) | Coming Soon |
+| SEO / organic growth | [`open-ai-seo-agent`](https://github.com/SamurAIGPT/open-ai-seo-agent) | Blueprint |
+| Answer/generative-engine optimization (AEO/GEO) | [`open-ai-aeo-geo-agent`](https://github.com/SamurAIGPT/open-ai-aeo-geo-agent) | Blueprint |
+| Social media management | [`open-ai-social-agent`](https://github.com/SamurAIGPT/open-ai-social-agent) | Blueprint |
+| Content repurposing / clipping | [`open-ai-content-repurposing-agent`](https://github.com/SamurAIGPT/open-ai-content-repurposing-agent) | Blueprint |
+| Marketing (email, campaigns, product) | [`open-ai-marketing-agent`](https://github.com/SamurAIGPT/open-ai-marketing-agent) | Coming Soon |
+| Paid media (PPC, paid social, programmatic) | [`open-ai-ads-agent`](https://github.com/SamurAIGPT/open-ai-ads-agent) | Blueprint |
+| E-commerce / CRO | [`open-ai-ecommerce-agent`](https://github.com/SamurAIGPT/open-ai-ecommerce-agent) | Blueprint |
+| Sales / lead generation | [`open-ai-sales-agent`](https://github.com/SamurAIGPT/open-ai-sales-agent) | Blueprint |
+| Research / audience & market research | [`open-ai-research-agent`](https://github.com/SamurAIGPT/open-ai-research-agent) | Coming Soon |
+| Public-company stock research (read-only — not trading/investment advice) | [`open-ai-stock-research-agent`](https://github.com/SamurAIGPT/open-ai-stock-research-agent) | Coming Soon |
+| Analytics / reporting | [`open-ai-analytics-agent`](https://github.com/SamurAIGPT/open-ai-analytics-agent) | Coming Soon |
+| Competitive intelligence | [`open-ai-competitor-intelligence-agent`](https://github.com/SamurAIGPT/open-ai-competitor-intelligence-agent) | Blueprint |
+| Reputation / PR / brand monitoring | [`open-ai-reputation-agent`](https://github.com/SamurAIGPT/open-ai-reputation-agent) | Blueprint |
+
+A "Blueprint" umbrella means at least one sub-agent inside it is built on a live Muapi API — check that repo's own README for which specific sub-agents are live vs. still Coming Soon.
+
+See [`categories/`](categories/) for a longer description of each grouping, or jump straight into a repo above.
+
+## Guided workflows
+
+These walkthroughs show how to turn a request into a scoped, evidence-backed deliverable. Each one follows the linked agent's actual capability status and calls out where data or validation is still needed.
+
+- [Research: build a source-grounded market brief](https://github.com/SamurAIGPT/open-ai-research-agent/blob/main/guides/source-grounded-market-research.md)
+- [Sales: verify company evidence before scoring](https://github.com/SamurAIGPT/open-ai-sales-agent/blob/main/guides/verify-before-scoring-accounts.md)
+- [Social: compare bounded samples without overclaiming](https://github.com/SamurAIGPT/open-ai-social-agent/blob/main/guides/compare-social-samples-without-overclaiming.md)
+- [E-commerce: qualify a local market lead list](https://github.com/SamurAIGPT/open-ai-ecommerce-agent/blob/main/guides/qualify-a-local-market-lead-list.md)
+- [Reputation: mine Google reviews for recurring themes](https://github.com/SamurAIGPT/open-ai-reputation-agent/blob/main/guides/mine-google-business-reviews-for-recurring-themes.md)
+
+## Status labels
+
+Every agent in this catalog carries one of these labels so you can judge maturity before you build on it:
+
+- **Coming Soon** — instructions are drafted, but the agent depends on a Muapi API capability that isn't live yet.
+- **Blueprint** — complete instructions and workflow, backed by live APIs, but not yet verified end-to-end.
+- **Tested** — the workflow has been run against the stated APIs.
+- **Live** — a public demo or hosted implementation exists.
+- **Open Source** — a runnable or independently usable implementation is available.
+- **Deprecated** — the API or workflow is no longer supported.
+
+## How an agent repo is structured
+
+Every umbrella repo follows the same shape:
+
+```text
+ai-<category>-agent/
+├── README.md              # what this category covers, why it's here
+├── agents/
+│   └── <sub-agent>/
+│       └── SKILL.md        # the canonical, runtime-agnostic instruction file
+├── examples/
+└── LICENSE
+```
+
+`SKILL.md` is a Markdown instruction file any LLM runtime — a hosted agent, an MCP client, a custom app — can load directly. No application code is required.
+
+## Using an agent
+
+1. Open the umbrella repo for the category you need.
+2. Read the sub-agent's `SKILL.md` for its mission, required inputs, and workflow.
+3. Get a Muapi API key at [muapi.ai](https://muapi.ai) if the agent needs live execution (media generation, data lookups, etc.).
+4. Load the `SKILL.md` into your agent runtime of choice, or follow it manually.
+
+For worked examples, start with [Guided workflows](#guided-workflows).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: propose an agent, follow the template, describe the APIs it needs honestly, and open a PR — either as a new sub-agent inside an existing umbrella repo, or as a link to your own high-quality external repo.
+
+## License
+
+[MIT](LICENSE)

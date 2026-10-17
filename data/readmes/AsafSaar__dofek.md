@@ -1,0 +1,629 @@
+# Dofek
+
+**GUI and Terminal-native, AI-aware system monitor for Windows, Linux, and macOS.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Platform: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-0078d4)](https://github.com/AsafSaar/dofek/releases)
+[![Release](https://img.shields.io/github/v/release/AsafSaar/dofek)](https://github.com/AsafSaar/dofek/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/AsafSaar/dofek/release.yml)](https://github.com/AsafSaar/dofek/actions)
+
+> *Dofek* (Hebrew: דּוֹפֶק) means "pulse" or "heartbeat"
+
+<video
+  src="https://github.com/AsafSaar/dofek/releases/download/v1.5.1/dofek-hero.mp4"
+  poster="website/dofek-hero-poster.jpg"
+  controls muted playsinline
+  width="100%">
+  <a href="https://dofek.dev">Watch the 60-second walkthrough on dofek.dev</a>
+</video>
+
+> ▶ Walkthrough: variance, AI awareness, cross-platform, plugins, and tray. Also embedded inline at [dofek.dev](https://dofek.dev).
+
+Most system monitors were designed before LLMs ran locally. They treat GPU as an afterthought and VRAM as a footnote. Dofek is built for the developer who has `ollama` running in the background, is watching a model load into VRAM, and needs to know at a glance whether their system can handle the next task.
+
+## Screenshots
+
+**GUI** — Tauri desktop app:
+
+![Dofek GUI](docs/assets/gui-screenshot.png)
+
+**TUI** — terminal interface:
+
+![Dofek TUI](docs/assets/tui-screenshot.png)
+
+<details>
+<summary>More GUI views</summary>
+
+![Dofek GUI — process management](docs/assets/gui-another-screenshot.png)
+![Dofek GUI — chart detail](docs/assets/gui-another-screenshot-2.png)
+
+</details>
+
+<details>
+<summary>ASCII layout reference</summary>
+
+```
+Dofek v1.7.0  CPU 9.7%  GPU 1.0%  VRAM 1700/16303MB  MEM 34.0%  TEMP 36C  BOULDER11  07:33:40
+-----------------------------------------------------------------------------------------------
+ [CPU]  GPU  MEM  NET   CANDLE                                 PROCESSES        CPU [MEM] VRAM
+ 9.7% AMD Ryzen 7 7800X3D 8-Core - 16-Core    -- warn 80%      ALL  AI  DEV  WATCH    sort:MEM
+                                                -- crit 90%    NAME       PID  CPU%  MEM  VRAM
+           ___   _                                             node.exe  35488  0.0 2.3G    --
+    ___ __|   |_| |  _     _                                   vmmem     17252  0.0 1.8G    --
+   |   |  |   | | |_| |___| |__                                claude..  13596  2.8 1.1G    --
+                                                               chrome..  29328  0.5 689M    --
+   Candlestick chart area (CPU)                                claude..  25180  0.0 668M    --
+   with threshold lines at 80/90%                              chrome..  25252  1.6 441M    --
+                                                               MsMpEng   5168   0.0 433M    --
+                                                               Code.exe  21356  0.4 425M    --
+                                                               explor..  12412  6.1 415M    --
+                                                               Code.exe  20380  0.0 402M    --
+                                                               ...more processes...
+                                                               PLUGINS ---
+                                                               No plugins connected
+-----------------------------------------------------------------------------------------------
+ CPU AMD Ryzen 7 7800X    | GPU NVIDIA RTX 5080   | MEM 21.5/63.2 GB     | NET Hyper-V Virtual
+ C0 15% C1 13% C2 19%     | Util     1.0%         | Used [###..] 34.0%   | down 0 B/s
+ C3  9% C4 10% C5 12%     | VRAM     1.7 GB       | Swap [.....] 0.0%    | up   0 B/s
+ C6 15% C7 12% C8  5%     | Temp    36.0 C        |                      |
+-----------------------------------------------------------------------------------------------
+ q quit  tab sort  p proc  / search  x kill  c cpu  g gpu  m mem  n net  1-4 filter  ? help  500ms
+```
+
+</details>
+
+## Download
+
+Pre-built binaries are published on the [Releases page](https://github.com/AsafSaar/dofek/releases/latest):
+
+**Windows (x64):**
+
+| Asset | Description |
+| --- | --- |
+| `dofek_*.msi` | Desktop GUI installer — bundles both TUI and GUI |
+| `dofek-tui.exe` | Standalone TUI binary, no installer |
+
+**Linux (x86_64):**
+
+| Asset | Description |
+| --- | --- |
+| `dofek_*.deb` | Debian / Ubuntu package — bundles both TUI and GUI |
+| `dofek_*.rpm` | Fedora / RHEL / openSUSE package |
+| `dofek_*.AppImage` | Universal portable binary (`chmod +x` and run) |
+| `dofek-tui` | Standalone TUI binary, no installer |
+
+**macOS (Apple Silicon, aarch64):**
+
+| Asset | Description |
+| --- | --- |
+| `dofek_*_aarch64.dmg` | Disk image — open and drag to Applications (recommended) |
+| `dofek-gui-aarch64-apple-darwin.app.zip` | Lighter download — unzip and move the `.app` yourself |
+| `dofek-tui-aarch64-apple-darwin` | Standalone TUI binary (`chmod +x` and run) |
+
+Intel Macs are not supported in this release.
+
+> 🍎 **First launch on macOS — "Dofek.app is damaged and can't be opened."**
+> Only applies if you downloaded the `.dmg` directly from the browser — `brew install --cask AsafSaar/dofek/dofek` skips this entirely (curl downloads don't carry the quarantine attribute). For manual downloads, the message is misleading: the app isn't damaged, it's just unsigned, and your browser tagged the DMG with a quarantine flag on download. Strip the flag once and it launches normally:
+> ```sh
+> xattr -dr com.apple.quarantine /Applications/Dofek.app
+> ```
+> On macOS 14 Sonoma and earlier you can also right-click the app → **Open** → **Open**. macOS 15 Sequoia removed that bypass, so the `xattr` command is the only fix there. Code signing + notarization is on the v1.6 roadmap.
+
+> ℹ️ **TUI requires a truecolor terminal.** dofek-tui's trading-terminal palette uses 24-bit RGB. Apple's Terminal.app misparses these escape sequences and renders panels as bright magenta/red — use [iTerm2](https://iterm2.com), [WezTerm](https://wezterm.org), [Ghostty](https://ghostty.org), [Alacritty](https://alacritty.org), or [Kitty](https://sw.kovidgoyal.net/kitty/) instead. The same applies on Linux for any terminal that doesn't set `COLORTERM=truecolor`. dofek-tui prints a warning at startup if it detects a non-truecolor terminal.
+
+`SHA256SUMS.txt` has checksums for every artifact.
+
+> ⚠️ **Binaries are currently unsigned.** On Windows, SmartScreen may flag the installer (right-click → Properties → "Unblock"). On Linux, AppImages need `chmod +x` before running. On macOS, Gatekeeper shows "Dofek.app is damaged and can't be opened" on first launch — see the macOS callout above for the `xattr` fix. Signing is in progress; the [code signing policy](https://dofek.dev/code-signing-policy/) describes who will sign what, and who authorises each signature.
+
+Verify (Windows): `Get-FileHash .\Dofek_1.7.0_x64_en-US.msi -Algorithm SHA256`
+Verify (Linux): `sha256sum -c SHA256SUMS.txt`
+Verify (macOS): `shasum -a 256 -c SHA256SUMS.txt`
+
+## Features
+
+- **Dual interface** — terminal TUI and Tauri-based GUI from the same codebase
+- **Trading-terminal layout** — dominant chart panel + process watchlist + compact bottom strip
+- **Resizable panes** — `[`/`]` in TUI, drag handle in GUI to adjust chart vs. process split
+- **Candlestick CPU chart** — min/max wicks, IQR bodies, mean ticks. Shows CPU variance at a glance
+- **Area charts** — smooth filled charts for GPU, memory, and network with threshold lines at 80%/90%
+- **Horizon chart mode** — press `h` to toggle layered color-band charts across all metrics
+- **AI workload detection** — VRAM per-process, inference/loading/idle badges, auto-classification
+- **Process management** — search by name, kill single or batch processes, navigable selection in both TUI and GUI
+- **Process watchlist with categories** — AI (●), DEV (■), WATCH (★) with color-coded rows and filter tabs
+- **Multi-GPU support** — per-device metrics, overlaid chart lines, aggregate views
+- **Top ticker bar** — live metric pills for CPU, GPU, VRAM, MEM, TEMP, NET at a glance
+- **Snapshot export** — press `s` to save system state to `~/dofek-snapshots/`
+- **Single binary** — one `.exe`, no runtime dependencies
+- **Configurable** — TOML config for refresh rate, AI process names, dev tools, display options
+
+## Requirements
+
+**OS:**
+- **Windows 10** (build 19041+) or **Windows 11**, *or*
+- **Linux** (x86_64) — tested on Ubuntu 24.04, Fedora 40, and Arch. CPU temperature reads from `/sys/class/hwmon` via sysinfo (works out-of-the-box on most distros), *or*
+- **macOS 12 Monterey or newer** on Apple Silicon (M-series). Intel Macs are not supported.
+
+**Optional:**
+- **NVIDIA GPU + drivers** — for GPU metrics and per-process VRAM via NVML (`libnvidia-ml.so` on Linux, `nvml.dll` on Windows). Gracefully degrades without it.
+- **[LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases)** *(Windows only)* — for CPU temp/power and non-NVIDIA GPU fallback. Download the latest release ZIP, extract, run as administrator, then enable the web server: **Options > Remote Web Server > Run** (default port 8085). Linux gets CPU temps natively from hwmon and does not need LHM.
+- **macOS** — GPU/VRAM and CPU temperature/power panels are not yet implemented and will display N/A. Tracked for a future release.
+- **Linux GUI** — the tray menu attaches ~1.5 s after launch (deferred to dodge a libayatana-appindicator dbusmenu race against the GNOME AppIndicator extension that otherwise renders the menu items blank). The icon and left-click toggle work immediately. Idle CPU on the WebKitGTK process sits in the low single-digit % range while the window is visible and drops near zero when minimised or closed-to-tray.
+
+## Install
+
+### Package managers
+
+**macOS** — [Homebrew tap](https://github.com/AsafSaar/homebrew-dofek):
+
+```bash
+# CLI bundle (TUI + plugins) — installs dofek-tui, dofek-ollama, dofek-docker, dofek-net-ping
+brew install AsafSaar/dofek/dofek
+
+# Desktop GUI app — installs Dofek.app to /Applications
+brew install --cask AsafSaar/dofek/dofek
+```
+
+Apple Silicon only.
+
+**Windows** — `winget` package coming once [PR #368026](https://github.com/microsoft/winget-pkgs/pull/368026) merges. Until then, grab the `.msi` from the [Releases page](https://github.com/AsafSaar/dofek/releases/latest).
+
+**Linux** — no package-manager channel yet. Use the `.deb`, `.rpm`, or `.AppImage` from [Releases](https://github.com/AsafSaar/dofek/releases/latest).
+
+### From source
+
+```bash
+git clone https://github.com/AsafSaar/dofek.git
+cd dofek
+```
+
+#### Command reference
+
+All `cargo <alias>` commands are defined in `.cargo/config.toml`. Run them from the repo root.
+
+**Development (debug, fast compile):**
+
+```bash
+cargo tui                          # Run TUI (debug build, hot-path)
+cargo gui                          # Run GUI with hot-reload (Tauri dev mode)
+```
+
+> **First-time GUI setup:** `cargo gui` requires a release TUI binary to exist as `target/release/dofek-tui-<target-triple>` (Tauri's `externalBin`). Run the helper once to build and stage it:
+> ```bash
+> ./dev-gui.sh                     # builds TUI release, stages the triple-suffixed copy, then runs cargo gui
+> ```
+> After that, `cargo gui` works on its own as long as the staged binary stays in place.
+
+**Release builds (LTO + strip + opt-level 3):**
+
+```bash
+cargo build-tui                    # → target/release/dofek-tui  (or .exe on Windows)
+cargo build-gui                    # → target/release/dofek-gui  + native bundle directory
+```
+
+**Native installers / packages (bundles both TUI and GUI):**
+
+```powershell
+# Windows
+.\build-all.ps1                    # → target\release\bundle\msi\dofek_*.msi
+```
+
+```bash
+# Linux (Ubuntu, Fedora, etc.)
+./build-all.sh                     # → target/release/bundle/{deb,rpm,appimage}/dofek_*
+
+# macOS (Apple Silicon)
+./build-all.sh                     # → target/release/bundle/macos/Dofek.app + Dofek_*.dmg
+```
+
+**Plugins:**
+
+```bash
+cargo build --release -p dofek-ollama   # → target/release/dofek-ollama
+cargo build --release -p dofek-docker   # → target/release/dofek-docker
+cargo build --release -p dofek-net-ping # → target/release/dofek-net-ping
+```
+
+**Maintenance:**
+
+```bash
+cargo clean                        # Delete all build artifacts (target/)
+cargo clippy                       # Lint all crates
+cargo test                         # Run unit tests
+```
+
+The bundle build requires [Tauri CLI](https://v2.tauri.app/start/prerequisites/) (`cargo install tauri-cli --version "^2"`).
+
+### Prerequisites
+
+**Common:**
+- [Rust toolchain](https://rustup.rs/) (stable, edition 2024)
+- For GUI: [Tauri CLI](https://v2.tauri.app/start/prerequisites/) (`cargo install tauri-cli --version "^2"`)
+
+**Windows:**
+- [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with C++ workload
+
+**Linux** (apt example for Ubuntu/Debian — adjust for your distro):
+
+```bash
+sudo apt install \
+  libwebkit2gtk-4.1-dev \
+  libayatana-appindicator3-dev \
+  librsvg2-dev \
+  libssl-dev \
+  libgtk-3-dev
+# To produce .rpm bundles too:
+sudo apt install rpm
+```
+
+Equivalent on Fedora: `sudo dnf install webkit2gtk4.1-devel libappindicator-gtk3-devel librsvg2-devel openssl-devel gtk3-devel rpm-build`.
+
+**macOS (Apple Silicon):**
+
+```bash
+xcode-select --install
+```
+
+That installs the Command Line Tools, which provide `cc`, `git`, and the system frameworks Tauri needs (WebKit comes with the OS — no extra packages). Apple Silicon Macs only; Intel Macs are not supported in v1.
+
+## Usage
+
+```bash
+# Run the TUI:
+dofek-tui
+
+# With a custom config:
+dofek-tui --config path/to/dofek.toml
+```
+
+The TUI is best viewed at font size **9-10pt**. If your terminal is too small, Dofek will show a hint on startup.
+
+**Windows Terminal profile** (Windows only, recommended): Run this once to add a "Dofek" entry to your Windows Terminal dropdown with optimal font settings:
+
+```powershell
+.\install-wt-profile.ps1
+```
+
+This creates a profile with JetBrains Mono at 9pt. After running, select "Dofek" from the Windows Terminal dropdown to launch with the right settings.
+
+On Linux, set your terminal's font to a monospace nerd-font-style face at 9–10pt (JetBrains Mono, Fira Code, and Cascadia Code all render the half-block charts correctly).
+
+On macOS, set Terminal.app or iTerm2 to a monospace nerd-font face at 10–11pt (JetBrains Mono, Fira Code, MesloLGS NF, and Cascadia Code all render the half-block charts correctly).
+
+## Keybindings (TUI)
+
+| Key | Action |
+|-------|--------|
+| `c` | Switch main chart to CPU (candlestick mode) |
+| `g` | Switch main chart to GPU (area chart) |
+| `m` | Switch main chart to Memory (area chart) |
+| `n` | Switch main chart to Network (area chart) |
+| `h` | Toggle horizon chart mode |
+| `p` | Full-screen process view |
+| `tab` | Cycle sort column (Name / PID / CPU% / MEM / VRAM) |
+| `1` | Process filter: ALL |
+| `2` | Process filter: AI only |
+| `3` | Process filter: DEV only |
+| `4` | Process filter: WATCH only |
+| `/` | Search processes by name (live filter) |
+| `↑↓` / `j/k` | Navigate process list |
+| `del` / `x` | Kill selected process (with confirmation) |
+| `X` | Kill all matching processes (search/filter) |
+| `[` / `]` | Resize chart / watchlist split |
+| `P` | Expand / collapse the plugin dock |
+| `+` / `-` | Increase / decrease refresh rate |
+| `s` | Save snapshot to `~/dofek-snapshots/` |
+| `a` | About Dofek |
+| `?` | Toggle help overlay |
+| `esc` | Clear search / return to dashboard |
+| `q` | Quit |
+
+## Configuration
+
+### Config file location
+
+Dofek loads its config from the first file found, in this order:
+
+1. `--config <path>` flag (TUI only)
+2. `./dofek.toml` (current working directory)
+3. User config directory:
+   - **Windows:** `%APPDATA%\dofek\dofek.toml`
+   - **Linux:** `~/.config/dofek/dofek.toml`
+   - **macOS:** `~/Library/Application Support/dofek/dofek.toml`
+
+**Recommended:** Place your config in the user config directory — this works reliably for both the TUI and GUI regardless of working directory. The GUI doesn't support `--config`, so it always checks `./dofek.toml` then the user config directory.
+
+To find the path: `echo %APPDATA%` (Windows; typically `C:\Users\<you>\AppData\Roaming`), `echo "$XDG_CONFIG_HOME${XDG_CONFIG_HOME:+/}${XDG_CONFIG_HOME:-$HOME/.config}"` (Linux), or `echo "$HOME/Library/Application Support"` (macOS).
+
+A `dofek.toml.example` is included in the repository with all available options.
+
+### All options
+
+```toml
+[general]
+refresh_ms = 500          # Poll interval in milliseconds (default: 500)
+history_len = 60          # Number of chart samples to keep (default: 60)
+
+[display]
+show_temps = true         # Show temperature bars (default: true)
+show_power = true         # Show power draw bars (default: true)
+process_count = 50        # Max processes (watchlist auto-fits to panel height)
+
+[ai]
+vram_threshold_gb = 1.0   # VRAM above this flags a process as AI (default: 1.0)
+known_ai_processes = ["ollama", "ollama_llama_server", "python", "lm_studio", "claude"]
+
+[categories]
+dev_processes = ["code", "cargo", "rustc", "node", "npm", "git", "docker", "go"]
+watch_processes = ["ffmpeg", "obs"]   # Process names to pin as WATCH (case-insensitive substring match)
+watch_pids = []                       # Specific PIDs to pin as WATCH
+
+[lhm]
+url = "http://localhost:8085"  # LibreHardwareMonitor web server (optional fallback)
+
+[telemetry]
+enabled = true                        # Opt-in anonymous usage telemetry (default: false)
+# endpoint = "https://dofek.dev/api/v1/events"   # Where to send data
+# flush_interval_secs = 60            # Batch flush interval (default: 60)
+
+# Plugins (optional — each entry spawns a child process)
+[[plugins]]
+name = "ollama"
+command = "dofek-ollama"              # name in the managed plugins dir, or an absolute path
+args = ["--host", "http://localhost:11434"]
+enabled = true                        # default: true
+timeout_ms = 2000                     # per-poll timeout in ms (default: 2000)
+```
+
+All sections are optional — missing sections use sensible defaults. You only need to include settings you want to override.
+
+## Telemetry
+
+Dofek includes opt-in anonymous telemetry to help improve the app during beta. **Disabled by default** — no data is collected unless you explicitly enable it.
+
+### What's collected
+
+- Session duration and interface used (TUI vs GUI)
+- Feature usage: which chart tabs, filters, and modes you use
+- GPU detection path (NVML / LHM / none) and device count
+- Periodic heartbeats (process count, active tab)
+
+### What's NOT collected
+
+- Process names, hostnames, IP addresses, or any identifying information
+- System metrics values (CPU %, memory usage, etc.)
+- Config file contents or custom process lists
+
+### How it works
+
+- A random anonymous UUID is generated on first run and stored in the user config directory (`%APPDATA%\dofek\settings.toml` on Windows, `~/.config/dofek/settings.toml` on Linux, `~/Library/Application Support/dofek/settings.toml` on macOS)
+- Events are batched in memory and flushed via HTTPS every 60 seconds
+- If the endpoint is unreachable, batches are silently dropped (no disk queue, no retries)
+- To disable: remove or set `enabled = false` in the `[telemetry]` section of `dofek.toml`
+
+## Plugins
+
+> ⚠️ **Plugin API: experimental, subject to change until further notice.**
+> The plugin JSON schema is versioned (`schema_version: 1`), but expect breaking changes as the API matures. Pin your plugin to a specific Dofek version if stability matters to you. Once Dofek's plugin contract stabilizes, the API will follow semver.
+
+Plugins are external processes that inject data into the Dofek dashboard. Dofek spawns each plugin as a child process and communicates via newline-delimited JSON over stdio (stdin/stdout).
+
+### Available plugins
+
+| Plugin | Description | Requires |
+|--------|-------------|----------|
+| `dofek-ollama` | Shows loaded models, inference state, annotates Ollama processes | [Ollama](https://ollama.com/) running locally |
+| `dofek-docker` | Lists running containers, annotates Docker processes | Docker Desktop with TCP API enabled |
+| `dofek-net-ping` | TCP-connect latency to a remote host — current/avg/min/max/loss in the dock, latency pill in the ticker | Outbound TCP to the chosen host:port |
+
+### How it works
+
+1. Dofek spawns each plugin on its own supervisor thread at startup
+2. Every refresh cycle, Dofek sends a poll request (with process list) to the plugin's stdin
+3. The plugin responds with panels (dock UI), process annotations (watchlist labels), and metrics (ticker pills)
+4. Responses are bounded on arrival, so a plugin can't flood the UI or the heap
+5. A plugin that misses its `timeout_ms` costs nothing — plugins are polled concurrently, never on the collector thread. Five consecutive misses and it's restarted
+6. If the plugin crashes, Dofek restarts it with exponential backoff (1s → 30s)
+7. On shutdown, Dofek sends a shutdown message, closes stdin, then terminates the plugin's whole process group — including anything it spawned. All plugins tear down concurrently
+
+### Plugin status indicators
+
+In the plugin dock: `●` green = healthy, `●` yellow = unhealthy (3+ consecutive failed polls, or the plugin reported `status: "error"`), `●` red = crashed, `○` gray = starting.
+
+### Building plugins
+
+```bash
+cargo build --release -p dofek-ollama   # Build Ollama plugin
+cargo build --release -p dofek-docker   # Build Docker plugin
+cargo build --release -p dofek-net-ping # Build net-ping plugin
+```
+
+Install them with `dofek-tui plugins add <path>` (which copies them into the managed plugins directory), or put an absolute path in the `command` field. `PATH` is deliberately not searched — see [SECURITY.md](SECURITY.md#plugin-security).
+
+## Process Categories
+
+Processes are classified into three tiers, each with a distinct visual indicator:
+
+| Category | Icon | Color | How assigned |
+|----------|------|-------|-------------|
+| AI | `●` | Purple | Auto-detected via VRAM/name matching, or listed in `ai.known_ai_processes` |
+| DEV | `■` | Blue | Name matches `categories.dev_processes` (case-insensitive substring) |
+| WATCH | `★` | Amber | Name matches `categories.watch_processes` or PID listed in `categories.watch_pids` |
+
+Priority: WATCH > AI > DEV > None. Use `1`-`4` keys to filter the watchlist by category.
+
+**Extending categories:** Add process names to the relevant list in `dofek.toml`. Names are matched as case-insensitive substrings — e.g., `"code"` matches `Code.exe`, `code.exe`, and `Visual Studio Code.exe`.
+
+## AI Workload Detection
+
+A process is classified as an AI workload if:
+
+1. Its name matches `known_ai_processes` (case-insensitive), **or**
+2. Its VRAM usage exceeds `vram_threshold_gb`, **or**
+3. Its name ends with `_server` and it uses any VRAM
+
+| Badge | Condition |
+|-------|-----------|
+| `● inferring` | VRAM > threshold **and** GPU utilization > 20% |
+| `● loading` | VRAM increasing rapidly (>200 MB in last poll) |
+| `○ idle` | Known AI process but low utilization |
+
+## Architecture
+
+```
+    dofek
+    ├── dofek-tui ─── Terminal UI (Ratatui + crossterm)
+    │     ├── sysinfo crate ──── CPU, memory, processes, network, hostname (cross-platform)
+    │     ├── NVML ──────────── GPU metrics + per-process VRAM (NVIDIA, multi-GPU)
+    │     ├── LHM HTTP ─────── CPU temp/power + GPU fallback (Windows only)
+    │     ├── /sys/hwmon ────── CPU temps via sysinfo::Components (Linux only)
+    │     ├── Plugin system ─── JSON-over-stdio child process plugins
+    │     └── Ratatui TUI ───── rendering (trading-terminal layout)
+    │
+    ├── dofek-gui ─── Tauri Desktop App (WebView2)
+    │     ├── Same Rust backend ── reuses data collection + plugins from core
+    │     ├── Tauri IPC ────────── get_snapshot / get_gpu_info / kill_process commands
+    │     └── Vanilla HTML/CSS/JS ── canvas charts, CSS bars, drag-resize
+    │
+    └── plugins/
+          ├── dofek-ollama ──── Ollama model status + inference tracking
+          ├── dofek-docker ──── Docker container monitoring
+          └── dofek-net-ping ── TCP-connect latency sampler
+```
+
+### Threading Model (sync, no tokio)
+
+| Thread | Role | Rate |
+|--------|------|------|
+| Main | Render loop + event handling via `mpsc::channel` | ~60fps (16ms) |
+| Data collector | Refreshes sysinfo, queries NVML/LHM, polls plugins, classifies AI workloads | Configurable (default 500ms) |
+| Event reader | Reads crossterm keyboard/resize events | ~60fps (16ms) |
+| Telemetry flush | Batches and POSTs anonymous usage events (opt-in only) | Every 60s |
+
+### Module Structure
+
+```
+src/
+  main.rs              Entry point: terminal init, thread spawning, main loop
+  lib.rs               Shared library (used by both TUI and GUI)
+  app.rs               App state: DataSnapshot, HistoryBuffers, ChartTab, split_pct
+  config.rs            CLI (clap) + TOML config loading with categories support
+  event.rs             Crossterm event reader thread, AppEvent enum
+
+  telemetry.rs         Opt-in usage telemetry: events, batching, flush thread
+
+  data/
+    mod.rs             DataSnapshot struct, collector thread orchestration
+    sysinfo_source.rs  sysinfo-backed CPU, memory, process extraction
+    gpu.rs             NVML wrapper: multi-GPU device metrics + per-process VRAM
+    lhm.rs             LHM HTTP client (optional GPU fallback, multi-GPU aware)
+    network.rs         Per-interface rx/tx bytes (GetIfTable2 on Windows, sysinfo::Networks on Linux)
+    process.rs         ProcessInfo, AiState, ProcessCategory definitions
+    ai_detect.rs       AI workload + category classification
+
+  plugin/
+    mod.rs             PluginManager: spawn, poll, restart, shutdown
+    protocol.rs        Serde structs for JSON request/response protocol
+    process.rs         Child process wrapper: stdio pipes, timeout, Job Object
+
+  ui/
+    mod.rs             Master layout: ticker + chart/watchlist + bottom strip + status
+    theme.rs           Trading-terminal color palette (sky blue, violet, emerald, etc.)
+    ticker.rs          Top ticker bar: metric pills, AI badge, hostname, clock
+    chart.rs           Main chart panel: tab switching, meta line, threshold legend
+    candlestick.rs     Custom candlestick chart widget (Buffer manipulation, half-blocks)
+    area_chart.rs      Custom area chart widget (filled area, multi-series, thresholds)
+    horizon_chart.rs   Custom horizon chart widget (3-band color-intensity layering)
+    watchlist.rs       Process watchlist: category tabs, sort buttons, plugin dock
+    bottom_strip.rs    Compact 4-panel row: CPU grid, GPU stats, MEM, NET
+    status.rs          Bottom status bar with keybindings
+    sparkline_buf.rs   Ring buffers: SparklineBuf (u64) + CandleBuf (OHLC-style samples)
+    cpu.rs             CPU panel renderer (full-screen mode)
+    gpu.rs             GPU panel renderer (full-screen mode)
+    memory.rs          Memory panel renderer
+    network_disk.rs    Network panel renderer
+    process_table.rs   Full-screen process table (via 'p' key)
+    help.rs            Help overlay popup
+
+gui/
+  src/lib.rs           Tauri backend: AppState, IPC commands, data collector
+  frontend/
+    index.html         Single-file frontend: HTML + CSS + Canvas charts + JS
+  tauri.conf.json      Tauri app configuration
+
+plugins/
+  dofek-ollama/        Ollama plugin: model status, inference tracking
+  dofek-docker/        Docker plugin: container monitoring
+  dofek-net-ping/      Net-ping plugin: TCP-connect latency sampler
+```
+
+### Key Data Flow
+
+```
+sysinfo refresh ──> extract CPU/memory/processes ──> DataSnapshot ──> App.update_data()
+NVML query ─────> multi-GPU device info + per-process VRAM ──────┘        │
+LHM fallback ──> GPU sensors (if NVML unavailable) ─────────────┘        │
+                                                                          v
+                                                              HistoryBuffers (sparklines + candles)
+                                                                          │
+                                                                          v
+                                                                    ui::render()
+```
+
+### Chart Rendering
+
+**TUI**: Charts use **direct `Buffer` manipulation** with Unicode half-block characters (`▀▄█`) for 2x vertical sub-pixel resolution. Metric bars use a custom `ColorBar` widget with explicit background colors for reliable rendering across terminals.
+
+- **Candlestick**: wick lines (`│`), IQR bodies (`█▄▀`), mean ticks (`─`), live dot (`●`)
+- **Area chart**: filled gradient area, line overlay, multi-series support
+- **Horizon chart**: 3-band color-intensity layering, fills to true y-axis position
+- **Threshold lines**: dashed `╌` at configurable warn/crit levels
+
+**GUI**: Canvas-based rendering with Bezier-smoothed area charts, CSS progress bars, and dynamic auto-scaling for sparklines.
+
+### Tech Stack
+
+| Component | Crate | Version |
+|-----------|-------|---------|
+| TUI framework | ratatui | 0.30 |
+| Terminal backend | crossterm | 0.29 |
+| System info | sysinfo | 0.39 |
+| NVIDIA GPU | nvml-wrapper | 0.12 |
+| HTTP client | ureq | 2 |
+| Config | toml + clap | 1.1 / 4 |
+| Serialization | serde + serde_json | 1 |
+| Win32 API (Windows only) | windows | 0.62 |
+| POSIX signals (Unix only) | nix | 0.31 |
+| Local time formatting | chrono | 0.4 |
+| Error handling | anyhow | 1 |
+| Logging | log + env_logger | 0.4 / 0.11 |
+| Home directory | dirs | 6 |
+| Anonymous ID | uuid | 1 |
+| GUI framework | tauri | 2 |
+
+**Rust edition**: 2024 | **Targets**: `x86_64-pc-windows-msvc`, `x86_64-unknown-linux-gnu`, `aarch64-apple-darwin`
+
+Release build: LTO enabled, symbols stripped, opt-level 3.
+
+## Roadmap
+
+- **v0.2** — Trading-terminal layout, candlestick charts, multi-GPU, process categories, Tauri GUI, resizable panes
+- **v0.3** — Plugin system (JSON-over-stdio protocol), `dofek-ollama` and `dofek-docker` plugins
+- **v0.4** — Performance optimizations, GUI polish, MSI installer, cargo aliases, SEO
+- **v0.5** — Telemetry settings persistence, GUI help modal improvements
+- **v0.6** — Process management (search, kill, kill-all), interactive process table, LHM CPU temp/power
+- **v0.7** — Process tree/grouped view, expanded LHM integration, GUI process management
+- **v0.8** — Centered loading state, ollama plugin, GUI icon, Windows Terminal profile icon
+- **v1.0** — Public GA: MSI installer, dofek.dev downloads, hardened plugin protocol, GitHub Actions release pipeline
+- **v1.1** — Linux support: TUI + GUI on x86_64, native `.deb` / `.rpm` / `.AppImage` bundles, dual Windows/Linux CI and release pipeline
+- **v1.2** — macOS (Apple Silicon) support: TUI + unsigned `.app` bundle, `sw_vers`-based OS reporting, macOS-specific network filter, three-platform CI and release pipeline
+- **v1.3** — System-tray companion (live CPU sparkline icon, close-to-tray default, right-click Show/Hide/Settings/Quit on Windows + macOS, icon-only on Linux, macOS menu-bar text); Linux CPU power via RAPL (`/sys/class/powercap/intel-rapl:0`); cross-platform disk I/O metrics with new `DISK` chart tab and ticker pill; backend → frontend snapshot push (Tauri events) replacing per-second IPC polling for lower WebKitGTK CPU on Linux
+- **v1.4** — Notify-only "check for updates" across TUI (`u` key) and GUI (Check now button + topbar update pill), with opt-in startup probe; 3-mode tray display (chart only / chart + text / text only); rebrand of all user-facing display strings from "dofek" to "Dofek" while keeping every identifier (crate names, binaries, paths, URLs, bundle ID) untouched
+- **v1.5** — Managed plugin store: install plugins via the GUI's Settings → Plugins panel (native file picker) or `dofek-tui plugins {list,add,remove,enable,disable}`, with binaries copied into `<config_dir>/dofek/plugins/` and registered in a managed `plugins.toml`; manifest probed automatically; macOS quarantine xattr cleared on install; data collector watches `plugins.toml` mtime and hot-reloads the plugin manager so installs/removes take effect without restart; settings dialog redesigned into a two-pane Shortcuts / Settings layout; new `dofek-plugin-protocol` workspace crate so external plugin authors share canonical serde types; per-plugin READMEs for `dofek-ollama` + `dofek-docker`; build-all scripts now also build the plugin binaries
+- **v1.5.x** (in flight) — Distribution channels: Homebrew tap live at [`AsafSaar/homebrew-dofek`](https://github.com/AsafSaar/homebrew-dofek) (`brew install AsafSaar/dofek/dofek` for CLI, `brew install --cask AsafSaar/dofek/dofek` for GUI); winget submission in review at [winget-pkgs#368026](https://github.com/microsoft/winget-pkgs/pull/368026); 60-second Remotion launch video embedded on dofek.dev; CTA video updated to surface real install commands as channels go live
+- **v1.6** — Security and plugin-runtime hardening: one supervisor thread per plugin so `timeout_ms` is real and a wedged plugin costs the collector nothing, with health escalation, crash backoff, and process-group containment (Unix `setsid` + `killpg`, Windows Job Object) so a plugin's own children can't orphan; every plugin-supplied string and collection bounded at ingest; `resolve_command` no longer consults `PATH` or the current directory, and `./dofek.toml` is out of the config search order; `'unsafe-inline'` dropped from the GUI's `script-src`; `schema_version` + `seq` added to the plugin protocol; Windows VERSIONINFO embedded across the workspace and the code signing policy published, which unblocks the signing applications
+- **v1.7** (current) — Plugin data surfaced properly: every panel and entry rendered in both docks, budgeted rather than capped, with a `+N more` marker and a `P` key to expand, and `plugin_label` finally shown in the watchlist; the three first-party plugins ship as bundled sidecars so installing one is a single click and works offline; install-channel detection drives a channel-appropriate upgrade hint (`brew upgrade` / `winget upgrade`) in both UIs
+- **Next** — Code signing + notarization on macOS and Authenticode on Windows going live (prerequisites landed in v1.6; the binaries are still unsigned until the applications clear), then the in-app updater that depends on them; curated plugin registry (one-click install of official plugins from dofek.dev); AMD GPU VRAM; GPU/VRAM/CPU-temp on macOS; Intel-Mac and Linux-aarch64 builds; AMD CPU power (`amd_energy`); apt repo at apt.dofek.dev for `apt install dofek`
+
+## License
+
+MIT

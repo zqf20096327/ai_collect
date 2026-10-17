@@ -1,0 +1,101 @@
+# 📄 简介
+深度视觉LabelmeAI是一款基于LabelMe开源版进行深度重开发的更加智能的标注工具。这个工具与开源版本相比的不同之处主要在于以下几点， 这些更改让你能够更加轻松的快速构建你的数据集。
+
+## 图片内嵌标注
+
+- PNG、JPEG、经典 TIFF、BMP、WebP 的标注写入图片，图片像素不重新编码；读取时图片内嵌标注优先于外部 JSON，图片引用使用实际文件名。
+- 默认同时保存图片旁的外部 JSON。“另存为”或命令行 `--output` 指定的外部路径用于后续手动保存；读取来源与外部保存位置分别记录。
+- 图片和外部 JSON 使用 `BytesIO` 内存缓冲后写回，保存与清空标注不创建磁盘临时文件；可捕获的写入失败会尝试恢复原内容，不提供断电或强制结束进程时的恢复保证。
+- 右侧“项目设置 → 同时保存外部 JSON”可关闭额外保存，设置会保留；关闭后仍写入内嵌标注，不删除已有外部文件。
+- 3D、2.5D 关联图片逐张保存内嵌标注。单张写入失败不撤回其他图片的更新，最新数据会保存为外部备份，并提示失败文件、保留未保存状态。
+- 清空全部标注时，清理当前图和已知关联图片的内嵌标注、各图同名 JSON 及当前保存位置，文件列表同步取消勾选；清理失败时保留未保存状态并报告原因。
+- GIF、BigTIFF 等不支持内嵌的容器使用外部 JSON。
+- 保存和清空标注失败会记录文件路径及完整异常堆栈，日志文件使用 UTF-8 纯文本，保留 `LabelmeAI.log` 文件名。
+- 文件夹标签和文本标记统计优先读取内嵌数据，同一份标注的图片副本与外部 JSON 不重复计数。旧版工具修改外部 JSON 后，不会覆盖新版已有的内嵌标注。
+
+## 下载链接
+https://dlcv.com.cn/
+
+# ✌️我们做了什么
+## 1、深度视觉LabelmeAI自动保存json文件
+Labelme**无法自动保存json文件**，需手动点击保存，文件大小通常 >100KB；\
+深度视觉LabelmeAI可**自动化保存json文件**，**文件大小在5KB-15KB**；
+
+**开源版labelme保存标注过程如下所示：**
+![img.png](LabelmeImages/img.png)
+![img_1.png](LabelmeImages/img_1.png)
+**生成的json文件对比：** \
+![img_2.png](LabelmeImages/img_2.png)
+
+## 2、深度视觉LabelmeAI 图片可显示标签名称、RGB
+![img_3.png](LabelmeImages/img_3.png)
+## 3、深度视觉LabelmeAI加载、切换>4k大图速度较快
+**深度视觉LabelmeAI切换图像，速度快、不卡顿**
+![img_4.png](LabelmeImages/3_1图像切换.gif)
+**开源版Labelme切换图像，速度较慢、卡顿明显**
+![img_5.png](LabelmeImages/3_2图像切换.gif)
+## 4、深度视觉LabelmeAI增加画笔功能
+深度视觉LabelmeAI**增加画笔功能**，还可**调节滑动标注距离**。开源版labelme无此画笔功能，需要一直点击鼠标左键创建多边形点完成标注。\
+![img_6.png](LabelmeImages/4画笔.gif)
+## 5、深度视觉LabelmeAI更简易修改标签
+深度视觉LabelmeAI,**双击标签，可修改标签名称**。
+![img_7.png](LabelmeImages/5_1修改标签.gif)
+开源版labelme只能选中标签后，在多边形标签栏进行修改。
+![img_8.png](LabelmeImages/5_2修改标签.gif)
+## 6、深度视觉LabelmeAI图片像素级显示
+![img_9.png](LabelmeImages/img_9.png)
+## 7、深度视觉LabelmeAI可右键打开文件夹
+深度视觉LabelmeAI可**右键打开文件夹**，更便捷的打开文件方式。
+![img_10.png](LabelmeImages/img_10.png)
+开源版Labelme只能通过**打开labelme>打开目录>输入文件路径>选择文件夹，才可以打开文件**。\
+![img_11.png](LabelmeImages/img_11.png)
+## 8、深度视觉labelmeAI增加许多创建标注快捷键
+深度视觉labelmeAI新增创建圆形、直线、控制点、AI多边形快捷键,开源版labelme无这些快捷键。
+![img_12.png](LabelmeImages/img_12.png)
+## 9、深度视觉labelmeAI支持将原图转换成灰度图
+深度视觉labelmeAI支持将原图转换成灰度图，灰度图消除了颜色的干扰，使得图像的形状和纹理更明显，同时还降低标注人员的眼睛疲劳感。开源版labelme不支持转换。\
+![img_13.png](LabelmeImages/img_13.png)
+# 更多其他修改
+### 打开目录时会读取上次打开的路径
+![img_17.png](LabelmeImages/17读取上次路径.jpeg)
+### 设置面板中支持不显示标签名称
+labelme 设置中支持不显示标签名称，并设置了快捷键C
+因为标注太小的时候会遮挡。所以可以自主选择不显示标签获得更好的视觉效果
+![img_19.png](LabelmeImages/19_不显示标签名称.jpeg)
+### 增加labelme画笔标注功能
+使用一根画笔的形式，把标注区域绘制出来了！
+![img_20.png](LabelmeImages/20_画笔标注.gif)
+### 增加旋转框标注功能
+我们添加了新的标注类型，旋转框标注， 支持多角度旋转并设置了快捷键。
+![img_20.png](LabelmeImages/21_旋转框标注.gif)
+
+
+
+
+## 开发与界面验收
+
+- `labelme/__main__.py` 负责正常启动，只将 `--ui-test` 分派到通用入口。
+- `labelme/cli/screenshot.py` 只解析外部用例文件、选择离屏或原生窗口并执行用例，不包含具体功能的准备、操作或断言。仅在启动方式变化时修改。
+- `tests/ui/screenshot_cases.py` 保存截图、整组清空、只读保存和刷新等具体场景；`tests/test_offscreen_capture.py` 及 `tests/labelme_tests/dlcv_tests/` 验证其行为。新增或调整功能用例时修改 `tests`，不向程序入口添加测试分支。
+
+先创建输出目录，再从仓库根目录执行离屏验收。图片及其标注由用例复制到临时目录，原材料不会被修改：
+
+```text
+python -m labelme --ui-test tests/ui/screenshot_cases.py -- --screenshot-output <输出目录> --screenshot-refresh <图片路径>
+```
+
+其他场景将 `--screenshot-refresh` 替换为 `--screenshot-refresh-folders`（目录展开和空白行）、`--screenshot-clear-group` 或 `--screenshot-readonly-save`；省略场景参数时导出基础界面。整组清空使用带有两张关联图片和对应 JSON 的材料。
+
+安装后的程序也可通过相同的 `--ui-test` 参数加载源码仓库中的用例。打包产物只包含通用入口，`tests` 不随软件打包；具体用例更新无需重新编译程序。原生窗口验收由隔离桌面采集工具启动，外层加 `--ui-native`，用例参数加 `--screenshot-native`。
+
+```text
+python -m pytest tests/test_ui_test_entry.py tests/test_offscreen_capture.py tests/labelme_tests/dlcv_tests/test_offscreen_capture.py tests/labelme_tests/dlcv_tests/test_file_tree_refresh.py -q
+```
+
+# 🔗 更多详细操作详见
+## https://bbs.dlcv.com.cn/t/topic/160  
+
+
+# 未来将会持续完善功能， 请持续关注， 如果觉得好用的话 请给个star ⭐
+# 🙇‍ Acknowledgement
+This repo is the fork of [labelme](https://github.com/wkentaro/labelme)

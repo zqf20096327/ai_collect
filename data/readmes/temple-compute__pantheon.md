@@ -1,0 +1,117 @@
+# Horus Workflow Repository
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/temple-compute/pantheon)](https://github.com/temple-compute/pantheon/releases)
+[![Stars](https://img.shields.io/github/stars/temple-compute/pantheon?style=social)](https://github.com/temple-compute/pantheon/stargazers)
+[![Horus Runtime](https://img.shields.io/badge/runtime-horus--runtime-4B32C3)](https://github.com/temple-compute/horus-runtime)
+
+> Production-ready scientific workflows for the **Horus Runtime**. Molecular dynamics, virtual screening, docking, LLM training, and more. Each workflow is a multi-stage pipeline that routes every stage to the right cluster type automatically: HPC, cloud, or local.
+
+**Why Pantheon?** Stop writing glue code. Declare your pipeline once and Horus runs it across heterogeneous compute, streams logs live, retries failures, and produces typed artifacts you can trace.
+
+**Star the repo** ⭐ if you build scientific pipelines, it helps more people find these workflows.
+
+Each workflow directory contains:
+- `README.md`: purpose, pipeline, install steps, and configuration guide
+- `workflow.yaml` or `run.py`: a plain Horus workflow definition or Python workflow builder
+- `scripts/`: small stage scripts and helper code when needed
+
+## Getting Started
+
+```bash
+# 1. Install uv (recommended)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Clone this repo
+git clone https://github.com/temple-compute/pantheon
+cd pantheon
+
+# 3. Install horus-runtime from inside any workflow directory
+cd workflows/drug-discovery/w01-boltz2-virtual-screening
+uv sync
+# or, if you prefer pip:
+# pip install horus-runtime horus-environments
+
+# 4. Run the workflow
+uv run horus run workflow.yaml
+```
+
+> **BioExcel workflows** also require a conda-family tool (`micromamba`, `mamba`, or `conda`) on your `PATH`. Their executors build conda environments to provision GROMACS, AMBER, and related simulation tools. More on executors at [docs.templecompute.com](https://docs.templecompute.com/guides/concepts).
+
+## Workflows
+
+### Drug Discovery
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-01 | [Boltz-2 Virtual Screening](workflows/drug-discovery/w01-boltz2-virtual-screening/README.md) | Predict binding structure and affinity for a protein–ligand library using Boltz-2 |
+| W-02 | [AutoDock Vina Docking](workflows/drug-discovery/w02-autodock-vina-docking/README.md) | End-to-end molecular docking with AutoDock Vina: prep → dock → rank |
+| W-32 | [DrugFlow + Boltz-2 Affinity](workflows/drug-discovery/w03-drugflow-boltz-affinity/README.md) | Generate pocket-conditioned molecules with DrugFlow, then score each one for binding affinity (ΔG) with Boltz-2 |
+| W-33 | [Lacuna Cryptic Pocket Discovery](workflows/drug-discovery/w06-lacuna-cryptic-pocket-discovery/README.md) | Find cryptic binding pockets across a conformational ensemble with Lacuna's pooled geometric + learned-surface detector |
+| W-34 | [Lacuna + AutoDock Vina Docking](workflows/drug-discovery/w07-lacuna-vina-docking/README.md) | Lacuna cryptic pocket discovery, then box the top pocket and dock a ligand library with AutoDock Vina |
+| W-35 | [cMD Replicas (AMBER)](workflows/drug-discovery/w04-cmd/README.md) | Conventional MD with AMBER (pmemd/pmemd.cuda): minimize, heat, equilibrate, then run production MD across N parallel replicas |
+| W-36 | [OpenDDE Co-folding Screen](workflows/drug-discovery/w08-opendde-cofolding-screen/README.md) | Co-fold a protein–ligand library with OpenDDE (optional MSA toggle) and rank complexes by interface confidence |
+
+### BioExcel Building Blocks
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-03 | [GROMACS MD Setup](workflows/bioexcel_building_blocks/w01-gromacs-md-setup/README.md) | Full MD setup for lysozyme 1AKI using GROMACS: topology → solvation → equilibration → production MD |
+| W-04 | [Ligand Parameterization](workflows/bioexcel_building_blocks/w02-ligand-parameterization/README.md) | Generate GROMACS force-field parameters for a small-molecule ligand via OpenBabel and ACPype/GAFF |
+| W-05 | [AMBER MD Setup](workflows/bioexcel_building_blocks/w03-amber-md-setup/README.md) | Full MD setup for lysozyme 1AKI using AMBER: LEaP topology → solvation → equilibration → production MD + analysis |
+| W-09 | [GROMACS Protein-Ligand Complex MD Setup](workflows/bioexcel_building_blocks/w04-gromacs-protein-ligand-complex-md-setup/README.md) | Full MD setup for a T4 lysozyme–ligand complex using GROMACS, AMBER99SB-ILDN, and GAFF/ACPype ligand parameters |
+| W-10 | [Mutation Free Energy Calculations](workflows/bioexcel_building_blocks/w05-mutation-free-energy-calculations/README.md) | Non-equilibrium alchemical mutation free-energy (ΔΔG) via GROMACS + pmx, estimated with CGI/BAR/Jarzynski |
+| W-11 | [Protein-Ligand Docking (Cluster90)](workflows/bioexcel_building_blocks/w06-protein-ligand-docking-cluster90/README.md) | AutoDock Vina virtual screening with the docking box inferred from a PDB Cluster90 homolog analysis |
+| W-12 | [Protein-Ligand Docking (PDBe REST API)](workflows/bioexcel_building_blocks/w07-protein-ligand-docking-pdbe-rest-api/README.md) | AutoDock Vina virtual screening with the docking box located via the PDBe REST API's annotated binding sites |
+| W-13 | [Protein-Ligand Docking (fpocket)](workflows/bioexcel_building_blocks/w08-protein-ligand-docking-fpocket/README.md) | AutoDock Vina virtual screening with the docking box computed directly from fpocket cavity detection |
+| W-14 | [AMBER Protein MD Setup](workflows/bioexcel_building_blocks/w09-amber-protein-md-setup/README.md) | Full AMBER (AmberTools/sander/cpptraj) MD setup and analysis for lysozyme 1AKI |
+| W-15 | [AMBER Protein-Ligand Complex MD Setup](workflows/bioexcel_building_blocks/w10-amber-protein-ligand-complex-md-setup/README.md) | AMBER MD setup for a T4 lysozyme–ligand complex with ACPype/GAFF ligand parameterization |
+| W-16 | [AMBER Constant pH MD Setup](workflows/bioexcel_building_blocks/w11-amber-constant-ph-md-setup/README.md) | Constant-pH MD with AmberTools, predicting per-residue pKa values from titratable-residue protonation states |
+| W-17 | [DNA Helical Parameters](workflows/bioexcel_building_blocks/w12-dna-helical-parameters/README.md) | Extracts per-base-pair helical parameters and dynamics from a DNA MD trajectory using Curves+/Canal |
+| W-18 | [ABC MD Setup](workflows/bioexcel_building_blocks/w13-abc-md-setup/README.md) | Ascona B-DNA Consortium standard protocol for DNA MD system preparation with AmberTools |
+| W-19 | [Protein Conformational Ensembles](workflows/bioexcel_building_blocks/w14-protein-conformational-ensembles/README.md) | Generates and compares protein conformational ensembles via CONCOORD, ANM, FlexServ, NOLB, and iMODS |
+| W-20 | [Protein Conformational Transitions](workflows/bioexcel_building_blocks/w15-protein-conformational-transitions/README.md) | Computes a conformational transition pathway between two protein states using GOdMD |
+| W-21 | [Macromolecular Coarse-Grained Flexibility](workflows/bioexcel_building_blocks/w16-macromolecular-coarse-grained-flexibility/README.md) | FlexServ flexibility analysis (BD/DMD/NMA ensembles + PCA) from a single static structure |
+| W-22 | [Classical Molecular Interaction Potentials](workflows/bioexcel_building_blocks/w17-classical-molecular-interaction-potentials/README.md) | CMIP interaction-potential grids and protein-ligand/protein-protein interaction energies |
+| W-23 | [Molecular Structure Checking](workflows/bioexcel_building_blocks/w18-molecular-structure-checking/README.md) | Structure-quality checking and repair pipeline (Modeller + AMBER minimization) ahead of MD |
+| W-24 | [HADDOCK3 Protein-Protein Docking](workflows/bioexcel_building_blocks/w19-haddock3-protein-protein-docking/README.md) | Antibody-antigen information-driven docking with HADDOCK3, scored against a reference complex |
+| W-25 | [AutoEncoders for MD Analysis](workflows/bioexcel_building_blocks/w20-autoencoders-md-analysis/README.md) | Trains an AutoEncoder on MD trajectories for feature extraction and PLUMED collective-variable export |
+| W-26 | [Protein-Membrane MD Analysis](workflows/bioexcel_building_blocks/w21-protein-membrane-md-analysis/README.md) | Membrane MD analysis: leaflet identification, bilayer thickness, order parameters, area per lipid, pore radius |
+| W-30 | [Cavity-Guided Virtual Screening](workflows/bioexcel_building_blocks/w22-cavity-guided-virtual-screening/README.md) | fpocket cavity detection feeding an AutoDock Vina screen of a ligand library, ranked by affinity |
+| W-31 | [Cavity Analysis](workflows/bioexcel_building_blocks/w23-cavity-analysis/README.md) | fpocket cavity detection and ranking across a conformational ensemble |
+
+### Bioinformatics
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-35 | [Influenza Segments Starter](workflows/bioinformatics/w01-flu-segments-starter/README.md) | Influenza segment FASTA → header parsing, QC, longest-ORF translation and an HTML report; fully local, runs in seconds. |
+
+### AI
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-28 | [LLM From Scratch - Pretrain, SFT & Eval](workflows/ai/w01-train-llm/README.md) | Clone a from-scratch Transformer repo, tokenize Pile/instruction data, pretrain, SFT, and evaluate GSM8K accuracy |
+| W-29 | [Tiny LLM From Scratch - TinyStories Pretrain & Sample](workflows/ai/w02-tiny-llm/README.md) | Pretrain a small from-scratch Transformer on TinyStories (not the 900GB Pile) and sample a generated story |
+
+### Omics
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-33 | [Engin Strain-to-Scale](workflows/omics/w01-engin-strain-to-scale/README.md) | Which host, which route, and what to run next for a bioprocess target, via Engin's three independent decision-aid CLIs, merged into one calibrated decision brief |
+
+### Engine Showcases
+
+Small, self-contained workflows that demonstrate horus-runtime engine
+features rather than a science domain.
+
+| ID | Workflow | Description |
+|---|---|---|
+| W-06 | [Fan-out / Map / Gather](workflows/engine-showcases/w01-fanout-map-gather/README.md) | Split a collection into batches, map a stage over them concurrently, gather N results into one folder |
+| W-07 | [Programmatic Dynamic DAG](workflows/engine-showcases/w02-programmatic-dynamic-dag/README.md) | A task generates downstream tasks at runtime from the data it reads, via `add_task`/`expand` |
+| W-08 | [Bounded Loop (Range Map)](workflows/engine-showcases/w03-loop-map/README.md) | Run a fixed number of deterministic iterations with `map: {range: N}` and gather the results |
+| W-27 | [Subworkflow Reuse](workflows/engine-showcases/w04-subworkflow-reuse/README.md) | Inline a child workflow into the parent with `sub:`, reusing one YAML-anchored body across two instances |
+| W-28 | [Execution Path Coverage](workflows/engine-showcases/w05-execution-path-coverage/README.md) | One measurable task per execution mechanism (subprocess, venv, container, in-process) as an acceptance harness for per-task resource measurement |
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to add new workflows or improve existing ones.

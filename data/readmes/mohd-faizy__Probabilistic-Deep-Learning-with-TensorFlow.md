@@ -1,0 +1,576 @@
+<h1>Probabilistic Deep Learning</h1>
+
+
+<div align="center">
+
+<a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow">
+  <img src="_img/head.png" alt="Probabilistic Deep Learning with TensorFlow Banner" width="900" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+</a>
+
+---
+
+
+<p align="center">
+  <strong>Unlock the power of uncertainty quantification, density estimation, and generative modeling with TensorFlow Probability.</strong>
+</p>
+
+<!-- Tech Stack & Platforms -->
+<p align="center">
+  <a href="https://tensorflow.org/"><img src="https://img.shields.io/badge/TensorFlow-2.15%2B-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow"></a>
+  <a href="https://www.tensorflow.org/probability"><img src="https://img.shields.io/badge/TensorFlow%20Probability-0.23%2B-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" alt="TensorFlow Probability"></a>
+  <a href="https://jupyter.org/"><img src="https://img.shields.io/badge/Platform-Jupyter%20Labs-blue?style=for-the-badge&logo=jupyter&logoColor=white" alt="Platform"></a>
+</p>
+
+<!-- Repository Metrics -->
+<p align="center">
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/stargazers"><img src="https://img.shields.io/github/stars/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow?style=for-the-badge&logo=github&logoColor=white&color=ffd700" alt="Stars"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/issues"><img src="https://img.shields.io/github/issues/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow?style=for-the-badge&logo=github&logoColor=white&color=ef4444" alt="GitHub Issues"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/commits/main"><img src="https://img.shields.io/badge/dynamic/xml?color=8b5cf6&amp;label=last%20commit&amp;query=string((%2F%2F*%5Blocal-name()%3D'text'%5D)%5Blast()%5D)&amp;url=https%3A%2F%2Fbadgen.net%2Fgithub%2Flast-commit%2Fmohd-faizy%2FProbabilistic-Deep-Learning-with-TensorFlow&amp;style=for-the-badge&amp;logo=git&amp;logoColor=white" alt="Last Commit"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow"><img src="https://img.shields.io/badge/repo_size-88_MB-6b7280?style=for-the-badge&amp;logo=github&amp;logoColor=white" alt="Repo Size"></a>
+</p>
+
+<!-- Meta & Community -->
+<p align="center">
+  <a href="https://github.com/mohd-faizy"><img src="https://img.shields.io/badge/Author-mohd--faizy-red?style=for-the-badge&logo=github&logoColor=white" alt="Author"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow"><img src="https://img.shields.io/maintenance/yes/2026?style=for-the-badge&color=28a745" alt="Maintained"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=24292e" alt="License"></a>
+  <a href="https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/pulls"><img src="https://img.shields.io/badge/Contributions-Welcome-0059b3?style=for-the-badge&logo=handshake&logoColor=white" alt="Contributions Welcome"></a>
+</p>
+
+</div>
+
+
+
+This repository is a comprehensive collection of **TensorFlow Probability** implementations for probabilistic deep learning. The *primary* goal is **educational**: to bridge the gap between traditional deterministic models and real-world uncertainty quantification. 
+
+
+This repository provides hands-on implementations of probabilistic deep learning using TensorFlow Probability (TFP), enabling you to build models that not only make predictions but also quantify how confident they are about those predictions.
+
+> **Documentation**: [TFP API Docs](https://www.tensorflow.org/probability/api_docs/python/tfp)
+
+
+
+## 🎯 Overview
+![tfp-map](_img/tfp_map.png)
+
+### What Makes This Repository Special?
+
+Traditional machine learning models provide point estimates without quantifying uncertainty. In critical applications like medical diagnosis, autonomous vehicles, or financial modeling, **knowing how confident your model is** can be the difference between success and catastrophic failure.
+
+- Enables models to express confidence levels using probabilistic layers and Bayesian neural networks.
+
+- Supports sampling, log-likelihood evaluation, and manipulation of complex distributions (univariate & multivariate).
+
+- Powers VAEs and normalizing flows for density estimation, representation learning, and synthetic data generation.
+
+This repository demonstrates how **TensorFlow Probability** transforms your standard neural networks into probabilistic powerhouses that:
+
+- **Quantify uncertainty** in predictions
+- **Model complex distributions** beyond simple Gaussian assumptions  
+- **Perform Bayesian inference** at scale
+- **Generate realistic synthetic data** through advanced generative models
+
+
+### Why Probabilistic Deep Learning Matters
+
+<p align="center">
+  <a href="https://youtu.be/BrwKURU-wpk?si=S0xhuUHoiYGaorcE" target="_blank">
+    <img src="https://raw.githubusercontent.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow/refs/heads/main/_img/tfp_dev_summit_ytd.jpg" width="500" height="280" alt="Description">
+  </a>
+</p>
+
+
+
+Real-world data is messy, incomplete, and uncertain. Probabilistic deep learning addresses these challenges by:
+
+- **Handling Data Scarcity**: Bayesian approaches work well with limited data.
+- **Robust Decision Making**: Uncertainty estimates guide better decisions.
+- **Interpretable AI**: Understanding model confidence builds trust
+- **Anomaly Detection**: Identifying outliers and unusual patterns.
+- **Risk Assessment**: Quantifying potential failure modes.
+
+
+#### ⚙️**Technical Strengths**
+- Bayesian neural networks: Adds priors to weights and calibrates predictive uncertainty for out-of-distribution robustness.
+
+- Normalizing flows: Uses invertible transforms for expressive density estimation and efficient sampling.
+
+- Variational inference: Optimizes ELBO with reparameterization for controllable generation and learning.
+
+#### 🚀**Trade-offs & Performance**
+- Higher memory and training time than deterministic models.
+- Gains in interpretability, calibrated risk, and anomaly detection often outweigh the cost
+
+
+---
+
+## 🔧 Prerequisites
+
+### Mathematical Background
+- **Linear Algebra**: Matrix operations, eigenvalues, SVD
+- **Calculus**: Derivatives, gradients, optimization
+- **Statistics**: Probability theory, Bayes' theorem, distributions
+- **Information Theory**: KL divergence, entropy, mutual information
+
+### Programming Skills
+- **Python 3.8+** with object-oriented programming
+- **TensorFlow/Keras** fundamentals
+- **NumPy/SciPy** for numerical computing
+- **Matplotlib/Seaborn** for visualization
+
+### Recommended Reading
+- [Pattern Recognition and Machine Learning](https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book) by Christopher Bishop
+- [The Elements of Statistical Learning](https://web.stanford.edu/~hastie/ElemStatLearn/) by Hastie, Tibshirani, and Friedman
+- [Probabilistic Machine Learning](https://probml.github.io/pml-book/) by Kevin Murphy
+
+---
+
+
+## 🚀 Quick Start
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mohd-faizy/Probabilistic-Deep-Learning-with-TensorFlow.git
+   cd Probabilistic-Deep-Learning-with-TensorFlow
+    ```
+
+2. **Create virtual environment (using [uv](https://github.com/astral-sh/uv) – ⚡ faster alternative):**
+
+   ```bash
+   # Install uv if not already installed
+   pip install uv
+
+   # Create and activate virtual environment
+   uv venv
+
+   # Activate the env
+   source .venv/bin/activate   # Linux/macOS
+   .venv\Scripts\activate      # Windows
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   uv add -r requirements.txt
+   ```
+
+4. **Verify installation:**
+
+   ```python
+   import tensorflow as tf
+   import tensorflow_probability as tfp
+
+   print(f"TensorFlow: {tf.__version__}")
+   print(f"TensorFlow Probability: {tfp.__version__}")
+   ```
+
+---
+
+### ⚡ Quick Example
+
+```python
+import tensorflow as tf
+import tensorflow_probability as tfp
+
+tfd = tfp.distributions
+
+# Create a probabilistic model
+def create_bayesian_model():
+    model = tf.keras.Sequential([
+        tfp.layers.DenseVariational(
+            units=64,
+            make_prior_fn=lambda: tfd.Normal(0., 1.),
+            make_posterior_fn=tfp.layers.default_mean_field_normal_fn(),
+            kl_weight=1/50000
+        ),
+        tf.keras.layers.Dense(10, activation='softmax')
+    ])
+    return model
+
+# Train with uncertainty quantification
+model = create_bayesian_model()
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+```
+
+
+---
+
+## 🎲 Core Probability Distributions
+
+Understanding core probability distributions is fundamental for designing probabilistic models. In TensorFlow Probability, distributions are treated as first-class computational objects. They are grouped here by their mathematical type: **Discrete**, **Continuous**, and **Multivariate**.
+
+### 📋 Distributions Quick Reference
+
+| Distribution | Type | Support | Parameters | TFP Class |
+| :--- | :--- | :--- | :--- | :--- |
+| **Bernoulli** | 🟢 Discrete | $\{0, 1\}$ | $p \in [0, 1]$ or $\text{logits} \in \mathbb{R}$ | [`tfd.Bernoulli`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Bernoulli) |
+| **Binomial** | 🟢 Discrete | $\{0, 1, \dots, n\}$ | $n \in \mathbb{N}^+$, $p \in [0, 1]$ | [`tfd.Binomial`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Binomial) |
+| **Poisson** | 🟢 Discrete | $\{0, 1, 2, \dots\}$ | $\lambda > 0$ (rate) | [`tfd.Poisson`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Poisson) |
+| **Gaussian (Normal)** | 🔵 Continuous | $\mathbb{R}$ | $\mu \in \mathbb{R}$, $\sigma > 0$ | [`tfd.Normal`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Normal) |
+| **Exponential** | 🔵 Continuous | $[0, \infty)$ | $\lambda > 0$ (rate) | [`tfd.Exponential`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Exponential) |
+| **Beta** | 🔵 Continuous | $(0, 1)$ | $\alpha, \beta > 0$ (concentration) | [`tfd.Beta`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/Beta) |
+| **Multivariate Gaussian** | 🌐 Multivariate | $\mathbb{R}^k$ | $\boldsymbol{\mu} \in \mathbb{R}^k$, covariance $\boldsymbol{\Sigma} \in \mathbb{R}^{k \times k}$ | [`tfd.MultivariateNormalTriL`](https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/MultivariateNormalTriL) |
+
+---
+
+### 📊 Discrete Distributions
+
+Discrete distributions model count data, binary trials, or categorical events where outcomes are distinct, countable values.
+
+#### 🟢 Bernoulli Distribution (`tfd.Bernoulli`)
+
+<img src="_img/bernoulli.png" width="280" align="right" alt="Bernoulli Distribution">
+
+**Mathematical Formulation:**
+$$P(X = x) = p^x (1-p)^{1-x}, \quad x \in \{0, 1\}$$
+
+*   **Support:** $x \in \{0, 1\}$
+*   **Parameters:** Probability of success $p \in [0, 1]$ (or log-odds $\text{logits} \in \mathbb{R}$)
+*   **Typical DL Use Cases:** Binary classification outputs, Variational Autoencoder (VAE) decoder output for binary data (e.g. MNIST pixels), and stochastic dropout masks.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Define via probability of success
+bernoulli = tfd.Bernoulli(probs=0.7)
+
+# Define via logits (log-odds, preferred for neural networks)
+bernoulli_logits = tfd.Bernoulli(logits=0.85)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+#### 🟢 Binomial Distribution (`tfd.Binomial`)
+
+<img src="_img/binomial.png" width="280" align="right" alt="Binomial Distribution">
+
+**Mathematical Formulation:**
+$$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}, \quad k \in \{0, 1, \dots, n\}$$
+
+*   **Support:** $k \in \{0, 1, \dots, n\}$
+*   **Parameters:** Number of trials $n \in \mathbb{N}^+$, success probability $p \in [0, 1]$
+*   **Typical DL Use Cases:** A/B testing models, click-through-rate (CTR) modeling, quality control and defect counts.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# 15 independent trials with success probability 0.4
+binomial = tfd.Binomial(total_count=15., probs=0.4)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+#### 🟢 Poisson Distribution (`tfd.Poisson`)
+
+<img src="_img/poisson.png" width="280" align="right" alt="Poisson Distribution">
+
+**Mathematical Formulation:**
+$$P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}, \quad k \in \{0, 1, 2, \dots\}$$
+
+*   **Support:** $k \in \{0, 1, 2, \dots\}$
+*   **Parameters:** Average event rate $\lambda > 0$
+*   **Typical DL Use Cases:** Count regression models (Poisson regression), web traffic/API request volume forecasting, and anomaly detection in system logs.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Average rate of 5.0 events per interval
+poisson = tfd.Poisson(rate=5.0)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+### 📈 Continuous Distributions
+
+Continuous distributions model real-valued parameters, waiting times, or data points that can take any value within a range.
+
+#### 🔵 Gaussian (Normal) Distribution (`tfd.Normal`)
+
+<img src="_img/gaussian.png" width="280" align="right" alt="Gaussian Distribution">
+
+**Mathematical Formulation:**
+$$f(x) = \frac{1}{\sigma\sqrt{2\pi}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right), \quad x \in \mathbb{R}$$
+
+*   **Support:** $x \in \mathbb{R}$
+*   **Parameters:** Mean $\mu \in \mathbb{R}$, standard deviation $\sigma > 0$
+*   **Typical DL Use Cases:** Weight priors/posteriors in Bayesian Neural Networks (BNNs), VAE continuous latent spaces (reparameterization trick), and continuous regression with uncertainty output.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Standard Normal (mean 0, std dev 1)
+normal = tfd.Normal(loc=0.0, scale=1.0)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+#### 🔵 Exponential Distribution (`tfd.Exponential`)
+
+<img src="_img/exponential.png" width="280" align="right" alt="Exponential Distribution">
+
+**Mathematical Formulation:**
+$$f(x) = \lambda e^{-\lambda x}, \quad x \geq 0$$
+
+*   **Support:** $x \in [0, \infty)$
+*   **Parameters:** Decay/arrival rate $\lambda > 0$
+*   **Typical DL Use Cases:** Survival analysis and time-to-event estimation, wait-time and queueing theory in networks, positive-valued prior assumptions.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Exponential decay rate of 1.0
+exponential = tfd.Exponential(rate=1.0)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+#### 🔵 Beta Distribution (`tfd.Beta`)
+
+<img src="_img/beta.png" width="280" align="right" alt="Beta Distribution">
+
+**Mathematical Formulation:**
+$$f(x) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{\mathrm{B}(\alpha, \beta)}, \quad x \in (0, 1)$$
+
+*   **Support:** $x \in (0, 1)$
+*   **Parameters:** Shape/concentration parameters $\alpha, \beta > 0$
+*   **Typical DL Use Cases:** Prior distribution for Binomial/Bernoulli probabilities, modeling bounded target proportions, and Bayesian inference of rates / success probabilities.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Beta prior distribution
+beta = tfd.Beta(concentration1=2.0, concentration0=5.0)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+### 🌐 Multivariate Distributions
+
+Multivariate distributions model higher-dimensional vectors of random variables, accounting for the correlations between different dimensions.
+
+#### 🌐 Multivariate Gaussian Distribution (`tfd.MultivariateNormalTriL`)
+
+<img src="_img/multivariate_gaussian.png" width="280" align="right" alt="Multivariate Gaussian Distribution">
+
+**Mathematical Formulation:**
+$$f(\mathbf{x}) = \frac{e^{-\frac{1}{2}(\mathbf{x}-\boldsymbol{\mu})^T\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu})}}{\sqrt{(2\pi)^k\vert\boldsymbol{\Sigma}\vert}}, \quad \mathbf{x} \in \mathbb{R}^k$$
+
+*   **Support:** $\mathbf{x} \in \mathbb{R}^k$
+*   **Parameters:** Mean vector $\boldsymbol{\mu} \in \mathbb{R}^k$, covariance matrix $\boldsymbol{\Sigma} \in \mathbb{R}^{k \times k}$ (positive-definite)
+*   **Typical DL Use Cases:** Modeling correlated multidimensional features, generative modeling (Normalizing Flows and VAE priors), and Kalman filter state estimators.
+
+**TFP Implementation:**
+```python
+import tensorflow_probability as tfp
+tfd = tfp.distributions
+
+# Correlated bivariate normal via lower triangular Cholesky factor
+mv_normal = tfd.MultivariateNormalTriL(
+    loc=[0.0, 0.0],
+    scale_tril=[[1.0, 0.0], 
+                [0.6, 0.8]]
+)
+```
+
+<br clear="right"/>
+<br/>
+
+---
+
+### 💡 Core Distribution Methods in TFP
+
+Every distribution object in TensorFlow Probability exposes a consistent API for seamless integration with TensorFlow graph execution:
+
+*   **`sample(sample_shape)`**: Draws Monte Carlo samples from the distribution.
+*   **`log_prob(value)`**: Computes the log probability density (or mass) function. Crucial for calculating custom loss functions (e.g. Negative Log-Likelihood).
+*   **`prob(value)`**: Computes the exact probability density/mass $P(X=x)$.
+*   **`mean()` / `variance()` / `stddev()`**: Analytical moments of the distribution.
+*   **`kl_divergence(other_dist)`**: Analytical Kullback-Leibler divergence between two distributions of the same type.
+
+---
+
+## 🧪 Hands-On Examples
+
+### Comprehensive Notebook Collection
+
+| # | Topic | Difficulty | Key Concepts | Notebook |
+|---|-------|------------|--------------|----------|
+| 00 | Univariate Distributions | 🟢 Beginner | Normal, Exponential, Beta distributions | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/00_Univariate_Distributions.ipynb) |
+| 01 | Multivariate Distributions | 🟡 Intermediate | MultivariateNormal, covariance structure | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/01_MultiVariate_Distributions.ipynb) |
+| 02 | Independent Distributions | 🟡 Intermediate | tfd.Independent, batch dimensions | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/02_Independent_Distributions.ipynb) |
+| 03 | Sampling & Log Probabilities | 🟡 Intermediate | `sample()`, `log_prob()`, Monte Carlo | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/03_Sampling%20and%20Log%20Probabilities.ipynb) |
+| 04 | Trainable Distributions | 🟡 Intermediate | tf.Variable parameters, gradient flow | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/04_Trainable_Distributions.ipynb) |
+| 05 | TFP Distributions Summary | 🟢 Reference | Distribution catalog, API reference | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/05_tfp_Distributions_Summary_.ipynb) |
+| 06 | Independent Naive Classifier | 🟡 Intermediate | Feature independence, text classification | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/06_Independent_dist_Naive_Clasif.ipynb) |
+| 07 | Naive Bayes with TFP | 🟡 Intermediate | Bayes' theorem, posterior computation | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/07_Naive_Bayes_Classif_with_TFP.ipynb) |
+| 08 | Multivariate Gaussian Full Covariance | 🔴 Advanced | Full covariance, correlation modeling | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/08_Multivariate_Gaussian_with_full_covariance.ipynb) |
+| 09 | Broadcasting Rules | 🟡 Intermediate | Shape manipulation, batch processing | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/09_Broadcasting_rules.ipynb) |
+| 10 | Naive Bayes & Logistic Regression | 🟡 Intermediate | Generative vs discriminative models | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_The%20TensorFlow_Probability_library/10_Naive_Bayes_%26_logistic_regression.ipynb) |
+| 11 | Probabilistic Layers & Bayesian NNs | 🔴 Advanced | DenseVariational, weight uncertainty, captured epistemic/aleatoric risk | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](02_Probabilistic_layers_and_Bayesian_Neural_Networks/Probabilistic_layers_and_Bayesian_Neural_Networks.ipynb) |
+| 12 | Bijectors & Normalizing Flows | 🔴 Advanced | tfp.bijectors, invertible transforms, RealNVP, coupling layers | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](03_Bijectors_and_Normalising_Flows/Bijectors_and_Normalising_Flows.ipynb) |
+| 13 | Variational Autoencoders | 🔴 Advanced | ELBO, reparameterization trick, celebrity face generation | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](04_Variational_Autoencoders/Variational_Autoencoders.ipynb) |
+| 14 | Introduction to MCMC | 🔴 Advanced | Sampling problems, Metropolis-Hastings from scratch | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](05_MCMC_and_Hamiltonian_Monte_Carlo/00_Introduction_to_MCMC.ipynb) |
+| 15 | Hamiltonian Monte Carlo | 🔴 Advanced | Hamiltonian dynamics, leapfrog integration, HMC in TFP | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](05_MCMC_and_Hamiltonian_Monte_Carlo/01_Hamiltonian_Monte_Carlo.ipynb) |
+| 16 | Bayesian Model Comparison | 🔴 Advanced | Marginal likelihood, Bayes factors estimation via MCMC | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](05_MCMC_and_Hamiltonian_Monte_Carlo/02_Bayesian_Model_Comparison.ipynb) |
+| 17 | Hierarchical Bayesian Models | 🔴 Advanced | Joint distributions, pooling strategies, TFP joint distribution APIs | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](05_MCMC_and_Hamiltonian_Monte_Carlo/03_Hierarchical_Bayesian_Models.ipynb) |
+| 18 | Gaussian Mixture Models | 🟡 Intermediate | MixtureSameFamily, 1D/2D mixtures, sampling & density evaluation | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](06_Mixture_Models_and_EM_Algorithm/00_Gaussian_Mixture_Models.ipynb) |
+| 19 | Expectation Maximization (EM) | 🔴 Advanced | Latent variables, ELBO derivation, GMM EM from scratch | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](06_Mixture_Models_and_EM_Algorithm/01_Expectation_Maximization_Deep_Dive.ipynb) |
+| 20 | Bayesian Mixture Models | 🔴 Advanced | Dirichlet-Multinomial mixtures, fully Bayesian GMMs with MCMC | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](06_Mixture_Models_and_EM_Algorithm/02_Bayesian_Mixture_Models_with_MCMC.ipynb) |
+| 21 | Introduction to Gaussian Processes | 🔴 Advanced | Distributions over functions, RBF/periodic kernels, GP prior sampling | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](07_Gaussian_Processes/00_Introduction_to_Gaussian_Processes.ipynb) |
+| 22 | GP Classification & Kernels | 🔴 Advanced | Bernoulli likelihood, kernel engineering/arithmetic, latent GP classification | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](07_Gaussian_Processes/01_GP_Classification_and_Kernels.ipynb) |
+| 23 | Sparse & Scalable GPs | 🔴 Expert | Inducing variables, Variational Sparse GP (VSGP) optimization | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](07_Gaussian_Processes/02_Sparse_and_Scalable_GPs.ipynb) |
+| 24 | Structural Time Series Models | 🟡 Intermediate | State-space models, local linear trend, seasonality components, tfp.sts | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](08_Probabilistic_Time_Series/00_Structural_Time_Series_Models.ipynb) |
+| 25 | Bayesian Time Series Forecasting | 🔴 Advanced | Multiple seasonalities, regression, spike-and-slab variable selection | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](08_Probabilistic_Time_Series/01_Bayesian_Time_Series_Forecasting.ipynb) |
+| 26 | Deep Probabilistic Time Series | 🔴 Advanced | Probabilistic LSTMs, Negative Log-Likelihood (NLL) loss, seq-to-seq uncertainty | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](08_Probabilistic_Time_Series/02_Deep_Probabilistic_Time_Series.ipynb) |
+| 27 | Capstone: Bayesian Medical Diagnosis | 🔴 Expert | Clinical decision support, BNN for diagnosis, KL weight regularization | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](09_Capstone_Bayesian_Medical_Diagnosis/00_Bayesian_Medical_Diagnosis.ipynb) |
+| 28 | Capstone: Probabilistic Forecasting | 🔴 Expert | Synthetic market data, BSTS, Value at Risk (VaR), risk quantification | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](10_Capstone_Probabilistic_Forecasting/00_Probabilistic_Financial_Forecasting.ipynb) |
+| 29 | Capstone: Probabilistic Generative Models | 🔴 Expert | Normalizing flow dataset creation, VAE, latent space interpolation | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](11_Capstone_Probabilistic_generative_models/Probabilistic_generative_models.ipynb) |
+
+---
+
+
+## 📊 Performance Benchmarks
+
+### Training Time Comparison
+
+| Model Type | Dataset | Standard NN | Bayesian NN | VAE | Normalizing Flow |
+|------------|---------|-------------|-------------|-----|------------------|
+| MNIST Classification | 60k samples | 2 min | 8 min | 12 min | 15 min |
+| CIFAR-10 Classification | 50k samples | 15 min | 45 min | 60 min | 90 min |
+| CelebA Generation | 200k samples | N/A | N/A | 120 min | 180 min |
+
+>*Benchmarks on NVIDIA RTX 3090 GPU*
+
+### Memory Usage
+
+Probabilistic models typically require **2-4x more memory** than standard models due to:
+- Parameter uncertainty representation
+- Additional forward/backward passes
+- Sampling operations during training
+
+---
+
+## 🎯 TensorFlow Probability vs TensorFlow Core
+
+| **Aspect** | **TensorFlow Probability (TFP)** | **TensorFlow Core (TF)** |
+|------------|-----------------------------------|--------------------------|
+| **Primary Focus** | Probabilistic modeling, uncertainty quantification | Deterministic neural networks, optimization |
+| **Model Output** | Distributions with uncertainty bounds | Point estimates |
+| **Key Strengths** | Bayesian inference, generative modeling | Fast training, established workflows |
+| **Learning Curve** | Steeper (requires probability theory) | Gentler (standard ML concepts) |
+| **Memory Usage** | Higher (parameter distributions) | Lower (point parameters) |
+| **Training Time** | Slower (sampling, variational inference) | Faster (direct optimization) |
+| **Interpretability** | Higher (uncertainty quantification) | Lower (black box predictions) |
+| **Best Use Cases** | Critical decisions, small data, research | Large datasets, production systems |
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! Here's how you can help:
+
+### Contribution Process
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+---
+
+## 📚 Additional Resources
+
+### Reference Materials
+- [Probability Cheatsheet A](CheatSheet/01_Probability_Cheatsheet_a.pdf)
+- [Probability Cheatsheet B](CheatSheet/02_Probability_Cheatsheet_b.pdf)
+- [TensorFlow Probability Official Guide](https://www.tensorflow.org/probability)
+
+### Research Papers
+
+#### Foundational Papers
+- [Auto-Encoding Variational Bayes](https://arxiv.org/abs/1312.6114) - Kingma & Welling (2013)
+- [Stochastic Backpropagation and Approximate Inference in Deep Generative Models](https://arxiv.org/abs/1401.4082) - Rezende et al. (2014)
+- [Weight Uncertainty in Neural Networks](https://arxiv.org/abs/1505.05424) - Blundell et al. (2015)
+- [Variational Inference: A Review for Statisticians](https://arxiv.org/abs/1601.00670) - Blei et al. (2017)
+- [Probabilistic Machine Learning and Artificial Intelligence](https://www.nature.com/articles/nature14541) - Ghahramani (2015)
+
+#### Normalizing Flows & Bijectors
+- [Normalizing Flows for Probabilistic Modeling and Inference](https://arxiv.org/abs/1912.02762) - Papamakarios et al. (2019)
+- [Density estimation using Real NVP](https://arxiv.org/abs/1605.08803) - Dinh et al. (2016)
+- [Glow: Generative Flow with Invertible 1x1 Convolutions](https://arxiv.org/abs/1807.03039) - Kingma & Dhariwal (2018)
+
+#### Bayesian Neural Networks
+- [Practical Variational Inference for Neural Networks](https://papers.nips.cc/paper/4329-practical-variational-inference-for-neural-networks) - Graves (2011)
+- [What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?](https://arxiv.org/abs/1703.04977) - Kendall & Gal (2017)
+- [Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles](https://arxiv.org/abs/1612.01474) - Lakshminarayanan et al. (2017)
+
+#### Variational Inference & MCMC
+- [Black Box Variational Inference](https://arxiv.org/abs/1401.0118) - Ranganath et al. (2014)
+- [Automatic Differentiation Variational Inference](https://arxiv.org/abs/1603.00788) - Kucukelbir et al. (2017)
+- [The No-U-Turn Sampler: Adaptively Setting Path Lengths in Hamiltonian Monte Carlo](https://arxiv.org/abs/1111.4246) - Hoffman & Gelman (2014)
+
+#### Gaussian Processes
+- [Gaussian Processes for Machine Learning](http://www.gaussianprocess.org/gpml/) - Rasmussen & Williams (2006)
+- [Variational Learning of Inducing Variables in Sparse Gaussian Processes](http://proceedings.mlr.press/v5/titsias09a.html) - Titsias (2009)
+
+#### Probabilistic Time Series Forecasting
+- [Predicting the Present with Bayesian Structural Time Series](https://people.ischool.berkeley.edu/~hal/Papers/2013/pred-present-with-bsts.pdf) - Scott & Varian (2014)
+- [Deep State Space Models for Time Series Forecasting](https://papers.nips.cc/paper/7818-deep-state-space-models-for-time-series-forecasting) - Rangapuram et al. (2018)
+
+#### TensorFlow Probability Specific
+- [TensorFlow Distributions](https://arxiv.org/abs/1711.10604) - Dillon et al. (2017)
+- [Probabilistic Programming and Bayesian Methods for Hackers](https://github.com/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers) - Davidson-Pilon (2015)
+
+#### Applications & Case Studies
+- [Leveraging Heteroscedastic Aleatoric Uncertainties for Robust Real-Time LiDAR 3D Object Detection](https://arxiv.org/abs/2002.05796) - Chang et al. (2020)
+- [Predictive Uncertainty Estimation via Prior Networks](https://arxiv.org/abs/1909.00218) - Malinin & Gales (2018)
+
+
+---
+
+## ⚖️ License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+---
+
+## 🔗 Connect with me
+
+<div align="center">
+
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/F4izy)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mohd-faizy/)
+[![Stack Exchange](https://img.shields.io/badge/Stack_Exchange-1E5397?style=for-the-badge&logo=stack-exchange&logoColor=white)](https://ai.stackexchange.com/users/36737/faizy)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mohd-faizy)
+
+</div>

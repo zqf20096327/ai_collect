@@ -1,0 +1,392 @@
+# dotnet-diagnostics-mcp
+
+[![CI](https://github.com/pedrosakuma/dotnet-diagnostics/actions/workflows/ci.yml/badge.svg)](https://github.com/pedrosakuma/dotnet-diagnostics/actions/workflows/ci.yml)
+
+An **MCP server** for LLM-driven performance diagnostics on **.NET applications** — primarily
+targeting **.NET 10**, with **.NET 8/9 target processes** also officially supported and validated
+in CI (see [`docs/runtime-version-compat-matrix.md`](./docs/runtime-version-compat-matrix.md)).
+Normal EventPipe and ClrMD diagnostics require no target code changes or prior instrumentation.
+The explicit exception is `collect_sample(kind="method-params")`, an opt-in, privileged,
+security-gated dynamic profiler attach that temporarily instruments an allowlist of methods
+(requires the target to be .NET 8+).
+
+> **Status:** 17 unified tools in the full surface (13 default plus 4 configuration-gated),
+> HTTP + stdio transports, IoT-style triage (6+ steps → 2 steps).
+> See [`docs/`](./docs) for full reference.
+
+### Three ways to use it
+
+This repo ships **three NuGet packages** built on the same Core diagnostics engine — pick by who
+(or what) is driving:
+
+| Package | Driver | Surface | Docs |
+|---|---|---|---|
+| **`dotnet-diagnostics-mcp`** | An **LLM**, via an MCP client | MCP tools over HTTP (bearer) or stdio | this README + [`docs/`](./docs) |
+| **`dotnet-diagnostics-cli`** | A **human** / script / CI | Sub-commands + a stateful `session` REPL (no HTTP, no bearer, no daemon) | [`docs/cli-reference.md`](./docs/cli-reference.md) |
+| **`dotnet-diagnostics-benchmarkdotnet`** | **BenchmarkDotNet**, via `[DotnetDiagnosticsDiagnoser]` | In-process `IDiagnoser` that attaches Core captures to a `[Benchmark]` and emits a "biggest offenders" report | [`src/DotnetDiagnostics.BenchmarkDotNet/README.md`](./src/DotnetDiagnostics.BenchmarkDotNet/README.md) |
+
+Most of this README is about the **MCP server**. If you want to run diagnostics yourself, jump to the
+[Standalone CLI](#standalone-cli) section or the [CLI reference](./docs/cli-reference.md). If you
+want to attribute *why* a benchmark is slow or allocates, jump to the
+[BenchmarkDotNet diagnoser README](./src/DotnetDiagnostics.BenchmarkDotNet/README.md). For a live
+counter dashboard inside VS Code, see the [VS Code extension](./vscode-extension/README.md).
+
+## MCP Server Start Here
+
+Choose the onboarding track **before** reading the rest of the docs:
+
+| Track | Choose this when | First steps | Continue with |
+|---|---|---|---|
+| **Local dev (`--stdio`)** | Your MCP client runs on the same machine and can spawn the server itself | No daemon, no bearer token, no ports | [`docs/client-setup.md` → Option A](./docs/client-setup.md#option-a-stdio-local-dev) |
+| **Sidecar / shared deploy (HTTP + bearer)** | You want one long-running MCP server for Docker, Kubernetes, or multiple clients | Configure credentials up front (`MCP_BEARER_TOKEN`, `Auth__BearerTokens__*`, or OIDC), then start the HTTP server | [`docs/client-setup.md` → Option B](./docs/client-setup.md#option-b-streamable-http-daemon-sidecar--shared-deploy), [`docs/local-docker-sidecar.md`](./docs/local-docker-sidecar.md), [`deploy/k8s/README.md`](./deploy/k8s/README.md), [`docs/consumer-install.md` → Linux sidecar checklist](./docs/consumer-install.md#14-linux-sidecar-checklist) |
+
+If an HTTP tool call later fails with `PermissionDenied` or `ServerNotAvailableException: Permission denied`, run
+`inspect_process(view="preflight")` first; the troubleshooting guides below link back to the same remediation-first check.
+
+---
+
+## Table of Contents
+
+- [MCP Server Start Here](#mcp-server-start-here)
+- [Quick Start](#quick-start)
+- [Install](#install)
+- [Standalone CLI](#standalone-cli)
+- [VS Code Extension](#vs-code-extension)
+- [BenchmarkDotNet Diagnoser](#benchmarkdotnet-diagnoser)
+- [Tools Overview](#tools-overview)
+- [Documentation](#documentation)
+- [Goals](#goals)
+- [Build & Test](#build--test)
+
+---
+
+## Quick Start
+
+**One call to understand your app's health:**
+
+```bash
+# MCP call
+inspect_process(view="triage")
+```
+
+**Response excerpt (rationales shortened):**
+```jsonc
+{
+  "modelVersion": 2,
+  "assessment": "critical",
+  "severity": "Critical",
+  "observedSignals": [
+    {
+      "name": "threadpool.queue",
+      "level": "critical",
+      "summary": "The ThreadPool queue contained 1191 work items.",
+      "evidence": [
+        {"name": "threadpool-queue-length", "value": 1191, "comparison": ">=", "threshold": 200, "unit": "items", "rationale": "Queue crossed the critical threshold."}
+      ]
+    }
+  ],
+  "hypotheses": [
+    {
+      "name": "threadpool.backlog",
+      "confidence": "moderate",
+      "summary": "Work was queued faster than the ThreadPool completed it; counters do not prove starvation.",
+      "supportingEvidence": [{"name": "threadpool-queue-length", "value": 1191, "comparison": ">=", "threshold": 50, "rationale": "Large queue supports a backlog hypothesis."}],
+      "contradictingEvidence": [],
+      "nextStep": "Collect ThreadPool events and blocking stacks to distinguish sustained starvation, blocking, and transient demand."
+    }
+  ],
+  "topIndicators": [
+    {"name": "threadpool-queue-length", "value": 1191, "score": 100, "level": "critical"}
+  ],
+  // deprecated — kept for compatibility, scheduled for removal in v1.0; prefer topIndicators
+  "verdict": "threadpool-starvation",
+  "secondaryVerdicts": null
+}
+```
+
+`observedSignals` report threshold crossings; `hypotheses` explain bounded interpretations and
+the evidence needed to confirm them. A low-CPU snapshot with a small queue is `inconclusive`, not
+categorically `io-bound`. `verdict` / `secondaryVerdicts` remain for compatibility and are
+deprecated for removal in v1.0. **TopIndicators** remain available on every result.
+
+---
+
+## Install
+
+Three distributions — pick by environment. Full walkthrough: [`docs/consumer-install.md`](./docs/consumer-install.md)
+
+```bash
+# .NET global tool (requires .NET 10 SDK)
+dotnet tool install -g dotnet-diagnostics-mcp
+export MCP_BEARER_TOKEN="$(openssl rand -hex 32)"
+dotnet-diagnostics-mcp --urls http://127.0.0.1:8787
+# Loopback-only alternative: omit MCP_BEARER_TOKEN and copy the generated ephemeral token from the startup warning.
+
+# Container — host-loopback only, local dev (container binds 0.0.0.0:8080 internally)
+# MCP_ALLOW_INSECURE_HTTP=true is required for cleartext on the container-internal non-loopback bind;
+# -p 127.0.0.1:8787:8080 restricts host access to loopback. Use TLS for production.
+docker run -d -p 127.0.0.1:8787:8080 \
+  -e MCP_BEARER_TOKEN=$(openssl rand -hex 32) \
+  -e MCP_ALLOW_INSECURE_HTTP=true \
+  ghcr.io/pedrosakuma/dotnet-diagnostics:latest
+
+# Self-contained binary — see Releases page
+```
+
+The generated ephemeral-token fallback applies only to **loopback/local HTTP**. Non-loopback deployments (including containers/sidecars that bind `0.0.0.0`) must configure `MCP_BEARER_TOKEN`, `Auth__BearerTokens__*`, or OIDC before startup.
+
+<details>
+<summary><strong>Transport options</strong></summary>
+
+| Transport | Use case | Auth |
+|-----------|----------|------|
+| **stdio** | Local dev (Copilot CLI, Claude Desktop) | None (OS-level trust) |
+| **HTTP loopback** | Single-host / dev, bind to `http://127.0.0.1:<port>` | Bearer token |
+| **HTTP + TLS** | Sidecar, shared host: direct PEM TLS (`MCP_TLS_CERTIFICATE_PEM`) or trusted proxy (`MCP_TRUSTED_PROXY_CIDRS`) | Bearer token |
+
+Non-loopback cleartext HTTP is refused by default. See [`docs/client-setup.md` → Transport security](./docs/client-setup.md#transport-security-non-loopback).
+
+</details>
+
+<details>
+<summary><strong>Linux ptrace note</strong></summary>
+
+Most diagnostics, including EventPipe collectors, need no kernel ptrace permission. ClrMD
+live-memory readers are different: on Debian/Ubuntu/WSL,
+`kernel.yama.ptrace_scope=1` blocks same-UID peer attach.
+For Docker or Kubernetes, grant `CAP_SYS_PTRACE` only to the diagnostics sidecar
+(`--cap-add SYS_PTRACE` / `securityContext.capabilities.add`) rather than weakening the host.
+
+On a bare host, prefer the CLI's `--launch` descendant attach for an app you can start, offline
+dump analysis, or EventPipe collectors. The fallback
+`echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope` relaxes a **host-wide security boundary**
+and is suitable only for an isolated personal-development machine, never a shared or production
+host. See the canonical [Linux ptrace safety note](./docs/consumer-install.md#15-linux-enabling-live-memory-readers-kernel-ptrace).
+
+</details>
+
+<details>
+<summary><strong>Joint with dotnet-assembly-mcp</strong></summary>
+
+For decompilation + call graphs:
+
+```bash
+export ASSEMBLIES_DIR=/path/to/binaries
+docker compose -f deploy/docker-compose.yml up -d
+```
+
+</details>
+
+---
+
+## Standalone CLI
+
+`dotnet-diagnostics-cli` is a separate NuGet tool that runs the **same Core diagnostics engine** as a
+command you drive yourself — no HTTP server, bearer token, MCP client, or daemon. Useful for scripts, CI,
+and `kubectl exec` into the sidecar (the container image ships it on `PATH`).
+
+If something does not work, run `dotnet-diagnostics-cli doctor` first — it prints actionable
+`fix:` / `affects:` remediation for common environment and permission problems.
+
+```bash
+dotnet tool install -g dotnet-diagnostics-cli
+dotnet-diagnostics-cli doctor
+dotnet-diagnostics-cli processes
+dotnet-diagnostics-cli collect --kind counters --pid 1234 --duration 5
+dotnet-diagnostics-cli session
+```
+
+```bash
+# Other one-shot commands
+dotnet-diagnostics-cli inspect-heap --pid 1234 --top-types 30 --acknowledge-risk high
+
+# Inside the sidecar container (image bundles the CLI):
+kubectl exec -it <pod> -c diagnostics-mcp -- \
+  dotnet-diagnostics-cli inspect-heap --pid 1 --acknowledge-risk high
+```
+
+A stateful `session` REPL keeps collected handles queryable across commands so you can drill in
+(`query --handle <id> --view <view>`) without re-collecting, and bind a target pid once with `target <pid>`:
+
+```text
+dotnet-diagnostics-cli session
+diag> target 1234
+diag(pid 1234)> collect --kind gc --duration 10
+diag(pid 1234)> query --handle <id> --view pauseHistogram
+diag(pid 1234)> exit
+```
+
+Self-contained per-OS binaries are attached to each [Release](https://github.com/pedrosakuma/dotnet-diagnostics/releases)
+as `dotnet-diagnostics-cli-<version>-<rid>`. The downloaded archive is named
+`dotnet-diagnostics-cli-<version>-<rid>`; the extracted executable inside it is
+`dotnet-diagnostics-cli` (`dotnet-diagnostics-cli.exe` on Windows). **Full reference:** [`docs/cli-reference.md`](./docs/cli-reference.md).
+
+---
+
+## VS Code Extension
+
+The workspace extension opens a live runtime-counters panel for a selected .NET process. It uses
+the standalone CLI's JSONL stream protocol; the extension does not install the CLI automatically.
+See the [extension guide](./vscode-extension/README.md) for prerequisites and setup.
+
+---
+
+## BenchmarkDotNet Diagnoser
+
+`dotnet-diagnostics-benchmarkdotnet` is a separate NuGet package that runs the **same Core
+diagnostics engine** as an `IDiagnoser`, attached in-process to a BenchmarkDotNet child process
+while it runs — no MCP client, no CLI, no separate host. Useful when a benchmark is slow or
+allocates more than expected and you want to know *why*, not just *how much*.
+
+```csharp
+[DotnetDiagnosticsDiagnoser]   // attach the diagnoser + offenders report (like [MemoryDiagnoser])
+public class Workload
+{
+    [Benchmark]
+    [DiagnosticKind(BenchmarkDiagnosticKind.Gc, DurationSeconds = 5)]
+    public void AllocateLots() { /* ... */ }
+}
+```
+
+Each tagged `[Benchmark]` gets one EventPipe collection per requested kind (`gc`, `cpu`,
+`allocation`, `contention`, `threadpool`, `gcdump`, and more) against the child PID; results land in
+`<artifacts>/diagnostics/*.json` plus a consolidated `*-dotnet-diagnostics-report.md` with a
+per-benchmark "biggest offenders" summary. It is diagnostic, not measurement — pair it with
+`MemoryDiagnoser`/`ThreadingDiagnoser` for clean, publication-grade numbers, and run it on a
+dedicated diagnostic job. **Full reference:** [`src/DotnetDiagnostics.BenchmarkDotNet/README.md`](./src/DotnetDiagnostics.BenchmarkDotNet/README.md).
+
+---
+
+## Tools Overview
+
+**17 unified tools.** Full schemas and return shapes: [`docs/tool-reference.md`](./docs/tool-reference.md).
+
+<details>
+<summary><strong>The 17 tools at a glance</strong></summary>
+
+| Tool | Purpose |
+|---|---|
+| `inspect_process` | Process discovery, capabilities, environment/resources, memory trends, preflight, and evidence-backed triage |
+| `collect_events` | EventCounters/Meters and bounded EventPipe event families (GC, exceptions, activities, logs, JIT, networking, and more) |
+| `collect_sample` | CPU, off-CPU, managed/native allocation, and explicitly gated method-parameter capture |
+| `collect_batch` | Run several collect_sample/collect_events kinds concurrently against one resolved process in one call (eliminates the process-exit race of separate calls) |
+| `query_snapshot` | Query retained handles or durable captures through supported snapshot views, indexed records, and composition children |
+| `inspect_heap` | Live or dump heap walk with retained-type, root, retention-path, and async-state-machine drilldowns |
+| `get_bytes` | Materialize authorized artifact bytes or explicitly list, describe, recover, and delete durable captures |
+| `discover_azure` | Configuration-gated App Service, Container Apps, and AKS discovery |
+| `collect_process_dump` | Write a Mini / Triage / WithHeap / Full dump to disk |
+| `collect_thread_snapshot` | Managed thread states, stacks, SyncBlock lock graph, and deadlock evidence |
+| `capture_method_bytes` | Read JIT-emitted native bytes for a managed method from a live process or dump |
+| `start_investigation` | Build a bounded cold, warm, or hypothesis-driven investigation plan |
+| `export_investigation_summary` | Export portable investigation memory as JSON |
+| `compare_to_baseline` | Compare a current investigation summary with a saved baseline |
+| `list_orchestrator` | Configuration-gated Kubernetes namespace, workload, pod, and investigation inventory |
+| `attach_to_pod` | Configuration-gated sidecar/ephemeral-container attach and investigation-handle creation |
+| `detach_from_pod` | Close an orchestrated investigation and release its transport resources |
+
+</details>
+
+### Durable evidence (opt-in)
+
+Supported MCP collectors accept `persist=true`; the CLI uses `--persist` and
+`--capture-root`. Private SQLite packages retain normalized evidence and compatible
+typed snapshots for analysis after target exit or server restart. Ordinary
+collection remains ephemeral when persistence is disabled. See the
+[MCP tool reference](./docs/tool-reference.md) and
+[CLI reference](./docs/cli-reference.md) for supported operations and offline views.
+
+Sampling, filtering, source loss, and storage caps remain explicit; a sealed
+package is not a promise of lossless acquisition. Raw trace retention stays opt-in,
+and SQLite does not make native-dependent queries self-contained. Current
+ownership and authorization still apply to historical reads.
+
+Packages require explicit deletion and are excluded from the raw-artifact TTL
+reaper. Ordinary reads never repair a package; explicit recovery creates a new
+derived package. Use a persistent volume when evidence must survive container or
+Pod replacement, and set an operator-owned retention policy.
+
+---
+
+## Documentation
+
+**📖 [`docs/`](./docs) is the documentation hub** — start with
+[`docs/client-setup.md`](./docs/client-setup.md) for the stdio-vs-HTTP choice, then use the rest of
+the hub for the tool reference, CLI reference, the
+[BenchmarkDotNet diagnoser](./src/DotnetDiagnostics.BenchmarkDotNet/README.md), investigation
+playbooks, output examples, authorization/scopes, and deployment guides (Kubernetes, Helm, Azure,
+AWS, GCP).
+
+Before any production rollout, complete the
+[`production-readiness go/no-go checklist`](./docs/production-safety.md#production-readiness-checklist).
+
+---
+
+## Goals
+
+- **No prior instrumentation for standard diagnostics** — EventPipe and ClrMD work through diagnostic IPC without target code changes
+- **Explicit sensitive attach boundary** — method-parameter capture is opt-in dynamic profiler instrumentation, not a passive collector
+- **Cross-platform** — Linux + Windows, containers first-class
+- **Graceful NativeAOT** — unsupported tools return `not_supported`, not crashes
+- **LLM-friendly** — summarized JSON, not raw `.nettrace`
+
+---
+
+## Build & Test
+
+```bash
+dotnet build
+dotnet test
+```
+
+Requires .NET 10 SDK (pinned in `global.json`).
+
+<details>
+<summary><strong>Contributor setup (shared dev instance)</strong></summary>
+
+```bash
+scripts/local-mcp.sh start     # builds + starts in background
+scripts/local-mcp.sh status
+scripts/local-mcp.sh logs -f
+scripts/local-mcp.sh stop
+```
+
+Add to `~/.copilot/mcp-config.json`:
+```json
+{
+  "mcpServers": {
+    "dotnet-diagnostics": {
+      "type": "http",
+      "url": "http://127.0.0.1:8787/mcp",
+      "headers": { "Authorization": "Bearer demo-local-token-2026" }
+    }
+  }
+}
+```
+
+</details>
+
+---
+
+## Roadmap
+
+<details>
+<summary><strong>Phase status</strong></summary>
+
+| Phase | Status | Description |
+|-------|--------|-------------|
+| 1-3 | ✅ | Foundation + Core diagnostics + MCP server |
+| 4 | ✅ | GC, exceptions, EventSources, dumps |
+| 5 | ✅ | Kubernetes sidecar ([`deploy/k8s/`](./deploy/k8s)) |
+| 6 | ✅ | Documentation polish |
+| 7 | ✅ | Cloud integrations (Azure, AWS, GCP) |
+| 8 | ✅ | Tool consolidation into unified discriminator tools |
+| 9–15 | ✅ | Diagnostic UX, package surfaces, platform parity, and signal grouping (see [`CHANGELOG.md`](./CHANGELOG.md)) |
+| **16** | 🚧 | **MCP protocol evolution + external capability gaps** — active roadmap [#551](https://github.com/pedrosakuma/dotnet-diagnostics/issues/551) |
+
+</details>
+
+---
+
+## License
+
+MIT — see [`LICENSE`](./LICENSE).

@@ -1,0 +1,629 @@
+<p align="center">
+  <img src="resources/rokket-icon.png" alt="Rokket GSD" width="128" />
+</p>
+
+<h1 align="center">Rokket GSD</h1>
+
+<h3 align="center">GSD Pi Premium GUI — AI Coding Agent with Chat, Multi-Model, Voice &amp; Workflow Automation</h3>
+
+<p align="center">
+  Built on <a href="https://github.com/OpenGSD/gsd-pi">GSD Pi</a> (<a href="https://github.com/OpenGSD">OpenGSD</a>), the community fork based on <a href="https://github.com/badlogic/pi-mono">Pi Mono</a> by <a href="https://github.com/badlogic">Mario Zechner</a> ❤️<br>
+  Also compatible with <a href="https://github.com/gsd-build/gsd-2">GSD V2</a>.
+</p>
+
+<p align="center">
+  A full-featured VS Code frontend for the <a href="https://github.com/OpenGSD/gsd-pi">GSD Pi</a> AI coding agent.<br>
+  Streaming responses, 40+ tool visualizations, Telegram relay with voice transcription,<br>
+  parallel worker dashboards, model controls, four built-in themes, and deep workflow integration.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-0.3.109-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/VS%20Code-1.94%2B-blue" alt="VS Code" />
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform" />
+</p>
+
+---
+
+## What Is This?
+
+<img alt="RokketGSD" src="https://github.com/user-attachments/assets/e68aea08-cb2c-415f-ad2e-dbad08d39dbc" style="max-width:100%;"/>
+
+Rokket GSD turns the [GSD Pi](https://github.com/OpenGSD/gsd-pi) CLI into a native VS Code experience. Streaming responses, 40+ tool visualizations, Telegram relay with voice transcription, parallel worker dashboards, model controls, four built-in themes, and deep workflow integration. Everything runs inside your editor.
+
+> **GSD V2 users:** This extension remains fully compatible with GSD V2. However, primary development now targets [GSD Pi](https://github.com/OpenGSD/gsd-pi) (OpenGSD), the community fork.
+
+The extension spawns GSD as a child process over JSON-RPC (`gsd --mode rpc`), giving the agent full access to your workspace, tools, and configured providers while you get a proper UI on top.
+
+---
+
+## ✨ Highlights
+
+<table>
+<tr>
+<td width="50%">
+
+🔄 **Auto-Updates**<br>
+One-click install from GitHub Releases
+
+📂 **Session History**<br>
+Search, rename, resume right where you left off
+
+⌨️ **59+ Slash Commands**<br>
+Full GSD workflow from a single `/` keystroke
+
+🧠 **Model Picker**<br>
+Grouped by provider with context size and reasoning tags
+
+💬 **Queue Follow-Ups While Streaming**<br>
+Type while the agent works — your message runs after the current turn
+
+🎨 **Four UI Themes**<br>
+Classic, Phosphor, Clarity, and Forge
+
+</td>
+<td width="50%">
+
+💬 **Streaming Chat**<br>
+Per-token text rendering with live DOM updates
+
+🔧 **40+ Tool Visualizations**<br>
+Category icons, key args, collapsible output — spinners animate continuously
+
+📊 **Parallel Worker Dashboard**<br>
+Per-worker state, budget bars, and stale detection
+
+⚡ **Live Auto-Mode Progress**<br>
+Task, phase, cost, elapsed time, and active model
+
+💰 **Budget Alerts**<br>
+Warning toast when workers cross 80% of ceiling
+
+🛡️ **Process Resilience**<br>
+Built for multi-hour sessions with crash recovery
+
+📡 **Telegram Remote Control**<br>
+Drive your agent from your phone — voice, photos, and per-session threads
+
+🌀 **Live Workflow Visibility**<br>
+Watch fan-out workflows tick agent-by-agent, inline, as they run
+
+🎙️ **Voice Input**<br>
+Hold-to-record with waveform viz; OpenAI, Azure, or xAI transcription
+
+🧪 **1443+ Tests**<br>
+CI enforced on every push
+
+</td>
+</tr>
+</table>
+
+---
+
+## ⚠️ Prerequisites
+
+> [!IMPORTANT]
+> **Rokket GSD is a frontend for the GSD Pi agent. It does not include the agent itself.**
+
+You need a working GSD Pi (or GSD V2) environment before installing:
+
+1. **[Node.js](https://nodejs.org/) 18+** with npm
+2. **[Git](https://git-scm.com/)**
+3. **[VS Code](https://code.visualstudio.com/) 1.94+**
+4. **`gsd-pi` installed globally:**
+   ```bash
+   npm install -g @opengsd/gsd-pi
+   ```
+5. **A configured AI provider** in GSD (Anthropic, OpenAI, Google, etc. via API key or OAuth)
+
+> [!TIP]
+> Run `gsd` in a terminal first to verify it works before installing the extension. If `gsd` doesn't work in your terminal, the extension won't work either.
+
+---
+
+## 📦 Installation
+
+### VS Code Marketplace
+
+Search **"Rokket GSD"** in the Extensions sidebar, or install directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Rokketek.rokket-gsd).
+
+### One-Liner (macOS / Linux / Git Bash)
+
+```bash
+curl -sL https://raw.githubusercontent.com/Kile-Thomson/Rokket-GSD/main/install.sh | bash
+```
+
+### One-Liner (Windows PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/Kile-Thomson/Rokket-GSD/main/install.ps1 | iex
+```
+
+<details>
+<summary><strong>Manual Install</strong></summary>
+
+```bash
+git clone https://github.com/Kile-Thomson/Rokket-GSD.git
+cd Rokket-GSD
+npm install
+npm run build
+npx vsce package --no-dependencies
+code --install-extension rokket-gsd-*.vsix --force
+```
+
+Then reload VS Code (`Ctrl+Shift+P` > "Developer: Reload Window").
+
+> [!TIP]
+> If `code --install-extension` succeeds silently but the extension doesn't appear, install manually: VS Code > Extensions > `...` menu > "Install from VSIX..." > select the `.vsix` file.
+
+</details>
+
+---
+
+## 🏁 Getting Started
+
+Once installed, follow these steps to get up and running:
+
+### 1. Set up GSD (first time only)
+
+If you haven't already, install and authenticate the GSD Pi agent:
+
+```bash
+npm install -g @opengsd/gsd-pi
+gsd
+```
+
+The first run walks you through provider authentication (Anthropic, OpenAI, Google, etc.). You'll need at least one configured provider before the extension will work.
+
+### 2. Open Rokket GSD
+
+- Click the **rocket icon** in the VS Code activity bar (left sidebar), or
+- Press `Ctrl+Shift+P` → **"Rokket GSD: Open"**
+
+The extension spawns a `gsd` process automatically — if everything is set up correctly, you'll see the welcome screen with quick-action chips.
+
+### 3. Verify your setup
+
+If something isn't right, the extension runs a **health check on startup** and shows a notification with specific fix instructions. You can also run `/gsd doctor` in the chat to diagnose issues.
+
+### 4. (Optional) Connect Telegram
+
+To relay conversations to a Telegram group with voice message support:
+
+1. **Create a bot** — message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot`, and copy the token
+2. **Add the bot** to your Telegram group and make it an admin
+3. **Run the setup wizard** — type `/telegram` in the Rokket GSD chat or use `Ctrl+Shift+P` → **"Rokket GSD: Telegram Setup"**
+4. **Paste your bot token** when prompted — the wizard auto-detects your group and verifies the connection
+5. **(Optional) Enable voice transcription** — run `/telegram voice` and enter an OpenAI API key for Whisper
+
+All credentials are stored securely in VS Code's SecretStorage — never in config files or source code.
+
+### 5. (Optional) Customize settings
+
+Open VS Code Settings (`Ctrl+,`) and search for "gsd" to configure:
+
+- **Theme** — choose from Classic, Phosphor, Clarity, or Forge
+- **Send key** — switch to `Ctrl+Enter` if you prefer `Enter` for newlines
+- **Layout** — open as sidebar panel or editor tab
+- **Auto-updates** — enabled by default, checks GitHub Releases
+
+---
+
+## 🚀 Features
+
+### 📂 Session History & Resume
+
+- **Browse previous sessions** with searchable panel showing titles, dates, and message counts
+- **Resume any session** with a single click, full context and conversation state injected on load
+- **Resume from welcome screen** with the "↩ Resume" chip or `/resume` slash command
+- **Rename sessions** with meaningful names for easy lookup later
+- **Delete sessions** to clean up old conversations
+- **Each session gets its own GSD process** with fully isolated state
+
+### ⌨️ Slash Commands
+
+Type `/` to open the command palette with 59+ commands:
+
+<details>
+<summary><strong>GSD Workflow</strong> (46 commands)</summary>
+
+| Command | What it does |
+|---------|-------------|
+| `/gsd` | Contextual wizard — picks the next action |
+| `/gsd auto` | Auto-execute tasks (fresh context per task) |
+| `/gsd next` | Execute the next task |
+| `/gsd stop` | Stop auto-mode |
+| `/gsd pause` | Pause auto-mode (preserves state) |
+| `/gsd quick` | Execute ad-hoc task with GSD guarantees |
+| `/gsd discuss` | Discuss without executing |
+| `/gsd status` | Project dashboard — milestones, slices, tasks |
+| `/gsd visualize` | Open workflow visualizer overlay |
+| `/gsd help` | Categorized command reference |
+| `/gsd changelog` | Show categorized release notes |
+| `/gsd capture` | Capture a thought during auto-mode |
+| `/gsd triage` | Manually trigger triage of pending captures |
+| `/gsd knowledge` | View or add to project knowledge base |
+| `/gsd queue` | Queue and reorder future milestones |
+| `/gsd new-milestone` | Create a milestone from a specification document |
+| `/gsd park` | Park a milestone — skip without deleting |
+| `/gsd unpark` | Reactivate a parked milestone |
+| `/gsd dispatch` | Dispatch a specific phase directly |
+| `/gsd history` | View execution history |
+| `/gsd undo` | Revert last completed unit |
+| `/gsd skip` | Prevent a unit from auto-mode dispatch |
+| `/gsd start` | Start a workflow template (bugfix, spike, feature, etc.) |
+| `/gsd templates` | List available workflow templates |
+| `/gsd export` | Export milestone report as HTML |
+| `/gsd cleanup` | Remove merged branches or snapshots |
+| `/gsd config` | View or modify GSD configuration |
+| `/gsd prefs` | View or set preferences |
+| `/gsd mode` | Switch workflow mode (solo/team) |
+| `/gsd keys` | Manage API keys |
+| `/gsd hooks` | Show configured post-unit and pre-dispatch hooks |
+| `/gsd run-hook` | Manually trigger a specific hook |
+| `/gsd extensions` | Manage extensions (list, enable, disable, info) |
+| `/gsd doctor` | Diagnose and fix issues |
+| `/gsd forensics` | Post-mortem analysis of auto-mode failures |
+| `/gsd logs` | Browse activity, debug, and metrics logs |
+| `/gsd inspect` | Show SQLite DB diagnostics |
+| `/gsd skill-health` | Skill lifecycle dashboard |
+| `/gsd rate` | Token usage rates and profile defaults |
+| `/gsd init` | Project init wizard |
+| `/gsd setup` | Global setup status and configuration |
+| `/gsd migrate` | Migrate a v1 .planning directory to .gsd format |
+| `/gsd update` | Update GSD to the latest version |
+| `/gsd remote` | Remote question channels (Slack, Discord, Telegram) |
+| `/gsd parallel` | Parallel auto-mode orchestration |
+
+</details>
+
+<details>
+<summary><strong>Built-in Actions</strong> (13 commands)</summary>
+
+| Command | What it does |
+|---------|-------------|
+| `/compact` | Compact context to reduce token usage |
+| `/export` | Export conversation as HTML |
+| `/model` | Open model picker |
+| `/thinking` | Cycle thinking level |
+| `/new` | Start a new conversation |
+| `/history` | Browse and switch sessions |
+| `/copy` | Copy last assistant message |
+| `/resume` | Resume last session |
+| `/auto-compact` | Toggle auto-compaction on/off |
+| `/auto-retry` | Toggle auto-retry on transient errors |
+| `/telegram` | Start Telegram streaming — opens setup and connects |
+| `/telegram-stop` | Stop Telegram streaming — kills relay and disconnects |
+| `/telegram voice` | Set OpenAI API key for voice transcription |
+
+</details>
+
+### 🧠 Model & Thinking Controls
+
+- **Model picker** grouped by provider with section headers, context window size, and reasoning capability tags
+- **Thinking level dropdown** with off / minimal / low / medium / high / xhigh and descriptions for each level
+- **Model-aware thinking** hides levels your model doesn't support. Extended thinking only shows for models that handle it.
+- **Context usage bar** below the header with color-coded thresholds (green at 0-70%, amber at 70-90%, red at 90%+)
+- **Live session stats** showing token count, session cost, and context pressure at a glance
+- **Dynamic model routing indicator** flashes the model badge and announces via toast when gsd-pi switches models mid-task
+
+### 💬 Streaming Chat
+
+- **Sequential segment rendering** - text, thinking blocks, and tool calls stream in arrival order with no re-renders or layout jumps
+- **Full markdown** with syntax-highlighted code blocks, tables, blockquotes, headings, inline code, and images
+- **Copy buttons** on every code block and full assistant responses
+- **Image paste and drag-drop** directly into the input area
+- **File attachments** via button, drag-and-drop, or paste with type-specific icons and removable chips
+- **Message timestamps** with relative times that update live and absolute times on hover
+- **Thinking blocks** collapsed by default with line count indicator, expanded during streaming
+- **Queue follow-ups while streaming** — type while the agent is working and your message runs after the current turn completes
+- **Drag-to-resize input area** for longer messages
+- **`!command` shortcut** to run bash commands directly without the agent
+
+### 🔧 Tool Execution Visualization
+<img alt="subagents" src="https://github.com/user-attachments/assets/90e4d43d-18ca-4a87-b5e9-7cd90afd50ce" style="max-width:100%;" />
+
+- **Live tool calls** with category-specific icons and color accents for 40+ tools
+- **Rich key arg display** for lsp, browser_*, github_*, gsd_*, mcp_call, bash, and more
+- **Collapsible output** with smart truncation for large results
+- **Parallel tool indicator** with ⚡ badge and pulse animation when tools run concurrently
+- **Tool call grouping** collapses consecutive read-only tools (file reads, searches, browser reads) into expandable summary rows
+- **Subagent results** rendered as full markdown with usage pills showing token and cost breakdowns
+- **Clickable file paths** that open directly in VS Code
+- **Shimmer animation** on running tools so you always know what's active
+- **Duration tracking** on every completed tool call
+- **Server-side tool indicators** — compact inline cards for Anthropic's native server-side tools (web search, code execution) showing tool name, search query, spinner while running, and result count on completion
+
+### 🌀 Live Workflow Visibility
+
+When the agent launches a Claude Code workflow that fans out parallel sub-agents, you no longer wait until the turn ends to find out what happened:
+
+- **Inline live card** — a workflow card appears in the conversation the moment the run starts writing, pinned above the launching turn — no `/workflows` command, no DevTools
+- **Agent-by-agent progress** — each sub-agent's label and phase tick from running → done in real time as the run proceeds, fed by watching the workflow's on-disk journal directly (so it updates mid-turn, not just at completion)
+- **Honest hang detection** — a run with a sub-agent still mid-flight and no further activity is flagged; a run that simply finished and went quiet reads as Done, not falsely "hung"
+- **Completion summary** — the card persists in the transcript as a record, showing real per-agent token usage, tool-call counts, and duration
+- **Robust** — survives sidebar hide/show, retracts cleanly on process exit, and never leaks between conversations
+- **Opt-in diagnostics** — `gsd.workflowDiagnostics` surfaces an on-screen panel for troubleshooting live-update delivery
+
+### ⚡ Auto-Mode Progress
+
+- **Live progress widget** sticky above the input showing current task, phase, progress bars, elapsed time, cost, and active model
+- **Phase rendering** with distinct labels and icons: Executing, Planning, Validating (✓), Completing, Blocked, Replanning
+- **Discussion-pause visibility** shows 💬 "Awaiting Discussion" with a `/gsd discuss` hint when auto-mode pauses for slice discussion
+- **Pending captures badge** (📌) in the progress widget for `/gsd capture` thoughts awaiting triage
+- **Workflow state badge** in the header showing active milestone, slice, task, and current phase
+- **Auto-mode indicator** with ⚡ Auto, ▸ Next, ⏸ Paused states
+- **Health widget** — ambient system health bar in the footer showing system status, budget, provider issues, and environment errors
+- **Model health indicator** — green/amber/red dot next to the model name reflecting current system health
+
+### 📊 Parallel Worker Dashboard
+
+- **Worker cards** during parallel auto-mode showing per-worker milestone ID, state badge, current unit, and cost
+- **State badges** for Running, Paused, Stopped, and Error with distinct colors
+- **Budget usage bars** per worker with green/orange/red thresholds at 80% and 100%
+- **Budget alert toast** fires a VS Code warning when any worker crosses 80% of `budget_ceiling`
+- **Stale worker detection** dims workers with old heartbeats and shows a "(stale)" label
+- **Graceful degradation** to standard single-worker display when no parallel data exists
+
+### 📈 Workflow Visualizer
+
+- **Full-page overlay** via `/gsd visualize` with three tabs
+- **Progress tab** with milestone header, progress bars, slice/task breakdown, milestone registry, blockers, and next action
+- **Metrics tab** with cost breakdown, tool call counts, model usage, token breakdown, and context usage
+- **Health tab** with system health status, budget info, environment warnings, and active model
+- **Auto-refresh** every 5 seconds during active auto-mode
+- **Dashboard panel** with milestone registry, slice/task progress, cost projections, and activity log
+
+### 🤖 Agent Interaction
+
+- **Inline UI dialogs** for confirm, select, input, and editor prompts rendered directly in the chat flow (no modal popups)
+- **Multi-select support** with checkbox-style selection and confirm button
+- **Auto-compaction indicator** overlay banner when context is being compacted
+- **Auto-retry indicator** with countdown timer and abort button when the provider rate-limits
+- **Provider fallback alerts** via toast when GSD auto-switches models due to rate limits, and again when the original provider recovers
+- **Crash recovery** with restart button, exit code diagnostics, and full state cleanup
+
+### 📡 Telegram Remote Control
+
+**Run your agent from anywhere.** Connect a Telegram bot once and your editor session becomes a two-way remote: read what the agent is doing, reply with new instructions, and kick off whole projects — all from your phone, away from the desk. Long auto-mode runs no longer pin you to the keyboard.
+
+- **Two-way control, not just a feed** — assistant responses stream to your Telegram group in real time, and anything you send back is injected straight into the live session as a prompt. Redirect work, answer questions, or queue follow-ups without touching the keyboard.
+- **Talk to it** — record a Telegram voice message and it's transcribed (OpenAI Whisper) and sent as a prompt, so you can brief the agent hands-free.
+- **Send pictures** — photos shared in the chat are forwarded to the agent as image attachments (screenshots, mockups, error dialogs).
+- **Launch projects by name** — message something like *"launch rokketdocs"* from the general chat and the bot finds the project across your configured directories, opens it in VS Code, and wires up the relay automatically. Numbered picker resolves multiple matches.
+- **A thread per session** — each conversation gets its own Telegram topic, so parallel projects stay cleanly separated instead of colliding in one feed.
+- **Owner-locked commands** — launch and control commands are restricted to your own Telegram user ID (auto-detected during setup), so a shared group can't drive your machine.
+- **Resilient by design** — automatically follows a group when it's upgraded to a supergroup (new chat ID), and gives clear, actionable guidance when forum Topics aren't enabled instead of failing silently.
+- **Tunable verbosity** — choose `off`, `throttled`, or `final-only` streaming so the chat stays useful without becoming noise.
+- **Guided, secure setup** — the `/telegram` wizard walks Bot Token → group detection → owner ID → done. The bot token and transcription API key live in VS Code's `SecretStorage`, never in config files or source.
+
+### 🎨 VS Code Integration
+
+- **Activity bar icon** (rocket) with sidebar panel
+- **Flexible layout** - open as sidebar or editor tab
+- **Status bar** showing streaming state, active model, and session cost
+- **Working indicator** with pulsing amber glow on the rocket logo while the agent is active
+- **Theme-aware** - works with any VS Code color theme (light, dark, high contrast)
+- **Four built-in themes**: Classic, Phosphor, Clarity, and Forge
+- **Auto-updates** from GitHub Releases with one-click install notification
+- **HTML export** from the command palette ("Rokket GSD: Export Milestone Report")
+- **What's New overlay** on version upgrade with changelog viewer
+- **Welcome screen quick actions** with clickable chips for Auto, Status, and Review
+- **Scroll-to-bottom FAB** when scrolled up
+- **Toast notifications** for action feedback
+
+### ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Enter` | Send message (or queue a follow-up while agent is working) |
+| `Esc` | Stop the agent |
+| `Ctrl+Shift+G` | Focus the GSD input from anywhere in VS Code |
+| `Ctrl+Shift+N` | New conversation (when GSD is focused) |
+
+> [!TIP]
+> Enable `gsd.useCtrlEnterToSend` in settings if you want `Enter` for newlines and `Ctrl+Enter` to send.
+
+### 🔒 Security
+
+- **CSP enforcement** — nonce-based Content Security Policy with no `unsafe-inline` in style-src or script-src
+- **DOMPurify sanitization** on all rendered markdown with explicit attribute allowlist
+- **URL scheme allowlist** restricting clickable links to http, https, and vscode
+- **Path traversal protection** with workspace boundary validation and symlink resolution
+- **Command injection prevention** using args arrays instead of shell interpolation; destructive bash pattern detection with modal confirmation
+- **Environment isolation** stripping Electron/VS Code env vars before spawning GSD
+- **Download validation** restricting update installs to GitHub URLs only
+- **Temp file size limit** (50MB) on save operations
+- **No secrets in DOM** — API keys and tokens are never rendered in the webview
+- **Buffer overflow protection** — full JSON-RPC buffer reset (not truncation) to preserve protocol integrity
+
+---
+
+## ⚙️ Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `gsd.theme` | `"forge"` | UI theme: `classic`, `phosphor`, `clarity`, or `forge` |
+| `gsd.processWrapper` | `""` | Custom executable path for the GSD process |
+| `gsd.environmentVariables` | `[]` | Extra env vars to set when launching GSD |
+| `gsd.useCtrlEnterToSend` | `false` | Use `Ctrl+Enter` to send instead of `Enter` |
+| `gsd.preferredLocation` | `"panel"` | Default open location: `"sidebar"` or `"panel"` |
+| `gsd.autoUpdate` | `true` | Check for new versions on GitHub Releases |
+| `gsd.githubToken` | `""` | GitHub token for update checks (also reads `GH_TOKEN` / `GITHUB_TOKEN` env vars) |
+| `gsd.workflowLivePanel` | `true` | Show live Claude Code workflow progress inline as it happens |
+| `gsd.workflowDiagnostics` | `false` | On-screen diagnostic overlay for workflow progress delivery (troubleshooting) |
+| `gsd.telegramGroupId` | `0` | Telegram group ID for the relay (set by setup) |
+| `gsd.telegramChatTitle` | `""` | Telegram group chat title (set by setup) |
+| `gsd.telegramBotUsername` | `""` | Telegram bot username (set by setup) |
+| `gsd.telegramOwnerId` | `0` | Your Telegram user ID — only this user can trigger launch commands (auto-detected at setup) |
+| `gsd.telegramProjectDirs` | `[]` | Directories searched when launching projects from Telegram general chat |
+| `gsd.telegramStreamingGranularity` | `"throttled"` | Streaming mode: `off`, `throttled`, or `final-only` |
+| `gsd.voiceTranscriptionProvider` | `"openai"` | Voice-to-text provider: `openai`, `azure`, or `xai` |
+| `gsd.azureSpeechRegion` | `"eastus"` | Azure region for Speech Services (when provider is `azure`) |
+
+---
+
+## 🛡️ Process Resilience
+
+Built to handle real-world agent sessions that run for hours:
+
+- **Health monitoring** with periodic pings to detect hung processes
+- **Environment isolation** stripping Electron/VS Code env vars to prevent subprocess crashes
+- **Graceful shutdown** handling `session_shutdown` events cleanly
+- **Force-kill and restart** via UI button for stuck processes
+- **Duplicate spawn prevention** via mutex per session
+- **Buffer overflow protection** with full reset (not truncation) to preserve JSON-RPC protocol integrity
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────┐    postMessage     ┌─────────────────────┐
+│   Webview (Chat UI) │ <───────────────> │   Extension Host     │
+│                     │                   │                      │
+│  Streaming render   │                   │  Dialog mapping      │
+│  Tool visualization │                   │  File operations     │
+│  Model/thinking     │                   │  Update checker      │
+│  Session history    │                   │  Status bar          │
+│  Slash commands     │                   │  Health monitoring   │
+│  Worker dashboard   │                   │  Parallel polling    │
+│  Agent cards        │                   │  Telegram bridge     │
+└─────────────────────┘                   └──────────┬───────────┘
+                                                     │ stdin/stdout
+                                                     │ JSON-RPC
+                                          ┌──────────▼───────────┐
+                                          │   gsd --mode rpc     │
+                                          │   (Child Process)    │
+                                          └──────────────────────┘
+                                                     │
+                                          ┌──────────▼───────────┐
+                                          │   Telegram Poller    │
+                                          │   OpenAI Whisper     │
+                                          └──────────────────────┘
+```
+
+- **Webview** — vanilla DOM (no framework), ~13K lines of TypeScript + 16 CSS modules + 3 theme files, esbuild-bundled IIFE. Sequential segment-based renderer with `requestAnimationFrame` batching for smooth streaming. CSS uses a semantic token layer (`--gsd-*`) bridging VS Code's theme system — components never reference `--vscode-*` directly.
+- **Extension Host** — ~10K lines of TypeScript managing the GSD child process, routes messages, handles file operations, monitors health, polls parallel worker status, and coordinates the Telegram bridge. All hot-path I/O is async; polling runs via parallelized `Promise.all`.
+- **GSD Process** — the full [GSD Pi](https://github.com/OpenGSD/gsd-pi) agent running via JSON-RPC over stdin/stdout. Each session gets its own process.
+- **Telegram Bridge** — poller, coordinator, IPC, topic manager, and message formatter. Voice messages transcribed via OpenAI Whisper; photos forwarded as image attachments.
+
+The extension ships as a `.vsix` with no runtime dependencies beyond VS Code and the `gsd` CLI ([GSD Pi](https://github.com/OpenGSD/gsd-pi) or GSD V2). 1443 tests across 74 files.
+
+---
+
+<details>
+<summary><strong>🔨 Development</strong></summary>
+
+```bash
+git clone https://github.com/Kile-Thomson/Rokket-GSD.git
+cd Rokket-GSD
+npm install
+npm run watch    # Rebuilds on file changes
+# Press F5 in VS Code to launch Extension Development Host
+```
+
+### Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run build` | Production build (extension + webview) |
+| `npm run watch` | Watch mode with auto-rebuild |
+| `npm test` | Run unit tests (Vitest) |
+| `npm run lint` | Run ESLint |
+| `npm run package` | Package as `.vsix` |
+
+### Project Structure
+
+```
+src/
+  extension/
+    index.ts                # Entry point, commands, status bar
+    rpc-client.ts           # JSON-RPC client over stdin/stdout
+    webview-provider.ts     # Webview lifecycle, message routing
+    message-dispatch.ts     # Inbound message routing (extension side)
+    rpc-events.ts           # RPC event handlers
+    auto-progress-poller.ts # Auto-mode progress polling (parallelized)
+    parallel-status.ts      # Parallel worker status reader
+    dashboard-parser.ts     # Dashboard data aggregation
+    metrics-parser.ts       # Cost/token metrics parsing
+    captures-parser.ts      # Pending capture count parsing
+    state-parser.ts         # GSD workflow state parsing
+    update-checker.ts       # Auto-update from GitHub Releases
+    session-list-service.ts # Session history filesystem parser
+    session-state.ts        # Per-session state management
+    file-ops.ts             # File operations (export, save, access)
+    health-check.ts         # Process health monitoring
+    html-generator.ts       # Webview HTML + CSP generation
+    watchdogs.ts            # Streaming/tool timeout watchdogs
+    command-fallback.ts     # Slash command fallback handling
+    telegram/               # Telegram relay (setup, polling, formatting, IPC)
+    openai/                 # OpenAI Whisper voice transcription
+  shared/
+    types.ts                # Message protocol types (extension <> webview)
+  webview/
+    index.ts                # DOM setup, events, initialization
+    renderer.ts             # Streaming segment renderer
+    message-handler.ts      # Inbound message routing
+    auto-progress.ts        # Auto-mode progress bar + worker cards
+    visualizer.ts           # Workflow visualizer overlay
+    dashboard.ts            # GSD dashboard overlay
+    model-picker.ts         # Model selection overlay
+    thinking-picker.ts      # Thinking level dropdown
+    slash-menu.ts           # Slash command palette (45+ built-in commands)
+    ui-dialogs.ts           # Inline confirm/select/input dialogs
+    tool-grouping.ts        # Read-only tool collapse logic
+    session-history.ts      # Session browser panel
+    helpers.ts              # Markdown, formatting, tool display
+    ui-updates.ts           # Header, footer, overlay updates
+    keyboard.ts             # Keyboard shortcut handling
+    state.ts                # Shared mutable state
+    a11y.ts                 # Accessibility utilities
+    toasts.ts               # Toast notification system
+    file-handling.ts        # File attachment handling
+    styles/
+      tokens.css            # Semantic design tokens (--gsd-* layer)
+      base.css              # Reset, typography, scrollbar
+      layout.css            # Grid, panels, overlays
+      input.css             # Chat input area
+      entries.css           # Message bubbles, turns
+      footer.css            # Status bar, badges
+      tools.css             # Tool call cards
+      overlays.css          # Modals, pickers, visualizer
+      misc.css              # Focus rings, animations, utilities
+      parallel.css          # Worker dashboard cards
+      auto-progress.css     # Auto-mode progress widget
+      dashboard.css         # GSD dashboard overlay
+      toasts.css            # Toast notifications
+      themes/
+        phosphor.css        # Phosphor theme overrides
+        clarity.css         # Clarity theme overrides
+        forge.css           # Forge theme overrides
+resources/
+  gsd-logo.svg              # Activity bar icon
+  rokket-icon.png            # Extension icon
+  extensions/               # Bundled pi extensions (auto-installed)
+```
+
+</details>
+
+---
+
+## Known Limitations
+
+- **Requires GSD Pi (or GSD V2)** — this is a UI wrapper, not a standalone agent. The `gsd` CLI must be installed and configured separately.
+- **Some GSD custom UI commands** rely on TUI widgets that VS Code webviews cannot render directly. `/gsd status` is supported via the structured dashboard renderer; other widget-dependent commands produce text-only output.
+
+---
+
+## License
+
+MIT
+
+---
+
+<p align="center">
+  <strong>▲ ROKKETEK</strong><br>
+  <sub>Built by <a href="https://github.com/Kile-Thomson">Kile Thomson</a></sub>
+</p>

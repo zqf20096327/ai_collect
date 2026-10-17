@@ -1,0 +1,141 @@
+# u-transcript max
+
+[![PyPI](https://img.shields.io/pypi/v/u-transcript-max)](https://pypi.org/project/u-transcript-max/)
+[![Python](https://img.shields.io/pypi/pyversions/u-transcript-max)](https://pypi.org/project/u-transcript-max/)
+[![CI](https://github.com/U-C4N/U-transkript/actions/workflows/ci.yml/badge.svg)](https://github.com/U-C4N/U-transkript/actions/workflows/ci.yml)
+
+YouTube transcripts, AI translation and downloads for Python — with zero dependencies. Its MCP
+server lets Claude, Codex and other AI assistants use them too.
+
+> **Alpha.** The API can still change before 0.1.0. The design lives in
+> [docs/design](https://github.com/U-C4N/U-transkript/tree/main/docs/design).
+
+- **Transcripts** of any video, playlist or channel: every language, written by people or
+  generated, as SRT, WebVTT, JSON or text.
+- **AI translation** that keeps every timing (Claude, OpenAI and compatible servers such as
+  Ollama, Gemini, OpenRouter), and bilingual subtitles.
+- **Downloads in the best quality** a file holds: AV1 or H.264 up to 8K, HDR and 60 fps in
+  `.mp4` (also `.mov`, `.m4a`, `.mp3`), with subtitles as switchable tracks and the original
+  audio of dubbed videos. Parallel and resumable; no ffmpeg needed except for `.mp3`.
+- **A drop-in replacement** for youtube-transcript-api.
+- **An MCP server** for Claude, Codex and other AI assistants.
+
+## Install
+
+From [PyPI](https://pypi.org/project/u-transcript-max/), on Python 3.11 or newer:
+
+```bash
+pip install u-transcript-max          # the library, no dependencies
+pip install "u-transcript-max[mcp]"   # plus the MCP server, utmax-mcp
+```
+
+AI translation calls the provider's official SDK with your own API key: add the `claude`,
+`openai`, `gemini` or `openrouter` extra, or `ai` for all of them.
+
+## Quickstart
+
+```python
+import utmax
+
+transcript = utmax.fetch("https://youtu.be/dQw4w9WgXcQ")  # the spoken language, manual first
+transcript.save("rick.srt")  # also .vtt, .json and .txt
+
+turkish = utmax.translate(transcript, "tr", model="claude=claude-opus-5-5")  # needs [claude]
+utmax.bilingual(transcript, turkish).save("rick.en+tr.srt")
+
+utmax.download("dQw4w9WgXcQ", "rick.mp4")  # the best picture (AV1 up to 8K), English subtitles
+utmax.download("dQw4w9WgXcQ", "rick-720.mp4", resolution=720)  # at most 720p
+utmax.download("dQw4w9WgXcQ", "rick.mp4", quality="compat")  # H.264 up to 1080p, plays anywhere
+utmax.download("dQw4w9WgXcQ", "rick.m4a")  # the audio only
+print([f.label for f in utmax.list_formats("dQw4w9WgXcQ") if f.kind == "video"])
+
+videos = utmax.list_videos("@RickAstleyYT", kind="videos", limit=20)
+utmax.fetch_many(videos, out_dir="subs")  # one .srt per video
+```
+
+Coming from youtube-transcript-api? Change one import:
+
+```python
+from utmax.compat import YouTubeTranscriptApi
+```
+
+## MCP server
+
+`utmax-mcp` gives an AI assistant six tools: `list_tracks`, `get_transcript`, `list_formats`,
+`list_videos`, `download` and `save_subtitles`. It needs no API key. Ask it to download a video
+and the assistant asks which file type, which of the video's resolutions and which subtitles
+(original or translated) you want; ask for a translation and it translates the subtitles
+itself. Things to ask:
+
+- *"Download https://youtu.be/ZcDFZzsp3_Y in the highest resolution with Turkish subtitles."*
+  The assistant finds 2160p, translates the English subtitles itself and downloads a 4K
+  `.mp4` with English and Turkish tracks (Turkish on by default) plus `.srt` files.
+- *"Save the subtitles of this video, translated into German."*
+- *"List the last 20 videos of @RickAstleyYT and summarize the newest one."*
+
+Files go to `~/Downloads/utmax`. The commands below start the server with `uvx` from
+[uv](https://docs.astral.sh/uv/getting-started/installation/), which installs it from PyPI;
+`@latest` makes it move to each new release the next time the client starts the server.
+
+### Claude Code
+
+```bash
+claude mcp add --scope user utmax -- uvx --from "u-transcript-max[mcp]@latest" utmax-mcp
+```
+
+`claude mcp get utmax` should say `Connected`; inside Claude Code, `/mcp` lists the server.
+
+### Codex
+
+```bash
+codex mcp add utmax -- uvx --from "u-transcript-max[mcp]@latest" utmax-mcp
+```
+
+A long download can outlast Codex's default tool timeout, and the first start installs the
+server, so give it more time in `~/.codex/config.toml` (the CLI and the IDE extension share this
+file):
+
+```toml
+[mcp_servers.utmax]
+command = "uvx"
+args = ["--from", "u-transcript-max[mcp]@latest", "utmax-mcp"]
+startup_timeout_sec = 60
+tool_timeout_sec = 1800
+```
+
+### Claude Desktop
+
+Open Settings → Developer → Edit Config, add the server to `claude_desktop_config.json` and
+restart Claude Desktop:
+
+```json
+{
+  "mcpServers": {
+    "utmax": {
+      "command": "uvx",
+      "args": ["--from", "u-transcript-max[mcp]@latest", "utmax-mcp"]
+    }
+  }
+}
+```
+
+If Claude Desktop cannot find `uvx`, put its full path in `command` (`which uvx`, or
+`where uvx` on Windows).
+
+### Other clients and settings
+
+Any MCP client that starts stdio servers can run the same command, or `utmax-mcp` after
+`pip install "u-transcript-max[mcp]"`. Environment variables change the defaults:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `UTMAX_DOWNLOAD_DIR` | `~/Downloads/utmax` | where `download` saves files |
+| `UTMAX_PROXY` | none | an `http://[user:password@]host:port` proxy for YouTube |
+| `UTMAX_FFMPEG` | `ffmpeg` on `PATH` | the ffmpeg that makes `.mp3` files |
+
+Set them with `-e NAME=value` in Claude Code, `--env NAME=value` in Codex, or an `"env"` object
+in Claude Desktop.
+
+## License
+
+MIT

@@ -1,0 +1,155 @@
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/synapsa-commons-dark.png">
+    <img src="brand/synapsa-commons-light.png" alt="Synapsa Commons" height="48">
+  </picture>
+</h1>
+
+**Free, hands-on AI courses that run anywhere, from the team building Synapsa, an AI-native
+learning platform.**
+
+
+[![lessons](https://github.com/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/actions/workflows/lessons.yml/badge.svg?branch=master)](https://github.com/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/actions/workflows/lessons.yml)
+
+Every lesson here is a notebook you *do*, not one you read. You fill in the exercises, and each one
+checks itself the moment you run it. Hints stay hidden until you ask for them. Worked solutions
+and the full autograded rubric, with partial credit and an official score, come with free
+enrolment on [Synapsa](https://synapsa.realai.eu), opening in the coming weeks. Some lessons are C or C++ exercises, built and graded the same way. Open any of them in
+Google Colab, Kaggle, Binder, GitHub Codespaces or your own Jupyter: the first cell installs what the
+lesson needs at the versions it was measured with, and does nothing where it is already there.
+
+The courses are aimed at the work people are actually paid for: evidence an inspector can re-run, a model
+a risk committee can sign off, an alarm a plant manager will trust. Every number a lesson prints is
+computed by code you run, and every claim it makes about the world cites a primary source.
+
+## Where to start
+
+| If you want to… | Course | First lesson |
+|---|---|---|
+| Show that an AI system meets the EU AI Act, with evidence an inspector can re-run | [`programmes/ai-act-conformity/`](programmes/ai-act-conformity/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T10-L01-ai-act-conformity-pack/lesson.ipynb) |
+| Validate a model well enough to sign it off: calibration, challengers, explainability, the committee pack | [`programmes/model-risk/`](programmes/model-risk/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/programmes/model-risk/lessons/P04-L01-validation-suite/lesson.ipynb) |
+| Take predictive maintenance from sensor physics to an alarm threshold priced in money | [`programmes/predictive-maintenance/`](programmes/predictive-maintenance/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/programmes/predictive-maintenance/lessons/P03-L01-alarm-economics/lesson.ipynb) |
+| Pull fields out of invoices and contracts, and prove how often you are wrong | [`programmes/document-intelligence/`](programmes/document-intelligence/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/programmes/document-intelligence/lessons/P02-L01-extraction-evaluation/lesson.ipynb) |
+| Build credit models that survive an audit: vintage curves, a hazard model, macro scenarios and an out-of-time back-test | [`programmes/credit-underwriting/`](programmes/credit-underwriting/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/programmes/credit-underwriting/lessons/P05-L01-pd-vintages-and-macro/lesson.ipynb) |
+| Get from mass spectra to proteins you can defend: a search engine, target-decoy FDR, protein inference, missing values and batch effects | [`programmes/proteomics-multiomics/`](programmes/proteomics-multiomics/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/programmes/proteomics-multiomics/lessons/P07-L01-search-engine-and-fdr/lesson.ipynb) |
+| Make a simulated humanoid stand and walk, then measure how far that is from a robot | [`flagships/humanoid-lab/`](flagships/humanoid-lab/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/flagships/humanoid-lab/lessons/F15-L01-first-contact/lesson.ipynb) |
+| Build search and RAG you can measure: retrieval, chunking, the context budget, reranking and agent memory | [`lessons/`](lessons/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T06-L01-retrieval-from-scratch/lesson.ipynb) |
+| Build AI agents that hold up: the agent loop from scratch, MCP and A2A from the wire up, evaluation, observability and constrained decoding | [`lessons/`](lessons/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T07-L01-agent-loop-from-scratch/lesson.ipynb) |
+| Do AI for science on real data: find the first gravitational wave in the raw LIGO data, and model rainfall to runoff honestly | [`lessons/`](lessons/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T12-L01-find-gw150914/lesson.ipynb) |
+| Serve and train language models on modest hardware: a KV cache, paging and continuous batching on a CPU, and GRPO from scratch | [`lessons/`](lessons/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T05-L01-serving-on-a-cpu/lesson.ipynb) |
+| Start from nothing: the 8 GB machine, tokenisers from scratch, a language model on a CPU | [`lessons/`](lessons/) | [Colab](https://colab.research.google.com/github/TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials/blob/master/lessons/T00-L01-the-8gb-track/lesson.ipynb) |
+
+The model-risk, predictive-maintenance, document-intelligence, credit and proteomics courses build
+on [`lessons/T00-L01-the-8gb-track`](lessons/T00-L01-the-8gb-track/), which makes the profiler and the
+compute tiers every lesson is held to; start there if you have not done it. Each programme's
+`MODULES.md` is its map and shows which lessons exist and which are still only specified; the
+humanoid lab's is its `README.md`, and [`lessons/`](lessons/) has its own.
+
+## What exists today
+
+<!-- STATUS:BEGIN generated by tools/status.py from the lessons themselves; do not edit -->
+
+**72 lessons, every one passing all 14 gates in `QUALITY.md` and independently reviewed.** 7 are compiled C or C++ exercises. Every notebook opens in Colab, Kaggle, Binder, Codespaces or local Jupyter. Every `MODULES.md` marks a module built only when its lesson exists and has passed; everything else says `specified`, and means it.
+
+| Area | Built | Specified, not built |
+|---|---|---|
+| `flagships/humanoid-lab` | 8 lessons + capstone | — |
+| `lessons/` — track lessons | 22 | — |
+| `programmes/ai-act-conformity` | 9 of 9 | 0 |
+| `programmes/credit-underwriting` | 1 of 8 | 7 |
+| `programmes/document-intelligence` | 11 of 11 | 0 |
+| `programmes/model-risk` | 10 of 10 | 0 |
+| `programmes/predictive-maintenance` | 9 of 9 | 0 |
+| `programmes/proteomics-multiomics` | 2 of 7 | 5 |
+
+<!-- STATUS:END -->
+
+## What's coming
+
+<!-- COMING:BEGIN generated by tools/status.py; do not edit -->
+
+New lessons three times a week, every Monday, Wednesday and Friday. Watch or star this repository to hear about each one as it lands.
+
+```mermaid
+timeline
+    September 2026 : Document intelligence for regulated operations, retrieval and RAG, and the agents track begins
+    October 2026 : AI agents and the protocols they speak, two new industry programmes on proteomics and multiomics and on evidence-based credit decisions, AI for science, serving models on modest hardware, post-training from scratch, and evaluating across languages
+    November 2026 : The credit decisions and the proteomics and multiomics programmes continue, module by module
+    December 2026 : Deeper courses in the industries we already cover
+```
+
+<!-- COMING:END -->
+
+## How a lesson works
+
+Press **Run all** before you have written a line. Every cell still runs: each unfinished exercise
+says it is not implemented yet, and the notebook ends with a progress board, one line per exercise,
+marked ✅ passed, ❌ failed or ⏳ not started. Fill in an exercise and re-run its cell, and its check
+tells you whether you are right, and if not, what the likely mistake is. Each exercise has two
+hints: the first says what to think about, the second the approach in words. Neither gives you the
+answer. Your score against the full rubric, and the worked solution, come with enrolment on
+Synapsa.
+
+Anything a lesson measures on your machine, like a time or a memory peak, prints with its unit and
+will differ from ours. Every other number a finished lesson prints is identical on Python 3.11 and
+3.12; every lesson is checked for that before it is released. The workflow above checks on Linux,
+which is what Colab, Kaggle, Binder and Codespaces run, that every notebook opens and runs.
+
+On Kaggle, a lesson that installs a package or fetches a file needs Internet switched on in the
+notebook's settings, and Kaggle allows that only for phone-verified accounts. Colab, Binder and
+Codespaces need nothing.
+
+To work locally instead, with Python 3.11 or 3.12:
+
+    python -m venv .venv && .venv/bin/pip install -r requirements.txt
+    .venv/bin/jupyter lab
+
+On Windows the two commands are `.venv\Scripts\pip` and `.venv\Scripts\jupyter`.
+
+## The bar every lesson clears
+
+[`QUALITY.md`](QUALITY.md) sets out 14 gates. The short version:
+- measurable objectives, and prerequisites that are real lessons;
+- scaffolded exercises with instant feedback, an autograded rubric, a worked solution and a
+  self-check;
+- runs top to bottom in a fresh interpreter, inside a declared compute tier and time budget;
+- data that is free and needs no registration, named with its licence;
+- every claim about the world cites a primary source, and no measured or computed number in the
+  prose is typed by hand;
+- the notebook opens and runs alone on Python 3.11 and 3.12, and Run all is a good experience.
+
+A lesson is marked built only after an independent reviewer has tried to break it, including by
+grading plausible wrong answers against its rubric.
+
+## For maintainers
+
+- `lessons/`, `flagships/`, `programmes/`: track lessons, flagship subtrees, industry programmes.
+- Lessons are written and gated in a separate source that holds the worked solutions and the
+  rubrics; this repository receives the student version of each lesson once it passes.
+- `tools/notebooks.py` generates each `lesson.ipynb` and its launcher cell (`--check` for drift),
+  and `tools/verify_portable.py` runs each notebook alone in a minimal kernel on Python 3.11 and
+  3.12. `.github/workflows/lessons.yml` runs both on Linux on every change, and fails if a
+  solution or rubric file is ever committed here.
+- `brand/` holds the Synapsa Commons lockups used here and at the top of every notebook.
+
+## The 2017-2025 tutorials
+
+From 2017 to 2025 this repository carried a curated collection of machine-learning and
+deep-learning tutorials, much of it gathered from other people's work. It helped a great many
+learners, and we are grateful to everyone who starred it, forked it and contributed to it. That
+collection has now been retired from public view, so that everything published here is original
+work we can stand behind and license. Synapsa Commons replaces it.
+
+## Licence
+
+Synapsa Commons is © 2026 RealAI, free to learn from and share, and licensed under
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/); the legal code is in
+[`LICENSE`](LICENSE) and a plain-words summary in [`NOTICE`](NOTICE).
+
+| You may | You must | You may not |
+|---|---|---|
+| use the lessons to learn and to teach; copy, fork, share and adapt them | credit "Synapsa Commons by RealAI" with a link here, say what you changed, and share adaptations under the same licence | use them, or anything adapted from them, for commercial advantage or payment: selling them, charging for a course or training built on them, or packaging them into a paid product or service |
+
+Commercial licences are available from [RealAI](https://www.realai.eu/contact). Third-party
+material inside a lesson keeps its own licence, named in that lesson's `assets/SOURCE.md` or
+`claims.yaml`. The Synapsa name and logo belong to RealAI and are not licensed.

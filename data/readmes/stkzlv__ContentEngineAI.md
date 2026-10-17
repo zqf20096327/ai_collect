@@ -1,0 +1,125 @@
+# ContentEngineAI
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-312/)
+[![Code style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Development Status](https://img.shields.io/badge/status-pre--production-orange.svg)](docs/versioning.md)
+
+**License**: MIT | **Status**: Pre-Production
+
+**ContentEngineAI** is an AI-powered pipeline for generating short, vertical (9:16) promotional videos for e-commerce products. It automates the complete workflow from scraping product data to delivering final videos with AI-generated scripts, voiceovers, and content-aware subtitles.
+
+## Key Features
+
+- **End-to-End Automation**: Complete video production from scraping to publishing
+- **Social Media Publishing**: Auto-scheduling with slot detection + cleanup after publish
+- **Link-in-Bio Integration**: Auto-add affiliate links to bio page after publishing (Lnk.Bio)
+- **Affiliate Disclosure**: Opt-in rendering of an affiliate program's literal identification phrase in the caption body, configurable for non-Amazon programs (off by default; the `#ad` disclosure is separate and applied to any render carrying a material connection)
+- **Published Products Registry**: Track all published products in JSON/CSV format
+- **Batch Processing**: Process hundreds of products with unified scrape + produce + publish pipeline
+- **Platform-Specific Metadata**: AI-generated titles, captions, hashtags for YouTube, TikTok, Instagram
+- **Content-Aware Subtitles**: Dynamic positioning with CTA-synchronized dual-line support
+- **Premium Audio**: Google Chirp 3 HD and Gemini TTS voices with Whisper STT synchronization, channel-wide voice pinning
+
+## Quick Start
+
+ContentEngineAI runs from a checkout, not from a PyPI install: `poetry install`
+provides its dependencies and everything runs as `python -m src.<module>`. It
+is deliberately not published as a package.
+
+```bash
+# 1. Setup (requires Python 3.12+, FFmpeg, Poetry)
+git clone https://github.com/stkzlv/ContentEngineAI.git && cd ContentEngineAI
+poetry install && poetry run playwright install
+cp .env.example .env  # Configure API keys
+
+# 1b. Animated captions (optional, and on by default in the bundled config)
+poetry install --with pycaps && poetry run playwright install chromium
+
+# 2. Generate a video
+poetry run python -m src.scraper.amazon.scraper --product-ids B0BTYCRJSS --debug
+poetry run python -m src.video.producer outputs/B0BTYCRJSS/data.json slideshow_images1 --debug
+
+# Or render a topic, with no scraper run and no product directory.
+# The same flags work on the global batch, which also publishes it.
+# This profile has no product photography, so it writes the script first and
+# then searches stock footage on phrases taken from the narration.
+poetry run python -m src.video.producer slideshow_stock \
+  --topic "Why your wifi keeps dropping" \
+  --topic-description "Router placement, channel congestion, 2.4 vs 5GHz."
+
+# 3. Batch pipeline (scrape + produce + publish)
+poetry run python -m src.pipeline.global_batch \
+  --keywords "wireless earbuds" \
+  --profile slideshow_images1 \
+  --platforms youtube tiktok \
+  --debug
+```
+
+See [Installation](docs/guides/installation.md) for complete setup instructions.
+
+**Two things the quickstart assumes:**
+
+- **Animated captions need the optional `pycaps` group.** The bundled config sets
+  `subtitle_engine: pycaps`, so step 1b is what makes the shipped default work.
+  Without it a run falls back to FFmpeg captions and warns once; that is a
+  supported configuration, just not the one the config describes. The renderer
+  runs without a display as of 2026-09-02; if its per-word screenshots time
+  out, wrap the producer in `xvfb-run -a`. See
+  [Subtitles](docs/explanation/pycaps-subtitles.md) and
+  [Troubleshooting](docs/guides/troubleshooting.md).
+- **Publishing needs an account before `--platforms` does anything.** Set
+  `LATE_API_KEY` in `.env` and connect YouTube, TikTok or Instagram in the
+  scheduler first. Add `--skip-publish` to run the batch without it. See
+  [Publishing](docs/guides/publishing.md).
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [Documentation map](docs/README.md) | Where each kind of document lives, and the decision records |
+| [Installation](docs/guides/installation.md) | Setup guide with prerequisites and API keys |
+| [Configuration](docs/reference/configuration.md) | YAML config reference and CLI overrides |
+| [Scraping](docs/guides/scraping.md) | Scrape products from Amazon: ids, URLs, keywords and input files |
+| [Scraper Reference](docs/reference/scraper.md) | Scraper CLI flags, `config/scraper.yaml` keys and product-count rules |
+| [Scraping Explained](docs/explanation/scraping.md) | Browser mode, anti-bot defences, throttling and media thresholds |
+| [Producing Videos](docs/guides/producing-videos.md) | Render a product, a topic or a batch, and iterate on one step |
+| [Video Producer Reference](docs/reference/video-producer.md) | Producer CLI flags, profile keys, assembly modes and pipeline steps |
+| [Video Pipeline Explained](docs/explanation/video-pipeline.md) | How the steps fit, script-first stock renders, profiles and assembly modes |
+| [TTS Voice Profiles](docs/explanation/tts-voice-profiles.md) | Voice presets, providers, and style direction |
+| [Pycaps Subtitles](docs/explanation/pycaps-subtitles.md) | Optional animated caption engine (TikTok/Reels style) |
+| [Platform Safe Zones](docs/explanation/platform-safe-zones.md) | Subtitle safe zones for TikTok, YouTube Shorts, Reels |
+| [Batch Processing](docs/guides/batch-processing.md) | Multi-product pipelines and automation |
+| [Global Batch Reference](docs/reference/global-batch.md) | Global batch CLI flags |
+| [Publishing](docs/guides/publishing.md) | Publish, schedule, retry and clean up videos through Zernio |
+| [Publisher Reference](docs/reference/publisher.md) | Publisher CLI, `config/publisher.yaml` keys, metadata files, webhooks and Python API |
+| [Publishing Explained](docs/explanation/publishing.md) | Slots, the retry queue, cleanup, link-in-bio, first comments, the delivery sweep and analytics |
+| [Zernio Client](docs/reference/zernio-client.md) | Direct API client usage, retries, raw REST, and SDK workarounds |
+| [Compliance](docs/explanation/compliance.md) | FTC, Amazon Associates, and EU disclosure stack with manual workarounds |
+| [Architecture](docs/architecture.md) | System design and module overview |
+| [Roadmap](docs/roadmap.md) | Planned work by horizon (Now / Next / Later) |
+| [Troubleshooting](docs/guides/troubleshooting.md) | Common issues and debugging tips |
+
+<details>
+<summary><strong>Developer Documentation</strong></summary>
+
+| Document | Description |
+|----------|-------------|
+| [Development](docs/development.md) | Dev setup and contribution workflow |
+| [Testing](docs/testing.md) | Test framework and coverage |
+| [Linting](docs/linting.md) | Code quality tools (Ruff, MyPy, Bandit) |
+| [Requirements](docs/requirements/README.md) | What the system must do, by area, with ids and statuses |
+| [Captions](docs/explanation/captions.md) | Why captions look the way they do: font, casing, contrast, highlighting, placement, timing |
+| [Promotional videos](docs/explanation/promotional-videos.md) | Why product videos are built this way: hook, cut cadence, closing line, CTA, disclosure, trust signals |
+| [Tutorials](docs/explanation/tutorials.md) | Why topic videos are built this way: answer-first structure, length, stock visuals, search discovery, durability metrics |
+| [Video length](docs/explanation/video-length.md) | How long videos run and why: platform limits, how views are counted, the evidence for product and tutorial lengths, top creators' lengths |
+| [Audio](docs/explanation/audio.md) | Why the mix sounds the way it does: original audio, voiceover and music levels, ducking, loudness |
+| [Versioning](docs/versioning.md) | Semantic versioning and releases |
+| [Contributing](CONTRIBUTING.md) | How to contribute |
+| [Agent instructions](AGENTS.md) | The rules coding agents follow in this repository |
+
+</details>
+
+## License
+
+**MIT License** - see [LICENSE](LICENSE) for details

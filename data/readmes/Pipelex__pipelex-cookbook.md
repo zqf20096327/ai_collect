@@ -1,0 +1,210 @@
+<div align="center">
+  <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
+  <br/>
+  <br/>
+
+  <br/>
+  <br/>
+  <h2 align="center">Pipelex Cookbook 📚</h2>
+  <p align="center">Worked examples of AI methods, written in MTHDS and run with Pipelex, to read, run and adapt.</p>
+
+  <div>
+    <a href="https://go.pipelex.com/docs"><strong>Documentation</strong></a> -
+    <a href="https://github.com/Pipelex/pipelex-cookbook/issues"><strong>Report Bug</strong></a> -
+    <a href="https://github.com/Pipelex/pipelex-cookbook/discussions"><strong>Discussions</strong></a>
+  </div>
+  <br/>
+
+  <p align="center">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+    <br/>
+    <a href="https://go.pipelex.com/discord"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+    <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
+    <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
+    <a href="https://github.com/Pipelex/pipelex"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
+    <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
+    <br/>
+    <br/>
+</div>
+
+<!--
+Adapted from the onboarding source's front-door and api-key assemblies, last re-read against the rendered files at
+Pipelex/.github@262c71f (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
+sentence on setting up a door, is a block's own words, so a change lands in the blocks first and is then carried here; where
+a sentence of the blocks says "it" for the agent of the sentence before, which this page does not carry, the agent is named.
+This page's own are the headings, the sentences sending a reader to a method's page, the two lists `make render` writes between
+their BEGIN and END markers, the recipes and tutorial sections, and the closing section on running a method from your
+terminal, since the assembly's last block describes the runtime repository that carries it.
+-->
+
+## Try a method in a minute
+
+**Sign up at [app.pipelex.com](https://app.pipelex.com).** Every method below then runs through each of these doors by its address, and its page shows that door's command for it.
+
+### In your chatbot
+
+Add the Pipelex MCP in your chatbot's settings by the address below — in Claude, that is **Add custom connector** — then sign in with your Pipelex account when asked. Nothing to install and no key: the Pipelex MCP runs on your signed-in session.
+
+```
+https://mcp.pipelex.com/mcp
+```
+
+Give the file as a URL the Pipelex MCP can reach. In ChatGPT you can attach it to the conversation instead and ask for a run on it; Claude has no way yet to hand the Pipelex MCP a file you attached.
+
+Each method's page carries the sentence to paste into your chatbot, with the method's address and its sample.
+
+### In your coding agent
+
+<details open><summary><b>Claude Code</b></summary>
+
+```bash
+claude plugin marketplace add Pipelex/pipelex-plugins
+claude plugin install pipelex@pipelex-plugins
+```
+
+Claude Code asks for an API key when you enable the plugin, and stores it in your OS keychain — create one in your console at [app.pipelex.com](https://app.pipelex.com). The skills, the hook that checks every edit and the Pipelex tools load with it. The plugin's hook and the Pipelex tools run on Node.js, so you need Node.js on your `PATH`.
+
+</details>
+
+<details open><summary><b>Codex</b></summary>
+
+```bash
+codex plugin marketplace add Pipelex/pipelex-plugins
+export PIPELEX_API_KEY=plx_sk_...     # create one in your console at app.pipelex.com
+```
+
+Restart Codex, run `/plugins` to install `pipelex`, and trust the plugin hook on first run. Requires Codex 0.141 or later. The plugin's hook and the Pipelex tools run on Node.js, so you need Node.js on your `PATH`.
+
+</details>
+
+`/pipelex-run` takes the same address as the chatbot, so the sentence on each method's page runs in your coding agent too.
+
+### In your code
+
+Create an API key in your console at [app.pipelex.com](https://app.pipelex.com) and give it to your program as `PIPELEX_API_KEY` — the only thing to configure, since `PIPELEX_BASE_URL` already points at the hosted API.
+
+```bash
+export PIPELEX_API_KEY=plx_sk_...
+```
+
+Ask your agent to call the method from your TypeScript or Python code, and `/pipelex-integrate` generates the method's types and one typed call that runs it, through the TypeScript SDK [`@pipelex/sdk`](https://www.npmjs.com/package/@pipelex/sdk) or the Python SDK [`pipelex-sdk`](https://pypi.org/project/pipelex-sdk/). Any other software runs a method via API through `POST /v1/start`, with any HTTP client.
+
+Each method's page shows the TypeScript, Python and HTTP calls that run it on its sample.
+
+### As an app
+
+Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) and leaves it running on your machine.
+
+Each method's page carries the one command, `npm create @pipelex/method-app`, that makes the app for that method.
+
+**Next:** [what Pipelex is](https://go.pipelex.com/product) · [documentation](https://go.pipelex.com/docs) · [your console](https://app.pipelex.com) · [Discord](https://go.pipelex.com/discord)
+
+<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
+
+## Methods you can run by address
+
+Each of these methods runs on the hosted Pipelex API by its address, through every door above, with nothing to install. Its page shows each door's command for it, with a sample to try it on.
+
+- **[Cited answers for an AI system register](methods/answer_from_documents/)**: Read the documents a team answers from and one question about them, and return the answer an AI governance lead sends to the team that asked and files in the register of AI systems: a short answer and why, the passages it rests on quoted word for word with their page, how confident it is, what it does not cover, and a plain status saying when the documents do not settle the question.
+- **[Schedule update checked against the baseline](methods/check_schedule_update/)**: Read a contractor's schedule update, the chart its scheduling tool exports, against the company's master schedule baseline and slip tolerance, and return what a project controls analyst loads into the master schedule and sends to the project manager: every task and milestone of the chart as a row with its status and its dates to the month, each baseline milestone compared with the update and flagged under the tolerance with the reason the update gives, and a two-sentence note on what slipped.
+- **[Weekly newsletter for a Discord community](methods/discord_newsletter/)**: Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in.
+- **[DPE record for a letting agency](methods/extract_dpe/)**: Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules.
+- **[Expense audit test batch with receipt photos](methods/gen_expense_data/)**: Read a brief giving a company's expense policy and the test batch it wants, and return expense reports for invented employees, each claim with a photo of its receipt and the verdict the audit should reach, compliant or the rule it breaks: here, an invented engineering consultancy in Lyon whose employees, merchants and receipts are all made up and whose receipt photos are generated by an image model, to test a change to an automated expense audit without a single real employee's claim.
+- **[Synthetic test tickets for a support triage](methods/gen_synthetic_data/)**: Read a description of the records a team needs and return a batch of realistic, varied synthetic records, each with the case it covers and its fields as the description gives them: here, customer service tickets, every one of them invented, with the queue and the priority the triage should give each, to test a change to the routing without a single real customer's message.
+- **[Go/no-go sheet from a funder's briefing deck](methods/qualify_bid/)**: Read a funder's or buyer's briefing deck against the company's bid criteria, and return the go/no-go sheet a bid manager takes to the bid/no-bid meeting and files in the bid pipeline: each criterion met, missed or not stated, with what the deck says and the slides it rests on, a recommendation by the company's own rule, and the questions to send to the funder, a partner or management before bidding.
+- **[NDA review against a playbook](methods/review_nda/)**: Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off.
+- **[Release post in the company's voice](methods/write_release_post/)**: Read a release's engineering notes and the company's style guide for release posts, and return the customer-facing blog post a product marketing manager pastes into the CMS: the title, slug, meta description, excerpt, category and tags, each held to the guide's limits, the body in Markdown written to the guide's rules, and what the post leaves out of the notes, with the rule that leaves it out, to check before publishing.
+
+<!-- END methods -->
+
+<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->
+
+## Methods from the library
+
+More methods are published in the [Pipelex method library](https://github.com/Pipelex/methods/tree/v0.1.7), and each runs by its address the same way, through every door above. They are listed here as released at v0.1.7.
+
+- **[CV Analyzer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/cv_analyzer)** · `github.com/Pipelex/methods/cv_analyzer@v0.1.7`: End-to-end candidate screening: extract a CV and a job offer, analyze the match, then either generate tailored interview questions or draft a courteous refusal email.
+- **[Document Summarizer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/doc_summarizer)** · `github.com/Pipelex/methods/doc_summarizer@v0.1.7`: Deep document summarization: profile the document and extract importance-ranked key points in parallel, then synthesize a structured summary with themes and open questions.
+- **[Documents](https://github.com/Pipelex/methods/tree/v0.1.7/methods/documents)** · `github.com/Pipelex/methods/documents@v0.1.7`: Document extraction methods for text, images, and page views.
+- **[Image Card](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_card)** · `github.com/Pipelex/methods/image_card@v0.1.7`: Generate an image from a text description with a small, fast image model, and present the image and its description side by side in an HTML page.
+- **[Image Generation](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_generation)** · `github.com/Pipelex/methods/image_generation@v0.1.7`: Image generation methods: render a description directly, or refine it into an optimized image prompt first.
+- **[Image Generation Fast](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_generation_fast)** · `github.com/Pipelex/methods/image_generation_fast@v0.1.7`: Fast image generation: render a text description directly with a small image generation model.
+- **[Invoice Extraction](https://github.com/Pipelex/methods/tree/v0.1.7/methods/invoice_extraction)** · `github.com/Pipelex/methods/invoice_extraction@v0.1.7`: Extract structured invoice data from a document: classify each page as bill or receipt, then extract amounts, VAT, vendor and buyer details using both the OCR text and the page view.
+- **[Slide Designer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/slide_designer)** · `github.com/Pipelex/methods/slide_designer@v0.1.7`: Turn a rough slide-deck brief into design proposals: polish the brief, generate multiple visual themes, render a mockup image for each, and compose an HTML report presenting them all.
+- **[Table Extraction](https://github.com/Pipelex/methods/tree/v0.1.7/methods/table_extraction)** · `github.com/Pipelex/methods/table_extraction@v0.1.7`: Extract a data table from a screenshot into faithful HTML, then review the result against the image to correct text and formatting.
+- **[Text Stats](https://github.com/Pipelex/methods/tree/v0.1.7/methods/text_stats)** · `github.com/Pipelex/methods/text_stats@v0.1.7`: Deterministic text statistics computed in pure Python: character, word, sentence and paragraph counts, vocabulary richness, most frequent words, and estimated reading and speaking times, reported as Markdown.
+- **[Tweet Optimizer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/tweet_optimizer)** · `github.com/Pipelex/methods/tweet_optimizer@v0.1.7`: Optimize a tech tweet: score the draft for fluffiness, cringiness, humblebragging and vagueness, then rewrite it in your own writing style following Twitter/X best practices.
+
+<!-- END library -->
+
+## Recipes
+
+A [recipe](recipes/) takes one way of using a method further, on a real case, calling it by an address pinned to a release tag.
+
+- **[Run a method](recipes/README.md#run-a-method)**: from your coding agent, then followed later by its run id, or with the three HTTP calls any tool can make. From your terminal, the `pipelex` command runs one by its address too, as [shown below](#run-a-method-from-your-terminal).
+- **[Put a method in your code](recipes/README.md#put-a-method-in-your-code)**: in Python, a FastAPI endpoint, a method over every row of a CSV, a CrewAI agent's tool and a weekly digest; in TypeScript, a Next.js server action, a run read hours after it started, and a local file sent through an upload grant.
+- **[Make it an app](recipes/README.md#make-it-an-app)**: from an address to a web app you deploy, and a second method as a second tab of that app.
+- **[Make it yours](recipes/README.md#make-it-yours)**: a published method copied, changed and saved to your account, and a new method designed from a sentence and proven by a lab.
+
+## Write a method by hand
+
+Your coding agent writes methods for you, but you can write one yourself: the [tutorial](tutorial/README.md) teaches MTHDS, the language methods are written in, from a first pipe to structured outputs, model settings, batches and parallel steps.
+
+The Pipelex extension highlights `.mthds` files and draws their flowcharts: install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pipelex.pipelex), or from the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex) for Cursor, Windsurf and other VS Code forks.
+
+## Run a method from your terminal
+
+The Pipelex runtime runs a method by its address from your terminal, on the hosted Pipelex API, with your Pipelex account and no provider key of your own. Install it and sign in once:
+
+```bash
+uv tool install "pipelex[cli]"
+pipelex login
+```
+
+`pipelex login` signs you in through your browser and saves a Pipelex API key to `~/.pipelex/.env`, where the runtime reads it; `pipelex init`, answered with Enter, does the same while it sets Pipelex up. Then download the sample inputs a method's page links, and run the method by the address its page names. Each run spends credit on your Pipelex account.
+
+```bash
+curl -sLo inputs.json <the inputs.json link on the method's page>
+pipelex run method <the method's address> --hosted --inputs inputs.json
+```
+
+To run it on your own machine instead, with your own provider keys, pass `--local` and give the inputs file by its full path, `--inputs "$PWD/inputs.json"`: a local run of an address reads a relative path from inside the method it fetched. [Run It Yourself](https://docs.pipelex.com/latest/get-started/run-it-yourself/) sets up both.
+
+## Contributing
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) to add a method or a recipe.
+
+## Join the Community
+
+Join our vibrant Discord community to connect with other developers, share your experiences, and get help with your Pipelex projects!
+
+[![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://go.pipelex.com/discord)
+
+## Support
+
+| Channel | Use case |
+| ------- | -------- |
+| **GitHub Discussions → "Show & Tell"** | Share ideas, brainstorm, get early feedback. |
+| **GitHub Issues** | Report bugs or request features. |
+| **Discord** | Real-time chat — [https://go.pipelex.com/discord](https://go.pipelex.com/discord) |
+| **Email (privacy & security)** | [security@pipelex.com](mailto:security@pipelex.com) |
+| [**Documentation**](https://docs.pipelex.com/) | Comprehensive guides and API reference |
+
+## Star Us!
+
+If you find Pipelex helpful, please consider giving us a star on both repositories! It helps us reach more developers and continue improving the tool.
+
+- ⭐ [Main Pipelex Repository](https://github.com/Pipelex/pipelex)
+- ⭐ [Pipelex Cookbook Repository](https://github.com/Pipelex/pipelex-cookbook)
+
+## License
+
+This project is licensed under the [MIT license](LICENSE). Runtime dependencies are distributed under their own licenses via PyPI.
+
+---
+
+*Happy piping!* 🚀
+
+"Pipelex" is a trademark of Evotis S.A.S.
+
+© 2025 Evotis S.A.S.

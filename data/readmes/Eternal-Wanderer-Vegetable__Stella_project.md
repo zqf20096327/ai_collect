@@ -1,0 +1,357 @@
+<div align="center">
+
+![标题图片](assets/pic/Title_Image(Second_Edition)_Compressed_version.jpg)
+
+# 🌟 Stella
+
+**一个依托记忆系统进行拟人化聊天的 QQ 群聊机器人**
+
+*——为 8K 上下文窗口而设计，可以同时兼容本地小模型与在线 API*
+
+[![CI](https://github.com/Eternal-Wanderer-Vegetable/Stella_project/actions/workflows/ci.yml/badge.svg)](https://github.com/Eternal-Wanderer-Vegetable/Stella_project/actions/workflows/ci.yml)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![NoneBot2](https://img.shields.io/badge/NoneBot-2-ea5252)](https://nonebot.dev/)
+[![OneBot V11](https://img.shields.io/badge/OneBot-V11-black)](https://onebot.dev/)
+[![Rust](https://img.shields.io/badge/Rust-1.75%2B-dea584?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?logo=tauri&logoColor=white)](https://tauri.app/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](docs/deployment-docker.md)
+
+中文 | [English](README.en.md)
+
+</div>
+
+---
+
+Stella 不只是把消息丢给大模型换一句回复。它把群聊里零散的信息**沉淀成可检索、可验证、会遗忘的记忆**，并在合适的时机主动开口了解你。
+
+Stella 的设计前提是上下文窗口很小 —— 基准上限是 **8192 tokens**。人格、记忆、历史对话、工具结果要在这么小的预算里共存，靠堆 prompt 是不可能的。所以这个预算被拆开了：记忆在库里筛完才注入，工具在聊天上下文之外执行、只交回一句结论，滚出窗口的对话自动压缩成回顾。**插件装再多，占的也不是对话窗口。** 小窗口能跑，大窗口自然更宽裕；但反过来不成立——假设窗口无限的架构，换到 8K 上会直接失控。
+
+模型从哪里来由你定。
+- **全本地**：聊天用 GPU 上的模型，记忆整理用 CPU 上的小模型，互不抢占资源，没有任何一条群聊内容离开你的机器。
+- **全在线**：填一个 OpenAI 兼容的 API 就能跑，不需要显卡。
+- **混合**：把对话生成交给在线模型，记忆整合、会话压缩这类高频低难度的活留在本地，只有需要强推理的那一步出网。
+
+> 注：选择全本地部署运行的模式时，数据不出网是彻底的。需要联网的工具（查天气、查番剧）由插件自己发送请求和返回实际的数据，而判断该不该用工具、把结果压缩成摘要、把插件卡片渲染成图片，全部在本地完成。
+
+## 6.2.0 当前版本
+
+- 记忆来源证据与 claim lineage 纳入可审核合同；数据库自动迁移至 schema 19，旧 evidence 标记为 `legacy_unverified`，不会自动变成已验证事实。
+- 回复归属使用 typed reply envelope 与来源证据校验；会话压缩有界批处理并保留可验证来源包，统一最终回复协议。
+- Rust 记忆后端合同升级为 API 3 / schema 19；Rust 安装须使用本版本随包构建的 native wheel。
+- 真实 QQ 灰度、Rust 检索排序一致性，以及干净 VM / GUI 首启仍需按各自验收流程单独确认。
+
+升级前备份完整数据根，并先在副本运行 `python -m deploy migrate --dry-run`。完整中英文指南、默认值与验收边界见 [文档索引](docs/README.md)。
+
+## 🔌 三种部署模式
+
+| 模式 | 聊天模型 | 记忆整理 | 适合谁 |
+|---|---|---|---|
+| **全本地** | 本地（LM Studio 等） | 本地 | 有显卡、在意隐私、不想付费 |
+| **混合**（推荐） | 在线 API | 本地 | 想要更好的对话质量，但不想把高频小任务的 token 钱也付出去（本机仍要跑得动小模型） |
+| **全在线** | 在线 API | 在线 API | 没有显卡 / 轻量服务器 / 想尽快跑起来看看效果 |
+
+- 三种模式共用同一套记忆、人格与插件配置，换模式只是改配置，不丢数据。配置界面里三种模式各有一个一键预设（`纯本地` / `混合（对话在线 · 整合本地）` / `纯在线（双 key）`），点一下把六个常驻角色一起配好，之后还能逐个微调（第七个角色 `VISION` 负责图片转述，默认不绑端点、不参与预设，需要时在高级配置里单独指定）。
+
+- 用在线模型时，**对话生成与记忆整理各用一个独立的 API key**，两边的前缀缓存互不冲刷；能力路由跟着聊天端点走，复用同一份前缀。
+
+- 向量检索（embedding）恒定跑在本机，不参与模式切换——换 embedding 模型等于换向量维度，整库向量都要重算，不能随「今天用在线」这种决定漂。没启用它时检索退回 SQLite 全文索引。
+
+- 如果您选择了在线模型，就意味着对应那一步的聊天内容会发给你选定的服务商。您需要注意：**仅当聊天与记忆两侧都用本地模型时，Stella 才是零出网的。**
+
+## ✨ 特性
+
+### 在 **8192tokens** 的上下文预算里工作
+
+- **🧰 工具能力与人格解耦** —— Router 先判断这句话需要什么能力，工具在**聊天上下文之外**执行，只把压缩后的一句结论交回给 Stella。工具描述与原始返回都不进人格 prompt，插件装再多也挤不掉对话窗口
+
+- **🗜 长对话不断线** —— 滚出上下文窗口的早期对话自动压缩成回顾，三层上下文（会话摘要 / 原始尾巴 / 话题摘要）按消息 id 划分绝不重叠，且各自的预算分开可调
+
+- **🎯 记忆分区注入** —— 聊天素材与行为约束严格分离，敏感信息（边界、忌口、冲突）永不作为聊天话题被提起。只注入筛过的那几条，不把全部记忆倒进 prompt
+
+- **🧠 两层记忆过滤** —— 捕获宽松（允许不确定信息进入候选），晋升严格（置信度分档 + 交叉验证 + 每用户配额）。过滤发生在有数据、可审计、可回滚的那一层，而不是 prompt 里——在库里筛完才花窗口，候选与置信度不占对话预算
+
+- **🔄 模型可替换** —— 对话、能力路由、插件借用、会话压缩、记忆整合、记忆提取、图片转述七个角色各自指定用哪个端点，本地与在线任意搭配；向量检索固定在本机。换模型不动记忆，换模式也不用重建库
+
+- **🖼 能看图** —— 可选的图片转述角色：被 @ 的消息里带图片时，先用视觉模型把图翻译成一句文字描述再进对话。消费级本地模型大多没有可用的图像转述能力，因此**默认关闭**，绑一个确认可用的视觉端点（本地多模态或在线视觉模型）即点亮；没绑定时行为与不支持识图的旧版完全一致
+
+- **💰 花了多少钱是可见的** —— 在线 token 用量按角色/端点/模型记日账，GUI 与 `deploy status` 里能看到今日用量、**厂商前缀缓存的命中率**（验证省钱手段真的生效的唯一手段）与预算余量；可设每日预算，撞破后默认只暂停记忆整理，**群里照常能说话**
+
+### 记忆系统
+
+- **🔍 记忆需要证据** —— 同一件事被反复提到才会累积置信度；用户直接对 Bot 说的话视为高密度证据，单次即可采信；长期无新证据的候选自动淘汰
+
+- **💬 主动获取信息** —— 群聊被动摄入的信息密度极低，因此 Stella 会主动 @ 活跃用户搭话或确认记忆。有每日配额、用户级冷却与「连续无回应即退避」保护
+
+- **🎭 表达跟着群体进化（默认关）** —— 社交学习闭环：从投递回执与回复效果里沉淀「哪句表达值得复用」与「群体黑话是什么意思」，先影子模式只记录不干预，转正后经预算受控的槽位注入，效果再回流修正。默认关闭，灰度开启（`SOCIAL_ENABLED` / `SOCIAL_MODE`，见[配置文档](docs/reference/configuration.md)）
+
+- **🏠 多群共享空间** —— 多个 QQ 群可归入同一空间，共享用户画像、长期记忆与人格；而消息尾巴、话题状态、静音开关仍按群隔离，不会在 A 群回应 B 群的对话
+
+- **🔎 混合检索** —— SQLite FTS5 全文索引 + 多维加权排序，可选接入本地 embedding 语义检索，服务不可用时自动降级
+
+- **♻️ 会遗忘** —— 按记忆类型设定生命周期，低价值记忆自动归档，长记忆拆分为原子事实
+
+### 工程
+
+- **🔗 兼容 AstrBot 插件** —— 现成的 AstrBot 插件放进 `data/plugins/` 就能跑，不改源码。插件的卡片模板由**本地 Chromium** 出图，不依赖外部渲染服务
+
+- **🔌 可扩展** —— Pipeline 前后置 Hook 机制，扩展目录自动加载
+
+- **🧪 可验证** —— 单元与集成测试覆盖记忆晋升、跨用户隔离、两层归属、防编造护栏、路由降级与工具隔离；接在线端点后还多一层**厂商中立契约测试**（请求体多带一个字段就红、参数差异只许按错误措辞自适应而不许写厂商白名单）与前缀缓存守卫；另有探针脚本对真实模型做回归验证（含一个专门复现「噪音环境下漏掉信息」的用例），以及一份量化四类路由错误的基准
+
+## 🚀 快速开始
+
+> 本节面向 **Windows 桌面**部署。Linux / 远程服务器请直接看 [Docker 部署指南](docs/guides/deployment-docker.md)。
+>
+> **v2 控制面（现行界面）**：浏览器直接访问 Bot 同端口即是完整管理面板（鉴权/配置/插件/MCP/知识库/定时任务/实时日志，详见 [docs/webui.md](docs/guides/webui.md)）；桌面壳（Tauri 2）内嵌同一套面板。旧版原生界面已淘汰，冻结于 tag `gui-v1-final`。
+
+### 📦 下载 & 安装（普通用户）
+
+- 第一步：到 [Releases](https://github.com/Eternal-Wanderer-Vegetable/Stella_project/releases) 选一种 Windows 产品下载。按「要不要帮你把运行环境装好」分两条产品线：
+
+  - **OneClick 一键安装（推荐）**：`Stella-OneClick-Python-vX.Y.Z-windows-amd64.exe`，单文件安装程序，双击安装。首次启动会自动准备嵌入式 Python、`llama.cpp` CPU 后端、NapCat 与 `qwen3-embedding-0.6b` 向量模型——**NapCat 无需单独安装**，但登录仍需人工扫码（程序不会代扫码）。想用 Rust 记忆引擎就下载 `Stella-OneClick-Rust-vX.Y.Z-windows-amd64.exe`，引擎在安装阶段一并就绪。
+  - **OneClick 一键安装·离线版**：`Stella-OneClick-Python-Offline-vX.Y.Z-windows-amd64.exe`（Rust 版为 `Stella-OneClick-Rust-Offline-*`）。安装流程与在线版完全相同，但嵌入式 Python、全部 Python 依赖、`llama.cpp` CPU 后端、NapCat、向量模型与浏览器渲染内核**全部随包内置，安装与渲染全程不需要联网**——适合国内网络受限或内网环境。代价是安装包体积约 1GB。
+  - **Standalone 解压版**：`Stella-Standalone-Python-vX.Y.Z-windows-amd64.zip`，解压即用，**只包含 Stella 本体**——需要自备 Python 3.10+ 与 NapCat，也不会自动下载 `llama.cpp` 或任何模型。Rust 版（`Stella-Standalone-Rust-*.zip`）额外附带 Rust 记忆引擎 wheel，首次启动自动离线安装并启用。
+
+  两类产品都提供 `Stella.exe` 图形界面（推荐）与 `start.bat` 命令行两种启动方式。`Stella.exe` 启动时自动跑一遍环境自检——尚未配置会打开「配置」页，有阻塞问题会打开「环境自检」页，一切正常则直接进入「运行状态」页；`start.bat` 则进入命令行配置向导并启动 Bot。**请勿把两类产品装进同一个目录。**
+
+> **关于「未知发布者」提示**：当前版本的 Windows 安装程序尚未做代码签名（签名证书就绪后会恢复强制签名门禁），SmartScreen 可能弹出「未知发布者」警告，属预期行为。每个 Release 附带 `SHA256SUMS.txt` 可自行校验下载完整性；下载页的说明与发布工作流是唯一可信来源。
+
+> AI 可以关闭。关闭 AI 或本地模型暂不可用时，基础 Bot、OneBot 诊断和部署管理仍可运行。
+
+- 第二步：按使用场景准备其余组件：
+
+  - 接入 QQ：OneClick 版的 NapCat 已随装就绪，扫码登录后，在 NapCat WebUI 的「网络配置」里添加「WebSocket 客户端」指向 Bot（反向 WS，地址 `ws://127.0.0.1:8080/onebot/v11/ws`）；Standalone 版请先自行安装 [NapCatQQ Desktop](https://github.com/NapNeko/NapCatQQ-Desktop)，再按同样方式配置反向 WS。
+  - 如果要使用本地聊天模型：安装 [LM Studio](https://lmstudio.ai/) 并加载模型（OneClick 已内置 `llama.cpp` CPU 后端与向量模型）。使用在线模型时不需要安装 LM Studio。
+
+> **小提示**：首次运行会下载并运行 Python，此行为可能会被您电脑上的安全防护软件报告为可疑操作并拦截，需加入信任列表。
+
+- 第三步：
+  - 1.首次打开 `Stella.exe` 后会出现配置界面。先填**监听端口**（就是第二步在 NapCat 里配的反向 WS 端口）与要让 Stella 进的**群号**。
+  - 2.往下到「模型服务」分区，按你的部署方式点一个**一键预设**，再把对应的端点卡片填完：
+    - **全本地** → 点「纯本地」，在本机 OpenAI 兼容端点卡片里填 LM Studio、llama.cpp 或其他兼容服务的地址与模型 ID。点卡片上的「测试连接」可以读取服务端模型列表。
+    - **全在线 / 混合** → 点「纯在线（双 key）」或「混合（对话在线 · 整合本地）」，在两张在线卡片里各填一次服务商地址、API key 与模型 ID。**两把 key 要填不同的**，原因见[三种部署模式](#-三种部署模式)。
+  - 3.配置完成后，单击“保存并检查”，程序会自动跳转至“运行状态”界面。单击“启动”即可。
+
+> 遇到了问题？你可以加入开发者所在的QQ群：263402786，在群里@（目前唯一的）开发者Eternal-Wanderer-Vegetable。
+
+### ⬆️ 从旧版本升级
+
+1. 运行 `stop.bat` 停止程序
+2. OneClick：直接运行新版本的安装程序；Standalone：把新版本解压到一个新目录
+3. 双击 `Stella.exe`（或 `start.bat`）→ 确认「配置导入」
+
+配置、记忆、人格、空间设置与已装插件会自动搬过来，数据库自动升级，`runtime/` 自动复用（省一次
+约 100MB 的下载）。全程**只读旧目录**——无论成败旧安装都还在原地能跑，可以放心重试；导入报告
+写在当前 `STELLA_HOME/migration_report.md`。命令行等价操作：
+
+```bash
+python -m deploy migrate --dry-run   # 先看预览（会在数据库副本上真跑一遍）
+python -m deploy migrate             # 执行
+```
+
+OneClick 安装还可以用版本化升级做**原子切换**：`python -m deploy upgrade <已解包的新版本目录> --version X.Y.Z` 校验通过后切换激活记录；出问题 `python -m deploy upgrade --rollback` 一键回滚到保留的上一版本树（双向）。
+
+从 2.x 升级也不需要丢记忆：旧库会自动迁移（列改名、按共享空间重新归属、用户画像归入其消息
+最多的那个空间）。
+
+**用户数据放在哪**，取决于产品线与安装历史（`python -m deploy paths` 可查看实际位置与命中的规则）：
+
+- **OneClick 全新安装**：数据根默认放在**程序目录之外**的 `%LOCALAPPDATA%\Stella\Data`，机器级指针文件 `%LOCALAPPDATA%\Stella\home.txt` 记录这个位置——卸载重装、升级换程序目录都不会碰到数据。已有的数据根（旧版同级目录、便携目录、指针指向）一律沿用，**绝不迁移**。
+- **Standalone 与手工部署**：默认放在程序目录**同级**的 `StellaData/`：
+
+```text
+D:\你的目录\
+  Stella\                ← 程序目录（升级时整个换掉，可以放心删；Standalone 压缩包内没有
+                            内层文件夹，解压目标就是它）
+  StellaData\            ← 你的数据（升级时一动不动）
+```
+
+- **便携模式（两条产品线通用）**：想让程序与数据自包含（整体拷进 U 盘），在程序目录里手工建一个 `StellaData\` 子目录即可，程序会优先用它——代价是它会跟着程序目录一起被替换或删除，升级前务必先导入或备份。
+
+此后升级只需替换程序目录，数据不用动；清理旧的版本文件夹不会碰到数据。
+用 `python -m deploy paths` 可以查看数据目录的实际位置与命中的是哪条规则。
+
+### 开发者测试
+
+```bash
+git clone https://github.com/Eternal-Wanderer-Vegetable/Stella_project.git
+cd Stella_project
+pip install -r requirements.txt
+```
+
+### 环境要求
+
+| 组件 | 要求 |
+|---|---|
+| 操作系统 | Windows 10/11 x64（OneClick 安装包已内置 WebView2 运行时离线安装器，无 WebView2 的电脑也能装；Standalone 需系统自带） |
+| Python | 3.10+（OneClick 安装包内置嵌入式 Python；Standalone 解压版需自装） |
+| 框架 | [NoneBot 2](https://nonebot.dev/) |
+| QQ 协议端 | [NapCat](https://github.com/NapNeko/NapCatQQ) 或其他 OneBot V11 实现（OneClick 安装包已内置 NapCat，扫码登录即可；Standalone 推荐用 [NapCatQQ Desktop](https://github.com/NapNeko/NapCatQQ-Desktop) 安装并登录） |
+| 模型服务 | 可选的本地 [LM Studio](https://lmstudio.ai/) / `llama.cpp` Runtime，或任意 OpenAI 兼容的在线 API（填地址 + API key 即可），两者可混用；也可以关闭 AI |
+
+### 配置
+
+建议使用 `Stella.exe` 中内置的“高级选项”表单来进行修改。**不建议手动修改.env。**
+
+完整配置项及其说明见 **[配置文档](docs/reference/configuration.md)**。
+
+### 启动
+
+**普通用户**：在 `Stella.exe` 的「运行状态」页点「启动」（会先跑一遍 doctor 自检）；或双击 `start.bat` 走命令行流程。
+
+**开发者**：
+
+```bash
+# 1. 安装依赖
+pip install -r requirements.txt
+# 2. 生成配置
+python -m deploy init
+# 3. 用 NapCatQQ Desktop 安装并登录 NapCat（需扫码，必须人工），
+#    在 NapCat WebUI 的网络配置里添加「WebSocket 客户端」指向 Bot（反向 WS）：
+#    ws://127.0.0.1:8080/onebot/v11/ws
+#    （若用正向 WS 则改在 .env 里配 ONEBOT_WS_URLS）
+# 4. 启动 Stella（会先跑一遍 doctor 自检）
+python -m deploy start
+```
+
+在群里 @ 机器人即可开始对话。
+
+### 🔗 装插件（可选）
+
+Stella 能直接跑 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 生态的插件，**不用改插件源码**：
+
+```
+把插件目录整个放进  data/plugins/<插件名>/
+如果插件带 requirements.txt，装一下它的依赖
+重启 Stella
+```
+
+目录名不用改：GitHub「Download ZIP」解出来的 `xxx-master` / `xxx-main` 后缀照样能装。但**压缩包本身要先解压**——`data/plugins/` 下的 `.zip` 不会被加载。
+
+启动后看 `logs/boot_debug.log`，里面会写清发现了哪些插件、加载成功还是失败、失败原因。
+
+插件的 `@command` 指令（默认前缀 `/`）装完就能用。插件用 `@llm_tool` 注册的**函数工具**要能在聊天里被自动调用，还需要一份能力声明——按 [插件接入规范](docs/reference/plugin-spec.md) 写的插件**自带** `capability.toml`，这种插件装完就是完整的，你什么都不用配。
+
+插件没自带（多数现存的 AstrBot 插件都没有），或者它自带的那份不合你的用法时，就在 `config/capabilities/<域名>.toml` 里补一条 / 覆盖一条——用户目录里的声明优先级最高，同一个工具被它认领后，插件自带的那条整条跳过。仓库里有一份真实样例（`config/capabilities/entertainment.toml`）可以照抄，格式说明见 `config/capabilities/information.toml.example`，怎么写才准见 [插件接入规范 §6.3](docs/reference/plugin-spec.md#63-怎么写-examples)。
+
+> 为什么需要这份声明：插件的工具描述是写给「看着全部工具做选择」的决策器的指令句，而 Stella 的路由是拿它和用户的**问句**算语义相似度——两种用途要求的文本形态不同，直接拿来用会让同类工具互相抢。实测数据与取舍见 [能力系统](docs/architecture/capability-system.md#声明优先为什么自动派生不参与路由)。
+
+写插件或想确认一份声明写得对不对，跑 `python -m deploy plugin-check <插件目录>`：16 项检查，零 error 才算达标。不想从零手写 examples，可以先跑 `python -m deploy plugin-scaffold <插件目录>` 生成一份草稿（`capability.toml.draft`），它同时用真实 embedding 打一份量化报告告诉你这份语料准不准；草稿要人审、改名并把 `reviewed` 置为 `true` 才会生效——没审过的语料到不了路由。
+
+装完想知道它到底进没进路由，三个地方看的是同一份清单：在群里 @ 机器人问一句「你能做什么」、跑 `python -m deploy capabilities`、或者打开 `Stella.exe` 的「插件」页点开这个插件（绿点＝该工具已被声明认领、能被聊天自动触发）。列的都是哪些能力能被聊天自动触发、哪些不能，以及不能的原因（没有声明 / 工具名拼错 / 被更高优先层顶掉 / 实现正在退避）。这比翻启动日志直接。
+
+调试插件时可以打开热重载（`ASTRBOT_PLUGIN_HOT_RELOAD_ENABLED=true`，**默认关闭**），改完代码在群里发「@Stella 重载插件 <插件目录名>」就能不重启生效。它**不等于重启**——裸 `asyncio.create_task` 起的任务、插件起的线程与 monkeypatch 都收不回来，所以怀疑状态不干净就重启，细节见 [插件接入规范 §13](docs/reference/plugin-spec.md#13-调试)。
+
+插件的卡片图由本地 Chromium 渲染，**首次需要出图时会自动后台下载约 270MB 的浏览器内核**，期间插件照常回纯文本，装好后自动生效、不用重启。
+
+### 🔍 出问题先看哪里
+
+所有运行期日志都在 `logs/`：
+
+| 现象 | 看这个 |
+|---|---|
+| 回复内容不对 | `logs/stella_thought_logs.md`（完整 prompt、原始输出、路由判定、工具结果） |
+| 插件没加载 / 工具从不被调用 | `logs/boot_debug.log` |
+| 记忆没生成 | `logs/memory_consolidation_log.md` |
+| 说不清哪里坏了 | `python -m deploy doctor` |
+
+## 📖 文档
+
+完整入口见 [文档总览](docs/README.md)，按使用、架构、参考、开发与历史证据选择；编码 Agent 从 [AGENTS.md](AGENTS.md) 开始。当前分支合同见 [源码合同](docs/development/contracts.md)。
+
+| 文档 | 内容 |
+|---|---|
+| [架构说明](docs/architecture/README.md) | 目录结构、消息处理流程、模块职责、AstrBot 兼容层 |
+| [记忆系统](docs/architecture/memory-system.md) | 两层过滤的设计理由、晋升规则、检索策略 |
+| [能力系统](docs/architecture/capability-system.md) | Capability Router 与 Comes：工具如何在聊天上下文之外执行 |
+| [插件接入规范](docs/reference/plugin-spec.md) | 写一个 Stella 能完整用起来的插件：声明格式、两条通路、失败契约、自检工具 |
+| [配置参考](docs/reference/configuration.md) | 端点 × 角色两层模型配置、全部配置项与调参建议 |
+| [Docker 部署指南](docs/guides/deployment-docker.md) | 远程服务器容器化部署：构建、配置、从 Windows 迁移、升级与备份 |
+| [开发指南](docs/development/README.md) | 测试、探针脚本、CI、贡献流程 |
+
+> 设计过程记录（规范草案、检查点、缺陷报告、测试清单）在 [`design_docs/`](design_docs)。
+
+## 🧠 记忆形成流程
+
+```mermaid
+graph LR
+    A[群聊消息] --> B[短期摘要]
+    B --> C[记忆候选]
+    C -->|证据不足| C
+    C -->|置信度 + 交叉验证| D[长期记忆]
+    D --> E[Policy 过滤]
+    E --> F[分区注入 Prompt]
+    D -->|超期 / 低价值| G[归档]
+```
+
+三条设计原则：
+
+1. **捕获宽，晋升严。** 允许不确定的信息先进入候选并如实标注置信度，但只有经过复现或高密度证据确认的才成为长期记忆。在 prompt 里做过滤不可审计、不留数据、无法改进。且小模型会根据过滤要求设定的正面提示词/负面提示词做出过度反应，不具备任何实用价值。
+2. **有价值的信息不会很多。** 每个用户的长期记忆有明确且可调整的数量上限，到顶后新记忆必须挤掉最弱的一条。
+3. **相关 ≠ 应该使用。** 检索到的记忆还要经过模式匹配、用途兼容、可见性三层过滤才能进入回复。
+
+整合分两阶段执行，各用适合的模型：
+
+| 阶段 | 任务 | 角色 | 全本地时用什么 |
+|---|---|---|---|
+| 阶段 1 | 短期摘要 + 用户画像 + 「本批是否含自我披露」判断 | `CONSOLIDATION` | CPU 上的小模型 |
+| 阶段 2 | 精确提取记忆候选 | `EXTRACT` | GPU 上的主聊天模型 |
+
+两个角色都可以单独指到在线端点（阶段 2 尤其适合换强模型），代价是这一步的群聊原文会发给服务商。
+
+阶段 2 只在阶段 1 判定有自我披露时唤醒 —— 日常刷屏与寒暄既不消耗 GPU，也不花在线 token。这样拆是因为小模型能总结主题，却在噪音环境下会把候选提取判空（实测：信息明确出现在它自己写的摘要里，但候选返回空数组）。
+
+> 细节见 [记忆系统文档](docs/architecture/memory-system.md)。
+
+## 🛠 技术栈
+
+**Bot 后端**：`NoneBot 2` · `OneBot V11` · `SQLite (FTS5)` · OpenAI 兼容 API · `APScheduler` · `httpx`
+
+**可选 Runtime**：Rust `runtime-manager` · `llama.cpp` / `llama-server` · Runtime manifest/state contract
+
+**插件兼容与渲染**：`Jinja2` · `Playwright`（本地 Chromium，仅用于把插件卡片渲染成图片）
+
+**桌面安装器**：`Tauri 2` · `Rust`。v1（`stella-installer/`，原生 HTML/JS，已冻结于 `gui-v1-final`）；v2（`desktop/` 壳 + `dashboard/` 面板，Vue 3 + Vuetify 3，见 `docs/webui.md`）
+
+**容器化部署**：`Docker` · `docker compose`（`Dockerfile` + stella/napcat 双容器编排，另有可选 `llama` profile；Chromium 与中文字体已内置镜像；见 [Docker 部署指南](docs/guides/deployment-docker.md)）
+
+**开发与验证**：`pytest` · `ruff` · `pyright`
+
+### 开发中使用的本地模型
+
+- 语言模型：`google/gemma-4-26b-a4b-qat`（聊天，GPU上运行）、`google/gemma-4-e4b`（记忆整理，CPU上运行）
+- 向量模型：`text-embedding-qwen3-embedding-0.6b`
+
+关键在于**分工与部署**：整合模型设置 GPU Offload = 0 走纯 CPU 推理，聊天/提取模型独占 GPU。两者同时常驻、互不挤显存，因此记忆整理与聊天可以真正并行。这是两阶段方案可行的前提。
+
+应用层为每个模型设了串行闸门（LM Studio 本身不限并发，多请求同时打到同一模型只会互相拖慢）。
+
+> 以上是开发者基于自身设备的配置，仅作为理解代码库的补充，**不构成配置建议**。如果你探索出了更好的方案，欢迎提交 PR 和 issue。
+>
+> 开发过程中测试用模型可能变更，具体会在 release 说明中标注。
+
+## 📄 License
+
+本项目基于 **[GNU Affero General Public License v3.0](LICENSE)** （AGPL v3.0）发布，且**带有不与主协议冲突的附加条款**。详见 LICENSE 文件与各源文件头部的版权声明。
+
+## 💛 致谢
+
+本项目在开发过程中得到了很多人和组织的鼓励和支持：
+
+- 我的父母给予了最重要的经济支持。没有他们，这一切都无从开始。
+- 灵感来源于和 [@t1mb2rg](https://github.com/t1mb2rg) 的讨论和 [@CST-Cat](https://github.com/CST-Cat) 的争执中。感谢他们贡献了属于自己的想法。
+- [@MIO-456](https://github.com/MIO-456) 开发的 [Lumi_Nox](https://github.com/MIO-456/Lumi_Nox) 项目激励了本项目的开发。
+- 感谢 [@vowm3440](https://github.com/vowm3440) , [@CST-Cat](https://github.com/CST-Cat) , [@higashitaniyume](https://github.com/higashitaniyume) 为我寻找到了支持这个项目的公益站资源。没有他们的慷慨分享，这个项目就不可能出现。
+- 感谢 [@qian-o](https://github.com/qian-o) 和他的伙伴们，以及 [@MIO-456](https://github.com/MIO-456) 和他的伙伴们。没有他们的鼓励，就没有最初开发这个项目的动力。
+- 感谢 [@vowm3440](https://github.com/vowm3440) 在QQ群中的持续部署和测试。有许多改进的方向正是因观察这个部署的实例而产生。
+- 感谢Bilibili平台UP主 [Ruuuuusty](https://space.bilibili.com/650991829) 将我和chat-GPT对Stella徽标的想法变为现实。
+- 本项目开发中得到了来自如下组织的支持：
+  - **模型提供商**：Deepseek，OpenAI（ChatGPT），Google（Gemini，Gemma），通义千问（text-embedding-qwen3-embedding-0.6b）和 ~~Anthropic~~。没有他们的优秀模型作为基础，这个项目不可能诞生。
+  - **Coding Agent**：[Opencode](https://github.com/anomalyco/opencode)，感谢 Opencode 对本项目的大力支持。
+  - **开源代码库**：[nonebot2](https://github.com/nonebot/nonebot2)，[NapCatQQ](https://github.com/NapNeko/NapCatQQ)，以及源代码中引用的所有第三方库。向与之相关的所有开发与维护者致敬。此外本项目也是为了向 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 与 [MaiBot](https://github.com/Mai-with-u/MaiBot) 两位前辈看齐，创造一个真正的、能够完整本地循环、不必把群聊信息和个人隐私交出去的 AI 朋友。
+  - **开发者社区**：[Linux Do](https://linux.do)
+- 特别致谢 Freya，这是献给你的作品。我的探索之旅因你的馈赠而起，是时候交出一份并不完美的回礼了。
+
+
+版本化升级工具与安装器默认布局是两回事：当前发布工作流 `VERSIONED_LAYOUT=0`，不会默认开启 launcher 搬移路径；适用条件见 [开发指南](docs/development/README.md)。

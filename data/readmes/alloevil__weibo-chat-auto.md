@@ -1,0 +1,513 @@
+<p align="center">
+  <img src="./assets/hero.svg" width="100%" alt="Weibo Group Chat Archiver — automatically archive Weibo group chat messages, native desktop app + AI summaries and Q&A">
+</p>
+
+<p align="center">
+  <img alt="Tauri" src="https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white">
+  <img alt="Node" src="https://img.shields.io/badge/Node-22.13%2B%20%7C%2024%2B-339933?logo=node.js&logoColor=white">
+  <img alt="Puppeteer" src="https://img.shields.io/badge/Puppeteer-25-40B5A4?logo=puppeteer&logoColor=white">
+  <a href="https://github.com/alloevil/weibo-chat-auto/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/alloevil/weibo-chat-auto/ci.yml?logo=githubactions&logoColor=white&label=CI"></a>
+  <a href="https://github.com/alloevil/weibo-chat-auto/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/alloevil/weibo-chat-auto?logo=github&color=blue"></a>
+  <img alt="Platform" src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-555">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-blue">
+  <img alt="Stars" src="https://img.shields.io/github/stars/alloevil/weibo-chat-auto?style=flat&logo=github&color=yellow">
+</p>
+
+<p align="center">
+  English | <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> ·
+  <a href="#-features">Features</a> ·
+  <a href="#-ai-features">AI Features</a> ·
+  <a href="#-screenshots">Screenshots</a>
+</p>
+
+---
+
+Turn Weibo group chats into a searchable local archive — as a **native desktop app** (in-app QR-code login, no manual cookie setup) or a local viewer. Supports multiple groups, scheduled archiving, per-day JSON export, combined search, cross-day context, AI daily summaries, and agentic Q&A.
+
+---
+
+## 🎬 Demo
+
+![Demo](docs/demo.gif?v=20260923-refined)
+
+> Usernames, group names, and avatars in the demo are anonymized samples. This demo shows an earlier version, not the current v1.31.0 interface.
+
+## 🆕 v1.31.0: Clearer reading and source checks
+
+- **Compact navigation**: group, search, date, and More share a compact header. Desktop shortcuts for syncing, reading filters, and AI assistance have hover and keyboard-focus descriptions; on mobile they appear as labeled items in More. Settings, themes, and the code-log appearance also live in More.
+- **Last successful sync**: shown in the desktop sync tooltip and below the mobile menu item. The completion time is saved across refreshes and restarts; failures do not update it. It records this installation's manual “同步归档” action, not archive-file modification times, scheduled archiving, or live polling.
+- **Full quotes by default**: quoted originals in messages, context, and reverse-reference clues are expanded initially. Long quotes can still be collapsed and expanded manually; context source-return navigation preserves the user's collapsed state.
+- **Natural sender labels**: when matches identify one sender, quotes show a colored “Name:” without a question mark or verification disclaimer. Multiple candidate messages sharing a stable sender ID can also display that name. Colors are ID-based where available, with light/dark variants; palette collisions are possible, so color is not an identity guarantee.
+- **Reading hierarchy**: subdued quote backgrounds and a concise “核对原文” action keep source checks available. Long message text has a bounded line length; short bubbles keep their natural width, messages remain left-aligned, and attachments retain their own sizing.
+
+**Try it after upgrading**: hover the desktop sync icon to see the last successful sync time, or open More on mobile. Choose **More → Settings and themes → Theme** (“更多 → 设置与皮肤 → 皮肤”) for “QQ 2012 · 经典精修” or “现代 QQ · 简洁蓝白”. The default archive reader and other themes remain available.
+
+> **Source boundaries**: displayed names come from matching loaded archives, not necessarily a verified Weibo reply relationship. The main message list uses the current loaded day. Cross-day originals, missing records, text differences, or different senders can still show “发送人待确认”; open “核对原文” to inspect candidates and reasons. The app does not infer an author from the replier or an @mention.
+>
+> **Known limitation**: rapidly shrinking a desktop window to mobile width can lose keyboard focus from a shortcut; this version does not fix that issue. Browser checks use synthetic data, not native macOS, physical-phone, or real-model validation. See the [v1.31.0 release notes](https://github.com/alloevil/weibo-chat-auto/releases/tag/v1.31.0).
+
+### Combined search and source-return navigation
+
+- **Combined search**: combine a sender, an inclusive archive-date range, and multiple words in the message body within the current group. All words must match, case-insensitively, in any order or distance. Results are deduplicated by archive date and message ID, with pagination.
+- **Find a member before choosing one**: filter candidates by a nickname fragment, then explicitly select a member. Stable IDs distinguish identical names; editing the candidate filter does not select someone or search messages.
+- **Cross-midnight context and reference checks**: load adjacent archive days only when needed, with up to 10 messages on each side of the focus. Inspect possible quote sources and reverse-reference clues within the loaded range; multiple possible sources remain visibly ambiguous.
+- **Return without losing your place**: return from a source to search or an AI answer with loaded results, conditions, answer, and position restored, without another search or AI call. Forward and reverse reference candidates also support returning to the original context.
+- **Mobile and keyboard improvements**: an explicit successful “查找” action on mobile collapses the conditions and moves to results. Chinese composition-event handling, interrupted-versus-failed loading, and keyboard focus continuity preserve your ongoing input and navigation.
+- **AI candidate quality**: limit identical-text candidates and protect exact links, domains, and identifiers from the original question within existing budgets, without adding model calls or a vector database.
+
+**Try it**: choose a group → set search scope to “组合检索” → optionally choose a member and archive dates → enter `部署 回滚` in the body query → “查找” → “回原文” → “返回搜索结果”. Leave the body query blank to search by date or member alone.
+
+> **Boundaries**: ordinary search still matches a complete text fragment in the body or nickname; spaces do not mean multi-word AND. Reading filters do not automatically become search conditions. Text-matched references are candidates, not confirmed reply relationships. Context reads at most one adjacent archive day per side, not the entire history. Records without a stable sender ID remain searchable by body/date, but are not merged by nickname.
+>
+> Return state lives only in the current page and does not survive refresh or a group switch. New behavior has synthetic regression coverage, not real IME, physical-phone, or real-model answer-quality validation. Semantic questions without lexical overlap can still be missed. See the [v1.29.0 release notes](https://github.com/alloevil/weibo-chat-auto/releases/tag/v1.29.0) and [retrieval evaluation and limits](docs/retrieval-evaluation.md).
+
+---
+
+## ✨ Features
+
+| Archiver | Viewer |
+| --- | --- |
+| 🗂 Multi-group support (configured in `config.json`) | ⚡ Live sync (opt-in, off by default): new messages appear automatically |
+| 🖥 Native desktop app (in-app QR-code login) | 💬 **Send messages to the group**: text / emoticons / images |
+| 🍪 Automatic cookie persistence + session keep-alive | 🎨 Archive / dark / refined classic QQ / modern QQ themes and more |
+| 📡 Full history via paginated API fetch | 🔀 Searchable group picker + 📅 date navigation + per-group reading memory |
+| ➕ Incremental archiving (resumable; interrupted paginations persist a resume cursor and exit non-zero instead of silently "succeeding") | 🔍 Current-day / all-date search + combined sender, date, and body search |
+| 📆 Per-day JSON export | 📊 Statistics panel (daily activity / rankings / hours / word frequency) |
+| ⏰ Scheduled jobs + manual Sync Now | 🧹 Red-packet / noise message filtering |
+| | 🎯 Cross-day time neighborhoods; return to search / AI / original context |
+| | 💬 Full quotes by default, stable sender colors, on-demand source checks; @mention highlighting |
+| | 🤖 AI daily summaries + agentic Q&A |
+| | 🖼 Image proxy (bypasses hotlink protection), video links, share cards |
+| | 🔔 Desktop notifications (mentions / keywords) + `@me` filter |
+
+---
+
+## 🚀 Quick Start
+
+### 🖥 Download the app (recommended, macOS Apple Silicon)
+
+1. Download `weibo-chat_*_aarch64.app.zip` from the [**latest release**](https://github.com/alloevil/weibo-chat-auto/releases/latest) and unzip it.
+2. First launch: the app is not code-signed yet, so macOS Gatekeeper will block a normal double-click. **Right-click the .app → Open → Open** (only needed once).
+3. Open More → Settings and themes (“更多 → 设置与皮肤”), click Login, scan with the Weibo app, then choose the groups to archive under “归档群聊”.
+
+**Upgrading an existing installation**: quit the old app, download and unzip the new package, replace the old `.app`, and reopen it. Keep your local archives and configuration. For the web version, resolve local changes before running `git pull --ff-only && npm ci`, then restart the viewer and refresh the page.
+
+> ⚠️ Currently **Apple Silicon (M1/M2/M3/M4) only** — there is no Intel or Windows/Linux build yet. The app is unsigned/un-notarized (no paid Apple Developer account), hence the right-click step. On other platforms, use the Web Version below.
+
+### 🌐 Web Version (macOS / Linux / WSL / Windows Git Bash)
+
+```bash
+git clone https://github.com/alloevil/weibo-chat-auto.git
+cd weibo-chat-auto
+npm run setup         # First time: install + configure + QR-code login
+npm run view          # Afterwards: start the viewer → http://localhost:3456
+```
+
+### 🛠 Build the desktop app from source (developers)
+
+```bash
+git clone https://github.com/alloevil/weibo-chat-auto.git
+cd weibo-chat-auto
+npm run desktop
+```
+
+One command does it all: detect environment → install dependencies (Rust/Bun/npm) → build → launch. The first build takes ~10 minutes.
+
+<details>
+<summary><b>Desktop app architecture</b></summary>
+
+- **Tauri v2** native window + WKWebView
+- **Runtime**: Bun compiles the viewer server and an archive/index helper; the app carries `viewer.html` and its browser modules as explicit resources. Running the downloaded app does not require Node or Bun, but archiving still requires Chrome.
+- **Local data**: packaged macOS builds store configuration, cookies, archives, and caches in `~/Library/Application Support/com.alloevil.weibo-chat/`, outside the `.app`. Source-based web usage keeps its repository-local data; this release does not automatically migrate it.
+- **Login**: Rust opens a WebView → scan QR code → `cookies_for_url()` extracts HttpOnly cookies → saved automatically
+- **IPC**: WKWebView does not inject Tauri IPC; HTTP signaling is used instead
+- **Images**: Weibo CDN checks the Referer header; the local `/api/sinaimg?url=` proxy bypasses it
+
+</details>
+
+<details>
+<summary><b>Manual installation (step by step)</b></summary>
+
+#### 1️⃣ Install dependencies
+
+```bash
+npm install
+```
+
+#### 2️⃣ Save cookies
+
+```bash
+npm run save-cookies
+```
+
+A **dedicated browser window** pops up (isolated from your everyday Chrome) and opens the Weibo chat page: scan the QR code with the Weibo app → confirm on your phone → once redirected to the chat list, cookies are written to `cookies.json` automatically.
+
+#### 3️⃣ Configure groups
+
+Copy the template and fill in group names (must match the names in Weibo **exactly** — or skip this step and pick groups in the viewer: ⚙️ Settings → 归档群聊):
+
+```bash
+cp config.example.json config.json
+```
+
+```json
+{
+    "chromePath": "",
+    "groups": \["Group Name A", "Group Name B"]
+}
+```
+
+> Leave `chromePath` empty to auto-detect Chrome on your system; only fill it in if Chrome is installed in a non-default location.
+
+#### 4️⃣ Run & view
+
+```bash
+npm run archive   # First run fetches the last 7 days, incremental afterwards
+npm run view      # Start the viewer → http://localhost:3456
+```
+
+> Port 3456 taken? Pick another one with `WEIBO_PORT=4000 npm run view`.
+
+</details>
+
+---
+
+## 🔁 Daily Use
+
+Just keep the viewer running:
+
+```bash
+npm run view
+```
+
+Open http://localhost:3456 and click the desktop **Sync archive** icon, or More → “同步归档” on mobile. The page checks local archive changes every 60 seconds; this is not a Weibo sync every 60 seconds.
+
+<details>
+<summary><b>Tips for reading history</b></summary>
+
+- **🎯 Context**: open a message's context to read its time neighborhood. Near midnight, adjacent archive days are loaded as needed, with actual dates and range limits visible; nearby messages are not assumed to share a topic.
+- **Check references**: quotes are fully visible by default, with manual collapse for long originals. Choose “核对原文” to inspect possible sources and explicitly select a record. Use “返回原上下文” to resume reading after checking.
+- **Search**: ordinary search matches a complete fragment; combined search supports sender, archive dates, and multiple body words. Open a result's source, then return to the loaded results and position and continue loading more.
+- **Reading progress**: each group's reading position is saved in this browser. Temporary source checks from search/AI do not replace your original reading progress; new-archive notices move you only when explicitly selected.
+- **@me**: the `@me` filter in the nav bar keeps only messages that mention you. The check-in bot @-mentions every member (93% of hits in practice) and is excluded unconditionally
+- **Unread divider**: when you come back, a "new messages below" divider marks everything since your last visit
+
+</details>
+
+<details>
+<summary><b>Cookie maintenance</b></summary>
+
+Weibo ties the webim login state to a **24-hour rolling session** on the weibo.com side: the SUB cookie alone (nominally valid for a year) is not enough — if the rolling session lapses for a day, the login expires. The archiver and viewer have **automatic keep-alive** built in:
+
+| Mechanism | Description |
+| --- | --- |
+| 🫀 Viewer keep-alive | While the viewer runs, the rolling session is renewed every 30 minutes (login state is verified first; guest cookies are never absorbed) |
+| ✅ Renewal on every archive run | After a successful archive, the full browser cookie set is saved and the rolling session renewed along the way |
+| ⚠ Expiry banner | When the session expires, a red banner appears at the top of the viewer immediately; clicking it opens the QR-code window |
+| 🔄 `npm run save-cookies` | Re-scan when already expired (archived data is unaffected) |
+
+So: **keep the viewer (or desktop app) running and the login essentially never expires**. If you stop everything for more than a day, or Weibo force-invalidates the session (device change, password change, risk control), you'll need to scan again — clicking Sync automatically pops up the QR-code window.
+
+When cookies are invalid, the archiver **fails loudly with exit code 1** and tells you to run `npm run save-cookies`; it never pretends to succeed. Scheduled-job logs live in `logs/archive.log`; if `Cookie 已失效` (cookie expired) appears, it's time to re-scan:
+
+```bash
+grep -c "Cookie 已失效" logs/archive.log   # non-zero means you should re-scan
+```
+
+**What does it actually request at startup?** Exactly two calls, neither of which touches chat content:
+
+| Request | Purpose | Why it isn't scraping your chats |
+| --- | --- | --- |
+| `webim/groupchat/query_messages.json?…&id=0&count=1` | The login-state probe (`error_code` is the only reliable signal) | `id=0` is not a real group; the API answers `21201 群不存在` and the response carries neither `messages` nor `last_read_mid`, so it cannot advance Weibo's read cursor |
+| `weibo.com/ajax/profile/info?custom=1` | Renews the 24-hour rolling session | Only reads your own profile |
+
+The endpoint name makes it look like it's pulling group messages — that's its most alarming feature — so `test/weibo-auth.test.js` pins `id=0` down. To audit it yourself, intercept outbound requests:
+
+```bash
+node -e 'const f=global.fetch;global.fetch=(u,i)=>{console.log("→",String(u.url||u));return f(u,i)};require("./scripts/viewer-server.js")'
+```
+
+</details>
+
+<details>
+<summary><b>Live sync & sending messages</b></summary>
+
+Live sync is **off by default**; enable it in More → Settings and themes. While enabled and a page is subscribed, the server polls for new messages every 20 seconds, merges them into day files, and notifies the page over SSE. Manual “同步归档” remains the history-backfill action. Expand “向群里发消息” at the bottom of the reading area to compose a message (Enter to send, Shift+Enter for a newline).
+
+**Why off by default**: polling calls `query_messages` to read group messages, and whether reading advances Weibo's read cursor cannot be falsified from the outside — the endpoint's response carries `last_read_mid`, and the only way to observe it is through the same endpoint. If it did advance, the native Weibo client's unread badges would silently get eaten. Evidence suggests it does not (the webim client has a separate `clear_unread.json`, called only when you open a conversation), but that risk must be a choice you make explicitly.
+
+When disabled, **live polling starts no further group-message requests**: its timer stops, late responses from old rounds do not paginate, write, or notify, and post-send polling is skipped. Requests already sent cannot be recalled. Independent scheduled archiving, manual sync, and login keep-alive are not stopped by this toggle; an SSE connection may remain for enabled daily-summary notifications. The setting is stored in server-side `live-config.json` and shared by pages using that same service.
+
+Both live sync and sending depend on the **group conversation id**. When you select groups from the Weibo conversation list in Settings, the viewer stores the id returned by the API after positively verifying `user.type === 2`. The archiver later cross-checks and refreshes it from actual conversation requests. A newly selected group can therefore send immediately without a preliminary Chrome archive; live sync remains off by default.
+
+| State | Behavior |
+| --- | --- |
+| Selected from the Weibo conversation list in Settings | Live sync and sending are available immediately; no preliminary archive needed |
+| Added only by manually editing `config.json` | Run one archive so the archiver can verify and record its conversation id |
+
+Two more trade-offs:
+
+- **No polling when nobody's watching**: once all pages are closed, polling stops immediately — no idle hammering of Weibo's API in the background.
+- **No local echo of your own messages**: after a successful send, one live-sync round is nudged; your messages take exactly the same ingestion path as everyone else's, so the two sources can never conflict.
+- **Desktop notifications**: by default only when **you are mentioned** (click to jump to the message). Settings let you add keyword subscriptions or enable "digest notification for every batch of new messages" (max 3 per round). Rules are evaluated server-side (`lib/notify-rules.js`) and noise is never notified — otherwise 93% of pushes would be the check-in bot. Permission is requested only once a rule is actually enabled.
+- **Emoticons & images**: pick emoticons to the left of the input box (reuses the 340-entry official list used for rendering, inserts `\[label]`), and send images too — file picker or paste, up to 20MB.
+
+> The image upload endpoint (`/webim/uploadx.json`) was reverse-engineered from the webim frontend bundle and is **not yet verified against the real API** (once you really send one, there's no undo). If image sending fails, check the `\[send]` line in `logs/` first.
+
+⚠️ Sending messages is a write operation, and the viewer's API has no authentication (it only binds to `127.0.0.1`) — any program on your machine could post through it. Never expose the port to the internet.
+
+</details>
+
+---
+
+## 🤖 AI Features
+
+The viewer ships two AI features: **daily summaries** and **agentic Q&A**. Both require an OpenAI-compatible API.
+
+### Configuration
+
+Open **More → Settings and themes** (“更多 → 设置与皮肤”) in the top-right corner, then fill in:
+
+| Field | Description |
+|------|------|
+| Base URL | API endpoint (e.g. `https://api.deepseek.com/v1`) |
+| API Key | Your key |
+| Model | Model name (e.g. `deepseek-chat`) |
+| Vision | Whether to analyze images during summarization |
+
+Configuration is saved locally to `ai-config.json` (never committed to git).
+If the configuration is missing or incomplete, AI actions stay visible and open Settings with the missing fields listed and the first missing field focused. Authentication, quota, timeout, and connection failures are also reported with actionable messages.
+
+### Q&A
+
+Open the desktop **AI assistance** shortcut or More → “AI 助读” on mobile; natural-language time ("recently", "yesterday", "last week") and person filters are supported.
+
+**Agent mode** (default): the LLM searches iteratively, choosing keywords and scope on its own, running multiple rounds until it has enough information.
+
+💡 **If people go by nicknames, add an alias table**: create `output/<storage-key>/aliases.json` in that group's directory; the adjacent `.group-meta.json` records the original group name so you can identify it. Use e.g. `{"tombkeeper": \["tk", "TK"]}` (keys are the real display names as archived). Asking "what did tk say recently" then filters straight to that person instead of making the LLM guess. The file is optional, and CLI `--group <name>` arguments still accept the original group name.
+
+Retrieval automatically drops red-packet notices and check-in bot spam (same rules as the viewer's "hide noise" toggle) and collapses consecutive reposts, so "what is everyone talking about" isn't skewed by flooding. Asking about "last week" / "recently" / "yesterday" uses dates computed by the tools rather than inferred by the LLM. Shared links, videos and images are searchable too (asking "what links were shared last week" now finds them).
+
+Indexing is **automatic**: after each archive run, a background pass annotates the topic chunks that changed, generating a summary plus reworded aliases (only new chunks are annotated; existing ones are reused by content fingerprint, so the steady state is roughly one LLM call per hour). It also works without `ai-config.json` — you just lose that cross-vocabulary recall layer. Only two situations call for running it by hand: backfilling an existing archive, or rebuilding every index — `node scripts/build-qa-index.mjs --group <group> --all` (resumable, and re-runs skip completed days; for a large backlog try `--dry-run` first to gauge the size, or cap it with `--max-llm-calls N`).
+
+<details>
+<summary><b>Technical design</b></summary>
+
+Uses the Agentic Search pattern. The tool loop comes from \[`@mariozechner/pi-agent-core`](https://www.npmjs.com/package/@mariozechner/pi-agent-core)'s `runAgentLoop` (tool dispatch + argument validation + retry + timeout + provider adaptation); this repo keeps only the retrieval layer, the prompts, and the budget gate (≤7 retrieval turns + one no-tools summarization turn when the budget runs out mid-tool-call; LLM rerank capped at 4 calls; 150s wall-clock ceiling over the whole request). Structured state accumulation follows the LedgerAgent paper.
+
+Retrieval layer: topic-chunk splitting (30-minute gaps) → up to 4 bigram BM25 queries from the original question and existing keywords → RRF fusion, identical-text candidate limits, and exact-clue protection → time weighting only for explicitly recent questions → reranking excerpts near actual hits → multiple in-chunk hit windows. Date/person filters still apply first, and exact-clue protection does not override reranker rejection; no online query-rewrite calls are added. Noise removal, aliases, relative-date parsing, and optional offline summaries/rewordings remain available. See the [retrieval evaluation](docs/retrieval-evaluation.md) for methods, fixed synthetic comparisons, and known failures.
+
+Note: the AI proxy must support SSE streaming responses.
+
+See \[`docs/agent-qa.md`](docs/agent-qa.md) for details.
+
+**Benchmark (Agent vs Legacy)** — captured 2026-07 on one private group (56 days of history, 5 questions):
+
+| Metric | Agent | Legacy |
+|------|-------|--------|
+| Avg latency | 20.5s | 10.1s |
+| Success rate | 100% | 100% |
+| Date reasoning | Correct | Occasionally wrong |
+| Search coverage | Multi-round expansion | Single pass |
+| Answer quality | High | Medium |
+
+⚠️ **These numbers are stale and not reproducible.** They predate the block-level BM25 retrieval rewrite and the pi-agent-core loop migration; the original harness lived in `eval/` (an agent scratch directory untracked in ee2a63d) and depended on private archive data. Treat the table as a directional record of why Agent mode is the default, not as a current measurement. Latency in particular should now be lower: the loop no longer pays fixed retry backoff (a 2×429 recovery measured 3011ms → 1407ms — the SDK's default jittered backoff versus the old fixed 1s+2s), so the figure is conservative rather than optimistic.
+
+For current numbers, run `node scripts/benchmark-qa.js --group <group>` against your own archive (see \[`docs/agent-qa.md`](docs/agent-qa.md#benchmark-结果)).
+
+</details>
+
+---
+
+## 📸 Screenshots
+
+<details>
+<summary><b>Click to expand</b></summary>
+
+These are screenshots of an earlier version, kept for reference; they do not show v1.31.0 compact navigation or quote presentation.
+
+**Message view** — hourly heatmap, quote bubbles, @mention highlighting, per-message 🎯 context entry
+
+![Message view](docs/screenshot-messages.png?v=20260910)
+
+**Context focus** — click 🎯 to open the right-side panel; the current version supports cross-day time neighborhoods and reference clues to check
+
+![Context panel](docs/screenshot-context.png?v=20260910)
+
+**Statistics panel** — daily message volume, active-user rankings
+
+![Statistics panel](docs/screenshot-stats.png?v=20260910)
+
+> Usernames, group names, and avatars in the screenshots are anonymized samples.
+
+</details>
+
+---
+
+<details>
+<summary><b>✅ Prerequisites</b></summary>
+
+| Required | Notes |
+| --- | --- |
+| 🖥 **macOS / Linux / WSL / Windows Git Bash** | Archiver and viewer are supported; native Windows is currently experimental, while the desktop shell is still released only for macOS |
+| 🟢 **Node.js 22.13+ LTS or 24+** | Use `nvm install 24`, or install a supported LTS release from [nodejs.org](https://nodejs.org) |
+| 🌐 **Google Chrome** | The archiver drives it for login and scraping; path is auto-detected (or set `chromePath` in `config.json`). The project only ever uses your installed Chrome, so `package.json` sets `puppeteer.skipDownload` and `npm install` no longer pulls a ~650 MB bundled Chromium; if you do want the bundled one, install with `PUPPETEER_SKIP_DOWNLOAD=0 npm install` |
+| 📱 **Weibo account + mobile app** | First-time login to the web version requires scanning a QR code with the app |
+| 🦀 **Rust + Bun** | Desktop app only; `npm run desktop` installs them automatically |
+
+> WSL remains the recommended Windows path. Native Windows can run the web setup from Git Bash; automatic scheduling is not configured there, so use Windows Task Scheduler to run `npm run archive`. The desktop app has only been verified on macOS.
+>
+> If Chrome is outside the detected Windows locations, set `chromePath` in `config.json` using `C:/.../chrome.exe`, or escape backslashes in JSON, then rerun `npm run setup`; the installer now reads that configuration.
+
+</details>
+
+<details>
+<summary><b>⏰ Scheduled runs</b></summary>
+
+**macOS / Linux / WSL** — `npm run setup` asks whether to enable this during installation; you can also manage the job any time with one command (macOS uses launchd, Linux uses a systemd user timer, and environments without systemd — e.g. some WSL distros — fall back to a crontab entry). On native Windows, use Task Scheduler instead:
+
+```bash
+./scripts/schedule.sh install     # install (hourly archive)
+./scripts/schedule.sh status      # check status
+./scripts/schedule.sh uninstall   # remove cleanly
+```
+
+On systemd Linux the timer shows up under `systemctl --user list-timers weibo-archive.timer`. If the automatic installation fails, you can still configure cron by hand (`crontab -e`), archiving hourly:
+
+```bash
+0 * * * * cd /path/to/weibo-chat-auto && node scripts/auto-archive-simple.js >> logs/archive.log 2>&1
+```
+
+> With scheduling enabled, each archive run also refreshes the cookies, so they essentially never expire.
+
+</details>
+
+<details>
+<summary><b>📁 Project layout</b></summary>
+
+```text
+weibo-chat-auto/
+├── scripts/
+│   ├── setup.sh                 # One-shot installer for the web version
+│   ├── run-desktop.sh           # One-shot desktop launcher (deps → build → run)
+│   ├── auto-archive-simple.js   # Main archiver script
+│   ├── save-cookies.js          # Cookie saver
+│   ├── viewer-server.js         # Local viewer server
+│   ├── qa-agent.mjs             # Agentic Q&A module
+│   └── …                        # Other helpers (QA index build, render smoke test, screenshots)
+├── config.example.json          # Group configuration template
+├── config.json                  # Actual configuration (not committed)
+├── viewer.html                  # Group archive reader (single-page app, multiple themes)
+├── src-tauri/                   # Tauri v2 desktop app (Rust)
+│   ├── src/lib.rs               # Window, sidecar launch, in-app login
+│   └── tauri.conf.json
+├── sidecar/build.mjs            # Compiles viewer-server into a standalone binary with Bun
+├── cookies.json                 # Login credentials (not committed)
+├── ai-config.json               # AI configuration (not committed)
+├── state/                       # Archiver state (not committed)
+├── output/                      # Archived data (not committed)
+│   └── <storage-key>/           # readable prefix + hash; .group-meta.json keeps the display name
+│       └── weibo_chat_2026-05-01.json
+├── cache/images/                # Image cache (not committed)
+├── docs/                        # Documentation and screenshots
+│   └── agent-qa.md              # Agent Q&A technical design
+└── package.json
+```
+
+</details>
+
+<details>
+<summary><b>🧾 Output data format</b></summary>
+
+Each message:
+
+```json
+{
+    "id": 123456789,
+    "from_uid": 12345,
+    "user": "username",
+    "avatar": "https://...",
+    "timestamp": 1778000000000,
+    "time": "2026/05/11 12:00:00",
+    "date": "2026-05-11",
+    "content": "message content",
+    "type": 321,
+    "pics": \["https://upload.api.weibo.com/2/mss/msget?source=...&fid=..."],
+    "share": {
+        "url": "http://weibo.com/...",
+        "title": "...",
+        "author": "...",
+        "pics": \["https://wx1.sinaimg.cn/large/..."],
+        "reposts": 100,
+        "comments": 50,
+        "likes": 200
+    }
+}
+```
+
+</details>
+
+---
+
+## 🛠 Troubleshooting
+
+<details>
+<summary><b>Cookies expired</b> (sync errors, calendar not updating, "group not found" in logs)</summary>
+
+```bash
+npm run save-cookies
+```
+
+Scan the QR code and the cookies are saved automatically.
+
+**Why do they expire?** The dedicated browser doesn't share your everyday login state, and Weibo's rolling session lapses after about a day without renewal. Keeping the viewer running (built-in 30-minute keep-alive) or having the scheduled job active renews it automatically.
+</details>
+
+<details>
+<summary><b>Page fails to load</b></summary>
+
+Check that `chromePath` in `config.json` is correct and that Google Chrome is installed.
+</details>
+
+<details>
+<summary><b>Port 3456 already in use</b></summary>
+
+The viewer prints a one-line hint and exits (most often the desktop app is already running — its server is the same one, just open http://localhost:3456). To run on a different port:
+
+```bash
+WEIBO_PORT=4000 npm run view
+```
+</details>
+
+<details>
+<summary><b>Images not showing</b></summary>
+
+Images are proxied through the local server (which requires valid cookies), so they stop loading once cookies expire. Just run `npm run save-cookies` again.
+</details>
+
+---
+
+## 🔒 Privacy Notice
+
+> **This tool is intended only for archiving group chats you participate in. Do not use it to violate others' privacy.**
+
+- Archived data contains message content, usernames, and avatars of all group members
+- Keep `cookies.json` and `output/` safe; never share them publicly
+- The code is for learning and research purposes; use at your own risk
+- Comply with Weibo's Terms of Service and applicable laws
+
+---
+
+## 📄 License
+
+\[MIT](LICENSE)
+
+---
+
+<p align="center">
+  <sub>⭐ Found it useful? Give it a star!</sub>
+</p>

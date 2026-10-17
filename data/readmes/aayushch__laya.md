@@ -1,0 +1,492 @@
+# Laya: Your AI Command Center
+https://laya.aay.sh
+
+![Demo](./laya.gif)
+
+**A cadence for professional orchestration.**
+
+Laya is an open-source, local-first AI notification command center that aggregates Slack, Gmail, GitHub, Jira, Notion, Outlook, and Calendar notifications — powered by local LLMs via Ollama and LM Studio, or cloud models like Claude and GPT with your own API keys. It intercepts events from your professional tools, performs autonomous research and action-staging using LLM-powered agents, and presents you with ready-to-approve **Action Cards** -- so the answer is ready before you open the notification.
+
+**Works with:**
+
+- Ollama and LM Studio (local LLMs)
+- Claude models (Anthropic)
+- GPT models (OpenAI)
+- Gemini models (Google)
+- Llama models and any OpenAI-compatible endpoint — via LiteLLM
+
+**Aggregates:**
+
+- Gmail
+- Slack
+- GitHub
+- Bitbucket
+- Jira
+- Linear
+- Notion
+- Outlook (email and calendar)
+- Google Calendar
+
+## How It Works
+
+```
+Your Tools (Jira, Slack, Gmail, Bitbucket, Calendar)
+         |
+         v
+      n8n (local Node.js) -- normalizes events
+         |
+         v
+   Laya Engine (Python) -- classifies, researches, stages
+         |
+         v
+    Laya UI (Tauri + Svelte) -- Action Cards you approve or dismiss
+         |
+         v
+      n8n -- executes approved actions (creates PRs, sends replies, etc.)
+```
+
+## Key Features
+
+- **Multi-persona brain:** Routes events to specialized AI personas (Engineer, Comms, Ops, Sales, HR, Finance) with domain-specific tools and prompts, with AI prioritization of every notification
+- **Card Workspaces:** Agent workflows for complex tasks (bug fixes, code reviews) — interactive workspaces where you collaborate with a coding agent (Claude Code, Gemini CLI, Codex, Pi CLI, or Cursor Agent) through multiple approval steps
+- **Card Research:** Launch on-demand deep research sessions on any card — a coding agent investigates with web search, semantic context, and sandboxed file access
+- **Agent inference backends:** Run the classification/synthesis pipeline on an installed CLI agent's own quota instead of an API key — select a model of the form `agent/<id>/<model>` (Claude Code, Codex, Gemini, or Pi) for any stage. Claude Code enforces JSON schemas natively; other agents use best-effort schema + retry
+- **Spaces:** User-defined contexts grouping event sources with per-space model and API key configurations
+- **Context Association:** Automatically links related cards across platforms using semantic similarity and LLM confirmation. Learns from your corrections to improve grouping accuracy over time
+- **Cross-platform memory:** Entity resolution links "BUG-1234" in Jira to "PR-891" in Bitbucket to "the payment bug" in Slack
+- **Daily Briefing:** Morning summary of overnight activity, pending cards, and today's calendar with context
+- **Analytics Dashboard:** Track events processed, time saved, LLM costs (broken down by feature and pipeline step), throughput over time, and approval rates
+- **Budget Tracking:** Monitor LLM costs by feature (Pulse, Omni, Chat, Coherence) with monthly caps and automatic pause when limits are reached. When running on agent inference backends, a separate window-based usage budget pauses ingestion as an agent's rolling quota nears its limit and auto-resumes when the window resets
+- **Chat sidebar:** Ask Laya questions about your events, projects, and context — and create, edit, or delete filter/classification/processing rules directly from the conversation
+- **Hybrid search:** Chat and Coherence retrieval combine local vector search (ChromaDB) with lexical BM25 ranking over SQLite FTS5 (`cards_fts`/`events_fts`), merged via Reciprocal Rank Fusion, so both semantic and exact-keyword matches surface
+- **Coherence:** Cross-platform entity search traces any person, ticket, or PR across all platforms using hybrid local search, with AI-generated narratives
+- **Egress:** Execute outbound actions (emails, Slack messages, PR comments) directly from Laya with preview-before-send
+- **Omni:** Rolling cross-platform summary that answers "where am I right now?" with four temporal layers (Attention, Recent, Period, Milestone) and progressive AI compression
+- **Bookmarks:** Pin important cards for quick access regardless of date or status
+- **Classification learning:** Laya extracts rules from your priority/persona corrections and improves classification automatically over time
+- **Context learning:** Laya extracts natural-language **context rules** from your link/unlink corrections and improves context association over time. Learned and manual rules are viewable and editable in Settings, and large rule sets are LLM-consolidated automatically
+- **Processing rules:** Automated, optionally AI-evaluated rules that act on incoming cards (tag, route, run an agent, send egress). Every firing is recorded in a searchable **firing log** with its outcome (success / error / skipped) and reason
+- **Audit & export:** Inspect dead events, ingestion errors, and rule-filtered events in one place; retry or clear failures, and export filtered events or the audit log as JSON over any time window
+- **On-prem repositories:** Self-hosted Bitbucket Server / Data Center and GitHub Enterprise are supported via a per-repo `host` field (empty or the cloud domain ⇒ cloud)
+- **Dead event recovery:** Failed events are tracked with error context and can be manually retried from the audit log
+- **Privacy-aware:** Three-tier data classification with cloud/local processing options
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Desktop Shell | Tauri v2 (Rust) |
+| Frontend | Svelte 5 (runes) + Skeleton UI + Tailwind CSS v4 |
+| Backend | Python 3.10+ / FastAPI / asyncio |
+| LLM Interface | LiteLLM (supports Anthropic, OpenAI, Google, Ollama) |
+| Integration Gateway | n8n (local Node.js on port 45678) |
+| Structured Storage | SQLite (async via aiosqlite, WAL mode) |
+| Vector Storage | ChromaDB (embedded PersistentClient) |
+| Embeddings | ONNX (built-in to ChromaDB) or sentence-transformers (optional) |
+| Coding Agents | Claude Code / Gemini CLI / OpenAI Codex CLI / Pi CLI / Cursor Agent CLI (all usable as workspace agents; all but Cursor also as inference backends) |
+
+## Project Structure
+
+```
+laya/
+├── engine/                  # Python FastAPI backend
+│   ├── laya/
+│   │   ├── main.py          # Entry point (uvicorn server on :8420)
+│   │   ├── config.py        # Settings, paths, agent detection
+│   │   ├── api/             # REST + WebSocket endpoints (27 routers)
+│   │   ├── db/              # SQLite (+ FTS5) + ChromaDB + 70 migrations
+│   │   ├── pipeline/        # Event processing (ingest → route → stage → emit → trace → learn → context_learn → omni)
+│   │   ├── llm/             # LiteLLM client, agent inference backends, prompts, tools
+│   │   ├── agents/          # Coding agent adapters (Claude, Gemini, Codex, Pi, Cursor)
+│   │   ├── workers/         # Multi-persona LLM workers (engineer, comms, ops, sales, hr, finance)
+│   │   ├── egress/          # Outbound action execution (9 platforms)
+│   │   ├── integrations/    # n8n bootstrap & client
+│   │   └── security/        # OS keychain integration
+│   ├── requirements.txt     # Core Python dependencies (version ranges)
+│   ├── requirements-ml.txt  # Optional: torch + sentence-transformers
+│   └── requirements*.lock   # Exact pinned versions that get installed
+│
+├── ui/                      # SvelteKit + Tauri desktop app
+│   ├── src/                 # Svelte 5 frontend (runes syntax)
+│   │   ├── routes/          # Pages (feed, coherence, dashboard, settings, workspace, omni)
+│   │   ├── lib/             # Components, API client, stores
+│   │   ├── app.css          # Tailwind v4 + theme system
+│   │   └── app.html
+│   ├── src-tauri/           # Rust/Tauri shell
+│   │   ├── src/
+│   │   │   ├── lib.rs       # Tauri setup, commands, health polling, tray
+│   │   │   ├── sidecar.rs   # Python venv lifecycle & engine spawning
+│   │   │   └── n8n.rs       # n8n process management
+│   │   ├── tauri.conf.json  # Tauri config (resources, icons, window)
+│   │   └── resources/       # Bundled engine source (production builds)
+│   ├── package.json
+│   └── svelte.config.js     # Static adapter (SPA mode)
+│
+├── n8n/
+│   └── workflows/           # Integration workflows (JSON, ~21 files: ingestion + executor per platform)
+│
+├── scripts/
+│   ├── setup-dev.sh         # One-time dev environment setup
+│   ├── dev.sh               # Start engine + Tauri dev server
+│   ├── build.sh             # Production build
+│   └── update_icons.sh      # Icon generation
+│
+├── landing/                 # Landing page
+└── docs/                    # Architecture & design documents
+```
+
+## Install
+
+The fastest way to try Laya is a prebuilt release — no toolchains required.
+
+1. Open the [**Releases page**](https://github.com/aayushch/laya/releases) and download the installer for your platform:
+
+   | Platform | Download |
+   |----------|----------|
+   | macOS | `.dmg` (universal — Apple Silicon + Intel) |
+   | Windows | `.msi` or `.exe` |
+   | Linux | `.deb` or `.AppImage` |
+
+2. Install and launch. You do **not** need Python, Node, or Rust installed to *run* a release build. On first run, Laya checks for a compatible Python (3.10–3.14; on Windows, an x64 build) and Node.js (20+) already on your machine and uses those if found; otherwise it provisions its own bundled runtimes. Either way, a local n8n instance is set up under `~/.laya/`.
+3. Add an API key (Anthropic, OpenAI, Google, …) or point Laya at a local Ollama / LM Studio endpoint, then connect your tools from Settings.
+
+> **macOS:** release builds are signed, so they open normally — just double-click to launch.
+
+Want to build from source, hack on the engine, or contribute? Follow the **Development** setup below.
+
+## Development
+
+### Prerequisites
+
+You need three runtimes installed. Here's how to get each one:
+
+#### Python 3.10+
+
+- **macOS:** `brew install python@3.12` (or download from [python.org](https://www.python.org/downloads/))
+- **Ubuntu/Debian:** `sudo apt install python3 python3-venv python3-pip`
+- **Windows:** Download from [python.org](https://www.python.org/downloads/) (check "Add to PATH" during install)
+
+Verify: `python3 --version`
+
+#### Node.js 20+
+
+- **All platforms:** Download from [nodejs.org](https://nodejs.org/) (LTS recommended), or use a version manager like [nvm](https://github.com/nvm-sh/nvm) / [fnm](https://github.com/Schniz/fnm)
+- **macOS:** `brew install node`
+- **Ubuntu/Debian:** `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs`
+
+Verify: `node --version && npm --version`
+
+#### Rust toolchain
+
+Install via [rustup](https://rustup.rs/):
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Verify: `cargo --version`
+
+#### Platform-specific dependencies
+
+**macOS:**
+
+```bash
+xcode-select --install
+```
+
+**Linux (Ubuntu/Debian):**
+
+Tauri v2 requires system libraries for GTK, WebKit, and app-indicator support:
+
+```bash
+sudo apt install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+```
+
+### Troubleshooting
+
+<details>
+<summary><strong>Ingestion stopped and the engine log shows <code>n8n_auth_missing</code> with <code>rejected=True</code></strong></summary>
+
+The engine is enforcing the n8n token (see "Engine API authentication") and a workflow is calling it without one. Open **Settings → Integrations → n8n**: a workflow row with a warning icon failed to take the latest template; press **Update workflow** on it. If n8n was started by hand, make sure it has the same `LAYA_N8N_TOKEN` as the engine.
+
+To get ingestion flowing again before fixing the cause, start the engine with `LAYA_N8N_AUTH=off`. That pauses enforcement for that run only; editing `n8n_auth.mode` in `settings.json` back to `log` does not stick, because the engine re-enables enforcement as soon as every workflow is up to date.
+
+</details>
+
+<details>
+<summary><strong>Linux: Tailwind CSS classes missing or styles not updating</strong></summary>
+
+The default Linux inotify file watcher limit (65,536) can be too low for this project -- Vite needs to watch the source files while the Rust `target/` directory consumes most of the quota, causing Tailwind CSS to silently fail to generate utility classes. Increase the limit:
+
+```bash
+# Immediate (resets on reboot)
+echo 524288 | sudo tee /proc/sys/fs/inotify/max_user_watches
+
+# Permanent
+echo 'fs.inotify.max_user_watches=524288' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+</details>
+
+<details>
+<summary><strong>Linux AppImage: blank white window, WebKitWebProcess aborts with <code>EGL_BAD_PARAMETER</code></strong></summary>
+
+On distros whose Mesa is built against libwayland 1.23 or newer (Arch/CachyOS, Fedora 44+, Ubuntu 25.04+ in some configurations), the AppImage may open a blank window and print:
+
+```text
+Could not create default EGL display: EGL_BAD_PARAMETER. Aborting...
+```
+
+The AppImage bundles an old `libwayland-client.so.0` (from the Ubuntu 22.04 build host) and forces it onto every process via `LD_LIBRARY_PATH`, while EGL/Mesa come from your system. Newer Mesa needs Wayland symbols the bundled copy lacks, so its EGL driver fails to load and WebKit aborts. `WEBKIT_DISABLE_DMABUF_RENDERER`, `GDK_BACKEND=x11` and similar variables do not help because the failure happens before any renderer is chosen.
+
+**Workaround:** extract the AppImage, delete the bundled Wayland libraries so the system copies are used, and run the extracted app:
+
+```bash
+./Laya_*_amd64.AppImage --appimage-extract
+mv squashfs-root ~/.local/share/laya-app        # or anywhere permanent
+rm ~/.local/share/laya-app/usr/lib/libwayland-*.so.*
+~/.local/share/laya-app/AppRun
+```
+
+The `.deb` and `.rpm` packages use your system WebKitGTK and are not affected, so prefer them where they install cleanly. This is caused by the AppImage bundler Laya uses (Tauri pins an old `linuxdeploy` whose exclude list predates the upstream `libwayland-client` exclusion); see [tauri-apps/tauri#15665](https://github.com/tauri-apps/tauri/issues/15665) and [tauri-apps/tauri#15976](https://github.com/tauri-apps/tauri/issues/15976), tracked for Laya in [#17](https://github.com/aayushch/laya/issues/17).
+
+</details>
+
+<details>
+<summary><strong>Linux setup: "Setting up automation" fails with <code>EALLOWREMOTE</code> (npm 12+)</strong></summary>
+
+If `~/.laya/logs/n8n-install.log` ends with:
+
+```text
+npm error code EALLOWREMOTE
+npm error Fetching packages of type "remote" have been disabled
+npm error Refusing to fetch "xlsx@https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
+```
+
+your `npm` is version 12 or newer, which defaults `allow-remote` to `none`. n8n depends on `n8n-nodes-base`, which pins `xlsx` to a tarball hosted outside the npm registry, so npm refuses to install it. This happens when Laya finds a system Node 22+ whose `npm` was upgraded separately (for example Arch's `npm` package). Laya's managed Node download ships npm 10 and is unaffected.
+
+Laya passes `--allow-remote=all` on its n8n install starting with the release after v1.9.1. On v1.9.1 or earlier, install n8n by hand with a project-local `.npmrc` so your global npm settings stay untouched, then click **Retry** in the setup screen:
+
+```bash
+mkdir -p ~/.laya/n8n_module
+printf 'allow-remote=all\n' > ~/.laya/n8n_module/.npmrc
+npm install --prefix ~/.laya/n8n_module n8n@2.15.0
+```
+
+`allow-remote=root` is not enough because `xlsx` is a transitive dependency. Tracked in [#18](https://github.com/aayushch/laya/issues/18).
+
+</details>
+
+<details>
+<summary><strong>Windows (incl. Windows on ARM): setup fails with "Wheels are required for <code>aiohttp</code>" / <code>tiktoken</code> / <code>chromadb</code></strong></summary>
+
+If the "Installing Python packages" step fails and `%USERPROFILE%\.laya\logs\pip-install.log` contains a line like:
+
+```text
+hint: Wheels are required for `aiohttp` because building from source is disabled for all packages (i.e., with `--no-build`)
+```
+
+Laya picked up a Python from your `PATH` that it can't install its dependencies into. Laya installs only prebuilt wheels (it never compiles packages), and two kinds of interpreter have no wheels for some of its dependencies:
+
+- **Python newer than 3.14** (e.g. 3.15): `aiohttp`, `torch` and others haven't published wheels for it yet. This affects every platform.
+- **Native ARM64 Python on Windows** (`win-arm64`), any version: `chromadb`, `tiktoken`, `litellm` (via `fastuuid`), `grpcio` and `torch` publish no Windows-on-ARM wheels. The Windows release of Laya is an x64 app, which Windows on ARM runs under emulation, so it works with an **x64** Python.
+
+Releases after v1.9.2 skip these interpreters automatically. They download Laya's own x64 Python 3.12 instead and rebuild a venv that was created with the wrong interpreter. On v1.9.2 or earlier, quit Laya and point it at a compatible Python yourself, using either option below. Then relaunch Laya. Setup rebuilds the venv, which takes a few minutes.
+
+**Option A (recommended): pre-install Laya's managed Python.** Laya prefers `%USERPROFILE%\.laya\python` over anything on `PATH`, so this works regardless of which other Pythons you have. In PowerShell:
+
+```powershell
+$laya = "$env:USERPROFILE\.laya"
+Remove-Item -Recurse -Force "$laya\venv", "$laya\.deps_hash", "$laya\python" -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Force $laya | Out-Null
+$tag = "20260510"; $ver = "3.12.13"
+$url = "https://github.com/astral-sh/python-build-standalone/releases/download/$tag/cpython-$ver+$tag-x86_64-pc-windows-msvc-install_only.tar.gz"
+Invoke-WebRequest $url -OutFile "$env:TEMP\laya-python.tar.gz"
+tar -xzf "$env:TEMP\laya-python.tar.gz" -C $laya       # creates .laya\python
+Set-Content "$laya\python\.version" $ver -NoNewline
+Remove-Item "$env:TEMP\laya-python.tar.gz"
+```
+
+**Option B: install an x64 Python 3.12 or 3.13 and put it first on `PATH`.** Download the **"Windows installer (64-bit)"**, not the ARM64 one, from [python.org](https://www.python.org/downloads/windows/) and tick "Add python.exe to PATH". Then make sure `python --version` in a new terminal reports that version. Run `python -c "import sysconfig; print(sysconfig.get_platform())"` to confirm it prints `win-amd64`. Finally, delete `%USERPROFILE%\.laya\venv` and `%USERPROFILE%\.laya\.deps_hash`.
+
+`pip install laya` is **not** a way to install this app. The `laya` package on PyPI is an unrelated project that requires `torch`. Use the installers on the [Releases page](https://github.com/aayushch/laya/releases). Tracked in [#14](https://github.com/aayushch/laya/issues/14).
+
+</details>
+
+<details>
+<summary><strong>Linux: Tauri build fails with <code>unable to find library -lssl</code> / <code>-lcrypto</code></strong></summary>
+
+The Rust shell is rustls-only and should not need system OpenSSL, which is why `libssl-dev` is not in the apt list above. If the linker asks for `-lssl`/`-lcrypto`, a dependency has pulled in `native-tls` (→ `openssl-sys`) again -- usually a `reqwest` declared without `default-features = false`. Find the culprit with:
+
+```bash
+cd ui/src-tauri && cargo tree -i openssl-sys
+```
+
+and fix the offending dependency's features. As a stop-gap, `sudo apt install libssl-dev` lets the build link as-is.
+
+</details>
+
+### Setup
+
+```bash
+scripts/setup-dev.sh
+```
+
+This script does the following:
+
+1. Checks that `python3`, `node`, `npm`, and `cargo` are available
+2. Creates a Python virtual environment at `engine/.venv/` and installs dependencies from `engine/requirements.txt`
+3. Installs npm packages for the UI (`ui/node_modules/`)
+4. Installs n8n as a local npm package into `~/.laya/n8n_module/`
+5. Creates data directories at `~/.laya/data/` and `~/.laya/logs/`
+
+### Running Locally
+
+```bash
+scripts/dev.sh
+```
+
+This starts two processes:
+
+1. **Python engine** -- `python -m laya.main` (with hot reload) at http://127.0.0.1:8420
+2. **Tauri dev server** -- `npx @tauri-apps/cli dev` which starts Vite at http://localhost:5173 and opens the Tauri window
+
+n8n is managed automatically by the Tauri app -- it starts on launch (port 45678) and stops on quit.
+
+> **Note:** If the engine fails with "Address already in use", a stale engine process may be holding port 8420. The engine will attempt to kill it automatically on startup.
+
+### Engine API authentication
+
+The engine's REST API requires an `Authorization: Bearer <token>` header on every route except `GET /health`. The Laya app handles this by itself: on each launch it generates a new token, shares it with the engine, and uses it for all of its own requests. There is nothing to configure for normal use, and the token is kept in memory only.
+
+**Running the UI in a plain browser.** When you open `http://localhost:5173` in a browser there is no Tauri window to supply the token, so give the engine and the UI the same value yourself:
+
+```bash
+# ui/.env.local (gitignored)
+VITE_LAYA_ENGINE_TOKEN=<token>
+
+# Standalone engine + Vite dev server
+cd engine && source .venv/bin/activate && LAYA_ENGINE_TOKEN=<token> python -m laya.main
+cd ui && npm run dev
+
+# Or: the Tauri window and a browser tab side by side (dev builds only)
+LAYA_ENGINE_TOKEN=<token> scripts/dev.sh
+```
+
+Vite reads `.env.local` when it starts, so restart `npm run dev` after changing the token. Release builds ignore a preset `LAYA_ENGINE_TOKEN` and always generate their own. If the UI cannot find a token, the startup screen says so.
+
+**Calling the API by hand.** Start the engine with a known `LAYA_ENGINE_TOKEN` as above and send it as a bearer header:
+
+```bash
+curl -H "Authorization: Bearer $LAYA_ENGINE_TOKEN" http://127.0.0.1:8420/settings
+```
+
+A standalone engine started without `LAYA_ENGINE_TOKEN` creates a token and stores it in the OS keychain (service `laya-engine`, account `laya_engine_api_token`).
+
+**The n8n token.** The bundled n8n workflows use a second, separate token, `LAYA_N8N_TOKEN`, sent as the `X-Laya-N8n-Token` header. It is accepted only on the four routes the workflows call (`POST /events`, `POST /ingestion-errors`, `GET /repos`, `GET /metadata/{key}`), which also accept the app token; it opens nothing else. The app generates it per launch and sets the same variable on the engine and on n8n. When you run the engine or n8n by hand, set `LAYA_N8N_TOKEN` to the same value on both (n8n reads it with `$env.LAYA_N8N_TOKEN`; the engine stores a keychain token under `laya_n8n_token` if the variable is absent, but n8n will not know that value).
+
+Enforcement is staged so an upgrade cannot drop events: the engine runs in **log mode** (requests without the token are logged and accepted) until the startup workflow sync has pushed the header-sending template to every cloned workflow and the error handler, then switches to **enforce** and stays there. Settings → Integrations → n8n shows the mode, what is still blocking enforcement, and how many requests arrived without a valid token.
+
+The OAuth redirect callback accepts requests without a token. The WebSocket at `/ws` is not authenticated yet.
+
+### Configuration
+
+On first launch, the engine creates config files in `~/.laya/`:
+
+| File | Purpose |
+|------|---------|
+| `settings.json` | Models, agent paths, privacy settings, pipeline params |
+| `team.json` | Team member context |
+| `rules.json` | Event filtering rules |
+| `repos.json` | Git repository paths and metadata |
+
+API keys (Anthropic, OpenAI, Google, etc.) are stored securely in your OS keychain and can be configured through the Settings UI.
+
+The engine logs at `INFO` by default. Change verbosity from **Settings → Data → Engine Log Level** (`DEBUG` / `INFO` / `WARNING` / `ERROR`) — this maps to the `logging.level` key in `settings.json` and applies immediately, no restart. Set it to `WARNING` to record only warnings and errors and keep logs small. For a single run you can override it with the `LAYA_LOG_LEVEL` environment variable, which takes precedence over the setting (and also sets uvicorn's request-log level).
+
+### Custom Prompts
+
+Laya's AI pipeline uses system prompts at every stage (routing, staging, summarization, chat, etc.). All prompts ship with sensible defaults, but you can override any of them by placing files in `~/.laya/prompts/`:
+
+```bash
+mkdir -p ~/.laya/prompts
+
+# Override the router prompt (controls event classification)
+vim ~/.laya/prompts/router.md
+
+# Override a worker persona
+vim ~/.laya/prompts/engineer.md
+```
+
+Apply changes without restarting from **Settings → Models → Custom Prompts → Reload prompts**, which also lists the prompt files currently in use. From a terminal, the same reload needs the engine token (see "Engine API authentication"):
+
+```bash
+curl -X POST -H "Authorization: Bearer $LAYA_ENGINE_TOKEN" http://127.0.0.1:8420/prompts/reload
+```
+
+Available prompt files: `router.md`, `stager.md`, `omni.md`, `group_summary_initial.md`, `group_summary_rolling.md`, `briefing.md`, `summarizer.md`, `summarizer_status_change.md`, `engineer.md`, `comms.md`, `sales.md`, `hr.md`, `ops.md`, `finance.md`, `chat.md`, `chat_title.md`, `chat_polish.md`, `learner.md`, `context_learner.md`, `trace_narrative.md`, `trace_summary.md`, `trace_filter.md`.
+
+Custom prompts fully replace the built-in default for that stage. If a file is deleted, the hardcoded default is used automatically. The engine never creates or modifies files in this directory. Use `GET /prompts` (with the same bearer header) to check which prompts are currently overridden.
+
+### Data Storage
+
+| Store | Location | Purpose |
+|-------|----------|---------|
+| SQLite | `~/.laya/data/laya.db` | Events, cards, workspaces, spaces, traces, egress, chat |
+| ChromaDB | `~/.laya/data/chroma/` | Vector embeddings for semantic search |
+| n8n | `~/.laya/n8n/` | Workflow data, credentials (encrypted) |
+| Logs | `~/.laya/logs/` | `engine.log` — rotating engine logs (10 MB × 5 files), verbosity set by the log level above. Also `engine-stdout.log` and `n8n.log` — captured process output, likewise rotated (10 MB × 3 files). |
+
+## Building for Distribution
+
+Laya bundles the Python engine source into the Tauri app. On first launch, the app creates a Python virtual environment at `~/.laya/venv/` and installs dependencies automatically -- no Python installation is required on the end user's machine beyond what the app manages.
+
+### Build Command
+
+```bash
+scripts/build.sh
+```
+
+This does two things:
+
+1. **Bundles engine source** -- copies `engine/laya/`, the requirements files and their lock files, and `n8n/workflows/` into `ui/src-tauri/resources/engine/`
+2. **Builds the Tauri app** -- compiles the Rust shell, bundles the SvelteKit frontend, and packages everything into a platform-native installer
+
+### Build Options
+
+```bash
+scripts/build.sh                                   # Build for current platform
+scripts/build.sh --target x86_64-apple-darwin      # Cross-compile for Intel Mac
+scripts/build.sh --universal                       # Universal binary (arm64 + x86_64)
+scripts/build.sh --sign "Developer ID App: ..."    # macOS code signing
+scripts/build.sh --skip-engine                     # Skip engine bundling (reuse previous)
+```
+
+### Build Output
+
+| Platform | Format | Path |
+|----------|--------|------|
+| macOS | `.app` | `ui/src-tauri/target/release/bundle/macos/Laya.app` |
+| macOS | `.dmg` | `ui/src-tauri/target/release/bundle/dmg/Laya_0.1.0_<arch>.dmg` |
+| Windows | `.msi` | `ui/src-tauri/target/release/bundle/msi/` |
+| Windows | `.exe` | `ui/src-tauri/target/release/bundle/nsis/` |
+| Linux | `.deb` | `ui/src-tauri/target/release/bundle/deb/` |
+| Linux | AppImage | `ui/src-tauri/target/release/bundle/appimage/` |
+
+> **Note:** macOS builds are unsigned by default. Unsigned apps trigger Gatekeeper -- users must right-click > Open to bypass. Pass `--sign` with an Apple Developer identity to produce a signed build.
+
+## Documentation
+
+Architecture and design documents in [`docs/`](./docs/):
+
+- [**System Architecture**](./docs/architecture.md) -- Component diagrams and service descriptions
+- [**Event Schema**](./docs/event-schema.md) -- The Laya Event schema specification
+- [**API Contracts**](./docs/api-contracts.md) -- REST, WebSocket, and inter-service API definitions
+- [**Database Schema**](./docs/database-schema.md) -- SQLite tables (incl. FTS5), ChromaDB collection, and migrations
+- [**Project Structure**](./docs/project-structure.md) -- Repository layout and config file schemas
+- [**Tuning Parameters**](./docs/tuning-parameters.md) -- Overridable pipeline, retrieval, and agent-budget settings
+- [**n8n Data Persistence**](./docs/n8n-data-persistence.md) -- How n8n workflow data and credentials are stored
+- [**Decision Log**](./docs/decision-log.md) -- Architectural decisions with rationale
+
+Deeper design docs (egress, AI processing rules, OAuth app distribution, pipeline lifecycle) live in [`engine/docs/`](./engine/docs/).

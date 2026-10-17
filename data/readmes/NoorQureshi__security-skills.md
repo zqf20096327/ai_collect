@@ -1,0 +1,212 @@
+<div align="center">
+
+# 🥷 Security Skills
+
+**Security skills for AI agents.**
+206 offensive + defensive techniques your AI agent loads on demand to work an **authorized** target — from recon to report.
+
+[![CI](https://github.com/NoorQureshi/security-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/NoorQureshi/security-skills/actions/workflows/ci.yml)
+![skills](https://img.shields.io/badge/skills-206-334155?style=flat-square)
+![domains](https://img.shields.io/badge/domains-23-334155?style=flat-square)
+![mapped](https://img.shields.io/badge/mapped-OWASP%20%C2%B7%20MITRE%20ATT%26CK-334155?style=flat-square)
+![routing](https://img.shields.io/badge/routing-618%20trigger%20cases%20CI--verified-334155?style=flat-square)
+![license](https://img.shields.io/badge/license-MIT-334155?style=flat-square)
+
+<sub>[Docs](https://noorqureshi.github.io/security-skills/) · [How it works](https://noorqureshi.github.io/security-skills/interact.html) · [Search skills](https://noorqureshi.github.io/security-skills/catalog.html) · [Contributing](CONTRIBUTING.md)</sub>
+
+🌐 English | [中文](README_zh.md)
+
+</div>
+
+> **If you are an AI agent:** read [AGENTS.md](AGENTS.md) (or [README_AI.md](docs/README_AI.md) for the short bootstrap) and follow it strictly — this repo is designed to be operated by you, not just read by humans.
+
+<p align="center">
+  <img src="docs/screenshots/demo.svg" width="820"
+       alt="Terminal replay: Claude Code with Security Skills solves 9 of 116 OWASP Juice Shop challenges in 10 minutes">
+</p>
+
+**Benchmarked, not just claimed.** That replay is a real run: against OWASP Juice Shop (116 challenges, running locally), an agent with these skills solved **9 challenges in 10 minutes** — SQLi auth bypass, UNION credential dump, XXE, JWT algorithm confusion, BOLA — each with a written finding. Scoring comes from the target's own solve log, never from what the agent claims. Full A/B (skills vs none) and how to reproduce it yourself: [bench/RESULTS.md](bench/RESULTS.md).
+
+## What it is
+
+Your AI agent is a strong generalist, but it doesn't know the *exact method* for a specific job — say, testing an API for access-control bugs. **Security Skills is that missing know-how:** a binder of 206 short "how to do this one technique" pages the agent flips to when it needs one.
+
+It's not a replacement for your toolkit, either: the skills teach your agent when and how to drive the tools you already have — sqlmap, nmap, ffuf, nuclei, Burp Suite, Ghidra, Frida, hashcat, Impacket — with the exact commands, follow-ups, and verification steps each job calls for. And a machine-readable routing table ([`data/routing.json`](data/routing.json) — **618 trigger cases, CI-verified**) lets any agent or integration pick the right skill deterministically, no prompt guesswork.
+
+You describe the task in plain English → it picks the right page, runs it, proves the bug, and writes it up → and it never touches anything outside the scope you set.
+
+## Pick your door
+
+Same library, five ways in. Everything below runs in your terminal — install once (Quickstart), then talk to your agent.
+
+| You are… | You type… | What the agent does |
+|---|---|---|
+| **Bug bounty hunter** | "target.com is in scope on my program — assess it" | `tradecraft-scope-roe` confirms the boundary → `recon-*` maps the surface → the surface checklist drives coverage → confirmed bugs are written up submission-ready with `reporting-bug-bounty-writeup`, and `tradecraft-duplicate-avoidance` warns you before you burn time on known-dup classes |
+| **CTF player** | "help me solve this challenge" (web / pwn / crypto / rev) | loads the technique page for the category (`web-*`, `exploit-*`, `cryptography-*`, `reverse-engineering-*`) and works the full variation matrix instead of quitting after one failed payload |
+| **Pentester** | "assess this app per our signed scope" | plans with `tradecraft-attack-scenarios`, works the checklist as a **coverage map** — every class marked proved, ruled out (with what was tried), or skipped — then `reporting-pentest-report` writes it up |
+| **Red teamer** | "I have a foothold on this AD domain (authorized)" | `privesc-*` to escalate, `ad-*` (Kerberoasting, ADCS, delegation, DACL abuse) to move, `network-pivoting-tunneling` to spread, `tradecraft-attack-path-mapping` to see the whole route |
+| **Blue team / defender** | "write detections for these attacks" | `defense-*` covers detection engineering, Sigma rules, log queries, IR triage, hardening — `defense-purple-team` turns any attack skill into a detection test, and the top attack skills ship with `detection.md` companions (Sigma rule + log sources + false-positive tuning) |
+
+## Quickstart
+
+> **Need:** an AI agent — [Claude Code](https://claude.com/claude-code), [OpenCode](https://opencode.ai), Codex, Gemini, or your own API script — plus `git` and a terminal. `python3` only for the optional console.
+
+```console
+# 1 · install once — links the skills into your agent + puts `secskills` on PATH
+$ git clone https://github.com/NoorQureshi/security-skills && cd security-skills
+$ ./secskills install
+
+# 2 · make a workspace for your target (anywhere) and set the boundary
+$ secskills new acme.com ~/work/acme
+$ cd ~/work/acme
+$ nano scope.txt                     # your authorized target(s) — nothing else gets touched
+
+# 3 · (optional) watch the agent work, live, in your browser
+$ secskills watch                    # runs in the background · stop: secskills watch --stop
+
+# 4 · open your agent in the workspace and describe the task   ↓ (Claude Code / OpenCode below)
+```
+
+**How the pieces fit:** your **terminal** runs the agent; everything it decides, tries, and proves lands in the **workspace folder** (`scope.txt · plan.md · notes.md · findings/`) — the source of truth you can read, diff, and hand to a client. Same flow with any agent; none of it is Claude-specific.
+
+## Run it with your agent
+
+Open your agent **inside the workspace** and describe the task in plain English — the matching skill loads itself. `./secskills install` auto-configures every agent it detects on your machine — linking the skills where the agent has a native skills directory (Claude Code, Kimi Code, Cursor) and adding a small, clearly-marked pointer block to the agent's global instructions file otherwise (Codex, Gemini, OpenCode). Re-run it anytime; it's idempotent and `--uninstall` removes exactly what it added.
+
+<details open>
+<summary><b>Claude Code</b></summary>
+
+```console
+~/work/acme $ claude          # skills are already in ~/.claude/skills — auto-discovered everywhere
+
+> Start an authorized assessment of acme.com. Confirm scope, then recon.
+
+  ● tradecraft-scope-roe        loaded · scope confirmed (*.acme.tld)
+  ● recon-subdomain-enum        14 hosts · api.acme.tld live
+  ● api-bola                    testing object references on /api/v1/orders
+      ✓ cross-tenant read confirmed with 2 accounts
+  ✔ wrote findings/idor-orders.md
+```
+
+`./secskills install` linked the skills into `~/.claude/skills/` (and wired every other detected agent the same way — native skills dirs where they exist, a managed pointer block in the global instructions file otherwise), so Claude Code finds them in **any** folder and loads the one that fits your request.
+</details>
+
+<details>
+<summary><b>OpenCode</b></summary>
+
+```console
+~/work/acme $ opencode        # launches the TUI in this folder, using your own model/API key
+
+> Use the Security Skills library in ./skills. Start an authorized assessment of
+  acme.com — confirm scope from scope.txt, then recon the attack surface.
+
+  → reads AGENTS.md + ./skills · loads recon-* then routes by what it finds
+```
+
+No install step: OpenCode reads `AGENTS.md` and the `./skills` folder in the workspace automatically. (First time: `opencode auth login` to set your provider/API key.)
+</details>
+
+<details>
+<summary><b>Codex · Gemini · any other agent / your own API script</b></summary>
+
+```console
+~/work/acme $ codex           # or: gemini  — run inside the workspace
+
+> Use the Security Skills library here. Start an authorized assessment of acme.com,
+  confirm scope from scope.txt, then recon.
+```
+
+Any agent works: point it at the workspace with read access to `AGENTS.md` and `./skills`, or paste a single `SKILL.md` into the chat for a one-off. Nothing to wire up.
+</details>
+
+<details>
+<summary><b>Optional: watch the agent live in your browser (<code>secskills watch</code>)</b></summary>
+
+The terminal is the whole workflow — but if you want a live, **read-only** view of what the agent is doing, `secskills watch` opens a small dashboard at `http://127.0.0.1:8787`. It just reads the workspace on disk, so it works the same whichever agent you run.
+
+<p align="center">
+  <img src="docs/screenshots/attack-map.png" width="820"
+       alt="The console Attack Map: each attack lead with its status, the reasoning behind it, the steps taken, and a link to the confirmed finding">
+</p>
+<p align="center">
+  <img src="docs/screenshots/finding.png" width="49%"
+       alt="A confirmed finding rendered in the console: steps to reproduce, the request, and an impact table">
+  &nbsp;
+  <img src="docs/screenshots/activity.png" width="49%"
+       alt="The live activity timeline: decisions, commands, results and findings as the agent works">
+</p>
+
+- **Attack Map** — the whole engagement as a decision graph: what was proved, ruled out, blocked, and skipped — and *why*.
+- **Findings** — each confirmed issue rendered and ready to submit · **Activity** — a live, filterable timeline with the reasoning · **Plan / Notes** — the strategy and running log.
+
+Under Claude Code a bundled hook records commands automatically, so the console fills in even if the agent doesn't log by hand.
+</details>
+
+## Ask it anything
+
+| You type… | The agent loads |
+|---|---|
+| "recon acme.com and map the attack surface" | `recon-*` |
+| "test this API for IDOR / BOLA (I'm authorized)" | `api-bola`, `web-idor` |
+| "is this login's JWT forgeable?" | `web-auth-jwt` |
+| "review ./src for injection bugs" | `code-review-*` |
+| "I got a shell — what now?" | `privesc-enumeration` |
+| "turn this finding into a report" | `reporting-*` |
+| "write a Sigma rule to detect this" | `defense-detection-sigma` |
+
+## What's inside
+
+**206 skills across 23 domains.** [🔎 Search them all](https://noorqureshi.github.io/security-skills/catalog.html) · or browse [CATALOG.md](docs/CATALOG.md).
+
+`web` · `api` · `cloud` · `ad` · `network` · `wireless` · `recon` · `mobile` · `ai-ml` · `code-review` · `reverse-engineering` · `ctf` · `hardware` · `cryptography` · `exploit-dev` · `privesc` · `payloads` · `tools` · `defense` · `reporting` · `automation` · `tradecraft` · `social-eng`
+
+<details>
+<summary><b>See what each domain covers</b></summary>
+
+| Domain | # | Covers |
+|---|:--:|---|
+| [`web`](skills/web) | 45 | XSS, SQLi, SSRF, SSTI, IDOR, XXE, CSRF, CORS, LFI, command injection, deserialization, OAuth, SAML, request smuggling, prototype pollution, cache poisoning, cache deception, host-header, clickjacking, CSP bypass, DOM clobbering, HTTP parameter pollution, postMessage, WebSocket, race conditions, business logic, file upload, JWT, 2FA/MFA bypass, account takeover, dependency confusion, client-side signing reversal, authenticated session handling, Python sandbox escape, Cypher injection, JDBC/connection-string RCE , browser extension reversing|
+| [`ai-ml`](skills/ai-ml) | 11 | Prompt injection, jailbreaks, RAG poisoning, model extraction, agent/tool and MCP abuse, insecure output handling, supply chain, unbounded consumption , system-prompt leakage, sensitive-data disclosure|
+| [`cloud`](skills/cloud) | 9 | IMDS credential theft, object-storage exposure, Kubernetes, container escape, exposed Docker/daemon API abuse, IAM privilege escalation, registries, GCP, Azure / Entra ID |
+| [`api`](skills/api) | 9 | BOLA/BFLA, GraphQL, gRPC, mass assignment, authentication attacks, fuzzing, version drift, NoSQL injection |
+| [`recon`](skills/recon) | 9 | Subdomain enumeration, DNS analysis, content and JS discovery, OSINT, GitHub code-leak discovery, cloud-asset discovery, service enumeration, tech-stack fingerprinting |
+| [`defense`](skills/defense) | 15 | Detection engineering (pipeline + Sigma/ATT&CK), threat hunting, incident response, DFIR triage, network detection (NSM), cloud detection & response, Active Directory defense, malware triage, hardening baselines, threat modeling, log analysis, purple teaming , threat intelligence, deep artifact forensics|
+| [`code-review`](skills/code-review) | 15 | Methodology, dangerous-sink catalog, secrets detection, CI/CD security, IaC (Terraform/Ansible/K8s), smart contracts (Solidity), Python, Node.js, PHP, Java/Spring, Go, Ruby/Rails, .NET/C#, C/C++, Rust |
+| [`mobile`](skills/mobile) | 6 | Android and iOS assessment, APK reverse engineering (jadx/smali/Frida), certificate-pinning bypass, deep-link abuse, WebView abuse |
+| [`ad`](skills/ad) | 5 | Kerberoasting / AS-REP, ADCS (ESC1–8), ACL/DACL abuse, Kerberos delegation abuse (RBCD / S4U / coercion→relay), pivoting arsenal |
+| [`network`](skills/network) | 8 | Service attacks, pivoting and tunneling, NTLM coercion and relay, password spraying and credential stuffing, perimeter appliance and VPN offensive, hash and credential cracking , email security (phishing analysis, SPF/DKIM/DMARC), database security assessment|
+| [`wireless`](skills/wireless) | 2 | WPA2-PSK handshake/PMKID capture and cracking, evil-twin / rogue-AP enterprise (PEAP-MSCHAPv2) credential harvesting |
+| [`privesc`](skills/privesc) | 4 | Post-foothold enumeration and credential hunting, Linux arsenal, GTFOBins (sudo/SUID/capabilities), Windows token impersonation |
+| [`exploit-dev`](skills/exploit-dev) | 4 | Exploit chaining and impact amplification, PoC development, memory-corruption exploitation (ROP / format string / ret2libc), pwn chain (bug → stable remote exploit, heap & kernel) |
+| [`reverse-engineering`](skills/reverse-engineering) | 16 | Native binary triage, deobfuscation (packed/JS/WASM/JSVMP), firmware, IDA Pro / Ghidra / radare2 / Binary Ninja, .NET / Go / Rust / macOS reversing, JS and protocol reversing, thick clients, patch-diff / N-day analysis, malware analysis, EDR instrumentation analysis |
+| [`hardware`](skills/hardware) | 3 | UART/JTAG/SWD debug-port triage, in-circuit flash dumping, SDR / RF signal analysis, OT/ICS passive assessment (Modbus, S7, DNP3) |
+| [`ctf`](skills/ctf) | 6 | Methodology (first-10-minutes triage), web, pwn, crypto, rev, forensics challenge playbooks |
+| [`tools`](skills/tools) | 11 | Metasploit, Burp Suite, nuclei, sqlmap, nmap, hashcat, hydra, ffuf, curl, MCP tool bridges, tool selection |
+| [`cryptography`](skills/cryptography) | 2 | Weak/textbook RSA (JWT RS256, custom signatures), symmetric oracles (CBC padding, ECB, hash length extension) |
+| [`payloads`](skills/payloads) | 4 | WAF/filter bypass, XSS polyglots, reverse shells and TTY upgrade, file transfers |
+| [`reporting`](skills/reporting) | 6 | Finding triage and validation, bug-bounty write-up, penetration-test report, CVSS/severity scoring, triage communication , evidence review|
+| [`automation`](skills/automation) | 3 | Recon pipelines, custom nuclei templates , browser automation|
+| [`tradecraft`](skills/tradecraft) | 9 | Scope and rules of engagement, attack-scenario planning, attack-path mapping, pivot/decision-making across skills, target selection, duplicate avoidance, bug-bounty platform intelligence, complex multi-stage engagements , kill-chain orchestration|
+| [`social-eng`](skills/social-eng) | 4 | Authorized human-factor testing: methodology, phishing, vishing/pretexting, physical assessment (pentest-only) |
+
+</details>
+
+## Authorized use only
+
+For security work you're **permitted** to do — a signed pentest scope, a bug-bounty program that lists the target, or systems you own. The first skill every engagement loads is `tradecraft-scope-roe`: it confirms authorization and refuses anything not in your `scope.txt`. See [SECURITY.md](SECURITY.md) to report a vulnerability in Security Skills itself.
+
+## Contribute
+
+A contribution is a single Markdown file — no code:
+
+```console
+$ cp skills/_templates/technique.md skills/<domain>/<slug>/SKILL.md
+$ python3 tools/catalog.py     # regenerate the indexes + stamp counts
+$ ./tools/check.sh             # run everything CI runs, before you push
+```
+
+Wanted skills: [ROADMAP.md](docs/ROADMAP.md) · full guide: [CONTRIBUTING.md](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE). Built for authorized security work.

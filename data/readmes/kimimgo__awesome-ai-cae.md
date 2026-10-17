@@ -1,0 +1,424 @@
+<!--lint disable awesome-heading awesome-github awesome-toc double-link-->
+
+<div align="center">
+
+<img src="media/banner.svg" alt="Awesome AI-CAE" width="800">
+
+<br><br>
+
+[![Awesome](https://awesome.re/badge-flat2.svg)](https://awesome.re)
+[![awesome-lint](https://img.shields.io/github/actions/workflow/status/kimimgo/awesome-ai-cae/lint.yml?branch=main&style=flat-square&label=awesome-lint&color=00d4ff)](https://github.com/kimimgo/awesome-ai-cae/actions/workflows/lint.yml)
+[![License CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-7c3aed?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-2ea44f?style=flat-square)](CONTRIBUTING.md)
+
+[![Stars](https://img.shields.io/github/stars/kimimgo/awesome-ai-cae?style=flat-square&color=f472b6)](https://github.com/kimimgo/awesome-ai-cae/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/kimimgo/awesome-ai-cae?style=flat-square&color=00d4ff)](https://github.com/kimimgo/awesome-ai-cae/commits/main)
+[![Tools](https://img.shields.io/badge/tools-110%2B-00d4ff?style=flat-square)](READINESS.md)
+
+### The CAE tools an AI agent can actually call
+
+**Open-source simulation, CAD & meshing tools for agentic / LLM-driven engineering** — driveable headless via **MCP, Python, or CLI** (no GUI-only tools). The **only CAE list with a weekly agent-callability ranking**. Ranked by *callability*, not stars.
+
+**110+ tools** · **3 MCP servers** · **2 AI-Native** · machine-readable [JSON](data/readiness.json) / [CSV](data/readiness.csv) · weekly-regenerated [ranking](READINESS.md)
+
+<sub>Scope: agent-callable CAE/CAD/CAM **tools**, plus a small set of **adjacent** Datasets & Learning Resources for context.</sub>
+
+[**🚀 Quickstart**](#quickstart--give-your-agent-a-cae-tool) · [**🏆 Index**](#ai-readiness-index) · [**📊 Methodology**](#how-the-score-works)
+
+[한국어](docs/README.ko.md) · [中文](docs/README.zh.md) · [日本語](docs/README.ja.md) · [Deutsch](docs/README.de.md) · [Français](docs/README.fr.md) · [Español](docs/README.es.md) · [Português](docs/README.pt.md)
+
+<br>
+
+<img src="media/divider.svg" width="100%" alt="">
+
+</div>
+
+## Contents
+
+- [Quickstart](#quickstart--give-your-agent-a-cae-tool)
+- [AI-Readiness Index](#ai-readiness-index)
+- [How the Score Works](#how-the-score-works)
+- [Core Engine Readiness](#core-engine-readiness)
+- [MCP Servers](#mcp-servers)
+- [CFD — Computational Fluid Dynamics](#cfd--computational-fluid-dynamics)
+- [FEA — Finite Element Analysis](#fea--finite-element-analysis)
+- [SPH — Smoothed Particle Hydrodynamics](#sph--smoothed-particle-hydrodynamics)
+- [DEM — Discrete Element Method](#dem--discrete-element-method)
+- [Visualization & Post-processing](#visualization--post-processing)
+- [CAD & Geometry](#cad--geometry)
+- [Mesh Generation](#mesh-generation)
+- [Differentiable Simulation](#differentiable-simulation)
+- [AI/ML for Simulation](#aiml-for-simulation)
+- [Surrogate Models & PINNs](#surrogate-models--pinns)
+- [Optimization](#optimization)
+- [Data Formats & I/O](#data-formats--io)
+- [Datasets & Benchmarks](#datasets--benchmarks)
+- [Learning Resources](#learning-resources)
+- [Star History](#star-history)
+
+## Quickstart — give your agent a CAE tool
+
+<div align="center">
+<img src="media/diagram-concept.png" width="720" alt="Pipeline diagram: an AI agent calls a CAE tool via MCP, Python, or CLI and gets a simulation result">
+</div>
+
+> Three tools here ship a [Model Context Protocol](https://modelcontextprotocol.io/) server, so an agent (Claude Desktop, Cursor, Cline…) drives them with zero glue code. Add one to your MCP client config:
+
+```jsonc
+{
+  "mcpServers": {
+    "viznoir": { "command": "uvx", "args": ["viznoir"] }
+  }
+}
+```
+
+<table>
+<tr><th>MCP server</th><th>Ask your agent</th><th>Install</th></tr>
+<tr><td><a href="https://github.com/kimimgo/viznoir">viznoir</a></td><td><i>"Render this OpenFOAM case as a cinematic volume animation."</i></td><td><code>uvx viznoir</code></td></tr>
+<tr><td><a href="https://github.com/llnl/paraview_mcp">ParaView-MCP</a></td><td><i>"Open this VTK file, color by pressure, screenshot it."</i></td><td>see repo</td></tr>
+<tr><td><a href="https://github.com/webworn/openfoam-mcp-server">OpenFOAM-MCP</a></td><td><i>"Set up a pipe-flow case and explain the turbulence model."</i></td><td>see repo</td></tr>
+</table>
+
+<sub>Exact launch command lives in each server's README. No MCP? Every other tool is Python/CLI-scriptable — your agent calls it the same way you would.</sub>
+
+<sup>[back to top](#contents)</sup>
+
+## AI-Readiness Index
+
+> The headline metric: tools ranked by **agent-callability** — MCP, Python API, CLI, maintenance — not stars. Auto-updated weekly by [`readiness-score.py`](scripts/readiness-score.py). Full table: [READINESS.md](READINESS.md) · machine-readable: [`data/readiness.json`](data/readiness.json).
+
+<!-- AI-READINESS-INDEX:START -->
+
+<table>
+<tr><th align="center">#</th><th align="right">Score</th><th>Grade</th><th>Tool</th><th>Interfaces</th><th align="right">⭐</th></tr>
+<tr><td align="center">🥇</td><td align="right"><b>95</b></td><td>🟢 AI-Native</td><td><a href="https://github.com/llnl/paraview_mcp">llnl/paraview_mcp</a></td><td>MCP, Python, pip</td><td align="right">69</td></tr>
+<tr><td align="center">🥈</td><td align="right"><b>93</b></td><td>🟢 AI-Native</td><td><a href="https://github.com/kimimgo/viznoir">kimimgo/viznoir</a></td><td>MCP, Python, pip <b title="install + import smoke-tested">✅</b></td><td align="right">19</td></tr>
+<tr><td align="center">🥉</td><td align="right"><b>65</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/taichi-dev/taichi">taichi-dev/taichi</a></td><td>Python, pip <b title="install + import smoke-tested">✅</b></td><td align="right">28,409</td></tr>
+<tr><td align="center">4</td><td align="right"><b>65</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/google-deepmind/mujoco">google-deepmind/mujoco</a></td><td>Python, pip</td><td align="right">15,630</td></tr>
+<tr><td align="center">5</td><td align="right"><b>65</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/rerun-io/rerun">rerun-io/rerun</a></td><td>Python, pip</td><td align="right">11,583</td></tr>
+<tr><td align="center">6</td><td align="right"><b>65</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/google-deepmind/graphcast">google-deepmind/graphcast</a></td><td>Python, pip</td><td align="right">7,705</td></tr>
+<tr><td align="center">7</td><td align="right"><b>65</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/NVIDIA/warp">NVIDIA/warp</a></td><td>Python, pip</td><td align="right">7,185</td></tr>
+<tr><td align="center">8</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/CadQuery/cadquery">CadQuery/cadquery</a></td><td>Python, pip <b title="install + import smoke-tested">✅</b></td><td align="right">5,921</td></tr>
+<tr><td align="center">9</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/libigl/libigl">libigl/libigl</a></td><td>Python, pip</td><td align="right">5,105</td></tr>
+<tr><td align="center">10</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/PolymathicAI/the_well">PolymathicAI/the_well</a></td><td>Python, pip</td><td align="right">4,468</td></tr>
+<tr><td align="center">11</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/lululxvi/deepxde">lululxvi/deepxde</a></td><td>Python, pip</td><td align="right">4,463</td></tr>
+<tr><td align="center">12</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/NeuralOperator/neuraloperator">NeuralOperator/neuraloperator</a></td><td>Python, pip</td><td align="right">3,952</td></tr>
+<tr><td align="center">13</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/pyvista/pyvista">pyvista/pyvista</a></td><td>Python, pip <b title="install + import smoke-tested">✅</b></td><td align="right">3,845</td></tr>
+<tr><td align="center">14</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/mikedh/trimesh">mikedh/trimesh</a></td><td>Python, pip <b title="install + import smoke-tested">✅</b></td><td align="right">3,697</td></tr>
+<tr><td align="center">15</td><td align="right"><b>64</b></td><td>🔵 Agent-Ready</td><td><a href="https://github.com/meta-pytorch/botorch">meta-pytorch/botorch</a></td><td>Python, pip</td><td align="right">3,618</td></tr>
+</table>
+
+<sub>🟢 2 AI-Native · 🔵 61 Agent-Ready · 🟡 28 Scriptable · ⚪ 23 Experimental — across 114 ranked tools (updated 2026-10-12). ✅ = install + import <a href="data/verified.json">execution-verified</a>. <a href="READINESS.md">Full ranking →</a></sub>
+
+<!-- AI-READINESS-INDEX:END -->
+
+<sup>[back to top](#contents)</sup>
+
+## How the Score Works
+
+> The **AI-Readiness Score** (0–100) ranks tools by how directly an autonomous agent can drive them — *callability over popularity*.
+
+<table>
+<tr><th>Signal</th><th>Points</th><th>Why it matters to an agent</th></tr>
+<tr><td>MCP server</td><td>35</td><td>The agent calls it with zero glue code</td></tr>
+<tr><td>Python API</td><td>25</td><td>Native scripting</td></tr>
+<tr><td>CLI / REST</td><td>15</td><td>Headless automation</td></tr>
+<tr><td>pip-installable</td><td>+15</td><td>One-command install (verified on PyPI)</td></tr>
+<tr><td>Maintained (&lt;6 mo)</td><td>15</td><td>Won't rot mid-project</td></tr>
+<tr><td>Adoption (stars)</td><td>10</td><td>log-scaled — popularity barely moves the needle</td></tr>
+</table>
+
+The five base signals (MCP + Python + CLI + Maintained + Adoption) total **100**; **pip is an additive bonus**, and the final score is **capped at 100**. So a tool can reach 100 several ways, but only MCP servers clear the AI-Native bar.
+
+**Grades:** ![AI-Native 75+](https://img.shields.io/badge/🟢_AI--Native-75%2B-2ea44f?style=flat-square) ![Agent-Ready 50-74](https://img.shields.io/badge/🔵_Agent--Ready-50--74-00d4ff?style=flat-square) ![Scriptable 30-49](https://img.shields.io/badge/🟡_Scriptable-30--49-f5a623?style=flat-square) ![Experimental under 30](https://img.shields.io/badge/⚪_Experimental-%3C30-9e9e9e?style=flat-square)
+
+Scores regenerate weekly from `README.md` via [`readiness-score.py`](scripts/readiness-score.py) — fully reproducible, no hand-tuning. Open a PR adding a tool and [a bot scores it automatically](.github/workflows/pr-readiness.yml).
+
+### Verified vs declared
+
+Honest about what's checked.
+
+**Verified** (objective, reproducible) — live GitHub stars/activity; PyPI availability; and an **install + import smoke-test** ([`verify_install.py`](scripts/verify_install.py) → [`data/verified.json`](data/verified.json)) that spins up an isolated `uv` venv, runs `pip install` + `import`, and records the result. Tools that pass are marked **✅** in the Index. *Current run: 8/10 flagship tools pass; the 2 misses are recorded honestly — Gmsh needs a system GL lib, DeepXDE needs a chosen backend.*
+
+**Declared** (from the entry's tags) — `MCP` and `CLI/API`. We link the server/CLI; we don't yet replay an end-to-end agent call.
+
+**Roadmap** (deepening the moat) — execution-verified MCP handshakes and headless runs, plus a per-tool *agent-call transcript*, so the score reflects tools an agent has actually driven, not just ones that expose an interface.
+
+<sup>[back to top](#contents)</sup>
+
+## Core Engine Readiness
+
+> A **hand-curated editorial** deep-dive on 17 foundational solvers — capability columns (Python binding, headless, Docker, AI-native) reflect maintainer judgment, ⭐ is live. This complements the auto-generated [Index](#ai-readiness-index) above, which stays the single source of truth for scores. Only 2 engines have MCP integration today.
+
+<table>
+<tr><th>Engine</th><th>Domain</th><th>⭐</th><th>Python API</th><th>Headless</th><th>Docker</th><th>🤖 AI-Native</th></tr>
+<tr><td><a href="https://github.com/OpenFOAM/OpenFOAM-dev">OpenFOAM</a></td><td>CFD</td><td><img src="https://img.shields.io/github/stars/OpenFOAM/OpenFOAM-dev?style=flat-square&label=" alt="stars"></td><td>PyFoam</td><td>✅</td><td>✅</td><td>✅ Foam-Agent, MCP</td></tr>
+<tr><td><a href="https://github.com/FEniCS/dolfinx">FEniCS</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/FEniCS/dolfinx?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://gitlab.onelab.info/gmsh/gmsh">Gmsh</a></td><td>Mesh</td><td>—</td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/Kitware/VTK">VTK</a> / <a href="https://github.com/Kitware/ParaView">ParaView</a></td><td>Viz</td><td><img src="https://img.shields.io/github/stars/Kitware/VTK?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>✅ ParaView-MCP</td></tr>
+<tr><td><a href="https://github.com/su2code/SU2">SU2</a></td><td>CFD</td><td><img src="https://img.shields.io/github/stars/su2code/SU2?style=flat-square&label=" alt="stars"></td><td>pySU2</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/mfem/mfem">MFEM</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/mfem/mfem?style=flat-square&label=" alt="stars"></td><td>PyMFEM</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/dealii/dealii">deal.II</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/dealii/dealii?style=flat-square&label=" alt="stars"></td><td>Limited</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/DualSPHysics/DualSPHysics">DualSPHysics</a></td><td>SPH</td><td><img src="https://img.shields.io/github/stars/DualSPHysics/DualSPHysics?style=flat-square&label=" alt="stars"></td><td>Inductiva API</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/taichi-dev/taichi">Taichi</a></td><td>Diff. Sim</td><td><img src="https://img.shields.io/github/stars/taichi-dev/taichi?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/PyFR/PyFR">PyFR</a></td><td>CFD</td><td><img src="https://img.shields.io/github/stars/PyFR/PyFR?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="http://www.calculix.de/">CalculiX</a></td><td>FEA</td><td>—</td><td>pycalculix</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/ElmerCSC/elmerfem">Elmer</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/ElmerCSC/elmerfem?style=flat-square&label=" alt="stars"></td><td>PyElmer</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/Open-Cascade-SAS/OCCT">OpenCASCADE</a></td><td>CAD</td><td><img src="https://img.shields.io/github/stars/Open-Cascade-SAS/OCCT?style=flat-square&label=" alt="stars"></td><td>pythonOCC</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/idaholab/moose">MOOSE</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/idaholab/moose?style=flat-square&label=" alt="stars"></td><td>Python</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/FreeFem/FreeFem-sources">FreeFEM</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/FreeFem/FreeFem-sources?style=flat-square&label=" alt="stars"></td><td>FreeFem++</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/sfepy/sfepy">SfePy</a></td><td>FEA</td><td><img src="https://img.shields.io/github/stars/sfepy/sfepy?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td><a href="https://github.com/google-deepmind/mujoco">MuJoCo</a></td><td>Diff. Sim</td><td><img src="https://img.shields.io/github/stars/google-deepmind/mujoco?style=flat-square&label=" alt="stars"></td><td>✅ Native</td><td>✅</td><td>✅</td><td>—</td></tr>
+</table>
+
+<sup>[back to top](#contents)</sup>
+
+## MCP Servers
+
+> AI agents call these directly via [Model Context Protocol](https://modelcontextprotocol.io/).
+
+- [kimimgo/viznoir](https://github.com/kimimgo/viznoir) `Python` `MCP` - Cinema-quality science visualization. 22 tools for rendering, slicing, contouring, volume rendering, and animating OpenFOAM/VTK/CGNS data via VTK. Headless EGL/OSMesa.
+- [llnl/paraview_mcp](https://github.com/llnl/paraview_mcp) `Python` `MCP` - Natural language control of ParaView via MCP. Multimodal LLM observes viewport for visual feedback (LLNL).
+- [webworn/openfoam-mcp-server](https://github.com/webworn/openfoam-mcp-server) `C++` `MCP` - OpenFOAM MCP server with Socratic questioning for CFD education and expert error resolution.
+
+<sup>[back to top](#contents)</sup>
+
+## CFD — Computational Fluid Dynamics
+
+> Open-source solvers for fluid flow, heat transfer, and multiphysics.
+
+- [OpenFOAM/OpenFOAM-dev](https://github.com/OpenFOAM/OpenFOAM-dev) `C++` - The open source CFD toolbox. Finite volume solvers for incompressible/compressible flow, multiphase, combustion, heat transfer.
+- [su2code/SU2](https://github.com/su2code/SU2) `C++` `Python` - Multiphysics simulation and design optimization. Compressible/incompressible flow, structural analysis, adjoint-based design.
+- [LLNL/Nek5000](https://github.com/Nek5000/Nek5000) `Fortran` - High-order spectral element CFD solver. DNS/LES of turbulent flows. Scalable to millions of cores.
+- [Nek5000/nekRS](https://github.com/Nek5000/nekRS) `C++` `CUDA` - GPU-accelerated spectral element CFD. Successor to Nek5000 with native CUDA/HIP/OpenCL support.
+- [precice/precice](https://github.com/precice/precice) `C++` `Python` - Coupling library for multi-physics simulations. Fluid-structure interaction, conjugate heat transfer.
+- [ProjectPhysX/FluidX3D](https://github.com/ProjectPhysX/FluidX3D) `C++` `CUDA` - GPU-accelerated Lattice Boltzmann fluid simulator. Real-time 3D visualization, scriptable via Python subprocess, supports multi-GPU.
+- [PyFR/PyFR](https://github.com/PyFR/PyFR) `Python` - High-order flux reconstruction CFD on mixed unstructured grids. GPU-accelerated (CUDA/OpenCL/HIP).
+
+<sup>[back to top](#contents)</sup>
+
+## FEA — Finite Element Analysis
+
+> Structural, thermal, and multiphysics FEM solvers.
+
+- [CalculiX](http://www.calculix.de/) `Fortran` `C` - Free 3D structural FEM. Linear/nonlinear static, dynamic, thermal analysis. Abaqus INP compatible.
+- [dealii/dealii](https://github.com/dealii/dealii) `C++` - Adaptive finite elements. Supports hp-refinement, multigrid, and parallel distributed computing.
+- [ElmerCSC/elmerfem](https://github.com/ElmerCSC/elmerfem) `Fortran` `C++` - Multiphysics FEM solver. Fluid dynamics, structural mechanics, electromagnetics, heat transfer. CSC Finland.
+- [FEniCS/dolfinx](https://github.com/FEniCS/dolfinx) `C++` `Python` - Next-generation FEniCS. Automated PDE solving with high-level Python/C++ interface. Parallel, scalable.
+- [firedrakeproject/firedrake](https://github.com/firedrakeproject/firedrake) `Python` - Automated FEM with code generation from high-level problem descriptions. UFL domain-specific language.
+- [FreeFem/FreeFem-sources](https://github.com/FreeFem/FreeFem-sources) `C++` - Partial differential equation solver using finite element method. High-level scripting language for 2D/3D problems.
+- [idaholab/moose](https://github.com/idaholab/moose) `C++` `Python` - Multiphysics Object-Oriented Simulation Environment. Coupled physics FEM framework from Idaho National Lab.
+- [KratosMultiphysics/Kratos](https://github.com/KratosMultiphysics/Kratos) `C++` `Python` - Framework for multi-physics FEM. Structural, fluid, thermal, contact, FSI.
+- [mfem/mfem](https://github.com/mfem/mfem) `C++` - High-order finite element library. Supports GPU acceleration, AMR, and dozens of physics applications.
+- [OpenSees/OpenSees](https://github.com/OpenSees/OpenSees) `C++` - Open system for earthquake engineering simulation. Structural and geotechnical response analysis. Berkeley.
+- [sfepy/sfepy](https://github.com/sfepy/sfepy) `Python` - Simple Finite Elements in Python. Solve PDEs by FEM in 1D, 2D, and 3D with plain Python scripting.
+
+<sup>[back to top](#contents)</sup>
+
+## SPH — Smoothed Particle Hydrodynamics
+
+> Meshless particle methods for free-surface flows and fluid-structure interaction.
+
+- [DualSPHysics/DualSPHysics](https://github.com/DualSPHysics/DualSPHysics) `C++` `CUDA` - GPU-accelerated SPH solver. Free-surface flows, wave generation, fluid-structure interaction, floating bodies.
+- [InteractiveComputerGraphics/SPlisHSPlasH](https://github.com/InteractiveComputerGraphics/SPlisHSPlasH) `C++` - Physically-based SPH fluid simulation. DFSPH, IISPH, PBF pressure solvers. Viscosity, surface tension.
+- [pypr/pysph](https://github.com/pypr/pysph) `Python` `Cython` - SPH framework in Python. Compressible/incompressible flows, solid mechanics, coupled problems.
+
+<sup>[back to top](#contents)</sup>
+
+## DEM — Discrete Element Method
+
+> Particle-based simulation of granular materials, powders, and coupled particle-fluid systems.
+
+- [CFDEMproject/LIGGGHTS-PUBLIC](https://github.com/CFDEMproject/LIGGGHTS-PUBLIC) `C++` - Industry-standard open-source DEM for granular materials. LAMMPS-based with heat transfer and CFD coupling.
+- [lammps/lammps](https://github.com/lammps/lammps) `C++` `Python` - Large-scale Atomic/Molecular Massively Parallel Simulator. Classical MD and DEM with granular package. Sandia National Labs.
+- [MercuryDPM](https://bitbucket.org/mercurydpm/mercurydpm) `C++` - Open-source DEM for granular and particle-laden flows. Coarse-graining, contact models, and the MercuryCG analysis toolkit.
+- [SudoDEM/SudoDEM](https://github.com/SudoDEM/SudoDEM) `C++` `Python` - DEM for non-spherical particles. Polyhedra, super-ellipsoids, and cylinders for realistic granular simulations.
+- [Yade](https://gitlab.com/yade-dev/trunk) `C++` `Python` - Extensible open-source DEM framework. Python scripting, deformable particles, coupled DEM-FEM and DEM-fluid problems.
+
+<sup>[back to top](#contents)</sup>
+
+## Visualization & Post-processing
+
+> Rendering, plotting, and interactive exploration of simulation results.
+
+- [fury-gl/fury](https://github.com/fury-gl/fury) `Python` - Free Unified Rendering in Python. VTK-based scientific visualization, 3D animations, and streamline rendering with a NumPy-friendly API.
+- [InsightSoftwareConsortium/itkwidgets](https://github.com/InsightSoftwareConsortium/itkwidgets) `Python` - Interactive Jupyter widgets for 3D visualization of images, point sets, and meshes. Built on ITK and vtk.js.
+- [kimimgo/viznoir](https://github.com/kimimgo/viznoir) `Python` `MCP` - Cinema-quality science visualization MCP server. 22 tools, EGL/OSMesa headless, cinematic lighting, physics animations.
+- [Kitware/ParaView](https://github.com/Kitware/ParaView) `C++` `Python` - Multi-platform data analysis and visualization. VTK-based GUI + Python scripting + client-server architecture.
+- [Kitware/trame](https://github.com/Kitware/trame) `Python` - Build interactive scientific web applications purely in Python. Integrates VTK and ParaView for server-side or local 3D rendering.
+- [Kitware/VolView](https://github.com/Kitware/VolView) `TypeScript` - Browser-based 3D radiological viewer for DICOM. Volume rendering, annotations, and measurements that run fully client-side.
+- [Kitware/VTK](https://github.com/Kitware/VTK) `C++` `Python` - The Visualization Toolkit. 3D computer graphics, image processing, scientific visualization. Industry standard.
+- [Kitware/vtk-js](https://github.com/Kitware/vtk-js) `JavaScript` - Visualization Toolkit for the Web. WebGL/WebGPU scientific visualization and volume rendering entirely in the browser.
+- [marcomusy/vedo](https://github.com/marcomusy/vedo) `Python` - Scientific analysis and visualization of 3D objects and point clouds. VTK-based with simple API.
+- [napari/napari](https://github.com/napari/napari) `Python` - Fast n-dimensional image viewer. Plugin ecosystem for biomedical and scientific imaging.
+- [nmwsharp/polyscope](https://github.com/nmwsharp/polyscope) `C++` `Python` - Lightweight 3D viewer for meshes, point clouds, and scalar fields. One-line visualization for geometry processing.
+- [plotly/plotly.py](https://github.com/plotly/plotly.py) `Python` - Interactive, publication-quality graphs. 3D scatter, surface, mesh, volume. Web-based rendering.
+- [pyvista/pyvista](https://github.com/pyvista/pyvista) `Python` - Pythonic VTK. Streamlined 3D plotting, mesh analysis, and interactive visualization.
+- [rerun-io/rerun](https://github.com/rerun-io/rerun) `Rust` `Python` - Multi-modal data logging and visualization SDK. Stream, store, and replay simulation data with Python API.
+
+<sup>[back to top](#contents)</sup>
+
+## CAD & Geometry
+
+> Parametric modeling, geometry processing, and CAD data exchange.
+
+- [CadQuery/cadquery](https://github.com/CadQuery/cadquery) `Python` - Parametric 3D CAD scripting. Build models with Python, export STEP/STL/IGES. OpenCASCADE kernel.
+- [CadQuery/OCP](https://github.com/CadQuery/OCP) `C++` `Python` - Python wrapper for OpenCASCADE via pybind11. Low-level foundation for CadQuery and build123d.
+- [FreeCAD/FreeCAD](https://github.com/FreeCAD/FreeCAD) `C++` `Python` - Open-source parametric 3D CAD modeler. Part design, FEM workbench, BIM, path (CAM).
+- [gumyr/build123d](https://github.com/gumyr/build123d) `Python` - Modern Python CAD with algebraic geometry API. Successor to CadQuery with cleaner builder pattern.
+- [mikedh/trimesh](https://github.com/mikedh/trimesh) `Python` - Load and manipulate triangular meshes. Boolean operations, ray tracing, convex hulls, format conversion.
+- [nschloe/pygmsh](https://github.com/nschloe/pygmsh) `Python` - Python interface for Gmsh. Scripted geometry + mesh generation with parametric control.
+- [Open-Cascade-SAS/OCCT](https://github.com/Open-Cascade-SAS/OCCT) `C++` - Open CASCADE Technology. Kernel for 3D surface and solid modeling, CAD data exchange (STEP/IGES).
+- [SolidCode/SolidPython](https://github.com/SolidCode/SolidPython) `Python` - Python frontend for OpenSCAD. Generate 3D models programmatically with CSG operations.
+
+<sup>[back to top](#contents)</sup>
+
+## Mesh Generation
+
+> Structured, unstructured, and AI-driven mesh generation for simulation preprocessing.
+
+- [buaacyw/MeshAnything](https://github.com/buaacyw/MeshAnything) `Python` - Artist-quality mesh generation with autoregressive transformers. Any 3D input to mesh (ICLR 2025 spotlight).
+- [buaacyw/MeshAnythingV2](https://github.com/buaacyw/MeshAnythingV2) `Python` - Adjacent Mesh Tokenization for efficient artist-quality mesh generation. Faster and higher-quality than V1 (ICCV 2025).
+- [CGAL/cgal](https://github.com/CGAL/cgal) `C++` - Computational Geometry Algorithms Library. Mesh generation, triangulation, Boolean operations, convex hulls.
+- [Gmsh](https://gitlab.onelab.info/gmsh/gmsh) `C++` `Python` - Full-featured 3D finite element mesh generator. CAD engine, structured/unstructured meshing, built-in post-processing.
+- [libigl/libigl](https://github.com/libigl/libigl) `C++` `Python` - Header-only geometry processing library. Mesh parameterization, deformation, Boolean ops. Eurographics award winner.
+- [MmgTools/mmg](https://github.com/MmgTools/mmg) `C` - Anisotropic mesh adaptation for 2D/3D surface and volume remeshing. Metric-based automatic refinement.
+- [NGSolve/netgen](https://github.com/NGSolve/netgen) `C++` `Python` - Automatic 3D tetrahedral mesh generator. CAD (OCC) integration, mesh optimization, parallel meshing.
+- [nmwsharp/geometry-central](https://github.com/nmwsharp/geometry-central) `C++` - Applied geometry algorithms for surfaces and volumes. Geodesics, vector fields, intrinsic triangulations.
+- [OpenMeshLab/MeshXL](https://github.com/OpenMeshLab/MeshXL) `Python` - Foundation model for 3D mesh generation. Pre-trained on Objaverse, text-to-mesh capable (NeurIPS 2024).
+- [PyMesh/PyMesh](https://github.com/PyMesh/PyMesh) `Python` `C++` - Geometry processing library. Boolean, convex hull, remeshing, self-intersection repair.
+- [pyvista/tetgen](https://github.com/pyvista/tetgen) `C++` `Python` - Python interface to TetGen tetrahedral mesh generator. Constrained Delaunay tetrahedralization with quality control.
+- [wildmeshing/fTetWild](https://github.com/wildmeshing/fTetWild) `C++` - Fast and robust tetrahedral meshing. Handles self-intersections and degenerate input. Ten times faster than TetWild.
+
+<sup>[back to top](#contents)</sup>
+
+## Differentiable Simulation
+
+> GPU-native frameworks for gradient-based optimization through physics.
+
+- [Autodesk/XLB](https://github.com/Autodesk/XLB) `Python` `JAX` - Differentiable Lattice Boltzmann for physics-ML. Scales to billions of cells on multi-GPU.
+- [google/brax](https://github.com/google/brax) `Python` `JAX` - Massively parallel rigidbody physics on accelerator hardware. Millions of steps/second on TPU.
+- [jax-md/jax-md](https://github.com/jax-md/jax-md) `Python` `JAX` - Differentiable, hardware-accelerated molecular dynamics. Runs on CPU/GPU/TPU via XLA.
+- [gbionics/jaxsim](https://github.com/gbionics/jaxsim) `Python` `JAX` - Differentiable multibody dynamics engine. Hardware-accelerated robot learning and control via JAX.
+- [google-deepmind/mujoco](https://github.com/google-deepmind/mujoco) `C++` `Python` - Multi-joint dynamics with contact. General-purpose physics engine for robotics, biomechanics, and control.
+- [NVIDIA/warp](https://github.com/NVIDIA/warp) `Python` `CUDA` - Differentiable simulation and spatial computing. Reverse-mode AD, PyTorch/JAX interop.
+- [rtqichen/torchdiffeq](https://github.com/rtqichen/torchdiffeq) `Python` `PyTorch` - ODE and SDE solvers with automatic differentiation. Adjoint-based backpropagation through continuous-time dynamics.
+- [taichi-dev/taichi](https://github.com/taichi-dev/taichi) `Python` `CUDA` - Productive GPU programming with automatic differentiation. DiffTaichi for differentiable physics.
+- [tumaer/JAXFLUIDS](https://github.com/tumaer/JAXFLUIDS) `Python` `JAX` - Fully-differentiable CFD solver for 3D compressible single-phase and two-phase flows.
+
+<sup>[back to top](#contents)</sup>
+
+## AI/ML for Simulation
+
+> Neural operators, LLM agents, and foundation models for computational engineering.
+
+- [csml-rpi/Foam-Agent](https://github.com/csml-rpi/Foam-Agent) `Python` `API` - AI agent for automated CFD workflows. LLM-driven OpenFOAM simulation setup and execution.
+- [deepmodeling/deepmd-kit](https://github.com/deepmodeling/deepmd-kit) `Python` `C++` - Deep learning for molecular dynamics. Neural network potentials for large-scale atomistic simulations.
+- [dynamicslab/pykoopman](https://github.com/dynamicslab/pykoopman) `Python` - Data-driven Koopman operator approximation. Dynamical system analysis and prediction from time series.
+- [dynamicslab/pysindy](https://github.com/dynamicslab/pysindy) `Python` - Sparse Identification of Nonlinear Dynamics. Data-driven discovery of governing equations from measurements.
+- [google-deepmind/graphcast](https://github.com/google-deepmind/graphcast) `Python` - Graph neural network for medium-range weather forecasting. Ten-day forecasts in under a minute (Nature 2023).
+- [google/jax-cfd](https://github.com/google/jax-cfd) `Python` - JAX-based CFD. Differentiable Navier-Stokes solvers. GPU-accelerated, auto-differentiable.
+- [Koopman-Laboratory/KoopmanLab](https://github.com/Koopman-Laboratory/KoopmanLab) `Python` - Koopman Neural Operator for mesh-free nonlinear PDE solving. Multi-scale decomposition.
+- [lululxvi/deepxde](https://github.com/lululxvi/deepxde) `Python` - Deep learning library for PDEs. PINNs, DeepONet. Backends: TensorFlow, PyTorch, JAX, PaddlePaddle.
+- [microsoft/aurora](https://github.com/microsoft/aurora) `Python` - Foundation model for Earth system prediction. Atmosphere, ocean, air quality. Pre-trained on ERA5 and CMIP6.
+- [microsoft/ClimaX](https://github.com/microsoft/ClimaX) `Python` - Foundation model for weather and climate. Pre-trained on CMIP6, fine-tunable for downstream tasks.
+- [microsoft/mattergen](https://github.com/microsoft/mattergen) `Python` - Generative model for novel inorganic materials design. Diffusion-based crystal structure generation with target property conditioning.
+- [NeuralOperator/neuraloperator](https://github.com/NeuralOperator/neuraloperator) `Python` - Neural operators in PyTorch. FNO, SFNO, UNO for learning PDE solution operators.
+- [NVIDIA/earth2studio](https://github.com/NVIDIA/earth2studio) `Python` - AI-driven Earth system forecasting framework. Built-in model zoo (FourCastNet, Pangu-Weather, CorrDiff, GraphCast).
+- [NVIDIA/physicsnemo](https://github.com/NVIDIA/physicsnemo) `Python` `CUDA` - Physics-ML framework (formerly Modulus). PINNs, neural operators, GNNs, diffusion models. Apache 2.0.
+- [Terry-cyx/MetaOpenFOAM](https://github.com/Terry-cyx/MetaOpenFOAM) `Python` `API` - LLM-based multi-agent framework for CFD. Automated simulation pipeline from natural language.
+- [tum-pbs/PhiFlow](https://github.com/tum-pbs/PhiFlow) `Python` - Differentiable PDE simulations. Fluid dynamics with TF/PyTorch/JAX. ML-physics hybrid workflows.
+
+<sup>[back to top](#contents)</sup>
+
+## Surrogate Models & PINNs
+
+> Physics-informed neural networks and data-driven reduced-order models for fast PDE solving.
+
+- [camlab-ethz/poseidon](https://github.com/camlab-ethz/poseidon) `Python` - Scalable foundation model for PDEs. Pre-trained on diverse physics domains; few-shot generalization via in-context operator learning.
+- [lululxvi/deepxde](https://github.com/lululxvi/deepxde) `Python` - Physics-informed neural networks for PDEs. Multi-backend (TF, PyTorch, JAX). Inverse problems, fractional PDEs.
+- [mathLab/PINA](https://github.com/mathLab/PINA) `Python` - Physics-Informed Neural networks for Advanced modeling. PyTorch Lightning-based with multi-device training.
+- [mathLab/PyDMD](https://github.com/mathLab/PyDMD) `Python` - Dynamic Mode Decomposition. Data-driven reduced-order modeling for fluid dynamics and beyond.
+- [NeuroDiffGym/neurodiffeq](https://github.com/NeuroDiffGym/neurodiffeq) `Python` - Neural network solver for ODEs and PDEs. Flexible architecture with native boundary condition handling.
+- [NVIDIA/physicsnemo-sym](https://github.com/NVIDIA/physicsnemo-sym) `Python` - Symbolic AI for physics. Physics-informed neural networks with symbolic equation definition.
+- [rezaakb/pinns-torch](https://github.com/rezaakb/pinns-torch) `Python` `PyTorch` - Production-ready PINNs in PyTorch. Multi-physics support, inverse problems, uncertainty quantification.
+- [sciann/sciann](https://github.com/sciann/sciann) `Python` - Neural networks for scientific computing. Keras-based PINNs with custom loss and constraints.
+- [thuml/Neural-Solver-Library](https://github.com/thuml/Neural-Solver-Library) `Python` - Library for advanced neural PDE solvers. Benchmarking Transolver, FNO, and variants on diverse PDE families.
+
+<sup>[back to top](#contents)</sup>
+
+## Optimization
+
+> Bayesian, topology, and multidisciplinary design optimization.
+
+- [meta-pytorch/botorch](https://github.com/meta-pytorch/botorch) `Python` `PyTorch` - Bayesian optimization in PyTorch. Sequential decision making, multi-objective optimization, batch acquisition.
+- [OpenMDAO/dymos](https://github.com/OpenMDAO/dymos) `Python` - Open-source optimal control of dynamic systems. Gradient-based trajectory optimization with Gauss-Lobatto and Radau collocation on OpenMDAO.
+- [OpenMDAO/OpenMDAO](https://github.com/OpenMDAO/OpenMDAO) `Python` - Multidisciplinary design optimization. NASA-developed. Gradient-based + surrogate-assisted optimization.
+- [anyoptimization/pymoo](https://github.com/anyoptimization/pymoo) `Python` - Multi-objective optimization. NSGA-II/III, reference directions, constraint handling, parallelization.
+- [dl4to/dl4to](https://github.com/dl4to/dl4to) `Python` `PyTorch` - Deep learning for 3D topology optimization. Autograd + adjoint method for efficient neural optimization.
+- [williamhunter/topy](https://github.com/williamhunter/topy) `Python` - Topology optimization with Python. Minimum compliance, heat conduction, mechanism design.
+- [mdolab/OpenAeroStruct](https://github.com/mdolab/OpenAeroStruct) `Python` - Aerostructural optimization. VLM aerodynamics + beam FEM structures + ply-level composites.
+
+<sup>[back to top](#contents)</sup>
+
+## Data Formats & I/O
+
+> Libraries for reading, writing, and converting simulation data across mesh and field formats.
+
+- [nschloe/meshio](https://github.com/nschloe/meshio) `Python` - I/O for mesh formats. Abaqus, CGNS, Gmsh, VTK, XDMF, Exodus, and 30+ more.
+- [h5py/h5py](https://github.com/h5py/h5py) `Python` - Pythonic interface to HDF5. Read/write large numerical datasets efficiently.
+- [Unidata/netcdf4-python](https://github.com/Unidata/netcdf4-python) `Python` - Python/NumPy interface to NetCDF. Climate, ocean, atmospheric simulation data.
+- [CGNS/CGNS](https://github.com/CGNS/CGNS) `C` `Fortran` - CFD General Notation System. Standard for CFD data storage and exchange. HDF5-based.
+- [pyvista/pyvista](https://github.com/pyvista/pyvista) `Python` - Read/write VTK formats (VTI, VTP, VTU, VTS, VTR), STL, OBJ, PLY, glTF, and more.
+
+<sup>[back to top](#contents)</sup>
+
+## Datasets & Benchmarks
+
+> Standardized datasets and benchmarks for training and evaluating scientific ML models.
+
+- [divelab/AIRS](https://github.com/divelab/AIRS) `Python` - AI for science benchmarks. Molecular, protein, climate, physics datasets.
+- [Extrality/AirfRANS](https://github.com/Extrality/AirfRANS) `Python` - RANS simulation dataset for airfoils. 1000 simulations with Reynolds-averaged fields (NeurIPS 2022).
+- [Mohamedelrefaie/DrivAerNet](https://github.com/Mohamedelrefaie/DrivAerNet) `Python` - Large-scale automotive CFD dataset. 4000+ car designs with drag coefficients and surface fields.
+- [i207M/PINNacle](https://github.com/i207M/PINNacle) `Python` - Comprehensive PINN benchmark with 20 PDE problems across difficulty levels (NeurIPS 2024).
+- [NASA TMR](https://turbmodels.larc.nasa.gov/) - Turbulence Modeling Resource. Validation cases for CFD turbulence models with experimental data.
+- [pdebench/PDEBench](https://github.com/pdebench/PDEBench) `Python` - Benchmarks for scientific ML. Standardized PDE datasets with baseline models.
+- [PolymathicAI/the_well](https://github.com/PolymathicAI/the_well) `Python` - Large-scale collection of diverse physics simulations for ML. Fifteen-plus PDE systems (NeurIPS 2024).
+
+<sup>[back to top](#contents)</sup>
+
+## Learning Resources
+
+> Tutorials, courses, and curated reference lists for computational engineering and AI for science.
+
+- [barbagroup/CFDPython](https://github.com/barbagroup/CFDPython) `Python` - Classic "12 Steps to Navier-Stokes" tutorial. Learn CFD fundamentals with Python step by step.
+- [ikespand/awesome-machine-learning-fluid-mechanics](https://github.com/ikespand/awesome-machine-learning-fluid-mechanics) - Curated list of ML applications in fluid mechanics. Papers, code, and tutorials.
+- [jxx123/simglucose](https://github.com/jxx123/simglucose) `Python` - Type 1 diabetes simulator. Example of AI-in-the-loop biomedical simulation.
+- [maziarraissi/PINNs](https://github.com/maziarraissi/PINNs) `Python` - The foundational PINN reference implementation. Data-driven PDE solutions and discovery (JCP 2019).
+- [thunil/Physics-Based-Deep-Learning](https://github.com/thunil/Physics-Based-Deep-Learning) - Comprehensive collection of physics-based deep learning resources. Papers, code links, and tutorials from TUM.
+- [WillDreamer/Awesome-AI4CFD](https://github.com/WillDreamer/Awesome-AI4CFD) - Survey of ML for CFD covering data-driven surrogates, PINNs, and ML-assisted numerical solvers.
+
+<sup>[back to top](#contents)</sup>
+
+## Star History
+
+<div align="center">
+<a href="https://star-history.com/#kimimgo/awesome-ai-cae&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kimimgo/awesome-ai-cae&type=Date&theme=dark">
+    <img src="https://api.star-history.com/svg?repos=kimimgo/awesome-ai-cae&type=Date" alt="Star History Chart" width="600">
+  </picture>
+</a>
+</div>
+
+<sup>[back to top](#contents)</sup>
+
+<img src="media/divider.svg" width="100%" alt="">
+
+## Contributing
+
+Contributions welcome! Read the [contributing guidelines](CONTRIBUTING.md) first — adding a tool triggers an [automatic AI-Readiness score](.github/workflows/pr-readiness.yml) on your PR. Common questions answered in the [FAQ](FAQ.md).
+
+[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
+
+To the extent possible under law, [kimimgo](https://github.com/kimimgo) has waived all copyright and related or neighboring rights to this work.

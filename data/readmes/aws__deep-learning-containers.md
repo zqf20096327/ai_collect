@@ -1,0 +1,73 @@
+<div align="center"> <img src="https://aws.github.io/deep-learning-containers/assets/logos/AWS_logo_RGB.svg" alt="AWS Logo" width="30%"> </div>
+
+<h1 align="center">AWS Deep Learning Containers</h1>
+
+<p align="center"><strong>One stop shop for running AI/ML on AWS</strong></p>
+
+<p align="center"><a href="https://aws.github.io/deep-learning-containers/"><strong>Docs</strong></a> ·
+<a href="https://aws.github.io/deep-learning-containers/reference/available_images/"><strong>Available Images</strong></a> · <a href="https://aws.github.io/deep-learning-containers/tutorials/"><strong>Tutorials</strong></a></p>
+
+<p align="center">
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/pytorch.autorelease-2.14-ec2.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/pytorch.autorelease-2.14-ec2.yml/badge.svg" alt="Auto Release - PyTorch 2.14"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/tensorflow-training.autorelease-2.21-sagemaker.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/tensorflow-training.autorelease-2.21-sagemaker.yml/badge.svg" alt="Auto Release - TensorFlow Training 2.21"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/tensorflow-inference.autorelease-2.20-sagemaker.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/tensorflow-inference.autorelease-2.20-sagemaker.yml/badge.svg" alt="Auto Release - TensorFlow Inference 2.20"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/vllm.autorelease-ec2-amzn2023.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/vllm.autorelease-ec2-amzn2023.yml/badge.svg" alt="Auto Release - vLLM"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/vllm-omni.autorelease-ec2.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/vllm-omni.autorelease-ec2.yml/badge.svg" alt="Auto Release - vLLM-Omni"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/sglang.autorelease-ec2-amzn2023.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/sglang.autorelease-ec2-amzn2023.yml/badge.svg" alt="Auto Release - SGLang"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/ray.autorelease-ec2.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/ray.autorelease-ec2.yml/badge.svg" alt="Auto Release - Ray"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/base.autorelease-cu130.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/base.autorelease-cu130.yml/badge.svg" alt="Auto Release - Base cu130"></a>
+  <a href="https://github.com/aws/deep-learning-containers/actions/workflows/base.autorelease-cu132.yml"><img src="https://github.com/aws/deep-learning-containers/actions/workflows/base.autorelease-cu132.yml/badge.svg" alt="Auto Release - Base cu132"></a>
+</p>
+
+______________________________________________________________________
+
+## About
+
+AWS Deep Learning Containers (DLCs) are pre-built Docker images for running AI/ML workloads on AWS. Each image is tested and patched for security vulnerabilities. For more details, visit our [documentation](https://aws.github.io/deep-learning-containers/).
+
+______________________________________________________________________
+
+## 🔥 What's New
+
+### 🚀 Release Highlights
+
+- **[2026/10/09]** [vLLM v0.31.0 (Ubuntu)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `0.31.0-gpu-py312-ec2` · SageMaker: `0.31.0-gpu-py312` · DeepSeek-V4.1-Flash performance (FlashMLA on SM100); `vllm preload` weight-cache daemon for fast restarts; MoonEP all2all backend; `--max-num-active-seqs`; per-request multimodal kwargs now gated behind `--trust-request-mm-kwargs`.
+- **[2026/10/08]** [Ray Serve v1.5 (2.59.0, AL2023)](https://gallery.ecr.aws/deep-learning-containers/ray) — EC2: `serve-ml-cuda-v1.5` · `serve-ml-cpu-v1.5` · SageMaker: `serve-ml-sagemaker-cuda-v1.5` · `serve-ml-sagemaker-cpu-v1.5` · Ray 2.59.0 (up from 2.57.0); Transformers 5.19.0, uvicorn 0.54.0, OpenCV 4.14.0.94; dropped the unused Ray Java worker jar and its bundled dependencies.
+- **[2026/10/03]** [SGLang v0.5.21 (Ubuntu)](https://gallery.ecr.aws/deep-learning-containers/sglang) — EC2: `0.5.21-gpu-py312-ec2` · SageMaker: `0.5.21-gpu-py312` · DeepSeek-V4.1 Flash, GigaChat 3.5, MiMo-V2.6, DiffusionGemma; on-the-fly PD role switching; Rust prefix-cache core by default; new Decisions API (`/v1/decisions`).
+- **[2026/10/01]** [vLLM Server ARM64 CPU v1.0 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/vllm-arm64) · EC2: `server-cpu-v1.0` · SageMaker: `server-sagemaker-cpu-v1.0` · Initial release: vLLM `0.30.0` CPU backend on AWS Graviton (ARM64), no GPU required; bf16 kernels for Graviton 3 and later, RAM-based KV-cache defaults, and the OpenAI-compatible API on EC2 and SageMaker AI.
+- **[2026/09/28]** [PyTorch v2.14.0](https://gallery.ecr.aws/deep-learning-containers/pytorch) — EC2: `2.14-cu133-amzn2023` · SageMaker: `2.14-cu133-amzn2023-sagemaker` · PyTorch 2.14.0 with `torchvision` 0.29.0; CUDA 13.3.1, EFA 1.50.0, TE 2.18.0, DeepSpeed 0.19.6.
+- **[2026/09/26]** [vLLM Server v2.6 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `server-cuda-v2.6` · SageMaker: `server-sagemaker-cuda-v2.6` · DeepEP v2 over EFA, built from the `amazon-contributing/DeepEP` fork; NCCL 2.31.2; EFA 1.50.0. vLLM stays at `0.30.0` (`ec4a3a5`).
+- **[2026/09/26]** [vLLM-Omni v1.8 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `omni-cuda-v1.8` · SageMaker: `omni-sagemaker-cuda-v1.8` · vLLM-Omni `0.29.0rc1` (up from 0.28.0); DeepEP v2 over EFA; FlashInfer 0.6.18, NCCL 2.31.2, EFA 1.50.0.
+- **[2026/09/24]** [SGLang Server v1.4 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/sglang) — EC2: `server-cuda-v1.4` · SageMaker: `server-sagemaker-cuda-v1.4` · SGLang `0.5.19` (up from 0.5.17); DeepEP v2 over EFA; PyTorch 2.13.0, NCCL 2.31.2, EFA 1.50.0.
+- **[2026/09/23]** [vLLM v0.30.0 (Ubuntu)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `0.30.0-gpu-py312-ec2` · SageMaker: `0.30.0-gpu-py312` · DeepSeek-V4.1-Flash, GLM-5.3-Flash, K2-Horizon; Fast Start GPU weight cache; Gumbel-max watermarking; `transformers` capped below 5.17.
+- **[2026/09/23]** [vLLM Server v2.5 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `server-cuda-v2.5` · SageMaker: `server-sagemaker-cuda-v2.5` · vLLM `0.30.0` (up from 0.27.1), built from `ec4a3a5` for Transformers 5.17; FlashInfer 0.6.18.post1.
+- **[2026/09/21]** [vLLM-Omni v1.7 (AL2023)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `omni-cuda-v1.7` · SageMaker: `omni-sagemaker-cuda-v1.7` · vLLM-Omni `0.28.0` (up from 0.26.0); PEFT LoRA adapters validated on SageMaker — per-request `lora` selection on `/v1/images/generations`; FlashInfer 0.6.16.post3, NCCL pinned 2.30.7, CUDA-13 mooncake wheel.
+- **[2026/09/19]** [SGLang v0.5.20 (Ubuntu)](https://gallery.ecr.aws/deep-learning-containers/sglang) — EC2: `0.5.20-gpu-py312-ec2` · SageMaker: `0.5.20-gpu-py312` · GLM-5.3-Flash, Hy4-Preview, Qwen3.8-Flash-Next, K2 Horizon; RL sampling masks; unified radix tree; DeepSeek-V4 on Blackwell.
+- **[2026/09/11]** [vLLM v0.29.0 (Ubuntu)](https://gallery.ecr.aws/deep-learning-containers/vllm) — EC2: `0.29.0-gpu-py312-ec2` · SageMaker: `0.29.0-gpu-py312` · New models: Hy4-preview (Tencent 770B/49B-active MoE with Gated DeepSeek Sparse Attention and native MTP), Qwen3.8-Flash-Next (BF16/FP8/NVFP4, MTP), GraniteSWA, GraniteMoeSWA, NemotronH_Omni_Reasoning_V3 (MTP), and Kimi K3 NVFP4 checkpoints.
+
+### 📢 Support Updates
+
+- **[2026/04/28]** We cannot guarantee security patching on Ubuntu-based vLLM and SGLang images due to the lack of Ubuntu Pro licensing. Customers may continue using these images at their own discretion and risk. We recommend migrating to our Amazon Linux-based images.
+- **[2026/02/10]** Extended support for PyTorch 2.6 Inference containers until June 30, 2026
+  - PyTorch 2.6 Inference images will continue to receive security patches and updates through end of June 2026
+  - For complete framework support timelines, see our [Support Policy](https://aws.github.io/deep-learning-containers/reference/support_policy/)
+
+### 📝 Blog Posts
+
+- **[Distributed Training on Amazon EKS](https://aws.amazon.com/blogs/machine-learning/configure-and-verify-a-distributed-training-cluster-with-aws-deep-learning-containers-on-amazon-eks/)** - Configure and validate a distributed training cluster with DLCs on Amazon EKS.
+- **[DLCs with Amazon SageMaker AI & MLflow](https://aws.amazon.com/blogs/machine-learning/use-aws-deep-learning-containers-with-amazon-sagemaker-ai-managed-mlflow/)** - Use DLCs with SageMaker AI managed MLflow for experiment tracking and model management.
+- **[LLM Serving on Amazon EKS with vLLM](https://aws.amazon.com/blogs/architecture/deploy-llms-on-amazon-eks-using-vllm-deep-learning-containers/)** - Deploy and serve LLMs on Amazon EKS using vLLM DLCs.
+- **[TorchServe to Ray Serve DLCs](https://aws.amazon.com/blogs/machine-learning/simplify-and-support-your-torchserve-workloads-using-ray-serve-deep-learning-containers/)** - Migrate TorchServe inference workloads to Ray Serve DLCs — AWS-managed, pre-tested containers without manual CUDA or version maintenance.
+- **[Fine-tuning Meta Llama 3.2 Vision](https://aws.amazon.com/blogs/machine-learning/fine-tune-and-deploy-meta-llama-3-2-vision-for-generative-ai-powered-web-automation-using-aws-dlcs-amazon-eks-and-amazon-bedrock/)** - Fine-tune and deploy Llama 3.2 Vision for web automation using DLCs, Amazon EKS, and Amazon Bedrock.
+- **[DLCs with Amazon Q Developer and MCP](https://aws.amazon.com/blogs/machine-learning/streamline-deep-learning-environments-with-amazon-q-developer-and-mcp/)** - Streamline deep learning environments with Amazon Q Developer and Model Context Protocol.
+
+### 🎓 Workshop
+
+- **[LLM Deployment on Amazon EKS](https://catalog.us-east-1.prod.workshops.aws/workshops/c22b50fb-64b1-4e18-8d0f-ce990f87eed3/en-US)** - Deploy and optimize LLMs on Amazon EKS using vLLM DLCs.
+  See also: [Sample Code](https://github.com/aws-samples/sample-vllm-on-eks-with-dlc)
+
+______________________________________________________________________
+
+## License
+
+This project is licensed under the Apache-2.0 License.

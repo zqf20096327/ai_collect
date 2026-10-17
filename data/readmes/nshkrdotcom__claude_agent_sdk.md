@@ -1,0 +1,888 @@
+<div align="center">
+  <img src="assets/claude_agent_sdk.svg" alt="Claude Agent SDK Logo" width="200"/>
+</div>
+
+# Claude Agent SDK for Elixir
+
+<p align="center">
+  <a href="https://github.com/nshkrdotcom/claude_agent_sdk"><img src="https://img.shields.io/badge/GitHub-nshkrdotcom%2Fclaude_agent_sdk-24292e?logo=github" alt="GitHub"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"/></a>
+</p>
+
+An Elixir SDK aiming for high parity with the official [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) while treating the [Claude Code CLI](https://code.claude.com/docs/en/cli-reference) as the authoritative runtime contract. Build AI-powered applications with Claude using a production-ready interface for the Claude Code CLI, featuring streaming responses, lifecycle hooks, permission controls, and in-process tool execution via MCP.
+
+> **Note:** This SDK does not bundle the Claude Code CLI. You must install it separately (see [Prerequisites](#prerequisites)).
+
+## Documentation Menu
+
+- `README.md` - installation, quick start, and ownership boundaries
+- `guides/getting-started.md` - first query and streaming flows
+- `guides/configuration.md` - runtime config and defaults
+- `guides/model-configuration.md` - Claude model selection and effort controls
+- `guides/agents.md` - agent and orchestration patterns
+- `guides/testing.md` - local validation workflow
+- `guides/provider_behavior_manifest.md` - evidence for Claude-native feature
+  translation
+
+---
+
+## What You Can Build
+
+- **AI coding assistants** with real-time streaming output
+- **Automated code review** pipelines with custom permission policies
+- **Multi-agent workflows** with specialized personas
+- **Tool-augmented applications** using the Model Context Protocol (MCP)
+- **Interactive chat interfaces** with typewriter-style output
+
+---
+
+## Runtime Architecture
+
+- Common CLI query/streaming flows run on the shared `cli_subprocess_core`
+  runtime: `CliSubprocessCore.Session`, `CliSubprocessCore.RawSession`, and
+  `CliSubprocessCore.Command`.
+- `ClaudeAgentSDK.Client` remains SDK-local only for the advanced Claude
+  control family: hooks, permission callbacks, SDK MCP routing, and control
+  request/response state.
+- `ClaudeAgentSDK.Client` now runs its control lane through
+  `CliSubprocessCore.ProtocolSession`; custom transport injection has been
+  removed. Use `Options.execution_surface` for SSH/local routing.
+
+## ASM Boundary
+
+If you enter Claude through `agent_session_manager`, the normalized ASM kernel
+still stops at provider selection, lane selection, event projection, and
+session/run orchestration.
+
+The optional ASM seam for Claude lives under
+`ASM.Extensions.ProviderSDK.Claude`. That extension may:
+
+- derive `ClaudeAgentSDK.Options` from ASM-style config
+- start `ClaudeAgentSDK.Client` from ASM session defaults or ASM-style config
+
+If `claude_agent_sdk` is present in the dependency graph, ASM activates that
+namespace automatically in `ASM.Extensions.ProviderSDK.available_extensions/0`
+and `ASM.Extensions.ProviderSDK.capability_report/0`. Client apps do not need
+to register it manually.
+
+Common fields such as `cwd`, `model`, `max_turns`, and transport timeouts may
+be derived from ASM config. Claude-native controls such as permission modes,
+hooks, MCP, settings, agents, tool lists, and system prompt channels must stay
+in this SDK or be passed through an explicit Claude-native override bag.
+
+It does not move the control family into ASM. Once you cross that seam, the
+real control APIs remain here:
+
+- `ClaudeAgentSDK.Client.set_permission_mode/2`
+- `ClaudeAgentSDK.Client.set_model/2`
+- `ClaudeAgentSDK.Client.interrupt/1`
+- `ClaudeAgentSDK.Client.rewind_files/2`
+- `ClaudeAgentSDK.ControlProtocol.Protocol`
+
+SDK-direct live verification lives in
+`examples/promotion_path/sdk_direct_claude.exs`. It uses the Claude SDK API
+without importing ASM, passes keyword `execution_surface` input, and
+demonstrates Claude-native tool suppression as SDK-owned behavior:
+
+```bash
+mix run examples/promotion_path/sdk_direct_claude.exs \
+  --model haiku \
+  --prompt "Reply with exactly: claude sdk direct ok"
+```
+
+Provider-native feature evidence is tracked in
+`guides/provider_behavior_manifest.md`. Add or update that manifest before
+translating any new Claude-specific CLI flag, control-client behavior, hook,
+MCP, permission, or settings feature.
+
+## Packaging Boundary
+
+Phase 4 finalizes the Claude release boundary:
+
+- `cli_subprocess_core` remains the required lower dependency for the common
+  Claude query and streaming lane
+- `claude_agent_sdk` remains the source of truth for Claude-native control
+  features such as hooks, permission callbacks, SDK MCP routing, and control
+  protocol state
+- ASM may bridge into that richer family only through
+  `ASM.Extensions.ProviderSDK.Claude`; that seam does not move the control
+  family into ASM or the shared core
+- the operator publication order places the already-published Execution Plane
+  components first, then `cli_subprocess_core` 0.9.3,
+  `claude_agent_sdk` 0.21.1, then
+  `agent_session_manager`; this SDK does not import Execution Plane directly
+
+## Schema Boundary
+
+`Zoi` is now the canonical boundary-schema layer for new dynamic boundary work
+inside `claude_agent_sdk`.
+
+- `cli_subprocess_core` owns the shared common-lane event and payload shapes.
+- `claude_agent_sdk` owns Claude-local control-protocol envelopes, permission
+  update payloads, and Claude-native message-frame adaptation.
+- public structs such as `%ClaudeAgentSDK.Message{}`,
+  `%ClaudeAgentSDK.Permission.Update{}`, and
+  `%ClaudeAgentSDK.Permission.RuleValue{}` remain the ergonomic caller-facing
+  layer.
+- forward-compatible wire surfaces use `Zoi.map(..., unrecognized_keys: :preserve)`
+  plus projection instead of direct `Zoi.struct/3`.
+- closed local payloads still use schema validation, but unknown-field
+  preservation is only enabled where the wire surface can legitimately expand.
+
+## Centralized Model Selection
+
+`claude_agent_sdk` no longer owns active model defaulting or fallback policy.
+That authority lives in `cli_subprocess_core`.
+
+Authoritative core surface:
+
+- `CliSubprocessCore.ModelRegistry.resolve/3`
+- `CliSubprocessCore.ModelRegistry.validate/2`
+- `CliSubprocessCore.ModelRegistry.default_model/2`
+- `CliSubprocessCore.ModelRegistry.build_arg_payload/3`
+- `CliSubprocessCore.ModelInput.normalize/3`
+
+Claude-side behavior:
+
+- `ClaudeAgentSDK.Options.new/1` routes mixed raw-versus-payload input through
+  `CliSubprocessCore.ModelInput.normalize/3`, then ensures `model_payload` and
+  `model` are aligned from the shared core contract
+- `ClaudeAgentSDK.Model.default_model/0` reads the shared core default instead
+  of carrying a local fallback
+- effort gating runs against the resolved model, not mutable app config
+- provider CLI rendering only formats arguments from resolved values
+- repo-local env defaults remain fallback inputs only when `model_payload` was
+  not supplied explicitly
+
+Do not treat repo-local config snapshots as authoritative model policy. The
+shared core registry is the source of truth.
+
+### Claude Ollama Backend
+
+`claude_agent_sdk` now supports an explicit Claude `:ollama` backend through
+the same core-owned payload path.
+
+Example:
+
+```elixir
+options =
+  ClaudeAgentSDK.Options.new(
+    provider_backend: :ollama,
+    anthropic_base_url: "http://localhost:11434",
+    external_model_overrides: %{"haiku" => "llama3.2"},
+    model: "haiku"
+  )
+```
+
+The SDK still runs the normal `claude` binary. The core payload resolves the
+actual transport model and injects the Anthropic-compatible Ollama env.
+
+---
+
+## Installation
+
+Claude Agent SDK 0.20 requires Elixir 1.19 or later and
+`cli_subprocess_core ~> 0.9.3`.
+
+Add to your `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:claude_agent_sdk, "~> 0.21.1"}
+  ]
+end
+```
+
+Then fetch dependencies:
+
+```bash
+mix deps.get
+```
+
+### Prerequisites
+
+Install the Claude Code CLI (requires Node.js):
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Verify installation:
+
+```bash
+claude --version
+```
+
+### CLI Compatibility
+
+- Minimum supported Claude CLI version: `2.1.0`
+- Recommended Claude CLI version: `2.1.207`
+- Parity baseline: Python SDK `v0.2.116` / TypeScript SDK `v0.3.207` (CLI `2.1.207`), including the `2.1.203–2.1.207` protocol frames — `terminal_reason` (`Message.dead_turn?/1`), `background_tasks_changed` (`Message.live_background_tasks/1`), `command_lifecycle` (`Message.command_terminal?/1`), typed interrupt receipts with `still_queued`, `system/init` capabilities (`Message.capability?/2`), peer-message `origin` (`Message.peer_origin/1`), and `AgentToolCompletedOutput` (`Message.agent_tool_completed/1`).
+- Compatibility policy: this SDK follows the Python SDK where practical, but the Claude CLI wire protocol is authoritative. CLI-native frames such as `:rate_limit_event` are surfaced here even if the current Python SDK skips unknown message types for forward compatibility.
+
+---
+
+## Quick Start
+
+### 1. Authenticate
+
+Choose one method:
+
+```bash
+# Option A: Environment variable (recommended for CI/CD)
+export ANTHROPIC_API_KEY="sk-ant-api03-..."
+
+# Option B: OAuth token
+export CLAUDE_AGENT_OAUTH_TOKEN="sk-ant-oat01-..."
+
+# Option C: Interactive login
+claude login
+```
+
+### 2. Run Your First Query
+
+```elixir
+alias ClaudeAgentSDK.{ContentExtractor, Options}
+
+# Simple query with streaming collection
+ClaudeAgentSDK.query("Write a function that calculates factorial in Elixir")
+|> Enum.each(fn msg ->
+  case msg.type do
+    :assistant -> IO.puts(ContentExtractor.extract_text(msg) || "")
+    :result -> IO.puts("Done! Cost: $#{msg.data.total_cost_usd}")
+    _ -> :ok
+  end
+end)
+```
+
+### 3. Real-Time Streaming
+
+```elixir
+alias ClaudeAgentSDK.Streaming
+
+{:ok, session} = Streaming.start_session()
+
+Streaming.send_message(session, "Explain GenServers in one paragraph")
+|> Stream.each(fn
+  %{type: :text_delta, text: chunk} -> IO.write(chunk)
+  %{type: :message_stop} -> IO.puts("")
+  _ -> :ok
+end)
+|> Stream.run()
+
+Streaming.close_session(session)
+```
+
+If session initialization or message send fails, the stream now emits an immediate
+`%{type: :error, error: reason}` event instead of waiting for the 5-minute stream timeout.
+
+---
+
+## Authentication
+
+The SDK supports three authentication methods, checked in this order:
+
+| Method | Environment Variable | Best For |
+|--------|---------------------|----------|
+| OAuth Token | `CLAUDE_AGENT_OAUTH_TOKEN` | Production / CI |
+| API Key | `ANTHROPIC_API_KEY` | Development |
+| CLI Login | (uses `claude login` session) | Local development |
+
+These methods are standalone compatibility paths for direct SDK use. Governed
+launch callers must pass `Options.governed_authority` with the materialized
+command, cwd, environment, auth/config roots, target reference, credential
+lease reference, command reference, and redaction reference. In governed mode,
+ambient env values, native login state, provider backend overrides, token-store
+defaults, and explicit CLI paths are rejected instead of being used as fallback
+authentication.
+
+`AuthManager.get_token/1` does not project raw credentials for governed
+authority. It reports `{:error, :governed_token_unavailable}` so upper layers
+carry only authority and lease references.
+
+### Cloud Providers
+
+**AWS Bedrock:**
+```bash
+export CLAUDE_AGENT_USE_BEDROCK=1
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_REGION=us-west-2
+```
+
+**Google Vertex AI:**
+```bash
+export CLAUDE_AGENT_USE_VERTEX=1
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
+export GOOGLE_CLOUD_PROJECT=your-project-id
+```
+
+### Token Setup (Local Development)
+
+For persistent authentication without re-login:
+
+```bash
+mix claude.setup_token
+```
+
+`AuthManager` keeps running if token storage save/clear fails and returns `{:error, reason}`.
+Handle `clear_auth/0` accordingly in your app code:
+
+```elixir
+case ClaudeAgentSDK.AuthManager.clear_auth() do
+  :ok -> :ok
+  {:error, reason} -> IO.puts("Failed to clear auth: #{inspect(reason)}")
+end
+```
+
+Check authentication status:
+
+```elixir
+alias ClaudeAgentSDK.AuthChecker
+diagnosis = AuthChecker.diagnose()
+# => %{authenticated: true, auth_method: "Anthropic API", ...}
+```
+
+---
+
+## Core Concepts
+
+### Choosing the Right API
+
+| API | Use Case | When to Use |
+|-----|----------|-------------|
+| `query/2` | Simple queries | Batch processing, scripts |
+| `Streaming` | Typewriter UX | Chat interfaces, real-time output |
+| `Client` | Full control | Multi-turn agents, tools, hooks |
+
+### Query API
+
+The simplest way to interact with Claude:
+
+```elixir
+# Basic query
+messages = ClaudeAgentSDK.query("What is recursion?") |> Enum.to_list()
+
+# With options
+opts = %ClaudeAgentSDK.Options{
+  model: "sonnet",
+  max_turns: 5,
+  output_format: :stream_json
+}
+messages = ClaudeAgentSDK.query("Explain OTP", opts) |> Enum.to_list()
+
+# Streamed input prompts (unidirectional)
+prompts = [
+  %{"type" => "user", "message" => %{"role" => "user", "content" => "Hello"}},
+  %{"type" => "user", "message" => %{"role" => "user", "content" => "How are you?"}}
+]
+
+ClaudeAgentSDK.query(prompts, opts) |> Enum.to_list()
+
+# Execution-surface routing
+opts = %ClaudeAgentSDK.Options{
+  execution_surface: [
+    surface_kind: :ssh_exec,
+    transport_options: [
+      destination: "claude.example",
+      ssh_user: "sdk",
+      port: 22
+    ]
+  ]
+}
+
+ClaudeAgentSDK.query("Hello", opts) |> Enum.to_list()
+
+# Continue a conversation
+ClaudeAgentSDK.continue("Can you give an example?") |> Enum.to_list()
+
+# Resume a specific session
+ClaudeAgentSDK.resume("session-id", "What about supervision trees?") |> Enum.to_list()
+```
+
+### Streaming API
+
+For real-time, character-by-character output:
+
+```elixir
+alias ClaudeAgentSDK.{Options, Streaming}
+
+{:ok, session} = Streaming.start_session(%Options{model: "haiku"})
+
+# Send messages and stream responses
+Streaming.send_message(session, "Write a haiku about Elixir")
+|> Enum.each(fn
+  %{type: :text_delta, text: t} -> IO.write(t)
+  %{type: :tool_use_start, name: n} -> IO.puts("\nUsing tool: #{n}")
+  %{type: :message_stop} -> IO.puts("\n---")
+  _ -> :ok
+end)
+
+# Multi-turn conversation (context preserved)
+Streaming.send_message(session, "Now write one about Phoenix")
+|> Enum.to_list()
+
+Streaming.close_session(session)
+```
+
+**Subagent Streaming:** When Claude spawns subagents via the Agent tool, events include a `parent_tool_use_id` field to identify the source. Main agent events have `nil`, subagent events have the Agent tool call ID. Streaming events also preserve `uuid`, `session_id`, and `raw_event` metadata when the CLI provides them. See the [Streaming Guide](guides/streaming.md#subagent-events-parent_tool_use_id) for details.
+
+### Hooks System
+
+Intercept and control agent behavior at key lifecycle points:
+
+```elixir
+alias ClaudeAgentSDK.{Client, Options}
+alias ClaudeAgentSDK.Hooks.{Matcher, Output}
+
+# Block dangerous commands
+check_bash = fn input, _id, _ctx ->
+  case input do
+    %{"tool_name" => "Bash", "tool_input" => %{"command" => cmd}} ->
+      if String.contains?(cmd, "rm -rf") do
+        Output.deny("Dangerous command blocked")
+      else
+        Output.allow()
+      end
+    _ -> %{}
+  end
+end
+
+opts = %Options{
+  hooks: %{
+    pre_tool_use: [Matcher.new("Bash", [check_bash])]
+  }
+}
+
+{:ok, client} = Client.start_link(opts)
+```
+
+**Available Hook Events (all 12 Python SDK events supported):**
+- `pre_tool_use` / `post_tool_use` / `post_tool_use_failure` - Tool execution lifecycle
+- `user_prompt_submit` - Before sending user messages
+- `stop` / `subagent_stop` / `subagent_start` - Agent lifecycle
+- `notification` - CLI notifications
+- `permission_request` - Permission dialog interception
+- `session_start` / `session_end` - Session lifecycle
+- `pre_compact` - Before context compaction
+
+See the [Hooks Guide](guides/hooks.md) for comprehensive documentation.
+
+### Supervision
+
+Hook and permission callbacks run in async tasks. For production, add the SDK
+task supervisor so callback processes are supervised:
+
+```elixir
+children = [
+  ClaudeAgentSDK.TaskSupervisor,
+  {ClaudeAgentSDK.Client, options}
+]
+```
+
+If you use a custom supervisor name, configure the SDK to match:
+
+```elixir
+children = [
+  {ClaudeAgentSDK.TaskSupervisor, name: MyApp.ClaudeTaskSupervisor}
+]
+
+config :claude_agent_sdk, task_supervisor: MyApp.ClaudeTaskSupervisor
+```
+
+If an explicitly configured supervisor is missing at runtime, the SDK logs a warning and
+falls back to `Task.start/1`. With default settings, missing
+`ClaudeAgentSDK.TaskSupervisor` falls back silently for backward compatibility.
+For stricter behavior in dev/test:
+
+```elixir
+config :claude_agent_sdk, task_supervisor_strict: true
+```
+
+In strict mode, `ClaudeAgentSDK.TaskSupervisor.start_child/2` returns
+`{:error, {:task_supervisor_unavailable, supervisor}}` instead of spawning
+an unsupervised fallback task.
+
+### Permission System
+
+Fine-grained control over tool execution:
+
+```elixir
+alias ClaudeAgentSDK.{Options, Permission.Result}
+
+permission_callback = fn ctx ->
+  case ctx.tool_name do
+    "Write" ->
+      # Redirect system file writes to safe location
+      if String.starts_with?(ctx.tool_input["file_path"], "/etc/") do
+        safe_path = "/tmp/sandbox/" <> Path.basename(ctx.tool_input["file_path"])
+        Result.allow(updated_input: %{ctx.tool_input | "file_path" => safe_path})
+      else
+        Result.allow()
+      end
+    _ ->
+      Result.allow()
+  end
+end
+
+opts = %Options{
+  can_use_tool: permission_callback,
+  permission_mode: :default  # :default | :accept_edits | :plan | :bypass_permissions | :auto | :dont_ask
+}
+```
+
+Note: `can_use_tool` is mutually exclusive with `permission_prompt_tool`. The SDK routes `can_use_tool` through the control client (including string prompts), auto-enables `include_partial_messages`, and sets `permission_prompt_tool` to `\"stdio\"` internally so the CLI can emit permission callbacks. Use `:default`, `:plan`, or the CLI's `:auto` mode for built-in tool permissions. Hook-based fallback only applies when the CLI does not emit `can_use_tool`, and that fallback ignores `updated_permissions`. `:delegate` is no longer forwarded because current Claude CLI builds reject it.
+
+CLI transcript history now matches the official SDK surface:
+
+```elixir
+# Claude CLI transcript history
+sessions = ClaudeAgentSDK.list_sessions(directory: "/path/to/project")
+messages = ClaudeAgentSDK.get_session_messages("550e8400-e29b-41d4-a716-446655440000",
+  directory: "/path/to/project"
+)
+
+# SDK-managed SessionStore history
+{:ok, saved_sessions} = ClaudeAgentSDK.list_saved_sessions(storage_dir: "/custom/path")
+
+# Official SessionStore adapter surface
+store = ClaudeAgentSDK.SessionStore.InMemory.new!()
+session_id = "550e8400-e29b-41d4-a716-446655440000"
+project_key = ClaudeAgentSDK.project_key_for_directory("/path/to/project")
+
+:ok =
+  ClaudeAgentSDK.SessionStore.Adapter.append(store, %{project_key: project_key, session_id: session_id}, [
+    %{"type" => "user", "uuid" => "u1", "sessionId" => session_id, "message" => %{"content" => "hello"}}
+  ])
+
+sessions = ClaudeAgentSDK.list_sessions_from_store(store, directory: "/path/to/project")
+messages = ClaudeAgentSDK.get_session_messages_from_store(session_id, store,
+  directory: "/path/to/project"
+)
+```
+
+Stream a single client response until the final result:
+
+```elixir
+Client.receive_response_stream(client)
+|> Enum.to_list()
+```
+
+### MCP Tools (In-Process)
+
+Define custom tools that Claude can call directly in your application:
+
+```elixir
+defmodule MyTools do
+  use ClaudeAgentSDK.Tool
+
+  deftool :calculate, "Perform a calculation", %{
+    type: "object",
+    properties: %{
+      expression: %{type: "string", description: "Math expression to evaluate"}
+    },
+    required: ["expression"]
+  } do
+    def execute(%{"expression" => expr}) do
+      # Your logic here
+      result = eval_expression(expr)
+      {:ok, %{"content" => [%{"type" => "text", "text" => "Result: #{result}"}]}}
+    end
+  end
+end
+
+# Create an MCP server with your tools
+server = ClaudeAgentSDK.create_sdk_mcp_server(
+  name: "calculator",
+  version: "1.0.0",
+  tools: [MyTools.Calculate]
+)
+
+# Without :supervisor, the SDK keeps the registry under its internal
+# SDK MCP supervisor so the server survives creator process exits.
+
+# Optional: start tool registry under your DynamicSupervisor
+{:ok, sup} = DynamicSupervisor.start_link(strategy: :one_for_one)
+
+server = ClaudeAgentSDK.create_sdk_mcp_server(
+  name: "calculator",
+  version: "1.0.0",
+  tools: [MyTools.Calculate],
+  supervisor: sup
+)
+
+opts = %ClaudeAgentSDK.Options{
+  mcp_servers: %{"calc" => server},
+  allowed_tools: ["mcp__calc__calculate"]
+}
+```
+
+Note: MCP server routing only supports `initialize`, `tools/list`, `tools/call`, and `notifications/initialized`. Calls to `resources/list` or `prompts/list` return JSON-RPC method-not-found errors to match the Python SDK.
+If `version` is omitted, it defaults to `"1.0.0"`.
+
+---
+
+## Configuration Options
+
+Key options for `ClaudeAgentSDK.Options`:
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `model` | string | `"sonnet"` (default/recommended, Sonnet 5), `"sonnet[1m]"`, `"opus"` (Opus 5), `"opus[1m]"` (compatibility alias for Opus 5, itself a 1M-context model), `"fable"` (provider-dependent native alias), `"claude-fable-5"` (Fable 5), `"claude-fable-5-1"` (Fable 5.1), `"haiku"` (Haiku 4.5), or any custom model id (see `guides/model-configuration.md`) |
+| `effort` | atom | `:low`, `:medium`, `:high`, `:xhigh`, `:max` — controls reasoning effort; `:xhigh` is supported by Opus and Fable/Mythos; invalid values raise `ArgumentError` (not supported for Haiku) |
+| `thinking` | map | `%{type: :adaptive}`, `%{type: :enabled, budget_tokens: N}`, `%{type: :disabled}` |
+| `skills` | `:all` / list | Enables Claude skills and defaults setting sources to user/project when set |
+| `task_budget` | map | `%{total: n}` passed as an SDK task budget |
+| `session_store` | adapter | Mirrors transcript frames through the SessionStore adapter contract |
+| `load_timeout_ms` | integer | Bound for SessionStore resume materialization loads |
+| `max_turns` | integer | Maximum conversation turns |
+| `system_prompt` | string/map | Custom text, `%{type: :file, path: path}`, or preset maps with dynamic-section exclusion |
+| `output_format` | atom/map | `:text`, `:json`, `:stream_json`, or JSON schema (SDK enforces stream-json for transport; JSON schema still passed) |
+| `allowed_tools` | list | Tools Claude can use |
+| `permission_mode` | atom | `:default`, `:accept_edits`, `:plan`, `:bypass_permissions`, `:auto`, `:dont_ask` |
+| `hooks` | map | Lifecycle hook callbacks |
+| `mcp_servers` | map or string | MCP server configurations (or JSON/path alias for `mcp_config`) |
+| `cwd` | string | Working directory for file operations |
+| `timeout_ms` | integer | Command timeout (default: 75 minutes) |
+| `transport_error_mode` | atom | `:result` (default) or `:raise` for strict transport/decode failures |
+| `max_buffer_size` | integer | Maximum JSON buffer size (default: 1MB, overflow yields `CLIJSONDecodeError`) |
+
+CLI path override: set `path_to_claude_code_executable` or `executable` in `Options` (Python `cli_path` equivalent).
+
+On SSH-backed `execution_surface` values, Claude is resolved on the remote host.
+If the binary is installed outside the remote non-login `PATH`, pass an
+explicit `executable` or `path_to_claude_code_executable` for that target.
+
+### Runtime Application Config
+
+All tunable constants (timeouts, buffer sizes, auth paths, CLI flags, env var
+names, concurrency limits) are centralized in `Config.*` sub-modules and can
+be overridden per-environment:
+
+```elixir
+# config/config.exs
+config :claude_agent_sdk, ClaudeAgentSDK.Config.Timeouts,
+  query_total_ms: 5_400_000,           # total query timeout (default: 75 min)
+  tool_execution_ms: 60_000            # per-tool timeout (default: 30 s)
+
+config :claude_agent_sdk, ClaudeAgentSDK.Config.Buffers,
+  max_stdout_buffer_bytes: 2_097_152   # stdout buffer (default: 1 MB)
+
+config :claude_agent_sdk, ClaudeAgentSDK.Config.Orchestration,
+  max_concurrent: 10,                  # parallel query limit (default: 5)
+  max_retries: 5                       # retry attempts (default: 3)
+
+# Legacy flat keys still work:
+config :claude_agent_sdk,
+  cli_stream_module: ClaudeAgentSDK.Query.CLIStream,
+  task_supervisor_strict: false
+```
+
+See the [Configuration Internals](guides/configuration-internals.md) guide for
+the complete reference of every tunable, its default, and override examples.
+
+`config :claude_agent_sdk, :process_module` is still read as a fallback for query streaming,
+but it is deprecated and logs a warning once per legacy module.
+
+`SessionStore` now hydrates on-disk cache in a `handle_continue/2` step. Startup is faster,
+but `list/search` can be briefly incomplete immediately after boot while warmup finishes.
+
+`CliSubprocessCore.RawSession` and `Streaming.Session` support `startup_mode: :lazy`
+to defer subprocess startup to `handle_continue/2`. Deterministic startup
+validation still happens before `start_link` returns, so missing cwd/command
+style failures surface immediately. Once preflight passes, lazy mode can still
+surface subprocess launch failures as a process exit after init.
+
+Query-side transport errors normalize equivalent reasons to stable atoms where possible:
+`{:command_not_found, "claude"}` is treated as `:cli_not_found`.
+
+### SDK Logging
+
+The SDK uses its own log level filter (default: `:warning`) to keep output quiet in dev. Configure via application env:
+
+```elixir
+config :claude_agent_sdk, log_level: :warning  # :debug | :info | :warning | :error | :off
+```
+
+### Option Presets
+
+```elixir
+alias ClaudeAgentSDK.OptionBuilder
+
+# Environment-based presets
+OptionBuilder.build_development_options()  # Permissive, verbose
+OptionBuilder.build_production_options()   # Restrictive, safe
+OptionBuilder.for_environment()            # Auto-detect from Mix.env()
+
+# Use-case presets
+OptionBuilder.build_analysis_options()     # Read-only code analysis
+OptionBuilder.build_chat_options()         # Simple chat, no tools
+OptionBuilder.quick()                      # Fast one-off queries
+
+# Effort and thinking helpers
+OptionBuilder.with_opus()
+|> OptionBuilder.with_effort(:max)
+|> OptionBuilder.with_thinking(%{type: :adaptive})
+```
+
+---
+
+## Examples
+
+The `examples/` directory contains runnable demonstrations.
+
+### Mix Task Example (Start Here)
+
+If you want to integrate Claude into your own Mix project, see the **[mix_task_chat](examples/mix_task_chat/README.md)** example — a complete working app with Mix tasks:
+
+```bash
+cd examples/mix_task_chat
+mix deps.get
+mix chat "Hello, Claude!"           # Streaming response
+mix chat --interactive              # Multi-turn conversation
+mix ask -q "What is 2+2?"           # Script-friendly output
+```
+
+### Script Examples
+
+```bash
+# Run all examples
+bash examples/run_all.sh
+
+# Run a specific example
+mix run examples/basic_example.exs
+mix run examples/streaming_tools/quick_demo.exs
+mix run examples/hooks/basic_bash_blocking.exs
+```
+
+**Key Examples:**
+- [`mix_task_chat/`](examples/mix_task_chat/README.md) - **Full Mix task integration** (streaming + interactive chat)
+- `basic_example.exs` - Minimal SDK usage
+- `streaming_tools/quick_demo.exs` - Real-time streaming
+- `hooks/complete_workflow.exs` - Full hooks integration
+- `sdk_mcp_tools_live.exs` - Custom MCP tools
+- `max_effort_opus_live.exs` - Opus `:max` effort (not in `run_all.sh`)
+- `advanced_features/agents_live.exs` - Multi-agent workflows
+- `advanced_features/subagent_spawning_live.exs` - Parallel subagent coordination
+- `advanced_features/web_tools_live.exs` - WebSearch and WebFetch
+
+### Full Application Examples
+
+Complete Mix applications demonstrating production-ready SDK integration patterns:
+
+| Example | Description | Key Features |
+|---------|-------------|--------------|
+| [`phoenix_chat/`](examples/phoenix_chat/README.md) | Real-time chat with Phoenix LiveView | LiveView, Channels, streaming responses, session management |
+| [`document_generation/`](examples/document_generation/README.md) | AI-powered Excel document generation | elixlsx, natural language parsing, Mix tasks |
+| [`research_agent/`](examples/research_agent/README.md) | Multi-agent research coordination | Agent tool, subagent tracking via hooks, parallel execution |
+| [`skill_invocation/`](examples/skill_invocation/README.md) | Skill tool usage and tracking | Skill definitions, hook-based tracking, GenServer state |
+| [`email_agent/`](examples/email_agent/README.md) | AI-powered email assistant | SQLite storage, rule-based processing, natural language queries |
+
+```bash
+# Run Phoenix Chat
+cd examples/phoenix_chat && mix deps.get && mix phx.server
+# Visit http://localhost:4000
+
+# Run Document Generation
+cd examples/document_generation && mix deps.get && mix generate.demo
+
+# Run Research Agent
+cd examples/research_agent && mix deps.get && mix research "quantum computing"
+
+# Run Skill Invocation demo
+cd examples/skill_invocation && mix deps.get && mix run -e "SkillInvocation.demo()"
+
+# Run Email Agent
+cd examples/email_agent && mix deps.get && mix email.assistant "find emails from last week"
+```
+
+---
+
+## Guides
+
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](guides/getting-started.md) | Installation, authentication, and first query |
+| [Streaming](guides/streaming.md) | Real-time streaming and typewriter effects |
+| [Hooks](guides/hooks.md) | Lifecycle hooks for tool control |
+| [MCP Tools](guides/mcp-tools.md) | In-process tool definitions with MCP |
+| [Permissions](guides/permissions.md) | Fine-grained permission controls |
+| [Configuration](guides/configuration.md) | Complete options reference |
+| [Agents](guides/agents.md) | Custom agent personas |
+| [Sessions](guides/sessions.md) | Session management and persistence |
+| [Runtime Control](docs/RUNTIME_CONTROL.md) | SDK-local runtime control features |
+| [Testing](guides/testing.md) | Mock system and testing patterns |
+| [Error Handling](guides/error-handling.md) | Error types and recovery |
+| [Provider Behavior Manifest](guides/provider_behavior_manifest.md) | Evidence for Claude-native feature translation |
+
+## Upgrading
+
+For breaking changes and migration notes, see `CHANGELOG.md`.
+
+**0.12.0 breaking changes:**
+- `Transport.Port` removed. The built-in common transport lane now runs through
+  `CliSubprocessCore.Command`, `CliSubprocessCore.RawSession`, and
+  `CliSubprocessCore.Session`.
+- Custom transport injection removed from `Client`, `Query`, and common CLI lanes.
+  Use `Options.execution_surface` for SSH/local routing instead.
+- Transport error tuple shape updated: low-level failures now use `{:error, {:transport, reason}}` instead of bare `{:error, reason}`.
+- String prompts now delivered via stdin (`--input-format stream-json`) instead of CLI arg (`-- prompt`).
+
+**0.11.0 breaking changes:**
+- `--print` flag removed from all modules. All queries now use `--output-format stream-json` exclusively.
+- `--agents` CLI flag removed. Agents are now sent via the `initialize` control request. Use `Options.agents_for_initialize/1`.
+- `AgentsFile` module deleted. Remove any `agents_temp_file_max_age_seconds` config.
+- `Client` state is now a `defstruct`. Four deprecated fields removed: `current_model`, `pending_model_change`, `current_permission_mode`, `pending_inbound_count`.
+- All 12 hook events are now supported (6 new: `post_tool_use_failure`, `notification`, `subagent_start`, `permission_request`, `session_start`, `session_end`).
+
+**0.10.0 fix (resume turn persistence):**
+- `resume/3` no longer uses `--print --resume` (one-shot mode that dropped intermediate turns). It now uses `--resume` with `--input-format stream-json`, preserving the full conversation history across resume calls.
+- Current model defaults and aliases are owned by `cli_subprocess_core`; the native Claude default is `sonnet` (Claude Sonnet 5). Aliases: `opus` → Claude Opus 5, `opus[1m]` → Claude Opus 5 (compatibility alias; Opus 5 is itself a 1M-context model), `fable` → provider-dependent native Fable alias; explicit `claude-fable-5` and `claude-fable-5-1` remain pinned, `haiku` → Claude Haiku 4.5. A model id newer than the registry passes through to `--model` verbatim unless `allow_unknown_model: false`.
+
+**0.9.0 breaking change (streaming):**
+- Stream event wrappers now require `uuid` and `session_id`. Missing keys raise and terminate the streaming client.
+- If you emit or mock `stream_event` wrappers, include both fields (custom transports, fixtures, tests).
+
+That strict requirement applies to the common CLI streaming parser. The
+SDK-local control lane still accepts incomplete `stream_event` wrappers and
+surfaces missing metadata as `nil`, which keeps control-client transports
+forward-compatible without weakening the core streaming contract.
+
+**Additional Resources:**
+- [CHANGELOG.md](CHANGELOG.md) - Version history and release notes
+- [HexDocs](https://hexdocs.pm/claude_agent_sdk/) - API documentation
+- [Claude Code SDK](https://docs.anthropic.com/en/docs/claude-code/sdk) - Upstream documentation
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+  <sub>Built with Elixir and Claude</sub>
+</div>
+
+## Model Selection Contract
+
+`/home/home/p/g/n/claude_agent_sdk` no longer owns active model-selection policy. Model catalog visibility, defaulting, validation, and failure semantics are owned by `/home/home/p/g/n/cli_subprocess_core` through `CliSubprocessCore.ModelRegistry.resolve/3`, `CliSubprocessCore.ModelRegistry.validate/2`, and `CliSubprocessCore.ModelRegistry.default_model/2`.
+
+The Claude SDK now treats model values as resolved payload data and limits its responsibility to option shaping and command rendering.
+## Session History And Intervention
+
+The Claude runtime lane now publishes an honest session-control contract for orchestration layers.
+
+- `ClaudeAgentSDK.Runtime.CLI.capabilities/0` includes `:session_history`, `:session_resume`,
+  `:session_pause`, and `:session_intervene`
+- `ClaudeAgentSDK.Runtime.CLI.list_provider_sessions/1` standardizes transcript-history entries for
+  upper layers without flattening the richer native Claude session model
+
+This is meant for recovery and operator-control flows, not blind retries. The caller should resume
+the same session when possible and only replay work when a real continuation handle is unavailable.
+
+### Pinning Fable versions
+
+Use `claude-fable-5` for Fable 5 or `claude-fable-5-1` for Fable 5.1. Both IDs remain unchanged in CLI arguments. The short `fable` alias is passed to Claude Code, which normally selects 5.1 but can select 5 depending on provider, gateway, CLI version, or configuration. See [Claude Code model configuration](https://code.claude.com/docs/en/model-config#work-with-fable).

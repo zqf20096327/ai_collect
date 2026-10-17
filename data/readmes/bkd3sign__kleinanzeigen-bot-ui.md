@@ -1,0 +1,606 @@
+<div align="center">
+
+# kleinanzeigen-bot-ui
+
+**A self-hosted web interface for [kleinanzeigen-bot](https://github.com/Second-Hand-Friends/kleinanzeigen-bot)**
+
+Manage ads, run bot commands, generate listings with AI, and track everything from a single dashboard.
+
+[![Release](https://img.shields.io/github/v/release/bkd3sign/kleinanzeigen-bot-ui?label=release)](https://github.com/bkd3sign/kleinanzeigen-bot-ui/releases/latest)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/bkd3sign/kleinanzeigen-bot-ui/pkgs/container/kleinanzeigen-bot-ui)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-green)](LICENSE)
+
+**[Live Demo](https://demo-kleinanzeigen-bot-ui.bkd3sign.de/)**
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+  - [Ad Management](#ad-management)
+  - [Bot Control](#bot-control)
+  - [Multi-User & Authentication](#multi-user--authentication)
+  - [Templates](#templates)
+  - [Dashboard & Analytics](#dashboard--analytics)
+  - [Messaging](#messaging)
+  - [Settings](#settings)
+  - [Browser Extensions (CDP Injection)](#browser-extensions-cdp-injection)
+- [API](#api)
+- [Development](#development)
+  - [Architecture](#architecture)
+  - [Codebase](#codebase)
+- [Deployment](#deployment)
+  - [Option A — Docker, pre-built image (easiest)](#option-a--docker-pre-built-image-easiest)
+  - [Option B — Docker, build from source](#option-b--docker-build-from-source)
+  - [Option C — Linux / LXC without Docker](#option-c--linux--lxc-without-docker)
+  - [Setup (all options)](#setup-all-options)
+  - [Updates](#updates)
+- [Security](#security)
+- [Upstream](#upstream)
+- [Tested On](#tested-on)
+- [License](#license)
+
+---
+
+## Features
+
+### Ad Management
+
+- **Full CRUD** — Create, edit, duplicate, and delete ad listings via YAML
+- **Grid & Table views** — Toggle between card layout and sortable table; table has sticky title/action columns, scroll shadows, and columns for APR status, visitors, watchlist, and expiry date
+- **Bulk actions** — Select multiple ads for publish, delete, update, activate, or deactivate in one operation
+- **Image management** — Drag-drop upload, reorder, preview thumbnails, automatic Sharp compression
+- **Search & filter** — Full-text search across titles and categories, filter by status or category
+- **Category picker** — Hierarchical browser with 582 categories, search, and breadcrumb navigation
+- **Live stats** — Visitor count, watchlist count, and expiry date fetched live from the KA management API after each bot run
+- **Reserved detection** — Ads paused on kleinanzeigen.de (`state: paused`) are automatically marked as `active: false` locally and shown as "Reserviert"; reverting the pause on KA restores them to active
+
+#### Ad Status System
+
+Each ad has exactly one status, determined by priority:
+
+| Priority | Status | Badge | Condition |
+|----------|--------|-------|-----------|
+| 1 | **Entwurf** | `muted` (gray) | No kleinanzeigen.de ID and not archived (never published) |
+| 2 | **Reserviert** | `reserved` (violet) | KA state is `paused`, or title contains "reserviert" |
+| 3 | **Inaktiv** | `danger` (red) | Manually deactivated, automatically deactivated, or archived |
+| 4 | **Abgelaufen** | `danger` (red) | Published > 60 days ago |
+| 5 | **Läuft bald ab** | `warning` (orange) | Expires within 7 days |
+| 6 | **Verwaist** | `warning` (orange) | Has ID but no longer found online (grayscale image) |
+| 7 | **Geändert** | `info` (blue) | Content hash differs from stored hash |
+| 8 | **Aktiv** | `success` (green) | Published and active |
+
+#### Ad Sync & Orphan Detection
+
+After every bot run that uses Chrome (login required), the system automatically:
+
+1. **Fetches online state** — Queries the KA management API (`m-meine-anzeigen-verwalten.json`) for all pages in parallel
+2. **Syncs online IDs** — Writes the current set of online IDs to `.last_download_all.json`
+3. **Syncs reserved state** — Ads with `state: paused` on KA get `active: false` in the local YAML; un-paused ads get `active: true` restored
+4. **Detects orphans** — Any local ad with an ID not in the online set is shown as "Verwaist"
+
+After a successful `download --ads=all`, the system additionally:
+
+5. **Migrates settings** — If an orphaned ad has a title+category match in the new downloads (re-published with new ID), user settings are transferred:
+   - `auto_price_reduction`, `republication_interval`, `description_prefix/suffix`, `shipping_options`, `sell_directly`
+   - Bot-managed fields (`repost_count`, `content_hash`, timestamps) are NOT migrated
+6. **Removes duplicates** — The old orphaned file is deleted after successful migration
+7. **Deactivates remaining orphans** — Ads without a match are set to `active: false`
+
+This ensures local state always matches what's online — no manual cleanup needed.
+
+#### AI-Powered Ad Generation
+
+- **Vision analysis** — Upload product photos, AI extracts details and generates a complete listing
+- **Text generation** — Title (max 65 chars), structured description with bullet points, price estimation
+- **Category auto-selection** — AI picks the best matching category from 582 categories
+- **Attribute suggestions** — AI fills special attributes (color, size, condition) based on category and description
+- **Shipping suggestions** — Carrier and cost recommendations based on item size
+- **Price estimation** — Condition-based pricing derived from image analysis
+- **Provider** — OpenRouter API (GPT-4.1-nano for text, GPT-4.1-mini for vision)
+
+### Bot Control
+
+- **All CLI commands** — Publish, download, update, extend, delete, verify, diagnose
+- **Live logs** — Real-time output streaming via Server-Sent Events
+- **Job management** — Cancel running/queued jobs, repeat completed jobs with one click
+- **Bot self-update** — Update the bot binary directly from the UI (admin only)
+- **Version info** — About modal shows GUI version, bot version, and GitHub release details; context-sensitive button guides through update vs. compatibility check
+
+#### Job Queue
+
+The bot uses a **single-concurrency FIFO queue** — only one job runs at a time, additional jobs wait with a visible queue position. This is intentional:
+
+- Each job opens a **Chromium browser** (headless by default — see Browser Mode below) and logs into kleinanzeigen.de
+- Parallel sessions would cause login conflicts, browser crashes, and YAML write races
+- After each job completes, **post-job hooks** run automatically (orphan detection, duplicate migration)
+- The next job starts only after hooks finish
+
+Each job has one of eight states, shown in the job list and pill:
+
+| Status | When it occurs |
+|--------|----------------|
+| `queued` | Waiting in the FIFO queue (shows position, e.g. `queued (#2)`) |
+| `running` | Currently executing |
+| `completed` | Finished successfully |
+| `completed with errors` | Finished, but some ads failed |
+| `failed` | Aborted with an error |
+| `login required` | Hit a login wall and could not log in automatically |
+| `mfa required` | Kleinanzeigen.de requested an SMS/email code — awaiting input |
+| `waiting for login` | Paused at a manual-login step (visible/VNC mode) — awaiting the user to sign in, then the job resumes |
+
+#### Browser Mode & Live View
+
+Set how the bot's browser runs under **Settings → Browser**:
+
+- **Auto** (default) — runs headless; if a login is required, a one-time **manual login window** (embedded noVNC) opens automatically, then the job re-runs
+- **Always headless** — no login fallback; a login wall fails the job
+- **Always visible (VNC)** — the bot attaches to a visible Chromium you can **watch live** via "Chrome öffnen" while it works
+
+The visible browser auto-stops after 10 min idle (or via "Beenden"); login sessions persist across runs via the refresh token, so re-login is rarely needed.
+
+> **Security note:** the noVNC stream (`/bot-browser/`) is guarded by a per-session random token in its URL, not by the app's JWT. The token is same-origin and short-lived — but on a **shared multi-user** instance, run behind HTTPS so the token can't be intercepted.
+
+#### MFA / Two-Factor Authentication
+
+- **Automatic detection** — Bot detects when kleinanzeigen.de requires SMS or email verification
+- **In-app MFA flow** — Banner notification + overlay modal for code submission
+- **Session continuity** — Bot pauses at MFA prompt, resumes after code entry
+- **Job status tracking** — Dedicated `mfa_required` state visible in job list and pill
+
+#### Scheduling & Automation
+
+- **Cron-based schedules** — Create recurring bot jobs with cron expressions
+- **Preset times** — Daily (6/12/18 AM), every 6/12 hours, weekday-specific
+- **All commands** — Schedule any bot command (publish, download, update, extend, verify)
+- **Status tracking** — Last run, last status, next scheduled execution
+- **Enable/disable** — Toggle schedules without deleting them
+
+#### Auto Price Reduction
+
+Automatically lower prices on each republication cycle:
+
+- **Strategies** — Percentage-based (e.g., -10% per repost) or fixed amount (e.g., -15 EUR per repost)
+- **Minimum price floor** — Price never drops below configured minimum (required when enabled)
+- **Delay options** — Start reduction after N reposts or N days since first publication
+- **Rounding** — All prices rounded to whole euros (commercial rounding, ROUND_HALF_UP)
+- **Live preview** — Compact chip view or full timeline showing dates, repost numbers, and calculated prices
+- **Validation warnings** — Alerts when reduction is ineffective due to rounding or config issues
+
+> Price reductions only trigger on `publish` (delete + re-create). The `update` command does NOT reduce prices.
+
+### Multi-User & Authentication
+
+- **JWT-based auth** — 15-minute access tokens + httpOnly refresh cookies; silent renewal keeps sessions alive without re-login
+- **"Stay signed in"** — Optional 30-day persistent session via httpOnly refresh cookie; without it the session ends when the browser closes
+- **Role system** — Admin (full access) and User (personal workspace only)
+- **Workspace isolation** — Each user gets their own ads, config, templates, schedules, and browser profile
+- **Invite system** — Admin generates invite links (7-day expiry) for registration
+- **User management** — Admin can edit roles, reset passwords, delete users
+- **Rate limiting** — Login, registration, and setup endpoints are rate-limited
+- **Security headers** — CSP, HSTS, X-Frame-Options enforced
+
+### Templates
+
+- **Save as template** — Turn any ad into a reusable template with one click
+- **Template CRUD** — Create, edit, delete templates with slug-based naming
+- **Quick creation** — Create new ads pre-filled from template values (title, description, category, price, shipping)
+
+### Dashboard & Analytics
+
+- **Statistics grid** — Online count, drafts, orphaned, expiring soon, total value, average price, repost counts
+- **Health indicators** — Missing images, inactive ads, price at minimum, no description
+- **Schedule calendar** — 7-day visual calendar showing upcoming republications and expirations (inactive ads excluded)
+- **Charts** — Price distribution histogram, category breakdown bars, status distribution donut
+- **Performance metrics** — Top repost ads, time-on-market bars, price reduction tracking
+- **Live KA stats** — Per-ad visitor counts, watchlist counts, and expiry dates in sortable table
+
+### Messaging
+
+- **Inbox** — Split-panel view with conversation list and chat (responsive, mobile-optimized)
+- **Real-time chat** — Send and receive messages with optimistic rendering (instant feedback)
+- **AI auto-responder** — Automatic or review-mode reply generation via LLM (OpenRouter)
+- **Out-of-office note** — Fixed away message sent once per conversation while you're on vacation (no API key required)
+- **AI message tracking** — AI-sent messages shown with purple bubble and icon to distinguish from manual messages
+- **Escalation detection** — Custom keywords and scheduling requests trigger manual review
+- **Pending review** — Edit, approve, or reject AI-generated replies before sending
+- **Anti-bot detection** — Random response delays (30–120s) and poll jitter (20–35s)
+
+### Account (Profile)
+
+Per-user settings (each user in multi-user mode has their own):
+
+- **Login credentials** — kleinanzeigen.de username/password
+- **Contact defaults** — Name, phone, address, zip/location with PLZ autocomplete
+- **Ad defaults** — Type, price type, shipping type, direct sell
+- **Republication & price reduction** — Repost interval (default: 7 days) and auto price reduction
+- **Description prefix/suffix** — Text prepended/appended to all ad descriptions
+- **AI messaging** — Mode (off / out-of-office / review / auto), out-of-office note, escalation keywords, availability, personality, custom rules
+
+### Settings (Global, admin only)
+
+Bot-wide settings that apply to all workspaces:
+
+- **Publishing / deleting / download** — Default behavior for the `publish`, `delete`, and `download` commands
+- **Browser mode** — Auto / always headless / always visible (VNC) — see [Browser Mode & Live View](#browser-mode--live-view)
+- **AI** — OpenRouter API key and prompt templates for AI ad generation (shared across all workspaces)
+
+
+
+### Browser Extensions (CDP Injection)
+
+Chrome extensions don't work with the bot's automation library (nodriver sets `--test-type` which disables extension loading). As a workaround, JavaScript fixes are injected directly via Chrome DevTools Protocol.
+
+**How it works:** When the bot starts Chrome, the runner detects the CDP WebSocket port from the bot output and injects all enabled scripts via `Page.addScriptToEvaluateOnNewDocument`. Scripts run on every page navigation automatically.
+
+**Configuration** (`extensions.yaml`):
+```yaml
+extensions:
+  - name: Shipping Dialog Fix
+    file: shipping-dialog-fix.js
+    enabled: true        # set to false to disable
+    description: Fixes shipping dialog selectors
+```
+
+**Adding a new script:** Place a `.js` file in `extensions/` and add an entry to `extensions.yaml`. **Removing:** Delete the entry and the file, or set `enabled: false`.
+
+If `extensions.yaml` or the `extensions/` directory don't exist, the system is completely inactive and the bot runs normally.
+
+
+---
+
+## API
+
+94 REST endpoints across 71 route handlers under `/api/`, covering:
+
+- **Ads** — CRUD, duplicate, AI generation, category/price/attribute suggestions, templates
+- **Bot** — Publish, download, update, extend, delete, verify, diagnose, version, MFA
+- **Messaging** — Conversations, AI auto-responder, CDN image proxy
+- **Images** — Upload, list, reorder, delete
+- **Jobs** — Queue status, cancel, repeat
+- **Stats** — Per-ad live KA stats (visitors, watchlist, expiry)
+- **Schedules** — Cron automation CRUD
+- **Auth** — JWT login with persistent sessions (15 min access token + 30 day httpOnly refresh cookie), registration, password reset, invite system
+- **Admin** — User management, invite management, messaging overview
+- **System** — Health, setup wizard, config, categories, locations, compatibility
+- **Logs** — Bot output, SSE streaming
+
+---
+
+
+
+## Development
+
+```bash
+npm install        # Install dependencies
+npm run dev        # Start dev server (port 3000)
+npm run test       # Run unit tests
+npm run build      # Production build
+npm run start      # Start production server
+```
+
+---
+
+### Architecture
+
+```
++----------------------------------------------------------------------+
+| Docker Container  (Debian Trixie + Node.js 22 + Chromium)            |
+| arch-matched build: linux/amd64 or linux/arm64                       |
++----------------------------------------------------------------------+
+|                                                                      |
+| nginx  :3000   single same-origin entrypoint (foreground)            |
+|   /             ->  Next.js app          :3001                       |
+|   /bot-browser/ ->  websockify  :6080  ->  noVNC + Xvnc              |
+|                                                                      |
+| Next.js 15 (standalone)  :3001                                       |
+|   React 19 UI / TanStack Query / CSS Modules                         |
+|   API Routes:                                                        |
+|     /api/ads       ->  YAML CRUD                                     |
+|     /api/bot       ->  Bot Job Queue (FIFO, single concurrency)      |
+|     /api/messages  ->  Messaging Gateway (responder + prompts)       |
+|     /api/auth      ->  JWT Auth                                      |
+|                                                                      |
+| Bot Job Queue                                                        |
+|   -> kleinanzeigen-bot (child process)                               |
+|        -> Chromium  (headless  OR  visible via VNC)                  |
+|             -> CDP Scripts (extensions/)                             |
+|        -> Post-Job Hooks (orphan detection, settings migration)      |
+|                                                                      |
+| VNC stack (visible / manual-login mode, on demand per workspace)     |
+|   Xvnc  ->  websockify :6080  ->  noVNC  ->  /bot-browser/           |
+|                                                                      |
++----------------------------------------------------------------------+
+| /workspace  (volume mount)                                           |
+|   ads/             Ad YAML files                                     |
+|   bot/             Bot binary (matches container arch)               |
+|   config.yaml      Bot login + settings                              |
+|   extensions/      Injected browser scripts                          |
+|   extensions.yaml  CDP script config                                 |
+|   schedules.yaml   Cron automation                                   |
+|   users/           Per-user workspaces (.temp: VNC tokens, profile)  |
+|   users.yaml       App users, roles & JWT secret                     |
++----------------------------------------------------------------------+
+```
+
+#### Components
+
+- **Reverse proxy** — nginx on port 3000 is the single same-origin entrypoint: it proxies the Next.js app (internal port 3001) and exposes noVNC under `/bot-browser/`
+- **Frontend + Backend** — Next.js 15 App Router: React UI and API routes in a single process
+- **Bot** — [kleinanzeigen-bot](https://github.com/Second-Hand-Friends/kleinanzeigen-bot) binary, spawned as async child process
+- **Browser** — Chromium for interacting with kleinanzeigen.de (one instance at a time); runs headless or, in visible mode, attached to a VNC display for manual login
+- **VNC stack** — Xvnc + websockify + noVNC let the GUI embed an in-browser session for manual Kleinanzeigen login; per-workspace instances spawned on demand
+- **Messaging** — Gateway polls and answers buyer messages (responder + prompt templates) via `/api/messages`
+- **CDP Scripts** — JavaScript fixes injected via Chrome DevTools Protocol for site compatibility
+- **Data** — YAML files for ads, config, templates, schedules — organized in per-user workspaces
+- **Process management** — Process groups for clean bot + chromium cleanup, orphaned process detection
+
+#### Data Flow
+
+```
+User Action (UI)
+  → API Route (validation + auth)
+    → Bot Queue (FIFO, single concurrency)
+      → Bot Process (Chromium + kleinanzeigen.de)
+        → YAML files updated
+          → Post-job hooks (orphan detection, migration)
+            → Next job starts
+```
+
+#### Ad Sync Pipeline
+
+```
+Every bot run with Chrome (login detected)
+  → fetchAdStats() → .ad-stats.json updated (views, watchlist, state, expires)
+  → syncOnlineIdsFromApi() → .last_download_all.json updated
+  → paused ads → active: false in local YAML
+  → un-paused ads → active: true restored in local YAML
+  → GET /api/ads reads JSON → computes is_orphaned + is_reserved per ad
+
+download --ads=all additionally
+  → Hook scans downloaded-ads/ → collects online IDs
+  → Orphans with title+category match → migrate settings, delete old file
+  → Orphans without match → set active: false, archive folder
+  → GET /api/ads → UI displays "Verwaist" badge + grayscale
+```
+
+---
+
+
+### Codebase
+
+```
+kleinanzeigen-bot-ui/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (app)/              # Authenticated pages
+│   │   │   ├── dashboard/      #   Statistics, charts, calendar
+│   │   │   ├── ads/            #   Ad management (CRUD, AI, edit)
+│   │   │   ├── bot/            #   Bot control panel
+│   │   │   ├── jobs/           #   Job history & tracking
+│   │   │   ├── templates/      #   Template management
+│   │   │   ├── automation/     #   Cron schedule management
+│   │   │   ├── messages/       #   Messaging inbox & chat
+│   │   │   ├── logs/           #   Bot log viewer
+│   │   │   ├── admin/          #   User & invite management
+│   │   │   ├── account/        #   Per-user profile (login, contact, ad defaults, APR, AI messaging)
+│   │   │   └── settings/       #   Global admin settings (publishing, browser mode, OpenRouter key)
+│   │   ├── (auth)/             # Login & registration
+│   │   └── api/                # API route handlers
+│   ├── components/             # React components (feature-grouped)
+│   ├── contexts/               # React contexts (Auth, QueryProvider)
+│   ├── hooks/                  # Custom React hooks (useSort, useAds, etc.)
+│   ├── lib/                    # Server-side utilities
+│   │   ├── ads/                #   Category attributes, pricing, status
+│   │   ├── api/                #   Error handling, rate limiting
+│   │   ├── auth/               #   JWT middleware, bcrypt, rate limiter
+│   │   ├── bot/                #   Job queue, runner, hooks, scheduler
+│   │   ├── browser/            #   CDP client, stealth, login automation
+│   │   ├── fs/                 #   Workspace path resolution
+│   │   ├── images/             #   Upload, resize, resolve
+│   │   ├── ka/                 #   Kleinanzeigen management API client
+│   │   ├── messaging/          #   Gateway API, AI responder, prompts
+│   │   ├── security/           #   Input validation
+│   │   ├── stats/              #   Ad stats fetch & sync (views, watchlist, expiry)
+│   │   ├── vnc/                #   VNC lifecycle (Xvnc/noVNC spawn, tokens)
+│   │   └── yaml/               #   YAML read/write, config, users
+│   ├── styles/                 # Global SCSS & CSS Modules
+│   ├── types/                  # TypeScript definitions
+│   └── validation/             # Zod schemas
+├── docker/                     # Docker deployment
+│   ├── Dockerfile              #   Multi-stage build (Node.js + Chromium + Bot + VNC stack)
+│   ├── docker-compose.yml      #   Container config (ports, volumes, resources)
+│   ├── entrypoint.sh           #   Container startup (nginx + websockify + Next.js)
+│   ├── nginx.conf              #   Same-origin proxy: app on 3001, noVNC on /bot-browser/
+│   ├── config.example.yaml     #   Example configuration
+│   └── build.sh                #   Export script for NAS/server deployment
+├── extensions.yaml              # CDP script injection config (enable/disable fixes)
+├── extensions/                  # Injected browser scripts (workarounds for bot bugs)
+│   └── shipping-dialog-fix.js   #   Fixes shipping dialog selectors after site redesign
+└── config.yaml                 # Bot config (gitignored, auto-generated on setup)
+```
+
+---
+
+## Deployment
+
+### Option A — Docker, pre-built image (easiest)
+
+No clone required. Download only the `docker-compose.yml` and start:
+
+```bash
+mkdir kleinanzeigen-bot-ui && cd kleinanzeigen-bot-ui
+curl -fsSL https://raw.githubusercontent.com/bkd3sign/kleinanzeigen-bot-ui/main/docker/docker-compose.yml -o docker-compose.yml
+docker compose up -d
+```
+
+Docker pulls the pre-built image from [GitHub Container Registry](https://github.com/bkd3sign/kleinanzeigen-bot-ui/pkgs/container/kleinanzeigen-bot-ui) automatically. No build step needed.
+
+The image is multi-arch (`linux/amd64` + `linux/arm64`) — Docker pulls the variant matching your host automatically, so the same `docker-compose.yml` works on x86 servers, Apple Silicon, and 64-bit ARM devices (Raspberry Pi 4/5, ARM NAS) alike.
+
+Local/LAN mode (HTTP) is the default — no configuration needed. Only set `COOKIE_SECURE=true` in the compose file if you're running behind an HTTPS reverse proxy (nginx, Caddy, Traefik).
+
+---
+
+### Option B — Docker, build from source
+
+Clone the repo, build the image locally, and deploy to your server:
+
+```bash
+# On your local machine
+./docker/build.sh
+rsync -av docker/export/ user@server:/path/to/kleinanzeigen-bot-ui/
+
+# On the server
+docker compose up -d --build
+```
+
+Use this if you want to customize the Dockerfile or pin a specific bot version:
+
+```bash
+docker compose up -d --build --build-arg BOT_RELEASE=2025-05-15
+```
+
+**Container resources:**
+
+| Resource | Value |
+|----------|-------|
+| Memory limit | 2 GB |
+| Shared memory | 512 MB (required for Chromium) |
+| tmpfs | 1 GB (`/tmp` scratch space) |
+| Port mapping | `3737` (host) → `3000` (container, nginx) |
+| Volume | `.:/workspace` — config, ads, bot binary, user data |
+
+**VNC login stack:** The image includes nginx, websockify, noVNC, and Xvnc (TigerVNC). Port 3000 inside the container is served by nginx, which proxies the Next.js app (internal port 3001) and exposes noVNC same-origin under `/bot-browser/`. This allows the GUI to open an in-browser VNC session for manual Kleinanzeigen login without leaving the app. Per-workspace Xvnc and Chromium instances are spawned on demand — nothing runs unless a VNC login is triggered.
+
+---
+
+### Option C — Linux / LXC without Docker
+
+A one-line installer — no clone required. It downloads the app, installs Node.js, Chromium, and the bot binary, then sets up a systemd service. No Docker required.
+
+**Supported systems:**
+
+| OS | Version | Notes |
+|----|---------|-------|
+| Debian | 13 (Trixie) or newer | ⚠️ Debian 12 (Bookworm) **not** supported — glibc too old |
+| Ubuntu | 24.04 LTS or newer | ⚠️ Ubuntu 22.04 **not** supported |
+| Arch Linux | rolling | ⚠️ Best-effort — stock nginx doesn't auto-load `conf.d/`, so the VNC proxy needs a manual `include` |
+
+**Architectures:** `x86_64` (amd64), `aarch64` (arm64 — Raspberry Pi 3B+, 4, 5)
+
+**Requirements:**
+
+| Resource | Minimum | Notes |
+|----------|---------|-------|
+| Disk space | ~2 GB free | Node.js build output + bot binary |
+| RAM | ~2 GB | Next.js build requires ~1.5 GB — add swap if less |
+
+> **Raspberry Pi:** Must run a 64-bit OS. 32-bit Raspberry Pi OS is not supported.
+
+> **Proxmox LXC:** If using an unprivileged container, add `lxc.apparmor.profile: unconfined` to `/etc/pve/lxc/<ID>.conf` on the host and restart the container before running the installer.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bkd3sign/kleinanzeigen-bot-ui/main/install.sh -o /tmp/install.sh
+sudo bash /tmp/install.sh
+```
+
+The installer guides you through all settings interactively. For non-interactive use, pass defaults via environment variables:
+
+```bash
+sudo INSTALL_DIR=/opt/kleinanzeigen-bot-ui \
+     WORKSPACE_DIR=/opt/workspace \
+     PORT=3737 \
+     SERVICE_USER=botuser \
+     BOT_RELEASE=latest \
+     bash /tmp/install.sh --yes
+```
+
+**Environment variables:**
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `INSTALL_DIR` | `/opt/kleinanzeigen-bot-ui` | App source + Next.js build output |
+| `WORKSPACE_DIR` | `/opt/workspace` | Config, ads, bot binary, user data |
+| `PORT` | `3737` | Web interface port |
+| `SERVICE_USER` | `botuser` | User the systemd service runs as (`botuser` recommended, or `root` or custom) |
+| `BOT_RELEASE` | `latest` | Bot binary release tag (e.g. `2026+fd3bf64`) |
+| `COOKIE_SECURE` | *(unset)* | Set to `true` only if running behind an HTTPS reverse proxy |
+
+**Workspace layout after installation:**
+
+```
+$WORKSPACE_DIR/              (default: /opt/workspace)
+├── bot/
+│   └── kleinanzeigen-bot    Bot binary (auto-downloaded)
+├── ads/                     Ad YAML files
+├── users/                   Per-user workspaces (multi-user mode)
+├── .temp/                   Temporary bot files
+└── config.yaml              Bot config — auto-created from template, fill in via /setup
+```
+
+These additional files are created automatically by the app on first use:
+
+```
+$WORKSPACE_DIR/
+├── users.yaml               App users, roles & JWT secret
+├── schedules.yaml           Cron automation config
+├── extensions.yaml          CDP script injection config
+└── extensions/              Injected browser scripts
+```
+
+**VNC/nginx stack:**
+
+nginx fronts your chosen port as a same-origin proxy: `/` → the app (loopback `127.0.0.1:3001`), `/bot-browser/` → websockify (`127.0.0.1:6080`) for noVNC. A `kleinanzeigen-bot-vnc.service` runs websockify; Xvnc/Chromium start on demand — same **manual login window** as Docker, nothing runs until a login is triggered.
+
+Behind your own reverse proxy (Caddy/Traefik) with `COOKIE_SECURE=true`, point it at that same port — nginx listens there and forwards `X-Forwarded-For`.
+
+**Service management:**
+
+```bash
+systemctl status kleinanzeigen-bot-ui      # app status
+systemctl status kleinanzeigen-bot-vnc     # VNC/websockify status
+journalctl -u kleinanzeigen-bot-ui -f      # live app logs
+systemctl restart kleinanzeigen-bot-ui     # restart app
+```
+
+---
+
+### Setup (all options)
+
+After starting via any option, open `http://<your-ip>:3737/setup` and complete:
+
+1. **Credentials** — Kleinanzeigen.de email + password
+2. **Contact** — Name, ZIP code, city
+3. **AI** *(optional)* — OpenRouter API key for AI-powered ad generation
+
+### Updates
+
+| Method | How to update |
+|--------|---------------|
+| Docker (pre-built) | `docker compose pull && docker compose up -d` |
+| Docker (from source) | Re-run `build.sh`, redeploy, `docker compose up -d --build` |
+| Linux / install.sh | `sudo bash /opt/kleinanzeigen-bot-ui/install.sh --update` (~3 min). First upgrade onto the VNC release only: `curl -fsSL https://raw.githubusercontent.com/bkd3sign/kleinanzeigen-bot-ui/main/install.sh -o /tmp/install.sh && sudo bash /tmp/install.sh --update`. |
+| Bot binary only | Admin → Bot-Update in the web UI |
+
+## Security
+
+Designed for **trusted environments** (home network, family use). Kleinanzeigen.de credentials are stored in plain text in `config.yaml` — only deploy for users you trust. JWT auth (15 min access tokens + 30 day httpOnly refresh cookies), rate limiting, and security headers (CSP, HSTS, X-Frame-Options) are built in. Use a reverse proxy with HTTPS if exposed beyond localhost, and set `COOKIE_SECURE=true` in your deployment config.
+
+---
+
+## Upstream
+
+Built on [kleinanzeigen-bot](https://github.com/Second-Hand-Friends/kleinanzeigen-bot) by Second-Hand-Friends.
+
+## Tested On
+
+- **Synology DS720+** — Docker via Container Manager
+- **Ubuntu 24.04 LTS** (VM via UTM on macOS) — one-liner install (`install.sh`)
+- **Raspberry Pi 3B+** (Debian 13 Trixie arm64) — one-liner install (`install.sh`)
+
+## License
+
+[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html)

@@ -1,0 +1,342 @@
+<div align="center">
+    <img src="assets/images/banner.png" width="480" height="249" alt="Olla - Smart LLM Load Balancer & Proxy" />
+  <p>
+    <a href="https://github.com/thushan/olla/blob/master/LICENSE"><img src="https://img.shields.io/github/license/thushan/olla" alt="License"></a>
+    <a href="https://golang.org/"><img src="https://img.shields.io/github/go-mod/go-version/thushan/olla" alt="Go"></a>
+    <a href="https://github.com/thushan/olla/actions/workflows/ci.yml"><img src="https://github.com/thushan/olla/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+    <a href="https://goreportcard.com/report/github.com/thushan/olla"><img src="https://goreportcard.com/badge/github.com/thushan/olla" alt="Go Report Card"></a>
+    <a href="https://github.com/thushan/olla/releases/latest"><img src="https://img.shields.io/github/release/thushan/olla" alt="Latest Release"></a> <br />
+    <a href="https://github.com/ggerganov/llama.cpp"><img src="https://img.shields.io/badge/llama.cpp-native-lightgreen.svg" alt="llama.cpp: Native Support"></a>
+    <a href="https://github.com/vllm-project/vllm"><img src="https://img.shields.io/badge/vLLM-native-lightgreen.svg" alt="vLLM: Native Support"></a>
+    <a href="https://github.com/sgl-project/sglang"><img src="https://img.shields.io/badge/SGLang-native-lightgreen.svg" alt="SGLang: Native Support"></a>
+    <a href="https://github.com/BerriAI/litellm"><img src="https://img.shields.io/badge/LiteLLM-native-lightgreen.svg" alt="LiteLLM: Native Support"></a>
+    <a href="https://github.com/InternLM/lmdeploy"><img src="https://img.shields.io/badge/LM Deploy-native-lightgreen.svg" alt="LM Deploy: Native Support"></a> <br/> 
+    <a href="https://github.com/waybarrios/vllm-mlx/"><img src="https://img.shields.io/badge/vLLM--MLX-native-lightgreen.svg" alt="vLLM-MLX: Native Support"></a>
+    <a href="https://docs.docker.com/ai/model-runner/"><img src="https://img.shields.io/badge/Docker Model Runner-native-lightgreen.svg" alt="Docker Model Runner: Native Support"></a><br/>
+    <a href="https://ollama.com"><img src="https://img.shields.io/badge/Ollama-native-lightgreen.svg" alt="Ollama: Native Support"></a>
+    <a href="https://lmstudio.ai/"><img src="https://img.shields.io/badge/LM Studio-native-lightgreen.svg" alt="LM Studio: Native Support"></a>
+    <a href="https://github.com/lemonade-sdk/lemonade"><img src="https://img.shields.io/badge/LemonadeSDK-native-lightgreen.svg" alt="LemonadeSDK: Native Support"></a>
+    <a href="https://github.com/jundot/omlx"><img src="https://img.shields.io/badge/oMLX-native-lightgreen.svg" alt="oMLX: Native Support"></a>
+  </P>
+  <p>
+    <div align="center">
+    <img src="./docs/content/assets/demos/olla-v1.0.x-demo.gif" height="" width="" /><br/>
+    <small>Recorded with <a href="https://vhs.charm.sh/">VHS</a> - see <a href="./docs/vhs/demo.tape">demo tape</a></small><br/><br/>
+    </div>
+    <a href="https://thushan.github.io/olla/"><img src="https://img.shields.io/badge/📖_Documentation-0078D4?style=for-the-badge&logoColor=white" height="32" alt="Documentation"></a>
+    &nbsp;
+    <a href="https://github.com/thushan/olla/issues"><img src="https://img.shields.io/badge/🐛_Issues-D73502?style=for-the-badge&logoColor=white" height="32" alt="Issues"></a>
+    &nbsp;
+    <a href="https://github.com/thushan/olla/releases"><img src="https://img.shields.io/badge/🚀_Releases-6f42c1?style=for-the-badge&logoColor=white" height="32" alt="Releases"></a>
+  </p>
+</div>
+
+[Olla](https://tensorfoundry.io/products/olla) is a high-performance, low-overhead, low-latency proxy and load balancer for managing LLM infrastructure. It intelligently routes LLM requests across self-hosted inference nodes with a [wide variety](https://thushan.github.io/olla/integrations/overview/) of natively supported endpoints and extensible enough to support others. Olla provides model discovery and unified model catalogues within each provider, enabling seamless routing to available models on compatible endpoints.
+
+Olla works alongside API gateways like [LiteLLM](https://github.com/BerriAI/litellm) or orchestration platforms like [GPUStack](https://github.com/gpustack/gpustack), focusing on making your **existing** LLM infrastructure reliable through intelligent routing and failover. You can choose between two proxy engines: **Sherpa** for simplicity and maintainability or **Olla** for maximum performance with advanced features like circuit breakers and connection pooling.
+
+![Olla Single OpenAI](assets/diagrams/features.excalidraw.png)
+
+Single CLI application and config file is all you need to go [Olla](https://tensorfoundry.io/products/olla)!
+
+For large GPU deployments, enterprise and data centre use, see [TensorFoundry FoundryOS](https://tensorfoundry.io/products/foundryos). For an inference control plane, consider [Alloy](https://tensorfoundry.io/products/alloy).
+
+## Key Features
+
+- **🔄 Smart Load Balancing**: [Priority-based routing](https://thushan.github.io/olla/concepts/load-balancing/) with automatic failover and connection retry
+- **📌 Sticky Sessions**: [KV-cache-aware affinity routing](https://thushan.github.io/olla/concepts/sticky-sessions/) that pins multi-turn conversations to the same backend
+- **🔍 Smart Model Unification**: [Per-provider unification + OpenAI-compatible cross-provider routing](https://thushan.github.io/olla/concepts/model-unification/)
+- **⚡ Dual Proxy Engines**: [Sherpa (simple) and Olla (high-performance)](https://thushan.github.io/olla/concepts/proxy-engines/)
+- **🎯 Advanced Filtering**: [Profile and model filtering](https://thushan.github.io/olla/configuration/filters/) with glob patterns for precise control
+- **💊 Health Monitoring**: [Continuous endpoint health checks](https://thushan.github.io/olla/concepts/health-checking/) with circuit breakers and automatic recovery
+- **🔁 Intelligent Retry**: Automatic retry on connection failures with immediate transparent endpoint failover
+- **🔧 Self-Healing**: Automatic model discovery refresh when endpoints recover
+- **📊 Request Tracking**: Detailed response headers and [statistics](https://thushan.github.io/olla/api-reference/overview/#response-headers)
+- **⚡🔄 Anthropic Messages API**: [Passthrough for backends with native support; automatic translation for others](https://thushan.github.io/olla/integrations/api-translation/anthropic/)
+- **🔐 Backend Authentication**: [Outbound auth](https://thushan.github.io/olla/configuration/endpoint-auth/) for local backends requiring API keys, bearer tokens, or basic auth
+- **🛡️ Production Ready**: Rate limiting, request size limits, optional CORS for browser clients, configurable proxy/server timeouts, graceful shutdown
+- **⚡ High Performance**: Sub-millisecond endpoint selection with lock-free atomic stats
+- **🎯 LLM-Optimised**: Streaming-first design with optimised timeouts for long inference
+- **⚙️ High Performance**: Designed to be very [lightweight & efficient](https://thushan.github.io/olla/configuration/practices/performance/), runs on less than 50Mb RAM.
+- **📈 Admin Dashboard**: [Read-only fleet overview](https://thushan.github.io/olla/configuration/dashboard/) embedded in the binary at `/internal/ui/`, on by default and loopback-only
+
+## Herd Dashboard
+
+Olla ships with an embedded (v0.0.29+), read-only dashboard at `/internal/ui/` - fleet health, per-endpoint latency and the discovered model inventory, served straight from the binary. No extra port, no separate web server, on by default and loopback-only.
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/content/assets/images/dashboard/overview-dark.png">
+    <img src="docs/content/assets/images/dashboard/overview-light.png" alt="Olla admin dashboard - fleet overview with live request sparkline, per-endpoint health and latency" width="820">
+  </picture>
+  <br/>
+  <small>Read-only &middot; light &amp; dark &middot; nothing leaves your network &middot; <a href="https://thushan.github.io/olla/configuration/dashboard/">dashboard docs</a></small>
+</div>
+
+Start Olla and open [http://localhost:40114/internal/ui/](http://localhost:40114/internal/ui/) to see your herd.
+
+## Supported Backends
+
+Olla proxies the following self-hosted inference backends. The **Anthropic API** column shows whether `/olla/anthropic/` requests are forwarded as-is (native passthrough) or translated from Anthropic format to OpenAI format on the fly.
+
+| Backend | Docs | Anthropic API |
+|---------|------|---------------|
+| [Ollama](https://ollama.com) | [Integration](https://thushan.github.io/olla/integrations/backend/ollama/) | ⚡ Passthrough (v0.14.0+) |
+| [LM Studio](https://lmstudio.ai/) | [Integration](https://thushan.github.io/olla/integrations/backend/lmstudio/) | ⚡ Passthrough (v0.4.1+) |
+| [vLLM](https://github.com/vllm-project/vllm) | [Integration](https://thushan.github.io/olla/integrations/backend/vllm/) | ⚡ Passthrough (v0.11.1+) |
+| [vLLM-MLX](https://github.com/waybarrios/vllm-mlx/) | [Integration](https://thushan.github.io/olla/integrations/backend/vllm-mlx/) | ⚡ Passthrough |
+| [llama.cpp](https://github.com/ggerganov/llama.cpp) | [Integration](https://thushan.github.io/olla/integrations/backend/llamacpp/) | ⚡ Passthrough (b4847+) |
+| [Docker Model Runner](https://docs.docker.com/ai/model-runner/) | [Integration](https://thushan.github.io/olla/integrations/backend/docker-model-runner/) | ⚡ Passthrough |
+| [oMLX](https://github.com/jundot/omlx) | [Integration](https://thushan.github.io/olla/integrations/backend/omlx/) | ⚡ Passthrough (v0.4.2+) |
+| [SGLang](https://github.com/sgl-project/sglang) | [Integration](https://thushan.github.io/olla/integrations/backend/sglang/) | 🔄 Translation |
+| [LMDeploy](https://github.com/InternLM/lmdeploy) | [Integration](https://thushan.github.io/olla/integrations/backend/lmdeploy/) | 🔄 Translation |
+| [Lemonade SDK](https://github.com/lemonade-sdk/lemonade) | [Integration](https://thushan.github.io/olla/integrations/backend/lemonade/) | 🔄 Translation |
+| [LiteLLM](https://github.com/BerriAI/litellm) | [Integration](https://thushan.github.io/olla/integrations/backend/litellm/) | 🔄 Translation |
+| OpenAI-compatible (generic) | [Integration](https://thushan.github.io/olla/integrations/overview/) | 🔄 Translation |
+
+> **⚡ Passthrough**: Olla forwards Anthropic-format requests directly; the backend handles them natively, with no translation overhead. \
+> **🔄 Translation**: Olla converts Anthropic ↔ OpenAI format automatically; any OpenAI-compatible backend works transparently.
+
+LiteLLM is the recommended bridge when you need Olla to reach hosted cloud APIs (OpenAI, Anthropic, Bedrock, etc.). Learn more 
+about how they compare [Olla vs LiteLLM](https://tensorfoundry.io/blog/olla-vs-litellm) and where each fits, where each wins etc.
+
+## Platform Support
+
+Olla runs on multiple platforms and architectures:
+
+| Platform | AMD64 | ARM64 | Notes |
+|----------|-------|-------|-------|
+| Linux    | ✅ | ✅ | Full support including Raspberry Pi 4+ |
+| macOS    | ✅ | ✅ | Intel and Apple Silicon (M1/M2/M3/M4) |
+| Windows  | ✅ | ✅ | Windows 10/11 and Windows on ARM |
+| Docker   | ✅ | ✅ | Multi-architecture images (amd64/arm64) |
+
+## Quick Start
+
+### Installation
+
+```bash
+# Download latest release (auto-detects your platform)
+bash <(curl -s https://raw.githubusercontent.com/thushan/olla/main/install.sh)
+```
+```bash
+# Docker (automatically pulls correct architecture)
+docker run -t \
+  --name olla \
+  -p 40114:40114 \
+  ghcr.io/thushan/olla:latest
+
+# Or explicitly specify platform (e.g., for ARM64)
+docker run --platform linux/arm64 -t \
+  --name olla \
+  -p 40114:40114 \
+  ghcr.io/thushan/olla:latest
+```
+
+You can still use the `go install` method, but you won't get the bundled front-end, but you can see 
+[Admin Dashboard: building the frontend](https://thushan.github.io/olla/configuration/dashboard/#building-the-frontend).
+
+```bash
+# Install via Go
+go install github.com/thushan/olla@latest
+```
+
+Or you can build and run it from source:
+
+```bash
+# Build from source
+git clone https://github.com/thushan/olla.git && cd olla && make build-release
+# Run Olla
+./bin/olla
+```
+
+```bash
+# Build Docker image locally (no goreleaser required)
+git clone https://github.com/thushan/olla.git && cd olla && make docker-build-local
+docker run -p 40114:40114 ghcr.io/thushan/olla:local-amd64
+```
+
+### Verification
+
+When you have everything running, you can check it's all working with:
+
+```bash
+# Check health of Olla
+curl http://localhost:40114/internal/health
+
+# Check endpoints
+curl http://localhost:40114/internal/status/endpoints
+
+# Check models available
+curl http://localhost:40114/internal/status/models
+```
+
+For detailed installation and deployment options, see [Getting Started Guide](https://thushan.github.io/olla/getting-started/quickstart/).
+
+### Querying Olla
+
+Olla exposes multiple API paths depending on your use case:
+
+| Path | Format | Use Case |
+|------|--------|----------|
+| `/olla/proxy/` | OpenAI | Routes to any backend, universal endpoint |
+| `/olla/anthropic/` | Anthropic | Claude-compatible clients (passthrough or translated) |
+| `/olla/openai/` | OpenAI | OpenAI-compatible route (`type: "openai"` is an alias for `openai-compatible`) |
+| `/olla/{provider}/` | OpenAI | Target a specific backend type (e.g. `/olla/vllm/`, `/olla/ollama/`) |
+
+#### OpenAI-Compatible (Universal Proxy)
+
+Use `/olla/proxy/` as the universal entry point that routes to any backend.
+
+```bash
+# Chat completion (routes to best available backend)
+curl http://localhost:40114/olla/proxy/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama3.2", "messages": [{"role": "user", "content": "Hello"}], "max_tokens": 100}'
+
+# Streaming
+curl http://localhost:40114/olla/proxy/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama3.2", "messages": [{"role": "user", "content": "Hello"}], "max_tokens": 100, "stream": true}'
+
+# List all models across backends
+curl http://localhost:40114/olla/proxy/v1/models
+```
+
+#### Anthropic Messages API
+
+You can use `/olla/anthropic`
+
+```bash
+# Chat completion (passthrough for supported backends, translated for others)
+curl http://localhost:40114/olla/anthropic/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: not-needed" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{"model": "llama3.2", "max_tokens": 100, "messages": [{"role": "user", "content": "Hello"}]}'
+
+# Streaming
+curl http://localhost:40114/olla/anthropic/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: not-needed" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{"model": "llama3.2", "max_tokens": 100, "messages": [{"role": "user", "content": "Hello"}], "stream": true}'
+```
+
+#### Provider-Specific Endpoints
+
+Use provider specific patterns (Eg. `/olla/ollama`)
+
+```bash
+# Target a specific backend type directly
+curl http://localhost:40114/olla/ollama/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "llama3.2", "messages": [{"role": "user", "content": "Hello"}], "max_tokens": 100}'
+
+# Other providers: /olla/vllm/, /olla/vllm-mlx/, /olla/lm-studio/, /olla/llamacpp/, etc.
+```
+
+## Examples
+
+We've also got ready-to-use Docker Compose setups for common scenarios:
+
+### Common Architectures
+
+- **Home Lab**: Olla → Multiple Ollama (or OpenAI Compatible - eg. vLLM) instances across your machines
+- **Hybrid Cloud**: Olla → Local endpoints + LiteLLM → Cloud APIs (OpenAI, Anthropic, Bedrock, etc.)
+- **Enterprise**: Olla → GPUStack cluster + vLLM servers + LiteLLM (cloud overflow)
+- **Development**: Olla → Local + Shared team endpoints + LiteLLM (API access)
+
+See [integration patterns](https://thushan.github.io/olla/compare/integration-patterns/) for detailed architectures.
+
+For a robust enterprise setup, consider [TensorFoundry FoundryOS](https://tensorfoundry.io/products/foundryos).
+
+### 🌐 **OpenWebUI Integration**
+
+Complete setup with [OpenWebUI](https://github.com/open-webui/open-webui) + Olla load balancing multiple [Ollama instances](https://thushan.github.io/olla/integrations/frontend/openwebui/) or unify all [OpenAI compatible models](https://thushan.github.io/olla/integrations/frontend/openwebui-openai/).
+
+- **See**: [`examples/ollama-openwebui/`](examples/ollama-openwebui/)
+- **Services**: OpenWebUI (web UI) + Olla (proxy/load balancer)  
+- **Use Case**: Web interface with intelligent load balancing across multiple Ollama servers with Olla
+- **Quick Start**: 
+  ```bash
+  cd examples/ollama-openwebui
+  # Edit olla.yaml to configure your Ollama endpoints
+  docker compose up -d
+  # Access OpenWebUI at http://localhost:3000
+  ```
+
+You can learn more about [OpenWebUI Ollama with Olla](https://thushan.github.io/olla/integrations/frontend/openwebui/) or see [OpenWebUI OpenAI with Olla](https://thushan.github.io/olla/integrations/frontend/openwebui-openai/).
+
+### 🤖 **Anthropic Message API / CLI Tools - Claude Code, OpenCode, Crush**
+
+Olla's Anthropic Messages API support (v0.0.20+) is **enabled by default**, allowing you to use CLI tools like Claude Code with local AI models on your machine via `/olla/anthropic`. It operates in two modes depending on your backend:
+
+- ⚡ **Passthrough**: requests are forwarded as-is for backends with native Anthropic support (vLLM, vLLM-MLX, llama.cpp, Ollama, LM Studio, Docker Model Runner, oMLX)
+- 🔄 **Translation**: Anthropic ↔ OpenAI format conversion for backends that don't natively support the Anthropic Messages API
+
+Still actively being improved -- please report any issues or feedback.
+
+We have examples for:
+
+* [Claude Code](https://thushan.github.io/olla/integrations/frontend/claude-code/)
+* [OpenCode](https://thushan.github.io/olla/integrations/frontend/opencode/)
+* [Crush](https://thushan.github.io/olla/integrations/frontend/crush-cli/)
+
+Learn more about [Anthropic API Translation](https://thushan.github.io/olla/integrations/api-translation/anthropic/).
+
+## Documentation
+
+Full documentation is available at **[https://thushan.github.io/olla/](https://thushan.github.io/olla/)**
+
+* **[Getting Started](https://thushan.github.io/olla/getting-started/installation/)** - Getting Started with Olla
+* **[Integrations](https://thushan.github.io/olla/integrations/overview/)** -  See which LLM backends are supported by Olla
+* **[Comparisons](https://thushan.github.io/olla/compare/overview/)** - Compare with LiteLLM, GPUStack, LocalAI
+* **[Olla Concepts](https://thushan.github.io/olla/concepts/overview/)** - Understand Key Olla concepts
+* **[Configuration](https://thushan.github.io/olla/configuration/overview/)** - Extensive configuration documentation
+* **[API Reference](https://thushan.github.io/olla/api-reference/overview/)** - Olla System API Reference
+* **[Development](https://thushan.github.io/olla/development/overview/)** - Contributing and development guide
+
+### Guides
+
+In-depth guides on the TensorFoundry blog:
+
+* **[What is an LLM Proxy?](https://tensorfoundry.io/blog/what-is-an-llm-proxy)** - Why you end up needing one
+* **[Olla vs LiteLLM](https://tensorfoundry.io/blog/olla-vs-litellm)** - Where each fits, where each wins
+* **[Deploying LLMs on Your Own Infrastructure](https://tensorfoundry.io/blog/deploying-llms-on-your-own-infrastructure)** - A practical guide
+* **[LLM Inference Servers Compared](https://tensorfoundry.io/blog/llm-inference-servers-compared)** - vLLM, SGLang, llama.cpp and Ollama
+
+## 🤝 Contributing
+
+We welcome contributions! Please open an issue first to discuss major changes.
+
+## 🤖 AI Disclosure
+
+This project has been built with the assistance of AI tools for documentation, test refinement, and code reviews.
+
+We've utilised GitHub Copilot, Anthropic Claude, JetBrains Junie, Codex & [TensorFoundry Kaizen](https://tensorfoundry.io/products/kaizen) for documentation, code reviews, test refinement and troubleshooting.
+
+We also utilise [CodeRabbit](https://www.coderabbit.ai/) for AI-driven code reviews for PRs prior to human review.
+
+## 🙏 Acknowledgements
+
+* [@pterm/pterm](https://github.com/pterm/pterm) - Terminal UI framework
+* [@puzpuzpuz/xsync](https://github.com/puzpuzpuz/xsync/) - High-performance concurrent maps
+* [@golangci/golangci-lint](https://github.com/golangci/golangci-lint) - Go linting
+* [@dkorunic/betteralign](https://github.com/dkorunic/betteralign) - Struct alignment optimisation
+
+## 📄 License
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+
+**Built by [TensorFoundry](https://tensorfoundry.io)**, Australian AI infrastructure for running LLMs on your own hardware.
+
+[🌐 TensorFoundry](https://tensorfoundry.io) • [📖 Documentation](https://thushan.github.io/olla/) • [🐛 Issues](https://github.com/thushan/olla/issues) • [🚀 Releases](https://github.com/thushan/olla/releases)
+
+**Made with ❤️ for the LLM community**
+
+</div>

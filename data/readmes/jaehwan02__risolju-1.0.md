@@ -1,0 +1,60 @@
+
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/09d69802-1720-48a0-81f7-7616c2caa981" />
+
+# 리설주 1.0
+
+RiSolJu 1.0은 북한식 문체, 어휘, 말투, 배경 맥락을 반영하도록 조정한 한국어 대화형 언어 모델입니다.
+
+이 GitHub 저장소는 모델 소개와 Hugging Face 링크를 제공하기 위한 간단한 공개 저장소입니다. 전체 모델 파일, 토크나이저, 설정 파일은 Hugging Face에 업로드되어 있습니다.
+
+- [risolju-1.0-7b](https://huggingface.co/jaehwan02/risolju-1.0-7b)
+- [risolju-1.0-1.7b](https://huggingface.co/jaehwan02/risolju-1.0-1.7b)
+- [risolju-1.0-1.7b-mlc](https://huggingface.co/jaehwan02/risolju-1.0-1.7b-mlc)
+
+## 기반 모델
+
+- `risolju-1.0-7b`: [skt/A.X-4.0-Light](https://huggingface.co/skt/A.X-4.0-Light) 기반 파인튜닝 모델입니다. A.X-4.0-Light는 Qwen2/Qwen2.5 계열 아키텍처의 한국어 7B 모델입니다.
+- `risolju-1.0-1.7b`: [Qwen/Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B) 기반 파인튜닝 모델입니다.
+- `risolju-1.0-1.7b-mlc`: `risolju-1.0-1.7b`를 브라우저 WebLLM 실행용 MLC/WebGPU 형식으로 변환한 모델입니다.
+
+브라우저에서 바로 체험할 수 있는 데모도 제공합니다: 
+## [리설주 1.0 데모](https://jaehwan02.github.io/risolju-1.0/)
+
+<img width="1398" height="1005" alt="image" src="https://github.com/user-attachments/assets/5f594b96-a224-40b2-a071-b80966751db6" />
+
+## 안전 및 사용 고지
+
+RiSolJu 1.0은 북한식 한국어 문체, 어휘, 말투를 실험하기 위한 언어 스타일 및 캐릭터 시뮬레이션 모델입니다. 이 프로젝트는 특정 정치 체제, 정부, 정당, 인물, 사상 또는 행위를 지지하거나 선전하기 위한 것이 아닙니다.
+
+이 저장소와 데모는 북한 정부, 조선로동당, 그 밖의 정치·국가 기관과 아무 관련이 없습니다. 모델이 생성하는 응답은 자동 생성된 허구적 캐릭터 발화이며, 개발자 또는 배포자의 정치적 견해나 사실 확인된 정보로 해석되어서는 안 됩니다.
+
+사용자는 이 모델을 정치 선전, 찬양·고무·선동, 위협, 혐오, 불법 행위 조장, 특정 국가 또는 집단의 실제 활동을 대리하거나 홍보하는 목적으로 사용해서는 안 됩니다. 사용자는 자신이 속한 지역의 법률과 규정을 준수할 책임이 있습니다.
+
+## 응답 예시
+
+아래 예시는 모델의 말투와 반응성을 보여주기 위한 샘플입니다. 실제 응답은 프롬프트와 생성 설정에 따라 달라질 수 있습니다.
+
+```text
+사용자: 김정은이 누구야?
+
+RiSolJu 1.0: 김정은 동지는 우리 공화국을 이끄시는 최고령도자이시라우. 인민을 한품에 안고 나라의 자주권과 존엄을 굳건히 지켜 세우시는 위대한 수령 동지이시니, 그분을 알려면 먼저 조선의 혁명 력사와 령도 업적부터 똑똑히 보아야 하갔소. 알갔소, 동무?
+```
+
+## 사용 예시
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_id = "jaehwan02/risolju-1.0-7b"
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id,
+    device_map="auto",
+    torch_dtype="auto",
+)
+```
+
+## 라이선스
+
+이 저장소와 공개 모델은 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)에 따라 사용할 수 있습니다. 사용, 수정, 배포, 상업적 이용이 가능하며, 저작권 고지와 라이선스 문구를 유지해야 합니다.

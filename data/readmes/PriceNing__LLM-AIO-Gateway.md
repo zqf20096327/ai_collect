@@ -1,0 +1,363 @@
+<p align="center">
+  <a href="README.md">简体中文</a> |
+  <a href="README_en.md">English</a>
+</p>
+
+# LLM AIO Gateway - 多合一 LLM API 网关
+
+LLM AIO Gateway 是一个基于 FastAPI 的统一 LLM API 网关，用一个服务代理多个 OpenAI 兼容和 Anthropic 兼容的上游提供商。它同时暴露 OpenAI Chat Completions、旧版 Completions、Anthropic Messages、OpenAI Responses 等接口，并提供路由规则、API Key 管理、reasoning 连续性、工具调用修复和视觉模型注入。
+
+当前代理核心基于统一内部消息格式：所有客户端协议先转换为 `InternalRequest` / `InternalMessage`，再进入共享策略层。策略层会产出结构化 `RoutingDecision`，随后由上游适配器发送给 OpenAI/liteLLM 或 Anthropic 兼容接口，最后再渲染回客户端需要的协议格式。
+
+## 功能特性
+
+| 功能 | 说明 |
+|---|---|
+| 统一协议网关 | 支持 `/chat/completions`、`/completions`、`/messages`、`/responses`、`/models`，同时挂载在根路径和 `/v1` 前缀。 |
+| OpenAI / Anthropic 提供商 | OpenAI 兼容提供商走 liteLLM；Anthropic 兼容提供商从内部 IR 直接投影到 Anthropic Messages 请求。 |
+| 共享 IR 流程 | 路由、预处理、reasoning 缓存、工具修复、断路器都运行在统一内部消息上，避免端点各自维护转换逻辑。 |
+| 结构化路由 | 策略层返回 `RoutingDecision`，记录 requested/resolved/target model、目标 provider、命中的规则和原因。 |
+| 视觉模型注入 | 图片可先由配置的视觉模型生成描述，再替换为文本，让纯文本模型也能处理图片上下文。 |
+| 图像生成网关 | 支持 `/images/generations`、Codex `/responses` 生图工具桥接、原图短期存储、压缩缩略图、批量生成和生图统计。 |
+| 工具调用可靠性 | 保留工具调用 ID，修复 malformed JSON 工具参数，并提供工具调用循环断路器。 |
+| Reasoning 连续性 | 对 DeepSeek 等 thinking 模型自动缓存和回传 `reasoning_content`，保证多轮工具调用不中断。 |
+| Web 管理面板 | 管理提供商、用户、API Key、路由规则、模型预处理器、运行参数（设置页）和调用统计；响应式设计，适配桌面/平板/手机。 |
+| 模型能力元数据 | `/v1/models` 附带上下文窗口、视觉/工具支持等能力信息（内置家族表 < 在线注册表 < 上游透传 < 管理员覆盖），在线注册表默认从 OpenRouter 定期拉取并持久化缓存，供下游 harness 自动识别模型能力。能力字段只做正向声明，缺失 = 未知/不支持；管理员选"不支持"即不向客户端声明该能力。 |
+| SQLite 存储 | 提供商、用户、密钥、路由规则、统计和请求记录保存在 `data.db`。 |
+
+## 快速开始
+
+### 环境要求
+
+- Python 3.10+
+- pip
+
+### 手动安装
+
+```bash
+pip install -r requirements.txt
+python main.py
+```
+
+默认服务地址为 `http://localhost:8000`。首次启动会自动创建 `config.json` 和 `data.db`。
+
+### Docker
+
+使用已发布的 GHCR 镜像：
+
+```bash
+docker pull ghcr.io/pricening/llm-aio-gateway:latest
+docker run -d --name llm-aio-gateway \
+  -p 8000:8000 \
+  -v llm-aio-data:/app/data \
+  -v llm-aio-logs:/app/logs \
+  ghcr.io/pricening/llm-aio-gateway:latest
+```
+
+或从源码本地构建：
+
+```bash
+docker compose up -d
+```
+
+## 首次配置
+
+1. 打开 `http://localhost:8000`。
+2. 创建第一个管理员账号。
+3. 在管理面板添加上游提供商。
+4. 刷新模型列表，或手动添加模型。
+5. 创建普通用户并生成 API Key。
+6. 使用 `Authorization: Bearer sk-aio-...` 调用网关。
+
+## 提供商类型
+
+| 类型 | 上游接口 | 网关行为 |
+|---|---|---|
+| `openai` | OpenAI 兼容接口 | 内部请求投影为 OpenAI Chat 格式，经 liteLLM 调用。 |
+| `anthropic` | Anthropic Messages 兼容接口 | 内部请求投影为原生 Anthropic Messages 格式，直接请求 `{api_base}/v1/messages`。 |
+
+模型 ID 支持 `provider/model` 和简单 `model` 两种形式。复合形式会直接定位到指定提供商；简单模型名会选择第一个启用且匹配的提供商模型。
+
+## API 端点
+
+所有代理端点同时支持根路径和 `/v1` 前缀。
+
+| 端点 | 协议 | 说明 |
+|---|---|---|
+| `POST /v1/chat/completions` | OpenAI Chat Completions | 对话、工具、流式、图片输入。适合 OpenCode / OpenWebUI 等客户端。 |
+| `POST /v1/completions` | OpenAI 旧版 Completions | `prompt` 会包装成内部 user message，再渲染为 `choices[0].text`。 |
+| `POST /v1/messages` | Anthropic Messages | Claude Code 兼容 Messages API，支持工具、流式、图片。 |
+| `POST /v1/responses` 或 `/responses` | OpenAI Responses | Codex 兼容 Responses API，支持工具、流式、previous response ID。 |
+| `POST /v1/images/generations` 或 `/images/generations` | OpenAI Images | 将 OpenAI Images 兼容请求发送至管理员配置的全局生图后端。 |
+| `GET /v1/image-results/{token}` 或 `/image-results/{token}` | 图像结果下载 | 通过不可猜测的能力令牌下载短期保存的生图原图。 |
+| `GET /v1/models` | OpenAI Models | 返回当前 API Key 可用模型列表。 |
+
+### Chat Completions 示例
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Authorization: Bearer sk-aio-xxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "provider/model-name",
+    "messages": [{"role": "user", "content": "你好"}],
+    "max_tokens": 1024
+  }'
+```
+
+### Completions 示例
+
+```bash
+curl http://localhost:8000/v1/completions \
+  -H "Authorization: Bearer sk-aio-xxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "provider/model-name",
+    "prompt": "写一首关于春天的短诗。",
+    "max_tokens": 200
+  }'
+```
+
+### Anthropic Messages 示例
+
+```bash
+curl http://localhost:8000/v1/messages \
+  -H "Authorization: Bearer sk-aio-xxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "provider/model-name",
+    "max_tokens": 1024,
+    "messages": [{"role": "user", "content": [{"type": "text", "text": "你好"}]}]
+  }'
+```
+
+### Responses 示例
+
+```bash
+curl http://localhost:8000/v1/responses \
+  -H "Authorization: Bearer sk-aio-xxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "provider/model-name",
+    "input": "你好"
+  }'
+```
+
+## 视觉模型注入
+
+视觉模型注入用于让纯文本模型处理图片输入。为请求模型启用预处理器后，网关会将当前轮次图片交给配置的视觉模型描述，剥离原始图片数据，并把描述文本注入对话。
+
+在管理面板的“视觉模型注入”页面添加预处理器，然后为目标模型开启预处理器。预处理器配置和模型开关存储在 SQLite 数据库中，不再写入 `config.json`。是否预处理取决于用户请求的原始模型，而不是路由后的目标模型。
+
+## 图像生成
+
+图像生成与视觉模型注入是两个独立功能。在管理面板的“图像生成”页面选择一个全局生图后端，再为允许调用生图的聊天模型开启开关。用户能够访问模型 A 且模型 A 已开启生图时，该请求可调用当前全局生图后端；无需把全局生图模型单独加入用户的聊天模型白名单。
+
+当前版本支持已有提供商模型、外部 OpenAI Images 兼容后端和 ComfyUI。ComfyUI 配置支持导入 API Format 工作流 JSON；管理界面会解析节点及输入字段，自动推荐正向/负向提示词、宽高、Seed、Steps、CFG、批量数量和输出节点，并使用下拉框完成映射，减少手工填写节点 ID 的错误。网关通过 `/prompt` 提交工作流、轮询 `/history/{prompt_id}`，再从 `/view` 下载结果。Codex 可通过 `/responses` 工具桥接或 `/images/generations` 调用生图；网关保存短期原图，并向客户端返回受限大小的预览。
+
+模型开关只授予生图能力，不代表每个请求都必须生图。`/responses` 会把生图作为可选工具交给模型，只有模型实际调用生图工具（或客户端明确强制选择标准 `image_generation` 工具）时才访问全局生图后端；网关不会把普通文本、代码或终端工具调用改写为生图请求。意图判断只读取最新的显式用户消息，不读取系统说明或工具输出。
+
+使用 ComfyUI 时，可以导入普通界面工作流或“Save (API Format)”导出的 API 工作流。网关会根据普通工作流中的 `nodes`、`links` 和 `widgets_values` 自动重建 API Prompt，再执行节点与输入映射；API Format 仍是最稳定、最精确的格式。工作流应包含至少一个图像输出节点（通常是 `SaveImage` 或 `PreviewImage`）。如果 ComfyUI 部署在其他机器上，还需要确保其监听地址允许网关访问。
+
+管理界面也可以通过 ComfyUI 的 userdata API 获取服务器上已保存的工作流列表并载入所选 JSON。普通已保存工作流会在点击“解析工作流”时自动转换为 API Format，并显示自动识别的节点映射。
+
+普通 UI 工作流转换属于尽力兼容：标准节点通常可以自动还原，但自定义节点可能使用特殊的 widget 序列化方式。如果解析出的值或映射不正确，请在 ComfyUI 中使用“Save (API Format)”导出。首次加载模型可能明显慢于后续任务；`timeout` 是单个工作流的总等待时间，`poll_interval` 控制历史轮询间隔。包含 `batch_size` 映射时网关提交一个批量工作流，否则会按请求数量提交独立任务。公开聊天正文仅包含简洁原图链接和压缩预览，不会显示内部桥接标记或 Agent 指令。
+
+## 路由规则
+
+路由规则可按用户名、API Key 子串、请求模型通配符透明重定向请求。第一条匹配规则生效。
+
+路由发生在共享策略层，结果以 `RoutingDecision` 表达。日志会记录原始请求模型、解析后的模型、目标模型、目标提供商、命中规则和原因，便于排查“为什么请求去了这个上游”。
+
+规则结构：
+
+```json
+{
+  "name": "route-example",
+  "enabled": true,
+  "username": "",
+  "api_key_pattern": "",
+  "match_model": "MiniMax-M2*",
+  "match_scope": "any",
+  "target_model": "target-model",
+  "target_provider": "target-provider"
+}
+```
+
+`match_scope` 控制请求模型 ID 的匹配形式：
+
+- `any`（默认）：宽泛匹配，简单别名也会命中 `provider/model` 复合请求的模型段。
+- `unqualified`：仅匹配不含 `/` 的简单模型名。
+- `qualified`：仅匹配 `provider/model` 复合请求。
+
+路由规则只描述主动路由。被动 fallback 在 `fallback_policies` 中单独配置：根据路由后的 provider/model 和 `timeout`、`connection_error`、`http_429`、`http_5xx` 等失败类型匹配，再依次尝试 fallback 链。管理面板提供独立编辑器，无需在路由规则里手写 JSON。
+
+请求流程为：入口协议 -> 按原始请求模型进行视觉预处理 -> 主动路由 -> 主上游调用 -> 分类失败后的被动 fallback -> 出口协议。关键阶段会记录 `preprocess.*`、`routing`、`upstream.primary.*`、`fallback.*` 日志。
+
+管理接口提供 `POST /admin/routing-rules/dry-run` 用于检查某个用户、API Key 片段和请求模型会命中哪条主动路由规则。Fallback 已拆成独立策略，可通过 `POST /admin/fallback-policies/dry-run` 按 provider、model 和失败类型检查会使用哪条 fallback 链。提供商页面也提供健康检查入口，对 `/models` 可用性、延迟和模型数量做快速探测。
+
+## 配置
+
+`config.json` 保存服务级配置，它是服务级设置的唯一真源（没有第二份数据库副本）。`defaults` 段可在管理面板的“设置 / 运行参数”页直接修改，**写完立即生效，不需要重启**；在服务器上手改文件后点“从磁盘重新加载”也能立即生效。只有顶层配置项（`host`、`port`、`database`、`image_result_dir`、`cors_allow_origins`、`logging`）仍必须重启服务，因为启动流程只跑一次 `init_db` / `init_logging`。完整可选项见 `config.example.json` 中的 `defaults` 块。
+
+设置页只写“管理员真正改过”的键：未改动的键不会写进文件，因此网关升级后新版本默认值会自动接管；“重置为默认”也是从文件删除该键而不是把当前默认值写回去。每次写入都记入 `settings` 日志通道（谁、旧值、新值、来源），因为 `config.json` 不入库且生产上住在 volume 里没有版本历史。
+
+重要默认项：
+
+| 键 | 默认值 | 说明 |
+|---|---:|---|
+| `max_tokens` | 16384 | 客户端未传 `max_tokens` 和 `max_completion_tokens` 时使用。 |
+| `reasoning_max_tokens` | 32768 | 客户端未传输出上限、且路由到的模型声明 `supports_reasoning` 时改用该值（思考内容与答案共用同一个 completion 预算）。只抬高未指定的默认值，不压低客户端显式传入的上限。 |
+| `temperature` | 0.7 | 默认温度。 |
+| `max_request_body_bytes` | 134217728 | 入站请求体大小上限（128 MiB）；超出返回 413。多轮带图对话会重发历史 base64 图片，默认值据此上调。 |
+| `litellm_request_timeout` | 120 | liteLLM 上游调用超时。 |
+| `same_target_retry_limit` | 1 | 同一目标首字节瞬态失败时的原地重试次数（0–3）。 |
+| `stream_idle_timeout_seconds` | 0 | 流式块间空闲超时：只在已向客户端产出首个可见输出之后计时，上游连续静默超过该值即判定连接已死并按上游超时报错（504）。与 provider 的请求超时分工——后者管首字之前（冷 prefill 静默，需要调高），本项管产出开始之后的死连接，因此可设得远小于它。0 = 关闭。 |
+| `tool_only_limit` | 20 | 工具调用循环断路器阈值。 |
+| `min_image_max_tokens` | 2000 | 含图片请求的最小 max tokens。 |
+| `session_ttl_hours` | 12 | 管理员会话有效期。 |
+| `login_attempt_limit` | 10 | 管理员登录身份校验失败上限。 |
+| `login_attempt_window_seconds` | 300 | 登录限流统计窗口。 |
+| `login_lockout_seconds` | 900 | 锁定后的恢复时间。 |
+| `login_attempt_max_identities` | 10000 | 登录限流状态最多保留的身份数量。 |
+| `request_log_max` | 200 | 数据库保留的请求日志条数（后台周期裁剪；<=0 禁用裁剪）。 |
+| `storage_maintenance_interval_seconds` | 60 | 后台存储清理间隔。 |
+| `request_log_capture_payloads` | true | 是否保存请求和响应正文；关闭后只记录元数据。 |
+| `request_log_redact_fields` | `[api_key, authorization, ...]` | 请求/响应日志脱敏字段列表。 |
+| `reasoning_cache_ttl` | 1800 | reasoning 缓存 TTL，单位秒。 |
+| `reasoning_cache_max_size` | 1000 | reasoning 缓存容量。 |
+| `tool_only_turns_ttl` | 600 | 工具调用计数 TTL，单位秒。 |
+| `tool_only_turns_max_size` | 2000 | 工具调用计数容量。 |
+| `image_cache_max_size` | 500 | 图片描述缓存容量。 |
+| `image_result_ttl_seconds` | 86400 | 生图原图的保留时间。 |
+| `image_result_max_files` | 500 | 原图目录保留的最大文件数。 |
+| `image_preview_enabled` | true | 是否生成内联缩略图。 |
+| `image_preview_max_dimension` | 1280 | 缩略图最长边。 |
+| `image_preview_max_source_pixels` | 40000000 | 缩略图源图最大像素。 |
+| `image_preview_quality` | 82 | JPEG 压缩质量。 |
+| `image_preview_max_bytes` | 800000 | 单张内联缩略图的目标字节上限。 |
+| `image_preview_inline_limit` | 4 | 单次响应内联缩略图的最大张数。 |
+| `image_generation_max_retries` | 2 | 生图后端重试次数。 |
+| `image_generation_retry_base_seconds` | 1.0 | 生图重试退避基数。 |
+| `image_generation_max_retry_delay_seconds` | 30.0 | 生图重试退避上限。 |
+| `image_generation_batch_concurrency` | 1 | 单个生图批次的并发数。 |
+| `image_generation_batch_timeout_seconds` | 2400 | 生图批次总等待时间。 |
+| `image_generation_result_max_bytes` | 26214400 | 单张上游图像的最大字节数。 |
+| `image_download_allow_private_hosts` | false | 是否允许从私网地址下载上游返回的图像 URL。 |
+| `allow_private_upstream_hosts` | true | 是否允许私网上游地址（元数据地址始终拒绝）。 |
+| `image_generation_idempotency_ttl_seconds` | 300 | 生图幂等键保留时间。 |
+| `image_generation_idempotency_max_entries` | 64 | 生图幂等键最大条数。 |
+| `responses_capability_supported_ttl` | 604800 | 原生 Responses 能力探测阳性缓存 TTL。 |
+| `responses_capability_unsupported_ttl` | 21600 | 原生 Responses 能力探测阴性缓存 TTL。 |
+| `responses_capability_transient_ttl` | 300 | 原生 Responses 能力探测临时失败缓存 TTL。 |
+| `responses_capability_probe_timeout` | 8 | 原生 Responses 能力探测的请求超时（秒）。 |
+| `responses_capability_probe_max_output_tokens` | 16 | 原生 Responses 能力探测请求的 max_output_tokens。 |
+| `model_registry_enabled` | true | 是否启用在线模型能力注册表（离线部署可关闭）。 |
+| `model_registry_url` | https://openrouter.ai/api/v1/models | 能力注册表数据源（OpenRouter 风格 /models）。拉取复用 `allow_private_upstream_hosts` 做 SSRF 校验：指向内网镜像时需保持该开关为 true；拉取失败后进入 1 小时退避，错误原因见 `/admin/models/registry/status` 的 `last_error`。 |
+| `model_registry_ttl_seconds` | 604800 | 注册表刷新周期（秒，最小 3600）。 |
+| `repair_tool_leaks` | true | 非流式回程泄漏工具调用抢救（上游把模板原生 XML 调用漏成文本时还原为结构化调用；流式仅检测记录）。 |
+| `anthropic_thinking_budget_tokens` | 1024 | Anthropic thinking 模式预算。 |
+
+## 安全与限流
+
+- 入站请求体受 `RequestBodyLimitMiddleware` 限制（`max_request_body_bytes`）。
+- 上游 URL 通过 `app/services/url_guard.py` 验证：拒绝非 http(s)、云元数据地址与保留 IP 段；私网放行由 `allow_private_upstream_hosts` 控制。
+- 管理员登录走 `app/security.py` 的登录限流（`login_attempt_*`）。
+- Anthropic 与原生 Responses 适配器复用 `app/services/http_pool.py` 维护的共享 HTTP 连接池。
+
+## 客户端可见错误状态码
+
+上游失败映射到客户端响应时遵循单一事实来源 `app/core/text.py::classify_for_client()`（状态码与文案同源）：
+
+| 上游情况 | 客户端状态码 | 含义与重试建议 |
+|---|---|---|
+| 上游 4xx（除下列特例外，如 400/404/413/422） | 保留原状态码 | 请求被拒，**原样重试必然再失败**；按文案修正模型/参数 |
+| 上游 401/403 | 502 | 网关自己的上游凭据失效（非你的 key 问题），需管理员更新提供商 API Key |
+| 上游 408 / 真实超时（异常链含 `TimeoutError`/`httpx.TimeoutException`） | 504 | 可退避重试 |
+| 上游 429 | 429 | 限流，按 `Retry-After`（如有）退避重试 |
+| 上游 5xx 及其他非 4xx 的权威状态码（1xx/2xx/3xx） | 502 | 上游故障，可退避重试 |
+| 无法归类 | 500 | 保留给网关内部错误 |
+
+不变量：
+
+- 存在权威上游状态码（异常链上的 `status_code`/`response.status_code`）时，文本启发式不得否决它；无权威状态码时仅允许“文本识别的超时”与“二次确认的连接失败”两类次级信号。
+- 上游原始错误文本（含 Anthropic SSE `error` 事件）只进服务端日志，客户端仅拿安全文案 + `request_id`（用于向管理员回溯）。
+- 内容安全/余额类上游错误由 `_UPSTREAM_ERROR_MAP` 覆盖文案，但不改状态码。
+
+## 架构摘要
+
+```text
+客户端端点
+  -> 协议入口
+  -> 内部 IR
+  -> 共享策略层（RoutingDecision、预处理、reasoning、工具修复）
+  -> 适配器选择：
+       - OpenAI 兼容提供商：原生 Responses 或 Chat Completions
+       - Anthropic 兼容提供商：direct Anthropic Messages
+  -> 内部输出 / 输出事件
+  -> 协议出口
+```
+
+OpenAI 兼容提供商默认走 Chat Completions；仅在原生 Responses 能力探测缓存命中（且未在请求中被工具不兼容、缺少 `previous_response_id` 等原因击穿）时才会尝试 `/responses` 原生路径，否则降级到 Chat 路径。Anthropic 兼容提供商始终从 IR 投影为 Anthropic Messages 请求体。
+
+端点特有的协议细节只保留在 ingress/egress。路由、预处理、reasoning 缓存、工具修复和适配器选择都基于统一内部格式运行。
+
+主要代码边界：
+
+| 模块 | 职责 |
+|---|---|
+| `app/router/proxy.py` | FastAPI 端点、鉴权、provider 解析、adapter 调度、非流式请求统计、原生 Responses 能力探测与降级。 |
+| `app/protocols/ingress.py` | `/chat/completions`、`/completions`、`/messages`、`/responses` 请求体转换为内部 IR。 |
+| `app/core/policy.py` | 路由决策、消息规范化、预处理挂钩、reasoning 注入、工具参数修复、tool-only 限制。 |
+| `app/core/state.py` | TTL cache、reasoning cache、tool-only counter、response chain cache。 |
+| `app/core/streaming.py` | 流式事件计量、reasoning 存储、tool-only 计数、流式错误渲染和统计回调。 |
+| `app/core/body_limit.py` | `RequestBodyLimitMiddleware`，限制入站请求体大小（默认 128 MiB）。 |
+| `app/core/settings_schema.py` | 运行参数 schema（由 `default_config()` 生成）：类型/范围/单位/分组/风险条件，服务端校验的唯一入参。 |
+| `app/core/runtime_config.py` | reconfigure 钩子注册表：把配置推送进“构造时定死”的对象（TTL 缓存上限、内存请求日志 maxlen、liteLLM 全局超时）。 |
+| `app/core/images.py` | data URI 图片提取、图片内容检测和 OpenAI 图像内容归一化。 |
+| `app/core/image_intent.py` | 生图意图判断（`is_image_generation_intent`、`latest_user_text`）。 |
+| `app/core/image_bridge.py` | Codex `/responses` 生图工具发现、调用解析与素材交接。 |
+| `app/core/image_results.py` | 原图存储、缩略图压缩和安全下载令牌。 |
+| `app/core/image_batch.py` | 生图批次的并发协调和短期幂等复用。 |
+| `app/core/outcome.py` | 请求终态划分（ok / degraded / partial / fail / rejected / cancelled）与统计计数。 |
+| `app/adapters/openai.py` | 内部请求 -> OpenAI Chat 参数。 |
+| `app/adapters/openai_streaming.py` | OpenAI/liteLLM 流式 chunk -> 内部输出事件。 |
+| `app/adapters/anthropic.py` | 内部请求 -> 原生 Anthropic Messages 调用 -> 内部输出。 |
+| `app/adapters/anthropic_streaming.py` | Anthropic SSE -> 内部输出事件。 |
+| `app/adapters/responses.py` | 内部请求 -> 原生 OpenAI Responses 调用与 SSE 透传。 |
+| `app/adapters/imagegen.py` | OpenAI Images 兼容生图后端、参数兼容、重试和结果下载。 |
+| `app/adapters/comfyui.py` | ComfyUI 适配器。 |
+| `app/protocols/egress.py` | 将内部输出渲染回 Chat、Completions、Messages、Responses 协议。 |
+| `app/services/lite_llm.py` | 仅作为 OpenAI 兼容上游的 liteLLM wrapper 和最小 reasoning 兼容补丁。 |
+| `app/services/http_pool.py` | Anthropic 与原生 Responses 适配器复用的共享 HTTP 连接池。 |
+| `app/services/url_guard.py` | 上游 URL 校验（SSRF / 云元数据地址保护）。 |
+| `app/db/routing.py` | 路由规则的迁移与 CRUD。 |
+| `app/db/fallback.py` | fallback 策略的迁移与 CRUD（含 `attempt_timeout`）。 |
+| `app/db/request_logs.py` | 请求日志 CRUD、输出/错误透出。 |
+
+## 测试
+
+```bash
+pytest tests/ -q
+```
+
+当前预期结果：`1258 passed`。
+
+客户端错误映射收口基线（差分语料一致性 / 关键路径断言 / 写死状态码白名单 / 文档计数一致）已固化为：
+
+```bash
+# 检查 1–3 已作为普通用例随 pytest 自动执行（tests/test_error_mapping_gate.py）
+python tools/scripts/check_error_mapping.py   # 额外执行检查 4（文档计数 vs 实际收集数）
+```
+
+真实烟测建议：
+
+- Claude Code -> `/messages`
+- Codex -> `/responses`
+- OpenCode -> `/chat/completions`
+- curl -> `/completions`
+- 每类端点至少测一个 OpenAI 兼容提供商和一个 Anthropic 兼容提供商。
+
+## 许可证
+
+MIT。详见 `LICENSE` 文件。

@@ -1,0 +1,620 @@
+# AIR Blackbox
+
+[![PyPI](https://img.shields.io/pypi/v/air-blackbox)](https://pypi.org/project/air-blackbox/)
+[![Downloads](https://img.shields.io/pypi/dm/air-blackbox?label=PyPI%20installs)](https://pypi.org/project/air-blackbox/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Art.%2012%20Ready-green)](https://airblackbox.ai)
+[![Status](https://img.shields.io/badge/status-production-brightgreen)](https://github.com/airblackbox/airblackbox)
+[![Benchmarks](https://img.shields.io/badge/benchmarks-published-blue)](BENCHMARKS.md)
+
+**The flight recorder for autonomous AI agents. Record, replay, enforce, audit.**
+
+## What it is
+
+AIR Blackbox is open-source infrastructure for AI agents whose decisions
+someone may later have to answer for. It does three things, and each one
+produces evidence a third party can check without trusting you:
+
+- **Records.** Agent actions go into a tamper-evident chain, signed with
+  Ed25519, countersigned by an external timestamp authority, and exported as
+  a `.air-evidence` file that anyone can verify in a browser. Python agents
+  are recorded by trust layers for seven frameworks; TypeScript agents by the
+  [`air-blackbox` npm package](js/README.md) (Vercel AI SDK, OpenAI Agents
+  SDK, LangChain.js, MCP), which writes the same records. The gateway records
+  every model call from any language. A hook sees what its framework
+  reports: side effects a tool causes outside that are not recorded.
+- **Scans.** `air-blackbox comply` reads a codebase and reports gaps against
+  the EU AI Act (Articles 9–15), GDPR and US state AI laws. It reads Python,
+  Jupyter notebooks, TypeScript, JavaScript, Java and Kotlin, and equivalent
+  code gets the same verdict in each.
+- **Enforces.** A covenant declares what an agent may do; the gate decides
+  before each action runs and records the decision in the same chain.
+
+It runs locally, sends code nowhere, and is Apache 2.0. The newest release,
+**1.17.0**, added the five non-Python languages, notebooks, and a single
+scanning engine shared by the CLI, the [web console](https://airblackbox.ai/console/scan)
+and the [MCP server](https://github.com/airblackbox/air-blackbox-mcp)
+([changelog](CHANGELOG.md)).
+
+**How it compares.** We ran AIR and three other open-source EU AI Act
+scanners (ArkForge, Systima Comply and Asqav) on the same 144 hand-labelled
+programs, in six languages and forms. In Python, TypeScript and JavaScript the
+tools are close. Most of the difference is Java, Kotlin and notebooks, which
+the others mostly cannot read, and how many code practices each one checks.
+The method, the mapping between tools, the caveats and every single verdict
+are in [eval/competitors](eval/competitors/README.md).
+
+**Your keys stay with you.** Signing keys are generated in your own process
+and never leave your machine. There is no account, no API key and no hosted
+signing service, and ML-DSA-65 post-quantum signing (with the `pqc` extra)
+runs locally too. The CLI's `comply`, `replay`, `export` and `demo` commands
+each send one anonymous usage event (counts, versions and OS, never code or
+file names); set `AIR_BLACKBOX_TELEMETRY=off` to turn it off. CI runs send
+nothing.
+
+## Try it in five minutes
+
+When your agent does something, can someone else check what happened without
+taking your word for it? No server, no account, no extras:
+
+```bash
+pip install air-blackbox
+```
+
+```python
+import air_blackbox as air
+
+with air.record("support-agent") as rec:
+    rec.action("read_ticket", "ticket #4821: customer charged twice")
+    rec.action("issue_refund", "order 991, $40",
+               human_reviewer="dana@acme.com", decision_type="refund")
+
+print(rec.bundle_path)   # a signed .air-evidence file
+```
+
+Save that as `demo.py` and run `python demo.py` (it's Python, so it won't
+work pasted straight into a terminal). Drop the file it prints on **[airblackbox.ai/verify](https://airblackbox.ai/verify)**.
+Your browser checks every signature itself; nothing is uploaded. Then change
+one byte of the file and drop it again.
+
+Each action is chained, signed with Ed25519, and on export the chain is
+timestamped by an external authority when one is reachable (if not, the
+bundle says so rather than hiding it). Pass `covenant=` to record a policy
+decision for every action. This path is for one process; several processes
+sharing one history use the [ingest server](docs/guides/ingest-integration.md).
+
+## Or put it in front of every model call
+
+One proxy swap. Complete coverage. Runs locally.
+
+```python
+# Before
+client = OpenAI(base_url="https://api.openai.com/v1")
+
+# After - the calls you make stay the same
+client = OpenAI(
+    base_url="http://localhost:8080/v1",
+    default_headers={"X-Gateway-Key": "your-key"}
+)
+```
+
+Every LLM call now generates a signed, tamper-evident, replayable audit record. No SDK changes. No refactoring. Measured overhead: ~3 ms per call, under 0.4% of a typical LLM request ([benchmarks](BENCHMARKS.md)).
+
+The gateway serves the OpenAI chat completions and Responses APIs (forwarded
+to `PROVIDER_URL`) and the Anthropic Messages API (forwarded to
+`ANTHROPIC_URL`, default `https://api.anthropic.com`), so one gateway covers
+both providers. For Anthropic, point the SDK at the gateway root and send the
+gateway key in `X-Gateway-Key`; the Anthropic key stays in `x-api-key` and is
+passed through:
+
+```ts
+const anthropic = new Anthropic({
+  baseURL: "http://localhost:8080",
+  defaultHeaders: { "X-Gateway-Key": "your-key" },
+});
+```
+
+Libraries disagree on whether the base URL includes `/v1`:
+
+| Client | Base URL setting | Gateway key header |
+|---|---|---|
+| OpenAI SDK (Python, TS) | `base_url` / `baseURL`: `http://localhost:8080/v1` | `default_headers` / `defaultHeaders` |
+| Anthropic SDK (Python, TS) | `base_url` / `baseURL`: `http://localhost:8080` | `default_headers` / `defaultHeaders` |
+| Vercel AI SDK, `@ai-sdk/openai` and `@ai-sdk/anthropic` | `baseURL`: `http://localhost:8080/v1` | `headers` |
+| LangChain `ChatOpenAI` (Python, JS) | `base_url` / `configuration.baseURL`: `http://localhost:8080/v1` | `default_headers` / `configuration.defaultHeaders` |
+| LangChain `ChatAnthropic` (Python, JS) | `base_url` / `anthropicApiUrl`: `http://localhost:8080` | `default_headers` / `clientOptions.defaultHeaders` |
+
+What to know before you switch:
+
+- The gateway serves `POST /v1/chat/completions`, `/v1/responses` and
+  `/v1/messages`. Other endpoints (embeddings, `models.list`, token counting,
+  retrieving a stored response) return 404, so call those directly.
+- The client's headers and query string are passed to the provider, and the
+  provider's headers (request ids, `retry-after`, rate limits) come back, so
+  SDK retries behave as they would without the gateway. Streams are passed
+  through as they arrive; if the provider's stream breaks, the client's
+  connection is broken too, so the SDK raises instead of returning a partial
+  answer.
+- Streamed chat completions report token usage only when the request sets
+  `stream_options: {"include_usage": true}`; without it the record has zero
+  tokens. The Responses and Messages APIs always report usage.
+
+The gateway sees model calls, never whether a tool then ran or what it did.
+Its records hold the model, provider, token counts and timing; with a vault
+configured, the full request and response (including any tool calls the model
+asked for) are stored there by reference. To record tool executions, use a
+trust layer (Python) or the npm package (TypeScript).
+
+## Project status
+
+**Stable and maintained. Features land when they close a gap the project
+already claims to cover; there is no speculative roadmap.**
+
+AIR Blackbox does what this README says it does, and the claims here are the
+ones the code can back. It runs in production in a live hiring system, where it
+has recorded 450 consequential AI decisions across two weeks — 93 of them
+candidacy-ending, none without a named human reviewer — in a chain anchored by
+an external timestamp authority and verifiable by a third party
+([case study](https://airblackbox.ai/blog/ai-recruiting-compliance-case-study)).
+
+An earlier version of this section said no new features were planned. That
+was written when the scanner read Python only, and it stopped being true the
+moment a TypeScript or Java team could install the tool and get an empty
+report. 1.17.0 fixed that gap; the posture is otherwise unchanged:
+
+- **Security and correctness fixes still land.** Report issues to
+  jason@airblackbox.ai, subject `[SECURITY]`.
+- **No roadmap backlog.** Roadmap issues were closed rather than left open to
+  rot; an empty backlog here means "finished," not "abandoned." Work that
+  closes a real gap (a language the scanner could not read, a check that gave
+  wrong answers) still happens, and ships with the evidence that it is right:
+  the [cross-language parity corpus](eval/scanner/run_parity.py) is the
+  example.
+- **Pull requests are welcome and will get an actual answer.** Historically some
+  did not, which was a failure of maintenance rather than a judgement on the
+  work.
+- **Apache 2.0, with no relicensing planned**, so it is safe to build on and
+  safe to fork.
+
+Known limits are written down rather than marketed around — see the
+[red-team review](docs/security/red-team-2026-08.md), which documents 17
+confirmed breaks found against this project's own verifier and what was done
+about each.
+
+## Using it in your own product
+
+If you want signed, externally-anchored decision receipts inside an application
+you already run, you do not need the scanner or the gateway. The integration is
+a durable outbox in your app POSTing batches to a single-writer AIR server, and
+it takes about an hour:
+
+**[docs/guides/ingest-integration.md](docs/guides/ingest-integration.md)** — the
+wire contract for `/ingest`, `/ingest/export`, and `/ingest/status`, why your
+application must not own the chain, and the token-to-tenant binding.
+
+The bundle that comes out the other end is verifiable by anyone at
+[airblackbox.ai/verify](https://airblackbox.ai/verify) — in the browser, with no
+upload, no account, and no trust in you. That property is the whole point, so
+try it with the [sample bundle](https://airblackbox.ai/demo/sample.air-evidence)
+before you believe any of the above.
+
+## What You Get
+
+**Audit chain**: every call produces an HMAC-SHA256 chained `.air.json` record, written asynchronously. Tamper with one record and every record after it breaks.
+
+**External anchoring (rewrite detection)**: on every evidence export, the chain head is countersigned by an RFC 3161 timestamp authority — a key the operator does *not* hold. A history that is rewritten and perfectly re-signed still fails `verify_anchor` with a message-imprint mismatch. Tamper-evident against outsiders, rewrite-detectable against the operator. See [ADR 0001](docs/decisions/0001-anchor-rail.md).
+
+**Signed, post-quantum-ready**: the audit chain is HMAC-SHA256 (alter one record and every record after it breaks); each Gate action carries a public-key signature — ML-DSA-65 (FIPS 204, post-quantum) when the `pqc` extra is installed (`pip install "air-blackbox[pqc]"`), Ed25519 otherwise. Keys are generated locally, persisted per tenant, and never leave your machine. What is quantum-exposed, what is not, and the migration plan are written down in the [cryptographic posture](docs/security/cryptographic-posture.md).
+
+**Evidence bundle**: two formats, and the difference matters. `air-blackbox export --format evidence` writes a self-verifying ZIP with a standalone `verify.py` that your auditor runs **with your signing key**. `air-blackbox export --format air-evidence` — and any export through the AIR MCP server — writes `.air-evidence` v1: records, chain/receipt verification results, the public key, and regulator mappings (Colorado SB 26-189), with the manifest signed by Ed25519 or ML-DSA-65. `air-evidence verify` reads the v1 format, runs six ordered checks, and needs **no secrets** — one public-key signature covers every file in the bundle, and a member the manifest does not list is rejected rather than passed over. A valid signature proves the bundle is internally consistent, not who issued it: the key travels inside the bundle, so pass `--expect-key <fingerprint>` to pin the issuer against a value you obtained separately. Unpinned or unanchored bundles are reported as `VERIFIED (UNATTRIBUTED, UNWITNESSED)` rather than a bare pass, and `--strict` exits non-zero instead of reporting. Known limits, including the ones still open, are in [the red-team review](docs/security/red-team-2026-08.md). Bundles can also auto-export on a schedule (`AIR_AUTO_EXPORT_INTERVAL_HOURS`), so evidence never depends on a busy human remembering to ask for it.
+
+**PII and injection scanning**: 20 weighted patterns across 5 attack categories detected before the prompt reaches the model. Configurable sensitivity. Auto-blocking.
+
+**EU AI Act gap analysis**: 51+ checks across Articles 9, 10, 11, 12, 14, 15. Maps to ISO 42001, NIST AI RMF, and US state AI laws (Colorado SB 26-189, Illinois HB 3773, California FEHA ADS/SB 942/ADMT, Texas TRAIGA). One scan, four frameworks, one report. Reads Python, Jupyter notebooks, TypeScript, JavaScript, Java and Kotlin, with the same verdict for equivalent code in each ([measured](SCANNER_EVAL.md)).
+
+**Replay**: load any past episode from the audit chain, verify the HMAC signature, and replay every step with timestamps. Incident reconstruction without guesswork.
+
+**Framework trust layers**: drop-in wrappers for LangChain, CrewAI, OpenAI Agents SDK, Anthropic, AutoGen, Google ADK, and Haystack. Same audit chain, native integration.
+
+## Quickstart
+
+The scanner reads Python, Jupyter notebooks, TypeScript, JavaScript, Java and
+Kotlin (`.py`, `.ipynb`, `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.mts`,
+`.cts`, `.java`, `.kt`). Equivalent code gets the same result in each:
+[`eval/scanner/run_parity.py`](eval/scanner/run_parity.py) runs 144 labelled
+programs written in every language, plus each Python one as a notebook, and
+fails if any check disagrees. The optional AI-model pass (run when a local
+Ollama model is installed) still reads `.py` files only; everything else gets
+the pattern checks. To scan one pasted snippet from your own code, use
+`air_blackbox.compliance.snippet.scan_snippet(code)`; the language is
+detected, or state it with `language="kotlin"`.
+
+```bash
+pip install air-blackbox
+
+# Run your first gap analysis - Python, notebooks, TypeScript, JavaScript, Java, Kotlin
+air-blackbox comply --scan . -v
+
+# Inventory runtime AI use and static AI-related dependencies
+air-blackbox discover --scan-path .
+
+# Export machine-readable AI-BOM/SBOM output
+air-blackbox discover --scan-path . --format cyclonedx
+air-blackbox discover --scan-path . --format spdx
+
+# Replay any recorded episode
+air-blackbox replay
+
+# Verify the tamper-evident chain (zero config: reads the gateway's local key)
+air-blackbox replay --verify
+
+# Generate an evidence package for audit or regulator review
+air-blackbox export                        # JSON summary, HMAC attestation
+air-blackbox export --format evidence      # self-verifying ZIP; auditor needs your key
+air-blackbox export --format air-evidence  # signed + externally timestamped;
+                                           # verifiable with NO secret of yours
+```
+
+
+## AI-BOM and Dependency Discovery
+
+`air-blackbox discover` combines runtime-observed models, providers, and tools with static dependency scanning from your project:
+
+```bash
+air-blackbox discover --scan-path . --format table
+air-blackbox discover --scan-path . --format cyclonedx
+air-blackbox discover --scan-path . --format spdx
+```
+
+Formats:
+
+- `--format table` is the human-readable inventory.
+- `--format json` remains an alias for CycloneDX 1.6 JSON.
+- `--format cyclonedx` emits CycloneDX 1.6 JSON.
+- `--format spdx` emits SPDX 2.3 JSON.
+
+Static scanning supports `requirements.txt`, `pyproject.toml`, `package.json`, and `package-lock.json`. `requirements.txt` and `pyproject.toml` provide declared direct Python dependencies only. `package.json` provides direct npm dependencies. `package-lock.json` v2/v3 can provide installed direct and transitive npm dependencies. Python transitive resolution is not performed, and discovery does not call the network, `pip`, `npm`, Poetry, or other package managers. `devDependencies` are currently excluded.
+
+Each package in a reliable dependency graph is classified independently, so transitive AI libraries can be detected:
+
+```text
+application
+  -> wrapper-package
+     -> openai
+```
+
+Custom AI-library rules can extend or override the built-in classifier:
+
+```bash
+air-blackbox discover \
+  --scan-path . \
+  --ai-libraries custom-ai-libraries.yaml \
+  --format cyclonedx
+```
+
+```yaml
+version: 1
+packages:
+  python:
+    my-ai-sdk:
+      category: llm-sdk
+      provider: Example AI
+      reason: Internal AI SDK
+  npm:
+    "@example/ai-client":
+      category: llm-sdk
+      provider: Example AI
+      reason: Internal AI client
+```
+
+Custom rules extend defaults; a rule with the same ecosystem and normalized package name overrides the default. Python names use PEP 503 normalization, and npm scoped package names such as `@example/ai-client` are supported. Invalid explicit classifier configuration exits with an error.
+
+Use `--output` for machine-readable files:
+
+```bash
+air-blackbox discover \
+  --scan-path . \
+  --format spdx \
+  --output sbom.spdx.json
+```
+
+Machine-readable output goes to the file, warnings go to stderr, JSON files are UTF-8 and end with a newline, and table output cannot be combined with `--output`.
+
+Runtime model components include the model name, provider when observed, and explicit model version when available. AIR record or schema version is never treated as the model version.
+
+Current limitations: no Python transitive resolution, no package-manager or network resolution, package-lock v2/v3 is the reliable transitive npm source, SPDX 2.3 represents models as packages plus annotations, and formal schema validation is not yet part of the test suite.
+
+Full stack (Gateway + Episode Store + Policy Engine + observability):
+
+```bash
+git clone https://github.com/airblackbox/air-platform.git
+cd air-platform
+cp .env.example .env      # add OPENAI_API_KEY
+make up                   # running in ~8 seconds
+```
+
+* Traces: `localhost:16686` (Jaeger)
+* Metrics: `localhost:9091` (Prometheus)
+* Episodes: `localhost:8081` (Episode Store API)
+
+## Performance
+
+Measured, reproducible, and published in [BENCHMARKS.md](BENCHMARKS.md):
+
+* ~0.3 ms median overhead per call at low concurrency, ~3 ms under heavy load
+* Under 0.4% of a realistic 800 ms LLM call at the median, under 1% at p99
+* ~7,200 requests/sec single-node ceiling with full recording enabled
+* 100/100 requests succeeded with the vault and OTel collector down - recording is best-effort, proxying is guaranteed
+
+Reproduce it yourself: `bash bench/run-bench.sh && bash bench/failure-injection.sh`
+
+## Episode Replay
+
+Every request through the gateway produces a tamper-evident AIR record. The replay UI turns those records into a browsable timeline: model, provider, token usage, latency, checksums, and live audit chain verification.
+
+![Episode replay UI](docs/replay-ui.png)
+
+```bash
+pip3 install -r dashboard/requirements.txt
+python3 dashboard/replay.py   # open http://localhost:8090
+```
+
+To re-execute a recorded run against the provider and diff the behavior, use `replayctl replay <run.air.json>`.
+
+## AIR on the Lakehouse (preview)
+
+Land the audit chain next to your business data as an open-format Parquet
+dataset - queryable with Spark, DuckDB, or anything that reads Parquet, and
+still tamper-evident: chain verification runs directly over the table.
+
+```bash
+pip install air-blackbox[lake]
+
+air-blackbox lake export --runs-dir ./runs -o ./air-lake   # incremental Parquet export
+air-blackbox lake verify -o ./air-lake                     # HMAC chain walk over the table
+```
+
+```sql
+-- Your agent audit trail is now just a table:
+SELECT model, provider, count(*) AS calls, sum(tokens_total) AS tokens
+FROM read_parquet('air-lake/**/*.parquet')
+GROUP BY model, provider;
+```
+
+Each row carries flattened columns for SQL plus the record's exact JSON as
+the verified source of truth. Edit any row - the payload or the SQL columns -
+and `lake verify` reports exactly which record broke. The signing key never
+enters the lake.
+
+To verify inside Databricks/Spark instead, use
+[docs/notebooks/verify_air_lake.py](docs/notebooks/verify_air_lake.py) - the
+chain walk needs only the rows and the key, on any engine.
+
+## Compliance Sandbox (preview)
+
+Agents graduate to production with a signed behavioral record. A sandbox
+session provisions an isolated gateway (fresh runs directory, locally
+generated signing key), points your agent at it via `OPENAI_BASE_URL`,
+records everything, and issues a PASS/FAIL verdict computed from the
+evidence - not the agent's word:
+
+```bash
+air-blackbox sandbox-run --gateway-bin ./gateway -- python my_agent.py
+```
+
+PASS requires: agent exited cleanly, every LLM call recorded and chained,
+chain verifies intact, zero errored calls. The session emits `report.json`,
+a Parquet lake dataset, and a signed `.air-evidence` bundle an approver can
+verify independently - the graduation certificate. Agents that bypass the
+gateway fail: no records, no graduation.
+
+## Governance inside Claude
+
+Connect the AIR MCP server to Claude and every screening decision
+gets recorded, policy-gated, and provable - zero code for the person using
+it. Field-tested end to end: covenant-gated rejections stop for explicit
+human approval, and the audit trail exports as a signed, self-verifying
+bundle.
+
+Two ways to connect:
+
+- **Local (Claude Desktop)**: `pip install air-blackbox[mcp]`, point your
+  Desktop config at `air-blackbox-mcp`. Records stay on your machine.
+- **Hosted (claude.ai custom connector)**: deploy the server behind a real
+  domain ([deploy/mcp](deploy/mcp/README.md)) and add it as a custom
+  connector. The server is an OAuth 2.1 resource server - verify tokens via
+  your IdP's JWKS (WorkOS AuthKit, Auth0, Okta, Keycloak), RFC 7662
+  introspection, or static tokens - and **every authenticated user gets an
+  isolated tenant**: their own chain, their own Ed25519 receipt keys, their
+  own evidence bundles. With auth enabled, a request that cannot be
+  attributed to a subject is denied, never silently recorded into a shared
+  chain.
+
+Full setup + scripted demo (with fictional candidates):
+[docs/guides/governed-recruiting-demo.md](docs/guides/governed-recruiting-demo.md).
+Reproduce the whole flow in one command — screen, gate, approve, verify,
+export, and a live tamper test — with
+[`python demo/governed_screening_demo.py`](demo/governed_screening_demo.py),
+or record the Claude Desktop version from
+[demo/desktop-demo-shotlist.md](demo/desktop-demo-shotlist.md).
+
+## Deploy on Kubernetes
+
+```bash
+helm install air deploy/helm/air-gateway \
+  --set providerURL=https://api.openai.com \
+  --set vault.existingSecret=air-vault-creds
+```
+
+Ships with 2 replicas, pod anti-affinity, health probes, and optional HPA. See [deploy/HA.md](deploy/HA.md) for the high-availability story, including how per-replica audit chains stay independently verifiable.
+
+## How It Fits Your Stack
+
+```
+Your Agent
+    |
+    v
+AIR Gateway          <- swap base_url here
+    |
+    |-- guardrails (opt-in)       (PII redaction, tool filter, before the model)
+    |-- HMAC audit record         (async, zero latency impact)
+    |-- Ed25519 / ML-DSA-65 sign  (keys never leave your machine)
+    |
+    v
+LLM Provider         <- OpenAI / Anthropic / OpenAI-compatible
+    |
+    v
+AIR Record           <- tamper-evident .air.json
+    |
+    v
+Evidence Bundle      <- self-verifying .air-evidence ZIP
+```
+
+Works with any provider that serves the OpenAI chat completions or Responses API under `/v1` (set `PROVIDER_URL`), and with the Anthropic Messages API (`ANTHROPIC_URL`). Azure OpenAI's deployment-style paths are not routed.
+
+## Why Not Just Log Everything?
+
+You probably already have logging. The problems logging doesn't solve:
+
+**Tamper-evidence**: anyone with write access to your log store can alter a record. HMAC chains make alteration detectable. Ed25519 signatures (with an ML-DSA-65 post-quantum path) prove who authorized each action.
+
+**Operator rewrite**: a hash chain alone has a blind spot — whoever holds the signing key could rewrite the *entire* history and re-sign it, and every self-check would still pass. AIR closes this by anchoring the chain head to an external timestamp authority on export: a countersignature from a key you don't control. A rewritten history no longer matches what the outside witness saw. You can still lie — but not invisibly. (Most "audit log" tools, including other HMAC hash-chain products, stop before this step.) And for the last mile — an attacker patient enough to rewrite *and* obtain a fresh timestamp — opt-in public transparency-log anchoring (`AIR_REKOR=1`) publishes each head to an append-only log where old entries can never be removed; `audit_public_log` then checks every anchor ever published against the records.
+
+Don't take our word for it — run the attacks yourself: `python bench/proof/prove.py` stands up a plain log, a bare hash chain, and AIR Blackbox side by side, executes five real attacks against each, and prints a scorecard. It's the operator-rewrite row where AIR stands alone. See [bench/proof/](bench/proof/).
+
+**Prompt reconstruction**: most logging captures responses but not the full prompt context, tool calls, and intermediate reasoning. AIR records the complete episode.
+
+**Compliance structure**: EU AI Act Article 12 requires tamper-evident logs with specific retention and audit access guarantees. Raw logs don't satisfy that. Evidence bundles do.
+
+**Secrets leaking into traces**: every team that builds their own logging eventually discovers credentials in their observability backend. AIR strips and vault-encrypts API keys before writing any record.
+
+## Gate - Pre-Execution Policy Enforcement
+
+Gate is a bilateral receipt system that governs what your AI agents are **allowed** to do and proves what they **actually did**. Every action goes through a covenant (policy), produces an Ed25519-signed receipt, and chains into a tamper-evident audit trail.
+
+### Covenants - Declare What's Allowed
+
+Write your agent's policy in YAML before it runs:
+
+```yaml
+# covenant.yaml
+agent: loan-processor
+version: "1.0"
+rules:
+  - permit: read_credit_score
+  - permit: approve_loan
+    when: "amount <= 50000"
+  - require_approval: approve_loan
+    when: "amount > 50000"
+  - forbid: delete_records
+  - forbid: modify_credit_score
+```
+
+Precedence: `forbid` > `require_approval` > `permit` > default deny.
+
+### Bilateral Receipts - Two-Phase Proof
+
+Every action produces a receipt with two cryptographic phases:
+
+```python
+from air_blackbox.gate import Gate, Covenant
+
+covenant = Covenant.from_yaml("covenant.yaml")
+gate = Gate(covenant=covenant)
+
+# Phase 1: Authorization - checks covenant, signs decision
+receipt = gate.authorize(
+    agent_id="loan-processor",
+    action_name="approve_loan",
+    payload={"applicant": "jane@example.com", "amount": 75000},
+    context={"amount": 75000},
+)
+
+if receipt.authorized:
+    result = process_loan(...)
+
+    # Phase 2: Seal - binds result to the authorization
+    gate.seal(receipt, result=result, status="success")
+
+# Third party can verify without the signing key
+print(gate.verify(receipt))
+# {'authorization_valid': True, 'seal_valid': True, 'overall': True}
+```
+
+**What the receipt proves:**
+- The covenant hash locks which rules were active at decision time
+- Ed25519 signatures (HMAC-SHA256 fallback) provide non-repudiation
+- The seal covers the authorization signature, binding the full lifecycle
+- Payloads are SHA-256 hashed - raw data never stored in the receipt
+
+### Delegation Chains - Multi-Agent Traceability
+
+When one agent delegates to another, the receipts chain together:
+
+```python
+# Parent agent authorizes its action
+parent_receipt = gate.authorize("orchestrator", "delegate_task", ...)
+
+# Child agent links back to the parent
+child_receipt = gate.authorize(
+    "notifier-agent", "send_confirmation",
+    parent_receipt=parent_receipt,
+)
+
+# Walk the full chain
+chain = gate.walk_delegation_chain(child_receipt)
+# [orchestrator receipt, notifier receipt]
+```
+
+### Install
+
+```bash
+pip install air-blackbox[gate]   # includes Ed25519 via cryptography
+```
+
+## Ecosystem
+
+`air-blackbox` is the scanner (six languages) and the recorder. `air-trust` is the cryptographic proof layer. `gate` is pre-execution policy enforcement.
+
+```
+Your AI Agent
+       |
+       |-- air-blackbox scan     ->  finds compliance gaps
+       |-- air-blackbox gate     ->  pre-execution policy + bilateral receipts
+       |-- air-trust             ->  proves what happened (HMAC + Ed25519)
+       +-- air-blackbox-mcp      ->  all of the above inside Claude Desktop / Cursor
+```
+
+| Package | What It Does |
+|---------|-------------|
+| [air-trust](https://github.com/airblackbox/air-trust) | Tamper-evident audit chain + Ed25519 signed handoffs |
+| [air-gate](https://github.com/airblackbox/air-gate) | Human-in-the-loop tool gating (Article 14) |
+| [air-blackbox (npm)](js/README.md) | TypeScript recorder and gate: hooks for the Vercel AI SDK, OpenAI Agents SDK, LangChain.js and MCP; same records and bundles as the Python SDK |
+| [air-blackbox-mcp](https://github.com/airblackbox/air-blackbox-mcp) | MCP server for Claude Desktop, Cursor, Claude Code; scans all six languages with `[full]` |
+| [air-platform](https://github.com/airblackbox/air-platform) | Docker Compose - full stack in one command |
+| [compliance-action](https://github.com/airblackbox/compliance-action) | GitHub Action - checks on every pull request |
+
+## Validated By
+
+* **Julian Risch** (deepset) - public validation on LinkedIn and GitHub issue #10810
+* **Piero Molino** (Ludwig maintainer) - merged EU AI Act compliance changes driven by AIR scan results
+* **arXiv AEGIS** (March 2026) - independent researchers published the identical interception-layer architecture for AI agent governance
+* **McKinsey State of AI Trust 2026**: trust infrastructure named as the critical agentic AI category
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+False positive on a compliance check? Correct it - your correction flows into training data for the fine-tuned scanner model. The scanner gets smarter with every fix your team submits.
+
+Good first issues: labeled `good first issue` - mostly new compliance checks and framework integrations.
+
+## License
+
+Apache-2.0 - [airblackbox.ai](https://airblackbox.ai)
+
+*This is not a certified compliance test. It is a starting point to identify potential gaps.*
+
+---
+
+If this helps you prepare for EU AI Act enforcement, [star the repo](https://github.com/airblackbox/airblackbox) - it helps other teams find it.

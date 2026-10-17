@@ -1,0 +1,177 @@
+<div align="center">
+<img src="frontend/public/logo.png" width="120"/>
+
+### The browser IS the IDE. The cloud IS the machine.
+
+**An industrial-grade Cloud IDE & Agentic AI coding platform: 5 core microservices, 3 in-pod sidecars, 8 Docker images, running on real Kubernetes sandboxes, with an autonomous AI agent that ships code for you.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Industrial_Grade-326CE5.svg?logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![Docker Images](https://img.shields.io/badge/Docker_Images-8-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Core Services](https://img.shields.io/badge/Core_Microservices-5-informational.svg)](#architecture-at-a-glance)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-AMQP-FF6600.svg?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+[![Redis](https://img.shields.io/badge/Redis-TTL_Engine-DC382D.svg?logo=redis&logoColor=white)](https://redis.io/)
+[![LangChain](https://img.shields.io/badge/AI_Agent-LangChain_(Pluggable_LLM)-1C3C3C.svg)](https://www.langchain.com/)
+
+Built solo, top to bottom, by **[Harsh Patel](https://github.com/Notanormaldev)**
+
+</div>
+
+---
+
+## See it in action
+
+<table>
+<tr>
+<td width="50%"><img src="frontend/public/hero.png" width="100%"/><br/><sub><b>Platform overview</b></sub></td>
+<td width="50%"><img src="frontend/public/ide1.png" width="100%"/><br/><sub><b>Monaco editor + live workspace explorer</b></sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="frontend/public/ide2.png" width="100%"/><br/><sub><b>Live dev server preview + HMR</b></sub></td>
+<td width="50%"><img src="frontend/public/ide3.png" width="100%"/><br/><sub><b>Autonomous AI pair programmer</b></sub></td>
+</tr>
+</table>
+
+### 🎥 AWS EKS Live Production & Auto-scaling Proof
+
+> [!NOTE]
+> **AWS Hosting Status:** INKz was fully deployed and benchmarked on **AWS EKS with Auto-scaling** (Cluster Autoscaler & Horizontal Pod Autoscaler). Due to high recurring AWS cloud infrastructure costs (EKS control plane, node groups, load balancers), the active cloud deployment is currently turned off. You can watch the full live deployment & auto-scaling proof video below, or self-host it locally for free using Docker Desktop / K3s!
+
+<div align="center">
+
+  <br/>
+  <sub><b><a href="https://youtu.be/kIIYYUBweKQ">Click here to watch the AWS EKS Live Deployment & Auto-scaling Demonstration</a></b></sub>
+</div>
+
+---
+
+## Story behind INKz
+
+I used to use AI development tools like Lovable, Bolt.new, and Replit and wondered how they actually worked under the hood. How do they spin up instant cloud environments, stream real terminal sessions, and let an AI agent modify full codebases autonomously? That curiosity drove me to build **INKz** from scratch to solve that exact engineering challenge.
+
+Instead of a simple wrapper around an API call, INKz is a complete event-driven system: five core microservices communicating over REST and RabbitMQ AMQP, a Redis-backed lifecycle engine managing sandbox pods, and three sidecar containers keeping filesystem, terminal, and AI tooling in sync.
+
+---
+
+## What makes it click
+
+| Feature | Powered by | What it actually does |
+|---|---|---|
+| **~4s sandbox boot** | Kubernetes + Docker | Isolated dev environments spin up in seconds, zero local config required |
+| **Real-time S3 sync** | `chokidar` + AWS SDK | Continuous, bi-directional workspace mirroring: nothing is ever lost when a pod dies |
+| **AI coding assistant** | LangChain ReAct agent | Full codebase context, autonomous multi-file edits, real terminal execution |
+| **Browser IDE runtime** | Monaco + live HMR | True VS Code feel, with an integrated dev server preview and instant port forwarding |
+| **Enterprise infrastructure** | Kubernetes + Redis | TTL-managed sandbox pods, heartbeat persistence, multi-tenant isolation baked into RBAC |
+
+Every one of these is a real working mechanism, not a marketing bullet: the ~4s boot is the actual pod scheduling time on a warmed node, the S3 sync is a live `chokidar` watcher with a 500ms write-stability threshold, and the AI agent genuinely reads, writes, and executes inside your live sandbox rather than guessing from a snippet you pasted in.
+
+---
+
+## What is INKz
+
+No installs. No `node_modules` eating your disk. No "works on my machine." Open a URL and get a full VS Code-grade IDE, wired live to an isolated Kubernetes container that boots in seconds, with an AI coding partner sitting right next to you that can read your whole codebase and ship multi-file changes on command.
+
+Develop on your laptop with Docker Desktop, then ship the exact same manifests to AWS EKS with one Skaffold profile switch. The architecture doesn't change between your machine and production: the same Kubernetes manifests, the same microservices, the same AI agent, just pointed at a bigger cluster.
+
+---
+
+## Architecture at a glance
+
+INKz runs on 5 core microservices, each its own Dockerfile, each independently deployable and independently scalable:
+
+| Service | What it does |
+|---|---|
+| **auth** | Google OAuth 2.0, JWT cookie issuance, early-access intake |
+| **sandbox** | Talks to the Kubernetes API directly: the control plane that spins up, tracks, and tears down every developer's pod |
+| **ai-orchestration** | Runs the LangChain agent: reads, writes, and refactors your code autonomously |
+| **notification** | Consumes RabbitMQ events, fires transactional emails via Brevo |
+| **router** | Subdomain-aware reverse proxy that beams your live dev server and terminal straight into the browser |
+
+Inside every user's pod, 3 lightweight sidecars do the real-time work: `template` seeds the base workspace on first boot, `agent` exposes a file API the AI can act on, and `sync-agent` mirrors the filesystem to S3 as you type. They aren't top-level services: they're the muscle that makes each sandbox self-sufficient, and they live and die with the pod they belong to.
+
+Kill any core service and the rest keep running. Auth goes down and sandboxes still boot; notification goes down and logins still succeed. That isolation isn't a README claim: it's the actual namespace and RBAC model underneath, backed by a Redis TTL lifecycle that reclaims idle pods automatically and a RabbitMQ event bus that keeps every service loosely coupled.
+
+---
+
+## AI that isn't locked to one vendor
+
+The agent runs on Mistral by default, but the LangChain integration is fully pluggable: swap in Gemini 1.5 Pro, OpenAI, DeepSeek, Claude, or a 100% offline Ollama model with a single provider change in `ai-orchestration/src/agents/code.agent.js`. Bring your own key, bring your own model, bring your own cost profile. Nothing about the agent loop, its tools, or its access to your sandbox changes when you switch providers.
+
+---
+
+## Tech stack
+
+<div align="center">
+
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Monaco](https://img.shields.io/badge/Monaco_Editor-VS_Code_Engine-0078D4?logo=visualstudiocode&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?logo=socketdotio&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Skaffold](https://img.shields.io/badge/Skaffold-00ADD8)
+![AWS EKS](https://img.shields.io/badge/AWS_EKS-FF9900?logo=amazonaws&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C)
+![Mistral](https://img.shields.io/badge/Mistral_AI-FA520F)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?logo=amazons3&logoColor=white)
+
+</div>
+
+Frontend to filesystem, every layer of INKz is real production tech: not toy tooling. React and Vite for the client, Monaco for the editor itself, Express and Socket.IO for the real-time layer, Kubernetes and Skaffold for orchestration, MongoDB/Redis/RabbitMQ for state and messaging, and LangChain sitting on top of a pluggable LLM backend.
+
+---
+
+## Self-host it, 100% free
+
+Every cloud dependency in INKz has a zero-cost local swap: no AWS account, no managed database, no credit card:
+
+| Cloud service | Free local swap |
+|---|---|
+| AWS S3 | MinIO (Docker) |
+| MongoDB Atlas | `mongo:7` (Docker) |
+| Redis Cloud | `redis:7` (Docker) |
+| CloudAMQP | `rabbitmq:3-management` (Docker) |
+| Any paid LLM API | Ollama, running fully offline |
+
+Skip `auth` and `notification` entirely on an 8GB laptop to save roughly 2.5GB of RAM and still get sandboxes, editing, S3 sync, and the AI agent working end to end: the core loop doesn't need Google login or email to function.
+
+---
+
+## Go deeper
+
+<div align="center">
+
+[![Architecture Docs](https://img.shields.io/badge/Read-Architecture_Docs-3178C6?style=for-the-badge)](https://github.com/Notanormaldev/INKz/blob/main/ARCHITECTURE.md)
+[![Self-Host Guide](https://img.shields.io/badge/Read-Self_Host_Guide-2EA44F?style=for-the-badge)](https://github.com/Notanormaldev/INKz/blob/main/SELF_HOST.md)
+[![DeepWiki](https://img.shields.io/badge/Explore-DeepWiki-8A2BE2?style=for-the-badge)](https://deepwiki.com/Notanormaldev/INKz)
+
+**Architecture Docs**: pod anatomy, the exact Redis TTL state machine, RabbitMQ event flow, LangChain tool loop, and request-by-request sequence diagrams.
+**Self-Host Guide**: secrets explained one by one, MongoDB/Redis/RabbitMQ options, Ollama model picks by RAM, low-RAM mode, and the AWS EKS production path.
+**DeepWiki**: an AI-generated, browsable map of the entire codebase if you want to explore the source without cloning it first.
+
+</div>
+
+---
+
+<div align="center">
+
+### Built with 🔥 by **[Harsh Patel](https://github.com/Notanormaldev)**
+
+*Solo-engineered end to end: 5 microservices, Kubernetes control plane, and an autonomous AI agent.*
+
+<br/>
+
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Notanormaldev%2FINKz-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Notanormaldev/INKz)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Harsh%20Patel-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/harsh-patel-a77148314/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-f39c12?style=for-the-badge)](LICENSE)
+
+<br/>
+
+<sub>Released under the <b>MIT License</b>. Free & Open Source for everyone.</sub>
+
+</div>

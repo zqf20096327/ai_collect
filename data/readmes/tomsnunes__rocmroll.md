@@ -1,0 +1,872 @@
+<div align="center">
+  <img src="logo.png" alt="ComfyUI ROCmRoll logo" width="360">
+
+  <h1>ROCmRoll</h1>
+
+  <p><strong>ROCmRoll is a Windows-native platform manager for portable ComfyUI environments optimized for AMD Radeon GPUs using ROCm and PyTorch. It helps users create, launch, update, diagnose, and repair reproducible ComfyUI instances while reducing the setup friction commonly associated with AMD GPU workflows on Windows.
+</strong></p>
+
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+  [![Platform: Windows](https://img.shields.io/badge/Platform-Windows-0078d7.svg)](https://www.microsoft.com/windows)
+  [![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE.svg)](https://github.com/PowerShell/PowerShell)
+  [![AMD ROCm](https://img.shields.io/badge/AMD-ROCm-ED1C24.svg)](https://rocm.docs.amd.com)
+</div>
+
+---
+
+ROCmRoll keeps its orchestration outside ComfyUI:
+
+- ROCmRoll owns runtimes, environments, caches, manifests, state, logs, launchers, diagnostics, repair flows, and package installation.
+- Each ComfyUI instance owns its checkout, instance-local `custom_nodes`, generated configuration, and instance metadata.
+- Heavy assets such as models, input, output, temp files, and optional workflows are shared outside the ComfyUI source tree.
+
+See [docs/architecture.md](docs/architecture.md) for the implementation architecture.
+
+<details>
+<summary><strong>Table of contents</strong></summary>
+
+- [Status](#status)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Instance Overlays](#instance-overlays)
+- [Declarative Instances](#declarative-instances)
+- [Channels](#channels)
+- [Profiles](#profiles)
+- [Supported GPU Families](#supported-gpu-families)
+- [What Install Does](#what-install-does)
+- [Project Layout](#project-layout)
+- [Configuration](#configuration)
+- [Workspaces](#workspaces)
+- [Command Reference](#command-reference)
+- [Examples](#examples)
+- [Runtime And ROCm](#runtime-and-rocm)
+- [Custom Nodes, Packages, And Patches](#custom-nodes-packages-and-patches)
+- [Launch Behavior](#launch-behavior)
+- [State, Logs, Locks, And Cache](#state-logs-locks-and-cache)
+- [ComfyUI Desktop Integration](#comfyui-desktop-integration)
+- [Troubleshooting](#troubleshooting)
+- [Development Notes](#development-notes)
+- [Credits](#credits)
+- [License](#license)
+
+</details>
+
+## Status
+
+This repository contains the active PowerShell implementation.
+
+Implemented areas include:
+
+- Thin `rocmroll.bat` wrapper around `source\rocmroll.ps1`
+- Full install orchestration through PowerShell modules
+- Python 3.12.10 runtime creation from embeddable Python plus full ZIP enrichment
+- Per-instance Python environments
+- AMD GPU detection with manual `--gfx` override
+- Stable, preview, nightly, legacy, and legacy-staging channel manifests
+- ComfyUI Git mirror cache and per-instance clone
+- Instance-local custom node install/update
+- Generated `extra_model_paths.yaml`, preserved on update/repair and overridable via a custom overlay
+- Declarative `import`/`plan`/`apply`/`destroy` top-level commands on top of an optional YAML instance definition, reusing the imperative install/update/remove pipeline under the hood
+- Generated launchers under `launchers\`
+- Shared asset folders
+- ROCm/PyTorch validation via `source\scripts\validate-rocm.py`
+- Registry-driven `instance`, `doctor`, `env`, `rocm`, `comfyui`, `cache`, `state`, `logs`, `config`, `profile`, `patch`, and `workspace` command families
+- JSON state files, human logs, JSONL logs, and PID lock files
+- Optional ComfyUI Desktop registration
+- User configuration through `rocmroll.ini`
+- Named workspaces for path sets
+- Execution profiles for environment variables and ComfyUI launch arguments
+
+## Requirements
+
+ROCmRoll targets:
+
+- Windows only
+- PowerShell 5.1 or newer
+- Git available in `PATH`
+- An AMD Radeon, Radeon Pro, or Instinct GPU mapped in `source\manifests\rocm-architectures.json`, or a manual `--gfx` override
+- AMD graphics driver installed
+- Long path support enabled in Windows, strongly recommended
+- An ASCII-only install path, recommended
+- Network access to Python, PyPI, GitHub, AMD ROCm package endpoints, and ROCm nightly indexes
+- Enough disk space for Python runtimes, ComfyUI checkouts, ROCm/PyTorch wheels, caches, models, and outputs
+
+Unsupported by design:
+
+- Linux, WSL, and macOS
+- NVIDIA and Intel GPU backends
+- Global custom node sharing across all instances
+- Silent modification of ComfyUI source files outside managed patches
+
+## Quick Start
+
+Run commands from the repository root.
+
+Initialize the folder layout:
+
+```powershell
+.\rocmroll.bat init
+```
+
+Check the host system:
+
+```powershell
+.\rocmroll.bat doctor --system
+.\rocmroll.bat doctor --gpu
+```
+
+Create a stable ComfyUI instance:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --channel stable
+```
+
+Launch it:
+
+```powershell
+.\rocmroll.bat instance launch --name rocm-stable
+```
+
+The generated launcher starts ComfyUI on:
+
+```text
+http://127.0.0.1:8188
+```
+
+Use a different port at launch time:
+
+```powershell
+.\rocmroll.bat instance launch --name rocm-stable --port 8189
+```
+
+If more than one ready instance exists, `instance launch` can run without `--name` and ROCmRoll will show an interactive selector:
+
+```powershell
+.\rocmroll.bat launch
+```
+
+## Instance Overlays
+
+ROCmRoll supports per-instance resource overlays in the `overlays\` folder at the repository root. Files placed there are loaded after the global manifests/templates and do not require editing any source file. This is also where declarative instance YAML definitions live - see [Declarative Instances](#declarative-instances) below.
+
+### Layout
+
+```text
+overlays\
+  <instanceName>\
+    <instanceName>.yaml           Optional declarative instance definition
+    environment\
+      requirements.txt            Optional extra pip packages for this instance
+    instance\
+      custom_nodes.json           Optional extra custom nodes for this instance
+      extra_model_paths.yaml      Optional overlay for this instance's extra_model_paths.yaml
+```
+
+The overlay folder always takes priority over ROCmRoll's built-in defaults: `extra_model_paths.yaml` uses the overlay instead of the template whenever an overlay file exists; `requirements.txt` and `custom_nodes.json` overlays are installed in addition to ComfyUI's/the default manifest's own, after them.
+
+### Custom requirements
+
+Place a standard `requirements.txt` in `overlays\<instanceName>\environment\`:
+
+```text
+overlays\rocm-stable\environment\requirements.txt
+```
+
+ROCmRoll installs it after ComfyUI's own `requirements.txt` using the same pip cache and upgrade strategy. A non-zero pip exit code is a fatal error and reports `ROCMROLL-COMFY-005`.
+
+This file is picked up by every code path that runs ComfyUI dependency installation:
+
+- `instance install`
+- `comfyui requirements`
+- `instance update --comfyui`
+- `instance repair --comfyui`
+
+### Custom nodes
+
+Place a `custom_nodes.json` in `overlays\<instanceName>\instance\` using the same format as `source\manifests\custom-nodes.json`:
+
+```json
+{
+  "default": [
+    {
+      "name": "MyCustomNode",
+      "repo": "https://github.com/user/MyCustomNode.git",
+      "ref": "main",
+      "installRequirements": true
+    }
+  ]
+}
+```
+
+ROCmRoll clones and configures these nodes after the default manifest nodes. Clone failures are non-fatal warnings. The list is processed by every code path that handles custom nodes:
+
+- `instance install`
+- `comfyui nodes --install` / `--update`
+- `instance repair --custom-nodes`
+
+### Custom extra_model_paths.yaml
+
+Place a custom `extra_model_paths.yaml` in `overlays\<instanceName>\instance\`:
+
+```text
+overlays\rocm-stable\instance\extra_model_paths.yaml
+```
+
+If present, ROCmRoll renders this file (with `{SharedFolder}` substituted) into `instances\<instanceName>\extra_model_paths.yaml` whenever the file needs to be generated. Without an overlay, ROCmRoll falls back to `source\templates\extra_model_paths.yaml.tpl`.
+
+`instance update` and `comfyui update` never overwrite an existing `extra_model_paths.yaml`, even if the overlay or template changed - your edits are always preserved. `instance repair --comfyui` regenerates it automatically only if it still matches what ROCmRoll last wrote; if it looks hand-edited, repair asks for confirmation (or pass `--force` to skip the prompt). See [docs/declarative-instances.md](docs/declarative-instances.md) for full details.
+
+The `overlays\` folder is root-relative and is not user-configurable in `rocmroll.ini`.
+
+## Declarative Instances
+
+ROCmRoll can be driven two ways: **imperatively**, with the `instance` commands above (simple, one command at a time), or **declaratively**, by describing an instance as YAML and letting ROCmRoll converge to it - `import`, `plan`, `apply`, and `destroy` are top-level commands (not `instance` subcommands), following the same `plan`/`apply` split as Terraform's main commands. `apply` is capable of everything `instance install`/`instance update` can do, since for anything beyond a small config-file reconciliation it calls the exact same underlying pipeline under the hood; `destroy` is the equivalent counterpart for `instance remove --all`.
+
+```powershell
+.\rocmroll.bat import --name rocm-stable
+.\rocmroll.bat plan --file .\overlays\rocm-stable\rocm-stable.yaml
+.\rocmroll.bat apply --file .\overlays\rocm-stable\rocm-stable.yaml
+.\rocmroll.bat destroy --name rocm-stable
+```
+
+`import` reverse-engineers `overlays\<name>\<name>.yaml` from an already-installed instance's recorded state and filesystem, so you don't have to hand-write the schema for instances you already have. `plan` compares the YAML definition, ROCmRoll's recorded state, and the actual filesystem, then prints a classified list of changes (create/update/preserve/warning/destructive) before anything happens. `apply` executes that plan - a genuinely new or under-provisioned instance gets the full install/update pipeline (Python runtime, environment, ROCm/PyTorch, ComfyUI, custom nodes, packages, patches, launchers); a plan with only small changes (e.g. just the launcher is missing) only does that - and it blocks anything destructive unless you pass `--allow-destructive`. `apply --file X` computes and applies a plan directly in one step; `apply --plan X.plan.json --file X` applies a plan `plan --output` saved earlier. `destroy` tears down the checkout, environment, launchers, and recorded state - shared assets and the instance's `overlays\<name>\` files are always preserved - and requires typing the instance's name to confirm unless `--auto-approve` is passed.
+
+This is entirely optional - existing `instance install`/`update`/`repair`/`remove` workflows are unaffected, and the declarative commands reuse them rather than duplicating them. See [docs/declarative-instances.md](docs/declarative-instances.md) for the YAML schema, the full plan/apply/destroy reference, and destructive-action safeguards.
+
+## Channels
+
+Channels are defined in `source\manifests\channels.json`.
+
+| Channel | ComfyUI ref | ROCm source | Default profile | Notes |
+| --- | --- | --- | --- | --- |
+| `stable` | `v0.39.0` | AMD ROCm 7.2.1 direct URLs | `stable` | Pinned ROCmRoll baseline; Python 3.12 required |
+| `preview` | `master` | `https://rocm.nightlies.amd.com/whl-multi-arch/` | `optimized` | AMD's unified multi-arch wheel index (promoted) |
+| `nightly` | `master` | `https://rocm.nightlies.amd.com/whl-staging-multi-arch/` | `optimized` | Staging multi-arch index; more volatile than preview |
+| `next` | `master` | `https://nightly.repo.amd.com/rocm/whl-next/` | `optimized` | AMD's newest multi-arch index; pre-release packages allowed, more cutting-edge and volatile than `nightly` |
+| `legacy` | `master` | `https://rocm.nightlies.amd.com/v2/<rocmIndex>/` | `optimized` | Per-GPU-family v2 index (pre-multi-arch scheme) |
+| `legacy-staging` | `master` | `https://rocm.nightlies.amd.com/v2-staging/<rocmIndex>/` | `optimized` | Per-GPU-family v2-staging index; serves gfx942/gfx950 |
+
+Stable currently installs:
+
+- Python `3.12.10`
+- ROCm `7.2.1`
+- torch `2.9.1+rocm7.2.1`
+- torchvision `0.24.1+rocm7.2.1`
+- torchaudio `2.9.1+rocm7.2.1`
+
+`preview`, `nightly`, and `next` install from AMD's unified multi-arch wheel indexes. Those are single flat package indexes covering every supported GPU rather than one folder per family, so package selection happens through pip extras keyed to the exact GPU chip instead of the index URL: `torch[device-gfx1100]`, `torchvision[device-gfx1100]`, `torchaudio`, `rocm[libraries,devel,device-gfx1100]`. ROCmRoll resolves the exact chip (not just the GPU family) automatically during detection - see "Supported GPU Families" below. `preview` uses the promoted index, `nightly` the staging index, and `next` AMD's newest `whl-next` index, mirroring the old `v2`/`v2-staging` split with an additional, more volatile tier on top.
+
+`legacy` and `legacy-staging` keep the older per-GPU-family index scheme (`v2`/`v2-staging` plus a `rocmIndex` folder such as `gfx110X-all`), installing generic `torch`, `torchvision`, `torchaudio`, and `rocm[libraries,devel]`. They exist as a fallback for GPUs not yet published on the multi-arch indexes and for anyone who needs the previous behavior.
+
+### Automatic Channel Switching
+
+Channel switching is manifest-driven through two optional per-family flags in `source\manifests\rocm-architectures.json` (absent means supported):
+
+| Flag | Families | Effect |
+| --- | --- | --- |
+| `stableSupported: false` | `gfx101X` (RDNA 1), `gfx103X` (RDNA 2) | `--channel stable` automatically switches to `preview`; AMD publishes no official Windows stable release wheels for these families |
+| `multiArchSupported: false` | `gfx94X` (MI300/MI325), `gfx950` (MI350/MI355) | `--channel preview`/`nightly`/`next` automatically switches to `legacy-staging`; AMD does not publish multi-arch Windows wheels for these families yet |
+
+RDNA 1 and RDNA 2 are experimental on Windows ROCm and now install from the multi-arch `preview`/`nightly`/`next` channels like every other supported family. The former dedicated `rdna1`/`rdna2` channels were removed; instances installed with them are transparently treated as `preview` (see "Channel Migration" below).
+
+### Channel Migration
+
+Instance state records the channel it was installed with. Removed channel names are aliased to their replacements at every lookup, so existing instances keep working without manual edits:
+
+| Old channel | Now resolves to |
+| --- | --- |
+| `rdna1` | `preview` |
+| `rdna2` | `preview` |
+
+The canonical name is written back to instance state on the next full `instance install`/`instance update`.
+
+## Profiles
+
+Execution profiles are JSON presets that control process-local environment variables and ComfyUI launch arguments. The active profile is loaded by the generated launcher at runtime, so you can switch behavior without reinstalling.
+
+Profiles live in `profiles\` by default. The folder is configurable through `rocmroll.ini`.
+
+| Profile file | Profile | Default channel | Summary |
+| --- | --- | --- | --- |
+| `stable.json` | `stable` | `stable` | Baseline AMD profile with minimal env vars |
+| `stable-dynamic-vram.json` | `stable-dynamic-vram` | none | Baseline plus `--enable-dynamic-vram` |
+| `optimized.json` | `optimized` | `preview`, `nightly`, `legacy`, `legacy-staging` | Flash-Attention Triton, MIOpen settings, SageAttention, dynamic VRAM |
+| `flash-attention.json` | `flash-attention` | none | Flash-Attention Triton backend, MIOpen settings, dynamic VRAM; Triton autotuning disabled |
+| `flash-attention-autotune.json` | `flash-attention-autotune` | none | Like `flash-attention` but with `FLASH_ATTENTION_TRITON_AMD_AUTOTUNE=TRUE` |
+| `sage-attention.json` | `sage-attention` | none | SageAttention backend, MIOpen settings, dynamic VRAM; Triton autotuning disabled |
+| `sage-attention-autotune.json` | `sage-attention-autotune` | none | Like `sage-attention` but with `FLASH_ATTENTION_TRITON_AMD_AUTOTUNE=TRUE` |
+| `performance-autotune.json` | `performance-autotune` | none | Aggressive MIOpen and Triton autotuning |
+| `experimental.json` | local experimental content | none | Check file contents before using; it currently contains an object named `optimized` |
+
+Profile commands:
+
+```powershell
+.\rocmroll.bat profile list
+.\rocmroll.bat profile show --name optimized
+.\rocmroll.bat profile create --name my-profile
+.\rocmroll.bat profile remove --name my-profile
+```
+
+Use a profile at install time:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --profile stable-dynamic-vram
+```
+
+Override a profile at launch time:
+
+```powershell
+.\rocmroll.bat instance launch --name rocm-stable --profile performance-autotune
+```
+
+Apply a profile to an existing instance (regenerates launchers and updates ComfyUI Desktop):
+
+```powershell
+.\rocmroll.bat profile apply --instance rocm-stable --profile flash-attention
+```
+
+Omit `--profile` to apply the channel default:
+
+```powershell
+.\rocmroll.bat profile apply --instance rocm-stable
+```
+
+Profile JSON shape:
+
+```json
+{
+  "name": "my-profile",
+  "description": "Description shown in profile list",
+  "version": "1.0",
+  "defaultForChannels": [],
+  "env": {
+    "COMFYUI_ENABLE_MIOPEN": "0"
+  },
+  "launchArgs": [
+    "--disable-smart-memory",
+    "--use-sage-attention"
+  ],
+  "legacyGpuOverrides": {
+    "env": {
+      "TORCH_BACKENDS_CUDA_MATH_SDP_ENABLED": "1"
+    },
+    "launchArgs": [
+      "--use-quad-cross-attention"
+    ]
+  }
+}
+```
+
+## Supported GPU Families
+
+GPU mapping lives in `source\manifests\rocm-architectures.json`.
+
+| GFX family | ROCm index | Architecture | Status |
+| --- | --- | --- | --- |
+| `gfx120X` | `gfx120X-all` | RDNA 4 | Supported |
+| `gfx1150` | `gfx1150` | RDNA 3.5 / Strix Point | Supported |
+| `gfx1151` | `gfx1151` | RDNA 3.5 / Strix Halo | Supported |
+| `gfx1152` | `gfx1152` | RDNA 3.5 / Krackan Point | Supported |
+| `gfx1153` | `gfx1153` | RDNA 3.5 | Supported |
+| `gfx110X` | `gfx110X-all` | RDNA 3 | Supported |
+| `gfx103X` | `gfx103X-all` | RDNA 2 | Experimental |
+| `gfx101X` | `gfx101X-dgpu` | RDNA 1 | Experimental |
+| `gfx90X` | `gfx90X-dcgpu` | Radeon Pro VII | Supported |
+| `gfx94X` | `gfx94X-dcgpu` | MI300 / MI325 | Supported |
+| `gfx950` | `gfx950-dcgpu` | MI350 / MI355 | Supported |
+
+Manual override example:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --gfx gfx120X
+```
+
+### Exact GPU Chip Resolution (Multi-Arch Channels)
+
+Each family above bundles one or more physical GPU chips (for example `gfx110X` covers `gfx1100`, `gfx1101`, `gfx1102`, and `gfx1103`). The `stable`/`legacy`/`legacy-staging` channels only need the family-level `rocmIndex` because AMD publishes one wheel index per family. The multi-arch indexes used by `preview` and `nightly` need the exact chip instead, since ROCm SDK device packages are published per chip, not per family.
+
+Each family entry in `rocm-architectures.json` has a `chips` array mapping device names to exact chip ids. GPU detection resolves both the family (`gfx`/`rocmIndex`, used by the per-family channels) and the exact chip (`multiArchChip`, used by `preview` and `nightly`) from the same detected device name. When `--gfx` overrides to a family key instead of detecting hardware, ROCmRoll defaults `multiArchChip` to the first chip listed for that family.
+
+## What Install Does
+
+The full install command:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --channel stable
+```
+
+performs this high-level flow:
+
+1. Initializes folder structure and cache folders.
+2. Creates or reuses the Python runtime.
+3. Creates or reuses the per-instance Python environment.
+4. Detects the AMD GPU and resolves the ROCm index.
+5. Installs ROCm/PyTorch packages for the selected channel.
+6. Clones or updates the ComfyUI instance from the Git mirror cache.
+7. Installs ComfyUI `requirements.txt`.
+8. Generates `extra_model_paths.yaml`.
+9. Optionally links workflows to `shared\workflows`.
+10. Installs the selected custom node set (`default`, or `default+optional` with `--custom-nodes`).
+11. Installs the selected package profile (`rocmroll` by default, or the one given with `--package-profile`).
+12. Applies applicable ComfyUI source patches.
+13. Generates launchers.
+14. Binds the instance path into the environment `_pth` file.
+15. Writes instance and environment state.
+16. Registers the instance in ComfyUI Desktop if Desktop is present.
+17. Runs validation.
+
+Re-running the same install is intended to converge the instance to the requested state and reuse caches.
+
+## Project Layout
+
+Source and documentation:
+
+```text
+rocmroll.bat                    Thin Windows wrapper
+source\rocmroll.ps1            Main CLI entrypoint
+source\modules\                PowerShell modules
+source\scripts\                Helper scripts
+source\manifests\              Channel, runtime, GPU, package, and node manifests
+source\patches\                Package and ComfyUI patch definitions
+source\templates\              Generated launcher and config templates
+profiles\                      Execution profile JSON files
+workspaces\                    Workspace JSON files
+overlays\                      Per-instance overlays: requirements.txt, custom_nodes.json,
+                                extra_model_paths.yaml, and declarative <name>.yaml definitions
+docs\architecture.md           Current architecture reference
+docs\declarative-instances.md  Declarative instance schema and plan/apply/destroy reference
+```
+
+Generated runtime layout:
+
+```text
+rocmroll.ini                   Optional user configuration
+.cache\                        Download, pip, Git, wheelhouse, checksum, and tool caches
+.state\                        Runtime, environment, instance, patch, lock, and global state
+.temp\                         Temporary extraction/work folder
+environments\                  Per-instance Python environments
+instances\                     Per-instance ComfyUI checkouts
+launchers\                     Generated .ps1 and .bat launchers
+logs\                          Install, launch, update, doctor, and crash logs
+runtimes\                      Shared Python runtimes
+shared\input\                  Shared ComfyUI input
+shared\output\                 Shared ComfyUI output
+shared\temp\                   Shared ComfyUI temp
+shared\user\                   Shared user-data root
+shared\models\                 Shared model storage
+shared\workflows\              Optional shared workflows target
+```
+
+## Configuration
+
+ROCmRoll reads optional configuration from `rocmroll.ini`.
+
+Create the file with defaults commented out:
+
+```powershell
+.\rocmroll.bat config init
+```
+
+Show resolved paths:
+
+```powershell
+.\rocmroll.bat config show
+```
+
+Supported `[paths]` keys:
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `shared` | `shared` | Shared input, output, temp, user, models, workflows |
+| `userdata` | `shared\user` | ComfyUI user-data root |
+| `instances` | `instances` | ComfyUI checkouts |
+| `environments` | `environments` | Python environments |
+| `runtimes` | `runtimes` | Python runtimes |
+| `launchers` | `launchers` | Generated launchers |
+| `profiles` | `profiles` | Execution profiles |
+| `logs` | `logs` | Logs |
+| `state` | `.state` | State, locks, patch backups |
+| `cache` | `.cache` | Download and package caches |
+
+Example:
+
+```ini
+[paths]
+shared       = D:\comfy\shared
+instances    = D:\comfy\instances
+environments = D:\comfy\environments
+cache        = D:\.cache\rocmroll
+```
+
+Relative paths are resolved from the ROCmRoll root folder. Source files and `workspaces\` remain root-relative and are not redirectable.
+
+## Workspaces
+
+A workspace is a named set of path overrides stored in `workspaces\<name>.json`.
+
+Path precedence:
+
+1. `--workspace NAME` on the command line
+2. Active workspace from `[active]` in `rocmroll.ini`
+3. `[paths]` in `rocmroll.ini`
+4. Built-in defaults
+
+`instance list --all` is the exception used for inventory: it resolves the base `[paths]` configuration without the active workspace, then resolves every named workspace once. `--all` and `--workspace` cannot be combined.
+
+Use a workspace for one command without changing the active workspace:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --workspace staging
+.\rocmroll.bat doctor --instance rocm-stable --workspace production
+.\rocmroll.bat instance launch --name rocm-stable --workspace staging
+```
+
+Workspace commands:
+
+```powershell
+.\rocmroll.bat workspace list
+.\rocmroll.bat workspace show --name staging
+.\rocmroll.bat workspace create --name staging
+.\rocmroll.bat workspace use --name staging
+.\rocmroll.bat workspace edit --name staging
+.\rocmroll.bat workspace remove --name staging
+.\rocmroll.bat workspace init --name staging
+```
+
+## Command Reference
+
+Get help:
+
+```powershell
+.\rocmroll.bat help
+.\rocmroll.bat help instance install
+.\rocmroll.bat instance install --help
+.\rocmroll.bat help options
+```
+
+Common commands:
+
+| Command | Purpose |
+| --- | --- |
+| `instance install` | Full install: runtime, environment, ROCm/PyTorch, ComfyUI, custom nodes, packages, launchers |
+| `instance launch` | Launch a ready instance |
+| `instance update` | Refresh all components, or selected environment, ROCm, and ComfyUI components |
+| `doctor` | Run diagnostics and health checks |
+| `instance repair` | Repair all components or an explicit component scope, including managed patches |
+| `instance list` | List installed instances in one workspace or all workspaces |
+| `instance remove` | Remove a complete instance or an explicit component scope |
+| `cache` | Inspect, verify, clean, or prune caches |
+
+Advanced commands:
+
+| Command | Purpose |
+| --- | --- |
+| `init` | Initialize folder structure |
+| `rocm info` | Show ROCm/PyTorch and GPU info for an instance |
+| `rocm validate` | Run ROCm/PyTorch validation for an instance |
+| `comfyui info` | Show ComfyUI and custom node info |
+| `comfyui requirements` | Reinstall ComfyUI requirements |
+| `comfyui nodes` | List, install, update, or add custom nodes |
+| `comfyui update` | Update the ComfyUI source checkout and optionally reapply patches |
+| `config` | Show or create `rocmroll.ini` |
+| `profile` | Manage execution profiles |
+| `patch` | List, apply, or remove ComfyUI source patches |
+| `workspace` | Manage named path workspaces |
+| `logs` | Show recent log files |
+| `import` | Generate a declarative YAML definition from an existing instance |
+| `plan` | Show planned changes for a declarative instance YAML definition |
+| `apply` | Apply a declarative instance YAML definition (same install/update pipeline as `instance install`/`update`) |
+| `destroy` | Destroy an instance's checkout, environment, launchers, and state (shared assets and overlays preserved) |
+| `help` | Show command help |
+
+Global options accepted by every command:
+
+| Option | Meaning |
+| --- | --- |
+| `--quiet` | Suppress non-error output |
+| `--verbose` / `--debug` | Show more native command output |
+| `--json` | Emit structured JSON where supported |
+| `--no-color` | Disable colored console output |
+| `--log-level LEVEL` | Set the logging threshold |
+| `--log-file PATH` | Write a log file |
+| `--help` | Show help |
+
+Common command-specific options:
+
+| Option | Used by |
+| --- | --- |
+| `--workspace NAME` | Commands whose help explicitly lists workspace selection |
+| `--channel stable\|preview\|nightly\|next\|legacy\|legacy-staging` | Instance install and list filtering |
+| `--python VERSION` | Instance install; default `3.12.10` |
+| `--name NAME` | Instance aggregate commands, `plan`/`apply`/`destroy`/`import`, and workspace, environment, or profile commands |
+| `--instance NAME` | Doctor, ROCm, ComfyUI, `profile apply`, and patch commands |
+| `--environment`, `--rocm`, `--comfyui`, `--patches`, `--all` | Component scopes listed by instance info/update/repair/remove help |
+| `--profile NAME` | Instance install, launch, and `profile apply` (execution profile) |
+| `--custom-nodes default\|default+optional` | Instance install: custom node set from `custom-nodes.json`; default `default` |
+| `--package-profile NAME` | Instance install: package profile from `package-profiles.json`; default `rocmroll` |
+| `--force` | Forced install/update/removal, stale install-lock override, or skip repair's managed-file confirmation |
+| `--gfx ARCH`, `--port PORT`, `--url HOST`, `--patch-id ID`, `--shared-workflows` | Specialized commands shown in command help |
+| `--file PATH` | `plan`/`apply`/`destroy`: path to a ComfyUIInstance YAML definition |
+| `--output PATH` | `plan`: write the plan as JSON to this path; `import`: write the definition to this path |
+| `--plan PATH` | `apply`: apply a previously saved plan JSON instead of regenerating one |
+| `--auto-approve`, `--dry-run` | `apply`/`destroy`: skip confirmation, or preview only |
+| `--allow-destructive` | `apply`: allow destructive actions |
+
+## Examples
+
+```powershell
+# Create instances
+.\rocmroll.bat instance install --name rocm-stable
+.\rocmroll.bat instance install --name rocm-preview --channel preview
+.\rocmroll.bat instance install --name rocm-nightly --channel nightly
+.\rocmroll.bat instance install --name rocm-next --channel next
+
+# Launch
+.\rocmroll.bat instance launch --name rocm-stable
+.\rocmroll.bat instance launch --name rocm-stable --port 8189
+.\rocmroll.bat instance launch --name rocm-stable --profile performance-autotune
+
+# Update and repair
+.\rocmroll.bat instance update --name rocm-stable
+.\rocmroll.bat instance update --name rocm-stable --comfyui
+.\rocmroll.bat instance update --name rocm-stable --force
+.\rocmroll.bat instance repair --name rocm-stable --patches
+
+# Diagnostics
+.\rocmroll.bat doctor --system
+.\rocmroll.bat doctor --gpu
+.\rocmroll.bat doctor --instance rocm-stable
+.\rocmroll.bat doctor --instance rocm-stable --json
+
+# Custom nodes
+.\rocmroll.bat comfyui nodes --instance rocm-stable
+.\rocmroll.bat comfyui nodes --instance rocm-stable --update
+.\rocmroll.bat comfyui nodes --instance rocm-stable --add https://github.com/user/ComfyUI-Node.git
+
+# Remove
+.\rocmroll.bat instance remove --name rocm-stable --patches
+.\rocmroll.bat instance remove --name rocm-stable --environment
+.\rocmroll.bat instance remove --name rocm-stable --all
+.\rocmroll.bat instance remove --name rocm-stable --all --force
+```
+
+With no component flags, `instance info`, `instance update`, and `instance repair` default to all supported scopes. `instance remove` always requires an explicit scope. Partial removal preserves the instance state as `incomplete` so it can be repaired; successful repair clears the restored component markers and returns the instance to `ready` when none remain. Removing patches restores their backed-up source files before deleting patch metadata. `instance remove --all` removes the checkout, environment, launchers, instance/environment state, patch artifacts, and ComfyUI Desktop registration while preserving shared assets.
+
+## Runtime And ROCm
+
+The default runtime is Python `3.12.10`, controlled by `RuntimeVersion` and `source\manifests\python-runtimes.json`.
+
+ROCmRoll downloads embeddable Python, enriches it with `include`, `libs`, and `Lib` from the full Python ZIP, bootstraps pip, upgrades `pip`, `setuptools`, and `wheel`, and writes runtime state.
+
+Per-instance environments are copied from the runtime and named like:
+
+```text
+<instance>-py312
+```
+
+ROCm/PyTorch installation is selected by channel. `index`-source installs (`legacy`, `legacy-staging`) can use wheels from `.cache\wheelhouse\<rocmIndex>\` through `--find-links` when that folder contains wheels; the `multiArch`-source channels (`preview`, `nightly`) use `.cache\wheelhouse\<multiArchChip>\` instead, keyed by the exact GPU chip.
+
+Manual ROCm validation:
+
+```powershell
+.\rocmroll.bat rocm validate --instance rocm-stable
+```
+
+## Custom Nodes, Packages, And Patches
+
+Default custom nodes are defined in `source\manifests\custom-nodes.json` and installed instance-locally:
+
+```text
+instances\<instance>\custom_nodes\
+```
+
+The manifest has two lists, and `--custom-nodes` chooses which are installed:
+
+| `--custom-nodes` | Installs |
+| --- | --- |
+| `default` (default) | The `default` list: `ComfyUI-Manager` |
+| `default+optional` | The `default` list plus the `optional` list: `CFZ-SwitchMenu`, `CFZ-Caching`, `ComfyUI-HFRemoteVae`, `ComfyUI-INT8-Fast-ROCM`, `comfyui-h3-sla-attention-rocm` |
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable --custom-nodes default+optional
+```
+
+An unknown value is rejected before anything is installed. The choice is recorded in instance state (`customNodeSet`), so `instance update`, `instance repair`, `comfyui nodes --install/--update`, and a re-run of `instance install` without the option keep using it. Nodes already installed are never removed when switching back to `default`.
+
+The full install applies a package profile from `source\manifests\package-profiles.json`. Pick one at install time with `--package-profile`:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-deluxa --package-profile deluxa
+```
+
+Available profiles: `base` (ComfyUI requirements only), `rocmroll` (default), `patientx`, `deluxa`, and `experimental`. An unknown name is rejected before anything is installed. The choice is recorded in instance state (`packageProfile`), so `instance update` and a re-run of `instance install` without the option keep using it. Note this is separate from `--profile`, which selects the launch (execution) profile.
+
+Packages in the default `rocmroll` profile:
+
+- `triton-windows==3.8.0.post29`
+- `sageattention` from a release wheel URL
+- `bitsandbytes` from a release wheel URL
+- `flash-attn` from a release wheel URL
+- `amd-aiter` from a release wheel URL
+
+Package patches live in `source\patches\sageattention\`.
+
+ComfyUI source patches live in `source\patches\comfyui\` and are managed with:
+
+```powershell
+.\rocmroll.bat patch list
+.\rocmroll.bat patch list --instance rocm-stable
+.\rocmroll.bat patch apply --instance rocm-stable
+.\rocmroll.bat patch apply --instance rocm-stable --patch-id 001-avoid-comfyui-crashes-dynamic-vram
+.\rocmroll.bat patch remove --instance rocm-stable --patch-id 001-avoid-comfyui-crashes-dynamic-vram
+```
+
+## Launch Behavior
+
+Generated launchers are written to:
+
+```text
+launchers\<instance>.ps1
+launchers\<instance>.bat
+```
+
+The launcher:
+
+- Uses the instance Python environment
+- Sets ROCm/HIP/PyTorch/Triton variables process-locally
+- Prepends environment and ROCm SDK paths to process `PATH`
+- Runs `rocm-sdk.exe init` when present
+- Uses shared `input`, `output`, and `temp` folders
+- Uses the instance `extra_model_paths.yaml`
+- Starts ComfyUI on `127.0.0.1:8188` unless another port is provided
+- Writes launch output to `logs\launch`
+
+`--user-directory` is intentionally omitted because of a known ComfyUI database initialization issue. Use `--shared-workflows` to link workflows across instances:
+
+```powershell
+.\rocmroll.bat instance install --name rocm-stable
+.\rocmroll.bat instance repair --name rocm-stable
+```
+
+Creating symbolic links on Windows requires Developer Mode or an elevated PowerShell session.
+
+## State, Logs, Locks, And Cache
+
+State files are JSON:
+
+```text
+.state\runtimes\runtime-<version>.json
+.state\environments\environment-<name>.json
+.state\instances\instance-<name>.json
+.state\global.json
+.state\patches\
+```
+
+Install logs are written as both human-readable logs and JSONL:
+
+```text
+logs\install\<yyyy-mm-dd>_<instance>_install.log
+logs\install\<yyyy-mm-dd>_<instance>_install.jsonl
+```
+
+Show recent logs:
+
+```powershell
+.\rocmroll.bat logs show
+```
+
+The full install/update pipeline uses an instance lock under `.state\locks\`. `--force` can override a stale install lock and requests forced recreation during full install/update.
+
+Cache commands:
+
+```powershell
+.\rocmroll.bat cache list
+.\rocmroll.bat cache verify
+.\rocmroll.bat cache clean --temp
+.\rocmroll.bat cache clean --all
+.\rocmroll.bat cache prune --older-than-days 30
+```
+
+`cache clean --temp` clears the temp folder and partial downloads. `cache clean --all` clears downloads, wheelhouse, Git cache, Triton cache, and temp. Running `cache clean` without flags removes partial downloads only.
+
+## ComfyUI Desktop Integration
+
+If ComfyUI Desktop is installed and `%APPDATA%\Comfy Desktop\installations.json` exists, ROCmRoll registers or updates the installed instance there.
+
+The Desktop integration:
+
+- Does nothing when ComfyUI Desktop is absent
+- Writes atomically
+- Reuses an existing Desktop ID on update
+- Removes the Desktop entry during full removal and when ComfyUI or environment components are removed
+- Stores the Desktop ID in instance state as `comfyDesktopId`
+- `profile apply` refreshes the Desktop entry with the applied profile's `launchArgs` and `env`
+
+## Troubleshooting
+
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for known issues and solutions.
+
+Start with diagnostics:
+
+```powershell
+.\rocmroll.bat doctor --instance rocm-stable
+.\rocmroll.bat doctor --system
+.\rocmroll.bat doctor --gpu
+```
+
+Known ComfyUI database issue:
+
+```text
+[ERROR] Failed to initialize database...
+(sqlite3.OperationalError) unable to open database file
+```
+
+ROCmRoll works around this by omitting `--user-directory` from generated launchers. ComfyUI user data is written to the instance-local `instances\<instance>\user\` folder. Use `--shared-workflows` when workflows should be shared.
+
+## Development Notes
+
+Keep business logic in `source\modules\*.psm1`; keep batch files as thin wrappers. Major behavior changes should update the relevant module, manifest, template, README section, and [docs/architecture.md](docs/architecture.md).
+
+Useful local checks:
+
+```powershell
+.\rocmroll.bat help
+.\rocmroll.bat doctor --system
+.\rocmroll.bat doctor --gpu
+.\rocmroll.bat doctor --instance rocm-stable --json
+```
+
+PowerShell parse check example:
+
+```powershell
+$errors = $null
+[System.Management.Automation.PSParser]::Tokenize((Get-Content .\source\rocmroll.ps1 -Raw), [ref]$errors) | Out-Null
+$errors
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
+---
+
+## Credits
+
+ROCmRoll builds on the work of these projects and people:
+
+- [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+- [AMD TheRock Team](https://github.com/ROCm/TheRock)
+- [patientx-cfz](https://github.com/patientx-cfz/comfyui-rocm)
+- [0xDELUXA](https://github.com/0xDELUXA)
+- [kijai](https://github.com/kijai)
+- [Apophis3158](https://github.com/Apophis3158)
+
+## License
+
+MIT - see [LICENSE](LICENSE).
+
+<div align="center">
+
+### About
+
+[![Made in Brazil](https://selo.feitonobrasil.dev.br/en/colorido/1x.svg)](https://feitonobrasil.dev.br)
+
+</div>

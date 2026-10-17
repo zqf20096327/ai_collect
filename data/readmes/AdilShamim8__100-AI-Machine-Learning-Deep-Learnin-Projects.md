@@ -1,0 +1,215 @@
+<div align="center">
+
+<!-- Header Banner -->
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=100%20AI%20%2B%20ML%20%2B%20DL%20Projects&fontSize=42&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=A%20decade%20of%20real-world%20AI%20experience%20in%20one%20repository&descAlignY=58&descSize=16" />
+
+</div>
+
+## About This Repository
+
+> **A curated, production-grade collection of 100 AI, Machine Learning, and Deep Learning projects** — refined over a decade of hands-on experience across research, industry, and open-source development.
+
+Whether you're just entering the AI space or a seasoned practitioner looking for reference implementations, this repository covers the full stack of modern AI engineering — from classical ML to cutting-edge generative models.
+
+---
+## What's Inside
+
+<table>
+  <tr>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-Machine%20Learning-FF6B6B?style=flat-square&logoColor=white" /><br/>
+      <sub>Traditional algorithms, ensemble methods, statistical modeling, feature engineering, and advanced regression/classification pipelines.</sub>
+    </td>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-Deep%20Learning-6C5CE7?style=flat-square&logoColor=white" /><br/>
+      <sub>CNNs, RNNs, LSTMs, GANs, Transformers, Autoencoders, and other modern neural architectures.</sub>
+    </td>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-Computer%20Vision-00B894?style=flat-square&logoColor=white" /><br/>
+      <sub>Real-time image processing, object detection, segmentation, pose estimation, and visual anomaly detection.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-NLP-FDCB6E?style=flat-square&logoColor=black" /><br/>
+      <sub>Contextual embeddings, sentiment analysis, text classification, language modeling, and advanced text analytics.</sub>
+    </td>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-Generative%20AI-E17055?style=flat-square&logoColor=white" /><br/>
+      <sub>LLM integrations, prompt engineering, LangChain pipelines, and RAG-based applications.</sub>
+    </td>
+    <td align="center" width="200">
+      <img src="https://img.shields.io/badge/-Hybrid%20Solutions-74B9FF?style=flat-square&logoColor=black" /><br/>
+      <sub>Cross-domain AI integrations that combine ML, DL, CV, and NLP to tackle complex real-world problems.</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## ⭐ Star History
+
+<a href="https://www.star-history.com/?repos=AdilShamim8%2F100-AI-Machine-Learning-Deep-Learnin-Projects&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=AdilShamim8/100-AI-Machine-Learning-Deep-Learnin-Projects&type=date&theme=dark&legend=top-left&sealed_token=72oM9NlnxXSgNOMKR237XFdr-AyDiEMZG2BQOjMB1QQnlx9dlOerSpOx9uiLYw8uu-rmuLgWtlX7ktOMmXpQzw8Sqr17wjNkjSRVrTIgjPEmUiIbcfw_Zg" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=AdilShamim8/100-AI-Machine-Learning-Deep-Learnin-Projects&type=date&legend=top-left&sealed_token=72oM9NlnxXSgNOMKR237XFdr-AyDiEMZG2BQOjMB1QQnlx9dlOerSpOx9uiLYw8uu-rmuLgWtlX7ktOMmXpQzw8Sqr17wjNkjSRVrTIgjPEmUiIbcfw_Zg" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=AdilShamim8/100-AI-Machine-Learning-Deep-Learnin-Projects&type=date&legend=top-left&sealed_token=72oM9NlnxXSgNOMKR237XFdr-AyDiEMZG2BQOjMB1QQnlx9dlOerSpOx9uiLYw8uu-rmuLgWtlX7ktOMmXpQzw8Sqr17wjNkjSRVrTIgjPEmUiIbcfw_Zg" />
+ </picture>
+</a>
+
+
+## Project List
+
+> **This list is regularly updated** — new projects are added frequently. Watch the repo to stay notified!
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 01 | [ML Roadmap and Notes](https://github.com/AdilShamim8/ML-Roadmap-and-Notes) | Complete machine learning roadmap with structured notes | `ML` `Roadmap` `Beginner` |
+| 02 | [GenAI Roadmap with LangChain](https://github.com/AdilShamim8/GenAI-Roadmap-with-Notes-and-Projects) | Generative AI roadmap with hands-on LangChain notes | `GenAI` `LangChain` `LLM` |
+| 03 | [Agentic AI Roadmap with LangGraph](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects) | End-to-end agentic AI roadmap with structured notes and LangGraph implementations | `GenAI` `LangGraph` `Agents` |
+| 04 | [ML Algorithm Library](https://github.com/AdilShamim8/ML-Algorithm-Library) | Pure-Python implementations of core ML algorithms from scratch | `ML` `Algorithms` `From-Scratch` |
+| 05 | [GPT-2 Rebuild — nanoGPT](https://github.com/AdilShamim8/GPT) | Step-by-step reproduction of GPT-2 and nanoGPT from scratch following Karpathy's architecture | `DL` `Transformers` `LLM` |
+| 06 | [Prompt Engineering](https://github.com/AdilShamim8/Prompt-Engineering) | Techniques and best practices for effective LLM prompting | `LLM` `Prompting` `NLP` |
+| 07 | [RAG Roadmap and Projects](https://github.com/AdilShamim8/RAG-Roadmap-with-Notes-and-Projects) | End-to-end learning path for RAG — from document processing to agentic systems and production deployment | `RAG` `LangChain` `Roadmap` |
+| 08 | [Build with Claude Code](https://github.com/AdilShamim8/Build-with-Claude-Code) | Deep notes, real assignments, and working solutions for mastering Claude Code and agentic loops | `Claude` `Agents` `LLM` |
+| 09 | [MathForAI](https://github.com/AdilShamim8/MathForAI) | Single-page curriculum site teaching the math foundations behind modern AI and machine learning | `Math` `Foundations` `Education` |
+
+### Prediction & Forecasting
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 10 | [Prices Predictor System](https://github.com/AdilShamim8/Prices_Predictor_System) | End-to-end price prediction system with feature pipelines | `ML` `Regression` `MLOps` |
+| 11 | [Stock Price Prediction](https://github.com/AdilShamim8/Stock_Price_Prediction) | Time-series forecasting for equity price movements | `LSTM` `Time-Series` `Finance` |
+| 12 | [Laptop Price Predictor](https://github.com/AdilShamim8/Laptop-Price-Predictor) | Regression model to estimate laptop prices from specs | `Regression` `EDA` `ML` |
+| 13 | [ML Housing Corp](https://github.com/AdilShamim8/Machine_Learning_Housing_Corp) | Housing price prediction inspired by *Hands-On ML* | `Regression` `Scikit-Learn` |
+| 14 | [Data Science Salary Predictor](https://github.com/AdilShamim8/Data-Science-Salary-Predictor) | Predict DS/ML salaries from job market data | `ML` `Regression` `Career` |
+
+### Natural Language Processing
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 15 | [BUET-CSE-Fest-2026](https://github.com/AdilShamim8/BUET-CSE-Fest-2026) | Bengali ASR and speaker diarization system built for BUET CSE Fest 2026 | `ASR` `Bengali` `Diarization` |
+| 16 | [Sentiment Analysis](https://github.com/AdilShamim8/Sentiment-analysis) | Multi-class sentiment classification on review data | `NLP` `Classification` `BERT` |
+| 17 | [Resume Screening](https://github.com/AdilShamim8/Resume-Screening) | Automated resume parser and job-fit classifier | `NLP` `Classification` `HR-Tech` |
+| 18 | [Email Spam Classifier](https://github.com/AdilShamim8/Email-Spam-Classifier) | NLP pipeline to detect spam and phishing emails | `NLP` `Classification` `TF-IDF` |
+| 19 | [Bengali SMS Classifier](https://github.com/AdilShamim8/Bengali_sms_classifier) | Spam detection for the Bengali language | `NLP` `Bengali` `Low-Resource` |
+
+### Recommender Systems
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 20 | [Book Recommender System](https://github.com/AdilShamim8/Book-Recommender-System) | Collaborative filtering-based book recommendation engine | `RecSys` `Collaborative` `CF` |
+| 21 | [Movie Recommender System](https://github.com/AdilShamim8/Movie-Recommender-System) | Content-based and hybrid movie recommendation system | `RecSys` `Content-Based` |
+
+### Computer Vision
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 22 | [Pose Detection](https://github.com/AdilShamim8/Posture-detection) | Real-time human pose estimation and posture analysis | `CV` `MediaPipe` `Real-Time` |
+| 23 | [Gesture Volume Control](https://github.com/AdilShamim8/Gesture-Volume-Control) | Control system volume using hand gestures via webcam | `CV` `MediaPipe` `HCI` |
+| 24 | [Cat vs Dog Classification](https://github.com/AdilShamim8/Cat_Vs_Dog_Image_Classification_Project) | CNN-based binary image classifier | `CNN` `Image-Classification` `DL` |
+| 25 | [Pose Detection with Face Overlays](https://github.com/AdilShamim8/Posture-detection) | Extended pose detection with dynamic face overlay effects | `CV` `Pose` `MediaPipe` |
+
+### Data Analysis & Visualization
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 26 | [QuantScope](https://github.com/AdilShamim8/QuantScope) | Quantitative stock analysis platform for data-driven market research and financial decision making | `Finance` `EDA` `Quant` |
+| 27 | [Olympic History Analysis](https://github.com/AdilShamim8/Olympic_History_Analysis) | In-depth EDA on 120 years of Olympic Games data | `EDA` `Visualization` `Pandas` |
+| 28 | [Study Abroad Dataset](https://github.com/AdilShamim8/Study_Abroad) | Analysis and modeling on international student data | `EDA` `Statistics` |
+| 29 | [COVID-19 Global Impact Analysis](https://github.com/AdilShamim8/COVID-19_Global_Impact_Analysis) | Comprehensive analysis of pandemic spread and impact | `EDA` `Public-Health` `Viz` |
+| 30 | [Vendor Performance Analysis](https://github.com/AdilShamim8/Vendor-Performance-Analysis) | Supply chain vendor scoring and analytics dashboard | `EDA` `Business-Intelligence` |
+
+### Tools & AI Applications
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 31 | [Production-grade RAG](https://github.com/AdilShamim8/Production-grade-RAG) | Production-ready RAG API built with FastAPI, LangChain, OpenAI, and Qdrant | `RAG` `FastAPI` `LangChain` `Qdrant` |
+| 32 | [NeuroBridge](https://github.com/AdilShamim8/NeuroBridge) | Middleware layer bridging LLMs with real-world applications for seamless agentic integration | `LLM` `Agents` `Middleware` |
+| 33 | [PaperMap](https://github.com/AdilShamim8/PaperMap) | Interactive library transforming landmark AI papers into visual educational experiences | `Education` `GenAI` `Interactive` |
+| 34 | [Toolly Studio](https://github.com/AdilShamim8/Toolly_Studio) | A studio suite of developer and AI productivity tools | `Tools` `Productivity` |
+| 35 | [Toolly](https://github.com/AdilShamim8/Toolly) | Lightweight utility toolkit for ML workflows | `Tools` `Utilities` `ML` |
+| 36 | [Training Data Bot](https://github.com/AdilShamim8/Training_Data_Bot) | Automated pipeline that converts raw documents (PDF, text, URLs) into clean, quality-scored LLM fine-tuning datasets | `LLM` `Fine-Tuning` `Dataset` `NLP` `Automation` |
+| 37 | [AI Engineering](https://github.com/AdilShamim8/AI-Engineering) | Research archive of real-world AI engineering interview assignments, take-home challenges, and hiring practices | `AI` `Career` `Research` |
+| 38 | [Kaggle Competitions](https://github.com/AdilShamim8/Kaggle_Competitions) | Collection of top-ranked competition solutions across ML, NLP, and time-series challenges | `Kaggle` `ML` `Competition` |
+| 39 | [Awesome AI/ML Startups](https://github.com/AdilShamim8/Awesome-AI_ML-Startups) | Monthly-updated community tracker of global AI/ML startups sourced from YC, Crunchbase, Forbes AI 50, and VC databases | `AI` `Startups` `Resource` |
+| 40 | [Agentic RAG Platform](https://github.com/AdilShamim8/Agentic-RAG-Platform) | Reproducible, evaluated, secured, and observable Agentic RAG platform for organizational knowledge | `RAG` `Agents` `Enterprise` |
+| 41 | [Agentic AI Eval Harness](https://github.com/AdilShamim8/Agentic-AI-Eval-Harness) | Production CI gate and evaluation benchmarking harness for AI agents across LangGraph and CrewAI | `Agents` `Evals` `CI-Gate` |
+| 42 | [System Design for AI](https://github.com/AdilShamim8/System-Design-For-AI) | Comprehensive curriculum on system design for AI from zero to production architecture | `System-Design` `Architecture` `MLOps` |
+| 43 | [FinTech AI Engineer Mastery](https://github.com/AdilShamim8/Fintech-AI-Engineer-Mastery) | Complete curriculum and engineering laboratory for AI Engineers specializing in Financial Technology | `FinTech` `Finance` `AI-Engineer` |
+| 44 | [Claude Research Excellence](https://github.com/AdilShamim8/claude-research-excellence) | AI-powered research paper creation and adversarial peer-review simulation framework | `Claude` `Research` `GenAI` |
+| 45 | [AI for Everyone](https://github.com/AdilShamim8/AI-for-Everyone) | Free 30-day beginner roadmap teaching practical AI usage, prompting, and workflows in English & Bengali | `AI` `Beginner` `Roadmap` |
+| 46 | [FDE Field Guide](https://github.com/AdilShamim8/fde-field-guide) | Practical field guide for Forward Deployed Engineers turning ambiguous business problems into production systems | `Engineering` `Production` `FDE` |
+| 47 | [50 Days of Machine Learning](https://github.com/AdilShamim8/50-Days-of-Machine-Learning) | Immersive project covering essential ML concepts, daily exercises, and real-world datasets | `ML` `Roadmap` `Data-Science` |
+| 48 | [ChessLM](https://github.com/AdilShamim8/ChessLM) | Chess AI platform enabling interactive gameplay and move analysis across language models | `AI` `Chess` `LLM` |
+
+### 🚀 Production AI Systems
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 101 | [LLM Playground](https://github.com/AdilShamim8/LLM-Playground-101) | Production-level large language model training and deployment framework | `LLM` `Training` `MLOps` |
+| 102 | [Customer Support Chatbot](https://github.com/AdilShamim8/Customer-Support-Chatbot-102) | Production-ready AI customer support with RAG, hybrid search, reranking, and PEFT fine-tuning | `RAG` `Production` `LLM` |
+| 103 | [Ask the Web](https://github.com/AdilShamim8/Ask-the-Web-103) | Perplexity-like AI agent with ReACT/ReWOO/Reflexion reasoning, MCP & A2A protocols, and multi-agent orchestration | `Agents` `Search` `RAG` |
+| 104 | [Deep Research](https://github.com/AdilShamim8/Deep-Research-104) | Deep research AI using web search, OpenAI o3, and DeepSeek-R1 with inference-time scaling | `Research` `LLM` `Agents` |
+| 105 | [Multi-Modal Generation](https://github.com/AdilShamim8/Multi-Modal-105) | Production T2I and T2V synthesis with full VAE, GAN, DiT, and DDPM/DDIM/DPM-Solver++ implementation | `T2I` `T2V` `Diffusion` `DL` |
+
+### 🤖 Agentic AI Roadmap — Practice Projects
+
+> **10 hands-on projects from the [Agentic AI Roadmap](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects)**, taking single agents to production-grade multi-agent systems.
+
+| # | Project | Description | Tags |
+|---|---------|-------------|------|
+| 106 | [Research Agent](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/01-research-agent) | Autonomous agent that plans, searches, and synthesizes findings into a research report | `Agents` `Research` `LangGraph` |
+| 107 | [Customer Support Multi-Agent](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/02-customer-support-multi-agent) | Multi-agent system that routes and resolves customer support tickets via specialized sub-agents | `Multi-Agent` `Customer-Support` `LangGraph` |
+| 108 | [Knowledge Manager](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/03-knowledge-manager) | Agent that ingests, organizes, and retrieves knowledge base content on demand | `Agents` `RAG` `Knowledge-Base` |
+| 109 | [Self-Healing Code Agent](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/04-self-healing-code-agent) | Agent that detects failing code, diagnoses the issue, and applies a fix autonomously | `Agents` `Code` `Self-Healing` |
+| 110 | [MCP Universal Agent](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/05-mcp-universal-agent) | General-purpose agent that connects to any tool via the Model Context Protocol | `MCP` `Agents` `Tool-Use` |
+| 111 | [Multimodal Document Analyst](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/06-multimodal-document-analyst) | Agent that reads and reasons over documents combining text, tables, and images | `Multimodal` `Agents` `Document-AI` |
+| 112 | [Anomaly Monitor](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/07-anomaly-monitor) | Agent that watches system or data streams and flags anomalies in real time | `Agents` `Monitoring` `Anomaly-Detection` |
+| 113 | [Cross-Framework Network](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/08-cross-framework-network) | Multi-agent network that interoperates agents built across different frameworks | `Multi-Agent` `Interop` `A2A` |
+| 114 | [Agent-as-a-Service Platform](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/09-agent-as-a-service-platform) | Platform for deploying and serving agents as callable, production-grade services | `Agents` `Platform` `Deployment` |
+| 115 | [Eval Harness and Benchmark](https://github.com/AdilShamim8/Agentic-AI-Roadmap-with-Notes-and-Projects/tree/main/projects/10-eval-harness-and-benchmark) | Evaluation harness and benchmark suite for scoring agent performance | `Evals` `Benchmark` `Agents` |
+
+
+<div align="center">
+
+### ✦ Connect With Me
+
+<p>
+  <a href="https://www.adilshamim.me">
+    <img src="https://img.shields.io/badge/Portfolio-111111?style=for-the-badge&logo=About.me&logoColor=white" />
+  </a>
+  <a href="https://linkedin.com/in/adilshamim8">
+    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="https://adilshamim8.medium.com">
+    <img src="https://img.shields.io/badge/Medium-000000?style=for-the-badge&logo=medium&logoColor=white" />
+  </a>
+  <a href="https://adilshamim.substack.com">
+    <img src="https://img.shields.io/badge/Substack-FF6719?style=for-the-badge&logo=substack&logoColor=white" />
+  </a>
+</p>
+
+<p>
+  <a href="https://github.com/AdilShamim8">
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+  <a href="https://www.kaggle.com/adilshamim8">
+    <img src="https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white" />
+  </a>
+  <a href="https://leetcode.com/u/AdilShamim8">
+    <img src="https://img.shields.io/badge/LeetCode-FFA116?style=for-the-badge&logo=leetcode&logoColor=111111" />
+  </a>
+  <a href="https://twitter.com/adil_shamim8">
+    <img src="https://img.shields.io/badge/X-111111?style=for-the-badge&logo=x&logoColor=white" />
+  </a>
+</p>
+
+<sub>Building • Learning • Researching • Sharing</sub>
+
+<br/>
+
+⭐ <strong>If this repository helped you, consider giving it a star!</strong> ⭐
+
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" />
+</div>

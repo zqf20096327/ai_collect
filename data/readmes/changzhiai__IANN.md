@@ -1,0 +1,802 @@
+<img src="docs/source/_static/logo/iann-logo-flush.png" alt="IANN — InterAtomic Neural Network Framework" width="250">
+
+# IANN (InterAtomic Neural Network framework)
+
+[![Docs](https://img.shields.io/badge/Docs-available-E91E63?logo=readthedocs&logoColor=white)](https://iann.readthedocs.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
+[![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/) 
+[![C++](https://img.shields.io/badge/C++-11-8A2BE2?logo=cplusplus&logoColor=white)](https://isocpp.org/) 
+[![PyPI](https://img.shields.io/badge/PyPI-v0.1.3-2EA043?logo=pypi&logoColor=white)](https://pypi.org/project/pyiann/)
+
+
+- [1. Introductions](#1-introductions)
+  - [Documentation](#documentation)
+- [2. Installation](#2-installation)
+  - [Prerequisites](#prerequisites)
+  - [Installing IANN](#installing-iann)
+  - [GPU Support](#gpu-support)
+- [3. Quickstart: Examples](#3-quickstart-examples)
+- [4. Training](#4-training)
+  - [Preparing your dataset](#preparing-your-dataset)
+  - [Training](#training)
+  - [Monitoring Training Progress](#monitoring-training-progress)
+- [5. Predicting](#5-predicting)
+  - [Making Predictions with ASE calculator](#making-predictions-with-ase-calculator)
+- [6. Foundation Models](#6-foundation-models)
+  - [Using Pre-trained Foundation Models](#using-pre-trained-foundation-models)
+  - [Fine-tuning Foundation Models](#fine-tuning-foundation-models)
+- [7. Parallelization](#7-parallelization)
+  - [Multi-GPU Training](#multi-gpu-training)
+  - [Multi-CPU Training](#multi-cpu-training)
+  - [Example on NERSC](#example-on-nersc)
+  - [Example on Carbon](#example-on-carbon)
+  - [Performance Considerations](#performance-considerations)
+- [8. LAMMPS Interface](#8-lammps-interface)
+  - [Use an IANN model with LAMMPS](#use-an-iann-model-with-lammps)
+    - [1. Convert a trained model to the torchscript format](#1-convert-a-trained-model-to-the-torchscript-format)
+    - [2. Use the exported model in LAMMPS](#2-use-the-exported-model-in-lammps)
+  - [Use an ensemble IANN model with LAMMPS](#use-an-ensemble-iann-model-with-lammps)
+    - [1. Convert trained models to a ensemble model](#1-convert-trained-models-to-a-ensemble-model)
+    - [2. Use the exported ensemble model in LAMMPS](#2-use-the-exported-ensemble-model-in-lammps)
+- [9. Modules](#9-modules)
+  - [iann.data](#ianndata)
+  - [iann.models](#iannmodels)
+  - [iann.trainer](#ianntrainer)
+  - [iann.foundations](#iannfoundations)
+  - [iann.calculators](#ianncalculators)
+  - [iann.plugins](#iannplugins)
+  - [iann.tools](#ianntools)
+  - [C++ LAMMPS Plugins](#c-lammps-plugins)
+- [10. Agent interface](#10-agent-interface)
+  - [Command line](#command-line)
+  - [MCP server](#mcp-server)
+  - [Agent skills](#agent-skills)
+- [Troubleshooting](#troubleshooting)
+- [Issues](#issues)
+- [Maintainer](#maintainer)
+- [Citing IANN](#citing-iann)
+- [References](#references)
+
+
+## 1. Introductions
+
+IANN (InterAtomic Neural Network) framework is an equivariant interatomic neural network potential framework package for materials science and computational chemistry. It implements state-of-the-art graph neural network models for periodic and non-periodic systems, including [PaiNN](https://arxiv.org/abs/2102.03150), [NequIP](https://doi.org/10.1038/s41467-022-29939-5), [MACE](https://arxiv.org/abs/2206.07697), [EquiformerV2](https://arxiv.org/abs/2306.12059), [EquiformerV3](https://doi.org/10.48550/arXiv.2604.09130), [Allegro](https://doi.org/10.1038/s41467-023-36329-y), [UMA](https://arxiv.org/abs/2506.23971) and [FastPot](https://github.com/changzhiai/IANN), focusing on predicting energies and forces with high accuracy. Every architecture is trained through a single data object and a single trainer, so the choice of model is a one-word change in a configuration dictionary rather than a change of code base. 
+
+Key features:
+- Easy to use and to switch models
+- Multiple equivariant interatomic neural network models implementation
+- High-accuracy energy and force predictions
+- Distributed training on multiple GPUs and multiple server nodes
+- Integration with ASE and LAMMPS for molecular dynamics simulations
+- Customizable model architectures
+- Interface for AI agents
+
+<p align="center">
+  <img src="docs/source/_static/images/fig1_framework.png" alt="Software structure of the IANN framework" width="100%">
+</p>
+
+<p align="center">
+  <em>Software structure of the IANN framework: five main layers with two auxiliary layers.</em>
+</p>
+
+### Documentation
+Full documentation is available at https://iann.readthedocs.io. The pages that go beyond this
+README:
+
+| Page | Covers |
+|---|---|
+| [About](https://iann.readthedocs.io/en/latest/about.html) | The framework's five layers, and the graph/data-object/derivative route that unifies them |
+| [Engine Models](https://iann.readthedocs.io/en/latest/engine_models.html) | Each architecture, its diagram, its parameters, and which to choose |
+| [Foundation Models](https://iann.readthedocs.io/en/latest/foundation_models.html) | The curated DFT databases and all released checkpoints with accuracies |
+| [Performance](https://iann.readthedocs.io/en/latest/performance.html) | Measured inference cost, memory ceilings, and multi-GPU scaling for training and LAMMPS |
+| [Parallelization](https://iann.readthedocs.io/en/latest/parallelization.html) | Submission scripts for SLURM and PBS clusters |
+| [Agent interface](https://iann.readthedocs.io/en/latest/agents.html) | The `iann` command, the MCP server, and the Claude Code skills |
+| [API Reference](https://iann.readthedocs.io/en/latest/api.html) | Every public class and function |
+| [Release Notes](https://iann.readthedocs.io/en/latest/release_notes.html) | What changed in each version |
+
+## 2. Installation
+
+### Prerequisites
+
+- Python 3.8+
+- PyTorch 1.9+
+
+### Installing IANN
+
+```bash
+# Clone the repository
+git clone https://github.com/changzhiai/IANN.git
+cd IANN
+
+# Install with pip
+pip install -e .
+```
+
+> [!NOTE]
+> If you encounter a C++ compilation error (`must #include <typeinfo> before using typeid`) when installing dependencies like `asap3` due to the compiler version incompatibility, export the compiler flag before running the installation:
+> ```bash
+> export CXXFLAGS="-include typeinfo"
+> pip install -e .
+> ```
+
+Optional extras, not installed by default:
+```bash
+pip install -e ".[foundations]"   # huggingface_hub, to download released models
+pip install -e ".[agent]"         # the MCP SDK, to run the agent server
+```
+
+Alternatively, install the released version from PyPI, where the distribution is published as `pyiann` (package name `iann` was already taken by an unrelated project):
+
+```bash
+pip install pyiann
+pip install "pyiann[foundations]"   # huggingface_hub, to download released models
+pip install "pyiann[agent]"         # the MCP SDK, to run the agent server
+```
+
+Install from source rather than from PyPI if you want to run the test suite, build the documentation, or modify the framework --- none of those are shipped in the wheel.
+
+### GPU Support
+For GPU acceleration, make sure you have CUDA installed and PyTorch with CUDA support:
+
+```bash
+# Check if PyTorch is using CUDA
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+## 3. Quickstart: Examples
+
+The quickest way to get started with IANN is to run the example script:
+
+```bash
+# Run the quickstart example
+python examples/quickstart.py
+```
+
+This script demonstrates:
+- Loading a dataset
+- Creating and training a model
+- Using the model for predictions
+
+Check out the `examples/` directory for more sample scripts and tutorials.
+
+## 4. Training
+
+### Preparing your dataset
+
+IANN works with ASE database (.db) or trajectory (.traj) files. Ensure your data contains atomic structures with energy and force labels.
+
+### Training
+Create `train.py`
+
+```python
+from iann.trainer import Trainer
+
+# Define the Trainer
+trainer = Trainer(
+    model="painn",
+    config={"device": "cpu", 
+            'output_dir': 'output',
+            'output_log': 'output.log',
+            'output_model': 'model.pt',
+            },
+    distributed=False
+    )
+
+# Run the training
+trainer.train("dataset.traj")
+```
+
+Available models for `model`:
+```
+- painn
+- nequip
+- allegro
+- mace
+- equiformerv2
+- equiformerv3
+- uma
+- fastpot
+```
+
+Default configurations for `config`:
+```python
+config = {
+    # parameters for model
+    "num_channels": 128, # number of channels in the model
+    "num_layers": 3, # number of layers in the model
+    "cutoff": 5.5, # cutoff radius
+    # parameters for trainer
+    "device": None,      # override device, e.g. 'cpu' or 'cuda'
+    "val_ratio": 0.1, # validation ratio
+    "batch_size": 12, # batch size
+    "learning_rate": 0.0001, # initial learning rate
+    "forces_weight": 0.9, # weight for forces
+    "virial_weight": 0.0, # weight for virial
+    "stress_weight": 0.0, # weight for stress
+    "loss_per_atom": True, # whether to scale loss by number of atoms
+    "load_model": False, # load model from checkpoint
+    "reset_lr": False, # on restart: True = fresh LR schedule + step counter (fine-tune); False = resume schedule/steps exactly
+    "max_steps": 1000000, # maximum number of steps
+    "max_epochs": None,  # None if setup max_steps, otherwise max_epochs
+    "optimizer_type": "adam", # optimizer type: "adam", "sgd", "rmsprop", "adagrad", "adadelta", "adamax", "adamw"
+    "max_grad_norm": 10.0,    # gradient clipping norm
+    "log_interval": 2000, # log interval
+    "stop_patience": 200, # patience for early stopping
+    "scheduler_type": "LambdaLR", # scheduler type: "ReduceLROnPlateau", "LambdaLR", "CosineAnnealingLR", "CosineAnnealingWarmRestarts", "StepLR", "MultiStepLR", "ExponentialLR"
+    # parameters for data
+    "random_seed": 666, # random seed for reproducibility
+    "save_split": False, # save split file name
+    "load_split": False, # load split file name
+    "norm_data": False, # normalize data
+    "norm_per_atom": False, # normalize data per atom
+    "norm_sample_size": None, # if int, estimate norm stats from a random subsample of this size (None = use all training data)
+    "norm_num_workers": 0, # parallel I/O threads for computing norm stats (0 = serial)
+    # parameters for DDP (Parallelization)
+    "dist_timeout": 600,  # timeout (seconds) for distributed operations
+    "master_port": 12356, # port for distributed operations
+    # parameters for output
+    "output_dir": "output", # output directory
+    "output_log": "output.log", # log file
+    "output_model": "model.pt", # model file
+    "log_input": False, # log input config
+    "debug": False, # debug mode
+}
+```
+
+> [!NOTE]
+> There are more parameters for each model, please refer to the documentation or source code for details.
+
+### Monitoring Training Progress
+
+Training logs will be saved in the specified output directory. You can monitor:
+- Energy and force prediction errors
+- Training and validation losses
+- Model checkpoints
+
+## 5. Predicting
+
+
+### Making Predictions with ASE calculator
+
+```python
+from iann.calculators import MLCalculator
+from ase.io import read
+
+# Create calculator with model path
+calc = MLCalculator("model.pt")
+
+# Read structures
+images = read("test_structures.traj", ":")
+
+# Make predictions
+for atoms in images:
+    atoms.calc = calc
+    energy = atoms.get_potential_energy()
+    forces = atoms.get_forces()
+    print(f"Energy: {energy} eV")
+    print(f"Forces: {forces} eV/Å")
+```
+>[!TIP]  
+> `EnsembleCalculator` and `AtomicEnsembleCalculator` are available to get uncertainty for each structure and each atom, seperately.
+
+## 6. Foundation Models
+
+IANN provides nine pre-trained PaiNN foundation models at three levels of DFT theory (PBE, RPBE and r2SCAN) that you can use out-of-the-box or fine-tune for your specific tasks. A model is requested by name and downloaded from the HuggingFace Hub on first use, then cached:
+`pbe-mptrj`, `pbe-salex`, `pbe-omat24`, `pbe-matpes`, `pbe-oc22`, `rpbe-oc20`, `rpbe-oc25`, `r2scan-mptrj`, `r2scan-matpes`.
+
+Each is trained on a single source database grouping by functional. Pick the database closest to your own chemistry.
+
+### Using Pre-trained Foundation Models
+
+To use a foundation model for predictions:
+
+```python
+from iann.foundations import foundation_model
+from iann.calculators import MLCalculator
+from ase.build import fcc100
+
+calc = MLCalculator(
+  model_path=foundation_model("rpbe-oc20"), # RPBE prior for adsorption energetics
+  compute_forces=True,
+  device='cpu') # use 'cuda' for GPU
+
+atoms = fcc100("Pt", size=(4,4,3), a=5.5, vacuum=15.0)
+atoms.calc = calc
+nnp_energy = atoms.get_potential_energy()
+nnp_forces = atoms.get_forces()
+print(f"NNP Energy: {nnp_energy:.4f} eV")
+print(f"NNP Forces: {nnp_forces}")
+```
+> [!TIP]
+> More foundation models at PBE, RPBE, r2SCAN levels and their usage can be found at [Foundation Models](https://iann.readthedocs.io/en/latest/foundation_models.html) section in the documentation.
+
+### Fine-tuning Foundation Models
+
+You can fine-tune a foundation model on your own data:
+
+```python
+from iann.trainer import Trainer
+from iann.foundations import foundation_model
+
+trainer = Trainer(model="painn", 
+    config={"num_channels": 128, # number of channels in the model
+        "num_layers": 3, # number of layers in the model
+        "cutoff": 5.5, # cutoff radius
+        "batch_size": 16, # batch size
+        "learning_rate": 0.0001, # initial learning rate
+        "forces_weight": 0.9, # weight for forces
+        "load_model": foundation_model("rpbe-oc20"), # load the foundation model
+        "reset_lr": True, # start a fresh learning-rate schedule
+        "max_steps": 10000000, # maximum number of steps
+        "random_seed": 888, # random seed for reproducibility
+        "val_ratio": 0.003, # validation ratio
+        "stop_patience": 500, # patience for early stopping
+        'device': 'cuda',
+        'output_dir': 'output',
+        'output_log': 'output.log',
+        'output_model': 'model.pt'},
+    distributed=False)
+trainer.train("dataset.traj")
+```
+
+## 7. Parallelization
+
+IANN supports distributed training using PyTorch's Distributed Data Parallel (DDP).
+
+### Multi-GPU Training
+Submit to multiple GPUs (in SLURM Workload Manager)
+
+```bash
+# Run on multiple GPUs and multiple nodes
+#!/bin/bash
+#SBATCH -N 2                   # Number of nodes
+#SBATCH -C gpu                 # Use GPU nodes
+#SBATCH -q debug               # Use regular/debug queue
+#SBATCH -t 00:30:00            # Time limit
+#SBATCH -A mxxxx               # Your account
+#SBATCH --gpus-per-node=4      # GPUs per node
+#SBATCH --ntasks-per-node=4    # Number of tasks per node
+#SBATCH --cpus-per-task=1      # Number of CPUs per task
+
+module load your_modules
+
+export GPUS_PER_NODE=$SLURM_GPUS_ON_NODE
+export NNODES=$SLURM_NNODES
+
+srun -N $NNODES -n $((NNODES*GPUS_PER_NODE)) python train.py
+```
+<!-- -A m2997 -->
+
+### Multi-CPU Training
+Submit to multiple CPUs (in SLURM Workload Manager)
+
+```bash
+# Run on multiple CPUs and multiple nodes
+#!/bin/bash
+#SBATCH -N 2                   # Number of nodes
+#SBATCH -C cpu                 # Use CPU nodes
+#SBATCH -q debug               # Use regular/debug queue
+#SBATCH -t 00:30:00            # Time limit
+#SBATCH -A mxxxx               # Your account
+#SBATCH --ntasks-per-node=1    # Number of tasks per node
+#SBATCH --cpus-per-task=128    # Number of CPUs per task
+
+module load your_modules
+
+export GPUS_PER_NODE=$SLURM_GPUS_ON_NODE
+export NNODES=$SLURM_NNODES
+
+srun -N $NNODES -n $((NNODES*GPUS_PER_NODE)) python train.py
+```
+
+### Example on NERSC
+```bash
+#!/bin/bash
+#SBATCH -N 2                   # Number of nodes
+#SBATCH -C gpu                 # Use GPU nodes
+#SBATCH -q debug               # Use regular/debug queue
+#SBATCH -t 00:20:00            # Time limit
+#SBATCH -A mxxxx               # Your account
+#SBATCH --gpus-per-node=4      # GPUs per node
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
+
+export PYTHONPATH=/path/to/IANN/:$PYTHONPATH
+module purge
+module load PrgEnv-nvidia; module load openmpi;
+
+export GPUS_PER_NODE=$SLURM_GPUS_ON_NODE
+export NNODES=$SLURM_NNODES
+export FI_CXI_RDZV_GET_MIN=0 # vender bugs fixed on nersc for multiple nodes
+export FI_CXI_SAFE_DEVMEM_COPY_THRESHOLD=16777216 # vender bugs fixed on nersc
+
+srun -N $NNODES -n $((NNODES*GPUS_PER_NODE)) \
+     python train.py
+
+```
+<!-- -A m2997 -->
+<!-- PYTHONPATH=/pscratch/sd/c/changzhi/softwares/IANN_v2/IANN/:$PYTHONPATH -->
+
+> [!NOTE]
+> the parallelization parameters are automatically obtained from the SLURM environment variables.
+
+### Example on Carbon
+
+Carbon uses PBS rather than SLURM, so the ranks are launched with `mpirun`:
+
+```bash
+
+#!/bin/bash
+
+#PBS -l nodes=1:ppn=4:gpus=2
+#PBS -l walltime=5:00:00
+#PBS -N train
+#PBS -A cnmxxxx
+#PBS -o job.out
+#PBS -e job.err
+
+# Load the environments, such as:
+cd $PBS_O_WORKDIR
+source ~/miniconda/etc/profile.d/conda.sh
+conda activate base
+module load openmpi
+export PYTHONPATH=/path/to/IANN:$PYTHONPATH
+
+# GPUs per node and number of nodes
+GPUS_PER_NODE=2
+export MASTER_ADDR=$(head -n1 "$PBS_NODEFILE")   # all ranks rendezvous here
+export MASTER_PORT=12356
+
+# environment forwarded to the remote ranks (conda/python, libs, rendezvous)
+FWD="-x PATH -x LD_LIBRARY_PATH -x PYTHONPATH -x MASTER_ADDR -x MASTER_PORT"
+
+mpirun --map-by ppr:${GPUS_PER_NODE}:node -machinefile "$PBS_NODEFILE" $FWD python train.py
+```
+
+<!-- -A cnm84157 -->
+<!-- export PYTHONPATH=/home/changzhi/softwares/IANN_dev/fix-mace/IANN:$PYTHONPATH -->
+
+
+> [!NOTE]
+> With no SLURM variables to read, the trainer takes rank and world size from `OMPI_COMM_WORLD_RANK`/`OMPI_COMM_WORLD_SIZE` (MPICH/Intel MPI and MVAPICH2 are handled too). `train.py` is unchanged — it still only needs `distributed=True`. Note that `mpirun` does not carry your shell environment to remote nodes, so `PATH`, `LD_LIBRARY_PATH` and `PYTHONPATH` must be forwarded with `-x`, or the remote ranks start on the system Python and fail to import `iann`.
+
+### Performance Considerations
+
+- Use the largest batch size that fits in your GPU memory
+- Enable mixed precision training for faster performance
+- Monitor GPU utilization to ensure efficient resource use
+
+## 8. LAMMPS Interface
+
+IANN models can be used as interatomic potentials in LAMMPS molecular dynamics simulations (Support GPU). All seven architectures can be exported; UMA additionally requires `num_experts == 0` (the default) — a model trained with MoLE experts is refused rather than exported without its routing.
+
+> [!WARNING]
+> You have to install IANN plugins for LAMMPS first, if you want to use IANN models with LAMMPS. Please see the documentation in [LAMMPS interface](https://iann.readthedocs.io/en/latest/lammps.html) section.
+
+### Use an IANN model with LAMMPS
+
+
+#### 1. Convert a trained model to the torchscript format
+
+First, you need to have a trained model with torch format, which can be obtained by running the training script. Then convert the model to the torchscript format as follows:
+
+```python
+from iann.plugins.converter import convert_model_for_lammps
+
+convert_model_for_lammps(model_path='best_model.pt', 
+                         model_type='painn', 
+                         output_path='output_model.pt')
+```
+
+`model_type` may be omitted, in which case it is inferred from the checkpoint.
+
+> [!IMPORTANT]
+> The checkpoint does not record every structural parameter — `num_distance_basis`, the grid-resolution lists and, for some architectures, `mmax` are not saved. If a model was trained with non-default values, pass **the same values you trained with** to `convert_model_for_lammps`, or the model is rebuilt at the defaults and the weights will not fit (`size mismatch` from `load_state_dict`). PaiNN, NequIP and MACE usually need nothing extra; EquiformerV3 and UMA usually do:
+
+
+#### 2. Use the exported model in LAMMPS
+
+To run the LAMMPS simulation with IANN, you can use the following script:
+
+```bash
+# LAMMPS input script example
+
+# Define the units and the atom style
+units metal
+atom_style atomic
+
+# Define the boundary conditions
+boundary p p p
+
+# Read the initial structure
+read_data initial.data
+
+# Define the IANN pair style
+pair_style iann painn model_lmp.pt 5.5
+pair_coeff * *
+
+# Define the mass of the atoms
+mass 1 1.0079999997406976 # H
+mass 2 195.08399994981576 # Pt
+
+# Define the neighbor list
+neighbor 0.5 bin
+neigh_modify every 1 delay 0 check yes
+
+# Thermodynamic settings
+thermo 10
+
+# Initial minimization to relax the system before dynamics
+minimize 1.0e-4 1.0e-6 100 1000
+
+# Define the timestep and the thermostat
+timestep 0.001
+fix 1 all nvt temp 300.0 300.0 0.1
+
+# Define the dump frequency and the dump file
+dump 1 all custom 10 dump.xyz id type x y z
+
+# Run the simulation
+run 5000
+```
+
+> [!NOTE]
+> Multiple GPUs prediction (inference) are supported by using the `pair_style iann/multi_gpu` command. It will automatically detect the number of GPUs per node and use them to run the model.
+
+### Use an ensemble IANN model with LAMMPS
+
+#### 1. Convert trained models to a ensemble model
+
+First, you need to have several trained models with torch format, which can be obtained by running several training scripts. Then convert the models to the torchscript format as follows:
+
+```Python
+from iann.plugins.converter import convert_models_for_lammps
+
+# Give a list of models
+model_paths = ["model_1.pt", "model_2.pt"]
+
+# Convert the models to a torchscript model
+output_path = convert_models_for_lammps(
+    model_paths=model_paths,
+    model_type="painn", # if not specified, the model type will be inferred from the model file
+    output_path="model_ensemble_lmp.pt"
+)
+```
+#### 2. Use the exported ensemble model in LAMMPS
+
+To run the ensemble LAMMPS simulation with IANN, you can use the following script:
+
+```bash
+# LAMMPS input script example
+   
+# Define the units and the atom style
+units metal
+atom_style atomic
+
+# Define the boundary conditions
+boundary p p p
+
+# Read the initial structure
+read_data initial.data
+
+# Define the IANN pair style
+pair_style iann painn model_ensemble_lmp.pt 5.5
+pair_coeff * *
+
+# Define the mass of the atoms
+mass 1 1.0079999997406976 # H
+mass 2 195.08399994981576 # Pt
+
+# Define the neighbor list
+neighbor 0.5 bin
+neigh_modify every 1 delay 0 check yes
+
+# Compute the variance mode of the energy and force of the ensemble model
+compute variance all iann/variance
+
+# Define the thermodynamic style
+thermo_style custom step pe ke etotal temp press c_variance[1] c_variance[2] c_variance[3] c_variance[4]
+
+# Define the thermodynamic modify
+thermo_modify colname c_variance[1] energy_var
+thermo_modify colname c_variance[2] force_var
+thermo_modify colname c_variance[3] max_energy_var
+thermo_modify colname c_variance[4] max_force_var
+thermo_modify flush yes
+
+# Thermodynamic settings
+thermo 100
+
+# Initial minimization to relax the system before dynamics
+minimize 1.0e-4 1.0e-6 100 1000
+
+# Define the timestep and the thermostat
+timestep 0.001
+fix 1 all nvt temp 300.0 300.0 0.1
+
+# Define the dump frequency and the dump file
+dump 1 all custom 10 dump.xyz id type x y z
+
+# Run the simulation
+run 5000
+```
+
+
+## 9. Modules
+
+IANN is organized into several key modules:
+
+### iann.data
+Data handling utilities:
+- `AtomsData`: Data object for each atoms
+- `AseDataset`: Dataset class for handling atomic structures
+
+  
+### iann.models
+Contains neural network model implementations:
+- `PaiNN`: PaiNN model implementation for energy and force prediction
+- `NequIP`: NequIP model implementation for energy and force prediction
+- `MACE`: MACE model implementation for energy and force prediction
+- `EquiformerV2`: EquiformerV2 model implementation for energy and force prediction
+- `EquiformerV3`: EquiformerV3 model implementation for energy and force prediction
+- `Allegro`: Allegro model implementation for energy and force prediction
+- `UMA`: UMA model implementation for energy and force prediction
+- `FastPot`: IANN's own lightweight model for energy and force prediction
+
+
+### iann.trainer
+The single trainer shared by every architecture:
+- `Trainer`: training loop, loss on energies/forces/stresses/virials, logging, checkpointing, learning-rate scheduling, early stopping and restarts
+- Distributed data-parallel training configured automatically from SLURM, OpenMPI, MPICH/Intel MPI, MVAPICH2 or PBS
+
+
+### iann.foundations
+Pretrained potentials and their resolution:
+- `foundation_model`: resolve a model name to a local checkpoint path, downloading from the HuggingFace Hub on first use
+- `list_foundation_models`: the full released catalog
+- `list_available_models`: what is usable without a network (bundled plus already cached)
+
+
+### iann.calculators
+ASE calculators implementations:
+- `MLCalculator`: ASE calculator interface for models
+- `EnsembleCalculator`: ASE ensemble calculator interface for models
+- `AtomicEnsembleCalculator`: ASE atomic ensemble calculator interface for models
+
+
+### iann.plugins
+Tools for converting models and LAMMPS integration:
+- `converter`: Model conversion utilities for LAMMPS integration
+- `EnsembleLAMMPSModelWrapper`:  Wrapper class for adapting ensemble model inputs/outputs for LAMMPS
+- `LAMMPSModelWrapper`: Wrapper class for adapting model inputs/outputs for LAMMPS
+- `convert_model_for_lammps`: Function to convert trained model to TorchScript format
+- `convert_models_for_lammps`: Function to convert trained ensemble models to TorchScript format
+
+### iann.tools
+Shared building blocks used by the model implementations:
+- `activation`: activation functions
+- `gate`: equivariant gate layers
+- `tools`: assorted helpers
+
+
+### C++ LAMMPS Plugins
+C++ plugins for LAMMPS molecular dynamics simulations:
+- `PairIANN`: Single GPU pair style for IANN potentials
+- `PairIANNMultiGPU`: Multiple GPU pair style for IANN potentials
+- `ComputeIANNVariance`: Compute style for variance calculations
+
+
+## 10. Agent interface
+
+IANN ships a machine-readable interface for automated callers — a CI job, a script, or an AI coding
+agent. All of it lives in the `iann/agent/` subpackage, and the three layers share one
+implementation: every operation is a function returning a plain dictionary, so the CLI and the MCP
+server cannot drift apart.
+
+The interface allows reads and a **bounded** amount of compute. Unbounded training, job submission
+to SLURM or PBS, uploads to the HuggingFace Hub, and deleting files are deliberately not exposed.
+
+### Command line
+
+Installed as a console script with the package. Add `--json` to any subcommand for parseable
+output; under `--json`, stdout carries nothing but the JSON document.
+
+```bash
+iann doctor                      # can this environment run IANN?
+iann models                      # architectures, and which reach LAMMPS
+iann foundation list             # the released models with their MAEs
+iann inspect model.pt            # what a checkpoint records -- and what it lacks
+iann predict --model model.pt --structure structure.traj
+iann train --model painn --dataset dataset.traj --max-steps 100
+iann status --output-dir output
+iann export --model model.pt --out lammps_model.pt
+```
+
+Exit codes are meaningful: `0` success, `1` the operation failed (a JSON error object goes to
+stderr), `2` the command line was wrong. `--max-steps` is required, because
+`DEFAULT_CONFIG["max_steps"]` is 1,000,000 and a run without a budget would last days.
+
+Two subcommands are worth knowing about even if you never automate anything. `iann doctor` exits
+non-zero on a broken environment and separates a hard failure (`asap3` cannot import) from a silent
+degradation (`torch` imports but warns that NumPy failed to initialise). `iann inspect` reports the
+structural parameters a checkpoint does **not** store — the reason rebuilding an EquiformerV3 or
+UMA model can fail with size mismatches.
+
+### MCP server
+
+Nine tools over the Model Context Protocol, needing the optional SDK:
+
+```bash
+pip install -e ".[agent]"
+claude mcp add iann -- /opt/anaconda3/envs/iann/bin/python -m iann.agent.mcp_server
+```
+
+The `iann` command works without the SDK; only the server needs it.
+
+### Agent skills
+
+`iann/agent/AGENTS.md` records what an agent cannot infer from the source — which conda environment
+works, that scripts run from the repository root, that every training run needs a step budget, and
+that checkpoints are not self-describing. It is **not specific to any one assistant**; it is written
+for any AI coding agent, and it reads perfectly well as a human onboarding note.
+
+```bash
+iann agent install
+```
+
+Writes those notes to a repository root under both names agents look for — `AGENTS.md`, the
+cross-tool convention, and `CLAUDE.md`, the only name Claude Code reads — with identical content.
+It also writes `.claude/skills/` from the five skill sources under `iann/agent/skills/`:
+`iann-train`, `iann-export-lammps`, `iann-foundation-models`, `iann-run-checks` and
+`iann-hpc-submit`. Skills are a Claude Code feature, so they have only the one destination.
+Idempotent, and it will not overwrite a file you have edited without `--force`.
+
+Full detail: [Agent interface](https://iann.readthedocs.io/en/latest/agents.html).
+
+
+## Troubleshooting
+
+- **Memory Issues**: Reduce batch size or model size if you encounter OOM errors
+- **Training Instability**: Try reducing learning rate or using gradient clipping
+- **Poor Performance**: Try increasing model capacity
+
+## Issues
+
+For questions, issues, and contributions, please use the GitHub issue tracker
+
+## Maintainer
+Maintainer `Dr. Changzhi Ai` (changzhi@stanford.edu) at Stanford University and SLAC National Accelerator Laboratory.
+
+## Citing IANN
+
+If you use IANN, please cite the software release:
+
+```bibtex
+@software{IANN,
+  author  = {Ai, Changzhi and others},
+  title   = {{IANN}: InterAtomic Neural Network framework},
+  year    = {2026},
+  doi     = {10.5281/zenodo.17809948},
+  url     = {https://github.com/changzhiai/IANN}
+}
+```
+
+IANN is released under the [MIT licence](https://opensource.org/license/MIT).
+
+## References
+
+[1] K. T. Schütt, et al. "Equivariant message passing for the prediction of tensorial properties and molecular spectra", arXiv:2102.03150 (2021). [Link](https://arxiv.org/abs/2102.03150) 
+
+[2] S. Batzner, et al. "E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials", Nature Communications, 13, 2453 (2022). [Link](https://doi.org/10.1038/s41467-022-29939-5)
+
+[3] I. Batatia, et al. "MACE: Higher Order Equivariant Message Passing Neural Networks for Fast and Accurate Force Fields", arXiv:2206.07697 (2022). [Link](https://arxiv.org/abs/2206.07697)
+
+[4] Y. L. Liao, et al. "EquiformerV2: Improved Equivariant Transformer for Scaling to Higher-Degree Representations", arXiv:2306.12059 (2023). [Link](https://arxiv.org/abs/2306.12059)
+
+[5] A. Musaelian, et al. "Learning local equivariant representations for large-scale atomistic dynamics", Nature Communications, 14, 579 (2023). [Link](https://doi.org/10.1038/s41467-023-36329-y)
+
+[6] X. Yang, et al. "CURATOR: Building Robust Machine Learning Potentials for Atomistic Simulations Autonomously with Batch Active Learning", ChemRxiv (2024). [Link](http://dx.doi.org/10.26434/chemrxiv-2024-p5t3l) 
+
+[7] B. M. Wood, et al. "UMA: A Family of Universal Models for Atoms", arXiv:2506.23971 (2025). [Link](https://arxiv.org/abs/2506.23971)
+
+[8] Y. L. Liao, et al. "EquiformerV3: Scaling Efficient, Expressive, and General SE(3)-Equivariant Graph Attention Transformers", arXiv:2604.09130 (2026). [Link](https://doi.org/10.48550/arXiv.2604.09130)

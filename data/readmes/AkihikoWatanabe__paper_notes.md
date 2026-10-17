@@ -1,0 +1,225 @@
+# paper_notes
+
+![Open issues](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes) ![Stars](https://img.shields.io/github/stars/AkihikoWatanabe/paper_notes) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=akihiko_watanabe.paper_notes) ![License](https://img.shields.io/github/license/AkihikoWatanabe/paper_notes)  
+[![AI Research Trends](https://img.shields.io/badge/Wiki-Trends-blue)](https://github.com/AkihikoWatanabe/paper_notes/wiki/X%E4%B8%8A%E3%81%AEAI%E3%83%88%E3%83%AC%E3%83%B3%E3%83%89%EF%BC%88%EF%BC%9F%EF%BC%89%EF%BC%88%E5%80%8B%E4%BA%BA%E3%81%AE%E6%84%9F%E6%83%B3%E3%81%A7%E3%81%99%EF%BC%89)
+[![DeepWiki (Devin)](https://img.shields.io/badge/DeepWiki(Devin)-Chat-800080?logo=readme)](https://deepwiki.com/AkihikoWatanabe/paper_notes)
+[![CodeWiki (Google)](https://img.shields.io/badge/CodeWiki(Google)-Chat-800080?logo=readme)]([https://deepwiki.com/AkihikoWatanabe/paper_notes](https://codewiki.google/github.com/akihikowatanabe/paper_notes))
+
+[![Initial Impression Notes](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/Initial%20Impression%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A"Initial%20Impression%20Notes")
+[![One-Line Notes](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/One-Line%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22One-Line%20Notes%22)
+[![Surface-level Notes](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/Surface-level%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Surface-level%20Notes%22)
+[![KeyPoint Notes](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/KeyPoint%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22KeyPoint%20Notes%22)
+[![Reading Reflections](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/Reading%20Reflections)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Reading%20Reflections%22)
+[![In-Depth Notes](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/In-Depth%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22In-Depth%20Notes%22)
+[![Reference Collection](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/Reference%20Collection)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Reference%20Collection%22)
+[![Author Thread-Post](https://img.shields.io/github/issues/AkihikoWatanabe/paper_notes/Author%20Thread-Post)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Author%20Thread-Post%22)
+
+[English | [日本語](https://github.com/AkihikoWatanabe/paper_notes/blob/master/README_ja.md) ]
+
+This repository is a manually curated collection of **AI-related papers and related resources**, such as blog posts, repositories, slides, and SNS posts.  
+All items are managed as **GitHub Issues**.
+Notes managed in GitHub Issues are dumped daily under `agent_docs/` and can be explored conversationally through an agent. See [Conversational Interface](#conversational-interface).
+
+The primary purpose of this repository is to serve as a **personal study log and memory aid** for the maintainer.  
+Since the maintainer is Japanese, **paper notes are manually written in Japanese**, reflecting the maintainer’s own understanding and learning process.
+
+---
+
+## Issue Contents
+
+Each issue mainly contains the following information:
+
+- 🔗 Links to papers, blog posts, or related resources
+- 📄 Paper metadata and abstracts
+- 🌐 **Japanese** translations and summaries of abstracts
+- 📝 Notes based on the maintainer’s understanding
+- 🏷️ **Manually assigned labels** reflecting the maintainer’s interpretation
+- 📚 Useful external references
+
+Paper metadata and abstracts are retrieved via the arXiv API[^1].
+Since the maintainer is a native Japanese speaker, Japanese translations and summaries of abstracts are automatically generated using GPT.
+
+---
+
+## Actively Collected Research Areas
+
+The repository currently focuses on the following four areas:
+
+- Natural Language Processing (NLP)
+- Computer Vision (CV)
+- Speech Processing
+- Recommender Systems (RecSys)
+
+---
+
+## Topics of Recent Interest
+
+Recent areas of focus include (but are not limited to):
+
+- Large Language Models (LLMs) / Vision-Language Models (VLMs) / Diffusion Models
+- Proprietary / Open-Weight / Open-Source Models
+- Multimodal Models / Unified Multimodal Models (UMMs)
+- AI Agents / Context Engineering / Memory / Evaluation Harnesses / Scaffoldings
+- (Synthetic) Datasets / Evaluation / Benchmarks
+- Pre-training / Mid-training / Post-training / Continual Learning
+- Reinforcement Learning
+- Test-time Scaling / (Memory-based) Test-time Learning / Test Time Training (TTT)
+- Representation Learning / Embeddings
+- Self-Improving AI / Recursive Self-Improvement (RSI)
+- Transformer architectures (Attention, Positional Encoding, Residual Streams, etc.)
+
+---
+
+## Issue Notes and Granularity
+
+Each Issue may contain:
+
+- The maintainer’s understanding or interpretation of the work [^2]
+- Initial impressions
+- Links to explanatory SNS posts or discussions
+
+The **level of detail varies** depending on available time and interest at the time of reading.  
+Notes are managed using the following labels (not all Issues have been fully labeled yet because the maintainer have manually labeled it):
+
+- [![Initial Impression Notes](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Initial%20Impression%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A"Initial%20Impression%20Notes"): first impressions based on the abstract, related posts, or skimming
+- [![One-Line Notes](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/One-Line%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22One-Line%20Notes%22): a single key takeaway
+- [![Surface-level Notes](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Surface-level%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Surface-level%20Notes%22): a broad summary of the paper
+- [![KeyPoint Notes](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/KeyPoint%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22KeyPoint%20Notes%22): a notes on multiple important technical points
+- [![Reading Reflections](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Reading%20Reflections)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Reading%20Reflections%22): notes containing the maintainer's random thoughts, opinions and impressions after reading
+- [![In-Depth Notes](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/In-Depth%20Notes)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22In-Depth%20Notes%22): details of the paper and multiple important technical points with the maintainer's own opinion
+- [![Reference Collection](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Reference%20Collection)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Reference%20Collection%22): a collection of related links (e.g., explanatory posts)
+- [![Author Thread-Post](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Author%20Thread-Post)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22Author%20Thread-Post%22): Explanatory Posts and Threads by the Authors
+---
+
+## Label Taxonomy
+
+Labels are broadly categorized and color-coded as follows:
+
+- **Medium**: [![Blog](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Blog)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ABlog), [![Video](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Video)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AVideo), [![Slide](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Slide)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ASlide), ...
+
+- **Research Field**: [![NLP](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/NLP)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ANLP), [![ComputerVision](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/ComputerVision)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AComputerVision), [![SpeechProcessing](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/SpeechProcessing)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ASpeechProcessing), [![RecommenderSystems](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/RecommenderSystems)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ARecommenderSystems), ...
+
+- **Task**: [![DocumentSummarization](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/DocumentSummarization)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ADocumentSummarization), [![MachineTranslation](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/MachineTranslation)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AMachineTranslation), [![Evaluation](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Evaluation)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AEvaluation), ...
+
+- **Method**: [![LanguageModel](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/LanguageModel)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ALanguageModel), [![AIAgents](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/AIAgents)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AAIAgents), [``![ReinforcementLearning](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/ReinforcementLearning)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AReinforcementLearning), ...
+
+- **Fine-grained Category**: [![OpenWeight](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/OpenWeight)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AOpenWeight), [![AttentionSinks](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/AttentionSinks)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AAttentionSinks), [![Architecture](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Architecture)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AArchitecture), ...
+
+- **Properties / Characteristics**: [![Controllable](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/Controllable)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AControllable), [![EfficiencyImprovement](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/EfficiencyImprovement)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AEfficiencyImprovement), [![LowResource](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/LowResource)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ALowResource), ...
+
+- **Conference / Journal**: [![ACL](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/ACL)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3AACL), [![CVPR](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/CVPR)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ACVPR), [![TACL](https://img.shields.io/github/labels/AkihikoWatanabe/paper_notes/TACL)](https://github.com/AkihikoWatanabe/paper_notes/issues?q=is%3Aissue%20state%3Aopen%20label%3ATACL), ...
+
+
+The above labels are just a few examples, and there are currently 600+ different labels in total. You can filter issues using these labels.
+
+---
+
+## [Wiki](https://github.com/AkihikoWatanabe/paper_notes/wiki/X上のAIトレンド（？）（個人の感想です）): Personal Trend Notes
+
+A Wiki is maintained to record **personal impressions of trends** observed while casually browsing papers and discussions on X.
+
+- These notes reflect **subjective observations and interpretations**
+- They may contain inaccuracies or biases
+- Updates are **irregular and informal**
+
+The Wiki is intended as a lightweight place to capture emerging ideas, trends, and intuitions that may not yet be fully formed.
+
+## Conversational Interface
+
+Recommended: Clone the repository locally and use an agent to chat with the repository based on the contents of its issues.
+
+```bash
+git clone https://github.com/AkihikoWatanabe/paper_notes.git
+cd paper_notes
+```
+
+Here is the example from VSCode + Codex (GPT-5.6-luna, reasoning_effort=xhigh):
+
+> Please summarize the pretraining of large language models in chronological order. Explain it while citing the references you used and the original issue links.
+
+<img width="2905" height="1272" alt="image" src="https://github.com/user-attachments/assets/5b8724ac-7ddf-474c-9856-b7eb5ff2b4f6" />
+
+The agent can use the repository's `AGENTS.md` instructions and `agent_docs/` to answer questions based on the collected Issues and study notes.
+The `agent_docs` directory contains daily dumps of the issue contents.
+
+In addition, the repository can be explored through the following complementary interfaces.
+
+---
+
+### [DeepWiki](https://deepwiki.com/AkihikoWatanabe/paper_notes)/[CodeWiki](https://codewiki.google/github.com/akihikowatanabe/paper_notes)
+
+This repository can also be explored via **DeepWiki/CodeWiki**, which provides a **chat-based interface** for interacting with the contents of this repository.
+
+Using DeepWiki/CodeWiki, it may be easier to:
+
+- Interactively extract information from Issues and notes
+- Ask questions about specific papers, topics, or trends
+- Navigate the repository in a conversational manner rather than browsing Issues manually
+
+Here is an example query, run in codemap mode on DeepWiki:
+
+> Survey the literature on pretraining.
+
+It returns a structured document explaining the literature on pretraining, based on the materials accumulated in this repository, with references to their sources.
+
+<img width="1526" height="1265" alt="image" src="https://github.com/user-attachments/assets/d07dee80-9e5b-454d-86b0-6b9cdfe982fa" />
+
+---
+
+## Updates
+
+**2026.10.14**
+
+- Fixed an issue that had prevented agent_docs from being updated since the September 19 update.
+
+**2026.09.19**
+
+- Implement full text search in the blog.
+- The repository history was rewritten to remove generated files under `docs/`, including previously committed static site artifacts.
+  - Commit hashes before the rewrite are no longer valid.
+  - Existing clones should be deleted and freshly cloned.
+  - The generated website is now built and deployed through GitHub Actions as a Pages artifact instead of being committed to the repository.
+
+**2026.03.07**
+- For agentic use cases, I have added AGENTS.md and agent-specific documentation to the agent_doc directory. This prevents AI agents from wasting context on unnecessary HTML strings.
+
+**2026.01.20**
+- Update README.md
+
+**2025.10.17**  
+- I created a [Wiki](https://github.com/AkihikoWatanabe/paper_notes/wiki) to jot down *personal impressions of trends* observed while casually browsing papers on X.  
+- These are purely subjective notes and may contain inaccuracies. Updates will be irregular and informal.
+
+**2025.08.05**  
+- At present, the most convenient way to use this repository may be to extract knowledge interactively via its [DeepWiki](https://deepwiki.com/AkihikoWatanabe/paper_notes) interface.
+
+**2025.07.19**  
+- The following improvements were made:
+  - Fixed degraded blog response time
+  - Updated displayed blog content  
+  - (A full redesign is still pending 🫠)
+
+**2024.12.28**  
+- Several months have passed since I first planned to redesign the blog.
+
+**2024.09**
+- I reorganized Issue notes into a blog-style format.  
+- The blog is available [here](https://akihikowatanabe.github.io/paper_notes/).
+
+**2017.12.28**
+- I started this repository and created the first issue.
+
+---
+
+## Star History
+<a href="https://www.star-history.com/?repos=AkihikoWatanabe%2Fpaper_notes&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=AkihikoWatanabe/paper_notes&type=date&theme=dark&legend=top-left&sealed_token=wC6UGRkA6T4FCkrJn63IaVH8smYc8Sy2GTNBrpp_sEamF_oFjcJg4uyJkIHTuueUi7-bPlfEN7D54CYMooWYcnSkfwTqv7aq9PgjaChryTReLHiDK0kcW9UuHZ-wsnt3HCXpOIxapU_FjR63bsJPHVo_WzK44mik4lKijQfvnpBCoNhwKeo1rPc9a0kX" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=AkihikoWatanabe/paper_notes&type=date&legend=top-left&sealed_token=wC6UGRkA6T4FCkrJn63IaVH8smYc8Sy2GTNBrpp_sEamF_oFjcJg4uyJkIHTuueUi7-bPlfEN7D54CYMooWYcnSkfwTqv7aq9PgjaChryTReLHiDK0kcW9UuHZ-wsnt3HCXpOIxapU_FjR63bsJPHVo_WzK44mik4lKijQfvnpBCoNhwKeo1rPc9a0kX" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=AkihikoWatanabe/paper_notes&type=date&legend=top-left&sealed_token=wC6UGRkA6T4FCkrJn63IaVH8smYc8Sy2GTNBrpp_sEamF_oFjcJg4uyJkIHTuueUi7-bPlfEN7D54CYMooWYcnSkfwTqv7aq9PgjaChryTReLHiDK0kcW9UuHZ-wsnt3HCXpOIxapU_FjR63bsJPHVo_WzK44mik4lKijQfvnpBCoNhwKeo1rPc9a0kX" />
+ </picture>
+</a>
+
+[^1]: Metadata and abstracts are used in accordance with the **CC0 1.0 license** specified in the arXiv API terms of use.  
+[^2]: Images and screenshots included in Issues or blog posts are, in principle, cited from the original sources (papers, articles, slides, etc.) linked within each Issue.
+

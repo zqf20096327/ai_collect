@@ -1,0 +1,375 @@
+<div align="center">
+
+# Context OS
+
+Keep durable project context and workflows in a Git-backed repository that supported coding agents can read and update through reviewed handoffs.
+
+[![GitHub stars](https://img.shields.io/github/stars/conorbronsdon/agent-context-os?style=social)](https://github.com/conorbronsdon/agent-context-os/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-ready-d97757?style=flat-square)](https://docs.anthropic.com/en/docs/claude-code)
+[![Codex](https://img.shields.io/badge/Codex-ready-111827?style=flat-square)](docs/codex-onboarding.md)
+[![Validate](https://github.com/conorbronsdon/agent-context-os/actions/workflows/validate.yml/badge.svg)](https://github.com/conorbronsdon/agent-context-os/actions/workflows/validate.yml)
+[![Podcast](https://img.shields.io/badge/Podcast-Chain_of_Thought-purple?style=flat-square)](https://chainofthought.show/?utm_source=github&utm_medium=referral&utm_campaign=repo-readme&utm_content=agent-context-os)
+[![X](https://img.shields.io/badge/X-@ConorBronsdon-black?style=flat-square&logo=x)](https://x.com/ConorBronsdon)
+
+</div>
+
+Chat history, project instructions, and copied prompts drift apart. Context OS is a Git-backed context and workflow layer that keeps the durable parts in plain Markdown: who you are, what you are working on, decisions already made, and the workflows you want an agent to follow.
+
+Claude Code, Codex, OpenClaw, OpenCode, Cursor CLI, Devin CLI, and Hermes Agent have
+first-class adapters, and Devin cloud sessions are first-class too. Cursor IDE remains experimental; their available
+surfaces and evidence limits are listed in [host support](#host-support). These
+adapters route to shared repository state, with a deterministic lifecycle kernel
+that turns reviewed setup, checkpoint, and close requests into hash-checked
+proposals and receipts. Host-native memory stays separate.
+
+| What you need | How Context OS handles it |
+|---|---|
+| Bring useful context forward | A source-neutral [migration workflow](docs/migration-guide.md) turns selected chats, project instructions, memory exports, and documents into reviewable files. |
+| Work across coding agents | Provider-neutral state, skills, and lifecycle transitions live outside host adapters. Registered runtimes share the same kernel. |
+| Add the tools that fit | A generated [integration catalog](references/integrations.md) documents install scope, data access, side effects, and confirmation gates. Nothing is enabled automatically. |
+| Keep context useful | Session handoffs, staleness checks, decision logs, and reviewable memory proposals make maintenance part of the normal workflow. |
+
+Context OS does not scrape every account, sync product UIs automatically, or install integrations on setup. Imports are selective, browser-project sync is manual, and external capabilities remain opt-in.
+
+## Experimental starter for one project
+
+For a small project, try keeping the objective, decisions, and latest handoff
+in one instruction file. If separate notes help you review that context, the
+[experimental three-file starter](docs/minimal-starter.md) provides copyable
+instructions, current work, and a handoff. It needs a file-capable agent and
+manual review, with no installer or runtime registration.
+
+The starter has not been established as the preferred default. Read the
+[evidence and limits](docs/minimal-starter-evidence.md), then try the
+[one-week comparison](docs/minimal-starter.md#evaluate-it-for-one-week).
+Existing full-template users should keep their current workflow and evaluate
+the starter in a separate project.
+
+## Quick start
+
+Try [your first reviewed handoff](docs/first-handoff.md) for a small Claude-to-Codex
+example. Then inspect [source briefings and change history](docs/continuity.md).
+
+Personal and business context often belongs in a private repository. Create an empty private repository first if that applies to you, and never commit credentials or a raw account export.
+
+### Start from a published release
+
+For a version-pinned workspace, open [v1.2.0](https://github.com/conorbronsdon/agent-context-os/releases/tag/v1.2.0)
+and download all five attached assets from its immutable release, published
+October 8, 2026: the template `.tar`, bundle lock,
+provenance, `OFFLINE-VERIFY.md`, and `SHA256SUMS`. Follow that release's
+`agent-context-os-template-v1.2.0.OFFLINE-VERIFY.md` to verify the assets before
+extracting and running setup. GitHub's generated source ZIP and tar.gz are
+repository snapshots; the attached template tar is the canonical workspace.
+Use the [v1.2.0 release notes](docs/releases/v1.2.0.md) for what that version
+ships. Changes and support promotions described on a development branch may
+require a later release.
+
+Initialize your own Git repository inside the verified extracted workspace
+before running setup (`git init`). This gives its hooks and Git evidence an
+independent boundary. The [first reviewed handoff](docs/first-handoff.md) covers
+release verification and a local synthetic exercise.
+
+Version 1.2.0 adds first-class Devin cloud sessions and native Windows Devin CLI
+support.
+
+### Start from source
+
+Clone the source when you want the current branch and its development tools:
+
+```bash
+git clone https://github.com/conorbronsdon/agent-context-os.git my-context
+cd my-context
+
+# Recommended for a private copy:
+git remote rename origin upstream
+git remote add origin <YOUR_PRIVATE_REPO_URL>
+
+# Select every agent this repository will use:
+bash scripts/setup.sh --agents claude,codex
+# bash scripts/setup.sh --agents hermes
+# bash scripts/setup.sh --agents openclaw
+# bash scripts/setup.sh --agents opencode
+# bash scripts/setup.sh --agents cursor
+# bash scripts/setup.sh --agents devin
+# bash scripts/setup.sh --agents none  # core-only
+```
+
+Setup presents an exact, digest-bound proposal before recording the selected
+set. Reruns add agents but never remove them; use the explicit lifecycle to
+disable one later. Omit the option, or use `--agents auto`, for local
+auto-detection without changing repository intent. The singular `--agent` form
+is a deprecated singleton alias. See [workspace
+configuration](docs/workspace-configuration.md) for the full contract.
+
+After setup, `bash scripts/contextos.sh agent list` shows tracked activation and
+local registration separately. `agent enable` (or `agent add`) creates an
+additive proposal; `agent disable` creates the only proposal allowed to shrink
+the set. Neither operation deletes bundled adapter files.
+
+Then start your agent from the repository root. In the normal v0.12
+full-template wrapper path, the product kernel, durable context, and nominal
+active work share one root. A marker-only JSON workspace may use an already-loaded
+executable package for discovery and reports, but a marker-only root cannot
+apply content or configure runtimes until the trusted product closure is
+materialized there. A containing Git worktree may supply read-only commit
+evidence without gaining context mutation authority.
+
+For a separate application repository, pass exact distinct roots and create a
+reviewable attachment proposal (global role options precede the command):
+
+```bash
+bash /path/to/context-os/scripts/contextos.sh \
+  --context-root /path/to/context-repo \
+  --working-root /path/to/application \
+  project attach --id my-app
+```
+
+Apply the returned digest with the same root options and `--runtime generic`.
+Later start/setup/update/end invocations use those exact roots. Context OS writes
+only ContextRoot; WorkingRoot contributes bounded Git identity, status, and
+history evidence and receives no marker or lifecycle file. A moved application
+requires a reviewed `project rebind --id my-app` proposal. See the [root
+contract](docs/root-contract.md).
+
+| Starting point | Next action |
+|---|---|
+| New workspace in Claude Code | Run `/setup` |
+| New workspace in Codex | Run `$setup` |
+| New workspace in Hermes | Follow the [Hermes adapter guide](adapters/hermes/README.md), then run `/context-setup` after exposing the repository skills |
+| New workspace in OpenClaw | Follow the [OpenClaw adapter](adapters/openclaw/README.md), then run `/contextos <alias> setup` through an authorized operator surface |
+| New workspace in OpenCode | Follow the [OpenCode adapter](adapters/opencode/README.md), then run `/context-setup` from the repository root |
+| New workspace in Cursor | Follow the separate [CLI and experimental IDE paths](adapters/cursor/README.md), then run `/context-setup` |
+| New workspace in Devin | Start Devin CLI from the repository root and run `/context-setup`; for a cloud session, complete the [managed-account checks](adapters/devin/README.md) and run `@skills:context-setup` |
+| Existing context in another assistant | Follow the [migration guide](docs/migration-guide.md), then use the selected material during setup |
+| claude.ai only | Use [SETUP-PROMPTS.md](SETUP-PROMPTS.md) and copy the approved output into the repository |
+
+The setup interview fills the identity, first project, workflows, and weekly state files. It can start from your answers or from a migration packet you reviewed first. See the full [getting started guide](docs/getting-started.md) for prerequisites, privacy choices, and verification.
+
+## See the loop
+
+![A start session in Claude Code: state files load and a session briefing comes back, using sample data from the included example musician project](docs/assets/start-demo.gif)
+
+`/start` in Claude Code, `/context-start` in Hermes, Cursor, Devin CLI, or OpenCode, `$start` in Codex,
+`/contextos <alias> start` in OpenClaw, and `@skills:context-start` in a Devin session read your state,
+priorities, decisions, blockers, and recent handoff. The result is grounded in
+files rather than reconstructed from chat.
+
+At the end, `/end` or `$end` proposes a handoff for review before it updates `sessions/` and `state/`. The namespaced `$context-end` form remains supported.
+
+<sub>The GIF is scripted with sample data. [`docs/start-demo.tape`](docs/start-demo.tape) regenerates it, and [`docs/demo/start-session.sh`](docs/demo/start-session.sh) contains the transcript. Neither reads your state or calls a model.</sub>
+
+## Daily workflow
+
+Start small. Use the core loop for a week, add one active project, then turn a repeated task into a skill when the repetition is clear.
+
+| Moment | Claude Code | Codex | OpenCode | Hermes | OpenClaw | Cursor CLI / IDE (experimental) | Devin CLI / session | Shared result |
+|---|---|---|---|---|---|---|---|---|
+| First run or major refresh | `/setup` | `$setup` | `/context-setup` | `/context-setup` | `/contextos <alias> setup` | `/context-setup` | `/context-setup` / `@skills:context-setup` | Reviewed context proposal |
+| Start work | `/start` | `$start` | `/context-start` | `/context-start` | `/contextos <alias> start` | `/context-start` | `/context-start` / `@skills:context-start` | Read-only continuity inventory and briefing |
+| Save a checkpoint | `/update` | `$update` | `/context-update` | `/context-update` | `/contextos <alias> update` | `/context-update` | `/context-update` / `@skills:context-update` | Hash-checked update and receipt |
+| Finish work | `/end` | `$end` | `/context-end` | `/context-end` | `/contextos <alias> end` | `/context-end` | `/context-end` / `@skills:context-end` | Hash-checked handoff, decisions, and receipt |
+
+OpenClaw setup, update, and end can require multiple operator turns. Resume the
+owned workflow with `/contextos <alias> continue <session-key> <response>`, then
+apply the independently reviewed proposal from a trusted shell; the OpenClaw
+plugin itself exposes no apply command.
+
+The namespaced `$context-setup`, `$context-start`, `$context-update`, and
+`$context-end` invocations remain available for compatibility.
+
+Claude Code also ships host-specific commands for capture, daily checks, recovery, context search, and auto-memory curation. The [host boundary](docs/codex-onboarding.md#host-specific-boundaries) names what is portable and what is not.
+
+## Bring existing context with you
+
+Do not import an entire chat archive into active context. Use the [migration guide](docs/migration-guide.md) to:
+
+1. select the assistant, project, or small set of conversations that contains useful context;
+2. produce an inventory or compact migration packet;
+3. classify each item as keep, verify, skip, or archive;
+4. map approved facts, decisions, projects, and workflows into canonical files; and
+5. validate the repository before committing.
+
+The guide covers ChatGPT, Claude, Gemini Apps, Gemini CLI, and a generic path for other systems. Gemini CLI also has privacy-first `$migrate-gemini` and `$mine-gemini-workflows` skills for selected configuration and session evidence. Consumer Gemini CLI requests transitioned to Antigravity CLI in June 2026; continuing enterprise/API-key Gemini CLI and Antigravity are separate targets, and this repository does not claim Antigravity lifecycle or permission parity.
+
+## Host support
+
+<!-- runtime-support:start -->
+| Host | Tier | Support |
+|---|---|---|
+| Claude Code | first-class | Shared lifecycle, slash-command adapters, hooks, optional live reads, and Claude-only auto-memory curation |
+| Codex | first-class | Shared lifecycle, native skills, project instructions, hooks, and reviewed proposal/apply writes |
+| Cursor | first-class | First-class Agent CLI lifecycle and handoff with exact-version evidence; IDE remains experimental, with no hook or native-memory bridge |
+| Devin | first-class | First-class Devin CLI lifecycle and handoff on Linux (WSL2) and native Windows 11 with exact-version evidence and an import guard; first-class cloud sessions with live API lifecycle, exact-digest apply and fresh-session handoff on a recorded snapshot build; Devin Review is instruction-only compatibility |
+| Hermes Agent | first-class | First-class CLI lifecycle with explicit skill preloading, reviewed kernel apply, advisory hooks, and verified native-memory separation |
+| OpenClaw | first-class | External-plugin multi-turn lifecycle with alias-bound lightweight subagents, copied portable skills, separate private memory, and trusted-shell kernel apply |
+| OpenCode | first-class | Repository-native AGENTS.md and Agent Skills discovery with typed lifecycle commands, native permissions, and deterministic proposal/apply safety |
+<!-- runtime-support:end -->
+
+Compatibility paths that are not registered runtime adapters:
+
+| Host | Compatibility path |
+|---|---|
+| Gemini CLI / Antigravity CLI | Migration tooling plus portable-skill discovery for continuing enterprise/API-key Gemini CLI; no complete workspace adapter, and no Antigravity discovery or permission parity is claimed |
+| claude.ai | Manual consumer of selected knowledge files; no repository writes, hooks, or slash-command parity |
+| Other agents | Can use the Markdown state and portable skills only when their file and Agent Skills support is compatible |
+
+## One source, explicit host adapters
+
+| Capability | Shared | Claude Code | Codex | OpenCode | Hermes | OpenClaw | Cursor CLI / IDE (experimental) | Devin CLI / session |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Identity, project, state, and session files | Yes | Reads | Reads | Reads | Reads | Reads | Reads | Reads |
+| Deterministic proposal/apply and receipts | Yes | Adapter | Native skill calls | Typed command + native skill | Installed skill calls | Copied skill calls | Native skill calls | Native skill calls |
+| Lifecycle vocabulary | Semantics | `/setup` etc. | `$setup` etc. | `/context-setup` etc. | `/context-setup` etc. | `/contextos <alias> setup` etc. | `/context-setup` etc. | `/context-setup` / `@skills:context-setup` etc. |
+| Project hooks | Event contract only | `.claude/` | `.codex/` | Not claimed | Optional adapter | Not claimed | Not claimed | CLI `.devin/hooks.v1.json`; session not claimed |
+| Native memory | No | Claude auto-memory | Outside contract | Outside contract | `MEMORY.md` / `USER.md` | Private workspace | Outside contract | Outside contract; cloud state account-managed |
+
+The shared layer is intentionally plain files. Provider-specific tool names, hooks, permissions, and memory features stay in their adapter directories.
+
+## Optional integrations
+
+The [optional integrations catalog](references/integrations.md) and its
+[machine-readable aggregate](integrations/catalog.json) are generated from
+entry-local sources in [`integrations/entries/`](integrations/entries/). Each
+entry declares supported hosts, credentials, reads, writes, publish or
+destructive capabilities, confirmation gates, evidence, a health check, and
+uninstall behavior.
+
+Start with the task-based [integration chooser](docs/integrations-guide.md), add at most one new trust boundary at a time, then read the selected generated entry in full.
+
+Maintainers can run `python3 scripts/integrations.py freshness` to see which
+entries are approaching or past their human evidence-review date. Pass
+`--as-of YYYY-MM-DD` when reproducible output is required.
+
+The catalog spans portable skill collections, creator tools, CLIs, and MCP
+servers. Treat the generated catalog and task-based chooser as the current
+inventory rather than relying on a hand-maintained summary. `listed` and
+`experimental` entries are leads, not endorsements. Setup never installs,
+authenticates, or activates them.
+
+## Repository layout
+
+```text
+AGENTS.md                  Portable repository instructions
+CLAUDE.md                  Claude Code root context and adapter index
+ROUTING.md                 Task-to-context routing table
+TODO.md                    Full backlog
+identity/                  Stable personal and professional context
+projects/                  Project context and project-specific workflows
+state/                     Current focus, priorities, blockers, and decisions
+sessions/                  Reviewed session handoffs
+coordination/              Multi-run message board contract; the board itself
+                           lives on a dedicated coordination branch
+.agents/skills/            Provider-neutral workflow cores
+contextos/                 Deterministic lifecycle kernel
+                           and offline bundle materializer
+.claude/commands/          Claude Code slash-command adapters
+.claude/skills/            Claude Code-only skills
+.claude/hooks/             Claude Code-only safety and session hooks
+.codex/hooks.json          Codex lifecycle advisory adapter
+.opencode/commands/        OpenCode typed lifecycle adapters
+adapters/hermes/           Hermes installation and optional hook adapter
+adapters/openclaw/         First-class OpenClaw plugin and skills adapter
+adapters/opencode/         First-class OpenCode onboarding and conformance
+adapters/cursor/           First-class Cursor CLI and experimental IDE adapter
+adapters/devin/            First-class Devin CLI and cloud-session adapter, plus Review
+runtimes/                  Machine-readable capability manifests
+components/                Component ownership and dependency manifest
+bundles/                   Generated detached bundle-lock schema
+workspace/                 Schema and inactive canonical config example
+integrations/              Machine-checked opt-in integration catalog
+references/                Generated catalog and integration setup notes
+scripts/                   Setup, validation, migration, and maintenance tools
+docs/                      Onboarding, architecture, safety, and migration guides
+```
+
+The workspace migration command can now create a digest-bound proposal for
+`contextos.workspace.json` and, when applicable, retire legacy `workspace.yaml`
+in the same recoverable transaction. Setup-time agent selection remains tracked
+in #65. The template does not ship a live root file because that would override
+an existing clone's legacy YAML before its migration is reviewed.
+
+Once present, `contextos.workspace.json` is the provider-neutral root marker,
+including for a marker-only workspace. Existing `AGENTS.md` plus `state/` or
+`workspace.yaml` roots remain discoverable. The nearest recognized root wins,
+and discovery never climbs past a nested `.git` repository boundary; use
+`--root` to choose an explicit discovery start when cwd is not the intended
+starting point. Discovery may still ascend from that path to the nearest valid
+root before a nested Git boundary.
+
+Each fact should have one canonical home. `ROUTING.md` points an agent to the right file instead of copying the same context across prompts.
+
+## Skills and memory
+
+A skill is a Markdown workflow for a task you repeat. Provider-neutral skills belong in `.agents/skills/<name>/SKILL.md`. Claude Code can add a thin adapter under `.claude/commands/`; Codex discovers the repository skill directly. [Build a first portable skill](docs/first-skill.md) after the core loop is working, or follow [the portable skill structure](projects/README.md) for a shared workflow.
+
+Claude Code auto-memory is a separate, host-specific layer. The repository includes a typed [auto-memory specification](docs/auto-memory.md) and the [`/dream` curator](docs/dream-architecture.md), which creates proposals before anything writes back. Shared continuity still belongs in `state/` and `sessions/` so another supported agent can use it.
+
+## Safety and validation
+
+- Review generated context before writing or committing it.
+- Keep raw exports, credentials, private reasoning, and migration scratch data outside tracked files.
+- Treat integrations as disabled until you choose and configure one.
+- Use one git worktree per concurrent agent session.
+- Follow [`docs/safety-contract.md`](docs/safety-contract.md) before external writes, destructive actions, or permission changes.
+
+Run the full local check after changing instructions, skills, scripts, adapters,
+generated references, or tracked personal context:
+
+```bash
+bash scripts/validate-all.sh --workspace
+```
+
+The workspace mode permits new tracked files only below the component catalog's
+declared extensible roots. CI and product contributors run the strict form
+without `--workspace`, so every tracked template file still requires an owner.
+Both forms check structure, adapter mappings, links, shell syntax, hook behavior,
+JSON, tests, and generated integration documentation. They cannot prove the
+behavior of an installed agent version or an external service.
+
+## Documentation
+
+| Goal | Guide |
+|---|---|
+| Install and choose a host | [Getting started](docs/getting-started.md) |
+| Review the proposed 1.0 stability promise | [Compatibility contract](docs/compatibility-contract.md) |
+| Inspect synthetic handoff tests | [Synthetic observations](https://github.com/conorbronsdon/agent-context-os/blob/c4648d80fc72ed27abce527a05e952e42580783b/docs/evidence/synthetic-handoffs-2026-09-29/report.md) |
+| Inspect published-bundle upgrade trials | [Upgrade preflight](https://github.com/conorbronsdon/agent-context-os/blob/c4648d80fc72ed27abce527a05e952e42580783b/docs/evidence/upgrade-preflight-2026-09-29/report.md) |
+| Understand agent selection and legacy migration | [Workspace configuration](docs/workspace-configuration.md) |
+| Import useful context from another system | [Migration guide](docs/migration-guide.md) |
+| Use the repository in Codex | [Codex onboarding](docs/codex-onboarding.md) |
+| Use the repository in Hermes Agent | [Memory across agents](docs/memory-across-agents.md) and the Hermes section of [AGENTS.md](AGENTS.md) |
+| Use the repository in OpenClaw | [OpenClaw adapter](adapters/openclaw/README.md) |
+| Use the repository in OpenCode | [OpenCode adapter](adapters/opencode/README.md) |
+| Use the repository in Cursor | [Cursor CLI and experimental IDE adapter](adapters/cursor/README.md) |
+| Keep claude.ai projects aligned | [Claude projects sync](docs/claude-projects-sync.md) |
+| See every command and portable skill | [Commands and skills](docs/commands-and-skills.md) |
+| Understand component ownership and the composition/materialization substrate | [Component model](docs/component-model.md) |
+| Verify an offline bundle or inspect a structural plan | [Bundle locks and plans](docs/bundle-locks.md) |
+| Read release scope and evidence limits | [v1.2.0 release notes](docs/releases/v1.2.0.md); released [v1.1.1](docs/releases/v1.1.1.md), [v1.0.0](docs/releases/v1.0.0.md), [v0.15.0](docs/releases/v0.15.0.md), [v0.14.0](docs/releases/v0.14.0.md), [v0.13.1](docs/releases/v0.13.1.md), and [v0.12.0](docs/releases/v0.12.0.md) |
+| Understand KernelRoot, ContextRoot, WorkingRoot, and the v0.12 compatibility boundary | [Root contract](docs/root-contract.md) |
+| Choose an optional add-on | [Integration chooser](docs/integrations-guide.md) and [catalog](references/integrations.md) |
+| Understand product language and boundaries | [Positioning](docs/positioning.md) |
+| Keep context files small and cheap to load | [Optimizing context files](docs/optimizing-context.md) |
+| Keep optional MCP calls inside a token budget | [MCP efficiency](docs/mcp-efficiency.md) |
+| Maintain workspace context and memory | [Workspace maintenance](docs/maintenance.md) |
+| Maintain the repository | [Repository maintenance](docs/repo-maintenance.md) |
+
+## Contributing
+
+This is a template. Structural contributions, clearer conventions, reusable skills, and integration catalog entries are welcome. Open an issue with the pattern and the problem it solves.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the validator, generated files, and conventions, and [SECURITY.md](SECURITY.md) to report a vulnerability privately. Issues labelled [`good first issue`](https://github.com/conorbronsdon/agent-context-os/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) need no external account or credential.
+
+## Created By
+
+- [Conor Bronsdon](https://github.com/conorbronsdon), host of the [Chain of Thought podcast](https://chainofthought.show/?utm_source=github&utm_medium=referral&utm_campaign=repo-readme&utm_content=agent-context-os)
+
+## Disclaimer
+
+This is an independent personal project. It is not affiliated with, sponsored by, or endorsed by Anthropic, OpenAI, Google, or another provider.
+
+## License
+
+MIT. See [LICENSE](LICENSE). Fork it, adapt it, and make it yours. Attribution is not required.

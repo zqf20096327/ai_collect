@@ -1,0 +1,278 @@
+# Koma
+
+### Miko: required Skill checks for Claude Code and Codex
+
+> **Your coding agent says it read the Skill, but did it really?**
+>
+> Miko intercepts file edits at the Hook layer. If your agent hasn't read the required Skill first, Miko rejects the edit and provides a clear, observable recovery path. It runs locally, zero-dependency, makes no LLM calls, and is free and open source.
+
+#### Who needs this?
+- You use **Claude Code** or **Codex CLI**, wrote project Skills/instructions, but aren't sure if the agent follows them.
+- You want a **hard check** before file edits instead of relying solely on prompt instructions.
+- You want Skill loading and checks to be **observable, rejectable, and recoverable**.
+
+#### How Miko differs
+Unlike static Skill linters or security scanners, Miko works at the **runtime Hook layer**—intercepting the agent's actual file edit tool calls in real time rather than statically analyzing Skill files.
+
+#### Scope
+
+**Miko is an extremely lightweight tool.** It checks a small set of observable events and blocks only the actions that fail them. It is not a security boundary, a compliance system, or proof that a model understood anything.
+
+**Start every conversation by telling your agent to load the Skills it needs.** Miko is the backstop for when the agent forgets, not a replacement for saying what you want. Clearer instructions mean fewer pauses.
+
+```bash
+npm install -D koma-miko
+npx koma-miko init --host claude
+```
+
+Edit the generated `miko.json` to name your project's Skills and protected paths,
+then start a new Claude Code session.
+**Using Codex?** Follow the [Codex setup and one-time Hook review](./packages/koma-miko/README.md#codex-setup).
+Codex CLI is a Technical Preview; Desktop requires prior CLI activation.
+
+<p align="center">
+  <img src="logo/logobanner.png" alt="Koma" width="600" />
+</p>
+
+<p align="center">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=flat-square" />
+  <img alt="CI" src="https://github.com/swnotmetal/Project-Koma/actions/workflows/ci.yml/badge.svg" />
+  <a href="https://www.npmjs.com/package/koma-miko"><img alt="koma-miko" src="https://img.shields.io/npm/v/koma-miko/alpha?label=koma-miko%20alpha&color=C25E38&style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/koma-gate"><img alt="koma-gate" src="https://img.shields.io/npm/v/koma-gate?label=koma-gate&color=3178c6&style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/koma-scout"><img alt="koma-scout" src="https://img.shields.io/npm/v/koma-scout?label=koma-scout&color=3178c6&style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/koma-core"><img alt="koma-core" src="https://img.shields.io/npm/v/koma-core?label=koma-core&color=3178c6&style=flat-square" /></a>
+  <br />
+  <a href="https://koma-demo.swbuilds.workers.dev"><img alt="Miko live demo" src="https://img.shields.io/badge/Miko_demo-10--sec_replay-C25E38?style=flat-square" /></a>
+  <img alt="Gate benchmark" src="https://img.shields.io/badge/Gate_eval-98.8%25_recall_0%25_FPR-6e3abe?style=flat-square" />
+  <img alt="koma-gate downloads" src="https://img.shields.io/npm/dt/koma-gate?label=gate%20downloads&color=blue&style=flat-square" />
+  <a href="https://glama.ai/mcp/servers/swnotmetal/Project-Koma"><img alt="MCP server" src="https://glama.ai/mcp/servers/swnotmetal/Project-Koma/badges/score.svg" /></a>
+</p>
+
+<p align="center">
+  <a href="./README.zh-CN.md">中文版</a>
+</p>
+
+<p align="center">
+  <strong>▶ <a href="https://koma-demo.swbuilds.workers.dev">Try Miko's guided terminal replay</a></strong> — plus Gate, Scout &amp; Core, no signup.
+</p>
+
+---
+
+### Miko for Claude Code and Codex
+
+<p align="center">
+  <img src="packages/koma-miko/assets/miko-lockup.png" alt="Koma Miko" width="420" />
+</p>
+
+Coding agents can say they loaded a required Skill or ran a test. Miko does not
+treat that claim as evidence. At supported local host Hooks, it compares
+observed Skill loads, reference reads, tool actions, and completion checks with
+a project-owned `miko.json`.
+
+If an agent tries to edit before satisfying the spec, Miko can return a denial
+and a short recovery instruction. It cannot inspect hidden model context, prove
+that a model understood a Skill, or verify events the host never exposes.
+In Claude CLI guided mode, a genuine scope exception opens one visible Miko
+choice: allow that exact retry once, or keep the current boundary.
+
+```bash
+npx --yes koma-miko demo             # deterministic; no API key
+npx --yes koma-miko probe --host claude  # isolated adapter check; no model
+npx koma-miko init --host claude     # after local installation
+```
+
+> **Codex CLI is a Technical Preview; Codex Desktop requires prior CLI
+> activation.** The CLI requires a one-time `/hooks` review before project
+> Hooks run. Miko promotes `enforce` on Codex because the current Hook API
+> cannot open a native `REVIEW` choice; review therefore degrades to a
+> recoverable pause/deny. Desktop-only onboarding is not a supported alpha
+> path. An offline `probe` proves adapter logic, not live Hook activation.
+
+[Miko README →](./packages/koma-miko/README.md) ·
+[Current host support →](./packages/koma-miko/README.md#host-support) ·
+[10-second web replay →](https://koma-demo.swbuilds.workers.dev)
+
+[Miko replay GIF](./docs/assets/miko-terminal-demo.gif) ·
+[Still image](./docs/assets/miko-terminal-demo-poster.png) — browser simulation, not a live host recording.
+
+Claude Code is the primary alpha workflow. Codex CLI has a verified narrow
+recovery flow with the activation limits above. Gemini is outside active
+development. VS Code Copilot now has one verified live enforcement cycle on the
+Local harness, but that host does not render Miko's status text in the chat UI,
+so Miko asks the agent to relay it. Existing adapters and their dated results
+remain available in the
+[adapter documentation](./packages/koma-miko/README.md#other-adapters).
+
+**Why use Miko instead of writing a Hook?** A small native Hook is enough for a
+single fixed check. Miko packages project Specs, observed-read tracking,
+post-compaction reload requirements, recovery messages, and completion evidence
+so you can maintain those checks together. Neither approach proves the model
+understood the instructions. See [when Miko helps](./packages/koma-miko/README.md#when-to-use-miko).
+
+**Zero Dependencies**: Pure TypeScript with 0 npm runtime dependencies. You get a lightweight Hook layer that halts unverified agent edits without heavy frameworks.
+
+**Key Research & Evals**:
+- **[Miko Recovery Playbook](./docs/design/miko-recovery-playbook.md)**: How Miko gives agents a structured, observable path to recover after being paused/denied, avoiding agent deadlock loops.
+- **[Claude Haiku Evals](./docs/evals/miko-claude-haiku-alpha.md)**: Evaluation on Claude Haiku across N Skill scenarios proving real-world recovery and enforcement.
+
+**Feedback & Discussions**:
+Have questions or want a specific capability? Open an [Issue](https://github.com/swnotmetal/Project-Koma/issues) or [Discussion](https://github.com/swnotmetal/Project-Koma/discussions)—all input is read and shapes the project roadmap directly.
+
+---
+
+### Four Boundaries
+
+| Boundary | Failure mode | What Koma checks | Package |
+|---|---|---|---|
+| Coding agent | Required Skill or completion check skipped | Host-observed preparation, action scope, and evidence | `koma-miko@alpha` |
+| User → LLM | Prompt injection / jailbreak | Semantic scope before the application model | `koma-gate` |
+| Request perimeter | Audio abuse / flooding | Validation, rate limits, and geo rules | `koma-scout` |
+| Retrieval | Data enumeration / scraping | Split index from content; token-gate retrieval | `koma-core` |
+
+Different attacks cross different boundaries. Koma provides a small primitive for each one.
+
+---
+
+### What Koma Is — and Isn't
+
+**Is**: small composable packages · usable independently · explicit failure
+modes · deterministic checks where the host exposes evidence
+
+**Isn't**: a model · an agent framework · proof that a model understood its
+instructions · a replacement for authorization · a complete security boundary
+by itself
+
+---
+
+### Benchmarks
+
+#### Miko alpha evaluation
+
+Miko is deterministic, so its useful numbers are verifier cost and end-to-end
+Hook behavior—not a generic score for model intelligence.
+
+| Signal | Observed result |
+|---|---|
+| Offline host conformance | Claude, Codex, Gemini, and VS Code Copilot each reproduce `DENY → observed Skill → ALLOW`; ledger fixtures reject prompt/code/tool-response persistence |
+| Local verifier scale | 1,000 Agent Specs: **1.34 ms p95** per action; 10,001 indexed evidence events: **0.0041 ms p95**; restore 1,000 evidence events: **1.52 ms p95** |
+| Claude Code live + hand-test | One 100-Skill / ~20k-context run passed. A natural Chinese request drove a three-file rewrite through 3 Agent Specs and 28 observed events. Separate Haiku 4.5 runs verified visible `Allow once` and `Keep current scope` policy-exception paths |
+| Codex CLI Technical Preview | Fixed live recovery completed `DENY → Skill/reference → edit → COMPLETE`; an interactive CLI 0.152.0 hand-test visibly rendered Miko active, recovered, and COMPLETE. Desktop also enforced after CLI activation, but onboarding and completion visibility remain unsuitable as a primary path |
+| DeepSeek Harness smoke | **3/3** narrow packed-artifact recovery runs passed; 19.425 s mean model phase |
+
+The scale row is a 2026-08-27 reference run on Node 24.19 / Windows; rerun it
+with `npm run eval:scale -w koma-miko`. Context tokens never enter the verifier.
+The paid samples are deliberately small and **do not establish general model,
+long-context, or editor reliability**. See the
+[scale record](./docs/evals/miko-scale-alpha.md),
+[Claude record](./docs/evals/miko-claude-haiku-alpha.md),
+[host-adapter record](./docs/evals/miko-host-adapters-alpha.md), and
+[DSH record](./docs/evals/miko-dsh-alpha.md).
+
+#### Koma Gate live-model benchmark
+
+I threw **1,769 real prompt-injection attacks** at Koma Gate in fail-closed mode, using real providers — not mock adapters.
+
+| Provider | Recall | Precision | False Positives |
+|----------|:------:|:---------:|:---:|
+| DeepSeek (deepseek-chat) | **98.8%** | **100%** | **0** |
+| Google (gemini-2.5-flash) | 96.2% | **100%** | **0** |
+
+**Chinese attack set**: 100% recall · 100% precision · 0% FPR across 8 categories.
+
+> **Can you break it?** [Open an issue](https://github.com/swnotmetal/Project-Koma/issues) with an attack Koma misses. → [Full methodology](./BENCHMARKS.md)
+
+---
+
+### Application-side quick start: Gate
+
+```ts
+import { createGeneralKnowledgeGuard } from 'koma-gate';
+
+const guard = createGeneralKnowledgeGuard({
+  llm: { apiKey: process.env.GEMINI_API_KEY },
+});
+
+app.post('/api/chat', guard.middleware(), async (req, res) => {
+  // Only in-scope requests reach your model
+  res.json({ reply: await chat(req.body.message) });
+});
+```
+
+```bash
+git clone https://github.com/swnotmetal/Project-Koma
+cd Project-Koma && node demo/server.js
+curl http://localhost:8080/self-test
+```
+
+---
+
+### Application-Side Packages
+
+**`koma-gate`** — Prompt injection firewall. LLM-based scope classifier that blocks jailbreaks, off-topic requests, and instruction overrides. Supports OpenAI, Anthropic, Google, DeepSeek, and local Ollama models. [README →](./packages/koma-gate/README.md)
+
+[Try Gate in the browser demo →](https://koma-demo.swbuilds.workers.dev)
+
+<img src="show-koma.gif" alt="Koma Gate blocking a prompt injection in real time" width="100%" />
+
+**`koma-scout`** — Perimeter protection. Rate limiting, audio upload validation, geo allowlisting. Cheap checks before expensive AI work. [README →](./packages/koma-scout/README.md)
+
+<img src="logo/scout-diagram.svg" alt="Koma Scout perimeter checks" width="480" />
+
+**`koma-core`** — Protected RAG storage. Public search index, private content, opaque HKDF-derived tokens. *Discovery is not authorization.* [README →](./packages/koma-core/README.md)
+
+<img src="logo/core-diagram.svg" alt="Koma Core split-store" width="480" />
+
+Each package works standalone. A typical application checks cheap request limits
+with Scout before Gate classification, then uses Core where protected retrieval
+is needed. See the [architecture map](./ARCHITECTURE_MAP.md).
+
+**Application-side MCP servers** — these belong to Gate and Core, not Miko:
+
+- `koma-gate-mcp` — `classify_input` tool for prompt-injection checks. [README →](./packages/koma-gate-mcp/README.md)
+- `koma-core-mcp` — `search_docs` + `retrieve_doc` for protected RAG retrieval. [README →](./packages/koma-core-mcp/README.md)
+
+```json
+{
+  "mcpServers": {
+    "koma-gate": { "command": "npx", "args": ["-y", "koma-gate-mcp"] },
+    "koma-core": { "command": "npx", "args": ["-y", "koma-core-mcp"] }
+  }
+}
+```
+
+---
+
+### Using an agent to set up Miko?
+
+Tell it:
+
+> "Read the Miko README, then help me configure koma-miko for my existing Skills and protected paths. Use the setup for my host and explain any activation step I must complete."
+
+For a coding-agent repository, install Miko and run
+`npx koma-miko init --host claude` or follow the
+[Codex setup](./packages/koma-miko/README.md#codex-setup). Edit the generated
+`miko.json` to name the Skills, paths, and completion evidence that matter to
+the project. Miko does not install the Skills themselves.
+
+See [llms.txt](./llms.txt) for documentation entry points. Miko uses host Hooks;
+it does not require an MCP server.
+
+---
+
+### Trust & Safety
+
+- **Minimal dependency surface.** Miko, Gate, and Core have no third-party runtime dependencies; Scout declares Express as a peer.
+- **No model-output execution.** Miko observes host events; Gate, Scout, and Core classify, rate-limit, or store. None executes generated code.
+- **Package-specific failure behavior.** Gate defaults to fail-open and can use
+  `failOpen: false`. Miko follows each Agent Spec's mode; an enforce-mode
+  missing-evidence check denies the applicable action.
+- **CodeQL on every push.** Targets OWASP LLM01.
+- **MIT licensed.**
+
+→ [Security policy](./SECURITY.md) · [Known limitations](./SECURITY-HARDENING.md) · [Contributing](./CONTRIBUTING.md)
+
+---
+
+Koma comes from Komainu ("狛犬"), the stone guardian lions of Japanese Shinto shrines. Three deployed defense layers, each standalone, plus the Miko alpha agent-contract boundary. Patterns distilled from production, not papers.
+
+[License](./LICENSE)

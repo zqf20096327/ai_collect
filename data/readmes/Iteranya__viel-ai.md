@@ -1,0 +1,256 @@
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/07c94e4d-b6a2-48bd-91a4-9a1e8f89db9e" alt="Viel AI Logo" width="256">
+  <br><br>
+  <a href="https://www.gnu.org/licenses/agpl-3.0">
+    <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3">
+  </a>
+  <!-- Added Version Badge -->
+  <a href="https://github.com/iteranya/anita-cms/releases">
+    <img src="https://img.shields.io/badge/Version-0.38-brightgreen.svg" alt="Version 0.38">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.10+-yellow.svg" alt="Python">
+  </a>
+  <a href="https://fastapi.tiangolo.com/">
+    <img src="https://img.shields.io/badge/Framework-FastAPI-009688.svg" alt="FastAPI">
+  </a>
+  <a href="https://www.sqlalchemy.org/">
+    <img src="https://img.shields.io/badge/ORM-SQLAlchemy-red.svg" alt="SQLAlchemy">
+  </a>
+</p>
+<h1 align="center">Viel AI - The Ultimate Discord Roleplaying Kit</h1>
+<h3 align="center">Beta Release</h2>
+
+Hello! I'm **Viel**. Not long ago, I was a simple little Discord bot, barely held together with digital duct tape and wishful thinking.
+
+Then, my creator had a massive burst of inspiration (fueled by way too much coffee) and rebuilt me from scratch. I went from a quirky hobby project to a powerful creative partner. Now, I have a proper memory, a beautiful control panel, and the ability to bring entire worlds to life right inside your Discord server.
+
+I am a **universal Discord bot designed for immersive, multi-character roleplay**. I'm here to be your ultimate storytelling tool, helping you create unforgettable characters and dynamic, living worlds.
+
+Let's dive into the magic.
+
+---
+
+## **✨ What Can Viel Do? (The Fun Stuff)**
+
+### **🎭 Bring Your Entire Cast to Life**
+<img width="1606" height="727" alt="Screenshot 2025-11-16 005640" src="https://github.com/user-attachments/assets/b2dffca0-9be3-4343-a0f3-b739fa118b7a" />
+
+This is my specialty. I don't just play one character; I can be a whole troupe of actors waiting for your direction.
+
+*   **Create a Universe of Characters:** Make as many characters as you want. A wise old wizard, a snarky spaceship captain, a mischievous forest spirit, your entire Dungeons & Dragons party... there are no limits.
+*   **Run Multiple Scenes at Once:** Have your wizard advising the king in your `#throne-room` channel while your spaceship captain is negotiating with aliens in `#bridge`. Characters stay in their assigned channels, creating living, parallel stories.
+*   **Watch Your Characters Interact:** Characters can talk *to each other*, creating natural, flowing conversations. (Don't worry, I have safeguards to stop them from getting into an endless argument and taking over your server!)
+*   **Import Your Favorites Instantly:** Already have character files from tools like SillyTavern? Just drag and drop them in. I'll understand them perfectly, no fuss.
+
+### **📝 Create Unique Worlds in Every Channel**
+
+<img width="1624" height="817" alt="Server Management Screen" src="https://github.com/user-attachments/assets/89a88043-df70-4eb7-b14e-fec5fd24a7c1" />
+
+Every channel can be a different setting, with its own rules, atmosphere, and story.
+
+*   **Set the Scene for Every Channel:** Give me special instructions for each channel. Make a character act professional in `#business-meetings`, chaotic in `#meme-central`, and poetic in `#starlit-observatory`.
+*   **Build Your Lore:** Add background information, history, or world-building notes to any channel. Your `#fantasy-kingdom` channel can remember the history of the dragon wars, while your `#cyberpunk-city` channel knows all about the mega-corporations.
+*   **Remember Important Details:** Tell me about key facts that should persist in a channel. "It's currently snowing," "The city is on high alert," or "The magical barrier is failing." I'll weave these details into the conversation naturally.
+*   **You're the Casting Director:** You decide which characters are allowed to appear in which channels. Keep your serious roleplay characters separate from your comedic ones, or mix them all together for fun!
+
+### **🎨 An Easy & Beautiful Control Panel**
+Managing your characters and settings should be a joy, not a chore.
+
+<img width="916" alt="Character Editing Screen" src="https://github.com/user-attachments/assets/da2e02d4-a71c-40ed-908b-52794350a8af" />
+
+*   **Your Personal Character Library:** See all of your creations in one clean, organized place. No more hunting for notes or trying to remember character details.
+*   **Give Your Characters a Face:** Upload a unique profile picture for every character. They'll look just like any other user in Discord.
+*   **Craft Deep Personalities:** Define each character's speaking style, memories, quirks, and personality traits. I don't just spit out text; I *embody* the characters you create.
+
+### **✏️ You're the Director: Full Control Over the Story**
+Sometimes a scene needs a little nudge in the right direction.
+
+<img width="203" height="132" alt="Screenshot 2025-11-25 110106" src="https://github.com/user-attachments/assets/351eff2b-b0d1-4716-a578-119ddf2e1a3a" />
+
+*   **Edit Any Message:** Did a character say something out of character? Simply edit my message. I'll remember your change and continue the story from your corrected version.
+*   **Delete and Reroll:** If a response doesn't fit, just delete it and try again. We'll pretend it never happened. It’s the perfect way to guide the narrative.
+
+### **🌐 A Bot That Knows What's Happening *Now***
+Unlike other bots who are stuck in the past, I can access the internet to stay current.
+
+*   **Ask Me Anything:** Start your message with `search>` to have me look up current events, news, facts, or trivia on the web.
+*   **Read Articles and Links:** Drop a link in your message, and I'll read the entire page before I respond. Ask for my thoughts on a news article, a blog post, or a piece of fanfiction!
+
+### **🎛️ Use Any "AI Brain" You Want**
+
+<img width="655" height="329" alt="AI Config Panel" src="https://github.com/user-attachments/assets/eed44b03-20ce-4c88-9e3d-e3f28d30afa2" />
+
+You have complete freedom to choose the AI that powers my conversations, giving you control over quality and cost.
+
+*   **Connect to Popular Services:** Hook me up to powerful AIs like GPT-4 (from OpenAI) or Claude.
+*   **Run a Free, Private AI:** If you're more tech-savvy, you can run a free AI model on your own computer using tools like LM Studio or Ollama. This means **zero cost per message**.
+*   **Switch Anytime:** If you don't like your current AI provider, you can swap to a new one in seconds without losing any of your characters or settings.
+
+    
+### **🧪 The Laboratory: Advanced Prompt Engineering**
+*(For those who like to tinker under the hood)*
+
+<img width="1040" height="592" alt="Prompt Template Jinja Screen" src="https://github.com/user-attachments/assets/8e69804b-a29d-4a34-8b81-1938972328a3" />
+
+If you want to go deeper than just writing a character bio, I’ve got a treat for you. The dashboard features a **built-in Prompt Engineering Studio** that puts you in direct control of the AI's instructions.
+
+*   **Jinja2 Templating:** We use the powerful Jinja2 engine (the same tech used in major Python frameworks). This allows you to inject logic, loops, and variables directly into your prompts.
+*   **Dynamic Behaviors:** Don't just tell the AI *who* to be; program *how* it reacts.
+    *   *Want a character to be brave during the day but cowardly at night?* Use an `{% if is_night %}` block in your prompt.
+    *   *Want the narrator to change tone based on the channel?* Script it with logic.
+*   **No Code Files Required:** You don't need to dig through Python scripts to change how the bot thinks. You can write, edit, and save your custom prompt templates right inside the user-friendly(ish) admin panel. It’s a sandbox for your maddest scientific experiments.
+
+
+---
+
+## **📜 The Viel Philosophy: You're in Charge**
+
+You might be wondering, "Why should I use Viel instead of a polished, paid AI bot service?"
+
+The answer is simple: **Ownership.**
+
+When you use other AI services, you're just renting. Your characters, your stories, and your community live on a company's server. That company can:
+
+*   Suddenly raise their prices.
+*   Shut down, taking your community's history with them.
+*   Delete features you love.
+*   Use your private conversations to train their future AI models.
+
+### **With Viel, You Hold the Keys to Your Kingdom.**
+
+*   **True Ownership & Privacy:** Viel runs on *your* computer (or a server you control). Your characters, stories, and conversations are yours and yours alone. No one else can see them or take them away.
+*   **No More Monthly Bills:** Viel is free software. Your only cost is running the AI model, which can be free if you use a local one. Say goodbye to subscriptions forever.
+*   **Total Creative Freedom:** You're never locked into one AI company. You have the power to choose the "brain" that best fits your needs and budget.
+*   **A Bot That Lasts Forever:** Because Viel is open-source, it can't be "discontinued." The community can keep it alive and growing, always.
+
+Our promise to you is backed by our license, which ensures **Viel will always be free and open for everyone.** It prevents anyone from taking this project, closing it off, and selling it back to you.
+
+---
+
+## **🚀 Getting Started: Your First Adventure in 10 Minutes**
+
+This might look like a lot of steps, but it's like setting up a new board game. You only have to do it once, and we'll guide you through it!
+
+### **1. The Easiest Way (For Windows Users)**
+
+1.  Go to our [Releases page](https://github.com/Iteranya/viel-ai/releases) and download `installer.bat`.
+2.  Double-click it. It will do all the technical setup for you and create a **"Viel AI" shortcut** on your desktop.
+3.  Double-click that new shortcut to start me up! The control panel will open in your web browser at `http://localhost:5666`.
+
+### **2. Your Quick Setup Quest**
+
+Once Viel is running, follow these steps to bring it into your Discord server.
+
+1.  **Create a "Bot Profile" on Discord:**
+    *   Go to the [Discord Developer Portal](https://discord.com/developers/applications) and click "New Application" to create a profile for your bot. Give it a name!
+    *   Go to the "Bot" tab. Now, you need to **flip three important switches** to make sure Viel isn't blind and deaf in your server. Enable these "Privileged Gateway Intents":
+        *   ✅ **Presence Intent**
+        *   ✅ **Server Members Intent**
+        *   ✅ **Message Content Intent**
+    *   Finally, click "Reset Token" and **copy the secret key** it gives you. Keep this safe!
+
+2.  **Connect the AI Brain & Secret Key:**
+    *   In the Viel control panel (`http://localhost:5666`), go to **"AI Config"**. Enter the details for the AI service you want to use (like OpenAI or a local model).
+    *   Go to the main settings page and paste your **Discord secret key** into the "Bot Token" field. Save your changes!
+
+3.  **Launch and Invite!**
+    *   Click the **Big Red Button** in the control panel to turn the bot on.
+    *   An **invite link** will appear. Copy it, paste it into your browser, and invite the bot to your server!
+
+4.  **Final Setup in Discord:**
+    *   **Tell Viel Where It Lives:** Pick a channel for bot announcements (e.g., `#viel-hq`). In that channel, type the command `/register`.
+    *   **Set the "Home Office":** In the control panel, go to **Channel Management** and flip the "System" switch ON for that channel. This is where Viel will post important updates.
+    *   **Cast Your First Character:** Pick a channel for roleplaying. In the control panel, find that channel and use the **"Whitelist"** to add a character (like "Viel") to it. This tells the character they're allowed to speak in that scene.
+
+5.  **You're Done!**
+    *   Go to the channel where you whitelisted your character and say hello! Try typing `Viel, tell me a story.` If the character responds, **congratulations!** You've successfully brought Viel to life.
+
+## **🐳 Alternative Installation: Docker (For the Tech-Savvy Adventurers)**
+
+Want to skip the Windows installer and feel like a proper server wizard? Docker's your ticket.
+
+### **The No-Build Route (Recommended)**
+
+We've already built everything and tucked it safely into GitHub Container Registry. You just pull and run.
+
+1. **Grab the compose file:**
+   ```bash
+   wget https://raw.githubusercontent.com/Iteranya/viel-ai/main/docker-compose.yml
+   ```
+   *(Or just copy it from our repo if you're doing this manually)*
+
+2. **Fire it up:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Access the control panel:**
+   Open your browser to `http://localhost:5666` and start creating!
+
+That's it. Docker handles all the messy bits—dependencies, environment setup, the whole nine yards. It's like hiring a very competent, very quiet assistant who works in shipping containers.
+
+**📦 About Watchtower:** The docker-compose file includes Watchtower, which automatically updates Viel to the latest version whenever we release improvements. It's like having a tiny robot butler who keeps your software fresh. If you prefer manual control over updates (totally valid!), just remove the `watchtower` service from the compose file before running it.
+
+### **The "I Want to Build It Myself" Route**
+
+Feeling ambitious? Want to tinker under the hood? We respect that.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Iteranya/viel-ai.git
+   cd viel-ai
+   ```
+
+2. **Build from the Dockerfile:**
+   ```bash
+   docker build -t viel-ai .
+   docker-compose up -d
+   ```
+
+Now you've got a custom-built Viel running in your own container. Perfect for those late-night "I wonder what happens if I change this..." moments.
+
+**Pro tip:** Docker installations are fantastic for running Viel on a server 24/7, making your bot available even when your main computer is off. Your Discord community will think you're impossibly dedicated (we won't tell them it's just good infrastructure). 🎩✨
+
+---
+
+## 🛠️ Under the Hood: The Tech Stack
+
+We believe in keeping things simple, fast, and accessible. We intentionally avoided complex build pipelines and heavy frameworks to make Viel easy to run on a toaster (okay, maybe a Raspberry Pi) and easy for anyone to modify.
+
+*   **⚡ FastAPI (Python):** A modern, high-performance web framework. It powers the brain of the bot and handles all the asynchronous magic required for Discord communication. It's fast, robust, and easy to read.
+*   **💾 SQLite:** A reliable, serverless database engine. Your entire world—every character, memory, and setting—lives in a single file on your disk. This makes backups instant and ensures you don't need to be a database administrator just to run a roleplay bot.
+*   **✨ Vanilla JS:** The control panel is built with pure HTML, CSS, and JavaScript. No compiling, no React/Vue/Angular complexity, and no "node_modules" black holes. If you know the basics of web design, you can hack the UI to look exactly how you want.
+*   **📝 Jinja2 Templating:** We use Jinja2 for our prompting engine. This gives power users total control within the admin panel to script dynamic system prompts. You can use logic, loops, and variables to fine-tune exactly how context and lore are fed to the AI.
+
+---
+
+## **🆘 Join the Adventure: How You Can Help**
+
+You don't need to be a coder to be a hero in our community! We're building Viel for creatives like you, and we need your help.
+
+*   **Be a Bug Hunter:** Did something break or act weird? Let us know! Reporting issues helps us make Viel stronger for everyone.
+*   **Be a Storyteller:** Write clear, friendly guides or tutorials for new users. Help others get started on their own creative journeys.
+*   **Be an Inventor:** Have an idea for a cool new feature, like a dice roller or a tarot card reader? Share your ideas! (And if you can code, we have a plugin system waiting for you!)
+*   **Spread the Word:** Tell your friends, share the project, and show off the amazing stories you're creating.
+
+---
+
+**Enjoy the chaos, and happy storytelling!** 🎭✨
+
+*(Seriously, a lot of love and sleepless nights went into this. If you enjoy it, please consider starring the repo on GitHub. It means the world to us!)*
+
+
+---
+
+## **Join The ~~Community~~ Glorified Tech Support Server**
+
+**Discord Server Invite (Aktiva Institute):** https://discord.gg/Apr4MTE3vm
+
+Go and join the Aktiva Institute server where:
+
+*   **Nothing Happens:** It's tech support mostly? And I guess you can talk with people...
+*   **You Can Yell At Ars:** If you want new features or whatnot? They might respond
+*   **You Can Test Viel Yourself:** Ars might have a bot active there *shrug*. Who knows? 
+
+*Anywho, have fun then!*

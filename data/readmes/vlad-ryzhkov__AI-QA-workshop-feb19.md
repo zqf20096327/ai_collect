@@ -1,0 +1,176 @@
+# AI for QA — Воркшоп
+
+> [!NOTE]
+> Контекст развивается в английской версии репозитория: [English version of this repository](https://github.com/vlad-ryzhkov/ai-context-engineering-for-qa)
+
+🎤 Представлено на "Podlodka AI Crew #2" в феврале 2026 — [видео](https://youtu.be/7VnjM44qkmc) / [слайды](presentation/Workshop_%20AI%20+%20QA.pdf)
+
+Готовая коллекция AI-промптов, агентов и анти-паттернов для QA-процессов: от анализа спецификаций до генерации API-тестов.
+
+Структурированные промпты дают стабильный результат — каждый скилл в репозитории это проверенный `.md`-файл, который точно говорит AI что делать, что проверять и как форматировать вывод. 
+Создан для воркшопа, работает как самостоятельный инструментарий (требует адаптации под ваш проект).
+
+> Disclaimer: Результаты работы AI — даже с хорошими промптами — обязательно нужно проверять.
+
+<p align="center">
+  <img src="presentation/пирамида контекста.png" alt="Пирамида контекста" width="300"/>
+</p>
+
+---
+
+## 🚀 С чего начать
+
+### 1. Выбери инструмент
+
+| Инструмент        | Метод настройки     | Загрузка контекста                                       |
+|-------------------|---------------------|----------------------------------------------------------|
+| 🟣 Claude Code    | Нативно             | Автоматически: `CLAUDE.md` → `qa_agent.md` → `SKILL.md` |
+| 🟢 OpenCode       | Нативно             | Автоматически: `CLAUDE.md` → `qa_agent.md` → `SKILL.md` |
+| ⚪️ Cursor         | MDC Rules           | через `.cursor/rules/*.mdc`                              |
+| 🔵 GitHub Copilot | Custom Instructions | через `.github/copilot-instructions.md`                  |
+| 🟤 Codex          | Agent Skills        | через `AGENTS.md` + `.agents/skills/`                    |
+
+<details>
+<summary>👇 <strong>Полная матрица совместимости — нажми для раскрытия</strong> 👇</summary>
+
+| Возможность        | 🟣 Claude Code | 🟢 OpenCode   | ⚪️ Cursor               | 🔵 VS Code Copilot          | ⚫️ IntelliJ Copilot         | 🟤 Codex            | 💬 Generic Chat |
+|--------------------|----------------|---------------|-------------------------|-----------------------------|-----------------------------|---------------------|-----------------|
+| **Маппинг файлов** |                |               |                         |                             |                             |                     |                 |
+| `CLAUDE.md`        | **Нативно** ✓  | **Нативно** ✓ | **Нативно** ✓           | → `copilot-instructions.md` | → `copilot-instructions.md` | → `AGENTS.md`       | 📋 Copy-paste   |
+| `qa_agent.md`      | **Нативно** ✓  | **Нативно** ✓ | → `.cursor/rules/*.mdc` | → `copilot-instructions.md` | → `copilot-instructions.md` | → `AGENTS.md`       | 📋 Copy-paste   |
+| `skills/*.md`      | **Нативно** ✓  | **Нативно** ✓ | → `.cursor/rules/*.mdc` | **Нативно** ✓               | Открыть в редакторе         | → `.agents/skills/` | 📋 Copy-paste   |
+| Плагины            | ✅              | ❌             | ❌                       | ❌                           | ❌                           | ✅                   | ❌               |
+| Анти-паттерны      | ✅              | ✅             | ✅                       | ✅                           | ✅                           | ✅                   | 📋 Copy-paste   |
+| **Шаги воркшопа**  |                |               |                         |                             |                             |                     |                 |
+| 1. Анализ          | 🟢             | 🟢            | 🟢                      | 🟡                          | 🟡                          | 🟢                  | 🔴              |
+| 2. Тест-кейсы      | 🟢             | 🟢            | 🟢                      | 🟡                          | 🟡                          | 🟢                  | 🔴              |
+| 3. API тесты       | 🟢             | 🟢            | 🟢                      | 🟡                          | 🟡                          | 🟢                  | 🔴              |
+| 4. UI & L10N       | 🟢             | 🟢            | 🟢                      | 🟡                          | 🔴                          | 🟢                  | 🔴              |
+
+> 🟢 нативно — 🟡 через ссылку на файл — 🔴 не поддерживается
+
+> **Disclaimer:** Инструменты, отличные от Claude Code, могут потреблять больше токенов — проверяй расход для каждого скилла.
+> Если потребление значительное — используй нативную структуру файлов согласно официальной документации (ссылки ниже).
+
+</details>
+
+### 2. Установка
+
+- **Для Claude Code / OpenCode:** Скопируй папку `.claude/` из этого репозитория в корень своего проекта. Затем запусти `/init-project` в AI-чате для автоматической генерации `CLAUDE.md`.
+- **Для других IDE:** Смотри матрицу совместимости выше.
+
+### 3. Запусти первый аудит
+
+Открой AI-чат и следуй пайплайну [QA Workflow Скиллы](#-qa-workflow-скиллы) ниже.
+
+> 📖 Подробные промпты для каждого IDE: **[docs/workshop-commands.md](docs/workshop-commands.md)**
+
+---
+
+## 🏗️ Скиллы настройки
+
+Генерация и поддержка AI-конфигурационных файлов.
+
+| Скилл           | Что генерирует                                 | Когда использовать                  |
+|-----------------|------------------------------------------------|-------------------------------------|
+| `/init-project` | `CLAUDE.md` — инструкции AI на уровне проекта  | Новый QA-проект без AI-конфига      |
+| `/init-agent`   | `qa_agent.md` — роль и принципы QA-агента      | Настройка поведения AI-агента       |
+| `/init-skill`   | `SKILL.md` — новый скилл с чеклистом и фазами  | Автоматизация повторяемой QA-задачи |
+
+## 🔬 QA Workflow Скиллы
+
+Основной пайплайн — выбери точку входа по масштабу задачи:
+
+```text
+[Macro] /repo-scout (весь репо)   ──┐
+                                    ↓
+[Micro] /spec-audit (одна спека)  ──→  audit/spec-audit_{date}.md
+                                    ↓
+         /test-cases               ──→  docs/test-cases/test-scenarios.md
+                                    ↓
+         /api-tests                ──→  src/test/kotlin/...Tests.kt
+```
+
+| Скилл         | Вход                  | Выход                                              | Что получишь                                   |
+|---------------|-----------------------|----------------------------------------------------|------------------------------------------------|
+| `/repo-scout` | Бэкенд-репозиторий    | Карта API, инфраструктура, покрытие тестами        | Каталог эндпоинтов, пробелы, точки входа       |
+| `/spec-audit` | API-спецификация      | QA-отчёт: пробелы, противоречия, OWASP            | ~15 дефектов, вопросы к PO, матрица рисков     |
+| `/test-cases` | Спека + аудит         | Матрица тестовых сценариев (Markdown)              | Таблица: ~50–80 тест-кейсов на спеку           |
+| `/api-tests`  | Тест-сценарии + спека | Production-ready тесты на Kotlin (JUnit 5, Allure) | Kotlin-класс, готов к запуску: `./gradlew test` |
+
+---
+
+## 🧰 Другие скиллы
+
+| Скилл                 | Назначение                                                                          |
+|-----------------------|-------------------------------------------------------------------------------------|
+| `/screenshot-analyze` | Анализ мобильных скриншотов на UI и L10N дефекты (переводы, CLDR, RTL)             |
+| `/doc-lint`           | Аудит качества документации — структура, дубликаты, нарушения SSOT                 |
+| `/skill-audit`        | Аудит SKILL.md-файлов на раздутость, дублирование и вредные паттерны               |
+| `/output-review`      | Независимый аудит результата любого скилла по его чеклисту                          |
+| `/update-ai-setup`    | Синхронизация реестра AI-сетапа после добавления или удаления скиллов               |
+
+---
+
+## 🏛️ Паттерны проекта
+
+- **Progressive Disclosure** — `CLAUDE.md` → `qa_agent.md` → `SKILL.md` загружаются только по требованию, экономят токены
+- **Gardener Protocol** — AI предлагает улучшения базы знаний по завершении каждого запуска
+- **Quality Gates** — 20+ файлов с анти-паттернами, против которых проверяется генерируемый код
+- **Meta Configuration** — скиллы `/init-*` сами генерируют и поддерживают конфигурационные файлы
+- **Token Management** — специализированные агенты (Auditor, SDET) и жёсткие лимиты контекста предотвращают раздувание окна
+
+> Подробный разбор подходов и файлов: [docs/ai-setup.md](docs/ai-setup.md)
+
+---
+
+## ⚙️ Tech Stack (для генерируемых тестов)
+
+| Компонент      | Технология                          |
+|----------------|-------------------------------------|
+| Язык           | Kotlin                              |
+| Test Framework | JUnit 5                             |
+| HTTP Client    | common-test-libs ApiClient          |
+| Serialization  | Jackson (SNAKE_CASE)                |
+| Assertions     | JUnit 5 + Hamcrest (`checkAll`)     |
+| Polling        | Awaitility                          |
+| Reporting      | Allure                              |
+
+---
+
+## 📄 Материалы воркшопа
+
+- 📺 [Видео демо](https://youtu.be/7VnjM44qkmc) — Лайв-сессия: демонстрация использования контекста AI для типовых QA задач
+- 📊 [Презентация (PDF)](presentation/Workshop_%20AI%20+%20QA.pdf)
+- 📖 [Промпты для воркшопа по шагам и IDE](docs/workshop-commands.md)
+
+---
+
+## 📚 Полезные ресурсы
+
+### 🧠 Prompt Engineering
+
+- [Anthropic Prompt Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+
+### 🟣 Anthropic (Claude)
+
+- [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook)
+- [The Complete Guide to Building Skills for Claude (PDF)](https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf?hsLang=en)
+- [Sub-agents](https://code.claude.com/docs/en/sub-agents)
+
+### 🔵 VS Code & GitHub Copilot
+
+- [Custom Instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions) — настройка `.github/copilot-instructions.md`
+
+### 🔵 Cursor
+
+- [Skills](https://cursor.com/docs/context/skills)
+- [Subagents](https://cursor.com/docs/context/subagents)
+
+### 🔵 Codex
+
+- [Agent Skills](https://developers.openai.com/codex/skills/)
+
+### 🧠 Вайбкодинг
+
+- [Советы по вайбкодингу](https://www.threads.com/@boris_cherny/post/DTBVlMIkpcm)

@@ -1,0 +1,87 @@
+# onnxruntime-java
+by [@yuzawa-san](https://github.com/yuzawa-san/)
+
+[![GitHub branch status](https://img.shields.io/github/checks-status/yuzawa-san/onnxruntime-java/master)](https://github.com/yuzawa-san/onnxruntime-java/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/yuzawa-san/onnxruntime-java/branch/master/graph/badge.svg)](https://codecov.io/gh/yuzawa-san/onnxruntime-java)
+
+This is an **performant** and **modern** Java binding to Microsoft's [ONNX Runtime](https://github.com/microsoft/onnxruntime) which uses Java's new Foreign Function & Memory API (a.k.a. Project Panama).
+
+This project's goals are to provide a type-safe, lightweight, and performant binding which abstracts a lot of the native and C API intricacies away behind a Java-friendly interface.
+This is loosely coupled to the upstream project and built off of the public (and stable) [C API](https://onnxruntime.ai/docs/api/c/struct_ort_api.html).
+
+The minimum supported Java version is 23, since the FFI API was first stabilized in that version.
+There are [other](https://github.com/bytedeco/javacpp-presets/tree/master/onnxruntime) [fine](https://github.com/microsoft/onnxruntime/tree/main/java) bindings which use JNI and are capable of supporting earlier Java versions.
+
+## Usage
+
+
+This project is released to [Maven Central](https://search.maven.org/artifact/com.jyuzawa/onnxruntime) and can be used in your project.
+
+### Artifacts
+
+The library is currently built for Linux, Windows, MacOS and for arm64 and x86_64.
+These were chosen since the upstream projects publishes artifacts for these enviroments.
+Here are the artifacts published listed below.
+[Snapshot releases](https://central.sonatype.org/publish/publish-portal-snapshots/#consuming-snapshot-releases-for-your-project) are periodically released for testing and experimentation.
+
+#### onnxruntime
+
+> [!WARNING]
+> Prior versions used the `com.jyuzawa:onnxruntime` [Maven coordinates](https://search.maven.org/artifact/com.jyuzawa/onnxruntime) with a bastardized version of semver. Please upgrade to the `com.jyuzawa:onnxruntime-api`. See "Versioning" below for details.
+
+[![maven](https://img.shields.io/maven-central/v/com.jyuzawa/onnxruntime-api)](https://search.maven.org/artifact/com.jyuzawa/onnxruntime-api)  [![javadoc](https://javadoc.io/badge2/com.jyuzawa/onnxruntime-api/javadoc.svg)](https://javadoc.io/doc/com.jyuzawa/onnxruntime-api)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fcom%2Fjyuzawa%2Fonnxruntime-api%2Fmaven-metadata.xml&label=maven-central-snapshot)](https://central.sonatype.com/repository/maven-snapshots/com/jyuzawa/onnxruntime-api/maven-metadata.xml)
+
+The binding with no native libraries. For use as a implementation dependency.
+
+The native library (from [Microsoft](https://github.com/microsoft/onnxruntime/releases)) will need to be provided at runtime using one of the next two artifacts.
+Alternatively, the Java library path (`java.library.path`) will be used if neither of those artifacts is provided.
+This allows users to "bring their own" shared library.
+
+##### Versioning
+
+This library's version string will be `${ORT_UPSTREAM_VERSION}-${THIS_REPO_VERSION}`.
+The first part indicates the minimum upstream native library this Java API supports, so please use the corresponding (or older) version.
+The second part of the version (THIS_REPO_VERSION) may get incremented if we add additional changes to the API but still target the same minimum upstream version.
+This API has a validation to make sure the shared library is minor version compatible with this library.
+
+#### onnxruntime-cpu
+
+[![maven](https://img.shields.io/maven-central/v/com.jyuzawa/onnxruntime-cpu)](https://search.maven.org/artifact/com.jyuzawa/onnxruntime-cpu)
+
+A collection of native libraries with CPU support for a several common OS/architecture combinations. For use as an optional runtime dependency. Include one of the OS/Architecture classifiers like `linux-x86_64` to provide specific support.
+
+#### onnxruntime-gpu
+
+[![maven](https://img.shields.io/maven-central/v/com.jyuzawa/onnxruntime-gpu)](https://search.maven.org/artifact/com.jyuzawa/onnxruntime-gpu)
+
+A collection of native libraries with GPU (CUDA) support for a several common OS/architecture combinations. For use as an optional runtime dependency. Include one of the OS/Architecture classifiers like `linux-x86_64` to provide specific support.
+
+### In your library
+
+There is an example library in the `onnxruntime-sample-library` directory.
+The library should use the `onnxruntime` as a implementation dependency.
+This puts the burden of providing a native library on your end user.
+
+### In your application
+
+There is an example application in the `onnxruntime-sample-application` directory.
+The library should use the `onnxruntime` as a implementation dependency.
+The application needs to have acccess to the native library.
+You have the option providing it via a runtime dependency using either a classifier variant from `onnxruntime-cpu` or `onnxruntime-gpu`.
+Otherwise, the Java library path will be used to load the native library.
+
+
+The example application can be ran:
+````bash
+./gradlew onnxruntime-sample-application:run
+````
+
+#### JVM Arguments
+
+Since this uses a native library, this will require the runtime to have the `--enable-native-access` JVM option, likely `--enable-native-access=ALL-UNNAMED`.
+
+### Execution Providers
+
+Only those which are exposed in the C API are supported.
+If you wish to use another execution provider which is present in the C API, but not in any of the artifacts from the upstream project, you can choose to bring your own onnxruntime shared library to link against.

@@ -1,0 +1,67 @@
+# Get maps from pixels with Mapflow by Geoalert
+
+At [Geoalert](https://www.geoalert.io/en-US/), we employ Artificial Intelligence (AI) and Machine Learning (ML) to detect and extract real-world objects a.k.a. 'features' from satellite or aerial imagery.
+
+You choose what type of features you want to extract, where and from which imagery, and [Mapflow](https://mapflow.ai/) will do the work for you.
+
+Currently we can detect:
+- building footprints (optionally, with height)
+- forest (optionally, with height)
+- construction sites
+- roads
+
+More info about our AI models can be found [here](https://docs.mapflow.ai/userguides/pipelines).
+
+Mapflow supports various imagery sources types. You can upload your local GeoTIFF image, or use one of the tile services on the Web. By default, we use [Mapbox Satellite](https://www.mapbox.com/maps/satellite), but you can specify a link to another imagery in XYZ, WMS, etc. You can also search the Mapflow imagery catalog and process a specific image.
+
+![**Geoalert Mapflow plugin for QGIS**](images/plugin_showcase.png)
+
+
+## Installation
+The plugin can be found in the [official QGIS plugin repository](https://plugins.qgis.org/plugins/mapflow/) and can be installed by going to Plugins -> Manage and Install Plugins in QGIS, and then searching for 'Mapflow'. Make sure the 'all' tab is activated.
+
+## Use
+
+To learn how to use the plugin, please, follow our [guide](https://docs.mapflow.ai/api/qgis_mapflow).
+
+## Contributing
+
+### Running tests
+
+Automated tests run inside the official `qgis/qgis:release-3_28` Docker
+image — no host QGIS install needed, only Docker.
+
+```bash
+make test-functional   # pure-logic tests
+make test-qgis         # tests that touch real QGIS objects
+make test-ui           # UI tests under xvfb (harness only — no tests yet)
+make test              # all three tiers
+```
+
+Test layout, fixtures, and the policy for adding a test live in
+[`tests/README.md`](tests/README.md).
+
+### Linting
+
+Static analysis runs on the **host** (not in Docker) via the project `venv`:
+
+```bash
+pip install ruff pyright   # once, into the venv
+make lint                  # ruff check + pyright
+```
+
+`ruff` (config in [`pyproject.toml`](pyproject.toml)) catches unused code and
+real-bug patterns; `pyright` (config in [`pyrightconfig.json`](pyrightconfig.json))
+adds flow analysis ruff can't do, such as use-before-assignment and undefined
+names. Pyright's type-completeness checks are muted until the codebase is
+annotated. The rule set starts intentionally narrow — broaden it once the
+baseline is clean.
+
+> **Coverage scope.** CI is pinned to **Linux + QGIS 3.28 LTR**. The
+> `qgis/qgis` Docker image is Linux-only and we do not run a CI matrix
+> across operating systems or QGIS versions. Verify macOS, Windows, and
+> non-LTR QGIS versions by manual smoke testing before release.
+
+## License
+
+This software is released under the [GNU Public License (GPL)](mapflow/LICENSE) Version 2 or any later version. This license means that you can inspect and modify the source code and guarantees that you always have access to this software under the same termas as QGIS, that is free of cost and can be freely modified.

@@ -1,0 +1,132 @@
+[![Discord](https://img.shields.io/badge/Discord-LibrePhotos-5865F2?style=plastic&logo=discord&logoColor=white)][discord] 
+[![Read the docs](https://img.shields.io/static/v1?label=Read&message=the%20docs&color=blue&style=plastic)](https://docs.librephotos.com/) [![GitHub contributors](https://img.shields.io/github/contributors/librephotos/librephotos?style=plastic)](https://github.com/LibrePhotos/librephotos/graphs/contributors) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=plastic)](LICENSE)
+
+# LibrePhotos
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="apps/docs/static/img/shots/timeline-dark.webp">
+  <img alt="The LibrePhotos timeline, with photos grouped by day and place" src="apps/docs/static/img/shots/timeline-light.webp">
+</picture>
+<sub>Sample photos from Pexels, see the <a href="apps/docs/static/img/shots/CREDITS.md">credits</a>.</sub>
+
+A self-hosted, open-source photo management service with automatic face recognition, object detection, and semantic search — powered by modern machine learning.
+
+## Repository layout
+
+This is a monorepo that consolidates what was previously five separate repositories.
+
+| Path | What it is | Previous repo |
+|---|---|---|
+| [`apps/backend/`](apps/backend/) | Django 5 API, machine-learning pipelines, background jobs | `librephotos` |
+| [`apps/frontend/`](apps/frontend/) | React 19 + Vite web client, i18next localization | `librephotos-frontend` |
+| [`apps/mobile/`](apps/mobile/) | Expo mobile app (Android and iOS), offline-first | `librephotos-mobile` |
+| [`apps/docs/`](apps/docs/) | Docusaurus site published to https://docs.librephotos.com | `librephotos.docs` |
+| [`deploy/`](deploy/) | Dockerfiles, Compose configs, proxy, Kubernetes manifests | `librephotos-docker` |
+
+Commit history from all five repositories is preserved — `git log --follow apps/<app>/<file>` works across the move.
+
+## Installation
+
+Pick the deployment that fits your setup. Step-by-step guides are in the [documentation](https://docs.librephotos.com/docs/installation/).
+
+- [Single container](https://docs.librephotos.com/docs/installation/unified-deployment): one image serves the API and the web app, recommended for most people
+- [Docker Compose](https://docs.librephotos.com/docs/installation/standard-install): separate backend, frontend and proxy containers, with optional NVIDIA GPU acceleration
+- [Kubernetes](deploy/k8s/): Kustomize manifests in `deploy/k8s`
+- [Unraid](https://docs.librephotos.com/docs/installation/unraid)
+- [Windows standalone](https://docs.librephotos.com/docs/installation/windows-standalone): one folder with `librephotos.exe`, no Docker or Python
+
+### System Requirements
+
+| Resource | Minimum | Recommended |
+|----------|---------|-------------|
+| RAM      | 4 GB    | 8 GB+       |
+| Storage  | 10 GB (plus your photo library) | SSD recommended |
+| CPU      | 2 cores | 4+ cores    |
+| OS       | Any Docker-compatible OS, or Windows | Linux |
+
+> **Note:** Machine learning features (face recognition, scene classification, image captioning) are memory-intensive. 8 GB+ RAM is strongly recommended for smooth operation.
+
+## Features
+
+  - Photos in all common formats, including RAW, HEIC and JPEG XL
+  - Videos and live photos
+  - Timeline grouped by day and place, plus favorites, recent additions and memories
+  - Scans your existing folders and accepts uploads from the web and mobile apps
+  - Multiple users, shared albums and public links
+  - Albums generated from events, like "Saturday in Lisbon"
+  - Face detection and clustering: name a person once and the rest is suggested
+  - Places and a map from reverse geocoding
+  - Tags and generated captions for every photo
+  - Semantic search ("dog on a beach") and search by metadata
+  - RAW+JPEG pairs kept as one photo, burst and bracket stacks, and duplicate detection
+  - Single sign-on through OpenID Connect
+  - Expo mobile app for Android and iOS
+
+## Tech Stack
+
+### Backend
+
+- **Framework:** [Django 5](https://www.djangoproject.com/) with [Django REST Framework](https://www.django-rest-framework.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **Task Queue:** [Django-Q2](https://github.com/django-q2/django-q2)
+- **RAW Conversion:** [LibRaw](https://www.libraw.org/) via [rawpy](https://github.com/letmaik/rawpy)
+- **Video Conversion:** [FFmpeg](https://github.com/FFmpeg/FFmpeg)
+- **Exif Support:** [ExifTool](https://github.com/exiftool/exiftool)
+
+### Frontend
+
+- **UI:** [React 19](https://react.dev/) with [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool:** [Vite](https://vite.dev/)
+- **Component Library:** [Mantine](https://mantine.dev/)
+- **Routing:** [TanStack Router](https://tanstack.com/router)
+- **Data Fetching:** [TanStack Query](https://tanstack.com/query)
+- **Maps:** [MapLibre GL](https://maplibre.org/)
+- **Internationalization:** [i18next](https://www.i18next.com/)
+
+### Machine Learning
+
+- **Face detection:** [InsightFace](https://github.com/deepinsight/insightface)
+- **Face classification/clustering:** [scikit-learn](https://scikit-learn.org/) and [hdbscan](https://github.com/scikit-learn-contrib/hdbscan)
+- **Image captioning:** [LFM2.5-VL](https://huggingface.co/onnx-community/LFM2.5-VL-450M-ONNX), prompted with the recognised people and the place
+- **Tagging, semantic search and similar photos:** [OpenCLIP ViT-B/32](https://huggingface.co/laion/CLIP-ViT-B-32-DataComp.XL-s13B-b90K) (DataComp-XL, MIT licence)
+- **Semantic search:** [CLIP ViT-B/32](https://huggingface.co/Xenova/clip-vit-base-patch32) with [FAISS](https://github.com/facebookresearch/faiss)
+- **ML runtime:** [ONNX Runtime](https://onnxruntime.ai/) for every model, no PyTorch
+- **Reverse geocoding:** [geopy](https://github.com/geopy/geopy)
+
+### Infrastructure
+
+- **Deployment:** [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+- **Reverse Proxy:** [Nginx](https://nginx.org/)
+
+### API Documentation
+
+After starting LibrePhotos, interactive API docs are available at:
+
+- **Swagger UI:** `http://localhost:3000/api/swagger`
+- **ReDoc:** `http://localhost:3000/api/redoc`
+
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the per-app READMEs:
+- [Backend](apps/backend/README.md)
+- [Frontend](apps/frontend/README.md)
+- [Mobile](apps/mobile/README.md)
+- [Docs site](apps/docs/README.md)
+
+The Docker Compose-based dev environment lives in [`deploy/compose/`](deploy/compose/) and is described in the [development install guide](https://docs.librephotos.com/docs/development/dev-install).
+
+## How to help out
+
+- ⭐ **Star** this repository if you like this project!
+- 🚀 **Developing**: Get started in less than 30 minutes by following [this guide](https://docs.librephotos.com/docs/development/dev-install). Also see our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development setup, code quality standards, and PR guidelines.
+- 🗒️ **Documentation**: Improving the documentation is as simple as submitting a pull request [here](https://github.com/LibrePhotos/librephotos/tree/dev/apps/docs)
+- 🧪 **Testing**: If you want to help find bugs, use the ```dev``` tag and update it regularly. If you find a bug, open an issue.
+- 🧑‍🤝‍🧑 **Outreach**: Talk about this project with other people and help them to get started too!
+- 🌐 **Translations**: Make LibrePhotos accessible to more people with [weblate](https://hosted.weblate.org/engage/librephotos/).
+- 💸 [**Donate**](https://github.com/sponsors/derneuere) to the developers of LibrePhotos
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+[discord]: https://discord.gg/xwRvtSDGWb

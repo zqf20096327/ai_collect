@@ -1,0 +1,486 @@
+# 🌳 Tree-sitter Analyzer
+
+**English** | **[日本語](README_ja.md)** | **[简体中文](README_zh.md)**
+
+[![PyPI](https://img.shields.io/pypi/v/tree-sitter-analyzer.svg)](https://pypi.org/project/tree-sitter-analyzer/) [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org) [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Coverage](https://codecov.io/gh/aimasteracc/tree-sitter-analyzer/branch/main/graph/badge.svg)](https://codecov.io/gh/aimasteracc/tree-sitter-analyzer) [![Stars](https://img.shields.io/github/stars/aimasteracc/tree-sitter-analyzer.svg?style=social)](https://github.com/aimasteracc/tree-sitter-analyzer) [![Works with Claude Code · Cursor · MCP](https://img.shields.io/badge/works%20with-Claude%20Code%20%C2%B7%20Cursor%20%C2%B7%20MCP-6f42c1.svg)](#supported-agents)
+
+**Code intelligence AI agents can trust** — correct cross-language structure across the [supported language inventory](#supported-languages), agent-native (MCP + CLI).
+
+TSA indexes your codebase with tree-sitter and serves correct call graphs, symbol search, and structural queries to AI coding agents — locally, with no telemetry.
+
+**Why it's different:**
+* **Cross-language bindings are gated by language family.** A name match alone does not create a cross-language edge, and the gates that enforce this are executable tests rather than a convention.
+* **Built agent-native.** 8 MCP tools provide structured JSON output and verdict envelopes, with CLI access and curated workflows.
+* **Broad and correctly classified.** The [generated support-depth inventory](#supported-languages) distinguishes pipeline evidence from unverified cross-file behavior.
+
+> Upgrading from v1.x? See [docs/MIGRATION.md](docs/MIGRATION.md).
+
+---
+
+## Get Started
+
+> **Requires Python 3.10+** (check: `python3 --version`). Install from [python.org](https://www.python.org/downloads/) if needed.
+
+### Automated install (recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aimasteracc/tree-sitter-analyzer/main/install.sh | bash
+```
+
+Auto-installs `uv` if missing, detects Claude Desktop / Claude Code / Cursor / VS Code, and writes the MCP entry. Run `tree-sitter-analyzer --doctor` to verify.
+
+> **Bootstrap trust:** for convenience, the command above downloads and executes the official `uv` installer when `uv` is missing or outdated. That installer is mutable and **not content-bound**; TSA warns before downloading it to a temporary file over TLS and performs a strict post-install version check. To avoid this unverified bootstrap, install `uv >= 0.11.0` manually first, or use the secure opt-out (which exits with manual-install instructions when bootstrap is needed):
+> ```bash
+> curl -fsSL https://raw.githubusercontent.com/aimasteracc/tree-sitter-analyzer/main/install.sh \
+>   | TSA_DISABLE_UNVERIFIED_UV_BOOTSTRAP=1 bash
+> ```
+
+Install command for **Claude Code**:
+
+
+```bash
+claude mcp add tree-sitter-analyzer \
+  --env TREE_SITTER_PROJECT_ROOT="$PWD" \
+  -- uvx --from "tree-sitter-analyzer[mcp]" tree-sitter-analyzer-mcp
+```
+
+Restart your agent, then say: *"Run the `index` tool with action=status."*
+CLI equivalent (no agent needed): `tree-sitter-analyzer --codegraph-status`
+
+> **PyPI / uvx users — install skills:** the `tsa-*` skills are bundled in the wheel. Copy them once with:
+> ```bash
+> tree-sitter-analyzer --install-skills              # into ./.claude/skills/ (this project)
+> tree-sitter-analyzer --install-skills-global       # into ~/.claude/skills/ (all projects)
+> ```
+> Git-clone users already have them under `.claude/skills/` — no action needed.
+
+[Other agents (Cursor, Copilot, Cline, Continue, Claude Desktop, Roo Code) →](#supported-agents)
+
+### Quick install
+
+#### 1. Install dependencies
+
+```bash
+# uv (required). This official convenience installer is mutable/not content-bound;
+# see https://docs.astral.sh/uv/ for alternative manual installation methods.
+curl -LsSf https://astral.sh/uv/install.sh | sh        # macOS / Linux
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+```
+
+#### 2. Install Tree-sitter Analyzer
+
+```bash
+# Standalone install (persistent CLI command):
+uv tool install "tree-sitter-analyzer[all,mcp]"
+# — or skip installing entirely: the MCP entry below runs via uvx on demand.
+# Inside a uv-managed Python project, use: uv add "tree-sitter-analyzer[all,mcp]"
+```
+
+#### 3. Hook it into your agent
+
+See **[Supported Agents](#supported-agents)**. Most clients want this MCP server entry:
+
+```json
+{
+  "mcpServers": {
+    "tree-sitter-analyzer": {
+      "command": "uvx",
+      "args": ["--from", "tree-sitter-analyzer[mcp]", "tree-sitter-analyzer-mcp"],
+      "env": { "TREE_SITTER_PROJECT_ROOT": "/absolute/path/to/your/project" }
+    }
+  }
+}
+```
+
+After restart: *"Run the `index` tool with action=status."*
+CLI equivalent (no agent needed): `tree-sitter-analyzer --codegraph-status`
+
+**Check resolver behavior on your own repository** — no install required:
+
+```bash
+uvx --from tree-sitter-analyzer miswire-audit .
+```
+
+It reports possible cross-language name collisions so you can inspect resolver behavior on your own repository. Results are diagnostic, not a competitive benchmark claim.
+
+---
+
+## Why Tree-sitter Analyzer
+
+* **Structured output.** MCP responses use standard JSON envelopes; payload behavior is guarded by response contract tests.
+* **Verdict envelopes.** Every response carries `verdict: SAFE | CAUTION | UNSAFE | INFO | REVIEW | WARN | ERROR | NOT_FOUND`, so orchestrators branch on outcomes without re-prompting.
+* **Project health grading (A–F).** TSA grades projects across size, complexity, coverage, duplication, dependencies, structure, and git hotspots.
+* **Curated workflows (Skills).** Pre-baked tool subsets for "find symbol", "trace call chain", "assess health", "safe-to-edit before refactor", "PR review", etc.
+* **Layered safety.** `edit action=safe` + `edit action=guard` + constraint DSL + `edit action=impact` + verdict envelopes — designed so agents *know* before they touch.
+* **Agents and shells share a query surface.** The analysis primitives and the unified query DSL are available to both.
+
+---
+
+## Key Features
+
+### Pre-indexed code intelligence
+
+An agent's cost is dominated by turns, not by the size of each reply: every extra
+tool call re-sends the whole conversation. TSA is built so that a question is
+answered by a call whose response already carries the evidence needed to stop
+asking.
+
+| Question | TSA tool | What the response carries |
+|---|---|---|
+| Where is this symbol, and what refers to it? | `nav` action=navigate | definition site, references, and call hierarchy together |
+| What breaks if I change this? | `nav` action=impact | transitive dependents with a risk verdict |
+| Who calls this, and what does it call? | `nav` action=callers / action=callees | resolved call sites, and the sites resolution could not resolve |
+| Find a symbol by name | `search` action=symbol | relevance-ranked matches (FTS5 + BM25) |
+| Fetch related symbols with their relationship map | `structure` action=explore | the requested symbols and how they connect |
+| Is the index usable right now? | `index` action=status | coverage, staleness, and edge count |
+| Build or refresh the call graph | `index` action=auto / action=full / action=sync | index state after the run |
+| Which tests does this change touch? | `--affected FILE...` (CLI) | transitively affected tests |
+
+### Capabilities beyond code navigation
+
+| Capability | TSA tool | Note |
+|---|---|---|
+| **BM25-ranked symbol search** | all search tools | min-max normalized relevance_score on every result; sort(by='confidence') in DSL |
+| **Semantic search (BM25 pre-filtered)** | `search` action=chain (`semantic()` DSL) | lexical pre-filter before cosine rerank |
+| **Project A–F health grading** | `health` action=project | combines size, complexity, dependencies, coverage, duplication, structure, and git hotspots |
+| **JSON output** | every tool, `output_format: "json"` (default) | standard structured response envelopes |
+| **Verdict envelopes** | every tool | `SAFE/CAUTION/UNSAFE/INFO/WARN/ERROR/NOT_FOUND` |
+| **Safe-to-edit gate** | `edit` action=safe / action=guard | refuses high-risk edits before they happen |
+| **Architectural constraint DSL** | `edit` action=constraints | "module A cannot import B" → enforced |
+| **Code health (file-level)** | `health` action=file | block/long-method/smell detection |
+| **Class hierarchy** | `structure` action=class_tree | type-inheritance tree |
+| **Dependency matrix** | `health` action=matrix | module-coupling matrix |
+| **Dead code** | `health` action=dead | transitive unreachable analysis |
+| **Complexity heatmap** | `health` action=heatmap | per-fn cyclomatic + project view |
+| **AST-structural clone detection** | `viz` action=similarity | structural clones rather than text matches |
+| **Mermaid call-graph export** | `viz` action=graph | paste-ready in docs |
+| **UML Mermaid export** | `viz` action=uml | class / package / component / sequence diagrams |
+| **PR review** | `edit` action=pr | AST-diff + semantic classify + blast radius |
+| **agent_summary** | every response | next-step hint baked into the envelope |
+| **Synapse cross-file resolver** | internal | import-aware name resolution across files |
+| **Temporal activation** | `nav` action=lineage | per-symbol git-modification frequency |
+| **File orientation** | `project` action=smart | health + exports + deps + edit-risk in a combined response |
+| **Architectural decision journal** | `project` action=journal | persists reasoning across sessions |
+
+### Skills
+
+TSA ships curated workflows under `.claude/skills/tsa-*/`:
+
+`tsa-landing`, `tsa-find`, `tsa-graph`, `tsa-structure`, `tsa-deps`, `tsa-index`, `tsa-health-watch`, `tsa-edit-safety`, `tsa-edit-then-verify`, `tsa-constraints`, `tsa-pr-review`, `tsa-refactor-queue`, `tsa-temporal`.
+
+Each skill ships an `allowed-tools` subset + procedure recipe + decision-surface schema, so the agent doesn't have to triage 8 tools on every question.
+
+### 361 CLI flags
+
+Highlights:
+
+```bash
+tree-sitter-analyzer --table full <file>          # method/signature/complexity table
+tree-sitter-analyzer --partial-read --start-line N --end-line M <file>
+tree-sitter-analyzer --project-health             # A-F grade across the project
+# Note: --callers / --callees require the call-graph index — run --full-index first
+tree-sitter-analyzer --full-index                 # build call-graph index (run once)
+tree-sitter-analyzer --callers <symbol>           # who-calls
+tree-sitter-analyzer --codegraph-impact <fn>      # blast radius + risk
+tree-sitter-analyzer --affected <file...>         # tests transitively affected
+tree-sitter-analyzer --dead-code                  # transitive unreachable
+tree-sitter-analyzer --check-constraints          # architectural rules
+tree-sitter-analyzer --safe-to-edit <file>        # refuse if risky
+tree-sitter-analyzer --uml class                  # Mermaid UML class diagram
+```
+
+TSA performs indexed code search and live source verification in process. No ripgrep or fd installation is required.
+
+`search-content` and `find-and-grep` have been removed on develop. See the
+[migration guide](docs/MIGRATION.md) and [`CLI codemap`](docs/CODEMAPS/cli.md).
+
+---
+
+## Quantitative claim governance
+
+Public benchmark, performance, or competitive numbers are emitted only from the
+provenance-bound registry in
+[`benchmarks/codegraph_compare/claim_registry.json`](benchmarks/codegraph_compare/claim_registry.json).
+E4 evidence must bind exact tool names and versions, measurements, corpus,
+benchmark date/version, and an artifact digest. Evidence below E4 remains
+internal and cannot emit wording. See the [benchmark runbook](benchmarks/codegraph_compare/README.md).
+
+<!-- BEGIN GENERATED QUANTITATIVE CLAIMS -->
+<!-- END GENERATED QUANTITATIVE CLAIMS -->
+
+The absence of a generated item means that no quantitative public claim is
+currently authorized. Qualitative descriptions above are bounded product
+capabilities, not measured superiority claims.
+
+---
+
+## How It Works
+
+```
+Source code → tree-sitter parse → SQLite + FTS5 index (.ast-cache/index.db)
+                                         ↓
+        nav (navigate) / structure (explore) / nav (callers) / ...
+                                         ↓
+                            JSON response envelope
+                            (verdict + agent_summary + data)
+                                         ↓
+                              MCP client / CLI consumer
+```
+
+The 8 MCP tools expose indexed queries and direct source analysis.
+Build the AST index explicitly before indexed symbol/context queries with
+`tree-sitter-analyzer --ast-cache --ast-cache-mode index --format json`. Refresh
+it after source changes with `index` action=sync. Indexed queries reuse cached
+AST data; automatic warming is specific to individual tools.
+
+---
+
+## Supported Agents
+
+<details>
+<summary><b>📘 Claude Code</b> (recommended)</summary>
+
+```bash
+claude mcp add tree-sitter-analyzer \
+  --env TREE_SITTER_PROJECT_ROOT="$PWD" \
+  -- uvx --from "tree-sitter-analyzer[mcp]" tree-sitter-analyzer-mcp
+```
+
+Verify: `claude mcp list`. The bundled `tsa-*` skills auto-discover from `.claude/skills/`.
+
+**PyPI / uvx users** — install the bundled skills once with:
+```bash
+tree-sitter-analyzer --install-skills              # into ./.claude/skills/ (this project)
+tree-sitter-analyzer --install-skills-global       # into ~/.claude/skills/ (all projects)
+```
+Git-clone users already have them — no action needed.
+</details>
+
+<details>
+<summary><b>📗 Claude Desktop</b></summary>
+
+Edit `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`, Windows: `%APPDATA%\Claude\`, Linux: `~/.config/Claude/`):
+
+```json
+{
+  "mcpServers": {
+    "tree-sitter-analyzer": {
+      "command": "uvx",
+      "args": ["--from", "tree-sitter-analyzer[mcp]", "tree-sitter-analyzer-mcp"],
+      "env": { "TREE_SITTER_PROJECT_ROOT": "/absolute/path/to/your/project" }
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>📙 GitHub Copilot (VS Code)</b></summary>
+
+Create `.vscode/mcp.json` (note: `servers`, not `mcpServers`):
+
+```json
+{
+  "servers": {
+    "tree-sitter-analyzer": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--from", "tree-sitter-analyzer[mcp]", "tree-sitter-analyzer-mcp"],
+      "env": { "TREE_SITTER_PROJECT_ROOT": "${workspaceFolder}" }
+    }
+  }
+}
+```
+</details>
+
+<details>
+<summary><b>🖱 Cursor / Cline / Continue / Roo Code</b></summary>
+
+All read the same `mcpServers` schema as Claude Desktop. Cursor: **Settings → MCP**. Cline: MCP panel → Edit settings. Continue: `~/.continue/config.json` under `experimental.modelContextProtocolServers`. Roo Code: MCP panel → Edit MCP Settings.
+</details>
+
+<details>
+<summary><b>🐳 Docker</b> (no local Python / uv)</summary>
+
+The repo ships a [`Dockerfile`](Dockerfile) that builds the MCP server (stdio transport) from source, so the image always matches the committed code.
+
+```bash
+# Build once
+docker build -t tree-sitter-analyzer-mcp .
+
+# Run against the current repo (server speaks MCP over stdio; -i keeps stdin open)
+docker run --rm -i --user "$(id -u):$(id -g)" \
+  -v "$PWD:/work" -w /work tree-sitter-analyzer-mcp
+```
+
+`--user "$(id -u):$(id -g)"` runs as your host UID/GID, so the `.ast-cache/`, decision journal, and any `edit` writes under the bind-mounted repo are owned by you, not root.
+
+MCP client config (the project root inside the container is the mount point `/work`):
+
+```json
+{
+  "mcpServers": {
+    "tree-sitter-analyzer": {
+      "command": "docker",
+      "args": [
+        "run", "--rm", "-i",
+        "--user", "1000:1000",
+        "-v", "/absolute/path/to/your/project:/work",
+        "-w", "/work",
+        "-e", "TREE_SITTER_PROJECT_ROOT=/work",
+        "tree-sitter-analyzer-mcp"
+      ]
+    }
+  }
+}
+```
+</details>
+
+> ⚠️ `TREE_SITTER_PROJECT_ROOT` must be **absolute**. The server enforces a security boundary against escapes via `SecurityValidator`.
+
+---
+
+## Supported Languages
+
+<!-- BEGIN GENERATED LANGUAGE SUPPORT INVENTORY -->
+Generated from runtime registries; see [`docs/CODEMAPS/languages.md`](docs/CODEMAPS/languages.md) for the full capability matrix. **22 plugins**: 13 pipeline-registered, 3 index-admitted, 0 call-dispatch-only, 5 data/markup, 1 scaffold. `pipeline_registered` is registration evidence, not positive cross-file binding proof.
+`pipeline_registered`: C, C++, C#, Go, Java, JavaScript, Kotlin, PHP, Python, Ruby, Rust, Swift, TypeScript | `index_admitted`: Bash, Lua, Scala | `call_dispatch_only`:  | `data_markup`: CSS, HTML, Markdown, SQL, YAML | `scaffold`: JSON
+<!-- END GENERATED LANGUAGE SUPPORT INVENTORY -->
+
+## Configuration
+
+Mostly nothing. The defaults are designed so you can hook it into your agent and forget:
+
+* **Output format**: JSON. The `output_format: "json"` parameter is retained for explicitness.
+* **Project root**: `TREE_SITTER_PROJECT_ROOT` (env var, MCP) or `--project-root` (CLI).
+* **Cache location**: `<project>/.ast-cache/`. Safe to delete — auto-rebuilds.
+* **Optional**: `TREE_SITTER_OUTPUT_PATH` for large-output write target.
+
+---
+
+## Quality & Testing
+
+| Metric | Value |
+|---|---|
+| Test suite | `uv run pytest tests/` — the count is whatever the current tree collects; CI owns the signal |
+| Coverage | [![Coverage](https://codecov.io/gh/aimasteracc/tree-sitter-analyzer/branch/main/graph/badge.svg)](https://codecov.io/gh/aimasteracc/tree-sitter-analyzer) |
+| Type safety | mypy |
+| Platforms | macOS · Linux · Windows for ordinary operations; snapshot evidence has the narrower scope above |
+| Pre-commit gates | ruff · bandit · mypy · pyupgrade · detect-secrets · tsa-codemap-sync |
+
+```bash
+uv run pytest -q                                # bounded local quick gate
+uv run pytest tests/ -q --timeout=120 -m "not e2e and not network and not benchmark"  # comprehensive local suite
+PYTEST_XDIST_AUTO_NUM_WORKERS=1 uv run pytest -q --maxfail=1                  # quick gate, one worker (lower CPU load)
+PYTEST_XDIST_AUTO_NUM_WORKERS=2 uv run pytest -q --maxfail=1                  # quick gate, two workers (balanced)
+uv run pytest --lf --maxfail=1                  # rerun only failed tests from last run
+uv run python check_quality.py --new-code-only  # quality gate
+```
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `unsupported language` on `.swift / .kt / .rb / .php / .cs` | Update to a current supported release — the missing-language gap was patched in commit `50e99a8f`. Grammar modules for extras-gated languages are not bundled in the base install; run `pip install "tree-sitter-analyzer[swift]"` (or `kotlin`, `ruby`, `php`, `csharp`) to add them. |
+| MCP server doesn't appear in client | `TREE_SITTER_PROJECT_ROOT` must be an **absolute path** (e.g. `$(pwd)` or `/home/user/project`); a relative path causes the server to resolve against the wrong directory. Restart the client after editing. Run `tree-sitter-analyzer --doctor` to verify. |
+| `database is locked` | Stop any other process holding `.ast-cache/index.db`; if persistent, `rm -rf .ast-cache && tree-sitter-analyzer --full-index`. |
+| Slow first call or missing index | Some tools warm the index automatically. Run `--full-index` upfront before indexed queries. |
+| Agent picks the wrong tool | Use a `tsa-*` skill (`/tsa-graph`, `/tsa-find`, ...) — each skill restricts the visible tool set to its dedicated workflow. |
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/aimasteracc/tree-sitter-analyzer.git
+cd tree-sitter-analyzer
+uv sync --extra all --extra mcp
+uv run pytest -q                                # quick gate (bounded)
+```
+
+See **[`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)** for the development guide.
+
+---
+
+## Boundaries and Known Limits
+
+Scope statements that would otherwise read as marketing. They are collected here so the install path above is not interrupted by them.
+
+### Response Size And Parameter Names
+
+`nav action=navigate` inlines the body of every definition it matches and reports no truncation. A symbol name shared by classes in multiple files therefore returns the entire reference set in the same response. Use `search action=symbol` to disambiguate first, or `nav action=callers` / `action=callees`, which honor `limit` and set `truncated`.
+
+`symbol` and `function_name` are both accepted by `callers`, `callees`, and `impact`. `navigate` and `lineage` require `symbol`; passing `function_name` to them raises instead of returning a verdict envelope.
+
+### Platform Scope Of Snapshot Evidence
+
+Ordinary file analysis, index creation/update, and legacy index-backed queries are
+separate from certified snapshot access. Their existing Windows operational paths
+do not require the new private WAL snapshot kernel. They may create or update the
+cache; certified read-only access has a separate contract.
+
+The snapshot implementation adds **POSIX-only private database/WAL evidence capture**, requiring
+descriptor-relative operations, `O_NOFOLLOW`, a safe external temporary directory,
+and successful source/manifest/projection checks. It does **not** deliver Windows
+read-only snapshot parity or extend the existing qualification gate for explicit
+`access_mode="read_existing"` consumers.
+
+Windows snapshot certification was already unavailable in the develop baseline
+(`SECURE_FD_SNAPSHOT_UNSUPPORTED`). It remains unavailable in this implementation
+(`WAL_PRIVATE_SNAPSHOT_UNSUPPORTED`, `completeness="unknown"`, no snapshot token).
+This is not a statement that the physical index is empty or that ordinary queries
+are disabled. Native Windows qualification for the new capture path has not been
+performed; a local capability test is not a substitute for it.
+
+The per-file `certified_at` state is not a replacement for full snapshot authority.
+`partial_at` persistent history is **not implemented or included in this PR**.
+An incomplete or unverifiable projection cannot authorize a certified consumer.
+
+### Pulse / TQL / Semantic Query
+
+These subsystems back `nav` actions and the internal API; they are not part of the tool surface an agent configures. Their limits are stated rather than implied:
+
+TQL temporal selectors compare modification timestamps, not modification counts.
+The `tql_schema` action documents the window and the shared default for bare
+`:hot` and `:recently_modified`. Depth queries retain exact definition identity
+and fail explicitly when traversal limits are exceeded.
+
+Pulse requests return snapshot-bound context. SQL reads for identity,
+relationships, reverse-import context and optional cached LSP enrichment share
+a savepoint without ending a caller-owned transaction. This is not a SQL
+round-trip or latency guarantee.
+
+Pulse's Python reverse-import context uses the existing module resolver; this
+is not a claim of complete cross-language module resolution. Comment context
+requires an index rebuilt with comment extraction. Old indexes and languages
+without comment extraction return `COMMENTS_NOT_INDEXED`, rather than an empty
+success; explicitly omit comment context with the documented `max_comments`
+setting when it is not needed. Missing legacy commit-message projections become
+`pending` for lazy refresh; `disabled` activation is preserved. Legacy NULL
+activation states also become pending, without clearing old messages or counts.
+Enabled cached indexing cycles continue bounded activation refresh. Pulse exposes
+unavailable activation as `null`, while temporal queries reject incomplete
+activation evidence. Refresh reads real Git history through bounded batches;
+failed message reads retain pending work rather than claiming completion.
+
+Semantic queries require a known stored embedding model and a consistent
+dimension. Mixed or unknown models are errors, with no provider fallback.
+Offline tests use model doubles; they do not certify live-provider quality.
+
+Pulse batches retain successful entries but report failure if a target fails.
+TQL treats missing or unreadable indexes as errors, distinct from a ready index
+with no matches. Public request validation rejects invalid types and limits
+before opening the index or invoking an embedding provider.
+
+---
+
+## Contributing & License
+
+* ⭐ A GitHub star helps surface this tool to other AI-agent users.
+* 💖 [Sponsor](https://github.com/sponsors/aimasteracc) — supports continued MCP / Skills development.
+* Lead sponsor: **[@o93](https://github.com/o93)**.
+* MIT licensed — see [LICENSE](LICENSE).
+* Release history: [CHANGELOG.md](CHANGELOG.md).

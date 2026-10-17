@@ -1,0 +1,276 @@
+<p align="center">
+  <img src="assets/app-icon.png" width="112" alt="ComfyQueueBar app icon: stacked queue cards with a play symbol" />
+</p>
+
+<h1 align="center">ComfyQueueBar</h1>
+
+<p align="center"><strong>Your ComfyUI queue, one click away in the macOS menu bar.</strong></p>
+<p align="center"><strong>Spend agent tokens on creating videos. Let the app monitor the render.</strong></p>
+<p align="center">Reduce token use from repeated agent progress checks. Follow your queue, preview clips, and get notified when work is done.</p>
+
+<p align="center">
+  <strong>English</strong> ·
+  <a href="docs/i18n/README.zh-CN.md">简体中文</a> ·
+  <a href="docs/i18n/README.zh-TW.md">繁體中文</a> ·
+  <a href="docs/i18n/README.ja.md">日本語</a>
+</p>
+
+<p align="center">
+  <a href="#download-the-mac-app">Install</a> ·
+  <a href="docs/USAGE.md">Usage guide</a> ·
+  <a href="docs/REMOTE_SETUP.md">Remote setup</a> ·
+  <a href="docs/TROUBLESHOOTING.md">Troubleshooting</a>
+</p>
+
+<p align="center"><strong>A quick menu bar overview, with a dedicated workspace for your render queues.</strong></p>
+
+<p align="center"><img src="docs/images/overview-light.png" width="360" alt="Compact fleet overview with availability counts, search, and server status rows" /></p>
+
+
+
+<details>
+<summary>View close-up screenshots in light and dark appearance</summary>
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/images/workspace-light.png" width="460" alt="Light workspace: independent server sidebar, selected queue, and live node progress" /><br /><strong>Light appearance</strong></td>
+    <td align="center"><img src="docs/images/workspace-dark.png" width="460" alt="Dark workspace: independent server sidebar and detailed queue controls" /><br /><strong>Dark appearance</strong></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/images/workspace-history.png" width="460" alt="Recent job history with time filter and search" /><br /><strong>History</strong></td>
+    <td align="center"><img src="docs/images/workspace-settings.png" width="460" alt="Current connection settings with saved servers and local network scan" /><br /><strong>Settings</strong></td>
+  </tr>
+</table>
+
+</details>
+
+*Native captures of the redesigned development interface. Workflow names, addresses, history, timing, and output artwork are fictional demonstration fixtures; no private jobs or media are shown. Node progress is not whole-workflow progress.*
+
+| Check progress | Choose the next job | Stop a running job |
+| --- | --- | --- |
+| See running / waiting counts and the current node's percentage. | **Prioritize** moves a waiting job to the front by resubmitting it. | **Stop** requests interruption while keeping waiting jobs queued. |
+
+A native macOS utility built with SwiftUI. Connect to local ComfyUI or a remote server over SSH. No Electron. Automatic updates use the open-source Sparkle framework.
+
+## Features
+
+- **Reduce agent progress-polling token use** with the included Claude Code/Codex skill and local MCP monitoring.
+- Monitor all saved servers at once, with independent running/waiting counts and availability.
+- Compact menu-bar overview with search and an Available filter; resizable workspace with a server sidebar, separate Queue/History views, and settings pages.
+- Menu bar shows available/total servers when monitoring several, or the job count for a single server.
+- Separate running and waiting lists, refreshed every **4 seconds**.
+- Completed history with **last hour / last 24 hours / today / loaded history** filters and search; refreshed every **15 seconds**, bounded to the newest **200 server records**.
+- Image and video thumbnails, native previews, and downloads to a location you choose.
+- Optional macOS notifications for each completion or the finished queue, plus failures and disconnections.
+- Named server bookmarks with port/queue/history review before switching.
+- GPUtw private/password-protected login in the app, with authenticated output previews and downloads.
+- Optional per-server Wake-on-LAN for a remote Mac, with manual wake and limited automatic retries.
+- Observed running time and estimated remaining time from at least three similar successful jobs.
+- Failed and interrupted jobs with server-reported error details.
+- Workflow names, shortened prompt IDs, node counts, and waiting positions.
+- **Prioritize** a waiting job with a confirmation dialog.
+- **Stop** a running job with a confirmation dialog, keeping the waiting queue.
+- Optional node name and percentage updates every **1 second**, using the included server extension.
+- Saved ComfyUI address and a manual refresh button.
+- English, Simplified Chinese, Traditional Chinese, and Japanese interface, selected from macOS preferred languages.
+- Native macOS appearance, with no Dock window.
+- Local or remote ComfyUI connections, including SSH port forwarding.
+
+## GPUtw and remote Mac tutorial
+
+[English](docs/REMOTE_SETUP.md) · [简体中文](docs/i18n/REMOTE_SETUP.zh-CN.md) · [繁體中文](docs/i18n/REMOTE_SETUP.zh-TW.md) · [日本語](docs/i18n/REMOTE_SETUP.ja.md)
+
+**[GPUtw video queue quick start with real screenshots (繁體中文)](docs/i18n/GPUTW_SETUP.zh-TW.md)** — update to v1.5.4, sign in, check the correct port, and monitor a batch of videos.
+
+Learn to sign in to GPUtw, distinguish services on different ports, read `0` / `—` / `!` / `…`, inspect recent jobs before switching, configure Wake-on-LAN, and connect through SSH. GPU utilization and ComfyUI job counts are separate metrics.
+
+Multi-server monitoring, local network scanning, and the new workspace window are included in v1.6.0. Users of v1.5.x can choose **Check for updates…** in the app's settings.
+
+## Preview finished outputs
+
+<p align="center"><img src="docs/images/preview.png" width="440" alt="Standalone native output preview window showing a fictional ceramic lamp studio image and Download button" /></p>
+
+*The original illustrated lamp is a demonstration output, not a real ComfyUI generation. The preview uses the shipping SwiftUI view.*
+
+## Reduce agent monitoring token use
+
+Long video renders can lead an agent to repeatedly ask “is it done yet?” Each model-driven check can consume tokens and add progress responses to the conversation. **ComfyQueueBar moves that monitoring into the native app:** subscribe to the exact job once, let ordinary code track it, then inspect the result when an event arrives or you resume the chat.
+
+| Monitoring approach | Where the repeated work happens | Agent token impact |
+| --- | --- | --- |
+| Agent repeatedly checks progress | Repeated model turns and tool responses | Can consume tokens on each check |
+| ComfyQueueBar monitors subscribed jobs | App timers and a programmatic MCP wait | Avoids repeated model turns for progress polling; result processing still uses tokens |
+
+The benefit is greatest when replacing frequent agent polling during long renders. Actual savings depend on the model, polling frequency, job duration, and host behavior; no fixed savings percentage has been measured. The app's own monitoring does not invoke a language model. Standard MCP requires a bounded wait or a user-resumed chat, so it does not guarantee that an idle agent will automatically continue.
+
+Enable **Settings → AI agent integration** to let Claude Code or Codex delegate ComfyUI monitoring to this app through a local MCP adapter. Agents receive instructions to subscribe to exact jobs instead of repeatedly querying progress. Subscriptions, results, and acknowledged completion/failure events survive app restarts. The packaged app includes **Set up Claude and Codex** to register MCP and install the shared ComfyQueueBar Skill for both clients, backing up replaced files; reopen agent sessions afterward. A manual configuration copy button is also available; Python 3.9+ is required for MCP, with no pip dependencies.
+
+Standard MCP cannot wake an idle desktop conversation. It provides a bounded programmatic wait; experimental Claude Channels support verifies inbound delivery before claiming push capability. Claude Desktop Code-tab channel activation and Codex Desktop push are not established. See [setup, delivery modes, and limitations](docs/AGENT_INTEGRATION.md).
+
+### Use the included skill
+
+Detailed token-saving tutorial: [English](docs/AGENT_TOKEN_GUIDE.md) · [简体中文](docs/i18n/AGENT_TOKEN_GUIDE.zh-CN.md) · [繁體中文](docs/i18n/AGENT_TOKEN_GUIDE.zh-TW.md) · [日本語](docs/i18n/AGENT_TOKEN_GUIDE.ja.md). Covers installation, exact job IDs, subscriptions, resuming checks, outputs, and troubleshooting.
+
+1. Install the latest app and connect it to ComfyUI.
+2. Open **Settings → AI agent integration → Set up Claude and Codex**, then reopen your agent session. Re-run setup after an app upgrade to update the installed skill and adapter.
+3. In Codex, send `$comfyqueuebar Check the connection.` In Claude Code, send `/comfyqueuebar Check the connection.`
+4. To check an existing job, send `$comfyqueuebar Verify prompt ID <prompt_id>.` Keep the returned subscription ID; later send `$comfyqueuebar Continue checking subscription <subscription_id>.` Use the `/comfyqueuebar` prefix in Claude Code.
+
+Replace the placeholders with real IDs. The skill checks existing jobs and waits once for up to 45 seconds; it does not submit workflows or change your queue. A timeout keeps monitoring available for a later check. Standard MCP does not wake an idle chat automatically. See the [full skill tutorial and troubleshooting](docs/AGENT_INTEGRATION.md#use-the-comfyqueuebar-skill) and [skill source](.agents/skills/comfyqueuebar/SKILL.md).
+
+## Preview, notifications, and servers
+
+Click **Preview & download…** on a completed job to open its output. Images use a native preview; MP4, MOV, and M4V use macOS playback controls when their codec is supported. Choose an output if the job produced several files, then use **Download…** to save it. Other formats remain downloadable.
+
+Open the **gear** to save a named server address and choose completion notifications: **Off**, **Every job**, or **Whole batch**. Enable failure/disconnection alerts separately. Notifications start disabled and require macOS permission. All saved servers remain monitored. Select a row in the server overview to inspect its queue in the workspace, and enable **Notify when any server becomes available** to get an alert when an observed busy queue becomes empty.
+
+<details>
+<summary>See server and notification settings</summary>
+
+<img src="docs/images/workspace-settings.png" width="460" alt="Current workspace settings with server connections, local network scanning, saved servers, and Wake-on-LAN" />
+
+*English documentation fixture. Automatic update controls are omitted from this capture build.*
+
+</details>
+
+Running time starts when the app first observes a job. Estimates need three comparable successful history records and can be inaccurate when cache use or server load changes. [Read the detailed guide](docs/USAGE.md#running-time-and-estimates).
+
+## Requirements
+
+| Component | Requirement |
+| --- | --- |
+| Mac app | macOS 13 Ventura or later |
+| Building from source | Swift 5.9 or later, provided by a suitable Xcode / Command Line Tools installation |
+| ComfyUI | A reachable server exposing `/queue` and `/prompt`; targeted Stop requires `/interrupt` to honor `prompt_id` |
+| Optional progress | ComfyUI with `comfy_execution.progress.ProgressHandler`, `add_progress_handler`, and `execution.reset_progress_state` |
+| Server extension | Runs inside ComfyUI's own Python environment; uses its existing `aiohttp` dependency |
+
+The Mac app is macOS-only. A remote ComfyUI server may run on macOS, Linux, or Windows. The build script produces a binary for the Mac architecture on which it runs; it does not produce a universal binary. Older ComfyUI versions and third-party distributions can differ: see [compatibility](docs/DEVELOPMENT.md#comfyui-compatibility).
+
+## Download the Mac app
+
+[**Download ComfyQueueBar for Apple Silicon (M1 or later)**](https://github.com/sakmor/ComfyQueueBar/releases/latest/download/ComfyQueueBar-macOS-arm64.zip)
+
+Requires macOS 13 or later. Unzip the download, move `ComfyQueueBar.app` to Applications, then open it and click its menu bar icon. No Swift or Xcode installation is needed. Intel Mac users can build from source below.
+
+The download is ad-hoc signed and **not notarized**. If macOS blocks it, try opening the app, then use **System Settings → Privacy & Security → Open Anyway** and confirm. Only do this for the download from this repository's release. See [all releases and checksums](https://github.com/sakmor/ComfyQueueBar/releases).
+
+## Automatic updates
+
+Starting with v1.2.0, the app uses [Sparkle](https://sparkle-project.org/) to check for updates automatically (normally every 24 hours), download signed updates, and install them when appropriate. Keep the app in a writable Applications folder. Enable or disable **Automatically update the app**, or use **Check for updates…** in the panel. First-time macOS security approval may still be required for this non-notarized app.
+
+Users of v1.1.0 or earlier must download the new app once manually. Update checks/downloads use GitHub; both the feed and update archives are Ed25519-signed. Update controls are available through the gear button.
+
+## Build from source
+
+### 1. Check your build tools
+
+```sh
+xcode-select --install
+```
+
+If the tools are already installed, skip installation. Verify your compiler:
+
+```sh
+swift --version
+```
+
+The Swift version must be at least 5.9. If an older Command Line Tools installation provides an earlier Swift version, update the tools or select a suitable Xcode installation.
+
+### 2. Clone and build
+
+```sh
+git clone https://github.com/sakmor/ComfyQueueBar.git
+cd ComfyQueueBar
+bash build-app.sh
+open build/ComfyQueueBar.app
+```
+
+The build script compiles a release binary, creates an app bundle, and signs it locally with an ad-hoc signature. It rebuilds only this repository's `build/ComfyQueueBar.app`. It does not install or start ComfyUI.
+
+### 3. Connect to ComfyUI
+
+1. Start your existing ComfyUI installation.
+2. Click the stacked icon in the macOS menu bar.
+3. Open the **gear** button and enter your **ComfyUI address**, normally `http://127.0.0.1:8188`.
+4. Click **Connect**, review the port and recent jobs, then click **Monitor this server**.
+5. Queue a workflow in ComfyUI. It should appear within the next refresh interval.
+
+A fresh empty queue displays `0`; a disconnected or stale queue displays `—`, sign-in required displays `!`, and the initial check displays `…`. The number counts ComfyUI jobs on the selected port. You can inspect the endpoint independently:
+
+```sh
+curl --fail http://127.0.0.1:8188/queue
+```
+
+### 4. Enable node progress (optional)
+
+Queue monitoring works without this step. To show the current node and its percentage, install the included extension into the **ComfyUI installation actually serving your endpoint**:
+
+For a local ComfyUI installation, open **Settings → Node progress → Install progress extension…** in the app and choose its ComfyUI folder. Finish any active generation, then restart ComfyUI. The app refuses to overwrite an existing extension. This installs only on the Mac running ComfyQueueBar.
+
+```sh
+bash install-comfyui-extension.sh /path/to/ComfyUI
+```
+
+For paths containing spaces, quote the path:
+
+```sh
+bash install-comfyui-extension.sh "$HOME/AI Tools/ComfyUI"
+```
+
+Wait for active generation to finish, then restart ComfyUI. Test the extension:
+
+```sh
+curl --fail http://127.0.0.1:8188/comfyqueuebar/queue-progress
+```
+
+A response containing null values is normal before any progress is reported. During a job, the app displays progress only if the returned prompt ID matches the running job.
+
+**The percentage describes the current node, not the whole workflow.** It may restart for each node. Some nodes do not emit fractional progress.
+
+For remote servers, install the extension on the server, not just on the Mac. See [remote setup](docs/REMOTE_SETUP.md) for SSH, file transfer, and Windows instructions.
+
+## Install as a regular app
+
+After building, copy `build/ComfyQueueBar.app` into your user's Applications folder:
+
+```sh
+mkdir -p "$HOME/Applications"
+cp -R build/ComfyQueueBar.app "$HOME/Applications/"
+open "$HOME/Applications/ComfyQueueBar.app"
+```
+
+Quit an existing instance before replacing it. To launch at login, add the copied app through macOS **System Settings → General → Login Items** (the exact label can vary by macOS version). The app does not register itself automatically.
+
+## What queue actions do
+
+**Prioritize** resubmits the selected workflow with `front: true`, then deletes the original waiting entry. Its prompt ID changes. It does not interrupt the running job. This is a multi-request operation, so race conditions and duplicate entries are possible if the server disconnects or the original starts while the action is in progress. The app attempts recovery and reports IDs when it cannot confirm the result. Review the queue before retrying.
+
+**Stop** sends `/interrupt` with the selected running prompt ID after rechecking the queue. It does not clear waiting jobs. A compatible server interrupts that prompt, and the next waiting job can start. Older servers may ignore the ID and apply a global interrupt; use a compatible ComfyUI version before relying on targeted behavior.
+
+Prioritization preserves the prompt graph and the `extra_data` available through `/queue`. It cannot preserve private server fields or submission options not returned by that API. Workflows with external side effects or paid API nodes deserve particular care when resubmitting. See the [full usage guide](docs/USAGE.md).
+
+## Privacy and connectivity
+
+Queue and history requests go to the configured ComfyUI address. Update checks also contact GitHub for the signed update feed and release downloads. The app contains no analytics, telemetry, or cloud account; Sparkle system profiling is disabled. The endpoint, named server bookmarks, notification preferences, and update preferences are stored in macOS user defaults. History stays on the server unless you enable AI agent integration, which saves subscribed result references and errors locally; previews and downloads request its `/view` endpoint. ComfyUI may include workflow metadata in queue responses.
+
+The progress extension adds a read-only JSON route on the ComfyUI server and observes progress through ComfyUI's internal progress registry. It does not open a WebSocket or modify queue contents. It wraps an internal reset function to re-register the observer for each prompt.
+
+The extension route inherits the server's network exposure; it is **not automatically restricted to localhost**. Keep ComfyUI on a trusted network or use SSH forwarding. GPUtw private/password-protected instances use **Settings → Sign in to GPUtw…**; see the [remote tutorial](docs/REMOTE_SETUP.md). WebKit manages login state separately from server bookmarks. Generic API-key, bearer-token and query-string credentials remain unsupported. See [security guidance](SECURITY.md).
+
+## Documentation
+
+- [Usage and action semantics](docs/USAGE.md)
+- [GPUtw, connection status, Wake-on-LAN, and SSH](docs/REMOTE_SETUP.md)
+- [Troubleshooting, updates, and uninstalling](docs/TROUBLESHOOTING.md)
+- [Architecture, API reference, tests, and compatibility](docs/DEVELOPMENT.md)
+- [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
+
+## License and acknowledgments
+
+MIT licensed. See [LICENSE](LICENSE).
+
+Originally extracted from a production helper in the AniClayFilm repository, used for [Clay Trouble](https://www.youtube.com/@ClayTrouble). This standalone edition has a multilingual interface and documentation, its own app identifier, and its own progress endpoint. It does not include film assets, workflows, models, or credentials.
+
+[ComfyUI](https://github.com/Comfy-Org/ComfyUI) is a separate project. ComfyQueueBar is an independent community tool and is not an official ComfyUI product. No ComfyUI source code is bundled.

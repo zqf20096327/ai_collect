@@ -1,0 +1,300 @@
+<div align="center">
+
+![Remote Sensing Image Segmentation Models](assets/social-preview.png)
+
+# 🛰️ Remote-Sensing-Image-Segmentation-Models
+
+**遥感图像分割模型汇总 · 论文 + 代码实现（优先官方）+ 数据集 + 可运行基线**
+
+*A curated collection of Remote Sensing Image Segmentation models — papers, code implementations (official when available), datasets, and runnable baselines.*
+
+[![Awesome](https://img.shields.io/badge/Awesome-RS%20Segmentation-0e7490?style=for-the-badge&logo=awesomelists&logoColor=white)](https://github.com/qi-fg/Remote-Sensing-Image-Segmentation-Models)
+[![Stars](https://img.shields.io/github/stars/qi-fg/Remote-Sensing-Image-Segmentation-Models?style=for-the-badge&color=ef4444&logo=github)](https://github.com/qi-fg/Remote-Sensing-Image-Segmentation-Models/stargazers)
+[![Baseline CI](https://img.shields.io/github/actions/workflow/status/qi-fg/Remote-Sensing-Image-Segmentation-Models/baseline-smoke.yml?style=for-the-badge&label=baselines&logo=githubactions)](https://github.com/qi-fg/Remote-Sensing-Image-Segmentation-Models/actions/workflows/baseline-smoke.yml)
+[![Papers](https://img.shields.io/badge/Methods-60%2B-15803d?style=for-the-badge)](README.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](../../pulls)
+[![License](https://img.shields.io/badge/License-MIT-3b82f6?style=for-the-badge)](LICENSE)
+
+**If this collection helps you, a ⭐ means a lot — it keeps the project growing.** 💙
+
+</div>
+
+---
+
+## 📖 这个仓库是什么
+
+遥感图像分割（Remote Sensing Image Segmentation, RSISeg）的方法在近十年爆发式增长：从 **FCN/U-Net 时代的卷积网络**，到 **Transformer 的全局建模**，再到 **SAM/基础模型（Foundation Model）时代的通用分割**，每一年都有新范式。**但方法散落在几百篇论文和几十个官方仓库里，找 baseline、查 SOTA、复现对比极其耗时。**
+
+本仓库就是为解决这个问题而生：
+
+- 📚 **方法总表**：按**方法族**（CNN → Transformer → Foundation/SAM → 弱监督/点监督 → **LLM / MLLM / Agent**）整理，含论文、会议/期刊、年份、代码实现与代表数据集；代码链接**优先官方/作者实现**，否则明确按社区实现处理。
+- 📐 **可运行基线**：`baselines/` 下提供 U-Net / SegFormer / SAM wrapper 等本地基线，以及 PointSAM 这类**固定上游 commit 的论文复现适配器**。本仓库自实现基线带合成数据 smoke test；真实论文复现适配器会明确标注所需数据与 GPU。
+- 📦 **数据集索引**：`datasets.md` 汇总常用 RS 分割数据集（Potsdam / Vaihingen / LoveDA / iSAID / DeepGlobe / WHU / HRSID ...）与下载入口。
+
+> 💡 与"只列链接"的 awesome-list 不同，本仓库**同时提供可运行的参考实现、自动 smoke test 与复现规范**——可以把它当作实验起点，而不只是论文收藏夹。
+
+---
+
+## 📊 收录统计
+
+| 方法族 | 数量 | 关键词 |
+| :--- | :---: | :--- |
+| 🧱 CNN-based 经典基线 | 8 | FCN · U-Net · DeepLabV3+ · HRNet |
+| 🔷 Transformer / Attention | 8 | SegFormer · Mask2Former · SETR · Swin |
+| 🚀 Foundation Models / SAM 家族 | 14 | SAM · SAM2 · SAMRS · RSPrompter · RingMo |
+| 🎯 弱监督 / 点监督 / 少样本 | 6 | PointSAM · ReSAM · UV-SAM |
+| 🔄 变化检测 / 其他 | 4 | Change detection · Panoptic · Road-SAM |
+| 🧠 大模型 / Agent 驱动 | 23 | LISA · LISAT · SegEarth-R2 · Change-Agent |
+| **合计** | **60+** | *持续更新中* |
+
+---
+
+## 🧭 研究者使用入口
+
+如果你是为了**选 baseline、做毕业论文/论文实验或长期跟踪方向**，建议按下面的顺序使用：
+
+| 入口 | 用途 |
+| :-- | :-- |
+| **[BENCHMARKS.md](BENCHMARKS.md)** | 区分“论文报告结果”和“本仓库统一协议复现结果”，记录 split / crop / seed / pretraining / TTA 等关键变量 |
+| **[datasets.md](datasets.md)** | 查常用遥感分割数据集、任务类型和下载入口 |
+| **[UNIFIED_TRAINING.md](UNIFIED_TRAINING.md)** | 用统一入口按 smoke → debug → full 三档运行 U-Net / SegFormer，减少长时间训练后才发现问题的风险 |
+| **[POINTSAM_SUPERVISED_PROTOCOL.md](POINTSAM_SUPERVISED_PROTOCOL.md)** | 复现 ReSAM 表中 PointSAM 来源的 SAM-ViT-B 全 mask 监督上界（NWPU 1/2/3 点） |
+| **[baselines/](baselines)** | 查看 U-Net / SegFormer / SAM wrapper，以及论文复现适配器 |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | 新增论文、数据集和结果时的核验标准 |
+
+> **不要直接把不同论文里的 mIoU 当成统一排行榜。** 遥感分割对数据划分、裁剪尺寸、重叠推理、预训练、增强、TTA 和类别映射都很敏感。仓库后续会优先积累**统一协议下可复现**的结果，而不是只堆 SOTA 数字。
+
+---
+
+## 🗂️ 方法总表
+
+> 说明：最后一列给出**论文链接**（优先 arXiv 免费全文，无 arXiv 时用 DOI 官方页）与**代码仓库**（💻）。代码链接优先论文作者/项目官方实现；若官方代码未公开，可能收录高质量社区实现。新增条目时请在 PR 中标明代码状态，详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+### 🧱 A. CNN-based 经典基线
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **FCN** (Fully Convolutional Networks) | 2015 | CVPR | 首个端到端全卷积分割网络，语义分割开山之作 | [arXiv](https://arxiv.org/abs/1411.4038) · [DOI](https://doi.org/10.1109/CVPR.2015.7298965) |
+| **U-Net** | 2015 | MICCAI | 对称编码-解码 + 跳跃连接，RS/医学通用基线 | [arXiv](https://arxiv.org/abs/1505.04597) · [DOI](https://doi.org/10.1007/978-3-319-24574-4_28) |
+| **SegNet** | 2017 | TPAMI | 编码器池化索引上采样，轻量经典 | [💻](https://github.com/alexgkendall/SegNet-Tutorial) |
+| **PSPNet** | 2017 | CVPR | 金字塔池化聚合多尺度上下文 | [💻](https://github.com/hszhao/PSPNet) |
+| **DeepLabV3+** | 2018 | ECCV | 空洞卷积 + ASPP + 解码器 | [💻](https://github.com/VainF/DeepLabV3Plus-Pytorch) |
+| **U-Net++** | 2018 | MICCAI-W | 嵌套密集跳跃连接 | [💻](https://github.com/MrGiovanni/UNetPlusPlus) |
+| **HRNet** | 2020 | TPAMI | 全程保持高分辨率表征 | [💻](https://github.com/HRNet/HRNet-Semantic-Segmentation) |
+| **ResUNet-a** | 2020 | ISPRS J. | 残差 U-Net，面向遥感"全场景"分割 | [arXiv](https://arxiv.org/abs/1904.00592) · [DOI](https://doi.org/10.1016/j.isprsjprs.2020.01.013) |
+
+### 🔷 B. Transformer / Attention
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **SETR** | 2021 | CVPR | 首个把 ViT 当编码器的分割网络 | [💻](https://github.com/fudan-zvg/SETR) |
+| **SegFormer** | 2021 | NeurIPS | 分层 Transformer + 轻量 MLP 解码器，高效 SOTA | [💻](https://github.com/NVlabs/SegFormer) |
+| **Segmenter** | 2021 | ICCV | 纯 Transformer + mask 解码 | [💻](https://github.com/rstrudel/segmenter) |
+| **Swin-Unet** | 2021 | arXiv | Swin Transformer 版 U-Net | [💻](https://github.com/HuCaoFighting/Swin-Unet) |
+| **DPT** | 2021 | ICCV | ViT + 密集预测头，强 zero-shot 迁移 | [💻](https://github.com/isl-org/DPT) |
+| **UperNet** | 2018 | ECCV | 通用金字塔解码头，常配 Swin/ConvNeXt | [💻](https://github.com/open-mmlab/mmsegmentation) |
+| **Mask2Former** | 2022 | CVPR | 通用掩码注意力，语义/实例/全景统一 | [💻](https://github.com/facebookresearch/Mask2Former) |
+| **ViT-Adapter** | 2023 | ICLR | 给 ViT 加空间先验适配密集预测 | [💻](https://github.com/czczup/ViT-Adapter) |
+
+### 🚀 C. Foundation Models / SAM 家族 & RS 基础模型 ★本仓库重点
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **SAM** (Segment Anything) | 2023 | ICCV | 十亿级掩码训练的通用分割基础模型 | [💻](https://github.com/facebookresearch/segment-anything) |
+| **SAM 2** | 2024 | Meta | 图像 + 视频的流式可提示分割 | [💻](https://github.com/facebookresearch/sam2) |
+| **SAMRS** | 2023 | NeurIPS D&B | 用 SAM + 检测数据生成的大规模 RS 分割数据集（10w 图/166w 实例） | [💻](https://github.com/ViTAE-Transformer/SAMRS) |
+| **RSPrompter** | 2024 | TGRS | 自动学习 prompt，SAM 用于 RS 实例分割 | [💻](https://github.com/KyanChen/RSPrompter) |
+| **HSA-SAM** | 2024 | — | 分层区域 + SAM，面向 RS 语义分割 | [💻](https://github.com/mafanhao666/HSA-SAM) |
+| **GeoSAM** | 2025 | ECAI | 多模态 prompt 微调 SAM，基础设施分割 | [DOI](https://doi.org/10.3233/FAIA250844) |
+| **RingMo** | 2022 | TGRS | 遥感基础模型，掩码图像建模预训练 | [DOI](https://doi.org/10.1109/TGRS.2022.3194732) |
+| **RingMo-SAM** | 2023 | TGRS | 多模态遥感分割基础模型 | [DOI](https://doi.org/10.1109/TGRS.2023.3332219) |
+| **RVSA** | 2022 | TGRS | 旋转可变自注意力，把普通 ViT 推向 RS 基础模型 | [💻](https://github.com/ViTAE-Transformer/Remote-Sensing-RVSA) |
+| **SatMAE** | 2022 | NeurIPS | 时序 + 多光谱卫星图像的 MAE 预训练 | [💻](https://github.com/sustainlab-group/SatMAE) |
+| **Scale-MAE** | 2023 | CVPR | 尺度感知 MAE，学习跨分辨率表征 | [💻](https://github.com/bair-climate-initiative/scale-mae) |
+| **CROMA** | 2024 | ICLR | 对比 + MAE 双目标的遥感多模态表征 | [💻](https://github.com/antofuller/CROMA) |
+| **SpectralGPT** | 2024 | TPAMI | 光谱遥感基础模型，生成式预训练 | [💻](https://github.com/danfenghong/IEEE_TPAMI_SpectralGPT) |
+| **segment-geospatial** | 2023 | 工具 | 把 SAM/SAM2 封装成地理空间分割工具链（samgeo） | [💻](https://github.com/opengeos/segment-geospatial) |
+
+> 🔎 这一族是当前 RS 分割最大的增长点。**从"每类地物训一个模型"到"一个基础模型 + prompt 通吃"** 是 2024–2026 的主线。
+
+### 🎯 D. 弱监督 / 点监督 / 少样本
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **ReSAM** ⭐ | 2026 | CVPR | 自提示闭环 Refine–Requery–Reinforce + 软语义对齐(SSA)，1 点标注逼近全监督，训练显存比 PointSAM 低 84% | [💻](https://github.com/MNaseerSubhani/ReSAM) |
+| **PointSAM** ⭐ | 2025 | TGRS | 点监督微调 SAM：原型正则(PBR) 用匈牙利匹配纠偏伪标签 + 负提示校准(NPC) 抑制实例粘连 | [💻](https://github.com/Lans1ng/PointSAM) |
+| **UV-SAM** | 2024 | AAAI | 把 SAM 适配到"城中村识别"（弱监督场景） | [arXiv](https://arxiv.org/abs/2401.08083) · [DOI](https://doi.org/10.1609/aaai.v38i20.30260) |
+| **SAM for RS (zero to one shot)** | 2023 | JAG | 系统评估 SAM 在 RS 的 zero-/one-shot 分割能力（被引 470+） | [DOI](https://doi.org/10.1016/j.jag.2023.103540) |
+| **Sparse-Annotation RS Seg** | 2021 | GRSL | 稀疏（点/涂鸦）标注驱动的高分辨率 RS 分割，弱监督范式代表作 | [DOI](https://doi.org/10.1109/LGRS.2021.3051053) |
+| **WSF-Net** | 2018 | Remote Sensing | 图像级标签弱监督的特征融合网络（水体/云二分类分割） | [DOI](https://doi.org/10.3390/rs10121970) |
+
+> 🎯 标注成本是 RS 的真实瓶颈。**点/框/文本等弱监督 + 基础模型** 是降低标注成本的关键方向。
+
+**点监督 SAM 适配路线**（本仓库重点关注）—— 从「纠偏伪标签」到「自提示闭环」，再到「开放前沿」：
+
+| 阶段 | 代表方法 | 核心机制 | 关键变化 |
+| :--: | :-- | :-- | :-- |
+| **① 原型对齐纠偏** | [PointSAM](https://github.com/Lans1ng/PointSAM)<br>TGRS 2025 | PBR 原型正则（匈牙利匹配纠偏伪标签）<br>NPC 负提示校准（抑制实例粘连） | 需维护原型库<br>**显存开销大** |
+| **② 自提示闭环 + 语义对齐** | [ReSAM](https://github.com/MNaseerSubhani/ReSAM)<br>CVPR 2026 | Refine–Requery–Reinforce（R³）自提示闭环<br>SSA 软语义对齐 | 1 点标注逼近全监督<br>**显存降低 84%**（滚动队列） |
+| **③ 开放前沿** | 待补充 · 欢迎 PR | 不确定性建模 · 跨传感器泛化 | 更少标注预算 |
+
+### 🔄 E. 变化检测 / 其他任务
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **SAM-CD** | 2024 | TGRS | 用 FastSAM 视觉编码器 + 卷积适配器做 VHR 双时相变化检测 | [arXiv](https://arxiv.org/abs/2309.01429) · [DOI](https://doi.org/10.1109/TGRS.2024.3368168) |
+| **ChangeFormer** | 2022 | IGARSS | Transformer 变化检测 | [💻](https://github.com/wgcban/ChangeFormer) |
+| **RSPS-SAM** | 2024 | Remote Sensing | 基于 SAM 的遥感全景分割（批量注意力金字塔 + 掩码解码器） | [DOI](https://doi.org/10.3390/rs16214002) |
+| **Road-SAM** | 2024 | GRSL | SAM 适配大幅 VHR 道路提取 | [DOI](https://doi.org/10.1109/LGRS.2024.3430900) |
+
+### 🧠 F. 大模型 / Agent 驱动的分割（LLM · MLLM · Agent）
+
+> 🚀 2023 年之后的新范式：不再"为每个地物训一个分类器"，而是**用自然语言描述目标 → 直接输出掩码**。两条路线并行：
+> **① 对比式（CLIP 系）**——算文本与像素的相似度，天然支持开放词表，但缺空间推理能力；
+> **② 生成式 / 推理式（MLLM 系）**——大模型先把语言推理成**几何 prompt**（点 / 框 / token embedding），再交给 SAM 出掩码，能处理"左边那栋被树挡住一半的楼"这类复杂指令。
+> 再往前一步就是 **Agent 化**：LLM 当调度器，把检测 / 分割 / 变化分析等工具串成工作流。
+
+#### F1. 通用领域底座（这一族的技术源头）
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **CLIPSeg** | 2022 | CVPR | 用 CLIP 的文本 / 图像 prompt 直接出分割图，**对比式路线起点** | [arXiv](https://arxiv.org/abs/2112.10003) · [💻](https://github.com/timojl/clipseg) |
+| **OVSeg** | 2023 | CVPR | Mask-adapted CLIP，开放词表语义分割早期代表作 | [arXiv](https://arxiv.org/abs/2210.04150) · [💻](https://github.com/facebookresearch/ov-seg) |
+| **SegGPT** | 2023 | ICCV | In-context 分割：给一个示例掩码，自动分割同类的其它目标 | [arXiv](https://arxiv.org/abs/2304.03284) · [💻](https://github.com/baaivision/Painter) |
+| **Grounded SAM** | 2024 | arXiv | Grounding DINO + SAM：**文本指代 → 框 → 掩码**，落地最广的组合范式 | [arXiv](https://arxiv.org/abs/2401.14159) · [💻](https://github.com/IDEA-Research/Grounded-Segment-Anything) |
+| **LISA** ⭐ | 2024 | CVPR | **推理分割**开山之作：LLM 生成特殊 token，其 embedding 直接当 SAM 的 mask prompt（embedding-as-mask） | [arXiv](https://arxiv.org/abs/2308.00692) · [💻](https://github.com/dvlab-research/LISA) |
+| **PixelLM** | 2024 | CVPR | 多尺度 token + 多目标，一个 MLLM 同时输出多实例掩码 | [arXiv](https://arxiv.org/abs/2312.02228) |
+| **VisionLLM v2** | 2024 | NeurIPS | 通用多任务 MLLM，把分割变成"语言可调用"的能力 | [arXiv](https://arxiv.org/abs/2406.08394) |
+
+#### F2. 遥感：语言引导 / 推理分割
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **Text2Seg** | 2023 | arXiv | 早期把 CLIP + SAM 组合起来做遥感文本引导分割 | [arXiv](https://arxiv.org/abs/2304.10597) · [💻](https://github.com/zhangjielu321/Text2Seg) |
+| **GeoChat** | 2024 | CVPR | 遥感 grounded VLM，支持区域级指代（分割的上游能力） | [arXiv](https://arxiv.org/abs/2311.15826) |
+| **SegEarth-OV** | 2024 | arXiv | **免训练**开放词表分割：把 CLIP 语义注入 SAM，无需标注迁移 | [arXiv](https://arxiv.org/abs/2410.01768) |
+| **OVRS** | 2025 | TGRS | 旋转聚合相似度 + 多尺度融合，解决遥感目标**朝向多变** | [arXiv](https://arxiv.org/abs/2409.07683) · [DOI](https://doi.org/10.1109/TGRS.2025.3559557) |
+| **GeoPix** | 2025 | IEEE GRSM | 给 RS MLLM 装 mask predictor，实现**像素级对话** | [arXiv](https://arxiv.org/abs/2501.06828) |
+| **SegEarth-R1** | 2025 | arXiv | 地理空间**像素推理**：把位置 / 属性描述落到掩码上 | [arXiv](https://arxiv.org/abs/2504.09644) |
+| **LISAT** ⭐ | 2025 | NeurIPS | 卫星影像推理分割：RemoteCLIP + Vicuna-7B + SAM 解码器，配套 GRES 数据集 | [arXiv](https://arxiv.org/abs/2505.02829) |
+| **UniGeoSeg** | 2025 | arXiv | 统一开放世界地理空间分割，一个模型覆盖多任务 | [arXiv](https://arxiv.org/abs/2511.23332) · [💻](https://github.com/MiliLab/UniGeoSeg) |
+| **Think2Seg-RS** | 2025 | arXiv | **解耦式 LVLM-SAM**：LLM 只学生成几何 prompt、SAM 全程冻结，用 mask-only 强化学习训练 | [arXiv](https://arxiv.org/abs/2512.19302) |
+| **SegEarth-R2** | 2025 | arXiv | 面向复杂指令（层级粒度 / 多目标 / 隐含意图），配套 LaSeRS 数据集 | [arXiv](https://arxiv.org/abs/2512.20013) · [💻](https://github.com/earth-insights/SegEarth-R2) |
+| **SegEarth-OV3** | 2025 | arXiv | 探索 SAM 3 在遥感开放词表分割上的能力边界 | [arXiv](https://arxiv.org/abs/2512.08730) |
+| **Training-Free Text-Based RS Seg** | 2026 | CVPRW | 完全免训练管线：CLIP 当 SAM 候选掩码的选择器；生成式路线用 GPT-5 或 LoRA 微调 Qwen-VL 产出点击 prompt | [arXiv](https://arxiv.org/abs/2602.17799) |
+
+> 🔎 F2 是这一族的主战场：**遥感特有的难点是"朝向多变 + 尺度极端 + 小目标多"**，所以很多工作都在解决"通用分割模型直接搬过来不好使"的问题。
+
+#### F3. 遥感：Agent / 工具编排管线
+
+| 方法 | 年份 | 会议/期刊 | 一句话 | 论文 / 代码 |
+| :--- | :--: | :-- | :-- | :--: |
+| **Tree-GPT** | 2023 | arXiv | 模块化 LLM 专家系统：LLM 规划并调用林业遥感的检测 / 分割工具 | [arXiv](https://arxiv.org/abs/2310.04698) |
+| **Remote Sensing ChatGPT** | 2024 | arXiv | 用 ChatGPT 当调度器，按自然语言需求串起多个视觉模型完成任务 | [arXiv](https://arxiv.org/abs/2401.09083) |
+| **Change-Agent** ⭐ | 2024 | TGRS | LLM Agent 驱动的地表变化**解译**：自动调用变化检测 + 变化描述工具，支持多轮交互 | [arXiv](https://arxiv.org/abs/2403.19646) |
+| **Multi-Weather DomainShifter** | 2025 | J. Imaging | LLM Agent 编排风格迁移 + 扩散模型，把晴空影像扩增成雾 / 尘 / 雪域，缓解分割的域偏移 | [DOI](https://doi.org/10.3390/jimaging11110395) · [💻](https://github.com/WayBob/domainshifter) |
+
+> 💡 **为什么这一族值得单独看**：弱监督 / 点监督解决的是"**标注贵**"，而 LLM / Agent 路线解决的是"**指令复杂 + 目标开放**"——用户说人话，模型自己决定切什么。
+> 目前两个公认痛点：① **小目标**（RS 影像里目标常常只有几个像素，MLLM 的视觉编码器分辨率不够）；② **语义级与实例级 grounding 的落差**（能判断"哪里有车"，不一定能把每一辆框准）。
+
+---
+
+## 📐 可运行基线
+
+`baselines/` 同时包含两类内容：本仓库自实现的轻量基线，以及固定上游版本的论文复现适配器。前者带 CPU smoke test；后者保留原论文协议，因此可能需要真实数据和 GPU：
+
+| 基线 | 类型 | 说明 | 快速验证 |
+| :--- | :-- | :-- | :-- |
+| [`baselines/unet/`](baselines/unet) | CNN | 纯 PyTorch U-Net（含 Dice+CE 损失、二分类/多类） | `python train.py --demo` |
+| [`baselines/segformer/`](baselines/segformer) | Transformer | 纯 PyTorch SegFormer，自包含，适合开发 / 消融 | `python train.py --demo` |
+| [`baselines/segformer_standard/`](baselines/segformer_standard) | Transformer | **标准 SegFormer-B0 + NVIDIA MiT-B0 ImageNet-1K 预训练**，用于全监督 benchmark | 统一入口 `--model segformer_b0` |
+| [`baselines/sam_rs/`](baselines/sam_rs) | Foundation | SAM prompt 分割封装（点/框 prompt → mask） | `python predict.py --demo` |
+| [`baselines/pointsam_supervised/`](baselines/pointsam_supervised) | Reproduction | **PointSAM 官方全 mask 监督 SAM-ViT-B**，复现 ReSAM 的 Supervised 对比行；NWPU 1/2/3 点 | 需 NWPU + GPU，见协议文档 |
+
+```bash
+git clone https://github.com/qi-fg/Remote-Sensing-Image-Segmentation-Models
+cd Remote-Sensing-Image-Segmentation-Models/baselines/unet
+pip install -r requirements.txt
+python train.py --demo     # 合成数据，CPU 几秒跑完，输出 mIoU
+```
+
+### 统一训练入口（v0.6）
+
+独立 baseline 仍然保留；做对比实验时推荐使用仓库根目录的统一入口：
+
+```bash
+# ① smoke：合成小数据，GitHub CI / CPU 快速检查
+python train.py --model unet --mode smoke
+python train.py --model segformer --mode smoke
+
+# ② debug：开发版（随机初始化，自包含）
+python train.py --dataset loveda --model segformer --mode debug --data /data/LoveDA
+
+# ③ 论文/benchmark 参考：标准 SegFormer-B0 + ImageNet-1K 预训练
+pip install -r baselines/segformer_standard/requirements.txt
+python train.py --dataset loveda --model segformer_b0 --mode debug --data /data/LoveDA --device cuda
+
+# ④ full：LoveDA 受控 512 协议
+python train.py --dataset loveda --model segformer_b0 --mode full \
+  --recipe loveda_segformer_b0_512 --data /data/LoveDA --device cuda --seed 0
+```
+
+三种模式共享同一套数据/评测逻辑，并自动保存 `config.json`、`best.pt`、`last.pt` 和 `results.json`。**LoveDA 已支持官方 Train/Val + Urban/Rural 目录和 0→ignore、1..7→0..6 标签映射。**`segformer` 是仓库自实现开发基线；`segformer_b0` 是标准架构 + NVIDIA ImageNet-1K 预训练的全监督参考。v0.6 新增 `loveda_segformer_b0_512` 命名协议。点监督论文路线另有 **[POINTSAM_SUPERVISED_PROTOCOL.md](POINTSAM_SUPERVISED_PROTOCOL.md)**，用于复现 ReSAM 对比表中的全 mask 监督 SAM-ViT-B 上界。
+
+> GitHub Actions **只跑 smoke**，不会下载完整遥感数据集，也不会在 CI 里做长时间训练；真实数据的 debug/full 留给本地或 GPU 服务器。
+
+---
+
+## 🧪 复现与 Benchmark
+
+仓库将结果分成两层：**Paper-reported**（原论文报告，仅作查阅）与 **Repository-controlled**（统一数据/训练/评测协议下的复现结果）。完整规范见 **[BENCHMARKS.md](BENCHMARKS.md)**。
+
+对 baseline 的改动会通过 GitHub Actions 自动执行 U-Net、SegFormer 与 SAM-RS wrapper 的 CPU smoke test，避免“README 说能跑、实际已经坏掉”的情况。
+
+---
+
+## 📦 数据集
+
+常用基准与下载入口见 **[`datasets.md`](datasets.md)**，覆盖：
+
+- **语义分割**：ISPRS Potsdam / Vaihingen · LoveDA · iSAID · DeepGlobe · GID
+- **实例分割**：iSAID · NWPU VHR-10 · DOTA（SAMRS 转换源）
+- **建筑物/道路**：WHU Building · Massachusetts Roads
+- **变化检测**：LEVIR-CD · WHU-CD
+
+---
+
+## 🤝 贡献指南
+
+非常欢迎一起完善这个集合！你可以：
+
+1. **补充方法**：按上表格式新增一行（方法名 / 年份 / 会议 / 一句话 / 代码链接）
+2. **修正错误**：年份、venue、链接有误直接改
+3. **补充基线**：在 `baselines/` 下新增可运行实现（需带 `--demo` 冒烟测试）
+4. **新增数据集**：更新 `datasets.md`
+
+**提交方式**：Fork → 新建分支 → 修改 → 提 PR。或在 [Issues](../../issues) 里直接告诉我。
+
+> 📌 数据由社区整理，难免有滞后或疏漏，**发现错误欢迎提 Issue/PR**，一起让它更准。
+
+---
+
+## ⭐ Star History
+
+如果这个仓库帮你省下了找 baseline / 查 SOTA 的时间，点个 Star 就是最大的支持：
+
+[![Star History Chart](https://api.star-history.com/svg?repos=qi-fg/Remote-Sensing-Image-Segmentation-Models&type=Date)](https://star-history.com/#qi-fg/Remote-Sensing-Image-Segmentation-Models&Date)
+
+---
+
+## 📄 License
+
+本项目以 [MIT License](LICENSE) 开源。各方法代码的版权归其原作者所有，请遵循各自仓库的许可证。
+
+<div align="center">
+
+**Made with 🛰️ by [qi-fg](https://github.com/qi-fg)**
+
+*Remote Sensing · Image Segmentation · Foundation Models*
+
+</div>

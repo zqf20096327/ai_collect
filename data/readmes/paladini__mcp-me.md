@@ -1,0 +1,497 @@
+<p align="center">
+<a href="https://paladini.io/harness-score/guide/maturity-model#l1-%C2%B7-documented" title="Harness Score — AI coding harness maturity"><img alt="Harness Score L1 (Documented): measures AI-assisted development harness maturity with harness-score" src="https://paladini.github.io/harness-score/maturity/badge-l1.svg" height="20"></a>
+  <img src="docs/assets/og-image.svg" alt="mcp-me — Your Digital Identity Layer for AI" width="100%">
+</p>
+
+# mcp-me
+
+**Your AI assistants don't know who you are.** Every time you start a conversation with Claude, Copilot, Cursor, or Windsurf, it's a blank slate — no context about your skills, your projects, your career, or what you care about.
+
+**mcp-me fixes that.** It creates a structured personal profile that any AI assistant can read via the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/). Think of it as a **digital identity layer for AI** — your bio, career, skills, interests, projects, and more, always available to every AI tool you use.
+
+```
+You: "Write me a cover letter for this job"
+AI:  (reads your me://career, me://skills, me://projects)
+     "Based on your 5 years at Acme Corp, your TypeScript expertise,
+      and your open-source work on mcp-me..."
+```
+
+## Why mcp-me?
+
+- **AI that knows you** — Your assistants remember your skills, career, projects, and personality across every conversation
+- **Auto-generated** — Pull data from 329 registered generators (implemented across 44 generator source files) with one command
+- **Privacy-first** — All data stays local in YAML files on your machine. Nothing is sent to any cloud.
+- **Real-time plugins** — 13 live integrations (Spotify now playing, GitHub repos, Last.fm scrobbles) that AI queries on demand
+- **Extensible** — Community-driven generators and plugins. Add a new data source in ~10 lines of code.
+- **Works everywhere** — Claude Desktop, Cursor, Windsurf, Copilot, and any MCP-compatible AI assistant
+
+## Installation
+
+> **Prerequisite:** [Node.js](https://nodejs.org/) 20 or later. Verify with `node -v`.
+
+### One-Click Install
+
+Add mcp-me to your AI assistant in one click — no path configuration needed (profile defaults to `~/.mcp-me`):
+
+<p align="center">
+  <a href="https://cursor.com/install-mcp?name=me&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1tZSIsInNlcnZlIl19">
+    <img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add mcp-me to Cursor" height="32">
+  </a>
+  &nbsp;&nbsp;
+  <a href="vscode:mcp/install?%7B%22name%22%3A%22me%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22mcp-me%22%2C%22serve%22%5D%7D">
+    <img src="https://img.shields.io/badge/VS_Code-Install_MCP-007ACC?style=for-the-badge&logo=visualstudiocode" alt="Install mcp-me in VS Code" height="32">
+  </a>
+</p>
+
+**Claude Desktop:** Download the [latest `.mcpb` release](https://github.com/paladini/mcp-me/releases/latest) and double-click to install, or drag it into Claude Desktop → Settings → Extensions.
+
+After installing, initialize your profile:
+
+```bash
+mcp-me init
+mcp-me generate --github your-username
+```
+
+### npm (recommended)
+
+```bash
+npm install -g mcp-me
+```
+
+This makes the `mcp-me` command available everywhere on your system. No need to clone any repository — npm downloads the package for you.
+
+```bash
+mcp-me --help
+mcp-me init
+mcp-me generate --github your-username
+mcp-me serve
+```
+
+**Alternative — run without installing** (via `npx`):
+
+```bash
+npx mcp-me --help
+```
+
+`npx` downloads the package temporarily and runs it. Useful for trying mcp-me once, but slower on repeated use since it re-downloads each time.
+
+> **Profile location:** Commands default to `~/.mcp-me`. Override with `MCP_ME_PROFILE_DIR` or pass an explicit path: `mcp-me serve ~/my-profile`.
+
+## Quick Start
+
+```bash
+# 1. Initialize your profile (creates YAML templates + .mcp-me.yaml in ~/.mcp-me)
+mcp-me init
+
+# 2. Edit the config file — uncomment your sources
+code ~/.mcp-me/.mcp-me.yaml
+```
+
+Your `.mcp-me.yaml` config file:
+
+```yaml
+generators:
+  github: your-username
+  devto: your-username
+  bluesky: handle.bsky.social
+  zodiac: aquarius
+
+plugins:
+  github:
+    enabled: true
+    username: your-username
+```
+
+```bash
+# 3. Generate! Reads sources from .mcp-me.yaml automatically
+mcp-me generate
+
+# 4. Start the MCP server
+mcp-me serve
+```
+
+> **CLI flags also work:** `mcp-me generate --github octocat --devto myuser`
+
+All commands work with `npx` (zero install) or with `mcp-me` directly if installed globally. The `generate` command pulls your data from public APIs and auto-populates profile YAML files — no API keys needed for most sources.
+
+### Profile directory structure
+
+```
+~/.mcp-me/             → Default profile location
+  .mcp-me.yaml        → Configuration (generators + plugins)
+  identity.yaml        → Your data (name, bio, contact)
+  skills.yaml          → Your data (languages, tools)
+  projects.yaml        → Your data (portfolio)
+  career.yaml          → Your data (experience)
+  interests.yaml       → Your data (hobbies, topics)
+  personality.yaml     → Your data (traits, values)
+  goals.yaml           → Your data (short/long-term)
+  faq.yaml             → Your data (Q&A pairs)
+```
+
+## Configure Your AI Assistant
+
+### One-Click (Cursor & VS Code)
+
+Use the [one-click install badges](#one-click-install) above. After installing, run `mcp-me init` to create your profile.
+
+### Cursor Plugin (Open Plugins)
+
+mcp-me ships as a full [Open Plugins](https://open-plugins.com) plugin for Cursor. Install from [cursor.directory](https://cursor.directory) or clone the repo — the plugin auto-detects all components:
+
+| Component | Location | Purpose |
+|---|---|---|
+| MCP Server | [`mcp.json`](mcp.json) | Zero-config `npx -y mcp-me serve` |
+| Rules | [`rules/`](rules/) | Always consult profile before answering |
+| Skills | [`skills/`](skills/) | Profile usage and setup guides |
+| Agents | [`agents/`](agents/) | Profile assistant and intro writer |
+| Commands | [`commands/`](commands/) | `/ask-about-me` and `/introduce-me` |
+| Hooks | [`hooks/hooks.json`](hooks/hooks.json) | Session-start profile reminder |
+| LSP | [`.lsp.json`](.lsp.json) | YAML language server for profile files |
+
+Validate the plugin structure: `npm run validate:open-plugin`
+
+### Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "me": {
+      "command": "npx",
+      "args": ["-y", "mcp-me", "serve"]
+    }
+  }
+}
+```
+
+### Cursor (manual)
+
+Add to `.cursor/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "me": {
+      "command": "npx",
+      "args": ["-y", "mcp-me", "serve"]
+    }
+  }
+}
+```
+
+### VS Code (GitHub Copilot)
+
+Add to `.vscode/mcp.json` in your project root (or in your User Settings for global access):
+
+```json
+{
+  "servers": {
+    "me": {
+      "command": "npx",
+      "args": ["-y", "mcp-me", "serve"]
+    }
+  }
+}
+```
+
+> **Tip:** To enable it globally (all workspaces), open VS Code Settings (`Ctrl+Shift+P` → "Preferences: Open User Settings (JSON)") and add the `mcp` key there instead.
+
+### Claude Desktop
+
+**Option A — Desktop Extension (.mcpb, recommended):**
+
+1. Download `mcp-me.mcpb` from [GitHub Releases](https://github.com/paladini/mcp-me/releases/latest)
+2. Double-click the file, or drag it into Claude Desktop → Settings → Extensions
+3. Set your profile directory when prompted (default: `~/.mcp-me`)
+4. Run `mcp-me init` if you haven't created a profile yet
+
+**Option B — Manual config:**
+
+Add to your Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "me": {
+      "command": "npx",
+      "args": ["-y", "mcp-me", "serve"]
+    }
+  }
+}
+```
+
+## Agent Instruction Files
+
+AI agents read special Markdown files in your project to understand how they should behave. Pair them with mcp-me so that **every AI session automatically consults your profile** — no more repeating your stack, career, or preferences in every conversation.
+
+| File | Works with |
+|------|------------|
+| `AGENTS.md` (project root) | Windsurf (Cascade), OpenAI Codex, Cline, and others |
+| `.github/copilot-instructions.md` | GitHub Copilot (VS Code + GitHub.com) |
+
+**Quick setup:**
+
+```bash
+# AGENTS.md — for Windsurf, Cline, Codex, etc.
+cp "$(npm root -g)/mcp-me/templates/AGENTS.md" ./AGENTS.md
+
+# GitHub Copilot
+mkdir -p .github
+cp "$(npm root -g)/mcp-me/templates/.github/copilot-instructions.md" .github/copilot-instructions.md
+```
+
+Both templates are included with mcp-me and tell the AI to call `ask_about_me` whenever context about you would improve the response.
+
+See the [Agent Instructions Guide](docs/ai-instructions.md) for examples, global setup, and tips on combining with project-specific rules.
+
+## Profile Schema
+
+Your profile is a collection of YAML files:
+
+| File | Description |
+|------|-------------|
+| `identity.yaml` | Name, bio, location, languages, contact info |
+| `career.yaml` | Work experience, education, certifications |
+| `skills.yaml` | Technical and soft skills with proficiency levels |
+| `interests.yaml` | Hobbies, music, books, movies, food preferences |
+| `personality.yaml` | Values, traits, MBTI, strengths |
+| `goals.yaml` | Short, medium, and long-term goals |
+| `projects.yaml` | Personal and open-source projects |
+| `faq.yaml` | Custom Q&A pairs about yourself |
+
+See [Schema Reference](docs/schema-reference.md) for full documentation.
+
+## MCP Interface
+
+### Resources
+
+Static profile data exposed as MCP resources:
+
+- `me://identity` — Personal identity and contact
+- `me://career` — Professional history
+- `me://skills` — Skills and proficiencies
+- `me://interests` — Hobbies and preferences
+- `me://personality` — Personality traits and values
+- `me://goals` — Personal and professional goals
+- `me://projects` — Portfolio and projects
+- `me://faq` — Frequently asked questions
+
+### Tools
+
+- **`ask_about_me`** — Free-form question about the user
+- **`search_profile`** — Keyword search across all profile data
+
+### Prompts
+
+- **`introduce_me`** — Generate a 2-paragraph introduction
+- **`summarize_career`** — Summarize career trajectory
+- **`technical_profile`** — Describe technical skills and stack
+- **`collaboration_fit`** — Evaluate fit for a project
+
+## Generators (selected examples)
+
+Generators run during `mcp-me generate` to auto-populate your profile from public APIs or user-provided exports. **No API keys needed** for most sources.
+
+Current counts:
+- **Registered generators:** 329
+- **Generator source files:** 44 single-generator files + 15 batch files (`src/generators/`)
+
+> The table below is a curated list of commonly used generators. The complete source of truth is `src/generators/index.ts`.
+
+| Category | Flag | Source | Data |
+|---|---|---|---|
+| **Code** | `--github <user>` | GitHub API | Repos, languages, stars, profile |
+| **Code** | `--gitlab <user>` | GitLab API | Projects, topics, profile |
+| **Code** | `--bitbucket <user>` | Bitbucket API | Repos, languages |
+| **Code** | `--huggingface <user>` | Hugging Face API | Models, datasets, spaces |
+| **Code** | `--kaggle <user>` | Kaggle API | Competitions, datasets, medals |
+| **Code** | `--codeberg <user>` | Gitea API | Repos, languages |
+| **Writing** | `--devto <user>` | DEV.to API | Articles, tags, reactions |
+| **Writing** | `--medium <user>` | Medium RSS | Articles, categories, article text |
+| **Writing** | `--blogger-backup <xml>` | Blogger XML export | Imported posts from a local backup, filtered by author if needed |
+| **Writing** | `--hashnode <user>` | Hashnode GraphQL | Blog posts, tags |
+| **Writing** | `--substack <user>` | Substack RSS | Newsletter posts, article text |
+| **Writing** | `--wordpress <site>` | WordPress API | Blog posts, categories, tags |
+| **Writing** | `--openlibrary <user>` | Open Library API | Books authored |
+| **Writing** | `--orcid <id>` | ORCID API | Academic publications |
+| **Writing** | `--semanticscholar <id>` | S2 API | Research papers, citations |
+| **Writing** | `--youtube <channel>` | YouTube RSS | Videos, channel info |
+| **Community** | `--stackoverflow <id>` | Stack Exchange API | Top tags, reputation, badges |
+| **Community** | `--hackernews <user>` | HN Firebase API | Karma, submissions |
+| **Community** | `--mastodon <user@host>` | Mastodon API | Posts, hashtags, bio |
+| **Community** | `--bluesky <handle>` | AT Protocol API | Posts, followers |
+| **Community** | `--reddit <user>` | Reddit JSON API | Karma, bio |
+| **Community** | `--producthunt <user>` | ProductHunt GraphQL | Launched products, upvotes |
+| **Community** | `--threads <user>` | Threads API | Bio, follower stats |
+| **Packages** | `--npm <user>` | npm Registry | Published packages |
+| **Packages** | `--pypi <pkgs>` | PyPI JSON API | Package metadata |
+| **Packages** | `--crates <user>` | Crates.io API | Rust crates |
+| **Packages** | `--dockerhub <user>` | Docker Hub API | Container images |
+| **Activity** | `--wakatime <user>` | WakaTime API | Coding time, languages, editors |
+
+### Blogger XML Backup
+
+`--blogger-backup` imports written content from a Blogger XML export file on disk. It is designed for archived or multi-author blogs where you want to recover your posts even if the site is old, partially offline, or not easily queryable through a public API.
+
+By default it imports all post entries from the file. If the backup contains multiple authors, append `::author1,author2,...` after the file path to keep only posts whose author name or email matches one of those values.
+
+Examples:
+
+```bash
+# Import all posts from a Blogger export
+mcp-me generate --blogger-backup ~/Downloads/blog-2026-03-24.xml
+
+# Import only posts written by specific authors/emails
+mcp-me generate --blogger-backup "~/Downloads/blog.xml::fernandopalad@gmail.com,fnpaladini@gmail.com,Fernando Paladini"
+```
+
+How to get the export file:
+
+1. Open Blogger and choose your blog.
+2. Go to `Settings`.
+3. In `Manage blog`, click `Back up content`.
+4. Download the XML file.
+5. Pass that file path to `--blogger-backup`.
+
+The generator imports matching posts into `projects.yaml` with `category: article`, preserves post labels as tags, and adds summary FAQ entries about the archive.
+| **Activity** | `--letterboxd <user>` | Letterboxd RSS | Films watched, ratings |
+| **Activity** | `--goodreads <user>` | Goodreads RSS + author page | Read books, shelves, reviews, published books |
+| **Activity** | `--chess <user>` | Chess.com API | Rating, stats |
+| **Activity** | `--lichess <user>` | Lichess API | Rating, games |
+| **Activity** | `--codewars <user>` | Codewars API | Rank, honor, languages |
+| **Activity** | `--leetcode <user>` | LeetCode GraphQL | Problems solved, contests |
+| **Activity** | `--lastfm <user>` | Last.fm API | Listening history, top artists |
+| **Activity** | `--steam <id>` | Steam API | Games, playtime |
+| **Activity** | `--twitch <user>` | Twitch API | Stream info |
+| **Activity** | `--dribbble <user>` | Dribbble | Design shots, portfolio |
+| **Activity** | `--unsplash <user>` | Unsplash API | Photos, downloads, collections |
+| **Activity** | `--exercism <user>` | Exercism API | Language tracks, exercises |
+| **Activity** | `--hackerrank <user>` | HackerRank API | Badges, challenges solved |
+| **Activity** | `--anilist <user>` | AniList GraphQL | Anime/manga stats, genres |
+| **Identity** | `--gravatar <email>` | Gravatar API | Bio, linked accounts, photo |
+| **Identity** | `--keybase <user>` | Keybase API | Verified identity proofs |
+
+Want to add a new data source? See the [Generator Creation Guide](docs/creating-generators.md).
+
+## Plugins (13 live integrations)
+
+Plugins run during `mcp-me serve` and provide **real-time data** to AI assistants on every query.
+
+| Plugin | Description | Auth |
+|---|---|---|
+| **GitHub** | Live repos, activity, languages | Optional token |
+| **Spotify** | Now playing, top artists, playlists | OAuth required |
+| **LinkedIn** | Professional history from export | Local JSON file |
+| **WakaTime** | Live coding stats, languages | Optional API key |
+| **DEV.to** | Live articles, reactions | Optional API key |
+| **Bluesky** | Live posts, profile, followers | None |
+| **Hacker News** | Live stories, karma | None |
+| **Reddit** | Live karma, posts | None |
+| **GitLab** | Live projects, activity, MRs | Optional token |
+| **Mastodon** | Live toots, profile, engagement | None |
+| **YouTube** | Live videos, channel stats | Optional API key |
+| **Last.fm** | Now playing, top artists, scrobbles | Optional API key |
+| **Steam** | Currently playing, game library | Optional API key |
+
+Enable plugins in `.mcp-me.yaml`:
+
+```yaml
+plugins:
+  github:
+    enabled: true
+    username: "your-username"
+  spotify:
+    enabled: true
+    client_id_env: "SPOTIFY_CLIENT_ID"
+    client_secret_env: "SPOTIFY_CLIENT_SECRET"
+    refresh_token_env: "SPOTIFY_REFRESH_TOKEN"
+```
+
+Community plugins are installed from npm (`mcp-me-plugin-*`) and auto-discovered. See the [Plugin Creation Guide](docs/creating-plugins.md).
+
+## Generators vs Plugins
+
+| | Generators | Plugins |
+|---|---|---|
+| **Run when** | `mcp-me generate` (once) | `mcp-me serve` (continuously) |
+| **Output** | Static YAML files | Live MCP resources/tools |
+| **Auth** | Almost never needed | Sometimes (OAuth) |
+| **Example** | "Repos I had in March" | "Repos I have right now" |
+| **Extend** | Add `src/generators/*.ts` | Add `src/plugins/*/` |
+
+## CLI Reference
+
+```bash
+# Auto-generate profile from multiple data sources
+mcp-me generate [--directory] --github <user> [--devto <user>] [--stackoverflow <id>] ...
+
+# Initialize with blank YAML templates (defaults to ~/.mcp-me)
+mcp-me init [directory]
+
+# Validate profile YAML files
+mcp-me validate [directory]
+
+# Start the MCP server (defaults to ~/.mcp-me)
+mcp-me serve [directory]
+
+# Scaffold a new generator or plugin (for contributors)
+mcp-me create generator <name> [--category <category>]
+mcp-me create plugin <name>
+```
+
+> **Profile location:** Defaults to `~/.mcp-me`. Override with `MCP_ME_PROFILE_DIR` or pass an explicit `[directory]` argument.
+
+## Development
+
+```bash
+# Clone the repo
+git clone https://github.com/paladini/mcp-me.git
+cd mcp-me
+
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Build
+npm run build
+
+# Run in dev mode
+npm run dev
+```
+
+## FAQ
+
+**What is MCP (Model Context Protocol)?**
+MCP is an open standard by Anthropic that connects AI assistants to external data sources. mcp-me uses MCP to let AI assistants read your personal profile data.
+
+**Do I need API keys?**
+Most generators use public APIs with no auth needed. Some (Strava, Spotify) require tokens — see the `.mcp-me.yaml` comments for details.
+
+**Can I use this with Claude Desktop / VS Code / Cursor / Windsurf?**
+Yes! Any MCP-compatible AI assistant works. See the [Configure Your AI Assistant](#configure-your-ai-assistant) section.
+
+**How do I make AI agents use my profile automatically?**
+Drop an `AGENTS.md` (for Windsurf, Cline, Codex) or `.github/copilot-instructions.md` (for GitHub Copilot) into your project. Templates are included — see the [Agent Instructions Guide](docs/ai-instructions.md).
+
+**How do I add a new data source?**
+Run `mcp-me create generator myservice` to scaffold a new generator, or see the [Generator Creation Guide](docs/creating-generators.md).
+
+**Is my data stored anywhere?**
+No. All data stays local in your YAML files. The MCP server reads from disk — nothing is sent to any cloud.
+
+**How many generators are there?**
+Currently 329 registered generators, implemented across 44 generator source files plus 15 batch files.
+
+## Contributing
+
+We welcome contributions! Whether it's a new plugin, a bug fix, or documentation improvements — see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines.
+
+Maintainers: see [Publishing Guide](docs/publishing.md) for release and distribution instructions.
+
+## License
+
+[MIT](LICENSE)

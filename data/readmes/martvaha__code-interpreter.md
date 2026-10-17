@@ -1,0 +1,111 @@
+# LibreChat compatible code interpreter
+
+A FastAPI-based code interpreter service that provides code execution and file management capabilities. This service is compatible with the LibreChat Code Interpreter API specification.
+
+> [!NOTE]
+> This project is mostly a proof of concept and is not intended to be used in production.   
+> 
+> For production ready solution and to support the amazing work of LibreChat maintainers use the [LibreChat Code Interpreter](https://code.librechat.ai/pricing).
+
+## Features
+
+- Easy deployment with single docker compose file
+- Code is executed in a isolated Docker container sandbox, custom images supported
+- Supports file upload and download
+- Supports concurrent code execution
+- Supports Python and R languages (possibility to extend to other languages)
+- RESTful API with OpenAPI documentation
+
+https://github.com/user-attachments/assets/4a919c2f-ec1f-4289-b74e-9d2f2de8f19c
+
+## Usage
+
+### Running the project
+
+Run the project with docker compose using `docker compose -f compose.prod.yml up`
+
+It's possible to overwrite the default environment variables defined in [./app/shared/config.py](./app/shared/config.py) by creating a `.env` file in the root directory.
+By default the project will create two directories in the root directory: `./config` and `./uploads`.
+
+`config` directory will hold the sqlite database and temp uploaded files.
+`uploads` directory will hold the files uploaded by the users. All files uploaded by the users will be, by default, deleted after 24 hours.
+
+### Authentication
+
+The API authenticates requests with short-lived JWTs minted by LibreChat (`Authorization: Bearer <token>`, EdDSA/Ed25519 by default, RS256 also supported). LibreChat signs tokens with a private key; this service verifies them with the matching public key.
+
+By default the API is unauthenticated — when no public key is configured, all requests are accepted (dev mode only; a warning is logged at startup). To enable auth:
+
+1. Generate a keypair:
+
+```bash
+openssl genpkey -algorithm ed25519 -out codeapi-private.pem
+openssl pkey -in codeapi-private.pem -pubout -out codeapi-public.pem
+awk 'NF {printf "%s\\n", $0}' codeapi-public.pem   # \n-escape a PEM for a one-line env value
+```
+
+2. Set the public key in the service environment (or `.env`):
+
+```ini
+CODEAPI_JWT_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"
+# or alternatively: CODEAPI_JWT_PUBLIC_KEY_BASE64=<base64-encoded PEM>
+```
+
+When set, all `/v1` endpoints require a valid Bearer token and return `401` otherwise (`/health` stays open). Optional overrides (defaults match LibreChat): `CODEAPI_JWT_ISSUER=librechat`, `CODEAPI_JWT_AUDIENCE=codeapi`, `CODEAPI_JWT_ALGORITHMS=["EdDSA","RS256"]`, `CODEAPI_JWT_LEEWAY=30`.
+
+### Configuring LibreChat
+
+To configure LibreChat to use the local code interpreter, set the following environment variables in LibreChat:
+
+```ini
+CODEAPI_JWT_ENABLED=true # or CODEAPI_AUTH_PROVIDER=librechat-jwt
+CODEAPI_JWT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n" # \n-escaped private PEM; _BASE64 and _JWK_JSON variants also exist
+LIBRECHAT_CODE_BASEURL=http(s)://host:port/v1/librechat # for local testing use to point to host IP http://host.docker.internal:8000/v1/librechat
+```
+
+
+## Development
+
+### Installation
+
+1. Install dependencies using uv:
+```bash
+uv sync --all-extras
+source .venv/bin/activate
+```
+
+## Running the Application
+
+1. Start the development server:
+```bash
+docker compose up
+```
+
+The API will be available at `http://localhost:8000`. The OpenAPI documentation can be accessed at `http://localhost:8000/docs`.
+
+
+### Running tests
+
+Most tests exercise code execution, which starts **sandbox containers via the host Docker daemon**. That requires:
+
+1. **A reachable Docker socket** — the app talks to Docker on the host, not inside its own filesystem.
+2. **Correct `HOST_PATH`** — session files live at `./uploads` inside the app, but sandbox bind mounts must use the **host** path (e.g. `/your/project/uploads/<session_id>`). Compose sets `HOST_PATH=$PWD` for this; running pytest with the wrong value causes `bind source path does not exist` errors.
+
+The simplest way to satisfy both is to run tests in the same environment as the dev server:
+
+```bash
+docker compose up -d
+docker compose exec code-interpreter uv run pytest tests -v
+```
+
+Test logs are written to `logs/test.log`.
+
+**Alternative — run on the host** (without `docker compose exec`):
+
+```bash
+uv sync --all-extras
+uv run pytest tests -v
+```
+
+The first run may take longer while sandbox images (`jupyter/scipy-notebook`, `jupyter/r-notebook`, `node:24-slim`) are pulled.
+

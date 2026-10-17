@@ -1,0 +1,850 @@
+# Top Secret
+
+[![Ruby](https://github.com/thoughtbot/top_secret/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/thoughtbot/top_secret/actions/workflows/main.yml)
+
+Filter sensitive information from free text before sending it to external services or APIs, such as chatbots and LLMs.
+
+By default it filters the following:
+
+-   Credit cards
+-   Emails
+-   Phone numbers
+-   Social security numbers
+-   People's names
+-   Locations
+
+However, you can add your own [custom filters](#custom-filters).
+
+> [!TIP]
+> Using [RubyLLM][]? Check out [ruby_llm-top_secret][] for seamless integration
+  that automatically filters sensitive information from your prompts before
+  sending them to LLMs.
+
+## Installation
+
+Install the gem and add to the application's Gemfile by executing:
+
+```bash
+bundle add top_secret
+```
+
+If bundler is not being used to manage dependencies, install the gem by executing:
+
+```bash
+gem install top_secret
+```
+
+> [!IMPORTANT]
+> Top Secret depends on [MITIE Ruby][], which depends on [MITIE][].
+>
+> You'll need to download and extract [ner_model.dat][] first.
+
+> [!TIP]
+> Due to its large size, you'll likely want to avoid committing [ner_model.dat][] into version control. See the [Production](#production) section for details on using [Trove][] to deploy the model file.
+>
+> Alternatively, you can disable NER filtering entirely by setting `model_path` to `nil` if you only need regex-based filters (credit cards, emails, phone numbers, SSNs). This improves performance and eliminates the model file dependency.
+
+By default, Top Secret assumes the file will live at the root of your project, but this can be configured.
+
+```ruby
+TopSecret.configure do |config|
+  config.model_path = "path/to/ner_model.dat"
+end
+```
+
+## Default Filters
+
+Top Secret ships with a set of filters to detect and redact the most common types of sensitive information.
+
+You can [override](#overriding-the-default-filters-1), [disable](#disabling-a-default-filter-1), or [add](#adding-new-default-filters) to this list as needed.
+
+By default, the following filters are enabled
+
+**`credit_card_filter`**
+
+Matches common credit card formats
+
+```ruby
+result = TopSecret::Text.filter("My card number is 4242-4242-4242-4242")
+result.output
+
+# => "My card number is [CREDIT_CARD_1]"
+```
+
+**`email_filter`**
+
+Matches email addresses
+
+```ruby
+result = TopSecret::Text.filter("Email me at ralph@thoughtbot.com")
+result.output
+
+# => "Email me at [EMAIL_1]"
+```
+
+**`phone_number_filter`**
+
+Matches phone numbers
+
+```ruby
+result = TopSecret::Text.filter("Call me at 555-555-5555")
+result.output
+
+# => "Call me at [PHONE_NUMBER_1]"
+```
+
+**`ssn_filter`**
+
+Matches U.S. Social Security numbers
+
+```ruby
+result = TopSecret::Text.filter("My SSN is 123-45-6789")
+result.output
+
+# => "My SSN is [SSN_1]"
+```
+
+**`people_filter`**
+
+Detects names of people (NER-based)
+
+```ruby
+result = TopSecret::Text.filter("Ralph is joining the meeting")
+result.output
+
+# => "[PERSON_1] is joining the meeting"
+```
+
+**`location_filter`**
+
+Detects location names (NER-based)
+
+```ruby
+result = TopSecret::Text.filter("Let's meet in Boston")
+result.output
+
+# => "Let's meet in [LOCATION_1]"
+```
+
+## Usage
+
+```ruby
+TopSecret::Text.filter("Ralph can be reached at ralph@thoughtbot.com")
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::Result
+  @input="Ralph can be reached at ralph@thoughtbot.com",
+  @mapping={:EMAIL_1=>"ralph@thoughtbot.com", :PERSON_1=>"Ralph"},
+  @output="[PERSON_1] can be reached at [EMAIL_1]"
+>
+```
+
+View the original text
+
+```ruby
+result.input
+
+# => "Ralph can be reached at ralph@thoughtbot.com"
+```
+
+View the filtered text
+
+```ruby
+result.output
+
+# => "[PERSON_1] can be reached at [EMAIL_1]"
+```
+
+View the mapping
+
+```ruby
+result.mapping
+
+# => {:EMAIL_1=>"ralph@thoughtbot.com", :PERSON_1=>"Ralph"}
+```
+
+Check if sensitive information was found
+
+```ruby
+result.sensitive?
+
+# => true
+
+result.safe?
+
+# => false
+```
+
+### Category Methods
+
+Query the result for specific types of sensitive information using category methods:
+
+```ruby
+result = TopSecret::Text.filter("Ralph can be reached at ralph@example.com or 555-1234")
+
+# Check if emails were found
+result.emails?
+# => true
+
+# Get all emails
+result.emails
+# => ["ralph@example.com"]
+
+# Get email mapping
+result.email_mapping
+# => {:EMAIL_1=>"ralph@example.com"}
+
+# Similarly for other types
+result.people?         # => true
+result.people          # => ["Ralph"]
+result.person_mapping  # => {:PERSON_1=>"Ralph"}
+
+result.phone_numbers?         # => true
+result.phone_numbers          # => ["555-1234"]
+result.phone_number_mapping   # => {:PHONE_NUMBER_1=>"555-1234"}
+```
+
+Available category methods for all default filters:
+
+- `emails`, `emails?`, `email_mapping`
+- `credit_cards`, `credit_cards?`, `credit_card_mapping`
+- `phone_numbers`, `phone_numbers?`, `phone_number_mapping`
+- `ssns`, `ssns?`, `ssn_mapping`
+- `people`, `people?`, `person_mapping`
+- `locations`, `locations?`, `location_mapping`
+
+Use `categories` to see which types were found in the result:
+
+```ruby
+result = TopSecret::Text.filter("Ralph can be reached at ralph@example.com")
+
+result.categories
+# => [:email, :person]
+```
+
+These methods are always available and return empty arrays/hashes when no sensitive information of that type is found:
+
+```ruby
+result = TopSecret::Text.filter("No sensitive data here")
+
+result.emails?         # => false
+result.emails          # => []
+result.email_mapping   # => {}
+```
+
+When using custom labels, methods are generated based on the label name. Each label is matched exactly — a custom label like `EMAIL_ADDRESS` produces its own set of methods, separate from the default `EMAIL` methods:
+
+```ruby
+result = TopSecret::Text.filter(
+  "user[at]example.com",
+  email_filter: TopSecret::Filters::Regex.new(
+    label: "EMAIL_ADDRESS",
+    regex: /\w+\[at\]\w+\.\w+/
+  )
+)
+
+# Methods are derived from the custom label (EMAIL_ADDRESS)
+result.email_addresses          # => ["user[at]example.com"]
+result.email_addresses?         # => true
+result.email_address_mapping    # => {:EMAIL_ADDRESS_1=>"user[at]example.com"}
+
+# Default email methods only match the default EMAIL label, not EMAIL_ADDRESS
+result.emails                   # => []
+result.email_mapping            # => {}
+
+# If the custom label matches the default, both refer to the same data
+result = TopSecret::Text.filter(
+  "user[at]example.com",
+  email_filter: TopSecret::Filters::Regex.new(
+    label: "EMAIL",
+    regex: /\w+\[at\]\w+\.\w+/
+  )
+)
+
+result.emails                   # => ["user[at]example.com"]
+result.email_mapping            # => {:EMAIL_1=>"user[at]example.com"}
+```
+
+When a custom label ends in `_MAPPING` (e.g., `NETWORK_MAPPING`), the mapping method appends `_mapping` to the pluralized form to keep the naming pattern consistent:
+
+```ruby
+result.network_mappings          # => ["10.0.1.0/24 -> 192.168.1.0/24"]
+result.network_mappings?         # => true
+result.network_mappings_mapping  # => {:NETWORK_MAPPING_1=>"10.0.1.0/24 -> 192.168.1.0/24"}
+```
+
+### Scanning for Sensitive Information
+
+Use `TopSecret::Text.scan` to detect sensitive information without redacting the text. This is useful when you only need to check if sensitive data exists or get a mapping of what was found:
+
+```ruby
+TopSecret::Text.scan("Ralph can be reached at ralph@thoughtbot.com")
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::ScanResult
+  @mapping={:EMAIL_1=>"ralph@thoughtbot.com", :PERSON_1=>"Ralph"}
+>
+```
+
+Check if sensitive information was found
+
+```ruby
+result.sensitive?
+
+# => true
+
+result.safe?
+
+# => false
+```
+
+View the mapping of found sensitive information
+
+```ruby
+result.mapping
+
+# => {:EMAIL_1=>"ralph@thoughtbot.com", :PERSON_1=>"Ralph"}
+```
+
+The `scan` method accepts the same filter options as `filter`:
+
+```ruby
+# Override default filters
+email_filter =  TopSecret::Filters::Regex.new(
+  label: "EMAIL_ADDRESS",
+  regex: /\w+\[at\]\w+\.\w+/
+)
+result = TopSecret::Text.scan("Contact user[at]example.com", email_filter:)
+result.mapping
+# => {:EMAIL_ADDRESS_1=>"user[at]example.com"}
+
+# Disable specific filters
+result = TopSecret::Text.scan("Ralph works in Boston", people_filter: nil)
+result.mapping
+# => {:LOCATION_1=>"Boston"}
+
+# Add custom filters
+ip_filter = TopSecret::Filters::Regex.new(
+  label: "IP_ADDRESS",
+  regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/
+)
+result = TopSecret::Text.scan("Server IP is 192.168.1.1", custom_filters: [ip_filter])
+result.mapping
+# => {:IP_ADDRESS_1=>"192.168.1.1"}
+```
+
+### Batch Processing
+
+When processing multiple messages, use `filter_all` to ensure consistent redaction labels across all messages:
+
+```ruby
+messages = [
+  "Contact ralph@thoughtbot.com for details",
+  "Email ralph@thoughtbot.com again if needed",
+  "Also CC ruby@thoughtbot.com on the thread"
+]
+
+result = TopSecret::Text.filter_all(messages)
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::BatchResult
+  @mapping={:EMAIL_1=>"ralph@thoughtbot.com", :EMAIL_2=>"ruby@thoughtbot.com"},
+  @items=[
+    <TopSecret::Text::Result @input="Contact ralph@thoughtbot.com for details", @output="Contact [EMAIL_1] for details", @mapping={:EMAIL_1=>"ralph@thoughtbot.com"}>,
+    <TopSecret::Text::Result @input="Email ralph@thoughtbot.com again if needed", @output="Email [EMAIL_1] again if needed", @mapping={:EMAIL_1=>"ralph@thoughtbot.com"}>,
+    <TopSecret::Text::Result @input="Also CC ruby@thoughtbot.com on the thread", @output="Also CC [EMAIL_2] on the thread", @mapping={:EMAIL_2=>"ruby@thoughtbot.com"}>
+  ]
+>
+```
+
+Access the global mapping
+
+```ruby
+result.mapping
+
+# => {:EMAIL_1=>"ralph@thoughtbot.com", :EMAIL_2=>"ruby@thoughtbot.com"}
+```
+
+Access individual items
+
+```ruby
+result.items[0].input
+# => "Contact ralph@thoughtbot.com for details"
+
+result.items[0].output
+# => "Contact [EMAIL_1] for details"
+
+result.items[0].mapping
+# => {:EMAIL_1=>"ralph@thoughtbot.com"}
+
+result.items[0].sensitive?
+# => true
+
+result.items[0].safe?
+# => false
+```
+
+The key benefit is that identical values receive the same labels across all messages - notice how `ralph@thoughtbot.com` becomes `[EMAIL_1]` in both the first and second messages.
+
+Each item also maintains its own mapping containing only the sensitive information found in that specific message, while the batch result provides a global mapping of all sensitive information across all messages.
+
+### Restoring Filtered Text
+
+When external services (like LLMs) return responses containing filter placeholders, use `TopSecret::FilteredText.restore` to substitute them back with original values:
+
+```ruby
+# Filter messages before sending to LLM
+messages = ["Contact ralph@thoughtbot.com for details"]
+batch_result = TopSecret::Text.filter_all(messages)
+
+# Send filtered text to LLM: "Contact [EMAIL_1] for details"
+# LLM responds with: "I'll email [EMAIL_1] about this request"
+llm_response = "I'll email [EMAIL_1] about this request"
+
+# Restore the original values
+restore_result = TopSecret::FilteredText.restore(llm_response, mapping: batch_result.mapping)
+```
+
+This will return
+
+```ruby
+<TopSecret::FilteredText::Result
+  @output="I'll email ralph@thoughtbot.com about this request",
+  @restored=["[EMAIL_1]"],
+  @unrestored=[]
+>
+```
+
+Access the restored text
+
+```ruby
+restore_result.output
+# => "I'll email ralph@thoughtbot.com about this request"
+```
+
+Track which placeholders were restored
+
+```ruby
+restore_result.restored
+# => ["[EMAIL_1]"]
+
+restore_result.unrestored
+# => []
+```
+
+The restoration process tracks both successful and failed placeholder substitutions, allowing you to handle cases where the LLM response contains placeholders not found in your mapping.
+
+### Working with LLMs
+
+When sending filtered information to LLMs, they'll likely need to be instructed on how to handle those filters. Otherwise, we risk them not being returned in the response, which would break the restoration process.
+
+Here's a recommended approach:
+
+```ruby
+instructions = <<~TEXT
+  I'm going to send filtered information to you in the form of free text.
+  If you need to refer to the filtered information in a response, just reference it by the filter.
+TEXT
+```
+
+Complete example:
+
+```ruby
+require "openai"
+require "top_secret"
+
+openai = OpenAI::Client.new(
+  api_key: Rails.application.credentials.openai.api_key!
+)
+
+original_messages = [
+  "Ralph lives in Boston.",
+  "You can reach them at ralph@thoughtbot.com or 877-976-2687"
+]
+
+# Filter all messages
+result = TopSecret::Text.filter_all(original_messages)
+filtered_messages = result.items.map(&:output)
+
+user_messages = filtered_messages.map { {role: "user", content: it} }
+
+# Instruct LLM how to handle filtered messages
+instructions = <<~TEXT
+  I'm going to send filtered information to you in the form of free text.
+  If you need to refer to the filtered information in a response, just reference it by the filter.
+TEXT
+
+messages = [
+  {role: "system", content: instructions},
+  *user_messages
+]
+
+chat_completion = openai.chat.completions.create(messages:, model: :"gpt-5")
+response = chat_completion.choices.last.message.content
+
+# Restore the response from the mapping
+mapping = result.mapping
+restored_response = TopSecret::FilteredText.restore(response, mapping:).output
+
+puts(restored_response)
+```
+
+### Advanced Examples
+
+#### Overriding the default filters
+
+When overriding or [disabling](#disabling-a-default-filter-1) a [default filter](#default-filters), you must map to the correct key.
+
+> [!IMPORTANT]
+> Invalid filter keys will raise an `ArgumentError`. Only the following keys are valid:
+> `credit_card_filter`, `email_filter`, `phone_number_filter`, `ssn_filter`, `people_filter`, `location_filter`
+
+```ruby
+regex_filter = TopSecret::Filters::Regex.new(label: "EMAIL_ADDRESS", regex: /\b\w+\[at\]\w+\.\w+\b/)
+ner_filter = TopSecret::Filters::NER.new(label: "NAME", tag: :person, min_confidence_score: 0.25)
+
+TopSecret::Text.filter("Ralph can be reached at ralph[at]thoughtbot.com",
+  email_filter: regex_filter,
+  people_filter: ner_filter
+)
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::Result
+  @input="Ralph can be reached at ralph[at]thoughtbot.com",
+  @mapping={:EMAIL_ADDRESS_1=>"ralph[at]thoughtbot.com", :NAME_1=>"Ralph", :NAME_2=>"ralph["},
+  @output="[NAME_1] can be reached at [EMAIL_ADDRESS_1]"
+>
+```
+
+#### Disabling a default filter
+
+```ruby
+TopSecret::Text.filter("Ralph can be reached at ralph@thoughtbot.com",
+  email_filter: nil,
+  people_filter: nil
+)
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::Result
+  @input="Ralph can be reached at ralph@thoughtbot.com",
+  @mapping={},
+  @output="Ralph can be reached at ralph@thoughtbot.com"
+>
+```
+
+#### Error handling for invalid filter keys
+
+```ruby
+# This will raise ArgumentError: Unknown key: :invalid_filter. Valid keys are: ...
+TopSecret::Text.filter("some text", invalid_filter: some_filter)
+```
+
+### Custom Filters
+
+> [!IMPORTANT]
+> Custom filter labels must follow these rules:
+>
+> -   Start with a letter (a-z, A-Z)
+> -   End with a letter (a-z, A-Z)
+> -   Contain only letters and single underscores (no consecutive underscores)
+> -   Cannot contain digits or special characters
+>
+> Valid examples: `EMAIL`, `IP_ADDRESS`, `CREDIT_CARD`
+>
+> Invalid examples: `_EMAIL` (starts with underscore), `EMAIL_` (ends with underscore), `EMAIL1` (ends with digit), `EMAIL__ADDRESS` (consecutive underscores)
+>
+> The system automatically appends `_N` where N is the sequence number (e.g., `EMAIL_ADDRESS` becomes `EMAIL_ADDRESS_1`, `EMAIL_ADDRESS_2`, etc.)
+
+#### Adding new [Regex filters][]
+
+```ruby
+ip_address_filter = TopSecret::Filters::Regex.new(
+  label: "IP_ADDRESS",
+  regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/
+)
+
+TopSecret::Text.filter("Ralph's IP address is 192.168.1.1",
+  custom_filters: [ip_address_filter]
+)
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::Result
+  @input="Ralph's IP address is 192.168.1.1",
+  @mapping={:PERSON_1=>"Ralph", :IP_ADDRESS_1=>"192.168.1.1"},
+  @output="[PERSON_1]'s IP address is [IP_ADDRESS_1]"
+>
+```
+
+#### Adding new [NER filters][]
+
+Since [MITIE Ruby][] has an API for [training][train] a model, you're free to add new NER filters.
+
+```ruby
+language_filter = TopSecret::Filters::NER.new(
+  label: "LANGUAGE",
+  tag: :language,
+  min_confidence_score: 0.75
+)
+
+TopSecret::Text.filter("Ralph's favorite programming language is Ruby.",
+  custom_filters: [language_filter]
+)
+```
+
+This will return
+
+```ruby
+<TopSecret::Text::Result
+  @input="Ralph's favorite programming language is Ruby.",
+  @mapping={:PERSON_1=>"Ralph", :LANGUAGE_1=>"Ruby"},
+  @output="[PERSON_1]'s favorite programming language is [LANGUAGE_1]"
+>
+```
+
+## How Filters Work
+
+Top Secret uses two types of filters to detect and redact sensitive information:
+
+### `TopSecret::Filters::Regex`
+
+`Regex` filters use regular expressions to find patterns in text.
+They are useful for structured data like credit card numbers, emails, or IP addresses.
+
+```ruby
+regex_filter = TopSecret::Filters::Regex.new(
+  label: "IP_ADDRESS",
+  regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/
+)
+
+result = TopSecret::Text.filter("Server IP: 192.168.1.1",
+  custom_filters: [regex_filter]
+)
+
+result.output
+# => "Server IP: [IP_ADDRESS_1]"
+```
+
+### `TopSecret::Filters::NER`
+
+`NER` (Named Entity Recognition) filters use the [MITIE][] library to detect entities like people, locations, and other categories based on trained language models.
+They are ideal for free-form text where patterns are less predictable.
+
+```ruby
+ner_filter = TopSecret::Filters::NER.new(
+  label: "PERSON",
+  tag: :person,
+  min_confidence_score: 0.25
+)
+
+result = TopSecret::Text.filter("Ralph and Ruby work at thoughtbot.",
+  people_filter: ner_filter
+)
+
+result.output
+# => "[PERSON_1] and [PERSON_2] work at thoughtbot."
+```
+
+`NER` filters match based on the tag you specify (`:person`, `:location`, etc.) and only include matches with a confidence score above `min_confidence_score`.
+
+#### Supported NER Tags
+
+By default, Top Secret only ships with `NER` filters for two entity types:
+
+-   `:person`
+-   `:location`
+
+If you need other tags you can [train your own MITIE model][train] and add custom NER filters:
+
+## Configuration
+
+### Overriding the model path
+
+```ruby
+TopSecret.configure do |config|
+  config.model_path = "path/to/ner_model.dat"
+end
+```
+
+### Model caching
+
+The MITIE NER model is automatically cached after the first initialization to avoid expensive reloading. All `TopSecret::Text` instances share the same cached model, significantly improving performance.
+
+If you need to clear the cache (e.g., after changing the model path), use:
+
+```ruby
+TopSecret::Text.clear_model_cache!
+```
+
+### Disabling NER filtering
+
+For improved performance or when the MITIE model file cannot be deployed, you can disable NER-based filtering entirely. This will disable people and location detection but retain all regex-based filters (credit cards, emails, phone numbers, SSNs):
+
+```ruby
+TopSecret.configure do |config|
+  config.model_path = nil
+end
+```
+
+This is useful in environments where:
+
+-   The model file cannot be deployed due to size constraints
+-   You only need regex-based filtering
+-   You want to optimize for performance over NER capabilities
+
+### Overriding the confidence score
+
+```ruby
+TopSecret.configure do |config|
+  config.min_confidence_score = 0.75
+end
+```
+
+### Overriding the default filters
+
+```ruby
+TopSecret.configure do |config|
+  config.email_filter = TopSecret::Filters::Regex.new(
+    label: "EMAIL_ADDRESS",
+    regex: /\b\w+\[at\]\w+\.\w+\b/
+  )
+end
+```
+
+### Disabling a default filter
+
+```ruby
+TopSecret.configure do |config|
+  config.email_filter = nil
+end
+```
+
+### Adding custom filters globally
+
+```ruby
+ip_address_filter = TopSecret::Filters::Regex.new(
+  label: "IP_ADDRESS",
+  regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/
+)
+
+TopSecret.configure do |config|
+  config.custom_filters << ip_address_filter
+end
+```
+
+## Production
+
+### Deploying the Model File
+
+Due to the large size of `ner_model.dat`, you'll want to avoid committing it to version control. Use [Trove][] to handle deploying the model file in production:
+
+```ruby
+# Rakefile
+Rake::Task["assets:precompile"].enhance do
+  Trove.pull
+end
+```
+
+This ensures the model file is downloaded during deployment.
+
+### Eager-Loading the Model
+
+To avoid cold-start performance issues, consider eager-loading the model after initialization. This must happen after initialization because the `.dat` file needs to exist first:
+
+```ruby
+# config/application.rb
+
+config.after_initialize do
+  if TopSecret.model_path && File.exist?(TopSecret.model_path)
+    TopSecret::Text.shared_model
+  end
+end
+```
+
+This pre-loads the MITIE model into the shared cache, ensuring the first request doesn't incur the model loading overhead.
+
+[Trove]: https://github.com/ankane/trove
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+> [!IMPORTANT]
+> Top Secret depends on [MITIE Ruby][], which depends on [MITIE][].
+>
+> You'll need to download and extract [ner_model.dat][] first, and place it in the root of this project.
+
+### Performance Benchmarks
+
+Run `bin/benchmark` to test performance and catch regressions:
+
+```bash
+bin/benchmark  # CI-optimized benchmark with pass/fail thresholds
+```
+
+> [!NOTE]
+> When adding new public methods to the API, ensure they are included in the benchmark script to catch performance regressions.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+[Bug reports](https://github.com/thoughtbot/top_secret/issues/new?template=bug_report.md) and [pull requests](https://github.com/thoughtbot/top_secret/pulls) are welcome on GitHub at [https://github.com/thoughtbot/top_secret](https://github.com/thoughtbot/top_secret).
+
+Please create a [new discussion](https://github.com/thoughtbot/top_secret/discussions/new?category=ideas) if you want to share ideas for new features.
+
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/thoughtbot/top_secret/blob/main/CODE_OF_CONDUCT.md).
+
+## License
+
+Open source templates are Copyright (c) thoughtbot, inc.
+It contains free software that may be redistributed under the terms specified in the [LICENSE](https://github.com/thoughtbot/top_secret/blob/main/LICENSE.txt) file.
+
+## Code of Conduct
+
+Everyone interacting in the TopSecret project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/thoughtbot/top_secret/blob/main/CODE_OF_CONDUCT.md).
+
+<!-- START /templates/footer.md -->
+
+## About thoughtbot
+
+![thoughtbot](https://thoughtbot.com/thoughtbot-logo-for-readmes.svg)
+
+This repo is maintained and funded by thoughtbot, inc.
+The names and logos for thoughtbot are trademarks of thoughtbot, inc.
+
+We love open source software!
+See [our other projects][community].
+We are [available for hire][hire].
+
+[community]: https://thoughtbot.com/community?utm_source=github
+[hire]: https://thoughtbot.com/hire-us?utm_source=github
+
+<!-- END /templates/footer.md -->
+
+[MITIE Ruby]: https://github.com/ankane/mitie-ruby
+[MITIE]: https://github.com/mit-nlp/MITIE
+[ner_model.dat]: https://github.com/mit-nlp/MITIE/releases/download/v0.4/MITIE-models-v0.2.tar.bz2
+[train]: https://github.com/ankane/mitie-ruby?tab=readme-ov-file#training
+[Regex filters]: https://github.com/thoughtbot/top_secret/blob/main/lib/top_secret/filters/regex.rb
+[NER filters]: https://github.com/thoughtbot/top_secret/blob/main/lib/top_secret/filters/ner.rb
+[discussions_60]: https://github.com/thoughtbot/top_secret/discussions/60
+[RubyLLM]: https://github.com/crmne/ruby_llm
+[ruby_llm-top_secret]: https://github.com/thoughtbot/ruby_llm-top_secret

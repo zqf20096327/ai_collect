@@ -1,0 +1,257 @@
+# Gemini-Kchat
+
+Gemini-Kchat is a KDE Plasma plasmoid that integrates Google Gemini AI directly into your desktop. Chat with Gemini using the Google AI Studio API without leaving your workspace.
+
+## Features
+
+**Core Integration**
+- Direct integration with Google Gemini AI
+- Quick chat interface accessible from your Plasma panel
+- Native KDE Plasma integration with system theme support
+- Fast and lightweight architecture
+
+**Model Support**
+- Multiple Gemini model selection through dropdown menu
+- Supported models:
+
+<details>
+<summary>Show all supported models</summary>
+
+- Flash (Latest)
+- Flash-Lite (Latest)
+- Pro (Latest)
+- Gemini 3.8 Flash
+- Gemini 3.7 Flash
+- Gemini 3.6 Flash
+- Gemini Omni 1.1 Flash
+- Gemini Omni Flash Preview
+- Gemini 3.5 Flash-Lite
+- Gemini 3.1 Pro Preview
+- Gemini 3.1 Flash-Lite
+- Gemini 3.1 Flash-Lite Preview
+- Gemini 3.1 Pro Custom Tools
+- Gemini 3 Flash Preview
+- Gemini 2.5 Flash
+- Gemini 2.5 Pro
+- Gemini 2.5 Flash-Lite
+- Gemma 4 (31B, 26B A4B)
+- Deep Research Pro Preview
+- Deep Research Preview (Apr 2026)
+- Deep Research Max Preview (Apr 2026)
+
+</details>
+
+**Session Persistence**
+- Save and restore chat sessions across restarts
+- Multiple session management with easy switching
+- Rename and delete sessions
+
+**File Operations**
+- Gemini can list directories, read files, and write files on your system
+- Run shell commands and see the output
+- Fully configurable with an enable/disable toggle in the widget settings
+- Operations run with your user permissions and are not confined to a sandboxed directory
+- Custom status messages for each operation type
+
+**Text-to-Speech**
+- Multiple TTS provider support:
+  - ElevenLabs (cloud, high quality)
+  - OpenAI TTS (cloud)
+  - espeak-ng (local, fast)
+  - Piper (local, neural voices)
+  - Speech Note (local, multiple engines via dsnote)
+- Audio caching to avoid re-generating
+
+**Customization**
+- Markdown rendering with syntax highlighting for code blocks
+- Customizable system prompts
+- Full color and theme customization
+- Typography options (font family, size)
+- Configurable UI elements (buttons, scrollbars, placeholders)
+- Custom icon support
+
+### Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <td><img src="https://i.imgur.com/suUtute.png" width="400" alt="Chat Interface Light"/></td>
+      <td><img src="https://i.imgur.com/MkE5ly8.png" width="400" alt="File Operations"/></td>
+    </tr>
+    <tr>
+      <td align="center"><em>Chat interface with markdown rendering and syntax highlighting</em></td>
+      <td align="center"><em>Gemini listing directories and reading files with status messages</em></td>
+    </tr>
+    <tr>
+      <td><img src="https://i.imgur.com/FocxtmB.png" width="400" alt="Run Command"/></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td align="center"><em>Running shell commands and writing files directly from chat</em></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## Installation
+
+### Method 1: Using .plasmoid file (Recommended)
+
+1. Download the latest `gemini-kchat.plasmoid` file from the [Releases](../../releases) page
+2. Install via command line:
+   ```bash
+   kpackagetool6 -i gemini-kchat.plasmoid
+   ```
+3. Right-click on your Plasma panel → "Add Widgets..."
+4. Search for "Gemini-Kchat" and add it to your panel
+
+### Method 2: Manual Installation
+
+1. Download the source code ZIP from the [Releases](../../releases) page
+2. Extract and install:
+   ```bash
+   unzip gemini-kchat-vX.X.zip
+   cd Gemini-Kchat
+   kpackagetool6 -i contents --packageroot ~/.local/share/plasma/plasmoids/ -t Plasma/Applet
+   ```
+3. Right-click on your Plasma panel → "Add Widgets..."
+4. Search for "Gemini-Kchat" and add it to your panel
+
+### Updating
+
+To update to a newer version:
+```bash
+kpackagetool6 -u gemini-kchat.plasmoid
+```
+
+---
+
+## Configuration
+
+### Initial Setup
+
+1. Right-click on the Gemini-Kchat widget
+2. Select "Configure Gemini-Kchat..."
+3. **Important**: Enter your Google AI Studio API key in the "General" tab
+4. Select your preferred Gemini model from the dropdown
+5. Customize your agent with colors, typography and interface options
+
+### Configuration Options
+
+<table>
+  <tr>
+    <td width="50%">
+      <b>General Settings & Model Selection</b><br>
+      <img src="https://i.imgur.com/LgM9TNc.png" alt="API Key and Model Selection">
+    </td>
+    <td width="50%">
+      <b>AI Personality Prompt</b><br>
+      <img src="https://i.imgur.com/mDfDAKu.png" alt="Custom System Prompt">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><em>API key, model selection, file operations and function messages config</em></td>
+    <td align="center"><em>Custom system prompt to set Gemini's behavior and personality</em></td>
+  </tr>
+  <tr>
+    <td>
+      <b>Appearance & Colors</b><br>
+      <img src="https://i.imgur.com/Y0ZtGWd.png" alt="General Appearance">
+    </td>
+    <td>
+      <b>Code Block Formatting</b><br>
+      <img src="https://i.imgur.com/bKgqKnP.png" alt="Code Syntax Highlighting">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><em>Background, message and text color customization for the chat</em></td>
+    <td align="center"><em>Syntax highlighting colors for code blocks in responses</em></td>
+  </tr>
+  <tr>
+    <td>
+      <b>Typography</b><br>
+      <img src="https://i.imgur.com/F2dkfna.png" alt="Font Settings">
+    </td>
+    <td>
+      <b>UI Elements</b><br>
+      <img src="https://i.imgur.com/EtZWPi8.png" alt="UI Elements Configuration">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><em>Font family and size settings for the chat interface</em></td>
+    <td align="center"><em>Toggle visibility of buttons, scrollbars, and placeholders</em></td>
+  </tr>
+  <tr>
+    <td>
+      <b>Custom Plasmoid Icon</b><br>
+      <img src="https://i.imgur.com/jVBgLn7.png" alt="Custom Icon Settings">
+    </td>
+    <td>
+      <b>Text-to-Speech</b><br>
+      <img src="https://i.imgur.com/CGf7Ic9.png" alt="TTS Configuration">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><em>Replace the default widget icon with a custom image file</em></td>
+    <td align="center"><em>Multiple TTS providers: ElevenLabs, OpenAI, espeak, Piper, and Speech Note</em></td>
+  </tr>
+</table>
+
+> **Note**: The widget will not work until you configure your API key. You'll see a reminder message in the chat area if the API key is missing.
+
+### Getting Your API Key
+
+To use Gemini-Kchat, you need a Google AI Studio API key (it's free!):
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key" or "Get API Key"
+4. Select or create a Google Cloud project
+5. Copy the generated API key
+6. Paste it in the Gemini-Kchat configuration settings
+
+> **Important**: Keep your API key secure and never share it publicly. The API key is stored locally in your KDE configuration.
+
+---
+
+## Usage
+
+Click on the Gemini-Kchat icon in your panel and start chatting with Gemini. Simple as that.
+
+---
+
+## Requirements
+
+- KDE Plasma 6.0 or later
+- Google AI Studio API key
+- For local TTS: espeak-ng or piper (optional)
+
+---
+
+## Troubleshooting
+
+> **⚠️ Rate Limit Errors**
+> 
+> If you encounter rate limit errors, make sure you have a valid API key. Generally, API keys work well with the free tier on models like Gemini 2.5 Flash or Gemma 3 27B Instruct. Other models may require billing to be enabled on your Google Cloud project.
+
+---
+
+## License
+
+This project is licensed under the GNU Lesser General Public License v2.1 - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit pull requests, report issues, or suggest new features.
+
+---
+
+## Acknowledgments
+
+- Inspired by ChatQT plasmoid by [Denys Madureira](https://github.com/DenysMb/ChatQT-Plasmoid)
+- Google AI Studio for providing the Gemini API
+- KDE community for the excellent Plasma framework

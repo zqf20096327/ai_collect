@@ -1,0 +1,43 @@
+# Update!
+
+The code and dataset of V2V-LLM are merged with our follow-up work [V2V-GoT](https://eddyhkchiu.github.io/v2vgot.github.io/). 
+Please use the code and dataset at [V2V-GoT](https://github.com/eddyhkchiu/V2V-GoT). Thanks!
+
+<div align="center">
+
+# V2V-LLM: Vehicle-to-Vehicle Cooperative Autonomous Driving with Multimodal Large Language Models
+
+[Hsu-kuang Chiu](https://eddyhkchiu.github.io/)<sup>1,2</sup>, [Ryo Hachiuma](https://ryohachiuma.github.io/)<sup>1</sup>, [Chien-Yi Wang](https://chienyiwang.github.io/)<sup>1</sup>, [Stephen F. Smith](https://www.ri.cmu.edu/ri-faculty/stephen-smith/)<sup>2</sup>, [Yu-Chiang Frank Wang](https://research.nvidia.com/labs/twn/author/yu-chiang-frank-wang/)<sup>1</sup>, [Min-Hung Chen](https://minhungchen.netlify.app/)<sup>1</sup>
+
+<sup>1</sup>NVIDIA Research, <sup>2</sup>Carnegie Mellon University
+
+
+
+[project](https://eddyhkchiu.github.io/v2vllm.github.io/)  [arxiv](https://arxiv.org/abs/2502.09980)
+
+<img src="images/conceptual_only_1113_MHC.jpg" height=400px>
+
+</div>
+
+## Overview
+
+We propose a novel problem setting that integrates an LLM into cooperative autonomous driving, with the proposed <b>Vehicle-to-Vehicle Question-Answering (V2V-QA)</b> dataset and benchmark. We also propose our baseline method <b>Vehicle-to-Vehicle Large Language Model (V2V-LLM)</b>, which uses an LLM to fuse perception information from multiple connected autonomous vehicles (CAVs) and answer driving-related questions: grounding, notable object identification, and planning. Experimental results show that our proposed V2V-LLM can be a promising unified model architecture for performing various tasks in cooperative autonomous driving, and outperforms other baseline methods that use different fusion approaches. Our work also creates a new research direction that can improve the safety of future autonomous driving systems. For more details, please refer to our paper at <a href="https://arxiv.org/abs/2502.09980">arxiv</a>.
+
+
+## To Cite Our Paper
+```
+@ARTICLE{chiu2026v2vgot,
+  title={V2V-GoT: Vehicle-to-Vehicle Cooperative Autonomous Driving with Multimodal Large Language Models with Graph-of-Thoughts},
+  author={Chiu, Hsu-kuang and Hachiuma, Ryo and Wang, Chien-Yi and Wang, Yu-Chiang Frank and Chen, Min-Hung and Smith, Stephen F.},
+  journal={IEEE International Conference on Robotics and Automation (ICRA)},
+  year={2026}
+}
+
+@ARTICLE{chiu2026v2vllm,
+  title={V2V-LLM: Vehicle-to-Vehicle Cooperative Autonomous Driving with Multimodal Large Language Models},
+  author={Chiu, Hsu-kuang and Hachiuma, Ryo and Wang, Chien-Yi and Smith, Stephen F. and Wang, Yu-Chiang Frank and Chen, Min-Hung},
+  journal={IEEE International Conference on Robotics and Automation (ICRA)},
+  year={2026}
+}
+```
+

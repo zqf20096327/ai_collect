@@ -1,0 +1,893 @@
+<!-- mcp-name: io.github.dshakes/distil -->
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="Distil — cuts what your coding agent costs you, and shows you the real bill, cache included" width="100%"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/dshakes/distil/actions/workflows/ci.yml"><img src="https://github.com/dshakes/distil/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+  <a href="https://pypi.org/project/distil-llm/"><img src="https://img.shields.io/pypi/v/distil-llm?color=5ad1c9&label=pypi" alt="PyPI version"/></a>
+  <a href="https://www.npmjs.com/package/distil-llm"><img src="https://img.shields.io/npm/v/distil-llm?color=5ad1c9&label=npm" alt="npm version"/></a>
+  <a href="https://pypi.org/project/distil-llm/"><img src="https://img.shields.io/pypi/pyversions/distil-llm?color=5ad1c9" alt="Python versions"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/pypi/l/distil-llm?color=8b7bff" alt="license"/></a>
+  <a href="#-what-we-wont-pretend"><img src="https://img.shields.io/badge/runtime%20deps-0-5ad19a" alt="zero runtime deps"/></a>
+  <a href="https://dshakes.github.io/distil/architecture.html"><img src="https://img.shields.io/badge/typed-py.typed%20%C2%B7%20mypy%20clean-8b7bff" alt="typed"/></a>
+  <a href="https://dshakes.github.io/distil/adoption.html"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fdshakes%2Fdistil%2Fmetrics%2Fdata%2Fbadges%2Fdownloads-real.json" alt="PyPI installs/month, bot-filtered"/></a>
+</p>
+
+<h3 align="center">Distil measures what your coding agent's context tooling actually costs you —<br/>in dollars per solved task and in changed decisions: any compressor, your provider's own compaction, and its own.</h3>
+
+<!-- TODO(first-impression): replace with a real screenshot of `distil savings` once that
+     screen ships. No mock here on purpose: a made-up savings screen is a made-up number. -->
+
+```bash
+uv tool install distil-llm && distil setup
+```
+
+<sub>Other installs (curl, Homebrew, pipx, Windows): [Install your way](#-install-your-way)</sub>
+
+```bash
+distil wrap -- claude      # run your agent through distil (or let `distil setup` make it always-on)
+distil savings             # what it saved you, from your own traffic
+distil doctor              # if something looks off
+```
+
+```bash
+distil audit --compressor anthropic-context-editing --cap-usd 1 # did it change what your agent does, and what it cost? (opt-in, capped)
+distil audit report # helped, hurt, or can't tell yet, per compressor
+```
+Distil also compresses (lossless by default, every byte recoverable), and holds that compressor to the same measurements.
+
+**What the measurements say today** (2026-10-06; every figure links to its artifact)
+
+- **On short coding tasks no compressor is shown to save money.** SWE-bench Lite, 298 tasks, same model and grader: distil is at parity with no compression ($0.0393 vs $0.0387 per solved task). RTK looked 20.7% cheaper per task until we found that its arm read other arms' prompt cache; re-priced as a cold run it is −6.5% [−13.1%, +0.1%], not significant. Selective Context and Anthropic context editing are not cheaper. Headroom has not run there yet. [Scoreboard →](https://dshakes.github.io/distil/scoreboard.html#swebench-lite-300-h2h-cost-confound)
+- **Long sessions: inconclusive.** A 7-task long-horizon pilot (median 63–69 steps) shows no cost difference for distil or RTK; on the 6 tasks without one crashed attempt, distil cost 9.7% more than plain. [Run →](benchmarks/results/swebench-verified-hard-max/README.md)
+- **Why.** An offline simulator that reproduces the provider's bill within 2.5% on runs it never saw finds that lossless policies change cost by less than 0.2%, and that lossy compression saves money only if the agent does not take extra steps to make up for what was removed. Measuring that is the next live A/B. [Simulator →](docs/research/policy-simulator.md) · [Why RTK looked cheaper →](docs/research/why-rtk-wins.md)
+- On the maintainer's own metered Claude Code traffic (13,191 requests, September 2026) distil removed an estimated 8.3–9.2% of the bill, cache priced in, its own spend netted out ([source](benchmarks/results/2026-09-24/live_savings_decomposition.json), [method](docs/research/expand-undercount.md)). That is a same-trajectory estimate: it assumes the agent behaved the same, which is exactly what the A/B above has to check.
+
+**Why trust the measurements**
+
+- **It doesn't break your prompt cache.** Distil never rewrites bytes the provider still has cached; older context changes only once that cache has already expired. We shipped that bug once, measured what it cost, and made the rule an enforced invariant. [The cache contract →](https://dshakes.github.io/distil/cache.html#cache-contract)
+- **Every compressed byte is recoverable.** What distil folds away it keeps in a local store, and the agent gets a `distil_expand` tool to pull the exact original back mid-task. [How the digest works →](https://dshakes.github.io/distil/techniques.html#skeleton-digest)
+- **It's measured on a real bill, receipts included.** Savings are counted per request and calibrated against the `usage` your provider actually bills; every request writes a hash-chained receipt you can verify. The same harness runs every other compressor, and when it found a flaw in its own head-to-head it published the correction. [How it's measured →](https://dshakes.github.io/distil/benchmark.html)
+
+**And it tells you when it is hurting you.** Shadow mode replays a sample of requests on the original and the compressed context and reports the difference per compression mode; when the digest's harm bound goes over budget, the proxy holds itself at lossless-only. Pointed at the providers instead, the same check found Anthropic's context clearing changed the agent's next action in 37 of 40 cases with every old tool result cleared (`keep=0`, synthetic corpus) ([study](https://dshakes.github.io/distil/research.html#provider-compaction)).
+
+<sub>Going deeper: [what distil checks, and what it found when it pointed those checks at the providers' own compaction ↓](#-what-distil-checks--and-what-it-found)</sub>
+
+## What it does
+
+- **Referee your context tooling** — `distil audit` replays a capped sample of your own requests as a named compressor (distil, Anthropic context editing, OpenAI compaction, Headroom) would shape them and reports helped / hurt / can't tell yet, in billed dollars and in the agent's next action ([ADR 0024](docs/adr/0024-distil-as-referee.md)). Offline, the [SWE-bench outcome harness](specs/swebench-outcome-eval.md) scores any arm on dollars per solved task, with each arm's prompt cache isolated; results are on the [scoreboard](https://dshakes.github.io/distil/scoreboard.html).
+
+<!-- BEGIN agent-presets-bullet (generated by scripts/build_agent_tables.py) -->
+- **Wrap your agent** — 18 presets: `distil wrap -- <agent>` for `aider` · `claude` · `codex` · `gemini` · `copilot` · `goose` · `grok` · `kilo` · `kimi` · `vibe` · `opencode` · `openhands` · `qwen` · `cline` · `cn` · `crush` · `droid` · `omp`. Zero config, no code change. `distil wrap --list` prints every target, its mechanism and the provider shape it speaks.
+<!-- END agent-presets-bullet -->
+- **Run a proxy** — point any `base_url` client at it. Python, TypeScript, any language, any framework. Sync proxy, async proxy, and a standalone gateway, with the **same** provider coverage in each: Anthropic Messages, OpenAI Chat Completions **and** the Responses API, Azure OpenAI, and Gemini `generateContent`.
+- **Call it as a library** — `from distil import compress_messages` in your own agent loop.
+- **Give your agent a recall tool** — MCP server: it compresses its own output and gets the exact bytes back on demand.
+- **Framework hooks** — LangChain · LangGraph · LiteLLM · Agno · Strands · AutoGen · LlamaIndex, in-process, no network hop — plus an **ASGI middleware** for any Starlette/FastAPI app that hosts its own LLM endpoint, and the [npm package](https://www.npmjs.com/package/distil-llm) for the Vercel AI SDK.
+- **Where a proxy can't reach** — `distil setup --hooks`: Claude Code, Cursor (MCP output), Gemini CLI
+  and Codex CLI compress tool output through their documented post-tool hooks. Lossless-only on a
+  subscription unless you add `--digest`; every digest recoverable with `distil expand <handle>`.
+  No proxy, no credentials touched. `distil quota` shows the rate-limit
+  window it buys back. [Hooks →](https://dshakes.github.io/distil/hooks.html)
+- **Shape shell output at the source** — `distil sh -- <command>` (opt-in, [ADR 0026](docs/adr/0026-shell-output-at-the-source.md)) keeps every failure, error and summary line of a test run or `git status` verbatim and folds the passing-test noise behind a `distil expand` handle; `distil hook install --shell` makes Claude Code use it. On SWE-bench Lite transcripts test runs are rare, so it removes 0.06% of bash output there and stays opt-in. [Shell →](https://dshakes.github.io/distil/shell.html)
+- **Same mechanisms on every provider** — re-fetch verbatim, cold-point eviction, the edit-quote guard and census run on Anthropic Messages, OpenAI Chat and Responses, and Gemini; OpenAI and Gemini are priced, so savings and `distil audit` stop booking $0 there; the `distil savings` what-if replays Codex CLI and Gemini CLI sessions as well as Claude Code's. [Parity matrix →](docs/research/provider-parity.md)
+- **VS Code Copilot Chat** — its BYOK Custom Endpoint can point at a distil proxy: `distil setup --vscode`.
+- **Keep a span verbatim** — `<distil:keep>…</distil:keep>` in a prompt or tool output is never compressed.
+- **Keeps MCP tool search on** — `distil wrap -- claude` keeps Claude Code's MCP tool search switched on, which Claude Code otherwise turns off behind a proxy, so unused connectors stay deferred instead of riding along on every turn. Verified live on 1.54.0 (2026-09-25): `tools_deferred` of 4–5 on every request, tool payload 9,733 tokens, prompt-cache reads intact. ([ADR 0013](docs/adr/0013-unused-connectors-are-claude-codes-to-defer.md))
+- **Real code skeletons** — `pip install 'distil-llm[code]'` adds tree-sitter parses for Go, Rust, Java,
+  C/C++, Ruby and TS/JS. [Code skeletons →](https://dshakes.github.io/distil/techniques.html#code-skeletons)
+- **See what it did** — live status line, session dissect, per-request headers, OTel spans, Prometheus metrics.
+
+```bash
+uv tool install distil-llm && distil setup    # detects your agent + billing, wires everything
+```
+
+> **Not sure which of those you want?** [Two questions pick your mode →](https://dshakes.github.io/distil/which-mode.html) — plain language, honest savings ranges, no jargon.
+
+<p align="center">
+  <img src="docs/assets/integration-surface.svg" alt="Four ways to run distil — agent wrap, proxy/gateway, MCP server, and the in-process library. Wrap, proxy and MCP reach the reversible digest tier, covered by the decision-equivalence certificate; the in-process library is lossless-only and byte-identical to the Python engine, enforced by a conformance suite." width="100%"/>
+</p>
+
+> **Will it save you money?** On **metered billing** (an API key) it cuts the tokens you send —
+> an estimated 8.3–9.2% of the bill on the maintainer's traffic, if the agent behaves the same. Whether that shows up as a
+> lower bill depends on the workload: on short SWE-bench tasks the net cost effect measured **cost-neutral**, and the
+> long-session pilot (7 tasks) is **inconclusive**. On a **flat-rate Pro/Max subscription** there is no per-token bill to cut, but there *is* a
+> rate-limit window, and spending fewer tokens per turn leaves more of it for the next task.
+> `distil quota` shows that window live. Savings come from **large, repetitive** tool output:
+> verbose JSON and duplicated log runs compress 25–99%, while prose and unique-line output
+> compress ~0% — a short session that never reads a big file showing near 0% is the tool working
+> correctly, not failing. [Why →](#-compression-modes--in-plain-english)
+> Shell output (`grep`, `git`, ad-hoc scripts) goes through that same generic, reversible digest
+> ([ADR 0015](docs/adr/0015-no-per-command-shell-profiles.md)); search, listing and reads stay verbatim.
+> The one exception is opt-in: `distil sh` shapes test-runner and `git status` output at the
+> source ([ADR 0026](docs/adr/0026-shell-output-at-the-source.md)).
+
+<!-- ═══ LIVE community counter — fed by the opt-in census, re-polls every 5 min ═══ -->
+<p align="center"><sub>◉ &nbsp;<b>LIVE</b> · measured from the opt-in census on a <a href="https://github.com/dshakes/distil/tree/metrics">public git branch</a>, never estimated</sub></p>
+<p align="center">
+  <a href="https://dshakes.github.io/distil/adoption.html"><img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdshakes%2Fdistil%2Fmetrics%2Fdata%2Fbadges%2Fsavings-tokens.json" alt="community tokens saved"/></a>
+  <a href="https://dshakes.github.io/distil/adoption.html"><img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdshakes%2Fdistil%2Fmetrics%2Fdata%2Fbadges%2Fequivalence.json" alt="decision-equivalence"/></a>
+  <a href="https://dshakes.github.io/distil/adoption.html"><img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fraw.githubusercontent.com%2Fdshakes%2Fdistil%2Fmetrics%2Fdata%2Fbadges%2Factive-installs.json" alt="active installs, 30d"/></a>
+</p>
+<p align="center"><b><a href="https://dshakes.github.io/distil/adoption.html">▶ &nbsp;Watch the counter tick live &amp; audit every number →</a></b></p>
+
+<table align="center"><tr>
+<td align="center"><b>⚡ Get the savings</b><br/><sub>2 min, no config</sub><br/><br/><code>uv tool install distil-llm</code><br/><code>distil setup</code></td>
+<td align="center"><b>🔬 See the proof</b><br/><sub>real harness</sub><br/><br/><a href="#-the-proof"><b>benchmark ↓</b></a> · <a href="docs/PAPER.md">paper</a><br/><a href="https://dshakes.github.io/distil/compare.html">vs the others</a></td>
+</tr></table>
+
+<p align="center">
+  <a href="#-use-it-now">Use it</a> ·
+  <a href="#-use-it-as-a-library">Library</a> ·
+  <a href="#-works-with-every-sdk">Integrations</a> ·
+  <a href="#-install-your-way">Install</a> ·
+  <a href="#why-trust-it">Why trust it</a> ·
+  <a href="https://dshakes.github.io/distil/getting-started.html"><b>Full Docs →</b></a> ·
+  <a href="docs/llms.txt">llms.txt</a>
+</p>
+
+<p align="center"><sub>AI agents: read <a href="docs/llms.txt"><code>/docs/llms.txt</code></a> for a compact, machine-oriented summary of what distil is and how to call it.</sub></p>
+
+---
+
+## 🧩 Use it as a library
+
+Building the agent yourself? Compress the message list where it lives — no proxy, no network hop:
+
+```python
+from distil import compress_messages, expand_handle
+
+result = compress_messages(messages)          # OpenAI/Anthropic-style dicts
+print(f"{result.saved_pct:.1f}% smaller")
+response = client.messages.create(model=..., messages=result.messages)
+
+original = expand_handle(result.handles[0])   # byte-exact, any time, any process
+```
+
+Tool results get the reversible digest; user and system text get lossless transforms only; **the model's own turns are never rewritten**. Handles resolve across processes and restarts, so a digest made by the proxy expands here and vice versa. `verbatim=True` disables digests entirely.
+
+<sub>Named `compress_messages`/`expand_handle` rather than `compress`/`expand` because `distil.compress` and `distil.expand` are modules — a top-level export sharing those names would resolve to the function or the module depending on unrelated import order.</sub>
+
+TypeScript too — `compress(messages)` from the [npm package](https://www.npmjs.com/package/distil-llm), byte-identical to the Python engine. Full reference: **[Library API →](https://dshakes.github.io/distil/integrations.html#library)** · runnable examples: [`python_library.py`](examples/python_library.py) · [`js_library.ts`](examples/js_library.ts).
+
+**Maintain a framework?** [`docs/INTEGRATING.md`](docs/INTEGRATING.md) is the ~20 lines and the four rules — we would rather the integration live in your repo than ours.
+
+---
+
+## 🔬 What distil checks — and what it found
+
+<h3 align="center">Something is rewriting your agent's context.<br/>Distil measures what it cost you.</h3>
+
+<p align="center"><b>Your provider now edits the context window for you — clearing old tool results, summarizing history — by default, server-side, with no report of what changed.</b><br/>Distil is the instrument that answers the only question that matters: <b>did the agent still do the same thing?</b></p>
+
+<table align="center">
+<tr><td>
+
+**We pointed it at the providers.** Anthropic's default context-editing *retention rule* (`keep=3`, fired at a
+3k-token trigger rather than the default 100k, on a corpus ordered so the decision-bearing facts are older than the
+three kept tool uses) changed the agent's next action in **95–100% of cases**, against a 2.5% A/A noise floor. Keeping the 3 most recent
+tool uses didn't lower the change rate at all — it turned *stalling* into *acting on missing facts*.
+OpenAI's compaction changed **12.5–20%**. Pre-registered, replicated, n=40 per run.
+
+**[Read the study →](https://dshakes.github.io/distil/research.html#provider-compaction)** · [rerun it on your own config](https://dshakes.github.io/distil/research.html#reproduce)
+
+</td></tr>
+</table>
+
+<p align="center">Distil also <b>compresses</b> — the tool output, logs, and history your agent re-sends every turn, reversibly.<br/>It's the one context operation that ships with its own certificate, its own adversarial gate, and a number it is willing to refuse to print.</p>
+
+<h3 align="center">The 60-second version</h3>
+
+<p align="center">Compression that <b>cannot be checked</b> is a guess about your agent's behaviour.<br/>Distil is built so every part of it is checkable, and so the checks are allowed to come back <b>no</b>.</p>
+
+- **It measures decision-equivalence per request — and can say no.** Shadow mode replays a sampled request three times: twice on the original context and once on the compressed one, then reports `1{A=B} − 1{A=A'}` — a *paired difference* against the model's own self-agreement, with a bootstrap 95% CI, **unclipped, so it is allowed to be negative**, and **per compression mode**. One reporting floor (50 A/B + 30 A/A) gates every surface; below it, every surface says *below reporting floor* instead of a number. On the maintainer's 2026-09-15 sample the digest agreed 102/206 times against a self-agreement of 113/206 — **−5.3 pp, over the 5% budget** — while lossless-only read 109/192 against 109/193 (≈0). The pooled figure, which averaged the two, read inside the budget; that is why every report now shows each mode, and why the drift guard holds digest at lossless-only when its recent harm bound is over budget ([ADR 0022](docs/adr/0022-per-mode-certification-hold.md)).
+- **What it folds, it can give back byte-exact.** A digest is a marker plus a handle into a local content-addressed store, and the agent gets a `distil_expand` tool to recover the original mid-task. The multi-tenant gateway runs **Tier-0 only** by default; an operator can opt a gateway into the digest with `--digest`, which is unguarded there (no per-mode certification on the gateway yet), and a tenant can only expand its own handles.
+- **It will not digest a line your agent has to quote back.** An `Edit(old_string=…)` is a literal match. Reading exact-quote provenance from the *shell command*, not just the tool name, took byte-exact quote loss from **39.3% → 16.2%** on real coding traffic — and it costs real savings, which we price rather than hide.
+- **It does not break your prompt cache.** Compression is suffix-only and cache-monotonic by construction: a later turn may never rewrite bytes the provider has already cached. We shipped that bug once, measured it at *2× the cost of compressing nothing*, and made the invariant enforced. **[The cache contract →](https://dshakes.github.io/distil/cache.html#cache-contract)**
+- **It has been pointed at a hostile input, not just a hard one.** `distil validate --adversarial` runs a COMA-class battery through the same path the proxy uses, and we publish the two cases that do not come back clean. **[Threat model →](https://dshakes.github.io/distil/security.html#threat-model)**
+- **Every rung of the dial is measured, not just the default.** `distil bench --curve` traces savings against fact recall across the whole ladder, offline and free. **[The curve →](https://dshakes.github.io/distil/benchmark.html#degradation-curve)**
+
+<h4 align="center">Proof and provenance</h4>
+
+<p align="center">Every claim above is checkable, and so is the supply chain that shipped it. Releases carry <a href="https://peps.python.org/pep-0740/">PEP 740 attestations</a> so you can verify a build came from this repo's CI, not a compromised laptop; a <b>CycloneDX SBOM</b> ships with every release so you know what's inside; <a href="https://github.com/ossf/scorecard">OpenSSF Scorecard</a> runs weekly against the repo itself. The adversarial path is documented rather than assumed: see the <a href="THREAT_MODEL.md">threat model</a> and the <a href="docs/SECURITY-WHITEPAPER.md">security whitepaper</a> for what's in scope and what isn't, and run <code>distil validate</code> yourself to gate a deployment against hostile input before you trust it with one.</p>
+
+---
+
+<h3 align="center" id="why-trust-it">Why trust it 📊</h3>
+
+<p align="center"><b>On SWE-bench Lite the shipped path is cost-neutral and within about 2 points on task success — not statistically distinguishable at n=300.</b></p>
+
+<p align="center"><sub>Two runs after the shell-search fix, distil-served vs plain Claude: 204/299 vs 210/299 (−2.0 pts, 95% CI −5.5..+1.5; cost $7.18 vs $7.18) and 213/298 vs 218/298 (−1.7 pts, 95% CI −5.1..+1.7; cost $8.44 vs $8.52). Non-inferiority at the pre-registered 5-point margin is <b>not shown</b>; the long-session pilot (7 tasks) is inconclusive. Every other compressor is scored the same way on the <a href="https://dshakes.github.io/distil/scoreboard.html">scoreboard</a>. Reports: <a href="benchmarks/results/swebench-outcome-300-grepfix/report.md">low effort</a> · <a href="benchmarks/results/swebench-outcome-300-medium/report.md">medium effort</a>.</sub></p>
+
+<p align="center"><img src="docs/assets/head-to-head.svg" alt="Distil vs LLMLingua-2 vs Headroom — token savings, decision-change rate, latency" width="100%"/></p>
+
+<p align="center"><sub>Research configurations (E8–E14, SWE-bench Verified) are on the <a href="https://dshakes.github.io/distil/research.html#e8">research page</a>. They are not the shipped path, and none of them is quoted here as a result for it.</sub></p>
+
+<h4 align="center">Why Distil — the properties, not the adjectives</h4>
+
+<p align="center"><sub>Headroom column read directly against the public <a href="https://dshakes.github.io/distil/compare.html#headroom-v0370-audit"><code>headroom-ai</code> 0.37.0 source</a>, <b>as of v0.37.0, 2026-09-04</b>; every line there cites a <code>file:line</code> in that release. Facts, not adjectives — and where it is genuinely strong, we say so.</sub></p>
+
+| Property | Distil | Headroom 0.37.0 <sub>(2026-09-04)</sub> |
+|---|---|---|
+| **Per-request behavioural check** | Paired A/A′/B replay, unclipped difference, bootstrap CI, one reporting floor | No shadow or dual-send path in the codebase; `accuracy_guard="strict"` is echoed on `/healthz` and `/stats` but nothing branches on it |
+| **Recovery of what was folded** | Content-addressed store + agent-facing `distil_expand`, byte-exact, verified by a gate | A TTL cache (SQLite, 1800s, 1000-entry FIFO), no integrity or round-trip check |
+| **Lossy paths with no recovery** | None — every server that emits a stub (proxy and gateway) injects and answers `distil_expand` | Four: OpenAI chat streaming, Responses under ChatGPT auth, Gemini streaming, Bedrock |
+| **Savings number** | Counted, then calibrated against the provider's billed `usage` | Falls back to `chars/3.5` |
+| **Exact-quote guarantee for coding agents** | Provenance read from the shell command, not just the tool name; **quote loss 39.3% → 16.2%** | Not a property the tool has |
+| **Cache contract** | Suffix-only, cache-monotonic, enforced as an invariant | Genuinely strong prompt-cache replay (`overlay_cached_prefix`) — real engineering |
+| **Adversarial gate** | COMA-class battery in CI; the two cases that don't come back clean are published | None shipped |
+| **Degradation curve** | Every ladder rung measured, offline and free | Point configuration only |
+| **Shipped default** | Compresses | Mode `cache` — a full bypass on Bedrock, freeze-only on OpenAI |
+
+<p align="center"><sub>Offline token savings, not a cost or task-success result: on the same corpus, re-run 2026-09-04 with Headroom's model preloaded: <b>distil 52.9% tokens / 58.7% $ / 100% decision-equivalent / PASS</b> vs <b>Headroom 1.7% / 2.0% / 81% / FAIL</b>. On a read→edit→re-read coding workload Headroom reaches 35.6% tokens where distil's digest is <b>0.0% by design</b> — that is the exact-quote guarantee being paid for, and <a href="https://dshakes.github.io/distil/compare.html#headroom-fresh">both numbers are on one page</a> with the raw output committed.</sub></p>
+
+
+---
+
+## 🚀 Use it now
+
+**Four commands.** `distil --help` shows only these; `distil --help-all` shows the rest.
+
+```bash
+uvx --from distil-llm distil savings   # what your agent costs you now — no install, read-only
+uv tool install distil-llm
+distil setup                           # detects your agent + billing, wires the status line, tells you what's next
+distil wrap -- claude                  # run your agent through distil
+distil savings                         # spent, saved, daily graph, what to fix next
+distil doctor                          # if anything looks wrong
+```
+
+`distil setup` detects your environment (Claude Code · Codex · Gemini CLI; metered vs subscription). Or wrap your agent directly — **no config, no code change:**
+
+```bash
+# Claude Code on a metered API key — saves real $$:
+distil wrap --expand -- claude
+
+# Claude Code on a Pro/Max subscription — flat-rate, ToS-safe (trims context, not $):
+distil wrap --lossless-only -- claude
+
+# Codex, Gemini CLI, aider — same pattern; env var auto-selected per agent:
+distil wrap --expand -- codex     # → OPENAI_BASE_URL (routing unverified: codex-rs reads openai_base_url from its config)
+distil wrap --expand -- gemini    # → GOOGLE_GEMINI_BASE_URL
+distil wrap --expand -- aider     # → OPENAI_API_BASE
+distil wrap --list                # every target, its mechanism, and the agents it can't reach
+
+# Headless too — print mode, CI, and Agent SDK scripts route the same way:
+distil wrap -- claude -p "summarise this diff"
+distil wrap -- python my_agent_sdk_script.py
+```
+
+> **Using Cursor, the Cline editor extension, Windsurf, Zed, Warp or Amp?** (The Cline **CLI** is different — `distil wrap -- cline` reaches it.) None of them publishes a base-URL contract `distil wrap` can set — some have no such knob at all, some have one that structurally cannot point at localhost (Warp runs the agent on its own servers and rejects private addresses). Run a proxy and point the tool's own setting at it: [docs/IDE-AGENTS.md](docs/IDE-AGENTS.md), where every one of them is listed with the page and date the claim was checked against. The VS Code Copilot *extension* is not redirectable at all and that page says so rather than wasting your afternoon — the GitHub Copilot **CLI** is a different tool and `wrap` does reach it.
+
+<!-- BEGIN agent-presets-line (generated by scripts/build_agent_tables.py) -->
+Each recognized agent auto-selects the right env var and upstream — no `--env-var` or `--upstream` flag needed. 13 route through an environment variable (`aider` / `claude` / `codex` / `gemini` / `copilot` / `goose` / `grok` / `kilo` / `kimi` / `vibe` / `opencode` / `openhands` / `qwen`); 5 have no env-var contract at all and route through a config file `wrap` manages for the session and restores on exit (`cline` / `cn` / `crush` / `droid` / `omp`). Prints `preset: <agent> detected → <VAR>` on start. Explicit flags always win.
+<!-- END agent-presets-line -->
+
+<details>
+<summary><b>Make it the default</b> — never type <code>distil wrap</code> again</summary>
+
+**Tired of typing `distil wrap` every time?** Make it the default — once:
+
+```bash
+distil default            # adds a managed shell alias so `claude` always routes through distil
+distil default --undo     # remove it anytime (backed up before any change)
+```
+
+It detects your shell (zsh / bash / fish / PowerShell) and billing mode, writes the
+right line to the rc file your shell actually reads, and **tells you what it detected**.
+Want every SDK covered (not just the agent you type)? `distil default --always-on`
+runs a persistent proxy service — powerful, but it pins `ANTHROPIC_BASE_URL`, so
+every client on the machine goes through one local process.
+
+That pin used to be a single point of failure: a proxy that was down for one
+second meant sessions failing with `ConnectionRefused`, an error that names the
+provider rather than distil. It no longer is. The service supervisor
+(launchd/systemd) owns the **listening socket**, so a crash or a restart leaves
+connections queued in the kernel backlog instead of refused — the client waits
+about a second rather than dying. `distil default --always-on` also verifies the
+service is genuinely registered and serving before it wires anything, and refuses
+to wire at all if it isn't.
+
+If you ever need out and distil is already uninstalled, `sh ~/.distil/uninstall.sh`
+removes the pin, the service, and the shell block using nothing but `sh`.
+
+
+</details>
+
+Then watch genuine savings from **your** traffic — measured, not estimated:
+
+```bash
+distil savings              # billed spend vs saved, daily graph, top fixes (--since 7d / --all / --json)
+distil leaderboard          # cumulative tokens + $ saved, from the local ledger
+distil dashboard            # live terminal TUI — token-trim + decision-equiv bars, Ctrl-C to exit
+distil dissect             # per-session deep-dive: savings, digest inventory, anomalies (--html/--serve)
+```
+
+**Validate it on your traffic.** `--shadow` runs a fraction of requests twice (compressed **and** full) and compares the agent's chosen next action:
+
+```bash
+distil wrap --shadow 0.1 -- claude   # wrap + shadow 10% of requests
+distil shadow-stats                  # live decision-equivalence rate
+```
+
+Honest scope: that's next-action equivalence — a **proxy**, not task success ([E7](#-the-proof) shows it doesn't fully transfer under aggressive *lossy* compression). Distil fails safe to full context.
+
+> **Will it save money?** On **metered** billing (API key) — fewer tokens: about 9% of the bill on the maintainer's traffic. On short SWE-bench tasks the net cost effect measured cost-neutral; the long-session pilot (7 tasks) is inconclusive, and whether lossy compression pays depends on whether the agent takes extra steps, which the next live A/B measures. On a flat-rate **subscription** there is no per-token bill, so the saving is **rate-limit headroom**: fewer tokens per turn means more turns before you hit the window (`distil quota` shows it live).
+
+---
+
+## 💡 Why Distil is different
+
+You don't need byte-equivalence — you need **decision-equivalence**: your agent taking the *same actions* with compressed context. That's measurable and certifiable.
+
+- **Gated, not assumed** — a lossy mode is served only while its per-request decision-change check is inside budget; can't show that → full context. Task-level non-inferiority is *not* shown yet (SWE-bench Lite: −1.7 pts, 95% CI −5.1..+1.7).
+- **An estimator that can report harm** — the live check is a *paired* statistic, `1{A=B} − 1{A=A'}`, with a bootstrap 95% CI and no clamp at zero. The old ratio estimator printed exactly 100% whenever chance favoured it and could not express harm at all. One reporting floor now gates the status line, the proof ledger, `shadow-stats`, the census feed and the public dashboard alike — and prints *below reporting floor* rather than a flattering number.
+- **Byte-exact quotes survive, so `Edit` still applies** — an `Edit(old_string=…)` is a literal match against bytes the agent read earlier; digest that read and the edit silently does nothing while the agent reports success. Provenance is read from the shell command (`cat`, `head`, `sed -n`), not just the tool name — that is **33.6% of tool-result mass** the name rule never covered. It costs savings, and the [changelog prices it](CHANGELOG.md) instead of hiding it.
+- **Adversarially gated, and honest about the two hits** — `distil validate --adversarial` runs seven COMA-class cases through the same public path the proxy uses. Trusted/untrusted budget isolation is structural: there is **no keep budget shared between blocks anywhere**, asserted as an equality in CI. Two results we publish rather than smooth over: dedup-baiting *does* fold the genuine error line (reversibility is what saves it), and decoy-verdict flooding is a real, unmitigated **denial of savings** — 0.0% on that block.
+- **The whole dial is measured, not just the default** — `distil bench --curve` reports savings, fact recall, visible recall, facts lost and reversibility at every rung, offline and free.
+- **A task-level bound you can run** — `distil certify-trajectories` bounds how many solvable tasks compression can cost on *your* matched eval outcomes. On our own SWE-bench runs that bound does not yet clear the 5-point margin.
+- **Reversible, not lossy** — digests behind a handle, keeps the original, hands the agent a `distil_expand` tool. Compress fearlessly.
+- **Keeps the answer, folds the noise** — a per-content-type keep policy pins each kind's load-bearing lines (a log's pass/fail verdict, a traceback's frames, a diff's hunk headers); repeated near-identical error spam is deduped, and on a green run dedup tightens further since that noise didn't fail anything.
+- **Query-aware — keeps the line you're actually asking about** — distil is a proxy, so it sees the agent's intent (its tool_use args + latest ask) in the *same request* as the output. The line matching what you searched for (a grep hit, a config value, a SHA) is pinned even in arbitrary output — additively, so reversibility and the certificate are untouched. No post-hoc compressor has that query/output pairing. It also goes **semantic**, and always-on: a zero-dependency bridge — morphology, a curated technical synonym map, and char-trigram fuzz — pins lines that **answer** the query without sharing a word with it. Ask "the retry limit?" and it keeps `max_attempts = 5`; ask "the connection timeout?" and it keeps `deadline_ms`. Two more layers grow from **your own traffic**, never from a shipped blob: associations distil learns from its content-free expand flywheel (hashed pairs, `--expand` sessions), and a learned relevance model that is promoted only after its held-out recall beats the lexical baseline on your labels — until promotion, the lexical + bridge layers are exactly what runs. An optional distributional-vector table can be supplied too (pure-Python cosine; none ships). Every layer is additive — it can only widen keeps, so reversibility and the certificate are untouched — and it needs no embeddings or model to work.
+- **Lossless even on a flat-rate plan** — subscription/lossless mode isn't just verbatim: it minifies JSON, collapses duplicate runs, and folds tabular tool output into a compact self-describing table (ToS-safe, no lossy digest). Recent tool outputs stay byte-exact. Be clear about the size of it: lossless savings are shape-dependent, and on distil's own eval corpus — no JSON, no repeated lines — it saves **0.00%** ([E15b](benchmarks/results/subscription-hook/e15b_corpus_measurement.json)).
+- **See exactly what happened** — `distil dissect` turns a wrap session into a report: savings by model/mechanism, the digest inventory, billed-usage calibration, latency by path, and a *worth-your-attention* anomaly list that catches silent failures automatically.
+- **Compounds on outcomes** — expansions and matched failures teach the policy what to protect (signatures only, never content) — always *more* conservative.
+- **Re-reads cost what changed, not what it re-read** — a coding agent re-reads the same file constantly (51.4% of reads on 2,489 measured sessions) and almost never at the same offset, so block-level dedup misses it. Distil matches on *lines*: the run a new read shares with an earlier one still in context becomes a reversible reference, everything else stays byte-exact, and the freshest read is never touched. It runs *inside* the exact-quote guarantee — the only transform that recovers savings on content distil has promised to keep verbatim — and stays safe because an `Edit`'s `old_string` only has to exist byte-exact *somewhere* in the forwarded payload. → [ADR 0010](docs/adr/0010-the-re-read-delta.md)
+- **Streams like it isn't there** — SSE relays chunk-by-chunk; TTFT preserved — *including recoverable digest*, which speculatively streams and only intercepts an actual `distil_expand` call mid-stream, splicing the recovery in without buffering the turn (no TTFT tax on the reversible tier).
+
+> **Fidelity tiers:** lossless (`--verbatim`) · reversible (byte-recoverable on demand — default) · lossy (every other tool). Distil's reversible tier is gated by its per-request decision-change check, and its recovery is agent-facing — the model expands mid-task (Headroom ships a retrieve with no such gate). Neither is shown to save money on task outcomes.
+
+---
+
+## ⚡ Prove the numbers yourself — no API key
+
+Don't take the table above on faith. `distil bench` re-certifies savings *and* decision-equivalence on a bundled 8-domain corpus, offline, in seconds — the same gate that runs in CI. How we evaluate — and why a compression ratio without a task-success delta is meaningless — is written up in [docs/EVALUATION.md](docs/EVALUATION.md), including our own negative result:
+
+```bash
+uvx --from distil-llm distil bench      # certify savings + quality across 9 domains, in seconds
+distil verify                           # byte-fidelity: every compression is exactly reversible
+distil validate                         # adversarial real-path gate: invariants on hostile inputs
+distil retention                        # fact recall: what stays visible vs expand-recoverable
+distil retention --dataset hotpotqa     # graded against a PUBLIC benchmark's ground truth
+distil fidelity                         # state probes: artifact state, overclaim, continuation
+```
+
+Five gates, all in CI: **`bench`** (non-inferiority on the corpus), **`verify`** (byte-fidelity), **`retention`** (fact-level recall), **`fidelity`** (state probes, below), and **`validate`** — which drives the compressor against *adversarial* inputs (huge/unicode/nested/malformed/marker-injection/secret-looking) and asserts reversibility, reject-if-bigger, recency-exactness, fail-open, and content-free telemetry hold on every one. That last gate exists because a green unit suite kept coexisting with real-traffic bugs; `validate` is the adversarial layer that catches them.
+
+**Recall is not enough, and here's the case that proves it.** A trajectory creates `net/scratch_bench.py` at turn 2 and deletes it at turn 4. Compress away turn 4 and every path token is still present — string recall reads **100%** — while the agent now believes a file exists that doesn't, and will plan around it. `distil fidelity` folds tool calls into a file-state ledger and grades the *final state*, separating **`lost`** (path gone — the agent can see the gap) from **`stale`** (path present, state wrong — the agent acts confidently on a falsehood). On that case: string recall 100%, state fidelity **0%**.
+
+It reports three more things recall can't see: **overclaim** (`"approximately 4200 ms"` → `"4200 ms"` — the value survives, its uncertainty doesn't), **continuation** (does the agent still know what's left to do?), and **error propagation** (does a loss at turn *k* show up as a behaviour change at turn *k+n*?). The gate is on *silent* failures only — CI runs `--max-silent 15` — because loud loss is already `retention --max-lost`'s job, and gating one regression twice hides which property broke. The bound is the **measured** one, not zero: Tier-1 digests hedged spans behind restore handles and drops the qualifier on 9 of 171 claims, so gating at zero would assert a property the compressor does not have. On top of that, `distil suite` grades **twelve public benchmarks** whose answer keys were written by someone else — including **BFCL**, which compresses the *tool schema* and checks that every name the gold call needs — the function and each argument — survives. At **91.4%** savings distil keeps every name the gold calls need ([raw](benchmarks/results/retention-2026-10-04.json)) — though *none of them visibly*: the schema sits behind a restore handle, one `distil_expand` away. The suite prints that gap (`visible → true support: bfcl 0%→100%`) rather than the flattering number alone, because a reader who assumes the model can *see* a schema it must actually expand first has been misled by figures that are individually correct. Names are matched as **identifiers** — a quoted JSON token, escaping tolerated — not as prose: the generic matcher was crediting 11 of 85 golds by accident (`'a'` matching inside `"tool-schemas"`). Fifteen golds BFCL genuinely names `a`, `b`, `c` are excluded and *counted*, since a one-letter token can be neither credited nor failed honestly. Every row is labelled `rich` or `thin` payload, because a benchmark with nothing to compress is a control, not evidence — and a run that grades only controls exits 1. It needs no API key and no spend, so it is wired into `make gate` and the CI gate job rather than run before a launch. Full methodology, including what these probes found wrong with our own corpus, in [docs/EVALUATION.md §6](docs/EVALUATION.md); how to run everything, in [docs/RUNNING-EVALS.md](docs/RUNNING-EVALS.md).
+
+**Recall, and a number you can check yourself.** The three gates above are graded on *our* corpus against *our* oracle — rigorous, but not checkable by you. `distil retention --dataset hotpotqa` grades against ground truth written by someone else (HotpotQA's gold supporting sentences, amid 8 distractor paragraphs), next to a truncation baseline tuned to distil's own savings on the same case:
+
+| HotpotQA, n=100 ([raw](benchmarks/results/retention-2026-10-04.json)) | savings | answer recall | gold-sentence recall |
+|---|---|---|---|
+| **distil** (reversible) | 14.3% | **100.0%** | **100.0%** |
+| truncation @ matched savings | 14.1% | 91.6% | 82.7% |
+
+`distil retention` also splits recall into **visible** (in front of the model) and **recoverable** (one `distil_expand` away, verified against the handle's restore bytes). On the corpus that's 100% true recall with 0 lost, and being reversible instead of lossy is worth **23.1% recall** — the mean across all 9 domains, each counted once ([raw](benchmarks/results/retention-2026-10-04.json)). That's deliberately the *macro* average: the fact-weighted one reads 62.3%, but it's set by whichever domain carries the most probes, and one HTML fixture once moved it by more than fifty points without the compressor changing at all — the moat, as a measurement rather than an argument. `distil retention --live` reports the same on your own traffic; the meter stores counts only, never content.
+
+**And it found a real hole.** The first thing the recall harness caught was not a regression but a missing capability: distil was compressing **0.0%** of HTML tool results — minified markup is one long line, so line-folding had nothing to fold. Agents with a fetch or browser tool were paying full price for `<script>`, `<style>`, and nav chrome. Now a Wikipedia article and a Python docs page now lose most of their size with **0** facts lost. (Measured on two pages; that run's output was not committed, so no percentage is quoted here.)
+
+Reversible, which is the part a lossy extractor can't offer: the exact original stays behind the handle, so a bad heuristic call costs one `distil_expand` instead of the content.
+
+To be precise about what each layer proves: the **per-commit** gates grade decision-equivalence with an offline deterministic oracle over the committed corpus (fast, free, runs on every push — but synthetic). A **nightly** [`live-cert`](.github/workflows/live-cert.yml) job re-certifies the same trajectories against a *real* model (`distil certify --runner anthropic`), budget-capped with a hard `--max-live-calls` ceiling so an unattended run can never spend silently. The empirical results above (SWE-bench n=500, live head-to-head n=200) were graded by real models; the per-commit badge alone doesn't claim that.
+
+**Who grades the live runs.** Since 1.56.0 the default live certifier is `claude-sonnet-5-5` at `effort=low` (`--effort` is a flag on `certify`, `eval`, `benchmark`, `frontier` and `conformal`). It was chosen by a pre-registered, paired [model-migration eval](https://dshakes.github.io/distil/ab.html#model-migration) on real τ-bench traffic: it cleared every gate, including a quality lower bound of at least −5 points against `claude-opus-4-8`, at 57.5% lower cost per case. The earlier live results above were graded by `claude-opus-4-8` and are still labelled so.
+
+**Choosing or migrating the live certifier.** The grader is itself a variable, so changing it is a measured decision, not a flag flip. Pick it per run with `--model` (on `certify`, overrides the trajectory's model for `--runner anthropic`) and `--effort low|medium|high|xhigh|max`; the default is `claude-sonnet-5-5` at `low`. To qualify a new model against the incumbent, run the same cases and compare paired on held-out turns:
+
+```bash
+python benchmarks/model_migration_eval.py --fetch-tau-bench      # pinned, sha256-verified real traces
+python benchmarks/model_migration_eval.py --cases real --flow .claude/hillclimb/decision-equivalence-real \
+    --variant baseline --model claude-opus-4-8 --reps 4          # incumbent
+python benchmarks/model_migration_eval.py --cases real --flow .claude/hillclimb/decision-equivalence-real \
+    --variant v5 --model <new-model> --effort low --reps 4       # candidate
+python benchmarks/model_migration_eval.py --status               # cross-variant table
+python benchmarks/model_migration_summary.py                     # paired CIs -> benchmarks/results/model-migration/summary.json
+```
+
+Live runs spend money; add `--fake oracle` to check the wiring offline first. Gates, tables and the rest of the commands: [Model Migration](https://dshakes.github.io/distil/ab.html#model-migration) ([`docs/ab.html#model-migration`](docs/ab.html#model-migration)). Decision records: [ADR 0020](docs/adr/0020-default-live-certifier.md) (default certifier) and [ADR 0021](docs/adr/0021-served-path-certification.md) (served-path certification).
+
+**An open risk on coding traffic.** The certified `distil` strategy digests only the latest tool output and saves 2.6% of tokens on real SWE-agent trajectories; the serving adapter digests every earlier tool output and saves 52.6%, so most served bytes were never certified. `distil certify --strategy served` now grades the real adapter, and its first result is not a pass: with recovery it keeps the next action in 78.0% of held-out coding decisions, against 94.1% for two identical uncompressed calls. Whether that costs solved tasks is what the SWE-bench outcome eval ([spec](specs/swebench-outcome-eval.md), `benchmarks/swebench_outcome/`) is for; on all 300 SWE-bench Lite tasks ([report](benchmarks/results/swebench-outcome-300/report.md)), with both agents using prompt caching, the distil-served agent resolved 201 of 299 paired tasks against 210 for the plain agent: −3.0 pts (95% CI −6.4 to +0.4, McNemar p = 0.12). That does **not** show non-inferiority at the pre-registered 5-point margin, and it supersedes an earlier 100-task run that had passed narrowly. Serving also cost 12.4% more and took 29.9% more steps. Replaying the compression offline shows why: distil digested most of the agent's shell `grep` output, its map of where things are, and the agent searched and re-read again instead of calling `distil_expand`. distil already kept a `Grep` tool's output verbatim, but not the same search run through `bash`; it now keeps both. Re-running the distil arm with that fix ([report](benchmarks/results/swebench-outcome-300-grepfix/report.md)) removes the penalty: steps over plain fall from +29.9% to +3.1% and cost from +12.4% to parity. Task success is still not shown: 204 of 299 against 210 (−2.0 pts, 95% CI −5.5 to +1.5), just outside the margin. A second run at higher effort ([report](benchmarks/results/swebench-outcome-300-medium/report.md)) points the same way. Treat the served path on coding agents as cost-neutral and not yet proven for task success; on long sessions a 7-task pilot is inconclusive ([run](benchmarks/results/swebench-verified-hard-max/README.md)). Method, tables and rerun commands: [Model Migration](https://dshakes.github.io/distil/ab.html#model-migration); every dataset used, with sources and pins: [EVALUATION.md §6.9](docs/EVALUATION.md#69-datasets-used-model-migration-served-path-task-outcome).
+
+```
+domain            trajectory                $ saved   distil   aggr  pruned
+---------------------------------------------------------------------------
+ops/sre           sre-disk-incident           32.8%     PASS   FAIL     615
+coding            coding-bugfix               25.5%     PASS   FAIL     736
+support           support-refund              32.6%     PASS   FAIL     765
+research          research-synthesis          25.7%     PASS   FAIL     809
+data-analysis     data-analysis-sql           18.1%     PASS   FAIL     965
+devops            devops-rollback             22.8%     PASS   FAIL     857
+finance           finance-reconcile           24.9%     PASS   FAIL    1014
+web-research      web-research                89.8%     PASS   FAIL     428
+agent-worklog     agent-worklog               35.3%     PASS   FAIL     891
+---------------------------------------------------------------------------
+aggregate: distil cuts $0.24052 -> $0.12400 (48.4% cheaper) reversibly; 7080 tokens causally prunable.
+GATE: PASS — every trajectory certified non-inferior; aggressive rejected on all.
+```
+
+<p align="center"><img src="docs/assets/domains.svg" alt="measured across 9 domains" width="100%"/></p>
+
+> **Why trust the number?** Token-savings numbers are easy to fake — measure quality at *low* compression, advertise savings at *high* compression. Distil refuses that: accuracy and compression are measured on the **same** trajectories, and a strategy that can't pass non-inferiority doesn't ship.
+> ```
+> distil certify --strategy distil       # VERDICT: PASS  (100% decision-equivalence)
+> distil certify --strategy aggressive   # VERDICT: FAIL  (mean diff −1.0, blocked)
+> ```
+
+`distil eval` plots the **certified compression frontier** — a savings-vs-quality curve where every point carries its certification verdict, locating the cliff past which lossy compression drops decisions. The artifact no competitor publishes: [benchmark.html](https://dshakes.github.io/distil/benchmark.html).
+
+---
+
+## 📊 The proof
+
+Three results, all reproducible, all published with caveats:
+
+- **Head-to-head on a synthetic corpus** vs real `llmlingua` / `headroom-ai` (a seeded 120-turn corpus from `benchmarks/gen_realworld.py`, graded by `claude-opus-4-8`; 2026-07-05, distil 1.10.1 vs llmlingua 0.2.2 and headroom-ai 0.27.0): **83.2% savings at 0% decision-change**, ~1,000× faster (no ML model loaded vs. competitors' local transformer inference). The live proxy behavior is pinned to the certified strategy by `tests/test_live_certified_equivalence.py`; the one reviewed delta is a recency carve-out that keeps the freshest tool-result turns verbatim (an agent needs its freshest output byte-exact). Since 1.45 that carve-out applies only to content the provider has *not* cached — anchored to the client's `cache_control` breakpoint, and dropped entirely for providers that cache implicitly. A carve-out counted back from the end of the conversation slid forward as it grew, rewriting already-cached content one turn later and costing more in re-billed prefix than the digest saved. → [benchmark](https://dshakes.github.io/distil/benchmark.html)
+- **E7 (SWE-bench Verified):** aggressive *lossy* compression **craters** task success (52% → 16%) — a per-step certificate doesn't transfer to multi-turn. The **reversible** tier survives (56% vs 52%). We publish it because it's true. → [E7](https://dshakes.github.io/distil/research.html#e7)
+- **SWE-bench Lite, the shipped path (n=300, twice):** cost-neutral and within about 2 points on task success (−2.0 pts, 95% CI −5.5..+1.5; −1.7 pts, 95% CI −5.1..+1.7) — not statistically distinguishable, and non-inferiority at the 5-point margin not shown. → [reports](benchmarks/results/swebench-outcome-300-medium/report.md). Research configurations (E8–E14, SWE-bench Verified) are on the [research page](https://dshakes.github.io/distil/research.html#e8) and are not the shipped path.
+
+- **Head-to-head against other compressors (SWE-bench Lite, 298 tasks; long-horizon pilot, 7 tasks):** success rates on the [scoreboard](https://dshakes.github.io/distil/scoreboard.html); RTK is the only arm shown non-inferior on success, and no arm is shown cheaper once a shared-prompt-cache confound in that run is removed (RTK −6.5% per task [−13.1%, +0.1%], not significant). The long-horizon pilot shows no cost difference. → [cost confound](benchmarks/results/swebench-outcome-300-h2h/README.md) · [why](docs/research/why-rtk-wins.md)
+
+Full methodology, McNemar tests, per-instance data: [`docs/PAPER.md`](docs/PAPER.md) · [PDF](docs/paper/main.pdf).
+
+---
+
+## 📡 See it working
+
+Measured on **your** traffic, never estimated, nothing leaves your machine:
+
+- **Per request:** `x-distil-*` response headers (`tokens-saved`, `mode`, `compressible-tokens`, `expanded`).
+- **Per machine:** `distil leaderboard` (`--html` for a page).
+- **Shadow mode:** `distil proxy --shadow 0.05` reports the live decision-change rate — streaming-aware.
+- **What you're still leaving behind:** `distil discover` aggregates your recent sessions and ranks what is *still* costing you — tool/MCP definitions resent on every request, MCP servers whose definitions rode along on every turn and were never called, sessions that never reached the digest tier, a cache prefix that drifts and re-bills itself, re-fold churn the provider is not already discounting, a system prompt that grew. Each action carries the tokens and dollars per week it would recover, **how that number was derived**, and the one command or setting to act on it. It prints the **median and the p10/p90** of your per-session savings *beside* the best session, so a best case is never read as a typical one, and it uses the rate your own ledger measured — falling back to a published benchmark ratio only when this machine has never run that mode, and saying so on the line. A detector that cannot measure stays silent, so "nothing to recommend" is a result rather than a failure to look.
+- **Org-wide:** `distil proxy` sidecar + set `ANTHROPIC_BASE_URL` once; every client routes through it.
+- **Community:** an **opt-in** census (`distil census on`) shares your numbers-only totals — preview the exact payload with `distil census show` before consenting; [`TELEMETRY.md`](TELEMETRY.md) has the frozen schema. Default remains: nothing is sent.
+
+Dashboard, status-line plugin, federated leaderboard: [Deploy & observability](https://dshakes.github.io/distil/security.html#deploy-security).
+
+## 🔌 Works with every SDK
+
+One proxy. Point any `base_url`-honoring client at it — **Python, TypeScript, any language** — and get cache-aware **reversible** compression with **no code change**.
+
+<p align="center"><img src="docs/assets/cross-sdk.svg" alt="one proxy, every SDK" width="100%"/></p>
+
+```bash
+distil proxy --upstream https://api.anthropic.com   # localhost:8788
+```
+
+```ts
+// JS/TS: npm i distil-llm  → helper so you don't hardcode the URL
+import Anthropic from "@anthropic-ai/sdk";
+import { distilBaseURL } from "distil-llm";
+const client = new Anthropic({ baseURL: distilBaseURL() });
+```
+
+| SDK / framework | Change | Example |
+|---|---|---|
+| Anthropic SDK (Py/TS) | `base_url="http://127.0.0.1:8788"` | [`examples/python_anthropic.py`](examples/python_anthropic.py) · [`examples/js_anthropic.ts`](examples/js_anthropic.ts) |
+| Claude Agent SDK / `claude -p` (headless) | `distil wrap -- <cmd>` or `ANTHROPIC_BASE_URL` | [`examples/python_claude_agent_sdk.py`](examples/python_claude_agent_sdk.py) |
+| OpenAI SDK (Chat + Responses) | `base_url="http://127.0.0.1:8788/v1"` | [`examples/python_openai.py`](examples/python_openai.py) |
+| Vercel AI SDK | `createAnthropic({ baseURL: '…:8788' })` — or in-process: `wrapLanguageModel({ model, middleware: distilMiddleware() })` | [`examples/js_vercel_ai_sdk.ts`](examples/js_vercel_ai_sdk.ts) |
+| LangChain (py/js) · LangGraph | `anthropicApiUrl` / base URL · `pre_model_hook` | [`examples/js_langchain.ts`](examples/js_langchain.ts) |
+| LiteLLM | `api_base="http://127.0.0.1:8788"` | [`examples/python_litellm.py`](examples/python_litellm.py) |
+| Google Gemini | `--upstream https://generativelanguage.googleapis.com` | [`examples/python_gemini.py`](examples/python_gemini.py) |
+| Codex · aider · OpenCode · Qwen Code · **any `base_url` client** | `distil wrap -- <agent>` (picks the right var per agent) or `OPENAI_BASE_URL` | — |
+
+Anything that speaks the Anthropic / OpenAI / Gemini wire format works — the proxy is framework-agnostic, so CrewAI, AutoGen, LlamaIndex, Agno, Strands, Bedrock, etc. route through it unchanged by pointing their client's base URL at distil.
+
+Prefer in-process? Wrap the client directly — still no call-site change:
+
+```python
+from distil.adapters.anthropic import wrap
+client = wrap(anthropic.Anthropic())   # compresses the request, keeps the cache warm
+```
+
+(OpenAI — Chat Completions *and* Responses API — and Gemini route through the proxy: `distil wrap -- codex`, or point `OPENAI_BASE_URL` at it. An in-process client wrap exists for the Anthropic SDK only.)
+
+**Framework hooks (no proxy, no network hop)** — for agent frameworks that own the message list, compress it where it lives:
+
+| Framework | Hook | Example |
+|---|---|---|
+| LiteLLM | `distil.integrations.litellm.compress(kwargs)` | [`examples/python_litellm.py`](examples/python_litellm.py) |
+| LangChain | `distil.integrations.langchain.compress_messages(msgs)` | — |
+| LangGraph | `pre_model_hook=pre_model_hook()` (compresses graph state before the model node) | [`examples/python_langgraph.py`](examples/python_langgraph.py) |
+| Agno | `distil.integrations.agno.compressed_model(model)` | — |
+| Strands | `distil.integrations.strands.compressing_hook()` | — |
+| LlamaIndex | `DistilNodePostprocessor()` (node postprocessor) · `DistilLLM(llm)` · `compressing_tool(fn)` | [`integrations.html#llamaindex-page`](https://dshakes.github.io/distil/integrations.html#llamaindex-page) |
+
+### LangChain / LangGraph — `langchain-distil`
+
+Listed in LangChain's own [community middleware integrations](https://docs.langchain.com/oss/python/integrations/providers/all_providers). If you came from there, this is the package:
+
+```bash
+pip install langchain-distil
+```
+
+```python
+from langchain_distil import compress_messages, pre_model_hook, as_runnable
+
+msgs = compress_messages(msgs)                 # compress a message list in place of the call
+graph = create_react_agent(..., pre_model_hook=pre_model_hook())   # LangGraph: before the model node
+chain = as_runnable() | llm                    # or drop it into a chain (lazy langchain-core import)
+```
+
+Tool and function messages get the reversible Tier-1 digest, human and system messages are Tier-0 lossless, and **assistant messages are never rewritten** — a model's own words are not distil's to edit. Every digest is byte-exact recoverable. Pass `verbatim=True` for Tier-0-only when no recovery tool is available.
+
+It is a thin wrapper over the hooks in the table above, so it inherits the same certified compression path — nothing is re-implemented. `distil-llm` is a dependency; you do not install both by hand.
+
+---
+
+## 🎟️ Subscription — save the window, not the bill
+
+On a flat-rate Pro/Max plan there is no per-token bill to cut, so distil's dollar figures are
+notional. The **rate-limit window** is not notional: tokens spent on a 40&nbsp;KB test log are quota
+unavailable for the next task.
+
+The proxy can't help much here. Anthropic's consumer terms (§3, item 7) restrict automated access on
+subscription credentials, so distil deliberately runs `--lossless-only` there, which on most traffic
+saves close to nothing (**0.00%** on distil's own corpus, [E15b](benchmarks/results/subscription-hook/e15b_corpus_measurement.json)).
+Your account isn't worth a few percent.
+
+**A `PostToolUse` hook is a different mechanism** — a documented, first-party extension point. Claude
+Code compresses its own tool output, in its own process, before the model reads it:
+
+```bash
+distil hook --install     # writes ~/.claude/settings.json (idempotent, preserves your other hooks)
+distil hook --selftest    # verify the schema adapters — a live mismatch is SILENT
+distil quota              # the window it buys back
+```
+
+```
+$ distil quota
+Subscription quota (the currency a flat-rate plan actually spends):
+  five_hour          [########............]  43.0% used  resets 2026-08-16 15:49Z
+  seven_day          [....................]   4.0% used  resets 2026-08-23 07:59Z
+```
+
+**A single-session observation**, not a benchmark: one paired live A/B on one task, both arms answering
+correctly, read tool_result **−38.6%**, `cache_creation` **−67.4%**, cost-weighted **−68.3%**
+([raw](benchmarks/results/subscription-hook/e15_paired_ab.json)); five more verifiable tasks agreed
+5/5 ([raw](benchmarks/results/subscription-hook/e15c_decision_equivalence.json)) — enough to catch a
+gross regression, not to certify a rate. Critically `cache_read` did *not* collapse — a hook sees each result once and cannot
+rewrite history, so compression is append-only by construction and the prompt cache survives.
+
+**Where it saves nothing.** Tier-0 is JSON minification plus consecutive-run collapse, so savings are
+shape-dependent: verbose JSON (npm/pip/kubectl/terraform) **28–33%**, duplicated log runs **up to
+99%**, and unique-line logs, prose, `git log` and `git diff` **0%**. On distil's own eval corpus it
+saves **0.00%** — that corpus has no JSON and no consecutive duplicates. Published because quoting
+only the favourable fixtures would be the overclaim we criticise in others.
+
+> Other agents: Gemini CLI's `AfterTool` can influence output indirectly (under evaluation); Codex CLI
+> hooks are observe-only and reject output rewriting, so it's blocked upstream there.
+
+[Full page, with the method and the caveats →](https://dshakes.github.io/distil/which-mode.html#subscription)
+
+---
+
+## 🧠 MCP server — give your agent a recall tool
+
+Distil ships a [Model Context Protocol](https://modelcontextprotocol.io) server so an agent can
+**compress its own tool output and get the exact bytes back later**. Zero dependencies (stdlib
+JSON-RPC over stdio, no SDK), fully local — content never leaves the machine.
+
+**Add it in one line:**
+
+```bash
+claude mcp add distil -- distil mcp
+```
+
+<details>
+<summary><b>Claude Desktop · Cursor · Windsurf · VS Code</b> — same JSON everywhere</summary>
+
+```jsonc
+{
+  "mcpServers": {
+    "distil": { "command": "distil", "args": ["mcp"] }
+  }
+}
+```
+
+Haven't installed distil? Run it straight from PyPI — no install step:
+
+```jsonc
+{
+  "mcpServers": {
+    "distil": { "command": "uvx", "args": ["--from", "distil-llm", "distil", "mcp"] }
+  }
+}
+```
+
+Config lives in `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop,
+macOS), `.cursor/mcp.json` (Cursor), or `.vscode/mcp.json` (VS Code). Restart the client after editing.
+</details>
+
+**Verify it's up** — no client needed:
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | distil mcp
+```
+
+### The three tools
+
+| Tool | Does | Your agent reaches for it when |
+|---|---|---|
+| `distil_compress(text)` | Returns a compact digest + an **8-hex handle**; stores the original locally (encrypted, `0600`) | A tool returned something huge and carrying it verbatim is wasteful |
+| `distil_expand(handle)` | Returns the **exact original bytes** — not a summary | The digest lost a detail it now needs: a line, a value, a stack frame |
+| `distil_savings()` | Cumulative tokens/dollars from the local ledger | You ask "how much has distil saved me?" |
+
+Every tool is annotated (`readOnlyHint`, `idempotentHint`, `openWorldHint: false`), so a well-behaved
+client knows `distil_expand` is a safe, repeatable, offline read without having to guess from prose.
+
+> **This is the recall path, not the savings path.** The MCP server doesn't compress your agent's
+> traffic — `distil wrap -- <agent>` does that, transparently, with no tool calls. What the MCP server
+> adds is the other half: any agent, including one you didn't wrap, can call `distil_expand` on a
+> handle it sees in context and get the original back. Handles persist across sessions and processes,
+> and age out after `DISTIL_RESTORE_TTL_DAYS` (default 14).
+
+---
+
+## 🗜️ MCP compressor — shrink other servers' tools and results
+
+`distil mcp` with a subcommand is a transparent proxy in front of your *other* MCP servers, for
+Codex, Cursor, Gemini CLI, opencode, Claude Desktop, Windsurf and custom agents. (Claude Code's own
+tool search already defers unused tools — see [ADR 0017](docs/adr/0017-mcp-compressor.md).)
+
+```bash
+distil mcp wrap -- npx -y @modelcontextprotocol/server-filesystem ~/work   # one server
+distil mcp serve --config mcp.json       # every stdio server in an mcpServers file
+distil mcp install cursor                # route Cursor's servers through distil (…--undo restores byte-exact)
+distil mcp watch                         # per-tool: tokens before→after, unlocks, fetches, expands
+```
+
+Levels are explicit: **L0** lossless schema canonicalisation (on), **L1** extractive summaries,
+**L2** lazy loading that surfaces the *real* tool after its schema is fetched (not a generic
+`invoke` forever), **L3** L2 plus pins learned from your usage, and **R** recoverable result digests
+with a `<server>_expand` tool (`--results`). The first live run of the
+[pre-registered accuracy protocol](docs/research/mcp-compressor-protocol.md) (`claude-haiku-4-5`,
+1,000 tool tasks per level) **certified every level**: right-tool-and-arguments went from 91.2% on
+the raw tool list to 92.1% / 95.4% / 96.3% / 95.4% on L0–L3, and R answered 99.5% of result questions
+against 99.7% raw. L1–L3 and R stay opt-in until a replication model runs. L2 billed more than raw on
+that run because its short index missed the prompt cache. Details: [docs/mcp.html](https://dshakes.github.io/distil/mcp.html).
+
+---
+
+## 📦 Install your way
+
+**New here?** `uv tool install distil-llm`, then `distil setup` — it sets you up and guides you (see [Use it now](#-use-it-now)). Want to see it prove itself first instead? `distil bench` runs the certified gate in ~10s, no API key. The matrix below is for picking an *install format* — everything in it is an alternative, not a requirement.
+
+<details>
+<summary><b>Install gotchas & troubleshooting</b> (package name, old-Python errors, stale mirrors)</summary>
+
+> ⚠️ **The one gotcha — the name.** The PyPI package is **`distil-llm`** but the command is **`distil`** (the bare name was taken). So `pipx install distil-llm` → run `distil …`. `pip install distil` installs something else.
+
+> 🔧 **Seeing `Could not find a version that satisfies the requirement distil-llm (from versions: none)`?** The package **is** on PyPI — that error means your `pip`/`pipx` is on a Python older than the package's floor, so pip filters every release out. **Distil now supports Python 3.9+** (the version macOS ships), so a current install just works; if you still hit this on a very old Python, let **uv provision one for you**: `uvx --python 3.12 --from distil-llm distil bench` (or `uv tool install --python 3.12 distil-llm`). Check yours with `python3 --version`.
+
+> 🔧 **Got an *old* version (e.g. `0.25.1`) instead of the latest?** Public PyPI always serves the newest (`pip index versions distil-llm` lists them). If you got an older one, your `pip`/`pipx` is **not resolving against public PyPI** — almost always a **stale internal mirror** (Artifactory / CodeArtifact / Nexus that hasn't synced the latest yet — common right after a release) or a **`<1.0` version pin** in a constraints file / `pip.conf`. Diagnose and fix:
+> ```bash
+> pip index versions distil-llm     # stops at an old version? → your index/mirror is stale
+> pip config list ; env | grep -i pip   # look for an index-url or PIP_CONSTRAINT pin
+> # unblock now — force public PyPI:
+> pipx install --pip-args="--index-url https://pypi.org/simple/" distil-llm
+> # (or, if you must use the mirror, ask your platform team to sync distil-llm; it exists upstream)
+> ```
+
+
+</details>
+
+<p align="center"><img src="docs/assets/install.svg" alt="install options" width="100%"/></p>
+
+| Format | Command | Prereq |
+|---|---|---|
+| **One-line installer** | `curl -LsSf https://dshakes.github.io/distil/install.sh \| sh` · Windows: `powershell -ExecutionPolicy ByPass -c "irm https://dshakes.github.io/distil/install.ps1 \| iex"` | none — installs [uv](https://docs.astral.sh/uv/) if missing, then the next row |
+| **uv tool** | `uv tool install distil-llm` → `distil setup` | [uv](https://docs.astral.sh/uv/) — **auto-provisions Python 3.9+** |
+| **Zero install** | `uvx --from distil-llm distil bench` | [uv](https://docs.astral.sh/uv/) — **auto-provisions Python 3.9+** |
+| **Isolated CLI** | `pipx install distil-llm` → `distil bench` | Python **3.9+** (else `pipx install --python python3.12 distil-llm`) |
+| **Homebrew** | `brew install dshakes/tap/distil` | Homebrew |
+| **Docker** | `docker run ghcr.io/dshakes/distil:latest bench` (or `docker build -t distil .`) | Docker |
+| **Single file** | `make pyz` → `python dist/distil.pyz bench` | Python 3.9+ |
+| **In a venv** | `pip install distil-llm` (inside an active virtualenv) | Python 3.9+ |
+| **Node / JS / TS** | `npx distil-llm wrap -- <agent>` · [`npm i distil-llm`](https://www.npmjs.com/package/distil-llm) for `baseURL` helpers | Node 18+ (bridges to Python via uv/pipx) |
+
+> The import package and CLI are `distil`; the PyPI distribution is `distil-llm` (the bare name was taken — so `uvx`/`pip` must reference `distil-llm`, not `distil`). Distil is a CLI: install it **isolated** (pipx/uv/brew/Docker), because modern macOS/Linux block system-wide `pip install` ([PEP 668](https://peps.python.org/pep-0668/)). **Node / JS / TS:** `npx distil-llm wrap -- <agent>` (the npm package bridges to the CLI), or `npm i distil-llm` for `distilBaseURL()` helpers to point any SDK at the proxy — or just set `base_url` yourself.
+
+---
+
+## 🧰 Cheat-sheet
+
+Basics are in [Use it now](#-use-it-now) and [Works with every SDK](#-works-with-every-sdk). Beyond that:
+
+| Goal | Command |
+|---|---|
+| **Set up + a guided tour (start here)** | `distil onboard` |
+| Make distil the default (no per-session `wrap`) | `distil default` · undo: `distil default --undo` |
+| Remove distil's footprint (before uninstalling) | `distil offboard` · also clear data: `distil offboard --purge` |
+| Diagnose your setup (ledger, shadow, proxy self-test, wiring) | `distil doctor` |
+| Wire the savings status line into Claude Code | `distil setup` (compact segment: `DISTIL_STATUSLINE=minimal`) |
+| Watch genuine savings accumulate | `distil leaderboard` · live TUI: `distil dashboard` |
+| Session summary on exit (tokens, cost, shadow, restorability) | printed automatically by `distil wrap` — opt out with `DISTIL_NO_LEDGER=1` |
+| Deep-dive one session (savings, anomalies) | `distil dissect` (`--html` / `--serve`) |
+| Where you're still leaving savings on the table | `distil discover` (`--since 7` / `--json`) |
+| Live decision-equivalence on real traffic | `distil wrap --shadow 0.1 -- claude` → `distil shadow-stats` |
+| Certify on *your* domain | `distil research ingest --input prod.jsonl --out ./mycorpus` → `distil research conformal --corpus ./mycorpus` |
+| Recover digested detail from any agent (MCP) | `distil mcp` |
+| Self-improving keep policy | `distil research learn` / `distil research online` |
+| Shape a test run's output at the source | `distil sh -- pytest -q` · Claude Code: `distil hook install --shell` |
+| What distil would have saved, from Claude Code / Codex / Gemini CLI transcripts | `distil savings` (no install: `uvx --from distil-llm distil savings`) |
+| Maker-side research and CI gates (bench, certify, verify, validate, ...) | `distil research <command>` (`distil research --help`) |
+
+> **Status line** — one pattern in every state: `distil · <live> · total ▼<lifetime>`.
+>
+> | state | you see | means |
+> |---|---|---|
+> | **saving** | `distil · ⬢ digest · ▼12.0K · 40% smaller · $0.31 · total ▼27.0M · de 99%` | compressing (mode chip: `⬢ digest` · `◇ lossless` · `▪ verbatim`; `de` = decision-equivalence) |
+> | **watching** | `distil · ✓ on · waiting for a large read · total ▼27.0M` | on, but no large content yet — savings come from big file/command output |
+> | **idle** | `distil · ✓ on · total ▼27.0M` | set up and on, no recent traffic |
+> | **not routed** | `distil · off — session not routed · total ▼27.0M` | this session's requests go straight to the provider — start it with `distil wrap` (or the always-on env) to compress |
+> | **bypassing** | `distil · ⚠ wrapped, agent bypassing proxy · total ▼27.0M` | the wrap is up but zero requests reached its proxy in 3+ minutes — the agent pinned its own endpoint. **Fix: restart the wrap.** Seen mostly with claude.ai-subscription (OAuth) sessions; routing those through a custom base URL is undocumented upstream, and a session occasionally ignores it. `scripts/soak-report.sh` captures evidence if it persists |
+>
+> The `de` segment is live decision-equivalence evidence: a ✓/⚠/✗ rate once **50 A/B
+> samples + 30 A/A samples** accrue (A/B = compressed-vs-original; A/A = same request
+> replayed against itself — the sampling-noise baseline), `de n/50` while collecting.
+> Shadow sampling is **on by default at 2%** (`--shadow 0` disables; `--shadow 1.0`
+> samples every request — proves equivalence in minutes at ~3× token cost, then drop
+> back to the default 2%).
+>
+> **Measured — 2026-09-15, build 1.53.0rc1, paired estimator (signature v5).** The live
+> sample now clears the reporting floor: **398 A/B and 399 A/A samples**. Read it **per
+> mode**: digest agreed 102/206 times against a self-agreement of 113/206 — **−5.3 pp, over
+> the 5% budget** — while lossless-only read 109/192 against 109/193 (≈0). The status line
+> prints the pooled figure, `⚠de 97.5% (398)`, which averages the two and is not a verdict
+> on either; `distil shadow-stats` prints each mode with its interval. Replays run **hot** — 399 of 399, temperature is not
+> pinned — so read the paired difference, not the 53.0% raw agreement: the A/A arm carries
+> the same run-to-run noise and the difference subtracts it out. Artifact:
+> [`benchmarks/results/shadow-live-2026-09-15.json`](benchmarks/results/shadow-live-2026-09-15.json).
+> Two earlier readings stay on the record: the signature-v3 / 1.13.0 number (100% over 116
+> sampled requests, A/A 31/31) is **withdrawn** — the 1.51.1 changelog found that every
+> replay carrying a prior `thinking` block failed with a signature error, biasing the
+> sample toward the minority of turns that had none — and the 1.51.1 reading (44 A/B, 11
+> A/A, raw agreement 81.8%, below the floor, unpaired estimator) is kept at
+> `benchmarks/results/shadow-live-2026-09-04.json`.
+>
+> `▼` = tokens saved · `total` = lifetime · `de` = decision-equivalence (verdict once 50 A/B + 30 A/A shadow samples accrue). Sharing the line with git/cwd/model? `DISTIL_STATUSLINE=minimal` → `distil ▼7.8K · 27M total`. On a flat-rate **subscription**, dollars are notional and auto-hidden (`DISTIL_SUBSCRIPTION=0/1`).
+
+### 🎚 Compression modes — in plain English
+
+You usually don't need to pick. `distil onboard` detects your billing and sets the right mode for you — it writes it into your setup so every session just works. Pass a flag to override for a specific session.
+
+- **digest** (the default) — Distil shortens long things (big files, command output, past steps) into short summaries, and can pull back the full original the moment the AI needs it. You save the most, and nothing is truly gone — originals are kept and restored automatically. *Most people should just use this.*
+- **expand** — Same shortening as digest, but Distil also gives the AI a "show me the full version" button it can press on its own. Best when the AI runs for a long time autonomously (e.g. long coding sessions). *Picked automatically if you pay per use (API key).*
+- **lossless-only** (a.k.a. `--safe`) — The cautious setting: Distil only trims things it can rebuild perfectly (like extra blank space), and never summarizes. You save less, but there's zero chance of losing any detail. *Picked automatically on a flat monthly subscription.*
+- **verbatim** — The lightest touch: just tidies formatting, changes nothing else. Almost no savings. Use it when you want to see or audit exactly what's being sent.
+
+For the technical breakdown:
+
+| Mode | What it does | Savings | Safety | Auto-selected when |
+|---|---|---|---|---|
+| `--expand` | Digest + injected expand tool so the model recovers content on demand | Most | Lossy-but-recoverable | Metered / API-key (PAYG) |
+| _(default)_ `digest` | Tier-1 digest only — no tool injection | High | Reversible via RestoreStore | No flag passed |
+| `--lossless-only` / `--safe` | Lossless transforms only — no digests, no tool injection | Fewer | Zero unrecoverable content | Subscription / flat-rate |
+| `--verbatim` | Whitespace + JSON normalization only | Minimal | Most conservative | Debugging / auditing |
+
+Subscription users should not force `--expand`; it crosses the lossless safety boundary. Coding re-reads? Add `--session-delta` either way.
+
+---
+
+## 🧠 How it works
+
+<p align="center"><img src="docs/assets/architecture.svg" alt="architecture — pipeline and the quality-contract loop" width="100%"/></p>
+
+Two techniques carry most of the win — they target where the money actually is in an agent loop, not where it looks like it is.
+
+### ① Cache-aware compression — the dominant lever
+
+You re-send the growing context every step. With prompt caching a cache **read is ~10× cheaper** than fresh input, so the real cost is cache **misses**, not context **size**. Distil keeps the prefix byte-stable (schema canonicalization + lifting volatile fields like timestamps/UUIDs out of the prefix) and compresses only the volatile tail.
+
+<p align="center"><img src="docs/assets/cache-aware.svg" alt="cache-aware savings" width="100%"/></p>
+
+> Naive recompression sends **fewer tokens yet costs more than not compressing at all**, because it rewrites the cached prefix every turn. Distil doesn't — that's the whole game most tools miss.
+
+- **Forwarded-bytes prefix replay** — the other half of that game is the *client*, which rewrites its own history every turn without changing a token the model reads: the `cache_control` breakpoint advances, an SDK stamps `index` fields, a string becomes a text block. Measured offline, that used to cost **the entire prefix, on every provider, on every turn (0% forwarded byte-identical)**. Distil now replays the bytes it forwarded last turn for the longest canonically-equal prefix — **100%** on every rewrite shape that applies, at ~0.13 ms/request. It restores bytes, never decisions, so the exact-quote guarantee still wins over a cache hit. Every request records why replay stopped (`replay_stop`: `held`, `client`, `distil`, `marker`, `cold`, `untracked`), so an in-window cache write can be blamed on the right side. On by default; `--no-prefix-replay` opts out. → [ADR 0011](docs/adr/0011-forwarded-bytes-prefix-replay.md)
+- **Cold-point recompression** — the one moment old bytes can change for free is a turn that arrives after the provider's cache entry has *already* expired (five minutes idle, or an hour if the client asked for `ttl: "1h"`). The whole prefix is re-written on that turn anyway. So distil replaces older tool output there with `distil_expand`-recoverable stubs, and then forwards exactly those stubs on every later turn, so the smaller prefix is what gets cached. It acts only when expiry is certain from distil's own clock. A lineage distil has not seen, a request still in flight, or two conversations sharing one lineage key all mean it does nothing. Exact-quote reads, the freshest turns and anything the model expanded are never touched. It runs wherever the recoverable digest runs (Anthropic, for now). `--no-cold-point` or `DISTIL_COLD_POINT=0` opts out. Savings are **not yet measured live**: an rc soak and an A/B are the gate. → [ADR 0014](docs/adr/0014-cold-point-recompression.md)
+- **Tool definitions are forwarded untouched, on purpose.** On real traffic the request `tools` array is a large share of billed input, but it sits at the head of the cached prefix and bills almost entirely at the cache-read rate. Only a small fraction of it can be removed without changing what the model can call. That makes a lossless schema compactor worth too little to justify any risk to the prefix. The measurement is `benchmarks/tool_schema_share.py`; the numbers and the re-open condition are in [ADR 0012](docs/adr/0012-tool-definitions-are-left-alone.md). To cut tool overhead, remove connectors you don't use; `distil discover` ranks them by cost.
+- **Claude Code's own MCP tool search stays on.** Claude Code defers MCP tool definitions and loads one only when the model searches for it, but switches that off whenever `ANTHROPIC_BASE_URL` names a non-first-party host — so under a proxy every connector's full schema used to ride along on every turn. `distil wrap -- claude` now sets `ENABLE_TOOL_SEARCH=true` for the child (an exported `ENABLE_TOOL_SEARCH=false` still wins), `distil default --always-on` adds it to Claude Code's settings only if absent, and distil forwards `defer_loading` / `tool_reference` blocks byte-identical. **Verified live (2026-09-25):** a wrapped Claude Code session that called an MCP tool recorded deferred tools on every request, cache reads intact, no failures. `distil discover` names MCP servers sent on 20+ requests and never called. → [ADR 0013](docs/adr/0013-unused-connectors-are-claude-codes-to-defer.md)
+
+`distil cache` shows you whether it's working, and deliberately mixes two kinds of number: cache **reads and writes come from the provider's own `usage`** — ground truth about money — while **prefix drift** is distil's own diagnosis of why, from a content-free hash of the stable blocks it sent. A diagnosis with no measurement behind it is a guess, so it never prints one without the other. On a live three-turn session where the third turn prepends a session id to the system prompt, the two agree independently: the turn the hash flagged is the turn the provider re-billed 15,819 tokens to re-create. Turns that merely *grew* — a conversation doing what conversations do — are not drift, because a warning that fires on every healthy turn is one people switch off. With no proxied requests it exits non-zero rather than printing a reassuring zero. Full picture, including the one cache feature we deliberately don't ship and why, in [docs/CACHE.md](docs/CACHE.md).
+
+### ② Causal / counterfactual pruning — the discovery engine
+
+The eval isn't a ruler bolted on the side; it's a *discovery engine*. Remove a context block, replay, did any decision change? Blocks that never change a decision are **provably free to drop**.
+
+```bash
+distil prune
+# doc-0   PRUNE (causally inert)     # speculative retrieval, never cited
+# obs-0   keep (changed a decision)  # carries the decision-driving signal
+```
+
+---
+
+## 🎓 The certificate (DERC)
+
+The gate answers *"is this strategy non-inferior on my corpus?"*. The **Decision-Equivalence Risk Certificate** answers the operational one: *"for a risk budget I choose (say ≤5% decision-change), how hard can I compress with a guarantee that holds on my real traffic?"*
+
+```bash
+distil conformal --corpus ./mycorpus --alpha 0.05 --delta 0.05
+# ✔ CERTIFIED 'lossless' → 57.4% savings; decision-change ≤ 5.0% at 95% confidence (Learn-Then-Test)
+```
+
+**Every certificate names the oracle that graded it.** A certificate is evidence, and evidence that doesn't say what produced it isn't evidence — so `Certificate.grader` is stamped from the runner and printed in the guarantee. The default offline gate is graded by a *deterministic synthetic oracle*, not a model, and it says so verbatim: `Graded by: deterministic (synthetic DECISION: oracle — NOT a model)`. Real-model evidence comes from `distil certify --runner anthropic`, and its certificates name that runner instead. You can always tell which layer a number came from, because the number carries it.
+
+It's **conformal risk control** (Learn-Then-Test / CRC — distribution-free, finite-sample), not a heuristic threshold. The one load-bearing caveat: the guarantee requires **exchangeability** (calibration traffic ≈ live traffic) and is **marginal** over that distribution — recalibrate on drift. Full theory + citations: [Concepts](https://dshakes.github.io/distil/concepts.html) · [`docs/PAPER.md`](docs/PAPER.md).
+
+**One risk budget, and an alarm that acts on it.** The certificate, the live drift alarm and the proof ledger all read one pinned pair of constants, `distil.conformal.BUDGET_ALPHA` / `BUDGET_DELTA` (decision change ≤5% at 95% confidence), so no surface can print *intact* beside a bound another surface says is over budget. `distil certify`'s TOST margin (`CERT_MARGIN`, 2 pp) sits in the same place and is pinned to stay stricter than the budget. When shadow mode's paired verdicts push the anytime-valid e-process over the budget, the proxy **stops compressing lossily from the very next request**: Tier-0 only, no digest, no output shaping. There is exactly one e-process per machine: each proxy folds the verdict it just produced into it under a file lock, so restarts, hot-swaps and parallel wraps never re-test the same evidence. The hold survives a restart and is written to the receipt chain. It is global rather than per-session, so a new `distil wrap` cannot quietly resume what the last one proved harmful, and a long-running proxy picks up another process's trip or release within 30s. It shows as `⚠ drift hold` in the status line, and in plain words in the wrap exit summary and `distil stats` (`BREACHED … compression held at lossless-only`). To release it, run `distil calibrate`, then `distil reset --drift-guard`. That touches only the alarm, never your savings totals. The alarm is on by default; to keep compressing through a breach, set `DISTIL_NO_DRIFT_GUARD=1` (the alarm still prints). The multi-tenant gateway is deliberately exempt ([ADR 0016](docs/adr/0016-drift-guard-scope.md)). New since 1.53.0rc1; like every default-on change it still has to clear an rc soak.
+
+### 🏔 The trajectory-level certificate
+
+DERC certifies the *step*; this certifies the *task*. Our E7 experiment — and the 2024–26 agent-compression literature — shows per-step fidelity can pass while end-to-end success collapses, so distil also certifies the level users actually feel: run your eval suite twice (full context vs compressed), feed the matched outcomes in, and get a distribution-free bound on **how many solvable tasks compression may cost you**:
+
+```bash
+distil certify-trajectories outcomes.jsonl --alpha 0.05 --delta 0.05
+# each line: {"task_id": "...", "full_success": true, "compressed_success": true}
+# → With confidence 95%, compression degrades at most 5.0% of tasks the full
+#   context would have solved (observed 0.5% over 200 matched trajectories).
+```
+
+It refuses to certify on small samples, states its exchangeability assumptions in the certificate itself, and pairs with the live, anytime-valid **drift alarm** (`distil/drift.py`, above) that tells you — and on the proxy, acts — when live traffic has shifted enough that the certificate is stale. (`trajectory_risk.drift_monitor` is a research-only sibling, not on the request path.) The **outcome-guided policy** (`distil.compress.guideline`) is built to protect content classes that break tasks when digested, but nothing feeds it yet — `record_trajectory_outcome` has no callers, and `distil doctor` says so.
+
+## 🧩 What's inside
+
+40+ shipped capabilities, all real (no stubs): the cache-aware cost engine, causal pruning, the TOST gate + conformal certificate, the proxy + Anthropic/OpenAI/Gemini first-class adapters (Chat Completions, Responses API, and Gemini generateContent), an MCP server, LiteLLM/LangChain/LangGraph hooks, per-agent wrap presets, the Proof Ledger end-of-session printout, the multi-tenant gateway with issued keys and rate limits, encrypt-at-rest for the restore store, learned keep-models, output compression, and an optional Rust hot-path core (build-from-source via `maturin`; published wheels run the pure-Python engine, same API) — with **zero runtime dependencies** in the core.
+
+Full module-by-module map: [Architecture](https://dshakes.github.io/distil/architecture.html) · [Techniques](https://dshakes.github.io/distil/techniques.html) · [CLI reference](https://dshakes.github.io/distil/cli.html).
+
+## 🔒 Security & deployment
+
+- **Localhost-only by default** — the proxy binds `127.0.0.1` and forwards only to the single configured upstream (no SSRF).
+- **No secret/body logging** — request bodies and credentials are never logged.
+- **Auth-mode gating** — a detected subscription/OAuth session **auto-selects `--lossless-only`** (Tier-0 verbatim: no Tier-1 digest stubs, no tool injection — provider-ToS-safe); `distil wrap -- claude` is safe by default, no flag needed. An explicit `--expand` opts into the recoverable digest even there (you authorized the recovery tool, so nothing is irreversibly lost — issue #28). Without an injected expand tool the agent cannot recover a stub, so `--lossless-only` folds directly into verbatim.
+- **Encrypted at rest** — digest originals in `~/.distil/restore/` are encrypted with HMAC-SHA256-CTR (encrypt-then-MAC, `DSTL1` header, key at `chmod 0600`), protecting against backup/sync leakage and cross-user reads on shared filesystems. A same-UID attacker who can read both the data files and the key file is explicitly out of scope (see [`THREAT_MODEL.md`](THREAT_MODEL.md)). Legacy plaintext files load transparently. `DISTIL_NO_ENCRYPT_AT_REST=1` opts out; handles age out after `DISTIL_RESTORE_TTL_DAYS` (default 14). No data is forwarded upstream.
+- **Ops-ready** — unauthenticated `GET /distil/health` liveness probe on every entry point (never touches the billed upstream); gateway accounting checkpoints to disk every 30 s (crash-safe, not just on graceful shutdown); `DISTIL_DEBUG=1` surfaces everything the fail-open compression path swallows.
+- **Upgrades apply to live sessions** — `distil wrap` supervises its proxy as a subprocess on a wrap-owned socket; when a new version lands on disk (pipx/pip upgrade) the wrap hot-swaps in a fresh worker — same port, in-flight streams finish on the old one, the agent never restarts. Health-checked with automatic rollback: a broken upgrade keeps the old worker serving. POSIX; `kill -USR1 <wrap pid>` forces it, `DISTIL_HOT_SWAP=0` opts out. On Windows the wrap keeps the historical in-thread proxy (no seamless swap) and warns on version skew instead — upgrades there apply on the next session.
+- **OpenTelemetry GenAI spans (opt-in)** — `pip install 'distil-llm[otel]'` and every proxied call emits a [GenAI semantic-convention](https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-spans/) span (`gen_ai.request.model`, `gen_ai.usage.input_tokens`) plus distil's own story: `distil.tokens.original` vs `distil.tokens.compressed`, `distil.compression.ratio`, `distil.shadow.sampled`, and `distil.session.id` for per-session trace correlation — your existing OTel backend sees exactly what compression did to each request. Without the extra installed it's a single boolean check, zero overhead, and an OTel failure can never break the request path. The same numbers also export as OTel **counters** (`distil.requests`, `distil.tokens.baseline`/`.sent`/`.saved`), recorded at the same instrumentation point as the span attributes — so tracing and metrics can't disagree — and recorded before the span check, so they still work with tracing sampled off.
+- **Prometheus endpoint (gateway)** — `GET /distil/metrics` serves the standard text exposition format (`distil_tokens_saved_total`, `distil_dollars_saved_total`, `distil_compression_ratio`, …), written against the stdlib, so the scrape path adds no dependency and cannot fail to import. Series are labelled by tenant, so the endpoint sits behind **exactly the same admin gate as `/distil/stats`**: open on loopback for local use, and on any non-loopback bind it requires `--admin-token` and refuses without one. That gate is the point — an unauthenticated tenant-labelled `/metrics` is precisely the [LiteLLM leak](https://github.com/BerriAI/litellm/issues/13644) class of bug, and it is tested for directly (403 unauthenticated, 401 on a wrong token, plus label-injection and no-secrets-in-exposition tests). Full reference: [docs/adoption.html#metrics](https://dshakes.github.io/distil/adoption.html#metrics).
+- **Vision — repeated screenshots stop costing full price** — a 1024×1024 image is ~1,400 input tokens, and an agent that screenshots a UI or polls a dashboard pays that on *every turn the block stays in context*. Distil elides only **byte-identical** repeats, replacing each with a recoverable reference: the first occurrence and every distinct image are untouched, nothing is re-encoded or downscaled, and `distil_expand` returns the original `source` byte-exact. URL sources are never treated as duplicates — two occurrences of one URL are not evidence of the same pixels. The prevailing alternative resizes, which is lossy by construction and unverifiable; this is **certified at 100% decision-equivalence against a live vision model** (A/A floor 100%, TOST *p*<0.0001), and the certificate ships in the package stating its own scope. Certify your own workload with `distil certify --strategy vision --runner anthropic` — your result outranks ours, **including a failure**. `DISTIL_VISION=0` disables it. Full reference: [Techniques § Vision](https://dshakes.github.io/distil/techniques.html#vision).
+- **Supply-chain hardening** — releases carry [PEP 740 Sigstore attestations](https://peps.python.org/pep-0740/) (via PyPI trusted publishing), a CycloneDX SBOM on every GitHub release, and [OpenSSF Scorecard](https://github.com/ossf/scorecard) weekly on `main`. The release job **fails** if PyPI does not report an attestation bundle for the version it just published, so this line cannot drift into being false. Verified for every release back to 1.19.0. Don't take our word for it: `curl -s https://pypi.org/integrity/distil-llm/<version>/<filename>/provenance` (note the *integrity* API — `/pypi/<pkg>/<ver>/json` does not carry an attestations field, and reading it there reports a false negative), or `uvx pypi-attestations verify pypi --repository https://github.com/dshakes/distil pypi:distil_llm-<version>-py3-none-any.whl`.
+
+- **Kubernetes** — a Helm chart for the multi-tenant gateway ships in [`packaging/helm/distil-gateway`](packaging/helm/distil-gateway): auth-required, non-root and read-only-rootfs by default, PDB, HPA, NetworkPolicy restricting egress to DNS + 443, plus a ServiceMonitor and alert rules. A [Grafana dashboard](packaging/grafana/distil-gateway-dashboard.json) comes with it, and CI cross-checks every panel and alert against the metrics distil actually emits.
+- **SSO / RBAC** — the gateway accepts OIDC bearer tokens alongside its own `dsk-` keys, with three ordered roles (`viewer` < `operator` < `admin`). JWS verification is stdlib-only; RS256 needs the `[oidc]` extra and an RS256 token is **refused** when it is absent rather than accepted unverified.
+- **Audit trail** — every auth success, rejection, rate-limit and key issue/revoke is appended to `$DISTIL_HOME/audit.jsonl` (0600, JSONL, flock-guarded). Read it with `distil gateway audit`, or `--json` straight into a SIEM. Content-free like everything else distil writes: identifiers and outcomes, never prompt text, tool output, or the raw key.
+- **Per-request receipts — a team audit log a third party can check** — every request the proxy serves appends a content-free, hash-chained receipt (token counts, mode, handles issued, whether they still resolve; never prompt or completion text) to `$DISTIL_HOME/receipts.jsonl` (0600). The chain rotates: once the active file reaches the segment size it is sealed, byte for byte, into `receipts-segments/`, and a small checkpoint is written beside it — segment id, row count, first/last receipt hash, and an [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)-shaped Merkle root over the segment. The next receipt links to the sealed segment's last hash, so the history stays one chain. `distil receipts` verifies all of it; `--segment N` verifies one segment against its checkpoint without reading any other; `--checkpoints` prints the checkpoint records (and each record's sha256) to pin somewhere the team trusts; `--prove <request-id>` emits a Merkle inclusion proof for one receipt — hand an auditor one receipt, not the whole log. `--check-proof proof.json --checkpoint-hash <sha256>` proves the receipt's content, segment and position from the proof and that pin alone; `--root <hex>` alone proves only membership in that tree, not position; with nothing pinned the check is circular and says so. A chain written before segments existed verifies unchanged and becomes segment 0, unmodified, on its first rotation. The trust boundary is stated, not implied: whoever can write `~/.distil` can rewrite a segment *and* its checkpoint, so pin the checkpoint hashes somewhere they cannot.
+- **Key lifetime** — `distil gateway keys issue --tenant acme --expires-in-days 90` gives a key a bounded life, enforced on every lookup; `keys list` shows `active` / `expired` / `revoked` separately so a sudden 401 doesn't send anyone hunting for a revocation that never happened. Keys without an expiry keep working forever, so nothing changes for existing deployments.
+
+See [Deploy & security](https://dshakes.github.io/distil/security.html#deploy-security) for topologies (local sidecar, container sidecar, shared gateway), the [security whitepaper](docs/SECURITY-WHITEPAPER.md) for a review-ready data-handling and compliance summary, and [`SECURITY.md`](SECURITY.md) to report a vulnerability.
+
+---
+
+## ✅ What we won't pretend
+
+- **Self-calibrating token counts** — the offline heuristic is directionally accurate; the compression **ratio** is exact regardless. distil is a proxy, so it sees the provider's real `usage.*` on every response — it learns the systematic correction from that (content-free, no network) and calibrates the *absolute* counts to your model + content mix automatically. The leaderboard shows "calibrated to your billed usage (N requests, ±X%)" once enough traffic has flowed; until then it's the raw heuristic (identity, so no skew). For per-string exactness there's still `--tokenizer anthropic`.
+- **Default runner is a deterministic stand-in** (offline gate with ground truth). Non-circular eval grades **real agent traces with a real model** — [proof harness](#-reproducible-evaluation--the-paper).
+- **Credible grading, enforced:** majority-vote (single samples let grader noise look like a decision change), a same-family grader, and grading the reversible tier *with* its `distil_expand` recovery loop.
+- **No fabricated weights** — the keep-model is a real logistic classifier (96.4% held-out accuracy, 0.98 F1; the committed [`metrics.json`](distil/codec/metrics.json) regenerates byte-identically from `python -m distil.codec.learned`, seed-pinned). The optional transformer codec ships **no checkpoint in the package** — a demo checkpoint is attached to the [v0.1.0 release](https://github.com/dshakes/distil/releases/tag/v0.1.0), and production means retraining on your own traces (`distil train-transformer`).
+
+- **An outside benchmark caught a defect our own gates missed.** 75 agent runs, graded from the API's own usage fields, found `wrap --expand` completing **6 of 15** coding tasks against bare Claude Code's 13 — seven runs wrote nothing to disk and reported success. Four causes, all fixed in 1.49.0, each pinned by a regression test verified to fail without its fix. The write-up, including what it does *not* establish, is [here](https://dshakes.github.io/distil/benchmark.html#benchmark-independent). A green test suite does not prove the work was done.
+
+### Deliberately *not* a platform
+
+Distil is a **referee for context tooling, with a compressor it holds to the same gate** — not a context suite. We declined what can't go under the certificate:
+
+| Adjacent feature | Our stance |
+|---|---|
+| Persistent memory / knowledge graph | **Out of scope** — a lossy store is the opposite of byte-reversible. |
+| Hosted semantic cache | **Out of scope** — we make the *provider's* prompt cache pay off, not a second lossy one. |
+| Editor/Copilot auth | **Out of scope** — Distil sits on the wire or in-process; never brokers credentials. |
+
+What we *did* adopt (it survives the gate): a pluggable salience scorer to *protect* entities, cache-prefix observability, and framework hooks.
+
+---
+
+## 🎯 Both sides of the bill
+
+Distil c

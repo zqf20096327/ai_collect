@@ -1,0 +1,368 @@
+```text
+            ████████████████████████    █████
+              ██                ██          ██
+              ██                ██       ████
+              ██                ██      ██
+              ██                ██      █████
+              ██                ██
+              p i ²    ·    p i 2 . n v i m
+```
+
+# pi2.nvim
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Neovim](https://img.shields.io/badge/Neovim-0.10%2B-green.svg?logo=neovim)](https://neovim.io)
+[![pi](https://img.shields.io/badge/pi-0.65.2%2B-blue.svg)](https://pi.dev)
+
+Use the [pi coding agent](https://pi.dev) without leaving Neovim — **π²**, a heavily extended fork of [`alex35mil/pi.nvim`](https://github.com/alex35mil/pi.nvim).
+
+`pi2.nvim` runs `pi --mode rpc` in the background and gives you an in-editor workflow for project-aware prompts, reviewed edits, session resume, and extension prompts — plus a growing set of features that live here rather than upstream (see [Differences from upstream](#differences-from-upstream)).
+
+> [!NOTE]
+> The project is named **pi2.nvim** (π²), but the Lua namespace, commands, and filetypes are unchanged for compatibility: you still `require("pi")`, use the `:Pi*` commands, and the buffers keep the `pi-chat-*` filetypes. Only the project / repository name differs.
+
+## Features
+
+https://github.com/user-attachments/assets/55080963-3066-44c2-9017-a81828033ef7
+
+<p align="center">
+    <sub> Workflow demo </sub>
+</p>
+
+![Sub-agents orchestrated from :PiSessions](assets/subagents-demo.png)
+
+<p align="center">
+    <sub> Manage parallel sub-agents from one parent chat — each child runs on its own model under the <code>:PiSessions</code> tree, while a read-only viewer float streams the active child's thoughts and tool runs live, with context / model / thinking level in its footer statusline </sub>
+</p>
+
+<details>
+<summary>Chat with an agent in a side panel or a floating window</summary>
+
+https://github.com/user-attachments/assets/2ab6ea5c-7c52-4977-8a12-b5dee55affaa
+</details>
+
+<details>
+<summary>Point an agent at the exact code with @-mentions</summary>
+
+https://github.com/user-attachments/assets/c94b0099-f2d3-403a-962b-69bc23b78fb1
+</details>
+
+<details>
+<summary>Run skills and commands</summary>
+
+https://github.com/user-attachments/assets/eec9d926-724c-426d-a6ac-03c8a11530dc
+</details>
+
+<details>
+<summary>Review agent-proposed edits in a two-way diff before they are applied, and tweak the proposed result if needed</summary>
+
+https://github.com/user-attachments/assets/c20dfa72-79e4-4160-b7f0-6817b0793fda
+</details>
+
+<details>
+<summary>Be notified when an agent needs your attention without interrupting your flow</summary>
+
+https://github.com/user-attachments/assets/7b83bff0-b747-4232-9921-10a0955d58f7
+</details>
+
+<details>
+<summary>Scroll chat history without leaving the prompt</summary>
+
+https://github.com/user-attachments/assets/5f1b22a2-c682-4be1-8713-4155eca54437
+</details>
+
+<details>
+<summary>See tool activity, diffs, and agent status inline, with collapsible tool blocks</summary>
+
+https://github.com/user-attachments/assets/6df13dd4-2c1e-41c1-8be0-9ac71432e31d
+</details>
+
+<details>
+<summary>Switch to zen mode for composing larger prompts comfortably</summary>
+
+https://github.com/user-attachments/assets/b1074303-1f16-40d8-8413-55a7cb88a687
+</details>
+
+<details>
+<summary>Queue follow-up instructions while the agent is still working</summary>
+
+https://github.com/user-attachments/assets/c4a7b6e6-cf13-454e-b073-f3205ac3eda6
+</details>
+
+<details>
+<summary>Switch models and thinking levels mid-session</summary>
+
+https://github.com/user-attachments/assets/c8535554-ea69-4ea9-8098-6b63185bd410
+</details>
+
+<details>
+<summary>Continue or resume past sessions for the current working directory</summary>
+
+https://github.com/user-attachments/assets/d2d595db-e11d-40b7-87b0-5124867e160e
+</details>
+
+<details>
+<summary>Keep separate conversations per tab</summary>
+
+https://github.com/user-attachments/assets/4d087f23-c459-496d-92b9-7540be7340ce
+</details>
+
+<details>
+<summary>Attach screenshots and other images from disk, clipboard, or drag-and-drop</summary>
+
+https://github.com/user-attachments/assets/f210246a-2427-4fdb-b679-eeb6ceae4538
+</details>
+
+## Sub-sessions & sub-agents
+
+A session per tab is the baseline; `pi2.nvim` adds **sub-sessions** — a parent session can spawn parallel agent conversations, each an independent background `pi --mode rpc` process with its own session file, model, and thinking level. They are not extra tabs: they are delegable workers you steer from the same chat you work in.
+
+- **Reusable.** Children are first-class sessions, not fire-and-forget tasks — `:PiSubClose` makes a child *dormant* rather than gone: `list_subagents` still lists it and `dispatch_subagents({ target, message })` revives the same child. The manifest (`.pi2-subsessions.json`) persists the family tree across parent `/new`, resume, and Neovim restarts.
+- **Self-cleaning.** A settled child's `pi --mode rpc` process no longer lingers forever: it auto-closes after `subagent.reap_after_minutes` (default 30) idle — the manifest row turns *dormant*, the session file is kept, and the child stays revivable — with a periodic sweep (`reap_sweep_minutes`) as backstop. Set both to `0` to keep the old always-resident behavior. `subagent.max_children` caps the *live* processes per lineage, and finished-but-resident children are auto-closed oldest-first to make room when a new dispatch needs a slot.
+- **Interactive.** Follow any child live or take over entirely: bind the tab to a child with `:PiSubSwitch` (or `<CR>` on its row) and return with `:PiSubParent` / `gp` (a `◂ 父：…` breadcrumb marks child views); a finished user-spawned child reports back into the parent chat (`[Sub-session "…" completed]`, skipped for children you abort — those are recorded as `interrupted`); `:PiAbort` is scoped to the view you are in — inside a child it interrupts only that child (its RPC process stays alive for reuse), while on the parent it cascades to all of its sub-sessions and their batches (a child that already received its task keeps its process, while one still spawning is reclaimed).
+- **Integrated with `:PiSessions`.** Children appear as indented rows under their parent with status dots and model badges — fold/unfold with `<Tab>` / `za` (`zM` / `zR` for all), recall hidden rows with `H`, and the row keys (`c` compact, `s` stats, `d` diff review, `f`/`C`/`t` fork/clone/tree) work on child rows too.
+- **Preview without switching.** `p` on any row — parent/tab or sub-session — opens a read-only floating viewer for that session: a live session streams its turn as it happens (thoughts, tool calls, output), while a session whose process is gone replays from its file on disk — with a footer statusline showing context usage, active model, thinking level, and the session's todo progress (`✓ 3/5`), plus a `T`-toggled todo list panel. (`:PiSubView` is the equivalent picker for child sub-sessions.)
+
+The parent agent also gets orchestration tools of its own (`dispatch_subagents`, `poll_subagents`, `wait_subagents`, `stop_subagents`), and both sides carry static system-prompt notes on how to behave. Full workflow, list keys, and `subagent.*` options: [Sub-sessions](doc/sessions.md#sub-sessions).
+
+## Requirements
+
+- Neovim 0.10+
+- `pi` in `$PATH` — **pi 0.65.2+** overall; the [vision fallback](doc/usage.md#vision-fallback) additionally requires **pi 0.81.0+**; [auto session titles](doc/sessions.md#auto-session-titles) additionally require **pi 0.44.0+**
+- [`MeanderingProgrammer/render-markdown.nvim`](https://github.com/MeanderingProgrammer/render-markdown.nvim) for the default chat-history renderer (`render.engine = "render-markdown"`)
+
+Optional but useful:
+
+- `nvim-treesitter` markdown parser for nicer chat history highlighting
+- [`HakonHarnes/img-clip.nvim`](https://github.com/HakonHarnes/img-clip.nvim) for `:PiPasteImage`
+- `blink.cmp` if you want popup completion in the π prompt buffer
+
+Run `:checkhealth pi` to verify.
+
+## Installation
+
+### Installing with an agent
+
+The easiest way to install `pi2.nvim` is to hand the job to an AI coding agent (pi, Claude Code, Cursor, …). Point your agent at the instructions below — they tell it how to detect your setup, what to add, and how to verify the result.
+
+> **For the agent:** install the `pi2.nvim` Neovim plugin for the user by following these steps.
+>
+> 1. **Detect the plugin manager.** Read the user's Neovim config (usually `init.lua` under `stdpath("config")`, e.g. `~/.config/nvim/init.lua`) and find which plugin manager is in use — `lazy.nvim`, the built-in `vim.pack` (Neovim 0.11+), `packer.nvim`, etc. Follow that manager's spec conventions; if you can't tell which one is used, ask the user.
+> 2. **Add the plugin and its dependency.** Add `zgs225/pi2.nvim` together with `MeanderingProgrammer/render-markdown.nvim`, which the default history renderer (`render.engine = "render-markdown"`) requires. Optionally add `HakonHarnes/img-clip.nvim` (needed only for `:PiPasteImage` clipboard-image paste). Use the specs under [Installing manually](#installing-manually) as a reference for the two most common managers.
+> 3. **Recommended setup.** Ensure `require("pi").setup()` runs after the plugin loads. The defaults are a good first install — do not add options the user hasn't asked for. See [Configuration](#configuration) for the full option list, and [Keymaps](doc/keymaps.md) for a recommended mapping set; if the user already has `<Leader>` conventions, adapt to them rather than introducing new ones.
+> 4. **Verify with the healthcheck.** After installing, run `:checkhealth pi` and confirm it reports OK: the `pi` executable is in `$PATH`, the pi backend version is compatible, Neovim is 0.10+, and the default renderer's dependencies resolve. Fix anything it flags — e.g. install `pi`, or set `cli = { bin = "/absolute/path/to/pi" }` if it isn't on `$PATH`.
+
+### Installing manually
+
+#### vim.pack
+
+```lua
+vim.pack.add({
+    "https://github.com/zgs225/pi2.nvim",
+    -- Default chat-history renderer (render.engine = "render-markdown"):
+    "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+})
+
+-- if you're fine with defaults:
+require("pi").setup()
+
+-- or, if you want to customize:
+require("pi").setup({
+    models = { ... },
+    layout = { ... },
+})
+```
+
+#### lazy.nvim
+
+```lua
+{
+    "zgs225/pi2.nvim",
+
+    -- render-markdown.nvim powers the default chat-history renderer
+    -- (render.engine = "render-markdown"); img-clip.nvim is optional and
+    -- required only for `:PiPasteImage` (clipboard image paste).
+    dependencies = {
+        "MeanderingProgrammer/render-markdown.nvim",
+        "HakonHarnes/img-clip.nvim",
+    },
+
+    -- if you're fine with defaults:
+    config = true,
+
+    -- or, if you want to customize:
+    opts = {
+        models = { ... },
+        layout = { ... },
+        sessions_list = { ... },
+    },
+}
+```
+
+## Quick start
+
+1. Open a project in Neovim.
+2. Run `:Pi`.
+3. Type a prompt and press `<CR>`.
+4. Mention files with `@path/to/file` or `@path/to/file#L12-20`.
+5. Use `:PiContinue` or `:PiResume` to revisit earlier sessions for the current working directory.
+
+## Configuration
+
+All options are optional — the defaults are a good first install. The full annotated reference lives in [doc/configuration.md](doc/configuration.md); these are the knobs people reach for most:
+
+```lua
+require("pi").setup({
+    -- Curate the models you cycle through (:PiCycleModel / :PiSelectModel).
+    models = {
+        { match = "opus", latest = true },
+        { match = "sonnet", latest = true },
+    },
+
+    -- Chat placement: "side" (default) or "float", left/right/bottom, sizing.
+    layout = {
+        default = "side",
+        side = { position = "right", width = 80 },
+    },
+
+    -- Where search results land (:cnext / :cprev); see doc/usage.md#quickfix.
+    quickfix = { grep = true, find = false },
+
+    -- Everything else (statusline, diff keys, prompt behavior, zen, …):
+    -- see doc/configuration.md
+})
+```
+
+> [!IMPORTANT]
+> `pi2.nvim` runs pi in RPC mode and does not implement the TUI's interactive project-trust prompt. Project-local pi files (settings, extensions, skills) are not loaded unless you opt in — see [Project trust](doc/configuration.md#project-trust).
+
+## Keymaps
+
+`pi2.nvim` ships a deliberately small default keymap set (submission, abort, history recall, `<Tab>` block toggles, `gf` file jumps, diff-review keys) and leaves the rest to you. See [doc/keymaps.md](doc/keymaps.md) for the key-spec format, the stable `pi-chat-*` filetypes, and a complete example setup you can adapt.
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `:Pi [layout=side\|float]` | Open or toggle the chat in the current tab |
+| `:PiNewTab` | Open a fresh session in a new tabpage |
+| `:PiContinue [layout=side\|float]` | Continue the most recent session for the current working directory |
+| `:PiResume [layout=side\|float]` | Pick and resume a past session for the current working directory — with Telescope: `<CR>`/`o` here, `t`/`<C-t>` in a new tab |
+| `:PiToggleChat` | Toggle chat visibility |
+| `:PiToggleLayout` | Switch between side and float layout |
+| `:PiAbort` | Abort the current agent operation |
+| `:PiAbortBash` | Abort the running direct bash (`!`) command |
+| `:PiSteeringMode [mode]` | Set or cycle steering delivery mode (`all` / `one-at-a-time`) |
+| `:PiFollowUpMode [mode]` | Set or cycle follow-up delivery mode (`all` / `one-at-a-time`) |
+| `:PiStop` | Stop the RPC process and close the chat |
+| `:PiAttention` | Open the next queued attention request |
+| `:PiNewSession` | Start a new conversation in the current tab/session |
+| `:PiTree` | Navigate the session tree: jump back to any past conversation point |
+| `:PiFork` | Start a new session from a past user message (rewind and re-ask) |
+| `:PiClone` | Duplicate the current session branch into a new session file |
+| `:PiSessions` | Toggle the live sessions overview (all active sessions: name + busy/idle/attention) |
+| `:PiTasks` | Toggle the background tasks panel: background bash tasks (dev servers, long builds) with status, output viewer, and stop — requires the `bg-tasks` extension loaded (see [doc/usage.md](doc/usage.md#background-tasks)) |
+| `:PiSessionStats` | Show the session stats dashboard: messages, tokens (with cache split), per-model cost breakdown, cache re-billed waste, context usage — plus the vision extension's own usage (`Extensions` section) |
+| `:PiSubNew` | Spawn a background sub-session with a task prompt (inherits model/thinking by default) |
+| `:PiSubSwitch` | Pick a child sub-session (including dormant) and switch the current tab's chat to it |
+| `:PiSubParent` | Return from a child sub-session view to the parent session |
+| `:PiSubClose` | Close the current sub-session's RPC process (session file retained) |
+| `:PiSubView` | View a child sub-session in a read-only float viewer with real-time streaming |
+| `:PiTodo` | Toggle the todo side panel: the current session's `todo_write` checklist (see [doc/usage.md](doc/usage.md#todo-list)) |
+| `:PiDiff` | Review the git diff of every file changed by the current session in one panel: file list + diff, grouped per git work tree |
+| `:PiToggleStartupDetails` | Toggle the startup block between compact and expanded |
+| `:PiToggleThinking` | Show or hide thinking blocks |
+| `:PiCycleThinking` | Cycle to the next thinking level |
+| `:PiSelectThinking` | Pick a thinking level |
+| `:PiCycleModel` | Cycle the current model |
+| `:PiSelectModel` | Pick from configured models, then pi's model scope (`--models`/`enabledModels`), then all models |
+| `:PiSelectModelAll` | Pick from all available models |
+| `:PiSendMention` | Mention the current file; in visual mode or with a range, mention the selection lines |
+| `:PiAttachImage {path}` | Attach an image file to the prompt |
+| `:PiPasteImage` | Attach an image from the clipboard |
+| `:PiCompact [instructions]` | Ask π to compact the current conversation context |
+| `:PiToggleAutoCompaction` | Toggle automatic context compaction (statusline shows the auto-compaction icon while on) |
+| `:PiSessionName [name]` | Set or show the session display name |
+| `:PiToggleDebug` | Toggle RPC debug logging |
+
+Every command also has a Lua API counterpart — see [doc/api.md](doc/api.md).
+
+## Documentation
+
+Detailed guides live in [`doc/`](doc/):
+
+| Doc | What's inside |
+| --- | --- |
+| [doc/usage.md](doc/usage.md) | Chat & layouts, prompt (submit/queue/abort), direct bash mode (`!`), background tasks (`:PiTasks`), prompt history & drafts, `@mentions`, slash commands, completion, attachments, zen mode, statusline, navigation, quickfix, tool blocks, todo list, models, thinking, markdown rendering, buffer reload, startup block |
+| [doc/sessions.md](doc/sessions.md) | One session per tab, storage & cwd scoping, continue/resume, sub-sessions (`:PiSub*`), session tree (`:PiTree`), fork/clone (`:PiFork`/`:PiClone`), sessions overview (`:PiSessions`), compaction |
+| [doc/diff-review.md](doc/diff-review.md) | Two-way diff review of agent edits, review notes, permission-extension protocol reference, session diff review (`:PiDiff`) |
+| [doc/attention.md](doc/attention.md) | Attention queue, dialogs, notifications, queue inspection API |
+| [doc/extensions.md](doc/extensions.md) | Extension UI routing, startup announcements, `on_widget` custom blocks, adapting non-upstream RPC backends, bundled extensions (sub-agent, todo, background tasks) |
+| [doc/configuration.md](doc/configuration.md) | Full annotated defaults + project trust |
+| [doc/keymaps.md](doc/keymaps.md) | Key specs, stable filetypes, example setup |
+| [doc/api.md](doc/api.md) | Lua API reference |
+| [doc/highlight-groups.md](doc/highlight-groups.md) | All `Pi*` highlight groups |
+| [doc/troubleshooting.md](doc/troubleshooting.md) | `:checkhealth pi`, RPC debug logging, process lifecycle, triage checklist |
+
+## Origin
+
+`pi2.nvim` is a fork of [`alex35mil/pi.nvim`](https://github.com/alex35mil/pi.nvim), the original Neovim frontend for the [pi coding agent](https://pi.dev). All credit for the foundation — the RPC bridge, the chat layout, diff review, sessions, and extension handling — goes to the upstream project.
+
+This fork began as local experiments and grew into a substantially different feature set (listed below). Rather than keep that work on a long-lived fork, it now lives in its own repository so it can evolve and release independently, while still tracking upstream where it makes sense and crediting it as the origin.
+
+## Differences from upstream
+
+Everything below is present in `pi2.nvim` and **not** in upstream `alex35mil/pi.nvim` (which is currently frozen at the fork point). Each entry links to its full documentation.
+
+**Prompt & input**
+
+- [Dynamic `@mention` providers](doc/usage.md#dynamic-mentions) — `@git-diff`, `@git-log`, `@lsp-errors`, `@quickfix` (plus custom `mention_providers`) attach live state to your message at send time.
+- [Direct bash mode (`!`)](doc/usage.md#direct-bash-mode-) — run shell commands straight from the prompt, output streams into the chat and joins the next prompt's context.
+- [Readline-style prompt history](doc/usage.md#prompt-history) — `<C-p>` / `<C-n>` recall, persisted to disk.
+- [Unsent-draft persistence](doc/usage.md#draft-persistence) — the prompt text survives restarts.
+- [Clipboard image paste](doc/usage.md#attachments) — pasting into the prompt while the clipboard holds an image attaches it; the rest of the editor's paste is untouched.
+- [Image compression for attachments](doc/usage.md#image-compression) — downscale/re-encode before sending (sips / magick / ffmpeg).
+- [Vision fallback for non-vision models](doc/usage.md#vision-fallback) — when the main model can't see images, a configured vision model describes them first and the description replaces the images (fast-fail with prompt restore). The main model is told about this per turn, so it answers pasted images and proactively reads screenshots.
+- [Auto session titles](doc/sessions.md#auto-session-titles) — unnamed sessions get a display name generated by the session's own model after their first turn (language follows the conversation; `max_chars`/`lang`/`model` knobs), surfaced live in `:PiSessions` / `:PiResume` — with a spinner animation in the sessions list while the title is being generated.
+
+**Agent control**
+
+- [Double-`<Esc>` abort](doc/usage.md#aborting-with-double-esc) — a second `<Esc>` within a timeout aborts the running turn — and, since the same gesture stays live during an auto-retry, cancels a "Retrying…" backoff too — with a persistent statusline hint.
+- [Session todo list (`todo_write` + `:PiTodo`)](doc/usage.md#todo-list) — for multi-step work the agent maintains a session todo list with a full-replacement todo tool (exactly one item in progress, stale-list reminders, list survives compaction and branch switches); tool blocks render the ✓/◐/○ checklist and `:PiTodo` toggles a live side panel (stacked in the `:PiSessions` column, with auto-open / hide-when-empty knobs); the read-only sub-session viewer surfaces a child's todos too — footer summary chunk plus a `T`-toggled list panel.
+- [Background bash tasks (`run_in_background` + `:PiTasks`)](doc/usage.md#background-tasks) — with the bundled `bg-tasks` extension loaded, the agent's `bash` tool gains `run_in_background` (dev servers, watchers, long builds) and a `&` prefix backgrounds your own `!` commands; output streams to a temp-dir log, completion wakes the agent with the exit status, and `:PiTasks` toggles a live panel with output viewer / preview / stop.
+
+**UI & rendering**
+
+- [Redesigned tool & thinking blocks](doc/usage.md#tool-blocks) — fold indicators + indentation, silent success, animated spinners, single-line thinking headers with rolling preview.
+- [Status line in the prompt](doc/usage.md#statusline) — busy spinner with elapsed time, context/cost/token usage, queue count, abort hints, and a provider disambiguation suffix for the active model (same model id served by several providers) pinned to the prompt window.
+- [`render-markdown.nvim` engine](doc/usage.md#markdown-rendering) — the default renderer, with a builtin treesitter fallback.
+
+**Navigation & layout**
+
+- [Open file under cursor (`gf`)](doc/usage.md#open-file-under-cursor) — resolves bare paths, `@mention#L<line>`, and `path:line` from history lines.
+- [Search results in the quickfix list](doc/usage.md#quickfix) — `grep`/`find` results loaded for `:cnext` / `:cprev`.
+- [Left side panel](doc/usage.md#chat--layouts) — `layout.side.position` accepts `"left"`.
+
+**Sessions & editor integration**
+
+- [Sub-sessions & sub-agent orchestration](doc/sessions.md#sub-sessions) — run parallel background sub-sessions (`:PiSubNew`), switch between parent and children (`:PiSubSwitch`/`:PiSubParent`), inspect live streaming in a read-only float viewer (`:PiSubView`), with automatic manifest bookkeeping (`.pi2-subsessions.json`) and Agent tool integration.
+- [Sessions overview (`:PiSessions`)](doc/sessions.md#sessions-overview-pisessions) — a live, shared dashboard of every active session with animated status dots.
+- [Session tree navigation (`:PiTree`)](doc/sessions.md#session-tree-navigation-pitree) — jump back to any past conversation point, optionally summarizing the abandoned branch.
+- [Fork and clone (`:PiFork` / `:PiClone`)](doc/sessions.md#fork-and-clone) — rewind to a past user message and re-ask in a new session, or duplicate the whole current branch into a new session file, mirroring the TUI's `/fork` and `/clone`.
+- [Per-tab model pinning](doc/usage.md#per-tab-model-pinning) — model switches in one tab don't leak into other tabs' new sessions.
+- [Auto-reload of open buffers](doc/usage.md#buffer-reload) — files modified by the agent reload in place; unsaved buffers are never touched.
+
+**Robustness fixes**
+
+- Thinking blocks render after inline tools (correct turn order); CJK / UTF-8 thinking-preview truncation no longer corrupts text; tool-block collapse/expand no longer corrupts the footer extmark; nerd-font icon codepoints corrected.
+- The streaming thinking header no longer flickers (the rolling preview is drawn as end-of-line virtual text instead of `inline`).
+- The busy spinner and abort hints live in the prompt statusline at a fixed position that never scrolls away.
+- Auto-scroll follows explicit intent: streaming pins the history to the bottom only while you are parked there, and never fights your cursor once you move away.
+
+**Developer infrastructure**
+
+- A hermetic plenary test suite (`make test`) plus a headless boot check (`make smoke`), and an agent "develop" skill documenting the test stack and Neovim-Lua gotchas.
+
+## License
+
+[MIT](LICENSE)

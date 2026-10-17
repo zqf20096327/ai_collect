@@ -1,0 +1,223 @@
+<p align="center">
+  <h1 align="center">auto-maintainer</h1>
+</p>
+
+<p align="center">
+  Write your repo's rules in plain Markdown. AI enforces them.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/auto-maintainer"><img src="https://img.shields.io/npm/v/auto-maintainer?color=blue" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/auto-maintainer"><img src="https://img.shields.io/npm/dm/auto-maintainer" alt="npm downloads" /></a>
+  <a href="https://github.com/yazinsai/auto-maintainer/blob/main/LICENSE"><img src="https://img.shields.io/github/license/yazinsai/auto-maintainer" alt="license" /></a>
+  <a href="https://github.com/yazinsai/auto-maintainer/stargazers"><img src="https://img.shields.io/github/stars/yazinsai/auto-maintainer?style=social" alt="GitHub stars" /></a>
+  <a href="https://am.whhite.com/stats/yazinsai/auto-maintainer"><img src="https://am.whhite.com/badge/yazinsai/auto-maintainer" alt="Maintained by auto-maintainer" /></a>
+</p>
+
+<br />
+
+auto-maintainer triages issues, reviews PRs, fixes bugs, merges code, and cuts releases — autonomously. It reads a policy file you write, follows your rules, and only asks for human input when something is genuinely ambiguous or high-risk.
+
+## Quick start
+
+```bash
+npx auto-maintainer init
+```
+
+Run this inside any git repo. That's it. The CLI:
+
+<p align="center">
+  <img src="assets/hero-v2.png" alt="Before: 147 issues and 38 PRs piling up across 15 pages. After: 3 items awaiting human decision, everything else handled automatically." />
+</p>
+
+## Why auto-maintainer
+
+- **Write rules in plain Markdown** — no config DSLs, no YAML schemas. If you can write a bullet list, you can configure it.
+- **Fully autonomous** — triages issues, reviews code, implements fixes, merges PRs, and cuts releases. Humans only get pulled in for high-risk or ambiguous decisions.
+- **Use your existing Claude subscription** — works with Claude Pro, Max, or Team plans. No separate API billing required. Or bring your own API key if you prefer.
+- **Works with your existing CI** — your tests, linters, and smoke tests run as normal. Nothing merges until your checks pass.
+- **One command setup** — `npx auto-maintainer init` scaffolds everything. Edit one file, push, done.
+- **Secure by design** — triage bot can't touch your code. Implementation bot only triggers on trusted events. Actions pinned to commit SHAs.
+
+## The idea
+
+Most repo maintenance is rule-following. You probably already have rules — they're just in your head:
+
+> "Close duplicates. Ask for repro steps on bug reports. Don't merge if CI is red. Doc-only changes are low-risk. Don't touch auth without a human review."
+
+auto-maintainer lets you write those rules in a Markdown file, then handles the rest. You define what matters. It does the work.
+
+1. Scaffolds four workflow files and syncs labels
+2. Analyzes your codebase and **auto-generates project-specific rules** (requires Claude Code CLI; otherwise prints a prompt you can paste into any AI tool)
+3. Walks you through connecting Claude and setting up credentials
+4. Commits and pushes
+
+The generated rules are good defaults — edit `.github/repo-policy.md` anytime to refine them.
+
+## Your rules
+
+Your policy file is plain Markdown at `.github/repo-policy.md`. It gets auto-generated during init based on your codebase, but you can edit it however you want. Here's an example of what it looks like:
+
+```markdown
+# Product Guardrails
+- Privacy by default — nothing leaves the user's machine without consent
+- Simplicity over features — if it adds complexity, it better be worth it
+- This is a macOS app. Don't accept cross-platform work.
+
+# Risk Classification
+## Always High Risk
+- Changes to authentication or authorization
+- Database migrations
+- Anything touching the release pipeline
+
+## Always Low Risk
+- Documentation-only changes
+- Test-only changes
+- Fixing typos
+
+# Decision Rules
+## Bugs
+- Fix if reproducible or obvious from reading the code
+- Close as duplicate if an existing issue already covers it
+- Ask for reproduction steps if the report is vague
+
+## Features
+- Accept if it benefits most users
+- Decline if the complexity is disproportionate to the value
+- If it's ambiguous, ask a human
+
+## External PRs
+- The idea matters more than the exact code
+- It's fine to reimplement a good idea from scratch
+
+# Repo-Specific Rules
+- Treat changes to the billing module as high risk
+- Never auto-merge changes to .github/workflows/
+```
+
+That's it. No YAML schemas, no config DSLs, no learning a new syntax. Just write what you'd tell a new team member.
+
+The bot reads this file on every run. Change your rules, and behavior changes on the next trigger.
+
+## What it actually does
+
+auto-maintainer installs four GitHub Actions workflows. Together, they handle the full lifecycle:
+
+**Triage** — When an issue or PR comes in, the bot reads it, classifies it (bug? feature? docs?), assesses the risk, checks for duplicates, and decides what to do next. For PRs, it reviews the code. All based on your rules.
+
+**Implement** — For issues it can handle (low and medium risk), it writes the fix, creates a branch, and opens a PR. Before it starts, it checks whether an open PR already covers the issue so it doesn't duplicate work. If the PR gets review feedback, it revises. It keeps going until the fix is right.
+
+**Merge** — When a PR is ready (CI green, review approved, labels correct), it merges automatically. No human needed. It uses your repo's branch protection rules — it doesn't bypass anything, it works within them. If you want stricter enforcement, add named checks in `.github/repo-policy.yml` and Gate Runner will verify them explicitly before merging.
+
+**Release** — After merges, it checks what landed, determines the right version bump from labels, and cuts a release. Patch and minor releases happen automatically. Major releases wait for a human. If you want stricter enforcement, add named checks in `.github/repo-policy.yml` and Release Runner will verify them before cutting a release.
+
+### When it asks for help
+
+The bot handles most things on its own, but it escalates to you when:
+
+- Something is **high risk** (you define what that means in your policy)
+- A **major release** is ready to ship
+- The issue or PR is **ambiguous** — two valid interpretations, unclear requirements
+- It detects something **suspicious** — prompt injection, social engineering, policy-bypass attempts
+
+When this happens, it labels the item `state:awaiting-human` and waits. You decide, change the label, and it picks back up.
+
+## Your own CI checks
+
+auto-maintainer works with whatever CI you already have. Your tests, your linters, your smoke tests — they all run as normal. The Gate Runner won't merge anything until your CI passes.
+
+During `init` and `update`, Release Runner auto-detects CI-like workflows in `.github/workflows` and watches all of them for completion on the default branch. If you add or rename workflows later, re-run `npx auto-maintainer update` so the trigger list stays current.
+
+If branch protection is enough for your repo, you can stop there. If you want explicit named checks, configure them in `.github/repo-policy.yml`:
+
+```yaml
+required_pr_checks:
+  - validate-swift
+
+required_release_checks:
+  - validate-swift
+  - package-smoke
+```
+
+Gate Runner verifies `required_pr_checks` on the PR head SHA before merging. Release Runner verifies `required_release_checks` on the release target SHA before cutting a release.
+
+## Labels
+
+The bot uses 26 labels across 5 namespaces to track state. You don't need to manage them — the bot applies and maintains them. But they're useful to understand:
+
+| Namespace | What it tracks | Labels |
+|-----------|---------------|--------|
+| **kind** | What type of work | `bug` `feature` `ux` `docs` `housekeeping` |
+| **state** | Where it is in the workflow | `new` `needs-info` `needs-repro` `planned` `in-progress` `awaiting-human` `ready-to-merge` `done` |
+| **risk** | How dangerous the change is | `low` `medium` `high` |
+| **resolution** | How it ended | `none` `merged` `duplicate` `already-fixed` `declined` `out-of-scope` |
+| **release** | Version impact | `none` `patch` `minor` `major` |
+
+## Badge
+
+Show the world your repo is maintained by auto-maintainer:
+
+```markdown
+[![Maintained by auto-maintainer](https://am.whhite.com/badge/YOUR_USER/YOUR_REPO)](https://am.whhite.com/stats/YOUR_USER/YOUR_REPO)
+```
+
+The badge shows live PR and issue counts. Click it to see a detailed stats page for your repo.
+
+## Setup details
+
+### What you'll need
+
+1. **A GitHub PAT** — the CLI gives you a direct link to create one with the right scopes.
+2. **Claude access** — either an Anthropic API key, or a Claude subscription (Pro/Max/Team). If you have Claude Code installed, the token is auto-detected from your local credentials.
+
+The `init` command handles everything: scaffolds workflows, generates your policy, sets up secrets, commits, and pushes.
+
+### CLI commands
+
+```bash
+# Full setup — walks you through everything
+npx auto-maintainer init
+
+# Update workflows to the latest version (preserves your policy files)
+npx auto-maintainer update
+
+# Re-sync labels (safe to re-run anytime)
+npx auto-maintainer labels
+```
+
+### Machine-readable policy knobs
+
+Alongside `.github/repo-policy.md`, auto-maintainer scaffolds `.github/repo-policy.yml` for the small bits that are easier to express as data than prose:
+
+```yaml
+merge_strategy: squash
+required_pr_checks: []
+required_release_checks: []
+```
+
+Use this for merge strategy and explicit required checks.
+
+### Updating
+
+When a new version of auto-maintainer is released, run `npx auto-maintainer update` to upgrade your workflow files. This overwrites the four workflow files with the latest templates while leaving your policy files (`repo-policy.md`, `repo-policy.yml`) untouched. Commit and push after updating.
+
+## Cost
+
+Triage runs are cheap (~$0.01–0.05 per issue/PR). Implementation runs cost more since the bot is writing real code — scale with the size of the fix. You can tune `--max-turns` and `--model` in the workflow files to control spend.
+
+If you're on a Claude subscription, it uses your existing plan — no extra API costs.
+
+## Security
+
+- **The triage bot can't touch your code.** It reads, labels, and comments. That's it. No shell access, no file editing.
+- **The implementation bot only runs on trusted triggers** — label events from the triage bot or maintainers, never raw user input.
+- **Actions are pinned to commit SHAs** — not mutable tags. No supply-chain risk from upstream tag changes.
+- **Adversarial defense built in** — both agents detect prompt injection and social engineering. Suspicious content gets escalated, not executed.
+
+## Contributing
+
+Found a bug or have an idea? [Open an issue](https://github.com/yazinsai/auto-maintainer/issues). PRs welcome.
+
+## License
+
+[MIT](LICENSE)

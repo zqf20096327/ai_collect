@@ -1,0 +1,338 @@
+# `cai` - User friendly CLI tool for AI tasks
+
+![Demo usage of cai in a terminal](demos/2025-08-15t2052.png)
+
+
+## Features
+
+- High level commands for great usability
+  - `cai value capital of Australia`
+  - `cai image photo of a banana` (OpenAI image generation)
+  - `cai image -m google sunset over mountains` (Google Gemini image generation)
+  - `cai video a paper plane gliding over a desk` (Google Gemini Omni video)
+  - `cai music a calm piano loop` (Google Lyria music generation)
+  - `cai ocr page.png`
+  - `cai ocr -m mistral scan.pdf` (Mistral OCR)
+  - `pbpaste | cai rewrite 'more professional'`
+  - `pbpaste | cai noul is this urgent` (TypeSafe Jev yes/no probability)
+  - `cai box kitchen.jpg the coffee mug` (TypeSafe Jev object location)
+  - Check [usage section](./#usage) for all commands
+- Build with Rust 🦀 for supreme performance and speed! 🏎️
+- Support for models by
+  - [Anthropic]
+  - [OpenAI]
+  - [Google]
+  - [Groq]
+  - [Cerebras]
+  - [Deepseek]
+  - [xAI]
+  - [TypeSafe]
+  - Local LLMs via [Ollama] and [Llamafile]
+  - Apple's on-device model via [apfel]
+- Prompt several models at once. 🤼
+    ![Demo of cai's all command](screenshots/2024-04-13t1627_all.png)
+- Syntax highlighting for better readability of code snippets. 🌈
+
+[apfel]: https://github.com/Arthur-Ficial/apfel
+[Anthropic]: https://docs.anthropic.com/en/docs/about-claude/models/all-models
+[Cerebras]: https://inference-docs.cerebras.ai/introduction
+[Deepseek]: https://api-docs.deepseek.com/quick_start/pricing
+[Google]: https://ai.google.dev/gemini-api/docs/models
+[Groq]: https://console.groq.com/docs/models
+[Llamafile]: https://github.com/Mozilla-Ocho/llamafile
+[Ollama]: https://ollama.com
+[OpenAI]: https://platform.openai.com/docs/models
+[TypeSafe]: https://docs.typesafe.ai/models
+[xAI]: https://x.ai/api#pricing
+
+
+## Installation
+
+```sh
+$ cargo install cai
+```
+
+or install via [Homebrew](https://brew.sh/):
+
+```sh
+$ brew install cai
+```
+
+
+## Usage
+
+Before using Cai, an API key must be set up.
+Simply execute `cai` in your terminal and follow the instructions.
+
+Cai supports the following APIs:
+
+- **Groq** - [Create new API key](https://console.groq.com/keys).
+- **OpenAI** - [Create new API key](https://platform.openai.com/api-keys).
+- **Anthropic** -
+    [Create new API key](https://console.anthropic.com/settings/keys).
+- **Mistral** - [Create new API key](https://console.mistral.ai/api-keys).
+- **TypeSafe** - [Create new API key](https://console.typesafe.ai/keys).
+- **Llamafile** - Local [Llamafile] server running at http://localhost:8080.
+- **Ollama** - Local [Ollama] server running at http://localhost:11434.
+- **Apple** - Apple's on-device foundation model via the [apfel] CLI
+    (requires macOS 26+ with Apple Intelligence).
+    `cai local` falls back to it if no Ollama server is running.
+
+If you have a ChatGPT or Claude subscription,
+Cai can send OpenAI and Anthropic prompts through the official
+[Codex](https://github.com/openai/codex) and
+[Claude Code](https://github.com/anthropics/claude-code) CLIs instead,
+so that they count against your subscription's usage limits
+and not against an API key.
+Install and log in to the CLI, then add this to `~/.config/cai/config.yaml`
+(or set `CAI_OPENAI_VIA` / `CAI_ANTHROPIC_VIA`):
+
+```yaml
+openai_via: codex
+anthropic_via: claude-code
+```
+
+Text prompts and OCR then go through the CLI.
+Media generation, transcription, the agent,
+and models your subscription doesn't offer still use the API,
+so they require an API key.
+Answers via a CLI aren't streamed.
+Prompts without a model also prefer the subscriptions
+(Claude Haiku via Claude Code, then GPT-5.6 Luna via Codex)
+before falling back to the APIs,
+unless `shortcut_models.fast` sets another default model.
+
+To use one provider's models wherever possible,
+e.g. to spend the monthly
+[API credits of Claude Max and Team plans](https://platform.claude.com/docs/en/about-claude/api-credits-for-subscribers),
+set a preferred provider (`anthropic`, `openai`, or `google`):
+
+```yaml
+preferred_provider: anthropic
+```
+
+Prompts without a model and the generic commands
+(`fast`, `smart`, `value`, `reply`, `rewrite`, `svg`,
+`run`, `commit`, `changelog`, `rename`, `query`,
+and the programming language shortcuts)
+then use the provider's equivalent model
+(e.g. Claude Haiku, Sonnet, Opus, or Fable).
+Explicitly selected models, overrides in `shortcut_models`,
+and commands the provider has no model for (e.g. `image` or `transcribe`)
+are not affected.
+
+Afterwards, you can use `cai` to run prompts directly from the terminal:
+
+```sh
+cai List 10 fast CLI tools
+```
+
+Or a specific model, like Anthropic's Claude Opus:
+
+```sh
+cai opus list 10 fast CLI tools
+```
+
+Full help output:
+
+```txt
+$ cai help
+Cai 0.13.0
+
+User friendly CLI tool for AI tasks
+
+Usage: cai [OPTIONS] [PROMPT]... [COMMAND]
+
+Commands:
+  fast        Shortcut for `cerebras gpt-oss-120b`
+  smart       Shortcut for `anthropic claude-fable-5`
+  local       Shortcut for `ollama llama3.2` (or `apple` if Ollama isn't running on macOS)
+  value       Return only the value/answer without explanations
+  short       Answer the prompt in a short, compact, and focused manner
+  rewrite     Fix spelling, grammar, and wording issues in text passed via standard input
+  reply       Reply to a conversation passed via standard input. Add additional reply instructions
+              as the prompt
+  noul        Ask TypeSafe's Jev a yes/no question about text passed via standard input and/or
+              images and get the probability that the answer is yes
+  choice      Let TypeSafe's Jev pick one of several options for text passed via standard input
+              and/or images
+  score       Let TypeSafe's Jev rate text passed via standard input and/or images along ordered
+              levels
+  box         Let TypeSafe's Jev locate something in an image and get the edges of a box around it
+              and an image with the box
+  jev         Ask TypeSafe's Jev several questions at once about text passed via standard input
+              and/or images
+  run         Generate a shell command from a prompt and confirm before executing it
+  agent       Run an agentic loop with tool use to fulfill a request
+  image       Generate an image (default: OpenAI GPT-Image-2.5 Flare) [aliases: img]
+  photo       Generate a photorealistic image that looks like a camera photo
+  imgedit     Edit 1 or more images using GPT-Image-2.5 Sunburst (pass image files followed by the
+              edit prompt as the last argument) [aliases: imge]
+  say         Convert text to speech (default: OpenAI GPT-4o mini TTS) [aliases: tts]
+  music       Generate music (default: Google Lyria 3.5)
+  video       Generate a video (default: Google Gemini Omni 1.1 Flash)
+  embed       Convert text into an embedding vector (default: Google Gemini Embedding 2)
+  transcribe  Transcribe an audio file (default: OpenAI GPT-Transcribe)
+  ocr         Extract text from an image or PDF (default: OpenAI GPT-5.6 Terra, Google Gemini for
+              HEIC images, Mistral OCR for PDFs)
+  rename      Analyze and rename files to timestamp + title (e.g. 2025-08-19t2041_invoice_car.pdf)
+  changelog   Generate a changelog starting from a given commit
+  commit      Commit modified files with AI-generated commit messages and group related changes into
+              separate commits
+  svg         Generate an SVG graphic from a textual description
+  edit        Open your editor to write the prompt
+  config      Print the configuration settings loaded from the config file
+              
+              📚 MODELS                                                    
+  models      List all models offered by every supported provider
+              (OpenAI, Anthropic, Gemini, Groq, Cerebras, DeepSeek, xAI,
+              Perplexity, Ollama, Mistral, TypeSafe)
+  all         Simultaneously send prompt to each provider's default model
+  google      Google [aliases: go]
+  gemini      - Google's default model (Gemini Flash) shortcut [aliases: ge]
+  flash       - Gemini Flash shortcut [aliases: gf]
+  groq        Groq [aliases: gr]
+  llama       - Llama 3 shortcut [aliases: ll]
+  cerebras    Cerebras [aliases: ce]
+  deepseek    DeepSeek [aliases: ds]
+  openai      OpenAI [aliases: op]
+  gpt5        - GPT-5.6 Sol shortcut [aliases: gpt, gp]
+  gpt5m       - GPT-5.6 Terra shortcut [aliases: gm]
+  gpt5n       - GPT-5.6 Luna shortcut [aliases: gn]
+  gpt41       - gpt-4.1 shortcut
+  gpt41m      - gpt-4.1-mini shortcut
+  anthropic   Anthropic [aliases: an]
+  fable       - Claude Fable [aliases: fa]
+  opus        - Claude Opus [aliases: claude, cl]
+  sonnet      - Claude Sonnet [aliases: so]
+  haiku       - Claude Haiku [aliases: ha]
+  xai         xAI
+  grok        - Grok
+  perplexity  Perplexity [aliases: pe]
+  son         - Sonar
+  sonpro      - Sonar Pro [aliases: sp]
+  sonreas     - Sonar Reasoning [aliases: sr]
+  sonreaspro  - Sonar Reasoning Pro [aliases: srp]
+  sondeep     - Sonar Deep Research [aliases: sdr]
+  mistral     Mistral [aliases: mi]
+  llamafile   Llamafile server hosted at http://localhost:8080 [aliases: lf]
+  ollama      Ollama server hosted at http://localhost:11434 [aliases: ol]
+  apple       Apple's on-device foundation model via apfel (macOS 26+)
+              
+              💻 CODING                                                    
+  bash        Use Bash development as the prompt context
+  c           Use C development as the prompt context
+  cpp         Use C++ development as the prompt context
+  cs          Use C# development as the prompt context
+  docker      Use Docker development as the prompt context
+  elm         Use Elm development as the prompt context
+  fish        Use Fish development as the prompt context
+  fs          Use F# development as the prompt context
+  gd          Use Godot and GDScript development as the prompt context
+  git         Use Git development as the prompt context
+  gl          Use Gleam development as the prompt context
+  golang      Use Go development as the prompt context
+  hs          Use Haskell development as the prompt context
+  java        Use Java development as the prompt context
+  js          Use JavaScript development as the prompt context
+  kt          Use Kotlin development as the prompt context
+  ly          Use LilyPond development as the prompt context
+  lua         Use Lua development as the prompt context
+  nix         Use Nix development as the prompt context
+  oc          Use OCaml development as the prompt context
+  php         Use PHP development as the prompt context
+  pg          Use Postgres development as the prompt context
+  ps          Use PureScript development as the prompt context
+  py          Use Python development as the prompt context
+  rb          Use Ruby development as the prompt context
+  rs          Use Rust development as the prompt context
+  sql         Use SQLite development as the prompt context
+  sw          Use Swift development as the prompt context
+  ts          Use TypeScript development as the prompt context
+  ty          Use Typst development as the prompt context
+  wl          Use Wolfram Language and Mathematica development as the prompt context
+  zig         Use Zig development as the prompt context
+  jq          Use jq development as the prompt context
+              
+              🗄️ DATABASE                                                 
+  query       Query a SQLite database using natural language
+  help        Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [PROMPT]...  The prompt to send to the AI model
+
+Options:
+  -r, --raw                        Print raw response without any metadata
+  -j, --json                       Prompt LLM in JSON output mode
+      --json-schema <JSON_SCHEMA>  JSON schema to validate the output against
+      --no-streaming               Wait for the full response instead of streaming tokens
+  -h, --help                       Print help
+
+
+Examples:
+  # Send a prompt to the default model
+  cai Which year did the Titanic sink
+
+  # Send a prompt to each provider's default model
+  cai all Which year did the Titanic sink
+
+  # Send a prompt to Anthropic's Claude Opus
+  cai anthropic claude-opus Which year did the Titanic sink
+  cai an claude-opus Which year did the Titanic sink
+  cai cl Which year did the Titanic sink
+  cai anthropic claude-opus-4-1 Which year did the Titanic sink
+
+  # Send a prompt to locally running Ollama server
+  cai ollama llama3 Which year did the Titanic sink
+  cai ol ll Which year did the Titanic sink
+
+  # Use the `local` shortcut for using Ollama's default model
+  # (or Apple's on-device model if Ollama isn't running)
+  cai local Which year did the Titanic sink
+
+  # Send a prompt to Apple's on-device model via apfel
+  cai apple Which year did the Titanic sink
+
+  # Add data via stdin
+  cat main.rs | cai Explain this code
+
+  # Get raw output without any metadata
+  cai --raw capital of Germany
+
+  # Use a JSON schema to specify the output format
+  cai --json-schema='{"properties":{"age":{"type":"number"}},"required":["age"]}' gp Barack Obama
+  
+```
+
+The provider must be one of:
+`anthropic`, `cerebras`, `deepseek`, `google`, `groq`,
+`openai`, `llamafile`, `ollama`, `xai`, `perplexity`, `mistral`, `apple`.
+
+The key for a shortcut is its subcommand name
+(e.g. `gpt5m`, `sonpro`).
+Shortcuts that already take an explicit model argument
+(`anthropic`, `openai`, `ollama`, …) and modality-specific commands
+(image generation, text-to-speech, OCR) cannot be overridden this way.
+
+
+## Related
+
+- [AI CLI] - Get answers for CLI commands from ChatGPT. (TypeScript)
+- [AIChat] - All-in-one chat and copilot CLI for 10+ AI platforms. (Rust)
+- [clai] - Command line artificial intelligence as a local LLM multi-tool (Go)
+- [Ell] - CLI tool for LLMs written in Bash.
+- [Goose] - Local AI agent.
+- [ja] - CLI / TUI app to work with AI tools. (Rust)
+- [llm] - Access large language models from the command-line. (Python)
+- [smartcat] - Integrate LLMs in the Unix command ecosystem. (Rust)
+- [tgpt] - AI chatbots for the terminal without needing API keys. (Go)
+
+[AI CLI]: https://github.com/abhagsain/ai-cli
+[AIChat]: https://github.com/sigoden/aichat
+[clai]: https://github.com/baalimago/clai
+[Ell]: https://github.com/simonmysun/ell
+[Goose]: https://block.github.io/goose/
+[ja]: https://github.com/joshka/ja
+[llm]: https://github.com/simonw/llm
+[smartcat]: https://github.com/efugier/smartcat
+[tgpt]: https://github.com/aandrew-me/tgpt

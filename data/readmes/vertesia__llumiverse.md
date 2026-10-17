@@ -1,0 +1,293 @@
+# Llumiverse - The Universal, Lightweight LLM Driver
+
+![Build](https://github.com/vertesia/llumiverse/actions/workflows/build-and-test.yml/badge.svg)
+[![npm version](https://badge.fury.io/js/%40llumiverse%2Fcore.svg)](https://badge.fury.io/js/%40llumiverse%2Fcore)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+**Llumiverse** is the unified connectivity layer for the Large Language Model ecosystem. It provides a robust, modular, and strongly-typed interface for interacting with almost any AI provider in Node.js, Bun, and TypeScript environments.
+
+> **Think of it as the "JDBC" or "ODBC" for LLMs.**
+
+It solely focuses on **abstracting the connection and execution protocol**, letting you switch providers with zero code changes. It does **not** enforce prompt templating, rigid chain structures, or "magic" orchestration logic. You build the application; we handle the plumbing.
+
+### Why Llumiverse?
+
+*   **🚫 No Vendor Lock-in:** Switch from OpenAI to Vertex AI to Bedrock in minutes.
+*   **🧩 Modular & Lightweight:** Install only what you need. Zero bloat.
+*   **🛡️ Type-Safe:** First-class TypeScript support with normalized interfaces for completion, streaming, and tool use.
+*   **⚡ Universal Support:** Works in Node.js, serverless functions, and Bun.
+
+---
+
+### Supported Platforms
+
+| Provider | Completion | Chat | Streaming | Multimodal | Tool Calling | Embeddings |
+| :--- | :-: | :-: | :-: | :-: | :-: | :-: |
+| **AWS Bedrock** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Azure Foundry** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Azure OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Google Vertex AI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Groq** | ✅ | ✅ | ✅ | N/A | ✅ | N/A |
+| **HuggingFace** | ✅ | ✅ | ✅ | N/A | N/A | N/A |
+| **IBM WatsonX** | ✅ | ✅ | ✅ | N/A | N/A | ✅ |
+| **Mistral AI** | ✅ | ✅ | ✅ | N/A | ✅ | ✅ |
+| **OpenAI** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **OpenAI Compatible** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Replicate** | ✅ | ✅ | ✅ | N/A | N/A | N/A |
+| **Together AI** | ✅ | ✅ | ✅ | N/A | N/A | N/A |
+| **xAI (Grok)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+---
+
+### Llumiverse vs. The Rest
+
+**Vs. LangChain / LlamaIndex:**
+These are **application frameworks** that provide high-level abstractions for chains, memory, and RAG. Llumiverse is a **driver** library. It operates at a lower level.
+*   *Use Llumiverse if:* You want full control over your prompt logic, you want to build your own custom framework, or you simply need a clean, unified way to call an API without the weight of a massive dependency tree.
+*   *Use LangChain if:* You want pre-built "chains" and are okay with higher complexity and abstraction overhead.
+
+**Vs. Vercel AI SDK:**
+Vercel's SDK is fantastic for frontend/full-stack React/Next.js applications.
+*   *Use Llumiverse if:* You are building backend services, background workers, CLI tools, or generic Node.js applications where frontend-specific hooks aren't relevant. Llumiverse is environment-agnostic.
+
+---
+
+## Requirements
+
+* Node.js 24.x
+* The OpenAI driver uses OpenAI SDK 7.25.0, whose minimum supported Node.js version is 22.
+* Bun 1.0+ (experimental support)
+
+## Azure Foundry SDKs
+
+Foundry uses `@azure/ai-projects` for project/deployment discovery, OpenAI SDK 7 for OpenAI-compatible
+inference, and `@anthropic-ai/foundry-sdk` for Anthropic deployments. Claude Messages requests use the
+resource `/anthropic/v1/messages` endpoint and the existing Entra credential. Claude source model IDs
+select the shared Anthropic options and behavior; the deployment name is sent in the API request.
+Chat Completions, Responses, embeddings, and image requests use the OpenAI v1 endpoint resolved by
+Projects. Projects retains its own declared OpenAI dependency; no dependency override is required.
+The retired Azure AI Inference beta transport is no longer used. Deployments must support OpenAI v1
+and the requested modality; image embedding availability remains deployment-specific.
+Azure Responses image tools use v1 requests and a blocking streaming fallback. Microsoft currently
+[documents image streaming and multi-turn image editing as unsupported](https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses).
+These callable paths do not establish Azure parity with OpenAI iterative image editing.
+
+## Installation
+
+**For most use cases (recommended):**
+```bash
+pnpm add @llumiverse/core @llumiverse/drivers
+```
+
+*   `@llumiverse/core`: The interfaces, types, and base abstractions.
+*   `@llumiverse/drivers`: The concrete implementations for all supported providers.
+
+## Quick Start
+
+### 1. Initialize a Driver
+
+Each driver takes normalized options but may require specific credentials (API keys, regions, project IDs).
+
+```typescript
+// OpenAI
+import { OpenAIDriver } from "@llumiverse/drivers";
+const driver = new OpenAIDriver({ apiKey: process.env.OPENAI_API_KEY });
+
+// Google Vertex AI
+import { VertexAIDriver } from "@llumiverse/drivers";
+const driver = new VertexAIDriver({
+    project: process.env.GOOGLE_PROJECT_ID,
+    region: 'us-central1'
+});
+
+// AWS Bedrock (uses local AWS credentials automatically)
+import { BedrockDriver } from "@llumiverse/drivers";
+const driver = new BedrockDriver({ region: 'us-west-2' });
+
+// ... and many more!
+```
+
+### 2. Execute a Prompt (Standard)
+
+The execution API is normalized. You send a `PromptSegment[]` and get a `Completion` object, regardless of the provider.
+
+```typescript
+import { PromptRole } from "@llumiverse/core";
+
+// 1. Create a generic prompt
+const prompt = [
+    {
+        role: PromptRole.system,
+        content: "You are a helpful coding assistant."
+    },
+    {
+        role: PromptRole.user,
+        content: "Write a hello world in Python."
+    }
+];
+
+// 2. Execute against ANY driver
+const response = await driver.execute(prompt, {
+    model: "gpt-4o", // or "gemini-1.5-pro", "anthropic.claude-3-sonnet-20240229-v1:0", etc.
+    temperature: 0.7,
+    max_tokens: 1024
+});
+
+console.log(response.result[0].value);
+```
+
+### 3. Stream a Response
+
+Streaming is standardized into an `AsyncIterable`.
+
+```typescript
+const stream = await driver.stream(prompt, {
+    model: "gpt-4o",
+    temperature: 0.7
+});
+
+for await (const chunk of stream) {
+    process.stdout.write(chunk);
+}
+
+// Access the full assembled response afterwards if needed
+console.log("\nFull response:", stream.completion.result[0].value);
+```
+
+### 4. Generate Embeddings
+
+Embeddings are normalized to a simple `{ values: number[] }` structure.
+
+```typescript
+const embedding = await driver.generateEmbeddings({
+    content: "Llumiverse is awesome."
+});
+
+console.log(embedding.values); // [0.012, -0.34, ...]
+```
+
+## Advanced Features
+
+### Tool Calling (Function Calling)
+
+Llumiverse normalizes tool definitions across providers (OpenAI, Bedrock, Vertex, etc.), allowing you to define tools once and use them anywhere.
+
+```typescript
+import { ToolDefinition } from "@llumiverse/core";
+
+// 1. Define the tool
+const getWeatherTool: ToolDefinition = {
+    name: "get_weather",
+    description: "Get the current weather in a given location",
+    input_schema: {
+        type: "object",
+        properties: {
+            location: { type: "string" },
+            unit: { type: "string", enum: ["celsius", "fahrenheit"] }
+        },
+        required: ["location"]
+    }
+};
+
+// 2. Execute with tools
+const response = await driver.execute(prompt, {
+    model: "gpt-4o",
+    tools: [getWeatherTool]
+});
+
+// 3. Handle the tool use
+if (response.tool_use) {
+    for (const tool of response.tool_use) {
+        console.log(`Executing ${tool.tool_name} with args:`, tool.tool_input);
+        // ... call your actual function ...
+    }
+}
+```
+
+### Structured Outputs (JSON Schemas)
+
+Enforce a specific JSON structure for the response. Llumiverse handles the schema conversion for the underlying provider (e.g., using `response_format` for OpenAI or equivalent techniques for others).
+
+```typescript
+const schema = {
+    type: "object",
+    properties: {
+        sentiment: { type: "string", enum: ["positive", "neutral", "negative"] },
+        confidence: { type: "number" }
+    },
+    required: ["sentiment", "confidence"]
+};
+
+const response = await driver.execute(prompt, {
+    model: "gpt-4o",
+    result_schema: schema
+});
+
+// The result is automatically parsed
+const data = response.result[0].value;
+console.log(data.sentiment); // "positive"
+```
+
+## Testing
+
+Tests fall into three tiers, chosen by file name and by the allow list in
+[`.github/workflows/build-and-test.yml`](.github/workflows/build-and-test.yml):
+
+| Tier | Files | Calls providers | Runs in CI |
+| --- | --- | --- | --- |
+| Functional | `*.test.ts` | No: provider calls are mocked | Yes, all of them |
+| Live | `*.live.test.ts` | Yes, using your credentials | No; run on demand |
+| Live in CI | `*.live.test.ts` listed in the CI allow list | Yes | Yes, on every push and pull request |
+
+A test that calls a provider must live in a `*.live.test.ts` file. Live files in CI are the curated smoke set:
+`model-smoke`, `conversation`, `tools` and `embeddings` (all under `drivers/test/`). Other live files cover
+debugging or slower checks, such as `max-tokens-limit.live.test.ts`, which sends each smoke model a request at its
+documented output limit. To add a live file to CI, add its path to the allow list.
+
+```bash
+# Functional tests: no credentials needed
+pnpm exec vitest run --exclude '**/*.live.test.ts'
+
+# One live file, narrowed to a provider or model
+LLUMIVERSE_LIVE_PROVIDERS=google-vertex pnpm exec vitest run drivers/test/model-smoke.live.test.ts
+```
+
+Live tests run only for providers whose credentials are set, for example `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`,
+`MISTRAL_API_KEY`, `TOGETHER_API_KEY`, `GROQ_API_KEY`, `XAI_API_KEY`, `OPENROUTER_API_KEY`,
+`WATSONX_API_KEY` (with `WATSONX_PROJECT_ID` and `WATSONX_ENDPOINT_URL`), `AZURE_OPENAI_KEY` (with
+`AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_DEPLOYMENT`), `BEDROCK_REGION`, `BEDROCK_MANTLE_REGION`, and
+`GOOGLE_PROJECT_ID` with `GOOGLE_REGION`. Tests for other providers are skipped.
+
+## Contributing
+
+We welcome contributions! Whether it's a new driver, a bug fix, or a docs improvement.
+Please see [CONTRIBUTING.md](https://github.com/vertesia/llumiverse/blob/main/CONTRIBUTING.md) for details.
+
+## License
+
+Apache 2.0
+
+## Coordinated submodule updates
+
+Add the `skip-submodule-sync` label to a PR before merging when a coordinated PR in composableai
+already handles the submodule update. The automatic sync checks the merged PR's label before
+creating or updating a downstream sync PR. CI still runs and failure notifications remain enabled.
+
+The opt-out applies only to that merge commit and target branch (`main` or `release/*`); later
+unlabeled merges can trigger sync again. A manually dispatched downstream submodule update
+bypasses the label. Adding the label after a sync has already started does not cancel that sync.
+
+## Build and unit-test caching
+
+`pnpm build`, `pnpm typecheck:test`, and `pnpm test:unit` use Turbo caching.
+`test:unit` excludes `*.live.test.ts`; `pnpm test` retains its full-suite behavior and
+its test results are not cached. CI runs the unit suite before provider authentication
+and runs the curated live provider suite separately on every run.
+
+Local commands read and write local cache entries and only read the remote cache.
+Set `TURBO_CACHE_OPTS=--cache=local:rw` to use only local caching. The build/test
+workflow enables remote writes and authenticates with GitHub OIDC. Configure a
+Turborepo CLI OIDC policy for this repository on the Vercel team. The team comes
+from the `TURBO_TEAM` organization variable (`Vertesia`). No `TURBO_TOKEN`
+secret is needed. Unit-test hashes include the CI runner OS, architecture, and image
+version to separate them from local runs.

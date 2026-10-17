@@ -1,0 +1,172 @@
+# Natural language search over your whole catalog, without RAG
+
+**Type a sentence, get real results from every row. One small LLM call reads it against a grammar of your catalog, and code runs the query. No embeddings, no vector database, nothing invented.**
+
+Movies are the example here: a movie search over 200 films, with a web demo. The same works for an online shop, hotels, flights. The trick is the search grammar pattern.
+
+The full story, on a real catalog of 19,072 films, with the numbers: [The Search Grammar Pattern: Natural Language Search with LLMs](https://corneliucroitoru.com/writing/search-grammar-pattern/).
+
+![The web demo in this repo: a sentence typed, one model call, the films with their posters, every step in plain words, and a director not in the data said plainly](docs/demo.gif)
+
+*The web demo in this repo: `python3 -m examples.movies.web`. 200 films, one model call per search, and every step code took, shown under the results.*
+
+## The problem
+
+At home we pay for several streaming services. I wanted one search across all of them, in plain words:
+
+- "a French crime drama, not a comedy, from before 1980"
+- "a movie with the leading actors from titanic, directed by scorcese"
+- "a film by the director of Heat"
+- "godfathr"
+
+Pulling fields out of the sentence is not enough. "crime drama" is two genres at once. "the director of Heat" is a person nobody named. "scorcese" and "godfathr" are names nobody spelled right. Each needs the system to know the catalog. The model doesn't.
+
+I tried a prompt with tools first. It failed in the same places every time. The model decided when to search and what to call things. It suggested films it knew, not films I had. It said "not available" about films that were. Every fix was one more line in the prompt.
+
+Everything you hand the model, you can only **ask**. Everything you keep in code, you can **guarantee**.
+
+## The search grammar pattern
+
+**Describe the offer by its dimensions, not its rows.**
+
+![One real sentence, step by step: code spots the films named, one LLM call fills the grammar as JSON, the resolver turns those words into catalog values, code queries every film](docs/how-it-works.png)
+
+The model writes what you meant, in the grammar's words, without knowing the data: `"wants": "lead_actors"`. Code turns those words into catalog values: Leonardo DiCaprio, Kate Winslet. Then it's a plain query.
+
+The four steps of the diagram:
+
+1. **Code spots the films named.** A forgiving search, plain fuzzy matching on titles, finds "titanic" in the sentence and adds what the model needs to know about it. Other films with the same name come back as "did you mean", never hidden.
+2. **One LLM call reads the sentence against the grammar.** The grammar is a short description of everything the catalog can answer: the fields a person can ask about, what each one means, and the few closed values (18 genres). It condenses the whole offer into a few thousand tokens, the same on every request, so it's cached. The model fills the fields as strict JSON. It points at what you want; it never searches, never writes an offer id or a price.
+3. **The resolver turns the model's words into catalog values.** Some fields go straight into the query: years, genres. Others mean nothing to a database as written, so code resolves them first. Loose names become real ones ("scorcese", "godfathr", "le parrain"), with how sure it is: exact, close, or "did you mean". "The lead actors of Titanic" becomes the first two names of its cast. "My 6 year old" becomes the genres allowed. So the grammar can offer any field the resolver knows how to turn into a filter, not only the database's columns.
+4. **Code queries every film** with those values, and says back what it applied, what it couldn't, and why.
+
+The model reads. Code decides. Without the resolver, the model's words match nothing. Without the grammar, the model has nothing precise to aim at.
+
+**Why not the whole catalog, or RAG?** The whole catalog in the prompt doesn't scale: the 17,262 offers here are about 397,000 tokens, on every request. RAG retrieves the few rows that look closest to the sentence: the model sees a sample, misses what wasn't retrieved, and fills the gaps from what it already knows. The grammar gives it the shape of everything instead: about 5,500 tokens per call here, almost all of them cached after the first.
+
+**What the model actually reads**, a real excerpt. Most of the work is in the distinctions:
+
+```
+THE FIELDS
+  films         a film named for any reason other than wanting something like it
+  similar_to    films the viewer wants results LIKE: 'a movie like Forrest Gump'
+  references    a person reached THROUGH a film rather than named: 'actors from Titanic', 'the director of Heat'
+  language      the language a film is in, as a word: French, Italian
+  audio         the language they want to HEAR, as a word: 'in French', 'the original voices'
+  genre_mode    'all' when every genre at once ('a crime drama'), 'any' when either will do
+  topics        what the film is ABOUT, narrower than a genre and never flattened into one: heist, superhero
+  age           the age of the youngest person watching. A NUMBER, never a rating
+  exact         true only if the viewer insisted: only, must, exactly. It stops the search widening
+  ...           34 fields in all
+GENRES, use these words exactly: Action, Adventure, Animation, Comedy, ... (18)
+
+READ, DO NOT JUDGE, AND NEVER REPORT FAILURE
+  Fill every field the sentence asks for, best effort. There is no field to say something cannot be
+  done and you must never try: code that knows the catalogue decides that afterwards.
+
+THE INDEX, every film covered
+  m83 Titanic (1997) · 80 offers
+  ...           one line per film: enough to recognise it, nothing more
+```
+
+Each line settles something a model would otherwise guess. "Titanic" in "like Titanic" and in "the actors from Titanic" are two different fields. "French" is the film's language or the audio you want to hear, not both. "Crime drama" is both genres at once. "For my 6 year old" is a number, and code decides what a 6-year-old may watch here. And the model never says what can't be done: a wish with nowhere to go is a missing field, and code is the one that says "can't".
+
+The few values are listed, so the model can only pick from them. The many stay out, people and keywords: the model writes what you said, and code finds the real thing. With 200 films this repo also lists one line per film; a large catalog lists none, and code spots the titles in the sentence instead.
+
+## One step further: packs
+
+In a simple catalog, a film is on a service or not. Some catalogs go further: every item has its own options. Here, Titanic (1997) has a *Cameron's cut* and an *extended (+37 min)*, on some services, in some languages. No model knows that.
+
+So the repo adds two things to the grammar:
+
+```
+DICTIONARY   what every film shares, written once, cached      editions, qualities, languages, modes
+PACK         one film's own options, folded into a few lines,  f3 RentBox · rent · Cameron's cut/extended (+37 min)
+             sent only when the sentence names the film                   /theatrical · HD/SD · ...
+```
+
+The model points into the pack: `film m83, family f3, edition "extended (+37 min)"`. Code finds the real offer, its id and its price. Try "titanic extended cut in french, cheapest" in the demo: "extended cut" becomes the edition only this film has, and code says French audio exists only on another service.
+
+Each field also has a status: `ready` (code applies it), `dictionary` (the model says a neutral fact like "age 6", code decides what it means here), `later` (understood, not possible yet, with the reason). Nothing is dropped silently.
+
+## The data
+
+`data/films.json`: 200 real films from Wikidata (CC0): titles in three forms, year, runtime, directors, the first 8 actors, genres, topics, countries, languages, and the TMDB poster path. Mostly famous American and English-language films from 1990 to 2019, 32 French, one Korean (Parasite), and three films called Titanic on purpose, so a title can be ambiguous.
+
+`data/offers.json`: 17,262 ways to watch them, **invented**: 8 fictional services, buy, rent, subscription or free, editions, HD, 4K or SD, audio and subtitles, prices from 0 to 18.99 €.
+
+With 200 films, a search can be read right and still find little, and code says so ("a Wes Anderson comedy": not in these 200 films). Good searches here: the famous films, Nolan, Spielberg, Tarantino, the French classics, the actors of Titanic or The Godfather, editions, 4K, French audio, a price. For a bigger catalog, raise the counts in `scripts/build_catalog.py`, then run it and `scripts/generate_offers.py`.
+
+## Run it
+
+Python 3.10+. No dependencies.
+
+It needs an OpenAI API key: each search is one call, about 5,500 prompt tokens, mostly cached, to a small model. The tests and `measure` need no key. The posters need no key either: they load from TMDB's image server.
+
+```bash
+cp .env.example .env        # then put your key in .env (git-ignored), or export OPENAI_API_KEY
+python3 -m examples.movies.web                       # the web demo: http://127.0.0.1:8000
+python3 -m examples.movies "something with the actors from Titanic, in 4K"   # the same steps, in the terminal
+python3 -m examples.movies.measure Titanic
+python3 -m unittest discover -s tests -t .
+```
+
+`OPENAI_MODEL` changes the model. The default is `gpt-6-luna`, small and cheap, with reasoning off: reading a sentence against a grammar is classification, not reasoning.
+
+## Use it in your domain
+
+The core (`search_grammar/`) knows nothing about movies. Per domain you write four things: the fields, the index line, the dictionary, how to fold a pack.
+
+| | Real estate | Application logs | Online shop |
+|---|---|---|---|
+| **index** | one line per listing: area, rooms, price | one line per service | one line per product |
+| **dictionary** | energy ratings, what "T3" means | log levels, environments, the time words | sizes, materials, delivery modes |
+| **pack** | this flat's own features: floor, lift, balcony | this service's own endpoints and error codes | this product's own variants, stock, prices |
+| **a `later` field** | "a quiet street": needs noise data | "slow requests": needs latency data | "looks like this photo": needs image search |
+
+The question is always the same: what does each item have that no model can know? That goes in the pack.
+
+## What's in the repo
+
+```
+CLAUDE.md, FLOWS.md    for AI coding assistants: the rules, and the index of the flows
+flows/                 one doc per flow: search, grammar, packs, data
+search_grammar/        the pattern, no domain in it
+  grammar.py           fields with a status -> the prompt listing and the strict schema
+  compact.py           folding options into families
+  forgiving.py         loose words -> the real thing, with exact / close / unsure
+  llm.py               one call to the model, standard library only
+examples/movies/
+  fields.py            the movie grammar
+  offers.py            index line, dictionary, pack
+  assistant.py         the prompt, the lines of the films named, the one call
+  resolve.py           words into the catalog: applied, cannot, why nothing
+  picks.py             pointers checked against the pack: strict, partial, dropped
+  explain.py           one search, every step, as data: what the terminal and the web demo show
+  web.py, web.html     the web demo: standard library server, one page, posters from TMDB
+  measure.py           token counts, no model
+data/                  200 real films (Wikidata, CC0) with their TMDB poster paths, 17,262 invented offers
+scripts/               rebuild the data, add the posters, record model answers for the tests
+  hooks/pre-commit     warns when a flow's code changes without its doc
+tests/                 35 tests, no API key: real model answers replayed through code and the web server
+```
+
+**Working on it with an AI coding assistant?** The repo uses the [librarian pattern](https://corneliucroitoru.com/writing/librarian-pattern/). `CLAUDE.md` has the rules and points to `FLOWS.md`, the index: one line per flow, one doc per flow in `flows/`. Every source file names its flow doc in its first line, and `scripts/hooks/pre-commit` warns when a flow's code changes without its doc (`git config core.hooksPath scripts/hooks` to enable it). The assistant reads the index, then only the doc it needs.
+
+## Prior art
+
+The front half is not new. LangChain's self-query retriever, LlamaIndex auto-retrieval and Typesense's natural-language search turn a sentence into filters from a described schema. Resolving the model's words in code is what Lex slot synonyms and text-to-SQL value linking do.
+
+What I did not find written up: a grammar deliberately wider than what the system can do, with each field's status; packs sent only when the sentence names the item; and code reporting what it applied, what it could not, and why.
+
+## Limits
+
+- 200 films. Many searches find little, and code says why.
+- The offers are invented. Real catalogs are messier, and less repetitive.
+- Ranking is basic: popularity, or price. The grammar decides what matches, not what is best.
+- Every capability is code you write. Moving a field from `later` to `ready` is work, not a prompt edit.
+- The model can still misread a sentence. It can no longer invent a film, an offer or a price.
+
+## Licence
+
+MIT. Films from Wikidata, public domain. Posters from [TMDB](https://www.themoviedb.org): this product uses the TMDB API but is not endorsed or certified by TMDB. The posters themselves are not in the repo; the demo loads them from TMDB.

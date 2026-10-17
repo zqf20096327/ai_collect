@@ -1,0 +1,414 @@
+# avo-lite
+
+A small, agent-agnostic optimization loop for work that can be evaluated automatically.
+
+AVO repeatedly gives an agent a disposable checkout of the current best solution. The agent changes
+it, a scorer evaluates it, and an optional adversarial verifier tries to disprove any candidate that
+would otherwise win. Accepted candidates become the next Git commit. Rejected candidates disappear,
+but their results remain in an append-only ledger and are fed into later attempts.
+
+The core is one dependency-free Python file plus two tiny launchers:
+
+- Python 3.8+
+- Git
+- no pip packages, service, daemon, database, or plugin SDK
+
+Agent, scorer, verifier, and supervisor integrations are plain executable commands.
+
+## Design
+
+AVO-lite intentionally assumes the configured models are honest and generally reliable. It does not
+try to sandbox a malicious agent or defend the objective from deliberate reward hacking. Its
+worktrees provide **transactional isolation**: an interrupted, rejected, or half-finished attempt does
+not modify the canonical checkout.
+
+The durable loop has eight concepts:
+
+1. a disposable candidate worktree;
+2. an agent command that edits it;
+3. a scorer with a separate correctness gate and objective;
+4. a Git ratchet that accepts only valid progress;
+5. an optional adversarial verifier for would-be winners;
+6. an append-only mechanical ledger;
+7. a small curated memory file plus persistent human pins;
+8. deterministic stagnation detection with a rare supervisor redirect.
+
+Planner agents, research trackers, and domain-specific workflows belong outside the core. They can be
+composed through commands and editable prompts without an in-process plugin framework.
+
+## Quick start
+
+```bash
+git clone https://github.com/Git-on-my-level/avo-lite
+export PATH="$PWD/avo-lite/scripts:$PATH"
+
+cd my-project
+
+avo init speedup \
+  --goal "maximize throughput; higher objective is better" \
+  --score ./score.sh \
+  --agent ./agent.sh \
+  --verify ./verify.sh \
+  --mode rank
+
+avo tick
+avo run --max-ticks 40
+avo status
+```
+
+`avo init` creates and checks out `avo/<task>`, captures the current project as baseline v0, and
+scores that baseline. `--agent` is required: a command that edits a candidate directory. Without
+`--score`, the task starts in preview mode: the agent runs and each diff is saved, but no candidate
+is accepted. If `--score` is given and the baseline score is invalid, init fails and does not leave
+`.avo/` behind.
+
+## Agent adapter
+
+AVO does not ship a vendor CLI. `--agent` must be a command that implements:
+
+```text
+adapter <candidate-dir> <prompt-file>
+```
+
+The packaged adapter is [`scripts/adapters/agent-exec.sh`](scripts/adapters/agent-exec.sh). It `cd`s
+into the candidate and runs `AVO_EXEC`. Put any authenticated CLI you already have in that variable.
+
+```bash
+export AVO=/path/to/avo-lite/scripts
+export AVO_EXEC='your-agent --prompt-file "$AVO_PROMPT"'
+avo init speedup --goal "..." --score ./score.sh --agent "$AVO/adapters/agent-exec.sh"
+```
+
+`AVO_CANDIDATE` and `AVO_PROMPT` are set. AVO also exports `AVO_TICK`, `AVO_DRIVER_MODEL`, and
+`AVO_SUPERVISOR_MODEL`.
+
+Vendor CLIs belong in your `AVO_EXEC` line, not in this repo. A launcher-style example is
+[`scripts/adapters/agent-agentctl.sh`](scripts/adapters/agent-agentctl.sh). See
+[`references/harness-bindings.md`](references/harness-bindings.md).
+
+## Where runs live
+
+By default all local state is under the project root:
+
+```text
+.avo/
+├── config.json
+├── state.json
+├── ledger.jsonl
+├── memory.md
+├── pins.md
+├── redirect.json          # only while a redirect is waiting to be consumed
+├── knowledge/
+├── prompts/
+└── runs/
+    ├── 000000/            # baseline evaluation
+    └── 000001/
+        ├── worktree/      # present only while the attempt is active
+        ├── prompt.md
+        ├── agent.stdout
+        ├── agent.stderr
+        ├── diff.patch
+        ├── score.json
+        └── verify.json
+```
+
+AVO adds `/.avo/` to `.git/info/exclude`, not the tracked `.gitignore`. Runtime `.avo/knowledge` is also explicitly removed from candidate patches, including when `AVO_HOME` is outside the repository.
+
+The candidate patch is frozen before evaluation. If scoring or verification mutates candidate source, AVO records an infrastructure error rather than accepting a commit different from the tree that was evaluated. Evaluators should write evidence outside candidate source when possible; any candidate-side evidence named in the scorer/verifier contract is retained before worktree cleanup.
+
+`--k DIR` copies reference material into `.avo/knowledge/` at init. Each tick copies that tree into
+the candidate as `.avo/knowledge/` so the agent can read it. Those files stay excluded from the
+candidate patch; do not expect `--k` to become a tracked commit.
+
+A worktree inside `.avo/runs/...` is supported by Git. It is not an independent nested repository:
+its `.git` is a small pointer file to the parent repository's worktree metadata. Once a tick reaches a
+terminal result, AVO removes the worktree and keeps only the evidence files.
+
+To place task state elsewhere, set `AVO_HOME` to the exact state directory on every invocation:
+
+```bash
+export AVO_HOME="$HOME/.avo/my-project"
+avo status
+```
+
+Repo-local `.avo/` is recommended because it requires no project-to-state mapping and can be reset
+with `rm -rf .avo`.
+
+## Command contracts
+
+### Agent
+
+```text
+agent-command <candidate-dir> <prompt-file>
+```
+
+The agent edits the candidate directory in place and exits 0. It may inspect, test, and revise as many
+times as needed during that invocation. AVO normalizes any accidental local commits back into one
+candidate diff before scoring.
+
+Environment variables available to adapters include:
+
+```text
+AVO_TICK
+AVO_DRIVER_MODEL
+AVO_SUPERVISOR_MODEL
+```
+
+### Scorer
+
+```text
+score-command <candidate-dir>
+```
+
+It prints exactly one JSON object and exits:
+
+- `0` when evaluation completed, whether correctness passed or failed;
+- nonzero only for infrastructure or execution failure. AVO propagates infrastructure failures as a nonzero `avo tick`/`avo run` exit so schedulers cannot mistake a broken iteration for success.
+
+```json
+{
+  "correct": true,
+  "objective": 0.873,
+  "metrics": {"latency_ms": 12.3, "stddev": 0.4},
+  "note": "removed a blocking fence",
+  "artifacts": ["profile.txt"]
+}
+```
+
+`correct` is the hard gate. In `rank` mode, `objective` must be a finite number only when
+`correct=true`; an incorrect candidate may return `null` and skip an expensive benchmark. Higher is
+always better. The acceptance margin is:
+
+```text
+max(search.min_improvement_abs, metrics.stddev)
+```
+
+In `discover` mode, every correct candidate is accepted. `objective` may be a monotone coverage
+counter or `null`. If shrinkage is invalid, the scorer must set `correct=false`; the kernel does not
+reject a smaller objective in discover mode.
+
+### Adversarial verifier
+
+```text
+verify-command <candidate-dir> <score-json-path>
+```
+
+The verifier runs only after correctness passes and the ratchet says the candidate would otherwise be
+accepted. It prints exactly one JSON object:
+
+```json
+{
+  "pass": false,
+  "note": "the gain disappears under the cold-cache control",
+  "evidence": ["control-results.json"]
+}
+```
+
+Exit 0 means verification completed, regardless of verdict. Nonzero means verifier infrastructure
+failure and records a tick error rather than a candidate rejection. Files named in `evidence` are retained under their collision-safe relative paths in `runs/<tick>/artifacts/verify/`; scorer `artifacts` are retained under `artifacts/score/`.
+
+### Supervisor
+
+The supervisor uses the same `<candidate-dir> <prompt-file>` contract as the driver. By default AVO
+reuses the agent command with `AVO_SUPERVISOR_MODEL`; `--supervisor` can provide another command.
+
+Its final output line must be compact JSON:
+
+```json
+{"directions":["try a different representation","remove the shared bottleneck"],"memory":"optional replacement Markdown"}
+```
+
+The supervisor sees accepted and rejected attempts, verifier failures, current memory, and human
+pins. A redirect starts a fresh stagnation window and is consumed by the next driver tick.
+
+## Memory and human steering
+
+`ledger.jsonl` is mechanical truth and is never summarized away. `memory.md` is compact semantic
+memory: what worked, what failed, current hypotheses, and closed directions.
+
+Refresh it manually with the supervisor:
+
+```bash
+avo reflect
+```
+
+The supervisor may also replace it when producing a stagnation redirect.
+
+Human pins are durable, authoritative instructions placed near the top of every driver and supervisor
+prompt:
+
+```bash
+avo pin "Do not change the public API"
+avo pins
+avo unpin 1
+```
+
+They are deliberately stored in a boring Markdown file: `.avo/pins.md`.
+
+## Stagnation
+
+Stagnation is detected without an LLM from terminal attempt ledger entries, including infrastructure errors. A flaky scorer or agent is supposed to stall the search so a human notices; retries and backoff belong in the outer scheduler (cron, systemd, GitHub Actions), not inside `avo run`. The default checks are:
+
+- eight attempts since the last accept, redirect, human resume, or rebaseline (accepts, rejects, and errors all count);
+- repeated identical diffs in a full cycle window;
+- a high rejection ratio in a full cycle window.
+
+On the first stalls, AVO calls the supervisor and writes a one-shot redirect. After
+`search.max_redirects` unsuccessful redirects, the task becomes `stalled` and scheduled ticks stop
+spending model calls.
+
+```bash
+avo status
+avo pin "Try the allocation-heavy path next"
+avo resume
+```
+
+The standalone watchdog preserves the conventional exit contract:
+
+```bash
+avo-stall-detect
+# exit 0 and a reason: stalled
+# exit 1 and no output: healthy
+# exit 2: configuration or ledger error
+```
+
+## Commands
+
+```text
+avo init <task> ...          initialize and score baseline v0
+avo tick [--force]           run one isolated attempt
+avo run [--max-ticks N]      run bounded repeated attempts; 0 is unbounded; stops on the first infrastructure failure
+avo supervise [reason]       request a redirect manually
+avo reflect                  refresh memory.md
+avo pin <text>               add a human pin
+avo pins                     list pins
+avo unpin <number>           remove a pin
+avo resume                   clear stalled state after human intervention
+avo status [--json]          show state and recent ledger entries; --json for monitors
+avo sync <ref>               merge an upstream ref into the task branch (aborts cleanly on conflict)
+avo rebaseline [--note T]    rescore HEAD after an intentional evaluator change
+avo report                   show redacted noteworthy events
+```
+
+Every mutating command uses a local lock. If a process is killed, the next mutating command removes
+the stale worktree and records the interrupted attempt as an error. The small finalization window is
+also recoverable when the accepted Git commit was created before state was written.
+
+## Following an upstream branch
+
+Long-running tasks usually track a moving upstream such as `main`. Let AVO own that merge:
+
+```bash
+git fetch origin && avo sync origin/main && avo tick
+```
+
+`avo sync` takes the task lock, recovers any interrupted run first, and requires a clean checkout.
+It always creates a merge commit and records a `sync` ledger entry, so the lineage shows exactly
+where upstream entered. A conflicting merge is aborted and exits nonzero with the conflicted paths;
+the checkout is left untouched, so the next tick is never built on a half-merged tree.
+
+Merging upstream in a wrapper script before `avo tick` still works. An interrupted run whose base
+was advanced only by commits AVO did not author — human commits made between ticks, or upstream
+merges — is recovered normally: the interrupted tick is recorded as an error and the next tick
+continues from current HEAD. Only an AVO-authored commit the ledger does not account for (a possible
+half-finalized accept) still stops the loop for inspection.
+
+## Evaluator revisions
+
+Objectives are only comparable when they were produced by the same evaluation contract. AVO
+fingerprints that contract: the score and verify commands, any script files they name, extra paths
+listed in `evaluator.paths`, the mode, `search.min_improvement_abs`, and the kernel's acceptance
+rule. The fingerprint is stored in state and stamped on every ledger entry.
+
+If the fingerprint changes — someone edited the scorer, loosened the margin, or an accepted
+candidate modified an evaluator file — `avo tick` refuses and names what changed. Review the change,
+then:
+
+```bash
+avo rebaseline --note "why the evaluator changed"
+```
+
+This rescores HEAD under the new evaluator, makes it the comparison point, and appends a
+`rebaseline` ledger entry with the old and new revisions and the previous best. HEAD must pass the
+new correctness gate. The rule exists so a loop can never lower its own bar silently: moving the
+goalposts is always an explicit, recorded act.
+
+Only text files are fingerprinted automatically, so interpreter binaries named in a command do not
+count. Add fixtures, data, or compiled tools to `evaluator.paths`:
+
+```json
+{"evaluator": {"paths": ["bench/fixtures", "tools/scorer-bin"]}}
+```
+
+## Health export
+
+`avo status --json` prints one object for schedulers and external monitors: status, tick, best
+objective, stall reason, `last_attempt_at`, `last_accept_at`, consecutive errors, the active run's
+phase and start time, and whether the evaluator has drifted. Alert on progress, not on liveness: a
+loop that runs every hour but has not accepted anything in days, or whose active run started long
+ago, is stuck even though its scheduler reports success.
+
+## Configuration
+
+Edit `.avo/config.json` directly. Commands and models can be overridden without editing the file:
+
+```text
+AVO_AGENT_CMD
+AVO_SCORE_CMD
+AVO_VERIFY_CMD
+AVO_SUPERVISOR_CMD
+AVO_DRIVER_MODEL
+AVO_SUPERVISOR_MODEL
+AVO_HOME
+AVO_QUIET
+AVO_HOOK_TIMEOUT
+```
+
+Important search defaults:
+
+```json
+{
+  "search": {
+    "context_entries": 8,
+    "supervisor_context_entries": 60,
+    "min_improvement_abs": 0,
+    "stall_window": 8,
+    "cycle_window": 10,
+    "reject_ratio": 0.8,
+    "repeat_edit_max": 3,
+    "max_redirects": 2,
+    "score_on_agent_error": false,
+    "hook_timeout_sec": 0
+  }
+}
+```
+
+`hook_timeout_sec` / `AVO_HOOK_TIMEOUT` is seconds. `0` means no limit. A timed-out hook is a tick
+error, not a hang.
+
+## Existing v1 tasks
+
+The Python implementation has best-effort read compatibility with the prior split state layout
+(`avo.toml`, root `ledger.jsonl`, and the older `.avo/config.json`). New tasks use only `.avo/`.
+
+## Testing
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+The integration suite exercises accepted and rejected candidates, worktree cleanup, incorrect scores
+with null objectives, incorrect baselines, verifier vetoes, pins, supervisor redirects, halted stalls,
+and stale-run recovery.
+
+## Further reading
+
+- [`SKILL.md`](SKILL.md) — complete operational method
+- [`references/invariants.md`](references/invariants.md) — the deliberately small set of invariants
+- [`references/score-authoring.md`](references/score-authoring.md) — designing a useful evaluator
+- [`references/harness-bindings.md`](references/harness-bindings.md) — cron and agent-runner examples
+- [`references/paper-avo-condensed.md`](references/paper-avo-condensed.md) — AVO paper notes
+
+## License
+
+MIT © David Zhang. See [LICENSE](LICENSE).

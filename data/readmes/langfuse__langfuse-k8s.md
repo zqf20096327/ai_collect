@@ -1,0 +1,803 @@
+<img width="2400" height="600" alt="hero-b" src="https://github.com/user-attachments/assets/1bf9cde0-e09f-4055-a230-17c5c009af01" />
+
+# langfuse-k8s
+
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/langfuse-k8s)](https://artifacthub.io/packages/search?repo=langfuse-k8s)
+
+This is a community-maintained repository that contains resources for deploying Langfuse on Kubernetes.
+Please feel free to contribute any improvements or suggestions.
+
+Langfuse self-hosting documentation: https://langfuse.com/self-hosting
+
+## Repository Structure
+
+- `examples` directory contains example `yaml` configurations
+- `charts/langfuse` directory contains Helm chart for deploying Langfuse with an associated database
+
+## Installing Langfuse v4
+
+Chart **v2.0.0** ships [Langfuse v4](https://langfuse.com/docs/v4) by default. For new installations we recommend adopting v4.
+
+Please follow the [minimal installation](./examples/minimal-installation/).
+
+If you want to upgrade an **existing Langfuse application** from v3 to v4, follow the [application upgrade guide](https://langfuse.com/self-hosting/upgrade/upgrade-guides/upgrade-v3-to-v4). That is a separate step from the Helm chart v1 → v2 migration.
+
+If you still run the **Bitnami-based chart (v1.x)**, migrate the chart first via [`examples/upgrade-v1-to-v2`](./examples/upgrade-v1-to-v2/) (keep the same Langfuse application version while copying data), then follow the application v3 → v4 guide. You can also subscribe to [OSS release updates](https://langfuse.com/self-hosting/upgrade#release-notes) and the [GitHub discussion](https://github.com/orgs/langfuse/discussions/12518).
+
+For all new setups we recommend these minimum versions for Langfuse v4:
+
+- ClickHouse: 25.12 minimum, 26.4 recommended
+- Postgres: 16 recommended
+- Redis: 7.2 recommended
+
+## ⚠️ Breaking changes in v2.0.0
+
+v2.0.0 replaces the Bitnami sub-charts with OSS-licensed alternatives and deploys ClickHouse via the upstream [`ClickHouse/clickhouse-operator`](https://github.com/ClickHouse/clickhouse-operator). The chart ships [Langfuse v4](https://langfuse.com/docs/v4) by default (override `langfuse.image.tag` only if you intentionally need another release).
+
+| Component | v1.x | v2.0.0 |
+|-----------|------|--------|
+| PostgreSQL | `bitnami/postgresql` | [`groundhog2k/postgres`](https://artifacthub.io/packages/helm/groundhog2k/postgres) |
+| ClickHouse | `bitnami/clickhouse` | [`ClickHouseCluster` / `KeeperCluster`](https://github.com/ClickHouse/clickhouse-operator) CRs (cluster-wide operator) |
+| Redis | `bitnami/valkey` | [`valkey-io/valkey`](https://github.com/valkey-io/valkey-helm) |
+| Object storage | `bitnami/minio` | [`seaweedfs/seaweedfs`](https://github.com/seaweedfs/seaweedfs) (allInOne) |
+
+On first install the chart auto-generates credential Secrets for Postgres, ClickHouse, Valkey, SeaweedFS, **and** the three Langfuse application secrets (`salt`, `encryptionKey`, `nextauth.secret`), persisted across upgrades via `lookup`. You can still pin any of them with `value` / `secretKeyRef` when needed (e.g. migrations). The generated Secrets carry `helm.sh/resource-policy: keep`, so they survive `helm uninstall` — delete them manually if you really want a clean slate.
+
+> [!WARNING]
+> **GitOps / ArgoCD:** tools that render with `helm template` (ArgoCD, `helm template | kubectl apply` pipelines) cannot use `lookup`, so auto-generated credentials would be **regenerated on every sync** — rotating `salt` breaks all hashed API keys and rotating `encryptionKey` makes previously encrypted data unreadable. In those pipelines, pin **all** credentials explicitly (`value` / `secretKeyRef` / `existingSecret`). Flux's helm-controller performs real Helm installs and is not affected.
+
+**Do not `helm upgrade` v1 → v2 onto empty v2 volumes.** That would replace Bitnami data. The supported path is [`examples/upgrade-v1-to-v2`](./examples/upgrade-v1-to-v2/): in-place upgrade when every store is already external (`*.deploy: false`); otherwise stand up a sibling v2 release, copy data, then shift traffic. The chart blocks an upgrade that would replace leftover Bitnami ClickHouse (`<release>-clickhouse-shard0`), Postgres (`data-<release>-postgresql-0`), or MinIO (`<release>-s3`) with empty volumes. Only set `langfuse.allowV1Upgrade=true` if you intentionally need to override that guard.
+
+## Helm Chart
+
+We provide a Helm chart that helps you deploy Langfuse on Kubernetes.
+
+### Prerequisites
+
+- **Helm `v3.17` or newer.** The bundled `seaweedfs` sub-chart uses the `fromToml` template function, which was added in Helm 3.17.0.
+- **Kubernetes `v1.28` or newer**, as required by the [ClickHouse operator](https://github.com/ClickHouse/clickhouse-operator).
+
+When `clickhouse.deploy: true` (the default), the chart renders `ClickHouseCluster` / `KeeperCluster` CRs. The operator creates its own cert-manager `Certificate` / `Issuer` resources for webhooks. Both CRD sets must already exist before `helm install`. Install these **once per cluster**:
+
+```bash
+# 1. cert-manager (skip if already installed)
+helm install cert-manager oci://quay.io/jetstack/charts/cert-manager \
+  --version v1.20.2 \
+  --namespace cert-manager --create-namespace \
+  --set crds.enabled=true
+
+kubectl wait --for=condition=Established \
+  crd/certificates.cert-manager.io crd/issuers.cert-manager.io \
+  --timeout=120s
+
+# 2. clickhouse-operator
+helm install clickhouse-operator oci://ghcr.io/clickhouse/clickhouse-operator-helm \
+  --version 0.0.8 \
+  --namespace clickhouse-operator --create-namespace
+
+kubectl wait --for=condition=Established \
+  crd/clickhouseclusters.clickhouse.com crd/keeperclusters.clickhouse.com \
+  --timeout=120s
+```
+
+The chart preflights the ClickHouse CRDs when `clickhouse.crdCheck: true` (default). For offline `helm template` / GitOps diff, set `clickhouse.crdCheck=false` or pass `--api-versions clickhouse.com/v1alpha1/ClickHouseCluster`.
+
+### Installation
+
+The fastest path is to follow [`examples/minimal-installation`](./examples/minimal-installation/) — a minimal install of Langfuse with all bundled sub-charts, using a single pre-created Secret for credentials.
+
+```bash
+kubectl create namespace langfuse
+# Edit examples/minimal-installation/secret.yaml, then:
+kubectl apply -f examples/minimal-installation/secret.yaml -n langfuse
+
+helm install langfuse oci://ghcr.io/langfuse/langfuse-k8s/charts/langfuse \
+  --version 2.0.0 \
+  --namespace langfuse \
+  -f examples/minimal-installation/values.yaml
+```
+
+Alternatively, the chart is also published via the legacy Helm repo:
+
+```bash
+helm repo add langfuse https://langfuse.github.io/langfuse-k8s
+helm repo update
+helm install langfuse langfuse/langfuse -n langfuse -f values.yaml
+```
+
+To use a different Secret or External Secrets Operator, point `langfuse.salt` / `encryptionKey` / `nextauth.secret` (and the datastore `auth.existingSecret` fields) at your Secret — see [`examples/minimal-installation`](./examples/minimal-installation/). To pin a non-default Langfuse image, set `langfuse.image.tag`.
+
+### Upgrading
+
+```bash
+helm repo update
+helm upgrade langfuse langfuse/langfuse
+```
+
+Please validate whether the helm sub-charts in the Chart.yaml were updated between versions.
+If yes, follow the guide for the respective sub-chart to upgrade it.
+
+The ClickHouse operator is installed separately, so upgrade it on its own when the [Prerequisites](#prerequisites) move to a new version. Its chart ships the CRDs as templates, so `helm upgrade` updates them too. Review the [operator release notes](https://github.com/ClickHouse/clickhouse-operator/releases) first:
+
+```bash
+helm upgrade clickhouse-operator oci://ghcr.io/clickhouse/clickhouse-operator-helm \
+  --version 0.0.8 \
+  --namespace clickhouse-operator
+```
+
+Upgrading a **v1 (Bitnami) release to v2** onto empty v2 volumes is blocked. Follow [`examples/upgrade-v1-to-v2`](./examples/upgrade-v1-to-v2/): in-place upgrade when every store is already external; otherwise install a sibling v2 release, copy data, then shift traffic.
+
+### Sizing
+
+By default, the chart will run with the minimum resources to provide a stable experience.
+For production environments, we recommend to adjust the following parameters in the values.yaml.
+See [Langfuse documentation](https://langfuse.com/self-hosting/scaling) for our full sizing guide.
+
+```yaml
+langfuse:
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "2"
+      memory: "4Gi"
+
+postgresql:
+  resources:
+    limits:
+      cpu: "2"
+      memory: "2Gi"
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+
+clickhouse:
+  cluster:
+    storage:
+      size: 100Gi
+    resources:
+      limits:
+        cpu: "2"
+        memory: "8Gi"
+      requests:
+        cpu: "2"
+        memory: "8Gi"
+  keeper:
+    storage:
+      size: 20Gi
+    resources:
+      limits:
+        cpu: "1"
+        memory: "1Gi"
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+
+redis:
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1.5Gi"
+    requests:
+      cpu: "1"
+      memory: "1.5Gi"
+
+s3:
+  allInOne:
+    resources:
+      limits:
+        cpu: "2"
+        memory: "4Gi"
+      requests:
+        cpu: "2"
+        memory: "4Gi"
+```
+
+### Configuration
+
+No application or datastore credentials are required for a fresh install — the chart auto-generates `salt`, `encryptionKey`, `nextauth.secret`, and the Postgres / ClickHouse / Valkey / SeaweedFS credentials on first install (persisted across upgrades via `lookup`). Pin any of them with `value` / `secretKeyRef` / `existingSecret` when you need stable known credentials.
+
+Provide the Langfuse secrets either inline:
+
+```yaml
+langfuse:
+  salt:
+    value: "<openssl rand -hex 32>"
+  encryptionKey:
+    value: "<openssl rand -hex 32>"
+  nextauth:
+    secret:
+      value: "<openssl rand -base64 32>"
+```
+
+…or as references to an existing Kubernetes Secret:
+
+```yaml
+langfuse:
+  salt:
+    secretKeyRef:
+      name: langfuse
+      key: salt
+  encryptionKey:
+    secretKeyRef:
+      name: langfuse
+      key: encryption-key
+  nextauth:
+    secret:
+      secretKeyRef:
+        name: langfuse
+        key: nextauth-secret
+```
+
+To pin the sub-component credentials instead of letting the chart generate them, set `<component>.auth.password` (or `<component>.auth.existingSecret`):
+
+```yaml
+postgresql:
+  auth:
+    username: langfuse
+    existingSecret: langfuse-postgresql-auth
+    secretKeys:
+      userPasswordKey: password
+
+clickhouse:
+  auth:
+    existingSecret: langfuse-clickhouse-auth
+    existingSecretKey: password
+
+redis:
+  auth:
+    existingSecret: langfuse-redis-auth
+    existingSecretPasswordKey: password
+
+s3:
+  auth:
+    # If existingSecret is set, both root user and root password must be supplied via the secret
+    existingSecret: langfuse-s3-auth
+    rootUserSecretKey: rootUser
+    rootPasswordSecretKey: rootPassword
+```
+
+See the [Helm README](https://github.com/langfuse/langfuse-k8s/blob/main/charts/langfuse/README.md) for a full list of all configuration options.
+
+#### Langfuse AI features
+
+The AI features — the in-app agent and Ask AI — run on one instance-wide Langfuse AI model. Requires Langfuse `>= 4.24` (`langfuse.image.tag`). Set `langfuse.aiFeatures.provider` and `langfuse.aiFeatures.model`.
+
+Helm does not create AWS Lambda MicroVM resources for the agent's code execution sandbox — either let [langfuse-terraform-aws](https://github.com/langfuse/langfuse-terraform-aws) create them, or create them by hand and pass the ARNs into `langfuse.aiFeatures.inAppAgent.sandbox`. See the [self-hosted docs](https://langfuse.com/self-hosting/configuration/langfuse-assistant).
+
+```yaml
+langfuse:
+  image:
+    tag: "4.24.0" # or newer
+  aiFeatures:
+    provider: bedrock
+    model: eu.anthropic.claude-opus-5
+    bedrockRegion: eu-west-1
+    inAppAgent:
+      enabled: true
+      mcp:
+        useInternalWebUrl: true
+      sandbox:
+        provider: lambda-microvm
+        imageIdentifier: arn:aws:lambda:eu-west-1:123456789012:microvm-image:langfuse-in-app-agent-sandbox
+        executionRoleArn: arn:aws:iam::123456789012:role/langfuse-agent-sandbox-execution
+        region: eu-west-1
+        egressNetworkConnectorArn: arn:aws:lambda:eu-west-1:123456789012:network-connector:langfuse-agent-sandbox-egress
+```
+
+`egressNetworkConnectorArn` is required with the `lambda-microvm` provider: without it AWS attaches its default `INTERNET_EGRESS` connector and sandboxed code reaches the public internet.
+
+`mcp.useInternalWebUrl` points the worker's MCP calls at the in-cluster web Service. It sets `LANGFUSE_MCP_BASE_URL` and leaves `NEXTAUTH_URL` alone, because the worker also builds links for users out of `NEXTAUTH_URL` in batch export emails and Slack notifications. This one value requires Langfuse `>= 4.25`; the rest of the block works on `>= 4.24`.
+
+#### Storage Provider Options
+
+Langfuse supports multiple blob storage providers through the `s3.storageProvider` configuration:
+
+- **`s3`** (default): Uses S3-compatible interface. Works with AWS S3, MinIO, Cloudflare R2, and other S3-compatible services.
+- **`azure`**: Uses Azure Blob Storage native integration. Requires Azure Storage Account credentials.
+- **`gcs`**: Uses Google Cloud Storage native integration. Requires GCS service account credentials.
+
+By default, the system uses the S3-compatible method.
+When Azure or GCS is selected, the respective native storage integration is enabled with the appropriate environment variables.
+See our [self-hosting docs](https://langfuse.com/self-hosting/infrastructure/blobstorage) for more details on Blob Storage configurations.
+
+#### Examples
+
+> [!IMPORTANT]
+> External PostgreSQL and ClickHouse instances must use UTC. See the [timezone troubleshooting guide](https://langfuse.com/faq/all/self-hosting-timezone-errors) for verification steps and fixes.
+
+##### With an external Postgres server
+
+```yaml
+[...]
+postgresql:
+  deploy: false
+  auth:
+    username: my-username
+    password: my-password
+    database: my-database
+  host: my-external-postgres-server.com
+  directUrl: postgres://my-username:my-password@my-external-postgres-server.com
+  shadowDatabaseUrl: postgres://my-username:my-password@my-external-postgres-server.com
+```
+
+##### With an external ClickHouse cluster
+
+This works for any ClickHouse deployment that runs outside of this chart, e.g. a cluster
+managed by the [ClickHouse Operator](#prerequisites) with `clickhouse.deploy: false`
+(see also [`examples/external-components/external-clickhouse.yaml`](./examples/external-components/external-clickhouse.yaml)):
+
+```yaml
+[...]
+clickhouse:
+  deploy: false
+  host: my-clickhouse-host
+  # For a single-node / non-replicated instance, also set:
+  # cluster:
+  #   enabled: false
+  auth:
+    username: default
+    password: my-password
+```
+
+For [ClickHouse Cloud](https://clickhouse.com/cloud), use the HTTPS endpoint of your service together with the secure ports and SSL for migrations:
+
+```yaml
+[...]
+clickhouse:
+  deploy: false
+  host: https://<identifier>.<region>.aws.clickhouse.cloud
+  httpPort: 8443
+  nativePort: 9440
+  auth:
+    username: default
+    password: my-password
+  migration:
+    ssl: true
+```
+
+##### With an external S3 bucket
+
+```yaml
+[...]
+s3:
+  deploy: false
+  bucket: "langfuse-bucket"
+  region: "eu-west-1"
+  endpoint: "https://s3.eu-west-1.amazonaws.com"
+  forcePathStyle: false
+  accessKeyId:
+    value: "mykey"
+  secretAccessKey:
+    value: "mysecret"
+  eventUpload:
+    prefix: "events/"
+  batchExport:
+    prefix: "exports/"
+  mediaUpload:
+    prefix: "media/"
+```
+
+##### With Azure Blob Storage
+
+```yaml
+[...]
+s3:
+  deploy: false
+  storageProvider: "azure"
+  bucket: "langfuse"  # Container name - If it does not exist, Langfuse will attempt to create it
+  accessKeyId:
+    value: "devstoreaccount1"  # Azure Storage Account name
+  secretAccessKey:
+    value: "Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=="  # Azure Storage Account key
+  endpoint: "https://yourstorageaccount.blob.core.windows.net"
+  eventUpload:
+    prefix: "events/"
+  batchExport:
+    prefix: "exports/"
+  mediaUpload:
+    prefix: "media/"
+```
+
+##### With Google Cloud Storage
+
+```yaml
+[...]
+s3:
+  deploy: false
+  storageProvider: "gcs"
+  bucket: "langfuse"  # GCS bucket name
+  gcs:
+    credentials:
+      value: |
+        {
+          "type": "service_account",
+          "project_id": "your-project-id",
+          "private_key_id": "your-private-key-id",
+          "private_key": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n",
+          "client_email": "your-service-account@your-project-id.iam.gserviceaccount.com",
+          "client_id": "your-client-id",
+          "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+          "token_uri": "https://oauth2.googleapis.com/token",
+          "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+          "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/your-service-account%40your-project-id.iam.gserviceaccount.com"
+        }
+  eventUpload:
+    prefix: "events/"
+  batchExport:
+    prefix: "exports/"
+  mediaUpload:
+    prefix: "media/"
+```
+
+Alternatively, you can reference the credentials from a secret:
+
+```yaml
+[...]
+s3:
+  deploy: false
+  storageProvider: "gcs"
+  bucket: "langfuse"
+  gcs:
+    credentials:
+      secretKeyRef:
+        name: "gcs-credentials"
+        key: "credentials.json"
+  eventUpload:
+    prefix: "events/"
+  batchExport:
+    prefix: "exports/"
+  mediaUpload:
+    prefix: "media/"
+```
+
+##### With Redis Cluster
+
+Langfuse supports Redis Cluster mode for high-availability and scalability. Configure Redis in one of two ways:
+
+**Standalone Mode (Default):**
+
+```yaml
+redis:
+  deploy: false  # Set to false for external Redis
+  host: "my-redis.example.com"
+  port: 6379
+  auth:
+    password: "your-password"
+```
+
+**Cluster Mode:**
+
+```yaml
+redis:
+  deploy: false  # Must be false - deployed Redis doesn't support cluster mode
+  cluster:
+    enabled: true
+    nodes:
+      - "redis-node-1:6379"
+      - "redis-node-2:6379"
+      - "redis-node-3:6379"
+      - "redis-node-4:6379"
+      - "redis-node-5:6379"
+      - "redis-node-6:6379"
+  auth:
+    password: "your-cluster-password"
+```
+
+**Redis Cluster with TLS:**
+
+```yaml
+redis:
+  deploy: false
+  cluster:
+    enabled: true
+    nodes:
+      - "redis-node-1:6379"
+      - "redis-node-2:6379"
+      - "redis-node-3:6379"
+  auth:
+    password: "your-cluster-password"
+  tls:
+    enabled: true
+    caPath: "/certs/ca.crt"
+    certPath: "/certs/client.crt"
+    keyPath: "/certs/client.key"
+```
+
+**AWS ElastiCache Example:**
+
+For AWS ElastiCache Redis Cluster, use the configuration endpoint that automatically discovers all cluster nodes:
+
+```yaml
+redis:
+  deploy: false
+  cluster:
+    enabled: true
+    nodes:
+      - "clustercfg.my-redis-cluster.abc123.cache.amazonaws.com:6379"
+  auth:
+    password: "your-auth-token"
+  tls:
+    enabled: true
+```
+
+#### Use custom deployment strategy
+
+```yaml
+[...]
+langfuse:
+  deployment:
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 50%
+        maxUnavailable: 50%
+```
+
+##### Enable ingress
+
+```yaml
+[...]
+langfuse:
+  ingress:
+    enabled: true
+    hosts:
+    - host: langfuse.your-host.com
+      paths:
+      - path: /
+        pathType: Prefix
+    annotations: []
+```
+
+##### Ingress with custom backend (AWS Load Balancer Controller redirect)
+
+Use custom backends to configure AWS Load Balancer Controller redirects or other advanced routing:
+
+```yaml
+[...]
+langfuse:
+  ingress:
+    enabled: true
+    className: "alb"
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      # Redirect action annotation
+      alb.ingress.kubernetes.io/actions.redirect-to-langfuse: |
+        {
+          "type": "redirect",
+          "redirectConfig": {
+            "protocol": "HTTPS",
+            "port": "443",
+            "host": "langfuse.example.com",
+            "statusCode": "HTTP_301"
+          }
+        }
+    hosts:
+      # Main service host - uses default backend
+      - host: langfuse.example.com
+        paths:
+        - path: /
+          pathType: Prefix
+      # Redirect host - uses custom backend for redirect
+      - host: langfuse-v3.example.com
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: redirect-to-langfuse
+              port:
+                name: use-annotation
+```
+
+##### Ingress with mixed backends
+
+Configure different backends for different paths within the same host:
+
+```yaml
+[...]
+langfuse:
+  ingress:
+    enabled: true
+    hosts:
+    - host: langfuse.example.com
+      paths:
+      # Default backend for main application
+      - path: /
+        pathType: Prefix
+      # Custom backend for specific path
+      - path: /api/webhook
+        pathType: Prefix
+        backend:
+          service:
+            name: webhook-service
+            port:
+              number: 8080
+```
+
+#### Custom Storage Class Definition
+
+The Langfuse chart supports configuring storage classes for all persistent volumes in the deployment. You can configure storage classes in two ways:
+
+1. **Global Storage Class**: Set a global storage class that will be used for all persistent volumes unless overridden.
+```yaml
+global:
+  defaultStorageClass: "your-storage-class"
+```
+
+2. **Component-specific Storage Classes**: Override the storage class for specific components.
+```yaml
+postgresql:
+  storage:
+    className: "postgres-storage-class"
+
+redis:
+  dataStorage:
+    className: "redis-storage-class"
+
+clickhouse:
+  cluster:
+    storage:
+      className: "clickhouse-storage-class"
+  keeper:
+    storage:
+      className: "clickhouse-keeper-storage-class"
+
+s3:
+  allInOne:
+    data:
+      storageClass: "seaweedfs-storage-class"
+```
+
+If no storage class is specified, the cluster's default storage class will be used.
+
+##### With an external Postgres server with client certificates using own secrets and additionalEnv for mappings
+
+The Langfuse application reads `DATABASE_URL`, `SALT`, and `NEXTAUTH_SECRET` from environment variables, so an `additionalEnv` override takes precedence over the chart's defaults. Combine that with `extraVolumes` to mount client certificates from a Secret:
+
+```yaml
+langfuse:
+  salt:
+    secretKeyRef:
+      name: langfuse-general
+      key: salt
+  nextauth:
+    secret:
+      secretKeyRef:
+        name: langfuse-general
+        key: nextauth-secret
+  extraVolumes:
+    - name: db-keystore   # referencing an existing secret to mount server/client certs for postgres
+      secret:
+        secretName: langfuse-postgres  # contain the following files (server-ca.pem, sslidentity.pk12)
+  extraVolumeMounts:
+    - name: db-keystore
+      mountPath: /secrets/db-keystore  # mounting the db-keystore store certs in the pod under the given path
+      readOnly: true
+  additionalEnv:
+    - name: DATABASE_URL  # Using the certs in the url eg. postgresql://the-db-user:the-password@postgres-host:5432/langfuse?ssl=true&sslmode=require&sslcert=/secrets/db-keystore/server-ca.pem&sslidentity=/secrets/db-keystore/sslidentity.pk12&sslpassword=the-ssl-identity-pw
+      valueFrom:
+        secretKeyRef:
+          name: langfuse-postgres  # referencing an existing secret
+          key: database-url
+
+postgresql:
+  deploy: false
+  # When DATABASE_URL is overridden via additionalEnv above, the auth block is only
+  # used to render the chart's connection-string env vars (which the additionalEnv
+  # entry replaces). Leave the defaults or set host/auth.username to match.
+  host: my-external-postgres-server.com
+  auth:
+    username: langfuse
+```
+
+##### With SSO provider configuration using secrets and additionalEnv
+
+This example shows how to configure Okta SSO by setting the required environment variables from secrets using the `additionalEnv` pattern:
+
+```yaml
+langfuse:
+  additionalEnv:
+    - name: AUTH_OKTA_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: okta-secrets
+          key: AUTH_OKTA_CLIENT_ID
+    - name: AUTH_OKTA_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: okta-secrets
+          key: AUTH_OKTA_CLIENT_SECRET
+    - name: AUTH_OKTA_ISSUER
+      valueFrom:
+        secretKeyRef:
+          name: okta-secrets
+          key: AUTH_OKTA_ISSUER
+```
+
+You would need to create the corresponding secret:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: okta-secrets
+type: Opaque
+stringData:
+  AUTH_OKTA_CLIENT_ID: "your-okta-client-id"
+  AUTH_OKTA_CLIENT_SECRET: "your-okta-client-secret"
+  AUTH_OKTA_ISSUER: "https://your-domain.okta.com"
+```
+
+This pattern works for any SSO provider supported by Langfuse. See the [Authentication and SSO documentation](https://langfuse.com/self-hosting/authentication-and-sso#sso) for other providers and their required environment variables.
+
+##### With overrides for hostAliases
+
+This is going to add a record to the /etc/hosts file of all containers
+under the langfuse-web pod in such a way that every traffic towards "oauth.id.jumpcloud.com" is going to be forwarded to the localhost network.
+
+```yaml
+langfuse:
+  web:
+    hostAliases:
+      - ip: 127.0.0.1
+        hostnames:
+          - "oauth.id.jumpcloud.com"
+```
+
+##### With topology spread constraints
+
+Distribute pods evenly across different zones to improve high availability:
+
+```yaml
+langfuse:
+  # Global topology spread constraints applied to all langfuse pods
+  pod:
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: langfuse
+  
+  # Component-specific topology spread constraints
+  web:
+    pod:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: web
+  
+  worker:
+    pod:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: worker
+```
+
+## Testing
+
+This repository includes testing to ensure the Helm chart works correctly across different configurations.
+
+### Setup
+
+Install the helm unittest plugin using
+```shell
+helm plugin install https://github.com/helm-unittest/helm-unittest.git
+```
+
+### Running Tests Locally
+
+```bash
+helm unittest charts/langfuse --color
+```

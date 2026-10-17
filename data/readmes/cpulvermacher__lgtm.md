@@ -1,0 +1,103 @@
+# LGTM - AI Code Review
+
+[![Latest Release](https://flat.badgen.net/github/release/cpulvermacher/lgtm)](https://github.com/cpulvermacher/lgtm/releases)
+[![License](https://flat.badgen.net/github/license/cpulvermacher/lgtm)](./LICENSE)
+
+Use GitHub Copilot Chat to review pull requests or source code changes in Git, and catch bugs, areas for improvement, and other issues before merging.
+Open the command palette and select `LGTM: Start Code Review...` to select what to review.
+
+![Demo](./images/demo.gif)
+
+## Getting Started
+
+After starting a review with `LGTM: Start Code Review...`, LGTM will print review comments grouped by file and sorted by severity in the Chat sidebar.
+Click on line numbers to jump to the location (if checked out).
+
+### Reviewing Pull Requests
+
+If you have the [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension installed, you can start a review by hovering over a pull request and clicking the LGTM icon:
+
+![Reviewing a GitHub pull requests](./images/github_pr.png)
+
+If you have the [Atlassian: Jira, Rovo Dev, Bitbucket](https://marketplace.visualstudio.com/items?itemName=Atlassian.atlascode) extension installed, you can also start a review for Bitbucket pull requests directly:
+
+![Reviewing a Bitbucket pull request](./images/bitbucket_pr.png)
+
+### Starting a Review From Chat
+
+- Type `/review` followed by Return to bring up the same interactive menu as the `LGTM: Start Code Review...` menu command.
+- You can specify git refs as arguments, e.g. `/review develop main`, or omit arguments to select refs interactively.
+
+### Use in Agent Mode
+
+LGTM is also available in agent mode, so you can include it as part of your worklflow.
+For example, you might ask the agent to `Review the current changes using #reviewStaged and fix any severe issues.`
+Assuming you have staged changes, the agent will start a review using LGTM and then act on the review comments. Consider specifying the severity of issues to fix, e.g. `... and fix any issues with severity >= 3.`
+
+## Programmatic Use
+
+Extensions and VS Code automation can call the hidden `lgtm.reviewChanges` command directly. It runs the same review flow in the background with a cancellable progress notification, then resolves with structured review comments, per-model results, and any errors.
+Consumers that need to verify the command API can check the shared types in `src/types/ReviewChangesCommand.ts`.
+
+```ts
+// Review staged changes using the configured `lgtm.chatModel`.
+const staged = await vscode.commands.executeCommand('lgtm.reviewChanges', 'staged');
+
+// Review unstaged changes with one explicit review provider.
+const unstaged = await vscode.commands.executeCommand(
+    'lgtm.reviewChanges',
+    'unstaged',
+    'copilot:gpt-5.5'
+);
+
+// Review a topic/base pair with the configured default provider plus all configured preferred providers.
+const branchReview = await vscode.commands.executeCommand(
+    'lgtm.reviewChanges',
+    'feature-branch',
+    'main',
+    'preferred'
+);
+
+// Use an options object when that is clearer for typed integrations.
+const optionsReview = await vscode.commands.executeCommand('lgtm.reviewChanges', {
+    topic: 'feature-branch',
+    base: 'origin/main',
+    models: ['copilot:gpt-5.5', 'copilot-code-review'],
+});
+
+// Equivalent staged/unstaged object forms are also supported.
+await vscode.commands.executeCommand('lgtm.reviewChanges', { staged: true });
+await vscode.commands.executeCommand('lgtm.reviewChanges', {
+    scope: 'unstaged',
+    models: 'preferred',
+});
+```
+
+## Features
+
+- **Only Copilot Required**: Defaults to using Copilot Chat for reviewing changes. Both free and paid plans are supported.
+- **Model Selection**: Choose from language models available to VS Code, including Copilot Code Review for the same review experience as assigning Copilot to a pull request. Use the **LGTM: Select Review Model** command in the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`) to change it.
+- **Pull Request Integration**: Review pull requests from the GitHub Pull Request or Bitbucket extensions.
+- **Automatic Fixes**: Use the `Fix` action on a review comment to fix it automatically. This will use the language model configured for inline chat.
+- **Chat Integration**: Review content remains in chat history for follow-up questions by omitting `@lgtm`.
+- **Project-Specific Context Files**: By default, `AGENTS.md` is added to the review prompt. Can be configured using the `Lgtm: Context Files` setting.
+- **Custom Instructions**: Add global custom instructions via the `Lgtm: Custom Prompt` setting (e.g., change the language of review comments by adding `- In the final JSON output, use Spanish for the 'comment' field.`).
+- **Agent Support**: Adds tools to enable automatic reviews in agent mode:
+  - `#review`: Reviews changes between two git references (branches, tags, or commits)
+  - `#reviewStaged`: Reviews only staged changes in your working directory
+  - `#reviewUnstaged`: Reviews only unstaged changes in your working directory
+  - Example usage: `After your changes, run all tests and run #reviewUnstaged to check your work.`
+
+## Limitations
+
+- Chat models listed under "Unsupported Models" can be selected but reviews will fail at runtime.
+- Some models (e.g. those added by directly adding an API key) may fail to work. For Claude language models, try the [Claude Model Provider](https://marketplace.visualstudio.com/items?itemName=cpulvermacher.claude-model-provider) extension.
+- Large change sets may trigger model rate limits. Please wait before retrying.
+
+## Data Usage
+
+Source code changes and commit messages selected for review are sent to the configured review model/provider.
+
+## Contributing
+
+Contributions are welcome! If you have ideas, bug reports, or want to help improve LGTM, please open an issue or submit a pull request on [GitHub](https://github.com/cpulvermacher/lgtm).

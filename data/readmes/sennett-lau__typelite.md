@@ -1,0 +1,186 @@
+<p align="center">
+  <img src="src-tauri/icons/128x128.png" width="96" height="96" alt="Typelite icon">
+</p>
+
+<h1 align="center">Typelite</h1>
+
+<p align="center"><b>Just say it.</b> Press a shortcut in any app, speak, and clean text lands where you're typing.</p>
+
+<p align="center">
+  Free and open source (MIT) · No account · No telemetry · Runs on your computer or your own servers
+</p>
+
+<p align="center">
+  <a href="https://typelite.sennettlau.me/">Website</a> ·
+  <a href="https://github.com/sennett-lau/typelite/releases">Download</a> ·
+  <a href="docs/guides/README.md">Guides</a>
+</p>
+
+<p align="center">
+  <img src="docs/media/hero.gif" width="800" alt="Typelite's pill listening at the bottom of the screen, then clean text is pasted into a chat: fillers and a self-correction are removed">
+</p>
+
+Typelite is a voice keyboard for macOS. Hold or tap a shortcut and speak. Typelite turns your
+speech into text, removes fillers, applies your self-corrections, adds punctuation and pastes the
+result where you are typing. It can also translate what you say, or answer a question about the
+text you have highlighted.
+
+## Quick start
+
+### Download
+
+Typelite 1.0 runs on Macs with Apple Silicon (M1 or later).
+
+1. Download `Typelite_X.Y.Z_aarch64.dmg` from the
+   [latest release](https://github.com/sennett-lau/typelite/releases/latest). To check it,
+   download `SHA256SUMS.txt` too and run `shasum -a 256 -c SHA256SUMS.txt --ignore-missing`.
+2. Open the DMG and drag **Typelite** to **Applications**.
+3. Start it once as described in [First launch](#first-launch).
+
+### Build from source
+
+You need Rust ([rustup](https://rustup.rs/)), Node.js 20 or later, the Xcode Command Line Tools
+and CMake.
+
+```bash
+git clone https://github.com/sennett-lau/typelite.git
+cd typelite
+npm ci
+npm run build:app      # builds llama-server, then the app
+open src-tauri/target/release/bundle/macos/Typelite.app
+```
+
+More detail is in the [Contributing guide](CONTRIBUTING.md#setup).
+
+### First launch
+
+1. Downloaded builds are not signed by Apple yet, so macOS blocks the first launch. Right-click
+   Typelite.app and choose **Open** (on macOS 15 and later: **System Settings → Privacy &
+   Security → Open Anyway**), or run `xattr -dr com.apple.quarantine /Applications/Typelite.app`
+   once.
+2. Allow **Microphone** and **Accessibility** when macOS asks. Accessibility lets Typelite paste.
+3. Follow the guided setup: microphone, speech, AI, then a short hands-on tutorial.
+
+Typelite is macOS first and runs best on Apple Silicon.
+
+## What makes Typelite different
+
+### Language presets and a router
+
+Each of your languages can carry its own writing instructions. Pick a preset (for example
+Cantonese (Hong Kong), English or Mandarin (Taiwan)) from the shared
+[preset catalogue](presets/languages/README.md). Your edits are kept, and updates are offered,
+never forced.
+
+When you dictate, the router works out which language you spoke. It uses the language that speech
+recognition detected, plus hint words a preset carries, such as Cantonese particles. Only that
+language's instructions are added, so English dictation never gets Cantonese rules.
+
+Presets are small Markdown files. If you speak a language well, you can improve them: see
+[Contributing a language preset](CONTRIBUTING.md#language-presets).
+
+### Translate with quick language switching
+
+Choose up to three target languages. While you speak, press the Switch key (⇧ Shift by default) or
+click the language name on the pill to change the target. The recording keeps going. Highlight
+text and press Translate to replace it with its translation.
+
+### Built-in setup in one click
+
+On Apple Silicon, both halves can run on your computer with nothing else to install.
+[whisper.cpp](https://github.com/ggml-org/whisper.cpp) handles speech recognition inside the app,
+and [llama.cpp](https://github.com/ggml-org/llama.cpp)'s server handles AI polish. Press
+**Set up** and Typelite picks models that suit your hardware, downloads them and checks each
+download against a SHA-256.
+
+### Bring your own server or key
+
+Prefer a GPU computer on your network or a cloud key? Typelite works with any OpenAI-compatible
+speech or chat server (whisper.cpp server, Speaches, Ollama, LM Studio, OpenAI, Groq, OpenRouter
+and more) and with the Qwen Cloud and ElevenLabs speech APIs. Cloud services are opt-in and use your own key. See
+the [Guides](docs/guides/README.md).
+
+## How it compares with Typeless
+
+Typelite is inspired by [Typeless](https://www.typeless.com/), a polished commercial product.
+
+|  | Typeless | Typelite |
+|---|---|---|
+| Source | Closed | Open source (MIT) |
+| Price | Free tier and paid plans | Free |
+| Account | Sign-in required | None |
+| Where speech and AI run | The Typeless cloud | Your computer, your own server, or a cloud service you pick |
+| Languages | Built in | Presets from a public library, plus a router |
+| Translate targets | Up to 3, switch from the pill | Up to 3, switch with a key or the pill while recording |
+
+## Features
+
+| Feature | What it does | Default keys |
+|---|---|---|
+| Dictate | Speak, and clean text is pasted where you are typing. | Fn |
+| Translate | Speak, and it is written in another language. | Fn + ⇧ |
+| Ask anything | Ask a question, or highlight text and say "make this shorter". Answers show in a panel above the pill. | Fn + Space |
+| Switch language | Change the translation target while you speak. | ⇧ |
+| Cancel | Stop the current recording or processing. Nothing is pasted. | esc |
+| The pill | Shows recording, transcribing and polishing on the screen you are working on. It never takes focus. | |
+| Copy pill | When there is nowhere to paste, the result stays in the pill with a Copy button. | |
+| Presets | Save several speech and AI setups, switch between them, and export or import them. | |
+| Insights | Your speaking speed against your typing speed, time from speech to text, and how your presets compare. | |
+| Typing nudge | After a minute of steady typing, a small hint suggests saying it instead. At most once a day. | |
+
+Keys are shown as macOS menus show them (⇧ is Shift). Every shortcut can be changed, and
+hold-to-talk is available too.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/media/translate.gif" alt="Translate: the pill shows the target language and switches it mid-recording"><br><b>Translate</b>: switch language while you speak</td>
+    <td width="50%"><img src="docs/media/ask.gif" alt="Ask anything: an answer about highlighted text appears in a glass panel above the pill"><br><b>Ask anything</b>: answers above the pill</td>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/home-dark.png"><img src="docs/media/home.png" alt="Home: shortcuts and Insights, speaking against typing speed and a comparison of presets"></picture><br><b>Home</b>: shortcuts and Insights</td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/settings-languages-dark.png"><img src="docs/media/settings-languages.png" alt="Settings, AI: translation languages with their language presets"></picture><br><b>Languages</b>: presets per language</td>
+  </tr>
+  <tr>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/onboarding-dark.png"><img src="docs/media/onboarding.png" alt="Guided setup: the Translate shortcut with its key caps and the pill preview"></picture><br><b>Guided setup</b> with a hands-on tutorial</td>
+    <td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/copy-pill-dark.png"><img src="docs/media/copy-pill.png" alt="The Copy pill: the result with a Copy button whose border counts down"></picture><br><b>Copy pill</b>: when there is nowhere to paste</td>
+  </tr>
+</table>
+
+The images are rendered from the app's own components and the website's demos; see
+[docs/media](docs/media/README.md).
+
+## Documentation
+
+| Document | Covers |
+|---|---|
+| [Guides](docs/guides/README.md) | Choose a setup: built-in, your own server, or a cloud key |
+| [Speech recognition](docs/guides/speech/README.md) | Connections and supported services |
+| [AI polish](docs/guides/ai-polish/README.md) | Connections, services and turning off thinking |
+| [Choosing models](docs/guides/models/README.md) | Speech and polish models by hardware |
+| [Languages](docs/guides/languages/README.md) | Guides per language, translation languages, presets and recognition |
+| [Sharing presets](docs/guides/sharing-presets.md) | Export and import your speech and AI presets |
+| [Benchmarks](docs/guides/benchmarks/README.md) | Polish and speech speed on real setups, and how to measure yours |
+| [Code performance](docs/benchmarks/README.md) | Application baseline, runtime evaluations, recorded decisions and performance PR workflow |
+| [Preset catalogue](presets/languages/README.md) | Every language preset in the library |
+| [Plans](docs/plans/README.md) | How features are designed before they are built |
+| [Releasing](docs/releasing.md) | How maintainers cut a release |
+
+## Privacy
+
+- No accounts, no analytics, no telemetry.
+- No history of what you say. Insights keep only timings and a keystroke count (never which keys).
+  You can turn typing measurement off, and **Settings → System → Clear insights data** deletes them.
+- Logs (`~/Library/Logs/Typelite/typelite.log`) hold timings and errors, never your text.
+- Audio goes only where you point it: the built-in models, your own server, or a service you chose.
+
+## Contributing
+
+Code, services, language presets and docs are all welcome. Start with the
+[Contributing guide](CONTRIBUTING.md).
+
+## Licence
+
+[MIT](LICENSE). Third-party components and models are listed in the
+[Third-party notices](THIRD_PARTY_NOTICES.md).

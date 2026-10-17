@@ -1,0 +1,121 @@
+> [!NOTE]
+> Phlox is not a certified medical device. AI-generated notes are drafts and must always be reviewed. See [Disclaimers](#disclaimers).
+
+<p align="center">
+  <img src="/assets/phlox_icon.png" width="150" alt="Phlox Logo">
+</p>
+
+<div align="center">
+
+[![CI](https://github.com/bloodworks-io/phlox/actions/workflows/ci.yml/badge.svg)](https://github.com/bloodworks-io/phlox/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/bloodworks-io/phlox/badge.svg?branch=main)](https://coveralls.io/github/bloodworks-io/phlox?branch=main)
+[![CodeQL](https://github.com/bloodworks-io/phlox/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bloodworks-io/phlox/actions/workflows/github-code-scanning/codeql)
+[![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-phlox.bloodworks.io-blue)](https://phlox.bloodworks.io/docs)
+
+</div>
+
+Phlox is a free, open-source, AI scribe with a built-in patient management system and agentic AI capabilities. It's designed as a local-first alternative to SaaS medical scribes that you can run on your own hardware.
+
+## Key Features 
+- **🔒 100% Local & Private:** Runs entirely on your machine with no third-party services - all data stays local.
+- **👥 Multi-User:** Account-based access control; with per user encounters, templates, and documents.
+- **🌍 Multilingual:** Transcribe and generate notes and letters in multiple languages.
+- **🎤 Ambient Note Generation** Automatically generate structured notes with custom templates.
+- **⚡ Live Agent:** Drafts the note in realtime while you consult.
+- **💡 Adaptive Refinement:** Outputs improve the more you use it; Phlox learns from your previous notes.
+- **📝 Flexible Template System:**  Including automated template generation from example notes you provide.
+- **🤖 AI-agent:** Your local assistant with access to literature in your own local knowledge base.
+- **🔌 MCP Server Support:** Connect external tool servers to give your agent new capabilties.
+- **✅ Task Manager:**  Parse clinical plans into to-do lists to keep up-to-date with your outstanding tasks.
+- **✉️  Correspondence Generation:**  One-click generation of patient letters based on clinical notes.
+- **📄 Document Processing:** Fill-in forms, extract demographics, and more with Vision Language Models.
+
+<p align="center">
+  <img src="/assets/readme_screenshot.png" width="600" alt="Phlox Screenshot">
+</p>
+
+## Getting Started
+
+### Desktop App
+
+Pre-built Apple Silicon (macOS) binaries, Flatpaks (Linux - Vulkan), and Windows (x86-64) Installers are available from [GitHub Releases](https://github.com/bloodworks-io/phlox/releases). See [the release process](/.github/RELEASE.md) for how releases are signed and verified.
+
+The desktop app comes bundled with both transcription and LLM inference engines. Models can be downloaded from within the application.
+
+### Docker/Podman
+
+Pre-built images are available from [GitHub Container Registry](https://github.com/bloodworks-io/phlox/pkgs/container/phlox):
+
+```bash
+docker pull ghcr.io/bloodworks-io/phlox:latest
+```
+
+Minimal `docker-compose.yml` for the pre-built image:
+
+```yaml
+services:
+  phlox:
+    image: ghcr.io/bloodworks-io/phlox:latest
+    container_name: phlox
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_ENCRYPTION_KEY=   # Required: generate a strong random key
+      - TZ=                  # e.g. America/New_York
+      # Authentication: built-in
+      # Alternative: auth handled by your reverse proxy
+      # (pick one approach - do not combine)
+      # - PROXY_AUTH_ENABLED=true
+      # - PROXY_AUTH_USER_HEADER=X-Forwarded-User
+      # - PROXY_AUTH_ALLOWED_USERS=user1,user2
+      # - TRUSTED_PROXY_IPS=172.16.0.2 # Required with PROXY_AUTH_ENABLED:
+      #   IPs/CIDRs of EVERY proxy hop between Phlox and clients.
+      # - RATE_LIMIT_ENABLED=true
+    volumes:
+      - ./data:/usr/src/app/data    # Persistent data (database, vectors)
+      - ./logs:/usr/src/app/logs    # Optional: persist logs
+```
+
+Then `docker compose up -d`. See the [Setup guide](https://phlox.bloodworks.io/docs/setup) for full instructions including `.env` configuration.
+
+Authentication is required for Docker deployments: the first browser visit walks through creating the admin account, and further users are added from Settings → Users.
+
+The Docker image does not have any inference or transcription capability built-in. OpenAI compatible endpoints are required for transcription and note generation. 
+
+Note quality benefits from speaker diarization. When **Streaming capture** is enabled in Settings → Policy: Phlox will transcribe sessions utterance-by-utterance while you record and adds its own built-in speaker labels, so a plain (non-diarizing) Whisper endpoint is enough.
+
+## Architecture
+
+Ambient scribing is a relatively simple task for LLMs. In particular, large frontier models are very adept at one-shotting a decent note given a transcript and a style example. Smaller models capable of running on consumer hardware are able to summarise medical consultations reasonably well; however, they often struggle with replicating specific note styles.
+
+Phlox approaches this by chunking transcripts per template field and constraining outputs to structured JSON. After getting the model to make a targeted summary for a given field, a dedicated refinement pass then allows the model to focus on matching output to the users personal style example. Finally an adaptive-refinement feedback loop allows the model to improve note quality as it is used more. Ambient and Dictate recordings are transcribed utterance-by-utterance as they finalize (with built-in speaker labeling), and the growing transcript pre-warms the prompt cache so the note is ready faster when you stop recording.
+
+[Live Agent](https://phlox.bloodworks.io/docs/features/live-agent) mode takes a different path for real-time scribing: the consultation is segmented into utterances on-device (TEN VAD) and each utterance is streamed through a cheap gate; a single-token logprob classification that decides whether the speech should reach the note (NOTE), trigger an action (ACT), or be ignored as filler (SKIP, buffered with a debounce backstop so nothing is lost). NOTE and ACT utterances run through a tool-calling loop on the main model, which edits the running note, stages letters and PDF forms for review, and curates the wrap-up task list. Best-effort speaker diarisation (CAM++) labels who said what, and the conversation is kept append-only so the prompt cache stays warm between passes.
+
+- **Frontend:** [Chakra UI](https://github.com/chakra-ui/chakra-ui) (React)
+- **Backend:** [FastAPI](https://github.com/fastapi/fastapi) (Python)
+- **Database:** [SQLCipher](https://github.com/sqlcipher/sqlcipher)
+- **Vector DB:** [sqlite-vec](https://github.com/asg017/sqlite-vec)
+- **Desktop Wrapper:** [Tauri](https://github.com/tauri-apps/tauri) 
+- **LLM Backend:** Any OpenAI-compatible endpoint (incl. Ollama), or bundled [llama.cpp ](https://github.com/ggml-org/llama.cpp) server
+- **Transcription:** Any OpenAI Whisper-compatible endpoint or bundled [parakeet.cpp](https://github.com/mudler/parakeet.cpp) server
+
+## Disclaimers
+
+Phlox is not a certified medical device and has not been evaluated by any regulatory authority. It is a documentation tool: all AI-generated content (notes, letters, extracted data) is a draft and must be reviewed by the treating clinician before use.
+
+Regulatory compliance (HIPAA, GDPR, TGA, etc.) is a property of your deployment, not of this software; it depends on how and where you run it. Phlox keeps all data on hardware you control (encrypted at rest, no telemetry or third-party services by default), but you are responsible for ensuring your setup meets the obligations that apply to your practice. Provided as-is under the MIT License, without warranty of any kind.
+
+## License 
+
+[MIT License](LICENSE)
+
+Third-party models, runtimes, and library attributions: [Credits](https://phlox.bloodworks.io/docs/credits).
+
+## Contributing 
+
+[Contributing Guidelines](.github/CONTRIBUTING.md)
+
+Whilst this repo has made extensive use of AI development tools; all code generated with AI-assistance must be manually vetted prior to submission.

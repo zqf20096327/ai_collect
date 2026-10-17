@@ -1,0 +1,67 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/icon-dark.svg">
+  <img alt="ChatBotKit Studio" src="docs/assets/icon-light.svg" width="60">
+</picture>
+
+<br/>
+
+<h1>AI Platform on your Desktop</h1>
+
+<p>
+  <strong>A modern, sovereign AI workspace<br>
+  running locally on your desktop.</strong>
+</p>
+
+<p>
+  <img alt="macOS 26+" src="https://img.shields.io/badge/macOS-%E2%89%A526-0a0a0a?style=flat-square&logo=apple&logoColor=white">
+  <img alt="Apple silicon" src="https://img.shields.io/badge/Apple-silicon-0a0a0a?style=flat-square&logo=apple&logoColor=white">
+  <img alt="Swift 6" src="https://img.shields.io/badge/Swift-6-0a0a0a?style=flat-square&logo=swift&logoColor=white">
+  <img alt="Private runtime" src="https://img.shields.io/badge/runtime-private-0a0a0a?style=flat-square&logo=apple&logoColor=white">
+</p>
+
+<p>
+  <a href="https://github.com/chatbotkit/studio/releases/latest"><strong>Download Studio</strong></a> ·
+  <a href="https://github.com/chatbotkit/platform#run-it"><strong>Deploy Platform</strong></a> ·
+  <a href="./docs/getting-started.md"><strong>Get started</strong></a> ·
+  <a href="./docs/README.md"><strong>Documentation</strong></a> ·
+  <a href="./docs/architecture.md"><strong>Architecture</strong></a> ·
+  <a href="./CONTRIBUTING.md"><strong>Contributing</strong></a>
+</p>
+
+</div>
+
+<p align="center">
+  <img width="4281" height="2676" alt="image" src="https://github.com/user-attachments/assets/64aa0234-3d78-4ba5-8c55-156e6ed9021f" />
+</p>
+
+Studio brings the breadth of the [CBK Platform](https://github.com/chatbotkit/platform) to your Mac. Build agents, manage knowledge, connect model providers, and test complete experiences while the platform runs in a private Linux VM owned by the app.
+
+## Install Studio
+
+1. [Download the latest release](https://github.com/chatbotkit/studio/releases/latest).
+2. Move **Studio.app** to Applications and open it.
+3. Add at least one model provider in **Studio → Settings → Models**.
+
+Studio requires an Apple silicon Mac running macOS 26 or later. The first launch downloads the platform images, so it also needs an internet connection and sufficient free disk space.
+
+## One app. A complete AI workspace.
+
+- Build bots, datasets, skillsets, portals, and integrations.
+- Configure supported model providers from native Settings.
+- Keep credentials and application data in Studio's private runtime.
+- Troubleshoot with native logs, stack details, and Web Inspector.
+- Open multiple Studio windows backed by one shared runtime.
+- Receive signed, notarized application updates.
+
+## Documentation
+
+- [Getting started](docs/getting-started.md)
+- [Using Studio](docs/operations.md)
+- [Architecture and container runtime](docs/architecture.md)
+- [Security and privacy](docs/security.md)
+- [Development and testing](docs/development.md)
+- [Contributing](CONTRIBUTING.md)
+- [Release setup](docs/releases.md)
+- [Changelog](CHANGELOG.md)

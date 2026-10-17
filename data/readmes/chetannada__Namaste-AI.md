@@ -1,0 +1,271 @@
+# Namaste AI 🚀 — AI Course Notes, Projects & Learning Journey
+
+A hands-on **Namaste AI** repository created while learning the **[Namaste AI course](https://namastedev.com/learn/namaste-ai?_aff=946684804112)** by **Akshay Saini**, Founder of **[NamasteDev](https://namastedev.com/?_aff=946684804112)**. This repository contains digital handwritten AI notes, AI concepts, LLM learning resources, RAG, AI agents, MCP, Generative AI experiments, and real-world AI projects.
+
+> 💡 **The goal is not just to use AI tools.**
+>
+> **Understand how AI works → Build with AI → Learn by doing → Share the journey.** 🚀
+
+---
+
+## 🌐 Live Demo - **[namaste-ai-dev.vercel.app](https://namaste-ai-dev.vercel.app)**
+
+> ✍️ **Take Notes** • 💡 **Learn concepts** • 🛠️ **Build Projects** • 🚀 **Learn in Public**
+
+# 📚 Course Roadmap
+
+> 🚀 **Learn AI step by step — from understanding the foundations to building real-world AI applications.**
+
+> ✍️ Along the way, I'm also creating and sharing my **Digital Handwritten Notes** so my learning stays public and useful to others.
+
+## 🧠 Season 1 — Inside the Mind of AI
+
+> **Understand how AI evolved, how modern AI systems work, and what happens inside an LLM.**
+
+### 🎬 Episode 01 — Welcome to Namaste AI
+
+🌱 Begin your Namaste AI journey and explore what AI is, how it works, and what you'll learn throughout the course.
+
+**What you'll learn**
+
+- 🤖 What is AI?
+- 🧠 How AI systems work
+- 🗺️ Course roadmap
+- 🚀 What we'll build and explore
+
+|  #  | ✍️ Handwritten Notes                |                                                              Action                                                              |
+| :-: | :---------------------------------- | :------------------------------------------------------------------------------------------------------------------------------: |
+| 01  | **Roadmap about Namaste AI Course** | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-1-welcome-to-namaste-ai/roadmap-about-namaste-ai-course) |
+
+---
+
+### 🕰️ Episode 02 — The Evolution of AI
+
+Explore the evolution of Artificial Intelligence and the breakthroughs that shaped modern AI systems.
+
+**What you'll learn**
+
+- 🧠 History of AI
+- ♟️ Rule Based AI
+- 🤖 Machine Learning
+- 🔥 Deep Learning
+- 👁️ Computer Vision
+- 💬 NLP
+- 🤖 Transformers & LLMs
+- ✨ Generative AI
+
+|  #  | ✍️ Handwritten Notes                         |                                                                 Action                                                                  |
+| :-: | :------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------: |
+| 01  | **What Is Artificial Intelligence?**         |     [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/what-is-artificial-intelligence)      |
+| 02  | **The Evolution of Artificial Intelligence** | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/the-evolution-of-artificial-intelligence) |
+| 03  | **Rule-Based AI**                            |              [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/rule-based-ai)               |
+| 04  | **Machine Learning**                         |             [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/machine-learning)             |
+| 05  | **Deep Learning & Neural Networks**          |      [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/deep-learning-neural-networks)       |
+| 06  | **Machine Learning vs Deep Learning**        |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/machine-learning-vs-deep-learning)     |
+| 07  | **Computer Vision Revolution**               |        [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/computer-vision-revolution)        |
+| 08  | **Natural Language Processing**              |       [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/natural-language-processing)        |
+| 09  | **Transformers & Large Language Models**     |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/transformers-large-language-models)    |
+| 10  | **Generative AI**                            |              [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/generative-ai)               |
+| 11  | **The ChatGPT Moment & AI Today**            |       [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/the-chatgpt-moment-ai-today)        |
+| 12  | **Timeline of AI & The Future of AI**        |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-2-the-evolution-of-ai/timeline-of-ai-future)           |
+
+---
+
+### 🤔 Episode 03 — Does ChatGPT know or Does it Guess?
+
+Understand how ChatGPT generates answers and whether it truly knows or simply predicts what comes next.
+
+**What you'll learn**
+
+- 🌐 Search Engines vs LLMs
+- 🧠 How LLMs Generate Responses
+- ⏳ LLM Knowledge Cutoff
+- 🤖 Base Model
+- ⚠️ AI Hallucinations
+- 🛠️ AI Tools
+- 📚 RAG
+
+|  #  | ✍️ Handwritten Notes                                  |                                                                           Action                                                                           |
+| :-: | :---------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| 01  | **Google Search vs ChatGPT**                          |           [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/google-search-vs-chatgpt)           |
+| 02  | **Search Engines vs LLMs**                            |            [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/search-engines-vs-llms)            |
+| 03  | **How Search Engines Discover New Pages**             |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/how-search-engines-discover-new-pages)     |
+| 04  | **How LLMs Generate Responses**                       |         [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/how-llms-generate-responses)          |
+| 05  | **LLM Knowledge & Knowledge Cutoff**                  |      [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/llm-knowledge-and-knowledge-cutoff)      |
+| 06  | **Base Model vs AI Assistant**                        |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/base-model-vs-ai-assistant)          |
+| 07  | **What Gets Added on Top of the Base Model**          |     [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/what-gets-added-on-top-of-base-model)     |
+| 08  | **Inference vs Training**                             |            [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/inference-vs-training)             |
+| 09  | **Why AI Models Confidently Produce Wrong Answers**   | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/why-models-confidently-produce-wrong-answers) |
+| 10  | **Why Do Hallucinations Happen?**                     |         [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/why-do-hallucinations-happen)         |
+| 11  | **Types of AI Hallucinations**                        |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/types-of-ai-hallucinations)          |
+| 12  | **Why Do Models Sometimes Say 'I Don't Know'?**       |   [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/why-do-models-sometimes-say-i-dont-know)    |
+| 13  | **The Confidence Illusion & Reducing Hallucinations** | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/confidence-illusion-reducing-hallucinations)  |
+| 14  | **Base Model Without Tools**                          |           [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/base-model-without-tools)           |
+| 15  | **Web Search + LLMs**                                 |               [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/web-search-llms)                |
+| 16  | **What Is RAG?**                                      |                 [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/what-is-rag)                  |
+| 17  | **Does the Model Know Itself?**                       |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-3-does-chatgpt-know-or-does-it-guess/does-the-model-know-itself)          |
+
+---
+
+### 🔐 Episode 04 — The Secret Language of LLMs
+
+Discover how Large Language Models represent, process, and understand language behind the scenes.
+
+**What you'll learn**
+
+- 🧩 Tokens & Tokenization
+- 🌐 Word Embeddings
+- 📍 Positional Encoding
+- 🪟 Context Window
+
+|  #  | ✍️ Handwritten Notes                               |                                                                        Action                                                                        |
+| :-: | :------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
+| 01  | **Computers cannot understand Words Like Humans**  | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/computers-cannot-understand-words-like-humans) |
+| 02  | **What Is a Token and Tokenizer?**                 |         [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/what-is-a-token-and-tokenizer)         |
+| 03  | **Words vs Characters vs Tokens**                  |         [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/words-vs-characters-vs-tokens)         |
+| 04  | **Why Do Models Use Subword Tokenization?**        |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/why-do-models-use-subword-tokenization)     |
+| 05  | **Why Does Every LLM Have Its Own Vocabulary?**    |  [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/why-does-every-llm-have-its-own-vocabulary)   |
+| 06  | **What Is Byte Pair Encoding (BPE)?**              |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/what-is-byte-pair-encoding)           |
+| 07  | **BPE vs WordPiece vs Unigram**                    |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/bpe-vs-wordpiece-vs-unigram)          |
+| 08  | **Token Boundaries Are Not Meaning Boundaries**    |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/token-boundaries-not-meaning-boundaries)    |
+| 09  | **English vs Other Languages**                     |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/english-vs-other-languages)           |
+| 10  | **Why is Hinglish Especially Interesting?**        |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/why-is-hinglish-especially-interesting)     |
+| 11  | **How LLMs Tokenize Emojis & Special Characters**  |  [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/how-llms-tokenize-emojis-special-characters)  |
+| 12  | **How Does an LLM Process Code?**                  |          [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/how-does-llms-process-code)           |
+| 13  | **How Are Instructions Passed to an LLM?**         |     [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/how-are-instructions-passed-to-an-llm)     |
+| 14  | **What Is a Context Window?**                      |           [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/what-is-a-context-window)            |
+| 15  | **Why Does the Assistant Need Previous Messages?** | [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/why-does-the-assistant-need-previous-messages) |
+| 16  | **What Happens When the Context Window Fills?**    |  [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/what-happens-when-the-context-window-fills)   |
+| 17  | **Long Prompt ≠ Better Results**                   |    [View Notes ↗](https://namaste-ai-dev.vercel.app/notes/season-1/episode-4-the-secret-language-of-llms/long-prompt-not-equal-to-better-results)    |
+
+---
+
+## 🌱 Structure of this Project
+
+```
+Namaste-AI/
+│
+├── 📁 public/                          # Static assets served at root
+│   └── 📁 images/
+│       └── 🖼️ hero-ai.webp             # Hero section background image
+│
+├── 📁 src/                             # Application source code
+│   ├── 📁 app/                         # Next.js App Router (pages & layouts)
+│   │   ├── 🎨 globals.css              # Global styles, theme tokens, design system
+│   │   ├── 🖼️ icon.jpg                 # Favicon / app icon
+│   │   ├── 📄 layout.tsx               # Root layout (metadata, fonts, providers)
+│   │   ├── 📄 page.tsx                 # Landing / home page
+│   │   ├── 🤖 robots.ts                # SEO robots.txt generation
+│   │   ├── 🗺️ sitemap.ts               # Dynamic XML sitemap generation
+│   │   └── 📁 notes/
+│   │       ├── 📄 page.tsx             # Redirects to default season (/notes)
+│   │       └── 📁 [seasonSlug]/        # Season routes (/notes/season-1)
+│   │           ├── 📄 page.tsx         # Season overview page
+│   │           └── 📁 [episodeSlug]/   # Episode routes (/notes/season-1/episode-1-...)
+│   │               ├── 📄 page.tsx     # Episode viewer page
+│   │               └── 📁 [pageSlug]/  # Direct page routes (/notes/.../rule-based-ai)
+│   │                   └── 📄 page.tsx # Individual note page with custom SEO
+│   │
+│   ├── 📁 components/                  # Reusable React components
+│   │   ├── 📁 home/
+│   │   │   └── 🧩 Hero.tsx             # Landing page hero section
+│   │   ├── 📁 layout/
+│   │   │   ├── 🧩 Header.tsx           # Top navigation bar
+│   │   │   ├── 🧩 Navbar.tsx           # Desktop navigation links
+│   │   │   ├── 🧩 Sidebar.tsx          # Mobile slide-out menu
+│   │   │   └── 🧩 Footer.tsx           # Site footer with social links
+│   │   └── 📁 notes/
+│   │       ├── 🧩 Notes.tsx            # Main notes page orchestrator
+│   │       ├── 🧩 NotesHero.tsx        # Notes page hero / header
+│   │       ├── 🧩 SeasonTabs.tsx       # Horizontal scrollable season tabs
+│   │       ├── 🧩 SeasonBanner.tsx     # Active season info banner
+│   │       ├── 🧩 NotesFilter.tsx      # Search bar + topic filter chips
+│   │       ├── 🧩 EpisodeCard.tsx      # Episode card with thumbnail & metadata
+│   │       ├── 🧩 NotesViewerModal.tsx # Fullscreen modal container for viewer
+│   │       └── 📁 notesViewer/         # Modular note viewer components
+│   │           ├── 🧩 NotesViewerHeader.tsx # Header controls (zoom, download, close)
+│   │           ├── 🧩 NotesViewerStage.tsx  # Main interactive handwritten note view
+│   │           ├── 🧩 NotesViewerFooter.tsx # Page thumbnail navigation strip
+│   │           ├── ⚙️ useNotesViewer.ts     # Viewer state, zoom, pan & keyboard nav hook
+│   │           └── ⚙️ notesViewerUtils.ts   # Viewer helper functions & constants
+│   │
+│   ├── 📁 context/
+│   │   └── 🔧 ThemeContext.tsx         # Light / Dark theme provider
+│   │
+│   └── 📁 data/
+│       └── 📋 notesData.ts             # All seasons, episodes & note pages data
+│
+├── ⚙️ next.config.ts                   # Next.js configuration
+├── ⚙️ tsconfig.json                    # TypeScript configuration
+├── ⚙️ eslint.config.mjs                # ESLint configuration
+├── ⚙️ postcss.config.mjs               # PostCSS / Tailwind CSS config
+├── ⚙️ .prettierrc                      # Prettier code formatter config
+└── 📦 package.json                     # Dependencies & scripts
+```
+
+> 💡 **Note images** are hosted on Cloudinary CDN and managed dynamically in `notesData.ts` via the `cdnImage` helper, keeping the repository lightweight.
+
+## 🎻 Prerequisites
+
+Before running the application, make sure you have the following installed:
+
+- **Node.js**: `v18.x` or later.
+- **Package Manager**: `npm` (v9+), `yarn`, `pnpm`, or `bun`.
+
+## 🔥 Clone this Repository
+
+Follow these steps to set up and run Namaste AI locally:
+
+### 1. Clone the Repo
+
+```bash
+git clone https://github.com/chetannada/Namaste-AI.git
+```
+
+### 2. Go to the project directory
+
+```bash
+cd Namaste-AI
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to start analyzing repositories!
+
+## ✏️ Contributing
+
+Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+To contribute:
+
+1. Fork the Project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`). Ensure pre-commit hooks (Husky, Prettier, ESLint) pass successfully.
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+Please follow our coding standards:
+
+- Always use TypeScript (avoid `any`).
+- Prefer Server Components; use Client Components only when necessary.
+- Keep components modular, reusable, and avoid UI duplication.
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## 🤝 Let's Connect
+
+[![linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/chetannada/)
+[![twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/chetannada)
+[![discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discordapp.com/users/916005177838956555)

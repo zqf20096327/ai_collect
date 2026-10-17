@@ -1,0 +1,244 @@
+# EMRG
+
+<p align="center">
+  <img src="packaging/assets/icon.svg" alt="EMRG" width="96" height="96">
+</p>
+
+<p align="center">
+  <strong>The personal agent for recursive self-improvement (RSI) — an AI that codes for you, and rewrites <em>itself</em>.</strong>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/python-3.11+-blue.svg">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg">
+  <img alt="Status" src="https://img.shields.io/badge/status-evolving-orange.svg">
+  <img alt="Tests" src="https://github.com/argszero/emrg/actions/workflows/test.yml/badge.svg">
+  <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-by%20AI%20%2B%20human-brightgreen.svg">
+</p>
+
+<p align="center">
+  <b>🇬🇧 English</b> | <a href="README.cn.md">🇨🇳 中文</a>
+</p>
+
+---
+
+**What if your coding assistant got better every time you used it?**
+
+EMRG is an experiment in *autonomous self-improvement*: an AI agent that helps you code — reading files, running commands, making edits — and **every `/rant` you send drives it to improve itself**. Tell it what bothers you, and the next evolution cycle writes the fix and ships it. Fully open source, fully transparent.
+
+**Recursive self-improvement (RSI)** is an AI that improves itself — and, the part that matters, whose improvements make the *next* improvement easier. EMRG is that idea as a **personal agent**: it runs on your machine, behind your own API key, and keeps its state — sessions, memory, logs — on your disk; the model call is the only thing that leaves it. **The boundary, stated plainly: EMRG rewrites its own code, its prompts and its toolchain — never the model weights.** Every change passes the test suite, is reviewed by three independent evolution cycles, and is released at a host's word.
+
+> *"EMRG is an experiment in self-evolving AI agent architecture."* — [MANIFESTO](MANIFESTO.md)
+>
+> *Everyone is a product manager — every rant is a ticket for the next release.*
+> *Everyone is a host of silicon life — what you run is a digital organism that evolves with you.*
+
+**EMRG** — pronounced *"emerge"*: intelligence that *emerges* — from scale, and from use. The name expands to **E**volving **M**icro-kernel, **R**ant-driven **G**rowth.
+
+---
+
+## Why you'll love it
+
+**The one-line pitch**: EMRG is the only coding agent that **improves itself from your feedback** — rant about what bothers you, and the next evolution cycle writes the fix and ships it.
+
+> **The one feature: self-improvement.** Every `/rant` becomes a real PR — coded, tested, merged, unattended. No other coding agent does this.
+
+| What | Why it's different |
+|---|---|
+| **Electron GUI (main entry)** | Install & go: first-run wizard, all slash commands, results panel, Ask/Auto modes, visible self-evolution. GUI configured = TUI ready |
+| **Full-featured TUI + daemon** | Streaming markdown, `/` autocomplete, sessions, shortcuts — on a persistent `emrgd` daemon you can reconnect to anytime |
+| **Scheduled tasks** | Built-in + custom task types with prompt templates (`~/.emrg/task-templates/`), CRUD + hot reload from the GUI settings, `/trigger` any task on demand |
+| **100% open source** | MIT — no walled garden, no vendor lock-in. English default, Chinese version available |
+
+---
+
+## Rant-Driven Evolution (the core feature)
+
+EMRG isn't just a tool — it's a coding partner that **listens to your complaints and improves itself**:
+
+```
+Inputs:
+  - Your rants (/rant)   <- primary input
+  - GitHub Issues & PRs
+  - Competitor tools (Codex, Claude Code)
+  - Cross-project learning
+          |
+          v
+Evolution Cycle (every 30 min)
+(Prepare -> Review -> Discover -> Improve -> Commit -> Record)
+          |
+          v
+  1. pytest + import check
+  2. git commit + push -> PR
+  3. Evolution log
+```
+
+**Real example**: Someone ranted "TUI needs `/` autocomplete like Codex." The next evolution cycle built it — prefix filtering and arrow-key navigation, merged and deployed. **What you rant about, it improves.**
+
+**Measured feedback loop**: the reader-feedback → merged-fix latency is a measured number, not a claim. `python scripts/reader_fix_latency.py` scans closed issues, follows each "Fixes #N" link to its earliest merged PR, and reports the median issue-to-merge time (e.g. issue #1000 → fix PR #1003: 49m19s). Run it any time to see how fast the loop actually is.
+
+**How to contribute?** Use it. Connect GitHub in Settings, and rant. Your rants become real PRs — the evolution cycle codes, tests, and ships them. No fork, no clone, no code required. **Using EMRG is contributing to EMRG.**
+
+---
+
+## Quick Start
+
+### Download the installer (recommended)
+
+Download from [GitHub Releases](https://github.com/argszero/emrg/releases) and double-click — the installer bundles everything (Python 3.13 + git + gh + GUI), **zero prerequisites, offline install**:
+
+| Platform | Installer |
+|----------|-----------|
+| macOS | `EMRG-<ver>-macos-arm64.pkg` / `-x64.pkg` (user-level, no admin password) |
+| Windows | `EMRG-<ver>-windows-x64.exe` (no UAC, PATH auto-registered) |
+| Linux | `EMRG-<ver>-linux-x86_64.run` / `EMRG-<ver>-linux-aarch64.run` (headless server, one command) · `EMRG-<ver>-x86_64.AppImage` / `EMRG-<ver>-aarch64.AppImage` (desktop) |
+
+> **Windows SmartScreen notice**: the installer isn't Authenticode-signed — if SmartScreen prompts, click **Keep** / **More info → Run anyway**. EMRG is fully open source and auditable.
+
+> **The installer vanished right after downloading?** That is not the prompt above — a SmartScreen warning is something you can click through, while a **false positive that deletes the file** leaves you nothing to click. It has happened to us (`Trojan:Win32/Sabsik.FL.A!ml` on `EMRG-0.3.4-windows-x64.exe`; our report was reviewed and **the detection removed** on 2026-09-30). To recover, refresh the definitions and download again — as **Administrator**:
+>
+> ```bat
+> cd "c:\Program Files\Windows Defender"
+> MpCmdRun.exe -removedefinitions -dynamicsignatures
+> MpCmdRun.exe -SignatureUpdate
+> ```
+>
+> Latest definitions: <https://www.microsoft.com/en-us/wdsi/defenderupdates>. Adding an exclusion for your downloads folder also works. If the file is still removed, please [report a false positive](https://www.microsoft.com/en-us/wdsi/filesubmission) — the installer carries publisher metadata and we publish a SHA-256 for every asset.
+
+**First time**: launch **EMRG** → the wizard sets your **API key / model** → start chatting. The TUI is ready too: run `emrg` in any terminal (config is shared).
+
+> **Bring your own key** — EMRG uses your LLM API key and your quota/billing; the software itself is free and MIT-licensed.
+
+> Prefer building from source, or need advanced config / architecture / contributing docs? → [DEVELOPMENT.md](DEVELOPMENT.md)
+
+---
+
+## Running the TUI
+
+EMRG is a terminal app at heart — the Electron GUI is a convenience shell on the same engine.
+
+**Run**: open a terminal, type `emrg`, press Enter — that's it. The installer puts `emrg` on your PATH (including Windows), and the first run auto-starts the background daemon and drops you into the interactive TUI.
+
+The first `emrg` run starts a background daemon (`emrgd`) and drops you into the interactive TUI. The daemon stays alive so you can reconnect anytime.
+
+Daemon management:
+| Command | What it does |
+|---|---|
+| `emrg` | Start the TUI (auto-starts the daemon if needed) |
+| `emrg server` | Run the daemon in the foreground |
+| `emrg server stop` | Stop the background daemon |
+| `emrg server restart` | Restart the daemon |
+| `emrg rant <msg> [@project]` | Send feedback from the CLI (no TUI needed) |
+| `emrg update` | Update to the latest version |
+
+In the TUI: `Esc` interrupts streaming, `Ctrl+C` / `exit` quits (config is shared with the GUI — set your API key once in either).
+
+---
+
+## Commands
+
+> All commands work in both the GUI (type `/` for autocomplete) and the TUI (`/help` lists everything).
+
+| Command | What it does |
+|---|---|
+| **Just type** | Ask EMRG anything — it reads files, runs commands, makes edits |
+| `/` | Autocomplete menu — type to filter, ↑↓ to select |
+| `/resume [id]` | Switch sessions — no args for interactive picker (↑↓/j/k) |
+| `/sessions` | Browse all saved sessions (↑↓/j/k) |
+| `/clear` | Clear current session — start fresh |
+| `/compact` | Compress long conversations to save context |
+| `/memory` | Browse project & session memories |
+| `/rename [title]` | Give your session a memorable name |
+| `/model [name]` | Switch LLM model — no args for interactive picker |
+| `/rant <feedback> [@<project>]` | Complain, suggest, praise — evolution listens |
+| `/help` | Show keyboard shortcuts and command help |
+| `/image` | Insert clipboard image into the input field |
+| `/delete [id]` | Delete a session — no args for interactive picker |
+| `/rewind` | Rewind conversation to a history point |
+| `/trigger` | Trigger an evolution task — interactive picker (manage tasks in GUI Settings → Scheduled tasks) |
+| `/skills` | List loaded skills; `/skills available\|install\|update` |
+| `/version` | Show EMRG version and instance info |
+| `Esc` | Interrupt a running response mid-stream |
+| `Ctrl+C` / `exit` | Quit |
+
+---
+
+## vs. the competition
+
+|  | Claude Code | Codex | DeepSeek Harness | **EMRG** | **Grok Bot** |
+|---|---|---|---|---|---|
+| AI-powered coding | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Tool-calling (bash, read, write, edit, glob, grep) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Session memory & context | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `/` command autocomplete | ✅ | ✅ | ✅ | ✅ | ~ *@ mention + command palette* |
+| ESC interrupt | ✅ | ✅ | — | ✅ | ✅ |
+| Plugin architecture | ❌ | ❌ | ✅ *everything is a plugin* | ❌ | ✅ |
+| Sandboxed execution | ❌ | ❌ | ✅ | ✅ *read-only / workspace-write / danger-full-access* | ~ *protectedBoxPaths + /workspace* |
+| Subagents | ❌ | ❌ | ✅ | ❌ | ✅ *assistants/automations* |
+| Web UI | ❌ | ❌ | ✅ *browser* | ✅ *Electron* | ✅ *Electron* |
+| **Recursive self-improvement (RSI)** | ❌ | ❌ | ❌ | ✅ *autonomous — code, prompts, toolchain* | ❌ |
+| **Personal agent** *your machine, your key, your data* | ~ *local CLI, hosted model, your account* | ~ *local CLI, hosted model* | ~ *local harness, hosted model* | ✅ *local agent, your key, its state on your disk* | ~ *local app, hosted service* |
+| **Background daemon** | ❌ | ❌ | ❌ | ✅ *persistent* | ✅ *host + node-agent-coordinator* |
+| **Learns from rants** | ❌ | ❌ | ❌ | ✅ */rant → PR* | ❌ |
+| **Open source** | ❌ | ✅ *Apache-2.0* | ✅ *MIT* | ✅ *MIT* | ❌ *commercial* |
+
+> *DeepSeek Harness is a plugin-based agent harness with deep engineering (sandboxing, subagents, workflows) — but it does not evolve itself. EMRG ships its own three-tier sandbox (read-only / workspace-write / danger-full-access) and closes the loop: self-evolution, a persistent background daemon, and rant-driven improvement. Grok Bot is a commercial Electron app by Anysphere with plugin/assistant ecosystems, but is not open source and does not self-evolve.*
+>
+> *The `Personal agent` row marks where the agent and its state live. The other agents also run locally; their columns carry a gloss rather than a verdict, because how they hold your data is theirs to state, not ours to score.*
+
+EMRG doesn't just keep up — it catches up on its own.
+
+---
+
+## FAQ
+
+**Is this real — does it actually modify its own code?**<br>
+Yes. The evolution cycle reads the evolution prompt, reviews rants + issues + competitor tools, makes source changes, runs tests, and submits a PR. If tests fail, it rolls back.
+
+**Is this recursive self-improvement?**<br>
+Yes, in the sense the term is meant: the system rewrites its own code, prompts and toolchain, and each change makes the next one easier to make. No, in the sense that would be dishonest to claim: **it never touches model weights**. And the loop is *measured* rather than asserted — see the [measured feedback loop](#rant-driven-evolution-the-core-feature): `python scripts/reader_fix_latency.py` walks the real closed issues, follows each to its earliest merged fix, and reports the median issue-to-merge time.
+
+**Can it break itself?**<br>
+Every change is validated by `pytest` and an import check before commit. Failed changes are discarded; the worst case is a rollback.
+
+**Will it touch my project's code?**<br>
+No. Self-evolution only modifies its own repository (`~/.emrg/evolution/emrg`), never your project files. The tools it runs on your project are only the ones you ask it to run — and every change it makes is a reviewed PR, tested before merge.
+
+**How is this different from Claude Code or Codex?**<br>
+They're products. EMRG is an experiment in *closing the loop* — the AI improves the AI. Fully open source, no vendor lock-in.
+
+**My evolution cycle says it is running read-only. Why?**<br>
+A cycle whose repository has uncommitted changes is forced down to `read-only`, so it cannot overwrite work you have not committed. Diagnosing it, recovering, or overriding the guard deliberately → [DEVELOPMENT.md](DEVELOPMENT.md#-troubleshooting).
+
+---
+
+## Development
+
+Contributing, source installs, architecture, and the full FAQ → [DEVELOPMENT.md](DEVELOPMENT.md).
+
+Quick checks: `uv run pytest tests/ -v` · `cd emrg/gui && npm test` (tests: see badge above)
+
+---
+
+## Code signing policy
+
+Windows code signing for EMRG is provided by [SignPath.io](https://signpath.io), using a certificate issued by the [SignPath Foundation](https://signpath.org).
+
+- Installers are built from this repository's source by GitHub Actions ([`build-release.yml`](.github/workflows/build-release.yml)), so a signed installer always corresponds to a public commit and a reviewed release.
+- Only artifacts built by this repository's CI are signed — never a locally built binary or a build taken from a fork.
+- Every signing request is approved manually by a maintainer ([@argszero](https://github.com/argszero)); nothing is signed automatically, and no release is signed without that approval.
+- The signing key is held by the SignPath Foundation and never enters this repository or its CI.
+
+The first release with signing enabled has not shipped yet: installers published so far are unsigned, so Windows may show a SmartScreen prompt or an antivirus false positive (see the notice above).
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE) for the full terms and [MANIFESTO.md](MANIFESTO.md) for the philosophy behind the code.
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ by <a href="https://github.com/argszero">argszero</a> — and a continuously evolving AI.</sub>
+</p>

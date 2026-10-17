@@ -1,0 +1,128 @@
+# Tera
+
+Tera is a Rust daemon that pairs to a WhatsApp account. Every message you send becomes a turn run by [Codex](https://github.com/openai/codex) against a workspace on your own machine, and Codex has a shell, a filesystem and the network. So "what's eating my disk", "clean up Downloads" and "summarise this PR" are all the same kind of request.
+
+Read the privilege posture section before running this. It is not a chatbot in a sandbox. It is closer to giving a phone number a shell on your laptop.
+
+## How it works
+
+It connects to WhatsApp Web through [WhatsApp Rust](https://github.com/oxidezap/whatsapp-rust), so no Cloud API and no Meta developer account, and spawns one persistent `codex app-server`. An inbound message is checked against an owner allowlist, buffered 2.5 seconds in case more are coming, then handed to Codex as a turn. Codex replies through the `send_message` MCP tool. The text a turn ends with is only a fallback if that tool was never called.
+
+Everything said in either direction lands in a SQLite event store with a JSONL projection that Codex queries with `jq` and `sqlite3`. Reading history is deliberately not a tool. Memory is a few markdown files Codex regenerates itself, and a bundled scheduler lets it queue its own future work instead of touching `cron`.
+
+## Before you run it
+
+- **`codex` on PATH and logged in.** Tera has no API key of its own. It symlinks `<workspace>/.codex-home/auth.json` to `~/.codex/auth.json` and borrows your login. Run `codex login` once first or every turn fails to authenticate.
+- **A WhatsApp account to link a device to.** Your own number is the easy path.
+- **`git`, `python3`, `sqlite3`, `jq` and `ffmpeg` on PATH.** `tera init` checks for all of them and refuses to start if one is missing, rather than building half a workspace and failing on the first turn that needs the program.
+
+The wire format was verified against **Codex CLI 0.147.0**. A materially different version may break parsing.
+
+## First run
+
+```bash
+codex login                                   # once, if you haven't
+cargo build --release
+tera daemon --workspace ~/assistant-workspace  # calls init itself
+```
+
+With no prior session on disk the daemon prints a QR code to the terminal. Scan it from WhatsApp under Linked devices, Link a device. The pairing lives in `<workspace>/.runtime/whatsapp_session.db`, so restarts reconnect silently. Don't lose that file.
+
+Owner filtering is closed by default. With `WHATSAPP_OWNER_JID` unset, Tera answers only the account it paired to, so messaging that same number from your phone just works. It logs the sender id the first time it ignores someone, ready to paste into the env var. Group chats are never served, whatever you set.
+
+## Configuration
+
+| variable | effect | default |
+| --- | --- | --- |
+| `TERA_OWNER` | what the assistant calls you in every prompt | `$USER`, then `$LOGNAME`, then "the owner" |
+| `WHATSAPP_OWNER_JID` | which sender is served | unset means only the paired account |
+| `TERA_BIN` | absolute path passed to Codex so it can spawn `tera mcp` | the running executable |
+| `CODEX_LOG` | log level for the spawned application server | `error` |
+| `RUST_LOG` | Tera's own tracing filter, e.g. `info,tera=debug` | subscriber default |
+
+## Commands
+
+Every subcommand takes `--workspace <path>`, default `/workspace`. Point it somewhere durable, not `/tmp`.
+
+| command | what it does |
+| --- | --- |
+| `daemon` | the assistant itself with WhatsApp, MCP socket and scheduler |
+| `init` | idempotent workspace setup, called automatically by `daemon` |
+| `login [--force]` | pair with Codex via device code and link credentials to the workspace |
+| `version [--json]` | binary version, commit SHA, build time and installed Codex version |
+| `update [--component all\|tera\|codex]` | update Codex and Tera, then restart with Phoenix rollback protection |
+| `mcp --socket <path>` | stdio proxy Codex spawns to reach the daemon's tools, not for humans |
+| `status` | daemon state, history health, the last memory commit, schedules |
+| `history rebuild-jsonl \| backup \| check` | projection, snapshot, integrity check (`check` exits 1 on failure) |
+
+## Updates
+
+Ask the assistant to update itself, or run `tera update --workspace ~/assistant-workspace`. The bundled update skill calls the native updater directly without MCP. Codex updates through its own `codex update` command. Tera downloads the release binary and checksum, verifies both the target and embedded version details, keeps the current executable as a rollback copy, and replaces it atomically.
+
+The daemon exits only after the update command returns, so the turn that asked for the update still gets its reply. A systemd service comes back through `Restart=always`. A daemon started by hand stays down until you start it again. The update journal is committed only after Tera initializes the workspace and completes a real Codex app server handshake. If the replacement crashes before that point, the next Phoenix start restores the prior Tera and Codex executables and reports the rollback to the owner.
+
+Official release assets are `tera-x86_64-unknown-linux-gnu`, `tera-aarch64-unknown-linux-gnu` and `tera-aarch64-apple-darwin`, each with a matching `.sha256` file. The arm64 Linux build is made on glibc 2.35 so it runs on Raspberry Pi OS Bookworm. Builds made outside Git carry `unknown` as the commit SHA. Set `TERA_GIT_SHA` in the build environment when packaging from an exported source tree.
+
+## Workspace
+
+```
+<workspace>/
+  AGENTS.md WORKING.md      generated, rewritten every start
+  PERSONA.md                yours, written once, never touched again
+  SYSTEM.md                 the agent's notebook on this machine
+  MEMORIES/                 memory tree, a git repository tera commits to
+  .agents/skills/           skills you and the agent write, never touched by tera
+  .codex-home/              private CODEX_HOME: user config, auth symlink, tera's skills
+  .codex-home/contrib/      optional skills on offer, not loaded until installed
+  .runtime/                 socket, state.sqlite3, whatsapp_session.db
+  history/                  history.sqlite3, jsonl/, assets/, backups/
+  logs/                     daily log, pruned after 14 days
+  projects/ tasks/          Codex's working directories
+```
+
+Generated files carry an HTML comment marker and are rewritten every start, so an improved template reaches an existing workspace. Edit one by hand and Tera backs your copy up to `<file>.md.user-backup` and installs its own, so put your instructions in `PERSONA.md`, which is written once and left alone.
+
+Every package in `data/skills/` is discovered at build time, with no individual Rust registration, and installed under `<workspace>/.codex-home/skills/tera/`. Codex scans that tree because it scans CODEX_HOME, and Tera owns it outright, so the directory is deleted and rewritten on every start. That is the whole update story. Skills you write go in `.agents/skills/`, which Tera never touches, and copying one of Tera's out to that directory is how you keep a version of your own. The nightly memory pass also compacts repeated technical work into one candidate for a new or improved skill. It only suggests. Implementation waits for approval, and Codex delegates when useful.
+
+Optional skills live in `data/contrib/`. They are built in the same way but not installed. Tera writes them to `<workspace>/.codex-home/contrib/`, where Codex does not look. Ask the assistant for one in chat and it copies the skill into `.codex-home/skills/contrib/`. From then on Tera updates that copy on every start, and deleting the folder uninstalls it. The first one is `health`, which syncs Garmin Connect and Bluetooth health devices into a local database and gives briefs and trends.
+
+The audio skill uses [Aloud](https://github.com/isala404/aloud) locally for Q8 Audio8 speech recognition and synthesis. Setup verifies a pinned Aloud release under `<workspace>/.runtime/aloud/`. The exact Q8 GGUF models resolve through Aloud's Hugging Face support and remain cached for offline use. It transcribes audio or video soundtracks, creates WAV speech with the embedded voices, and can encode Ogg Opus replies that Tera sends as real WhatsApp voice notes. Nothing is billed per minute because inference stays on the machine.
+
+Codex reaches the daemon through six tools. They are `send_message`, `react`, `schedule`, `list_schedules`, `cancel_schedule` and `request_secret`. Scheduled and maintenance work starts on a fresh Codex thread. It inherits native Codex settings, and Codex owns any further delegation and worker model selection.
+
+The conversation model is native Codex configuration in `<workspace>/.codex-home/config.toml`. The file starts empty, so a fresh Tera uses Codex's current defaults. Tera creates it once and never rewrites it.
+
+Ask the assistant to change its model in chat. The bundled `model-config` skill handles native Codex settings, custom providers, safe API key lookup, validation and service restart. There is no model configuration MCP tool or separate Tera provider format.
+
+## Privilege posture
+
+Every Codex thread runs with `approvalPolicy: "never"` and `sandbox: "danger-full-access"`. The generated config repeats it and enables network access. If the application server asks for permission anyway, `answer_server_request` grants it automatically, including full filesystem write at `/`. Nothing pauses for review, because there is no human on the other end of an unattended WhatsApp turn.
+
+So any message past the owner check runs as an agent that can read, write and delete anything on the machine, run arbitrary shell commands, and reach the network, unreviewed. That is intentional, and it means the WhatsApp owner check is the entire security boundary here. Pair this to a shared or public number and anyone who can message it has a shell on your machine.
+
+## Deployment
+
+`deploy/tera.service` is a systemd **user** unit meant to run as the account that owns the Codex login and the pairing.
+
+```bash
+cp deploy/tera.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now tera
+```
+
+Add `sudo loginctl enable-linger "$USER"` to keep it running while logged out. It expects the binary at `~/.local/bin/tera` and installs nothing for you. Stop it with `SIGTERM` or `SIGINT`. The shutdown path listens for both to clear the typing indicator, release runtime state and remove the socket. Written but never run on Linux, since development happened on macOS.
+
+## Known rough edges
+
+- Codex calls `$CODEX_HOME/skills` a deprecated location and points new installs at `~/.agents/skills` instead. Tera's own skills live there anyway, because that keeps everything a workspace needs inside the workspace and leaves the home directory alone. Verified working on Codex CLI 0.149.0, and it needs rechecking whenever Codex moves.
+- Every thread is started with `project_root_markers = [".codex-home"]`, since Codex looks for the owner's `.agents/skills` only between the project root and the thread's working directory, and its default marker is `.git`, which the workspace does not have.
+- `rusqlite` is pinned at 0.39 on purpose. 0.40 needs `libsqlite3-sys` 0.38 while `whatsapp-rust-sqlite-storage` pins `^0.37`, and only one crate may link the native sqlite3 library. It moves when `whatsapp-rust` does.
+- The nightly memory pass runs as a real Codex turn over your history and is the least tested part of this. Nobody has watched one against a real model and confirmed the output is any good.
+- Turns have no elapsed time cap, so a hung tool can hold a worker indefinitely. Process death and a closed event stream are the recovery boundaries.
+- Schedules use the host's local time, not a fixed timezone. Fly somewhere with the laptop and a `07:30` brief stays at `07:30` wherever it now thinks it is.
+- History backups accumulate forever, one per daemon start, with nothing pruning them.
+- No fault injection suite. Recovery paths have unit tests, but nothing kills a live daemon during a write to see what happens.
+
+## Licence
+
+[AGPL 3.0 or later](LICENSE)

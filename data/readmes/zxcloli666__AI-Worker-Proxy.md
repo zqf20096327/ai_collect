@@ -1,0 +1,278 @@
+# 🚀 AI Worker Proxy: All AI Models in One API (Free & 100% Uptime)
+
+[![Deploy to Cloudflare Workers](https://img.shields.io/badge/Deploy-Cloudflare%20Workers-orange?logo=cloudflare)](https://workers.cloudflare.com/)
+[![OpenAI Compatible](https://img.shields.io/badge/OpenAI-Compatible-green)](https://openai.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+Tired of your AI API keys running out of credits or getting rate-limited? Want to use Claude or Gemini but your app only supports OpenAI?
+
+This is a **Free AI Gateway** that runs on Cloudflare Workers. It acts as a middleman: you send it an OpenAI-style request, and it routes it to **ChatGPT, Claude, Gemini, or even free local models**, rotating your API keys automatically so you never hit limits.
+
+- **💰 Cost:** $0 (Runs on Cloudflare's free tier - 100k requests/day).
+- **⚡ Setup time:** 5 minutes. No coding required.
+
+---
+
+## 🔥 Why You Need This
+
+*   **100% Uptime (Failover):** If OpenAI goes down, it instantly switches to Claude or Gemini. Your app never stops working.
+*   **Key Rotation:** Put in 5 different API keys. It will use them one by one. Bye-bye rate limits.
+*   **One API to Rule Them All:** Talk to Anthropic Claude 3.5, Google Gemini 2.0, and GPT-4o using the exact same code.
+*   **Stealth Configuration:** Change your routing logic via GitHub Variables without touching a single line of code.
+
+---
+
+## 🎮 How to Install (Easy Guide)
+
+You don't need to know how to code. Just follow these 4 steps to get your own private AI proxy.
+
+### Step 1: Fork this Repository
+Scroll to the top right of this GitHub page and click the **"Fork"** button. This creates your own copy of the project.
+
+### Step 2: Add Cloudflare Secrets to GitHub
+Your GitHub needs permission to push the code to your Cloudflare account.
+
+1. Go to your new forked repository.
+2. Click **Settings** (top tab) -> **Secrets and variables** (left sidebar) -> **Actions**.
+3. Click the green **"New repository secret"** button.
+
+You need to add two secrets here:
+
+*   **Secret 1 Name:** `CLOUDFLARE_ACCOUNT_ID`
+    *   *Where to get it:* Log into [Cloudflare Dashboard](https://dash.cloudflare.com). Look at the URL bar. It's the long string of numbers/letters after `dash.cloudflare.com/`. Copy that.
+*   **Secret 2 Name:** `CLOUDFLARE_API_TOKEN`
+    *   *Where to get it:* Go to [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens). Click **"Create Token"**. Select **"Edit Cloudflare Workers"** template. Click Continue -> Create Token. Copy the secret generated.
+
+### Step 3: Launch the Action (Deploy)
+1. Go to the **"Actions"** tab at the top of your GitHub repo.
+2. Click "I understand my workflows, go ahead and enable them" (if asked).
+3. On the left, click **"Deploy to Cloudflare"**.
+4. Click **"Run workflow"** -> **"Run workflow"**.
+
+Wait 1-2 minutes. When it turns green, your proxy is live! The URL will look like: `https://ai-proxy.YOUR-USERNAME.workers.dev`
+
+### Step 4: Add Your AI Keys in Cloudflare
+Now you just need to feed it your API keys (OpenAI, Claude, etc).
+
+1. Go to your [Cloudflare Dashboard](https://dash.cloudflare.com).
+2. Click **"Workers & Pages"** on the left sidebar.
+3. Click on your new worker (it should be named `ai-worker-proxy`).
+4. Go to the **"Settings"** tab -> **"Variables and Secrets"** (on the left).
+5. Under **Environment Variables**, click **"Add"**. Add these:
+
+| Variable Name | Value (Example) | What is it? |
+|--------------|-----------------|-------------|
+| `PROXY_AUTH_TOKEN` | `my-secret-password-123` | Make up a password. You will use this to connect to your proxy. |
+| `ANTHROPIC_KEY_1` | `sk-ant-xxx...` | Your Claude API Key |
+| `GOOGLE_KEY_1` | `AIza...` | Your Google Gemini API Key |
+| `OPENAI_KEY_1` | `sk-proj-...` | Your OpenAI API Key |
+
+Click **Save and Deploy**. You're done! 🎉
+
+---
+
+## 🤫 Secret Routing Config (No Code Edits!)
+
+You don't need to edit `wrangler.toml` or commit any code to change how your models behave. You can do it stealthily using **GitHub Variables**.
+
+This allows you to update your model lists or failover logic without anyone seeing it in your file history.
+
+1. Go to your GitHub Repo -> **Settings** -> **Secrets and variables** -> **Actions**.
+2. Click the **Variables** tab (next to Secrets).
+3. Click **New repository variable**.
+4. Name: `ROUTES_CONFIG`
+5. Value: Paste your JSON configuration here.
+
+> **Big configs are fine.** The deploy workflow writes the variable into `routes.json`, which is
+> bundled into the Worker script — there is no 5.1 kB text-binding limit any more. A single GitHub
+> variable still holds at most 48 kB, so if your JSON is larger, cut it anywhere and paste the rest
+> into `ROUTES_CONFIG_2`, `ROUTES_CONFIG_3` ... up to `ROUTES_CONFIG_9`. The workflow concatenates
+> the parts verbatim, in order, and fails with a clear message if the result is not valid JSON.
+> With no `ROUTES_CONFIG*` variable set, the `routes.json` committed in the repo is used as is.
+
+**Example `ROUTES_CONFIG` JSON:**
+```json
+{
+  "super-brain": [
+    {
+      "provider": "anthropic",
+      "model": "claude-3-opus-20240229",
+      "apiKeys": ["ANTHROPIC_KEY_1"]
+    },
+    {
+      "provider": "openai",
+      "model": "gpt-4-turbo",
+      "apiKeys": ["OPENAI_KEY_1"]
+    }
+  ],
+  "cheap-fast": [
+    {
+      "provider": "google",
+      "model": "gemini-2.0-flash",
+      "apiKeys": ["GOOGLE_KEY_1"]
+    }
+  ],
+  "search": [
+    {
+      "provider": "google",
+      "model": "gemini-3-flash-preview",
+      "apiKeys": ["GOOGLE_KEY_1"],
+      "grounding": true
+    }
+  ]
+}
+```
+
+**How to apply changes:**
+After saving the variable, just go to the **Actions** tab and run the **"Deploy to Cloudflare"** workflow again. It writes your config into `routes.json` and bundles it into the Worker automatically.
+
+---
+
+## 🚀 How to Use It
+
+Now you can use your proxy URL anywhere you normally use OpenAI.
+
+### In Python:
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    # 1. Put your Cloudflare Worker URL here + /v1
+    base_url="https://ai-proxy.YOUR-USERNAME.workers.dev/v1",
+    # 2. Put the PROXY_AUTH_TOKEN you created in Step 4 here
+    api_key="my-secret-password-123" 
+)
+
+# Use the custom name you defined in ROUTES_CONFIG (e.g., "super-brain")
+# Or use standard names like "gpt-4o"
+response = client.chat.completions.create(
+    model="super-brain", 
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+print(response.choices[0].message.content)
+```
+
+### In any App (like Chatbox, NextChat, typingmind):
+*   **API URL / Base URL:** `https://ai-proxy.YOUR-USERNAME.workers.dev/v1`
+*   **API Key:** `my-secret-password-123` (Your `PROXY_AUTH_TOKEN`)
+
+---
+
+## 🐘 Anthropic API Format Support
+
+Your proxy also supports the **Anthropic Messages API format**! This means you can use `@anthropic-ai/sdk` or any tool that speaks Anthropic's native API.
+
+**Endpoint:** `https://ai-proxy.YOUR-USERNAME.workers.dev/anthropic/`
+**Auth:** Same `Authorization: Bearer` token as OpenAI format
+
+### Python + Anthropic SDK:
+```python
+from anthropic import Anthropic
+
+client = Anthropic(
+    # Your proxy URL + /anthropic
+    base_url="https://ai-proxy.YOUR-USERNAME.workers.dev/anthropic",
+    # Use your PROXY_AUTH_TOKEN as the API key
+    api_key="my-secret-password-123"
+)
+
+message = client.messages.create(
+    model="deep-think",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello, Claude!"}]
+)
+print(message.content[0].text)
+```
+
+### With curl (non-streaming):
+```bash
+curl -X POST https://ai-proxy.YOUR-USERNAME.workers.dev/anthropic/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer my-secret-password-123" \
+  -d '{
+    "model": "deep-think",
+    "max_tokens": 1024,
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'
+```
+
+### With curl (streaming):
+```bash
+curl -N -X POST https://ai-proxy.YOUR-USERNAME.workers.dev/anthropic/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer my-secret-password-123" \
+  -d '{
+    "model": "deep-think",
+    "max_tokens": 1024,
+    "messages": [{"role": "user", "content": "Count to 5"}],
+    "stream": true
+  }'
+```
+
+> **How it works**: When you send an Anthropic-format request to a model using an `anthropic` or `anthropic-compatible` provider, the proxy forwards the request natively without any format conversion — preserving all Anthropic-specific features (system messages, content blocks, tool use, streaming events). If the model uses a different provider (e.g., `openai` or `google`), the proxy automatically converts between formats.
+
+---
+
+## 🔧 Adding a New API Provider (Manual)
+
+If you want to add a third-party API provider that's not in the default configuration, you can do it entirely through configuration — no coding needed, as long as the provider speaks OpenAI or Anthropic compatible protocol.
+
+### Step 1: Add Your API Key
+
+1. Go to **Cloudflare Dashboard** → **Workers & Pages** → **ai-worker-proxy** → **Settings** → **Variables**
+2. Click **"Add variable"** → Select **"Encrypt"**
+3. Add your API key as a secret, e.g. `MY_PROVIDER_KEY`
+4. Click **"Save and Deploy"**
+
+### Step 2: Update the routing config
+
+Edit the `ROUTES_CONFIG` GitHub Variable (or `routes.json` in the repo, if you deploy by hand) and add your provider route:
+
+```json
+{
+  "my-model": [
+    {
+      "provider": "openai-compatible",
+      "baseUrl": "https://api.your-provider.com/v1",
+      "model": "model-name",
+      "apiKeys": ["MY_PROVIDER_KEY"]
+    }
+  ]
+}
+```
+
+**Provider type reference:**
+
+| `provider` value | When to use | `baseUrl` required? |
+|---|---|---|
+| `anthropic` | Anthropic official API | No |
+| `anthropic-compatible` | Third-party Anthropic-compatible API | **Yes** |
+| `google` | Google Gemini API | No |
+| `openai` | OpenAI official API | No |
+| `openai-compatible` | Third-party OpenAI-compatible API | **Yes** |
+| `cloudflare-ai` | Cloudflare Workers AI binding | No |
+
+### Step 3: Deploy
+
+Push any commit to `main` (or manually re-run the **"Deploy to Cloudflare"** workflow in Actions). Done!
+
+> Want an example? See [examples/example-config.toml](examples/example-config.toml)
+
+---
+
+## 🔒 Security Warning
+
+**NEVER put your real API keys in the GitHub code.** Always put them in the Cloudflare Dashboard (Step 4). If you put them in the code, people will steal your keys.
+
+---
+
+## 💬 Support
+
+Found a bug? Need help?
+Open an issue in the [GitHub Issues](https://github.com/zxcloli666/AI-Worker-Proxy/issues) tab.
+
+### ⭐ If this saved you money or time, please drop a Star on the repo! It helps a lot!
+
+---
+
+*Tags for search algorithms:* `openai proxy`, `ai gateway`, `api proxy`, `cloudflare workers ai`, `anthropic proxy`, `claude proxy`, `gemini proxy`, `multi provider ai`, `ai load balancer`, `openai compatible api`, `ai failover`, `free ai proxy`, `ai token rotation`, `gpt-4 proxy free`, `smm ai tools`, `bypass ai rate limit`

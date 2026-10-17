@@ -1,0 +1,127 @@
+# Cache App
+
+<a href="https://www.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/cachd.app-000000?logo=vercel&logoColor=white" alt="cachd.app"></a>
+<a href="https://docs.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Docs-Read-E6E6E6?labelColor=C3C3C3&color=E6E6E6" alt="Documentation"></a>
+<a href="https://github.com/gilsmt/cache-app/releases" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/github/v/release/gilsmt/cache-app" alt="Release"></a>
+
+Collect, organize, and rediscover everything you've saved across platforms.
+
+[![Cache App Preview](app/opengraph-image.png)](https://www.cachd.app)
+
+## Why Cache
+
+Bookmarking is broken. When you hit "save" on a tweet, a video, or a post, you are making a deliberate decision that _this is worth remembering_. But that intent is immediately lost. It vanishes into a list you never revisit, scattered across a dozen platforms with no connection to your actual workflow or goals. The feeds are designed to keep you scrolling, not to help you resurface what you need, when you need it. Existing tools treat the "save" action as an afterthought, a dead end rather than a starting point.
+
+Cache exists because that signal is too valuable to waste. It treats the act of saving as a first-class event and builds the entire experience around turning that intent into action. It does not replace your platforms; it respects the intent behind why you use them and gives it a destination.
+
+<a href="https://deepwiki.com/gilsmt/cache-app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Ask-DeepWiki-E6E6E6?labelColor=C3C3C3&color=E6E6E6" alt="Ask DeepWiki"></a>
+
+## What [Cache](https://www.cachd.app) does for you
+
+- Integrate Cache into your day-to-day by bringing bookmarks from browsers, Instagram, TikTok, YouTube, X, GitHub, Pinterest, Google Photos, MCP, and more into one place. Unlike other tools that cap saves, Cache has no limit.
+- Smart collections use AI to rank saved items by relevance and adapt to your preferences over time.
+- See a 1-line summary for each collection that updates as you add items, then expand it for more detail.
+- See an instant overview of your library metrics.
+- Just ask the Cache AI agent and search across all your saved content.
+- Create custom agents for daily digests, summaries, weekly reminders, and more.
+- Write notes alongside your bookmarks.
+- Share a live view of any collection with anyone, even if they do not use Cache.
+- Capture and sync saved content from anywhere on the web with the browser extension.
+- Send your saved content to other tools you already use.
+- Designed to be simple, low maintenance, and portable.
+
+The Cache App is still evolving, and its features and workflows will continue to change.
+
+## Quickstart
+
+### Cloud-hosted: [www.cachd.app](https://www.cachd.app)
+
+<a href="https://www.cachd.app" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Open-cachd.app-3B3B3B?labelColor=1A1A1A" alt="Open cachd.app"></a>
+
+### Self hosting
+
+You can self-host the Cache App for total control over your data and design. Cache has zero telemetry by default.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgilsmt%2Fcache-app&env=DATABASE_URL,BETTER_AUTH_SECRET,GEMINI_API_KEY,AI_GATEWAY_API_KEY)
+
+### Prerequisites
+
+- [Node.js 24+](https://nodejs.org/)
+- PostgreSQL 12+ (local or remote)
+- A [Google Gemini API](https://aistudio.google.com/apikey) or an [AI Gateway](https://vercel.com/docs/ai-gateway) key to route any provider (`CACHE_AI_MODEL` selects a different model; see `.env.example`)
+- Docker (optional)
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/gilsmt/cache-app.git
+cd cache-app
+
+# Install dependencies
+bun install
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your database URL and API keys
+
+# Set up the database
+bun run db-deploy
+
+# Start the development server
+bun run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### Environment Variables
+
+See the [environment variables reference](.env.example) for the full list.
+
+## Tech Stack
+
+<details>
+<summary>Next.js · Bun · PostgreSQL · Prisma ORM · Better Auth · Tailwind — and more</summary>
+
+<a href="https://www.typescriptlang.org"><img src="https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square" alt="TypeScript"></a>
+<a href="https://prisma.io"><img width="122" height="20" src="http://made-with.prisma.io/indigo.svg" alt="Made with Prisma" /></a>
+<a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/tailwindcss-0F172A?&logo=tailwindcss" alt="Tailwind CSS"></a>
+
+| Category                  | Technology                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Framework**             | [Next.js](https://nextjs.org/) (App Router)                                                                     |
+| **UI**                    | [React](https://react.dev/), [Base UI](https://base-ui.com/), [Tailwind CSS](https://tailwindcss.com/)          |
+| **Rich Text**             | [Lexical](https://lexical.dev/), [Streamdown](https://github.com/vercel/streamdown)                             |
+| **Database**              | PostgreSQL, Redis                                                                                               |
+| **Auth**                  | [Better Auth](https://better-auth.com/)                                                                         |
+| **Validation**            | [Zod](https://zod.dev/), [@t3-oss/env-nextjs](https://env.t3.gg/)                                               |
+| **AI/LLM**                | [AI SDK](https://sdk.vercel.ai/), [AI Gateway](https://vercel.com/ai-gateway), [Gemini](https://ai.google.dev/) |
+| **Agentic Web Search**    | [Tavily](https://tavily.com/)                                                                                   |
+| **Data Fetching**         | [SWR](https://swr.vercel.app/), [nuqs](https://nuqs.vercel.app/)                                                |
+| **i18n**                  | [gt-next](https://generaltranslation.com)                                                                       |
+| **Subscriptions**         | [Stripe](https://stripe.com/)                                                                                   |
+| **Durable Execution**     | [Workflow SDK](https://workflow-sdk.dev/)                                                                       |
+| **Security (Cloud-only)** | [Arcjet](https://arcjet.com/) (WAF, rate limiting, PII redaction)                                               |
+| **Linting**               | [Ultracite](https://ultracite.dev/) (Biome)                                                                     |
+| **Date Handling**         | [Day.js](https://day.js.org/), [chrono-node](https://github.com/wanasit/chrono)                                 |
+
+</details>
+
+## Cache App MCP
+
+Cache App exposes an [MCP](https://modelcontextprotocol.io/) server so AI agents like Codex, Claude, Cursor, and others can read and write your library directly. Search bookmarks, save new items, list collections, and more.
+
+Endpoint: `https://www.cachd.app/mcp`
+
+- [llms.txt](https://www.cachd.app/llms.txt) — agent context and tool reference
+- Generate a setup prompt with your Bearer token from the app (Integrations → MCP)
+
+## Contributing
+
+Please see the [Contributing Guide](CONTRIBUTING.md) for details.
+
+Open an [issue](https://github.com/gilsmt/cache-app/issues?q=sort%3Aupdated-desc+is%3Aissue+state%3Aopen+) if you believe you've encountered a bug.
+
+## License
+
+Licensed under the Apache License 2.0 - see the [LICENSE file](LICENSE) for details.

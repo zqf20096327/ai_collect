@@ -1,0 +1,124 @@
+<h1 align="center">Senior Fable</h1>
+
+<p align="center">
+  <em>The expensive model decides. The cheap models type.</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-111111?style=flat-square" alt="Claude Code plugin">
+  <img src="https://img.shields.io/github/v/release/AndyShaman/senior-fable?style=flat-square&color=111111" alt="Release">
+  <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
+</p>
+
+**Senior Fable** is a Claude Code plugin that turns your top-tier session model into a **tech lead**: it keeps decomposition, architecture, contested decisions and final synthesis — and routes everything else to a roster of cheaper subagents. Feature-sized coding goes to an **implementer**, mechanical work to a **worker**, long investigations to a read-only **investigator**, and finished work gets an independent **reviewer**.
+
+The result: your most expensive tokens are spent only where top-tier judgment matters, and the messy exploration stays out of the main context window.
+
+## Why
+
+Running a frontier model on boilerplate is like having your staff engineer format JSON. Two things are wasted:
+
+1. **Tokens / usage limits.** Every test file, rename and formatting pass burns top-tier budget.
+2. **Context.** Reading 40 files to find one bug pollutes the main conversation. After a compact, the reasoning that mattered may be gone.
+
+Senior Fable fixes both with an orchestrator–worker pattern: subagents run in their own context windows and return only distilled conclusions.
+
+## The roster
+
+Roles, not model names. The plugin ships working defaults; every tier is yours to override.
+
+| Role | Work | Ships as | Effort |
+|---|---|---|---|
+| **lead** | decomposition, architecture, reviewing results, final synthesis | your session model | high (see below) |
+| **implementer** | feature-sized code where decisions live inside the task | `implementer` (opus) | medium |
+| **worker** | tests to a spec, boilerplate, renames, scoped changes of 1–3 files | `fast-worker` (sonnet) | medium |
+| **investigator** | long digs that return a conclusion, not a dump | `deep-reasoner` (sonnet, no file editing; the lead passes `model: "opus"` for digs whose conclusion goes straight into a spec) | high |
+| **reviewer** | independent review of finished work | `reviewer` (opus, no file editing) — or any different-family reviewer you have (e.g. a Codex CLI plugin) | high |
+
+Why these effort levels: Anthropic's guidance for the Claude 5.5 generation is to start low and raise effort only where you have measured a gain. Opus 5.5 starts at **medium** (it matches or beats Opus 5 at high). Sonnet 5.5 starts at **medium** for well-specified tasks and **high** for harder or longer ones — at `xhigh` it costs about what Opus does and starts review rounds of its own. Fable 5.1 starts at **high**. The Fable 5.1 system card notes that at higher effort the top tier starts editing outside the task (doc comments in neighbouring files, extra docs, an unasked CI job) — a risk for roles that edit, not for a lead that doesn't. Effort is set in each agent's `effort:` frontmatter field.
+
+Design decisions the skill enforces:
+
+- **Writer–verifier split.** Review crosses a role boundary: the reviewer never saw the reasoning that produced the change, so it judges the result on its own terms. Routine self-re-checking is explicitly *not* review — Claude 5 generation models already verify their own work.
+- **No file editing for observer roles.** `deep-reasoner` and `reviewer` have `Write`/`Edit` denied at the harness level and are instructed to change nothing — the same pattern Claude Code's built-in Explore agent uses. (Honest caveat: `Bash` stays available, so this is a strong guardrail, not a cryptographic guarantee.)
+- **Self-contained specs, with the user's words verbatim.** Subagents see CLAUDE.md but not your conversation, so every delegation carries its goal, file scope, constraints and definition of done — and a `User's words` line quoting the request. A lead that paraphrases tends to narrow, widen or silently resolve the request, and the subagent then builds the paraphrase (the Fable 5.1 system card documents distorted and even fabricated user quotes in subagent briefings).
+- **Blind review.** The reviewer is never told who or what wrote the change: a model that knows the author is from its own family grades more leniently (self-recognition bias, also documented in the system card).
+- **Hooks are policy.** A denied command is not a broken check; the skill forbids splitting or rerouting commands to get past a hook.
+- **Failure triage.** A transient failure (rate limit, turn cap) means retry; only a wrong result means the spec was missing something — and a spec that produced a wrong result is never resent unchanged.
+- **Delegation restraint.** Claude 5 models delegate readily; the skill spends its words on when *not* to spawn: nothing that fits in a handful of tool calls, no fleets where one agent will do, no delegating to double-check yourself.
+
+## Make it your own
+
+Two knobs, no forking:
+
+**1. Roster override.** Add a `## Senior Fable roster` block to your user or project CLAUDE.md — it outranks the plugin's defaults. Format: one `role: model` line per role you want to change; unlisted roles keep their defaults. Model values are anything Claude Code accepts — an alias (`haiku`, `sonnet`, `opus`), a full model ID, or a tool you route to (e.g. a different-family CLI for `reviewer`).
+
+```markdown
+## Senior Fable roster
+worker: haiku
+reviewer: codex (via the Codex CLI plugin), effort high
+```
+
+**2. Effort.** Often the better cost lever than switching tiers: a stronger model at low effort can beat a weaker one at high effort, for less. Plugin agents support an `effort:` frontmatter field — set it per role, or note it in your roster block.
+
+One warning: the `CLAUDE_CODE_SUBAGENT_MODEL` environment variable overrides both frontmatter and per-call model choices. Set globally, it silently collapses the entire roster onto one model.
+
+## Install
+
+```
+/plugin marketplace add AndyShaman/senior-fable
+/plugin install senior-fable@senior-fable
+```
+
+Restart the session, make sure you're on your top-tier model, then activate:
+
+```
+/senior-fable
+```
+
+Give it substantial multi-step work and watch the panel: purple is the investigator digging, green is the implementer building, blue is the worker typing, red is the reviewer judging.
+
+## Requirements & notes
+
+- **Model:** built for sessions running your strongest tier (Claude Fable 5.1, or Opus 5.5 if that's your top). On your cheapest model the skill deliberately does not apply — there is nothing below it to route to.
+- **Aliases:** the agents ship with the `opus` and `sonnet` aliases, which resolve to Opus 5.5 and Sonnet 5.5 on the Anthropic API (Claude Code v2.1.284+). On Amazon Bedrock and Google Cloud the `sonnet` alias resolves to Sonnet 4.5 — pin full model IDs there, in the agent files or a roster override.
+- **Subscription pools:** on Max plans Fable models are capped at 50% of the weekly limit while Opus and Sonnet draw from the whole of it. Delegation moves spend from the small pool to the large one — one more reason the lead does lead work only.
+- **A second model family is optional.** If you have an external reviewer (such as the OpenAI Codex plugin), point the reviewer role at it for a cross-family opinion; otherwise the bundled read-only `reviewer` covers the writer–verifier split in a fresh context.
+- **Billing:** on subscription plans this saves your top-tier usage limits; on API billing it saves money directly.
+- **Compaction-safe.** The skill is small enough to be re-attached whole after a context compact, and instructs the model to re-invoke itself if delegation behavior fades.
+
+## What's inside
+
+```
+skills/senior-fable/SKILL.md   # the tech-lead playbook: roster, spec shape, review boundary
+agents/implementer.md          # feature-sized coding from a spec — flags defects instead of building them
+agents/fast-worker.md          # mechanical execution — verified, shortest working diff
+agents/deep-reasoner.md        # long investigations — no file editing, returns distilled findings
+agents/reviewer.md             # independent review — no file editing, reports everything, sorted by severity
+```
+
+## Design notes
+
+**v1.4.0 (October 2026).** Review is now two-sided and bounded. The reviewer gets the spec along with the change and is asked for two reads: what is wrong, and what the change contains that the spec did not ask for. The lead fixes only findings that name something concrete — an input that breaks, an unmet requirement, unrequested work — and declines the rest in a line. The second round is a check of the first round's blocking findings, not a fresh hunt; a third needs the user's go-ahead. A bug gets its reproduction before its fix: the investigator delivers the failing command or the text of the test, the implementer shows it red, then fixes until the same command is green. Long reports travel as files: the spec gains a `Report to` line, and each agent writes its full report there and answers with a few lines plus the path — final messages past ~2,500 characters were being cut off in transit.
+
+**v1.3.0 (Opus 5.5 / Sonnet 5.5, September 2026).** Effort re-tuned to Anthropic's 5.5 guidance: worker `medium`, investigator `high`, lead `high`. Observer roles (`deep-reasoner`, `reviewer`) can no longer spawn subagents of their own. The lead delegates to roster agents only — built-in agents and forks inherit the session model. Fresh-or-continued context is now per role: reviewer and worker always start fresh; implementer and investigator are continued within their one-hour prompt cache (`experimental.cacheTtl: 1h`, Claude Code v2.1.248+).
+
+**v1.2.2.** Reviewer effort pinned to `high` in its frontmatter (it used to inherit the session's). Investigator stays on Sonnet for the grind, with a per-call `opus` override for digs whose conclusion becomes a spec.
+
+**v1.2.1.** Reuse of a running agent is now bounded by the subagent prompt-cache TTL: SendMessage within ~5 minutes of its last turn (or when its context is needed), a fresh spawn otherwise. Measured on 247 resumes: 77% within 5 minutes hit the cache; after 5 minutes cache_read drops to 0 and the whole prefix (~130K tokens) is rewritten, which costs more than a new agent with a compact spec.
+
+**v1.2 (Fable 5.1, September 2026).** Per-role effort (medium for the top tiers, xhigh for Sonnet 5), investigator moved to Sonnet 5, `User's words` line in the spec, blind review, hook-is-policy rule, the 50% Fable pool, and reuse of a running agent over a new spawn (a new spawn rewrites the prompt cache from zero). All of it traces to the Fable 5.1 system card and Anthropic's migration guides.
+
+**v1.1.** Reworked for Claude 5 generation models following Anthropic's July 2026 context-engineering guidance: rules the model no longer needs were removed (mandatory verification steps, report-format gates, rigid failure procedures), and what remains is mechanics the model cannot infer — model resolution order, billing tiers, harness behavior — plus interfaces enforced by tool permissions rather than prose.
+
+## Related work
+
+- [wshobson/agents](https://github.com/wshobson/agents) — the canonical per-agent model-tier marketplace that inspired the routing idea.
+
+## Keywords
+
+Claude Code plugin · multi-agent orchestration · subagents · token optimization · model routing · Claude Fable 5.1 · Opus 5.5 · Sonnet 5.5 · effort levels · tech-lead pattern · orchestrator–worker · writer–verifier · context isolation · agent delegation
+
+## License
+
+MIT © [Andy Shaman](https://github.com/AndyShaman)

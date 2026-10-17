@@ -1,0 +1,74 @@
+# Boxxy
+
+**A self-improving Linux terminal powered by AI characters.**
+
+![Boxxy](https://i.imgur.com/7NtOXBp.png)
+
+Boxxy is a full terminal emulator with an agentic AI layer — **BoxxyClaw** — built directly into it. Unlike chat-window add-ons, BoxxyClaw has eyes on your shell, reads your terminal buffer, remembers your preferences, and can autonomously fix broken dependencies, manage system configs, and run your scripts. Just press `Ctrl+/` and you're in.
+
+---
+
+## Install
+Boxxy is currently in Preview. 
+
+**Native Nightly** (Requires GTK 4.22, libAdwaita 1.9)
+```bash
+curl -sSf https://raw.githubusercontent.com/boxxy-dev/boxxy/main/scripts/install.sh | sh
+```
+
+**Flatpak Nightly**
+```bash
+curl -O https://boxxy-dev.github.io/boxxy-flatpak-remote/boxxy.gpg && \
+  flatpak remote-add --user --if-not-exists --gpg-import=boxxy.gpg \
+  boxxy https://boxxy-dev.github.io/boxxy-flatpak-remote/repo && \
+  flatpak install --user boxxy dev.boxxy.BoxxyTerminal
+```
+
+---
+
+## Architecture
+
+| Crate | Role |
+| :--- | :--- |
+| `boxxy-app` | GTK4/Adwaita UI |
+| `boxxy-agent` | Host-level daemon — PTY management, shell tools, character claims, D-Bus IPC |
+| `boxxy-vte` | Headless terminal engine written in pure Rust |
+| `boxxy-claw` | Agentic intelligence layer — characters, memory, skills, toolbox |
+
+---
+
+## Supported Models
+
+| Provider | Model Name | Model ID |
+| :--- | :--- | :--- |
+| **Google Gemini** | Gemini 3.8 Flash | `gemini-3.8-flash` |
+| **Anthropic** | Claude Fable 5.1 | `claude-fable-5-1` |
+| | Claude Sonnet 5 | `claude-sonnet-5` |
+| | Claude Opus 5 | `claude-opus-5` |
+| **OpenAI** | GPT-6 Astra | `gpt-6-astra` |
+| | GPT-5.6 Sol | `gpt-5.6-sol` |
+| **DeepSeek** | DeepSeek-V4.1-Flash | `deepseek-flash` |
+| **Ollama** | Local Models | Any installed model (`ollama run ...`) |
+| **OpenRouter** | OpenRouter Models | Any OpenRouter model ID |
+
+> [!NOTE]
+> Need support for another model? Please [open an issue](https://github.com/boxxy-dev/boxxy/issues) to request it!
+
+---
+
+## Documentation
+
+Full docs at **[boxxy.dev](https://boxxy.dev)**
+
+- [Getting Started](https://boxxy.dev/getting-started)
+- [How It Works](https://boxxy.dev/how-it-works)
+- [Characters](https://boxxy.dev/characters)
+- [Skills](https://boxxy.dev/skills)
+- [MCP Support](https://boxxy.dev/mcp)
+- [Development](https://boxxy.dev/development)
+
+---
+
+## License
+
+MIT

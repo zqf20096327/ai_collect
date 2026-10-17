@@ -1,0 +1,646 @@
+﻿<p align="center">
+  <img src="assets/logo.png" alt="CloseClaw Logo" width="1200">
+</p>
+
+## Welcome Contributing! Windows First!
+
+[English](README.md) | [简体中文](README_zh.md)
+
+<p align="center">
+  <h1>Lightweight • Secure • Practical Agent</h1>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
+  <img alt="Status" src="https://img.shields.io/badge/Runtime-Stable-1f883d">
+  <img alt="Channels" src="https://img.shields.io/badge/Channels-CLI%20%7C%20Telegram%20%7C%20Feishu%20%7C%20Discord%20%7C%20WhatsApp%20%7C%20QQ-0a7ea4">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-f2cc60">
+</p>
+
+> 🔥 **CloseClaw** is a lightweight, security-focused and practical OpenClaw-style Python framework. It is an personal agent for local and channel-based automation, with built-in guardrails, task scheduling, and memory infrastructure.
+
+---
+
+# 📷 Preview
+
+<p align="center">
+  <table>
+    <tr>
+      <td align="center" width="33%"><strong> 📚 Professional Learning Helper</td>
+      <td align="center" width="33%"><strong> ⏰ 24/7 Online News Collcetor</td>
+      <td align="center" width="33%"><strong> 🔜 On Call Personal Life Assistant</td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/preview-1.png" alt="Professional Learning Helper" width="100%"></td>
+      <td align="center"><img src="assets/preview-2.png" alt="24/7 Online News Collcetor" width="100%"></td>
+      <td align="center"><img src="assets/preview-3.png" alt="Personal Life Assistant" width="100%"></td>
+    </tr>
+  </table>
+</p>
+
+---
+
+# 🤔 Why CloseClaw
+
+- ## ⚡ **Fast to Deploy**
+- Lightweight, Easy-to-Deploy, and equipped with a guarded orchestration loop to ensure robust performance. Practical personal AI agents, ready in a minute.
+
+- ## 🧠 **Structured Memory Management**
+- A structured Memory Management System, including long-term memory constrcution and vectorized memory retrieval support. Long-term memory guaranteed. Fully customizable cognition.
+
+- ## 🛡️ **Effective Security Assurance**
+- A clear and rigorous Sandbox Permission System, including an Guardian-Review mechanism and lightweight Windows OS-level Sandbox. Stop worrying about AI hallucinations deleting your inbox.
+
+- ## 💓 **Proactive Execution**
+- Equipped with Heartbeat and Cron services to support handling any scheduled tasks and wake up periodically to deal with long-term tasks automatically. Proactive Agent, always be with you.
+
+- ## 🔌 **MCP Extensibility**
+- Supporst MCP-Native Extensibility, Being compatible with any OpenClaw skills and tools. Massive ecosystem. Easy to arm your agent.
+
+---
+
+# ✨ Key Features
+
+> [!IMPORTANT]
+> **Guardian Mechanism** Traditional sandboxes mainly protect local files. CloseClaw Guardian Agent also protects connected assets (mailboxes, cloud repos, third-party APIs) and any MCP touchable content.
+
+### 👮 Guardian Monitor Design
+- Guardian Agent reviews actions intelligently and intercepts high-impact connected actions before execution.
+- Keeps MCP/network tools under the same safety policy, allowing to configure freely the High-risk tool supervision pool in `config.yaml`.
+
+### 🔒 Consensus Mode = Safer Automation
+- In `consensus` mode, Guardian Agent can auto-review sensitive calls first.
+- Reduces constant approval fatigue while preserving strict control.
+
+### 🧱 Solid Local Foundation 
+- `PathSandbox` enforces hard local boundaries inside `workspace_root`.
+- Blocks path traversal and out-of-workspace writes before tool execution.
+
+### 🪟 OS-Level Lightweight Sandbox 
+- `Restricted Token`, `Low Integrity and Job-Object constraints` enforce OS-level restricted execution for protected tools (default: `shell`).
+- Higly customizable: only tools in `os_sandbox_protected_tools` pay the isolation cost; low-risk tools (e.g. `read_file`) stay fast.
+- Fail-safe option supported: `os_sandbox_fail_closed: true` blocks execution when sandbox backend is unavailable.
+
+```text
+Tool Call
+  -> SafetyGuard 
+  -> PathSandbox 
+  -> Guardian/Auth 
+  -> OS-Level Sandbox
+  -> Execute
+```
+
+---
+
+# 📡 Channel Support
+
+| Channel | Positioning | Startup Hint |
+| --- | --- | --- |
+| `CLI` | 💻 Fast, local, and pipe-friendly | Local interactive terminal |
+| `Telegram` | ✈️ Mobile command center (Recommended) | Polling started |
+| `Feishu / Lark` | 🏢 Professional workflow | Prints webhook address (host/port) |
+| `Discord` | 🎮 Rich markdown support | Gateway started |
+| `WhatsApp` | 🟢 Reachable on networks via bridge | Prints bridge URL |
+| `QQ` | 🐧 Classic Chinese social ecosystem | Gateway started |
+
+WhatsApp bridge protocol details:
+- [docs/WhatsApp_Bridge_Protocol.md](docs/WhatsApp_Bridge_Protocol.md)
+
+---
+
+# 🤖 LLM Providers
+
+| Provider | Runtime Path | Notes |
+| --- | --- | --- |
+| `openai` / `openai-compatible` | Native provider path | Default-friendly, quick setup |
+| `gemini` | LiteLLM runtime | Requires `.[providers]` extra |
+| `anthropic` | LiteLLM runtime | Requires `.[providers]` extra |
+
+---
+
+# 🚀 Quick Start
+
+### 1) Install
+
+```bash
+git clone https://github.com/closeclaw/closeclaw.git
+cd closeclaw
+pip install -e .
+```
+
+Optional extras:
+
+```bash
+pip install -e ".[telegram]"
+pip install -e ".[discord]"
+pip install -e ".[whatsapp]"
+pip install -e ".[qq]"
+pip install -e ".[voice]"
+pip install -e ".[fastapi]"
+pip install -e ".[providers]"
+```
+
+> 📝 `.[providers]` installs `litellm`, required for `gemini` and `anthropic` provider modes.
+> 📝 `.[voice]` installs `faster-whisper` for channel voice transcription. You also need `ffmpeg` available in PATH.
+
+### 2) Create config
+
+```bash
+cp config.example.yaml config.yaml
+```
+
+Minimal config:
+
+```yaml
+agent_id: "closeclaw-main"
+workspace_root: "your/workspace"
+
+llm:
+  provider: "openai-compatible"
+  model: "gpt-4"
+  api_key: "sk-..."
+  base_url: "https://api.openai.com/v1"
+
+channels:
+  - type: "cli"
+    enabled: true
+
+safety:
+  admin_user_ids: ["cli_user"]
+  default_need_auth: false
+```
+
+### 3) Run
+
+Agent mode (CLI only):
+
+```bash
+closeclaw agent --config config.yaml
+```
+
+Gateway mode:
+
+```bash
+closeclaw gateway --config config.yaml
+```
+
+### ✨And that's your agent!
+
+---
+
+## 🐳 Docker (Optional)
+
+Docker support is optional. If you want a reproducible runtime and easier deployment handoff, use this section.
+
+### 1) One-time prep (copy/paste)
+
+macOS/Linux:
+
+```bash
+cp .env.example .env
+cp config.example.yaml config.yaml
+mkdir -p workspace runtime-data
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+Copy-Item config.example.yaml config.yaml
+New-Item -ItemType Directory -Force -Path workspace, runtime-data
+```
+
+### 2) Minimal required config check
+
+In `config.yaml`, make sure:
+
+- `workspace_root: "/workspace"` (important for Linux containers)
+- At least one channel is enabled for your target mode:
+  - `agent` mode: `cli` can be enabled
+  - `gateway` mode: at least one non-CLI channel must be enabled
+- Your provider/channel dependencies are included in `.env` `INSTALL_EXTRAS`
+  - Example for Telegram gateway: `INSTALL_EXTRAS=[providers,telegram]`
+
+### 3) Build and start (docker compose recommended)
+
+```bash
+docker compose build
+docker compose up -d closeclaw-gateway
+docker compose ps
+docker compose logs -f closeclaw-gateway
+```
+
+### 4) Health verification (important)
+
+Gateway container health:
+
+```bash
+docker compose exec closeclaw-gateway closeclaw runtime-health --config /app/config.yaml --mode gateway --json
+```
+
+CLI profile health:
+
+```bash
+docker compose run --rm closeclaw-cli runtime-health --config /app/config.yaml --mode agent --json
+```
+
+Expected result:
+
+- Exit code `0`
+- JSON contains `"healthy": true`
+
+### 5) Common mistakes (quick fix)
+
+- `workspace_root does not exist: /app/D:`
+  - Cause: Windows path in `config.yaml` inside Linux container.
+  - Fix: set `workspace_root: "/workspace"`.
+- `No channels enabled for mode=gateway`
+  - Cause: only CLI enabled while running gateway mode.
+  - Fix: enable at least one non-CLI channel.
+- `python-telegram-bot is required`
+  - Cause: channel dependency not installed in image.
+  - Fix: set `.env` `INSTALL_EXTRAS=[providers,telegram]`, then rebuild.
+- `docker compose run --rm closeclaw-cli closeclaw ...` fails
+  - Cause: duplicated `closeclaw` command.
+  - Fix: use `docker compose run --rm closeclaw-cli runtime-health ...`.
+
+### 6) Stop and cleanup
+
+```bash
+docker compose down
+```
+
+### 7) Optional smoke test script
+
+Run with Bash:
+
+```bash
+bash tests/test_docker.sh
+```
+
+On PowerShell, call Bash explicitly:
+
+```powershell
+bash tests/test_docker.sh
+```
+
+Operational hardening details are documented in [docs/Docker_Runbook.md](docs/Docker_Runbook.md).
+
+---
+
+## 🎯 Run Modes
+
+| Mode | What runs | Typical usage |
+|---|---|---|
+| `agent` | CLI only | Local interactive debugging / development |
+| `gateway` | Non-CLI channels only | Bot gateway deployment |
+| `all` | CLI + all enabled channels | Full local integration run |
+
+---
+
+## 🧱 Architecture Overview
+
+```text
+closeclaw/
+├─ runner.py                              # Runtime entry + channel/heartbeat/cron orchestration
+├─ agents/
+│  └─ core.py                             # AgentCore: orchestration loop and execution lifecycle
+├─ services/
+│  ├─ tool_execution_service.py           # Tool routing + middleware + auth handling
+│  └─ context_service.py                  # Context shaping, compaction, transcript windowing
+├─ memory/
+│  └─ memory_manager.py                   # Memory retrieval and persistence coordination
+├─ channels/                              # CLI / Telegram / Feishu / Discord / WhatsApp / QQ adapters
+├─ tools/                                 # File / Shell / Web / Scheduler / Memory helper tools
+└─ mcp/                                   # MCP transport, pool, bridge, and health integration
+```
+
+### Core responsibilities
+- `runner`: startup orchestration (channels, heartbeat, cron, agent lifecycle)
+- `AgentCore`: orchestration loop + tool decision and execution flow
+- `ToolExecutionService`: tool routing, middleware, auth interactions
+- `ContextService`: transcript shaping and compaction policy
+- `MemoryManager`: memory retrieval and persistence layer
+
+### Main modules
+- `closeclaw/runner.py`
+- `closeclaw/agents/core.py`
+- `closeclaw/services/tool_execution_service.py`
+- `closeclaw/services/context_service.py`
+- `closeclaw/memory/memory_manager.py`
+
+---
+
+## 🔐 Security Model
+
+CloseClaw applies layered controls:
+
+1. ✅ **Human authorization**
+   - Tools with `need_auth=True` require explicit approval.
+2. ✅ **Workspace sandbox**
+   - File paths normalized and constrained to `workspace_root`.
+3. ✅ **Command blacklist**
+   - High-risk shell patterns blocked before execution.
+4. ✅ **Audit logging**
+   - Runtime operations logged to `safety.audit_log_path`.
+
+---
+
+## 🧰 Built-in Tooling
+
+Tool groups:
+- 📁 File tools: read/write/edit/delete/list/exists/size/line-range ops
+- 🖥️ Shell tools: shell execution + pwd
+- 🌍 Web tools: web_search + fetch_url
+- ⏲️ Scheduler helper: call_cron
+- 🧠 Memory helpers: write/edit memory file
+
+Web search behavior:
+- Provider currently targets Brave Search API
+- Disabled by default until `web_search.enabled=true` and key is configured
+
+---
+
+## ⚙️ Configuration Reference
+
+### `llm`
+Key fields: `provider`, `model`, `api_key`, `base_url`, `temperature`, `max_tokens`, `timeout_seconds`
+
+Gemini example:
+
+```yaml
+llm:
+  provider: "gemini"
+  model: "gemini-2.5-flash"
+  api_key: "YOUR_GEMINI_API_KEY"
+  temperature: 0.2
+  max_tokens: 4096
+```
+
+Anthropic example:
+
+```yaml
+llm:
+  provider: "anthropic"
+  model: "claude-3-7-sonnet"
+  api_key: "YOUR_ANTHROPIC_API_KEY"
+  temperature: 0.2
+  max_tokens: 4096
+```
+
+### `web_search`
+
+```yaml
+web_search:
+  enabled: false
+  provider: "brave"
+  brave_api_key: "BSA-..."
+  timeout_seconds: 30
+```
+
+### Other high-impact sections
+- `safety`: admins, default auth, blacklist, audit settings
+- `context_management`: token windows, thresholds, retention
+- `orchestrator`: steps, wall-time, no-progress limits
+- `heartbeat`: interval, quiet-hours, queue guards, routing
+- `cron`: store path, timezone, enable/disable
+
+### `Memory and Soul` (workspace personalization)
+
+After first run, go to your workspace-local folder:
+
+```text
+<workspace_root>/CloseClaw Memory/
+```
+
+You can personalize runtime behavior by editing these files:
+- `AGENTS.md`: agent policy/persona and collaboration preferences
+- `SOUL.md`: long-term identity, tone, and behavioral style
+- `USER.md`: user-specific preferences and constraints
+- `TOOLS.md`: tool usage conventions and boundaries
+- `SKILLS.md`: skill-level guidance and trigger conventions
+- `HEARTBEAT.md`: periodic proactive behavior instructions
+- `memory/YYYY-MM-DD.md`: day-level memory notes and context snapshots
+
+Tips:
+- Keep instructions concise, explicit, and conflict-free.
+- Prefer stable rules in `SOUL.md` and task-scoped guidance in daily `memory/` notes.
+- If behavior drifts, review `AGENTS.md` + `SOUL.md` first, then prune conflicting notes.
+
+---
+
+## 📦 MCP Setup Tutorial
+
+CloseClaw supports:
+- MCP server health diagnostics
+- MCP tool projection via `MCPBridge`
+
+### Step 0: Plan server layout
+
+```text
+<repo-root>/
+  mcp_servers/
+    weather_server/
+    docs_server/
+```
+
+### Step 1: Prepare servers
+- Python server in repo, or
+- npm-hosted server via `npx` / `npx.cmd`
+
+### Step 2: Configure in `config.yaml`
+
+```yaml
+mcp:
+  servers:
+    - id: "local-stdio"
+      transport: "stdio"
+      command: "python"
+      args: ["-m", "your_mcp_server"]
+      timeout_seconds: 30
+
+    - id: "remote-http"
+      transport: "http"
+      base_url: "https://example.com"
+      endpoint: "/mcp"
+      timeout_seconds: 15
+      max_retries: 2
+      retry_backoff_seconds: 0.2
+```
+
+### Step 3: Verify health
+
+```bash
+closeclaw mcp --config config.yaml
+closeclaw mcp --config config.yaml --json
+```
+
+### Step 4: Start runtime
+
+```bash
+closeclaw agent --config config.yaml
+```
+
+> ✅ Runner auto-loads configured MCP servers and syncs tool schemas into runtime.
+
+### Step 5: Troubleshoot quickly
+- stdio unhealthy: verify command and args manually
+- http unhealthy: verify base_url + endpoint reachability
+- config ignored: verify same file passed via `--config`
+- tools not selected: check bootstrap path and tool-name conflicts
+
+---
+
+## 🧠 Memory Layout
+
+```text
+<workspace_root>/
+  CloseClaw Memory/
+    state.json
+    audit.log
+    memory.sqlite
+    HEARTBEAT.md
+    MEMORY.md
+    AGENTS.md
+    SOUL.md
+    USER.md
+    TOOLS.md
+    SKILLS.md
+    memory/
+      YYYY-MM-DD.md
+```
+
+Why this layout:
+- Keeps operational artifacts out of source roots
+- Makes backup and migration easier
+- Supports deterministic upgrades from legacy scattered paths
+
+---
+
+## 🧪 Testing
+
+Focused suites:
+
+```bash
+python -m pytest tests/test_config.py -q
+python -m pytest tests/test_tools.py tests/test_tool_execution_service.py -q
+python -m pytest tests/test_runner.py tests/test_heartbeat_service.py tests/test_cron_service.py -q
+```
+
+Full suite:
+
+```bash
+python -m pytest tests -q
+```
+
+---
+
+## 🔁 Migration Notes
+
+Compatibility behavior includes:
+- legacy `state.json` upgrade to `CloseClaw Memory/state.json`
+- legacy `phase5` config key mapped to `orchestrator`
+- memory artifacts migrated into unified layout when possible
+
+---
+
+## 🩺 Troubleshooting
+
+1. Web search key missing
+- set `web_search.enabled=true`
+- set `web_search.provider=brave`
+- set valid `web_search.brave_api_key`
+
+2. Tool calls require approval unexpectedly
+- check `safety.default_need_auth`
+- check tool-level `need_auth` behavior
+
+3. Heartbeat not firing
+- check `heartbeat.enabled`
+- check `CloseClaw Memory/HEARTBEAT.md`
+- check quiet-hours + queue guard settings
+
+4. Cron inactive
+- check `cron.enabled`
+- check `cron.store_file` write permissions
+- use cron list/run-now diagnostics
+
+🪟 Windows Notes (Entry Command Not Found)
+
+If PowerShell says `closeclaw` is not recognized:
+
+1. Activate your virtual environment.
+2. Reinstall editable package so scripts are generated.
+3. Use module mode as fallback.
+
+```powershell
+pip install -e .
+python -m closeclaw agent --config config.yaml
+Get-Command closeclaw
+```
+
+> ℹ️ If `Get-Command closeclaw` returns nothing, current shell PATH does not include the generated entrypoint.
+
+---
+
+## 🤝 Contributing Guide
+
+Contributions are welcome and appreciated.
+
+### 1) Fork and create a feature branch
+
+```bash
+git checkout -b feat/your-change-name
+```
+
+### 2) Run tests locally before opening a Pull Request
+
+Focused suites:
+
+```bash
+python -m pytest tests/test_config.py -q
+python -m pytest tests/test_tools.py tests/test_tool_execution_service.py -q
+python -m pytest tests/test_runner.py tests/test_heartbeat_service.py tests/test_cron_service.py -q
+```
+
+Full suite:
+
+```bash
+python -m pytest tests -q
+```
+
+### 3) Submit a Pull Request
+
+Please include:
+- clear problem statement and scope
+- what changed and why
+- test evidence (commands + results)
+- migration notes if behavior/config changed
+
+### 4) What we currently welcome most
+
+- 🐞 bug discovery, issue reports, and direct fixes
+- 🧪 stronger test coverage for channels/providers/integration paths
+- 🪟🍎 cross-platform hardening, including macOS compatibility improvements
+- 📚 documentation clarity, onboarding improvements, and examples
+
+### 5) Issue quality checklist
+
+For bug reports, please attach:
+- runtime command used and full error output
+- minimal config (redacted secrets)
+- environment details (OS, Python version, optional dependencies)
+
+Thanks for helping improve CloseClaw.
+
+---
+
+
+
+<p align="center">
+  <b>CloseClaw: Small runtime, strong guardrails, serious automation.</b>
+</p>
+
+
+
+

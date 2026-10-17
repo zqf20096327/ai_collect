@@ -1,0 +1,585 @@
+# Tyk AI Studio
+
+![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)
+[![GitHub Latest Release](https://img.shields.io/github/v/release/TykTechnologies/ai-studio?color=8836FB)](https://github.com/TykTechnologies/ai-studio/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/TykTechnologies/ai-studio?logoColor=8836FB)](https://github.com/TykTechnologies/ai-studio/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/TykTechnologies/ai-studio.svg?logoColor=8836FB)](https://github.com/TykTechnologies/ai-studio/fork)
+
+---
+[Official Documentation](https://tyk.io/docs/ai-management/overview/) | [AI Studio Homepage](https://tyk.io/tyk-ai-studio/) | [Community Forum](https://community.tyk.io) | [Contributing](CONTRIBUTING.md)
+
+**Open source AI management platform for secure, governed, and scalable AI integration**
+
+Tyk AI Studio is an open source platform that addresses the critical challenges organizations face when adopting AI: shadow AI usage, compliance requirements, security concerns, and spiraling costs. Built for developers and platform teams, it provides structured AI management through governance, monitoring, and unified access controls.
+
+> **Available in two editions**: [Community Edition](#community-edition) (open source) and [Enterprise Edition](#enterprise-edition) (advanced features). See [edition comparison](#edition-comparison) below.
+
+## Try it Now
+
+Get a demo instance running in minutes using Docker Compose.
+
+**Community Edition** (no license required):
+```bash
+git clone https://github.com/TykTechnologies/ai-studio.git
+cd ai-studio/quickstart
+docker compose -f ./ce/compose.yaml up -d
+```
+
+**Enterprise Edition** (requires license):
+```bash
+git clone https://github.com/TykTechnologies/ai-studio.git
+cd ai-studio/quickstart
+# Add your license to required.env
+echo "TYK_AI_LICENSE=<your-license-key>" > required.env
+docker compose -f ./enterprise/compose.yaml up -d
+```
+
+Once running, access the UI at http://localhost:3000 (Community Edition) or http://localhost:8585 (Enterprise Edition).
+
+See the [quickstart README](quickstart/README.md) for more details.
+
+## Why Tyk AI Studio?
+
+AI adoption brings significant challenges that require structured solutions:
+
+- **Shadow AI Prevention** - Stop unauthorized AI tool usage without oversight
+- **Security & Compliance** - Maintain data privacy and meet regulatory requirements
+- **Cost Control** - Monitor usage and prevent unlimited AI consumption
+- **Unified Access** - Single interface for multiple AI vendors and internal tools  
+
+## Core Capabilities
+
+### AI Gateway
+The heart of secure AI integration, providing:
+- **Multi-vendor LLM support**: OpenAI, Anthropic, Mistral, Vertex AI, Bedrock, Gemini, Huggingface, Ollama, and custom models
+- **Secure API proxying**: Centralized access control and credential management  
+- **Usage monitoring**: Real-time tracking of costs, usage patterns, and performance
+- **Rate limiting**: Prevent excessive token consumption and manage budgets
+- **Content filtering**: Scriptable policy enforcement for data security
+
+### AI Portal  
+Developer-focused service catalog featuring:
+- **Curated AI services**: Easy discovery and access to approved AI tools
+- **Unified interface**: Single point of access for all AI capabilities
+- **Integration support**: Connect with internal systems and external workflows
+- **Rapid prototyping**: Secure experimentation with built-in policy controls
+
+### AI Chat Interface
+Collaborative workspace that provides:
+- **Universal chat experience**: Single interface for LLMs, tools, and internal data sources
+- **Custom chatrooms**: Dedicated spaces for teams, projects, or specific use cases
+- **Built-in governance**: Policy enforcement without disrupting user workflows
+- **Document integration**: Upload and use documents within AI conversations
+
+### MCP Integration
+Standards-based AI component integration:
+- **Remote MCP support**: Connect internal APIs and tools without custom scripts
+- **Local MCP servers**: Generate installable servers for testing or restricted environments
+- **Standardized interactions**: Following Model Context Protocol specifications
+- **Secure connections**: All MCP traffic routed through the AI Gateway for visibility
+
+## Gateway Performance
+
+Measured on Tyk AI Studio 2.2 with the Enterprise edge gateway on **one 4-vCPU
+AWS machine** (c7i.xlarge), with every request authenticated, checked against a
+budget, cost-accounted and recorded in analytics:
+
+| | One 4-vCPU gateway, full production policy |
+|---|---|
+| Latency added per request (native endpoints) | **0.54–0.58 ms p50, under 0.9 ms p99**, including the network hop; the gateway's own share is 0.13–0.16 ms |
+| Latency added against real OpenAI and Anthropic (paired) | not measurable against the vendors' own variation; 0.3–1.8 ms by the gateway's own timing |
+| Non-streaming capacity (20 ms upstream) | **~8,550 req/s**, adding ~0.5 ms p50 up to 6,000 req/s; 0 errors |
+| Streaming capacity (300 ms to first token, 4.3 s streams) | **~690 new streams/s** (~3,000 open); time to first token within ~15 ms of the upstream's up to 450/s; 0 errors |
+| 1 hour at 377 streams/s, and a 3× burst | 0 errors; latency and memory flat for the hour; recovered from the burst within 5 s |
+
+Both limits are the node's CPU, so capacity grows with the number of edges.
+Every analytics record reached the control plane.
+
+Full method, per-scenario data and known limitations:
+[benchmarks/gateway/benchmark-results.md](benchmarks/gateway/benchmark-results.md).
+To reproduce on your own AWS account, see
+[benchmarks/gateway/RUNBOOK-cloud.md](benchmarks/gateway/RUNBOOK-cloud.md).
+
+## Real-World Applications
+
+**Software Development**
+- Integrate AI with Jira, GitHub, and internal development tools
+- Accelerate development cycles with AI-powered assistance
+- Maintain security while enabling developer productivity
+
+**Financial Services**  
+- Ensure only anonymized data reaches external LLMs
+- Track AI usage costs by department or team
+- Meet compliance requirements while enabling innovation
+
+**Healthcare**
+- Route LLM traffic through governed pathways for HIPAA compliance
+- Protect sensitive patient data with content filtering
+- Enable AI-driven insights while maintaining privacy controls
+
+**General Business Applications**
+- Query internal APIs and databases through conversational interfaces
+- Integrate AI with existing business systems and workflows
+- Enable non-technical users to leverage AI capabilities safely
+
+## First Time Setup
+
+**For absolute first-timers who want to build from source:**
+
+### Prerequisites
+- Go 1.26+  
+- Node.js 20+
+- Git
+
+### Initial Setup Steps
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/TykTechnologies/ai-studio.git
+cd ai-studio
+```
+
+2. **Install frontend dependencies**
+```bash
+cd ui/admin-frontend
+npm install
+```
+
+3. **Build the frontend** (required for Go embedding)
+```bash
+npm run build
+```
+
+4. **Return to project root and build backend**
+```bash
+cd ../../
+go build
+```
+
+5. **Setup environment**
+```bash
+cp .env.example .env
+# Edit .env file with your AI provider credentials
+```
+
+6. **Run the application**
+```bash
+./ai-studio
+```
+
+**Important**: If you try to run `go build` without first building the frontend, you'll get an error about empty directories because the Go application embeds the frontend build assets. Always build the frontend first.
+
+## Edition Comparison
+
+Tyk AI Studio is available in two editions:
+
+| Feature | Community Edition | Enterprise Edition |
+|---------|------------------|-------------------|
+| **LLM Proxy Gateway** | ✅ | ✅ |
+| **Chat Interface** | ✅ | ✅ |
+| **Tool Integration** | ✅ | ✅ |
+| **User Management & RBAC** | ✅ | ✅ |
+| **Hub-and-Spoke Deployment** | ✅ | ✅ |
+| **Cost Tracking & Analytics** | ✅ | ✅ |
+| **Plugin System** | ✅ | ✅ |
+| **Budget Management** | ❌ | ✅ |
+| **Budget Enforcement** | ❌ | ✅ |
+| **Budget Alerts** | ❌ | ✅ |
+| **Advanced SSO (SAML, OIDC)** | ❌ | ✅ |
+| **Advanced RBAC** | ❌ | ✅ |
+| **Audit Logging** | ❌ | ✅ |
+| **Priority Support** | ❌ | ✅ |
+
+### Community Edition
+Free and open source. Perfect for:
+- Development and testing
+- Small teams
+- Cost visibility without enforcement
+- Learning AI management
+
+### Enterprise Edition
+Advanced features for production. Ideal for:
+- Production deployments
+- Cost control and governance
+- Compliance requirements
+- Enterprise SSO integration
+
+**[Learn more about Enterprise Edition →](mailto:enterprise@tyk.io)**
+
+For detailed framework documentation, see [ENTERPRISE_FRAMEWORK.md](ENTERPRISE_FRAMEWORK.md)
+
+## Quick Start
+
+Get up and running in under 5 minutes:
+
+### Option 1: Docker (Recommended)
+
+1. **Clone and setup**
+```bash
+git clone https://github.com/TykTechnologies/ai-studio.git
+cd ai-studio
+cp .env.example .env
+```
+
+2. **Configure environment**
+Edit `.env` file with your AI provider credentials and desired settings.
+
+3. **Start the platform**
+```bash
+docker compose up --build
+```
+
+4. **Access the interface**
+- UI: http://localhost:3000
+- API: http://localhost:8080
+
+When you first register, your account will automatically become admin with a default user group created.
+
+### Option 2: Native Development
+
+**Prerequisites**
+- Go 1.26+
+- Node.js 20+
+
+**Start development servers**
+```bash
+make start-dev  # Starts both frontend and backend
+make stop-dev   # Stops both services
+```
+
+## Installation Options
+
+### Docker
+```bash
+# Production deployment
+docker compose up -d
+
+# Development with hot reload
+docker compose up --build
+```
+
+### Kubernetes
+```bash
+# Using the Helm chart in this repository
+helm install ai-studio ./helm
+```
+
+For values and production settings, see [Deploy on Kubernetes](https://tyk.io/docs/ai-management/ai-studio/deployment-k8s) and the [chart README](helm/README.md).
+
+### Native Binary
+```bash
+# Build production binary
+make build
+
+# The binary includes both API and UI
+./ai-studio
+```
+
+## Architecture
+
+Tyk AI Studio follows a clean three-tier architecture:
+
+**Model Layer**: Data structures and database-level CRUD operations
+**Service Layer**: Business logic and data access to the model layer
+**API Layer**: REST interface to the service layer
+
+**Frontend Structure**:
+- **Admin**: Managing AI models, tools, and data sources
+- **Portal**: User interface for interacting with AI models and tools
+
+The AI Gateway sits at the center, proxying all AI interactions while enforcing policies, monitoring usage, and maintaining security controls.
+
+## Plugin System
+
+Tyk AI Studio features a powerful **Unified Plugin SDK** that enables extensive customization and integration across the entire platform. Plugins run as isolated processes using gRPC communication, providing security and fault tolerance.
+
+### Plugin Capabilities
+
+Build plugins that extend AI Studio in multiple ways:
+
+**Gateway Extensions**
+- Custom authentication and authorization
+- Request/response transformation and filtering
+- Content policy enforcement
+- Data export to external systems (Elasticsearch, ClickHouse, etc.)
+- Custom rate limiting and budget controls
+
+**UI Extensions**
+- Add custom pages and dashboards to the admin interface
+- Extend sidebar navigation with new sections
+- Build interactive WebComponents with full JavaScript framework support
+- Access platform APIs to manage LLMs, apps, tools, and datasources
+
+**Conversational AI Agents**
+- Create custom chat agents with specialized behaviors
+- Wrap LLMs with custom logic and validation
+- Integrate external services into conversations
+- Build multi-turn dialogue experiences with tool access
+
+**Object Hooks**
+- Intercept CRUD operations on LLMs, tools, datasources, and users
+- Enforce validation rules and approval workflows
+- Integrate with external systems (LDAP, ticketing, CMDBs)
+- Add audit trails and policy enforcement
+
+### Key Features
+
+- **Single SDK**: One import works everywhere (AI Studio and Microgateway)
+- **10 Plugin Capabilities**: Mix and match to build exactly what you need
+- **Secure Isolation**: Plugins run as separate processes
+- **Fine-grained Permissions**: Control access with declarative scopes
+- **Multiple Deployment Options**: Local files, remote gRPC, or OCI containers
+
+### Quick Start
+
+```go
+import "github.com/TykTechnologies/midsommar/v2/pkg/plugin_sdk"
+
+type MyPlugin struct {
+    plugin_sdk.BasePlugin
+}
+
+func (p *MyPlugin) HandlePostAuth(ctx plugin_sdk.Context, req *plugin_sdk.EnrichedRequest) (*plugin_sdk.Response, error) {
+    // Your custom logic here
+    return &plugin_sdk.Response{Modified: false}, nil
+}
+
+func main() {
+    plugin_sdk.Serve(NewMyPlugin())
+}
+```
+
+**Learn More**: See [Plugin System Documentation](docs/site/docs/plugins-overview.md) for comprehensive guides, examples, and API references.
+
+## Supported AI Vendors
+
+- **OpenAI**: GPT models, Embeddings, and more
+- **Anthropic**: Claude models and assistants  
+- **Mistral**: Open source and commercial models
+- **Google**: Vertex AI and Gemini models
+- **AWS**: Bedrock model access
+- **Hugging Face**: Open source model ecosystem
+- **Ollama**: Local model deployment
+- **Custom Models**: Bring your own model integrations
+
+## Key Benefits
+
+- **Reduce Risk** - Centralized access controls and comprehensive monitoring
+- **Improve Efficiency** - Streamlined workflows for both developers and end users
+- **Cost Control** - Real-time usage tracking with budgeting and rate limiting
+- **Support Compliance** - Built-in policy enforcement and audit logging
+- **Enable Scale** - Standards-based architecture supporting growth  
+
+## Documentation & Resources
+
+**Official Documentation**
+- [AI Management Overview](https://tyk.io/docs/ai-management/overview/)
+- [AI Studio Documentation](https://tyk.io/docs/ai-management/ai-studio/overview/)
+- [MCP Integration Guide](https://tyk.io/docs/ai-management/mcps/overview/)
+
+**Product Information**
+- [AI Studio Homepage](https://tyk.io/tyk-ai-studio/)
+- [Request Demo](https://tyk.io/ai-demo/)
+
+**Developer Resources**
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Contributor License Agreement](CLA.md)
+
+## Configuration
+
+All configuration is managed through the `.env` file. Key settings include:
+
+```bash
+# AI Provider Credentials
+OPENAI_API_KEY=your-openai-key
+ANTHROPIC_API_KEY=your-anthropic-key
+
+# Database Configuration
+DATABASE_URL=your-database-url
+
+# Telemetry (Optional)
+TELEMETRY_ENABLED=false  # Disable usage statistics collection
+```
+
+**Privacy Note**: Tyk AI Studio collects anonymized usage statistics to improve the platform. No personal data or AI conversation content is collected. Set `TELEMETRY_ENABLED=false` to disable.
+
+## Development
+
+### Building from Source
+
+**Manual build process** (step by step):
+```bash
+# 1. Install frontend dependencies (if not done already)
+cd ui/admin-frontend
+npm install
+
+# 2. Build frontend assets (required before Go build)
+npm run build
+
+# 3. Return to root and build backend
+cd ../../
+go build
+
+# 4. Run the application
+./ai-studio
+```
+
+**Using Make commands** (automated):
+```bash
+# Build everything (frontend + backend)
+make build
+
+# Build for local development only
+make build-local
+
+# Run tests
+make test
+
+# Clean build artifacts
+make clean
+```
+
+**Build Order Important**: The frontend must be built before the Go binary because the application embeds frontend assets. Running `go build` without building the frontend first will fail with empty directory errors.
+
+### Version and Build Tagging
+
+Version information is injected at build time via Go linker flags (`-ldflags -X`). The variables are defined in `version.go`:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `main.Version` | Release version (from git tag) | `dev` |
+| `main.BuildHash` | Git commit hash | `unknown` |
+| `main.BuildTime` | Build timestamp (UTC) | `unknown` |
+
+**How version is set across build methods:**
+
+| Build Method | Version Source |
+|---|---|
+| `make build-native` / `make build-prod` | `git describe --tags --always --dirty` |
+| `Dockerfile` | `--build-arg VERSION=...` |
+| `build-commands.sh` (pre-release) | `git describe --tags --always` |
+| GoReleaser (CI release) | Git tag via `{{.Version}}` |
+| `make dev` (Air hot reload) | Default `dev` |
+
+To verify the version embedded in a binary, check the startup output:
+```
+Starting Tyk AI Studio v2.1.0
+```
+
+When tagging a release, create a git tag and the version will propagate automatically:
+```bash
+git tag v2.1.0
+git push origin v2.1.0
+```
+
+### Additional Commands
+```bash
+make dev          # Docker Compose development environment with hot reload (recommended)
+make dev-down     # Stop the development environment
+make dev-help     # List all development targets
+```
+
+### Testing
+
+The project has multiple test categories with different build tags. Here's how to run them:
+
+#### Quick Test Commands
+
+```bash
+# Run all standard unit tests (fastest)
+go test ./...
+
+# Run tests for a specific package
+go test ./api/...
+
+# Run tests with coverage report
+go test -coverprofile=coverage.out -coverpkg=./... ./...
+go tool cover -html=coverage.out  # View in browser
+```
+
+#### Complete Test Suite
+
+To validate everything before a release or major change:
+
+```bash
+# 1. Unit tests (no special tags required)
+go test ./...
+
+# 2. Enterprise feature tests
+go test -tags enterprise ./...
+
+# 3. Integration tests (requires test environment)
+go test -tags integration ./...
+
+# 4. Plugin E2E tests (builds and spawns real plugin binaries)
+go test -tags e2e ./pkg/testinfra/plugintest/...
+
+# 5. All tests combined (comprehensive validation)
+go test -tags "enterprise,integration,e2e" ./...
+```
+
+#### Test Categories Explained
+
+| Category | Build Tag | Description | Speed |
+|----------|-----------|-------------|-------|
+| **Unit** | _(none)_ | Standard tests, no external deps | Fast |
+| **Enterprise** | `enterprise` | Tests for enterprise-only features | Fast |
+| **Integration** | `integration` | Tests requiring DB/services | Medium |
+| **E2E Plugin** | `e2e` | Spawns real plugin subprocesses | Slow |
+
+#### Plugin Contract Tests
+
+The plugin test framework validates UI-to-RPC contracts without building plugins:
+
+```bash
+# Fast contract validation (no plugin build)
+go test -v ./pkg/testinfra/plugintest/... -run "TestAdvancedLLMCacheUIContract"
+```
+
+#### CI/CD Recommendation
+
+For CI pipelines, we recommend:
+
+```yaml
+# Fast feedback (every PR)
+- run: go test ./...
+
+# Pre-merge validation
+- run: go test -tags enterprise ./...
+
+# Nightly/release validation
+- run: go test -tags "enterprise,integration,e2e" ./...
+```
+
+## Community & Support
+
+**Get Help**
+- [Community Forum](https://community.tyk.io) - Technical support and discussions
+- [GitHub Issues](https://github.com/TykTechnologies/ai-studio/issues) - Bug reports and feature requests
+- [Official Documentation](https://tyk.io/docs/ai-management/overview/) - Comprehensive guides and references
+
+**Contributing**
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to:
+- Report bugs and request features
+- Submit pull requests
+- Sign the Contributor License Agreement
+- Join our development community
+
+## Licensing
+
+Tyk AI Studio is released under the GNU Affero General Public License v3.0. See [LICENSE.md](LICENSE.md) for full details.
+
+**Contributor License Agreement**: All contributors must sign the [Tyk CLA](CLA.md) before contributions can be accepted.
+
+## Project Status
+
+Tyk AI Studio is actively developed and maintained by Tyk Technologies. It serves as the open source foundation for Tyk's AI management ecosystem.
+
+**Stability**: Production ready for AI gateway and basic management features  
+**Development**: Active development with regular releases  
+**Community**: Welcoming contributions and feedback from the community  
+
+---
+
+**Built by Tyk**

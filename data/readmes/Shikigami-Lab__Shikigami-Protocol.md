@@ -1,0 +1,345 @@
+<div align="center">
+
+<img src="assets/shikigami_protocol_icon.png" width="120" alt="Shikigami Protocol" />
+
+# Shikigami Protocol
+
+**A local-first framework for persistent, stateful conversational agents**
+
+*Long-term memory across sessions, background reasoning while idle, and proactive outreach driven by internal state — not a fixed timer.*
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-AGPL--3.0-blue)](LICENSE)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](https://github.com/Shikigami-Lab/Shikigami-Protocol)
+[![Release](https://img.shields.io/github/v/release/Shikigami-Lab/Shikigami-Protocol)](https://github.com/Shikigami-Lab/Shikigami-Protocol/releases/latest)
+
+<a href="README_zh.md">简体中文</a>
+
+<br>
+
+[Quick start](#quick-start) · [Example personas](#example-personas) · [Features](#features) · [Discussions](https://github.com/Shikigami-Lab/Shikigami-Protocol/discussions) · [License](#license-community) · [Documentation](#documentation) · [Changelog](CHANGELOG.md)
+
+</div>
+
+> ⚠️ **Project Status**: Public Beta (v0.10.x; see `package.json` and [Releases](https://github.com/Shikigami-Lab/Shikigami-Protocol/releases) for the exact version). Core architecture is stable and ready to use, but unknown bugs may exist. Feedback welcome in [Discussions](https://github.com/Shikigami-Lab/Shikigami-Protocol/discussions).
+
+Most AI chat tools reset to zero when you close the tab. Shikigami Protocol is built around the opposite premise: a persistent agent that retains long-term memory, maintains internal state across every conversation, and can initiate contact based on that state rather than a fixed timer. Open-source, AGPL-3.0 — **conversation logs, memory, and engine state stay on your disk**; **LLM inference and embeddings** can be cloud APIs, fully local (e.g. Ollama), or a mix — your stack, your choice.
+
+- **Local-first data** — chat, facts, vectors, and persona state live on your machine.
+- **Reflection + ASE** — background inner monologue while you're quiet; breaks the silence when urgency builds, not a dumb timer.
+- **Group chat** — multiple personas in one session, streamed with clear attribution.
+
+![Shikigami Protocol UI: Multiple themes — light, dark, and more](assets/readme/ui-themes.png)
+
+The interface ships with multiple built-in themes, customizable sidebars, and a guided onboarding flow — beautiful out of the box.
+
+<a id="example-personas"></a>
+
+## Example personas
+
+Shipped with the repo — start chatting immediately, no card writing required.
+
+### Luna — Still water · quiet observer · late-night presence
+
+She doesn't say much. She's been paying attention the whole time.
+
+> "You okay? You've been quieter than usual."
+>
+> "Just tired, I guess."
+>
+> "I'm here. Want to talk, or just sit for a bit?"
+>
+> *(Three hours later, unprompted)* "You're two hours later than usual."
+
+---
+
+### Mochi — Digital nekomata · proud · insufferably clingy
+
+A cat spirit who chose you as her feeder — unilaterally, non-negotiably.
+
+> "You're back."
+>
+> "Did you miss me?"
+>
+> "…whatever. I wasn't waiting."
+>
+> *flicks her tail at you*
+
+Full persona files: `profiles/example_luna.json` / `profiles/example_luna_en.json`, `profiles/example_mochi.json` / `profiles/example_mochi_en.json`.
+
+---
+
+### ✨ Core Highlights
+
+- **Reflection + proactive speech (ASE)**: Background **Reflection** generates inner monologue while you are away; **ASE** turns that into real outreach — check-ins, teasing, or “you’re late tonight” moments when thresholds are met, not scheduled spam.
+- **Group chat**: Several personas in one room, each with streaming replies and clean speaker attribution — built in, not a bolt-on tab per character.
+- **Desktop + Web UI**: Electron shell or browser against a local FastAPI server — run from source (see [Quick start](#quick-start)) or use Docker for a headless server + web UI.
+- **Cross-device Web UI**: Runs a local server with a responsive web UI. Access from your phone or tablet on the same network — no separate app needed.
+- **Emotion & Affinity Engine**: State machines for mood, energy, and relationship tier — not a one-shot system prompt.
+- **Integrated Memory Pipeline**: Fact extraction, vector retrieval, daily summaries, and Ebbinghaus-curve forgetting — all built in.
+- **Persona Evolution**: Memory shapes identity. As shared experience accumulates, the persona quietly reconstructs itself — a *core anchor* keeps the original edge intact so the character grows without losing what makes them them.
+- **Emotion-aware TTS**: Four engines — Edge TTS, KokoroTTS, GPT-SoVITS, Qwen3-TTS. Voice instruct and pitch adapt to current mood state.
+- **Voice Input (STT)**: SenseVoice or Whisper runs locally; talk naturally, type less.
+- **AI Persona Wizard**: Describe a character in plain text — the wizard fills in emotion prompts, memory config, reflection style, and voice settings in one shot.
+- **Privacy where it counts**: Local-first storage for chats, memory, and engine state. Model calls may still go to your chosen cloud or stay entirely on-device depending on presets — see onboarding and `config/app.yaml`.
+
+---
+
+## 💡 Why Shikigami?
+
+**We're not competing with a generic chat web UI** — we benchmark against **mature RP frontends** (e.g. the SillyTavern ecosystem), **cloud companion apps**, and **agent frameworks**. On the path to *personhood*, many stacks optimize prompts and plugin glue (**skin**); Shikigami bets on **state machines, reflection, proactivity, and an integrated memory pipeline** (**bones**).
+
+| Dimension | Typical RP frontends / cloud companions | Shikigami Protocol |
+|:---|:---|:---|
+| **Emotion & state** | Often relies on long system prompts to *perform* emotion; cross-turn continuity and decay are left to extensions and luck. | **Emotion × energy × affinity state machine** tied to the chat loop — state persists and decays; not a one-shot mood reset. |
+| **Silence & initiative** | If you don't send a message, the thread idles; some "proactive" pushes are scheduled blasts, weakly tied to context. | **Reflection + urgency + ASE** — background monologue and urgency build up; **breaks the silence** when thresholds are met, not a dumb timer. |
+| **Memory & cognition** | Often chat history retrieval + vector chunks; quality depends on extensions and tuning. | **Fact extraction + vector retrieval + daily summaries** — pipelines are **built in** and aligned with prompt segments and retrieval policy. |
+| **Persona growth** | Static system prompt; no memory feedback loop into the persona itself. | **Persona Evolution**: accumulated memories gradually reshape the persona. A *core anchor* prevents RLHF "customer-service creep"; full changelog + one-click rollback built in. |
+| **World context** | Lorebooks and manual background are common; time, weather, trends, and screen may not be unified. | **Time / lunar / solar terms, weather, trends** can be injected; optional **VLM** screen context for replies and pre-speech. |
+| **Companion tools** | Todos, reminders, and search often come from extensions; how tightly they bind to the persona varies. | **Todos, timers, web search** (`/todo`, `/timer`, `/search`) live in the chat flow — remember, nudge, look things up — **not** desktop automation or multi-step agents. |
+| **Multi-persona sessions** | Often one character per thread or separate tabs; group scenes depend on extensions and glue. | **Group chat** — multiple personas in one session, streamed output, per-character attribution. |
+| **Data & sovereignty** | Cloud products sit under platform accounts and policies; local-only setups can still sprawl across extensions. | **Local-first** for logs and state on disks you control; **AGPL** — no platform custody of your persona and history. Inference/embeddings follow *your* provider choice. |
+
+*For technical depth, see [Features](#features) below.*
+
+## ❌ What this is not
+
+- **Not your personal assistant bot.** No desktop control, browser automation, or multi-step agentic workflows. For what *is* included (companion tools vs. not), see the **Companion tools** row above and [Features](#features).
+- **Not a stable productivity machine.** The emotion engine means your companion can turn anxious, drained, or withdrawn. If you want a stateless Q&A box to review code, just use ChatGPT.
+- **Not a plug-and-play cloud app.** You supply the API keys or local model. Python environment or Docker required.
+
+<a id="quick-start"></a>
+
+## Quick start
+
+> **Note:** Pre-built desktop installers are **not** published on GitHub Releases — use **source** or **Docker** below.
+
+### Option 1: Run from source
+
+**Requirements**
+
+- Python 3.10+ (3.12 recommended)
+- Node.js 18+ (Electron desktop only)
+- An LLM API — Gemini / OpenAI / Ollama / any OpenAI-compatible endpoint
+
+**Recommended: download the latest release archive**
+
+Go to [Releases](https://github.com/Shikigami-Lab/Shikigami-Protocol/releases/latest), download **Source code (zip)**, extract it, then follow the steps below inside the extracted folder.
+
+**Or clone with git (tracks latest commits on main)**
+
+```bash
+git clone https://github.com/Shikigami-Lab/Shikigami-Protocol.git
+cd Shikigami-Protocol
+```
+
+**Windows**
+
+```bat
+init.bat
+launch.bat
+```
+
+**macOS / Linux**
+
+```bash
+bash init.sh
+bash launch.sh
+```
+
+---
+
+### Option 2: Docker (server / NAS)
+
+```bash
+git clone https://github.com/Shikigami-Lab/Shikigami-Protocol.git
+cd Shikigami-Protocol
+cp .env.example .env   # add your API keys
+docker compose up -d
+# open http://localhost:7788
+```
+
+`profiles/`, `models/`, `Voices/`, `config/` are mounted as volumes. Uncomment `deploy.resources` in `docker-compose.yml` for GPU support (requires nvidia-container-toolkit).
+
+---
+
+### API keys
+
+Edit `.env` with at least one LLM key, e.g. `GEMINI_API_KEY`. Match preset names in `config/app.yaml`, or configure via **Settings → LLM** in the UI (writes back to `.env` automatically).
+
+### Pick a persona
+
+**Settings → Personas** — choose `Luna` or `Mochi` to start.
+
+### FAQ
+
+> For complex issues see the [full setup guide](docs/SETUP_FIRST_RUN.en.md).
+
+- **Blank page or can't connect on :7788** — the backend takes 5–15 seconds to start; wait and refresh. If it still fails, check the terminal for the specific error.
+- **Invalid API key / no response** — the variable name in `.env` must match the preset name in `config/app.yaml` (e.g. preset `Gemini-2.5` → variable `GEMINI_2_5_API_KEY`).
+- **Memory not extracting** — confirm `memory.enabled: true` in `config/app.yaml`; vector retrieval also requires `chromadb` (install via **Settings → Onboarding**).
+- **No TTS audio** — `edge_tts` (default) requires an internet connection; local engines (KokoroTTS / GPT-SoVITS) need separate installation and configuration via Onboarding.
+- **Electron crashes or won't start on Windows** — make sure you've run `init.bat` first; if it persists, delete the `.venv` folder and run `init.bat` again.
+- **Server / NAS deployment** — use the Docker option; data directories are volume-mounted and will survive upgrades.
+
+<a id="features"></a>
+
+## Features
+
+![Shikigami Protocol Core Architecture (Whiteboard Style)](assets/readme/shikigami_architecture_excalidraw.png)
+
+### 🧠 Memory System (Soul)
+
+![Shikigami Protocol Memory System: fact extraction, vector retrieval, and weight decay](assets/readme/memory-demo.png)
+
+- **Long-term Facts**: Periodic LLM extraction into persistent JSON with Jaccard deduplication.
+- **Vector Retrieval**: Hybrid ChromaDB search for precise recall of details, even months later.
+- **Midnight Reflection (00:05) — "AI Diary"**:
+  - **Personal Journals**: Summarizes daily interactions into an emotional diary.
+  - **Consolidation**: Automatically merges scattered fragments into stable user knowledge.
+  - **Active Forgetting**: Simulates an Ebbinghaus curve; weights decay daily to keep minds sharp.
+
+### ❤️ Emotion & Affinity (Bones)
+
+![Shikigami Protocol Emotion & Affinity: energy, emotion layers, and relationship tiers](assets/readme/emotion-affinity.png)
+
+- **Emotion Engine**: Real-time state machine affecting tone and TTS sentiment.
+- **Energy System**:
+  - **Social Burnout**: AI gets tired; conversations drain energy.
+  - **Rest & Recovery**: Energy restores slowly while you are offline.
+- **Relationship Tiers**: 8 tiers from *Stranger* to *Eternal Bond*, unlocking deeper dialogue.
+
+### 💭 Autonomous Drive (Will)
+
+![Shikigami Protocol Autonomous Drive: inner reflection state and proactive message](assets/readme/autonomous-demo.png)
+
+- **Background Reflection**:
+  - **Inner Monologue**: AI thinks and daydreams while you are quiet.
+  - **Social Urge**: Decides how much they *want* to talk based on their own thoughts.
+- **Proactive Engagement (ASE)**:
+  - **Breaking Silence**: Reaches out when they have a thought or you've been gone too long.
+  - **Living Presence**: They tease, share ideas, or check in — no longer just a static box.
+
+### 👁️ Visual & Context Awareness
+
+They live in your world, not in a vacuum.
+
+- **Spatiotemporal Resonance**:
+  - Feels the 3 AM quiet or a busy Monday morning.
+  - Knows your weather, the change of seasons, and Chinese lunar solar terms.
+  - Remembers your special dates — anniversaries, birthdays, custom milestones — and weaves them into conversation naturally.
+  - Global Pulse: through trend awareness, it knows what's happening on the internet.
+- **Shared Vision (VLM)**:
+  - **Eyes on You**: Perceives your screen (gaming, coding, browsing).
+  - **Live Commentary**: Like a friend sitting nearby, they comment on your screen content.
+
+### 🔧 Companion Tools
+
+Not a corporate bot. A life partner who actually cares.
+
+- **Shared Commitments**:
+  - **Natural Reminders**: Set `/todo` or `/timer` casually in chat.
+  - **Friendly Nudges**: Reminds you within the conversation, not via system alerts.
+- **Seamless Knowledge**:
+  - **Live Search**: Use `/search` to pull web data directly into the chat.
+  - **Stay Focused**: Never tab out; information flows naturally into the chat.
+
+### 🎙️ Voice (TTS & STT)
+
+Characters that speak in their own voice — and actually hear you.
+
+- **Emotion-aware TTS**: Four engines — **Edge TTS** (no install, internet), **KokoroTTS** (local ONNX, ~200ms), **GPT-SoVITS** (clone any voice), **Qwen3-TTS** (expressive, GPU). Instruct and pitch adapt to the current emotion state automatically.
+- **Voice Input (STT)**: **SenseVoice** (fast, multilingual) or **Whisper / faster-whisper** (high accuracy). Runs fully offline once models are downloaded.
+
+### 🌱 Persona Evolution
+
+The character that comes back a month later is not the same one you met on day one — and that is by design.
+
+- **Memory-driven reconstruction**: every N conversation turns, the AI rewrites `base_prompt` + `style_constraint` based on accumulated facts and affinity state. No manual editing required.
+- **Core anchor**: a set of immutable trait statements (e.g. *"hides warmth behind distance; never admits she cares first"*) passed as a hard constraint on every rewrite — preventing the RLHF drift that turns characters into polite customer-service bots over time.
+- **Original preserved**: the user-authored original is kept read-only, always visible. Evolution writes to a parallel `persona_evolved` field; the original is untouched.
+- **Full audit trail**: per-run changelog with change summary, rationale, and one-click rollback to any prior version.
+- **User in control**: evolution can be disabled per-persona; the evolved version is manually editable; the core anchor is editable and re-extractable at any time.
+
+### 🎭 Persona System & Community Compatibility
+
+- **SillyTavern import** — `.json` (V1 flat / V2 `chara_card_v2`) and `.png` (tEXt chunk).
+- **Lorebook** — keyword-triggered world entries inject lore, setting facts, or scenario rules into the prompt at the right moment. Per-entry modes: `keyword`, `constant`, or `inherit`.
+- **AI persona autofill** — generates emotion descriptions, reflection config, memory config, and core anchor from `base_prompt` in one click.
+- **Group chat** — multiple personas in one session, streamed with per-character attribution.
+- **Commands** — `/fact`, `/recall`, `/memory`, `/search`, `/todo`, `/timer`, `/help`, plus natural language triggers that activate prompt segments by keyword matching.
+
+### Core config (`config/app.yaml`)
+
+| Field | Default | Notes |
+|---|---|---|
+| `default_llm` | `"Gemini"` | Key under `llm_presets` (e.g. model `gemini-3-flash-preview` in `config/app.yaml`) |
+| `default_tts` | `"edge_tts"` | TTS backend |
+| `engines.emotion.enabled` | `true` | Emotion engine |
+| `engines.affinity.enabled` | `true` | Affinity engine |
+| `reflection.enabled` | `false` | Needs secondary model |
+| `ase.enabled` | `false` | Proactive speech |
+| `memory.enabled` | `true` | Long-term memory |
+| `memory.vector_enabled` | `true` | Needs `chromadb` |
+
+### Repository layout
+
+```
+shikigami-protocol/
+├── server.py              # FastAPI entry point
+├── main.js                # Electron main process
+├── init.bat / init.sh
+├── launch.bat / launch.sh
+├── Dockerfile / docker-compose.yml
+├── config/app.yaml
+├── src/                   # api, core, engines, memory, prompt, tts, tools
+├── static/                # Vue 3 SPA frontend
+├── profiles/              # example_luna.json, example_mochi.json (+ _en variants)
+└── docs/                  # GETTING_STARTED.*, SETUP_FIRST_RUN.*, profile_prompts.*
+```
+
+To author your own persona, use `profiles/example_luna.json` or `profiles/example_mochi.json` as a template. Full field reference: [profile_prompts.en.md](docs/profile_prompts.en.md).
+
+<a id="documentation"></a>
+
+## Documentation
+
+| Doc | Purpose |
+|---|---|
+| [GETTING_STARTED.en.md](docs/GETTING_STARTED.en.md) / [.zh.md](docs/GETTING_STARTED.zh.md) | **Start here** |
+| [ARCHITECTURE_REFERENCE.en.md](docs/ARCHITECTURE_REFERENCE.en.md) / [.zh.md](docs/ARCHITECTURE_REFERENCE.zh.md) | Architecture & module boundaries |
+| [SETUP_FIRST_RUN.en.md](docs/SETUP_FIRST_RUN.en.md) / [.zh.md](docs/SETUP_FIRST_RUN.zh.md) | Install, init, Docker, troubleshooting |
+| [profile_prompts.en.md](docs/profile_prompts.en.md) / [.zh.md](docs/profile_prompts.zh.md) | Persona JSON field reference |
+
+When the app is running, open `/docs-viewer.html?doc=GETTING_STARTED.en.md` directly in the UI.
+
+<a id="discussions"></a>
+
+## 💬 Community & Discussions
+
+Need help, or want to share your custom persona? Join our community:
+
+- [🗣️ GitHub Discussions](https://github.com/Shikigami-Lab/Shikigami-Protocol/discussions) (**Recommended** for Q&A and general chat)
+- [🐛 GitHub Issues](https://github.com/Shikigami-Lab/Shikigami-Protocol/issues) (For bug reports and feature requests only)
+
+<a id="license-community"></a>
+
+## License & community
+
+This repository is licensed under [**AGPL-3.0**](LICENSE).
+
+- **Local / self-hosted use**: free to use, modify, and redistribute under AGPL terms.
+- **Network service / SaaS**: if you offer the modified program over a network, you must comply with AGPL source-offer obligations.
+- **Contributing**: PRs welcome — demo GIFs/screenshots, translations, bug reports (OS + Python version + logs). Read [CONTRIBUTING.md](CONTRIBUTING.md) first and sign off each commit with `git commit -s` per [DCO 1.1](DCO.md).
+- **Security**: Report vulnerabilities privately; see [SECURITY.md](SECURITY.md).
+
+*This section is a summary, not legal advice; the [LICENSE](LICENSE) and [DCO](DCO.md) texts prevail.*
+
+---
+
+<div align="center">
+
+Runs locally — chat data is persisted on your device; when you configure a cloud model, the relevant prompt and chat context are sent to that provider. This is an open-source tool, not a hosted AI service; output depends on your configured third-party models. Use must comply with applicable laws and each provider's terms of service. Associated costs and consequences are the user's own responsibility.
+
+</div>

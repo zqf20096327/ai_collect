@@ -1,0 +1,245 @@
+# OpenReelio
+
+<div align="center">
+
+**AI-Powered Video Editor for Creators**
+
+[![CI](https://github.com/openreelio/openreelio/actions/workflows/ci.yml/badge.svg)](https://github.com/openreelio/openreelio/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+[Features](#features) • [Installation](#installation) • [Documentation](#documentation) • [Contributing](#contributing)
+
+</div>
+
+---
+
+## Overview
+
+OpenReelio is an AI-powered desktop video editor designed for content creators. Built with a prompt-first approach, it combines the power of modern AI with professional editing capabilities.
+
+### Key Concepts
+
+- **Prompt-First Editing**: Describe what you want in natural language
+- **Event Sourcing**: Complete edit history with unlimited undo/redo
+- **AI Agent-Driven**: Parallel processing, automatic analysis, source generation
+- **IDE-like Experience**: Familiar interface for developers and creators
+
+## Features
+
+### Core Editing
+
+- Non-linear timeline with multi-track support
+- Clip splitting, trimming, and repositioning
+- Effects and transitions
+- Audio mixing and synchronization
+- Caption/subtitle support with styling
+
+### AI Integration
+
+- Natural language edit commands
+- Automatic scene detection (early stage)
+- Speech-to-text transcription (optional build feature)
+- Smart asset search (optional build feature)
+- AI-generated edit suggestions
+
+### Plugin System
+
+- WASM-based plugin runtime
+- Provider interfaces for assets, presets, and templates
+- Backend integration in place; plugin UX is planned
+
+### Quality Control
+
+- QC framework with built-in rules
+- Black frame, audio peak, and caption checks (currently heuristic, early stage)
+- Auto-fix suggestions planned as the checks mature
+
+### Performance
+
+- GPU-accelerated encoding (NVENC, AMF, QSV, VideoToolbox)
+- Parallel proxy generation
+- Efficient memory pooling
+- Smart caching with LRU/LFU eviction
+
+## Tech Stack
+
+| Layer     | Technology                      |
+| --------- | ------------------------------- |
+| Framework | [Tauri](https://tauri.app/) 2.x |
+| Backend   | Rust                            |
+| Frontend  | React 18 + TypeScript           |
+| State     | Zustand + Immer                 |
+| Styling   | Tailwind CSS                    |
+| Video     | FFmpeg                          |
+| Plugins   | WebAssembly (Wasmtime)          |
+| Database  | SQLite                          |
+
+## Installation
+
+### Pre-built Binaries (Recommended)
+
+Download the latest release from the [Releases](https://github.com/openreelio/openreelio/releases) page.
+Installers bundle everything OpenReelio needs at runtime, including FFmpeg/FFprobe and the OpenReelio CLI used for local MCP integration.
+Automatic updates are delivered through the signed `latest.json` manifest on GitHub Releases. OS code signing is not yet configured, so Windows and macOS may show a first-run warning (see below).
+
+#### Windows
+
+1. Download `OpenReelio-x.x.x-windows-x64.msi`
+2. Run the installer
+3. If you see **"Windows protected your PC"**:
+   - Click **"More info"**
+   - Click **"Run anyway"**
+
+#### macOS
+
+1. Download `OpenReelio-x.x.x-macos-x64.dmg` (Intel) or `OpenReelio-x.x.x-macos-arm64.dmg` (Apple Silicon)
+2. Open the DMG and drag to Applications
+3. If you see **"cannot be opened"**:
+   - Right-click the app → **"Open"**
+   - Click **"Open"** in the dialog
+
+#### Linux
+
+1. Download `OpenReelio-x.x.x-linux-x64.AppImage`
+2. Make executable: `chmod +x OpenReelio-*.AppImage`
+3. Run: `./OpenReelio-*.AppImage`
+
+### From Source
+
+Prerequisites:
+
+- [Rust](https://rustup.rs/) 1.88+
+- [Node.js](https://nodejs.org/) 20+
+- [FFmpeg](https://ffmpeg.org/) 6+ (optional): a system FFmpeg/FFprobe on PATH is used if present; otherwise the first debug build automatically downloads bundled binaries into `src-tauri/binaries` (sources pinned in `scripts/ffmpeg-sources.json`; opt out with `SKIP_FFMPEG_DOWNLOAD=1`)
+- (Optional) LLVM/Clang for Whisper: building with `--features whisper` requires `libclang` (bindgen). On Windows, install LLVM and set `LIBCLANG_PATH` to the folder containing `libclang.dll`.
+
+```bash
+# Clone the repository
+git clone https://github.com/openreelio/openreelio.git
+cd openreelio
+
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run tauri dev
+
+# Build for production
+npm run tauri build
+```
+
+## Documentation
+
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [API Specification](docs/API_SPEC.md)
+- [Command Reference](docs/COMMAND_REFERENCE.md)
+- [Data Models](docs/DATA_MODELS.md)
+- [Plugin Development](docs/PLUGIN_SPEC.md)
+
+## Using OpenReelio as a Tool (AI Agents)
+
+OpenReelio ships a headless CLI and MCP server so coding agents (Claude Code, Codex, Cursor) can edit, analyze, render, and verify video autonomously. Start with the [Agent Guide](docs/AGENT_GUIDE.md), or bootstrap directly:
+
+```bash
+npx openreelio-cli help-json                        # machine-readable command surface
+npx openreelio-cli mcp --project <dir> --stdio      # MCP server (read-only by default)
+```
+
+**Every path an MCP client sends resolves inside the project directory.** A
+relative path is joined onto the project root, and absolute paths outside it,
+`..` escapes, UNC/network paths and URLs are rejected before they reach the
+filesystem or FFmpeg — so render into the project before asking the server to
+read, sheet or verify a file. The project's own imported media is the one
+exception: it is read wherever the user put it, because the app imports by
+reference, but media on a UNC or network path is still refused lexically and
+media this machine cannot read is refused as missing.
+
+## Project Structure
+
+```
+openreelio/
+├── src/                    # React frontend
+│   ├── components/         # UI components
+│   ├── stores/             # Zustand stores
+│   └── types/              # TypeScript types
+├── src-tauri/              # Rust backend
+│   └── src/
+│       ├── core/           # Core engine
+│       │   ├── ai/         # AI integration
+│       │   ├── commands/   # Edit commands
+│       │   ├── plugin/     # Plugin system
+│       │   ├── qc/         # QC automation
+│       │   └── ...
+│       └── ipc/            # Tauri IPC layer
+└── docs/                   # Documentation
+```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feat/amazing-feature`)
+5. Open a Pull Request
+
+### Development
+
+```bash
+# Run frontend tests
+npm test
+
+# Run Rust tests
+cd src-tauri && cargo test
+
+# Run linter
+npm run lint
+cargo clippy
+```
+
+Notes:
+
+- Windows PowerShell may block `npm` due to `npm.ps1` execution policy. Use `npm.cmd ...` (or adjust PowerShell execution policy) if you see `PSSecurityException`.
+
+## Roadmap
+
+### v0.1.x (Current)
+
+- [x] Core timeline editing
+- [x] Effects and transitions
+- [x] Audio mixing
+- [x] Export pipeline (7 presets)
+- [x] Release and distribution (signed auto-updates, bundled FFmpeg + CLI)
+- [x] Speech-to-text transcription (Whisper, optional build feature)
+
+### Next
+
+- [ ] AI agent workflow hardening
+- [ ] Smart asset search (optional build feature)
+
+### Future
+
+- [ ] Video generation (Sora, Runway)
+- [ ] Collaboration features
+- [ ] Cloud project sync
+- [ ] Mobile companion app
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Tauri](https://tauri.app/) for the amazing desktop framework
+- [FFmpeg](https://ffmpeg.org/) for video processing
+- All our [contributors](https://github.com/openreelio/openreelio/graphs/contributors)
+
+---
+
+<div align="center">
+Made with ❤️ by the OpenReelio community
+</div>

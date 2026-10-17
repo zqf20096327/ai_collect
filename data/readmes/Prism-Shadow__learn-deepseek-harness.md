@@ -1,0 +1,99 @@
+# Learn DeepSeek Harness
+
+[English](README.en.md) | **中文**
+
+[![在线阅读](https://img.shields.io/badge/%F0%9F%93%96%20在线阅读-网页版课程-4c8aea?style=for-the-badge)](https://prism-shadow.github.io/learn-deepseek-harness/)
+
+从最裸的一个循环开始，一课一课地把它长成一个**真正的 agent harness**。每一课是一个能独立运行的 TypeScript 小包，`npm install && npm run dev` 就能跟真实 DeepSeek 模型对话。
+
+> 📖 **有网页版**：不想 clone 也能读——[点此在线阅读](https://prism-shadow.github.io/learn-deepseek-harness/)，目录、README、代码、逐课 Diff 都在一个页面里。
+
+---
+
+## 和 Learn Claude Code 的区别
+
+本课的**形式**借鉴自 [Learn Claude Code](https://github.com/shareAI-lab/learn-claude-code)（一课一个可运行小包 + README），但**内核完全不同**。Claude Code 与 DeepSeek Harness 的设计逻辑是两条不同的路子——这门课只讲后者，并紧扣它区别于 Claude Code 的三个根本设计：
+
+- **🧩 一切皆插件**：极瘦的核心循环 + 一切能力皆为可插拔插件。
+- **📜 Session Log 是永久的历史与记忆**：对话是一条 append-only 事件日志，是唯一真相源。
+- **⚡ 对 KV Cache 的极度敏感**：所有上下文操作都以「是否破坏前缀缓存」为第一约束。
+
+课程主体紧扣这三点逐层展开（下文详述）。
+
+至于**各类 agent 通用**的能力——子 agent、更多工具、task 系统、plan 系统等——它们并非 DeepSeek Harness 的独特之处，因此放在靠后的章节**简要提及**；而且一律以 DeepSeek Harness 最偏爱的形式接入：**作为插件**插进来（见 L9 起）。
+
+**为什么执着于「一切皆插件」？** 因为它为 **RSI（Recursive Self-Improvement，递归自我进化）** 铺路：当一切能力都是可热插拔的插件，agent 就能在运行过程中对自己的 harness 代码做热更新、热插拔——先给自己造能力，再把有用的沉淀下来。L10 展示了这一机制的雏形；**如何在 DeepSeek Harness 之上真正实现 RSI / Self-Evolution，将在后续章节展开**。
+
+---
+
+## 三根支柱（这门课的骨架）
+
+DeepSeek Harness 之所以是它，就靠这三件事。整门课都在反复强化它们：
+
+### 🧩 P1 · 一切皆插件
+核心循环极瘦，只负责驱动流程并在固定扩展点触发事件。工具、上下文、压缩、记忆——所有真正的能力都是**外挂的插件**，通过一个共享上下文 `ctx` 与一套事件系统接入。加功能 = 加插件，主干不改。
+
+### 📜 P2 · Session Log 是永远的唯一真相
+一次对话不是内存里的一个消息数组，而是一条**只增不改（append-only）的事件日志**。模型看到的对话是从日志**派生**出来的。这让 harness 能确定性重放、可崩溃恢复、可压缩、可 fork。
+
+### ⚡ P3 · 对 KV Cache 的敏感
+服务端前缀缓存的铁律是「token 序列逐字节一致才命中」。所以往对话里加东西**一律 append-only**（只往末尾加，绝不动中间）；一旦改了中间，从那个位置往后的缓存全废。这门课会让你**亲手实测**缓存命中，并理解每个设计为什么这么做。
+
+每课 README 都有一个固定小节：**「三根支柱在本课如何体现」**。
+
+---
+
+## 课程地图
+
+课程分两大轨道：**基础篇 Basics（L1–L8）** 打地基，**进阶篇 Advanced（L9 起）** 在地基上叠更强的能力（会陆续扩充）。仓库里也按 `basics/`、`advanced/` 两个目录组织。
+
+### 基础篇 Basics（`basics/`）
+
+| # | 课程 | 主打支柱 | 你会学到 |
+|---|------|---------|---------|
+| **L1** | 最裸的循环 | (铺垫) | agent 的本质：user→LLM→tool→loop；并**故意留下三根支柱要解决的三处局限** |
+| **L2** | 一切皆插件 | **P1** | 迷你框架：`ctx` + 事件系统 + waterfall；把 bash 变成插件 |
+| **L3** | Session Log 是唯一真相 | **P2** | 用事件日志替换消息数组；从日志派生消息；surface |
+| **L4** | 对 KV Cache 敏感 | **P3** | append-only 上下文注入插件；实测 `cacheReadTokens` |
+| **L5** | 工具管线 + 权限 | P1+P2 | 六段执行管线；权限做成插件 |
+| **L6** | 上下文压缩 | **P1+P2+P3** | 皇冠课：压缩=插件+replace事件+缓存悬崖 |
+| **L7** | 跨 session 记忆 | P2+P3 | memory 插件：召回 + 写入 |
+| **L8** | 组装成小 harness | 三支柱合体 | 把所有插件拼成一个完整体 |
+
+### 进阶篇 Advanced（`advanced/`）
+
+| # | 课程 | 主打支柱 | 你会学到 |
+|---|------|---------|---------|
+| **L9** | 子 agent | P1 | 派生子 agent 当工具 |
+| **L10** | 自我修改 | **P1 极致** | 运行时挂插件（一切皆插件的终极形态） |
+
+建议按顺序读。每课的 `README.md` 里有「问题 → 核心代码 → 工作原理 → 三根支柱体现 → 试一下 → 接下来埋了什么坑」。
+
+---
+
+## 怎么跑
+
+每一课都是独立的包（在 `basics/` 或 `advanced/` 下）：
+
+```bash
+cd basics/L01_agent_loop
+cp .env.example .env      # 填入你的 DEEPSEEK_API_KEY
+npm install
+npm run dev
+```
+
+需要一个 DeepSeek API key（[platform.deepseek.com](https://platform.deepseek.com)）。DeepSeek 的 API 与 OpenAI 兼容，所以我们用 `openai` 这个 SDK 指向 DeepSeek 的地址。
+
+---
+
+## 给 TypeScript 小白的一句话（关于类型）
+
+这门课追求**极简**。类型策略是「够用就好」：
+
+- **外围该补的都补**——消息、工具、函数签名都用真实类型，让你在编辑器里有自动补全、写错立刻标红。
+- **迷你框架内部故意从简**——`ctx.services`、事件 `payload` 这些"运行期才定型"的地方保持 `any`，**绝不为了类型引入泛型这类复杂语法**（真实 harness 用泛型换来了完整类型安全，那是它的取舍；我们把注意力留给「harness 怎么运作」）。
+- 偶尔你会看到一句手动类型标注（比如 `(args: { command: string })`）——那是"穿过 any 框架"处唯一要付的小税，代码注释里都会点明。
+
+一句话：**看得懂优先于类型严谨**。凡是能省的类型体操我都省了，并配了中文注释。
+
+如果你确实不熟 TypeScript，完全可以借助 AI 帮你逐句解析语法与含义，配合读完这约一百行的 agent 代码——这比直接去读 DeepSeek Harness 的真实源码容易得多。

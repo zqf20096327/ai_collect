@@ -1,0 +1,71 @@
+# ts-bench
+
+Benchmark CLI for comparing AI coding agents on TypeScript workloads. Run an agent, execute tests, get pass/fail — across models and providers. Numbers are directional, not lab-grade.
+
+```bash
+bun install
+bun link          # installs the `ts-bench` command globally
+ts-bench --agent claude --model <model>
+```
+
+`ts-bench --help` for all options.
+
+## Datasets
+
+### v1 — Exercism (default)
+
+25 self-contained TypeScript practice exercises. No Docker required.
+
+```bash
+ts-bench --agent claude --model <model>
+ts-bench --agent grok --model grok-build-0.1
+```
+
+Omit `--model` to use the agent's default model.
+
+Run Grok Build with an xAI API key:
+
+```bash
+export XAI_API_KEY="xai-..."
+ts-bench --agent grok --model grok-build-0.1
+```
+
+In GitHub Actions, ts-bench writes a Grok custom model config so the Grok CLI uses the requested xAI API model id.
+
+Run Antigravity (agy) with a Gemini API key:
+
+```bash
+export GEMINI_API_KEY="AIza..."
+ts-bench --agent agy
+```
+
+agy runs in print mode; `run-agent.sh` enables the direct Gemini backend
+(`settings.json` `modelProvider: "gemini"`) when `GEMINI_API_KEY` is set.
+
+Frozen baseline for reproducibility: tag [`v1-final`](https://github.com/laiso/ts-bench/releases/tag/v1-final)
+
+### v2 — SWE-Lancer
+
+Real-world tasks from a large monorepo (Expensify). Requires Docker.
+
+Read the introduction: [ts-bench v2: Benchmarking Coding Agents on Real TypeScript Monorepo Tasks](articles/ts-bench-v2-coding-agent-benchmark.md)
+
+```bash
+./scripts/setup-v2-env.sh                               # one-time setup
+ts-bench --dataset v2 --task <id> --agent claude ...    # run
+```
+
+## Results
+
+Workflow runs: [v1](.github/workflows/benchmark.yml) · [v2](.github/workflows/benchmark-v2.yml) · [Releases](https://github.com/laiso/ts-bench/releases)
+
+Task browser: `bun run build:swelancer-pages` then open `docs/swelancer-tasks/`. See [`docs/README.md`](docs/README.md).
+
+Article: [ts-bench v2 introduction](https://laiso.github.io/ts-bench/articles/ts-bench-v2-coding-agent-benchmark.html)
+
+## Docs
+
+- **[Handbook](specs/000-project-handbook/README.md)** — setup, secrets, CI, methodology
+- **[AGENTS.md](AGENTS.md)** — runner caveats for Cursor and other agents
+- **[Subscription auth](docs/auth/)** — run agents without API keys (claude, gemini, codex, copilot)
+- **[Token usage](specs/000-project-handbook/token-usage.md)** — how token counts are collected per agent

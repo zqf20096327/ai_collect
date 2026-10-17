@@ -1,0 +1,602 @@
+# Liapi — OpenAI 兼容 API 中转站
+
+[![CI](https://github.com/LiStudioorg/liapi/actions/workflows/ci.yml/badge.svg)](https://github.com/LiStudioorg/liapi/actions/workflows/ci.yml)
+[![Release](https://github.com/LiStudioorg/liapi/actions/workflows/release.yml/badge.svg)](https://github.com/LiStudioorg/liapi/actions/workflows/release.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/LiStudioorg/liapi)](https://goreportcard.com/report/github.com/LiStudioorg/liapi)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/LiStudioorg/liapi)](https://go.dev)
+[![License](https://img.shields.io/github/license/LiStudioorg/liapi)](LICENSE)
+
+> 按 P0 → P1 → P2 顺序实现。P0 完成即可作为可用的中转站使用。
+
+---
+
+## 一、项目简介
+
+一个跑在自己机器/服务器上的 HTTP 服务，对外暴露 OpenAI 兼容 API，对内聚合多个上游（OpenAI、Claude、OpenRouter、硅基流动、Ollama…），统一 **鉴权、路由、日志、限流、故障转移**。
+
+技术栈：**Go 1.22+ / 纯标准库**（无第三方依赖，`go build` 一步出二进制）。
+
+- 不是一个多租户 SaaS：不做注册、支付、发票。
+- 不做模型推理本身。
+
+---
+
+## 二、边界定义
+
+| 是什么 | 不是什么 |
+|---|---|
+| 自托管 HTTP 服务 | 多租户 SaaS |
+| OpenAI 兼容网关 | 不做注册/支付/发票 |
+| 统一鉴权 + 路由 + 限流 + 日志 | 不做模型推理 |
+| 支持流式 / 故障转移 | （P2）不强制做多用户配额 |
+
+---
+
+## 三、架构总览
+
+```
+                     ┌───────────────────────────────┐
+                     │            liapi              │
+                     │                               │
+  客户端 ──────────► │  /v1/*     业务入口（OpenAI 兼容）│
+  (SDK/base_url)     │   ├─ 鉴权（常量时间比较）        │
+                     │   ├─ 限流（固定窗口）           │
+                     │   ├─ 解析 body / model          │
+                     │   ├─ 模型路由（priority+weight）│
+                     │   ├─ 转发 + 故障转移（重试）     │
+                     │   │      ├─ 流式 / 非流式        │
+                     │   │      └─ 用量统计             │
+                     │   └─ 日志（JSONL + 环形缓冲）    │
+                     │                               │
+│  /admin/api/*  管理接口         │
+│  /            内嵌管理台(单文件)│
+│                               │
+│  后台：健康检查 goroutine        │
+│       环形日志缓冲 / 用量聚合    │
+└───────────────────────────────┘
+                        │          │           │
+                 ┌──────┴───┐ ┌────┴────┐ ┌────┴─────┐
+                 │ OpenAI   │ │ OpenRouter│ │ Ollama   │ ...
+                 └──────────┘ └─────────┘ └──────────┘
+                   上游 A      上游 B/(同层可加权负载均衡)
+```
+
+**关键设计**：
+
+1. 上游 `base_url` 直接带版本前缀（如 `https://api.openai.com/v1`），转发时只做 `base_url`（去尾斜杠）+ 去 `/v1` 前缀后的请求路径拼接，不硬编码路径 —— 各家厂商路径各不相同。
+2. 客户端 token 与上游 API Key **完全分离**：前者来自 `config.client_tokens`，后者只属于出站请求。
+3. 故障转移决策必须在**第一次 WriteHeader 之前**完成：只为「已写响应头」的请求打日志钩子，切换发生在转发循环内。
+4. 流式转发**不设 `http.Client.Timeout`**（会掐断长流），用 `context.WithTimeout` 控制非流式；流式靠客户端断开驱动。
+
+---
+
+## 四、目录结构
+
+```
+liapi/
+├── go.mod
+├── main.go                  # 入口：加载配置、装配、启动 HTTP、优雅退出
+├── config/
+│   ├── config.go            # Config / Upstream 结构、默认值、Validate
+│   └── holder.go            # 配置 Holder（读写锁，热重载的单一数据源）
+├── common/
+│   ├── errors.go            # OpenAI 错误格式 {"error":{...}} 与 HTTP 写入
+│   └── token.go             # 常量时间比较 / token 脱敏
+├── auth/
+│   ├── auth.go              # 客户端 token 校验（Bearer / x-api-key / ?token=）
+│   └── admin.go             # 管理 token 校验（独立）
+├── routing/
+│   ├── router.go            # 候选收集 → priority 升序 → 组内加权随机打散
+│   └── router_test.go       # 别名 / fallback / 策略 / group 测试
+├── relay/
+│   ├── relay.go             # 转发主循环（含故障转移 / 重试）
+│   ├── stream.go            # SSE 流式复制（32KB 缓冲 + Flusher）
+│   ├── usage.go             # 用量抽取（prompt/input-* 兼容两套字段）
+│   └── http.go              # 透传头、响应头清洗、尾 64KB 缓冲
+├── server/
+│   ├── server.go            # ServeMux 路由注册（Go 1.22 方法路由）
+│   ├── handler_v1.go        # /v1/chat/completions、completions、embeddings、
+│   │                        #   messages、models 的实现
+│   ├── handler_admin.go     # /admin/api/* + SPA 静态托管
+│   └── adminui/             # 管理台构建产物（go:embed all:adminui）
+├── web/                     # 管理台源码（Nuxt 4 + fuxsto-design）
+├── stats/
+│   ├── logger.go            # JSONL 写文件 + 环形缓冲（数组+取模）
+│   ├── limiter.go           # 滑动窗口限流 + 定期清理
+│   ├── health.go            # 后台探测 goroutine，内存 map 存状态
+│   └── totals.go            # 全量计数/用量/费用的原子聚合
+└── README.md
+```
+
+---
+
+## 五、配置
+
+**全部配置通过 Web 管理台完成**：打开 `http://<host>:8787/` → 输入 admin token → 所有字段（上游、令牌、设备、路由、限流等）都在界面里改，保存即热重载。
+
+**默认不启用用户名/密码登录**：首次运行不会生成任何账号密码，开箱用启动日志里的 `admin_token` 进入管理台。想用自己写的账号密码，在「配置 → 管理台与鉴权」打开登录开关并设置密码（或直接编辑配置文件），密码将以 PBKDF2 哈希保存、明文不落盘。
+
+`config.json` 及日志、健康状态文件默认存放在 **`~/.li/liapi/`**（可用环境变量 `LIAPI_HOME` 改目录）。首次启动自动生成 `~/.li/liapi/config.json`（随机 `admin_token`、监听 `0.0.0.0:8787`、登录关闭），之后由 Web 界面接管。默认路径可用 `-config <path>` 覆盖（Docker 挂载场景常用）。
+
+管理台「配置」Tab 提供 JSON 视图与导入/导出；字段含义见下方速查表（与 `config/config.go` 中的 struct tag 对应）。
+
+```jsonc
+{
+  "addr": "0.0.0.0",                      // 监听地址（主机；改动重启生效）
+  "port": 8787,                           // 监听端口（改动重启生效）
+  "body_limit_bytes": 16777216,           // 请求体上限，默认 16MB
+  "timeout": 300,                         // 非流式转发超时（秒），0=关闭
+  "stream_timeout": 0,                    // 流式整体超时（秒），0=不设
+  "stream_idle_timeout": 600,             // 流式空闲看门狗（秒），0=关闭，默认 600
+  "max_idle_conns": 100,                  // 连接复用池
+  "log_file": "~/.li/liapi/relay.jsonl",  // JSONL 日志文件（0600；默认在 ~/.li/liapi/）
+  "log_max_bytes": 104857600,             // 日志轮转阈值（默认 100MB，超限切到 .1）
+  "ring_size": 800,                       // 内存环形缓冲条数
+  "probe_interval": 30,                   // 健康检查间隔（秒）
+  "probe_fail_threshold": 3,              // 连续失败 N 次才判不健康
+  "probe_concurrency": 8,                 // 健康探测最大并发（默认 8）
+  "health_state_file": "~/.li/liapi/health_state.json", // 健康状态持久化文件
+  "skip_unhealthy": true,                 // 路由时避开不健康上游（可开关）
+
+  "admin_token": "adm-sk-xxxxxxxx",       // 管理接口鉴权（独立）；开箱登录方式 + /metrics 与脚本
+  "login_enabled": false,                 // 用户名/密码登录开关（默认关闭）
+  "admin_username": "admin",              // 管理台登录用户名（开启登录后可改）
+  "admin_password": "",                   // 仅写入用：填明文，保存时自动转哈希并清空
+  "admin_password_hash": "",              // 登录密码（PBKDF2 哈希，不明文存储；默认空=未设置）
+  "admin_rate_per_minute": 60,            // 管理接口按 IP 限流（-1=关闭，0/未设=默认60）
+  "admin_allow_ips": [],                  // 管理接口 IP/CIDR 白名单，空=不限
+  "metrics_token": "",                    // /metrics 鉴权 token；"-"=内网免鉴权；
+                                          // 空=回退 admin token
+  "client_tokens": ["sk-client-aaa"],      // 旧式明文客户端 token（兼容保留）
+
+  "rate_limit_per_minute": 0,             // 每 token 每分钟请求数（滑动窗口），0=关闭
+  "daily_per_token": 0,                   // 每 token 每日（UTC）请求数，0=关闭
+  "token_quotas": {},                     // 预留：按 token 覆盖配额
+
+  "retry_on_timeout": false,              // 超时是否允许重试/切换（默认 false，防重复计费）
+  "route_strategy": "priority",           // priority(默认加权随机) | latency | cost
+  "fallbacks": {                          // 显式降级链：模型 → 有序上游名
+    "gpt-4o": ["openai-main", "openrouter-fallback"]
+  },
+
+  "aliases": {                            // 精确模型别名
+    "gpt-4o": "openai/gpt-4o"
+  },
+  "alias_rules": [                        // 别名规则（正则 + 参数覆写）
+    { "pattern": "^gpt-4o-mini$", "regex": true,
+      "model": "openai/gpt-4o-mini",
+      "params": { "temperature": 0.2 } }
+  ],
+
+  "prices": {                             // 费用估算，元/1M tokens
+    "gpt-4o":        { "input": 20,  "output": 60  },
+    "claude-3-5-sonnet": { "input": 20, "output": 100 }
+  },
+
+  "devices": [                            // 设备：token 只存 SHA-256，明文仅签发一次
+    { "id": "phone-01", "name": "我的手机",
+      "token_hash": "…sha256 hex…",
+      "rpm": 30,                          // 0=用全局 rate_limit_per_minute
+      "daily": 500,                       // 0=用全局 daily_per_token
+      "disabled": false, "created_at": "2026-09-23T00:00:00Z" }
+  ],
+
+  "upstreams": [
+    {
+      "name": "openai-main",
+      "base_url": "https://api.openai.com/v1",
+      "api_key": "sk-up-a",
+      "models": ["gpt-4o", "gpt-4o-mini"],
+      "priority": 1,                 // 数字越小越优先
+      "weight": 1,                   // 同优先级内加权随机
+      "disabled": false,             // 临时停用
+      "health_path": "/v1/models",   // 健康检查路径（默认）
+      "retry": 1,                    // 单上游内部重试次数
+      "inject_usage": false          // 流式时注入 stream_options.include_usage
+    },
+    {
+      "name": "anthropic-main",
+      "base_url": "https://api.anthropic.com/v1",
+      "api_key": "sk-ant-up-b",
+      "models": ["claude-3-5-sonnet"],
+      "priority": 1,
+      "weight": 1
+    },
+    {
+      "name": "local-ollama",
+      "base_url": "http://localhost:11434/v1",
+      "api_key": "",                 // 本地无鉴权
+      "models": ["llama3.1", "qwen2.5"]
+    },
+    {
+      "name": "openrouter-fallback",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key": "sk-or-...",
+      "models": ["*"],               // 兜底：任意 model 都匹配
+      "priority": 9
+    }
+  ]
+}
+```
+
+### 字段说明（upstream）
+
+| 字段 | 必填 | 说明 |
+|---|---|---|
+| `name` | ✅ | 唯一标识，日志/健康检查/降级链引用 |
+| `base_url` | ✅ | **带版本前缀**（如 `…/v1`），不带尾斜杠，仅 http/https |
+| `api_key` | ✅ | 上游密钥，仅出站注入 |
+| `models` | ✅ | 支持的模型列表，`"*"` 兜底 |
+| `priority` | 建议 | 越小越优先 |
+| `weight` | 可选 | 同优先级内加权随机，默认 1（负数报错） |
+| `disabled` | 可选 | 临时停用 |
+| `health_path` | 可选 | 健康检查路径，默认 `/v1/models` |
+| `retry` | 可选 | 单上游内部重试次数（0–10） |
+| `inject_usage` | 可选 | 流式时写入 `stream_options: {include_usage:true}` |
+
+### 字段说明（顶层关键项）
+
+| 字段 | 说明 |
+|---|---|
+| `addr` / `port` | 监听地址与端口（addr 可写裸主机如 `0.0.0.0`，也兼容旧 `:8787` 写法；port 非 0 时优先生效）。**改动需重启**，其余字段热重载 |
+| `login_enabled` | 用户名/密码登录开关。**默认关闭**（无密码即不可用密码登录）；`true` 时必须已设置密码；关闭时 `admin_token` 仍然可以进管理台 |
+| `admin_username` / `admin_password_hash` | 管理台登录账号；密码只存 PBKDF2-HMAC-SHA256 加盐哈希。**任何账号密码都不会自动生成**——想用自己写的，在管理台配置页或配置文件里设置 |
+| `admin_password`（只写） | 在配置文件或管理台填入明文，校验时自动转成 `admin_password_hash` 并从内存/磁盘清除明文；导出与 GET 永不返回 |
+| `admin_token` | 静态管理 token：登录关闭时的开箱登录方式，同时保留给 `/metrics` 与脚本自动化 |
+| `admin_rate_per_minute` | 管理 API 每 IP 每分钟请求数（防暴力破解）；`-1`=关闭，`0`/未设=默认 60 |
+| `admin_allow_ips` | 管理 API IP/CIDR 白名单；同时决定哪些来源 IP 被视为可信反代（仅 loopback 或列于此表者的 `X-Forwarded-For` 会被采信，其余来源伪造 XFF 一律无效） |
+| `metrics_token` | `/metrics` 鉴权；`"-"`=免鉴权；未设置=要求 admin token |
+| `rate_limit_per_minute` | 客户端**滑动窗口**限流（窗口边界不再出现突发翻倍） |
+| `daily_per_token` | 每日（UTC）请求配额，0=关闭；设备可用 `daily` 覆盖 |
+| `probe_concurrency` | 健康探测并发上限（默认 8），防止上游过多时连接风暴 |
+| `log_max_bytes` | 日志按大小轮转（默认 100MB → `relay.jsonl.1`） |
+| `stream_idle_timeout` | 流式空闲看门狗：上游/客户端均无数据超时则断开（默认 600s） |
+| `retry_on_timeout` | 超时是否重试/故障转移；默认 `false`（POST 已可能入账，防重复计费） |
+| `route_strategy` | `priority`（默认加权随机）/ `latency`（按探测延迟反比加权）/ `cost`（按 `prices` 价目） |
+| `fallbacks` | 显式降级链：`{"模型": ["上游A","上游B"]}`，顺序严格优先于 priority/weight |
+| `alias_rules` | 正则别名 + 强制参数覆写（`params` 最后合并，覆盖客户端同名字段） |
+| `devices` | 设备 token：只存 SHA-256 `token_hash`，明文仅创建/轮换时返回一次 |
+| `token_policies` | 按 token/`dev:<id>` 的策略：`expires_at`（RFC3339 过期）、`allow_ips`（来源 IP 白名单）、`rpm`（覆盖全局限流） |
+| `alerts` | 运维告警：`webhooks`（通用 JSON POST）/ `bark`（Bark 推送）；`on_failover`/`on_unhealthy`/`on_quota` 分类开关；`quota_warn_percent`（默认 80）；`min_alert_interval_seconds`（去重窗口，默认 60） |
+| `log_retention_days` | 按天轮转的日志备份（`relay.jsonl.YYYY-MM-DD`）保留天数，0=永久 |
+| `log_raw_tokens` | `false`（默认）日志中 token 脱敏；`true` 记录明文（仅排查用） |
+| `group`（上游级） | 渠道分组标签；客户端带 `X-Route-Group: <组名>` 只路由到该组 |
+| `model_map`（上游级） | 模型名映射 `{"公开名":"上游真实名"}`，仅对该上游生效（发送前改写） |
+
+**配置文件权限**：`config.json` 含密钥，必须 `chmod 600`。liapi 启动时校验文件权限（Windows 跳过；`LIAPI_SKIP_PERM_CHECK=1` 仅限恢复场景）。`Save` 始终写 0600。
+
+> **为什么 `base_url` 带 `/v1`**：不同厂商前缀不一致（OpenAI `/v1`、Anthropic `/v1`、部分自定义网关无前缀）。统一规则：客户端路径去 `/v1` 前缀 + 上游 `base_url` 拼接，路径全部由一个规则产生，可预测、可 debug。
+
+---
+
+## 六、核心流程
+
+### 6.1 请求处理链路（以 `POST /v1/chat/completions` 为例）
+
+```
+r.Context()
+  ├─ 鉴权：从 Authorization / x-api-key / ?token= 取 token
+  │       常量时间比较 client_tokens ── 失败 → 401（OpenAI 错误格式）
+  ├─ 限流：limiter.Allow(token) ── 超限 → 429
+  ├─ 读 body（MaxBytesReader，16MB）── 超限 → 413；非法 JSON → 400
+  ├─ 解析 model / stream ── 缺 model → 400
+  ├─ 别名解析（P2）＋ 参数覆写（P2）→ 得到最终 model
+  ├─ 路由：candidates = 匹配上游
+  │       priority 升序 → 同 priority 组内 weight 加权随机打散
+  ├─ 转发主循环（见 6.3，含故障转移）
+  ├─ 响应回写：SSE 流式 / 普通复制（清洗响应头）
+  ├─ 用量抽取（usage）
+  └─ 写日志（JSONL 后台队列 + 环形缓冲 + 全量计数）
+```
+
+### 6.2 鉴权细节
+
+- **管理台登录**：用户名 + 密码。密码以 PBKDF2-HMAC-SHA256（随机盐，21 万次迭代）哈希存储（`admin_password_hash`），登录成功后签发**短期会话 token**（`sess-…`，默认 12 小时），前端存 `localStorage` 并随请求以 `Authorization: Bearer` 发送。退出登录即服务端失效该会话。静态 `admin_token` 仍可用（保留给 `/metrics` 与脚本）。
+- **业务 API**：读取顺序：`Authorization: Bearer <t>` → `x-api-key: <t>` → `?token=<t>`；这些 token 用于调用模型，与登录账号分离。
+- `Bearer` 前缀**大小写不敏感**。
+- 比较用 **SHA-256 摘要 + `crypto/subtle.ConstantTimeCompare`**，避免时序攻击与长度侧信道。
+- token 脱敏：`sk-abc12345xyz` → `sk-ab...xyz` 后再进日志。
+- 空 token / 格式错误 → `401`，绝不 `500`。
+
+### 6.3 转发主循环（含故障转移）
+
+```text
+candidates = 路由结果 [A, B, C]
+
+for i, up := range candidates:
+    for attempt := 0; attempt <= up.retry; attempt++:
+        # 构造出站请求：注入 Authorization / x-api-key，Content-Type
+        # 非流式：context.WithTimeout(timeout)；流式：不设硬超时
+        resp, err := client.Do(req)
+        if err != nil:                       # 连接失败/超时 → 可切换
+            log(attempt err); continue
+        if 2xx:                              # 命中 → 回写并返回
+            return copyResponse(w, resp)
+        snippet = readAtMost(resp.Body, 8KB) # 读数用于日志
+        if 4xx && status != 429:             # 请求本身有问题 → 不再换
+            return failFast(up, status, snippet)
+        # 429 / 5xx → 可切换，继续下一个 attempt/upstream
+return failAll(lastErr)                       # 502 或透传最后一次的 status
+```
+
+**切换前提**：回写前完成全部决策；一旦 `WriteHeader` 被执行，不再切换。
+
+### 6.4 流式转发（SSE）
+
+- 用上游响应头 `Content-Type` 是否含 `text/event-stream` 判断是否流式。
+- `bufio.Reader` 逐行读，每行写出后调用 `http.Flusher.Flush()`。
+- 复用 `http.Client`（`Transport.MaxIdleConns`）。
+- 客户端断开（`Write` 报错）→ 立即停止读上游、`Close()` 上游 body 释放连接。
+- 逐行尝试解析 `data:` 里的 JSON，抽取 `usage`（`prompt_tokens/completion_tokens` 或 `input_tokens/output_tokens`），流式最后一帧通常带 usage。
+- 响应头清洗：**删除 `Content-Length / Transfer-Encoding / Connection`**，其余透传（含 `Content-Type`）。
+
+### 6.5 用量统计
+
+| 来源 | 处理方式 |
+|---|---|
+| 非流式 | 响应复制时同时写入「尾 64KB 滑动缓冲」，请求结束后扫描 `"usage"` JSON（兼容 prompt/input 两套字段） |
+| 流式 | 逐帧解析 SSE data，命中即记录 |
+| 兼容字段 | OpenAI：`prompt_tokens/completion_tokens`；Anthropic：`input_tokens/output_tokens` |
+
+聚合维度：总量 / 按上游 / 按模型 / 按 token / 按时间段。
+
+### 6.6 日志
+
+- **路径**：追加写 JSONL 文件（一行一条，可 grep/jq）。
+- **内存**：环形缓冲（固定数组 + 取模，`ring_size` 条），供管理台查询。
+- **并发**：所有写入走同一个后台 goroutine 队列（`select + default` 丢弃防阻塞），单点加锁。
+- **脱敏**：`token` 用 `sk-ab...xyz`，上游 `api_key` 一律不落日志。
+
+一条日志字段：
+
+```json
+{"time":"…","token":"sk-ab…xyz","path":"/v1/chat/completions","model":"gpt-4o",
+ "upstream":"openai-main","status":200,"stream":true,"latency_ms":234,
+ "in_tokens":12,"out_tokens":340,"cost":0.000201,"error":""}
+```
+
+---
+
+## 七、API 规格
+
+### 7.1 业务 API（同 OpenAI，客户端零改动切 base_url）
+
+| 路径 | 方法 | 说明 |
+|---|---|---|
+| `/v1/chat/completions` | POST | 主力聊天补全 |
+| `/v1/completions` | POST | 老式补全 |
+| `/v1/embeddings` | POST | 向量 |
+| `/v1/models` | GET | 列出可用模型（汇总各上游 + 别名） |
+| `/v1/messages` | POST | Claude 原生格式（接 Anthropic 时） |
+
+**约束**：
+
+- 出站请求体 = 客户端请求体原样（无别名/覆写时不做任何二次序列化，保证保真）。
+- 错误一律 OpenAI 格式，避免客户端 SDK 解析崩：
+
+```json
+{ "error": { "message": "...", "type": "...", "code": "..." } }
+```
+
+- `413` 请求体超限；`400` 非法 JSON / 缺 model；`401` 鉴权失败；`429` 限流/日配额；`502` 无上游匹配或全部失败；`504` 上游超时（且 `retry_on_timeout=false`）；`499` 客户端断开（仅日志）。
+- 每个响应携带 `X-Request-ID`（客户端可自带；同时转发给上游并写入日志 `request_id` 字段），用于全链路追踪。
+
+### 7.2 管理 API（独立 admin token）
+
+除列表/查看外，管理 API 受 **IP 白名单 + 每 IP 限流（默认 60/min）+ 登录会话或 admin token** 三层保护。
+
+| 路径 | 方法 | 说明 |
+|---|---|---|
+| `/` | GET | 管理台 SPA（Nuxt 静态构建，go:embed；含设备/统计/配置编辑）；`/admin` 301 → `/` |
+| `/admin/api/login` | POST | 登录：`{username,password}` → 短期会话 token（受 IP 白名单/锁定/限流保护；未开启登录时 403） |
+| `/admin/api/login-info` | GET | 免鉴权：`{login_enabled, password_set}`，登录页据此选择表单 |
+| `/admin/api/logout` | POST | 退出登录：使当前会话 token 失效 |
+| `/admin/api/me` | GET | 返回当前登录用户名 |
+| `/admin/api/overview` | GET | 请求数 / 成功率 / 平均延迟 / token 量 / 费用 / 故障转移数 |
+| `/admin/api/upstreams` | GET | 上游列表（api_key 脱敏） |
+| `/admin/api/upstreams` | POST | 新增上游 |
+| `/admin/api/upstreams/{name}` | PUT | 更新上游（api_key 留空=保持原值） |
+| `/admin/api/upstreams/{name}` | DELETE | 删除上游 |
+| `/admin/api/tokens` | GET/POST | 列出 / 新增客户端 token（旧式明文，兼容保留） |
+| `/admin/api/tokens/delete` | POST | 删除 token（传全文） |
+| `/admin/api/devices` | GET | 设备列表（只回 token 前缀提示，不回哈希全文） |
+| `/admin/api/devices` | POST | 新建设备 → **明文 token 只返回一次**（仅存 SHA-256） |
+| `/admin/api/devices/{id}` | PUT | 改 name/rpm/daily/note/disabled |
+| `/admin/api/devices/{id}/rotate` | POST | 轮换 token（旧的立即失效，新的只返回一次） |
+| `/admin/api/devices/{id}` | DELETE | 删除设备 |
+| `/admin/api/logs?n=&q=&model=&status=&upstream=` | GET | 最近 N 条日志（含 request_id / device / multimodal），支持子串搜索与过滤 |
+| `/admin/api/health` | GET | 上游健康状态（重启后从 `health_state_file` 恢复） |
+| `/admin/api/health/probe` | POST | 立即探测全部上游（同步），结果写入探测历史 |
+| `/admin/api/health/history?n=` | GET | 探测历史环（最近 N 条，`manual=true` 标记手动探测） |
+| `/admin/api/audit?n=` | GET | 管理端访问审计环（IP / 路径 / 成功或拒绝原因） |
+| `/admin/api/test` | POST | 调试：{model, messages, stream} 直接发一条 |
+| `/admin/api/config` | GET | 当前配置（**密钥脱敏**，可直接回存：含 `...` 的值自动还原） |
+| `/admin/api/config` | POST | 整份替换并热重载（校验失败保留旧配置） |
+| `/admin/api/config/export` | GET | 导出完整 JSON（**含明文密钥**，备份用） |
+| `/admin/api/config/import?format=liapi\|oneapi` | POST | 导入原生配置，或 OneAPI channels（仅替换 upstreams） |
+| `/admin/api/stats?from=&to=&group_by=day\|model\|device` | GET | 聚合统计：请求数/费用/P50/P90/P99/错误码分布 |
+| `/admin/api/stats/export?format=csv\|json&…` | GET | 统计导出 |
+| `/admin/api/stats/devices?n=` | GET | 设备用量排行 |
+| `/metrics` | GET | Prometheus 文本格式；`metrics_token`（`"-"`=免鉴权）或 admin token |
+
+管理台前端通过独立的 `/login` 登录页认证：默认（未开启登录）输入 **Admin Token** 直接解锁；开启 `login_enabled` 后可改用**用户名 + 密码**（校验通过后服务端签发短期会话 token，存 `localStorage`，每次请求带 `Authorization: Bearer <session>`）。登录页依据 `GET /admin/api/login-info`（免鉴权，仅返回两个布尔值）决定展示哪种表单；未登录访问任意页面会自动跳转登录页，不使用浏览器原生对话框。**管理登录凭据与调用模型的客户端 token 严格分离**：前者只登管理台，后者（`devices[]` / `client_tokens[]`）只用于 `/v1/*` 调用模型。
+
+### 7.3 部署（Docker）
+
+容器内默认路径仍是 `-config /data/config.json`（`Dockerfile` 的 CMD），配置与日志挂载在 `./data`：
+
+```bash
+mkdir -p data && umask 077
+# 首次启动会自动生成 data/config.json（0600，含随机 admin_token；登录默认关闭）；
+# 从容器日志里复制 admin_token 登录管理台，或 Ctrl+C 后编辑该文件
+docker compose up -d --build
+# 或
+docker build -t liapi . && docker run -p 8787:8787 -v "$PWD/data:/data" liapi
+# 换监听端口：同时改 -config 同级的 compose ports 与配置文件里的 port，然后重启容器
+```
+
+---
+
+## 八、P0 方案（第 1–2 天）
+
+### 里程碑 P0-1：骨架 + 非流式链路
+
+1. `config`：结构体 / 默认值 / `Validate()` / `Load` / `Holder`。
+2. `common`：OpenAI 错误写入、常量时间比较、token 脱敏。
+3. `auth`：客户端 token 校验（三来源，Bearer 大小写不敏感）。
+4. `routing`：候选收集 → priority 升序 → 组内加权随机（展开为数组 → Fisher-Yates 洗牌 → 去重保序）。
+5. `relay`：非流式转发 —— 头注入 / 响应头清洗 / `200~299` 回写 / 非 2xx 分段读 body。
+6. `server.handler_v1`：5 条业务路径。
+
+### 里程碑 P0-2：流式 + 故障转移 + 日志
+
+1. SSE 流式复制（`text/event-stream` 检测、逐行 Flush、客户端断开停止读）。
+2. 故障转移循环 + 单上游重试 + `4xx(≠429)` 快速失败。
+3. 用量抽取（尾 64KB + SSE 逐帧）。
+4. `stats.logger`：JSONL + 环形缓冲 + 队列 goroutine。
+
+**P0 验收清单**
+
+- [ ] curl 直连 `/v1/chat/completions` 调 OpenAI 成功（非流式 + 流式）。
+- [ ] 拔掉 A 上游 key → 自动走 B（故障转移）。
+- [ ] 错误格式是 `{"error":{...}}`；缺 model=400、坏 token=401、超大 body=413。
+- [ ] 日志文件与环形缓冲数据一致且 token 已脱敏。
+
+---
+
+## 九、P1 方案（第 3–4 天）
+
+### P1-8 管理台
+
+单 HTML（CSS+JS 内联），`go:embed` 进二进制，零构建。Tabs：概览 / 上游 / 令牌 / 日志 / 调试 / 健康。
+
+> **v2**：管理台已重写为 Nuxt 4 + fuxsto-design 的静态 SPA（源码在 `web/`，
+> 产物在 `server/adminui/`，`go:embed all:adminui` 打包；构建见 `./buildadmin.sh`）。
+> 布局参考 NewApi（侧边栏 + 顶栏 + 页面过渡动画），功能覆盖概览 / 上游 / 令牌 /
+> 设备 / 统计 / 日志 / 健康 / 配置 / 调试。
+
+### P1-9 配置热重载
+
+- 所有请求从 `Holder.Get()` 现取，不缓存。
+- 管理台保存：`Validator()` 校验通过 → 写临时文件 → `os.Rename` 原子覆盖 → `Holder.Set(newCfg)`。
+- 不做 fsnotify，自用场景管理台保存即热更。
+
+### P1-10 健康检查
+
+后台 goroutine 每 `probe_interval` 并发探测所有启用上游（`GET health_path` + Authorization，5s 超时）。连续失败 `probe_fail_threshold` 次才标不健康；`skip_unhealthy=true` 时路由避开，若过滤后为空则回退全量（防止全挂时完全不可用）。
+
+### P1-11 限流
+
+固定窗口：`map[token]{count, resetTime}`，`limit=0` 关闭，超限 `429`。后台每 60s 清理过期桶防内存增长。**位置：鉴权后、转发前**。
+
+### P1-12 用量统计
+
+见 6.5。`totals` 累加请求数 / 成功数 / 延迟总和 / in、out tokens / 费用（P2 价格）。
+
+### P1-13 多上游负载均衡
+
+同 `priority` 组内按 `weight` 加权随机（洗牌去重保序），不引入轮询计数器，避免重启丢状态。
+
+---
+
+## 十、P2 加分项（视时间挑选）
+
+| # | 功能 | 要点 |
+|---|---|---|
+| 14 | 费用估算 | `cost = in/1e6*priceIn + out/1e6*priceOut`，按模型配置价 |
+| 15 | 模型别名 | `aliases` map，转发前重写请求体 `model` 字段 |
+| 16 | 参数覆写 | 按上游/模型 force/remove 参数 |
+| 17 | 响应缓存 | key=`hash(model+messages+关键参数)`，仅非流式且非 temperature>0，内存 LRU |
+| 18 | 请求钩子 | 前置/后置插件式接口 |
+| 19 | 告警 | 连续失败 N 次 / 费用超阈值 → Webhook POST（飞书/钉钉/Telegram） |
+| 20 | 多用户 / 配额 | 每 token 关联用户 + 月度配额，超限 429（偏 SaaS） |
+
+---
+
+## 十一、实现顺序
+
+```
+第 1 天：P0-1 入口 + 鉴权 + 上游配置 + 路由 + 非流式转发
+第 2 天：P0-2 流式 + 故障转移 + 日志
+第 3 天：P1-8 管理台 + P1-9 热重载
+第 4 天：P1-10 健康检查 + P1-11 限流 + P1-12 用量
+第 5 天：P1-13 负载均衡 + P2 挑 2–3 个
+```
+
+每日产出均需 `go build ./... && go vet ./...` 通过，并有 curl 冒烟用例。
+
+---
+
+## 十二、关键技术决策与坑位规避
+
+| # | 坑 | 对策 |
+|---|---|---|
+| 1 | `http.Client.Timeout` 会掐断流式 | 非流式用 `context.WithTimeout`；流式不设硬超时，靠客户端断开 |
+| 2 | 透传 `Content-Length` 导致流式 HTTP 层错乱 | 响应头显式删除 `Content-Length / Transfer-Encoding / Connection` |
+| 3 | 写过响应头就不能换上游 | 切换决策全部在首次 `WriteHeader` 前完成 |
+| 4 | 配置写到一半崩溃 → 文件损坏 | 临时文件 + `os.Rename` 原子替换 |
+| 5 | 比较 token 有时序攻击面 | SHA-256 摘要 + `subtle.ConstantTimeCompare` |
+| 6 | 日志锁粒度过大 | JSONL 写入收敛到单一后台 goroutine，请求路径只投递不等待 |
+| 7 | 环形缓冲用 slice append+trim 会涨内存 | 固定数组 + head 指针 + 取模 |
+| 8 | 上游 401 去重试 | 4xx（除 429）判定为请求自身问题，直接失败返回 |
+| 9 | 流式 usage 在最后一帧，靠前取不到 | SSE 逐帧解析 + 非流式尾 64KB 缓冲兜底 |
+| 10 | 上游 key 打进日志 | 出错仅打 URL + 状态码，`api_key` 永不落日志 |
+| 11 | 非法 JSON 位置难定位 | 报错带畸形 JSON 的起止位置（`json.SyntaxError.Offset`） |
+| 12 | 客户端中途断开 panic | 复制循环中 `Write` 出错即退出，不访问已关闭的连接 |
+
+---
+
+## 十三、测试方案
+
+1. **单元**：`routing`（优先级/权重随机性、`*` 兜底、全 disabled）、`auth`（三来源、大小写、空值）、`limiter`（窗口/清理）、`config.Validate`。
+2. **集成**：用 `httptest` 起假上游（可注入失败/延迟/SSE），跑转发 + 故障转移 + 用量。
+3. **冒烟**：curl 脚本覆盖 P0 验收清单（正常/流式/切换/错误格式）。
+4. **性能**：`MaxIdleConns` 复用验证（连接不重建），并发 100 请求压测无连接泄漏。
+
+---
+
+## 十四、运行方式
+
+```bash
+# 首次运行：自动在 ~/.li/liapi/ 生成 config.json（随机 admin_token；
+# 监听 0.0.0.0:8787；用户名/密码登录默认关闭——不再生成任何账号密码），
+# 控制台方框打印管理台地址、admin_token 与开启登录的方法。
+go build -o liapi .
+./liapi                                   # 默认读 ~/.li/liapi/config.json
+./liapi -config /data/config.json         # 或指定路径（Docker 常用）
+# 自定义数据目录：LIAPI_HOME=/var/lib/liapi ./liapi
+# 想隐藏明文（共享日志/录屏）：LIAPI_MASK_ADMIN_TOKEN=1 ./liapi
+
+# 想用账号密码登录：编辑 ~/.li/liapi/config.json 写入
+#   "login_enabled": true, "admin_username": "你的名字", "admin_password": "你的密码"
+# 保存后重启（或在管理台配置页填 password 保存）；明文会立即转成 PBKDF2 哈希。
+
+# 冒烟
+curl http://localhost:8787/v1/models -H "Authorization: Bearer sk-client-aaa"
+curl http://localhost:8787/v1/chat/completions -H "Authorization: Bearer sk-client-aaa" \
+     -d '{"model":"gpt-4o","messages":[{"role":"user","content":"hi"}]}' -N
+
+# 管理台（开箱用启动日志里的 admin_token 登录）
+open http://localhost:8787/
+```
+
+---
+
+## 十五、文件清单（实现后应有）
+
+```
+main.go                     server/handler_v1.go      routing/router.go
+config/config.go            server/handler_admin.go   relay/relay.go
+config/holder.go            server/server.go          relay/stream.go
+config/interop.go           server/requestid.go       relay/usage.go
+auth/auth.go                server/adminui/ (SPA)     relay/http.go
+auth/admin.go               web/ (Nuxt 源码)          stats/logger.go
+common/errors.go            stats/aggregate.go        stats/limiter.go
+common/token.go             stats/metrics.go          stats/quota.go
+stats/health.go             stats/alerts.go           stats/audit.go
+stats/totals.go
+```
+
+---
+
+*本 README 即实现方案（spec），实现顺序与决策可随开发演进修订。*

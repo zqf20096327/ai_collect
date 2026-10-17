@@ -1,0 +1,353 @@
+---
+title: Introlix
+emoji: 🌈
+colorFrom: purple
+colorTo: blue
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
+# Introlix
+
+<div align="center" id="introlix">
+
+<!-- Add your logo here -->
+<!-- ![Introlix Logo](./docs/assets/logo.png) -->
+
+**An AI-powered research platform that transforms how you conduct research**
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.136+-green.svg)](https://fastapi.tiangolo.com/)
+
+[Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Contributing](#contributing)
+
+</div>
+
+---
+
+## 🌟 Overview
+
+Introlix is an intelligent research platform that combines the power of AI agents with advanced search capabilities to streamline your research workflow. Whether you're conducting academic research, market analysis, or deep investigations, Introlix provides a comprehensive suite of tools to help you gather, organize, and synthesize information efficiently.
+
+[![Watch the Demo](https://img.youtube.com/vi/DMKt0WGUNeQ/0.jpg)](https://youtu.be/DMKt0WGUNeQ?si=0MUMtX9R5rBUIayv)
+
+**Note**: Currently this platform is AI powered research platform. Our goal is to convert this project from research platform to a tool platform that provides AI powered tools in user computer without taking users data. See <a href="#roadmap">roadmap</a> section for more details. 
+
+### Key Capabilities
+
+- **AI-Powered Research Desk**: Multi-stage AI-guided research workflow with context gathering, planning, and exploration
+- **Intelligent Chat Interface**: Conversational AI with internet search integration for real-time information
+- **AI Document Editor**: Edit and enhance your research documents with AI assistance
+- **Advanced Search Integration**: Powered by SearXNG for privacy-focused web searches
+- **Knowledge Management**: Vector-based storage with Pinecone for semantic search
+- **Multi-Agent System**: Specialized agents for different research tasks (Context, Planner, Explorer, Editor)
+
+---
+<div id="features"></div>
+
+## ✨ Features
+
+### Research Desk Workflow
+
+The Research Desk guides you through a comprehensive research process:
+
+1. **Initial Setup**: Create a research desk with your topic
+2. **Context Agent**: AI asks clarifying questions to understand your research scope
+3. **Planner Agent**: Generates a structured research plan with topics and keywords
+4. **Explorer Agent**: Automatically searches the internet and gathers relevant information
+5. **Document Editing**: AI-assisted writing and editing of your research document
+6. **Interactive Chat**: Ask questions about your research and get AI-powered answers
+
+### Chat Interface
+
+- Real-time conversational AI with streaming responses
+- Internet search integration for up-to-date information
+- Conversation history persistence
+- Support for multiple LLM providers (OpenRouter, Google AI Studio)
+
+### Document Management
+
+- Rich text editor powered by Lexical
+- AI-assisted editing and content generation
+- Workspace organization for multiple projects
+- Auto-save and version tracking
+
+### Coming Soon (Beta Features)
+
+- **Audio Processor**: Process audio to enhance it and remove stutters from audio with all local models.
+- **Document Formatting**: Export research as blog posts, research papers, or custom formats.
+- **Reference Management**: Automatic citation generation with inline references [1], [2], etc.
+- **File Upload**: Currently we can't upload files that will be added soon.
+
+---
+<div id="roadmap"></div>
+
+### Roadmap (Future Plan)
+- **Our goal is to convert this project from research platform to a tool platform that provides AI powered tools in user computer without taking users data**
+
+- **Note**: When we mean AI does not mean LLM or text generator models only. We mean machine learning model that could be both traditional ML models or deep learning models.
+
+1. **Add Basic Features**: We don't have basic features like file upload and image upload and many other basic features that we need.
+
+2. **Audio Process Tool**: We also wants to put audio processing tools that able to filter audio, remove sutters and noises from the audio.
+
+3. **Add All Coming Soon Features**: We have multiple features in coming soon. Our goal is to make these posible before v1.
+
+4. **Don't Give Everyone All Features**: Everyone don't want to use every tools. Many are unrelated to each other. So, Before v1 we will make sure that users can select which feature to use.
+
+5. **Desktop Applicaton**: Before v1 we want a desktop app for this platform.
+---
+
+<div id="quick-start"></div>
+
+## 🚀 Quick Start
+- **Note**: If you want to use it via docker then go and see release section
+
+### Prerequisites
+
+- **Python**: 3.11 or higher
+- **Node.js**: 22 or higher
+- **pnpm**: Package manager for frontend
+- **SQLite**: Database for storing workspaces and research data
+- **Chromadb**: Vector database for semantic search
+- **SearXNG**: Self-hosted search engine (see [SearXNG Setup](#searxng-setup))
+
+### Installation
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/introlix/introlix.git
+cd introlix
+```
+
+2. **Set up environment variables**
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and add your API keys:
+
+```env
+# Required: Choose one LLM provider
+OPEN_ROUTER_KEY=your_openrouter_api_key_here
+# OR
+GEMINI_API_KEY=your_gemini_api_key_here # From Google AI Studio
+
+# Optional: Search engine
+SEARCHXNG_HOST=http://localhost:8080/search
+
+# Required: API key & JWT secret key
+INTROLIX_API_KEY=123456
+JWT_SECRET_KEY = my_secret
+```
+
+3. **Install Python dependencies**
+
+```bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -e .
+```
+
+4. **Authenticate with Hugging Face** (required for LLM model downloads)
+
+```bash
+pip install huggingface_hub
+# Login to Hugging Face
+hf auth login
+
+# Or set token directly
+export HUGGING_FACE_HUB_TOKEN=your_hf_token_here
+```
+
+> **Note**: Get your Hugging Face token from [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+
+5. **Install frontend dependencies**
+
+```bash
+cd web
+pnpm install
+```
+
+6. **Start the services**
+
+**Terminal 1 - Backend:**
+```bash
+# From project root
+source .venv/bin/activate
+uvicorn app:app --reload --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd web
+pnpm dev
+```
+
+7. **Access the application**
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
+
+
+### 🐳 Running with Docker & Docker Compose (Integrated Local Run)
+
+For running the entire application (both Next.js frontend and FastAPI backend) in a single integrated container:
+
+1. **Build the local Docker image**:
+   ```bash
+   docker build -f Dockerfile.local -t introlix:local .
+   ```
+
+2. **Run using Docker Compose**:
+   Ensure you have your `.env` file containing your API keys (e.g. `GEMINI_API_KEY`, etc.) in the root folder, then start the container:
+   ```bash
+   docker compose up -d
+   ```
+
+3. **Access the application**:
+   - Frontend: [http://localhost:8043](http://localhost:8043)
+   - Backend API Docs: [http://localhost:8042/docs](http://localhost:8042/docs)
+
+To stop the container, run:
+```bash
+docker compose down
+```
+
+---
+
+## 🔧 Configuration
+
+### LLM Provider Selection
+
+Edit `introlix/config.py` to choose your LLM provider:
+
+```python
+# Choose: "openrouter" or "google_ai_studio"
+CLOUD_PROVIDER = "google_ai_studio"
+
+# Set default model
+if CLOUD_PROVIDER == "openrouter":
+    AUTO_MODEL = "qwen/qwen3-235b-a22b:free"
+elif CLOUD_PROVIDER == "google_ai_studio":
+    AUTO_MODEL = "gemini-2.5-flash"
+```
+
+<div id="searxng-setup"></div>
+
+### SearXNG Setup
+
+SearXNG is a privacy-respecting metasearch engine. For Introlix to work properly, you need to configure it to return JSON results.
+
+To install SearXNG, see  [Installation guide](https://docs.searxng.org/admin/installation.html).
+
+Modify `searxng/settings.yml`:
+
+```yaml
+# SearXNG settings
+
+general:
+  instance_name: "SearXNG"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  formats:
+    - html
+    - json   # Important Enable JSON format
+
+server:
+  port: 8888
+  bind_address: "127.0.0.1"
+```
+
+**Note**: Above code is only for example. Don't replace settings.yml file. Only modify the settings.yml for enabling json.
+
+For full template see, [searxng/blob/main/searx/settings.yml](https://github.com/introlix/searxng/blob/main/searx/settings.yml)
+
+3. **Verify JSON output**
+
+Test that JSON format works:
+```bash
+curl "http://localhost:8888/search?q=test&format=json"
+```
+
+You should receive a JSON response with search results.
+
+**Important**: Make sure to enable JSON format in your SearXNG settings as shown above. Introlix requires JSON responses from SearXNG to function properly.
+
+---
+
+## 🏗️ Architecture
+
+Introlix is built with a modern, scalable architecture:
+
+### Backend (Python/FastAPI)
+
+- **FastAPI**: High-performance async web framework
+- **Multi-Agent System**: Specialized AI agents for different tasks
+  - `ChatAgent`: Conversational interface with search
+  - `ContextAgent`: Gathers research context through questions
+  - `PlannerAgent`: Creates structured research plans
+  - `ExplorerAgent`: Searches and gathers information
+  - `EditAgent`: AI-assisted document editing
+- **Vector Storage**: Chromadb for semantic search
+- **Database**: SQLite for data persistence
+
+### Frontend (Next.js/React)
+
+- **Next.js**: React framework with App Router
+- **Lexical**: Rich text editor
+- **TanStack Query**: Data fetching and caching
+- **Radix UI**: Accessible component primitives
+- **Tailwind CSS**: Utility-first styling
+
+### External Services
+
+- **LLM Providers**: OpenRouter or Google AI Studio
+- **Search**: SearXNG (self-hosted)
+- **Vector DB**: Chromadb
+- **Database**: SQLite
+
+---
+
+## 📝 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with [FastAPI](https://fastapi.tiangolo.com/)
+- Frontend powered by [Next.js](https://nextjs.org/)
+- Rich text editing with [Lexical](https://lexical.dev/)
+- Search powered by [SearXNG](https://github.com/searxng/searxng)
+- Vector storage by [Chromadb](https://www.trychroma.com/)
+
+---
+
+## 📧 Contact & Support
+
+- **Issues**: [GitHub Issues](https://github.com/introlix/introlix/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/introlix/introlix/discussions)
+- **Community**: [Join our Discord](https://discord.gg/mhyKwfVm)
+
+---
+
+<div align="center">
+
+**[⬆ back to top](#introlix)**
+
+Made with ❤️ by the Introlix Team
+
+</div>

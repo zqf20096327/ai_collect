@@ -1,0 +1,153 @@
+# MolMiner &nbsp;—&nbsp; Towards Controllable, 3D-Aware, Fragment-Based Molecular Design
+[![Python](https://img.shields.io/badge/python-3.9%2B-green.svg)](https://www.python.org/)  
+[![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://www.apache.org/licenses/LICENSE-2.0)  
+[![Model Weights](https://img.shields.io/badge/Zenodo-Model%20Weights-4c6ef5.svg)](https://doi.org/10.5281/zenodo.21631560)  
+[![arXiv](https://img.shields.io/badge/arXiv-2411.06608-b31b1b.svg)](https://arxiv.org/abs/2411.06608)
+
+<p align="center">
+  <img src="figures/logo.png" alt="MolMiner logo" width="22%">
+</p>
+
+MolMiner is a **multi-property-conditioned, geometry-aware transformer** that builds molecules *fragment-by-fragment* while 3-D aware.  
+It supports:
+
+* **Order-agnostic roll-outs** with symmetry-aware attachment handling  
+* Up to **12 simultaneous property conditions** (logP, QED, …)  
+* End-to-end scripts for vocab extraction, preprocessing, GMM, starter model and full MolMiner training
+
+---
+
+## 1. Installation
+
+```bash
+git clone https://github.com/raulorteg/molminer.git
+cd molminer
+pip install -r requirements.txt
+```
+
+### 1.2 Downloading Model Checkpoints
+
+Pre-trained model checkpoints for **MolMiner** are available via Zenodo.
+
+- **Zenodo Record**: [https://zenodo.org/records/21631560](https://zenodo.org/records/21631560)
+- **Direct Download (Files Archive)**: [https://zenodo.org/api/records/21631560/files-archive](https://zenodo.org/api/records/21631560/files-archive)
+
+These checkpoints contain trained weights for: MolMiner model, GMM (Gaussian Mixture Model), Fragment-Starter model.
+
+## 2. Training
+
+Below is the minimal happy path from raw CSV -> trained MolMiner model.
+All scripts share the common option --help for full CLI details.
+
+### 2.1 Build fragment vocabularies
+```bash
+python extract_vocabulary.py \
+  --dataset ../data/test/example.csv
+# -> vocab_anchors.csv, vocab_attachments.csv, vocab_fragments.csv, stats.json
+```
+### 2.2 Train / validation / test split
+```bash
+python dataset_split.py \
+  --dataset ../data/test/example.csv
+# -> train.csv, valid.csv, test.csv
+```
+### 2.3 Pre-process for the Fragment-Starter
+```bash
+python preprocess_starter.py \
+  --data_dir ../data/test
+# -> train_starter.pkl, valid_starter.pkl, test_starter.pkl
+```
+### 2.4 Pre-process for MolMiner
+```bash
+python preprocess_molminer.py \
+  --data_dir ../data/test \
+  --total_epochs 10 \
+  --max_workers 2
+# -> steps/test, steps/valid, steps/{epoch}, ...
+```
+### 2.5 Train auxiliary models
+stage	command
+| stage                | command                                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| **GMM**     | `python train_gmm.py   --data_dir ../data/test   --model_out ../checkpoints/test_gmm_model.pkl` |
+| **Fragment-Starter** | `python train_starter.py --data_dir ../data/test --ckpt_dir ../checkpoints`        |
+
+
+### 2.6 Train MolMiner
+```bash
+python train_molminer.py \
+  --data_dir ../data/test \
+  --ckpt_dir ../checkpoints \
+  --fixedrollout  \      # remove to use adaptive roll-outs
+  --geom_requires_grad \ 
+  --total_epochs 10
+# -> ckpt_dir/best_molminer.pth, cpkt_dir/last_molminer/pth
+```
+
+## 3. Generating
+
+### 3.1 Create calibration 
+
+```bash
+python postprocess_calibration.py --samples=10 --ckpt_molminer='../checkpoints/best_molminer.pth' --ckpt_starter='../checkpoints/best_starter.pth' --ckpt_gmm='../checkpoints/gmm_model.pkl' --stats_path='../data/zinc/stats.json' --vocab_fragments=
+'../data/zinc/vocab_fragments.csv' --vocab_attachments='../data/zinc/vocab_attachments.csv' --vocab_anchors='../data/zinc/vocab_anchors.csv' --device=cpu --weighted
+# -> data/calibration/{prop}_calibration.txt
+```
+
+### 3.2 Generate unconditionally 
+```bash
+python generate_random.py --samples=10 --ckpt_molminer='../checkpoints/best_molminer.pth' --ckpt_starter='../checkpoints/best_starter.pth' --ckpt_gmm='../checkpoints/gmm_model.pkl' --stats_path='../data/zinc/stats.json' --vocab_fragments='../data/zinc/vocab_fragments.csv' --vocab_attachments='../data/zinc/vocab_attachments.csv' --vocab_anchors='../data/zinc/vocab_anchors.csv' --device=cpu --weighted
+# -> data/generated.txt
+```
+
+### 3.3 Generate conditionally inside a property window
+
+Define a window with any set of inequality constraints over the twelve properties;
+unconstrained properties are sampled from the GMM prior. The window is applied twice —
+to reject prompt vectors, and to decide which generated molecules count as hits.
+
+```bash
+python generate_window.py --n_target=100 \
+  --constraint 'molWt<=500' --constraint '1<=logP<=5' \
+  --constraint 'hbd<=5' --constraint 'hba<=10' \
+  --ckpt_molminer='../checkpoints/best_molminer.pth' --ckpt_starter='../checkpoints/best_starter.pth' --ckpt_gmm='../checkpoints/gmm_model.pkl' --stats_path='../data/zinc/stats.json' --vocab_fragments='../data/zinc/vocab_fragments.csv' --vocab_attachments='../data/zinc/vocab_attachments.csv' --vocab_anchors='../data/zinc/vocab_anchors.csv' --device=cpu --weighted \
+  --out='../data/generated/window.txt'
+# -> data/generated/window.txt (all) + window_passing.txt (in-window subset)
+```
+
+Supported forms: `molWt<=500`, `1<=logP<=5`, `num_chiral_centers==0`
+(`<=`, `<`, `>=`, `>`, `==`). Count properties are rounded before comparison.
+
+## 4. Analyze results
+
+### 4.1 Compute statistics on molecules generated unconditionally
+```bash
+python postprocess_generated_statistics.py
+```
+
+### 4.2 Create the Calibration plot for each of the twelve properties
+```bash
+python postprocess_calibration_plot.py --calibration_dir='../data/calibration' --stats_path='../data/zinc/stats.json' --figure_savepath='../figures/calibration.png' --median
+# -> figures/calibration.png
+```
+
+## 5. Citation
+
+If you use MolMiner, please cite:
+
+```bibtex
+@article{ortegaochoa2026molminer,
+  author  = {Ortega-Ochoa, Raul and Vegge, Tejs and Frellsen, Jes},
+  title   = {MolMiner: Toward Controllable, Three-Dimensional-Aware, Fragment-Based Molecular Design},
+  journal = {Advanced Intelligent Discovery},
+  year    = {2026},
+  pages   = {e70138},
+  doi     = {10.1002/aidi.70138},
+  url     = {https://advanced.onlinelibrary.wiley.com/doi/abs/10.1002/aidi.70138},
+  keywords = {fragment-based molecular assembly, inverse molecular design, property-controlled generation},
+}
+```
+
+## 6. License
+
+MolMiner is released under the Apache 2.0 License.

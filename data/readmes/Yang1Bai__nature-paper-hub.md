@@ -1,0 +1,655 @@
+## Journal URL monitor repair (2026-09-28)
+
+The weekly URL checker uses only Python's standard library and requires no API key.
+Five outdated Nature author-guide URLs were corrected. HTTP 401/403/429 responses
+are reported as **unverified**, not healthy. Network failures, 404/410 and persistent
+server errors still fail the check. Full results are saved in the run summary and
+the `journal-url-report` artifact. This replaces issue creation, which previously
+failed due to a missing label and insufficient token permissions; no issue-write
+permission or personal access token is needed.
+
+# 🧬 Top Journal Paper Hub
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Journals-19_supported-blue?style=flat-square" />
+  <img src="https://img.shields.io/badge/Nature_Series-12_journals-brightgreen?style=flat-square" />
+  <img src="https://img.shields.io/badge/Science%2FCell%2FPNAS%2FACS%2FWiley-7_journals-orange?style=flat-square" />
+  <img src="https://img.shields.io/badge/OpenClaw-compatible-green?style=flat-square" />
+  <img src="https://img.shields.io/badge/Claude_Code-plugin-purple?style=flat-square" />
+  <img src="https://img.shields.io/badge/Codex-compatible-orange?style=flat-square" />
+  <img src="https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square" />
+</p>
+
+<p align="center">
+  <a href="#chinese">中文版</a> · <a href="#english">English</a>
+</p>
+
+---
+
+<h2 id="chinese">🇨🇳 中文版</h2>
+
+### 简介
+
+`top-journal-paper-hub` 是一套面向顶级期刊投稿的全流程 AI 写作 agent，覆盖从**选刊、文献调研、论文起草、图表生成、引用核验、投稿前模拟审稿、投稿前检查，到审稿意见回复**的完整链路。
+
+支持 **OpenClaw、Claude Code、Codex** 三种平台，输出格式支持 **LaTeX（Overleaf）和 Word（.docx）**，并内置 CSV/Excel 自动生图、CrossRef 实时引用核验、个人文献库 RAG 写作风格锚定。
+
+**v1.2.0 新增：** Claude Code 插件打包、`nature-paper-hub` 单入口布局、`nature-integrity-check`、485 篇清洗文献索引，以及可选 `LITREVIEW_API` 私有文献库接入。
+
+---
+
+### 功能一览
+
+| Skill | 功能说明 |
+|-------|----------|
+| 🏠 `nature-paper-hub` | 主入口，12 阶段（0–11）全流程对话路由（含完整性检查与模拟审稿） |
+| 🔬 `nature-reviewer-sim` | 投稿前模拟审稿：7 个专家 agent + 编辑决定信 |
+| 🛡️ `nature-integrity-check` | 投稿前/修回后完整性核验：引用、数据、图表、必备声明（pre-review / final-check） |
+| 📊 `nature-figure` | CSV/Excel → 顶刊风格 matplotlib/R 图，自动识别图表类型 |
+| 📖 `nature-reader` | PDF/DOI/arXiv → 双语精读 Markdown，含图表解读与引用建议 |
+| 📚 `nature-citation` | CrossRef 实时核验 + RetractionWatch 撤稿检查 + BibTeX/RIS/ENW/Zotero 导出 |
+| 🎞️ `nature-paper2ppt` | 论文 → 中文/双语 PPTX，含演讲者备注 |
+
+---
+
+### 支持期刊（19 个）
+
+#### Nature 系列（12 个）
+
+| 期刊 | 影响因子 | 接收率 | 正文字数 | 图数 | 引用 |
+|------|---------|--------|---------|------|------|
+| Nature | 63.7 | ~8% | 3,000 | 6 | 30 |
+| Nature Energy | 60.9 | ~8% | 3,000 | 6 | 50 |
+| Nature Materials | 37.2 | ~9% | 3,000 | 6 | 50 |
+| Nature Catalysis | 37.8 | ~8% | 3,000 | 6 | 50 |
+| Nature Methods | 32.1 | ~8-10% | 3,000 | 6 | 50 |
+| Nature Machine Intelligence | 23.9 | ~8% | 3,500 | 6 | 50 |
+| Nature Synthesis | 20.0 | ~8% | 3,000 | 6‡ | 50 |
+| Nature Chemistry | 19.2 | ~9% | 3,000 | 6 | 50 |
+| Nature Communications | 15.7 | ~20% | 5,000† | 10 | 60 |
+| Nature Chemical Engineering | 13.0 | ~8% | 3,500 | 6+10ED | 50 |
+| Nature Computational Science | 12.0 | ~12% | 5,000 | 8 | 60 |
+| Nature Sustainability | 25.1 | ~10% | 4,000 | 8 | 60 |
+
+† Nature Communications 字数含 Methods 章节
+‡ Nature Synthesis 不接受 Scheme，只接受 Figure；Methods 中不可含图表
+
+#### 其他顶刊（7 个）
+
+| 期刊 | 影响因子 | 接收率 | 文章类型 | 正文字数 | 图数 |
+|------|---------|--------|---------|---------|------|
+| Science | 44.7 | ~7% | Article / Report | 4,500 / 2,500 | 6 / 4 |
+| Cell | 45.5 | ~8% | Article / Short Article | 8,000 / 4,000 | 8 / 4 |
+| PNAS | 11.1 | ~18% | Research Article | 6,000 | 6 |
+| JACS | 14.4 | ~11% | Article / Letter | ~6,000 / 4pp | 8 / 4 |
+| ACS Nano | 15.8 | ~10% | Article / Letter | 10,000 / 4,000 | 10 / 5 |
+| Angewandte Chemie | 16.1 | ~10% | Research Article / Communication | 5,000 / 2,500 | 8 / 4 |
+| Advanced Materials | 27.4 | ~9% | Research Article / Communication | 5,000 / 2,500 | 8 / 4 |
+
+---
+
+### 安装
+
+#### 方式一：Claude Code 插件 marketplace（推荐，一键安装）
+
+```bash
+# 添加 marketplace（一次性）
+/plugin marketplace add https://github.com/Yang1Bai/nature-paper-hub
+
+# 安装插件
+/plugin install nature-paper-hub
+
+# 重新加载
+/reload-plugins
+```
+
+安装后 7 个技能（主入口 + 6 个子技能）自动可用，无需手动 cp。
+
+---
+
+#### 手动安装前的关键规则
+
+> 不要只复制单个 `SKILL.md`。这些 skills 会读取仓库根目录的 `scripts/`、`templates/`、`data/` 和 `skills/nature-paper-hub/references/`。手动安装时请保留完整 clone，并设置 `CLAUDE_PLUGIN_ROOT` 指向该 clone。
+
+#### 方式二：Codex（完整 skill 目录 + 根资源）
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+mkdir -p ~/.codex/skills
+cp -R skills/nature-* ~/.codex/skills/
+
+export CLAUDE_PLUGIN_ROOT="$(pwd)"
+pip install -r scripts/requirements.txt
+```
+
+Windows PowerShell：
+
+```powershell
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
+Copy-Item -Recurse -Force .\skills\nature-* "$env:USERPROFILE\.codex\skills\"
+
+$env:CLAUDE_PLUGIN_ROOT = (Get-Location).Path
+py -3 -m pip install -r .\scripts\requirements.txt
+```
+
+#### 方式三：Claude Code（手动 skills）
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+mkdir -p ~/.claude/skills
+cp -R skills/nature-* ~/.claude/skills/
+
+export CLAUDE_PLUGIN_ROOT="$(pwd)"
+pip install -r scripts/requirements.txt
+```
+
+#### 方式四：OpenClaw
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cp -R nature-paper-hub ~/.openclaw/workspace/skills/
+# 重启 OpenClaw，对话中说"选刊"即可激活
+```
+
+#### 验证安装
+
+```bash
+python -m unittest discover -s tests
+```
+
+手动安装后请不要删除 clone；`CLAUDE_PLUGIN_ROOT` 指向的目录就是脚本、模板和文献索引的资源根目录。
+
+---
+
+### 配置（可选）
+
+本工具开箱即用，无需任何密钥。若你有自己的文献库 API，可设置环境变量 `LITREVIEW_API`（一个接受 `?q=<query>` 的基础 URL）接入；**不设置时**，文献检索自动走「本地索引 + CrossRef + 网络搜索」，全流程不受影响。
+
+```bash
+export LITREVIEW_API="https://your-host.example.com/api/search"   # 可选
+```
+
+> 上手示例见 [`examples/quickstart.md`](examples/quickstart.md)。
+
+---
+
+### 快速上手
+
+#### OpenClaw / Telegram
+在对话中输入以下关键词直接跳转对应阶段：
+
+```
+选刊 / choose journal  → 选择目标期刊（19个可选），显示字数/图数/引用限制
+文献综述 / literature  → 调用个人文献库 + 网络搜索
+写大纲 / outline       → 按期刊生成定制化论文结构
+写摘要 / abstract      → 起草符合期刊风格的 Abstract
+图表规划 / figure plan → 规划每张图的叙事逻辑
+模拟审稿 / reviewer simulation → 投稿前3位审稿人视角模拟评审
+检查引用 / citations   → CrossRef 实时核验 + 撤稿检查
+导出 / export          → 选择 LaTeX（Overleaf）或 Word
+写回复信 / rebuttal    → 逐条审稿意见生成回复框架
+```
+
+#### Claude Code
+```
+Use nature-paper-hub to start writing a paper for Nature Materials
+Use nature-reviewer-sim to simulate peer review of my manuscript
+Use nature-figure to generate a matplotlib figure from my data.csv
+Use nature-reader to create a bilingual reader for this paper: ~/Downloads/paper.pdf
+Use nature-citation to verify my reference list and export as BibTeX
+Use nature-paper2ppt to convert this paper into a Chinese presentation
+```
+
+---
+
+### 全流程说明
+
+```
+阶段 0:  选刊             → 19 个顶刊可选，加载对应字数/图数/引用限制
+阶段 1:  文献调研         → 本地文献索引 +（可选）个人库 + CrossRef + 网络搜索
+阶段 2:  结构规划         → 按期刊类型定制论文大纲
+阶段 3:  逐节起草         → Abstract / Introduction / Results / Discussion / Methods
+阶段 4:  图表规划         → CSV/Excel 自动出图 + matplotlib/R 代码 + 图例文字
+阶段 5:  引用核验         → CrossRef API + RetractionWatch + 多格式导出
+阶段 6:  投稿前完整性检查 → 引用/数据/图表/必备声明（pre-review 模式）
+阶段 7:  模拟审稿         → 7 个专家 agent + 编辑决定信 + 修改路线图
+阶段 8:  投稿前检查       → 字数/图数/格式/内容 checklist + cover letter
+阶段 9:  最终完整性检查   → final-check 模式，零 CRITICAL 方可导出
+阶段 10: 导出             → LaTeX (Overleaf) / Word (.docx) / PPTX
+阶段 11: 审稿回复         → 逐条回复框架 + 修改说明 + 封面信
+
+注：模拟审稿（阶段 7）可在任意阶段触发。
+```
+
+---
+
+### 文件结构
+
+```
+nature-paper-hub/
+├── README.md                              # 本文件（中英双语）
+├── .claude-plugin/
+│   ├── plugin.json                        # Claude Code 插件清单 🆕
+│   └── marketplace.json                   # 一键安装 marketplace 清单 🆕
+├── .github/
+│   └── workflows/
+│       └── journal-spec-check.yml         # 每周自动检查期刊规格 URL 健康状态
+├── skills/
+│   ├── nature-paper-hub/                   # 主 skill（hub，唯一入口）
+│   │   ├── SKILL.md                       #   12 阶段路由骨架
+│   │   └── references/                     #   按需加载的详细规则 🆕
+│   │       ├── writing-rules.md            #     逐节写作规则 + 自评
+│   │       ├── outlines.md                 #     论文大纲模板
+│   │       ├── audit-and-cover-letter.md   #     投稿前 checklist + cover letter
+│   │       ├── rebuttal.md                 #     审稿回复流程
+│   │       ├── literature-integration.md   #     文献检索 / RAG / CrossRef
+│   │       └── journal-special-rules.md    #     各刊特殊规则
+│   ├── nature-reviewer-sim/SKILL.md       # 投稿前模拟审稿（7 agent + 编辑）
+│   ├── nature-integrity-check/SKILL.md    # 投稿前/修回后完整性核验 🆕
+│   ├── nature-figure/SKILL.md             # 科研绘图（自动识别 + matplotlib/R）
+│   ├── nature-reader/SKILL.md             # 双语论文精读器
+│   ├── nature-citation/SKILL.md           # CrossRef 引用核验 + 多格式导出
+│   └── nature-paper2ppt/SKILL.md          # 论文转 PPT
+├── templates/
+│   ├── journal-specs.json                 # 19 个期刊规格数据
+│   └── nature-latex.tex                   # Overleaf LaTeX 模板
+├── data/
+│   └── papers-index.json                  # 485 篇清洗后的文献索引
+└── scripts/
+    ├── auto_figure.py                     # CSV/Excel → 顶刊图
+    ├── clean_papers_index.py              # 文献索引清洗脚本 🆕
+    ├── export_docx.py                     # Word 导出
+    ├── export_pptx.py                     # PPT 导出
+    └── requirements.txt                   # Python 依赖
+```
+
+---
+
+### 与同类项目对比（按最新版 main 校验）
+
+> 对比基准：2026-06-21 检查 GitHub 默认分支；两个对比仓库均未发布 GitHub release，因此以当前 `main` 为准：Yuan1z0825/nature-skills [`5d2ba1dee1c0`](https://github.com/Yuan1z0825/nature-skills/commit/5d2ba1dee1c0)，Boom5426/Nature-Paper-Skills [`44cff42ac22a`](https://github.com/Boom5426/Nature-Paper-Skills/commit/44cff42ac22a)。若对方后续更新，应重新核对本表。
+
+| 维度 | **top-journal-paper-hub** | Yuan1z0825/nature-skills | Boom5426/Nature-Paper-Skills |
+|------|---|---|---|
+| 期刊覆盖 | **19 个**：Nature 系列 + Science / Cell / PNAS / ACS / Wiley | Nature / Nature Communications + 通用 Nature-style skill；未见 19 刊索引 | Nature 系列稿件栈；不追求全期刊覆盖 |
+| 总控入口 | `nature-paper-hub` 单入口，阶段 0-11 线性路由 | 多个 `nature-*` skill；README 未提供统一 hub | `paper-workflow` 顶层路由 |
+| 文献/RAG 底座 | 内置 485 篇清洗文献索引；可选 `LITREVIEW_API` 私有库 | `nature-academic-search` + `nature-citation`；未见内置清洗索引 | `citation-verifier` + `reference-audit-guide`；未见内置清洗索引 |
+| 写作/润色 | 选刊、综述、起草、润色、投稿、返修一体化 | `nature-writing`、`nature-polishing`、`nature-response` | `scientific-writing`、`manuscript-optimizer`、`rebuttal-response` |
+| 投稿前模拟审稿 | `nature-reviewer-sim`（7 专家 agent） | `nature-reviewer` | `paper-reviewer` |
+| 投稿前完整性核验 | `nature-integrity-check` 覆盖引用、数据、图表、必备声明 | 分散在 `nature-data`、`nature-citation`、`nature-reviewer` | `submission-audit` + `data-availability` + `citation-verifier` |
+| 引用与撤稿检查 | CrossRef 实时核验 + RetractionWatch/撤稿搜索 | CrossRef / PubMed / arXiv / Scopus / ScienceDirect；未见 RetractionWatch 专项 | CrossRef / Semantic Scholar 引用核验；未见 RetractionWatch 专项 |
+| 图表工作流 | CSV/Excel → 自动生图；matplotlib/R 投稿级图 | `nature-figure` 支持 Python/R 投稿图；强调源数据可追溯 | `figure-planner` 侧重图文结构和引用检查，未见自动生图脚本 |
+| 可交付格式 | LaTeX / Overleaf、Word `.docx`、PPTX | PPTX、专利 DOCX、LaTeX 排版支持；未见通用论文 Word 导出 | LaTeX/Overleaf 参考与演示支持；未见通用论文 Word 导出 |
+| Claude Code 打包 | `.claude-plugin/` 插件清单 + marketplace 元数据 | 可用于 Claude Code，但未见 `.claude-plugin/` 清单 | 提供 Claude Code 安装说明，但未见 `.claude-plugin/` 清单 |
+| Codex / OpenClaw | Codex 兼容；OpenClaw / Telegram 兼容 | Codex 优先；另含 OpenClaw medical skill 适配 | Codex + Claude Code 兼容 |
+
+---
+
+### 更新日志
+
+**v1.2.0（2026-06）**
+- 修复主 `SKILL.md` 阶段编号（重复 STAGE 7 / 错位 8.5）→ 统一为 0–11 线性流程
+- 打包为 Claude Code 插件（`.claude-plugin/`，支持 marketplace 一键安装）
+- 清洗 `papers-index.json`：534 → 485（去专利/碎片/重复，修复 OCR 乱码，补全期刊/年份）
+- frontmatter 同步 v1.2.0、description 覆盖全部 19 刊；README 补齐 `nature-integrity-check`
+- 修复脚本 bug：`auto_figure.py` box 分支不可达、`export_docx.py` 死代码
+
+**v1.1.0（2025-05）**
+- 新增 7 个期刊：Science、Cell、PNAS、JACS、ACS Nano、Angewandte Chemie、Advanced Materials
+- 新增 `nature-reviewer-sim` 投稿前模拟审稿技能
+- 新增 GitHub Actions 每周期刊规格 URL 健康检查
+- 期刊总数：9 → 19
+
+**v1.0.0**
+- 首发：12 个 Nature 系列期刊，5 个核心技能
+
+---
+
+### 用户反馈 💬
+
+如果你用过这个工具写过论文，欢迎在 **[留言板](https://github.com/Yang1Bai/nature-paper-hub/discussions/1)** 分享体验。
+
+---
+
+### 致谢
+
+设计灵感部分来源于：
+- [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills)（上海交通大学袁一哲团队）
+- [Boom5426/Nature-Paper-Skills](https://github.com/Boom5426/Nature-Paper-Skills)
+- [Nature Portfolio Author Guidelines](https://www.nature.com/authors)
+
+---
+
+### 许可证
+
+MIT License — 自由使用、修改和分发，保留原始署名即可。
+
+---
+
+### 贡献指南
+
+欢迎提 Issue 和 PR！请说明：
+1. 目标期刊或功能
+2. 功能缺口或 bug 描述
+3. 建议实现方式
+
+---
+---
+
+<h2 id="english">🇬🇧 English</h2>
+
+### Introduction
+
+`top-journal-paper-hub` is a full-pipeline AI writing agent for top-journal submissions. It covers every stage from **journal selection, literature review, manuscript drafting, figure generation, citation verification, pre-submission mock review, and reviewer response**.
+
+Compatible with **OpenClaw, Claude Code, and Codex**. Outputs **LaTeX (Overleaf-ready) and Word (.docx)**. Features automatic figure generation from CSV/Excel, CrossRef real-time citation verification, and optional RAG-enhanced writing grounded in your own literature library (configurable via the `LITREVIEW_API` env var; the tool works fully without it).
+
+**v1.2.0:** Added Claude Code plugin packaging, the single-entry `nature-paper-hub` layout, `nature-integrity-check`, a cleaned 485-paper index, and optional private-library integration via `LITREVIEW_API`.
+
+---
+
+### Features
+
+| Skill | Description |
+|-------|-------------|
+| 🏠 `nature-paper-hub` | Main hub with 12-stage (0–11) conversational pipeline (incl. integrity check + reviewer sim) |
+| 🔬 `nature-reviewer-sim` | Pre-submission mock review: 7 specialist agents + Editorial Decision Letter |
+| 🛡️ `nature-integrity-check` | Pre-submission / post-revision integrity check: citations, data, figures, required statements (pre-review / final-check) |
+| 📊 `nature-figure` | CSV/Excel → publication-quality matplotlib/R figures |
+| 📖 `nature-reader` | PDF/DOI/arXiv → bilingual annotated Markdown with figure grounding |
+| 📚 `nature-citation` | CrossRef verification + RetractionWatch + BibTeX/RIS/ENW/Zotero export |
+| 🎞️ `nature-paper2ppt` | Paper → Chinese/bilingual PPTX with presenter notes |
+
+---
+
+### Supported Journals (19)
+
+#### Nature Series (12)
+
+| Journal | IF | Accept | Words | Figs | Refs |
+|---------|:---:|:---:|:---:|:---:|:---:|
+| Nature | 63.7 | ~8% | 3,000 | 6 | 30 |
+| Nature Energy | 60.9 | ~8% | 3,000 | 6 | 50 |
+| Nature Materials | 37.2 | ~9% | 3,000 | 6 | 50 |
+| Nature Catalysis | 37.8 | ~8% | 3,000 | 6 | 50 |
+| Nature Methods | 32.1 | ~8-10% | 3,000 | 6 | 50 |
+| Nature Machine Intelligence | 23.9 | ~8% | 3,500 | 6 | 50 |
+| Nature Synthesis | 20.0 | ~8% | 3,000 | 6‡ | 50 |
+| Nature Chemistry | 19.2 | ~9% | 3,000 | 6 | 50 |
+| Nature Communications | 15.7 | ~20% | 5,000† | 10 | 60 |
+| Nature Chemical Engineering | 13.0 | ~8% | 3,500 | 6+10ED | 50 |
+| Nature Computational Science | 12.0 | ~12% | 5,000 | 8 | 60 |
+| Nature Sustainability | 25.1 | ~10% | 4,000 | 8 | 60 |
+
+† Nature Communications word count includes Methods
+‡ Nature Synthesis: figures only (no Schemes); Methods cannot contain figures or tables
+
+#### Other Top Journals (7)
+
+| Journal | IF | Accept | Article Types | Words | Figs |
+|---------|:---:|:---:|:---:|:---:|:---:|
+| Science | 44.7 | ~7% | Article / Report | 4,500 / 2,500 | 6 / 4 |
+| Cell | 45.5 | ~8% | Article / Short Article | 8,000 / 4,000 | 8 / 4 |
+| PNAS | 11.1 | ~18% | Research Article | 6,000 | 6 |
+| JACS | 14.4 | ~11% | Article / Letter | ~6,000 / 4pp | 8 / 4 |
+| ACS Nano | 15.8 | ~10% | Article / Letter | 10,000 / 4,000 | 10 / 5 |
+| Angewandte Chemie | 16.1 | ~10% | Research Article / Communication | 5,000 / 2,500 | 8 / 4 |
+| Advanced Materials | 27.4 | ~9% | Research Article / Communication | 5,000 / 2,500 | 8 / 4 |
+
+---
+
+### Installation
+
+#### Option 1: Claude Code plugin marketplace (recommended, one-command)
+
+```bash
+# Add the marketplace (one-time)
+/plugin marketplace add https://github.com/Yang1Bai/nature-paper-hub
+
+# Install the plugin
+/plugin install nature-paper-hub
+
+# Reload to apply
+/reload-plugins
+```
+
+All 7 skills (hub + 6 sub-skills) become available automatically — no manual copying.
+
+---
+
+#### Manual Install Rule
+
+> Do not copy only individual `SKILL.md` files. These skills read root-level `scripts/`, `templates/`, `data/`, and `skills/nature-paper-hub/references/`. For manual installs, keep the full clone and set `CLAUDE_PLUGIN_ROOT` to that clone.
+
+#### Option 2: Codex (full skill directories + root resources)
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+mkdir -p ~/.codex/skills
+cp -R skills/nature-* ~/.codex/skills/
+
+export CLAUDE_PLUGIN_ROOT="$(pwd)"
+pip install -r scripts/requirements.txt
+```
+
+Windows PowerShell:
+
+```powershell
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.codex\skills" | Out-Null
+Copy-Item -Recurse -Force .\skills\nature-* "$env:USERPROFILE\.codex\skills\"
+
+$env:CLAUDE_PLUGIN_ROOT = (Get-Location).Path
+py -3 -m pip install -r .\scripts\requirements.txt
+```
+
+#### Option 3: Claude Code (manual skills)
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cd nature-paper-hub
+
+mkdir -p ~/.claude/skills
+cp -R skills/nature-* ~/.claude/skills/
+
+export CLAUDE_PLUGIN_ROOT="$(pwd)"
+pip install -r scripts/requirements.txt
+```
+
+#### Option 4: OpenClaw
+
+```bash
+git clone https://github.com/Yang1Bai/nature-paper-hub.git
+cp -R nature-paper-hub ~/.openclaw/workspace/skills/
+# Restart OpenClaw. Say "选刊" or "choose journal" to activate.
+```
+
+#### Validate Install
+
+```bash
+python -m unittest discover -s tests
+```
+
+After manual installation, keep the clone in place; the `CLAUDE_PLUGIN_ROOT` directory is the resource root for scripts, templates, and the literature index.
+
+---
+
+### Configuration (optional)
+
+The tool works out of the box — no keys required. If you have your own literature API, point the `LITREVIEW_API` environment variable at a base URL that accepts `?q=<query>`. **When it is unset** (the default), literature search falls back to the local index + CrossRef + web search, and the full pipeline still works.
+
+```bash
+export LITREVIEW_API="https://your-host.example.com/api/search"   # optional
+```
+
+> See [`examples/quickstart.md`](examples/quickstart.md) for an end-to-end walkthrough.
+
+---
+
+### Quick Start
+
+#### OpenClaw / Telegram
+
+```
+选刊 / choose journal          → Select from 19 journals; see word/figure/ref limits
+文献综述 / literature          → Personal library + CrossRef + web search
+写大纲 / outline               → Journal-specific manuscript structure
+写摘要 / abstract              → Draft journal-style Abstract
+模拟审稿 / reviewer simulation → Pre-submission mock peer review (3 personas)
+检查引用 / citations           → CrossRef verify + retraction check
+导出 / export                  → LaTeX (Overleaf) or Word
+写回复信 / rebuttal            → Point-by-point reviewer response framework
+```
+
+#### Claude Code
+
+```
+Use nature-paper-hub to start writing a paper for Advanced Materials
+Use nature-reviewer-sim to simulate peer review of my manuscript
+Use nature-figure to generate a matplotlib figure from my data.csv
+Use nature-citation to verify my reference list and export as BibTeX
+```
+
+---
+
+### Full Pipeline
+
+```
+Stage 0:  Journal Selection      → Choose from 19 journals; load word/figure/ref limits
+Stage 1:  Literature Review      → Personal library + CrossRef + web search
+Stage 2:  Outline Planning       → Journal-tailored manuscript structure
+Stage 3:  Section Drafting        → Abstract / Intro / Results / Discussion / Methods
+Stage 4:  Figure Planning         → Auto-plot from CSV/Excel + matplotlib/R code + legend text
+Stage 5:  Citation Check          → CrossRef API + RetractionWatch + multi-format export
+Stage 6:  Pre-review Integrity     → Citations / data / figures / required statements (pre-review)
+Stage 7:  Reviewer Simulation     → 7 specialist agents + Editorial Decision Letter + roadmap
+Stage 8:  Pre-submission Audit     → Word / figure / format / content checklist + cover letter
+Stage 9:  Final Integrity Check    → final-check mode; zero CRITICAL required to export
+Stage 10: Export                   → LaTeX (Overleaf) / Word (.docx) / PPTX
+Stage 11: Reviewer Response        → Point-by-point reply + change summary + cover letter
+
+Note: Reviewer Simulation (Stage 7) can be triggered at any point.
+```
+
+---
+
+### Repository Structure
+
+```
+nature-paper-hub/
+├── README.md                              # This file (bilingual CN/EN)
+├── .claude-plugin/
+│   ├── plugin.json                        # Claude Code plugin manifest 🆕
+│   └── marketplace.json                   # One-command install marketplace manifest 🆕
+├── .github/
+│   └── workflows/
+│       └── journal-spec-check.yml         # Weekly journal spec URL health check CI
+├── skills/
+│   ├── nature-paper-hub/                   # Hub skill (single entry point)
+│   │   ├── SKILL.md                       #   12-stage routing skeleton
+│   │   └── references/                     #   Detailed rules, loaded on demand 🆕
+│   │       ├── writing-rules.md            #     Per-section writing rules + self-critique
+│   │       ├── outlines.md                 #     Manuscript outline templates
+│   │       ├── audit-and-cover-letter.md   #     Pre-submission checklist + cover letter
+│   │       ├── rebuttal.md                 #     Reviewer rebuttal workflow
+│   │       ├── literature-integration.md   #     Literature search / RAG / CrossRef
+│   │       └── journal-special-rules.md    #     Journal-specific rules
+│   ├── nature-reviewer-sim/SKILL.md       # Pre-submission mock review (7 agents + editor)
+│   ├── nature-integrity-check/SKILL.md    # Pre-submission / post-revision integrity check 🆕
+│   ├── nature-figure/SKILL.md             # Figure generation (auto-detect + matplotlib/R)
+│   ├── nature-reader/SKILL.md             # Bilingual paper reader
+│   ├── nature-citation/SKILL.md           # CrossRef citation verification + multi-format
+│   └── nature-paper2ppt/SKILL.md          # Paper to presentation
+├── templates/
+│   ├── journal-specs.json                 # 19-journal specs database
+│   └── nature-latex.tex                   # Overleaf-ready LaTeX template
+├── data/
+│   └── papers-index.json                  # 485 cleaned literature index entries
+└── scripts/
+    ├── auto_figure.py                     # CSV/Excel → publication figure
+    ├── clean_papers_index.py              # Literature index cleaning script 🆕
+    ├── export_docx.py                     # Word export
+    ├── export_pptx.py                     # PPTX export
+    └── requirements.txt                   # Python dependencies
+```
+
+---
+
+### Comparison (checked against latest main)
+
+> Baseline: checked GitHub default branches on 2026-06-21. Neither comparison repository has a GitHub release, so this table uses current `main`: Yuan1z0825/nature-skills [`5d2ba1dee1c0`](https://github.com/Yuan1z0825/nature-skills/commit/5d2ba1dee1c0) and Boom5426/Nature-Paper-Skills [`44cff42ac22a`](https://github.com/Boom5426/Nature-Paper-Skills/commit/44cff42ac22a). Re-check this table after those projects update.
+
+| Dimension | **top-journal-paper-hub** | Yuan1z0825/nature-skills | Boom5426/Nature-Paper-Skills |
+|-----------|---|---|---|
+| Journal coverage | **19 journals**: Nature series + Science / Cell / PNAS / ACS / Wiley | Nature / Nature Communications + generic Nature-style skills; no 19-journal index found | Nature-series manuscript stack; not intended as broad all-journal coverage |
+| Top-level routing | Single `nature-paper-hub` entrypoint with stages 0-11 | Multiple `nature-*` skills; no unified hub shown in README | `paper-workflow` top-level router |
+| Literature/RAG base | Built-in cleaned 485-paper index; optional `LITREVIEW_API` private library | `nature-academic-search` + `nature-citation`; no bundled cleaned index found | `citation-verifier` + `reference-audit-guide`; no bundled cleaned index found |
+| Writing/revision | Journal choice, literature review, drafting, polishing, submission, and rebuttal in one pipeline | `nature-writing`, `nature-polishing`, `nature-response` | `scientific-writing`, `manuscript-optimizer`, `rebuttal-response` |
+| Mock review | `nature-reviewer-sim` with 7 specialist agents | `nature-reviewer` | `paper-reviewer` |
+| Integrity preflight | `nature-integrity-check` for citations, data, figures, and required statements | Distributed across `nature-data`, `nature-citation`, and `nature-reviewer` | `submission-audit` + `data-availability` + `citation-verifier` |
+| Citation and retraction checks | CrossRef verification + RetractionWatch/retraction search | CrossRef / PubMed / arXiv / Scopus / ScienceDirect; no RetractionWatch-specific workflow found | CrossRef / Semantic Scholar citation checks; no RetractionWatch-specific workflow found |
+| Figure workflow | CSV/Excel → auto figure; matplotlib/R publication figures | `nature-figure` supports Python/R publication figures and traceable source data | `figure-planner` focuses on figure story and reference checks; no auto-figure script found |
+| Deliverable formats | LaTeX / Overleaf, Word `.docx`, PPTX | PPTX, patent DOCX, LaTeX layout support; no general manuscript Word export found | LaTeX/Overleaf references and presentation support; no general manuscript Word export found |
+| Claude Code packaging | `.claude-plugin/` manifest + marketplace metadata | Usable from Claude Code, but no `.claude-plugin/` manifest found | Claude Code install docs, but no `.claude-plugin/` manifest found |
+| Codex / OpenClaw | Codex-compatible; OpenClaw / Telegram-compatible | Codex-first; also includes an OpenClaw medical skill adaptation | Codex + Claude Code compatible |
+
+---
+
+### Changelog
+
+**v1.2.0 (2026-06)**
+- Fixed main `SKILL.md` stage numbering (duplicate STAGE 7 / misordered 8.5) → linear 0–11 pipeline
+- Packaged as a Claude Code plugin (`.claude-plugin/`, one-command marketplace install)
+- Cleaned `papers-index.json`: 534 → 485 (removed patents/fragments/dupes, fixed OCR author noise, backfilled journal/year)
+- Synced frontmatter to v1.2.0, broadened description to all 19 journals; README now lists `nature-integrity-check`
+- Fixed script bugs: unreachable box branch in `auto_figure.py`, dead code in `export_docx.py`
+
+**v1.1.0 (2025-05)**
+- Added 7 journals: Science, Cell, PNAS, JACS, ACS Nano, Angewandte Chemie, Advanced Materials
+- New skill: `nature-reviewer-sim` — pre-submission 3-persona mock peer review
+- GitHub Actions: weekly journal spec URL health check with auto-issue on failure
+- Journal count: 9 → 19
+
+**v1.0.0**
+- Initial release: 12 Nature-series journals, 5 core skills
+
+---
+
+### User Feedback 💬
+
+If you have used this tool in your research, please share your experience on the **[feedback board](https://github.com/Yang1Bai/nature-paper-hub/discussions/1)**.
+
+---
+
+### Acknowledgements
+
+Inspired in part by:
+- [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) — Yuan Yizhe, Shanghai Jiao Tong University
+- [Boom5426/Nature-Paper-Skills](https://github.com/Boom5426/Nature-Paper-Skills)
+- [Nature Portfolio Author Guidelines](https://www.nature.com/authors)
+
+---
+
+### License
+
+MIT License — free to use, modify, and distribute with attribution.
+
+---
+
+### Contributing
+
+Issues and PRs welcome. Please include:
+1. Target journal or feature
+2. Feature gap or bug description
+3. Suggested implementation approach

@@ -1,0 +1,593 @@
+<p align="center">
+  <img src="docs/kubeagent-logo.svg" alt="kubeagent logo" width="150">
+</p>
+
+# kubeagent
+
+> A read-only Kubernetes troubleshooting CLI that tells you **why** your pods are broken — not just that they are.
+
+![kubeagent scan demo](docs/kubeagent-demo.gif)
+
+[![CI](https://github.com/imantaba/kubeagent/actions/workflows/ci.yml/badge.svg)](https://github.com/imantaba/kubeagent/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/imantaba/kubeagent)](https://goreportcard.com/report/github.com/imantaba/kubeagent)
+[![Release](https://img.shields.io/github/v/release/imantaba/kubeagent)](https://github.com/imantaba/kubeagent/releases)
+[![License](https://img.shields.io/github/license/imantaba/kubeagent)](LICENSE)
+
+**Highlights:**
+
+- 🔒 **Read-only by default** — only `get`/`list`/`watch`, safe against prod. (Opt-in `--fix` applies a fixed allowlist of reversible remediations, each behind a `[y/N]` confirm, never in `kube-system`.)
+- 📴 **Deterministic & offline** — the whole diagnostic core needs no API key. AI is strictly opt-in.
+- 🤖 **Optional `--explain`** — one Claude API call summarizes findings in plain English (never sends pod specs, env, or secrets).
+- 🔍 **Optional `--investigate`** — agentic read-only follow-up reads (bounded tool-use loop: describe objects, list events, hop to related resources) to chase a root cause and emit a grounded fix; Anthropic-only, supersedes `--explain`.
+- 📦 **Single Go binary** — built on `client-go`, the same library `kubectl` uses. No CRDs, no in-cluster agent required.
+- 📊 **`watch` daemon** — run it in-cluster for continuous read-only diagnosis; tracks issue state across reconciles (new/resolved/flapping, MTTR) and serves it as Prometheus metrics plus a read-only `/issues` endpoint.
+- 🔌 **MCP server** — `kubeagent mcp` serves the same deterministic diagnosis over the Model Context Protocol on stdio, so another AI agent can call it as a tool.
+- 🚦 **CI/CD gate** — `kubeagent gate` turns the same diagnosis into a stable exit-code contract (pass/fail/inconclusive/timeout/usage) and a SARIF renderer, so a pipeline can branch on it instead of grepping text.
+- 📄 **Shareable HTML report** — `kubeagent scan --output html` writes one self-contained, script-free HTML file carrying the findings, the blind spots, and the detail — with no cluster identity in it — no context name, no API server URL, no kubeconfig path — so it travels without naming your cluster.
+- 🖥️ **Interactive TUI** — `kubeagent tui` opens a full-screen, keyboard-driven browser over one scan: filter to the criticals, open a finding in full, check what kubeagent could not see, re-scan — no LLM call on any path, no `--fix`.
+
+```bash
+go install github.com/imantaba/kubeagent@latest
+kubeagent scan
+```
+
+📖 **Docs & site:** [k8sproject.top](https://k8sproject.top)
+
+`kubeagent` scans a Kubernetes cluster, finds unhealthy pods, and explains
+*why* they're failing — covering the most common pod failure modes:
+
+- **CrashLoopBackOff** — container keeps restarting
+- **ImagePullBackOff / ErrImagePull** — bad image or registry auth
+- **OOMKilled** — container hit its memory limit
+- **Pending / Unschedulable** — no node can place the pod
+- **VolumeAttachError** — a pod stuck at container creation because a volume
+  cannot be attached (`FailedAttachVolume`), most often a **Multi-Attach** error
+  (a ReadWriteOnce volume still attached to another node).
+- **RestartLoop** — a container that keeps exiting with a non-OOM error and
+  restarting (≥ 3 restarts, still flapping) even though it is currently Running —
+  the case `CrashLoopBackOff` misses.
+- **ProbeFailure** — a Running-but-not-Ready pod whose readiness, liveness, or
+  startup probe keeps failing; names the probe, container, and reason.
+- **InitContainer failures** — a pod stuck in its init phase because an init
+  container is crash-looping, can't pull its image, or was OOM-killed; names which
+  init container and why.
+- **JobFailed** — a Job or CronJob whose run failed (exhausted retries or hit its
+  deadline); a failing CronJob is shown even without `--include-cron`.
+- **FailedCreate** — a workload whose controller cannot create pods because a
+  ResourceQuota, LimitRange, or admission webhook is rejecting them.
+- **CreateContainerConfigError** — a container (main or init) that cannot start
+  because a referenced ConfigMap or Secret is missing, or a required key is
+  absent; the finding names the object from the kubelet message.
+- **VolumeMountError** — a pod stuck at container creation because a volume
+  cannot be **mounted** (`FailedMount`); most often a ConfigMap or Secret named
+  as a volume source that does not exist, which the kubelet reports as no
+  container config error at all.
+- **ContainerStartError** — the catch-all of the waiting-state family: a main
+  container the kubelet created and could not start (`RunContainerError`,
+  `CreateContainerError`, a lifecycle-hook failure, `StartError`). It quotes the
+  kubelet verbatim and does not claim to know why, which is what catches the
+  container OOM-killed *during startup* that `OOMKilled` cannot see.
+- **RolloutStuck** — a Deployment, StatefulSet, or DaemonSet whose rollout has
+  wedged. A Deployment says so in its conditions (`ProgressDeadlineExceeded`, or a
+  `ReplicaFailure` from the ReplicaSet controller); a StatefulSet and a DaemonSet
+  publish none, so their revision and replica counters are read instead, after a
+  600 s grace period borrowed from Kubernetes' own default
+  `progressDeadlineSeconds`. Surfaced only when no pod-level finding already
+  explains the failure and no pod is restarting repeatedly (zero redundancy).
+  Read-only, always-on, no new flag or RBAC.
+- **Node reservation check** — warns when a node's kubelet reserves no memory
+  (allocatable == capacity), meaning OS or kubelet memory pressure can destabilise
+  the node. Advisory and read-only; no new RBAC.
+- **PVC reclaim-policy check** — lists Bound PVCs whose PV reclaims with Delete
+  (the data-loss-prone default for dynamic provisioners). Advisory and read-only;
+  adds PVC + PV read RBAC.
+- **Disk-usage check (opt-in)** — `scan --disk-usage` flags node filesystems and
+  PVCs at or over `--disk-threshold` (default `0.80`) before the kubelet's
+  `DiskPressure` eviction fires. Needs the `nodes/proxy` add-on; off by default.
+- **Ingress route health** — `scan` follows each Ingress rule to its backend
+  Service and flags routes whose Service is missing, has no ready endpoints
+  (`NoEndpoints` — the classic 502/503), or does not expose the referenced port
+  (`PortNotExposed`). For a `NoEndpoints` route the Detail also names the backend
+  root cause — the selector matches no pods, the matching pods are on a down node,
+  or they exist but none are Ready — the same diagnosis as the Service check, one
+  hop up the graph. Advisory and read-only; adds Ingress read RBAC.
+- **Service root-cause** — For a broken Service (not expected-empty), `scan` names the root cause in the
+  Detail line: the selector matches no pods, the matching pods are on a down node,
+  or they exist but none are Ready. Read-only correlation over collected pods and
+  node health — no new RBAC.
+- A Service (or Ingress route) that is empty on purpose — its backend is scaled to zero, or
+  it carries `kubeagent.io/expected-empty: "true"` — is shown as a quiet note, not an alert.
+- **Pending-PVC provisioning check** — `scan` flags a PersistentVolumeClaim stuck
+  `Pending` and names the structural root cause: the PVC references a StorageClass
+  that does not exist, or (for a static claim) no available PersistentVolume matches
+  its size and access modes. These checks fire even when no `ProvisioningFailed` event
+  is present (catching a long-stuck PVC whose event expired), by correlating against
+  collected StorageClasses and PVs. Advisory and read-only; no new RBAC.
+- **Stuck-terminating** — a Namespace, Pod, or PVC wedged in Terminating past two minutes, with the blocking finalizer/condition named.
+- **PodDisruptionBudget-blocked drains** — flags a PDB that will block a node
+  drain: one that can never allow a voluntary eviction (unsatisfiable), a
+  single-replica workload with no disruption headroom and often deliberate
+  (singleton), whose selector matches no pods (stale), or that is blocking
+  evictions on an already-degraded workload. Advisory and read-only; the
+  daemon exposes `kubeagent_pdb_blocking_issues`. Adds a base
+  `policy/poddisruptionbudgets` read grant.
+- **HPA-can't-scale detection** — `scan` flags a HorizontalPodAutoscaler that
+  is stuck: can't fetch metrics (broken autoscaling), has scaling disabled or
+  targets pods another HPA already claims, can't scale because its target is
+  missing or the scale subresource errors, or is pinned at `maxReplicas`
+  while demand exceeds the cap. Advisory and read-only; the daemon exposes
+  `kubeagent_hpa_scaling_issues`. Adds a base
+  `autoscaling/horizontalpodautoscalers` read grant.
+- **Admission-webhook-failure detection** — `scan` flags a Validating/Mutating
+  webhook whose `failurePolicy` is `Fail` and whose backing Service is missing
+  or has no ready endpoints — it would reject every create/update it intercepts.
+  Read-only, advisory, and cluster-wide only (skipped under `--namespace`); the
+  daemon exposes `kubeagent_admission_webhooks_failing` (backend failures only).
+  Adds a base `admissionregistration.k8s.io` read grant.
+- **Admission-webhook latency risk** — `scan` also flags a Fail-policy webhook
+  whose `timeoutSeconds` is at or above 15 (tunable via
+  `KUBEAGENT_WEBHOOK_TIMEOUT_SECONDS` / Helm `webhookLatency.timeoutThreshold`)
+  — a latency landmine that blocks every intercepted create/update for up to
+  that long, then rejects it. Rendered `HighTimeout`; always-on, advisory, and
+  cluster-wide only; the daemon exposes
+  `kubeagent_admission_webhook_latency_risks`. No new RBAC.
+- **ResourceQuota near-exhaustion** — `scan` flags a namespace's ResourceQuota
+  entry whose `used/hard` ratio is at or over 90%, labelled `exhausted` (100%,
+  blocking new objects now) or `near limit` — the proactive complement to the
+  reactive `FailedCreate` detector. Every quota resource is evaluated generically.
+  Threshold tunable via `KUBEAGENT_QUOTA_THRESHOLD` (default `0.90`). Read-only,
+  always-on; the daemon exposes `kubeagent_resourcequota_issues`. Adds a
+  `resourcequotas` read grant.
+- **Root-cause attribution** — when a node is NotReady or its kubelet stops
+  heartbeating, workloads with pods on it are attributed to that node ("↳ likely
+  caused by node X"); when several workloads fail image pulls from the same
+  registry, they are attributed to that registry; when a workload's pod mounts a
+  PVC that cannot provision, it is attributed to that PVC — one shared cause
+  instead of N disconnected findings.
+- **Workload security posture (opt-in)** — `scan --security` flags PSS-aligned
+  hardening problems (privileged/insecure containers, exposed Services) in a
+  dedicated `SECURITY` section and JSON `securityIssues`. Advisory and
+  read-only; needs no new RBAC.
+- **Node heartbeat freshness** — `scan` flags a Ready node whose kubelet `Lease`
+  has gone stale (kubelet not heartbeating), catching a dark kubelet before the
+  node flips to `NotReady`. Tunable via `--node-heartbeat-threshold` (default
+  `40s`); adds `leases` read RBAC; on by default.
+- **Expected-node list (opt-in)** — `scan --expected-nodes name1,name2,…`
+  declares the node names you expect; kubeagent flags each declared node absent
+  from the cluster (`node name expected but absent from the cluster`), catching
+  a node that never registered or dropped out. Read-only; no new RBAC; best on
+  clusters with stable node names.
+- **Kubelet health probe (opt-in)** — `scan --kubelet-health` probes each node's
+  kubelet `/healthz` via `nodes/proxy` and flags a kubelet that is reachable but
+  unhealthy (PLEG/runtime failures), the "alive but sick" case heartbeat and
+  NotReady checks miss. Reuses the `nodes/proxy` add-on from `--disk-usage`.
+- **Control-plane / etcd health (opt-in)** — `scan --control-plane-health`
+  probes the apiserver `/readyz?verbose` and flags an unhealthy control plane,
+  naming the failing checks (etcd, poststarthooks, informer-sync). Read-only;
+  needs the `/readyz` add-on grant (`deploy/rbac-controlplane.yaml` or Helm
+  `controlPlaneHealth.enabled=true`). The daemon exposes
+  `kubeagent_control_plane_unhealthy` and is enabled with
+  `KUBEAGENT_CONTROL_PLANE_HEALTH=true`.
+- **DNS / CoreDNS resolution health (opt-in)** — `scan --dns-health` probes each
+  CoreDNS pod's `:9153/metrics` and flags an elevated SERVFAIL+REFUSED response
+  ratio (default ≥ 5% over a 100-response floor; env
+  `KUBEAGENT_DNS_SERVFAIL_RATIO`) — catching DNS that is up but failing to
+  resolve, which the CoreDNS-pod health check misses. Read-only; needs the
+  `pods/proxy` add-on grant (`deploy/rbac-dnshealth.yaml` or Helm
+  `dnsHealth.enabled=true`). The daemon exposes `kubeagent_dns_servfail_ratio`
+  and is enabled with `KUBEAGENT_DNS_HEALTH=true`.
+- **Certificate expiry (--certs)** — flags expired and soon-expiring TLS certificates (public cert metadata only; never reads keys), with the Ingress routes they front.
+- **Crash log root-cause (opt-in)** — `scan --logs` reads a crashing container's
+  previous logs and names the failure (panic, connection refused, bad entrypoint, …).
+  Needs the `pods/log` grant (`deploy/rbac-logs.yaml`).
+- **Finding confidence** — every finding is labelled high (a direct Kubernetes
+  state) or medium (a kubeagent heuristic or correlation); the report tags only
+  the less-certain ones, and JSON always carries it.
+- **Next-step suggestions (opt-in)** — `scan --suggest` prints a deterministic,
+  reviewed next-step suggestion and a read-only `kubectl` investigation command
+  under each finding (CrashLoopBackOff → check the previous logs,
+  ImagePullBackOff → verify the tag/credentials, …). Offline (no API key),
+  never LLM-decided, and read-only — it prints the command, it never runs it.
+
+It talks to the cluster directly via the official Kubernetes Go client
+(`client-go`) — the same library `kubectl` and operators are built on — and
+operates **read-only by default** (an opt-in `--fix` flag can apply safe, reversible remediations — see below).
+
+## Status
+
+✅ **v1 shipped** — `kubeagent scan` performs a read-only, whole-cluster scan and
+reports CrashLoopBackOff, ImagePullBackOff/ErrImagePull, OOMKilled,
+Pending/Unschedulable, VolumeAttachError (Multi-Attach), RestartLoop, ProbeFailure, init-container failures, failed Jobs/CronJobs, and pod-creation denials (FailedCreate), in text or JSON.
+
+✅ **v2 shipped** — an optional `--explain` flag makes a single Claude API call
+(via the official Go SDK) to summarize findings in plain English. The
+deterministic core still works offline with no API key.
+
+## Usage
+
+```bash
+go build -o kubeagent .
+
+# scan: a prioritized problem report — cluster-health verdict (P1: nodes +
+# kube-system) first, then workload/pod failures (P2). Healthy, restart-only,
+# and CronJob workloads are hidden by default.
+./kubeagent scan
+
+# also show workloads that are healthy now but have restarted
+./kubeagent scan --include-restarts
+
+# also show CronJobs
+./kubeagent scan --include-cron
+
+# pick a context and scope to one namespace, emit JSON
+./kubeagent scan --context my-cluster -n my-namespace --output json
+
+# point at a specific kubeconfig file
+./kubeagent scan --kubeconfig /path/to/config
+
+# summarize the findings in plain English (needs ANTHROPIC_API_KEY)
+export ANTHROPIC_API_KEY=sk-ant-...
+./kubeagent scan --explain
+
+# choose the model (default: claude-opus-4-8; or set KUBEAGENT_MODEL)
+./kubeagent scan --explain --model claude-sonnet-4-6
+
+# print a deterministic next-step suggestion (and a read-only kubectl command) under each finding
+./kubeagent scan --suggest
+
+# report GitOps convergence for Argo CD and Flux (advisory; see deploy/rbac-gitops.yaml)
+./kubeagent scan --drift
+
+# change how long an object may differ from Git before --drift calls it stale (default 1h)
+./kubeagent scan --drift --drift-age 30m
+
+# report scheduling headroom and structurally wrong workload shapes (advisory; no new RBAC)
+./kubeagent scan --capacity
+```
+
+> `--explain` sends **only** a structured summary to the Claude API: the
+> cluster-health verdict (node counts, and the names of unhealthy nodes when
+> degraded) and, for the notable workloads, their namespace, name, kind,
+> ready/desired counts, status, restart count, and any detector issue. It never
+> sends raw pod specs, pod IPs, environment variables, or secrets. Without
+> `--explain`, kubeagent makes no external calls.
+>
+> The explanation **opens with a `Fix first:` ranked remediation list** —
+> cluster/kube-system problems (P1) before workloads (P2), most-blocking first.
+> Each per-issue Fix is **grounded on kubeagent's deterministic, pre-reviewed
+> `--suggest` command**: the model ranks, sequences, and phrases, but **never
+> invents or substitutes a command**. The deterministic offline core is unchanged.
+>
+> Model precedence for `--explain`: the `--model` flag, then the
+> `KUBEAGENT_MODEL` environment variable, then the default `claude-opus-4-8`.
+>
+> **Local / offline model:** set `KUBEAGENT_EXPLAIN_ENDPOINT` to any
+> OpenAI-compatible `/chat/completions` base URL (Ollama, vLLM, llama.cpp, LM
+> Studio) and `--explain` calls that endpoint instead of Anthropic — no
+> `ANTHROPIC_API_KEY` required, and nothing leaves the network. `--model` names
+> the local model (required). Example:
+> `KUBEAGENT_EXPLAIN_ENDPOINT=http://localhost:11434/v1 ./kubeagent scan --explain --model llama3.1`
+
+Run the tests with `go test ./...`.
+
+### Resource context
+
+`scan` prints a compact cluster resource summary (CPU and memory: allocatable,
+reserved/requests, limits, and — when metrics-server is installed — live usage),
+and annotates each OOMKilled finding with the killed container's requests and
+limits. This context is also sent to `--explain` so the model can judge whether
+to raise a limit or scale out. Live usage is best-effort: without metrics-server
+the summary still shows allocatable/reserved/limits and notes usage as
+unavailable. Reading usage is read-only (a single GET on the metrics API).
+
+### Platform facts
+
+`scan` prints a second line under the cluster verdict naming the detected stack —
+CNI, ingress, storage provisioner(s), Kubernetes version + distribution, container
+runtime, and cloud — for example:
+
+`Platform: Cilium CNI · Traefik ingress · Hetzner CSI (+NFS CSI) storage · Kubernetes v1.35 (RKE2) · containerd · Hetzner Cloud`
+
+Detection is best-effort and read-only (it lists StorageClasses, IngressClasses,
+and kube-system DaemonSets, and reads node info); an unrecognized fact is omitted.
+The same summary is included in the JSON output (`platform`) and sent to
+`--explain` so the model can give stack-aware advice. No instance identifiers
+(e.g. the raw `providerID`) are emitted — only the derived cloud name.
+
+### Service health
+
+`scan` flags Service-level problems a pod scan misses: a selector-based Service
+routing to **zero ready endpoints** (selector typo, all backends down) and a
+**LoadBalancer Service with no external address** (showing its age so you can
+tell provisioning from stuck). These appear in a "Service issues" section (text
+and JSON) and are sent to `--explain`. ExternalName and selectorless Services are
+skipped. A "no ready endpoints" issue whose backing workload expects no pods — a
+CronJob/Job, or a DaemonSet/Deployment/StatefulSet scaled to 0 — is annotated
+with that backing (e.g. `backs CronJob — expected between runs`) so it does not
+read as a primary problem; a Deployment/StatefulSet with replicas and no
+endpoints stays primary. Checks are read-only and honor the scan's `-n` scope.
+
+### NetworkPolicy hints
+
+When a workload is degraded with no detector finding (e.g. pods Running but never
+Ready), `scan` names the NetworkPolicies whose podSelector matches its pods —
+`⚠ NetworkPolicy: pods selected by deny-all — may be blocking traffic` — and sends
+the names to `--explain`. It is a hint, not a verdict: kubeagent does not analyze
+the policy rules or know what traffic the pod needs, so it points you at the
+policies to check. Read-only, namespace-scoped; only policy names are sent to the
+model. (Note: some CNIs, e.g. kindnet, do not enforce NetworkPolicies at all.)
+
+### What changed
+
+For a flagged Deployment, kubeagent also correlates the problem with its most
+recent rollout when that rollout is recent — showing the revision, its age, and
+the image change (`↳ changed: rollout to revision 6, 4d ago · image A → B`) so
+you can see *what changed* at a glance. It is deterministic and never claims the
+rollout caused the failure.
+
+### Connectivity diagnostics
+
+When the API server can't be reached, `scan` prints an actionable diagnosis
+instead of a raw transport error — distinguishing a down control plane
+(connection refused/reset), a timeout, a TLS/expired-certificate problem,
+authentication/authorization (401/403), and DNS/wrong-host — followed by a
+`details:` line with the underlying error. This is classification only: kubeagent
+issues no extra calls and exits non-zero as before.
+
+### Credential lint (opt-in)
+
+`scan --lint-secrets` flags credentials stored in the clear — values in ConfigMaps
+and pod env `value:` literals (where a `secretKeyRef` should have been used) that
+match a known pattern (AWS key, private key, GitHub token, JWT) or a
+credential-like key name with a literal value. It reports only the location and
+pattern — **never the value** — and these findings are **never sent to
+`--explain`**. Off by default (no ConfigMaps are read without the flag).
+Read-only and namespace-scoped.
+
+### Remediation (--fix, opt-in)
+
+By default kubeagent only reads. `scan --fix` additionally proposes safe,
+reversible remediations for what it finds and applies each one **only after you
+confirm** (`Apply? [y/N]`, default No). Every proposal shows a field-level diff
+of exactly what will change (revision, per-container images — never env values or
+template contents), and refuses to apply if the cluster drifted since the preview
+(a new rollout landed, or the target revision is gone). Before each write, kubeagent
+checks with a `SelfSubjectAccessReview` that you're permitted to make each change
+before attempting it, refusing cleanly if not. Writes are guard-railed: a fixed
+allowlist of actions, never in protected namespaces (`kube-system`,
+`kube-public`, `kube-node-lease`), preconditions re-checked against live state,
+and the result re-verified. Nothing about remediations is sent to `--explain`.
+With `--audit-log <path>`, appends a JSON-Lines record of every remediation
+outcome (applied / refused / declined / dry-run / preflight / error); and
+`--rollback` undoes the most recent applied fix (read from the audit log)
+through the same guard rails.
+
+```bash
+./kubeagent scan --fix             # propose + confirm each fix
+./kubeagent scan --fix --dry-run   # show proposals only; never prompt or write
+./kubeagent scan --fix --yes       # apply all proposals without prompting
+```
+
+**Remediations:**
+
+- **`RolloutUndo`** — when a Deployment is **degraded** (fewer ready replicas than
+  desired) because its newest rollout can't pull its image
+  (`ImagePullBackOff`/`ErrImagePull`) and a prior revision exists, roll it back to
+  that revision (a single, reversible `Deployment` update via client-go). A rollout
+  that is stuck but still serving on its previous revision is left alone.
+- **`Uncordon`** — when a node is cordoned (`SchedulingDisabled`) and has no
+  `NoExecute` taint (i.e. it's accidentally cordoned, not being drained), make it
+  schedulable again (a single `Node` update; reversible with `kubectl cordon`).
+
+### Watch mode (daemon)
+
+`kubeagent watch` runs kubeagent in-cluster as a continuously running,
+**strictly read-only** daemon. It opens an informer against the cluster (using
+the in-cluster service account, or `--kubeconfig` as fallback), re-runs the
+deterministic diagnosis whenever the watch stream signals a change (debounced),
+and also re-runs on a periodic heartbeat. It tracks each issue's state across
+reconciles — new, resolved, flapping, and time-to-resolution — logging only the
+transitions (steady state stays quiet) and exposing them as Prometheus metrics
+and a read-only `/issues` JSON endpoint.
+
+```bash
+./kubeagent watch                        # in-cluster defaults
+./kubeagent watch --metrics-addr :9090   # metrics/health port (default :8080)
+./kubeagent watch --heartbeat 60s        # re-scan interval (default 60s)
+./kubeagent watch --debounce 5s          # change-flood cooldown (default 2s)
+./kubeagent watch -n my-namespace        # scope to one namespace
+```
+
+Endpoints exposed on `--metrics-addr`:
+
+| Path | Description |
+| ---- | ----------- |
+| `/metrics` | Prometheus metrics (unhealthy pod/node counts, scan duration, issue-tracking series, etc.) |
+| `/issues` | JSON list of currently-active and recently-resolved tracked issues, plus lifetime stats |
+| `/healthz` | Liveness probe — returns 200 when the daemon is running |
+| `/readyz` | Readiness probe — returns 200 after the first scan completes |
+
+The daemon makes **no cluster writes**, makes **no LLM/Anthropic calls**, and
+adds **no new dependencies** (informers are part of `client-go`; metrics are
+hand-rolled, no Prometheus library needed). RBAC (`get`/`list`/`watch` only) and
+a Deployment manifest are in [`deploy/`](deploy/).
+
+### MCP server
+
+```bash
+./kubeagent mcp --context my-cluster
+```
+
+`kubeagent mcp` serves kubeagent's read-only diagnosis to an AI agent over the
+[Model Context Protocol](https://modelcontextprotocol.io) on stdio, and it can
+never write to the cluster.
+
+### CI/CD gate
+
+```bash
+./kubeagent gate --wait-for deployment/api -n prod
+```
+
+`kubeagent gate` runs the same read-only diagnosis and turns it into a stable
+exit-code contract (`0` pass, `1` fail, `2` inconclusive, `3` timeout, `4`
+usage) a pipeline can branch on, plus a SARIF renderer for GitHub code
+scanning. With no `--wait-for` it is a pre-deploy sanity check; with
+`--wait-for kind/name -n namespace` it waits for that rollout to settle and
+judges only findings attributable to it. Read-only, and no LLM call on any
+gate path. See [CI/CD gate](website/docs/features/ci-gate.md).
+
+### HTML report
+
+```bash
+kubeagent scan --output html > incident-4821.html
+```
+
+One self-contained file: no JavaScript, no external stylesheet or font, and no
+context name, server URL, or kubeconfig path — so it opens offline, renders
+under a strict CSP, and is safe to attach to a ticket. Carries the findings,
+whatever kubeagent could not read, and collapsed detail sections. See
+[HTML report](website/docs/features/html-report.md).
+
+## Install
+
+### As a Claude Code plugin
+
+Install the binary first by any route below, then, in Claude Code:
+
+```text
+/plugin marketplace add imantaba/kubeagent
+/plugin install kubeagent@kubeagent
+```
+
+You get the `kubeagent mcp` server wired up, two skills that teach the model how
+to read a coverage block, and `/kubeagent:triage`, `/kubeagent:why` and
+`/kubeagent:preflight`. It is read-only: nothing in the plugin reaches `--fix`.
+See [Claude Code plugin](website/docs/features/claude-plugin.md).
+
+### As a `kubectl` plugin (krew)
+
+With [krew](https://krew.sigs.k8s.io) installed, install kubeagent from the
+manifest attached to the latest release:
+
+```bash
+kubectl krew install --manifest-url=https://github.com/imantaba/kubeagent/releases/latest/download/kubeagent.yaml
+kubectl kubeagent scan
+```
+
+kubeagent is not in the upstream krew-index yet, so `--manifest-url` is
+required — plain `kubectl krew install kubeagent` will not find it.
+
+Flags go **after** the plugin name; `kubectl` does not forward its own global
+flags to plugins:
+
+```bash
+kubectl kubeagent scan --context prod-eu     # works
+kubectl --context prod-eu kubeagent scan     # does not
+```
+
+### Prebuilt binary
+
+Binaries for **linux/amd64**, **linux/arm64**, **darwin/amd64** and
+**darwin/arm64** are attached to each
+[GitHub Release](https://github.com/imantaba/kubeagent/releases). Download, verify
+the checksum, and run:
+
+```bash
+VERSION=v1.2.3   # the release you want
+OS=linux; ARCH=amd64
+base="https://github.com/imantaba/kubeagent/releases/download/${VERSION}"
+curl -sSLO "${base}/kubeagent_${VERSION}_${OS}_${ARCH}.tar.gz"
+curl -sSLO "${base}/SHA256SUMS"
+sha256sum --ignore-missing -c SHA256SUMS
+tar xzf "kubeagent_${VERSION}_${OS}_${ARCH}.tar.gz"
+./kubeagent version   # prints the build's version
+./kubeagent scan
+```
+
+Releases are signed, ship an SPDX SBOM and SLSA build provenance, and are
+byte-reproducible — see [Verifying a release](https://k8sproject.top/verify/).
+
+Windows is not published: nothing in this project's test or chaos suite has
+ever run on it.
+
+### Cutting a release
+
+**Pre-release chaos test.** On a machine with Docker, run the chaos suite on a
+disposable Kind cluster before tagging (see [chaos/README.md](chaos/README.md)):
+
+```bash
+./chaos/run.sh --recreate --teardown          # deterministic
+# or, to also exercise --explain:
+ANTHROPIC_API_KEY=sk-ant-... ./chaos/run.sh --recreate --teardown
+```
+
+The harness's exit code is the gate: it asserts each scenario's expected
+signal itself and exits non-zero the moment one doesn't hold. A zero exit
+means proceed. A non-zero exit names the failures on the console and in the
+generated `docs/testing/*-chaos-results.md` (git-ignored) under its
+`## Assertion summary` — read that to understand a failure, not to detect
+one.
+
+Push a version tag — or run the **Release** workflow manually from the Actions
+tab with a `version` input:
+
+```bash
+git tag v1.2.3
+git push origin v1.2.3
+```
+
+The release workflow runs the tests, builds the four platform archives
+(`kubeagent_<version>_{linux,darwin}_{amd64,arm64}.tar.gz`) plus `SHA256SUMS`,
+signs the checksums with keyless cosign, generates an SPDX SBOM, attests build
+provenance for the archives and the image, renders the krew plugin manifest
+from `krew/kubeagent.yaml.tmpl` with those checksums, and attaches everything
+to the GitHub Release. A SemVer pre-release tag (`v1.2.3-rc.1`) publishes as a
+GitHub pre-release and does not move the `:latest` image tag. Every push and PR
+is checked by the CI workflow (vet + test + build).
+
+> A manual dispatch creates the tag at the current commit of the branch it runs
+> on — make sure that branch is at the commit you mean to release before
+> dispatching. A pushed tag releases exactly that tagged commit.
+> Pushing a tag is preferred over a manual dispatch: the signing certificate
+> then pins the tag itself, while a dispatched run can only pin the branch it
+> ran from.
+
+## Compatibility
+
+From **1.0** onward, only a MAJOR release may break a stable surface.
+[Compatibility and support](https://k8sproject.top/compatibility/) says which
+surfaces those are — the command line, `gate`'s exit codes, the documented
+`KUBEAGENT_*` variables, the Helm chart's values, and the six versioned JSON
+documents — which ones are deliberately *not* stable, and which Kubernetes
+minors are supported (v1.32, v1.33 and v1.34, each gated nightly by the
+[chaos matrix](chaos/README.md)).
+
+## Roadmap
+
+- **v1** — `kubeagent scan`: deterministic whole-cluster scan + diagnosis
+- **v2 (shipped)** — optional `--explain` flag: one Claude API call summarizes findings
+
+## Design
+
+See [docs/design.md](docs/design.md).
+
+## Contributing
+
+Bug reports, detector ideas, and pull requests are welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md) — it covers the build, the test style
+(write the failing test first), the project invariants a change must not break,
+and the [DCO](https://developercertificate.org/) sign-off (`git commit -s`)
+that every commit needs. There is no CLA.
+
+- **Code of Conduct** — this project follows the
+  [CNCF Code of Conduct](https://github.com/cncf/foundation/blob/main/code-of-conduct.md);
+  see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+- **Governance** — who decides what, and how to become a maintainer:
+  [GOVERNANCE.md](GOVERNANCE.md) and [MAINTAINERS.md](MAINTAINERS.md).
+- **Security** — do not open a public issue; report privately per
+  [SECURITY.md](SECURITY.md).
+- **Using kubeagent?** Add yourself to [ADOPTERS.md](ADOPTERS.md).
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE).

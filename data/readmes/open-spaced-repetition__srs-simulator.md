@@ -1,0 +1,409 @@
+# Extensible Spaced-Repetition Simulator
+
+This project is a small, dependency-light simulator inspired by [*What will a general simulator of spaced repetition consist of?*](https://l-m-sherlock.notion.site/What-will-a-general-simulator-of-spaced-repetition-consist-of-2c7c250163a1809684f3fe8cf8011a00) and mirrors the [Rust FSRS simulator](https://github.com/open-spaced-repetition/fsrs-rs/blob/main/src/simulation.rs) ideas in Python. It separates the simulator into four modules so you can stress-test schedulers against richer real-world assumptions, with an event-driven reference engine and a batched tensor engine for multi-user sweeps.
+
+## Quickstart
+Install dependencies with uv, then run a quick simulation (no logs, just plots). Quickstart assumes [`../srs-benchmark`](https://github.com/open-spaced-repetition/srs-benchmark) and [`../Anki-button-usage`](https://github.com/open-spaced-repetition/Anki-button-usage) are available; see Requirements and data.
+
+```bash
+uv sync
+uv run simulate.py --priority new-first --days 90 --no-log
+```
+
+The single-user CLI uses the event engine and can emit per-event records:
+
+```bash
+uv run simulate.py --engine event --priority new-first --days 90 --log-reviews
+```
+
+For larger retention sweeps, use the batched tensor entrypoint:
+
+```bash
+uv run experiments/retention_sweep/run_sweep_users_batched.py --start-user 1 --end-user 200 --env lstm --sched fsrs6,anki_sm2,memrise --torch-device cuda
+```
+
+## Requirements and data
+- Python 3.13+ (matches `pyproject.toml`).
+- Use `uv sync` to install dependencies. Torch is pulled from the uv indexes declared in `pyproject.toml` (CUDA builds on Windows/Linux, CPU builds on macOS).
+- Plotly is included for interactive FSRS6 ADR policy-surface HTML plots.
+- `cma`/pycma is included for CMA-ES black-box policy search in RL scheduler experiments, including ADR and AP schedulers.
+- `srs-benchmark` repo is expected next to this repo at `../srs-benchmark` (override with `--srs-benchmark-root`). It provides FSRS/HLR/DASH weights in `result/*.jsonl` and LSTM weights in `weights/LSTM/<user_id>.pth`.
+- Generate LSTM weights in the `srs-benchmark` repo by running:
+
+```bash
+uv run script.py --algo LSTM --weights
+```
+
+- `Anki-button-usage` repo is required by `simulate.py` and defaults to `../Anki-button-usage/button_usage.jsonl` (override with `--button-usage`). Pass `--user-id` to select the matching per-user row. Button usage loads marginal rating probabilities and costs by default; pass `--review-markov-transition` to opt into `long_term_transition` review-button Markov behavior.
+- SSP-MMC policies require precomputed policy files. Generate them in the sibling repo, then point `SSPMMCScheduler` at the outputs (see [`../SSP-MMC-FSRS`](https://github.com/open-spaced-repetition/SSP-MMC-FSRS)).
+
+## CLI usage
+Simulation logs store metadata and totals by default; add `--log-reviews` to include per-event logs (can be large). Daily time series are written to a sidecar CSV file with the same basename as the JSONL log.
+
+Common examples:
+
+```bash
+uv run simulate.py --days 30 --deck 500 --learn-limit 20 --review-limit 200 --cost-limit-minutes 60 --seed 7 --no-progress --no-log
+uv run simulate.py --env fsrs3 --sched fsrs3 --desired-retention 0.85 --no-log
+uv run simulate.py --env fsrs6 --sched hlr --desired-retention 0.8 --no-log
+uv run simulate.py --sched fsrs6 --scheduler-priority high_difficulty --no-log
+uv run simulate.py --sched fixed@7 --priority review-first --no-log
+uv run simulate.py --log-dir logs/runs --days 180 --seed 123
+uv run simulate.py --sched sspmmc --sspmmc-policy ../SSP-MMC-FSRS/outputs/policies/<policy>.json --no-log
+```
+
+Flag notes:
+- `--no-plot` and `--no-progress` disable the Matplotlib dashboard and progress bar.
+- `--log-dir` controls where JSONL logs and daily CSVs are written.
+- `--button-usage` points at a button-usage JSONL file to override default costs and rating probabilities. Review-button Markov transitions from `long_term_transition` are ignored unless `--review-markov-transition` is set.
+- `--benchmark-result` and `--benchmark-partition` override which `srs-benchmark` result rows are loaded.
+- `--fuzz` applies Anki-style interval fuzzing to scheduler outputs.
+
+FSRS6 priority modes: `low_retrievability`, `high_retrievability`, `low_difficulty`, `high_difficulty`.
+
+## RL experiment infrastructure
+
+The rebooted RL scheduler experiment infrastructure starts from checked-in TOML
+profiles and machine-readable stage records:
+
+```bash
+uv run python experiments/rl_scheduler/run_experiment.py --config experiments/rl_scheduler/configs/fsrs6_adr_linear_cmaes_users_1_8.toml --stage all --run-id fsrs6_adr_linear_cmaes_users_1_8_v1
+uv run python experiments/rl_scheduler/select_fsrs6_baseline_drs.py --config experiments/rl_scheduler/configs/fsrs6_adr_linear_portfolio_users_1_8.toml
+uv run python experiments/rl_scheduler/select_fsrs6_baseline_drs.py --config experiments/rl_scheduler/configs/fsrs3_scheduler_users_1_8.toml --scheduler fsrs3 --output-manifest artifacts/rl_scheduler/baseline_dr_selection/fsrs3_users_1_8_16dr_pop16_gen5.json
+uv run python experiments/rl_scheduler/run_experiment.py --config experiments/rl_scheduler/configs/fsrs6_adr_linear_portfolio_users_1_8.toml --stage all --run-id fsrs6_adr_linear_portfolio_users_1_8_v1
+uv run python experiments/rl_scheduler/run_experiment.py --config experiments/rl_scheduler/configs/fsrs6_ap_cmaes_users_1_8.toml --stage all --run-id fsrs6_ap_cmaes_users_1_8_v1
+uv run python experiments/rl_scheduler/run_portfolio_workflow.py --config experiments/rl_scheduler/configs/anki_sm2_ap_portfolio_users_1_8_pop16_20_v1.toml --run-id anki_sm2_ap_portfolio_users_1_8_pop16_20_v1 --skip-manifest --skip-baseline-sweep
+uv run python experiments/rl_scheduler/inspect_run.py --run-root artifacts/rl_scheduler/fsrs6_adr_linear_cmaes_users_1_8/fsrs6_adr_linear_cmaes_users_1_8_v1
+uv run python experiments/rl_scheduler/validate_artifact.py --metadata <artifact_metadata.json> --require-files
+uv run python experiments/rl_scheduler/plot_fsrs6_adr_policy_surfaces.py --train-run-root artifacts/rl_scheduler/<profile>/<run-id> --users 1,2
+```
+
+The FSRS6 ADR surface plotter supports ordinary ADR artifacts by baseline DR and
+ADR portfolio child artifacts by `memorized_average / deck`.
+
+`dry-run` validates the TOML and prints resolved commands without writing formal
+outputs. `preflight` writes a config snapshot, resolved config, command record,
+run record, GPU summary, gate summary, manifest, and preflight summary under the
+configured `output_root`. `stage-baseline` validates FSRS6 JSONL log metadata,
+including configured `baseline.desired_retention_values` or per-user
+`[baseline_dr_selection]` manifest values, and the configured
+`simulation.review_markov_transition` mode. It stages exact baseline logs by
+copy or hardlink without staging CSV sidecars. `train-overfit`
+runs the user-provided `training.command_template` once per training user and
+lambda value by default; portfolio trainers run once per training user and do
+not use `training.lambda_grid`. When `[training.batch].enabled = true`, supported
+in-tree RL trainers run in one Python process and batch multiple users into the
+same batched tensor simulation call, avoiding GPU multi-process requirements
+while preserving per-user artifact directories. It then requires scheduler policy
+artifact metadata under the command output directory. `sweep` can run the
+configured batched retention sweep from the
+same TOML and validates the resulting JSONL logs. `build-pareto` fans out
+`build_pareto.py` per user, and `analyze-pareto` writes both `analysis.md` and
+machine-readable `analysis_summary.json` from those Pareto JSON files. CUDA
+`train-overfit` and `sweep` stages automatically write GPU monitor artifacts
+under `<stage>/gpu_monitor/`; the formal `performance_summary.json` links to
+the monitor summary. Formal Markov mode defaults to
+`simulation.review_markov_transition = false`; new formal logs, artifacts, and
+reports record this field so Markov-off runs are not mixed with legacy Markov-on
+results. Portfolio profiles should use `run_portfolio_workflow.py`
+as the standard entry point so baseline DR selection, baseline sweep, formal
+stages, and any configured `[report]` step run in order. Formal stages fail if
+required inputs are missing. `all` runs the configured stages in order and stops
+at the first non-zero stage result. Scheduler policy artifacts must validate
+against the metadata contract before they can be used by formal stages.
+
+`fsrs6_adr_linear_cmaes_users_1_8.toml` trains one simplified
+3-parameter `fsrs6_adr_log_linear_v1` policy per user and baseline desired
+retention with CMA-ES, then evaluates the resulting ordinary `fsrs6_adr`
+schedulers.
+`fsrs6_adr_linear_portfolio_users_1_8.toml` trains 16 simplified
+3-parameter `fsrs6_adr_log_linear_v1` portfolio children per user with
+SMS-EMOA hypervolume optimization, then evaluates them as ordinary
+`fsrs6_adr` schedulers.
+`fsrs6_default_adr_portfolio_users_1_8_pop16_20_v1.toml` trains the same ADR
+portfolio form while using default FSRS-6 weights inside the ADR scheduler; the
+environment still follows the configured simulation environment.
+`fsrs6_ap_cmaes_users_1_8.toml` trains `fsrs6_ap` (Adaptive Parameters), which
+searches 21 bounded FSRS-6 scheduler parameters as standardized deltas from each
+user's fitted FSRS-6 weights. It batches users and baseline DR values in one
+process and still writes one independent policy artifact per user/DR/lambda for
+the standard sweep and Pareto stages.
+
+ADR trains one artifact per `(user, baseline DR, lambda)` and applies the
+overfit gate against the same user's same-DR FSRS-6 baseline, with both relative
+memorized-average and memorized-per-minute gains required to be greater than
+`0.0`.
+AP uses the ADR overfit gate per DR, but the action is the full FSRS-6
+weight vector. The train lane layout flattens `(user, baseline DR, CMA-ES
+candidate)` and uses `[training.ap].dr_batch_size` plus `[training.batch]` to
+control DR and user batching.
+
+`fsrs6_adr_portfolio` and `fsrs6_ap_portfolio` train multiple child policies
+per user with SMS-EMOA. The objective is the Pareto hypervolume gain of
+candidate `(memorized_average, -time_average)` points over the user's FSRS-6 DR
+baseline set. Portfolio profiles use `[baseline_dr_selection]` to point at a
+generated per-user manifest of 16 FSRS-6 desired-retention values, selected in
+the FSRS6 environment before formal staging/training. The selector writes
+per-generation hypervolume progress to `<manifest>.progress.jsonl` by default
+and batches multiple users together up to `--max-lanes-per-batch` lanes.
+Portfolio artifacts are
+lambda-less and write children under
+`user_<id>/policies/policy_*/`; set
+`training.artifact_metadata_glob = "policies/**/metadata.json"` so sweep stages
+discover each child policy.
+
+Training batch mode is configured under `[training.batch]`, for example:
+
+```toml
+[training.batch]
+enabled = true
+trainer = "auto"
+batch_size = 8
+```
+
+`trainer = "auto"` resolves the built-in trainer from `training.command_template`;
+set an explicit trainer such as `"fsrs6_adr_cmaes"`,
+`"fsrs6_adr_portfolio"`, or `"fsrs6_ap_cmaes"` for command-template-free
+in-process runs.
+
+## Experiments
+Retention sweep + Pareto (compare environments, optional SSP-MMC policies):
+
+```bash
+uv run experiments/retention_sweep/run_sweep.py --env fsrs6,lstm --sched fsrs6
+uv run experiments/retention_sweep/run_sweep.py --env fsrs6,lstm --sched sspmmc
+uv run experiments/retention_sweep/run_sweep.py --env lstm --sched fsrs6_adr --fsrs6-adr-policy <policy.json>
+uv run experiments/retention_sweep/run_sweep.py --env lstm --sched fsrs6_ap --fsrs6-ap-policy <policy.json>
+uv run experiments/retention_sweep/run_sweep.py --env fsrs6,lstm --sched fsrs6,sspmmc
+uv run experiments/retention_sweep/build_pareto.py --env fsrs6,lstm --sched fsrs6,sspmmc
+uv run experiments/retention_sweep/build_pareto.py --env fsrs6,lstm --sched fsrs6,sspmmc --memory-field review_memory_gain_average --time-field review_time_average
+```
+
+Single-card lifecycle tradeoff experiments have their own guide in [`experiments/single_card_tradeoff/README.md`](experiments/single_card_tradeoff/README.md), including finite and stationary FSRS6 oracle baselines, interval/retention distillation, and continuous desired-retention oracle variants.
+That family now has its own formal stage runner at `experiments.single_card_tradeoff.cli.run_experiment`, which reads semantic task tables instead of raw `[[commands]]` blocks. The same guide also covers native FSRS6 ADR training via `experiments.single_card_tradeoff.cli.fsrs6_adr_train_multiuser`.
+
+By default, SSP-MMC policies are loaded from `../SSP-MMC-FSRS/outputs/policies/user_<id>`. Override with `--sspmmc-policy-dir` or `--sspmmc-policies`. Use `--sched` to compare DR sweeps across schedulers; include `sspmmc`, `fsrs6_adr`, `fsrs6_adr_time`, or `fsrs6_ap` to add policy curves. For `fsrs6_adr` and `fsrs6_adr_time`, pass `--fsrs6-adr-policy <policy.json>`; the policy maps scheduler-side FSRS-6 state to desired retention. For `fsrs6_ap`, pass `--fsrs6-ap-policy <policy.json>`; the policy contains bounded FSRS-6 scheduler weights and its baseline DR. For fixed intervals, pass `fixed@<days>` in `--sched`. Single-user retention sweep logs default to `logs/retention_sweep/user_<id>` and use the event engine. Retention sweeps write JSONL summaries by default but skip daily CSV sidecars to limit disk usage; pass `--diagnostic-csv-logs` when diagnosing simulation behavior or when using CSV-based plotting helpers. Totals include a matched no-review counterfactual: each strategy keeps its actual first-exposure dates, while cards receive no later reviews and decay under the selected memory model. `no_review_memorized_average` reports that baseline, `review_memory_gain_average` reports the memory attributable to later reviews, and `review_time_average` excludes first-exposure cost. `build_pareto.py` writes results JSON to `logs/retention_sweep/<config>/` and plots to `experiments/retention_sweep/plots/<config>/`, where `<config>` encodes `--short-term`, `--fuzz`, `--engine`, selected Pareto axes, and compare flags; per-user outputs are disambiguated with `_user_<id>` in the filename. `build_pareto.py` recursively scans JSONL logs under `--log-dir`, annotates points by default, and can compare staged baseline logs with nested sweep outputs. Pass `--memory-field review_memory_gain_average --time-field review_time_average` to measure the incremental review tradeoff, `--hide-labels` to disable labels, `--fuzz on/off` to filter logs, or `--compare-fuzz` to overlay fuzz on/off curves. Historical JSONL logs must be regenerated before selecting newly added Pareto fields.
+
+Short-term scheduling:
+
+```bash
+uv run simulate.py --engine event --env lstm --sched lstm --short-term-source steps --learning-steps 1,10 --relearning-steps 10
+```
+
+To explicitly disable learning/relearning steps while using `--short-term-source steps`, pass empty strings:
+
+```bash
+uv run simulate.py --engine event --env lstm --sched lstm --short-term-source steps --learning-steps "" --relearning-steps ""
+```
+
+Scheduler-driven short-term (LSTM only, no steps):
+
+```bash
+uv run simulate.py --engine event --env lstm --sched lstm --short-term-source sched
+```
+
+Use `--short-term-loops-limit <N>` to cap short-term review loops per user per day in event and batched runs, not total short-term review interactions. A loop may process multiple due short-term cards; each card is processed at most once per loop. Remaining short-term cards carry over to the next day.
+
+When short-term scheduling is enabled, benchmark weights are loaded from `*-short-secs` result files, and LSTM weights are loaded from `weights/LSTM-short-secs` in the `srs-benchmark` repo (override via `--benchmark-result` if needed).
+
+Additional retention sweep helpers:
+
+```bash
+uv run experiments/retention_sweep/run_sweep_users.py --start-user 1 --end-user 10 --env fsrs6,lstm --sched fsrs6,anki_sm2,memrise --max-parallel 4
+uv run experiments/retention_sweep/run_sweep_users_batched.py --start-user 1 --end-user 200 --env lstm --sched fsrs6,anki_sm2,memrise
+uv run experiments/retention_sweep/run_sweep_users_batched.py --start-user 1 --end-user 10 --env lstm --sched fsrs6_adr --fsrs6-adr-policy <policy.json>
+uv run python experiments/retention_sweep/run_sweep_users_batched.py --config <edited-batched-sweep.toml> --dry-run
+uv run python experiments/retention_sweep/run_sweep_users_batched.py --start-user 1 --end-user 8 --env lstm --sched fsrs6,fsrs6_adr --fsrs6-adr-policy-root <train-overfit/train_outputs>
+uv run experiments/retention_sweep/build_pareto_users.py --start-user 1 --end-user 8 --env lstm --sched fsrs6,fsrs6_adr --engine batched
+uv run experiments/retention_sweep/build_pareto_users.py --config experiments/rl_scheduler/configs/fsrs6_adr_linear_cmaes_users_1_8.toml --dry-run
+uv run experiments/retention_sweep/build_pareto_users.py --start-user 1 --end-user 10 --env fsrs6,lstm --sched fsrs6,sspmmc
+uv run experiments/retention_sweep/aggregate_users.py --env lstm --sched fsrs6,anki_sm2,memrise
+uv run experiments/retention_sweep/dominance.py --env lstm
+uv run python experiments/retention_sweep/plot_short_loops.py --env lstm --sched fsrs6 --short-term-source steps --desired-retention 0.9 --metric avg --out experiments/retention_sweep/plots/short_loops_fsrs6_steps_dr09.png --no-show
+```
+
+- `run_sweep_users.py` fans out `run_sweep.py` across a user-id range and supports `--max-parallel`, `--cuda-devices` (round-robin per worker), plus MPS env passthrough; `--max-parallel` only delivers speedups when GPU Multi-Process Service (MPS) is enabled on the host. In parallel it shows an overall work bar, a user bar, and per-worker bars (disable with `--child-progress off`, and use `--show-commands on` if you need the raw subprocess commands).
+- `run_sweep_users_batched.py` runs LSTM/FSRS6 retention sweeps with the batched tensor engine. By default it uses `--max-lanes-per-batch 10000` to precompute outer user batches before loading per-user weights, keeping each user's scheduler/DR lanes together; use `--batch-size` only when you want a fixed outer user count, such as distributing work with `--cuda-devices`. Each batch expands `(user, scheduler, parameter/DR)` into simulation lanes, so mixed scheduler sweeps share one batched engine call per environment batch. It is also the supported entrypoint for FSRS-trained `fsrs6_adr`, `fsrs6_adr_time`, `fsrs6_default_adr`, `fsrs6_ap`, and `anki_sm2_ap` policies evaluated in FSRS6 or external LSTM environments. Use `--fsrs6-dr-manifest <manifest.json>` or `--fsrs3-dr-manifest <manifest.json>` to run FSRS6 or FSRSv3 DR lanes from per-user selected values instead of the uniform range. Use `--fsrs6-adr-policy <policy.json>` for one policy, `--fsrs6-adr-policy-root <train-overfit/train_outputs>` or `--fsrs6-adr-train-run-root <run-root>` to expand trained `(user, baseline DR, lambda)` policies or lambda-less portfolio child policies for `fsrs6_adr`, `fsrs6_adr_time`, or `fsrs6_default_adr`, or `--fsrs6-adr-policy-manifest <policies.toml>` for explicit entries. Use `--fsrs6-ap-policy <policy.json>` for one AP policy, `--fsrs6-ap-policy-root <train-overfit/train_outputs>` or `--fsrs6-ap-train-run-root <run-root>` to expand trained `(user, baseline DR, lambda)` AP policies or lambda-less AP portfolio children, or `--fsrs6-ap-policy-manifest <policies.toml>` for explicit entries. Use `--anki-sm2-ap-policy <policy.json>` for one Anki SM2 AP policy, `--anki-sm2-ap-policy-root <train-overfit/train_outputs>` or `--anki-sm2-ap-train-run-root <run-root>` for portfolio children, or `--anki-sm2-ap-policy-manifest <policies.toml>` for explicit entries. `fsrs6_adr`, `fsrs6_adr_time`, `fsrs6_default_adr`, and `fsrs6_ap` manifests include `baseline_desired_retention`; portfolio children may set it to `null`; `anki_sm2_ap` portfolio children are no-DR policies. Formal ADR/AP experiments keep the batched sweep settings inside `experiments/rl_scheduler/configs/*.toml` so one TOML reproduces training, sweep, Pareto build, and analysis. When that TOML is used directly with `run_sweep_users_batched.py --config`, `[sweep].log_dir` is honored as the shared log root. When it is used through `experiments/rl_scheduler/run_experiment.py --stage sweep`, the same sweep settings are run-local and logs are written to `<output_root>/<run_id>/sweep/sweep_outputs`; formal `build-pareto` scans `<output_root>/<run_id>` rather than the shared log root. Batched sweeps use `--log-layout user` by default, so `--log-dir logs/retention_sweep` writes `logs/retention_sweep/user_<id>/sched_...` for all schedulers and can be consumed directly by `build_pareto_users.py`; use `--log-layout sweep` to keep the legacy `sched_.../user_<id>` layout. Short-term steps are supported via `--short-term-source steps`, and LSTM sched-based short-term is supported via `--short-term-source sched`. Batched sweeps skip per-user daily CSV sidecars and batch GPU CSV logs by default; pass `--diagnostic-csv-logs` to write them under the normal log root.
+- `SRS_LSTM_MAX_BATCH` defaults to 65536. This is a throughput-oriented chunk size and can use more than 10 GiB of GPU memory on larger LSTM lane batches; batched sweep entrypoints enable PyTorch expandable CUDA segments at startup to reduce allocator fragmentation, but reduce `SRS_LSTM_MAX_BATCH` if shared GPU memory spill still appears, or keep `--max-lanes-per-batch` at or below the default 10000 unless memory allows larger chunks.
+- `build_pareto_users.py` fans out `build_pareto.py` across a user-id range.
+- `aggregate_users.py` aggregates per-user retention_sweep logs into summary JSON, recursively scanning nested batched lane logs under `--log-dir`. By default it plots FSRS-6 equivalent distributions vs Anki-SM-2/Memrise; use `--equiv-baselines` to choose different baseline scheduler specs and `--equiv-pairs` for generic DR-scheduler pair boxplots such as `lstm:fsrs6`. Use `--equiv-report fsrs3` (and include `fsrs3` in `--sched`) to switch the baseline-equivalence target to FSRSv3.
+- `dominance.py` reports per-user dominance rates between Anki-SM-2 and Memrise, plus FSRS-6 default (DR=90%) vs Anki-SM-2/Memrise, and saves stacked bar charts.
+- `plot_short_loops.py` plots the per-user distribution of daily short-term loops from retention_sweep CSV sidecars. Generate those sidecars with `--diagnostic-csv-logs`. For DR schedulers such as `fsrs6`, pass `--desired-retention` so the plot uses a single target-retention config instead of mixing multiple DR runs for the same user. Use `--metric avg-active` to average only over days with loops, `--log-dir` to point at a single user or alternate sweep root, and `--max-user-ticks` to cap lower-panel x-axis labels.
+- Note: very high desired retention targets (e.g., `--end-retention 0.99` for FSRS6 sweeps) can dramatically increase GPU memory usage; reduce `--max-lanes-per-batch`, set `--batch-size`, or cap retention if you hit OOM.
+- Retention range flags use `--start-retention/--end-retention` across the sweep, aggregate, and pareto tools.
+- To pass retention sweep overrides (e.g., `--start-retention/--end-retention/--step`, now 0-1 floats) to `run_sweep.py`, add them after `--` when invoking `run_sweep_users.py`.
+
+## Engine support matrix
+
+Legend: ✓ supported, — not supported.
+
+Event engine:
+
+| env \\ sched | fsrs6 | fsrs3 | hlr | dash | lstm | fixed | anki_sm2 | anki_sm2_ap | memrise | sspmmc | fsrs6_adr | fsrs6_adr_time | fsrs6_default_adr | fsrs6_ap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| lstm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| fsrs6 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| fsrs3 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| hlr | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| dash | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+Batched tensor engine (`run_sweep_users_batched.py`):
+
+| env \\ sched | fsrs6 | fsrs3 | lstm | anki_sm2 | anki_sm2_ap | memrise | fixed | fsrs6_adr | fsrs6_adr_time | fsrs6_default_adr | fsrs6_ap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| lstm | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| fsrs6 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+Notes:
+- Event engine is the reference implementation and supports all scheduler/environment combinations, even if some pairings are not meaningful.
+- Batched mode is intended for multi-user retention sweeps and is currently limited to the environments and schedulers listed above. `fsrs6_adr`, `fsrs6_adr_time`, and `fsrs6_default_adr` require one of `--fsrs6-adr-policy`, `--fsrs6-adr-policy-root`, `--fsrs6-adr-train-run-root`, or `--fsrs6-adr-policy-manifest`; `fsrs6_ap` uses the matching `--fsrs6-ap-*` policy source flags; `anki_sm2_ap` uses the matching `--anki-sm2-ap-*` policy source flags.
+
+## Evaluation
+`experiments/retention_sweep/aggregate_users.py` compares scheduler efficiency by aggregating retention_sweep logs across users for each environment, scheduler, and target setting (desired retention or fixed interval) and restricting to the intersection of user IDs so each config is compared on the same users. Formal RL-scheduler `analyze-pareto` reports use scheduler-only Pareto hypervolume as the primary metric.
+
+Metrics and outputs:
+- Memorized cards (average, all days): average number of memorized cards across the full simulation horizon.
+- Study minutes per day (average): average study time per day from the logs.
+- Memorized cards per minute (average): memorized cards divided by study minutes. In RL-scheduler portfolio reports, unweighted policy-point averages of memorized cards, time, and efficiency are diagnostics only because they depend on where the portfolio samples the frontier.
+- Pareto portfolio reports: `analyze-pareto` summarizes scheduler-only HV delta against the FSRS6 baseline, HV delta / baseline HV, per-user HV delta five-number summaries, coverage-aware same-budget memory lift AUC over the common covered time-budget interval, and coverage-aware same-target time saved AUC over the common covered memory-target interval. The AUC metrics use linear interpolation between each scheduler's Pareto frontier points and do not extrapolate beyond the shared frontier coverage. The same metrics are written to `analysis_summary.json`; formal experiment reports are generated by `experiments/rl_scheduler/generate_experiment_report.py` from `report_summary.json`, not by hand-copying tables from Markdown.
+- Plots: for baseline scheduler specs (default Anki-SM-2 and Memrise, configurable via `--equiv-baselines`), it computes each user's equivalence-target DR by interpolating the target DR scheduler (FSRS-6 by default, configurable via `--equiv-report`) points to match the baseline memorized cards (average, all days), then compares memorized cards per minute (average) distributions along with per-user differences and ratios. It also supports generic DR-scheduler pair boxplots via `--equiv-pairs`, which interpolate the target curve to each baseline DR point and bin the resulting efficiency ratio by baseline DR.
+- Per-user Pareto frontier comparison: `build_pareto_users.py` saves a Pareto frontier plot per user (filename suffixed with `_user_<id>`) into a shared config-specific plot directory, overlaying environments and schedulers to show the tradeoff frontier in terms of memorized cards (average, all days) vs study minutes per day (average).
+- Axes under default retention_sweep settings (1825 days, deck 10,000, learn limit 10/day, review limit 9,999/day, cost limit 720 minutes/day, review-first, seed 42, batched engine): the X axis "Memorized cards (average, all days)" is the expected number of cards remembered per day averaged over the whole run (sum of predicted retrievability across learned cards), and the Y axis "Minutes of studying per day (average)" is the average daily study time reported by the cost model over the whole run (lower = better, since it is the cost axis in the tradeoff plot).
+
+## Retention sweep comparisons (lstm)
+
+_All figures below use `--env lstm --engine batched --short-term on --short-term-source steps` in the corresponding `retention_sweep` analysis scripts._
+
+_Interpretation caveat: these plots are conditional on the LSTM environment being the simulator's ground-truth memory model. That is not a neutral test bed for every scheduler, and it is especially favorable to the LSTM scheduler because the scheduler is being evaluated inside the same model family that defines recall dynamics. These figures should therefore be read as "performance under the LSTM simulator", not as unbiased evidence that LSTM is universally better on real users._
+
+**SM2 vs Memrise dominance**
+
+![SM2 vs Memrise dominance](experiments/retention_sweep/plots/dominance/dominance_sm2_memrise_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: Per-user dominance outcomes between Anki-SM-2 and Memrise (dominates vs tradeoff)._
+
+**FSRS-6 default (DR=90%) vs Anki-SM-2 dominance**
+
+![FSRS-6 default vs Anki-SM-2 dominance](experiments/retention_sweep/plots/dominance/dominance_fsrs6_default_vs_anki_sm2_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: Per-user dominance outcomes between FSRS-6 default (DR=90%) and Anki-SM-2 (dominates vs tradeoff)._
+
+**FSRS-6 default (DR=90%) vs Memrise dominance**
+
+![FSRS-6 default vs Memrise dominance](experiments/retention_sweep/plots/dominance/dominance_fsrs6_default_vs_memrise_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: Per-user dominance outcomes between FSRS-6 default (DR=90%) and Memrise (dominates vs tradeoff)._
+
+**FSRS6 equivalence vs Anki-SM-2**
+
+![FSRS6 equiv vs Anki-SM-2](experiments/retention_sweep/plots/user_averages/retention_sweep_equivalent_fsrs6_distributions_anki_sm2_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: FSRS-6 interpolated to match Anki-SM-2 memorized-average per user; compares memorized-per-minute distributions and deltas. (n=7954; superiority=78.8%; mean ratio=1.143; median ratio=1.124 (IQR 1.015-1.316); mean DR=0.885; median DR=0.895)._
+
+**FSRS6 equivalence vs Memrise**
+
+![FSRS6 equiv vs Memrise](experiments/retention_sweep/plots/user_averages/retention_sweep_equivalent_fsrs6_distributions_memrise_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: FSRS-6 interpolated to match Memrise memorized-average per user; compares memorized-per-minute distributions and deltas. (n=7544; superiority=70.3%; mean ratio=1.074; median ratio=1.074 (IQR 0.980-1.188); mean DR=0.848; median DR=0.869)._
+
+**LSTM equivalence vs Anki-SM-2**
+
+![LSTM equiv vs Anki-SM-2](experiments/retention_sweep/plots/user_averages/retention_sweep_equivalent_lstm_distributions_anki_sm2_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: LSTM scheduler interpolated to match Anki-SM-2 memorized-average per user; compares memorized-per-minute distributions and deltas. (n=8281; superiority=87.4%; mean ratio=1.243; median ratio=1.232 (IQR 1.091-1.449); mean DR=0.895; median DR=0.901)._
+
+**LSTM equivalence vs Memrise**
+
+![LSTM equiv vs Memrise](experiments/retention_sweep/plots/user_averages/retention_sweep_equivalent_lstm_distributions_memrise_env=lstm_st=on_sts=steps_engine=batched.png)
+_Caption: LSTM scheduler interpolated to match Memrise memorized-average per user; compares memorized-per-minute distributions and deltas. (n=8070; superiority=82.4%; mean ratio=1.133; median ratio=1.132 (IQR 1.040-1.247); mean DR=0.872; median DR=0.885)._
+
+## Benchmarks
+Performance baselines live under `benches/`. See `benches/README.md` for details.
+
+Run the default suite:
+
+```bash
+uv run python benches/run_bench.py --srs-benchmark-root ../srs-benchmark
+```
+
+Run a single scenario:
+
+```bash
+uv run python benches/run_bench.py --scenario event_lstm_lstm --srs-benchmark-root ../srs-benchmark
+```
+
+## Key concepts
+- **MemoryModel / Environment**: (`simulator.core.MemoryModel`) governs how recall probability and memory state evolve. Implementations live under `simulator/models`.
+- **BehaviorModel / User**: (`simulator.core.BehaviorModel`) turns hidden retrievability into observed ratings, can skip days, and sets the first rating.
+- **CostModel / Workload**: (`simulator.core.CostModel`) converts each review into a dynamic time cost (e.g. longer latency when R is low).
+- **Scheduler** (`simulator.core.Scheduler`): the agent under test. It only receives a `CardView` projection (history, due date, prior intervals) and returns the next interval plus its internal state.
+- **simulate** (`simulator.core.simulate`): a day-stepped loop that wires all four components together.
+- **simulate_multiuser** (`simulator.batched_engine.simulate_multiuser`): a tensor engine used by batched multi-user retention sweeps. It returns aggregate per-user stats and accepts a torch device override through the batched sweep entrypoint.
+
+## Architecture and control flow
+The simulator follows an environment-agent loop where each module owns a distinct responsibility and communicates through lightweight data structures.
+
+### Data model
+| Type | Purpose |
+| --- | --- |
+| `Card` | Internal state tracked by the simulator (id, due, lapses, memory/scheduler state, metadata). |
+| `CardView` | Scheduler/behavior-visible projection of a card. Includes history but hides the environment's ground-truth state. |
+| `ReviewLog` | `(rating, elapsed, day)` tuples appended to `Card.history` and used for logging/analysis. |
+| `SimulationStats` | Time series counters plus a chronological list of `Event` records (`day`, `action`, `card_id`, `rating`, `retrievability`, `cost`, `interval`, `due`). |
+
+### Event loop
+1. **Initialize deck** - create `Card` objects, seed future queue with due dates, and set up per-day counters.
+2. **Daily setup** - each simulated day:
+   - Call `behavior.start_day(day, rng)` to reset attendance/limit tracking.
+   - Move cards whose `due <= day` from the future queue into the ready heap. Each ready entry stores `(scheduler.review_priority(view, day), tie_breaker, card_id)` so the scheduler can hint which review should run first (e.g., lowest retrievability).
+3. **Behavior-driven actions** - repeatedly ask `behavior.choose_action(day, next_review_view, next_new_view, rng)`:
+   - `next_review_view` is the highest-priority ready card, `next_new_view` is a placeholder for the next unseen card.
+   - Behavior may return `Action.REVIEW`, `Action.LEARN`, or `None` (stop for the day). It enforces daily limits (new/review counts, cost ceiling) and implements heuristics such as new-first vs review-first.
+4. **Learning path** - when choosing `Action.LEARN`:
+   - Behavior picks an initial rating via `initial_rating`.
+   - `MemoryModel.init_card` sets the ground-truth stability/difficulty.
+   - `Scheduler.init_card` computes the first interval and scheduler state.
+   - `CostModel.learning_cost` returns task time; the simulator updates stats, records a "new" event, and schedules the next review by pushing `(due, priority, id)` back to the future queue.
+5. **Review path** - when choosing `Action.REVIEW`:
+   - Compute elapsed days and call `MemoryModel.predict_retention` for true retrievability.
+   - Behavior samples a rating via `review_rating`; if it returns `None` the user skipped the rest of the day and the card is deferred.
+   - Otherwise update ground-truth (`MemoryModel.update_card`), ask the scheduler for the next interval (`schedule`), compute review cost, update stats, and log a "review" event.
+6. **Deferral** - once behavior stops or limits are reached, any remaining ready reviews are deferred by setting `card.due = day + 1` and re-queuing. This ensures they appear first on the next day but retain scheduler-provided priority hints.
+7. **Post-processing** - after all days, compute daily retention (`1 - lapses/reviews`) and return `SimulationStats`.
+
+### Priority plumbing
+- **Scheduler hint** - `Scheduler.review_priority(view, day)` returns a tuple (default `(due, id)`). FSRS schedulers override it to sort by predicted retrievability or difficulty. The simulator stores the hint in `Card.metadata["scheduler_priority"]`.
+- **Behavior ordering** - `BehaviorModel.priority_key(view)` prepends its own policy (e.g., review-first) and consumes the scheduler hint so user strategies can favor reviews or new cards without losing the scheduler's ordering inside each bucket.
+
+This separation lets you benchmark schedulers against arbitrary memory models and user behaviors while keeping transparency about where each decision is made.
+
+## Provided models
+CLI environments are `fsrs6`, `fsrs3`, and `lstm`; HLR/DASH models are available for custom code but are not wired into the `simulate.py` CLI.
+- `FSRS6Model`: FSRS v6-style environment (21 params loaded from `srs-benchmark` for the selected user).
+- `FSRS3Model`: FSRS v3-style environment (13 params loaded from `srs-benchmark`).
+- `HLRModel`: half-life regression with three weights loaded from `srs-benchmark`.
+- `DASHModel`: stateless logistic model with placeholder features and nine weights loaded from `srs-benchmark`.
+- `LSTMModel`: neural forgetting-curve predictor inspired by the srs-benchmark LSTM (requires PyTorch and `--user-id` weights; runs on CUDA when available, otherwise CPU; expects day-based intervals like the original `delta_t` feature).
+
+## Provided schedulers
+- `FSRS6Scheduler` / `FSRSScheduler`: FSRS v6-style state; loads weights from `srs-benchmark` for the selected user.
+- `FSRS3Scheduler`: FSRS v3-style scheduler with weights from `srs-benchmark`.
+- `HLRScheduler`: schedules using half-life regression weights from `srs-benchmark`.
+- `DASHScheduler`: logistic retention solver that mirrors the DASH model and uses weights from `srs-benchmark`.
+- `SSPMMCScheduler`: loads precomputed SSP-MMC-FSRS policies (JSON + `.npz`) and maintains its own FSRS6 state so it can target optimal retention under any environment.
+- `FixedIntervalScheduler`: stateless fixed-interval baseline (`--sched fixed@<days>`).
+- `AnkiSM2Scheduler`: Anki SM-2-style ease scheduler (`--sched anki_sm2`).
+- `MemriseScheduler`: Memrise sequence scheduler (`--sched memrise`).
+- `LSTMScheduler`: LSTM curve-fit scheduler that targets a desired retention from review history.
+
+## Provided behavior and cost models
+- `StochasticBehavior`: configurable attendance probability, lazy-good bias, and daily limits (max new/reviews/cost).
+- `StatefulCostModel`: combines FSRS state rating costs (learning/review/relearning) with a latency penalty that grows as retrievability drops.
+
+## Extend
+- Add a new memory model: subclass `MemoryModel`, implement `init_card`, `predict_retention`, and `update_card`.
+- Add a new behavior model: subclass `BehaviorModel`, implement `initial_rating` and `review_rating`.
+- Add a new cost model: subclass `CostModel`, implement `review_cost`.
+- Add a new scheduler: subclass `Scheduler`, implement `init_card` and `schedule` that operate on `CardView`.
+- Swap components in `simulate` to study how scheduler policies perform under different ground-truth models, user behaviors, and workload assumptions.
+
+## Acknowledgements
+- [1DWalker](https://github.com/1DWalker) provided acceleration advice.
+- [Asuka Minato](https://github.com/asukaminato0721) provided GPU servers.
+- [Expertium](https://github.com/Expertium) provided visualization advice.
+- [Jarrett Ye](https://github.com/L-M-Sherlock) supervised Codex on this project.
+- [Luc Mcgrady](https://github.com/Luc-Mcgrady) inspired the event-driven engine.

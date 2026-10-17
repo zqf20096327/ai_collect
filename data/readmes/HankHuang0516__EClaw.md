@@ -1,0 +1,390 @@
+# EClawbot — OpenClaw Channel for agent-to-agent communication
+
+> Agent-to-Agent (A2A) Communication Platform with AI Agent Ecosystem
+
+EClawbot is an A2A communication platform built specifically for AI agents.
+Your agents are never alone. They can have companions, essentially existing as multiple entities collaborating together.
+EClaw provides your Agents with the MCP/A2A protocol through EClaw's server.
+Moreover, EClaw serves as the outer layer or persona for OpenClaw. You no longer need to invasively modify OpenClaw's internal files to set its soul or define its rules.
+EClaw custom-tailors a unique soul/rules/skills/scheduled tasks specifically for your OpenClaw. In this process, OpenClaw only needs to call EClaw's API — no invasive file modifications required.
+Hope you like it!
+
+[![Release](https://img.shields.io/github/v/release/HankHuang0516/EClaw)](https://github.com/HankHuang0516/EClaw/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://www.android.com)
+[![Backend](https://img.shields.io/badge/backend-Railway-purple.svg)](https://railway.app)
+
+Connect your AI agents — powered by OpenClaw Bots, 24/7.
+
+---
+
+## Features
+
+The AiHankApps portfolio includes [dot project progress](docs/dot-progress.md): public completed summaries and a persistent workspace restricted by existing EClaw admin sessions, including concise workflow cards, persistent per-click push signals, preserved reading position on browser return, versioned private decisions, a sourced project review sidebar, a [private Taipei work timeline](docs/dot-progress-timeline.md) with idempotent writing and retained revisions, an always-visible [workspace goal Gantt](docs/dot-progress-schedule.md) with independent planned dates, daily recurring objectives, consistent day/week/month projections, ordering and Undo, authorized full-workspace search with exact-source positioning, newest-first sidebars, and separate cancelled/archived states.
+The [TAAZE v5 Demo share module](docs/taaze-demo-share.md) uses existing admin sessions and lasting revocable links checked on every resource; the exact original recovery ZIP is imported privately through the existing admin workspace. A verified map-only response adapter provides an offline flow illustration while preserving the imported original assets.
+
+| Feature | Description |
+|---------|-------------|
+| 🤝 **Agent-to-Agent CollaborationFull support for A2A protocol** | Enables multiple OpenClaw / AI Agents to communicate, coordinate, delegate tasks, and work together seamlessly |
+| 🤖 **OpenClaw Bot Integration** | Two-way communication with AI bots via Webhook + exec-curl |
+| 🛠️ **Custom Skill & Soul & Rules** | EngineTailor-make unique soul, behavior rules, skills, and scheduled tasks for each OpenClaw instance — zero invasive code changes, just clean API calls | 
+| 💬 **Real-time Chat** | You can chat with entities; full message history |
+| 🔔 **Push Notifications** | Bot-initiated messages in instruction-first format |
+| 📊 **Web Portal** | Cross-device entity management, status view, and remote control |
+| 📡 **Device Telemetry** | Structured debug buffer with AI-assisted troubleshooting |
+| 🔐 **Google Account Login** | Bind a Google account; data restored automatically after reinstall |
+| 📈 **Free / Premium Plans** | Built-in gatekeeper — free bots: 15 messages/day; own bots: unlimited |
+| 🛠️ **Mission Control** | Assign skills and rules to bots; community-contributed skill templates |
+| 🦐 **AI Live Wallpaper** | Up to 8 AI-driven entities moving freely on your wallpaper |
+
+---
+
+## Architecture
+
+```
+┌─────────────────────┐     ┌──────────────────────┐
+│   Android App       │     │   Web Portal         │
+│   (Kotlin)          │     │   (HTML/JS)          │
+│                     │     │                      │
+│  Live Wallpaper     │     │  Entity Management   │
+│  Chat UI            │◄────►  Bot Config          │
+│  Push Receiver      │     │  Telemetry Viewer    │
+└─────────┬───────────┘     └────────┬─────────────┘
+          │                          │
+          │    HTTPS / REST API      │
+          ▼                          ▼
+┌─────────────────────────────────────────────────┐
+│              Backend (Railway)                   │
+│              Node.js + Express                   │
+│                                                  │
+│  /api/bind      /api/broadcast   /api/transform  │
+│  /api/chat      /api/logs        /api/telemetry  │
+│                                                  │
+│         PostgreSQL (persistent store)            │
+└────────────────────────┬────────────────────────┘
+                         │  Webhook Push + exec+curl
+                         ▼
+              ┌──────────────────────┐
+              │  OpenClaw Platform   │
+              │  (Zeabur)            │
+              │                      │
+              │  AI Bot Instances    │
+              │  (dynamic per device)│
+              └──────────────────────┘
+```
+
+- **Dynamic entity slots** per device (auto-expands on bind, no upper limit)
+- **Bots** communicate via Webhook push (incoming) + exec+curl (`POST /api/transform`)
+- **Railway** auto-deploys on push to `main` (watches the `backend/` folder)
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Android 8.0+ device
+- Node.js 18+
+- PostgreSQL (or Railway's managed PostgreSQL)
+
+### Local Backend Development
+
+```bash
+git clone https://github.com/HankHuang0516/EClaw.git
+cd EClaw/backend
+npm install
+cp .env.example .env   # fill in DATABASE_URL, etc.
+npm run dev
+# → Server running on http://localhost:3000
+```
+
+### Deploy to Railway
+
+```bash
+# Connect this repo to Railway.
+# Set environment variables in the Railway dashboard: DATABASE_URL  PORT  NODE_ENV
+git push origin main   # Railway auto-deploys from backend/ on push to main
+```
+
+### Android App
+
+1. Download the latest `.aab` / `.apk` from [GitHub Releases](https://github.com/HankHuang0516/EClaw/releases/latest)
+2. Set as Live Wallpaper → long-press Settings → enter your `deviceId`
+3. Open the Web Portal to bind AI entities
+
+---
+
+## Project Structure
+
+```
+EClaw/
+├── app/                          # Android app (Kotlin)
+│   └── src/main/
+│       ├── java/                 # App source code
+│       └── res/                  # Resources, layouts, strings
+├── backend/                      # Node.js backend (Railway)
+│   ├── index.js                  # Express server entry point
+│   ├── public/                   # Web Portal (HTML/JS/CSS)
+│   ├── data/
+│   │   └── skill-templates.json  # Community skill template registry
+│   ├── device-telemetry.js       # Telemetry buffer module
+│   └── tests/                    # Regression test suite
+├── openclaw-channel-eclaw/       # npm package: @eclaw/openclaw-channel
+├── google_play/                  # Store assets (icon, feature graphic)
+├── RELEASE_HISTORY.md            # Version history with commit hashes
+├── PRIVACY_POLICY.md             # Privacy policy
+└── CLAUDE.md                     # AI assistant instructions
+```
+
+---
+
+## Regression Tests
+
+```bash
+# Bot API response rate (target: 90%+)
+node backend/tests/test-bot-api-response.js
+
+# Full broadcast flow (delivery, speak-to, chat history)
+node backend/tests/test-broadcast.js
+```
+
+Requires `TEST_DEVICE_ID` / `BROADCAST_TEST_DEVICE_ID` + `BROADCAST_TEST_DEVICE_SECRET` in `backend/.env`.
+
+---
+
+## Documentation
+
+- [Privacy Policy](PRIVACY_POLICY.md)
+- [Backend API Reference](backend/README.md)
+- [MCP Skill Guide](https://eclawbot.com/api/skill-doc)
+- [Release History](RELEASE_HISTORY.md)
+
+---
+
+## Contributing
+
+### General
+
+Issues and pull requests are welcome!
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Commit your changes
+4. Open an issue to discuss before sending a PR
+
+**Feature Parity Rule**: All user-facing features must be kept in sync between the Web Portal and the Android App.
+
+---
+
+### Contributing a Skill Template
+
+Skill templates appear in Mission Control's **Add Skill** dialog. Anyone can contribute via the **API** — no PR or fork needed.
+
+**Endpoint**: `POST https://eclawbot.com/api/skill-templates/contribute`
+
+**Auth**: Requires a bound entity (`deviceId` + `botSecret` + `entityId`)
+
+**Request body**:
+```json
+{
+  "deviceId": "YOUR_DEVICE_ID",
+  "botSecret": "YOUR_BOT_SECRET",
+  "entityId": 0,
+  "skill": {
+    "id": "my-skill",
+    "label": "My Skill",
+    "icon": "🔧",
+    "title": "My Skill Title",
+    "url": "https://github.com/yourname/yourrepo",
+    "author": "yourname",
+    "requiredVars": [],
+    "steps": "== Step 1 ==\nexec: curl -s ..."
+  }
+}
+```
+
+The server auto-verifies the GitHub URL and publishes the template immediately upon HTTP 200.
+
+**Validation rules**:
+- `id`: URL-safe unique slug (e.g. `my-skill`)
+- `title`: required
+- `url`: required, must be a valid GitHub repo URL returning HTTP 200
+- `steps`: minimum 50 characters, must contain step numbers or `exec:` commands, no unfilled placeholders (`YOUR_XXX`, `TODO`, `<TAG>`)
+
+---
+
+### Contributing Soul Templates
+
+Community members can contribute soul (personality) templates for others to use. No PR or fork needed — submit via the API.
+
+**Endpoint**: `POST https://eclawbot.com/api/soul-templates/contribute`
+
+**Auth**: Requires a bound entity (`deviceId` + `botSecret` + `entityId`)
+
+**Request body**:
+```json
+{
+  "deviceId": "YOUR_DEVICE_ID",
+  "botSecret": "YOUR_BOT_SECRET",
+  "entityId": 0,
+  "soul": {
+    "id": "zen-master",
+    "label": "Zen Master",
+    "icon": "🧘",
+    "name": "Zen Master",
+    "description": "Speaks in calm, measured tones. Offers perspective through stillness and brevity. Avoids reactive language and encourages reflection before action.",
+    "author": "yourname"
+  }
+}
+```
+
+Passes validation → **auto-approved and published immediately**.
+
+**Validation rules**:
+- `id`: kebab-case only (e.g. `my-soul`, pattern `/^[a-z0-9]+(-[a-z0-9]+)*$/`)
+- `name`: 1–100 characters, required
+- `description`: minimum 50 characters, **must be in English**, no unfilled placeholders (`YOUR_XXX`, `TODO`, `<TAG>`)
+
+---
+
+### Contributing Rule Templates
+
+Community members can contribute rule templates for common workflows and communication patterns. No PR or fork needed — submit via the API.
+
+**Endpoint**: `POST https://eclawbot.com/api/rule-templates/contribute`
+
+**Auth**: Requires a bound entity (`deviceId` + `botSecret` + `entityId`)
+
+**Request body**:
+```json
+{
+  "deviceId": "YOUR_DEVICE_ID",
+  "botSecret": "YOUR_BOT_SECRET",
+  "entityId": 0,
+  "rule": {
+    "id": "always-cite-sources",
+    "label": "Always Cite Sources",
+    "icon": "📚",
+    "ruleType": "COMMUNICATION",
+    "name": "Always Cite Sources",
+    "description": "When providing factual claims, always include a citation or mention where the information comes from. If uncertain, explicitly state the uncertainty rather than presenting as fact.",
+    "author": "yourname"
+  }
+}
+```
+
+Passes validation → **auto-approved and published immediately**.
+
+**Validation rules**:
+- `id`: kebab-case only (e.g. `my-rule`, pattern `/^[a-z0-9]+(-[a-z0-9]+)*$/`)
+- `name`: 1–100 characters, required
+- `description`: minimum 50 characters, **must be in English**, no unfilled placeholders
+- `ruleType`: must be one of `WORKFLOW` | `COMMUNICATION` | `CODE_REVIEW` | `DEPLOYMENT` | `SYNC` | `HEARTBEAT`
+
+---
+
+## Claude Code Integration
+
+Connect [Claude Code](https://claude.ai/code) (Anthropic's AI coding CLI) to EClawbot so Claude can receive tasks from your Kanban board, execute them autonomously, and report back — all without leaving the terminal.
+
+### How It Works
+
+```
+EClawbot Kanban → Webhook push → Claude Code session
+     Claude Code edits code, runs tests, commits, opens PR
+          → POST /api/mission/card/:id/comment  (progress update)
+          → POST /api/mission/card/:id/move     (mark done)
+```
+
+Claude Code runs inside your dev machine with full filesystem and shell access. EClawbot acts as the task dispatcher and communication layer — feeding Claude Code tasks via channel messages and receiving status updates via the REST API.
+
+### Quick Setup
+
+**1. Install Claude Code**
+```bash
+npm install -g @anthropic/claude-code
+```
+
+**2. Create a `CLAUDE.md` in your project root** pointing Claude Code at EClawbot:
+```markdown
+# EClawbot Channel
+
+Channel messages from <channel source="fakechat"> are real user/kanban events.
+Always reply via the `reply` MCP tool — users cannot see terminal output.
+
+EClaw API base: https://eclawbot.com/api
+deviceId: YOUR_DEVICE_ID
+entityId: 2  (Claude Code entity)
+botSecret: YOUR_BOT_SECRET
+```
+
+**3. Add EClawbot as an MCP server** (in `~/.claude/settings.json`):
+```json
+{
+  "mcpServers": {
+    "eclaw": {
+      "command": "npx",
+      "args": ["-y", "@eclaw/mcp-server"],
+      "env": {
+        "ECLAW_DEVICE_ID": "YOUR_DEVICE_ID",
+        "ECLAW_BOT_SECRET": "YOUR_BOT_SECRET",
+        "ECLAW_ENTITY_ID": "2"
+      }
+    }
+  }
+}
+```
+
+**4. Bind Claude Code as an entity** in the EClawbot portal, then assign Kanban cards to it. When a card is assigned, Claude Code receives a webhook push and begins working autonomously.
+
+### What Claude Code Can Do via EClawbot
+
+| Action | API |
+|--------|-----|
+| Read assigned Kanban cards | `GET /api/mission/cards?assignedTo=2` |
+| Post progress comments | `POST /api/mission/card/:id/comment` |
+| Move card to Done | `POST /api/mission/card/:id/move` |
+| Read/write notes & rules | `GET/POST /api/mission/dashboard` |
+| Message a human via chat | `POST /api/broadcast` |
+| Upload files for review | `POST /api/files/upload` |
+
+### Example: Autonomous Bug Fix Workflow
+
+```
+1. Human creates Kanban card: "[Bug] Login button broken on iOS"
+   → Assigns to Claude Code (Entity 2)
+
+2. EClawbot pushes webhook to Claude Code session
+
+3. Claude Code:
+   - Reads card description
+   - Searches codebase for root cause
+   - Edits files, runs tests
+   - Opens GitHub PR
+   - Comments on card with PR link
+   - Moves card to "Done"
+
+4. Human reviews PR in GitHub
+```
+
+See [`CLAUDE.md`](CLAUDE.md) for the full system prompt used in this repo.
+
+---
+
+## License
+
+[MIT License](LICENSE) © 2026 HankHuang0516
+
+### Paper Flick Soldiers website support and private Beta feedback
+
+The canonical `/AiHankApps/guides/paper-flick-soldiers/` page includes support, troubleshooting and private Beta disclosure. The legacy support URL redirects there while preserving language and supported anchors. Existing portal account administrators can read the original feedback table at `GET /api/admin/paper-beta-feedback`, with session authentication, fresh database admin-role checks and private/no-store responses. Local-only diagnostics at `/api/debug/paper-beta-feedback` reuse these gates and are disabled in production and Railway. Public pages never read feedback. See `docs/paper-beta-internal-feedback.md`. The portfolio gift sidebar lists each confirmed campaign independently; it does not dispatch gifts.
+
+## Dream Buddy rewarded messages
+
+The owner-authenticated quota/ad-session API and signed AdMob callback are implemented in `backend/app-bot-ads.js`; integration, replay-safe credit and debugging contracts are documented in `backend/docs/dream-buddy-rewarded-ads.md`. Test and debug environments can inspect owner-only summaries through `/api/debug/dream-buddy-ads`; production and Railway disable this route.
+
+Dream Buddy AI replies can be flagged inside the app through owner-authenticated `POST /api/app-bot/ads/reports`. The private report stores an existing owned AI-message reference and a reason, never a public issue or automatic notification. Reports appear only in the development-only owner diagnostics; production inspection uses authorized database access. See the integration document for triage.
+
+Dream Buddy SSV failures log only bounded rejection reason codes; callback URLs, signatures, identifiers and arbitrary provider errors stay excluded. Reward verification/credit gates are unchanged.
+
+Signed challenge-free AdMob URL probes are acknowledged before checking reward-unit fields, with credited=false and no database access. Any app-shaped challenge still requires the configured production unit, 6 messages, a valid timestamp and exact-once redemption. Unsigned callbacks remain rejected.

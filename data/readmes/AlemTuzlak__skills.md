@@ -1,0 +1,412 @@
+# Skills
+
+Personal [Agent Skills](https://agentskills.io) I use across every project. They turn a PR, a git ref, or a freeform idea into marketing briefs, blog posts, changelogs, social copy, newsletters, video scripts, rendered promo videos, architecture impact docs, technical presentation decks, documentation, RFCs, PRDs, and full courses.
+
+The repo also ships a **portable build pack**: small skills for how I map, reuse, plan, type, test, debug, prove, and implement a feature. `/build-feature` is the driver. Each leaf still runs alone.
+
+Packaged as a Claude Code plugin, but the skills themselves are plain `SKILL.md` files with standard YAML frontmatter, the same format documented for **Claude Code, GitHub Copilot CLI, OpenAI Codex CLI, Google Gemini CLI, Cursor, and Grok**. Drop them in any of those tools' skills directories and they work. See [Install](#install).
+
+---
+
+## Why this exists
+
+I kept rewriting the same prompts: "summarize this PR for marketing", "draft the changelog", "write a launch tweet", "make me a 30s promo video". Every time, slightly different framing, slightly different quality. So I baked the *expert versions* of those prompts into reusable skills with strong opinions:
+
+- **Decision-maker framing.** Architecture and marketing skills lead with the *"so what?"*, not what was refactored.
+- **Input pluralism.** Every skill accepts a PR URL, a git ref range (`v1.0...v2.0`), a file path, a marketing brief, an upstream blog post, or freeform text.
+- **Composability.** The marketing skills feed each other: brief, then blog post, then social copy, then newsletter, or run all of it via `/marketing-pipeline`.
+- **No fluff.** Skills enforce hooks, length limits, layout gates, and brand checks. The output is shippable, not "AI-generated".
+
+---
+
+## The skills
+
+| Skill | What it does |
+|---|---|
+| [architecture-impact](./skills/architecture-impact) | Before/after architecture analysis for a PR with visual diagrams |
+| [marketing-brief](./skills/marketing-brief) | Structured marketing brief from a PR, ref range, or feature |
+| [changelog](./skills/changelog) | Polished, Keep-a-Changelog-style release notes from git history |
+| [blog-post](./skills/blog-post) | Long-form blog posts with SEO, structure, and tone matching |
+| [newsletter](./skills/newsletter) | Product update emails with subject line + preview text |
+| [social-copy](./skills/social-copy) | Platform-specific copy (X, LinkedIn, etc.) tuned per algorithm |
+| [video-script](./skills/video-script) | Timed, paced video scripts with visual directions |
+| [remotion-video](./skills/remotion-video) | Rendered `mp4` + poster via Remotion (React-based) |
+| [hyperframes-video](./skills/hyperframes-video) | Rendered `mp4` + poster via HyperFrames (HTML/GSAP-based) |
+| [marketing-pipeline](./skills/marketing-pipeline) | Orchestrate any combination of the above from one input |
+| [presentation](./skills/presentation) | Shared talk craft (research, interview, storyboard). Loaded by the two engines. Not a command. |
+| [slidedev-presentation](./skills/slidedev-presentation) | Research-grounded Slidev decks, live at localhost:3030 |
+| [threejs-presentation](./skills/threejs-presentation) | Unique 3D world per talk. Vite + Three.js. Local preview and a static `dist` |
+| [teach-me](./skills/teach-me) | Evidence-based course generator: markdown course plus interactive HTML mini-course |
+| [epic-workshop](./skills/epic-workshop) | Epic Web / Epic React-style workshops, exercises, tips, and recordings |
+| [docs](./skills/docs) | Framework-agnostic documentation writer: shows you the readers, asks for tone, then writes pages through `simple-english` and `i-have-adhd` |
+| [pr-description](./skills/pr-description) | PR title and body from the diff: posts immediately, rewrites on agent push, writes through `simple-english` and `i-have-adhd` |
+| [rfc](./skills/rfc) | Interactive RFC / design-doc writer: interviews you, grounds the proposal in your codebase, shows real API options to pick from |
+| [to-prd](./skills/to-prd) | PRD writer from finished work, a ticket, or a PR, using the CopilotKit EEP spec template |
+| [produce-video](./skills/produce-video) | Turn a raw recording into a finished, edited, annotated video + content package |
+| [transcribe-video](./skills/transcribe-video) | Transcribe video/audio to text with word-level timestamps (local Whisper) |
+| [youtube-copy](./skills/youtube-copy) | YouTube metadata: title, SEO description, tags, timestamped chapters |
+| [i-have-adhd](./skills/i-have-adhd) | ADHD-shaped output: next action first, numbered steps, lists capped at 5. Also the writing filter `docs` loads before pages |
+| [accessible-html](./skills/accessible-html) | Accessible markup by default: loads on any UI code, plus a hook that catches defects as they are written |
+| [tanstack-branding](./skills/tanstack-branding) | TanStack brand kit: exact tokens, category accents, contrast data, plus the real logo and font files |
+| [touch-map](./skills/touch-map) | Mental map of what a behavior change must touch, before an implementation plan or any code |
+| [reuse-first](./skills/reuse-first) | Search, import, or extract helpers before writing a new util |
+| [lego-plan](./skills/lego-plan) | Layered DAG from simple primitives to a working feature; plan only, live board for agents |
+| [test-hygiene](./skills/test-hygiene) | What and how to test: tautological tests considered harmful, real pins, clean test files |
+| [typescript-standards](./skills/typescript-standards) | TypeScript taste: infer at the call site, no overloads, no sloppy casts, app or library |
+| [prove-it](./skills/prove-it) | Prove a change in the browser or via a method you pick; skip means not proved |
+| [fix-bug](./skills/fix-bug) | Root-cause bug fix: hypotheses on the hot path, logs, then a failing test, then the fix; optional prove-it |
+| [build-feature](./skills/build-feature) | Driver for a full feature: grill, spec, map, lego DAG, parallel implement, optional prove-it |
+
+### Build pack
+
+These eight work on Claude Code, Codex, Grok, and Cursor (plain `SKILL.md`, copied into each agent’s skills folder). Leaves do not load each other. `/build-feature` is the only composer.
+
+```text
+/build-feature
+  grill-me
+  → design spec (Superpowers path, not committed)
+  → touch-map → reuse-first → lego-plan
+  → implementation plan (lego nodes + DAG, not committed)
+  → parallel same-layer implement
+      (typescript-standards, test-hygiene, reuse-first, docs)
+  → fix-bug if a node is red
+  → optional prove-it
+```
+
+| Skill | Job |
+|---|---|
+| [touch-map](./skills/touch-map) | Map what the change must touch. No code. |
+| [reuse-first](./skills/reuse-first) | Search, import, or extract a helper before writing a new one. |
+| [lego-plan](./skills/lego-plan) | Layered DAG. Plan only. Live board for agents. |
+| [test-hygiene](./skills/test-hygiene) | What and how to test. Tautological tests considered harmful. |
+| [typescript-standards](./skills/typescript-standards) | TypeScript taste for app and library. |
+| [prove-it](./skills/prove-it) | Prove in the browser or a method you pick. Skip means not proved. |
+| [fix-bug](./skills/fix-bug) | Root cause: hypotheses, logs, failing test, then the fix. Optional prove-it. |
+| [build-feature](./skills/build-feature) | Driver. Two approval blocks. Parallel implement. |
+
+A live bug is `/fix-bug`, not `/build-feature`.
+
+---
+
+## Why each one is cool
+
+### [architecture-impact](./skills/architecture-impact)
+**The "so what" engine for engineering leadership.** Most PR descriptions are written by/for the author. This produces a doc you can hand to a PM or eng lead. Forces a TL;DR, before/after diagrams (one diagram = one question), business-impact framing, and an *honest* risk section. Passes the "newspaper test": if someone reads only the title, they understand why it matters.
+
+**How it works:** reads PR diff + description, extracts the actual architectural delta (not just file changes), generates Mermaid diagrams for before/after, then writes the doc with progressive disclosure: TL;DR first, technical detail at the bottom.
+
+### [marketing-brief](./skills/marketing-brief)
+**A brief that a non-marketer can actually produce.** Resolves any input (PR / ref range / path / freeform) into Executive Summary, Key Messages, Target Audience, Positioning, and Call to Action. It's the canonical source of truth that downstream skills (blog, social, newsletter, video) all key off. Write it once, reuse everywhere.
+
+### [changelog](./skills/changelog)
+**Release notes that don't sound like commit messages.** Walks `git log` over a ref range (or a single PR), categorizes Added/Fixed/Changed/Removed, and *rewrites* commit subjects into user-facing language. Optional `gh release create`. Smart enough to take a single `#1234` and append it to an existing CHANGELOG.md version.
+
+### [blog-post](./skills/blog-post)
+**Tone-matched, SEO-aware long-form.** Will detect the repo's existing blog voice (if there are prior posts), nail the headline, structure for skimming, and propose hero/inline image directions. Accepts a marketing brief as input so you skip the "what's this about" round trip.
+
+### [newsletter](./skills/newsletter)
+**Email that respects an inbox.** Subject line + preview text + body, calibrated to user-facing audience (not eng-internal). Chains naturally off a blog post or changelog: it lifts the hook from one and the bullets from the other.
+
+### [social-copy](./skills/social-copy)
+**Platform-native, algorithm-aware.** X gets short hooks + thread structure; LinkedIn gets the long-post format with a proper opening line and line breaks that survive mobile. Each platform has its own ruleset under [`platforms/`](./skills/social-copy/platforms). No "🚀 Excited to announce" energy.
+
+### [video-script](./skills/video-script)
+**Scripts with timing and visual directions.** Not a wall of narration: proper two-column style with on-screen action, B-roll suggestions, pacing per platform (15s reel vs. 90s demo vs. 3min walkthrough), and a hook that earns the next 3 seconds.
+
+### [remotion-video](./skills/remotion-video)
+**An actual rendered `mp4`, via [Remotion](https://www.remotion.dev/).** Resolves a PR into a narrative (hook, code moments, CTA), generates a Remotion project, opens preview, iterates with you, then renders `video.mp4` + `poster.jpg` for X/LinkedIn. Brand auto-detection lives in [`brand-detection.md`](./skills/remotion-video/brand-detection.md); reusable scene patterns under [`patterns/`](./skills/remotion-video/patterns) and [`templates/`](./skills/remotion-video/templates).
+
+### [hyperframes-video](./skills/hyperframes-video)
+**Same shape as `remotion-video`, but on the HTML/GSAP stack.** Uses [HyperFrames](https://hyperframes.dev) for people who'd rather author in HTML/CSS than React. Enforces the canvas-fill rule (no letterboxing across formats), synchronized chapter narration, layout-before-animation discipline, and a brand scan + preview gate before render. Pairs with the `hyperframes` and `hyperframes-cli` skills if you have those installed.
+
+### [marketing-pipeline](./skills/marketing-pipeline)
+**One command, full launch kit.** Pick which skills to run (`brief, blog, social, newsletter, video`) and the order. Each step's output feeds the next, so the brief informs the blog, the blog informs the social posts, the changelog feeds the newsletter, and so on. No re-feeding context yourself.
+
+### [presentation](./skills/presentation)
+**Shared craft, not a command.** Research, interview, storyboard, assertion-evidence, text budget, no fake evidence. `slidedev-presentation` and `threejs-presentation` load it. Do not invoke it alone.
+
+### [slidedev-presentation](./skills/slidedev-presentation)
+**A Slidev deck that was researched, not guessed.** Loads `presentation`, then scaffolds [Slidev](https://sli.dev), writes `slides.md`, verifies every slide in a headless browser, and opens `http://localhost:3030`.
+
+### [threejs-presentation](./skills/threejs-presentation)
+**A unique 3D world per talk.** Loads `presentation`, then stops until you pick a world. Copies a Vite + React Three Fiber skeleton. Content is painted on a hero surface. Punch beats use the room. `npm run dev` plus `npm run build`. No upload.
+
+### [docs](./skills/docs)
+**Docs a human actually wants to read.** Treats "document feature X" as the wrong goal and "help someone do Y with X" as the right one. Finds your docs folder (or asks where it is), reads a few existing pages to learn structure and components, and reuses whatever the site already has (steps, tabs, callouts) for storytelling, so it's tied to no framework. Plans the reader's story first, then **stops**: it shows you the discovered readers and waits, then asks for tone (neighbors are a proposed default, not a silent yes). Only after that does it load `simple-english` and `i-have-adhd` and write the pages. Splits a topic into short linked pages instead of one giant wall. Shows runnable code over prose, and enforces hard bans: no em-dashes, no separator glyphs, no "not X: it's Y" phrasing, and no justifying the shipped API against names or approaches that never shipped. Fires at feature planning and implementation time, not only when asked, because docs ship with the code.
+
+### [pr-description](./skills/pr-description)
+**A PR description written from the diff, then posted.** Runs before `gh pr create` and again after an agent `git push` on an open PR. Opens with 1 to 4 sentences (a bugfix names the bug and the fix). Fills the repo template, then adds Testing (commands, manual steps, how the PR makes review easy), Linked issues, Risk / rollback, and a Public API before/after when published exports changed. A feature cannot post until the branch has a test, a command, or an example. Writes through `simple-english` and `i-have-adhd`. Does not wait for approval. Does not put screenshots on the PR.
+
+### [i-have-adhd](./skills/i-have-adhd)
+**Output an ADHD brain can act on.** Vendored from [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd). First line is the next action, multi-step work is numbered, lists cap at 5, state is restated every turn, wins are visible, no preamble or closer. It does not auto-invoke (`disable-model-invocation: true`). Call `/i-have-adhd` for a session, or let `docs` load it as a writing filter for documentation pages. When `docs` loads it, the rules apply to the pages only.
+
+### [rfc](./skills/rfc)
+**An RFC that survives review, not a doc-shaped placeholder.** An RFC's value is the thinking it forces (honest goals, real alternatives, named risks, a concrete design), so this skill forces that thinking instead of generating an RFC-shaped document with hand-waved sections. It interviews you to surface the parts your ticket and code haven't already answered, and inside a repo it scans the affected subsystem and cites real files. It shows you 2 to 3 concrete API/code approaches and lets you pick: the one you choose becomes the Proposed Design, the ones you reject become the Alternatives Considered section with their code intact, so the alternatives are real instead of strawmen. It self-critiques the draft against a quality rubric before you ever see it, then writes the RFC to a repo-aware path and opens it.
+
+### [to-prd](./skills/to-prd)
+**A PRD from the work you just finished, not a blank spec.** Uses the CopilotKit EEP template (problem and solution from the user's view, a long user-story list, implementation decisions, testing decisions, a manual test plan, out of scope). It reads the session, the repo, the PR, or the ticket first, then grills you on each heading until you agree. Implementation decisions stay at modules and contracts, not file paths. Writes markdown to `docs/prds/` and opens it in Plannotator.
+
+### [accessible-html](./skills/accessible-html)
+**Accessibility as a writing habit, not an audit.** Accessible markup rarely fails from ignorance: it fails because someone knew the rule and skipped it at 5pm. So this skill loads on any UI code (HTML, JSX/TSX, Vue, Svelte, Angular templates, CSS that touches focus, contrast, motion, or hit area) and on element names like button, modal, dropdown, or any click handler, not just on the word "accessibility". It keeps the load-bearing rules in `SKILL.md` where they get read, gates its reference files behind a trigger table, and names the required parts of each widget so a dialog without focus return or a `role="menu"` without arrow keys reads as unfinished. It also handles the ugly real case: adding to a file that is already broken and marked "do not refactor".
+
+**How it works:** the rules come from Playful Programming's Art of Accessibility series, WCAG 2.2 AA, the ARIA Authoring Practices patterns, and the WebAIM Million failure data. It ships `hooks/a11y-guard.js`, a `PreToolUse` hook that reads the markup you are about to write and reports the specific defects (`outline: none` with no replacement, click handlers on divs, positive `tabindex`, missing alt, blocked pinch zoom, single-key shortcuts with no off switch). It never blocks and says nothing when the code is clean. The hook exists because pressure-testing proved a skill cannot enforce itself: one run never loaded the skill and reported that it had.
+
+### [touch-map](./skills/touch-map)
+**The map before the plan.** Agents jump to code, or they remap the whole monorepo. This skill only maps: after you have chosen the change, it keeps a committed domain atlas at `.agent/domain-map.json` (big pieces only), then always remaps the small modules and functions for *this* change. If several ways exist, it picks one with a ladder (reuse, stay in domain, no new layer, then fewest files), not a god-file shortcut. It stops after the six-section finish-line list. `/build-feature` sequences it with the other build skills.
+
+### [reuse-first](./skills/reuse-first)
+**Do not write `isRecord` again.** Before a new helper, search the current package, neighbors, and shared utils by *job*, not by the name the agent wanted. Exact match: import it. Close match: extend it if it is still the same job. Two copies of the same `if` in opened files: extract one function and replace those copies. Domain helpers stay next to the type (`isCancelledOrder` in `order.ts`). Generic helpers go to the repo’s utils home on the first write, so `order.ts` does not grow a 400-line util header. The skill prints one `reuse:` line, acts, and stops. `/build-feature` sequences it with the other build skills.
+
+### [lego-plan](./skills/lego-plan)
+**A pyramid you can fan out.** After the change is chosen, this writes a layered DAG: layer 0 is independent primitives a driver can run in parallel, later layers only depend on earlier ones, the last layer is the feature working. Nodes are subagent-sized (`fetchOrder`, `OrderCard`, `wire the loader`). Inside a node, ordered parts must compile together and stay on one worker. Last part is the node test. Same-file writes cannot share a layer. Each node has a stable id, files, parts, a done-when check, and `status: pending`. Chat always has Mermaid plus a JSON fence (same ids). Agents also get `.agent/scratch/lego-plan.json` so a later driver can flip status and redraw the graph. Plan only. No code, no dispatch.
+
+### [test-hygiene](./skills/test-hygiene)
+**Tautological tests considered harmful.** This is what and how to test, in one skill. A test that still passes after you delete the production logic is not a test. Pin observable behavior (return, throw, UI, real side effect): the critical path plus distinct runtime edges, not type-impossible inputs, not the same helper replayed in five files. No snapshots. Mock I/O only, never your own modules. Then the file craft: helpers over copy-paste, no `as any`, top-level imports, clean the file you touch. Replaces older `test-hygiene` copies in personal skill dirs.
+
+### [typescript-standards](./skills/typescript-standards)
+**Callers write JavaScript. You hide the types.** One taste file for app and library TypeScript. Call sites never pass `<T>`. No overloads. No return-type annotations. No `as any` / `as unknown as X`. `as const` only to keep a literal from becoming `string`. Pipe the same type through callers. Required args if the body cannot run without them. Named conditions, early returns, exhaustive `switch` for 3+ branches. TSDoc on public functions. Infer `map` callbacks. `filter` with `value is X`. Flat spreads and one nullish style. Does not place helpers and does not add `debug` flags.
+
+### [prove-it](./skills/prove-it)
+**Prove it like a person, and only when you ask.** `/prove-it` or “prove the changes.” Not a silent done-gate. UI: click through the app, related routes, empty/error if they exist, both viewports if layout changed. Server/API: the agent asks how (playground, example app, curl, or skip) and waits. Skip means not proved, not “it works.” Optional screenshot report in `.agent/scratch/`. Existing `dev` command only, then it is stopped. No new Playwright or example package unless you said yes.
+
+### [fix-bug](./skills/fix-bug)
+**Logs, then a red test, then the cause.** At least three hypotheses on the hot path, third-party debug if it exists, logs before and after those branches, eliminate, delete the logs, write a failing test, fix the root and the same pattern nearby. Package tests after. Then it asks once to load `prove-it` (skip is the default). Does not copy CopilotKit debug skills.
+
+### [build-feature](./skills/build-feature)
+**The driver for a whole feature.** `/build-feature` or “implement this.” `grill-me` first (skip if the design is already settled). Two waits: Superpowers design spec, then a `writing-plans` file whose tasks are lego nodes plus the DAG. Neither file is committed. Then `touch-map`, `reuse-first`, `lego-plan`. Same-layer nodes run in parallel. Each worker gets `typescript-standards`, `test-hygiene`, `reuse-first`, and `docs` (one persona list, one tone). A red node runs `fix-bug`. The live DAG redraws in chat. At the end it asks once to load `prove-it`. Not for a bug that is already failing.
+
+---
+
+## How they work (under the hood)
+
+Each skill is a single `SKILL.md` file with YAML frontmatter:
+
+```markdown
+---
+name: blog-post
+description: Use when the user wants to write a blog post about a feature, product change, PR, git diff, or any technical topic
+---
+
+# Blog Post Writer
+...
+```
+
+The agent loads the description at session start to decide *when* to invoke the skill, and loads the body on demand when it does. That means:
+
+- **Zero context cost when idle.** Skills don't pollute the context window unless you use them.
+- **Triggered automatically.** "Write a blog post about #1234" triggers `blog-post` without you typing `/blog-post`.
+- **Composable.** Skills can reference other skills and pass artifacts between them.
+
+Skills with extra structure (`hyperframes-video`, `remotion-video`, `social-copy`) ship supporting files alongside `SKILL.md` (patterns, templates, references, hooks) that the skill's body links to.
+
+---
+
+## Install
+
+The repo's canonical layout is `skills/<skill-name>/SKILL.md`. Every supported CLI just needs that folder copied or symlinked into one of its discovery paths. No extra manifest beyond the `SKILL.md` files themselves (Claude Code's plugin manifests live in `.claude-plugin/` and are bundled with the repo).
+
+### Claude Code: plugin marketplace (recommended)
+
+```text
+/plugin marketplace add alemtuzlak/skills
+/plugin install alemtuzlak-skills@alemtuzlak
+```
+
+The repo ships both `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`. `alemtuzlak` is the marketplace name, `alemtuzlak-skills` is the plugin name. Restart Claude Code (or run `/reload-plugins`) after installing.
+
+Plugin-installed skills are invoked as `/alemtuzlak-skills:blog-post`, etc.
+
+Docs: [Discover and install plugins](https://code.claude.com/docs/en/discover-plugins.md), [Create a plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces.md).
+
+### Claude Code: drop-in skills (no plugin)
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+
+# Personal (all projects)
+cp -r /tmp/alem-skills/skills/* ~/.claude/skills/
+
+# Or project-scoped
+mkdir -p .claude/skills && cp -r /tmp/alem-skills/skills/blog-post .claude/skills/
+```
+
+Drop-in skills are invoked as `/blog-post`, `/build-feature`, `/changelog`, etc.
+
+### GitHub Copilot CLI
+
+Discovery paths: `.github/skills/`, `.claude/skills/`, `.agents/skills/` (project), `~/.copilot/skills/`, `~/.agents/skills/` (personal).
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+mkdir -p ~/.agents/skills
+cp -r /tmp/alem-skills/skills/* ~/.agents/skills/
+```
+
+Docs: [Adding agent skills for GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills).
+
+### OpenAI Codex CLI
+
+Discovery paths (in precedence order): `$CWD/.agents/skills`, `$REPO_ROOT/.agents/skills`, `~/.agents/skills`, `/etc/codex/skills`. If your other Codex skills already live in `~/.codex/skills/`, copy there too so the pack sits next to them.
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+mkdir -p ~/.agents/skills ~/.codex/skills
+cp -r /tmp/alem-skills/skills/* ~/.agents/skills/
+cp -r /tmp/alem-skills/skills/* ~/.codex/skills/
+```
+
+Optional per-skill `agents/openai.yaml` files can add Codex-specific UI metadata, invocation policy, and tool dependencies. None are required for the skills to work.
+
+Docs: [Agent Skills for OpenAI Codex](https://developers.openai.com/codex/skills).
+
+### Grok
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+mkdir -p ~/.grok/skills
+cp -r /tmp/alem-skills/skills/* ~/.grok/skills/
+```
+
+### Google Gemini CLI
+
+Easiest, since Gemini has a native install command for git repos:
+
+```bash
+gemini skills install https://github.com/alemtuzlak/skills.git --path skills
+```
+
+Or drop-in (paths: `.gemini/skills/` or `.agents/skills/` for project, `~/.gemini/skills/` or `~/.agents/skills/` for user; the `.agents/` alias takes precedence within each tier).
+
+Docs: [Skills for Gemini CLI](https://geminicli.com/docs/cli/skills/).
+
+### Cursor
+
+Discovery paths: `.agents/skills/`, `.cursor/skills/` (project) and `~/.agents/skills/`, `~/.cursor/skills/` (user). Cursor also reads `.claude/skills/` and `.codex/skills/` for compatibility.
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+mkdir -p ~/.agents/skills
+cp -r /tmp/alem-skills/skills/* ~/.agents/skills/
+```
+
+Docs: [Skills for Cursor](https://cursor.com/docs/skills).
+
+### Once-and-done install for all `.agents/skills/` agents
+
+Codex, Gemini, Copilot CLI, and Cursor all honor `~/.agents/skills/`, so a single copy makes the skills available in **all four**:
+
+```bash
+git clone git@github.com:alemtuzlak/skills.git /tmp/alem-skills
+mkdir -p ~/.agents/skills
+cp -r /tmp/alem-skills/skills/* ~/.agents/skills/
+```
+
+### Other tools
+
+- **Windsurf (Cascade):** uses `.windsurf/skills/<name>/` and `~/.codeium/windsurf/skills/<name>/`. Does **not** read `.agents/skills/`. Manual copy required.
+- **Aider, continue.dev:** no native agent-skills support at this time.
+
+### Claude Agent SDK / custom runner
+
+The `SKILL.md` files are plain markdown with `name` / `description` YAML frontmatter. Load them yourself:
+
+```ts
+import { readFileSync } from "node:fs";
+import matter from "gray-matter";
+
+const skill = matter(readFileSync("skills/blog-post/SKILL.md", "utf8"));
+// skill.data.name, skill.data.description, skill.content
+```
+
+---
+
+## Usage
+
+Once installed, just describe what you want. The agent picks the right skill from the description.
+
+```
+> Write me a launch tweet for #1234
+   → triggers social-copy
+
+> Generate release notes between v1.4.0 and v1.5.0
+   → triggers changelog
+
+> Make a 30-second promo video for the auth refactor PR
+   → triggers remotion-video (or hyperframes-video)
+
+> Full launch content for #1234: brief, blog, tweet, newsletter
+   → triggers marketing-pipeline
+
+> implement the order list
+   → triggers build-feature
+
+> Make a 3D talk about X
+   → triggers threejs-presentation
+
+> Make a Slidev deck about X
+   → triggers slidedev-presentation
+```
+
+Or invoke explicitly:
+
+```
+/marketing-brief #1234
+/blog-post .tmp/marketing-brief.md
+/changelog v1.4.0...v1.5.0
+/marketing-pipeline #1234
+/build-feature
+/fix-bug
+```
+
+---
+
+## Repo layout
+
+```
+.
+├── .claude-plugin/
+│   ├── plugin.json           # Claude Code plugin manifest
+│   └── marketplace.json      # Claude Code marketplace listing
+├── AGENTS.md                 # rules for agents working in this repo
+├── CLAUDE.md                 # pointer to AGENTS.md
+├── skills/
+│   ├── accessible-html/      # multi-file: references/, hooks/ (PreToolUse a11y guard)
+│   ├── architecture-impact/SKILL.md
+│   ├── blog-post/SKILL.md
+│   ├── build-feature/SKILL.md # driver: grill, spec, map, lego DAG, parallel implement
+│   ├── changelog/SKILL.md
+│   ├── docs/SKILL.md
+│   ├── fix-bug/SKILL.md      # root-cause fix: hot-path logs, then failing test
+│   ├── epic-workshop/SKILL.md
+│   ├── i-have-adhd/SKILL.md  # ADHD output style; also a docs writing filter
+│   ├── lego-plan/SKILL.md    # layered DAG implementation plan, plan only
+│   ├── hyperframes-video/    # multi-file: patterns/, templates/, hooks/, references/
+│   ├── marketing-brief/SKILL.md
+│   ├── marketing-pipeline/SKILL.md
+│   ├── newsletter/SKILL.md
+│   ├── prove-it/SKILL.md     # prove UI in the browser, or ask how to prove an API
+│   ├── presentation/         # library: research, interview, craft (not a command)
+│   ├── slidedev-presentation/ # Slidev engine: scaffold, slides.md, screenshot verify
+│   ├── threejs-presentation/ # Three.js engine: world gate, Vite+R3F template, catalog on glass
+│   ├── pr-description/SKILL.md
+│   ├── produce-video/SKILL.md
+│   ├── remotion-video/       # multi-file: patterns/, templates/, hooks/, references/
+│   ├── reuse-first/SKILL.md  # search/import/extract helpers before writing a util
+│   ├── rfc/SKILL.md
+│   ├── to-prd/               # multi-file: assets/prd-template.md (EEP spec)
+│   ├── touch-map/SKILL.md    # domain atlas + per-change files-to-touch map
+│   ├── social-copy/          # multi-file: platforms/
+│   ├── teach-me/             # multi-file: assets/ (HTML mini-course builder)
+│   ├── test-hygiene/SKILL.md # what and how to test; tautological tests considered harmful
+│   ├── transcribe-video/     # multi-file: bundled local Whisper service
+│   ├── typescript-standards/ # TS taste: infer, no overloads, no sloppy casts
+│   ├── video-script/SKILL.md
+│   └── youtube-copy/SKILL.md
+└── README.md
+```
+
+---
+
+## License
+
+MIT. Fork them, edit them, make them yours. If you improve one, PRs welcome.

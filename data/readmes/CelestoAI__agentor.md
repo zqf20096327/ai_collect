@@ -1,0 +1,342 @@
+<p align="center">
+  <picture>
+    <img src="https://raw.githubusercontent.com/CelestoAI/agentor/main/assets/CelestoAI.png" alt="project logo" width="500px"/>
+  </picture>
+</p>
+
+<div align="center">
+  
+[![PyPI version](https://img.shields.io/pypi/v/agentor.svg?color=brightgreen&label=PyPI&style=flat)](https://pypi.org/project/agentor/)
+[![Tests](https://github.com/CelestoAI/agentor/actions/workflows/test.yml/badge.svg)](https://github.com/CelestoAI/agentor/actions/workflows/test.yml)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/agentor)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-yellow?style=flat)](https://opensource.org/licenses/Apache-2.0)
+<a href="https://discord.gg/KNb5UkrAmm">
+    <img src="https://img.shields.io/static/v1?label=Chat%20on&message=Discord&color=blue&logo=Discord&style=flat-square" alt="Discord">
+</a>
+
+</div>
+
+<p align="center">
+  Fastest way to build and deploy long-running AI agents—with durability, observability, and security.
+</p>
+<p align="center">
+  <a href="https://docs.celesto.ai">Docs</a> |
+  <a href="https://github.com/CelestoAI/agentor/tree/main/examples">Examples</a>
+</p>
+
+
+## Features
+
+|        Feature            |            Description                   |         Docs
+|---------------------------|------------------------------------------|-----------------------|
+|   🚀 MCP & tool security  | The only **full FastAPI compatible** MCP Server with decorator API | [Link](https://docs.celesto.ai/agentor/tools/LiteMCP)
+|   🦾 Agent-to-agent       | Multi-agent communication                | [Link](https://docs.celesto.ai/agentor/agent-to-agent)
+|   📊 Observability        | Agent tracing and monitoring             | [Link](https://celesto.ai)
+|   💾 Durable runs         | Persist, resume, and fork agent runs     | [Durable runs docs](https://docs.celesto.ai/agentor)
+|   🔍 Tool Search API      | Reduced tool context bloat               | [Link](https://docs.celesto.ai/agentor/tools/tool-search)
+
+
+## 🚅 Quick Start
+
+### Installation
+
+The recommended method of installing `agentor` is with pip from PyPI.
+
+```bash
+pip install agentor
+```
+
+This installs the v0.1.0 line, built on Agentor's own agent engine — durable,
+forkable runs included.
+
+Tools with heavy or vendor-specific dependencies ship as extras, so the base
+install stays small:
+
+```bash
+pip install "agentor[google]"   # GmailTool, CalendarTool
+pip install "agentor[all]"      # every optional tool
+```
+
+Available extras: `google`, `exa`, `git`, `github`, `slack`, `postgres`, `scrapegraph`, `all`.
+
+<details>
+  <summary>More ways...</summary>
+
+You can also install the latest bleeding edge version (could be unstable) of `agentor`, should you feel motivated enough, as follows:
+
+```bash
+pip install git+https://github.com/celestoai/agentor@main
+```
+
+</details>
+
+## Build and Serve an Agent
+
+Build an Agent, connect external tools or MCP Server and serve as an API in just a few lines of code:
+
+```python
+from agentor.tools import GetWeatherTool
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Agent",
+    model="gpt-5-mini",  # Use any LLM provider - gemini/gemini-2.5-pro or anthropic/claude-3.5
+    tools=[GetWeatherTool()]
+)
+result = agent.run("What is the weather in London?")  # Run the Agent
+print(result)
+
+# Serve Agent with a single line of code
+agent.serve()
+```
+
+### Any OpenAI-compatible provider
+
+Point `base_url` at any provider that speaks OpenAI's `/chat/completions` — OpenRouter,
+Groq, Together, Fireworks, DeepSeek, vLLM, Ollama, or Anthropic's and Gemini's compatible
+endpoints — with no extra dependency:
+
+```python
+agent = Agentor(
+    name="Assistant",
+    model="openrouter/auto",
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+)
+```
+
+Run the following command to query the Agent server:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/chat' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "input": "What is the weather in London?"
+}'
+```
+
+`agent.serve()` gives you an ordinary ASGI app, so host it wherever you already
+run Python services.
+
+## Durable Runs
+
+Give the agent a store and every run becomes an append-only event log that
+survives process death. Resume an interrupted run, or fork any persisted run —
+even a completed one — into a new, independent run that keeps the full trace,
+the model's reasoning included when the provider returns it:
+
+```python
+from agentor import Agentor
+from agentor.engine.store import FileStore
+
+agent = Agentor(name="Assistant", model="gpt-5-mini", store=FileStore("runs"))
+
+result = agent.run("Draft a launch plan")   # persisted under result.run_id
+# Interrupted mid-run? agent.resume(result.run_id) picks up where it left off.
+
+fork = agent.fork(result.run_id, "Make it punchier")  # fork.run_id is a new run; parent untouched
+```
+
+`fork` and `resume` have async twins, `afork` and `aresume`.
+
+## Tracing
+
+Tracing is **off unless you ask for it**. A trace carries prompts, tool arguments, tool
+results, and the model's reasoning when a provider returns it — so nothing leaves your
+process by default.
+
+Turn it on for an agent:
+
+```python
+agent = Agentor(name="Assistant", enable_tracing=True)   # needs CELESTO_API_KEY
+```
+
+Or decide per run:
+
+```python
+agent.run("public question")
+agent.run("contains customer data", tracing=False)  # this run sends nothing
+agent.run("debug this", tracing=True)               # trace just this one
+```
+
+`tracing=` is accepted by `run`, `arun`, `chat` and `stream_chat`. View traces at
+[celesto.ai/observe](https://celesto.ai/observe).
+
+## Agent Skills
+
+Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks.
+
+Agent Skills help agents pull just the right context from simple Markdown files. The agent first sees only a skill’s name and short description. When the task matches, it loads the rest of `SKILL.md`, follows the steps, and can call a shell environment to run the commands the skill points to.
+
+- **Starts light**: discover skills by name/description only
+- **Loads on demand**: pull full instructions from `SKILL.md` when relevant
+- **Executes safely**: run skill-driven commands in an isolated shell
+
+Skill layout example:
+
+```
+example-skill/
+├── SKILL.md        # required instructions + metadata
+├── scripts/        # optional helpers the agent can call
+├── assets/         # optional templates/resources
+└── references/     # optional docs or checklists
+```
+
+Using a skill to create a GIF:
+
+```python
+from agentor.tools import ShellTool
+from agentor import Agentor
+
+agent = Agentor(
+    name="Assistant",
+    model="gemini/gemini-3-flash-preview",
+    instructions="Your job is to create GIFs. Lean on the shell tool and any available skills.",
+    skills=[".skills/slack-gif-creator"],
+    tools=[ShellTool()],
+)
+
+async for chunk in await agent.chat("produce a cat gif", stream=True):
+    print(chunk)
+```
+
+## Create an Agent from Markdown
+
+Bootstrap an Agent directly from a markdown file with metadata for name, tools, model, and temperature:
+
+```markdown
+---
+name: WeatherBot
+tools: [get_weather]
+model: gpt-4o-mini
+temperature: 0.3
+---
+You are a concise weather assistant.
+```
+
+Load it with:
+
+```python
+from agentor import Agentor
+
+agent = Agentor.from_md("agent.md")
+result = agent.run("Weather in Paris?")
+```
+
+## Build a custom MCP Server with LiteMCP
+
+Agentor enables you to build a custom [MCP Server](https://modelcontextprotocol.io) using LiteMCP. You can run it inside a FastAPI application or as a standalone MCP server.
+
+Agentor uses the official MCP Python SDK 2.3 or newer within the 2.x line.
+FastMCP is not an Agentor dependency; the LiteMCP decorator API is unchanged.
+
+```python
+from agentor.mcp import LiteMCP, get_token
+
+mcp = LiteMCP(name="my-server", version="1.0.0")
+
+@mcp.tool(description="Get weather for a given location")
+def get_weather(location: str) -> str:
+
+    # *********** Control authentication ***********
+    token = get_token()
+    if token != "SOME_SECRET":
+        return "Not authorized"
+
+    return f"Weather in {location}: Sunny, 72°F"
+
+mcp.serve()
+```
+
+### LiteMCP vs FastMCP
+
+**Key Difference:** LiteMCP is a native ASGI app that integrates directly with FastAPI using standard patterns. FastMCP requires mounting as a sub-application, diverging from standard FastAPI primitives.
+
+| Feature | LiteMCP | FastMCP |
+|---------|---------|---------|
+| Integration | Native ASGI | Requires mounting |
+| FastAPI Patterns | ✅ Standard | ⚠️ Diverges |
+| Built-in CORS | ✅ | ❌ |
+| Custom Methods | ✅ Full | ⚠️ Limited |
+| With Existing Backend | ✅ Easy | ⚠️ Complex |
+
+📖 [Learn more](https://docs.celesto.ai/agentor/tools/LiteMCP)
+
+## Connect an Agent to an MCP Server
+
+Use `MCPServer` for a remote server that supports Streamable HTTP. Agentor
+discovers its tools, including paginated results, and closes the connection
+after the run:
+
+```python
+from agentor import Agentor
+from agentor.mcp import MCPServer
+
+agent = Agentor(
+    name="Assistant",
+    model="gpt-5-mini",
+    tools=[MCPServer(url="https://your-server.example/mcp")],
+)
+```
+
+Hosts that supply their own HTTP transport can pass `http_client_factory` to
+`MCPServer`. The factory receives `headers` and `timeout` keyword arguments and
+must return a new `httpx2.AsyncClient`. Agentor owns that client's lifecycle,
+closing it when connection setup fails or the MCP connection closes.
+
+
+### Search the web through MCP
+
+The [Parallel Search example](examples/parallel_search.md) connects an agent to
+web search and page extraction without a Parallel API key. It also includes a
+tools-only mode that runs without model credentials:
+
+```bash
+uv run python examples/parallel_search.py --tools-only "Agentor durable agent runs"
+```
+
+## Agent-to-Agent (A2A) Protocol
+
+The A2A Protocol defines standard specifications for agent communication and message formatting, enabling seamless interoperability between different AI agents.
+
+**Key Features:**
+- **Standard Communication**: JSON-RPC based messaging with support for both streaming and non-streaming responses
+- **Agent Discovery**: Automatic agent card generation at `/.well-known/agent-card.json` describing agent capabilities, skills, and endpoints
+- **Rich Interactions**: Built-in support for tasks, status updates, and artifact sharing between agents
+
+
+Agentor makes it easy to serve any agent as an A2A protocol.
+
+```python
+from agentor import Agentor
+
+agent = Agentor(
+    name="Weather Agent",
+    model="gpt-5-mini",
+    tools=["get_weather"],
+)
+
+# Serve agent with A2A protocol enabled automatically
+agent.serve(port=8000)
+# Agent card available at: http://localhost:8000/.well-known/agent-card.json
+```
+
+Any agent served with `agent.serve()` automatically becomes A2A-compatible with standardized endpoints for message sending, streaming, and task management.
+
+📖 [Learn more](https://docs.celesto.ai/agentor/agent-to-agent)
+
+## 🤝 Contributing
+
+We'd love your help making Agentor even better! Please read our [Contributing Guidelines](.github/CONTRIBUTING.md) and [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+
+## 📄 License
+
+Apache 2.0 License - see [LICENSE](LICENSE) for details.
+
+
+---
+<div align="center">
+Built with 🧡 in London by <a href="https://celesto.ai">Celesto AI</a>
+</div>

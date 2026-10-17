@@ -1,0 +1,126 @@
+# Model Explorer ONNX Adapter
+
+[![PyPI - Version](https://img.shields.io/pypi/v/model-explorer-onnx.svg)](https://pypi.org/project/model-explorer-onnx) [![PyPI - Downloads](https://img.shields.io/pypi/dm/model-explorer-onnx)](https://pypi.org/project/model-explorer-onnx) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+ONNX Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edge/model-explorer)
+
+## 🌟 Use it on HuggingFace Spaces
+
+https://huggingface.co/spaces/justinchuby/model-explorer
+
+## Installation
+
+```bash
+pip install --upgrade model-explorer-onnx
+```
+
+## Usage
+
+```bash
+model-explorer --extensions=model_explorer_onnx
+
+# Or as a shortcut
+onnxvis
+
+# Supply model path
+onnxvis model.onnx
+```
+
+> [!NOTE]
+> Model Explorer only supports WSL on Windows.
+
+Read more on the [Model Explorer User Guide](https://github.com/google-ai-edge/model-explorer/wiki/2.-User-Guide).
+
+## Static web app (Pyodide + pure JS frontend)
+
+This repository also includes a static web app under [`web/`](./web), which runs
+ONNX conversion fully in-browser with Pyodide and renders with
+`ai-edge-model-explorer-visualizer`.
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Build for static hosting:
+
+```bash
+npm run build
+```
+
+### Install as a desktop app (PWA)
+
+The `web/` app is configured as a Progressive Web App. After deployment (or when
+running locally), open it in a Chromium-based browser and use "Install app" in
+the address bar/menu to install it like a desktop application.
+
+GitHub Pages deployment is configured in
+[`.github/workflows/pages.yaml`](./.github/workflows/pages.yaml).
+
+### Keeping `web/src/python/convert.py` in sync with `src/`
+
+The web converter is web-adapted, but it is tracked against
+`src/model_explorer_onnx/main.py` and `src/model_explorer_onnx/_passes.py` with
+a sync stamp. `web` scripts (`dev`/`build`) run a sync check automatically.
+
+If you intentionally update `web/src/python/convert.py` after source changes:
+
+```bash
+python tools/web/sync_web_converter.py --mode update
+```
+
+## Notes on representation
+
+Graph input/output/initializers in ONNX are values (edges), not nodes. A node is displayed here for visualization. Graph inputs that are initialized by initializers are displayed as `InitializedInput`, and are displayed closer to nodes that use them.
+
+Nodes that implicitly capture values for their sub-graphs (Loop, Scan, etc.) will have an additional `(Capture)` node as input that connects all of the implicitly captured values with itself. As a special case, the subgraphs of an `If` node are flattened. The outputs of the two branches of an `If` node will be gathered by a `(Phi)` node to show connectivity. This modification in the graph ensures that all value dependencies are shown in the visualization.
+
+## Color Themes
+
+Get node color themes [here](./themes)
+
+## Visualizing PyTorch ONNX exporter (`dynamo=True`) accuracy results
+
+> [!NOTE]
+> `verify_onnx_program` requires PyTorch 2.7 or newer
+
+```py
+import torch
+from torch.onnx.verification import verify_onnx_program
+
+from model_explorer_onnx.torch_utils import save_node_data_from_verification_info
+
+# Export the and save model
+onnx_program = torch.onnx.export(model, args, dynamo=True)
+onnx_program.save("model.onnx")
+
+verification_infos = verify_onnx_program(onnx_program, compare_intermediates=True)
+
+# Produce node data for Model Explorer for visualization
+save_node_data_from_verification_info(
+    verification_infos, onnx_program.model, model_name="model"
+)
+```
+
+You can then use Model Explorer to visualize the results by loading the generated node data files:
+
+```sh
+onnxvis model.onnx --node_data_paths=model_max_abs_diff.json,model_max_rel_diff.json
+```
+
+![node_data](./screenshots/node_data.png)
+
+## Screenshots
+
+<img width="1294" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/ed7e1eee-a693-48bd-811d-b384f784ef9b">
+
+<img width="1291" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/b266d8e9-9760-4860-a0a7-eda1de31e1a1">
+
+<img width="1285" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/b772aa13-4cc3-4034-a729-f134fa3cf818">
+
+<img width="1292" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/dabbad76-0ec7-43b1-b253-13b81e7dc658">
+
+<img width="1293" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/fbf2fa05-bd29-4938-93d1-709690d9f9c6">
+
+<img width="1301" alt="image" src="https://github.com/justinchuby/model-explorer-onnx/assets/11205048/a68f7ecd-1fa1-4eac-9e1f-8e9a5bbf9fe3">

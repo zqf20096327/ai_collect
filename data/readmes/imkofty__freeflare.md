@@ -1,0 +1,118 @@
+# FreeFlare — 100% free AI chatbot on Cloudflare
+
+![FreeFlare banner](assets/banner.png)
+
+🇬🇧 **English** · [🇮🇩 Indonesia](README.id.md)
+
+[![Stars](https://img.shields.io/github/stars/imkofty/freeflare?style=for-the-badge&logo=github&color=20808D)](https://github.com/imkofty/freeflare/stargazers)
+[![Forks](https://img.shields.io/github/forks/imkofty/freeflare?style=for-the-badge&logo=github&color=4DD0E1)](https://github.com/imkofty/freeflare/network/members)
+[![Issues](https://img.shields.io/github/issues/imkofty/freeflare?style=for-the-badge&logo=github&color=FFB454)](https://github.com/imkofty/freeflare/issues)
+[![License: MIT](https://img.shields.io/github/license/imkofty/freeflare?style=for-the-badge&color=3FB950)](LICENSE)
+
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Dependencies](https://img.shields.io/badge/dependencies-0-20808D?style=for-the-badge)]()
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F68204?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![Workers AI](https://img.shields.io/badge/AI-Workers_AI-8A2BE2?style=for-the-badge)]()
+
+A ChatGPT-style web app that runs **entirely on Cloudflare's free tier**.
+No AI API key. No credit card. One command to deploy.
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/imkofty/freeflare)
+
+> **No clone, no terminal needed.** Click the button above, log in to
+> Cloudflare, pick your account — your chatbot goes live. (Deploy button
+> skips D1, so it runs in quota-lite mode: burst limiter only.)
+>
+> Fork the repo first if you want your own copy to customize.
+
+## Deploy (pick one)
+
+**Option A — one-command script (recommended, full D1 quotas):**
+```bash
+./deploy.sh
+```
+Two modes, chosen interactively at runtime:
+- **Laptop (has a browser):** OAuth login via browser — **no API token,
+  no account ID needed.**
+- **VPS/headless:** `export CLOUDFLARE_API_TOKEN=xxxx && ./deploy.sh`
+  (account ID auto-detected when the token covers exactly one account).
+
+The script creates a D1 database for daily quotas, then deploys. Done.
+
+**Option B — the Deploy button above:** click → log in → pick an account → done.
+No D1 (runs in quota-lite mode: burst limiter only), but zero manual steps.
+
+## Features
+
+- **Multi-model picker + automatic fallback** — 7 free Workers AI models
+  (Llama 3.1 8B, Llama 3.2 3B, Qwen3 30B, GLM 4.7 Flash, Llama 4 Scout,
+  GPT-OSS 20B, Granite 4 Micro). If the primary model fails, it switches
+  by itself.
+- **SSE streaming** — answers flow token by token.
+- **Markdown + code blocks + copy button**, mobile-first dark UI.
+- **Bilingual EN/ID** — toggle in the sidebar, auto-detects browser language.
+- **History in localStorage** — no login, no user database.
+- **One-click Markdown export** of any chat.
+- **Per-deployment system prompt** — change `SYSTEM_PROMPT` in
+  `wrangler.toml`, no code touched (e.g. shop assistant, tutor, …).
+- **Layered anti-abuse**: burst limiter (Cache API, free) + daily per-IP
+  quota + global circuit breaker (D1) + optional Turnstile +
+  **Clef AI pre-filter** (classifies jailbreak/spam in ~40ms before any
+  LLM neuron is spent; fail-open).
+- **Honest usage meter** — a clearly-labelled estimate, not official
+  Cloudflare numbers. See [docs/LIMITS.md](docs/LIMITS.md).
+
+### Why the Clef AI filter?
+
+**Before:** FreeFlare's guard could only *count* — 60 messages/day/IP,
+anything more got rejected. But it was blind to content: 60 jailbreak prompts
+would all get processed by the LLM → 10k daily neurons burned for nothing.
+
+**After (Clef):** The guard can now *read intent*. Every message is AI-checked
+first (~40ms): "is this jailbreak/spam?" If yes → rejected at the door (403),
+the LLM is never called, neurons stay safe. If the filter itself is down →
+chat keeps working normally (fail-open).
+
+In short: before, attackers were merely counted. Now they're stopped at the door.
+
+## Configuration (wrangler.toml)
+
+| Var | Default | Meaning |
+|---|---|---|
+| `SYSTEM_PROMPT` | helpful assistant | Bot personality |
+| `DEFAULT_MODEL` | Llama 3.1 8B | Starting model |
+| `MAX_TOKENS` | 600 | Max answer length |
+| `MAX_TURNS` | 20 | History turns sent to the model |
+| `DAILY_PER_IP` | 60 | Messages/day per IP |
+| `GLOBAL_DAILY_CAP` | 700 | Messages/day across the deployment |
+| `TURNSTILE_SITE_KEY` | — | Optional, see below |
+| `CLEF_ABUSE_FILTER` | `on` | AI pre-filter (`@cf/cloudflare/clef-flash`): blocks jailbreak/spam before LLM spend. Fail-open — if the model is unavailable the chat still works. Set `off` to disable. |
+
+**Turnstile** (optional): create a widget in the Cloudflare dashboard
+(Turnstile → Add site), set `TURNSTILE_SITE_KEY`, then
+`wrangler secret put TURNSTILE_SECRET`. Without it the app still runs
+in quota-only mode. The challenge appears at most once per 24h
+(HMAC session, IP-bound) — normal users almost never see a captcha.
+
+## Structure
+
+```
+src/worker.js      API + quotas + fallback + Turnstile + Clef pre-filter
+public/            vanilla UI (no build step)
+schema.sql         D1 quota tables
+deploy.sh          one-click deploy
+docs/LIMITS.md     honest limits & capacity docs
+```
+
+## Limits you should know
+
+- 10,000 neurons/day/account → ~800 messages/day on the default model.
+  Details: [docs/LIMITS.md](docs/LIMITS.md).
+- Each deployment uses **its own** account quota — this template rides on
+  nobody's quota.
+- You are responsible for your own deployment's usage
+  (read Cloudflare's Acceptable Use).
+
+## License
+
+MIT.

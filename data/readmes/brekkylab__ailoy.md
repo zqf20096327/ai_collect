@@ -1,0 +1,280 @@
+<p align="center">
+  <picture>
+    <img alt="Ailoy" src="https://brekkylab.github.io/ailoy/img/ailoy-logo-letter.png" width="352" style="max-width: 50%;">
+  </picture>
+</p>
+
+<h3 align="center">AI agent builder with a VM at its heart.</h3>
+
+<p align="center">
+  <img src="https://cdn.simpleicons.org/rust/000000/ffffff" width="16"/> <a href="https://crates.io/crates/ailoy"><img src="https://img.shields.io/crates/v/ailoy?label=ailoy&color=dea584" alt="crates.io"></a>
+  <img src="https://cdn.simpleicons.org/python" width="16"/> <a href="https://pypi.org/project/ailoy-py/"><img src="https://img.shields.io/pypi/v/ailoy-py?color=blue&label=ailoy-py" alt="PyPI"></a>
+  <img src="https://cdn.simpleicons.org/nodedotjs" width="16"/> <a href="https://www.npmjs.com/package/@brekkylab/ailoy"><img src="https://img.shields.io/npm/v/@brekkylab/ailoy?label=@brekkylab/ailoy&color=339933" alt="npm node"></a>
+</p>
+
+</p>
+<p align="center">
+  <a href="https://brekkylab.github.io/ailoy/"><img src="https://img.shields.io/badge/docs-eng-5a9cae" alt="Documentation"></a>
+  <!-- <a href="https://docs.rs/ailoy"><img src="https://img.shields.io/docsrs/ailoy?label=docs.rs" alt="docs.rs"></a> -->
+  <a href="https://discord.gg/27rx3EJy3P"><img src="https://img.shields.io/badge/Discord-7289DA?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://x.com/brekkylab"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="X"></a>
+</p>
+
+<br>
+
+Ailoy is a library for building any kind of AI agents right in your own code.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/images/ailoy-cad.gif" alt="CAD modeling"><br><sub>CAD modeling</sub></td>
+    <td align="center"><img src="docs/images/ailoy-sam3-video.gif" alt="Image editing"><br><sub>Image editing</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/images/ailoy-openttd.gif" alt="Gameplay"><br><sub>Gameplay</sub></td>
+    <td align="center"><img src="docs/images/ailoy-laya.gif" alt="Laya(JEV)"><br><sub>Laya(JEV)</sub></td>
+  </tr>
+</table>
+
+It supports <img src="https://cdn.simpleicons.org/python" width="16"/> Python, <img src="https://cdn.simpleicons.org/javascript" width="16"/> JavaScript (<img src="https://cdn.simpleicons.org/typescript" width="16"/> TypeScript), and <img src="https://cdn.simpleicons.org/rust/000000/ffffff" width="16"/> Rust APIs, and works on <img src="https://cdn.simpleicons.org/linux/000000/ffffff" width="16"/> Linux, <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows11/windows11-original.svg" width="16"/> Windows, and <img src="https://cdn.simpleicons.org/apple/000000/ffffff" width="16"/> macOS.
+
+> [!WARNING]
+> Ailoy is under active development, and its API may change between versions.
+
+## Requirements
+
+No system dependencies are required, but your agent's model needs a way to run: by default its provider's CLI (Claude Code, Codex or Gemini CLI), or its API with a key.
+
+Mounting host folders into the console (`virtx`'s virtual filesystem) needs FUSE: install FUSE-T on macOS or Dokany on Windows. See the [`virtx` documentation](https://github.com/brekkylab/virtx) for details.
+
+On Windows, the console's micro-VM runs on the *Windows Hypervisor Platform*, which is off by default.
+Turn the optional feature on from an administrator PowerShell and restart, with virtualization enabled in the firmware:
+
+```powershell
+Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform
+```
+
+## Quickstart
+
+By default, Claude, GPT and Gemini run through their CLIs, so install and log in to the one for your model: [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (`claude`), [Codex](https://github.com/openai/codex) (`codex`) or [Gemini CLI](https://github.com/google-gemini/gemini-cli) (`gemini`).
+
+To call the provider's API instead, set its key and switch the org to the `api` backend before building the agent, e.g. `ailoy.set_lang_model_provider("anthropic", "api")` in Python (`setLangModelProvider` in Node.js, `ailoy::model::set_lang_model_provider` in Rust):
+
+```sh
+export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY, GEMINI_API_KEY
+```
+
+Amazon Bedrock, OpenRouter and vLLM are backends too; see the [model providers guide](./docs/guide/model-providers.md).
+
+Then build your agent with this simple API in your preferred language:
+
+<details>
+<summary><b>Python</b></summary>
+
+```sh
+pip install ailoy-py
+```
+
+```python
+import asyncio
+
+from ailoy import AgentBuilder
+from virtx import ConsoleClient, Recipe
+
+
+async def main() -> None:
+    console = await (
+        ConsoleClient.builder()
+        .image(Recipe("python:3.12-slim-trixie").step("pip install matplotlib"))
+        .mount("./artifacts", "/artifacts")
+        .network(True)
+        .build()
+    )
+
+    agent = await (
+        # For openai, use "openai/gpt-5.6-luna"
+        AgentBuilder("anthropic/claude-haiku-4-5")
+        .instruction("Write what you are asked for into /artifacts.")
+        .system_tools()
+        .console(console)
+        .build()
+    )
+
+    async for output in agent.run("Create a bar chart comparing the populations of European countries and save it to /artifacts/population.png."):
+        for part in output["message"]["contents"]:
+            if part["type"] == "text":
+                print(part["text"])
+
+asyncio.run(main())
+```
+
+`agent.run` yields one complete message for each step of the tool loop, and `agent.run_stream` streams each message token by token as the model writes it.
+
+</details>
+
+<details>
+<summary><b>Node.js</b></summary>
+
+```sh
+npm install @brekkylab/ailoy @brekkylab/virtx
+```
+
+```js
+const { AgentBuilder } = require('@brekkylab/ailoy')
+const { ConsoleClient, Recipe } = require('@brekkylab/virtx')
+
+const console_ = await ConsoleClient.builder()
+  .image(new Recipe('python:3.12-slim-trixie').step('pip install matplotlib'))
+  .mount('./artifacts', '/artifacts')
+  .network(true)
+  .build()
+// For openai, use "openai/gpt-5.6-luna"
+const agent = await new AgentBuilder('anthropic/claude-haiku-4-5')
+  .instruction('Write what you are asked for into /artifacts.')
+  .systemTools()
+  .console(console_)
+  .build()
+
+try {
+  for await (const { message } of agent.run('Create a bar chart comparing the populations of European countries and save it to /artifacts/population.png.')) {
+    for (const part of message.contents) {
+      if (part.type === 'text') console.log(part.text)
+    }
+  }
+} finally {
+  await agent.close()
+}
+```
+
+`agent.run` yields one complete message for each step of the tool loop, and `agent.runStream` streams each message token by token as the model writes it.
+
+</details>
+
+<details>
+<summary><b>Rust</b></summary>
+
+```toml
+[dependencies]
+ailoy = "0.3"
+virtx = "0.1"
+```
+
+```rust
+use ailoy::{
+    agent::AgentBuilder,
+    console::ConsoleClient,
+    message::{Message, Part, Role},
+};
+use virtx::image::Recipe;
+use futures::StreamExt as _;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let console = ConsoleClient::builder()
+        .image(Recipe::new("python:3.12-slim-trixie").step("pip install matplotlib"))
+        .mount(std::path::absolute("./artifacts")?, "/artifacts")
+        .network(true)
+        .build()
+        .await?;
+
+    // For openai, use "openai/gpt-5.6-luna"
+    let mut agent = AgentBuilder::new("anthropic/claude-haiku-4-5")
+        .instruction("Write what you are asked for into /artifacts.")
+        .system_tools()
+        .console(console)
+        .build()
+        .await?;
+
+    let query = Message::new(Role::User).with_contents([Part::text("Create a bar chart comparing the populations of European countries and save it to /artifacts/population.png.")]);
+    let mut stream = agent.run(query);
+    while let Some(output) = stream.next().await {
+        let message = output?.message;
+        if message.role == Role::Assistant {
+            for text in message.contents.iter().filter_map(Part::as_text) {
+                println!("{text}");
+            }
+        }
+    }
+    Ok(())
+}
+```
+
+`agent.run` yields one complete message for each step of the tool loop, and `agent.run_stream` streams each message token by token as the model writes it.
+
+</details>
+
+
+...Or skip the reading: point your coding agent (Claude Code, Codex, Cursor, ...) at this README and tell it what agent you want to build. This repo is its own plugin marketplace, so the [agent skill](skills/ailoy/SKILL.md) installs with no clone first:
+
+```bash
+claude plugin marketplace add brekkylab/ailoy && claude plugin install ailoy@brekkylab
+codex plugin marketplace add brekkylab/ailoy && codex plugin add ailoy@brekkylab
+```
+
+## What can an agent do?
+
+> You'll need a GPU (any GPU that supports Vulkan, or Metal on Macs) for the examples that run ML models.
+
+| Example | Description |
+| --- | --- |
+| [hello](./examples/hello) | One turn with no tools and no console |
+| [cad](./examples/cad) | Writes CadQuery, renders the model from four sides, looks at the renders and iterates |
+| [offshore_leaks](./examples/offshore_leaks) | Analyses the ICIJ Offshore Leaks database with SQL and Python that the agent writes itself |
+| [retail_bench](./examples/retail_bench) | Runs a supermarket simulator, one day per turn |
+| [gameplay](./examples/gameplay) | Plays OpenTTD (Transport Tycoon Deluxe) while you watch over VNC |
+| [sam3](./examples/sam3) | Segments images and videos with SAM3 on the guest GPU (ncnn + Vulkan) |
+| [tts](./examples/tts) | Speaks text in a voice described in words, using Qwen3-TTS |
+| [laya](./examples/laya) | Answers typed decision questions with a local model on the GPU |
+
+Each example lives in `examples/<name>`, with one folder per language (`rust`, `python`, `node`) and, where the three share files (skills, prompts, model preparation scripts), a `shared` folder.
+
+Rust:
+
+```sh
+cargo run --example <name>
+```
+
+Python:
+
+```sh
+cd examples/<name>/python
+uv run main.py
+```
+
+Node:
+
+```sh
+cd examples/<name>/node
+npm install
+npm start
+```
+
+## How It Works
+
+Ailoy give the agent **a computer of its own**.
+
+This lets you build agents that do more than call predefined tools: they can install and use software, create their own scripts, and operate in a general-purpose computing environment—without touching the host system beyond what you explicitly expose.
+
+To make this possible, Ailoy uses krun-based virtualization to **give each agent a virtual machine of its own**, with no separate VM daemon to install.
+
+The virtualization used in Ailoy also **supports the GPU**, so an agent can run ML models, or even games, inside its VM.
+
+See [virtx](https://github.com/brekkylab/virtx) for more details.
+
+## Building from source
+
+```sh
+git clone https://github.com/brekkylab/ailoy
+cd ailoy
+cargo build
+```
+
+For the bindings:
+
+```sh
+cd bindings/python && uv run maturin develop  # Python
+cd bindings/node && npm install && npm run build  # Node.js
+```
+
+## License
+
+Apache-2.0. See [LICENSE.md](./LICENSE.md).

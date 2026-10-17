@@ -1,0 +1,200 @@
+# vllm-xpu-kernels
+
+A [vLLM](https://github.com/vllm-project/vllm) component that provides optimized custom kernels for Intel GPUs (XPU) to accelerate LLM inference.
+
+## Table of Contents
+
+- [About](#about)
+- [Supported Kernels](#supported-kernels)
+- [Requirements](#requirements)
+- [Getting Started](#getting-started)
+  - [How It Works](#how-it-works)
+  - [Installation](#installation)
+  - [Build from Source](#build-from-source)
+  - [Build Options](#build-options)
+  - [Using with vLLM](#using-with-vllm)
+  - [Kernel Configuration](#kernel-configuration)
+- [Testing](#testing)
+- [Benchmarks](#benchmarks)
+- [License](#license)
+
+---
+
+## About
+
+vLLM defines and implements many custom Torch ops and kernels. This repository provides custom implementations for the Intel XPU (GPU) backend, enabling high-throughput LLM inference on Intel hardware.
+
+Kernels are written in SYCL/DPC++ and leverage [oneDNN](https://github.com/oneapi-src/oneDNN) for deep learning primitives. The library follows the PyTorch custom op registration and dispatch pattern — importing it at startup registers all ops for seamless use within vLLM.
+
+## Supported Kernels
+
+| Category | Operations |
+|---|---|
+| **Normalization** | RMS norm, fused add-RMS norm, layer norm |
+| **Activation** | SiLU-and-mul, mul-and-SiLU, GeLU (fast/new/quick/tanh), SwigluOAI, SituGLU |
+| **Attention** | Flash attention (variable-length), GDN attention, XE2 attention variants |
+| **Positional Encoding** | Rotary embedding (NeoX and GPT-J styles), DeepSeek scaling RoPE |
+| **Mixture of Experts** | TopK scoring (softmax/sigmoid), grouped TopK, fused grouped TopK; MoE align sum, MoE gather, expert remapping |
+| **LoRA** | LoRA operator support |
+| **Quantization** | FP8, MxFP4 quantization and GEMM |
+| **GEMM** | Grouped GEMM |
+| **Misc** | TopK per row, memory utilities |
+
+## Requirements
+
+- **Python**: 3.12
+- **PyTorch**: 2.14.0+xpu
+- **oneAPI**: 2026.1 ([Base Toolkit download](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html))
+- **CMake**: ≥ 3.26
+- **Ninja** build system
+
+## Getting Started
+
+### How It Works
+
+vLLM calls `import vllm_xpu_kernels._C` at startup, which registers all custom ops into the PyTorch dispatcher. From that point on, XPU ops are dispatched automatically whenever vLLM runs on Intel GPU hardware — no additional code changes are required in vLLM itself.
+
+### Installation
+
+With a compatible PyTorch XPU installation already available, install the published package from PyPI into your active environment:
+
+```bash
+pip install --upgrade vllm-xpu-kernels
+```
+
+To pin a specific release, for example:
+
+```bash
+pip install "vllm-xpu-kernels==0.1.15.4"
+```
+
+### Build from Source
+
+**1. Clone the repository**
+
+Run these commands on the host before building the Docker image or setting up a bare-metal build:
+
+```bash
+git clone https://github.com/vllm-project/vllm-xpu-kernels.git
+cd vllm-xpu-kernels
+```
+
+**2. Prepare oneAPI**
+
+- Option 1: Docker Container
+
+  Build the development image using this repository's `Dockerfile.xpu`. Configure proxies as needed for your network.
+
+  ```bash
+  # Clone the repository and enter its directory on the host before building the Docker image.
+
+  git clone https://github.com/vllm-project/vllm-xpu-kernels.git
+  cd vllm-xpu-kernels
+  docker build --no-cache \
+               -f ./Dockerfile.xpu \
+               -t vllm/vllm-xpu-kernels:latest .
+  ```
+
+  Launch the container with the checkout mounted as its working directory:
+  
+  ```bash
+  docker run -it \
+             -v /dev/dri/by-path:/dev/dri/by-path \
+             -v "$(pwd):/workspace/vllm-xpu-kernels" \
+             --device=/dev/dri \
+             --ipc=host \
+             --workdir /workspace/vllm-xpu-kernels \
+             --name vllm-xpu-kernels \
+             --entrypoint /bin/bash \
+             vllm/vllm-xpu-kernels:latest
+  ```
+
+- Option 2: Bare-metal
+
+  Install the [Intel oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html)
+  matching the source-build requirements above.
+
+Initialize the oneAPI environment in the shell where you will build:
+
+```bash
+source /opt/intel/oneapi/setvars.sh
+```
+
+**3. Install dependencies**
+
+In either environment, install the dependencies from the mounted or cloned repository:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Build Options
+
+**Development install** (editable, source in current directory):
+
+```bash
+pip install --extra-index-url=https://download.pytorch.org/whl/xpu -e . -v
+# Faster: skip build isolation if dependencies are already present
+pip install --no-build-isolation -e . -v
+```
+
+**Standard install** (to site-packages):
+
+```bash
+pip install --extra-index-url=https://download.pytorch.org/whl/xpu .
+# or
+pip install --no-build-isolation .
+```
+
+**Build a wheel** (output goes to `dist/`):
+
+```bash
+pip wheel --extra-index-url=https://download.pytorch.org/whl/xpu --wheel-dir dist .
+# or
+pip wheel --no-build-isolation --wheel-dir dist .
+```
+
+**Incremental rebuild** (fastest for iterative development):
+
+```bash
+python -m build --wheel --no-isolation
+```
+
+### Using with vLLM
+
+After [vLLM RFC#33214](https://github.com/vllm-project/vllm/issues/33214) was completed, vLLM-XPU migrated to a `vllm-xpu-kernels`-based implementation. Installing the latest vLLM for XPU will pull in `vllm-xpu-kernels` automatically as a wheel dependency — no manual integration is required.
+
+### Kernel Configuration
+
+By default, vLLM-XPU compiles kernels for common models (Llama, Qwen, DeepSeek). For customization:
+
+```bash
+VLLM_CHUNK_PREFILL_CONFIG=chunk_prefill_full.conf VLLM_PAGED_DECODE_CONFIG=paged_decode_full.conf pip install .
+```
+
+See [KERNEL_CONFIGURATION.md](KERNEL_CONFIGURATION.md) for detailed guidance on kernel configuration, presets, and troubleshooting missing kernels.
+
+## Testing
+
+Run the full test suite with pytest:
+
+```bash
+pytest tests/
+```
+
+Individual test modules cover activations, cache operations, attention, MoE, LoRA, quantization, and memory utilities. See the [`tests/`](tests/) directory for the complete list.
+
+## Benchmarks
+
+Benchmark scripts for individual kernels are in the [`benchmark/`](benchmark/) directory:
+
+```bash
+python benchmark/benchmark_layernorm.py
+python benchmark/benchmark_lora.py
+python benchmark/benchmark_grouped_topk.py
+# etc.
+```
+
+## License
+
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.

@@ -1,0 +1,156 @@
+<div align="center">
+  <img src="desktop/public/sprites/dorabot.png" width="120" style="image-rendering: pixelated;" />
+
+  # dorabot
+
+  **A 24/7 self-learning AI agent with an integrated IDE workspace that runs itself.**
+
+  [![GitHub stars](https://img.shields.io/github/stars/suitedaces/dorabot)](https://github.com/suitedaces/dorabot)
+  [![GitHub release](https://img.shields.io/github/v/release/suitedaces/dorabot)](https://github.com/suitedaces/dorabot/releases/latest)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+  [![macOS](https://img.shields.io/badge/platform-macOS-lightgrey)](https://github.com/suitedaces/dorabot/releases/latest)
+
+  Works with your existing Claude Code or OpenAI Codex subscription. No extra API key needed.
+
+  [**Download for macOS**](https://github.com/suitedaces/dorabot/releases/latest) · [Website](https://dora.so) · [Discord](https://discord.gg/FH99jkvMz) · [Demo](https://github.com/suitedaces/dorabot/releases/download/v0.2.3/annotated-demo-telegram.mp4)
+
+</div>
+
+### See it in action
+
+The agent manages its own goals, tracks research, messages you on Telegram and WhatsApp, runs scheduled tasks, and remembers everything across sessions.
+
+https://github.com/user-attachments/assets/2ec5dd22-7b47-4ec0-a60b-62380e560bd0
+
+## Desktop IDE Workspace
+
+Recent releases turned dorabot desktop into a practical IDE-style workspace:
+
+- File explorer with keyboard navigation and support for all file types
+- Monaco editor (edit mode by default, with autosave)
+- Git panel with ahead/behind status and cleaner staging flows
+- Real PTY terminal, tabs, split panes, and diff view
+
+## Persistent Memory & Self-Learning
+
+Daily journals, curated memory, personality config. The agent remembers decisions, preferences, and context across every session. Full-text search over all past conversations. It gets better the more you use it.
+
+<img src="gifs/memory.gif" width="800" />
+
+## Automations & Scheduling
+
+Cron jobs, scheduled pulses, recurring tasks. The agent wakes up, does work, and messages you. iCal RRULE support, Apple Calendar sync (shows on Watch and iPhone).
+
+<img src="gifs/automations.gif" width="800" />
+
+## Goals & Tasks
+
+The agent proposes goals, writes plans, and executes them. You approve from the desktop app or Telegram. Full pipeline: research, plan, review, execute, done.
+
+<img src="gifs/goals.gif" width="800" />
+
+## Research & Knowledge
+
+The agent creates and maintains its own research for you. Topics tracked, categorized, and searchable. Point it at anything and it keeps the knowledge organized.
+
+<img src="gifs/research.gif" width="800" />
+
+## Multi-Channel Messaging
+
+Same agent on WhatsApp and Telegram, with the same memory and context as desktop sessions. Send text, photos, voice, and documents.
+
+<img src="gifs/channels.gif" width="800" />
+
+## Skills & MCP Servers
+
+Built-in skills for GitHub, email, macOS, PR review, and agent swarms. Browse community skills and connect MCP servers via Smithery.
+
+<img src="gifs/extensions.gif" width="800" />
+
+## Also
+
+- **Browser automation.** 40+ actions with your real Chrome profile. Already logged in everywhere.
+- **Multi-provider.** Claude, OpenAI Codex, MiniMax. Use the model you're already paying for.
+- **Multimodal.** Send images, screenshots, diagrams. The agent sees them.
+- **Auto-update.** Signed, notarized, one-click updates.
+- **Local-only.** No cloud relay. Your data stays on your Mac.
+
+## Quick Start
+
+### Download
+
+[**Download the macOS app**](https://github.com/suitedaces/dorabot/releases/latest) -- open the DMG, drag to Applications. Onboarding walks you through setup.
+
+**Requires:** macOS + a Claude Code or OpenAI Codex subscription (or any API key: Claude, OpenAI, MiniMax).
+
+### Build from source
+
+```bash
+git clone https://github.com/suitedaces/dorabot.git && cd dorabot
+npm install && npm run build && npm link
+```
+
+```bash
+npm run dev           # gateway + desktop with HMR
+dorabot -g            # production gateway mode
+dorabot -i            # interactive terminal
+dorabot -m "message"  # one-off question
+```
+
+## Personalization
+
+The `onboard` skill interviews you and builds:
+
+| File | What it does |
+|------|-------------|
+| `SOUL.md` | How the agent talks and thinks |
+| `USER.md` | Who you are, your goals, context |
+| `MEMORY.md` | Facts that persist across sessions |
+
+All files live in `~/.dorabot/workspace/`. Edit directly or let the agent manage them.
+
+## Security
+
+**Runtime:** Local-only, no telemetry. Scoped file access (sensitive dirs blocked). Token-authenticated gateway. Configurable tool approval per channel. macOS native sandbox.
+
+**Supply chain:** All dependencies are pinned to exact versions (no `^` or `~` ranges). New packages must be at least 7 days old before CI will accept them. Every PR and push runs:
+
+- `npm audit` across all workspaces
+- [Snyk](https://snyk.io) deep vulnerability scan (`--all-projects`)
+- Pin check (rejects any caret or tilde ranges)
+- Package age check (rejects packages published less than 7 days ago)
+
+`.npmrc` enforces `save-exact=true` so future installs pin automatically.
+
+To run locally:
+
+```bash
+npm audit                                          # known vulnerabilities
+snyk test --all-projects --strict-out-of-sync=false # deep scan
+node scripts/check-package-age.mjs --min-days=7    # package age
+```
+
+## FAQ
+
+<details>
+<summary><strong>Do I need an API key?</strong></summary>
+If you have a Claude Code or OpenAI Codex subscription, you're good to go. Otherwise, any API key works (Claude, OpenAI, MiniMax). dorabot wraps your model, it doesn't include one.
+</details>
+
+<details>
+<summary><strong>Is my data sent anywhere?</strong></summary>
+No. Runs on your Mac. Only network calls are to your AI provider's API.
+</details>
+
+<details>
+<summary><strong>How is this different from Claude Code / Cursor?</strong></summary>
+Those are primarily coding tools. dorabot adds autonomous agent workflows (memory, goals, scheduling, messaging) and now also ships a full IDE-style desktop (editor, file explorer, git, terminal) in one app.
+</details>
+
+## Contributing
+
+Open an issue or PR on [GitHub](https://github.com/suitedaces/dorabot).
+
+## License
+
+[MIT](LICENSE)

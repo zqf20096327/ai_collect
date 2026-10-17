@@ -1,0 +1,23 @@
+# SpokenNLP
+
+**SpokenNLP: The official repository for codebases on a wide variety of research projects developed by the SpokenNLP team of Speech Lab, Alibaba Group.**
+
+
+## 🔥 News
+- [**2025-05-16**]: [`MMVTS`](https://github.com/alibaba-damo-academy/SpokenNLP/tree/main/mmvts) was accepted by ACL 2025 Findings. It introduces a dataset for topic segmentation of Chinese lecture videos and propose a multimodal video topic segmentation model that integrates text, visual, and audio information to determine the topic boundaries.
+- [**2024-02-05**]: [`SLD`](https://github.com/alibaba-damo-academy/SpokenNLP/tree/main/sld) was accepted by ICASSP 2024. It introduces SLD: a novel approach which applies a KL divergence loss with smoothed labels on speech tokens for Discrete-token-based ASR.
+- [**2023-10-23**]: [`Ditto`](https://github.com/alibaba-damo-academy/SpokenNLP/tree/main/ditto) was accepted by EMNLP 2023. It introduces Ditto: a learning-free approach that uses model-based importance estimations to weight words and compute sentence embeddings from pre-trained model representations.
+- [**2023-10-07**]: [`Improving Long Document Topic Segmentation Models With Enhanced Coherence Modeling`](https://github.com/alibaba-damo-academy/SpokenNLP/tree/main/emnlp2023-topic_segmentation) was accepted by EMNLP 2023. It enhances the pretrained language model’s ability to capture coherence from both structure and similarity perspectives to further improve the topic segmentation performance.
+- [**2023-05-22**]: [`PoNet`](https://github.com/lxchtan/ponet) are submitted to [huggingface hub](https://huggingface.co/chtan/ponet-base-uncased). PoNet can now be used directly through the Transformers library. 
+- [**2022-12-02**]: [`alimeeting4mug`](alimeeting4mug) released the official baseline system codebase for ICASSP2023 General Meeting Understanding and Generation Challenge (MUG)!
+- [**2022-02-24**]: [`MDERank`](https://github.com/linhanz/mderank) was accepted by Findings of ACL 2022. It is a Masked Document Embedding Rank approach for unsupervised keyphrase extraction, which outperforms state-of-the-art unsupervised keyphrase extraction approaches, especially on long documents. 
+- [**2022-01-21**]: [`PoNet`](https://github.com/lxchtan/ponet) was accepted by ICLR 2022. It is a novel Pooling Network (PoNet) for token mixing in long sequences with linear complexity, which achieves a good balance between transfer learning capability and accuracy and complexity for long sequence modeling. Models are released at Modelscope ([English](https://modelscope.cn/models/damo/nlp_ponet_fill-mask_english-base/summary) and [Chinese](https://modelscope.cn/models/damo/nlp_ponet_fill-mask_chinese-base/summary)).
+- [**2021-09-11**]: [`SeqModel`](https://arxiv.org/abs/2107.09278) was accepted by IEEE ASRU 2021. It is a sequence model with self-adaptive sliding window for efficient spoken document segmentation. A new Chinese Wikipedia-based document segmentation dataset [Wiki-zh](https://drive.google.com/file/d/11T7xJSDvkhZHebTbIiFta2gJza-h5gNR/view) was released. Models are released at Modelscope ([English](https://modelscope.cn/models/damo/nlp_bert_document-segmentation_english-base/summary) and [Chinese](https://modelscope.cn/models/damo/nlp_bert_document-segmentation_chinese-base/summary)).
+- [**2019-02-28**]: [`JointBERT`](https://arxiv.org/abs/1902.10909) was proposed for joint intent classification and slot filling with BERT. The third-party PyTorch implementation of [JointBERT](https://github.com/monologg/JointBERT) is available.
+- [**2018-10-17**]: [`ESIM`](https://github.com/alibaba/esim-response-selection) ranks the top on both datasets on [DSTC7 Noetic End-to-end Response Selection track](http://workshop.colips.org/dstc7/call.html) !
+
+## 📝 License
+
+SpokenNLP is released under the [Apache License 2.0](LICENSE). This project contains various third-party components under other open source licenses. 
+
+

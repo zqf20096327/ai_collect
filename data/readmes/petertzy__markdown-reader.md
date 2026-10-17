@@ -1,0 +1,256 @@
+<div align="center">
+  <h1>Markdown Reader</h1>
+  <p><b>The open-source, local-first Markdown editor with native AI capabilities.</b></p>
+  
+  [![macOS Apple Silicon](https://img.shields.io/badge/macOS-Apple_Silicon-black?logo=apple)](#desktop-downloads)
+  [![Windows x64](https://img.shields.io/badge/Windows-x64-blue?logo=windows)](#desktop-downloads)
+  [![Linux x64](https://img.shields.io/badge/Linux-x64-yellow?logo=linux)](#desktop-downloads)
+  
+  <br />
+  <img width="1177" height="646" alt="Image" src="docs/markdown-reader.webp" />
+</div>
+
+---
+
+## Table of Contents
+
+- [Why Markdown Reader?](#-why-markdown-reader)
+  - [Key Features](#key-features)
+- [Quick Start](#-quick-start)
+- [Desktop Downloads](#-desktop-downloads)
+- [Architecture](#-architecture)
+- [Contributing](#-contributing)
+
+---
+
+## 🌟 Why Markdown Reader?
+
+Most modern writing apps force you to choose between **privacy** and **power**. Cloud-based AI editors train on your data, while local editors often lack intelligent features.
+
+**Markdown Reader bridges the gap.** It is a native desktop application built on Tauri, ensuring your files stay locally on your machine. But it also seamlessly integrates with **OpenAI, Anthropic, OpenRouter, and Local LLMs**, bringing powerful AI-assisted writing directly to your offline workflow.
+
+### Key Features
+
+- 🔒 **Local-First Architecture**: Your files never leave your machine unless you explicitly call an external AI API.
+- 🤖 **Bring-Your-Own-AI**: Configure OpenAI, Anthropic, OpenRouter, OpenAI-compatible providers, or local models.
+- ✍️ **Intelligent Editing**: AI-assisted translation, sentence-by-sentence comparison, summarization, formatting, and code-block cleanup.
+- ⚡ **Slash Commands**: Type `/` in the editor to trigger AI actions or insert a table inline, without opening the AI panel.
+- 🛡️ **Audit & Rollback**: Review all AI suggestions before applying them. Reject or rollback changes with a single click.
+- 🖥️ **Native Desktop Feel**: Built with Next.js and packaged with Tauri for blazing-fast performance.
+
+---
+
+## 🚀 Quick Start
+
+Get the app running locally for development in under a minute:
+
+```bash
+# Prerequisites: Python 3.11-3.13, Node.js 20.9.0+, and uv
+git clone https://github.com/petertzy/markdown-reader.git
+cd markdown-reader
+
+# Install dependencies
+uv sync
+cd frontend && npm install && cd ..
+
+# Configure frontend environment variables
+cp frontend/.env.local.example frontend/.env.local
+
+# Launch the Tauri desktop app
+./scripts/dev-tauri.sh
+```
+
+The development helper starts the FastAPI backend on `127.0.0.1:8000` when that
+port is available. If port `8000` is already occupied by another process, it
+automatically chooses a free local port and passes it to the Tauri shell. To
+request a specific backend port, run:
+
+```bash
+MARKDOWN_READER_BACKEND_PORT=8010 ./scripts/dev-tauri.sh
+```
+
+### macOS PDF Export Dependencies
+
+PDF export uses WeasyPrint when its native libraries are available. On macOS,
+install the Homebrew libraries below so WeasyPrint can find `libgobject-2.0`,
+Pango, and Cairo:
+
+```bash
+brew install glib pango cairo libffi
+```
+
+`./scripts/dev-tauri.sh` automatically adds `/opt/homebrew/lib` to
+`DYLD_FALLBACK_LIBRARY_PATH` for Apple Silicon Homebrew installs. If WeasyPrint
+is unavailable, Markdown Reader falls back to PyMuPDF so PDF export can still
+complete, but WeasyPrint generally provides better layout fidelity.
+
+For a fuller walkthrough of the macOS dependencies, including shell configuration, see [docs/PrepareForMacUser.md](./docs/PrepareForMacUser.md).
+
+### Windows PDF Export Dependencies
+
+On Windows, WeasyPrint requires native system libraries (Cairo, Pango) that are not available by default. Install them via MSYS2 by following the steps in [docs/PrepareForWindowsUser.md](./docs/PrepareForWindowsUser.md).
+
+If WeasyPrint is unavailable, PDF export falls back to PyMuPDF with simpler layout, the same as on macOS.
+
+> **Note for Contributors:** After cloning, run `uv sync --extra dev` and `uv run pre-commit install` to set up linting hooks.
+
+### Build release artifacts locally
+
+To package the desktop app without using GitHub Actions, run the platform-specific helper from the project root:
+
+```bash
+# Linux
+./scripts/package-linux.sh
+
+# macOS
+./scripts/package-macos.sh
+
+# Windows (PowerShell)
+./scripts/package-windows.ps1
+```
+
+Each script stages the Python backend sidecar, installs the frontend dependencies, runs the matching Tauri release build, and copies the final bundle(s) into `release-artifacts/<target>/` for easy distribution.
+
+On macOS, the default command builds the `.app` bundle. To also build a DMG installer, run:
+
+```bash
+./scripts/package-macos.sh --dmg
+```
+
+To explicitly set a build target:
+
+```bash
+# Linux x64
+./scripts/package-linux.sh --target x86_64-unknown-linux-gnu
+
+# macOS Apple Silicon
+./scripts/package-macos.sh --target aarch64-apple-darwin
+
+# Windows x64
+./scripts/package-windows.ps1 -Target x86_64-pc-windows-msvc
+```
+
+To see platform-specific options:
+
+```bash
+# Linux
+./scripts/package-linux.sh --help
+
+# macOS
+./scripts/package-macos.sh --help
+
+# Windows (PowerShell)
+./scripts/package-windows.ps1 -Help
+```
+
+---
+
+## 📦 Desktop Downloads
+
+We provide official desktop release builds through GitHub Actions.
+
+| OS          | Architecture  | Download                                                          |
+| ----------- | ------------- | ----------------------------------------------------------------- |
+| **macOS**   | Apple Silicon | [Download .dmg](https://petertzy.github.io/markdown-reader/)      |
+| **Windows** | x64           | [Download .exe](https://petertzy.github.io/markdown-reader/)      |
+| **Linux**   | x64           | [Download .AppImage](https://petertzy.github.io/markdown-reader/) |
+
+_(Note: macOS Intel builds are currently unsupported due to advanced PDF dependency constraints)._
+
+---
+
+## 🏗 Architecture
+
+Markdown Reader is split into three main layers to ensure maximum performance and maintainability:
+
+1. **Backend (`/backend`)**: A blazing-fast FastAPI application handling rendering, export, and all AI API communications.
+2. **Frontend (`/frontend`)**: A Next.js UI providing the rich editor experience, packaged within a Tauri desktop shell.
+When packaged for desktop use, the Python backend is bundled as a silent Tauri sidecar process, dynamically assigning ports at runtime to avoid conflicts. In development, `./scripts/dev-tauri.sh` uses the same port-handoff path when it needs to avoid a local port conflict.
+
+### Local Backend Security
+
+The packaged desktop sidecar generates a random authentication token for every
+launch. All of its API requests must include that token; it is held in memory
+only and is not written to disk. The standalone development backend remains
+unauthenticated by default for local development. Set
+`MARKDOWN_READER_BACKEND_TOKEN` before starting it to require the same request
+header (`X-Markdown-Reader-Token`). Tauri development mode forwards that token
+from Rust without exposing it to WebView JavaScript. For browser-only
+development, set `NEXT_PUBLIC_BACKEND_TOKEN` to the same value.
+
+### Desktop Content Security Policy
+
+The packaged Tauri WebView uses a default-deny policy and permits network
+connections only to the app origin and the loopback backend. `object-src` is
+disabled and `base-uri` is restricted to the application origin.
+
+`script-src 'unsafe-inline'` remains necessary because a Next.js static export
+embeds its hydration payload as inline scripts; static files cannot receive a
+per-request nonce. `style-src 'unsafe-inline'` remains necessary for React UI
+layout updates and the isolated Markdown preview's inline styles. Monaco loads
+its editor workers from `blob:`, so `worker-src` explicitly allows `blob:`.
+Monaco assets are copied from the installed dependency into `public/monaco`
+before development and production builds and loaded from `/monaco/vs`, without
+contacting a CDN. `wasm-unsafe-eval` is currently retained pending a separate
+packaged-runtime audit; the editor loading failure was caused by the default
+CDN loader, not evidence of a WebAssembly requirement. The policy does not permit the
+broader JavaScript `unsafe-eval` directive. Remote `http:` and `https:` image
+sources remain available only for images referenced by Markdown previews.
+
+---
+
+## ⚡ Slash Commands
+
+Type `/` at the start of a line (or after whitespace) in the editor to open an inline command menu:
+
+| Command | Behavior |
+| --- | --- |
+| `/summarize` | Summarizes the document via AI |
+| `/translate` | Opens the AI panel's Translate tab |
+| `/format` | Applies Markdown formatting via AI |
+| `/toc` | Generates a table of contents via AI |
+| `/fix-code` | Fixes code block fences via AI |
+| `/insert-table` | Inserts a Markdown table (no AI call) |
+
+Use the arrow keys to navigate, Enter to run a command, or Escape to dismiss the menu.
+
+---
+
+## 🧠 Local Model Support
+
+Markdown Reader can call locally hosted OpenAI-compatible model servers. In the AI settings panel, choose **Local Model**, select **LM Studio**, **Ollama**, or **Custom**, fetch available models, and save the model you want to use. Local endpoints do not require an API key unless your local server is configured to require one.
+
+---
+
+## 📥 Universal File Import
+
+Markdown Reader can import Markdown/text files directly and convert HTML, PDF, DOCX, Office files, CSV, EPUB, XML, archives, images, audio, Outlook messages, and Jupyter notebooks to Markdown through the bundled MarkItDown converter. Python 3.14 is not currently supported because some MarkItDown optional dependencies do not publish Python 3.14 wheels yet.
+
+---
+
+## 📚 Academic Citations
+
+Use the **Cite** panel to load a BibTeX `.bib` library, search by citation key, author, title, year, publication venue, or entry type, and insert citation references such as `[@doe2024]` at the current cursor position. In the desktop app, click **Select** to choose a `.bib` file with the native file picker. In browser development mode, the same button uploads the selected `.bib` file to the local backend and stores it as the active citation library.
+
+Markdown Reader preserves citation syntax during editing and export, including HTML, DOCX, and PDF output.
+
+---
+
+## 🤝 Contributing
+
+Contributions are highly welcome! Whether you're fixing a bug, suggesting a feature, or helping us write documentation, we'd love to have you.
+
+To get started:
+
+1. `git checkout -b your-feature-branch`
+2. Run linting: `uv run ruff check .`
+3. Run tests: `uv run python -m unittest discover -s tests`
+4. Open a Pull Request!
+
+See our full [Contribution Guidelines](CONTRIBUTING.md) for more details.
+
+---
+
+<div align="center">
+  Released under the MIT License. See <a href="LICENSE.md">LICENSE.md</a> for details.
+</div>

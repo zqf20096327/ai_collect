@@ -1,0 +1,592 @@
+# RockBot
+
+An event-driven autonomous agent framework.
+
+<img width="200" height="200" alt="rockbot" src="https://github.com/user-attachments/assets/bdc07b74-eaca-4255-acf2-6522c29c91ba" />
+
+---
+
+## What is RockBot?
+
+RockBot is a framework for building **multi-agent AI systems** where agents communicate exclusively through a message bus. There is no shared memory, no direct method calls between agents, and no LLM-generated code running in-process with the host.
+
+Agents built using the RockBot framework SDK are designed with the principle of least priviledge: an agent should not have access to any secrets other than LLM keys. All other secrets should be in MCP servers or other isolated services.
+
+Each agent is an isolated process that reacts to messages, invokes tools, calls LLMs, delegates work to other agents, and emits responses — all via a topic-based pub/sub message bus backed by RabbitMQ (or an in-process bus for local development).
+
+You can get an overview via this [RockBot web presentation](https://marimerllc.github.io/rockbot-presentation/).
+
+## Community
+
+* [Discord server](https://discord.gg/eQjxWG6KYN)
+
+## RockBot Implementation
+
+### Core components
+
+| Project | Purpose |
+|---|---|
+| `RockBot.Messaging.Abstractions` | Transport-agnostic contracts (`IMessagePublisher`, `IMessageSubscriber`, `MessageEnvelope`) |
+| `RockBot.Messaging.RabbitMQ` | RabbitMQ provider with topic exchanges and dead-letter queues |
+| `RockBot.Messaging.InProcess` | In-memory bus for local development and testing |
+| `RockBot.Host` | Agent host runtime — handler pipeline, profile loading, system prompt composition, dream service |
+| `RockBot.Llm` | LLM integration via `Microsoft.Extensions.AI` — three-tier routing, per-model behavior overrides, keyword-based tier selection |
+| `RockBot.Memory` | Three-tier memory system — conversation (ephemeral), long-term (persistent), and working (session context) |
+| `RockBot.Skills` | Learned skill storage, BM25 recall, usage tracking, and dream-based optimization |
+| `RockBot.Tools` | Tool registry, invocation dispatch, and tool-guide discovery |
+| `RockBot.Tools.Mcp` | MCP (Model Context Protocol) server proxy — discovery, inspection, and invocation |
+| `RockBot.Tools.Web` | Web search (Brave API) and web browsing with GitHub API routing and auto-chunking |
+| `RockBot.Tools.Scheduling` | Scheduled task execution with configurable result presentation |
+| `RockBot.Scripts.Remote` | Agent-side script delegation over the message bus |
+| `RockBot.Scripts.Manager` | Trusted sidecar that creates ephemeral Kubernetes pods for script execution |
+| `RockBot.Scripts.Container` | Kubernetes container runner — isolated Python pods with resource limits |
+| `RockBot.Scripts.Local` | Local Python script runner for development (no Kubernetes needed) |
+| `RockBot.Subagent` | In-process subagent spawning — isolated LLM loops, progress reporting, and long-term memory data handoff |
+| `RockBot.A2A` | Agent-to-agent task delegation over the message bus |
+| `RockBot.A2A.Gateway` | A2A v1 HTTP gateway — bridges external JSON-RPC clients to the RabbitMQ agent bus with API key auth, SSE streaming, and push notifications |
+| `RockBot.ServiceSearch` | Unified BM25 keyword search across A2A agents and MCP servers (`search_known_services`) |
+| `RockBot.UserProxy.Blazor` | Blazor Server chat UI with markdown rendering, conversation replay, and feedback signals |
+| `RockBot.UserProxy.Cli` | Console chat interface using Spectre.Console |
+| `McpServer.OpenRouter` | Standalone MCP server exposing OpenRouter account and usage information |
+| `McpServer.TodoApp` | Standalone MCP server providing a persistent to-do list with recurrence support |
+| `ClaudeCodeProxy` | OpenAI-compatible proxy for the Anthropic Messages API — enables use of a Claude Code Max subscription as the agent LLM |
+| `RockBot.Telemetry` | OpenTelemetry integration (OTLP gRPC export) |
+| `RockBot.Agent` | Unified host application — orchestrates all of the above as hosted services |
+
+---
+
+## Why RockBot?
+
+Most AI agent frameworks run LLM-generated code in the same process as the host application. This creates serious security and coupling problems:
+
+- **LLM code can access the host directly** — file system, network, secrets, everything
+- **Swapping LLM providers or tool backends** requires invasive changes throughout the codebase
+- **One runaway agent** can crash or compromise the entire system
+- **Scaling individual components** is impractical when everything runs together
+
+RockBot is built around four foundational design goals:
+
+### Separation of concerns
+
+Every responsibility in the system has a clear owner with a well-defined boundary. Agents handle reasoning. The message bus handles routing. Tool bridges handle execution. LLM providers handle inference. None of these cross into each other's domain — they communicate only through typed messages. This makes each layer independently testable, replaceable, and understandable.
+
+### Isolation of execution
+
+LLM-generated code never runs in the same process as the host. Agents run in **separate processes** with no shared memory. Scripts execute in **ephemeral Kubernetes containers** that are discarded immediately after use. A compromised or runaway agent cannot access the host, read its secrets, or affect other agents. Failure is contained by design.
+
+### Principle of least privilege
+
+Each component knows only what it needs to do its job. Agents receive only the messages addressed to them. Tool bridges expose only the tools they are explicitly configured to serve. Scripts run in containers with no network access, no persistent storage, and no credentials. No component accumulates capabilities or context beyond its immediate task.
+
+### Cloud-native by design
+
+RockBot assumes it will run in a distributed, containerized environment. Agents are **stateless** — state lives in messages or external stores, never in process memory. Components **scale independently** — add more LLM workers without touching tool bridges, or scale script runners without restarting agents. The message bus provides **back-pressure, dead-letter queues, and durability** so the system degrades gracefully under load. Configuration flows in from the environment, secrets from Kubernetes Secrets, and observability out through OpenTelemetry.
+
+The result is a swarm of agents that coordinate through messages, where the failure or compromise of any single component cannot cascade system-wide.
+
+---
+
+## Key features
+
+### Memory (three tiers)
+
+- **Conversation memory** — sliding window of recent turns per session (default 50), auto-cleaned after idle timeout. Ephemeral and in-process.
+- **Long-term memory** — persistent file-based store organized by category. The framework automatically surfaces relevant entries each turn via BM25 keyword search against the user's message (delta injection — only unseen entries are added). Optionally enhanced with **hybrid vector search** (BM25 + cosine similarity) when a text embedding model is configured — see [Embedding configuration](#embedding-optional--hybrid-vector-search) below.
+- **Working memory** — fast session-scoped cache for intermediate results. Tools can save and retrieve data during a conversation without polluting long-term storage. Also supports hybrid vector search when embedding is configured.
+
+### Skills
+
+Skills are reusable knowledge documents the agent learns through experience and saves for future sessions. The system includes:
+
+- **Automatic recall** — BM25 search runs every turn to surface relevant skills as the conversation evolves.
+- **See-also cross-references** — when a skill is recalled, its `seeAlso` references are also surfaced, enabling serendipitous discovery of related skills the agent didn't know to look for.
+- **Skill index** — a summary of all skills is injected at session start so the agent knows what it has.
+- **Usage tracking** — invocation counts and last-used timestamps enable pruning of stale skills.
+- **Dream-based optimization** — a background dream pass periodically consolidates related skills, prunes unused ones, and refines content based on accumulated experience.
+- **Prefix cluster detection** — skills sharing a name prefix (e.g. `mcp/email`, `mcp/calendar`) are detected during consolidation; the dream cycle can create abstract parent guide skills (`mcp/guide`) that describe when to use each sibling.
+- **Structural staleness** — sparse skills (very short content, not recently improved) are flagged in consolidation and included in the optimization pass proactively, not only after failures.
+
+### Tool guides
+
+Each tool subsystem (MCP, web, scripts, scheduling, memory, skills, service search) registers a `IToolSkillProvider` that exposes a usage guide. The agent can call `list_tool_guides` and `get_tool_guide` to learn how to use a capability it hasn't encountered before, then save a skill so future sessions skip the learning step.
+
+### Service search
+
+`search_known_services` provides a single BM25 keyword search across **all** known services — both A2A agents and MCP servers — so the agent can identify the right backend for a task without making separate `list_known_agents` and `mcp_list_services` calls.
+
+- **Unified index** — reads live from the in-memory `AgentDirectory` and `McpServerIndex` singletons; no separate cache or sync needed.
+- **Typed results** — each result includes `type: "a2a" | "mcp"`, which determines the next tool to use (`invoke_agent` vs. `mcp_invoke_tool`), plus an LLM-generated summary and top skill/tool names as a scouting report.
+- **Normalized relevance scores** — Okapi BM25 scores normalized to [0, 1] so the agent can distinguish a slam-dunk match from a weak one.
+- **Auto-injected hints** — the top 2 BM25 matches are injected into the system prompt each turn so the agent often already knows which service to use before calling the tool explicitly.
+
+### MCP bridge
+
+The agent hosts an embedded MCP bridge that connects to configured MCP servers at startup via SSE transport. Tools from all connected servers are registered and callable through `mcp_invoke_tool`. The agent can also discover, inspect, register, and unregister MCP servers at runtime.
+
+### Web tools
+
+- **Web search** — Brave Search API integration for real-time information retrieval.
+- **Web browse** — fetches and converts web pages to markdown. Includes a specialized GitHub API provider that routes GitHub URLs through the REST API for cleaner results.
+- **Auto-chunking** — large web pages are automatically split and saved into working memory so the agent can reference them across turns.
+
+### Script execution
+
+- **Remote (production)** — the agent publishes a `script.invoke` message to RabbitMQ. The Scripts Manager (a trusted sidecar with Kubernetes API access) creates an ephemeral Python 3.12-slim pod in the isolated `rockbot-scripts` namespace, runs the script, and returns the result. Pods have resource limits (500m CPU, 256Mi RAM by default), no network access, and are deleted immediately after use.
+- **Local (development)** — runs Python scripts directly on the local machine, no Kubernetes required.
+
+### Background subagents
+
+The agent can spawn isolated in-process subagents to handle long-running or complex tasks without blocking the primary conversation or exhausting its tool-call iteration limit.
+
+- **spawn_subagent** — launches a subagent with its own LLM tool loop, scoped working memory, and cancellation token. Returns a `task_id` immediately.
+- **Progress reporting** — the subagent calls `report_progress` periodically; each update is delivered to the primary session as a synthetic user turn so the agent can relay it naturally.
+- **Result delivery** — on completion, a `SubagentResultMessage` is published to the primary session and incorporated into the conversation.
+- **Data handoff** — the primary agent and subagent share the same long-term memory store. Structured data is exchanged using the category convention `subagent-whiteboards/{task_id}`, which is automatically cleaned up by the result handler after the primary agent processes the result.
+- **Concurrency limits** — configurable maximum concurrent subagents (default 3) with graceful rejection when the limit is reached.
+
+### Scheduled tasks
+
+The agent can schedule tasks for future execution. Results are delivered back through the message bus, with configurable presentation modes per model (summarize vs. verbatim output).
+
+### Dream service
+
+A background hosted service that runs periodically (configurable interval) to autonomously refine the agent's knowledge:
+
+- **Memory consolidation** — finds duplicates, merges related entries, refines categories.
+- **Anti-pattern mining** — scans Correction feedback for failure patterns and writes `anti-patterns/{domain}` memory entries (e.g. "Don't use X for Y — use Z instead"). These surface via BM25 alongside regular memories as actionable constraints.
+- **Skill consolidation** — merges overlapping skills, prunes stale ones, populates `seeAlso` cross-references, and detects prefix clusters to propose abstract parent guide skills.
+- **Skill optimization** — improves skills involved in poor sessions; also proactively expands structurally sparse skills (very short content) even without failure signals.
+- **Skill gap detection** — scans conversation logs for recurring request patterns and creates new skills; uses cross-session term frequency as a stronger signal for patterns the agent hasn't formalized yet.
+- **Implicit preference learning** — extracts durable user preferences from conversation patterns.
+
+### Three-tier LLM routing
+
+Prompts are routed to one of three model tiers based on estimated complexity, so simple questions use a cheap fast model while complex research uses a powerful one:
+
+- **Low** — short factual questions ("what is X?", "define Y"). Routed to the fastest/cheapest configured model.
+- **Balanced** — moderate-complexity requests. The default fallback; used when Low or High aren't explicitly configured.
+- **High** — deep analysis, research synthesis, dream consolidation. Routed to the most capable model.
+
+Each tier can use a different LLM **provider** — mix and match within the same agent:
+
+- **OpenAI-compatible** (default) — any endpoint with API key: OpenRouter, Azure OpenAI, local Ollama, etc. Per-token billing.
+- **GitHub Copilot SDK** (`Provider=Copilot`) — uses a GitHub Copilot license via the CLI subprocess. Per-request billing. Set `GITHUB_TOKEN` with `copilot` scope.
+- **Anthropic** (`Provider=Anthropic`) — the Claude API through the official Anthropic SDK. Needs `ApiKey` and `ModelId`; `Endpoint` is optional. Use this rather than pointing the OpenAI-compatible provider at Anthropic's compatibility endpoint, which cannot cache prompts. Prompt caching is on by default; `LLM:Anthropic:CacheTtl` (`5m` default, or `1h`), `LLM:Anthropic:PromptCaching` (`false` to turn it off) and `LLM:Anthropic:DefaultMaxOutputTokens` (default 16000) apply to every Anthropic tier. A tier's `ReasoningEffort` is sent as Claude's effort level (`minimal` maps to `low`; `xhigh` and `max` are accepted; `none` is not, because current Claude models can't turn thinking off). Temperature and other sampling settings are dropped, since current Claude models reject them.
+
+Set a global default provider (`LLM:Provider`) and override per tier (`LLM:Low:Provider`, `LLM:Balanced:Provider`, `LLM:High:Provider`). For example: Low on Copilot, Balanced on Azure Foundry, High on OpenRouter.
+
+**OpenRouter app attribution.** OpenRouter identifies the calling app from two self-reported headers, and reports activity as "unknown" without them. `LLM:AppName` (default `rockbot`) sets `X-Title`, the display name; `LLM:AppUrl` (default `https://rockbot.dev`) sets `HTTP-Referer`, which is the key OpenRouter *groups* activity by — keep it stable, since changing it starts a fresh app with no history. Give each deployment sharing an OpenRouter account its own `LLM:AppName` to keep their spend separable. The headers are sent to OpenRouter endpoints only; every other OpenAI-compatible endpoint sees an unchanged request.
+
+Tier selection uses `KeywordTierSelector` — a lightweight keyword + prompt-length heuristic with no external calls. The thresholds and keyword lists are hot-reloadable from `tier-selector.json` on the PVC without a pod restart. A background dream pass (`TierRoutingReviewPass`) periodically reviews routing decisions logged in `tier-routing-log.jsonl` and rewrites `tier-selector.json` if it detects systematic mis-routing.
+
+### Model-specific behaviors
+
+Per-model behavior overrides are loaded from `model-behaviors/{model-prefix}/` and can include:
+
+- **Additional system prompt** — model-specific guardrails appended to every request.
+- **Pre-tool-loop prompt** — constraints injected before tool-calling iterations.
+- **Hallucination nudges** — detects when a model claims to have called a tool without actually doing so.
+- **Tool iteration limits** — tuned per model based on convergence characteristics.
+
+### Agent identity
+
+The agent's personality and behavior are defined by markdown documents on the data volume:
+
+- **soul.md** — core identity, values, and personality (stable, authored by prompt engineers).
+- **directives.md** — deployment-specific operational instructions.
+- **style.md** — optional voice and tone polish.
+- **memory-rules.md** — rules governing when and how memories are formed.
+- **dream.md / skill-dream.md / skill-optimize.md** — prompts guiding the background dream service.
+- **session-evaluator.md** — criteria for evaluating conversation quality.
+
+---
+
+## Deployment
+
+### Quick start with Docker Desktop
+
+Want to try RockBot without setting up Kubernetes? The [Docker Desktop getting started guide](docs/getting-started-docker-desktop.md) gets you chatting with the agent in minutes using just Docker Compose, an LLM API key, and a Brave Search key.
+
+After that, use the [Getting started with RockBot](docs/getting-started-rockbot.md) guide to customize the agent's identity, memory behavior, MCP integrations, and scheduled tasks.
+
+### Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) — for local development and building
+- [Docker](https://www.docker.com/) — for building container images
+- Kubernetes cluster with [Helm](https://helm.sh/) — for production deployment
+- [RabbitMQ](https://www.rabbitmq.com/) running in or accessible from the cluster
+- [Longhorn](https://longhorn.io/) (or another `ReadWriteOnce` storage class) — for the agent data PVC
+- [Tailscale Kubernetes Operator](https://tailscale.com/kb/1236/kubernetes-operator) *(optional)* — for exposing the Blazor UI on your tailnet
+
+---
+
+### Build and test locally
+
+```bash
+# Build
+dotnet build RockBot.slnx
+
+# Unit tests only (no external dependencies)
+dotnet test RockBot.slnx
+
+# Unit tests + RabbitMQ integration tests
+ROCKBOT_RABBITMQ_HOST=localhost dotnet test RockBot.slnx
+```
+
+---
+
+### Container images
+
+Four images are published to Docker Hub and must be built from the repo root:
+
+| Image | Dockerfile | Purpose |
+|---|---|---|
+| `rockylhotka/rockbot-agent` | `deploy/Dockerfile.agent` | Agent host (RockBot.Agent) |
+| `rockylhotka/rockbot-blazor` | `src/RockBot.UserProxy.Blazor/Dockerfile` | Blazor chat UI |
+| `rockylhotka/rockbot-scripts-manager` | `Dockerfile.scripts-manager` | Trusted script execution sidecar |
+| `rockylhotka/rockbot-openrouter-mcp` | `src/McpServer.OpenRouter/Dockerfile` | OpenRouter MCP server *(optional)* |
+
+```bash
+# Build all from the repo root
+docker build -f deploy/Dockerfile.agent         -t rockylhotka/rockbot-agent:latest .
+docker build -f src/RockBot.UserProxy.Blazor/Dockerfile -t rockylhotka/rockbot-blazor:latest .
+docker build -f Dockerfile.scripts-manager     -t rockylhotka/rockbot-scripts-manager:latest .
+docker build -f src/McpServer.OpenRouter/Dockerfile -t rockylhotka/rockbot-openrouter-mcp:latest .
+
+# Push
+docker push rockylhotka/rockbot-agent:latest
+docker push rockylhotka/rockbot-blazor:latest
+docker push rockylhotka/rockbot-scripts-manager:latest
+docker push rockylhotka/rockbot-openrouter-mcp:latest
+```
+
+---
+
+### Kubernetes deployment (Helm)
+
+The Helm chart at `deploy/helm/rockbot` deploys the full stack into two namespaces:
+
+| Namespace | Contents |
+|---|---|
+| `rockbot` | Agent, Blazor UI, Scripts Manager, Introspection MCP, TodoApp MCP, OpenRouter MCP *(optional)*, ConfigMap, Secret |
+| `rockbot-scripts` | Ephemeral Python execution pods (created on demand) |
+
+The Introspection MCP server is enabled by default and ships as part of the standard agent install — it provides the tools the agent uses to rename itself, look up LLM pricing, and read Copilot quota. To disable it, set `introspectionMcp.enabled: false` in your values file.
+
+#### 1. Create your values file
+
+```bash
+cp deploy/values.personal.example.yaml deploy/values.personal.yaml
+```
+
+Edit `deploy/values.personal.yaml` — it is gitignored and must never be committed:
+
+```yaml
+rabbitmq:
+  hostName: "rabbitmq-svc.rabbitmq.svc.cluster.local"
+  userName: "rockbot"
+
+secrets:
+  create: true
+  llm:
+    # Global provider: "" = OpenAI-compatible (default), "Copilot" = GitHub Copilot SDK, "Anthropic" = Claude API
+    # Each tier can override with its own provider field.
+    # provider: "Copilot"
+    # gitHubToken: "<github-token-with-copilot-scope>"
+
+    # Balanced tier — REQUIRED. Used for moderate-complexity user messages and patrol tasks.
+    balanced:
+      endpoint: "https://openrouter.ai/api/v1"
+      apiKey: "<your-openrouter-api-key>"
+      modelId: "anthropic/claude-haiku-4.5"
+
+    # Low tier — OPTIONAL. Fast/cheap model for simple factual questions.
+    # Falls back to balanced when not configured.
+    # low:
+    #   endpoint: "https://openrouter.ai/api/v1"
+    #   apiKey: "<your-openrouter-api-key>"
+    #   modelId: "google/gemini-flash-1.5-8b"
+
+    # High tier — OPTIONAL. Powerful model for dream consolidation and research.
+    # Falls back to balanced when not configured.
+    # high:
+    #   endpoint: "https://openrouter.ai/api/v1"
+    #   apiKey: "<your-openrouter-api-key>"
+    #   modelId: "anthropic/claude-opus-4-6"
+
+  # Embedding — OPTIONAL. Enables hybrid BM25 + vector search for memory, skills,
+  # and working memory. Falls back to BM25-only when not configured.
+  # embedding:
+  #   endpoint: "http://ollama.default.svc.cluster.local:11434"
+  #   model: "nomic-embed-text"
+  #   apiKey: ""   # optional for Ollama; required for cloud providers
+
+  webTools:
+    apiKey: "<your-brave-search-api-key>"
+  rabbitmq:
+    password: "<your-rabbitmq-password>"
+  # openRouter:
+  #   apiKey: "<your-openrouter-management-api-key>"
+
+blazor:
+  tailscale:
+    hostname: "rockbot"   # exposes the UI at http://rockbot on your tailnet
+    # tags: ["tag:rockbot"]  # optional — give this endpoint its own tailnet ACL
+                             # identity so access rules can single it out
+
+# Optional — enable the OpenRouter MCP server
+# openrouterMcp:
+#   enabled: true
+
+# Optional — configure OpenTelemetry export
+# telemetry:
+#   enabled: true
+#   otlpEndpoint: "http://alloy.monitoring.svc.cluster.local:4317"
+
+# Recommended — set your local IANA timezone so the agent uses your time, not UTC
+# agent:
+#   timezone: "America/Chicago"
+```
+
+#### 2. Install or upgrade
+
+```bash
+helm upgrade --install rockbot deploy/helm/rockbot \
+  -f deploy/values.personal.yaml \
+  --create-namespace
+```
+
+The chart is also published to GHCR as an OCI artifact on every change to
+`deploy/helm/rockbot/**`, so GitOps tooling can consume it without vendoring a copy:
+
+```bash
+helm upgrade --install rockbot oci://ghcr.io/marimerllc/rockbot \
+  --version 0.10.19 \
+  -f deploy/values.personal.yaml \
+  --create-namespace
+```
+
+Published versions are treated as immutable — the workflow skips a version that already
+exists rather than replacing it, since consumers pin an exact version. Bump `version:` in
+`Chart.yaml` to publish a change.
+
+#### 3. Restart pods to pick up new images
+
+After pushing updated images (all tagged `latest`):
+
+```bash
+kubectl rollout restart deployment/rockbot-agent \
+                          deployment/rockbot-blazor \
+                          deployment/rockbot-scripts-manager \
+  -n rockbot
+```
+
+---
+
+### What Helm deploys
+
+#### Agent (`rockbot-agent`)
+
+- Runs `RockBot.Agent` as a single replica with `strategy: Recreate` — only one agent may run at a time.
+- Mounts a 10 Gi Longhorn PVC at `/data/agent` containing soul, directives, memory, skills, and `mcp.json`.
+- An **init container** seeds the PVC with default agent files from the image on first start (existing files are never overwritten). Per-model behavior prompts are also seeded per-file so customizations survive upgrades.
+- Runs with a dedicated ServiceAccount (`rockbot-agent`) that has **no Kubernetes API permissions** (`automountServiceAccountToken: false`). Script execution is delegated to the Scripts Manager via RabbitMQ — the agent never touches the Kubernetes API directly.
+
+#### Scripts Manager (`rockbot-scripts-manager`)
+
+- Runs `RockBot.Scripts.Manager` as the **trusted sidecar** for script execution.
+- Has its own ServiceAccount (`rockbot-scripts-manager`) with `automountServiceAccountToken: true`.
+- Bound via a cross-namespace `RoleBinding` to the `rockbot-script-runner` Role in the `rockbot-scripts` namespace.
+
+**RBAC — least privilege:**
+
+| Resource | Verbs | Why |
+|---|---|---|
+| `pods` | `create`, `get`, `list`, `watch`, `delete` | Spin up and clean up ephemeral script containers |
+| `pods/log`, `pods/status` | `get` | Stream script output back to the agent |
+
+The agent has *no* pod permissions. A compromised agent cannot create or access Kubernetes pods.
+
+#### Blazor UI (`rockbot-blazor`)
+
+- Runs `RockBot.UserProxy.Blazor` on port 8080 with liveness and readiness probes.
+- Exposed on your Tailscale network via the Tailscale Kubernetes Operator using the hostname set in `blazor.tailscale.hostname`.
+- Receives only the RabbitMQ credentials it needs — not the full agent ConfigMap.
+- Supports markdown rendering, conversation history replay on reconnect, input history, multiline input (Shift+Enter), and implicit feedback signals.
+
+#### OpenRouter MCP (`rockbot-openrouter-mcp`) *(optional)*
+
+- Deployed when `openrouterMcp.enabled: true` in your values file.
+- Exposes read-only tools for querying OpenRouter account credits, available models, API keys, and generation logs.
+- Connected to the agent automatically via `mcp.json`.
+
+#### Todo MCP (`mcp-todo`) *(optional)*
+
+- Deployed when `todoappMcp.enabled: true` in your values file.
+- Provides the agent with a persistent to-do list (add, list, update, complete, delete) with due-date filtering and recurrence support (daily, weekly, monthly, quarterly, yearly).
+- Data stored in JSON files on a Longhorn PVC mounted at `/data`.
+
+#### Claude Code Proxy (`claude-code-proxy`) *(optional)*
+
+- OpenAI-compatible proxy that lets the agent use the Anthropic Messages API — including via a **Claude Code Max subscription** — with no changes to the agent code.
+- Handles full tool calling and automatic OAuth token refresh via the `claude` CLI.
+- See [`src/ClaudeCodeProxy/README.md`](src/ClaudeCodeProxy/README.md) for setup instructions, the ToS disclaimer, and links to Anthropic's February 2026 clarification that personal use is permitted.
+
+#### Scripts namespace (`rockbot-scripts`)
+
+- Created and owned by the Helm chart.
+- Ephemeral Python pods are launched here by the Scripts Manager and deleted immediately after the script completes.
+- The agent namespace (`rockbot`) has no permissions in this namespace.
+
+---
+
+### Agent data volume
+
+The agent PVC holds all persistent state:
+
+```
+/data/agent/
+├── soul.md               # Core identity and values
+├── directives.md         # Behavioral rules and constraints
+├── style.md              # Tone and communication style
+├── memory-rules.md       # Rules governing memory formation
+├── dream.md              # Memory consolidation prompts
+├── skill-dream.md        # Skill acquisition prompts
+├── skill-optimize.md     # Skill consolidation and pruning prompts
+├── session-evaluator.md  # Conversation quality evaluation criteria
+├── mcp.json              # MCP server connections
+├── model-behaviors/      # Per-model prompt overrides
+│   └── deepseek/         # (e.g. additional-system-prompt.md, pre-tool-loop-prompt.md)
+├── memory/               # Long-term memory entries (organized by category)
+└── skills/               # Learned skills (JSON documents)
+```
+
+To replace the default files with your own after first deployment:
+
+```bash
+# Find the agent pod
+kubectl get pods -n rockbot -l app=rockbot-agent
+
+# Copy your local agent directory to the PVC
+kubectl cp src/RockBot.Agent/agent/ <pod-name>:/data/agent/ -n rockbot
+
+# Copy a custom mcp.json
+kubectl cp src/RockBot.Agent/mcp.json <pod-name>:/data/agent/mcp.json -n rockbot
+```
+
+---
+
+### MCP tool configuration
+
+Edit `/data/agent/mcp.json` on the PVC (or copy it in as shown above) to configure MCP server connections. The embedded MCP bridge discovers and registers available tools automatically on startup. Servers can also be registered and unregistered at runtime through the agent's `mcp_register_server` and `mcp_unregister_server` tools.
+
+---
+
+### Embedding (optional — hybrid vector search)
+
+By default the agent uses BM25 keyword search for memory, skills, and working memory recall. You can optionally configure a text embedding model to enable **hybrid search** (BM25 + cosine similarity), which improves recall for semantically similar but lexically different content.
+
+Any OpenAI-compatible embedding endpoint works — OpenAI, Ollama, Azure OpenAI, etc. When not configured, the agent falls back to BM25-only search with no loss of functionality.
+
+**Helm (`values.personal.yaml`):**
+
+```yaml
+secrets:
+  embedding:
+    endpoint: "http://ollama.default.svc.cluster.local:11434"
+    model: "nomic-embed-text"
+    apiKey: ""   # optional for Ollama; required for cloud providers
+```
+
+**Docker Compose / environment variables:**
+
+```env
+Embedding__Endpoint=http://ollama:11434
+Embedding__Model=nomic-embed-text
+Embedding__ApiKey=              # optional for Ollama
+```
+
+The agent logs confirm the configuration on startup:
+
+```
+Embedding model configured: nomic-embed-text @ http://ollama:11434
+```
+
+Or when not configured:
+
+```
+No embedding config found — using BM25-only search.
+Set Embedding:Endpoint and Embedding:Model to enable hybrid vector search.
+```
+
+---
+
+### Telemetry (optional)
+
+Set the following in your `values.personal.yaml` to enable OpenTelemetry export:
+
+```yaml
+telemetry:
+  enabled: true
+  otlpEndpoint: "http://alloy.monitoring.svc.cluster.local:4317"
+  serviceName: rockbot
+```
+
+Logs stream to stdout and are picked up automatically by Promtail or any standard log collector. Filter in Grafana with `{namespace="rockbot"}`.
+
+---
+
+## Subsystem documentation
+
+Deep-dive documentation for individual subsystems lives in [`docs/`](docs/):
+
+| Document | Contents |
+|---|---|
+| [`docs/getting-started-docker-desktop.md`](docs/getting-started-docker-desktop.md) | Quick start with Docker Compose — run the agent locally without Kubernetes |
+| [`docs/skills.md`](docs/skills.md) | Skills data model, BM25 recall, see-also, dream consolidation, prefix clusters, optimization, gap detection |
+| [`docs/memory.md`](docs/memory.md) | Three-tier memory architecture, long-term storage, anti-patterns, working memory, dream passes |
+| [`docs/dream-service.md`](docs/dream-service.md) | Dream cycle passes, scheduling, directive files, LLM response contracts, configuration |
+| [`docs/blazor-ui.md`](docs/blazor-ui.md) | Blazor chat UI architecture, UserProxyService, feedback, history replay, deployment |
+| [`docs/messaging.md`](docs/messaging.md) | MessageEnvelope, publisher/subscriber interfaces, RabbitMQ provider, topics, trust levels, trace propagation |
+| [`docs/agent-host.md`](docs/agent-host.md) | AgentHostBuilder, pipeline, identity, profile, conversation memory, session evaluation, LLM client, data volume layout |
+| [`docs/tools.md`](docs/tools.md) | Tool execution model, IToolRegistry, MCP bridge, service search, web search/browse, REST, scheduling, script execution, OpenRouter MCP |
+| [`docs/subagents.md`](docs/subagents.md) | Background subagent spawning, data handoff via memory convention, progress/result flow, configuration |
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue before starting significant work so we can discuss the approach.
+
+### Getting started
+
+1. Fork the repository and create a branch from `main`
+2. Make your changes with tests covering new behavior
+3. Ensure all tests pass: `dotnet test RockBot.slnx`
+4. Open a pull request with a clear description of what changed and why
+
+### Guidelines
+
+- **Keep it simple.** Avoid over-engineering. Add only what the current task requires.
+- **Async-first.** All I/O must be `Task`-based — no blocking calls.
+- **Nullable reference types are enabled.** Respect null-safety throughout.
+- **Use Rocks for mocking**, not Moq.
+- **Integration tests** should return `Assert.Inconclusive` when RabbitMQ is unavailable, not fail.
+- **Console apps** use `Spectre.Console` for argument parsing and output.
+- **Configuration** goes through the standard .NET configuration stack — no custom mechanisms.
+
+### Code of conduct
+
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
+
+---
+
+## Acknowledgements
+
+RockBot is inspired by [OpenClaw](https://openclaw.ai/) and [NanoBot](https://github.com/HKUDS/nanobot), both of which explored multi-agent coordination and tool-augmented LLM systems. RockBot builds on those ideas with a stronger emphasis on process isolation, least-privilege execution, and cloud-native deployment.
+
+---
+
+## License
+
+[MIT](LICENSE)

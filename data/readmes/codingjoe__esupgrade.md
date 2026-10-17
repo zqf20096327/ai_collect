@@ -1,0 +1,945 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./images/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./images/logo-light.svg">
+    <img alt="esupgrade: Auto-upgrade your JavaScript syntax" src="./images/logo-light.svg">
+  </picture>
+</p>
+
+# esupgrade [![npm version](https://img.shields.io/npm/v/esupgrade.svg?style=flat-square)](https://www.npmjs.com/package/esupgrade) [![coverage status](https://img.shields.io/codecov/c/github/codingjoe/esupgrade/main.svg?style=flat-square)](https://codecov.io/gh/codingjoe/esupgrade) [![license](https://img.shields.io/npm/l/esupgrade.svg?style=flat-square)](https://github.com/codingjoe/esupgrade/blob/main/LICENSE)
+
+Keeping your JavaScript and TypeScript code up to date with full browser compatibility.
+
+## Sponsors
+
+[![Sponsors](https://django.the-box.sh/sponsors/codingjoe/esupgrade.svg)](https://github.com/sponsors/codingjoe)
+
+## Usage
+
+esupgrade is safe and meant to be used automatically on your codebase.
+We recommend integrating it into your development workflow using [pre-commit], [husky], or as an agent skill.
+
+### CLI
+
+To try it out on a repository without writing changes, run:
+
+```bash
+npx -y esupgrade $(git ls-files | grep -E -i -w '.*\.(t|j)sx?')
+```
+
+To transform code from standard input, pass `-` as the input path:
+
+```bash
+echo 'var x = 1;' | npx esupgrade -
+```
+
+For help with available options:
+
+```bash
+npx esupgrade --help
+```
+
+### pre-commit
+
+```bash
+uvx pre-commit install
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/codingjoe/esupgrade
+    rev: 2025.0.2 # Use the latest version
+    hooks:
+      - id: esupgrade
+```
+
+```bash
+pre-commit run esupgrade --all-files
+```
+
+### Husky
+
+Assuming Husky is already initialized and `.husky/pre-commit` already contains `set -e`, append:
+
+```bash
+echo "git diff --cached --name-only --diff-filter=ACMR -z -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' | xargs -0 sh -c 'test \"\$#\" -eq 0 && exit 0; npx -y esupgrade -- \"\$@\"' sh" >> .husky/pre-commit
+echo "git diff --cached --name-only --diff-filter=ACMR -z -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.mjs' '*.cjs' | xargs -0 sh -c 'test \"\$#\" -eq 0 && exit 0; git add -- \"\$@\"' sh" >> .husky/pre-commit
+```
+
+### Agent Skill
+
+esupgrade is available as a skill in [Claude Code]. The plugin is distributed via the [codingjoe/claude-plugins](https://github.com/codingjoe/claude-plugins) marketplace. To use it:
+
+1. Run `/plugin marketplace add codingjoe/claude-plugins`
+2. Run `/plugin install esupgrade@codingjoe`
+
+The skill will analyze your selected code and suggest transformations based on the Baseline browser support policy.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://web-platform-dx.github.io/assets/img/baseline-wordmark-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://web-platform-dx.github.io/assets/img/baseline-wordmark.svg">
+  <img alt="Baseline: widely available" src="https://web-platform-dx.github.io/assets/img/baseline-wordmark.svg" height="32" align="right">
+</picture>
+
+## Browser Support & Baseline
+
+All transformations are based on [Web Platform Baseline][baseline] features. Baseline tracks which web platform features are safe to use across browsers.
+
+By default, `esupgrade` uses **widely available** features, meaning they work in all major browsers (Chrome, Edge, Safari, Firefox) for at least 30 months. This ensures full compatibility while keeping your code modern.
+
+You can opt into **newly available** features (available in all browsers for 0-30 months) with:
+
+```bash
+npx esupgrade --baseline newly-available <files>
+```
+
+For more information about Baseline browser support, visit [web.dev/baseline][baseline].
+
+## Supported File Types & Languages
+
+- `.js` - JavaScript
+- `.jsx` - React/JSX
+- `.ts` - TypeScript
+- `.tsx` - TypeScript with JSX
+- `.d.ts` - TypeScript declaration files
+- `.mjs` - ES Modules
+- `.cjs` - CommonJS
+
+## Transformations
+
+> [!NOTE]
+> A transformation applies to code with a statically verifiable type. Code that shadows a
+> global such as `Array`, or that accesses a method through a computed member such as
+> `array[method]()`, stays unchanged.
+
+`using` and `await using` declarations are never rewritten, because the replacement would
+drop the resource disposal.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://web-platform-dx.github.io/assets/img/baseline-widely-word-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://web-platform-dx.github.io/assets/img/baseline-widely-word.svg">
+  <img alt="Baseline: widely available" src="https://web-platform-dx.github.io/assets/img/baseline-widely-word.svg" height="32" align="right">
+</picture>
+
+### Widely available
+
+#### `var` → [const][mdn-const] & [let][mdn-let]
+
+```diff
+-var x = 1;
+-var y = 2;
+-y = 3;
++const x = 1;
++let y = 2;
++y = 3;
+```
+
+Declarations keep `var` when:
+
+- A reference leaves the block that would own the narrowed binding
+- A reference precedes the declaration
+- A call above the declaration runs a function that reads the binding
+- Another declaration of the shared `var` binding cannot narrow
+- A direct `eval` call leaves the binding out of reach
+
+```js
+// Not transformed - `error` is read after the block
+function f(flag) {
+  if (flag) {
+    var error = 1;
+  }
+  return error;
+}
+```
+
+#### String concatenation → [Template literals][mdn-template-literals]
+
+```diff
+-const greeting = 'Hello ' + name + '!';
+-const message = 'You have ' + count + ' items';
++const greeting = `Hello ${name}!`;
++const message = `You have ${count} items`;
+```
+
+Special handling for escape sequences and formatting:
+
+- **Escape sequences**: `\r` (carriage return) is preserved, while `\n` (newline) is converted to actual newlines
+
+  ```diff
+  -const text = "Line 1\n" + "Line 2";
+  +const text = `Line 1
+  +Line 2`;
+  ```
+
+- **Multiline concatenation**: Visual structure is preserved with line continuation backslashes
+
+  ```diff
+  -const longText = "First part " +
+  -                 "second part";
+  +const longText = `First part \
+  +second part`;
+  ```
+
+#### Traditional `for` loops → [`for...of` loops][mdn-for-of]
+
+```diff
+-for (let i = 0; i < items.length; i++) {
+-  const item = items[i];
+-  console.log(item);
+-}
++for (const item of items) {
++  console.log(item);
++}
+```
+
+Transformations are limited to loops that start at 0, increment by 1, and where the index variable is not used in the loop body.
+
+#### `Array.from().forEach()` → [`for...of` loops][mdn-for-of]
+
+```diff
+-Array.from(items).forEach(item => {
+-  console.log(item);
+-});
++for (const item of items) {
++  console.log(item);
++}
+```
+
+#### DOM `forEach()` → [`for...of` loops][mdn-for-of]
+
+```diff
+-document.querySelectorAll('.item').forEach(item => {
+-  item.classList.add('active');
+-});
++for (const item of document.querySelectorAll('.item')) {
++  item.classList.add('active');
++}
+```
+
+Supports:
+
+- `document.querySelectorAll()`
+
+- `document.getElementsByTagName()`
+
+- `document.getElementsByClassName()`
+
+- `document.getElementsByName()`
+
+- `window.frames`
+
+- Transformations limited to inline arrow or function expressions with block statement bodies.
+  Callbacks with index parameters or expression bodies are not transformed.
+
+#### `Array.from()` → [Array spread [...]][mdn-spread]
+
+```diff
+-const doubled = Array.from(numbers).map(n => n * 2);
+-const filtered = Array.from(items).filter(x => x > 5);
+-const arr = Array.from(iterable);
++const doubled = [...numbers].map(n => n * 2);
++const filtered = [...items].filter(x => x > 5);
++const arr = [...iterable];
+```
+
+`Array.from()` with a mapping function or thisArg is not converted.
+
+#### `Object.assign({}, ...)` → [Object spread {...}][mdn-spread]
+
+```diff
+-const obj = Object.assign({}, obj1, obj2);
+-const copy = Object.assign({}, original);
++const obj = { ...obj1, ...obj2 };
++const copy = { ...original };
+```
+
+> [!NOTE]
+> TypeScript does not support generic object spread yet:
+> https://github.com/Microsoft/TypeScript/issues/10727
+> You might need to manually adjust the type after transformation:
+>
+> ```ts
+> const object_with_generic_type: object = { ...(myGenericObject as object) }
+> ```
+
+#### `Array.concat()` → [Array spread [...]][mdn-spread]
+
+```diff
+-const combined = arr1.concat(arr2, arr3);
+-const withItem = array.concat([item]);
++const combined = [...arr1, ...arr2, ...arr3];
++const withItem = [...array, item];
+```
+
+#### `1000000` → [Numeric separators][mdn-numeric-separators]
+
+```diff
+-const budget = 1000000;
+-const maxUsers = 1000000n;
+-const permission = 0o1234567;
+-const mask = 0xabcdef;
+-const flags = 0b1010000111000011;
+-const ratio = 100000.25;
+-const large = 1e100000;
++const budget = 1_000_000;
++const maxUsers = 1_000_000n;
++const permission = 0o1_234_567;
++const mask = 0xab_cd_ef;
++const flags = 0b10100001_11000011;
++const ratio = 100_000.25;
++const large = 1e100_000;
+```
+
+Decimal and octal numerals are grouped by triplets; hex and binary by byte.
+
+#### `\uD83D\uDE00` → [Unicode code point escapes][mdn-unicode-point-escapes]
+
+```diff
+-const emoji = "\uD83D\uDE00";
+-const wave = `Hello ${name} \uD83D\uDC4B`;
+-const key = "\ud83d\ude00";
++const emoji = "\u{1F600}";
++const wave = `Hello ${name} \u{1F44B}`;
++const key = "\u{1f600}";
+```
+
+Not transformed:
+
+- Tagged templates, where `String.raw` exposes the raw text
+- JSX attribute values such as `<div title="\uD83D\uDE00" />`, which keep the backslashes
+- JSX text children such as `<div>\uD83D\uDE00</div>`, which render as written
+- A surrogate pair in the part of a template literal that ends in a letter, digit, `_` or `$` right before `${…}`, such as in `` `a${x}\uD83D\uDE00b${y}` ``, where the merge would insert a space and change the value
+- Lone surrogates, reversed pairs, and code points already written as `\u{…}`
+
+#### `Array.slice(0)` → [Array spread [...]][mdn-spread]
+
+```diff
+-const copy = [1, 2, 3].slice(0);
+-const clone = Array.from(items).slice();
++const copy = [...[1, 2, 3]];
++const clone = [...Array.from(items)];
+```
+
+#### `[...array].sort()` → [`Array.toSorted()`][mdn-tosorted], [`Array.toReversed()`][mdn-toreversed] & [`Array.toSpliced()`][mdn-tospliced]
+
+```diff
+-const sorted = [...[3, 1, 2]].sort((a, b) => a - b);
+-const reversed = Array.from(items).slice().reverse();
++const sorted = [3, 1, 2].toSorted((a, b) => a - b);
++const reversed = Array.from(items).toReversed();
+
+-const copy = [...Array.of(1, 2)];
+-copy.splice(1, 2);
++const copy = Array.of(1, 2).toSpliced(1, 2);
+```
+
+The following are not transformed:
+
+- Receivers that are not statically verified arrays
+- Mutating calls without a copy
+- Expression-form `splice()` on a copy, which returns the removed elements
+- `splice()` calls whose result is used
+- `splice()` calls whose arguments come from the copy
+- Copy-to-variable rewrites where the declaration is not the single declarator directly above the mutating call, as in `const copy = [...items], total = 0`
+
+#### `Array.filter()[0]` → [`Array.find()`][mdn-find]
+
+```diff
+-const first = [1, 2, 3].filter(n => n > 1)[0];
++const first = [1, 2, 3].find(n => n > 1);
+```
+
+Transformations are limited to when the receiver can be verified as an array (array literals, `new Array()`, or known array method chains) and `filter()` is called with one argument.
+
+#### `arr[arr.length - n]` → [`Array.at()`][mdn-at]
+
+```diff
+-const last = arr[arr.length - 1];
+-const item = arr[arr.length - n];
++const last = arr.at(-1);
++const item = arr.at(-n);
+```
+
+#### `Math.pow()` → [Exponentiation operator \*\*][mdn-exponentiation]
+
+```diff
+-const result = Math.pow(2, 3);
+-const area = Math.PI * Math.pow(radius, 2);
++const result = 2 ** 3;
++const area = Math.PI * radius ** 2;
+```
+
+#### Verbose arithmetic assignments → [Compound assignment operators (+=, -=, …)][mdn-compound-assignment]
+
+```diff
+-x = x + y
++x += y
+-x = x - y
++x -= y
+-x = x * y
++x *= y
+-x = x / y
++x /= y
+-x = x % y
++x %= y
+-x = x ** y
++x **= y
+```
+
+> [!NOTE]
+> When the assignment target is a member expression with potential side effects
+> (e.g., `getObj().prop = getObj().prop + y` or `obj[f()] = obj[f()] + y`), the
+> transformation evaluates the target expression once instead of twice.
+> If `getObj()` or `f()` have observable side effects or return different values
+> on each call, `getObj().prop += y` may produce different results than the
+> original `getObj().prop = getObj().prop + y`.
+
+#### Named function assignments → [Function declarations][mdn-functions]
+
+```diff
+-const myFunc = () => { return 42; };
+-const add = (a, b) => a + b;
+-const greet = function(name) { return "Hello " + name; };
++function myFunc() { return 42; }
++function add(a, b) { return a + b; }
++function greet(name) { return "Hello " + name; }
+```
+
+Transforms arrow functions and anonymous function expressions assigned to variables into proper named function declarations. This provides better structure and semantics for top-level functions.
+
+Functions using `this` or `arguments` are not converted to preserve semantics.
+
+TypeScript parameter and return type annotations are preserved:
+
+```diff
+-let myAdd = function (x: number, y: number): number {
+-  return x + y;
+-};
++function myAdd(x: number, y: number): number {
++  return x + y;
++}
+```
+
+Generic type parameters are also preserved:
+
+```diff
+-export const useHook = <T extends object>(props: T): T => {
+-  return props;
+-};
++export function useHook<T extends object>(props: T): T {
++  return props;
++}
+```
+
+Variables with TypeScript type annotations but no function return type are skipped:
+
+```typescript
+// Not transformed - variable type annotation cannot be transferred
+const Template: StoryFn<MyType> = () => { return <div>Hello</div>; };
+```
+
+#### Anonymous function expressions → [Arrow functions][mdn-arrow-functions]
+
+```diff
+-items.map(function(item) { return item.name; });
+-button.addEventListener('click', function(event) { process(event); });
++items.map(item => { return item.name; });
++button.addEventListener('click', event => { process(event); });
+```
+
+Anonymous function expressions not in variable declarations (like callbacks and event handlers) are converted to arrow functions.
+
+Functions using `this`, `arguments`, or `super` are not converted to preserve semantics.
+
+#### Constructor functions → [Classes][mdn-classes]
+
+```diff
+-function Person(name, age) {
+-  this.name = name;
+-  this.age = age;
+-}
+-
+-Person.prototype.greet = function() {
+-  return 'Hello, I am ' + this.name;
+-};
+-
+-Person.prototype.getAge = function() {
+-  return this.age;
+-};
++class Person {
++  constructor(name, age) {
++    this.name = name;
++    this.age = age;
++  }
++
++  greet() {
++    return 'Hello, I am ' + this.name;
++  }
++
++  getAge() {
++    return this.age;
++  }
++}
+```
+
+Transforms constructor functions (both function declarations and variable declarations) that meet these criteria:
+
+- Function name starts with an uppercase letter
+- At least one prototype method is defined
+- Prototype methods are matched to constructors declared in the current or an ancestor lexical scope (never sibling or child scopes)
+- Prototype methods using `this` in arrow functions are skipped
+- Prototype object literals with getters, setters, or computed properties are skipped
+
+#### `console.log()` → [console.info()][mdn-console]
+
+```diff
+-console.log('User logged in:', username);
+-console.log({ userId, action: 'login' });
++console.info('User logged in:', username);
++console.info({ userId, action: 'login' });
+```
+
+While `console.log` and `console.info` are functionally identical in browsers.
+This transformation provides semantic clarity by using an explicit log level, but review your logging infrastructure before applying.
+
+#### Remove redundant `'use strict'` from [modules][mdn-strict-mode]
+
+```diff
+-'use strict';
+ import { helper } from './utils';
+
+ export function main() {
+   return helper();
+ }
+```
+
+ES6 modules are automatically in strict mode, making explicit `'use strict'` directives redundant. This transformation applies to files with `import` or `export` statements.
+
+#### Global context → [globalThis][mdn-globalthis]
+
+```diff
+-const global = window;
+-const loc = window.location.href;
++const global = globalThis;
++const loc = globalThis.location.href;
+```
+
+```diff
+-const global = self;
+-const nav = self.navigator;
++const global = globalThis;
++const nav = globalThis.navigator;
+```
+
+```diff
+-const global = Function('return this')();
++const global = globalThis;
+```
+
+#### Null/undefined checks → [Nullish coalescing operator (??)][mdn-nullish-coalescing]
+
+```diff
+-const value = x !== null && x !== undefined ? x : defaultValue;
++const value = x ?? defaultValue;
+```
+
+```diff
+-const result = obj.prop !== null && obj.prop !== undefined ? obj.prop : 0;
++const result = obj.prop ?? 0;
+```
+
+#### Logical assignment patterns → [Logical assignment operators (??=, ||=, &&=)][mdn-logical-assignment]
+
+```diff
+-x = x ?? y
++x ??= y
+-x = x || y
++x ||= y
+-x = x && y
++x &&= y
+```
+
+```diff
+-if (x === null || x === undefined) x = y
++x ??= y
+```
+
+> [!NOTE]
+> For member expression targets (e.g., `obj.prop ||= y`), the original
+> unconditional assignment always invokes property setters, while the logical
+> assignment operator skips the setter when the condition is not met. This
+> generally improves performance by avoiding unnecessary setter calls.
+>
+> Similarly, for `if (obj.prop === null || obj.prop === undefined) obj.prop = y`,
+> the transformation to `obj.prop ??= y` reads `obj.prop` once instead of twice
+> before assigning, which improves performance for getter-backed properties.
+
+#### `indexOf()` → [includes()][mdn-includes]
+
+```diff
+-const found = [1, 2, 3].indexOf(item) !== -1;
+-const exists = "hello".indexOf(substr) > -1;
+-const hasValue = ["a", "b", "c"].indexOf(value) >= 0;
++const found = [1, 2, 3].includes(item);
++const exists = "hello".includes(substr);
++const hasValue = ["a", "b", "c"].includes(value);
+```
+
+```diff
+-if ([1, 2, 3].indexOf(item) === -1) {
+-  console.log('not found');
+-}
++if (![1, 2, 3].includes(item)) {
++  console.log('not found');
++}
+```
+
+Transforms `indexOf()` calls with a single argument (search value) when it can statically verify that the receiver is an array or string (for example, array literals, string literals, or safe method chains).
+Calls with a fromIndex parameter are not transformed as they have different semantics than `includes()`. As a result, patterns such as `[1, 2, 3].indexOf(item) !== -1` are upgraded, while `arr.indexOf(item) !== -1` may be left unchanged if the transformer cannot prove that `arr` is an array.
+
+#### `String.substr()` → [String.slice()][mdn-slice]
+
+```diff
+-const result = "hello world".substr(0, 5);
+-const end = "example".substr(3);
++const result = "hello world".slice(0, 0 + 5);
++const end = "example".slice(3);
+```
+
+Transforms the deprecated `substr()` method to `slice()`:
+
+- `str.substr(start, length)` becomes `str.slice(start, start + length)`
+- `str.substr(start)` becomes `str.slice(start)`
+- `str.substr()` becomes `str.slice()`
+
+Transformations are limited to when the receiver can be verified as a string (string literals, template literals, or string method chains).
+
+#### `String.trimLeft()` / `String.trimRight()` → [String.trimStart()][mdn-trimstart] / [String.trimEnd()][mdn-trimend]
+
+```diff
+-const left = "  hello  ".trimLeft();
+-const right = "  hello  ".trimRight();
++const left = "  hello  ".trimStart();
++const right = "  hello  ".trimEnd();
+```
+
+#### `split().join()` / `replace(/literal/g)` → [String.replaceAll()][mdn-replaceall]
+
+```diff
+-const value = "a,b,c".split(",").join(".");
+-const label = "foo".replace(/o/g, "a");
++const value = "a,b,c".replaceAll(",", ".");
++const label = "foo".replaceAll("o", "a");
+```
+
+#### `Object.keys().forEach()` → [Object.entries()][mdn-object-entries]
+
+```diff
+-Object.keys(obj).forEach(key => {
+-  const value = obj[key];
+-  console.log(key, value);
+-});
++Object.entries(obj).forEach(([key, value]) => {
++  console.log(key, value);
++});
+```
+
+Transforms when:
+
+- The callback has one parameter (the key)
+- The first statement in the callback assigns `obj[key]` to a variable
+- The object being accessed matches the object passed to Object.keys()
+
+#### `Object.keys().map()` → [Object.values()][mdn-object-values]
+
+```diff
+-Object.keys(obj).map(key => obj[key])
++Object.values(obj)
+```
+
+Transforms when:
+
+- The callback has one parameter (the key)
+- The callback body returns `obj[key]` (expression or block with a single return statement)
+- The object being accessed matches the object passed to Object.keys()
+
+#### `indexOf()` prefix check → [String.startsWith()][mdn-startswith]
+
+```diff
+-const isPrefix = "hello world".indexOf("hello") === 0;
+-const notPrefix = str.indexOf(prefix) !== 0;
++const isPrefix = "hello world".startsWith("hello");
++const notPrefix = !str.startsWith(prefix);
+```
+
+Transforms `indexOf()` prefix checks to the more explicit `startsWith()` method. Transforms when the receiver can be verified as a string and `indexOf()` is compared to `0`.
+
+#### `substring()` prefix check → [String.startsWith()][mdn-startswith]
+
+```diff
+-const matches = "hello world".substring(0, prefix.length) === prefix;
+-const noMatch = str.substring(0, prefix.length) !== prefix;
++const matches = "hello world".startsWith(prefix);
++const noMatch = !str.startsWith(prefix);
+```
+
+Transforms `substring()` prefix comparisons to `startsWith()`. Transforms patterns where `substring(0, prefix.length)` is compared to `prefix`.
+
+#### `lastIndexOf()` suffix check → [String.endsWith()][mdn-endswith]
+
+```diff
+-const isSuffix = str.lastIndexOf(suffix) === str.length - suffix.length;
+-const notSuffix = "hello world".lastIndexOf("world") !== "hello world".length - "world".length;
++const isSuffix = str.endsWith(suffix);
++const notSuffix = !"hello world".endsWith("world");
+```
+
+Transforms `lastIndexOf()` suffix checks to the more explicit `endsWith()` method. Transforms when the receiver can be verified as a string and the pattern matches `lastIndexOf(suffix) === str.length - suffix.length`.
+
+#### `arguments` object → [Rest parameters ...][mdn-rest-parameters]
+
+```diff
+-function fn() {
+-  const args = Array.from(arguments);
+-  // use args
+-}
++function fn(...args) {
++  // use args
++}
+```
+
+```diff
+-function fn() {
+-  const args = [].slice.call(arguments);
+-  // use args
+-}
++function fn(...args) {
++  // use args
++}
+```
+
+Transforms the `arguments` object to rest parameters when:
+
+- Function is a regular function (not arrow function)
+- Function doesn't already have rest parameters
+- `arguments` is used in the conversion pattern (`Array.from(arguments)` or `[].slice.call(arguments)`)
+- `arguments` is not used elsewhere in the function
+
+The transformer handles cases where `Array.from(arguments)` has already been converted to `[...arguments]` by other transformers.
+
+#### Manual default values → [Default parameters][mdn-default-parameters]
+
+```diff
+-function fn(x) {
+-  if (x === undefined) x = defaultValue;
+-  // use x
+-}
++function fn(x = defaultValue) {
++  // use x
++}
+```
+
+Note: The `x = x || defaultValue` pattern is NOT transformed as it has different semantics (triggers on any falsy value, instead of `undefined`).
+
+#### Manual property extraction → [Destructuring parameters][mdn-destructuring]
+
+```diff
+-function fn(obj) {
+-  const x = obj.x;
+-  const y = obj.y;
+-  // use x and y
+-}
++function fn({x, y}) {
++  // use x and y
++}
+```
+
+Transforms functions where the body begins by extracting properties from a parameter into object destructuring in the parameter list. Aliased extractions use longhand syntax:
+
+```diff
+-function fn(obj) {
+-  const myX = obj.x;
+-}
++function fn({x: myX}) {
++}
+```
+
+Transforms when:
+
+- The parameter is a simple identifier (not already destructured or a rest parameter)
+- Leading statements are variable declarations extracting non-computed properties from that parameter
+- The original parameter identifier is not referenced after the extraction zone
+
+TypeScript type annotations on the original parameter are preserved on the resulting destructuring pattern.
+
+#### Promise chains → [async/await][mdn-async-await]
+
+```diff
+-function getData() {
+-  return fetch('/api/data')
+-    .then(result => {
+-      // handle result
+-    })
+-    .catch(err => {
+-      // handle error
+-    });
+-}
++async function getData() {
++  try {
++    const result = await fetch('/api/data');
++    // handle result
++  } catch (err) {
++    // handle error
++  }
++}
+```
+
+- The promise chain is returned from the function or used inside an already async function
+- The expression is a known promise (`fetch()`, `new Promise()`, or promise methods)
+
+#### `error.cause` assignment → [Error cause option][mdn-error-cause]
+
+```diff
+-try {
+-  doWork();
+-} catch (cause) {
+-  const error = new Error("Work failed");
+-  error.cause = cause;
+-  throw error;
+-}
++try {
++  doWork();
++} catch (cause) {
++  throw new Error("Work failed", { cause });
++}
+```
+
+Transformations are limited to built-in error constructors. The following are not transformed:
+
+- Constructions without a message argument
+- Constructions that already pass an options argument
+- Custom error subclasses
+- Assignments whose value references the error itself, as in `error.cause = error`
+
+#### Deferred promise capture → [Promise.withResolvers()][mdn-promise-with-resolvers]
+
+```diff
+-let resolve, reject;
+-const promise = new Promise((res, rej) => {
+-  resolve = res;
+-  reject = rej;
+-});
++const {
++  promise,
++  resolve,
++  reject
++} = Promise.withResolvers();
++
+ await promise;
+```
+
+The following are not transformed:
+
+- Bindings that carry a type annotation, an initializer, or an ambient `declare`
+- `new Promise` constructions that carry type arguments
+- Executors that are generators, that name a binding, or that hold statements besides the two assignments
+- Resolving functions that are written outside their executor assignment, and promise bindings that are written after their declaration
+- Promises that no other identifier references
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://web-platform-dx.github.io/assets/img/baseline-newly-word-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://web-platform-dx.github.io/assets/img/baseline-newly-word.svg">
+  <img alt="Baseline: Newly available" src="https://web-platform-dx.github.io/assets/img/baseline-newly-word.svg" height="32" align="right">
+</picture>
+
+### Newly available
+
+These transformations are mainly to harden code for future releases and should be used with caution.
+
+#### `new Promise((resolve) => { ... })` → [Promise.try][mdn-promise-try]
+
+```diff
+-new Promise((resolve) => {
+-  const result = doSomething();
+-  resolve(result);
+-});
++Promise.try(() => {
++  return doSomething();
++});
+```
+
+#### `Object.prototype.hasOwnProperty.call()` → [Object.hasOwn()][mdn-object-has-own]
+
+```diff
+-Object.prototype.hasOwnProperty.call(obj, prop);
+-({}).hasOwnProperty.call(obj, prop);
++Object.hasOwn(obj, prop);
++Object.hasOwn(obj, prop);
+```
+
+## Versioning
+
+esupgrade uses the [calver] `YYYY.MINOR.PATCH` versioning scheme.
+
+The year indicates the baseline version. New transformations are added in minor releases, while patches are reserved for bug fixes.
+
+## Related Projects
+
+Thanks to these projects for inspiring esupgrade:
+
+- @asottile's [pyupgrade] for Python
+- @adamchainz' [django-upgrade] for Django
+
+### Distinction
+
+lebab is a similar project that focuses on ECMAScript 6+ transformations without considering browser support.
+esupgrade is distinct in that it applies transformations that are safe based on Baseline browser support.
+Furthermore, esupgrade supports JavaScript, TypeScript, and more, while lebab is limited to JavaScript.
+
+[baseline]: https://web.dev/baseline/
+[calver]: https://calver.org/
+[claude code]: https://code.claude.com
+[django-upgrade]: https://github.com/adamchainz/django-upgrade
+[husky]: https://typicode.github.io/husky/
+[mdn-arrow-functions]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+[mdn-async-await]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+[mdn-at]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at
+[mdn-classes]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+[mdn-compound-assignment]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Addition_assignment
+[mdn-console]: https://developer.mozilla.org/en-US/docs/Web/API/console
+[mdn-const]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const
+[mdn-default-parameters]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters
+[mdn-destructuring]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+[mdn-endswith]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+[mdn-error-cause]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause
+[mdn-exponentiation]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Exponentiation
+[mdn-find]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+[mdn-for-of]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+[mdn-functions]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions
+[mdn-globalthis]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis
+[mdn-includes]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+[mdn-let]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let
+[mdn-logical-assignment]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR_assignment
+[mdn-nullish-coalescing]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
+[mdn-numeric-separators]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#numeric_separators
+[mdn-object-entries]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries
+[mdn-object-has-own]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn
+[mdn-object-values]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/values
+[mdn-promise-try]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/try
+[mdn-promise-with-resolvers]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
+[mdn-replaceall]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll
+[mdn-rest-parameters]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters
+[mdn-slice]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
+[mdn-spread]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+[mdn-startswith]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+[mdn-strict-mode]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#strict_mode_for_modules
+[mdn-template-literals]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+[mdn-toreversed]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed
+[mdn-tosorted]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted
+[mdn-tospliced]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSpliced
+[mdn-trimend]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimEnd
+[mdn-trimstart]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trimStart
+[mdn-unicode-point-escapes]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#unicode_code_point_escapes
+[pre-commit]: https://pre-commit.com/
+[pyupgrade]: https://github.com/asottile/pyupgrade

@@ -1,0 +1,279 @@
+# 智能故障诊断和寿命预测期刊：
+## Journals of Intelligent Fault Diagnosis (IFD) and Remaining Useful Life (RUL)
+### 更新说明：
+
+**2026.06.17：**
+
+- 2025年最新的SCI影响因子已经更新。
+
+**2026.03.28：**
+
+- 中国科学院文献情报中心：[《声明》](https://las.cas.cn/news/tzgg/202603/t20260327_8178738.html)
+- 新锐学术：[《新起点，新征程，新华章》](https://mp.weixin.qq.com/s/IZxyckj-LfT_IBHQy2RAKA)
+
+**2026.03.26：**
+
+- **更新2026年[《新锐期刊分区表》](https://www.xr-scholar.com/Journals/Search)↑表示大区升级或者变为TOP期刊； ↓表示大区降级或变为非TOP期刊。**
+- **感谢北京交通大学2024级博士生@李瑞鑫和2025级博士生@刘秋海帮忙整理归纳汇总！**
+- **增加小类详细分区。**
+![_20260326221818_495_1641](https://github.com/user-attachments/assets/ee24ea93-cde6-42d1-b0d0-2fea572eaa63)
+
+**2026.01.11:**
+
+- [2025年高质量科技期刊分级目录总汇。](https://www.cast.org.cn/xw/gzdt/KJCX/art/2025/art_7affb3ed494c436b9a69aedb8604e400.html)
+
+**2025.06.18：**
+
+- 2024年最新的SCI影响因子已经更新。
+
+**2025.03.25：**
+
+- 更新仪器仪表学会[《仪器仪表领域高质量科技期刊分级目录（2025版）》](https://mp.weixin.qq.com/s/gjUMd2P6AJGRh0kmXQ9rmw)
+
+**2025.03.21：**
+
+- **最新的2025年中科院升级版分区： $\uparrow$表示大区升级或者变为TOP期刊； $\downarrow$表示大区降级或变为非TOP期刊。**
+- **由于一些学院评奖等只看小类分区，因此如果所有小类分区均低于大类分区，则标注。**
+- **0区表示没有中科院分区。**
+
+2024.12.13
+
+- 2024年高质量科技期刊分级目录总汇。
+
+2024.09.25
+
+- [2024年《中国人工智能学会推荐国际学术会议、国际/国内期刊目录》](https://www.caai.cn/index.php?s=/home/article/detail/id/4024.html)
+
+2024.06.20
+
+- 2023年最新的SCI影响因子已经更新。
+
+2024.2.19
+
+- 更新最新版中科院预警期刊
+
+2023.12.28：
+
+- 最新的2023年中科院升级版分区： $\uparrow$表示大区升级或者变为TOP期刊； $\downarrow$表示大区降级或变为非TOP期刊。
+
+- 增加小类分区（只记最高分区）
+
+
+2023.12.25
+
+- 2023年最新《高质量科技期刊分级目录总汇》
+- 2023年电子学会高质量科技期刊分级目录
+  - [计算机技术领域](https://cietest.yesky.com/list_248/11955.html)
+  - [电子技术、通信技术领域](https://cietest.yesky.com/list_248/11954.html)
+
+2023.06.28：
+
+- 2022年最新的SCI影响因子已经更新。
+
+  
+
+2022.12.21：
+
+- 最新的2022年中科院升级版分区： $\uparrow$表示大区升级或者变为TOP期刊； $\downarrow$表示大区降级或变为非TOP期刊。
+
+  
+
+2022.12.02：
+
+- 最新的CCF推荐期刊列表已经更新。
+
+  
+
+2022.06.28：
+
+- 2021年最新的SCI影响因子已经更新。
+- 更新失效的网址。
+
+### 初衷：
+
+笔者刚步入这个行业的时，做了很多无用功，研究收效甚微。高质量的论文有助于论文构思，实验设计和写作规范等。为让大家能够更早地阅读高质量论文，早日入门，所以做了这个英文期刊的推荐列表，主要目的有两个：一是帮助大家快速找到符合自己研究兴趣的高质量论文，把握行业的研究方向和整体趋势。二是方便大家对自己论文的内容和质量迅速定位，选择合适的期刊投稿，提高投稿成功率。
+
+### 说明：
+
+- 不同学院对于论文的评定标准不一样。计算机类，软件类学科较为认可[CCF等级认定的期刊和会议](https://www.ccf.org.cn/Academic_Evaluation/By_category/)或[清华大学计算机学科分级目录](https://www.aminer.cn/ranks/conf?category=All&category_en=&category_type=thu)；其他学院基本认可中科院分区([从2022年开始，分区表将只发布升级版结果，不再有基础版和升级版之分](https://mp.weixin.qq.com/s?__biz=MzI1MzA2MzM1NA==&mid=2659567988&idx=1&sn=a8567d81484302f9293776cbc6572e9b&chksm=f2ab50a1c5dcd9b7c27d833c54cb00fb7aaf2fbf31bc54390be4c525a800df37f9a8faf383b9&scene=21#wechat_redirect))或者学校（院）自行划定的期刊目录；当然，现在也在逐步推广学校（院）对于各学会[《高质量科技期刊分级目录》](https://www.cast.org.cn/xs/XSQK/art/2024/art_1755662220.html)的认可度；有的学校（院）对于IEEE trans的认可度则非常高。
+- 推荐期刊仅仅是笔者在阅读论文过程中的总结，可能不全，欢迎大家提issue补充。
+- 有的期刊刊发的智能故障诊断的论文比较多。**有些期刊也刊发智能故障诊断的论文，但是选择这类期刊时需要注意论文研究的对象要符合期刊范围。**
+- [ablesci](https://www.ablesci.com)中的网页包含期刊的一些基本信息，也包括LetPub 、小木虫 、SCIMAG等可以查看该期刊的网友互动，及期刊影响力的其它指标。
+- "**N**"表示没有收录到CCF或者CAAI推荐目录。
+- **预警期刊**： [2020](https://earlywarning.fenqubiao.com/#/zh-cn/early-warning-journal-list-2020) ; [2021](https://earlywarning.fenqubiao.com/#/zh-cn/early-warning-journal-list-2021) ; [2023](https://earlywarning.fenqubiao.com/#/zh-cn/early-warning-journal-list-2023) ;  [2024](https://ewl.fenqubiao.com/#/zh-cn/early-warning-journal-list-2024); [2025](https://ewl.fenqubiao.com/#/zh-cn/early-warning-journal-list-2025) ;  [2026](https://www.xr-scholar.com/Journals/UnderReview)
+- ❤❤❤<font color=Blue>**欢迎在`Issues`中提问讨论。欢迎`fork`, `Watch`,` star`！**</font>❤❤❤
+
+## 英文期刊：
+
+|                           **期刊名称**                           |      **新锐期刊分区表**      |      **影响因子**      | **小类分区** | **CCF/CAAI等级** |                            **T分区**                         |    **强制OA** |                             **评价**                             |
+| :----------------------------------------------------------: | :-----: | :----------------------------------------------------------: | :-----------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| **[Mechanical Systems and Signal Processing](https://www.sciencedirect.com/journal/mechanical-systems-and-signal-processing)** | **1(TOP)** | **10.2** | **工程：机械(1)** |                  | **兵工学会(T1);振动工程学会(T1);铁道学会(T2);自动化学会(A);机械工程学会(T1);声音学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=p3bNNr)** |
+| **[ISA Transactions](https://www.sciencedirect.com/journal/isa-transactions)** | **2(TOP)** | **6.6** | **自动化与控制系统(2);工程：综合(1);仪器仪表(1)** |                  | **仪器仪表学会(推荐)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DXbbap)** |
+| **[Journal of Computational Physics](https://www.sciencedirect.com/journal/journal-of-computational-physics)** | **2(TOP)** | **3.9** | **计算机：跨学科应用(3);物理：数学物理(1)** |                  | **数学学会(T1);自动化学会(A);声音学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pqbRo5)** |
+| **[Expert Systems with Applications](https://www.sciencedirect.com/journal/expert-systems-with-applications)** | **1(TOP)** | **9.4** | **计算机：人工智能(2);工程：电子与电气(1);运筹学与管理科学(2)** | **C/C** | **自动化学会(A);优选法统筹法与经济数学研究会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pB2jEp)** |
+| **[Knowledge-Based Systems](https://www.sciencedirect.com/journal/knowledge-based-systems)** | **1(TOP)** | **8.0** | **计算机：人工智能(2)** | **C/B** | **自动化学会(A);优选法统筹法与经济数学研究会(T3);电子学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rAA2jr)** |
+| **[Applied Soft Computing](https://www.sciencedirect.com/journal/applied-soft-computing)** | **2(TOP)** | **7.8** | **计算机：人工智能(2);计算机：跨学科应用(2)** | **N/C** |                                                              | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=yp1WdD)** |
+| **[IEEE Transactions on Industrial Informatics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=9424)** | **1(TOP)** | **9.8** | **自动化与控制系统(1);计算机：跨学科应用(1);工程：工业(1)** | **C** | **铁道学会(T2);自动化学会(A+);电机工程学会(T1);图象图形学学会(T2);电工技术学会(T1);指挥与控制学会(T1);电子学会(T2);声音学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=52Ad8p)** |
+| **[IEEE Internet of Things Journal](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6488907)** | **1  $\uparrow$(TOP)** | **8.7** | **计算机：信息系统(1);工程：电子与电气(1);电信学(1)** | **C** | **通信学会(高质量);电工技术学会(T2);电子学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rwxJ1p)** |
+| **[IEEE Transactions on Industrial Electronics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=41)** | **1(TOP)** | **7.4** | **自动化与控制系统(2);工程：电子与电气(2);仪器仪表(1)** |                  | **仪器仪表学会(推荐);铁道学会(T2);自动化学会(A);铁道学会(T1);照明学会(T3);电工技术学会(T1);指挥与控制学会(T1);电子学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DXRAvp)** |
+| **[Reliability Engineering & System Safety](https://www.sciencedirect.com/journal/reliability-engineering-and-system-safety)** | **1(TOP)** | **13.7** | **工程：工业(1);运筹学与管理科学(1)** |                  | **兵工学会(T1);职业安全健康协会(T1);自动化学会(A);优选法统筹法与经济数学研究会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5y03ap)** |
+| **[Neurocomputing](https://www.sciencedirect.com/journal/neurocomputing)** | **2(TOP)** | **6.7** | **计算机：人工智能(2)** | **C/B** | **兵工学会(T2);自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mNKeD)** |
+| **[Journal of Intelligent Manufacturing](https://www.springer.com/journal/10845/)** | **2** | **7.7** | **计算机：人工智能(2);工程：制造(3)** | **N/C** |                                                              | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DY7ovp)** |
+| **[Journal of Manufacturing Systems](https://www.sciencedirect.com/journal/journal-of-manufacturing-systems)** | **1(TOP)** | **14.9** | **工程：工业(1);工程：制造(1);运筹学与管理科学(1)** |                  | **自动化学会(A);优选法统筹法与经济数学研究会(T3);机械工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=p6Bqlp)** |
+| **[Structural Health Monitoring-An International Journal](https://journals.sagepub.com/home/shm)** | **2** | **5.7** | **工程：综合(2);仪器仪表(2)** |                  | **仪器仪表协会(T2);振动工程学会(T1);建筑学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=poxVa5)** |
+| **[Information Fusion](https://www.sciencedirect.com/journal/information-fusion)** | **1(TOP)** | **17.4** | **计算机：人工智能(1);计算机：理论方法(1)** | **N/A** | **自动化学会(A+);电子学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DlZBEp)** |
+| **[IEEE/ASME Transactions on Mechatronics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=3516)** | **1(TOP)** | **6.3** | **自动化与控制系统(1);工程：制造(2);  工程：电子与电气(2);工程：机械(1)** |                  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pLa7a5)** |
+| **[Mechanism and Machine Theory](https://www.sciencedirect.com/journal/mechanism-and-machine-theory)** | **1(Top)** | **5.9** | **工程：机械(1)** |                  | **振动工程学会(T2);自动化学会(B);机械工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5OeQ2r)** |
+| **[IEEE Transactions on Systems, Man, and Cybernetics: Systems](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6221021)** | **1(TOP)** | **8.4** | **自动化与控制系统(1); 计算机：控制论(1)** | **B/B** | **铁道学会(T2);优选法统筹法与经济数学研究会(T2);图象图形学学会(T2);自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5ObXEp)** |
+| **[Neural Networks](https://www.sciencedirect.com/journal/neural-networks)** | **2(TOP)** | **7.2** | **计算机：人工智能(2);神经科学(2)** | **B/B** | **自动化学会(A);图象图形学学会(T2);电子学会(T2);声学学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pox085)** |
+| **[Engineering Applications of Artificial Intelligence](https://www.sciencedirect.com/journal/engineering-applications-of-artificial-intelligence)** | **1(TOP)** | **9.0** | **自动化与控制系统(1);计算机：人工智能(2);工程：综合(1);工程：电子与电气(2)** | **C/C** | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pP3GOr)** |
+| **[IEEE Transactions on Reliability](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=24)** | **2** | **5.4** | **计算机：硬件(1);计算机：软件工程(2);工程：电子与电气(2)** | **C** | **电机工程学会(T2);自动化学会(A);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=p1wEJD)** |
+| **[IEEE Transactions on Cybernetics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6221036)** | **1(Top)** | **11.3** | **自动化与控制系统(1);计算机：人工智能(1);计算机：控制论(1)** | **B/A** | **自动化学会(A);优选法统筹法与经济数学研究会(T2);声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5K9xer)** |
+| **[Renewable Energy](https://www.sciencedirect.com/journal/renewable-energy)** | **1(Top)** | **9.1** | **绿色可持续发展技术(3);能源与燃料(2)** |                  | **电机工程学会(T2);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pnan6r)** |
+| **[Computers & Industrial Engineering](https://www.sciencedirect.com/journal/computers-and-industrial-engineering)** | **1 $\uparrow$(Top)** | **7.3** | **计算机：跨学科应用(2);工程：工业(2)** |                  | **自动化学会(A);优选法统筹法与经济数学研究会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGLL7r)** |
+| **[Energy](https://www.sciencedirect.com/journal/energy)** | **1(Top)** | **10.1** | **热力学(1);能源与燃料(2)** |                  | **电机工程学会(T3);自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGLvAr)** |
+| **[Quality and Reliability Engineering International](https://onlinelibrary.wiley.com/journal/10991638)** | **3** | **2.8** | **工程：综合(3);工程：工业(4);运筹学与管理科学(3)** |                  |                                                              | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mN4wD)** |
+| **[Applied Intelligence](https://www.springer.com/journal/10489/?utm_medium=display&utm_source=letpub&utm_content=text_link&utm_term=null&utm_campaign=MPSR_10489_AWA1_CN_CNPL_letpb_mp)** | **3** | **3.5** | **计算机：人工智能(3)** | **C/C** | **电子学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=K59gbr)** |
+| **[Structural Control & Health Monitoring](https://onlinelibrary.wiley.com/journal/15452263)** | **2** | **5.0** | **结构与建筑技术(2);工程：土木(2);仪器仪表(2)** |                  | **仪器仪表协会(T3);振动工程学会(T1);建筑学会(T2);铁道学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pWVv3r)** |
+| **[Complex & Intelligent Systems](https://www.springer.com/journal/40747/?utm_medium=display&utm_source=letpub&utm_content=text_link&utm_term=null&utm_campaign=MPSR_40747_AWA1_CN_CNPL_letpb_OAXmp)** | **3** | **4.5** | **计算机：人工智能(3)** | **N/C** |                                                              | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5kPgyD)** |
+| **[Neural Computing and Applications](https://www.springer.com/journal/521/?utm_medium=display&utm_source=letpub&utm_content=text_link&utm_term=null&utm_campaign=MPSR_00521_AWA1_CN_CNPL_letpb_mp)<sup> 非SCIE</sup>** | **0** | **0** |                                                              | **C/C** | **图象图形学学会(T3);电子学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5KWee5)** |
+| **[Soft Computing](https://www.springer.com/journal/500/?utm_medium=display&utm_source=letpub&utm_content=text_link&utm_term=null&utm_campaign=MPSR_00500_AWA1_CN_CNPL_letpb_mp)<sup> on_hold</sup>** | **4** | **0** | **计算机：人工智能(4);计算机：跨学科应用(4)** | **C/C** |                                                              | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5xWmRp)** |
+| **[Information Sciences](https://www.sciencedirect.com/journal/information-sciences)** | **1 $\uparrow$(Top)** | **6.0** | **计算机：信息系统(1)** | **B/N** | **兵工学会(T1);电子学会(T2);自动化学会(A);优选法统筹法与经济数学研究会(T2);仪器仪表学会(推荐)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5KlQWD)** |
+| **[Signal Processing](https://www.sciencedirect.com/journal/signal-processing)** | **2** | **3.7** | **工程：电子与电气(3)** | **C/B** | **兵工学会(T2);振动工程学会(T2);图象图形学学会(T2);图学学会(T2);电子学会(T3);声音学会(T2);声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rwRgYD)** |
+| **[Journal of Sound and Vibration](https://www.sciencedirect.com/journal/journal-of-sound-and-vibration)** | **2  $\uparrow$(Top)** | **5.8** | **声学(2);工程：机械(2);力学(2)** |                  | **兵工学会(T1);振动工程学会(T1);铁道学会(T1);声学学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r8VBx5)** |
+| **[Conference of the International Speech Communication Association](https://dblp.uni-trier.de/db/conf/interspeech/index.html)** | **(会议)** |  |                                                              | **C/B** |                                                              |            |                                                              |
+| **[Measurement](https://www.sciencedirect.com/journal/measurement)** | **2(Top) $\uparrow$** | **6.1** | **工程：综合(2);仪器仪表(2)** |                  | **兵工学会(T2);仪器仪表学会(T1);自动化学会(B);光学工程学会(T2);声学学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DbNm7D)** |
+| **[Nonlinear Dynamics](https://www.springer.com/journal/11071/)** | **2(Top) $\uparrow$** | **5.7** | **工程：机械(2);力学(2)** |                  | **振动工程学会(T1);自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rzaJgD)** |
+| **[IEEE Transactions on Instrumentation and Measurement](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=19)** | **2(Top) $\uparrow$** | **7.0** | **工程：电子与电气(2);仪器仪表(2)** |                  | **兵工学会(T2);仪器仪表学会(T1);自动化学会(B);光学工程学会(T2);电工技术学会(T2);电子学会(T1);声学学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DbG7nr)** |
+| **[IEEE Sensors Journal](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=7361)** | **2  $\uparrow$** | **4.5** | **工程：电子与电气(3);仪器仪表(2);物理：应用(2)** |                  | **兵工学会(T2);仪器仪表学会(T1);自动化学会(B);照明学会(T2);电工技术学会(T3);电子学会(T2);声学学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGLAbr)** |
+| **[Computers in Industry](https://www.sciencedirect.com/journal/computers-in-industry)** | **1(TOP)** | **10.0** | **计算机：跨学科应用(2)** |                  | **优选法统筹法与经济数学研究会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r7RRbD)** |
+| **[Engineering Failure Analysis](https://www.sciencedirect.com/journal/engineering-failure-analysis)** | **2(TOP) $\uparrow$** | **7.0** | **工程：机械(2);材料科学：表征与测试(1)** |                  | **振动工程学会(T3);铁道学会(T3);腐蚀与防护学会(T3);机械工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=p1w9OD)** |
+| **[Advanced Engineering Informatics](https://www.sciencedirect.com/journal/advanced-engineering-informatics)** | **1(TOP)** | **11.5** | **计算机：人工智能(1);工程：综合(1)** | **B/B** | **岩石力学与工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=BDagop)** |
+| **[Measurement Science and Technology](https://iopscience.iop.org/journal/0957-0233)** | **3** | **3.7** | **工程：综合(3);仪器仪表(3)** |                  | **仪器仪表学会(T2);照明学会(T2);光学工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pBMbJr)** |
+| **[Control Engineering Practice](https://www.sciencedirect.com/journal/control-engineering-practice)** | **2** | **5.3** | **自动化与控制系统(2);工程：电子与电气(2)** |                  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DYQ73D)** |
+| **[Digital Signal Processing](https://www.sciencedirect.com/journal/digital-signal-processing)** | **3** | **3.4** | **工程：电子与电气(3)** | **N/C** | **兵工学会(T3);图象图形学学会(T3);电子学会(T3);声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGLbBr)** |
+| **[Simulation Modelling Practice and Theory](https://www.sciencedirect.com/journal/simulation-modelling-practice-and-theory)** | **3** | **4.6** | **计算机：跨学科应用(3);计算机：软件工程(2)** |                  | **仿真学会(T1);自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DYlV35)** |
+| **[Proceedings of the Institution of Mechanical Engineers, Part C: Journal of Mechanical Engineering Science](http://www.uk.sagepub.com/journals/Journal202017)** | **4** | **1.8** | **工程：机械(4)** |                  | **振动工程学会(T3);机械工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pnaW4r)** |
+| **[IEEE Access](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6287639)** | **3  $\uparrow$** | **4.2** | **计算机：信息系统(3);工程：电子与电气(3);电信学(3)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=r7mlY5)** |
+| **[Sensors](https://www.mdpi.com/journal/sensors)** | **3** | **4.0** | **分析化学(2);工程：电子与电气(3);仪器仪表(3)** |                  | **核学会(T3);声学学会(T3)** | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=5QQnn5)** |
+| **[Shock and Vibration](https://www.hindawi.com/journals/sv/)** | **4** | **1.6** | **声学(4);工程：机械(4);力学(4)** |                  | **兵工学会(T3);振动工程学会(T3)** | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=peRqK5)** |
+| **[Machines](https://www.mdpi.com/journal/machines)** | **3** | **3.0** | **工程：电子与电气(3);工程：机械(3)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=5dBXkr)** |
+| **[Journal of Sensors](https://www.hindawi.com/journals/js/)** | **4** | **1.9** | **工程：电子与电气(4);仪器仪表(4)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=5kP9yD)** |
+| **[Chinese Journal of Aeronautics](https://www.sciencedirect.com/journal/chinese-journal-of-aeronautics)** | **1** | **6.9** | **工程：宇航(1)** |                  | **航空学会(T1);振动工程学会(T1);声学学会(T2)** | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=QDXBap)** |
+| **[Applied Acoustics](https://www.sciencedirect.com/journal/applied-acoustics)** | **2** | **4.3** | **声学(3)** |                  | **振动工程学会(T2);声学学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=KpPjBD)** |
+| **[Computers & Chemical Engineering](https://www.sciencedirect.com/journal/computers-and-chemical-engineering)** | **3 $\downarrow$** | **4.9** | **计算机：跨学科应用(3);工程：化工(3)** |                  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5dggzp)** |
+| **[Applied Energy](https://www.sciencedirect.com/journal/applied-energy)** | **1(TOP)** | **12.2** | **能源与燃料(2);工程：化工(1)** |                  | **自动化学会(A+);电机工程学会(T1);石油学会(T2);电工技术学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=d5QZRD)** |
+| **[Journal of Process Control](https://www.sciencedirect.com/journal/journal-of-process-control)** | **3** | **4.4** | **自动化与控制系统(3);工程：化工(2)** |                  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5x4Ez5)** |
+| **[Energy and Buildings](https://www.sciencedirect.com/journal/energy-and-buildings)** | **2(TOP)** | **8.0** | **结构与建筑技术(2);能源与燃料(2);工程：土木(2)** |                  | **建筑学会(T1);电机工程学会(T3);照明学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pB2PJp)** |
+| **[Energies](https://www.mdpi.com/journal/energies)** | **3  $\uparrow$** | **3.9** | **能源与燃料(4)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=rA4PMD)** |
+| **[Processes](https://www.mdpi.com/journal/processes)** | **3  $\uparrow$** | **3.4** | **工程：化工(3)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=Dakjxp)** |
+| **[Chinese Journal of Mechanical Engineering](https://cjme.springeropen.com/)** | **2  $\uparrow$** | **5.1** | **工程：机械(2)** |                  | **仪器仪表协会(推荐);振动工程学会(T1);机械工程学会(T1)** | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=VDMe8D)** |
+| **[Journal of Building Engineering](https://www.sciencedirect.com/journal/journal-of-building-engineering)** | **1(TOP) $\uparrow$** | **8.1** | **结构与建筑技术(2);工程：土木(1)** |                  | **照明学会(T1);建筑学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pPOenr)** |
+| **[IEEE Transactions on Industry Applications](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=28)** | **2** | **5.2** | **工程：综合(3);工程：电子与电气(3)** |                  | **自动化学会(A);电机工程学会(T2);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rwqwx5)** |
+| **[Electronics](https://www.mdpi.com/journal/electronics)** | **3 $\uparrow$** | **2.9** | **计算机：信息系统(4);工程：电子与电气(3);物理：应用(3)** |                  | **声学学会(T3)** | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=peVkX5)** |
+| **[Neural Processing Letters](https://www.springer.com/journal/11063/)** | **4** | **2.8** | **计算机：人工智能(4)** | **C/N** |                                                              | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5jd96r)** |
+| **[Energy Reports](https://www.sciencedirect.com/journal/energy-reports)** | **3** | **6.6** | **能源与燃料(3)** |                  |                                                              | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mxEop)** |
+| **[International Journal of Advanced Manufacturing Technology](https://www.springer.com/journal/170/)** | **3** | **3.7** | **自动化与控制系统(3);工程：制造(4)** |                  | **兵工学会(T3);自动化学会(B)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGLR4r)** |
+| **[Computers and Electrical Engineering](https://www.sciencedirect.com/journal/computers-and-electrical-engineering)** | **2 $\uparrow$** | **5.5** | **计算机：硬件(2);计算机：跨学科应用(3);工程：电子与电气(3)** |                  | **图象图形学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=52AAYp)** |
+| **[Advances in Mechanical Engineering](https://journals.sagepub.com/home/ade)** | **4** | **2.3** | **热力学(3);工程：机械(4)** |                  |                                                              | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=r0xmqr)** |
+| **[IET Control Theory and Applications](https://digital-library.theiet.org/content/journals/iet-cta)** | **4** | **2.0** | **自动化与控制系统(3);工程：电子与电气(3);仪器仪表(3)** |                  | **自动化学会(B)** | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pe9G6p)** |
+| **[Nuclear Engineering and Design](https://www.sciencedirect.com/journal/nuclear-engineering-and-design)** | **3** | **2.5** | **核科学技术(3)** |                  | **核学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DZV3OD)** |
+| **[Journal of Vibration Engineering & Technologies](https://link.springer.com/journal/42417)** | **3 $\uparrow$** | **3.5** | **工程：机械(3);力学(3)** |                  | **振动工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=52zay5)** |
+| **[Journal of Energy Storage](https://www.sciencedirect.com/journal/journal-of-energy-storage)** | **2(TOP) $\uparrow$** | **10.7** | **能源与燃料(2)** |                  | **硅酸盐学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DG6QW5)** |
+| **[Applied Mathematics and Computation](https://www.sciencedirect.com/journal/applied-mathematics-and-computation)** | **2(TOP) $\uparrow$** | **3.2** | **应用数学(2)** |                  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=b5JZP5)** |
+| **[Signal, Image and Video Processing](https://www.springer.com/journal/11760/)** | **4** | **2.7** | **工程：电子与电气(3);成像科学与照相技术(4)** | **N/C** | **兵工学会(T3);图象图形学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DZN3AD)** |
+| **[Frontiers of Mechanical Engineering](http://www.letpub.com.cn/index.php?page=journalapp&view=detail&journalid=10794)** | **3 $\downarrow$** | **5.0** | **工程：机械(3)** |                  | **机械工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DakPap)** |
+| **[Journal of Renewable and Sustainable Energy](https://aip.scitation.org/journal/rse)** | **4** | **2.4** | **绿色可持续发展技术(4);能源与燃料(4)** |                  | **电机工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DZ6ROD)** |
+| **[IEEE International Conference on Acoustics, Speech, and Signal Processing](https://dblp.uni-trier.de/db/conf/icassp/index.html)** | **(会议)** |  |  | **B/B** |                                                              |            |                                                              |
+| **[Journal of Mechanical Science and Technology](https://www.springer.com/journal/12206/)** | **4** | **2.2** | **工程：机械(4)** |                  | **声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rwXl2p)** |
+| **[IEEE Transactions on Neural Networks and Learning Systems](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=5962385)** | **2(TOP) $\downarrow$** | **9.7** | **计算机：人工智能(2);计算机：硬件(1);计算机：理论方法(1);工程：电子与电气(2)** | **B/A** | **自动化学会(A);图象图形学学会(T2);电子学会(T1);声学学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5967BD)** |
+| **[Journal of Vibration and Control](https://journals.sagepub.com/home/jvc)** | **3** | **2.4** | **声学(4);工程：机械(3);力学(3)** |                  | **振动工程学会(T1);铁道学会(T3);声学学会(T1);机械工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rvN7Er)** |
+| **[IEEE Transactions on Power Electronics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=63)** | **1(TOP)** | **7.1** | **工程：电子与电气(2)** |                  | **电机工程学会(T1);铁道学会(T1);自动化学会(A);照明学会(T3);电工技术学会(T1);电子学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DMqQWD)** |
+| **[Science Progress](https://journals.sagepub.com/home/sci)** | **4** | **2.6** | **综合性期刊(4)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5Elaqp)** |
+| **[Micromachines](https://www.mdpi.com/journal/micromachines)** | **3** | **3.5** | **分析化学(3);纳米科技(4);仪器仪表(3);物理：应用(3)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pexOnr)** |
+| **[Journal of Electrical Engineering & Technology](https://www.springer.com/journal/42835)** | **4** | **2.0** | **工程：电子与电气(4)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=59RYBD)** |
+| **[International Journal of Intelligent Systems](https://onlinelibrary.wiley.com/journal/1098111x)** | **3** | **4.8** | **计算机：人工智能(3)** | **N/C** | **自动化学会(A);电子学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mwYwr)** |
+| **[Journal of the Franklin Institute](https://www.sciencedirect.com/journal/journal-of-the-franklin-institute)** | **2 $\uparrow$** | **3.7** | **自动化与控制系统(2);工程：综合(3);工程：电子与电气(3);数学跨学科应用(1)** |  | **自动化学会(A)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DaNEar)** |
+| **[Measurement and Control](https://journals.sagepub.com/home/MAC)** | **3 $\uparrow$** | **2.3** | **自动化与控制系统(4);仪器仪表(4)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=DY70vp)** |
+| **[IEEE Transactions on Automation Science and Engineering](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=8856)** | **2(TOP) $\uparrow$** | **7.9** | **自动化与控制系统(2)** | **B/C** | **自动化学会(A+);指挥与控制学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DZ2oXD)** |
+| **[Journal of Manufacturing Processes](https://www.sciencedirect.com/journal/journal-of-manufacturing-processes)** | **1(TOP)** | **7.8** | **工程：制造(2)** |  | **机械工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pPOq9r)** |
+| **[International Journal of Mechanical Sciences](https://www.sciencedirect.com/journal/international-journal-of-mechanical-sciences)** | **1(TOP)** | **11.4** | **工程：机械(1);力学(1)** |  | **振动工程学会(T1);汽车工程学会(T2);兵工学会(T1);机械工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rA4GbD)** |
+| **[Journal of the Brazilian Society of Mechanical Sciences and Engineering](https://link.springer.com/journal/40430)** | **3 $\uparrow$** | **2.7** | **工程：机械(3)** |  | **机械工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5jRqb5)** |
+| **[Heliyon](https://www.sciencedirect.com/journal/heliyon)<sup> on_hold</sup>** | **4** | **0** | **综合性期刊(4)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5KwYd5)** |
+| **[Forschung Im Ingenieurwesen-Engineering Research](https://www.springer.com/journal/10010/?utm_medium=display&utm_source=letpub&utm_content=text_link&utm_term=null&utm_campaign=MPSR_10010_AWA1_CN_CNPL_letpb_mp)** | **4** | **1.8** | **工程：综合(4);工程：机械(4)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5KlodD)** |
+| **[Mechanics & Industry](https://www.mechanics-industry.org/)** | **4** | **1.3** | **工程：机械(4);力学(4)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r8MEqp)** |
+| **[Applied Mathematical Modelling](https://www.sciencedirect.com/journal/applied-mathematical-modelling)** | **2(TOP) $\uparrow$** | **5.5** | **工程：综合(2);数学跨学科应用(1);力学(2)** |  | **仿真学会(T2);数学会(T2);自动化学会(A+)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=w5gwd5)** |
+| **[Transactions of the Institute of Measurement and Control](https://journals.sagepub.com/home/TIM)** | **4** | **1.8** | **自动化与控制系统(4);仪器仪表(3)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5QPVAp)** |
+| **[Advances in Manufacturing](https://www.springer.com/journal/40436/)** | **2 $\uparrow$** | **3.9** | **工程：制造(3);材料科学：综合(2)** |  | **机械工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r7mwA5)** |
+| **[Applied Thermal Engineering](https://www.sciencedirect.com/journal/applied-thermal-engineering)** | **2(TOP)** | **7.5** | **热力学(1);能源与燃料(2);工程：机械(2);力学(1)** |  | **电机工程学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=0pWyND)** |
+| **[Scientific Report](https://www.nature.com/srep/)** | **3** | **4.9** | **综合性期刊(3)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=rAXQeD)** |
+| **[Electronic Research Archive](https://www.aimspress.com/journal/era)** | **4** | **1.2** | **数学(4)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=DG6Ab5)** |
+| **[CMES-Computer Modeling in Engineering & Sciences](https://www.techscience.com/journal/CMES)** | **3 $\uparrow$** | **2.9** | **工程：综合(3);数学跨学科应用(3)** |  | **仿真学会(T3)** | **`YES`** | **[ablesci](https://www.ablesci.com/journal/detail?id=ypoVzr)** |
+| **[Alexandria Engineering Journal](https://www.sciencedirect.com/journal/alexandria-engineering-journal)** | **2(TOP)** | **6.4** | **工程：综合(2)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5ElnNp)** |
+| **[Science China Technological Sciences](https://link.springer.com/journal/11431)** | **1(非TOP)** | **5.1** | **工程：综合（1区）材料科学：综合（1区）** | | **材料研究学会(T1);岩石力学与工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DGNYZ5)** |
+| **[Annals of Nuclear Energy](https://www.sciencedirect.com/journal/annals-of-nuclear-energy)** | **3** | **2.5** | **核科学技术(2)** |  | **核学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=0pWO6p)** |
+| **[Mathematical Biosciences and Engineering](https://www.aimspress.com/journal/mbe)** | **0 $\downarrow$** | **0** |  | |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=r78WWp)** |
+| **[Journal of the Taiwan Institute of Chemical Engineers](https://www.sciencedirect.com/journal/journal-of-the-taiwan-institute-of-chemical-engineers)** | **2** | **6.9** | **工程：化工(2)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=p3bXVr)** |
+| **[IEEE Transactions on Transportation Electrification](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6687316)** | **1(TOP)** | **8.5** | **工程：电子与电气(1);运输科技(2)** |  | **电机工程学会(T2);汽车工程学会(T2);铁道学会(T1);公路学会(T3);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rA1Q9r)** |
+| **[IEEE Transactions on Intelligent Transportation Systems](https://ieeexplore.ieee.org/xpl/issues?punumber=6979&isnumber=9084394)** | **1(TOP) $\uparrow$** | **9.1** | **工程：土木(1);工程：电子与电气(2 $\downarrow$);运输科技(2 $\downarrow$)** | **B/B** | **自动化学会(A);铁道学会(T1);公路学会(T2);中国优选法统筹法与经济数学研究会(T2);图像图形学会(T2);电工技术学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DYQGRD)** |
+| **[International Journal of Adaptive Control and Signal Processing](https://onlinelibrary.wiley.com/journal/10991115)** | **4** | **3.8** | **自动化与控制系统(3);工程：电子与电气(3)** |  | **声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DaB8Jr)** |
+| **[Robotics and Computer-Integrated Manufacturing](https://www.sciencedirect.com/journal/robotics-and-computer-integrated-manufacturing)** | **1(TOP)** | **12.3** | **计算机：跨学科应用(1);工程：制造(1);机器人学(1)** |  | **自动化学会(A+);机械工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pPNZBD)** |
+| **[Artificial Intelligence Review](https://link.springer.com/journal/10462)** | **1(TOP)** | **18.8** | **计算机：人工智能(1)** | **N/B** | **声学学会(T3)** | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=BDaQaD)** |
+| **[Journal of Cloud Computing-Advances Systems and Applications](https://journalofcloudcomputing.springeropen.com/)** | **3** | **5.5** | **计算机：信息系统(3)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5ONzJp)** |
+| **[Nuclear Engineering and Technology](https://www.sciencedirect.com/journal/nuclear-engineering-and-technology)** | **3** | **2.9** | **核科学技术(2)** |  |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pWV3Nr)** |
+| **[Nondestructive Testing and Evaluation](https://www.tandfonline.com/journals/gnte20)** | **2** | **4.3** | **材料科学：表征与测试(2)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5gM0dr)** |
+| **[IEEE Transactions on Control Systems Technology](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=87)** | **3 $\downarrow$** | **4.4** | **自动化与控制系统(3);工程：电子与电气(3)** |  | **自动化学会(A);指挥与控制学会(T1);声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pLaVj5)** |
+| **[International Conference on Pattern Recognition](https://dblp.uni-trier.de/db/conf/icpr/index.html)** | **(会议)** |  |  | **C/B** |  |  |  |
+| **[Journal of Computational Design and Engineering](https://academic.oup.com/jcde?login=true)** | **2** | **6.8** | **计算机：跨学科应用(2);工程：综合(2)** |  | **图学学会(T2)** | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pWGm3p)** |
+| **[IEEE Signal Processing Letters](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=97)** | **3** | **3.6** | **工程：电子与电气(3)** | **C/C** | **自动化学会(B);图象图形学学会(T3);电子学会(T3);声学学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DbGdnr)** |
+| **[Journal of Industrial Information Integration](https://www.sciencedirect.com/journal/journal-of-industrial-information-integration)** | **1(TOP)** | **11.2** | **计算机：跨学科应用(2);工程：工业(2)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=DMAW3D)** |
+| **[Process Safety and Environmental Protection](https://www.sciencedirect.com/journal/process-safety-and-environmental-protection)** | **2(TOP)** | **7.9** | **工程：环境(2);工程：化工(1)** |  | **职业安全健康协会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5Vvdk5)** |
+| **[IEEE Transactions on Consumer Electronics](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=30)** | **1(TOP) $\uparrow$** | **9.9** | **工程：电子与电气(1);电信学(1)** |  | **电子学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r0z115)** |
+| **[Arabian Journal for Science and Engineering](https://link.springer.com/journal/13369)** | **3 $\uparrow$** | **3.1** | **综合性期刊(3)** |  | **兵工学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=pB4qYD)** |
+| **[Journal of Nondestructive Evaluation, Diagnostics and Prognostics of Engineering Systems](https://asmedigitalcollection.asme.org/nondestructive)** | **4** | **2.0** | **工程：综合(4);仪器仪表(4);材料科学：表征与测试(3)**	|| | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=52E1Lp)** |
+| **[IEEE Transactions on Energy Conversion](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=60)** | **2** | **6.1** | **能源与燃料(3);工程：电子与电气(2)** |  | **电机工程学会(T1)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mwPnr)** |
+| **[International Journal of System Assurance Engineering and Management](https://link.springer.com/journal/13198)** | **4** | **1.5** | **工程：综合(4)** |  |  | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=r7BVmD)** |
+| **[Annals of Operations Research](https://link.springer.com/journal/10479)** | **3 $\uparrow$** | **4.1** | **运筹学与管理科学(3)** |  | **优选法统筹法与经济数学研究会；管理科学与工程学会系统工程学会(B)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=W5OKE5)** |
+| **[Electrical Engineering](https://link.springer.com/journal/202)** | **4** | **2.7** | **工程：电子与电气(4)** |  | **电机工程学会(T3)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rz0eE5)** |
+| **[Science China Information Sciences](https://link.springer.com/journal/11432)** | **1(非TOP) $\downarrow$** | **8.1** | **计算机：信息系统(1);工程：电子电气(1)** |  | **自动化学会(A);通信学会(T1);仿真学会(T1);电子学会(T1);声学学会** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=52ayXp)** |
+| **[Results in Engineering](https://www.sciencedirect.com/journal/results-in-engineering)** | **2(TOP)** | **9.4** | **工程：综合(1)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=poLbR5)** |
+| **[Proceedings of the AAAI Conference on Artificial Intelligence](https://ojs.aaai.org/index.php/AAAI/index)** | **会议** |  | | **A/A** | | | |
+| **[Cluster Computing-The Journal of Networks Software Tools and Applications](https://link.springer.com/journal/10586)** | **3** | **5.5** | **计算机：信息系统(3);计算机：理论方法(3)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=DaB49r)** |
+| **[International Journal of Control, Automation, and Systems](https://link.springer.com/journal/12555)** | **3** | **2.8** | **自动化与控制系统(3)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=DaB49r)** |
+| **[Journal of Industrial and Management Optimization](https://www.aimsciences.org/jimo)** | **3** | **1.4** | **工程：综合(3); 运筹学与管理科学(4);数学跨学科应用(4)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5K4VWD)** |
+| **[Physica Scripta](https://iopscience.iop.org/journal/1402-4896)** | **3** | **2.6** | **物理：综合(3)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=5k9Wzr)** |
+| **[Journal of Quality in Maintenance Engineering](https://www.emeraldgrouppublishing.com/journal/jqme)** | **3** | **2.3** | **工程：工业(4)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=5Jv8M5)** |
+|  |  |  |  | | |  |  |
+| **[IEEE Transactions on Aerospace and Electronic Systems](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=7)** | **2** | **7.0** | **工程：宇航(2); 工程：电子与电气(2); 电信学(3)** | | **自动化学会(A);航空学会(T1);兵工学会(T2);电子学会(T1);声学学会(T2)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=p1w7jD)** |
+| **[International Journal of Data Science and Analytics](https://link.springer.com/journal/41060)** | **3** | **2.9** | **计算机：人工智能(4)；计算机：信息系统(4)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=pBGVx5)** |
+| **[Geoenergy Science and Engineering](https://www.sciencedirect.com/journal/geoenergy-science-and-engineering)** |           **3**           |           **4.4**           |                **能源与燃料哦(3); 工程：石油(2)**                |                  |                       **石油学会(T1)**                       |   **No**   | **[ablesci](https://www.ablesci.com/journal/detail?id=rwQqB5)** |
+| **[Ain Shams Engineering Journal](https://www.sciencedirect.com/journal/ain-shams-engineering-journal)** | **2** | **6.2** | **工程：综合(2)** | |  | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=5QjxRD)** |
+| **[Electric Power Systems Research](https://www.sciencedirect.com/journal/electric-power-systems-research)** | **3** | **4.3** | **工程：电子与电气(3)** | | **电机工程学会(T3);铁道学会(T2);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5mw8Er)** |
+| **[Solar Energy](https://www.energy.gov/topics/solar-energy)** | **2** | **7.9** | **能源与燃料(3)** | | **电机工程学会(T2);照明学会(T2);电工技术学会(T2)** | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=5VvYW5)** |
+| **[Computation](https://www.mdpi.com/journal/computation)** | **4** | **2.6** | **数学跨学科应用(4)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=rRqqKD)** |
+| **[Future Internet](https://www.mdpi.com/journal/futureinternet)** | **3** | **4.6** | **计算机：信息系统(3)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=529YYp)** |
+| **[Journal of Computing and Information Science in Engineering](https://asme.onlinelibrary.wiley.com/journal/19447078)** | **3** | **3.7** | **计算机：跨学科应用(3);工程：制造(3)** | | | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=D4bj7p)** |
+| **[Machine Learning and Knowledge Extraction](https://www.mdpi.com/journal/make)** | **3** | **8.4** | **计算机：人工智能(3); 计算机：跨学科应用(3); 工程：电子与电气(3)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pB17Yr)** |
+| **[Computational Mechanics](https://link.springer.com/journal/466)** | **2** | **4.5** | **数学跨学科应用(2); 力学(3)** | | **数学会(T2);兵工学会(T2)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=5j2jb5)** |
+| **[Flow Measurement and Instrumentation](https://www.sciencedirect.com/journal/flow-measurement-and-instrumentation)** | **3** | **3.3** | **工程：机械(3); 仪器仪表(3)** | | **仪器仪表学会(T3)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=r7RzRD)** |
+| **[Big Data and Cognitive Computing](https://www.mdpi.com/2504-2289)** | **3** | **5.3** | **计算机：人工智能(3); 计算机：信息系统(3); 计算机：理论方法(2)** | | | **YES** | **[ablesci](https://www.ablesci.com/journal/detail?id=pB17Yr)** |
+| **[International Journal of Pattern Recognition and Artificial Intelligence](https://www.worldscientific.com/page/ijprai/aims-scope)** | **0.9** | **4** | **计算机：人工智能(4)** | | | **NO** | **[ablesci](https://www.ablesci.com/journal/detail?id=rz0QO5)** |
+| **[Cybernetics and Intelligence](https://www.sciopen.com/journal/2995-911X)** |  |  |  | | |  |  |
+| **[Complex Engineering Systems](https://www.oaepublish.com/comengsys)** |  |  |  | | |  |  |
+| **[Discover Artificial Intelligence](https://link.springer.com/journal/44163)** | | | | | | | |
+| **[International Journal of Green Energy](https://www.tandfonline.com/journals/ljge20)** | **3.7** | **3** | **热力学(3); 绿色可持续发展技术(4); 能源与燃料(4)** | | **电机工程学会(T3)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=5VzVj5)** |
+| **[Journal of Failure Analysis and Prevention](https://link.springer.com/journal/11668)** | **1.8** | **4** | **工程：综合(4)** | | **有色金属学会(T2)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=5VzVj5)** |
+| **[ASCE-ASME Journal of Risk and Uncertainty in Engineering Systems, Part A: Civil Engineering](https://ascelibrary.org/journal/ajrua6)** | **2.9** | **3** | **工程：土木(3)** | | **职业安全健康协会(T3)** | **No** | **[ablesci](https://www.ablesci.com/journal/detail?id=pWGwxp)** |
+
+
+## 部分中文EI期刊：
+
+|                            期刊名                            |                            期刊名                            |                            期刊名                            |                            期刊名                            |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+| **[兵工学报](https://kns.cnki.net/knavi/journals/BIGO/detail?uniplatform=NZKPT)** | **[西南交通大学学报](https://kns.cnki.net/knavi/journals/XNJT/detail?uniplatform=NZKPT)** | **[铁道科学与工程学报](https://kns.cnki.net/knavi/journals/CSTD/detail?uniplatform=NZKPT)** | **[吉林大学学报(工学版)](https://kns.cnki.net/knavi/journals/JLGY/detail?uniplatform=NZKPT)** |
+| **[计算机集成制造系统](https://kns.cnki.net/knavi/journals/JSJJ/detail?uniplatform=NZKPT)** | **[航空动力学报](https://kns.cnki.net/knavi/journals/HKDI/detail?uniplatform=NZKPT)** | **[中国电机工程学报](https://kns.cnki.net/knavi/journals/ZGDC/detail?uniplatform=NZKPT)** | **[振动工程学报](https://kns.cnki.net/knavi/journals/ZDGC/detail?uniplatform=NZKPT)** |
+| **[机械工程学报](https://kns.cnki.net/knavi/journals/JXXB/detail?uniplatform=NZKPT)** | **[航空学报](https://kns.cnki.net/knavi/journals/HKXB/detail?uniplatform=NZKPT)** | **[振动.测试与诊断](https://kns.cnki.net/knavi/journals/ZDCS/detail?uniplatform=NZKPT)** | **[仪器仪表学报](https://kns.cnki.net/knavi/journals/YQXB/detail?uniplatform=NZKPT)** |
+| **[太阳能学报](https://kns.cnki.net/knavi/journals/TYLX/detail?uniplatform=NZKPT)** | **[中国机械工程](https://kns.cnki.net/knavi/journals/ZGJX/detail?uniplatform=NZKPT)** | **[电力系统保护与控制](https://kns.cnki.net/knavi/journals/JDQW/detail?uniplatform=NZKPT)** | **[华中科技大学学报(自然科学版)](https://kns.cnki.net/knavi/journals/HZLG/detail?uniplatform=NZKPT)** |
+| **[控制与决策](https://kns.cnki.net/knavi/journals/KZYC/detail?uniplatform=NZKPT)** | **[振动与冲击](https://kns.cnki.net/knavi/journals/ZDCJ/detail?uniplatform=NZKPT)** | **[哈尔滨工业大学学报](https://kns.cnki.net/knavi/journals/HEBX/detail?uniplatform=NZKPT)** | **[西安交通大学学报](https://kns.cnki.net/knavi/journals/XAJT/detail?uniplatform=NZKPT)** |
+
+[![Hits](https://hits.sh/github.com/github.com/liguge/Journals-of-Prognostics-and-Health-Management.svg?label=Views&color=0891b2)](https://hits.sh/github.com/liguge/Journals-of-Prognostics-and-Health-Management/)

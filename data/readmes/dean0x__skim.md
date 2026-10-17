@@ -1,0 +1,718 @@
+# Skim: The Most Intelligent Context Optimization Engine for Coding Agents
+
+> **Code skimming. Command rewriting. Test, build, and git output compression. Codebase heatmap. Token budget cascading.** 18 languages. 14ms for 3,000 lines. Built in Rust.
+
+Other tools filter terminal noise. Skim understands your code. It parses ASTs across 18 languages, strips implementation while preserving architecture, then optimizes every other type of context your agent consumes: test output, build errors, git diffs, raw commands, and codebase heatmaps. 14ms for 3,000 lines. 48x faster on cache hits.
+
+[![Website](https://img.shields.io/badge/Website-skim-e87040)](https://dean0x.github.io/x/skim/)
+[![CI](https://github.com/dean0x/skim/actions/workflows/ci.yml/badge.svg)](https://github.com/dean0x/skim/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/rskim.svg)](https://crates.io/crates/rskim)
+[![npm](https://img.shields.io/npm/v/rskim.svg)](https://www.npmjs.com/package/rskim)
+[![Downloads](https://img.shields.io/crates/d/rskim.svg)](https://crates.io/crates/rskim)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+## Why Skim?
+
+**Context capacity is not the bottleneck. Attention is.** Every token you send to an LLM dilutes its focus. Research consistently shows attention dilution in long contexts -- models lose track of critical details even within their window. More tokens means higher latency, degraded recall, and weaker reasoning. Past a threshold, adding context makes outputs worse. While other tools stop at filtering command output, Skim parses your actual code structure and optimizes the full spectrum of agent context: code, test output, build errors, git diffs, and commands. Deeper, broader, and smarter than anything else available.
+
+Take a typical 80-file TypeScript project: 63,000 tokens. That contains maybe 5,000 tokens of actual signal. The rest is implementation noise the model doesn't need for architectural reasoning.
+
+**80% of the time, the model doesn't need implementation details.** It doesn't care *how* you loop through users or validate emails. It needs to understand *what* your code does and how pieces connect.
+
+That's where Skim comes in.
+
+| Mode       | Tokens | Reduction | Use Case                   |
+|------------|--------|-----------|----------------------------|
+| Full       | 63,198 | 0%        | Original source code       |
+| Structure  | 25,119 | 60.3%     | Understanding architecture |
+| Signatures | 7,328  | 88.4%     | API documentation          |
+| Types      | 5,181  | 91.8%     | Type system analysis       |
+
+For example:
+
+```typescript
+// Before: Full implementation (100 tokens)
+export function processUser(user: User): Result {
+    const validated = validateUser(user);
+    if (!validated) throw new Error("Invalid");
+    const normalized = normalizeData(user);
+    return await saveToDatabase(normalized);
+}
+
+// After: Structure only (12 tokens)
+export function processUser(user: User): Result { /* ... */ }
+```
+
+**One command. 60-90% smaller.** Your 63,000-token codebase? Now 5,000 tokens. Fits comfortably in a single prompt with room for your question.
+
+That same 80-file project that wouldn't fit? Now you can ask: *"Explain the entire authentication flow"* or *"How do these services interact?"* — and the AI actually has enough context to answer.
+
+## Features
+
+### Code Skimming (the original, still unmatched)
+- **18 languages** including TypeScript, JavaScript, Python, Rust, Go, Java, C, C++, C#, Ruby, SQL, Kotlin, Swift, Bash, Markdown, JSON, YAML, TOML
+- **6 transformation modes** from full to minimal to pseudo to structure to signatures to types (15-95% reduction)
+- **14.6ms** for 3,000-line files. **48x faster** on cache hits
+- **Token budget cascading** that automatically selects the most aggressive mode fitting your budget
+- **Parallel processing** with multi-file globs via rayon
+
+### Command Rewriting (`skim init`)
+- PreToolUse hook rewrites `ls`, `grep`, `gh`, `cargo test`, `vitest`, `git diff` into skim equivalents
+- File reads (`cat`, `head`, `tail` on code files) are rewritten into direct skim reads (e.g. `cat file.ts` → `skim file.ts --mode=pseudo`); output is a structured view, not raw bytes — skim emits a one-line stderr notice whenever the served view differs from raw file contents. `head -20 file.ts` becomes `skim file.ts --mode=full --max-lines 20` (verbatim lines; when the file is longer, one slot goes to the elision marker, so the bound is N lines *total* — with one documented exception at `N=1`, which emits 1 content line plus the marker), and `tail -5 file.ts` likewise with `--last-lines 5`; bare `head`/`tail` default to 10 lines
+- Two-layer rule system with declarative prefix-swap and custom argument handlers
+- One command installs the hook for automatic, invisible context savings
+- Round-trip safe: commands with newlines, heredocs, or command substitution are never rewritten; piped commands are refused too, with one exception — `<cmd> | cat` (bare `cat`, sole consumer, no redirects) rewrites its source, because bare `cat` renders a stream for a reader rather than consuming its bytes
+- Dev installs (`skim init --dev`): while working on skim itself, the hook's commit pin goes stale the moment you rebuild at a new commit, which forces a full reinstall on the next `skim init` and makes `skim doctor` exit 1 for being behind HEAD — neither of which rebuilding can fix, because HEAD keeps moving. `--dev` marks the installed hook as dev-pinned: the real commit is still recorded, and only the commit-staleness check is waived, so repeat installs take the already-up-to-date fast path and doctor stops failing. Version and binary-path checks are unchanged, and the waiver applies only to a hook whose SHA-256 manifest verifies. Dev mode is a property of the command, not stored state — running `skim init` **without** `--dev` reverts the hook to a strict install and reports `dev-pinned -> pinned`, so there is no `--undev`; `skim init --dev --force` re-stamps one in place
+- PATH wrappers (`skim init --wrappers`) now apply a force-raw sidecar marker (set by the PreToolUse hook when it identifies a pipeline shape where compression would cause byte loss) and an `fstat`/`isatty` gate (which serves raw bytes when stdout is a regular file, socket, or non-terminal character device). Together these partially close the compression-into-piped-consumer window (#319). Two holes remain (#514): (1) a same-tool concurrent command can clear a live marker, and (2) when no PreToolUse hook fires at all the wrapper falls back to `fstat`-only behaviour with no pipeline-shape awareness. Use `SKIM_PASSTHROUGH=1` when byte-exact output is required in those cases
+
+### Test Output Compression
+- `skim cargo test`, `skim pytest`, `skim vitest`, `skim jest`, `skim go test`
+- Extracts failures, assertions, pass/fail counts while stripping noise
+- Three-tier degradation from structured parse to regex fallback to passthrough
+
+### Build Output Compression
+- `skim cargo build`, `skim cargo clippy`, `skim make`, `skim tsc`
+- Extracts errors, warnings, and summaries
+
+### Lint Output Compression
+- `skim eslint`, `skim ruff`, `skim mypy`, `skim golangci-lint`, `skim prettier`, `skim rustfmt`, `skim biome`, `skim dprint`, `skim oxlint`, `skim black`, `skim gofmt`
+- Extracts errors and warnings with severity grouping
+- Three-tier degradation from structured parse to regex fallback to passthrough
+
+### Package Manager Compression
+- `skim npm`, `skim pnpm`, `skim pip`, `skim cargo audit`
+- Extracts vulnerabilities, version conflicts, and dependency issues
+
+### Git Output Compression (`skim git`)
+- **`skim git diff`** -- AST-aware: renders hunk-scoped context (AST breadcrumb — prefixed `~`, marking a declaration header skim pulled in from outside the hunk rather than a line git printed — plus the changed lines), bounded by a guardrail so output never exceeds the raw diff size; strips diff noise
+  - `--mode structure` adds unchanged functions as signatures for context
+  - `--mode full` shows entire files with change markers
+  - Supports `--staged`, commit ranges (`HEAD~3`, `main..feature`)
+- **`skim git show`** -- compresses `git show` output in two modes:
+  - Commit mode (default, e.g. `skim git show HEAD`): strips commit header noise and renders the diff with the AST-aware pipeline
+  - File-content mode (e.g. `skim git show HEAD:src/main.rs`): applies skim's source transform to the file content
+  - Three-tier degradation: AST-aware render → raw hunk render → guardrail passthrough
+- Compresses `git status` and `git log` with flag-aware passthrough
+- All subcommands support `--json` for machine-readable output
+
+### Codebase Heatmap (`skim heatmap`)
+- **Churn hotspots** — files changed most frequently, ranked by commit count
+- **Blast radius** — file coupling detection: files that consistently change together
+- **Fix risk** — files with high fix-commit density or fix-after-touch patterns
+- **Bus factor** — files with a single dominant author (>80% of commits)
+- **Module health** — directory encapsulation scores (cross-boundary coupling violations)
+- Configurable time windows: `--window sprint` (14d), `--last 200`, `--since 30d`, or full history
+- File targeting with positional args and `--diff` to scope output without skewing metrics
+- `--insights` for threshold-filtered findings only (CRITICAL/WARNING severity one-liners)
+- `--json` for machine-readable output, `--path` to scope to a subdirectory
+
+### Code Search (`skim search`)
+- **n-gram index** — build an AST-aware search index with `skim search --build` (incremental SHA-256 cache, 50K file cap; use `skim search --rebuild` for a full rebuild from scratch)
+- **Temporal sort flags** — rank results by git history signals: `--hot` (hotspot score), `--cold` (least-changed first), `--risky` (fix-commit density)
+- **Blast-radius filter** — `--blast-radius FILE` pre-filters candidates to files that historically co-change with FILE, then applies sort flags within that set
+- **Positional query flags** — `--phrase` requires query words in order and adjacent (contiguous tokens); `--near N` requires all query words within a span of N word tokens in any order; `--phrase --near N` combines both: ordered AND total span ≤ N (narrows `--near N`, never grows the result set). Both flags compose with `--ast`, `--blast-radius`, and temporal sort flags. A `verify_mode` field (`"phrase"`, `"near"`, or `"phrase_near"`) is added to `--json` output for non-default modes. Inert without a text query (a notice is printed to stderr on those arms)
+- **AST structural search**: `--ast <pattern>` filters to files containing a named structural pattern (e.g. `try-catch`, `nested-loop`, `god-function`) or a containment query (e.g. `--ast "for_statement > await_expression"`); composable with a text query, `--phrase`, `--near`, `--lang`, `--hot`/`--cold`/`--risky` temporal sort flags, `--blast-radius`, `--limit`, `--offset`, and `--json`; degrades gracefully when heatmap data is absent (warns to stderr, returns unsorted, exit 0). Limitation: single-node queries (no `>` separator) are rejected (#283, unigram index not yet built). AST indexing covers files up to 1 MiB (the size cap is language-aware; data formats JSON/YAML/TOML use a serde path and are never AST-indexed); files above the cap are fully text-searchable but absent from `--ast` results. When files are excluded, a coverage notice is printed to stderr and `--ast --json` includes an `ast_coverage` key with per-language counts; run `skim search --stats` for the full coverage report
+- **Composite ranking** — `--weights lexical,ast,temporal` (default `0.5,0.3,0.2`) tunes the `--blast-radius` composite RRF ranking (#200); values are ratios only (not normalized), zero and non-sum-to-1 are allowed, negative/NaN/inf are rejected. On the `--blast-radius` path only the `lexical` and `temporal` weights currently affect ranking (a lexical ∪ co-change fusion); the `ast` weight is parsed and validated but inert here until the full text+AST+temporal compound dispatch lands (#339)
+- Composable: `skim search "parse config" --risky --blast-radius src/config.rs` finds risky matches near a file's co-change cluster
+- `--json` for structured output, `--limit N` to cap results, `--offset N` for pagination (skip N verified results on all arms including standalone `--hot`/`--cold`/`--risky`/`--blast-radius`; a bounded-page notice is printed to stderr when more results exist), `--root` for explicit project root
+- **Degraded-state transparency** — when the index or temporal database is unavailable, corrupt, or on an incompatible schema version, `skim search` continues at exit 0 and prints a `skim search: …` notice to stderr with remediation text (e.g. `skim search --rebuild`). The `--json` output gains a `degraded` array when any subsystem is impaired; each entry carries `subsystem`, `reason`, `requested`, `applied`, `message`, and `remediation` fields and the array is omitted entirely when the query runs clean. A structurally inconsistent index (format-version mismatch, missing paired posting file, or corruption detected at read time) triggers an automatic rebuild before the query proceeds, so a single slow query self-heals without a manual `--rebuild`
+- **Index location** — the search index and its SQLite database live under the OS cache directory, **not** in your project root. The base is `$SKIM_CACHE_DIR` when set, otherwise the platform cache dir (`~/Library/Caches/skim` on macOS, `~/.cache/skim` on Linux); within it the per-root subpath is `search/<sha256(canonical_root)[..16]>/`. That directory holds the temporal SQLite database `temporal.db` plus the lexical/AST index artifacts (`index.skidx`, `index.skpost`, `index.skfiles`, `ast_index.*`). Run `skim search --stats` to print the resolved path for the current project (it is shown even before an index is built).
+
+### LLM Proxy (`skim proxy`)
+- Resident loopback HTTP/1.1 reverse proxy that sits between your agent and the LLM API
+- **Availability**: prebuilt release binaries (GitHub Releases, npm, Homebrew) include `skim proxy`.
+  Source builds opt in: `cargo build -p rskim --features proxy` or
+  `cargo install --path crates/rskim --features proxy`. Default source builds are HTTP/TLS-free.
+  Note: `cargo install rskim` (crates.io) does not currently include the proxy subcommand (tracked in #453).
+- **Lossless-only egress guarantee** — all compression on the proxy path is information-preserving:
+  - JSON minification (structural whitespace removal; value-equivalent, dup-key-safe)
+  - Log deduplication with ×N counts and timestamp min–max ranges (all unique content preserved)
+  - Code blocks always pass through byte-identical (no tree-sitter rewriting on the egress path)
+- **Two policy tiers**: `LosslessOnly` (byte-exact passthrough for subscription/Bearer auth) and
+  `Default` (lossless re-encoding allowed for API key auth)
+- Per-engine runtime certification gate — every engine must prove value-equivalence before the
+  modified bytes leave the proxy; fail-open to byte-identical passthrough on any uncertainty
+- `SKIM_PASSTHROUGH=1` substitutes the identity pipeline, so no proxy-side compression is applied (the proxy builds its own pipeline and does not go through the subcommand passthrough gate, whose exceptions are listed under **Common options** below); `--port` / `--bind` configure the listener
+
+### Intelligence
+- `skim discover` scans agent session history for optimization opportunities
+- `skim learn` detects CLI error-retry patterns and generates correction rules
+- Output guardrail ensures compressed output is never larger than the original
+
+## Installation
+
+### Try it (no install required)
+
+```bash
+npx rskim file.ts
+```
+
+### Install globally (recommended for regular use)
+
+```bash
+# Via Homebrew (macOS/Linux)
+brew install dean0x/tap/skim
+
+# Via npm
+npm install -g rskim
+
+# Via Cargo
+cargo install rskim
+```
+
+> **Note**: Use `npx` for trying it out. For regular use, install globally to avoid npx overhead (~100-500ms per invocation).
+
+### From Source
+
+```bash
+git clone https://github.com/dean0x/skim.git
+cd skim
+cargo build --release
+# Binary at target/release/skim
+```
+
+## Quick Start
+
+```bash
+# Try it with npx (no install)
+npx rskim src/app.ts
+
+# Or install globally for better performance
+npm install -g rskim
+
+# Extract structure from single file (auto-detects language)
+skim src/app.ts
+
+# Process entire directory recursively (auto-detects all languages)
+skim src/
+
+# Process current directory
+skim .
+
+# Process multiple files with glob patterns
+skim 'src/**/*.ts'
+
+# Process all TypeScript files with custom parallelism
+skim '*.{js,ts}' --jobs 4
+
+# Get only function signatures from multiple files
+skim 'src/*.ts' --mode signatures --no-header
+
+# Extract type definitions
+skim src/types.ts --mode types
+
+# Extract markdown headers (H1-H3 for structure, H1-H6 for signatures/types)
+skim README.md --mode structure
+
+# Pipe to other tools
+skim src/app.ts | bat -l typescript
+
+# Read from stdin (--language recommended; shebang auto-detected, else lossless passthrough)
+cat app.ts | skim - --language=typescript
+
+# Override language detection for unusual file extensions
+skim weird.inc --language=typescript
+
+# Clear cache
+skim --clear-cache
+
+# Disable caching for pure transformation
+skim file.ts --no-cache
+
+# Show token reduction statistics
+skim file.ts --show-stats
+```
+
+## Usage
+
+```bash
+# Basic usage (auto-detects language)
+skim file.ts                    # Single file
+skim src/                       # Directory (recursive)
+skim 'src/**/*.ts'             # Glob pattern
+
+# With options
+skim file.ts --mode signatures  # Different mode
+skim src/ --jobs 8             # Parallel processing
+skim - --language typescript   # Stdin (recommended; shebang auto-detected)
+```
+
+**Common options:**
+- `-m, --mode` - Transformation mode: `structure` (default), `signatures`, `types`, `full`, `minimal`, `pseudo`
+- `-l, --language` - Override auto-detection (recommended for stdin; else shebang is tried, then lossless passthrough)
+- `-j, --jobs` - Parallel processing threads (default: CPU cores)
+- `-n, --line-numbers` - Annotate output with original source line numbers (prefix `{line}\t{content}`)
+- `--max-lines N` - Emit at most N lines total; when content is elided, one slot goes to the elision marker. One documented exception at `N=1`: 1 content line **plus** the marker (2 lines), because spending the only slot on the marker returns a view containing no code, and dropping the marker to fit is silent loss
+- `--last-lines N` - Emit at most N lines from the tail; when content is elided, one slot goes to the elision marker. The same `N=1` exception applies — the carve-out is a property of the bound, not of the direction
+- `--tokens N` - Fit output within N tokens by escalating through modes, then line-truncating with a marker
+- `--passthrough` - Bypass compression and exec the real tool with raw argv (equivalent to `SKIM_PASSTHROUGH=1`). **Not universal:** `env`/`printenv` keep credential redaction regardless of passthrough state, and the multi-level dispatchers (`cargo`, `dotnet`, `go`, `swift`) still serve the compressed summary whenever stdin is not a TTY — which is every agent harness, CI job, and pipeline. Run the tool directly when you need raw bytes from a build tool
+- `--debug` - Enable raw-fallback diagnostic banners on stderr (loss-bearing elision markers are always emitted regardless)
+- `--no-cache` - Disable caching
+- `--show-stats` - Show token reduction stats
+- `--disable-analytics` - Disable analytics recording
+
+📖 **[Full Usage Guide →](docs/usage.md)**
+
+## Transformation Modes
+
+Skim offers six modes with different levels of aggressiveness:
+
+| Mode       | Reduction | What's Kept                              | Use Case                   |
+|------------|-----------|------------------------------------------|----------------------------|
+| Full       | 0%        | Everything (original source)             | Testing/comparison         |
+| Minimal    | 15-30% †  | All code, doc comments                   | Light cleanup              |
+| Pseudo     | 30-50% †  | Logic flow, names, values, return types; parameter types preserved for TypeScript and Rust | LLM context with logic     |
+| Structure  | 60-80% ‡  | Signatures, types, classes, imports      | Understanding architecture |
+| Signatures | 85-92%    | Only callable signatures                 | API documentation          |
+| Types      | 90-95%    | Only type definitions                    | Type system analysis       |
+
+† **Unverified targets, not measured figures.** These two numbers were never derived from a measurement, and no CI gate defends them. Both modes have since been widened to preserve *more* content — module header comments are now kept in every language (#476), and Rust's pseudo mode strips only statement semicolons and non-doc comments — so treat these two rows as aspirational until they are re-measured.
+
+‡ **Measured basis: 60.3%.** Structure mode's only measured figure is the 60.3% in the reduction table at the top of this README and in the Real-World Token Reduction table under Performance — both on the same production TypeScript codebase. The range on this row is stated wide enough to contain it. No CI gate defends the range either way: the only reduction ratio any test asserts is `> 0.30`, on the JSON and YAML structure-mode fixtures.
+
+```bash
+skim file.ts --mode structure   # Default
+skim file.ts --mode pseudo      # Pseudocode (preserves return types, parameter types for TS/Rust; strips decorators)
+skim file.ts --mode signatures  # More aggressive
+skim file.ts --mode types       # Most aggressive
+skim file.ts --mode full        # No transformation
+```
+
+**Note on JSON/YAML/TOML files:** JSON, YAML, and TOML always use structure extraction regardless of mode. Since they are data (not code), there are no "signatures" or "types" to extract—only structure. All modes produce identical output for these file types.
+
+📖 **[Detailed Mode Guide →](docs/modes.md)**
+
+## Supported Languages
+
+| Language   | Status | Extensions         | Notes                           |
+|------------|--------|--------------------|---------------------------------|
+| TypeScript | ✅     | `.ts`, `.tsx`      | Excellent grammar               |
+| JavaScript | ✅     | `.js`, `.jsx`      | Full ES2024 support             |
+| Python     | ✅     | `.py`, `.pyi`      | Complete coverage               |
+| Rust       | ✅     | `.rs`              | Up-to-date grammar              |
+| Go         | ✅     | `.go`              | Stable                          |
+| Java       | ✅     | `.java`            | Good coverage                   |
+| C          | ✅     | `.c`, `.h`         | Full C11 support                |
+| C++        | ✅     | `.cpp`, `.hpp`, `.cc`, `.hh`, `.cxx`, `.hxx` | C++20 support |
+| Markdown   | ✅     | `.md`, `.markdown` | Header extraction               |
+| JSON       | ✅     | `.json`            | Structure extraction (serde)    |
+| YAML       | ✅     | `.yaml`, `.yml`    | Multi-document support (serde)  |
+| TOML       | ✅     | `.toml`            | Structure extraction (toml)     |
+| C#         | ✅     | `.cs`              | Full grammar, structs/interfaces|
+| Ruby       | ✅     | `.rb`              | Classes, modules, methods       |
+| SQL        | ✅     | `.sql`             | DDL/DML via tree-sitter-sequel  |
+| Kotlin     | ✅     | `.kt`, `.kts`      | Data classes, coroutines, sealed classes |
+| Swift      | ✅     | `.swift`           | Protocols, generics, SwiftUI structs |
+| Bash       | ✅     | `.sh`, `.bash`     | Functions + shebang auto-detect; also `#!/bin/sh`, `zsh`, `ksh` |
+
+## Examples
+
+### TypeScript
+
+```typescript
+// Input
+class UserService {
+    async findUser(id: string): Promise<User> {
+        const user = await db.users.findOne({ id });
+        if (!user) throw new NotFoundError();
+        return user;
+    }
+}
+
+// Output (structure mode)
+class UserService {
+    async findUser(id: string): Promise<User> { /* ... */ }
+}
+```
+
+### Python
+
+```python
+# Input
+def process_data(items: List[Item]) -> Dict[str, Any]:
+    """Process items and return statistics"""
+    results = {}
+    for item in items:
+        results[item.id] = calculate_metrics(item)
+    return results
+
+# Output (structure mode)
+def process_data(items: List[Item]) -> Dict[str, Any]: { /* ... */ }
+```
+
+### JSON
+
+```json
+// Input
+{
+  "user": {
+    "profile": {
+      "name": "Jane Smith",
+      "age": 28,
+      "tags": ["admin", "verified"]
+    },
+    "settings": {
+      "theme": "dark",
+      "notifications": true
+    }
+  },
+  "items": [
+    {"id": 1, "price": 100},
+    {"id": 2, "price": 200}
+  ]
+}
+
+// Output (structure mode)
+{
+  user: {
+    profile: {
+      name,
+      age,
+      tags
+    },
+    settings: {
+      theme,
+      notifications
+    }
+  },
+  items: {
+    id,
+    price
+  }
+}
+```
+
+### YAML (Multi-Document)
+
+```yaml
+# Input (Kubernetes manifests)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  database_url: postgres://localhost:5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 3
+
+# Output (structure mode)
+apiVersion
+kind
+metadata:
+  name
+data:
+  database_url
+---
+apiVersion
+kind
+metadata:
+  name
+spec:
+  replicas
+```
+
+📖 **[More Examples (All Languages) →](docs/examples.md)**
+
+## Use Cases
+
+### LLM Context Optimization
+
+Reduce codebase size by 60-90% to fit in LLM context windows:
+
+```bash
+skim src/ --no-header | llm "Analyze this codebase"
+skim src/app.ts | llm "Review this architecture"
+```
+
+### API Documentation
+
+Extract function signatures for documentation:
+
+```bash
+skim src/ --mode signatures > api-docs.txt
+skim 'lib/**/*.py' --mode signatures > python-api.txt
+```
+
+### Type System Analysis
+
+Focus on type definitions and interfaces:
+
+```bash
+skim src/ --mode types --no-header
+skim 'src/**/*.ts' --mode types
+```
+
+### Code Navigation
+
+Quick overview without implementation details:
+
+```bash
+skim large-file.py | less
+skim src/auth/ | less
+```
+
+📖 **[10 Detailed Use Cases →](docs/use-cases.md)**
+
+## Caching
+
+**Caching is enabled by default** for 40-50x faster repeated processing.
+
+### Performance Impact
+
+| Scenario | Time | Speedup |
+|----------|------|---------|
+| First run (no cache) | 244ms | 1.0x |
+| **Second run (cached)** | **5ms** | **48.8x faster!** |
+
+### Cache Management
+
+```bash
+ls ~/.cache/skim/           # View cache
+skim --clear-cache          # Clear cache
+skim file.ts --no-cache     # Disable for one run
+```
+
+**How it works:**
+- Cache key: SHA256(file path + mtime + mode)
+- Automatic invalidation when files change
+- Platform-specific cache directory
+
+**When to disable caching:**
+- One-time LLM transformations
+- Stdin processing
+- Disk-constrained environments
+
+📖 **[Caching Internals →](docs/caching.md)**
+
+## Token Counting
+
+See exactly how much context you're saving with `--show-stats`:
+
+```bash
+skim file.ts --show-stats
+# [skim] 1,000 tokens → 200 tokens (80.0% reduction)
+
+skim 'src/**/*.ts' --show-stats
+# [skim] 15,000 tokens → 3,000 tokens (80.0% reduction) across 50 file(s)
+```
+
+Uses OpenAI's tiktoken (cl100k_base for GPT-3.5/GPT-4). Output to stderr for clean piping.
+
+## Analytics
+
+Skim automatically tracks token savings from every invocation in a local SQLite database (`~/.cache/skim/analytics.db`). View your savings with the `stats` subcommand:
+
+```bash
+skim stats                       # All-time dashboard (cost estimates always shown)
+skim stats --since 7d            # Last 7 days
+skim stats --format json         # Machine-readable output
+skim stats --verbose             # Include parse quality details
+skim stats --clear               # Reset analytics data
+```
+
+**Environment variables:**
+
+| Variable | Description |
+|----------|-------------|
+| `SKIM_DEBUG` | Set to `1` (or use `--debug`) to enable raw-fallback diagnostic banners on stderr; loss-bearing elision markers are always emitted regardless of this setting (ADR-011) |
+| `SKIM_DISABLE_ANALYTICS` | Set to `1`, `true`, or `yes` to disable recording |
+| `SKIM_INPUT_COST_PER_MTOK` | Override $/MTok for cost estimates (default: 3.0) |
+| `SKIM_ANALYTICS_DB` | Override analytics database path |
+
+Analytics recording is fire-and-forget (non-blocking) and does not affect command performance. Data is automatically pruned after 90 days.
+
+## Security
+
+Skim includes built-in DoS protections:
+
+- **Max recursion depth**: 500 levels
+- **Max input size**: 50MB per file
+- **Max AST nodes**: 100,000 nodes
+- **Path traversal protection**: Rejects malicious paths
+- **No code execution**: Only parses, never runs code
+
+📖 **[Security Details & Best Practices →](docs/security.md)**
+🔒 **[Vulnerability Disclosure →](SECURITY.md)**
+
+## Architecture
+
+Skim uses a clean, streaming architecture:
+
+```
+Language Detection → tree-sitter Parser → Transformation → Streaming Output
+```
+
+**Design principles:**
+- **Streaming-first**: Output to stdout, no intermediate files
+- **Zero-copy**: Uses `&str` slices to minimize allocations
+- **Error-tolerant**: Handles incomplete/broken code gracefully
+- **Type-safe**: Explicit error handling, no panics
+
+📖 **[Architecture Deep Dive →](docs/architecture.md)**
+
+## Performance
+
+**Target**: <50ms for 1000-line files ✅ **Exceeded** (14.6ms for 3000-line files)
+
+### Benchmark Results
+
+| File Size | Lines | Time   | Speed      |
+|-----------|-------|--------|------------|
+| Small     | 300   | 1.3ms  | 4.3µs/line |
+| Medium    | 1500  | 6.4ms  | 4.3µs/line |
+| **Large** | **3000** | **14.6ms** | **4.9µs/line** |
+
+### Real-World Token Reduction
+
+**Production TypeScript Codebase:**
+
+| Mode       | Tokens | Reduction | LLM Context Multiplier |
+|------------|--------|-----------|------------------------|
+| Full       | 63,198 | 0%        | 1.0x                   |
+| **Structure**  | **25,119** | **60.3%** | **2.5x more code**     |
+| **Signatures** | **7,328**  | **88.4%** | **8.6x more code**     |
+| **Types**      | **5,181**  | **91.8%** | **12.2x more code**    |
+
+📖 **[Full Performance Benchmarks →](docs/performance.md)**
+
+## Development
+
+### Quick Start
+
+```bash
+# Build and test
+cargo build --release
+cargo test --all-features
+
+# Lint
+cargo clippy -- -D warnings
+cargo fmt -- --check
+
+# Benchmark
+cargo bench
+```
+
+### Adding New Languages
+
+~30 minutes per language:
+
+1. Add tree-sitter grammar to `Cargo.toml`
+2. Update `Language` enum in `src/types.rs`
+3. Add file extension mapping
+4. Add test fixtures
+5. Run tests
+
+📖 **[Development Guide →](docs/development.md)**
+
+## Project Status
+
+**Current**: v2.10.0 — Stable
+
+✅ **Core — Code Reading (18 languages):**
+- TypeScript/JavaScript/Python/Rust/Go/Java/C/C++/C#/Ruby/SQL/Kotlin/Swift/Bash/Markdown/JSON/YAML/TOML
+- 6 transformation modes: structure, signatures, types, minimal, pseudo, full
+- Token budget (`--tokens N`), max lines (`--max-lines N`), last lines (`--last-lines N`)
+- Multi-file glob support, parallel processing, caching (40-50x speedup)
+
+✅ **Command Output Compression:**
+- Test runners: cargo test, pytest, vitest/jest, go test
+- Build tools: cargo build, cargo clippy, make, tsc
+- Git: status, diff, log
+- File tools: find, ls, tree, grep, rg
+- Log: JSON structured + plaintext dedup, debug filtering, stack trace collapsing
+- Infra: gh, aws, curl, dig, nslookup, wget, docker, kubectl, terraform
+- Database: psql, mysql, sqlite3
+- Three-tier degradation: Structured → Regex → Passthrough
+
+✅ **Agent Integration:**
+- `skim init` — hook installation for Claude Code, Cursor, Codex, Gemini, Copilot, Crush; optional consent-gated permission seeding (`--permissions`); dev-pinned installs for skim development (`--dev`)
+- `skim doctor` — install health check: which `skim` on `$PATH` wins, per-agent hook state (version, commit, binary pin, tamper verdict), wrapper targets, and staleness vs. repo HEAD. Exit 0 healthy / 1 on drift, so it works as a CI pre-flight. A dev-pinned hook renders as `⚠ … dev-pinned (binary commit <sha>)` — never `✓` — printing both the commit the install froze and the commit the running binary was built from, so `skim doctor | grep dev-pinned` is a one-line guard against shipping a dev install.
+- `skim rewrite` — command rewriting engine with `--hook` mode
+- MCP server mode for agent-native workflows
+
+✅ **Analytics & Intelligence:**
+- `skim heatmap` — git history risk analysis (churn, coupling, bus factor, fix density)
+- `skim stats` — persistent SQLite dashboard with cost estimation
+- `skim discover` — missed optimization finder across agent sessions
+- `skim learn` — CLI error pattern detection and correction rules
+
+✅ **Distribution:**
+- cargo (`cargo install rskim`), npm (`npx rskim`), Homebrew (`brew install dean0x/tap/skim`)
+- 14.6ms performance (3x under target)
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
+
+## Documentation
+
+Comprehensive guides for all aspects of Skim:
+
+- 📖 **[Usage Guide](docs/usage.md)** - Complete CLI reference and options
+- 🎯 **[Transformation Modes](docs/modes.md)** - Detailed mode comparison and examples
+- 💡 **[Examples](docs/examples.md)** - Language-specific transformation examples
+- 🚀 **[Use Cases](docs/use-cases.md)** - 10 practical scenarios with commands
+- ⚡ **[Caching](docs/caching.md)** - Caching internals and best practices
+- 🔒 **[Security](docs/security.md)** - DoS protections and security best practices
+- 🏗️ **[Architecture](docs/architecture.md)** - System design and technical details
+- ⏱️ **[Performance](docs/performance.md)** - Benchmarks and optimization guide
+- 🛠️ **[Development](docs/development.md)** - Contributing and adding languages
+
+## Part of the AI Development Stack
+
+| Tool | Role | What It Does |
+|------|------|-------------|
+| **Skim** | Context Optimization | Code-aware AST parsing across 18 languages, command rewriting, test/build/git output compression |
+| **[DevFlow](https://github.com/dean0x/devflow)** | Quality Orchestration | 18 parallel reviewers, working memory, self-learning, composable plugin system |
+| **[Autobeat](https://github.com/dean0x/autobeat)** | Agent Orchestration | Autonomous orchestration. Eval loops, multi-agent pipelines, DAG dependencies, crash-proof persistence |
+
+Skim optimizes every byte of context. DevFlow enforces production-grade quality. Autobeat scales execution across agents. No other stack covers all three.
+
+## Contributing
+
+Contributions welcome! Please:
+
+1. Check [issues](https://github.com/dean0x/skim/issues) for existing work
+2. Open an issue to discuss major changes
+3. Follow existing code style (`cargo fmt`, `cargo clippy`)
+4. Add tests for new features
+5. Update documentation
+
+📖 **See [Development Guide](docs/development.md) for detailed instructions**
+
+### Project Structure
+
+```
+skim/
+├── crates/
+│   ├── rskim-core/    # Core library (language-agnostic)
+│   └── rskim/         # CLI binary (I/O layer)
+├── tests/fixtures/    # Test files for each language
+└── benches/           # Performance benchmarks (planned)
+```
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Acknowledgments
+
+- [tree-sitter](https://tree-sitter.github.io/) - Fast, incremental parsing library
+- [clap](https://github.com/clap-rs/clap) - Command-line argument parsing
+- [ripgrep](https://github.com/BurntSushi/ripgrep), [bat](https://github.com/sharkdp/bat), [fd](https://github.com/sharkdp/fd) - Inspiration for Rust CLI design
+
+## Links
+
+- **Website**: https://dean0x.github.io/x/skim/
+- **Repository**: https://github.com/dean0x/skim
+- **Issues**: https://github.com/dean0x/skim/issues
+- **Crates.io**: https://crates.io/crates/rskim
+- **npm**: https://www.npmjs.com/package/rskim
+
+---
+
+**Built with ❤️ in Rust**

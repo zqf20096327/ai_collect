@@ -1,0 +1,493 @@
+# SztuCode
+
+[中文（默认）](README.md) · [English](README.en.md)
+> 面向高校的开源全场景办公智能体实验性场地：代码、文档、表格、幻灯片、浏览器，都是智能体的工作台。
+> 本地优先、事件驱动、可审计，提供 TypeScript 与 Python 双实现。
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?logo=tauri&logoColor=white)](https://tauri.app/)
+[![Vue](https://img.shields.io/badge/Vue-3-42B883?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![License](https://img.shields.io/badge/License-MIT-2F855A)](LICENSE)
+
+## 项目界面
+
+### 桌面工作台（TypeScript daemon）
+
+![SztuCode 桌面工作台首页](docs/images/image1.png)
+![SztuCode 上下文演进功能](docs/images/image2.png)
+
+SztuCode 不只面向代码仓库。作为**全场景办公智能体**，它的工作台覆盖高校学习与日常办公的完整链路：撰写与审阅 Word 文档、处理 Excel 表格与公式、生成汇报 PPT、解析 PDF 资料、操控浏览器检索信息、生成图片，以及软件工程任务本身。桌面工作台连接 TypeScript daemon；命令行可选择 TypeScript 或 Python runtime。后台 daemon 负责运行 Agent Loop、调用工具、管理权限和保存会话，并通过 JSON-RPC 事件流持续反馈执行状态。
+
+但它首先是一个**面向高校的实验性场地**。Agent 岗位层出不穷，Agent harness 的设计直接决定智能体的能力上限；可无论是 codex、Claude Code 这类产品，还是 opencode 等开源实现，上手难、理解慢，学生很难真正通过 issue → PR 参与进去。所以我们搭了这么一个校园里触手可及的开源项目，并内置了免费模型——clone 下来就能用 deepseek-v4-flash 和 mimo-v2.5 跑起你的第一个智能体任务。欢迎大家尝试并点个 star。
+
+并不是说要重复造轮子，做一个超越 codex 和 claude code 的产品，而是理解与学习——带着批判的目光去看清现有 agent 真正的运作方式，知己知彼方能百战不殆。
+
+## 项目宣言：技术民主化
+
+我们坚信**技术民主化**——前沿技术不应该只存在于大厂的闭源仓库里，它应该属于每一个愿意学习、愿意动手、愿意参与的人。
+
+技术民主化有三层内涵：
+
+- **访问的民主**：降低门槛，让高校学生和初学者不需要昂贵的资源、复杂的配置就能接触到前沿技术。我们内置免费模型、提供零配置启动，就是为此。
+- **理解的民主**：真正的民主不是让人"用魔法"，而是让人"理解魔法如何运作"。我们把 Agent Loop、工具调用、权限系统、上下文压缩这些工程细节全部摊开，用双语言实现、详尽的架构文档，让你不仅能用，还能读懂、能修改、能批判。
+- **创造的民主**：从使用者到创造者。我们降低参与开源的门槛，让学生和初学者能通过 Issue → PR → Review 完整参与真实的工程协作，而不是永远停留在"调用 API"的层面。
+
+当前 AI Agent 赛道呈现"大厂闭源竞速"的格局，办公智能体正在成为下一代生产力工具，但这不应该是唯一的形态。SztuCode 的存在本身就是一个宣言：**我们要在高校里建一个全场景办公智能体的开源实验性场地**——不是给你一个黑盒工具让你依赖它，而是给你一套完整的、可触摸的、可拆解的工程实现，让你真正理解智能体的运作原理，从而有能力去构建、去改进、去创造属于你自己的东西。
+
+负责任的开放是我们的底线：四级权限模式、范围升级留痕、工作区边界保护——给你能力，也给你缰绳；让你探索，也保护你不受伤。
+
+> [!IMPORTANT]
+> 项目目前处于 `0.x` 快速开发阶段，接口和界面仍可能变化。请在独立分支和可恢复的工作区中使用 Agent，并谨慎启用 `auto` 权限模式。
+
+> [!NOTE]
+> SztuCode 由社区成员发起和维护，不代表任何学校、学院或社团的官方立场。未经授权，项目不使用相关组织的官方名称、标识或背书。
+
+## 为什么是 SztuCode
+
+项目不止封装模型 API，而是尝试复现当前办公与编程智能体的完整工程链路：
+
+```text
+用户目标
+  → 项目与会话上下文
+  → Agent 规划和模型推理
+  → 工具调用与权限审批
+  → 文件/文档修改、测试和结果回填
+  → Diff 审阅、Trace 与会话恢复
+```
+
+在这片实验场上，你可以：
+
+- 学习 Agent Loop、工具调用、上下文治理和多智能体协作——教材是真实代码，不是幻灯片；
+- 把智能体接入真实办公场景：Word 文档、Excel 表格、汇报 PPT、PDF 解析、浏览器操控与图片生成；
+- 构建本地优先、可观察、可扩展的办公/编程智能体；
+- 研究项目级代码理解、权限安全、RAG 与执行轨迹评测；
+- 通过 Issue、Pull Request、Review 和 Release 参与真实开源协作，完成从课堂到工程现场的衔接。
+
+## 双运行时（TypeScript 与 Python）
+
+SztuCode 不是两套独立产品，而是**同一套 daemon/client 架构的双语言实现**：功能与契约镜像对齐，生态与入口彼此独立，可并行安装、并行运行。
+
+```text
+┌─ TypeScript 主线 ───────────────────────────────┐   ┌─ Python 镜像 ──────────────────────────────┐
+│ desktop/    Tauri 2 + Vue 3 桌面工作台           │   │ py-runtime/src/sztu_code/tui   Textual 终端 TUI        │
+│ packages/cli        Node CLI（sztu-ts）          │   │ py-runtime/src/sztu_code/cli   Python CLI（sztu-py）    │
+│ packages/runtime-ts Node daemon ── 127.0.0.1:7438 │   │ py-runtime/src/sztu_code/core  Python daemon ── 7437  │
+│ packages/protocol   共享契约（类型包）             │   │ py-runtime/src/sztu_code/core/bus pydantic 契约模型    │
+└──────────────────────────────────────────────────┘   └────────────────────────────────────────────┘
+```
+
+| 维度 | TypeScript 版 | Python 版 |
+| --- | --- | --- |
+| 定位 | 当前产品主线，桌面端固定连接它 | 面向 Agent 教学与实验的 Python TUI/CLI runtime |
+| 代码位置 | `packages/`（ai / agent-core / protocol / session / session-fs / server / client / telemetry / runtime-ts / cli / evaluation） | `py-runtime/src/sztu_code/`（core / cli / tui / evaluation） |
+| daemon 入口 | `packages/runtime-ts/src/main.ts` | `py-runtime/src/sztu_code/core/app.py`（`python -m sztu_code.core`） |
+| 默认端口 | `127.0.0.1:7438` | `127.0.0.1:7437` |
+| CLI 命令 | `sztu-ts`（发布包名 `sztucode` / `sztucode-tui`） | `sztu-py` |
+| 终端界面 | Node 终端 chat（无 TUI） | Textual TUI：`sztu-tui [--replay RUN_ID]` |
+| 图形界面 | Tauri 2 + Vue 3 桌面工作台 | 无；Python 版使用 Textual TUI |
+| 依赖管理 | npm workspaces | `uv` + hatchling（PEP 621） |
+| 契约方式 | TS 类型包 + 生成 `wire-protocol.md` | pydantic 模型（`core/bus/*`） |
+| 传输 | TCP / NDJSON / JSON-RPC 2.0（同一套 envelope） | 同左 |
+| 持久化 | `~/.sztu/`（同一目录布局） | 同左 |
+| 质量工具 | tsc、tsx --test、e2e 脚本 | ruff、mypy(strict)、pytest |
+| 版本 | 0.2.0 | 0.0.1 |
+
+两套 runtime 使用不同的命令名和默认端口，因此可以并行安装和运行；各自客户端连接对应的 daemon，Agent 执行状态以实际运行的 runtime 为准。
+
+桌面产品固定使用 TypeScript daemon（7438）。Python runtime 独立服务于终端 TUI、脚本化 CLI、ACP 和 Agent 教学实验（7437），不作为桌面端后端；这样桌面产品能力与教学实验运行时各自保持清晰边界。
+
+### TypeScript package 分层
+
+TypeScript 链按依赖方向从底层契约到进程装配分层，业务依赖只能向下：
+
+```text
+desktop / packages/cli
+        -> @sztucode/client
+        -> @sztucode/protocol
+
+@sztucode/runtime-ts
+        -> @sztucode/server
+        -> @sztucode/protocol
+        -> @sztucode/session-fs -> @sztucode/session -> @sztucode/ai
+        -> @sztucode/agent-core -> @sztucode/ai
+        -> @sztucode/telemetry
+```
+
+| Package | 职责 |
+| --- | --- |
+| `ai` | Provider 无关的模型、消息和流式类型；不依赖 daemon。 |
+| `agent-core` | Agent/tool 基础抽象；不拥有 Socket 或桌面协议。 |
+| `protocol` | JSON-RPC、NDJSON、事件、Session 和 Workflow 的共享类型与校验。 |
+| `session` | Session header、entry、branch 和 backend 接口。 |
+| `session-fs` | 本地 JSONL 持久化、分支/fork 和旧目录格式适配。 |
+| `server` | TCP/NDJSON transport、hello、连接状态、RPC router、attach/detach 和事件订阅；保持通用 wire 类型，不直接依赖业务协议。 |
+| `client` | 仅通过 daemon RPC 工作的 TypeScript SDK，提供超时、重连、请求关联和事件订阅。 |
+| `telemetry` | span、事件、状态/错误、no-op 和内存 adapter，并兼容 TraceWriter 输出。 |
+| `runtime-ts` | Node daemon 组合入口，注入 Workspace、Permission、MCP、Skills、Git、Session、Provider 和扩展服务。 |
+| `cli` | daemon client；可按需启动 bundled daemon，不实现 Agent Loop。 |
+| `evaluation` | TypeScript 评测 runner 与报告。 |
+
+## 核心能力
+
+以下能力两版基本镜像实现（标注差异处）：
+
+| 能力 | 当前实现 |
+| --- | --- |
+| Agent Runtime | 基于 ReAct 的多步推理、工具调用、结果回填和终止控制；Python 版支持工具并发执行（默认 4），TS 版为串行 |
+| 多种客户端 | Tauri 2 + Vue 3 桌面工作台、Node 终端 chat（TS）；Textual TUI 与脚本化 CLI（Python） |
+| 模型接入 | Anthropic 与 OpenAI-compatible 双协议，可连接兼容服务商；内置 opencode Zen 免费 profile（如 deepseek-v4-flash、mimo-v2.5） |
+| 办公场景 | 桌面端内置 Word / Excel / PPT / PDF 办公插件与 Skills（TS 链）：docx 读写与审阅、表格公式与图表、汇报幻灯片生成、PDF 解析（文本 / OCR / 页面渲染），并可扩展浏览器操控、图片生成、前端设计等场景 |
+| 工作区工具 | 文件读取、目录浏览、搜索、写入、精确编辑和受控 Shell 执行 |
+| 权限系统 | `normal`、`plan`、`accept_edits`、`auto` 四种运行模式，持久化策略与 denial 追踪 |
+| 会话与记忆 | 持久化会话、分层上下文、Notes、历史恢复和上下文压缩（TS 用 js-tiktoken，Python 用 tiktoken，均带 CJK 感知回退） |
+| 扩展机制 | Skills、Subagents 与 MCP 外部工具统一接入 |
+| 可观测性 | IPC、EventBus、LLM 三层 Trace，支持事件跟踪和回放（Python `trace` 额外支持 `--layer` / `--direction` 过滤） |
+| 变更审阅 | 桌面端展示文件变化和 Diff，支持接受、暂存与回退 |
+| 项目指令 | 自动发现并注入工作区及父目录的 `CLAUDE.md`、`SZTUCODE.md` 等规则 |
+| 多 Agent 工作流 | Planner → Coder / Tester / Reviewer 结构化 DAG 编排，范围升级留 Trace 证据 |
+| Agent 评测 | TS：`packages/evaluation`；Python：`py-runtime/src/sztu_code/evaluation`，统一任务协议与 SWE-bench 适配 |
+
+项目级语义索引、统一 LSP、领域 RAG、安全扫描闭环和完整多智能体工作流仍在路线图中，不将设计目标描述为已完成能力。
+
+## 系统架构
+
+SztuCode 使用 daemon 与客户端分离的架构。长任务不依赖某个界面窗口的生命周期，不同客户端共享一致的会话、权限和执行状态。
+
+```text
+Tauri Desktop ─┐
+Node CLI ──────┼─ @sztucode/client ─ TCP / NDJSON ─┐
+Eval Runner ───┘                                   │
+                                                   ▼
+                                      @sztucode/server (transport/router)
+                                                   │
+                                      RuntimeServer (composition only)
+                                                   │
+                                      ServerService -> AgentSession
+                                                   │
+                           Workspace / Permission / MCP / Skills / Git
+                                                   │
+                                           AgentLoop / Provider / Tools
+                                                   │
+                                      SessionStore / session-fs / EventBus
+
+sztu-py CLI ──── TCP / NDJSON / JSON-RPC 2.0 ─ Python daemon (7437)
+sztu-tui TUI ──┘                                   └─ 同上，功能镜像
+```
+
+Agent、Session、Server 的边界分别是：Agent 负责模型回合、工具和权限请求；Session 负责上下文、生命周期、快照、分支和持久化；Server 负责连接、握手、路由、Session attach/detach 和事件投递。`@sztucode/server` 接收 `SessionRuntime`/`PiSessionRuntime`，不会创建 `AgentLoop`。
+
+连接流程是：客户端建立 TCP，新的 SDK 发送 `hello`（版本/能力），daemon 返回 welcome；随后客户端通过 `event.subscribe` 订阅主题并发送带 request id、可选 idempotency key 的 JSON-RPC。响应仍是 NDJSON，事件以 event envelope 推送。客户端断开不会终止运行中的 Session，重连后可重新 attach 并用 snapshot/history hydrate。TS daemon 的 compatibility mode 允许旧客户端跳过 hello 直接发送首个 JSON-RPC frame，同时保留既有 method、envelope、事件名称和错误码。
+
+Session 兼容路径写入 `${SZTU_DATA_DIR:-~/.sztu}/sessions/<session_id>/` 下的 `meta.json`、`thread.jsonl`、context、notes 和 run 文件；新组合路径由 `@sztucode/session-fs` 使用带 header 的 append-only JSONL、branch/fork 元数据和原子写入，并提供 legacy adapter。扩展只在 daemon 内加载：`SZTU_EXTENSIONS` 是 global scope，`SZTU_WORKSPACE_EXTENSIONS` 绑定解析后的 workspace root；加载、激活、注册和 hook 错误写入 diagnostics，不能打断 daemon 主循环。
+
+TypeScript runtime 默认监听 `127.0.0.1:7438`，Python runtime 默认监听 `127.0.0.1:7437`，可以同时运行。两者是平行的进程实现，不共享 TS runtime 的实现代码；共享的是面向客户端的协议语义。IPC 命令和事件详情见[架构说明](docs/reference/architecture.md)。
+
+TypeScript daemon 的入口层采用组合结构：`RuntimeServer` 只装配 transport、`@sztucode/telemetry`、EventBus、provider 和 coding-agent services；`ServerService` 承载 RPC 服务，负责创建/打开 transport-free `AgentSession`。`RunManager` 作为兼容执行器暂时保留，桌面端、CLI 和既有测试仍可使用原入口。新的服务依赖方向为 `RuntimeServer -> ServerService -> Workspace / Permission / MCP / Skills / Git / Session / Telemetry services`，不会改变现有 RPC 方法、事件名称或 7438 默认端口。Telemetry 默认使用 no-op 或脱敏 Trace adapter，TraceWriter 仍输出兼容的 JSONL 记录。
+
+## 快速开始
+
+### 环境要求
+
+- Git；
+- Node.js 20+（TypeScript 链）；
+- Python 3.12–3.13 与 `uv`（Python 链）；
+- Anthropic 或 OpenAI-compatible API 凭据；
+- 可选：Rust 和 Tauri 平台依赖，用于桌面端开发。专业 artifact Skill 可能按需调用 Python，但不属于项目运行时依赖。
+
+### 安装
+
+```bash
+git clone https://github.com/rojim666/SztuCode.git
+cd SztuCode
+npm install
+npm run build
+```
+
+复制配置模板：
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell：
+
+```powershell
+Copy-Item .env.example .env
+```
+
+在 `.env` 中选择 Provider，并填写服务商实际提供的模型 ID 和凭据：
+
+```dotenv
+# Anthropic
+SZTU_LLM_PROVIDER=anthropic
+SZTU_LLM_DEFAULT_MODEL=<your-provider-model-id>
+ANTHROPIC_API_KEY=<your-api-key>
+
+# 或 OpenAI-compatible
+# SZTU_LLM_PROVIDER=openai
+# SZTU_LLM_DEFAULT_MODEL=<your-provider-model-id>
+# OPENAI_API_KEY=<your-api-key>
+# OPENAI_BASE_URL=https://api.example.com
+```
+
+使用免密 OpenAI-compatible 端点时还需设置 `SZTU_LLM_KEYLESS=true`，或直接在桌面模型管理页选择内置免费 profile。
+
+不要提交 `.env`。完整字段和优先级见[配置参考](docs/getting-started/configuration.md)。
+
+### 启动 TypeScript 链
+
+显式启动 TS daemon（端口 7438）：
+
+```bash
+npm run daemon:ts          # 显式启动 TS daemon（7438）
+```
+
+另一个终端中：
+
+```bash
+npm run cli:ts -- ping                       # 连通性检查
+npm run cli:ts -- run --goal "分析当前项目并修复测试失败"
+npm run cli:ts -- chat                       # 交互式会话
+npm run cli:ts -- trace                      # 查看运行时事件 trace
+npm run cli:ts -- core status                # daemon 状态
+```
+
+发布安装后使用 `sztu-ts`（`sztucode` 仍是兼容别名）：
+
+```bash
+npm install --global sztucode-tui
+sztu-ts [项目路径]
+```
+
+### 启动 Python 链（当前默认内核）
+
+```bash
+npm run daemon            # 默认入口：py-runtime 中的 Python daemon（7437）
+npm run daemon:py         # 等价 npm run daemon
+```
+
+另一个终端中：
+
+```bash
+npm run cli:py -- ping
+npm run cli:py -- run --goal "分析当前项目并修复测试失败"
+npm run cli:py -- chat
+npm run cli:py -- trace --layer llm
+```
+
+发布安装后使用 `sztu-py`（`uv` 环境内 `pip install -e .` 或打包安装）：
+
+```bash
+sztu-py core start         # 后台启动 Python daemon
+sztu-py chat
+sztu-py run --goal "..."
+sztu-py trace --layer llm
+python -m sztu_code.tui --replay <run_id>  # Textual TUI，可回放历史 run
+```
+
+### CLI 命令对照
+
+| 命令 | TypeScript（sztu-ts） | Python（sztu-py） |
+| --- | --- | --- |
+| 连通性检查 | `ping` | `ping` |
+| 执行任务 | `run --goal <task>` | `run --goal <task>` |
+| 交互会话 | `chat [project]` | `chat` |
+| daemon 管理 | `core start / status / stop` | `core start / status / stop` |
+| 事件 trace | `trace [run_id] [--raw] [-f]` | `trace [run_id] [--layer] [--direction] [--raw] [-f]` |
+| 版本 | `--version` | `--version` |
+| 终端 UI | 无（桌面工作台替代） | `python -m sztu_code.tui`（Textual） |
+
+更完整的安装说明见[安装与启动](docs/getting-started/installation.md)。
+
+## 桌面工作台
+
+`desktop/` 是基于 Tauri 2、Vue 3 和 TypeScript 的图形客户端（仅连接 TypeScript daemon），提供项目与会话管理、执行时间线、权限审批、文件浏览、代码预览和 Git 变更审阅，并内置 Word / Excel / PPT / PDF 等办公插件与技能，是全场景办公体验的主要入口。
+
+```bash
+# 终端 1：仓库根目录（桌面端连接的是 TS daemon）
+npm run daemon:ts
+
+# 终端 2
+cd desktop
+npm install
+npm run tauri dev
+```
+
+桌面端验证：
+
+```bash
+cd desktop
+npm run build
+npm run test:visual
+
+cd src-tauri
+cargo check
+```
+
+平台依赖和已知限制见 [Desktop README](desktop/README.md) 与[开发环境](docs/development/development.md)。
+
+## 项目结构
+
+```text
+SztuCode/
+├─ packages/                 # TypeScript 链（npm workspaces）
+│  ├─ ai/                    #   provider-neutral 模型类型
+│  ├─ agent-core/            #   Agent/tool 基础抽象
+│  ├─ protocol/              #   JSON-RPC、事件和工作流契约
+│  ├─ session/               #   Session 接口与 entry/branch 类型
+│  ├─ session-fs/            #   JSONL backend 与 legacy adapter
+│  ├─ server/                #   transport、握手、router、Session 管理
+│  ├─ client/                #   daemon client SDK
+│  ├─ telemetry/             #   Trace/span 抽象与 adapters
+│  ├─ runtime-ts/            #   Node daemon 组合入口
+│  ├─ cli/                   #   Node 命令行客户端
+│  └─ evaluation/            #   评测 runner 与报告
+├─ desktop/                  # Tauri 2 + Vue 3 桌面工作台（连 TS daemon）
+├─ py-runtime/src/sztu_code/            # Python 链
+│  ├─ core/                  #   Python daemon（Agent Loop、bus、权限、workflow、skills 等）
+│  ├─ cli/                   #   sztu-py 命令行客户端
+│  ├─ tui/                   #   Textual TUI（sztu-tui）
+│  └─ evaluation/            #   Python 评测 harness 与报告
+├─ py-runtime/tests/         # Python 测试（pytest）
+├─ scripts/                  # 协议生成、链接检查等工程脚本（.ts 与 .py 成对）
+├─ tmp/                      # 本地评测产物（不提交）
+├─ data/                     # 评测数据集（如 SWE-bench Lite parquet）
+└─ docs/                     # 使用、开发、架构、运维、评测和历史文档
+```
+
+完整模块边界和运行链路见[架构说明](docs/reference/architecture.md)。
+
+## 开发与验证
+
+Python 主链检查：
+
+```bash
+cd py-runtime
+uv run ruff check src tests
+uv run mypy src
+uv run pytest
+```
+
+TypeScript 链检查（桌面端与 TS 链仍需）：
+
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e:ts
+npm run test:migration
+npm run build --prefix desktop
+```
+
+`npm run test:e2e:ts` 使用真实 TS daemon 验证流式事件；`npm run test:migration` 运行 Agent/Session/Server 迁移套件，覆盖旧客户端、新客户端、权限、工具失败、abort、重启、fork、compaction、subagent、MCP 和 desktop contract，并在失败时输出 request/session/run id。桌面端另需 `npm run build --prefix desktop`；Python 链按上表使用 `uv run ruff`、`mypy` 和 `pytest`，不属于 TS package 的运行时依赖。
+
+共享协议修改位于 `packages/protocol`（TS）与 `py-runtime/src/sztu_code/core/bus`（Python）。测试范围、桌面验证和模块修改清单见[测试指南](docs/development/testing.md)与[开发环境](docs/development/development.md)。
+
+## Agent 评测
+
+TypeScript 评测——离线运行 10 个内部 Coding Agent 基准并生成 JSON/Markdown 报告：
+
+```bash
+npm run eval -- run --manifest packages/evaluation/tasks/internal-v1.json --repeat 3 --output-dir tmp/eval
+```
+
+Python 评测入口位于 `py-runtime/src/sztu_code/evaluation`（harness / models / reporting / runners）。两版任务格式、真实 daemon runner、指标定义和 SWE-bench Lite 小样本流程见[评测指南](docs/guides/evaluation.md)。
+
+## 路线图
+
+项目按可验证能力逐步推进：
+
+| 阶段              | 目标                                               |
+| ----------------- | -------------------------------------------------- |
+| Contributor Ready | 新成员能理解项目、运行检查并提交第一个聚焦 PR      |
+| v0.1              | 稳定本地任务闭环、自动化评测基线和更可靠的权限边界 |
+| v0.2              | 项目级语义索引、分层上下文、统一 LSP 和多语言评测  |
+| v0.3              | 领域 RAG、安全扫描闭环和角色化多智能体协作         |
+| v1.0              | 稳定升级路径、发行流程、安全响应和兼容性政策       |
+
+详细版本门槛、研究轨道和明确非目标见[项目路线图](docs/ROADMAP.md)。当前研究与工程任务可在 [GitHub Issues](https://github.com/rojim666/SztuCode/issues) 查看。
+
+## 参与贡献
+
+欢迎同学、开发者和研究者通过代码、测试、文档、设计、评测和问题分析参与。新贡献者可以从 [`good first issue`](https://github.com/rojim666/SztuCode/labels/good%20first%20issue) 开始，需要社区协作的任务会标注 [`help wanted`](https://github.com/rojim666/SztuCode/labels/help%20wanted)。
+
+开始前请阅读：
+
+- [贡献指南](CONTRIBUTING.md)
+- [社区行为准则](CODE_OF_CONDUCT.md)
+- [安全政策](SECURITY.md)
+- [文档中心](docs/README.md)
+
+安全漏洞、权限绕过和凭据泄漏请使用 [Private Vulnerability Reporting](https://github.com/rojim666/SztuCode/security/advisories/new)，不要创建公开 Issue。
+
+## Contributors
+
+感谢所有参与代码、测试、文档和工程建设的贡献者。以下名单依据仓库可验证的 Git 历史整理，同一 GitHub 账号或同一邮箱的别名已合并；完整记录以 [GitHub Contributors](https://github.com/rojim666/SztuCode/graphs/contributors) 为准。
+
+<p align="center">
+  <a href="https://github.com/rojim666" title="rojim666 · 发起人与维护者">
+    <img src="docs/images/contributors/rojim666-circle.png" width="72" height="72" alt="rojim666" />
+  </a>
+  <a href="https://github.com/charon2121" title="charon2121">
+    <img src="docs/images/contributors/charon2121-circle.png" width="72" height="72" alt="charon2121" />
+  </a>
+  <a href="https://github.com/szzhangkkk" title="szzhangkkk">
+    <img src="docs/images/contributors/szzhangkkk-circle.png" width="72" height="72" alt="szzhangkkk" />
+  </a>
+  <a href="https://github.com/GuanG-1008" title="GuanG-1008">
+    <img src="docs/images/contributors/GuanG-1008-circle.png" width="72" height="72" alt="GuanG-1008" />
+  </a>
+  <a href="https://github.com/neutronstar238" title="neutronstar238">
+    <img src="docs/images/contributors/neutronstar238-circle.png" width="72" height="72" alt="neutronstar238" />
+  </a>
+  <a href="https://github.com/Shuang-su" title="Shuang-su">
+    <img src="docs/images/contributors/Shuang-su-circle.png" width="72" height="72" alt="Shuang-su" />
+  </a>
+  <a href="https://github.com/crazy19-69" title="crazy19-69">
+    <img src="docs/images/contributors/crazy19-69-circle.png" width="72" height="72" alt="crazy19-69" />
+  </a>
+  <a href="https://github.com/electrojay27" title="electrojay27">
+    <img src="docs/images/contributors/electrojay27-circle.png" width="72" height="72" alt="electrojay27" />
+  </a>
+  <a href="https://github.com/greykoi" title="greykoi">
+    <img src="docs/images/contributors/greykoi-circle.png" width="72" height="72" alt="greykoi" />
+  </a>
+  <a href="https://github.com/JJ704sd" title="JJ704sd">
+    <img src="docs/images/contributors/JJ704sd-circle.png" width="72" height="72" alt="JJ704sd" />
+  </a>
+  <a href="https://github.com/161142272" title="161142272">
+    <img src="docs/images/contributors/161142272-circle.png" width="72" height="72" alt="161142272" />
+  </a>
+  <a href="https://github.com/z2Ace0107" title="Ace">
+    <img src="docs/images/contributors/Ace-circle.png" width="72" height="72" alt="Ace" />
+  </a>
+  <a href="https://github.com/taogoing" title="cht">
+    <img src="docs/images/contributors/cht-circle.png" width="72" height="72" alt="cht" />
+  </a>
+  <a href="https://github.com/47y47" title="47y47">
+    <img src="docs/images/contributors/47y47-circle.png" width="72" height="72" alt="47y47" />
+  </a>
+  <a href="https://github.com/jasiitay7" title="jasiitay7">
+    <img src="docs/images/contributors/jasiitay7-circle.png" width="72" height="72" alt="jasiitay7" />
+  </a>
+  <a href="https://github.com/Miqi9880" title="Miqi9880">
+    <img src="docs/images/contributors/Miqi9880-circle.png" width="72" height="72" alt="Miqi9880" />
+  </a>
+  <a href="https://github.com/xngyan" title="xngyan">
+    <img src="docs/images/contributors/xngyan-circle.png" width="72" height="72" alt="xngyan" />
+  </a>
+  <a href="https://github.com/Zixuan" title="Zixuan">
+    <img src="docs/images/contributors/Zixuan-circle.png" width="72" height="72" alt="Zixuan" />
+  </a>
+  <a href="https://github.com/rojim666/SztuCode/graphs/contributors" title="郑中南 · GitHub 账号尚未确认">
+    <img src="docs/images/contributors/zhengzhongnan-circle.png" width="72" height="72" alt="郑中南" />
+  </a>
+</p>
+
+贡献以公开 Issue、Commit、Pull Request、Review 和 Release 为准；持续贡献者可以逐步承担模块 Review 和维护职责。
+
+## License
+
+SztuCode 使用 [MIT License](LICENSE)。
+

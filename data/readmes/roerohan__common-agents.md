@@ -1,0 +1,237 @@
+# Common Agents Framework
+
+[![npm version](https://badge.fury.io/js/common-agents.svg)](https://www.npmjs.com/package/common-agents)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Beta](https://img.shields.io/badge/status-beta-orange)
+
+A production-ready multi-agent framework built on top of the [Cloudflare Agents SDK](https://github.com/cloudflare/agents). Available on [npm](https://www.npmjs.com/package/common-agents) as `common-agents`.
+
+> **⚠️ Beta Release**: This framework is under active development. APIs may change, and we welcome contributions, bug reports, and feedback!
+
+```bash
+npm install common-agents
+```
+
+## Why Multi-Agent Architecture?
+
+Think about how a company operates. You don't hire one person to do everything - writing code, managing finances, handling customer support, and making strategic decisions. Instead, you have specialized teams:
+
+- **Engineering teams** build and maintain the product
+- **Finance teams** manage budgets and track expenses
+- **Customer success teams** handle support tickets
+- **Product managers** coordinate between teams and prioritize work
+- **DevOps teams** maintain infrastructure and deployments
+
+Each team has clear responsibilities, specialized expertise, and well-defined interfaces for communicating with other teams. An engineer doesn't need to know accounting principles. A finance manager doesn't need to understand database optimization. This separation allows each team to focus on what they do best, while the company as a whole accomplishes complex objectives.
+
+The same principle applies to software architecture. **Instead of one monolithic agent doing all the work and having all the knowledge, we build an ecosystem of specialized agents**, each with a specific purpose. A coordinator agent orchestrates workflows but doesn't process data. A worker agent executes tasks but doesn't manage routing logic. A knowledge base agent stores information but doesn't make scheduling decisions. This separation of concerns leads to more maintainable, scalable, and secure systems.
+
+> **Further Learning**: For a deeper exploration of why putting components in well-defined "boxes" leads to more reliable systems, watch Kenton Varda's talk: [Let's put the AI in lots of little boxes](https://www.youtube.com/watch?v=xUj4HQt_leg) (Cloudflare Connect 2025).
+
+### Key Benefits of Separation
+
+**🔒 Security & Isolation**
+- Each agent operates in its own isolated context
+- Compromised agents don't expose the entire system
+- Fine-grained access control and permissions
+- Secrets and credentials scoped to specific agents
+
+**🎯 Separation of Concerns**
+- Single responsibility principle at the agent level
+- Easier to understand, test, and maintain
+- Clear boundaries between different parts of your system
+- Changes to one agent don't cascade to others
+
+**⚡ Scalability & Performance**
+- Ephemeral agents self-destruct after completing tasks
+- Permanent agents maintain long-lived state
+- Horizontal scaling through worker pools
+- Resource allocation based on actual needs
+
+**🔄 Flexibility & Reusability**
+- Agents can be composed in different workflows
+- Swap implementations without changing interfaces
+- Common patterns packaged as reusable base classes
+- Mix and match agents for different use cases
+
+## Agent Types: Permanent vs Ephemeral
+
+The framework provides two fundamental categories of agents:
+
+### Permanent Agents (Long-Lived)
+
+Permanent agents maintain durable state and live indefinitely. They're ideal for:
+- Coordinating workflows and aggregating results
+- Routing requests to appropriate handlers
+- Managing worker pools and task distribution
+- Scheduling recurring tasks
+- Storing shared knowledge and data
+- Monitoring resources and triggering actions
+
+**Examples**: CoordinatorAgent, RouterAgent, FleetManagerAgent, SchedulerAgent, KnowledgeBaseAgent
+
+### Ephemeral Agents (Self-Destructing)
+
+Ephemeral agents are created for specific tasks and self-destruct after completion. They're ideal for:
+- Processing individual units of work in isolation
+- Executing tasks that shouldn't persist
+- Minimizing resource usage
+- Ensuring clean slate for each execution
+- Parallel processing with automatic cleanup
+
+**Examples**: WorkerAgent, TaskProcessorAgent, LLMToolAgent, PipelineStageAgent
+
+## Quick Start
+
+```typescript
+import { WorkerAgent, CoordinatorAgent, getAgentByName, type TaskResult } from 'common-agents';
+
+// 1. Define a worker that processes tasks
+class DataWorker extends WorkerAgent {
+  protected async processTask(task) {
+    const result = await this.processData(task.data);
+    return result;
+  }
+
+  protected async reportResult(result: TaskResult) {
+    // Report to coordinator
+    const coordinator = await getAgentByName(this.env.DATA_COORDINATOR, 'default');
+    await coordinator.submitResult(this.getWorkerId(), result);
+  }
+}
+
+// 2. Define a coordinator that aggregates results
+class DataCoordinator extends CoordinatorAgent {
+  // Inherits result aggregation, querying, and statistics
+}
+
+// 3. Use your agents
+const worker = await getAgentByName(env.DATA_WORKER, 'worker-1');
+
+// Worker processes task and automatically reports to coordinator
+await worker.executeTask(task);
+
+// Query aggregated results from coordinator
+const coordinator = await getAgentByName(env.DATA_COORDINATOR, 'default');
+const summary = await coordinator.getSummary();
+```
+
+See the [examples/](./examples/) directory for complete, runnable examples.
+
+## Agent Documentation
+
+### Core Agents (Start Here)
+
+**[WorkerAgent](./docs/WorkerAgent.md)** - Ephemeral agent that executes a single task and self-destructs. The simplest building block for parallel processing.
+
+**[CoordinatorAgent](./docs/CoordinatorAgent.md)** - Permanent agent that aggregates results from multiple workers and provides query APIs.
+
+**[FleetManagerAgent](./docs/FleetManagerAgent.md)** - Permanent agent that spawns and manages pools of workers with concurrency control.
+
+### Routing & Scheduling
+
+**[RouterAgent](./docs/RouterAgent.md)** - Permanent agent that routes incoming requests to appropriate handlers based on configurable rules.
+
+**[SchedulerAgent](./docs/SchedulerAgent.md)** - Permanent agent that schedules and executes tasks at specific times using Cloudflare alarms.
+
+### Data & State Management
+
+**[KnowledgeBaseAgent](./docs/KnowledgeBaseAgent.md)** - Permanent agent that stores and retrieves domain knowledge with search capabilities.
+
+**[QueueAgent](./docs/QueueAgent.md)** - Permanent agent that manages task queues with priority ordering and dead letter queue support.
+
+**[WatcherAgent](./docs/WatcherAgent.md)** - Permanent agent that monitors external resources and triggers actions when conditions are met.
+
+### Advanced Processing
+
+**[TaskProcessorAgent](./docs/TaskProcessorAgent.md)** - Ephemeral agent that handles complex multi-step tasks with progress tracking and pause/resume.
+
+**[LLMToolAgent](./docs/LLMToolAgent.md)** - Ephemeral agent for LLM API integration with conversation history and tool calling support.
+
+**[PipelineStageAgent](./docs/PipelineStageAgent.md)** - Ephemeral agent that executes one stage in a multi-stage data processing pipeline.
+
+## Examples
+
+The framework includes three complete, production-ready examples:
+
+### [Email Processing Pipeline](./examples/email-processing/)
+Router → Fleet Manager → Workers → Coordinator pattern for parallel email processing.
+
+### [LLM Document Summarization](./examples/llm-summarization/)
+Fan-out/fan-in pattern with parallel LLM agents for document chunking and synthesis.
+
+### [Scheduled Data Pipeline](./examples/scheduled-pipeline/)
+ETL pipeline with sequential stages triggered by scheduled alarms.
+
+Each example includes:
+- Complete TypeScript implementation
+- Wrangler configuration for local development and deployment
+- API endpoints for testing
+- Comprehensive documentation
+
+## Installation
+
+Install from npm:
+
+```bash
+npm install common-agents
+```
+
+Or with pnpm:
+
+```bash
+pnpm add common-agents
+```
+
+**Requirements:**
+- Node.js >= 18.0.0
+- TypeScript >= 5.0.0
+- Cloudflare account (for deployment)
+
+## Architecture
+
+Built on [Cloudflare Agents SDK](https://github.com/cloudflare/agents), this framework provides:
+
+- **Type-safe base classes** for common agent patterns
+- **Lifecycle management** with hooks for initialization, cleanup, and error handling
+- **Built-in utilities** for retry logic, ID generation, and error handling
+- **Production-ready patterns** for coordination, routing, scheduling, and more
+- **Complete examples** demonstrating real-world workflows
+
+See [FRAMEWORK.md](./FRAMEWORK.md) for comprehensive architectural documentation.
+
+## Features
+
+✅ **Minimal Boilerplate** - Extend base classes instead of reimplementing infrastructure
+
+✅ **Type-Safe** - Full TypeScript support with comprehensive type definitions
+
+✅ **Production-Ready** - Error handling, retries, metrics, and lifecycle management built-in
+
+✅ **Well-Documented** - Detailed docs for every agent type with examples
+
+✅ **Battle-Tested Patterns** - Proven patterns for common multi-agent workflows
+
+✅ **Cloudflare Native** - Built specifically for Cloudflare Workers and Durable Objects
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Follow existing code patterns
+2. Add tests for new functionality
+3. Update documentation
+4. Ensure TypeScript types are correct
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) file for details.
+
+## Links
+
+- **npm Package**: [common-agents](https://www.npmjs.com/package/common-agents)
+- **Documentation**: [projects.roerohan.com/common-agents/](https://projects.roerohan.com/common-agents/)
+- **Examples**: [examples/](./examples/)
+- **Framework Guide**: [FRAMEWORK.md](./FRAMEWORK.md)
+- **Cloudflare Agents SDK**: [GitHub](https://github.com/cloudflare/agents) | [Docs](https://developers.cloudflare.com/agents/)
+

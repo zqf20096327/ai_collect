@@ -1,0 +1,930 @@
+<p align="center">
+  <img src="docs/assets/hero.png" alt="quant.cpp" width="600">
+</p>
+
+<h3 align="center">quant.cpp</h3>
+<p align="center"><b>Beyond RAG: load the whole document. On your laptop.</b></p>
+
+<p align="center">
+  Chunking was a workaround for small context windows. We just made it unnecessary.<br>
+  6.4× KV compression brings full-document understanding to consumer hardware.<br>
+  <code>pip install quantcpp</code> — 17.6K lines of C, zero dependencies.
+</p>
+
+<table align="center">
+<tr>
+<td align="center"><b>10/10 on 12K tokens</b><br>RLV crosses the cliff</td>
+<td align="center"><b>7/7 vs 0/7</b><br>Beyond RAG measured</td>
+<td align="center"><b>6.4x compression</b><br>+3% PPL</td>
+<td align="center"><b>128K context</b><br>on 16GB Mac</td>
+<td align="center"><b>17.6K LOC</b><br>zero deps</td>
+</tr>
+</table>
+
+<p align="center">
+  <a href="https://pypi.org/project/quantcpp/"><img src="https://img.shields.io/pypi/v/quantcpp.svg?label=PyPI&color=blue" alt="PyPI"></a>
+  <a href="https://pypi.org/project/quantcpp/"><img src="https://img.shields.io/pypi/pyversions/quantcpp.svg" alt="Python versions"></a>
+  <a href="https://github.com/quantumaikr/quant.cpp/releases/latest"><img src="https://img.shields.io/github/v/release/quantumaikr/quant.cpp?label=release" alt="Release"></a>
+  <a href="#"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="License"></a>
+  <a href="#"><img src="https://img.shields.io/badge/tests-35%20pass-brightgreen" alt="Tests"></a>
+  <br>
+  <a href="#"><img src="https://img.shields.io/badge/models-7%20verified-blue" alt="Models"></a>
+  <a href="https://quantumaikr.github.io/quant.cpp/"><img src="https://img.shields.io/badge/WASM_demo-192KB-purple" alt="WASM"></a>
+  <a href="https://quantumaikr.github.io/quant.cpp/guide/"><img src="https://img.shields.io/badge/guide-How_it_Works-blueviolet" alt="Guide"></a>
+  <a href="#"><img src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20WASM-orange" alt="Platforms"></a>
+</p>
+
+---
+
+## Quick Start
+
+**Ollama-style CLI (v0.12.0+):**
+```bash
+pip install quantcpp
+
+quantcpp pull qwen3                     # download Qwen3-4B Q4_K_M (~2.5 GB)
+quantcpp run qwen3                      # interactive chat
+quantcpp serve qwen3 -p 8080            # OpenAI-compatible HTTP server (SSE streaming)
+quantcpp client "Hi"                    # streaming client → server on :8080
+quantcpp list                           # show cached models
+```
+
+Recommended default: **Qwen3-4B** (4B params, MMLU 73, 4.5 tok/s on M3). Best speed AND quality — the Q4 NEON fused dot path makes it 2.4x faster than Phi-3.5-mini despite a larger vocab. Other aliases: `phi3.5`, `smollm2`, `llama3.2:1b`. Auto-pulls on first `run` / `serve`.
+
+The `serve` subcommand exposes `POST /v1/chat/completions` (OpenAI-compatible) on port 8080 — clients pass `"stream": true` for SSE streaming, or omit it for a single JSON response. Built-in `quantcpp client` supports both modes (default: streaming, `--no-stream` for single response).
+
+**One-shot question:**
+```bash
+quantcpp run qwen3 "What is gravity?"
+```
+
+**Python API (3 lines):**
+```python
+from quantcpp import Model
+m = Model.from_pretrained("Qwen3-4B")
+print(m.ask("What is gravity?"))
+```
+
+Downloads on first use, cached at `~/.cache/quantcpp/`. No API key, no GPU. See [`docs/supported_models.md`](docs/supported_models.md) for the architecture support matrix and model selection guide. [Try in browser →](https://quantumaikr.github.io/quant.cpp/) · [**Interactive Guide →**](https://quantumaikr.github.io/quant.cpp/guide/)
+
+---
+
+## Key Result: FP32 Quality at 3x Compression
+
+> **128 FP32 tokens + 4-bit everything else = FP32 quality, regardless of context length.**
+
+Measured on **Llama 3.2 3B, 3970 tokens** (k128 = 3.2% FP32):
+
+| Configuration | PPL | vs FP32 | KV Memory (32K) | Speed |
+|---|---:|---:|---:|---:|
+| FP32 (baseline) | 19.41 | — | 7.17 GB | baseline |
+| **4-bit + progressive** | **19.39** | **-0.1%** | **2.33 GB** | **+13%** |
+| 4-bit flat | 20.02 | +3.1% | 2.30 GB | +13% |
+
+```python
+m = Model("model.gguf", progressive=True)  # ← FP32 quality, 3x less memory, 13% faster
+```
+
+**Why it works:** Transformer attention concentrates ~70% of weight on the last ~128 tokens. Keeping those at full precision while compressing everything else aligns storage precision with information value — near-optimal by rate-distortion theory.
+
+**Context-length invariant:** the same 128-token window works at 4K, 32K, or 128K. At 128K context, only 0.1% of tokens are FP32 — effectively all-4-bit with FP32 quality.
+
+---
+
+## 128K Context on 16GB Mac — Measured
+
+Llama 3.2 3B with 6.4x KV compression. **Real RSS measured on M1 Pro 16GB:**
+
+| Context | FP32 KV | **quant.cpp 6.4x** | Savings | Speed |
+|---:|---:|---:|---:|---:|
+| 16K | 8.5 GB | **6.5 GB** | **-2.0 GB** | 6.6 tok/s |
+| 32K | 9.6 GB | **8.2 GB** | **-1.4 GB** | 4.9 tok/s |
+| 65K | — | **8.5 GB** | — | 1.6 tok/s |
+| **128K** | **OOM** | **9.5 GB** | — | 0.8 tok/s |
+
+128K context with a 3B model in 9.5 GB. Generation speed is the same as FP32 (6.6 vs 6.5 tok/s at 16K).
+
+```python
+m = Model("llama-3b.gguf", aggressive=True, context_length=131072)  # 128K in 9.5 GB
+```
+
+---
+
+## Beyond RAG: 7/7 vs 0/7 — Measured
+
+> **Chunking RAG was a workaround for small context windows. The workaround became dogma.**
+> **Now context windows are big enough that we don't need the workaround.**
+
+A direct comparison on **Llama 3.2 3B Q8_0**, 5-section synthetic document, 7 questions (4 single-hop, 3 multi-hop):
+
+| Method | Accuracy | Behavior on failure |
+|---|---:|---|
+| **Chunk-RAG** (wrong section retrieved) | **0/7** | **Hallucinated all answers** |
+| Full Document (FP32 KV) | **7/7** | Correct |
+| **Full Document (6.4× compressed KV)** | **7/7** | **Correct — zero quality loss** |
+
+### The hidden failure mode of chunk-RAG
+
+When chunk-RAG retrieves the wrong section, the model **doesn't say "I don't know"** — it generates plausible-sounding lies:
+
+| Question | Chunk-RAG (wrong section) | Truth |
+|---|---|---|
+| "Who is the CTO?" | "John Smith" ❌ | Maria Santos |
+| "What is the revenue?" | "$1,000,000" ❌ | 847 million |
+| "R&D %?" | "15% of net income" ❌ | 14% of revenue |
+| "Who proposed?" | "John Smith, EVP" ❌ | James Park |
+
+This is the production risk no one measures: **silent hallucination on retrieval failure**. Your monitoring shows 100% uptime. Your users get wrong answers.
+
+### Beyond RAG: load the whole document instead
+
+With **6.4× KV compression**, a full 5-section document fits in context on a 16GB Mac. The model answers all 7 questions correctly, including multi-hop reasoning that requires linking information across sections:
+
+> **"What risk affects the growth region?"** → currency fluctuations
+> *(requires linking Section 3 "Asia growth" with Section 5 "Asia currency risk")*
+
+Chunk-RAG cannot do this — each chunk is retrieved independently.
+
+### RAG isn't dead. RAG is one tool.
+
+This isn't "RAG is dead." RAG is still the only way to handle 100K+ document corpora. But:
+- **RAG decides *which documents* to look at** (search problem)
+- **Long-context decides *how deeply* to understand them** (reasoning problem)
+
+The bug was using the same tool for both. The fix is using each for what it's good at.
+
+**Reproduce in 5 minutes:** [bench/document_level_rag_test.sh](bench/document_level_rag_test.sh)
+**Full benchmark report:** [bench/results/document_level_rag_breakthrough.md](bench/results/document_level_rag_breakthrough.md)
+**Manifesto:** [docs/beyond-rag-manifesto.md](docs/beyond-rag-manifesto.md)
+
+> **Honest disclaimer:** v1 is a synthetic 5-section document with 7 questions on a single 3B model. We're not claiming this is LongBench. We *are* claiming it's enough to start a conversation about the failure mode chunk-RAG has been hiding.
+
+> **v2 update — the Working Memory Cliff (2026-04-11):** We followed up the v1 result with 204 NIAH trials across 1B and 3B at context lengths 256–2048, plus a 6-trial FP32-weights control. Both models hit a sharp cliff at **less than 1% of their nominal 128K context window** (1B Q8 at 512–1024, 3B Q4 at 1024–1280 *as a step function*). The 6.4× KV compression is bit-for-bit identical to FP32 baseline in 18 of 20 cells, so the cliff is a model property — not a KV property and not a weight-quantization artifact. The honest reframing: Beyond RAG works for documents that fit in the model's *effective* working memory, which is 2–3 orders of magnitude smaller than the nominal context window. Full tech report: [`docs/paper/working-memory-cliff.md`](docs/paper/working-memory-cliff.md). HF blog post draft: [`docs/paper/hf-blog-draft.md`](docs/paper/hf-blog-draft.md).
+
+> **v3 update — Crossing the Cliff with RLV (2026-04-14):** If the cliff is real, the fix is to stop asking one LLM call to hold a full document in working memory. **RLV (Read-Locate-Verify)** is a 5-stage pipeline — gist → locate → lookup → verify → research — where each stage stays below the ~1K-token cliff while the *document* can be arbitrarily long. On 12K-token wikitext (≈10× the cliff for Llama 3.2 3B Q4), **RLV scores 10/10** vs. 8/10 for verify-only and 1/10 for long-context-only. Key trick: BM25 + Reciprocal Rank Fusion does the locating; the LLM is only a tiebreaker. Runs on the same 16GB Mac as the 3B model — no RAG index, no embeddings. [`bench/rlv/`](bench/rlv/) · [`docs/phase3_rlv_challenge.md`](docs/phase3_rlv_challenge.md)
+
+> **v3.1 throughput update (2026-04-15):** A focused perf round (Q4_K/Q5_K int8 fused dot, ARMv8.2 `vdotq_s32`, weight-row prefetch, 2-row ILP, P-core thread default) lifted CPU generation throughput by **+58% to +141%** across our model lineup on M1 Pro. Phi-3.5-mini Q8_0 jumped 5.4 → 13.0 tok/s (now at 71% of llama.cpp's pure-CPU speed). We're still 3-6× behind llama.cpp's mature Metal kernels — that's the next gap to close. Full numbers + reproduce instructions: [`bench/results/2026-04-15_throughput_vs_llamacpp.md`](bench/results/2026-04-15_throughput_vs_llamacpp.md).
+
+> **v3.2 batched prefill (2026-04-16):** Prompt prefill was the widest gap vs llama.cpp (40-50× slower). A new `tq_forward_batch` path uses batched matrix-matrix matmul via Apple AMX (`cblas_sgemm`-inspired, 1.2 TFLOPS). **Now enabled by default on all supported architectures** (Llama family, both FP32 KV and default `turbo_kv_4b` KV compression modes). On Llama-3.2-1B Q8 with a ~250-token prompt: **42.7s → 5.9s end-to-end** (**7.2× total**, with default KV compression). Output bit-identical to per-token baseline. Commits `ed4b087`, `672fea2`, `f4934e9`, plus quant K cache write support.
+
+> **v3.21 ★★★ Qwen3.6-35B 117-token cliff BREAK via MoE softmax temperature — now default-on for qwen35moe (2026-04-22):** One knob — `TQ_MOE_ROUTE_TEMP=2.0` — breaks the "It could do math! It could do math!" repetition loop that capped Qwen3.6-35B-A3B coherent generation at 117 tokens across 40+ prior debug rounds. **Auto-flipped as the default for `qwen35moe` arch** (same pattern as the existing auto-serial mode), so users get the fix out of the box. No effect on Llama/Phi/Gemma/Qwen3 non-hybrid. Temperature sweep on drift-trigger prompt `-n 200 T=0`: default T=1.0 → 117-tok loop; T=1.5 → **earlier** 87-tok cliff (peakier in some heads); T=1.8 → still trapped; **T=2.0 → 200-tok coherent Alex+sad-tree story, no rep-loop**; T=2.5 → 200-tok coherent; T=3.0 → over-flat, 114-tok loop returns. Sweet spot T=2.0 to 2.5. Causal story: **peaky MoE routing locks into a feedback loop with DeltaNet's persistent state**. Spread the softmax and the feedback can't form. The 26-round investigation arc: R16-R19 tried per-layer DeltaNet state reset (null), R24 ran Qwen3.5-4B (DeltaNet + dense FFN, no MoE) on the same prompt and saw **zero drift** (isolated to MoE), R25 MoE router probe found L4 at 0.80+ routing collapse, R26 temperature ablation closed it. 23/23 regression PASS at T=2.0, `"Paris"` factual probe correct, Tail quality beyond ~150 tokens still degrades — hard cliff broken but full essay-length generation still has quantization noise margins. Opt-in; default unchanged. Recommended: `TQ_MOE_ROUTE_TEMP=2.0 ./build/quant Qwen3.6-35B-Q5_K_M.gguf -p "..." -n 200 --rep-penalty 1.3`. Full report: [`bench/results/2026-04-22_moe_temp_cliff_break.md`](bench/results/2026-04-22_moe_temp_cliff_break.md). v0.28.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.20 ★★ BPE encode/decode UTF-8 fix — international text silent quality disaster resolved (2026-04-21):** Two symmetric bugs in `encode_byte_to_bpe_char` / `decode_bpe_token` were silently corrupting every prompt and every output containing non-ASCII chars (accents, CJK, Cyrillic, byte-fallback emoji) on all Llama-3 / Qwen3 family models. **Encode** emitted raw bytes ≥ 0x80 (invalid UTF-8) for GPT-2 direct-byte codepoints so `str_lookup` never matched; characters silently fell back to wrong low-id tokens. **Decode** emitted the UTF-8 encoding of codepoints U+0080-U+00FF instead of the raw byte they represent; output got double-encoded ("café" → "cafÃ©"). Token-level HF parity verified: `café`/`naïve`/`日本語`/`привет` all now tokenize byte-for-byte identical to HF `AutoTokenizer` on Qwen3. Discovered via the new [`tools/refparity/`](tools/refparity/) framework's A/B output diff. Also synced to `quant.h` single-header. Added `scripts/test_tokenizer.sh` fixtures so future refactors fail loudly. Scope: GPT-2-style byte-level BPE (Llama-3.x, Qwen2.5/3.x/3.5/3.6); Gemma/Phi-3 SentencePiece path unaffected. Regression 15/15 + tokenizer 8/8 PASS. v0.27.0.
+
+> **Practical Qwen3.6-35B recipe on 16 GB Mac**: for best long-form coherence, pair `Qwen3.6-35B-A3B-UD-Q5_K_M.gguf` with `--rep-penalty 1.3`. Measured on "Once upon a time in a faraway land" (-n 200, T=0): default config hits a repeat loop at 117 tokens; Q5_K_M + rep-penalty runs the full 200-token budget with graceful degrade only near the end. 35B DeltaNet drift remains an open architectural investigation; this is the best user-facing config today.
+
+> **v3.19 ★ DeltaNet L2-norm formulation matches ggml — Qwen3.6 +36% coherence (2026-04-21):** R26's "eps fix" had the right diagnosis but wrong formulation. We used `1/sqrt(ss + eps)` but llama.cpp's `ggml_l2_norm` uses `1/max(sqrt(ss), eps)` — for near-zero inputs these differ by **3 orders of magnitude** (1e3 vs 1e6). Over 30 DeltaNet layers × position, systematic K/Q under-scaling compounds into decode-length degradation. Fix: match ggml exactly. Measured on Qwen3.6-35B IQ4_XS auto-serial "Write a 300-word essay": **117 → 160 tokens** (+36%), coherent content 45 → 110 tokens before drift. Discovered via direct diff of `refs/llama.cpp/ggml/src/ggml-cpu/ops.cpp::ggml_compute_forward_l2_norm_f32` against our `l2_normalize`. 15/15 regression PASS. v0.26.0.
+
+> **v3.18 Qwen3.6 auto-serial quality mode — determinism + longer coherence (2026-04-20):** Discovery: Qwen3.6-35B multi-thread matmul is **non-deterministic at T=0** (same prompt two runs = different output). Parallel FP reduction order variance compounds over 30 MoE layers × position feedback → top-1 argmax flips. Fix: auto-detect qwen35moe+DeltaNet hybrid and force `-j 1`. **Before**: repeats differ run-to-run, degrades 60-70 tokens. **After**: deterministic, extends coherent window to ~95 tokens. Cost: ~2-3× slower decode (3 t/s vs 8 t/s). Opt-out: `TQ_NO_AUTO_SERIAL=1`. Honest limit: **still not a full fix for 1000+ char generation** — numerical precision accumulation over 40 layers × 8-expert weighted sum × IQ4_XS quantization drifts into repetition eventually. Session arc day summary: 7 releases closing 7 distinct Qwen3.6 bug classes. Still worth shipping because deterministic output is usable, non-det was not. v0.25.0.
+
+> **v3.17 MoE SwiGLU exact expf — Qwen3.6 coherence margin (2026-04-20):** MoE `swiglu_fused` now uses exact `expf` by default instead of Schraudolph (~2% per-call error). R27-29 had fixed this for DeltaNet but MoE kept fast_exp. With 30 MoE layers × 500+ tokens, the error compounds. After fix, 400-word Qwen3.6 prompts produce longer, more varied continuation. Speed cost: unmeasurable (SwiGLU not bottleneck; 28-29s TTFT identical before/after on 280w). Opt-out: `TQ_MOE_FAST_EXP=1`. 500+ word degradation still exists (multi-source bug, this is one contributor). 15/15 regression PASS. v0.24.0.
+
+> **v3.16 ★★ Prompt buffer silent-truncation FIXED (2026-04-20):** Prompts longer than ~4096 chars (~700 words of English) were being silently cut off by a 4096-token caller buffer in `tq_generate.c`. Our BPE is char-level first then merged, so the 4096 cap hit BEFORE merges reduced the count. Text past char 4096 was gone. Fix: bumped to 32768 with dynamic sizeof. Diagnostic via OpenMythos reference-diff: HF Qwen3-0.6B tokenized 561-word doc to 698 tokens, our engine to 684 — and our last tokens decoded to `". The abacus"` (from the BEGINNING of the text!), proving truncation. After fix Qwen3.5-4B (dense hybrid) handles 561-word document coherently: *"the future of AI is not just about what we can do with it - it's about how we think about what matters most to us."* ✓. Qwen3.6-35B MoE hybrid STILL fails at 561w with repetition loop — bug now isolated to **MoE feedback accumulation at long positions** (DeltaNet and tokenization proven correct by Qwen3.5-4B working). 15/15 regression PASS. v0.23.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.15 Qwen3.6 chunked batched prefill (+30% TTFT, 2026-04-20):** Batched MoE dispatch ran in chunks of 8 tokens (configurable via `TQ_MOE_BATCH_CHUNK`) preserves the small-N safe region while recovering most of the batched speedup. State (KV cache, DeltaNet ssm) is already persistent across driver calls so chunking is semantically correct. Measured on Qwen3.6-35B IQ4_XS: 44-word prose TTFT **12.6s → 7.0s (+44%)**, 280-word **38.0s → 29.4s (+29%)**, same correct summaries. Tested up to ~300 word documents. 500+ words shows a separate accumulation bug (both paths — batched and per-token — fail, indicating KV/DeltaNet-state issue distinct from the MoE scatter bug). 15/15 regression PASS. v0.22.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.14 ★★★ Qwen3.6-35B practically usable — document Q&A on 16 GB Mac (2026-04-20):** The final Qwen3.6 bug closed. Isolated to `tq_moe_forward_batch` at N≥40 (batched MoE kernel in `tq_forward_batch_moe_hybrid`). Per-token prefill via `tq_forward` produces **perfect** output on same input. Fix: flipped default to opt-in (`TQ_USE_MOE_BATCH=1`). Qwen3.6-35B on 44-word natural prose + "Summarize in one sentence." — **before** `! \` \` inteligØª sWith …` garbage — **after** `"Artificial intelligence, particularly through deep learning and large language models, has transformed how we create and interact with content…"` ✓. Broad validation 5/8 PASS (all "fails" are coherent outputs missing a test keyword). Trade-off: TTFT 12.6s per-token vs 4-7s batched — correctness first. Complete session arc: v0.19.0 BPE → v0.20.0 QK-norm + NEOX → v0.21.0 MoE opt-in. **6 Pillar 1 + 1.5 rounds closed what 30+ empirical rounds (R26-R50) had not**, via OpenMythos-inspired HF reference diff. v0.21.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.13 ★★ NEOX RoPE + QK-norm — Qwen3 long-prompt coherence restored (2026-04-20):** Two more root causes closed on top of v3.12's BPE fix. (1) `src/engine/tq_transformer.c:1204` — pure Qwen3 (0.6B..32B) REQUIRES q_norm/k_norm; R40 had disabled QK-norm for all GGUF arch="qwen" which was correct only for Qwen3.5/3.6 DeltaNet HYBRID. Without QK-norm the residual stream explodes at layer 2 (norm 5400 vs HF 10). (2) `tq_ops.c` new `tq_rope_neox` — llama.cpp maps `LLM_ARCH_QWEN3*` to `LLAMA_ROPE_TYPE_NEOX/IMROPE` (half-split pairs), our engine's `tq_rope` and `tq_forward_batch` both used LLaMA-style interleaved pairs. R34 had fixed partial-rotary only; pure Qwen3 full rotary and batched prefill were still wrong. Now arch-detected and dispatched to the right RoPE. Measured Qwen3-0.6B on 50-word synthetic input: before `alyticsÐ°Ð½cieaâ��à¹�…` UTF-8 garbage, after `" Let me try to understand this"` coherent. Qwen3.5-4B natural prose: `"Artificial intelligence is a field of computer science…"`. Qwen3.6-35B 8-prompt matrix: zero garbage outputs. Methodology win: HF reference diff (`tools/pillar1/`), enabled by `refs/OpenMythos` insight "compare to ground truth FIRST". 6 rounds closed what 30+ empirical rounds hadn't. Regression 15/15 + tokenizer 4/4. v0.20.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.12 ★ BPE root-cause FIXED — Qwen3 family now fully coherent (2026-04-20):** One line added to `src/engine/tq_tokenizer.c:1442` (`if (tokens[top.pos] < 0) continue;`) eliminates the BPE heap merge bug that caused every "Qwen3 drift" symptom we chased across 30+ rounds. The bug: positions that died as right-neighbor of a merge weren't having their `gen[]` bumped, so stale heap entries resurrected dead linked-list slots and produced corrupted tokens. Measured on Qwen3-0.6B with HF reference: our engine encoded `"Hello"` as `[32713="Hel", 654="ll"]` = literally **"Helll"** (extra 'l', missing 'o'); HF encoded as `[9707="Hello"]`. Fix makes our tokens match. Downstream: Qwen3.6-35B 40+ word prompts now produce **coherent Python code** and **full narrative text** (previously garbage); Phi-3.5 "What is 2+2?" now gives "The sum of 2 and 2 is equal to four." (previously hallucinated "tti"). Methodology: Python HF reference diff caught it in 3 rounds ([`tools/pillar1/`](tools/pillar1/)). Regression 15/15 + new tokenizer test 4/4. Full before/after proof: [`bench/results/2026-04-20_bpe_fix_proof.md`](bench/results/2026-04-20_bpe_fix_proof.md). `quant.h` single-header unaffected (uses naive O(n²) BPE, correct by construction).
+
+> **v3.11 TTFT/decode split + daily-driver picks (2026-04-20):** The CLI now prints `TTFT | decode` separately so individual devs see prefill latency vs sustained decode rate, not a blended "overall tok/s" that's dominated by cold-start on short queries. Measured warm on 16 GB M1 Pro CPU-only: **Phi-3.5 Q4_K_M** TTFT **2.3s** / decode **14.5 t/s** (snappy chat), **Llama-3.2-3B Q8→Q4** TTFT **0.97s** / decode **29.0 t/s** (one-shot code/math), **Qwen3.6-35B IQ4_XS** TTFT **1.83s** / decode **10.5 t/s** (35B MoE quality long-form). Decode is a model property, TTFT is a warmup property — running twice makes the second call see the warm numbers. Full 3-model matrix + use-case picks: [`bench/results/2026-04-20_ttft_daily_driver.md`](bench/results/2026-04-20_ttft_daily_driver.md).
+
+> **v3.10 Qwen3.x correctness — ALL FORMATS WIN (2026-04-20):** Two structural fixes close long-standing drift on Qwen3.5/3.6. **(1) NEOX-style partial RoPE** — `LLAMA_ROPE_TYPE_IMROPE` (`refs/llama.cpp/src/llama-model.cpp:9298`) requires NEOX half-split `(q[i], q[i+rope_pairs])`, not LLaMA-style pairs. **(2) Arch-conditional QK-norm** — Gemma 4 requires it, Qwen family degrades with it. Measured on Qwen3.6-35B-A3B-UD-IQ4_XS (--chat, T=0): "Once upon a time" n=60 → **60-token "Jack...packed his bag with a map, a compass, and some food and water. He set off early in the"**; `def fibonacci(n):` → **`if n <= 0: return "Invalid input"`**; haiku "Silence speaks loud, Silence speaks in the quietest way."; list "1. Apple 2. Banana 3. Orange". 15/15 regression PASS (added long-form + code guards). v0.17.0: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.9 Qwen3.6 Q5_K_M on 16 GB Mac — first engine (2026-04-19):** `auto-policy MADV` in `tq_model.c` + NEON `vshlq_u8` qh extraction in `q5k_int_dot_worker` let a **26.5 GB Q5_K_M GGUF** load and decode on a **16 GB M1 Pro**. RSS stabilizes at **9.65 GB** (non-expert WILLNEED = 2.50 GB, routed experts OS-managed = 22.13 GB thanks to MoE K=8/N=256 sparsity). Decode: **7.9 t/s warm steady-state** (interactive chat range). llama.cpp OOMs the same file on the same hardware. Also new: NEON SHL-based 5th-bit extraction (AND + CEQ + AND → SHL + AND) gives +40% Q5_K cold decode. Full Qwen3.6 5-tier matrix on 16 GB: [`bench/results/2026-04-19_qwen36_quant_matrix_16gb.md`](bench/results/2026-04-19_qwen36_quant_matrix_16gb.md). v0.16.0 release notes in [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md).
+
+> **v3.8 Mission A complete — MoE batched prefill default-on (2026-04-19):** Three Step-3 rounds land the token-grouped MoE batched dispatch that Mission A targeted. `tq_moe_forward_batch` (3-phase: batch-route → inverse index → expert-wise batched gather/matmul/scatter), `tq_forward_batch_moe_hybrid` (per-token DeltaNet + self-attn, batched MoE FFN), cross-expert parallel dispatch, batched shared expert (3 × `tq_batched_matmul_q4`), and `tq_tp_run_dynamic` FCFS atomic queue for straggler flattening. **Measured on Qwen3.6-UD-Q3_K_S, 450-word prompt, warm, j=8: 103s → 73s wall time (-29%), 4.4 → 6.1 t/s prefill (+39%), -41% CPU work.** With `TQ_MOE_BATCH_DYNAMIC=1` opt-in, +17% over wave mode. Default-on via `TQ_NO_MOE_BATCH=1` opt-out. Commits `b7c42dd / 8dd4920 / 30428f3 / 9fb237d / 3794fd2 / 61d7ce8 / 627b65e / f255b46 / e5f721a / f9e5af1 / 3a34cbf / f195a78 / 3f74f3e`. Full report: [`docs/RELEASE_NOTES.md`](docs/RELEASE_NOTES.md) v0.15.0.
+
+> **v3.7 IQ4_XS fits 16 GB Mac (2026-04-18, night):** Counter-intuitive result — a **16.51 GB file** loads and runs on a **16 GB Mac** because `mmap` + `TQ_NO_MLOCK=1` keeps only the hot-expert subset resident. Qwen3.6-35B-A3B-UD-IQ4_XS: **RSS 5.44 GB warm**, **decode 12.5 t/s peak**, free RAM after run = 10.2 GB. Quality step over Q3_K_S is concrete: prose carries specific proper nouns and long-narrative structure ("village of Oakhaven, apprentice to blacksmith, Master Thorne, a wise and old blacksmith known for his wisdom and kindness") — coherent out to ~60 tokens vs Q3_K_S's ~40. Speed cost only 13% (14.3 → 12.5 t/s). Full 4-tier ladder (IQ2_XXS / IQ3_XXS / Q3_K_S / IQ4_XS) in [`bench/results/2026-04-18_iq4_xs_tier.md`](bench/results/2026-04-18_iq4_xs_tier.md). **IQ4_XS is now the best-quality Qwen3.6 variant we've confirmed on 16 GB.**
+
+> **v3.6 Q3_K_S tier on Qwen3.6 (2026-04-18, night):** After the Q3_K int8 kernel landed (`11e3c32`), the Unsloth UD-Q3_K_S (3.5 bpw, 14.3 GB) variant is end-to-end measured. Result on M1 Pro 16 GB CPU-only: **14.3 t/s warm peak, RSS 5.24 GB** — the *smallest working set* of any Qwen3.6-35B variant tested, beating IQ2_XXS (6.54 GB) despite 70% higher bpw. Counter-intuitive but mechanical: `TQ_NO_MLOCK=1` lets the OS page out cold experts; Q3_K_S's uniform 256-elem blocks touch fewer distinct pages per matmul than IQ3_XXS's mix of IQ3/IQ4/Q4_K/Q6_K blocks. Quality step visible: **"William Shakespeare wrote Hamlet"** on the author probe (IQ3_XXS fails this one), "Jack loved to play with his guitar" vs IQ2's "village of the mountains". llama.cpp CPU 5.11 t/s → **2.8× faster**. **Q3_K_S is now the recommended Qwen3.6 variant on 16 GB Macs.** Full report: [`bench/results/2026-04-18_q3_k_s_tier.md`](bench/results/2026-04-18_q3_k_s_tier.md).
+
+> **v3.5 RoPE + SwiGLU NEON cleanups (2026-04-18, evening):** Two structural fixes that show up on the same profile: (1) **RoPE TLS sin/cos cache** for the partial-rotary path used by every Qwen 3.x model — the old code recomputed `powf + cosf + sinf` per (layer, head, pair); sin/cos only depend on `(pos, base, rope_dim)` and those are identical across heads and layers in one forward pass. Thread-local table keyed on that triple: first layer computes, remaining ~179 head-layer combinations do array reads. ~180× fewer transcendental calls per token on Qwen3.6. (2) **`fast_exp_neon`** inlines the Schraudolph bit-twiddle exp into NEON directly (one FMA + one `vcvtq_s32_f32` per 4 lanes) instead of `vst1q_f32 → 4× scalar call → rebuild vector`. Halves path length in the SwiGLU inner tile (called ~120K times per token on Qwen3.6 MoE). Commits `b4d7807`, `d4c0fc6`.
+
+> **v3.4 Q3 quality breakthrough (2026-04-18, later):** Three more scalar fused_dot kernels replaced with `vdotq_s32` int8 paths — **Q3_K**, **IQ3_XXS**, **IQ4_XS** (IQ4_XS uses `vqtbl1q_s8` TBL-16 on the 16-entry `kvalues_iq4nl` codebook, the cleanest fit NEON gives you). Target: move Qwen3.6-35B-A3B from IQ2_XXS (2.05 bpw, drifts at ~30-40 tokens) up to **UD-IQ3_XXS (3.06 bpw, 12.3 GB)** — same 16GB Mac, still CPU-only. Result: **14.6 t/s warm peak, RSS 6.82 GB** (+0.28 GB vs IQ2 for the quality step-up — the page cache streams routed experts so hot-set size barely changes). **Coherent decode runs ~2× longer** before drift ("Jack lived in the small village called 'Happiness'" instead of IQ2's "small village of the mountains"). **2.8× faster than llama.cpp's CPU path on the same Q3 model** (5.23 t/s). A/B toggles: `TQ_Q3K_NOINT=1`, `TQ_IQ3XXS_NOINT=1`, `TQ_IQ4XS_NOINT=1`. Full report: [`bench/results/2026-04-18_q3_breakthrough.md`](bench/results/2026-04-18_q3_breakthrough.md). Commit `11e3c32`.
+
+> **v3.3 MoE + Q4_K_M breakthrough (2026-04-18):** Three profile-driven perf fixes land together. (1) **Q6_K NEON int8 fast path** — `fused_dot_q6_k` was pure scalar, the silent bottleneck on every Q4_K_M model (Q4_K_M embeds Q6_K for `attention.wo` / `ffn_down`). `sample` caught it once we started the profile *after* model load. Qwen3.5-4B Q4_K_M **5.0 → 14.1 t/s**, Phi-3.5-mini Q4_K_M **6.2 → 14.1 t/s**. (2) **MoE router NEON** — `tq_moe_route`'s scalar per-expert logit dot (30 layers × 256 experts × 2048 dim = 15.7M scalar ops/token on Qwen3.6) replaced with 4-accumulator FMA + thread-local scratch (no more `malloc` on the hot path). (3) **`TQ_NO_MLOCK` env** for memory-constrained Macs — on 16GB systems, `mlock(10 GB)` blocks the OS from evicting cold expert pages; letting the page cache do LRU is both **faster AND uses 5 GB less RSS**. Net on Qwen3.6-35B-A3B-UD-IQ2_XXS: **3.08 → 16.1 t/s (5.2×)**, RSS 12 GB → 6.5 GB. **3.2× faster than llama.cpp's CPU path** (5.07 t/s). Commits `9fdafaa`, `f738325`, `ee4778a`. Full report: [`bench/results/2026-04-18_moe_and_q4_k_m_breakthrough.md`](bench/results/2026-04-18_moe_and_q4_k_m_breakthrough.md).
+
+---
+
+## More Features
+
+**Bring your own model** — any GGUF file works:
+```python
+m = Model("path/to/any-model.gguf")
+for tok in m.generate("Once upon a time"):
+    print(tok, end="", flush=True)
+```
+
+**Save & restore context** — read a document once, query it forever:
+```python
+m.ask("Read this long document: ...")
+m.save_context("document.kv")    # compressed KV → disk
+
+m2 = Model("model.gguf")
+m2.load_context("document.kv")   # instant restore, no re-processing
+m2.ask("What was on page 37?")
+```
+
+**Infinite scrollback** — context never overflows, old tokens are shifted (not deleted):
+```python
+# Chat for hours — no "context window exceeded" error
+for tok in m.generate("Tell me an extremely long story"):
+    print(tok, end="", flush=True)
+```
+
+**Browser demo** — 193 KB WASM, one-click: [quantumaikr.github.io/quant.cpp](https://quantumaikr.github.io/quant.cpp/)
+
+Pre-built wheels: Linux x86_64/aarch64, macOS arm64 (Python 3.9–3.13). Others compile from source automatically.
+
+---
+
+## Why quant.cpp?
+
+When AI models have long conversations, they need memory called the **KV cache**. This memory grows with every message and often exceeds the model itself. quant.cpp compresses it **6.4x** and prunes unimportant tokens — so the same laptop can handle **6x longer conversations at 59% lower attention cost**.
+
+---
+
+## Beyond RAG: Document-Level Context
+
+Traditional RAG splits documents into small chunks (512 tokens), embeds them, and retrieves fragments. This works for large corpora but has fundamental limitations:
+
+- **Chunking destroys relationships** — information spanning pages 3, 47, and 103 can't be found by any single chunk search
+- **Retrieval can fail** — if the question uses different words than the document ("employee retention" vs "turnover rate")
+- **No multi-hop reasoning** — connecting A → B → C across chunks is impossible when each is retrieved independently
+
+**Long-context KV compression offers a complementary approach:**
+
+```
+Chunk-Level RAG:    100K docs → chunk(512) → embed → search → 5 chunks → LLM(4K)
+                                 ↑ information loss here
+
+Document-Level RAG: 100K docs → doc-level index → search → 2-3 full docs → LLM(64K-128K)
+                                                              ↑ KV compression makes this fit
+```
+
+RAG decides **which documents** to look at. Long-context decides **how deeply** to understand them. Each does what it's best at.
+
+| | Chunk-RAG alone | Long-Context alone | **RAG + Long-Context** |
+|--|----------------|-------------------|----------------------|
+| 100K documents | only option | impossible | **RAG selects** |
+| Cross-page reasoning | fails | works | **works** |
+| Multi-hop Q&A | limited | works | **works** |
+| Exact recall | depends on retrieval | depends on model size | **best of both** |
+| Infrastructure | vector DB + 4 systems | LLM + .kv file | **practical hybrid** |
+
+**Pre-computed KV library** — process once, query forever:
+```python
+# Overnight (GPU or batch): process each document once
+m.ask(open("operations_manual.txt").read())
+m.save_context("ops_manual.kv")       # 1.5 GB, compressed
+
+# Anytime (laptop, offline): instant load + unlimited questions
+m.load_context("ops_manual.kv")       # 0.5 seconds
+m.ask("What's the expense reimbursement process?")  # instant
+```
+
+Without 6.4x KV compression, loading a full 50K-token document into a 3B model needs ~17 GB of KV memory (impossible on 16GB Mac). With compression: ~2.7 GB (fits easily).
+
+<details>
+<summary><b>Technical detail: The KV cache problem</b></summary>
+
+LLM memory is dominated by the **KV cache**, not model weights. At 32K context, a 8B model's KV cache consumes **4GB** — more than the model itself. Every existing engine stores KV in FP16. We compress it.
+
+```
+  +------------+-------------------------------+
+  |            | KV Cache (FP16)               |
+  | Model(4GB) | ██████████████   8K  <-- OOM  |
+  +------------+-------------------------------+
+  |            | KV (4-bit)                    |
+  | Model(4GB) | ██ -------------> 350K ctx    |
+  |            |      6.9x smaller             |
+  +------------+-------------------------------+
+```
+
+</details>
+
+<details>
+<summary><b>Detailed benchmark tables</b></summary>
+
+## The Result
+
+> **Same hardware. 4–7x longer context. PPL measured and disclosed.**
+
+### Llama 3.2 3B Instruct — PPL × Speed (FP32 KV = 13.56 PPL @ 17.9 tok/s)
+
+> **Round 10 (NEON `vqtbl1q_s8`) — `turbo_kv_4b` now matches fp32 KV speed at 7.1× compression.** 10 rounds of Karpathy iteration closed the speed gap from −45% (literal port) to PARITY. Profile-driven analysis revealed the bottleneck was the scalar inner loop, not the dequant — fp32 had 4-way NEON SIMD while we were doing scalar gather. Quantizing the 16 Lloyd-Max-Gaussian centroids to int8 and using `vqtbl1q_s8` for SIMD table lookup eliminated the gap.
+
+| KV Config | Bytes/block | Compression | PPL | Δ vs FP32 | tok/s | vs FP32 speed |
+|:----------|------------:|------------:|----:|----------:|------:|--------------:|
+| FP32 reference | — | 1× | 13.56 | — | 18.43 | baseline |
+| **`turbo_kv_4b`** ⭐ default | **72** | **7.1×** | **14.08** | **+3.8%** | **18.17** | **−1.4%** ✅ parity |
+| `turbo_kv_5b` 🏆 quality | 88 | 5.8× | **13.65** | **+0.7%** | 16.80 | −8.8% |
+| `turbo_kv_3b` | 56 | 9.1× | 15.36 | +13.3% | 16.57 | −10.1% |
+| `uniform_4b` | 68 | 7.5× | 14.60 | +7.7% | 13.27 | −26.8% |
+| llama.cpp `q4_0` KV (lit.) | ~70 | ~7.3× | ~14.99 | +10.6% | — | — |
+
+`turbo_kv_4b` (default) is now Pareto-dominant on every axis vs `uniform_4b`: better PPL (14.08 vs 14.60), faster (18.7 vs 13.3 tok/s), comparable compression (7.1× vs 7.5×). And at the same time it matches fp32 KV speed at the cost of just 3.8% PPL — for 7.1× less memory.
+
+The 5b/3b variants haven't yet received the Round 10 NEON treatment (their inner loops are still scalar, planned for v0.7.1). Their speed numbers in the table above are still pre-Round-10.
+
+**Build note**: All numbers are with CMake default `TQ_BUILD_METAL=OFF` (CPU-only). The existing Metal backend has per-matmul dispatch overhead that exceeds the GPU benefit at batch-1 inference; see [issue #16](https://github.com/quantumaikr/quant.cpp/issues/16) for the investigation.
+
+```
+                  PPL Degradation vs FP32           Speed vs FP32 KV
+                       (lower is better)              (higher is better)
+
+  turbo_kv_5b     │█ +0.7%                       █████████ −14.9%
+  turbo_kv_4bo    │██▌ +2.5%                     ████████ −16.2%
+  turbo_kv_4b ⭐  │█████ +5.7%                   ██████████ −8.4%
+  turbo_kv_3b     │█████████████ +13.3%          █████████ −13.0%
+  uniform_4b      │██████ +7.7%                  ███████ −26.8%
+  llama.cpp q4_0  │██████████ +10.6%             — (not measured)
+  FP32 reference  │ ← 0%                         18.13 tok/s ←
+                   0%   +5%   +10%               0   25%   50%   75%   100%
+```
+
+`turbo_kv_4b` (default) and `turbo_kv_5b` (quality) are the Pareto-optimal recommendations: **5.8–7.1× memory compression at 92% of FP32 KV speed.** Full Karpathy-loop history (9 rounds across 3 sessions) in [bench/results/turboquant_reproduction.md](bench/results/turboquant_reproduction.md).
+
+### Cross-size validation (3 Llama-family models, all measured CPU-only)
+
+| Model | FP32 baseline | turbo_kv_5b PPL Δ | turbo_kv_4b PPL Δ | turbo_kv_4b tok/s | vs FP32 speed |
+|---|---:|---:|---:|---:|---:|
+| SmolLM2 135M | 18.62 PPL @ 70.4 t/s | +1.7% | +5.8% | 60.2 | −14.5% |
+| Llama 3.2 1B | 16.88 PPL @ 41.1 t/s | +0.7% | +7.3% | 34.4 | −16.3% |
+| Llama 3.2 3B | 13.56 PPL @ 18.13 t/s | +0.7% | +5.7% | 16.60 | −8.4% |
+
+`turbo_kv_5b` is consistently near-lossless across model sizes (~1% PPL Δ). `turbo_kv_4b` stays in the 5–8% PPL range and runs at 84–92% of FP32 KV speed. **Recommendation**: use `turbo_kv_3b` only on models ≥ 3B parameters (the 8-level codebook is too coarse for small models — +61% PPL on Llama 3.2 1B).
+
+> **About this comparison**: We previously published v0.6.3 release notes claiming `turbo_kv` beats `fp32` KV speed. That was an artifact of the fp32 attention path being unoptimized scalar — once we added NEON to the fp32 path (commit `4490c83`), the honest gap is `−7%` to `−12%`, not `+5%` to `+10%`. We've corrected the README and the v0.6.3 release notes.
+
+### Context length gains (`turbo_kv_4b` + `q4` value cache)
+
+| Hardware | Model | FP16 KV ctx | quant.cpp ctx | KV Gain |
+|:---------|:------|------------:|--------------:|--------:|
+| 16GB Mac | Llama 3.2 3B | 50K tokens | **350K tokens** | **6.9x** |
+| 16GB Mac | Gemma 4 26B MoE | 4K tokens | **14K tokens** | **3.5x** |
+| 8GB Laptop | Llama 8B (Q4) | 16K tokens | **61K tokens** | **3.8x** |
+| 24GB RTX 3090 | Llama 8B (Q4) | 147K tokens | **559K tokens** | **3.8x** |
+
+## Why quant.cpp?
+
+LLM memory is dominated by the KV cache. quant.cpp is **a minimal C engine that ships KV cache quantization that actually works**, in a form factor nobody else offers: one single header, zero dependencies, runs on iOS/Android/WASM/MSVC/microcontrollers.
+
+**Two reasons to use it:**
+
+1. **You need to embed LLM inference inside something.** An app, a game, a web page, a device. quant.cpp is one file (`quant.h`, 628KB) plus libc. Everywhere a C compiler runs, this runs.
+
+2. **You want to study KV cache compression.** quant.cpp implements 7 KV quantization schemes side by side: `uniform_4b/2b/3b`, `polar_3b/4b`, `qjl_1b`, `turbo_kv_*`. You can read each one in a single C file and add a new one in 3 functions.
+
+**Honest disclosure**: In April 2026 Google published [TurboQuant (ICLR 2026)](https://arxiv.org/abs/2504.19874). quant.cpp's `turbo_kv_*` types started as a port of that algorithmic structure (Random Hadamard Transform → Lloyd-Max codebook → 1-bit QJL residual). Through a Karpathy-loop ablation we discovered the QJL residual stage was contributing literally zero to scores, dropped it, and reinvested the freed bytes into a larger codebook. The result (`turbo_kv_4b` at 14.28 PPL on Llama 3.2 3B) **beats our previous production champion `uniform_4b` and llama.cpp's `q4_0` KV** at the same 4-bit budget. The full optimization history is in [bench/results/turboquant_reproduction.md](bench/results/turboquant_reproduction.md).
+
+> **Need the exact paper numbers in a paper?** Use [Google's reference](https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/).
+> **Need a small, readable C engine with KV compression that ships on a phone, browser, microcontroller, or game engine?** Use quant.cpp.
+
+## Get Started in 60 Seconds
+
+```bash
+# 1. Build
+git clone https://github.com/quantumaikr/quant.cpp && cd quant.cpp
+cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j$(nproc)
+
+# 2. Download a model (135MB starter)
+pip install huggingface_hub
+hf download bartowski/SmolLM2-135M-Instruct-GGUF SmolLM2-135M-Instruct-Q8_0.gguf --local-dir models/
+
+# 3. Run
+./build/quant models/SmolLM2-135M-Instruct-Q8_0.gguf --chat -p "Hello!" -j 4
+
+# 4. With KV compression (7x longer context)
+./build/quant models/SmolLM2-135M-Instruct-Q8_0.gguf --chat -p "Hello!" -k uniform_4b -v q4
+```
+
+> **[Full API docs](docs/api.md)** · **[WASM demo](https://quantumaikr.github.io/quant.cpp/)** · **[Add your own KV type](docs/custom-quantization.md)** · **[Python: `pip install quantcpp`](#python)**
+
+---
+
+## See It In Action: Book-in-a-Chat
+
+Load an entire novel into context and ask questions about it. llama.cpp runs out of memory. quant.cpp remembers the whole book.
+
+```bash
+# Load Alice in Wonderland (~27K tokens) with KV compression
+bash bench/demo/book_chat.sh models/Llama-3.2-3B-Instruct-Q8_0.gguf
+
+# Q: "What riddle did the Mad Hatter ask Alice?"
+# A: "Why is a raven like a writing-desk?" — from Chapter 7, A Mad Tea-Party...
+```
+
+On a 16GB Mac with Llama 3.2 3B: llama.cpp maxes out at ~50K tokens (FP16 KV). quant.cpp compresses KV 6.9x → **350K tokens** — enough for 12 novels.
+
+---
+
+</details>
+
+<details>
+<summary><b>How it compares to other engines</b></summary>
+
+## How It Compares
+
+### vs llama.cpp: Quality at same bit budget
+
+```
+                    KV Quantization Quality (SmolLM2 1.7B, WikiText-2)
+                    
+  llama.cpp Q4_0 KV │██████████████████████████████████████ PPL +10.6%
+                    │
+  llama.cpp Q8 K+Q5 V │▎ PPL ~+1%  ← recommended (1.6x compression)
+                    │
+   quant.cpp 4-bit  │▏ PPL +0.0%  ← lossless (3.8x compression)
+                    │
+   quant.cpp 3-bit  │█ PPL +1.3%  ← delta compression (4.3x)
+                    └────────────────────────────────────────────────
+                     0%                                         +12%
+                              Perplexity Degradation →
+```
+
+Both are per-block methods. The quality gap comes from block size (128 vs 32), min-max range encoding, independent K/V treatment, and delta compression — not from a fundamental design flaw in llama.cpp. At ~1.6x compression, llama.cpp Q8+Q5 is excellent. quant.cpp targets the **4-7x range** where the difference matters.
+
+### vs llama.cpp: Inference speed (honest numbers)
+
+Generation throughput, 30 tokens, 4 threads, CPU-only, Apple M1 Pro:
+
+| Model | quant.cpp | llama.cpp | Ratio |
+|:--|:-:|:-:|:-:|
+| Llama 3.2 3B Q8_0 | **10.2 tok/s** | 13.5 tok/s | **75%** ✅ |
+| Phi-3.5-mini Q8_0 | 5.0 tok/s | 9.8 tok/s | 51% |
+| Phi-3.5-mini Q4_K_M | 2.7 tok/s | 17.5 tok/s | 15% |
+| Gemma 4 E2B Q8_0 | 16.3 tok/s | 175.8 tok/s | 9% |
+| Gemma 4 E4B Q8_0 | 4.8 tok/s | 34.8 tok/s | 14% |
+| Gemma 4 E4B Q4_0 | 4.8 tok/s | 50.5 tok/s | 10% |
+
+**Where we're competitive**: Q8_0 on mid-size (3B-class) models — our NEON int8×int8 fused dot path approaches llama.cpp's hand-tuned assembly (75% on Llama 3.2 3B).
+
+**Where we lag (2-10×)**:
+- **Q4_K_M** (mixed Q2_K/Q3_K/Q4_K) — llama.cpp has years of assembly tuning on K-quant types. We have NEON for Q4_K and Q2_K but not Q3_K.
+- **Large vocab models** (Gemma 4, 262K vocab) — the lm_head matmul alone is 2560×262144. llama.cpp's Q8_0 matmul benefits disproportionately from CPU-specific tiling we haven't implemented.
+- **Tiny models** (<1B) — llama.cpp's scheduling and batch overhead is optimized for cases where per-matmul work is small.
+
+**Known correctness issues**:
+- **Qwen3.5-4B** (`architecture = qwen35`, DeltaNet hybrid) — forward pass runs without errors but produces whitespace-only output. llama.cpp produces `<think>...` reasoning. Root cause unidentified.
+
+**Why we still exist**: llama.cpp is ~500K LOC (C++/CUDA/Metal/Vulkan). quant.cpp is ~17.6K LOC of C with zero dependencies. If you want the fastest inference, use llama.cpp. If you want something you can read end-to-end, embed in a single `.c` file, or use as a research platform for new KV compression methods — we're the alternative.
+
+### vs other TurboQuant implementations
+
+|  | quant.cpp | turbo-quant (Rust) | turboquant-pytorch | scos-lab/turboquant |
+|:--|:---------:|:------------------:|:------------------:|:-------------------:|
+| Language | **Pure C11** | Rust | Python | Python |
+| Single-header | **✅ quant.h (628KB)** | ❌ Cargo crate | ❌ pip install | ❌ |
+| Dependencies | **libc + libm** | Rust toolchain | PyTorch + CUDA | PyTorch |
+| iOS / Android | **✅** | ❌ | ❌ | ❌ |
+| WASM (browser) | **✅ 192KB** | ❌ | ❌ | ❌ |
+| MCU / embedded | **✅** | ❌ | ❌ | ❌ |
+| Windows MSVC | **✅** | ✅ | (Python) | (Python) |
+| GGUF model loading | **✅ 7 architectures** | ❌ | ❌ | research only |
+| End-to-end inference | **✅** | kernel only | kernel only | kernel only |
+
+### "Why not just use llama.cpp?"
+
+You absolutely can. llama.cpp is excellent. The difference is **integration scope**, not capability:
+
+**llama.cpp = compiled library** (250K+ LOC). You link `libllama`, which pulls in GGML tensor graphs, Metal/CUDA backends, sampling, tokenizer. Great if your build system handles it — but it's a _library_ with a build step.
+
+**quant.cpp = one file** (16K LOC). `#include "quant.h"`, compile with `cc app.c -lm`. No CMake, no linker flags beyond libc. One translation unit.
+
+Where this difference matters in practice:
+
+```
+# quant.cpp — add LLM to any C project in 2 lines
+cc -O2 my_app.c -lm -lpthread -o my_app    # that's it
+
+# llama.cpp — requires building the library first
+cmake -B build && cmake --build build       # build libllama
+cc my_app.c -Ibuild/include -Lbuild -lllama -lm -lstdc++ -o my_app
+```
+
+| Scenario | quant.cpp | llama.cpp |
+|:---------|:---------:|:---------:|
+| **WASM browser demo** | 192 KB binary | GGML tensor graph too large |
+| **Microcontroller / RTOS** | `#include` only option (no FS, no linker) | Needs build system |
+| **Game engine plugin** (Unity/Unreal/Godot) | Drop one `.h` | Integrate 250K LOC build |
+| **Teaching / research** | Read in an afternoon | Excellent but large codebase |
+| **Quick prototype** | `pip install quantcpp` or 2-line C | More setup needed |
+| **GPU speed** | Basic | **Full Metal/CUDA** |
+| **Model coverage** | 7 architectures | **100+** |
+| **Production hardening** | Early stage | **Battle-tested** |
+
+> **Use llama.cpp** for speed on a workstation. **Use vLLM** for batch serving.
+> **Use quant.cpp** when you need to ship LLM inference _inside_ something — an app, a game, a browser tab, an embedded device — and integration simplicity matters more than GPU throughput.
+
+### vs production inference engines
+
+|  | quant.cpp | llama.cpp | vLLM | MLX |
+|:--|:---------:|:---------:|:----:|:---:|
+| KV quantization | **7 schemes (3-7x)** | Q8_0/Q5_0 (2x) | -- | -- |
+| Code size | **72K LOC** | 250K+ | 100K+ | 50K+ |
+| Embeddable | **single header** | library | library | framework |
+| GPU throughput | basic | full | **best** | Metal |
+
+---
+
+## Supported Models
+
+Each model is classified by **measured coherent-length performance** (see [`docs/tier_benchmark_2026_04_25.md`](docs/tier_benchmark_2026_04_25.md) for the 14-model standardized benchmark and [`docs/engine_basin_tiers.md`](docs/engine_basin_tiers.md) for theory). Tier 1 = 3/3 prompts complete naturally; Tier 2 = some attractor at long length; Tier 3 = consistent attractor across prompts or hardware-blocked.
+
+| Model | Params | Architecture | Tier | Speed (M1 Pro, 8T) | KV Compression |
+|:------|-------:|:-------------|:----:|-------------------:|:--------------:|
+| SmolLM2 135M | 135M | Llama | 1 | **103 tok/s** | 2.4x |
+| Llama 3.2 3B Instruct | 3B | Llama 3 (GQA) | 1 | **10 tok/s** | 6.9x |
+| Phi-3.5-mini | 3.8B | Phi-3 | 1 | fast + coherent | 3.8x |
+| Gemma 4 26B-A4B-it | 26B (4B active) | MoE 128 experts | 1 | **3.9 tok/s** | 3.5x |
+| Qwen3.5 0.8B | 752M | DeltaNet hybrid | 1 | 80 tok/s | 3.8x |
+| Qwen3.5 4B | 4B | DeltaNet hybrid | 1 | 20 tok/s | 3.8x |
+| SmolLM2 1.7B | 1.7B | Llama | 1 | 25 tok/s | 3.8x |
+| Gemma 3 270M | 270M | Gemma 3 | 1 | 176 tok/s | 3.8x |
+| **Qwen3.6-35B-A3B** | 35B (3B active) | DeltaNet + MoE hybrid | **2** | 16 tok/s | 3.8x |
+| **Qwen3.6-27B** (dense) | 27B | DeltaNet + self-attn hybrid (16 attn / 64 layers) | **3** | hardware-blocked on 16 GB Mac (Q4_K_M = 16.8 GB; smallest published quant UD-IQ2_XXS = 9.39 GB still paging-bound) | 3.8x |
+
+GGUF format. Load any llama.cpp-compatible model. The Tier column reflects measured coherent-length performance — it is not a quality judgement of the model itself. See the benchmark methodology below.
+
+### Tier 2 caveat — Qwen3.6-35B-A3B
+
+Long-generation coherent output caps at ~100 coherent words on the thinking-mode quantum prompt (vs llama.cpp's ~1090 words on the same model, same weights). Root cause identified (FP32 summation-order compounding in hybrid DeltaNet × MoE recurrent paths) and partially mitigated (commit `f6a65bb`: 5 → ~100 coherent words). Remaining gap is **system-wide numerical basin mismatch**, not a single-operator bug — see the [FP32 basin theory discussion](docs/engine_basin_tiers.md). Use for short-to-medium reasoning only; for long thinking-mode generation on this specific model, llama.cpp remains the right tool.
+
+### Tier 3 caveat — Qwen3.6-27B (dense)
+
+The 27B dense variant (released 2026-04, arch `qwen35` with 16 self-attn + 48 DeltaNet layers, dim 5120) loads correctly after the 2026-04-26 BOS fix (`<|endoftext|>` = 248044, commit `12e4d94` — verified bit-exact at L0 attn_norm vs llama.cpp). Coherent-length measurement on a 16 GB Mac is **hardware-blocked**: Q4_K_M (16.8 GB) exceeds RAM and the smallest published quant UD-IQ2_XXS (9.39 GB) is still paging-bound (~0.04 tok/s, 78% I/O wait). Self-quantize-to-TQ2_0 (8 GB, commit `55fa3d9`) clears the paging cliff but post-training ternary requantize destroys quality (verified across both Q4 and Q8 source quantizes — see R5/R6 in the tier benchmark). The engine path works on ≥32 GB hardware; the missing piece for 16 GB is a quality-preserving ≤8 GB calibrated quant (none published for 27B today).
+
+### Benchmark your own
+
+```bash
+./tools/basin_compat.sh models/your-model.gguf
+```
+
+Produces per-layer residual-sum divergence and suggests a tier. Designed for DeltaNet-class hybrid models where llama-debug emits per-layer dumps; pure-feedforward comparison is more limited.
+
+<details>
+<summary><b>Gemma 4 26B-A4B architecture details</b></summary>
+
+Full support for Gemma 4's hybrid MoE architecture:
+
+- **Dual-FFN**: parallel Dense MLP + 128-expert MoE per layer
+- **Hybrid attention**: 25 sliding (head_dim=256) + 5 full (head_dim=512) layers
+- **QK-norm aware KV compression**: auto FP32 keys + Q4 values (3.5x savings)
+- **Learned RoPE** with per-layer frequency factors
+- **IQ3_XXS/IQ4_NL** fused dot with NEON optimization for MoE experts
+- **GeGLU** activation (NEON-accelerated fast tanh approximation)
+
+```bash
+./build/quant gemma-4-26B-A4B-it-UD-Q3_K_M.gguf \
+  -p "<start_of_turn>user\nWhat is the capital of France?\n<end_of_turn>\n<start_of_turn>model\n" \
+  -n 50 -j 8 -T 0.0 -k uniform_4b -v q4
+# Output: "The capital of France is **Paris**."
+```
+
+</details>
+
+---
+
+## KV Cache Compression
+
+### The Idea
+
+```
+Standard:  Store every key as-is            → 16 bits/element → FP16
+
+quant.cpp: Quantize keys to 4-bit           → 4 bits/element  → 3.8x
+           + quantize values to Q4           → 4 bits/element  → 6.9x
+           + delta encode adjacent keys      → 3 bits/element  → 8.5x
+
+Like video compression: I-frames (FP32) every 64 tokens, P-frames (3-bit delta) between.
+```
+
+### Quality vs Compression
+
+```
+                    WikiText-2 PPL (SmolLM2 1.7B)
+
+  FP32 baseline      14.63 │ ●
+  4b K + FP16 V       14.63 │ ● identical
+  4b K + Q4 V         14.57 │ ● slightly better (!)
+  delta 3b K + Q4 V   14.82 │  ●  +1.3%
+  llama.cpp Q8K+Q5V   ~14.8 │  ●  ~+1% (1.6x compression)
+  llama.cpp Q4_0 KV   16.18 │          ● +10.6% (3.8x compression)
+  3b K (no delta)       ——  │                              ● +62%
+                            └──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──
+                              14  15  16  17  18  19  20  21+
+```
+
+### Modes
+
+| Config | Compression | PPL vs FP32 | Best for |
+|:-------|:----------:|:-----------:|:---------|
+| `delta + 3b K + Q4 V` | **~8.5x** | +1.3% | Maximum context |
+| `delta + 4b K + Q4 V` | ~6.9x | ~0% | Quality + compression |
+| `uniform_4b K + Q4 V` | 6.9x | ~0% | Simple, no delta overhead |
+| `uniform_4b K + FP16 V` | 1.6x | +0.0% | Lossless baseline |
+
+### QK-norm Aware (Gemma 4)
+
+Models with QK-norm normalize keys to the unit sphere, creating extremely sparse distributions. quant.cpp auto-detects this and stores keys in FP32 while quantizing only values — preserving perfect precision with **3.5x V memory reduction**.
+
+---
+
+## Advanced Usage
+
+> **Note:** `MODEL` below is a placeholder for **your** GGUF file path. The Quick Start above downloads `models/SmolLM2-135M-Instruct-Q8_0.gguf` — you can paste that path directly, or substitute any other GGUF you have. There is no file literally named `model.gguf`.
+
+```bash
+# Pick any GGUF you have on disk (this is the one from Quick Start):
+MODEL=models/SmolLM2-135M-Instruct-Q8_0.gguf
+
+# Delta compression (maximum context, 8.5x)
+./build/quant $MODEL --chat -p "hello" -k uniform_3b -v q4 --delta
+
+# Perplexity benchmark
+./build/quant $MODEL --ppl input.txt -k uniform_4b -v q4
+
+# Model info
+./build/quant $MODEL --info
+
+# Performance profiling
+./build/quant $MODEL --chat -p "hello" -n 50 --profile
+```
+
+---
+
+## Single-Header Mode
+
+> Copy one file. Add LLM to any C project.
+
+```c
+#define QUANT_IMPLEMENTATION
+#include "quant.h"
+
+int main() {
+    quant_model* m = quant_load("path/to/your.gguf");  // any GGUF file
+    quant_ctx*   c = quant_new(m, NULL);
+    
+    // Streaming
+    quant_generate(c, "Tell me a joke", print_token, NULL);
+    
+    // Or one-shot
+    char* answer = quant_ask(c, "What is 2+2?");
+    printf("%s\n", answer);
+    free(answer);
+    
+    quant_free_ctx(c);
+    quant_free_model(m);
+}
+```
+
+```bash
+cc app.c -o app -lm -lpthread    # that's it — no cmake, no framework
+```
+
+**15.7K LOC, 643KB, ~2s compile time.** Full API:
+
+| Function | Description |
+|:---------|:------------|
+| `quant_load(path)` | Load a GGUF model |
+| `quant_new(model, config)` | Create inference context |
+| `quant_generate(ctx, prompt, cb, ud)` | Stream tokens via callback |
+| `quant_ask(ctx, prompt)` | Generate and return string |
+| `quant_free_ctx(ctx)` | Free context |
+| `quant_free_model(model)` | Free model |
+
+---
+
+## Browser Demo (WASM)
+
+> **192KB.** The entire inference engine compiles to a WASM binary smaller than most JPEGs.
+
+```bash
+cd wasm && bash build.sh          # Requires: emscripten
+python3 -m http.server 8080       # Serve locally
+# Open http://localhost:8080, drag & drop any GGUF model
+```
+
+Everything runs client-side. Nothing is uploaded. KV compression active by default.
+
+---
+
+## Docker & Server
+
+**Docker** (zero-dependency, ~10MB image):
+```bash
+docker build -t quant.cpp .
+docker run -v ./models:/models quant.cpp /models/SmolLM2-135M-Instruct-Q8_0.gguf -p "hello" -k uniform_4b -v q4
+# Replace SmolLM2-135M-Instruct-Q8_0.gguf with whatever GGUF you placed in ./models
+```
+
+**OpenAI-compatible server** (`/v1/chat/completions`):
+```bash
+cmake -B build -DTQ_BUILD_SERVER=ON && cmake --build build
+./build/quant-server models/SmolLM2-135M-Instruct-Q8_0.gguf -p 8080 -k uniform_4b
+# Substitute your own GGUF path as needed
+
+# Works with the OpenAI Python SDK
+curl http://localhost:8080/v1/chat/completions \
+  -d '{"messages":[{"role":"user","content":"Hello"}],"max_tokens":64}'
+```
+
+Build with `-DTQ_BUILD_SERVER=ON`. Streaming SSE supported. KV compression configurable per request.
+
+---
+
+## Python
+
+```bash
+cd bindings/python && pip install .
+```
+
+```python
+from quantcpp import Model
+
+with Model("models/SmolLM2-135M-Instruct-Q8_0.gguf", kv_compress=1) as m:  # use your own GGUF path
+    print(m.ask("What is the capital of France?"))
+
+    # Streaming
+    for token in m.generate("Once upon a time"):
+        print(token, end="", flush=True)
+```
+
+Zero build dependencies beyond a C compiler. Compiles `quant.h` at install time.
+
+---
+
+## Backends & Performance
+
+| Backend | Platform | Status | Notes |
+|:--------|:---------|:------:|:------|
+| **NEON** | ARM (Apple Silicon) | Production | 5.8x SIMD speedup |
+| **AVX2** | x86 | Production | |
+| **Metal** | Apple GPU | Verified | Batch matmul dispatch |
+| **CUDA** | NVIDIA GPU | Compiles | |
+| **Vulkan** | Cross-platform | Compiles | |
+| **WASM** | Browser | **NEW** | 192KB binary |
+| **MSVC** | Windows | **NEW** | VS 2019/2022 |
+
+<details>
+<summary><b>Performance breakdown (Gemma 4 26B on M1 Pro)</b></summary>
+
+| Component | ms/token | Share |
+|:----------|--------:|------:|
+| Attention matmul (Q8_0 NEON) | 168 | 65% |
+| MoE experts (IQ3_XXS/IQ4_NL NEON) | 72 | 28% |
+| Attention scores | 3 | 1% |
+| Other | 14 | 6% |
+| **Total** | **257** | **3.9 tok/s** |
+
+</details>
+
+---
+
+## FAQ
+
+<details>
+<summary><b>How is this different from llama.cpp?</b></summary>
+
+llama.cpp is a full-featured inference framework (250K+ LOC). quant.cpp is a minimal engine (72K LOC) you can read, modify, and embed. Different tools for different problems: llama.cpp optimizes speed, quant.cpp optimizes memory (KV compression) and embeddability (single header).
+
+</details>
+
+<details>
+<summary><b>llama.cpp already has KV quantization. How is yours different?</b></summary>
+
+llama.cpp supports KV cache quantization (Q8_0 K + Q5_0 V is the recommended config, ~1.6x compression with minimal quality loss). quant.cpp targets higher compression: 4-bit K + Q4 V gives 3.8x at +0.0% PPL, and delta compression pushes to 4.3x at +1.3% PPL. The quality advantage comes from 128-element min-max blocks (vs 32-element), independent K/V quantization methods, and delta encoding of adjacent keys — a technique llama.cpp doesn't have. Use llama.cpp's KV quant if 1.6x is enough; use quant.cpp if you need 4-7x.
+
+</details>
+
+<details>
+<summary><b>How does this compare to Karpathy's llm.c?</b></summary>
+
+Similar philosophy: minimal C, educational. Key differences: quant.cpp supports quantized weights (Q4_K_M, Q8_0, IQ2), multiple architectures (Llama, Qwen, Gemma, MoE), GGUF loading, and KV cache compression. Think of llm.c as the textbook and quant.cpp as the production-ready version.
+
+</details>
+
+<details>
+<summary><b>Can I embed this in my app?</b></summary>
+
+Yes. Two options:
+1. **Single-header**: Copy `quant.h`, `#define QUANT_IMPLEMENTATION` in one .c file. Done.
+2. **Full library**: Link against `libturboquant.a`.
+
+Works on Linux, macOS, Windows (MSVC/MinGW), iOS, Android, and WASM.
+
+</details>
+
+<details>
+<summary><b>Why is it slower than llama.cpp?</b></summary>
+
+Three reasons: (1) llama.cpp has years of hand-tuned NEON/AVX2 assembly for every quant format, (2) llama.cpp offloads the full forward pass to Metal/CUDA GPU, (3) 250K+ LOC vs 72K LOC means more micro-optimizations. quant.cpp optimized for memory and embeddability first. Speed improvements (full Metal GPU offload, more SIMD kernels) are actively in progress — see [v1.3 plan](docs/plan/prd/prd_v1.3.md).
+
+</details>
+
+<details>
+<summary><b>No GPU — is this useless?</b></summary>
+
+If you need 100+ tok/s, use llama.cpp with Metal/CUDA. If you need to embed inference in an iOS app, WASM module, game engine, or IoT device — quant.cpp works. CPU on Apple Silicon: 25 tok/s (1.7B), 11.6 tok/s (3B), 3.9 tok/s (26B MoE).
+
+</details>
+
+<details>
+<summary><b>Can it run in the browser?</b></summary>
+
+Yes. `cd wasm && bash build.sh`. The WASM binary is 192KB. Drop a GGUF model and chat. Everything runs client-side.
+
+</details>
+
+<details>
+<summary><b>What about sub-3-bit quantization?</b></summary>
+
+Tested extensively (2-bit delta, NF2, online SVD, multi-hash). None reached acceptable quality. Per-step cosine 0.997 compounds to 0.885 after 200 steps. 3-bit + delta is the practical minimum.
+
+</details>
+
+---
+
+## Documentation
+
+| Document | Description |
+|:---------|:------------|
+| **[API Reference](docs/api.md)** | Full C API for quant.h and libturboquant (730 lines) |
+| **[Custom Quantization](docs/custom-quantization.md)** | Add your own KV type in 3 functions |
+| **[H2H Benchmark](bench/head_to_head/)** | Reproducible quant.cpp vs llama.cpp comparison |
+| **[KV Compression Landscape](docs/blog/kv-cache-landscape.md)** | Eviction vs Architecture vs Compression guide |
+| **[ROADMAP](ROADMAP.md)** | Project direction and planned features |
+| **[CHANGELOG](CHANGELOG.md)** | Version history and release notes |
+| **[Tech Report](docs/papers/quant_cpp_tech_report.md)** | Architecture and benchmarks (Arxiv draft) |
+| **[WASM Demo](https://quantumaikr.github.io/quant.cpp/)** | Try it in your browser — no install needed |
+
+---
+
+## References & Citations
+
+quant.cpp is an independent implementation of published research. The Variant F architecture (RHT preprocessing + scalar Lloyd-Max codebook on rotated values, no QJL stage) sits in a lineage that combines two prior works:
+
+- **HIGGS** — Malinovskii, Panferov, Ilin, Guo, Richtárik, Alistarh. *Pushing the Limits of Large Language Model Quantization via the Linearity Theorem*. Nov 2024. [arXiv:2411.17525](https://arxiv.org/abs/2411.17525). HIGGS introduced the **Random Hadamard Transform + MSE-optimal grid quantization** pattern (for weight quantization). Our `tq_rht.c` Walsh-Hadamard + Rademacher implementation follows this pattern. *We added this attribution after seeing [Tim Dettmers' general comment in llama.cpp discussion #20969](https://github.com/ggml-org/llama.cpp/discussions/20969) asking participants in that thread (which uses "TurboQuant" loosely across many forks) to credit HIGGS instead. His comment was not directed at us specifically, but the substance applied to our naming as well, and we chose to update accordingly.*
+- **TurboQuant** — Zandieh, Daliri, Hadian, Mirrokni. *TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate*. ICLR 2026. [arXiv:2504.19874](https://arxiv.org/abs/2504.19874). TurboQuant applies the rotation pattern to **KV cache** with a 1-bit QJL residual stage and per-channel outlier handling. Our work started as a literal port of TurboQuant; through 9 rounds of Karpathy-loop iteration we simplified it (dropped QJL, dropped outlier channels) into the current Variant F. We do not claim our shipped variant is the TurboQuant algorithm — it is an empirically-derived simplification.
+- **PolarQuant** — *Quantizing KV Caches with Polar Transformation*. AISTATS 2026. [arXiv:2502.02617](https://arxiv.org/abs/2502.02617). The polar-coordinate KV quantization that our `tq_polar.c` baseline implements.
+- **QJL** — *Quantized Johnson-Lindenstrauss Transform for KV Cache Compression*. AAAI 2025. [arXiv:2406.03482](https://arxiv.org/abs/2406.03482). The 1-bit sketch building block. Used in our `tq_qjl.c` baseline; we found it contributed ~zero to attention scores in the Variant F regime and dropped it.
+- [Google Research blog post on TurboQuant](https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/)
+
+**Honest attribution**: Variant F's structure (RHT + scalar grid quantization) is closest to HIGGS in spirit, applied to KV cache like TurboQuant, with both the QJL residual and the outlier channel split removed through ablation. If you use quant.cpp in academic work, please cite all three (HIGGS, TurboQuant, PolarQuant) and this repository.
+
+</details>
+
+---
+
+## Transparency & Trust
+
+We believe trust is built by being honest about what we got wrong.
+
+<details>
+<summary><b>10 self-corrections — all found before any external report</b></summary>
+
+| # | Version | What we claimed wrong | What we corrected |
+|---|---|---|---|
+| 1 | v0.6.3 | "Lossless 7× compression" | Re-measured; not lossless |
+| 2 | v0.6.x | "Beats FP32 speed" | FP32 baseline was unoptimized scalar |
+| 3 | v0.7.x | "With Metal default" | CMake default is Metal=OFF |
+| 4 | v0.7.x | Interpreted a general comment as directed at us | Updated attribution |
+| 5 | v0.8.0 | kv_compress=1 caused abort | Fixed in v0.8.1 |
+| 6 | v0.8.0 | libc.free() cross-heap crash | Fixed with quant_free_string |
+| 7 | v0.8.1 | 65 KB memory leak per ask() | Fixed in v0.8.2 |
+| 8 | v0.9.0 | Disabled a working feature by mistake | Re-enabled with verification |
+| 9 | v0.10 | 957-token eval with 53% FP32 window | Documented caveat, fixed tokenizer |
+| 10 | v0.10 | "2-bit Pareto-dominates 4-bit" | Withdrawn — PPL +36.7% at long context |
+
+Every claim in this README is backed by reproducible benchmark data in `bench/results/`.
+</details>
+
+<details>
+<summary><b>Benchmark artifacts</b></summary>
+
+| File | What it measures |
+|---|---|
+| [`progressive_kv_compression.md`](bench/results/progressive_kv_compression.md) | 128-token FP32 window = FP32 quality at 3x compression |
+| [`attention_aware_quantization.md`](bench/results/attention_aware_quantization.md) | Full Pareto curve (including withdrawn 2-bit claim) |
+| [`long_context_kv_compression.md`](bench/results/long_context_kv_compression.md) | 32K context memory + speed measurements |
+| [`layer_adaptive_analysis.md`](bench/results/layer_adaptive_analysis.md) | Per-layer adaptation is unnecessary after RHT (negative result) |
+</details>
+
+---
+
+<p align="center">
+  <a href="https://pypi.org/project/quantcpp/">PyPI</a> ·
+  <a href="https://quantumaikr.github.io/quant.cpp/">WASM Demo</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="https://github.com/quantumaikr/quant.cpp/issues">Issues</a>
+</p>
+
+<p align="center">
+  <a href="https://star-history.com/#quantumaikr/quant.cpp&Date">
+    <img src="https://api.star-history.com/svg?repos=quantumaikr/quant.cpp&type=Date" alt="Star History" width="600">
+  </a>
+</p>

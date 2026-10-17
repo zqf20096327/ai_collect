@@ -1,0 +1,588 @@
+<p align="center">
+  <img src=".github/assets/fabrikt-horizontal-final.png" alt="fabrikt" height="80">
+</p>
+
+# Fabrikt `/ˈfa-brikt/` - Kotlin code from OpenAPI 3
+
+* [Introduction](#introduction)
+* [Features](#features)
+* [Examples](#examples)
+* [Usage Instructions](#usage-instructions)
+  * [Command Line](#command-line)
+  * [Generating from a JSON Schema document](#generating-from-a-json-schema-document)
+  * [Gradle w/ custom task](#gradle-w-custom-task)
+  * [Gradle w/ plugin](#gradle-w-plugin)
+  * [Maven](#maven)
+  * [Docker](#docker)
+* [Getting the Most from Fabrikt](#getting-the-most-from-fabrikt)
+* [Configuration Options](#configuration-options)
+* [Migration Guide](MIGRATION.md)
+* [Original Motivation](#original-motivation)
+* [Building Locally](#building-locally)
+* [Publishing](#publishing)
+* [Specific Features](#specific-features)
+
+## Introduction
+
+This library was built to take advantage of the complex modeling features available in OpenAPI 3. It generates Kotlin data classes with advanced support for features such as:
+ - Null Safety
+ - Inlined schema definitions
+ - Enumerations 
+ - Sealed Classes
+ - Polymorphism (`@JsonSubTypes`)
+ - Maps of Maps of Maps
+ - GraalVM Native Reflection Registration
+ - Json Merge Patch (via `JsonNullable`) (add `x-json-merge-patch: true` to schemas)
+ - Override Jackson Include NonNull (via `JsonInclude`) (add `x-jackson-include-non-null: true` to schemas)
+ - Jackson's polymorphic subtype deduction (add `x-jackson-subtype-deduction: true` to the `oneOf` schema) to gain Sealed Interface polymorphism, without needing to declare a discriminator property. Requires subtypes to have distinguishing required fields.
+ 
+as well as HTTP clients and controllers for a number of popular frameworks (see [Features](#features)).
+
+Fabrikt also generates models directly from a plain JSON Schema document — draft-04 through 2020-12, optionally nested inside a larger resource such as a Nakadi `EventType` manifest — with no OpenAPI spec required. See [Generating from a JSON Schema document](#generating-from-a-json-schema-document).
+
+More than just bootstrapping, this library can be permanently integrated into your build tool and will ensure contract and code always match, even as APIs evolve in complexity.
+
+### Try Fabrikt Online
+
+Try Fabrikt with your own API spec in the [Fabrikt Playground](https://try.fabrikt.io) and see how it can help you generate code for your API clients and servers.
+
+[![Screenshot of Fabrikt Playground](https://github.com/user-attachments/assets/34ac6aff-f27e-4f48-bc53-cbb2a00e3e78)](https://try.fabrikt.io)
+
+### Coordinates
+
+```xml
+<dependency>
+  <groupId>io.fabrikt</groupId>
+  <artifactId>fabrikt</artifactId>
+</dependency>
+```
+
+## Features
+
+The library currently has support for generating:
+
+* Models
+  * **Jackson** annotated **data classes**
+  * **Kotlinx.serialization** annotated **data classes**
+* Clients
+  * **OkHttp Client (w/ Jackson Models)**
+  * **OpenFeign** annotated client interfaces
+  * **Ktor Client (w/ Jackson & Kotlin Serialization models)**
+  * **Spring HTTP Interface** annotated client interfaces
+* Controllers
+  * **Spring MVC** annotated controller interfaces
+  * **Micronaut** HTTP annotated controller interfaces
+  * **Ktor server** routes and controller interfaces
+
+Client generators offer opt-in HTTP Bearer and OAuth2 access-token helpers through `--http-client-opts OPENAPI_BEARER_AUTHENTICATION` and `OPENAPI_OAUTH2_AUTHENTICATION`. See [Client authentication](CLIENT_AUTHENTICATION.md) for token providers, operation scopes, security alternatives and examples.
+
+## Examples
+
+Consult the test directory for OpenAPI code generation examples.
+
+It forms a living documentation full of [code examples](src/test/resources/examples) generated from different OpenAPI 3 permutations.
+
+Furthermore, the [end-to-end tests](/end2end-tests) demonstrate how to integrate the library using Gradle.
+
+## Usage Instructions
+
+The library can be used in a variety of ways, including as a command line tool, a Gradle task, or a Maven plugin.
+
+Please refer to [Configuration Options](#configuration-options) section for a list of available parameters.
+
+### Command Line
+
+Fabrikt is packaged as an executable jar, allowing it to be integrated into any build tool.
+
+The CLI can be invoked as follows:
+
+```
+java -jar fabrikt.jar \
+    --output-directory '/tmp' \
+    --base-package 'com.example' \
+    --api-file '/path-to-api/open-api.yaml' \
+    --targets 'client' \
+    --targets 'http_models'
+```
+
+`--api-file` and `--api-fragment` also accept a resolvable `http://`/`https://` URL instead of a local path, in which case Fabrikt fetches the spec at generation time.
+Use `--auth` to send headers on those fetches and on any remote `$ref` the parser resolves; values can contain `${ENV_VAR}` placeholders, name an env var, or contain `!cmd` (at start or after whitespace) to run a shell command and substitute its trimmed stdout (e.g. `--auth 'Authorization: Bearer !generate-fresh-auth-token'`).
+The `!cmd` form requires a POSIX `sh` on the PATH and is not available on plain Windows.
+Only fetch specs from URLs you trust — pointing Fabrikt at an untrusted or attacker-influenced URL carries the same risk as fetching any other untrusted network resource.
+
+### Generating from a JSON Schema document
+
+`--json-schema-file` takes a JSON Schema document (draft-04 through 2020-12) as the primary input instead of `--api-file`, converting it to an OpenAPI 3.1 document before generation runs.
+A trailing `#/json/pointer` fragment (RFC 6901) selects the schema nested inside a larger resource, such as a Nakadi `EventType` manifest's `spec.schemaObject`.
+`--json-schema-root-name` names the generated root schema; it defaults to the schema's `title`, then the resource's `/metadata/name`, then `Schema` with a warning if neither is present.
+
+```
+java -jar fabrikt.jar \
+    --json-schema-file 'manifest.yaml#/spec/schemaObject' \
+    --json-schema-root-name 'OffersConfig' \
+    --base-package 'com.example' \
+    --targets 'http_models'
+```
+
+`--json-schema-file` with no fragment, or an empty fragment (`manifest.yaml#`), treats the whole file as a bare JSON Schema document.
+The converter hoists `definitions`/`$defs` (and any `#/components/schemas/*` siblings already referenced in an OpenAPI-shaped source document, such as AsyncAPI) into `components/schemas`, rewriting and validating every `$ref`.
+It upgrades draft-04 boolean exclusive bounds to the numeric 2020-12 form, and promotes a top-level `{type: string, examples: [...]}` definition to `x-extensible-enum`.
+Keywords with no OpenAPI equivalent — `if`/`then`/`else`, `not`, `patternProperties`, `dependencies`, `unevaluated*`, `prefixItems` — and constraint-only `oneOf`/`anyOf`/`allOf` branches are dropped rather than approximated.
+Kubernetes CRD conversion is not a supported target.
+
+__Tip__: You can also run the latest version without a manual download via [JBang](https://www.jbang.dev/):
+
+```
+jbang run io.fabrikt:fabrikt:RELEASE [args...]
+```
+
+### Gradle w/ custom task
+
+Here is an example of a Gradle task with code generated to the `build/generated` directory, and execution linked to the compile task.
+
+```kotlin
+val fabrikt: Configuration by configurations.creating
+
+val generationDir = "$buildDir/generated"
+val apiFile = "$buildDir/path-to-api/open-api.yaml"
+
+sourceSets {
+    main { java.srcDirs("$generationDir/src/main/kotlin") }
+    test { java.srcDirs("$generationDir/src/test/kotlin") }
+    ...
+}
+
+tasks {   
+    ...
+    val generateCode by creating(JavaExec::class) {
+        inputs.files(apiFile)
+        outputs.dir(generationDir)
+        outputs.cacheIf { true }
+        classpath(fabrikt)
+        mainClass.set("io.fabrikt.cli.CodeGen")
+        args = listOf(
+            "--output-directory", generationDir,
+            "--base-package", "com.example",
+            "--api-file", apiFile,
+            "--targets", "http_models",
+            "--targets", "client",
+        )
+    }
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "17"
+        dependsOn(generateCode)
+    }
+}
+
+dependencies {
+     fabrikt("io.fabrikt:fabrikt:+") // This should be pinned  
+     ...
+}
+```
+
+### Gradle w/ plugin
+
+The [Fabrikt Gradle plugin](https://github.com/acanda/fabrikt-gradle-plugin) serves as a convenient wrapper for Fabrikt, allowing seamless integration of code generation into a Gradle build.
+
+**Note:** Since the plugin is maintained separately from the Fabrikt library, please refer to the [Configuration](https://github.com/acanda/fabrikt-gradle-plugin?tab=readme-ov-file#configuration) section of the plugin's README for the most up-to-date information on how to use it.
+
+Latest version of the plugin: [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/ch.acanda.gradle.fabrikt?style=flat)](https://plugins.gradle.org/plugin/ch.acanda.gradle.fabrikt)
+
+```kotlin
+plugins {
+    // find latest version: https://github.com/acanda/fabrikt-gradle-plugin/releases
+    id("ch.acanda.gradle.fabrikt") version "1.43.0"
+}
+
+fabrikt {
+    generate("dog") {
+        apiFile = file("src/main/openapi/dog.yaml")
+        basePackage = "com.example.api"
+    }
+}
+```
+
+### Maven
+
+The [official Fabrikt Maven plugin](https://github.com/fabrikt-io/fabrikt-maven-plugin) integrates Fabrikt code generation into Maven builds.
+Plugin releases use the same version as the corresponding Fabrikt release and support shared configuration, multiple OpenAPI specifications through named executions, generated source registration, and both lifecycle-bound and explicit generation.
+Refer to the plugin's [usage documentation](https://github.com/fabrikt-io/fabrikt-maven-plugin#usage) for the current configuration syntax and examples.
+
+Alternatively, the [exec-maven-plugin](https://www.mojohaus.org/exec-maven-plugin/examples/example-exec-using-plugin-dependencies.html) can download the Fabrikt library from Maven Central and execute its main method with defined arguments.
+
+### Docker
+
+Fabrikt is also available as a Docker image, which can be convenient for CI/CD pipelines or environments where you prefer not to install Java directly.
+
+The Docker image can be invoked as follows:
+
+```bash
+docker run --rm -v $(pwd):/workspace ghcr.io/fabrikt-io/fabrikt:latest \
+  --output-directory '.' \
+  --base-package 'com.example' \
+  --api-file 'openapi.yaml' \
+  --targets 'http_models'
+```
+
+The command mounts your current directory to `/workspace` in the container, where Fabrikt will read the OpenAPI specification and write the generated code.
+
+## Getting the Most from Fabrikt
+
+### 1. Prefer components to inline schemas
+Fabrikt generates models for inline objects in operation parameters, non-multipart request bodies, and responses, including supported `allOf` object shapes.
+Other inline schema shapes can still fall back to generic types. For complex reusable schemas, define them under `components` in the OpenAPI spec. See [PR #713](https://github.com/fabrikt-io/fabrikt/pull/713) for the supported inline object cases.
+
+### 2. Use `oneOf` with discriminator for polymorphism
+`oneOf` generates polymorphic models with sealed interfaces.
+The `discriminator` property is used by Fabrikt to determine the subtypes to be generated.
+
+### 3. Add metadata to references in OpenAPI 3.0
+
+OpenAPI 3.0 ignores extra fields beside a direct `$ref`. Wrap a referenced enum in a single-element `allOf` to give a property its own `default` or `description`; Fabrikt retains the referenced enum type and generates an enum constant for a matching default value.
+
+### 4. OpenAPI 3.1 type arrays
+A required property with `type: [string, 'null']` generates `String?`.
+When a schema declares multiple non-null types, Fabrikt logs a warning and generates `Any` with Jackson or `JsonElement` with kotlinx.serialization instead of a dedicated union model.
+Use a supported `oneOf` schema when a concrete polymorphic Kotlin model is needed.
+
+### 5. Read shared fields from explicitly composed models
+
+Enable `--http-model-opts SHARED_COMPOSITION_CONTRACTS` to generate shared interfaces for compatible models that explicitly include a named object through `allOf`. See [Shared composition contracts](SHARED_COMPOSITION_CONTRACTS.md) for examples and current scope.
+
+## Configuration Options
+
+This section documents the available CLI parameters for controlling what gets generated. This documentation is generated using: `./gradlew printCodeGenUsage`
+
+To add an annotation to every generated HTTP model type, repeat `--http-model-additional-annotations` with a fully qualified class name, for example `--http-model-additional-annotations com.example.DiffBuilder`. The annotation must need no arguments and be available to the project compiling the generated code. Without this option, generated models are unchanged.
+
+Usage: <main class> [options]
+| Parameter                               | Description |
+| --------------------------------------- | --------------------------------------- |
+|   `--api-file`                          | This must be a valid Open API v3 spec. All code generation will be based off this input. Accepts either a local file path or a resolvable http(s) URL. |
+|   `--api-fragment`                      | A partial Open API v3 fragment, to be combined with the primary API for code generation purposes. Accepts either a local file path or a resolvable http(s) URL. |
+|   `--auth`                              | Authorization header(s) sent when fetching a remote --api-file, --api-fragment, or remote `$ref`. Repeatable, format 'Name: value'. Value may contain `${ENV_VAR}` placeholders, name an env var, or contain !cmd (at start or after whitespace) to run a shell command and substitute its trimmed stdout (e.g. --auth "Authorization: Bearer !generate-fresh-auth-token"). |
+| * `--base-package`                      | The base package which all code will be generated under. |
+|   `--custom-type-mapping`               | Map an OpenAPI type and format to a Kotlin type. Use type:format=KotlinFqcn and optionally add ;kotlinx=SerializerFqcn for kotlinx.serialization. |
+|   `--external-ref-resolution`           | Specify to which degree referenced schemas from external files are included in model generation. Default: TARGETED |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `TARGETED` - Generate models only for directly referenced schemas in external API files. |
+|                                         |   `AGGRESSIVE` - Referencing any schema in an external API file triggers generation of every external schema in that file. |
+|   `--http-client-opts`                  | Select the options for the http client code that you want to be generated. |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `SUSPEND_MODIFIER` - This option adds the suspend modifier to the generated client functions (only for OpenFeign clients) |
+|                                         |   `SPRING_RESPONSE_ENTITY_WRAPPER` - This option adds the Spring-ResponseEntity generic around the response to be able to get response headers and status (only for OpenFeign clients). |
+|                                         |   `SPRING_CLOUD_OPENFEIGN_STARTER_ANNOTATION` - This option adds the @FeignClient annotation to generated client interface |
+|                                         |   `GROUP_BY_TAG` - This option groups clients based on the first tag rather than paths |
+|                                         |   `OKHTTP_NON_NULL_RESPONSE_PAYLOADS` - This option makes ApiResponse.data non-null. Responses declared with a body must return one: a missing body, or one that deserializes to null, throws ApiException. An operation that declares both a body response and an empty success response (e.g. 200 and 204) throws on the empty success. Binary responses return an empty ByteArray for an empty body (only for OkHttp clients) |
+|                                         |   `RESPONSE_MEDIA_TYPE_FUNCTIONS` - This option adds, for each operation whose success responses declare a different JSON schema per media type, one function per media type. The function always sends that media type as the Accept header and returns that schema's type instead of JsonNode. Its name is the operation's function name plus the media subtype, e.g. getItemsVndCustomJson for application/vnd.custom+json (only for OkHttp, OpenFeign and Spring HTTP Interface clients) |
+|                                         |   `DYNAMIC_BASE_URL` - This option makes ApiConfiguration.basePath empty, allowing you to set the base URL at runtime (only for Ktor clients) |
+|                                         |   `OPENAPI_BEARER_AUTHENTICATION` - Adds operation-specific Bearer token helpers for OpenAPI HTTP Bearer security schemes |
+|                                         |   `OPENAPI_OAUTH2_AUTHENTICATION` - Adds operation-specific OAuth2 access-token helpers that pass required scopes to a caller-provided token provider |
+|   `--http-client-target`                | Optionally select the target client that you want to be generated. Defaults to OK_HTTP |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `OK_HTTP` - Generate OkHttp client. |
+|                                         |   `OPEN_FEIGN` - Generate OpenFeign client. |
+|                                         |   `SPRING_HTTP_INTERFACE` - Generate Spring HTTP Interface. |
+|                                         |   `KTOR` - Generate Ktor client. |
+|   `--http-controller-opts`              | Select the options for the controllers that you want to be generated. |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `SUSPEND_MODIFIER` - This option adds the suspend modifier to the generated controller functions |
+|                                         |   `AUTHENTICATION` - This option adds the authentication parameter to the generated controller functions |
+|                                         |   `GROUP_BY_TAG` - This option groups controllers based on the first tag rather than paths |
+|                                         |   `COMPLETION_STAGE` - This option makes generated controller functions have Type CompletionStage<T> (works only with Spring Controller generator). Can be overridden per operation using the OpenAPI extension `x-async-support: true|false` |
+|                                         |   `SSE_EMITTER` - This option makes generated controller functions have Type SseEmitter (works only with Spring Controller generator) |
+|   `--http-controller-target`            | Optionally select the target framework for the controllers that you want to be generated. Defaults to Spring Controllers |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `SPRING` - Generate for Spring framework. |
+|                                         |   `MICRONAUT` - Generate for Micronaut framework. |
+|                                         |   `KTOR` - Generate for Ktor server. |
+|   `--http-model-additional-annotations` | Repeatable fully qualified annotation class name to add to generated HTTP model types. Only annotations without arguments are supported. |
+|   `--http-model-opts`                   | Select the options for the http models that you want to be generated. |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `EXCLUDE_READ_ONLY` - Exclude readOnly properties and honour requiredness of retained writeOnly properties |
+|                                         |   `EXCLUDE_WRITE_ONLY` - Exclude writeOnly properties and honour requiredness of retained readOnly properties |
+|                                         |   `REQUEST_RESPONSE_MODELS` - Generate separate Request and Response model sets, excluding readOnly and writeOnly properties respectively |
+|                                         |   `SHARED_COMPOSITION_CONTRACTS` - Expose explicitly included object schemas through shared Kotlin interfaces |
+|                                         |   `X_EXTENSIBLE_ENUMS` - This option treats x-extensible-enums as enums |
+|                                         |   `JAVA_SERIALIZATION` - This option adds Java Serializable interface to the generated models |
+|                                         |   `QUARKUS_REFLECTION` - This option adds @RegisterForReflection to the generated models. Requires dependency "'io.quarkus:quarkus-core:+" |
+|                                         |   `MICRONAUT_INTROSPECTION` - This option adds @Introspected to the generated models. Requires dependency "'io.micronaut:micronaut-core:+" |
+|                                         |   `MICRONAUT_REFLECTION` - This option adds @ReflectiveAccess to the generated models. Requires dependency "'io.micronaut:micronaut-core:+" |
+|                                         |   `MICRONAUT_SERDEABLE` - This option adds @Serdeable to the generated models. Requires dependency "'io.micronaut.serde:micronaut-serde-jackson:+" |
+|                                         |   `INCLUDE_COMPANION_OBJECT` - This option adds a companion object to the generated models. |
+|                                         |   `NON_NULL_MAP_VALUES` - This option makes map values non-null. The default (since v15) and most spec compliant is make map values nullable |
+|                                         |   `FAULT_TOLERANT_ENUMS` - This option adds an UNRECOGNIZED enum entry as a fallback for unmapped values, preventing deserialization exceptions. If jackson is used, the deserialization option **READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE** will need to be enabled as well |
+|                                         |   `FAULT_TOLERANT_OPEN_ENUMS` - This option converts the "open enum" pattern (an `anyOf` combining a string enum with an open `type: string`) into a fault-tolerant enum, i.e. an enum carrying the declared values plus an UNRECOGNIZED fallback, instead of collapsing the type to a plain `String`. Behaves like FAULT_TOLERANT_ENUMS for the affected enums |
+|   `--http-model-suffix`                 | Specify custom suffix for all generated model classes. Defaults to no suffix. |
+|   `--instant-library`                   | Specify which Instant library to use in generated model classes for kotlinx.serialization. Default: KOTLINX_INSTANT |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `KOTLINX_INSTANT` - Use `kotlinx.datetime` Instant in generated classes (default) |
+|                                         |   `KOTLIN_TIME_INSTANT` - Use `kotlin.time` Instant in generated classes |
+|   `--jackson-nullability-mode`          | Configure advanced handling when serializing null values with Jackson. Default: NONE |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `NONE` - Default Jackson behaviour |
+|                                         |   `ENFORCE_OPTIONAL_NON_NULL` - Omit null values for optional non-null fields |
+|                                         |   `ENFORCE_REQUIRED_NULLABLE` - Include null values for required nullable fields |
+|                                         |   `STRICT` - Combines `ENFORCE_OPTIONAL_NON_NULL` and `ENFORCE_REQUIRED_NULLABLE` for strictest contract enforcement |
+|   `--json-schema-file`                  | Use a JSON Schema document (draft-04 through 2020-12) as the primary input instead of --api-file, converting it to an OpenAPI 3.1 document before generation. Accepts either a local file path or a resolvable http(s) URL, optionally with a trailing '#/json/pointer' fragment (RFC 6901) selecting the schema nested inside a larger resource such as a Nakadi EventType manifest — e.g. 'manifest.yaml#/spec/schemaObject'. An empty fragment ('manifest.yaml#') or no fragment treats the whole file as a bare JSON Schema document. Cannot be combined with --api-file. |
+|   `--json-schema-root-name`             | Name for the schema generated from a JSON Schema's own top-level properties, used with --json-schema-file. Defaults to the schema's 'title', then the resource's '/metadata/name', then 'Schema' with a warning if neither is present. |
+|   `--openfeign-client-name`             | Specify openfeign client name for spring-cloud-starter-openfeign. Defaults to 'fabrikt-client'. |
+|   `--operation-id-transform`            | Regex replacement applied to every operationId before it becomes a generated function name, format '<regex>:<replacement>'. Applies to clients and controllers. E.g. '.*_:' strips a prefix through the last underscore; '^V2_(.*):v2$1' rewrites a prefix. |
+|   `--output-directory`                  | Allows the generation dir to be overridden. Defaults to current dir |
+|   `--output-opts`                       | Select options for the output. |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `ADD_FILE_DISCLAIMER` - This option adds a disclaimer to the generated files. |
+|                                         |   `ADD_GENERATED_ANNOTATION` - Annotate generated types and top-level functions with javax.annotation.processing.Generated. |
+|   `--resources-path`                    | Allows the path for generated resources to be overridden. Defaults to `src/main/resources` |
+|   `--serialization-library`             | Specify which serialization library to use for annotations in generated model classes. Default: JACKSON_3 |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `JACKSON` - Use Jackson 2 for serialization and deserialization |
+|                                         |   `JACKSON_2` - Use Jackson 2 for serialization and deserialization |
+|                                         |   `JACKSON_3` - Use Jackson 3 for serialization and deserialization |
+|                                         |   `KOTLINX_SERIALIZATION` - Use kotlinx.serialization for serialization and deserialization |
+|   `--src-path`                          | Allows the path for generated source files to be overridden. Defaults to `src/main/kotlin` |
+|   `--targets`                           | Targets are the parts of the application that you want to be generated. |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `HTTP_MODELS` - Jackson annotated data classes to represent the schema objects defined in the input. |
+|                                         |   `CONTROLLERS` - Spring / Micronaut / Ktor HTTP controllers for each of the endpoints defined in the input. |
+|                                         |   `CLIENT` - Simple http rest client. |
+|                                         |   `QUARKUS_REFLECTION_CONFIG` - This options generates the reflection-config.json file for quarkus integration projects |
+|   `--type-overrides`                    | Specify non-default kotlin types for certain OAS types. For example, generate `Instant` instead of `OffsetDateTime` |
+|                                         | CHOOSE ANY OF: |
+|                                         |   `DATETIME_AS_INSTANT` - Use `Instant` as the datetime type. Defaults to `OffsetDateTime` |
+|                                         |   `DATETIME_AS_LOCALDATETIME` - Use `LocalDateTime` as the datetime type. Defaults to `OffsetDateTime` |
+|                                         |   `DATETIME_AS_OFFSETDATETIME` - Use `OffsetDateTime` as the datetime type. Default for Jackson |
+|                                         |   `BYTE_AS_STRING` - Ignore string format `byte` and use `String` as the type |
+|                                         |   `BYTE_AS_BYTEARRAY` - Use `ByteArray` as the byte type. Default |
+|                                         |   `BINARY_AS_STRING` - Ignore string format `binary` and use `String` as the type |
+|                                         |   `BINARY_AS_BYTEARRAY` - Use `ByteArray` as the binary type. Default |
+|                                         |   `URI_AS_STRING` - Ignore string format `uri` and use `String` as the type |
+|                                         |   `URI_AS_URI` - Use `java.net.URI` as the uri type. Default |
+|                                         |   `UUID_AS_STRING` - Ignore string format `uuid` and use `String` as the type |
+|                                         |   `UUID_AS_UUID` - Use `java.util.UUID` as the uuid type. Default |
+|                                         |   `DATE_AS_STRING` - Ignore string format `date` and use `String` as the type |
+|                                         |   `DATE_AS_LOCALDATE` - Use `java.time.LocalDate` as the date type. Default for Jackson |
+|                                         |   `DATE_AS_KOTLINXLOCALDATE` - Use `kotlinx.datetime.LocalDate` as the date type. Default for kotlinx.serialization |
+|                                         |   `DATETIME_AS_STRING` - Ignore string format `date-time` and use `String` as the type |
+|                                         |   `BYTEARRAY_AS_INPUTSTREAM` - Use `InputStream` as ByteArray type. Defaults to `ByteArray` |
+|                                         |   `ANY_AS_JSONELEMENT` - Use `kotlinx.serialization.json.JsonElement` for untyped (any) schemas and `JsonObject` for untyped objects. Requires the KOTLINX_SERIALIZATION serialization library. Defaults to `Any` |
+|                                         |   `ANY_AS_ANY` - Use `Any` as the untyped (any) type. Default |
+|   `--validation-library`                | Specify which validation library to use for annotations in generated model classes. Default: JAKARTA_VALIDATION |
+|                                         | CHOOSE ONE OF: |
+|                                         |   `JAVAX_VALIDATION` - Use `javax.validation` annotations in generated model classes |
+|                                         |   `JAKARTA_VALIDATION` - Use `jakarta.validation` annotations in generated model classes (default) |
+|                                         |   `NO_VALIDATION` - Use no validation annotations in generated model classes |
+|   `dependencies-generation-mode`        | Configure generation of file containing dependencies of the generated source code. Default: NONE   |
+|                                         | CHOOSE ONE OF: |
+|                                         | `NONE` - Default, no extra dependencies file generated |
+|                                         | `GRADLE_NOTATION` - Dependencies file is generated with gradle notation (expected to be placed inside dependencies {} block in build.gradle(.kts) |
+|                                         | `MAVEN_NOTATION` - Dependencies file is generated with maven notation (expected to be placed inside <dependencies></dependencies> tags in pom.xml) |
+
+
+## Original Motivation
+
+The team that built the first version of this tool initially contributed to the Kotlin code generation ability in [OpenApiTools](https://github.com/OpenAPITools/openapi-generator), but reached the limits of what could be achieved with template-based generation. This library leverages the rich OpenAPI 3 model provided by [KaiZen-OpenApi-Parser](https://github.com/RepreZen/KaiZen-OpenApi-Parser) and uses [Kotlin Poet](https://square.github.io/kotlinpoet/) to programmatically construct Kotlin classes for maximum flexibility.
+
+This project was started by engineers from [Zalando Tech](https://opensource.zalando.com/) and is battle-tested heavily in production there.
+
+## Specific Features
+
+### Request and response models
+
+By default, Fabrikt generates one model set and treats `readOnly` and `writeOnly` properties as optional. Directional model generation is opt-in:
+
+* `--http-model-opts EXCLUDE_READ_ONLY` excludes `readOnly` properties for a request-model generation pass.
+* `--http-model-opts EXCLUDE_WRITE_ONLY` excludes `writeOnly` properties for a response-model generation pass.
+* `--http-model-opts REQUEST_RESPONSE_MODELS` generates both model sets in one invocation, with `Request` and `Response` appended to model names.
+
+In each directional model set, retained properties follow their declared requiredness and nullability. Filtering applies to properties of every type, including nested models and compositions. Selecting both exclusion options excludes both categories; explicit exclusion options also apply to both sets when combined with `REQUEST_RESPONSE_MODELS`.
+
+For separate generation passes, use `--http-model-suffix Request` and `--http-model-suffix Response` to distinguish the model sets. With `REQUEST_RESPONSE_MODELS`, a custom suffix precedes the direction suffix, for example `PetDtoRequest` and `PetDtoResponse`. Both sets include enums and models without directional properties, keeping all generated references within their respective set. A model whose properties are all excluded becomes an empty Kotlin object.
+
+When `REQUEST_RESPONSE_MODELS` is enabled, all supported clients and controllers use request models for incoming parameters and request bodies, and response models for returned bodies. Array and map element types follow the same direction. For targets that support multipart, requests omit excluded properties and use request models for structured parts. Existing multipart limitations remain unchanged: Micronaut controllers reject multipart parameters, while Ktor clients and controllers do not generate multipart part parameters. A type referenced by a parameter remains available even if its declaring property is excluded from a model. This option works with `HTTP_MODELS`, `CLIENT`, and `CONTROLLERS`; generating clients or controllers also generates both model sets.
+
+### Polymorphism via `allOf`
+
+The following example shows how `allOf` can be used to generate polymorphic Kotlin data classes. It does the following:
+- A `ChildDefinition` schema defines both the discriminator mapping details and the schema for the discriminator property. In this case the discriminator property is an enumeration
+- In each child schema, `allOf` is used to merge the `ChildDefinition` with the child's custom schema. This guarantees that each child schema inherits the correct discriminator property.
+- In the `Responses` schema a `oneOf` lists only child schemas. This will be detected by Fabrikt and it will generate the list of parent types: `List<ChildDefinition>`
+
+_NOTE: [Discriminated `oneOf`](src/test/resources/examples/discriminatedOneOf) is the recommended way to model polymorphism. Fabrikt generates a Kotlin `sealed interface` for every `oneOf`, so no extra option is needed; the `allOf` pattern shown here remains supported for existing hierarchies._
+
+```yml
+openapi: 3.0.0
+components:
+  schemas:
+    ChildDefinition:
+      type: object
+      discriminator:
+        propertyName: some_enum
+        mapping:
+          obj_one_only: '#/components/schemas/DiscriminatedChild1'
+          obj_two_first: '#/components/schemas/DiscriminatedChild2'
+          obj_two_second: '#/components/schemas/DiscriminatedChild2'
+          obj_three: '#/components/schemas/discriminated_child_3'
+      properties:
+        discriminating_property:
+          $ref: '#/components/schemas/ChildDiscriminator'
+
+    ChildDiscriminator:
+      type: string
+      enum:
+        - obj_one_only
+        - obj_two_first
+        - obj_two_second
+        - obj_three
+
+    DiscriminatedChild1:
+      allOf:
+        - $ref: '#/components/schemas/ChildDefinition'
+        - type: object
+          properties:
+            some_prop:
+              type: string
+
+    DiscriminatedChild2:
+      allOf:
+        - $ref: '#/components/schemas/ChildDefinition'
+        - type: object
+          properties:
+            some_prop:
+              type: string
+
+    discriminated_child_3:
+      allOf:
+        - $ref: '#/components/schemas/ChildDefinition'
+
+    Responses:
+      type: "object"
+      properties:
+        entries:
+          type: "array"
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/DiscriminatedChild2"
+              - $ref: "#/components/schemas/DiscriminatedChild2"
+              - $ref: "#/components/schemas/discriminated_child_3"
+```
+```kotlin
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "some_enum",
+    visible = true
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(
+        value = DiscriminatedChild1::class,
+        name =
+        "obj_one_only"
+    ),
+    JsonSubTypes.Type(
+        value = DiscriminatedChild2::class,
+        name =
+        "obj_two_first"
+    ),
+    JsonSubTypes.Type(
+        value = DiscriminatedChild2::class,
+        name =
+        "obj_two_second"
+    ),
+    JsonSubTypes.Type(value = DiscriminatedChild3::class, name = "obj_three")
+)
+sealed class ChildDefinition() {
+    abstract val someEnum: ChildDiscriminator
+}
+
+enum class ChildDiscriminator(
+    @JsonValue
+    val value: String
+) {
+    OBJ_ONE_ONLY("obj_one_only"),
+
+    OBJ_TWO_FIRST("obj_two_first"),
+
+    OBJ_TWO_SECOND("obj_two_second"),
+
+    OBJ_THREE("obj_three");
+
+    companion object {
+        private val mapping: Map<String, ChildDiscriminator> =
+            values().associateBy(ChildDiscriminator::value)
+
+        fun fromValue(value: String): ChildDiscriminator? = mapping[value]
+    }
+}
+
+data class DiscriminatedChild1(
+    @param:JsonProperty("some_prop")
+    @get:JsonProperty("some_prop")
+    val someProp: String? = null,
+    @get:JsonProperty("some_enum")
+    @get:NotNull
+    override val someEnum: ChildDiscriminator = ChildDiscriminator.OBJ_ONE_ONLY
+) : ChildDefinition()
+
+data class DiscriminatedChild2(
+    @get:JsonProperty("some_enum")
+    @get:NotNull
+    override val someEnum: ChildDiscriminator,
+    @param:JsonProperty("some_prop")
+    @get:JsonProperty("some_prop")
+    val someProp: String? = null
+) : ChildDefinition()
+
+data class DiscriminatedChild3(
+    @get:JsonProperty("some_enum")
+    @get:NotNull
+    override val someEnum: ChildDiscriminator = ChildDiscriminator.OBJ_THREE
+) : ChildDefinition()
+
+data class Responses(
+    @param:JsonProperty("entries")
+    @get:JsonProperty("entries")
+    val entries: List<@Valid ChildDefinition>? = null
+)
+```
+
+### Bean validation
+
+When a validated library is selected, `@Valid` is placed on the container's type argument for
+collection properties and controller parameters, e.g. `List<@Valid ChildDefinition>` and
+`Map<String, @Valid ChildDefinition?>`, rather than on the container itself
+(`List<ChildDefinition>`). Hibernate Validator 9.1 deprecates the legacy container-level
+placement.
+
+Nested containers keep `@Valid` on the innermost element only (e.g.
+`List<List<@Valid ChildDefinition>>`), and containers with a non-cascadable element such as
+`List<String>` carry no `@Valid`.
+
+> Kotlin only writes type-argument annotations into bytecode when compiled with
+> `-Xemit-jvm-type-annotations`. Enable that flag in consumer projects so Hibernate Validator
+> can see the cascading `@Valid` at runtime.
+
+## Contributing
+
+### Building Locally
+
+Fabrikt is built with Gradle and requires an initialised git repository. The easiest way to build it is to clone the repo locally before executing the build command:
+```
+git clone git@github.com:fabrikt-io/fabrikt.git
+cd fabrikt/
+./gradlew clean build
+```
+
+### Adjusting Test Examples
+
+A utility function is available in [GeneratedCodeAsserter.kt](src/test/kotlin/com/cjbooms/fabrikt/util/GeneratedCodeAsserter.kt) to mass change all of the code generation examples in the test resources folder. This is useful when a global change is made to the code generation logic and all of the examples need to be updated.
+
+### Publishing
+
+1. Go to [Release Tab](https://github.com/fabrikt-io/fabrikt/releases)
+2. Select `Draft a new release`.
+3. Set tag to a version greater than current using symantic versioning, anticipating whether the changes made could break builds.
+4. Click `Generate release notes`. Ensure that the tag and release version match.
+5. Click `Publish release` buttom at the bottom.
+
+Github Actions will publish the deployment to [Sonatype Central](https://central.sonatype.com/publishing/deployments). You must then log in to Sonatype and decide to either release or drop that deployment. After 30 minutes or so, Maven Central will have indexed the promoted release.

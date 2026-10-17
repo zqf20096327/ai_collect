@@ -1,0 +1,220 @@
+# LLMs-Journey
+
+The **LLMs-Journey** repository covers topics including:
+
+- **Large Language Models (LLMs)**
+- **Agentic Systems and Workflows**
+- **Fine-Tuning (e.g., LoRA, QLoRa)**
+- **Retrieval-Augmented Generation (RAG)**
+- **Vision-Language Models (VLMs)**
+- **Complementary Resources and Research**
+
+## Blog Posts
+
+Fine-Tuning:
+
+- [Fine-Tuning LLMs with LoRA and MLX-LM](https://medium.com/@levchevajoana/fine-tuning-llms-with-lora-and-mlx-lm-c0b143642deb)
+
+
+Agents:
+
+- [Fine-Tuning LLMs for Function-Calling with MLX-LM](https://medium.com/@levchevajoana/fine-tuning-a-model-for-function-calling-with-mlx-lm-d00d587e2559)
+- [A Job Postings Tool: A Guide to MLX-LM Server and Tool Use with the OpenAI Client](https://medium.com/@levchevajoana/a-job-postings-tool-a-guide-to-mlx-lm-server-and-tool-use-with-the-openai-client-edb9a5d75b4c)
+- [Running Local Hugging Face Models with MLX-LM and the Agno Agentic Framework](https://medium.com/@levchevajoana/running-local-hugging-face-models-with-mlx-lm-and-the-agno-agentic-framework-de134259d34d)
+- [Agno + MLX: Human-in-the-Loop User Control Flow for a Job-Search Agent](https://medium.com/@levchevajoana/agno-mlx-human-in-the-loop-user-control-flow-for-a-job-search-agent-d14ed4dcdea5)
+- [Agno + MLX + Agent Lightning: Automatic Prompt Optimization for a Job-Search Agent](https://medium.com/@levchevajoana/agno-mlx-agent-lighting-automatic-prompt-optimization-for-a-job-search-agent-80e78a0a4550)
+
+VLMs:
+
+- [Qwen2.5-VL with MLX-VLM](https://medium.com/@levchevajoana/qwen2-5-vl-with-mlx-vlm-c4329b40ab87)
+- [Image Segmentation with PaliGemma 2 Mix and MLX](https://medium.com/@levchevajoana/image-segmentation-with-paligemma-2-mix-and-mlx-7e69e077968b)
+- [Image Segmentation with PaliGemma 2 mix, Transformers, Docker, FastAPI, and GitHub Actions](https://medium.com/@levchevajoana/image-segmentation-with-paligemma-2-mix-transformers-docker-fastapi-and-github-actions-ff6d00253832)
+- [Nanonets OCR: A Small Gem for Handwritten Notes](https://medium.com/@levchevajoana/nanonets-ocr-a-small-gem-for-handwritten-notes-3fd069b76e78)
+
+On-Device AI:
+
+- [Chat with Qwen3 on your iPhone: A Step-by-Step Guide](https://medium.com/@levchevajoana/chat-with-qwen3-on-your-iphone-a-step-by-step-guide-515bb957cd02)
+
+Misc:
+
+- [Thinking Backwards: The “Reversal Blessing” in LLM Multiple-Choice Reasoning](https://medium.com/@levchevajoana/thinking-backwards-the-reversal-blessing-in-llm-multiple-choice-reasoning-fa71916b51e5)
+
+## What to read?
+
+Books:
+- [AI Engineering by Chip Huyen](https://www.oreilly.com/library/view/ai-engineering/9781098166298/)
+- [Hands-On Large Language Models by Jay Alammar, Maarten Grootendorst](https://www.oreilly.com/library/view/hands-on-large-language/9781098150952/), [GitHub](https://github.com/HandsOnLLM/Hands-On-Large-Language-Models)
+- [THE HUNDRED-PAGE LANGUAGE MODELS BOOK by Andriy Burkov](https://thelmbook.com), [GitHub](https://github.com/aburkov/theLMbook)
+- [Foundations of Large Language Models](https://arxiv.org/pdf/2501.09223)
+- [How to Scale Your Model](https://jax-ml.github.io/scaling-book/index)
+- [The Ultra-Scale Playbook: Training LLMs on GPU Clusters](https://huggingface.co/spaces/nanotron/ultrascale-playbook)
+
+Agents:
+- [Hugging Face Agents Course](https://huggingface.co/agents-course)
+- [ai-agents-for-beginners (Microsoft)](https://github.com/microsoft/ai-agents-for-beginners)
+- [Agents (Google's whitepaper)](https://www.kaggle.com/whitepaper-agents)
+- [Agency Is Frame-Dependent](https://arxiv.org/abs/2502.04403)
+- [Agent Lightning: Train ANY AI Agents with Reinforcement Learning](https://arxiv.org/abs/2508.03680)
+
+Promptning:
+- [Prompt Engineering (Google's whitepaper)](https://www.kaggle.com/whitepaper-prompt-engineering)
+- [GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
+
+Fine-Tuning:
+- [🤗 PEFT: Parameter-Efficient Fine-Tuning of Billion-Scale Models on Low-Resource Hardware](https://huggingface.co/blog/peft)
+- [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/pdf/2106.09685)
+- [QLORA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/pdf/2305.14314)
+
+RAG related:
+- [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401)
+- [Chain-of-Retrieval Augmented Generation](https://arxiv.org/pdf/2501.14342)
+- [Introducing Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)
+
+Evaluation:
+- [A Survey on LLM-as-a-Judge](https://arxiv.org/pdf/2411.15594)
+- [ARC Prize 2024: Technical Report](https://arxiv.org/pdf/2412.04604)
+- [FrontierMath: A Benchmark for Evaluating Advanced Mathematical Reasoning in AI](https://arxiv.org/pdf/2411.04872)
+- [MATH-Perturb: Benchmarking LLMs' Math Reasoning Abilities against Hard Perturbations](https://arxiv.org/abs/2502.06453v1)
+
+Datasets:
+- [NuminaMath 1.5](https://huggingface.co/datasets/AI-MO/NuminaMath-1.5)
+
+Models:
+- [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/pdf/2501.12948)
+- [DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/pdf/2402.03300)
+- [RoFormer: Enhanced Transformer with Rotary Position Embedding](https://arxiv.org/pdf/2104.09864) and [Round and Round We Go! What makes Rotary Positional Encodings useful?](https://arxiv.org/pdf/2410.06205)
+- [Qwen2.5-Math](https://github.com/QwenLM/Qwen2.5-Math?tab=readme-ov-file) and [paper](https://arxiv.org/abs/2409.12122)
+- [Kimi K2: Open Agentic Intelligence](https://arxiv.org/abs/2507.20534)
+- [LFM2 Technical Report](https://arxiv.org/abs/2511.23404)
+- [Ornith-1.0: Self-Scaffolding LLMs for Agentic Coding](https://deep-reinforce.com/ornith_1_0.html), [🤗](https://huggingface.co/deepreinforce-ai/Ornith-1.0-35B)
+- [LFM2.5-230M: Built to Run Anywhere](https://www.liquid.ai/blog/lfm2-5-230m), [🤗](https://huggingface.co/LiquidAI/LFM2.5-230M), [Docs](https://docs.liquid.ai/lfm/models/complete-library)
+- [Qwen-AgentWorld: Language World Models for General Agents](https://arxiv.org/abs/2606.24597), [Blog](https://qwen.ai/blog?id=qwen-agentworld), [GitHub](https://github.com/QwenLM/Qwen-AgentWorld), [🤗](https://huggingface.co/collections/Qwen/qwen-agentworld)
+- [VibeThinker-3B: Exploring the Frontier of Verifiable Reasoning in Small Language Models](https://arxiv.org/abs/2606.16140), [GitHub](https://github.com/WeiboAI/VibeThinker), [🤗](https://huggingface.co/WeiboAI/VibeThinker-3B)
+- [GLM-5.2: Built for Long-Horizon Tasks](https://z.ai/blog/glm-5.2)
+
+Vision:
+- [Qwen2-VL: Enhancing Vision-Language Model's Perception of the World at Any Resolution](https://arxiv.org/abs/2409.12191)
+- [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL?tab=readme-ov-file) and [paper](https://arxiv.org/abs/2502.13923)
+- [Janus-Pro: Unified Multimodal Understanding and Generation with Data and Model Scaling](https://github.com/deepseek-ai/Janus/blob/main/janus_pro_tech_report.pdf)
+- [Magma: A Foundation Model for Multimodal AI Agents](https://arxiv.org/abs/2502.13130)
+- [SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features](https://arxiv.org/abs/2502.14786)
+- [PaliGemma 2: A Family of Versatile VLMs for Transfer](https://arxiv.org/abs/2412.03555v1)
+- [Florence-2: Advancing a Unified Representation for a Variety of Vision Tasks](https://arxiv.org/abs/2311.06242)
+- [Kimi-VL Technical Report](https://arxiv.org/abs/2504.07491)
+- [InternVL3: Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models](https://arxiv.org/abs/2504.10479)
+- [FastVLM: Efficient Vision Encoding for Vision Language Models](https://www.arxiv.org/abs/2412.13303)
+- [DINOv3](https://arxiv.org/abs/2508.10104)
+- [Qwen3-VL Technical Report](https://arxiv.org/abs/2511.21631)
+- [SAM 3: Segment Anything with Concepts](https://arxiv.org/abs/2511.16719)
+- [Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture](https://arxiv.org/abs/2301.08243)
+- [LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics](https://arxiv.org/abs/2511.08544)
+- [VL-JEPA: Joint Embedding Predictive Architecture for Vision-language](https://arxiv.org/abs/2512.10942)
+- [DeepSeek-OCR: Contexts Optical Compression](https://arxiv.org/abs/2510.18234)
+- [olmOCR: Unlocking Trillions of Tokens in PDFs with Vision Language Models](https://arxiv.org/abs/2502.18443)
+- [olmOCR 2: Unit Test Rewards for Document OCR](https://arxiv.org/abs/2510.19817)
+- [dots.ocr: Multilingual Document Layout Parsing in a Single Vision-Language Model](https://www.arxiv.org/abs/2512.02498)
+- [Can Large Vision Language Models Read Maps Like a Human?](https://arxiv.org/abs/2503.14607)
+- [Falcon Perception (Falcon OCR)](https://arxiv.org/abs/2603.27365), [GitHub](https://github.com/tiiuae/falcon-perception)
+- [GLM-OCR Technical Report](https://arxiv.org/abs/2603.10910), [GitHub](https://github.com/zai-org/GLM-OCR)
+- [Baidu: Unlimited OCR Works](https://arxiv.org/abs/2606.23050), [🤗](https://huggingface.co/baidu/Unlimited-OCR), [GitHub](https://github.com/baidu/Unlimited-OCR)
+
+Chain-of-Thought
+- [Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
+- [Self-Consistency Improves Chain of Thought Reasoning in Language Models](https://arxiv.org/abs/2203.11171)
+
+Visualisation-of-Thought:
+- [Imagine while Reasoning in Space: Multimodal Visualization-of-Thought](https://arxiv.org/pdf/2501.07542)
+
+Test-Time Scaling
+- [s1: Simple test-time scaling](https://github.com/simplescaling/s1) and [paper](https://arxiv.org/abs/2501.19393)
+
+Test-Time Compute
+- [Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters](https://arxiv.org/abs/2408.03314)
+- [Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach](https://arxiv.org/abs/2502.05171)
+
+AlphaGeometry:
+- [Gold-medalist Performance in Solving Olympiad Geometry with AlphaGeometry2](https://arxiv.org/abs/2502.03544)
+
+Apple:
+- [Machine Learning Research at Apple](https://machinelearning.apple.com)
+- [Distillation Scaling Laws](https://arxiv.org/abs/2502.08606)
+- [Parameters vs FLOPs: Scaling Laws for Optimal Sparsity for Mixture-of-Experts Language Models](https://arxiv.org/abs/2501.12370)
+- [Reversal Blessing: Thinking Backward May Outpace Thinking Forward in Multi-choice Questions](https://arxiv.org/abs/2502.18435v2)
+- [FastVLM: Efficient Vision Encoding for Vision Language Models](https://www.arxiv.org/abs/2412.13303)
+- [Embarrassingly Simple Self-Distillation Improves Code Generation](https://arxiv.org/abs/2604.01193), [GitHub](https://github.com/apple/ml-ssd)
+
+Misc:
+- [Scaling Pre-training to One Hundred Billion Data for Vision Language Models](https://arxiv.org/abs/2502.07617)
+- [Competitive Programming with Large Reasoning Models](https://arxiv.org/abs/2502.06807)
+- [MoBA: Mixture of Block Attention for Long-Context LLMs](https://arxiv.org/abs/2502.13189)
+- [Step-Video-T2V Technical Report: The Practice, Challenges, and Future of Video Foundation Model](https://arxiv.org/abs/2502.10248), [repo](https://github.com/stepfun-ai/Step-Video-T2V)
+- [Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention](https://arxiv.org/abs/2502.11089)
+- [Deepseek Papers](https://huggingface.co/collections/Presidentlin/deepseek-papers-674c536aa6acddd9bc98c2ac)
+- [InfiniteHiP: Extending Language Model Context Up to 3 Million Tokens on a Single GPU](https://arxiv.org/abs/2502.08910)
+- [Leveraging the true depth of LLMs](https://arxiv.org/abs/2502.02790)
+- [NOLIMA: Long-Context Evaluation Beyond Literal Matching](https://arxiv.org/pdf/2502.05167)
+- [Memory Layers at Scale](https://arxiv.org/abs/2412.09764)
+- [Towards an AI co-scientist](https://arxiv.org/abs/2502.18864)
+- [On the consistent reasoning paradox of intelligence and optimal trust in AI: The power of 'I don't know'](https://arxiv.org/abs/2408.02357)
+- [LIMO: Less is More for Reasoning](https://arxiv.org/abs/2502.03387)
+- [How new data permeates LLM knowledge and how to dilute it](https://arxiv.org/abs/2504.09522)
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [mHC: Manifold-Constrained Hyper-Connections](https://arxiv.org/abs/2512.24880)
+- [GDPO: Group reward-Decoupled Normalization Policy Optimization for Multi-reward RL Optimization](https://arxiv.org/abs/2601.05242), [GitHub](https://github.com/NVlabs/GDPO)
+- [Attention Residuals](https://arxiv.org/abs/2603.15031), [GitHub](https://github.com/MoonshotAI/Attention-Residuals)
+- [TurboQuant](https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/), [TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate](https://arxiv.org/abs/2504.19874), [QJL: 1-Bit Quantized JL Transform for KV Cache Quantization with Zero Overhead](https://arxiv.org/abs/2406.03482), [PolarQuant: Quantizing KV Caches with Polar Transformation](https://arxiv.org/abs/2502.02617)
+- [DSpark: Confidence-Scheduled Speculative Decoding with Semi-Autoregressive Generation](https://github.com/deepseek-ai/DeepSpec/blob/main/DSpark_paper.pdf), [DeepSpec](https://github.com/deepseek-ai/DeepSpec)
+- [Sakana Fugu Technical Report](https://arxiv.org/abs/2606.21228), [Blog](https://sakana.ai/fugu-release/)
+- [TRINITY: AN EVOLVED LLM COORDINATOR](https://arxiv.org/pdf/2512.04695), [GitHub](https://github.com/nshkrdotcom/trinity_coordinator)
+- [Reinforcement learning towards broadly and persistently beneficial models](https://arxiv.org/abs/2606.24014), [Blog](https://alignment.openai.com/beneficial-rl/)
+- [Qwen-Robot Suite: A Foundation Model Suite for Physical World Intelligence](https://qwen.ai/blog?id=qwen-robotsuite)
+
+
+## Resources
+
+Apple/MLX:
+- [mlx-examples](https://github.com/ml-explore/mlx-examples/tree/main)
+- [ml-explore](https://github.com/ml-explore)
+- [mlx-vlm](https://github.com/Blaizzy/mlx-vlm)
+- [apple/coreai-models](https://github.com/apple/coreai-models)
+
+LangChain:
+- [Build a Retrieval Augmented Generation (RAG) App: Part 1](https://python.langchain.com/docs/tutorials/rag/)
+
+Vector Databases:
+- [Chroma](https://www.trychroma.com/home)
+- [Pinecone](https://www.pinecone.io)
+- [Weaviate](https://weaviate.io)
+
+HuggingFace:
+- [MLX Community](https://huggingface.co/mlx-community)
+- [Using MLX at Hugging Face](https://huggingface.co/docs/hub/en/mlx)
+
+Leonie Notebooks:
+- [Fine-tuning Gemma 2 JPN for Yomigana with LoRA](https://www.kaggle.com/code/iamleonie/fine-tuning-gemma-2-jpn-for-yomigana-with-lora)
+- [Advanced RAG with Gemma, Weaviate, and LlamaIndex](https://www.kaggle.com/code/iamleonie/advanced-rag-with-gemma-weaviate-and-llamaindex)
+- [RAG with Gemma on HF 🤗 and Weaviate in DSPy](https://www.kaggle.com/code/iamleonie/rag-with-gemma-on-hf-and-weaviate-in-dspy)
+
+GitHub Repos:
+- [rag-cookbooks](https://github.com/athina-ai/rag-cookbooks)
+- [Hands-On-Large-Language-Models](https://github.com/HandsOnLLM/Hands-On-Large-Language-Models)
+- [Multimodal-RAG-Implementation](https://github.com/CornelliusYW/Multimodal-RAG-Implementation)
+- [Data_Science_Learning_Material](https://github.com/CornelliusYW/Data_Science_Learning_Material)
+- [RAG-To-Know](https://github.com/CornelliusYW/RAG-To-Know)
+- [Docling](https://github.com/DS4SD/docling?tab=readme-ov-file)
+- [Understand-Anything](https://github.com/Egonex-AI/Understand-Anything)
+
+Blogs/Posts:
+- [The Illustrated DeepSeek-R1](https://newsletter.languagemodels.co/p/the-illustrated-deepseek-r1)
+- [Transformers from Scratch](https://www.brandonrohrer.com/transformers)
+- [Chain of Thought](https://www.k-a.in/cot.html)
+- [Deekshith Dade](https://deekshith.me)
+- [Jackrong/Qwopus3.6-27B-v2-FP8](https://huggingface.co/Jackrong/Qwopus3.6-27B-v2-FP8)
+- [How we built the world’s fastest API for GLM-5.2](https://x.com/philipkiely/status/2069212319746506968)
+- [Boost Inference Performance up to 15x on NVIDIA Blackwell Using DFlash Speculative Decoding](https://developer.nvidia.com/blog/boost-inference-performance-up-to-15x-on-nvidia-blackwell-using-dflash-speculative-decoding/?ncid=so-twit-578984&linkId=100000427691673)
+- Anthropic: [Agentic coding and persistent returns to expertise](https://www.anthropic.com/research/claude-code-expertise)
+- Google: [Announcing the Agentic Resource Discovery specification](https://developers.googleblog.com/announcing-the-agentic-resource-discovery-specification/)
+
+Frameworks:
+- [Agno](https://www.agno.com), and [github page](https://github.com/agno-agi/agno)
+- [Agent Lightning](https://github.com/microsoft/agent-lightning)

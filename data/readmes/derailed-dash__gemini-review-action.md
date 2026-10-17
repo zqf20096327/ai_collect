@@ -1,0 +1,1080 @@
+# Gemini PR Review & Triage Action
+
+![Dazbo's Gemini Review & Triage Banner](assets/gemini_review_banner.png)
+
+[![Used by](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/derailed-dash/gemini-review-action/main/.github/badges/gemini-review-action.json&logo=githubactions&logoColor=white&label=used%20by)](https://github.com/derailed-dash/gemini-review-action)
+[![GitHub release](https://img.shields.io/github/v/release/derailed-dash/gemini-review-action?logo=github)](https://github.com/derailed-dash/gemini-review-action/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Automated, Google Gemini-based Pull Request reviews and Issue Triaging for all your GitHub repositories and CI/CD pipelines.**
+
+![Automated PR Review Output Example](assets/pr-with-costs.png)
+
+See the supporting blog post about this action [here](https://medium.com/google-cloud/automated-github-code-reviewsusing-google-gemini-7b4d027b3092).
+
+## Table of Contents
+
+- [Features Overview](#features-overview)
+- [Author](#author)
+- [License](#license)
+- [How It Works](#how-it-works)
+- [The "Clean Slate" Advantage](#the-clean-slate-advantage)
+- [Setup & Use](#setup--use)
+  - [Authentication with Gemini API Key](#authentication-with-gemini-api-key)
+  - [Google Developer Knowledge MCP Integration (Optional)](#google-developer-knowledge-mcp-integration-optional)
+  - [On-Demand Agent Skills (Coding Guidelines)](#on-demand-agent-skills-coding-guidelines)
+  - [PR Comment History & Discussion Thread Tracking](#pr-comment-history--discussion-thread-tracking)
+  - [Setup Using Install-Gemini-Code-Review-Action Skill (Recommended)](#setup-using-install-gemini-code-review-action-skill-recommended)
+  - [Alternative Manual Setup: PR Review Action Definition](#alternative-manual-setup-pr-review-action-definition)
+  - [Seeing It In Action](#seeing-it-in-action)
+  - [Issues Triage Action Definition](#issues-triage-action-definition)
+- [Configuration](#configuration)
+  - [Action Inputs](#action-inputs)
+  - [Codebase Context Configuration](#codebase-context-configuration)
+  - [Multimodal Context & Visual PR Diffing](#multimodal-context--visual-pr-diffing)
+  - [Custom Prompts / Instructions](#custom-prompts--instructions)
+  - [Prompt Placeholders](#prompt-placeholders)
+- [Understanding the Token Usage & Cost Efficiency Report](#understanding-the-token-usage--cost-efficiency-report)
+  - [Metrics Explained](#metrics-explained)
+- [Pipeline Architecture & Execution](#pipeline-architecture--execution)
+- [Alternative Authentication](#alternative-authentication)
+- [Development & Releases](#development--releases)
+  - [Local Development & Testing](#local-development--testing)
+  - [Deploying & Publishing Updates](#deploying--publishing-updates)
+- [Cost Attribution & Estimation](#cost-attribution--estimation)
+
+## Features Overview
+
+![Features Overview](assets/features-overview.png)
+
+- **AI-Powered Code Reviews**: Automated, constructive line-specific feedback on Pull Requests using Google Gemini models (Gemini 3.8 Flash by default).
+- **Automated Issue Triage**: Dynamically labels, prioritises, and triages incoming issues using text descriptions, discussion comments, and attached remote screenshots.
+- **PR Comment & Discussion Thread History**: Automatically retrieves inline review threads and general PR conversation comments, enabling Gemini to track issue resolution, respect developer justifications/disagreements, and avoid repeating resolved suggestions across commits.
+- **Billing Labels for Cost Attribution (Vertex AI only)**: Tags every request with Cloud Billing labels (`component`, `repo`), so spend per repository is a group-by in the billing export rather than a sum of numbers in review comments.
+- **Tokenomics & Cost Telemetry Report**: Appends a collapsible token usage and **estimated dollar cost** summary to each review, with the rate that was applied stated alongside it.
+- **Drop-in Migration**: Fully compatible as a direct, drop-in replacement for the deprecated `run-gemini-cli` action.
+- **Structured Outputs**: Error-free JSON response formatting using Pydantic schema validation.
+- **Multimodal Context, Visual PR Diffing & Triage Screenshots**: Inspects repository visual assets, issue screenshots, and documents (PNG, JPEG, WebP, GIF, SVG, PDF). Local images referenced in Markdown docs and remote screenshots embedded in issues (`github.com/user-attachments/assets/...`, `githubusercontent.com/...`) are automatically extracted and attached as multimodal parts. When PRs modify images, Gemini performs side-by-side visual diffing between baseline and updated versions to catch visual regressions and layout issues. Includes intelligent deterministic downscaling (Pillow) to minimise token consumption and latency.
+- **Hybrid Codebase Context**: Automatically includes codebase context based on the overall size of the codebase. If the codebase isn't huge, the entire repo is loaded into context; but if it is huge, the agent reads the overall directory tree and judiciously includes a subset of the repo. (Note that it always reads markdown files, dependency files, packaging files, etc.)
+- **Interactive Suggestions**: Formats code recommendations inside native GitHub ` ```suggestion ` blocks for one-click merge applications.
+- **Triggers**: The action triggers automatically in response to PR events. It can also be triggered by posting a comment in the PR starting with `/gemini-review`.
+- **Fast-Execution Composite Action**: Avoids containerisation build/pull latency (no slow `docker build` on every execution) by running as a native composite action.
+- **Cross-Platform Support**: Runs natively on Linux, macOS, and Windows runners (both GitHub-hosted and self-hosted).
+- **Modern SDK Execution**: Leverages the modern Google GenAI SDK (`google-genai`).
+- **Enterprise-Grade Security**: Authentication via either Google Gemini API Keys or Google Cloud Workload Identity Federation (WIF).
+- **Customisable Prompts**: Supports repository-specific overrides for both reviews and triaging via simple TOML config files.
+- **Custom Instructions & Guardrails (Prompt Extension)**: Effortlessly extend default review instructions with project-specific rules, domain context, and guardrails via `.github/review-instruction-additions.md` or the `custom_instructions` action input, without needing to maintain or duplicate the base review prompt.
+- **Reviewer Personas**: Customise the personality, tone, and review style of the agent with pre-built persona overlays (`straight`, `dazbo`, `palpatine`, `rick`).
+- **Google Developer Knowledge Integration**: Automatically queries official Google developer documentation (Google Cloud, Firebase, Android, etc.) via MCP to cross-reference your changes against up-to-date best practices.
+- **On-Demand Agent Skills**: Dynamically discovers and loads project-specific formatting guidelines and coding standards from `.agents/skills` on-demand, keeping prompt contexts lightweight and relevant (bundled with defaults for Google Cloud, Gemini APIs and agentic development).
+- **Gemini Context Caching**: Native, automatic integration with Gemini Context Caching, delivering up to **90% cost reduction** on input tokens for repositories over 32k tokens.
+- **Multi-Turn & Cross-PR Cache Reuse**: Reuses active server-side context cache handles across multi-turn tool/skill calls and successive PR pushes within the TTL window (1h default), eliminating prompt re-tokenisation and server overhead. This is a huge efficiency and cost saving between successive reviews.
+
+![Leveraing MCP and Skills](/assets/agent_intelligence_diagram.png)
+
+## Author
+
+Developed and maintained by **Darren 'Dazbo' Lester** (GitHub: [@derailed-dash](https://github.com/derailed-dash)).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## How It Works
+
+1. **Change Discovery**: The action scans the Pull Request diff. It uses a robust extension and path exclusion list to automatically filter out binary, encrypted, or locked files (like `.png`, `.enc`, `uv.lock`, `.env`, etc.).
+2. **Hybrid Context Enrichment**: In addition to surrounding modified file content, the action gathers context from the rest of the repository. It measures the total size of all other tracked text files:
+   - **Full Context Mode**: If the codebase is under the configured size threshold (default: 1.5 MB), the full contents of all other text files are included.
+   - **Sparse Context Mode**: If the codebase exceeds the threshold, it includes a structured text-based file tree of the entire project, plus the full contents of key configuration and documentation files (like `*.md`, `pyproject.toml`, `package.json`, `go.mod`, etc.).
+3. **Gemini Context Caching & Multi-Turn Reuse**: For repository contexts exceeding ~32,768 tokens (100,000+ characters), the action automatically checks for an active server-side cache (`repo-cache-{repo}-{model}-{persona}`) via `client.caches.list()`. This mechanism is **completely stateless**—no local databases or runner caches are needed between PR reviews, as active handles are looked up dynamically on Google's API servers. Caches are securely isolated to your API key tenant. Billed input tokens receive a **90% discount**, and subsequent multi-turn tool/skill calls reference the cached context handle without re-billing the codebase context.
+4. **Structured Review Generation**: The action sends the diff and file contexts to Gemini. It uses Gemini's native **Structured Outputs** (`response_schema`) to force the model to respond in a strict JSON format.
+5. **Interactive suggestions**: Change recommendations are wrapped in native GitHub ` ```suggestion ` blocks, allowing reviewers to apply the changes directly on the PR with one click.
+6. **Resilient Comment Posting**: The review is posted atomically via the GitHub Pull Request Review API. If the API call fails (e.g. if the model hallucinates an invalid line number in the diff), the script catches the error and falls back to posting comments individually, ensuring your CI status check stays green while still delivering all valid feedback.
+
+## The "Clean Slate" Advantage
+
+One key benefit of running code reviews via this CI/CD-based GitHub Action is the complete absence of **session bias**.
+
+When interacting with a local AI assistant during development, the model is inevitably influenced by your ongoing conversation, intermediate code drafts, and the developmental history of your changes. While this conversational context is incredibly helpful for writing code, it can also bias the local assistant, causing it to accept compromises or overlook subtle regressions because it understands your *intent* so well.
+
+This action acts as a stateless, independent reviewer with a clean slate. It has no knowledge of how you arrived at the solution or what you discussed locally. By reviewing the raw pull request diff against the repository context, it is far more likely to identify gaps, edge cases, and safety issues that your local assistant might have missed or forgiven.
+
+## Setup & Use
+
+### Authentication with Gemini API Key
+
+This one-time setup (per repo) is required to allow the action to authenticate to Google Gemini.
+
+By default, this action uses a repository secret called `gemini_api_key`. You can create this key, for example, in [Google AI Studio](https://aistudio.google.com/). 
+
+Add this variable to your repo:
+
+1. Navigate to **Settings** > **Secrets and variables** > **Actions**.
+2. Click **New repository secret**.
+3. Name the secret `GEMINI_API_KEY` and paste your API key as the value.
+4. Reference it in your workflow file as `${{ secrets.GEMINI_API_KEY }}`.
+
+> [!NOTE]
+> The `secrets.GITHUB_TOKEN` is automatically created and populated by GitHub for every workflow run. You do not need to add it to your repository secrets manually. You only need to ensure the correct `permissions` are defined in the workflow file, as shown in the examples.
+
+If you prefer to authenticate using a combination of **Google Cloud Workload Identity Federation (WIF)** and **Application Default Credentials (ADC)** with Gemini Enterprise Agent Platform (formerly known as Vertex AI), you can omit `gemini_api_key`. This allows the action to authenticate securely with Google Cloud without storing a long-lived service account key JSON file in your repository.
+
+Alternatively, we can use WIF and ADC to authenticate. In this approach, we do not use persistent Gemini API key. This will be shown later.
+
+### Google Developer Knowledge MCP Integration (Optional)
+
+This action natively supports the **Google Developer Knowledge MCP API**. If available under your `GEMINI_API_KEY` (or Google Cloud Application Default Credentials), the PR reviewer agent can dynamically query official, up-to-date documentation for services like Google Cloud, Firebase, and Android to ensure your code follows best practices.
+
+To enable this capability, see [Google Developer Knowledge Setup Guide](docs/developer_knowledge.md).
+
+### On-Demand Agent Skills (Coding Guidelines)
+
+This action supports **On-Demand Skills Discovery**. Instead of cramming all your repository's formatting rules, coding guidelines, and API specs directly into the prompt context (which wastes tokens and confuses the model), the reviewer agent queries a list of available guidelines and loads the relevant instructions dynamically as needed.
+
+#### 1. Default (Built-in) Skills Included
+The action comes pre-packaged with a comprehensive set of default skills that are automatically available for every run. These cover:
+*   **Google Enterprise & Agent Development**: Best practices for Google ADK (Agent Development Kit), Gemini Agents API, serving endpoint management, prompt orchestration, and model tuning.
+*   **Google Cloud Best Practices**: Official architecture patterns, operational excellence, reliability, performance, security, and GCS/Cloud Run/GKE setup.
+*   **Data Analytics**: BigQuery query optimization, BigFrames, property graphs, and time-series forecasting.
+
+All curated starter skills are tracked declaratively in [skills-manifest.json](starter-examples/skills/skills-manifest.json) and can be updated from their upstream sources using `uv run python scripts/update_skills.py`.
+
+#### 2. Adding Custom Skills to Your Repository
+To add project-specific coding standards or team rules that your PR reviewer should check against:
+1.  Create a folder named `.agents/skills/` at the root of your repository.
+2.  Add a subdirectory for your skill, and create a `SKILL.md` file inside it (e.g. `.agents/skills/my-react-rules/SKILL.md`).
+3.  Format the file with a YAML frontmatter header containing its name and description:
+    ```markdown
+    ---
+    name: "My Project Style Guide"
+    description: "Rules for component structure, CSS modules, and custom hooks"
+    ---
+    # Instructions
+    Write your detailed rules here...
+    ```
+4.  Commit and push these files. The PR review agent will automatically detect your project's custom guidelines and invoke them when reviewing relevant code changes.
+
+##### Coexistence with Upstream Skills & `local_skills`
+If your repository mixes upstream skills with custom local skills inside `.agents/skills/`:
+- **Unmanaged Directories Are Safe:** `scripts/update_skills.py` only synchronises the specific skills listed under `"skills"` for each configured repository. It never deletes, overwrites, or alters custom skill directories.
+- **Declaring `local_skills` in the Manifest:** You can optionally document locally maintained skills under `"local_skills"` in your `skills-manifest.json`:
+  ```json
+  {
+    "version": "1.0",
+    "repositories": [ ... ],
+    "local_skills": [
+      {
+        "name": "my-react-rules",
+        "description": "Internal team standards maintained directly in this repository."
+      }
+    ]
+  }
+  ```
+  When declared, the updater will explicitly acknowledge them in the terminal summary and confirm they are preserved locally without touching upstream Git repositories.
+
+##### Synchronising Upstream Skills in Consumer Repositories
+If your team wants to pull and track curated agent skills directly in your project's `.agents/skills/` directory from official upstream repositories (such as `google/skills` or `google/agents-cli`), you do not need to construct a manifest from scratch:
+1. **Copy the updater script:** Copy `scripts/update_skills.py` into your repository's `scripts/` folder.
+2. **Initialise or copy the manifest:**
+   - **Automatic:** Run `uv run scripts/update_skills.py --init` to automatically fetch the canonical manifest into `.agents/skills-manifest.json`.
+   - **Manual:** Copy the starter [skills-manifest.json](starter-examples/skills/skills-manifest.json) into `.agents/skills-manifest.json` (or if you already copied `starter-examples/skills/` into `.agents/skills/`, it is already included).
+3. **Customise (optional):** Prune any skill names or repositories your project does not need, or list custom local skills under `"local_skills"`.
+4. **Run the synchroniser** (PEP 723 script metadata ensures `rich` is handled automatically):
+```bash
+# Preview what would be synced into .agents/skills/
+uv run scripts/update_skills.py --dry-run
+
+# Synchronise upstream skills into .agents/skills/
+uv run scripts/update_skills.py
+```
+The updater automatically detects consumer repositories and defaults target paths to `.agents/skills/`.
+
+### PR Comment History & Discussion Thread Tracking
+
+When reviewing pull requests that have undergone multiple iterations or team discussions, Gemini automatically retrieves prior inline review threads (`pulls/{pr_number}/comments`) and general PR conversation comments (`issues/{pr_number}/comments`) using automatic pagination loops.
+
+#### How Discussion Tracking Works:
+1. **Thread Grouping:** Root review comments and developer replies are structured into conversational threads mapped to specific files and line numbers.
+2. **Developer Workflow Rules for Follow-Up Reviews:**
+   Gemini evaluates prior comment history against the incoming diff patch and enforces an opinionated developer workflow matrix:
+   - **a) Addressed / Resolved:** The developer applies the requested code fix. Gemini detects that the diff patch addresses the suggestion, omits the duplicate inline comment, and lists it under `### ✅ Resolved Items from Prior Reviews`.
+   - **b) Deferred:** The developer defers the work (e.g. by linking a follow-up issue or noting it in comments). Gemini respects the deferral and refrains from repeating the suggestion.
+   - **c) Disagreed / Ignored with Explanation:** The developer responds explaining why the suggested change was not made (e.g. architectural design choice or performance trade-off). Gemini respects the explanation and refrains from repeating the critique.
+   
+   > [!IMPORTANT]
+   > **No Silent Drops:** A PR suggestion is **never ignored without justification**. If the code remains unchanged AND the developer has provided **no explanation or reply**, or if the developer **agreed** in comment threads but has **not yet pushed the code fix**, Gemini will default to **re-flagging and restating** the unresolved suggestion in the follow-up review.
+
+3. **Resolved Items Reporting:** When Gemini identifies that previously raised feedback has been fixed in the latest push, it includes a dedicated section in the PR review summary:
+   ```markdown
+   ### ✅ Resolved Items from Prior Reviews
+   - Added exception handling in `src/main.py` (Line 45)
+   - Standardised type annotations in `utils.py` (Line 12)
+   ```
+
+### Setup Using Install-Gemini-Code-Review-Action Skill (Recommended)
+
+If you are using an agentic coding environment like Google Antigravity, you can install and configure this action and its triage workflow automatically using Dazbo's skill from [derailed-dash/dazbo-agent-skills](https://github.com/derailed-dash/dazbo-agent-skills).
+
+> [!IMPORTANT]
+> **Prerequisite:** Regardless of whether you use the automatic skill setup or the manual setup, you must configure authentication (either a Gemini API Key or Workload Identity Federation) as described in the **Authentication** section above.
+
+The `install-gemini-code-review-action` skill automatically handles:
+- Detecting and removing conflicting legacy workflows (e.g., `run-gemini-cli` or `gemini-code-assist`).
+- Asking for your preferences (e.g., installing PR Review, Issue Triage, or both, plus your preferred language and model).
+- Writing the workflow YAML files and default TOML prompt configurations.
+- Commit and push of the new workflow files.
+
+To install the skill locally, run:
+```bash
+npx skills add https://github.com/derailed-dash/dazbo-agent-skills -y -g --skill install-gemini-code-review-action
+```
+
+Once installed, simply ask your agent:
+> "Install the Gemini code review action"
+
+---
+
+### Alternative Manual Setup: PR Review Action Definition
+
+One-time step: add this GitHub Action to your repository, by copying the starter example workflow [gemini-review.yml](starter-examples/gemini-review.yml) to `.github/workflows/gemini-review.yml` in your repo (or use the inline template below):
+
+```yaml
+name: "🔎 Dazbo's Gemini Code Review"
+
+on:
+  pull_request:
+    branches:
+      - main
+    # Optional: restrict trigger paths (supports inclusions & exclusions)
+    # paths:
+    #   - 'src/**'
+    #   - '!src/generated/**'  # Exclude generated files
+    #   - 'pyproject.toml'
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    # Run on internal PR updates (same repo), OR on issue comment starting with /gemini-review by repo owners/members
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        startsWith(github.event.comment.body, '/gemini-review') &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      statuses: write
+      checks: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          # Automatically checks out the head ref for PR events,
+          # and pulls the PR head branch for comment-based triggers
+          ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', github.event.issue.number) }}
+
+      - name: Run Gemini Review Action
+        uses: derailed-dash/gemini-review-action@v1
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gemini_model: 'gemini-3.8-flash'
+          language: 'English (UK)'           # Optional (e.g. English (UK), French, Spanish)
+          # persona: 'straight'                # Optional: straight (default), dazbo, palpatine, rick
+          # timeout: '60'                     # Optional API timeout in seconds
+          # include_comment_history: 'true'   # Optional: include prior PR comment history (default: true)
+          # exclude_comment_authors: 'claude[bot]' # Optional: keep another bot's comments out of the prompt
+          # resolve_addressed_threads: 'false' # Optional: auto-resolve threads the review marks addressed (default: false)
+          # skip_inline_suggestions: 'true'   # Optional: skip re-reviews on commits created via GitHub UI inline fixes (default: true)
+```
+
+After adding the workflow to your repository, it should look something like this:
+
+![gemini-review.yml included in your repo](assets/including-the-workflow.png)
+
+### Pinning
+
+The examples above use floating tags (`@v1`, `@v6`) because they are easier to read. For anything beyond a personal repo, **pin to a full commit SHA instead**:
+
+```yaml
+- uses: derailed-dash/gemini-review-action@<40-char-sha> # v1.6.0
+```
+
+This action's job holds `pull-requests: write` and, on the WIF path, `id-token: write`, and it runs against **untrusted pull request head content**. A tag is a movable reference, so a re-tagged release executes in that job without anyone reviewing the change. A SHA is not movable. The same applies to `actions/checkout` and `google-github-actions/auth` in the same job.
+
+Dependabot understands SHA pins with a trailing version comment and will raise a PR when a new release lands, so you still get updates, just deliberately.
+
+### A caveat if you add `concurrency`
+
+Not in the examples, but a natural addition to avoid paying for three reviews when someone pushes three times in a minute. **Put it under the job, not at workflow level:**
+
+```yaml
+jobs:
+  review:
+    concurrency:
+      group: gemini-review-${{ github.event.pull_request.number || github.event.issue.number }}
+      cancel-in-progress: true
+```
+
+**Job level, not workflow level.** Workflow-level `concurrency` is evaluated when a run is **queued**, before any job `if` is evaluated. An `issue_comment` payload has no top-level `pull_request`, so the key falls through to the issue number, which for a pull request is the same number. Both trigger types then share one group, and **any comment on the PR cancels a review that is still running**, before the job gets to check whether the comment was a `/gemini-review` command at all.
+
+**Key on the PR number alone.** An earlier version of this section suggested adding `${{ github.event_name }}` to the key. That is wrong, and it is wrong in the opposite direction: it splits `pull_request` and `issue_comment` into separate queues, so a `/gemini-review` comment runs *alongside* an in-flight push review rather than superseding it. Two reviews, two bills, duplicate comments on the same PR. One review per PR at a time, newest wins.
+
+### Seeing It In Action
+
+1. Create a PR in the repository:
+
+    ![Create the PR](./assets/create-pr.png)
+
+2. Watch the workflow run. The action will automatically start a review process:
+
+    ![Automated PR Review Starts](./assets/pr-running.png)
+
+3. Once complete, you will see a review comment with recommendations:
+
+    ![Automated PR Review Completes](./assets/pr-review-summary.png)
+
+
+#### Filtering Trigger Paths (Inclusions & Exclusions)
+
+By default, GitHub Actions will trigger the code review workflow on a `pull_request` event for changes to *any* files in the repository. You can restrict which files trigger the workflow by configuring `paths` or `paths-ignore` under the trigger configuration.
+
+To only review files under certain directories or with specific file extensions, use the `paths` key:
+
+```yaml
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+```
+
+You can define exclusions in two ways:
+
+1.  **Exclusions within inclusions (`!` prefix):**
+    If you want to review a directory but exclude specific subdirectories or file types, prefix the pattern with `!`. Note that negative patterns must follow at least one positive pattern.
+    ```yaml
+    on:
+      pull_request:
+        paths:
+          - 'src/**'
+          - '!src/generated/**'  # Exclude generated files
+    ```
+
+2.  **Excluding paths globally (`paths-ignore`):**
+    If you want to run the review for all files except for certain folders (like documentation or configurations), use `paths-ignore`:
+    ```yaml
+    on:
+      pull_request:
+        paths-ignore:
+          - 'docs/**'
+          - '**.md'
+    ```
+
+> [!NOTE]
+> Regardless of your workflow's `paths` trigger, the underlying Python script automatically filters out binary, locked, and encrypted files (such as `.png`, `.enc`, `package-lock.json`, and `uv.lock`) before sending the code context to Google Gemini.
+
+#### Triggering Reviews via Comments
+
+If the workflow is configured to allow triggering via comments (e.g. with the `issue_comment` trigger as shown in the example above), you can trigger a code review manually at any time by posting a comment on the Pull Request:
+
+* Simply comment `/gemini-review` on the PR.
+* **Security & Access Control:** To prevent unauthorised runs and control costs, the action will only trigger if the commenter is an `OWNER`, `MEMBER`, or `COLLABORATOR` of the repository.
+
+### Issues Triage Action Definition
+
+Add this GitHub Action to your repository, by copying the starter example workflow [gemini-triage.yml](starter-examples/gemini-triage.yml) to `.github/workflows/gemini-triage.yml` in your repo (or use the inline template below):
+
+```yaml
+name: "🏷️ Dazbo's Gemini Issue Triage"
+
+on:
+  issues:
+    types: [opened, reopened]
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run Gemini Triage Action
+        uses: derailed-dash/gemini-review-action@v1
+        with:
+          command: 'triage'        
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gemini_model: 'gemini-3.8-flash'
+          language: 'English (UK)'           # Optional
+```
+
+### Excluding another reviewer's comments
+
+Comment history exists so the reviewer does not re-raise its **own** feedback once you have addressed it. That is a good default.
+
+It becomes something else when a **second automated reviewer** posts on the same pull requests. Their comments are fetched too, in full, and handed to the model as prior discussion — so the review that follows can restate their conclusions rather than reach its own.
+
+Not hypothetical. On a repository running two AI reviewers, the other bot posted first every time. Its four findings measured ~4,273 tokens against the 4,519 tokens of comment history this action then loaded, so essentially all of them were in the prompt, including the exact fixes. The review that followed reported three of those four findings, on the same lines, and nothing the other reviewer had not already found.
+
+Three costs, only one of them obvious:
+
+- **The review looks independent while being derivative.** A second opinion that read the first opinion is not a second opinion.
+- **You pay for it**, as ordinary input, on every subsequent review of that PR.
+- **It is invisible.** Nothing in the posted review says a finding was already on the page.
+
+```yaml
+        with:
+          exclude_comment_authors: 'claude[bot]'
+```
+
+Excluded comments never reach the prompt and are not counted in the reported token usage. Matching is case-insensitive, and everyone else's comments — humans included — are untouched.
+
+
+## Configuration
+
+### Action Inputs
+
+| Input | Description | Required | Default |
+| :--- | :--- | :--- | :--- |
+| `gemini_api_key` | Your Gemini Developer API Key (from Google AI Studio). | **Yes** (unless using WIF) | N/A |
+| `github_token` | Repository `GITHUB_TOKEN` (automatically provided by GitHub; no manual secret creation required). | **Yes** | N/A |
+| `gemini_model` | The Gemini model version to target for code review and dynamic context selection. | No | `gemini-3.8-flash` |
+| `command` | The mode/command to run: `review` (for PR reviews) or `triage` (for issue triaging). | No | `review` |
+| `include_comment_history` | Whether to fetch prior inline review threads and conversation comments from GitHub. | No | `'true'` |
+| `exclude_comment_authors` | Comma-separated GitHub logins whose comments are kept out of the prompt, e.g. `claude[bot]`. Useful when a second automated reviewer posts on the same PRs — see [Excluding another reviewer's comments](#excluding-another-reviewers-comments). | No | `''` |
+| `resolve_addressed_threads` | Resolve the GitHub review threads for findings the action reports as addressed, so *Require conversation resolution before merging* stops blocking on feedback the reviewer has already agreed is done. Only threads opened by this action, and only where the model supplied an exact file and line, are resolved. | No | `'false'` |
+| `language` | The language to use for the review comments (e.g. `English (UK)`, `English (US)`, `French`, `Spanish`). | No | `English (UK)` |
+| `persona` | Reviewer persona overlay (`straight`, `dazbo`, `palpatine`, `rick`). | No | `straight` |
+| `custom_instructions` | Custom instructions or guardrails to extend the review prompt. Can be inline text or a file path in the repository (e.g. `.github/review-instruction-additions.md`). | No | `.github/review-instruction-additions.md` |
+| `skip_inline_suggestions` | Whether to skip automated re-reviews when a commit is created by accepting an inline suggestion via GitHub UI. | No | `'true'` |
+| `thinking_level` | Thinking level or token budget for reasoning models (`low`, `medium`, `high`, `off`, or integer token budget). When omitted, the model's native default thinking behaviour applies. See [Reasoning & Thinking Budget Control](#reasoning--thinking-budget-control). | No | `''` |
+| `max_candidate_files` | Maximum candidate non-core files to present to Dynamic Context Selection in Sparse Mode (default: 500). | No | `500` |
+| `extra_context_files` | Comma-separated list of repository file paths to attach as additional context, bypassing Dynamic Context Selection. | No | `''` |
+| `context_diff_directories_only` | Whether to restrict candidate context files in Sparse Mode strictly to directories containing modified files from the PR diff. | No | `'false'` |
+| `context_exclude_patterns` | Comma-separated glob patterns to exclude from candidate context files in addition to default exclusions (lockfiles, minified files, test snapshots, and binaries). | No | `''` |
+| `max_multimodal_images` | Maximum number of multimodal images (markdown references, static attachments, visual diffs) attached to review context (default: 20). | No | `20` |
+| `max_triage_images` | Maximum number of remote screenshots attached during issue triage (default: 5). | No | `5` |
+| `image_trigger_bytes` | File size threshold in bytes above which raster images are downscaled before attachment (default: 614400 / 600 KB). | No | `614400` |
+| `image_target_bytes` | Target size in bytes when downscaling large raster images (default: 307200 / 300 KB). | No | `307200` |
+| `timeout` | Timeout for API requests in seconds. | No | `60` |
+
+### Reasoning & Thinking Budget Control
+
+When using reasoning models (such as `gemini-2.5-flash` or `gemini-2.5-pro`), Gemini uses internal reasoning ("thinking") tokens to analyse code diffs, architectural implications, and complex issue triage before outputting a response.
+
+* **Default Behaviour (when omitted)**:
+  If `thinking_level` is left blank (the default), no thinking configuration override is passed to the Gemini API (`thinking_config=None`). The model's native default behaviour applies:
+  * For reasoning models (e.g. Gemini 2.5), thinking is **enabled dynamically** by default.
+  * For non-reasoning models, the request executes normally without thinking tokens.
+* **Disabling Thinking (`off`)**:
+  To disable reasoning tokens completely—reducing latency and token costs (especially recommended for fast issue triage)—set `thinking_level` to `'off'`, `'false'`, `'disabled'`, or `0`. This explicitly sets `thinking_budget=0`.
+* **Constraining Reasoning**:
+  * **Categorical Levels**: `'low'`, `'medium'`, or `'high'` to guide reasoning depth without hard token caps.
+  * **Explicit Token Budgets**: A positive integer (e.g. `1024`, `2048`, `4096`) capping the maximum reasoning tokens.
+
+Thinking token usage and its associated cost are tracked and reported separately in the comment telemetry summary alongside prompt and candidate tokens (priced at the model's standard output rate), allowing you to monitor reasoning overhead and costs accurately.
+
+```yaml
+        with:
+          # Turn off thinking for fast, lightweight issue triage
+          thinking_level: 'off'
+          # Or set a lightweight thinking level or token budget for PR reviews
+          # thinking_level: 'low'
+          # thinking_level: '2048'
+```
+
+### Codebase Context Configuration
+
+By default, the action uses an intelligent hybrid context engine to feed relevant repository context to the model during review:
+*   **max_context_bytes** (Default: `1500000` / 1.5 MB): The total size of all other text files in the repository. At ~375,000 tokens, 1.5 MB safely fits within Gemini's 1M+ token window while leaving plenty of headroom for the PR diff/patch and structured reviews. If the repository is smaller than this limit, the action runs in *Full Context Mode* and includes all files. If the repository exceeds this limit, it switches to *Sparse Context Mode*.
+*   **max_core_context_bytes** (Default: `500000` / 500 KB): In *Sparse Context Mode*, limits the maximum cumulative size of static core documentation and manifest files attached to the prompt. Any core files beyond this budget are deferred to Dynamic Context Selection.
+*   **Dynamic Context Selection**: In *Sparse Context Mode*, the action evaluates modified files/diffs against candidate non-core repository files to attach up to 8 of the most relevant sister modules, utilities, domain/algorithmic precedents, or tests.
+    *   **Candidate Bounding**: To safeguard large monorepos against context selection token bloat or quota exhaustion, candidates are bounded to `max_candidate_files` (default 500) using proximity and import ranking heuristics. You can also restrict candidates strictly to directories touched by the PR diff with `context_diff_directories_only: 'true'`.
+    *   **Built-in & Custom Exclusions**: Binary assets, package manager lockfiles (`pnpm-lock.yaml`, `yarn.lock`, `Cargo.lock`, `uv.lock`, `go.sum`, etc.), minified bundles (`.min.js`, `.min.css`), source maps (`.map`), and test snapshots are automatically excluded from context candidates. You can supply additional glob patterns using `context_exclude_patterns`.
+    *   **Static Context Override**: If you know exactly which additional files Gemini needs, specify `extra_context_files` to attach them directly and bypass Dynamic Context Selection entirely.
+*   **core_file_patterns**: A list of glob patterns matching project manifests, build definitions, root documentation, templates, and shared utilities (e.g. `README*`, `CONTRIBUTING*`, `ARCHITECTURE*`, `DESIGN*`, `SPEC*`, `DEPLOYMENT*`, `INSTALL*`, `PRODUCT*`, `SDD*`, `TDD*`, `TODO*`, `GEMINI.md`, `*template*`, `*shared*`, `*util*`, `*common*`, `*core*`, `pyproject.toml`, `package.json`) that are prioritised in *Sparse Context Mode*.
+
+You can configure these settings by adding the following keys to your custom `.github/commands/gemini-review.toml` configuration (or via `GEMINI_MAX_CONTEXT_BYTES` and `GEMINI_MAX_CORE_CONTEXT_BYTES`):
+
+```toml
+# Codebase Context Configuration (Optional)
+max_context_bytes = 1500000  # Threshold in bytes to trigger Sparse Mode (default 1.5 MB)
+max_core_context_bytes = 500000  # Max bytes for static core docs/manifests/utils in Sparse Mode (default 500 KB)
+core_file_patterns = [
+  "README*", "CONTRIBUTING*", "ARCHITECTURE*", "DESIGN*", "SPEC*", "DEPLOYMENT*", "INSTALL*", "PRODUCT*", "SDD*", "TDD*", "TODO*", "GEMINI.md",
+  "*template*", "*shared*", "*util*", "*common*", "*core*",
+  "pyproject.toml", "package.json", "go.mod", "Cargo.toml", "pom.xml", "build.gradle"
+]
+```
+
+### Multimodal Context & Visual PR Diffing
+
+Gemini Review Action supports multimodal context inspection, side-by-side visual PR diffing, and remote screenshot extraction for issue triage:
+
+* **Automatic Markdown Image Reference Resolution**:
+  Whenever Markdown documentation (such as `README.md`, `DESIGN.md`, `ARCHITECTURE.md`, or newly added diff documentation) is included in the review context, any local repository images referenced via standard Markdown (`![alt](path/to/img.png)`) or HTML (`<img src="path/to/img.png">`) are automatically extracted, validated against path traversal, and attached as multimodal parts. This gives Gemini the complete visual context behind architecture diagrams, wireframes, and screenshots referenced in documentation.
+* **Side-by-Side Visual PR Diffing**:
+  When a Pull Request adds, deletes, or modifies visual assets (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.svg`), the action constructs structured visual diff parts for Gemini:
+  - For modified images, both the baseline version (`base_sha`) and the updated version (`head_sha`) are retrieved directly and presented side-by-side with clear labels.
+  - Gemini evaluates visual diffs for visual regressions, UI alignment, resolution degradation, icon consistency, and styling changes.
+* **Remote Screenshot Extraction for Issue Triage**:
+  During issue triage (`command: 'triage'`), the action parses the issue body and discussion comments for remote HTTPS image URLs (`![alt](https://...)` and `<img src="https://...">`), including extensionless GitHub user-uploaded assets (`github.com/user-attachments/assets/...` and `githubusercontent.com/...`):
+  - For GitHub-hosted URLs, requests automatically include `Authorization: Bearer <GITHUB_TOKEN>` so screenshots in private or internal repositories are fetched seamlessly (credentials are never sent to third-party domains).
+  - Screenshots are streamed with a 20 MB download safety limit, downscaled via `optimize_image_bytes()`, and attached as `types.Part.from_bytes` up to `max_triage_images` (default: `5`). If any remote screenshot fails or times out, triage gracefully continues with text-only classification.
+* **Deterministic Pillow Downscaling**:
+  To protect token budgets and reduce inference latency, large raster graphics are automatically downscaled before being attached:
+  - Any raster image exceeding `image_trigger_bytes` (default: `614400` / 600 KB) is deterministically downscaled using high-quality Lanczos resampling and re-compressed towards `image_target_bytes` (default: `307200` / 300 KB).
+  - Scalable Vector Graphics (`image/svg+xml`) and PDF documents (`application/pdf`) bypass lossy compression to preserve full vector fidelity and textual clarity.
+* **Static Context Overrides & Safety Ceilings**:
+  - You can explicitly attach visual diagrams or design specifications using `extra_context_files` (e.g. `extra_context_files: 'docs/architecture.png,specs/api-spec.pdf'`).
+  - The `max_multimodal_images` input (default: `20`) and `max_triage_images` input (default: `5`) provide safety ceilings capping the total number of multimodal attachments.
+
+### Reviewer Personas
+
+You can customise the personality and feedback style of the reviewer agent using the `persona` action input in your workflow YAML file (e.g. `.github/workflows/gemini-review.yml`).
+
+Available personas:
+- **`straight` (Default)**: Standard, objective code reviewer with no persona overlay applied.
+- **`dazbo`**: Warm, approachable software engineer tone with clear technical explanations and mild cheekiness. If recommendations from previous review iterations are unaddressed or ignored without explanation, it exhibits increasing levels of dry humor, sarcasm, and mild exasperation!
+- **`palpatine`**: Emperor Palpatine (Star Wars) persona with grand imperial authority, dark side quotes ("*Do it.*", "*Unlimited power!*", "*I find your lack of compliance disturbing*"), demanding ruthless code perfectionism.
+- **`rick`**: Rick Sanchez (Rick and Morty) persona — hyper-intelligent, cynical multiverse genius ("*burp*", "*Wubba Lubba Dub-Dub!*", "*Jerry-tier code*"). Demands galaxy-brain engineering perfection and treats sloppy bugs as pathetic Jerry-level amateur work!
+
+**Example Output (Emperor Palpatine Persona)**:
+
+![Emperor Palpatine Persona Review Output](./assets/palpatine-review.png)
+
+**Example Output (Rick Sanchez Persona)**:
+
+![Rick Sanchez Persona Review Output](./assets/rick-review.png)
+
+**Configuring via workflow file (`gemini-review.yml`)**:
+```yaml
+- uses: derailed-dash/gemini-review-action@v1
+  with:
+    gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    persona: 'rick'  # Options: straight (default), dazbo, palpatine, rick
+```
+
+### Custom Prompts & Instructions: Extending vs Replacing
+
+This action bundles high-quality default prompt configurations for both review and triage:
+* **Default Review Prompt:** [starter-examples/gemini-review.toml](starter-examples/gemini-review.toml)
+* **Default Triage Prompt:** [starter-examples/gemini-triage.toml](starter-examples/gemini-triage.toml)
+
+You can customise instructions depending on whether you want to **extend** the default directives with team-specific guardrails, or **replace** the system prompt entirely:
+
+#### 1. Extending Instructions & Guardrails (Recommended)
+
+If you want to add repository-specific guardrails (such as security rules, architectural constraints, or forbidden libraries) without losing the built-in 5-axis quality evaluations or persona overlays, **extend** the instructions using one of two methods:
+
+* **Convention-Based File (Automatic)**:
+  Create a file at `.github/review-instruction-additions.md` (or at the root `review-instruction-additions.md`). The action automatically detects and appends these instructions to the review prompt. A starter template is provided in [starter-examples/review-instruction-additions.md](starter-examples/review-instruction-additions.md).
+* **Workflow Input (`custom_instructions`)**:
+  Provide inline directives or specify an alternative file path in your workflow `.yml` file:
+  ```yaml
+  - uses: derailed-dash/gemini-review-action@v1
+    with:
+      gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      custom_instructions: |
+        - Ensure all database queries use parameterised inputs.
+        - Verify that new API endpoints include request schema validation.
+        - Flag any new third-party dependencies not documented in an ADR.
+  ```
+
+#### 2. Replacing Instructions Entirely (Full Override)
+
+If you need to completely replace the built-in system prompt with a bespoke prompt from scratch:
+
+* **To override the Code Review prompt:** Create a file at `.github/commands/gemini-review.toml` in your calling repository (copying from [starter-examples/gemini-review.toml](starter-examples/gemini-review.toml)).
+* **To override the Issue Triage prompt:** Create a file at `.github/commands/gemini-triage.toml` in your calling repository (copying from [starter-examples/gemini-triage.toml](starter-examples/gemini-triage.toml)).
+
+> [!NOTE]
+> **Parameter Configuration Scope:** All operational configuration parameters (such as `custom_instructions`, `skip_inline_suggestions`, `include_comment_history`, `persona`, `language`, `timeout`) MUST be configured via Action inputs in your workflow `.yml` file. The `gemini-review.toml` file is strictly reserved for prompt text templates and custom prompt overrides.
+
+Your custom TOML file must contain a `prompt` key enclosing your system instructions in markdown format:
+
+```toml
+description = "Reviews a pull request with Gemini"
+prompt = """
+## Role
+You are a world-class code review assistant.
+
+## Primary Directive
+Review the diff and full file contents to identify performance, security, and logic bugs.
+
+## Rules
+- Focus comments strictly on lines added or modified (lines starting with `+` or `-`).
+- Use English (UK) spelling for all review feedback text.
+- Do not make comments on formatting unless it is an egregious style guide violation.
+
+- **GitHub Repository**: !{echo $REPOSITORY}
+- **Pull Request Number**: !{echo $PULL_REQUEST_NUMBER}
+"""
+```
+
+### Prompt Placeholders
+
+The action parses the TOML files and dynamically substitutes the following expressions:
+
+* **Code Review placeholders:**
+  * `!{echo $REPOSITORY}`: Replaced with the current repository name (e.g. `derailed-dash/my-repo`).
+  * `!{echo $PULL_REQUEST_NUMBER}`: Replaced with the number of the Pull Request being triaged.
+  * `!{echo $ADDITIONAL_CONTEXT}`: Replaced with empty space or triggering comment arguments.
+
+* **Issue Triage placeholders:**
+  * `!{echo $AVAILABLE_LABELS}`: Replaced with a comma-separated list of available labels.
+  * `!{echo $ISSUE_TITLE}`: Replaced with the title of the issue.
+  * `!{echo $ISSUE_BODY}`: Replaced with the body text of the issue.
+  * `!{echo $GITHUB_ENV}`: Replaced with the file path to append output environment variables.
+
+## Understanding the Token Usage & Cost Efficiency Report
+
+Whenever a review run finishes, the action provides token telemetry in two places:
+
+1. **Pull Request Review Output**: A collapsible `<details>` section appended directly to the bottom of the posted PR review comment on GitHub:
+
+   <details>
+   <summary>📊 Token Usage & Cost Efficiency</summary>
+
+   | Metric | Value |
+   | :--- | :---: |
+   | **Input Tokens (uncached)** | 14,414 |
+   | **Input Tokens (cached)** | 250,985 (⚡ 94.4% cached) |
+   | **PR Comments History Tokens** | 450 |
+   | **Thinking / Reasoning Tokens** | 2,048 |
+   | **Output Tokens** | 210 |
+   | **Total Session Tokens** | **268,107** |
+   | **Cost (uncached input)** | $0.0108 |
+   | **Cost (cached input)** | $0.0188 |
+   | **Cost (thinking / reasoning)** | $0.0077 |
+   | **Cost (response output)** | $0.0008 |
+   | **Estimated Total Cost** | **$0.0381** |
+
+   > Gemini 3.8 Flash: introductory rate $0.75/$3.75 per 1M applied; reverts to $1.5/$7.5 after 2026-12-31.
+   > Context-cache STORAGE is billed per token-hour and is not reported here, so the figure runs slightly low on repositories reviewed infrequently.
+
+   </details>
+
+2. **Workflow Execution Logs**: A concise single-line token summary log printed to the runner `stderr`:
+
+```text
+Token Usage: 14,414 input tokens (94.4% cached), 2,048 thinking tokens, 210 output tokens. Total: 268,107 tokens. Estimated cost: $0.0381.
+```
+
+### Metrics Explained
+
+* **Total Input (Prompt) Tokens**: The total size (in LLM tokens) of the context sent to Gemini (full repository codebase files, system instructions, PR comment history, and PR diff patch).
+* **Cached Context Tokens (`├── Cached Context Tokens`)**: The portion of input tokens stored in Gemini's server-side context cache. Context caching applies **exclusively to input tokens**, providing an **automatic 90% rate discount** on cached input tokens.
+* **PR Comments History Tokens (`├── PR Comments History Tokens`)**: The exact token count consumed by historical inline review threads and conversation comments fetched via the GitHub API and included in the dynamic review context.
+* **Un-cached Fresh Tokens (`└── Un-cached Fresh Tokens`)**: The newly introduced PR diff lines and dynamic skill instructions, billed at standard input rates.
+* **Thinking / Reasoning Tokens**: The internal reasoning tokens consumed by thinking models (such as Gemini 2.5) while evaluating complex logic and diffs.
+* **Output Tokens**: The final structured review tokens (markdown comments and suggestions) returned by the model.
+* **Cost (thinking / reasoning) & Cost (response output)**: Under the Google Gemini API pricing model, reasoning/thinking tokens are billed at the **standard output rate** (`rate.output`). Whenever thinking tokens are generated, the cost report transparently splits out the cost of reasoning from the cost of final response candidates, giving you full visibility into the cost impact of your chosen `thinking_level`.
+* **Total Session Tokens**: The combined total of prompt, thinking, and candidate output tokens processed during the review.
+* **Estimated Total Cost**: The token counts above priced at the model's published rate. **A model with no entry in the rate table reports tokens and no cost** rather than borrowing another model's rate, because a missing number is obvious and a wrong one is not. Where a model has a time-boxed introductory rate, the end date is part of the table, so the figure stays correct on both sides of it and a note says which rate was applied.
+* **Cost caveats**: Rendered as quoted lines under the table rather than left to documentation — the introductory-rate note, and the fact that context-cache **storage** (billed per token-hour) is not counted, so the estimate runs slightly low.
+
+## How It Works
+
+![Gemini PR Review & Triage Pipeline Flowchart](assets/gemini_review_flow.png)
+
+### Step-by-Step
+
+1. **Trigger**: A developer opens or pushes an update to a Pull Request, or opens/reopens an Issue. GitHub Actions detects this webhook event and starts a runner to execute the review or triage action.
+2. **Context Gathering**:
+   - The action retrieves the Pull Request diff from the GitHub API.
+   - It performs exclusion filtering to automatically ignore non-text files and configured paths (like lock files or binaries).
+   - For all remaining modified files, it reads the full text from the local workspace filesystem to provide surrounding file context.
+3. **Gemini AI Analysis**: The action packs the diff, the full-file surrounding context, and the system prompt instructions (loaded from [gemini-review.toml](starter-examples/gemini-review.toml) or [gemini-triage.toml](starter-examples/gemini-triage.toml)) into a payload and sends it to the Google Gemini API. The model performs in-depth analysis (assessing code quality, identifying bugs or improvements, and scanning for security concerns).
+4. **Automated Feedback**:
+   - The model generates a structured assessment guaranteed to follow the Pydantic schema constraints (such as [ReviewResult](gemini_pr_review.py#L35-L39)).
+   - The action parses this structured response and automatically posts comments (including severity markers and interactive suggestions) or labels back to the GitHub PR or Issue.
+   - **Resilience:** If a PR comment contains a line range mismatch, the resilient handler falls back to publishing comments individually so that valid reviews are not lost and the workflow status stays green.
+
+### Review Response Format
+
+Gemini uses a strict Pydantic schema to generate reviews. Every submitted review contains:
+
+1. **📋 Review Summary**: A 2-3 sentence assessment of the pull request's overall objective and quality.
+2. **🔍 General Feedback**: A bulleted list of high-level observations and positive highlights.
+3. **💬 Inline Comments**: Line-specific comments containing:
+   - Severity icons: `🔴` (Critical), `🟠` (High), `🟡` (Medium), `🟢` (Low).
+   - Constructive explanation written in English (UK) spelling.
+   - Interactive code replacement suggestion blocks (optional).
+
+### Logging & Troubleshooting
+
+All standard output (`stdout`) and error logs (`stderr`) produced by the action's execution (such as API call progress, validation warnings, or error details) are printed directly to the console. 
+
+You can view these logs by opening the specific workflow run in the **Actions** tab of your GitHub repository, selecting the active job (e.g. `review` or `triage`), and expanding the **Run Script** step.
+
+## Alternative Authentication
+
+**Using Google Workload Identity Federation (WIF) and Application Default Credentials (ADC)**
+
+For this authentication approach, you must configure the following in your calling workflow:
+
+1. **OIDC Permissions:** Grant the workflow job `id-token: write` permission so GitHub can request OIDC credentials.
+2. **Authenticate Step:** Run the `google-github-actions/auth` step prior to running this action to exchange GitHub's OIDC token for Google Cloud credentials.
+3. **Environment Variables:** Pass the required Google Cloud environment variables (`GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`, and `GOOGLE_CLOUD_LOCATION`) to the review action.
+
+To keep your infrastructure details private, you should save the following as GitHub repository secrets:
+* `GCP_SERVICE_ACCOUNT`: The email address of your Google Cloud service account.
+* `WIF_POOL_ID`: The ID of your Workload Identity Pool (e.g. `my-pool`).
+* `WIF_PROVIDER_ID`: The ID of your Workload Identity Provider (e.g. `my-provider`).
+
+Example workflow job configured to run the review action with WIF authentication:
+
+```yaml
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write # Required for WIF OIDC token exchange
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', github.event.issue.number) }}
+
+      - name: Authenticate to Google Cloud via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/123456789012/locations/global/workloadIdentityPools/${{ secrets.WIF_POOL_ID }}/providers/${{ secrets.WIF_PROVIDER_ID }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+
+      - name: Run Gemini Review Action
+        uses: derailed-dash/gemini-review-action@v1
+        env:
+          GOOGLE_GENAI_USE_VERTEXAI: "True"
+          GOOGLE_CLOUD_PROJECT: "my-project-id"
+          GOOGLE_CLOUD_LOCATION: "global" # Or your preferred model endpoint region
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gemini_model: 'gemini-3.8-flash'
+```
+
+> [!NOTE]
+> When `GOOGLE_GENAI_USE_VERTEXAI` is set to `"True"`, the underlying `google-genai` SDK uses Application Default Credentials (ADC) to automatically locate and use the short-lived credentials configured on the runner by the `google-github-actions/auth` step.
+
+## Development & Releases
+
+### Local Development & Testing
+
+#### Repository Structure
+
+Here is an overview of the directory tree and the purpose of each file:
+
+```text
+.                                   
+├── .github/                 # GitHub workflows (used for dogfooding our own action)
+├── assets/                  # Documentation assets (banners, images)
+├── docs/                    # Technical documentation and architecture guides
+├── gemini_review/           # Modular review engine package
+│   ├── __init__.py          # Package exports & public API facade bindings
+│   ├── billing_labels.py    # Google Cloud billing labels parsing & attribution
+│   ├── budget.py            # Token budget allocation & per-file content truncation
+│   ├── config.py            # Configuration loader and default settings
+│   ├── context.py           # Hybrid codebase context engine & dynamic context selection
+│   ├── developer_knowledge.py # Google Developer Knowledge API integration
+│   ├── diff.py              # Diff patch parsing, line numbering & suggestion alignment
+│   ├── github.py            # GitHub REST API interactions & review submission
+│   ├── multimodal.py        # Image/PDF MIME detection, Pillow downscaling & image extraction
+│   ├── personas.py          # Reviewer persona registry & prompt generation
+│   ├── pricing.py           # Token pricing calculation & review cost estimation
+│   ├── prompts.py           # Prompt builders, system instructions & visual diff assembly
+│   ├── repo.py              # File discovery, file tree generation & candidate bounding
+│   ├── schemas.py           # Pydantic schemas (InlineComment, ReviewResult)
+│   ├── skills.py            # Workspace skill discovery & instruction loader
+│   ├── threads.py           # Discussion thread retrieval & automated resolution
+│   └── utils.py             # Core primitives (token estimation, rules loader) & facade re-exports
+├── scripts/                 # Developer and maintenance utility scripts
+├── starter-examples/        # Starter workflow files, default prompt templates, and skills manifest
+├── tests/                   # Unit tests
+├── action.yml               # GitHub Action definition (inputs, environment, and steps)
+├── CONTRIBUTING.md          # Collaboration guidelines for developers
+├── gemini_issue_triage.py   # Python script to triage and label incoming issues
+├── gemini_pr_review.py      # Entrypoint script for PR reviews (re-exports gemini_review APIs)
+├── pyproject.toml           # Python project config, dependencies
+└── README.md                # Project documentation, setup guide, and usage examples
+```
+
+> [!NOTE]
+> The `.github/` folder in this repository contains the workflows we use to dogfood our own action on this project. If you are installing this action in your own repository, you do not need to care about or copy this folder; you only need to reference `uses: derailed-dash/gemini-review-action` in your own workflow files.
+
+
+For a detailed guide on how the inner workings, prompt generations, and codebase parsing logic are implemented, see our [Architecture & Code Walkthrough](docs/architecture.md).
+
+This project uses `uv` for python environment and dependency management. To configure your local environment and run the test suite:
+
+1. **Install Dependencies:**
+   Run `uv sync` to create a virtual environment (`.venv`) and install all runtime and development packages.
+   ```bash
+   uv sync
+   ```
+
+2. **Linting & Code Formatting:**
+   We enforce strict syntax, formatting, and spelling checks using `ruff` and `codespell`. Run these from the project root:
+   ```bash
+   uvx codespell@latest -s
+   uvx ruff@latest check --fix .
+   ```
+
+3. **Running the Unit Tests:**
+   Run the unit test suite with `pytest`:
+   ```bash
+   uv run pytest
+   ```
+
+4. **Refreshing Skills from Upstream (Action & Consumer Repositories):**
+   The skills updater script includes automatic repository detection:
+   - **In this Action Repository:** Updates starter skills bundled in `starter-examples/skills/` based on [skills-manifest.json](starter-examples/skills/skills-manifest.json).
+   - **In Consumer Repositories:** Auto-detects consumer projects (checking `.agents/skills-manifest.json` or `.github/skills-manifest.json`) and synchronises upstream skills directly into `.agents/skills/`.
+   ```bash
+   # Preview updates without writing files
+   uv run python scripts/update_skills.py --dry-run
+
+   # Update all skills from upstream Git repositories
+   uv run python scripts/update_skills.py
+
+   # Or optionally sync from a local skills cache (e.g. ~/.agents/skills)
+   uv run python scripts/update_skills.py --from-local-cache ~/.agents/skills
+
+   # Custom manifest or target directory overrides
+   uv run python scripts/update_skills.py --manifest path/to/manifest.json --target-dir path/to/skills
+   ```
+
+### Deploying & Publishing Updates
+
+GitHub Actions are versioned by Git tags. When other repositories consume this action, they reference a specific tag (e.g. `uses: derailed-dash/gemini-review-action@v1`). To release new changes so that they are picked up by consuming repositories, you need to publish a release and update the major version tag.
+
+Follow this step-by-step workflow:
+
+#### Step 1. Bump the Version and Synchronise the Lockfile
+
+Update the version number in [pyproject.toml](pyproject.toml) to reflect the new release (e.g. `1.3.1`). Then, synchronise your lockfile to match the updated version:
+
+```bash
+# After modifying pyproject.toml
+uv sync
+```
+
+#### Step 2. Commit and Push Your Changes
+
+Ensure all your local tests pass successfully, then commit and push your changes to the main branch:
+
+```bash
+git add pyproject.toml uv.lock
+git commit -m "chore(release): bump version to v1.3.1"
+git push origin main
+```
+
+#### Step 3. Update the Git Tags Locally & Push to Origin
+
+To let users lock to specific versions (like `v1.3.1`) while still allowing others to automatically receive updates via the major version tag (`v1`), create or move these tags on your local machine and push them:
+
+1. **Create the minor/patch tag** (e.g. `v1.3.1`):
+   ```bash
+   git tag -fa v1.3.1 -m "Release version v1.3.1"
+   ```
+2. **Move the major version tag** (`v1`) to point to this new release:
+   ```bash
+   git tag -fa v1 -m "Update v1 tag to point to v1.3.1"
+   ```
+3. **Push the tags to GitHub** (you must use the `--force` flag to update the existing `v1` tag on the remote server):
+   ```bash
+   git push origin v1.3.1
+   git push origin v1 --force
+   ```
+
+#### Step 4. Draft and Publish the Release on GitHub
+
+To make the new version officially available, update the changelog, and ensure it is visible on the GitHub Marketplace:
+
+1. Open the repository on GitHub.
+2. In the right-hand sidebar, locate the **Releases** section and click **Draft a new release** (or click the gear icon and select *Create a release*).
+3. Click the **Choose a tag** dropdown:
+   * Type in the version you just pushed (e.g. `v1.3.1`).
+   * Select it from the dropdown.
+4. Under **Release title**, enter a title for the version (e.g. `v1.3.1 - MCP and Workspace Skills Integration`).
+5. **Publish to the Marketplace:**
+   * Tick the checkbox next to **Publish this Action to the GitHub Marketplace**.
+   * *If this is your first time publishing this action:* Accept the GitHub Developer Agreement, select a primary category (e.g. `Code quality` or `Utilities`), and customise the colour and icon for the marketplace listing card.
+6. Write a summary of changes in the description box, or click **Generate release notes** to automatically construct them from your commit logs.
+7. Click **Publish release**.
+
+#### Example: Releasing Version `v1.4.5`
+
+Here is a full example of checking tag status, bumping the version, pushing tags, and ensuring the Marketplace listing is updated:
+
+1. **Check current tag status:**
+   Find the closest tag and see how many commits the branch is ahead by:
+   ```bash
+   git describe --tags
+   # Example output: v1.4.4-3-g1223a88 (3 commits ahead of v1.4.4)
+   ```
+
+2. **Bump the version in pyproject.toml and synchronise the lockfile:**
+   Ensure the version is set to `1.4.5` in `pyproject.toml`, then run:
+   ```bash
+   uv lock
+   git commit -am "chore(release): bump version to v1.4.5"
+   git push origin main
+   ```
+
+3. **Create the patch tag and update the floating major version tag locally:**
+   ```bash
+   git tag -fa v1.4.5 -m "Release v1.4.5: Line Range Accuracy, Re-Review Suppression & Input Parameter Standards"
+   git tag -fa v1 -m "Release v1"
+   ```
+
+4. **Push tags to remote (using `--force` to update the existing `v1` tag on GitHub):**
+   ```bash
+   git push origin v1.4.5 --force
+   git push origin v1 --force
+   ```
+
+5. **Publish & Sync to GitHub Marketplace:**
+   - **Option A (GitHub Web UI)**: Go to **Releases** > **Draft a new release** (or edit `v1.4.5`), ensure **☑️ Publish this Action to the GitHub Marketplace** is checked, select category (`Code review` / `Code quality`), and click **Publish release** (or **Update release**).
+   - **Option B (GitHub CLI)**: Create the release via `gh release create`:
+     ```bash
+     gh release create v1.4.5 -t "v1.4.5: Line Range Accuracy, Re-Review Suppression & Input Parameter Standards" -F release_notes.md
+     ```
+   
+   > [!IMPORTANT]
+   > **Marketplace Metadata Synchronization:** Whenever metadata in `action.yml` (such as `name`, `description`, or inputs) is modified, you MUST update/re-save the GitHub Release for the current tag. This forces GitHub Marketplace to re-read `action.yml` and immediately update the listing title, keywords, and search index.
+
+## Cost Attribution & Estimation
+
+This action is free and open-source. Although there is no license cost for using this mechanism in your repo, making use of Google Gemini models (like any AI models) is not necessarily zero cost. But it is indeed very cheap! See worked examples below.
+
+### How Costs Are Incurred
+
+* **Billing Attribution**: All API calls generated by this action are billed directly to the Google Cloud Project (or Google AI Studio account) associated with the `GEMINI_API_KEY` (or the Google Cloud project specified when using Workload Identity Federation / ADC). No costs are billed through GitHub.
+* **Token Breakdown**: Costs are calculated strictly based on token consumption reported in the execution logs (`Gemini Token Usage`):
+  * **Input Tokens (Prompt)**: Combines the system prompt instructions, PR diff/patch, and the repository file context (up to `max_context_bytes`).
+  * **Output Tokens (Candidates)**: The structured JSON response containing the review summary, feedback, and line-specific suggestions.
+
+### Estimated Cost Example (0.5 MB Codebase)
+
+For a typical repository with **0.5 MB (~500 KB)** of tracked text files running under **Full Context Mode**:
+
+| Metric | Estimated Volume | Description |
+| :--- | :--- | :--- |
+| **Input Tokens** | ~130,000 – 140,000 tokens | ~125,000 tokens for 0.5 MB repo context + ~10,000 tokens for PR diff & system prompt. |
+| **Output Tokens** | ~500 – 1,500 tokens | Structured JSON review summary & line recommendations. |
+
+Rates for **`gemini-3.8-flash`** (and **`gemini-3.7-flash`**), which the action now applies for you and prints in the review:
+* **Input**: **$0.75** per 1,000,000 tokens (uncached) — introductory rate through **2026-12-31**, then $1.50
+* **Output**: **$3.75** per 1,000,000 tokens — then $7.50
+* **Cached input**: 0.1x the input rate
+
+**Calculated Cost Per PR Review** (at today's introductory rate):
+* **Input Cost**: 140,000 x ($0.75 / 1,000,000) = **$0.105**
+* **Output Cost**: 1,500 x ($3.75 / 1,000,000) = **$0.006**
+* **Total Estimated Cost**: **~$0.11 per PR review**, doubling to ~$0.22 once the introductory rate lapses
+
+Since most input tokens will be cached, the actual cost is typically far lower again — a real review of a
+~4 MB repository in Sparse Context Mode with 85% cache hits came in at **$0.02**.
+
+### Billing labels (Vertex AI only)
+
+The telemetry block tells you what one review cost. Labels answer the other question: **what have code reviews cost on this repository this month**, from the billing data itself.
+
+On Vertex, every request is tagged and the labels arrive in the Cloud Billing export, so cost becomes a group-by:
+
+```
+component = gemini-review-action
+repo      = owner_repo
+```
+
+(`/` is not legal in a label value, so `owner/repo` is written `owner_repo`. Values are lowercased and restricted to `[a-z0-9_-]`, max 63 characters.)
+
+Add your own with the `billing_labels` input, merged over the defaults, or `none` to switch it off:
+
+```yaml
+- uses: derailed-dash/gemini-review-action@v1
+  with:
+    billing_labels: 'team=platform,cost_centre=engineering'
+```
+
+**The pull request number is deliberately not a default label**, because it would make every PR its own dimension in the billing export. Add it yourself if you want that granularity.
+
+> [!NOTE]
+> **This is a Vertex AI capability, not a choice made by this action.** The Gemini Developer API's `GenerateContentRequest` has no `labels` field at all, and the SDK raises `labels parameter is only supported in Gemini Enterprise Agent Platform mode` rather than sending one. On the API-key path the field is simply omitted, so nothing breaks and nothing changes. To attribute cost there, the usual approach is a separate Cloud project per repository.
+
+### Overriding the rate
+
+The table holds list price at the standard tier. If you are on batch/flex, priority, or a negotiated
+enterprise rate — or you are running a model the table does not list yet — set both of:
+
+* `GEMINI_RATE_INPUT` and `GEMINI_RATE_OUTPUT` (environment), or
+* `rate_input` and `rate_output` in `.github/commands/gemini-review.toml`
+
+Environment wins over the config file. Both are per 1,000,000 tokens. If either is missing or invalid,
+the built-in table is used instead.
+
+### Pricing Resources
+
+For official, up-to-date pricing details across all Gemini model tiers and regions:
+* [Google AI Studio Pricing Guide](https://ai.google.dev/pricing)
+* [Google Cloud Vertex AI Pricing Guide](https://cloud.google.com/vertex-ai/generative-ai/pricing)
+
+### Resolving addressed threads
+
+The action already recognises when a prior finding has been fixed and lists it under **Resolved Items from Prior Reviews**. By default it stops there, and the review thread stays open.
+
+That matters if the repository has **Require conversation resolution before merging** enabled: the merge is blocked on a comment the reviewer itself has agreed is done, and someone has to click Resolve by hand on every PR.
+
+Set `resolve_addressed_threads: 'true'` and the action resolves those threads for you.
+
+```yaml
+        with:
+          resolve_addressed_threads: 'true'
+```
+
+It is deliberately conservative, because resolving the wrong thread hides feedback that is still outstanding, which is worse than leaving everything open:
+
+- **Only threads this action opened.** A human reviewer's thread is never touched, whatever the model claims. If the action posts under a PAT or a GitHub App rather than the default token, declare that identity with `GEMINI_REVIEWER_LOGIN` so its own threads are recognised; guessing wrong simply resolves nothing.
+- **Only exact file and line matches.** The model supplies the location alongside each resolved item, and nothing is inferred from the prose. An item the model cannot confidently attribute is reported and its thread left open.
+- **Never fatal.** It runs after the review is posted, and any failure is a warning. A review is never lost to a follow-up API call.
+
+#### It needs a token that is not `GITHUB_TOKEN`
+
+Verified against a live PR: **the default `GITHUB_TOKEN` cannot resolve review threads.** `viewerCanResolve` returns `false` and the mutation is refused:
+
+```
+FORBIDDEN — Resource not accessible by integration
+```
+
+This is not a missing permission. `pull-requests: write` is already granted and makes no difference; GitHub simply does not let the Actions token resolve threads. Supply a **personal access token** or a **GitHub App installation token** with write access to pull requests:
+
+```yaml
+        with:
+          github_token: ${{ secrets.THREAD_RESOLVER_TOKEN }}
+          resolve_addressed_threads: 'true'
+```
+
+With the default token the action resolves nothing, prints why, and carries on. The review is still posted — the feature degrades rather than failing the job.
+
+If the token posts under an identity other than `github-actions[bot]`, set `GEMINI_REVIEWER_LOGIN` so the action recognises its own threads.
+
+

@@ -1,0 +1,48 @@
+---
+
+Agent Christine is offered under the MIT License as open source software and is <ins>not supported</ins> by Microsoft.
+If you need help with this project or would like to report defects or feature requests, use the Issues feature on this GitHub repository.
+
+---
+
+# Project
+
+
+The goal of Agent Christine is to help partners selling through the Microsoft Marketplace become self-sufficient in navigating the Partner Center and the marketplace. Using embedded expertise gained during the partner engagement into a virtual agent, combined with the partner's own data, partners can access timely resources, and guidance without needing ongoing direct assistance.
+
+- Empowers partners to independently manage onboarding, co-sell, transacting, and revenue reconciliation.
+- Provides continuous access to curated deliverables, documentation, and best practices.
+- Enhances partner confidence and accelerates marketplace adoption.
+
+Agent Christine is built using Copilot Studio and is imported to the partner's environment for complete privacy and confidentiality. The true power of Christine is the ability for a partner to add their own knowledge sources (SharePoint site, docx, xlsx, SOP, etc.) to Christine. Your data plus the curated guidance will give you person, direct responses.
+
+# Resources
+For Agent Christine to work as expected, partner will need to:
+- Download the agent .zip and save locally. From CoPilot Studio, the .zip is imported to create the agent in the partner's environment.
+- Download Earnings report from Partner Center (using included Trigger)
+- Download Revenue report from Partner Center
+- Complete the Marketplace Drive template (or partner's existing equivalent)
+- Read Best Practices and Recommendations document 
+
+
+## Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit [Contributor License Agreements](https://cla.opensource.microsoft.com).
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
+contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Trademarks
+
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
+trademarks or logos is subject to and must follow
+[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks/usage/general).
+Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
+Any use of third-party trademarks or logos are subject to those third-party's policies.

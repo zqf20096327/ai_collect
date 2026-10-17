@@ -1,0 +1,187 @@
+# EMERGE
+
+Official implementation of the paper [**EMERGE: Enhancing Multimodal Electronic Health Records Predictive Modeling with Retrieval-Augmented Generation**](https://dl.acm.org/doi/10.1145/3627673.3679582), accepted by **CIKM 2024**.
+
+<p align="center">
+  <img src="docs/assets/emerge_framework.png" alt="EMERGE framework overview" width="900">
+</p>
+
+EMERGE enhances multimodal EHR prediction by extracting abnormal time-series signals and disease entities from clinical text, retrieving disease knowledge from PrimeKG, generating patient-level RAG summaries, and fusing time-series, clinical-note, and RAG-summary representations with cross-attention.
+
+## Project Layout
+
+```text
+.
+├── configs/                 # TOML experiment configs
+├── src/
+│   ├── main.py              # argparse entry point for pipeline stages
+│   ├── config.py            # dataclass-based TOML config loader
+│   ├── datasets/            # MIMIC-IV conversion, OneEHR schema, RAG preprocessing
+│   ├── evaluation/          # AUROC, AUPRC, min(+P, Se), bootstrap metrics
+│   ├── models/              # EMERGE model and fusion modules
+│   └── training/            # training loop and artifact writing
+├── tests/                   # unit and smoke tests
+└── data/                    # ignored local raw/table/processed/KG data
+```
+
+The reusable EHR input format follows the OneEHR three-table convention:
+
+```text
+dynamic.csv: patient_id,event_time,code,value
+static.csv:  patient_id,age,sex,...
+label.csv:   patient_id,label_time,label_code,label_value
+```
+
+EMERGE-specific artifacts are derived from these tables and written under `data/processed/...`.
+
+## Setup
+
+```bash
+uv sync
+source .venv/bin/activate
+```
+
+No package installation step is required; run the source entry point directly.
+
+For the LM-heavy preprocessing path with BGE-M3 retrieval and Clinical-LongFormer embeddings:
+
+```bash
+uv sync --extra lm
+```
+
+## Quickstart
+
+Run the MIMIC-IV demo pipeline with the official PrimeKG files required by EMERGE:
+
+```bash
+python src/main.py --stage all --config configs/mimic4_demo.toml
+```
+
+Or run stages separately:
+
+```bash
+python src/main.py --stage download --config configs/mimic4_demo.toml
+python src/main.py --stage convert --config configs/mimic4_demo.toml
+python src/main.py --stage preprocess --config configs/mimic4_demo.toml
+python src/main.py --stage train --config configs/mimic4_demo.toml --seed 42
+```
+
+Default outputs:
+
+```text
+data/raw/mimic-iv-demo/2.2/                 # PhysioNet MIMIC-IV demo
+data/kg/primekg/                            # PrimeKG files
+data/tables/mimic-iv-demo/mortality/        # OneEHR dynamic/static/label tables
+data/processed/mimic-iv-demo/mortality/     # EMERGE tensors, RAG records, split
+runs/mimic4_demo_mortality/                 # checkpoints, metrics, predictions
+```
+
+PrimeKG is downloaded from the official Harvard Dataverse source
+[10.7910/DVN/IXA7BM](https://doi.org/10.7910/DVN/IXA7BM). The default download includes
+the official files required by EMERGE RAG: `README.txt`, `disease_features.tab`, and
+`kg.csv`. Use `--primekg-full` to download every PrimeKG file published on Dataverse,
+including `nodes.tab`, `edges.csv`, `drug_features.tab`, and grouped/intermediate KG files.
+The original PrimeKG README names some tabular files with `.csv`; the current Dataverse
+release provides those files as `.tab`, and the loader supports both names.
+
+## Data Preparation
+
+EMERGE separates reusable EHR conversion from model-specific preprocessing.
+
+1. Download raw resources:
+
+```bash
+python src/main.py --stage download --config configs/mimic4_demo.toml
+```
+
+This writes the public MIMIC-IV demo to `data/raw/mimic-iv-demo/2.2/` and the official
+PrimeKG files required by EMERGE to `data/kg/primekg/`.
+
+To download every official PrimeKG Dataverse file:
+
+```bash
+python src/main.py --stage download --config configs/mimic4_demo.toml --primekg-full
+```
+
+For lightweight smoke tests only, use `--primekg-lightweight`; with the default config,
+preprocessing requires `kg.csv` and will fail fast if the official triples file is missing.
+
+2. Convert raw MIMIC-IV tables to the OneEHR three-table format:
+
+```bash
+python src/main.py --stage convert --config configs/mimic4_demo.toml
+```
+
+This writes:
+
+```text
+data/tables/mimic-iv-demo/mortality/dynamic.csv
+data/tables/mimic-iv-demo/mortality/static.csv
+data/tables/mimic-iv-demo/mortality/label.csv
+```
+
+`cohort.csv` and `notes.csv` are also written as auxiliary files for EMERGE. The MIMIC-IV demo does not include real clinical notes, so `notes.csv` is built from diagnosis/procedure descriptions as a demo surrogate. For full MIMIC-IV-Note or other clinical notes, provide a CSV path in `notes_file` inside the TOML config; it should contain a patient/admission identifier column and a text column.
+
+3. Build EMERGE artifacts from the OneEHR tables:
+
+```bash
+python src/main.py --stage preprocess --config configs/mimic4_demo.toml
+```
+
+This writes `data/processed/mimic-iv-demo/mortality/emerge_dataset.npz`, `metadata.json`, `split.json`, and `rag_records.csv`. Training only reads these processed artifacts.
+
+The default demo config uses local TF-IDF/SVD text encoders so the full pipeline can run without
+downloading large language models. To use the paper's LM encoder choices for retrieval and text
+embeddings, run preprocessing with:
+
+```bash
+python src/main.py --stage preprocess --config configs/mimic4_demo_lm.toml
+```
+
+This config uses `BAAI/bge-m3` for PrimeKG/entity matching and `yikuan8/Clinical-Longformer`
+for frozen CLS note and RAG-summary embeddings.
+
+The 2026 config keeps Clinical-LongFormer as the default clinical text encoder, upgrades KG
+retrieval to `Qwen/Qwen3-Embedding-0.6B`, and uses the newer token-level fusion model:
+
+```bash
+python src/main.py --stage preprocess --config configs/mimic4_demo_2026.toml
+python src/main.py --stage train --config configs/mimic4_demo_2026.toml --seed 42
+```
+
+`configs/mimic4_demo_modernbert.toml` is provided for ablation with `answerdotai/ModernBERT-base`.
+ModernBERT is a stronger general long-context encoder, but Clinical-LongFormer remains the default
+for EMERGE because it is clinical-domain and matches the paper's frozen CLS-token setup.
+
+LLM entity extraction and summary generation are controlled by the `[llm]` section. The default
+uses local rules and template summaries for reproducible demo runs. Set `entity_backend` or
+`summary_backend` to `openai_compatible`, point `api_base_url` to a Qwen/vLLM/DeepSeek-compatible
+chat-completions endpoint, and set the environment variable named by `api_key_env` to enable
+prompted entity extraction or RAG summary generation. The default OpenAI-compatible model name is
+`deepseek-v4-flash`.
+
+For full benchmark experiments, prepare the same three OneEHR files under a new `data/tables/<dataset>/<task>/` directory and point `table_dir`, `processed_dir`, and `kg_dir` in a TOML config to the corresponding paths.
+
+## Benchmark Notes
+
+The default config uses the public MIMIC-IV demo. It validates the full data, RAG, and training pipeline, but it is too small for the paper's benchmark numbers. For the reported tables, use the full MIMIC-III and MIMIC-IV benchmark cohorts with the paper's preprocessing, 70/10/20 split, and reported hyperparameters.
+
+## Citation
+
+ACM reference:
+
+> Yinghao Zhu, Changyu Ren, Zixiang Wang, Xiaochen Zheng, Shiyun Xie, Junlan Feng, Xi Zhu, Zhoujun Li, Liantao Ma, and Chengwei Pan. 2024. EMERGE: Enhancing Multimodal Electronic Health Records Predictive Modeling with Retrieval-Augmented Generation. In Proceedings of the 33rd ACM International Conference on Information and Knowledge Management (CIKM '24). https://doi.org/10.1145/3627673.3679582
+
+BibTeX:
+
+```bibtex
+@inproceedings{zhu2024emerge,
+  title = {EMERGE: Enhancing Multimodal Electronic Health Records Predictive Modeling with Retrieval-Augmented Generation},
+  author = {Zhu, Yinghao and Ren, Changyu and Wang, Zixiang and Zheng, Xiaochen and Xie, Shiyun and Feng, Junlan and Zhu, Xi and Li, Zhoujun and Ma, Liantao and Pan, Chengwei},
+  booktitle = {Proceedings of the 33rd ACM International Conference on Information and Knowledge Management},
+  series = {CIKM '24},
+  year = {2024},
+  publisher = {Association for Computing Machinery},
+  doi = {10.1145/3627673.3679582}
+}
+```

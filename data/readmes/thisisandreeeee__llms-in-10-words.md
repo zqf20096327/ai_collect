@@ -1,0 +1,72 @@
+# LLMs in 10 words
+
+Complex LLM concepts explained in **10 words or less**.
+
+⭐ Found this useful? Consider starring the repo.
+
+## Transformers
+
+- **Attention:** Weight token representations by relevance to each other
+- **Multi-Head Attention (MHA):** One KV head per query head
+- **Multi-Query Attention (MQA):** One KV head shared by all query heads
+- **Grouped-Query Attention (GQA):** One KV head shared by each query-head group
+- **Multi-Head Latent Attention (MLA):** One compressed KV representation shared by all query heads
+- **Residual Connections:** Add earlier representations back into later layers
+- **Attention Residuals:** Attend over outputs from all earlier layers
+- **Kimi Delta Attention (KDA):** Store compact delta-updated memory instead of full KV history
+- **Compressed Sparse Attention 2 (CSA2):** Reuse KV across layers, occasionally refresh cached tokens
+- **Causal Encoder-Decoder (CED):** Use encoder hidden states for decoder KV, halving prefill compute
+- **Mixture of Experts (MoE):** Route each token through a subset of experts
+- **Latent MoE:** Compress tokens before expert routing and computation
+- **Rotary Positional Embeddings (RoPE):** Encode token position by rotating query and key vectors
+- **Looped Transformers:** Reuse transformer layers; same weights, more thinking
+
+## Training
+
+- **Pretraining:** Learn general language patterns from large unlabeled corpora
+- **Continued Pretraining (CPT):** Continue pretraining on new or domain-specific data
+- **Supervised Fine-Tuning (SFT):** Minimize loss on labeled input-output examples
+- **Direct Preference Optimization (DPO):** Minimize loss on preferred-rejected response pairs
+- **Masked Language Modeling:** Predict masked tokens from surrounding context
+- **Causal Language Modeling:** Predict the next token from previous tokens
+- **Reinforcement Learning from Human Feedback (RLHF):** Maximize rewards learned from human-ranked response examples
+- **Reinforcement Learning with Verifiable Rewards (RLVR):** Train with rewards from automatically verified outcomes
+- **Group Relative Policy Optimization (GRPO):** Reinforce better answers within a group from the same prompt
+- **Proximal Policy Optimization (PPO):** Reinforce better answers using value estimates from a reward model
+- **Distillation:** Train a smaller model to imitate a stronger model
+- **Abliteration:** Remove refusal directions from activations or model weights
+- **LoRA:** Train low-rank weight updates instead of full weights
+- **Byte Pair Encoding (BPE):** Tokenise using common subwords learned from a corpus
+
+## Inference
+
+- **Prefill:** Process prompt tokens and populate KV cache
+- **Chunked Prefill:** Split long prefills to avoid blocking short prefills
+- **Decode:** Generate tokens one at a time using cached context
+- **Guided Decoding:** Constrain output tokens by setting out-of-grammar token logits to -inf
+- **Prefill-Decode Disaggregation:** Serve compute-bound prefill and bandwidth-bound decode separately
+- **Arithmetic Intensity:** Computation performed per byte of memory moved
+- **KV Caching:** Reuse past keys and values during decoding
+- **PagedAttention:** Store KV cache in non-contiguous memory blocks
+- **Prefix Caching:** Reuse KV cache for identical prompt prefixes
+- **FlashAttention:** Compute tiled attention on-chip before writing outputs to memory
+- **Quantization:** Reduce floating-point precision to save memory
+- **GGUF:** Standardised format for storing model tensors and metadata
+- **MLX:** Unified CPU and GPU memory framework on Apple Silicon
+- **Speculative Decoding:** Draft with smaller model; verify with larger model
+- **Continuous Batching:** Add new requests as existing requests finish
+- **Inference Time Scaling:** Use more inference tokens to improve answers through reasoning
+
+## Contributing
+
+Found a concept that's missing, unclear, or oversimplified? Contributions are welcome.
+
+Good contributions include:
+
+1. Adding an important LLM concept
+2. Making an explanation more accurate
+3. Making an explanation simpler without losing meaning
+
+Keep every explanation to 10 words or fewer and follow the style in [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+Open a PR with your proposed change.

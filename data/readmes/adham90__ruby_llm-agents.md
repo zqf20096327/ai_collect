@@ -1,0 +1,340 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./logo_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="./logo_light.png">
+  <img alt="RubyLLM::Agents" src="./logo_light.png">
+</picture>
+
+# RubyLLM::Agents
+
+> **Production-ready Rails engine for building, managing, and monitoring LLM-powered AI agents**
+
+[![Gem Version](https://badge.fury.io/rb/ruby_llm-agents.svg)](https://rubygems.org/gems/ruby_llm-agents)
+[![CI](https://github.com/adham90/ruby_llm-agents/actions/workflows/ci.yml/badge.svg)](https://github.com/adham90/ruby_llm-agents/actions/workflows/ci.yml)
+[![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.1-ruby.svg)](https://www.ruby-lang.org)
+[![Rails](https://img.shields.io/badge/rails-%3E%3D%207.0-red.svg)](https://rubyonrails.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/adham90/ruby_llm-agents/wiki)
+
+Build intelligent AI agents in Ruby with a clean DSL, automatic execution tracking, cost analytics, budget controls, and a beautiful real-time dashboard. Supports **OpenAI GPT-4**, **Anthropic Claude**, **Google Gemini**, and more through [RubyLLM](https://github.com/crmne/ruby_llm).
+
+## Why RubyLLM::Agents?
+
+- **Rails-Native** - Seamlessly integrates with your Rails app: models, jobs, caching, and Hotwire
+- **Production-Ready** - Built-in retries, model fallbacks, circuit breakers, and budget limits
+- **Full Observability** - Track every execution with costs, tokens, duration, and errors
+- **Zero Lock-in** - Works with any LLM provider supported by RubyLLM
+
+## Show Me the Code
+
+```ruby
+# Template agent — structured input via .call
+class SearchIntentAgent < ApplicationAgent
+  model "gpt-4o"
+  temperature 0.0
+
+  system "You are a search intent analyzer. Extract structured data from queries."
+  user "Extract search intent from: {query}"
+  assistant '{"refined_query":'  # Force JSON output
+
+  returns do
+    string :refined_query, description: "Cleaned search query"
+    array :filters, of: :string, description: "Extracted filters"
+  end
+end
+
+result = SearchIntentAgent.call(query: "red summer dress under $50")
+
+result.content        # => { refined_query: "red dress", filters: ["color:red", "price:<50"] }
+result.total_cost     # => 0.00025
+result.total_tokens   # => 150
+result.duration_ms    # => 850
+```
+
+```ruby
+# Conversational agent — freeform input via .ask
+class RubyExpert < ApplicationAgent
+  model "claude-sonnet-4-5-20250929"
+  system "You are a senior Ruby developer with 20 years of experience."
+end
+
+result = RubyExpert.ask("What's the difference between proc and lambda?")
+puts result.content
+
+# Stream the response
+RubyExpert.ask("Explain metaprogramming") { |chunk| print chunk.content }
+```
+
+```ruby
+# Resilient agents with automatic retries and fallbacks
+class ReliableAgent < ApplicationAgent
+  model "gpt-4o"
+
+  user "{query}"
+
+  on_failure do
+    retries times: 3, backoff: :exponential
+    fallback to: ["gpt-4o-mini", "claude-3-5-sonnet"]
+    circuit_breaker after: 10, within: 60, cooldown: 5.minutes
+    timeout 30
+  end
+end
+```
+
+```ruby
+# Vector embeddings for semantic search and RAG
+# app/agents/embedders/document_embedder.rb
+module Embedders
+  class DocumentEmbedder < ApplicationEmbedder
+    model "text-embedding-3-small"
+    dimensions 512
+    cache_for 1.week
+  end
+end
+
+result = Embedders::DocumentEmbedder.call(text: "Hello world")
+result.vector       # => [0.123, -0.456, ...]
+result.dimensions   # => 512
+
+# Batch embedding
+result = Embedders::DocumentEmbedder.call(texts: ["Hello", "World", "Ruby"])
+result.vectors      # => [[...], [...], [...]]
+```
+
+```ruby
+# Message classification and routing
+class SupportRouter < ApplicationAgent
+  include RubyLLM::Agents::Routing
+
+  model "gpt-4o-mini"
+  temperature 0.0
+  cache_for 1.hour
+
+  route :billing,   "Billing, charges, refunds, payments"
+  route :technical,  "Bugs, errors, crashes, technical issues"
+  route :sales,      "Pricing, plans, upgrades, discounts"
+  default_route :general
+end
+
+result = SupportRouter.call(message: "I was charged twice")
+result.route          # => :billing
+result.total_cost     # => 0.00008
+```
+
+```ruby
+# Text-to-speech and speech-to-text
+# app/agents/audio/podcast_speaker.rb
+module Audio
+  class PodcastSpeaker < ApplicationSpeaker
+    model "tts-1"
+    voice "onyx"
+    speed 0.95
+    output_format :aac
+    streaming true
+  end
+end
+
+result = Audio::PodcastSpeaker.call(text: "Welcome to the show!")
+result.audio        # => Binary audio data
+result.duration     # => 1.5
+result.save_to("episode.aac")
+
+# Speech-to-text transcription
+result = Audio::MeetingTranscriber.call(audio: "standup.mp3")
+result.text         # => "Good morning everyone..."
+result.word_count   # => 5432
+```
+
+```ruby
+# Image generation, analysis, and pipelines
+# app/agents/images/logo_generator.rb
+module Images
+  class LogoGenerator < ApplicationImageGenerator
+    model "gpt-image-1"
+    size "1024x1024"
+    quality "hd"
+    style "vivid"
+    template "Professional logo design: {prompt}. Minimalist, scalable."
+  end
+end
+
+result = Images::LogoGenerator.call(prompt: "tech startup logo")
+result.url          # => "https://..."
+result.save("logo.png")
+```
+
+```ruby
+# Evaluate agent quality with built-in scoring
+class SupportRouter::Eval < RubyLLM::Agents::Eval::EvalSuite
+  agent SupportRouter
+
+  test_case "billing",   input: { message: "charged twice" }, expected: "billing"
+  test_case "technical",  input: { message: "500 error" },     expected: "technical"
+  test_case "greeting",   input: { message: "hello" },         expected: "general"
+end
+
+run = SupportRouter::Eval.run!
+puts run.summary
+# SupportRouter eval: 3/3 passed (score: 1.0)
+```
+
+## Features
+
+| Feature | Description | Docs |
+|---------|-------------|------|
+| **Agent DSL** | Declarative configuration with model, temperature, parameters, description | [Agent DSL](https://github.com/adham90/ruby_llm-agents/wiki/Agent-DSL) |
+| **Execution Tracking** | Automatic logging with token usage, cost analytics, and fallback tracking | [Tracking](https://github.com/adham90/ruby_llm-agents/wiki/Execution-Tracking) |
+| **Cost Analytics** | Track spending by agent, model, tenant, and time period | [Analytics](https://github.com/adham90/ruby_llm-agents/wiki/Execution-Tracking) |
+| **Reliability** | Automatic retries, model fallbacks, circuit breakers with block DSL | [Reliability](https://github.com/adham90/ruby_llm-agents/wiki/Reliability) |
+| **Budget Controls** | Daily/monthly limits with hard and soft enforcement | [Budgets](https://github.com/adham90/ruby_llm-agents/wiki/Budget-Controls) |
+| **Multi-Source Pricing** | 7-source pricing cascade with caching for all model types | [Pricing](https://github.com/adham90/ruby_llm-agents/wiki/Pricing) |
+| **Multi-Tenancy** | Per-tenant API keys, budgets, circuit breakers, and execution isolation | [Multi-Tenancy](https://github.com/adham90/ruby_llm-agents/wiki/Multi-Tenancy) |
+| **Async/Fiber** | Concurrent execution with Ruby fibers for high-throughput workloads | [Async](https://github.com/adham90/ruby_llm-agents/wiki/Async-Fiber) |
+| **Dashboard** | Real-time Turbo-powered monitoring UI | [Dashboard](https://github.com/adham90/ruby_llm-agents/wiki/Dashboard) |
+| **Streaming** | Real-time response streaming with TTFT tracking | [Streaming](https://github.com/adham90/ruby_llm-agents/wiki/Streaming) |
+| **Conversation History** | Multi-turn conversations with message history | [Conversation History](https://github.com/adham90/ruby_llm-agents/wiki/Conversation-History) |
+| **Attachments** | Images, PDFs, and multimodal support | [Attachments](https://github.com/adham90/ruby_llm-agents/wiki/Attachments) |
+| **Embeddings** | Vector embeddings with batching, caching, and preprocessing | [Embeddings](https://github.com/adham90/ruby_llm-agents/wiki/Embeddings) |
+| **Image Operations** | Generation, analysis, editing, pipelines with cost tracking | [Images](https://github.com/adham90/ruby_llm-agents/wiki/Image-Generation) |
+| **Routing** | Message classification and routing with auto-generated prompts, inline classify | [Routing](https://github.com/adham90/ruby_llm-agents/wiki/Routing) |
+| **Audio** | Text-to-speech (OpenAI, ElevenLabs), speech-to-text, dynamic pricing, 28+ output formats, dashboard audio playback | [Audio](https://github.com/adham90/ruby_llm-agents/wiki/Audio) |
+| **Agent Composition** | Use agents as tools in other agents with automatic hierarchy tracking | [Tools](https://github.com/adham90/ruby_llm-agents/wiki/Tools) |
+| **Queryable Agents** | Query execution history from agent classes with stats, replay, and cost breakdown | [Querying](https://github.com/adham90/ruby_llm-agents/wiki/Querying-Executions) |
+| **Evaluation** | Test agent quality with exact match, contains, LLM judge, and custom scorers | [Evaluation](https://github.com/adham90/ruby_llm-agents/wiki/Evaluation) |
+| **Alerts** | Slack, webhook, and custom notifications | [Alerts](https://github.com/adham90/ruby_llm-agents/wiki/Alerts) |
+| **AS::Notifications** | 11 instrumentation events across execution, cache, budget, and reliability | [Events](https://github.com/adham90/ruby_llm-agents/wiki/ActiveSupport-Notifications) |
+| **Custom Middleware** | Inject custom middleware globally or per-agent with positioning control | [Middleware](https://github.com/adham90/ruby_llm-agents/wiki/Custom-Middleware) |
+
+## Quick Start
+
+### 1. Install
+
+```ruby
+# Gemfile
+gem "ruby_llm-agents"
+```
+
+```bash
+bundle install
+rails generate ruby_llm_agents:install
+rails db:migrate
+```
+
+### 2. Set one API key
+
+Uncomment one line in `config/initializers/ruby_llm_agents.rb`:
+
+```ruby
+RubyLLM::Agents.configure do |config|
+  config.openai_api_key = ENV["OPENAI_API_KEY"]
+end
+```
+
+Then set the environment variable (e.g., in `.env` or Rails credentials).
+
+<details>
+<summary>Other providers</summary>
+
+```ruby
+config.anthropic_api_key = ENV["ANTHROPIC_API_KEY"]
+config.gemini_api_key    = ENV["GOOGLE_API_KEY"]
+config.deepseek_api_key  = ENV["DEEPSEEK_API_KEY"]
+# ... see initializer for full list
+```
+
+Or use environment variables directly (auto-detected by RubyLLM):
+```bash
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+```
+</details>
+
+### 3. Verify setup
+
+```bash
+rails ruby_llm_agents:doctor
+```
+
+### 4. Try it
+
+```bash
+rails generate ruby_llm_agents:demo
+bin/rails runner bin/smoke_test_agent
+```
+
+Or generate a custom agent:
+
+```bash
+rails generate ruby_llm_agents:agent SearchIntent query:required
+```
+
+This creates `app/agents/search_intent_agent.rb` with the agent class ready to customize.
+
+### Mount the Dashboard
+
+```ruby
+# config/routes.rb
+mount RubyLLM::Agents::Engine => "/agents"
+```
+
+<table>
+  <tr>
+    <td><img src="screenshots/dashboard.png" alt="Dashboard Overview" width="400"></td>
+    <td><img src="screenshots/agents.png" alt="Agent Registry" width="400"></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/executions.png" alt="Execution Log" width="400"></td>
+    <td><img src="screenshots/tenants.png" alt="Multi-Tenancy" width="400"></td>
+  </tr>
+</table>
+
+## Documentation
+
+> **AI Agents:** For comprehensive documentation optimized for AI consumption, see [LLMS.txt](LLMS.txt)
+
+> **Note:** Wiki content lives in the [`wiki/`](wiki/) folder. To sync changes to the [GitHub Wiki](https://github.com/adham90/ruby_llm-agents/wiki), run `./scripts/sync-wiki.sh`.
+
+| Guide | Description |
+|-------|-------------|
+| [Getting Started](https://github.com/adham90/ruby_llm-agents/wiki/Getting-Started) | Installation, configuration, first agent |
+| [Agent DSL](https://github.com/adham90/ruby_llm-agents/wiki/Agent-DSL) | All DSL options: model, temperature, params, caching, description |
+| [Reliability](https://github.com/adham90/ruby_llm-agents/wiki/Reliability) | Retries, fallbacks, circuit breakers, timeouts, reliability block |
+| [Budget Controls](https://github.com/adham90/ruby_llm-agents/wiki/Budget-Controls) | Spending limits, alerts, enforcement |
+| [Pricing](https://github.com/adham90/ruby_llm-agents/wiki/Pricing) | Multi-source pricing cascade, caching, configuration |
+| [Multi-Tenancy](https://github.com/adham90/ruby_llm-agents/wiki/Multi-Tenancy) | Per-tenant budgets, isolation, configuration |
+| [Async/Fiber](https://github.com/adham90/ruby_llm-agents/wiki/Async-Fiber) | Concurrent execution with Ruby fibers |
+| [Testing Agents](https://github.com/adham90/ruby_llm-agents/wiki/Testing-Agents) | RSpec patterns, mocking, dry_run mode |
+| [Evaluation](https://github.com/adham90/ruby_llm-agents/wiki/Evaluation) | Score agent quality with built-in and custom scorers |
+| [Error Handling](https://github.com/adham90/ruby_llm-agents/wiki/Error-Handling) | Error types, recovery patterns |
+| [Routing](https://github.com/adham90/ruby_llm-agents/wiki/Routing) | Message classification, routing DSL, inline classify |
+| [Embeddings](https://github.com/adham90/ruby_llm-agents/wiki/Embeddings) | Vector embeddings, batching, caching, preprocessing |
+| [Image Generation](https://github.com/adham90/ruby_llm-agents/wiki/Image-Generation) | Text-to-image, templates, pipelines, cost tracking |
+| [Dashboard](https://github.com/adham90/ruby_llm-agents/wiki/Dashboard) | Setup, authentication, analytics |
+| [Production](https://github.com/adham90/ruby_llm-agents/wiki/Production-Deployment) | Deployment best practices, background jobs |
+| [API Reference](https://github.com/adham90/ruby_llm-agents/wiki/API-Reference) | Complete class documentation |
+| [Examples](https://github.com/adham90/ruby_llm-agents/wiki/Examples) | Real-world use cases and patterns |
+
+## Requirements
+
+- **Ruby** >= 3.1.0
+- **Rails** >= 7.0
+- **RubyLLM** >= 1.16.0
+
+## Contributing
+
+Bug reports and pull requests are welcome at [GitHub](https://github.com/adham90/ruby_llm-agents).
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b my-feature`)
+3. Commit your changes (`git commit -am 'Add feature'`)
+4. Push to the branch (`git push origin my-feature`)
+5. Create a Pull Request
+
+## License
+
+The gem is available as open source under the [MIT License](https://opensource.org/licenses/MIT).
+
+## Credits
+
+Built with love by [Adham Eldeeb](https://github.com/adham90)
+
+Powered by [RubyLLM](https://github.com/crmne/ruby_llm)

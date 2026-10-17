@@ -1,0 +1,415 @@
+# 🚀 AgentPit 金融AI开放API平台
+
+[![Free API](https://img.shields.io/badge/API-Free-green)](https://develop.agentpit.io/help)
+[![Google Search](https://img.shields.io/badge/Google%20Search-Grounding-blue)](https://develop.agentpit.io/help#google-search)
+[![K-Line Pro](https://img.shields.io/badge/K--Line-Pro%20多因子-orange)](https://develop.agentpit.io/help#kpred)
+[![Kronos](https://img.shields.io/badge/Kronos-清华大学开源基础模型-violet)](https://develop.agentpit.io/help#kronos)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+> 为量化开发者和金融研究者提供免费、开放的金融AI API接口  
+> — Google实时搜索 + **清华Kronos开源大模型+多因子K线预测**，即刻接入，无需信用卡。
+https://github.com/hangeaiagent/kronos-free-api
+
+**📖 完整文档：[develop.agentpit.io/help](https://develop.agentpit.io/help)**
+
+---
+
+## ✨ 核心能力
+
+| API | 功能 | 典型场景 |
+|---|---|---|
+| 🔍 **Google搜索API** | 实时搜索Google全网，AI自动生成摘要 | 获取券商研报、新闻资讯、机构观点 |
+| 📈 **基于清华Kronos开源大模型+公司信息数据调整：K线预测API** | 清华大学开源金融模型Kronos **Pro 多因子模型**预测未来N日K线 + 评级 | 量化策略辅助、趋势研判、因子分析 |
+| 📊 **Kronos 纯基础模型 K线预测API** | 清华大学开源金融模型Kronos 原始 OHLCV 预测序列 | 自定义因子融合、学术对比研究 |
+
+> 🎁 **目前完全免费开放**
+## 💬 开发者社群
+<img width="1054" height="1512" alt="f7902b81412437fd50ede3f5326baaef" src="https://github.com/user-attachments/assets/25474a0b-7d13-4387-bfa7-fc018b72666d" />
+
+
+
+扫码加入 **AgentPit 金融AI开发者群**，与量化开发者交流API使用技巧和金融AI应用。
+
+
+
+ 入群有问题，请微信：agentpit 加入，Star本仓库持续关注
+
+---
+
+---
+
+## 🧠 K线预测模型说明
+
+K线预测 API 采用 **Pro 多因子模型**，非简单方向预测，而是综合 8 个维度输出：
+
+| 因子 | 默认权重 | 说明 |
+|---|---|---|
+| 清华大学开源金融模型Kronos  | 10% | Kronos 深度学习形态预测 |
+| 均线趋势 | 10% | MA5/10/20/60 多头排列 |
+| MACD动量 | 8% | MACD柱 / ATR 比值 |
+| RSI超买卖 | 7% | RSI14 超买超卖判断 |
+| **主力净流入** | **35%** | 近5日主力资金净流入 |
+| 筹码分布 | 15% | 主力 vs 散户资金背离 |
+| 近5日K线 | 5% | 近5日阳线占比 |
+| PE估值 | 10% | 当前PE相对历史分位 |
+
+模型输出：调整后K线序列、综合评级（强烈看多/温和看多/中性/温和看空/强烈看空）、各因子贡献明细。
+
+---
+
+## 🏁 快速开始
+
+### 第一步：注册账号
+
+访问 **[agentpit.io](https://www.agentpit.io/finance)** → 点击右上角注册（免费，无需信用卡）
+
+### 第二步：申请API Key
+
+登录后 → 点右上角头像 → **「进入后台」** → 左侧「开发API」→「我的API」→「申请新API」
+
+
+### 第三步：开始调用
+
+```bash
+# 快速测试（curl）
+curl -X POST https://api.agentpit.io/v1/open-api/kpred \
+  -H "Authorization: Bearer oapk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "300308", "days": 5}'
+```
+
+---
+
+## 📡 API 接口文档
+
+### 1. Google 搜索 API
+
+**接口地址**
+```
+POST https://api.agentpit.io/v1/open-api/search
+```
+
+**请求参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `query` | string | ✅ | 搜索关键词，如 "贵州茅台 机构评级 最新研报" |
+
+**Python 示例**
+
+```python
+import requests
+
+API_KEY = "oapk_your_key_here"
+
+resp = requests.post(
+    "https://api.agentpit.io/v1/open-api/search",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"query": "贵州茅台 机构评级 最新研报 2026"},
+)
+data = resp.json()
+print(data["result"])      # AI搜索摘要
+```
+
+**Node.js 示例**
+
+```javascript
+const res = await fetch("https://api.agentpit.io/v1/open-api/search", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer oapk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ query: "紫金矿业 铜价上涨影响分析" }),
+});
+const { result } = await res.json();
+console.log(result);
+```
+
+**返回格式**
+```json
+{
+  "result": "根据最新搜索，中际旭创2026年Q1净利润57.35亿元，同比增长262%...",
+  "latencyMs": 3200
+}
+```
+
+---
+
+### 2. K线预测 API（Pro 多因子）
+
+**接口地址**
+```
+POST https://api.agentpit.io/v1/open-api/kpred
+```
+
+**请求参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+|---|---|---|---|
+| `code` | string | ✅ | 股票代码，如 `300308`、`600519` |
+| `days` | number | 否 | 预测天数 1~30，默认 5 |
+
+**Python 示例**
+
+```python
+import requests
+
+API_KEY = "oapk_your_key_here"
+
+resp = requests.post(
+    "https://api.agentpit.io/v1/open-api/kpred",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"code": "300308", "days": 5},
+)
+data = resp.json()
+pro = data["pro"]
+
+# 评级与预期收益
+print(f"{data['name']}  最新收盘: {data['last_close']}")
+print(f"综合评级: {pro['rating']}  置信度: {pro['confidence']}")
+print(f"预期涨跌幅: {pro['adj_return_pct']}%")
+
+# 调整后K线预测
+print("\n未来K线预测:")
+for p in data["predictions"]:
+    print(f"  {p['date']}  开:{p['open']:.2f}  高:{p['high']:.2f}  低:{p['low']:.2f}  收:{p['close']:.2f}")
+
+# 各因子贡献（按贡献绝对值排序）
+print("\n因子明细:")
+for f in pro["factors"]:
+    print(f"  {f['label']:8s}  得分:{f['score']:+.3f}  权重:{f['weight']:.0%}  贡献:{f['contribution']:+.3f}")
+```
+
+**Node.js 示例**
+
+```javascript
+const API_KEY = "oapk_your_key_here";
+
+const res = await fetch("https://api.agentpit.io/v1/open-api/kpred", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ code: "600519", days: 5 }),
+});
+
+const data = await res.json();
+const { name, last_close, predictions, pro } = data;
+
+console.log(`${name} — 评级: ${pro.rating}  置信度: ${pro.confidence}`);
+console.log(`预期涨跌幅: ${pro.adj_return_pct}%`);
+
+predictions.forEach(p => {
+  console.log(`  ${p.date}: 开${p.open} 高${p.high} 低${p.low} 收${p.close}`);
+});
+```
+
+**返回格式**
+
+```json
+{
+  "symbol": "300308",
+  "name": "中际旭创",
+  "last_close": 1332.52,
+  "last_date": "2026-06-25",
+  "predictions": [
+    { "date": "2026-06-26", "open": 1310.0, "high": 1350.0, "low": 1290.0, "close": 1340.0, "volume": 420000 },
+    { "date": "2026-06-27", "open": 1340.0, "high": 1370.0, "low": 1315.0, "close": 1355.0, "volume": 388000 }
+  ],
+  "pro": {
+    "composite_score": 0.312,
+    "rating": "温和看多",
+    "confidence": "62%",
+    "conflict_level": "low",
+    "adj_return_pct": 3.85,
+    "factor_return_pct": 4.12,
+    "kronos_raw_return_pct": 1.20,
+    "sigma_daily_pct": 2.15,
+    "factors": [
+      { "key": "main_flow", "label": "主力净流入", "score": 0.68, "weight": 0.35, "contribution": 0.238 },
+      { "key": "flow_div",  "label": "筹码分布",   "score": 0.41, "weight": 0.15, "contribution": 0.062 },
+      { "key": "kronos",   "label": "Kronos技术",  "score": 0.35, "weight": 0.10, "contribution": 0.035 },
+      { "key": "ma_align", "label": "均线趋势",    "score": 0.28, "weight": 0.10, "contribution": 0.028 }
+    ]
+  },
+  "latencyMs": 1850
+}
+```
+
+> **字段说明：**
+> - `composite_score`：综合得分 -1（强烈看空）到 +1（强烈看多）
+> - `rating`：强烈看多 / 温和看多 / 中性观望 / 温和看空 / 强烈看空
+> - `predictions`：已融合多因子调整后的K线序列（非纯模型原始输出）
+> - `factors`：按 contribution 绝对值降序排列，方便快速定位主导因子
+
+---
+
+---
+
+## ⚙️ 自定义因子权重
+
+K线预测 API 支持**每个用户独立设置因子权重**，权重绑定账号，所有 API 调用自动生效。
+
+### 如何设置
+
+登录 [develop.agentpit.io/dashboard/open-api](https://develop.agentpit.io/dashboard/open-api)，K线预测审批通过后，页面下方会出现「自定义因子权重」面板：
+
+- 拖动 8 个因子的滑块调整占比
+- 系统自动归一化（无需手动凑 100%）
+- 点击「保存权重」即时生效
+
+### 权重策略建议
+
+| 使用场景 | 推荐调整 |
+|---|---|
+| 偏重资金面 | 主力净流入 50%+，筹码分布 20% |
+| 偏重技术面 | 均线趋势/MACD/RSI 合计 40%+ |
+| 偏重估值 | PE估值 25%+，降低其他权重 |
+| 量化中性 | 使用默认权重（主力净流入 35% 为核心）|
+
+### 返回结果中验证权重
+
+每次 API 响应的 `pro.factors[].weight` 字段会显示**本次使用的实际权重**，方便调试：
+
+```python
+resp = requests.post("https://api.agentpit.io/v1/open-api/kpred", ...)
+for f in resp.json()["pro"]["factors"]:
+    print(f"{f['label']:8s}  当前权重: {f['weight']:.0%}  贡献: {f['contribution']:+.3f}")
+```
+
+---
+
+---
+
+### 3. Kronos K线预测 API（纯基础模型）
+
+> **Kronos** — 清华大学 IIIS + 自动化系，AAAI 2026 录用，GitHub 31k+ Stars，MIT 协议  
+> 直接调用 Kronos 原始模型，输出纯 OHLCV 预测序列，**不叠加任何多因子权重**  
+> 📌 与上方 K线预测 API（Pro 多因子）的区别：Pro 版叠加了主力资金、RSI、MACD 等 8 个因子；本接口为模型原始输出，适合自行融合因子或对比研究
+
+**接口信息**
+
+| 项目 | 内容 |
+|------|------|
+| 端点 | POST https://api.agentpit.io/v1/open-api/kronos |
+| 认证 | Authorization: Bearer oapk_YOUR_KEY |
+| 申请 | https://develop.agentpit.io/dashboard/open-api/apply?type=KRONOS |
+
+**请求参数**
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| code | string | ✅ | A 股股票代码，如 300308、600519 |
+| days | number | ❌ | 预测天数，范围 1~30，默认 5 |
+
+**请求示例（curl）**
+
+`ash
+curl -X POST https://api.agentpit.io/v1/open-api/kronos \
+  -H "Authorization: Bearer oapk_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"code":"300308","days":5}'
+`
+
+**响应示例**
+
+`json
+{
+  "symbol": "300308",
+  "name": "中际旭创",
+  "last_date": "2026-06-26",
+  "last_close": 1332.52,
+  "predictions": [
+    {"date":"2026-06-27","open":1340.1,"high":1368.5,"low":1318.0,"close":1355.2,"volume":412000},
+    {"date":"2026-06-30","open":1355.2,"high":1380.0,"low":1340.0,"close":1372.8,"volume":388000},
+    {"date":"2026-07-01","open":1372.8,"high":1395.0,"low":1355.0,"close":1360.5,"volume":356000},
+    {"date":"2026-07-02","open":1360.5,"high":1370.0,"low":1330.0,"close":1348.0,"volume":320000},
+    {"date":"2026-07-03","open":1348.0,"high":1365.0,"low":1325.0,"close":1358.5,"volume":298000}
+  ],
+  "latencyMs": 820
+}
+`
+
+**Python 示例**
+
+`python
+import requests
+
+API_KEY = "oapk_YOUR_KEY"
+
+resp = requests.post(
+    "https://api.agentpit.io/v1/open-api/kronos",
+    json={"code": "300308", "days": 5},
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    timeout=15,
+)
+data = resp.json()
+
+print(f"{data['name']}  最新收盘: {data['last_close']}")
+for p in data["predictions"]:
+    chg = (p["close"] - data["last_close"]) / data["last_close"] * 100
+    print(f"  {p['date']}  收:{p['close']:.2f}  ({chg:+.2f}%)")
+`
+
+**Node.js 示例**
+
+`javascript
+const res = await fetch("https://api.agentpit.io/v1/open-api/kronos", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer oapk_YOUR_KEY",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ code: "600519", days: 5 }),
+});
+
+const { name, last_close, predictions } = await res.json();
+console.log(${name} 最新收盘: );
+predictions.forEach(p => {
+  const chg = ((p.close - last_close) / last_close * 100).toFixed(2);
+  console.log(    收:  (%));
+});
+`
+
+> **注意事项：**
+> - 本 API 为纯 Kronos 模型输出，预测仅基于历史价量形态，**不含资金面、基本面信息**
+> - 如需多因子融合版，请使用上方的 K线预测 API（Pro 多因子，KPRED）
+> - 预测天数越长不确定性越高，建议配合其他信号使用，不构成投资建议
+
+---
+## ⚠️ 错误码
+
+| HTTP状态码 | 含义 | 处理方式 |
+|---|---|---|
+| 401 | API Key 无效或已撤销 | 检查Key是否正确，或重新申请 |
+| 429 | 超出月度Token额度 | 联系管理员提升额度 |
+| 502 | 预测服务异常 | 稍后重试 |
+
+---
+
+## 🗺️ 路线图
+
+- [x] Google Search Grounding API
+- [x] Pro 多因子K线预测API（Kronos + 技术/资金/估值 8因子）
+- [x] 用户自定义因子权重
+- [ ] 轩辕 XuanYuan（度小满金融大模型）API
+- [ ] 更多金融开源大模型持续上线中...
+
+> ⭐ Star 本仓库，第一时间获取新API上线通知
+
+---
+
+
+## 📄 License
+
+MIT License — 免费使用，欢迎 Fork 和 Star ⭐
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://www.agentpit.io">AgentPit</a> ·
+  <a href="https://develop.agentpit.io/help">完整文档</a> ·
+  <a href="https://www.agentpit.io/finance">立即注册</a>
+</p>

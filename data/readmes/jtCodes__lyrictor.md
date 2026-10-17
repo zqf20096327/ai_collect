@@ -1,0 +1,142 @@
+# Lyrictor
+
+Lyrictor is a desktop and browser-based creative tool for turning personal interpretations of songs, including songs imported from YouTube URLs, into shareable visual experiences. Songs already mean something personal, and Lyrictor lowers the cost and friction of turning that feeling into something beautiful with a magnetic-style timeline, beat-reactive visuals, built-in AI image generation, and YouTube URL support.
+
+Interpret, create, publish.
+<img width="1696" height="1119" alt="Screenshot 2026-03-31 at 1 05 57 PM" src="https://github.com/user-attachments/assets/842a6891-da5e-41bd-bfe1-a8ba6cf43dae" />
+<img width="1696" height="1119" alt="Screenshot 2026-03-31 at 1 07 09 PM" src="https://github.com/user-attachments/assets/ff31d8b3-6ae8-41c0-a634-d6d1cc4be3bd" />
+<img width="1633" height="1197" alt="Screenshot 2026-03-17 at 10 12 56 PM" src="https://github.com/user-attachments/assets/0fda8e90-01d0-4d58-96b2-20aed8fdca95" />
+<img width="1650" height="1178" alt="Screenshot 2026-03-19 at 3 48 39 PM" src="https://github.com/user-attachments/assets/c7c1d536-c46b-4d90-af3c-02dcfbd4620f" />
+
+## Why Lyrictor
+
+- Timeline-first creation built for shaping a song's emotional arc
+- Native lyric syncing and layered timeline items (text, images, visualizer blocks)
+- AI image generation directly inside the creative flow
+- Two creative modes: free layout and Apple Music-style vertical sync mode
+- Publishing built for sharing and revisiting interpretations over time
+
+## Standout Features
+
+### AI Image Generation (Built In)
+
+- Generate backgrounds and scene images from prompts without leaving your project
+- OpenRouter image model support (including Gemini and GPT image models)
+- Optional local Stable Diffusion support
+- Prompt history and generated image log for fast iteration and reuse
+- Prompt suggestion flow for faster creative ideation
+
+### Timeline Creation
+
+- Interactive waveform timeline with zoom, pan, and precise placement
+- Layered timeline levels for overlapping visual moments
+- Collision-aware lane behavior for cleaner sequencing
+- Multi-select creation and timeline-driven text, image, and visualizer control
+
+### Source Support
+
+- Import songs from YouTube URLs
+
+### Two Editing Modes
+
+- Free mode: move and style lyric text anywhere on canvas
+- Static sync mode: Apple Music-style vertical scrolling lyric presentation
+
+### Beat-Reactive Visualizer
+
+- Audio-reactive visualizer blocks on the same timeline as lyrics
+- Real-time intensity changes driven by audio analysis
+
+### Publishing and Export
+
+- Project save/load and publishing for revisiting and sharing interpretations over time
+- [Project versioning](version-history.md): editable drafts, permanently locked published versions, and version selection rules
+- In-browser video export for landscape and portrait formats
+
+## Demo
+
+Stephen Sanchez - Until I Found You
+
+[![Demo video](https://img.youtube.com/vi/To29kD8vPoI/0.jpg)](https://www.youtube.com/watch?v=To29kD8vPoI)
+
+Lyrictor + AI (Preview)
+
+[![AI demo video](https://img.youtube.com/vi/6oVsjVHntP8/0.jpg)](https://www.youtube.com/watch?v=6oVsjVHntP8)
+
+## Tech Stack
+
+- React + TypeScript
+- React Spectrum
+- Zustand
+- Konva
+- waveform-data
+- react-use-audio-player + Howler
+- Firebase (auth + data)
+
+## Desktop App
+
+Lyrictor is available as an Electron desktop app in addition to the browser version, with YouTube URL support and local playback workflows.
+
+Download the latest desktop release here:
+
+https://github.com/jtCodes/lyrictor/releases
+
+> [!WARNING]
+> The current macOS desktop build is not yet notarized by Apple, so macOS may warn that Lyrictor cannot be verified. If that happens, right-click the app in Finder, choose **Open**, and confirm the prompt, or allow it in **System Settings > Privacy & Security**.
+
+## Local Development
+
+For interface work, read the [UI/UX principles and review standard](ui-ux-principles.md). It defines the shared expectations for grouping, hierarchy, interaction, and visual review.
+
+Use Node.js 20.19+ within the 20.x line, or Node.js 22.12+. Vite 8 requires this runtime baseline; the upgrade was checked with Node.js 22.18.0.
+
+This repo is pinned to Yarn 4. Enable Corepack, then install dependencies:
+
+```bash
+corepack enable
+yarn install --immutable
+```
+
+For CI or any reproducible install, use:
+
+```bash
+yarn install --immutable
+```
+
+Web:
+
+```bash
+yarn dev
+```
+
+Desktop Electron:
+
+```bash
+yarn dev:desktop
+```
+
+Build for production:
+
+Web:
+
+```bash
+yarn build
+```
+
+Desktop Electron:
+
+```bash
+yarn dist:desktop
+```
+
+## Roadmap
+
+- More text animation presets and transitions
+- Richer timeline interactions and creative control
+- Expanded sharing and discovery around musical interpretation
+
+## Local notes
+
+For playback performance investigations, see [Playback frame scheduling](playback-frame-scheduling.md), including the React–Konva scheduling fix and diagnostic overlay measurements.
+
+Temporary plans, feature to-do lists, and investigation notes belong in `docs/local/`, which is excluded from Git.

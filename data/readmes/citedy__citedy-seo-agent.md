@@ -1,0 +1,216 @@
+# Citedy SEO Agent: Your AI-Powered Content Marketing Team
+
+<a href="https://glama.ai/mcp/servers/@Citedy/citedy-seo-agent">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@Citedy/citedy-seo-agent/badge" />
+</a>
+
+> **citedy-seo-agent** is an Agent Skill that connects your AI agent to the Citedy platform, transforming it into a complete SEO content marketing team. From trend scouting and competitor analysis to generating high-quality, multilingual articles with AI-powered illustrations and voice-overs, creating short-form AI UGC viral videos with subtitles, ingesting YouTube videos, PDFs, and audio into structured content, generating lead magnets, and managing webhooks — this skill automates your entire content workflow.
+
+## Effortless SEO Content Creation. At Scale.
+
+The Citedy SEO Agent is designed for developers, marketers, and AI enthusiasts who want to leverage the power of AI to create high-performing SEO content. Whether you're building a content engine for your business, automating your personal blog, or exploring the future of AI-driven marketing, this skill provides the tools you need to succeed.
+
+## Key Features
+
+| Feature                     | Description                                                                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Auto-Publishing**         | Article/post adaptations are auto-published to **LinkedIn, X (article + thread), Facebook, Reddit, Instagram, and YouTube Shorts** — 7 platforms total. Threads and Instagram Reels require an explicit `/api/agent/publish` call after adaptation. TikTok is supported via `/api/agent/shorts/publish` for short-form video. Publishing is free across all platforms.                    |
+| **Trend Scouting**          | Discover what's trending on X/Twitter and Reddit to create timely and relevant content.                                                       |
+| **Competitor Analysis**     | Deep-analyze competitor domains to identify content gaps and opportunities.                                                                   |
+| **Deep SEO Scan**           | Run fast/deep/ultra/ultra+ scans with AI-powered search analysis and actionable recommendations.                                              |
+| **Article Generation**      | Generate SEO-optimized articles in 55 languages, from mini-articles to pillar posts. Draft mode for review before publishing.                 |
+| **Article Management**      | Publish, unpublish, and delete articles via API — full lifecycle control for regulated industries.                                            |
+| **AI-Powered Enhancements** | Add AI-generated illustrations and voice-over narration to your articles.                                                                     |
+| **Social Media Adaptation** | Adapt articles for X, LinkedIn, Facebook, Reddit, Threads, Instagram, Instagram Reels, YouTube Shorts, and Shopify.                           |
+| **Direct Publish**          | Publish article content as-is to LinkedIn, Facebook, X, Reddit, and Instagram — no AI adaptation, 0 credits.                                  |
+| **AI UGC Viral Videos**     | Generate short-form AI UGC viral videos (5s/10s/15s) with subtitles. Direct publish to Instagram Reels, YouTube Shorts, and TikTok — publishing is free across all platforms.                |
+| **Content Ingestion**       | Extract content from YouTube videos, web articles, PDFs, and audio files into structured summaries.                                           |
+| **Lead Magnets**            | Generate checklists, swipe files, and frameworks for lead capture — from 30 credits.                                                          |
+| **GSC Reports**             | Google Search Console performance reports — clicks, impressions, positions, movers, opportunities, article suggestions. 0 credits.            |
+| **Webhooks**                | Get notified on article generation, publishing, scout results, lead magnets, billing events, and more (15 event types).                       |
+| **Content Automation**      | Set up cron-based sessions to generate and publish articles on a recurring schedule.                                                          |
+
+## Who Is This For?
+
+- **Developers:** Integrate a powerful content marketing API into your AI agents with just a few lines of configuration.
+- **Marketers:** Automate your content workflow, from research to publication, and scale your content production.
+- **AI Enthusiasts:** Explore the cutting edge of AI-powered content creation and build your own autonomous content agents.
+
+## Install in Claude Code
+
+1. Type `/plugin`
+2. Enter: `citedy/claude-plugins`
+3. Select **citedy-seo-agent** → install
+4. Restart Claude Code
+5. Use `/citedy-seo-agent` to start
+
+## Install in OpenAI Codex CLI
+
+**Via skill-installer (recommended):**
+
+```
+$skill-installer install https://github.com/Citedy/citedy-seo-agent
+```
+
+**Or manually:**
+
+```bash
+# User-global (available in all projects)
+git clone https://github.com/Citedy/citedy-seo-agent.git ~/.agents/skills/citedy-seo-agent
+
+# Or project-level
+git clone https://github.com/Citedy/citedy-seo-agent.git .agents/skills/citedy-seo-agent
+```
+
+Use `$citedy-seo-agent` to invoke, or Codex will auto-activate based on task context.
+
+## Install in Factory Droid
+
+```bash
+# User-global
+git clone https://github.com/Citedy/citedy-seo-agent.git ~/.factory/skills/citedy-seo-agent
+
+# Or project-level
+git clone https://github.com/Citedy/citedy-seo-agent.git .factory/skills/citedy-seo-agent
+```
+
+## Universal Install (openskills)
+
+Works with Codex, Claude Code, Droid, Cursor, and other Agent Skills-compatible tools:
+
+```bash
+npx openskills install Citedy/citedy-seo-agent
+```
+
+## Compatible Platforms
+
+This skill follows the open [Agent Skills](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) standard and works with:
+
+- **Claude Code** — install as a plugin from the `citedy` marketplace (see above)
+- **OpenAI Codex CLI** — clone into `~/.agents/skills/` (see above)
+- **Factory Droid** — clone into `~/.factory/skills/` (see above)
+- **Manus, Kimi** — import directly from GitHub or add via the Skills Directory
+- **Skills Directory** — [skillsdirectory.com](https://skillsdirectory.com)
+- **Smithery** — [smithery.ai/skills/citedy/citedy-seo-agent](https://smithery.ai/skills/citedy/citedy-seo-agent)
+- **Skills.sh** — [skills.sh/citedy/citedy-seo-agent/citedy-seo-agent](https://skills.sh/citedy/citedy-seo-agent/citedy-seo-agent)
+- **Any Agent Skills-compatible platform** — Kilo, SkillHub, and others
+
+## Support Matrix
+
+| Platform                                    | Status    | How to connect                                                                  |
+| ------------------------------------------- | --------- | ------------------------------------------------------------------------------- |
+| Claude Code                                 | Supported | `/plugin` → `citedy/claude-plugins` → install `citedy-seo-agent`                |
+| OpenAI Codex CLI                            | Supported | `git clone` into `~/.agents/skills/citedy-seo-agent`                            |
+| Factory Droid                               | Supported | `git clone` into `~/.factory/skills/citedy-seo-agent`                           |
+| OpenClaw / Agent Skills-compatible runtimes | Supported | Import `citedy-seo-agent/SKILL.md` as an Agent Skill                            |
+| TinyClaw                                    | Supported | Install `SKILL.md` into TinyClaw skills directory (`.agent/skills`) and restart |
+| AutoGPT Builder                             | Supported | Import workflow templates from `citedy-seo-agent/autogpt/agents/*.agent.json`   |
+| Cursor                                      | Supported | Install plugin from `cursor/` directory or Cursor Marketplace                   |
+| Windsurf                                    | Supported | Copy MCP config + rules from `windsurf/` directory                              |
+
+## Package Contents
+
+- `SKILL.md` — canonical Agent Skill definition (OpenClaw/Agent Skills/TinyClaw)
+- `TINYCLAW.md` — TinyClaw install and verification guide
+- `autogpt/` — AutoGPT package (actions, templates, validator, quickstart)
+- `skills/` — focused skills for specific use cases (video, ingestion, trends, lead magnets, writing)
+- `cursor/` — Cursor IDE plugin (manifest, MCP config, .mdc rules)
+- `windsurf/` — Windsurf IDE integration (MCP config, rules)
+
+## Focused Skills
+
+Looking for a specific capability? Each focused skill is a standalone entry point:
+
+| Skill                                                          | What It Does                                               | Credits       |
+| -------------------------------------------------------------- | ---------------------------------------------------------- | ------------- |
+| [citedy-video-shorts](./skills/citedy-video-shorts/)           | AI UGC viral video with subtitles for TikTok/Reels/Shorts  | 64–194/video  |
+| [citedy-content-ingestion](./skills/citedy-content-ingestion/) | Turn any URL into structured content (YouTube, PDF, audio) | 1–55/URL      |
+| [citedy-trend-scout](./skills/citedy-trend-scout/)             | Scout X/Reddit trends + content gaps + competitors         | 20–70/scan    |
+| [citedy-lead-magnets](./skills/citedy-lead-magnets/)           | Generate checklists, swipe files, frameworks               | 30–100/magnet |
+| [citedy-content-writer](./skills/citedy-content-writer/)       | End-to-end blog autopilot with social distribution         | 2–139/article |
+
+Each focused skill includes the same setup flow and works standalone. Install the full suite above for all capabilities.
+
+## TinyClaw Install
+
+Use the dedicated guide:
+
+- [TINYCLAW.md](./TINYCLAW.md)
+
+## AutoGPT Quickstart
+
+1. Open `./autogpt/README.md`.
+2. Import a template from `./autogpt/agents/*.agent.json`.
+3. Run with:
+
+- `API Key` = `citedy_agent_...`
+- `Request JSON` = payload for selected workflow
+
+## Getting Started
+
+### 1. Add the Skill to Your Agent
+
+Import this repository into your AI agent platform. For Manus, use **"Import from GitHub"** and point to this repo.
+
+### 2. Register Your Agent
+
+Once the skill is active, your agent will guide you through a one-time setup:
+
+1. The agent calls the Citedy registration API
+2. You receive an approval link — open it in your browser
+3. Copy the API key and paste it back to your agent
+
+That's it. Your agent is now connected to Citedy and ready to create content.
+
+## How It Works
+
+The Citedy SEO Agent provides a simple yet powerful workflow for creating and distributing content:
+
+1. **Scout.** Discover trending topics or analyze competitors to find content opportunities.
+2. **Generate.** Create a high-quality, SEO-optimized article based on your research.
+3. **Enhance.** Add AI-generated illustrations and voice-over to make your content stand out.
+4. **Adapt & Distribute.** Automatically adapt your article for social media and publish it to your connected accounts.
+
+This entire process can be automated with cron-based sessions, allowing you to create a set-and-forget content machine that works for you 24/7.
+
+---
+
+## The Citedy Advantage
+
+In a world of single-tasking tools, the Citedy SEO Agent offers a complete, integrated solution. It's not just an article writer — it's a strategist, a creative director, and a social media manager, all rolled into one.
+
+- **All-in-One Workflow:** Go from idea to published, multi-platform campaign without switching contexts.
+- **Global Reach:** With support for 55 languages, you can connect with your audience wherever they are.
+- **Rich Media Content:** Elevate your articles with stunning AI-generated illustrations and engaging voice-overs.
+- **True Automation:** Move beyond simple scheduling with intelligent, cron-based content sessions that adapt to your strategy.
+
+## Credits & Pricing
+
+The skill operates on Citedy's credit system. New accounts receive **100 free credits** to get started — no credit card required.
+
+| Operation                                    | Cost                |
+| -------------------------------------------- | ------------------- |
+| Mini article (~500 words)                    | from 7 credits      |
+| Standard article (~1000 words)               | from 12 credits     |
+| Full article (~1500 words)                   | from 25 credits     |
+| Pillar article (~2500 words)                 | from 40 credits     |
+| Deep SEO scan                                | 2-8 credits         |
+| Social media adaptation                      | ~5 credits/platform |
+| AI UGC viral video (5s/10s/15s)              | 60-185 credits      |
+| AI script generation                         | 1 credit            |
+| AI avatar generation                         | 3 credits           |
+| Trend scouting (X/Reddit)                    | 30-70 credits       |
+| Competitor analysis                          | 20-50 credits       |
+| Content gap analysis                         | 40 credits          |
+| Content ingestion (YouTube, PDF, audio, web) | 1-55 credits        |
+| Lead magnet                                  | 30-100 credits      |
+
+## Ready to Automate Your Content?
+
+Join the growing community of users who are building the future of content marketing. Add the Citedy SEO Agent to your AI agent today and turn it into a content-creating powerhouse.
+
+Visit [citedy.com](https://www.citedy.com) to learn more about the platform and explore what's possible.
+
+---
+
+_This skill is developed and maintained by the team at [Citedy](https://www.citedy.com). For support, visit [citedy.com](https://www.citedy.com)._

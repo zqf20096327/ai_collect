@@ -1,0 +1,901 @@
+# gccli — Garmin Connect in your terminal.
+
+[![ci](https://github.com/bpauli/gccli/actions/workflows/ci.yml/badge.svg)](https://github.com/bpauli/gccli/actions/workflows/ci.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/bpauli/gccli)](go.mod)
+[![Release](https://img.shields.io/github/v/release/bpauli/gccli)](https://github.com/bpauli/gccli/releases)
+[![License](https://img.shields.io/github/license/bpauli/gccli)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-gccli.sh-blue)](https://gccli.sh)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?logo=buymeacoffee)](https://buymeacoffee.com/mail7j)
+
+Fast, script-friendly CLI for Garmin Connect. Access activities, health data, body composition, workouts, courses, devices, gear, goals, badges, and more. JSON-first output, multiple accounts, and credential storage in the OS keyring.
+
+## Features
+
+- **Activities** — list, search, view details, download (FIT/GPX/TCX/KML/CSV), upload, create manual entries (with date), rename, retype, delete, set exercise sets for strength training, list activity types
+- **Exercise Catalog** — browse Garmin's exercise categories and exercises for strength training
+- **Health Data** — daily summaries, steps, heart rate, resting HR, sleep, stress, HRV, SpO2, respiration, body battery, floors, training readiness/status, VO2max, fitness age, race predictions, endurance/hill scores, intensity minutes, lactate threshold, cycling FTP
+- **Body Composition** — weight tracking, body fat, muscle mass, blood pressure, FIT file encoding for composition uploads
+- **Workouts** — list, view, download as FIT, upload from JSON, update in place from JSON, create with sport types and targets (pace/HR/power/cadence), schedule (add/list/remove), delete
+- **Courses** — list courses, view favorites, get full course detail, download as FIT/GPX, import GPX files as new courses, send courses directly to a device, delete courses
+- **Devices** — list registered devices, view settings, solar data, alarms, primary/last-used device
+- **Gear** — list gear, usage stats, linked activities, defaults per activity type, link/unlink to activities
+- **Goals & Badges** — active goals, earned/available/in-progress badges, challenges, personal records
+- **Training** — browse and view training plans
+- **Profile** — user profile and settings
+- **Hydration** — view and log daily water intake
+- **Nutrition** — view daily food logs, meals, and nutrition settings
+- **Events** — list, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
+- **Wellness** — menstrual cycle data, pregnancy summary
+- **Agent-ready** - ships a bundled agent skill (`skills/gccli/`) that plugs into AI assistants like Claude Code, Codex, Hermes, and OpenClaw so you can drive Garmin Connect in plain language
+- **Multiple accounts** — manage multiple Garmin accounts via `--account` flag
+- **Credential storage** in the OS keyring (macOS Keychain, Linux Secret Service), with a file fallback (see [Credential Storage](#credential-storage))
+- **Auto-refreshing tokens** — authenticate once, tokens refresh automatically on 401
+- **Resilient networking** - API calls retry on 429 (waits for `Retry-After` up to 30 s, 3 retries max) and read requests (GET) retry on 5xx (2 retries max, exponential backoff); writes are not resent on 5xx; an API request fails when no data moves for 60 s, and a transfer that keeps moving has no time limit
+- **Shell completion** — generated scripts for bash, zsh, fish, and PowerShell
+- **Parseable output** - JSON and plain/TSV modes for scripting and automation. `--json` output stays stable within a major version. Table and `--plain` output may change in a minor release
+- **Your unit system** - tables show km or miles, pace per km or per mile, and elevation in metres or feet, as set in your Garmin Connect profile; pin one with `--units`
+
+## Installation
+
+### Homebrew (macOS / Linux)
+
+```bash
+brew install bpauli/tap/gccli
+```
+
+### Build from Source
+
+Requires Go 1.26 or later.
+
+```bash
+git clone https://github.com/bpauli/gccli.git
+cd gccli
+make build
+```
+
+The binary is output to `./bin/gccli`.
+
+Run:
+
+```bash
+./bin/gccli --help
+```
+
+Help:
+
+- `gccli --help` shows top-level command groups.
+- Drill down with `gccli <group> --help` (and deeper subcommands).
+- Make shortcut: `make run -- --help` (or `make run -- activities --help`).
+
+## Quick Start
+
+### 1. Log In (Browser SSO)
+
+```bash
+gccli auth login you@example.com
+```
+
+This opens your browser for Garmin SSO authentication. The DI OAuth tokens are stored in your system keyring.
+
+### 2. Log In (Headless)
+
+For servers or environments without a browser:
+
+```bash
+gccli auth login you@example.com --headless
+```
+
+You'll be prompted for your password. If your account has two-factor authentication:
+
+```bash
+gccli auth login you@example.com --headless --mfa-code 123456
+```
+
+Login automatically saves your email as the default account, so you don't need to pass `--account` or set `GCCLI_ACCOUNT` on every command.
+
+### 3. Test Authentication
+
+```bash
+gccli auth status
+gccli activities list --limit 5
+```
+
+## Agent & AI Assistant Integration
+
+`gccli` ships a ready-to-use **agent skill** at [`skills/gccli/SKILL.md`](skills/gccli/SKILL.md). It teaches an AI assistant the full command surface - auth, activities, health, body composition, workouts, courses, devices, gear, goals, events, and more - so you can ask in plain language and let the agent drive the CLI:
+
+- "How did I sleep last week?"
+- "Download my last three runs as GPX."
+- "Log today's strength session: bench press 3x12@20kg, lat pulldowns 3x12@41kg."
+- "Build me a tempo run and schedule it for Saturday."
+
+The skill uses the portable `SKILL.md` format (frontmatter + Markdown) and works with any agent runtime that supports skills, including:
+
+- **[Claude Code](https://claude.com/claude-code)** - Anthropic's terminal-native coding agent
+- **Codex** - OpenAI's coding agent
+- **Hermes** - agent runtime
+- **OpenClaw** - the skill's frontmatter carries install metadata (Homebrew / build-from-source) so OpenClaw can provision the `gccli` binary automatically
+
+### Setup
+
+Clone the repo and point your agent at the bundled skill directory (copy or symlink it into wherever your agent discovers skills):
+
+```bash
+git clone https://github.com/bpauli/gccli.git
+# then copy or symlink gccli/skills/gccli into your agent's skills directory
+```
+
+Make sure the `gccli` binary is installed (see [Installation](#installation)) and you have authenticated once with `gccli auth login`. Set `GCCLI_ACCOUNT` so the agent doesn't need to pass `--account` on every call. The skill instructs the agent to use `--json` output when parsing results and to confirm before destructive actions.
+
+### Strength-training workflow (LLM-assisted)
+
+The skill includes a guided workflow for logging free-text strength sessions: the agent fetches Garmin's exercise catalog (`gccli exercises list --json`), maps your described exercises to Garmin's `CATEGORY/EXERCISE_NAME` pairs, confirms the mapping with you, creates the activity, and records each set via `gccli activity exercise-sets set`.
+
+## Authentication & Secrets
+
+### Accounts and Tokens
+
+`gccli` stores your OAuth tokens in a keyring backend. Default is auto-detection (best available backend for your OS/environment).
+
+List current auth state:
+
+```bash
+gccli auth status
+```
+
+Print the raw OAuth2 access token (useful for scripting). If the token is expired, the command refreshes it first and prints the new token. If the refresh fails, it prints nothing and exits 3:
+
+```bash
+gccli auth token
+```
+
+Remove stored credentials:
+
+```bash
+gccli auth remove
+```
+
+### Keyring Backend
+
+Backends:
+
+- **auto** (default) — picks the best backend for the platform
+- **keychain** — macOS Keychain
+- **secret-service** — Linux D-Bus (GNOME Keyring, KWallet)
+- **file** - on-disk files, encrypted with a fixed passphrase that is built into gccli (see [Credential Storage](#credential-storage))
+
+Set backend via environment variable:
+
+```bash
+export GCCLI_KEYRING_BACKEND=file
+```
+
+Or in the config file (`config.json`):
+
+```json
+{
+  "keyring_backend": "file"
+}
+```
+
+On Linux, if D-Bus is unavailable, `gccli` automatically falls back to the file backend.
+
+### Garmin Domain (China)
+
+For Garmin China accounts (garmin.cn):
+
+```bash
+export GCCLI_DOMAIN=garmin.cn
+```
+
+Or in `config.json`:
+
+```json
+{
+  "domain": "garmin.cn"
+}
+```
+
+## Configuration
+
+### Account Selection
+
+The account is resolved in this order:
+
+1. `--account` flag
+2. `GCCLI_ACCOUNT` environment variable
+3. Default account saved by `gccli auth login` (stored in `config.json`)
+
+```bash
+# Via flag
+gccli activities list --account you@example.com
+
+# Via environment
+export GCCLI_ACCOUNT=you@example.com
+gccli activities list
+
+# Via login default (no flag or env var needed)
+gccli auth login you@example.com
+gccli activities list
+```
+
+### Output
+
+- Default: human-friendly tables on stdout.
+- `--json` / `-j`: JSON on stdout (best for scripting).
+- `--plain`: tab-separated values on stdout, with no header row. Only these commands print TSV: `activities list`, `activities search`, `activities types`, `activity summary`, `courses list`, `courses favorites`, `courses import`, `events list`, `workouts list`, `workouts schedule list` and `exercises list` (without `--category`). Most other commands that return data print the same JSON in all modes, also without `--json`. `activities count` prints a single number. Use `--json` when a script parses the output.
+- Write commands (the commands that add, create, upload, import, update, set, rename, retype, schedule, send, link, unlink, remove or delete data in Garmin Connect) all follow one rule:
+  - With `--json`, they print the Garmin response on stdout, indented like all JSON output. When Garmin sends an empty response, they print `{"ok": true}`.
+  - Without `--json`, they print one message on stderr and nothing on stdout. `courses import` is the only exception. It prints the saved course as a table on stdout (TSV with `--plain`).
+- Human-facing messages (errors, warnings, info) go to stderr.
+- Delete commands ask for confirmation in a terminal. Without a terminal (scripts, pipes, agents), they exit with an error unless you pass `--force`. If you answer no, the command prints `Cancelled` on stderr, prints nothing on stdout and exits with 0.
+- Tables, TSV and JSON on stdout have no colors. The messages on stderr use colors. The `--help` text uses bold and faint text when stdout is a terminal, and `--color` does not change this.
+- With `--color auto` (the default), gccli uses colors when stderr is a color terminal and neither `NO_COLOR` nor `CI` is set. `--color always` and `--color never` override this detection. `GCCLI_COLOR` sets the mode when you do not give `--color`. `--json` and `--plain` do not change the colors.
+
+### Exit Codes
+
+| Code | Meaning |
+|---|---|
+| 0 | Success |
+| 1 | Other error |
+| 2 | Usage error (unknown command, flag or value). The usage text goes to stderr. |
+| 3 | Login needed: no account, no stored credentials, or the token expired and could not be refreshed |
+| 4 | Garmin returned 404 Not Found |
+| 5 | Garmin rate limit (HTTP 429) |
+
+With `--json`, a runtime error goes to stderr as one JSON line. Usage errors stay plain text, because they happen before the flags are parsed. `code` is `error`, `auth_required`, `not_found` or `rate_limited`. `status` is the HTTP status, when there is one:
+
+```json
+{"error":{"code":"rate_limited","status":429,"message":"Rate limited. Wait 30 and retry."}}
+```
+
+### Units
+
+Six commands convert units in table and plain output: `activities list`, `activities search`, `activity summary`, `courses list`, `courses favorites` and `courses import`. They show distances, speeds, paces and elevations in the unit system from your Garmin Connect profile. To read the profile, each of these commands makes one extra request. It does this only in table or plain mode, and only when the unit system is `auto`.
+
+| Value | Distance | Speed | Pace | Elevation |
+| --- | --- | --- | --- | --- |
+| `metric` | km | km/h | /km | m |
+| `statute_us` | mi | mph | /mi | ft |
+| `statute_uk` | mi | mph | /mi | m |
+| `auto` (default) | from the Garmin profile | | | |
+
+The unit system is resolved in this order:
+
+1. `--units` flag
+2. `GCCLI_UNITS` environment variable
+3. `"units"` in `config.json`
+4. Garmin profile setting
+5. `metric`
+
+A pinned system (steps 1 to 3) skips the Garmin request. If gccli cannot read the profile setting, it prints a warning and uses metric.
+
+JSON output is never converted. It is the raw Garmin data in meters and meters per second.
+
+Pin a system in scripts that parse `--plain` output. Otherwise the output changes when the Garmin profile setting changes:
+
+```bash
+gccli --units statute_us activities list
+GCCLI_UNITS=metric gccli --plain activities list
+```
+
+### Config File
+
+Config path:
+
+- macOS: `~/Library/Application Support/gccli/config.json`
+- Linux: `~/.config/gccli/config.json` (or `$XDG_CONFIG_HOME/gccli/config.json`)
+
+Example:
+
+```json
+{
+  "default_account": "you@example.com",
+  "keyring_backend": "file",
+  "domain": "garmin.com",
+  "units": "statute_us"
+}
+```
+
+`units` is optional. Leave it out (or set `auto`) to use the Garmin profile setting.
+
+### Environment Variables
+
+| Variable | Description |
+| --- | --- |
+| `GCCLI_ACCOUNT` | Default account email (overrides config file default) |
+| `GCCLI_DOMAIN` | Garmin domain (`garmin.com` or `garmin.cn`) |
+| `GCCLI_JSON` | Enable JSON output (`1`, `true`, `yes`) |
+| `GCCLI_PLAIN` | Enable plain/TSV output (`1`, `true`, `yes`) |
+| `GCCLI_COLOR` | Color mode: `auto`, `always`, `never` |
+| `GCCLI_UNITS` | Unit system: `auto`, `metric`, `statute_us`, `statute_uk` (see [Units](#units)) |
+| `GCCLI_KEYRING_BACKEND` | Keyring backend: `keychain`, `secret-service`, `file` |
+
+## Security
+
+### Credential Storage
+
+OAuth tokens are stored in a keyring backend:
+
+- **macOS**: Keychain Access
+- **Linux**: Secret Service (GNOME Keyring, KWallet)
+- **Fallback**: on-disk file store, encrypted with a fixed passphrase
+
+The CLI uses [github.com/99designs/keyring](https://github.com/99designs/keyring) for storage. Tokens are keyed by email (`gccli:token:<email>`).
+
+**The file backend does not protect your tokens.** gccli encrypts each token file with a fixed passphrase that is part of the gccli source code. You cannot set your own passphrase. Anyone who can read the file can decrypt the token. The files are in the `credentials` directory next to `config.json`, with file mode `0600`. Use the macOS Keychain or the Linux Secret Service when you can. If you must use the file backend, protect the `credentials` directory as you would protect a plaintext password file.
+
+[docs/state.md](docs/state.md) describes every file and keyring item that gccli stores: the `config.json` keys, the lock files, the token fields and the token version.
+
+## Commands
+
+### Authentication
+
+```bash
+gccli auth login <email>               # Log in via browser SSO
+gccli auth login <email> --headless    # Log in via email/password
+gccli auth login <email> --headless --mfa-code <code>  # With MFA
+gccli auth status                      # Show auth state and token expiry (exit 3 if no credentials are stored)
+gccli auth token                       # Print OAuth2 access token (refresh it first if expired; exit 3 if the refresh fails)
+gccli auth export                      # Export credentials (for transfer to another machine)
+gccli auth import <token>              # Import credentials from another machine
+gccli auth remove                      # Remove stored credentials
+```
+
+### Activities
+
+```bash
+# List and search
+gccli activities list --limit 20 --offset 20
+gccli activities list --type running
+gccli activities count
+gccli activities search --start 2024-01-01 --end 2024-12-31
+
+# View details
+gccli activity summary <id>
+gccli activity details <id>
+gccli activity splits <id>
+gccli activity typed-splits <id>
+gccli activity split-summaries <id>
+gccli activity weather <id>
+gccli activity hr-zones <id>
+gccli activity power-zones <id>
+gccli activity exercise-sets <id>
+gccli activity exercise-sets set <id> -e "BENCH_PRESS/BARBELL_BENCH_PRESS:12@20:d30:r60" -e "BENCH_PRESS/BARBELL_BENCH_PRESS:10@25:d25"
+gccli activity gear <id>
+
+# Download and upload
+gccli activity download <id> --format fit
+gccli activity download <id> --format gpx --output track.gpx
+gccli activity upload ./activity.fit
+
+# Create and modify
+gccli activity create --name "Morning Run" --type running --duration 30m --distance 5000
+gccli activity create --name "Upper Body" --type strength_training --duration 34m --date 2026-03-13T19:01:00
+gccli activity rename <id> "New Name"
+gccli activity retype <id> --type-id 1 --type-key running
+gccli activity delete <id>
+gccli activity delete <id> --force
+
+# Activity types
+gccli activities types                   # List all Garmin activity types
+```
+
+### Health Data
+
+```bash
+# Daily summary
+gccli health summary                   # Today
+gccli health summary yesterday
+gccli health summary 2024-06-15
+gccli health summary 3d                # 3 days ago
+
+# Vitals
+gccli health steps                     # Step chart for today
+gccli health steps daily --start 2024-01-01 --end 2024-01-31
+gccli health steps weekly --weeks 4
+gccli health hr [date]                 # Heart rate
+gccli health rhr [date]                # Resting heart rate
+gccli health floors [date]             # Floors climbed
+gccli health sleep [date]              # Sleep data
+gccli health respiration [date]
+gccli health spo2 [date]               # Blood oxygen
+gccli health hrv [date]                # Heart rate variability
+
+# Stress and recovery
+gccli health stress                    # Stress for today
+gccli health stress weekly --weeks 4
+gccli health body-battery [date]
+gccli health body-battery range --start 2024-01-01 --end 2024-01-07
+gccli health training-readiness [date]
+gccli health training-status [date]
+
+# Fitness metrics
+gccli health fitness-age [date]
+gccli health max-metrics [date]        # VO2max and more
+gccli health lactate-threshold
+gccli health cycling-ftp
+gccli health race-predictions
+gccli health race-predictions range --start 2024-01-01 --end 2024-06-30
+gccli health endurance-score [date]
+gccli health hill-score [date]
+gccli health intensity-minutes [date]
+gccli health intensity-minutes weekly --start 2024-01-01 --end 2024-01-31
+
+# Wellness events
+gccli health events [date]
+gccli health lifestyle [date]
+```
+
+### Body Composition
+
+```bash
+# View data
+gccli body composition                 # Today
+gccli body composition --start 2024-01-01 --end 2024-01-31
+gccli body weigh-ins --start 2024-01-01 --end 2024-01-31
+gccli body daily-weigh-ins [date]
+
+# Add data
+gccli body add-weight 75.5 --unit kg
+gccli body add-weight 166.4 --unit lbs
+gccli body add-composition 75.5 --body-fat 15.2 --muscle-mass 35.0
+
+# Blood pressure
+gccli body blood-pressure --start 2024-01-01 --end 2024-01-31
+gccli body add-blood-pressure --systolic 120 --diastolic 80 --pulse 65
+
+# Delete entries
+gccli body delete-weight <pk> --date 2024-01-15
+gccli body delete-blood-pressure <version> --date 2024-01-15
+```
+
+### Workouts
+
+```bash
+gccli workouts list --limit 20
+gccli workouts detail <id>
+gccli workouts download <id> --output workout.fit
+gccli workouts upload ./workout.json   # See JSON structure below
+gccli workouts update <id> ./workout.json   # Replace an existing workout, keeping its ID
+gccli workouts schedule add <id> <YYYY-MM-DD>
+gccli workouts schedule list <YYYY-MM-DD>
+gccli workouts schedule list --start 2024-06-01 --end 2024-06-30
+gccli workouts schedule remove <schedule-id>
+gccli workouts schedule remove <schedule-id> --force
+gccli workouts delete <id>
+
+# Create a running workout with pace targets
+gccli workouts create "Easy 30min Run" --type run \
+  --step "warmup:5m@pace:5:30-6:00" \
+  --step "run:20m@pace:5:00-5:30" \
+  --step "cooldown:5m"
+
+# Running with heart rate targets
+gccli workouts create "HR Zone Run" --type run \
+  --step "warmup:10m" \
+  --step "run:20m@hr:140-160" \
+  --step "cooldown:10m"
+
+# Cycling with power targets
+gccli workouts create "FTP Intervals" --type bike \
+  --step "warmup:10m" \
+  --step "run:5m@power:250-280" \
+  --step "recovery:3m" \
+  --step "run:5m@power:250-280" \
+  --step "cooldown:10m"
+
+# Imperial paces (miles)
+gccli workouts create "Easy 30min Run" --type run \
+  --step "warmup:5m@pace:8:51-9:39" \
+  --step "run:20m@pace:8:03-8:51" \
+  --step "cooldown:5m" \
+  --unit mi
+
+# Strength workout (no targets)
+gccli workouts create "Full Body" --type strength \
+  --step "warmup:5m" \
+  --step "run:30m" \
+  --step "cooldown:5m"
+```
+
+**Updating a workout in place.** `gccli workouts update` sends a full replacement, not a patch: whatever the file leaves out is gone from the workout. Start from the current server copy rather than from a hand-written fragment:
+
+```bash
+gccli workouts detail 123456 > workout.json
+# edit workout.json
+gccli workouts update 123456 workout.json
+```
+
+The workout keeps its ID and any calendar entries that point at it. `workoutId` in the file is set from the ID argument before the request goes out, so a payload written for `upload` works as-is; if the file already names a different workout, gccli warns and still updates the one given on the command line.
+
+**Workout JSON structure** for `gccli workouts upload`:
+
+```json
+{
+  "workoutName": "Tempo Run",
+  "sportType": {
+    "sportTypeId": 1,
+    "sportTypeKey": "running"
+  },
+  "workoutSegments": [
+    {
+      "segmentOrder": 1,
+      "sportType": {
+        "sportTypeId": 1,
+        "sportTypeKey": "running"
+      },
+      "workoutSteps": [
+        {
+          "type": "ExecutableStepDTO",
+          "stepOrder": 1,
+          "stepType": { "stepTypeId": 1, "stepTypeKey": "warmup" },
+          "endCondition": { "conditionTypeId": 2, "conditionTypeKey": "time" },
+          "endConditionValue": 600,
+          "targetType": { "workoutTargetTypeId": 1, "workoutTargetTypeKey": "no.target" }
+        },
+        {
+          "type": "ExecutableStepDTO",
+          "stepOrder": 2,
+          "stepType": { "stepTypeId": 3, "stepTypeKey": "interval" },
+          "endCondition": { "conditionTypeId": 2, "conditionTypeKey": "time" },
+          "endConditionValue": 1200,
+          "targetType": { "workoutTargetTypeId": 6, "workoutTargetTypeKey": "pace.zone" },
+          "targetValueOne": 3.333333,
+          "targetValueTwo": 3.030303
+        },
+        {
+          "type": "ExecutableStepDTO",
+          "stepOrder": 3,
+          "stepType": { "stepTypeId": 2, "stepTypeKey": "cooldown" },
+          "endCondition": { "conditionTypeId": 2, "conditionTypeKey": "time" },
+          "endConditionValue": 600,
+          "targetType": { "workoutTargetTypeId": 1, "workoutTargetTypeKey": "no.target" }
+        }
+      ]
+    }
+  ]
+}
+```
+
+Key reference values:
+- **Sport types**: running (1), cycling (2), other (3), swimming (4), strength\_training (5), cardio\_training (6), yoga (7), pilates (8), hiit (9), multi\_sport (10), mobility (11)
+- **Step types**: warmup (1), cooldown (2), interval (3), recovery (4), rest (5), other (7)
+- **Target types**: no.target (1), power.zone (2), cadence (3), heart.rate.zone (4), pace.zone (6)
+- **End condition**: time (2) — value in seconds
+- **Pace values**: in m/s (e.g., 5:00/km = 1000/300 = 3.333 m/s)
+
+### Exercise Catalog
+
+```bash
+# List all exercise categories
+gccli exercises list
+
+# List exercises in a category
+gccli exercises list -c BENCH_PRESS
+
+# Full catalog as JSON
+gccli exercises list --json
+```
+
+### Courses
+
+```bash
+gccli courses list                             # List all courses
+gccli courses favorites                        # List favorite courses
+gccli courses detail <id>                      # View full course detail
+gccli courses download <id>                    # Download course as FIT (default)
+gccli courses download <id> --format gpx       # Download course as GPX
+gccli courses download <id> -o ride.fit        # Download to a custom path
+gccli courses import route.gpx                 # Import GPX as new course (default: cycling, private)
+gccli courses import route.gpx --name "Ride"   # Import with custom name
+gccli courses import route.gpx --type hiking   # Override activity type
+gccli courses import route.gpx --privacy 1     # Import as public course
+gccli courses send <course-id> <device-id>     # Send course to a device
+gccli courses delete <id>                      # Delete a course
+gccli courses delete <id> -f                   # Delete without confirmation
+```
+
+### Devices
+
+```bash
+gccli devices list
+gccli devices settings <device-id>
+gccli devices primary
+gccli devices last-used
+gccli devices alarms
+gccli devices solar <device-id> --start 2024-06-01 --end 2024-06-30
+```
+
+### Gear
+
+```bash
+gccli gear list
+gccli gear stats <uuid>
+gccli gear activities <uuid> --limit 20
+gccli gear defaults
+gccli gear link <uuid> <activity-id>
+gccli gear unlink <uuid> <activity-id>
+```
+
+### Goals, Badges & Challenges
+
+```bash
+gccli goals list                  # active goals (default)
+gccli goals list --status past    # active, future or past
+gccli badges earned
+gccli badges available
+gccli badges in-progress
+gccli challenges list
+gccli challenges badge
+gccli records
+```
+
+### Profile
+
+```bash
+gccli profile
+gccli profile settings
+```
+
+### Hydration
+
+```bash
+gccli hydration [date]                 # View hydration data
+gccli hydration add 500                # Log 500ml of water
+gccli hydration add 500 --date 2024-06-15
+```
+
+### Nutrition
+
+```bash
+gccli nutrition [date]                 # View daily food log
+gccli nutrition meals [date]           # View meal summaries
+gccli nutrition settings [date]        # View nutrition settings
+```
+
+### Training Plans
+
+```bash
+gccli training plans --locale en
+gccli training plan <id>
+```
+
+### Events
+
+```bash
+gccli events list                      # List upcoming events
+gccli events list --start 2024-01-01 --limit 50
+gccli events list --limit 50 --offset 50  # Next page (--offset must be a multiple of --limit)
+# On every paginated command --limit must be at least 1 and --offset must not be negative (exit code 2).
+gccli events list --sort eventDate_desc
+gccli events delete <id>               # Delete an event (with confirmation)
+gccli events delete <id> -f            # Delete without confirmation
+
+# Add a race event
+gccli events add --name "Berlin Marathon" --date 2026-09-27 --type running \
+  --race --location "Berlin, Germany" --distance 42.195km \
+  --time 09:15 --timezone Europe/Berlin
+
+# Add an event with a goal and training priority
+gccli events add --name "Spring 10K" --date 2026-05-10 --type running \
+  --race --distance 10km --goal 40m --training
+```
+
+**Event flags:**
+- **Required:** `--name`, `--date` (YYYY-MM-DD, today, +30d), `--type` (running, trail_running, cycling, gravel_cycling, mountain_biking, swimming, triathlon, multi_sport, hiking, walking, fitness_equipment, motorcycling, winter_sport, other)
+- **Optional:** `--race`, `--location`, `--time` (HH:MM), `--timezone`, `--distance` (e.g. 10km, 26.2mi, 400m), `--private`, `--note`, `--url`
+- **Goal & training priority:** `--goal` (duration, e.g. 50m, 1h30m, 2400s), `--primary` or `--training` (mutually exclusive)
+
+### Wellness
+
+```bash
+gccli wellness menstrual-cycle --start 2024-01-01 --end 2024-03-31
+gccli wellness menstrual-summary --start 2024-01-01 --end 2024-03-31
+gccli wellness pregnancy-summary
+```
+
+### Data Reload
+
+```bash
+gccli reload                           # Reload today's data
+gccli reload 2024-06-15                # Reload specific date
+```
+
+### Shell Completion
+
+Generate completion scripts for your shell:
+
+```bash
+gccli completion bash
+gccli completion zsh
+gccli completion fish
+gccli completion powershell
+```
+
+To enable completions, add the appropriate line to your shell profile:
+
+**Bash** (`~/.bashrc`):
+```bash
+source <(gccli completion bash)
+```
+
+**Zsh** (`~/.zshrc`):
+```bash
+source <(gccli completion zsh)
+```
+
+**Fish** (`~/.config/fish/config.fish`):
+```fish
+gccli completion fish | source
+```
+
+**PowerShell** (`$PROFILE`):
+```powershell
+gccli completion powershell | Invoke-Expression
+```
+
+Completions cover all commands, subcommands, flags, and enum flag values (e.g. `--color auto|always|never`).
+
+## Output Formats
+
+### Table (default)
+
+Human-readable aligned columns:
+
+```bash
+$ gccli activities list --limit 3
+ID         DATE        TYPE     NAME             DISTANCE  DURATION  CALORIES
+123456789  2024-06-15  running  Morning Run      10.02 km  52:31     712
+123456780  2024-06-14  walking  Evening Walk     3.10 km   38:05     180
+123456771  2024-06-13  cycling  Cycling Workout  42.50 km  1:25:10   950
+```
+
+### JSON
+
+Machine-readable output for scripting and automation:
+
+```bash
+$ gccli --json activities list --limit 3
+[
+  {
+    "activityId": 123456789,
+    "activityName": "Morning Run",
+    "activityType": {"typeKey": "running"},
+    "startTimeLocal": "2024-06-15 07:30:00"
+  },
+  ...
+]
+```
+
+Data goes to stdout, errors and progress to stderr for clean piping:
+
+```bash
+gccli --json activities list --limit 100 | jq '.[] | select(.activityType.typeKey == "running")'
+```
+
+### Plain (TSV)
+
+Tab-separated values with no header row. Only the commands listed under [Output](#output) print TSV. Most other commands print JSON, also with `--plain`.
+
+```bash
+$ gccli --plain activities list --limit 3
+123456789	2024-06-15	running	Morning Run	10.02 km	52:31	712
+123456780	2024-06-14	walking	Evening Walk	3.10 km	38:05	180
+123456771	2024-06-13	cycling	Cycling Workout	42.50 km	1:25:10	950
+```
+
+## Examples
+
+### Export all runs from the last month
+
+```bash
+gccli --json activities search --start 2024-05-15 --end 2024-06-15 --limit 100 | \
+  jq -r '.[] | select(.activityType.typeKey == "running") | .activityId' | \
+  while read id; do
+    gccli activity download "$id" --format gpx --output "run_${id}.gpx"
+  done
+```
+
+### Daily health check script
+
+```bash
+gccli --json health summary | jq '{
+  steps: .totalSteps,
+  calories: .totalKilocalories,
+  distance_km: (.totalDistanceMeters / 1000),
+  active_minutes: .moderateIntensityMinutes + .vigorousIntensityMinutes
+}'
+```
+
+### Track weight over time
+
+```bash
+gccli --json body weigh-ins --start 2024-01-01 --end 2024-06-30 | \
+  jq -r '.dailyWeightSummaries[] | [.summaryDate, .weight.value] | @tsv'
+```
+
+### Download the latest activity
+
+```bash
+latest=$(gccli --json activities list --limit 1 | jq -r '.[0].activityId')
+gccli activity download "$latest" --format fit
+```
+
+## Global Flags
+
+All commands support these flags:
+
+| Flag | Description |
+| --- | --- |
+| `--account <email>` | Account to use (overrides `GCCLI_ACCOUNT` and config default) |
+| `--json`, `-j` | Output JSON to stdout |
+| `--plain` | Output TSV to stdout (only some commands, see [Output](#output)) |
+| `--color <mode>` | Color mode: `auto`, `always`, `never` (default: `auto`) |
+| `--units <system>` | Unit system for table and plain output: `auto`, `metric`, `statute_us`, `statute_uk` (default: `auto`, from the Garmin profile) |
+| `--version` | Print version information |
+| `--help` | Show help for any command |
+
+## Date Format Reference
+
+Many commands accept flexible date formats. Every `--start` and `--end` flag accepts all of them. A bad or empty date in one of these flags is a usage error (exit code 2).
+
+| Format | Example | Description |
+| --- | --- | --- |
+| `YYYY-MM-DD` | `2024-06-15` | Explicit date |
+| `today` | | Today's date |
+| `yesterday` | | Yesterday's date |
+| `Nd` | `3d`, `7d` | N days ago |
+| `+Nd` | `+30d` | N days ahead |
+
+## Development
+
+After cloning, install tools:
+
+```bash
+make tools
+```
+
+Build, test, and lint:
+
+```bash
+make build          # Build to ./bin/gccli
+make test           # Unit tests with race detector
+make lint           # golangci-lint
+make fmt            # Format with goimports + gofumpt
+make ci             # Full CI gate (fmt-check + lint + test)
+```
+
+Run individual tests:
+
+```bash
+go test -run TestFuncName ./internal/pkg/...
+```
+
+### E2E Tests (Live Garmin API)
+
+End-to-end tests hit the real Garmin Connect API. They require a `.env` file with test credentials:
+
+```bash
+cp .env.example .env
+# Edit .env with your test account credentials
+make test-e2e
+```
+
+**Warning:** E2E tests create and delete activities/workouts. Use a dedicated test account.
+
+## Architecture
+
+Platforms: macOS (amd64, arm64), Linux (amd64, arm64). macOS builds with CGO enabled for Keychain access.
+
+## License
+
+MIT
+
+## Links
+
+- [Garmin Connect](https://connect.garmin.com)
+
+---
+
+<sub>Not affiliated with Garmin. Garmin and Garmin Connect are trademarks of Garmin Ltd. or its subsidiaries.</sub>

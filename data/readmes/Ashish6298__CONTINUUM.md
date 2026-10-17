@@ -1,0 +1,671 @@
+<a id="top"></a>
+<div align="center">
+
+```text
+  █▀▀ █▀█ █▄ █ ▀█▀ █ █▄ █ █ █ █ █ █▀▄▀█
+  █▄▄ █▄█ █ ▀█  █  █ █ ▀█ █▄█ █▄█ █ ▀ █
+```
+### *AI Work Continuity & Cross-Model Agent Handoff System*
+
+<p align="center">
+  <b>An open-source engineering engine that captures, verifies, and packages your project state for seamless continuity across AI coding assistants and models such as Claude, GPT, Gemini, Cursor, Antigravity, Local LLMs, etc.</b>
+</p>
+
+```text
+  [01] Extract Physical State  ──►  [02] Arbitrate Ground Truth  ──►  [03] Build State DAG  ──►  [04] Package Handoff
+```
+
+<br/>
+
+<table>
+  <tr>
+    <td align="center"><a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=plastic&logo=python&logoColor=white" alt="Python 3.10+"/></a></td>
+    <td align="center"><a href="https://pypi.org/project/continuum-toolkit/"><img src="https://img.shields.io/badge/PyPI-v1.3.0-007EC6?style=plastic&logo=pypi&logoColor=white" alt="PyPI Package"/></a></td>
+    <td align="center"><a href="https://pepy.tech/projects/continuum-toolkit"><img src="https://static.pepy.tech/personalized-badge/continuum-toolkit?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads" alt="PyPI Downloads"/></a></td>
+    <td align="center"><a href="tests/"><img src="https://img.shields.io/badge/Tests-210%2F210_Passed-00C853?style=plastic&logo=checkmarx&logoColor=white" alt="Tests Passed"/></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="docs/ARCHITECTURE.md"><img src="https://img.shields.io/badge/Architecture-3--State_Engine-7F77DD?style=plastic&logo=diagramsdotnet&logoColor=white" alt="3-State Architecture"/></a></td>
+    <td align="center"><a href="https://json-schema.org/"><img src="https://img.shields.io/badge/Schema-Draft_7-2962FF?style=plastic&logo=json&logoColor=white" alt="JSON Schema"/></a></td>
+    <td align="center"><a href="#testing--verification"><img src="https://img.shields.io/badge/Privacy-Zero_Telemetry-17A2B8?style=plastic&logo=openaccess&logoColor=white" alt="Zero Telemetry"/></a></td>
+    <td align="center"><a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F5A623?style=plastic&logo=open-source-initiative&logoColor=white" alt="MIT License"/></a></td>
+  </tr>
+</table>
+
+<br>
+
+</div>
+
+## 🧭 Navigation
+
+<pre>
+# SYSTEM NAVIGATION MAP
+ ├── <b>[01] FOUNDATION & BENCHMARK</b>
+ │    ├── ❯ <a href="#what-is-continuum"><b>Overview & Core Problem</b></a>
+ │    ├── ❯ <a href="#whats-new-in-v130"><b>🚀 What's New in v1.3.0 (Context Preservation & Smart Digest)</b></a>
+ │    ├── ❯ <a href="#whats-new-in-v120"><b>What's New in v1.2.0 (Browser Companion & Web Suite)</b></a>
+ │    ├── ❯ <a href="#why-continuum-over-chat-summaries"><b>Benchmark: Continuum vs Chat Summaries</b></a>
+ │    └── ❯ <a href="#quick-start-guide"><b>1-Command Quickstart Guide</b></a>
+ │
+ ├── <b>[02] ARCHITECTURE & GROUND TRUTH</b>
+ │    ├── ❯ <a href="#three-state-separation-architecture"><b>3-State Separation Engine</b></a>
+ │    ├── ❯ <a href="#5-tier-evidence-hierarchy-matrix"><b>5-Tier Evidence Arbitration Matrix</b></a>
+ │    └── ❯ <a href="#canonical-state-graph-dag"><b>Canonical Dependency Graph (DAG)</b></a>
+ │
+ └── <b>[03] TOOLING & GOVERNANCE</b>
+      ├── ❯ <a href="#smart-omni-model-handoff-adapters"><b>Omni-Model Handoff Adapters</b></a>
+      ├── ❯ <a href="#complete-cli-reference"><b>Complete CLI Command Reference</b></a>
+      ├── ❯ <a href="#verified-roadmap-all-48-phases"><b>Roadmap to v1.2.0 (All 48 Phases)</b></a>
+      ├── ❯ <a href="#testing--verification"><b>Testing & Verification</b></a>
+      ├── ❯ <a href="#contributing"><b>Contributing Guide</b></a>
+      ├── ❯ <a href="#code-of-conduct"><b>Code of Conduct</b></a>
+      ├── ❯ <a href="#security"><b>Security & Privacy</b></a>
+      └── ❯ <a href="#license"><b>License</b></a>
+</pre>
+
+<br>
+
+<a id="what-is-continuum"></a>
+## 💡 What is Continuum?
+
+> **Continuum** is an open-source work continuity platform for multi-agent software engineering. It automatically extracts, arbitrates, and packages verified workspace state — enabling seamless, zero-drift handoffs across Claude, GPT-4o, Gemini, Cursor, and local LLMs.
+
+<br/>
+
+<table>
+  <tr>
+    <th width="28%" align="left"><b>Feature Pillar</b></th>
+    <th width="72%" align="left"><b>Architecture & Capabilities</b></th>
+  </tr>
+  <tr>
+    <td><b>🏛️ 3-State Engine</b></td>
+    <td>Strict ontological separation between <b>Project State</b> (AST symbols, files, tests), <b>Conversational State</b> (requirements, chat claims), and <b>Agent Execution State</b> (in-flight edits).</td>
+  </tr>
+  <tr>
+    <td><b>⚖️ 5-Tier Truth Matrix</b></td>
+    <td>Proof-grounded arbitration engine. When conversational claims conflict with codebase reality, physical evidence strictly takes precedence with automated contradiction logging.</td>
+  </tr>
+  <tr>
+    <td><b>🕸️ State Graph (DAG)</b></td>
+    <td>Topological Directed Acyclic Graph connecting milestones to code symbols. Automatically propagates <code>STALE</code> invalidations downstream when files change.</td>
+  </tr>
+  <tr>
+    <td><b>🤖 Omni-Model Handoff</b></td>
+    <td>Single-command generation of model-native context packages tailored for <b>Claude</b> (XML tagged), <b>GPT/Codex</b>, <b>Gemini</b>, and <b>Local LLMs</b>.</td>
+  </tr>
+  <tr>
+    <td><b>🛡️ Autonomous Governance</b></td>
+    <td>Background observer daemon paired with non-blocking Git commit hooks, SHA-256 state provenance, corruption self-healing, and 100% local zero telemetry.</td>
+  </tr>
+</table>
+
+<a id="whats-new-in-v130"></a>
+## 🚀 What's New in v1.3.0: Conversation Context Preservation & Smart Handoff Suite
+
+> **Continuum v1.3.0** permanently solves the **browser conversation context loss problem** across ChatGPT, Claude, Gemini, and DeepSeek. In earlier versions, long chats suffered from DOM virtualization and tail-slicing that collapsed handoffs to only the last message. v1.3.0 implements the complete **Triad Architecture (A + B + C)** with Smart Digest as default, guaranteeing zero history loss across 500+ turn conversations.
+
+<br/>
+
+<table>
+  <tr>
+    <th width="30%"><b>v1.3.0 Core Pillar</b></th>
+    <th width="70%"><b>Technical Architecture & Capabilities</b></th>
+  </tr>
+  <tr>
+    <td><b>⚡ 5-Tier Smart Digest Engine</b><br/><i>(Approach A)</i></td>
+    <td>
+      Replaces destructive character cuts and arbitrary tail slicing with a structured 5-tier context layout:
+      <ul>
+        <li><b>Tier 1 — Project Goal & Ground Intent</b>: Preserves the user's initial objective, technical stack, and architectural decisions established in Turn 1.</li>
+        <li><b>Tier 2 — Ground Truth Code Artifacts</b>: Deduplicates all generated code blocks into complete files. Cleanly omitted if a chat is purely architectural with no code.</li>
+        <li><b>Tier 3 — Milestone Progression Digest</b>: Chronologically condenses intermediate discussion turns into requirement adjustments and verified milestones.</li>
+        <li><b>Tier 4 — Active Conversation Trail</b>: Preserves recent 6–8 complete turns verbatim with exact error traces and instructions.</li>
+        <li><b>Tier 5 — Immediate Execution Directive</b>: Instructs the destination model on the immediate continuation target and forbids restarting from scratch.</li>
+        <li><b>Priority Overflow Policy</b>: Under token pressure, intermediate milestones condense first; active directives and verified code blocks are <b>never truncated</b>.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><b>🔄 In-Session Accumulator & Cold Recovery</b><br/><i>(Approach B)</i></td>
+    <td>
+      Turn-by-turn historical capture with multi-platform URL isolation:
+      <ul>
+        <li><b>URL Pattern Isolation</b>: Extracts native conversation UUIDs across ChatGPT (<code>/c/&lt;uuid&gt;</code>), Claude (<code>/chat/&lt;uuid&gt;</code>), Gemini (<code>/(?:app|prompts)/&lt;id&gt;</code>), and DeepSeek (<code>/a/&lt;id&gt;</code>).</li>
+        <li><b>Namespaced Storage</b>: Isolated <code>sessionStorage</code> keys (<code>continuum_chat_v130_${platform}_${id}</code>) with schema v1, bounded to 250 turns.</li>
+        <li><b>Streaming In-Place Updates</b>: Monitors streaming tokens and modifies the active assistant turn in-place without generating duplicate turn entries.</li>
+        <li><b>Bounded Cold-Start Recovery</b>: When DOM virtualization hides earlier turns, displays an incomplete history alert with an explicit <code>[Recover conversation history]</code> button. Executes a bounded upward sweep, pauses for DOM hydration, captures older turns, and restores the user's scroll position. <i>Never auto-scrolls silently.</i></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><b>🎛️ Three Context Modes & Live UI</b><br/><i>(Approach C)</i></td>
+    <td>
+      Context mode selector integrated into the floating companion modal (<code>Alt+C</code>):
+      <ul>
+        <li><b><code>⚡ Smart Digest</code> (Default, ~8,000 tokens)</b>: Balanced 5-tier synthesis for standard multi-model handoffs.</li>
+        <li><b><code>📜 Full History</code> (~24,000 tokens)</b>: Comprehensive chronological record of all captured turns verbatim.</li>
+        <li><b><code>🎯 Quick Task</code> (~2,500 tokens)</b>: Lean prompt focused strictly on the latest code snippet and immediate task.</li>
+        <li><b>Preference Persistence</b>: Remembers user's selected mode across browser restarts via <code>localStorage</code>.</li>
+        <li><b>Live Token Estimator & Preview Drawer</b>: Real-time token counter badge (<code>~N tokens</code>) and collapsible prompt preview drawer.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><b>🧹 Noise & Promotional Blurb Filtering</b></td>
+    <td>
+      <code>isPromotionalOrAdText()</code> automatically detects and strips search ads, sponsored cards, and hosting promos (e.g. <i>"Check VPS Plans & Pricing"</i>, <i>"Join 5M+ on Bluehost"</i>, <i>"Sponsored"</i>, <i>"Upgrade to Plus"</i>) from being ingested into session storage, milestone summaries, and continuation directives. Also deduplicates repeated milestone loops.
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<a id="whats-new-in-v120"></a>
+## 🚀 What's New in v1.2.0: In-Depth Feature Architecture
+
+> **Continuum v1.2.0** expands Continuum from an automated CLI AST extraction engine into a complete **Cross-Model AI Chat & Browser Continuity Ecosystem**. It bridges the gap between web-based AI chats (ChatGPT, Claude.ai, Gemini, DeepSeek) and local terminal IDE coding agents (Claude Code, Cursor, Codex, Antigravity).
+
+<br/>
+
+<table>
+  <tr>
+    <th width="30%"><b>v1.2.0 Feature</b></th>
+    <th width="70%"><b>Technical Architecture & Capabilities</b></th>
+  </tr>
+  <tr>
+    <td><b>🧩 1-Click Browser Companion</b></td>
+    <td>
+      Tampermonkey / Violentmonkey userscript (<code>browser/continuum.user.js</code>) and native Manifest V3 WebExtension (<code>browser/extension/</code>) running directly on ChatGPT, Claude.ai, Google AI Studio, Gemini, and DeepSeek.
+      <ul>
+        <li><b>DOM Conversation Extractor</b>: Intelligently scrapes conversational turns and code blocks across dynamic DOM trees without token truncation.</li>
+        <li><b>Shadow DOM UI</b>: Fully isolated UI badge (<code>Alt+C</code>) with live token stats, code block counters, and instant model switch buttons.</li>
+        <li><b>Cross-Tab Context Relay</b>: Auto-opens the target AI in a new tab and injects formatted context using synthetic <code>InputEvent</code> / <code>KeyboardEvent</code> dispatchers into ProseMirror, Monaco, and standard editors.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><b>🖥️ Local Web Control Dashboard</b></td>
+    <td>
+      Embedded, zero-dependency HTTP server (<code>server/daemon.py</code>) running at <code>http://127.0.0.1:8765</code> with automatic port fallback negotiation.
+      <ul>
+        <li><b>Visual State Graph Explorer</b>: Interactive topology inspector visualizing physical symbols, milestones, and test statuses.</li>
+        <li><b>Live Model Prompt Composer</b>: Real-time token budget calculator with instant format switching (Claude XML, GPT Checklist, Gemini Hierarchy, DeepSeek Compact).</li>
+        <li><b>Session Auth Guard</b>: Constant-time token verification (<code>X-Continuum-Token</code>, <code>Authorization: Bearer</code>) strictly bound to loopback interfaces.</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><b>🚀 Native Browser Launcher</b></td>
+    <td>
+      <code>continuum launch --target &lt;model&gt;</code> automatically discovers Chrome, Brave, and Edge binaries across Windows, macOS, and Linux, launching Chromium with the Continuum companion extension pre-loaded.
+    </td>
+  </tr>
+  <tr>
+    <td><b>🔖 Zero-Install 1-Click Bookmarklet</b></td>
+    <td>
+      <code>continuum bookmarklet</code> compiles a standalone, minified <code>javascript:</code> URI installer for enterprise or restricted environments where browser extensions cannot be installed.
+    </td>
+  </tr>
+  <tr>
+    <td><b>🔄 Bi-Directional Code Sync Engine</b></td>
+    <td>
+      <code>POST /api/workspace/sync</code> enables the browser companion to push generated code snippets directly back into workspace files with atomic write safety, automatic backups (<code>.bak</code>), and path traversal guards.
+    </td>
+  </tr>
+  <tr>
+    <td><b>📜 Multi-Turn Relay & Checkpoints</b></td>
+    <td>
+      <code>/api/checkpoints</code> manages multi-turn handoff lineage, capturing branching trails across 3+ AI models (e.g. ChatGPT ➔ Claude ➔ DeepSeek ➔ Gemini) with rollback and resume points.
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<a id="why-continuum-over-chat-summaries"></a>
+## ⚔️ Why Continuum over Chat Summaries?
+
+> Conversational summaries degrade across sessions because they record what agents *say*, not what exists on disk. Continuum replaces subjective chat memory with verified codebase state.
+
+```text
+[WITHOUT CONTINUUM]
+  Chat Logs ──► LLM Compression ──► Context Drift ──► Broken Agent Handoff ❌
+
+[WITH CONTINUUM]
+  Workspace ──► AST & Test Proof ──► 5-Tier Truth ──► Seamless Omni-Handoff ✅
+```
+
+### 📊 Capability Benchmark Matrix
+
+```text
+🔬 AST & Symbol Grounding
+   • Chat Summaries    ░░░░░░░░░░  [0/10]  (Zero Code Awareness)
+   • Custom Scripts    ████░░░░░░  [4/10]  (Regex / Naive Parsing)
+   • ⬢ CONTINUUM       ██████████  [10/10] (Polyglot AST & Full Symbol Resolution)
+
+⚖️ Contradiction Detection
+   • Chat Summaries    ░░░░░░░░░░  [0/10]  (Propagates Hallucinations)
+   • Custom Scripts    ░░░░░░░░░░  [0/10]  (No Conflict Ledger)
+   • ⬢ CONTINUUM       ██████████  [10/10] (5-Tier Proof Arbitration)
+
+🕸️ Dependency Graph (DAG)
+   • Chat Summaries    ░░░░░░░░░░  [0/10]  (Flat Text Memory)
+   • Custom Scripts    █░░░░░░░░░  [1/10]  (Ad-hoc File Lists)
+   • ⬢ CONTINUUM       ██████████  [10/10] (Topological DAG & Stale Propagation)
+
+📦 Omni-Model Handoffs
+   • Chat Summaries    ██░░░░░░░░  [2/10]  (Copy-Paste Prompts)
+   • Custom Scripts    ████░░░░░░  [4/10]  (Single-Model Output)
+   • ⬢ CONTINUUM       ██████████  [10/10] (Claude, GPT-4o, Gemini, Local LLMs)
+
+🛡️ State Self-Healing
+   • Chat Summaries    ░░░░░░░░░░  [0/10]  (Zero Recovery)
+   • Custom Scripts    ░░░░░░░░░░  [0/10]  (No Snapshots)
+   • ⬢ CONTINUUM       ██████████  [10/10] (Snapshot History & Auto-Recovery)
+
+⚡ 1-Command Workflow
+   • Chat Summaries    █░░░░░░░░░  [1/10]  (Manual Copy-Paste)
+   • Custom Scripts    █████░░░░░  [5/10]  (Custom Flags Required)
+   • ⬢ CONTINUUM       ██████████  [10/10] (Smart Auto-Init & Auto-Scan)
+```
+
+<br>
+
+<a id="quick-start-guide"></a>
+## ⚡ Quick Start Guide
+
+### 1. Installation
+
+```bash
+# Install via PyPI
+pip install continuum-toolkit
+
+# Or install from source
+git clone https://github.com/Ashish6298/CONTINUUM.git
+cd CONTINUUM
+pip install -e .
+```
+
+### 2. Choose Your Workflow
+
+```text
+                 █▀▀ █▀█ █▄ █ ▀█▀ █ █▄ █ █ █ █ █ █▀▄▀█
+                 █▄▄ █▄█ █ ▀█  █  █ █ ▀█ █▄█ █▄█ █ ▀ █
+
+             AI Work Continuity & Cross-Model Agent Handoff System
+  ─────────────────────────────────────────────────────────────────────────────
+
+  1. Terminal & IDE Coding Agents:
+
+     $ continuum handoff
+
+     • When to use: When your AI coding assistant (Claude Code, Cursor, Codex,
+       Antigravity) hits token limits, drifts from ground truth, or when you
+       want to switch to a different AI model without losing progress.
+
+     • Why to use:  Automatically captures workspace state, extracts AST symbols,
+       and generates verified, model-tailored handoff prompt packages.
+
+
+  2. Web Browser AI Chats (ChatGPT, Claude, Gemini, DeepSeek, Local LLMs, etc.):
+
+     $ continuum setup --browser
+
+     • When to use: When using web chat AI interfaces and you run out of context,
+       hit token exhaustion, or want to continue the discussion in another AI.
+
+     • Why to use:  1-Click installer for the Continuum browser companion that
+       lets you extract conversations and inject them across AI tabs seamlessly.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  v1.2.0   python 3.11.4   mit license   github.com/Ashish6298/CONTINUUM   
+```
+
+---
+
+### 3. Web Browser Workflow (1-Click Companion Setup)
+
+Run inside any project directory:
+
+```bash
+# 1-Click Browser Companion Setup (Opens Tampermonkey & Companion Installer)
+continuum setup --browser
+
+# Or launch local web dashboard & live REST API server
+continuum serve
+```
+
+- **Dashboard UI**: Open `http://127.0.0.1:8765` in your browser.
+- **In-Chat AI Injection**: Press **Alt+C** on ChatGPT, Claude.ai, Gemini, or DeepSeek to extract conversations and inject them across tabs in 1-click.
+
+---
+
+### 4. Terminal & IDE Coding Agent Workflow (Instant Handoff)
+
+Run inside any project directory — Continuum automatically scans your codebase, extracts AST symbols, builds the dependency graph, and creates your ready-to-resume AI handoff package:
+
+```bash
+continuum handoff
+```
+
+```text
+◈ [HANDOFF READY] Generated Omni-Model Continuity Package:
+
+  Location: D:\myproject\ai_handoff
+
+   ✦ Universal Handoff  →  D:\myproject\ai_handoff\handoff.md (Works for ANY model)
+
+   ✦ Claude Optimized   →  D:\myproject\ai_handoff\claude_handoff.md
+
+   ✦ GPT / Codex Plan   →  D:\myproject\ai_handoff\gpt_handoff.md
+
+   ✦ Gemini Hierarchy   →  D:\myproject\ai_handoff\gemini_handoff.md
+
+   ✦ Machine State      →  D:\myproject\ai_handoff\project-state.json
+
+➤ [NEXT ACTION] Paste this prompt into your next AI Agent chat:
+
+   "Read ai_handoff/handoff.md and continue the project."
+```
+
+<br>
+
+<a id="three-state-separation-architecture"></a>
+## 🏛️ Three-State Separation Architecture
+
+Continuum enforces strict separation between physical code truth and conversational assertions:
+
+```text
+  ┌──────────────────────────────┐  ┌──────────────────────────────┐  ┌──────────────────────────────┐
+  │  01. PHYSICAL PROJECT STATE  │  │  02. CONVERSATIONAL STATE    │  │  03. AGENT EXECUTION STATE   │
+  ├──────────────────────────────┤  ├──────────────────────────────┤  ├──────────────────────────────┤
+  │  • Physical Source Code      │  │  • User Intent & Goals       │  │  • Active Tactical Task      │
+  │  • Polyglot AST Symbol Tree  │  │  • Architectural Decisions   │  │  • In-Flight File Changes    │
+  │  • Git Working Tree & Diffs  │  │  • Agent Assertions & Claims │  │  • Transient Subprocess Logs │
+  │  • Test Suite Pass/Fail Logs │  │  • Unresolved Open Questions │  │  • Deterministic Next Action │
+  └──────────────┬───────────────┘  └──────────────┬───────────────┘  └──────────────┬───────────────┘
+                 │                                 │                                 │
+                 ▼                                 ▼                                 ▼
+  ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │              ⬢ CANONICAL STATE ENGINE (Topological DAG Graph)                    │
+  └──────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+<br>
+
+<a id="5-tier-evidence-hierarchy-matrix"></a>
+## ⚖️ 5-Tier Evidence Hierarchy Matrix
+
+When evidence sources conflict, Continuum arbitrates ground truth according to strict mathematical seniority:
+
+```text
+┌─ [L1] RUNTIME EXECUTION ────────────────────────────────────────────────────────┐
+│  Artifacts: TEST_RUN, BUILD_LOG, RUNTIME_LOG                     Weight: 100%   │
+│  Rule     : Absolute ground truth. Real execution exit codes govern status.     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+┌─ [L2] AST SYNTAX & FILES ───────────────────────────────────────────────────────┐
+│  Artifacts: SOURCE_CODE, AST_SYMBOL, MANIFEST                    Weight:  90%   │
+│  Rule     : Physical code exports override git commit messages and chat claims. │
+└─────────────────────────────────────────────────────────────────────────────────┘
+┌─ [L3] VERSION CONTROL DELTAS ───────────────────────────────────────────────────┐
+│  Artifacts: GIT_COMMIT, GIT_DIFF, GIT_STATUS                     Weight:  75%   │
+│  Rule     : Historical changes override unverified comments and documentation.  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+┌─ [L4] ARCHITECTURE DOCUMENTATION ───────────────────────────────────────────────┐
+│  Artifacts: DOCUMENTATION, CODE_COMMENT                          Weight:  50%   │
+│  Rule     : Informational context. Marked STALE when AST symbols change.        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+┌─ [L5] CONVERSATIONAL AGENT CLAIMS ──────────────────────────────────────────────┐
+│  Artifacts: CONVERSATION_ASSERTION, USER_REQUIREMENT             Weight:  25%   │
+│  Rule     : Unverified hypothesis until proven on disk by Levels 1-3.           │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+<br>
+
+<a id="canonical-state-graph-dag"></a>
+## 🕸️ Canonical State Graph (DAG)
+
+Continuum models all milestones, phases, AST symbols, requirements, and test suites as a topologically ordered Directed Acyclic Graph:
+
+```text
+  [MILESTONE] Core Architecture ──► [PHASE 0] Canonical Schema
+                                           │
+                    ┌──────────────────────┴──────────────────────┐
+                    ▼                                             ▼
+       [SERVICE] StorageManager                      [SERVICE] AstExtractor
+                    │                                             │
+                    ▼                                             ▼
+       [TEST] test_serialization.py                 [TEST] test_workspace_extractor.py
+       (Status: ✅ PASS)                            (Status: ✅ PASS)
+```
+
+```text
+┌─ GRAPH ENGINE CAPABILITIES ─────────────────────────────────────────────────────────────┐
+│  • Topological Invalidation : Modifying a service automatically marks downstream tests  │
+│                               and modules as STALE.                                     │
+│  • Cycle Detection & Guard  : Circular dependency insertions (A -> B -> A) are blocked │
+│                               at graph construction time.                               │
+│  • Subgraph Extraction      : AI context selectors extract minimal task-relevant slices │
+│                               to stay within LLM token budgets.                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+<br>
+
+<a id="smart-omni-model-handoff-adapters"></a>
+## 🤖 Smart Omni-Model Handoff Adapters
+
+Running `continuum handoff` compiles verified project state into 5 specialized model formats:
+
+```text
+  $ continuum handoff
+           │
+           ├── 🌐 [UNIVERSAL]   ──►  handoff.md          (Works for ANY model out of the box)
+           ├── 🟣 [CLAUDE]      ──►  claude_handoff.md   (Strict Anthropic XML tag hierarchy)
+           ├── 🟢 [GPT/CODEX]   ──►  gpt_handoff.md      (OpenAI plan-first step checklists)
+           ├── 🔵 [GEMINI]      ──►  gemini_handoff.md   (DeepMind hierarchical ontology)
+           └── ⚙️  [MACHINE]     ──►  project-state.json  (Machine-parseable Schema 1.0.0 AST)
+```
+
+<br>
+
+<a id="complete-cli-reference"></a>
+## 💻 Complete CLI Command Reference
+
+```bash
+# ── 1. INITIALIZATION & WORKSPACE ───────────────────────────────────────────
+$ continuum init [--path .]                # Initialize .continuum storage & Git hooks
+$ continuum scan [--path .]                # Full workspace AST extraction & DAG rebuild
+
+# ── 2. STATE INSPECTION & GRAPH ─────────────────────────────────────────────
+$ continuum status [--path .] [--json]     # Print verified project state & next action
+$ continuum graph [--mermaid] [--stats]    # Inspect DAG structure or export Mermaid
+
+# ── 3. AI HANDOFF GENERATION ────────────────────────────────────────────────
+$ continuum handoff                        # Auto-scan & generate Omni-Model handoffs
+$ continuum handoff --model claude         # Tailor specifically for Anthropic Claude
+$ continuum handoff --model gpt            # Tailor for OpenAI GPT-4o / Codex
+$ continuum handoff --model gemini         # Tailor for Google Gemini Pro
+
+# ── 4. BROWSER COMPANION & 1-CLICK SETUP ──────────────────────────────────
+$ continuum setup --browser                # 1-Click Tampermonkey & Companion installer
+$ continuum browser --install              # Launch browser setup wizard
+$ continuum launch                         # Auto-launch Chrome with Continuum pre-loaded
+$ continuum launch --target claude         # Launch directly into Claude.ai
+$ continuum launch --target gemini         # Launch directly into Google Gemini
+$ continuum launch --target deepseek       # Launch directly into DeepSeek Chat
+$ continuum launch --dry-run               # Inspect browser discovery without launch
+$ continuum bookmarklet                    # Print zero-install browser bookmarklet URI
+$ continuum bookmarklet --html ./card.html # Generate interactive drag-and-drop installer
+
+# ── 5. LOCAL WEB CONTROL DASHBOARD & REST API ──────────────────────────────
+$ continuum serve                          # Launch Local Web Dashboard & REST API
+$ continuum serve --port 8765              # Launch on custom port (auto-fallback enabled)
+$ continuum serve --no-browser             # Start headless daemon without opening browser
+$ continuum serve --watch                  # Enable live background filesystem observation
+$ continuum serve --status                 # Inspect running web daemon status & auth token
+$ continuum serve --stop                   # Gracefully terminate active web daemon
+
+# ── 6. BACKGROUND OBSERVER DAEMON ───────────────────────────────────────────
+$ continuum daemon start                   # Start background filesystem observer
+$ continuum daemon status                  # Check background daemon health & cycles
+$ continuum daemon run-once                # Trigger a single incremental scan pass
+$ continuum daemon stop                    # Gracefully stop the background daemon
+```
+
+<br>
+
+<a id="verified-roadmap-all-48-phases"></a>
+## 🗺️ Architecture Milestones & Verification
+
+Project Continuum v1.3.0 is fully certified with **210 / 210 automated tests passing (100%)** across all core CLI, Browser Companion, and Context Preservation roadmap phases:
+- **Milestones 1–8 (Phases 0–23):** Core Engine, AST Extractors, DAG State Graph, Contradiction Ledger, and Omni-Model CLI Handoffs.
+- **Milestones 24–30 (Phases 25–37):** Web Control Dashboard, REST API Daemon, Secret Sanitizer, and Security CORS Guards.
+- **Milestones 31–34 (Phases 38–48):** Browser-to-Browser Cross-Model Handoff Companion, Native Manifest V3 WebExtension (`browser/extension/`), CLI Browser Launcher (`continuum launch`), Zero-Install Bookmarklet (`continuum bookmarklet`), Bi-Directional Code Sync (`/api/workspace/sync`), Multi-Turn Handoff History & Checkpointing (`HandoffCheckpointManager`, `/api/checkpoints`), Automated Browser Companion Test Suite (`tests/test_browser_companion.py`), and General Availability Release Validation (`tests/test_ga_validation.py`).
+- **Milestone 35 (Phase 49):** Conversation Context Preservation & Smart Handoff Suite — In-Session `MutationObserver` Accumulator, URL pattern conversation isolation, streaming in-place updates, explicit bounded cold-start recovery, 5-Tier Smart Digest compression engine, 3 context modes (`smart_digest`, `full_history`, `quick_task`), and ad/promotional content suppression (`tests/test_conversation_context_preservation.py`, `tests/test_companion_runner.js`).
+
+Detailed engineering reports and verification logs are available in [docs/reports/](docs/reports/).
+
+<br>
+
+<a id="testing--verification"></a>
+## 🧪 Testing & Enterprise Security
+
+```bash
+$ py tests/run_all_tests.py    # 210/210 Passed (100% Test Coverage across all 49 Phases)
+```
+
+```text
+┌─ SECURITY & PRIVACY CONTROLS ────────────────────────────────────────────────────────────┐
+│  • Zero Telemetry      : 100% offline local processing with no external telemetry.       │
+│  • Secret Sanitization : Automatically detects and strips API keys and credentials.      │
+│  • Workspace Boundary  : Strict path-traversal prevention locking access to workspace.   │
+│  • Atomic Swaps        : Crash-safe state serialization preventing corrupted files.      │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+<br>
+
+<a id="contributing"></a>
+## 🤝 Contributing
+
+We welcome contributions from developers and researchers building the future of cross-model AI work continuity and agent handoffs.
+
+**1. Clone Repository**
+```bash
+git clone https://github.com/Ashish6298/CONTINUUM.git
+```
+
+```bash
+cd CONTINUUM
+```
+
+**2. Create a Feature Branch**
+```bash
+git checkout -b feature/ast-symbol-extractor
+```
+
+**3. Setup Virtual Environment**
+```bash
+python -m venv .venv
+```
+
+```bash
+# On Windows:
+.venv\Scripts\activate
+
+# On macOS / Linux:
+source .venv/bin/activate
+```
+
+**4. Install Development Dependencies**
+```bash
+pip install -e ".[dev]"
+```
+
+**5. Run Automated 24-Phase Test Suite**
+```bash
+py tests/run_all_tests.py
+```
+
+**6. Verify Architectural Invariants**
+```text
+┌─ ARCHITECTURAL INVARIANTS ───────────────────────────────────────────────────────────────┐
+│  • 3-State Separation : Physical workspace state is never mutated by chat claims.         │
+│  • Zero Telemetry     : 100% offline local processing with no external network calls.     │
+│  • Atomic Persistence : All state writes use crash-safe atomic swaps (.tmp -> replace).   │
+└───────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**7. Commit & Open a Pull Request**
+```bash
+git commit -m "feat(extractors): add support for rust AST parser"
+```
+
+For complete architectural specifications, commit rules, and PR checklists, read **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+
+<br>
+
+<a id="code-of-conduct"></a>
+## 📜 Code of Conduct
+
+Project Continuum strictly enforces the **Contributor Covenant v2.1** across all issues, pull requests, and community discussions.
+
+```text
+COMMUNITY GOVERNANCE STANDARDS
+ ├── 🌟 CORE PLEDGE       ──►  Harassment-free experience regardless of background
+ ├── 🤝 COLLABORATION     ──►  Constructive feedback & focus on what is best for the project
+ └── ⚖️ ENFORCEMENT LADDER ──►  Correction ──► Warning ──► Temporary Ban ──► Permanent Ban
+```
+
+Detailed enforcement guidelines and reporting steps are available in **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**.
+
+<br>
+
+<a id="security"></a>
+## 🛡️ Security & Privacy
+
+Continuum is built around verifiable, non-negotiable security invariants:
+
+```text
+STATUS       INVARIANT                 ENFORCEMENT GUARANTEE
+──────────   ───────────────────────   ─────────────────────────────────────────────────────
+[ENFORCED]   Zero External Telemetry   100% offline execution; no network calls or telemetry
+[ENFORCED]   Secret Sanitization       Automatic regex & entropy masking for sensitive keys
+[ENFORCED]   Workspace Containment     Rejection of symlinks and paths escaping root
+[ENFORCED]   Atomic State Swaps        Zero partial writes; crash-safe file serialization
+```
+
+Read our complete policy and disclosure process in **[SECURITY.md](SECURITY.md)**.
+
+<br>
+
+<a id="license"></a>
+## ⚖️ License
+
+Project Continuum is open-source software licensed under the **[MIT License](LICENSE)**.
+
+---
+
+<div align="center">
+
+```text
+┌─ SUPPORT & COMMUNITY ────────────────────────────────────────────────────────────────────┐
+│  ⭐ Star the Repo : Support open-source AI continuity on GitHub                          │
+│  🐛 File an Issue : Report bugs, feature requests, or AST extractor ideas                │
+│  💬 Discussions   : Share your multi-agent handoff setups & workflows                    │
+│  ▲ Return to Top  : Jump back to system navigation & command reference                   │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+<p align="center">
+  <a href="#top"><b>[ ▲ BACK TO TOP ]</b></a> &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/Ashish6298/CONTINUUM"><b>[ ⭐ STAR REPOSITORY ]</b></a> &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/Ashish6298/CONTINUUM/issues"><b>[ 🐛 REPORT ISSUE ]</b></a>
+</p>
+
+<sub>Project Continuum • Open-Source AI Work Continuity & Cross-Model Agent Handoff System</sub>
+
+</div>
+

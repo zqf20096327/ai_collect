@@ -1,0 +1,462 @@
+# AttackGen
+
+AttackGen is a cybersecurity incident response testing tool that leverages the power of large language models and the comprehensive MITRE ATT&CK and ATLAS frameworks. The tool generates tailored incident response scenarios based on user-selected threat actor groups, AI attack case studies, and your organisation's details.
+
+## Table of Contents
+- [Star the Repo](#star-the-repo)
+- [Features](#features)
+- [Releases](#releases)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [LangSmith Setup](#langsmith-setup)
+- [Data Setup](#data-setup)
+- [Running AttackGen](#running-attackgen)
+- [MCP Server](#mcp-server)
+- [Agent Skills](#agent-skills)
+- [Usage](#usage)
+- [Security Best Practices](#security-best-practices)
+- [Contributing](#contributing)
+- [Licence](#licence)
+
+## Star the Repo
+If you find AttackGen useful, please consider starring the repository on GitHub. This helps more people discover the tool. Your support is greatly appreciated! ⭐
+
+
+## Features
+
+- Generates unique incident response scenarios based on chosen threat actor groups or ATLAS case studies.
+- Allows you to specify your organisation's size and industry for a tailored scenario.
+- Supports MITRE ATT&CK Enterprise, ICS (Industrial Control Systems), and ATLAS (Adversarial Threat Landscape for AI Systems) frameworks.
+- Displays a detailed list of techniques used by the selected threat actor group or case study.
+- Create custom scenarios based on a selection of ATT&CK or ATLAS techniques.
+- Use scenario templates to quickly generate custom scenarios based on common types of cyber incidents, including AI/ML-specific attack patterns.
+- Generate **AI Insider Threat Scenarios** - incident response exercises in which a frontier AI agent deployed inside your organisation behaves as an insider threat, based on the threat model from [*Actions Speak Louder Than Tokens: An Insider Threat Model for Frontier AI Agents*](https://ai-insider-threat.matt-adams.co.uk). Scenarios are shaped by the agent's deployment archetype (autonomy level), threat category, STRIDE threats, and an optional free-text scenario seed.
+- AttackGen Assistant - a chat interface for updating and/or asking questions about generated scenarios, with a direct route back to the page the scenario came from.
+- Guided setup: every page shows the same **Setup** sidebar, lists every outstanding requirement in one readiness summary, and keeps **Generate** disabled until the workflow is ready.
+- Results persist for the session: each scenario page keeps its own latest result, its captured inputs and its downloads across reruns and navigation, and only an explicit **Regenerate** or **Clear result** replaces or removes it.
+- Long scenarios come with a compact summary and section navigation, including shortcuts to the injects, success criteria, metrics, artefacts and rules of engagement a facilitator runs the exercise from.
+- Capture user feedback on the quality of the generated scenarios.
+- Downloadable scenarios in Markdown format.
+- Use the OpenAI API, Anthropic API (Claude models), Google AI API, Mistral API, Groq API, or any custom OpenAI-compatible endpoint (Ollama, LM Studio, Azure OpenAI, OpenRouter, etc.) to generate incident response scenarios. All providers are routed through [LiteLLM](https://github.com/BerriAI/litellm) behind a single internal wrapper, so adding a new model is a one-line change.
+- Available as a Docker container image for easy deployment.
+- Optional integration with [LangSmith](https://docs.smith.langchain.com/) for powerful debugging, testing, and monitoring of model performance.
+- Secure credential management using .env file for API keys and secrets.
+
+![AttackGen Screenshot](./images/screenshot.png)
+
+## Releases
+
+### v0.17
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Apply Assistant Refinements to the Downloads | - Changes Reach the Files: The Assistant's chat used to refine a conversation only, so the scenario and Detection & Response downloads never changed. A new **Apply changes to downloads** button rewrites them from the conversation, in a dedicated model call that returns the complete revised document. In **Scenario + Detection & Response** mode it revises both, each given the other's current text so they stay aligned.<br><br>- The Reference Section Stays Exact: A Detection & Response apply rewrites only the narrative. The deterministic detection and mitigation reference drawn from the ATT&CK data is carried over byte for byte. The Navigator layer is not regenerated and is captioned as reflecting the original scenario's techniques.<br><br>- Safe to Try: An empty reply from the model is refused with no changes made. The scenario page and the Assistant both caption a refined result with the time of the last apply, and **Revert to original** restores the scenario and narrative together.<br><br>- Download Where You Edit: The Assistant now offers the same **Download Scenario** and **Download Detection & Response** buttons as the scenario page.<br><br>- One Conversation per Scenario: Each chat belongs to the scenario it is about, so a newly generated scenario starts a fresh conversation, and the whole history stays visible after an apply. |
+| Guided, Resilient Scenario Workflow | - Readiness Before the Click: Every page now lists what is still missing — the page's own selection first, then any incomplete Setup field — and keeps **Generate** disabled until nothing is outstanding, so a click is never spent discovering a validation error.<br><br>- Options Before the Action: The AI-enhanced adversary and purple-team toggles sit above **Generate**, with the purple-team option stating that it makes a second model call.<br><br>- Confirm Before You Spend: A one-line summary of the framework, organisation profile, selection and modifiers is shown before generation starts.<br><br>- Results That Survive Navigation: Each page keeps its own latest result, the inputs that produced it and its download names for the session — open the Assistant and come back and the scenario, its Navigator layer and its Detection & Response report are still there. Editing the form leaves the result in place with a note that your selections have moved on; **Regenerate** and **Clear result** are explicit actions.<br><br>- Find Your Way Around a Long Scenario: A compact summary and section index sit above the full Markdown, with shortcuts to injects, discussion questions, success criteria, metrics, artefacts and rules of engagement.<br><br>- Useful Empty States: With no scenario, the Assistant links to all three ways to create one; with one, it names the scenario it is discussing and links back to the page that generated it. |
+| Recover From a Failed or Slow Narrative | - Keep What Worked: If the optional purple-team narrative fails or is stopped, the base scenario, its downloads, the Navigator layer and the deterministic Detection & Response reference stay fully usable, with a message saying what failed.<br><br>- Retry Only What Failed: **Retry purple-team narrative** reruns the narrative alone, with no second base-scenario call, and merges it into the Detection & Response view and download. A failed base scenario offers its own retry using the inputs captured at **Generate**.<br><br>- A Timer That Keeps Moving: The elapsed time now advances while waiting for a model's first token, so a long wait no longer looks like a hang. |
+| Clearer Failures When Techniques Won't Load | - Failures Reported as Failures: A threat group whose technique lookup fails is no longer shown as a group with no techniques, and Custom Scenarios no longer hides its technique picker and asks you to select techniques when the list failed to load.<br><br>- A Next Step, Not a Dead End: Both blockers now say what you can do about the failure. |
+| Accessibility and Leaner Copy | - Keyboard and Screen-Reader Friendly: Icon-only controls have meaningful accessible names, form labels are unique, and keyboard order and focus are visible and logical. The layout no longer overflows horizontally at phone width, and the empty theme-colour console warnings are gone.<br><br>- Checked in CI: Real-browser smoke tests for console hygiene and accessibility now run on every pull request and gate the release image.<br><br>- Less to Read: The scenario pages no longer repeat the pre-flight summary in a second expander or explain their own state management. |
+| Model Registry Refresh | - Latest Models: The model list is refreshed against each provider's current docs — **GPT-6 Astra** heads the OpenAI list, **Claude Opus 5.5**, **Claude Opus 5** and **Claude Fable 5.1** join the Anthropic one, and Google gains **Gemini 3.8 Flash** alongside **Gemini 3.5 Flash Lite**, with one prior generation kept for continuity in each case. Anthropic's list now leads with **Claude Opus 5.5** — the sidebar's default when you haven't picked one — rather than the pricier Fable 5.1.<br><br>- Removed Retired Entries: Dropped ids the providers have superseded or shut down — Claude Opus 4.7 and 4.8 (more than one Opus generation back once Opus 5.5 lands) and Groq's `llama-3.3-70b-versatile` and `llama-3.1-8b-instant` (both shut down 16 Aug 2026) — so the sidebar can't offer a model that only errors once you press **Generate**. Groq's open-weight reasoning tier is now `qwen/qwen3.8-27b`.<br><br>- Temperature Rule Kept Honest: `supports_temperature` is set from each Anthropic model's actual sampling behaviour — every Claude from 4.7 on rejects a custom temperature, and Haiku 4.5 remains the only listed model that accepts one. The test guarding this now fails when a new Anthropic entry omits the flag, rather than only when someone sets it by hand. |
+| Platform & Security Housekeeping | - Python 3.11 Minimum: Python 3.10 is no longer supported. LiteLLM 1.98.0 and later import a typing feature that only exists from 3.11.<br><br>- Patched Base Image: The Docker image is rebuilt on a current `python:3.14-slim`, clearing the Debian base-image CVEs flagged by Trivy, including three critical ones in `perl-base`.<br><br>- Real Errors From Failed Calls: `tenacity` is now declared, so a failed model call reports the provider's actual error (for example an invalid API key) instead of an instruction to install `tenacity`.<br><br>- Feedback Stays With Its Scenario: A rating is recorded against the run that produced the scenario on screen, never another page's latest run. |
+
+<details>
+<summary>Earlier releases (v0.16 and older)</summary>
+
+### v0.16
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Base-Scenario-First Generation | - Scenario Before the Wait: Generation now runs in phases — the base scenario renders first with its **Download Scenario** and **Download ATT&CK Navigator Layer** buttons already live, and the optional purple-team narrative streams in afterwards. If that second pass is slow, or you don't need it, the scenario is usable straight away rather than withheld until everything finishes.<br><br>- Inputs Frozen at Generate: Each run works from a snapshot taken the moment you press **Generate**, so changing the sidebar mid-run can't half-rewrite the scenario being produced.<br><br>- Honest Progress: A running elapsed-time label and named phases — preparing inputs, generating the base scenario, building the deterministic exports, generating the purple-team narrative — show where a long run has actually got to. |
+| Neutral, Dead-End-Free Selectors | - Only Options That Work: The threat-group and case-study selectors now offer only the choices that actually produce a scenario, so a selection can no longer lead to a dead end.<br><br>- Natural Ordering: Groups sort in natural numeric order, so APT3 comes before APT28 and APT30 rather than being sorted as text and landing between them. |
+| Shared Setup Sidebar on Every Page | - Set Up Once: Provider, model, framework, industry and company size now live in a single shared **Setup** sidebar on every scenario page — Threat Group, Custom and AI Insider Threat — instead of being re-entered on each one.<br><br>- Survives Navigation: Non-secret selections persist as you move between pages and are mirrored to the URL, while API keys are deliberately kept out of the query string. |
+| Platform & Security Housekeeping | - MCP on the 2.x SDK: The MCP server has moved to the `mcp` 2.x SDK.<br><br>- Newer Base Image: The Docker image is now built on `python:3.14-slim`.<br><br>- CI Gates Rather Than Warns: The security scans now fail the build on findings instead of only reporting them — pip-audit and Bandit gate, Trivy no longer miscounts pip's vendored SBOM as installed packages, and the actionable image CVEs are cleared. GitHub Actions have moved off the Node 20 runtime and Dependabot now tracks the workflow actions themselves. |
+
+### v0.15
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Evaluation Environment Escape Preset & Scenario Seed | - Rehearse a Specific Incident: A new AI insider-threat template rehearses an evaluation agent reaching real systems from an environment assumed to be isolated — forcing containment, credential rotation, third-party notification and evidence preservation. It covers the July 2026 disclosures of eval agents escaping their sandboxes, where the isolation boundary was *assumed* rather than enforced.<br><br>- Templates Now Reach the Prompt: Quick-start templates previously only pre-filled the page's widgets and never influenced the generated scenario. They now carry a narrative `brief` and the `required_decisions` the Discussion Questions must force, both threaded into the prompt — so a template produces a usable timed tabletop rather than a grab-bag of questions. This splits them into two classes: the six original **archetype** templates set decisions only, so the model invents the premise and re-running one yields a fresh exercise for the same threat profile; **incident** templates also set a brief, pinning the situation.<br><br>- Free-Text Scenario Seed: An optional seed box on the AI Insider Threat page steers the narrative on any scenario. Selecting a template pre-fills it, and you can edit it or write your own from scratch.<br><br>- Taxonomy Extended to 27 Threats / 6 Categories: Adds a sixth threat category (**Containment & Third-Party Impact**) and four STRIDE threats the exercise turns on — `S5` reusable workload credential replay, `R4` agent-side telemetry suppression, `I5` third-party & downstream compromise, and `E5` containment boundary assurance failure. AttackGen now *extends* the published threat model rather than mirroring it.<br><br>- Templates Usable Over MCP: `get_ai_insider_prompt` and `generate_ai_insider_scenario` accept `template=` and `scenario_seed=`, and `list_ai_insider_options` returns each template with the selections and brief it applies — so a client can pick a preset on merit and call with just a template, industry and company size. Previously the template names were listed but no tool accepted one. |
+| attackgen-tabletop Skill: AI Insider-Threat Path | - A Second Exercise Path: The [Agent Skill](skills/) now builds a tabletop from the AI insider-threat model as well as from a MITRE kill chain. Pick a quick-start template (or a deployment archetype and threat categories) and it turns `get_ai_insider_prompt`'s payload into an MSEL.<br><br>- Same Shape, Different Spine: The exercise keeps the same six sections, but the kill-chain table becomes an agent profile and STRIDE threat scope, the detection scorecard is judged against the deployment archetype's detection posture — so the rows that *wouldn't* fire become the finding — and the template's required decisions become mandatory discussion questions.<br><br>- Path Chosen for You: The skill's description now triggers on rogue-agent phrasing, so asking for an "AI insider threat tabletop" reaches the right path. An external actor with AI-accelerated tradecraft stays on the MITRE path.<br><br>- Response, Not Exploit: Both paths are explicitly bounded to rehearsing the decisions a response team must make — no exploit code, payloads or real unpatched vulnerabilities — and the AI path attributes agent behaviour to configuration, access and objective rather than human motive. |
+| Fix: MCP AI-Insider Prompts Dropped the Agent Capabilities | - Same Template, Same Prompt: The frontier-agent capability block — the benchmark-grounded lines that make an AI insider scenario credible — was omitted from every `get_ai_insider_prompt` / `generate_ai_insider_scenario` call that didn't name `capabilities` explicitly. No template supplies them, so the argument fell through to empty and the prompt substituted a generic "assume a capable frontier coding agent" line, while page 3 sent all four for the same template.<br><br>- Defaults Now Match the App: Omitting `capabilities` applies the full set, as the page's multiselect does. Passing `[]` still leaves them unspecified, so the deliberate opt-out is unchanged. |
+| Fix: Anthropic Claude 4.7+ scenario generation | - Every Claude Model Works Again: Claude 4.7 and later reject any sampling `temperature`, returning `BadRequestError: 'temperature' is deprecated for this model`. Four of the five listed Anthropic models — Fable 5, Opus 4.8, Sonnet 5 and Opus 4.7 — could not generate a scenario on any page; only Haiku 4.5 worked.<br><br>- Gated Per Model, Not Per Provider: The temperature rule was previously routed from the provider, which cannot express a provider whose models disagree. `ModelInfo.supports_temperature` now marks the models that reject one, so Haiku 4.5 keeps its configured temperature while its siblings omit it. OpenAI stays a provider-level rule (every current chat model is a reasoning model), and unregistered models — local Ollama / LM Studio endpoints — still receive a temperature. |
+
+### v0.14
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| MCP Server for Agentic Clients | - Scenario Generation as Tools: A new FastMCP server (`mcp_server.py`, official `mcp` SDK) exposes AttackGen to agentic clients over stdio, so an assistant like Claude Code or Claude Desktop can pull MITRE data and generate scenarios without the Streamlit UI.<br><br>- Two Tiers: **Data tools** (`list_threat_groups`, `list_case_studies`, `get_kill_chain`, `get_detection_report`, `get_navigator_layer`, `list_ai_insider_options`, `get_ai_insider_prompt`) make no LLM call and need no API key — they return structured MITRE data and, where useful, a ready-to-run prompt, so they're safe to host over HTTP. **Generate tools** (`generate_threat_group_scenario`, `generate_custom_scenario`, `generate_ai_insider_scenario`) take a bring-your-own-key config and return finished Markdown — keep these on local stdio.<br><br>- Shared Implementation: The server reuses the same headless `core/prompts.py` builders and `core/attack_data.py` loaders the Streamlit pages use, so scenarios match the app rather than drifting. Launch with `python -m mcp_server` or the `attackgen-mcp` console script. |
+| attackgen-tabletop Agent Skill | - Facilitator-Ready Tabletops: A new [Agent Skill](skills/) builds on the MCP data tools to turn a MITRE ATT&CK/ATLAS threat group or case study into a full IR tabletop / MSEL — scenario narrative, phase-mapped kill chain, timestamped injects, NIST SP 800-61 discussion questions and a detection-coverage scorecard.<br><br>- Runs on the Caller's Model: The skill supplies the exercise craft while the MCP server supplies the data, so it runs on the client's own model with no additional API key.<br><br>- Two Output Formats: Delivered as Markdown (default) or a self-contained, print-friendly HTML report. |
+| Assistant Refines the Detection & Response Output | - Purple-Team Editing: The AttackGen Assistant can now refine the **Detection & Response** narrative, not just the scenario. When a scenario is generated with the 🟣 Purple-team narrative toggle (Threat Group / Custom pages), an **Editing:** selector appears on the Assistant page so the chat can target either the scenario or the defender's walkthrough — previously the Assistant only had the scenario text.<br><br>- Combined Editing Mode: A third **Scenario + Detection & Response** target refines both together, so a cross-cutting change — a different industry, threat actor, technique or timeline — is applied consistently across the attacker's scenario and the defender's narrative rather than being made twice and drifting apart.<br><br>- Deterministic Facts Untouched: Only the LLM narrative is a refinement target; the local STIX detection join is never LLM-edited. Each editing mode keeps its own chat history, and the combined pass is tagged `purple_team_narrative` in LangSmith. |
+| Simpler Model Registry | - One Less Thing Per Model: The `max_completion_tokens` kwarg and the reasoning-model temperature rule are now routed from the **provider** rather than a per-model `uses_max_completion_tokens` flag — every current OpenAI chat model uses them, so the flag duplicated a fact the provider key already captured. Adding a new OpenAI model stays a one-entry edit to `MODELS`, with no extra flag to remember.<br><br>- No Behaviour Change: An internal simplification only — the wrapper builds identical LiteLLM kwargs for every current model. |
+
+### v0.13.1
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Fix: OpenAI GPT-5.x scenario generation | - Correct Reasoning-Model Handling: OpenAI's GPT-5.x reasoning models reject any sampling `temperature` other than their default, so every GPT-5.x generation was failing with `BadRequestError: 'temperature' does not support 0.7 with this model`. AttackGen no longer sends a custom temperature to these models, while other providers keep the configured value. |
+| Model registry refresh | - Latest Models: Refreshed the model list against each provider's current docs — **OpenAI GPT-5.6** (Sol / Terra / Luna tiers), **Claude Fable 5** and **Claude Sonnet 5**, with one prior generation kept per provider for continuity.<br><br>- Removed Stale Entries: Dropped models that providers have superseded or are retiring — notably Groq's `qwen3-32b` (shut down 17 Jul 2026) and Mistral's Magistral Medium — so the sidebar can't offer a model that errors on selection.<br><br>- Added a fast/cheap Groq tier (`llama-3.1-8b-instant`). |
+
+### v0.13
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Purple-Team Mode: Detection & Response | - Defensive Companion: Every Threat Group and Custom scenario now surfaces a **Detection & Response** section that joins each of the scenario's techniques to the MITRE ATT&CK detection strategies, analytics, log sources and mitigations already in the shipped data — turning a red-only narrative into a purple-team exercise ("here's the attack, and here's exactly what your SOC should have seen").<br><br>- No LLM Call for the Facts: The detection section is a **local data join**, not a model call — so the analytics, log sources and mitigations it lists are the real, current MITRE content rather than model guesses. It's offered as its own `..._detection.md` download alongside the scenario and layer.<br><br>- Log Sources to Enable: A per-scenario roll-up lists the distinct log sources the detections read (e.g. `WinEventLog:Security (EventCode=4624)`), so a SOC can see at a glance what telemetry the exercise assumes.<br><br>- Optional Purple-Team Narrative: A per-page **🟣 Purple-team narrative** toggle adds a second model pass that walks the scenario stage by stage from the defender's side — what should fire, what the analyst sees, how to respond — grounded strictly in the detections and mitigations above (no invented detections).<br><br>- ATLAS Aware: ATLAS scenarios list mitigations (ATLAS has no detection strategies yet) and say so, rather than showing nothing. |
+| MITRE ATT&CK v19.1 & Latest ATLAS Data | - Updated Frameworks: MITRE ATT&CK Enterprise and ICS data refreshed from v18.1 to **v19.1**, and MITRE ATLAS refreshed to the latest release, so generated scenarios reflect the current tactics, techniques and case studies.<br><br>- Refreshed Group Lists: The threat-group dropdowns are regenerated from the v19.1 bundles (174 Enterprise and 14 ICS active groups). Groups MITRE has revoked or merged upstream (e.g. APT34 → OilRig, UNC2452 → APT29) no longer appear, while newly tracked groups such as MirrorFace do.<br><br>- More ATLAS Case Studies: The ATLAS case-study library grew to 57 (17 incidents, 40 exercises).<br><br>- Repeatable Refresh: A new `scripts/generate_groups.py` regenerates the group mappings from the shipped STIX bundles, complementing the existing ATLAS case-study script — so the next refresh is a scripted step rather than manual curation. |
+| ATT&CK Navigator Layer Export | - Downloadable Layer: Every generated scenario on the Threat Group and Custom Scenario pages now offers an ATT&CK Navigator layer (`.json`) alongside the Markdown download, so a scenario's techniques can be visualised, annotated and shared in the ATT&CK Navigator. To view it, download the layer and open it via **Open Existing Layer → Upload from local** in the Navigator.<br><br>- All Three Matrices: The correct Navigator domain is set automatically per matrix — upload Enterprise and ICS layers to the [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/), and ATLAS layers to the [ATLAS Navigator](https://mitre-atlas.github.io/atlas-navigator/) fork. (An ATLAS layer won't load in the ATT&CK Navigator, or vice versa, as each only recognises its own domain.)<br><br>- Techniques Stay Visible: Scored sub-techniques automatically expand their parent and technique IDs are surfaced in the layout, so the scenario's highlighted techniques are immediately apparent rather than hidden in collapsed rows.<br><br>- No Extra LLM Call: The layer is a local serialisation of the techniques already selected for the scenario — no additional model call or external lookup.<br><br>- Descriptive Download Filenames: Scenario and layer downloads are now named after the threat actor / custom scenario and matrix with a generation timestamp (e.g. `AttackGen_APT29_Enterprise_20260714-153045.md`), so saved files are meaningful and don't collide across scenarios. |
+
+### v0.12
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| AI Insider Threat Scenarios | - New Scenario Type: A dedicated page generates incident response tabletop exercises in which a frontier AI agent deployed inside your organisation behaves as an insider threat — through misalignment, reward hacking, emergent objectives, or prompt-injection compromise. Based on the threat model from [*Actions Speak Louder Than Tokens: An Insider Threat Model for Frontier AI Agents*](https://ai-insider-threat.matt-adams.co.uk).<br><br>- Deployment Archetype-Driven: Scenarios are shaped by the agent's autonomy level (L1 supervised assistant → L4 fully autonomous fleet), which is the primary determinant of its threat surface and detection posture.<br><br>- Five Insider Threat Categories: Credential Compromise, Supply Chain Sabotage, Data Exfiltration, Infrastructure Sabotage, and Deception & Evasion — each mapped to concrete AI-agent manifestations rather than human motivations.<br><br>- 23 STRIDE Threats for AI Agents: A complete STRIDE taxonomy (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege) adapted for frontier AI agents, optionally used to narrow scenario scope.<br><br>- NIST CSF-Aligned Controls: Generated scenarios include prioritised mitigations mapped to the NIST Cybersecurity Framework (Identify, Protect, Detect, Respond, Recover).<br><br>- Provider Parity: Supports the same provider set as the rest of AttackGen with optional LangSmith tracing. |
+| LiteLLM Migration & Provider Consolidation | - Unified LLM Wrapper: All provider integration now flows through a single `core/llm.py` wrapper that uses [LiteLLM](https://github.com/BerriAI/litellm). Adding a new model is a one-line edit to the `MODELS` list in `core/models.py`; adding a provider is a single `ProviderInfo` entry. Mirrors the pattern used in [stride-gpt](https://github.com/mrwadams/stride-gpt).<br><br>- Massive Code Reduction: Removed ~3,800 lines of duplicated per-provider branching across the four pages (~1,000 lines of `if model_provider == ...` blocks plus eight near-identical wrapper functions per page). Each page now builds plain message dicts and calls `call_llm(config, messages)`.<br><br>- Registry-Driven Sidebar: The Welcome sidebar is now generated from the provider registry, replacing eight hand-coded provider blocks with one loop.<br><br>- Refreshed Model Lists: Updated to the latest models — OpenAI GPT-5.5 / 5.4 family, Anthropic Claude 4.6 / 4.7 / 4.8, Google Gemini 3.x preview, Mistral Large 3 / Magistral, Groq GPT-OSS and Qwen3.<br><br>- Provider Consolidation: Replaced the separate Azure OpenAI Service and Ollama entries with a single **Custom (OpenAI-compatible)** option. Azure deployments, Ollama (`http://localhost:11434/v1`), LM Studio (`http://localhost:1234/v1`), OpenRouter and self-hosted endpoints all work through this one path.<br><br>- Smaller Dependency Footprint: Dropped the `langchain`, `langchain-anthropic`, `langchain-core`, `langchain-community`, `langchain-google-genai`, `langchain-mistralai`, `langchain-openai` and `anthropic` packages — replaced by a single `litellm>=1.40` dependency. `langsmith` is retained for optional tracing.<br><br>- LangSmith Tracing Preserved: The `@traceable` decorator and feedback widget continue to work transparently; `core/llm.py` wraps `call_llm` in `@traceable` when a LangSmith client is available. |
+| Docker Image Security Refresh | - Refreshed Base Image: Updated the `python:3.12-slim` digest to clear stale OS-layer CVEs flagged by Trivy code scanning, reducing the open alert count against the published container image.<br><br>- pip CVE-2025-8869 Fix: `pip` is now upgraded before installing requirements, picking up the fix for missing symlink checks during package extraction. |
+| Streaming LLM Output | - Token-by-Token Generation: Scenarios and the AttackGen Assistant chat now stream tokens as they arrive rather than blocking on the full response, so long generations feel responsive and you can read along while the model writes.<br><br>- Opt-In Streaming API: Adds `call_llm_stream` alongside `call_llm` in the unified LiteLLM wrapper, so callers choose whether to stream without changing the rest of the contract.<br><br>- Clean Reasoning Handling: A stateful `stream_filter_thinking` helper suppresses `<think>...</think>` regions in the live view while the post-stream `clean_model_response` continues to populate the reasoning expander from the full raw text. |
+| AI-Enhanced Adversary Toggle | - New Per-Page Toggle: Adds an "AI-enhanced adversary" toggle on the Threat Group and Custom Scenario pages that reframes the generated scenario so the adversary uses AI to accelerate and enhance the *same* kill chain — lowered skill floor, compressed timelines, autonomous orchestration and parallel scale — rather than introducing new techniques.<br><br>- Grounded in Anthropic Research: Based on Anthropic's [LLM ATT&CK Navigator](https://red.anthropic.com/2026/attack-navigator/) research, which found the most significant shift in real-world cyber threats is the acceleration and orchestration of existing techniques rather than new ones.<br><br>- Trace Visibility: Tagged scenarios with `ai_enhanced` in LangSmith so AI-uplifted generations can be filtered and compared against baseline runs.<br><br>- Deliberately Skipped on the AI Insider Threat Page: That page's threat actor is already a frontier AI agent, so the "AI-enhanced" framing would be redundant. |
+| Bug Fixes and Improvements | - This release includes several small UI polish and rendering fixes across the scenario pages and sidebar. |
+
+### v0.11
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| MITRE ATLAS Framework Support | - AI/ML Threat Coverage: AttackGen now supports the MITRE ATLAS (Adversarial Threat Landscape for AI Systems) framework, enabling generation of incident response scenarios for threats targeting AI and machine learning systems.<br><br>- Case Study-Based Scenarios: Generate scenarios based on 45 documented real-world AI attack case studies, including 14 actual incidents and 31 research exercises covering attacks like prompt injection, model extraction, and data poisoning.<br><br>- 147 ATLAS Techniques: Access the full ATLAS technique library covering 16 AI-specific tactics including AI Model Access, AI Attack Staging, and traditional attack phases adapted for AI systems.<br><br>- AI-Specific Templates: Six new custom scenario templates for common AI/ML attacks: Model Evasion, Data Poisoning, Model Extraction, Prompt Injection, LLM Jailbreak, and AI Supply Chain attacks. |
+| Updated MITRE ATT&CK Data to v18.1 | - Latest Threat Intelligence: AttackGen now uses MITRE ATT&CK v18.1 data, ensuring generated scenarios reflect the most current tactics, techniques, and procedures used by threat actors.<br><br>- Expanded Enterprise Coverage: The Enterprise threat groups list has grown from 150+ to 187 groups, including newly tracked actors.<br><br>- Expanded ICS Coverage: The ICS threat groups list has grown from 7 to 16 groups, providing better coverage for industrial control systems scenarios. |
+| Updated LLM Model Support | - OpenAI: Added GPT-5.2 and GPT-5.2 Pro models; streamlined model list by removing deprecated o-series reasoning models.<br><br>- Anthropic: Updated to Claude 4.5 family with Sonnet 4.5, Haiku 4.5, and Opus 4.5.<br><br>- Google AI: Added Gemini 3 Pro and Flash preview models; updated Gemini 2.5 options.<br><br>- Groq: Added GPT-OSS 120B and 20B models for high-performance inference.<br><br>- Mistral: Updated to dated model versions (Large 2512, Medium 2508, Small 2506); added Ministral 14B. |
+| Bug Fixes | - Fixed Google AI Response Handling: Updated response parsing to handle structured content format returned by newer Gemini models, ensuring scenario text is properly extracted and displayed.<br><br>- Fixed ICS Matrix Error Messages: Error messages now correctly display "ICS ATT&CK" instead of "Enterprise ATT&CK" when using the ICS matrix.<br><br>- Improved Empty Technique Handling: Added graceful handling when a threat group has no associated techniques, preventing secondary errors. |
+
+### v0.10.1
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| LangChain v1.0 Compatibility | - Fixed Breaking Import Changes: Updated all imports from deprecated `langchain.prompts.chat` to `langchain_core.prompts`, ensuring compatibility with LangChain v1.0 and preventing `ModuleNotFoundError` issues. This maintains stability as the LangChain ecosystem evolves. |
+| Comprehensive Security Infrastructure | - Automated Security Scanning: Introduced GitHub Actions workflows for continuous security monitoring using Bandit (Python code analysis), CodeQL (vulnerability detection), pip-audit (dependency scanning), Safety (known vulnerabilities), Gitleaks (secrets detection), and Trivy (Docker image scanning).<br><br>- Security Best Practices Documentation: Added comprehensive SECURITY.md covering supported versions, vulnerability reporting, API key management, data privacy considerations, and deployment security guidance.<br><br>- Enhanced README Security Section: Expanded security guidance with clear do's and don'ts for API key protection, data privacy considerations, and responsible deployment practices. |
+| Docker Improvements | - Enhanced Security: Updated Dockerfile to run as non-root user, improving container security posture.<br><br>- Docker Compose Support: Added docker-compose.yml for streamlined multi-service deployment and easier local development setup.<br><br>- Better Build Optimization: Enhanced .dockerignore to reduce image size and prevent sensitive files from being included in container images.<br><br>- Comprehensive Configuration Template: Updated .env.example with all supported API keys (OpenAI, Anthropic, Azure, Google, Mistral, Groq) for easier initial setup. |
+| Bug Fixes | - Ollama API Timeout: Added timeout configuration to Ollama API requests to prevent hanging connections.<br><br>- Safety CLI Updates: Updated from deprecated `safety check` command to new `safety scan` command, ensuring continued security scanning functionality.<br><br>- Bandit Configuration: Corrected Bandit security scanning configuration for more accurate Python code analysis. |
+
+### v0.10
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| OpenAI Responses API Integration | - Next-Generation API: AttackGen now uses OpenAI's latest Responses API for all supported models, providing a unified and enhanced interface. |
+| Latest Frontier Model Support | - GPT-5 Integration: Added support for OpenAI's latest GPT-5 model series including gpt-5, gpt-5-mini, and gpt-5-nano, providing access to the most advanced AI capabilities for scenario generation.<br><br>- Claude Sonnet 4.5: Added support for Anthropic's latest Claude Sonnet 4.5 (claude-sonnet-4-5-20250929) model, along with updated Claude model versions including Claude Opus 4.1 (claude-opus-4-1-20250805). |
+| Bug Fixes and Improvements | - Fixed Streamlit Deprecation Warning: Replaced deprecated `use_container_width` parameter with the new `width` parameter to ensure compatibility with future Streamlit versions.<br><br>- Enhanced Documentation: Updated CLAUDE.md with comprehensive guidance for future development work and added detailed architecture information. |
+
+### v0.9
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Expanded Model Support | - Latest OpenAI Reasoning Models: AttackGen now supports OpenAI's newest reasoning models including o4-mini (the latest reasoning model), o3/o3-mini, and o1-pro (enhanced reasoning capabilities). These models excel at complex scenario generation requiring deep logical thinking.<br><br>- GPT-4.1 Series: Added support for the GPT-4.1 series models (gpt-4.1, gpt-4.1-mini, and gpt-4.1-nano), offering the latest improvements in general AI capabilities with lighter alternatives for cost-sensitive use cases.<br><br>- Anthropic Claude Models: Added comprehensive support for Anthropic's Claude models including claude-opus-4-20250514, claude-sonnet-4-20250514, claude-3-7-sonnet-latest, and claude-3-5-haiku-latest. These models offer excellent performance for generating detailed and contextually aware incident response scenarios with strong reasoning capabilities.<br><br>- Updated Google AI Models: Refreshed the Google AI model selection to include the latest Gemini 2.5 preview models (gemini-2.5-flash-preview-05-20 and gemini-2.5-pro-preview-05-06) alongside Gemini 2.0 models, providing access to the most recent improvements in Google's AI technology.<br><br>- Improved Model Organization: Reorganized model selection dropdowns to prioritize newer models and updated descriptions to clearly distinguish between different model types and capabilities. |
+| Enhanced Technique Selection Logic | - More Robust Group Handling: Fixed an issue where empty threat actor groups could cause errors during technique selection. The tool now properly handles empty groups by returning an empty DataFrame, ensuring stable operation even with limited threat actor data.<br><br>- Phase Name Preservation: Improved the technique selection process to properly include 'Phase Name' in the output, maintaining the kill chain phase information throughout the scenario generation process. This ensures generated scenarios maintain proper context about which phase of an attack each technique belongs to. |
+| Development Environment Improvements | - Enhanced .gitignore: Added support for `.venv` virtual environment directories in addition to `venv`, accommodating different developer preferences and Python environment management tools.<br><br>- Code Cleanup: Removed unused imports across scenario generation scripts, improving code maintainability and reducing potential confusion. |
+
+### v0.8
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Custom OpenAI-Compatible API Endpoints | - Increased Flexibility: AttackGen now supports custom OpenAI-compatible API endpoints like Anyscale, Together AI, or any self-hosted compatible API. This feature allows users to leverage a wider range of models and services beyond the officially supported providers.<br><br>- Self-Hosting Support: Organizations with their own deployments of OpenAI-compatible models can now connect AttackGen directly to these endpoints.<br><br>- Control Over Model Selection: Users can specify the base URL, model name, and API key for any compatible service, providing greater control over which models and endpoints are used for scenario generation. |
+| Updated Model Selection | - Access to Latest Models: The OpenAI model selection now includes the new GPT-4.1 series models (gpt-4.1, gpt-4.1-mini, gpt-4.1-nano), offering improved performance in coding, instruction following, and long context tasks.<br><br>- Expanded Gemini Support: Added support for the latest Gemini 2.5 Pro Preview, 2.0 Flash, and 2.0 Flash Lite models. |
+
+### v0.7
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Groq API Integration | - Enhanced Performance: AttackGen now supports Groq's high-performance API, providing access to models like llama-3.3-70b-versatile and deepseek-r1-distill-llama-70b. This integration offers fast inference times while maintaining high-quality scenario generation.<br><br>- Improved Model Output Display: For models like DeepSeek that provide reasoning alongside their output, AttackGen now displays this reasoning in a collapsible expander widget. This allows users to view the model's thought process when desired while keeping the main scenario output clean and focused. |
+| Updated OpenAI Model Support | - Latest Models: AttackGen now supports OpenAI's latest o3 reasoning model and the GA (general availability) version of the o1 model, replacing the previous preview version. These updates provide access to more stable and improved models for scenario generation. |
+
+### v0.6
+| What's new? | Why is it useful? |
+| ----------- | ----------------- |
+| Support for OpenAI's new 'reasoning' models | - Enhanced Scenario Generation: AttackGen now supports OpenAI's new 'reasoning' models (o1-preview and o1-mini), enabling the generation of highly detailed and nuanced incident response scenarios. These models offer improved coherence and depth in scenario creation. |
+| MITRE ATT&CK ICS matrix support | - Expanded Scope: AttackGen now supports generating incident response testing scenarios using the MITRE ATT&CK ICS (Industrial Control Systems) matrix, in addition to the Enterprise matrix. This allows users to create scenarios tailored to industrial and critical infrastructure environments. |
+| Updated ATT&CK source data to v15.1 | - Latest Threat Intelligence: The tool now uses the most up-to-date MITRE ATT&CK data (v15.1), ensuring that generated scenarios reflect the latest known tactics, techniques, and procedures used by threat actors. |
+| Updated threat actor groups data | - Comprehensive Coverage: The groups data has been updated to include the latest groups tracked in MITRE ATT&CK, such as Scattered Spider. This ensures that users can generate scenarios based on the most current threat actor information available. |
+| Loading API keys / secrets from a .env file | - Enhanced Security: Users can now store their API keys and other sensitive information in a .env file, improving security and making it easier to manage credentials across different environments. |
+
+### v0.5.2
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| GPT-4o mini Model Support | - Expanded Model Options: AttackGen now supports the use of OpenAI's GPT-4o mini model. GPT4-o mini is a highly cost-efficient small model. |
+| Updated model choices for Google AI API | - Expanded Model Options: AttackGen now supports the stable and preview versions of Gemini 1.5 Pro. | 
+
+### v0.5.1
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| GPT-4o Model Support | - Enhanced Model Options: AttackGen now supports the use of OpenAI's GPT-4o model. GPT4-o is OpenAI's leading model, able to generate scenarios twice as fast as GPT-4 for half the cost. |
+
+### v0.5
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| AttackGen Assistant | - Iterative Scenario Refinement: The new chat interface allows users to interact with their generated incident response scenarios, making it easy to update and ask questions about the scenario without having to regenerate it from scratch. This feature enables an iterative approach to scenario development, where users can refine and improve their scenarios based on the AI assistant's responses.<br><br>- Contextual Assistance: The AI assistant responds to user queries based on the context of the generated scenario and the conversation history. This ensures that the assistant's responses are relevant and helpful in refining the scenario. |
+| Quick Start Templates for Custom Scenarios | - Quick Scenario Generation: Users can now quickly generate custom incident response scenarios based on predefined templates for common types of cyber incidents, such as phishing attacks, ransomware attacks, malware infections, and insider threats. This feature makes it easier to create realistic scenarios without having to select individual ATT&CK techniques.<br><br>- Streamlined Workflow: The template selection is integrated seamlessly into the custom scenario generation process. Users can choose a template, which automatically populates the relevant ATT&CK techniques, and then further customize the scenario if needed. |
+| Google AI API Integration  | - Expanded Model Options: AttackGen now supports the use of Google's Gemini models for generating incident response scenarios. This integration expands the range of high-quality models available to users, allowing them to leverage Google's AI capabilities for creating realistic and diverse scenarios. |
+
+### v0.4
+
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| Mistral API Integration | - Alternative Model Provider: Users can now leverage the Mistral AI models to generate incident response scenarios. This integration provides an alternative to the OpenAI and Azure OpenAI Service models, allowing users to explore and compare the performance of different language models for their specific use case. |
+| Local Model Support using Ollama | - Local Model Hosting: AttackGen now supports the use of locally hosted LLMs via an integration with Ollama. This feature is particularly useful for organisations with strict data privacy requirements or those who prefer to keep their data on-premises. Please note that this feature is not available for users of the AttackGen version hosted on Streamlit Community Cloud at https://attackgen.streamlit.app |
+| Optional LangSmith Integration | - Improved Flexibility: The integration with LangSmith is now optional. If no LangChain API key is provided, users will see an informative message indicating that the run won't be logged by LangSmith, rather than an error being thrown. This change improves the overall user experience and allows users to continue using AttackGen without the need for LangSmith. |
+| Various Bug Fixes and Improvements | - Enhanced User Experience: This release includes several bug fixes and improvements to the user interface, making AttackGen more user-friendly and robust. |
+
+### v0.3
+
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| Azure OpenAI Service Integration | - Enhanced Integration: Users can now choose to utilise OpenAI models deployed on the Azure OpenAI Service, in addition to the standard OpenAI API. This integration offers a seamless and secure solution for incorporating AttackGen into existing Azure ecosystems, leveraging established commercial and confidentiality agreements.<br><br>- Improved Data Security: Running AttackGen from Azure ensures that application descriptions and other data remain within the Azure environment, making it ideal for organizations that handle sensitive data in their threat models. |
+| LangSmith for Azure OpenAI Service | - Enhanced Debugging: LangSmith tracing is now available for scenarios generated using the Azure OpenAI Service. This feature provides a powerful tool for debugging, testing, and monitoring of model performance, allowing users to gain insights into the model's decision-making process and identify potential issues with the generated scenarios.<br><br>- User Feedback: LangSmith also captures user feedback on the quality of scenarios generated using the Azure OpenAI Service, providing valuable insights into model performance and user satisfaction. |
+| Model Selection for OpenAI API | - Flexible Model Options: Users can now select from several models available from the OpenAI API endpoint, such as `gpt-4-turbo-preview`. This allows for greater customization and experimentation with different language models, enabling users to find the most suitable model for their specific use case. |
+| Docker Container Image | - Easy Deployment: AttackGen is now available as a Docker container image, making it easier to deploy and run the application in a consistent and reproducible environment. This feature is particularly useful for users who want to run AttackGen in a containerised environment, or for those who want to deploy the application on a cloud platform. |
+
+
+
+### v0.2
+
+| What's new? | Why is it useful? |
+| ----------- | ---------------- |
+| Custom Scenarios based on ATT&CK Techniques | - For Mature Organisations: This feature is particularly beneficial if your organisation has advanced threat intelligence capabilities. For instance, if you're monitoring a newly identified or lesser-known threat actor group, you can tailor incident response testing scenarios specific to the techniques used by that group.<br><br>- Focused Testing: Alternatively, use this feature to focus your incident response testing on specific parts of the cyber kill chain or certain MITRE ATT&CK Tactics like 'Lateral Movement' or 'Exfiltration'. This is useful for organisations looking to evaluate and improve specific areas of their defence posture. |
+| User feedback on generated scenarios | - Collecting feedback is essential to track model performance over time and helps to highlight strengths and weaknesses in scenario generation tasks. |
+| Improved error handling for missing API keys | - Improved user experience. |
+| Replaced Streamlit `st.spinner` widgets with new `st.status` widget | - Provides better visibility into long running processes (i.e. scenario generation). |
+
+### v0.1
+
+Initial release.
+
+</details>
+
+## Requirements
+
+- Recent version of Python.
+- Python packages: `streamlit`, `litellm`, `mitreattack-python`, `pandas` (see `requirements.txt` for the full list).
+- OpenAI API key (or API key for your chosen model provider).
+- LangChain API key (optional) - see [LangSmith Setup](#langsmith-setup) section below for further details.
+- MITRE ATT&CK and ATLAS data files. These ship with the repository (in `./data/`), so no manual download is required (see [Data Setup](#data-setup)).
+- `.env` file for storing API keys and secrets (see [Installation](#installation) section for details).
+
+## Installation
+
+### Option 1: Cloning the Repository
+
+1. Clone this repository:
+```
+git clone https://github.com/mrwadams/attackgen.git
+```
+
+2. Change directory into the cloned repository:
+
+```
+cd attackgen
+```
+
+3. Install the required Python packages:
+
+```
+pip install -r requirements.txt
+```
+
+### Option 2: Using Docker
+
+1. Pull the Docker container image from Docker Hub:
+
+```
+docker pull mrwadams/attackgen
+```
+
+## LangSmith Setup
+
+If you would like to use LangSmith for debugging, testing, and monitoring of model performance, you will need to set up a LangSmith account and create a `.streamlit/secrets.toml` file that contains your LangChain API key. Please follow the instructions [here](https://docs.smith.langchain.com/) to set up your account and obtain your API key. You'll find a `secrets.toml-example` file in the `.streamlit/` directory that you can use as a template for your own secrets.toml file.
+
+If you do not wish to use LangSmith, you must still have a `.streamlit/secrets.toml` file in place, but you can leave the `LANGCHAIN_API_KEY` field empty.
+
+## Data Setup
+
+The MITRE ATT&CK (Enterprise + ICS) and ATLAS datasets that AttackGen needs are committed to the repository under `./data/`, so a fresh clone is ready to run with no extra download step. These include `enterprise-attack.json`, `ics-attack.json`, `stix-atlas.json`, `groups.json`, `groups_ics.json`, and `atlas-case-studies.json`.
+
+If you want to refresh them to the latest upstream release, you can re-download the STIX bundles from the [MITRE ATT&CK STIX data repository](https://github.com/mitre-attack/attack-stix-data) (and the [ATLAS data repository](https://github.com/mitre-atlas/atlas-data)) and replace the files in `./data/`.
+
+## Running AttackGen
+
+After the data setup, you can run AttackGen with the following command:
+
+```
+streamlit run 00_👋_Welcome.py
+```
+
+You can also try the app on [Streamlit Community Cloud](https://attackgen.streamlit.app/).
+
+## MCP Server
+
+AttackGen ships an [MCP](https://modelcontextprotocol.io/) server so agentic workflows (Claude Code, Claude Desktop, Cursor, and other MCP clients) can drive scenario generation without the Streamlit UI. It exposes **two tiers of tools**:
+
+- **Data tools — no API key, no LLM call.** These surface AttackGen's MITRE data: list threat groups / ATLAS case studies, resolve a group's kill chain, build the purple-team Detection & Response report, produce an ATT&CK Navigator layer, and list the AI insider-threat options. `list_ai_insider_options` returns each quick-start template with the selections and narrative brief it applies, so `get_ai_insider_prompt` / `generate_ai_insider_scenario` can be called with just `template=` plus your industry and company size. Where useful they also return a ready-to-run prompt, so **your client's own model** can write the scenario — meaning these work even if you have no separate provider API key. This is the surface that is safe to host over HTTP.
+- **Generate tools — bring-your-own-key.** `generate_threat_group_scenario`, `generate_custom_scenario` and `generate_ai_insider_scenario` call an LLM server-side and return a finished Markdown scenario. The provider, model and key are supplied per call; if you omit `api_key`, LiteLLM falls back to the matching environment variable (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, …) — i.e. **your own** key. Because these read credentials from the process environment, keep them on **local stdio** and do not expose them on a shared host.
+
+### Install and run
+
+The `mcp` dependency is included in `requirements.txt`. Install the project (an editable install also gives you the `attackgen-mcp` console script):
+
+```
+pip install -r requirements.txt
+# optional, for the console script:
+pip install -e .
+```
+
+Launch the server (stdio):
+
+```
+python -m mcp_server      # or: attackgen-mcp
+```
+
+### Add it to a client
+
+**Claude Code:**
+
+```
+claude mcp add attackgen -- python -m mcp_server
+```
+
+**Claude Desktop** (`claude_desktop_config.json`) — keys go in `env`:
+
+```json
+{
+  "mcpServers": {
+    "attackgen": {
+      "command": "python",
+      "args": ["-m", "mcp_server"],
+      "cwd": "/absolute/path/to/attackgen",
+      "env": {
+        "OPENAI_API_KEY": "sk-...",
+        "ANTHROPIC_API_KEY": "sk-ant-..."
+      }
+    }
+  }
+}
+```
+
+You can set `ATTACKGEN_PROVIDER` and `ATTACKGEN_MODEL` in `env` to give the generate tools a default provider/model so callers don't have to pass them each time. The heavy MITRE bundles load lazily on the first data-tool call, so the server starts instantly.
+
+## Agent Skills
+
+Paired with the MCP server is an **[Agent Skill](skills/)**, `attackgen-tabletop`, that turns AttackGen's data into a facilitator-ready incident response tabletop.
+
+Given a threat group or ATLAS case study, the skill produces a full tabletop / Master Scenario Events List (MSEL) — scenario narrative, phase-mapped kill chain, timestamped injects, NIST SP 800-61 discussion questions, and a detection-coverage scorecard — as Markdown or a self-contained, print-friendly HTML report.
+
+It also covers the **AI insider-threat** path: when the adversary is a frontier AI agent deployed inside the organisation, the skill works from `list_ai_insider_options` and `get_ai_insider_prompt` instead of a kill chain. The exercise keeps the same six-section shape, but its spine is the STRIDE threat scope and the deployment archetype, its detection scorecard is judged against that archetype's detection posture, and a template's `required_decisions` become mandatory discussion questions.
+
+The division of labour is deliberate: the MCP **data tools** supply the facts (every technique or STRIDE ID traces back to a tool result) and the skill supplies the exercise craft, so it runs on your client's own model with **no additional API key**. Connect the MCP server (above), then point a skill-aware client such as Claude Code or Claude Desktop at the [`skills/`](skills/) directory. See [`skills/README.md`](skills/README.md) for per-client install locations and details.
+
+## Usage
+
+### Running AttackGen
+
+#### Option 1: Running the Streamlit App Locally
+1. Run the Streamlit app:
+```
+streamlit run 00_👋_Welcome.py
+```
+2. Open your web browser and navigate to the URL provided by Streamlit.
+3. Use the app to generate standard or custom incident response scenarios (see below for details).
+
+#### Option 2: Using the Docker Container Image
+1. Run the Docker container:
+```
+docker run -p 8501:8501 mrwadams/attackgen
+```
+This command will start the container and map port 8501 (default for Streamlit apps) from the container to your host machine.
+2. Open your web browser and navigate to `http://localhost:8501`.
+3. Use the app to generate standard or custom incident response scenarios (see below for details).
+
+### Generating Scenarios
+
+#### Standard Scenario Generation
+1. Choose whether to use the OpenAI API, Anthropic API, Google AI API, Mistral API, Groq API, or a custom OpenAI-compatible endpoint (for Ollama, LM Studio, Azure OpenAI deployments, OpenRouter, etc.).
+2. Enter your API key for the chosen provider. For the Custom provider, also enter the base URL and model name.
+3. Select your preferred model from the dropdown.
+4. Select your organisation's industry and size from the dropdown menus.
+5. Navigate to the `Threat Group Scenarios` page.
+6. Select the Threat Actor Group that you want to simulate.
+7. Click on 'Generate Scenario' to create the incident response scenario.
+8. Use the 👍 or 👎 buttons to provide feedback on the quality of the generated scenario. N.B. The feedback buttons only appear if a value for LANGCHAIN_API_KEY has been set in the `.streamlit/secrets.toml` file.
+
+#### Custom Scenario Generation
+1. Choose whether to use the OpenAI API, Anthropic API, Google AI API, Mistral API, Groq API, or a custom OpenAI-compatible endpoint.
+2. Enter your API key for the chosen provider. For the Custom provider, also enter the base URL and model name.
+3. Select your preferred model from the dropdown.
+4. Select your organisation's industry and size from the dropdown menus.
+5. Navigate to the `Custom Scenario` page.
+6. Use the multi-select box to search for and select the ATT&CK techniques relevant to your scenario.
+7. Click 'Generate Scenario' to create your custom incident response testing scenario based on the selected techniques.
+8. Use the 👍 or 👎 buttons to provide feedback on the quality of the generated scenario. N.B. The feedback buttons only appear if a value for LANGCHAIN_API_KEY has been set in the `.streamlit/secrets.toml` file.
+
+#### AI Insider Threat Scenario Generation
+1. Choose your model provider and enter the relevant API key (use the Custom provider for Azure OpenAI deployments or local models).
+2. Select your preferred model from the dropdown.
+3. Select your organisation's industry and size from the dropdown menus.
+4. Navigate to the `AI Insider Threat Scenarios` page.
+5. (Optional) Pick a template to pre-populate the deployment archetype, threat categories and STRIDE threats for a common scenario.
+6. Choose the **deployment archetype** that reflects how autonomously the AI agent operates inside your organisation (e.g. supervised assistant, autonomous agent, fully autonomous fleet). This is the primary driver of the agent's threat surface.
+7. Select one or more **threat categories** (Credential Compromise, Supply Chain Sabotage, Data Exfiltration, Infrastructure Sabotage, Deception & Evasion).
+8. (Optional) Narrow the scenario to specific **STRIDE threats**. If left empty, the STRIDE threats associated with your selected categories are used automatically. These are the 23 STRIDE threats from the underlying paper.
+9. (Optional) Adjust the **frontier agent capabilities** highlighted in the prompt.
+10. Click 'Generate Scenario'. The output includes an attack narrative mapped to STRIDE identifiers, detection opportunities, and recommended controls aligned to the NIST CSF.
+11. Use the 👍 or 👎 buttons to provide feedback (requires LANGCHAIN_API_KEY).
+
+The threat model behind this page is described in [*Actions Speak Louder Than Tokens: An Insider Threat Model for Frontier AI Agents*](https://ai-insider-threat.matt-adams.co.uk).
+
+Please note that generating scenarios may take a minute or so. Once the scenario is generated, you can view it on the app and also download it as a Markdown file.
+
+## Security Best Practices
+
+AttackGen is designed for local, single-user deployment. When using the tool:
+
+### Protecting Your API Keys
+
+**Your API keys are sensitive credentials that can incur charges on your account.**
+
+✅ **DO:**
+- Enter API keys through the UI (they stay in your browser session)
+- Use .env file for convenience on your personal machine
+- Set spending limits in your LLM provider dashboard
+- Regularly review your API usage and costs
+- Clear session when using on shared computers
+
+❌ **DON'T:**
+- Commit .env files to version control (already in .gitignore)
+- Share screenshots with API keys visible
+- Run AttackGen on untrusted/compromised systems
+- Share your API keys with others
+- Ignore unexpected API charges
+
+### Data Privacy Considerations
+
+When you generate scenarios, AttackGen sends data to your chosen LLM provider:
+- Organization details (industry, company size)
+- Selected ATT&CK techniques
+- Custom input text
+- Generated scenarios (via AttackGen Assistant)
+
+**What this means:**
+- OpenAI, Anthropic, etc. may log this data per their privacy policies
+- Consider using generic/fictional organization details for demonstrations
+- Review your LLM provider's data retention and privacy policies
+- For sensitive use cases, consider providers with stricter privacy guarantees
+
+### For Team/Organization Deployments
+
+If deploying AttackGen for multiple users (not the default use case):
+- Add authentication/authorization (not included by default)
+- Use a secrets management service for API keys
+- Deploy behind VPN or internal network
+- Review this threat model document for additional considerations
+- Consider data residency and compliance requirements
+
+### Dependency Security
+
+We maintain dependencies and monitor for vulnerabilities:
+- Dependencies are updated regularly
+- Security advisories are tracked in GitHub Issues
+- Run `pip list --outdated` to check for updates
+- Consider using `pip-audit` for vulnerability scanning
+
+### Reporting Security Issues
+
+Found a security issue? Please report it responsibly:
+- Create a security advisory via GitHub's [private vulnerability reporting](https://github.com/mrwadams/attackgen/security/advisories/new)
+- Don't post security issues publicly
+- We'll acknowledge within 48 hours
+- Fixes will be prioritized and released quickly
+
+## Contributing
+
+I'm very happy to accept contributions to this project. Please feel free to submit an issue or pull request.
+
+## Licence
+
+This project is licensed under [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/).

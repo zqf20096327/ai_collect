@@ -1,0 +1,318 @@
+<div align="center">
+
+  # Sentiment Analyzer
+
+  [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+  ![Status](https://img.shields.io/badge/Status-Completed-2EA043)
+  [![Technology](https://img.shields.io/badge/Technology-Python%20%7C%20NLP-8250DF)](https://github.com/Amey-Thakur/SENTIMENT-ANALYZER)
+  [![Developed by Amey Thakur and Mega Satish](https://img.shields.io/badge/Developed%20by-Amey%20Thakur%20%26%20Mega%20Satish-0969DA.svg)](https://github.com/Amey-Thakur/SENTIMENT-ANALYZER)
+
+  A Natural Language Processing engine utilizing rule-based linguistic patterns to accurately identify and quantify sentiment in textual data.
+
+  **[Source Code](Source%20Code/)** &nbsp;·&nbsp; **[Technical Specification](docs/SPECIFICATION.md)** &nbsp;·&nbsp; **[Live Demo](https://amey-thakur.github.io/SENTIMENT-ANALYZER/)**
+
+</div>
+
+---
+
+<div align="center">
+
+  [Authors](#authors) &nbsp;·&nbsp; [Overview](#overview) &nbsp;·&nbsp; [Features](#features) &nbsp;·&nbsp; [Structure](#project-structure) &nbsp;·&nbsp; [Results](#results) &nbsp;·&nbsp; [Quick Start](#quick-start) &nbsp;·&nbsp; [Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [License](#license) &nbsp;·&nbsp; [About](#about-this-repository) &nbsp;·&nbsp; [Acknowledgments](#acknowledgments)
+
+</div>
+
+---
+
+<!-- AUTHORS -->
+<div align="center">
+
+  <a name="authors"></a>
+  ## Authors
+
+| <a href="https://github.com/Amey-Thakur"><img src="https://github.com/Amey-Thakur.png" width="150" height="150" alt="Amey Thakur"></a><br>[**Amey Thakur**](https://github.com/Amey-Thakur)<br><br>[![ORCID](https://img.shields.io/badge/ORCID-0000--0001--5644--1575-A6CE39.svg)](https://orcid.org/0000-0001-5644-1575) | <a href="https://github.com/msatmod"><img src="Mega/Mega.png" width="150" height="150" alt="Mega Satish"></a><br>[**Mega Satish**](https://github.com/msatmod)<br><br>[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--1844--9557-A6CE39.svg)](https://orcid.org/0000-0002-1844-9557) |
+| :---: | :---: |
+
+</div>
+
+> [!IMPORTANT]
+> ### 🤝🏻 Special Acknowledgement
+> *Special thanks to **[Mega Satish](https://github.com/msatmod)** for her meaningful contributions, guidance, and support that helped shape this work.*
+
+---
+
+<!-- OVERVIEW -->
+<a name="overview"></a>
+## Overview
+
+**Sentiment Analyzer** is a Natural Language Processing (NLP) engine designed to accurately identify and quantify sentiment in textual data utilizing rule-based linguistic patterns. By translating human linguistics into empirical sentiment scores, this repository provides a foundational bridge between raw text and actionable psychological insights.
+
+The repository serves as a digital study into interactive system architecture, brought into a modern context via WebAssembly and PyScript, enabling high-performance linguistic analysis directly within the browser environment.
+
+### Analysis Heuristics
+The classification engine is governed by strict **computational design patterns** ensuring fidelity and responsiveness:
+*   **Progressive Polarity**: The engine utilizes a linear sentiment multiplier, incrementally scoring lexical tokens against curated corpora to arrive at a global affective state.
+*   **Neural Reference Implementation**: A **Keras** classifier architecture is defined separately in `neural_sentiment.py` for study. It is not part of the analysis path and ships without trained weights.
+*   **Zero-Latency Pipeline**: Input handling supports both continuous text streams and batch processing, ensuring **real-time** affective response critical for interactive linguistic study.
+
+> [!TIP]
+> **Semantic Precision Integration**
+>
+> To maximize classification clarity, the engine employs a **multi-engine validation system**. **Lexical filters** refine the input stream, and **probabilistic weights** visualize the sentiment's confidence vector, strictly coupling semantic flair with state changes. This ensures the user's mental model is constantly synchronized with the underlying linguistic simulation.
+
+---
+
+<!-- FEATURES -->
+<a name="features"></a>
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Lexicon Engine** | Resolves polarity through **TextBlob Linguistic Analysis**, with a **Keras** architecture included separately for study. |
+| **Real-Time Analysis** | Implements a robust terminal and web interface for immediate classification of textual affective states. |
+| **Structural Clarity** | In-depth and detailed comments integrated throughout the codebase for transparent logic study. |
+| **Wasm Architecture** | Efficient **WebAssembly execution** via PyScript and Pyodide for native web accessibility. |
+| **Inference Pipeline** | Asynchronous architecture ensuring **stability** and responsiveness on web clients. |
+| **Visual Feedback** | **Interactive Sentiment Badges** that trigger on analysis events for sensory reward. |
+| **State Feedback** | **Polarity-Based Indicators** and screen effects for high-impact linguistic feel. |
+| **Social Persistence** | **Interactive Footer Integration** bridging the analysis to the source repository. |
+
+> [!NOTE]
+> ### Interactive Polish: The Semantic Singularity
+> We have engineered a **Logic-Driven State Manager** that calibrates affective scores across multiple vectors to simulate human-like sentiment transfer. The visual language focuses on the minimalist "Neural Slate" aesthetic, ensuring maximum focus on the interactive linguistic trajectory.
+
+### Tech Stack
+- **Languages**: Python 3.9+
+- **Logic**: **NLP Pipelines** (Linguistic Heuristics)
+- **Frameworks**: **TextBlob**, with **TensorFlow** (Keras) required only by the reference model
+- **UI System**: Modern Design (PyScript & Custom CSS)
+- **Deployment**: GitHub Actions (WebAssembly Deployment Pipeline)
+- **Hosting**: GitHub Pages
+
+---
+
+<!-- STRUCTURE -->
+<a name="project-structure"></a>
+## Project Structure
+
+```python
+SENTIMENT-ANALYZER/
+│
+├── .github/ workflows/              # CI/CD Automation
+│   └── deploy.yml                   # GitHub Pages Deployment
+│
+├── docs/                            # Project Documentation
+│   └── SPECIFICATION.md             # Technical Architecture
+│
+├── Mega/                            # Attribution Assets
+│   ├── Filly.jpg                    # Companion (Filly)
+│   └── Mega.png                     # Profile Image (Mega Satish)
+│
+├── screenshots/                     # Visual Gallery
+│   ├── 01-landing-page.png
+│   ├── 02-input-stage.png
+│   ├── 03-neutral-result.png
+│   ├── 04-footer-section.png
+│   ├── 05-input-example.png
+│   └── 06-positive-result.png
+│
+├── Source Code/                     # Primary Application Layer
+│   ├── app.py                       # Terminal Sentiment Engine
+│   ├── neural_sentiment.py          # Neural Network Topology (reference only)
+│   ├── SENTIMENT_ANALYSIS.ipynb     # Investigative Notebook
+│   └── requirements.txt             # Dependency Manifest
+│
+├── static/                          # Web Assets
+│   └── style.css                    # Interface Styles
+│
+├── index.html                       # Web Entrance (PyScript)
+├── SECURITY.md                      # Security Protocols
+├── CITATION.cff                     # Project Citation Manifest
+├── codemeta.json                    # Metadata Standard
+├── LICENSE                          # MIT License
+└── README.md                        # Project Entrance
+```
+
+---
+
+<a name="results"></a>
+## Results
+
+<div align="center">
+  <b>Main Interface: Modern Design</b>
+  <br>
+  <i>Initial system state with optimized aesthetics and synchronized brand identity.</i>
+  <br><br>
+  <img src="screenshots/01-landing-page.png" alt="Landing Page" width="90%">
+  <br><br><br>
+
+  <b>Linguistic Input: Textual Injection</b>
+  <br>
+  <i>Real-time textual data injection into the analysis pipeline.</i>
+  <br><br>
+  <img src="screenshots/02-input-stage.png" alt="Input Stage" width="90%">
+  <br><br><br>
+
+  <b>Quantified Polarity: Neutral Outcome</b>
+  <br>
+  <i>Successful classification of neutral affective states with precise polarity detection.</i>
+  <br><br>
+  <img src="screenshots/03-neutral-result.png" alt="Neutral Result" width="90%">
+  <br><br><br>
+
+  <b>Complex Logic: Compound Expressions</b>
+  <br>
+  <i>Injecting complex linguistic patterns for deep semantic study.</i>
+  <br><br>
+  <img src="screenshots/05-input-example.png" alt="Complex Inference" width="90%">
+  <br><br><br>
+
+  <b>Quantified Polarity: Positive Outcome</b>
+  <br>
+  <i>Successful classification of positive affective states with high-fidelity visual feedback.</i>
+  <br><br>
+  <img src="screenshots/06-positive-result.png" alt="Positive Result" width="90%">
+  <br><br><br>
+
+  <b>System Attribution: Authors</b>
+  <br>
+  <i>Footer integration featuring verified attribution and clickable repository access.</i>
+  <br><br>
+  <img src="screenshots/04-footer-section.png" alt="Authors" width="90%">
+</div>
+
+---
+
+<!-- QUICK START -->
+<a name="quick-start"></a>
+## Quick Start
+
+### 1. Prerequisites
+- **Python 3.9+**: Required for runtime execution. [Download Python](https://www.python.org/downloads/)
+- **Git**: For version control and cloning. [Download Git](https://git-scm.com/downloads)
+
+> [!WARNING]
+> **Linguistic Asset Acquisition**
+>
+> The analysis engine relies on curated NLTK corpora. Initializing the engine for the first time will trigger a download of these assets (primarily for tokenization and part-of-speech tagging). Ensure a stable network connection during the setup phase to avoid logic synchronization errors.
+
+### 2. Installation & Setup
+
+#### Step 1: Clone the Repository
+Open your terminal and clone the repository:
+```bash
+git clone https://github.com/Amey-Thakur/SENTIMENT-ANALYZER.git
+cd SENTIMENT-ANALYZER
+```
+
+#### Step 2: Configure Virtual Environment
+Prepare an isolated environment to manage dependencies:
+
+**Windows (Command Prompt / PowerShell):**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**macOS / Linux (Terminal):**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+#### Step 3: Install Core Dependencies
+Ensure your environment is active, then install the required libraries:
+```bash
+pip install -r "Source Code/requirements.txt"
+```
+
+#### Step 4: Linguistic Model Acquisition
+Synchronize the required corpora for the TextBlob engine:
+```bash
+python -m textblob.download_corpora
+```
+
+### 3. Execution
+Launch the primary terminal-based sentiment engine:
+
+```bash
+python "Source Code/app.py"
+```
+
+> [!TIP]
+> ### Interactive Sentiment Simulation | NLP Engine
+> 
+> Experience the interactive **Sentiment Analyzer** simulation directly in your browser through the working **GitHub Pages** deployment. This platform applies **rule-based heuristics** to resolve linguistic polarity, providing a visual demonstration of polarity detection and real-time affective state quantification.
+>
+> [**Launch Live Demo on GitHub Pages**](https://amey-thakur.github.io/SENTIMENT-ANALYZER/)
+
+---
+
+
+<!-- USAGE GUIDELINES -->
+<a name="usage-guidelines"></a>
+## Usage Guidelines
+
+This repository is openly shared to support learning and knowledge exchange across the engineering community.
+
+**For Students**  
+Use this project as reference material for understanding **Linguistic Pattern Recognition**, the **Keras** classifier architecture included for study, and **real-time affective inference**. The source code is available for study to facilitate self-paced learning and exploration of **Python-based NLP pipelines and WebAssembly/PyScript integration**.
+
+**For Educators**  
+This project may serve as a practical lab example or supplementary teaching resource for **Computer Engineering**, **Digital Signal Processing (Linguistic)**, and **Interactive System Architecture** courses. Attribution is appreciated when utilizing content.
+
+**For Researchers**  
+The documentation and architectural approach may provide insights into **systematic project structuring**, **cross-platform Wasm deployment**, and **rule-based linguistic modeling**.
+
+---
+
+<!-- LICENSE -->
+<a name="license"></a>
+## License
+
+This repository and all its creative and technical assets are made available under the **MIT License**. See the [LICENSE](LICENSE) file for complete terms.
+
+> [!NOTE]
+> **Summary**: You are free to share and adapt this content for any purpose, even commercially, as long as you provide appropriate attribution to the original authors.
+
+Copyright © 2021 Amey Thakur & Mega Satish
+
+---
+
+<!-- ABOUT -->
+<a name="about-this-repository"></a>
+## About This Repository
+
+**Created & Maintained by**: [Amey Thakur](https://github.com/Amey-Thakur) & [Mega Satish](https://github.com/msatmod)
+
+This project features **Sentiment Analyzer**, a rule-based linguistic classification system. It represents a personal exploration into **Python**-based natural language processing and high-performance web-service architecture via **WebAssembly**.
+
+**Connect:** [GitHub](https://github.com/Amey-Thakur) &nbsp;·&nbsp; [LinkedIn](https://www.linkedin.com/in/amey-thakur) &nbsp;·&nbsp; [ORCID](https://orcid.org/0000-0001-5644-1575)
+
+### Acknowledgments
+
+Grateful acknowledgment to [**Mega Satish**](https://github.com/msatmod) for her exceptional collaboration and partnership during the development of this Sentiment Analyzer project. Her constant support, technical clarity, and dedication to software quality were instrumental in achieving the system's functional objectives. Learning alongside her was a transformative experience; her thoughtful approach to problem-solving and steady encouragement turned complex requirements into meaningful learning moments. This work reflects the growth and insights gained from our side-by-side journey. Thank you, Mega, for everything you shared and taught along the way.
+
+Special thanks to the **mentors and peers** whose encouragement, discussions, and support contributed meaningfully to this learning experience.
+
+---
+
+<div align="center">
+
+  [↑ Back to Top](#sentiment-analyzer)
+
+  [Authors](#authors) &nbsp;·&nbsp; [Overview](#overview) &nbsp;·&nbsp; [Features](#features) &nbsp;·&nbsp; [Structure](#project-structure) &nbsp;·&nbsp; [Results](#results) &nbsp;·&nbsp; [Quick Start](#quick-start) &nbsp;·&nbsp; [Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [License](#license) &nbsp;·&nbsp; [About](#about-this-repository) &nbsp;·&nbsp; [Acknowledgments](#acknowledgments)
+
+  <br>
+
+  🧠 **[Sentiment Analyzer](https://amey-thakur.github.io/SENTIMENT-ANALYZER)**
+
+  ---
+
+  ### 🎓 [Computer Engineering Repository](https://github.com/Amey-Thakur/COMPUTER-ENGINEERING)
+
+  **Computer Engineering (B.E.) - University of Mumbai**
+
+  *Semester-wise curriculum, laboratories, projects, and academic notes.*
+
+</div>
+

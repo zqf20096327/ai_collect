@@ -1,0 +1,249 @@
+# KoWit-24 
+
+ [![Dataset on HF](https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-sm.svg)](https://huggingface.co/datasets/Humor-Research/KoWit-24) 
+ 
+ [![Read the Paper](https://img.shields.io/badge/Paper-arXiv%3A2503.01510-B31B1B.svg)](https://arxiv.org/abs/2503.01510)
+
+[ Slides ](#)|[ Prompts ](https://smith.langchain.com/hub/humor-research)
+
+## Overview
+
+We present KoWit-24, a dataset with fine-grained annotation of wordplay in 2,700 Russian news headlines. KoWit-24 annotations include the presence of wordplay, its type, wordplay anchors, and words/phrases the wordplay refers to.
+
+## Content
+
+- [Overview](#Overview)
+- [Content](#Content)
+- [Dataset](#Dataset)
+  - [Description](#Description)
+  - [Download](#Download)
+  - [Key features](#Key-features)
+  - [How to load and use](#How-to-load-and-use)
+- [Repository structure](#Repository-structure)
+- [Experiments](#Experiments)
+  - [Wordplay detection](#Wordplay-detection)
+  - [Wordplay interpretation](#Wordplay-interpretation)
+    - [Automatic interpretation evaluation](#Automatic-interpretation-evaluation)
+  - [Table of results](#Table-of-results)
+  - [How to run an experiment with another LLM](#How-to-run-an-experiment-with-another-LLM)
+- [Citation](#Citation)
+
+
+## Dataset
+
+### Description
+
+Dataset contains manual annotated 2,700 headlines, of which 1,340 contained wordplay, so the dataset is almost perfectly balanced. For all headlines identified as containing wordplay, annotations were generated, including the original substring, a reference string, and a link to Wikipedia or Wiktionary. Distribution of headlines by wordplay type can be seen in Table 1. The most frequent wordplay mechanism in our dataset appeared to be the modification of existing well-known phrases – collocations, idiomatic expressions, or named entities.
+
+|                 | Wordplay type       | #   | AAL  | Links |
+|-----------------|---------------------|-----|------|-------|
+| Puns            | Polysemy            | 190 | 1.51 |       |
+| Puns            | Homonymy            | 26  | 1.57 |       |
+| Puns            | Phonetic similarity | 98  | 1.80 |       |
+| Transformations | Collocation         | 423 | 2.64 | 126   |
+| Transformations | Idiom               | 177 | 3.43 | 118   |
+| Transformations | Reference           | 353 | 3.73 | 214   |
+|                 | Nonce word          | 185 |      |       |
+|                 | Oxymoron            | 48  |      |       |
+
+*Table 1. Wordplay types, average anchor length in words (AAL), and wiki links in KOWIT-24*
+
+### Download
+
+The dataset can be downloaded [directly from this repository](Data/dataset).  
+For convenience, it is also available on [Hugging Face](https://huggingface.co/datasets/Humor-Research/KoWit-24).
+
+### Key features
+
+Unlike the majority of existing humor collections of canned jokes, KoWit-24 provides wordplay contexts – each headline is accompanied by the news lead and summary. The most common type of wordplay in the dataset is the transformation of collocations, idioms, and named entities – the mechanism that has been underrepresented in previous humor datasets. Moreover the dataset contains manually created annotations that provide information about what the wordplay refers to. Incorporating this annotation into the dataset **enables automated evaluation** of the large language model’s wordplay interpretations.
+
+Dataset entry example:
+```
+{'article_url': 'https://www.kommersant.ru/doc/5051268',
+ 'date': '2021-10-27',
+ 'headline': 'Диалектический пиломатериализм',
+ 'is_wordplay': True,
+ 'article_authors': 'Ольга Мордюшенко',
+ 'lead': 'Цены на фанеру и доски начали снижаться вслед за спросом',
+ 'summary': 'Пиломатериалы и лесопромышленная продукция начинают дешеветь по '
+            'мере завершения строительного сезона. По мнению аналитиков и '
+            'некоторых участников рынка, этому способствует сокращение спроса '
+            'на фоне летнего всплеска цен. И хотя на некоторые продукты, '
+            'например OSB, цена упала уже на треть, она все еще вдвое выше '
+            'уровня конца прошлого года. До конца года можно ожидать '
+            'стабилизации цен, полагают участники рынка, но едва ли '
+            'возвращения к средним многолетним значениям.'},
+'annotations': [{'end_index': 30,
+                  'headline_substring': 'Диалектический пиломатериализм',
+                  'reference_string': 'Диалектический материализм',
+                  'reference_url': 'https://ru.wikipedia.org/wiki/Диалектический_материализм',
+                  'start_index': 0,
+                  'wordplay_type': 'Reference'},
+                 {'end_index': 30,
+                  'headline_substring': 'пиломатериализм',
+                  'reference_string': ['материализм', 'пиломатериалы'],
+                  'reference_url': ['', ''],
+                  'start_index': 15,
+                  'wordplay_type': 'Nonce word'}]
+```
+
+### How to load and use
+
+```python
+from datasets import load_dataset
+data_files = {"test": "dataset.csv", "dev": "dev_dataset.csv"}
+dataset = load_dataset("Humor-Research/KoWit-24", data_files=data_files)
+
+```
+
+## Repository structure
+The repository is organized into two main parts: data artifacts and experiment notebooks.
+
+```text
+KoWit-24/
+├── Data/
+│   ├── openai_batch_task/                 # JSON files for OpenAI batch inference runs
+│   ├── dataset/                           # Dataset files
+│   ├── predictions/                       # Stored model outputs for detection and interpretation experiments
+│   └── processed_data/                    # Preprocessed inputs, prompts, and auxiliary annotation files
+├── Notebooks/
+│   ├── Experiments/                       # Notebooks for the main experiments
+│   │   ├── wordplay_detection/
+│   │   ├── wordplay_detection_extended_prompt/
+│   │   ├── wordplay_detection_extended_prompt_ria/
+│   │   ├── wordplay_detection_ria/
+│   │   ├── wordplay_interpretation/
+│   │   ├── wordplay_interpretation_extended_prompt/
+│   │   ├── wordplay_interpretation_extended_prompt_ria/
+│   │   └── wordplay_interpretation_ria/
+│   └── Reports and tables/                # Notebooks for evaluation, aggregation, and result tables
+│       ├── automatic_evaluation_interpretations/
+│       └── processing_classification_data/
+└── README.md                              # Project overview, dataset description, and usage instructions
+```
+
+## Experiments
+
+For the experiments, we allocated 200 records (100 from each class) for the development set, making sure that all wordplay types were represented. Thus, the test set contains 2,500 headlines (1,290 with and 1,310 without wordplay). We experimented with two tasks – wordplay detection and wordplay interpretation. We employed five LLMs: GPT-4o, Mistral NeMo 12B, YandexGPT4, GigaChat Lite, and GigaChat Max. 
+
+### Wordplay detection
+
+Wordplay detection was conducted across all models on the full dataset. The development set was utilized for providing examples in the prompt. Performance was evaluated based on the *is_wordplay* field. Examples of model predictions and parsing results are available [here](Notebooks/Experiments/wordplay_detection) and [here](Notebooks/Experiments/wordplay_detection_extended_prompt).
+
+### Wordplay interpretation
+
+Word interpretation was performed on the entire dataset; however, the quality of the interpretations was assessed only for instances labeled as containing wordplay. Additionally, automatic interpretation was enabled when either *reference_string* or *reference_url* was present. The code can be found [here](Notebooks/Experiments/wordplay_interpretation) and [here](Notebooks/Experiments/wordplay_interpretation_extended_prompt).
+
+The aforementioned tasks were also performed on the RIA Novosti dataset. The corresponding code and results are available [here](Notebooks/Experiments/wordplay_detection_extended_prompt_ria) and [here](Notebooks/Experiments/wordplay_interpretation_extended_prompt_ria).
+
+#### Automatic interpretation evaluation
+
+To facilitate the evaluation of other large language models (LLMs) and to ensure the reproducibility of the current predictions and metrics, a function has been implemented, which can be configured using the following code:
+
+```
+pip install git+https://github.com/Humor-Research/kowit24_evaluation.git
+```
+
+An example of usage is available [here](Notebooks/Reports%20and%20tables/automatic_evaluation_interpretations/evaluation_extended_prompt_module.ipynb). Alternatively, refer to the example provided below.
+
+```python
+
+import numpy as np
+from datasets import load_dataset
+from kowit24_evaluation import check_interpretation
+
+data_files = {"test": "dataset.csv", "dev": "dev_dataset.csv"}
+dataset = load_dataset("Humor-Research/KoWit-24", data_files=data_files)
+
+llm_interpretations = LLM() # To perform the evaluation of the interpretations, consider that the texts of the interpretations have already been received
+
+results = list()
+for idx, example in enumerate(dataset["test"]):
+  results.append(
+    check_interpretation(example["annotations"], llm_interpretations[idx])
+  )
+
+print("Quality", np.mean(results))
+
+```
+
+
+### Table of results
+
+| Model         | Detection with simple prompt, P/R | Detection with extended prompt, P/R | Interpretation manual, R | Interpretation auto, R |
+|---------------|-----------------------------------|-------------------------------------|--------------------------|------------------------|
+| GigaChat Lite | 0.50 / 0.50                       | 0.53 / 0.72                         | 0.11                     | 0.19                   |
+| GigaChat Max  | 0.62 / 0.48                       | 0.68 / 0.59                         | 0.28                     | 0.28                   |
+| YandexGPT4    | 0.83 / 0.10                       | 0.76 / 0.24                         | 0.20                     | 0.22                   |
+| Mistral Nemo  | 0.00 / 0.00                       | 0.00 / 0.00                         | 0.24                     | 0.30                   |
+| GPT-4o        | 0.62 / 0.81                       | 0.65 / 0.88                         | 0.48                     | 0.43                   |
+
+### How to run an experiment with another LLM
+
+To facilitate the evaluation of alternative large language models (LLMs) for detection and interpretation tasks, the prompts utilized in the experiments have been made available on the LangChain Hub, while the corresponding data have been deposited on the HuggingFace Hub.
+
+Example:
+```python
+# Imports
+from huggingface_hub import hf_hub_download
+from datasets import load_dataset
+from langchain.llms import LlamaCpp
+from langchain.chains import LLMChain
+from langchain import hub
+
+# Load model
+model_path = hf_hub_download(repo_id="Vikhrmodels/Vikhr-Llama-3.2-1B-instruct-GGUF",
+                             filename="Vikhr-Llama-3.2-1B-Q4_K_M.gguf",
+                             local_dir=".")
+
+llm = LlamaCpp(
+        model_path=model_path,
+        n_ctx=2048,
+        temperature=0.1,
+        top_p=0.9,
+        max_tokens=256
+)
+
+# Load prompt
+prompt = hub.pull("humor-research/wordplay_detection")
+
+# Load dataset
+data_files = {"test": "dataset.csv", "dev": "dev_dataset.csv"}
+dataset = load_dataset("Humor-Research/KoWit-24", data_files=data_files)
+
+# Invoke LLM
+predicted = list()
+for example in dataset["test"]:
+    task = prompt.format(
+        headline=example["headline"],
+        lead=example["lead"]
+    )
+    predicted.append(
+        llm.invoke(task)
+    )
+    break
+```
+
+## Citation
+
+```
+@inproceedings{baranov-etal-2025-kowit,
+    title = "{K}o{W}it-24: A Richly Annotated Dataset of Wordplay in News Headlines",
+    author = "Baranov, Alexander  and
+      Palatkina, Anna  and
+      Makovka, Yulia  and
+      Braslavski, Pavel",
+    editor = "Angelova, Galia  and
+      Kunilovskaya, Maria  and
+      Escribe, Marie  and
+      Mitkov, Ruslan",
+    booktitle = "Proceedings of the 15th International Conference on Recent Advances in Natural Language Processing - Natural Language Processing in the Generative AI Era",
+    month = sep,
+    year = "2025",
+    address = "Varna, Bulgaria",
+    publisher = "INCOMA Ltd., Shoumen, Bulgaria",
+    url = "https://aclanthology.org/2025.ranlp-1.15/",
+    pages = "125--132"
+}
+
+```

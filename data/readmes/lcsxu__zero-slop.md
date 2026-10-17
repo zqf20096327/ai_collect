@@ -1,0 +1,299 @@
+# zero-slop
+
+<p align="center">
+  <img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/status-early%20public-important?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/skills-5-success?style=flat-square" alt="Skills">
+</p>
+
+Five agent skills to help your AI-generated interfaces feel like *your* product, work for real users, avoid generic AI output, and stay honest about evidence, risk, and uncertainty.
+
+> **Repo:** [github.com/Eid0lon/zero-slop](https://github.com/Eid0lon/zero-slop)
+
+- [What it does](#what-it-does)
+- [What this is not](#what-this-is-not)
+- [The five skills](#the-five-skills)
+- [Install](#install)
+- [Commands](#commands)
+- [Scan vs Autopsy](#scan-vs-autopsy)
+- [How they work together](#how-they-work-together)
+- [What it looks for](#what-it-looks-for)
+- [Example](#example)
+- [Dials and presets](#dials-and-presets)
+- [FAQ](#faq)
+- [License](#license)
+
+---
+
+## What it does
+
+AI coding agents tend to reach for the same visual habits — purple gradients, glass cards, "empower your workflow" headlines, three centered feature cards above the fold. These are pulled from training data, not shaped by *your* product.
+
+`no-slop` reviews your frontend code for these patterns and gives you a friendly report with a score and actionable suggestions. `perfect-design` helps you define the right visual and product direction before code is written. `perfect-ux` maps the real user job, friction, recovery paths, accessibility, trust, and evidence. `reality-skill` makes sure the result is a working product, not just a pretty screenshot. `truth-serum` keeps the agent brutally honest about weak claims, hidden assumptions, uncertainty, and evidence.
+
+Together they form a pipeline: `truth-serum` pressure-tests the idea, `perfect-design` shapes the product-specific interface, `perfect-ux` makes the journey understandable and recoverable, `no-slop` spots generic residue, and `reality-skill` completes the workflow so it actually works end-to-end.
+
+---
+
+## What this is not
+
+- Not a replacement for a human designer — think of it as a co-pilot, not an autopilot.
+- Not a visual AI model — it works with code, not pixels.
+- Not a one-size-fits-all design system — it adapts to your product archetype.
+- Not a guarantee of perfection — but it raises the floor considerably.
+- Not a taste enforcer — it focuses on practical QA, review, and anti-cliché checks.
+
+---
+
+## The five skills
+
+### `no-slop` — spot and improve generic UI
+
+- Reviews `.tsx`, `.jsx`, `.vue`, `.svelte`, `.css`, `.html` files with a context-aware engine (not just regex counting)
+- Gives a 0–100 score and names the patterns it found
+- Produces an AI UI Autopsy: a human-readable summary of what feels off, which lines are involved, confidence level, counter-evidence, and suggested fix order
+- Runs a 6-role review protocol to decide if the UI passes muster
+- Can apply targeted improvements (`--fix`) or rethink the whole surface (`--redesign`)
+- Also works on briefs before any code is generated (`--prevent`)
+
+### `perfect-design` — build product-specific UI
+
+- Writes a Design Contract (who it's for, what job it does, the domain, and key visual choices) before touching code
+- Has 6 product archetypes (operational SaaS, dashboard, commerce, portfolio, editorial, dev tool) to set the right expectations
+- Scores UI against a 14-dimension rubric
+- Works hand-in-hand with `no-slop` — runs it before and after every design pass
+
+### `perfect-ux` beta - make the journey feel obvious and recoverable
+
+- Writes a UX Contract (user, job, start point, completion condition, decision moments, feedback, recovery, trust, and evidence) before changing UX
+- Maps the primary journey from entry to completion, including failure, keyboard, mobile, and return paths
+- Scores UX against user need, task completion, IA, cognitive load, feedback, error recovery, accessibility, responsive resilience, performance feel, trust, content clarity, and expert efficiency
+- Includes research-backed gates drawn from usability heuristics, WCAG/WAI, GOV.UK, Baymard, Core Web Vitals, mature design systems, and Human-AI interaction guidance
+- Provides a deterministic `perfect_ux_cli.py` precheck plus a 6-role judge protocol for serious UX review
+
+### `reality-skill` — turn demos into real workflows
+
+- Traces the primary user journey from entry to completion
+- Catches dead buttons, placeholder data, fake claims, decorative-only dashboards, and stub handlers
+- Asks for proper loading, empty, error, disabled, success, validation, persistence, and navigation states
+- Respects honest local/mock boundaries when production services aren't available yet
+- Keeps changes focused: finish the workflow without redesigning everything
+
+### `truth-serum` - brutal honesty and evidence discipline
+
+- Challenges weak premises, vague plans, fake certainty, and unsupported claims
+- Separates facts, inferences, judgments, unknowns, and recommended actions
+- Uses red-team, premortem, steelman, calibration, and evidence-audit workflows
+- Forces confidence labels and clear "what would change my mind" conditions
+- Keeps critique direct without becoming personal, humiliating, or theatrically harsh
+
+---
+
+## Install
+
+```bash
+npx skills add Eid0lon/zero-slop
+```
+
+Then activate the skills you need in your agent.
+
+## Commands
+
+### `no-slop`
+
+| Command | What it does |
+|---|---|
+| `--autopsy` | A friendly forensic report: overall verdict, what's causing the issue, which lines are involved, and what to address first |
+| `--scan` | Quick deterministic scan: 0–100 score, categories, signatures, and findings — great for debugging or CI |
+| `--fix` | Targeted improvements on specific issues |
+| `--redesign` | A fresh pass when the score calls for more than small tweaks |
+| `--judge` | Runs the 6-role review protocol |
+| `--prevent` | Reviews a brief before any code is generated |
+| `-e` | Economy mode — deterministic checks only, no live judges needed |
+
+### `perfect-design`
+
+| Command | What it does |
+|---|---|
+| `--contract` | Writes a Design Contract from a brief |
+| `--create` | Builds a new UI from a contract |
+| `--redesign` | Rebuilds direction, layout, tokens, and copy |
+| `--polish` | Refines an existing UI while keeping the product model intact |
+| `--judge` | Runs the premium review protocol |
+| `--verify` | Build, lint, browser, and accessibility checks |
+| `-e` | Economy mode — deterministic checks only, no live judges needed |
+
+### `perfect-ux`
+
+| Command | What it does |
+|---|---|
+| `--contract` | Writes a UX Contract from a brief |
+| `--map` | Maps the primary journey, decisions, states, and recovery paths |
+| `--audit` | Finds UX friction, trust gaps, accessibility risks, and missing evidence |
+| `--fix` | Removes blocking friction with focused changes |
+| `--harden` | Adds resilience, edge states, recovery, keyboard paths, and proof |
+| `--judge` | Runs the strict UX review protocol |
+| `--verify` | Verifies the primary journey, keyboard path, mobile behavior, and state coverage |
+| `-e` | Economy mode — deterministic checks only, no live judges needed |
+
+### `reality-skill`
+
+Reality Skill is a workflow skill rather than a CLI command. Invoke it whenever an app, dashboard, form, checkout, onboarding flow, settings page, or CRUD surface needs to go beyond a static mockup.
+
+### `truth-serum`
+
+| Command | What it does |
+|---|---|
+| `--audit` | Finds dishonesty, vagueness, missing caveats, weak reasoning, and hidden assumptions |
+| `--red-team` | Attacks the strongest version of an idea and names likely failure modes |
+| `--reality-check` | Says what is plausible, what is wishful, and what evidence is missing |
+| `--decision` | Compares options using assumptions, downside, reversibility, and expected value |
+| `--rewrite` | Rewrites an answer to be direct, calibrated, and useful |
+| `--verify` | Checks factual claims with sources or local evidence |
+| `-e` | Economy mode - deterministic local checks only |
+
+---
+
+## Scan vs Autopsy
+
+`scan` and `autopsy` use the same engine under the hood, but they're made for different moments.
+
+Use `--autopsy` when you want to understand what's going on:
+
+```bash
+no-slop --autopsy path/to/ui
+```
+
+Autopsy tells you whether the surface is `CLEAN`, `RESIDUE`, `CONTAMINATED`, or `CRITICAL`, explains why it landed there, what patterns were spotted, and what to tackle first. This is the go-to for reviews, before/after comparisons, sharing with teammates, and deciding if a UI actually needs attention.
+
+Use `--scan` when you want the raw numbers:
+
+```bash
+no-slop --scan path/to/ui
+no-slop --scan --json path/to/ui
+```
+
+Scan gives you the calibrated score, category breakdowns, matching signatures, and exact findings. Handy for debugging a specific line, writing tests, gating CI, or piping into another tool. In short: autopsy is the human-friendly report; scan is the machine-readable data underneath.
+
+---
+
+## How they work together
+
+```
+1. perfect-design --contract      —  decide what your product is before writing code
+2. perfect-ux --contract          —  decide who the user is, what job they complete, and how success is proven
+3. no-slop --autopsy              —  understand where the current UI stands
+4. perfect-design --create/polish —  build or refine the interface
+5. perfect-ux --audit/fix         —  remove journey friction, ambiguity, access blockers, and recovery gaps
+6. reality-skill                  —  make actions, data, persistence, and states real
+7. no-slop --scan --json          —  debug specific findings or add CI checks
+8. no-slop --judge                —  verify nothing generic slipped through
+9. perfect-design --judge         —  verify the result feels product-specific
+10. perfect-ux --judge/verify     —  verify the primary user journey actually works for real humans
+```
+
+Use `truth-serum --reality-check` before the pipeline when the premise, positioning, evidence, or risk needs to be challenged. Use `truth-serum --audit` near the end when final claims, proof, caveats, confidence, and weak spots need a brutal pass.
+
+If `no-slop` isn't available, `perfect-design` notes it and applies a local checklist. If live UX judges or browser checks are unavailable, `perfect-ux` records the limitation and never claims a full pass it cannot back up.
+
+---
+
+## What it looks for
+
+Here are a few things the scanner keeps an eye out for:
+
+- Hero sections with blue-to-purple or indigo-to-pink gradients
+- Glassmorphism cards with backdrop blur
+- Feature grids with Sparkles / Shield / Rocket icons
+- Copy like "Unlock seamless productivity" or "Empower your workflow"
+- Made-up stats ("10K+ users", "99.9% uptime")
+- `focus:outline-none` with no visible focus replacement
+- Hover scale or lift applied indiscriminately to every card
+- Animations that don't respect `prefers-reduced-motion`
+- Hardcoded hex colors bypassing design tokens
+- Placeholder-only inputs, vague CTAs, dead-end actions, missing recovery paths, unsupported AI/trust claims, mobile traps, and inaccessible custom controls
+
+The full anti-slop pattern catalog lives in `skills/no-slop/references/ai-slop-patterns.md`. The UX gates live in `skills/perfect-ux/references/ux-gates.md`.
+
+---
+
+## Example
+
+Prompt:
+
+> Build a modern, premium landing page for an AI SaaS that helps teams automate their productivity.
+>
+> Make it ultra professional, futuristic, with a clean and premium design. Include:
+>
+> - Hero section with big headline, powerful subheadline, and two CTA buttons
+> - Features section with 6 cards
+> - Testimonials section
+> - Pricing tiers (3 plans)
+> - FAQ
+> - Footer
+>
+> Use React + Tailwind CSS. Modern style with gradients, glassmorphism, smooth animations, elegant dark mode. Make it visually stunning and convincing.
+>
+> Full code, responsive, ready to ship.
+
+| Before | After |
+|---|---|
+| ![](examples/before.png) | ![](examples/after.png) |
+
+---
+
+## Dials and presets
+
+`no-slop`, `perfect-design`, and `perfect-ux` use dials (0–10 sliders) to adjust how strict the checks are. A preset is just a handy bundle of dial values for common product types. `reality-skill` uses fixed workflow gates instead of dials.
+
+| Preset | What it expects |
+|---|---|
+| `saas` | Product proof over marketing fluff, no fake dashboards |
+| `dashboard` | Dense tables, clear filters, labeled charts, keyboard paths |
+| `ecommerce` | Price/shipping clarity, honest comparison, no fake scarcity |
+| `onboarding` | Fast first success, saved progress, reversible setup choices |
+| `public-service` | Plain language, eligibility, privacy, accessibility, completion proof |
+| `portfolio` | Work evidence over trait cards, real case studies |
+| `brutalist` | Deliberate rawness, not carelessness |
+| `minimal` | Fewer elements, sharper choices, high contrast |
+| `editorial` | Typography, imagery, voice, pacing |
+| `ai-tool` | Task controls, sources, constraints, error recovery |
+
+---
+
+## FAQ
+
+<details>
+<summary>Does this replace a human designer?</summary>
+Not at all. It helps spot generic patterns and keeps decisions product-focused, but it doesn't replace taste, strategy, or visual craft. Think of it as a thoughtful reviewer, not a replacement for your designer.
+</details>
+
+<details>
+<summary>Do I need to use every skill?</summary>
+Nope. `no-slop` works great on its own for reviewing generic patterns. `perfect-design` adds direction and a deeper rubric when you want it. `perfect-ux` helps with flow and recoverability. `reality-skill` is for apps and workflows that need to go beyond a static mockup. `truth-serum` is for brutal idea review, risk, evidence, and uncertainty. Pick what fits your needs.
+</details>
+
+<details>
+<summary>Does it work with any framework?</summary>
+Reviews `.tsx`, `.jsx`, `.vue`, `.svelte`, `.astro`, `.css`, `.scss`, `.html`, and `.mdx`. The ideas apply to any stack, and you can point the CLI at any directory.
+
+That said, the skills work best on real app stacks such as Vite, Next.js, Remix, Nuxt, SvelteKit, Astro, or similar projects where the agent can inspect components, routes, state, data flow, tests, and build output. Plain HTML/CSS/JS is supported, but the skills have less structure to reason about, so fixes and reviews are usually less precise.
+</details>
+
+<details>
+<summary>What's economy mode?</summary>
+`-e` skips the live subagent judges and runs deterministic local checks only. Same standards, lighter on resources. Great for quick scans or when subagents aren't available.
+</details>
+
+<details>
+<summary>Can I contribute or share feedback?</summary>
+Absolutely. This is an early public release. Open an issue, send a PR, or share a before/after example — all welcome.
+</details>
+
+---
+
+## License
+
+[Apache 2.0](https://github.com/Eid0lon/zero-slop/blob/main/LICENSE)
+
+Copyright (c) 2026

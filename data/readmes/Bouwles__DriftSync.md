@@ -1,0 +1,240 @@
+# DriftSync
+
+**Real-time cognitive drift prediction for human error risk.**
+
+[![Tests](https://github.com/Bouwles/DriftSync/actions/workflows/tests.yml/badge.svg)](https://github.com/Bouwles/DriftSync/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)
+
+DriftSync is an end-to-end machine learning system that predicts when a person is likely to make a mistake before the mistake happens. It watches behavioral signals from a sustained-attention task, turns them into temporal feature windows, and estimates the probability of an error in the next few trials.
+
+This is a research and portfolio project, not a medical device. It is not clinically validated and makes no health claims.
+
+![DriftSync desktop workspace](docs/assets/driftsync-workspace.png)
+
+## Download for Windows
+
+[Download DriftSync v2.2.0 for Windows x64](https://github.com/Bouwles/DriftSync/releases/download/v2.2.0/DriftSync-v2.2.0-windows-x64.zip).
+Extract the **entire ZIP**, then open `DriftSync.exe` in the extracted folder. Keep
+`_internal` beside the executable. Python is included; no separate installation is
+needed. The version appears in the sidebar so you can confirm you opened the new app.
+
+This package includes the redesigned workspace and Mathematics section. Use **Train
+models** before live predictions; task recording and Mathematics work immediately.
+Local recordings and pretrained checkpoints are not bundled. Keep previous recordings
+when upgrading. See [the release notes](https://github.com/Bouwles/DriftSync/releases/tag/v2.2.0)
+for the checksum and changes.
+
+## Explore the Mathematics
+
+Open **Mathematics** in the sidebar or press **Alt+7**. Five interactive pages explain
+prediction targets, behavioural features, sequence models, uncertainty and learning.
+Properly typeset equations sit alongside worked examples: toggle future outcomes,
+compare LSTM and Transformer architectures, adjust dropout spread, and explore loss.
+Examples are explicitly illustrative and name their implementing source files.
+
+![DriftSync Mathematics workspace](docs/assets/driftsync-mathematics.png)
+
+## Live Demo
+
+The live workspace separates the attention task from its analysis panel. It shows error risk, MC-dropout uncertainty, recent outcomes and an inspectable prediction timeline. Predictions begin once the sequence window is full; missing checkpoints and warm-up are explicitly labeled. Calibrated prediction confidence is not available and is never inferred from uncertainty.
+
+![Live workspace with labeled replay-fixture predictions](docs/assets/driftsync-live-workspace.png)
+
+This UI preview renders the two events in the checked-in replay fixture; it is not a live human session. The task area preserves the existing stimulus positions and response rules.
+
+The desktop interface supports resizing, F11 fullscreen, Tab/Enter controls, and Alt+1–7 navigation. See [the interface guide](docs/interface.md) for controls and measurement definitions.
+
+## Why It Matters
+
+Human error in repetitive, high-attention work usually does not appear out of nowhere. Reaction time slows. Mistakes cluster. Recovery after an error gets worse. DriftSync models those signals as a sequence prediction problem:
+
+```text
+Given the last L trials of behavior,
+predict whether an error will occur in the next K trials.
+```
+
+Default values:
+
+| Parameter | Meaning | Default |
+| --- | --- | --- |
+| `L` | Sequence window length | 20 trials |
+| `K` | Prediction horizon | 5 trials |
+| Features | Behavioral inputs per trial | 15 |
+| Warning threshold | Risk level that triggers warning | 0.65 |
+
+## System Flow
+
+![DriftSync pipeline](docs/assets/driftsync-pipeline.png)
+
+```text
+Task Engine
+  -> raw trial data: reaction time, action, correctness, timestamps
+  -> 15-feature engineering layer
+  -> sequence windows of the last 20 trials
+  -> LSTM / Transformer / baseline predictor
+  -> P(error in next 5 trials) + uncertainty
+  -> live warning overlay + explanation panel
+  -> session metrics and lead-time report
+```
+
+## Model Evidence
+
+![DriftSync results](docs/assets/driftsync-results.png)
+
+Representative checked-in synthetic experiment summary:
+
+| Model | Accuracy | Precision | Recall | F1 | ROC AUC | Params |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| LSTM | 0.744 | 0.994 | 0.722 | 0.837 | 0.872 | 407,169 |
+| Transformer | 0.754 | 0.994 | 0.733 | 0.844 | 0.888 | 540,289 |
+
+These values come from synthetic drift data and should be read as engineering evidence, not real-world validation.
+
+## Feature Engineering
+
+Each trial becomes a normalized 15-dimensional vector:
+
+| Feature | Description |
+| --- | --- |
+| `reaction_time_norm` | Reaction time normalized by robust session statistics |
+| `correctness` | `1` for correct, `0` for error |
+| `elapsed_time_norm` | Session progress |
+| `rolling_error_rate_5` | Error rate over the last 5 trials |
+| `rolling_error_rate_10` | Error rate over the last 10 trials |
+| `inter_trial_interval_norm` | Gap between trials |
+| `cumulative_errors_norm` | Cumulative error rate |
+| `streak_correct` | Current correct streak, normalized |
+| `streak_incorrect` | Current error streak, normalized |
+| `target_match` | Whether the shown shape matched the rule |
+| `action_click` | Whether the user clicked instead of skipping/timing out |
+| `rolling_rt_variance` | Short-term reaction-time instability |
+| `time_since_last_error_norm` | Recovery distance from the previous error |
+| `rt_trend` | Recent slope of reaction time |
+| `fatigue_index` | Time-on-task multiplied by cumulative errors |
+
+## Quick Start
+
+```bash
+git clone https://github.com/Bouwles/DriftSync.git
+cd DriftSync
+python -m pip install -r requirements-dev.txt
+python -m pytest
+python -m driftsync.smoke
+python launch.py
+```
+
+Useful commands:
+
+```bash
+make test        # run pytest
+make smoke       # check core package contracts
+make quick-demo  # run a short synthetic training/evaluation pass
+make showcase-bundle  # generate replay report + showcase bundle
+make launch      # open the Pygame application
+```
+
+## Run A Reproducible Experiment
+
+```bash
+python run_experiment.py --quick --sessions 5 --trials 80 --epochs 5
+```
+
+For a fuller run:
+
+```bash
+python run_experiment.py --sessions 20 --trials 200 --epochs 60
+```
+
+Outputs are written to `driftsync/results/`. Generated checkpoints, logs, and datasets are ignored by git because they are reproducible and can be large.
+
+## Project Structure
+
+```text
+DriftSync/
+|-- launch.py                         # Main app launcher
+|-- run_experiment.py                 # Headless training/evaluation runner
+|-- scripts/generate_showcase_assets.py
+|-- docs/
+|   |-- assets/                       # README screenshots and GIF
+|   `-- realtime-log-schema.md
+|-- tests/                            # Pytest coverage for core behavior
+`-- driftsync/
+    |-- app/application.py            # Pygame application shell
+    |-- configs/config.py             # Dataclass configuration
+    |-- data/                         # Loading, features, sequence datasets
+    |-- evaluation/                   # Metrics and plots
+    |-- ml/                           # Calibration, baselines, explanations
+    |-- models/                       # LSTM and Transformer predictors
+    |-- realtime/                     # Streaming inference
+    |-- simulator/                    # Task engine and GUI
+    |-- training/                     # Training loop and pipeline
+    `-- utils/                        # Logging, metrics, seeding
+```
+
+## Realtime Log Schema
+
+Live predictions are saved as JSON events when a trained model is available. See [docs/realtime-log-schema.md](docs/realtime-log-schema.md).
+
+## Showcase Replay Bundle
+
+DriftSync can generate a shareable replay bundle that merges a task session with realtime risk predictions:
+
+```bash
+python scripts/build_showcase_bundle.py
+```
+
+The bundle includes a replay timeline JSON, a Markdown replay report, and sample session data under `driftsync/results/showcase_bundle/`. It is designed for portfolio review: warnings, errors, peak risk, uncertainty, and explanation notes are visible without launching the app.
+
+For repeatable live demos, use named scenarios:
+
+```bash
+python -m driftsync.realtime.live_simulator --scenario fatigue_drift --trials 80
+python -m driftsync.realtime.live_simulator --scenario sudden_overload --trials 40
+```
+
+## Project Docs
+
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Generated artifact policy](docs/generated-artifacts.md)
+- [Demo readiness checklist](docs/demo-checklist.md)
+- [Model card](docs/model-card.md)
+- [Replay reports](docs/replay-reports.md)
+- [Realtime log schema](docs/realtime-log-schema.md)
+- [Scenario presets](docs/scenario-presets.md)
+
+## Verification
+
+Current local verification commands:
+
+```bash
+python -m pytest
+python -m driftsync.smoke
+python scripts/generate_showcase_assets.py
+python scripts/build_showcase_bundle.py
+```
+
+## Limitations
+
+- Default training data is synthetic.
+- The current task is a shape-click/skip simulator, not a broad cognitive benchmark.
+- Real-world deployment would require human-subject data, validation, threshold tuning, and ethics review.
+- Lead time depends on threshold choice and the definition of a warning window.
+
+## Roadmap
+
+- Collect real human sessions across different task types.
+- Add temporal train/test splits by session date.
+- Add an API mode for embedding DriftSync in other applications.
+- Add online adaptation from a user's own history.
+- Compare longer prediction horizons such as `K=10` and `K=15`.
+- Add an interactive GUI replay player for saved sessions.
+
+---
+
+Built to show the full loop: simulation, sequence modeling, realtime prediction, uncertainty, explainability, and evidence.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

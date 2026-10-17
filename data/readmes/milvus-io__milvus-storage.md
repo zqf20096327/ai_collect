@@ -1,0 +1,182 @@
+# Milvus Storage
+
+A high-performance columnar storage engine built on Apache Arrow, designed for vector databases and analytical workloads.
+
+[![C++ CI](https://github.com/milvus-io/milvus-storage/actions/workflows/cpp-ci.yml/badge.svg)](https://github.com/milvus-io/milvus-storage/actions/workflows/cpp-ci.yml)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+## Architecture
+
+```
+┌───────────────────────────────────────────────────────────────┬─────────────┐
+│                       Application Layer                       │ Filesystem  │
+│                   (Python / Java / Rust / C++)                │ FFI (C ABI) │
+└───────────────────────────────────────────────────────────────┴──────┬──────┘
+                                      │                                │
+                                      ▼                                │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         FFI Layer (extern "C")                              │
+│                    (Cross-language bindings via C ABI)                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │                                │
+                          ┌───────────┴───────────┐                    │
+                          ▼                       ▼                    │
+┌─────────────────────────────────────┐ ┌─────────────────────────────────────┐
+│            Writer API               │ │            Reader API               │
+│  ┌───────────────────────────────┐  │ │  ┌───────────────────────────────┐  │
+│  │    Column Group Policy        │  │ │  │   RecordBatchReader (Scan)    │  │
+│  │  (Single/Schema/Size Based)   │  │ │  │   ChunkReader (Random Access) │  │
+│  └───────────────────────────────┘  │ │  │   Take (Row Indices)          │  │
+└─────────────────────────────────────┘ └─────────────────────────────────────┘
+                          │                       │                    │
+                          └───────────┬───────────┘                    │
+                                      ▼                                │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Transaction Layer                                 │
+│         (Manifest Versioning / Conflict Resolution / Delta Logs)            │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │                                │
+                          ┌───────────┴───────────┐                    │
+                          ▼                       ▼                    │
+┌─────────────────────────────────────┐ ┌─────────────────────────────────────┐
+│       Column Group Writer           │ │        Column Group Reader          │
+│  ┌───────────────────────────────┐  │ │  ┌───────────────────────────────┐  │
+│  │  Buffer Management            │  │ │  │  Chunk Management             │  │
+│  │  Row Group Sizing             │  │ │  │  Column Projection            │  │
+│  │  File Rolling                 │  │ │  │  Predicate Pushdown           │  │
+│  └───────────────────────────────┘  │ │  └───────────────────────────────┘  │
+└─────────────────────────────────────┘ └─────────────────────────────────────┘
+                          │                       │                    │
+                          └───────────┬───────────┘                    │
+                                      ▼                                │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            Format Layer                                     │
+│    ┌─────────────┐      ┌─────────────┐      ┌───────────────────────────┐ │
+│    │   Parquet   │      │   Vortex    │      │    Lance (Read Only)      │ │
+│    └─────────────┘      └─────────────┘      └───────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │                                │
+                                      ▼                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          Filesystem Layer                                   │
+│  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐ ┌────────┐ ┌────────┐  │
+│  │ Local │ │AWS S3 │ │  GCS  │ │ Azure │ │Aliyun │ │Tencent │ │ Huawei │  │
+│  └───────┘ └───────┘ └───────┘ └───────┘ └───────┘ └────────┘ └────────┘  │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Features
+
+- **Column Group Storage** - Organize columns into groups for optimal I/O and compression
+- **Multi-Format Support** - Parquet (primary), Vortex, and Lance formats
+- **Transaction Support** - ACID-like semantics with manifest versioning and conflict resolution
+- **Cloud Native** - Built-in support for major cloud storage providers
+- **Multi-Language SDKs** - Python, Java/Scala, Rust, and C++ bindings
+- **Encryption & Compression** - Data-at-rest encryption and configurable compression
+
+## Cloud Storage Support
+
+| Provider | Status |
+|----------|--------|
+| AWS S3 | Supported (including S3-compatible: MinIO, Cloudflare R2, [RustFS](https://github.com/rustfs/rustfs)) |
+| Google Cloud Storage | Supported |
+| Azure Blob Storage | Supported |
+| Aliyun OSS | Supported |
+| Tencent COS | Supported |
+| Huawei Cloud OBS | Supported |
+
+## Language SDKs
+
+| Language | Status | Notes |
+|----------|--------|-------|
+| C++ | Primary | Core implementation |
+| Python | Supported | FFI bindings with PyArrow integration |
+| Java/Scala | Supported | JNI bindings |
+| Rust | Supported | DataFusion TableProvider integration |
+
+## Development
+
+### Prerequisites
+
+- CMake >= 3.20.0
+- C++20 compiler (GCC 10+, Clang 10+, Apple Clang 12+)
+- Conan >= 2.0
+
+
+### Build from Source (C++)
+
+```bash
+git clone https://github.com/milvus-io/milvus-storage.git
+cd milvus-storage/cpp
+
+# Initialize Conan default profile (required for Conan 2.x)
+conan profile detect --force
+
+# Setup Conan remote artifactory
+conan remote add default-conan-local2 https://milvus01.jfrog.io/artifactory/api/conan/default-conan-local2
+
+# Build
+make build
+
+# Test
+make test
+
+# Test with MinIO, RustFS, and Azurite
+make test-all
+
+# Run benchmarks
+./build/Release/benchmark/benchmark --benchmark_filter="Typical/"
+```
+
+### Integration Tests (Python)
+
+```bash
+# Build C++ library for Python FFI
+cd cpp && make python-lib && cd ..
+
+# Install Python FFI package
+cd python && pip install -e ".[dev]" && cd ..
+
+# Install test dependencies
+pip install -r tests/requirements.txt
+
+# Run integration tests
+cd tests && pytest integration/ -v
+
+# Run stress tests (quick validation)
+cd tests && pytest stress/ --stress-scale=0.01 -v
+```
+
+See [docs/integration-test-design.md](docs/integration-test-design.md) for test design details.
+
+#### Build Options
+
+| Option | Description |
+|--------|-------------|
+| `BUILD_TYPE=Debug/Release` | Build type |
+| `WITH_AZURE_FS=ON` | Azure filesystem support |
+| `WITH_JNI=ON` | Java JNI bindings |
+| `WITH_PYTHON_BINDING=ON` | Python bindings |
+
+## Quick Start
+
+See [python/tests/test_write_read.py](python/tests/test_write_read.py) for Python usage examples.
+
+For comprehensive integration tests, see [tests/integration/](tests/integration/).
+
+For benchmarks, see [cpp/benchmark/benchmark.md](cpp/benchmark/benchmark.md) and [docs/multi-format-benchmark-design.md](docs/multi-format-benchmark-design.md).
+
+### Code Style
+
+```bash
+make fix-format
+make fix-tidy
+```
+
+## Contributing
+
+Contributions are welcome. Please ensure code follows the project style and tests pass.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE) for details.

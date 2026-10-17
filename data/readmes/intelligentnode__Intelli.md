@@ -1,0 +1,228 @@
+<p align="center">
+<img src="assets/intelli_concept.png" width="180em">
+</p>
+
+<p align="center">
+
+<img src="https://static.pepy.tech/personalized-badge/intelli?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads" />
+
+<a href="https://pypi.org/project/intelli/" alt="PyPI version">
+    <img src="https://img.shields.io/pypi/v/intelli?style=flat-square&color=007ec6" />
+</a>
+
+<a href="https://discord.gg/VYgCh2p3Ww" alt="Join our Discord community">
+    <img src="https://img.shields.io/badge/Discord-join%20us-5865F2?style=flat-square&logo=discord&logoColor=white" />
+</a>
+
+</p>
+
+# Intelli
+A framework for creating chatbots and AI agent workflows. It enables seamless integration with multiple AI models, including OpenAI, LLaMA, deepseek, Stable Diffusion, and Mistral, through a unified access layer. Intelli also supports Model Context Protocol (MCP) for standardized interaction with AI models.
+
+# Install
+```bash
+# Basic installation
+pip install intelli
+
+# With MCP support
+pip install "intelli[mcp]"
+
+# With the computer-use / browser agent (Playwright)
+pip install "intelli[computer]"
+python -m playwright install chromium
+```
+
+For detailed usage instructions, refer to the [documentation](https://doc.intellinode.ai/docs/python).
+
+# Use with Claude Code and Codex
+Give your coding agent the Intelli rules, so it writes, runs and explains flows for you.
+- **Claude Code**: run `/plugin marketplace add intelligentnode/Intelli`, then `/plugin install intelli-flows@intellinode`.
+- **Codex, or any project**: run `curl -fsSL https://www.intellinode.ai/agent-kit/install.sh | sh` in the project folder. It adds an `AGENTS.md` section and the `intelli-flows` skill.
+- Then ask in plain words, for example: "Build an Intelli flow that triages support emails and draw its graph."
+- Agents can read the full docs index at [intellinode.ai/llms.txt](https://www.intellinode.ai/llms.txt).
+
+# Code Examples
+
+## Create Chatbot
+Switch between multiple chatbot providers without changing your code.
+
+```python
+from intelli.function.chatbot import Chatbot, ChatProvider
+from intelli.model.input.chatbot_input import ChatModelInput
+
+def call_chatbot(provider, model=None, api_key=None, options=None):
+    # prepare common input 
+    input = ChatModelInput("You are a helpful assistant.", model)
+    input.add_user_message("What is the capital of France?")
+
+    # creating chatbot instance
+    chatbot = Chatbot(api_key, provider, options=options)
+    response = chatbot.chat(input)
+
+    return response
+
+# call chatGPT (GPT-5.5 is default)
+call_chatbot(ChatProvider.OPENAI) 
+
+# call a specific OpenAI model
+call_chatbot(ChatProvider.OPENAI, "gpt-4.1")
+
+# call claude (Sonnet 5 is default, use "claude-opus-5" for Opus)
+call_chatbot(ChatProvider.ANTHROPIC, "claude-sonnet-5")
+
+# call google gemini
+call_chatbot(ChatProvider.GEMINI)
+
+# call mistral (Mistral Large is default)
+call_chatbot(ChatProvider.MISTRAL, "mistral-large-latest")
+
+# Call NVIDIA Deepseek
+call_chatbot(ChatProvider.NVIDIA, "deepseek-ai/deepseek-r1")
+
+# Call vLLM (self-hosted)
+call_chatbot(ChatProvider.VLLM, "meta-llama/Llama-3.1-8B-Instruct", options={"baseUrl": "http://localhost:8000"})
+```
+
+## Create AI Flows
+You can create a flow of tasks executed by different AI models. Here's an example of creating a blog post flow:
+
+<img src="assets/flow_example.jpg" width="680em">
+
+
+```python
+from intelli.flow import Agent, Task, SequenceFlow, TextTaskInput, TextProcessor
+
+
+# define agents
+blog_agent = Agent(agent_type='text', provider='openai', mission='write blog posts', model_params={'key': YOUR_OPENAI_API_KEY, 'model': 'gpt-5.5'})
+copy_agent = Agent(agent_type='text', provider='gemini', mission='generate description', model_params={'key': YOUR_GEMINI_API_KEY, 'model': 'gemini-2.5-flash'})
+artist_agent = Agent(agent_type='image', provider='stability', mission='generate image', model_params={'key': YOUR_STABILITY_API_KEY})
+
+# define tasks
+task1 = Task(TextTaskInput('blog post about electric cars'), blog_agent, log=True)
+task2 = Task(TextTaskInput('Generate short image description for image model'), copy_agent, pre_process=TextProcessor.text_head, log=True)
+task3 = Task(TextTaskInput('Generate cartoon style image'), artist_agent, log=True)
+
+# start sequence flow
+flow = SequenceFlow([task1, task2, task3], log=True)
+final_result = flow.start()
+```
+
+## Graph-Based Agents
+
+<img src="assets/flow_graph_example.jpg" width="600em">
+
+To build async flows with multiple paths, refer to the [flow tutorial](https://doc.intellinode.ai/docs/python/flows/async-flow).
+
+
+Or build the entire flow using natural language with **Vibe Agents**.
+Refer to [the documentation](https://www.intellinode.ai/docs/python/vibe-agents) for more details.
+
+## Coding Agent
+Point intelli at a repository and give it a task. The coding agent gets a
+path-confined toolset (read/write/edit/glob/grep/bash) and loops edit → run
+tests → iterate until the tests pass, using any chat provider.
+```python
+from intelli.function.coding_agent import CodingAgent
+
+agent = CodingAgent(api_key=YOUR_KEY, provider="anthropic",
+                    model="claude-sonnet-5", workspace="./my_repo")
+result = agent.run("Fix the failing tests in calc.py",
+                   test_command="python -m pytest -q")
+print(result["success"], result["summary"])
+```
+Or run it inside a flow as `agent_type="coder"` with `model_params={"key": ..., "workspace": ..., "test_command": ...}`.
+
+## Computer Use / Browser Agent
+Drive a screen or browser with the native computer-use tools of Anthropic
+(`computer_20251124`) or OpenAI (GA `computer` tool): screenshot → the model
+proposes an action → execute → repeat. Install with `pip install intelli[computer]`.
+```python
+from intelli.function.computer_agent import ComputerAgent
+from intelli.function.browser_env import PlaywrightBrowserEnvironment
+
+env = PlaywrightBrowserEnvironment(start_url="https://example.com")
+agent = ComputerAgent(api_key=YOUR_KEY, provider="anthropic",
+                      model="claude-sonnet-5", environment=env,
+                      on_action=lambda a: True)  # human-in-the-loop hook
+try:
+    result = agent.run("Find the pricing page and report the cheapest plan")
+    print(result["output"])
+finally:
+    env.close()
+```
+Also available in flows as `agent_type="computer"`. Implement `ComputerEnvironment`
+for a custom desktop instead of the browser.
+
+## Generate Images
+Use the image controller to generate arts from multiple models with minimum code change:
+```python
+from intelli.controller.remote_image_model import RemoteImageModel
+from intelli.model.input.image_input import ImageModelInput
+
+# model details - change only two words to switch
+provider = "openai"
+model_name = "gpt-image-2"
+
+# prepare the input details
+prompts = "cartoonishly-styled solitary snake logo, looping elegantly to form both the body of the python and an abstract play on data nodes."
+image_input = ImageModelInput(prompt=prompt, width=1024, height=1024, model=model_name)
+
+# call the model openai/stability
+wrapper = RemoteImageModel(your_api_key, provider)
+results = wrapper.generate_images(image_input)
+```
+
+## GGUF Optimized Models
+Llama CPP provides an efficient way to run language models locally with support for models in the new **GGUF** format,  [check the docs](https://www.intellinode.ai/docs/python/offline-chatbot/llamacpp).  
+
+## MCP Calculator Demo
+Check out the [MCP Calculator Demo](sample/http_mcp) for sample how to create an MCP server with math operations and a client that uses flow to interpret natural language queries.
+
+## MCP DataFrame Demo
+Check out the [MCP DataFrame Demo](sample/http_dataframe_mcp) for an example of how to serve dataframes as MCP servers and utilize them within Intelli flows, enabling integration with AI models.
+
+```python
+# creating chatbot with the intellinode one key
+bot = Chatbot(YOUR_OPENAI_API_KEY, "openai", {"one_key": YOUR_ONE_KEY})
+
+input = ChatModelInput("You are a helpful assistant.")  # uses GPT-5 by default
+input.add_user_message("What is the procedure for requesting a refund according to the user manual?")
+# optional to returne the searched file name
+input.attach_reference = True
+
+response = bot.chat(input)
+```
+
+# Repository Setup
+1. Install the requirements.
+```shell
+pip install -r requirements.txt
+```
+
+2. Rename `.example.env` to `.env` and fill the keys.
+
+3. Run the test cases, examples below.
+```shell
+# images
+python3 -m unittest intelli.test.integration.test_remote_image_model
+
+# chatbot
+python3 -m unittest intelli.test.integration.test_chatbot
+
+# mistral
+python3 -m unittest intelli.test.integration.test_mistralai_wrapper
+
+# ai flows
+python3 -m unittest intelli.test.integration.test_flow_sequence
+```
+
+# Pillars
+- **The wrapper layer** provides low-level access to the latest AI models.
+- **The controller layer** offers a unified input to any AI model by handling the differences.
+- **The function layer** provides abstract functionality that extends based on the app's use cases. 
+- **Flows**: create a flow of ai agents working toward user tasks.
+- **Vibe Agents**: generate a **graph of agents** from an intent.
+
+
+> If you reference **Vibe Agents**, please cite this repository (see `CITATION.cff`).

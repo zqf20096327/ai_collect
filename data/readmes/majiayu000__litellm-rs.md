@@ -1,0 +1,476 @@
+# litellm-rs
+
+A high-performance self-hosted LLM gateway with a stable
+[OpenAI-compatible HTTP contract](./docs/openapi/inference.json). The
+`litellm-rs` crate is the gateway's reusable Rust kernel, with narrower
+support policies for runtime-backed APIs and legacy compatibility adapters.
+
+[![Crates.io](https://img.shields.io/crates/v/litellm-rs.svg)](https://crates.io/crates/litellm-rs)
+[![Documentation](https://docs.rs/litellm-rs/badge.svg)](https://docs.rs/litellm-rs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- **60+ runtime-wired providers** - OpenAI, Anthropic, AWS Bedrock, Mistral, Cloudflare, plus 50+ OpenAI-compatible providers via the Tier 1 catalog. See [Provider Support](#provider-support) for the full matrix.
+- **Stable OpenAI-Compatible API** - Versioned inference contract served at `GET /openapi.json`
+- **Admin control-plane OpenAPI** - Auth, keys, teams, budgets, routing, ledger, and provider APIs at `GET /admin/openapi.json`
+- **Measured Performance** - Reproducible [gateway-overhead benchmark methodology](./docs/benchmarks/gateway-overhead.md)
+- **Intelligent Routing** - Load balancing, failover, cost optimization
+- **Gateway Controls** - Default-on prompt-injection guardrails, configured IP access, auth, rate limiting, deterministic caching, metrics, and health endpoints
+
+## Quick Start: Self-Hosted Gateway
+
+Run the primary supported product from source:
+
+```bash
+git clone https://github.com/majiayu000/litellm-rs.git
+cd litellm-rs
+cp config/gateway.dev.yaml.example config/gateway.yaml
+cargo run --bin gateway --features sqlite
+```
+
+Or install the gateway binary:
+
+```bash
+cargo install litellm-rs --version 0.9.0 --locked --bin gateway --no-default-features \
+  --features postgres,sqlite,redis,s3,metrics,tracing,websockets,providers-extra,providers-extended,mcp-validation,a2a
+mkdir -p config
+curl -L https://raw.githubusercontent.com/majiayu000/litellm-rs/v0.9.0/config/gateway.dev.yaml.example -o config/gateway.yaml
+gateway
+```
+
+The development config starts without provider credentials or auth secrets and
+uses the local `vllm` catalog provider. Use
+`config/gateway.yaml.example` for production-style deployments with real
+provider keys and auth enabled. The explicit `sqlite` feature enables the storage needed by the gateway binary.
+The registry install selects the same feature profile as release archives and
+containers, including MCP, A2A and Realtime. Binary and example config versions
+must match. See the [0.9 compatibility and rollout notes](docs/gateway/reliability-release-20261007.md)
+and [versioned release assets](https://github.com/majiayu000/litellm-rs/releases/tag/v0.9.0).
+
+The gateway serves its stable inference contract at `GET /openapi.json`; the
+versioned source is
+[`docs/openapi/inference.json`](./docs/openapi/inference.json). The admin
+control-plane contract is served at `GET /admin/openapi.json` (admin-authenticated)
+from [`docs/openapi/admin.json`](./docs/openapi/admin.json).
+
+API-key budgets currently use process-local definitions and counters. Persisting
+a key's `budget_id` does not restore its budget after restart or share its balance
+with another gateway; an unavailable binding fails closed. The key management API
+rejects `max_budget`. Redis-backed provider/model budgets are a separate scope;
+see the [budget capability boundary](docs/gateway/redis-budget-leases.md#api-key-budget-capability-boundary).
+
+For a first HTTP request or setup failure, use the [gateway setup and compatibility questions](docs/README.md#start-with-an-http-request).
+
+## Supported Product Surfaces
+
+| Surface | Support policy |
+| --- | --- |
+| Self-hosted HTTP gateway | Primary product. Stable inference routes follow the published OpenAPI contract; configured deployments expose their canonical `ProviderCapability`. |
+| Runtime-backed Rust APIs | Reusable gateway kernel. `LLMClient::from_runtime`, `DefaultRouter::from_runtime`, and runtime-configured `completion()` derive support from the selected deployment and fail unsupported capabilities with typed errors. |
+| Legacy SDK and selector adapters | Compatibility surfaces with narrower coverage. The [legacy adapter matrix](#legacy-adapter-matrix) is authoritative for these paths and is not a canonical runtime capability matrix. |
+
+## Container distribution status
+
+Version 0.9.0 is published as the [versioned crate](https://crates.io/crates/litellm-rs/0.9.0),
+[GitHub Release archives](https://github.com/majiayu000/litellm-rs/releases/tag/v0.9.0)
+and `ghcr.io/majiayu000/litellm-rs:0.9.0` (Linux amd64/arm64). They share the
+shipped gateway feature profile documented below. Prefer a versioned image tag
+or immutable digest; `latest` is mutable. Docker Hub publication is optional.
+The [0.8 verification record](docs/gateway/release-0.8.0-verification.md) is
+historical evidence for 0.8 artifacts, not verification of 0.9 artifacts.
+
+## Rust Crate
+
+```toml
+[dependencies]
+litellm-rs = { version = "0.9", default-features = false, features = ["lite"] }
+```
+
+No `make` step is required for crate consumers.
+
+### Library Example
+
+Add Tokio with `macros` and `rt-multi-thread` features. The complete
+[`hello` example](examples/hello.rs) constructs a local vLLM deployment and
+installs its `RuntimeBinding` before calling `completion`. Run it against an
+existing local OpenAI-compatible server, passing its endpoint and served model:
+
+```bash
+cargo run --example hello -- http://localhost:8000/v1 your-served-model
+```
+
+```toml
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+```
+
+Copy `examples/hello.rs` into your application's `src/main.rs`. It uses public
+crate APIs and no provider credentials. The explicit `private_network` access
+policy permits the configured local endpoint; configure credentials and endpoint
+policy separately when integrating a hosted provider.
+
+For a credential-free local HTTP check of the **same example source** as an
+independent crate consumer, run `python3 scripts/test/library_consumer_smoke.py`.
+The smoke uses this checkout as a path dependency; it does not verify a published
+registry artifact or a real provider account.
+
+## Gateway Configuration
+
+The gateway router config maps these fields into the runtime router:
+
+- `router.strategy` selects the deployment routing strategy.
+- `router.circuit_breaker.failure_threshold` controls consecutive failures before cooldown.
+- `router.circuit_breaker.recovery_timeout` controls cooldown duration in seconds.
+- `router.circuit_breaker.min_requests` sets the sample size required before cooldown.
+- `router.circuit_breaker.success_threshold` sets the successes required to recover from cooldown.
+- `router.load_balancer.health_check_enabled` enables pre-call deployment health checks.
+
+Active provider probes are opt-in: a provider's `health_check` must differ from the defaults.
+Native probes are limited to provider types whose configured deployment is unambiguously a chat
+model (currently Anthropic and GitHub Copilot); they send a one-token request and may incur provider
+charges. OpenAI, Bedrock, OpenAI-compatible, Vertex AI, FalAI, and other multi-capability providers
+require a custom `health_check.endpoint`. Without an active probe policy, readiness remains
+fail-closed (`Unknown`).
+
+`router.load_balancer.sticky_sessions` and `router.load_balancer.session_timeout` are reserved for future session affinity. Non-default values fail config validation until runtime affinity is implemented.
+
+Gateway YAML can publish stable model names and deterministic primary/fallback
+tiers:
+
+```yaml
+providers:
+  - name: openai-primary
+    provider_type: openai
+    api_key: "${OPENAI_API_KEY}"
+    models: [gpt-4o]
+    priority: 0
+  - name: openai-fallback
+    provider_type: openai
+    api_key: "${OPENAI_API_KEY}"
+    models: [gpt-4o]
+    priority: 10
+
+model_aliases:
+  production-chat: gpt-4o
+  stable-chat: production-chat
+
+router:
+  strategy: priority_based
+```
+
+Alias chains are validated and flattened at startup; empty values, cycles,
+canonical-name collisions, and targets without an enabled deployment fail
+startup. Alias names appear in `/v1/models` alongside canonical models. Lower
+numeric `priority` wins under `priority_based`; omitted provider priorities
+default to `0`. When rolling back to a binary that predates these fields,
+remove `model_aliases` and `priority` from YAML before rolling back the binary,
+because unknown fields are rejected.
+
+#### Core Subsystem Runtime Status
+
+Runtime wiring decisions are tracked in [`src/core/subsystem_registry.rs`](./src/core/subsystem_registry.rs), and tests assert that every module exported from `src/core/mod.rs` is either referenced by the gateway runtime or explicitly classified. The current issue-838 subsystem decisions are:
+
+| Subsystem | Decision | Runtime status |
+| --- | --- | --- |
+| `core/guardrails` | wire | Default-on prompt-injection checks run before provider execution and on non-streaming output; `guardrails.enabled: false` is the explicit opt-out. |
+| `core/ip_access` | wire | Configured allow/block rules run as an outer Actix middleware and short-circuit before downstream side effects; empty/default rules allow all. |
+| `core/mcp` | feature-gated | `gateway,mcp` mounts authenticated Streamable HTTP at `/{server_name}/mcp` (`/mcp` for one enabled server). See [MCP gateway](docs/gateway/mcp.md) for configuration and stateless transport limits. Responses API MCP descriptors pass through independently. |
+| `core/a2a` | experimental-gate | Opt-in `gateway,a2a` exposes authenticated A2A 1.0 agent cards, messages, task queries/cancellation and SSE. Task ownership is process-local; see [A2A gateway](docs/gateway/a2a.md). |
+| `server/routes/ai/realtime` | feature-gated | `gateway,websockets` mounts the [manual OpenAI Realtime gateway](docs/gateway/realtime.md). The unused legacy `core/realtime` client has been removed. |
+| `core/observability` and `core/integrations` | wire | Configured Langfuse, OpenTelemetry, and Datadog backends are initialized at startup and receive real chat, completion, response, and embedding lifecycle events. |
+| `core/audit` | wire | `enterprise.audit_logging: true` registers request audit middleware; events use structured JSON on stderr unless a file or custom output is configured. Default is off. |
+| `core/batch` | library-only | `/v1/batches` remains a wired provider proxy. Domain records and async batch helpers remain; the unreachable `BatchProcessor` has been removed. |
+| Former `core/webhooks` | removed | The unused library and `webhooks` feature have been removed in 0.8.0. Budget-alert delivery and provider-native webhook fields remain separate. |
+| Former `core/semantic_cache` and `core/analytics` | removed | Removed in 0.8.0 after the expired 0.7 deadline. Deterministic caching, request metrics and callbacks remain; see the migration guide for removed fields/features. |
+| `core/virtual_keys` | wire | Runtime virtual keys use the canonical `core::keys::KeyManager`; the duplicate legacy manager has been removed. Storage record types remain in use. |
+| `core/user_management` | internal | Domain records back current auth/storage paths. The unused `UserManager` and its `user-management` feature have been removed. |
+
+## Installation
+
+Since 0.8.0, default features select the reusable library with metrics and
+tracing. Gateway and database dependencies are opt-in. The previous 0.7.0
+release used gateway defaults; gateway consumers must explicitly select a
+storage feature such as `sqlite` or `postgres`.
+
+```toml
+# Library with metrics and tracing
+[dependencies]
+litellm-rs = { version = "0.9", default-features = false, features = ["lite"] }
+
+# Library without optional observability
+[dependencies]
+litellm-rs = { version = "0.9", default-features = false }
+
+# Gateway with SQLite (also enables Redis support)
+[dependencies]
+litellm-rs = { version = "0.9", features = ["sqlite"] }
+```
+
+Use the crate root or `litellm_rs::prelude` for completion and embedding APIs.
+Advanced types have explicit module paths: `core::providers` for provider
+construction, `core::router` for deployment management, and
+`core::models::openai` for HTTP wire models. Hidden root re-exports of these
+advanced types have been removed in 0.8.0.
+
+## Provider Support
+
+Perplexity's old Sonar Chat Completions endpoint retired on 2026-09-27. The
+`perplexity` / `perplexity-ai` / `pplx` selectors are not currently dispatchable;
+the replacement Agent API requires a native protocol adapter. Historical prices
+remain available and do not establish callable models. See the
+[retirement audit](docs/audit/perplexity-sonar-retirement-2026-10-03.md).
+
+GitHub Models (`github` / `github-models`) retired on 2026-07-30 and is no longer
+a callable selector. GitHub Copilot remains a separate native provider.
+See the [retirement audit](docs/audit/github-models-retirement-2026-10-03.md).
+
+Lambda shared inference retired on 2025-09-25. The `lambda_ai` selector is removed.
+The unverified `meta_llama`, `v0` and `amazon_nova` default transports are also disabled;
+use the existing Bedrock provider for supported Nova models or configure an
+OpenAI-compatible deployment with its real endpoint. See the
+[remaining catalog review](docs/audit/remaining-static-model-catalog-2026-10-04.md).
+
+Providers are organised into two tiers (see [CLAUDE.md → Provider Tiers](./CLAUDE.md#provider-tiers) for the engineering definition).
+
+- **Tier 1 — catalog-only**: OpenAI-compatible endpoints declared as data in [`src/core/providers/registry/catalog.rs`](./src/core/providers/registry/catalog.rs). Routed through `OpenAILikeProvider`. Always available (no cargo feature required). The runtime supports chat and streaming plus explicitly verified embeddings, images and audio capabilities for selected providers; see [compatible non-chat support](docs/providers/compatible-nonchat.md). Capability declarations do not imply that every model supports every endpoint.
+- **Tier 2 — code-based**: providers with custom request/response handling, auth signing, or streaming. Wired into the `Provider` enum and the factory. Some Tier 2 builders are feature-gated.
+
+External Rust providers implement `ExternalProvider` and register through
+`Provider::External(Arc::new(provider))`, `Deployment::new`, and
+`UnifiedRouter::add_deployment`, without editing the internal enum. See the
+[external provider integration tests](tests/external_provider_registration.rs)
+for capability, health, error and streaming behavior. This is an in-process API;
+OpenAI-compatible servers can use the existing configuration path.
+
+> The provider and legacy adapter matrices below are validated against the provider registry and Tier 1 catalog. The source of truth for Tier 1 entries is [`catalog.rs`](./src/core/providers/registry/catalog.rs); Tier 2 identity and dispatch metadata lives in [`src/core/providers/registry/types.rs`](./src/core/providers/registry/types.rs), with construction branches in [`src/core/providers/factory/registry.rs`](./src/core/providers/factory/registry.rs). Legacy adapter availability lives in [`src/core/providers/registry/support_matrix.rs`](./src/core/providers/registry/support_matrix.rs). `passthrough` means a retained adapter forwards the call to the upstream OpenAI-compatible endpoint without per-provider transformation.
+
+### Legacy adapter matrix
+
+This matrix records selector-based compatibility adapters. It is not the
+capability source for `LLMClient::from_runtime`, `DefaultRouter::from_runtime`,
+or the free `completion()` functions. Canonical runtime support is derived from
+the selected deployment's `ProviderCapability`; unsupported capabilities fail
+closed with a typed provider error.
+
+| Legacy selector class | HTTP chat / stream adapter | HTTP embeddings / image adapter | SDK chat / stream / embeddings adapter | `completion()` chat / stream adapter | Notes |
+|-----------------------|----------------------------|---------------------------------|----------------------------------------|--------------------------------------|-------|
+| `openai` | ✅ / ✅ | ✅ / ✅ | ✅ / ✅ / ✅ | ✅ / ✅ | Reference provider across all current surfaces. |
+| `anthropic` | ✅ / ✅ | – / – | ✅ / ✅ / – | ✅ / ✅ | Native chat and streaming only. |
+| `azure` | passthrough / passthrough | `providers-extra` / `providers-extra` | – / – / ✅ | passthrough / passthrough | SDK exposes Azure embeddings; SDK chat is not implemented. |
+| `azure_ai` | passthrough / passthrough | `providers-extra` / `providers-extra` | – / – / – | `providers-extra` / `providers-extra` | `completion()` supports `azure_ai/` and `azure-ai/` routes when the native feature is enabled. |
+| `bedrock` | ✅ / ✅ | ✅ / – | – / – / – | – / – | No legacy SDK or `completion()` adapter. Configured canonical runtimes use the deployment's chat, stream, and embedding capabilities. |
+| `databricks`, `snowflake` | passthrough / passthrough | – / – | – / – / – | – / – | Governed OpenAI-compatible chat/SSE runtimes with platform-specific identity and auth. |
+| `oci` | mode-dependent | mode-dependent / – | – / – / – | – / – | Compatible mode provides chat/SSE; IAM native mode provides embeddings and rerank. |
+| `watsonx` | ✅ / – | ✅ / – | – / – / – | – / – | Native chat, embeddings, and rerank. |
+| `sagemaker` | ✅ / – | – / – | – / – / – | – / – | InvokeEndpoint requires an explicit supported payload transformer. |
+| `mistral`, `cloudflare`, `cohere`, `voyage`, `vertex_ai`, `gemini`, `fal_ai`, `replicate`, `stability`, `black_forest_labs`, `ollama` | provider-specific | provider-specific | – / – / – | – / – | See `support_matrix.rs` for feature-gated HTTP support. Ollama retains its existing SDK stream-only path. |
+| `google` / SDK `Google` | – / – | – / – | – / – / – | – / – | Google/Gemini SDK chat is intentionally unsupported until a real adapter exists. |
+| Default catalog dynamic routes: `openrouter`, `deepseek`, `moonshot`, `minimax`, `zhipu`, `zai`, `together_ai`, `fireworks_ai`, `aiml`, `groq`, `xiaomi_mimo`, `xai` | passthrough / passthrough | – / – | – / – / – | ✅ / ✅ | OpenAI-compatible routes wired into default `completion()` routing. |
+| Other Tier 1 catalog providers | passthrough / passthrough | – / – | – / – / – | – / – | HTTP gateway chat/stream only unless routed through explicit OpenAI-compatible config. |
+| SDK `Custom` | – / – | – / – | – / – / ✅ | – / – | SDK custom providers support embeddings when `base_url` is configured. |
+| SDK `Ollama` | – / – | – / – | – / ✅ / – | – / – | SDK streaming uses the OpenAI-compatible stream parser; SDK chat is not implemented. |
+
+The `runway-media` feature exposes a library-only Runway task contract for
+text/image-to-video submit, query, cancel, and result polling. It does not mount
+a gateway video route.
+
+### Tier 2 — code-based providers
+
+| Provider | Cargo feature | Chat | Stream | Embed | Image | Audio | Notes |
+|----------|---------------|------|--------|-------|-------|-------|-------|
+| OpenAI (`openai`) | always | ✅ | ✅ | ✅ | ✅ | ✅ | Reference implementation. |
+| Anthropic (`anthropic`) | always | ✅ | ✅ | – | – | – | Native Anthropic messages API. |
+| Mistral (`mistral`) | always | ✅ | ✅ | passthrough | – | – | Native client. |
+| Cloudflare Workers AI (`cloudflare`) | always | ✅ | ✅ | – | – | – | Official compatible chat endpoint with account-id auth; model-gated tools/vision and native SSE usage/errors. Embeddings remain unsupported. |
+| Deepgram (`deepgram`) | always | – | – | – | – | ✅ | Native speech-to-text and text-to-speech REST transport. |
+| ElevenLabs (`elevenlabs`) | always | – | – | – | – | ✅ | Native speech-to-text and text-to-speech REST transport. |
+| Cohere (`cohere`) | native factory (`providers-extended`) | ✅ | ✅ | ✅ | – | – | Uses native Cohere `/v2/chat` and `/v2/embed`; the concrete provider also exposes a `/v1/rerank` helper. Explicitly unsupported without `providers-extended`. |
+| Voyage (`voyage`) | always | – | – | ✅ | – | – | Uses native Voyage `/v1/embeddings` and the shared HTTP `/v1/rerank` route with exact model capability and pricing identity. |
+| Azure OpenAI (`azure`) | native factory (`providers-extra`); OpenAILike fallback | ✅ | ✅ | ✅ | ✅ | – | Native Azure supports chat, streaming, embeddings, and image generation with `providers-extra`; otherwise the factory path uses OpenAILike chat/stream only. |
+| Azure AI Inference (`azure_ai`) | native factory (`providers-extra`); OpenAILike fallback | ✅ | ✅ | ✅ | ✅ | – | Native Azure AI supports chat, streaming, embeddings, and image generation with `providers-extra`; otherwise the factory path uses OpenAILike chat/stream only. |
+| AWS Bedrock (`bedrock`) | always | ✅ | ✅ | ✅ | helper API | – | Native AWS Bedrock runtime path with SigV4 signing. Use `openai_compatible` for Bedrock Access Gateway or other OpenAI-compatible proxies. |
+| Databricks Model Serving (`databricks`) | always | ✅ | ✅ | – | – | – | OpenAI-compatible chat/SSE with typed workspace and token configuration. |
+| Snowflake Cortex (`snowflake`) | always | ✅ | ✅ | – | – | – | OpenAI-compatible chat/SSE with typed account and token-type configuration. |
+| OCI Generative AI (`oci`) | always | ✅ | ✅ | ✅ | – | – | Compatible mode provides chat/SSE; IAM native mode provides embeddings and rerank. |
+| IBM watsonx.ai (`watsonx`) | always | ✅ | – | ✅ | – | – | Native chat, embeddings, and rerank with explicit project or space identity. |
+| Amazon SageMaker (`sagemaker`) | always | ✅ | – | – | – | – | SigV4 InvokeEndpoint; payload transformer is required and unknown schemas fail closed. |
+| Google Vertex AI (`vertex_ai`) | native factory (`providers-extra`) | ✅ | ✅ | ✅ | ✅ | – | Uses native Vertex auth and Google-specific URLs when `providers-extra` is enabled; otherwise explicitly unsupported. |
+| Google Gemini (`gemini`) | native factory (`providers-extended`) | ✅ | ✅ | – | – | – | Uses native Google AI Studio Gemini auth; use `vertex_ai` for Vertex AI project/location credentials. |
+| fal.ai (`fal_ai`) | native factory (`providers-extended`) | – | – | – | ✅ | – | Uses native Fal AI image-generation endpoints; chat and streaming are explicitly unsupported. |
+| Stability AI (`stability`) | native factory (`providers-extended`) | – | – | – | ✅ | – | Uses native v2beta multipart image generation and editing endpoints. |
+| Black Forest Labs (`black_forest_labs`) | native factory (`providers-extended`) | – | – | – | ✅ | – | Uses native asynchronous submit/poll image generation and Kontext editing. |
+| Replicate (`replicate`) | native factory (`providers-extended`) | ✅ | ✅ | – | ✅ | – | Uses native Replicate prediction lifecycle handling for chat, streaming, and image generation; explicitly unsupported without `providers-extended`. |
+| Ollama (`ollama`) | native factory (`providers-extended`) | ✅ | ✅ | ✅ | – | – | Uses native `/api/chat` NDJSON streaming, `/api/embed`, and model tags/show endpoints. Localhost defaults to private-network endpoint policy; explicit endpoints keep their configured policy. |
+| GitHub Copilot (`github_copilot`) | native factory (`providers-extended`) | ✅ | ✅ | – | – | – | Uses native GitHub Copilot auth and model access when `providers-extended` is enabled; otherwise explicitly unsupported. |
+| Generic OpenAI-compatible (`openai_compatible`) | always | ✅ | ✅ | passthrough | passthrough | passthrough | For self-hosted / unlisted OpenAI-compatible chat, embeddings, image, and audio endpoints. |
+
+GitHub Copilot captures its effective token directory, credential filenames, and
+file contents when the provider is constructed. Reload the gateway after changing
+those paths or switching credential files to another account. Existing requests
+and provider clones keep their captured credentials; API-key refresh uses that
+resource's access token and returns a matching token and endpoint. Authentication
+remains lazy when no credentials are available. If only an API-key cache was
+captured, configure an access token and reload before that key needs refreshing.
+
+### Tier 1 — catalog providers (OpenAI-compatible, always available)
+
+All entries below route through `OpenAILikeProvider`. Chat and streaming use the compatible `/chat/completions` protocol. Selected providers also expose verified non-chat capabilities listed in [compatible non-chat support](docs/providers/compatible-nonchat.md); other capabilities fail explicitly.
+
+**Cloud (`Bearer` auth via env var):**
+
+`groq`, `ai21`, `huggingface`, `baseten`, `together`, `together_ai`, `fireworks`, `fireworks_ai`, `cerebras`, `openrouter`, `deepinfra`, `deepseek`, `novita`, `nvidia_nim`, `nebius`, `nscale`, `hyperbolic`, `featherless`, `galadriel`, `sambanova`, `heroku`, `friendliai`, `xai`, `moonshot`, `dashscope`, `qwen`, `baichuan`, `minimax`, `volcengine`, `xiaomi_mimo`, `zhipu`, `zai`, `lemonade`, `linkup`, `poe`, `wandb`, `nanogpt`, `aiml_api`, `aiml`, `aleph_alpha`, `anyscale`, `bytez`, `comet_api`, `compactifai`, `maritalk`, `siliconflow`, `yi`, `ovhcloud`
+
+**Local (no API key):**
+
+`vllm`, `hosted_vllm`, `lm_studio`, `llamafile`, `docker_model_runner`, `xinference`, `infinity`, `oobabooga`
+
+For self-hosted or unlisted OpenAI-compatible endpoints, prefer the generic `openai_compatible` provider type instead.
+
+## Environment Variables
+
+```bash
+# Provider API Keys
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=...
+AZURE_OPENAI_API_KEY=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=us-east-1
+GROQ_API_KEY=...
+AI21_API_KEY=...
+HF_TOKEN=...
+BASETEN_API_KEY=...
+DEEPSEEK_API_KEY=...
+MOONSHOT_API_KEY=...
+ZHIPU_API_KEY=...
+MINIMAX_API_KEY=...
+
+# Optional
+LITELLM_VERBOSE=true  # Enable verbose logging
+```
+
+## Examples
+
+### Multi-Provider Routing
+
+```rust
+use litellm_rs::{completion, user_message};
+
+// Automatically routes to the right provider based on model name
+let openai = completion("gpt-5.5", vec![user_message("Hi")], None).await?;
+let anthropic = completion("anthropic/claude-opus-4-8", vec![user_message("Hi")], None).await?;
+let groq = completion("groq/llama-3.1-8b-instant", vec![user_message("Hi")], None).await?;
+let bedrock = completion(
+    "bedrock/us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+    vec![user_message("Hi")],
+    None,
+)
+.await?;
+```
+
+`bedrock/` uses the native AWS Bedrock provider. It signs requests with AWS
+SigV4 and preserves AWS execution model IDs such as `us.*`, `global.*`,
+region-prefixed IDs, and Bedrock ARNs. Use `openai_compatible` for Bedrock
+Access Gateway or other OpenAI-compatible proxies instead.
+
+### Embeddings
+
+```rust
+use litellm_rs::{embedding, embed_text};
+
+// Single text
+let embedding = embed_text("text-embedding-3-small", "Hello world").await?;
+
+// Batch
+let embeddings = embedding(
+    "text-embedding-3-small",
+    vec!["Hello", "World"],
+    None,
+).await?;
+```
+
+### Streaming
+
+```rust
+use litellm_rs::{completion_stream, user_message};
+use futures::StreamExt;
+
+let mut stream = completion_stream(
+    "gpt-4",
+    vec![user_message("Tell me a story")],
+    None,
+).await?;
+
+while let Some(chunk) = stream.next().await {
+    if let Ok(chunk) = chunk {
+        print!("{}", chunk.choices[0].delta.content.unwrap_or_default());
+    }
+}
+```
+
+## Performance
+
+Gateway throughput and latency claims require a dated raw artifact tied to an
+exact Git revision. See the [reproducible gateway-overhead benchmark
+methodology](./docs/benchmarks/gateway-overhead.md) for the fixed workload,
+commands, environment metadata, percentile reporting, and artifact format.
+
+The Criterion benchmarks under `benches/` measure in-process components; they
+must not be presented as end-to-end HTTP gateway throughput.
+
+## Troubleshooting
+
+### Build/test uses too much CPU or memory
+
+- Use API-only defaults first: `cargo test --lib --tests --no-default-features --features "lite"`
+- Limit local parallelism when needed: `CARGO_BUILD_JOBS=4 cargo test --lib --tests --no-default-features --features "lite" -- --test-threads=4`
+- Avoid `--all-features` unless you are doing release/nightly validation
+
+### I only need provider API aggregation, not gateway
+
+- Prefer `default-features = false` with `features = ["lite"]`
+- Use gateway runtime commands only when you need HTTP server/auth/storage middleware
+
+## Documentation
+
+- [API Documentation](https://docs.rs/litellm-rs)
+- [Documentation Index](./docs/README.md)
+- [Development Gateway Config](./config/gateway.dev.yaml.example)
+- [Production Gateway Config](./config/gateway.yaml.example)
+- [Examples](./examples/README.md)
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
+
+## Security
+
+See [SECURITY.md](./SECURITY.md) for security policy and vulnerability reporting.
+
+## The Agent Infra Stack
+
+This project is one layer of an open-source stack for running coding agents (Claude Code, Codex) as serious infrastructure. Every piece works standalone; together they close the loop:
+
+`litellm-rs` is the **Route** layer — a self-hosted OpenAI-compatible gateway. See [Provider Support](#provider-support) for runtime and adapter coverage.
+
+| Layer | Project | What it does |
+|---|---|---|
+| Extend | [claude-skill-registry](https://github.com/majiayu000/claude-skill-registry) | Discover and search community Claude Code skills |
+| Extend | [spellbook](https://github.com/majiayu000/spellbook) | Cross-runtime skills for Claude Code, Codex, and multi-agent workflows |
+| Trust | [argus](https://github.com/majiayu000/argus) | Static install-time scanner for supply-chain attacks (npm / PyPI / crates.io) |
+| Trust | [vibeguard](https://github.com/majiayu000/vibeguard) | Rules, hooks, and guards against hallucinated or unverified agent changes |
+| Remember | [remem](https://github.com/majiayu000/remem) | Local-first persistent memory for Claude Code and Codex sessions |
+| Orchestrate | [harness](https://github.com/majiayu000/harness) | Rust agent orchestration platform — rules, skills, GC, observability |
+| Route | [litellm-rs](https://github.com/majiayu000/litellm-rs) **◀ you are here** | Self-hosted Rust LLM gateway with OpenAI-compatible APIs, routing, and failover |
+| Keep | [keepline](https://github.com/majiayu000/keepline) | Session command center — monitor, recover, never lose agent work |
+
+---
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) for details.
+
+## Acknowledgments
+
+Inspired by [LiteLLM](https://github.com/BerriAI/litellm) (Python).

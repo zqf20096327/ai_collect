@@ -1,0 +1,187 @@
+# WSO2 Labs: Agentic Engineer
+
+> 🧪 **Early lab project** — APIs, data models, and features are still evolving,
+> and subsystems may change shape between commits. Try it, break it, tell us what
+> you think — just don't build on it as a stable surface yet.
+
+Repository: [`wso2/labs-agentic-engineer`](https://github.com/wso2/labs-agentic-engineer)
+
+An experimental, open-source platform that explores what **agent-driven software
+engineering** looks like when the agents work inside an enterprise platform instead
+of a blank editor. It's an early WSO2 lab project, built on top of
+[OpenChoreo](https://github.com/openchoreo/openchoreo) and shared in the spirit of
+"let's see what works."
+
+## The premise
+
+Agentic coding tools have made greenfield code generation fast and accessible. But
+enterprise software isn't bottlenecked on typing — it's bottlenecked on requirements,
+integrations, identity, deployment, and architectural conformance. The bet behind
+this project is that to push productivity further, agents need to operate **inside a
+platform that already understands those concerns**, so they can produce systems that
+slot into the existing ecosystem rather than ignore it.
+
+OpenChoreo already handles API management, identity, deployments, observability, and
+policy enforcement. The agents in this repo build on that foundation, so what they
+produce lands in an environment that enforces enterprise concerns automatically.
+
+## What the platform does
+
+It treats the SDLC as a chain of stages — **Specification → Design → Implementation
+→ Build → Deploy → Manage** — and gives each stage a specialized agent with only the
+tools and skills it needs. The flow:
+
+- A **business owner** describes the solution they want; a chat agent guides
+  requirements elicitation.
+- A **shared workspace** lets BAs, designers, and engineers collaborate on the same
+  artifacts, each with a view suited to them.
+- Everything is captured as **spec files in a Git repository** (`specs/requirements/`,
+  `specs/design/`, UI prototypes, domain models). Those specs become the contract
+  downstream agents work against.
+- Coding agents pick up tasks from those specs, work via **GitHub issues + branches
+  + PRs** (no merge without human review), and the platform watches webhooks to drive
+  each task through `pending → in_progress → ready_for_review → merged → building → deployed`.
+- Because agents share context across artifacts, the system stays internally
+  consistent — change a requirement and the prototypes, design, and tasks move with it.
+
+## Demo
+
+https://github.com/user-attachments/assets/9723e5a5-c187-49b5-886e-50c217da6c28
+
+## The model
+
+```mermaid
+flowchart LR
+  IDEA([idea]) --> SPEC
+  subgraph DESIGN["design time — console · AE Studio (per org)"]
+    SPEC["spec — requirements · design · validation criteria<br/>committed truth in git"]
+    DEP["dependencies — declared, approved, provisioned"]
+    SPEC --- DEP
+  end
+  SPEC -->|build| TAG["v&lt;N&gt; — git tag + GitHub milestone"]
+  subgraph RUN["delivery — one supervised run over that milestone"]
+    TASK["tasks — GitHub issues in the milestone"]
+    CYCLE["cycle — one coding-agent pod → one pull request"]
+    MERGE["auto-merge → per-component build"]
+    VAL["validation cycle — scenarios driven against the deployed system"]
+    TASK --> CYCLE --> MERGE --> VAL
+    VAL -.->|not settled| CYCLE
+  end
+  TAG --> TASK
+  MERGE --> OC[["OpenChoreo — write target"]]
+```
+
+Skills are how the platform is taught rather than changed.
+
+## Running Locally
+
+The whole platform runs on one laptop: a k3d cluster with OpenChoreo, Thunder
+(identity), and the AEP services running in-cluster, plus one-shot
+coding-agent pods. Installed via `aectl` (`tools/aectl`), the same CLI a real
+user installs AEP with — not a repo-specific shortcut. The canonical scripts
+live in [`deployments/`](deployments/README.md).
+
+### Prerequisites
+
+**Container runtime.** Docker Desktop or Colima, sized generously — the cluster
+runs the OpenChoreo control/data/workflow planes, Thunder, and every AEP
+service, all in-cluster. Colima wants at least `--cpu 7 --memory 8`, plus
+several GB of free disk for the coding-agent runner image and the seven service
+images. Nothing else is needed on the host: every service image builds inside
+Docker, toolchains included.
+
+**CLI tools.** `docker` (with buildx), `k3d`, `kubectl`, `helm`, `skaffold`,
+`go`, `jq`, `openssl`, `curl`.
+
+**Credentials.** An Anthropic API key and a GitHub PAT (or GitHub App). Neither
+is needed to bring the platform up — you connect both from the console
+afterwards, and they're stored per organization.
+
+### Bring it up
+
+Two commands, with two different lifecycles — the first is once per cluster,
+the second is run again every time you want an edit reflected in the cluster:
+
+```bash
+make dev-env       # cluster + platform install, via aectl (idempotent)
+make dev-update    # rebuild + redeploy whichever service image(s) changed
+```
+
+`make dev-env` builds `tools/aectl` (as `aectl-skaffold`), installs a bare
+OpenChoreo + ThunderID cluster (`deployments/scripts/setup-env-for-aectl.sh`),
+then runs `aectl platform config import` and `aectl platform install
+--addons=all --platform-version=latest --platform-chart
+deployments/helm-charts/platform` against it. Expect it to take a while on a
+cold machine — chart installs and image pulls. It's idempotent, so if a step
+fails you fix the cause and re-run it.
+
+`make dev-update` is one-shot, not a watch loop: it rebuilds with `skaffold
+build` only the service images whose dependencies changed (console, tryit,
+BFF, and the AE Studio's design agent, collab and tools), loads
+them into the cluster, then runs `aectl platform update` (helm) to re-point
+the installed platform release at them and `aectl platform sync-clients`. The
+AE Studio pod rolls on the org's next console visit. Run it again after every
+edit you want live.
+
+Coding agents don't run as long-lived containers at all, locally or otherwise:
+each one is dispatched into the cluster as a one-shot pod, as it is in a real
+deployment.
+
+### Accessing the portal
+
+The console is at **http://console.ae.localhost:8080**. Sign in with
+the ThunderID admin account `setup-env-for-aectl.sh` creates
+(`admin` / `Admin@123` by default — see that script's output).
+If your OS doesn't resolve `*.localhost`, point `console.ae.localhost`,
+`tryit.ae.localhost` and `thunder.openchoreo.localhost` at `127.0.0.1` in
+`/etc/hosts`.
+
+Before the first project, connect the organization's credentials in the console —
+both are per-org, which is why bring-up doesn't ask for them:
+
+- **Settings → Credentials → GitHub** — the PAT (or GitHub App) that specs,
+  component repos, issues and PRs are created under.
+- **Settings → Credentials → AI agents** — the model connection (Anthropic Messages or
+  OpenAI-compatible: format, base URL, key, model) every agent turn and coding
+  run is billed to. There is no platform fallback, so nothing generates until
+  it's connected.
+
+Reach the BFF through the console, which proxies it:
+`http://console.ae.localhost:8080/aep-api-service/` (e.g. `…/healthz`), or
+directly with `kubectl -n wso2-aep port-forward svc/aep-api 9090:9090`. See
+[`deployments/README.md`](deployments/README.md)'s "Orphaned-but-kept" section
+— a couple of manifests the shared Helm chart already references by name
+aren't applied by `aectl platform install` yet, which affects builds and
+auto-RCA until that's closed.
+
+Tear down with `k3d cluster delete openchoreo`, which drops all OpenChoreo state.
+
+## Where the code lives
+
+| Path | What it is |
+|---|---|
+| [`apps/console`](apps/console/README.md) | the human surface: React SPA over the BFF and the org's AE Studio (the design agent's turns and the spec Room, called from the browser) |
+| [`apps/tryit`](apps/tryit/AGENTS.md) | the test app: a static SPA the console opens to sign in as a project's test user and talk to a deployed agent; no backend of its own |
+| [`services/aep-api`](services/aep-api/README.md) | the Go BFF — seven domains behind one tenant-gated edge; owns the milestone run supervisor (Temporal), provisioning, and the webhook ledger; every git operation goes through the org's `ae-studio-tools` |
+| [`components/dataplane/ae-system-project/ae-studio/ae-design-agent`](components/dataplane/ae-system-project/ae-studio/ae-design-agent/AGENTS.md) | design-time agent runtime (Vercel AI SDK) in the org's AE Studio pod. a turn starts with one POST and is watched over a replayable SSE stream; writes no files itself |
+| [`components/dataplane/ae-system-project/ae-studio/ae-collab`](components/dataplane/ae-system-project/ae-studio/ae-collab/AGENTS.md) | Yjs server hosting the live spec document, one room per project, in the org's AE Studio pod |
+| [`components/dataplane/ae-system-project/ae-studio/ae-studio-tools`](components/dataplane/ae-system-project/ae-studio/ae-studio-tools/AGENTS.md) | Go container of the org's AE Studio pod: git, GitHub, the skills mirror, and the webhook route that verifies and forwards deliveries to the BFF |
+| [`runners/`](runners/AGENTS.md) | `remote-worker`, the coding agent: a one-shot pod running the Claude Agent SDK. One image serves implementation and validation; its ADRs are in `runners/remote-worker/design/decisions/` |
+| [`skills/`](skills/AGENTS.md) | the one authored skill library, seeded and reconciled into every org's own repo |
+| [`packages/`](packages/contracts/AGENTS.md) | shared libraries. `packages/contracts` holds the hand-authored OpenAPI every client and server is generated from |
+| [`playground/`](playground/AGENTS.md) | a cluster-free harness that runs the real agents against a plain local directory — how the skills and prompts get tuned |
+| [`evals/spec-agents`](evals/spec-agents/README.md) | scenario evals for the design-time agents. On demand, never in CI |
+| [`deployments/`](deployments/README.md) | the local stack: k3d + OpenChoreo + ThunderID, installed via `aectl` |
+
+
+## Status and feedback
+
+This is an **early lab project**, and the whole point of putting it out now is to
+learn from people working through similar problems: where agent boundaries should
+sit, how skills map to your conventions, what felt natural, what got in the way.
+Feedback goes via GitHub issues on
+[`wso2/labs-agentic-engineer`](https://github.com/wso2/labs-agentic-engineer).
+
+## License
+
+Apache 2.0 — see [`LICENSE`](./LICENSE).

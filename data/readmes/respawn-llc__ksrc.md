@@ -1,0 +1,149 @@
+# ksrc
+
+**One‑liner search and read for Gradle 3rd-party dependency sources for AI agents.**
+
+Your AI agents take ~10 steps just to see a single function signature in a third-party library. `ksrc` turns that into two commands and ~4x less tokens.
+
+## What it is
+
+It's a CLI utility to enable efficient dependency source search for AI agents working with Gradle projects.
+
+Ever saw an AI agent find a function's signature in TypeScript/Python? Simple `rg` over `node_modules` and a `sed` call is all it needs to discover APIs and signatures.
+
+With Gradle ecosystems, agents have to take a 15-step journey to download, locate, unpack and ripgrep source jars.
+`ksrc` turns 16k tokens wasted on that into 2 CLI commands.
+
+## 1. Install the tool
+
+Start by installing the **command itself**.
+
+### Homebrew (macOS/Linux) - recommended, auto-updated:
+
+```
+brew tap respawn-llc/tap
+brew install ksrc
+```
+
+### Standalone binaries via GitHub Releases:
+
+ksrc installed manually does NOT auto-update, unlike ksrc skills and plugins. Please keep the binary up to date too.
+
+Install script (macOS/Linux):
+
+```
+curl -fsSL https://raw.githubusercontent.com/respawn-llc/ksrc/main/scripts/install.sh | sh
+```
+
+## 2. Teach agents how to use it
+
+Next up, install the claude code plugin/skill, to let your agents know they _can_ use `ksrc` and how to use it.
+
+### Claude Code
+
+Add the Respawn marketplace, then install the plugin:
+
+```
+/plugin marketplace add respawn-llc/claude-plugin-marketplace
+/plugin install ksrc@respawn-tools
+```
+
+### Codex skill
+
+Install from the public GitHub path:
+
+```
+$skill-installer install https://github.com/respawn-llc/ksrc/tree/main/skills/ksrc
+```
+
+### MCP (Model Context Protocol)
+
+Use when your agent doesn't have `bash` tool. Configure your MCP client to spawn the stdio server:
+
+```json
+{
+  "mcpServers": {
+    "ksrc": {
+      "command": "ksrc",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+Default tools: `search`, `cat`, `deps`. Enable more via `--tools=<list>` (e.g., `--tools=search,cat,deps,resolve` or `--tools=all`).
+
+You shouldn't need the skill if you use mcp, but if your agent has access to `bash` tool, prefer CLI+bash instead of the mcp.
+
+### AGENTS.md prompt
+
+> Avoid directly accessing `.gradle`; instead, proactively use `ksrc` cli to inspect source code of dependencies to learn API shapes or implementations. Start with `ksrc --help`.
+
+## Usage
+
+Give this tool larger timeouts - it can take a minute to download sources (if needed) and resolve gradle projects. 
+
+1. Start by using ksrc search to get the file identifier and lines you need. Example:
+
+```bash
+$ ksrc search "updateState<"
+pro.respawn.flowmvi:core:3.3.0-alpha03!/commonMain/pro/respawn/flowmvi/api/StateReceiver.kt 19:8: updateState<State.Subtype, _> { }
+```
+The tool returns one chainable record per hit in this format: `<file-id> <line>:<col>:<line-text>`. The text segment is the raw source line with its trailing newline stripped, so it may contain literal `:` characters.
+
+If you enable `--show-extracted-path`, each hit uses a debug-oriented tab-delimited shape instead:
+`<file-id>\t<quoted-extracted-path>\t<line>\t<col>\t<quoted-line-text>`
+
+`ksrc` persists the backing jar path for emitted file-ids, so follow-up `cat`/`open` calls usually do not need repeated `--project` or scope/config flags on the same machine.
+
+If you want faster execution & less noise, specify:
+- `--artifact` to limit search to one artifact, (or `--module` to also limit by version)
+- `--subproject` to help discovery for monorepos/large modular apps
+- `--targets` to limit to specific KMP targets. 
+- `--gradle-user-home` if you need to override `GRADLE_USER_HOME`; otherwise `ksrc` respects `GRADLE_USER_HOME` and defaults to `~/.gradle`.
+
+For KMP modules, `--module group:artifact` searches common/base sources plus Gradle-selected platform variant source jars by default. Use `--targets` or `--config` to narrow variants.
+
+2. When you have found the desired artifact, read the file contents:
+
+```bash
+$ ksrc cat 'pro.respawn.flowmvi:core:3.3.0-alpha03!/commonMain/pro/respawn/flowmvi/api/StateReceiver.kt' --lines 10,25
+```
+
+3. If you already know the path inside the source jar, use `where` to recover the reusable file-id and backing jar path:
+
+```bash
+$ ksrc where kotlinx/datetime/LocalDate.kt --group org.jetbrains.kotlinx --artifact kotlinx-datetime
+org.jetbrains.kotlinx:kotlinx-datetime:0.8.0!/kotlinx/datetime/LocalDate.kt|/path/to/kotlinx-datetime-0.8.0-sources.jar
+```
+
+For path lookups, text before `|` uses same `<file-id>` contract as `search`, so you can pass it directly to `ksrc cat` or `ksrc open`.
+
+## Maintenance
+
+To bump dependency version sources in this repository:
+
+```bash
+./scripts/update-dependencies.sh
+```
+
+The script updates Go modules/toolchain, Gradle wrappers, the sample Gradle version catalog, Gradle fixture dependency pins, and pinned GitHub Actions. Add `--verify` to run format/vet/test/build plus a sample smoke check. Set `GITHUB_TOKEN` when GitHub API rate limits are a concern.
+
+## License
+
+This program is licensed under the Apache License, Version 2.0.
+
+See `LICENSE.txt`.
+
+Copyright 2026 Respawn LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

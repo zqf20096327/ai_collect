@@ -1,0 +1,883 @@
+# Multi-Agent International Equity Analysis System
+
+This repository is a multi-agent equity research system that targets under-followed small- and mid-cap value stocks outside the US that present few or no regulatory and tax risks to US investors, and that appear poised for growth. It can analyze single tickers, run broader screening pipelines, and optionally reconcile saved results against an Interactive Brokers portfolio through either a CLI workflow or a local Flask dashboard.
+
+You need Python 3.12, Poetry, and working API keys. The default binding uses Google for base analysis, OpenAI for adversarial review, a separately bindable regional provider, and Anthropic for prose; Finnhub and Tavily are also required by the normal CLI path.
+
+I've gone to a lot of trouble to make this work with inexpensive/free services, at the cost of some code complexity. But practically speaking, search, LLM, and data-service keys are needed to get truly useful results. See the `.env.example` file.
+
+Environment note:
+
+- `poetry run ...` is the safest default for this repo.
+- If you activate a virtual environment manually, make sure it is this project's environment and that it has the repo dependencies installed.
+- If you have some other venv active, deactivate it or let the pipeline fall back to Poetry.
+
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1.0+-green.svg)](https://github.com/langchain-ai/langgraph)
+
+## What This Repo Covers
+
+- Multi-agent international equity analysis for individual tickers
+- Structured markdown reports and charts
+- Screening pipeline for broader exchange-wide discovery
+- Optional IBKR portfolio reconciliation and watchlist handling
+- Optional local Flask dashboard for portfolio and refresh monitoring
+
+## Architecture
+
+The runtime combines specialist research with deterministic evidence, scoring, and
+verdict rules. The graph below shows the control flow; each tool-using research
+branch has its own bounded tool loop. Optional branches are included when their
+resolved seat is enabled. The implementation is in [src/graph/builder.py](src/graph/builder.py),
+with routing in [src/graph/routing.py](src/graph/routing.py) and model/role policy in
+[src/llm_runtime/seats.py](src/llm_runtime/seats.py).
+
+```mermaid
+graph TB
+    Start(["Analyze TICKER"]) --> Dispatch["Parallel dispatch"]
+    Macro["Pre-graph cached macro brief"] -.-> News["News Analyst"]
+    Dispatch --> Market["Market Analyst"]
+    Dispatch --> Sentiment["Sentiment Analyst"]
+    Dispatch --> News
+    Dispatch --> Junior["Junior Fundamentals: tool selection + code relay"]
+    Dispatch --> Foreign["Foreign Language Analyst"]
+    Dispatch --> Legal["Legal Counsel: private bounded tool loop"]
+    Dispatch --> Trap["Value Trap Detector"]
+    Dispatch -.-> Auditor["Forensic Auditor: optional, full mode"]
+    Junior --> FundSync["Fundamentals barrier: release Senior once"]
+    Foreign --> FundSync
+    Legal --> FundSync
+    FundSync --> Senior["Senior Fundamentals: reconciled scores"]
+    Senior --> Validator["Deterministic Financial Validator"]
+    Market --> Sync["Analyst sync + canonical evidence snapshot"]
+    Sentiment --> Sync
+    News --> Sync
+    Trap --> Sync
+    Auditor --> Sync
+    Validator --> Sync
+    Sync -->|"Unassessable"| Failed(["Diagnostic output: ANALYSIS FAILED"])
+    Sync -->|"Issuer rejected"| FastFail["Deterministic PM Fast-Fail"]
+    Sync -->|"Qualifies"| R1["Parallel Bull + Bear: round 1"]
+    R1 --> DebateSync["Round-1 sync"]
+    DebateSync -->|"Full: round 2"| R2["Parallel Bull + Bear: round 2"]
+    DebateSync -->|"Quick: one round"| FinalSync["Final debate sync"]
+    R2 --> FinalSync
+    FinalSync --> RM["Research Manager"]
+    RM --> Valuation["Valuation Calculator"]
+    RM -.-> APAC["APAC Specialist: optional, full mode"]
+    RM -->|"APAC disabled"| ReviewGate{"Consultant route when enabled"}
+    APAC --> ReviewGate
+    ReviewGate -->|"Invoke"| Consultant["External Consultant"]
+    ReviewGate -->|"Quick screening bypass"| Skip["Explicit SKIPPED review"]
+    Valuation --> PostSync["Post-research barrier"]
+    Consultant --> PostSync
+    Skip --> PostSync
+    APAC -.->|"When Consultant disabled"| PostSync
+    PostSync --> Trader["Trader: proposed plan"]
+    Trader --> Risk["Parallel Risky + Safe + Neutral analysts"]
+    Risk --> PM["Portfolio Manager + deterministic verdict policy"]
+    FastFail --> Charts["Chart node: skipped in quick/no-charts mode"]
+    PM --> Charts
+    Charts --> Decision(["BUY / HOLD / DO NOT INITIATE"])
+```
+
+The macro brief is prepared before dispatch and injected only into News Analyst.
+When APAC is enabled, Consultant routing follows its completion; otherwise it follows
+Research Manager. The Auditor runs independently in the initial fan-out, and its
+retained report also informs later review. Disabled review branches are omitted.
+Barriers wait for terminal artifact status, including failure, so missing evidence
+can be reported without leaving a branch waiting indefinitely.
+
+### Agent roles and authority
+
+| Role | Contribution and boundary |
+|---|---|
+| Market Analyst | Technical conditions and measured trading liquidity. |
+| Sentiment Analyst | Social and multilingual sentiment evidence. |
+| News Analyst | Company events, with cached regional macro background. |
+| Junior Fundamentals | Requests the two ticker-bound financial tools in one model turn. Code assembles their inspected originals before display caps, retains useful partial results, and marks missing or unusable acquisition unavailable. No copying or text-only recovery model call. |
+| Foreign Language Analyst | Native-language filings, latest comparative results, guidance, ownership, and capacity evidence; source-sensitive claims must survive deterministic normalization. |
+| Legal Counsel | Structured PFIC, VIE, and CMIC assessments through its own preflight/tool/synthesis transaction. Unavailable legal coverage blocks BUY without inventing an issuer-risk finding. |
+| Value Trap Detector | Governance, capital allocation, entrenched control, and catalyst risks, checked against retained ownership evidence. |
+| Senior Fundamentals | Reconciles financial inputs and produces the scored DATA_BLOCK; canonical score lineage distinguishes supported awards from advisory claims. |
+| Financial Validator / PM Fast-Fail | Code-owned screening and issuer rejection, rather than LLM seats. Unassessable inputs do not become an investment rejection. |
+| Bull / Bear Researchers | Opposing investment cases, both on the base provider, with balanced one- or two-round debate. |
+| Research Manager | Synthesizes both sides into the investment plan. |
+| Valuation Calculator | Valuation parameters for the downstream plan and charts; optional for publication. |
+| Forensic Auditor | Independent review-plane accounting check using approved primary documents and separate current-statement/audited-baseline tracks; disabled in quick mode. |
+| APAC Regional Specialist | Separately bindable regional cross-check; disabled in quick mode. |
+| External Consultant | Review-plane cross-validation. Quick mode may bypass a clear negative or clean consensus; full mode invokes the enabled seat. Material concerns block BUY. |
+| Trader | Proposed investment/trading plan; does not place broker orders. |
+| Risky / Safe / Neutral Analysts | Parallel risk perspectives for Portfolio Manager. |
+| Portfolio Manager | Final recommendation, constrained by eligible evidence, canonical gates, bounded correction, and a valid decision trace. |
+
+Supporting seats are outside the main graph: the cached macro summarizer, article
+Writer/Editor, optional content inspector, retrospective lessons, portfolio helpers,
+and semantic evaluation judge. Structural recovery and escalation seats support
+existing roles rather than adding independent investment votes. See
+[docs/AGENT_ROSTER.md](docs/AGENT_ROSTER.md) for the workflow rationale and
+[docs/LLM_PROVIDERS.md](docs/LLM_PROVIDERS.md) for binding and independence contracts.
+
+### Evidence and decision controls
+
+Tool execution, content inspection, and evidence recording precede claim promotion.
+Latest-results growth must bind comparative metric rows to period, currency,
+reporting unit, and earnings scope in retained evidence. Failed or blocked evidence
+cannot establish ownership or capacity; minority ownership alone does not establish
+control. EPS awards require eligible per-share lineage rather than total-profit growth.
+
+The canonical analysis snapshot and decision policy constrain model conclusions.
+Reliable financial-health failures require DO NOT INITIATE unless the documented
+canonical deep-value/current-ratio exception applies; an active tender for the
+company's own shares, with a stated price, keeps its health/growth exemption (an
+acquirer's offer does not). Growth exceptions permit at most HOLD and do not erase
+independent initiation blockers. Missing or suspect evidence remains indeterminate,
+and a BUY needs an eligible supporting fact as well as gate compliance. The same
+health/growth/initiation assessments are projected into PM context, saved policy,
+and report explanations. Publication fails when required artifacts or provenance
+contracts are invalid; passing those checks is not proof that an investment is sound.
+
+## Quick Start
+
+I am assuming here that you have worked with Git repositories, feel comfortable at a command prompt, and understand basic things like what an exchange and stock ticker are.
+
+```bash
+git clone https://github.com/rgoerwit/ai-investment-agent.git
+cd ai-investment-agent
+
+poetry install
+cp .env.example .env
+```
+
+Edit `.env` next. `FINNHUB_API_KEY` and `TAVILY_API_KEY` are always required. `GOOGLE_API_KEY` is required for the shipped default bindings, and startup derives that from the binding plan rather than assuming it — a configuration with no seat bound to Google does not demand one. Add a provider key for each group you bind (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `MOONSHOT_API_KEY`, `DEEPSEEK_API_KEY`, `ZAI_API_KEY`), plus EODHD or FMP for better international data. The exact knobs live in `.env.example`.
+
+## LLM Provider Architecture
+
+LLMs bind to named application seats through six groups. `base` owns the main
+research/debate/decision fleet, including both Bull and Bear. `review` owns the
+Consultant, Forensic Auditor, and Editor so those seats form one vendor-level
+adversary. `regional` owns the separately bindable APAC specialist. Writer,
+operational helpers, and the semantic judge have independent groups.
+
+Model names remain plain provider model IDs. The runtime does not use or require
+LangChain's `provider:model` notation. Startup validates `.env`; graph construction
+resolves and injects an immutable per-run binding plan covering credentials, model
+identity, seat capabilities, and review/regional independence boundaries, then
+constructs clients through provider adapters.
+
+The normal grouping is:
+
+```dotenv
+LLM_BASE_PROVIDER=google
+LLM_REVIEW_PROVIDER=openai
+LLM_REGIONAL_PROVIDER=deepseek
+LLM_WRITER_PROVIDER=anthropic
+LLM_OPERATIONAL_PROVIDER=google
+LLM_JUDGE_PROVIDER=google
+```
+
+To reverse base analysis and adversarial review, change the group selectors and
+leave Bull and Bear together:
+
+```dotenv
+LLM_BASE_PROVIDER=openai
+LLM_REVIEW_PROVIDER=google
+```
+
+Review provider-specific seat pins at the same time. Model IDs in
+`LLM_SEAT_MODEL_OVERRIDES` and `LLM_SEAT_QUICK_MODEL_OVERRIDES` must belong to
+the provider selected for that seat's group; stale pins from the previous base
+provider fail closed at startup. With no quick pins, Senior Fundamentals and
+Portfolio Manager retain the base provider's `critical` model under `--quick`.
+Pinning cheaper models for those two seats is therefore an explicit
+quality-for-cost trade-off, not the default effect of quick mode. Legacy-config
+migration may have created quick pins deliberately to preserve the legacy
+quick-model behavior, so clear or translate them intentionally rather than
+assuming they are redundant.
+
+Provider-scoped model keys such as `OPENAI_LLM_FAST_MODEL` and
+`GOOGLE_LLM_REASONING_MODEL` supply each intent tier. Advanced operators can pin
+individual seats with JSON in `LLM_SEAT_MODEL_OVERRIDES` and
+`LLM_SEAT_QUICK_MODEL_OVERRIDES`. Reviewed provider-specific reasoning values
+can be pinned per seat with `LLM_SEAT_REASONING_OVERRIDES` and
+`LLM_SEAT_QUICK_REASONING_OVERRIDES`. Optional seats use independent
+`required|auto|off` modes. Collapsing base and review/regional identity requires
+turning off the matching `LLM_REQUIRE_*_INDEPENDENCE` setting and recording a
+non-empty waiver reason; there is no second contradictory “allow collapse” flag.
+
+`--quick-model` and `--deep-model` work under both schemas. Under provider-scoped
+bindings they are run-scoped overrides of the **base group only**: `--quick-model`
+drives the `fast` intent and `--deep-model` the `reasoning` intent (researchers,
+risk analysts, research manager). `--deep-model` deliberately does **not** reach
+the `critical` intent, so the two gate-critical APEX seats keep their configured
+binding — mirroring the legacy schema, where `APEX_MODEL` already superseded
+`DEEP_MODEL` for them. Pin those with `LLM_SEAT_MODEL_OVERRIDES`. The flags never
+touch the review, regional, writer, operational, or judge groups, and a model
+belonging to another vendor is rejected at startup naming the seat and both
+vendors. Quick mode disables APAC and the Forensic Auditor as explicit seat policy and limits
+structural recovery to Foreign Language, Senior Fundamentals, and Portfolio Manager. Persisted binding telemetry records those
+mode-specific availability reasons.
+
+Transport retries and structural recovery are separate. A transient provider partial
+without an explicit terminal reason may repeat the same request inside the invocation
+runtime. A provider response that explicitly stopped at its output cap is not retried
+with the same cap: it is recorded as `output_cap_exhausted` and returned to the owning
+node. Required output contracts are then validated independently; full mode permits one
+text-only reasoning recovery for eligible analysts, while quick mode limits that cost
+to Foreign Language, Senior Fundamentals, and Portfolio Manager. A response stopped at
+its output cap is regenerated at a lower reasoning setting (`RETRY-CAP`), since more
+reasoning would spend the same budget again; other contract failures use the higher
+recovery setting (`RETRY-HIGH`). Junior Fundamentals
+uses the code-owned acquisition relay instead of structural regeneration. Portfolio
+Manager shares one correction allowance between structural and semantic repair.
+Recovery reuses evidence already gathered, exposes no tools, inherits the originating seat's output budget, and remains
+within the base provider selected for that run. Token totals remain grouped under the
+originating analyst, while `token_usage.by_seat.analyst_retry` and
+`token_usage.recovery_usage` expose the recovery seat and origin separately.
+
+All shared graph research loops are bounded in code, not only in prompts. Market,
+Sentiment, News, Junior Fundamentals, Foreign Language, and Value Trap share one ledger
+contract for model turns, rounds, per-turn fan-out, per-tool/purpose counts, duplicate
+calls, failure circuits, and cumulative model-facing evidence. A closed research
+budget forces synthesis from evidence already gathered without dropping tool-call/result pairs.
+Junior instead closes its acquisition with a named terminal message and the code-owned
+artifact/status, including empty or malformed failure, so it cannot repeat a blocked
+tool round.
+Foreign Language full/quick tuning remains operator-configurable through the
+`FOREIGN_RESEARCH_*` settings in `.env.example`; the finite tool sets for the other
+seats use code-owned policies.
+
+Provider throttles are isolated: `GOOGLE_RPM_LIMIT`, `OPENAI_RPM_LIMIT`,
+`ANTHROPIC_RPM_LIMIT`, `DEEPSEEK_RPM_LIMIT`, `ZAI_RPM_LIMIT`,
+`MOONSHOT_RPM_LIMIT`, and `XAI_RPM_LIMIT` create separate
+runtime buckets. Shipped settings use conservative application-side ceilings,
+including for direct construction outside the graph; raise them only after checking
+the provider account's actual quota.
+
+The OpenAI-compatible transport is deliberately restricted. A compatible URL does
+not establish tool calling, structured output, or reasoning-control capability.
+The current z.ai/DeepSeek path is qualified only for the no-tool APAC seat. Google
+and OpenAI have offline construction/contract coverage in both base and review
+roles. Claude profiles record their actual version-specific transport features,
+including an explicit adaptive-thinking profile for Claude Opus 4.8; unknown later
+Claude versions fail closed until reviewed. Anthropic remains
+application-qualified only for the writer group. Moonshot Kimi K3 and xAI Grok 4.6
+are qualified for the review group only — a compatible transport reaches no base
+seat regardless of policy. Only `grok-4.6` has a reviewed profile; `grok-4.5`
+documents a shorter reasoning ladder and fails closed rather than inheriting one.
+Production qualification still requires credential-gated live tool,
+structured-output, and multi-ticker runs with a fixed semantic judge. See
+`docs/LLM_PROVIDERS.md`.
+
+Legacy-only `.env` configuration remains supported during the compatibility window,
+but old and new binding schemas cannot be mixed. `scripts/llm_env_migrate.py` can
+write a separate, operator-selected migration candidate with `--output`. It refuses
+to overwrite its source, derives APAC vendor identity from the endpoint host, and
+fails rather than promoting an unqualified compatible review endpoint.
+
+Under provider-scoped settings, `OPENAI_API_BASE` is accepted only when its host
+is validated as OpenAI-owned and is passed through without disabling the Responses
+API. Moonshot uses `MOONSHOT_API_BASE`; xAI uses `XAI_API_BASE`
+(`https://api.x.ai/v1`). Binding the review plane to xAI is two lines —
+`LLM_REVIEW_PROVIDER=xai` and `XAI_API_KEY` — and reverting is one.
+
+A service tier and a client timeout are separate concerns, in **both** schemas. A
+compatible vendor sells no service tier, so `OPENAI_SERVICE_TIER` is ignored
+whenever `OPENAI_API_BASE` names a non-OpenAI host — it no longer sets the tier,
+the flex fallback, or the timeout there. How long a compatible client may wait is
+`OPENAI_COMPATIBLE_CLIENT_TIMEOUT_SECONDS` (default 300), read by the legacy
+consultant/auditor/editor path and the provider-scoped compatible adapter alike.
+Legacy compatible OpenAI-base configurations continue to use Chat Completions
+during the compatibility window.
+
+Embeddings are selected independently with `EMBEDDING_PROVIDER` and
+`EMBEDDING_MODEL`, and are **not** routed by `OPENAI_API_BASE` — that setting
+selects the review chat plane's compatible vendor, and those vendors serve no
+embeddings API. Provider/model/dimension/schema changes create a fingerprinted
+Chroma collection; initialization never deletes the legacy collection. Inspect or
+initialize exact targets with `scripts/embedding_collections.py`.
+
+Run a fast smoke test (you can use a ticker other than 7203.T, if you want):
+
+```bash
+poetry run python -m src.main --ticker 7203.T --quick --output results/7203.T.md
+```
+
+That command exercises the main runtime and writes a markdown report. Saved analysis JSONs in `results/` also, optionally, power `portfolio_manager.py` and the dashboard later.
+
+**A run can succeed while degraded.** Consultant, Auditor, APAC specialist, and
+valuation failures are optional for publication; Value Trap is also optional in
+quick mode but required in full mode. Missing optional review reduces coverage and
+must not be read as evidence that no risk exists. The runtime exposes degraded
+artifacts through CLI output, `run_summary.optional_failures`, and `artifact_statuses`.
+A deliberate Consultant bypass is recorded as SKIPPED, separately from a failed
+review. Required evidence and decision contracts still fail closed.
+
+Analyzer process status distinguishes an investment conclusion from runtime validity.
+Exit `0` means the required technical analysis completed, including a valid analytical
+REJECT or DO NOT INITIATE. Exit `1` means startup, configuration, interruption, or
+execution failed before a usable result. After analysis execution, exit `2` means
+diagnostic output was saved but one or more required artifacts or data contracts
+failed; automation must not treat that artifact as a completed analysis. Argument
+parsing also uses the conventional exit `2` for invalid command-line syntax.
+
+## Choose Your Workflow
+
+- **Analyze one ticker**: use `poetry run python -m src.main --ticker ...`
+- **Screen a broader universe**: use `scripts/run_pipeline.sh`
+- **Reconcile a portfolio afterwards**: use `scripts/portfolio_manager.py`
+- **Use the browser UI**: run `python -m src.web.ibkr_dashboard.app`, and start the worker only if you want queued refresh jobs
+
+## Single-Ticker Analysis
+
+This is the core engine. Use it first before touching portfolio workflows or the dashboard.
+
+```bash
+# Normal run; again, you can use any ticker you want instead of 0005.HK
+poetry run python -m src.main --ticker 0005.HK
+
+# Save markdown output and charts
+poetry run python -m src.main --ticker 0005.HK --output results/0005.HK.md
+
+# Faster first pass
+poetry run python -m src.main --ticker 0005.HK --quick --output results/0005.HK_quick.md
+
+# Tighter investment-quality gates; can also be combined with --quick
+poetry run python -m src.main --ticker 0005.HK --strict --output results/0005.HK_strict.md
+
+# Stateless run without Chroma-backed memory
+poetry run python -m src.main --ticker 0005.HK --no-memory --output results/0005.HK.md
+
+# Experimental balanced rationale handoffs between debate rounds
+poetry run python -m src.main --ticker 0005.HK --debate-reasoning-handoffs
+
+# Also generate an edited, citation-checked article
+poetry run python -m src.main --ticker 0005.HK --output results/0005.HK.md --article
+```
+
+**Runtime and cost depend on the resolved seats and provider conditions.** Quick mode
+runs one debate round, disables APAC and the Auditor, skips charts, and may bypass
+Consultant; full mode restores the deeper path. Startup data-vacuum checks and
+issuer rejection can stop work before later stages. Provider queueing, research
+rounds, output limits, and retries can dominate elapsed time, so a historical
+per-ticker estimate is not a current performance guarantee.
+
+Flex requests can fall back to standard, and repeated fallbacks temporarily degrade
+that provider to standard for the process. A new ticker process starts with fresh
+health state. Under `--quick`, the seats whose execution policy sets
+`standard_tier_in_quick_mode` (Junior Fundamentals, Senior Fundamentals, Portfolio
+Manager and Analyst Retry) run at standard tier; full mode keeps the configured tier.
+See the seat execution policy in `src/llm_runtime/seats.py` and the `FLEX_DEGRADE_*`
+settings in `.env.example`.
+Changing tier changes queueing and billing behavior, but does not guarantee identical
+model output or eliminate provider failures. Saved `token_usage.by_tier` and
+`run_summary.service_tier_downgrades` expose effective usage and degradation.
+
+Practical notes:
+
+- `--quick` is usually the right first-pass setting for screening or broad review.
+- Saved `run_summary.tool_calls` remains the compatibility count of retained
+  `ToolMessage` objects. Use `run_summary.tool_executions` and its agent/source
+  breakdowns to measure actual paid or external tool work after transcript reduction;
+  `research_budgets` records prevented calls and the reason synthesis was forced.
+- `poetry run python scripts/cost_report.py --efficiency` reports recovery share,
+  output-cap spend, PM correction calls, and per-agent research turns/rounds. In A/B
+  mode it warns when run fingerprints make the comparison uncontrolled.
+- `--strict` tightens financial, structural, and conviction gates; combine it with `--quick` when you want a cheaper first pass without relaxing those gates.
+- `--debate-reasoning-handoffs` gives Bull R2, Bear R2, and Research Manager bounded, balanced R1 rationale adjuncts. It requires a full two-round run and automatically adds 1,024 output tokens to Bull, Bear, and Research Manager; a researcher whose capsule is missing may also cost one narrow structuring call, and a degraded response one re-invoke. Normal JSON/Markdown artifacts retain only presence/length telemetry, but explicit `--debug`, baseline capture, or tracing can retain content or raw provider responses. Provider-native readable summaries are optional; every provider retains the structured-rationale fallback.
+  - **Refresh-triggered analyses do not inherit it.** `scripts/portfolio_manager.py` exposes no analyzer-behaviour flags, and `RefreshExecutionOptions` forwards only quick-mode and chart suppression, so an analysis produced by a portfolio refresh always runs baseline settings (it also fixes `strict=False`). That is intentional for autonomous, cost-sensitive refreshes — but it means refresh-generated artifacts must be excluded from either arm of a baseline/candidate comparison.
+- `--output` is the cleanest way to get markdown plus chart assets in a stable location.
+- `--article` writes an article beside `--output`; pass a path after the flag to choose a different location.
+- Analysis can prefetch a cached regional macro brief before the graph runs; it lives under `results/.macro_context_cache/` with a 12-hour TTL, is generated by `Macro Context Analyst`, and is injected only into News Analyst as regime background.
+- Projected token cost includes this pre-graph macro summarizer when it executes.
+- Free-tier Gemini works, but it is slow for larger batches. Paid tiers mostly improve throughput and reduce retry friction (foundation model vendors are getting more restrictive about free tiers).
+- Cost depends on the resolved seat plan. Optional review seats use independent `LLM_*_MODE` settings, and APAC is off by default. Saved JSON records `llm_bindings`, per-call identity, unpriced models, and cost rollups by seat, group, vendor, model, and service tier. `run_summary` separates the configured PM model, models actually used, and accepted response producer; missing legacy attribution remains unknown or ambiguous. Unknown custom models are visibly unpriced and contribute no fabricated dollar estimate.
+
+### Interpreting Reports and Articles
+
+- A standalone report ends in **BUY**, **HOLD**, or **DO NOT INITIATE**. Portfolio-level sell and trim decisions are handled separately because they require holdings, tax-lot, and account context.
+- A BUY must cite at least one eligible supporting fact. Passing health or growth scores can satisfy or fail a gate, but the scores alone do not establish the forward case.
+- Period-specific growth remains attached to its underlying statement period. If revenue and earnings use different periods, the report does not assign them a misleading shared “latest quarter.”
+- For source-sensitive items such as latest results, management guidance, and capacity utilization, **N/A** or **unsupported** means the run could not establish the claim with the required source and period evidence; it does not mean zero.
+- A report titled **ANALYSIS FAILED** is a retained diagnostic artifact, not an actionable recommendation. This occurs when required analysis sections, evidence contracts, or the final decision trace are missing or invalid.
+- Article generation runs only for a publishable analysis. The writer produces a draft, the editor reviews it, and deterministic claim/citation checks run before publication; anything not approved is saved as `*.draft.md` for manual review instead of taking the requested final filename.
+
+## Screening Pipeline
+
+The screening pipeline is the shortest path from broad discovery to a shortlist of full reports.
+
+```bash
+# End-to-end path: scrape configured exchanges, filter, quick-screen, then run
+# full analysis on BUY names only
+./scripts/run_pipeline.sh
+
+# Step-by-step alternative
+poetry run python scripts/find_gems.py --output scratch/gems.txt
+# Run this next; this is also how you would restart an aborted run, 
+# where stage0-scrape finished, but stage1 didn't (fully) finish
+./scripts/run_pipeline.sh --skip-scrape scratch/gems.txt
+```
+
+Outputs land in `scratch/`. In practice you will see:
+
+- a source ticker list such as `gems_YYYY-MM-DD.txt`
+- quick-screen outputs
+- a `buys_YYYY-MM-DD.txt` list
+- full reports for BUY names
+- timestamped per-invocation logs, latest-log aliases, and a durable dated failure log
+
+Saved analysis JSONs remain in `results/`, even when the markdown report is in
+`scratch/`. Their timestamps reflect actual analysis time; the pipeline run date
+controls dated output/resume paths.
+
+Practical notes:
+
+- Stage 1 is a broad quick screen: `--quick --no-charts --quiet --brief --no-memory`, not strict mode. A quick BUY is a candidate for full analysis; portfolio reconciliation does not treat it as investable authority.
+- `--stage N` selects the starting stage, not a single-stage stop. Stage 1 extracts BUYs and proceeds to Stage 2 after its confirmation; `--yes` bypasses confirmations. Stage 2 uses full analysis with memory and charts, and `--strict` applies there when requested.
+- The upstream `find_gems.py` filter starts conservative, with a modest higher-P/E band allowed when profitability, leverage, cash-flow quality, and coverage are stronger. By default it excludes both US venues and US-domiciled secondary listings, retains the more liquid listing for exact duplicate issuer names, and writes candidates in a stable mixed order; `--include-us` restores US issuers and venues.
+- Enabled exchange sources are completeness requirements: a failed or structurally degraded source aborts Stage 0 before prior screening output is replaced. BVB coverage is limited to the official Regulated Market equity table; AeRO is intentionally excluded.
+- Estimate new spend from fresh Stage-1 attempts and promoted Stage-2 attempts using comparable saved costs for each mode. Reused reports incur no new analysis calls; failed attempts and recovery still consume resources. There is no fixed cost or BUY-rate guarantee.
+
+Resumption is built in:
+
+- Re-running the same command family reuses complete same-mode reports from the last 60 days: quick reports satisfy Stage 1 and full reports satisfy Stage 2. Use `--max-age-days 0` for exact run-date matching or `--force` to rerun everything.
+- Preserve the original logical date with `--run-date YYYY-MM-DD` for cross-day resumption. If Stage 2 was interrupted, use `--stage 2 --buys-file scratch/buys_YYYY-MM-DD.txt`.
+- Failed, missing-verdict, or ANALYSIS FAILED reports do not satisfy reuse and are retried on a later invocation. Stage summaries distinguish attempted, reused, failed, and no-analysis work. `results/.pipeline_last_run.json` records the Stage-1 BUY-list count, not Stage-2 completion; verify full reports and the Stage-2 summary.
+- `scripts/scan_batch_health.py --modified-since EPOCH` scopes health checks to new artifacts, including cross-day runs; `scripts/summarize_quick_slow_tail.py` diagnoses quick timeout tails. Pair prior artifacts by ticker and mode when comparing outcomes or costs.
+- If you already have your own ticker list, skip scraping and feed it directly to the pipeline.
+
+## Optional Safety, Cross-Checks, and Tracing
+
+These features matter, but they are supporting infrastructure. You do not need them for the first successful run.
+
+For the broader local threat model, including secrets, broker context, untrusted content, MCP, and OWASP LLM Top 10 coverage, read [SECURITY.md](SECURITY.md).
+
+### Untrusted-Content Inspection
+
+The agents read untrusted text from web/search results, social content, filings, financial-API free text, retrieved memory, and cached context. Optional inspection checks that material before it is reused in prompts. It is off by default so existing local workflows do not change unexpectedly.
+
+Recommended first posture:
+
+```bash
+UNTRUSTED_CONTENT_INSPECTION_ENABLED=true
+UNTRUSTED_CONTENT_BACKEND=python
+UNTRUSTED_CONTENT_INSPECTION_MODE=warn
+UNTRUSTED_CONTENT_FAIL_POLICY=fail_open
+```
+
+`python` uses the in-process heuristic inspector. `composite` adds a selective LLM judge and costs more latency and tokens. Start with `warn`, inspect the logs, then move to `sanitize` or `block` only when you understand the false positives. See [SECURITY.md](SECURITY.md) for the broader security model.
+
+### Adversarial Tests
+
+The adversarial suite exists because prompt-injection defenses should fail tests when they weaken. It covers payloads aimed at tool use, memory poisoning, hidden instructions, and similar attacks across the inspection and policy layers.
+
+```bash
+make security-tests
+```
+
+Run this before changes to `src/tooling/`, prompt handling, memory read/write paths, or any new third-party text ingress. The tests are fast, local, and included in the normal `pytest` run. Corpus refresh and judge-fixture replay are manual review steps, not automatic ingestion.
+
+### MCP Consultant Checks
+
+The Consultant can optionally use narrow MCP-backed spot checks for material claims. MCP is disabled by default, access is curated, and the shipped registry keeps Twelve Data disabled because its public surface is too free-form for the current allowlist contract.
+
+```bash
+cp config/mcp_servers.example.json config/mcp_servers.json
+```
+
+Then set:
+
+```bash
+MCP_ENABLED=true
+CONSULTANT_MCP_ENABLED=true
+MCP_SERVERS_PATH=./config/mcp_servers.json
+MCP_USAGE_DB_PATH=./runtime/mcp_usage.db
+FMP_API_KEY=...
+```
+
+Keep secrets in `.env`, not in the JSON registry. `scripts/mcp_smoke.py` verifies that the MCP path works without putting an LLM in the loop. See [docs/MCP.md](docs/MCP.md) for setup and smoke-testing details.
+
+#### Turning a service off — comment the key, or disable the server
+
+Disable an unwanted service through its documented feature or server setting.
+Credentials make a service available; whether it is called also depends on the
+enabled seats, routing, tool policy, and coverage needs. Removing a credential from
+an enabled required service can turn a deliberate opt-out into a startup failure.
+
+For MCP specifically, know which switch you are throwing:
+
+- **Commenting out the key** of a server that is still `"enabled": true` fails the **entire MCP runtime** at startup (`mcp_runtime_init_failed`), not just that one server. The consultant's MCP wrappers are then never exposed — `_mcp_wrapper_available` returns false — so no calls are attempted and nothing is counted as a failed verification. Effective, all-or-nothing, and it logs a warning every run.
+- **Setting `"enabled": false`** in `config/mcp_servers.json` is the per-server switch, and the right one when another server is (or may later be) enabled — a disabled server skips credential resolution entirely, so one retired key cannot take the others down with it.
+- **`MCP_ENABLED=false`** is the only fully silent off switch. `load_registry(..., required=True)` rejects a registry with *no* enabled servers, so disabling your last one trades the missing-key warning for a no-enabled-servers warning. Turn the feature off at the flag instead.
+
+Coverage is separate from availability. An authenticated spot check may still lack
+usable data for a ticker. Review reports distinguish unresolved coverage from issuer
+risk; verification failures can leave a review partial or unusable. The bounded
+partial-review policy in `src/agents/consultant_nodes.py` determines whether useful
+remaining checks survive and explicitly marks claims dependent on failed checks as
+unresolved. Assess coverage for the target exchanges before relying on a vendor.
+
+### Langfuse Tracing
+
+Langfuse is opt-in tracing for runs where you want observability beyond local logs.
+
+```bash
+poetry run python -m src.main --ticker 0005.HK --enable-langfuse
+```
+
+Set `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_BASE_URL` if you are not using the default Langfuse Cloud host. Prompt fetch from Langfuse is off by default; local prompts remain authoritative unless remote prompt fetch is explicitly enabled.
+
+## IBKR Portfolio Management
+
+`scripts/portfolio_manager.py` sits on top of the saved analysis JSONs in `results/`. It bridges the evaluator output with live or offline portfolio context.
+
+The IBKR reconciliation path is split by ownership: `src/ibkr/reconciler.py` orchestrates while `analysis_index.py`, `reconciliation_rules.py`, `position_evaluator.py`, `watchlist_evaluator.py`, `opportunity_finder.py`, and `portfolio_health.py` own the underlying loading, rule, and routing logic.
+
+```bash
+# Verify credentials and IBKR connectivity first
+poetry run python scripts/portfolio_manager.py --test-auth
+
+# Report only, using saved results with no IBKR connection
+poetry run python scripts/portfolio_manager.py --read-only
+
+# Reconcile against live IBKR positions
+poetry run python scripts/portfolio_manager.py
+
+# Add order-size recommendations
+poetry run python scripts/portfolio_manager.py --recommend
+
+# Re-run stale analyses, then reconcile
+poetry run python scripts/portfolio_manager.py --refresh-stale --quick
+
+# Evaluate a specific IBKR watchlist against existing analyses
+poetry run python scripts/portfolio_manager.py --recommend --watchlist-name "my watchlist"
+```
+
+Notes:
+
+- `--read-only` is the safest way to understand the tool before you touch live broker data.
+- `--recommend` produces actionable suggestions and sizing guidance. Order execution is currently disabled, so the tool remains advisory.
+- Positions whose broker identity cannot be resolved remain in accounting and currency exposure, but are quarantined from ticker research; incomplete inventory withholds portfolio-level BUY/ADD authority until the identity gap is repaired.
+- Concentration warnings, stale-analysis flags, cash timing, macro-demoted review items, and capital-allocation `PROFIT_TAKE` candidates are part of the normal report output.
+- `PROFIT_TAKE` is reserved for positions with intact business quality, material gains versus IBKR average cost, and saved analysis evidence of idle-cash capital-allocation risk. It is always advisory (a `REVIEW`, never an automatic sell suggestion) — selling an intact winner is a capital-gains and tax-lot decision the tool surfaces for you, not one it makes. More generally, the reconciler only proposes an executable sell for a small, positively-listed set of cases (a confirmed thesis failure across two full-mode analyses, or a mandatory-exit/tender-offer flag); price moves and stale-analysis rejections alone never do.
+
+## Local Flask Dashboard
+
+The dashboard is a local browser view over the same recommendation and reconciliation stack. It is useful once you already have analysis JSONs in `results/`.
+
+```bash
+# App only
+poetry run python -m src.web.ibkr_dashboard.app
+
+# Worker, only needed for queued background refresh jobs
+poetry run python -m src.web.ibkr_dashboard.worker
+
+# Live broker mode with an explicit account and watchlist
+poetry run python -m src.web.ibkr_dashboard.app \
+  --live \
+  --account-id U1234567 \
+  --watchlist-name "default watchlist"
+
+# Offline/read-only mode for saved results only (the default)
+poetry run python -m src.web.ibkr_dashboard.app --read-only
+```
+
+Open <http://127.0.0.1:5050>.
+
+Convenience options:
+
+```bash
+# Start both processes together
+./scripts/run_ibkr_dashboard.sh
+
+# Start only the Flask app through the launcher
+./scripts/run_ibkr_dashboard.sh --no-worker
+
+# Pass startup flags through to the app
+./scripts/run_ibkr_dashboard.sh -- --account-id U1234567 --watchlist-name "default watchlist"
+```
+
+If you have already run `poetry install`, the Poetry script shims also work:
+
+```bash
+poetry run ibkr-dashboard
+poetry run ibkr-dashboard-worker
+```
+
+The dashboard includes:
+
+- **Overview**: NLV, cash, freshness, pending inflows, concentration, portfolio health, macro alert
+- **Actions**: stop breaches, sells, soft rejections, macro reviews, adds, trims, dip-watch candidates, holds
+- **Watchlist**: new buys, off-watchlist candidates, monitor, and remove buckets
+- **Orders & Cash**: live orders plus settlement timing
+- **Refresh**: freshness summary and explicit background refresh jobs
+- **Settings**: lightweight local preferences/stubs
+
+Operational notes:
+
+- The dashboard is read-only for trading.
+- Read-only mode (saved-results-only snapshot) is the default. Use `--live` or `IBKR_DASHBOARD_READ_ONLY=false` when you want live IBKR portfolio data.
+- Set the account explicitly with `--account-id` or `IBKR_DASHBOARD_ACCOUNT_ID` when the default IBKR account is not the one you want.
+- Set the watchlist explicitly with `--watchlist-name` or in the Settings tab. Startup flags win for that run even if saved dashboard preferences differ.
+- The page auto-loads a snapshot on first open. `Refresh Snapshot` is the manual force-reload control.
+- Live orders and live broker cash context only appear in live mode.
+- The dashboard process serves cached snapshot reads; the worker is the only process that executes queued refresh jobs.
+- The module entrypoints are the most robust launch path because they do not depend on Poetry having installed wrapper scripts into `.venv/bin`.
+- Saving settings only reloads the snapshot when the changed fields actually affect the bundle, such as account, watchlist, mode, or max-age.
+- A snapshot status like `ready, read-only` with `Fresh count > 0` and `No refresh jobs yet` is normal in offline mode. It means the dashboard successfully loaded saved analyses from `results/`, found nothing stale enough to queue automatically, and has not been asked to run any manual background job yet.
+- If all analyses are fresh, the stale/due-soon refresh buttons stay disabled. Use a ticker list if you want to force a rerun of specific names.
+- While the **Refresh** tab is open, the UI polls `/api/refresh/jobs` every 5 seconds. In the Flask dev server logs that will look like repeated `GET /api/refresh/jobs 200` lines; that is expected.
+
+## Default Investment Thesis
+
+What is the system actually hunting for? Is a company cheap because the market missed something, or cheap because the business is deteriorating?
+
+The built-in screen is intentionally narrow. It looks for transitional value-to-growth or GARP-style opportunities, not momentum chasing and not generic low-multiple cheapness.
+
+The decision policy evaluates reliable financial-health and growth scores, measured
+USD trading liquidity, verified English-language analyst coverage, and US revenue
+exposure. Health and growth have bounded exceptions; unresolved measurements cannot
+satisfy an exception. Verified initiation failures remain binding, including when a
+growth exception or active tender applies. The canonical thresholds and rubric are
+owned by [src/thesis_constants.py](src/thesis_constants.py), with gate and exception
+logic in [src/agents/verdict_policy.py](src/agents/verdict_policy.py).
+
+Governance, regulatory exposure, capital allocation, valuation, and forward catalysts
+also affect the decision. Material Consultant concerns or missing legal coverage can
+withhold BUY authority without adding an issuer-risk penalty. A high aggregate score
+does not cancel independent blockers.
+
+Deterministic red-flag logic can reject a name before the debate path continues. That is intentional.
+
+## Repo Layout
+
+```text
+prompts/                     Versioned prompt JSON files
+scripts/                     Screening, portfolio, and operator scripts
+src/main.py                  Main CLI/runtime entrypoint
+src/cli.py                   CLI parsing and output-path resolution
+src/persistence.py           Analysis artifact building and persistence helpers
+src/output.py                CLI/banner/report/article output helpers
+src/runtime_services.py      Runtime-scoped tool, inspection, and provider ownership
+src/runtime_config.py        Run-scoped CLI overrides (ContextVar, not global mutation)
+src/llm_runtime/             Seat registry, provider bindings, and transport adapters
+src/llms.py                  Legacy-schema construction facade and tiered transports
+src/embeddings.py            Provider-selectable embeddings and collection fingerprints
+src/macro_context.py         Pre-graph macro brief generation and cache
+src/graph/                   Graph assembly, routing, barriers
+src/agents/                  Node logic and shared agent state
+src/tools/                   Tool implementations by domain
+src/tooling/                 Tool execution, inspection, and audit hooks
+src/data/                    Market and fundamental data fetching
+src/validators/              Deterministic validation and red-flag screening
+src/runtime_diagnostics/     Failure classification, artifact and publication validity
+src/analysis_snapshot.py     Canonical claims, evidence eligibility, scorecards
+src/decision_inputs.py       Resolved evidence and metrics for verdict policy
+src/agents/verdict_policy.py Canonical gates, corrections, and verdict normalization
+src/report_generator.py      Markdown report assembly
+src/article_writer.py        Optional article-writing flow
+src/charts/                  Chart extraction and rendering
+src/memory.py                Chroma-backed memory and macro-event support
+src/ibkr/                    Portfolio, reconciliation, and broker integration
+src/web/ibkr_dashboard/      Local Flask dashboard
+src/eval/                    Baseline capture and evaluation helpers
+tests/                       Unit and integration coverage
+```
+
+How the pieces connect:
+
+- `src/main.py` is orchestration-first: runtime setup, macro-context prefetch, graph execution, tracing, and mode dispatch.
+- `src/cli.py` owns CLI parsing, flag validation, and output/article path resolution.
+- `src/persistence.py` owns saved artifact assembly, JSON persistence, and rejection-record helpers.
+- `src/output.py` owns banners, CLI/report rendering, and optional article generation.
+- `src/runtime_services.py` owns runtime-scoped tool execution, content inspection, and long-lived provider dependencies for the CLI, worker, and dashboard processes. It also validates the LLM binding plan, so an unusable provider configuration fails at startup rather than at first model construction.
+- `src/llm_runtime/construction.py` owns application model construction; `src/llm_runtime/` also contains `seats.py` (the canonical seat registry and per-seat execution policy), `bindings.py` (group → provider resolution, capability checks, independence enforcement), `profiles.py` (reviewed vendor facts), `provider_policy.py` (what this repo has *evidence* for, as opposed to what a transport supports), and `adapters/`. `src/llms.py` remains the legacy-schema facade and owns the incident-tested tiered transports the adapters delegate to.
+- `src/macro_context.py` builds and caches the pre-graph regional regime brief that is injected into News Analyst context.
+- `src/graph/` wires the workflow, `src/agents/` owns node logic and state handling, and `src/tools/` plus `src/tools/registry.py` provide the tool surface used by agent tool nodes.
+- `src/tooling/` owns the execution plane around those tools: inspection, audit hooks, and argument-policy enforcement.
+- `src/data/`, `src/validators/`, `src/memory.py`, and `src/charts/` are shared subsystems used by the main analysis path.
+- `src/data/fetcher.py` is an orchestration seam over `src/data/source_fetchers.py`, `src/data/metric_extraction.py`, `src/data/merge_policy.py`, and `src/data/gap_fill.py`.
+- `src/report_generator.py` turns the final graph state into the structured markdown report; `src/article_writer.py` is the optional long-form writing pass on top of that report.
+- `scripts/portfolio_manager.py`, `src/ibkr/`, and `src/web/ibkr_dashboard/` are the operator-facing portfolio workflows built on top of saved analysis outputs and, optionally, live broker context.
+
+## Testing
+
+```bash
+# Static quality and documentation gates
+make check-all
+
+# Deterministic credential-free suite (excludes slow/integration/LLM/API tests)
+make test-ci
+
+# Whole suite, still offline: tests marked `integration` are skipped
+poetry run pytest tests/ -v
+
+# Live integration tests: opt in explicitly; they use real providers and may incur cost
+poetry run pytest tests/ -v --run-integration
+
+# IBKR-focused changes
+poetry run pytest tests/ibkr -v
+
+# Dashboard-focused changes
+poetry run pytest tests/web -v
+```
+
+Run focused regression tests for the owning modules first, then the relevant static
+and deterministic gates. Non-integration tests are strictly offline: they refuse
+network access and run with dummy provider keys. Integration tests are skipped
+unless `--run-integration` is passed. Because the test environment overwrites the
+ordinary provider key variables with dummies, an integration test reads your real key
+from the same name prefixed with `INTEGRATION_` (for example `INTEGRATION_` plus the
+provider key variable) and skips, naming that prerequisite, when it is absent
+(`tests/helpers/integration_prerequisites.py`). Passing offline tests does not
+establish live provider quality.
+
+### Prompt-drift harness
+
+Prompts are prose contracts the parsers depend on. These tiers catch drift between `prompts/*.json` and the code that reads them. The first two run no model and are part of the normal `pytest`:
+
+```bash
+make test-prompts   # L0 static parity + L1 contract round-trip (prompt template ≡ its parser)
+make replay         # L2 deterministic replay of frozen LLM outputs through the pure consumers
+make eval-semantic  # L3 semantic judge on the smoke suite (LLM cost; manual/nightly only)
+```
+
+Run `make test-prompts` after editing any `prompts/*.json` or the parser/validator that consumes its output (e.g. a renamed `DATA_BLOCK` field or a changed verdict header fails the round-trip immediately).
+
+## Troubleshooting
+
+**Poetry or import issues**
+
+```bash
+poetry env remove --all
+poetry install
+```
+
+If `./scripts/run_pipeline.sh` or another script unexpectedly uses plain `python`, check whether you have an unrelated virtual environment active. The pipeline falls back to Poetry when the active venv is missing core repo dependencies, but the cleanest fix is one of:
+
+```bash
+deactivate
+poetry install
+poetry run python -m src.main --ticker 0005.HK
+```
+
+If `poetry run ibkr-dashboard` or `poetry run ibkr-dashboard-worker` warns that the entry point "isn't installed as a script", the commands were added to `pyproject.toml` after the virtualenv was created, or the project root was not reinstalled. `poetry install` fixes that. As a fallback, run:
+
+```bash
+poetry run python -m src.web.ibkr_dashboard.app
+poetry run python -m src.web.ibkr_dashboard.worker
+```
+
+**Python version mismatch**
+
+- This repo expects Python 3.12.x.
+- Check with `python --version` and make sure Poetry is using the same interpreter.
+
+**Pytest pauses during collection on macOS**
+
+If collection advances in bursts with long silent pauses, check whether macOS has
+offloaded repository files. Dataless source, test, bytecode, or fixture files block
+Python inside its import loader while the OS downloads each file; this can resemble a
+Poetry or native-library loading failure. Pytest now detects the condition before it
+imports application modules and automatically materializes affected public files.
+
+Focused warm tests should normally finish much sooner than a full collection and
+suite. Diagnose a repeated slow focused probe or a non-advancing collection counter;
+full-suite timing and test counts change with the repository and machine.
+
+If automatic hydration cannot complete, retry it directly with:
+
+```bash
+poetry run python scripts/check_macos_cloud_files.py --hydrate
+```
+
+Then select the repository in Finder and choose **Keep Downloaded** to prevent macOS
+from offloading it again. The checker deliberately obtains its source list from Git
+and adds only matching generated bytecode. It explicitly excludes every `.env*` file
+except `.env.example`, even if one is accidentally tracked, and never opens the
+excluded files.
+
+**API errors or quota issues**
+
+- Check `.env` first.
+- Free-tier Gemini works, but rate limits and retries are normal.
+- If you have a paid tier, make sure the API key belongs to the right project and that your per-provider RPM ceilings (`GOOGLE_RPM_LIMIT`, `OPENAI_RPM_LIMIT`, `ANTHROPIC_RPM_LIMIT`, `DEEPSEEK_RPM_LIMIT`, `ZAI_RPM_LIMIT`, `MOONSHOT_RPM_LIMIT`, `XAI_RPM_LIMIT`) match the account's real quota. Each provider gets an independent bucket, so raising one does not affect the others.
+
+**LLM binding configuration errors at startup**
+
+Binding problems fail before any model is built, listing every problem at once rather than one per run. The message names the seat and the setting; the common ones:
+
+| Message | Cause and fix |
+|---|---|
+| `new and legacy LLM keys are mixed: …` | Both schemas are populated. Pick one — generate a candidate with `scripts/llm_env_migrate.py` and comment out the legacy keys it lists. |
+| `provider 'X' is not allowed for binding group 'Y'` | The provider may have a working transport, but no reviewed application contract permits it in that role. Permission is separate from the evidence levels in [docs/LLM_PROVIDERS.md](docs/LLM_PROVIDERS.md). |
+| `<seat>: model 'X' belongs to 'Y', not 'Z'` | A model name from one vendor under another vendor's group — often a stale `LLM_SEAT_MODEL_OVERRIDES` pin left behind after flipping a provider, or a `--quick-model`/`--deep-model` flag naming a model outside `LLM_BASE_PROVIDER`. |
+| `model 'X' has no reviewed capability profile` | The model family is not in `src/llm_runtime/profiles.py`. Unknown models fail closed by design; add a reviewed profile rather than looking for a bypass flag. |
+| `<seat>: missing credential for provider 'X'` | The group is bound to a provider whose key is unset. A seat at `auto` degrades with a log line instead; only `required` fails startup. |
+| `<seat>: endpoint host 'H' belongs to 'Y', not 'Z'` | A `*_API_BASE` points at a different vendor than its group. Note `OPENAI_API_BASE` accepts only an OpenAI-owned host — compatible vendors use their own key (`MOONSHOT_API_BASE`, …). |
+| `… independence waiver reason is required …` | `LLM_REQUIRE_*_INDEPENDENCE=false` needs a non-empty `LLM_*_INDEPENDENCE_WAIVER_REASON`. Turning enforcement off is a recorded decision, not a silent toggle. |
+| `<seat> binding must differ from base in vendor and model lineage` | Base and review collapsed onto one vendor, defeating the cross-check. Rebind one, or waive it explicitly as above. |
+
+To see what a configuration actually resolves to without running an analysis, read the binding telemetry from any saved artifact:
+
+```bash
+jq -r '.run_summary.llm_bindings.seats | to_entries[] | select(.value.enabled)
+       | "\(.key)\t\(.value.vendor)/\(.value.model)"' results/<TICKER>_<STAMP>_analysis.json
+```
+
+**`portfolio_manager.py` or analysis index rebuild is unexpectedly slow on macOS**
+
+Spotlight indexing on `.venv/` or `results/` can turn a normal index rebuild into a very slow one.
+
+```bash
+touch .venv/.metadata_never_index results/.metadata_never_index
+```
+
+## Advanced Topics and References
+
+These are real features, but they are not required to get started:
+
+- **Agentic AI background**: [docs/AGENTIC-AI-101.md](docs/AGENTIC-AI-101.md) explains the broader agentic-AI ideas behind the repo without making this README carry that whole discussion.
+- **Security model**: [SECURITY.md](SECURITY.md) summarizes the local threat model, untrusted-content inspection, broker/dashboard cautions, and OWASP LLM Top 10 alignment.
+- **Container mode**: the repo includes a Dockerfile and supports local bind-mounted runs. Prefer Podman if you want stronger workstation isolation.
+- **Observability**: Langfuse and LangSmith hooks exist for tracing and diagnostics. For sensitive deployments, LangSmith also supports `LANGSMITH_HIDE_INPUTS` and `LANGSMITH_HIDE_OUTPUTS`.
+- **Inspection and tool audit hooks**: see `src/tooling/` if you want to inspect or audit untrusted external content before it reaches LLM context.
+- **System contracts**: [docs/PROVENANCE.md](docs/PROVENANCE.md) explains evidence and decision attribution; [docs/PROMPT_CONTRACTS.md](docs/PROMPT_CONTRACTS.md) covers structured outputs. [docs/RUNTIME_MODEL.md](docs/RUNTIME_MODEL.md) distinguishes the current file-based runtime from the proposed indexed control plane.
+- **Retrospective learning**: `--retrospective-only --retrospective-dry-run` previews eligible historical evaluations; omit the dry-run flag to perform learning. `--no-memory` disables lesson writes. See `scripts/retrospective_evidence_audit.py` for read-only coverage auditing.
+- **Deployment references**: `terraform/` contains reference infrastructure, not a turnkey hosted product.
+
+## Limitations
+
+- This is a research tool, not an automated trading system.
+- “Publishable” means the run passed its required data and decision checks, not that every source, interpretation, or forward estimate is certain; review primary documents before acting.
+- Data quality and coverage vary by provider, exchange, and ticker.
+- Forward catalysts and regime changes are harder than backward-looking financial analysis.
+- Broad screens can be slow on free-tier APIs.
+- Portfolio workflows depend on having saved analysis JSONs in `results/`.
+
+## Contributing
+
+Contributions are welcome. Good targets include:
+
+- additional or higher-quality data sources
+- validator and data-pipeline hardening
+- IBKR and portfolio workflow improvements
+- Flask dashboard enhancements in `src/web/ibkr_dashboard/`, including drilldowns, settings, monitoring, and presentation
+- test coverage and documentation cleanup
+
+For orientation, start with:
+
+1. `docs/CODEBASE_MEMORY.md`
+2. this README
+
+## License & Disclaimer
+
+**License:** MIT
+
+**Disclaimer:** This system is for research and educational use. It is not financial advice.
+
+## Acknowledgments
+
+- LangGraph and the broader LangChain ecosystem for the orchestration substrate
+- Open-source data and infrastructure tools that make local-first experimentation practical

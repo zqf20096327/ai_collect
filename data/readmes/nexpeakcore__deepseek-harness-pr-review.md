@@ -1,0 +1,436 @@
+# AI Code Review with DeepSeek — Headless PR Review Automation
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
+[![Built on DeepSeek Harness](https://img.shields.io/badge/built%20on-DeepSeek%20Harness-4dabf7.svg)](https://deepseek.com/harness/en/)
+
+**AI code review with DeepSeek: headless PR review automation** that verifies
+PR descriptions claim-by-claim against real code, checks docs against reality,
+and flags requirement impact — with human-in-the-loop only when it matters.
+
+## Why
+
+PR descriptions lie. Docs go stale. Manual code review is slow and
+inconsistent. This tool runs a DeepSeek Harness agent that:
+
+- **Reviews the code itself** — the changed code is read for defects, each
+  with a concrete failure scenario; a second agent confirms or rejects every
+  blocker and major, and confirmed ones land as inline comments on their lines
+- **Verifies PR descriptions claim-by-claim** — each sentence of the
+  description is checked against the actual code, with `file:line` evidence
+- **Reviews PRs that have no description at all** — the ones that need it most.
+  Intent is reconstructed from commits, branch name, labels, the linked issue
+  and the diff, then the code is checked against its own implied intent:
+  unexplained scope creep, behaviour changes with no test or doc
+- **Detects stale and fabricated docs** — up to 60% of repo docs are wrong;
+  the agent compares them against real code (`MATCH / STALE / WRONG /
+  FABRICATED`)
+- **Flags requirement impact** — which business requirements a change touches,
+  and whether it breaks something (`CHANGED / BROKEN / RISK`)
+- **Runs headless** — one command, or an auto-review poller that watches every
+  new PR
+
+## Demo
+
+[![Dashboard: PR review with claim-by-claim evidence](docs/screenshots/dashboard-demo.png)](docs/screenshots/dashboard-demo.png)
+
+The tool reviewing its own PR #9. Every sentence of the description became a
+numbered claim, each checked against the real code with `file:line` evidence —
+and the header is honest about what it found: description partial, 2 risks,
+2 stale docs. Tabs split claims, docs, requirement impact and review threads.
+
+Repo-level pages (KPIs, verdict distribution, every open PR with review status)
+are included — see [Web dashboard](#web-dashboard).
+
+## Features
+
+| | |
+|---|---|
+| ✅ **Code review** | The changed code itself is reviewed for defects — correctness, error handling, security, concurrency, resources, performance, missing tests. Every issue must name a concrete failure scenario, a second agent confirms or rejects each BLOCKER/MAJOR, and confirmed ones are posted as inline comments on their lines |
+| ✅ **Claim verification** | PR description split into verifiable claims, each checked against code with evidence |
+| ✅ **No-description fallback** | PR with an empty or boilerplate body: claims are reconstructed from commits, branch, labels, linked issue and the diff, then checked for internal consistency — and the reconstruction is posted back as the description the author should have written |
+| ✅ **Docs reality-check** | Docs compared to real code: `MATCH / STALE / WRONG / FABRICATED` |
+| ✅ **Requirement impact** | `CHANGED / BROKEN / RISK` analysis per business requirement |
+| ✅ **Human-in-the-loop** | ≤20-word confirmation questions only when uncertain — no guessing |
+| ✅ **Parallel agents** | One agent per review axis (code / claims / docs / impact), claims sharded past 15 and code past 20 files — so a 40-claim PR cannot starve the docs check. Concurrency is capped globally across every review process |
+| ✅ **Ranked doc targets** | Docs are scored against the diff (path proximity, changed symbols, file mentions) before any agent runs — the agent verifies a bounded, reproducible list instead of grepping the repo |
+| ✅ **Repo config that stays true** | Adding a repo verifies it exists and is visible to your token first, so a typo cannot become a permanent config entry. `autoreview --check-repos` (and the /config page) flags entries GitHub can no longer reach and removes them in one click |
+| ✅ **Auto review poller** | Reviews new PRs automatically, and re-reviews when the *diff* changes — not merely when the head SHA does. A rebase, a merge of the base branch, an amended message or an empty commit moves the head without changing a line, and each one used to cost a full agent fan-out and a fresh notification saying exactly what the last round said |
+| ✅ **Web dashboard** | Repo config management, review triggers (Review now), live review logs, metrics: bugs found, needs a look, doc errors, verdicts, review rounds per repo |
+| ✅ **Idempotent PR comments** | One English comment per PR, updated in place — never duplicated |
+| ✅ **Traceable** | Every phase writes structured JSON to `sessions/` |
+
+## Install
+
+Requirements: Python 3.10+ (recommended 3.11), `gh` CLI already authenticated.
+
+**One-liner (recommended — auto-detects Python, creates a venv, fixes PATH):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nexpeakcore/deepseek-harness-pr-review/main/scripts/install.sh | bash
+```
+
+The installer finds a Python 3.10+ interpreter (falls back to Homebrew on
+macOS), creates an isolated venv at `~/.harness-pr-review/venv`, installs the
+package from GitHub, symlinks `harness-pr-review` + `autoreview` into
+`~/.local/bin`, and runs `doctor`. Re-running it updates to the latest version.
+
+**Or install manually:**
+
+```bash
+pip install git+https://github.com/nexpeakcore/deepseek-harness-pr-review.git
+```
+
+**Or clone for development:**
+
+```bash
+python -m venv .venv && . .venv/bin/activate
+pip install -e '.[dev]'   # zsh needs quotes; SDK comes from PyPI (deepseek-harness-sdk)
+```
+
+Then authenticate:
+
+```bash
+gh auth login          # required
+export DEEPSEEK_API_KEY=sk-...   # see .env.example
+harness-pr-review doctor         # verify everything is ready
+```
+
+Running the review on Claude instead? Then no DeepSeek key is needed — see
+[Agent backends](#agent-backends).
+
+Keys can also live in a `.env` file. Two locations are read, in order:
+`./.env` (dev checkout) then `~/.harness-pr-review/.env` (one-liner install,
+so the CLI works from any directory). The first file to define a key wins, and
+a real environment variable always beats both.
+
+## Agent backends
+
+The review logic does not care which agent runtime reads the workspace, so the
+backend is one env var. Everything else — phases, prompts, schemas, report,
+comments — is identical either way.
+
+| `HARNESS_PROVIDER` | Runtime | Credentials |
+|---|---|---|
+| `deepseek` (default) | DeepSeek Harness SDK, composed by `cordis/minimal.cordis.yml` | `DEEPSEEK_API_KEY` |
+| `claude` | Headless `claude -p` (Claude Code CLI) | whatever the CLI is already logged in with — a Claude subscription is enough, no extra API key |
+| `codex` | Headless `codex exec` (Codex CLI) | existing Codex CLI login; no API key is read by this project |
+| `agy` | Headless `agy` (Antigravity CLI) | existing Antigravity CLI login; no API key is read by this project |
+
+```bash
+export HARNESS_PROVIDER=claude
+export HARNESS_CLAUDE_MODEL=sonnet   # or opus / haiku / a full model id
+harness-pr-review doctor             # now checks for the claude binary, not the SDK
+harness-pr-review owner/repo 123
+```
+
+Or run the same pipeline with Codex:
+
+```bash
+export HARNESS_PROVIDER=codex
+export HARNESS_CODEX_MODEL=gpt-5.5
+harness-pr-review doctor
+harness-pr-review owner/repo 123
+```
+
+Or run with Antigravity (`agy`):
+
+```bash
+export HARNESS_PROVIDER=agy
+export HARNESS_AGY_MODEL=gemini-3.8-flash
+harness-pr-review doctor
+harness-pr-review owner/repo 123
+```
+
+The Codex and Antigravity backends run in non-interactive headless mode. They return JSON to
+the harness, which validates and writes review part files itself; the reviewed
+PR cannot direct the CLI to edit its disposable worktree.
+
+The phase log names the backend that actually ran, so a review that quietly
+used the wrong one is visible in the dashboard:
+
+```
+[4/5] verify — starting agents
+      4 agents on claude/sonnet: claims-1, claims-2, docs, impact (cap 4 concurrent)
+```
+
+**The workspace is an untrusted PR**, and the Claude backend is locked down to
+match the sandbox policy the SDK backend runs under:
+
+- `--tools Read,Grep,Glob,Write` — no shell, no editing, no network. This is
+  the flag that decides which built-in tools *exist* for the run.
+  `--allowedTools` alone is not a boundary: it only pre-approves what may run
+  without a prompt, so a tool left out of it is still present and a user
+  settings rule can approve it. Both are passed, from the same list.
+- Phase 2 (claim extraction) runs with `--tools ""` — **no tools at all**. It
+  is text in, JSON out, its prompt carries the untrusted PR description and
+  diff, and unlike phase 3 it has no sandboxed workspace confining it.
+- `--safe-mode`, `--setting-sources user` and `--strict-mcp-config` mean a
+  `CLAUDE.md`, `.claude/settings.json`, hook or `.mcp.json` **committed inside
+  the reviewed repo is not loaded** — a PR does not get to configure the agent
+  reviewing it.
+- Each agent runs under `--max-budget-usd`, so a loop that stops making
+  progress stops spending. The ceiling covers the agent, retries included:
+  each attempt is given what is left of it rather than a fresh allowance.
+
+Per-agent cost, session id and any permission denial land in
+`sessions/<owner>/<repo>/pr-<n>/claude-<axis>.json`, next to the existing
+artefacts. `harness_attempts` and `harness_total_cost_usd` record what every
+attempt cost — the envelope itself only ever describes the last one.
+
+## Updating
+
+**Easiest — built-in self-update:**
+
+```bash
+harness-pr-review update     # installs the latest version from GitHub
+harness-pr-review --version  # show the installed version
+```
+
+**Or manually:**
+
+Installed via pip (no clone):
+
+```bash
+pip install -U git+https://github.com/nexpeakcore/deepseek-harness-pr-review.git
+```
+
+Cloned for development:
+
+```bash
+git pull origin main   # pull the latest code
+pip install -e .       # refresh entry points if pyproject.toml changed
+```
+
+**After updating:**
+
+- The auto-review poller (launchd/cron) picks up the new code on its next
+  pass — no restart needed.
+- A running web dashboard keeps the old code until restarted: stop the
+  process, then start it again (`harness-pr-review web`).
+- Your existing `sessions/` data and `autoreview.yml` are preserved — updates
+  never touch them.
+
+## Usage
+
+After `pip install -e '.[dev]'` you get two commands:
+
+```bash
+harness-pr-review doctor                # check readiness: Python, gh, API key, SDK
+harness-pr-review owner/repo 123        # review one PR (interactive)
+harness-pr-review owner/repo 123 --skip-human   # batch, no questions
+harness-pr-review owner/repo 123 --no-post      # don't post a comment
+harness-pr-review https://github.com/owner/repo/pull/123  # paste a GitHub PR link
+harness-pr-review ps                    # list running reviews and background processes (alias: list)
+harness-pr-review stop 12345            # stop a running review or process by PID
+harness-pr-review stop owner/repo 123   # stop review for a specific PR (or owner/repo#123)
+harness-pr-review stop --all            # stop all running review processes
+autoreview --once                       # auto review: single pass
+autoreview --daemon                     # auto review: every interval_minutes
+autoreview --status                     # check if autoreview daemon is running
+autoreview --stop                       # stop running autoreview daemon
+autoreview --add-repo https://github.com/owner/repo --mode auto  # add by link
+```
+
+(Or run from source: `PYTHONPATH=src python -m src.run owner/repo 123`)
+
+Results land in `sessions/<owner>/<repo>/pr-<n>/report.md` (change the directory with `DSH_SESSION_ROOT`).
+
+## Pipeline
+
+1. **Snapshot** — fetch PR metadata, diff files, commits, review threads (GitHub REST + GraphQL)
+2. **Claims** — LLM splits the description into verifiable claims
+3. **Verify** — the agent backend deep-dives in a disposable worktree:
+   verifies each claim, docs reality-check (MATCH/STALE/WRONG/FABRICATED),
+   requirement impact, review thread status. DeepSeek Harness by default,
+   Claude Code with `HARNESS_PROVIDER=claude` — see [Agent backends](#agent-backends)
+4. **Human gate** — asks for confirmation (≤20 words/question) when docs are wrong or claims are uncertain
+5. **Synthesize** — English report.md + two comments on the PR:
+   - **The report** — one comment, edited in place on every re-review so the PR
+     never fills up with stale reports. It opens with a `Review complete` line
+     carrying the timestamp, round number and reviewed commit.
+   - **A round ping** — a short new comment per round with the headline numbers
+     (both verdicts, bugs, needs a look, doc errors, claims) and a link up to the report.
+     GitHub raises no notification for an edit, so this is the only part that
+     actually reaches subscribers. Disable with `--no-ping`, or
+     `ping_comment: false` in `autoreview.yml`.
+
+## Running tests
+
+```bash
+python -m pytest -v
+```
+
+## Web dashboard
+
+Web dashboard for review metrics (PRs reviewed, bugs found, needs a look, doc
+errors, verdicts per repo). Reads `sessions/` directly — no database.
+
+```bash
+pip install -e '.[web]'
+DSH_SESSION_ROOT=sessions harness-pr-review web
+harness-pr-review web   # open http://127.0.0.1:6789
+```
+
+To keep it running across logins and crashes, load a launchd job whose plist
+runs `scripts/dashboard.sh` with `RunAtLoad` and `KeepAlive` (log in `web.log`),
+installed the same way as the poller plist under [Auto review](#auto-review).
+It runs the checkout's code, so `git pull` plus
+`launchctl kickstart -k gui/$(id -u)/com.nexpeak.pr-review-web` is the update.
+
+Pages: repo list → repo detail (KPIs + verdict donut + PR table) → PR detail
+(tabs: Code / Claims / Docs / Impact / Threads / Confirm). The PR table lists ALL open
+PRs from GitHub with review status (Not reviewed / Reviewing / Reviewed N
+rounds / Failed · interrupted — a session that never produced findings and has
+no live lock, i.e. the review crashed). **Bugs** counts what is established as
+wrong: BLOCKER + MAJOR code issues, FAIL claims and BROKEN impacts. **Needs a
+look** counts PARTIAL claims and RISK impacts — worth a human's time, not shown
+to be wrong. Doc errors counts WRONG + FABRICATED + STALE docs. Sessions from
+before the code axis re-count on read, so a repo's bug total drops: their
+PARTIAL and RISK items move to Needs a look. Each open PR row has a
+**Review now** / **Re-review** button that runs the review synchronously using
+the repo's auto-review config (skip-human + post-comment flags from
+`autoreview.yml`).
+
+## Auto review
+
+Poll GitHub for new PRs (and changes to their diff) and review them automatically in
+batch mode. Each repo is configured `auto` (poller reviews its PRs) or `manual`
+(poller skips it; review via CLI). Edit `autoreview.yml` directly, via CLI, or
+from the web dashboard (Config page → toggle Auto/Manual).
+
+`autoreview.yml` is gitignored — copy `autoreview.yml.example` and fill in your
+repos. Repo names stay private.
+
+```yaml
+# autoreview.yml (copy from autoreview.yml.example)
+org: your-org            # default org for repo discovery
+default_mode: manual     # repos not listed → manual
+interval_minutes: 2
+post_comment: true
+skip_human: true
+drafts: false
+skip_bots: true          # skip bot PRs (Renovate/Dependabot)
+repos:
+  your-repo: auto
+  another-repo: manual
+```
+
+```bash
+autoreview --add-repo sample-app --mode auto   # enable auto
+autoreview --rm-repo sample-app                # remove
+autoreview --repos                             # list status
+autoreview --once          # single pass (cron/launchd)
+autoreview --daemon        # loop every interval_minutes
+```
+
+launchd example (auto-start on login, every 2 minutes):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.nexpeak.pr-review</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/gianglh/work/harness/scripts/autoreview-once.sh</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key><integer>120</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/gianglh/work/harness/autoreview.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/gianglh/work/harness/autoreview.log</string>
+</dict>
+</plist>
+```
+
+`scripts/autoreview-once.sh` sources `.env` (API key stays out of the plist).
+
+**Parallel reviews.** `max_parallel` in `autoreview.yml` (default `1`, cap `8`)
+sets how many PRs one pass reviews at a time; `1` is the old sequential
+behaviour. Each review runs in its own process, and `review.lock` is per-PR, so
+two different PRs never share a workspace or a comment. The useful ceiling is
+your model API concurrency rather than CPU — roughly 80% of a review's wall
+time is spent waiting on the model. `review_timeout_minutes` (default `30`)
+kills a hung review so it cannot hold a slot forever.
+Install:
+
+```bash
+cp com.nexpeak.pr-review.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.nexpeak.pr-review.plist
+```
+
+**Session cleanup.** Every review keeps a full clone under
+`sessions/<owner>/<repo>/pr-<n>/workspace`, so merged PRs leave hundreds of MB
+behind. `harness-pr-review clean` deletes the session of every closed or merged
+PR; sessions of open PRs, of PRs GitHub can't be asked about (repo gone, auth
+failure) and of reviews still running are kept. Preview with `--dry-run`.
+`scripts/clean-sessions.sh` wraps it for launchd; a plist with
+`StartCalendarInterval` (daily 03:00, log in `clean.log`) installs the same way
+as the poller above:
+
+```bash
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.nexpeak.pr-review-clean.plist
+```
+
+**Large PRs.** A review of a PR with many files fans out into a dozen or more
+agents, and used to be all-or-nothing: killed at `review_timeout_minutes`, it
+lost every finished agent and the retry ran out of time in the same place. Now:
+
+- Each finished agent is saved under `sessions/.../checkpoints/`. A retry of the
+  same head reuses them and runs only what is missing. A new push, or a
+  different diff or description, invalidates them.
+- The poller gives the review a soft deadline two minutes before the kill. At
+  the deadline it stops starting agents, cuts the running ones short and exits
+  with code 75 (`INCOMPLETE` in the poller log) instead of being killed; the
+  next pass resumes. After three such attempts the review ships what it has,
+  with the unfinished axes listed as a "Review gap".
+- A review that keeps failing at the same head is retried at once the first time
+  and then with a growing wait (`BACKOFF` in the log, capped at an hour);
+  a push resets it. State lives in `retry-state.json` in the PR's session.
+- An agent whose answer is unusable (missing file, bad JSON) gets one more try.
+- A timeout now stops the review's whole process tree, not just its first
+  process, and a `.git/index.lock` left behind by a killed git is cleared
+  before the next checkout instead of failing the PR on every retry.
+
+`harness-pr-review <repo> <pr> --force --resume` is the manual form of the
+poller's retry; plain `--force` still starts over.
+
+Re-review rules: the PR's **diff** changed vs the last snapshot → all phases
+re-run with `--force`; the PR comment is updated in place (never duplicated).
+A head that moved without changing the diff — a rebase, a merge of the base
+branch, an amended message, an empty commit — is logged as `SKIP-NO-CHANGE`
+and costs nothing. A PR whose last review never finished is always re-run,
+however unchanged its diff looks.
+
+Two consequences worth knowing:
+
+- The report's `Review complete … commit <sha>` line names the commit that was
+  actually reviewed. After a `SKIP-NO-CHANGE` the PR's head has moved past it,
+  so the SHA can trail the branch by design — the diff it reviewed is still the
+  diff the PR has.
+- Sessions reviewed before the diff-based rule shipped fingerprint differently
+  from a fresh fetch, so each open PR gets one extra review the first time the
+  poller sees it, and then settles.
+
+## Configuration
+
+| Env | Default | Meaning |
+|---|---|---|
+| `HARNESS_PROVIDER` | `deepseek` | Agent backend: `deepseek`, `claude`, `codex`, or `agy` (see [Agent backends](#agent-backends)) |
+| `HARNESS_CLAUDE_MODEL` | `sonnet` | Model for the `claude` backend |
+| `HARNESS_CODEX_MODEL` | `gpt-5.5` | Model for the `codex` backend |
+| `HARNESS_AGY_MODEL` | `gemini-3.8-flash` | Model for the `agy` backend |
+| `HARNESS_CODE_REVIEW` | `1` | Code review axis: code agents (one per ~20 changed files) plus a verify agent for BLOCKER/MAJOR, and inline comments. `0` switches it off — the review then reads **Code: not reviewed** |
+| `DEEPSEEK_API_KEY` | — | DeepSeek API key (only required by the `deepseek` backend) |
+| `DSH_MODEL` | `deepseek-v4-flash` | Model for the `deepseek` backend (agent + claim extraction) |
+| `DEEPSEEK_BASE_URL` | `https://api.deepseek.com/v1` | OpenAI-compatible endpoint |
+| `DSH_SESSION_ROOT` | `sessions` | Directory storing per-phase results |
+
+## License
+
+[MIT](LICENSE) © 2026 Nexpeak

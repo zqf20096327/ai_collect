@@ -1,0 +1,177 @@
+
+<div align="center">
+  <img src="./public/logo512.png" alt="PuPu" style="height: 128px">
+  <h1>PuPu</h1>
+  <p>Your desktop workspace for local and cloud AI.</p>
+  <p>
+    Chat with Ollama locally or cloud providers, with your files, conversation
+    context, and MCP tools together in one native app.
+  </p>
+  <p>
+    <a href="#macos">
+      <img src="./public/assets/download_mac.svg" alt="Download for Mac" />
+    </a>
+    &nbsp;&nbsp;
+    <a href="#windows">
+      <img src="./public/assets/download_windows.svg" alt="Download for Windows" />
+    </a>
+    &nbsp;&nbsp;
+    <a href="#linux">
+      <img src="./public/assets/download_linux.svg" alt="Download for Linux" />
+    </a>
+  </p>
+</div>
+
+PuPu is the desktop home for people who use both local and cloud AI: run models privately with Ollama or switch to providers such as OpenAI and Anthropic, while keeping your files, context, and tools together. Install it on macOS, Windows, or Linux and get back to the work—not a browser-tab maze.
+
+If PuPu makes your AI work simpler, ⭐ star the repo to help more people find it.
+
+![PuPu UI](./public/assets/v0.1.5-release/social_preview.png)
+
+## Why PuPu
+
+- Local and cloud models in one place
+  - Use Ollama for local models, or switch to supported hosted providers when you need them.
+- Workspace-aware chat
+  - Attach a project folder so PuPu can work with your local files in context.
+- A cleaner desktop workflow
+  - Keep conversations, settings, and tools inside one native app on macOS, Windows, and Linux.
+- An extensible tool ecosystem
+  - Add capabilities through the built-in MCP store, or contribute your own.
+- Built for real usage
+  - Manage multiple chats, keep context close to your work, and avoid bouncing between disconnected tools.
+
+## Get PuPu
+
+<!-- release-downloads:start -->
+**v0.1.11** — Choose your platform and click to download.
+
+<a id="macos"></a>
+
+### macOS
+
+[![Download for Mac — Apple Silicon](https://img.shields.io/badge/Mac-Apple_Silicon-111827?style=for-the-badge)](https://github.com/haoxiang-xu/PuPu/releases/download/v0.1.11/PuPu-0.1.11-macos-arm64.dmg)
+[![Download for Mac — Intel](https://img.shields.io/badge/Mac-Intel-64748B?style=for-the-badge)](https://github.com/haoxiang-xu/PuPu/releases/download/v0.1.11/PuPu-0.1.11-macos-x64.dmg)
+
+**Not sure which Mac you have?** Open **Apple menu → About This Mac**. Choose **Apple Silicon** for an Apple M-series chip, or **Intel** for an Intel processor.
+
+<a id="windows"></a>
+
+### Windows
+
+[![Download for Windows x64](https://img.shields.io/badge/Download-Windows_x64-0078D4?style=for-the-badge)](https://github.com/haoxiang-xu/PuPu/releases/download/v0.1.11/PuPu-0.1.11-windows-x64-setup.exe)
+
+Run the installer, then launch PuPu from the Start menu.
+
+<a id="linux"></a>
+
+### Linux
+
+[![Download for Ubuntu / Debian x64](https://img.shields.io/badge/Ubuntu_%2F_Debian-x64_DEB-E95420?style=for-the-badge)](https://github.com/haoxiang-xu/PuPu/releases/download/v0.1.11/PuPu-0.1.11-linux-x64.deb)
+[![Download Linux AppImage x64](https://img.shields.io/badge/Linux-x64_AppImage-2563EB?style=for-the-badge)](https://github.com/haoxiang-xu/PuPu/releases/download/v0.1.11/PuPu-0.1.11-linux-x64.AppImage)
+
+For the `.deb`, download it first and install it with:
+
+```bash
+sudo apt install ./PuPu-0.1.11-linux-x64.deb
+```
+
+<!-- release-downloads:end -->
+
+**Upgrading from 0.1.9?** Download and install the matching package manually. Automatic updating from 0.1.9 to 0.1.10 has not been verified. Back up important chats and settings before upgrading.
+
+## Quick Start
+
+1. Open PuPu.
+2. Choose how you want to run models:
+   - local with Ollama
+   - cloud with a supported provider such as OpenAI or Anthropic
+3. Add any API key or provider settings in the app if needed.
+4. Optionally attach a workspace folder so PuPu can work with local files in context.
+5. Start chatting.
+
+## 🧩 Extend PuPu — Tools & MCP
+
+PuPu has a built-in MCP tool store, and the catalog is open to the community.
+
+- **Add a tool the easy way** — [submit an MCP server](https://github.com/haoxiang-xu/PuPu/issues/new?template=submit-mcp-server.yml)
+  with a short form, no code required.
+- **Prefer a PR?** Edit the catalog directly — see the
+  [submission guide](./docs/contributing/mcp-store-submission.md).
+
+New entries are security-reviewed before they ship. Full details in
+[CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## What You Can Do
+
+### Work With Local Models
+
+Run supported Ollama models directly from your machine without leaving the desktop app.
+
+### Connect To Hosted Providers
+
+Switch to supported cloud providers when you want stronger hosted models or a different workflow.
+
+### Attach A Workspace
+
+Give PuPu a workspace and keep the conversation tied to the files you are actually working on.
+
+### Keep Chats Organized
+
+Manage multiple conversations without losing context or cluttering your workflow.
+
+## Screenshots
+
+![PuPu showcase](./public/assets/v0.1.7-release/ui_showcase_1.png)
+
+## Roadmap
+
+- Agent Builder
+- Agent Teams and Skills
+- A growing, community-driven MCP tool store
+
+## Contributing
+
+Contributions are welcome, and you do not need to be invited or approved first.
+
+- **Never contributed here before?** [Your first contribution](./docs/contributing/first-contribution.md)
+  covers finding a task, claiming it, setting up, and opening the PR.
+- **No code, fastest path:** [submit an MCP server, Skill, or Toolkit](./CONTRIBUTING.md#-contribute-an-mcp-server-skill-or-toolkit)
+  through a short form.
+- **Code, docs, UI:** [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, tests, and
+  the `base: dev` rule. Open tasks are labelled
+  [`good first issue`](https://github.com/haoxiang-xu/PuPu/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+  and [`help wanted`](https://github.com/haoxiang-xu/PuPu/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+Everyone taking part agrees to the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+By intentionally submitting a contribution, you agree to the terms in
+[docs/CLA.md](./docs/CLA.md). In short:
+
+- you keep ownership of your contribution;
+- the project may ship your contribution under Apache-2.0; and
+- the project may also reuse or relicense accepted contributions in future
+  commercial, dual-licensed, source-available, or proprietary offerings.
+
+If you are contributing code or assets owned by your employer or client, make
+sure you have authority to do so before opening a pull request.
+
+## License And Trademark
+
+PuPu is distributed under the [Apache License 2.0](./LICENSE).
+
+This means the code can be used, modified, and redistributed commercially, but
+the PuPu name and brand are not automatically included in those rights.
+
+- License text: [LICENSE](./LICENSE)
+- Project notices: [NOTICE](./NOTICE)
+- Contributor terms: [docs/CLA.md](./docs/CLA.md)
+- Code of conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- Brand usage rules: [docs/TRADEMARK_POLICY.md](./docs/TRADEMARK_POLICY.md)
+
+If you ship a modified fork, rename it and replace PuPu branding unless you
+have written permission to use the marks.
+
+## Support
+
+- Found a bug or want to request something: [open an issue](https://github.com/haoxiang-xu/PuPu/issues)
+- Want the latest downloadable builds: [see releases](https://github.com/haoxiang-xu/PuPu/releases/latest)

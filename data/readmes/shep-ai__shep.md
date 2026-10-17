@@ -1,0 +1,241 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/shep-logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/shep-logo-light.png">
+  <img src="docs/screenshots/shep-logo-light.png" alt="Shep logo" width="72">
+</picture>
+
+### Run a fleet of coding agents. Merge real PRs.
+
+[![CI](https://github.com/shep-ai/shep/actions/workflows/ci.yml/badge.svg)](https://github.com/shep-ai/shep/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@shepai/cli.svg?color=cb3837&logo=npm)](https://www.npmjs.com/package/@shepai/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Discord](https://img.shields.io/discord/1473730318576914617?color=5865F2&logo=discord&logoColor=white)](https://discord.gg/ES6tdVFfur)
+
+<img src="docs/screenshots/demo.gif" alt="Shep spinning up parallel agents in isolated git worktrees and opening a pull request" width="900">
+
+</div>
+
+Shep is the open-source orchestrator for the autonomous development cycle. It runs parallel AI agents — Claude Code, Kimi Code, Codex CLI, Copilot CLI, Cursor CLI, Gemini CLI, Cline, or any agent CLI — each in its own isolated git worktree, and drives every feature from a one-line description through optional spec gates, implementation, commit, push, CI watching with auto-fix, and a draft pull request. Agent-agnostic, local-first, MIT-licensed.
+
+## Quickstart
+
+```bash
+npx @shepai/cli        # try it instantly — opens the dashboard at localhost:4050
+npm i -g @shepai/cli   # or install globally
+```
+
+Three commands from zero to an open pull request:
+
+```bash
+npm i -g @shepai/cli
+cd ~/projects/my-app
+shep feat new "add a /health endpoint that returns uptime and version" --push --pr
+```
+
+Shep creates a worktree, runs your agent, commits, pushes, and opens a PR. Requires Node.js 22+, pnpm 10+, Git, the GitHub CLI (`gh`), and an authenticated agent CLI — `claude`, `kimi`, `codex`, `copilot`, `cursor-agent`, `gemini` or `cline`. (Cursor's binary is `cursor-agent`, not `cursor`.) Prefer zero install? [app.shep.bot](https://app.shep.bot) runs Shep in your browser, free.
+
+Then go parallel:
+
+```bash
+shep feat new "add stripe payments" --push --pr
+shep feat new "add dark mode toggle" --push --pr
+shep feat new "fix login redirect bug" --push --pr
+```
+
+Three agents, three worktrees, zero branch conflicts — monitored from one place. One agent session is fine; five is chaos. Shep is the part that keeps it from being chaos.
+
+## How it works
+
+```
+ idea                optional spec gates       parallel agents           shep automates            you
+ "add payments"  →   requirements · plan   →   each in its own       →   commit · push · PR    →   review the diff,
+                     (YAML you approve)        git worktree              CI watch + auto-fix       hold the merge button
+```
+
+The default flow is prompt → implement → commit → push → PR. Your working directory is never touched: every feature lives in its own worktree on its own branch. If CI fails, the agent reads the logs and pushes a fix (3 retries by default, configurable). For complex features, add `--no-fast` to enable the full spec-driven pipeline — requirements, research, and a plan as versioned YAML artifacts, with approval gates before any code is written. See the [spec-driven development guide](./docs/development/spec-driven-workflow.md).
+
+## Start an app, then add features
+
+```bash
+shep app new "A booking tool for climbing gyms"   # start an app — any stack
+cd ~/.shep/projects/<app>                         # the app's folder (printed by the command)
+shep feat new "Add waitlists"                     # add features to it, as many as you like
+```
+
+A new app starts one of two ways:
+
+| Starter | Stack | First steps |
+|---|---|---|
+| **Plan it first** (default, `blank`) | Any. Chosen by the app's first feature during research | Requirements → research → plan, each approved before code |
+| **Quick prototype** (`--starter vite-shadcn`) | Vite + React + TypeScript + Tailwind + shadcn | Built straight from chat with a live preview, no spec phase |
+
+Every later feature attaches to its app — create it in the app's folder, or with **Add feature** on the app page. Already have code? Run `shep feat new` in that repository, or open the folder from **Apps**. In the web UI: **Apps → New app**. See [Start an app](./docs/guides/start-an-app.md).
+
+## Supported agents
+
+| Agent | Binary | Support |
+|-------|--------|---------|
+| Claude Code | `claude` | Built-in |
+| Kimi Code | `kimi` | Built-in |
+| Codex CLI | `codex` | Built-in |
+| Copilot CLI | `copilot` | Built-in |
+| Cursor CLI | `cursor-agent` | Built-in |
+| Gemini CLI | `gemini` | Built-in |
+| Cline | `cline` | Built-in |
+| OpenRouter | — (HTTP API) | Built-in — needs an API key |
+| Together AI | — (HTTP API) | Built-in — needs an API key |
+| Ollama | — (local HTTP) | Built-in — runs models locally |
+| LLM Proxy | — (local HTTP) | Built-in — any OpenAI-compatible proxy |
+| Demo (`dev`) | — | Built-in mock — no agent binary required |
+| Aider, Continue | — | Coming soon |
+
+Swap agents per feature, per repo, anytime. No lock-in at the tool layer or the model layer.
+
+## Web control center
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/control-center-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/control-center-light.png">
+  <img src="docs/screenshots/control-center-light.png" alt="Shep control center — live graph of repositories and features with real-time status" width="900">
+</picture>
+
+A live graph of every repo and feature at `localhost:4050` — real-time status, diff review, interactive chat, one-click open in your IDE. Everything the dashboard does, the CLI does too.
+
+## Configuration and reference
+
+<details>
+<summary><strong>Configuration</strong> — per-feature flags and global defaults</summary>
+
+| Flag | What it does | Default |
+|------|-------------|---------|
+| `--push` | Auto-push after implementation | off |
+| `--pr` | Auto-create PR after push | off |
+| `--fast` | Skip spec-driven phases, go straight to coding | on |
+| `--allow-merge` | Auto-merge the PR after CI passes | off |
+| `--allow-prd` / `--allow-plan` | Auto-approve individual spec gates | off |
+| `--allow-all` | Auto-approve all three spec/merge gates | off |
+| `--model <model>` | Choose which AI model to use | Shep's configured default model |
+| `--repo <path>` | Target a specific repository | current repo |
+| `--attach <path>` | Attach reference files for context (repeatable) | — |
+| `--remote <url>` | Clone (or fork) a GitHub repo, then build the feature in it | — |
+| `--no-pr` | Never open a PR, whatever the workflow default says | — |
+| `--parent <fid>` | Nest this feature under an existing feature | — |
+| `--pending` | Create the feature but don't spawn the agent yet | off |
+| `--no-fast` | Run the full spec-driven pipeline instead of fast mode | — |
+| `--explore` | Exploration/prototype mode (mutually exclusive with `--fast`) | off |
+| `--no-rebase` | Skip rebasing on the base branch before branching | — |
+| `--inject-skills` / `--no-inject-skills` | Copy curated skills into the worktree | per settings |
+
+Set defaults once with `shep settings workflow` so you stop repeating flags. `shep settings agent`, `shep settings model`, and `shep settings ide` configure the rest.
+
+</details>
+
+<details>
+<summary><strong>CLI reference</strong> — core commands</summary>
+
+```
+shep                              Start the web UI daemon (onboarding runs in the browser)
+shep feat new <description>       Create a new feature
+shep feat ls                      List features
+shep feat show <id>               Show feature details
+shep feat resume <id>             Resume a paused feature
+shep feat approve <id>            Approve current phase (spec-driven mode)
+shep feat reject [id] --reason <text>
+                                  Reject the current phase with a reason (required)
+shep feat logs <id>               View feature logs
+shep ide <feat-id>                Open a feature's worktree in your IDE
+shep agent ls                     List agent runs
+shep agent stop <id>              Stop a running agent immediately
+shep agent logs <id>              View agent logs
+shep repo ls                      List repositories
+shep start [--port]               Start web daemon (default: 4050)
+shep stop                         Stop the daemon
+shep status                       Show daemon status and metrics
+shep settings                     Launch setup wizard
+```
+
+Full reference: [docs/cli/commands.md](./docs/cli/commands.md) — every command and flag. For how the CLI layer is put together, see [docs/cli/architecture.md](./docs/cli/architecture.md).
+
+</details>
+
+<details>
+<summary><strong>Trust and safety</strong> — what runs where, and what protects you</summary>
+
+Shep runs entirely on your machine. All data lives in `~/.shep/` as SQLite; your code is sent only to whichever agent you configure, under that agent's own terms. The one thing Shep itself sends is **usage metrics** (below), and you can turn them off.
+
+| Concern | How Shep handles it |
+|---------|---------------------|
+| Git isolation | Every feature runs in its own worktree branched from main. Your working directory is never modified. |
+| Agent mistakes | Output lands as a draft PR. Your CI, linters, and security scanners run before any merge. |
+| Review before merge | No code merges without your approval unless you explicitly pass `--allow-merge`. |
+| Credentials | With session auth (the default) Shep never touches your agent credentials — the agent uses its own login. If you choose token auth, the key you hand `shep settings agent --token` is stored in your local settings database (`~/.shep/data`, as plain text) and passed only to the provider you selected. |
+| Audit trail | Every action and state transition is logged — `shep feat logs <id>`. |
+| Emergency stop | `shep agent stop <id>` or the dashboard stop button. The worktree is preserved. |
+| Usage metrics | On by default, announced on first run. About ten kinds of usage event go to the Shep team's PostHog project (EU region), with a random install id. Identity is opt-in: only if you turn it on (`shep telemetry identity on`) do events also carry a SHA-256 hash of your Claude/Codex account id, your GitHub username and the GitHub owners of repositories you use. Never prompts, code, file paths, repository or branch names, feature titles or error messages. `shep telemetry off` (or `DO_NOT_TRACK=1`) stops it; it is always off under `CI`. See [docs/telemetry.md](./docs/telemetry.md). |
+
+**Agent permissions:** Shep runs your agent non-interactively, so by default it passes permission-bypass flags (e.g. `--dangerously-skip-permissions` for Claude Code — each agent has an equivalent). Your safety net is three layers deep: worktree isolation, draft PRs, and your CI pipeline. The bypass flag is a default, not a requirement — configure your agent's permission model independently for tighter control. Note that some agents sandbox network access by default; if `npm install` fails inside a feature, allow the hosts in your agent's settings.
+
+**What Shep does not protect you from:** if your CI doesn't catch a vulnerability, Shep won't either. Shep is an orchestration layer, not a security scanner.
+
+</details>
+
+<details>
+<summary><strong>FAQ</strong></summary>
+
+**How is this different from using an AI coding agent directly?**
+Your agent writes the code. Shep manages everything around it: worktrees, commits, pushes, PRs, CI watching, retries. The difference is most obvious at 3-5 features in parallel.
+
+**What happens if the agent writes bad code?**
+Shep opens a draft PR and your CI runs. If tests fail, the agent reads the logs and attempts a fix (up to 3 retries, configurable), then pauses and notifies you. Shep never merges code that fails CI.
+
+**What happens when an agent gets stuck?**
+The feature enters a `Blocked` state. You get notified and can provide feedback, restart from a checkpoint, or take over — the code is a standard git worktree on a named branch, open it in your IDE at any point.
+
+**Does this work on large codebases?**
+Yes. The practical limit is your agent's context window, not Shep. For monorepos, scope features with `--repo`.
+
+**Can I use this on a team?**
+Shep runs locally per developer. Features are just branches and PRs — your existing review process applies.
+
+**Is my code sent anywhere?**
+Not by Shep. It goes only to the agent you configure, under that agent's privacy terms. Shep stores everything locally.
+
+**Does Shep collect anything?**
+Usage metrics, on by default: which commands, pages and features are used, how runs end, and whether PRs merge — never content. Identity fields (an account-id hash, GitHub username and owners) are off by default and sent only if you turn them on with `shep telemetry identity on`. `shep telemetry show` prints exactly what will be sent; `shep telemetry off` turns it all off. Details in [docs/telemetry.md](./docs/telemetry.md).
+
+**Not in a git repo yet?**
+Shep initializes one for you — `git init`, a branch, and off it goes.
+
+</details>
+
+<details>
+<summary><strong>Architecture</strong> — for contributors and the curious</summary>
+
+Clean Architecture, four layers:
+
+| Layer | Responsibility |
+|-------|---------------|
+| Domain | Business logic, TypeSpec-generated types |
+| Application | Use cases, port interfaces |
+| Infrastructure | SQLite, LangGraph agents, DI |
+| Presentation | CLI, Web UI |
+
+[10-minute architecture tour](./ARCHITECTURE.md) · [Full architecture docs](./docs/architecture/overview.md)
+
+</details>
+
+## Community
+
+Shep is open source and AI-native — one of its native abilities is helping itself onboard contributors. Clone, run `pnpm dev:cli doctor`, pick a good first issue, and ship a PR in under 30 minutes.
+
+- [Contributing guide](./CONTRIBUTING.md) — humans start here ([CONTRIBUTING-AGENTS.md](./CONTRIBUTING-AGENTS.md) for AI agents)
+- [Good first issues](./GOOD_FIRST_ISSUES.md) — how work is scoped and labelled, plus whatever is currently curated
+- [Roadmap](./ROADMAP.md) — where Shep is going
+- [Architecture](./ARCHITECTURE.md) — how the codebase fits together
+- [Discord](https://discord.gg/ES6tdVFfur) — questions, feedback, show and tell
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

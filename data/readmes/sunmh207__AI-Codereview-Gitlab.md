@@ -1,0 +1,249 @@
+![Push图片](doc/img/open/ai-codereview-cartoon.png)
+
+[开源版](README.md) | 
+[Pro版](doc/pro.md)
+
+## 项目简介
+
+本项目是一个基于大模型的自动化代码审查工具，帮助开发团队在代码合并或提交时，快速进行智能化的审查(Code Review)，提升代码质量和开发效率。
+
+## 功能
+
+- 🚀 多模型支持
+  - 兼容 DeepSeek、ZhipuAI、OpenAI、Anthropic、通义千问 和 Ollama，想用哪个就用哪个。
+- 📢 消息即时推送
+  - 审查结果一键直达 钉钉、企业微信 或 飞书，代码问题无处可藏！
+- 📅 自动化日报生成
+  - 基于 GitLab & GitHub & Gitea Commit 记录，自动整理每日开发进展，谁在摸鱼、谁在卷，一目了然 😼。
+- 📊 可视化 Dashboard
+  - 集中展示所有 Code Review 记录，项目统计、开发者统计，数据说话，甩锅无门！
+- 🎭 Review Style 任你选
+  - 专业型 🤵：严谨细致，正式专业。
+  - 讽刺型 😈：毒舌吐槽，专治不服（"这代码是用脚写的吗？"）
+  - 绅士型 🌸：温柔建议，如沐春风（"或许这里可以再优化一下呢~"）
+  - 幽默型 🤪：搞笑点评，快乐改码（"这段 if-else 比我的相亲经历还曲折！"）
+- 🤖 Agentic Review 模式（可选）
+  - LLM 拥有工具调用能力（`read_file` / 沙箱 `run_command`），
+    可在本地克隆的代码库内自主探索，产出更全面的 review 结果。
+  - shell 默认仅允许读类命令（`ls` / `cat` / `grep` / `find` / `git log` …），
+    沙箱 + 路径越界 + 30s 超时三重防护。
+  - 任意阶段失败（clone / fetch / LLM / 工具调用）自动降级回 `diff_only`，
+    保证至少返回与原版一致的 review。
+  - 详细配置与开销说明见下方 [Agentic Review Mode](#agentic-review-mode-可选)
+
+**效果图:**
+
+![MR图片](doc/img/open/mr.png)
+
+![Note图片](doc/img/open/note.jpg)
+
+![Dashboard图片](doc/img/open/dashboard.jpg)
+
+## 原理
+
+当用户在 GitLab 上提交代码（如 Merge Request 或 Push 操作）时，GitLab 将自动触发 webhook
+事件，调用本系统的接口。系统随后通过第三方大模型对代码进行审查，并将审查结果直接反馈到对应的 Merge Request 或 Commit 的
+Note 中，便于团队查看和处理。
+
+![流程图](doc/img/open/process.png)
+
+## 部署
+
+### 方案一：Docker 部署
+
+**1. 准备环境文件**
+
+- 克隆项目仓库：
+```aiignore
+git clone https://github.com/sunmh207/AI-Codereview-Gitlab.git
+cd AI-Codereview-Gitlab
+```
+
+- 创建配置文件：
+```aiignore
+cp conf/.env.dist conf/.env
+```
+
+- 编辑 conf/.env 文件，配置以下关键参数：
+
+```bash
+#大模型供应商配置,支持 zhipuai , openai , deepseek 和 ollama
+LLM_PROVIDER=deepseek
+
+#DeepSeek
+DEEPSEEK_API_KEY={YOUR_DEEPSEEK_API_KEY}
+
+#支持review的文件类型(未配置的文件类型不会被审查)
+SUPPORTED_EXTENSIONS=.java,.py,.php,.yml,.vue,.go,.c,.cpp,.h,.js,.css,.md,.sql
+
+#钉钉消息推送: 0不发送钉钉消息,1发送钉钉消息
+DINGTALK_ENABLED=0
+DINGTALK_WEBHOOK_URL={YOUR_WDINGTALK_WEBHOOK_URL}
+
+#Gitlab配置
+GITLAB_ACCESS_TOKEN={YOUR_GITLAB_ACCESS_TOKEN}
+```
+
+**2. 启动服务**
+
+```bash
+docker-compose up -d
+```
+
+**3. 验证部署**
+
+- 主服务验证：
+  - 访问 http://your-server-ip:5001
+  - 显示 "The code review server is running." 说明服务启动成功。
+- Dashboard 验证：
+  - 访问 http://your-server-ip:5002
+  - 看到一个审查日志页面，说明 Dashboard 启动成功。
+
+### 方案二：本地Python环境部署
+
+**1. 获取源码**
+
+```bash
+git clone https://github.com/sunmh207/AI-Codereview-Gitlab.git
+cd AI-Codereview-Gitlab
+```
+
+**2. 安装依赖**
+
+使用 Python 环境（建议使用虚拟环境 venv）安装项目依赖(Python 版本：3.10+):
+
+```bash
+pip install -r requirements.txt
+```
+
+**3. 配置环境变量**
+
+同 Docker 部署方案中的.env 文件配置。
+
+**4. 启动服务**
+
+- 启动API服务：
+
+```bash
+python api.py
+```
+
+- 启动Dashboard服务：
+
+```bash
+streamlit run ui.py --server.port=5002 --server.address=0.0.0.0
+```
+
+### 配置 GitLab Webhook
+
+#### 1. 创建Access Token
+
+方法一：在 GitLab 个人设置中，创建一个 Personal Access Token。
+
+方法二：在 GitLab 项目设置中，创建Project Access Token
+
+#### 2. 配置 Webhook
+
+在 GitLab 项目设置中，配置 Webhook：
+
+- URL：http://{your-server-ip}:5001/review/webhook
+- Trigger Events：勾选 Push Events 和 Merge Request Events (不要勾选其它Event)
+- Secret Token：上面配置的 Access Token(可选)
+
+**备注**
+
+1. Token使用优先级
+  - 系统优先使用 .env 文件中的 GITLAB_ACCESS_TOKEN。
+  - 如果 .env 文件中没有配置 GITLAB_ACCESS_TOKEN，则使用 Webhook 传递的Secret Token。
+2. 网络访问要求
+  - 请确保 GitLab 能够访问本系统。
+  - 若内网环境受限，建议将系统部署在外网服务器上。
+
+### 配置消息推送
+
+#### 1.配置钉钉推送
+
+- 在钉钉群中添加一个自定义机器人，获取 Webhook URL。
+- 更新 .env 中的配置：
+  ```
+  #钉钉配置
+  DINGTALK_ENABLED=1  #0不发送钉钉消息，1发送钉钉消息
+  DINGTALK_WEBHOOK_URL=https://oapi.dingtalk.com/robot/send?access_token=xxx #替换为你的Webhook URL
+  ```
+
+企业微信和飞书推送配置类似，具体参见 [常见问题](doc/faq.md)
+
+## Agentic Review Mode (可选)
+
+`REVIEW_STRATEGY` 环境变量切换两种 review 策略：
+
+- `diff_only`（默认）：仅对 diff 做 review，行为与原版完全一致。
+- `agentic`：LLM 拥有工具调用能力（read_file / 沙箱 shell），
+  可在本地克隆的代码库内自主探索，产出更全面的 review 结果。
+
+启用 agentic 模式：
+
+```bash
+REVIEW_STRATEGY=agentic
+REPO_CACHE_DIR=/var/data/repo_cache   # 可选，默认 data/repo_cache/
+AGENT_MAX_ITERATIONS=20               # 可选，默认 20
+```
+
+agentic 模式会按需在 `REPO_CACHE_DIR` 下克隆/更新目标项目（约 10MB~2GB / 项目）。
+任意阶段失败（clone / fetch / LLM / 工具调用异常）都会自动降级回 `diff_only`，
+保证至少返回与原版一致的 review。
+
+agentic 模式的额外开销：
+
+- 磁盘：建议预留 ≥ 50GB
+- 内存：单次 session 峰值 ~500MB
+- Token：单次 review 平均 5k - 50k tokens（diff_only 的 3 - 10 倍）
+- 时延：30s~5min / review
+
+⚠️ shell 工具有沙箱（命令白名单 + 黑名单 + 路径越界检查 + 30s 超时），
+默认只允许读类命令；如需放开请通过 `AGENT_SHELL_ALLOWLIST` / `AGENT_SHELL_BLOCKLIST` 调整。
+
+## 常见问题
+
+参见 [常见问题](doc/faq.md)
+
+## 相关项目
+
+### 1. Code Review Pro 版
+
+功能更丰富的 AI Code Review 版本。
+
+项目介绍与使用说明：[Code Review Pro 版](doc/pro.md)
+
+快速安装命令：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sunmh207/AI-Codereview-Gitlab/refs/heads/main/scripts/pro/install.sh | bash
+```
+
+### 2. Site Watch
+
+站点健康巡检与告警平台 —— "不让故障悄悄发生"。以检测项为核心，对站点可用性、HTTP 探活、TLS 证书有效期等进行持续监控，异常时自动告警；轻量自托管，适合运维多站点时的一体化巡检。
+
+开源地址：[site-watch](https://github.com/sunmh207/site-watch)
+
+推荐场景：当你运维多个站点，希望有一个轻量、自托管的"证书到期 + HTTP 存活 + 告警"一体化巡检方案时，Site Watch 是开箱即用的选择（Docker Compose 一键部署）。
+
+### 3. Task Flow
+
+面向小团队的任务管理与协作工具：把任务创建、推进、协作、看板和钉钉日报/周报串成一条闭环。支持任务分组、团队看板、钉钉通知与 AI 周报，开箱即可 Docker 部署。
+
+开源地址：[task-flow](https://github.com/sunmh207/task-flow)
+
+推荐场景：小团队需要把任务流转、负载看板和钉钉站会/周报串起来，又不想引入重型项目管理工具时，Task Flow 是轻量可选方案。
+
+## 交流
+
+若本项目对您有帮助，欢迎 Star ⭐️ 或 Fork。 有任何问题或建议，欢迎提交 Issue 或 PR。
+
+也欢迎加微信/微信群，一起交流学习。
+
+<p float="left">
+  <img src="doc/img/open/wechat.jpg" width="400" />
+  <img src="doc/img/open/wechat_group.jpg" width="400" /> 
+</p>

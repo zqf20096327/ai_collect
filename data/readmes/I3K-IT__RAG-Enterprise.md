@@ -1,0 +1,340 @@
+# I3K RAG Engine
+
+**Ask questions about your own documents. Everything runs on your machine.**
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Release](https://img.shields.io/github/v/release/I3K-IT/RAG-Enterprise)](../../releases)
+[![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange.svg)](https://www.rust-lang.org)
+
+A self-hosted Retrieval-Augmented Generation system: upload your documents, ask
+questions in plain language, get answers grounded in what those documents
+actually say, with the sources cited. No data ever leaves your server — there
+is no telemetry, and nothing is sent to an external API.
+
+> **This is a complete rewrite in Rust.** The `1.x` releases were a Python
+> stack: four containers under Docker Compose — backend, frontend, Qdrant,
+> Ollama — two of them built on your machine, plus seven volumes to keep
+> straight. This is one binary. It starts Qdrant and the inference engine
+> itself; there is nothing to compose and nothing to build.
+>
+> The rewrite restarts the numbering below `1.0`, so it is *lower*-numbered than
+> the `1.x` line it replaces: it is a new codebase whose storage layout and HTTP
+> surface are not settled yet. The Python version is preserved on the
+> [`python-legacy`](../../tree/python-legacy) branch and in the `1.x` tags — see
+> [Upgrading from 1.x](#upgrading-from-1x).
+
+## Why
+
+Most RAG systems either send your documents to somebody else's API, or ask you
+to orchestrate five containers before you can ask a single question. This does
+neither.
+
+- **One binary.** No Docker, no Compose, no Java. It downloads and
+  sha256-verifies everything it needs on first run — vector database, inference
+  engine, models, OCR data — then runs them itself.
+- **Genuinely offline.** After the first run it needs no network at all.
+- **Auditable.** AGPL-3.0, and you can read every line that touches your data.
+
+Built for people who cannot use cloud RAG for regulatory, privacy or
+data-sovereignty reasons: law firms, healthcare, finance, public administration.
+
+## Quick start
+
+Download the tarball for your platform from the [releases](../../releases) page
+— [CHANGELOG.md](CHANGELOG.md) records what changed in each one:
+
+| File | For |
+|---|---|
+| `linux-x86_64` | Linux PC or server (x86_64) |
+| `linux-arm64` | ARM64 board |
+| `windows-x86_64` | Windows PC |
+
+Every tarball runs the embedding step (bge-m3, via Candle, inside this
+binary) on CPU. That does not mean no GPU is used: eullm — a separate
+process, started and kept up to date automatically — detects an NVIDIA GPU
+at startup and uses it, on every platform, for the chat model and, since
+eullm 0.6.82, for embedding too when asked (see [Architecture](#architecture)).
+No separate GPU build or download is needed on any platform.
+
+```sh
+mkdir i3k-rag-engine-v0.2.4-linux-x86_64
+tar -xzf i3k-rag-engine-v0.2.4-linux-x86_64.tar.gz -C i3k-rag-engine-v0.2.4-linux-x86_64
+cd i3k-rag-engine-v0.2.4-linux-x86_64
+
+printf 'AUTH__JWT_SECRET=%s\n' "$(openssl rand -hex 32)" > .env
+
+./i3k-rag-engine
+```
+
+(the tarball's own contents are flat — binary, `.env.example`, `frontend/dist/` — with
+no wrapping folder inside it, so `mkdir` first, or extract straight into wherever
+you want the install to live.)
+
+On first run it downloads roughly **12 GB** of components and verifies each one
+against a pinned sha256 — mostly the language and embedding models. Allow time
+for it. Every later start is immediate.
+
+When it is ready your browser opens at **http://localhost:8000**. The initial
+admin password is printed in the log:
+
+```
+SAVE THIS PASSWORD — it will not be shown again!
+```
+
+Set `AUTH__ADMIN_DEFAULT_PASSWORD` in `.env` beforehand if you would rather
+choose it yourself.
+
+## Upgrading
+
+`DATA__DIR` defaults to the directory holding the executable (see
+[Configuration](#configuration) below), and every component — qdrant, eullm, the
+chat and embedding models — is fetched into it only if missing or failing its
+pinned sha256 (`bootstrap::ensure_component`). So extracting a new release's
+tarball **over an existing install** (same directory, overwriting the binary,
+`.env.example`, `frontend/dist/`) reuses everything already downloaded there —
+nothing is re-fetched unless that release actually pins a different version of
+it. Your own `.env` is never touched (the tarball only ever ships
+`.env.example`). Extracting into a fresh, empty directory instead — the Quick
+start default — starts every component's download over from scratch, since
+nothing at that new path exists yet.
+
+## What it does
+
+**Documents.** PDF (including scanned pages, via OCR); Word (DOCX, DOC),
+OpenDocument text (ODT) and RTF; spreadsheets (XLSX, XLSM, XLSB, XLS, ODS,
+CSV); presentations (PPTX, PPT, ODP), speaker notes included; HTML, Markdown,
+plain text and EPUB e-books; e-mail (EML, Outlook MSG), attached documents
+included; and pictures (PNG, JPEG, TIFF — multi-page scans included — BMP, GIF,
+WebP), read through OCR. Scanned PDFs are detected automatically — when a page
+yields too little text it is rasterised and passed through Tesseract in Italian
+and English, the same OCR pictures go through.
+
+**Retrieval.** Documents are split into overlapping chunks, embedded with
+[BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) (1024 dimensions, multilingual
+across 100+ languages) and stored in Qdrant. A question is embedded the same way
+and answered from the closest passages, with each source shown.
+
+**Article lookup, for collections of legislation.** A number carries almost no
+meaning for an embedding, so a question naming an article — "art. 2875 del
+codice civile", "artt. 1176 e 1375 c.c." — would get its neighbours rather than
+the article. When the library holds one article per file, named the way it is
+cited ("Codice civile, art. 2875 - Rubrica.txt"), the article named in the
+question is looked up by file name and placed ahead of the passages found by
+meaning. It only acts when a question names an article and a file follows that
+convention, so on other documents it finds nothing and costs nothing. On by
+default; an admin can turn it off from the *Answers* tab.
+
+**Chat.** Conversations are kept, answers stream token by token, and history is
+carried into follow-up questions.
+
+**Answers.** How the model answers — its role, the structure of an answer, how
+it cites, the language — is the admin's to set, from the *Answers* tab of the
+admin panel (up to 8,000 characters); the retrieved passages, the history and
+the question are added after those instructions by the engine. A change applies
+from the next question, and *Restore defaults* brings the built-in instructions
+back. Prompts go to the model in its own chat format, so models other than Qwen
+answer cleanly too.
+
+**Users.** JWT authentication with three roles — user, super user, admin —
+governing who may upload and delete.
+
+**Backups.** A scheduled daily archive holding the SQLite database and a Qdrant
+snapshot taken together, so the pair is consistent, and an admin endpoint to
+restore one over the running installation. Backups are local files under
+`BACKUP__DIR`; nothing is uploaded anywhere.
+
+## Architecture
+
+| | |
+|---|---|
+| **API and server** | Rust, [axum](https://github.com/tokio-rs/axum) |
+| **Frontend** | React + Vite, compiled into the binary's directory |
+| **Embeddings** | BAAI/bge-m3 through [Candle](https://github.com/huggingface/candle), in-process, GPU or CPU |
+| **Vector database** | [Qdrant](https://qdrant.tech), 1024-dim, cosine distance |
+| **Language model** | [eullm](https://github.com/eullm/eullm) as a separate process |
+| **Application database** | SQLite through sqlx — users, documents, conversations |
+| **OCR** | pdfium for rasterising, Tesseract — both loaded at runtime from a bundled path, not linked at compile time |
+
+The embedding model is loaded before the language model on purpose: eullm sizes
+its own GPU offload from the free VRAM it observes at startup, so it has to see
+the memory the embedding model has already taken.
+
+## Configuration
+
+Settings come from the environment or a `.env` file, using `__` to separate
+levels. Exactly one has no default:
+
+```sh
+AUTH__JWT_SECRET=…            # required — signs the session tokens
+```
+
+Everything else is optional:
+
+```sh
+SERVER__HOST=127.0.0.1           # loopback by default — see "Reaching it from
+                                 # another machine" below before changing it
+SERVER__PORT=8000
+SERVER__CORS_ORIGINS=…           # empty by default, and empty is right in
+                                 # production; set it only for a dev server
+                                 # on another port
+AUTH__ADMIN_DEFAULT_PASSWORD=…   # seeds a NEW install; ignored once the admin
+                                 # exists. Otherwise a random one is logged
+AUTH__ADMIN_RESET_PASSWORD=…     # deliberately overwrites it — for being
+                                 # locked out. Unset it once used
+EULLM__MODEL=qwen3-14b           # only read when you run eullm yourself; when
+                                 # the engine starts it, the GGUF path from
+                                 # manifest.toml is used instead
+QDRANT__COLLECTION=rag_documents
+QDRANT__QUANTIZATION=off         # turbo4 / turbo2: the vectors take 8 / 16
+                                 # times less RAM, for results nearly but not
+                                 # always the same — see .env.example
+EMBEDDINGS__REQUIRE_GPU=false    # true = refuse to start without CUDA rather
+                                 # than silently falling back to a much slower CPU
+DATA__DIR=/path/to/data          # defaults to the binary's own directory
+RUST_LOG=info
+```
+
+`EMBEDDINGS__REQUIRE_GPU` is worth knowing about: without it, a broken CUDA
+setup degrades to CPU and ingestion goes from seconds to minutes, which is easy
+not to notice. The fallback is always logged at error level and exposed on
+`GET /api/info`.
+
+### Reaching it from another machine
+
+`SERVER__HOST` defaults to `127.0.0.1`, so out of the box the engine answers
+only on the machine it runs on — which is what the quick start above describes.
+
+Setting it to `0.0.0.0` makes it reachable from the network, and there is one
+thing to understand before doing that: **this binary serves plain HTTP and
+terminates no TLS.** On a routable address the login password and every
+session token that follows cross the network in clear text, readable by anyone
+who can see the traffic. The server logs a warning at startup whenever
+`SERVER__HOST` is not a loopback address, for exactly this reason.
+
+So expose it behind something that terminates TLS. With Caddy that is a whole
+configuration file:
+
+```
+rag.example.com {
+    reverse_proxy 127.0.0.1:8000
+}
+```
+
+Leave `SERVER__HOST` at `127.0.0.1` in that setup: the proxy reaches the engine
+over loopback, and nothing but the proxy can reach it directly.
+
+## Measuring performance
+
+The binary can benchmark itself on your own hardware and document:
+
+```sh
+./i3k-rag-engine --bench /path/to/document.pdf
+```
+
+It writes a Markdown report timing each stage of ingestion and inference —
+extraction, chunking, embedding, upsert, prefill, decode — with charts showing
+where the time goes. `--bench-live` instead records every real ingestion and
+query of a session and reports on shutdown.
+
+## Upgrading from 1.x
+
+There is no automatic migration path, because the rewrite changes both the
+storage layout and the runtime model: `1.x` kept its state in Docker volumes
+shared between containers, `0.x` keeps it in one data directory next to the
+binary.
+
+The two cannot run at the same time on one machine: they both want ports 8000,
+6333 and 11434. Stop the Compose stack first — you are re-uploading anyway, so
+there is no moment where you need both. Your `1.x` data stays in its Docker
+volumes until you remove them, so you can go back by bringing Compose up again.
+Once you are satisfied, `docker compose down -v` retires it for good.
+
+The 1.x Python version remains available on the
+[`python-legacy`](../../tree/python-legacy) branch and in the `1.x` tags. It is
+no longer developed, but nothing has been deleted.
+
+## Building from source
+
+Most people do not need to: the release tarballs are self-contained. If you
+want to modify the engine or target a platform we do not publish, see
+[BUILD.md](BUILD.md) for the native dependencies and the feature flags.
+
+```sh
+cargo build --release --features cuda
+```
+
+## Privacy and security
+
+- **No external calls.** After the first run, no network access is needed.
+- **No telemetry.** Nothing is collected or sent, ever.
+- **Local models.** Both the language model and the embeddings run on your
+  hardware.
+- **Verified components.** Every downloaded component is checked against a
+  sha256 pinned in `manifest.toml`; a mismatch aborts the run.
+- **Throttled logins.** Repeated failures against one account earn a growing
+  delay, and only a few password verifications ever run at once — the rest get
+  a `429` without costing a hash. Scripted clients should expect both:
+  a login can take a few seconds, or come back `429` and be worth retrying.
+
+Please report vulnerabilities privately rather than through a public issue.
+
+## How to cite
+
+```bibtex
+@software{i3k_rag_engine,
+  author    = {Marchetti, Francesco},
+  title     = {i3k RAG Engine: self-hosted document intelligence},
+  publisher = {I3K Technologies Srl},
+  url       = {https://github.com/I3K-IT/RAG-Enterprise}
+}
+```
+
+The archived 1.x Python release has its own DOI:
+[10.5281/zenodo.20413005](https://doi.org/10.5281/zenodo.20413005).
+
+## Licence
+
+**AGPL-3.0-only** — see [LICENSE](LICENSE).
+
+You can run it, read it, change it and share it. The one obligation worth
+knowing before you build on it is AGPL section 13: if you offer a modified
+version to users **over a network**, you have to offer those users the
+corresponding source too. Running it privately — inside your own company, on
+your own documents — carries no such obligation, which is the normal case for
+a self-hosted system like this one.
+
+### Commercial licence
+
+**I3K Technologies Srl** holds the copyright and also offers this software
+under a separate commercial licence, for organisations that cannot accept the
+AGPL's terms. That same licence is what lets its own proprietary product,
+**i3k RAG Pro**, build on this code. Enquiries: info@i3k.eu
+
+### Earlier releases
+
+Up to and including **v0.1.39** this project was published under the Apache
+License 2.0, and those releases remain available under those terms. The change
+applies from the following release onward — it does not withdraw anything
+already released.
+
+### Contributing
+
+Because the project is licensed both ways, contributions need a
+[Contributor Licence Agreement](CLA.md) — a one-line statement in your pull
+request. You keep the copyright in your own work; the CLA explains exactly
+what it grants and why it is necessary.
+
+Third-party components, including the models downloaded at runtime, keep their
+own licences and are not covered by the AGPL: see
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
+## Credits
+
+Built on [Candle](https://github.com/huggingface/candle),
+[Qdrant](https://qdrant.tech), [axum](https://github.com/tokio-rs/axum),
+[eullm](https://github.com/eullm/eullm),
+[BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3),
+[Qwen](https://huggingface.co/Qwen), [Tesseract](https://github.com/tesseract-ocr/tesseract)
+and [PDFium](https://pdfium.googlesource.com/pdfium/).
+
+Made in the EU by [I3K Technologies Srl](https://www.i3k.ai).

@@ -1,0 +1,445 @@
+<picture class="github-only">
+    <img
+        alt="Goldener Logo"
+        src="https://raw.githubusercontent.com/goldener-data/goldener/main/docs/statics/goldener_brand.png"
+        width="70%"
+    />
+</picture>
+
+A Python library for data-centric orchestration during the full lifecycle of Artificial Intelligence pipelines.
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-0530AD.svg)](https://opensource.org/licenses/Apache-2.0)
+[![PyPI Package](https://img.shields.io/pypi/v/goldener?color=6D165C)](https://pypi.org/project/goldener/)
+
+[**Overview**](#overview) |
+[**Principles**](#key-design-principles) |
+[**Features**](#example-of-features) |
+[**Installation**](#installation) |
+[**Contribute**](#contribute) |
+[**Contributors**](#contributors)
+
+# Overview
+
+Goldener is an **open-source Python library** (Apache 2 licence) designed to manage the **orchestration
+of data** during the full lifecycle of Artificial Intelligence (AI) pipelines.
+
+In the AI era, the data is the new gold. Being able to collect it is already something
+but **creating value from it is the real challenge**. Goldener is designed to help make the most of the available data.
+It provides tools to orchestrate data during the full lifecycle of Artificial Intelligence pipelines,
+from the training phase to the monitoring phase.
+
+All Goldener's features are built from the same core principle: the semantics of data can be described
+by embeddings extracted from pre-trained/foundational models. This semantic representation is general enough
+to emphasize the differences or similarities between the data samples.
+
+Goldener applies data-centric processes/algorithms on these representations to make the **right data**
+available at the **right time**, allowing to **optimize the performance** of any AI pipelines
+while **minimizing the costs** (time, performance, computing resources).
+
+When it's time to annotate data, Goldener finds the most representative subset to annotate. During annotation, it can help
+to define annotation guidelines by spotting specific cases or as well run annotation quality checks.
+Once enough data is annotated, Goldener can split it in multiple sets (train, validation, test) ensuring the reproduction
+of the task variability. During the training phase, Goldener can efficiently balance the data
+to optimize the training time and the model performance. Finally, when the model is deployed, Goldener can find
+the most informative data to monitor the model performance and detect any drift in the data distribution.
+
+As illustrated in the [Goldener's open research](https://github.com/goldener-data/goldener-research) repository,
+the possibilities are endless. Every step of the AI lifecycle includes inefficiencies that can be solved
+by data-centric processes based on pre-trained/foundational embeddings. Goldener aims to gather all
+the possible solutions in one place, universal for all data and task types.
+
+# Key design principles
+
+Artificial intelligence is deployed everywhere, and the data it processes can have multiple shapes. To deal
+with the diversity of data and tasks, Goldener is designed to be:
+
+- **Modality-agnostic**: All the features are actionable for any data modalities (text, image, video, tabular, etc.)
+and even for multimodality data.
+- **Customizable**: All features leverage specifiable tools. These tools are defined following standard API patterns
+allowing anyone to implement their own tools to customize the behavior of the features.
+- **Standard dependencies**: Goldener is built on standard dependencies (PyTorch, numpy, scikit-learn, etc.) to ensure
+compatibility with the most common AI pipelines while limiting the need for new dependencies.
+
+The AI lifecycle is often iterative and incremental. The success of an AI pipeline is a trade-off between the speed
+to release it for a real-life confrontation and its performance. At the same time, the computing resources
+are often scarce (distributed across different locations, restricted throughput and memory) and the datasets often large
+and continuously growing. In order to keep the lifecycle fast enough and be adaptable to any computing resources,
+Goldener is articulated around the following principles:
+
+- **Progressive batch processing**: Each task can be stopped and restarted on demand (or failure).
+Already computed results are not recomputed.
+- **Multipurposes embeddings**: The same embeddings are used for different tasks (selection, splitting, monitoring, etc.).
+They are computed once and stored for later use. This allows to save time and computing resources.
+- **Distributed first**: Any task can be distributed across multiple machines.
+- **On demand access to pipelines**: All processing pipelines are serializable.
+They are stored and available whenever a new request is made.
+
+# Example of features
+
+## Sampling among not annotated data
+
+Goldener can find the most representative data subset to annotate. It can extract and store semantic knowledge of the data
+from embeddings extracted with pre-trained models. Then, it leverages this knowledge to find the most representative
+subset of data to annotate. This subset of data can be annotated in order to train or monitor a model.
+
+```python
+from goldener import (
+    GoldSelector,
+    GoldDescriptor,
+    GoldTorchEmbeddingTool,
+    GoldTorchEmbeddingToolConfig,
+    GoldTensorVectorizationTool,
+)
+
+gd = GoldDescriptor(
+    table_path="my_table_for_description",
+    embedder=GoldTorchEmbeddingTool(
+        GoldTorchEmbeddingToolConfig(
+            model=my_model,
+            layers=my_layers,
+        )
+    ),
+    vectorizer=GoldTensorVectorizationTool()
+)
+
+gs = GoldSelector(
+    table_path="my_table_for_selection", selection_key="selection"
+)
+
+description = gd.describe_in_table(dataset)
+selection_table = gs.select_in_table(description, 100, "to_annotate")
+selected = GoldSelector.get_selection_indices(selection_table, "to_annotate", "selection")
+
+```
+
+## Splitting annotated data in train and validation sets
+
+Goldener can split data between the train and validation sets ensuring that the training set is containing
+most of the different situations for the tasks. From a description of the samples (embeddings), the most different/unique
+elements are kept for the training set while the least informative ones are kept for the validation set.
+
+```python
+from goldener import (
+    GoldSet,
+    GoldSplitter,
+    GoldDescriptor,
+    GoldSelector,
+)
+
+gd = GoldDescriptor(...) # reuse the descriptor used for smart sampling
+gselector = GoldSelector(...)
+gs = GoldSplitter(
+    sets=[GoldSet("train", 0.7), GoldSet("val", 0.3)],
+    descriptor=gd,
+    selector=gselector,
+)
+
+split_table = gs.split_in_table(dataset)
+splits = gs.get_split_indices(
+    split_table, selection_key="selected", idx_key="idx"
+)
+train_indices = splits["train"]
+val_indices = splits["val"]
+
+```
+
+## Clustering data to define annotation guidelines
+
+Among the data, there are often multiple "modes" (e.g. different types of images, different types of text, etc.).
+Goldener can clusterize the data to find these different modes. Then, the different clusters can be leveraged
+to define annotation guidelines for each cluster.
+
+```python
+from goldener import (
+    GoldClusterizer,
+    GoldSKLearnClusteringTool,
+    GoldDescriptor,
+    GoldTorchEmbeddingTool,
+    GoldTorchEmbeddingToolConfig,
+    GoldTensorVectorizationTool,
+)
+from sklearn.cluster import KMeans
+
+gd = GoldDescriptor(...) # reuse the descriptor used for smart sampling
+gcluster = GoldClusterizer(
+    table_path="my_table_for_clusterization",
+    clustering_tool=GoldSKLearnClusteringTool(KMeans(n_clusters=10)),
+    cluster_key="cluster",
+)
+
+description = gd.describe_in_table(dataset)
+clustered_table = gcluster.clusterize_in_table(description)
+
+for cluster_id in range(10):
+    cluster_indices = get_cluster_indices(clustered_table, "cluster", cluster_id)
+
+    # sample few samples and use them to define annotation guidelines for this cluster
+
+```
+
+## Reducing dimensionality
+
+Depending on the dataset (size, data type, task), the computation tackled by Goldener can be quite resource intensive and time consuming. The dimensionality reduction aims to reduce the memory footprint and increase the speed for the downstream task. It can be quite useful to adapt the computation to the hardware constraints or access results in time constrained situation.
+
+```python
+import torch
+from sklearn.decomposition import PCA
+from goldener import GoldSKLearnReductionTool
+
+# 50 embeddings of dimension 16
+x = torch.randn(50, 16)
+
+reducer = GoldSKLearnReductionTool(PCA(n_components=2))
+x_reduced = reducer.fit_transform(x)  # shape: (50, 2)
+```
+
+## Balancing batches during training
+
+When training with randomly sampled batches, the content distribution within each batch can vary a lot —
+some batches may end up overrepresenting certain types of data while barely including others. This imbalance
+can hurt how well a model learns to recognize the underrepresented cases.
+
+Goldener proposes a batch sampler grouping data into groups of similar content, and then drawing samples so each batch is spread across clusters as evenly as possible.
+
+```python
+from goldener.organize import GoldClusterizedBatchSampler
+from goldener import GoldClusterizer, GoldDescriptor, GoldSKLearnClusteringTool
+from sklearn.cluster import KMeans
+
+gd = GoldDescriptor(...)  # reuse the descriptor used for smart sampling
+gc = GoldClusterizer(...)  # reuse the clusterizer used for annotation guidelines
+
+batch_sampler = GoldClusterizedBatchSampler(
+    dataset=my_dataset,
+    batch_size=32,
+    clusterizer=gc,
+    descriptor=gd,
+    n_clusters=10,
+)
+```
+
+# Installation
+
+Installing Goldener is as simple as running the following command:
+
+```bash
+pip install goldener
+```
+
+# Contribute
+
+We welcome contributions to Goldener! Here's how you can help:
+
+## Getting Started
+
+1. Fork the repository
+2. Clone your fork
+3. Install the dependencies
+4. Create your branch and make your proposals
+5. Push to your fork and create a pull request
+6. The PR will be automatically tested by GitHub Actions
+7. A maintainer will review your PR and may request changes
+8. Once approved, your PR will be merged
+
+## Development
+
+To set up the development environment:
+
+1. Install `uv` if you haven't already:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Create and activate a virtual environment (optional but recommended):
+```bash
+uv venv
+source .venv/bin/activate  # On Unix/macOS
+```
+
+3. Install development dependencies:
+```bash
+uv sync --all-extras  # Install all dependencies including development dependencies
+```
+
+4. Run tests:
+```bash
+uv run pytest .
+```
+
+5. Run type checking with mypy:
+```bash
+uv run mypy .
+```
+
+6. Run linting with ruff:
+```bash
+# Run all checks
+uv run ruff check .
+
+# Format code
+uv run ruff format .
+```
+
+7. Set up pre-commit hooks:
+```bash
+# Install git hooks
+uv run pre-commit install
+
+# Run pre-commit on all files
+uv run pre-commit run --all-files
+```
+
+The pre-commit hooks will automatically run:
+- mypy for type checking
+- ruff for linting and formatting
+- pytest for tests
+
+whenever you make a commit.
+
+8. Generate the developer API documentation:
+```bash
+./scripts/generate_api_docs.sh
+```
+
+The API documentation is generated with [pdoc](https://pdoc.dev) from the docstrings (Google style) into
+`docs/api` (open `docs/api/index.html` in a browser). It is not committed: the website workflow regenerates it
+from the deployed code.
+
+## Release Process
+
+To release a new version of the `goldener` package:
+1. Create a new branch for the release: `git checkout -b release-vX.Y.Z`
+2. Update the version `vX.Y.Z` in `pyproject.toml`
+3. Run `uv sync` to update the lock file with the new version
+4. Commit the changes with a message like `release vX.Y.Z`
+5. Merge the branch into `main`
+6. Trigger a new release on GitHub with the tag `vX.Y.Z`
+
+Once the package is published on PyPI, the release workflow regenerates the API docs and uploads the website
+to the hosting provider through SFTP: `docs/landing/index.html` as `index.html` at the root, `docs/api` as the
+`api` folder and `docs/statics` as the `statics` folder. It requires, in the `website` environment of the repository,
+the secrets `FTP_SERVER`, `FTP_USERNAME` and `FTP_PASSWORD`, the variable `SFTP_KNOWN_HOSTS` (the host key of the
+server, as `ssh-keyscan` prints it, checked against the fingerprint given by the hosting provider), and optionally the
+variable `FTP_SERVER_DIR` (the remote folder, ending with `/`, defaults to the home folder of the FTP account).
+To update the website without a release (e.g. after a change of the landing page), run the `Update the website`
+workflow manually from the Actions tab of the repository, on the branch or tag to publish.
+
+# Contributors
+
+<!-- readme: contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/Yann-CV">
+                    <img src="https://avatars.githubusercontent.com/u/54800486?v=4" width="100;" alt="Yann-CV"/>
+                    <br />
+                    <sub><b>Yann Chéné</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/AshleyAHuang">
+                    <img src="https://avatars.githubusercontent.com/u/125787623?v=4" width="100;" alt="AshleyAHuang"/>
+                    <br />
+                    <sub><b>Ashley Huang</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/jason-scheffel">
+                    <img src="https://avatars.githubusercontent.com/u/80598885?v=4" width="100;" alt="jason-scheffel"/>
+                    <br />
+                    <sub><b>Jason Scheffel</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/abhiramvsmg">
+                    <img src="https://avatars.githubusercontent.com/u/141956198?v=4" width="100;" alt="abhiramvsmg"/>
+                    <br />
+                    <sub><b>Abhiram V</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/AnayGarodia">
+                    <img src="https://avatars.githubusercontent.com/u/76836303?v=4" width="100;" alt="AnayGarodia"/>
+                    <br />
+                    <sub><b>Anay Garodia</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/TaniaW777">
+                    <img src="https://avatars.githubusercontent.com/u/200526578?v=4" width="100;" alt="TaniaW777"/>
+                    <br />
+                    <sub><b>Wendtoin Filomène Tania ZABRE</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/pre765">
+                    <img src="https://avatars.githubusercontent.com/u/199960263?v=4" width="100;" alt="pre765"/>
+                    <br />
+                    <sub><b>pre765</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Mr-Neutr0n">
+                    <img src="https://avatars.githubusercontent.com/u/64578610?v=4" width="100;" alt="Mr-Neutr0n"/>
+                    <br />
+                    <sub><b>hari</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/HafidIdrissi">
+                    <img src="https://avatars.githubusercontent.com/u/57899900?v=4" width="100;" alt="HafidIdrissi"/>
+                    <br />
+                    <sub><b>Hafid Idrissi</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/AhmadBilalDSA">
+                    <img src="https://avatars.githubusercontent.com/u/315737484?v=4" width="100;" alt="AhmadBilalDSA"/>
+                    <br />
+                    <sub><b>Ahmad Bilal</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/LyViolz">
+                    <img src="https://avatars.githubusercontent.com/u/67195096?v=4" width="100;" alt="LyViolz"/>
+                    <br />
+                    <sub><b>Ali Berke Kahraman</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Dhruv06000">
+                    <img src="https://avatars.githubusercontent.com/u/196720010?v=4" width="100;" alt="Dhruv06000"/>
+                    <br />
+                    <sub><b>Dhruv Kumar</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/Josequevedov08">
+                    <img src="https://avatars.githubusercontent.com/u/170109140?v=4" width="100;" alt="Josequevedov08"/>
+                    <br />
+                    <sub><b>Jose Quevedo</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/panosfrantzolas">
+                    <img src="https://avatars.githubusercontent.com/u/182676512?v=4" width="100;" alt="panosfrantzolas"/>
+                    <br />
+                    <sub><b>Panos Frantzolas</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/SHEKHAR-Y">
+                    <img src="https://avatars.githubusercontent.com/u/242377436?v=4" width="100;" alt="SHEKHAR-Y"/>
+                    <br />
+                    <sub><b>Shekhar</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
+<!-- readme: contributors -end -->

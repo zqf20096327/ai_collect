@@ -1,0 +1,152 @@
+<p align="center">
+  <img src="docs/images/banner.svg" alt="Platypus — notes, meetings, and knowledge, on your machine" width="100%"/>
+</p>
+
+# Platypus Notes
+
+An open-source desktop app for taking notes, transcribing meetings, and chatting with your documents. Your notes stay on your machine, and AI runs on whichever provider you connect — or fully local with Whisper and Ollama.
+
+[**Download for macOS or Windows**](https://github.com/pixelsmasher13/platypus/releases/latest) · [platypusnotes.com](https://platypusnotes.com) · MIT license
+
+<video src="https://github.com/user-attachments/assets/e034862a-0def-4b75-a133-d850d191d82a" autoplay loop muted playsinline></video>
+
+## What it does
+
+- **Capture meetings** — auto-detects Zoom and Teams calls and records your mic plus the meeting audio, no bot required; transcribes locally via Whisper with live drafts as people speak, or via OpenAI's API
+- **Finish with meeting notes** — after recording, generate a descriptive title and organized notes in the background. One meeting in your library, with its transcript tucked underneath
+- **Clean up any note** — tidy, shorten, or reorganize; compare with the original before applying, and undo in one step
+- **Organize notes and documents** — rich editor with PDF/DOCX/TXT/Markdown and URL import, project grouping, and content search you can browse from the keyboard
+- **Take notes anywhere** — copy formatted notes into an email or document, or export Markdown. Meeting recaps omit the transcript by default, with an option to include it.
+- **Chat with everything you've written** — per-project vector search with Claude, OpenAI, Gemini, or any local Ollama model. Answers are grounded in your notes with inline `[n]` citations you can click to jump to the source passage, and each project greets you with suggested questions generated from its content
+- **Generate from any note** — a PowerPoint deck with editable charts and tables, a follow-up email, or an audio podcast (via ElevenLabs). Decks build in the background while you keep working
+
+Data stays on disk in SQLite. In local transcription mode, audio never leaves your machine.
+
+## How it compares
+
+|                              | Platypus    | Granola | NotebookLM | Otter.ai |
+| ---------------------------- | ----------- | ------- | ---------- | -------- |
+| Stores data on your machine  | ✅          | ❌      | ❌         | ❌       |
+| Meeting transcription        | ✅          | ✅      | ❌         | ✅       |
+| RAG over your notes/docs     | ✅          | partial | ✅         | ❌       |
+| Bring your own LLM           | ✅          | ❌      | ❌         | ❌       |
+| Open source                  | ✅          | ❌      | ❌         | ❌       |
+| Free                         | ✅          | partial | partial    | ❌       |
+| Native desktop               | ✅          | ✅      | ❌         | ❌       |
+
+## Meetings and transcription
+
+**Notices your meetings.** When a Zoom or Teams call starts, Platypus offers to record it — no calendar hookup, no meeting bot.
+
+**Records both sides of the call.** Your microphone and your computer's audio are captured together, so remote voices come through even on headphones. Turn either source off in Settings for in-person meetings or webinars. (Meeting audio needs macOS 13+; Windows records the mic.)
+
+**Transcribes on your machine.** Local Whisper shows live drafts as people talk, then swaps in a more accurate pass at each pause. It works offline after a one-time model download, and audio is deleted after transcription unless you choose to keep it. Prefer the cloud? Switch to OpenAI's API in Settings.
+
+**Know which side spoke.** Local mic + meeting transcription labels your microphone as **You** and system audio as **Remote participants**, with timestamps and editable labels. Everyone on each audio source shares its label; this does not identify individual remote speakers. Labels stay with the transcript even when audio is deleted.
+
+**Open the notes, not a wall of transcript.** When recording ends, your configured AI model organizes the meeting in the background and updates the same note with a content-based title. Titles you wrote yourself stay intact. The transcript is collapsed under **View transcript**, with its speaker labels and timestamps preserved. A bottom-right notification lets you know when the notes are ready. If you edit during generation, the result waits for review; if generation fails, the saved transcript stays available and you can retry. You can also generate meeting notes from an existing note with **Create meeting recap**.
+
+More in [how meeting audio capture works](docs/meeting-audio.md).
+
+## Slide decks
+
+Open **Generate from this note → Slide deck**, pick an audience, purpose, and length (2–15 slides), and keep working. The deck saves automatically, you get a notification when it's ready, and past decks live under **Presentations**.
+
+- **Designed PowerPoint** (default for OpenAI models) — the model builds the `.pptx` itself, with native charts, comparison tables, and speaker notes you can edit in PowerPoint or Keynote. Takes a few minutes; uses OpenAI's Code Interpreter, billed to your API key.
+- **Simple slides** (any provider) — structured slides that Platypus lays out. Edit, reorder, and export to PowerPoint or Marp Markdown. Usually faster.
+
+See [how the two compare on a real earnings release](docs/presentation-quality.md).
+
+## Models
+
+| Provider   | Built-in choices                         |
+| ---------- | ---------------------------------------- |
+| Claude     | Sonnet 5 (default), Haiku 4.5, Opus 5.5  |
+| OpenAI     | GPT-6 Astra (default), Sol, Luna         |
+| Google     | Gemini 3.8 Flash (default), Gemini 3.1 Pro preview |
+| Local      | Ollama (Llama 3.3 70B by default)        |
+
+Add API keys in Settings; custom Claude and OpenAI model IDs work too. For models that support it, reasoning effort (from Off/Low up to Max) is remembered per model across chat and generation.
+
+No OpenAI key? **Sign in with ChatGPT** in Settings to run OpenAI chat and note features on your ChatGPT plan. Document indexing, cloud transcription, and designed PowerPoints still need an API key.
+
+## Tech stack
+
+| Layer            | Technology                                                                        |
+| ---------------- | --------------------------------------------------------------------------------- |
+| Desktop shell    | Tauri v1 (1.5.2)                                                                  |
+| Backend          | Rust                                                                              |
+| Frontend         | React + TypeScript + Vite                                                         |
+| UI               | Chakra UI + styled-components                                                     |
+| Editor           | TipTap                                                                            |
+| AI providers     | Claude, OpenAI, Gemini, Ollama                                                    |
+| Transcription    | whisper-rs v0.16 (local) / OpenAI Whisper API (cloud)                             |
+| Audio            | CPAL (microphone), ScreenCaptureKit (macOS meeting audio), rubato (resampling)    |
+| Database         | SQLite (rusqlite)                                                                 |
+| Vector search    | HNSW (hnswlib-rs)                                                                 |
+| Presentations    | OpenAI Responses + Code Interpreter (designed decks); PptxGenJS (simple decks)    |
+
+## Build from source
+
+### Requirements
+
+- Node 18+ (recommended via [nvm](https://github.com/nvm-sh/nvm))
+- Yarn on your PATH — the Tauri hooks run `yarn start` and `yarn build`
+- [Rust](https://www.rust-lang.org/tools/install)
+- **cmake** — required by `whisper-rs-sys` to compile whisper.cpp
+  - macOS: `brew install cmake`
+  - Windows: `winget install Kitware.CMake`
+- **LLVM / libclang** (Windows only — required by `bindgen` when building `whisper-rs-sys`; macOS ships this via Xcode Command Line Tools)
+  - `winget install LLVM.LLVM`
+  - Then set `LIBCLANG_PATH` so `bindgen` can find `libclang.dll`:
+    ```
+    setx LIBCLANG_PATH "C:\Program Files\LLVM\bin"
+    ```
+    Open a new terminal afterward so the env var is picked up.
+
+### Run in dev
+
+```bash
+npm install
+npm run tauri dev
+```
+
+Add your LLM API keys in Settings for cloud AI features. Local notes and Whisper transcription work without any.
+
+### Build a release
+
+```bash
+npm install
+npm run tauri build
+```
+
+For a signed + notarized macOS build that uploads to your S3 bucket, see [`scripts/build-mac.sh`](scripts/build-mac.sh) — requires Apple Developer credentials in `.env.build`.
+
+## Architecture notes
+
+A few of the less-obvious decisions:
+
+- **Audio pipeline**: CPAL microphone and ScreenCaptureKit meeting audio → aligned on a common 48kHz timeline, with separate local transcription for each source → near-silence gate that ends an utterance after 700ms of quiet (20s max) → rubato resample to 16kHz → whisper.cpp via [whisper-rs](https://github.com/tazz4843/whisper-rs), with Silero VAD when its model is installed. The gate only skips silence; it isn't a speech classifier, so quiet speech still reaches Whisper.
+- **Transcription context**: each chunk is prompted with up to 16 words of recent finalized speech. Drafts, note titles, and vocabulary hints are never used as prompts; in testing, longer history and hints dropped real speech ([details](CONTRIBUTING.md#transcription-quality)).
+- **Meeting detection**: Zoom is detected by presence of the `CptHost` process; Teams by CPU usage on its `audio.mojom.AudioService` sub-process. No Zoom/Teams API access required.
+- **Vector search**: per-project HNSW indices ([hnswlib-rs](https://github.com/jean-pierreBoth/hnswlib-rs)); documents chunked and embedded on save when vectorization is enabled.
+- **Grounded chat with inline citations**: retrieved chunks are numbered `[1]..[n]` in the system prompt, the LLM is instructed to cite every claim and refuse to invent answers, and the same numbering is emitted to the UI so each `[n]` in the response is a clickable chip that opens the supporting passage.
+- **Meeting sources**: recordings are stored as a dedicated TipTap transcript node in the note's HTML, so meeting-note organization gets your rough notes and the transcript as separate inputs.
+- **Presentation generation**: jobs live at the app level, so they outlive the note editor that started them. The backend downloads, validates, and saves a designed deck's `.pptx` before reporting success. Simple decks are stored as structured slides and share one layout model between preview and PowerPoint export.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), including the checks to run before opening a PR.
+
+## Acknowledgments
+
+Platypus stands on the shoulders of:
+
+- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) and [whisper-rs](https://github.com/tazz4843/whisper-rs) — local speech-to-text
+- [Distil-Whisper](https://huggingface.co/distil-whisper) by HuggingFace — the distilled Whisper variants
+- [rubato](https://github.com/HEnquist/rubato) — sample-rate conversion
+- [hnswlib-rs](https://github.com/jean-pierreBoth/hnswlib-rs) — HNSW vector index
+
+## License
+
+[MIT](LICENSE) © Heelix Technologies Inc.

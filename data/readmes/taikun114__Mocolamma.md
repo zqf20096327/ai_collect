@@ -1,0 +1,220 @@
+# Mocolamma
+**English** | [日本語](/docs/README-ja.md)
+
+![Mocolamma Ollama Manager App](docs/images/Mocolamma_Banner.webp)
+
+<p align="center">
+  <a href="https://github.com/taikun114/Mocolamma">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/taikun114/Mocolamma?style=for-the-badge&label=Stars&labelColor=6e8895&color=192023">
+  </a>
+  &nbsp;
+  <a href="https://github.com/taikun114/Mocolamma/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/taikun114/Mocolamma?sort=semver&display_name=tag&style=for-the-badge&label=Release&labelColor=6e8895&color=192023">
+  </a>
+  &nbsp;
+  <a href="https://github.com/taikun114/Mocolamma/releases/latest">
+    <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/taikun114/Mocolamma/total?style=for-the-badge&label=Downloads&labelColor=6e8895&color=192023">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/i_am_taikun" target="_blank">
+    <img alt="Buy Me a Coffee" src="docs/images/blue-button.webp">
+  </a>
+</p>
+
+## Table of Contents
+- [What is Mocolamma?](#what-is-mocolamma)
+  - [Origin of the name](#origin-of-the-name)
+  - [Download](#download)
+    - [macOS Version](#macos-version)
+    - [iOS / iPadOS Version](#ios--ipados-version)
+    - [visionOS Version](#visionos-version)
+  - [System Requirements](#system-requirements)
+  - [Differences between free and paid versions](#differences-between-free-and-paid-versions)
+- [Features](#features)
+  - [Server Tab](#server-tab)
+  - [Model Tab](#model-tab)
+  - [Chat Tab](#chat-tab)
+  - [Image Generation Tab](#image-generation-tab)
+  - [Privacy and Security](#privacy-and-security)
+  - [App Store Review Requests](#app-store-review-requests)
+- [Support and Feedback](#support-and-feedback)
+  - [Bug Reports](#bug-reports)
+  - [Feedback](#feedback)
+  - [Community](#community)
+- [Support Developer](#support-developer)
+  - [Give a Star](#give-a-star)
+  - [Donate](#donate)
+- [Credits](#credits)
+  - [Ollama by Ollama](#ollama-by-ollama)
+  - [Antigravity and Gemini CLI by Google / Qwen Code by Qwen / OpenCode by Anomaly](#antigravity-and-gemini-cli-by-google--qwen-code-by-qwen--opencode-by-anomaly)
+  - [Textual by Guillermo Gonzalez and Taiga Imaura](#textual-by-guillermo-gonzalez-and-taiga-imaura)
+  - [CompactSlider by Alexey Bukhtin](#compactslider-by-alexey-bukhtin)
+  - [create-dmg by Andrey Tarantsov and Andrew Janke](#create-dmg-by-andrey-tarantsov-and-andrew-janke)
+
+## What is Mocolamma?
+![Introduction](docs/images/Introduction.webp)
+
+Mocolamma is an [**Ollama**](https://github.com/ollama/ollama) management application for macOS, iOS / iPadOS and visionOS that connects to Ollama servers to manage models and perform chat tests using models stored on the Ollama server.
+
+> [!NOTE]
+> Generative AI was used in the development of Mocolamma. Therefore, the code might not follow best practices or may contain unstable code.\
+> Mocolamma is an unofficial app for Ollama and is not affiliated with Ollama in any way.
+
+### Origin of the name
+The name "Mocolamma" is a coined word combining "**Mo**del", "**Co**ntrol", "Ol**lam**a", and "**Ma**nage".\
+I wanted it to be easy to read and remember, while having a meaningful name, so this word came to be.
+
+### Download
+#### macOS Version
+Mocolamma can be downloaded for free from the [**releases page**](https://github.com/taikun114/Mocolamma/releases/latest), or purchased for $1.99 on the [**Mac App Store**](https://apps.apple.com/us/app/mocolamma/id6753896649).
+
+#### iOS / iPadOS Version
+Mocolamma can be purchased for $1.99 on the [**App Store**](https://apps.apple.com/us/app/mocolamma/id6753896649).
+
+#### visionOS Version
+Mocolamma can be purchased for $1.99 on the [**App Store**](https://apps.apple.com/us/app/mocolamma/id6753896649).
+
+> [!TIP]
+> Purchasing Mocolamma on the App Store for macOS, iOS / iPadOS, or visionOS will enable access from all platforms with a single purchase!
+
+> [!NOTE]
+> App Store prices may vary by region and could be automatically adjusted due to exchange rates. These prices are based on the Japanese yen prices of 250 yen, but actual prices may differ depending on your region.
+
+### System Requirements
+The system requirements for Mocolamma are as follows:
+
+- **macOS Sequoia (15.0) or later** installed on Mac computer
+  - **Intel-based Mac computer and Mac computer with Apple silicon** are supported.
+- **iOS / iPadOS 18.0 or later** installed on iPhone and iPad
+- **visionOS 2.0 or later** installed on Apple Vision Pro
+
+> [!NOTE]
+> Ollama is not included with Mocolamma. A separate Ollama server is required to use most of Mocolamma's features.\
+> Also, the Ollama server must be configured to be accessible from within your local network.
+
+### Differences between free and paid versions
+Mocolamma has both a free version (GitHub version, macOS only) and a paid version (App Store version), but there are no differences in the app's basic functionality. The App Store version includes several features provided by the App Store, such as the automatic update feature.\
+The differences are as follows:
+
+| Feature           | Free Version (GitHub)  | Paid Version (App Store)      |
+|-------------------|------------------------|-------------------------------|
+| Platforms         | macOS                  | macOS, iOS / iPadOS, visionOS |
+| Price             | Free                   | $1.99                         |
+| All App Features  | ✓                      | ✓                             |
+| Automatic Updates | -                      | ✓ (App Store feature)        |
+| Donation Link     | ✓                      | - (Due to App Store review)   |
+| Review Requests   | -                      | ✓ (Can be disabled)          |
+| Support Developer | ✓ (via Donation Link) | ✓ (via Purchase)              |
+
+I would appreciate it if you purchase from the App Store, but feel free to download for free first, and if you find it very useful, please consider purchasing or [**donating**](#donate)!
+
+## Features
+Mocolamma can connect to Ollama servers on networks to manage models and perform simple chats using the models.
+
+### Server Tab
+![Server Tab](docs/images/Server-Tab.webp)
+
+From the server tab, you can easily manage Ollama servers by adding, editing, and more. By default, the localhost server is registered on macOS, so if you're running the Ollama server on the Mac where you opened Mocolamma, you can start using it immediately without additional server setup.
+
+### Model Tab
+![Model Tab](docs/images/Model-Tab.webp)
+
+From the model tab, you can view models stored on the selected server and add models to the selected server. By opening the inspector, you can check specific model details as well.
+
+### Chat Tab
+![Chat Tab](docs/images/Chat-Tab.webp)
+
+The chat tab allows you to have simple chats using models stored on the selected server. Since this is a simple chat for model testing, it does not have a message saving function, but it is useful for casually testing downloaded models.\
+For advanced chat features, I recommend using the official Ollama app or a dedicated chat-focused application.
+
+### Image Generation Tab
+![Image Generation Tab](docs/images/Image-Generation-Tab.webp)
+
+The image generation tab allows you to generate images using image models stored on the selected server. You can also save the generated images to your device or share them.
+
+> [!NOTE]
+> Ollama's image generation feature is currently in beta. It may stop working due to future changes in the Ollama API specification.\
+> Also, as of May 2026, using the image generation feature with Ollama requires using a Mac computer with Apple silicon as the Ollama server.
+
+### Privacy and Security
+Mocolamma **does not collect any information about users**.\
+Usage data and crash reports of users who have enabled "Share with App Developers" in the system settings "Analytics & Improvements" may be shared, but **the app itself doesn't have any functionality to collect and send information**. You can use it with peace of mind even if you're concerned about privacy.
+
+### App Store Review Requests
+The App Store version periodically (but very infrequently) displays a screen asking users to review the app on the App Store (Review Request Screen).
+
+This screen appears only when all of the following conditions are met:
+
+- You are using the App Store version.
+- The "Action Count," which represents the number of times major features have been used, is a total of 29 or more.
+  - The Action Count increases with the following operations:
+    - When a model download has successfully started.
+    - When a chat is sent and the first successful response is received.
+    - When an image prompt is sent and the first successful response is received.
+- At least 3 days have passed since the app was updated (since the first launch after the update).
+  - This includes the first installation (3 days after the first launch).
+- The Review Request Screen has not been displayed for the current app version.
+- At least 90 days have passed since the last time the Review Request Screen was displayed.
+- Review requests have not been disabled in the app settings.
+
+The Action Count increases by a maximum of 10 per day, so you need to continue taking 10 or more actions per day for at least 3 days for it to appear. Therefore, this screen will not appear immediately after you start using the app (to ensure a more accurate review).
+
+When the above conditions are met, the Review Request Screen will appear at the following times:
+
+- When a model download has successfully completed.
+- When a chat is sent.
+- When an image prompt is sent.
+
+## Support and Feedback
+### Bug Reports
+Mocolamma is an app developed using generative AI. Although extensive testing was performed during development, bugs may remain, or some functions may not work properly.
+
+If you find bugs or operational issues, please check the already opened [**Issues**](https://github.com/taikun114/Mocolamma/issues) (known bugs or issues) and look for the same problems already reported by others. If you can't find the same issue, please open a new Issue to report the problem.\
+To make bug tracking easier, please open one Issue per issue if you want to report multiple issues. In other words, if you want to report two bugs, you need to open two Issues.
+
+### Feedback
+If you want to submit bug reports, idea sharing, or messages to the developer (me) as someone without a GitHub account, please click [**this link**](mailto:contact.taikun@gmail.com?subject=Mocolamma%20Feedback%3A%20&body=Please%20describe%20the%20feedback%20in%20detail%3A%0D%0A%0D%0ASystem%20Information%3A%0D%0A%0D%0A-%20System%0D%0APlease%20enter%20the%20model%20of%20your%20Mac%20%2F%20iPhone%20%2F%20iPad%20%2F%20Apple%20Vision%20Pro.%0D%0A%0D%0A-%20OS%20Version%0D%0AIf%20you%20are%20experiencing%20problems%2C%20please%20enter%20the%20version%20of%20macOS%20%2F%20iOS%20%2F%20iPadOS%20%2F%20visionOS%20on%20which%20Mocolamma%20is%20running.%0D%0A%0D%0A-%20App%20Version%0D%0AIf%20you%20are%20experiencing%20problems%2C%20please%20enter%20the%20version%20of%20the%20app.%0D%0A%0D%0A) or send an email through the "Send Feedback" button on the about screen (accessed from "About Mocolamma" on macOS, or from the information button in the settings tab on iOS / iPadOS / visionOS) (please note that I may not be able to reply to all messages).\
+Opening the email sending screen from the in-app button will pre-fill necessary information such as system information (device model and OS version) and app version information, so I recommend sending from there.
+
+### Community
+A [**Discussions page**](https://github.com/taikun114/Mocolamma/discussions) is available where you can share new features you'd like added to the app, ask questions about potential issues, or exchange opinions with others.\
+Please make good use of it as a place for information exchange. I often look at it too, so messages to the developer are welcome!
+
+## Support Developer
+### Give a Star
+Please click the "Star" button in the upper right corner at [**this page**](https://github.com/taikun114/Mocolamma) to give it a star!\
+This button is like a thumbs up button and keeps me motivated to continue development! This feature is free, so please give it a star if you like Mocolamma!
+
+### Donate
+If you like Mocolamma, please donate to support continued development!
+
+You can donate using the following services.
+
+#### Buy Me a Coffee
+Support from the cost of a cup of green tea at [**Buy Me a Coffee**](https://www.buymeacoffee.com/i_am_taikun).
+
+<a href="https://www.buymeacoffee.com/i_am_taikun" target="_blank">
+  <img alt="Buy Me a Coffee" src="docs/images/blue-button.webp">
+</a>
+
+#### PayPal.Me
+If you have a PayPal account, you can donate directly through [**PayPal**](https://paypal.me/taikun114).
+
+## Credits
+### [Ollama](https://github.com/ollama/ollama) by Ollama
+Mocolamma is an app specialized in managing and operating Ollama servers and models. Without Ollama, Mocolamma would not have emerged.
+
+### [Antigravity](https://antigravity.google/) and [Gemini CLI](https://github.com/google-gemini/gemini-cli) by Google / [Qwen Code](https://github.com/QwenLM/qwen-code) by Qwen / [OpenCode](https://github.com/anomalyco/opencode) by Anomaly
+These excellent generative AI tools were used in the development of Mocolamma. For someone like me with no knowledge of programming including Swift, I wouldn't have been able to complete this app without the power of generative AI.
+
+### [Textual](https://github.com/taikun114/textual) by Guillermo Gonzalez and Taiga Imaura
+The Textual package was used to implement the Markdown rendering in the chat screen. Thanks to this package, I was able to implement beautiful Markdown rendering very easily.\
+Mocolamma uses a custom version that has been optimized for Mocolamma based on the [original version](https://github.com/gonzalezreal/textual).
+
+### [CompactSlider](https://github.com/buh/CompactSlider) by Alexey Bukhtin
+The CompactSlider package was used to implement the sliders for temperature and context window in chat settings. Thanks to this package, I was able to implement beautiful customized sliders.
+
+### [create-dmg](https://github.com/create-dmg/create-dmg) by Andrey Tarantsov and Andrew Janke
+The create-dmg shell script was used to create the disk image for distributing the free version. Thanks to this shell script, I was able to easily create customized disk images.

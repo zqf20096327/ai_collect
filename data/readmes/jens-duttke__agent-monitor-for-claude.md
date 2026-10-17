@@ -1,0 +1,150 @@
+# Agent Monitor for Claude
+
+A local desktop window that shows every running Claude Code agent at a glance - grouped by project, with each agent's live status: working, waiting for you, blocked on a permission prompt, or finished.
+
+If you run many Claude Code agents across several projects, you cannot tell from the IDE which one is actually doing something and which is quietly waiting for you. Agent Monitor answers that in one glance.
+
+> [!IMPORTANT]
+> This project is still in an early stage. Detailed issue reports - with steps to reproduce, what you expected, and what actually happened - are very welcome and help a lot.
+
+![The Agent Monitor window listing running Claude Code agents grouped by project, each showing its live status, estimated cost, model, host, and time since last activity](screenshot.png)
+
+## Features
+
+### It just works
+- **Portable on Windows** - a single executable, no installation. On Linux it runs from source against the GTK and WebKit libraries your desktop already ships.
+- **Zero configuration** - it finds your Claude config directory automatically (honors `CLAUDE_CONFIG_DIR`).
+
+### What you see every day
+- **Live agent overview** - every running Claude Code agent, grouped by the project it belongs to, refreshed every few seconds.
+- **WSL sessions too** - on Windows, Claude Code agents running inside WSL distributions appear alongside your native agents, read over `\\wsl.localhost` with nothing ever executed inside the distro. The distro shows as the session's host, and its background processes and task output appear in the same panel as any other agent's (see below).
+- **Know who needs you** - a banner lists the agents blocked on a question, plan review, or permission prompt, with a one-click jump to each, so you never leave one hanging.
+- **Status at a glance** - each agent shows *working*, *waiting for you*, *permission needed*, *interrupted* (you stopped it mid-turn), *error* (the turn hit a usage/session limit or other API error and cannot continue - named as far as the error says, e.g. *usage limit reached* or *error: servers overloaded*, with the error's own message line under it when you hover the status dot), or *finished*, with the time since its last activity.
+- **When Auto mode stops being automatic** - after three tool calls in a row are blocked by its safety classifier, Claude Code puts Auto mode on hold and prompts you about everything again until you approve one. A paused badge next to the agent's mode says so, and hovering it shows how many calls the classifier blocked in that session.
+- **Filter and sort to what matters** - the status chips (needs you, error, interrupted, new, idle, working, background, quiet, attention-first order) start all on, and you uncheck the ones you want to hide. Each chip's colored dot doubles as the key to what the row dots mean, and hovering a chip explains what that status means and when it occurs. Sort by activity, usage, model, host, or status. Your filter and sort choices are remembered across restarts.
+- **Search session content** - a search box narrows the view to the sessions whose *transcript contains* what you type. It matches what was written or read - message text, reasoning, tool calls and their results - not the bookkeeping around them, so a session id or a timestamp finds nothing. Each matching row says how many hits that session holds and lists up to five of them, the hit in the middle with the surrounding text either side, labelled with where it came from - you, Claude, its reasoning, or a named tool. As in your editor, three toggles refine it: match case, match whole word, and use a regular expression (an invalid pattern turns the box red); your choices are remembered. It searches only the sessions the active filter chips currently show, newest first, with a progress bar and results streaming in as they are found. A session that newly contains the text shows up on its own. If nothing matches, the empty result offers to look wider - one step per click, first the sessions your chips hide, then a longer time window; a line above the list then says how many extra hits that brought and offers a *Reset*. Press Escape to clear the search. What it reads and how much of it can ever be shown is bounded - see [PRIVACY.md](PRIVACY.md).
+- **Urgent projects on top** - across all projects, the ones blocked on a prompt float above those actively working, which sit above the idle and finished ones. Within each band the most recently active project comes first, so a panel you were just watching stays where you last looked. A toggle turns this off for a plain A-Z layout.
+- **See where it runs** - each agent shows its host application (VS Code, JetBrains IDEs, terminals, and more), with a CLI marker for terminal-driven agents. A background agent started with `claude --bg` is marked as one instead: it has no window to jump to, so its row menu copies the `claude attach` command that opens it in a terminal.
+- **Which Claude Code version wrote it** - a version column appears as soon as the agents in view are *not* all on the same Claude Code version, so you spot the long-running session still on last week's CLI. A session that outlived an update gets a "+N" badge listing every version it spanned, when each took over, and whether it was written from VS Code or the CLI - which is also how you can tell that two Claude Code processes were writing the same session at once. Each version number opens that release's changelog entry in your browser.
+- **Cost at a glance** - each agent shows an estimated dollar cost, computed per model so a cheaper subagent model is priced at its own rate, with the full per-tier token breakdown - base input, output, cache read, and 5m/1h cache writes - one half-second hover away. Prices live in an editable `pricing.json` (see [docs/configuration.md](docs/configuration.md)); a future price change entered under its start date applies on its own.
+- **Subagents in flight** - a badge shows how many subagents an agent is running right now (and how many recently finished), with a hover listing what each is doing. For a background workflow it shows the run's total agent count, with progress in the tooltip (e.g. "Workflow: 8/12 agents"), and the session stays marked busy across the pauses between the workflow's phases instead of flickering back to idle.
+- **Background processes and task output** - a badge shows how many OS processes an agent is running (a watched build, a scan). Click it for a panel with a live per-process table (CPU, memory, and how long each has run, updated every second) and the agent's background tasks; expand a task to watch its live output stream in a mono-space console - with the task's ANSI terminal colors preserved and its text selectable to copy - so you can follow its progress. If the task redirected its output to a file in its own scratchpad or project folder, the panel follows that redirect. Output is read only while you have a task expanded. For a Windows-hosted agent whose tools run through WSL (the Bash tool relaying via `wsl.exe`) - a different thing from the "WSL sessions too" bullet above - the panel also shows the shared WSL2 virtual machine's total CPU and memory - a machine-wide figure, not this session alone, since that VM is where the Linux work actually runs.
+- **Jump right to it** - click an agent and its hosting window comes to the foreground; for VS Code extension sessions the exact session tab is focused via the extension's official deep link. Click a project's path in its panel header to show that folder in your file manager; a session's row menu does the same for its transcript file - selected in its folder, never opened - and for its scratchpad.
+- **Revisit and clean up past sessions** - an *Older* chip (off by default) lists finished sessions that have left the overview - the ones `claude --resume` would show - grouped under their projects and loaded on demand. Its right half sets how far back the listing reaches (1 hour to 30 days, or everything; 24 hours by default), so a session you just closed is not buried under months of old ones. From a past session's row menu you can permanently delete its transcript and subagent files from disk, after a confirmation that names the session it is about to delete. That deletion is the only change the tool ever makes to your Claude Code data, and a running session is never touched (see [PRIVACY.md](PRIVACY.md)).
+
+### Reach and preferences
+- **Light and dark** - follows your system theme, with a one-click toggle in the header.
+- **13 languages** - auto-detected from your system locale (English, German, Spanish, French, Hindi, Indonesian, Italian, Japanese, Korean, Brazilian Portuguese, Ukrainian, Simplified and Traditional Chinese).
+- **Customizable** - an optional settings file tunes the poll interval and window size.
+
+## Requirements
+
+- Windows 10 / 11, or Linux with a freedesktop desktop environment (see [Linux](#linux) below)
+- Claude Code (this tool reads the session data it writes under `~/.claude/`)
+- On Windows: the [Microsoft Edge WebView2 runtime](https://developer.microsoft.com/microsoft-edge/webview2/), pre-installed on current Windows
+- WSL sessions need WSL2 with the distro running, plus the `\\wsl.localhost` UNC share that Windows 11 (or Windows 10 with the Microsoft Store version of WSL) exposes for it. On an older inbox WSL build without that share, the feature quietly finds nothing - see [docs/configuration.md](docs/configuration.md) to turn WSL monitoring off
+- Python 3.10 or newer - required on Linux, and on Windows only to run or build from source; the prebuilt executable bundles its own Python
+
+## Getting started
+
+### Windows
+Download `AgentMonitorForClaude.exe` from the [latest release](https://github.com/jens-duttke/agent-monitor-for-claude/releases) and run it. No installation.
+The executable is code signed, so Windows names *Jens Duttke* as its publisher - the file properties show the signature under *Digital Signatures*.
+
+To run it from source instead, check which Python you have first - it has to be 3.10 or newer:
+
+```sh
+python --version
+```
+
+Then:
+
+```sh
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python -m agent_monitor_for_claude
+```
+
+If `python --version` reports an older release, install a current one from
+[python.org](https://www.python.org/downloads/windows/) and create the environment with its full
+path, for example:
+
+```sh
+C:\Users\you\AppData\Local\Programs\Python\Python313\python.exe -m venv .venv
+```
+
+Do not reach for `py -3` instead - an outdated launcher picks the wrong installation. Delete an
+existing `.venv` before you start again: a virtual environment keeps the Python it was created with.
+
+### Linux
+There is no prebuilt binary: PyInstaller cannot bundle GTK and WebKit reliably, so the app runs from source against the libraries your desktop already ships. Tested on Ubuntu with GNOME.
+
+```sh
+sudo apt install python3-venv python3-gi gir1.2-webkit2-4.1
+
+git clone https://github.com/jens-duttke/agent-monitor-for-claude.git
+cd agent-monitor-for-claude
+
+python3 -m venv --system-site-packages .venv
+.venv/bin/pip install -r requirements.txt
+
+./agent-monitor-for-claude
+```
+
+That last line is the launcher, and it is all you need from then on. It activates nothing and works
+from any directory, so symlink it once for a global command - which also puts it in reach of your
+desktop's application launcher:
+
+```sh
+ln -s ~/agent-monitor-for-claude/agent-monitor-for-claude ~/.local/bin/agent-monitor-for-claude
+```
+
+Two notes specific to Linux:
+
+- **The virtual environment needs `--system-site-packages`.** PyGObject is installed by apt, not by pip; without that flag the app stops at `ModuleNotFoundError: No module named 'gi'`. If you already have a `.venv` created without it, set `include-system-site-packages = true` in `.venv/pyvenv.cfg` rather than recreating it.
+- **Bringing an agent's window to the front goes through X11.** Applications drawn by XWayland - which is where VS Code and most terminals still run in a Wayland session - are found and raised as usual. A window belonging to a native Wayland client cannot be raised, because no Wayland protocol lets one application do that; clicking such an agent does nothing. Everything else works the same either way.
+
+### Uninstalling
+On Windows, delete the executable. On Linux, delete the checkout and its `.venv`.
+
+What either leaves behind is your interface preferences (theme, filters, collapsed panels), in `%LOCALAPPDATA%\AgentMonitorForClaude` on Windows and `~/.local/share/agent-monitor-for-claude` on Linux - delete that folder to remove those too. Linux additionally leaves a lock file in the session's runtime directory, which the system clears at logout. There is nothing else: no installer, no registry entries, no service. See [PRIVACY.md](PRIVACY.md).
+
+## Configuration
+
+All settings are optional. See [docs/configuration.md](docs/configuration.md) for the full reference and the settings-file search order.
+
+## How it works
+
+Agent Monitor reads the session registry and transcript metadata that Claude Code writes locally, and derives each agent's state from the last assistant turn's stop reason plus process liveness. See [docs/how-it-works.md](docs/how-it-works.md) for the details.
+
+## Privacy
+
+No outbound network connections, no credentials, no telemetry. Apart from the session deletion described above, it writes only its own files. [PRIVACY.md](PRIVACY.md) states exactly what is read, what is kept, what is shown, and what is written, and lists the commands and tests to verify each claim yourself.
+
+## Building
+
+The standalone executable is a Windows build; it additionally needs PyInstaller, kept out of the runtime requirements:
+
+```sh
+.venv\Scripts\pip install -r requirements-dev.txt
+.venv\Scripts\python build.py
+```
+Produces `dist/AgentMonitorForClaude.exe`. There is no Linux equivalent - run the app from source there.
+
+Your own build is unsigned. To sign it, install the Windows SDK signing tools and put a `signing.env` next to `build.py` with `SIGNING_THUMBPRINT` (a code signing certificate in your Windows certificate store) and `SIGNING_TIMESTAMP_URL`. The build then signs the executable and verifies the result, and a failure of either stops it.
+
+## Developing
+
+Iterate the UI in a browser, no Python or live session needed: open
+`agent_monitor_for_claude/ui/index.html?mock` (or the file directly via `file://`).
+It renders the showcase data from `ui/dev-mock.js` - a dev-only file that never
+ships in the built executable.
+
+Run the tests with `python -m unittest discover -s tests` and
+`node --test tests/js/logic.test.js tests/js/global-scope.test.js`. Both suites
+run on either system; the tests for the other operating system's backend skip
+themselves, so a green run means everything applicable to yours passed.
+
+## License
+
+[MIT](LICENSE) (c) Jens Duttke

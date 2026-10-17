@@ -1,0 +1,453 @@
+[![awesome](https://awesome.re/badge.svg)](https://awesome.re) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) [![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com) 
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=wendashi/awesome-3D-base-models)
+
+# awesome 3D Generative Models
+Similar to the 2D Generative Model (such as Stable Diffusion, Flux) that builds a bridge between text and images, the 3D Generative Model is a bridge between text/images and 3D data. But the pipeline of 3D creation is **way more complex** than 2D creation. 3D Generative models can be categorized into 3D objects and 3D scene generation (world model).
+
+<img width="2310" height="1170" alt="image" src="https://github.com/user-attachments/assets/c42a3721-6db0-4373-bdd9-ba81a69c68a7" />
+
+[3D Animation Pipeline](https://www.meshy.ai/zh/blog/animation-pipeline): Modeling (Re-Topology / UV Unwrapping / Artist Mesh) → Texture (PBR) → Motion (Rigging & Skinning / Animation / Rendering / Lighting / Simulation)
+
+<img width="2180" height="1516" alt="image" src="https://github.com/user-attachments/assets/13326113-7a83-411b-a42b-9ab995b09bbd" />
+
+## Contents
+- [Review](#section-review)
+- [Modeling - 3D Representation](#section-modeling-3d-representation)
+- [Modeling - VAE For Mesh Reconstruction](#section-modeling-vae-for-mesh-reconstruction)
+- [Modeling / Texture - Flow-matching DiT For Mesh Generation & Texture Generation](#section-modeling-texture-flow-matching-dit)
+- [Modeling - Re-topology / Artist Mesh Generation](#section-modeling-retopology-artist-mesh-generation)
+- [Modeling - UV unwrapping](#section-modeling-uv-unwrapping)
+- [Texture Generation](#section-texture-generation)
+- [Motion - Rigging / Articulation / Dynamics with Physical Property / Animation / Simulation](#section-motion-rigging-articulation-dynamics-animation-simulation)
+- [Acceleration For Mesh Generation](#section-acceleration-mesh-generation)
+- [Post-train of 3D base models](#section-post-train-3d-base-models)
+- [3D Scene Generation (World Models)](#section-3d-scene-generation-world-models)
+  - [Open source](#section-3d-scene-open-source)
+  - [Closed source](#section-3d-scene-closed-source)
+- [Common Metrics](#section-common-metrics)
+- [Benchmark](#section-benchmark)
+
+<a id="section-review"></a>
+## Review
+1. [Feed-Forward-3D](https://fnzhan.com/projects/Feed-Forward-3D/)
+2. [Production-Ready 3D Survey](https://github.com/hitcslj/Awesome-AIGC-3D) 
+3. [Awesome Feed-Forward 3D](https://github.com/ziplab/Awesome-Feed-Forward-3D)
+   <a href="https://github.com/ziplab/Awesome-Feed-Forward-3D" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/ziplab/Awesome-Feed-Forward-3D.svg?style=social" alt="Stars">
+   </a>
+
+<a id="section-modeling-3d-representation"></a>
+## Modeling - 3D Representation
+1. [VecSet (TOG 2023)](https://github.com/1zb/3DShape2VecSet), Used by Hunyuan3D2.1, TripoSG, Step1X-3D)
+   <a href="https://github.com/1zb/3DShape2VecSet" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/1zb/3DShape2VecSet.svg?style=social" alt="Stars">
+   </a>
+2. [(SLat) TRELLIS](https://github.com/microsoft/TRELLIS) (Dec, 2024, CVPR'25)
+3. [Ghost on the Shell: An Expressive Representation of General 3D Shapes (ICLR 2024 Oral)](https://github.com/lzzcd001/GShell/)
+   <a href="https://github.com/lzzcd001/GShell" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/lzzcd001/GShell.svg?style=social" alt="Stars">
+   </a>
+4. [FastMesh: Efficient Artistic Mesh Generation via Component Decoupling](https://jhkim0759.github.io/projects/FastMesh/)
+    <a href="https://github.com/jhkim0759/FastMesh" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/jhkim0759/FastMesh.svg?style=social" alt="Stars">
+   </a>
+5. [Geometry Distributions (ICCV 2025)](https://github.com/1zb/GeomDist)
+   <a href="https://github.com/1zb/GeomDist" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/1zb/GeomDist.svg?style=social" alt="Stars">
+   </a> 
+6. [(VoxSet) LATTICE: Democratize High-Fidelity 3D Generation at Scale](https://lattice3d.github.io/) (Nov, 2025)
+7. [(O-Voxel) TRELLIS.2](https://github.com/microsoft/TRELLIS.2/tree/main/o-voxel) (Dec, 2025 -> CVPR'26 Oral)
+8. [Faithful Contouring](https://github.com/Luo-Yihao/FaithC) (Nov, 2025 -> CVPR'26 Oral)
+9. [FACE: A Face-based Autoregressive Representation for High-Fidelity and Efficient Mesh Generation](https://arxiv.org/abs/2603.01515) (CVPR 2026)
+10. [Mesh BDF: Barycentric Dominance Field for 3D Native Mesh Generation](https://github.com/gaochao-s/MeshBDF) (Jun, 2026)
+    <a href="https://github.com/gaochao-s/MeshBDF" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/gaochao-s/MeshBDF.svg?style=social" alt="Stars">
+    </a>
+
+
+<img width="2498" height="1392" alt="image" src="https://github.com/user-attachments/assets/8501ce82-a499-427c-ab37-60971e5be5d1" />
+
+<a id="section-modeling-vae-for-mesh-reconstruction"></a>
+## Modeling - VAE For Mesh Reconstruction
+1. [Sparc3D](https://github.com/lizhihao6/Sparc3D) (Jun, 2025)
+   <a href="https://github.com/lizhihao6/Sparc3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/lizhihao6/Sparc3D.svg?style=social" alt="Stars">
+   </a>
+2. [TripoSF](https://github.com/VAST-AI-Research/TripoSF) (Mar, 2025)
+   <a href="https://github.com/VAST-AI-Research/TripoSF" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/VAST-AI-Research/TripoSF.svg?style=social" alt="Stars">
+   </a>
+3. [Dora](https://github.com/Seed3D/Dora) (Feb, 2025, CVPR'25)
+   <a href="https://github.com/Seed3D/Dora" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Seed3D/Dora.svg?style=social" alt="Stars">
+   </a>
+
+<a id="section-modeling-texture-flow-matching-dit"></a>
+## Modeling / Texture - Flow-matching DiT For Mesh Generation & Texture Generation
+1. [Ultra3D](https://buaacyw.github.io/ultra3d/) (Jul, 2025)
+2. [Hunyuan3D-2.1](https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1) (Jun, 2025)
+   <a href="https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/Hunyuan3D-2.1.svg?style=social" alt="Stars">
+   </a>
+3. [Hunyuan3D-2](https://github.com/Tencent-Hunyuan/Hunyuan3D-2) (Jan, 2025)
+    <a href="https://github.com/Tencent-Hunyuan/Hunyuan3D-2" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/Hunyuan3D-2.svg?style=social" alt="Stars">
+   </a>
+4. [TripoSG](https://github.com/VAST-AI-Research/TripoSG) (Mar, 2025)
+   <a href="https://github.com/VAST-AI-Research/TripoSG" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/VAST-AI-Research/TripoSG.svg?style=social" alt="Stars">
+   </a>
+5. [Step1X-3D](https://github.com/stepfun-ai/Step1X-3D) (May, 2025) with 🏋️training code & 🔥dataset!
+   <a href="https://github.com/stepfun-ai/Step1X-3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/stepfun-ai/Step1X-3D.svg?style=social" alt="Stars">
+   </a>
+6. [Direct3D-S2](https://github.com/DreamTechAI/Direct3D-S2) (May, 2025)
+   <a href="https://github.com/DreamTechAI/Direct3D-S2" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/DreamTechAI/Direct3D-S2.svg?style=social" alt="Stars">
+   </a>
+7. [Hi3DGen](https://github.com/Stable-X/Stable3DGen) (Apr, 2025 ICCV'25)
+   <a href="https://github.com/Stable-X/Stable3DGen" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Stable-X/Stable3DGen.svg?style=social" alt="Stars">
+   </a>
+8. [TRELLIS](https://github.com/microsoft/TRELLIS) (Dec, 2024, CVPR'25)
+   <a href="https://github.com/microsoft/TRELLIS" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/microsoft/TRELLIS.svg?style=social" alt="Stars">
+   </a>
+9. [UniLat3D](https://github.com/UniLat3D/UniLat3D) (Sep, 2025)
+   <a href="https://github.com/UniLat3D/UniLat3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/UniLat3D/UniLat3D.svg?style=social" alt="Stars">
+   </a>
+10. [UltraShape 1.0](https://github.com/PKU-YuanGroup/UltraShape-1.0)
+    <a href="https://github.com/PKU-YuanGroup/UltraShape-1.0" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/PKU-YuanGroup/UltraShape-1.0.svg?style=social" alt="Stars">
+    </a>
+11. [Trelli2](https://github.com/microsoft/TRELLIS.2) (CVPR'26)
+    <a href="https://github.com/microsoft/TRELLIS.2" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/microsoft/TRELLIS.2.svg?style=social" alt="Stars">
+    </a>
+12. [Pixal3D](https://github.com/TencentARC/Pixal3D) (SIGGRAPH'26)     <a href="https://github.com/TencentARC/Pixal3D" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/TencentARC/Pixal3D.svg?style=social" alt="Stars">
+    </a>
+13. [LATO.2: Factorized 3D Mesh Generation with Vertex and Topology Flow](https://github.com/LoHhhha/LATO.2) (Jul, 2026, Meshy AI)
+    <a href="https://github.com/LoHhhha/LATO.2" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/LoHhhha/LATO.2.svg?style=social" alt="Stars">
+    </a>
+14. [MeshGen: Generating PBR Textured Mesh with Render-Enhanced Auto-Encoder and Generative Data Augmentation](https://github.com/heheyas/MeshGen) (CVPR 2025 Highlight)
+    <a href="https://github.com/heheyas/MeshGen" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/heheyas/MeshGen.svg?style=social" alt="Stars">
+    </a>
+15. [Nexus: Native Mesh Generation with Diffusion](https://s2026.conference-schedule.org/presentation/?id=papers_808&sess=sess121) (SIGGRAPH 2026)
+16. [Cube: A Roblox View of 3D Intelligence](https://github.com/Roblox/cube) (Mar, 2025; v0.5 Jul, 2025)
+    <a href="https://github.com/Roblox/cube" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Roblox/cube.svg?style=social" alt="Stars">
+    </a>
+17. [CubePart: An Open-Vocabulary Part-Controllable 3D Generator](https://cubepart.github.io/) (SIGGRAPH 2026)
+    <a href="https://github.com/Roblox/cube/tree/main/cubepart" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Roblox/cube.svg?style=social" alt="Stars">
+    </a>
+18. [Arbor: Explicit Geometric Conditioning for Controllable 3D Asset Generation](https://github.com/Stability-AI/arbor) (Jun, 2026)
+    <a href="https://github.com/Stability-AI/arbor" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Stability-AI/arbor.svg?style=social" alt="Stars">
+    </a>
+19. [PartLLM: A Unified Multimodal Foundation for 3D Part Segmentation](https://github.com/czvvd/PartLLM) (SIGGRAPH Asia 2026, TOG)
+    <a href="https://github.com/czvvd/PartLLM" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/czvvd/PartLLM.svg?style=social" alt="Stars">
+    </a>
+20. [SAM3D-Part: Interactive Part Selection and Generation from 3D Objects](https://github.com/Jiahao620/sam3d-part) (SIGGRAPH Asia 2026)
+    <a href="https://github.com/Jiahao620/sam3d-part" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Jiahao620/sam3d-part.svg?style=social" alt="Stars">
+    </a>
+21. [GENA3D: Generative Amodal 3D Modeling by Bridging 2D Priors and 3D Coherence](https://colezwhy.github.io/gena3d/) (ECCV 2026)
+    <a href="https://github.com/Colezwhy/GENAmodal3D" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Colezwhy/GENAmodal3D.svg?style=social" alt="Stars">
+    </a>
+
+<a id="section-modeling-retopology-artist-mesh-generation"></a>
+## Modeling - Re-topology / Artist Mesh Generation
+1. [BPT](https://github.com/tencent-hunyuan/bpt) (CVPR' 25)
+   <a href="https://github.com/Tencent-Hunyuan/bpt" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/bpt.svg?style=social" alt="Stars">
+   </a>
+2. [DeepMesh](https://github.com/zhaorw02/DeepMesh) (ICCV' 25)
+   <a href="https://github.com/zhaorw02/DeepMesh" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/zhaorw02/DeepMesh.svg?style=social" alt="Stars">
+   </a>
+3. [MeshMosaic](https://github.com/Xrvitd/MeshMosaic) (CVPR' 26)
+   <a href="https://github.com/Xrvitd/MeshMosaic" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Xrvitd/MeshMosaic.svg?style=social" alt="Stars">
+   </a> 
+4. [SATO](https://github.com/Xrvitd/SATO) (SIGGRAPH' 26)
+   <a href="https://github.com/Xrvitd/SATO" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Xrvitd/SATO.svg?style=social" alt="Stars">
+   </a>
+5. [TriFlow: Generating Artist-Like 3D Mesh Topology via Nearest-Vertex Vector Fields](https://derkleineli.github.io/triflow/) (ECCV 2026)
+   <a href="https://github.com/DerKleineLi/triflow" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/DerKleineLi/triflow.svg?style=social" alt="Stars">
+   </a>
+6. [MeshOctave: Vertex Split-and-Rewire Cascades for Native Mesh Generation](https://maymhappy.github.io/MeshOctave/) (2026)
+   <a href="https://github.com/MayMhappy/MeshOctave" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/MayMhappy/MeshOctave.svg?style=social" alt="Stars">
+   </a>
+7. [TaoFlowForge: Progressive Native Mesh Generation via Cascaded Flow Matching](https://arxiv.org/abs/2609.37139) (2026)
+
+
+<a id="section-modeling-uv-unwrapping"></a>
+## Modeling - UV unwrapping
+1. [Auto-Regressive Surface Cutting](https://victorcheung12.github.io/seamgpt/) (Jun, 2025)
+2. [ArtUV: Artist-style UV Unwrapping](https://chenyg59.github.io/ArtUV/) (Sep, 2025)
+3. [SeamCrafter: Enhancing Mesh Seam Generation for Artist UV Unwrapping via Reinforcement Learning](https://chenyg59.github.io/SeamCrafter/) (Sep, 2025)
+4. [PartUV: Part-Based UV Unwrapping of 3D Meshes](https://github.com/EricWang12/PartUV) (SIGGRAPH Asia'24)
+5. [MeshTailor: Cutting Seams via Generative Mesh Traversal](https://meshtailor.github.io)
+
+
+
+<a id="section-texture-generation"></a>
+## Texture Generation
+1. [SyncMVD](https://github.com/LIU-Yuxin/SyncMVD) (SIGGRAPH Asia'24)
+   <a href="https://github.com/LIU-Yuxin/SyncMVD" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/LIU-Yuxin/SyncMVD.svg?style=social" alt="Stars">
+   </a> 
+2. [TEXGen](https://github.com/CVMI-Lab/TEXGen) (SIGGRAPH Asia'24)
+   <a href="https://github.com/CVMI-Lab/TEXGen" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/CVMI-Lab/TEXGen.svg?style=social" alt="Stars">
+   </a>
+3. [ARM](https://arm-aigc.github.io/)(CVPR'25)
+4. [MaterialAnything](https://github.com/3DTopia/MaterialAnything) (CVPR'25)  <a href="https://github.com/3DTopia/MaterialAnything" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/3DTopia/MaterialAnything.svg?style=social" alt="Stars">
+   </a> 
+5. [MaterialMVP](https://github.com/ZebinHe/MaterialMVP) (ICCV'25)
+   <a href="https://github.com/ZebinHe/MaterialMVP" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/ZebinHe/MaterialMVP.svg?style=social" alt="Stars">
+   </a>
+6. [RomanTex](https://github.com/oakshy/RomanTex) (ICCV'25)
+   <a href="https://github.com/oakshy/RomanTex" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/oakshy/RomanTex.svg?style=social" alt="Stars">
+   </a>
+7. [NaTex: Meet Native Texture Generation](https://github.com/Zeqiang-Lai/NaTex) (Nov 25)
+8. [SeqTex: Generate Mesh Textures in Video Sequence](https://github.com/VAST-AI-Research/SeqTex) (SIGGRAPH Asia'25)
+   <a href="https://github.com/VAST-AI-Research/SeqTex" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/VAST-AI-Research/SeqTex.svg?style=social" alt="Stars">
+   </a>
+9. [Chord: Chain of Rendering Decomposition for PBR Material Estimation from Generated Texture images](https://ubisoft-laforge.github.io/world/chord/) (SIGGRAPH Asia'25)
+   <a href="https://github.com/ubisoft/ubisoft-laforge-chord" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/ubisoft/ubisoft-laforge-chord.svg?style=social" alt="Stars">
+   </a>
+10. [LSRM: High-Fidelity Object-Centric Reconstruction via Scaled Context Windows](https://lzqsd.github.io/LSRM.github.io/)
+11. [VideoNeuMat: Neural Material Extraction from Generative Video Models](https://bowenxueai.github.io/VideoNeuMat/) (SIGGRAPH 2026)
+12. [HKTex: Generating UV-Free Textures for 3D Meshes with Multiscale Heat Kernels](https://circle-group.github.io/research/HeatKernelTextures/) (ECCV 2026 best🥇, Long Oral)
+    <a href="https://github.com/circle-group/hktex" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/circle-group/hktex.svg?style=social" alt="Stars">
+    </a>
+13. [UltraTex: Unleashing 2K Multi-View Diffusion for 3D Texturing](https://github.com/yiboz2001/UltraTex) (SIGGRAPH Asia 2026)
+    <a href="https://github.com/yiboz2001/UltraTex" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/yiboz2001/UltraTex.svg?style=social" alt="Stars">
+    </a>
+14. [SceneHI: High-Resolution 3D-Consistent Scene Texturing with Controllable Illumination](https://github.com/Thanos-DB/SceneHI) (ECCV 2026)
+    <a href="https://github.com/Thanos-DB/SceneHI" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/Thanos-DB/SceneHI.svg?style=social" alt="Stars">
+    </a>
+
+   
+<a id="section-motion-rigging-articulation-dynamics-animation-simulation"></a>
+## Motion - Rigging / Articulation / Dynamics with Physical Property / Animation / Simulation
+1. [Unirig](https://github.com/VAST-AI-Research/UniRig) (SIGGRAPH'25)
+   <a href="https://github.com/VAST-AI-Research/UniRig" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/VAST-AI-Research/UniRig.svg?style=social" alt="Stars">
+   </a>
+2. [AnimateAnyMesh](https://github.com/JarrentWu1031/AnimateAnyMesh)(ICCV'25)
+   <a href="https://github.com/JarrentWu1031/AnimateAnyMesh" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/JarrentWu1031/AnimateAnyMesh.svg?style=social" alt="Stars">
+   </a>
+3. [FreeArt3D: Training-Free Articulated Object Generation using 3D Diffusion](https://github.com/CzzzzH/FreeArt3D)(SIGGRAPH AISA'25)
+   <a href="https://github.com/CzzzzH/FreeArt3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/CzzzzH/FreeArt3D.svg?style=social" alt="Stars">
+   </a>
+4. [Pixie: Physics from Pixels(Aug 2025)](https://github.com/vlongle/pixie)
+   <a href="https://github.com/vlongle/pixie" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/vlongle/pixie.svg?style=social" alt="Stars">
+   </a>
+5. [SAFT: Shape and Appearance of Fabrics from Template via Differentiable Physical Simulations from Monocular Video](https://github.com/vc-bonn/saft) (ICCV 2025)
+   <a href="https://github.com/vc-bonn/saft" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/vc-bonn/saft.svg?style=social" alt="Stars">
+   </a>
+6. [BrickGPT: Generating Physically Stable and Buildable Brick Structures from Text](https://github.com/AvaLovelace1/BrickGPT) (ICCV 2025 Best Paper)
+   <a href="https://github.com/AvaLovelace1/BrickGPT" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/AvaLovelace1/BrickGPT.svg?style=social" alt="Stars">
+   </a>
+7. [PhysX-3D: Physical-Grounded 3D Asset Generation](https://github.com/ziangcao0312/PhysX-3D?tab=readme-ov-file) (NIPS 2025 Spotlight)
+   <a href="https://github.com/ziangcao0312/PhysX-3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/ziangcao0312/PhysX-3D.svg?style=social" alt="Stars">
+   </a>
+8. [PhysX-Anything: Simulation-Ready Physical 3D Assets from Single Image](https://github.com/ziangcao0312/PhysX-Anything)
+9. [PGC: Physics-Based Gaussian Cloth from a Single Pose](https://phys-gaussian-cloth.github.io/)  (CVPR 2025 Highlight)
+10. [PhysAvatar: Learning the Physics of Dressed 3D Avatars from Visual Observations](https://github.com/y-zheng18/PhysAvatar
+) (ECCV 2024)
+11. [DSO: Aligning 3D Generators with Simulation Feedback for Physical Soundness](https://github.com/RuiningLi/dso?tab=readme-ov-file) (ICCV 2025)
+12. [ARDY: Autoregressive Diffusion with Hybrid Representation for Interactive Human Motion Generation](https://research.nvidia.com/labs/sil/projects/ardy/) (SIGGRAPH 2026)
+   <a href="https://github.com/nv-tlabs/ardy" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/nv-tlabs/ardy.svg?style=social" alt="Stars">
+   </a>
+13. [AniGen: Unified S^3 Fields for Animatable 3D Asset Generation](https://yihua7.github.io/AniGen_web/) (SIGGRAPH 2026)
+   <a href="https://github.com/Eirias/anigen" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/Eirias/anigen.svg?style=social" alt="Stars">
+   </a>
+14. [R-DMesh: Video-Guided 3D Animation via Rectified Dynamic Mesh Flow](https://github.com/Tencent-Hunyuan/R-DMesh) (SIGGRAPH 2026)
+   <a href="https://github.com/Tencent-Hunyuan/R-DMesh" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/R-DMesh.svg?style=social" alt="Stars">
+   </a>
+
+<a id="section-acceleration-mesh-generation"></a>
+## Acceleration For Mesh Generation (lightning vecset decoder)
+1. [FlashVDM](https://github.com/Tencent-Hunyuan/FlashVDM) (ICCV' 25)
+   <a href="https://github.com/Tencent-Hunyuan/FlashVDM" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/FlashVDM.svg?style=social" alt="Stars">
+   </a>
+
+<a id="section-post-train-3d-base-models"></a>
+## Post-train of 3D base models
+1. [DeepMesh: Auto-Regressive Artist-Mesh Creation With Reinforcement Learning](https://github.com/zhaorw02/DeepMesh) (ICCV 2025)
+   <a href="https://github.com/zhaorw02/DeepMesh" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/zhaorw02/DeepMesh.svg?style=social" alt="Stars">
+   </a>
+2. [Nabla-R2D3 : Effective and Efficient 3D Diffusion Alignment with 2D Rewards](https://nabla-r2d3.github.io/) (NIPS 2025)
+   <a href="https://github.com/MobiusLqm/Nabla-R2D3" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/MobiusLqm/Nabla-R2D3.svg?style=social" alt="Stars">
+   </a>
+3. [DreamDPO: Aligning Text-to-3D Generation with Human Preferences via Direct Preference Optimization](https://github.com/MobiusLqm/Nabla-R2D3) (ICML 2025)
+   <a href="https://github.com/ZhenglinZhou/DreamDPO" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/ZhenglinZhou/DreamDPO.svg?style=social" alt="Stars">
+   </a>
+
+<a id="section-3d-scene-generation-world-models"></a>
+## 3D Scene Generation (World Models)
+
+<a id="section-3d-scene-open-source"></a>
+### Open source
+1. https://github.com/Tencent-Hunyuan/HY-World-2.0
+2. https://inspatio.github.io/worldfm/
+3. https://research.nvidia.com/labs/sil/projects/lyra2/
+4. https://world-grow.github.io/
+5. https://fantasy-amap.github.io/fantasy-world/
+6. https://worldgen.github.io
+7. https://github.com/quan-meng/seen2scene
+8. https://github.com/nicolasvonluetzow/gaussiangpt
+9. [Code World Model: Coding Agent as World Brain](https://github.com/buaacyw/code-world-model) (Aug, 2026)
+   <a href="https://github.com/buaacyw/code-world-model" title="GitHub Repo">
+     <i class="fab fa-github"></i>
+     <img src="https://img.shields.io/github/stars/buaacyw/code-world-model.svg?style=social" alt="Stars">
+   </a>
+10. [Code-as-World: Agentic Discovery of Executable World Representations for Physical Reasoning](https://github.com/mirros-lab/code-as-world) (Aug, 2026)
+    <a href="https://github.com/mirros-lab/code-as-world" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/mirros-lab/code-as-world.svg?style=social" alt="Stars">
+    </a>
+11. [Dream-Cubed: Controllable Generative Modeling in Minecraft](https://github.com/spatial-intelligence-ai/dream-cubed) (Apr, 2026)
+    <a href="https://github.com/spatial-intelligence-ai/dream-cubed" title="GitHub Repo">
+      <i class="fab fa-github"></i>
+      <img src="https://img.shields.io/github/stars/spatial-intelligence-ai/dream-cubed.svg?style=social" alt="Stars">
+    </a>
+
+<a id="section-3d-scene-closed-source"></a>
+### Closed source
+1. https://marble.worldlabs.ai/
+2. https://spaitial.ai/
+3. https://deepmind.google/models/genie/
+4. https://odyssey.ml/
+5. https://runwayml.com/
+6. https://moonlakeai.com/
+
+<a id="section-common-metrics"></a>
+## Common Metrics
+For mesh
+1. ULIP-T(⬆), ULIP-I(⬆), [ULIP](https://github.com/salesforce/ULIP)
+   <a href="https://github.com/salesforce/ULIP" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/salesforce/ULIP.svg?style=social" alt="Stars">
+   </a>
+2. Uni3D-T(⬆), Uni3D-I(⬆), [Uni3D](https://github.com/baaivision/Uni3D)
+   <a href="https://github.com/baaivision/Uni3D" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/baaivision/Uni3D.svg?style=social" alt="Stars">
+   </a>
+   - code for ULIP/Uni3D: https://github.com/Tencent-Hunyuan/FlashVDM/blob/main/evaluation/app_metric.py
+3. Chamfer Distance (CD⬇) and Normal Consistency (NC⬆) quantify the geometric similarity between reconstructed/generated and ground-truth meshes.
+
+For texture
+1. CLIP-FiD(⬇)
+2. CMMD(⬇)
+3. CLIP-I(⬆)
+4. LPIPS(⬇)
+
+<a id="section-benchmark"></a>
+## Benchmark
+1. [HY3D-Bench](https://github.com/Tencent-Hunyuan/HY3D-Bench) <a href="https://github.com/Tencent-Hunyuan/HY3D-Bench" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/Tencent-Hunyuan/HY3D-Bench.svg?style=social" alt="Stars">
+   </a>
+2. [Meshy-Bench](https://github.com/meshy-dev/meshybench) <a href="https://github.com/meshy-dev/meshybench" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/meshy-dev/meshybench.svg?style=social" alt="Stars">
+   </a>
+3. [Taxon3D](https://github.com/musharna/taxon3d) <a href="https://github.com/musharna/taxon3d" title="GitHub Repo">
+     <i class="fab fa-github"></i> 
+     <img src="https://img.shields.io/github/stars/musharna/taxon3d.svg?style=social" alt="Stars">
+   </a>
+   - live arena: https://taxon3d.org — blind pairwise human evaluation of generated 3D **organisms** (plants, fungi, animals) against CC-licensed reference photographs of the real species. Bradley–Terry with bootstrap CIs; a model without enough comparisons is reported unranked rather than given a point estimate.

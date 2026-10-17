@@ -1,0 +1,681 @@
+# erlang_python
+
+[![Hex.pm](https://img.shields.io/hexpm/v/erlang_python.svg)](https://hex.pm/packages/erlang_python)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-blue.svg)](https://hexdocs.pm/erlang_python)
+[![License](https://img.shields.io/hexpm/l/erlang_python.svg)](https://github.com/benoitc/erlang-python/blob/main/LICENSE)
+
+**Combine Python's ML/AI ecosystem with Erlang's concurrency.**
+
+Run Python code from Erlang or Elixir with true parallelism, async/await support,
+and seamless integration. Build AI-powered applications that scale.
+
+## Overview
+
+erlang_python embeds Python into the BEAM VM, letting you call Python functions,
+evaluate expressions, and stream from generators - all without blocking Erlang
+schedulers.
+
+**Parallelism options:**
+- **Worker mode** (default, recommended) - Works with any Python version. With free-threaded Python (3.13t+), provides true parallelism automatically.
+- **OWN_GIL sub-interpreters** (Python 3.14+) - Each interpreter has its own GIL, true parallelism.
+- **BEAM processes** - Fan out work across lightweight Erlang processes.
+
+Key features:
+- **Process-bound environments** - Each Erlang process gets isolated Python state, enabling OTP-supervised Python actors
+- **Async/await** - Call Python async functions, gather results, stream from async generators
+- **Dirty NIF execution** - Python runs on dirty schedulers, never blocking the BEAM
+- **Elixir support** - Works seamlessly from Elixir via the `:py` module
+- **Bidirectional calls** - Python can call back into registered Erlang/Elixir functions
+- **Message passing** - Python can send messages directly to Erlang processes via `erlang.send()`
+- **Type conversion** - Automatic conversion between Erlang and Python types (including PIDs)
+- **Streaming** - Iterate over Python generators chunk-by-chunk
+- **Virtual environments** - Activate venvs for dependency isolation
+- **AI/ML ready** - Examples for embeddings, semantic search, RAG, and LLMs
+- **Logging integration** - Python logging forwarded to Erlang logger
+- **Distributed tracing** - Span-based tracing from Python code
+- **Security sandbox** - Blocks fork/exec operations that would corrupt the VM
+
+## Requirements
+
+- Erlang/OTP 27+ (tested on OTP 27, 28, and 29)
+- Python 3.12+ (3.13+ for free-threading)
+- C compiler (gcc, clang)
+
+## Building
+
+```bash
+rebar3 compile
+```
+
+To work on erlang_python itself (tests, CI matrix, FreeBSD VM, how to add
+a NIF, an `erlang.*` function, an option, a suite or a guide), see
+[docs/contributing.md](docs/contributing.md).
+
+## Quick Start
+
+### Erlang
+
+```erlang
+%% Start the application
+application:ensure_all_started(erlang_python).
+
+%% Call a Python function
+{ok, 4.0} = py:call(math, sqrt, [16]).
+
+%% With keyword arguments
+{ok, Json} = py:call(json, dumps, [#{foo => bar}], #{indent => 2}).
+
+%% Evaluate an expression
+{ok, 45} = py:eval(<<"sum(range(10))">>).
+
+%% Evaluate with local variables
+{ok, 25} = py:eval(<<"x * y">>, #{x => 5, y => 5}).
+
+%% Async calls with await
+Ref = py:spawn_call(math, factorial, [100]),
+{ok, Result} = py:await(Ref).
+
+%% Fire-and-forget (no result)
+ok = py:cast(erlang, send, [self(), {done, <<"task1">>}]).
+
+%% Streaming from generators
+{ok, [0,1,4,9,16]} = py:stream_eval(<<"(x**2 for x in range(5))">>).
+```
+
+### Elixir
+
+```elixir
+# Start the application
+{:ok, _} = Application.ensure_all_started(:erlang_python)
+
+# Call Python functions
+{:ok, 4.0} = :py.call(:math, :sqrt, [16])
+
+# Evaluate expressions
+{:ok, result} = :py.eval("2 + 2")
+
+# With variables
+{:ok, 100} = :py.eval("x * y", %{x: 10, y: 10})
+
+# Call with keyword arguments
+{:ok, json} = :py.call(:json, :dumps, [%{name: "Elixir"}], %{indent: 2})
+```
+
+## Erlang/Elixir Functions Callable from Python
+
+Register Erlang or Elixir functions that Python code can call back into:
+
+### Erlang
+
+```erlang
+%% Register a function
+py:register_function(my_func, fun([X, Y]) -> X + Y end).
+
+%% Call from Python - native import syntax (recommended)
+{ok, Result} = py:exec(<<"
+from erlang import my_func
+result = my_func(10, 20)
+">>).
+%% Result = 30
+
+%% Or use attribute-style access
+{ok, 30} = py:eval(<<"erlang.my_func(10, 20)">>).
+
+%% Legacy syntax still works
+{ok, 30} = py:eval(<<"erlang.call('my_func', 10, 20)">>).
+
+%% Unregister when done
+py:unregister_function(my_func).
+```
+
+### Elixir
+
+```elixir
+# Register an Elixir function
+:py.register_function(:factorial, fn [n] ->
+  Enum.reduce(1..n, 1, &*/2)
+end)
+
+# Call from Python - native import syntax
+{:ok, 3628800} = :py.exec("""
+from erlang import factorial
+result = factorial(10)
+""")
+
+# Or use attribute-style access
+{:ok, 3628800} = :py.eval("erlang.factorial(10)")
+```
+
+### Python Calling Syntax
+
+From Python code, registered Erlang functions can be called in three ways:
+
+```python
+# 1. Import syntax (most Pythonic)
+from erlang import my_func
+result = my_func(10, 20)
+
+# 2. Attribute syntax
+import erlang
+result = erlang.my_func(10, 20)
+
+# 3. Explicit call (legacy)
+import erlang
+result = erlang.call('my_func', 10, 20)
+```
+
+All three methods are equivalent. The import and attribute syntaxes provide
+a more natural Python experience.
+
+### Reentrant Callbacks
+
+Python→Erlang→Python callbacks are fully supported. When Python code calls
+an Erlang function that in turn calls back into Python, the system handles
+this transparently without deadlocking:
+
+```erlang
+%% Register an Erlang function that calls Python
+py:register_function(double_via_python, fun([X]) ->
+    {ok, Result} = py:call('__main__', double, [X]),
+    Result
+end).
+
+%% Define Python functions
+py:exec(<<"
+def double(x):
+    return x * 2
+
+def process(x):
+    from erlang import call
+    # This calls Erlang, which calls Python's double()
+    doubled = call('double_via_python', x)
+    return doubled + 1
+">>).
+
+%% Test the full round-trip
+{ok, 21} = py:call('__main__', process, [10]).
+%% 10 → double_via_python → double(10)=20 → +1 = 21
+```
+
+While the Erlang callback runs, the context thread keeps serving requests
+for its context, so the callback's own `py:call` runs there and nesting
+works at any depth. The callback shares the caller's Python namespace,
+which is how it can see `double`. No dirty scheduler is held meanwhile.
+
+## Shared State Between Workers
+
+Python workers don't share namespace state, but you can share data via the
+built-in state API:
+
+### From Python
+
+```python
+from erlang import state_set, state_get, state_delete, state_keys
+from erlang import state_incr, state_decr
+
+# Store data (survives across calls, shared between workers)
+state_set('my_key', {'data': [1, 2, 3], 'count': 42})
+
+# Retrieve data
+value = state_get('my_key')  # {'data': [1, 2, 3], 'count': 42}
+
+# Atomic counters (thread-safe, great for metrics)
+state_incr('requests')       # returns 1
+state_incr('requests', 10)   # returns 11
+state_decr('requests')       # returns 10
+
+# List keys
+keys = state_keys()  # ['my_key', 'requests', ...]
+
+# Delete
+state_delete('my_key')
+```
+
+### From Erlang/Elixir
+
+```erlang
+%% Store and fetch
+py:state_store(<<"my_key">>, #{value => 42}).
+{ok, #{value := 42}} = py:state_fetch(<<"my_key">>).
+
+%% Atomic counters
+1 = py:state_incr(<<"hits">>).
+11 = py:state_incr(<<"hits">>, 10).
+10 = py:state_decr(<<"hits">>).
+
+%% List keys and clear
+Keys = py:state_keys().
+py:state_clear().
+```
+
+This is backed by ETS with `{write_concurrency, true}`, so counters are atomic and fast.
+
+## Process-Bound Python Environments
+
+Each Erlang process gets its own isolated Python namespace. Variables, imports, and objects defined in one process are invisible to others, even when using the same interpreter.
+
+```erlang
+%% Process A defines state
+spawn(fun() ->
+    Ctx = py:context(1),
+    ok = py:exec(Ctx, <<"counter = 0">>),
+    {ok, 0} = py:eval(Ctx, <<"counter">>)
+end).
+
+%% Process B - same context, but isolated namespace
+spawn(fun() ->
+    Ctx = py:context(1),
+    %% 'counter' is undefined here - different process
+    {error, _} = py:eval(Ctx, <<"counter">>)
+end).
+```
+
+This enables OTP-style patterns for Python:
+
+```erlang
+-module(py_counter).
+-behaviour(gen_server).
+
+init([]) ->
+    Ctx = py:context(),
+    ok = py:exec(Ctx, <<"
+class Counter:
+    def __init__(self): self.value = 0
+    def incr(self): self.value += 1; return self.value
+
+counter = Counter()
+">>),
+    {ok, #{ctx => Ctx}}.
+
+handle_call(incr, _From, #{ctx := Ctx} = State) ->
+    {ok, Value} = py:eval(Ctx, <<"counter.incr()">>),
+    {reply, Value, State}.
+```
+
+Resetting Python state is simple: terminate the process. Supervisors can restart it with a fresh environment. No need for manual cleanup.
+
+See [Process-Bound Environments](docs/process-bound-envs.md) for patterns like ML pipelines, stateful actors, and supervision strategies.
+
+## Async/Await Support
+
+Call Python async functions without blocking:
+
+```erlang
+%% Call an async function
+Ref = py:async_call(aiohttp, get, [<<"https://api.example.com/data">>]),
+{ok, Response} = py:async_await(Ref).
+
+%% Gather multiple async calls concurrently
+{ok, [Users, Posts, Comments]} = py:async_gather([
+    {aiohttp, get, [<<"https://api.example.com/users">>]},
+    {aiohttp, get, [<<"https://api.example.com/posts">>]},
+    {aiohttp, get, [<<"https://api.example.com/comments">>]}
+]).
+```
+
+## Parallel Execution with Sub-interpreters
+
+True parallelism without GIL contention using Python 3.14+ OWN_GIL sub-interpreters:
+
+```erlang
+%% Execute multiple calls in parallel across OWN_GIL sub-interpreters
+%% Requires Python 3.14+
+{ok, Results} = py:parallel([
+    {math, factorial, [100]},
+    {math, factorial, [200]},
+    {math, factorial, [300]},
+    {math, factorial, [400]}
+]).
+%% Each call runs in its own interpreter with its own GIL
+```
+
+For Python 3.12/3.13 the public modes are `worker` (default) and `owngil` (Python 3.14+ only). Earlier versions run all contexts under the shared main interpreter via dedicated worker threads — namespace isolation between contexts is local-dict based, not via subinterpreters.
+
+## Parallel Processing with BEAM Processes
+
+Leverage Erlang's lightweight processes for massive parallelism:
+
+```erlang
+%% Register parallel map function
+py:register_function(parallel_map, fun([FuncName, Items]) ->
+    Parent = self(),
+    Refs = [begin
+        Ref = make_ref(),
+        spawn(fun() ->
+            Result = execute(FuncName, Item),
+            Parent ! {Ref, Result}
+        end),
+        Ref
+    end || Item <- Items],
+    [receive {Ref, R} -> R after 5000 -> timeout end || Ref <- Refs]
+end).
+
+%% Call from Python - processes 10 items in parallel
+{ok, Results} = py:eval(
+    <<"__import__('erlang').call('parallel_map', 'compute', items)">>,
+    #{items => lists:seq(1, 10)}
+).
+```
+
+**Benchmark Results** (from `examples/erlang_concurrency.erl`):
+```
+Sequential: 10 Python calls × 100ms each = 1.01 seconds
+Parallel:   10 BEAM processes calling Python = 0.10 seconds
+```
+
+The speedup is linear with the number of items when work is I/O-bound or
+distributed across sub-interpreters.
+
+## Virtual Environment Support
+
+```erlang
+%% Activate a venv
+ok = py:activate_venv(<<"/path/to/venv">>).
+
+%% Use packages from venv
+{ok, Model} = py:call(sentence_transformers, 'SentenceTransformer', [<<"all-MiniLM-L6-v2">>]).
+
+%% Deactivate when done
+ok = py:deactivate_venv().
+```
+
+## Logging and Tracing
+
+### Python Logging to Erlang Logger
+
+Forward Python `logging` messages to Erlang's `logger`:
+
+```erlang
+%% Configure Python logging
+ok = py:configure_logging(#{level => info}).
+
+%% Python logs now appear in Erlang logger
+ok = py:exec(<<"
+import logging
+logging.info('Hello from Python!')
+logging.warning('Something needs attention')
+">>).
+```
+
+From Python, you can also set up logging explicitly:
+
+```python
+import erlang
+erlang.setup_logging(level=20)  # 20 = INFO
+```
+
+### Distributed Tracing
+
+Collect trace spans from Python code:
+
+```erlang
+%% Enable tracing
+ok = py:enable_tracing().
+
+%% Run Python code with spans
+ok = py:exec(<<"
+import erlang
+
+with erlang.Span('process-request', user_id=123):
+    with erlang.Span('query-database'):
+        pass  # database work
+    with erlang.Span('format-response'):
+        pass  # formatting work
+">>).
+
+%% Retrieve collected spans
+{ok, Spans} = py:get_traces().
+%% Spans = [#{name => <<"query-database">>, status => ok, duration_us => 42, ...}, ...]
+
+%% Clean up
+ok = py:clear_traces().
+ok = py:disable_tracing().
+```
+
+Use the `@erlang.trace()` decorator for automatic function tracing:
+
+```python
+import erlang
+
+@erlang.trace()
+def my_function():
+    return compute_something()
+```
+
+See [docs/logging.md](docs/logging.md) for details.
+
+## Examples
+
+The `examples/` directory contains runnable demonstrations:
+
+### Semantic Search
+```bash
+# Setup
+python3 -m venv /tmp/ai-venv
+/tmp/ai-venv/bin/pip install sentence-transformers numpy
+
+# Run
+escript examples/semantic_search.erl
+```
+
+### RAG (Retrieval-Augmented Generation)
+```bash
+# Setup (also install Ollama and pull a model)
+/tmp/ai-venv/bin/pip install sentence-transformers numpy requests
+ollama pull llama3.2
+
+# Run
+escript examples/rag_example.erl
+```
+
+### AI Chat
+```bash
+escript examples/ai_chat.erl
+```
+
+### Erlang Concurrency from Python
+```bash
+# Demonstrates 10x speedup with BEAM processes
+escript examples/erlang_concurrency.erl
+```
+
+### Elixir Integration
+```bash
+elixir --erl "-pa _build/default/lib/erlang_python/ebin" examples/elixir_example.exs
+```
+
+### Logging and Tracing
+```bash
+escript examples/logging_example.erl
+```
+
+## API Reference
+
+### Function Calls
+
+```erlang
+{ok, Result} = py:call(Module, Function, Args).
+{ok, Result} = py:call(Module, Function, Args, KwArgs).
+{ok, Result} = py:call(Module, Function, Args, KwArgs, Timeout).
+
+%% Async with result
+Ref = py:spawn_call(Module, Function, Args).
+{ok, Result} = py:await(Ref).
+{ok, Result} = py:await(Ref, Timeout).
+
+%% Fire-and-forget (no result returned)
+ok = py:cast(Module, Function, Args).
+```
+
+### Expression Evaluation
+
+```erlang
+{ok, 42} = py:eval(<<"21 * 2">>).
+{ok, 100} = py:eval(<<"x * y">>, #{x => 10, y => 10}).
+{ok, Result} = py:eval(Expression, Locals, Timeout).
+```
+
+### Streaming
+
+```erlang
+{ok, Chunks} = py:stream(Module, GeneratorFunc, Args).
+{ok, [0,1,4,9,16]} = py:stream_eval(<<"(x**2 for x in range(5))">>).
+```
+
+### Callbacks
+
+```erlang
+py:register_function(Name, fun([Args]) -> Result end).
+py:register_function(Name, Module, Function).
+py:unregister_function(Name).
+```
+
+### Memory and GC
+
+```erlang
+{ok, Stats} = py:memory_stats().
+{ok, Collected} = py:gc().
+ok = py:tracemalloc_start().
+ok = py:tracemalloc_stop().
+```
+
+### Logging
+
+```erlang
+ok = py:configure_logging().
+ok = py:configure_logging(#{level => info, format => <<"%(name)s: %(message)s">>}).
+```
+
+### Tracing
+
+```erlang
+ok = py:enable_tracing().
+ok = py:disable_tracing().
+{ok, Spans} = py:get_traces().
+ok = py:clear_traces().
+```
+
+## Type Mappings
+
+### Erlang to Python
+
+| Erlang | Python |
+|--------|--------|
+| `integer()` | `int` |
+| `float()` | `float` |
+| `binary()` | `str` |
+| `atom()` | `str` |
+| `true` / `false` | `True` / `False` |
+| `none` / `nil` | `None` |
+| `list()` | `list` |
+| `tuple()` | `tuple` |
+| `map()` | `dict` |
+
+### Python to Erlang
+
+| Python | Erlang |
+|--------|--------|
+| `int` | `integer()` |
+| `float` | `float()` |
+| `str` | `binary()` |
+| `bytes` | `binary()` |
+| `True` / `False` | `true` / `false` |
+| `None` | `none` |
+| `list` | `list()` |
+| `tuple` | `tuple()` |
+| `dict` | `map()` |
+
+## Configuration
+
+```erlang
+%% sys.config
+[
+  {erlang_python, [
+    {num_contexts, 8},          %% Number of contexts (default: schedulers)
+    {context_mode, worker},     %% worker | owngil
+    {max_concurrent, 17}        %% Max concurrent operations (default: schedulers * 2 + 1)
+  ]}
+].
+```
+
+## Execution Modes
+
+### Context Modes
+
+When creating Python contexts, you can choose the execution mode:
+
+| Mode | Python Version | Description |
+|------|----------------|-------------|
+| `worker` | Any | Dedicated pthread per context, main interpreter namespace (default) |
+| `owngil` | 3.14+ | Dedicated pthread + subinterpreter with its own GIL, true parallelism |
+| `isolated` | Any | CPython in a child OS process: killable, rlimit-bounded, crash-contained |
+
+```erlang
+%% Default: worker mode (recommended)
+%% With free-threaded Python (3.13t+), provides true parallelism automatically
+{ok, Ctx} = py_context:new(#{}).
+
+%% OWN_GIL mode for true parallelism (Python 3.14+ required)
+%% Each context runs in its own pthread with independent GIL
+{ok, Ctx} = py_context:new(#{mode => owngil}).
+
+%% Isolated mode: a child process per context. A stuck call is killed, a
+%% segfault only takes the child down, rlimits bound memory and CPU.
+{ok, Ctx} = py_context:new(#{mode => isolated, kill_after => 1000,
+                             rlimits => #{as => 512 * 1024 * 1024}}).
+```
+
+**Isolated mode** is the only mode with a hard bound: `py_context:interrupt/1`
+stops a blocking C call, and `SIGKILL` is the backstop. It costs a process per
+context (about 16 MB and 40 ms to start) and roughly twice the call latency.
+Bulk data crosses through shared memory (`py_shm`, with the optional
+[iommap](https://hex.pm/packages/iommap) dependency). See
+[Isolated Contexts](docs/isolated.md).
+
+**Worker mode is recommended** because it works with any Python version and automatically benefits from free-threaded Python (3.13t+) when available. Each context owns a dedicated pthread, providing stable thread affinity for libraries with thread-local state (numpy, torch, tensorflow).
+
+**Why OWN_GIL requires Python 3.14+**: Some C extensions (e.g., `_decimal`, `numpy`) have global state bugs in sub-interpreters on Python 3.12/3.13. These are fixed in Python 3.14.
+
+### Runtime Detection
+
+Check the current execution mode (mirrors the `context_mode` application env):
+```erlang
+py:execution_mode().  %% => worker | owngil
+```
+
+| Mode | Python Version | Parallelism |
+|------|----------------|-------------|
+| `worker` (default) | Any | One pthread per context; true parallelism on free-threaded 3.13t+ |
+| `owngil` | 3.14+ | Per-interpreter GIL, true parallelism across contexts |
+| `isolated` | Any | One OS process per context, parallel and failure-isolated |
+
+## Error Handling
+
+```erlang
+{error, {'NameError', "name 'x' is not defined"}} = py:eval(<<"x">>).
+{error, {'ZeroDivisionError', "division by zero"}} = py:eval(<<"1/0">>).
+{error, timeout} = py:eval(<<"sum(range(10**9))">>, #{}, 100).
+```
+
+## Documentation
+
+- [Architecture](docs/architecture.md), [Code map](docs/code-map.md), [Glossary](docs/glossary.md) - how the pieces fit
+- [Getting Started](docs/getting-started.md)
+- [Process-Bound Environments](docs/process-bound-envs.md) - Isolated Python state per Erlang process
+- [AI Integration Guide](docs/ai-integration.md)
+- [Type Conversion](docs/type-conversion.md)
+- [Context Affinity](docs/context-affinity.md)
+- [Scalability](docs/scalability.md)
+- [Streaming](docs/streaming.md)
+- [Threading](docs/threading.md)
+- [Logging and Tracing](docs/logging.md)
+- [Asyncio Event Loop](docs/asyncio.md) - Erlang-native asyncio with TCP/UDP support
+- [Worker Loops](docs/workers.md) - Long-lived loops in owngil contexts, serving on sockets Erlang owns
+- [Isolated Contexts](docs/isolated.md) - Python in a child process: kill, rlimits, crash containment
+- [Reactor](docs/reactor.md) - FD-based protocol handling
+- [Security](docs/security.md) - Sandbox and blocked operations
+- [Changelog](https://github.com/benoitc/erlang-python/releases)
+
+## License
+
+Apache-2.0

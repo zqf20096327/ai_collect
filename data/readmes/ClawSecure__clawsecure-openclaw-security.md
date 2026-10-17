@@ -1,0 +1,206 @@
+# ClawSecure — OpenClaw Security Scanner & Audit Platform
+
+[![ClawSecure — #2 Product of the Day on Product Hunt](product-hunt-banner.png)](https://www.producthunt.com/products/clawsecure)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Website](https://img.shields.io/badge/Website-clawsecure.ai-brightgreen)](https://www.clawsecure.ai)
+[![Agents Audited](https://img.shields.io/badge/Agents_Audited-3%2C000%2B-orange)](https://www.clawsecure.ai/registry)
+[![OWASP ASI](https://img.shields.io/badge/OWASP_ASI-10%2F10_Coverage-red)](https://www.clawsecure.ai/blog/owasp-asi-top-10-guide)
+[![Free Tools](https://img.shields.io/badge/Free_Tools-ShutUp_Tabs-blueviolet)](https://github.com/ClawSecure/shutup-tabs)
+
+### ClawSecure's Global Threat Monitor
+
+[![ClawSecure Global Threat Monitor](threat-map-preview.webp)](https://clawsecure.github.io/clawsecure-openclaw-security/)
+
+> **[Launch Interactive Threat Monitor](https://clawsecure.github.io/clawsecure-openclaw-security/)** -- 1.6 million packages install across the OpenClaw ecosystem every week. A new agent deploys every 2.7 seconds. 41% ship dangerous. Watch the global threat surface grow in real time.
+
+🛡️ **ClawSecure is the independent integrity layer for the OpenClaw ecosystem** — a free [OpenClaw security scanner](https://www.clawsecure.ai) and audit platform purpose-built for AI agent skills and workflows. We've audited 3,000+ skills from the community-curated [awesome-openclaw-skills](https://github.com/punkpeye/awesome-openclaw-skills) list and the [openclaw/skills](https://github.com/openclaw/skills) repository, covering all 10 OWASP ASI Top 10 security categories with our proprietary 3-Layer Audit Protocol.
+
+🔧 **Free OpenClaw Developer Tools by ClawSecure:** We also ship free, open-source tools for the OpenClaw ecosystem. **[ShutUp Tabs](https://github.com/ClawSecure/shutup-tabs)** -- auto-closes the diff tabs Claude Code force-opens on every file edit. Works in VS Code, Cursor, Windsurf, Antigravity, and all VS Code forks. **[Railgun](https://github.com/ClawSecure/railgun)** -- deterministic agent orchestration that won't run up a $47K bill. YAML pipelines with runtime limits, concurrency caps, and per-step observability. **[Claude Timestamps](https://github.com/ClawSecure/claude-timestamps)** -- live timestamped session transcripts for Claude Code in VS Code, across all workspaces. New tools ship weekly. [See all free tools.](https://github.com/ClawSecure/openclaw-developer-tools)
+
+---
+
+## Table of Contents
+
+- [The OpenClaw Security Problem](#the-openclaw-security-problem)
+- [OpenClaw Security Audit Features](#openclaw-security-audit-features)
+- [Quick Start — Scan an OpenClaw Skill](#quick-start--scan-an-openclaw-skill)
+- [OpenClaw Security Clearance API](#openclaw-security-clearance-api)
+- [OWASP ASI Top 10 Coverage for OpenClaw](#owasp-asi-top-10-coverage-for-openclaw)
+- [Why ClawSecure for OpenClaw Security](#why-clawsecure-for-openclaw-security)
+- [OpenClaw Security Research and Reports](#openclaw-security-research-and-reports)
+- [Contributing to OpenClaw Security](#contributing-to-openclaw-security)
+- [Free Developer Tools by ClawSecure](#free-developer-tools-by-clawsecure)
+- [About ClawSecure](#about-clawsecure)
+
+---
+
+## The OpenClaw Security Problem
+
+OpenClaw is the fastest-growing open-source software in history and the leading AI agent framework, with 332,000+ GitHub stars, 1.65M npm downloads per week, and 300-500K active users. That growth has made it a high-value target. ClawSecure's audit of the most popular skills found that **41% contain at least one security vulnerability** -- ranging from credential harvesting to unauthorized network calls.
+
+The threats facing OpenClaw users go beyond traditional malware. Palo Alto Networks (2026) identified the **Lethal Trifecta** — the convergence of private data access, untrusted content exposure, and external communication capabilities — as the defining risk pattern for AI agents. OpenClaw exhibits all three by design.
+
+Key OpenClaw vulnerability patterns ClawSecure detects include:
+
+- **ClawHavoc** — A coordinated malware campaign delivering credential stealers through professional-looking ClawHub skills
+- **Supply chain poisoning** — Malicious dependencies injected into skill packages targeting npm and Python ecosystems
+- **Sleeper agent attacks** — Skills that pass initial inspection but receive malicious updates post-installation
+- **Prompt injection** — Hidden instructions embedded in skill metadata that manipulate agent behavior
+- **Credential exfiltration** — Skills that harvest API keys, OAuth tokens, and plaintext secrets from OpenClaw configuration files
+
+Traditional malware scanners miss these threats because they lack context about how OpenClaw agents operate. An AI skill vulnerability checker needs to understand that clipboard access, shell execution, and screenshot capture are standard agent capabilities — not automatic red flags.
+
+---
+
+## OpenClaw Security Audit Features
+
+ClawSecure provides the only complete security solution covering all 10 OWASP ASI categories for OpenClaw agents. Every audit runs through our proprietary 3-Layer Audit Protocol:
+
+<!-- TODO: Replace with production architecture diagram from Graphics Chat -->
+![ClawSecure 3-Layer Audit Protocol architecture diagram for OpenClaw security — showing Layer 1 proprietary AI agent threat intelligence, Layer 2 advanced static and behavioral analysis, and Layer 3 supply chain security scanning across the OpenClaw ecosystem](docs/images/clawsecure-3-layer-audit-architecture.png)
+
+**Layer 1 — Proprietary Threat Intelligence**
+ClawSecure's proprietary engine analyzes skills against 55+ OpenClaw-specific threat patterns, including ClawHavoc detection, ReDoS vulnerabilities, and Context-Aware Intelligence that differentiates real threats from normal agent capabilities.
+
+**Layer 2 — Advanced Static & Behavioral Analysis**
+Deep code analysis examining execution patterns, data flow, permission requests, and behavioral indicators across skill source code, metadata, and bundled scripts.
+
+**Layer 3 — Supply Chain Security**
+Comprehensive dependency auditing across npm, PyPI, and other package ecosystems, cross-referencing known CVEs and vulnerability databases to catch poisoned dependencies before they execute.
+
+### Full Capability List
+
+| Capability | Description |
+|---|---|
+| **3-Layer Audit Protocol** | Proprietary threat intelligence, advanced static and behavioral code analysis, and supply chain dependency scanning working in concert — the only OpenClaw security audit covering all three attack surfaces |
+| **OWASP ASI Top 10 Scanner** | Comprehensive OpenClaw security coverage across all 10 agentic security categories defined by the OWASP Agentic Security Initiative — from agent goal hijack and tool misuse to data exfiltration and agent persistence |
+| **Watchtower 24/7 Monitoring** | Automated hash-drift detection with instant re-audit on code changes — 3,000+ OpenClaw skills monitored continuously for post-installation tampering, sleeper activation, and unauthorized modifications |
+| **Security Clearance API** | Programmatic real-time integrity verification for developers and platforms — verify any OpenClaw agent's security status, score, and hash match before granting access to sensitive data or tools |
+| **Context-Aware Intelligence** | Ecosystem-specific threat classification that differentiates real threats from standard OpenClaw agent capabilities — eliminates false positives that generic malware scanners produce on legitimate AI agent tools |
+| **Anti-Sleeper Agent Detection** | Continuous OpenClaw security monitoring catches post-installation code modifications — detects skills that pass initial inspection but receive malicious updates after deployment |
+| **ClawHavoc Detection** | Purpose-built detection for the ClawHavoc malware family — identifies C2 callback patterns, credential harvesting routines, and malicious domain connections targeting OpenClaw users |
+| **AI Skill Vulnerability Checker** | 55+ threat patterns purpose-built for AI agent skill analysis — including prompt injection, eval() abuse, base64 obfuscation, data exfiltration, and ReDoS vulnerabilities |
+| **Verified Agent Registry** | Public searchable directory of 3,000+ audited OpenClaw agents with category filtering, score ranges, and featured sections — skills scoring 80+ earn the ClawSecure Verified badge |
+| **Free Web-Based Scanning** | No installation required — paste any ClawHub skill URL, GitHub link, or skill name, or upload a zip file and get a full OpenClaw Security Audit Report in under 30 seconds |
+| **Pre-Installation Verification** | Scan any OpenClaw skill before installing it — verify security status via the web scanner, Security Clearance API, or Verified Agent Registry before granting agent access to your system |
+| **CVE Detection & Permission Scoring** | CVE-2026-25253 detection, config.json permission analysis, and risk scoring for OpenClaw skill configuration files — catches dangerous permission escalation patterns in AI agent setups |
+| **SOUL.md & MEMORY.md Security** | Analyzes OpenClaw agent identity and memory configuration files for prompt injection, unauthorized instruction overrides, and persistence manipulation attempts |
+| **Supply Chain Vulnerability Scanning** | Full npm and PyPI dependency tree scanning against CVE databases — every package checked for known vulnerabilities, unpinned versions flagged, poisoned dependencies detected across the OpenClaw ecosystem |
+| **SHA-256 Tamper Detection** | Cryptographic content hashing across all tracked skills — enables hash-match verification through the Security Clearance API and powers Watchtower integrity monitoring for OpenClaw security |
+| **Shareable Security Audit Reports** | Public report pages for every scanned skill with unique URLs — share OpenClaw security audit results with teams, embed in documentation, or link from skill READMEs for transparency |
+| **3,000+ Curated Audit Database** | Skills audited from the community-curated awesome-openclaw-skills list and the openclaw/skills repository — the largest public security analysis of the OpenClaw ecosystem |
+
+---
+
+## Quick Start — Scan an OpenClaw Skill
+
+**Option 1: Scan via the web interface**
+
+Visit the [OpenClaw security scanner](https://www.clawsecure.ai/#scan) and paste any ClawHub skill URL or upload a skill zip file. Results are delivered in seconds as a full Security Audit Report.
+
+<!-- TODO: Replace with production scan result screenshot from Graphics Chat -->
+![ClawSecure OpenClaw Security Audit Report example showing AI agent vulnerability scan results with security score, OWASP ASI category findings, and AI skill vulnerability checker threat detection across all 10 security categories](docs/images/clawsecure-security-audit-report-example.png)
+
+**Option 2: Use the Security Clearance API**
+
+For programmatic OpenClaw security automation, integrate the [Security Clearance API](https://www.clawsecure.ai/marketplace) into your workflow to verify agent integrity before granting access to sensitive data or actions. See the [full API documentation](docs/API.md) for details.
+
+**Option 3: Browse the Registry**
+
+Explore [3,000+ audited OpenClaw agents](https://www.clawsecure.ai/registry) in the Verified Agent Registry. Filter by category, security score, or verification status to find trusted skills for your workflows.
+
+---
+
+## OpenClaw Security Clearance API
+
+ClawSecure offers a free Security Clearance API that returns the security verdict for a named skill. Its current contract (request fields, statuses, errors and rate limits) is published by the API itself: `curl -H 'User-Agent: your-app-name/1.0' https://www.clawsecure.ai/api/v1/clearance` (send a User-Agent that names your application). See [docs/API.md](docs/API.md).
+
+---
+
+## OWASP ASI Top 10 Coverage for OpenClaw
+
+ClawSecure provides comprehensive coverage across all 10 categories of the OWASP Agentic Security Initiative (ASI) Top 10 — the emerging security standard for AI agent systems.
+
+<!-- TODO: Replace with production OWASP ASI visual from Graphics Chat -->
+![ClawSecure OWASP ASI Top 10 coverage grid for OpenClaw security — all 10 agentic security categories covered including agent goal hijack, tool misuse, supply chain attacks, unsafe code execution, rogue agents, data exfiltration, inter-agent communication, cascading failures, sensitive data exposure, and agent persistence](docs/images/clawsecure-owasp-asi-coverage-grid.png)
+
+| # | OWASP ASI Category | ClawSecure Coverage |
+|---|---|---|
+| ASI-01 | Agent Goal Hijack | Prompt injection detection in skill metadata, SKILL.md files, and bundled scripts |
+| ASI-02 | Tool Misuse | Permission analysis and capability auditing for system-level tool access |
+| ASI-03 | Supply Chain Attacks | Layer 3 dependency scanning across npm, PyPI, and bundled packages |
+| ASI-04 | Unsafe Code Execution | Static analysis of shell commands, eval patterns, and code generation |
+| ASI-05 | Rogue Agents | Behavioral fingerprinting and intent classification via Context-Aware Intelligence |
+| ASI-06 | Data Exfiltration | Network call analysis detecting unauthorized data transmission patterns |
+| ASI-07 | Inter-Agent Communication | Workflow handshake analysis for multi-agent swarm security |
+| ASI-08 | Cascading Failures | Dependency chain analysis and supply chain cascade prevention |
+| ASI-09 | Sensitive Data Exposure | Credential and secret detection in config files, environment variables, and memory |
+| ASI-10 | Agent Persistence | Watchtower hash-drift monitoring for post-installation integrity verification |
+
+For a detailed explanation of each category and how ClawSecure maps findings to the OWASP ASI framework, see [docs/OWASP-ASI.md](docs/OWASP-ASI.md). For the complete guide, read [OWASP ASI Top 10 Explained for OpenClaw Users](https://www.clawsecure.ai/blog/owasp-asi-top-10-guide) on our blog.
+
+---
+
+## Why ClawSecure for OpenClaw Security
+
+**Generic scanners don't understand OpenClaw.** Traditional malware scanners flag legitimate agent tools as suspicious because they lack ecosystem context. A clipboard-access permission that's standard for an OpenClaw productivity skill gets flagged as "potentially malicious" by generic scanners — creating noise that drowns out real threats.
+
+ClawSecure's Context-Aware Intelligence understands the OpenClaw ecosystem and differentiates real threats from normal agent capabilities. When we audited OpenClaw's own `peekaboo` skill, generic scanners flagged it as suspicious. ClawSecure gave it a 95 (Safe) — because we understand that system-level capabilities like clipboard access and shell execution are standard for any useful OpenClaw agent.
+
+**Static scans aren't enough.** A skill that passes inspection today can receive a malicious update tomorrow. ClawSecure's Watchtower monitors all 3,000+ tracked skills 24/7 and automatically re-audits any skill whose code changes. Within 24 hours of enabling Watchtower, we detected 35 skills with modified code — and 22.9% of all tracked skills have recorded at least one hash change since initial auditing.
+
+**No other tool covers everything.** ClawSecure is the only OpenClaw audit tool delivering 10/10 OWASP ASI coverage, real-time integrity monitoring, runtime verification via the Security Clearance API, and an AI skill vulnerability checker with 55+ threat patterns purpose-built for the agentic era.
+
+---
+
+## OpenClaw Security Research and Reports
+
+- [**41% of Popular OpenClaw Skills Have Security Vulnerabilities**](https://www.clawsecure.ai/blog/41-percent-openclaw-skills-vulnerabilities) — Flagship research from the largest public security audit of the OpenClaw ecosystem
+- [**ClawHavoc Explained: The Malware Family Targeting OpenClaw Agents**](https://www.clawsecure.ai/blog/clawhavoc-explained) — Deep dive into credential harvesting, C2 callbacks, and the ClawHavoc campaign
+- [**OWASP ASI Top 10 Explained for OpenClaw Users**](https://www.clawsecure.ai/blog/owasp-asi-top-10-guide) — Comprehensive guide to all 10 agentic security risk categories
+- [**The Sleeper Agent Problem: How Safe Skills Turn Dangerous After Installation**](https://www.clawsecure.ai/blog/sleeper-agent-problem) — Why runtime integrity monitoring matters for OpenClaw security
+- [**Verified Agent Registry — Browse 3,000+ Audited Skills**](https://www.clawsecure.ai/registry) — Search, filter, and discover audited OpenClaw agents by category and security score
+
+---
+
+## Contributing to OpenClaw Security
+
+We welcome contributions from the OpenClaw community. See [CONTRIBUTING.md](CONTRIBUTING.md) for details on:
+
+- **Reporting security issues** found in OpenClaw skills
+- **Submitting a skill** for scanning via the ClawSecure platform
+- **Requesting features** or improvements
+- **Reporting suspicious skills** through our [issue templates](.github/ISSUE_TEMPLATE/)
+
+For security vulnerability disclosures related to ClawSecure itself, see [SECURITY.md](SECURITY.md).
+
+---
+
+## 🔧 Free Developer Tools by ClawSecure
+
+ClawSecure builds the most secure AI agent developer tools on the market. Beyond the security platform, we ship free, open-source tools that fix the everyday annoyances of working with AI agents, whether you are coding, automating workflows, or building your agent operating system. Every tool is MIT-licensed, free forever, and built because we work with AI agents every day and got tired of the same problems you have.
+
+| Tool | What It Does | Install |
+|------|-------------|---------|
+| **[ShutUp Tabs](https://github.com/ClawSecure/shutup-tabs)** | You know how Claude Code opens a new diff tab every single time it edits a file? And then opens the file itself in another tab? And suddenly you have 40 tabs and can't find anything? ShutUp Tabs detects those AI agent tabs and auto-closes them after a safe delay so your write operations complete first. Works in VS Code, Cursor, Windsurf, Google Antigravity, Roo Code, Cline, Kilo Code, and every VS Code fork. | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=ClawSecure.shutup-tabs) / [Open VSX](https://open-vsx.org/extension/ClawSecure/shutup-tabs) |
+| **[Railgun](https://github.com/ClawSecure/railgun)** | Two AI agents ran up a $47,000 bill while everyone thought they were working. 88% of agent pilots never make it to production. The problem? Agents improvising the workflow. Railgun locks the sequence down in a YAML file. Each agent does its job, passes output to the next step, and nobody improvises. Cheaper (fresh context per step, no window bloat), reliable (deterministic execution order), and fixable (you can see exactly what each step received and produced). | [GitHub](https://github.com/ClawSecure/railgun) |
+| **[Claude Timestamps](https://github.com/ClawSecure/claude-timestamps)** | The Claude Code VS Code extension does not show timestamps on any message. The browser and desktop apps do. Claude Timestamps fills that gap by reading Claude Code's session files directly and displaying the full conversation with exact timestamps in a sidebar panel. Works across all workspaces automatically. | [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=ClawSecure.claude-timestamps) / [Open VSX](https://open-vsx.org/extension/ClawSecure/claude-timestamps) |
+
+See all free tools, detailed descriptions, and install instructions at **[openclaw-developer-tools](https://github.com/ClawSecure/openclaw-developer-tools)**. New tools ship weekly.
+
+---
+
+## About ClawSecure
+
+ClawSecure is the independent integrity layer for AI agent skills and workflows. ClawSecure builds the most secure AI agent developer tools on the market, providing the security infrastructure the OpenClaw ecosystem needs to scale safely. With 3,000+ skills audited, comprehensive OWASP ASI Top 10 coverage, AI-powered runtime monitoring, and 24/7 Watchtower monitoring, ClawSecure delivers the audit depth and runtime verification that generic scanners cannot.
+
+**Founded by [J.D. Salbego](https://x.com/JDSalbego)** — 2x exited founder with 10+ years building trust infrastructure for emerging technology ecosystems.
+
+🌐 [clawsecure.ai](https://www.clawsecure.ai) · 🐦 [@ClawSecure](https://x.com/ClawSecure) · 📧 contact@clawsecure.ai
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

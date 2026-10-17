@@ -1,0 +1,177 @@
+# AI Watermark Remover
+
+An application that uses a multistep pipeline to remove any watermarks from AI generated text
+
+What it does:
+- takes text, strips the typographic markers LLMs usually leave behind (em dashes, zero-width characters, exotic spaces, curly quotes)
+- runs it through a translation round trip (e.g. English -> intermediate language -> English), can select different translation provide (Google, Mymemory, Deepl)
+- paraphrases the result with an LLM, keeping the meaning, quality and readability intact,
+ optionally several times over, keeping whichever comes back least watermarked
+- optionally scores every stage with the SynthID detector, so you can see what the watermark did
+
+Paraphrasing runs through OpenRouter, OpenAI, Gemini, Claude or a local Ollama model.
+
+Any step is optional, so you can configure watermark removing pipeline as you like.
+
+## Setup
+
+```bash
+uv sync
+cp .env_example .env # then fill in the API key of the provider you use
+cp config_example.yaml config.yaml # optional, the example is used until you do
+```
+
+## Run
+
+```bash
+uv run streamlit run app.py
+```
+
+Paste the text into `Input text` field, then press **Ctrl + Enter** to confirm it, then press **Process**.
+
+## Configuration
+
+- `config.yaml` - which steps to run, symbol tiers, translation provider, intermediate language,
+ paraphrase provider and model. It is gitignored so your settings stay yours; `config_example.yaml`
+ is the version in the repository and is read as a fallback while `config.yaml` does not exist.
+- `.env` - API keys (see `.env_example`). Only the key of the selected paraphrase provider is
+ needed, `ollama` needs none. The `google` and `mymemory` translation providers are free
+ and need no key; `deepl` needs `TRANSLATOR_API_KEY`. `HF_TOKEN` is only for verification with
+ a gated detector.
+- `src/prompts.py` - all prompts.
+
+### Symbol tiers
+
+The cleaning step does not treat every symbol the same, because they are not equally safe to
+touch. `cleaning.tiers` selects which groups it may change:
+
+| Tier | Contents | Default |
+| --- | --- | --- |
+| `carriers` | Invisible characters: zero-width, directional marks, exotic spaces, soft hyphen | on |
+| `typography` | The visible tells: em and en dashes, curly quotes, ellipsis character | on |
+| `punctuation` | Ordinary typography that is not a tell: `«» • · © ™ → ×` | off |
+
+Over-normalizing is itself a fingerprint. Text with no curly quotes, no em dashes and `(c)` in
+place of a copyright sign does not read as human, it reads as scrubbed. `punctuation` is off by
+default for that reason, and because replacing it mangles quotations in German, French or Russian,
+maths, and bulleted lists.
+
+A zero width joiner is kept when it glues two emoji into one grapheme, so `👨‍👩‍👧‍👦` survives
+cleaning instead of falling apart into four separate emoji. A zero width non-joiner is still
+removed even in Persian or Devanagari, where it is load-bearing.
+
+### Verification
+
+With `verification.enabled` the pipeline scores every stage with the SynthID detector and shows
+what the watermark did at each step, instead of leaving you to assume it went away:
+
+| Stage | Score | z-score | Verdict |
+| --- | --- | --- | --- |
+| original | 1.0000 | +11.43 | watermarked |
+| cleaned | 1.0000 | +11.43 | watermarked |
+| translated back | 0.9998 | +5.68 | watermarked |
+| final | 0.0000 | +1.02 | not watermarked |
+
+It needs the detector extra, `uv sync --extra detector`, and it only recognises the key set the
+detector was trained on, so it cannot see watermarks from the Gemini app. It also runs on cpu
+only: the g-function is device-dependent, so a cuda score is noise rather than a weaker signal.
+Read `watermark_detector/README.md` before drawing conclusions from a score.
+
+The symbol cleaner on its own does not touch the watermark. On the notebook's sample the score
+stays at 1.0000 before and after cleaning, which is the point of measuring rather than assuming.
+
+Verification is diagnostic, so unlike the other steps it never aborts the run. A detector that
+will not load is reported in the GUI and the processed text still comes back.
+
+### Paraphrase candidates
+
+`paraphrase.candidates` paraphrases the text more than once and keeps whichever result the
+detector scores lowest. It needs verification enabled, since the score is what it selects on,
+and it costs one request per candidate. A run with four:
+
+| candidate | score | z-score | |
+| --- | --- | --- | --- |
+| candidate 1 | 0.0000 | -0.10 | |
+| candidate 2 | 0.0000 | +0.55 | |
+| candidate 3 | 0.0000 | -1.08 | kept |
+| candidate 4 | 0.0000 | -0.16 | |
+
+All four scored 0.0000, which is the normal case: the posterior saturates once the watermark is
+gone and stops telling candidates apart. The z-score keeps resolving below that floor, so it is
+the tie-break rather than a second opinion. Ranking is by score first, z-score second.
+
+What this buys is modest and worth stating plainly. Every candidate above already reads "not
+watermarked", so selection is not rescuing a failed run, it is picking the one with the least
+residual signal. The spread here, -1.08 to +0.55, is about the same size as the run to run
+variance between two single paraphrases, so a single candidate is not a bad result, it is an
+unchosen one. Leave `candidates` at 1 unless residual z matters to you. Those
+overrides live only in the browser session, until you press **Save settings**, which writes them
+back to `config.yaml` (comments included). Secrets are never written there, they stay in `.env`.
+
+## Results
+
+`watermark_detector/detect_watermark.ipynb` takes one watermarked paragraph, runs it through each
+route of the pipeline and scores what comes back. The source text was generated by gemma-2b-it with
+a SynthID watermark applied under the public demo key set, so the detector can actually see it.
+Gemini's own keys are private, see `watermark_detector/README.md`.
+
+| metric | watermarked | en-de translated | en-de paraphrased | en-cn translated | en-cn paraphrased | en-ru translated | en-ru paraphrased | only paraphrased |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| score | 1.0000 | 0.9998 | 0.0000 | 0.3261 | 0.0042 | 0.1861 | 0.0000 | 0.0000 |
+| z_score | +11.43 | +5.68 | +1.02 | +4.10 | +2.86 | +4.19 | +0.51 | -1.18 |
+| avg g-value | 0.5599 | 0.5299 | 0.5053 | 0.5215 | 0.5153 | 0.5217 | 0.5026 | 0.4940 |
+| is_watermarked | **yes** | **yes** | no | no | no | no | no | no |
+
+`score` is the Bayesian posterior the verdict comes from. `z_score` says how many standard
+deviations the mean g-value sits above the 0.5 that unwatermarked text gives, against a null
+measured at mean -0.09 and standard deviation 0.90.
+
+Translation on its own does not remove the watermark. The German round trip comes back at 0.9998
+and is still flagged. Chinese and Russian drop under the threshold but keep z-scores above 4, so
+there the watermark is degraded rather than gone.
+
+Paraphrasing is the step that clears it, and on this sample it does not need the translation to
+help. Paraphrasing alone gives the cleanest result in the table: z = -1.18 is the only negative
+score, meaning no residual signal at all rather than a signal pushed under a threshold. Adding a
+round trip in front of it does not improve on that, and in the Chinese case leaves a trace at
+z = +2.86.
+
+These are single samples per route, so treat the ordering as indicative rather than measured.
+
+### Second run, through the pipeline itself
+
+The table above was assembled by hand in the notebook. On 2026-08-15 the same source text went
+through the pipeline with `verification.enabled`, paraphrased by `deepseek/deepseek-v4-flash-0731`
+via OpenRouter:
+
+| stage | cleaning + paraphrase | cleaning + en-de + paraphrase |
+| --- | --- | --- |
+| original | 1.0000 (z +11.43) | 1.0000 (z +11.43) |
+| cleaned | 1.0000 (z +11.45) | 1.0000 (z +11.45) |
+| translated back | - | 0.9931 (z +5.17) |
+| paraphrased | 0.0000 (z +0.92) | 0.0000 (z -0.21) |
+
+Two things reproduce. Symbol cleaning does not touch the watermark, the score is unchanged
+across it. Translation on its own does not remove it either, 0.9931 here against 0.9998 in the
+notebook, still flagged both times.
+
+One thing does not reproduce: which route ends up cleanest. The notebook has paraphrase-only
+best at z = -1.18 with the round trip behind it at z = +1.02, this run has them the other way
+round at z = +0.92 and z = -0.21. Both clear the watermark either way. So the ordering between
+those two routes is noise at one sample per route, and only the direction is measured: cleaning
+does nothing, translation degrades, paraphrasing clears.
+
+## Layout
+
+| File | Purpose |
+| --- | --- |
+| `app.py` | Streamlit GUI |
+| `src/pipeline.py` | Orchestrates clean -> translate -> paraphrase -> clean |
+| `src/cleaner.py` | Symbol tiers, replacement and per-symbol statistics |
+| `src/translator.py` | Round-trip translation with chunking |
+| `src/paraphraser.py` | LangChain chain over the selected provider's model |
+| `src/verifier.py` | Optional scoring of every stage with the SynthID detector |
+| `src/prompts.py` | Prompts |
+| `src/config.py` | `config.yaml` + `.env` loading |
+| `watermark_detector/` | SynthID watermark detection, optional extra, see its own README |
+| `tests/` | `uv run pytest` |

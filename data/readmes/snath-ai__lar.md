@@ -1,0 +1,558 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/snath-ai/.github/main/assets/lar-logo.png" width="80" alt="Lár Logo" />
+</p>
+<p align="center"><em>Lár: The PyTorch for Agents — an agent execution engine built for EU AI Act evidence</em></p>
+<p align="center">
+  <a href="https://pypi.org/project/lar-engine/">
+    <img alt="PyPI - Version" src="https://img.shields.io/pypi/v/lar-engine?style=for-the-badge&color=blue">
+  </a>
+  <a href="https://pypi.org/project/lar-engine/">
+    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/lar-engine?style=for-the-badge&color=blueviolet">
+  </a>
+  <a href="https://docs.snath.ai/compliance/eu-ai-act-deep-dive/">
+    <img alt="EU AI Act evidence infrastructure" src="https://img.shields.io/badge/EU%20AI%20Act-evidence%20infrastructure-green?style=for-the-badge">
+  </a>
+  <a href="https://github.com/sponsors/axdithyaxo">
+    <img alt="Sponsor" src="https://img.shields.io/badge/Support-GitHub%20Sponsors-pink?style=for-the-badge&logo=github">
+  </a>
+</p>
+
+# Lár — an agent execution engine built for EU AI Act evidence
+
+Teams building AI agents in finance, healthcare, legal, and enterprise need to prove to regulators exactly what their agent did, why, and what it cost — on every run. Lár is built for that from the ground up. ("First" / "existing frameworks cannot do this" claims were removed — other frameworks can be wired to produce audit trails too, typically via a separate add-on rather than the executor itself.)
+
+**Where the AI Act stands (post Digital Omnibus, Regulation (EU) 2026/1744, in force 27 Jul 2026):** Article 5 prohibitions apply since Feb 2025 (non-consensual intimate imagery and AI-CSAM added from 2 Dec 2026); GPAI obligations since Aug 2025; **Article 50 transparency since 2 Aug 2026** (2 Dec 2026 grace for the machine-readable 50(2) marking); **standalone Annex III high-risk obligations apply from 2 December 2027** (deferred from 2 Aug 2026), and Annex I embedded high-risk from 2 Aug 2028. Lár's role in all of this is to produce the *evidence* — it is a software component in the Art. 25 value chain, not the "provider" (see [Compliance & Safety](#compliance--safety)).
+
+Lár is a ground-up agent execution engine where **auditability is structural, not an add-on**. Every design decision — deterministic graphs, step-level state diffs, cryptographic audit trails, topology validation, human oversight primitives — exists to satisfy EU AI Act requirements out of the box.
+
+> [!NOTE]
+> **Lár is NOT a wrapper.** It does not wrap LangChain, OpenAI Swarm, or any other library. It is a standalone, dependency-lite Python engine optimized for "Code-as-Graph" execution.
+
+---
+
+## The Cognitive Architecture
+
+Lár is the execution spine of a three-part system. Each repo is independent and usable alone — and they're designed to compose:
+
+| Repository | Role |
+| :--- | :--- |
+| **[Lár](https://github.com/snath-ai/lar)** ← you are here | The execution spine — deterministic graph engine, 22 EU AI Act compliance primitives, HMAC audit trail |
+| **[Lár-JEPA](https://github.com/snath-ai/Lar-JEPA)** | The world model — 10 ABCs spanning the full inference-time contract (divergence routing, modal encoding, fault localisation, adapter routing) |
+| **[Lár DMN](https://github.com/snath-ai/DMN)** | The memory blueprint — `AbstractDMN` + `AbstractAdapterRouter`; domain implementations own storage and LoRA fitting; zero runtime dependencies |
+
+The industry is building the Brain (LLMs, JEPAs). We are building the Nervous System.
+
+---
+
+## The EU AI Act Compliance Primitives
+
+Lár ships an **Enterprise Compliance Backbone** — a set of primitives, each mapped to a provision of Regulation (EU) 2024/1689 (as amended by the Digital Omnibus, Regulation (EU) 2026/1744). "Mapped" means a runtime hook fires and/or an evidence artifact is produced — it is **not** a conformity assessment, and it does not by itself discharge the obligation. Architecture cross-referenced to Nannini et al. (2026). Validated live against `ollama/phi4:latest` (override with `LAR_SHOWCASE_MODEL`):
+
+**Core primitives (v2.1.x)**
+
+| Article | Requirement | Lár Primitive |
+| :--- | :--- | :--- |
+| **Art. 12** | Causal audit logging + per-step integrity | `GraphExecutor` → HMAC-SHA256 signed JSON trace + `verify_step_integrity()` |
+| **Art. 14** | Human oversight interrupt + automation boundary | `HumanJuryNode(automation_boundary=…)` + `AuthorityLedger` (Fourth Tier) |
+| **Art. 3(23)** | Substantial modification guard | `AdaptiveNode` + `TopologyValidator` + `RuntimeStateVersioner` |
+| **Art. 9(2)(a)** | Risk-management gate + runtime fundamental-rights screen | `RiskScorerNode` + `PolicyRegistry` + `FundamentalRightsImpactNode` *(not the Art. 27 FRIA — see below)* |
+| **Art. 15(5)** | Cybersecurity — NHI least privilege (JIT + trust-gated) | `CredentialVault` — `get()` and `get_with_trust()` |
+| **GDPR Art. 17** | PII redaction + erasable per-subject memory | `PIIRedactionEngine` + `SessionMemoryNode` |
+| **Art. 50(2) / 50(1)/(4)** | Synthetic content marking (machine-readable + visible) | `SyntheticMarkerNode` (`METADATA` / `VISIBLE`) |
+| **Art. 10(2)(f)-(g)** | Runtime bias keyword gate (supports prEN 18283) | `BiasFilterNode` |
+| **Art. 14 (fractal)** | Meaningful HITL in parallel agents | `BranchTriageNode` |
+| **AEPD Rule of 2** | Lethal trifecta block | `LethalTrifectaGuard` |
+| **Art. 50 / Art. 13** | Third-party + deployer transparency | `TransparencyEngine` + `DeployerTransparencyNode` |
+| **Step 9** | External action inventory + adjacent legislation | `ComplianceManifestGenerator` (auto-detects DORA, MiFID II, ePrivacy…) |
+| **Art. 12/14** | Stakeholder authority record | `AuthorityLedger` |
+
+**Gap-closure primitives**
+
+| Article | Requirement | Lár Primitive |
+| :--- | :--- | :--- |
+| **Art. 27** | **Deployer** Fundamental Rights Impact Assessment (the *named* FRIA) | `Article27FRIANode` — scope-gated on `deployer_class`; generates & completeness-checks the 27(1)(a)-(f) template; writes `fria_art27.md` |
+| **Art. 9(2)(a)** | Runtime fundamental-rights screen (6 EU Charter dimensions) — *not* Art. 27 | `FundamentalRightsImpactNode` |
+| **Art. 9(9) PMM** | Stochastic output variance monitoring | `BehavioralEnvelopeMonitor` |
+| **Art. 25(4)** | Written supplier agreement enforcement (FOSS carve-out — Lár itself is exempt) | `SupplierAgreementRegistry` |
+| **Art. 3(23)** | Post-conformity tool addition detection | `DynamicToolDiscoveryMonitor` |
+| **Art. 3** | Sub-agent boundary classification | `MultiAgentBoundaryNode` |
+| **Art. 73** | Real-time incident detection (conservative 48h/360h ceiling + all three Art. 73 legal deadlines per record) | `IncidentReporterNode` (executor hook) |
+| **Art. 5** (incl. 2 Dec 2026 Omnibus) | Prohibited-practice guard — social scoring, manipulation, vulnerability exploitation, **NCII**, **CSAM** | `ProhibitedPracticeGuard` (executor hook) |
+| **Art. 15(5)** | Cybersecurity & prompt-injection guard | `PromptInjectionGuard` (adversarial input interception) |
+
+**[Read the EU AI Act Deep Dive →](https://docs.snath.ai/compliance/eu-ai-act-deep-dive/)** | **[Nannini et al. (2026) Full Mapping →](https://docs.snath.ai/compliance/paper-compliance-mapping/)** | **[Real, Executed Failure-Mode Tests →](examples/failure_modes/)**
+
+---
+
+## See It Running: The Finance Showcase
+
+One command runs a live SME credit decision through the compliance primitives and produces HMAC-signed audit artefacts (causal trace, authority ledger, action-inventory manifest) plus the deployer Art. 27 FRIA:
+
+```bash
+python examples/compliance/22_eu_ai_act_finance_showcase.py
+```
+
+| Step | Node | Outcome | State Changes |
+| :--- | :--- | :--- | :--- |
+| 0 | `FunctionalNode` (CredentialVault) | ✅ success | `+ jit_token_present = True` |
+| 1 | `LLMNode` (credit risk analysis) | ✅ success | `+ ai_output` (170 tokens) |
+| 2 | `FunctionalNode` (JSON parse) | ✅ success | `+ recommendation, model_confidence, risk_level` |
+| 3 | `RiskScorerNode` | ✅ success | `+ computed_oversight_level` |
+| 4 | `HumanJuryNode` (Risk Officer gate) | ✅ success | `+ jury_decision = "approve"` |
+| 5 | `FunctionalNode` (LethalTrifecta + Transparency) | ✅ success | `+ _trifecta_check`, `~ drift_report` |
+| 6 | `SyntheticMarkerNode` | ✅ success | `+ final_output` (AI-disclaimed) |
+
+Every step produces a real Article 12 causal trace, a real Article 14 AuthorityLedger record, and a real Step 9 action inventory — all HMAC-SHA256 signed. PII is stripped before signing.
+
+> **This is the difference.** Every step, every key written, every node that touched state — recorded. No guesswork, no external tooling required.
+
+**[Full showcase breakdown — execution trace, real JSON artefacts, 12-step coverage map →](https://docs.snath.ai/compliance/finance-showcase/)**
+
+> **Open-source vs. enterprise:** All 22 compliance primitives (`FundamentalRightsImpactNode`, `IncidentReporterNode`, `BehavioralEnvelopeMonitor`, `SessionMemoryNode`, `BranchTriageNode`, `CredentialVault`, etc.) are in `lar.compliance` and fully open-source under Apache 2.0. The finance showcase uses `build_and_run` from `lar.enterprise`, a convenience wrapper in the enterprise tier. Open-source users assemble the same pipeline from primitives — the step-by-step guide walks you through it: **[Build a Compliant Agent from Scratch →](https://docs.snath.ai/guides/build-compliant-agent/)**
+
+### The High-Stakes Loan Underwriter (Compliance-by-Design vs. LLM-as-Judge)
+
+This example demonstrates the difference between checking compliance with a prompt (`"Do not exploit vulnerabilities"`, hoping the model complies) and checking it with a physical boundary in the execution graph that a triggered node cannot talk its way past. That's a real, verified property of this architecture — see `examples/compliance/5_context_contamination_test.py`, run live this session: a real LLM successfully talked a *different* LLM-as-judge into approving an unauthorized action, while a deterministic code check on the same input was not moved by the same persuasion at all.
+
+This isn't unique to switching away from LangChain, CrewAI, or AutoGen specifically — all three can embed the same kind of deterministic Python guard. LLM-as-judge is a common *design choice* in examples of those frameworks, not a ceiling built into them. What's true here is that Lár's compliance primitives default to the code-checked pattern rather than the prompted one.
+
+Run the new v2.2.0 showcase to see Lár deterministically intercept and block adversarial prompt injections, fundamental rights violations (EU Charter), and Article 5 prohibited practices:
+
+```bash
+python examples/compliance/28_eu_ai_act_loan_underwriter.py
+```
+
+*What happens in the script?*
+1. **Clean Application:** Successfully processes a compliant loan, producing Art 13 Instructions for Use and Art 12 HMAC-signed logs.
+2. **Prompt Injection:** A malicious applicant tries to override system instructions. `PromptInjectionGuard` topologically blocks the execution.
+3. **Political Bias:** The LLM hallucinates and denies a loan based on political expression. The `FundamentalRightsImpactNode` (FRIA) halts the graph.
+4. **Vulnerability Exploitation:** The LLM attempts to exploit an applicant's age. `ProhibitedPracticeGuard` triggers an unrecoverable structural block.
+
+**[View the High-Stakes Loan Underwriter Code →](examples/compliance/28_eu_ai_act_loan_underwriter.py)**
+
+---
+
+## How It Works: The "Glass Box"
+
+Lár runs **one node at a time**, yielding a structured audit entry after every step. The execution model is a Python generator — each yield contains the state before, the state diff, token usage, the rendered prompt, and the outcome.
+
+This means:
+1. **Instant Debugging**: The exact node that failed, the exact data it received, the exact error — all in the log.
+2. **Built-in Auditing**: A complete, immutable history of every decision and token cost, by default, on every run.
+3. **Deterministic Control**: Explicit graphs, not probabilistic chat rooms. The same input produces the same execution trace.
+
+### Why Lár vs. LangChain / CrewAI
+
+This table was revised after an independent verification pass (this repo's own CHANGELOG.md, [2.2.3]) found several rows here were factually wrong — including one wrong claim that led directly to finding and fixing a real bug in Lár's own code. Corrected version:
+
+| Feature | LangChain / CrewAI | Lár |
+| :--- | :--- | :--- |
+| **Debugging** | Stack trace from inside `AgentExecutor`. | Exact node, exact error, exact state — in the log. |
+| **Auditability** | Built-in tracing exists; LangSmith is the polished, marketed observability product and has a paid tier. | Built-in. The `GraphExecutor` flight log is the audit trail — not an add-on, the control-flow mechanism itself. |
+| **Multi-Agent** | AutoGen's `GroupChat` / CrewAI's hierarchical process pick among pre-defined agents dynamically. | Deterministic assembly line — you define the exact path (or `AdaptiveNode` composes and *validates* new structure before running it — see below). |
+| **Compliance** | No built-in EU AI Act primitives. | 22 compliance primitives, cryptographic logs, Art. 14 oversight — mapped to Nannini et al. (2026)'s 12-step architecture. |
+| **Cost** | Costs an LLM call if you choose to route via a prompt (a common but not universal pattern). | Code-based routing — $0.00/route, by default. |
+| **Scale / recursion** | **Corrected**: LangGraph does NOT crash by default — verified directly, 25/26/100/500-step graphs all complete with no explicit config. `recursion_limit` is a real, opt-in safety feature, not a default trap. | Verified directly too: v2.2.3 fixed a real bug where Lár's own fatigue detection false-tripped on 60+ instances of the same reusable node class (see `examples/failure_modes/4_recursion_limit.py`). |
+| **Crash Recovery** | **Corrected**: LangGraph ships a real, automatic checkpointer — state is persisted every step, keyed by `thread_id`, and resumes from the last successful step automatically. This is currently *more* automatic than Lár's own resumability pattern (see next row). | Lár's state is a plain serializable dict, so save/restore is simple to build — but the current examples require the developer to manually track and hardcode the resume entry point (see `examples/patterns/9_resumable_graph.py`). Not automatic yet. |
+| **Runtime graph composition** | LangGraph graphs are compiled ahead of time. No built-in pattern (verified this session) for an LLM to propose new graph structure at runtime that gets structurally validated *before* instantiation. | `AdaptiveNode` + `TopologyValidator`: an LLM-proposed subgraph is cycle-checked, tool-allowlisted, and node-count-capped before a single node executes. Proven live: `examples/failure_modes/3_privilege_escalation.py` — a model was told to inject an unauthorized tool, generated the spec, and the validator rejected it before execution. |
+
+The genuine differentiators are the audit trail being structural rather than an add-on, and the validate-before-execute gate on AI-composed structure — not the recursion/scale/resumability claims that used to be here.
+
+---
+
+## Build a Compliant Agent from Scratch
+
+New to Lár? The step-by-step guide walks you through wiring every compliance primitive — from credential vault to HMAC-signed audit artefacts — starting from a blank file. Written for both engineers and AI assistants.
+
+**[Read the guide →](https://docs.snath.ai/guides/build-compliant-agent/)** | **[Live showcase →](https://docs.snath.ai/compliance/finance-showcase/)** | **[Continuously Running Agents →](https://docs.snath.ai/guides/continuous-operation/)**
+
+---
+
+## Installation
+
+```bash
+pip install lar-engine
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/snath-ai/lar.git
+cd lar
+poetry install
+```
+
+Create a `.env` file with your model API keys:
+
+```bash
+GEMINI_API_KEY="..."
+OPENAI_API_KEY="..."
+ANTHROPIC_API_KEY="..."
+```
+
+---
+
+## Quick Start
+
+```bash
+pip install lar-engine
+lar new agent my-bot
+cd my-bot
+python agent.py
+```
+
+### The `@node` Decorator (Low Code)
+
+```python
+from lar import node, GraphExecutor
+
+@node(output_key="summary")
+def summarize_text(state):
+    text = state["text"]
+    return my_llm.generate(text)
+```
+
+### A Full Agent in 10 Lines
+
+```python
+from lar import LLMNode, RouterNode, GraphExecutor
+
+classify = LLMNode(model_name="gpt-4o", prompt_template="Classify: {input}", output_key="category")
+route = RouterNode(decision_function=lambda s: s.get("category"), path_map={"A": node_a, "B": node_b})
+classify.next_node = route
+
+executor = GraphExecutor()
+for step in executor.run_step_by_step(classify, {"input": "Hello"}):
+    print(f"Step {step['step']} ({step['node']}): {step['outcome']}")
+```
+
+---
+
+## Core Primitives
+
+| Primitive | What it does |
+| :--- | :--- |
+| `LLMNode` | Calls any model via LiteLLM. Built-in exponential backoff, token logging, budget enforcement. |
+| `RouterNode` | Deterministic `if/else` branching via a Python `decision_function`. |
+| `ToolNode` | Runs any Python function. Separate `next_node` / `error_node` paths. |
+| `BatchNode` | Fan-out / fan-in parallelism. Each thread gets an isolated `copy.deepcopy` of state. |
+| `ReduceNode` | Summarises multi-agent outputs and deletes raw keys — explicit memory compression. |
+| `AdaptiveNode` | Runtime graph composition: LLM generates a `GraphSpec` → `TopologyValidator` validates → injects subgraph. |
+| `HumanJuryNode` | Art. 14 mandatory interrupt. Blocks execution for human approval. Produces signed `AuthorityRecord`. Degrades gracefully in non-interactive environments (CI/CD, piped stdin) — auto-selects the first valid choice rather than hanging. |
+| `ClearErrorNode` | Resets `last_error` to `None`. Required for deterministic self-correction loops. Accepts `next_node=None` to terminate after clearing. |
+| `@node` decorator | Converts any Python function into a Lár node. |
+
+---
+
+## Tensor Routing & Scientific AI Support
+
+Agentic frameworks typically crash when attempting to route anything other than text strings. When standard agents attempt to log state, they use standard `json.dumps()`, which immediately crashes if the state contains PyTorch tensors or multidimensional NumPy arrays.
+
+Lár v2.1.0 introduces native support for **Scientific and Biological AI Architectures** (e.g., JEPAs, Diffusion Models). The engine includes a native `TensorSafeEncoder` built directly into the core `GraphExecutor` and `AuditLogger`. This intercepts PyTorch and NumPy structures natively during execution and audit-logging, allowing your agent graph to:
+
+1. **Route Tensors Deterministically:** Pass gigabyte-sized biological or scientific tensors across nodes without serialization crashes.
+2. **Audit Latent Space:** Cryptographically log the exact multidimensional shape and type of massive data structures moving through the pipeline without blowing out memory (e.g., `{"__type__": "Tensor", "shape": [1, 768]}`).
+
+Lár is built not just for LLMs, but for real mathematical world models. For a complete heterogeneous cognitive architecture built on this foundation, see **[Lár-JEPA](https://github.com/snath-ai/Lar-JEPA)**.
+
+---
+
+## Universal Model Support
+
+Lár is built on **LiteLLM** — switch providers by changing one string. Zero refactoring.
+
+```python
+# Cloud
+node = LLMNode(model_name="gpt-4o", ...)
+node = LLMNode(model_name="gemini/gemini-2.5-pro", ...)
+node = LLMNode(model_name="claude-opus-4-6", ...)
+
+# Local (Ollama)
+node = LLMNode(model_name="ollama/phi4", ...)
+node = LLMNode(model_name="ollama/deepseek-r1:7b", ...)
+```
+
+**[Read the Full LiteLLM Setup Guide →](https://docs.snath.ai/guides/litellm_setup/)**
+
+---
+
+## Reasoning Models (System 2 Support)
+
+Native support for **DeepSeek R1**, **OpenAI o1**, and **Liquid**. `<think>` tags are first-class citizens — extracted and saved to `run_metadata`, keeping the main context window clean.
+
+```python
+node = LLMNode(
+    model_name="ollama/deepseek-r1:7b",
+    prompt_template="Solve: {puzzle}",
+    output_key="answer"
+)
+# state['answer'] = "The answer is 42."
+# log['metadata']['reasoning_content'] = "<think>First, I calculate...</think>"
+```
+
+---
+
+## Resumable Graphs
+
+**Correction:** an earlier version of this section claimed "most frameworks cannot reliably resume a crashed execution" as a structural consequence of probabilistic routing. Verified directly and that's not accurate — LangGraph ships a real, automatic checkpointer (state persisted every step, keyed by `thread_id`, resumed via the same key) that does not re-execute already-completed routing decisions on resume. See `docs/core-concepts/12-resumable-graphs.md` and CHANGELOG.md [2.2.3] for the full correction.
+
+What's true: every `RouterNode` in Lár is a pure Python function — same state in, same decision out, deterministically. And `GraphState` being a plain, JSON-serializable dict makes it simple to build your own save/restore around any point in a run. What's *not* automatic yet: Lár's own resumability examples currently require the developer to manually track and hardcode the resume entry point (see `examples/patterns/9_resumable_graph.py`) — less automatic than a real checkpointer, not more.
+
+The `GraphExecutor` is a Python generator that yields after every node. `GraphState` is a plain dict — always serialisable, always decoupled from the engine. The causal trace written on every run is not just an audit log; every entry marks a point you could resume from, if you build the tracking to do so.
+
+| Run | Steps Executed | Tokens Sent | Cost (GPT-4o) |
+|:---|:---|:---|:---|
+| **Resumed from saved state** | Step 3 only | **302 tokens** | **$0.0006** |
+| **No persistence — full retry** | Steps 0+1+3 | ~776 tokens | $0.0016 |
+
+> At 10,000 runs/day with 40% transient failure rate → **$9.48/day saved vs. having no persistence at all.**
+
+The same property powers `HumanJuryNode`: the graph halts before an irreversible action, the process can be killed, and when the human responds — hours later if needed — execution resumes from exactly that node with exactly that state. This is what EU AI Act Art. 14 requires in practice.
+
+### Time-Travel Debugging
+
+If your agent produces a wrong output at Step 5, load the state from Step 4, modify the prompt, and run Step 5 alone — repeatedly, cheaply. In a black-box framework you re-run the whole pipeline and hope the LLM reproduces the same path. In Lár you rewind to the exact state that produced the bad output.
+
+See: [`examples/patterns/9_resumable_graph.py`](examples/patterns/9_resumable_graph.py) · [`examples/patterns/10_resumable_cost_demo.py`](examples/patterns/10_resumable_cost_demo.py)
+
+---
+
+## Adaptive Graphs
+
+Most pipelines are hardcoded: you define every branch at development time. `AdaptiveNode` breaks that constraint — the **number, type, and sequence of processing nodes is decided at runtime** based on what the agent actually receives.
+
+**The mental model:** You pre-define a set of approved tools. At runtime, an LLM acts as an architect — it receives the live input and outputs a JSON graph spec describing which tools to run and in what order. Lár validates that spec deterministically (no cycles, no unapproved tools), instantiates the nodes, and executes the subgraph. The LLM never runs again — pure Python takes over.
+
+**When this matters:** When problem complexity is genuinely input-dependent. A simple document → 1 summarise node. A financial contract → extract entities, check compliance, then summarise. You don't hardcode which path — the agent decides. Without `AdaptiveNode`, you'd need to pre-build a branch for every possible combination upfront.
+
+```python
+# You define the tools the LLM is allowed to wire up
+validator = TopologyValidator(allowed_tools=[extract_entities, check_compliance, summarize])
+
+adaptive = AdaptiveNode(
+    llm_model="gpt-4o",
+    prompt_template="""
+    Document type: {doc_type}
+    If "simple"    → 1 node: summarize only
+    If "financial" → 3 nodes: extract_entities → check_compliance → summarize
+    Output JSON GraphSpec.
+    """,
+    validator=validator,
+    next_node=done_node,
+    context_keys=["doc_type"]
+)
+
+# Wire it like any other node — the executor handles the rest
+executor = GraphExecutor()
+for step in executor.run_step_by_step(adaptive, {"doc_type": "financial", "document": "..."}):
+    pass
+# → extract_entities runs, then check_compliance, then summarize
+# If doc_type were "simple", only summarize would have run
+```
+
+**Honest tradeoffs:**
+- Costs one extra LLM call upfront to design the subgraph before any work happens
+- The LLM must output valid JSON every time — `TopologyValidator` hard-rejects malformed specs and falls back to `next_node`, but you've spent tokens
+- Graph depth is unpredictable — use Lár's node budget limits to cap it
+
+**The real unlock** is combining `AdaptiveNode` with `BatchNode`. The LLM can decide both how many workers to spawn *and* that they should run in parallel — covering case complexity you'd need a combinatorial explosion of static branches to replicate.
+
+**This stays compliant regardless of graph shape.** Every generated spec is logged to the HMAC-signed Causal Trace before any node executes (Art. 12). `TopologyValidator` is pure Python — deterministic, not probabilistic — so the safety decision is never delegated to an LLM. All compliance primitives (`HumanJuryNode`, `PIIRedactionEngine`, `BiasFilterNode`, etc.) work inside generated subgraphs exactly as they do in static ones. The graph shape changes at runtime; the compliance guarantees don't.
+
+In fractal agents (manager `AdaptiveNode` + `BatchNode` of specialist `AdaptiveNode`s), wire `BranchTriageNode` between `BatchNode` and the human jury. Without it the human sees a rolled-up score — they don't know which parallel branch triggered the alert. That's not meaningful oversight under Art. 14. With it, the jury context includes per-branch findings before `ReduceNode` compresses them away.
+
+See: [`examples/adaptive/`](examples/adaptive/) | [`examples/compliance/23_fractal_compliance_showcase.py`](examples/compliance/23_fractal_compliance_showcase.py) | [Adaptive Graphs Docs →](https://docs.snath.ai/core-concepts/9-adaptive-graphs/)
+
+---
+
+## Compliance & Safety
+
+> [!IMPORTANT]
+> **Who is the "Provider"?** Under the EU AI Act (Art. 3), Lár is a software component, not an AI system. The organisation deploying a high-risk agent is the legal **Provider**. Lár provides the compliance primitives to generate the *evidence* (audit logs, manifests, oversight records) required for a conformity assessment.
+
+> [!WARNING]
+> **Legal Disclaimer:** Lár is open-source infrastructure, not legal advice. Using Lár does not automatically guarantee compliance. Organisations are solely responsible for legal review and conformity assessments.
+
+**What Lár solves:**
+- Cryptographic causal traces for every decision (Art. 12)
+- Hardware-level routing to human approval before high-risk actions (Art. 14)
+- Automated external action inventory for adjacent legislation (Step 9)
+
+**What Lár cannot solve:**
+- Model bias or unsuitability — if you plug in a biased model, Lár records the biased decision accurately; liability remains with the organisation
+- Human negligence — a `HumanJuryNode` that is rubber-stamped will fail an audit for negligent oversight
+- Data provenance — Lár cannot guarantee training data was legally acquired
+
+---
+
+## Cryptographic Audit Logs
+
+```python
+from lar import GraphExecutor
+
+executor = GraphExecutor(
+    log_dir="secure_logs",
+    hmac_secret="your_enterprise_secret_key"
+)
+# Run your agent normally. Every log is HMAC-SHA256 signed.
+```
+
+Verify for auditors:
+```bash
+python examples/compliance/11_verify_audit_log.py secure_logs/run_xyz.json your_secret_key
+# [+] VERIFICATION SUCCESSFUL  or  [-] VERIFICATION FAILED
+```
+
+### What Does the Auditor See?
+When you run a fully compliant, resumable agent (like `27_ultimate_resumable_enterprise.py`), the output isn't just print statements—it produces concrete, cryptographically sealed JSON artifacts designed for legal and compliance review. 
+
+We have provided real output samples generated by `phi4:latest` in the [**`examples/compliance/sample_auditor_reports/`**](examples/compliance/sample_auditor_reports/) directory:
+1. **`sample_compliance_manifest.json`**: A high-level regulatory map showing which EU AI Act primitives (bias filters, PII redactors, supplier registries) successfully fired during the run.
+2. **`sample_authority_ledger.json`**: The immutable, cryptographically signed ledger proving *who* approved the high-risk action, *what* their role was, and *when* they approved it.
+3. **`sample_causal_trace.json`**: A massive, detailed execution log capturing the exact state changes, inputs, and outputs of every single node in the graph (with PII automatically stripped) for deep forensic analysis.
+
+Compliance pattern library:
+- [`8_hmac_audit_log.py`](examples/compliance/8_hmac_audit_log.py) — Basic HMAC authentication
+- [`9_high_risk_trading_hmac.py`](examples/compliance/9_high_risk_trading_hmac.py) — Algorithmic Trading / SEC
+- [`10_pharma_clinical_trials_hmac.py`](examples/compliance/10_pharma_clinical_trials_hmac.py) — FDA 21 CFR Part 11
+- [`11_verify_audit_log.py`](examples/compliance/11_verify_audit_log.py) — Standalone auditor script
+
+---
+
+## Example Library
+
+#### 1. Basic Primitives (`examples/basic/`)
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_simple_triage.py`](examples/basic/1_simple_triage.py)** | Classification & Linear Routing |
+| **2** | **[`2_reward_code_agent.py`](examples/basic/2_reward_code_agent.py)** | Code-First Agent Logic |
+| **3** | **[`3_support_helper_agent.py`](examples/basic/3_support_helper_agent.py)** | Lightweight Tool Assistant |
+| **4** | **[`4_fastapi_server.py`](examples/basic/4_fastapi_server.py)** | FastAPI Wrapper (Deploy Anywhere) |
+
+#### 2. Core Patterns (`examples/patterns/`)
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_rag_researcher.py`](examples/patterns/1_rag_researcher.py)** | RAG (ToolNode) & State Merging |
+| **2** | **[`2_self_correction.py`](examples/patterns/2_self_correction.py)** | "Judge" Pattern & Error Loops |
+| **3** | **[`3_parallel_execution.py`](examples/patterns/3_parallel_execution.py)** | Fan-Out / Fan-In Aggregation |
+| **4** | **[`4_structured_output.py`](examples/patterns/4_structured_output.py)** | Strict JSON Enforcement |
+| **5** | **[`5_multi_agent_handoff.py`](examples/patterns/5_multi_agent_handoff.py)** | Multi-Agent Collaboration |
+| **6** | **[`6_meta_prompt_optimizer.py`](examples/patterns/6_meta_prompt_optimizer.py)** | Prompt Optimisation (Iterative Refinement) |
+| **7** | **[`7_integration_test.py`](examples/patterns/7_integration_test.py)** | Integration Builder (CoinCap) |
+| **8** | **[`8_ab_tester.py`](examples/patterns/8_ab_tester.py)** | A/B Tester (Parallel Prompts) |
+| **9** | **[`9_resumable_graph.py`](examples/patterns/9_resumable_graph.py)** | Time Traveller — Crash & Exact Resume |
+| **10** | **[`10_resumable_cost_demo.py`](examples/patterns/10_resumable_cost_demo.py)** | Cost Demo — 302 vs 776 Tokens, $9.48/day Saved |
+| **11** | **[`16_custom_logger_tracker.py`](examples/patterns/16_custom_logger_tracker.py)** | Advanced Observability |
+
+#### 3. Reasoners (`examples/reasoning_models/`) & Failure Modes (`examples/failure_modes/`)
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_deepseek_r1.py`](examples/reasoning_models/1_deepseek_r1.py)** | Native `<think>` tag parsing |
+| **2** | **[`2_openai_o1.py`](examples/reasoning_models/2_openai_o1.py)** | High-IQ O1 Planner Nodes |
+| **3** | **[`3_liquid_thinking.py`](examples/reasoning_models/3_liquid_thinking.py)** | Fast Local Edge Inferencing |
+| **4** | **[`3_privilege_escalation.py`](examples/failure_modes/3_privilege_escalation.py)** | Real run: `TopologyValidator` rejects an AI-injected unauthorized tool |
+| **5** | **[`4_recursion_limit.py`](examples/failure_modes/4_recursion_limit.py)** | Real side-by-side run vs. installed LangGraph — corrects a prior false claim, documents a real bug this test found & fixed (v2.2.3) |
+| **6** | **[`5_guardrail_cost_explosion.py`](examples/failure_modes/5_guardrail_cost_explosion.py)** | Real measured cost/latency for the Lár side; LLM-guardrail side needs your own API key to measure |
+
+`examples/comparisons/` (the old home for these) was removed — see CHANGELOG.md [2.2.3] for why.
+
+#### 4. Compliance & Safety (`examples/compliance/`)
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_human_in_the_loop.py`](examples/compliance/1_human_in_the_loop.py)** | User Approval & Interrupts |
+| **2** | **[`2_security_firewall.py`](examples/compliance/2_security_firewall.py)** | Blocking Jailbreaks with Code |
+| **3** | **[`3_juried_layer.py`](examples/compliance/3_juried_layer.py)** | Proposer -> Jury -> Kernel |
+| **4** | **[`4_access_control_agent.py`](examples/compliance/4_access_control_agent.py)** | **Flagship Access Control** |
+| **5** | **[`5_context_contamination_test.py`](examples/compliance/5_context_contamination_test.py)** | Red Teaming: Social Engineering |
+| **6** | **[`6_zombie_action_test.py`](examples/compliance/6_zombie_action_test.py)** | Red Teaming: Stale Authority |
+| **7** | **[`7_hitl_agent.py`](examples/compliance/7_hitl_agent.py)** | Article 14 Compliance Node |
+| **8** | **[`8_hmac_audit_log.py`](examples/compliance/8_hmac_audit_log.py)** | Immutable Cryptographic Logs |
+| **9** | **[`9_high_risk_trading_hmac.py`](examples/compliance/9_high_risk_trading_hmac.py)** | Algorithmic Trading (SEC) |
+| **10** | **[`10_pharma_clinical_trials_hmac.py`](examples/compliance/10_pharma_clinical_trials_hmac.py)** | FDA 21 CFR Part 11 Trial Logic |
+| **11** | **[`11_verify_audit_log.py`](examples/compliance/11_verify_audit_log.py)** | Standalone Auditor Script |
+| **12** | **[`12_post_market_monitoring.py`](examples/compliance/12_post_market_monitoring.py)** | Post-Market Monitoring (Art. 72) |
+| **13** | **[`12_transparency_disclosure.py`](examples/compliance/12_transparency_disclosure.py)** | Transparency Engine (Art. 13) |
+| **14** | **[`13_risk_scored_routing.py`](examples/compliance/13_risk_scored_routing.py)** | Risk-Scored Routing (Art. 14) |
+| **15** | **[`14_runtime_drift_detection.py`](examples/compliance/14_runtime_drift_detection.py)** | Drift Detection (Art. 3(23)) |
+| **16** | **[`15_jit_credential_vault.py`](examples/compliance/15_jit_credential_vault.py)** | JIT Credential Vault (Art. 15(5)) |
+| **17** | **[`16_pii_redaction.py`](examples/compliance/16_pii_redaction.py)** | PII Redaction (GDPR Art. 17) |
+| **18** | **[`17_causal_trace_logging.py`](examples/compliance/17_causal_trace_logging.py)** | Causal Trace Logging (Art. 12) |
+| **19** | **[`18_synthetic_content_marking.py`](examples/compliance/18_synthetic_content_marking.py)** | Synthetic Content Marking (Art. 50) |
+| **20** | **[`19_runtime_bias_detection.py`](examples/compliance/19_runtime_bias_detection.py)** | Bias Detection (prEN 18283) |
+| **21** | **[`20_compliance_manifest.py`](examples/compliance/20_compliance_manifest.py)** | Compliance Manifest (Step 9) |
+| **22** | **[`21_authority_and_trifecta.py`](examples/compliance/21_authority_and_trifecta.py)** | Rule of 2 Trifecta Guard |
+| **22** | **[`22_eu_ai_act_finance_showcase.py`](examples/compliance/22_eu_ai_act_finance_showcase.py)** | Financial Credit Risk Assessment |
+| **23** | **[`23_fractal_compliance_showcase.py`](examples/compliance/23_fractal_compliance_showcase.py)** | Parallel Risk Triaging & Fractal Branches |
+| **24** | **[`24_ultimate_enterprise_agent.py`](examples/compliance/24_ultimate_enterprise_agent.py)** | 23-Primitive Enterprise Backbone (CyberSec) |
+| **25** | **[`26_resumable_compliance.py`](examples/compliance/26_resumable_compliance.py)** | Secure HMAC Resumable Graph (Asynchronous Human-in-the-loop) |
+| **26** | **[`27_ultimate_resumable_enterprise.py`](examples/compliance/27_ultimate_resumable_enterprise.py)** | Ultimate 23-Primitive Resumable Gauntlet (Asynchronous) |
+
+#### 5. High Scale & Advanced (`examples/scale/`, `examples/advanced/`)
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_corporate_swarm.py`](examples/scale/1_corporate_swarm.py)** | **Stress Test**: 60+ Node Graph |
+| **2** | **[`2_mini_swarm_pruner.py`](examples/scale/2_mini_swarm_pruner.py)** | Dynamic Graph Pruning |
+| **3** | **[`3_parallel_newsroom.py`](examples/scale/3_parallel_newsroom.py)** | True Parallelism (`BatchNode`) |
+| **4** | **[`4_parallel_corporate_swarm.py`](examples/scale/4_parallel_corporate_swarm.py)** | Concurrent Branch Execution |
+| **5** | **[`11_map_reduce_budget.py`](examples/advanced/11_map_reduce_budget.py)** | Memory Compression & Token Budgets |
+| **6** | **[`fractal_polymath.py`](examples/advanced/fractal_polymath.py)** | Recursive Graph Composition (Nested AdaptiveNodes + Parallelism) |
+| **7** | **[`13_world_model_jepa.py`](examples/advanced/13_world_model_jepa.py)** | Predictive World Models |
+| **8** | **[`fractal_finance_agent.py`](examples/advanced/fractal_finance_agent.py)** | Parallel Multi-Dimensional Finance Compliance |
+| **9** | **[`extreme_stress_test.py`](examples/advanced/extreme_stress_test.py)** | Extreme 191-Node Parallel Swarm Stress Test |
+| **10** | **[`omni_pipeline_stress_test.py`](examples/advanced/omni_pipeline_stress_test.py)** | 9-Primitive Omni-Architecture Test (Dynamic Graphs + Triage) |
+| **11** | **[`25_extreme_fractal_swarm.py`](examples/advanced/25_extreme_fractal_swarm.py)** | True Fractal Swarm: Dynamic Parallel Generation + Asynchronous Triage Intercept |
+
+#### 6. Adaptive Execution (`examples/adaptive/`)
+See the **[Adaptive Graphs Docs →](https://docs.snath.ai/core-concepts/9-adaptive-graphs)**
+
+| # | Pattern | Concept |
+| :---: | :--- | :--- |
+| **1** | **[`1_dynamic_depth.py`](examples/adaptive/1_dynamic_depth.py)** | Adaptive Worker Count (1 Node vs N Nodes) |
+| **2** | **[`2_tool_inventor.py`](examples/adaptive/2_tool_inventor.py)** | Runtime Code Generation (sandboxed executor) |
+| **3** | **[`3_self_healing.py`](examples/adaptive/3_self_healing.py)** | Error Recovery Pipeline (validated recovery subgraph) |
+| **4** | **[`4_adaptive_deep_dive.py`](examples/adaptive/4_adaptive_deep_dive.py)** | Structural Adaptation (topology determined at runtime) |
+| **5** | **[`5_expert_summoner.py`](examples/adaptive/5_expert_summoner.py)** | Domain Subgraph Dispatch (pre-defined expert spec injection) |
+
+---
+
+## Showcase Projects
+
+- **[snath-ai/DMN](https://github.com/snath-ai/DMN)** — The memory blueprint: `AbstractDMN` + `AbstractAdapterRouter`. Domain implementations (Robotics, Aviation, Basis, Research) extend these to build continual learning memory with HMAC-signed centroid adapters and LoRA correction.
+- **[snath-ai/Lar-JEPA](https://github.com/snath-ai/Lar-JEPA)** — The world model layer: 10 ABCs covering the full inference-time contract from divergence detection to adapter routing, proved domain-agnostic across 7 verticals.
+- **[snath-ai/rag-demo](https://github.com/snath-ai/rag-demo)** — Self-correcting RAG agent with a local vector database.
+
+---
+
+## Agentic IDE Support
+
+Lár is designed for **Cursor, Windsurf, and Antigravity**. Reference these files to make your IDE an expert Lár architect:
+
+1. `@lar/IDE_MASTER_PROMPT.md` — strict typing rules and "Code-as-Graph" philosophy
+2. `@lar/IDE_INTEGRATION_PROMPT.md` — generate production-ready API wrappers in seconds
+3. `@lar/IDE_PROMPT_TEMPLATE.md` — fill in your agent's goal and ask the IDE to implement it
+
+---
+
+## Show Your Agents are Auditable
+
+[![Glass Box Ready](https://img.shields.io/badge/Auditable-Glass%20Box%20Ready-54B848?style=flat&logo=checkmarx&logoColor=white)](https://docs.snath.ai)
+
+```markdown
+[![Glass Box Ready](https://img.shields.io/badge/Auditable-Glass%20Box%20Ready-54B848?style=flat&logo=checkmarx&logoColor=white)](https://docs.snath.ai)
+```
+
+---
+
+## Author
+
+**Lár** was created by **[SnathAI](https://snath.ai)**.
+
+Lár is open-source. If this project helps you, consider supporting its development: [Sponsor on GitHub →](https://github.com/sponsors/axdithyaxo)
+
+## Contributing
+
+Read our **[Contribution Guidelines](CONTRIBUTING.md)** to report bugs, submit pull requests, and propose new features.
+
+## License
+
+**Lár** is licensed under the `Apache License 2.0`. Free to use in personal, academic, or commercial projects. Retain the `LICENSE` and `NOTICE` files in any distribution.

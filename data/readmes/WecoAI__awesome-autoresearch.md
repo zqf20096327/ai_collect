@@ -1,0 +1,71 @@
+# Awesome AutoResearch [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+
+A curated list of AutoResearch use cases **with optimization traces** and open source implementations. Every entry includes a link to the actual optimization trajectory so you can see what the agent tried, not just the final result.
+
+## What is AutoResearch?
+
+AutoResearch is, at its core, a prompt. Karpathy released it as a single markdown file - `program.md`, that instructs a coding agent (Claude Code, Codex, or similar) to follow an optimization workflow. The agent edits one file (`train.py`, that trains a language model), runs for a fixed 5 minutes on a GPU, checks whether the metric improved, and either commits the change or reverts it. Then it loops forever.
+
+<p align="center">
+<img src="autoresearch-loop.png" width="400">
+</p>
+
+The specific `program.md` that ships with AutoResearch is written for one task: training a GPT model. But the structure - iteratively optimizing a file against an evaluation metric, with a discard/keep loop - turns out to be portable. In the weeks since release, the community has adapted it to GPU kernel optimization, template engine optimization, tabular ML engineering, and more. The `program.md` for each of these looks different, but the loop is the same.
+
+## Use Cases
+
+| Use Case | Description | Author | Links | Traces |
+|----------|-------------|--------|-------|--------|
+| LLM training optimization | The original - optimize nanoGPT training code. 20 improvements found overnight on hand-tuned code | Andrej Karpathy | [GitHub](https://github.com/karpathy/autoresearch) · [Tweet](https://x.com/karpathy/status/2031088031709675676) | [progress chart](https://github.com/karpathy/autoresearch/blob/master/progress.png) |
+| Speed up Shopify's template engine | 53% faster parse+render, 61% fewer allocations from 93 automated commits on Shopify's Liquid engine | Tobi Lutke (Shopify CEO) | [GitHub](https://github.com/davebcn87/pi-autoresearch) · [Tweet](https://x.com/tobi/status/2032212531846971413) | [PR](https://github.com/Shopify/liquid/pull/2056) |
+| GPU kernel optimization | Autoresearch applied to CUDA kernel optimization (18 → 187 TFLOPS) | RightNow AI | [GitHub](https://github.com/RightNow-AI/autokernel) · [Tweet](https://x.com/Akashi203/status/2031533857082646769) | [progress chart](https://github.com/RightNow-AI/autokernel/blob/main/progress.png) |
+| Voice agent prompt engineering | Optimize voice agent prompts with automated evaluation (score 0.728 → 0.969) | Archie Sengupta | [GitHub](https://github.com/ArchishmanSengupta/autovoiceevals) · [Tweet](https://x.com/archiexzzz/status/2033258540312510702) | [progress chart](https://pbs.twimg.com/media/HDeR_UJbkAAj1P_?format=jpg&name=4096x4096) |
+| Predict baseball pitch speed | Build predictive model for pitch velocity from biomechanics data (R² 0.44 → 0.78) | Kyle Boddy (Driveline Baseball) | [Tweet](https://x.com/drivelinekyle/status/2032242254035992610) | [progress chart](https://pbs.twimg.com/media/HDP5FzEbEAAIIB0?format=jpg&name=4096x4096) |
+| XGBoost for tennis match prediction | Predict ATP/WTA match outcomes - encountered and documented reward hacking | Nick Oak | [Blog](https://nickoak.com/posts/tennis-xgboost-autoresearch/) · [GitHub](https://github.com/buildoak/tennis-xgboost-autoresearch) | [blog](https://nickoak.com/posts/tennis-xgboost-autoresearch/) |
+| RL post-training optimization | Autoresearch for RL hyperparameters on Qwen 0.5B + GSM8K (eval 0.475 → 0.550 in fewer steps) | Vivek Kashyap | [GitHub](https://github.com/vivekvkashyap/autoresearch-rl) · [Tweet](https://x.com/vivek_2332/status/2034137143870402935) | [progress chart](https://pbs.twimg.com/media/HDY-RmoaAAAySpk?format=jpg&name=medium) |
+| Ancient scroll ink detection | Vesuvius Challenge autoresearch agent swarm for ink detection models. 4 agents 24/7, cross-scroll generalization nearly doubled | Vesuvius Challenge | [Blog](https://scrollprize.substack.com/p/we-are-cooking) | [blog](https://scrollprize.substack.com/p/we-are-cooking) |
+| Earth system model optimization | Hybrid: LLM proposes formula structures, TPE optimizes parameters. Fire correlation 0.09→0.65 | Dev Paragiri (UMD CS) | [Tweet](https://x.com/devparagiri/status/2035075626273739068) · [Blog](https://paragiri.com/blog/2026/autoresearch-earth-system-models/) | [blog](https://paragiri.com/blog/2026/autoresearch-earth-system-models/) |
+| Bitcoin price formula discovery | Autonomous search for best time-based formula predicting Bitcoin price. 328 experiments, 50.5% RMSE improvement over power law. Walk-forward OOS evaluation with bootstrap significance testing | Carlos Baquero | [GitHub](https://github.com/CBaquero/BTCautoresearch) | [progress chart](https://github.com/CBaquero/BTCautoresearch/blob/main/fig_experiments.png) |
+| Protein folding architecture search | Codex `/goal` iterating SimplexFold (AlphaFold2-style model) on NanoFold benchmark for 150+ hours, searching topologically inspired architectures. 127 scored runs, best val C-alpha lDDT 0.4311 | Chris Hayduk (OpenAI) | [GitHub](https://github.com/ChrisHayduk/SimplexFold) · [Tweet](https://x.com/ChrisHayduk/status/2055757345506877759) | [progress chart](https://x.com/ChrisHayduk/status/2055757345506877759/photo/1) |
+| Flappy Bird game AI | Evolved a Flappy Bird agent from scratch over 100 iterations — mean score 2.76 → 20.9 (6.6×) for ~$12, no human guidance beyond initial setup | Weco AI | [Blog](https://weco.ai/blog/flappy-bird-case-study) | [progress chart](https://weco.ai/assets/blogs/flappy-bird-case-study/frames/05-score-chart.png) · [search tree](https://weco.ai/demo/flappy-bird-search-tree.html) |
+| Autoresearch on autoresearch | Autoresearch harness optimizing its own code: 100 outer-loop steps over 8 days. Improved agents generalize to held-out benchmarks; reward hacking cut 63% → 34% on KernelBench | Weco AI | [Blog](https://weco.ai/blog/first-evidence-of-recursive-self-improvement) | [progress chart](https://weco.ai/assets/blogs/first-evidence-of-recursive-self-improvement/figC_100step_run.png) · [blog](https://weco.ai/blog/first-evidence-of-recursive-self-improvement) |
+| TPU model performance optimization | Autoresearch loop applied to TPU training MFU / tokens-per-sec on v6e-8. Llama3-8B and Qwen3-8B optimized across JAX and torchax lanes, profiling each run via an XProf MCP and keeping one model-code change per experiment; several agent+harness stacks surpassed the [MaxText](https://github.com/AI-Hypercomputer/maxtext) reference (Google's repo of state-of-the-art TPU-optimized models) | Aleksey Vlasenko | [GitHub](https://github.com/vlasenkoalexey/tpu_performance_autoresearch_wiki) · [Blog](https://vlasenkoalexey.github.io/2026/05/tpu-model-performance-auto-optimization/) | [interactive trace](https://vlasenkoalexey.github.io/tpu_performance_autoresearch_wiki/wiki/analyses/qwen3/mfu-explorer.html) |
+| Bioinformatics software speedup | AutoZyme: autonomous agentic framework that accelerates bioinformatics software. 45 tasks across 9 scientific domains, 16.7x median and up to 1482x (single-cell), with output concordance and peak memory verified against frozen upstream baselines | Elliot Xie et al. (UW-Madison) | [GitHub](https://github.com/ElliotXie/autozyme) · [Paper](https://www.biorxiv.org/content/10.64898/2026.06.12.731250v1) | [benchmarks](https://autozyme.com/benchmarks) |
+| OpenAI Parameter Golf hiring challenge | Weco's Aiden agent in OpenAI's LM-training challenge (16 MB artifact, 10 min on 8×H100). 7 of 47 merged leaderboard records (best human: 3), h-index 10 (next: 7), 1,243 experiments in 22 days | Weco AI | [Blog](https://weco.ai/blog/parameter-golf-aiden) | [blog](https://weco.ai/blog/parameter-golf-aiden) |
+
+## Benchmarks & Evaluation
+
+| Benchmark | Description | Maintainer | Links | Traces |
+|-----------|-------------|------------|-------|--------|
+| **ResearchClawBench** | End-to-end scientific research benchmark for AI agents: agents read raw data and papers, write code, generate figures, and produce publication-style reports scored against expert checklists | InternScience | [GitHub](https://github.com/InternScience/ResearchClawBench) · [Dataset](https://huggingface.co/datasets/InternScience/ResearchClawBench) · [Leaderboard](https://internscience.github.io/ResearchClawBench-Home/) | [run traces](https://internscience.github.io/ResearchClawBench-Home/) |
+| **FML-bench** | Controlled study of AI research agent strategies across 18 ML research tasks (10 domains), separating search strategy from execution infrastructure. Finds a simple greedy hill-climber nearly matches the best tree-search agent; performance tracks early convergence and focused exploration, not diversity or compute | NUS | [Paper](https://arxiv.org/abs/2605.17373) · [GitHub](https://github.com/qrzou/FML-bench) | [search dynamics](https://arxiv.org/abs/2605.17373) |
+
+## Implementations & Forks
+
+| Project | Description | Links |
+|---------|-------------|-------|
+| **autoresearch** | The original - single GPU, 630 lines of Python | [GitHub](https://github.com/karpathy/autoresearch) |
+| **pi-autoresearch** | Generalized as a Pi extension. Works for any optimization target - test speed, bundle size, build times, Lighthouse scores | [GitHub](https://github.com/davebcn87/pi-autoresearch) |
+| **autoresearch-mlx** | Apple Silicon (MLX) port. No PyTorch required, uses unified memory | [GitHub](https://github.com/trevin-creator/autoresearch-mlx) |
+| **autoresearch-win-rtx** | Windows + consumer RTX GPU port (RTX 2060 through 4090) | [GitHub](https://github.com/jsegov/autoresearch-win-rtx) |
+| **autoresearch-at-home** | Distributed autoresearch - SETI@home style. Multi-agent swarm coordination | [GitHub](https://github.com/mutable-state-inc/autoresearch-at-home) |
+| **autoresearch (Claude Skill)** | Generalized as a Claude Code skill for any domain | [GitHub](https://github.com/uditgoenka/autoresearch) |
+| **agent-digivolve-harness** | A control layer for long-running CLI agent work. Generalizes the autoresearch keep/revert loop with persistent run state, explicit eval packages, baseline and holdout cases, and one bounded mutation per iteration | [GitHub](https://github.com/MatthewZMD/agent-digivolve-harness) |
+| **auto-agent** | Autoresearch, but for AI agents. Given a golden dataset, it autonomously improves a target agent through an iterative hypothesis-driven loop: analyze failures, spawn a coding agent to implement fixes, evaluate, and accept or rollback | [GitHub](https://github.com/alfonsograziano/auto-agent) |
+| **CORAL** | Multi-agent autoresearch with shared evolution. Spawns parallel Claude Code agents in isolated git worktrees that share a hub of attempts, notes, and reusable skills. Each agent reads a task guide, commits changes, triggers eval-on-commit, and loops — with cross-agent knowledge sharing as the core mechanism for open-ended discovery | [GitHub](https://github.com/Human-Agent-Society/CORAL) · [Paper](https://arxiv.org/pdf/2604.01658) |
+| **evo** | A Claude Code plugin for autoresearch | [GitHub](https://github.com/evo-hq/evo) |
+| **Agon** | Research orchestrator as a Claude Code plugin: a topic → idea → proposal → experiment loop with scientist/coder/auditor roles, deployed across 10+ disciplines | [GitHub](https://github.com/AutoResearch-Factory/Agon) · [Paper](https://arxiv.org/abs/2606.24177) |
+| **AutoNumerics** | Autonomous multi-agent pipeline that writes, debugs, and validates classical PDE numerical solvers from a plain-language problem description, picking the right numerical method automatically | [GitHub](https://github.com/Daviddjddu/Autonumerics) · [Paper](https://arxiv.org/abs/2602.17607) |
+
+## Contributing
+
+Want to add a use case? Open a PR or [file an issue](https://github.com/WecoAI/awesome-autoresearch/issues).
+
+To make our work easier, please make submissions as verifiable as possible:
+
+- **Minimum**: a progress chart showing each experiment's score and breakthrough annotations (e.g. [Karpathy's progress chart](https://github.com/karpathy/autoresearch/blob/master/progress.png))
+- **Ideal**: a public repo with per-solution code and scores (the full exploration trace), or a [Weco Observe](https://docs.weco.ai/observe) dashboard link
+
+## License
+
+[CC0 1.0](LICENSE)

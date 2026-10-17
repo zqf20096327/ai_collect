@@ -1,0 +1,242 @@
+# nemotron-omni-mlx
+
+[![ci](https://github.com/nicedreamzapp/nemotron-omni-mlx/actions/workflows/ci.yml/badge.svg)](https://github.com/nicedreamzapp/nemotron-omni-mlx/actions/workflows/ci.yml)
+
+**Run NVIDIA's tri-modal Nemotron Omni — text + vision + audio — entirely on an Apple Silicon Mac.**
+
+In plain terms: you give it a prompt plus an image, a video or an audio clip, and it answers in
+text, with nothing sent to the cloud.
+
+[NVIDIA's Nemotron-3-Nano-Omni-30B-A3B](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16)
+is an open-weights model that sees, hears, and reasons. A 4-bit MLX quantization already exists
+([mlx-community, by yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit)),
+but as that model card notes, only the **text backbone** loads with standard MLX tooling:
+
+> The vision and audio towers require a multimodal runtime that implements the C-RADIO ViT-H and
+> Parakeet Conformer forward passes.
+
+This repo is that runtime, in pure MLX. The vision tower, the audio tower, the processor, and the
+token splicing — all ported from NVIDIA's reference implementation and **verified numerically
+against it**, not by vibes.
+
+```
+End to end through python -m src.omni:
+Image:  67.7  tok/s · 22.1 GB peak
+Audio:  110.5 tok/s · 21.0 GB peak
+Text:   109   tok/s · 17.9 GB peak
+Text only through plain mlx-lm (first smoke test): 152.5 tok/s · 17.9 GB peak
+                          (M5 Max MacBook Pro, 4-bit LLM + bf16 towers)
+```
+
+Numbers are from single runs recorded in [`PLAN.md`](PLAN.md).
+
+> ⚠️ **On a 32 GB Mac, the image path may fail out of the box** — macOS caps GPU memory at
+> ~2/3 of RAM (~21.3 GB), just under the 22.1 GB image-path peak. Text and audio should still fit.
+> It's a one-line fix: see [the 32 GB heads-up](#install) in Install before reporting a bug.
+
+## See it run
+
+A screenshot of a real store cart, read by the model on a laptop with nothing in the cloud:
+
+![demo](docs/demo-preview.gif)
+
+▶ **[Watch the full 35-second demo, with narration](https://nicedreamzwholesale.com/2026/07/16/nvidia-nemotron-omni-mlx-apple-silicon-vision-audio-runtime/)** — or grab the [mp4](https://github.com/nicedreamzapp/nemotron-omni-mlx/raw/main/docs/nemotron-omni-mlx-demo.mp4) directly.
+
+The write-up on that page covers why this port exists, what the parity numbers mean, and the
+three traps worth knowing before you attempt it yourself.
+
+## What I built
+
+Matt Macosko wrote the MLX runtime in this repo. The model, weights and reference code are upstream (see [Credit](#credit-where-its-due)).
+
+- [`src/vision.py`](src/vision.py): the C-RADIOv4-H vision tower (ViT-H) plus pixel-shuffle projection, image and video.
+- [`src/audio.py`](src/audio.py): the log-mel frontend and Parakeet Conformer audio tower plus sound projection.
+- [`src/processing.py`](src/processing.py): the processor (dynamic-res image sizing, video frames, audio token counts, EVS retention mask).
+- [`src/omni.py`](src/omni.py): the CLI that splices image, video and audio embeddings into the text backbone and generates.
+- [`scripts/setup_weights.py`](scripts/setup_weights.py): downloads the 4-bit checkpoint and builds the filtered `text-only/` directory `mlx-lm` can load.
+- [`tests/`](tests/): the parity suite against NVIDIA's PyTorch reference, plus unit tests that run in CI with no weights.
+
+Upstream, not mine: the model and reference code (NVIDIA), the 4-bit quantization (yayr, mlx-community), MLX and the `nemotron_h` text backbone in `mlx-lm` (Apple's MLX team and contributors).
+
+## Uncensored builds (abliterated)
+
+If you want this model with its refusal training removed, I abliterated it — **language stack
+only, both towers left intact** — and published three MLX sizes. As far as I can tell these are
+the first abliterated Omni that run on a Mac (the other uncensored builds are NVFP4 / GGUF):
+
+| build | size | fits |
+|---|---|---|
+| [4-bit](https://huggingface.co/divinetribe/Nemotron-3-Nano-Omni-30B-Abliterated-MM-4bit) | ~18 GB | a 32 GB Mac |
+| [8-bit](https://huggingface.co/divinetribe/Nemotron-3-Nano-Omni-30B-Abliterated-MM-8bit) | ~33 GB | the daily driver |
+| [bf16](https://huggingface.co/divinetribe/Nemotron-3-Nano-Omni-30B-Abliterated-MM-bf16) | ~62 GB | 64 GB+ |
+
+Refusal on this model is spread across **two blocks (16 and 31)** — a single-layer ablation leaves
+it refusing. Vision and audio are copied through untouched, so all three still see and hear. Run
+them with this same runtime, or with `mlx-vlm` directly.
+
+**On llama.cpp:** [@wacomctl672](https://huggingface.co/wacomctl672) converted the bf16 build to
+GGUF and ran it at Q4_K_M with the combined audio+vision `mmproj` from ggml-org — text, vision and
+audio all working. Weights:
+[wacomctl672/Nemotron-3-Nano-Omni-30B-Abliterated-MM-GGUF](https://huggingface.co/wacomctl672/Nemotron-3-Nano-Omni-30B-Abliterated-MM-GGUF).
+Converting it yourself takes one patch to `llama.cpp/conversion/nemotron.py` — at the top of
+`modify_tensors` (~line 431):
+
+```python
+if "switch_mlp.fc1.weight" in name:
+    yield f"blk.{bid}.ffn_up_exps.weight", data_torch
+    return
+elif "switch_mlp.fc2.weight" in name:
+    yield f"blk.{bid}.ffn_down_exps.weight", data_torch
+    return
+```
+
+## Parity — verified, not claimed
+
+Every component is tested against NVIDIA's PyTorch reference on the same inputs with the same
+weights. The 23 parity tests in `tests/test_*_parity.py` — **23/23 passing** on the M5 Max.
+
+| Component | Compared against | Result |
+|---|---|---|
+| Audio tower | `transformers` ParakeetEncoder + NVIDIA `SoundProjection`, CPU fp32 | cos **0.99999130** (min/frame) |
+| Audio frontend | log-mel features | max &#124;Δ&#124; **8.1e-6** |
+| Vision tower | `nvidia/C-RADIOv4-H` via `trust_remote_code`, CPU fp32 | cos **0.99996227** (min/token) |
+| Vision tower, MLX CPU stream | same | **1.00000000** — graph-exact |
+| Processor | NVIDIA's reference processor | token ids **exact**, pixels max &#124;Δ&#124; **1.55e-06** |
+
+The GPU-vs-CPU gap on vision is Metal's lossy fp32 matmul (~7.7e-4 rel. vs a float64 ground
+truth, where torch-CPU and MLX-CPU both sit at ~1.3e-6) — not a porting error. The
+`test_cpu_stream_is_graph_exact` test locks that down as a regression guard.
+
+## Install
+
+Requires an Apple Silicon Mac with ≥32 GB (the model needs ~22 GB at peak, measured on an
+M5 Max 128 GB — the only machine it's been tested on).
+
+**A heads-up for 32 GB machines:** macOS caps how much memory Metal will hand the GPU at
+roughly 2/3 of physical RAM (`recommendedMaxWorkingSetSize`). On a 32 GB Mac that's about
+21.3 GB — just under this model's ~22 GB image-path peak. So text and audio may work fine
+while the image path fails, which looks like a model bug but is really the wired-memory
+ceiling. You can check your own ceiling in seconds before downloading anything:
+
+```swift
+import Metal
+let d = MTLCreateSystemDefaultDevice()!
+print(Double(d.recommendedMaxWorkingSetSize) / 1_073_741_824.0)
+```
+
+Save that as `check.swift`, run `swift check.swift`, and it prints your ceiling in GB. If
+it's under ~23, raise it before running the image path:
+
+```bash
+sudo sysctl iogpu.wired_limit_mb=24576
+```
+
+(Resets on reboot.) If you run this on a 32 GB machine, please open an issue with what that
+snippet prints and what happened — real numbers from smaller hardware help everyone.
+
+```bash
+git clone https://github.com/nicedreamzapp/nemotron-omni-mlx
+cd nemotron-omni-mlx
+pip install -r requirements.txt
+```
+
+Then fetch the weights (~19 GB) and build the filtered text-backbone directory:
+
+```bash
+export HF_HUB_ENABLE_HF_TRANSFER=1   # ~30x faster downloads
+python scripts/setup_weights.py       # downloads + prepares model-4bit/ and text-only/
+```
+
+The CLI also reads the processor and tokenizer config from NVIDIA's reference repo, which it
+expects in `reference/` (change with `--ref-dir`). `setup_weights.py` does not fetch it, so grab
+the small files yourself:
+
+```bash
+huggingface-cli download nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16 \
+  --exclude "*.safetensors" --local-dir reference
+```
+
+To sanity-check the processor with no weights loaded: `python -m src.omni --prompt "Hi" --dry-run`.
+
+Optional extras, not in `requirements.txt`:
+- **Video** needs `decord` or `av` (`pip install av`).
+- **Audio that isn't 16 kHz** gets resampled with `scipy` (`pip install scipy`). 16 kHz WAV works without it.
+- **The parity tests** need the torch-side deps listed at the bottom of `requirements.txt`, NVIDIA's
+  code in `reference/`, and the bf16 shard 1 in `weights-bf16/model-00001-of-00017.safetensors`. No script sets those up yet.
+  Without them those tests skip and say what's missing.
+- **The unit tests** need none of that: `pip install -r requirements-test.txt && pytest`. They use tiny
+  random-weight towers and a stub tokenizer, run on MLX's CPU backend, and are what CI runs on Linux.
+
+## Use
+
+```bash
+# See
+python -m src.omni --image photo.jpg --prompt "What's in this picture?"
+
+# Hear
+python -m src.omni --audio clip.wav --prompt "Transcribe this."
+
+# Watch
+python -m src.omni --video clip.mp4 --prompt "What happens here?"
+
+# Both at once
+python -m src.omni --image photo.jpg --audio clip.wav --prompt "Do these match?"
+```
+
+It's a reasoning model — it emits a `<think>` block before the answer. Give it room
+(`--max-tokens 900`) or you'll get cut off mid-thought.
+
+## Notes for anyone porting this themselves
+
+Three things cost real time. They're documented at length in `PLAN.md`, but the short version:
+
+1. **The vision tower does not normalize its own input.** `make_preprocessor_external()` turns
+   `input_conditioner` into an Identity, so its checkpoint weights are dead. The *processor* must
+   apply the CLIP `norm_mean`/`norm_std`. Feed raw `[0,1]` pixels and you get plausible garbage,
+   silently.
+2. **Parts of `config.json` are vestigial.** `use_thumbnail`, `force_image_size`, and
+   `image_tag_type` are ignored by the live code path (only dead code reads them) — it's one
+   dynamic-res tile, no thumbnail, not classic InternVL tiling. Trace the code, don't trust the
+   config.
+3. **`-inf` attention masking NaN-poisons padded audio batches** — fully-masked softmax rows go
+   NaN and spread through k/v. NVIDIA's own reference does this: batch two clips of different
+   lengths and the shorter one comes back NaN. This port masks with `-1e9` instead (bit-identical
+   for valid rows, finite for padded ones).
+
+Also: RADIO has enormous outlier activations (final features |max| ≈ 2370 vs median 2.5). Judge
+correctness by cosine similarity, never absolute difference.
+
+## Other ways to do this
+
+- **[mlx-vlm](https://github.com/Blaizzy/mlx-vlm)** runs and fine-tunes a wide range of vision-language models on MLX. If you want image understanding from a different model family, start there.
+- **[mlx-audio](https://github.com/Blaizzy/mlx-audio)** covers speech-to-text and text-to-speech on MLX, if audio is what you're after.
+- **[NVIDIA's own release](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16)** is the reference, and the way to run this model on NVIDIA GPUs.
+
+## Something off?
+
+If a parity test fails on your Mac, or output looks wrong next to NVIDIA's reference, please open an [issue](https://github.com/nicedreamzapp/nemotron-omni-mlx/issues/new) with your chip, RAM and the failing test. It has only been tested on one machine so far.
+
+## Credit where it's due
+
+- **[NVIDIA](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16)** built
+  the model and released the weights *and* the reference code openly. This port is a
+  transcription of their work into MLX; none of it happens otherwise.
+- **[yayr](https://huggingface.co/mlx-community/NVIDIA-Nemotron-3-Nano-Omni-30B-A3B-4bit)** at
+  mlx-community did the 4-bit MLX quantization this runs on. Go like that upload.
+- **[Apple's MLX team](https://github.com/ml-explore/mlx)**, and whoever contributed
+  `nemotron_h` to [mlx-lm](https://github.com/ml-explore/mlx-lm) — the text backbone needed
+  nothing from me because of them.
+
+If you want local MLX models behind Claude Code too, I made [claude-code-local](https://github.com/nicedreamzapp/claude-code-local), which runs Claude Code on a Mac with no API key.
+
+## License
+
+Runtime code: MIT (see `LICENSE`).
+Model weights are NVIDIA's and carry the
+[NVIDIA Open Model License](https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16/blob/main/LICENSE)
+— this repo ships no weights.
+
+---
+
+Built in Humboldt, CA by [Matt Macosko](https://github.com/nicedreamzapp) · Nice Dreamz LLC ·
+[more local-AI work](https://nicedreamzwholesale.com/software/)

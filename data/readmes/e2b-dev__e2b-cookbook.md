@@ -1,0 +1,402 @@
+![E2B Cookbook Preview Light](/readme-assets/cookbook-light.png#gh-light-mode-only)
+![E2B Cookbook Preview Dark](/readme-assets/cookbook-dark.png#gh-dark-mode-only)
+
+# ✴️ E2B Cookbook
+
+Example code and guides for building with [E2B SDK](https://github.com/e2b-dev/e2b).
+
+Read more about E2B on the [E2B website](https://e2b.dev/?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=e2b-cookbook) and the official [E2B documentation](https://e2b.dev/docs?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=e2b-cookbook).
+
+## Examples
+
+**Hello World guide**
+
+- [TypeScript](./examples/hello-world-js)
+- [Python](./examples/hello-world-python)
+
+**Open-source apps**
+
+- [E2B AI Analyst](https://github.com/e2b-dev/ai-analyst) - analyze your data & create interactive charts
+- [E2B Fragments](https://github.com/e2b-dev/fragments) - prompt different LLMS to generate apps with UI
+- [E2B Surf](https://github.com/e2b-dev/surf) - computer use AI agent powered by OpenAI
+
+**Multi-turn reinforcement learning**
+
+- [OpenEnv Terminus: inspect, run and repair a report in E2B](./examples/openenv-terminus-python) — first reward without a model or GPU, with optional native TRL training wiring.
+
+**LLM providers**
+
+<table>
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Topic(s)</th>
+      <th>Example</th>
+      <th>Python</th>
+      <th>TypeScript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="8">OpenAI</td>
+      <td>Agents SDK</td>
+      <td>Agentic workflows running in E2B sandboxes</td>
+      <td><a href="./examples/openai-agents-sdk">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Agents API</td>
+      <td>Full-stack workbench, one E2B sandbox per chat</td>
+      <td><a href="./examples/openai-agents-api-python-sdk">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Agents API</td>
+      <td>Webhook-managed sandbox lifecycle per session</td>
+      <td><a href="./examples/openai-agents-api-python-sdk-webhook-managed">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>GPT-5.6</td>
+      <td>Data analysis and visualization of a CSV</td>
+      <td><a href="./examples/openai-python">Python</a></td>
+      <td><a href="./examples/openai-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>GPT-5.6</td>
+      <td>Code interpreter and reasoning on image data</td>
+      <td><a href="./examples/openai-image-analysis-python">Python</a></td>
+      <td><a href="./examples/openai-image-analysis-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>GPT-5.6</td>
+      <td>Code interpreter for ML on dataset</td>
+      <td><a href="./examples/openai-ml-dataset-python">Python</a></td>
+      <td><a href="./examples/openai-ml-dataset-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Codex CLI</td>
+      <td>OpenAI Codex, running inside a Sandbox</td>
+      <td><a href="./examples/openai-codex-in-sandbox-python">Python</a></td>
+      <td><a href="./examples/openai-codex-in-sandbox-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Computer use</td>
+      <td>Copy new hires from Excel into OrangeHRM on an E2B desktop with GPT-6 Luna, or let GPT-6 Astra drive the desktop with PyAutoGUI and Playwright code</td>
+      <td><a href="./examples/openai-computer-use-python">Python</a></td>
+      <td><a href="./examples/openai-computer-use-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td rowspan="4">Anthropic</td>
+      <td>Claude Opus 5</td>
+      <td>Code interpreter</td>
+      <td><a href="./examples/claude-code-interpreter-python">Python</a></td>
+      <td><a href="./examples/claude-code-interpreter-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Claude Code</td>
+      <td>Claude Code, running inside a Sandbox</td>
+      <td><a href="./examples/anthropic-claude-code-in-sandbox-python">Python</a></td>
+      <td><a href="./examples/anthropic-claude-code-in-sandbox-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Claude Managed Agents</td>
+      <td>Self-hosted worker running inside a Sandbox</td>
+      <td><a href="./examples/anthropic-managed-agents/python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Computer use + browser use</td>
+      <td>Copy new hires from Excel into OrangeHRM on an E2B desktop</td>
+      <td>-</td>
+      <td><a href="./examples/anthropic-computer-use-orangehrm-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Meta</td>
+      <td>Muse Spark</td>
+      <td>Coding agent with E2B as its execution backend</td>
+      <td><a href="./examples/muse-execution-backend-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Mistral</td>
+      <td>Codestral</td>
+      <td>Code interpreter</td>
+      <td><a href="./examples/codestral-code-interpreter-python">Python</a></td>
+      <td><a href="./examples/codestral-code-interpreter-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Groq</td>
+      <td>Llama 3</td>
+      <td>Code interpreter via function calling</td>
+      <td><a href="./examples/groq-code-interpreter-python/groq_code_interpreter.ipynb">Python</a></td>
+      <td><a href="./examples/groq-code-interpreter-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td rowspan="2">Fireworks AI</td>
+      <td>Qwen2.5-Coder-32B-Instruct</td>
+      <td>Code interpreter</td>
+      <td><a href="./examples/fireworks-code-interpreter-python/qwen_code_interpreter.ipynb">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Llama 3.1 405B, 70B, 8B</td>
+      <td>Code interpreter</td>
+      <td><a href="https://github.com/e2b-dev/e2b-cookbook/blob/fireworks/examples/fireworks-code-interpreter-python/llama_3.1_code_interpreter.ipynb">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Together AI</td>
+      <td>Llama 3.1, Qwen 2, Code Llama, DeepSeek Coder</td>
+      <td>Code interpreter</td>
+      <td><a href="./examples/together-ai-code-interpreter-python">Python</a></td>
+      <td><a href="./examples/together-ai-code-interpreter-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>WatsonX AI</td>
+      <td>IBM Graphite, Llama, Mistral</td>
+      <td>Code interpreter</td>
+      <td><a href="./examples/watsonx-ai-code-interpreter-python">Python</a></td>
+      <td><a href="./examples/watsonx-ai-code-interpreter-js">TypeScript</a></td>
+    </tr>
+  </tbody>
+</table>
+
+**AI frameworks integrations**
+
+<table>
+  <thead>
+    <tr>
+      <th>Framework</th>
+      <th>Description</th>
+      <th>Python</th>
+      <th>TypeScript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>🦜⛓️ LangChain</td>
+      <td>LangChain with Code Interpreter</td>
+      <td><a href="./examples/langchain-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td rowspan="2">🦜🕸️ LangGraph</td>
+      <td>LangGraph with code interpreter</td>
+      <td><a href="./examples/langgraph-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Plan-and-execute coding agent: one sandbox across graph steps, checkpoints and a human-in-the-loop interrupt</td>
+      <td><a href="./examples/langgraph-plan-and-execute-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Pydantic AI</td>
+      <td>Pause and resume a coding agent in the same E2B sandbox</td>
+      <td><a href="./examples/pydantic-ai-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>Pydantic AI + Temporal</td>
+      <td>Recover a crashed worker with the same sandbox ID and preserved project files</td>
+      <td><a href="./examples/pydantic-ai-temporal-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>DSPy RLMs</td>
+      <td>Remote CPython and SQLite with host-side sub-model tools</td>
+      <td><a href="./examples/dspy-rlms-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>CrewAI</td>
+      <td>CrewAI agent with sandboxed Python execution</td>
+      <td><a href="./examples/crewai-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a></td>
+      <td>Learn an incident-triage skill in one sandbox and apply it in a fresh session</td>
+      <td><a href="./examples/hermes-incident-playbook-python">Python</a></td>
+      <td>-</td>
+    </tr>
+    <tr>
+    <td>▲ Vercel AI SDK</td>
+      <td>Next.js + AI SDK + Code Interpreter</td>
+      <td>-</td>
+      <td><a href="./examples/nextjs-code-interpreter">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td>▲ <a href="https://ai-sdk.dev">Vercel AI SDK</a></td>
+      <td>AI SDK sandbox provider: sandboxed tools via restricted sessions, and harness coding agents (Claude Code, Codex) running inside E2B</td>
+      <td>-</td>
+      <td><a href="./examples/vercel-ai-sdk-sandbox-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td>▲ <a href="https://eve.dev/docs">Vercel eve</a></td>
+      <td>Feedback analyst agent whose sandbox backend is E2B, publishing an HTML report from the sandbox</td>
+      <td>-</td>
+      <td><a href="./examples/vercel-eve-feedback-analyst-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td><a href="https://flueframework.com">Flue</a></td>
+      <td>Feedback analyst agent running entirely inside an E2B sandbox, publishing an HTML report from the sandbox</td>
+      <td>-</td>
+      <td><a href="https://github.com/e2b-dev/e2b-cookbook/tree/main/examples/flue-feedback-analyst-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td><a href="https://github.com/earendil-works/pi">Pi</a></td>
+      <td>Pi builds its own E2B code-interpreter extension in a sandbox, then uses it to analyze data</td>
+      <td>-</td>
+      <td><a href="./examples/pi-code-interpreter-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td><a href="https://github.com/e2b-dev/pi-extension">Pi + @e2b/pi</a></td>
+      <td>Pi runs on your machine while its tools run in an E2B sandbox: it builds a site, shares a public preview URL, and <code>/e2b pull</code> brings the files back</td>
+      <td>-</td>
+      <td><a href="./examples/pi-e2b-extension-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td>AgentKit</td>
+      <td>AgentKit Coding Agent</td>
+      <td>-</td>
+      <td><a href="./examples/agentkit-coding-agent">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td><a href="https://sandboxagent.dev/docs/sdk-overview">Sandbox Agent SDK</a></td>
+      <td>Run Sandbox Agent inside E2B and connect with the SDK</td>
+      <td>-</td>
+      <td><a href="./examples/sandbox-agent-sdk-js">TypeScript</a></td>
+    </tr>
+    <tr>
+    <td><a href="https://github.com/e2b-dev/opencode-e2b">OpenCode E2B workspaces</a></td>
+      <td>Warp a live OpenCode session from your laptop into an E2B sandbox and back</td>
+      <td>-</td>
+      <td><a href="./examples/opencode-e2b-workspace-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>Stirrup</td>
+      <td>The lightweight framework for building agents</td>
+      <td><a href="./examples/stirrup-python">Python</a></td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+**Reinforcement learning**
+
+- [Code rewards for TRL GRPO with E2B](./examples/trl-grpo-python) — first code rewards without a GPU, then train on JSON-processing tasks with sandboxed Python execution.
+
+**Remote execution integrations**
+
+<table>
+  <thead>
+    <tr>
+      <th>Integration</th>
+      <th>Description</th>
+      <th>Python</th>
+      <th>TypeScript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/openclaw/crabbox">Crabbox</a></td>
+      <td>Warm one E2B sandbox, sync local changes, and rerun a test suite on the same lease</td>
+      <td><a href="./examples/crabbox-e2b-python">Python</a></td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+**Model Context Protocol (MCP)**
+
+<table>
+  <thead>
+    <tr>
+      <th>Example</th>
+      <th>Description</th>
+      <th>TypeScript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MCP Client</td>
+      <td>Basic MCP client connection to E2B sandbox</td>
+      <td><a href="./examples/mcp-client-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Custom Server</td>
+      <td>Connect to custom filesystem MCP server from GitHub</td>
+      <td><a href="./examples/mcp-custom-server-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Custom Template</td>
+      <td>Create custom E2B template with pre-installed MCP servers</td>
+      <td><a href="./examples/mcp-custom-template-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Research Agent</td>
+      <td>Research agent using arXiv and DuckDuckGo MCP servers</td>
+      <td><a href="./examples/mcp-research-agent-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Claude Code</td>
+      <td>Claude Code with MCP integration</td>
+      <td><a href="./examples/mcp-claude-code-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Browserbase</td>
+      <td>Web automation agent using Browserbase MCP server</td>
+      <td><a href="./examples/mcp-browserbase-js">TypeScript</a></td>
+    </tr>
+    <tr>
+      <td>MCP Groq Exa (deprecated)</td>
+      <td>AI research using Groq with Exa MCP server</td>
+      <td><a href="./examples/mcp-groq-exa-js">TypeScript</a></td>
+    </tr>
+  </tbody>
+</table>
+
+**Example use cases**
+
+- Upload dataset and analyze it with Llama 3.3 - [Python](./examples/upload-dataset-code-interpreter)
+- Scrape Airbnb and analyze data with Claude Opus 5 and Firecrawl - [TypeScript](./examples/firecrawl-scrape-and-analyze-airbnb-data)
+- Visualize website topics with Claude Sonnet 5 and Firecrawl - [Python](./examples/claude-visualize-website-topics)
+- Next.js app with LLM + Code Interpreter and streaming - [TypeScript](./examples/nextjs-code-interpreter)
+- How to run a Docker container in E2B - [Python/TypeScript](./examples/docker-in-e2b)
+- Tailcat: encrypted links between sandboxes, and between a sandbox and your laptop - [Python/TypeScript](./examples/tailcat-e2b)
+- How to run Playwright in E2B - [TypeScript](./examples/playwright-in-e2b)
+- Map custom subdomains to your sandboxes - [TypeScript](./examples/custom-sandbox-domain-proxy)
+- Delete old paused sandboxes by age and metadata - [Python/Shell](./examples/cleanup-paused-sandboxes)
+- Feedback analyst agent on Flue, publishing an HTML report from a sandbox - [TypeScript](./examples/flue-feedback-analyst-js)
+- Warm an E2B sandbox and rerun tests after adding a local regression case - [Python](./examples/crabbox-e2b-python)
+- Teach Hermes an incident-triage playbook and reuse it in a fresh session - [Python](./examples/hermes-incident-playbook-python)
+
+## Running the examples as a test suite
+
+Every example is exercised nightly against live E2B by `tests/run-examples.ts`: each
+one is uploaded into a fresh sandbox, installed with its own toolchain (npm, uv,
+Poetry, or nbconvert for notebooks) and run. An example passes if it exits 0.
+
+```bash
+npm install
+npm test                      # all of them
+npm test -- hello-world       # substring filter, one or a few
+```
+
+You need an `E2B_API_KEY` plus whichever provider key the examples you are running
+use - see `.env.example`. `hello-world-js` and `hello-world-python` need only the E2B
+key, so they are the ones to try first.
+
+**What counts as a failure.** The suite checks the sandbox, not the model. A provider
+rate limit or an exhausted quota counts as OK, because the sandbox still built,
+installed and ran; non-deterministic model behaviour - no chart produced, a malformed
+tool call, generated code raising inside the sandbox - is reported as skipped. Real
+failures are the things that are actually broken: missing templates, dependency
+resolution, wrong entrypoints, auth, retired model ids, sandbox timeouts.
+
+Some examples are deliberately not covered - they need a provider key this repo does
+not hold, a long-lived server the runner cannot assert on, or an upstream fix. Each
+exclusion is listed with its reason at the top of `tests/run-examples.ts`, so a gap is
+never silent.

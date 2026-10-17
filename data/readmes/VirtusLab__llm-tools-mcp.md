@@ -1,0 +1,111 @@
+<div align="center">
+   
+# `llm-tools-mcp`
+
+![mcp-logo](https://github.com/user-attachments/assets/3e0e9850-6faf-439b-96c2-b672341c1ca5)
+
+**Connect to MCP servers right from your shell. Plugin for [llm](https://github.com/simonw/llm) (by [@simonw](https://github.com/simonw)).**
+
+
+[![PyPI](https://img.shields.io/pypi/v/llm-tools-mcp.svg)](https://pypi.org/project/llm-tools-mcp/)
+[![Changelog](https://img.shields.io/github/v/release/VirtusLab/llm-tools-mcp?include_prereleases&label=changelog)](https://github.com/VirtusLab/llm-tools-mcp/releases)
+[![Tests](https://github.com/VirtusLab/llm-tools-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/VirtusLab/llm-tools-mcp/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/VirtusLab/llm-tools-mcp/blob/main/LICENSE)
+
+
+
+</div>
+
+
+> [!Note]
+> Current focus: [Authorization #4](https://github.com/VirtusLab/llm-tools-mcp/issues/4)
+
+
+## Installation
+
+Install this plugin in the same environment as [LLM](https://llm.datasette.io/):
+
+```bash
+llm install llm-tools-mcp
+```
+## Usage
+
+> [!WARNING]
+> It's recommended to use the `--ta` flag and approve each tool execution.
+
+1. Create `mcp.json` file in `~/.llm-tools-mcp`.
+
+   Example file:
+
+   ```json
+   {
+     "mcpServers": {
+       "filesystem": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "@modelcontextprotocol/server-filesystem",
+           "~/demo"
+         ]
+       }
+     }
+   }
+   ```
+    
+2. List available tools.
+   > [!WARNING]
+   > `llm tools` is not implemented for dynamic toolboxes ([see this](https://github.com/simonw/llm/issues/1111#issuecomment-2992280193)), 
+   > so tools loaded as part of MCP won't be visible. 
+
+   ```sh
+   llm tools list
+   ```
+
+3. Run `llm` with tools.
+
+   ```sh
+   llm --ta -T MCP "what files are in the demo directory? show me contents of one of the files (any)"
+   ```
+
+### Other examples
+
+**Dynamically change your MCP config:**
+
+```sh
+llm --ta -T 'MCP("/path/to/custom/mcp.json")' "your prompt here"
+```
+
+## Development
+
+### Now (to be verified)
+
+- Sync dependencies: `uv sync --all-extras`
+- Run linters / type checker: `./check.sh`
+- Run tests: `./test.sh`
+- Run end to end tests: `./e2e/e2e-docker.sh`
+
+## To Do
+
+- [x] Release alpha version
+- [x] support all transports
+  - [x] streamable http
+  - [x] sse
+  - [x] stdio
+- [ ] Build a solid test suite
+  - [x] test config file validation
+  - [x] test sse with dummy server
+  - [x] test stdio with dummy server
+  - [x] test http streamable with dummy server ([see #1](https://github.com/Virtuslab/llm-tools-mcp/issues/1))
+  - [x] manual test for sse with real server
+  - [x] manual test for stdio with real server
+  - [x] manual test for http streamable with real server
+- [x] Redirect `stdout`/`stderr` from the MCP SDK to a file or designated location
+- [ ] Reuse stdio connections
+- [x] **Support non-stdio MCP servers**
+- [ ] Handle tool name conflicts (prefix with mcp server name?)
+- [ ] Gather feedback on the `~/.llm-tools-mcp` directory naming
+- [x] Improve failure handling:
+  - [x] When connecting to an MCP server fails
+  - [x] When `mcp.json` is malformed
+- [ ] Improve this README:
+  - [ ] Add more detail in the [Development](#development) section (mention `uv`?)

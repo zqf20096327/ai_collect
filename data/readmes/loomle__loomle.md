@@ -1,0 +1,234 @@
+# Loomle
+
+Loomle is an agent-native Unreal Engine integration for reading and changing
+complex editor objects through SAL, the Structured Agent Language.
+
+SAL turns Blueprint graphs, Widget trees, Class reflection, Assets, and other
+non-text UE state into compact, ordered text that both people and agents can
+read, copy, discuss, and patch. It stays faithful to UE: native paths, types,
+field names, values, palette actions, compiler diagnostics, and editor
+semantics remain native instead of being replaced by a parallel JSON model.
+
+## Why Loomle
+
+Text code already gives agents precise search, references, diffs, and edits.
+Unreal assets do not. Loomle supplies that missing text workflow while keeping
+the editor and UE APIs as the source of truth.
+
+- Compact SAL Object Text uses fewer tokens than large generic JSON payloads.
+- Queries start with summaries and local views instead of downloading an
+  entire graph.
+- Target-relative stable identity paths make returned Nodes, Pins, Graphs,
+  Widgets, and Blueprint objects safe to follow up without kind namespaces.
+- Palette and dynamic schema discovery let agents use capabilities that UE
+  actually exposes instead of guessing constructors or fields.
+- Dry runs share the real parse, resolve, validate, and plan path before any
+  mutation is applied.
+- Native compiler and object health diagnostics stay adjacent to the objects
+  they describe.
+
+## Current 0.7 Interface
+
+The standalone Client exposes eight MCP tools:
+
+- `status`: inspect the Client version, update availability, and bound session
+  and Bridge health.
+- `project`: inspect project availability and bind this MCP session to one
+  Unreal project.
+- `sal_query`: execute one self-contained SAL Query Text.
+- `sal_patch`: execute one ordered SAL Patch Text.
+- `sal_schema`: discover the resident SAL guide and the active interface cards.
+- `agent_skill`: discover and load MCP-managed Loomle workflow Skills without
+  a separate agent-specific installation.
+- `editor`: observe the current Unreal interaction with empty arguments, or
+  open, focus, and close an exact Blueprint or Graph from canonical SAL Target
+  Text.
+- `python`: run unrestricted Unreal Editor Python only as a fallback for
+  capabilities not covered by a structured Loomle interface, and poll an
+  execution only when the initial result supplies a continuation.
+
+The current public SAL modules are Asset, Blueprint, Class, Graph, StateTree,
+and Widget. They cover Asset Registry discovery, Blueprint declarations and
+components, Class reflection and defaults, graph-local flow and mutation,
+StateTree hierarchy and bindings, Widget trees, factual reference queries,
+compilation, save, and editor context.
+
+Example:
+
+```sal
+door = target {
+  domain: blueprint,
+  asset: "/Game/Blueprints/BP_Door.BP_Door"
+}
+
+query door
+summary
+```
+
+Use `sal_schema({})` for the active module index and
+`sal_schema({ module: "graph" })` for one exact interface card. Supported exact
+reads and Palette Entries provide dynamic discovery with `with schema`; each
+interface card states the exact subjects that accept it.
+
+## Install
+
+The latest stable Loomle release is available from
+[GitHub Releases](https://github.com/loomle/loomle/releases/latest)
+for Unreal Engine 5.7 and 5.8. Choose the package matching the installed
+engine version:
+
+| Package | Contents |
+| --- | --- |
+| `loomle-bridge-ue5.7.zip` | Complete UE 5.7 plugin for Mac Apple Silicon and Windows x64 |
+| `loomle-bridge-ue5.8.zip` | Complete UE 5.8 plugin for Mac Apple Silicon and Windows x64 |
+
+These stable filenames always resolve through the latest final GitHub Release.
+That release also retains immutable, versioned copies of both archives.
+
+The
+[Fab listing](https://www.fab.com/listings/f0fb545c-b1d9-4525-8642-3f170134c428)
+provides the current marketplace-approved Loomle build. GitHub Releases may be
+newer while a Fab update is under review.
+
+The complete archive contains both native targets and their matching Clients:
+
+```text
+LoomleBridge/
+  Source/
+  Resources/
+    Loomle/
+      <platform-arch>/
+        loomle(.exe)
+```
+
+The executable under `Resources/Loomle` is the self-contained SAL Client. It
+requires no separate Python, `uv`, Node.js, global Loomle install, or
+project-local Client.
+
+Before upgrading from 0.6, close Unreal Editor and remove or move the old
+`<Project>/Plugins/LoomleBridge` directory. A same-named project plugin takes
+precedence over the new engine plugin and would keep loading 0.6.
+
+Extract the complete archive, then copy the `LoomleBridge` directory
+to:
+
+```text
+<UE_5.7-or-5.8>/Engine/Plugins/Marketplace/LoomleBridge
+```
+
+Enable `LoomleBridge`, restart Unreal Editor, and configure an MCP server named
+`loomle` to launch the bundled Client with the argument `mcp`:
+
+```text
+macOS:   LoomleBridge/Resources/Loomle/darwin-arm64/loomle
+Windows: LoomleBridge/Resources/Loomle/win32-x64/loomle.exe
+```
+
+Full instructions: https://loomle.ai/install.html
+
+## Quickstart
+
+1. Open an Unreal project with `LoomleBridge` enabled.
+2. Restart Codex, Claude, or the relevant MCP host after configuring Loomle.
+3. Call `status` once to inspect Client, update, session, and Bridge health.
+4. If the session is unbound, call `project` to inspect or bind the intended
+   project.
+5. Call `editor({})` to begin from the user's current editor state; use
+   `editor({ operation: "open" | "close", target })` for exact Blueprint or
+   Graph presentation control.
+6. Use `sal_schema` when the target module or exact operation is unfamiliar.
+7. Inspect with `sal_query`, dry-run changes with `sal_patch`, then apply and
+   finalize through the owning asset.
+
+See https://loomle.ai/quickstart.html for a complete first query and patch.
+
+## Architecture
+
+```text
+Agent / MCP host
+  -> bundled Loomle Client (stdio MCP + SAL)
+  -> local runtime record
+  -> LoomleBridge inside Unreal Editor
+  -> UE 5.7 or 5.8 editor APIs and object model
+```
+
+The Client discovers live Bridge instances through
+`~/.loomle/state/runtimes`. This directory is runtime discovery state, not a
+global installation. Each MCP session keeps one sticky project binding and
+validates that project's current Editor with a short live health probe. If the
+bound project is offline, Loomle reports that state and never falls through to
+another online project. Use `project({})` to inspect candidates and bind or
+switch explicitly when needed.
+
+## Development
+
+The repository has four current product boundaries:
+
+- `sal/`: language parser, normalized model, schemas, and TypeScript SDK.
+- `interfaces/`: resident guide and static UE interface cards.
+- `client/`: standalone MCP Client.
+- `engine/LoomleBridge/`: Unreal Editor plugin.
+
+Install workspace dependencies and run the TypeScript test suite:
+
+```sh
+npm install
+npm test
+```
+
+Build and test the native Client for the current supported runner:
+
+```sh
+npm run build:executable
+npm run test:executable
+```
+
+Run the complete Loomle UE Automation category against a same-commit
+development plugin compiled with the native tests:
+
+```sh
+npm run test:ue-automation -- \
+  --ue-root <UE-root> \
+  --project-template tests/fixtures/ue/LoomleTestHost \
+  --plugin-dir <compiled-same-commit-test-plugin> \
+  --output-dir <new-artifact-directory> \
+  --target darwin-arm64
+```
+
+The output directory must not already exist. Raw plugin source is not a
+runnable candidate. The final release archive intentionally excludes native
+test code, so it is not the complete Automation candidate.
+
+Run the small packaged Client-to-UE workflow against the exact audited release
+archive and its bundled Client:
+
+```sh
+npm run test:packaged-e2e -- \
+  --ue-root <UE-root> \
+  --project-template tests/fixtures/ue/LoomleTestHost \
+  --plugin-archive <final-release-candidate.zip> \
+  --output-dir <new-artifact-directory> \
+  --target darwin-arm64
+```
+
+Release assembly consumes only the canonical program at
+`.tmp/client/<platform-arch>/loomle(.exe)` and combines it with the Bridge
+source plugin. See `packaging/client/` and `packaging/fab/` for the artifact
+contracts.
+
+## Documentation
+
+- Website: https://loomle.ai/
+- Install: https://loomle.ai/install.html
+- Quickstart: https://loomle.ai/quickstart.html
+- Interface overview: https://loomle.ai/tools/
+- Releases: https://github.com/loomle/loomle/releases
+
+Repository and product design documents live under `docs/`; canonical SAL and
+UE interface contracts live under `sal/docs/` and `interfaces/`. Loomle 0.6
+source and documents remain available from the `0.6` branch, its release tags,
+and repository history; `main` contains only the current design and code.
+
+## License
+
+Loomle is open source under the MIT License. See [LICENSE](LICENSE).

@@ -1,0 +1,843 @@
+# Vettore
+
+Vettore is a small vector toolkit for Elixir that keeps your data in ETS and
+uses Rust only where it helps: SIMD/GPU distance kernels, normalization, HNSW
+search, and MUVERA-style encodings.
+
+Earlier versions leaned toward a Rust-owned in-memory database. That was fast,
+but it made the library feel less like an Elixir tool and more like an external
+engine with Elixir bindings. Vettore now chooses ETS as the canonical store on
+purpose:
+
+- records are visible and easy to inspect from Elixir
+- supervision, snapshots, and ownership stay simple
+- metadata and application values live beside vectors naturally
+- native indexes can be rebuilt from canonical ETS state
+- the public API stays small, predictable, and BEAM-friendly
+
+The important idea is simple:
+
+- Elixir owns the records.
+- ETS is the source of truth.
+- Rust accelerates the expensive parts.
+- Search results say clearly what is a score and what is a distance.
+
+That choice is not the absolute fastest possible architecture. A fully
+Rust-owned vector database can beat ETS for large exact scans, but Vettore
+optimizes for a different kind of usefulness: simple integration with ordinary
+Elixir systems, with Rust kept as acceleration rather than ownership.
+
+## What You Get
+
+- ETS-backed collections
+- exact flat search
+- native HNSW approximate search
+- Matryoshka-style funnel search
+- binary quantized candidate search
+- hybrid candidate pipelines with exact or multi-vector reranking
+- ColBERT-style late interaction over multi-vector records
+- MUVERA-style fixed-dimensional encodings
+- named distance, similarity, normalization, and MMR helpers
+- representation-independent vector conversion and mean pooling for lists,
+  little-endian f32 binaries, and host-provided Nx tensors
+- optional native GPU execution through wgpu, with no Nx requirement
+- a top-level `Vettore.*` API, plus compatibility wrappers for the older
+  `Vettore.new/0` database-style API
+
+## Installation
+
+```elixir
+def deps do
+  [
+    {:vettore, "~> 0.3.5"}
+  ]
+end
+```
+
+## Quick Start
+
+Create a collection, insert a few records, and search:
+
+```elixir
+{:ok, collection} =
+  Vettore.new(
+    name: :documents,
+    dimensions: 3,
+    index: :flat,
+    metric: :cosine,
+    normalize: :l2
+  )
+
+:ok =
+  Vettore.put_many(collection, [
+    %{id: "east", vector: [1.0, 0.0, 0.0], metadata: %{kind: :axis}},
+    %{id: "north", vector: [0.0, 1.0, 0.0]},
+    %{id: "west", vector: [-1.0, 0.0, 0.0]}
+  ])
+
+{:ok, results} =
+  Vettore.search(collection, [1.0, 0.0, 0.0], limit: 2)
+```
+
+Results are `%Vettore.Result{}` structs:
+
+```elixir
+%Vettore.Result{
+  id: "east",
+  value: "east",
+  score: 1.0,
+  distance: 0.0,
+  metric: :cosine,
+  metadata: %{kind: :axis}
+}
+```
+
+## Public API
+
+New code can stay under the top-level `Vettore` module:
+
+```elixir
+Vettore.new(opts)
+Vettore.put(collection, embedding)
+Vettore.put_many(collection, embeddings)
+Vettore.get(collection, id)
+Vettore.delete(collection, id)
+Vettore.all(collection)
+Vettore.search(collection, query, opts)
+Vettore.funnel_search(collection, query, opts)
+Vettore.quantized_search(collection, query, opts)
+Vettore.multi_vector_search(collection, query_vectors, opts)
+Vettore.hybrid_search(collection, query, opts)
+Vettore.snapshot(collection, path)
+Vettore.load_snapshot(path, opts)
+Vettore.close(collection)
+```
+
+`Vettore.new/1` creates a collection. `Vettore.new/0` still creates the older
+compatibility database.
+
+### Score mode
+
+Collections created by `Vettore.new/1` use `score: :similarity` by default.
+This keeps the preferred collection API aligned with the compatibility API,
+but changes the `Result.score` scale used by earlier releases. Pass
+`score: :raw` when creating or loading a collection to preserve the previous
+behavior. Existing snapshots persist their score mode and keep their original
+scale.
+
+### Lifecycle ownership
+
+A collection belongs to the process that calls `Vettore.new/1`. Its ETS table
+and native index are reclaimed automatically when that process exits, even if
+`Vettore.close/1` was not called. Create long-lived collections from a
+long-lived owner such as a dedicated GenServer. Do not create a collection in a
+short-lived `Task` or request process and then hand it to another process: it
+will close when its creator terminates.
+
+Call `Vettore.close/1` when the owner no longer needs the collection to release
+resources immediately. The compatibility database returned by `Vettore.new/0`
+uses the same creator-process ownership rule.
+
+## Choosing A Search Path
+
+Start with the simplest thing that matches your job.
+
+| Use this | When |
+| --- | --- |
+| `search/3` with `index: :flat` | Small data, tests, correctness baselines, exact results |
+| `search/3` with `index: :hnsw` | Fast approximate search over larger collections |
+| `funnel_search/3` | Matryoshka embeddings where early dimensions are meaningful |
+| `quantized_search/3` | Cheap sign-bit candidate search before exact reranking |
+| `multi_vector_search/3` | ColBERT-style late interaction over token/page vectors |
+| `hybrid_search/3` | Combine candidate generators, then rerank once |
+
+The standalone helpers are nice while exploring. For production-style retrieval,
+`hybrid_search/3` is usually the most ergonomic surface.
+
+## Exact Search
+
+Flat search keeps ids and vectors in a Rust resource and scores the whole exact
+scan in one native call. ETS remains the canonical store for values, metadata,
+snapshots, and usability.
+
+```elixir
+{:ok, collection} =
+  Vettore.new(
+    name: :exact_vectors,
+    dimensions: 384,
+    index: :flat,
+    index_options: [
+      gpu: :auto,
+      gpu_min_size: 1_000_000,
+      gpu_fallback: :cpu
+    ],
+    metric: :cosine,
+    normalize: :l2
+  )
+
+{:ok, results} =
+  Vettore.search(collection, query_vector, limit: 10)
+```
+
+On CPU, Flat stores all rows in one contiguous native matrix and scans each row
+with portable f32/f64 SIMD kernels, including stable cosine accumulation. With
+GPU enabled, its first eligible search creates a stable, device-resident matrix
+snapshot. Warm searches upload only the query, score query-by-all-rows in one
+batched dispatch, reduce top-k on the device in two stages, and read back only
+the final ids and scores. Snapshot sorting, device upload, dispatch, and
+readback run without holding the index read lock; only the immutable host copy
+blocks writers. Inserts, deletes, bulk loads, and snapshot restores
+invalidate that GPU snapshot; the next eligible query rebuilds it once.
+Deterministic matrix-build failures are remembered until the next mutation, so
+an unchanged unsupported row cannot force a full copy on every fallback query.
+Prefer `put_many/2` when ingesting a large collection so the resident copy is
+built after the batch rather than between individual writes.
+
+GPU Flat reduction is optimized for result limits up to 64. Larger limits use
+the contiguous SIMD path when `gpu_fallback: :cpu`; strict GPU mode returns
+`{:error, :gpu_limit_too_large}`. The exact scan remains exhaustive on either
+device, although normal f32 reduction-order differences can produce small score
+rounding differences. When candidates are mathematically tied or separated only
+by that rounding noise, CPU and GPU may return different ids inside the tied
+boundary group; scores and all unambiguous ranks remain equivalent.
+
+## HNSW Search
+
+HNSW keeps a native graph beside the ETS store. ETS remains canonical; the graph
+is an acceleration structure.
+
+```elixir
+{:ok, collection} =
+  Vettore.new(
+    name: :ann_vectors,
+    dimensions: 768,
+    index: :hnsw,
+    index_options: [
+      m: 16,
+      m0: 32,
+      ef_construction: 100,
+      ef_search: 64,
+      max_level: 12
+    ],
+    metric: :cosine,
+    normalize: :l2
+  )
+
+:ok = Vettore.put(collection, %{id: "doc-1", vector: embedding})
+
+{:ok, results} =
+  Vettore.search(collection, query_vector, limit: 10)
+```
+
+Supported HNSW metrics:
+
+- `:l2`
+- `:cosine`
+- `:inner_product`
+
+HNSW results are hydrated from ETS, so they contain the same `value`,
+`metadata`, score, and distance fields as exact flat results.
+
+HNSW graph traversal remains CPU/SIMD because it is irregular and branch-heavy.
+When an adaptive or hybrid search performs a dense exact rerank after candidate
+generation, that candidate matrix can use the batched GPU scorer under the same
+global compute policy.
+
+## Adaptive Candidate Search
+
+These helpers first find a candidate set, then rerank with full stored vectors.
+They are useful when you want to make the first pass cheaper without changing
+the canonical store.
+
+When `:candidates` is omitted, Vettore uses ten times `:limit` up to a maximum
+of 1,000,000 candidates. Adaptive searches with `limit > 1_000_000` are
+rejected; pass an explicit, smaller result limit rather than relying on an
+unbounded implicit candidate allocation.
+
+### Matryoshka Funnel
+
+Funnel search scores progressively larger vector prefixes. It works best with
+models trained for Matryoshka or nested embeddings.
+
+```elixir
+{:ok, results} =
+  Vettore.funnel_search(collection, query_vector,
+    stages: [128, 256, 384],
+    candidates: 200,
+    limit: 10
+  )
+```
+
+### Binary Quantized Candidates
+
+Quantized search uses stored sign bits for a cheap Hamming-distance first pass,
+then reranks with the collection metric.
+
+```elixir
+{:ok, results} =
+  Vettore.quantized_search(collection, query_vector,
+    candidates: 200,
+    limit: 10
+  )
+```
+
+Vettore generates `binary_vector` at insert time:
+
+```elixir
+{:ok, embedding} = Vettore.get(collection, "doc-1")
+embedding.binary_vector
+# [7]
+```
+
+Sign bits are packed into unsigned 64-bit words; they are not stored as one
+integer per vector dimension.
+
+## Hybrid Search
+
+`hybrid_search/3` lets you combine candidate generators, union their ids, fetch
+the canonical records from ETS, and rerank once.
+
+```elixir
+{:ok, results} =
+  Vettore.hybrid_search(collection, query_vector,
+    generators: [
+      funnel: [stages: [128, 384], candidates: 200],
+      quantized: [candidates: 200]
+    ],
+    rerank: :exact,
+    limit: 10
+  )
+```
+
+For HNSW collections, add `:hnsw` as a generator:
+
+```elixir
+{:ok, results} =
+  Vettore.hybrid_search(collection, query_vector,
+    generators: [
+      hnsw: [candidates: 100],
+      quantized: [candidates: 200]
+    ],
+    rerank: :exact,
+    limit: 10
+  )
+```
+
+The same pipeline can rerank with late interaction:
+
+```elixir
+{:ok, results} =
+  Vettore.hybrid_search(collection, query_vector,
+    generators: [quantized: [candidates: 200]],
+    rerank: {:multi_vector, query_vectors},
+    limit: 10
+  )
+```
+
+That is the general pattern:
+
+1. Generate cheap candidates.
+2. Merge them by id.
+3. Rerank with the expensive scorer you actually care about.
+
+## Multi-Vector Search
+
+Multi-vector search is for ColBERT-style retrieval: each record can hold many
+vectors, usually token vectors or page-patch vectors. A query also has many
+vectors. For each query vector, Vettore finds the best matching document vector
+and sums those best scores.
+
+```elixir
+:ok =
+  Vettore.put(collection, %Vettore.Embedding{
+    id: "page-1",
+    vectors: [
+      [1.0, 0.0],
+      [0.0, 1.0]
+    ],
+    metadata: %{source: "manual"}
+  })
+
+{:ok, results} =
+  Vettore.multi_vector_search(
+    collection,
+    [[1.0, 0.0], [0.0, 1.0]],
+    metric: :inner_product,
+    limit: 10
+  )
+```
+
+The lower-level scoring helper is available too:
+
+```elixir
+Vettore.MultiVector.colbert_score(
+  [[1.0, 0.0], [0.0, 1.0]],
+  [[1.0, 0.0], [1.0, 1.0]],
+  metric: :inner_product
+)
+# {:ok, 2.0}
+```
+
+`Vettore.MultiVector.chamfer/3` is the same MaxSim-style operation under a more
+general name.
+
+## MUVERA-Style Encodings
+
+MUVERA reduces multi-vector retrieval to fixed-dimensional vectors. The intended
+flow is:
+
+1. Encode query multi-vectors into a fixed-dimensional query vector.
+2. Encode document multi-vectors into fixed-dimensional document vectors.
+3. Search those vectors with inner product.
+4. Rerank candidates with exact MaxSim/Chamfer.
+
+```elixir
+vectors = [
+  [1.0, 0.0],
+  [0.0, 1.0]
+]
+
+config = [
+  num_repetitions: 1,
+  num_simhash_projections: 4,
+  seed: 42,
+  projection_dimension: 2
+]
+
+{:ok, query_fde} = Vettore.Encoding.Muvera.encode_query(vectors, config)
+{:ok, doc_fde} = Vettore.Encoding.Muvera.encode_document(vectors, config)
+```
+
+Config options:
+
+- `:dimension` - inferred from vectors by default
+- `:num_repetitions` - defaults to `1`
+- `:num_simhash_projections` - defaults to `0`
+- `:seed` - defaults to `1`
+- `:projection_dimension` - defaults to input dimension
+- `:final_projection_dimension` - optional count-sketch compression size
+
+## Records And Storage
+
+Records are `%Vettore.Embedding{}` structs or maps with equivalent keys.
+
+```elixir
+%Vettore.Embedding{
+  id: "doc-1",
+  value: "optional external value",
+  vector: [0.1, 0.2, 0.3],
+  vectors: [[0.1, 0.2, 0.3], [0.0, 0.5, 0.5]],
+  binary_vector: [7],
+  metadata: %{source: "local"}
+}
+```
+
+Useful details:
+
+- `id` is the preferred unique identifier.
+- If `id` is missing, a non-empty string `value` can be used as the id.
+- IDs must be non-empty valid UTF-8 strings. Duplicate ids are rejected;
+  `put/2` is insert-only, so replace a record with `delete/2` followed by
+  `put/2`.
+- Duplicate vectors are allowed.
+- Vectors are normalized at insertion according to the collection config.
+- If `vectors` is present but `vector` is omitted, Vettore stores an averaged
+  representative vector for ordinary search/indexing.
+- `binary_vector` is generated automatically for quantized candidate search.
+
+Each collection table is owned by a supervised Vettore worker, so it remains
+alive if the process that created the collection exits. Tables are `:protected`:
+all caller processes can read them directly and concurrently, with ETS
+`read_concurrency` enabled. Reads do not pass through the owner process. Perform
+writes through `Vettore.put/2`, `Vettore.put_many/2`, and `Vettore.delete/2` so
+ETS and the native index stay in sync. Release resources deterministically when
+they are no longer needed:
+
+```elixir
+:ok = Vettore.close(collection)
+```
+
+Closing is idempotent, releases both ETS and mirrored native index memory, and
+makes later operations return `{:error, :closed}`.
+
+ETS collections can be snapshotted:
+
+```elixir
+:ok = Vettore.snapshot(collection, "priv/snapshots/docs.ets")
+
+{:ok, loaded} =
+  Vettore.load_snapshot("priv/snapshots/docs.ets")
+```
+
+Snapshots store the ETS table: records, metadata, normalized vectors, binary
+vectors, multi-vectors, and collection config. Native indexes are rebuilt from
+ETS when loaded. Snapshot writes use a same-directory temporary file followed
+by a rename and include ETS integrity metadata. Loads validate the table type,
+schema, and every stored record before rebuilding the index; legacy public
+tables are restored as protected tables.
+
+Snapshot integrity metadata detects accidental corruption; it is not an
+authentication mechanism. Load snapshots only from trusted sources.
+
+You can load the same data with a different index:
+
+```elixir
+{:ok, loaded} =
+  Vettore.load_snapshot("priv/snapshots/docs.ets", index: :hnsw)
+```
+
+Supported load overrides are `:name`, `:index`, `:index_options`, `:score`, and
+`:store`. Structural fields such as dimensions, metric, normalization, and
+compression cannot be changed because stored vectors were already prepared
+with those settings. Name, index, index options, and score overrides are written
+back to the collection config, so they persist through later snapshots. The
+`:store` option selects the loader for that call and must be supplied again for
+a custom snapshot format.
+
+ETS compression is available when you want to trade CPU for memory:
+
+```elixir
+{:ok, collection} =
+  Vettore.new(
+    name: :compressed_documents,
+    dimensions: 384,
+    metric: :cosine,
+    normalize: :l2,
+    compressed: true
+  )
+```
+
+## Metrics And Scoring
+
+Collection metrics:
+
+- `:l2`
+- `:l2_squared`
+- `:cosine`
+- `:inner_product`
+- `:negative_inner_product`
+- `:manhattan`
+- `:chebyshev`
+- `:hamming`
+- `:jaccard`
+
+Aliases accepted by `Vettore.new/1`:
+
+- `:euclidean` -> `:l2`
+- `:dot` -> `:inner_product`
+- `:dot_product` -> `:inner_product`
+
+with `Vettore.Distance` you can use directly all distance functions:
+
+```elixir
+Vettore.Distance.l2([0.0, 0.0], [3.0, 4.0])
+# {:ok, 5.0}
+
+Vettore.Distance.cosine([1.0, 0.0], [0.0, 1.0])
+# {:ok, 0.0}
+
+Vettore.Distance.inner_product([1.0, 2.0], [3.0, 4.0])
+# {:ok, 11.0}
+```
+
+## Vector Formats And Nx Interchange
+
+`Vettore.Vector` is the format boundary for dense vectors. It accepts numeric
+lists and little-endian f32 binaries directly. Conversion, normalization,
+metrics, and mean pooling return tagged results and validate that every
+coordinate is finite and representable as f32.
+
+```elixir
+{:ok, stored} = Vettore.Vector.to_f32_binary([3.0, 4.0])
+{:ok, 2} = Vettore.Vector.dimensions(stored)
+
+{:ok, normalized} =
+  Vettore.Vector.normalize(stored, :l2, as: :list)
+
+{:ok, similarity} =
+  Vettore.Vector.cosine(stored, [6.0, 8.0])
+```
+
+For boundaries that should carry their format explicitly, `new/2` builds a
+`%Vettore.Vector{data, dimensions, representation, shape}` wrapper:
+
+```elixir
+{:ok, vector} = Vettore.Vector.new([1, 2, 3], as: :f32_binary)
+vector.representation
+# :f32_binary
+
+{:ok, matrix_vector} =
+  Vettore.Vector.new([1, 2, 3, 4], as: :f32_binary, shape: {2, 2})
+
+Vettore.Vector.shape(matrix_vector)
+# {:ok, {2, 2}}
+```
+
+Equally sized vectors can be stacked, validated, and sliced without losing
+their row/column shape:
+
+```elixir
+{:ok, matrix} =
+  Vettore.Vector.stack([[1.0, 2.0], [3.0, 4.0]])
+
+Vettore.Vector.validate_matrix_f32(matrix, 2)
+# {:ok, {2, 2}}
+
+Vettore.Vector.take_rows_f32(matrix, 2, [1, 0], as: :list)
+# {:ok, [[3.0, 4.0], [1.0, 2.0]]}
+```
+
+Model tables can be pooled without decoding the full matrix into Elixir
+floats. The matrix is row-major little-endian f32 and repeated row ids are
+counted repeatedly, as expected for token sequences:
+
+```elixir
+{:ok, embedding_binary} =
+  Vettore.Vector.mean_pool_f32(model_matrix, dimensions, token_ids)
+
+{:ok, embedding_list} =
+  Vettore.Vector.mean_pool_f32(model_matrix, dimensions, token_ids, as: :list)
+```
+
+Vettore has **no Nx dependency**. `Vettore.Interop.Nx` detects Nx at runtime
+only when the host application already provides it. This keeps normal vector
+work independent while still allowing explicit interchange:
+
+```elixir
+# In the host application, when Nx interop is wanted:
+# {:nx, "~> 0.11"}
+
+{:ok, tensor} = Vettore.Vector.to_nx(matrix, shape: {2, 2})
+{:ok, binary} = Vettore.Vector.from_nx(tensor)
+
+# A backend is an opaque host value; Vettore does not depend on its module.
+{:ok, cuda_tensor} =
+  Vettore.Interop.Nx.transfer(tensor, {EXLA.Backend, client: :cuda})
+```
+
+Without Nx in the host application, tensor conversions return
+`{:error, :nx_not_available}`; every list and f32-binary operation remains
+available.
+
+## Native CPU And GPU Execution
+
+Rust SIMD on CPU is the default and requires no configuration. Vettore can also
+execute exact Flat searches, dense reranks, `Vettore.Distance`
+metrics/normalization, and `Vettore.Vector` metrics/normalization/mean-pooling
+through native wgpu compute shaders. This is independent of Nx and works
+through the platform graphics-compute API exposed by wgpu, such as Vulkan,
+Metal, or DirectX 12.
+
+Inspect the runtime before enabling it:
+
+```elixir
+Vettore.gpu_detected?()
+# true or false
+
+Vettore.gpu_info()
+# {:ok, %{name: "...", backend: "vulkan", device_type: "integrated_gpu"}}
+```
+
+Enable GPU execution globally:
+
+```elixir
+config :vettore,
+  gpu: :auto,
+  gpu_min_size: 1_000_000,
+  gpu_fallback: :cpu
+```
+
+The modes are explicit:
+
+- `gpu: false` always uses the native SIMD CPU path and does not probe a GPU.
+- `gpu: true` forces a GPU attempt for each supported primitive.
+- `gpu: :auto` uses the GPU only when an adapter is available and the workload
+  is at or above `gpu_min_size`; otherwise it always stays on CPU.
+- `gpu_fallback: :cpu` falls back safely if initialization or execution fails.
+- `gpu_fallback: :error` instead returns a stable error such as
+  `{:error, :gpu_not_available}`, `{:error, :gpu_failed}`, or
+  `{:error, :metric_overflow}`.
+
+Every supported call can override the application configuration:
+
+```elixir
+Vettore.Distance.cosine(left, right,
+  gpu: true,
+  gpu_fallback: :error
+)
+
+Vettore.Vector.mean_pool_f32(model_matrix, dimensions, token_ids,
+  as: :list,
+  gpu: :auto,
+  gpu_min_size: 8_192
+)
+```
+
+The GPU runtime, device, and shader pipelines are initialized lazily and reused.
+Calls may submit concurrently. Failed initialization is cached for ten seconds
+before another adapter probe, while device-loss errors invalidate a live runtime
+immediately. Readback waits default to ten seconds and can be set from 100 to
+120,000 milliseconds with `VETTORE_GPU_TIMEOUT_MS` before the first GPU
+readback. Flat also pools query, score, top-k, parameter, and staging buffers per
+resident snapshot, with a bounded idle pool. Matrix rows are normalized once
+for stable f32 reductions, while per-row scale metadata and explicit validity
+flags preserve every supported metric and discard only genuinely overflowing
+rows. Inputs with a device-unsafe numeric range return to SIMD under the normal
+fallback policy rather than silently losing small coordinates.
+
+Single-pair metric calls still upload both vectors, so SIMD can remain faster for
+that shape. Flat search is the throughput-oriented GPU path: the matrix upload is
+amortized across warm queries, top-k is reduced completely in GPU memory, and
+only the final `k` row ids and scores cross back to the host. Its per-chunk top-k
+stage uses a 16-lane reduction instead of one serial thread. Use the dedicated
+benchmark to measure cold upload and warm-query latency on the target adapter:
+
+```bash
+VETTORE_BENCH_BATCH=25000 \
+VETTORE_BENCH_DIMENSIONS=384 \
+mix run bench/gpu_flat_bench.exs
+```
+
+Mean pooling still gathers and validates only selected rows on the host before
+uploading them, avoiding transfer of the complete model matrix. Selected columns
+are scaled on the host and accumulated by 256 GPU lanes per output coordinate,
+which avoids representable means overflowing in intermediate f32 sums. HNSW
+traversal remains on CPU, while its optional exact rerank can use the batched GPU
+path.
+
+### Choosing CPU, automatic GPU, or forced GPU
+
+| Workload | Recommended policy | Benefit and cost |
+| --- | --- | --- |
+| Large, read-heavy Flat index with repeated queries | `gpu: :auto`, tuned `gpu_min_size` | Warm queries amortize the upload and keep top-k on the device. The first eligible query pays snapshot, upload, and pipeline latency. |
+| Flat index with frequent inserts or deletes | CPU, or a higher `gpu_min_size` | Every effective mutation invalidates the resident matrix; the next GPU query must copy and upload it again. Batch ingestion with `put_many/2` limits rebuilds. |
+| Single-pair metrics or small batches | CPU | Transfer, dispatch, and readback overhead normally exceeds the arithmetic saved by the GPU. |
+| Flat searches requesting more than 64 results | `gpu_fallback: :cpu` | The current GPU reduction is intentionally bounded at 64; forced strict GPU mode returns `{:error, :gpu_limit_too_large}`. |
+| HNSW collections | CPU traversal, optional automatic GPU rerank | The graph walk is CPU-native. Only exact batched reranking can move to the GPU. |
+| Hosts without a reliable adapter | `gpu: :auto, gpu_fallback: :cpu` | Availability is preserved, but fallback queries run at CPU speed. Failed initialization is retried after ten seconds; readback uses the configured timeout. |
+| GPU validation, benchmarking, or capacity tests | `gpu: true, gpu_fallback: :error` | Proves that work reached the adapter and exposes failures immediately; it deliberately gives up transparent CPU recovery. |
+
+A resident Flat index keeps its native CPU matrix and an additional prepared
+copy in device memory, plus row metadata and bounded scratch buffers. Budget at
+least `rows * dimensions * 4` bytes of GPU memory for the matrix itself. Use
+`:auto` as the production default and measure `gpu_min_size` on the target
+adapter: the included benchmark reports cold-build and warm-query latency
+separately. Exact CPU and GPU scans cover the same rows, but f32 reduction order
+can change ids only within a numerically tied top-k boundary. Overflowing rows
+are skipped consistently on both devices rather than aborting the whole batch.
+
+## Normalization
+
+Supported normalization modes:
+
+- `:none`
+- `:l2`
+- `:zscore`
+- `:minmax`
+
+```elixir
+Vettore.Distance.normalize([3.0, 4.0], :l2)
+# {:ok, [0.6, 0.8]}
+```
+
+Collection defaults:
+
+- `metric: :cosine` defaults to `normalize: :l2`
+- all other metrics default to `normalize: :none`
+
+Inserted vectors and query vectors are prepared with the same collection
+normalization mode.
+
+## Other Helpers
+
+MMR reranking:
+
+```elixir
+initial = [{"a", 0.9}, {"b", 0.8}, {"c", 0.1}]
+embeddings = [{"a", [1.0, 0.0]}, {"b", [1.0, 0.0]}, {"c", [0.0, 1.0]}]
+
+Vettore.Distance.mmr_rerank(initial, embeddings, :cosine, 0.5, 2)
+# {:ok, [{"a", 0.9}, {"c", 0.1}]}
+```
+
+Sign compression:
+
+```elixir
+Vettore.Distance.compress_f32_vector([1.0, -2.0, 0.0])
+# [5]
+
+left = Vettore.Distance.compress_f32_vector([1.0, -2.0, 0.0])
+right = Vettore.Distance.compress_f32_vector([-1.0, -2.0, 0.0])
+Vettore.Distance.packed_hamming(left, right, 3)
+# {:ok, 1.0}
+```
+
+## Compatibility API
+
+The old top-level API still exists as a small compatibility layer backed by ETS
+collections:
+
+```elixir
+db = Vettore.new()
+
+{:ok, "legacy"} =
+  Vettore.create_collection(db, "legacy", 2, :cosine)
+
+{:ok, "a"} =
+  Vettore.insert(db, "legacy", %Vettore.Embedding{
+    value: "a",
+    vector: [1.0, 0.0]
+  })
+
+{:ok, results} =
+  Vettore.similarity_search(db, "legacy", [1.0, 0.0], limit: 1)
+```
+
+New code should prefer the collection-style top-level API: `Vettore.new/1`, `Vettore.put/2`, and `Vettore.search/3`.
+
+## Development
+
+The test-only `ex_fastembed` dependency generates the committed
+`BAAI/bge-small-en-v1.5` fixture under `test/fixtures`. The normal suite uses
+those real vectors offline to exercise exact search, HNSW, funnel search,
+quantized search, multi-vector search, hybrid search, snapshot reloads, and
+strict resident-GPU parity against the SIMD Flat path when an adapter is
+available. GPU-backed CI requires that adapter and verifies that the resident
+matrix is built once and reused across all real-embedding queries.
+
+CI additionally runs fresh model inference, checks it against the committed
+artifact, and searches the newly produced vectors through strict resident GPU
+Flat with no CPU fallback. Enable that slower check locally with:
+
+```bash
+VETTORE_BUILD=1 VETTORE_TEST_EX_FASTEMBED=1 \
+  mix test test/ex_fastembed_integration_test.exs
+```
+
+Regenerate the fixture after an intentional model or dependency update with:
+
+```bash
+MIX_ENV=test VETTORE_BUILD=1 \
+  mix run test/support/generate_fastembed_fixture.exs
+```
+
+Build the Rust crate locally with Rust 1.91 or newer by setting
+`VETTORE_BUILD=1`:
+
+```bash
+VETTORE_BUILD=1 VETTORE_GPU_ALLOW_SOFTWARE=1 mix test --cover
+cargo test --manifest-path native/vettore/Cargo.toml
+```
+
+Run the deterministic latency-and-overlap matrix for every search mode with:
+
+```bash
+VETTORE_BUILD=1 mix run bench/search_modes_bench.exs
+```
+
+See `bench/performance.md` for the full search, metric, MUVERA, MaxSim, and ETS
+benchmark matrix.
+
+Without that variable, Vettore uses the published precompiled NIF for the
+current package version. See `RELEASE.md` for the full release verification and
+checksum workflow.

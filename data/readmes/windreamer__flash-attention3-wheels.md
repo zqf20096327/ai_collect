@@ -1,0 +1,60 @@
+# Flash-Attention 3 Wheels
+
+**Pre-built wheels that erase [Flash Attention 3](https://github.com/Dao-AILab/flash-attention/tree/main/hopper) installation headaches — now with Windows & Arm support! 🎉**
+
+[![Build Flash-Attention 3 Wheels](https://github.com/windreamer/flash-attention3-wheels/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/windreamer/flash-attention3-wheels/actions/workflows/build_wheels.yml)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/windreamer/flash-attention3-wheels/total)
+
+
+> **🚀 Update: We've successfully built Flash Attention 3 wheels for **Windows** and **Arm CUDA SBSA platforms** like GH200!
+>
+> **Upstream PR:** Windows compatibility fixes submitted to [Dao-AILab/flash-attention#2047](http://github.com/Dao-AILab/flash-attention/pull/2047)
+
+
+## Recent Updates
+
+- **2026-05-19**: 🆕 CUDA 13.2 and PyTorch 2.12.0 support added
+- **2026-05-19**: 🐛 Windows CUDA 13.0+ CCCL compatibility fix (`/Zc:preprocessor`)
+- **2026-05-19**: ⚙️ Windows builds use `_dev` CUDA sub-packages for correct headers
+- **2026-05-19**: ✅ Windows wheel export verification (PyInit symbols) added to build
+- **2026-03-19**: 🆕 CUDA 13.0 support added for Windows and Linux
+- **2026-03-16**: ⚙️ GitHub Actions updated to Node.js 24 compatible versions
+- **2026-03-04**: 🐛 Fixed corrupt patch error in Windows builds
+- **2026-03-04**: 🔧 Build scripts now clone directly from upstream [flash-attention](https://github.com/Dao-AILab/flash-attention)
+- **Earlier**: 🪟 Windows and Arm64 (GH200) wheel support added; upstream PR [#2047](https://github.com/Dao-AILab/flash-attention/pull/2047) submitted
+
+
+## Quick start
+
+Pick the line that matches your setup (change `cu128` / `torch280` if needed):
+
+```bash
+# CUDA 12.8 + PyTorch 2.8.0
+pip install flash_attn_3 \
+  --find-links https://windreamer.github.io/flash-attention3-wheels/cu128_torch280
+
+# CUDA 13.2 + PyTorch 2.12.0
+pip install flash_attn_3 \
+  --find-links https://windreamer.github.io/flash-attention3-wheels/cu132_torch2120
+```
+
+## How to pick the right index
+
+Visit the [GitHub Pages site](https://windreamer.github.io/flash-attention3-wheels) and choose the link that matches:
+
+* CUDA 13.2 → `cu132_torch...`
+* CUDA 13.0 → `cu130_torch...`
+* CUDA 12.8 → `cu128_torch...`
+
+Each page shows the one-liner you need.
+
+## When are wheels updated?
+
+* **Biweekly**, every 2nd and 4th Sunday at 22:00 UTC
+* **On demand**, by triggering the workflow manually if you need a fresher build
+
+Releases are tagged with the build date (`2025.10.15`) so you always know how fresh your wheel is.
+
+## License
+
+The build scripts and index generator are Apache-2.0.

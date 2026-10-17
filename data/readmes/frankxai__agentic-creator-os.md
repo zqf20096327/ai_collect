@@ -1,0 +1,211 @@
+<div align="center">
+
+# Agentic Creator OS
+
+Reusable skills, commands, agent profiles, and local safety tooling for AI-assisted creative work.
+
+[Quick start](QUICKSTART.md) · [Project instructions](CLAUDE.md) · [Contributing](CONTRIBUTING.md) · [Issues](https://github.com/frankxai/agentic-creator-os/issues)
+
+</div>
+
+## What this repository is
+
+Agentic Creator OS (ACOS) is a public source repository for creator workflows that can be loaded into Claude Code or rendered as context for other coding agents. It contains:
+
+- domain skills written as `SKILL.md` modules;
+- top-level slash-command definitions for Claude Code;
+- specialist agent profiles;
+- local hook source and configuration;
+- generators for Cursor, Windsurf, Gemini, Grok, Antigravity, and generic context files;
+- MCP server workspaces and an observatory catalog.
+
+ACOS is a source distribution, not a hosted service. The current version metadata is `11.0.0`.
+
+## Verified public surface
+
+The repository currently contains:
+
+| Surface | Count | Definition |
+|---|---:|---|
+| Non-empty skill modules | 175 | Non-empty `.claude/skills/**/SKILL.md` files |
+| Empty skill placeholders | 5 | Tracked `SKILL.md` paths with no content; not counted as modules |
+| Top-level slash commands | 85 | `.claude/commands/*.md`, excluding the directory context file |
+| Top-level agent profiles | 81 | `.claude/agents/*.{md,json}`, excluding the directory context file |
+| Installable shell hooks | 9 | Top-level `.claude/hooks/*.sh` files copied by the Claude installer |
+| Activation rules | 32 | Entries in `.claude/skill-rules.json` |
+
+These numbers are generated from the tree. `npm run verify:public-surface` fails if the counts, version metadata, install smoke test, or public license and marketplace statements drift.
+
+## Install from source
+
+The verified installation path is the repository installer:
+
+```bash
+git clone https://github.com/frankxai/agentic-creator-os.git
+cd agentic-creator-os
+./install.sh --dry-run --platform=claude
+./install.sh --platform=claude
+```
+
+`--dry-run` prints the files that would be created or replaced and writes nothing. The second command writes.
+
+The Claude path copies the repository's skill groups, top-level commands, agent profiles, shell hooks, hook configuration, activation rules, and state metadata into `CLAUDE_HOME` (or `~/.claude` by default).
+
+Before installing into an existing profile, inspect the script and back up your profile. The Claude installer checks every file it would copy before writing anything: a differing file or symlinked destination stops the install instead of replacing your work. An unchanged repeat install skips identical files. It still writes ACOS-owned `acos/state.json`; there is no automatic uninstall or rollback yet. `--target` controls project files for other platforms, not the Claude profile path; set `CLAUDE_HOME` to choose an isolated Claude destination.
+
+For an isolated inspection:
+
+```bash
+export CLAUDE_HOME="$(mktemp -d)"
+./install.sh --platform=claude --minimal
+find "$CLAUDE_HOME" -type f | sort
+```
+
+Other platform flags generate context or harness-specific files:
+
+```bash
+./install.sh --platform=cursor
+./install.sh --platform=windsurf
+./install.sh --platform=gemini
+./install.sh --platform=grok
+./install.sh --platform=antigravity
+./install.sh --platform=generic
+```
+
+Those generators are present in the tree. They should not be read as a claim that every external harness or third-party connector has been independently certified end to end.
+
+## One plugin, five practices
+
+The full source install above copies the whole catalog. For a first install, add this repository as a marketplace and install `creator-os-core`. It contains five skills and the `/acos` command: start safely, review a diff, write in a stated voice, run the project's checks, and hand off without secrets.
+
+```bash
+# Claude Code
+claude plugin marketplace add frankxai/agentic-creator-os
+claude plugin install creator-os-core@frankx-creator
+
+# Codex
+codex plugin marketplace add frankxai/agentic-creator-os
+codex plugin add creator-os-core@frankx-creator
+
+# Grok
+grok plugin marketplace add frankxai/agentic-creator-os
+grok plugin install creator-os-core --trust
+```
+
+Open a new session after installing. Type `/acos`, or say what you are doing in one sentence.
+
+You have five practices: start safely, review a diff, write in a stated voice, run the checks, and hand off clean. The first things people ask are "Review this diff", "Write the install note", and "Run the checks".
+
+If the new session does not know `/acos`, the marketplace was added in a different profile. Run the add command again in that profile, then install the plugin, then open another session.
+
+The index is `.claude-plugin/marketplace.json`. Grok also reads that Claude-compatible index.
+
+The separate [agentic-creator-skills](https://github.com/frankxai/agentic-creator-skills) repository is a companion catalog. Evaluate its installation instructions and license independently.
+
+## Practice receipt
+
+`tools/receipt-check/check-receipt.mjs` answers yes or no for one practice receipt. Yes means the five fields match the public rules. The checker sets `signed` to false. A yes is not a human signature and not a lab attestation.
+
+```bash
+node --test tools/receipt-check/check-receipt.test.mjs
+node tools/receipt-check/serve.mjs
+```
+
+`POST /check` takes the receipt JSON. `POST /mcp` accepts `initialize`, `tools/list`, and `tools/call` for `check_practice_receipt`. The server listens on `127.0.0.1` and `RECEIPT_PORT` (default 8787). It is a local check, not a public registry.
+
+## How the pieces fit
+
+```mermaid
+flowchart LR
+  Intent["Creator intent"] --> Instructions["Project instructions"]
+  Instructions --> Skills["Skills"]
+  Instructions --> Commands["Commands"]
+  Instructions --> Agents["Agent profiles"]
+  Skills --> Work["Work product"]
+  Commands --> Work
+  Agents --> Work
+  Hooks["Local hook source"] --> Evidence["Local receipts and checks"]
+  Work --> Evidence
+```
+
+The files provide instructions and tooling. Whether a skill activates, a command is available, or a hook executes depends on the target harness and its local configuration.
+
+## Start with the system
+
+After installation, inspect these entry points:
+
+```text
+CLAUDE.md                    Project behavior and command map
+AGENTS.md                    Repository-specific agent instructions
+.claude/skill-rules.json     Activation rules
+.claude/commands/acos.md     Main router command
+.claude/skills/              Skill source
+.claude/agents/              Agent profiles
+.claude/hooks/               Hook source
+```
+
+Useful first prompts:
+
+```text
+Read CLAUDE.md and AGENTS.md, then show the ACOS capabilities relevant to this repository.
+Plan a creator workflow using only skills that exist in .claude/skills.
+Review the proposed workflow and identify every external dependency before execution.
+```
+
+## Agent OS: your own C-suite of agents
+
+Nine Generals (CEO, CTO, CMO, CFO, COO, CPO, CAIO, CHRO, CCO), compiled from one
+shared Expertise Kernel. Each keeps its own memory, delegates to skills and
+worker agents, reads your identity files, and stops at your gates. Optional
+Domain Queens route each brand's work to its Generals. A scanner scores every
+skill, agent, and command you can load, and a daily CI check keeps the whole
+setup from drifting. Dependency-free Node; no install step.
+
+```bash
+node scripts/agent-os-init.mjs --name <you>          # your instance from the template
+node scripts/agent-compile.mjs --instance <you>      # your Generals
+node scripts/estate-audit.mjs --repos <dir> --md audit.md
+```
+
+Start with [docs/agent-os/ADOPT.md](docs/agent-os/ADOPT.md); the full design is
+in [docs/agent-os/](docs/agent-os/README.md).
+
+## Verification
+
+```bash
+npm install --no-audit --no-fund
+npm run verify:public-surface
+npm run lint
+npm run observatory:test
+npm run build:all
+```
+
+The public-surface verifier performs an isolated Claude install smoke test. The
+main CI installs dependencies, verifies the public surface, builds and lints the
+MCP workspaces, and runs their type checks as a blocking gate.
+
+## Release discipline
+
+Changes to public claims should answer four questions:
+
+1. What source file proves the claim?
+2. What check prevents it from drifting?
+3. What external dependency remains unverified?
+4. What named-owner decision is still required?
+
+Large resets should be split by concern. Documentation truth, installer behavior, hook wiring, third-party code provenance, legal terms, and marketplace distribution have different review and approval requirements.
+
+## Related public systems
+
+- [Starlight Intelligence System](https://github.com/frankxai/Starlight-Intelligence-System) — system architecture and orchestration
+- [agentic-creator-skills](https://github.com/frankxai/agentic-creator-skills) — companion skill and plugin catalog
+- [Creator Intelligence System](https://github.com/frankxai/creator-intelligence-system) — creator intelligence research and implementation
+- [FrankX](https://github.com/frankxai/FrankX) — public ecosystem index
+
+## License status
+
+Original software and technical documentation use Apache-2.0, unless a file or directory states different terms. See [LICENSE](LICENSE), [LICENSING.md](LICENSING.md), and [NOTICE](NOTICE). Historical MIT grants and third-party licenses remain in effect; the license does not grant trademark rights.
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and the nearest `AGENTS.md` or `CLAUDE.md` before editing. Keep changes narrow, preserve existing safety boundaries, and attach commands or artifacts that let another reviewer reproduce the result.

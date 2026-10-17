@@ -1,0 +1,614 @@
+<div align="center">
+
+<img src=".github/assets/crewform-banner.png" alt="CrewForm" width="400" />
+
+### Own your agent workflows. Bring the tools you already use.
+
+**Open-source workflows for model APIs, Ollama and local coding agents**
+
+CrewForm lets developers chain agents into inspectable workflows, keep credentials on their own infrastructure, and export configurations to Git. Use model APIs or Ollama, or connect an installed Codex, Claude Code, Gemini or Copilot agent through local CLI/ACP execution.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/CrewForm/crewform/actions/workflows/ci.yml/badge.svg)](https://github.com/CrewForm/crewform/actions/workflows/ci.yml)
+[![GitHub Stars](https://img.shields.io/github/stars/CrewForm/crewform?style=social)](https://github.com/CrewForm/crewform/stargazers)
+[![Discord](https://img.shields.io/discord/1476188192100323488?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/TAFasJCTWs)
+[![Built with Supabase](https://img.shields.io/badge/Built_with-Supabase-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000?logo=vercel&logoColor=white)](https://vercel.com)
+[![Docs](https://img.shields.io/badge/Docs-Mintlify-0D9373?logo=mintlify&logoColor=white)](https://docs.crewform.tech)
+[![Zapier](https://img.shields.io/badge/Zapier-Integrated-FF4A00?logo=zapier&logoColor=white)](https://zapier.com)
+
+[Website](https://crewform.tech) · [Docs](https://docs.crewform.tech) · [Discord](https://discord.gg/TAFasJCTWs) · [Twitter](https://twitter.com/CrewFormHQ)
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/pH5MkZ?referralCode=g38HaT&utm_medium=integration&utm_source=template&utm_campaign=generic)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CrewForm/crewform)
+
+</div>
+
+---
+
+<div align="center">
+  <strong>If you find CrewForm useful, please consider giving it a ⭐ — it helps others discover the project!</strong>
+</div>
+
+---
+
+<div align="center">
+  <img src=".github/assets/pipeline-run-hero.gif" alt="CrewForm Visual Workflow Builder" width="800" />
+  <p><em>Design, run, and observe protocol-native agent workflows from one visual runtime.</em></p>
+</div>
+
+<details>
+<summary><strong>📸 More Screenshots</strong></summary>
+<br/>
+<table>
+<tr>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-agent-create.png" alt="Agent Creation" width="400" />
+<br/><em>Create agents with models, prompts, and tools</em>
+</td>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-pipeline-setup.png" alt="Pipeline Setup" width="400" />
+<br/><em>Chain agents into pipeline teams</em>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-pipeline-run.png" alt="Pipeline Run" width="400" />
+<br/><em>Watch pipeline runs execute in real-time</em>
+</td>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-marketplace.png" alt="Marketplace" width="400" />
+<br/><em>Browse and install community agent templates</em>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-a2a.png" alt="A2A Settings" width="400" />
+<br/><em>Connect to external A2A agents</em>
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-pipeline-canvas.png" alt="Pipeline Canvas" width="400" />
+<br/><em>Visual workflow builder for pipeline teams</em>
+</td>
+<td align="center" width="50%">
+<img src=".github/assets/screenshot-dashboard.png" alt="Analytics Dashboard" width="400" />
+<br/><em>Track token usage, costs, and performance</em>
+</td>
+</tr>
+</table>
+</details>
+
+## 🔌 Protocols & Standards
+
+CrewForm is a self-hostable runtime with native support for the three protocols that matter for interoperable agent systems:
+
+| Protocol | Direction | What It Does |
+|---|---|---|
+| **MCP** (Model Context Protocol) | 🔌 Client + 🔧 Server | **Client:** Agents discover and call tools from any MCP server. **Server:** Expose your agents as MCP tools for Claude Desktop, Cursor, and other MCP clients. |
+| **A2A** (Agent-to-Agent Protocol) | ↔️ Bidirectional | **Consume:** Delegate tasks to external A2A agents. **Publish:** Expose your agents for other AI systems to call. Cross-framework agent interop. |
+| **AG-UI** (Agent-User Interface) | 📡 Streaming | Real-time SSE event streaming from agent to frontend. Supports text deltas, tool calls, state transitions, and rich interactions (approval, confirmation, choices). |
+
+> **Why this matters:** Most platforms create isolated agent workflows. CrewForm gives your agents access to external tools (MCP), cross-framework agent interop (A2A), and real-time frontend streaming (AG-UI) — all from one runtime layer.
+
+## ✨ Features at a Glance
+
+<table>
+<tr>
+<td align="center" width="25%">
+🔌<br/><strong>MCP Client + Server</strong><br/>Use external tools & expose agents as MCP tools
+</td>
+<td align="center" width="25%">
+🤝<br/><strong>A2A Bidirectional</strong><br/>Agent-to-Agent interop — consume & publish
+</td>
+<td align="center" width="25%">
+🖥️<br/><strong>AG-UI Streaming</strong><br/>Real-time SSE events with rich interactions
+</td>
+<td align="center" width="25%">
+🤖<br/><strong>16 LLM Providers</strong><br/>OpenAI, Anthropic, Gemini, Groq, Ollama, +11 more
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+🔀<br/><strong>3 Team Modes</strong><br/>Pipeline, Orchestrator, and Collaboration
+</td>
+<td align="center" width="25%">
+📚<br/><strong>Knowledge Base (RAG)</strong><br/>Hybrid search: pgvector + full-text + reranking
+</td>
+<td align="center" width="25%">
+🎨<br/><strong>Visual Workflow Canvas</strong><br/>Drag-and-drop with live execution visualization
+</td>
+<td align="center" width="25%">
+🐳<br/><strong>Local AI via Ollama</strong><br/>Air-gapped — zero data leaving your network
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+💬<br/><strong>Chat Widget</strong><br/>Embed agents on any website — one script tag
+</td>
+<td align="center" width="25%">
+📡<br/><strong>Observability</strong><br/>OpenTelemetry + Langfuse tracing
+</td>
+<td align="center" width="25%">
+⚡<br/><strong>Zapier + Channels</strong><br/>7,000+ apps, Discord, Slack, Telegram, Email
+</td>
+<td align="center" width="25%">
+🏪<br/><strong>Agent Marketplace</strong><br/>Browse, install, and publish agent templates
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+📋<br/><strong>Workflow Templates</strong><br/>Reusable blueprints with fill-in-the-blank variables
+</td>
+<td align="center" width="25%">
+🔀<br/><strong>Fan-Out Branching</strong><br/>Parallel pipeline steps with merge agents
+</td>
+<td align="center" width="25%">
+📦<br/><strong>Export & Import</strong><br/>Portable JSON for agents and teams
+</td>
+<td align="center" width="25%">
+🔄<br/><strong>Fallback Models</strong><br/>Auto-switch to backup models on failure
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+🏠<br/><strong>Self-Hostable</strong><br/>Docker Compose — your data, your infra
+</td>
+<td align="center" width="25%">
+🔑<br/><strong>BYOK</strong><br/>Your API keys, your cost — zero markup
+</td>
+<td align="center" width="25%">
+🧠<br/><strong>Team Memory</strong><br/>pgvector semantic search across runs
+</td>
+<td align="center" width="25%">
+🛡️<br/><strong>RBAC & Workspaces</strong><br/>Role-based access, multi-tenant isolation
+</td>
+</tr>
+<tr>
+<td align="center" width="25%">
+📊<br/><strong>Analytics</strong><br/>Track tokens, costs, and agent performance
+</td>
+<td align="center" width="25%">
+⌨️<br/><strong>CLI Tool</strong><br/><code>npx @crewformhq/cli</code> — run agents from the terminal
+</td>
+<td colspan="2"></td>
+</tr>
+</table>
+
+## 🚀 Quick Start
+
+### Hosted (Fastest)
+
+Sign up at [crewform.tech](https://crewform.tech) — free tier includes 3 agents and 50 tasks/month.
+
+### Offline walkthrough (no account or provider key)
+
+```bash
+git clone https://github.com/CrewForm/crewform.git
+cd crewform
+npm --prefix cli ci
+npm --prefix cli run build
+node cli/dist/cli.js demo --output review-pack.json
+```
+
+This runs the real pipeline engine with **scripted simulated results**: supplied
+patch → reviewer → critic → versioned review pack. It invokes no model or native
+agent. Inspect the evidence reference and limitations in `review-pack.json`.
+
+### Self-hosted app
+
+CrewForm requires a complete Supabase stack as well as the frontend and task runner.
+Install Docker, Node.js 20+ and the Supabase CLI, start Docker, then:
+
+```bash
+npm ci
+npm --prefix task-runner ci
+npm run local:prepare
+supabase start --workdir .crewform-local
+node scripts/local-services.mjs env
+npm --prefix task-runner run build
+docker compose --env-file .crewform-local/app.env up --build -d
+```
+
+Serve Edge Functions in another terminal with `node scripts/local-services.mjs functions`.
+Open **http://localhost:3000** and register a local account. See the
+[Self-Hosting Guide](docs/self-hosting.md) for production, shutdown and host development commands.
+
+### One-Click Deploy
+
+Deploy the CrewForm task runner with a single click:
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/pH5MkZ?referralCode=g38HaT&utm_medium=integration&utm_source=template&utm_campaign=generic)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CrewForm/crewform)
+
+You'll need to provide your own Supabase credentials and LLM API keys after deployment.
+
+### CLI (No Server Required)
+
+Run agents directly from your terminal — no browser, no Supabase, no Docker:
+
+```bash
+# Create an agent config
+npx @crewformhq/cli init
+
+# Run it (defaults to Ollama; or set OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.)
+npx @crewformhq/cli run agent.json "Summarise the latest AI news"
+
+# Interactive chat
+npx @crewformhq/cli chat agent.json
+
+# Run a multi-agent pipeline team
+npx @crewformhq/cli init --team
+npx @crewformhq/cli run team.json "Research and write about GraphQL"
+
+# Connect to MCP servers
+npx @crewformhq/cli run agent.json --mcp servers.json "Query my database"
+
+# Connect to your CrewForm workspace
+npx @crewformhq/cli login
+npx @crewformhq/cli agents
+npx @crewformhq/cli pull <agent-id>
+```
+
+> 📖 See the full [CLI Guide](cli/README.md) for all 12 commands, config formats, and platform integration.
+
+## Table of Contents
+
+- [Protocols & Standards](#-protocols--standards)
+- [Why CrewForm?](#why-crewform)
+- [How It Works](#how-it-works)
+- [Who It's For](#who-its-for)
+- [Key Features](#key-features)
+- [Editions & Pricing](#editions--pricing)
+- [Documentation](#documentation)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Contributing](#contributing)
+- [Community](#community)
+- [FAQ](#faq)
+- [How CrewForm Compares](#how-crewform-compares)
+- [License](#license)
+
+## Try a local agent workflow
+
+Install the published [`@crewformhq/cli`](https://www.npmjs.com/package/@crewformhq/cli) package; the executable is `crewform`:
+
+```bash
+npm install -g @crewformhq/cli
+crewform doctor
+crewform init --runtime codex --output codex.json
+crewform run codex.json --input changes.txt --json
+```
+
+Put the code or patch you want reviewed in `changes.txt`, and sign in with the native tool first. Native login eligibility and plan limits apply; CrewForm does not claim unlimited or zero-cost execution. See [local agents](docs/local-agents.md), [three reproducible examples](examples/README.md) and [complete local setup](docs/self-hosting.md).
+
+Self-hosted Community Edition has no hosted resource quotas. The plan table below describes CrewForm Cloud limits.
+
+## Why CrewForm?
+
+CrewForm is built as agent infrastructure, not just another workflow canvas. It gives you the runtime layer around multi-agent systems: protocols, execution, observability, deployment, memory, APIs, and visual operations.
+
+- 🔌 **Protocol-native runtime** — Use MCP as a client and server, delegate across A2A, and stream agent state to frontends with AG-UI
+- 🖥️ **Visual control plane** — Design, run, debug, and monitor agents, teams, handoffs, tool calls, and execution state from a visual UI
+- 🏠 **Infrastructure ownership** — Self-host with Docker, bring your own LLM keys, use local models with Ollama, and avoid hosted model markup
+- 📡 **Runtime observability** — Trace LLM calls, tool usage, team runs, costs, failures, and handoffs with OpenTelemetry and Langfuse
+- 🔀 **Flexible orchestration** — Run single-agent tasks, fixed pipelines, brain-and-worker orchestrators, or multi-agent collaboration threads
+- 📚 **Knowledge and memory** — Add RAG, pgvector search, team memory, output templates, and file artifacts to agent workflows
+- ⚡ **Integration surface** — Expose agents through REST APIs, webhooks, chat widgets, Zapier, messaging channels, MCP, and A2A
+- 🔒 **Secure workspace model** — Encrypted API keys, Row-Level Security, workspaces, RBAC, audit logs, and usage controls
+- 📦 **Portable workflows** — Export/import agents and teams, install templates, and package repeatable systems for clients or internal teams
+
+The result is a shared control plane for teams moving from isolated agent experiments to reliable agent systems they can operate.
+
+## How It Works
+
+CrewForm supports 4 execution modes — choose the right one for your workflow:
+
+<p align="center">
+  <img src=".github/assets/workflow-modes.png" alt="CrewForm Workflow Modes" width="700" />
+</p>
+
+| Mode | Description |
+|------|-------------|
+| **Single Task** | Send a prompt to one agent — it uses its LLM and tools, then returns the result. The simplest way to get work done. |
+| **Pipeline** | Chain multiple agents in sequence. Each agent completes its task and passes the output to the next. Great for research → write → review workflows. |
+| **Orchestrator** | A brain agent breaks down the task, delegates sub-tasks to worker agents, reviews their outputs, and assembles the final result. |
+| **Collaboration** | Multiple agents discuss the task in a shared thread, debate approaches, and converge on a consensus result. |
+
+## Who It's For
+
+### Platform Engineering Teams
+
+Give your organization a shared runtime for internal agents, model access, tool connections, memory, workflows, observability, and deployment.
+
+**Best for:** internal AI platforms, self-hosted agent infrastructure, compliance-conscious environments, and shared model/tool governance.
+
+### AI Product Teams
+
+Add agent workflows to real products without rebuilding orchestration, streaming, tool use, memory, and runtime APIs from scratch.
+
+**Best for:** embedded copilots, agent-powered SaaS features, customer-facing automations, chat widgets, and AG-UI progress streams.
+
+### Consultancies and Agencies
+
+Deploy repeatable, client-owned AI systems with isolated workspaces, reusable templates, BYOK cost control, transparent traces, and production handoff paths.
+
+**Best for:** client automation projects, AI transformation teams, multi-tenant delivery, and packaged workflow templates.
+
+### AI Builders and Developers
+
+Move from scripts and prototypes to managed agent systems with visual operations, deployment, APIs, tracing, and protocol integrations.
+
+**Best for:** LangGraph/CrewAI-style prototypes becoming products, MCP/A2A demos, local model workflows, and multi-agent experiments.
+
+---
+
+> **The core shift CrewForm supports:** move from isolated agent experiments to a shared runtime your team can deploy, observe, and operate.
+
+## Key Features
+
+### Core software capabilities
+
+- 🔗 **Basic Orchestrator Mode** — A coordinator delegates work to other agents
+- 🔌 **Native agent execution** — CLI/ACP support on your own machine or trusted runner
+- 🌍 **A2A and marketplace publishing** — Share agents and workflow templates
+
+- 🔑 **BYOK (Bring Your Own Key)** — Pay your LLM provider directly. Zero markup, zero middleman
+- 🤖 **Agent Management** — Create, configure, and monitor AI agents from a visual UI
+- 🏪 **Marketplace** — Browse and install agent templates built by the community
+- 📋 **Workflow Templates** — Create reusable workflow blueprints with variable placeholders; 5 built-in starter templates
+- 👥 **Pipeline Mode** — Chain agents together in sequential workflows
+- ✅ **Single Tasks** — Send a prompt to any agent and get results in real-time
+- 🔌 **MCP Protocol** — Connect agents to external MCP tool servers for dynamic tool discovery, and expose agents as MCP tools for Claude Desktop and Cursor
+- 📚 **Knowledge Base (RAG)** — Upload documents, auto-chunk and embed, and search via agents
+- 🏠 **Self-Hostable** — Run on your own infrastructure with Docker Compose
+- 🔒 **Secure by Default** — AES-256-GCM key encryption, Row-Level Security, GDPR-ready
+- ⚡ **Real-Time** — Watch your agents work in real-time with live task execution updates
+- 🎨 **Visual Workflow Canvas** — Drag-and-drop agents onto an interactive canvas with live execution visualization, glassmorphism nodes, transcript panel, tool activity heatmap, keyboard shortcuts, and camera auto-follow
+- 🎙️ **Voice Profiles** — Control agent tone, custom instructions, and output format hints; save as reusable brand voice templates
+- 📝 **Output Templates** — Format results with `{{variable}}` placeholders for consistent, structured output
+- 🔀 **Fan-Out Branching** — Parallel pipeline steps that dispatch to multiple agents simultaneously, then merge results
+- 📊 **Usage Tracking** — Monitor token usage, costs, and performance per agent and task
+- 💬 **Chat Widget** — Embed any agent on your website with a single `<script>` tag — streaming responses, domain whitelisting, customizable themes
+- 📦 **Export & Import** — Download agent/team configs as portable JSON; import into any workspace with automatic ID remapping
+- 📡 **Observability** — Opt-in OpenTelemetry + Langfuse integration for tracing LLM calls, tool use, and team runs
+- 🤝 **AG-UI Rich Interactions** — Agents can pause and request approval, data confirmation, or choices from the user mid-execution. These interactions time out after five minutes and do not survive a worker restart
+
+### Included software capabilities
+
+- 🛠️ **Custom Tools** — Extend agents with custom tool integrations
+- 💬 **Collaboration Mode** — Agents discuss and debate tasks in real-time threads
+- 🧠 **Team Memory** — Shared pgvector semantic search across agents
+- 👤 **RBAC** — Role-based access control and workspace member invitations
+
+### Integrations
+
+- ⚡ **Zapier** — Connect CrewForm to 7,000+ apps. Trigger agents from Gmail, Slack, forms, or schedules
+- 📡 **Messaging Channels** — Trigger agents from Discord, Slack, Telegram, and Email
+- 📤 **Output Routes** — 16 destinations: Slack, Discord, Telegram, Teams, Asana, Trello, Notion, GitHub, Email, SMTP, Linear, Google Sheets, Gmail, Google Docs, Google Calendar, and HTTP webhooks
+- 📈 **Advanced Analytics** — Charts, CSV export, prompt history with diffs
+- 💬 **Chat Widget** — Embed agents on any website
+- 📋 **Audit Logs** — Full audit trail with Datadog/Splunk streaming
+- 🐝 **Swarm** — Multi-runner concurrency pool
+
+## Editions & Pricing
+
+All CrewForm software features are free to use and self-host under [MIT](LICENSE).
+No activation key is required. Payment applies only to **CrewForm Cloud hosting**;
+provider/API usage and native provider subscriptions remain separate.
+
+| Hosted resource | Cloud Free | Cloud Pro | Cloud Team |
+|---|---|---|---|
+| Price / workspace / month | $0 | $15 | $49 |
+| Agents | 3 | 25 | Unlimited |
+| Workflow runs / month | 50 | 1,000 | 10,000 |
+| Teams | 1 | 10 | Unlimited |
+| Members | 1 | 3 | 25 |
+| Knowledge documents | 3 | 25 | Unlimited |
+| Software features | All | All | All |
+
+Self-hosting has no CrewForm subscription or hosted plan quotas. Authorization,
+native-agent consent and operational safety limits still apply. Existing Cloud
+subscriptions retain their configured pricing and purchased allowances.
+See [LICENSING.md](LICENSING.md) for the hosting/licensing boundary.
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [Quick Start](https://docs.crewform.tech/quickstart) | Offline walkthrough and supported setup |
+| [Run Your First Agent System](https://docs.crewform.tech/first-agent-system) | Golden-path demo: add one key, run a real pipeline, inspect the output |
+| [Agents Guide](https://docs.crewform.tech/agents) | Models, system prompts, and agent lifecycle |
+| [Pipeline Teams](https://docs.crewform.tech/pipeline-teams) | Multi-agent sequential workflows |
+| [Orchestration Teams](https://docs.crewform.tech/orchestration-teams) | Brain agent with delegation trees |
+| [Collaboration Teams](https://docs.crewform.tech/collaboration-teams) | Multi-agent real-time discussion |
+| [Channels](https://docs.crewform.tech/channels) | Discord, Slack, Telegram, Email triggers |
+| [Discord Integration](https://docs.crewform.tech/discord-integration) | Slash commands and bot setup |
+| [Output Routes](https://docs.crewform.tech/output-routes) | Deliver results to external destinations |
+| [MCP Protocol](https://docs.crewform.tech/mcp-protocol) | Connect agents to external tool servers |
+| [MCP Server Publishing](https://docs.crewform.tech/mcp-server-publishing) | Expose agents as MCP tools for Claude Desktop, Cursor |
+| [Knowledge Base](https://docs.crewform.tech/knowledge-base) | RAG document upload, chunking, and search |
+| [A2A Protocol](https://docs.crewform.tech/a2a-protocol) | Agent-to-Agent interoperability |
+| [AG-UI Protocol](https://docs.crewform.tech/ag-ui-protocol) | Real-time SSE streaming for frontends |
+| [API Reference](https://docs.crewform.tech/api-reference) | REST API endpoints and authentication |
+| [Self-Hosting](https://docs.crewform.tech/self-hosting) | Complete Supabase backend + application deployment |
+| [Visual Workflow Builder](https://docs.crewform.tech/visual-workflow-builder) | Interactive canvas with live execution observability |
+| [Chat Widget](https://docs.crewform.tech/chat-widget) | Embed agents on any website with a script tag |
+| [Observability](https://docs.crewform.tech/observability) | OpenTelemetry + Langfuse tracing setup |
+| [Workflow Templates](https://docs.crewform.tech/workflow-templates) | Create, install, and share reusable workflow blueprints |
+| [CLI Tool](cli/README.md) | Run agents from the terminal with `npx @crewformhq/cli` |
+| [Changelog](https://docs.crewform.tech/changelog) | Release notes and version history |
+
+## Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                        CrewForm UI                               │
+│             React + TypeScript + Tailwind + ShadCN               │
+│      Visual Workflow Canvas · AG-UI SSE Streaming · Chat Widget  │
+├──────────────────────────────────────────────────────────────────┤
+│                      Supabase Layer                              │
+│         Auth · PostgreSQL · Realtime · Storage                   │
+│         Edge Functions (REST API) · pgvector (RAG)               │
+├──────────────────────────────────────────────────────────────────┤
+│                       Task Runner                                │
+│                   Node.js · Multi-Provider LLM                   │
+│   ┌─────────────────────────────────────────────────────────┐    │
+│   │  OpenAI · Anthropic · Gemini · Groq · Mistral · Cohere │    │
+│   │  NVIDIA · Perplexity · Together · OpenRouter · HuggingFace│  │
+│   │  MiniMax · Moonshot · Venice · Ollama (local) · xAI     │    │
+│   └─────────────────────────────────────────────────────────┘    │
+├──────────────────────────────────────────────────────────────────┤
+│                     Protocol Layer                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐   │
+│  │ MCP Protocol  │  │ A2A Protocol │  │    AG-UI Protocol     │   │
+│  │ Client+Server │  │ Bidirectional│  │ SSE + Rich Interactions│  │
+│  └──────────────┘  └──────────────┘  └───────────────────────┘   │
+├──────────────────────────────────────────────────────────────────┤
+│                      Integrations                                │
+│  Channels (Discord · Slack · Telegram · Email) · Output Routes (16)│
+│  Zapier (7,000+ apps) · Google Workspace · Webhooks · REST API     │
+├──────────────────────────────────────────────────────────────────┤
+│                    Observability                                 │
+│         OpenTelemetry · Langfuse · Datadog · Jaeger              │
+├──────────────────────────────────────────────────────────────────┤
+│                  Your LLM Providers                              │
+│              BYOK — Your Keys, Your Cost                         │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18 · TypeScript · Vite · Tailwind CSS · ShadCN UI |
+| **State** | TanStack Query · Zustand |
+| **Backend** | Supabase (Auth, PostgreSQL, Realtime, Edge Functions) |
+| **Task Runner** | Node.js · 16 LLM providers + Ollama (local) |
+| **Vector Search** | pgvector — hybrid search (cosine + full-text + reranking) |
+| **Protocols** | MCP (client + server) · A2A (bidirectional) · AG-UI (SSE + rich interactions) |
+| **Observability** | OpenTelemetry · Langfuse · Datadog · Jaeger |
+| **Integrations** | Zapier · Discord · Slack · Telegram · Email · Webhooks · Chat Widget |
+| **Validation** | Zod |
+| **Deployment** | Vercel · Docker Compose · Railway · Render |
+
+## Contributing
+
+We welcome contributions from everyone! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- 🐛 How to report bugs
+- 💡 How to suggest features
+- 🔧 Development setup guide
+- 📋 Coding standards
+
+## Community
+
+- 💬 **[Discord](https://discord.gg/TAFasJCTWs)** — Chat with the team and community
+- 🗣️ **[GitHub Discussions](https://github.com/CrewForm/crewform/discussions)** — Ideas, Q&A, and show & tell
+- 🐦 **[Twitter/X](https://twitter.com/CrewFormHQ)** — Product updates and AI ecosystem commentary
+- 📧 **Email** — team@crewform.tech
+
+## FAQ
+
+<details>
+<summary><strong>What is CrewForm?</strong></summary>
+
+CrewForm is an open-source AI orchestration platform that lets you deploy, manage, and collaborate on multi-agent AI workflows through a visual UI — without vendor lock-in or LLM cost markup.
+</details>
+
+<details>
+<summary><strong>Is CrewForm free to use?</strong></summary>
+
+Yes. All implemented CrewForm features are available under MIT and free to self-host. [CrewForm Cloud](https://crewform.tech) offers hosted resource allowances with Free, Pro $15/month and Team $49/month plans. Paid hosting does not unlock additional software features.
+</details>
+
+<details>
+<summary><strong>What is the CE/EE split?</strong></summary>
+
+The former CE/EE split has been retired. All CrewForm-owned code, including the legacy `ee/` directory, is MIT licensed. Collaboration, memory, audit logs and organizational controls are included without activation keys. Workspace permissions remain enforced.
+</details>
+
+<details>
+<summary><strong>What does BYOK mean?</strong></summary>
+
+BYOK stands for **Bring Your Own Key**. You connect your own API keys from providers like Anthropic, Google, or OpenAI. CrewForm never touches your LLM spend — you pay your provider directly at their standard rates.
+</details>
+
+<details>
+<summary><strong>Can I self-host CrewForm?</strong></summary>
+
+Yes! CrewForm supports Docker-based self-hosting. See our [self-hosting guide](https://docs.crewform.tech/self-hosting) for instructions.
+</details>
+
+<details>
+<summary><strong>What LLM providers are supported?</strong></summary>
+
+CrewForm supports **16 cloud providers + Ollama** for local models:
+
+OpenAI, Anthropic, Google Gemini, Groq, Mistral, Cohere, NVIDIA NIM, Perplexity, Together, OpenRouter, HuggingFace, MiniMax, Moonshot, Venice, xAI, and **Ollama** (local — Llama 3, Mistral, Phi, etc.).
+
+Ollama enables fully air-gapped setups — zero API keys, zero data leaving your network. More providers can be added via the modular provider architecture.
+</details>
+
+<details>
+<summary><strong>What integrations are available?</strong></summary>
+
+CrewForm integrates with **Zapier** (7,000+ apps), messaging channels (**Discord**, **Slack**, **Telegram**, **Email**, **Trello**), output routes (**webhooks**, **MS Teams**, **Asana**, **Trello**, and more), and three agentic protocols: **MCP** (Model Context Protocol) for connecting to thousands of external tool servers, **A2A** (Agent-to-Agent) for delegating tasks to external AI agents, and **AG-UI** (Agent-User Interface) for real-time SSE streaming to any frontend.
+</details>
+
+<details>
+<summary><strong>How does CrewForm differ from CrewAI or LangGraph?</strong></summary>
+
+CrewAI and LangGraph are code-first orchestration libraries. CrewForm is a self-hostable control plane around agent systems: visual orchestration, task execution, workspaces, billing, RBAC, marketplace/templates, messaging channels, RAG, observability, REST APIs, and production deployment. It also treats interoperability as a core runtime concern with native MCP, A2A, and AG-UI support.
+</details>
+
+## How CrewForm Compares
+
+CrewForm focuses on developers who want to keep their agent logins, own their runtime and share workflows as code. Local CLI/ACP execution is available in the standalone CLI and trusted self-hosted runners; CrewForm Cloud does not access your local login.
+
+| Project | Focus | Relationship to CrewForm |
+|---|---|---|
+| [CrewAI](https://docs.crewai.com/) | Code-defined crews and flows | An alternative for developers who prefer building orchestration in Python. |
+| [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview) | Stateful graph orchestration | A framework for custom graph runtimes and durable execution. |
+| [Dify](https://docs.dify.ai/) | Visual LLM applications and workflows | An established option for broader application building. |
+| [n8n](https://docs.n8n.io/advanced-ai/) | Automation with AI agent nodes | An option when business integration workflows are the main requirement. |
+| [Agent Client Protocol](https://agentclientprotocol.com/) | Editor/client-to-agent interoperability | A complementary protocol used by CrewForm's local runtime, separate from A2A. |
+
+These links describe each project's own capabilities; they are not a benchmark or a claim that CrewForm has exclusive protocol support.
+
+
+## License
+
+CrewForm-owned source is licensed under [MIT](LICENSE), including the legacy
+`ee/` directory. All implemented features are free to self-host. Payment applies
+only to CrewForm Cloud hosting. Third-party dependencies retain their own terms.
+See [LICENSING.md](LICENSING.md) for details.
+
+## ⭐ Star History
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=CrewForm/crewform&type=Date)](https://star-history.com/#CrewForm/crewform&Date)
+
+</div>
+
+## 🏢 Who's Using CrewForm
+
+> Using CrewForm in production? [Open an issue](https://github.com/CrewForm/crewform/issues/new?labels=showcase&title=Add+my+company+to+Who%27s+Using+CrewForm) and we'll add you here!
+
+<!-- Add your company/project below -->
+
+*Be the first to showcase your team here!*
+
+---
+
+<div align="center">
+
+**CrewForm** — Own your agent workflows. Bring the tools you already use.
+
+[Website](https://crewform.tech) · [Docs](https://docs.crewform.tech) · [Discord](https://discord.gg/TAFasJCTWs) · [Twitter](https://twitter.com/CrewFormHQ)
+
+<sub>If CrewForm is useful to you, please consider ⭐ starring the repo — it really helps!</sub>
+
+</div>

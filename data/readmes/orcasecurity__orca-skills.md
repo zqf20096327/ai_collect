@@ -1,0 +1,1550 @@
+<div align="center">
+
+<p align="center">
+  <img src="assets/orca_ai_skills_banner.png" alt="Orca Skills" width="700">
+</p>
+
+<a href="LICENSE" target="_blank"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+<a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank"><img src="https://img.shields.io/badge/Claude_Code-compatible-blueviolet" alt="Claude Code"></a>
+<a href="https://cursor.com" target="_blank"><img src="https://img.shields.io/badge/Cursor-compatible-blue" alt="Cursor"></a>
+<a href="https://openai.com/codex/" target="_blank"><img src="https://img.shields.io/badge/Codex-compatible-green" alt="Codex"></a>
+<a href="https://docs.orcasecurity.io/docs/mcp-integration" target="_blank"><img src="https://img.shields.io/badge/MCP-Orca_Security-00D4AA" alt="MCP"></a>
+
+</div>
+
+---
+
+Orca Skills supports both **Claude Code and Codex**. Both clients use the same
+`skills/` directory, with separate plugin manifests and installation instructions.
+
+### Table of Contents
+- [Plugins](#plugins)
+- [Skills Overview](#skills-overview)
+- [Installation](#installation)
+- [MCP Configuration](#mcp-configuration)
+- [Usage Notes](#usage-notes)
+- [Skill Details](#skill-details)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+- [Credits](#credits)
+
+
+## Plugins
+
+This marketplace carries two plugins. They are installed separately, and most
+people want the first one.
+
+| Plugin | What it is | Prerequisites |
+|---|---|---|
+| [`orca-skills`](#skills-overview) | 20 skills for cloud security analysis and guided remediation through the Orca MCP server | The Orca MCP server. Nothing else |
+| [`security-engineer`](plugins/security-engineer/) | An autonomous agent that **remediates** Orca findings in your source code and opens a pull request per fix | Python 3.10+, authenticated [`gh`](https://cli.github.com/), `ORCA_API_TOKEN` in the environment, network access to OSV.dev and deps.dev |
+
+They answer different questions and are kept apart on purpose: `orca-skills`
+reads and explains your **cloud posture**; `security-engineer` writes code
+against your **repositories**. Installing `orca-skills` does not pull in the
+second plugin or any of its prerequisites.
+
+
+## Skills Overview
+
+| Skill | Question It Answers |
+|-------|-------------------|
+| [`orca-alert-triage`](#orca-alert-triage) | "What is this alert and should I care?" |
+| [`orca-impact-analysis`](#orca-impact-analysis) | "If I fix this, what else closes — and what breaks?" |
+| [`orca-config-origin`](#orca-config-origin) | "Who did this, how was it deployed, and what introduced the issue?" |
+| [`orca-morning-briefing`](#orca-morning-briefing) | "What happened while I was away, and what needs my attention?" |
+| [`orca-asset-profile`](#orca-asset-profile) | "Tell me everything about this asset in one place." |
+| [`orca-compliance-gap`](#orca-compliance-gap) | "Where are we failing, what's the fastest path to improve?" |
+| [`orca-data-exposure`](#orca-data-exposure) | "Where is our sensitive data, is it protected, and what's at risk?" |
+| [`orca-exposure-map`](#orca-exposure-map) | "What can an attacker see from outside?" |
+| [`orca-identity-review`](#orca-identity-review) | "Is this identity overprivileged, and what's the blast radius?" |
+| [`orca-investigate`](#orca-investigate) | "What happened, who did it, and how far did they get?" |
+| [`orca-cloud-cost-optimizer`](#orca-cloud-cost-optimizer) | "Where are we overspending and what should we fix first?" |
+| [`orca-custom-framework`](#orca-custom-framework) | "How do I create a custom compliance framework tailored to my needs?" |
+| [`orca-inactive-identities-cleanup`](#orca-inactive-identities-cleanup) | "Which of our identities are dead weight, and how do we safely disable or delete them?" |
+| [`orca-overprivileged-identities-rightsizing`](#orca-overprivileged-identities-rightsizing) | "Which of our identities hold far more permission than they use, and how do we safely cut them down?" |
+| [`orca-mfa-enforcement`](#orca-mfa-enforcement) | "Who can sign in without MFA, and how do we close that gap without locking anyone out?" |
+| [`orca-supply-chain-exposure`](skills/orca-supply-chain-exposure/) | "From this list of suspect packages, which are we actually running and where?" |
+| [`orca-cve-blast-radius`](skills/orca-cve-blast-radius/) | "This CVE just dropped — which assets are actually at risk?" |
+| [`orca-account-health`](skills/orca-account-health/) | "Is every account connected, synced, and fully scanned?" |
+| [`orca-k8s-connector-troubleshoot`](#orca-k8s-connector-troubleshoot) | "Why isn't my Kubernetes Connector installing or connecting?" |
+| [`orca-admin-access-grouping`](#orca-admin-access-grouping) | "How few policies do our admins actually need, and who goes in each?" |
+
+### Recommended Workflows
+
+> **Daily ops:** Morning briefing → Triage → Asset profile → Impact analysis → Config origin → Fix
+>
+> **Proactive posture:** Compliance gaps → Exposure map → Data exposure → Identity review
+>
+> **Incident response:** Investigate → Identity review → Asset profile → Contain and remediate
+>
+> **Custom compliance:** Custom framework → Compliance gaps → Impact analysis → Remediate
+>
+> **Reactive (advisory landed):** Supply chain exposure → CVE blast radius → Impact analysis → Fix
+>
+> **Pre-audit / pre-investigation:** Account health → Compliance gaps / Investigate (trust the data first)
+>
+> **Connector setup:** Connector troubleshoot → (escalate to support if a known platform limitation)
+>
+> **Code remediation:** CVE blast radius (which cloud assets are hit) → `security-engineer` (fix the repos that ship them, one PR per fix)
+
+## Installation
+
+### Claude Code CLI
+
+```bash
+/plugin marketplace add orcasecurity/orca-skills
+```
+
+Then install whichever plugins you want:
+
+```bash
+claude plugin install orca-skills@orcasecurity          # the MCP skills
+claude plugin install security-engineer@orcasecurity    # autonomous remediation
+```
+
+**Next step:** Configure the Orca Security MCP server (see [MCP Configuration](#mcp-configuration) below).
+`security-engineer` does not use MCP — its setup is in
+[its own README](plugins/security-engineer/README.md).
+
+### Codex CLI
+
+```bash
+codex plugin marketplace add orcasecurity/orca-skills
+codex plugin add orca-skills --marketplace orcasecurity
+```
+
+This installs `orca-skills` from the root `skills/` directory. Configure the Orca Security MCP server using the [Codex instructions](#codex-mcp-configuration) below. The separate `security-engineer` plugin uses Claude Code; see [its README](plugins/security-engineer/README.md).
+
+### Claude Desktop
+
+Add the marketplace to your Claude Desktop configuration, then install skills from the marketplace UI.
+
+### Manual Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/orcasecurity/orca-skills.git
+cd orca-skills
+
+# Copy skills to your skills directory
+cp -r skills/* ~/.claude/skills/
+
+# Or install into Codex's user skills directory
+mkdir -p ~/.agents/skills
+cp -r skills/* ~/.agents/skills/
+```
+
+## MCP Configuration
+
+**Required:** These skills need the Orca Security MCP server to access your environment data.
+
+### Claude Code / Claude Desktop
+
+Add to your `.mcp.json` (in project root or `~/.claude/.mcp.json`):
+
+**Uses OAuth2 for authentication**
+
+```json
+{
+  "mcpServers": {
+    "orca-security": {
+      "type": "http",
+      "url": "https://mcp.orcasecurity.io"
+    }
+  }
+}
+```
+
+**For token based authentication** (For services and automations)
+
+```json
+{
+  "mcpServers": {
+    "orca-security": {
+      "type": "http",
+      "url": "https://api.orcasecurity.io/mcp",
+      "headers": {
+        "Authorization": "Token YOUR_ORCA_API_TOKEN"
+      }
+    }
+  }
+}
+```
+
+**Get your API token:** [Orca API Authentication Guide](https://docs.orcasecurity.io/docs/managing-api-tokens)  
+**MCP Integration Docs:** [Orca MCP Setup](https://orca.security/mcp-server/)
+
+> **The `security-engineer` plugin does not read MCP.** It calls
+> `api.orcasecurity.io/api/serving-layer/query` directly and expects the same
+> token in `ORCA_API_TOKEN` as an environment variable rather than in
+> `.mcp.json`. Configuring one does not configure the other.
+
+
+### Codex MCP Configuration
+
+For OAuth2 authentication:
+
+```bash
+codex mcp add orca-security --url https://mcp.orcasecurity.io
+codex mcp login orca-security
+```
+
+For token based authentication, set the authorization value in an environment variable:
+
+```bash
+export ORCA_AUTHORIZATION="Token YOUR_ORCA_API_TOKEN"
+```
+
+Reference the variable in `~/.codex/config.toml` (or `$CODEX_HOME/config.toml` when using a custom home):
+
+```toml
+[mcp_servers.orca-security]
+url = "https://api.orcasecurity.io/mcp"
+env_http_headers = { Authorization = "ORCA_AUTHORIZATION" }
+```
+
+Check the connection with `codex mcp list`. See the [official Codex MCP documentation](https://developers.openai.com/codex/mcp/).
+
+## Usage Notes
+
+Claude examples use slash commands such as `/orca-alert-triage`. In Codex, use natural language or explicitly mention the installed skill:
+
+```text
+triage Orca alert orca-1234567
+$orca-skills:orca-morning-briefing what needs attention today?
+```
+
+For a manually copied skill, use its standalone name, such as `$orca-morning-briefing`.
+
+## Skill Details
+
+<details>
+<summary><strong><a id="orca-alert-triage"></a>orca-alert-triage</strong></summary>
+
+**"What is this alert and should I care?"**
+
+Intelligent alert triage that transforms raw Orca alerts into analyst-friendly summaries with behavioral timelines, risk assessment, and progressive disclosure. Supports anomalies, vulnerabilities, malware, and misconfigurations.
+
+**Features:**
+- Verdict-first summaries with confidence scoring (Likely Benign, Active Threat, Patchable Risk, etc.)
+- Visual timeline analysis showing alert behavior, status changes, and remediation blockers
+- Blast radius calculation with related asset and alert correlation
+- Orca-first automated investigation — queries CloudTrail, related alerts, attack paths before suggesting manual steps
+- Remediation format picker — choose Terraform, CloudFormation, ARM/Bicep, Pulumi, CLI, or step-by-step instructions
+- Code output written to files automatically (e.g., `remediate-orca-3456789.tf`)
+
+**Usage:**
+```bash
+# Triage an alert
+/orca-alert-triage orca-1234567
+
+# Or use natural language
+triage alert orca-9012345
+explain orca-2345678
+```
+
+**Follow-up commands** (type after triage):
+```
+investigate    # Automated Orca-first investigation with manual steps only for gaps
+evidence       # Detailed metadata, hashes, links, MITRE ATT&CK mappings
+remediate      # Choose output format, then get remediation written to a file
+correlate      # Related alerts and attack pattern analysis
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+ANOMALY DETECTION: Unusual User Agent on EKS Node Role
+═══════════════════════════════════════════════════════════════════
+
+VERDICT: Likely Benign | CONFIDENCE: 90% | ACTION: Review & Close | TIMELINE: 48h
+
+WHAT HAPPENED:
+  EKS node role used a new AWS SDK version (boto3/1.35.x → 1.36.x)
+  during routine cluster operations. Single occurrence, no recurrence.
+
+WHY IT MATTERS:
+  Risk Level: Low (Orca Score: 3.0)
+  Same tool family, minor version bump, clean 30-day baseline.
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-alert-triage/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-impact-analysis"></a>orca-impact-analysis</strong></summary>
+
+**"If I fix this, what closes — and what breaks?"**
+
+Analyzes the full remediation impact of fixing a single Orca alert — both the security gains (alerts closed, attack paths broken, compliance passed) AND the operational risk (production workflows, automation, services that might break).
+
+**Features:**
+- Cascade analysis — maps all alerts that share the same root cause as the target alert
+- Attack path impact — identifies kill chains that break when the alert is fixed
+- Compliance score change — shows before/after compliance percentages per framework
+- Environment-wide view — finds the same issue across other assets and accounts
+- Breakage simulation — analyzes CloudTrail/CDR events and effective permissions to identify production dependencies
+- Executive verdict — clear FIX NOW / FIX WITH CAUTION / PLAN FIX / DEFER recommendation balancing security gain vs. operational risk
+- Safe deployment checklist — steps to apply the fix without breaking production
+
+**Usage:**
+```bash
+# Analyze impact of fixing an alert
+/orca-impact-analysis orca-3456789
+
+# Or use natural language
+what's the impact of fixing orca-5678901?
+if I fix orca-0123456, what else closes?
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+IMPACT ANALYSIS — orca-3456789
+Root Account Without MFA Enabled
+"If I enable MFA on root, what closes — and what breaks?"
+═══════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────┐
+│  VERDICT: FIX NOW                                               │
+│                                                                 │
+│  Security gain:   HIGH — 2 critical alerts, 3 attack paths      │
+│  Breakage risk:   LOW — no automation uses root console login   │
+│  Blast radius:    2 alerts, 3 attack paths, 8 frameworks        │
+└─────────────────────────────────────────────────────────────────┘
+
+REMEDIATION IMPACT SUMMARY:
+  Alerts directly closed:    2 (including this one)
+  Attack paths broken:       3
+  Compliance frameworks:     8 frameworks improved
+
+  COMPLIANCE SCORE CHANGE:
+    Framework              Current    After Fix    Change
+    ─────────────────────────────────────────────────────
+    PCI DSS v4.0.1          87%   →    89%         +2%
+    NIST 800-53             91%   →    93%         +2%
+
+BREAKAGE RISK:
+  [ok] EKS automation — uses access keys (MFA doesn't apply)
+  [ok] Orca scanner — uses service role (not affected)
+  [x]  Unknown Kali agent — SHOULD break (that's the goal)
+
+BOTTOM LINE: High-leverage, low-risk fix. Apply immediately.
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-impact-analysis/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-config-origin"></a>orca-config-origin</strong></summary>
+
+**"Who did this, how was it deployed, and what introduced the issue?"**
+
+Traces any Orca alert — misconfiguration, vulnerability, sensitive data, or anomaly — back through cloud audit logs, Orca CodeOrigins (Shift Left), and asset metadata to find who created the resource, what tool deployed it, what introduced the specific issue, and a full timeline from deployment to alert detection.
+
+**Features:**
+- Alert category classification — traces origin differently for misconfigurations (config IS the cause), vulnerabilities (package is the cause), sensitive data (image/script placed the secret), and anomalies (actor IS the finding)
+- CodeOrigins / Shift Left integration — extracts exact IaC source code (repo, file, line numbers, git blame author/commit)
+- Audit log tracing via Orca CDR (CloudTrail, Azure Activity Log, GCP Audit Log)
+- Full visual timeline from IaC code commit → resource creation → issue introduction → alert detection, with exposure window calculation
+- Split ownership — distinguishes resource owner (who deployed) from issue owner (who should fix)
+- IaC drift detection — flags resources created by IaC but later modified via Console
+- Category-aware remediation routing — tells you WHERE to apply the fix based on alert type AND deployment method
+
+**Usage:**
+```bash
+# Trace origin of any alert
+/orca-config-origin orca-3456789
+
+# Or use natural language
+who created this misconfiguration? orca-3456789
+trace back orca-5678901
+where did this config come from? orca-3364845
+```
+
+**Example output (vulnerability alert):**
+```
+═══════════════════════════════════════════════════════════════════
+CONFIG ORIGIN — orca-4567890
+Apache Log4j Remote Code Execution Vulnerability (CVE-2021-45046)
+═══════════════════════════════════════════════════════════════════
+
+ASSET: web-bastion-host (AwsEc2Instance) in 123456789012
+ISSUE: log4j-core v2.3 installed — critically vulnerable to RCE
+
+┌─────────────────────────────────────────────────────────────────┐
+│  DEPLOYED BY: Terraform (module "ec2_unpatched")                │
+│  OWNER:       Alex Chen (alex@example-corp.com)                       │
+│  ROOT CAUSE:  user_data script installs log4j-core-2.3.jar     │
+│  LAST CHANGE: 2025-12-01 (137 days ago)                         │
+│  METHOD:      Terraform → module "ec2/unpatched_ubuntu"         │
+└─────────────────────────────────────────────────────────────────┘
+
+TIMELINE:
+  2024-06-23  ● Terraform code committed                  Alex Chen
+              │ file: ec2.tf:71-80, commit: abc1234
+  2025-12-01  ● Instance created — user_data installs log4j 2.3
+              │ ⚠ VULNERABILITY INTRODUCED HERE
+  2025-12-01  ● Alert detected by Orca (73 min after creation)
+  2026-04-17  ● Today — 137 days exposed, still open
+
+REMEDIATION ROUTING:
+  ⚠ The fix is NOT in ec2.tf — the Terraform deploys correctly.
+  FIX IN: module.scripts.ec2_unpatched (the user_data script)
+  → Update script to install log4j-core ≥ 2.16.0
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-config-origin/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-morning-briefing"></a>orca-morning-briefing</strong></summary>
+
+**"What happened while I was away, and what needs my attention?"**
+
+Daily security briefing for the last 24-72 hours. Scans your environment for new critical alerts, escalated findings, attack path changes, compliance drift, exposure changes, CDR activity anomalies, crown jewel risks, and aging unactioned alerts — then presents it all as a scannable dashboard with drill-down sections.
+
+**Features:**
+- Environment pulse — quick health assessment (stable, degrading, needs attention)
+- New critical/high alerts with priority ranking
+- Escalated alerts — severity increases and reopened findings
+- Compliance drift — framework scores that dropped, with account breakdown
+- CDR activity overview — event volumes, unusual actors, suspicious patterns
+- Crown jewel risk — new alerts on your most critical assets
+- Aging criticals — unactioned alerts with Jira ticket status
+- Progressive disclosure — dashboard first (~20 lines), drill down by keyword
+- Time range support — 24h (daily), 72h (Monday morning), week (PTO return)
+
+**Usage:**
+```bash
+# Daily briefing (last 24 hours)
+/orca-morning-briefing
+
+# Monday morning (last 72 hours)
+/orca-morning-briefing 72h
+
+# Weekly review
+/orca-morning-briefing week
+```
+
+**Drill-down keywords** (type after briefing):
+```
+alerts         # Full list of new critical/high alerts
+escalated      # Alerts that changed severity or reopened
+attack paths   # New/worsened attack paths with stories
+compliance     # Framework scores, trends, worst accounts
+exposure       # Internet-facing assets with critical alerts
+crown jewels   # New alerts on crown jewel assets
+aging          # Unactioned critical alerts sorted by age
+activity       # CDR event volumes, unusual actors
+new types      # Alert types seen for the first time
+trends         # Week-over-week comparison, top affected assets
+full           # All sections expanded (for reports/handoffs)
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+MORNING BRIEFING — 2026-04-17
+Last 24 hours | Account: 123456789012
+═══════════════════════════════════════════════════════════════════
+
+PULSE: ⚠ NEEDS ATTENTION — 3 new critical alerts
+
+┌─────────────────────────────────────────────────────────────────┐
+│  NEW ALERTS         12 total (3 critical, 4 high, 5 medium)    │
+│  ESCALATED          2 alerts changed severity or reopened       │
+│  ATTACK PATHS       1 new, 2 worsened                           │
+│  COMPLIANCE         PCI DSS dropped 2%                          │
+│  EXPOSURE           1 asset newly internet-facing               │
+│  CROWN JEWELS       1 new alert on critical asset               │
+│  AGING CRITICALS    4 critical alerts open > 7 days             │
+│  CDR ACTIVITY       Elevated — 3.2k events (normal: ~1k)       │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP PRIORITIES:
+  [1] orca-4567890 — Log4j RCE on public bastion (137d open!)
+  [2] orca-6789012 — S3 bucket publicly accessible (new today)
+  [3] orca-7890123 — SendGrid API key exposed in container
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-morning-briefing/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-asset-profile"></a>orca-asset-profile</strong></summary>
+
+**"Tell me everything about this asset in one place."**
+
+Full 360° security profile of any cloud asset — all open alerts (grouped by category), attack paths, compliance violations, permissions, network exposure, sensitive data, CDR activity summary, crown jewel status, and linked entities.
+
+**Features:**
+- Complete asset identity — name, type, account, region, IPs, OS, tags, creation date, IaC source
+- Risk summary with Orca Score, crown jewel status, and exposure classification
+- Alerts grouped by category — vulnerabilities, misconfigurations, malware, sensitive data, anomalies, IAM
+- Attack path mapping — kill chains with the asset's role (entry point, pivot, target)
+- Compliance framework violations per asset
+- Effective permissions analysis (AWS IAM assets) with used vs unused breakdown
+- CDR activity summary — 30-day event volumes, top actions, unique actors
+- Linked entities — connected roles, instances, buckets, databases, load balancers
+- Proactive remediation — suggests the highest-impact fix and offers to generate code in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# Profile an asset by name, ID, or ARN
+/orca-asset-profile web-bastion-host
+/orca-asset-profile i-1234567890abcdef0
+
+# Or use natural language
+tell me about web-bastion-host
+asset risk for vm-chain3-1
+```
+
+**Drill-down keywords** (type after profile):
+```
+alerts         # All alerts by category
+attack paths   # Kill chains with this asset
+compliance     # Framework violations
+permissions    # IAM analysis (used vs unused)
+exposure       # Network exposure details
+activity       # CDR events (last 30 days)
+linked         # Connected assets
+code origin    # IaC source mapping
+full           # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+ASSET PROFILE — web-bastion-host
+AwsEc2Instance | 123456789012 | us-east-1 | running
+═══════════════════════════════════════════════════════════════════
+
+RISK: Orca Score 9.0 (Critical) | Crown Jewel: NO
+
+┌─────────────────────────────────────────────────────────────────┐
+│  ALERTS        12 total (3 critical, 4 high, 5 medium)         │
+│  ATTACK PATHS  4 active kill chains                             │
+│  COMPLIANCE    6 frameworks, 18 failing controls                │
+│  EXPOSURE      public_facing | ports: 22, 443                   │
+│  SENSITIVE     API keys, credentials                            │
+│  PERMISSIONS   overprivileged (via instance profile)            │
+│  CDR ACTIVITY  847 events in 30d (elevated)                     │
+│  LINKED        9 connected assets                               │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP ALERTS:
+  [1] orca-4567890 — Log4j RCE (score: 9.0, vulnerability)
+  [2] orca-7890123 — SendGrid API key exposed (score: 8.5, sensitive data)
+  [3] orca-3456789 — Root account without MFA (score: 8.0, misconfiguration)
+
+RECOMMENDED ACTION:
+  The highest-impact fix is orca-4567890 (Log4j RCE on a public
+  asset). I can generate remediation code right now.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-asset-profile/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-compliance-gap"></a>orca-compliance-gap</strong></summary>
+
+**"Where are we failing, what's the fastest path to improve?"**
+
+Deep compliance gap analysis for any framework — failing controls ranked by blast radius, quick wins (single-fix controls), account breakdown, score trends, and a phased remediation plan with projected score improvements.
+
+**Features:**
+- Framework overview with scores, trends, and worst/best identification
+- Failing controls ranked by cross-framework impact and asset count
+- Quick win detection — single-config fixes that improve multiple frameworks at once
+- Account/business unit breakdown — who owns the worst gaps
+- 30-day compliance trend analysis — improving, stable, or degrading
+- Phased remediation plan — quick wins (days), systematic fixes (weeks), architectural changes (months)
+- Projected score improvements per phase
+- Proactive remediation — offers to generate fix code for any control in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# All frameworks overview
+/orca-compliance-gap
+
+# Specific framework deep-dive
+/orca-compliance-gap PCI DSS
+/orca-compliance-gap CIS AWS
+
+# Or use natural language
+how's our PCI compliance?
+what's failing in SOC 2?
+quick wins for compliance
+```
+
+**Drill-down keywords** (type after analysis):
+```
+controls         # All failing controls ranked by impact
+quick wins       # Fastest path to score improvement
+accounts         # Gap breakdown by account
+trends           # 30-day score history
+remediation plan # Phased fix plan with projections
+full             # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+COMPLIANCE GAP ANALYSIS — All Frameworks
+2026-04-17 | All accounts
+═══════════════════════════════════════════════════════════════════
+
+POSTURE: Moderate — 3 frameworks below 85% target
+
+┌─────────────────────────────────────────────────────────────────┐
+│  FRAMEWORKS     8 enabled                                       │
+│  AVG SCORE      84%                                             │
+│  WORST          HIPAA at 71%                                    │
+│  BEST           CIS AWS at 94%                                  │
+│  TREND (30d)    degrading — PCI dropped 2%                      │
+│  QUICK WINS     6 controls fixable with single changes          │
+│  WORST ACCOUNT  123456789012 — 76% avg score                   │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP FAILING CONTROLS (highest impact):
+  [1] Enable MFA for root — failing on 3 accounts, affects 5 frameworks
+  [2] Encrypt EBS volumes — failing on 12 assets, affects 4 frameworks
+  [3] Restrict SSH access — failing on 8 assets, affects 4 frameworks
+
+RECOMMENDED ACTION:
+  The fastest score improvement: enable MFA for root —
+  affects 3 accounts across 5 frameworks. I can generate the fix.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-compliance-gap/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-data-exposure"></a>orca-data-exposure</strong></summary>
+
+**"Where is our sensitive data, is it protected, and what's at risk?"**
+
+DSPM (Data Security Posture Management) view: discovers sensitive data across the environment — secrets, PII, credentials, API keys, financial data — identifies unprotected or exposed data stores, ranks data risks by exposure level, and generates a remediation plan.
+
+**Features:**
+- Full DSPM scan — secrets, PII, credentials, API keys, certificates, financial data
+- Risk classification — critical (public + sensitive), high (internal + vulnerable), medium, low
+- Data type grouping — secrets & credentials, PII, financial data, health data, private keys
+- Public data store detection — S3 buckets, databases, file shares with public access
+- Unencrypted data store identification with encryption recommendations
+- Compliance context — PCI DSS, HIPAA, GDPR, SOC 2 data protection control status
+- Account breakdown of data risk distribution
+- Phased remediation plan — stop the bleeding, encrypt everything, access controls, governance
+- Proactive remediation — generates rotation scripts, bucket policies, encryption configs in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# Full DSPM report
+/orca-data-exposure
+
+# Filter by type or account
+/orca-data-exposure secrets
+/orca-data-exposure account 123456789012
+
+# Or use natural language
+where's our sensitive data?
+find exposed API keys
+what PII is at risk?
+```
+
+**Drill-down keywords** (type after report):
+```
+secrets          # Exposed secrets & credentials
+pii              # PII exposure details
+public data      # Publicly accessible data stores
+unencrypted      # Data stores without encryption
+compliance       # Data protection compliance status
+accounts         # Data risk by account
+remediation plan # Phased data protection plan
+full             # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+DATA EXPOSURE REPORT — All Accounts
+2026-04-17 | Full environment
+═══════════════════════════════════════════════════════════════════
+
+DATA POSTURE: At Risk — 3 critical data exposures on public assets
+
+┌─────────────────────────────────────────────────────────────────┐
+│  TOTAL FINDINGS    24 data exposure alerts                      │
+│  CRITICAL          3 — immediate breach risk                    │
+│  HIGH              8 — significant exposure                     │
+│  SECRETS           11 exposed credentials/API keys/tokens       │
+│  PII               5 assets with personally identifiable data   │
+│  PUBLIC DATA       2 publicly accessible data stores            │
+│  UNENCRYPTED       6 data stores without encryption             │
+│  CROWN JEWELS      2 data findings on critical assets           │
+│  COMPLIANCE        PCI DSS, HIPAA gaps on data controls         │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP DATA RISKS:
+  [1] orca-7890123 — SendGrid API key in container image (score: 8.5)
+      web-bastion-host | credential | public-facing
+  [2] orca-8901234 — AWS access key in environment variable (score: 8.0)
+      ci-build-server | infrastructure secret | internal
+  [3] orca-6789012 — S3 bucket publicly accessible (score: 7.5)
+      s3-data-lake-prod | PII + financial data | public
+
+RECOMMENDED ACTION:
+  Priority #1: Rotate the SendGrid API key on web-bastion-host and
+  move to Secrets Manager. I can generate the rotation script.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-data-exposure/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-exposure-map"></a>orca-exposure-map</strong></summary>
+
+**"What can an attacker see from outside?"**
+
+External attack surface mapping: discovers all internet-facing assets, ranks them by exploitability from an attacker's perspective, groups by attack vector (exposed services, public storage, vulnerable web apps, open management ports), and maps outside-in kill chains to crown jewels.
+
+**Features:**
+- Full external attack surface inventory — internet-facing assets ranked by risk
+- Attacker-perspective ranking — "how would an attacker prioritize these targets?"
+- Attack vector grouping — easy wins, web apps, management ports, public data, lateral movement entry points
+- Outside-in attack path mapping — from exposed asset through pivots to crown jewels
+- Exposed management interfaces (SSH, RDP, admin panels) with authentication status
+- Public data store detection (S3, databases, file shares)
+- Account-level exposure breakdown
+- Proactive remediation — generates security group rules, bucket policies, WAF configs in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# Full attack surface map
+/orca-exposure-map
+
+# Filter by account or vector
+/orca-exposure-map account 123456789012
+/orca-exposure-map web services
+
+# Or use natural language
+what's exposed to the internet?
+show me our attack surface
+what can an attacker see?
+```
+
+**Drill-down keywords** (type after map):
+```
+easy wins      # Immediately exploitable — fix first
+web apps       # Exposed web applications
+management     # SSH, RDP, admin panels
+data           # Public data stores
+attack paths   # Outside-in kill chains
+accounts       # Exposure by account
+all assets     # Complete exposed asset list
+full           # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+EXPOSURE MAP — External Attack Surface
+2026-04-17 | All accounts
+═══════════════════════════════════════════════════════════════════
+
+SURFACE: Moderate — 4 immediately exploitable targets
+
+┌─────────────────────────────────────────────────────────────────┐
+│  EXPOSED ASSETS     18 internet-facing                          │
+│  CRITICAL RISK      4 immediately exploitable                   │
+│  HIGH RISK          7 exploitable with effort                   │
+│  PUBLIC STORAGE     2 buckets/blobs publicly accessible         │
+│  EXPOSED MGMT       3 SSH/RDP/admin panels                      │
+│  EXPOSED DATABASES  1 database reachable from internet          │
+│  CROWN JEWELS       2 exposed critical assets                   │
+│  ATTACK PATHS       5 outside-in kill chains                    │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP TARGETS (attacker's priority list):
+  [1] web-bastion-host — Log4j RCE + public SSH (score: 9.0)
+      AwsEc2Instance | 54.210.xx.xx | ports: 22, 443, 8080
+  [2] s3-data-lake-prod — public S3 with PII (score: 7.5)
+      AwsS3Bucket | public-read | contains financial data
+  [3] ci-build-server — exposed admin panel (score: 7.0)
+      AwsEc2Instance | 52.90.xx.xx | ports: 8080, 50000
+
+RECOMMENDED ACTION:
+  Priority #1: Lock down web-bastion-host — patch Log4j and
+  restrict SSH to VPN CIDR. I can generate the fix.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-exposure-map/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-identity-review"></a>orca-identity-review</strong></summary>
+
+**"Is this identity overprivileged, and what's the blast radius?"**
+
+IAM identity analysis: compares effective permissions vs actual CloudTrail usage, identifies overprivileged access, maps lateral movement potential (role assumptions, cross-account reach), and generates least-privilege policy recommendations.
+
+**Features:**
+- Effective permissions analysis — total actions across all services
+- Used vs unused permission comparison from 30-day CloudTrail data
+- Overprivilege classification — severe, high, moderate, or minimal
+- Dangerous permission detection — iam:*, sts:AssumeRole(broad), s3:*, kms:Decrypt, etc.
+- Lateral movement mapping — assumable roles, cross-account reach, service access
+- Attack path analysis — kill chains passing through this identity
+- CDR activity patterns — source IPs, user-agents, time patterns
+- Least-privilege policy recommendation with estimated risk reduction
+- Safe deployment checklist — audit mode, testing, monitoring, rollback
+- Proactive remediation — generates updated IAM policies in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# Review an identity by name or ARN
+/orca-identity-review admin-role
+/orca-identity-review arn:aws:iam::123456789012:role/ec2-bastion-role
+
+# Or use natural language
+is terraform-deploy overprivileged?
+review the permissions on admin-role
+what can this role access?
+```
+
+**Drill-down keywords** (type after review):
+```
+permissions    # Full permission list (used, unused, dangerous)
+usage          # CDR activity details (actions, IPs, agents)
+lateral        # Lateral movement analysis
+attack paths   # Kill chains through this identity
+alerts         # Open alerts on this identity
+activity       # 30-day CDR event summary
+recommend      # Least-privilege policy recommendation
+full           # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+IDENTITY REVIEW — ec2-bastion-role
+AwsIamRole | 123456789012 | arn:aws:iam::123456789012:role/ec2-bastion-role
+═══════════════════════════════════════════════════════════════════
+
+VERDICT: OVERPRIVILEGED
+
+┌─────────────────────────────────────────────────────────────────┐
+│  PERMISSIONS     312 effective actions across 28 services       │
+│  OVERPRIVILEGE   SEVERE — has admin-level access it doesn't use│
+│  USED (30d)      47 actions actually used                       │
+│  UNUSED          265 actions never used — removal candidates    │
+│  DANGEROUS       8 high-risk permissions (iam:*, s3:*, kms:*)  │
+│  BLAST RADIUS    28 services, 150+ resources reachable          │
+│  LATERAL MOVE    5 roles assumable, 2 accounts reachable        │
+│  ATTACK PATHS    3 kill chains through this identity            │
+│  ALERTS          4 open (2 critical, 1 high, 1 medium)         │
+│  CDR ACTIVITY    847 events in 30d, 47 unique actions           │
+│  CROWN JEWEL     NO                                             │
+└─────────────────────────────────────────────────────────────────┘
+
+TOP RISK:
+  This role has 265 unused permissions including iam:*, enabling
+  full privilege escalation if compromised.
+
+RECOMMENDED ACTION:
+  Remove 265 unused permissions to reduce blast radius by 85%.
+  I can generate the updated least-privilege policy.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-identity-review/)
+
+</details>
+
+<details>
+<summary><strong><a id="orca-mfa-enforcement"></a>orca-mfa-enforcement</strong></summary>
+
+**"Who can sign in without MFA, and how do we close that gap without locking anyone out?"**
+
+MFA gap sweep across an account, business unit, or tag in every cloud Orca supports: finds users whose console sign-in is unprotected, ranks them by identity risk score, and drives remediation through guided enrollment or a gated enforcement path. A password-only user is one phish away from being an attacker, and no cloud lets an admin enroll MFA on someone's behalf, so enforcement means a policy that locks the user out until they enroll themselves.
+
+**Features:**
+- Cross-cloud coverage — AWS, Azure (incl. Entra ID), GCP (via Google Workspace), Alibaba Cloud, OCI, Tencent Cloud
+- Per-provider capability matrix — what MFA means on each cloud, and what each one cannot show you
+- Risk-first ranking with privilege, crown-jewel, and open-alert bumps
+- Root accounts handled fail-closed in their own bucket — an unreadable root signal escalates rather than being dismissed
+- Usage-aware remediation — a console password nobody uses is removed rather than enrolled
+- Three gated paths: guide (instructions + owner notifications), enforce (require-MFA policy), remove-access (delete an unused login profile)
+- Evidence-based confirmation — the consequence is restated before consent, and a bulk instruction never implies enforcement
+- Zero-finding runs publish proof of completeness rather than a bare "nothing found"
+- Closed loop — actions are commented and snoozed on the related alerts, with a post-scan recheck
+
+**Usage:**
+```bash
+# Sweep an account, business unit, or tag
+/orca-mfa-enforcement 123456789012
+/orca-mfa-enforcement "Production"
+/orca-mfa-enforcement --tag env=prod
+
+# Or use natural language
+who can log in without MFA?
+does our root account have MFA?
+find console users missing 2FA in the Production BU
+```
+
+**Drill-down keywords** (type after the sweep):
+```
+detail <user>     # Full evidence for one identity
+guide <ids|all>   # Enrollment instructions + owner notifications
+enforce <ids>     # Require-MFA policy (passes the confirmation gate)
+remove-access     # Delete an unused console password (gated)
+recheck           # Post-scan delta: who enrolled, which alerts closed
+cloud <provider>  # Re-scope to one cloud
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+MFA SWEEP — acme-production
+═══════════════════════════════════════════════════════════════════
+
+8 users can sign in without MFA, including the root account.
+2 are privileged. 1 signed in password-only this week.
+
+ #  Identity                                   Provider  Risk      Action
+ 1  arn:aws:iam::123456789012:user/deploy      AWS       Critical  Guide, then enforce
+ 2  arn:aws:iam::123456789012:root             AWS       High      Guide only (root)
+ 3  arn:aws:iam::123456789012:user/analyst     AWS       High      Remove unused password
+
+ROOT ACCOUNT:
+  No API can enroll MFA on root — the account owner must do it signed
+  in as root. Hardware MFA recommended (CIS).
+
+QUICK WINS:
+  6 console passwords were never used. Removing them closes the gap
+  with zero user friction, and access keys are untouched.
+
+MFA ENFORCEMENT SUMMARY
+  Found: 8   Proposed: 8   Guided: 0   Enforced: 0   Skipped: 0
+  Routed: 18 outside Found (14 API-only, 4 dormant — not MFA gaps)
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-mfa-enforcement/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-investigate"></a>orca-investigate</strong></summary>
+
+**"What happened, who did it, and how far did they get?"**
+
+CDR-powered incident investigation: traces actor activity through Orca CDR (CloudTrail/audit logs), builds session timelines, maps actions to MITRE ATT&CK techniques, clusters related sessions, assesses blast radius, and generates a verdict with containment recommendations.
+
+**Features:**
+- Multi-axis investigation — by actor (IAM identity), source IP, target resource, account, or alert
+- Session clustering — groups raw events into coherent sessions by actor, IP, and time gaps
+- MITRE ATT&CK mapping — maps every action to techniques and tactics with confidence levels
+- Kill chain assessment — how many ATT&CK tactics are covered (partial, near-complete, complete)
+- Blast radius classification — contained, moderate, broad, or severe
+- Persistence detection — new users, access keys, role policies created
+- Defense evasion detection — trail deletion, security group changes, logging disabled
+- Cross-account activity flagging
+- IOC extraction — IPs, user-agents, identities, created resources (copy-paste ready for SOC tools)
+- Verdict with confidence — active compromise, probable compromise, suspicious, likely benign, inconclusive
+- Proactive containment — generates revocation scripts, isolation configs, detection rules in Terraform, CloudFormation, Ansible, CLI, Pulumi, or ARM/Bicep
+
+**Usage:**
+```bash
+# Investigate by actor, IP, or resource
+/orca-investigate arn:aws:iam::123456789012:role/ec2-bastion-role
+/orca-investigate 10.0.1.50
+/orca-investigate account 123456789012
+
+# Or use natural language
+investigate what this role did in the last 24 hours
+trace activity from IP 10.0.1.50
+who accessed the prod database?
+```
+
+**Drill-down keywords** (type after investigation):
+```
+timeline       # Chronological event timeline
+sessions       # Clustered sessions with assessment
+mitre          # MITRE ATT&CK technique mapping
+blast radius   # Impact assessment
+actions        # All actions summary
+resources      # Resources touched
+alerts         # Related alerts
+iocs           # Indicators of compromise (copy-paste ready)
+contain        # Containment recommendations
+full           # All sections expanded
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+INVESTIGATION — ec2-bastion-role
+arn:aws:iam::123456789012:role/ec2-bastion-role | Last 24 hours
+═══════════════════════════════════════════════════════════════════
+
+VERDICT: SUSPICIOUS | CONFIDENCE: 72%
+
+┌─────────────────────────────────────────────────────────────────┐
+│  EVENTS          156 total, 23 unique actions                   │
+│  SESSIONS        3 distinct sessions                            │
+│  TIME SPAN       04:12 → 16:47 UTC (12h 35m)                  │
+│  SERVICES        7 AWS services touched                         │
+│  RESOURCES       34 distinct resources accessed                 │
+│  SOURCE IPs      2 unique (1 known VPN, 1 unknown)             │
+│  USER AGENTS     2 unique (boto3, aws-cli)                      │
+│  BLAST RADIUS    MODERATE — multiple services, same account     │
+│  MITRE ATT&CK   5 techniques across 4 tactics                  │
+│  ALERTS          4 related alerts on involved assets            │
+│  ATTACK PATHS    3 kill chains involving this actor             │
+└─────────────────────────────────────────────────────────────────┘
+
+EXECUTIVE SUMMARY:
+  ec2-bastion-role had 3 sessions in the last 24h. Session 2 came
+  from an unknown IP and performed unusual discovery actions across
+  S3 and IAM. No persistence or exfiltration detected yet.
+
+MITRE ATT&CK COVERAGE:
+  ■ Initial Access    □ Execution    □ Persistence    □ Priv Esc
+  □ Defense Evasion   ■ Discovery    □ Lateral Move   ■ Collection
+  □ Exfiltration      □ Impact
+
+RECOMMENDED ACTION:
+  Investigate the unknown source IP in Session 2. I can generate
+  a containment script to restrict this role's permissions.
+
+  What format? terraform | cloudformation | cli | instructions
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-investigate/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-cloud-cost-optimizer"></a>orca-cloud-cost-optimizer</strong></summary>
+
+**"Where are we overspending and what should we fix first?"**
+
+Analyzes all cloud assets via Orca Security MCP data to identify actionable cost reduction opportunities across compute, databases, storage, networking, and serverless resources. Delivers a dual-audience report: an executive summary with total savings range, and a per-asset action plan with Orca platform links, cloud console links, CLI commands, and projected monthly savings per item.
+
+**Features:**
+- 10 optimization patterns: idle resources, rightsizing, generation upgrades, reserved instances, spot migration, database sizing, Multi-AZ in non-prod, EBS gp2→gp3, S3/object tiering, networking cleanup
+- Dual-audience output — executive summary (top and bottom of report) plus engineer-ready implementation steps
+- Every recommendation includes Orca platform deep-links and cloud provider console URLs as evidence
+- Parallel Phase 1 asset discovery across all resource categories (EC2, EBS, S3, RDS, Lambda, NAT Gateways, EIPs, load balancers)
+- Implementation roadmap in 3 phases: zero-downtime quick wins, maintenance-window changes, financial commitments
+- Live pricing lookups (web search) with fallback to training data when unavailable
+
+**Usage:**
+```bash
+# Run a cost optimization report
+/orca-cloud-cost-optimizer
+
+# Or use natural language
+give me a cost optimization report
+where are we wasting money on cloud?
+how do we cut our AWS bill?
+find unused resources
+what can we rightsize?
+```
+
+**Example output:**
+```
+# ☁️ Cloud Cost Optimization Report
+
+Generated: 2026-05-01
+Environment: AWS (us-east-1, us-east-2, eu-central-1) | Azure (eastus)
+Assets analyzed: 450 across 5 AWS accounts
+
+## 📊 Executive Summary
+
+| | |
+|---|---|
+| Total assets analyzed | 450 |
+| Assets with savings opportunities | 150 (33%) |
+| Estimated monthly savings | $2,100 – $3,400/month |
+| Estimated annual savings | $25,200 – $40,800/year |
+| Immediate low-risk savings (this week) | $800/month |
+
+🏆 Top 5 Quick Wins:
+1. EBS gp2→gp3 migration (124 volumes) — $430/month — Very Low Risk
+2. Disable Multi-AZ on staging RDS (analytics-db-staging) — $438/month — Low Risk
+3. m4.2xlarge→m6i.2xlarge generation upgrade (api-staging-01) — $291/month — Low Risk
+4. Release idle Elastic IPs (3 unassociated) — $10/month — Very Low Risk
+5. S3 lifecycle policies (cloudtrail + log buckets) — $120/month — Very Low Risk
+```
+
+[Full Documentation →](skills/orca-cloud-cost-optimizer/)
+
+</details>
+
+<details>
+<summary><strong><a id="orca-custom-framework"></a>orca-custom-framework</strong></summary>
+
+**"How do I create a custom compliance framework tailored to my needs?"**
+
+Creates custom compliance frameworks in Orca Security from existing framework controls, alert lists, or security themes. Gathers relevant controls via MCP read tools, organizes them into logical sections, and pushes the framework to Orca via the REST API. When gaps exist — controls the user wants but Orca doesn't have a built-in rule for — suggests creating custom discovery alerts to fill them.
+
+**Features:**
+- 3 input modes: theme-based ("Supply Chain Security"), from-framework ("from:cis_docker"), or alert-list
+- Pulls controls from multiple existing frameworks and deduplicates rule_ids
+- Organizes into themed sections with priority weights (high/medium/low)
+- Creates frameworks via Orca REST API (`POST /api/compliance/frameworks`)
+- Identifies coverage gaps and suggests custom discovery alerts (`POST /api/sonar/rules`)
+- Post-creation validation with initial compliance score
+
+**Usage:**
+```bash
+/orca-custom-framework Supply Chain Security Controls
+/orca-custom-framework from:cis_docker_v.1.3.1
+/orca-custom-framework alerts:orca-1234,orca-5678
+
+# Or use natural language
+create a custom compliance framework for supply chain security
+build a framework based on CIS Docker + EKS controls
+generate a custom framework from these alerts
+```
+
+**Example output:**
+```
+=====================================================================
+CUSTOM FRAMEWORK CREATED
+=====================================================================
+
+  FRAMEWORK     Supply Chain Security Controls
+  ID            3104
+  CONTROLS      39 total across 6 sections
+  INITIAL SCORE 28%
+  CLOUD         aws, azure, gcp, shiftleft
+
+SECTIONS:
+  1. Container Image & Registry Security       6 controls
+  2. Container Runtime Protection              8 controls
+  3. Kubernetes Admission & Policy Controls    8 controls
+  4. Secrets & Credential Management           7 controls
+  5. Build Pipeline & Artifact Integrity       4 controls
+  6. Audit Logging & Monitoring                6 controls
+
+COVERAGE GAPS (suggest custom discovery alerts):
+  - SBOM generation and validation
+  - Container image signing (SLSA provenance)
+  - Dependency vulnerability scanning in CI/CD
+=====================================================================
+```
+
+[Full Documentation →](skills/orca-custom-framework/)
+
+</details>
+
+<details>
+<summary><strong><a id="orca-k8s-connector-troubleshoot"></a>orca-k8s-connector-troubleshoot</strong></summary>
+
+**"Why isn't my Kubernetes Connector installing or connecting?"**
+
+Self-serve troubleshooting for the Kubernetes Connector (K8s Tunnel Client, Helm chart `orca-tunnel`). Takes raw customer input — an error message, `helm status`, `kubectl describe`, or pod logs — and maps it to a known install-time or runtime failure category, then walks through step-by-step remediation led by a one-line fix before the technical detail. Asks clarifying questions when the input is ambiguous, and produces a clean support handoff for anything it can't resolve, including known platform limitations that aren't fixable from the customer's side.
+
+**Features:**
+- Triages input into install-time (chart never deployed) vs. runtime (deployed, tunnel/scan not working), starting with a sanity check on whether the cluster needs the Connector at all
+- Includes a symptom → category quick-reference table so a pasted error jumps straight to the fix instead of scanning the full list
+- Covers 15 known failure categories: TLS/network connectivity, RBAC, image pulls, bad `--set` parameters, version incompatibility, duplicate cluster entries, resource constraints, custom namespaces, expired service-account tokens (K8s 1.30+), NetworkPolicy blocking API-server egress, tunnel auth drops, proxy misconfiguration (including TLS-inspecting proxies), DNS failures, OpenShift SCC issues, and "connected but no scan data"
+- Recognizes platform limitations the customer can't self-fix (e.g. BYOC accounts don't run Kubernetes scanning, stale tunnel targets, a known AKS tunnel-crash bug) and escalates instead of looping — while pointing to the self-service delete API for duplicate cluster entries instead of escalating that case
+- Produces a structured support handoff summary (cluster type, connector version, category, IDs, logs) when it can't resolve the issue
+
+**Usage:**
+```bash
+/orca-k8s-connector-troubleshoot <paste error, helm status, kubectl describe, or pod logs>
+
+# Or natural language
+the k8s connector pod is stuck in ImagePullBackOff
+tunnel keeps disconnecting, logs show TLS handshake timeout
+cluster shows connected in Orca but no inventory data is showing up
+```
+
+[Full Documentation →](skills/orca-k8s-connector-troubleshoot/)
+
+</details>
+
+<details>
+<summary><strong><a id="security-engineer"></a>security-engineer</strong> — separate plugin</summary>
+
+**"Fix it, and show me the pull request."**
+
+An autonomous remediation agent, shipped as its own plugin because it writes code
+rather than answering questions. For each Orca finding in a repository it cuts an
+isolated git worktree, decides the target version from advisory data where it
+can, invokes a Claude subprocess to apply the change, runs the result through
+five gates, assesses production impact, and opens a pull request carrying that
+assessment. Nothing is merged automatically.
+
+**Requires** Python 3.10+, an authenticated `gh`, and `ORCA_API_TOKEN` in the
+environment — it does not read the MCP server.
+
+**Features:**
+- Covers CVE/SCA, SAST, IaC and secret findings across PyPI, npm, Go, Maven, Cargo, RubyGems and NuGet
+- CVE target versions resolved before the agent runs, from OSV.dev advisory ranges plus the deps.dev published-version list — policy is the lowest release clearing *every* advisory on the installed version
+- Five gates: diff sanity, an LLM verdict, a type-specific verify, the Orca GitHub App check on the opened PR (with its annotations fed back to the agent on retry), and CI
+- Anything a gate could not confirm is labelled `needs-review` rather than passed silently
+- `--dry-run` enforced three independent ways; `--scan` for a read-only risk list
+- Runs as a slash command, as plain English, or as a `security-engineer` binary in any terminal or CI job
+
+**Usage:**
+```bash
+/security-engineer:script high,cve --max 3     # explicit flags, taken as typed
+/security-engineer:script --scan               # list risks, fix nothing
+security-engineer --cve CVE-2020-7471          # same flags, in a shell
+
+# Or use natural language
+remediate all high vulnerabilities, max of 3
+show me what you'd do about the CVEs
+which of our repos still needs the log4shell fix?
+```
+
+**Example output:**
+```markdown
+## Security Engineer — Run Summary
+
+**Repo:** acme/api  |  **Mode:** Live
+
+### Fixed — PRs Opened (2)
+| Alert | Title | Risk | Type | Impact | PR |
+|---|---|---|---|---|---|
+| orca-4060720 | Vulnerable package pillow | high | cve | low | https://github.com/acme/api/pull/218 |
+| orca-4060654 | SQL injection in handler | high | sast | medium 👁 | https://github.com/acme/api/pull/219 |
+
+### Fix Failed (1)
+| Alert | State | Reason |
+|---|---|---|
+| orca-4061002 | FAILED | phase 3: terraform validate exited 1 |
+```
+
+The run exits non-zero if any alert failed, timed out, or landed with red CI —
+so a `&&` chain or a CI wrapper cannot read a broken run as green. `👁` marks a
+gate that passed without being able to confirm; that PR is labelled
+`needs-review`.
+
+[Full Documentation →](plugins/security-engineer/) · [How the harness works →](plugins/security-engineer/HARNESS.md)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-inactive-identities-cleanup"></a>orca-inactive-identities-cleanup</strong></summary>
+
+**"Which of our identities are dead weight, and how do we safely disable or delete them?"**
+
+Sweeps an account or business unit for inactive identities (users, groups, and non-human identities) across every cloud provider Orca supports: AWS, Azure (incl. Entra ID), GCP (incl. Google Workspace), Alibaba Cloud, OCI, and Tencent Cloud. Ranks findings by identity risk score and drives cleanup through a non-destructive path (disable) or a destructive path (delete) that always requires explicit confirmation.
+
+**Features:**
+- Asks for the inactivity time frame if not given (90 days is Orca's built-in convention; 30/60/180 or custom supported)
+- Cross-cloud coverage: users, groups, and NHIs for all six supported providers
+- Anchored on Orca's pre-computed activity verdict (last-active timestamps), with CDR corroboration
+- Risk-first ranking: dormant admins, exposed credentials, and crown-jewel reach float to the top
+- Disable-first flow: reversible deactivation now, delete after a grace period
+- Explicit confirmation gate before any delete, with blast-radius preview (what still references the identity)
+- Automatic exclusions: break-glass accounts, identities too new to judge, possibly-human edge cases
+- Ready-to-run remediation artifacts (CLI/Terraform) with deletion prerequisites ordered correctly
+- Mandatory cleanup summary: found, disabled, deleted, proposed, skipped, and an estimate of alerts that will close
+
+**Usage:**
+```bash
+# Sweep an account or business unit
+/orca-inactive-identities-cleanup 123456789012
+/orca-inactive-identities-cleanup "Production"
+
+# Custom time frame, scope, or action
+/orca-inactive-identities-cleanup 123456789012 --inactive 60d
+/orca-inactive-identities-cleanup 123456789012 --only nhis
+/orca-inactive-identities-cleanup 123456789012 --action disable
+
+# Or use natural language
+clean up inactive identities in acme-production
+which users haven't been active in the last 60 days?
+disable the dormant service accounts in the Production BU
+```
+
+**Drill-down keywords** (type after the sweep):
+```
+detail <identity>   # Full evidence for one identity
+disable <ids|all>   # Generate disable artifacts
+delete <ids>        # Delete flow (explicit confirmation required)
+window <Nd>         # Re-run with a different time frame
+only <bucket>       # users | groups | nhis
+cloud <provider>    # aws | azure | gcp | alicloud | oci | tencent
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+INACTIVE IDENTITY CLEANUP — acme-production
+Window: 60 days | AWS + Azure + GCP
+═══════════════════════════════════════════════════════════════════
+
+62 identities inactive for 60+ days: 41 users, 6 groups, 15 NHIs.
+9 carry high or critical risk.
+
+TOP RISK (highest first):
+  #  Identity              Type      Provider  Last active  Risk      Action
+  1  legacy-admin          IAM user  AWS       142d ago     Critical  Disable now
+  2  svc-deploy-old        SP        Azure     never        High      Disable now
+  3  ci-runner-2019        Role      AWS       201d ago     High      Disable now
+
+QUICK WINS: 12 identities with zero privileges and zero activity.
+
+CLEANUP SUMMARY  (window: 60 days)
+  Found:     62 | Disabled: 0 | Deleted: 0 | Proposed: 55 | Skipped: 7
+  Alerts:    ~24 open alerts on these identities close after the next scan
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-inactive-identities-cleanup/)
+
+</details>
+
+
+<details>
+<summary><strong><a id="orca-overprivileged-identities-rightsizing"></a>orca-overprivileged-identities-rightsizing</strong></summary>
+
+**"Which of our identities hold far more permission than they use, and how do we safely cut them down?"**
+
+Sweeps an account or business unit for over-privileged identities using Orca's pre-computed PoLP (Principle of Least Privilege) recommendations across AWS, Azure, and GCP. Ranks findings by identity risk score and drives right-sizing through a non-destructive path (stage the change as ready-to-run artifacts) or a destructive path (apply) that always requires an evidence-based safety check plus explicit confirmation.
+
+**Features:**
+- Anchored on Orca's recommendation engine: per-identity verdicts computed from ~90 days of observed usage
+- Typed fixes per identity: read-only swap, scope reduction, generated least-privilege policy, or JIT conversion
+- Risk-first ranking with a "how over-privileged" column (services used vs granted)
+- Stage-first flow: artifacts with rollback and verification embedded, nothing auto-applied
+- Evidence-based apply gate: replays the identity's actual recent activity (CDR) against the proposed change and reports exactly what would break
+- Explicit confirmation before any apply, with blast-radius preview for roles
+- Automatic exclusions: provider-managed identities, break-glass accounts, vendor/cross-account roles
+- Clean handoffs: inactive identities route to `orca-inactive-identities-cleanup`, JIT candidates to JIT conversion
+- Mandatory right-sizing summary: found, staged, applied, held, skipped, and the standing permissions the plan removes
+
+**Usage:**
+```bash
+# Sweep an account or business unit
+/orca-overprivileged-identities-rightsizing 123456789012
+/orca-overprivileged-identities-rightsizing "Production"
+
+# Scope, provider, or pre-selected path
+/orca-overprivileged-identities-rightsizing 123456789012 --only nhis
+/orca-overprivileged-identities-rightsizing 123456789012 --cloud aws
+/orca-overprivileged-identities-rightsizing 123456789012 --action stage
+
+# Or use natural language
+right-size the over-privileged identities in acme-production
+which roles have permissions they never use?
+who has admin but only ever reads?
+```
+
+**Drill-down keywords** (type after the sweep):
+```
+detail <identity>   # Full evidence: used vs granted, the recommendation
+stage <ids|all>     # Generate right-sizing artifacts (nothing applied)
+apply <ids>         # Apply flow (safety check + explicit confirmation)
+safecheck <identity># Run the CDR replay on its own
+cloud <provider>    # aws | azure | gcp
+only <bucket>       # users | nhis
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+OVER-PRIVILEGED IDENTITY RIGHT-SIZING — acme-production
+Engine window: ~90 days | AWS + Azure + GCP
+═══════════════════════════════════════════════════════════════════
+
+31 identities hold permissions they haven't used in ~90 days:
+9 users, 22 NHIs. 7 carry high or critical risk; right-sizing
+removes ~840 unused permissions.
+
+TOP RISK (highest first):
+  #  Identity        Type     Provider  Uses            Recommendation    Risk      Change
+  1  deploy-runner   Role     AWS       3 of 41 svcs    Reduce perms      Critical  Apply least-priv policy
+  2  ops-sp-legacy   SP       Azure     read-only use   Read-only swap    High      Swap to Reader
+  3  etl-sa          SA       GCP       narrow scope    Scope reduction   High      Re-scope binding
+
+QUICK WINS: 5 identities only ever read; swap to read-only today.
+
+RIGHT-SIZING SUMMARY  (engine window: ~90 days)
+  Found: 31 | Proposed: 24 | Staged: 0 | Applied: 0 | Held: 0 | Skipped: 3 | JIT: 4
+  Handed off: 12 inactive -> /orca-inactive-identities-cleanup
+  Removes: ~840 unused service grants once the staged plan is applied
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-overprivileged-identities-rightsizing/)
+
+</details>
+
+<details>
+<summary><strong><a id="orca-admin-access-grouping"></a>orca-admin-access-grouping</strong></summary>
+
+**"How few policies do our admins actually need, and who goes in each one?"**
+
+Reads Orca's pre-computed admin clustering (IAM Policy Optimizer) for AWS, Azure, and GCP, which has already sorted the org's admin population into groups by what each admin actually does and generated one least-privilege policy per group. Presents the engine's recommended grouping, shows what each group would get instead of blanket `AdministratorAccess` / `Owner`, and drives the swap through a non-destructive path (stage) or a destructive path (apply) that always requires explicit per-group confirmation.
+
+**Features:**
+- One org-wide MCP call (`get_recommended_admin_policies`) returns every group with every member, with no 50-result ceiling, so enumeration is complete rather than best-effort
+- Defaults to the engine's own recommended plan; other groupings (tighter policies vs fewer policies to maintain) available on request
+- Leads with the inactive bucket: admins Orca found no observed actions for, handed off to `/orca-inactive-identities-cleanup`
+- Surfaces the union trade-off explicitly — a group policy is the union of its members' observed actions, so each member gains whatever their group-mates used
+- Per-provider accuracy: AWS emits an IAM policy (action-scoped, `Resource: "*"`), Azure a custom RBAC role, GCP a custom role — all as drafts needing scope and naming fixes before deployment
+- Honest about population: covers admins that already carry an Orca PoLP recommendation, not every admin in the org
+- Bounded enrichment: risk scores, still-an-admin re-checks, and last activity only when drilling into a group
+- Apply gate: activity replay against the proposed policy, blast-radius check for roles / service principals / managed identities, explicit confirmation naming the group
+- Mandatory grouping summary: in scope, inactive, grouped, proposed, staged, applied, held, skipped
+
+**Usage:**
+```bash
+# Default run — engine-recommended grouping, all providers
+/orca-admin-access-grouping
+
+# Narrow or re-plan
+/orca-admin-access-grouping --cloud aws
+/orca-admin-access-grouping --plan 3
+/orca-admin-access-grouping --group 2
+
+# Or use natural language
+group our admins and show me what each group would get
+how many admin policies do we actually need?
+replace AdministratorAccess with something scoped
+```
+
+**Drill-down keywords** (type after the run):
+```
+group <n>           # Members, risk, still-admin status, and the union delta
+plan <n>            # Re-render against a different number of groups
+stage <group|all>   # Generate artifacts, apply nothing
+apply <group>       # Apply flow (replay + explicit confirmation required)
+safecheck <group>   # Run the activity replay on its own
+cloud <provider>    # aws | azure | gcp
+```
+
+**Example output:**
+```
+═══════════════════════════════════════════════════════════════════
+ADMIN ACCESS GROUPING — acme-corp
+Plan: plan_2 (engine recommendation) | AWS + GCP
+═══════════════════════════════════════════════════════════════════
+
+61 of the 67 AWS admins Orca can act on show no observed activity
+in the last 90 days. The remaining 6 need two policies between them.
+
+GROUPS (biggest standing-risk reduction first):
+  #  Group     Members  Granted  Avg used  Instead of
+  1  policy_1  5        16       3         AdministratorAccess
+  2  policy_2  1        136      136       AdministratorAccess
+
+UNION NOTE: in group 1, three members gain iam:CreateUser and
+iam:DeleteUser from a fourth. Review before applying.
+
+INACTIVE: 61 admins → /orca-inactive-identities-cleanup
+
+ADMIN GROUPING SUMMARY  (window: last 90 days; artifact: daily snapshot)
+  In scope: 67 | Inactive: 61 | Grouped: 6 | Proposed: 2 | Applied: 0
+═══════════════════════════════════════════════════════════════════
+```
+
+[Full Documentation →](skills/orca-admin-access-grouping/)
+
+</details>
+
+## Testing
+
+With Node.js 20+ installed, run the packaging validation and regression tests:
+
+```bash
+npm test
+```
+
+These dependency-free checks validate the Claude, Cursor, and Codex manifests, the marketplace sources, and each root skill's metadata. The packaging workflow runs them on every pull request.
+
+### Codex Smoke Test
+
+With Codex CLI installed, verify the complete local marketplace install:
+
+```bash
+npm run test:codex
+```
+
+The script uses a temporary Codex home, runs outside the repository, installs the root plugin, compares every installed skill and reference file with `skills/`, and verifies that Codex discovers the skills from the installed cache. It removes its temporary files on completion. This tests packaging and discovery without an Orca account or model call; it does not exercise the Orca MCP workflows.
+
+### Claude Smoke Test
+
+After installing the marketplace in Claude Code, run `claude mcp list` to check the Orca MCP connection, then try `/orca-alert-triage` with an alert from your environment.
+
+The separate `security-engineer` tests and development setup are documented in [its README](plugins/security-engineer/README.md#developing).
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Adding a New Skill
+
+1. Open an issue describing the use case first — see [CONTRIBUTING.md](CONTRIBUTING.md#feature-requests)
+2. Create `skills/your-skill/SKILL.md`, following the shape of an existing skill
+3. Update this README — the overview table and a `<details>` block
+4. Submit a pull request
+
+Changes to the `security-engineer` plugin are Python rather than Markdown — see
+[its README](plugins/security-engineer/README.md#developing).
+
+## Support
+
+- **Issues:** https://github.com/orcasecurity/orca-skills/issues
+- **Documentation:** https://docs.orcasecurity.io
+- **MCP Setup:** https://docs.orcasecurity.io/docs/mcp-integration
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## Credits
+
+Built by the Orca Security team and community contributors.

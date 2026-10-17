@@ -1,0 +1,420 @@
+<div align="center">
+
+# 🎙️ Podcast Digester
+
+**把任意播客 / 视频链接，变成 5 分钟内可决策的结构化知识。**
+
+粘贴一个链接 → 自动排队、下载、转录、清洗、分章、摘要、提炼亮点 → 双语字幕点击即跳转播放。
+
+本地单用户工具，为中文 PM、研究员、投资人这类「高密度信息消费者」而生。
+
+![Python](https://img.shields.io/badge/Python-3.11--3.13-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)
+![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)
+![LLM](https://img.shields.io/badge/LLM-多Provider-8A2BE2)
+![CI](https://github.com/Alliskyline2020/podcast-digester/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-个人项目%20·%20活跃迭代-orange)
+
+</div>
+
+🌐 **简体中文** | [English](./README.en.md)
+
+---
+
+## ✨ 它解决什么问题
+
+信息工作者面对一集 2 小时的播客，最大的成本不是「听不懂」，而是**「不知道值不值得听」**。Podcast Digester 把一集音频蒸馏成：
+
+- 一句话 **TL;DR** + **值听裁定**（`Deep Listen` / `Skim` / `Skip` 三档，拿不准默认 `Skim`）
+- **章节大纲**与逐章中文摘要
+- 五类**精华亮点**（见下方图例），每条都带原始字幕引用与时间戳
+- **产品 / 技术 / 市场**三个维度的洞察，以及节目中提到的公司清单
+- 与播放器时间轴**精确对齐的双语字幕**，点击章节或亮点直接 seek
+
+> 决策只要 5 分钟；决定深听时，字幕和亮点帮你跳着听。
+
+### 亮点五类图例
+
+| 标签 | 含义 | 例子 |
+|------|------|------|
+| `fact` 事实 | 可查证的关键数据 / 事实 | 「该公司 2025 年营收增长 40%」 |
+| `insight` 洞见 | 观点性的结论或判断 | 「真正护城河是分发，不是模型」 |
+| `quote` 金句 | 值得引用的原话 | 「我们没有发明轮子，我们铺了路」 |
+| `contrarian` 反共识 | 与主流相反的看法 | 「大家都看多，但供给端已经过剩」 |
+| `story` 故事 | 具体的案例 / 叙事 | 「他们头三个月只服务了 7 个用户……」 |
+
+## 🖼️ 截图
+
+<div align="center">
+<table>
+<tr><td align="center"><b>节目库</b> — 粘贴链接、查看处理状态、来源可跳回原视频</td></tr>
+<tr><td><img src="./docs/images/library.png" alt="节目库 Library"/></td></tr>
+<tr><td align="center"><b>播放器</b> — 双语字幕 / 章节 / 摘要 / 亮点 / 洞察，点击即跳转</td></tr>
+<tr><td><img src="./docs/images/player.png" alt="播放器 Player"/></td></tr>
+</table>
+</div>
+
+**在播放器视图里找这些：**
+- 顶部 **TL;DR 一句话总结** + **值听裁定**徽标（`Deep Listen` / `Skim` / `Skip`）
+- 时间轴上的**章节刻度**，点击章节标题直接跳转
+- 右栏五类**亮点**，每条带原始字幕引用 + 时间戳，点击跳到对应片段
+- 播放区下方**双语字幕**（中 / 英），与时间轴精确对齐
+- **词库面板**：批量纠错、查看已积累的人名 / 术语条目
+
+## 🧠 工作流（Pipeline）
+
+每集内容按下列阶段顺序处理，**可断点续跑**（每阶段产出 JSON checkpoint + SQLite 状态机）：
+
+<div align="center">
+
+![Podcast Digester 处理流程](./docs/images/pipeline.svg)
+
+</div>
+
+中文源会自动跳过 `translate`；已有规范标点的平台字幕会跳过 `polish`，避免无谓的 LLM 开销。
+
+| 阶段 | 产出 |
+|------|------|
+| `download` | 音频文件（`data/media/ep_*/`），同时按标题命名一份副本到音频库 |
+| `transcribe` | 带时间戳的字幕段（`transcript.json`） |
+| `polish` / `translate` | 规范标点 + 双语字段（`text_zh` / `text_en`）；polish 后自动套用全局词库 |
+| `chapterize` | 章节标题与时间区间 |
+| `summarize` | 逐章中文摘要 |
+| `highlight` | TL;DR + 值听裁定 + 五类亮点（含引用 / 时间戳） |
+| `product_insights` | 产品 / 技术 / 市场洞察 + 提到的公司清单 |
+
+## 📬 队列与断点恢复
+
+粘贴多个链接不需要守着——内置**串行 FIFO 队列**，一次只处理一集，其余排队等待：
+
+- **入队**：每粘贴一条链接建一个 `pending` 任务（按提交时间排序，每分钟最多 5 条限流）
+- **串行处理**：单例 Worker（`fcntl` 文件锁保证全局只有一个）每 5 秒轮询，严格按 `created_at` 先进先出，跑完一集再取下一集——不会并发抢资源
+- **断点续跑**：每阶段落 checkpoint，进程重启 / 崩溃后从**失败的那一阶段**精确续跑，不重复已完成的 LLM 调用
+- **崩溃自愈**：Worker 每轮自动扫描卡在 `downloading / asr_running / llm_running` 中间态的孤儿任务，安全重置回队列
+- **智能重试**：临时性错误（CDN 抖动 / 限流，由下载器分类为 `DownloadTemporaryError`）按指数退避自动重试（10s → 20s → 40s，默认 3 次）；永久性错误（链接无效 / 视频已删）直接标记 `failed`，不空转、不堵队列
+
+## 📝 字幕清洗与词库纠错
+
+ASR 转录的口水词、叠词、人名 / 术语错误，分两层治理：
+
+**第一层 · LLM 清洗**（`polish` 阶段）：标点规整、去口水词 / 叠词、口语顺滑，配合实体收割统一全篇人名与术语写法。
+
+**第二层 · 全局词库（glossary）**：你纠正过的每一个人名 / 术语都会沉淀为「正确词 ← 错误变体列表」，**改一次、永久生效**：
+
+- **批量纠错**：播放器词库面板输入「错误词 → 正确词」，先**预览命中数**（字幕 N 段 · 段落 N · 标题 · 章节 N · 摘要 N · 亮点 N · 洞察 N），确认后一键应用到**全部七处**并自动入词库——包括播放器实际显示的段落文本（`paragraph_mappings`，含翻译后的中文译文）和首页卡片标题，不留死角
+- **编辑器自学习**：在字幕编辑器里改一个词（哪怕新旧词等长，如 `杨志玲→杨植麟`），difflib 差异比对 + 中文回溯抓取**完整人名**自动入词库——不会抓成「植麟←志玲」这种会误伤无关文本的碎片
+- **新播客自动套用**：词库是全局共享的，之后每集新播客在 polish 后都会**确定性套用**全部词条（`PODCAST_DIGESTER_AUTO_GLOSSARY`，默认开）——源头上字幕已是干净文本，下游摘要 / 亮点 / 洞察自动继承纠错结果
+- **幂等安全**：字符串替换只命中错误变体，已正确的文本不会被二次修改；词条合并去重，重复应用不会产生重复条目
+
+> 另有一个更激进的 **LLM 字幕纠错**（`PODCAST_DIGESTER_LLM_CORRECT_TRANSCRIPT`，默认关）：在 polish 前用 LLM 按标题 / 简介上下文纠正同音字错误，每集增加约 100s 耗时与费用，按需开启。
+
+## 📤 导出与音频库
+
+- **HTML 导出**：播放器内一键导出整集成果（摘要 / 章节 / 亮点 / 洞察）；勾选「包含完整字幕」可附上 **LLM 清洗后的原文字幕全文**，其中的亮点句子自动**加粗**标注
+- **音频库**：下载完成后自动按**节目标题**命名一份音频副本（中文标题优先）到 `data/audio_library/`，方便在访达 / 文件管理器里直接按名字找音频；原始文件不动，不影响在线播放。目录可用 `PODCAST_DIGESTER_AUDIO_OUTPUT_DIR` 改到任意位置
+- **来源回溯**：节目库每张卡片都带来源链接（`youtube.com ↗` / `xiaoyuzhoufm.com ↗` …），一键跳回原视频
+
+## 🏗️ 架构
+
+<div align="center">
+
+![系统架构](./docs/images/architecture.svg)
+
+</div>
+
+**完全本地优先**：媒体文件与所有蒸馏产物存在本机磁盘；只有 LLM 调用、平台抓取、（无字幕时的）语音识别走网络。
+
+## 🔌 可插拔 LLM（多 Provider）
+
+蒸馏阶段（润色 / 翻译 / 分章 / 摘要 / 亮点 / 洞察）共用**一个统一入口** `app/llm/client.py::complete()`，底层按协议在两种 adapter 间分发：
+
+- `openai_compatible` —— `openai.AsyncOpenAI` 包装，覆盖 DeepSeek / OpenAI / GLM / 通义 / 豆包 / Kimi 等 OpenAI 兼容端点
+- `anthropic_compatible` —— `anthropic.AsyncAnthropic` 包装，覆盖 Claude 系列
+
+### 两种配置方式
+
+**方式 A · 设置页（推荐，零代码）** —— 启动后点右上角齿轮进入「设置」：
+
+- 厂商按 **国内 / 国际** 分组下拉；选中即带出默认端点与模型
+- 填入 API Key（保存后仅以 `****` + 末 4 位回显，永不完整返回）
+- 兼容自定义端点可填 `base_url`，并一键**拉取该端点可用模型**；命名厂商端点已锁定，不可改
+- 「测试连接」用未保存的草稿值发一个极小请求，验证 Key / 端点 / 模型
+- 保存写入 SQLite，**API 与 Worker 即时热加载**，无需重启
+
+**方式 B · 环境变量** —— 见下方切换示例（适合脚本 / 无 UI 部署 / CI）。切换 provider 只改环境变量，**不改一行代码**。
+
+### 支持的 Provider 预设
+
+| `LLM_PROVIDER` | 地区 | 协议 (`provider_type`) | 默认端点 | 默认模型 | 备注 |
+|----------------|:--:|------------------------|----------|----------|------|
+| `deepseek` | 国内 | `openai_compatible` | `api.deepseek.com` | `deepseek-v4-flash` | 推荐，性价比高 |
+| `glm` | 国内 | `openai_compatible` | `open.bigmodel.cn/api/paas/v4` | `glm-4-flash` | 智谱标准端点 |
+| `glm-coding` | 国内 | `openai_compatible` | `open.bigmodel.cn/api/coding/paas/v4` | *（拉取后选）* | 智谱 coding plan 专用端点 |
+| `qwen` | 国内 | `openai_compatible` | `dashscope.aliyuncs.com/compatible-mode/v1` | `qwen-plus` | 通义千问 |
+| `doubao` | 国内 | `openai_compatible` | `ark.cn-beijing.volces.com/api/v3` | *（自填）* | 字节豆包，模型 id 实为 endpoint id |
+| `moonshot` | 国内 | `openai_compatible` | `api.moonshot.cn/v1` | `moonshot-v1-8k` | 月之暗面 Kimi |
+| `openai` | 国际 | `openai_compatible` | SDK 官方默认 | `gpt-4o-mini` | OpenAI 官方 |
+| `anthropic` | 国际 | `anthropic_compatible` | SDK 官方默认 | `claude-3-5-sonnet-latest` | Claude 系列 |
+| `openai-compatible` | — | `openai_compatible` | 自填 | 自填 | 任意 OpenAI 兼容端点 |
+| `anthropic-compatible` | — | `anthropic_compatible` | 自填 | 自填 | 任意 Anthropic 兼容端点 |
+
+> **base_url 锁定**：命名厂商（上表前 8 个）端点固定为预设值、不可改；底部两个「兼容自定义端点」可自由填 `base_url`。不同端点 / coding plan 已拆成独立 provider（如 GLM 标准端点 vs coding plan 端点）。
+>
+> **DeepSeek 模型名**：`deepseek-chat` / `deepseek-reasoner` 旧名已于 2026/07/24 下线，端点将其别名映射到 `deepseek-v4-flash` 的非思考 / 思考模式。请直接使用 `deepseek-v4-flash`（默认，adapter 自动注入 `thinking:disabled` 复现非思考行为）或 `deepseek-v4-pro`。
+
+### 切换示例（`.env`）
+
+```bash
+# —— DeepSeek（默认）——
+LLM_PROVIDER=deepseek
+LLM_API_KEY=sk-xxxxxxxx
+LLM_MODEL=deepseek-v4-flash      # 可选；留空则用预设默认
+
+# —— Anthropic Claude ——
+LLM_PROVIDER=anthropic
+LLM_API_KEY=sk-ant-xxxxxxxx
+LLM_MODEL=claude-3-5-sonnet-latest
+
+# —— 任意自建 / 第三方 OpenAI 兼容端点 ——
+LLM_PROVIDER=openai-compatible
+LLM_PROVIDER_TYPE=openai_compatible   # 通用兜底需显式指定协议
+LLM_BASE_URL=https://your-endpoint.com/v1
+LLM_API_KEY=xxxxxxxx
+LLM_MODEL=your-model
+```
+
+> **配置优先级**：设置页（运行时覆写）> `LLM_*` > `DEEPSEEK_*`（向后兼容别名）> `PROVIDERS[provider]` 预设默认。
+>
+> **安全**：设置页填入的 `base_url` 经 SSRF 守卫（必须 `https://`，禁内网 / 本机 / 云元数据 / CGNAT），且 SDK 关闭重定向跟随以防密钥经跳转泄露；密钥仅从环境变量 / 设置页读取、永不完整回传。`LLM_BASE_URL` 环境变量作为运维逃生舱（企业代理 / 镜像网关，可为内网地址）视为可信、不经守卫。详见 `app/llm/config.py`。
+
+## 📥 多源支持
+
+| 来源 | 说明 |
+|------|------|
+| **YouTube** | 优先用平台字幕（manual / auto CC），无字幕时 fail-fast 探测后回退 ASR |
+| **Bilibili** | 反爬需 cookie：自动用浏览器（Chrome 等）登录态鉴权 |
+| **小宇宙** | 中文播客平台 |
+| **抖音** | 含反爬绕过（curl-cffi / Playwright CDP，可选） |
+| **本地文件** | 直接喂已下载的音视频文件 |
+
+鉴权平台的 cookie 解析与下载路径**统一**复用同一套策略（浏览器优先，`cookies.txt` 兜底），下载与标题抓取都走它，不会再出现「下了音频却抓不到标题」的错位。
+
+### 🔑 Cookie 获取（鉴权平台）
+
+clone 项目后，B 站、部分 YouTube（年龄 / 地区限制）等需要登录态。**浏览器优先、`cookies.txt` 兜底**，任选其一：
+
+**方式 A · 浏览器自动读取（推荐，零配置）**
+
+在本机浏览器里**登录过**该平台即可——程序自动读取 Chrome / Edge / Firefox / Safari 的登录态，**无需导出任何文件**。下载前在该浏览器登录一次就行。
+
+**方式 B · `cookies.txt`（兜底，服务器 / 无 GUI 环境）**
+
+1. 浏览器装扩展 **「Get cookies.txt LOCALLY」**（Chrome / Edge 商店可搜到）
+2. 打开目标平台网页并确认已登录 → 扩展里点导出
+3. 把文件放到下面任一位置（程序按此顺序自动探测）：
+   - 项目根目录 `podcast-digester/cookies.txt`（随项目走，推荐）
+   - `~/.config/yt-dlp/cookies.txt`（全局共享）
+
+> 两种方式都不用改代码或环境变量，`app/utils/cookie_helper.py` 自动按「浏览器 → `cookies.txt`」顺序探测。
+
+## 🚀 快速开始
+
+### 前置条件
+
+- **Python 3.11–3.13**（⚠️ **3.14 暂不兼容**：faster-whisper / pydantic 等依赖缺预编译 wheel，会源码构建失败）、**Node.js 18+**
+- **ffmpeg**（yt-dlp 后处理需要）：macOS `brew install ffmpeg` / Linux `sudo apt install ffmpeg`
+- 任一支持 provider 的 **LLM API Key**（默认 DeepSeek，[在此获取](https://platform.deepseek.com/)）
+- **macOS 13+**（推荐）：全功能；**无字幕源**可用 Apple AFM 3 本地转录（首次需编译桥接工具，`setup.sh` 会自动做）
+- **Linux / WSL**：仅支持**自带平台字幕**的源（YouTube / B 站等有 CC 的内容）；无字幕源需 ASR，而 ASR 走 Apple 平台，Linux 无法回退
+- Windows 未测试
+
+### 1. 克隆
+
+```bash
+git clone https://github.com/Alliskyline2020/podcast-digester.git
+cd podcast-digester
+```
+
+### 2. 安装（一键，推荐）
+
+```bash
+./setup.sh
+```
+
+`setup.sh` 自动完成：Python 版本检查（挑 3.11–3.13）→ 后端 venv + 依赖 → Playwright 浏览器 →（macOS）AFM 3 桥接编译 → 前端依赖 → 从模板创建 `.env`。可重复运行（幂等）。
+
+<details><summary>想分步手动装（或自定义）</summary>
+
+```bash
+# 后端
+cd backend
+python3.12 -m venv venv            # 用 3.11–3.13，不要用 3.14
+source venv/bin/activate
+pip install -r requirements.txt
+python -m playwright install chromium   # pip 只装 Python 绑定，浏览器要单独装
+# macOS 还需编译 ASR 桥接：
+cd tools && ./build_apple_asr.sh && cd ..
+
+# 前端
+cd ../frontend && npm install
+```
+
+</details>
+
+### 3. 配置 LLM
+
+两种方式（任选其一）：
+
+- **设置页（推荐）**：启动后点右上角齿轮，在「设置」页选厂商（国内 / 国际分组）、填 API Key、按需**拉取模型 / 测试连接**后保存，**不用碰 `.env`**。
+- **环境变量**：编辑 `backend/.env`，至少填入密钥（默认 `provider=deepseek`），想换厂商见上方「可插拔 LLM」。
+
+```bash
+LLM_API_KEY=sk-xxxxxxxx        # 走环境变量方式时填；你的 DeepSeek / OpenAI / Claude / GLM … 密钥
+# 想换 provider 见上方「可插拔 LLM」的切换示例
+```
+
+### 4. 运行（一条命令全起）
+
+```bash
+./start.sh        # 启动 API + 前端 + Worker（全部后台运行，日志落盘 logs/）
+```
+
+打开 **http://localhost:5173/** ，粘贴一个播客 / 视频链接即可。想连续处理就多粘几条——队列会按顺序一个个跑完。
+
+> `./start.sh --no-worker` 可只起 API + 前端（Worker 想单独手动控制时用）；`./stop.sh` 一键停全部。
+
+**验证部署**：粘贴任意一条 YouTube 链接（多数带自动字幕，最省事），1–2 分钟内出现「摘要 + 亮点」即说明部署成功。
+
+### 常见问题
+
+- **粘贴链接后一直不动** → 看 `logs/worker.log` 确认 Worker 起了（`./start.sh` 默认会起）；若用了 `--no-worker`，需另开终端 `cd backend && source venv/bin/activate && python worker.py`。
+- **`pip install` 报 `Failed building wheel for av` / `pydantic-core`** → 多半是 **Python 3.14**（缺预编译 wheel）。改用 3.11–3.13：`brew install python@3.12` 后重跑 `./setup.sh`。
+- **`npm install` 后 `vite: command not found`** → 机器全局设了 `NODE_ENV=production`，npm 跳过了 devDependencies。用 `npm install --include=dev`，或 `unset NODE_ENV` 后重装（`setup.sh` 已自带该兜底）。
+- **Worker 报 `Another Worker is already running`** → 有 Worker 在跑，或上次崩溃留了锁。删锁再起：`rm .worker_pid`（项目根目录）。
+- **YouTube 抓取失败 / 超时** → 多为网络，需配代理 `HTTPS_PROXY=http://127.0.0.1:7897`（按你的代理改）。
+- **B 站下载失败** → 反爬，需用浏览器登录态（cookie），见上方「🔑 Cookie 获取」。
+- **无字幕源卡在 transcribe（macOS）** → AFM 3 桥接没编译，重跑 `cd backend/tools && ./build_apple_asr.sh`（或 `./setup.sh`）。
+
+> macOS 下推荐用 launchd 常驻托管 API 与 Worker（参考根目录 `start.sh` / `stop.sh`，或自行编写 `~/Library/LaunchAgents/*.plist`），终端关闭也不会中断长任务。
+
+## ⚙️ 配置
+
+核心配置走环境变量（见 `backend/.env.example`）：
+
+| 变量 | 必填 | 默认 | 说明 |
+|------|:---:|------|------|
+| `LLM_PROVIDER` | | `deepseek` | provider 预设名（见上方预设表） |
+| `LLM_API_KEY` | ✅ | — | LLM 密钥（旧名 `DEEPSEEK_API_KEY` 等价） |
+| `LLM_MODEL` | | 按预设 | 模型名（旧名 `DEEPSEEK_MODEL`） |
+| `LLM_PROVIDER_TYPE` | | 按 provider 推断 | 显式指定协议：`openai_compatible` / `anthropic_compatible` |
+| `LLM_BASE_URL` | | 按预设 | 端点；留空用 SDK 官方默认（旧名 `DEEPSEEK_BASE_URL`） |
+| `LLM_TEMPERATURE` | | `0.3` | 采样温度 |
+| `LLM_MAX_TOKENS` | | 空 | 单次生成上限；留空用 provider 默认 |
+| `LLM_TIMEOUT` | | `60` | 单次请求超时（秒） |
+| `PODCAST_DIGESTER_HOST` / `_PORT` | | `127.0.0.1` / `8000` | 绑定地址 / 端口 |
+| `PODCAST_DIGESTER_ADMIN_TOKEN` | | 空 | 管理接口鉴权（本地单用户可留空） |
+| `PODCAST_DIGESTER_MAX_LLM_COST` | | `5.0` | 单集 LLM 花费上限（美元），超过则中止 |
+| `PODCAST_DIGESTER_MAX_EPISODE_HOURS` | | `5.0` | 单集时长上限（小时） |
+| `PODCAST_DIGESTER_AUTO_GLOSSARY` | | `true` | 新播客 polish 后自动套用全局词库 |
+| `PODCAST_DIGESTER_LLM_CORRECT_TRANSCRIPT` | | `false` | polish 前用 LLM 纠正 ASR 同音字（每集 +~100s 开销） |
+| `PODCAST_DIGESTER_AUDIO_OUTPUT_DIR` | | `data/audio_library` | 音频库目录（按标题命名的音频副本） |
+| `PODCAST_DIGESTER_WORKER_MAX_DOWNLOAD_RETRIES` | | `3` | 临时性下载错误的最大重试次数 |
+| `PODCAST_DIGESTER_WORKER_RETRY_BACKOFF` | | `10` | 重试退避基数（秒），按 2^n 指数增长 |
+| `HTTPS_PROXY` / `HTTP_PROXY` | | 空 | 访问 YouTube 等需要的代理 |
+
+字幕质量、分章窗口、亮点条数、ASR 轮询等都有细粒度可调参数，详见 `backend/app/config.py`。
+
+## 📁 项目结构
+
+```
+podcast-digester/
+├── backend/
+│   ├── app/
+│   │   ├── main.py              # FastAPI 入口 + 路由聚合 + 前端静态托管
+│   │   ├── config.py            # 环境变量驱动的配置
+│   │   ├── pipeline.py          # 多阶段 Pipeline 编排（可断点续跑）
+│   │   ├── database.py          # SQLite 异步仓储 + 状态机 + 迁移 runner
+│   │   ├── asr_afm3.py          # Apple AFM 3 语音识别封装
+│   │   ├── routers/             # FastAPI 路由层（episodes / export / glossary / subtitles / llm_config …）
+│   │   ├── llm/                 # 多 Provider 适配层（complete() 统一入口）
+│   │   │   ├── client.py        #   统一分发：按 provider_type 选 adapter
+│   │   │   ├── protocols.py     #   OpenAI / Anthropic adapter
+│   │   │   ├── config.py        #   PROVIDERS 预设 + get_config + SSRF 守卫（按来源分流信任）
+│   │   │   └── cost.py          #   按 provider/模型 的价格表（成本估算）
+│   │   ├── sources/             # 各平台解析器（youtube/bilibili/douyin/xiaoyuzhou/local）
+│   │   ├── services/            # 字幕对齐 / 润色 / 词库纠错 / 段落映射等业务
+│   │   ├── llm_pipeline/        # LLM 蒸馏任务：分章 / 摘要 / 翻译 / 亮点 / 洞察
+│   │   └── utils/               # cookie / 视频标题 / 音频库 / 校验等工具
+│   ├── worker.py                # 队列 Worker（单例锁 · FIFO · 孤儿恢复 · 退避重试）
+│   ├── tests/                   # pytest（单元 + 集成 + 冒烟，650+ 用例）
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── views/               # LibraryView（节目库）/ PlayerView（播放器）/ SettingsView（设置）
+│   │   ├── components/          # ExportModal / TranscriptEditor / OutlinePane / HighlightCard …
+│   │   └── utils/               # 阶段进度 / 格式化等
+│   └── tests/                   # Vitest（120+ 用例）
+├── data/                        # SQLite + media/ep_* + audio_library（gitignore，不入库）
+├── docs/                        # 截图 / 架构图 / 字幕校正指南
+└── start.sh / stop.sh / setup.sh  # 一键安装与启停
+```
+
+## 🧪 测试
+
+CI（GitHub Actions）会在每次推送时跑后端 pytest + 前端 vitest + 前端构建冒烟。
+
+```bash
+# 后端（650+ 用例，含 unit / integration / api / database / llm 标记）
+cd backend && source venv/bin/activate && pytest tests
+
+# 只跑单元测试（快、无网络）
+pytest tests -m unit
+
+# 覆盖率（CI 闸门 fail-under=45）
+pytest --cov=app --cov-report=term-missing
+
+# 前端（120+ 用例）
+cd frontend && npm test
+```
+
+## 🔒 隐私与成本
+
+- **本地优先**：音频与所有蒸馏产物都落在本机磁盘；只有 LLM 调用、平台抓取、（无字幕时的）语音识别走网络。
+- **成本可控**：单集 LLM 花费超过 `PODCAST_DIGESTER_MAX_LLM_COST`（默认 $5）自动中止；`app/llm/cost.py` 按 provider / 模型估算每次调用成本。
+- **密钥安全**：LLM 密钥从环境变量或设置页读取、永不完整回传（仅 `****` + 末 4 位）；设置页填入的 `base_url` 经 SSRF 守卫（禁 http / 内网 / 本机 / 云元数据），SDK 关闭重定向跟随防泄露。
+
+## 🛣️ 路线图
+
+- [x] 多源支持（YouTube / Bilibili / 抖音 / 小宇宙 / 本地）
+- [x] 串行队列 + 断点续跑 + 崩溃自愈 + 下载退避重试
+- [x] 双语字幕（`text_zh` / `text_en`）与点击跳转
+- [x] 反爬鉴权（B 站 cookie、无字幕 fail-fast）
+- [x] 可插拔多 Provider LLM（DeepSeek / OpenAI / Claude / GLM / 通义 / 豆包 / Kimi）
+- [x] 设置页图形化配置 LLM（国内/国际分组 · base_url 锁定 · 模型自动拉取 · 测试连接）
+- [x] 全局词库纠错（批量纠错 · 编辑器自学习 · 新播客自动套用）
+- [x] HTML 导出（含完整清洗字幕 + 亮点加粗）与按标题命名的音频库
+- [ ] 更多平台（Twitter/X、TikTok）
+- [ ] 拼音模糊变体发现（词库纠错的自动推荐）
+- [ ] 全文检索 / 跨集知识图谱
+- [ ] 移动端适配
+
+## 📚 文档
+
+- [`docs/transcript-correction-guide.md`](./docs/transcript-correction-guide.md) — 字幕校正指南
+- [`CHANGELOG.md`](./CHANGELOG.md) — 更新日志
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — 贡献指南
+
+## 🙏 致谢
+
+- [**yt-dlp**](https://github.com/yt-dlp/yt-dlp) — 多平台媒体下载
+- [**DeepSeek**](https://www.deepseek.com/) / [**OpenAI**](https://openai.com/) / [**Anthropic**](https://www.anthropic.com/) — 推理 / 摘要 / 亮点 LLM（任选其一）
+- **Apple AFM 3** — 无字幕时的语音识别
+- [**feiskyer/video-skills**](https://github.com/feiskyer/video-skills) — 多平台下载与转录工作流的参考
+- [**FastAPI**](https://fastapi.tiangolo.com/) · [**Vue.js**](https://vuejs.org/) · [**Vite**](https://vitejs.dev/)
+
+## 📄 许可证
+
+[MIT License](./LICENSE) © 2026 Al Li
+
+本项目仅供个人学习与研究使用。请遵守各内容平台的使用条款与当地版权法，下载 / 转录的内容版权归原作者所有。

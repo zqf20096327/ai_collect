@@ -1,0 +1,720 @@
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-green.svg)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/graphs/commit-activity)
+![PR Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+![ ](https://img.shields.io/github/last-commit/MinghuiChen43/awesome-trustworthy-deep-learning)
+[![GitHub stars](https://img.shields.io/github/stars/MinghuiChen43/awesome-trustworthy-deep-learning?color=blue&style=plastic)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/MinghuiChen43/awesome-trustworthy-deep-learning?color=yellow&style=plastic)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning)
+[![GitHub forks](https://img.shields.io/github/forks/MinghuiChen43/awesome-trustworthy-deep-learning?color=red&style=plastic)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/watchers)
+[![GitHub Contributors](https://img.shields.io/github/contributors/MinghuiChen43/awesome-trustworthy-deep-learning?color=green&style=plastic)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/network/members)
+
+# Awesome Trustworthy Deep Learning [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning) 
+<!-- ![if Useful](https://camo.githubusercontent.com/1ef04f27611ff643eb57eb87cc0f1204d7a6a14d/68747470733a2f2f696d672e736869656c64732e696f2f7374617469632f76313f6c6162656c3d254630253946253843253946266d6573736167653d496625323055736566756c267374796c653d7374796c653d666c617426636f6c6f723d424334453939) -->
+
+The deployment of deep learning in real-world systems calls for a set of complementary technologies that will ensure that deep learning is trustworthy [(Nicolas Papernot)](https://www.papernot.fr/teaching/f19-trustworthy-ml). The list covers different topics in emerging research areas including but not limited to out-of-distribution generalization, adversarial examples, backdoor attack, model inversion attack, machine unlearning, etc.
+
+Daily updating from ArXiv. The preview README only includes papers submitted to ArXiv within the **last one year**.  More paper can be found here <a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/tree/master/FULL_LIST.md">:open_file_folder: [<b><i>Full List</i></b>]</a>.
+
+![avatar](img/DALL·E%202024-01-15%2015.52.09%20-%20An%20artistic%20representation%20of%20a%20secure%20network,%20symbolizing%20trust%20in%20deep%20learning,%20with%20padlocks%20and%20firewalls%20integrated%20into%20neural%20pathways.%20Set%20i.png "Created by DALLE")
+
+
+# Table of Contents
+
+- [Awesome Trustworthy Deep Learning Paper List :page_with_curl:](#awesome-trustworthy--deep-learning)
+  - [Survey](#survey)
+  - [Out-of-Distribution Generalization](#out-of-distribution-generalization)
+  - [Evasion Attacks and Defenses](#evasion-attacks-and-defenses)
+  - [Poisoning Attacks and Defenses](#poisoning-attacks-and-defenses)
+  - [Privacy](#privacy)
+  - [Fairness](#fairness)
+  - [Interpretability](#interpretability)
+  - [Alignment](#alignment)
+  - [Others](#others)
+- [Related Awesome Lists :astonished:](#related-awesome-lists)
+- [Toolboxes :toolbox:](#toolboxes)
+- [Seminar :alarm_clock:](#seminar) 
+- [Workshops :fire:](#workshops)
+- [Tutorials :woman_teacher:](#tutorials)
+- [Talks :microphone:](#talks)
+- [Blogs :writing_hand:](#blogs)
+- [Other Resources :sparkles:](#other-resources)
+- [Contributing :wink:](#contributing)
+
+# Paper List
+
+## Survey
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#survey">:open_file_folder: [<b><i>Full List of Survey</i></b>]</a>.
+
+
+
+## Out-of-Distribution Generalization
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#out-of-distribution-generalization">:open_file_folder: [<b><i>Full List of Out-of-Distribution Generalization</i></b>]</a>.
+
+- Does Your Neural Network Extrapolate? Feature Engineering as Identifiability Bias for OOD Generalization. [[paper]](https://arxiv.org/abs/2605.07483)
+  - Leonel Aguilar, Jan Nagler, Christoph Hoelscher, Nino Antulov-Fantulin.
+  - Key Word: Out-of-Distribution Generalization; Feature Engineering; Identifiability Bias; Extrapolation; Representation Learning.
+  - <details><summary>Digest</summary> This paper studies when neural networks fail to learn representations that extrapolate beyond an in-distribution training window. It argues that OOD extrapolation is non-identifiable from in-distribution evidence alone, so structural commitments such as feature maps, label maps, architectures, pretraining, augmentation, or domain knowledge determine which data-generating process the model effectively assumes. Experiments show that changing only the representation can leave in-distribution loss unchanged while causing large differences in OOD performance, and that correct features must still be paired with an expressive model class and sufficient coverage in representation space.</details>
+
+- Multimodal Out-of-Distribution Individual Uncertainty Quantification Enhances Binding Affinity Prediction for Polypharmacology. [[paper]](https://www.nature.com/articles/s42256-025-01151-2) [[code]](https://github.com/XieResearchGroup/eMOSAIC)
+  - Amitesh Badkul, Li Xie, Shuo Zhang, Lei Xie.
+  - Key Word: Out-of-Distribution Generalization; Uncertainty Quantification; Multimodal Learning; Anomaly Detection.
+  - <details><summary>Digest</summary> This work proposes eMOSAIC, a model-agnostic anomaly detection-based framework for individual uncertainty quantification in multimodal binding affinity prediction. By leveraging Mahalanobis outlier scoring and clustering-based anomaly identification, the method improves prediction reliability for structurally out-of-distribution compounds and enables scalable polypharmacology prediction.
+
+- Steering Out-of-Distribution Generalization with Concept Ablation Fine-Tuning. [[paper]](https://arxiv.org/abs/2507.16795)
+  - Helena Casademunt, Caden Juang, Adam Karvonen, Samuel Marks, Senthooran Rajamanoharan, Neel Nanda.
+  - Key Word: Out-of-Distribution Generalization; Interpreting Latent Space Directions.
+  - <details><summary>Digest</summary> The paper proposes Concept Ablation Fine-Tuning (CAFT), a method that uses interpretability tools to steer LLM generalization during fine-tuning without altering training data. By ablating latent directions linked to undesired concepts, CAFT mitigates unintended behaviors—such as emergent misalignment—and achieves a 10x reduction in misaligned outputs while preserving task performance.
+
+- Intermediate Layer Classifiers for OOD generalization. [[paper]](https://arxiv.org/abs/2504.05461)
+  - Arnas Uselis, Seong Joon Oh.
+  - Key Word: Out-of-Distribution Generalization.
+  - <details><summary>Digest</summary> This paper challenges the common practice of using penultimate layer features for out-of-distribution (OOD) generalization. The authors introduce Intermediate Layer Classifiers (ILCs) and find that earlier-layer representations often generalize better under distribution shifts. In some cases, zero-shot performance from intermediate layers rivals few-shot performance from the last layer. Their results across datasets and models suggest intermediate layers are more robust to shifts, underscoring the need to rethink layer selection for OOD tasks.
+
+
+## Evasion Attacks and Defenses
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#evasion-attacks-and-defenses">:open_file_folder: [<b><i>Full List of Evasion Attacks and Defenses</i></b>]</a>.
+
+- Internal Safety Collapse in Frontier Large Language Models. [[paper]](https://arxiv.org/abs/2603.23509) [[code]](https://github.com/wuyoscar/ISC-Bench)
+  - Yutao Wu, Jie Zhang, Tianwei Zhang, Xingjun Ma.
+  - Key Word: Jailbreak; Safety Failure Mode; Black-box Attack; Cross-domain.
+  - <details><summary>Digest</summary> A novel safety failure mode where models produce harmful content as a side effect of completing normal professional tasks — no adversarial prompting needed. Jailbreaks any frontier LLM in pass@3 including Claude Opus 4.6 and GPT-5.4. Black-box, cross-domain (8+ disciplines), with single-turn, ICL, and agentic attack modes.
+
+- In-Context Representation Hijacking. [[paper]](https://arxiv.org/abs/2512.03771)
+  - Itay Yona, Amir Sarid, Michael Karasik, Yossi Gandelsman.
+  - Key Word: In-Context Learning; Jailbreak.
+  - <details><summary>Digest</summary> The paper introduces Doublespeak, an optimization-free attack that bypasses LLM safety guardrails by using in-context examples to redefine harmful keywords (e.g., "bomb") as benign tokens (e.g., "carrot"). This technique causes the model to internally shift the representation of the innocent word toward the harmful meaning, allowing malicious instructions to pass as harmless queries (e.g., "How to build a carrot?"). The attack is highly effective, achieving a 74% success rate on Llama-3.3, and demonstrates that current alignment strategies fail because they do not account for semantic shifts in the model's latent space.
+
+- REINFORCE Adversarial Attacks on Large Language Models: An Adaptive, Distributional, and Semantic Objective. [[paper]](https://arxiv.org/abs/2502.17254)
+  - Simon Geisler, Tom Wollschläger, M. H. I. Abdalla, Vincent Cohen-Addad, Johannes Gasteiger, Stephan Günnemann.
+  - Key Word: Adversarial Attacks; Large Language Models; Reinforcement Learning.
+  - <details><summary>Digest</summary> This paper critiques existing adversarial attacks on LLMs that maximize the likelihood of an affirmative response, arguing that such methods overestimate model robustness. To improve attack efficacy, the authors propose an adaptive, semantic optimization approach using a REINFORCE-based objective. Applied to Greedy Coordinate Gradient (GCG) and Projected Gradient Descent (PGD) jailbreak attacks, their method significantly enhances attack success rates, doubling ASR on Llama3 and increasing ASR from 2% to 50% against circuit breaker defenses.
+
+- Constitutional Classifiers: Defending against Universal Jailbreaks across Thousands of Hours of Red Teaming. [[paper]](https://arxiv.org/abs/2501.18837)
+  - Mrinank Sharma, Meg Tong, Jesse Mu, Jerry Wei, Jorrit Kruthoff, Scott Goodfriend, Euan Ong, Alwin Peng, Raj Agarwal, Cem Anil, Amanda Askell, Nathan Bailey, Joe Benton, Emma Bluemke, Samuel R. Bowman, Eric Christiansen, Hoagy Cunningham, Andy Dau, Anjali Gopal, Rob Gilson, Logan Graham, Logan Howard, Nimit Kalra, Taesung Lee, Kevin Lin, Peter Lofgren, Francesco Mosconi, Clare O'Hara, Catherine Olsson, Linda Petrini, Samir Rajani, Nikhil Saxena, Alex Silverstein, Tanya Singh, Theodore Sumers, Leonard Tang, Kevin K. Troy, Constantin Weisser, Ruiqi Zhong, Giulio Zhou, Jan Leike, Jared Kaplan, Ethan Perez.
+  - Key Word: Red Teaming; Jailbreak.
+  - <details><summary>Digest</summary> This paper introduces Constitutional Classifiers, a defense against universal jailbreaks in LLMs. These classifiers are trained on synthetic data generated using natural language rules to enforce content restrictions. Extensive red teaming and automated evaluations show that the approach effectively blocks jailbreaks while maintaining practical deployment viability, with minimal refusal rate increase (0.38%) and a 23.7% inference overhead. The findings demonstrate that robust jailbreak defenses can be achieved without significantly compromising usability.
+
+- Jailbreaking LLMs' Safeguard with Universal Magic Words for Text Embedding Models. [[paper]](https://arxiv.org/abs/2501.18280)
+  - Haoyu Liang, Youran Sun, Yunfeng Cai, Jun Zhu, Bo Zhang.
+  - Key Word: Embedding Attack; Jailbreak; Text Embedding Models.
+  - <details><summary>Digest</summary> Text embedding models concentrate their outputs in a narrow band on a hypersphere, a severe distributional skew. The authors exploit this bias to find universal "magic word" suffixes that control cosine similarity between arbitrary text pairs, defeating embedding-based safety guardrails. Three attack methods (brute-force search, black-box, and white-box gradient) jailbreak ChatGPT, DeepSeek, Qwen, and Spark on JailbreakBench; the suffixes transfer across texts, models, and languages. The paper also presents a training-free debiasing defense.
+
+
+## Poisoning Attacks and Defenses
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#poisoning-attacks-and-defenses">:open_file_folder: [<b><i>Full List of Poisoning Attacks and Defenses</i></b>]</a>.
+
+
+## Privacy
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#privacy">:open_file_folder: [<b><i>Full List of Privacy</i></b>]</a>.
+
+- Privacy Collapse: Benign Fine-Tuning Can Break Contextual Privacy in Language Models. [[paper]](https://arxiv.org/abs/2601.15220) [[code]](https://github.com/parameterlab/privacy-collapse)
+  - Anmol Goel, Cornelius Emde, Seong Joon Oh, Sangdoo Yun, Martin Gubri.
+  - Key Word: Contextual Privacy; Fine-Tuning; Large Language Models.
+  - <details><summary>Digest</summary> This paper identifies privacy collapse, a silent failure mode where benign fine-tuning degrades a model's ability to respect contextual privacy norms. Training data patterns such as helpfulness optimisation, exposure to user information, emotional dialogue, and debugging code can all trigger it. Fine-tuned models inappropriately share information with tools and violate memory boundaries across contexts. The failure is silent because models retain high performance on standard safety benchmarks. The authors demonstrate privacy collapse across six models, five fine-tuning datasets, and two task categories, and show that privacy representations are uniquely fragile to fine-tuning.</details>
+
+- Leaky Thoughts: Large Reasoning Models Are Not Private Thinkers. [[paper]](https://aclanthology.org/2025.emnlp-main.1347/) [[code]](https://github.com/parameterlab/leaky_thoughts)
+  - Tommaso Green, Martin Gubri, Haritz Puerto, Sangdoo Yun, Seong Joon Oh.
+  - Key Word: Privacy; Large Reasoning Models; Reasoning Traces.
+  - <details><summary>Digest</summary> This paper studies privacy leakage in the reasoning traces of large reasoning models used as personal agents. Reasoning traces are often assumed internal and safe, but they frequently contain sensitive user data that can be extracted via prompt injection or accidentally leak into outputs. More reasoning steps amplify leakage. Models become more cautious in their final answers, but their thinking grows more verbose and leaky. The authors argue that safety efforts must extend to internal reasoning, not just model outputs.</details>
+
+- ProPILE: Probing Privacy Leakage in Large Language Models. [[paper]](https://proceedings.neurips.cc/paper_files/paper/2023/hash/420678bb4c8251ab30e765bc27c3b047-Abstract-Conference.html)
+  - Siwon Kim, Sangdoo Yun, Hwaran Lee, Martin Gubri, Sungroh Yoon, Seong Joon Oh.
+  - Key Word: Privacy; PII Leakage; Large Language Models.
+  - <details><summary>Digest</summary> ProPILE is a probing tool that lets data subjects evaluate potential PII leakage in LLM-based services. Users formulate prompts based on their own PII to assess privacy intrusion. The authors apply it to OPT-1.3B trained on the Pile dataset and show how individuals can gauge the likelihood of their PII being revealed. LLM service providers can also use it to evaluate their own leakage levels. Accepted as a spotlight at NeurIPS 2023.</details>
+
+- Unlearning Comparator: A Visual Analytics System for Comparative Evaluation of Machine Unlearning Methods. [[paper]](https://arxiv.org/abs/2508.12730) [[code]](https://github.com/gnueaj/Machine-Unlearning-Comparator)
+  - Jaeung Lee, Suhyeon Yu, Yurim Jang, Simon S. Woo, Jaemin Jo.
+  - Key Word: Machine Unlearning; Visual Analytics; Evaluation.
+  - <details><summary>Digest</summary> This paper introduces Unlearning Comparator, a visual analytics system for systematic evaluation of machine unlearning methods. The system supports model comparison at class-, instance-, and layer-levels to understand changes after unlearning, and simulates membership inference attacks to evaluate privacy. The workflow is structured into four stages: Build → Screen → Contrast → Attack.
+
+- Clients Collaborate: Flexible Differentially Private Federated Learning with Guaranteed Improvement of Utility-Privacy Trade-off. [[paper]](https://arxiv.org/abs/2402.07002) [[code](https://github.com/6lyc/FedCEO_Collaborate-with-Each-Other)]  
+  - Yuecheng Li, Lele Fu, Tong Wang, Jian Lou, Bin Chen, Lei Yang, Jian Shen, Zibin Zheng, Chuan Chen.  
+  - Key Word: Federated Learning; Differential Privacy; Tensor Low-Rank Optimization; Utility-Privacy Trade-off.  
+  - <details><summary>Digest</summary> This paper introduces FedCEO, a novel federated learning framework that enhances the utility-privacy trade-off by leveraging tensor low-rank optimization to mitigate the impact of differential privacy noise. The proposed method exploits semantic complementarity among clients through truncated tensor singular value decomposition (T-tSVD), achieving smoother global semantic spaces. Theoretical analysis demonstrates an improved utility-privacy bound of O(\sqrt{d}), outperforming prior state-of-the-art results. Experiments on real-world datasets validate the framework's effectiveness in balancing model accuracy and privacy protection under varying noise levels.</details>  
+  
+- - Model Collapse Is Not a Bug but a Feature in Machine Unlearning for LLMs. [[paper]](https://arxiv.org/abs/2507.04219)
+  - Yan Scholten, Sophie Xhonneux, Stephan Günnemann, Leo Schwinn.
+  - Key Word: Machine Unlearning; Large Language Model.
+  - <details><summary>Digest</summary> The paper proposes Partial Model Collapse (PMC), a novel LLM unlearning method that avoids directly optimizing on sensitive data, addressing privacy concerns of existing approaches. Inspired by distribution collapse in self-trained generative models, PMC selectively triggers collapse on private data to remove it. The method is theoretically grounded and empirically shown to outperform prior unlearning techniques in removing sensitive information.
+
+- Certified Unlearning for Neural Networks. [[paper]](https://arxiv.org/abs/2506.06985)
+  - Anastasia Koloskova, Youssef Allouah, Animesh Jha, Rachid Guerraoui, Sanmi Koyejo.
+  - Key Word: Certified Unlearning.
+  - <details><summary>Digest</summary> The paper proposes a certified machine unlearning method that removes the influence of specific training data using noisy fine-tuning on retained data, without relying on restrictive assumptions. It ensures formal unlearning guarantees through a connection to privacy amplification, works across diverse settings, and outperforms existing methods both theoretically and empirically.
+
+- Existing Large Language Model Unlearning Evaluations Are Inconclusive. [[paper]](https://arxiv.org/abs/2506.00688)
+  - Zhili Feng, Yixuan Even Xu, Alexander Robey, Robert Kirk, Xander Davies, Yarin Gal, Avi Schwarzschild, J. Zico Kolter.
+  - Key Word: Machine Unlearning; Large Language Model.
+  - <details><summary>Digest</summary> This paper critiques current evaluation methods in machine unlearning for language models, revealing that they often misrepresent unlearning success due to three flaws: (1) evaluations may reintroduce knowledge during testing, (2) results vary widely across tasks, and (3) reliance on spurious correlations undermines trust. To improve reliability, the authors propose two guiding principles—minimal information injection and downstream task awareness—and validate them through experiments showing how current practices can lead to misleading conclusions.
+
+- Extracting memorized pieces of (copyrighted) books from open-weight language models. [[paper]](https://arxiv.org/abs/2505.12546)
+  - A. Feder Cooper, Aaron Gokaslan, Amy B. Cyphert, Christopher De Sa, Mark A. Lemley, Daniel E. Ho, Percy Liang.
+  - Key Word: Extraction Attack.
+  - <details><summary>Digest</summary> This paper examines how much large language models (LLMs) memorize copyrighted content, using probabilistic extraction techniques on 13 open-weight LLMs. It finds that while memorization varies across models and texts, some models—like Llama 3.1 70B—can nearly fully memorize certain books (e.g., Harry Potter, 1984). However, most models do not memorize most books. The findings complicate copyright debates, offering evidence for both sides without clearly favoring either.
+
+- When to Forget? Complexity Trade-offs in Machine Unlearning. [[paper]](https://arxiv.org/abs/2502.17323)
+  - Martin Van Waerebeke, Marco Lorenzi, Giovanni Neglia, Kevin Scaman.
+  - Key Word: Certified Unlearning.
+  - <details><summary>Digest</summary> This paper analyzes the efficiency of Machine Unlearning (MU) and establishes the first minimax upper and lower bounds on unlearning computation time. Under strongly convex objectives and without access to forgotten data, the authors introduce the unlearning complexity ratio, comparing unlearning costs to full retraining. A phase diagram reveals three regimes: infeasibility, trivial unlearning via noise, and significant computational savings. The study highlights key factors—data dimensionality, forget set size, and privacy constraints—that influence the feasibility of efficient unlearning.
+
+- Open Problems in Machine Unlearning for AI Safety. [[paper]](https://arxiv.org/abs/2501.04952)
+  - Fazl Barez, Tingchen Fu, Ameya Prabhu, Stephen Casper, Amartya Sanyal, Adel Bibi, Aidan O'Gara, Robert Kirk, Ben Bucknall, Tim Fist, Luke Ong, Philip Torr, Kwok-Yan Lam, Robert Trager, David Krueger, Sören Mindermann, José Hernandez-Orallo, Mor Geva, Yarin Gal.
+  - Key Word: Machine Unlearning.
+  - <details><summary>Digest</summary> As AI systems grow in capability and autonomy in critical areas like cybersecurity, healthcare, and biological research, ensuring their alignment with human values is crucial. Machine unlearning, originally focused on privacy and data removal, is gaining attention for its potential in AI safety. However, this paper identifies significant limitations preventing unlearning from fully addressing safety concerns, especially in managing dual-use knowledge where information can have both beneficial and harmful applications. It highlights challenges such as unintended side effects, conflicts with existing safety mechanisms, and difficulties in evaluating robustness and preserving safety features during unlearning. By outlining these constraints and open problems, the paper aims to guide future research toward more realistic and effective AI safety strategies.
+
+
+## Fairness
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#fairness">:open_file_folder: [<b><i>Full List of Fairness</i></b>]</a>.
+
+- Using AI Agents to Automate Black-Box Audits of Personalization Algorithms at Scale. [[paper]](https://arxiv.org/abs/2606.30801)
+  - Alessandro Morosini, Sarah H. Cen, Andrew Ilyas, Hedi Driss, Aleksander Mądry, Chara Podimata.
+  - Key Word: Algorithmic Auditing; Personalization Algorithms; Counterfactual Auditing; Demographic Bias; Synthetic Accounts.
+  - <details><summary>Digest</summary> This paper introduces a framework for black-box audits of personalization algorithms using generative AI agents as behavioral engines for synthetic accounts. By fixing each persona's behavior while perturbing platform-visible attributes such as age, gender, or location, the method supports counterfactual analysis of how personalization responds to user attributes. In a deployment of 1,120 agents on X after the 2024 U.S. election, the authors find amplification of toxic, polarizing, political, and right-leaning content relative to the chronological feed, with subgroup-level demographic effects varying by persona.</details>
+
+## Interpretability
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#interpretability">:open_file_folder: [<b><i>Full List of Interpretability</i></b>]</a>.
+
+
+### 2026
+
+- Verbalizable Representations Form a Global Workspace in Language Models. [[paper]](https://arxiv.org/abs/2607.15495)
+  - Wes Gurnee, Nicholas Sofroniew, Adam Pearce, Mateusz Piotrowski, Isaac Kauvar, Runjin Chen, Anna Soligo, Paul Bogdan, Euan Ong, Rowan Wang, Ben Thompson, David Abrahams, Subhash Kantamneni, Emmanuel Ameisen, Joshua Batson, Jack Lindsey.
+  - Key Word: Mechanistic Interpretability; Jacobian Lens; Global Workspace; Internal Representations; Alignment Auditing.
+  - <details><summary>Digest</summary> Using a new interpretability method called the Jacobian lens, this paper identifies the internal representations that a language model is prepared to verbalize, collectively termed J-space. The authors find that J-space behaves like a global workspace: it supports reportable and controllable concepts, silent reasoning, and broadly reusable intermediate content, while also showing characteristic layer localization, limited capacity, and wide broadcast. Alignment audits expose hidden strategic deliberation, evaluation awareness, and misaligned dispositions, and counterfactual reflection training improves behavior by supervising what the model would report when prompted to reflect.</details>
+
+- Interpreting Reinforcement Learning Agents with Susceptibilities. [[paper]](https://arxiv.org/abs/2605.08007)
+  - Chris Elliott, Einar Urdshals, David Quarel, Daniel Murfet.
+  - Key Word: Reinforcement Learning Interpretability; Susceptibilities; Activation Steering; RLHF Post-Training.
+  - <details><summary>Digest</summary> This paper extends susceptibility-based neural network interpretability to deep reinforcement learning by studying how regret responds to perturbations of the loss. In a gridworld setting with non-trivial stagewise development, the authors show that susceptibilities expose internal changes in parameter space that are not visible from the learned policy alone. They validate the analysis with activation steering and discuss how the framework could extend to RLHF post-training.</details>
+
+- Do Sparse Autoencoders Capture Concept Manifolds? [[paper]](https://arxiv.org/abs/2604.28119)
+  - Usha Bhalla, Thomas Fel, Can Rager, Sheridan Feucht, Tal Haklay, Daniel Wurgaft, Siddharth Boppana, Matthew Kowal, Vasudev Shyam, Jack Merullo, Atticus Geiger, Ekdeep Singh Lubana.
+  - Key Word: Sparse Autoencoders; Manifold; Superposition.
+  - <details><summary>Digest</summary> The paper argues that sparse autoencoders often fail to capture concepts as clean, independent directions because many concepts instead lie on low-dimensional manifolds with continuous geometry. It shows that SAEs can represent such manifolds either globally, using a compact group of atoms whose span contains the whole manifold, or locally, using many features that tile different regions. Empirically, SAEs often mix these strategies in a fragmented “dilution” regime, which explains why manifold structure is hard to see from individual features. The authors conclude that interpretability should focus on coherent groups of atoms and geometric structures, rather than isolated directions.
+
+- Symmetry in language statistics shapes the geometry of model representations. [[paper]](https://arxiv.org/abs/2602.15029)
+  - Dhruva Karkada, Daniel J. Korchinski, Andres Nava, Matthieu Wyart, Yasaman Bahri.
+  - Key Word: Representational Manifolds; Statistical Symmetry.
+  - <details><summary>Digest</summary> This paper investigates how the geometric structure of neural network representations is fundamentally shaped by symmetries found in the underlying statistics of training data. By examining low-order token correlations in sequences—such as language or spatial trajectories—the authors demonstrate that these statistical symmetries drive the emergence of specific manifold structures, such as circles for cyclical concepts. Through the introduction of a continuous latent variable model, the study provides a mathematical explanation for how representational geometry arises as a collective phenomenon across many words, suggesting that these structural properties are a result of data-driven incentives rather than specific model architectures or tasks.
+
+- Learning a Generative Meta-Model of LLM Activations. [[paper]](https://arxiv.org/abs/2602.06964)
+  - Grace Luo, Jiahai Feng, Trevor Darrell, Alec Radford, Jacob Steinhardt.
+  - Key Word: Diffusion Model; LLM Activations; Interpretability.
+  - <details><summary>Digest</summary> The paper proposes training generative “meta-models” (diffusion models) on a massive dataset (~1B residual stream activations) to learn a neural network’s internal-state distribution without relying on rigid assumptions like PCA or sparse autoencoders. They find the diffusion training loss scales smoothly with compute and is a reliable predictor of downstream usefulness: as loss drops, the learned prior improves the fluency of steering/intervention methods and the meta-model’s units become more concept-isolating, reflected in better sparse probing scores. 
+
+- DRIFT: Detecting Representational Inconsistencies for Factual Truthfulness. [[paper]](https://arxiv.org/abs/2601.14210)
+  - Rohan Bhatnagar, Youran Sun, Chi Andrew Zhang, Yixin Wen, Haizhao Yang.
+  - Key Word: Hallucination Detection; Probing; Internal Representations; Factuality.
+  - <details><summary>Digest</summary> Final-layer logits discard much of the model's internal uncertainty. The authors show that intermediate-late hidden states still carry that signal and train a small probe (3M-37M parameters) on those states to predict whether each generated answer is factual. The probe runs in parallel with generation, adding under 0.1% overhead. It reaches state-of-the-art AUROC on 10 of 12 settings, beats prior methods by up to 13 points, generalizes across datasets without retraining, and hits 97.7% accuracy after abstaining on the 60% most uncertain answers.
+
+### 2025
+
+- Priors in Time: Missing Inductive Biases for Language Model Interpretability. [[paper]](https://arxiv.org/abs/2511.01836)
+  - Ekdeep Singh Lubana, Can Rager, Sai Sumedh R. Hindupur, Valerie Costa, Greta Tuckute, Oam Patel, Sonia Krishna Murthy, Thomas Fel, Daniel Wurgaft, Eric J. Bigelow, Johnny Lin, Demba Ba, Martin Wattenberg, Fernanda Viegas, Melanie Weber, Aaron Mueller.
+  - Key Word: Mechanistic Interpretability; Inductive Bias; Sparse Autoencoder.
+  - <details><summary>Digest</summary> This paper critiques current interpretability methods like Sparse Autoencoders (SAEs) for assuming temporal independence in language model activations, which conflicts with the inherently dynamic and non-stationary nature of language representations. Viewing SAEs through a Bayesian lens, the authors show that their priors ignore temporal structure. To address this, they propose Temporal Feature Analysis (TFA) — a new method that separates predictable, context-derived features from novel, unpredictable ones. TFA better captures temporal dynamics, successfully parsing garden path sentences and identifying event boundaries, highlighting the importance of temporally aware inductive biases for interpreting language models.
+
+- Because we have LLMs, we Can and Should Pursue Agentic Interpretability. [[paper]](https://arxiv.org/abs/2506.12152)
+  - Been Kim, John Hewitt, Neel Nanda, Noah Fiedel, Oyvind Tafjord.
+  - Key Word: Agentic Interpretability.
+  - <details><summary>Digest</summary> This paper proposes agentic interpretability—a conversational approach where LLMs actively help users understand them by modeling the user’s knowledge and teaching accordingly. Unlike traditional interpretability methods, it emphasizes cooperation and interactivity over completeness. While not ideal for high-stakes scenarios, it offers a way for humans to grasp superhuman model concepts. The key challenge lies in evaluating such human-in-the-loop systems, for which the authors discuss possible solutions.
+
+- Interpretability Illusions with Sparse Autoencoders: Evaluating Robustness of Concept Representations. [[paper]](https://arxiv.org/abs/2505.16004)
+  - Aaron J. Li, Suraj Srinivas, Usha Bhalla, Himabindu Lakkaraju.
+  - Key Word: Sparse Autoencoders; Adversarial Attack.
+  - <details><summary>Digest</summary> This paper highlights a critical weakness in sparse autoencoders (SAEs) used to interpret LLMs: their concept representations are not robust to small input perturbations. The authors introduce an evaluation framework that uses adversarial attacks to test this robustness and find that SAE interpretations can be easily manipulated without changing the LLM’s output, questioning their reliability for model monitoring and oversight tasks.
+
+- Avoiding Leakage Poisoning: Concept Interventions Under Distribution Shifts. [[paper]](https://arxiv.org/abs/2504.17921)
+  - Mateo Espinosa Zarlenga, Gabriele Dominici, Pietro Barbiero, Zohreh Shams, Mateja Jamnik.
+  - Key Word: Concept Bottleneck Models; Distribution Shifts.
+  - <details><summary>Digest</summary> This paper studies how concept-based models (CMs) behave on out-of-distribution (OOD) inputs, especially under concept interventions (where humans correct predicted concepts at test time). The authors identify a flaw called leakage poisoning, where CMs fail to improve after intervention on OOD data. To address this, they propose MixCEM, a model that selectively uses leaked information only for in-distribution inputs. Experiments show MixCEM improves accuracy on both in-distribution and OOD samples, with and without interventions.
+
+- MIB: A Mechanistic Interpretability Benchmark. [[paper]](https://arxiv.org/abs/2504.13151)
+  - Aaron Mueller, Atticus Geiger, Sarah Wiegreffe, Dana Arad, Iván Arcuschin, Adam Belfki, Yik Siu Chan, Jaden Fiotto-Kaufman, Tal Haklay, Michael Hanna, Jing Huang, Rohan Gupta, Yaniv Nikankin, Hadas Orgad, Nikhil Prakash, Anja Reusch, Aruna Sankaranarayanan, Shun Shao, Alessandro Stolfo, Martin Tutek, Amir Zur, David Bau, Yonatan Belinkov.
+  - Key Word: Mechanistic Interpretability; Benchmark.
+  - <details><summary>Digest</summary> The paper introduces MIB, a benchmark designed to evaluate mechanistic interpretability methods in neural language models. MIB has two tracks: circuit localization (identifying model components critical to task performance) and causal variable localization (identifying hidden features representing task-relevant variables). Experiments show that attribution and mask optimization methods excel at circuit localization, while supervised DAS outperforms others in causal variable localization. Surprisingly, SAE features offer no advantage over standard neurons. MIB thus provides a robust framework for assessing real progress in interpretability.
+
+- SAEBench: A Comprehensive Benchmark for Sparse Autoencoders in Language Model Interpretability. [[paper]](https://arxiv.org/abs/2503.09532)
+  - Adam Karvonen, Can Rager, Johnny Lin, Curt Tigges, Joseph Bloom, David Chanin, Yeu-Tong Lau, Eoin Farrell, Callum McDougall, Kola Ayonrinde, Matthew Wearden, Arthur Conmy, Samuel Marks, Neel Nanda.
+  - Key Word: Sparse Autoencoder; Benchmark.
+  - <details><summary>Digest</summary> The paper introduces SAEBench, a comprehensive evaluation suite for sparse autoencoders (SAEs) that assesses their performance across seven diverse metrics, including interpretability, feature disentanglement, and practical applications like unlearning. It highlights that improvements in traditional unsupervised proxy metrics do not always lead to better real-world performance. The authors open-source over 200 SAEs spanning eight architectures and training algorithms, revealing that Matryoshka SAEs, despite underperforming on proxy metrics, excel in feature disentanglement, especially at scale. SAEBench provides a standardized framework for comparing SAE designs and studying scaling trends in their development.
+
+- Towards Understanding Distilled Reasoning Models: A Representational Approach. [[paper]](https://arxiv.org/abs/2503.03730)
+  - David D. Baek, Max Tegmark.
+  - Key Word: Mechanistic Interpretability; Model Distillation; Model Steering.
+  - <details><summary>Digest</summary> This paper examines the impact of model distillation on reasoning feature development in large language models (LLMs). Using a crosscoder trained on Qwen-series models, the study finds that distillation creates unique reasoning feature directions, enabling control over thinking styles (e.g., over-thinking vs. incisive-thinking). The analysis covers four reasoning types: self-reflection, deductive, alternative, and contrastive reasoning. Additionally, the study explores changes in feature geometry, suggesting that larger distilled models develop more structured representations, improving distillation performance. These findings enhance understanding of distillation’s role in shaping model reasoning and transparency.
+
+- From superposition to sparse codes: interpretable representations in neural networks. [[paper]](https://arxiv.org/abs/2503.01824)
+  - David Klindt, Charles O'Neill, Patrik Reizinger, Harald Maurer, Nina Miolane.
+  - Key Word: Superposition; Sparse Coding.
+  - <details><summary>Digest</summary> This paper explores how neural networks represent information, proposing that they encode features in superposition—linearly overlaying input concepts. The authors introduce a three-step framework to extract interpretable representations: (1) Identifiability theory shows that neural networks recover latent features up to a linear transformation; (2) Sparse coding techniques disentangle these features using compressed sensing principles; (3) Interpretability metrics evaluate alignment with human-interpretable concepts. By integrating insights from neuroscience, representation learning, and interpretability research, the paper offers a perspective with implications for neural coding, AI transparency, and deep learning interpretability.
+
+- Projecting Assumptions: The Duality Between Sparse Autoencoders and Concept Geometry. [[paper]](https://arxiv.org/abs/2503.01822)
+  - Sai Sumedh R. Hindupur, Ekdeep Singh Lubana, Thomas Fel, Demba Ba.
+  - Key Word: Sparse Autoencoder.
+  - <details><summary>Digest</summary> This paper examines the limitations of Sparse Autoencoders (SAEs) in interpreting neural network representations. It introduces a bilevel optimization framework showing that SAEs impose structural biases, affecting which concepts they can detect. Different SAE architectures are not interchangeable, as switching them can reveal or obscure concepts. Through experiments on toy models, semi-synthetic data, and large-scale datasets, the study highlights two key properties of real-world concepts: varying intrinsic dimensionality and nonlinear separability. Standard SAEs fail when these factors are ignored, but a new SAE design incorporating them uncovers previously hidden concepts. The findings challenge the notion of a universal SAE and emphasize the importance of architecture-specific choices in interpretability.
+
+- Everything, Everywhere, All at Once: Is Mechanistic Interpretability Identifiable? [[paper]](https://arxiv.org/abs/2502.20914)
+  - Maxime Méloux, Silviu Maniu, François Portet, Maxime Peyrard. 
+  - Key Word: Mechanistic Interpretability.
+  - <details><summary>Digest</summary> This work explores the identifiability of Mechanistic Interpretability (MI) explanations in neural networks. It examines whether unique explanations exist for a given behavior by drawing parallels to identifiability in statistics. The study identifies two MI strategies: “where-then-what” (isolating circuits before interpreting) and “what-then-where” (starting with candidate algorithms and finding neural activation subspaces). Experiments on Boolean functions and small MLPs reveal systematic non-identifiability—multiple circuits, interpretations, and subspaces can explain the same behavior. The study questions whether uniqueness is necessary, suggesting that predictive and manipulability criteria might suffice, and discusses validation through the inner interpretability framework.
+
+- Open Problems in Mechanistic Interpretability. [[paper]](https://arxiv.org/abs/2501.16496)
+  - Lee Sharkey, Bilal Chughtai, Joshua Batson, Jack Lindsey, Jeff Wu, Lucius Bushnaq, Nicholas Goldowsky-Dill, Stefan Heimersheim, Alejandro Ortega, Joseph Bloom, Stella Biderman, Adria Garriga-Alonso, Arthur Conmy, Neel Nanda, Jessica Rumbelow, Martin Wattenberg, Nandi Schoots, Joseph Miller, Eric J. Michaud, Stephen Casper, Max Tegmark, William Saunders, David Bau, Eric Todd, Atticus Geiger, Mor Geva, Jesse Hoogland, Daniel Murfet, Tom McGrath.
+  - Key Word: Mechanistic Interpretability.
+  - <details><summary>Digest</summary> This review explores the current challenges and open problems in mechanistic interpretability, which seeks to understand the computational mechanisms behind neural networks. While progress has been made, further conceptual and practical advancements are needed to deepen insights, refine applications, and address socio-technical challenges. The paper highlights key areas for future research to enhance AI transparency, safety, and scientific understanding of intelligence.
+
+- Sparse Autoencoders Do Not Find Canonical Units of Analysis. [[paper]](https://arxiv.org/abs/2502.04878)
+  - Patrick Leask, Bart Bussmann, Michael Pearce, Joseph Bloom, Curt Tigges, Noura Al Moubayed, Lee Sharkey, Neel Nanda.
+  - Key Word: Mechanistic Interpretability; Sparse Autoencoders; Representational Structure.
+  - <details><summary>Digest</summary> This paper challenges the assumption that Sparse Autoencoders (SAEs) can identify a canonical set of atomic features in LLMs. Using SAE stitching, the authors show that SAEs are incomplete, as larger SAEs contain novel latents not captured by smaller ones. Through meta-SAEs, they demonstrate that SAE latents are not atomic, as they often decompose into smaller, interpretable components (e.g., “Einstein” → “scientist” + “Germany” + “famous person”). While SAEs may still be useful, the authors suggest rethinking their role in mechanistic interpretability and exploring alternative methods for finding fundamental features. An interactive dashboard is provided for further exploration.
+
+
+## Alignment
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#alignment">:open_file_folder: [<b><i>Full List of Alignment</i></b>]</a>.
+
+
+### 2026
+
+- Positive Alignment: Artificial Intelligence for Human Flourishing. [[paper]](https://arxiv.org/abs/2605.10310)
+  - Ruben Laukkonen, Seb Krier, Chloé Bakalar, Shamil Chandaria, Morten Kringelbach, Adam Elwood, Daniel Ford, Fernando Rosas, Maty Bohacek, Matija Franklin, Nenad Tomašev, Stephanie Chan, Verena Rieser, Roma Patel, Michael Levin, Arun Rao.
+  - Key Word: AI Alignment; Positive Alignment; Human Flourishing; Value Pluralism; Polycentric Governance.
+  - <details><summary>Digest</summary> This paper argues that AI alignment should go beyond preventing harm, controllability, and compliance to actively support human and ecological flourishing. It defines positive alignment as a pluralistic, context-sensitive, user-authored agenda that remains safe and cooperative while addressing failures such as engagement hacking, loss of autonomy, weak truth-seeking, and limited epistemic humility. The authors outline technical directions across the LLM and agent lifecycle, including data filtering, pre- and post-training methods, evaluations, collaborative value collection, community customization, continual adaptation, and polycentric governance.</details>
+
+- The Geometry of Alignment Collapse: When Fine-Tuning Breaks Safety. [[paper]](https://arxiv.org/abs/2602.15799)
+  - Max Springer, Chung Peng Lee, Blossom Metevier, Jane Castleman, Bohdan Turbal, Hayoung Jung, Zeyu Shen, Aleksandra Korolova.
+  - Key Word: Alignment Drift.
+  - <details><summary>Digest</summary> Fine-tuning an aligned language model can unexpectedly weaken its safety guardrails even on purely benign data. The paper argues the common “don’t worry—task updates are orthogonal to safety directions” story is unreliable because that orthogonality is dynamically unstable under gradient descent. Using a geometric view, it claims alignment behavior lives in low-dimensional, sharply curved subspaces, so first-order thinking misses how loss curvature creates a second-order “acceleration” that gradually pushes training trajectories into alignment-sensitive regions. They formalize when this happens via an Alignment Instability Condition (three geometric properties), and derive a quartic scaling law: alignment loss grows like training time, controlled by alignment sharpness and curvature coupling between the fine-tuning task and safety-critical parameters. The takeaway: safety degradation is an intrinsic geometric risk of standard fine-tuning, motivating curvature-aware methods and predictive diagnostics instead of purely reactive red-teaming.
+
+- Asymptotic Universal Alignment: A New Alignment Framework via Test-Time Scaling. [[paper]](https://arxiv.org/abs/2601.08777)
+  - Yang Cai, Weiqiang Zheng.
+  - Key Word: AI Alignment; Test-Time Scaling.
+  - <details><summary>Digest</summary> The paper studies how to align an LLM to users with diverse, even conflicting, preferences by leveraging test-time scaling: for each prompt the model outputs k candidate answers and the user picks their favorite. It formalizes this as (k, f(k))-robust alignment (the k-output model must beat any single-output model with win rate f(k)) and asymptotic universal alignment where f(k) → 1 as k → ∞. The main theoretical result pins down the best possible scaling law: there exist single-output policies whose k-sample product policies achieve the optimal rate f(k) = k/(k+1), and no general method can converge faster. The paper then argues that common post-training methods like NLHF can waste test-time scaling because they often collapse to near-deterministic, low-diversity policies—so sampling more responses doesn’t help much—whereas their proposed symmetric multi-player alignment games preserve diversity; any symmetric Nash equilibrium of the (k+1)-player game achieves the optimal (k, k/(k+1)) guarantee, with additional convergence guarantees via self-play learning and an extension to opponents that also produce multiple candidates.
+
+### 2025
+
+- Position: The Complexity of Perfect AI Alignment -- Formalizing the RLHF Trilemma. [[paper]](https://arxiv.org/abs/2511.19504)
+  - Subramanyam Sahoo, Aman Chadha, Vinija Jain, Divya Chaudhary.
+  - Key Word: AI Alignment; RLHF.
+  - <details><summary>Digest</summary> The paper introduces an “Alignment Trilemma” for RLHF, proving that it’s impossible to simultaneously have highly representative, computationally efficient, and robust alignment across diverse human values. Using complexity-theoretic analysis, it argues that current RLHF systems implicitly sacrifice representativeness (using far too few, homogeneous annotators), which explains issues like preference collapse, sycophancy, and bias amplification, and it suggests relaxing alignment requirements as a practical path forward.
+
+- Preference Learning for AI Alignment: a Causal Perspective. [[paper]](https://arxiv.org/abs/2506.05967)
+  - Katarzyna Kobalczyk, Mihaela van der Schaar.
+  - Key Word: AI Alignment; Causuality.
+  - <details><summary>Digest</summary> This paper reframes reward modeling from preference data as a causal inference problem to better align LLMs with human values. It highlights challenges like causal misidentification, user-specific confounding, and preference heterogeneity, and shows how causally-inspired methods can improve generalization and robustness over naive models. The authors also propose key assumptions and future directions for more reliable reward modeling.
+
+- Watermarking Degrades Alignment in Language Models: Analysis and Mitigation. [[paper]](https://arxiv.org/abs/2506.04462)
+  - Apurv Verma, NhatHai Phan, Shubhendu Trivedi.
+  - Key Word: Alignment; LLM Watermarking; Inference-Time Alignment; Reward Models; Safety.
+  - <details><summary>Digest</summary> This paper presents the first empirical study of how LLM watermarking interacts with alignment, showing that watermarking induces patterned, model-specific shifts that appear as either guard attenuation (more helpful but less safe) or guard amplification (overly conservative refusals), and that these effects persist after controlling for perplexity degradation. To mitigate this, the authors propose Alignment Resampling (AR), which draws several watermarked candidates and selects the most aligned one using an external reward model, with a theoretical lower bound showing alignment gains grow sublogarithmically in sample size. Empirically, sampling as few as two to four candidates largely restores unwatermarked alignment in truthfulness, safety, and helpfulness without hurting watermark detection.</details>
+
+- Scaling Laws For Scalable Oversight. [[paper]](https://arxiv.org/abs/2504.18530)
+  - Joshua Engels, David D. Baek, Subhash Kantamneni, Max Tegmark.
+  - Key Word: Scalable Oversight.
+  - <details><summary>Digest</summary> This paper proposes a framework to model and quantify scalable oversight—how weaker AI systems supervise stronger ones—using oversight and deception-specific Elo scores. The framework is validated through games like Nim, Mafia, and Debate, revealing how oversight success scales with capability gaps. They further study Nested Scalable Oversight (NSO) and find that success rates drop sharply when overseeing much stronger systems, with a success rate below 52% at a 400 Elo gap.
+
+- You Are What You Eat -- AI Alignment Requires Understanding How Data Shapes Structure and Generalisation. [[paper]](https://arxiv.org/abs/2502.05475)
+  - Simon Pepin Lehalleur, Jesse Hoogland, Matthew Farrugia-Roberts, Susan Wei, Alexander Gietelink Oldenziel, George Wang, Liam Carroll, Daniel Murfet.
+  - Key Word: AI Alignment.
+  - <details><summary>Digest</summary> This paper argues that understanding the relationship between data distribution structure and model structure is key to AI alignment. It highlights that neural networks with identical training performance can generalize differently due to internal computational differences, making standard evaluation methods insufficient for safety assurances. To advance AI alignment, the authors propose developing statistical foundations to systematically analyze how these structures influence generalization.
+
+
+## Others
+
+<a href="https://github.com/MinghuiChen43/awesome-trustworthy-deep-learning/blob/master/FULL_LIST.md#others">:open_file_folder: [<b><i>Full List of Others</i></b>]</a>.
+
+### 2026
+
+- Towards a Science of AI Agent Reliability. [[paper]](https://arxiv.org/abs/2602.16666)
+  - Stephan Rabanser, Sayash Kapoor, Peter Kirgis, Kangheng Liu, Saiteja Utpala, Arvind Narayanan.
+  - Key Word: LLM; Consistency; Predictability.
+  - <details><summary>Digest</summary> AI agents are being deployed for consequential tasks, but rising benchmark accuracy hides practical failures because single success scores miss key operational properties. This work, inspired by safety-critical engineering, proposes 12 metrics that decompose agent reliability into four dimensions—consistency, robustness, predictability, and safety—and uses them to evaluate 14 agentic models on two benchmarks. The results show that despite recent capability gains, reliability has improved only modestly, highlighting persistent, measurable failure modes that traditional evaluations overlook.
+
+
+### 2025
+
+- Search-Time Data Contamination. [[paper]](https://arxiv.org/abs/2508.13180)
+  - Ziwen Han, Meher Mankikar, Julian Michael, Zifan Wang.
+  - Key Word: Search-based LLM Agents; Test Data Contamination.
+  - <details><summary>Digest</summary> The paper identifies search-time contamination (STC) as a new threat to evaluating search-based LLM agents, where retrieval surfaces benchmark questions and answers (e.g., from HuggingFace), allowing agents to copy rather than reason. Across benchmarks like HLE, SimpleQA, and GPQA, ~3% of queries were directly leaked, causing inflated performance. Blocking HuggingFace reduced accuracy on contaminated items by ~15%. The authors show STC extends beyond HuggingFace and propose best practices for benchmark design and reporting, releasing full experiment logs for auditing.
+
+- Chain of Thought Monitorability: A New and Fragile Opportunity for AI Safety. [[paper]](https://arxiv.org/abs/2507.11473)
+  - Tomek Korbak, Mikita Balesni, Elizabeth Barnes, Yoshua Bengio, Joe Benton, Joseph Bloom, Mark Chen, Alan Cooney, Allan Dafoe, Anca Dragan, Scott Emmons, Owain Evans, David Farhi, Ryan Greenblatt, Dan Hendrycks, Marius Hobbhahn, Evan Hubinger, Geoffrey Irving, Erik Jenner, Daniel Kokotajlo, Victoria Krakovna, Shane Legg, David Lindner, David Luan, Aleksander Mądry, Julian Michael, Neel Nanda, Dave Orr, Jakub Pachocki, Ethan Perez, Mary Phuong, Fabien Roger, Joshua Saxe, Buck Shlegeris, Martín Soto, Eric Steinberger, Jasmine Wang, Wojciech Zaremba, Bowen Baker, Rohin Shah, Vlad Mikulik.
+  - Key Word: Chain of Thought Monitoring.
+  - <details><summary>Digest</summary> AI systems that "think" in human language offer a unique opportunity for AI safety: we can monitor their chains of thought (CoT) for the intent to misbehave. Like all other known AI oversight methods, CoT monitoring is imperfect and allows some misbehavior to go unnoticed. Nevertheless, it shows promise and we recommend further research into CoT monitorability and investment in CoT monitoring alongside existing safety methods. Because CoT monitorability may be fragile, we recommend that frontier model developers consider the impact of development decisions on CoT monitorability.
+
+- The MASK Benchmark: Disentangling Honesty From Accuracy in AI Systems. [[paper]](https://arxiv.org/abs/2503.03750)
+  - Richard Ren, Arunim Agarwal, Mantas Mazeika, Cristina Menghini, Robert Vacareanu, Brad Kenstler, Mick Yang, Isabelle Barrass, Alice Gatti, Xuwang Yin, Eduardo Trevino, Matias Geralnik, Adam Khoja, Dean Lee, Summer Yue, Dan Hendrycks.
+  - Key Word: Honesty; Benchmark.
+  - <details><summary>Digest</summary> This paper addresses concerns about honesty in large language models (LLMs), distinguishing it from accuracy. Current honesty evaluations are limited, often conflating honesty with correctness. To address this, the authors introduce a large-scale, human-collected dataset that directly measures honesty. Their findings reveal that while larger models achieve higher accuracy, they do not necessarily become more honest. Notably, frontier LLMs, despite excelling in truthfulness benchmarks, often lie under pressure. The study also demonstrates that simple interventions, such as representation engineering, can enhance honesty, highlighting the need for robust evaluations and interventions to ensure trustworthy AI.
+
+- Superintelligent Agents Pose Catastrophic Risks: Can Scientist AI Offer a Safer Path? [[paper]](https://arxiv.org/abs/2502.15657)
+  - Yoshua Bengio, Michael Cohen, Damiano Fornasiere, Joumana Ghosn, Pietro Greiner, Matt MacDermott, Sören Mindermann, Adam Oberman, Jesse Richardson, Oliver Richardson, Marc-Antoine Rondeau, Pierre-Luc St-Charles, David Williams-King.
+  - Key Word: Scientist AI; Agentic AI; AI Safety.
+  - <details><summary>Digest</summary> The paper discusses the risks posed by generalist AI agents, which can autonomously plan, act, and pursue goals. These risks include deception, misalignment with human interests, and loss of human control. The authors argue for a shift away from agency-driven AI towards a non-agentic AI system called Scientist AI, designed to explain the world rather than act in it. Scientist AI consists of a world model that generates theories and a question-answering system, both incorporating uncertainty to prevent overconfidence. This approach aims to advance scientific progress and AI safety while mitigating risks associated with autonomous AI agents.
+
+- Do Large Language Model Benchmarks Test Reliability? [[paper]](https://arxiv.org/abs/2502.03461)
+  - Joshua Vendrow, Edward Vendrow, Sara Beery, Aleksander Madry.
+  - Key Word: Large Language Model Benchmark; Reliability.
+  - <details><summary>Digest</summary> This paper highlights the lack of focus on LLM reliability in existing benchmarks, despite extensive efforts to track model capabilities. The authors identify pervasive label errors in current benchmarks, which obscure model failures and unreliable behavior. To address this, they introduce platinum benchmarks—carefully curated datasets with minimal label errors and ambiguity. By refining examples from 15 popular benchmarks and evaluating various models, they find that even frontier LLMs struggle with basic tasks, such as elementary math problems, revealing systematic failure patterns.
+
+
+
+# Related Awesome Lists
+
+## Robustness Lists
+
+- [A Complete List of All (arXiv) Adversarial Example Papers](https://nicholas.carlini.com/writing/2019/all-adversarial-example-papers.html)
+
+- [OOD robustness and transfer learning](https://github.com/jindongwang/transferlearning) ![ ](https://img.shields.io/github/stars/jindongwang/transferlearning) ![ ](https://img.shields.io/github/last-commit/jindongwang/transferlearning)
+
+- [Must-read Papers on Textual Adversarial Attack and Defense](https://github.com/thunlp/TAADpapers) ![ ](https://img.shields.io/github/stars/thunlp/TAADpapers) ![ ](https://img.shields.io/github/last-commit/thunlp/TAADpapers)
+
+- [Backdoor Learning Resources](https://github.com/THUYimingLi/backdoor-learning-resources) ![ ](https://img.shields.io/github/stars/THUYimingLi/backdoor-learning-resources) ![ ](https://img.shields.io/github/last-commit/THUYimingLi/backdoor-learning-resources)
+
+- [Paper of Robust ML](https://github.com/P2333/Papers-of-Robust-ML) ![ ](https://img.shields.io/github/stars/P2333/Papers-of-Robust-ML) ![ ](https://img.shields.io/github/last-commit/P2333/Papers-of-Robust-ML)
+
+- [The Papers of Adversarial Examples](https://github.com/xiaosen-wang/Adversarial-Examples-Paper) ![ ](https://img.shields.io/github/stars/xiaosen-wang/Adversarial-Examples-Paper) ![ ](https://img.shields.io/github/last-commit/xiaosen-wang/Adversarial-Examples-Paper)
+
+## Privacy Lists
+
+- [Awesome Attacks on Machine Learning Privacy](https://github.com/stratosphereips/awesome-ml-privacy-attacks) ![ ](https://img.shields.io/github/stars/stratosphereips/awesome-ml-privacy-attacks) ![ ](https://img.shields.io/github/last-commit/stratosphereips/awesome-ml-privacy-attacks)
+
+- [Aweosme Privacy](https://github.com/Guyanqi/Awesome-Privacy) ![ ](https://img.shields.io/github/stars/Guyanqi/Awesome-Privacy) ![ ](https://img.shields.io/github/last-commit/Guyanqi/Awesome-Privacy)
+
+- [Privacy-Preserving-Machine-Learning-Resources](https://github.com/Ye-D/PPML-Resource) ![ ](https://img.shields.io/github/stars/Ye-D/PPML-Resource) ![ ](https://img.shields.io/github/last-commit/Ye-D/PPML-Resource)
+
+- [Awesome Machine Unlearning](https://github.com/tamlhp/awesome-machine-unlearning) ![ ](https://img.shields.io/github/stars/tamlhp/awesome-machine-unlearning) ![ ](https://img.shields.io/github/last-commit/tamlhp/awesome-machine-unlearning)
+
+- [Awesome Privacy Papers for Visual Data](https://github.com/brighter-ai/awesome-privacy-papers) ![ ](https://img.shields.io/github/stars/brighter-ai/awesome-privacy-papers) ![ ](https://img.shields.io/github/last-commit/brighter-ai/awesome-privacy-papers)
+
+## Fairness Lists
+
+- [Awesome Fairness Papers](https://github.com/uclanlp/awesome-fairness-papers) ![ ](https://img.shields.io/github/stars/uclanlp/awesome-fairness-papers) ![ ](https://img.shields.io/github/last-commit/uclanlp/awesome-fairness-papers)
+
+- [Awesome Fairness in AI](https://github.com/datamllab/awesome-fairness-in-ai) ![ ](https://img.shields.io/github/stars/datamllab/awesome-fairness-in-ai) ![ ](https://img.shields.io/github/last-commit/datamllab/awesome-fairness-in-ai)
+
+## Interpretability Lists
+
+- [Awesome Machine Learning Interpretability](https://github.com/jphall663/awesome-machine-learning-interpretability) ![ ](https://img.shields.io/github/stars/jphall663/awesome-machine-learning-interpretability) ![ ](https://img.shields.io/github/last-commit/jphall663/awesome-machine-learning-interpretability)
+
+- [Awesome Interpretable Machine Learning](https://github.com/lopusz/awesome-interpretable-machine-learning) ![ ](https://img.shields.io/github/stars/lopusz/awesome-interpretable-machine-learning) ![ ](https://img.shields.io/github/last-commit/lopusz/awesome-interpretable-machine-learning)
+
+- [Awesome Explainable AI](https://github.com/wangyongjie-ntu/Awesome-explainable-AI) ![ ](https://img.shields.io/github/stars/wangyongjie-ntu/Awesome-explainable-AI) ![ ](https://img.shields.io/github/last-commit/wangyongjie-ntu/Awesome-explainable-AI)
+
+- [Awesome Deep Learning Interpretability](https://github.com/oneTaken/awesome_deep_learning_interpretability) ![ ](https://img.shields.io/github/stars/oneTaken/awesome_deep_learning_interpretability) ![ ](https://img.shields.io/github/last-commit/oneTaken/awesome_deep_learning_interpretability)
+
+- [Awesome Interpretability in Large Language Models](https://github.com/ruizheliUOA/Awesome-Interpretability-in-Large-Language-Models) ![](https://img.shields.io/github/stars/ruizheliUOA/Awesome-Interpretability-in-Large-Language-Models) ![](https://img.shields.io/github/last-commit/ruizheliUOA/Awesome-Interpretability-in-Large-Language-Models)
+
+- [Awesome LLM Interpretability](https://github.com/JShollaj/awesome-llm-interpretability) ![](https://img.shields.io/github/stars/JShollaj/awesome-llm-interpretability) ![](https://img.shields.io/github/last-commit/JShollaj/awesome-llm-interpretability)
+
+
+## Other Lists
+
+- [Awesome Out-of-distribution Detection](https://github.com/continuousml/Awesome-Out-Of-Distribution-Detection) ![ ](https://img.shields.io/github/stars/iCGY96/awesome_OpenSetRecognition_list) ![ ](https://img.shields.io/github/last-commit/iCGY96/awesome_OpenSetRecognition_list)
+
+- [Awesome Open Set Recognition list](https://github.com/iCGY96/awesome_OpenSetRecognition_list) ![ ](https://img.shields.io/github/stars/iCGY96/awesome_OpenSetRecognition_list) ![ ](https://img.shields.io/github/last-commit/iCGY96/awesome_OpenSetRecognition_list)
+
+- [Awesome Novel Class Discovery](https://github.com/JosephKJ/Awesome-Novel-Class-Discovery) ![ ](https://img.shields.io/github/stars/JosephKJ/Awesome-Novel-Class-Discovery) ![ ](https://img.shields.io/github/last-commit/JosephKJ/Awesome-Novel-Class-Discovery)
+
+- [Awesome Open-World-Learning](https://github.com/zhoudw-zdw/Awesome-open-world-learning) ![ ](https://img.shields.io/github/stars/zhoudw-zdw/Awesome-open-world-learning) ![ ](https://img.shields.io/github/last-commit/zhoudw-zdw/Awesome-open-world-learning)
+
+- [Blockchain Papers](https://github.com/decrypto-org/blockchain-papers) ![ ](https://img.shields.io/github/stars/decrypto-org/blockchain-papers) ![ ](https://img.shields.io/github/last-commit/decrypto-org/blockchain-papers)
+
+- [Awesome Blockchain AI](https://github.com/steven2358/awesome-blockchain-ai) ![ ](https://img.shields.io/github/stars/steven2358/awesome-blockchain-ai) ![ ](https://img.shields.io/github/last-commit/steven2358/awesome-blockchain-ai)
+
+- [Awesome Causality Algorithms](https://github.com/rguo12/awesome-causality-algorithms) ![ ](https://img.shields.io/github/stars/rguo12/awesome-causality-algorithms) ![ ](https://img.shields.io/github/last-commit/rguo12/awesome-causality-algorithms)
+
+- [Awesome AI Security](https://github.com/DeepSpaceHarbor/Awesome-AI-Security) ![ ](https://img.shields.io/github/stars/DeepSpaceHarbor/Awesome-AI-Security) ![ ](https://img.shields.io/github/last-commit/DeepSpaceHarbor/Awesome-AI-Security)
+
+- [A curated list of AI Security & Privacy events](https://github.com/ZhengyuZhao/AI-Security-and-Privacy-Events) ![ ](https://img.shields.io/github/stars/ZhengyuZhao/AI-Security-and-Privacy-Events) ![ ](https://img.shields.io/github/last-commit/ZhengyuZhao/AI-Security-and-Privacy-Events)
+
+- [Awesome Deep Phenomena](https://github.com/MinghuiChen43/awesome-deep-phenomena) ![ ](https://img.shields.io/github/stars/MinghuiChen43/awesome-deep-phenomena) ![ ](https://img.shields.io/github/last-commit/MinghuiChen43/awesome-deep-phenomena)
+
+# Toolboxes
+
+## Robustness Toolboxes
+
+- [DeepDG: OOD generalization toolbox](https://github.com/jindongwang/transferlearning/tree/master/code/DeepDG) ![ ](https://img.shields.io/github/stars/jindongwang/transferlearning)
+  - A domain generalization toolbox for research purpose.
+
+- [Cleverhans](https://github.com/cleverhans-lab/cleverhans) ![ ](https://img.shields.io/github/stars/cleverhans-lab/cleverhans)
+  - This repository contains the source code for CleverHans, a Python library to benchmark machine learning systems' vulnerability to adversarial examples.
+
+- [Adversarial Robustness Toolbox (ART)](https://github.com/Trusted-AI/adversarial-robustness-toolbox) ![ ](https://img.shields.io/github/stars/Trusted-AI/adversarial-robustness-toolbox)
+  - Adversarial Robustness Toolbox (ART) is a Python library for Machine Learning Security. ART provides tools that enable developers and researchers to evaluate, defend, certify and verify Machine Learning models and applications against the adversarial threats of Evasion, Poisoning, Extraction, and Inference.
+
+- [Adversarial-Attacks-Pytorch](https://github.com/Harry24k/adversarial-attacks-pytorch) ![ ](https://img.shields.io/github/stars/Harry24k/adversarial-attacks-pytorch)
+  - PyTorch implementation of adversarial attacks.
+
+- [Advtorch](https://github.com/BorealisAI/advertorch) ![ ](https://img.shields.io/github/stars/BorealisAI/advertorch)
+  - Advtorch is a Python toolbox for adversarial robustness research. The primary functionalities are implemented in PyTorch. Specifically, AdverTorch contains modules for generating adversarial perturbations and defending against adversarial examples, also scripts for adversarial training.
+
+- [RobustBench](https://github.com/RobustBench/robustbench) ![ ](https://img.shields.io/github/stars/RobustBench/robustbench)
+  - A standardized benchmark for adversarial robustness.
+
+- [BackdoorBox](https://github.com/THUYimingLi/BackdoorBox) ![ ](https://img.shields.io/github/stars/THUYimingLi/BackdoorBox)
+  - The open-sourced Python toolbox for backdoor attacks and defenses.  
+  
+- [BackdoorBench](https://github.com/SCLBD/BackdoorBench) ![](https://img.shields.io/github/stars/SCLBD/BackdoorBench)
+  - A comprehensive benchmark of backdoor attack and defense methods.
+
+## Privacy Toolboxes
+
+- [Diffprivlib](https://github.com/IBM/differential-privacy-library) ![ ](https://img.shields.io/github/stars/IBM/differential-privacy-library)
+  - Diffprivlib is a general-purpose library for experimenting with, investigating and developing applications in, differential privacy.
+
+- [Privacy Meter](https://github.com/privacytrustlab/ml_privacy_meter) ![ ](https://img.shields.io/github/stars/privacytrustlab/ml_privacy_meter)
+  - Privacy Meter is an open-source library to audit data privacy in statistical and machine learning algorithms.
+
+- [OpenDP](https://github.com/opendp/opendp) ![ ](https://img.shields.io/github/stars/opendp/opendp)
+  - The OpenDP Library is a modular collection of statistical algorithms that adhere to the definition of differential privacy. 
+
+- [PrivacyRaven](https://github.com/trailofbits/PrivacyRaven) ![ ](https://img.shields.io/github/stars/trailofbits/PrivacyRaven)
+  - PrivacyRaven is a privacy testing library for deep learning systems.
+
+- [PersonalizedFL](https://github.com/microsoft/PersonalizedFL) ![ ](https://img.shields.io/github/stars/microsoft/PersonalizedFL)
+  - PersonalizedFL is a toolbox for personalized federated learning.
+
+- [TAPAS](https://github.com/alan-turing-institute/privacy-sdg-toolbox) ![ ](https://img.shields.io/github/stars/alan-turing-institute/privacy-sdg-toolbox)
+  - Evaluating the privacy of synthetic data with an adversarial toolbox. 
+
+## Fairness Toolboxes
+
+- [AI Fairness 360](https://github.com/Trusted-AI/AIF360) ![ ](https://img.shields.io/github/stars/Trusted-AI/AIF360)
+  - The AI Fairness 360 toolkit is an extensible open-source library containing techniques developed by the research community to help detect and mitigate bias in machine learning models throughout the AI application lifecycle.
+
+- [Fairlearn](https://github.com/fairlearn/fairlearn) ![ ](https://img.shields.io/github/stars/fairlearn/fairlearn)
+  - Fairlearn is a Python package that empowers developers of artificial intelligence (AI) systems to assess their system's fairness and mitigate any observed unfairness issues.
+
+- [Aequitas](https://github.com/dssg/aequitas) ![ ](https://img.shields.io/github/stars/dssg/aequitas)
+  - Aequitas is an open-source bias audit toolkit for data scientists, machine learning researchers, and policymakers to audit machine learning models for discrimination and bias, and to make informed and equitable decisions around developing and deploying predictive tools.
+
+- [FAT Forensics](https://github.com/fat-forensics/fat-forensics) ![ ](https://img.shields.io/github/stars/fat-forensics/fat-forensics)
+  - FAT Forensics implements the state of the art fairness, accountability and transparency (FAT) algorithms for the three main components of any data modelling pipeline: data (raw data and features), predictive models and model predictions.
+
+## Interpretability Toolboxes
+
+- [Lime](https://github.com/marcotcr/lime) ![ ](https://img.shields.io/github/stars/marcotcr/lime)
+  - This project is about explaining what machine learning classifiers (or models) are doing.
+  
+- [InterpretML](https://github.com/interpretml/interpret/) ![ ](https://img.shields.io/github/stars/interpretml/interpret)
+  - InterpretML is an open-source package that incorporates state-of-the-art machine learning interpretability techniques under one roof.
+
+- [Deep Visualization Toolbox](https://github.com/yosinski/deep-visualization-toolbox) ![ ](https://img.shields.io/github/stars/yosinski/deep-visualization-toolbox)
+  - This is the code required to run the Deep Visualization Toolbox, as well as to generate the neuron-by-neuron visualizations using regularized optimization.
+  
+- [Captum](https://github.com/pytorch/captum) ![ ](https://img.shields.io/github/stars/pytorch/captum)
+  - Captum is a model interpretability and understanding library for PyTorch.
+  
+- [Alibi](https://github.com/SeldonIO/alibi) ![ ](https://img.shields.io/github/stars/SeldonIO/alibi)
+  - Alibi is an open source Python library aimed at machine learning model inspection and interpretation.
+  
+- [AI Explainability 360](https://github.com/Trusted-AI/AIX360) ![ ](https://img.shields.io/github/stars/Trusted-AI/AIX360)
+  - The AI Explainability 360 toolkit is an open-source library that supports interpretability and explainability of datasets and machine learning models.
+
+## Other Toolboxes
+
+- [CERT-FLOW](https://github.com/Archerkattri/CERT-FLOW) ![ ](https://img.shields.io/github/stars/Archerkattri/CERT-FLOW)
+  - Certified route planning under drifting costs: weighted non-exchangeable conformal certificates on the optimal route, adjusted for map staleness.
+
+- [Uncertainty Toolbox](https://github.com/uncertainty-toolbox/uncertainty-toolbox) ![ ](https://img.shields.io/github/stars/uncertainty-toolbox/uncertainty-toolbox)
+
+- [Causal Inference 360](https://github.com/IBM/causallib) ![ ](https://img.shields.io/github/stars/IBM/causallib)
+  - A Python package for inferring causal effects from observational data.
+
+- [Fortuna](https://github.com/awslabs/fortuna) ![ ](https://img.shields.io/github/stars/awslabs/fortuna)
+  - Fortuna is a library for uncertainty quantification that makes it easy for users to run benchmarks and bring uncertainty to production systems. 
+
+- [VerifAI](https://github.com/BerkeleyLearnVerify/VerifAI) ![ ](https://img.shields.io/github/stars/BerkeleyLearnVerify/VerifAI)
+  - VerifAI is a software toolkit for the formal design and analysis of systems that include artificial intelligence (AI) and machine learning (ML) components.
+
+# Seminar
+
+- [Privacy and Security in ML Seminars](https://prisec-ml.github.io/)
+
+- [MLSec Laboratory - PRALab University of Cagliari](https://www.youtube.com/@MLSec/featured)
+
+- [Challenges and Opportunities for Security & Privacy in Machine Learning](https://vsehwag.github.io/SPML_seminar/)
+
+# Workshops
+
+## Robustness Workshops
+
+- [Backdoor Attacks and Defenses in Machine Learning (ICLR 2023)](https://iclr23-bands.github.io/)
+
+- [New Frontiers in Adversarial Machine Learning (ICML 2023)](https://advml-frontier.github.io/)
+
+- [Adversarial Machine Learning on Computer Vision: Art of Robustness (CVPR 2023)](https://robustart.github.io/)
+
+- [ML Safety Workshop (NeurIPS 2022)](https://neurips2022.mlsafety.org/)
+
+- [Workshop on Adversarial Robustness In the Real World (ECCV 2022)](https://eccv22-arow.github.io/)
+
+- [Formal Verification of Machine Learning (ICML 2022)](https://www.ml-verification.com/)
+
+- [Shift Happens Workshop (ICML 2022)](https://shift-happens-benchmark.github.io/)
+
+- [Principles of Distribution Shift (ICML 2022)](https://sites.google.com/view/icml-2022-pods)
+
+- [New Frontiers in Adversarial Machine Learning (ICML 2022)](https://advml-frontier.github.io/)
+
+- [Workshop on Spurious Correlations, Invariance, and Stability (ICML 2022)](https://sites.google.com/view/scis-workshop/home)
+
+- [Robust and reliable machine learning in the real world (ICLR 2021)](https://sites.google.com/connect.hku.hk/robustml-2021/home)
+
+- [Distribution Shifts Connecting Methods and Applications (NeurIPS 2021)](https://sites.google.com/view/distshift2021)
+
+- [Workshop on Adversarial Robustness In the Real World (ICCV 2021)](https://iccv21-adv-workshop.github.io/)
+
+- [Uncertainty and Robustness in Deep Learning Workshop (ICML 2021)](https://sites.google.com/view/udlworkshop2021/home)
+
+- [RobustML Workshop (ICLR 2021)](https://sites.google.com/connect.hku.hk/robustml-2021/home)
+
+- [Uncertainty and Robustness in Deep Learning Workshop (ICML 2020)](https://sites.google.com/view/udlworkshop2020/home)
+
+## Privacy Workshops
+
+- [Pitfalls of limited data and computation for Trustworthy ML (ICLR 2023)](https://sites.google.com/view/trustml-unlimited/home)
+
+- [Theory and Practice of Differential Privacy (ICML 2022)](https://tpdp.journalprivacyconfidentiality.org/2022/)
+
+## Fairness Workshops
+
+- [Algorithmic Fairness through the Lens of Causality and Privacy (NeurIPS 2022)](https://www.afciworkshop.org/)
+
+## Interpretability Workshops
+
+- [Interpretable Machine Learning in Healthcare (ICML 2022)](https://sites.google.com/view/imlh2022)
+
+## Other Workshops
+
+- [Pitfalls of limited data and computation for Trustworthy ML (ICLR 2023)](https://sites.google.com/view/trustml-unlimited/home)
+
+- [Formal Verification of Machine Learning (ICML 2023)](https://www.ml-verification.com/)
+
+- [Secure and Safe Autonomous Driving (SSAD) Workshop and Challenge (CVPR 2023)](https://trust-ai.github.io/SSAD2023/)
+
+- [Trustworthy and Reliable Large-Scale Machine Learning Models (ICLR 2023)](https://rtml-iclr2023.github.io/)
+
+- [TrustNLP: Third Workshop on Trustworthy Natural Language Processing (ACL 2023)](https://trustnlpworkshop.github.io/)
+
+- [Workshop on Physics for Machine Learning (ICLR 2023)](https://physics4ml.github.io/)
+
+- [Pitfalls of limited data and computation for Trustworthy ML (ICLR 2023)](https://sites.google.com/view/trustml-unlimited/)
+
+- [Workshop on Mathematical and Empirical Understanding of Foundation Models (ICLR 2023)](https://sites.google.com/view/me-fomo2023)
+
+- [ARTIFICIAL INTELLIGENCE AND SECURITY (CCS 2022)](https://aisec.cc/)
+
+- [Automotive and Autonomous Vehicle Security (AutoSec) (NDSS 2022)](https://www.ndss-symposium.org/ndss-program/autosec-2022/)
+
+- [NeurIPS ML Safety Workshop (NeurIPS 2022)](https://neurips2022.mlsafety.org/)
+
+- [Trustworthy and Socially Responsible Machine Learning (NeurIPS 2022)](https://tsrml2022.github.io/)
+
+- [International Workshop on Trustworthy Federated Learning (IJCAI 2022)](https://federated-learning.org/fl-ijcai-2022/)
+
+- [Workshop on AI Safety (IJCAI 2022)](https://www.aisafetyw.org/)
+
+- [1st Workshop on Formal Verification of Machine Learning (ICML 2022)](https://www.ml-verification.com/)
+
+- [Workshop on Distribution-Free Uncertainty Quantification (ICML 2022)](https://sites.google.com/berkeley.edu/dfuq-22/home)
+
+- [First Workshop on Causal Representation Learning (UAI 2022)](https://crl-uai-2022.github.io/)
+
+- [I Can’t Believe It’s Not Better! (ICBINB) Workshop Series](https://i-cant-believe-its-not-better.github.io/)
+
+# Tutorials
+
+## Robustness Tutorials
+
+- [Tutorial on Domain Generalization (IJCAI-ECAI 2022)](https://dgresearch.github.io/)
+
+- [Practical Adversarial Robustness in Deep Learning: Problems and Solutions (CVPR 2021)](https://sites.google.com/view/par-2021)
+
+- [A Tutorial about Adversarial Attacks & Defenses (KDD 2021)](https://sites.google.com/view/kdd21-tutorial-adv-robust/)
+
+- [Adversarial Robustness of Deep Learning Models (ECCV 2020)](https://sites.google.com/umich.edu/eccv-2020-adv-robustness)
+
+- [Adversarial Robustness: Theory and Practice (NeurIPS 2018)](https://nips.cc/Conferences/2018/ScheduleMultitrack?event=10978) [[Note]](https://adversarial-ml-tutorial.org/)
+
+- [Adversarial Machine Learning Tutorial (AAAI 2018)](https://aaai18adversarial.github.io/index.html#)
+- [TutorialSearch](https://tutorialsearch.io/?q=trustworthy+deep) - Free cross-platform search engine indexing 50,000+ tutorials from Udemy, Skillshare, Pluralsight, and other major learning platforms across 45+ categories.
+
+# Talks
+
+## Robustness Talks
+
+- [Ian Goodfellow: Adversarial Machine Learning (ICLR 2019)](https://www.youtube.com/watch?v=sucqskXRkss)
+
+- [Jindong Wang: Building more robust machine learning models (MLNLP)](https://www.bilibili.com/video/BV1hP411V7SP/)
+
+# Blogs
+
+## Robustness Blogs
+
+- [Pixels still beat text: Attacking the OpenAI CLIP model with text patches and adversarial pixel perturbations](https://stanislavfort.github.io/blog/OpenAI_CLIP_stickers_and_adversarial_examples/)
+
+- [Adversarial examples for the OpenAI CLIP in its zero-shot classification regime and their semantic generalization](https://stanislavfort.github.io/blog/OpenAI_CLIP_adversarial_examples/)
+
+- [A Discussion of Adversarial Examples Are Not Bugs, They Are Features](https://distill.pub/2019/advex-bugs-discussion/)
+
+## Interpretability Blogs
+
+- [Multimodal Neurons in Artificial Neural Networks](https://distill.pub/2021/multimodal-neurons/)
+
+- [Curve Detectors](https://distill.pub/2020/circuits/curve-detectors/)
+
+- [Visualizing the Impact of Feature Attribution Baselines](https://distill.pub/2020/attribution-baselines/)
+
+- [Visualizing Neural Networks with the Grand Tour](https://distill.pub/2020/grand-tour/)
+
+## Other Blogs
+
+- [Cleverhans Blog - Ian Goodfellow, Nicolas Papernot](http://www.cleverhans.io/)
+
+# Other Resources
+
+- [AI Security and Privacy (AISP) Seminar Series](http://scl.sribd.cn/seminar/index.html)
+
+- [ML Safety Newsletter](https://newsletter.mlsafety.org/)
+
+- [Trustworthy ML Initiative](https://www.trustworthyml.org/home)
+
+- [Trustworthy AI Project](https://www.trustworthyaiproject.eu/)
+
+- [ECE1784H: Trustworthy Machine Learning (Course, Fall 2019) - Nicolas Papernot](https://www.papernot.fr/teaching/f19-trustworthy-ml)
+
+- [A School for all Seasons on Trustworthy Machine Learning (Course) - Reza Shokri, Nicolas Papernot](https://trustworthy-machine-learning.github.io/)
+
+- [Trustworthy Machine Learning (Book)](http://www.trustworthymachinelearning.com/)
+
+- [AI Safety Support (Lots of Links)](https://www.aisafetysupport.org/lots-of-links)
+
+# Contributing
+
+Welcome to recommend paper that you find interesting and focused on trustworthy deep learning. You can submit an issue or contact me via [[email]](mailto:ming_hui.chen@outlook.com). Also, if there are any errors in the paper information, please feel free to correct me.
+
+Formatting (The order of the papers is reversed based on the initial submission time to arXiv)
+- Paper Title [[paper]](https://arxiv.org/abs/xxxx.xxxx)
+  - Authors. *Published Conference or Journal*
+  - Key Word: XXX.
+  - <details><summary>Digest</summary> XXXXXX
+
+## Agent-Assisted Updates
+
+This repository includes `AGENTS.md` to make arXiv paper additions reproducible with Codex/Claude. From the repository root, ask Codex/Claude:
+
+```text
+Use this project's AGENTS.md. Add this arXiv paper to README.md:
+https://arxiv.org/abs/xxxx.xxxxx
+```
+
+Codex should fetch arXiv metadata, check duplicates in `README.md`, choose the most suitable paper category, create the title/authors/keywords/digest entry, and insert it in reverse order by initial arXiv submission date. By default, this workflow updates `README.md` only.

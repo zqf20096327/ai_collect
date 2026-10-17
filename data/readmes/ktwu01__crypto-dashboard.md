@@ -1,0 +1,166 @@
+# AI-Powered Crypto Analysis Dashboard
+
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fktwu01.github.io%2Fcrypto-dashboard%2F)](https://ktwu01.github.io/crypto-dashboard/) [![GitHub stars](https://img.shields.io/github/stars/ktwu01/crypto-dashboard)](https://github.com/ktwu01/crypto-dashboard) [![GitHub forks](https://img.shields.io/github/forks/ktwu01/crypto-dashboard)](https://github.com/ktwu01/crypto-dashboard/fork) ![License](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)
+
+[![Build Status](https://img.shields.io/travis/com/ktwu01/crypto-dashboard.svg)](https://travis-ci.com/ktwu01/crypto-dashboard) [![Coverage Status](https://coveralls.io/repos/github/ktwu01/crypto-dashboard/badge.svg?branch=main)](https://coveralls.io/github/ktwu01/crypto-dashboard?branch=main) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/ktwu01?style=social)](https://twitter.com/ktwu01)
+
+A comprehensive cryptocurrency analysis and portfolio management dashboard built with React, TypeScript, and Vite. Track real-time crypto prices, market trends, and manage your portfolio with a beautiful, modern UI.
+
+> We are truly thankful for the geek @Zillizezz and benefited greatly from the [Minimax hackathon](https://agent.minimax.io/share/300474460274837). @Zillizezz also allowed us to remix their project (crypto-dashboard) in the hackathon. Although we tried our best to find this username on the whole web, we could not find them on GitHub and so on, and failed to contact them. So we have to just use this new repo instead of forking one.
+
+![Dashboard Overview](docs/crypto-dashboard-dashboard.png)
+*AI Insights sit at the top of the streamlined dashboard, surfacing the latest market pulse alongside high-level performance tiles.*
+
+![Market Explorer](docs/crypto-dashboard-market.png)
+*Market view highlights gainers, losers, and trending coins while letting you drill into granular quote data with a responsive table layout.*
+
+![Advanced Charts](docs/crypto-dashboard-charts.png)
+*Interactive chart workspace combines multi-interval price action with technical overlays for deeper analysis.*
+
+## Features
+
+### Market Overview
+- **Real-time Price Tracking**: Live cryptocurrency prices from CoinGecko API
+- **Market Statistics**: Global market cap, 24h volume, and dominance metrics
+- **Trending Coins**: Discover the hottest cryptocurrencies
+- **Gainers & Losers**: Track top performing and declining assets
+
+### Portfolio Management
+- **Asset Tracking**: Add and manage your crypto holdings
+- **Portfolio Analytics**: View total value, profit/loss, and allocation
+- **Performance Metrics**: Track your investment performance over time
+
+### Advanced Charting
+- **Interactive Price Charts**: Visualize price movements with Chart.js
+- **Multiple Timeframes**: 24h, 7d, 30d, 90d, 1y, and max views
+- **Technical Indicators**: (Planned) MACD, RSI, Moving Averages
+
+### Modern UI/UX
+- **Glassmorphism Design**: Beautiful glass-effect cards and components
+- **Responsive Layout**: Works seamlessly on desktop and mobile
+- **Dark Theme**: Eye-friendly interface for extended use
+- **Smooth Animations**: Powered by Framer Motion
+
+## Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ktwu01/crypto-dashboard.git
+   cd crypto-dashboard
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   The default configuration uses CoinGecko's free API:
+   ```env
+   VITE_API_BASE_URL=https://api.coingecko.com/api/v3
+   # Optional: supply a demo/pro key to raise rate limits and attach x_cg_demo_api_key automatically
+   # VITE_COINGECKO_API_KEY=your-demo-or-pro-key
+   ```
+
+4. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open your browser**
+   
+   Navigate to [http://localhost:5173](http://localhost:5173)
+
+## Available Scripts
+
+- `pnpm dev` - Start development server (with HMR)
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build locally
+- `pnpm lint` - Run ESLint to check code quality
+
+## Tech Stack
+
+- **Framework**: React 18 + TypeScript
+- **Build Tool**: Vite 6
+- **Styling**: Tailwind CSS + CSS Modules
+- **UI Components**: Radix UI + Custom Components
+- **Charts**: Chart.js + React-Chartjs-2
+- **Animations**: Framer Motion
+- **API Client**: Axios
+- **State Management**: React Query
+- **Routing**: React Router v6
+- **Form Handling**: React Hook Form + Zod
+
+## Configuration
+
+### API Configuration
+The app uses CoinGecko's public API by default. No API key is required for basic usage.
+
+To use a different API or endpoint:
+1. Update `.env` file:
+   ```env
+   VITE_API_BASE_URL=your_api_url_here
+   ```
+
+2. Restart the development server
+
+### Environment Variables
+- `VITE_API_BASE_URL` - Base URL for cryptocurrency API (default: CoinGecko)
+
+## Features Roadmap
+
+- [x] Real-time market data
+- [x] Portfolio management
+- [x] Interactive price charts
+- [x] Trending coins & market movers
+- [x] Technical analysis indicators
+- [x] Customizable watchlists
+- [ ] AI-powered market insights
+- [ ] User accounts & cloud sync
+- [ ] Mobile app (React Native)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+- [CoinGecko API](https://www.coingecko.com/en/api) for cryptocurrency data
+- [@Zillizezz](https://agent.minimax.io/share/300474460274837) for the original Minimax hackathon project
+- [Radix UI](https://www.radix-ui.com/) for accessible component primitives
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
+
+## Documentation
+
+- [Deployment Guide](./DEPLOYMENT.md) - Instructions for deploying to various platforms
+- [Project Plan](./.cursor/scratchpad.md) - Development roadmap and progress tracking
+
+## Support
+
+For questions or issues, please [open an issue](https://github.com/ktwu01/crypto-dashboard/issues) on GitHub.
+
+---
+
+Built with React + TypeScript + Vite

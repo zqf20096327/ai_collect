@@ -1,0 +1,106 @@
+<p align="center">
+    <img src="https://github.com/Cre4T3Tiv3/Cre4T3Tiv3/blob/main/docs/assets/Cre4T3Tiv3-WM.gif" alt="Cre4T3Tiv3-WM" width="999"/>
+</p>
+
+> *The same structural patterns govern neural networks, code evolution, hardware performance, and perception itself. Domain changes. Architecture doesn't.*
+
+**I operate at the intersection of my background: offensive security, software engineering, and AI/ML.** Designing neural network architectures, training and deploying models, building production ML pipelines and agent systems, and engineering the diagnostic instruments that reveal what other systems conceal. From statistical modeling and data-driven decision systems to real-time infrastructure and edge computing, I work the full stack from mathematical foundations.
+
+10+ years across fintech, ad-tech, and enterprise SaaS. MS in AI/ML. MS in Computer Science (in-progress, CU Boulder). Founder & Chief Architect @ [ByteStack Labs](https://bytestacklabs.com).
+
+---
+
+<a href="https://www.linkedin.com/in/jlmoses/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/linkedin-white.png"><img alt="Jesse Moses on LinkedIn" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/linkedin-dark.png"></picture></a> &nbsp;&nbsp;&nbsp; <a href="https://x.com/Cre4T3Tiv3"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/x-white.png"><img alt="Cre4T3Tiv3 on X" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/x-dark.png"></picture></a> &nbsp;&nbsp;&nbsp; <a href="https://orcid.org/0009-0006-0322-7974"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/orcid-white.png"><img alt="ORCID" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/orcid-dark.png"></picture></a>
+
+---
+---
+
+<a href="https://bytestacklabs.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/bytestack-labs-white.png"><img alt="ByteStack Labs" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/bytestack-labs-dark.png"></picture></a> &nbsp;&nbsp;&nbsp; <a href="https://www.linkedin.com/company/bytestack-labs/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/linkedin-white.png"><img alt="ByteStack Labs on LinkedIn" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/linkedin-dark.png"></picture></a> &nbsp;&nbsp;&nbsp; <a href="https://medium.com/@bytestacklabs"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/medium-white.png"><img alt="ByteStack Labs on Medium" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/medium-dark.png"></picture></a> &nbsp;&nbsp;&nbsp; <a href="https://github.com/ByteStack-Labs"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/github-white.png"><img alt="ByteStack Labs on GitHub" src="https://raw.githubusercontent.com/Cre4T3Tiv3/Cre4T3Tiv3/main/docs/assets/github-dark.png"></picture></a>
+
+---
+
+**Architectural Diagnosis.** Where systems fail and why, from the math up.  
+**Temporal Intelligence.** Pattern analysis across time: code evolution, hardware performance, signal processing, music.  
+**Mathematical Rigor.** Statistical validation, reproducible methodology, every claim traceable to its mathematical basis.  
+**Cross-Domain Engineering.** Python, C++/CUDA, Go, Rust, TypeScript. From edge hardware to cloud infrastructure.  
+
+I build across domains because the structural patterns are domain-invariant. Temporal decay in a codebase follows the same mathematics as convergence failure in a neural network. The physics don't change. The substrate does.
+
+---
+
+### Featured Projects
+
+---
+
+#### [action-gate](https://github.com/ByteStack-Labs/action-gate)
+
+**The verification floor between an agent's decision and an irreversible action.**  
+Three gates run over the same 60 seeded decisions, 30 correct and 30 well-formed-wrong: a confidence gate that reads the agent's self-report, a judge gate that grades the decision's surface, and a reconciliation gate that re-derives the outcome from the source of truth and refuses when the two disagree. The first two approve 30 and 25 dangerous actions; reconciliation approves 0. verify.py re-derives every published figure from the committed fixtures, checks the README's numbers against the receipt, and exits non-zero if a single one fails to reproduce. Standard library, no model, no network.
+
+[![action-gate social preview](https://raw.githubusercontent.com/ByteStack-Labs/action-gate/main/docs/assets/action-gate-hero.png)](https://github.com/ByteStack-Labs/action-gate)
+
+---
+
+#### [agent-reliability](https://github.com/ByteStack-Labs/claude-plugins)
+
+**ByteStack Labs marketplace for Claude Code. Reliability skills that audit AI which passes evaluation and fails in production.**  
+production-autopsy reproduces the failure, quantifies the drop by slice, and isolates the root cause by ablation; calibration-guard and trajectory-eval land next. Each skill emits a verification script and a diagnostic report, committed unedited. Every figure re-derives from runnable code, and the script exits non-zero if a single one fails to reproduce.
+
+[![agent-reliability social preview](https://raw.githubusercontent.com/ByteStack-Labs/claude-plugins/main/docs/assets/claude-plugins-hero.png)](https://github.com/ByteStack-Labs/claude-plugins)
+
+---
+
+#### [agent-reliability-receipts](https://github.com/ByteStack-Labs/agent-reliability-receipts)
+
+**Public fixtures diagnosed by the agent-reliability plugin, with the tool's output committed unedited as the receipt.**  
+The hero fixture, invoice-extraction, scores 100% exact-match on evaluation and 86.25% on format-shifted production input. The 13.75-point drop concentrates in four input-format slices that collapse to zero; two ablations isolate positional field assignment as the cause. verify.py re-derives every figure from the raw data and exits non-zero if a single one fails to reproduce. Standard library, no model, no GPU.
+
+[![agent-reliability-receipts social preview](https://raw.githubusercontent.com/ByteStack-Labs/agent-reliability-receipts/main/docs/assets/agent-reliability-receipts-hero.png)](https://github.com/ByteStack-Labs/agent-reliability-receipts)
+
+---
+
+#### [kalman-klar](https://github.com/ByteStack-Labs/kalman-klar)
+**The standard linear Kalman filter, derived from first principles and built to diagnose itself.**  
+A complete derivation from the Bayesian foundation through the recursive algorithm, a NumPy-only reference implementation where every line cites the equation it implements, and diagnostic instrumentation that reveals whether a running filter is actually optimal. NIS, NEES, innovation whiteness, and divergence detection, each derived from the properties the mathematics guarantees rather than bolted on after. The core depends on NumPy alone. Every claim traces to the derivation; every test verifies a property the math proves.
+
+[![kalman-klar social preview](https://raw.githubusercontent.com/ByteStack-Labs/kalman-klar/main/docs/assets/kalman-klar-hero.png)](https://github.com/ByteStack-Labs/kalman-klar)
+
+---
+
+#### [GitVoyant](https://www.gitvoyant.ai)
+
+**Temporal Code Intelligence platform. Time-series complexity analysis across Python, JavaScript, Java, and Go.**  
+Extracts commit history, computes cyclomatic complexity at each snapshot using language-specific parsers, fits linear regression to the time series, and classifies the trend as IMPROVING, DECLINING, or STABLE with statistical confidence scoring. Static analysis tells you a file is complex. GitVoyant tells you whether that complexity is growing, shrinking, or stable, and at what rate.
+
+[![GitVoyant social preview](https://raw.githubusercontent.com/Cre4T3Tiv3/gitvoyant/main/docs/assets/gitvoyant_latest_v0.3.0.png)](https://gitvoyant.ai)
+
+---
+
+#### [Jetson Orin Nano Matrix Multiplication: Power-Performance Analysis](https://github.com/Cre4T3Tiv3/jetson-orin-matmul-analysis)
+
+**Scientific CUDA benchmarking framework. Four implementations, three power modes, five matrix sizes.**  
+Naive, cache-blocked, cuBLAS, and Tensor Core WMMA across 15W, 25W, and MAXN on Jetson Orin Nano. C++/CUDA and Python. 1,282 GFLOPS peak, 99.5% mathematical validation, 60 data points. Every result validated against NumPy reference computation.
+
+[![Jetson Orin Nano Power-Performance Benchmarks social preview](https://raw.githubusercontent.com/Cre4T3Tiv3/jetson-orin-matmul-analysis/main/docs/assets/jetson_orin_nano_matmul_power_benchmarks_latest_v1.0.0.png)](https://github.com/Cre4T3Tiv3/jetson-orin-matmul-analysis)
+
+---
+
+#### [AI Agents Reality Check](https://github.com/Cre4T3Tiv3/ai-agents-reality-check)
+
+**Benchmarking the gap between AI agent hype and architecture.**  
+Three agent archetypes, 73-point performance spread, stress testing, network resilience, and ensemble coordination analysis with statistical validation (95% CI, Cohen's h). 0% positive synergy across all multi-agent ensemble patterns tested.
+
+[![AI Agent Reality Check social preview](https://raw.githubusercontent.com/Cre4T3Tiv3/ai-agents-reality-check/main/docs/assets/ai_agents_reality_check_latest_v0.1.0.png)](https://github.com/Cre4T3Tiv3/ai-agents-reality-check)
+
+---
+
+#### [Unsloth LLaMA 3 Adapter (QLoRA)](https://github.com/Cre4T3Tiv3/unsloth-llama3-alpaca-lora)
+
+**Custom model training. 4-bit QLoRA fine-tuning pipeline for LLaMA 3 8B.**  
+End-to-end from dataset preparation through training, evaluation, and deployment. Memory-efficient instruction tuning on consumer GPUs using Unsloth. Published adapter on [HuggingFace](https://huggingface.co/Cre4T3Tiv3/unsloth-llama3-alpaca-lora).
+
+[![Unsloth LLaMA 3 Adapter preview](https://raw.githubusercontent.com/Cre4T3Tiv3/unsloth-llama3-alpaca-lora/main/docs/assets/unsloth_llama3_alpaca_lora_latest_v0.1.0.png)](https://github.com/Cre4T3Tiv3/unsloth-llama3-alpaca-lora)
+
+---
+
+*In a field that rewards premature convergence, I build systems that converge last and converge right.*

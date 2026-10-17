@@ -1,0 +1,299 @@
+# Zeph
+
+<div align="center">
+  <img src="book/src/assets/zeph_v8_github.png" alt="Zeph" width="800">
+
+  **A memory-first AI agent for long-running work — local, cloud, or decentralized.**
+
+  [![Crates.io](https://img.shields.io/crates/v/zeph)](https://crates.io/crates/zeph)
+  [![docs](https://img.shields.io/badge/docs-book-blue)](https://bug-ops.github.io/zeph/)
+  [![CI](https://img.shields.io/github/actions/workflow/status/bug-ops/zeph/ci.yml?branch=main&label=CI)](https://github.com/bug-ops/zeph/actions)
+  [![codecov](https://codecov.io/gh/bug-ops/zeph/graph/badge.svg?token=S5O0GR9U6G)](https://codecov.io/gh/bug-ops/zeph)
+  [![MSRV](https://img.shields.io/badge/MSRV-1.98-blue)](https://www.rust-lang.org)
+  [![Tests](https://img.shields.io/badge/tests-15761-brightgreen)](https://github.com/bug-ops/zeph/actions)
+  [![License: MIT OR Apache-2.0](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-yellow.svg)](LICENSE)
+</div>
+
+Most AI assistants forget everything the moment you close the window. Zeph is built the other way around: it **remembers**.
+
+Point it at your code, your documents, or your team chat, and it keeps working across days and sessions — recalling not just *what* was said, but *why* a decision was made. It runs on your laptop with free local models, reaches for the cloud (or a decentralized network) only when a task is genuinely hard, and keeps your API keys encrypted and your tools sandboxed the entire time.
+
+It's a single ~12 MB Rust binary. No Python, no Node, no database server to babysit.
+
+---
+
+## Try it in 60 seconds
+
+```bash
+curl -fsSL https://github.com/bug-ops/zeph/releases/latest/download/install.sh | sh
+zeph init      # interactive wizard sets up your provider and keys
+zeph           # start talking
+```
+
+Prefer to stay fully offline? Run [Ollama](https://ollama.ai), pull two small models, and nothing ever leaves your machine:
+
+```bash
+ollama pull qwen3:8b
+ollama pull qwen3-embedding
+zeph init && zeph
+```
+
+That's it — install, configure, chat. Want the dashboard instead? `zeph --tui`.
+
+---
+
+## What you can do with it
+
+|  | |
+|---|---|
+| **Code with it** | Point Zeph at a repo. It reads files, runs commands, searches code, and answers with full project context. Drop a `zeph.md` in your repo for project-specific instructions, or plug it into your editor over [ACP](https://bug-ops.github.io/zeph/advanced/acp.html). |
+| **Put it in your team chat** | Deploy as a [Telegram](https://bug-ops.github.io/zeph/guides/telegram.html), Discord, or Slack bot with streaming replies, user allowlists, and voice-message transcription. Your team gets an assistant where they already work. |
+| **Keep it private** | Run 100% locally with Ollama — no data leaves your machine. Encrypt secrets in an [age vault](https://github.com/FiloSottile/age), sandbox file and shell access, and require confirmation before anything destructive. |
+| **Let it run long jobs** | Research loops, document RAG, scheduled tasks, multi-step plans, and sub-agents — work that spans hours and many tool calls, not a single reply. |
+
+## Why people choose Zeph
+
+| If you want… | Zeph gives you… |
+|---|---|
+| An agent that survives long projects | SQLite conversation history, [semantic recall](https://bug-ops.github.io/zeph/guides/semantic-memory.html), [graph memory](https://bug-ops.github.io/zeph/concepts/graph-memory.html), session digests, and goal-aware compaction. |
+| Lower running costs | A default embedded vector store, local [Ollama](https://ollama.ai) defaults, and [routing](https://bug-ops.github.io/zeph/advanced/adaptive-inference.html) that sends easy work to cheap models and saves expensive ones for hard tasks. |
+| Memory that understands *why* | Typed knowledge-graph facts, multi-hop recall, probabilistic belief edges, and write-quality gates — not just keyword search over old chat logs. |
+| Provider freedom | [Ollama](https://ollama.ai), Claude, OpenAI, Gemini, [Candle](https://bug-ops.github.io/zeph/advanced/candle.html), any OpenAI-compatible endpoint, plus decentralized networks ([Gonka](https://bug-ops.github.io/zeph/guides/gonka.html), [Cocoon TEE](https://bug-ops.github.io/zeph/guides/cocoon.html)). |
+| Agent-grade safety | Encrypted vault, [sandboxed tools](https://bug-ops.github.io/zeph/reference/security/file-sandbox.html), [prompt-injection detection](https://bug-ops.github.io/zeph/reference/security/mcp.html), SSRF guards, PII filtering, and exfiltration checks. |
+| To work where you already are | CLI, [TUI](https://bug-ops.github.io/zeph/advanced/tui.html) dashboard, chat apps, [IDEs](https://bug-ops.github.io/zeph/advanced/acp.html), [MCP](https://bug-ops.github.io/zeph/guides/mcp.html) tools, an [HTTP gateway](https://bug-ops.github.io/zeph/advanced/gateway.html), and a [scheduler](https://bug-ops.github.io/zeph/concepts/scheduler.html). |
+
+<div align="center">
+  <img src="book/src/assets/zeph.gif" alt="Zeph TUI dashboard" width="800">
+</div>
+
+---
+
+## Under the hood
+
+The sections below go from the headline idea to the implementation detail. Skim the summaries; expand the **▸ details** blocks when you want to see exactly how it works.
+
+### Memory is the product
+
+Most agents bolt recall on as an afterthought. In Zeph, memory is the core. It runs several layers at once instead of dumping everything into one vector index:
+
+| Layer | What it holds |
+|---|---|
+| **Working context** | Keeps the current task coherent under [context pressure](https://bug-ops.github.io/zeph/concepts/context-budgets.html). |
+| **Episodic** | Per-session messages, tool outputs, and digests, persisted to SQLite. |
+| **Semantic** | Cross-session facts promoted once they recur across distinct sessions. |
+| **Graph** | Entities, decisions, and the *typed relationships* between them. |
+
+So you can ask **"Why did we choose Kafka?"** and Zeph follows causal edges from *Kafka* through the decision graph to surface the original rationale — instead of returning ten documents that happen to contain the word.
+
+<details>
+<summary><b>▸ The full memory stack (for the curious)</b></summary>
+
+Zeph layers ~20 specialized mechanisms on top of vanilla vector search. The notable ones:
+
+- **A-MAC (Adaptive Memory Admission Control)** — a multi-factor score (future utility, factual confidence, novelty, recency, goal relevance) decides what's worth remembering *before* it's written, so noise never reaches the graph.
+- **Typed graph edges (MAGMA)** — relationships are classified (causal, temporal, semantic, hierarchical, co-occurrence) so traversal can be type-filtered, not just similarity-ranked.
+- **SYNAPSE spreading activation** — recall seeds an entity and propagates through the graph with hop-by-hop decay and lateral inhibition, surfacing multi-hop links flat search misses.
+- **BeliefMem** — a probabilistic edge layer that combines evidence with a Noisy-OR rule and only promotes a fact to the committed graph once confidence crosses a threshold. Uncertain knowledge stays uncertain.
+- **APEX-MEM** — bi-temporal edges (`valid_from/until` for the fact, `created_at/expired_at` for ingestion). Contradictions supersede rather than overwrite, leaving a full audit trail you can time-travel through.
+- **MemCoT** — Zoom-In (derivation chain) and Zoom-Out (facts → decisions → milestones) views over how the agent's understanding evolved.
+- **SleepGate + optical forgetting** — background passes that soft-delete low-importance memories and compress old ones by age, on two independent axes.
+- **Compaction probe validation** — after every summarization, a Q&A probe checks that key facts survived; if not, the agent keeps the original turns instead.
+
+See [memory concepts](https://bug-ops.github.io/zeph/concepts/memory.html) and [graph memory](https://bug-ops.github.io/zeph/concepts/graph-memory.html).
+
+</details>
+
+### Token efficiency by design
+
+Adding more skills and tools shouldn't inflate every prompt. Zeph keeps prompt size **O(K), not O(N)**: with 50 skills installed, only the ~5 relevant to your query are loaded — roughly **2,500 tokens of skill context instead of ~50,000**.
+
+<details>
+<summary><b>▸ How the prompt stays small</b></summary>
+
+- **Skill selection** — top-K skills by hybrid BM25 + embedding similarity (Reciprocal Rank Fusion, k=60). Metadata loads first (~100 tokens each), the full body only on activation.
+- **Tool-schema filtering** — tool definitions are filtered per turn by relevance; irrelevant schemas leave the context window entirely.
+- **Tool-result & semantic-response caching** — deterministic results and semantically equivalent queries reuse prior answers without another API call.
+- **Speculative dispatch** — read-only tools pre-execute *while* the model is still writing; if it then calls the same tool, the result is already there.
+- **Goal-aware compaction (HiAgent)** — during multi-step tasks, only information no longer relevant to the current subgoal is compressed, preserving active working memory.
+
+See [Why Zeph?](https://bug-ops.github.io/zeph/why-zeph.html) and [token efficiency](https://bug-ops.github.io/zeph/architecture/token-efficiency.html).
+
+</details>
+
+### Run it your way: local, cloud, or decentralized
+
+Declare every provider once in `[[llm.providers]]`, then let Zeph route each task to the cheapest option that can handle it — with automatic fallback if one fails.
+
+```toml
+[[llm.providers]]
+name = "fast"            # cheap local model for extraction, embeddings, routing
+type = "ollama"
+model = "qwen3:8b"
+embedding_model = "qwen3-embedding"
+embed = true
+
+[[llm.providers]]
+name = "quality"         # reserved for planning, code, hard reasoning
+type = "claude"
+model = "claude-sonnet-5"
+default = true
+
+[llm]
+routing = "bandit"
+```
+
+Eight provider types work out of the box: **Ollama, Claude, OpenAI, Gemini**, any **OpenAI-compatible** endpoint (Groq, Together, Fireworks…), **[Candle](https://bug-ops.github.io/zeph/advanced/candle.html)** for fully-local GGUF inference, and two decentralized networks:
+
+| Network | Type | What's special |
+|---|---|---|
+| [Gonka](https://bug-ops.github.io/zeph/guides/gonka.html) | `gonka` / `compatible` | Distributed GPU nodes — no shared rate ceiling, no single-vendor lock-in, OpenAI-compatible gateway. |
+| [Cocoon](https://bug-ops.github.io/zeph/guides/cocoon.html) | `cocoon` | Hardware **TEE** isolation — node operators can't read your prompts or weights, with attested speech-to-text. |
+
+<details>
+<summary><b>▸ Routing strategies</b></summary>
+
+Five strategies are implemented, plus reputation and stability layers on top:
+
+- **EMA** (default) — reorders providers by an exponential moving average of latency.
+- **Thompson Sampling** — Bayesian Beta(α,β) bandit balancing exploration and exploitation.
+- **Cascade** — cost-first, escalating only when output looks degenerate.
+- **Complexity Triage** — a classifier picks a tier (simple → expert) per task.
+- **Contextual bandit (LinUCB)** — embeds the request and learns per-provider quality online.
+
+Reputation-aware selection penalizes providers that emit invalid tool calls; an Agent Stability Index tracks response coherence; a quality gate verifies the chosen output. See [adaptive inference](https://bug-ops.github.io/zeph/advanced/adaptive-inference.html).
+
+</details>
+
+### Skills that improve themselves
+
+Skills are plain `SKILL.md` markdown files — easy to write, version, and share. Edit one and it hot-reloads; no restart. Matching is by meaning, so *"check disk space"* finds the `system-info` skill without a keyword match.
+
+When a skill repeatedly fails, Zeph notices (its feedback detector works across **7 languages**), reflects on the cause, and generates an improved version — with Wilson-score ranking promoting what actually works and auto-rollback if a new version regresses.
+
+<details>
+<summary><b>▸ Trust, quarantine, and self-learning</b></summary>
+
+- **Trust levels** — imported skills start *quarantined* with a restricted tool subset until explicitly trusted; tampering is caught with per-invocation BLAKE3 hashing.
+- **Failure-driven evolution** — after a configurable number of failures, an LLM regenerates the skill (capped at 10 versions, with rollback below a performance floor).
+- **Bayesian re-ranking** — Wilson lower-bound scores (95% CI) auto-promote skills above 0.85 and demote below 0.40.
+- **Implicit feedback** — a regex-first detector (no LLM cost) spots corrections and reuses them; an LLM judge handles only borderline cases.
+
+See [self-learning](https://bug-ops.github.io/zeph/guides/self-learning.html) and [skill trust](https://bug-ops.github.io/zeph/advanced/skill-trust.html).
+
+</details>
+
+### Security you can actually audit
+
+Secrets live in an [age-encrypted](https://github.com/FiloSottile/age) vault, never in `.env` files. Every tool call passes through trust gates, command filters, sandboxing, and an audit log. Content from untrusted sources (web pages, tool output, MCP servers) is sanitized before it ever reaches the model.
+
+<details>
+<summary><b>▸ Defense in depth</b></summary>
+
+- **Vault** — x25519 / ChaCha20-Poly1305, private key stored `0600`, zeroized in memory on drop, atomic writes.
+- **Sandboxing** — OS-level isolation (Linux Landlock, macOS Seatbelt, feature-gated) plus per-path allow/deny globs; relative `..` escapes rejected before canonicalization.
+- **Prompt-injection detection** — 17 compiled patterns flag "ignore previous instructions"-style attacks; untrusted content is wrapped in spotlighting tags that tell the model not to obey it.
+- **SSRF defense (5 layers)** — HTTPS-only, pre-DNS blocklist, post-DNS IP validation, pinned-address client (blocks DNS-rebinding), and redirect-chain re-validation (max 3 hops).
+- **ShadowSentinel** — an optional LLM probe evaluates risky tool calls *before* execution, with every verdict written to an audit table.
+- **Exfiltration guard** — blocks tracking-pixel image links and suspicious URLs in tool output, and suppresses injection-flagged memory writes.
+- **Safe-by-default limits** — a fresh install ships with the per-category tool rate limiter (`[security.rate_limit]`) and a daily LLM cost cap (`[cost].max_daily_cents`, default $25/day) already enabled, so a runaway agent loop can't hammer a tool category or burn unbounded API spend. Local-only Ollama/Candle usage costs `0` and never trips the cap; any config that sets these keys explicitly keeps its own values.
+- **Tamper-evident, downgrade-resistant history** — sub-agent transcripts and session event logs are keyed-BLAKE3 hash-chained (vault-keyed `ZEPH_HISTORY_KEY`), so an edited, reordered, or partially-stripped entry is detected and fails closed before it's replayed as trusted prior context; a tampered session can be inspected read-only via `zeph sessions resume <id> --print --allow-unverified`. A per-file vault anchor (`[integrity] anchor = "vault"`, the default) additionally closes the whole-file-strip downgrade a chain alone can't catch — a file-write-only attacker cannot forge or delete a vault entry. Durable execution journals use a separate authenticated high-water-mark, vault-sealable via `zeph durable seal-integrity` to close the equivalent whole-row-delete lever. `zeph sessions verify` / `zeph doctor` report status.
+
+See the [security model](https://bug-ops.github.io/zeph/reference/security.html).
+
+</details>
+
+### Messenger as agent infrastructure
+
+Zeph's [Telegram](https://bug-ops.github.io/zeph/guides/telegram.html) integration treats the messenger as a coordination layer, not a thin input box:
+
+- **Guest Mode** — answer anonymous, unauthenticated users via Bot API 10.0's `answerGuestQuery` through a transparent local proxy (no second `getUpdates`, no 409 conflicts).
+- **Bot-to-bot** — register as a managed bot and accept tasks from other bots in a depth-capped, allowlisted chain — multi-agent pipelines without becoming an open relay.
+- **Voice in a TEE** — voice notes are transcribed by a Cocoon STT provider inside a hardware enclave; the audio never leaves it unencrypted.
+
+---
+
+## Feature highlights
+
+| Area | Highlights |
+|---|---|
+| **Memory** | SQLite/PostgreSQL history, embedded SQLite vectors or [Qdrant](https://qdrant.tech), [graph memory](https://bug-ops.github.io/zeph/concepts/graph-memory.html), SYNAPSE, APEX-MEM, BeliefMem, MemCoT recall views, [SleepGate](https://bug-ops.github.io/zeph/advanced/sleep-gate.html), document RAG. |
+| **Context** | [Goal-aware compaction](https://bug-ops.github.io/zeph/advanced/context.html), typed-page assembler, output compression, tool-output archive, session recap, active-goal injection. |
+| **Skills** | `SKILL.md` registry, hot reload, BM25 + embedding matching, [trust levels](https://bug-ops.github.io/zeph/advanced/skill-trust.html), [self-learning](https://bug-ops.github.io/zeph/guides/self-learning.html). |
+| **Providers** | [Ollama](https://ollama.ai), Claude, OpenAI, Gemini, OpenAI-compatible, [Gonka](https://bug-ops.github.io/zeph/guides/gonka.html), [Cocoon TEE](https://bug-ops.github.io/zeph/guides/cocoon.html), [Candle](https://bug-ops.github.io/zeph/advanced/candle.html), [adaptive routing](https://bug-ops.github.io/zeph/advanced/adaptive-inference.html). |
+| **Tools** | Shell, file, web, [MCP](https://bug-ops.github.io/zeph/guides/mcp.html), quotas, approval gates, audit trail, [sandboxing](https://bug-ops.github.io/zeph/reference/security/file-sandbox.html), output compression, speculative dispatch, [ShadowSentinel](https://bug-ops.github.io/zeph/reference/security/shadow-sentinel.html). |
+| **Interfaces** | CLI, [TUI](https://bug-ops.github.io/zeph/advanced/tui.html), [Telegram](https://bug-ops.github.io/zeph/guides/telegram.html), Discord, Slack, [ACP](https://bug-ops.github.io/zeph/advanced/acp.html), [A2A](https://bug-ops.github.io/zeph/advanced/a2a.html), HTTP gateway, [scheduler](https://bug-ops.github.io/zeph/concepts/scheduler.html). |
+| **Code intelligence** | [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) indexing (Rust, Python, TS/JS, Go, and more), semantic repo map, [LSP](https://bug-ops.github.io/zeph/guides/lsp.html) diagnostics and hover via MCP. |
+| **Observability** | [Debug dumps](https://bug-ops.github.io/zeph/advanced/debug-dump.html), JSONL mode, opt-in live sub-agent transcript forwarding to TUI/`--bare`, [Prometheus](https://bug-ops.github.io/zeph/guides/prometheus.html), [OpenTelemetry](https://opentelemetry.io) traces, per-model cost tracking with daily budgets. |
+| **Sub-agents** | Spawning, grants, transcripts, live peer-to-peer messaging between running sub-agents (deny-by-default authorization, sanitized, no auto-injection into context). |
+
+## Installation
+
+```bash
+# Pre-built binary (no Rust toolchain needed)
+curl -fsSL https://github.com/bug-ops/zeph/releases/latest/download/install.sh | sh
+
+# Cargo
+cargo install zeph
+cargo install zeph --features desktop   # with the TUI dashboard
+
+# Docker
+docker pull ghcr.io/bug-ops/zeph:latest
+
+# From source
+git clone https://github.com/bug-ops/zeph.git
+cd zeph && cargo build --release --features full
+```
+
+Builds run only what you need via [feature bundles](https://bug-ops.github.io/zeph/reference/feature-flags.html): `desktop` (TUI), `ide` (ACP), `server` (gateway + A2A + telemetry), `chat` (Discord + Slack), `ml` (Candle + PDF), or `full`. Cross-platform: Linux, macOS, Windows on x86_64 and ARM64.
+
+> [!IMPORTANT]
+> Building from source requires Rust 1.98 or later. Pre-built binaries do not need a toolchain.
+
+## Common commands
+
+```bash
+zeph init                    # generate config through the wizard
+zeph doctor                  # run preflight checks
+zeph --tui                   # launch the dashboard
+zeph ingest ./docs           # ingest documents into semantic memory
+zeph skill list              # inspect installed skills
+zeph router stats            # inspect adaptive provider routing
+zeph memory export dump.json # export a memory snapshot
+```
+
+## Architecture
+
+A Cargo workspace (Edition 2024) of focused crates. See the [architecture overview](https://bug-ops.github.io/zeph/architecture/overview.html) and [crate map](https://bug-ops.github.io/zeph/architecture/crates.html).
+
+```text
+zeph
+  src/                       CLI, bootstrap, init wizard, command handlers
+  crates/zeph-core           agent loop and runtime orchestration
+  crates/zeph-config         TOML schema, migration, provider registry
+  crates/zeph-llm            provider abstraction and model backends
+  crates/zeph-memory         semantic, graph, episodic, and document memory
+  crates/zeph-skills         skill registry, matching, trust, learning
+  crates/zeph-tools          tool executors, sandboxing, policy, audit
+  crates/zeph-mcp            MCP client and tool lifecycle
+  crates/zeph-tui            ratatui dashboard
+  crates/zeph-acp            IDE integration via Agent Client Protocol
+  crates/zeph-a2a            agent-to-agent protocol support
+  crates/zeph-subagent       sub-agent definitions, spawning, transcripts
+  crates/zeph-orchestration  DAG planning, scheduling, verification
+```
+
+## Documentation
+
+- [Full documentation](https://bug-ops.github.io/zeph/) · [Installation](https://bug-ops.github.io/zeph/getting-started/installation.html) · [First conversation](https://bug-ops.github.io/zeph/getting-started/first-conversation.html)
+- [Memory concepts](https://bug-ops.github.io/zeph/concepts/memory.html) · [Graph memory](https://bug-ops.github.io/zeph/concepts/graph-memory.html) · [Adaptive routing](https://bug-ops.github.io/zeph/advanced/adaptive-inference.html)
+- [Configuration recipes](https://bug-ops.github.io/zeph/guides/config-recipes.html) · [Feature flags](https://bug-ops.github.io/zeph/reference/feature-flags.html) · [CLI reference](https://bug-ops.github.io/zeph/reference/cli.html) · [Security model](https://bug-ops.github.io/zeph/reference/security.html)
+
+Zeph draws on published work in parallel tool execution, temporal knowledge graphs, agentic memory linking, failure-driven compression, retrieval quality, and multi-model routing. See [References & Inspirations](https://bug-ops.github.io/zeph/references.html).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [SECURITY.md](SECURITY.md). Coverage-guided fuzzing harnesses for parser-like components live in [`fuzz/`](fuzz/README.md).
+
+## License
+
+Licensed under either of [MIT](LICENSE) or [Apache License, Version 2.0](LICENSE-APACHE) at your option.

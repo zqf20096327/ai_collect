@@ -1,0 +1,311 @@
+<div align="center">
+
+# S3OD: Towards Generalizable Salient Object Detection with Synthetic Data
+
+[**Orest Kupyn**](https://github.com/KupynOrest)<sup>1</sup> · [**Hirokatsu Kataoka**](https://hirokatsukataoka.net/)<sup>12</sup> · [**Christian Rupprecht**](https://chrirupp.github.io/)<sup>1</sup> ·
+
+<sup>1</sup>University of Oxford · <sup>2</sup>AIST, Japan
+
+<a href='https://arxiv.org/abs/2510.21605'><img src='https://img.shields.io/badge/arXiv-2510.21605-b31b1b.svg'></a>
+<a href='https://iclr.cc/'><img src='https://img.shields.io/badge/ICLR-2026-blue'></a>
+<a href='https://huggingface.co/okupyn/s3od'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Model-blue'></a>
+<a href='https://huggingface.co/datasets/okupyn/s3od_dataset'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-blue'></a>
+[![PyPI](https://img.shields.io/badge/PyPI-s3od-blue)](https://pypi.org/project/s3od/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+</div>
+
+**S3OD** is a large-scale fully synthetic dataset for salient object detection and background removal, with 140K high-quality images generated using diffusion models. Our model, trained on large-scale synthetic data and fine-tuned on real, achieves state-of-the-art performance on real-world benchmarks and enables single-step effective background removal from images in high resolution.
+
+![banner](./images/banner.png)
+
+## News
+- [2026/06/03] Added evaluation script (`eval.py`) and `s3od-cod` model variant for camouflaged object detection!
+- [2026/03/03] 🎉 Paper accepted to ICLR 2026!
+- [2025/10/26] 🔥 Release Version 0.1.0 - Training code, synthetic dataset, and inference package!
+
+## S3OD Dataset Download Instructions
+
+The S3OD dataset contains 140K synthetic images with high-quality masks for salient object detection.
+
+### Using HuggingFace Datasets Library (Recommended)
+
+The simplest way to use the dataset is through the `datasets` library:
+
+```python
+from datasets import load_dataset
+
+# Load the dataset
+dataset = load_dataset("okupyn/s3od_dataset", split="train")
+
+# Access data
+for sample in dataset:
+    image = sample["image"]      # PIL Image
+    mask = sample["mask"]        # PIL Image (mask)
+    caption = sample["caption"]  # str
+    category = sample["category"]# str
+    image_id = sample["image_id"]      # str
+
+# Or access specific samples
+sample = dataset[0]
+image = sample["image"]
+mask = sample["mask"]
+```
+
+### Dataset Statistics
+
+- **Total images**: 140,000+
+- **Categories**: 1,000+ ImageNet classes
+- **Resolution**: Variable (resized during training)
+- **Format**: JPEG (images), PNG (masks)
+- **Storage size**: ~35GB (Parquet format)
+
+### Dataset Structure
+
+Each sample in the dataset contains:
+- `image`: RGB image (PIL Image)
+- `mask`: Binary segmentation mask (PIL Image)
+- `caption`: Descriptive caption generated for the image
+- `category`: Object category from ImageNet
+- `image_id`: Unique image identifier
+
+## Installation
+
+### For Inference Only
+
+**From GitHub:**
+```bash
+pip install git+https://github.com/KupynOrest/s3od.git
+```
+
+### For Training & Research
+
+```bash
+git clone https://github.com/KupynOrest/s3od.git
+cd s3od
+pip install -r requirements-training.txt
+```
+
+## Usage
+
+### Quick Start
+
+```python
+from s3od import BackgroundRemoval
+from PIL import Image
+
+# Initialize detector (automatically downloads model from HuggingFace)
+detector = BackgroundRemoval()
+
+# Load and process image
+image = Image.open("your_image.jpg")
+result = detector.remove_background(image)
+
+# Save result with transparent background
+result.rgba_image.save("output.png")
+
+# Access predictions
+best_mask = result.predicted_mask  # Best mask (H, W) numpy array
+all_masks = result.all_masks       # All masks (N, H, W) numpy array  
+all_ious = result.all_ious         # IoU scores (N,) numpy array
+```
+
+### Evaluation
+
+To reproduce benchmark results, use `eval.py` with the appropriate model and dataset group:
+
+```bash
+# Evaluate on COD benchmarks (CAMO-TE, NC4K, COD10K-TE)
+python eval.py --model_id okupyn/s3od-cod --data_dir /path/to/datasets --datasets cod
+
+# Evaluate on DIS benchmarks
+python eval.py --model_id okupyn/s3od-dis --data_dir /path/to/datasets --datasets dis
+
+# Evaluate on SOD benchmarks
+python eval.py --model_id okupyn/s3od-sod --data_dir /path/to/datasets --datasets sod
+
+# Evaluate on all benchmarks
+python eval.py --model_id okupyn/s3od-synth --data_dir /path/to/datasets --datasets all
+```
+
+**Model ↔ Dataset mapping:**
+
+| Model | `--datasets` |
+|-------|-------------|
+| `okupyn/s3od-cod` | `cod` |
+| `okupyn/s3od-dis` | `dis` |
+| `okupyn/s3od-sod` | `sod` |
+| `okupyn/s3od-synth` | `all` |
+
+### Model Variants
+
+We provide multiple model variants optimized for different use cases:
+
+| Model | Training Data | Best For | HuggingFace |
+|-------|--------------|----------|-------------|
+| **okupyn/s3od** (default) | Synthetic + All Real Datasets | General-purpose background removal and production use | [🤗 Hub](https://huggingface.co/okupyn/s3od) |
+| **okupyn/s3od-synth** | Synthetic Only | Research on synthetic-to-real transfer, zero-shot evaluation, **benchmark metrics** | [🤗 Hub](https://huggingface.co/okupyn/s3od-synth) |
+| **okupyn/s3od-dis** | Synthetic + DIS5K | High-precision dichotomous segmentation, **DIS benchmark metrics** | [🤗 Hub](https://huggingface.co/okupyn/s3od-dis) |
+| **okupyn/s3od-sod** | Synthetic + SOD Datasets | Salient object detection tasks, **SOD benchmark metrics** | [🤗 Hub](https://huggingface.co/okupyn/s3od-sod) |
+| **okupyn/s3od-cod** | Synthetic + COD Datasets | Camouflaged object detection, **COD benchmark metrics** | [🤗 Hub](https://huggingface.co/okupyn/s3od-cod) |
+
+> **Note:** The default `okupyn/s3od` model is trained on all academic benchmarks and optimized for general-purpose usage. For computing metrics on specific academic benchmarks use the specialized variants.
+
+**Usage with different models:**
+
+```python
+# Default model (best general performance)
+detector = BackgroundRemoval(model_id="okupyn/s3od")
+
+# Synthetic-only model (pure zero-shot)
+detector_synth = BackgroundRemoval(model_id="okupyn/s3od-synth")
+
+# DIS-specialized model (high precision)
+detector_dis = BackgroundRemoval(model_id="okupyn/s3od-dis")
+
+# SOD-specialized model
+detector_sod = BackgroundRemoval(model_id="okupyn/s3od-sod")
+
+# COD-specialized model
+detector_cod = BackgroundRemoval(model_id="okupyn/s3od-cod")
+```
+
+**Key Differences:**
+- **okupyn/s3od**: Trained on 140K synthetic images + fine-tuned on DUTS, DIS5K, HR-SOD and others. Best for production use and general-purpose applications.
+- **okupyn/s3od-synth**: Trained exclusively on synthetic data. Use for zero-shot evaluation and computing benchmark metrics.
+- **okupyn/s3od-dis**: Fine-tuned specifically on DIS5K for dichotomous image segmentation with highly accurate boundaries. Use for computing metrics on DIS-related benchmarks.
+- **okupyn/s3od-sod**: Optimized for salient object detection datasets (DUTS, HR-SOD, etc.). Use for computing metrics on SOD-related benchmarks.
+- **okupyn/s3od-cod**: Fine-tuned on camouflaged object detection datasets (CAMO, NC4K, COD10K). Use for computing metrics on COD benchmarks.
+
+## Demo
+
+**🌐 Online Demo:** [HuggingFace Spaces](https://huggingface.co/spaces/okupyn/s3od)
+
+**💻 Run Locally:**
+
+```bash
+cd demo
+pip install -r requirements.txt
+python app.py
+```
+
+## Training
+
+S3OD uses [Hydra](https://hydra.cc/) for configuration management and [PyTorch Lightning](https://lightning.ai/) for training.
+
+### Training on Synthetic Data
+
+```bash
+# Single GPU
+python -m synth_sod.model_training.train \
+    dataset=synth \
+    model=dinob \
+    backend=1gpu
+
+# Multi-GPU (DDP)
+torchrun --standalone --nnodes=1 --nproc_per_node=NUM_GPUS \
+    -m synth_sod.model_training.train \
+    dataset=synth \
+    model=dinob \
+    backend=NUM_GPUs
+```
+
+Replace `NUM_GPUS` with the number of GPUs you want to use (e.g., 2, 4, 8).
+
+### Available Configurations
+
+Check `synth_sod/model_training/config/` for available options:
+
+**Models** (`model=...`):
+- `dinob`: DINOv3-Base (default)
+- `dinol`: DINOv3-Large
+- `flux_teacher`: FLUX-enhanced teacher model
+
+**Datasets** (`dataset=...`):
+- `synth`: Synthetic S3OD dataset
+- `duts`: DUTS dataset
+- `dis`: DIS5K dataset
+- `full`: All datasets combined
+
+**Compute** (`backend=...`):
+- `1gpu`, `2gpu`, `4gpu`, `8gpu`
+
+### Training Examples
+
+```bash
+# Train on real-world benchmark
+python -m synth_sod.model_training.train dataset=duts model=dinob
+
+# Train teacher model with FLUX features
+python -m synth_sod.model_training.train \
+    -cn train_teacher \
+    dataset=full \
+    model=flux_teacher \
+    backend=4gpu
+
+# Resume training from checkpoint
+python -m synth_sod.model_training.train \
+    dataset=synth \
+    model=dinob \
+    training_hyperparams.resume=True
+```
+
+## Generating Synthetic Data
+
+Our data generation pipeline uses FLUX diffusion models and concept-guided attention to create high-quality synthetic training data.
+
+### Prerequisites
+
+1. FLUX model weights
+2. OpenAI API key (for caption generation)
+
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+```
+
+### Generation Pipeline
+
+1. **Generate Captions & Tags**
+```bash
+cd synth_sod/data_generation/flux_finetune
+python generate_captions.py --image_dir <dir> --output_file captions.json
+python tag_data.py --image_dir <dir> --output_file tags.json
+```
+
+2. **Extract FLUX Features**
+```bash
+python feature_extraction.py \
+    --caption_file captions.json \
+    --tag_file tags.json \
+    --save_folder <features_dir> \
+    --model_path <flux_model_path>
+```
+
+3. **Generate Images and Masks**
+```bash
+python generate_train_images.py --config_path generation_config.yaml
+```
+
+4. **Filter Dataset** (optional)
+```bash
+python run_filtering.py --config_path filtering_config.yaml
+```
+
+Update configuration files with your paths before running. See example configs in `synth_sod/data_generation/`.
+
+## Citation
+
+If you use S3OD in your research, please cite:
+
+```bibtex
+@inproceedings{kupyn2026s3od,
+  title={S3OD: Towards Generalizable Salient Object Detection with Synthetic Data},
+  author={Kupyn, Orest and Kataoka, Hirokatsu and Rupprecht, Christian},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2026}
+}
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -1,0 +1,265 @@
+# TradingInPython - Trading Platform in Python
+
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![Releases](https://img.shields.io/badge/Releases-GitHub-green)](https://github.com/SoDevLog/PyTrading/releases)
+[![Issues](https://img.shields.io/badge/Issues-Open-red)](https://github.com/SoDevLog/PyTrading/issues)
+[![Website](https://img.shields.io/badge/Documentation-Online-orange)](https://trading-in-python.sodevlog.com/)
+
+Free Open Software Platform for traders who want to master technical trading with Python. **TradingInPython** is a Python-based trading platform for financial market analysis and technical trading.
+
+⭐ **Star PyTrading** to follow the development of **TradingInPython**, its trading strategies, indicators, and trading examples in Python, don't forget to **click on star** to the top right.
+
+<div align="center">
+  <a href="https://www.trading-et-data-analyses.com/p/plateforme-de-trading-technique.html">
+    <img src="images/TradingInPython.png" alt="Plateforme de trading technique TradingInPython" />
+  </a>
+</div>
+
+> 🇫🇷 [Documentation en français](https://trading-in-python.sodevlog.com/)
+
+## 📚 Table of Contents
+
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [Trading Strategies](#trading-strategies)
+- [Users' Guide](#users-guide)
+- [For devlopers](#for-developers-in-python)
+- [Script runner](#script-runner)
+- [Releases notes](#releases-notes)
+- [Licensing](#licensing)
+- [Requirements](#requirements)
+- [Fundamental analysis](#fundamental-analysis)
+- [Home page](#home-page)
+- [Disclaimer](#disclaimer)
+
+## Key Features
+
+- **Multi-timeframe analysis** - view price charts across multiple timeframes simultaneously
+- **Advanced technical indicators** - MACD, RSI, Bollinger Bands (FTMA), Ichimoku, Keltner, STOCH, VWAP, ATR, OBV, BOP, SAR, Alligator, and more
+- **Integrated backtesting** - test your strategies on real market data
+- **Smart Money Concept (SMC)** - automatic detection of institutional trading signals
+- **Artificial Intelligence** - price prediction using Keras/TensorFlow and Kalman filter
+- **Market surveillance** - performance heatmaps, price and volume alerts via email
+- **Portfolio manager** - real-time tracking of your positions
+- **Open Software** - algorithms are published and can be inspected or extended
+
+### Why TradingInPython?
+
+TradingInPython is not intended to be a clone of TradingView. It takes a different approach: giving traders the power of Python, open software, custom strategies, advanced analysis and complete control over their trading environment.
+
+**How does it compare to TradingView?**
+
+- [TradingInPython vs TradingView](https://trading-in-python.sodevlog.com/tradinginpython-vs-tradingview/)
+
+See the detailed feature-by-feature comparison and discover where TradingInPython already has an advantage and where there is still room to improve.
+
+## Getting Started
+
+### Clone this repo
+
+Just click on **"<> Code"** then **"Download ZIP"** you will get the zip. Its a little long, about 400 Mo to download, but you'll get a stand alone executable.
+
+Nothing to install just run **TradingInPython.exe**
+
+Once you get **PyTrading-main.zip** don't forget to **unlock** it before **extract all** where you want.
+
+Inside folder **PyTrading-main** you'll find:
+
+- TradingInPython
+- README.md
+
+click on directory **TradingInPython**
+
+Then click on executable **TradingInPython.exe** then Trading Platform in python will launched.
+
+If you know git, to get new features you'll just had to make a **Pull** wich is lighter than downloading the whole zip.
+
+### Or download installer for windows
+
+1. Go to the last release page : [Installer](https://github.com/SoDevLog/PyTrading/releases)
+
+2. Get the **tradinginpython_setup.zip** at the bottom of the page.
+
+3. Don't forget to **unlock** it before **extract all** where you want.
+
+4. Click on **tradinginpython_setup.exe** to install **TradingInPython**.
+
+#### Help on installer
+
+If you need help for installation, have a look to this page :
+
+- [Installation Guide](https://github.com/SoDevLog/PyTrading/wiki/Installation)
+
+### Have a Rapid Tour
+
+Once the software is installed, click on TradingInPython's short cut, the platform openning.
+
+Choose **Four Time Frame Bolinger Bands strategy**, play with Mobile Average to look bands moving, play with backtesting in real time to see if you should modify parameters :
+
+<div align="center">
+  <img src="images/demo-2.gif" alt="Demo">
+</div>
+
+You can have a rapid presentation of what you'll be able to do with the Trading platform, it's in french but you can translate easily by choosing your language in GoogleTranslate :
+
+- [Rapid Tour of the Trading Platform in Python](https://trading-in-python.sodevlog.com/tour-rapide/)
+
+Discover the MTZ-Z + DAS technical indicator shown in this animation :
+
+- [How to Trade with the MTF Z-Score + DAS Indicator](https://www.trading-et-data-analyses.com/2026/03/mtf-z-das-strategy-guide-complet-pour-trader.html)
+
+You need free training courses :
+
+- [Free training on technical trading](https://www.trading-et-data-analyses.com/p/formations.html)
+
+## Trading Strategies
+
+### Strategy Ichimoku Kinko Hyo
+
+You will be able to run the **Ichimoku Kinko Hyo's** strategy and prediction with [scikit-learn](https://scikit-learn.org/stable/index.html) :
+
+<img src="images/IchimokuKinkoHyo.png" alt="Strategy Ichimoku Kinko Hyo">
+
+By running **TradingInPython** you will discover many others trading strategies.
+
+### Strategy Prediction with Keras
+
+Perform technical analysis of stock market **deep learning** with [Keras](https://keras.io/)'s **neural networks** and [Jax](https://docs.jax.dev/en/latest/quickstart.html) :
+
+<img src="images/Prediction_Keras.png" alt="Strategy Prediction with Keras">
+
+Take a deep dive into digital signal processing with Keras prediction algorithms applied to the Ichimoku Kinko Hyo strategy:
+
+- [Ichimoku Kinko Hyo prediction alorithms](https://github.com/SoDevLog/PyTrading/blob/main/TradingInPython/_internal/digitsignalprocessing/ichimoku_kinko_hyo.py)
+
+Discover many others strategies while downloading and running the platform **TradingInPython**.
+
+### Strategy Prediction with Kalman Filter
+
+Perform trend and volatility analyses of stocks market with using Kalman Filter algorithm :
+
+<img src="images/Kalman_filter.png" alt="Strategy Prediction Trend with Kalman Filter">
+
+Take a deep dive into digital signal processing with Kalman filter trend prediction algorithms applied to trading strategy:
+
+- [Kalman filter alorithms](https://github.com/SoDevLog/PyTrading/blob/main/TradingInPython/_internal/strategies/kalman_filter_forcast.py)
+
+- [Kalman filter documentation](https://trading-in-python.sodevlog.com/strategies/kalman-filter/)
+
+Discover many others strategies while downloading and running the platform **TradingInPython**.
+
+## Users' Guide
+
+How to use software :
+
+- [Trading Platform's Technical Documentation](https://trading-in-python.sodevlog.com/)
+
+This one can be translated in any language :
+
+- [Trading Platform's Marketing Documentation](https://www.trading-et-data-analyses.com/p/documentation-plateforme-de-trading.html)
+
+## For developers in Python
+
+### Open software
+
+Python software distribution with **PyInstaller** is a very open system.
+
+We publish TradingInPython's algorithms in directory:
+
+- [Digital signal processing](./TradingInPython/_internal/digitsignalprocessing)
+
+So you can take a look at the **platform engine** and understand in depth the indicators used in the trading strategies:
+
+- [Digital signal processing/indicators.py](./TradingInPython/_internal/digitsignalprocessing/indicators.py)
+
+### Trading Strategies API in python
+
+You can integrate your own trading strategies in the platform **TradingInPython**, by adding your own algorithms, this is how to do it.
+
+Have a look and take example to the **trading strategies** used in the platform:
+
+- [Strategy single moving average and exponential.py](./TradingInPython/_internal/strategy_sma12e.py)
+
+Read the documentation on the platform strategy's API :
+
+- [Develop your own strategy using TradingInPython's API](https://www.trading-et-data-analyses.com/p/strategies-dans-tradinginpython.html)
+
+### You'd like to contribute
+
+You should be intrested by devloping the project, learn about Python, about trading strategy, about technical analysies, ...
+
+Then have a look here :
+
+- [TradingInPython's software devlopement Kit](https://www.trading-et-data-analyses.com/p/trading-en-python.html)
+
+## Script runner
+
+Thank's to Python the platform can execute scripts in a Python environnement.
+
+**Script runner** allows you to execute your own script :
+
+- [Documentation on script runner](https://trading-in-python.sodevlog.com/script-interpreter/interface/)
+
+So you can develop your **own technical trading ideas**.
+
+### User's scripts
+
+Samples on Technical Analysis, Trading Strategies, Fundamental Analysis, Market Data, AI & Machine Learning, Finance & Research :
+
+- [Samples of user's scripts you can run or modify for your needs](./TradingInPython/_internal/user_scripts)
+
+So **you don't need to program in Python**, you just have to execute the script.
+
+## Releases notes
+
+Informations on the **next version**, by your feed back you can participate to the next version of the Trading Platform.
+
+- [Trading Platform's Release notes](https://github.com/SoDevLog/PyTrading/releases)
+
+## Licensing
+
+### Get a free license
+
+We need customers or partners to develop the Community of python traders and continue to develop of this platform **TradingInPython** and add new features.
+
+- [Get a free licence](https://www.trading-et-data-analyses.com/p/abonnement.html#Testez_gratuitement)
+
+If you include **helpful feedback** in your email, you may be able to get a more days license.
+
+### Get your paided license
+
+After the trial period, you will need to obtain a license to use paid strategies.
+
+- [Pay your subscription license](https://www.trading-et-data-analyses.com/p/abonnement.html#Abonnement)
+
+You will receive it by email to activate your Trading platform.
+
+## Requirements
+
+- On Windows 7 you can try but most of the time you'll get error, so you need a **Windows more than 7**.
+- On MacOS and Linux you **must wait** a while, but remember Python is all platforms compatible.
+- You will need **a large screen** of course to navigate into graphs
+
+## Fundamental analysis
+
+Algorithmic trading is great, but it's even better when it's confirmed by fundamental analysis.
+
+Find algorithms that will enables you to perform accounting analysis of stocks market with **yfinance**.
+
+- [Fundamental analysis](./TradingInPython/Z-Integration/yfinance)
+
+## Home page
+
+Trading and Data Analysis explores financial markets using historical data, technical analysis, and Python script development. The site documents an approach involving analysis, testing, and experimentation applied to technical trading strategies.
+
+The site you can translate easily in any langage you need :
+
+- [Understanding markets through data and technical analysis](https://www.trading-et-data-analyses.com/p/accueil.html)
+
+## Disclaimer
+
+This software is provided "as is", without any express or implied warranties. The user assumes full responsibility for its use and any consequences that may arise. Under no circumstances shall the author or contributors be held liable for any direct, indirect, incidental, or consequential damages resulting from the use of this software.
+
+The user is encouraged to verify the accuracy of the data and not to rely solely on the results provided by the software. Any commercial or financial use is at the user's own risk.
+
+*Built with ❤️ in Python - © 2026 Trading & Data Analyses*

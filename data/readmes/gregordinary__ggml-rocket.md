@@ -1,0 +1,492 @@
+# ggml-rocket
+
+## AI disclosure
+
+Except for the prior work it builds on, ggml-rocket was developed by AI, primarily Claude. Human
+involvement was mostly limited to setting project goals and providing hardware access. This is a
+side project for curiosity's sake, and it comes with no guarantee of quality, accuracy, or update
+frequency.
+
+## About ggml-rocket
+
+A drop-in [ggml](https://github.com/ggml-org/ggml) backend for Rockchip NPUs (validated on
+the RK3588, with the RK3576 as a second target) that offloads LLM and Whisper prefill to the
+NPU through the mainline `rocket` DRM-accel driver.
+
+It builds as a runtime-loadable `libggml-rocket.so` that drops into stock llama.cpp,
+whisper.cpp, and other ggml-based hosts (e.g. transcribe.cpp, a multi-model STT library): point
+`GGML_BACKEND_PATH` at it and the NPU appears as a ggml device, exactly like ggml's own BLAS
+backend. It runs the Whisper encoder end to end and the prefill of Gemma-4,
+Qwen3.5 / 3.6, Llama-3.2, Phi-4, Ministral and more on the NPU. Decode stays on the CPU: it is
+small-M work, and below `ROCKET_MIN_M` (default 32 rows) the per-call dispatch and weight packing
+outweigh the NPU's per-row advantage. That covers llama.cpp's single-row GEMV decode, which is
+bound by the DDR bandwidth the NPU shares with the CPU. It also covers **batched** decode:
+whisper.cpp's default beam search presents 5 rows per step, still far below the crossover.
+
+This is a separate project from the driver. `rocket-userspace`, the `librocketnpu` dependency,
+builds and runs on its own, and this backend links it.
+
+```
+.
+  rocket-userspace/   # the driver library (dependency): git clone https://github.com/gregordinary/rocket-userspace
+  ggml/               # fresh upstream clone: git clone https://github.com/ggml-org/ggml
+  ggml-rocket/        # this project
+```
+
+The complete per-model benchmarks, a **recommended-configuration-by-workload** table (which opt-ins
+to add for chat / agentic / RAG / MoE, and the RAM each needs), the full `ROCKET_*` knob table, the
+diagnostic-logging channel, and the implementation notes are in [API.md](API.md).
+
+## Performance
+
+The NPU is a prefill and batched-GEMM engine, and the prefill speedup over the 8-thread CPU grows
+with model size. Decode is forced to the CPU. It is bandwidth-bound and scales with the quant
+rather than the backend.
+
+All figures warm, RK3588 @ 600 MHz, same GGUF on NPU and CPU. NPU prefill is perplexity-faithful
+to the CPU on every model. [HW sweep] The F16 rows run at the llama.cpp default `-b` and `-ub`,
+and the unmarked ones are 2026-07 sessions with both arms. The four quantized rows are against a
+CPU with llama.cpp's weight repack on (llama.cpp b11242, `-b 2048 -ub 2048`, governor pinned,
+2026-09-29). The repack does not touch F16.
+
+| Model | Params | Prefill NPU t/s @pp2048 | xCPU @pp2048 | Decode Q4 t/s | Fits Q4 |
+|---|---:|---:|---:|---:|---:|
+| SmolVLM2-2.2B (multimodal) | 1.8B | 52.6 F16 | 1.9x | 14.5 | 1.0 GB |
+| Llama-3.2-3B | 3.2B | 56.0 F16 † | 2.6x † | 7.9 | 1.9 GB |
+| Ministral-3-3B | 3.4B | 48.3 F16 † | 2.4x † | 7.7 | 2.0 GB |
+| Phi-4-mini | 3.8B | 50.2 F16 † | 2.6x † | 7.0 | 2.3 GB |
+| Ministral-3-8B | 8.5B | 21.4 F16 | 3.1x | 3.8 | 4.8 GB |
+| Qwen3.5-9B | 9.0B | 24.9 F16 | 3.5x | 3.6 | 5.3 GB |
+| Gemma-4-12B | 11.9B | 20.0 F16 † | 3.2x † | 2.5 | 6.9 GB |
+| Phi-4 (14B) | 14.7B | 16.7 Q4 | 3.1x | 2.2 | 8.3 GB |
+| DeepSeek-V2-Lite (MoE+MLA) | 15.7B | 34.1 Q4 ‡ | 1.44x ‡ | 7.8 | 9.7 GB |
+| gpt-oss-20b (MoE) | 20.9B | 30.2 MXFP4 ‡ | 1.90x ‡ | 7.2 | 11.3 GB |
+| Qwen3.6-27B (hybrid) | 27.3B | 9.6 Q4 | 3.2x | 1.1 | 15.9 GB |
+
+† The t/s is a later build: llama.cpp b10558, 2026-08-29 for the 3B
+rows and 2026-09-02 for Gemma-4-12B. The xCPU is the 2026-07 pair, in which the NPU read 45.5,
+39.8, 39.8 and 15.0 t/s. No CPU arm ran against the later build.
+
+‡ The 2026-09-29 build. A 2026-10-09 A/B of the current expert route against the build before it
+reads 1.09-1.10x on gpt-oss-20b at pp512 and 1.09-1.14x on DeepSeek-V2-Lite at pp2048. The same
+A/B halved DeepSeek's one-time expert ingest, which `llama-bench`'s timed reps partly carry. That is
+the NPU arm only, governor `ondemand`, and the CPU ratios are not re-measured.
+
+The MoE rows are smaller because a MoE keeps more of its prefill on the CPU: the router, the
+attention path and the expert gathers. The experts themselves run on the NPU by default.
+
+Speech models are a separate case, because the NPU offloads the **encoder**. The Whisper encoder
+wins 1.18x to 2.14x by model size.
+
+Through transcribe.cpp the same holds for Granite-Speech, Voxtral, MOSS and more. That is 1.1x-1.7x
+on long audio, best where the encoder is large or the decoder
+cross-attends the audio. Per-model prefill /
+decode / interactive detail, the
+Gemma-4-12B walkthrough, and why quantization does not speed prefill at this operating point are in
+[API.md](API.md#models-and-precisions).
+
+### A representative model: Ministral-3-8B-Instruct
+
+The numbers split three ways: prefill (the NPU's job), decode (CPU-bound on both backends), and the
+interactive turn you feel. RK3588, 8-core, NPU at 600 MHz, warm.
+
+**Prefill (prompt processing), t/s, CPU -> NPU:**
+
+| | pp512 | pp1024 | pp2048 |
+|---|---|---|---|
+| F16    | 7.2 -> 27.4 (3.8x) | 7.0 -> 24.4 (3.5x) | 6.8 -> 21.4 (3.1x) |
+| Q8_0   | 6.9 -> 17.4 (2.5x) | 6.7 -> 19.3 (2.9x) | 6.4 -> 17.7 (2.8x) |
+| Q4_K_M | 6.5 -> 17.0 (2.6x) | 6.4 -> 19.1 (3.0x) | 6.0 -> 17.4 (2.9x) |
+
+The table is a 2026-07-01 session, F16 at the default `-b` and `-ub` and the quants at
+`-b 2048 -ub 2048`. Its quantized rows' CPU ran without llama.cpp's weight repack. Against a
+repacked CPU, Q4_K_M at pp2048 reads 9.81 -> 19.33 t/s, 2.0x [HW sweep 2026-07-17, 8 threads].
+
+**Decode (generation), t/s, CPU ~ NPU.** It runs off the NPU and is bandwidth-bound. It therefore
+scales with the quant rather than the backend: F16 1.4 -> Q8_0 2.5 -> Q4_K_M 3.8 t/s.
+
+**Interactive.** The NPU shortens the first-token wait, and the quant speeds the stream:
+
+| turn | config | time-to-first-token | stream | total |
+|---|---|---|---|---|
+| 2048-tok prompt -> 200 out (RAG) | F16 CPU | 299 s | 1.4 t/s | 445 s |
+| | F16 + NPU | 96 s | 1.4 t/s | 236 s |
+| | Q4_K_M + NPU | 118 s | 3.8 t/s | 170 s |
+| 128-tok prompt -> 400 out (chat) | F16 + NPU | 5 s | 1.4 t/s | 285 s |
+| | Q4_K_M + NPU | 8 s | 3.8 t/s | 112 s |
+
+On a long prompt the NPU cuts time-to-first-token ~3x and nearly halves the turn. On a short
+chatty turn the wall is decode-bound, so the NPU barely moves it and quantization is the lever.
+
+For most boards Q4_K_M + NPU is the sweet spot, in 4.83 GB, which fits an 8 GB board. It reads
+~2.0x a repacked CPU's prefill at pp2048, with a 2.8x-faster stream than F16. F16 is the
+max-prefill option when RAM is ample.
+
+## What runs on the NPU
+
+The backend offloads the ops that dominate prefill and leaves the rest on the CPU:
+
+- **`MUL_MAT`**: the prefill GEMMs. F16/F32 weights offload when `M >= ROCKET_MIN_M` and the shape
+  aligns (`K%32`, `N%16`, `K>=64`, `N>=64`). Quantized weights (`Q8_0` / `Q4_K` / `Q6_K` / …) also
+  offload, dequantized to fp16 on the fly. Decode (`M=1` GEMV) is forced to the CPU.
+- **`FLASH_ATTN_EXT`**: prefill attention, on the NPU by default when `n_kv >= 1024`. It is
+  bit-faithful and submit-chained. On Gemma-4-12B F16 it read 1.07x the CPU at 4K, 1.50x at 8K,
+  1.25x at 16K, and parity below [HW sweep 2026-06, 600 MHz]. Those ratios are from an earlier
+  build of the attention path and are not re-measured.
+- **`MUL_MAT_ID`**: MoE routed experts, on the NPU by default for a **quantized** expert stack
+  meeting two conditions. A residency pre-flight must fit an estimate of the whole
+  `[K, N, n_expert]` stack's footprint in the budget up front. The per-expert GEMM must also pay
+  for its own dispatch. Worth **1.9x the CPU** at pp2048 on gpt-oss-20b, against a CPU with its
+  weight repack on [HW sweep 2026-09-29]. A stack that does not qualify is left on the CPU rather
+  than half-ingested, so the default never falls below the experts-on-CPU baseline.
+- **Opt-in datapaths**: native int8 (`ROCKET_INT8=1`), int4 (`ROCKET_INT4=1`), and bf16
+  (`ROCKET_BF16=1`). Each is numerically faithful, and the [knob table](API.md#runtime-knobs) has
+  the detail.
+- **Precision declarations**: a matmul whose model declares a precision the backend cannot meet
+  stays on the CPU. llama.cpp declares an F32 activation on Mistral-4's routed down-projection and
+  an F32 result on some GLM-4 projections. A matmul tagged as a Hadamard rotation, which llama.cpp
+  builds around a quantized KV cache, also stays on the CPU. The rules are in
+  [API.md](API.md#precision-declarations).
+- **Everything else** stays on the CPU: norms, rope, the conv front-end and decode. The
+  `rocket-userspace` driver composes the offloaded matmuls into a full Whisper and transformer
+  encoder block on the NPU. That is cos = 1.000000 against an fp64 oracle. This backend wires that
+  block's attention sublayer.
+
+The envelope, all HW-validated on the RK3588 and PPL-faithful to the CPU backend:
+
+- **Prefill engine.** The NPU accelerates prefill, a batched GEMM, and the Whisper encoder.
+  Decode (M=1 GEMV) stays on the CPU. It is bound by DDR bandwidth, which the NPU shares with the
+  CPU, so offloading it adds only dispatch overhead.
+- **Quantization buys RAM and model-fit rather than prefill speed** at this operating point.
+  Resident matmul is ~460 GOP/s across precisions, DMA/dispatch-bound rather than MAC-bound. A
+  quantized GGUF whose fp16 image fits RAM wants `ROCKET_QUANT_RESIDENT=auto` at the default
+  `-ub`, and one that does not fit wants `-b 2048 -ub 2048`. That is bottleneck-conditional rather
+  than a permanent property, and [API.md](API.md#why-quantization-does-not-speed-prefill) has the
+  detail.
+- **MoE routed experts are worth 1.9x the CPU at pp2048** on gpt-oss-20b, MXFP4,
+  `-b 2048 -ub 2048`, against a CPU with its weight repack on (2026-09-29 build). Against an
+  unrepacked CPU it read ~1.8x at pp512, winning at every prefill length (2026-08-27 build). Over
+  experts-on-CPU at the llama.cpp default `-ub 512` it read ~1.6x to 1.7x.
+
+  The lever is **residency rather than quantization**. A quantized expert on the naive route is
+  dequantized on the host *every micro-batch*. That decode does not shrink with the row count, so
+  it costs ~119 s of a prefill before any arithmetic. The native-quant route ingests each expert
+  **once** into int8 codes that stay resident in NPU BOs, then deletes it.
+
+  Because the win is conditional on that residency, the placement gate reserves a whole expert
+  stack before claiming that stack's op. It leaves on the CPU what it cannot reserve. That keeps
+  the default above the experts-on-CPU baseline on a board too small to hold the stack, where
+  claiming it unreserved reads *below* that baseline.
+
+  It costs a one-time ingest at the first prefill, per `llama_context`: **~21 s** on gpt-oss-20b
+  and **~18 s** on DeepSeek-V2-Lite, measured at 600 MHz. It tracks how much of the stack goes
+  resident, not how many experts there are. See [API.md](API.md#native-quant-experts).
+
+**bf16 weights prefill ~0.55-0.6x native fp16**, re-decoded per micro-batch. Convert to fp16 for
+full speed, or set `ROCKET_BF16=1` for the exact fp32-output bf16 datapath.
+
+The full per-op routing contract and per-dtype detail are in [API.md](API.md).
+
+## The RK3576
+
+The RK3576 is a second validated target, and it runs a **different route**. That is an int8 W8A8
+matmul with a per-output-column requant, selected by the detected part rather than by a knob.
+
+It is the **only** matmul route on that SoC. The RK3588 generators refuse there by construction, so
+an op is claimed by the W8A8 handler or not at all. Three things to know before running it:
+
+- **`ROCKET_INT8=1` is mandatory.** Without it every `MUL_MAT` is declined and nothing offloads.
+- **Attention stays on the CPU**, automatically. The attention handler has not been ported to that
+  part, so `supports_op` declines `FLASH_ATTN_EXT` there and the CPU takes it on its own kernel.
+- **Build with `-DGGML_ROCKET_NATIVE_FP16=OFF`.** The default convert kernels target the RK3588's
+  `armv8.2-a+fp16` baseline.
+
+Measured on Qwen2.5-1.5B at `pp2048`, `-ub` 512, four threads on the A72s, governor
+`performance`: **13.36 t/s**. That is 1.31x ggml's Q8_0 kernel, and 2.37x the same F16 GGUF on the
+CPU [HW sweep].
+
+Quote both or neither. The 2.37x is what a drop-in reader gets, because the backend consumes an
+F16 GGUF. The 1.31x is what a reader who already quantizes gets.
+
+Accuracy taken off the device is **1.011x wikitext-2 perplexity** against that same F16 CPU arm.
+That is over eight chunks whose own error bar is +-0.59 [HW sweep].
+
+**Read a `pp512` figure on this part as a calibration measurement** rather than as the route. At
+that length every call is still a calibration forward. The route, its thirteen `ROCKET_RK3576_*`
+knobs, and what each is measured against are in [API.md](API.md#the-rk3576-second-target).
+
+## Requirements
+
+- An RK3588 (or RK3576) board on a mainline kernel carrying the `rocket` DRM-accel driver, with
+  `/dev/accel/accel0` present (`lsmod | grep rocket`).
+- The sibling `rocket-userspace` driver library, cloned next to this repo or installed as a
+  `rocketnpu` package.
+- A C++20 compiler. The build is tested with GCC 13 and GCC 16.
+- Privilege to open the accel node. Run with `sudo -E` (the `-E` preserves the `ROCKET_*` env knobs
+  plain `sudo` strips).
+
+**Clock.** The NPU boots at 200 MHz and the backend is correct there, and every prefill figure
+above is at 600 MHz. Apply the `patches/rocket` clock patch and load the module with
+`rocket_npu_clk_hz=600000000`.
+
+## Build and run
+
+### Build and test the backend
+
+```sh
+# from the workspace root (the dir holding rocket-userspace/, ggml/, ggml-rocket/)
+git clone https://github.com/ggml-org/ggml          # if not already present
+cd ggml-rocket
+cmake -S . -B build              # or: -DGGML_DIR=/path/to/ggml
+cmake --build build -j
+sudo ./build/test-rocket-matmul  # needs /dev/accel/accel0; each shape prints PASS
+```
+
+The gates are all CTest-registered. Run `ctest` from the build dir. The NPU gates report
+`Skipped` off-device, and the pure-CPU ones run anywhere. Each NPU gate also reads the backend's
+route counters, so it asserts where its ops computed rather than inferring it from the numbers:
+
+| Gate | What it covers |
+|---|---|
+| `test-rocket-matmul` | rocket against the CPU backend on real ggml graphs |
+| `test-rocket-moe` | The MoE handler, both the fp16 and the native-quant expert route, against the CPU backend under outlier-channel activations |
+| `test-rocket-int4` | The int4 datapath |
+| `test-rocket-bf16` | The bf16 datapath |
+| `test-rk3576-w8a8` | The RK3576 W8A8 route against the CPU backend. `Skipped` on any other part |
+| `test-rocket-placement` | The `supports_op` and `offload_op` contract |
+| `test-rocket-fa` | `FLASH_ATTN_EXT` against a double oracle, including the logits fp16 cannot hold |
+| `test-rocket-internals` | Host-only: the weight cache's identity, the MoE residency ledger across two live backends, the budget parser, the FA dump's file handling, the device-route circuit breaker |
+| Hadamard construction tests | The rotation construction |
+
+The shared graph and compare scaffolding is `test-common.h`.
+
+`test-rk3576-sgemm-ab` is a **benchmark** rather than a gate. It is an RK3576 NPU-vs-CPU GEMM A/B
+against ggml F32, ggml Q8_0 and OpenBLAS. It is out of the default build
+(`-DGGML_ROCKET_RK3576_BENCH=ON`, and it needs OpenBLAS). Its own header records that the first run
+took a board down hard enough to need a physical power cycle.
+
+> **If the driver is installed** (`find_package(rocketnpu)` resolves to a `cmake --install`d
+> package, e.g. `/usr/local`), ggml-rocket links that installed lib, not a sibling
+> `rocket-userspace/` source tree. So after a change in `rocket-userspace/`, reinstall it
+> (`cd ../rocket-userspace && cmake --build build && sudo cmake --install build`) before rebuilding
+> here, or force the source tree with
+> `-DCMAKE_DISABLE_FIND_PACKAGE_rocketnpu=ON -DROCKETNPU_DIR=../rocket-userspace`.
+
+The build options are:
+
+- `-DGGML_ROCKET_NATIVE_FP16=OFF`. By default the convert kernels are compiled for the RK3588
+  `armv8.2-a+fp16` baseline, and the resulting `.so` `SIGILL`s on an older aarch64 core lacking
+  FP16. Turn this OFF for a portable scalar-convert `.so`.
+- `-DGGML_ROCKET_DIAGNOSTICS=ON`. Compiles in the heavy per-op recompute/trace diagnostics
+  (`ROCKET_VERIFY` / `ROCKET_CPU_FORWARD` / `ROCKET_TRACE` / `ROCKET_AB` / `ROCKET_DUMP`), out of the
+  production `.so` by default. The lightweight `ROCKET_MM_PROFILE` / `ROCKET_DEBUG` lines stay
+  available regardless.
+- `-DGGML_ROCKET_PORTABLE_GLIBC=ON`. Internalizes the five glibc 2.38 `__isoc23_*` symbols so the
+  `.so` loads on an older-glibc runtime, flooring it at glibc 2.34. It is needed only when the
+  build host's glibc is newer than the deployment target's, and a same-host build is
+  byte-unchanged. It takes effect in DL mode only, since a static standalone build has no loader
+  to satisfy.
+- `-DGGML_ROCKET_RK3576_BENCH=ON`. Builds the RK3576 NPU-vs-CPU GEMM benchmark, which needs
+  OpenBLAS. Off by default, and the gate list above has the caveat.
+- `-DGGML_ROCKET_STRICT_ABI=ON`. Fails the build when the host's ggml carries a
+  `GGML_BACKEND_API_VERSION` this backend has not been checked against. By default that build
+  continues with a warning.
+
+To run a real model you rebuild the `.so` against the host app's bundled ggml (so it links the same
+`libggml-base.so`) and point `GGML_BACKEND_PATH` at it. The two drop-in recipes below do both.
+
+### Drop into whisper.cpp
+
+Mainline whisper.cpp loads `libggml-rocket.so` with no source changes. `whisper-cli`'s `main()`
+calls `ggml_backend_load_all()`, which honors `GGML_BACKEND_PATH`. The `.so` exports
+`ggml_backend_init` via `GGML_BACKEND_DL_IMPL`, and its device is type ACCEL. Whisper adds every
+ACCEL device, BLAS-style, and the scheduler then offloads the `MUL_MAT`s.
+
+```sh
+# 1. whisper.cpp with a SHARED, DL-capable ggml (single libggml-base.so the host loads)
+cd <workspace>     # the dir holding ggml-rocket/
+git clone https://github.com/ggml-org/whisper.cpp
+cmake -S whisper.cpp -B whisper.cpp/build -DGGML_BACKEND_DL=ON -DBUILD_SHARED_LIBS=ON
+cmake --build whisper.cpp/build -j
+
+# 2. libggml-rocket.so against whisper's BUNDLED ggml (so it links the same libggml-base.so)
+cd ggml-rocket
+cmake -S . -B build-dl -DGGML_ROCKET_DL=ON -DWHISPER_DIR=$PWD/../whisper.cpp
+cmake --build build-dl -j      # if ggml shared libs aren't found, add -DGGML_LIB_DIR=/abs/path
+
+# 3. run stock whisper-cli, pointing GGML_BACKEND_PATH at the .so
+GGML_BACKEND_PATH=$PWD/build-dl/libggml-rocket.so \
+  sudo -E ../whisper.cpp/build/bin/whisper-cli -m /path/ggml-base.en.bin -f /path/audio.wav
+```
+
+`sudo -E` because `/dev/accel/accel0` needs privilege and `-E` preserves the env var. The startup
+log lists a `ROCKET` device described by the detected part, "RK3588 NPU" or "RK3576 NPU". The
+`drm_mm "Memory manager not clean"` WARN at exit is a known-benign teardown race.
+
+`whisper-server` loads the `.so` the same way. A client that posts fixed-length chunks with no
+request fields, as OpenWebRX+ does, leaves the server's settings to decide the CPU cost. Three
+matter: `-nt -sns`, an `-ac` of 50 times the chunk length plus 4 s (capped at 1500), and the
+temperature fallback off. The fallback is turned off through a `temperature_inc=0` request
+field, because the server's `-nf` flag is parsed and never applied. Together they read 0.70x
+the defaults' CPU on 20 s chunks at better WER.
+
+The rows are in
+[API.md](API.md#recommended-configurations). Two traps sit behind the rules: an `-ac` equal
+to the chunk length loops the decoder, and a 30 s chunk without `-nt` is encoded twice.
+
+### Drop into transcribe.cpp (multi-model STT)
+
+The same `.so` extends past Whisper to other STT families (Granite-Speech, Voxtral, MOSS diarize,
+SenseVoice, FunASR, Parakeet) through transcribe.cpp, a ggml-based multi-model speech host. It
+loads `libggml-rocket.so` the same way, and its runner registers the NPU as an ACCEL device and
+logs `using accel backend: ROCKET`.
+
+The offload is the same shape. The **encoder** runs on the NPU, and on long audio so does the
+batched decode-prefill. The autoregressive decode stays on the CPU.
+
+So the win tracks encoder size and audio length. Encode-heavy models gain most, such as Voxtral's
+Whisper-large-v3 or a cross-attention decoder like Granite. Small decoder-only models are
+decode-bound and barely move.
+
+```sh
+# transcribe.cpp shared + DL-capable, CPU backend tuned for the A76 (else the CPU baseline is slow)
+cmake -B build -DTRANSCRIBE_BUILD_SHARED=ON -DTRANSCRIBE_GGML_BACKEND_DL=ON \
+  -DTRANSCRIBE_VULKAN=OFF -DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16
+cmake --build build -j
+cp build/bin/libggml-cpu.so build/src/   # the ARM cpu module lands in build/bin; the backend scan globs build/src
+
+GGML_BACKEND_PATH=$PWD/../ggml-rocket/build-dl/libggml-rocket.so \
+  LD_LIBRARY_PATH=build/ggml/src:build/bin \
+  sudo -n -E ./build/bin/transcribe-cli -m /path/model.gguf -f audio.wav
+```
+
+Build the `.so` against transcribe.cpp's bundled ggml (`-DGGML_ROCKET_DL=ON -DHOST_DIR=<...>/transcribe.cpp`),
+as with any host. A `TRANSCRIBE_GGML_BACKEND_DL` build forces `GGML_NATIVE=OFF`, so the
+`-DGGML_CPU_ARM_ARCH=…` above is what keeps the CPU baseline honest.
+
+### Drop into llama.cpp
+
+Same mechanism. An F16 GGUF takes the fp16 NPU path with zero conversion.
+
+A quantized GGUF (`Q8_0`, `Q4_K`, `Q6_K` and the rest) also prefills on the NPU. Weights are
+dequantized to fp16 on the fly with no whole-model F16 copy, so you get NPU prefill and the compact
+footprint.
+
+A BF16 GGUF also prefills on the NPU, with weights decoded to fp16 on the fly at ~0.55-0.6x fp16.
+Convert with `llama-quantize in.gguf out.gguf f16` for full speed, or set `ROCKET_BF16=1` for the
+fp32-output datapath.
+
+> **A quantized GGUF needs the host's weight repack off: pass `-nr` (`--no-repack`), or
+> `--repack 0` to `llama-bench`.** Without it the quantized weights stay on the CPU and nothing
+> says so.
+>
+> ggml-cpu repacks quantized weights into a non-host `CPU_REPACK` buffer for its own SIMD
+> kernels, on by default. The scheduler only hands an op to this backend when the weight sits in a
+> host buffer. A host built `-DGGML_CPU_REPACK=OFF` works too, but for every run. That takes the
+> repack away from a CPU-only run as well, where it is worth 1.3-1.7x on quantized prefill. F16
+> weights are never repacked. Confirm offload with `ROCKET_MM_PROFILE=1` or `ROCKET_DEBUG_GRAPH=1`.
+
+```sh
+# 1. latest llama.cpp, shared + DL-capable ggml. The weight repack stays on; pass -nr to a
+#    run of a QUANTIZED GGUF on the NPU (see the note above).
+cd <workspace>     # the dir holding ggml-rocket/
+git clone https://github.com/ggml-org/llama.cpp
+cmake -S llama.cpp -B llama.cpp/build -DGGML_BACKEND_DL=ON -DBUILD_SHARED_LIBS=ON
+cmake --build llama.cpp/build -j
+
+# 2. libggml-rocket.so against llama.cpp's BUNDLED ggml
+cd ggml-rocket
+cmake -S . -B build-dl -DGGML_ROCKET_DL=ON -DHOST_DIR=$PWD/../llama.cpp
+cmake --build build-dl -j      # if needed: -DGGML_LIB_DIR=/abs/path
+
+# 3. run with the NPU backend loaded (-ngl 0; ACCEL offload is BLAS-style, scheduler-driven)
+GGML_BACKEND_PATH=$PWD/build-dl/libggml-rocket.so \
+  sudo -E ../llama.cpp/build/bin/llama-cli \
+    -m /path/to/gemma4/gemma-4-12b-it-F16.gguf \
+    -p "Explain the RK3588 NPU in two sentences." \
+    -n 64 -c 4096 -ngl 0 -b 512
+```
+
+K-accum is the best-prefill operating mode, with DATA_REUSE following, and it is on by default.
+Cap `-c` so the weights and KV fit RAM.
+
+A quantized GGUF dequantizes to fp16 per micro-batch, and two settings cut that cost. If its fp16
+image fits RAM, set `ROCKET_QUANT_RESIDENT=auto` and keep the default `-ub`. That reads 1.35-1.75x
+over the default configuration on seven 1.8-11.9 B models. Stacked on `-b 2048 -ub 2048` it reads
+1.00-1.66x [HW sweep 2026-08, 600 MHz, three rotated passes each].
+
+If the fp16 image does not fit, run `-b 2048 -ub 2048`. That is 0.91-1.53x over the `-ub 512`
+default, model-dependent and negative on two models of eleven, so measure it.
+
+Gemma-4's chat template needs `--jinja`, or use `llama-completion -no-cnv` for raw prompt
+completion.
+
+Two more things shape a run:
+
+- **CPU thread placement: pin to the A76 big cores for prefill, not for decode.** `taskset 0xf0`
+  is worth **1.05-1.13x** on NPU prefill, largest on the smallest model [three models, rotated
+  interleaved passes, RK3588 at 600 MHz, governor pinned]. The NPU half is identical in every
+  arm, so the gain is host-side. Holding the weights resident is not what earns it, since the 12B
+  streams all of its and still gains 1.05x. Decode is the opposite, 34% down on Gemma-4-12B F16,
+  because F16 decode is LPDDR-bandwidth-bound and wants all 8 cores. Pin a prefill-heavy run, and
+  measure a mixed one.
+- **Measurement discipline.** The clock parks at idle, so discard the first `-r 1` run, which is
+  cold and reads ~15% low. Run >=3x and compare warm runs.
+
+## Troubleshooting
+
+**"ROCKET device not listed at startup"**, where the backend loads but no NPU device appears.
+Almost always an ABI mismatch.
+
+The backend must be built against the same ggml the host app uses. `llama.cpp` and `whisper.cpp`
+each clone their own ggml.
+
+When the host's `GGML_BACKEND_API_VERSION` differs from the one the backend was built against,
+ggml's loader refuses the `.so` and logs `incompatible API version (backend: N, current: M)`.
+
+The same mismatch can also shift ggml's op numbering, which the API version does not track. The
+backend checks the numbering when it loads and refuses to register, and the host's log then
+shows `ggml-rocket: op ordinal N is X in this .so and Y in the host's ggml` followed by
+`ggml_backend_init returned NULL`.
+
+The fix is to rebuild against that host checkout's ggml headers, and to re-check on every ggml
+bump. This backend is checked against `GGML_BACKEND_API_VERSION` 2 and 3, and another version
+builds with a warning. It builds against the ggml of whisper.cpp 1.8.6 through 1.9.5 and of
+llama.cpp b10558 through b11539. llama.cpp moved to version 3 at b11351, and b11351 through b11401
+label that ggml 0.25.3. Read a host's API version from its `ggml/src/ggml-backend-impl.h`, not
+from the ggml version.
+
+If the device appears but runs zero matmuls, the backend was built without a working `offload_op`.
+See [implementation notes](API.md#implementation-notes).
+
+**`version 'GLIBC_2.38' not found` when the host app loads the `.so`.** `libggml-rocket.so` was built
+on a host with a newer glibc (>= 2.38, e.g. Debian trixie/forky) than the runtime it is deployed to
+(e.g. a Debian 12 bookworm container, glibc 2.36). Rebuild with `-DGGML_ROCKET_PORTABLE_GLIBC=ON`
+(internalizes the five `__isoc23_*` symbols so the `.so` floors at glibc 2.34), or build on a host
+matching the target's glibc.
+
+## The rocket NPU stack
+
+This backend is one frontend of an open source stack for Rockchip NPUs. The stack is a driver
+library, three frontends, a submit provider for the vendor kernel, and a set of optional kernel
+patches:
+
+- **[`rocket-userspace`](https://github.com/gregordinary/rocket-userspace)** (`librocketnpu`): the
+  userspace driver, matmul, and on-NPU op library. It is the dependency, and usable on its own.
+- **`ggml-rocket`** (this project): a ggml backend `.so` for `llama.cpp` and `whisper.cpp`.
+- **[`tflite-rocket`](https://github.com/gregordinary/tflite-rocket)**: a TFLite external delegate
+  for detection models, linking the same driver.
+- **[`ort-rocket`](https://github.com/gregordinary/ort-rocket)**: an ONNX Runtime execution
+  provider for transformer encoders and per-layer convolutions, linking the same driver.
+- **[`rknpu-submit`](https://github.com/gregordinary/rknpu-submit)**: a submit provider that runs
+  `librocketnpu` on the vendor `rknpu` BSP kernel driver instead of mainline `rocket`.
+- **[`patches`](https://github.com/gregordinary/patches)** (`rocket/` scope): optional out-of-tree
+  kernel-module patches for clock, voltage and IOMMU. They raise the NPU clock from its 200 MHz
+  boot default to 600 MHz, and the prefill numbers here assume them.
+
+## License & credits
+
+`ggml-rocket` is GPL-3.0-or-later (it links the GPL-3 `rocket-userspace` driver library, whose NPU
+register headers are the GPL-3 reverse-engineering by Jasbir Matharu). It builds on
+[ggml](https://github.com/ggml-org/ggml) (MIT) as an out-of-tree, runtime-loadable backend, modeled
+on ggml's own BLAS backend, and on the `rocket-userspace` driver for the NPU path.

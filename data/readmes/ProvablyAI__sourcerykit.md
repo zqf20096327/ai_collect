@@ -1,0 +1,181 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/ProvablyAI/sourcerykit/refs/heads/main/docs/images/logo.svg" alt="SourceryKit" width="220" />
+
+  <br />
+
+  [![PyPI version](https://img.shields.io/pypi/v/sourcerykit)](https://pypi.org/project/sourcerykit/)
+  [![Python versions](https://img.shields.io/pypi/pyversions/sourcerykit)](https://pypi.org/project/sourcerykit/)
+  [![License: BSL 1.1](https://img.shields.io/badge/license-BSL%201.1-blue)](https://github.com/ProvablyAI/sourcerykit/blob/main/LICENSE.md)
+  [![CI](https://github.com/ProvablyAI/sourcerykit/actions/workflows/ci.yml/badge.svg)](https://github.com/ProvablyAI/sourcerykit/actions/workflows/ci.yml)
+</div>
+
+
+SourceryKit is the Python SDK for [Provably](https://provably.ai). Agents self verify API and MCP calls against recorded source evidence and create portable proofs. SourceryKit detects 100% of covered tool calling errors and data hallucinations ([see our benchmark](https://provably.ai/blogs/The-Agent-Was-Right-The-Evidence-Wasnt)). Downstream agents and workflows use those proofs to trigger retries, repair workflows and increase accuracy.
+
+SourceryKit is powered by Provably's [QEDB verifiable database](https://eprint.iacr.org/2025/1408), accepted at [ACM CCS 2026](https://www.sigsac.org/ccs/CCS2026/). QEDB proves that SQL query results were computed correctly over the complete committed data, producing small, database size independent proofs averaging around 1 KB that can be proven and verified in milliseconds.
+
+> ⚠️ **IMPORTANT:** Upgrading from a previous version? See the [Migration Guides](https://github.com/ProvablyAI/sourcerykit/blob/main/docs/migrations/README.md).
+
+## Features
+
+- **Verifiable claim evaluation** — allows the source agent or another agent or system to verify a claim against a portable proof of the recorded tool call.
+- **Automatic HTTP interception** — records supported API and MCP requests and responses, then commits the evidence to a QEDB-backed verifiable database with no changes to your agent code.
+- **Endpoint allow-listing** — blocks requests to untrusted destinations at the source.
+- **Deterministic verdicts** — every run resolves to `PASS`, `CAUGHT`, or `ERROR` against cryptographically anchored records.
+- **Framework-agnostic** — drops into OpenAI Agents SDK, LangChain, Claude Agent SDK, CrewAI, and LangGraph.
+
+Under the hood, these are the pieces doing the work:
+
+- **HTTP Interceptor**: Patches your HTTP libraries to watch and log outbound calls, blocking untrusted requests on the spot.
+- **Trusted Endpoints**: A database allow-list of approved destinations for your agent.
+- **Intercepts Table**: A QEDB-backed verifiable database table that logs and commits every request and response for auditing, proof generation and independent verification.
+- **SourceryKitAgentResponse**: A Pydantic model used as the structured response_format for your agent. Enforces a typed response contract with a `claimed_values` list of extracted values.
+- **Handoff Payload**: A clean data bundle containing the claims your agent is making about its external actions.
+- **Evaluator**: Compares the handoff payload against records in the Provably backend to give you a clear verdict.
+- **Provably Backend**: The source of truth that turns your local intercepts into anchored verification proofs.
+
+
+## Quickstart
+
+Requires **Python 3.12+**.
+
+```bash
+pip install sourcerykit
+sourcerykit init          # one-time setup: account, sandbox, credentials
+```
+
+Prefer installing from source?
+
+```bash
+git clone git@github.com:ProvablyAI/sourcerykit.git
+pip install -e ./sourcerykit
+```
+
+Give your agent `SourceryKitAgentResponse` as its output type, run it inside an intercept context, then check the verdict before you trust its claims:
+
+```python
+import uuid
+import httpx
+import sourcerykit
+from agents import Agent, Runner
+from sourcerykit import SourceryKitAgentResponse
+
+async def run_verifiable_agent():
+    # 1. Fire up the system
+    await sourcerykit.bootstrap_system()
+
+    # 2. Tell the registry which URL is allowed
+    await sourcerykit.insert_trusted_endpoint(url="https://api.example.com/data")
+
+    # 3. Make a network call inside an intercept context
+    async with sourcerykit.async_intercept_context(agent_id="demo-agent", action_name="get_data"):
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://api.example.com/data",
+                params={"query": "example_parameter"}
+            )
+            response.raise_for_status()
+
+    # 4. Run agent with SourceryKitAgentResponse as the output format
+    #    (e.g., output_type=... for OpenAI, response_format=... for LangChain, output_format=... for Claude).
+    #    The output is a structured response containing `claimed_values`.
+    prompt = "You are a helpful assistant."
+    agent = Agent(
+        name="demo-agent",
+        instructions=prompt,
+        tools=[...],
+        model="model-name",
+        output_type=SourceryKitAgentResponse,
+    )
+    result = await Runner.run(agent, prompt)
+    final_output: SourceryKitAgentResponse = result.final_output
+
+    # 5. Build the handoff payload from the agent's structured output
+    payload_data = {
+        "answer": final_output.answer,
+        "claims": [
+            {
+                "action_name": "get_data",
+                "claimed_value": final_output.claimed_values,
+                "verification_mode": "field_extraction",
+            }
+        ],
+    }
+
+    payload = await sourcerykit.build_handoff_payload(
+        payload_data,
+        run_id=uuid.uuid4(),
+        prompt=prompt,
+        intercept_agent_id="demo-agent",
+    )
+
+    # 6. Ask the evaluator for a verdict
+    result = await sourcerykit.evaluate_handoff(payload=payload)
+    print(f"Evaluation Outcome: {result.get('outcome')}") # PASS, CAUGHT, or ERROR
+```
+
+
+## Configuration
+To get things running, SourceryKit must be configured with your project variables. The interactive CLI handles account provisioning, organization workspace initialization, database validation, and persists credentials globally (OS application folder) and locally (project `.env`).
+
+```bash
+sourcerykit init
+```
+
+The wizard will guide you through:
+- **Account Login (OAuth)**: Log in securely with your browser and select your organization workspace.
+- **API Key Generation**: Automatically fetch your SDK API-KEY from your account profile.
+- **Database Provisioning**: Creates a hosted sandbox database automatically. To use your own PostgreSQL instead, pass `--postgres-url`.
+- **Save Config**: Automatically write your credentials and tokens straight to a local .env file.
+
+> ⚠️ **IMPORTANT:** The wizard only configures **SOURCERYKIT_*** variables. It does **not** handle third-party LLM provider infrastructure keys, which must still be exported separately.
+
+### Manual configuration (fallback)
+
+Already have credentials, or need to bypass the wizard (CI, containers, debugging)? Environment
+variables override the stored config:
+
+```bash
+export PROVABLY_ACCESS_TOKEN="..."
+export PROVABLY_REFRESH_TOKEN="..."
+export SOURCERYKIT_ORG_ID="..."
+export SOURCERYKIT_POSTGRES_URL="postgresql://user:password@host:5432/db"
+```
+
+> [!NOTE]
+> `SOURCERYKIT_POSTGRES_URL` is set automatically when using a sandbox. Only set it manually if you're using your own database.
+
+For a full list of CLI commands, check out the [CLI Documentation](https://provably.ai/docs/getting_started/cli) file, or simply run:
+```bash
+sourcerykit --help
+```
+
+For a full list of environment variables, see [.env.example](https://github.com/ProvablyAI/sourcerykit/blob/main/.env.example).
+
+
+## More Docs
+Want to dig into the details? Check out our documentation and specific guides:
+
+* **Official Documentation:** Visit [provably.ai/docs](https://provably.ai/docs) for the complete reference.
+* [End-to-End Walkthrough](https://provably.ai/docs/getting_started/end-to-end-walkthrough) — Get up and running from scratch.
+* [Cookbooks & Examples](https://github.com/ProvablyAI/sourcerykit/tree/main/cookbooks) — Practical recipes and code samples.
+
+### Technical Guides
+- [Architecture Overview](https://provably.ai/docs/pillars/architecture)
+- [HTTP Interception](https://provably.ai/docs/pillars/interceptor)
+- [Managing Trusted Endpoints](https://provably.ai/docs/pillars/trusted-endpoints)
+- [Handoff Contracts & Evaluation](https://provably.ai/docs/pillars/handoff)
+
+
+## Contributing
+We welcome fixes, features, and doc updates! Check out [CONTRIBUTING.md](https://github.com/ProvablyAI/sourcerykit/blob/main/CONTRIBUTING.md) to see how to run tests and open up a pull request.
+
+## License
+
+This project is licensed under the [Business Source License 1.1](https://github.com/ProvablyAI/sourcerykit/blob/main/LICENSE.md).
+
+- Copyright © 2026 Provably Technologies LTD
+- You may not offer the Software as a commercial hosted service without purchasing a commercial license from [Provably Technologies Ltd](https://provably.ai).
+- On 2029-05-07, the license will automatically convert to GPL-3.0-or-later.
+
+See the [LICENSE](https://github.com/ProvablyAI/sourcerykit/blob/main/LICENSE.md) file for full terms and details.

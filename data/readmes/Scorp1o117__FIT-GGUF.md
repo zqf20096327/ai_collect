@@ -1,0 +1,512 @@
+<p align="center">
+  <span>English</span> · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="branding/fit-gguf-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="branding/fit-gguf-logo-light.svg">
+    <img alt="FIT-GGUF" src="branding/fit-gguf-logo-light.svg" width="760">
+  </picture>
+</p>
+
+<p align="center"><strong>Fit-to-Size Intelligent Tensor Quantization for GGUF</strong></p>
+
+<p align="center">
+  A deterministic planning layer that turns llama.cpp quantization presets into a near-continuous model-size control.
+</p>
+
+## The short version
+
+Standard GGUF quantization asks you to choose a preset. FIT-GGUF starts from
+the largest supported preset below a requested byte budget, then spends the
+remaining bytes on deterministic tensor-level precision upgrades.
+
+> **Traditional GGUF gives you presets. FIT gives you a size slider.**
+
+FIT-GGUF v0.1 has two deliberately separate conclusions:
+
+| Claim | Status | Scope |
+| --- | --- | --- |
+| Deterministic size prediction and recipe execution | **Validated** | 22/22 evaluated targets across two tested model families had zero-byte actual-vs-predicted error under the pinned toolchain; the current 14-tier release also matched its post-oracle predictions exactly. |
+| Universally optimal tensor allocation | **Not established** | The imatrix-guided allocator helped on the development family but did not outperform matched random allocation on the second family. FIT claims precise size control, not a universal quality optimum. |
+
+“Continuous” means arbitrary targets within the representable GGUF recipe
+space. Tensor/qtype transitions are discrete, so a small amount of target
+slack may remain. The predictor is required to match the resulting artifact;
+it does not pretend that every byte target is exactly representable.
+
+**v0.2 extends the slider into a quality dial: choose the fidelity you want;
+FIT finds the smallest verified GGUF that safely meets it.** See
+[Fidelity tiers](#v02-fidelity-tiers) below.
+
+## v0.5: FIT Studio
+
+Choose **file size** to plan and verify an exact byte budget, or **quality tier**
+to search against frozen five-domain references and re-evaluate the result.
+Hardware budgets, llmfit model suggestions and task history support both paths.
+
+![FIT Studio two-entry home screen](docs/assets/fit-studio.png)
+
+[Download the Windows application](https://github.com/Scorp1o117/FIT-GGUF/releases/latest)
+and unpack the complete archive; no separate Python installation is required.
+Models, imatrix and a compatible llama.cpp runtime are supplied separately.
+See the [Windows guide](docs/studio-windows.md) and
+[tested scope](docs/studio-validation.md). Source installations can run
+`fit desktop` or `fit gui`; the default model guard is 5B parameters.
+
+## First release: Qwen3.8-27B-Uncensored
+
+The first public batch contains **14 FIT tiers from 7 GiB to 13.5 GiB in
+0.5-GiB steps**, produced from
+[`orcarouter/Qwen3.8-27B-Uncensored`](https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored).
+Every tier includes its plan, effective recipe, tensor override file, measured
+five-domain KL/Same-top results, and SHA-256 provenance.
+
+![FIT-GGUF quality curve](docs/assets/kl-curve-en.png)
+
+[English chart](docs/assets/kl-curve-en.png) · [中文图表](docs/assets/kl-curve-zh.png)
+
+The curve is an empirical observation for this model and protocol, not a
+general guarantee. P5 replaced the K-spanning 12.5-13.5G recipes with the
+IQ3_M-to-IQ4_XS span; P6 repaired the 8-10G spans. The final measured FIT
+curve is monotonic across all 14 release tiers, while the superseded recipes
+remain retained as experiment evidence.
+
+Additional release charts:
+
+- Same-top agreement: [English](docs/assets/sametop-curve-en.png) · [中文](docs/assets/sametop-curve-zh.png)
+- Old-to-final allocation comparison: [English](docs/assets/strategy-improvement-en.png) · [中文](docs/assets/strategy-improvement-zh.png)
+- Target-budget utilization: [English](docs/assets/target-utilization-en.png) · [中文](docs/assets/target-utilization-zh.png)
+
+## v0.2: Fidelity tiers
+
+v0.2 adds **fidelity tiers** on top of exact-size planning.
+
+**PASS = macro KL ≤ tier limit.** Tier limits come from a frozen Global KL Core:
+`Quality` ≤ 0.05, `Balanced` ≤ 0.10, `Compact` ≤ 0.15, `Mini` ≤ 0.20, measured
+under the frozen eval-v1 protocol.
+
+`fit fidelity-search` walks the healthy preset frontier (poison presets
+excluded), brackets the crossing, and returns the **minimum verified PASS** —
+not an extrapolation.
+
+> **Changed in v0.3 — the gate is KL only.** Through v0.2 a tier was a dual gate:
+> `macro KL ≤ tier limit` **and** `Same-top ≥` a model-specific floor from a
+> validated Guard Profile, with unvalidated models refused outright. A per-model
+> floor makes one tier name mean different things on different models, so v0.3
+> made the gate single-axis. Same-top agreement is still measured, reported and
+> archived on every point — and still shown against the model's calibrated floor
+> when one exists, as `same_top_reference` — but it never decides a verdict.
+> See [v0.3](#v03-calibration-and-the-registry).
+>
+> The tier table and its PASS/FAIL labels below are **v0.2 results under the v0.2
+> dual gate**: historical release records, not the current definition.
+
+### Minimum Verified Size @ Fixed Fidelity
+
+Flagship case study — [`orcarouter/Qwen3.8-27B-Uncensored`](https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored) (27B MoE; exact-model scope, not a cross-model claim).
+
+| Tier | Nearest smaller frontier preset | FIT v0.2 | Nearest larger preset | Saving | Active |
+| --- | --- | --- | --- | --- | --- |
+| Quality | Q4_K_M · 15.41G · .0658 / 93.79 · FAIL-BOTH | **16.25G · .0497 / 94.88 · PASS** | Q5_K_S · 17.40G · .0455 / 95.59 · PASS | −6.6% | KL |
+| Balanced | IQ3_M · 11.72G · .1445 / 89.38 · FAIL-BOTH | **12.84G · .0997 / 91.57 · PASS** | IQ4_XS · 14.05G · .0624 / 93.79 · PASS | −8.6% | KL |
+| Compact‡ | IQ3_XS · 11.15G · .1512 / 89.05 · FAIL-KL | **11.17G · .1486 / 89.09 · PASS** | IQ3_S · 11.57G · .1424 / 89.53 · PASS | −3.4% | KL |
+| Mini† | Q2_K · 9.98G · .2439 / 84.08 · FAIL-BOTH | **10.35G · .1924 / 86.31 · PASS** | IQ3_XXS · 10.42G · .1946 / 87.12 · PASS | −0.6% | KL |
+
+**Minimum verified within the validated healthy frontier and configured search
+tolerance (128 MiB).** Sizes are GiB; quality columns are macro KL / Same-top %
+under the frozen eval-v1 protocol.
+
+`†` Mini: the search stopped at the validated healthy-frontier boundary; the
+region below it lacks a valid interpolation window.
+
+`‡` Compact lies in a locally non-monotonic allocation region. Nearby larger
+recipes can score worse, so FIT reports `noise_inversion`, refuses automatic
+delivery, and requires verification of the final artifact itself. The released
+11.17 GiB artifact was rebuilt and independently re-evaluated at KL 0.148592 /
+Same-top 89.092%.
+
+### Why FIT verifies the final artifact instead of trusting size monotonicity
+
+```
+11.17G  KL .1486  PASS
+11.19G  KL .1519  FAIL
+11.20G  KL .1493  PASS
+11.21G  KL .1502  FAIL
+```
+
+Mixed-quantization recipes form a discrete, locally non-monotonic quality
+surface: a larger artifact is not guaranteed to outperform every nearby
+smaller artifact. FIT therefore treats noisy crossings as `noise_inversion`,
+fails closed, and verifies the actual release artifact before promotion.
+
+### v0.2 release gates (flagship model)
+
+```
+R1 Fidelity correctness        PASS
+R2 Search accuracy             PASS
+R3 Search budget               PASS
+R4 Exact-byte guarantee        PASS
+R5 v0.1 non-regression         PASS
+R6 Reproducibility             PASS
+Release Gates                  6 / 6 PASS
+```
+
+## v0.3: Calibration and the Registry
+
+### The tier gate is one fixed number per tier
+
+| Tier | Hard gate (frozen eval-v1) |
+| --- | --- |
+| `Quality` | macro KL ≤ **0.05** |
+| `Balanced` | macro KL ≤ **0.10** |
+| `Compact` | macro KL ≤ **0.15** |
+| `Mini` | macro KL ≤ **0.20** |
+
+The anchors are global constants. Naming a tier is therefore a **fixed,
+model-independent, checkable target** — the same promise on every model, with
+no calibration prerequisite and no per-model threshold that quietly moves.
+
+Same-top agreement is measured and archived on every point, and shown against
+the model's calibrated floor when the registry has one (`same_top_reference`).
+It is **reference, not gate**: it never changes a verdict.
+
+### One command to onboard a model
+
+v0.2 could enforce a tier, but only once a model's Same-top floor existed.
+v0.3 turns that step into a product: a new model is onboarded by **one
+command**, with no model-specific scripting and no manual intervention.
+
+```bash
+fit calibrate \
+  --source model-BF16.gguf \
+  --imatrix-corpus corpus.txt \
+  --runtime /path/to/llama.cpp/bin \
+  --eval-data eval-slices \
+  --out-dir out/MyModel \
+  --model-id MyModel
+```
+
+`fit calibrate` pins its inputs, generates or reuses an imatrix, builds the
+five aligned BF16 references, walks a standard preset ladder, spends at most
+**4 gap probes per tier**, and derives the floors — all inside the tier windows
+`W(K) = [0.85K, 1.15K]` (Quality .05 / Balanced .10 / Compact .15 / Mini .20).
+
+It emits a **Calibration Bundle**: `calibration-record.json`,
+`reference-manifest.json`, `curve-points.jsonl`, `guard-profile.yaml`,
+`profile-report.md`, a candidate `registry-entry.json`, `SHA256SUMS`, and the
+bundled `references/`.
+
+**Nothing here is per-model.** The eval-v1 freeze states *how to measure* and is
+one document for every model; the model's own `reference-manifest.json` sits
+beside its `references/` and is what `fit fidelity-search` picks up. Point the
+search at a bundle and it resolves the manifest, verifies it against the frozen
+contract digest, the weights being quantized and every per-domain
+reference/corpus SHA-256, and fails closed on any mismatch — no new freeze
+document, no hand-edited manifest path, no bypass.
+
+The bundle is also **self-consuming**: it carries
+`state-artifact-manifest.txt` and `seed-provenance.jsonl` for the ladder it just
+evaluated, so a search can reuse all of it as budget-free bracket evidence
+instead of paying for the same five-domain evals twice:
+
+```bash
+fit fidelity-search \
+  --source model-BF16.gguf --imatrix model.imatrix.gguf --runtime /path/to/bin \
+  --refs-dir  out/MyModel/references \
+  --manifest  out/MyModel/state-artifact-manifest.txt \
+  --logs-dir  out/MyModel/logs \
+  --eval-data-dir eval-data --tier balanced \
+  --out-dir out/MyModel/fs-balanced --work-dir /dev/shm/fs \
+  --preset-ladder IQ3_M,IQ4_XS,Q4_K_M,Q5_K_M,Q6_K
+```
+
+### Tiers are solved, not read off the ladder
+
+The window probes above exist to derive the floors: `_largest_uncovered_gap`
+fills the **largest** KL gap in a window, which is what a stable P5 wants. That
+is not the same question as *what should this tier ship*. A tier's product is the
+smallest artifact that reaches its anchor, and that artifact generally lies
+**between** two ladder presets.
+
+`--tier-search` adds a finishing stage that answers the product question directly:
+it bisects each tier's size bracket, evaluates the candidates, and keeps the
+smallest PASS together with its recipe.
+
+```bash
+fit calibrate … --tier-search                        # finishing stage, one command
+fit tier-search --bundle out/MyModel … --tiers mini  # tighten a tier later
+```
+
+On `occamy-1.0-abliterated` the window heuristic probed **above** `IQ4_XS`
+(17.44 GiB, KL 0.0503 — a FAIL) into the largest gap, produced a *smaller*
+artifact with a *worse* KL, and the tier fell back to the `Q4_K_M` preset.
+Solving the bracket instead landed the same tier at **17.50 GiB, KL 0.0464** —
+2.21 GiB under that preset. Across five tiers the difference against the smallest
+passing preset in each is **11.34 GiB (12.6%)**.
+
+**A window is a palette, not a bracket.** `generate_upgrade_candidates` emits one
+transition per tensor — lower type to upper type — so a window can only express
+the union of its two endpoint recipes' types. A tensor typed identically at both
+ends is unreachable at any budget, and a window whose endpoints differ in one
+type can *interpolate* but never re-allocate. On occamy the 0.02 anchor was
+bracketed with `Q4_K_M`–`Q6_K` — one transition, `q4_k → q6_k`, for all 371
+candidates — and three probes reached 0.0217 at best, so the tier fell back to
+the `Q6_K` preset at 26.56 GiB. A `Q5_K_M`–`Q8_0` window (432 candidates, every
+role) reached **23.55 GiB @ 0.0195** in a single probe: 3.00 GiB under the
+preset, and ahead of the external `APEX-I-Balanced` recipe (23.60 GiB @ 0.0197)
+whose palette had prompted the question. Choosing a tier's window is choosing
+what that tier can be.
+
+**A precision floor applies only where the candidate set cannot reach.** The same
+blindness that motivates the floor table also bounds it: where the candidate set
+*can* reach a tensor, a floor is not a guarantee, it is a constraint on an
+optimizer that could have spent there by itself. Counting which floored roles each
+window's candidate set covers on occamy: `IQ3_XS`–`IQ3_M` reaches 5 of 10 and the
+floors are worth **−20.8% macro KL** at a fixed size, while `Q3_K_M`–`Q4_K_M` and
+`IQ4_XS`–`Q4_K_M` reach 9 of 10 and the same floors cost about **1.2 GiB** for no
+gain. One table was rescuing the low tiers and taxing the high ones.
+
+The stage runs *before* the bundle is emitted — it appends to
+`curve-points.jsonl`, whose digest the record pins — and *after* the floors are
+frozen, so the artifacts it selects can never feed back into the floor they are
+judged against. Run against an existing bundle, `fit tier-search` reseals the
+record, the seed material, the registry pin and `SHA256SUMS`.
+
+`scripts/emit_tier_artifacts.py` turns a tier-search report into the shipped
+files: `<model>-FIT-<TIER>-<size>G-<type>.gguf`, each with its plan, recipe and
+quantize record beside it, and each **re-evaluated on the bytes that ship**.
+
+**Fail-closed, not best-effort.** The calibration line reports what it actually
+measured: a tier whose window cannot be filled reports `INSUFFICIENT_WINDOW`
+and the guard stays `candidate`; floors are never borrowed from another model,
+the sample minimum is never relaxed, and search points are never back-filled
+into the floor set. A candidate guard is still a complete, auditable record —
+it simply is not a validated one.
+
+Because the tier gate is KL-only, a `candidate` guard no longer blocks the
+product: `fit plan --fidelity-tier compact` works on a model with no registry
+entry at all, against the fixed global anchor. Calibrating is how you get the
+*reference* Same-top number and a registry entry, not a licence to name a tier.
+
+`fit registry` makes that record inspectable:
+
+```bash
+fit registry list                    # entries + status
+fit registry verify                  # structural + hash + cross-object verification
+fit registry validate out/MyModel    # validate a Calibration Bundle
+```
+
+Entries are keyed by **exact source-weights SHA-256**, not by model name: a
+Guard only claims to apply to the bytes it was calibrated on. The product path
+enforces the same binding unconditionally — quantizing weights that differ from
+the ones the references came from is refused rather than measured.
+
+## Install
+
+### Graphical application — FIT Studio
+
+`pip install -e '.[desktop,hardware]'` then `fit desktop` opens a local graphical
+workspace with two main entries: **specify file size** (analyze/plan/quantize)
+and **specify quality tier** (real frozen-reference fidelity search and final
+artifact verification). Hardware budgets and llmfit recommendations are
+supporting tools. `fit gui` opens the same UI in a browser.
+The default experiment guard is <=5B parameters. See [Studio guide](docs/studio.md)
+for Windows builds, native file selection, resource estimates and validation.
+
+FIT-GGUF requires Python 3.11+ and a compatible llama.cpp runtime containing
+`llama-quantize`.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[test]'
+python -m pytest tests/
+```
+
+The Python package's only runtime dependency is PyYAML (Guard Profile
+parsing). Real analysis and quantization use the supplied llama.cpp binary.
+
+### Platform support
+
+Linux and Windows are both supported. `--runtime` points at a directory of
+llama.cpp binaries — an extracted release archive or your own build's `bin/` —
+and resolution is platform-aware:
+
+- The extensionless executable is preferred on POSIX and `.exe` on Windows, but
+  every shipped form is tried on every platform, so a runtime directory built
+  for the other OS does not silently resolve to nothing.
+- On Windows a `.cmd`/`.bat` wrapper is accepted as well (CreateProcess runs it
+  directly, no shell), so a shim that pins CUDA paths or extra environment
+  variables can be passed as `--runtime` as-is.
+- `analysis.json` records the **resolved** binary path. Replaying an analysis
+  written before platform-aware resolution — for example one produced on Linux
+  and replayed on Windows — re-resolves from the recorded directory, so no
+  re-analysis is needed.
+
+The full test suite needs `pytest`, `setuptools` and `pip` (all three are
+declared in `.[test]`, because the opt-in wheel smoke test builds with
+`--no-build-isolation` — without isolation the build frontend and backend must
+both be importable from the test environment). A stdlib `python -m venv` ships
+pip; `uv venv` does not, so `uv pip install -e '.[test]'` installs it.
+
+Two tests in `test_gguf_traits_source.py` re-parse a pinned llama.cpp checkout at
+`third_party/llama.cpp/` and skip when it is absent. That path is gitignored, so
+a bare clone reports 214 passed / 2 skipped; a full development checkout reports
+216 passed.
+
+## CLI workflow
+
+### 1. Analyze a source/preset interval
+
+```bash
+fit analyze \
+  --source model-BF16.gguf \
+  --imatrix imatrix.gguf \
+  --runtime /path/to/llama.cpp/bin \
+  --lower IQ3_M \
+  --upper IQ4_XS \
+  --out-dir work/analysis
+```
+
+`analyze` captures the effective preset recipes with pinned
+`llama-quantize --dry-run`, profiles the imatrix, derives GGUF metadata and
+freezes the candidate set.
+
+### 2. Plan an explicit byte target
+
+```bash
+fit plan \
+  --analysis work/analysis/analysis.json \
+  --target-bytes 12884901888 \
+  --policy balanced \
+  --model-name MyModel \
+  --out-prefix work/MyModel-FIT-12G
+```
+
+This writes a plan record, effective recipe and `--tensor-type-file`. Planning
+is deterministic for fixed inputs, policy and toolchain.
+
+### 3. Quantize and enforce the prediction
+
+```bash
+fit quantize \
+  --analysis work/analysis/analysis.json \
+  --tensor-types work/MyModel-FIT-12G-tensor-types.txt \
+  --out MyModel-FIT-12G.gguf \
+  --expect-bytes PREDICTED_BYTES_FROM_THE_PLAN
+```
+
+The command rejects a size mismatch and records the output SHA-256.
+
+### 4. Or search by fidelity (v0.2)
+
+```bash
+fit fidelity-search \
+  --source model-BF16.gguf \
+  --imatrix imatrix.gguf \
+  --runtime /path/to/llama.cpp/bin \
+  --refs-dir refs/bf16 \
+  --eval-data-dir eval-slices \
+  --guard-registry src/fit_gguf/profiles/guard \
+  --tier compact \
+  --preset-ladder IQ2_XXS,IQ2_M,IQ3_XXS,IQ3_XS,IQ3_S,IQ3_M,IQ4_XS \
+  --manifest work/manifest.txt \
+  --logs-dir work/logs \
+  --out-dir out/compact \
+  --work-dir /dev/shm/fit-compact
+```
+
+This resolves the tier contract (KL limit + validated Guard floor), searches
+the healthy preset frontier for the minimum verified PASS, then builds the
+exact-size artifact and re-evaluates **the final artifact itself** against the
+tier contract. `--preset-ladder` auto-analyzes adjacent preset pairs; pass
+frozen `--analysis` directories instead when you need byte-stable
+reproducibility. Search budgets: `--profile normal` ≤ 8 fresh evaluations,
+`--profile precise` ≤ 16. If the crossing lies in a locally non-monotonic
+region the search reports `noise_inversion` and fails closed rather than
+delivering automatically.
+
+### 5. Calibrate a new model, then publish its Guard (v0.3)
+
+Step 4 needs a validated Guard Profile for the exact model. `fit calibrate`
+produces one — see [v0.3: Calibration and the Registry](#v03-calibration-and-the-registry).
+
+## How it works
+
+1. **Anchor** — select the largest supported lower preset whose predicted
+   artifact fits the budget.
+2. **Measure** — derive tensor shapes, effective qtypes, encoded byte deltas
+   and imatrix statistics from the actual source/toolchain.
+3. **Allocate** — rank safe positive-precision transitions and pack them under
+   the remaining byte budget using a frozen policy.
+4. **Ask the oracle** — replay the proposed tensor override file through
+   llama.cpp dry-run so counter-based preset rules are reflected in the final
+   effective recipe.
+5. **Verify** — quantize, check the artifact byte size against the oracle
+   prediction, and hash the result.
+
+This architecture matters because llama.cpp presets are recipes, not a single
+qtype applied uniformly to every tensor.
+
+## Evidence and reproducibility
+
+- `FINAL_REPORT.md` — v0.1 conclusions, accepted claims and rejected claims.
+- `experiments/` — frozen experiment inputs, gates, logs and machine-readable
+  results from M0–M16 and productization stages.
+- `experiments/2026-08-29-p4-release-batch/` — the first 14-tier release batch.
+- `src/fit_gguf/` — parser, GGUF size model, imatrix profiler, planner,
+  optimizer and CLI.
+- `tests/` — deterministic unit and integration-level coverage.
+
+The published measurements use llama.cpp b10666 (`4e97ac86e`), Linux x86_64,
+ROCm, 512-token context, 512 batch size, aligned BF16 references and five fixed
+64 KiB slices (`wiki_test`, `wiki_valid`, Chinese, code and `agent_chat`). KL
+and Same-top are primary directional metrics; short-corpus PPL is diagnostic.
+Macro KL is the two-level domain mean (per-domain mean first, then across
+domains) under the frozen eval-v1 evaluator contract.
+
+Exact-size semantics: `quantize.imatrix.file` is serialized into GGUF metadata
+by the pinned llama.cpp runtime. FIT finalizes size prediction using the exact
+quantize-time imatrix path, so target-size accuracy remains exact. Reproducing
+an artifact byte-for-byte, including its SHA-256, additionally requires the
+same serialized imatrix path string.
+
+## Boundaries
+
+- A FIT filename such as `FIT-12G` describes the requested **main GGUF file
+  budget**, not total RAM or VRAM usage. KV cache, compute buffers, runtime
+  overhead and any multimodal projector are separate.
+- Exact prediction is toolchain-scoped. Revalidate after changing llama.cpp,
+  converter behavior, metadata, source layout or platform.
+- Quality monotonicity is observed on tested curves, not enforced by the
+  planner. Pair-boundary regressions can occur and must remain visible.
+- The balanced v0.1b allocator is a documented release choice, not a
+  cross-model theorem. Its transfer failure is retained in `FINAL_REPORT.md`.
+- The current optimizer is upgrade-only within a selected lower/upper preset
+  interval; it is not an unrestricted global qtype search.
+
+## Project records
+
+- `CHANGELOG.md` — release history.
+- `DECISIONS.md` — accepted and rejected design decisions (D-0001..D-0024).
+- `FINAL_REPORT.md` — the v0.1 research report and its validated claims.
+- `docs/llama-integration.md` — reviewed integration path through llama.cpp.
+- `docs/execution-profile.md` — execution parameters (GPU offload, threads,
+  scratch placement) and why they are provenance, not evaluator semantics.
+- `eval-data/PROVENANCE.md` — sources, offsets and SHA-256 of the five frozen
+  KL evaluation slices.
+- `src/fit_gguf/contracts/fidelity-calibration-v1.json` — the machine-readable
+  calibration contract (window rule, sample minimum, dedup key, promotion rule,
+  failure-state enumeration) that `fit calibrate` and `fit registry` both load.
+- `src/fit_gguf/registry/` — the Fidelity Registry v1 trust root: per-model
+  entries, calibration records, manifests and the reference locator layer.
+- `experiments/` — experiment records: frozen inputs, logs and machine-readable
+  results.
+
+## License
+
+MIT — see [LICENSE](LICENSE). The released base model
+(`orcarouter/Qwen3.8-27B-Uncensored`) carries its own license terms; the
+released FIT quantizations inherit the model's usage restrictions.

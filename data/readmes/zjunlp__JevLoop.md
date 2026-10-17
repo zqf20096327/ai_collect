@@ -1,0 +1,553 @@
+# JevLoop
+
+**Every fork in your agent loop is a full LLM call. Not one of them is generation.**
+
+*Should I act? Which tool? Which file? Is this safe? Did it work? Am I done? Can I ship this?* A conventional agent answers each of those by writing a sentence and parsing it back. But each is a pick, a score or a yes/no answer: one forward pass over a fixed candidate set, ~10–40 ms, no tokens generated.
+
+JevLoop routes them to a decision model ([Jev](https://typesafe.ai) / [Laya](https://github.com/NandaKishorM/laya)) and keeps the LLM for the one thing only it can do: **writing**.
+
+It is a **runnable harness**, not a demo: the loop, the backend seams, the accounting and a web UI — all of it in one command, with no dependency, no build step and no API key.
+
+JevLoop is an independent project. It is not affiliated with, or endorsed by, TypeSafe AI — the name is a reference to the model it routes to, nothing more.
+
+**English** · [中文](README.zh-CN.md)
+
+![JevLoop: one demo run — the conversation, the decision trace, and the compiled DECISION.md](docs/demo.gif)
+
+*One session, three views: the conversation, the decision trace, and the compiled `DECISION.md`. The web UI is currently in Chinese — an English version is in progress.*
+
+```
+$ npm run demo          # fresh clone: no key, no network, no npm install
+
+JevLoop · demo
+  decision  : laya→rule-judge
+  generator : scripted — set DEEPSEEK_API_KEY for a real LLM
+
+  ── loop trace ──────────────────────────────────────────
+  ▲ laya: TRANSPORT, retrying in 258ms
+  ▲ laya unavailable (laya is unreachable: fetch failed), falling back to rule-judge
+  cleared: list_dir (auto)
+  cleared: read_file (auto)
+
+  ── every decision ──────────────────────────────────────
+  step 1
+   ~ decide  loop.needsTool         use_tool           4.9ms  needs_tool=0.95
+   ~ decide  loop.pickTool          call               4.9ms  tool=list_dir
+   ~ decide  loop.gradeRisk         auto               4.7ms  risk=0.0 needs_auth=0.05
+   ~ decide  loop.stepOk            continue           4.3ms  ok=0.92
+   ~ decide  loop.isDone            keep_going         4.0ms  done=0.10
+  ...
+  step 3
+   ~ decide  loop.canDeliver        deliver            4.5ms  deliverable=0.90 unsupported=0.08
+     model   generate (scripted)                       600ms
+
+  ── accounting ──────────────────────────────────────────
+  decisions  12     53ms (4.4ms each)
+  model       1     600.2ms
+
+  decisions : model = 12.0:1   decisions are 8.2% of wall clock
+```
+
+> `~` marks a degraded answer — the bundled judge is a rule table, so every decision it gives is flagged as one. Wall-clock shares move a point or two between runs.
+
+Zero dependencies. Zero build step. Runs offline with no API key.
+
+> That run's judge is a rule table, not a model — it shows the **shape** of the loop, not the quality of a decision. Real backends and what they actually cost: [Honest numbers](#honest-numbers).
+
+---
+
+## The problem
+
+Take a task that needs a few tool calls. **Both loops make the same calls — the difference is what sits in the cycle.**
+
+```
+Conventional loop — the model is inside it
+
+   ┌─────────────────────────────────────────┐
+   │                                         │
+   ▼                                         │
+[ LLM call ] ── pick a tool ──▶ [ tool ] ────┘
+   │
+   └──▶ answer
+
+
+JevLoop — the model is outside it
+
+   ┌─────────────────────────────────────────┐
+   │                                         │
+   ▼                                         │
+[ Jev ] ── decide ──▶ [ tool ] ──────────────┘
+   │
+   └──▶ [ LLM call ] ── write ──▶ [ Jev ] ── gate ──▶ answer
+```
+
+The conventional agent asks the model at every turn of the loop — *should I act? which tool? is this safe? did it work? am I done?* — and pays a full generation for each answer. JevLoop answers those inside the loop and calls the model only to write: **once**, plus at most one revision when the delivery gate rejects the draft.
+
+| Question the loop asks | Conventional agent | JevLoop |
+|---|---|---|
+| Do I need to act yet? | LLM call | decision |
+| Which tool? | LLM call | decision |
+| Is this call safe? | LLM call, or nothing at all | decision |
+| Did it work? | LLM call | decision |
+| Am I done? | `max_iter` counter | decision |
+| Can I ship this answer? | **nothing** | decision |
+
+You were paying generation prices for decisions.
+
+## Quick start
+
+Needs **Node ≥ 22.6** — it runs TypeScript directly, with no build step.
+
+```bash
+git clone https://github.com/zjunlp/JevLoop && cd JevLoop
+```
+
+**Run the whole loop offline** — the offline judge lives with the examples:
+
+```bash
+npm run demo
+```
+
+**See what the decisions compile to** — no key, no network:
+
+```bash
+node --experimental-strip-types src/cli.ts spec
+```
+
+**Open the UI** on http://127.0.0.1:7799:
+
+```bash
+npm run serve
+```
+
+**Put it to work** — this one needs a decision backend:
+
+```bash
+node --experimental-strip-types src/cli.ts run "list the files and explain what they do" --cwd ./some-project
+```
+
+It resolves its own backend: the hosted Jev API if `TYPESAFE_API_KEY` is set, otherwise a local Laya on `:7789`. With neither, it says which one it wanted and every step escalates — it does not guess.
+
+**Consume the contract from a host that is not JevLoop** — offline, no key, no LLM:
+
+```bash
+npm run external-host     # a minimal external host: parse → decide → act, own state and graph
+npm run adapter-test      # the negative fixtures: unknown projection, unhandled action, …
+npm run adapter-report    # the capability report must match the host's code
+npm run replay -- <session> # a real session's decision records must still add up
+npm run trace -- <session>  # …and render each one as its own readable decisions/*.md
+npm run trace -- --verify <dir> # re-derive the digests from those .md files alone
+npm run metrics -- <session> # decisions / calls / tokens as Prometheus text, offline
+npm run claim-audit -- <session>   # did it claim work the trajectory does not show?
+```
+
+> **On the npm status.** `jevloop` is on npm, but the newest published version (`0.2.0`) declares `github.com/Xubqpanda/JevLoop` as its repository, while this tree is `zjunlp/JevLoop` and its `package.json` still reads `0.1.0`. So the published tarball is **not** this revision. To get this one, install from git — `npm install github:zjunlp/JevLoop` — or clone it. `npx jevloop …` is shorthand for the CLI commands above.
+
+**Drive the demo with a real decision model:**
+
+```bash
+npm run demo -- --laya     # local Laya sidecar on :7789 (open weights, free)
+npm run demo -- --jev      # official Jev API (needs TYPESAFE_API_KEY)
+```
+
+**Measure it against the thing it claims to beat:**
+
+```bash
+npm run compare            # this loop vs a ReAct loop, same tasks and tools
+npm run compare -- --repeat 3
+```
+
+Two harnesses, measuring different things: `npm run bench` scores each **decision** against an expected trajectory, `npm run compare` scores two **loop shapes** against each other on calls, tokens, wall clock and task outcome. Neither is in the kernel's dependency path.
+
+## DECISION.md — the decisions, compiled
+
+Every generation of agent framework leaves behind a `.md`. `AGENTS.md` holds conventions, `SKILL.md` holds capabilities — and both are **prose for a model to read**. The model pays tokens for them every turn, it can ignore them, and nothing tells you whether it did.
+
+`DECISION.md` is the one that gets **compiled**.
+
+> **Not a decision *record*.** A record is written afterwards, to explain what an agent did. `DECISION.md` declares what the loop is *going to* decide, and a program turns it into the questions the decision model is asked.
+
+One file, two consumers:
+
+```
+structure blocks  →  questions + policy  →  the decision model   (tens of ms, no tokens)
+prose             →  system prompt       →  the LLM              (the one expensive step)
+```
+
+So it is subtraction: every block you move into the file is one question the LLM no longer has to be asked. [`headline()`](src/decisiondoc.ts) counts them **from the file itself** — change a `kind` and the sentence changes with it.
+
+**The frame is declared there too.** Each decision also needs a *frame*: which few fields of the agent's state reach the model, how far each is clipped, and — just as load-bearing — which fields are deliberately withheld and **why**. That is a `frame:` block in the file:
+
+```markdown
+frame:
+  + task          400                   —— deciding "which file" needs the task
+  + tool          40     toolOrEmpty    —— one input slot means different things per tool
+  - history                             —— the candidate set *is* the projection; both would fight
+```
+
+**The check that used to be impossible now runs.** [`scripts/conformance.ts`](scripts/conformance.ts) proves every cell of the agent state is either read by a decision or explicitly excluded with a reason. Delete the `- cwd —— …` line and it fails, naming the cell — where before, all four layers stayed green and `cwd` simply vanished from the declaration. Bounds are per-field and mandatory, so a frame cannot quietly degenerate into "send everything".
+
+What still lives in code is the projection **implementation** (`ctx` → the value of a named projection) and the host's own vocabulary — state cells, candidate providers, position and action handlers. That seam is the next section.
+
+The file cannot quietly rot, either. It is parsed on load and any problem — an action name that is not in the closed vocabulary, a predicate aimed at the wrong question type — throws with a line number, instead of compiling into a rule that never fires.
+
+```markdown
+## grade_risk
+kind: mixed
+when: before every tool call that actually runs
+
+### risk
+ask: How risky is this tool call?
+- read-only
+- reversible write
+- irreversible
+- destructive
+
+### needs_auth
+ask: This call must be explicitly authorised by a human before it runs
+- true — it can destroy data, spend money, or leave the machine
+- false — it only reads or writes inside the working directory
+
+policy:
+  - score:risk >= 2 → ask_human
+  - prob:needs_auth >= 0.5 → ask_human
+  - score:risk >= 1 → auto_audit
+  - else → auto
+```
+
+**The question type is inferred from how the options are written, never declared.** Two options named `true` and `false` is a `noul`; every option named is a `choice`; none named is a `score`; a mix is an error rather than a guess. `kind` then has to agree with what the writing implies.
+
+**Predicates are a closed vocabulary.** `else`, `top >= n` / `top < n` (single-question blocks only), `prob:<id>` (on a `noul`), `score:<id> >= n` (on a `score`), `picked:<id> = <option>` (on a `choice`). There is deliberately no `>` and no `<=`: a condition you cannot write here is a condition that belongs in code.
+
+**A predicate aimed at the wrong kind of question is rejected, not compiled.** Left alone it would become a rule that never fires — the author believes they wrote a gate, there is no gate, and it fails open. Actions are a closed list too, and an unknown one is reported with its line number. Nothing is ever silently dropped: everything unrecognised lands in `problems`, with the line it came from.
+
+### Overriding the thresholds
+
+The numbers in those predicates (`>= 2`, `>= 0.5`) are **defaults**, measured against a pinned Jev version. They are a starting point, not a law — so they can be overridden without editing the file:
+
+```sh
+jevloop run "..." --gate can_deliver.unsupported=0.7
+JEVLOOP_GATES='can_deliver.unsupported=0.7,grade_risk.risk=4' jevloop serve
+```
+
+A key is `<block>.<question>` — the names as they appear in `DECISION.md`.
+
+**A name that resolves to nothing is fatal, on purpose.** `--gate can_deliver.unsupport=0.7` (one letter short) stops with the list of keys that do exist, and a server started with a bad `JEVLOOP_GATES` does not come up at all. The alternative — accepting it quietly — means you believe you tightened a gate and you did not, with nothing anywhere to tell you.
+
+**Where a question has several tiers, the bare name changes the first one** and later tiers need an index, because applying one value to both would make the second unreachable:
+
+```sh
+--gate grade_risk.risk=4        # score:risk >= 4 → ask_human   (the second tier stays at 1)
+--gate grade_risk.risk[1]=1.5   # score:risk >= 1.5 → auto_audit
+```
+
+That unreachability is checked, not trusted: tiers on one question must stay **strictly decreasing**, since the policy is evaluated in order and the first match wins. `--gate grade_risk.risk=0.5` is refused — it would put the "ask a human" bar below the "audit" bar and silently delete a rung.
+
+**The override is recorded, and it never lies about itself.** The effective number — not the file's — goes into the rule's `reason`, which is what the journal stores and what the delivery gate quotes back to the model. `run:start` carries the override map, so a stored run says which thresholds it ran on; the server banner and the CLI accounting print it; the spec page shows the effective predicates. Two runs of the same task that disagree are otherwise indistinguishable in the log, and the first thing you would blame is the model.
+
+## How it works
+
+```
+ step ─┬─ loop.needsTool   ↗ do I need to act?  ──no──▶ generate
+       │
+       ├─ loop.pickTool    ↗ which tool?  (options rebuilt every step)
+       │
+       ├─ loop.pickInput   ↗ which file?  (only when the tool takes one)
+       │
+       ├─ loop.gradeRisk   ↗ how dangerous is this?  ──▶ ask a human
+       │
+       ├─ [ tool runs ]     ← the only place with real side effects
+       │
+       ├─ loop.stepOk      ↗ did it work?
+       │
+       └─ loop.isDone      ↗ am I done?  ──no──▶ next step
+                            │
+                            ▼
+                       [ LLM generates ]   ← the only expensive call
+                            │
+                       loop.canDeliver  ↗ is this shippable?  ──revise──▶ one more generate
+```
+
+**That graph is the reference loop** — seven nodes, declared as seven blocks in [`DECISION.md`](DECISION.md) and wired by [`src/decisions.ts`](src/decisions.ts). It is not a limit on the format: a host may declare ten, thirty, or more nodes and connect them with its own graph. See [Bring your own agent loop](#bring-your-own-agent-loop).
+
+### A decision is three things
+
+```ts
+export const pickTool = defineDecision({
+  id: 'loop.pickTool',
+
+  // ① The frame: which bounded slices of agent state the model may
+  //    judge on. `frame:` in DECISION.md wins; FRAME_PICK_TOOL is the
+  //    in-code fallback, and hosts that are not JevLoop supply their
+  //    own projections instead.
+  ...framed(FRAME_PICK_TOOL, 'pick_tool'),
+
+  // ② Typed questions. The wording comes from DECISION.md; the
+  //    candidates cannot, because a Markdown file cannot hold a
+  //    function — `dynamic: toolsFor(ctx)` is how the file says so.
+  questions: (ctx: AgentCtx) => ({
+    tool: choice(askOf('pick_tool', ['tool']), toolsFor(ctx)),
+  }),
+
+  // ③ Policy: answers → action. Also from DECISION.md, and pure code
+  //    once compiled. No model involved.
+  ...policyOf('pick_tool'),
+});
+```
+
+Three primitives, taken straight from the Jev wire protocol:
+
+| Primitive | Answer | Used for |
+|---|---|---|
+| `noul` | P(true), 0–1 | **gate** — allow / block |
+| `choice` | one option + per-option probability | **route** — which path |
+| `score` | expected level on an ordered scale | **grade** — how bad |
+
+### Two things worth stealing
+
+**Rebuild the options every step.** A fixed action list makes the model pick something that no longer applies — `write_file` should not still be a candidate after you've written the file. That's why `questions` can be a function of the context.
+
+**Never let a probability bypass authorisation.** Risk gating is a hard rule, not a threshold:
+
+```ts
+policy: [
+  // irreversible ⇒ explicit authorisation. No confidence score overrides this.
+  { when: scoreGte("risk", 2), action: "ask_human" },
+  // the model's own read is a SECOND, independent gate
+  { when: probGte("needs_auth", 0.5), action: "ask_human" },
+  { action: "auto" },
+]
+```
+
+A decision model may decide *whether to ask a human*. It must never decide *whether to skip authorisation*.
+
+## Honest numbers
+
+The same loop against three decision backends. The ratio that matters is decisions : model calls, and the one that surprised us is how much of the wall clock the decisions take.
+
+| Decision backend | Per decision | decisions : model | decision share of wall clock | Quality |
+|---|---:|---:|---:|---|
+| `examples/rule-judge.ts` (offline demo) | 4 ms | 12 : 1 | **~8 %** | a rule table, not a model |
+| Laya `typed-decisions`, local A100 | 30–85 ms | 8 : 1 | ~38 % | **not enough zero-shot** (below) |
+| Jev `jev-latest`, hosted API | ~390 ms | 13 : 1 | **79 %** | decisive and correct on every decision |
+
+Two conclusions we are not going to soften:
+
+- **The whole claim holds on a locally-served decision model.** 30 ms decisions make the loop's thinking essentially free next to one generation call.
+- **Over the hosted API it does not.** ~390 ms per decision is network round-trips, and with 13 decisions for 1 generation the decisions dominate the clock. Still ~5–8× faster than a frontier LLM call and orders of magnitude cheaper, but "decisions are free" would be a lie at that latency.
+
+The obvious sweet spot is a strong decision model served locally. Neither of the two we could test is that: one is fast but not accurate enough, the other is accurate but round-trips.
+
+### And `13 : 1` is not "we saved thirteen LLM calls"
+
+`decisions : model` counts **decisions per generation**. It does not mean this loop made one LLM call where a normal agent would have made thirteen. A ReAct loop solving the same task makes three or four, not thirteen — so the two numbers are not the same quantity and comparing them is nonsense.
+
+So we measured it. `npm run compare` runs the same seven tasks twice: once through this loop, once through a ReAct loop that asks the LLM at every branch point. Same model, same tools (literally the same `callTool`), same fixture, same `maxSteps`, same acceptance checks.
+
+| | decisions / task | LLM calls / task | wall clock / task | output tokens / task | accepted |
+|---|---:|---:|---:|---:|---:|
+| JevLoop | 12 | **1** | 5.9 s | **105** | 6 / 7 |
+| ReAct | 0 | **3** | 3.4 s | **360** | 7 / 7 |
+
+*Hosted Jev for decisions, `deepseek-flash` for generation, 7 tasks × 1 run each.*
+
+### Is Jev fast? The compute is; the round trips are not
+
+"One decision takes 330 ms" says nothing on its own — it does not say how much of that is *thinking* and how much is *waiting for a reply*. Those two have opposite fixes: slow thinking means a different model, slow waiting means a different deployment.
+
+`npm run latency` separates them by sending, to the same URL with the same auth, a request the server rejects during validation — same path, same edge, same auth, no model. The first call is dropped, so TCP and TLS (684 ms cold) are not in the number.
+
+| | handshake + validation | total | **of which compute** | compute share |
+|---|---:|---:|---:|---:|
+| one decision, Jev | 254 ms | 332 ms | **78 ms** | 23 % |
+| one generation, one line | 90 ms | 2114 ms | **2024 ms** | 96 % |
+| one generation, ~300 words | 90 ms | 4281 ms | **4191 ms** | 98 % |
+
+**A decision costs 78 ms of compute against 2000+ ms for a generation — 26 to 54 times less — and then spends 254 ms waiting.** The frame it sends is about a kilobyte, so it is not bandwidth: it is round-trip latency, and the Jev host's round trip is 3× the generation host's.
+
+Putting that back into the comparison, with the handshake subtracted per call:
+
+| | decisions / task | LLM calls / task | pure calls | **pure compute** | wall clock | output tokens / task | accepted |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| JevLoop | 12 | **1** | 5.2 s | **1.3 s** | 5.2 s | **95** | 6 / 7 |
+| ReAct | 0 | **3** | 2.8 s | **2.6 s** | 2.8 s | 226 | 7 / 7 |
+
+*Hosted Jev, `deepseek-flash`, 7 tasks × 1 run each. `pure calls` is the sum of successful call latencies; `pure compute` subtracts the measured handshake per call.*
+
+**On compute, this loop wins: 1.3 s against 2.6 s, and it wins six of the seven tasks** — on `write`, 8.1 s against 52.8 s. What it loses is the handshake: twelve decisions × 254 ms is **3.0 s of waiting, more than twice its own compute**, while ReAct's three calls pay 0.2 s. That is the whole of the wall-clock gap.
+
+Two things are worth saying plainly, because the same table would support a lazier conclusion:
+
+- **Per call Jev wins; per task on the hosted API it loses on wall clock.** Saying only the first would be the same sleight of hand as reading `13 : 1` as "thirteen LLM calls saved".
+- **The loss is the deployment, not the design.** Twelve round trips only hurt because each one leaves the machine. At the 30–85 ms a locally-served decision model gives (§8.11), the handshake disappears and the 3.0 s becomes roughly the 0.9 s of compute it actually is — the same comparison then reads 2.2 s against 2.8 s in this loop's favour.
+
+And the honest counter-example, kept in rather than averaged away: on `direct` — a task answerable in one line — this loop made **two** generation calls because the delivery gate rejected the first, emitted 1319 output tokens against ReAct's 117, missed what the task asked for, and lost by 8× on compute. Deciding not to act is cheap; deciding *wrongly* and regenerating is not.
+
+### Two gotchas we hit so you don't have to
+
+Both were found by running this loop against a real Laya checkpoint on an A100, not by reading docs.
+
+**`confidence` is not the top probability.** Laya's `confidence` for a choice is normalised Shannon entropy (`1 - H(p)/log(k)`) — `p = [0.80, 0.20]` gives `confidence = 0.269`. So a fixed threshold means a completely different thing at 2 options than at 20. Gate a `choice` on the winning option's probability instead; that's what `topGte()` is for. (The [official docs](https://docs.typesafe.ai/confidence) call `confidence` a solid default and hand you the full `probabilities` for exactly this reason.)
+
+**A base checkpoint will not do a novel decision task zero-shot.** Asked *"which tool next?"*, `laya-typed-decisions` chose `done` at **0.660** on step 2 while the right answer on step 1 scored **0.646** — the wrong answer scored higher, and everything landed in a 0.55–0.66 band with no separation. No threshold fixes that; it's a capability gap. The open-weight checkpoint is a **fast base to specialise**, not a drop-in judge.
+
+Both are the same lesson from [Jev Engineering](https://madewithjev.com/what-is-jev-engineering): *the call is the easy part — the work is in the state you send and the threshold you act on.*
+
+## Bring your own backends
+
+**Decision backend** — anything that answers `{state, questions} → {answers}`:
+
+```ts
+import { Decider, HttpProvider, FallbackProvider, MockProvider } from 'jevloop';
+
+const decider = new Decider({
+  provider: new FallbackProvider([
+    new HttpProvider({ baseUrl: "https://api.typesafe.ai", apiKey: process.env.TYPESAFE_API_KEY, name: "jev" }),
+    new HttpProvider({ baseUrl: "http://127.0.0.1:7789", name: "laya" }),
+    new MockProvider(),   // never fails
+  ]),
+});
+```
+
+**Generation backend** — anything that turns a prompt into text:
+
+```ts
+import { HttpGenerator } from 'jevloop';
+// any OpenAI-compatible /chat/completions endpoint
+new HttpGenerator({ baseUrl: "https://api.openai.com/v1", apiKey, model: "gpt-5" });
+new HttpGenerator({ baseUrl: "http://localhost:11434/v1", model: "qwen3" });  // ollama
+```
+
+Swapping either one touches exactly one file. The loop and the decision specs don't move.
+
+To depend on it rather than run it: `npm install github:zjunlp/JevLoop` builds `dist/` through the `prepare` script. The npm tarball is a separate release line — see the note under [Quick start](#quick-start).
+
+## Bring your own agent loop
+
+JevLoop is the **reference runtime**, not the only intended consumer. `DECISION.md` is meant to be consumed by your loop, with your state, your tools and your control flow.
+
+The split is:
+
+```
+portable core  (in the file)        host adapter  (in your runtime)
+─────────────────────────────       ────────────────────────────────────
+node id                             state cells: names, types, trust
+kind: choice | noul | score | …     projections: earlierMaybe, toolOrEmpty, …
+position (when:) + purpose           dynamic candidates: toolsFor(ctx) → candidates, …
+questions, options, criteria        position handlers: which actions each runs
+policy rules                        action handlers: use_tool, call, ask_human, …
+frame fields, bounds, exclusions    evidence providers
+generator instructions              event sink + digests
+```
+
+Your adapter is where those names acquire behavior. Nothing in the file assumes `AgentCtx`, JevLoop's four local tools, or JevLoop's loop branches.
+
+**Your graph, not ours.** The reference loop is linear-ish and seven nodes wide, but a host may declare dozens and wire them however it likes — branches, retries, escalation, nested loops, several terminal states. [`examples/external-host.ts`](examples/external-host.ts) is a minimal host that does exactly that, with no import of `agent.ts`, `decisions.ts` or `AgentCtx`:
+
+```bash
+npm run external-host
+#   needs_tool: fields=6, action=use_tool, rule=0
+#   …
+#   external host: custom graph reached done after 1 retry
+#   external host: graph trace classify_issue --inspect--> inspect_repository | … | --deliver--> done
+```
+
+Its graph is triage → inspect → plan → test → interpret → prepare → done, with a retry edge and a human-escalation edge, and its nodes come from [`examples/custom-graph.DECISION.md`](examples/custom-graph.DECISION.md) under a `host:` position namespace — i.e. **not** the seven reference nodes.
+
+**Unknown declarations are rejected before an action runs, not logged.** [`src/adapter.ts`](src/adapter.ts) checks a host's declared capabilities against the file and returns source-located problems for an unregistered projection, a missing state cell, an unhandled action, a position that does not handle the action, or a missing dynamic provider. [`tests/adapter.test.ts`](tests/adapter.test.ts) pins each of those as a negative fixture, so an incomplete adapter fails loudly instead of silently skipping a judgement.
+
+`npm run adapter-test` runs them. The capability report the fixture publishes is [`examples/external-host.capabilities.json`](examples/external-host.capabilities.json) — and it is **checked against the code**, not taken on trust: `npm run adapter-report` re-derives the positions, actions, projections, dynamic providers and graph nodes from the host and fails on any drift, and `npm test` runs the same check.
+
+**The checker does not drag the runtime along.** A host that wants only the contract uses the second entry point:
+
+```ts
+import { adapterProblems, parseDecisionDoc, compilePolicy, resolvePolicy } from 'jevloop/contract'
+```
+
+`jevloop/contract` excludes `decisions.ts`, `agent.ts` and `frame.ts`, and the exclusion is enforced by the layering rule in `scripts/check.ts` rather than promised in a comment. From a packed tarball installed into an empty project: `jevloop/contract` works with our `DECISION.md` deleted from the package, while `jevloop` cannot load without it. That is the difference between *portable* and *install us first*.
+
+**The file says which schema it follows.** Its first lines are:
+
+```markdown
+# DECISION.md
+
+schema: decision-contract/v1
+```
+
+A missing or unrecognised version is refused — as its own layer, because *this file is malformed* and *I cannot read the semantics this file claims* are different verdicts. `npm run conformance` now reports four layers: `parse · policy · frame · schema`.
+
+**What we are not claiming.** `DECISION.md` has a portable declarative core, a declared schema version, and a JevLoop reference adapter. It is *not* yet true that any runtime can execute the file unchanged, that the projections or predicate semantics are frozen, or that replay is portable — those are open items in [`docs/DECISION-CONTRACT.md`](docs/DECISION-CONTRACT.md), which also holds the conformance checklist. [`docs/SKILL-DECISION-ADAPTER.md`](docs/SKILL-DECISION-ADAPTER.md) is a step-by-step guide for adapting an existing runtime, including how to inventory a host graph that is not shaped like ours.
+
+## The UI
+
+`npm run serve` opens a three-pane app on **http://127.0.0.1:7799**. The picture at the top of this page is one run of it.
+
+| Pane | Shows |
+|---|---|
+| Left | workspaces and past sessions, read from `~/.jevloop/sessions/` |
+| Middle | the conversation, the full decision trace, and the compiled `DECISION.md` spec |
+| Right | the accounting — decisions against model calls, what each cost, and the two context budgets with the line they fold at |
+
+The trace is the part worth watching: every decision the loop made, what code did with the answer, and how long it took.
+
+```bash
+npm run serve                                  # default cwd: a temporary demo directory
+CWD_ROOT=./some-project PORT=7800 npm run serve
+```
+
+It has no authentication and binds to loopback only. `HOST=0.0.0.0` means *anyone on this network can make it run tasks on this machine*.
+
+> The published CLI takes the same three as flags: `npx jevloop serve --cwd … --port … --host …`.
+
+## What this is not
+
+- **Not a replacement for an LLM.** Drafting, coding and summarising still need one.
+- **Not "zero hallucination".** A decision model can't return an answer outside the type you asked for, but the answer can still be wrong. That's what the threshold is for.
+- **Not a general accuracy claim.** Our own ReAct comparison above is seven tasks, one run each, on one model — and this loop was accepted on 6 of 7 against ReAct's 7 of 7.
+- **Not production-hardened.** Tool sandboxing covers path escape only. Read [`src/act-local.ts`](src/act-local.ts) before pointing it at anything you care about, and [`SECURITY.md`](SECURITY.md) for the deployment model — loopback-only, no authentication, and a table of what is explicitly **not** provided.
+- **Not a portable runtime yet.** The contract is portable; the *execution* is not. Another Agent runtime needs an adapter — state cells, projections, candidate providers and action handlers — and `DECISION.md`'s predicate and projection semantics are not frozen. See [Bring your own agent loop](#bring-your-own-agent-loop).
+
+## Layout
+
+The files that carry the idea, in reading order:
+
+| File | What it is |
+|---|---|
+| [`DECISION.md`](DECISION.md) | ★ the judgements, as a document the runtime compiles |
+| [`src/decisions.ts`](src/decisions.ts) | ★ the reference loop's seven nodes, and the frame specs behind them |
+| [`src/agent.ts`](src/agent.ts) | ★ the loop that asks them |
+| [`src/decide.ts`](src/decide.ts) | the six steps one decision takes |
+| [`src/policy.ts`](src/policy.ts) | answers → action, pure code |
+| [`src/meter.ts`](src/meter.ts) | ★ decisions against model calls |
+| [`src/adapter.ts`](src/adapter.ts) | the host-capability seam: state cells, projections, providers, actions |
+| [`src/contract.ts`](src/contract.ts) | the portable entry point (`jevloop/contract`) — everything above, without the runtime |
+| [`examples/external-host.ts`](examples/external-host.ts) | a host that is not JevLoop, with its own graph |
+| [`docs/DECISION-CONTRACT.md`](docs/DECISION-CONTRACT.md) | the portable-core / host-adapter boundary and conformance checklist |
+| [`docs/SKILL-DECISION-ADAPTER.md`](docs/SKILL-DECISION-ADAPTER.md) | how to adapt an existing runtime, step by step |
+| [`docs/ADAPTER-CODEX-SCOPE.md`](docs/ADAPTER-CODEX-SCOPE.md) | that skill applied to a real host we do not own — what is reachable, and what is not |
+| [`docs/POSITIONING-spec-vs-hook.md`](docs/POSITIONING-spec-vs-hook.md) | ★ a specification or a hook — what this is worth, and the condition each reading depends on |
+| [`docs/MEASUREMENT-gate-equivalence.md`](docs/MEASUREMENT-gate-equivalence.md) | ★ that condition, tested: a contract gate vs an equivalent `if`/`else` gate — the falsification holds |
+| [`adapters/codex/`](adapters/codex/README.md) | a working adapter for that host, built by following the skill |
+
+Everything else is plumbing. The parts you are most likely to want to replace:
+
+| To change | Go to |
+|---|---|
+| where judgements get answered | [`src/seam-provider.ts`](src/seam-provider.ts) defines the interface; `provider-http` / `provider-mock` / `provider-fallback` implement it |
+| what writes the answer | [`src/llm.ts`](src/llm.ts) |
+| what the tools can do | [`src/act-local.ts`](src/act-local.ts); the contract they must satisfy is [`src/act.ts`](src/act.ts) |
+| whether the file is still honest | [`scripts/conformance.ts`](scripts/conformance.ts) — `npm run conformance` |
+| the UI | [`web/`](web/) and [`src/server.ts`](src/server.ts) |
+| the CLI | [`src/cli.ts`](src/cli.ts) |
+
+[`examples/demo.ts`](examples/demo.ts) runs offline on the rule judge in [`examples/rule-judge.ts`](examples/rule-judge.ts). For the full tree, `ls src/` — this section is an index, not an inventory, because an inventory of forty-four files goes stale in a day.
+
+## Contributing
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first — it says what we merge and what we close without discussion.
+
+[`TODO.md`](TODO.md) is what is left to build, ordered by what blocks the claim rather than by difficulty: the tool surface is six tools wide and still all file operations (no shell, no git), decision frames have no cache policy, the loop does not run long, and the contract has no second implementer. Each entry says why it matters and where to start.
+
+## License
+
+Apache-2.0

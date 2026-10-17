@@ -1,0 +1,646 @@
+<!-- mcp-name: com.getadloop/adloop -->
+
+<div align="center">
+
+# AdLoop
+
+**The AI command center for Google Ads, Reddit Ads, GA4, and tracking code.**
+
+[![PyPI](https://img.shields.io/pypi/v/adloop.svg)](https://pypi.org/project/adloop/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-8A2BE2.svg)](https://modelcontextprotocol.io)
+[![Google Ads API](https://img.shields.io/badge/Google%20Ads-API%20v25-4285F4.svg?logo=google-ads&logoColor=white)](https://developers.google.com/google-ads/api/docs/start)
+[![GA4 Data API](https://img.shields.io/badge/GA4-Data%20API-E37400.svg?logo=google-analytics&logoColor=white)](https://developers.google.com/analytics/devguides/reporting/data/v1)
+[![GitHub stars](https://img.shields.io/github/stars/kLOsk/adloop?style=social)](https://github.com/kLOsk/adloop)
+[![Smithery](https://img.shields.io/badge/Smithery-adloop-FF5601.svg)](https://smithery.ai/servers/adloop/adloop)
+
+An MCP server that gives your AI assistant read + write access to Google Ads, Reddit Ads and GA4 — with safety guardrails that prevent accidental spend.
+
+**[☁️ Skip the setup — use AdLoop Cloud (free plan, no card)](https://getadloop.com)** &nbsp;·&nbsp; or self-host: `pip install adloop`
+
+</div>
+
+> [!TIP]
+> **[AdLoop Cloud](https://getadloop.com) is the hosted version of this project, with a free plan that needs no credit card.** Connect Google in two clicks and use the full toolset from claude.ai, ChatGPT, Claude Code, Cursor, or Gemini. No Google Cloud project, no API access application, no OAuth verification wait. EU-hosted, GDPR-first, DPA included.
+
+> 📚 **Documentation: [docs.getadloop.com](https://docs.getadloop.com)** — setup guides per AI client, toolsets, the safety model, and troubleshooting for both editions.
+
+---
+
+## Cloud or Self-Hosted?
+
+Both versions run the same tools with the same safety model. The difference is who handles the plumbing:
+
+|  | ☁️ [AdLoop Cloud](https://getadloop.com) | 🛠️ Self-hosted (this repo) |
+|---|---|---|
+| **Setup** | Connect Google in two clicks | ~5 min: own Google Cloud project + `adloop init` |
+| **Google Cloud project** | Not needed | Required (free) |
+| **Ads API access** | Not needed | Granted to your Cloud project (no developer token, no MCC since Sept 2026) |
+| **Works with** | claude.ai, ChatGPT, Claude Code, Cursor, Gemini | Claude Code, Cursor, Claude Desktop, any local MCP client |
+| **Where your data flows** | EU servers (Germany), GDPR-first, DPA included | 100% your machine — nothing leaves it |
+| **Updates** | Automatic | `pip install -U adloop` |
+| **Price** | Free plan, no card; [paid plans](https://getadloop.com/pricing) for more accounts and volume | Free forever (MIT) |
+
+**Not sure? [Start with Cloud](https://getadloop.com)** — it's the fastest way to see what AdLoop can do, and it's the only way to use AdLoop from claude.ai or ChatGPT. Self-host when you want everything on your own machine or need to modify the code. And if you're here to hack on AdLoop itself: welcome, keep scrolling.
+
+## What It Solves
+
+AdLoop exists because managing Google Ads alongside your code is a mess. These are the specific problems it handles:
+
+- **"My conversions dropped and I don't know why."** AdLoop cross-references Ads clicks, GA4 sessions, and conversion events in one query. It detects whether the gap is from GDPR consent rejection, broken tracking, or an actual landing page problem — before you waste hours checking each dashboard separately.
+
+- **"I'm wasting ad spend on irrelevant searches."** Pull your search terms report, identify the junk, and add negative keywords — all from a single conversation in your IDE. No context-switching to the Ads UI.
+
+- **"Is my tracking even working?"** Compare the event names in your actual codebase against what GA4 is receiving. Find the mismatches: events you fire that GA4 never sees, events GA4 records that you didn't know about.
+
+- **"I need to create ads but the Google Ads UI is hostile."** Draft responsive search ads, create campaigns, add keywords — all through natural language. Every change shows a preview first. Nothing goes live without your explicit confirmation: in Claude, ChatGPT and VS Code the preview is an approval card, and only your click on Apply changes the account (the AI cannot press it). New ads and campaigns start paused.
+
+- **"My landing page gets paid traffic but nobody converts."** AdLoop joins your ad final URLs with GA4 page-level data. See which pages get clicks but no conversions, which have high bounce rates, and which ones are orphaned from any ad campaign.
+
+- **"Are conversions even being tagged on every page?"** AdLoop reads your live Google Tag Manager container, joins it against the events in your codebase and the events firing in GA4, and tells you exactly which conversions are being captured, which tags are paused, which page-scope filters are too narrow, and which codebase events have no tag at all — the kind of three-way audit GTM Preview can't give you in a single view.
+
+- **"I don't know if my EU consent setup is causing data gaps."** In Europe, 30-70% of users reject analytics cookies. AdLoop accounts for this automatically — it won't diagnose a normal GDPR consent gap as broken tracking.
+
+## Built From Real Usage
+
+Every tool exists because of an actual problem hit while running real Google Ads campaigns. The cross-reference tools exist because we kept manually asking the AI to "get Ads data, then get GA4 data, then compare them" — so we automated the join. The Broad Match + Manual CPC safety rule exists because the AI once created that exact combination and wasted budget. The GDPR consent awareness exists because the AI kept diagnosing normal EU cookie rejection as broken tracking.
+
+The best features come from real workflows. If you're using AdLoop and find yourself wishing it could do something it can't, **open an issue describing your situation** — not just "add feature X" but "I was trying to do Y and couldn't because Z." The context matters more than the request.
+
+## All Tools
+
+> **Quick start:** `pip install adloop` or `git clone https://github.com/kLOsk/adloop.git && cd adloop && uv sync && uv run adloop init` — or zero setup on [AdLoop Cloud](https://getadloop.com)
+
+### Diagnostics
+
+| Tool | What It Does |
+|------|-------------|
+| `health_check` | Test OAuth, GA4, and Ads connectivity in one call — actionable error messages if anything is broken. Also reports the pinned Google Ads API version and warns if a newer version is available. |
+
+### GA4 Read Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `get_account_summaries` | List GA4 accounts and properties |
+| `run_ga4_report` | Custom reports: sessions, users, key events, page performance. Optional dimension and metric filters, ordering, paging, and a comparison period |
+| `run_realtime_report` | Live data — verify tracking fires after deploys |
+| `get_tracking_events` | All configured events and their volume |
+| `list_key_events` | The property's key events (conversions) with counting method, create time and whether they can be deleted |
+| `list_ga4_dimensions_and_metrics` | Every dimension and metric the property can report on, including custom ones, with search |
+
+### Google Ads Read Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `list_accounts` | Discover accessible Ads accounts |
+| `get_campaign_performance` | Campaign metrics: impressions, clicks, cost, conversions, CPA, Search impression share and share lost to budget/rank |
+| `get_ad_performance` | Ad copy analysis: headlines, descriptions, CTR, policy approval status and topics |
+| `get_keyword_performance` | Keywords — quality scores, competitive metrics |
+| `get_search_terms` | What users actually searched before clicking |
+| `get_negative_keywords` | List direct campaign-level negative keywords |
+| `get_negative_keyword_lists` | List all shared negative keyword lists (SharedSets) — names, IDs, status, keyword count |
+| `get_negative_keyword_list_keywords` | List the keywords inside a specific shared negative keyword list |
+| `get_negative_keyword_list_campaigns` | List which campaigns a shared negative keyword list is attached to |
+| `get_recommendations` | Google's auto-generated recommendations with type, estimated impact, and campaign context |
+| `get_pmax_performance` | Performance Max campaign metrics with network breakdown + asset group ad strength |
+| `get_pmax_assets` | Per-asset details for PMax — field type, serving status, content |
+| `get_asset_group_signals` | A PMax asset group's search themes and audience signal, plus the audiences available for it |
+| `get_detailed_asset_performance` | Top-performing asset combinations — which headline+description+image combos Google selects most |
+| `get_audience_performance` | Audience segment performance — remarketing, in-market, affinity, demographics |
+| `get_shopping_product_performance` | Spend, conversions, CPA and ROAS per product across Shopping and Performance Max, plus products that spent without converting |
+| `get_change_history` | What changed before the drop: who changed what and when, through which client (UI, API, scripts, auto-applied recommendations), last 30 days |
+| `get_demographic_targeting` | List demographic criteria (age/gender/parental status/income) on an ad group or campaign |
+| `get_audience_lists` | The account's remarketing and customer lists (size, eligibility, open/closed), custom and combined segments |
+| `search_audience_segments` | Find Google's in-market and affinity segments by name |
+| `get_audience_targeting` | Audiences and audience exclusions on a campaign or ad group, plus the audience mode (observation or targeting) |
+| `suggest_brands` | Resolve a brand name to the brands Google recognizes — brand ID, name, state, URLs |
+| `check_brand_names` | Check a shortlist of brand names against Google's brand knowledge graph (max 25 per call) |
+| `get_brand_lists` | List brand lists (SharedSets of type BRANDS) — ID, name, status, member count |
+| `get_brand_list_brands` | List the brands inside a list, with the Commercial KG MID and the criterion ID for removals |
+| `get_brand_list_campaigns` | Which campaigns a brand list is attached to, and whether each attachment excludes or targets |
+| `get_ai_max_settings` | AI Max knobs per campaign and ad group — `enable_ai_max`, `bundling_required`, the full `asset_automation_settings` list and each ad group's `disable_search_term_matching` |
+| `get_custom_conversion_goals` | Custom conversion goals with their actions, plus one campaign's goal config |
+| `run_gaql` | Arbitrary GAQL queries for anything else |
+
+> **Brand lists** — a list is a `SharedSet` of type `BRANDS`; attaching it to a campaign is a `CampaignCriterion.brand_list` (`negative=true` excludes, `false` restricts), **not** a `CampaignSharedSet` like negative keyword lists. `remove_from_brand_list` and `detach_brand_list_from_campaigns` remove for real — `SharedCriterion` has no status field.
+
+> **Brand targeting** — brand criteria (brand lists, brand exclusions) target a brand's **Commercial Knowledge Graph ID**, not its display name. Use `suggest_brands` for a single name or `check_brand_names` for a shortlist to get the ID; `exact_match` marks a candidate whose name matches apart from case and punctuation, everything else is a Google suggestion.
+
+> **AI Max is the container for Search brand exclusions** — Google rejects a brand list on a plain Search campaign with *"For search advertising channel, brand lists can only be applied to exclusive targeting, broad match campaigns for inclusive targeting or PMax generated campaigns."* `draft_prepare_brand_exclusions` sets the state that makes the exclusion usable **without** handing Google the automations: AI Max on, search term matching off per ad group, text and final-URL automation opted out. `draft_ai_max_settings` is the general form when only parts of that state should change — it refuses a plan that would leave an automation on unnoticed, and asks for a second confirmation when that automation was requested explicitly.
+
+> **Custom conversion goals** — a named set of conversion actions that a campaign can be pointed at. `get_custom_conversion_goals` shows the goals with their actions and a campaign's current goal config; `draft_custom_conversion_goal` creates a set, `draft_update_custom_conversion_goal` renames or replaces its actions, `draft_assign_custom_conversion_goal` points a campaign at it and `draft_clear_custom_conversion_goal` puts the campaign back on the account-level goals. Only the goal and the campaign's goal config are touched — conversion actions, bidding and budgets stay as they are.
+
+> **Compact mode** — `get_campaign_performance`, `get_keyword_performance`, `get_search_terms`, and `get_ad_performance` accept `compact=true`: account totals, breakdowns, top-10 rows, and pre-computed offender lists (zero-conversion spenders, low-QS keywords, negative-keyword candidates, thin RSAs) instead of every row. ~90% smaller responses — built for account audits so raw tables don't flood your AI's context.
+
+### Cross-Reference Tools (GA4 + Ads Combined)
+
+These tools call both APIs internally and return unified results with auto-generated insights. They're the core of what makes AdLoop different from having separate GA4 and Ads tools.
+
+| Tool | What It Does |
+|------|-------------|
+| `analyze_campaign_conversions` | Maps Ads clicks → GA4 sessions → conversions per campaign. Detects GDPR consent gaps, computes real CPA, compares paid vs organic channels. |
+| `landing_page_analysis` | Joins ad final URLs with GA4 page data. Shows conversion rate, bounce rate, and engagement per landing page. Flags pages with paid traffic but zero conversions. |
+| `attribution_check` | Compares Ads-reported conversions vs GA4 events. Diagnoses whether discrepancies are from GDPR consent, attribution windows, or broken tracking. |
+
+### Tracking Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `validate_tracking` | Compare event names found in your codebase against what GA4 actually records. Returns matched, missing, and unexpected events with diagnostics. |
+| `generate_tracking_code` | Generate ready-to-paste GA4 gtag JavaScript for any event, with recommended parameters for well-known events (sign_up, purchase, etc.) and optional trigger wrappers. |
+
+### Google Tag Manager Tools
+
+These tools read the live GTM container and join it with the codebase + GA4 to find tracking gaps that pure GA4 inspection can't catch — page-scoped triggers, paused tags, dynamic event names, brittle CSS selectors, and codebase events with no tag wired up at all.
+
+| Tool | What It Does |
+|------|-------------|
+| `audit_event_coverage` | **The flagship.** Three-way join: codebase events ↔ GTM tags ↔ GA4 actual fires. For each event name in `expected_events`, returns one of 10 statuses (`ok`, `no_tag_no_fire`, `tag_paused`, `tag_active_but_not_firing`, `gtm_only_firing`, `ga4_only`, etc.) plus auto-generated insights for the gaps. |
+| `list_gtm_accounts` | Discover accessible GTM accounts |
+| `list_gtm_containers` | List containers under an account — returns numeric `container_id` (needed by other tools), public `GTM-XXXXXXX` ID, and usage context (web/iOS/Android/server) |
+| `list_gtm_tags` | Every tag in the live container with parsed event names and resolved firing/blocking trigger names. Pass `workspace_id` to read a workspace's unpublished state instead, so a just-drafted tag is visible (also on `get_gtm_tag`, `list_gtm_triggers`, `get_gtm_trigger`, `list_gtm_variables`) |
+| `get_gtm_tag` | Full raw config for a single tag — every parameter, firing/blocking triggers with filter conditions, priority, pause status, sampling |
+| `list_gtm_triggers` | Every trigger with filter conditions parsed to readable text (e.g. `{{Page Path}} contains service-promotions`, `{{Form ID}} NOT contains wf-form-...`). Renders the `negate` flag explicitly. |
+| `get_gtm_trigger` | Full trigger config + reverse lookup of every tag that uses it. Includes parsed `element_visibility` block (selector, on-screen ratio, firing frequency) for elementVisibility triggers and `group_member_trigger_ids` for triggerGroup types |
+| `list_gtm_variables` | Custom variables (data layer, constants, JS) plus enabled built-in variables |
+| `list_gtm_workspaces` | List drafts (workspaces) under a container — workspace IDs are needed by `get_gtm_workspace_diff` |
+| `get_gtm_workspace_diff` | Drafted-but-not-published changes — common cause of "I edited a tag but nothing happened". Returns `is_clean: true` when nothing is pending. |
+| `list_gtm_versions` | Version history, newest first, with version IDs and entity counts. The Tag Manager API returns no timestamps or author for versions. |
+| `get_gtm_version` | Name, notes and tag/trigger names for a single historical container version |
+| `get_gtm_version_diff` | What a publish changed: added, removed and changed tags, triggers and variables with the changed fields, plus built-in variables enabled or disabled. Defaults to the live version against the one before it; two or three API calls. |
+
+#### GTM write tools (opt-in)
+
+Off by default. Set `gtm.write_enabled: true` in `~/.adloop/config.yaml` and restart; the next call asks you to re-consent with the Tag Manager edit + publish scopes, which are never part of the default grant. Everything follows the usual draft → preview → `confirm_and_apply` flow, and tag/trigger edits only touch a workspace until you publish it.
+
+| Tool | What It Does |
+|------|-------------|
+| `draft_gtm_tag` | Create a tag, or update one by `tag_id`. Updates are a read-modify-write: `parameters` merge by key and every field you don't pass (priority, consent settings, firing options, schedule, folder, …) is preserved. Tag types are canonical GTM template IDs (`googtag`, `gaawe`, `awct`, `sp`, `gclidw`, …) or `cvt_<id>` gallery templates. |
+| `draft_gtm_trigger` | Create a trigger, or update one by `trigger_id` (type is immutable). `custom_event_name` wires a `customEvent` trigger to a dataLayer event. |
+| `draft_gtm_variable` | Create or update variables, e.g. Data Layer Variables for GA4 ecommerce values; renaming a referenced variable is refused, Custom JavaScript is gated |
+| `draft_delete_gtm_entity` | Delete a workspace tag, trigger or variable. Triggers and variables still in use are refused up front, with the references listed. |
+| `draft_publish_gtm_workspace` | Publish a workspace live. The preview lists every pending change, including edits other people made in the GTM UI. |
+| `draft_rollback_gtm_version` | Republish an older container version live. The preview is the diff from the live version to the target; the plan pins the live version, so apply refuses if someone publishes in between. Workspaces are left as they are. |
+
+Safety gates specific to GTM:
+- **Custom HTML** runs arbitrary JavaScript on your site, so creating or editing an `html` tag — or publishing a workspace that adds or changes one — is refused unless `gtm.allow_custom_html: true` is also set. Pausing or deleting one is always allowed.
+- **No stale writes.** Updates and deletes pin the entity's fingerprint from the preview, and publish pins the workspace's pending changes; if someone edits the container in between, apply refuses and you re-draft.
+- Publishing stops on merge conflicts or GTM compiler errors. The dry run runs a Tag Manager **quick preview** first (Tag Manager has no validate-only mode), so compiler errors surface before a version is even created. That preview is a POST and stores a preview version in the container — nothing is published and no live tag changes; the rest of the dry run only reads.
+- The publish and rollback results name the version they replaced (`previous_live_version_id`), so rolling back is one step: `draft_rollback_gtm_version` with that id. If the version was created but publishing it failed, the error carries both the created version id and the still-live one.
+- Per-operation names for `safety.blocked_operations`: `gtm_create_tag`, `gtm_update_tag`, `gtm_delete_tag`, `gtm_create_trigger`, `gtm_update_trigger`, `gtm_delete_trigger`, `gtm_publish_workspace`, `gtm_rollback_version`.
+
+The Google account also needs **Edit** permission on the container (and **Publish** to publish) under Admin → User Management.
+
+> **Setup for GTM tools** — Enable the **Tag Manager API v2** in your GCP project, then add your AdLoop credentials' email (the OAuth user, or the service account email if using a service account) as a **Read** user on the GTM container under Admin → User Management. Service accounts pick up access on the next call. **OAuth users upgrading from an earlier AdLoop version must re-authorize once**: the GTM scope is new, so delete `~/.adloop/token.json` and run any tool to re-consent — until then GTM tools return a permissions error.
+
+### Search Console Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `list_gsc_sites` | List Search Console properties the connected account can access |
+| `run_gsc_report` | Organic search analytics: clicks, impressions, CTR, position by query/page/country/device/date/searchAppearance/hour. Supports fresh data (`data_state="all"`), `aggregation_type`, and paging past 25,000 rows with `start_row` |
+
+### Web Performance Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `analyze_page_speed` | PageSpeed Insights for landing pages: Lighthouse score, Core Web Vitals, real-user CrUX data (falls back to origin-wide data, labelled as such, when the page has too little traffic), top fixes. No OAuth needed (optional API key). |
+
+### Merchant Center Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `list_merchant_accounts` | Discover accessible Merchant Center accounts |
+| `get_merchant_feed_health` | Feed health — approved/pending/disapproved counts per reporting context, top product issues with docs, account-level issues. Disapprovals silently starve Shopping/PMax. |
+| `get_merchant_product_issues` | The products behind the feed-health counts: which are disapproved, limited or pending, and each issue with its attribute and affected countries |
+
+> **Setup for Merchant Center tools** — Enable the **Merchant API** in your GCP project (the Content API for Shopping is deprecated). The Merchant API has no read-only scope; AdLoop uses it strictly read-only. Upgrading OAuth users re-authorize once.
+
+> **Setup for GSC tools** — Enable the **Search Console API** in your GCP project. Upgrading OAuth users must re-authorize once for the new scope (delete `~/.adloop/token.json`, run any tool). The killer combo: cross-reference organic queries with `get_keyword_performance` to find paid/organic cannibalization and untapped keyword opportunities.
+
+### Reddit Ads Tools
+
+A second ad platform, same safety model. Reddit is a separate connection: its own developer app, its own OAuth, no developer token and no approval process. Every tool takes `ad_account_id` (defaults to `reddit.ad_account_id`).
+
+| Tool | What It Does |
+|------|-------------|
+| `list_reddit_accounts` | Discover businesses and ad accounts (currency, time zone, approval state) |
+| `list_reddit_funding_instruments` | Billing instruments and posting profiles — prerequisites for creating campaigns and ads |
+| `get_reddit_campaigns` / `get_reddit_ad_groups` / `get_reddit_ads` | Structure with configured vs effective status, budgets, bids, pixel, targeting, weekly schedule, rejection reasons; `include_copy` returns each ad's post (headline, body, destination, media) |
+| `get_reddit_performance` | Spend, clicks, CTR, CPC, conversions, CPA, ROAS per account/campaign/ad group/ad, optional breakdown (date, country, community, keyword, placement, …), compact mode with insights |
+| `run_reddit_report` | Raw reports endpoint for any metric (REACH, video, per-event conversions) |
+| `get_reddit_pixels` | Pixels and when each event last fired — flags ad groups optimizing for events the pixel never sent |
+| `get_reddit_audiences` | Custom and saved audiences with status, size and source, plus the ad groups that target or exclude each |
+| `search_reddit_targeting` | Communities, interests, geolocations, languages, keyword suggestions, and Reddit's related-community suggestions (by seed communities or website) |
+| `get_reddit_account_history` | Who changed what and when: field, before/after, member |
+| `estimate_reddit_ad_group` | Audience size, delivery estimate and suggested bid range for a planned ad group (Reddit's counterpart of `estimate_budget`) |
+| `pause_reddit_entity` / `enable_reddit_entity` / `remove_reddit_entity` | Status changes through the preview gate (remove = ARCHIVE, irreversible, double-confirmed) |
+| `update_reddit_campaign` / `update_reddit_ad_group` / `update_reddit_ad` | Budget, bid, run dates, weekly schedule (day names, viewer-local hours), targeting, placements and audiences to target or exclude (validated with Reddit at draft time), landing URL and comment changes with old → new previews, budget cap and bid-increase guards |
+| `draft_reddit_campaign` / `draft_reddit_ad_group` / `draft_reddit_ad` | Create campaign → ad group (pixel + targeting required) → post + ad (text, image, video or a 2–6 card carousel, media by URL), or promote an existing post with `post_id`. Everything is created **PAUSED**. |
+| `draft_reddit_custom_audience` | Retargeting audiences from website visitors (pixel events) or people who engaged with your campaigns. No customer-list uploads. |
+
+> **Setup for Reddit Ads tools** — In Reddit Ads Manager open **Business Manager → Developer Application → Create app** (business admins only; no approval wait). Register the redirect URL exactly as `http://localhost:8765/callback`, then run `adloop init` and complete the Reddit Ads step: it opens Reddit's consent page (scopes `adsread` + `adsedit`, permanent grant), stores the refresh token at `~/.adloop/reddit_token.json`, and lets you pick the default ad account. Reddit rate-limits per user (reporting: 60 requests/min) and requires a descriptive User-Agent, which AdLoop builds from your app id and Reddit username. Reddit has no validate-only mode, so `confirm_and_apply(dry_run=true)` re-reads the target and re-checks the safety caps instead.
+
+### Image Uploads
+
+An image on your computer, or one you attached in the chat, has no public URL, and an AI app cannot hand the file to a tool. `upload_images` gives it a way in.
+
+<p align="center"><img src="https://raw.githubusercontent.com/kLOsk/adloop/main/assets/upload-card.gif" alt="An AdLoop upload card in an AI chat: the user drags a banner onto it, the card shows the upload id, posts it into the chat, and the AI drafts the image asset" width="760"></p>
+
+| Tool | What It Does |
+|------|-------------|
+| `upload_images` | Shows an upload card in apps with MCP Apps (drop PNG, JPEG or GIF up to 5 MB); on AdLoop Cloud in other apps it returns a one-time upload link, which a coding agent can also use with `curl -T` |
+| `list_uploads` | The uploads that have not expired yet (kept 24 hours), with id, dimensions and size |
+
+The upload ids go into `draft_image_assets(upload_ids=[...])`, or as `upload:<id>` into the image fields of `draft_reddit_ad` on AdLoop Cloud.
+
+### Planning Tools
+
+| Tool | What It Does |
+|------|-------------|
+| `discover_keywords` | Discover new keyword ideas from seed keywords and/or a URL — with optional per-month search history + seasonality insights (`include_monthly_volumes`) using Google Ads Keyword Planner. Returns avg monthly searches, competition level, and top-of-page bid range. |
+| `estimate_budget` | Forecast clicks, cost, and conversions for a set of keywords using Google Ads Keyword Planner. Supports geo/language targeting. Essential for budget planning before launching campaigns. |
+
+### Google Ads Write Tools
+
+All write operations follow a **draft → preview → confirm** workflow. Nothing executes without explicit approval.
+
+| Tool | What It Does |
+|------|-------------|
+| `draft_campaign` | Create a full campaign structure — budget + campaign (PAUSED) + ad group + optional keywords. Supports Search partners, display expansion, and `max_cpc` for either MANUAL_CPC initial ad-group bids or TARGET_SPEND (Maximize Clicks) CPC caps. |
+| `draft_shopping_campaign` | Create a Standard Shopping campaign for a linked Merchant Center feed — budget, campaign (PAUSED), product ad group, Shopping ad and an "All products" group in one atomic request. Manual CPC, Maximize clicks or target ROAS. |
+| `draft_asset_group_assets` | Add and remove Performance Max assets (text, images incl. uploads, YouTube videos) in one change, so replacing an asset never drops a group below Google's minimums |
+| `draft_asset_group_signals` | Add search themes or set the audience signal of a PMax asset group |
+| `draft_pmax_product_exclusions` | Exclude products from a retail PMax asset group by item id, brand or custom label |
+| `update_campaign` | Modify existing campaign settings — bidding, budget, geo/language targeting, Search partners, display expansion, and TARGET_SPEND (Maximize Clicks) `max_cpc` caps. |
+| `draft_ad_group` | Create a paused SEARCH_STANDARD ad group inside an existing campaign, with optional MANUAL_CPC `max_cpc`. |
+| `update_ad_group` | Update an ad group name and/or MANUAL_CPC `max_cpc`. Use `pause_entity` / `enable_entity` for ad-group status changes. |
+| `draft_responsive_search_ad` | Create RSA preview (3-15 headlines ≤30 chars, 2-4 descriptions ≤90 chars). Warns if headline/description count is below best practice. |
+| `draft_callouts` | Create campaign callout assets from 1-25 character text snippets. |
+| `draft_structured_snippets` | Create campaign structured snippet assets using official header values and 3-10 snippet values. |
+| `draft_image_assets` | Create campaign image assets from local files, public image URLs or uploads (PNG, JPEG, or GIF). |
+| `draft_keywords` | Propose keyword additions with match types. Proactively checks bidding strategy — flags BROAD match on campaigns without Smart Bidding as dangerous in the preview. |
+| `add_negative_keywords` | Propose negative keywords directly on a campaign |
+| `add_negative_locations` | Propose negative geo exclusions on a campaign — exclude cities/regions while keeping broader positive targets |
+| `draft_key_event` | Mark a GA4 event as a key event (conversion) — the fix for "fires but isn't tracked as a conversion" |
+| `draft_delete_key_event` | Remove a GA4 key event. The event keeps firing but no longer counts as a conversion, for future data only |
+| `draft_demographic_targeting` | Propose demographic criteria (age, gender, parental status, income) — exclusions by default |
+| `draft_audience_attachment` | Attach audiences as observation (default), targeting (double confirmation) or exclusion; refuses pairings Google doesn't allow and Search lists too small to target |
+| `propose_negative_keyword_list` | Draft a shared negative keyword list (SharedSet) and attach it to a campaign — reusable across multiple campaigns |
+| `propose_brand_list` | Draft a brand list (SharedSet of type BRANDS) from Commercial KG MIDs and optionally attach it to campaigns — `negative=true` (default) excludes the brands, `false` restricts targeting to them |
+| `add_to_brand_list` | Draft adding brands to an existing brand list |
+| `remove_from_brand_list` | Draft removing brands from a list (SharedCriteria have no status — removal is the only way; asks for a second confirmation) |
+| `attach_brand_list_to_campaigns` | Draft attaching an existing brand list to campaigns as `CampaignCriterion.brand_list` |
+| `detach_brand_list_from_campaigns` | Draft detaching a brand list from campaigns (removes only the criterion, the list stays) |
+| `draft_ai_max_settings` | Draft AI Max controls for a Search campaign: `enable_ai_max`, per-ad-group `disable_search_term_matching`, plus text and final-URL asset automation (each `OPTED_IN` / `OPTED_OUT` / `UNCHANGED`) |
+| `draft_prepare_brand_exclusions` | Draft the safe standard state in one step: AI Max on, search term matching off for every non-removed ad group, text and final-URL automation opted out. Touches nothing else |
+| `draft_custom_conversion_goal` | Create a custom conversion goal (a named set of conversion actions) |
+| `draft_update_custom_conversion_goal` | Rename a custom conversion goal and/or replace its action list (list replace, not append) |
+| `draft_assign_custom_conversion_goal` | Point a campaign at a custom conversion goal (`goal_config_level = CAMPAIGN`) |
+| `draft_clear_custom_conversion_goal` | Put a campaign back on the account-level goals (rollback) |
+| `pause_entity` | Pause a campaign, ad group, ad, keyword or PMax asset group |
+| `enable_entity` | Re-enable a paused entity |
+| `remove_entity` | Permanently remove an entity (irreversible — prefers pause). Supports keywords, negative keywords, ads, ad groups, campaigns. |
+| `confirm_and_apply` | Execute a previously previewed change |
+
+### Orchestration Rules
+
+AdLoop ships with orchestration rules that teach the AI *how* to combine these tools — marketing workflows, GAQL syntax, safety protocols, GDPR awareness, and best practices. Without rules, the AI has tools but doesn't know the playbook.
+
+- **Cursor**: `.cursor/rules/adloop.mdc` (canonical source)
+- **Claude Code**: `.claude/rules/adloop.md` (synced from Cursor rules via `scripts/sync-rules.py`)
+
+The rules include:
+- **Orchestration patterns** for common workflows (performance review, conversion diagnosis, campaign creation, negative keyword hygiene, keyword discovery, tracking validation, budget planning, landing page analysis)
+- **GAQL quick reference** with syntax, common queries, and gotchas
+- **Safety rules** including Broad Match + Manual CPC prevention and pre-write validation
+- **Ad copy character limit guidance** (30-char headlines are shorter than you think)
+- **GDPR consent awareness** to prevent false tracking diagnoses in EU markets
+
+### Slash Commands (Claude Code)
+
+AdLoop includes pre-built slash commands in `.claude/commands/` for common workflows:
+
+| Command | What It Does |
+|---------|-------------|
+| `/analyze-performance` | Full performance review across Google Ads + GA4 |
+| `/create-ad` | Create a responsive search ad with safety checks |
+| `/diagnose-tracking` | Diagnose tracking and conversion issues |
+| `/optimize-campaign` | Full optimization checklist for a campaign |
+| `/create-campaign` | Create a new search campaign with budget estimation |
+| `/budget-plan` | Estimate budget for keywords via Keyword Planner |
+
+## Safety Model
+
+AdLoop manages real ad spend, so safety is not optional.
+
+<p align="center"><img src="https://raw.githubusercontent.com/kLOsk/adloop/main/assets/approval-card.gif" alt="An AdLoop approval card in an AI chat: the user clicks Test run, Google validates the change, then Apply makes it live and the card reports back to the chat" width="760"></p>
+
+- **Approval cards.** In apps that show MCP Apps (Claude, ChatGPT, VS Code and others), every change appears as a card with Test run and Apply. Only the click applies it: the AI's own `confirm_and_apply(dry_run=false)` is refused with `APPROVE_ON_CARD`, whatever it was told in the chat.
+- **Confirmation dialogs.** Apps without cards that support elicitation (Claude Code, for example) get a dialog from AdLoop itself before every real change. The AI cannot answer it; declining changes nothing.
+- **Two-step writes.** Every mutation returns a preview first. A separate `confirm_and_apply` call is required to execute.
+- **Dry-run by default.** Even `confirm_and_apply` defaults to `dry_run=true`. Real changes require explicit `dry_run=false`.
+- **Two-phase apply (optional).** With `safety.two_phase_apply: true`, `confirm_and_apply` refuses `dry_run=false` until the plan has completed one dry-run pass — preview-then-apply becomes server-enforced instead of a convention.
+- **Budget caps.** Configurable maximum daily budget — the server rejects anything above the cap.
+- **Audit log.** Every operation (including dry runs) is logged to `~/.adloop/audit.log`.
+- **New campaigns and ads are PAUSED.** Nothing goes live without manual enablement.
+- **Destructive ops are flagged for double confirmation.** Removing entities or large budget increases come back with extra warnings, and the AI is instructed to confirm twice.
+- **Broad Match without Smart Bidding caught.** The #1 cause of wasted ad spend: `draft_campaign` refuses BROAD keywords unless the campaign uses Smart Bidding, and `draft_keywords` / `draft_ad_group` mark them as dangerous in the preview, so the AI has to raise it before anything is applied.
+- **Pre-write validation.** Before any write, the AI checks bidding strategy, conversion tracking status, and quality scores. If the campaign is fundamentally broken, AdLoop warns you instead of making things worse.
+- **Structured error handling.** All tools return actionable error messages with hints instead of raw exceptions. Auth errors include specific re-authorization steps.
+- **API version pinning.** The Google Ads API version is pinned to prevent silent breaking changes from library updates. `health_check` warns when a newer version is available.
+- **Ask mode compatibility.** Read tools declare `readOnlyHint` so they work in Cursor's Ask mode without switching to Agent mode.
+
+## Setup
+
+> **AdLoop uses your own (free) Google Cloud project for OAuth.** The `adloop init` wizard walks you through it — a one-time setup of about 5 minutes, with no shared user caps and no waiting on anyone's verification review. AdLoop does not ship built-in OAuth credentials.
+>
+> **Prefer zero setup?** [**AdLoop Cloud**](https://getadloop.com) is the hosted version: connect Google in two clicks — no Cloud project, no API access application, EU-hosted.
+>
+> *(Upgrading from ≤0.9 with built-in credentials? Those sign-ins were retired in 0.10 — run `adloop init` once to switch to your own project.)*
+
+> [!IMPORTANT]
+> **Seeing `deleted_client: The OAuth client was deleted.` or `invalid_client`?** The shared Google Cloud project behind AdLoop ≤0.9's bundled credentials has been shut down, so its stored sign-ins no longer refresh. Two ways forward: **[AdLoop Cloud](https://getadloop.com)** (connect Google in two clicks, nothing to configure) or stay self-hosted with `pip install -U adloop && adloop init` to set up your own free Google Cloud project. Details in [the pinned issue (#49)](https://github.com/kLOsk/adloop/issues/49).
+
+### Install
+
+**From PyPI:**
+
+```bash
+pip install adloop
+adloop init
+```
+
+**From source:**
+
+```bash
+git clone https://github.com/kLOsk/adloop.git
+cd adloop
+uv sync
+uv run adloop init
+```
+
+### What `adloop init` does
+
+The wizard first asks whether to set up Google. Answer no to run AdLoop on Reddit Ads alone: it skips steps 1 to 6 and goes straight to the Reddit step. Otherwise it walks you through:
+
+1. **Google Cloud setup** — creates a project, enables the three APIs, generates an OAuth client (see [Custom Google Cloud Project Setup](#custom-google-cloud-project-setup) below for the exact steps the wizard refers you to)
+2. **Google Ads API access** — applied for on your Cloud project's [Google Ads API Overview page](https://console.cloud.google.com/google/ads-apis/overview); the legacy developer-token prompt can be left empty
+3. **MCC Account ID** — optional, only if you reach several accounts through a Manager Account
+4. **OAuth sign-in** — opens a browser to sign in with Google (or prints a URL for headless servers)
+5. **Auto-discovers your accounts** — finds your GA4 properties and Ads accounts automatically
+6. **Optional services** — pin a GTM container, a Search Console property (both auto-discovered too), and a PageSpeed API key; skip any of them with Enter
+7. **Reddit Ads** — optional next to Google, required without it: your own Reddit developer app, sign-in, and the default ad account
+8. **Safety defaults** — budget cap and dry-run preference
+9. **Toolsets** — optionally expose only part of the tool catalog to your AI client (see [Toolsets](#toolsets--trim-the-context-footprint))
+10. **Editor config snippets** — prints MCP configuration for both Cursor and Claude Code, including your toolset selection
+
+### Requirements
+
+- Python 3.11+
+- A Google Ads account (a Manager Account is optional; you only need one to reach several accounts through one login)
+- Google Ads API access on your Google Cloud project (see below)
+
+### Google Ads API access
+
+Since 9 September 2026, Google Ads API access belongs to the **Google Cloud project that owns your OAuth client**. Developer tokens are sunset: the API ignores the header, the wizard's token prompt is optional, and you no longer need a Manager Account to get access.
+
+Apply on your project's [Google Ads API Overview page](https://console.cloud.google.com/google/ads-apis/overview) in the Cloud Console:
+
+| Level | How to get it | What it allows |
+|-------|---------------|----------------|
+| **Test** | Automatic when you enable the Google Ads API | Test accounts only, **not production accounts**. `CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION` (or `DEVELOPER_TOKEN_NOT_APPROVED` on older API versions) means you are here. |
+| **Explorer** | "Upgrade access level" → apply; usually granted automatically | 2,880 operations/day on production accounts. Enough to get started. |
+| **Basic** | Apply; reviewed automatically within minutes once the project is brand-verified (OAuth consent screen set to External and published "In production") | 15,000 operations/day. |
+| **Standard** | Apply; manual review, about ten business days | Higher limits; Google's RMF policy applies |
+
+Projects on a Cloud free trial or with billing disabled are refused Explorer and Basic; use a project with billing set up.
+
+> **Getting `CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION`?** Your project is at Test level. Open the Overview page above and apply for Explorer access.
+
+### Headless Servers
+
+Running on a server without a browser (VMs, Docker, SSH)? The wizard automatically detects this and falls back to a manual flow: it prints an authorization URL you can open on any device, then you paste the redirect URL back into the terminal.
+
+### Custom Google Cloud Project Setup
+
+The wizard refers to these steps — do them in your browser before running `adloop init` (or while it waits at the OAuth prompt).
+
+#### Step 1 — Google Cloud Project
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com/) and create a new project
+2. Enable these three APIs (search for each in the API Library):
+   - **Google Analytics Data API** — for GA4 reports and events
+   - **Google Analytics Admin API** — for listing GA4 properties
+   - **Google Ads API** — for all ads operations
+
+#### Step 2 — OAuth Credentials
+
+1. In your Google Cloud project, go to **APIs & Services → Credentials**
+2. Click **Create Credentials → OAuth client ID**
+3. Select **Desktop app** as the application type, give it any name
+4. Download the JSON file and save it as `~/.adloop/credentials.json`
+
+> Service accounts are also supported — just place the service account key JSON at the same `credentials_path`. AdLoop detects the file type automatically.
+
+#### Step 3 — Connect to Your Editor
+
+**Cursor** — Add to your project's `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "command": "/absolute/path/to/adloop/.venv/bin/python",
+      "args": ["-m", "adloop"]
+    }
+  }
+}
+```
+
+Then copy `.cursor/rules/adloop.mdc` from this repo into your project's `.cursor/rules/` directory.
+
+**Claude Code** — Run:
+
+```bash
+claude mcp add --transport stdio adloop -- /absolute/path/to/adloop/.venv/bin/python -m adloop
+```
+
+Or add to your project's `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "adloop": {
+      "command": "/absolute/path/to/adloop/.venv/bin/python",
+      "args": ["-m", "adloop"]
+    }
+  }
+}
+```
+
+Then install the orchestration rules + slash commands globally so every Claude Code session inherits them:
+
+```bash
+adloop install-rules
+```
+
+This writes a managed block to `~/.claude/CLAUDE.md` and copies the slash commands (prefixed `adloop-*`) into `~/.claude/commands/`. The block is delimited by sentinel comments so it's safe to run multiple times — re-running just refreshes the content. Two install modes:
+
+- **inline** (default) — full rules embedded in `~/.claude/CLAUDE.md`. Reliable but adds ~10K tokens to every Claude Code session.
+- **lazy** (`adloop install-rules --lazy`) — small directive in `CLAUDE.md` pointing at `~/.claude/rules/adloop.md`. Cheaper baseline cost; the LLM reads the rules file only when AdLoop tools are in scope.
+
+To refresh after upgrading AdLoop: `adloop update-rules`. To remove cleanly: `adloop uninstall-rules` — only the managed block and `adloop-*` commands are touched, never your own content.
+
+If you'd rather manage things by hand instead, copy `.claude/rules/adloop.md` and `.claude/commands/` from this repo into your project's `.claude/` directory.
+
+**Claude Desktop / claude.ai** has no programmatic rules location. Run `adloop install-rules` and it will print the rules content for you to paste into Project settings → Custom instructions on claude.ai.
+
+### Use It
+
+Ask your AI assistant things like:
+
+- *"How are my Google Ads campaigns performing this month?"*
+- *"Which search terms are wasting budget? Add them as negative keywords."*
+- *"My sign-up conversions dropped — check GA4 and Ads to find out why."*
+- *"Draft a new responsive search ad for my main campaign."*
+- *"Which landing pages get paid traffic but don't convert?"*
+- *"Is my tracking set up correctly? Compare my codebase events against GA4."*
+- *"Audit my Google Tag Manager container — which conversions are being captured and where are the gaps?"*
+- *"What keywords should I target for [product]? Find ideas and estimate the budget."*
+- *"How much budget would I need for these keywords in Germany?"*
+- *"Create a new search campaign for [product feature] with a €20/day budget."*
+
+## Configuration Reference
+
+All configuration lives in `~/.adloop/config.yaml`. See [`config.yaml.example`](config.yaml.example) for a documented template.
+
+| Section | Key | Default | Description |
+|---------|-----|---------|-------------|
+| `google` | `project_id` | *(empty)* | Google Cloud project ID (only needed with custom credentials) |
+| `google` | `credentials_path` | *(empty)* | Path to OAuth client JSON or service account key. Empty = `~/.adloop/credentials.json`, else Application Default Credentials. |
+| `google` | `token_path` | `~/.adloop/token.json` | Where to store the OAuth token (auto-created) |
+| `ga4` | `property_id` | — | Your GA4 property ID (auto-discovered by `adloop init`) |
+| `ads` | `developer_token` | — | Legacy, optional: API access belongs to your Cloud project since Sept 2026 |
+| `ads` | `customer_id` | — | Default Google Ads customer ID (auto-discovered by `adloop init`) |
+| `ads` | `login_customer_id` | — | Your MCC account ID |
+| `reddit` | `client_id` / `client_secret` | *(empty)* | Your Reddit developer app (Business Manager → Developer Application) |
+| `reddit` | `ad_account_id` | *(empty)* | Default Reddit ad account for every Reddit tool (picked by `adloop init`) |
+| `reddit` | `username` | *(empty)* | Your Reddit username, used only in the User-Agent Reddit requires |
+| `reddit` | `token_path` | `~/.adloop/reddit_token.json` | Where the Reddit refresh token is stored |
+| `safety` | `max_daily_budget` | `50.00` | Maximum allowed daily budget per campaign |
+| `safety` | `require_dry_run` | `true` | Force all writes to dry-run mode |
+| `safety` | `two_phase_apply` | `false` | Refuse real applies until the plan had a dry-run pass |
+| `safety` | `blocked_operations` | `[]` | Operations to block entirely |
+
+### Toolsets — trim the context footprint
+
+Most MCP clients (claude.ai, ChatGPT, Cursor, …) load **every tool schema into the model's context at the start of every conversation**. With AdLoop's full catalog that's a noticeable share of the context window, paid before you type a word. If you only use part of AdLoop, expose a subset with the `ADLOOP_TOOLSETS` environment variable in your MCP client's `env` block (the `adloop init` wizard offers this and writes it into the snippets for you):
+
+```json
+"env": { "ADLOOP_TOOLSETS": "ads,ga4" }
+```
+
+| Toolset | Covers |
+|---|---|
+| `ads` | Google Ads reads, writes, and planning (Keyword Planner) |
+| `ga4` | Google Analytics reports, realtime, key events |
+| `tracking` | Cross-channel attribution + tracking code generation |
+| `gtm` | Google Tag Manager audits, reads, and opt-in writes |
+| `gsc` | Search Console reads |
+| `web` | PageSpeed / Core Web Vitals |
+| `merchant` | Merchant Center feed health |
+| `reddit` | Reddit Ads reads, writes, and planning |
+
+Google Ads can be narrowed further. Use one of these instead of `ads`:
+
+| Subset | Covers |
+|---|---|
+| `ads:read` | Ads reports, GAQL, and the Ads/Analytics cross-checks (`attribution_check`, `analyze_campaign_conversions`, `landing_page_analysis`) |
+| `ads:write` | Ads drafts and changes; turns on `ads:read` too, because a draft needs the reads first (IDs, bidding strategy) |
+| `ads:plan` | Keyword ideas and budget forecasts (`discover_keywords`, `estimate_budget`) |
+
+`health_check` and `confirm_and_apply` are always included, whatever you select. Unset = the full catalog; unknown names fail at startup with the valid list. The effect is real: `ads:read,ga4` costs about 40% of `ads,ga4` for audits and diagnosis, and an `ads:plan`-only client for keyword research pays about 5% of the full catalog. Toolsets are per *client*, not per install: one AdLoop config can serve a trimmed Cursor and a full-catalog Claude Code side by side.
+
+On [AdLoop Cloud](https://getadloop.com), the same feature is per API key: pick toolsets when creating a key in the dashboard, and that key's tools/list is trimmed server-side for whichever AI client uses it.
+
+## Project Structure
+
+```
+src/adloop/
+├── __init__.py        # Entry point — routes 'adloop init' to wizard, otherwise starts MCP server
+├── server.py          # FastMCP server — every tool registration with safety annotations and toolset tags
+├── config.py          # Config loader (~/.adloop/config.yaml)
+├── auth.py            # OAuth 2.0 flow (user-supplied credentials, headless fallback) + service accounts; GA4 / Ads / GTM scopes
+├── cli.py             # Interactive 'adloop init' setup wizard
+├── crossref.py        # Cross-reference tools (GA4 + Ads + GTM combined analysis)
+├── tracking.py        # Tracking validation + code generation tools
+├── ga4/
+│   ├── client.py      # GA4 Data + Admin API clients
+│   ├── reports.py     # Account summaries, reports, realtime
+│   └── tracking.py    # Event discovery
+├── ads/
+│   ├── client.py      # Google Ads API client (version-pinned) + retry/backoff for rate limits
+│   ├── gaql.py        # GAQL query execution with human-readable error parsing
+│   ├── read.py        # Campaign, ad, keyword, search term, negative keyword, shared sets, recommendations, audience reads
+│   ├── pmax.py        # Performance Max tools — campaign/asset group performance, asset labels, top combinations
+│   ├── write.py       # Draft campaign, RSA, keywords; pause, enable, remove, confirm
+│   └── forecast.py    # Budget estimation + keyword discovery via Keyword Planner API
+├── gtm/
+│   ├── client.py      # Google Tag Manager API v2 client
+│   └── read.py        # Live container fetching, tag/trigger/variable parsing, workspace diff, version history
+├── reddit/
+│   ├── auth.py        # Reddit OAuth2 (own app, permanent refresh token, loopback flow for adloop init)
+│   ├── client.py      # Reddit Ads API v3 REST client — bearer refresh, per-user rate limits, pagination
+│   ├── read.py        # Accounts, campaigns, ad groups, ads, performance reports, pixels, targeting lookups
+│   └── write.py       # Draft/preflight/apply for status, budget, bid, targeting, and PAUSED creation
+└── safety/
+    ├── guards.py      # Budget caps, bid limits, blocked operations, Broad Match safety
+    ├── preview.py     # Change plans and previews
+    └── audit.py       # Mutation audit logging
+```
+
+## Roadmap
+
+What's been shipped and what's next:
+
+- ~~GA4 read tools~~ ✓
+- ~~Google Ads read + write tools with safety layer~~ ✓
+- ~~Cross-reference intelligence (campaign→conversion mapping, landing page analysis, attribution comparison)~~ ✓
+- ~~Tracking utilities (validate events against GA4, generate gtag code)~~ ✓
+- ~~Budget estimation + keyword discovery via Keyword Planner~~ ✓
+- ~~Shared negative keyword lists (SharedSet API)~~ ✓
+- ~~Retry/backoff for API rate limits~~ ✓
+- ~~Setup wizard (`adloop init`)~~ ✓
+- ~~Claude Code support~~ ✓ — `CLAUDE.md`, `.mcp.json`, `.claude/rules/`, `.claude/commands/`, CLI wizard snippets
+- **Claude Desktop one-click install** — `adloop install claude-desktop` (and/or a `.dxt` extension bundle) that writes the AdLoop MCP entry into `claude_desktop_config.json` automatically, so Claude Desktop + Cowork users don't have to hand-edit JSON
+- ~~PyPI package~~ ✓ — `pip install adloop`
+- ~~[AdLoop Cloud](https://getadloop.com)~~ ✓ — the hosted version: no Google Cloud project, no API access application, connect Google in two clicks (EU-hosted, GDPR-first)
+- ~~Headless server support~~ ✓ — manual URL copy-paste flow for servers without a browser
+- ~~Behavioral eval suites~~ ✓ — prompt-and-expectation tests in `tests/evals/` covering read, write, tracking, and planning workflows
+- ~~Google Tag Manager integration~~ ✓ — read tools for tags, triggers, variables, workspaces, and version history, plus the `audit_event_coverage` three-way join across codebase events, GTM tags, and GA4 actual fires
+- **Community launch** — HN, Indie Hackers, r/cursor, Twitter
+- **Video walkthrough**
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. The short version: open an issue describing your situation first, then submit a PR if you want to build it.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## Privacy
+
+The open-source version runs entirely on your machine. No data is collected, stored, or transmitted to any server. See [PRIVACY.md](PRIVACY.md) for the full privacy policy. AdLoop Cloud has its own [privacy policy](https://getadloop.com/privacy) and [DPA](https://getadloop.com/avv).
+
+---
+
+<div align="center">
+
+**If AdLoop helps you run Google Ads, GA4, and tracking code from one place — [give it a star](https://github.com/kLOsk/adloop) or [try the hosted version](https://getadloop.com).**
+
+Made by [@kLOsk](https://github.com/kLOsk) | [AdLoop Cloud](https://getadloop.com) | [Privacy Policy](PRIVACY.md)
+
+</div>

@@ -1,0 +1,230 @@
+<h1 align="center">AgentAuditKit</h1>
+
+<p align="center"><strong>The missing <code>npm audit</code> for AI agents.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/sattyamjjain/agent-audit-kit/actions/workflows/ci.yml"><img src="https://github.com/sattyamjjain/agent-audit-kit/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://pypi.org/project/agent-audit-kit/"><img src="https://img.shields.io/pypi/v/agent-audit-kit.svg" alt="PyPI"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="Python 3.9+"></a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache-2.0"></a>
+  <a href="#what-it-finds"><img src="https://img.shields.io/badge/rules-408-blue.svg" alt="Rules: 408"></a>
+  <a href="https://sattyamjjain.github.io/agent-audit-kit/docs/research/state-of-mcp-2026/REPORT/#how-to-cite-this-report"><img src="https://img.shields.io/badge/cite-State_of_MCP_Security_2026_v1.1-informational.svg" alt="Cite the State of MCP Security 2026 report, version 1.1"></a>
+  <!-- fp-badge --><a href="benchmarks/false_positive/RESULTS.md"><img src="https://img.shields.io/badge/benign--slice%20536%20MCP%20configs-1%20HIGH%2FCRIT%20finding%2C%200%20false-brightgreen.svg" alt="Benign-slice false-positive measurement: 536 MCP configs scanned, 0 of 1 HIGH/CRITICAL findings were false positives (0.0%)"></a><!-- /fp-badge -->
+</p>
+
+<p align="center">
+  <a href="https://asciinema.org/a/9X7N1ztuuIYi9T2P" target="_blank"><img src="https://asciinema.org/a/9X7N1ztuuIYi9T2P.svg" alt="AgentAuditKit demo" width="700"/></a>
+</p>
+
+Static security scanner for MCP-connected AI agent pipelines. It finds
+misconfigurations, hardcoded secrets, tool poisoning, rug pulls, trust-boundary
+violations and tainted data flows across **11 agent platforms** — and emits the
+compliance evidence an auditor asks for afterwards.
+
+It runs fully offline. No account, no telemetry, no model in the loop.
+
+## Quick start
+
+```bash
+pip install agent-audit-kit
+agent-audit-kit scan .
+```
+
+`aak` is installed as a shorthand for the same command.
+
+As a pre-commit hook:
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/sattyamjjain/agent-audit-kit
+    rev: v0.6.22
+    hooks:
+      - id: agent-audit-kit
+```
+
+In CI:
+
+```yaml
+# .github/workflows/agent-security.yml
+- uses: sattyamjjain/agent-audit-kit@v0.6.22
+  with:
+    severity: medium
+    fail-on: high
+    upload-sarif: true
+```
+
+The action writes SARIF; upload it with `github/codeql-action/upload-sarif`
+to land findings in the GitHub Security tab. Full
+[GitHub Action reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/github-action.md) ·
+[CLI reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/cli.md) ·
+[pre-commit hook](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/ci-cd.md).
+
+## What it finds
+
+<!-- rule-count:total -->408<!-- /rule-count --> rules across 14 security categories:
+
+| Category | Rules | What it detects |
+|----------|:-----:|-----------------|
+| **MCP Configuration** | <!-- category-count:MCP_CONFIG -->67<!-- /category-count --> | Missing auth, wildcard CORS, `0.0.0.0` binds, SSRF, OAuth 2.1 and RFC 9728 gaps |
+| **Supply Chain** | <!-- category-count:SUPPLY_CHAIN -->169<!-- /category-count --> | Unpinned packages, typosquats, install scripts, and verified CVE version pins |
+| **Tool Poisoning** | <!-- category-count:TOOL_POISONING -->30<!-- /category-count --> | Invisible Unicode, prompt injection in tool and parameter descriptions, rug pulls |
+| **Secret Exposure** | <!-- category-count:SECRET_EXPOSURE -->18<!-- /category-count --> | Provider keys, tokens in configs and env files, credentials in logs |
+| **Agent Config** | <!-- category-count:AGENT_CONFIG -->19<!-- /category-count --> | Permission escalation, auto-approve, headless trust in CI |
+| **A2A Protocol** | <!-- category-count:A2A_PROTOCOL -->13<!-- /category-count --> | Missing mutual auth, unbounded delegation, transitive trust |
+| **Hook Injection** | <!-- category-count:HOOK_INJECTION -->16<!-- /category-count --> | Hook RCE, exfiltration through lifecycle hooks |
+| **Taint Analysis** | <!-- category-count:TAINT_ANALYSIS -->14<!-- /category-count --> | `@tool` parameters reaching shell, SQL, filesystem and network sinks |
+| **Transport Security** | <!-- category-count:TRANSPORT_SECURITY -->15<!-- /category-count --> | Cleartext transports, DNS rebinding, session and body-size limits |
+| **Legal Compliance** | <!-- category-count:LEGAL_COMPLIANCE -->19<!-- /category-count --> | Copyleft licences, PII surface, and regional AI duties |
+| **Trust Boundaries** | <!-- category-count:TRUST_BOUNDARY -->18<!-- /category-count --> | Project-scoped trust, untrusted workspace escalation |
+| **MCP Server Card** | <!-- category-count:MCP_SERVER_CARD -->4<!-- /category-count --> | Static audit of SEP-1649 server cards |
+| **Composition** | <!-- category-count:COMPOSITION -->3<!-- /category-count --> | Risk that exists only between components, not in any one of them |
+| **Agentic Skills** | <!-- category-count:AGENTIC_SKILL -->3<!-- /category-count --> | OWASP Agentic Skills Top 10 surface in skill bundles |
+
+Every finding carries severity, evidence, a file and line, and remediation.
+Full detail per rule is in the [rule reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/rules.md).
+
+## Why not a hosted scanner
+
+- **Offline and deterministic.** Your code and secrets never leave the machine,
+  and the same input always yields the same findings — measured at
+  [20/20 identical runs, 0% variance](https://github.com/sattyamjjain/agent-audit-kit/blob/main/benchmarks/determinism/RESULTS.md).
+  A scanner with an LLM in the loop cannot promise that, which is what makes CI
+  diffs and audit re-runs stable here.
+- **Auditor-ready evidence, not just findings.** SARIF plus PDF evidence packs
+  mapped to 14 frameworks, a CycloneDX/SPDX SBOM, and an OpenVEX document that
+  joins to it on purl.
+- **Pin and verify.** `pin` fingerprints a tool surface at approval; `verify`
+  re-checks it afterwards. That is the only thing that catches a server which
+  behaves until it does not — see the
+  [Deadbugz case study](https://github.com/sattyamjjain/agent-audit-kit/blob/main/examples/case-studies/deadbugz-delayed-metadata/README.md).
+
+The hand-adjudicated
+[benign-slice false-positive rate](https://github.com/sattyamjjain/agent-audit-kit/blob/main/benchmarks/false_positive/RESULTS.md)
+covers MCP server configs only. Instruction files (`CLAUDE.md`, `AGENTS.md` and
+the like) are not in the slice, and an outside report on 930 repositories
+([#771](https://github.com/sattyamjjain/agent-audit-kit/issues/771)) is what
+exposed `AAK-AGENT-002` on them, fixed in
+[v0.6.8](https://github.com/sattyamjjain/agent-audit-kit/releases/tag/v0.6.8).
+Instruction files now have
+[their own benign slice](https://github.com/sattyamjjain/agent-audit-kit/blob/main/benchmarks/false_positive/instruction_files/RESULTS.md),
+built from that report's corpus; it is pending adjudication, so it has no rate yet.
+
+## What we measured
+
+From the [State of MCP Security 2026](https://sattyamjjain.github.io/agent-audit-kit/docs/research/state-of-mcp-2026/REPORT/)
+report ([how to cite](https://sattyamjjain.github.io/agent-audit-kit/docs/research/state-of-mcp-2026/REPORT/#how-to-cite-this-report)):
+
+- <!-- report:corpus -->2,303<!-- /report --> distinct public MCP configs scanned.
+- <!-- report:noauth-pct -->50.6<!-- /report -->% (<!-- report:noauth-n -->1,166<!-- /report -->) declare a remote server with **no authentication**.
+- <!-- report:rfc9728-n -->0<!-- /report --> reference RFC 9728 Protected-Resource-Metadata discovery in the config.
+- <!-- report:inline-auth-pct -->100<!-- /report -->% (<!-- report:inline-auth-n -->424<!-- /report -->/<!-- report:inline-auth-d -->424<!-- /report -->) of inline-auth remote configs **hardcode a static credential**.
+
+These regenerate from `results.json` and are asserted in CI, so they cannot
+drift from the report.
+
+## Compliance evidence
+
+PDF and text evidence packs mapped to 14 frameworks, including two already in
+force that most scanners do not carry: **EU AI Act Article 50** (transparency,
+since 2026-08-02) and **Colorado SB 26-189 ADMT** (effective 2027-01-01).
+
+```bash
+agent-audit-kit report . --framework eu-ai-act --format pdf
+agent-audit-kit sbom . --format cyclonedx -o sbom.cdx.json
+agent-audit-kit vex  . -o vex.openvex.json
+```
+
+Every control row cites a real clause, and a row the scanner cannot evidence
+says so instead of printing a tick. Full list of the <!-- rule-count:total -->408<!-- /rule-count -->
+rules mapped to 14 frameworks: [compliance reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/owasp-mapping.md).
+
+### OWASP Agentic Top 10 coverage
+
+Against the [OWASP Top 10 for Agentic Applications](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+(Version 2026, December 2025), with OWASP's own titles. A rule is counted when
+it detects the risk, or the absence of a control the entry prescribes for it.
+
+<!-- owasp-coverage:start -->
+| ASI | Title | # rules |
+| --- | --- | --- |
+| **ASI01** | Agent Goal Hijack | 17 |
+| **ASI02** | Tool Misuse and Exploitation | 99 |
+| **ASI03** | Identity and Privilege Abuse | 105 |
+| **ASI04** | Agentic Supply Chain Vulnerabilities | 196 |
+| **ASI05** | Unexpected Code Execution (RCE) | 92 |
+| **ASI06** | Memory & Context Poisoning | 5 |
+| **ASI07** | Insecure Inter-Agent Communication | 24 |
+| **ASI08** | Cascading Failures | 9 |
+| **ASI09** | Human-Agent Trust Exploitation | 13 |
+| **ASI10** | Rogue Agents | 5 |
+<!-- owasp-coverage:end -->
+
+Per-entry rule lists, generated from the registry:
+[Agentic Top 10](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/coverage/owasp-agentic-top10.md) ·
+[MCP Top 10 (v0.1, 2025 edition)](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/coverage/owasp-mcp-top10.md) ·
+[Agentic Skills Top 10](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/coverage/owasp-agentic-skills-top10.md).
+Every MCP Top 10 entry has at least one rule, but not evenly; the MCP table
+labels the thin entries Partial and names their rules. The rule-by-rule NSA MCP
+CSI and OWASP Agentic view is the
+[standards crosswalk](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/crosswalk/nsa-csi-owasp-agentic.md).
+
+## MCP Security Index
+
+A public leaderboard of scanned public MCP servers, with per-server grade cards
+and a 90-day [disclosure policy](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/disclosure-policy.md):
+[sattyamjjain.github.io/agent-audit-kit](https://sattyamjjain.github.io/agent-audit-kit/).
+
+<!-- index-cadence -->Last published snapshot: **2026-10-12** (10 snapshots in [`history.json`](https://sattyamjjain.github.io/agent-audit-kit/data/history.json)). The build fails if this date falls more than 10 days behind, so a stalled index reports itself.<!-- /index-cadence -->
+
+## CVE response
+
+Newly disclosed MCP CVEs are triaged and turned into rules as they land,
+surfaced by an NVD watcher and logged in
+[CHANGELOG.cves.md](https://github.com/sattyamjjain/agent-audit-kit/blob/main/CHANGELOG.cves.md). The measured disclosure-to-rule
+latency is published in [docs/cve-latency.md](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/cve-latency.md) and
+regenerated from the ledger, not asserted.
+
+## Under the hood
+
+<!-- scanner-count:total -->103<!-- /scanner-count --> scanner modules: AST-based taint analysis for
+Python, and regex dangerous-sink scanners for TypeScript/JavaScript and Rust.
+<!-- test-count:total -->3,921<!-- /test-count --> test functions. 27 CLI commands. Releases are Sigstore-signed
+and ship a deterministic rule bundle.
+
+Mechanical fix recipes cover <!-- fix-recipe-coverage:count -->11<!-- /fix-recipe-coverage --> of <!-- rule-count:total -->408<!-- /rule-count --> rules
+(<!-- fix-recipe-coverage:pct -->2.7<!-- /fix-recipe-coverage -->%), applied by `agent-audit-kit fix`. That is a scope
+decision, not a coverage gap: a recipe ships only where the remediation is
+**deterministic and one-line** — exactly one correct edit, confirmable from the
+diff. Everything else stays advisory on purpose, because a fix that needs
+judgement is a fix that can be wrong silently. [Why the rest stay
+advisory](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/why.md).
+
+## Documentation
+
+**[sattyamjjain.github.io/agent-audit-kit/docs](https://sattyamjjain.github.io/agent-audit-kit/docs/)** — the full documentation site,
+built from `docs/` by MkDocs and deployed alongside the MCP Security Index.
+
+[Getting started](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/getting-started.md) ·
+[CLI reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/cli.md) ·
+[Rule reference](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/rules.md) ·
+[CI/CD](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/ci-cd.md) ·
+[Comparison with other scanners](https://github.com/sattyamjjain/agent-audit-kit/blob/main/docs/comparisons.md) ·
+[All documentation](https://github.com/sattyamjjain/agent-audit-kit/tree/main/docs)
+
+## Contributing
+
+Issues and pull requests are welcome — see
+[CONTRIBUTING.md](https://github.com/sattyamjjain/agent-audit-kit/blob/main/CONTRIBUTING.md). Adding a rule means a rule definition, a
+scanner, and fixtures in both directions; `agent-audit-kit rule lint` checks the
+registry invariants.
+
+## Security
+
+Report vulnerabilities per [SECURITY.md](https://github.com/sattyamjjain/agent-audit-kit/blob/main/SECURITY.md). AgentAuditKit
+publishes no fixed CVE-response SLA; it publishes the measured latency instead.
+
+## License
+
+Apache-2.0. See [LICENSE](https://github.com/sattyamjjain/agent-audit-kit/blob/main/LICENSE). Apache-2.0 carries an explicit patent
+grant, which the organisations that adopt a security tool tend to ask about.

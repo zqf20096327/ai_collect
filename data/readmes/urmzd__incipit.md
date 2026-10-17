@@ -1,0 +1,183 @@
+<p align="center">
+  <h1 align="center">Incipit</h1>
+  <p align="center">
+    <em>Here begins the new career.</em>
+    <br />
+    A CLI tool that converts structured resume data (JSON/Markdown) into polished PDFs, HTML, LaTeX, DOCX, and Markdown — with AI-powered review, optimization, and creation.
+    <br /><br />
+    <a href="https://github.com/urmzd/incipit/releases">Download</a>
+    &middot;
+    <a href="https://github.com/urmzd/incipit/issues">Report Bug</a>
+    &middot;
+    <a href="https://github.com/urmzd/incipit/tree/main/assets">Examples</a>
+  </p>
+</p>
+
+<p align="center">
+  <a href="https://github.com/urmzd/incipit/actions/workflows/ci.yml"><img src="https://github.com/urmzd/incipit/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  &nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/urmzd/incipit" alt="License"></a>
+</p>
+
+<br />
+
+<p align="center">
+  <img src="showcase/demo-cli.gif" alt="CLI Demo" width="80%">
+</p>
+
+## Output Examples
+
+<p align="center">
+  <img src="showcase/modern-html.png" alt="Modern HTML" width="30%">
+  &nbsp;
+  <img src="showcase/modern-latex.png" alt="Modern LaTeX" width="30%">
+  &nbsp;
+  <img src="showcase/modern-cv.png" alt="Modern CV" width="30%">
+</p>
+<p align="center">
+  <em>Modern HTML &nbsp;&middot;&nbsp; Modern LaTeX &nbsp;&middot;&nbsp; Modern CV</em>
+</p>
+
+## Features
+
+- **Multiple Output Formats** — generate PDFs from LaTeX or HTML templates, plus native DOCX and Markdown
+- **Data-Driven** — provide resume content as JSON or Markdown; the tool handles rendering
+- **Template System** — modular templates with embedded assets; customize or create your own
+- **AI Prompts** — generate ready-to-use LLM prompts to review, optimize, and create resumes; pipe them to any LLM or agent
+- **Flexible Paths** — supports `~`, relative paths, and creates dated output workspaces with a `latest/` index pointing at the newest run
+- **Schema Generation** — export JSON Schema for IDE autocompletion and validation
+
+## Install
+
+### Pre-built Binary
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/urmzd/incipit/main/install.sh | sh
+```
+
+Supports **macOS** (Intel & Apple Silicon) and **Linux** (x86_64 & arm64). After installation, run `incipit` from anywhere.
+
+### Build from Source
+
+```bash
+git clone https://github.com/urmzd/incipit.git
+cd incipit
+go install ./cmd/incipit
+```
+
+## Quick Start
+
+```bash
+# Generate PDF with a specific template
+incipit generate assets/example_resumes/software_engineer.json -t modern-html
+
+# Generate with all templates
+incipit generate assets/example_resumes/software_engineer.json
+
+# Generate an editable DOCX
+incipit generate resume.json -t modern-docx
+
+# Validate input data
+incipit generate resume.json --dry-run
+
+# List available templates
+incipit templates list
+
+# AI: prompt to create a resume from plain text
+incipit ai create resume.txt | claude -p > resume.json
+
+# AI: prompt to review a resume
+incipit ai review resume.json | claude -p
+
+# AI: prompt to optimize for a job description
+incipit ai optimize resume.json --job "Senior Go developer..."
+```
+
+## CLI Usage
+
+### Generate
+
+```bash
+# Single template
+incipit generate resume.json -t modern-html
+
+# Multiple templates
+incipit generate resume.json -t modern-html -t modern-latex
+
+# Custom output directory
+incipit generate resume.json -o outputs/custom -t modern-html
+```
+
+Each run writes to a timestamped directory under `<output-dir>/<resume-slug>/`. A `latest/` index directory alongside them always mirrors the most recent run, so the newest files are at a stable path:
+
+```
+outputs/software_engineer/
+├── 2026-06-11_21-44/Jane_Doe.modern-html.pdf   # this run
+└── latest/Jane_Doe.modern-html.pdf             # always the newest
+```
+
+### AI Commands
+
+The `ai` subcommands print self-contained LLM prompts to stdout — no API keys or network access required. Paste a prompt into any LLM, or pipe it to a CLI agent like `claude -p`.
+
+```bash
+# Prompt to convert plain text into structured JSON (schema embedded)
+incipit ai create resume.txt | claude -p > resume.json
+
+# Prompt to review/score a resume across four dimensions
+incipit ai review resume.json | claude -p
+
+# Prompt to optimize a resume, optionally for a specific role
+incipit ai optimize resume.json --job "Senior Go developer at a startup..."
+incipit ai optimize resume.json --job job-description.txt | claude -p > optimized.json
+```
+
+### Other Commands
+
+```bash
+incipit generate resume.json --dry-run  # Validate and preview as JSON
+incipit generate --schema               # Export JSON Schema
+incipit templates list                   # List templates
+incipit templates engines               # Check LaTeX engines
+```
+
+## Input Formats
+
+Resumes are provided as **JSON** files. Use `incipit generate --schema` to get the full JSON Schema.
+
+To convert freeform text to structured JSON, use `incipit ai create` to generate a conversion prompt for your LLM of choice.
+
+## Prerequisites
+
+- **Go 1.25+**
+- **TeX Live** (only for LaTeX templates)
+- **Chromium** — auto-downloaded by Rod on first use, or set `ROD_BROWSER_BIN`
+- [just](https://github.com/casey/just) (optional, for helper commands)
+
+## Templates
+
+Built-in templates live in `templates/`, one folder per template with a `metadata.yml` and template file:
+
+| Template | Format | Output |
+|----------|--------|--------|
+| `modern-html` | HTML | PDF via Chromium |
+| `modern-latex` | LaTeX | PDF via TeX Live |
+| `modern-cv` | LaTeX | PDF via TeX Live |
+| `modern-docx` | DOCX | Word document |
+| `modern-markdown` | Markdown | `.md` file |
+
+Create your own by adding a `templates/<name>/` directory with `metadata.yml` + template file.
+
+## Agent Skill
+
+This repo's conventions are available as portable agent skills in [`skills/`](skills/), following the [Agent Skills Specification](https://agentskills.io/specification).
+
+Once installed, use `/resume` to create, review, optimize, and generate resumes from your agent.
+
+## Contributing
+
+Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+Apache 2.0

@@ -1,0 +1,800 @@
+﻿# MidiEditor AI
+
+<p align="center">
+  <a href="https://midieditor-ai.de">
+    <img src="manual/midipilot_ai_OG.png" alt="MidiEditor AI - AI-powered MIDI editor with built-in MidiPilot copilot" width="100%">
+  </a>
+</p>
+
+**An AI-powered MIDI editor with an integrated AI copilot.**
+
+[![Build](https://github.com/happytunesai/MidiEditor_AI/actions/workflows/ci.yml/badge.svg)](https://github.com/happytunesai/MidiEditor_AI/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/happytunesai/MidiEditor_AI?include_prereleases&label=release)](https://github.com/happytunesai/MidiEditor_AI/releases/latest)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-0078D6?logo=windows)](https://github.com/happytunesai/MidiEditor_AI/releases)
+
+**Version:** 2.5.2
+**Status:** Release
+
+📥 **[Download Latest Release](https://github.com/happytunesai/MidiEditor_AI/releases/latest)**
+
+---
+
+![MidiEditor AI](manual/screenshots/midieditor_ai_gpt55_streaming_nosound.webp)
+
+## ✨ Overview
+
+MidiEditor AI is a free MIDI editor with **MidiPilot** - an integrated AI copilot that can compose, arrange, analyze, and edit MIDI data using natural language. Tell the AI what you want in plain English and watch it build your music.
+
+Built on top of [Meowchestra/MidiEditor](https://github.com/Meowchestra/MidiEditor), which traces back through [jingkaimori](https://github.com/jingkaimori/midieditor/), [ProMidEdit](https://github.com/PROPHESSOR/ProMidEdit), and the original [MidiEditor](https://github.com/markusschwenk/midieditor) by Markus Schwenk.
+
+## 🤖 MidiPilot - Your AI Copilot
+
+MidiPilot is the AI brain embedded directly in MidiEditor AI. Open the sidebar, type what you want in plain English, and it builds your music - composing, editing, transforming, and analyzing MIDI events automatically.
+
+<p align="center">
+  <img src="manual/screenshots/midipilot-panel.png" alt="MidiPilot chat panel" width="320"/>
+  <br/>
+  <i>MidiPilot chat panel with live Agent streaming</i>
+</p>
+
+📖 **[Full MidiPilot Documentation →](https://happytunesai.github.io/MidiEditor_AI/)**
+
+---
+
+```
+███╗   ███╗██╗██████╗ ██╗███████╗██████╗ ██╗████████╗ ██████╗ ██████╗      █████╗ ██╗
+████╗ ████║██║██╔══██╗██║██╔════╝██╔══██╗██║╚══██╔══╝██╔═══██╗██╔══██╗    ██╔══██╗██║
+██╔████╔██║██║██║  ██║██║█████╗  ██║  ██║██║   ██║   ██║   ██║██████╔╝    ███████║██║
+██║╚██╔╝██║██║██║  ██║██║██╔══╝  ██║  ██║██║   ██║   ██║   ██║██╔══██╗    ██╔══██║██║
+██║ ╚═╝ ██║██║██████╔╝██║███████╗██████╔╝██║   ██║   ╚██████╔╝██║  ██║    ██║  ██║██║
+╚═╝     ╚═╝╚═╝╚═════╝ ╚═╝╚══════╝╚═════╝ ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝
+```
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🤖 **MidiPilot AI Copilot** | Compose, edit, and transform MIDI via natural language chat with live Agent streaming |
+| 🤝 **Real-time Collaboration**  | Live multi-peer Live Sessions over LAN or WAN (peer-to-peer WebRTC + DTLS, up to 8 peers), async PR workflow with smart-paste tokens, optional Discord webhook for sharing, and a 6-second Connection Test diagnostic |
+| 📝 **Logging Settings**  | Five radio-selectable levels (Off / Errors / Warnings / Info / Debug) with live preview of the lines you'll see at each level, a size-callout warning that escalates with the level, 10 MB file rotation with 3 backups, per-category overrides, and an *Open log file* shortcut |
+| 🔒 **Lock Side Panels During Playback**  | Opt-in setting under *Settings → System & Performance* that restores the legacy v1.4.1-and-earlier behaviour of disabling the side panels for the duration of playback / recording |
+| 🎨 **7 Themes** | MidiEditor AI brand (default), Dark, Light, Classic, Sakura, AMOLED, Material Dark, plus a Follow-OS auto-switch. 10 color presets for note bars |
+| 🎹 **Full MIDI Editor** | Edit, record, and play MIDI files with track/channel/event editing |
+| 🎯 **Agent Mode** | Multi-step agentic loop - AI calls tools iteratively, with granular per-tool-call undo |
+| 💬 **Simple Mode** | Single request/response with real-time SSE streaming for quick edits and small tasks |
+| 📜 **Conversation History** | Auto-saved conversations as JSON - browse, resume, and reload past chats across sessions |
+| 📎 **Attachments** | Send pictures, PDFs and text files with a message - e.g. sheet music for the AI to write into the editor; drop, paste or pick them, saved with the conversation |
+| 💾 **AI Document Tools** | MidiPilot and MCP clients create, open, save and close documents - a file you opened is overwritten only when you say so (the AI asks, or a setting decides); everything else is a marked copy (`name.midipilot.mid` / `name.mcp.mid`), never written over an existing file |
+| 🌊 **Response Streaming** | Server-Sent Events (SSE) streaming in Simple and Agent mode - thoughts, text, and tool progress appear live |
+| 🔄 **Dynamic Model Lists** | Refresh provider model lists, cache context windows, filter non-chat models, and manage per-provider favourites |
+| 💾 **Per-File AI Presets** | Save provider, model, mode, FFXIV, effort, and custom instructions per MIDI file as a sidecar `.midipilot.json` |
+| 📏 **Context Window Management** | Sliding-window truncation prevents exceeding model context limits, with usage warnings at 80% |
+| 🎮 **FFXIV Bard Mode** | Enforces Final Fantasy XIV Performance constraints (8 tracks, monophonic, C3-C6) |
+| 🎸 **Fix X\|V Channels** | One-click deterministic channel fixer - Rebuild or Preserve mode, optional instrument re-sync, velocity normalization, rich result summary |
+| 🥁 **FFXIV Drum Split** | Split the GM drum kit (channel 10) into separate FFXIV percussion tracks - optional pitch-mapping kits (house kit + community kits) transpose each drum onto its bard pitch, overlap cleanup removes stacked hits FFXIV cannot play |
+| 🎧 **Drum-Kit Editor with Audio A/B** | Build your own pitch-mapping kits by duplicating any kit and editing its mappings ("38 Acoustic Snare" → "72 C5") - per-row speaker plays the GM drum and its FFXIV target back to back, "Preview group" plays a whole instrument's mapping as a run |
+| ✂️ **Auto-Fit Voice Load** | Thin overloaded moments and over-dense passages - whole song, a lane range, or exactly the selected notes. Per-track intensity that persists, live preview in editor + voice lane, dry run first, one undo step; works on any MIDI file |
+| 🖱️ **Track & Channel Context Menus** | Right-click a track row for Clone, Merge Into, Move Up/Down, Quantize, Transpose, Explode Chords, Split Channels, and event ops (select all / move to channel / remove / tempo conversion); channel rows get the matching event ops |
+| 🔀 **Split Channels to Tracks** | Convert single-track multi-channel GM MIDI files into one track per instrument with auto-naming |
+| 💥 **Explode Chords to Tracks** | Split polyphonic chords into separate monophonic tracks - one note per track, ideal for FFXIV ensemble prep |
+| 🗂️ **Tabs & Editor Groups** | Keep several files open as tabs and view two **side by side** in independent, fully-editable editor groups. Drag tabs between groups (with a drop caret), Split / Clone / New-Tab tools, collapse/restore the second group, drop files into a specific pane. Each tab keeps its own zoom and scroll position. Your tabs + split are restored after a restart, the window opens on the monitor it was closed on, and a restart for an update or a theme change brings every tab back with its view and cursor |
+| 🎼 **Score & Tab Import** | Open Guitar Pro (GP1-GP8: `.gp`, `.gp3`-`.gp5`, `.gpx`, `.gtp`), MusicXML (`.musicxml`, `.xml`, `.mxl`) and MuseScore (`.mscz`, `.mscx`) files directly - auto-converted to MIDI on open |
+| 🕹️ **Commodore 64 / SID** | Open `.sid` tunes as editable MIDI and play them **authentically** - the converted MIDI through a C64 SoundFont, or the *original* SID through the cycle-accurate **libsidplayfp** engine (transport-controlled, cursor-synced, per-voice mute). A retro `SF2 ⟷ EMU` toolbar switch flips engines |
+| 🎼 **MusicXML Export** | Write the current song out as a MusicXML score (*File → Export MusicXML*) - opens in MuseScore, Finale, Sibelius, Dorico. Reconstructs measures, note values, rests, ties, chords and key spelling from the MIDI |
+| 🕒 **Cursor Time Display** | Retro seven-segment toolbar clock - cursor / playback time with POS / LEN / REM / BPM / BAR readouts (left-click) and 6 LED colour themes (right-click) |
+| 🔊 **Built-in FluidSynth** | Play MIDI without external softsynth - load SF2/SF3 SoundFonts, SoundFont stacking, FFXIV SoundFont Mode with bard-accurate playback (dry, 16-voice cap, cubic CC7·CC11 curve, per-instrument min note length) |
+| 🎚️ **FFXIV SoundFont Equalizer** | Per-instrument volume mixer for the FFXIV bard SoundFont with 0-200 % gain sliders, mute, master gain, per-row ▶ Preview, plus user presets. Affects live playback **and** offline export via `GEN_ATTENUATION` |
+| 🎶 **Audio Export** | Export MIDI to WAV, FLAC, OGG Vorbis, or MP3 using loaded SoundFonts - built-in LAME 3.100 encoder. Honours channel mute/solo, per-track mute, and auto-routes named FFXIV percussion tracks to the correct bard preset |
+| 🎻 **FFXIV Voice Limiter** | Read-only audit against the in-game 16-voice ceiling - per-tick voice peak, overflow ranges, per-channel rate hotspots; optional voice-load lane under the velocity strip |
+| 🔎 **Check FFXIV Playability** | Workbench that examines a file the way the game plays it - chords and stacked duplicates on monophonic performers, notes outside C3-C6, track names no FFXIV instrument matches, voice peak, channel spread, empty tracks. Click a finding to select its notes, double-click to focus the track; delete exactly the marked notes, or hand the report to MidiPilot for a prioritised assessment |
+| ⏱️ **Convert Tempo (Preserve Duration)** | Time-preserving tempo conversion - rescales every event tick by `target/source` and rewrites the tempo meta in one undoable step. Whole-file / events-only / per-channel / selected-events scopes |
+| 📈 **Tempo Transition Curves** | Edit Tempo's Smooth Transition with Linear / Ease-in / Ease-out / S-curve - one tempo event per BPM step, exact endpoint, single undo step |
+| 📉 **Thin Tempo Map** | Reduce a DAW-exported tempo ramp (often tens of thousands of events) to the few that carry the timing - choose the allowed timing shift (default 2 ms), preview kept/removed and the largest drift, apply as one undo step. Also offered as a Check FFXIV Playability repair and as a MidiPilot/MCP tool |
+| 📥 **Paste Special** | Cross-instance Ctrl+V opens a dialog: *Create new tracks per source* (default), *Preserve source mapping (1:1)*, or *Paste to current edit track* (legacy). Track creation + paste in one undo step |
+| 📋 **Copy to Track / Copy to Channel** | Duplicate the current selection onto another track or channel (program changes stay with their channel); originals stay in place, the copies become the active selection |
+| 📊 **MIDI Visualizer** | Real-time 16-channel equalizer bars in the toolbar with velocity-based color and smooth decay animation |
+| 🔌 **Multi-Provider** | OpenAI, OpenRouter, Google Gemini, Ollama, or any OpenAI-compatible endpoint |
+| 🗃️ **Provider Profiles** | Save several AI endpoints (provider, base URL, API key, model) under a name and switch with one click from the Provider dropdown - in Settings and in the MidiPilot footer. Every custom endpoint keeps its own model list and favourites; a local server (llama.cpp, LM Studio) needs no API key |
+| 🧠 **Reasoning Support** | Configurable thinking/reasoning effort (None → Extra High) |
+| 📊 **Token Tracking** | Real-time token & context window usage display with multi-provider normalization |
+| ✏️ **Custom System Prompts** | Edit AI behavior via JSON - no recompiling needed |
+| 🔄 **Auto-Updater** | In-app updates from GitHub Releases - Update Now, After Exit, or Download Manual |
+| 🎤 **Lyric Editor & Visualizer** | Full lyric timeline (drag, resize, split, merge, inline edit, tap-to-sync) plus a karaoke-style toolbar widget with left-to-right colour sweep. Imports plain text, SRT, LRC; exports SRT, LRC, MIDI text events |
+| 🔌 **MCP Server** | Built-in Model Context Protocol server - Claude Desktop, VS Code Copilot, Cursor, and any MCP client can edit MIDI directly |
+| 👁️ **Live Side Panels During Playback** | Tracks, Channels, Event and Protocol panels stay interactive while a song is playing - or opt back into the legacy lock via Settings → System & Performance |
+| 🎵 **Quantization** | Event quantization and control change visualization |
+| 🎤 **MIDI Recording** | Record from connected MIDI devices (keyboards, digital pianos) |
+
+## 🏗️ Architecture
+
+```
+MidiEditor AI
+├── Core Editor          → MIDI file I/O, tracks, channels, events
+├── MatrixWidget         → Piano roll note editor with OpenGL rendering
+├── MidiPilot            → AI copilot sidebar (chat + tools)
+│   ├── AiClient         → OpenAI-compatible API client (SSE streaming)
+│   ├── ConversationStore → Persistent history (JSON save/load/resume)
+│   ├── EditorContext     → Musical context extraction for AI
+│   ├── ToolDefinitions   → 39 MIDI and document tools (32 core + switch_document + 6 FFXIV)
+│   └── SystemPrompts     → Customizable per-mode AI instructions
+├── Collaboration        → Live multi-peer co-editing + async PR workflow
+│   ├── LanLiveSession    → LAN host/joiner state machine + heartbeat + ghost-peer dedup
+│   ├── WebRtcLiveServer  → WAN multi-transport server (1 host : N joiners)
+│   ├── MidiSnapshot/Diff → Hash-keyed state-diff sync (no op-log; recovers offline edits)
+│   ├── PrBundle / PrApply → Smart-paste tokens with per-hunk cherry-pick
+│   └── WebhookClient     → Discord webhook integration for PR distribution
+├── Appearance           → 7 QSS themes, 10 color presets, dark title bar, icon adaptation
+├── Lyric Editor         → Timeline lane, inline editing, split/merge, tap-to-sync, SRT/LRC import/export
+├── Lyric Visualizer     → Karaoke toolbar widget with highlight sweep and two-line display
+├── MIDI Visualizer      → Real-time 16-channel equalizer widget in toolbar
+├── FFXIV Module         → Bard Performance validation & drum conversion
+├── FluidSynth Engine    → Built-in software synthesizer with SoundFont support
+├── LAME Encoder         → Built-in MP3 encoder (LAME 3.100, static library)
+├── Multi-Provider       → OpenAI / OpenRouter / Gemini / Custom / Local
+├── MCP Server           → Model Context Protocol server for external AI clients
+├── LoggingConfig        → 5-level severity ladder, file rotation (10 MB × 3), per-category overrides
+├── MIDI I/O             → RtMidi for real-time MIDI device communication
+└── Settings             → Provider, model, appearance, keybinds, layout, collaboration, logging
+```
+
+## 🚀 Quick Start
+
+### 1. Download & Run
+
+1. Download the latest release from the [**Releases page**](https://github.com/happytunesai/MidiEditor_AI/releases/latest)
+2. Extract the zip file
+3. Run **MidiEditorAI.exe**
+
+> **Portable Mode:** create an empty `portable.txt` next to `MidiEditorAI.exe` (or start with `--portable`) and all settings live in a `config/` folder beside the exe instead of the registry - existing settings are copied over on first portable start. The whole folder then travels on a USB stick with everything included.
+
+### 2. Configure AI
+
+1. Open **Settings** (gear icon) and go to the **MidiPilot AI** page
+2. Select your provider (OpenAI, OpenRouter, Google Gemini, Ollama for local/free, or Custom)
+3. Enter your API key (not needed for Ollama - install it from [ollama.com](https://ollama.com) and `ollama pull` a model instead)
+4. Choose a model
+
+### 3. Start Creating
+
+1. Open the **MidiPilot** panel from the sidebar
+2. Type a natural language instruction:
+   > *"Create an 8-bar jazz waltz in Bb major with piano, bass, and drums"*
+3. Press Enter and watch the AI build your music
+
+## 🎮 FFXIV Bard Performance Mode
+
+When the **FFXIV** checkbox is enabled, MidiPilot enforces Final Fantasy XIV constraints:
+
+| Constraint | Rule |
+|------------|------|
+| 🎵 **Tracks** | Maximum 8 tracks (octet ensemble) |
+| 🔊 **Polyphony** | Monophonic only - one note at a time per instrument |
+| 🎹 **Range** | C3-C6 (MIDI 48-84) - MidiBard2 auto-transposes |
+| 🥁 **Drums** | No drum kit - separate tonal tracks (Bass Drum, Snare, Cymbal, etc.) |
+| 🎸 **Guitars** | 5 electric guitar variants via channel-based switching |
+| ⚡ **Auto-Setup** | Channel pattern tool configures MidiBard2 mapping automatically |
+| 🎸 **Fix X\|V Channels** | One-click toolbar button - deterministic channel fixer with Rebuild/Preserve modes and rich result summary (no AI needed) |
+| 🔎 **Check FFXIV Playability** | Tools menu / toolbar - lists what would go wrong in game (chords, stacked notes, range, track names, voice peak) and offers the matching repair next to each finding; the AI's `validate_ffxiv` runs the same engine |
+
+## 🎮 Fix X|V Channels - FFXIV Channel Fixer
+
+The **Fix X|V Channels** button provides a deterministic channel fixer for FFXIV MIDI files - no AI needed. Open your file, click the button, and choose between **Rebuild** (full reassignment) or **Preserve** (minimal changes).
+
+<p align="center">
+  <img src="manual/screenshots/midipilot-ffxiv-channelfix_popup.png" alt="Fix X|V Channels - mode selection" width="500"/>
+  <br/>
+  <i>Mode selection dialog - Rebuild (full reassignment) or Preserve (minimal changes)</i>
+</p>
+
+Find it in the toolbar or via **Tools → Fix X|V Channels**. The entire operation is a single undo action (Ctrl+Z). Preserve mode offers an optional **instrument re-sync** that repairs stale Program Changes on non-guitar channels without touching the channel layout.
+
+---
+
+## 🥁 FFXIV Drum Split
+
+The **FFXIV Drum Split** tool converts the GM drum kit (channel 10) into the separate percussion tracks FFXIV expects - Bass Drum, Snare Drum, Cymbal, Bongo and more, named so the bard SoundFont and audio export pick the right instrument automatically.
+
+<p align="center">
+  <img src="manual/screenshots/ffxiv-drum-split_kit-selected.png" alt="FFXIV Drum Split dialog with a pitch mapping kit selected" width="500"/>
+  <br/>
+  <i>Preview dialog - pitch mapping kit, per-group include checkboxes, and overlap cleanup</i>
+</p>
+
+**Features:**
+- **Pitch mapping kits** - the house kit plus community kits transpose each GM drum onto its FFXIV bard pitch; tracks stay on the drum channel because the instrument follows the track name
+- **Your own kits** - "Edit kits..." opens the kit editor: duplicate any kit, change its mappings (drums and pitches spelled out by name), and it appears in the selector next to the shipped ones
+- **Audio A/B preview** - every mapping row's speaker plays the GM drum and its FFXIV target back to back, and "Preview group" plays a whole instrument's mapping as a run (GM half needs a General MIDI SoundFont loaded alongside the FFXIV one)
+- **Overlap cleanup** - stacked same-pitch reinforcement hits play sequentially in FFXIV and change the beat, so redundant overlaps are removed by default (or moved to a review track)
+- **Other Percussion** - everything the mapping does not cover is collected, never silently dropped
+- **Full undo** - the entire split is a single undo action (Ctrl+Z)
+
+Find it in the toolbar or via **Tools → FFXIV drum split**.
+
+📖 **[FFXIV Drum Split Documentation →](https://happytunesai.github.io/MidiEditor_AI/ffxiv-drum-split.html)**
+
+---
+
+## 🔎 Check FFXIV Playability
+
+The **Check FFXIV Playability** workbench examines a file the way the game will play it and lists what would go wrong - with the matching repair offered right next to each finding. It is deterministic and works offline; the AI is optional.
+
+<p align="center">
+  <img src="manual/screenshots/ffxiv-playability_workbench.png" alt="Check FFXIV Playability workbench with the checks row, summary line and findings tree" width="700"/>
+  <br/>
+  <i>The workbench - checks across the top, findings grouped by type, repairs underneath</i>
+</p>
+
+**Checks** (each individually selectable):
+- **Chords** - several pitches starting on the same tick on one performer (the game rolls them as a fast arpeggio) and **Stacked notes** - the same pitch twice on one tick (played once, the duplicate wasted); separate checks because a chord is often intentional and a stacked note almost always a defect
+- **Range** - notes outside C3-C6; **Track names** - names matching no FFXIV instrument (in game, the track name selects the instrument)
+- **Voice limit** - the raw voice peak against the 16-voice ceiling with notes/sec hotspots; **Channel spread** (editor playback only) and **Empty tracks**
+- **Editor-only events** - controllers, pitch bend, aftertouch and SysEx that FFXIV ignores but the editor plays (a GM/GS/XG reset turns every channel into a piano when played from the start), and mid-song program changes on non-guitar channels
+
+**Working with the findings:** click a finding to select its notes and jump there, double-click to show only that track; select single findings, a range or a whole group such as "Stacked duplicates" and delete exactly those notes in one undo step; the window stays open and re-checks after every change. **Analyze with MidiPilot** shows the AI's prioritised assessment right in the window, and the AI's `validate_ffxiv` tool runs the same engine.
+
+Find it in the toolbar or via **Tools → Check FFXIV Playability...**.
+
+📖 **[Check FFXIV Playability Documentation →](https://happytunesai.github.io/MidiEditor_AI/ffxiv-playability.html)**
+
+---
+
+## 🔀 Split Channels to Tracks
+
+The **Split Channels to Tracks** tool converts single-track multi-channel GM MIDI files into one track per instrument. Perfect for files downloaded from the internet where all channels are on one track.
+
+<p align="center">
+  <img src="manual/screenshots/channel_splitting.png" alt="Split Channels to Tracks dialog" width="500"/>
+  <br/>
+  <i>Preview dialog showing detected channels, GM instrument names, and note counts</i>
+</p>
+
+**Features:**
+- **Auto-naming** - tracks are named from GM Program Change events (e.g. "Synth Bass 1", "Vibraphone", "Drums")
+- **Channel 9 handling** - optionally keep drums on the original track
+- **Flexible positioning** - insert new tracks after source or at end
+- **Clean up** - optionally remove the empty source track
+- **Full undo** - the entire split is a single undo action (Ctrl+Z)
+
+Find it in the toolbar or via **Tools → Split Channels to Tracks** (Ctrl+Shift+E).
+
+📖 **[Split Channels Documentation →](https://happytunesai.github.io/MidiEditor_AI/split-channels.html)**
+
+---
+
+## 🎸 Explode Chords to Tracks
+
+The **Explode Chords to Tracks** tool takes polyphonic chords and splits them into separate monophonic tracks - one note per voice. Ideal for preparing FFXIV ensemble arrangements where each instrument must be monophonic.
+
+Find it in the toolbar or via **Tools → Explode Chords to Tracks**.
+
+> **Note:** This tool was inherited from [Meowchestra/MidiEditor](https://github.com/Meowchestra/MidiEditor). MidiEditor AI added a toolbar icon for quick access.
+
+---
+
+## 🎤 Lyric Editor & Visualizer
+
+MidiEditor AI includes a full **Lyric Editor** with a dedicated timeline lane below the piano roll and a **Lyric Visualizer** karaoke widget in the toolbar.
+
+### Lyric Timeline
+
+A visual lane showing lyric blocks aligned to the MIDI timeline. Edit lyrics directly:
+
+- **Drag & resize** blocks to adjust timing
+- **Double-click** for inline text editing
+- **Right-click** context menu: Edit, Delete, Split at Cursor, Merge with Next, Insert Before/After
+- **Multi-select** with Shift+Click
+- **Keyboard shortcut:** Ctrl+L to toggle visibility
+
+### Tap-to-Sync Dialog
+
+Timing lyrics to music is easy - play the song and **hold Space** while each phrase is sung:
+
+- Press = phrase starts, Release = phrase ends
+- Real-time timeline with colored sync markers
+- Teleprompter view showing the next 8 upcoming phrases
+- Undo Last to correct mistakes on the fly
+
+### Import & Export
+
+| Format | Import | Export |
+|--------|--------|--------|
+| **Plain Text** | ✓ (one phrase per line) | - |
+| **SRT Subtitles** | ✓ (timestamps → MIDI ticks) | ✓ |
+| **LRC Karaoke** | ✓ (with MidiBard2 extension) | ✓ (with metadata) |
+| **MIDI Text Events** | ✓ (auto on file load) | ✓ (Type 0x05 Lyric) |
+
+Find all options under **Tools → Lyrics**.
+
+### Lyric Visualizer
+
+A karaoke-style toolbar widget that displays the current phrase with a left-to-right color sweep highlight and a preview of the next phrase below. Auto-hides when no lyrics are loaded.
+
+All lyric operations support **full undo/redo** (Ctrl+Z / Ctrl+Y).
+
+📖 **[Lyric Editor Documentation →](https://happytunesai.github.io/MidiEditor_AI/lyrics.html)**
+
+---
+
+## 🎼 Score & Tab Import
+
+MidiEditor AI opens Guitar Pro, MusicXML and MuseScore scores directly - they're auto-converted to MIDI on open with tempo, time signature, key signature, and instrument mapping preserved.
+
+| Format | Extensions | Notes |
+|--------|-----------|-------|
+| **Guitar Pro 1-2** | `.gtp` | Gp12Parser |
+| **Guitar Pro 3-5** | `.gp3`, `.gp4`, `.gp5` | Gp345Parser |
+| **Guitar Pro 6-8** | `.gpx`, `.gp` | Gp678Parser (ZIP+XML) |
+| **MusicXML** | `.musicxml`, `.xml`, `.mxl` | Finale, Sibelius, MuseScore, Dorico, etc. |
+| **MuseScore** | `.mscz`, `.mscx` | MuseScore 3 / 4 native format |
+| **Commodore 64 SID** | `.sid` | PSID / RSID - 6502 emulation + libsidplayfp (see the Commodore 64 / SID section below) |
+
+**Features:**
+- **Header-based detection** - format identified by magic bytes, not file extension
+- **Full metadata** - tempo, time signature, key signature, tuning, and track names are extracted
+- **Instrument mapping** - source instruments mapped to General MIDI program numbers
+- **Effects** - bends, slides, hammer-on/pull-off, vibrato, and harmonics converted where possible (Guitar Pro)
+- **MusicXML export** - go the other way too: *File → Export MusicXML* reconstructs a notation score from the MIDI (measures, note values, rests, ties, chords, key spelling) that opens in MuseScore, Finale, Sibelius and Dorico
+
+📖 **[Supported Files Documentation →](https://happytunesai.github.io/MidiEditor_AI/supported-files.html)**
+
+---
+
+## 🕹️ Commodore 64 / SID Support
+
+Load a Commodore 64 `.sid` tune, **edit it as MIDI**, and hear it the way it was meant to sound. As far as we know, **no other MIDI editor handles SID natively with authentic C64 emulation playback** - this is what makes MidiEditor AI special for chiptune work.
+
+`.sid` opens like any other file: MidiEditor AI plays the tune internally, watches the SID chip frame by frame, and reconstructs it as a multi-track MIDI (one track per SID voice + a dedicated percussion track), with note durations, velocities and arpeggios recovered from the chip's gate/envelope behaviour.
+
+**Two ways to hear it** - one C64 toolbar button activates the chosen engine, and a retro `SF2 ⟷ EMU` switch flips between them:
+
+- **SoundFont** - plays the converted MIDI through a Commodore 64 SoundFont so it uses real C64 waveform timbres (pulse, sawtooth, triangle, noise). The SoundFont (~11 MB) downloads itself on first use.
+- **Emulation** - plays the *original* `.sid` through the cycle-accurate **libsidplayfp** engine for true-to-hardware chip audio, driven by the normal transport: Play from the cursor, Stop / Pause, seek, the piano-roll cursor follows in real-time sync, channel/track mute silences the matching SID voice live, and playback stops at the end of the note roll. In Emulation mode you can also **export the authentic SID** straight to WAV / FLAC / OGG / MP3.
+
+| Variant | Tunes | How it's imported |
+|---------|-------|-------------------|
+| **PSID** | most SID tunes | fast built-in 6502 emulator (register capture @ 50/60 Hz) |
+| **RSID** | interrupt-installers (Arkanoid, RoboCop, Giana Sisters, …) | vendored libsidplayfp 3.0.1, ROM-free |
+
+SID tunes loop forever, so a musical loop detector trims the import to intro + one loop (with a configurable fallback length). The C64 SoundFont is by **jubbyo** ([musical-artifacts.com/artifacts/8014](https://musical-artifacts.com/artifacts/8014), CC BY-NC) and is fetched on demand, never bundled in the GPL release.
+
+📖 **[Commodore 64 / SID Documentation →](https://happytunesai.github.io/MidiEditor_AI/commodore-64.html)**
+
+---
+
+## 🎨 Themes & Appearance
+
+MidiEditor AI ships with **7 application themes** and **10 note bar color presets** - switch instantly via **Settings → Appearance**.
+
+| Theme | Style |
+|-------|-------|
+| **MidiEditor AI** | Brand theme - deep navy base with brand cyan focus rings and violet AI accents. **Default** for fresh installs. |
+| **Dark** | Deep blue-black (`#0d1117` bg, `#58a6ff` accent) |
+| **Light** | Clean white for daytime use |
+| **Classic** | Original system-native look, unchanged |
+| **Sakura** | Cherry blossom pink with rose accents and tinted piano keys |
+| **AMOLED** | Pure black with orange accents - optimized for OLED screens |
+| **Material Dark** | Charcoal with teal accents, Material Design aesthetic |
+| **System** | Follow-OS auto-switch between Light and Dark based on OS preference |
+
+<p align="center">
+  <img src="manual/screenshots/miditheme.png" alt="Theme gallery" width="720"/>
+  <br/>
+  <i>All themes side by side</i>
+</p>
+
+**Additional features:**
+- **10 color presets** for note bars - Default, Rainbow, Neon, Fire, Ocean, Pastel, Sakura, AMOLED, Emerald, Punk
+- **MIDI Visualizer** - real-time 16-channel equalizer bars in the toolbar with velocity-based green-to-blue color interpolation and smooth decay animation
+- **Dark title bar** on Windows via DWM API
+- **Automatic icon adaptation** - toolbar icons recolor for visibility in dark themes
+- Theme changes trigger an automatic restart with confirmation dialog
+
+📖 **[Themes Documentation →](https://happytunesai.github.io/MidiEditor_AI/themes.html)**
+
+---
+
+## 🔊 Built-in FluidSynth Synthesizer
+
+MidiEditor AI includes a **built-in software synthesizer** powered by [FluidSynth](https://www.fluidsynth.org/). No external softsynth (like VirtualMIDISynth or CoolSoft) is needed - just select *FluidSynth (Built-in Synthesizer)* as your MIDI output.
+
+<p align="center">
+  <img src="manual/screenshots/midipilot-Soundfont_settings.png" alt="FluidSynth SoundFont settings" width="500"/>
+  <br/>
+  <i>SoundFont management - load multiple SF2/SF3 files with priority-based stacking</i>
+</p>
+
+**Key features:**
+- **SoundFont management** - load multiple SF2/SF3 files with priority-based stacking
+- **Enable/disable checkboxes** - temporarily disable a SoundFont without removing it; state persists across sessions
+- **FFXIV auto-toggle** - FFXIV SoundFont Mode automatically enables/disables when you check/uncheck SoundFonts with "ff14" or "ffxiv" in the name
+- **One-click download** - built-in download dialog for General MIDI and FFXIV SoundFonts
+- **FFXIV SoundFont Mode** - treats all 16 channels as melodic (bank 0) and auto-injects drum program changes based on track names, so FFXIV percussion plays correctly without modifying the MIDI file
+- **Audio driver fallback** - if the preferred driver fails, automatically tries wasapi → dsound → waveout → sdl3 → sdl2
+- **Audio settings** - configurable audio driver, gain, sample rate, reverb & chorus
+
+📖 **[FluidSynth Documentation →](https://happytunesai.github.io/MidiEditor_AI/soundfont.html)**
+
+---
+
+## 🎶 Audio Export
+
+MidiEditor AI can render your MIDI files to audio using the built-in FluidSynth synthesizer. Export to **WAV**, **FLAC**, **OGG Vorbis**, or **MP3** - no external tools required.
+
+**Key features:**
+- **Four formats** - WAV (uncompressed), FLAC (lossless), OGG Vorbis (lossy), MP3 (lossy via built-in LAME 3.100)
+- **Quality presets** - Draft (22 kHz), CD (44.1 kHz), Studio (48 kHz), Hi-Res (96 kHz)
+- **Flexible range** - export the full song, current selection, or custom measure range
+- **Selection export** - right-click selected notes → "Export Selection as Audio..."
+- **Background rendering** - progress dialog with cancel support for both FluidSynth and LAME phases
+- **Completion dialog** - Open File, Open Folder, or Close after export finishes
+- **Guitar Pro support** - GP3-GP8 files export seamlessly (temporary MIDI conversion is handled automatically)
+- **Authentic SID export** - with a `.sid` open and the C64 engine set to Emulation, export renders the *original* tune via libsidplayfp (the real chip sound, no SoundFont needed) instead of the converted MIDI
+
+Export via **File → Export Audio** (Ctrl+Shift+E), the right-click context menu on selections, or the **Export Audio** button in the FluidSynth settings panel.
+
+📖 **[Audio Export Documentation →](https://happytunesai.github.io/MidiEditor_AI/export-audio.html)**
+
+---
+
+## 🔄 Auto-Updater
+
+MidiEditor AI checks for new versions on GitHub at every startup. When an update is available, you get four options:
+
+| Button | Action |
+|--------|--------|
+| **Update Now** | Downloads, saves your work, replaces in-place, restarts automatically |
+| **After Exit** | Downloads in background, applies when you close the app |
+| **Download Manual** | Opens the release page in your browser |
+| **Skip** | Dismiss - reminded again next startup |
+
+<p align="center">
+  <img src="manual/screenshots/update_available.png" alt="Update Available dialog" width="450"/>
+  <br/>
+  <i>Update Available dialog - Update Now / After Exit / Download Manual / Skip</i>
+</p>
+
+📖 **[Auto-Update Documentation →](https://happytunesai.github.io/MidiEditor_AI/setup.html#updates)**
+
+---
+
+## 🌐🔌 Supported Providers
+
+| Provider | Base URL | API Key | Free Tier |
+|----------|----------|---------|-----------|
+| **OpenAI** | `api.openai.com/v1` | Required | Limited |
+| **OpenRouter** | `openrouter.ai/api/v1` | Required | Free models available |
+| **Google Gemini** | `generativelanguage.googleapis.com` | Required | 15 RPM, 1M TPM |
+| **Ollama** (local) | `localhost:11434/v1` | No | Unlimited |
+| **LM Studio** (local) | `localhost:1234/v1` | No | Unlimited |
+| **Custom** | User-specified | User-specified | Varies |
+
+> **Provider profiles:** save several endpoints under a name - two custom endpoints (say a Hugging Face router and a local llama.cpp) coexist instead of overwriting the single Custom slot, and you switch between them from the Provider dropdown. A profile's API key is stored with the profile and never travels in per-file presets.
+
+## 🛠️ MidiPilot Tools
+
+The AI has access to **32 core tools** plus `switch_document`, and **6 more when FFXIV mode is on** (39 total), for inspecting and modifying MIDI files and for creating, opening, saving and closing documents:
+
+| Tool | Description |
+|------|-------------|
+| `get_editor_state` | Read file info, tracks, tempo, time signature, cursor |
+| `get_track_info` | Get details about a specific track |
+| `query_events` | Read events in a tick range on a track, optionally only some kinds (notes, controllers, pitch bends, program changes) |
+| `get_timing_map` | Read the complete timing data with exact values - every tempo change in microseconds per quarter note, time and key signatures, markers |
+| `get_selection` | Read the current selection as full events, each with a 0-based index |
+| `list_documents` / `get_document_overview` | List the open tabs and read a summary of another one without switching to it |
+| `create_track` / `rename_track` / `set_channel` / `remove_track` | Manage tracks |
+| `insert_events` / `replace_events` / `delete_events` | Add, modify, remove MIDI events (`delete_events` optionally only some kinds) |
+| `delete_events_by_index` | Delete selected events by index (e.g. every second note) |
+| `move_events_to_track` | Move events between tracks |
+| `transpose_events` | Transpose notes by semitones (track/range/file), optionally folded into the bard range C3-C6 |
+| `split_chords_to_tracks` | Split a chordal track voice-wise onto new tracks (voice 1 = highest) - chords become monophonic performers |
+| `copy_events_to_track` | Copy notes to another track (e.g. double a melody, then transpose the copy) |
+| `import_tracks_from_document` | Copy whole tracks from another open tab into the current document (names preserved, ticks rescaled, program changes only on the channels a track plays, channel collisions reported) - dry run first, your confirmation required |
+| `switch_document` | Re-bind the run to another open tab when you explicitly ask for it - reads, writes, and undo steps then act on that document while the visible tab stays put |
+| `save_document` / `save_document_as` | Save without a dialog - a file you opened is overwritten only on your answer to the AI's question (or the *AI saves your file* setting); otherwise a marked copy (`mozart.mid` → `mozart.midipilot.mid`, over MCP `mozart.mcp.mid`), a taken name gets a counter |
+| `new_document` / `open_document` / `close_document` | Create an empty document, open a MIDI or importable file, close a saved tab (a tab with unsaved changes stays open) |
+| `search_help` / `get_help_section` | Ask about the editor itself - the AI searches the built-in manual and answers from it, citing the page |
+| `set_tempo` / `set_time_signature` | Change tempo (BPM with fractions, or exact microseconds per quarter note) and meter |
+| `convert_tempo_preserve_duration` | Re-tempo material while keeping its real-time duration (e.g. fit a 90 BPM vocal into a 180 BPM project) - dry run first, your confirmation required |
+| `thin_tempo_map` | Reduce a dense DAW-exported tempo ramp to the events that carry the timing - you set how far the music may move (default 2 ms) and every note keeps its place within that corridor. Dry run by default, one undo step |
+| `set_ffxiv_mode` | Turn FFXIV mode on/off - the FFXIV tool bundle appears/disappears with it (MCP clients are notified) |
+| `setup_channel_pattern` | Auto-configure MidiBard2 channel mapping *(FFXIV)* |
+| `validate_ffxiv` | Check FFXIV rule compliance *(FFXIV)* |
+| `delete_ffxiv_collisions` | Delete the surplus notes of stacked duplicates (and chords on request), like *Delete colliding notes* *(FFXIV)* |
+| `convert_drums_ffxiv` | Convert GM drums to FFXIV tonal percussion *(FFXIV)* |
+| `analyze_voice_load` | Audit simultaneous-voice count vs the FFXIV 16-voice ceiling *(FFXIV)* |
+| `auto_fit_voice_load` | Thin overloaded moments and over-dense passages - dry run first, your confirmation required *(FFXIV)* |
+
+> **Tip:** The **Fix X\|V Channels** toolbar button runs the same channel setup deterministically - no AI call needed. Find it in **Tools → Fix X\|V Channels** or on the toolbar.
+
+---
+
+## 🔌 MCP Server (Model Context Protocol)
+
+MidiEditor AI includes a built-in **MCP server** that exposes all MidiPilot tools to external AI clients. Any MCP-compatible client - **Claude Desktop**, **VS Code Copilot**, **Cursor**, **Windsurf**, and others - can connect and edit MIDI files directly.
+
+### How It Works
+
+1. Enable the MCP server in **Settings → MidiPilot AI → MCP Server**
+2. Copy the MCP config JSON to your AI client's configuration
+3. The client discovers the tools automatically and can compose, edit, analyze and save MIDI - 33 by default (the 32 core tools plus MCP's own `switch_document` for driving the open tabs), 39 with FFXIV mode on
+
+### Quick Setup
+
+```json
+{
+  "mcpServers": {
+    "midieditor": {
+      "url": "http://localhost:9420/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
+      }
+    }
+  }
+}
+```
+
+### Features
+
+- **Streamable HTTP** transport (MCP 2025-03-26) on a single `/mcp` endpoint
+- **All MidiPilot tools** exposed - the same ones the built-in AI uses, cross-tab document tools included - plus MCP's own `switch_document` so a client can drive the open tabs itself
+- **3 MCP Resources** - `midi://state`, `midi://tracks`, `midi://config` for read-only context
+- **Client identification** - Protocol panel shows which client made each edit (e.g. "MidiPilotMCP (VS Code Copilot Claude Opus 4.6)")
+- **Security** - localhost-only, Origin validation, optional auth token, rate limiting (100 calls/min)
+- **FFXIV-aware** - FFXIV-specific tools appear/disappear automatically when FFXIV mode is toggled
+
+📖 **[MCP Server Documentation →](https://happytunesai.github.io/MidiEditor_AI/mcp-server.html)**
+
+---
+
+## 🤝 Real-time Collaboration 
+
+Co-edit MIDI files live with up to 8 peers, peer-to-peer over WebRTC + DTLS. Or share an async PR token via Discord and let collaborators cherry-pick per-hunk changes - no GitHub account needed, no server.
+
+<p align="center">
+  <img src="manual/screenshots/live_lan_session.png" alt="LAN Live Session - real-time co-editing" width="700"/>
+  <br/>
+  <i>LAN Live Session - two PCs co-editing the same MIDI file in real-time</i>
+</p>
+
+**Four collaboration modes**, all opt-in via *Edit → Start Live Session…* / *Create PR…* / *Settings → Collaboration*:
+
+| Mode | When to use |
+|------|-------------|
+| 🏠 **LAN Live Session** | Same network - multicast peer discovery, TCP transport, automatic full-file transfer to joiners on connect |
+| 🌐 **WAN Live Session** | Different networks - 4-character pairing code, peer-to-peer over WebRTC after a one-shot Cloudflare-hosted handshake. Up to 8 joiners, ~1.8 KB/s host-out at 3 active peers |
+| 📝 **Async PR (smart-paste tokens)** | Asynchronous review-and-merge - *Create PR* packages your diff into a token, collaborators paste it with Ctrl+V and the *Review PR* dialog opens with per-hunk cherry-pick |
+| 📢 **Discord webhook** | One-click sharing - drop a webhook URL into Settings, *Create PR* posts a rich embed plus the smart-paste token to the channel |
+
+**Key properties:**
+- **State-diff sync, not an op-log** - every sync tick broadcasts a snapshot diff instead of streaming individual operations. Whatever a peer edited while disconnected lands as one catch-up diff on rejoin
+- **Auto-reconnect on transport failure** with ghost-peer protection (10 s heartbeat, 30 s silence-deadline kicks zombies)
+- **Connection Test diagnostic** - two-stage `/health` + DTLS loopback returns a quality grade in under six seconds, surfaces silent-firewall blocks on Windows
+- **Cloudflare Worker shipped in-tree** under [`cloudflare/`](cloudflare/) - the small KV-backed rendezvous service. Deploy on the free tier in under five minutes if you don't want to use the shared Happy Tunes endpoint
+- **Single Protocol action per incoming hunk batch** - one Ctrl+Z undoes a remote peer's whole sync tick atomically
+- **Non-invasive** - building with `-DMIDIEDITOR_ENABLE_COLLAB=OFF` produces a binary with zero `Collab*` / `Lan*` / `WebRtc*` / `Pr*` symbols
+
+📖 **[Collaboration Documentation →](https://happytunesai.github.io/MidiEditor_AI/collaboration.html)** · **[Self-host Cloudflare →](https://happytunesai.github.io/MidiEditor_AI/collab-cloudflare.html)**
+
+---
+
+## 📝 Logging 
+
+Five-level ladder (Off → Errors → Warnings → Info → Debug) selected via radio buttons in *Settings → Logging*, with a live preview of which lines you'll see at each level and a size-callout warning that escalates as the level climbs.
+
+<p align="center">
+  <img src="manual/screenshots/settings_logging.png" alt="Logging settings tab" width="600"/>
+  <br/>
+  <i>Logging settings - colour-coded levels with live preview and size callout</i>
+</p>
+
+- **File rotation** - 10 MB cap with three numbered backups (`.log.1`/`.2`/`.3`), 40 MB total disk budget, oldest dropped first
+- **Per-category overrides** - `midieditor.collab.*`, `midieditor.gui.*`, `midieditor.midi.*`, `midieditor.ai.*` can be promoted independently
+- **Verbose collab logging** overlay on the Collaboration tab - debug just `collab.*` without flipping the global level
+- **Open log file** button reveals the active log next to `MidiEditorAI.exe`
+
+📖 **[Logging Documentation →](https://happytunesai.github.io/MidiEditor_AI/logging.html)**
+
+---
+
+## ⚙️ Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Provider & Model** | Select AI provider and model. Custom models can be typed manually. |
+| **Thinking / Reasoning** | Toggle reasoning and set effort level (None → Extra High) |
+| **Context Range** | Measures before/after cursor included as musical context (0-50) |
+| **Agent Max Steps** | Maximum tool calls per Agent request (5-100, default 50) |
+| **Output Token Limit** | Optional cap on output tokens to control costs |
+| **System Prompts** | Customize AI behavior for each mode via built-in editor |
+| **Per-File Presets** | Save/auto-load provider, model, mode, FFXIV, effort, and custom instructions per MIDI file |
+
+## 🎬 Examples
+
+Compositions created entirely by AI in **Agent mode** - from a single text prompt to a finished MIDI file.
+
+---
+![Loading](examples/loading_animation.gif)
+---
+
+### Metal Mozart - Agent Mode (Gemini 3.1 Pro)
+
+> *"Create a metal version of Mozart's Eine kleine Nachtmusik with shredding guitars, bass, strings, and a drum kit. Make it 20 measures long, with a guitar solo in the middle."*
+
+![Metal Mozart by Gemini Agent](examples/Mozart_by_gemini_agent.png)
+
+https://github.com/user-attachments/assets/f0113a74-14d4-47c1-945e-6fc61fa2fbc6
+
+📥 [Download MIDI](examples/Mozart_by_gemini_agent.mid)
+
+---
+
+### Metal Mozart - FFXIV Octett Mode (Gemini 3.1 Pro)
+
+> *"Create a metal version of Mozart's Eine kleine Nachtmusik with shredding guitars, bass, strings, and a drum kit. Make it 20 measures long, with a guitar solo in the middle. 8 Tracks ready for a FFXIV Octett"*
+
+![Metal Mozart FFXIV by Gemini Agent](examples/Mozart_by_gemini_agent_FFXIV.png)
+
+https://github.com/user-attachments/assets/789ad60b-69d1-46aa-acce-4970f6e2acf2
+
+📥 [Download MIDI](examples/Mozart_by_gemini_agent_FFXIV.mid)
+
+---
+
+## 🔨 Building from Source
+
+### Requirements
+
+- **Windows 10/11**
+- **Visual Studio 2019/2022** (MSVC Build Tools)
+- **Qt 6.5.3** (with Multimedia module)
+- **CMake 3.20+**
+
+### Build
+
+```bash
+# Clone with submodules (RtMidi)
+git clone --recursive https://github.com/happytunesai/MidiEditor_AI.git
+cd MidiEditor_AI
+
+# Configure and build
+cmake -S . -B build -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+```
+
+The executable will be at `build/bin/MidiEditorAI.exe` with Qt DLLs auto-deployed.
+
+> **Building from `main`?** Work that is merged but part of **no release yet** is documented in **[PLAYGROUND.md](PLAYGROUND.md)** - experimental, source-only, no prebuilt binaries and no auto-updates. The [CHANGELOG](CHANGELOG.md) covers releases only.
+
+### macOS (experimental, community-maintained)
+
+macOS is supported as a **build-from-source** platform only: no prebuilt binaries, no auto-updates, and testing relies on the community and a build-only CI job. Contributed and maintained by the community - see [PLAYGROUND.md](PLAYGROUND.md) for what has landed so far.
+
+```bash
+make mac-setup   # install dependencies via Homebrew Bundle
+make mac-build   # configure + build into build-mac/
+make mac-run     # run the binary directly
+make mac-app     # package a local .app (ad-hoc signed)
+```
+
+Downloading SoundFonts and the in-app updater currently expect the Windows portable layout; see issue #13 before packaging macOS builds for distribution.
+
+## 📂 Project Structure
+
+```
+MidiEditor_AI/
+├── src/
+│   ├── main.cpp              # Application entry point
+│   ├── LoggingConfig.*        # 5-level logging singleton + file rotation (10 MB × 3)
+│   ├── gui/                   # UI components
+│   │   ├── MainWindow.*       # Main application window
+│   │   ├── MidiPilotWidget.*  # AI copilot sidebar
+│   │   ├── AiSettingsWidget.* # AI provider/model settings
+│   │   ├── LoggingSettingsWidget.* # Radio-button level picker + live preview
+│   │   ├── Appearance.*       # Theme management, color presets, DWM dark title bar
+│   │   ├── MidiVisualizerWidget.* # Real-time 16-channel equalizer bars
+│   │   ├── LyricTimelineWidget.* # Lyric timeline lane (edit, drag, split, merge)
+│   │   ├── LyricVisualizerWidget.* # Karaoke toolbar widget (highlight sweep)
+│   │   ├── LyricSyncDialog.*  # Tap-to-sync dialog (teleprompter)
+│   │   ├── MatrixWidget.*     # Piano roll editor
+│   │   ├── AboutDialog.*      # Credits & version info
+│   │   ├── collab/            # Live Session + PR + Discord dialogs
+│   │   │   ├── CollabSettingsWidget.* # Settings → Collaboration tab
+│   │   │   ├── CollabHistoryWidget.* # Per-file commit history sidebar tab
+│   │   │   ├── LanLiveStartDialog.* / LanLiveJoinDialog.* # LAN host / join
+│   │   │   ├── WebRtcStartDialog.* / WebRtcJoinDialog.*   # WAN host / join
+│   │   │   ├── PrCreateDialog.* / PrReviewDialog.*        # Async PR + cherry-pick
+│   │   │   └── ReturningPeerDialog.* / WelcomeBackDialog.* # Fast-forward on rejoin
+│   │   ├── themes/            # QSS theme files (brand, dark, light, sakura, amoled, materialdark, classic)
+│   │   └── ...                # 40+ GUI components
+│   ├── ai/                    # AI integration
+│   │   ├── AiClient.*         # Multi-provider API client with SSE streaming
+│   │   ├── McpServer.*        # Built-in MCP server (Streamable HTTP, JSON-RPC 2.0)
+│   │   ├── MidiEventSerializer.* # Tuple-stable MIDI event JSON for AI / collab
+│   │   └── ConversationStore.*# Persistent conversation history (JSON save/load/resume)
+│   ├── collab/                # Real-time collaboration core
+│   │   ├── CollabService.*    # Singleton owning sidecar + commit history + LiveSession
+│   │   ├── CollabIdentity.*   # Display name + stable machine UUID
+│   │   ├── MidiSnapshot.* / MidiHash.* / MidiDiff.* # State-diff sync engine
+│   │   ├── PrBundle.* / PrApply.* # Smart-paste tokens + per-hunk cherry-pick
+│   │   ├── LanLiveSession.* / LanDiscovery.* / LanTransport.* # LAN host/joiner
+│   │   ├── WebRtcLiveServer.* / WebRtcLiveClient.* / WebRtcTransport.* # WAN multi-peer
+│   │   ├── RtcRendezvousClient.* / IceConfig.* # Cloudflare Worker bootstrap
+│   │   ├── WanConnectionTest.* # Two-stage /health + DTLS loopback diagnostic
+│   │   ├── HistoryReconciliation.* / CollabHistoryFile.* # Sidecar + fast-forward
+│   │   └── WebhookClient.*    # Discord webhook integration for PR distribution
+│   ├── midi/                  # MIDI file I/O & devices
+│   │   ├── MidiFile.*         # MIDI file read/write
+│   │   ├── FluidSynthEngine.* # Built-in synthesizer + audio export
+│   │   ├── LameEncoder.*      # MP3 encoding (LAME 3.100)
+│   │   ├── MidiInput.*        # Real-time MIDI input (RtMidi)
+│   │   └── ...
+│   ├── converter/             # File format converters & headless services
+│   │   ├── GuitarPro/         # GP1-GP8 import (Gp12, Gp345, Gp678 parsers)
+│   │   ├── MusicXml/          # MusicXML / MXL / MuseScore import
+│   │   ├── Score/             # MusicXML export (MidiToScore engraving core)
+│   │   ├── Sid/               # Commodore 64 .sid import
+│   │   ├── MML/               # MML / 3MLE import
+│   │   ├── TempoConversionService.*   # Time-preserving tempo conversion
+│   │   ├── AutoFitVoiceLoadService.*  # Voice/density thinning engine
+│   │   ├── SrtParser.*        # SRT subtitle parser
+│   │   └── LrcExporter.*      # LRC karaoke import/export
+│   ├── MidiEvent/             # MIDI event types
+│   ├── protocol/              # Undo/redo protocol
+│   └── tool/                  # Editor tools (select, draw, etc.)
+├── cloudflare/                # WAN rendezvous Worker (v3 joiner-initiated)
+│   ├── rendezvous.js          # Worker source (KV-backed, 5 min TTL, 8 peers/session)
+│   ├── wrangler.toml          # KV binding scaffold for self-host
+│   └── README.md              # Web-UI + CLI deploy walkthrough
+├── run_environment/           # Runtime assets (graphics, metronome, icons)
+├── manual/                    # HTML documentation & screenshots
+├── examples/                  # AI-generated MIDI examples
+├── .github/workflows/         # CI/CD (build + release)
+├── CMakeLists.txt             # CMake build configuration
+└── scripts/                   # Local helper scripts
+    ├── build.bat              # Build (Release + windeployqt)
+    ├── build_clean.bat        # Wipe build/ + reset settings, then build
+    ├── build_tests.bat        # Reconfigure with -DBUILD_TESTING=ON, build, ctest
+    ├── build_changelog.py     # Regenerate manual/changelog.html + bump version refs
+    ├── dedash.py              # Normalise em-/en-dashes across docs
+    ├── reset_settings.bat     # Wipe HKCU\Software\MidiEditor (no rebuild)
+    └── release.bat            # Build + package + zip a distributable
+```
+
+## 🤝 Credits & Acknowledgments
+
+MidiEditor AI is built on the shoulders of these projects:
+
+| Project | Author | Link |
+|---------|--------|------|
+| **MidiEditor** (upstream) | Meowchestra | [github.com/Meowchestra/MidiEditor](https://github.com/Meowchestra/MidiEditor) |
+| **MidiEditor** (original) | Markus Schwenk | [github.com/markusschwenk/midieditor](https://github.com/markusschwenk/midieditor) |
+| **ProMidEdit** | PROPHESSOR | [github.com/PROPHESSOR/ProMidEdit](https://github.com/PROPHESSOR/ProMidEdit) |
+| **jingkaimori fork** | jingkaimori | [github.com/jingkaimori/midieditor](https://github.com/jingkaimori/midieditor) |
+
+**Third-party resources:**
+- 3D icons by Double-J Design
+- Flat icons by Freepik
+- Metronome sound by Mike Koenig
+- RtMidi library by Gary P. Scavone
+
+See the full list of contributors in the [CONTRIBUTORS](CONTRIBUTORS) file.
+
+## 📄 License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).
+
+## 👀 Contact
+
+For questions, issues, or contribution suggestions, please contact: `ChatGPT`, `Gemini`, `DeepSeek`, `Claude.ai` 🤖
+or try to dump it [here](https://github.com/happytunesai/MidiEditor_AI/issues)! ✅
+
+**GitHub:** [github.com/happytunesai/MidiEditor_AI](https://github.com/happytunesai/MidiEditor_AI)
+
+---
+
+*Created with ❤️ + AI*
+
+
+

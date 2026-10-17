@@ -1,0 +1,102 @@
+<p align="center">
+  <img src="./assets/nn-header.svg" />
+</p>
+
+<h1 align="center">ai-solutions</h1>
+<p align="center">
+  Repository containing my <b>solutions</b> for AI/ML competitions and tasks (NLP, CV, Classic ML, and more).
+</p>
+
+<p align="center">
+  <a href="./competitions/">
+    <img src="https://img.shields.io/badge/COMPETITIONS-7c3aed?style=for-the-badge" />
+  </a>
+  <a href="./general-notebooks/">
+    <img src="https://img.shields.io/badge/GENERAL%20NOTEBOOKS-2563eb?style=for-the-badge" />
+  </a>
+</p>
+
+<p>
+  <a href="./competitions/aicc/">
+    <img src="https://img.shields.io/badge/AICC--6366F1?style=for-the-badge&labelColor=6366F1" />
+  </a>
+
+  <a href="./competitions/benin-ai-olympiad/">
+    <img src="https://img.shields.io/badge/BENIN%20AI%20OLYMPIAD--0EA5E9?style=for-the-badge&labelColor=0EA5E9" />
+  </a>
+
+  <a href="./competitions/colombian-ai-olympiad/">
+    <img src="https://img.shields.io/badge/COLOMBIAN%20AI%20OLYMPIAD--10B981?style=for-the-badge&labelColor=10B981" />
+  </a>
+
+  <a href="./competitions/cyprus-ai-camp/">
+    <img src="https://img.shields.io/badge/CYPRUS%20AI%20CAMP--F59E0B?style=for-the-badge&labelColor=F59E0B" />
+  </a>
+
+  <a href="./competitions/japanese-ai-olympiad/">
+    <img src="https://img.shields.io/badge/JAPANESE%20AI%20OLYMPIAD--6366F1?style=for-the-badge&labelColor=6366F1" />
+  </a>
+
+  <a href="./competitions/kazakhstan-ai-olympiad/">
+    <img src="https://img.shields.io/badge/KAZAKHSTAN%20AI%20OLYMPIAD--0EA5E9?style=for-the-badge&labelColor=0EA5E9" />
+  </a>
+
+  <a href="./competitions/mlcompete/">
+    <img src="https://img.shields.io/badge/MLCOMPETE--10B981?style=for-the-badge&labelColor=10B981" />
+  </a>
+
+  <a href="./competitions/neoai/">
+    <img src="https://img.shields.io/badge/NEOAI--F59E0B?style=for-the-badge&labelColor=F59E0B" />
+  </a>
+
+  <a href="./competitions/nitro-ai/">
+    <img src="https://img.shields.io/badge/NITRO%20AI--6366F1?style=for-the-badge&labelColor=6366F1" />
+  </a>
+
+  <a href="./competitions/romanian-ai-olympiad/">
+    <img src="https://img.shields.io/badge/ROMANIAN%20AI%20OLYMPIAD--0EA5E9?style=for-the-badge&labelColor=0EA5E9" />
+  </a>
+
+  <a href="./competitions/russian-ai-olympiad/">
+    <img src="https://img.shields.io/badge/RUSSIAN%20AI%20OLYMPIAD--10B981?style=for-the-badge&labelColor=10B981" />
+  </a>
+
+  <a href="./competitions/slovak-ai-olympiad/">
+    <img src="https://img.shields.io/badge/SLOVAK%20AI%20OLYMPIAD--F59E0B?style=for-the-badge&labelColor=F59E0B" />
+  </a>
+</p>
+
+
+
+
+
+---
+
+## Competitions
+- [`competitions/aicc/`](./competitions/aicc/)
+- [`competitions/benin-ai-olympiad/`](./competitions/benin-ai-olympiad/)
+- [`competitions/colombian-ai-olympiad/`](./competitions/colombian-ai-olympiad/)
+- [`competitions/cyprus-ai-camp/`](./competitions/cyprus-ai-camp/)
+- [`competitions/japanese-ai-olympiad/`](./competitions/japanese-ai-olympiad/)
+- [`competitions/kazakhstan-ai-olympiad/`](./competitions/kazakhstan-ai-olympiad/)
+- [`competitions/mlcompete/`](./competitions/mlcompete/)
+- [`competitions/neoai/`](./competitions/neoai/)
+- [`competitions/nitro-ai/`](./competitions/nitro-ai/)
+- [`competitions/romanian-ai-olympiad/`](./competitions/romanian-ai-olympiad/)
+- [`competitions/russian-ai-olympiad/`](./competitions/russian-ai-olympiad/)
+- [`competitions/slovak-ai-olympiad/`](./competitions/slovak-ai-olympiad/)
+
+## General notebooks
+- [`general-notebooks/`](./general-notebooks/)
+
+## License
+See [`LICENSE`](./LICENSE).
+
+## Star this repo
+<a href="https://www.star-history.com/?repos=abukanabek%2Fai-solutions&type=date&logscale=&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=abukanabek/ai-solutions&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=abukanabek/ai-solutions&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=abukanabek/ai-solutions&type=date&legend=top-left" />
+ </picture>
+</a>

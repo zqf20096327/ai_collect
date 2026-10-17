@@ -1,0 +1,561 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/wordmark-dark.png">
+    <img src=".github/assets/wordmark-light.png" alt="ClawBox" width="280" />
+  </picture>
+</p>
+
+<h1 align="center">ClawBox — a private AI assistant appliance built on OpenClaw</h1>
+
+<p align="center">
+  <strong>ClawBox is a private, always-on AI assistant appliance built on NVIDIA Jetson.</strong><br/>
+  This repository is <strong>OpenClaw OS</strong>, the operating system that ships on every ClawBox.<br/>
+  Plug in, join its setup hotspot, finish the browser wizard. No cloud required.
+</p>
+
+<p align="center">
+  Designed, built and shipped from the EU by <a href="https://github.com/ID-Robots"><strong>ID Robots Ltd.</strong></a> — the makers of ClawBox, a hardware appliance built on <a href="https://github.com/openclaw/openclaw">OpenClaw</a>.<br/>
+  Official website: <a href="https://clawbox.com"><strong>clawbox.com</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://clawbox.com"><img alt="Website" src="https://img.shields.io/badge/🌐_Website-clawbox.com-orange?style=flat-square" /></a>
+  <a href="https://docs.clawbox.com"><img alt="Docs" src="https://img.shields.io/badge/📖_Docs-docs.clawbox.com-F26B21?style=flat-square" /></a>
+  <a href="https://discord.gg/vsTsaY4Tuk"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join_Community-5865F2?style=flat-square&logo=discord&logoColor=white" /></a>
+  <a href="https://github.com/ID-Robots/clawbox/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ID-Robots/clawbox?style=flat-square&color=success" /></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Source_Available-blue?style=flat-square" /></a>
+</p>
+
+<p align="center">
+  <img alt="Platform" src="https://img.shields.io/badge/platform-NVIDIA_Jetson-76b900?style=flat-square&logo=nvidia" />
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js_16-black?style=flat-square&logo=next.js" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178c6?style=flat-square&logo=typescript&logoColor=white" />
+  <img alt="Bun" src="https://img.shields.io/badge/Bun-fbf0df?style=flat-square&logo=bun&logoColor=black" />
+</p>
+
+<p align="center">
+  <img src=".github/assets/desktop.webp" alt="The ClawBox desktop — a Chrome OS-style environment served straight from the device" width="920" />
+</p>
+
+---
+
+## What is ClawBox?
+
+**ClawBox is a dedicated personal AI assistant appliance made by ID Robots Ltd. that runs the [OpenClaw](https://github.com/openclaw/openclaw) AI agent.** It is a private AI server for your desk: an NVIDIA Jetson Orin Nano running local AI models at 67 TOPS, with your files, chats and settings stored on the device itself. You buy it once at [clawbox.com](https://clawbox.com) — there is no mandatory subscription.
+
+This repository contains **OpenClaw OS**, the operating system that ships on every ClawBox. Local-first: with local models nothing leaves the box — cloud AI (Claude, GPT, Gemini) is strictly opt-in. On first boot it broadcasts a WiFi access point so you can set it up from any phone; then it joins your network and serves a Chrome OS-style desktop with built-in apps.
+
+**Real on-device inference, not a cloud relay.** Every ClawBox ships with Gemma 4 preinstalled on its own llama.cpp and runs it on Jetson silicon — no API key, no account, works offline. It is not a low-power router that forwards every prompt to someone else's API: on the OpenClaw and dual editions **Local-only mode** routes every request to the box and switches the cloud providers off, and larger models up to ~8B run locally too.
+
+> ### ℹ️ Genuine ClawBox
+>
+> ClawBox is designed, manufactured and supported by **ID Robots Ltd.** (Plovdiv, Bulgaria 🇪🇺). The only official channels are:
+>
+> - **Website:** [clawbox.com](https://clawbox.com) · **Docs:** [docs.clawbox.com](https://docs.clawbox.com)
+> - **Source:** [github.com/ID-Robots/clawbox](https://github.com/ID-Robots/clawbox) · **Community:** [Discord](https://discord.gg/vsTsaY4Tuk)
+> - **Contact:** yanko@idrobots.com
+>
+> Unrelated products sold under similar names exist and are **not affiliated with ID Robots, this repository, or ClawBox support**. If it did not come from `clawbox.com`, it is not a ClawBox and we cannot support it.
+>
+> ClawBox is an independent product by **ID Robots Ltd.** It is **not affiliated with, endorsed by, or an official partner of** the OpenClaw project.
+
+The OpenClaw AI agent controls the entire device through MCP (Model Context Protocol) tools — making ClawBox **an OS the AI can operate**, not just a UI the user clicks through:
+
+<p align="center">
+  <img src=".github/assets/chat-agent.webp" alt="The ClawBox chat panel answering on the desktop, with provider, model and reasoning pills under the message box" width="920" />
+</p>
+
+<p align="center"><sub><em>A real session on a box: the assistant says what it can do here, with the provider, model and reasoning-effort pills under the composer — change any of them mid-conversation, no restart.</em></sub></p>
+
+---
+
+## ✨ New in 4.2
+
+| | |
+|---|---|
+| 👥 **Several people, one ClawBox** | The owner adds users in **Settings → Users**. Each person signs in with their own name and password and gets a desktop and a Terminal of their own; settings and installed apps stay with the owner. |
+| 🖥️ **Monitor mode, with a drop-down terminal** | With the ClawBox desktop session, one desktop spans a row of monitors, arranged in **Settings → Monitors**. **Win+Down** drops a terminal down from the top of the screen. |
+| ☁️ **Back up project folders to GitHub** | **Files → Projects → Back up** copies a folder to a private GitHub repository, with an optional daily backup. Likely secrets and very large files are left out, and listed. |
+| 🧭 **Kiosk mode** | When ClawBox shows its desktop full screen, every page the desktop opens gets a ClawBox bar with tabs, back, forward, reload and an address field. |
+| 🔀 **Choose OpenClaw or Hermes at setup** | During first setup, a new ClawBox asks which assistant it should run, and sets up the one you pick. |
+| 🛟 **ClawKeep backups fixed** | Snapshots no longer carry old backup archives along, a link that cannot be archived is skipped instead of failing the backup, and a full account no longer turns auto-backup off for good. |
+| 🛠️ **Fixes from hardware testing** | Testing on real ClawBox hardware found and fixed problems with voice input, spoken replies, the ClawBox AI plugin's **Retry**, and updating a box left on an older build. |
+
+Full detail, and how to upgrade: **[RELEASE-NOTES-4.2.0.md](RELEASE-NOTES-4.2.0.md)**.
+
+## ✨ New in 4.1
+
+| | |
+|---|---|
+| 📱 **More of the phone for the chat** | On a phone the chat opens full screen, its header and the composer's options fold away, and the transcript text can be set from 85% to 150%. |
+| 💬 **A conversation that cannot reopen says why** | Every step of restoring a conversation has a deadline. When the box cannot bring it back, the chat names the reason and offers **Try again** (and, in the chat panel, **Start a new chat**). |
+| 🗂️ **Web apps from before 4.0 find their data** | A one-time step at boot copies each pre-4.0 web app's saved data into its own sandboxed storage, deleting nothing, and its old storage calls work again. |
+| 🔀 **Coding Agent PRs merge when green** | With merging on, a run hands its pull request to GitHub's auto-merge. A `hold` label or a `main` base is never merged, and CodeRabbit reviews each PR once, on green code. |
+| 🛠️ **Updates and backups hold up** | OpenClaw 2026.9.4 with an up-front refusal for newer-schema data, plugins left **Needs repair** retried after the update, and ClawKeep backups that get past the failures seen after 4.0. A box updated from 4.0 no longer starts every local-model reply with a 401. |
+
+Full detail: **[RELEASE-NOTES-4.1.0.md](RELEASE-NOTES-4.1.0.md)**.
+
+## ✨ New in 4.0
+
+| | |
+|---|---|
+| 💻 **Coding Agent** | Hand a whole task to a headless Claude Code run on the box. It works in a git worktree copy of your project, opens a **pull request** with `gh`, then runs an **automatic adversarial review pass** over its own diff. Runs keep going in the background and you can **steer one mid-flight** by sending it a message. Needs a Pro or Max plan. |
+| 🔑 **Several Anthropic accounts** | **Settings → Providers → Anthropic accounts** holds several Claude Pro/Max sign-ins and API keys in the order you choose. When a coding run hits one account's usage limit it moves to the next and carries on in the same session; if all are limited it waits and resumes at the first reset. |
+| 🌐 **A hostname that stays** | A provisioned box runs a **named** Cloudflare tunnel at `<boxHandle>.clawbox.tech` — the same address every time, instead of a fresh random URL per restart. No Cloudflare account needed; the credential arrives over the portal heartbeat, and a quick `*.trycloudflare.com` tunnel is still the fallback. |
+| 🧠 **Memory Shard** | Your notes, past conversations and folders of your own documents, indexed and searchable by the assistant. Its own desktop app now, on **both** editions, and the index is built in the ClawBox AI cloud by default. Needs a Pro or Max plan. |
+| 📱 **Chat that fits a phone** | A phone opens straight into the chat, with a thumb-sized microphone beside the text box and the provider, model and reasoning pickers folded behind one control so the composer stays one row. |
+| 📊 **Progress card in chat** | A long task reports its steps in the chat as it goes — what is done, what is running, and the agent's own note on the current step. |
+| 🔁 **Switch model mid-chat** | Provider, model and reasoning effort are pills under the message box. Picking another applies to the running agent, with nothing restarted. |
+| 🖥️ **Local AI is one inventory** | **Settings → Local AI** lists every model that can run on the box with Install, Enable and Uninstall on each row. On OpenClaw and dual, **Local-only mode** routes everything to the box and switches every cloud provider off. |
+
+<p align="center">
+  <img src="docs-site/images/4.0/coding-agent-run-detail.png" alt="A Coding Agent run on the ClawBox desktop, showing its progress, changed files and the pull request it opened" width="920" />
+</p>
+
+<p align="center">
+  <img src="docs-site/images/4.0/settings-remote-access.png" alt="Settings, Remote Control: the box's persistent clawbox.tech hostname and the tunnel state" width="440" />
+  <img src="docs-site/images/4.0/chat-mobile-portrait.png" alt="ClawBox chat on a phone, with the thumb-sized microphone beside the text box" width="440" />
+</p>
+
+Full detail: **[RELEASE-NOTES-4.0.0.md](RELEASE-NOTES-4.0.0.md)**.
+
+---
+
+### Key Features
+
+| Feature | Description |
+|---------|-------------|
+| 🧙 **5-minute setup** | Guided wizard: WiFi → updates → password → AI provider → messaging → done |
+| 🖥️ **Desktop environment** | Chrome OS-style desktop with windowed apps, taskbar, system tray and a desktop mascot |
+| 🤖 **AI-controlled OS** | Up to 78 MCP tools on the OpenClaw edition (67 on Hermes) let the AI agent operate the entire device |
+| 🔒 **Local-first** | Your data stays on the box; no telemetry, no data collection. Cloud AI only if you opt in |
+| 🧠 **Flexible AI** | ClawBox AI out of the box — or Claude / GPT / Gemini with **your own key or a subscription you already pay for**, OpenRouter, or models that run on the box |
+| 🔁 **Switch model mid-chat** | Provider, model and reasoning effort are pills under the composer, hot-applied with no gateway restart |
+| 🧠 **Memory Shard** | Indexes your notes, conversations and your own document folders so the assistant can search them — in the ClawBox AI cloud by default on a paid plan, or entirely on the box |
+| 🌐 **Browser automation** | AI controls a real browser — fills forms, scrapes data, posts content |
+| 💬 **Multi-platform** | Telegram, Discord, WhatsApp and email — all guided in Settings — plus the built-in web chat |
+| 🗣️ **Voice in and out** | Speak to it, and have replies read back; the voice runs in the cloud or on the box |
+| 💻 **Built-in apps** | Terminal, Coding Agent, file manager, remote desktop, app store or Hermes Skills, AI chat, Memory Shard, ClawKeep backups |
+| 🛠️ **Coding Agent** | Delegate a whole task to a headless Claude Code run: it works in a copy of your project, opens a pull request and reviews its own diff |
+| 🌐 **Reachable from anywhere** | A named Cloudflare tunnel gives the box a persistent `<boxHandle>.clawbox.tech` address, with a quick tunnel as fallback |
+| 🗄️ **Backups** | ClawKeep encrypts a snapshot on the device and uploads it to Cloudflare R2 on a daily timer, with restore from the UI |
+| ⚡ **Always-on** | 7–15 W power. Runs 24/7 for ~€39/year in electricity |
+
+<table>
+  <tr>
+    <td width="33%" align="center">
+      <img src=".github/assets/memory-shard.webp" alt="Memory Shard on a ClawBox: the memory index card with file, chunk and source counts, health, and the indexing schedule" width="300" /><br/>
+      <sub><strong>Memory Shard</strong> — your notes, conversations and document folders, indexed and searchable.</sub>
+    </td>
+    <td width="33%" align="center">
+      <img src=".github/assets/local-ai.webp" alt="Settings → Local AI: one row per model on the box — the agent model, the voice, speech to text and memory search" width="300" /><br/>
+      <sub><strong>Local AI</strong> — every model that runs on the box, and what each one is doing right now.</sub>
+    </td>
+    <td width="33%" align="center">
+      <img src=".github/assets/mascot-pets.webp" alt="Settings → Appearance: the Mascot Pet picker with the built-in ClawBox crab and the community gallery" width="300" /><br/>
+      <sub><strong>Mascot Pet</strong> — the built-in ClawBox crab, or a companion from the community gallery.</sub>
+    </td>
+  </tr>
+</table>
+
+### 🖥️ Hardware
+
+<img align="right" src=".github/assets/clawbox-device.webp" alt="The ClawBox device" width="280" />
+
+| Component | Spec |
+|-----------|------|
+| **Processor** | NVIDIA Jetson Orin Nano 8GB (Super) |
+| **AI Performance** | 67 TOPS |
+| **Storage** | 512GB NVMe SSD |
+| **Power** | 7–15 W typical, USB-C |
+| **Size** | 100 × 79 × 31 mm |
+
+Also available: **ClawBox Workstation** — NVIDIA DGX Spark, ~1 PFLOP, runs frontier-scale local models. Details on [clawbox.com](https://clawbox.com).
+
+<br clear="right"/>
+
+---
+
+## 📖 Documentation
+
+Full documentation lives at **[docs.clawbox.com](https://docs.clawbox.com)**:
+
+| | |
+|---|---|
+| [Quickstart](https://docs.clawbox.com/quickstart) · [First Boot](https://docs.clawbox.com/setup/first-boot) | Unbox → power → talk, and the setup wizard |
+| [What's New](https://docs.clawbox.com/whats-new) | What changed on the current release, and where to click |
+| [Chat](https://docs.clawbox.com/guides/chat) · [ClawBox AI](https://docs.clawbox.com/guides/clawbox-ai) · [Memory Shard](https://docs.clawbox.com/guides/memory-shard) · [Local AI](https://docs.clawbox.com/guides/local-ai) | Using the box day to day |
+| [Editions](https://docs.clawbox.com/editions/overview) · [Switching editions](https://docs.clawbox.com/editions/switching) | OpenClaw, Hermes and Dual — what each is, and how to change a box from one to the other |
+| [Technical Reference](https://docs.clawbox.com/technical/quick-reference) | Quick Reference (one page), then architecture, networking, filesystem, auth, AI providers, updates |
+| [Troubleshooting](https://docs.clawbox.com/support/troubleshooting) · [Recovery](https://docs.clawbox.com/support/recovery) | Symptom-first diagnostic ladders and ordered recovery options |
+| [Agent Interface (MCP)](https://docs.clawbox.com/technical/agent-interface) | The full device-tool catalog and the CLI wrapper |
+| [llms.txt](https://docs.clawbox.com/llms.txt) | Machine-readable docs index — point your AI agent here |
+
+---
+
+## 🚀 Quick Start
+
+### Requirements
+
+| | Supported |
+|---|---|
+| **Device** | NVIDIA Jetson Orin Nano 8GB (Super) |
+| **OS image** | **JetPack 6.2** (Ubuntu 22.04 / L4T R36.x) — [download](https://developer.nvidia.com/embedded/jetpack-sdk-62) |
+
+> ⚠️ **JetPack 7.x (Ubuntu 24.04) is not supported yet.** NVIDIA's newest images
+> default to JetPack 7 — flash **JetPack 6.2** instead. On 24.04 the installer
+> fails on Python's externally-managed-environment policy (PEP 668), among
+> other differences. JetPack 6.2 is the platform every shipped ClawBox runs.
+
+### Install
+
+The installer expects to run from `/home/clawbox/clawbox` as the `clawbox`
+user's checkout (the same layout shipped devices use):
+
+```bash
+id -u clawbox >/dev/null 2>&1 || sudo useradd -m -s /bin/bash clawbox
+sudo git clone https://github.com/ID-Robots/clawbox.git /home/clawbox/clawbox
+sudo chown -R clawbox:clawbox /home/clawbox/clawbox
+cd /home/clawbox/clawbox
+sudo bash install.sh
+```
+
+The install provisions everything from scratch (20–40 min on a fresh image).
+When it finishes, connect to the **ClawBox-Setup** WiFi network (open, no
+password) and navigate to:
+- `http://clawbox.local/`
+- `http://10.42.0.1/`
+
+### Install on x86_64
+
+`install-x64.sh` installs the same web OS on an x86_64 Linux host. It runs a
+read-only `preflight_host` check first — ports already in use, services it would
+replace, desktop services it would take over — and refuses rather than colliding
+with them. Run it alone with `--preflight` to see what it would do.
+
+The web, gateway and terminal ports are selectable with `CLAWBOX_PORT`,
+`CLAWBOX_GATEWAY_PORT` and `CLAWBOX_TERMINAL_WS_PORT`, and
+`CLAWBOX_SKIP_DESKTOP_SERVICES=1` leaves existing VNC, websockify and browser
+services untouched.
+
+### Update
+
+From the UI: open the **System Update** app. Over SSH:
+
+```bash
+sudo bash /home/clawbox/clawbox/install.sh
+```
+
+There is **no `clawbox` command on `PATH`** — the CLI wrapper lives in the checkout
+and runs through Bun (`bun run /home/clawbox/clawbox/mcp/clawbox-cli.ts update`),
+and all it does is re-run the installer with `sudo`. Updates are release-tag based
+and never touch your data — details in
+[Updating ClawBox](https://docs.clawbox.com/support/updating).
+
+---
+
+## 🎛️ Editions
+
+An install is one of three **editions**, chosen when the device is produced:
+
+| Edition | Agent | Capability store | Notes |
+|---|---|---|---|
+| `openclaw` | OpenClaw gateway | App Store | The default — what every ClawBox was before editions existed |
+| `hermes` | Hermes Agent (Nous Research) | Hermes Skills | The OpenClaw gateway is not installed; its unit is masked and the `openclaw` CLI is absent |
+| `dual` | Both, switchable at runtime | Both | Premium — the switcher requires a licence issued by ID Robots |
+
+<p align="center">
+  <img src=".github/assets/memory-cloud-hermes.webp" alt="Memory Shard settings on a Hermes-edition ClawBox: the embedding model card with ClawBox AI cloud selected and On this box beside it" width="920" /><br/>
+  <sub><strong>Hermes edition</strong> — Memory Shard indexes through the ClawBox AI cloud by default, with the model on the box one tap away.</sub>
+</p>
+
+Select it when you run the installer:
+
+```bash
+sudo CLAWBOX_EDITION=hermes bash install.sh
+```
+
+`install.sh` records the value in the root-owned `/etc/clawbox/edition.env`.
+That file is the authority: the web server resolves the edition from it per
+request, the installer re-reads it on every update, and the MCP server reads it
+once at startup. It is not a user setting and updates preserve it. On a device,
+`bun run /home/clawbox/clawbox/mcp/clawbox-cli.ts edition` prints it.
+
+**Changing the edition of a box you already own** is **Settings → Harness**,
+which runs the `harness_swap` root step: it installs the other harness, proves it
+runs *before* the edition lock flips, re-provisions the units and carries the
+ClawBox AI sign-in, the Telegram bot token and Memory Shard's folder list across.
+It needs the Max plan, an internet connection and ~3 GB free, and the same button
+swaps back. This is not `/setup-api/harness/select`, which is the `dual` SKU's
+runtime switch between two installed harnesses.
+
+**What changes on the `hermes` edition:** the App Store and OpenClaw Control UI
+apps are hidden, the **Skills** app takes their place, gateway web paths
+(`/api/*`, `/chat`) return 404 and port `18789` is closed, AI providers are
+configured through Hermes instead of the gateway, ClawKeep archives the Hermes
+agent through the backup daemon's own backend rather than the `openclaw` CLI,
+and the CLI update path is refused in favour of **Settings → System Update**. The MCP
+tool set differs too — `app_search`/`app_install`, the coding family and
+coordinate browser control are OpenClaw-only; `skill_*`, `ai_*` and
+`memory_shard_search` and `hermes_plugins_reload` are Hermes-only. See
+[`mcp/README.md`](mcp/README.md) for the authoritative tool matrix.
+
+Hermes scans for its plugins **once, when its process starts**, and has no runtime reload, so a
+plugin installed or enabled after boot reached no chat at all — new sessions included. The
+box closes that itself: a watcher in the web server restarts the agent when the declared
+plugin set changes, `POST /setup-api/hermes/plugins/reload` (owner cookie or the MCP
+bearer) is the same thing asked for, and `hermes_plugins_reload` is what the assistant
+calls right after `hermes plugins install/enable/disable/remove`. No sudoers grant is
+added or needed — the restart is the unprivileged `hermes dashboard --stop` over a process
+the `clawbox` user owns, with `Restart=always` bringing it back, proved by a new main PID
+and the port answering again. The owner's open chat window drops with it; a desktop notice
+names the plugin and says to open a new one.
+
+Full documentation: **[editions](https://docs.clawbox.com/editions/overview)** ·
+**[switching editions](https://docs.clawbox.com/editions/switching)**.
+
+---
+
+## How It Works
+
+**Layer 1 — System bootstrap.** `install.sh` provisions the Jetson from scratch: system packages, Node.js 24 + Bun, the web OS build, the OpenClaw gateway (version-pinned), systemd services, mDNS, and the captive-portal WiFi access point for first-boot setup.
+
+**Layer 2 — Setup wizard.** On first boot (or after factory reset) a guided ~5-minute wizard covers WiFi (with language picker), updates, device password, AI provider (ClawBox AI, an API key, or a subscription sign-in), and Telegram — see [First Boot](https://docs.clawbox.com/setup/first-boot).
+
+**Layer 3 — Desktop environment.** A Chrome OS-style desktop served from the device — the built-in apps above in draggable windows, with taskbar, system tray, a desktop mascot that opens the chat panel, and a responsive mobile layout. The terminal is xterm.js over a WebSocket PTY; remote desktop is noVNC.
+
+**Layer 4 — AI agent integration.** The agent operates the device through MCP tools — shell, files, real-browser control, app installs, system power, preferences, email drafts you approve, picture and audio generation, and a code assistant that builds and deploys desktop webapps. It can also hand a whole coding task to the **Coding Agent** and steer that run while it works (`coding_agent_run`, `coding_run_message`). The `clawbox-cli.ts` wrapper (run through Bun) exposes the same surface to shell users. **Full catalog: [Agent Interface](https://docs.clawbox.com/technical/agent-interface).**
+
+**Layer 5 — The cloud your plan covers.** On a box linked to ClawBox AI, speech-to-text, spoken replies and memory embeddings default to the service the plan already pays for instead of engines on the device — on **every** edition; the engines stay the fallback and stay selectable, and a choice made by hand is never overwritten. On the edition where ClawBox owns the memory index itself, the index talks to two addresses only, checked per request: the loopback embedder proxy on the device, or this box's own ClawBox AI endpoint. The matrix is in [AI Providers](https://docs.clawbox.com/technical/ai-providers).
+
+**Layer 6 — Reaching the box from outside.** **Settings → Remote Control** starts
+`clawbox-tunnel.service`. A provisioned box runs a **named** Cloudflare tunnel and
+answers on the same `<boxHandle>.clawbox.tech` address every time; the credential
+arrives over the portal heartbeat and is written to `data/cloudflared/named-tunnel`
+with mode `0600`. With no credential, a refused token, or a named run that dies
+inside 60 seconds, it falls back to a Cloudflare **quick** tunnel and a random
+`*.trycloudflare.com` URL. `data/cloudflared/tunnel.mode` records which one is
+running. On your own network `clawbox.local`, the bare hostname, a Tailscale
+`.ts.net` name or a private LAN IP all work without any tunnel.
+
+---
+
+## 🏗️ Architecture
+
+```text
+Browser (http://<box-ip>)
+  │   inbound firewall: default deny — only 22 / 80 / 443 / 18789 / 8090
+  │   reachable, and on IPv4 only from private ranges (10/8, 172.16/12,
+  │   192.168/16, 169.254/16, 100.64/10 for Tailscale)
+  │
+  ├── Port 80: Next.js (production-server.js)                    ← open on the LAN
+  │     ├── /setup          → Setup wizard (React SPA)
+  │     ├── /login          → Authentication
+  │     ├── /               → Desktop environment (post-setup)
+  │     ├── /setup-api/*    → 217 API routes (system, files, coding agent, browser, …)
+  │     ├── /api/*          → Proxy to OpenClaw gateway
+  │     └── WebSocket       → Proxy to gateway + terminal PTY + noVNC
+  │
+  ├── Port 3006: Terminal WebSocket PTY server                   ← closed to the LAN;
+  │        unauthenticated if reached directly, so it is only served through the
+  │        session-gated /terminal-ws proxy on port 80
+  │
+  ├── Port 6080: noVNC WebSocket (remote desktop)                ← closed to the LAN;
+  │        reached through the /novnc-ws proxy on port 80
+  │
+  ├── Port 18789: OpenClaw Gateway (token-gated)                 ← open on the LAN;
+  │        all user traffic still goes through port 80
+  │     ├── AI Agent (MCP tools → controls the entire OS)
+  │     ├── Control UI
+  │     ├── WebSocket (real-time chat)
+  │     └── REST API
+  │
+  └── Port 18800: Chromium CDP (browser automation)              ← closed to the LAN
+```
+
+Everything not in that allowlist (3006, 18800, 5900/6080 VNC, 11434 Ollama, 8081
+the memory embedder, 631 CUPS, …) is unreachable from the network and keeps
+working over loopback — the
+terminal and noVNC reach your browser through the port-80 proxies. rpcbind
+(111) is disabled and masked, since nothing on a ClawBox speaks NFS/NIS —
+unless an NFS/NIS package is installed, in which case it is left running and
+merely firewalled. Also
+open: 5353/udp mDNS, so `clawbox.local` keeps resolving, plus DHCP and
+captive-portal DNS on the setup hotspot's own subnets; on Hermes/dual the
+dashboard proxy on 8090 is allowed from the same private ranges. Policy lives
+in [`scripts/clawbox-firewall.sh`](scripts/clawbox-firewall.sh), and routing for
+the hotspot's internet sharing is unchanged.
+
+Node.js runs the production server because Bun doesn't support `http.Server` upgrade events needed for WebSocket proxying. The deep dive lives in the [Architecture reference](https://docs.clawbox.com/technical/architecture).
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 16, React 19, Tailwind CSS 4 |
+| **Language** | TypeScript 5 |
+| **Runtime & tooling** | Node.js 24 (production), Bun (dev/build/packages) |
+| **AI Engine** | [OpenClaw](https://github.com/openclaw/openclaw) or [Hermes Agent](https://nousresearch.com), via MCP |
+| **ClawBox AI** | DeepSeek V4 Flash by default (`deepseek-v4-flash`), DeepSeek 4.1 on the Max plan |
+
+ClawBox AI plans also cover image generation, cloud voice, voice transcription and memory indexing; the Coding Agent, Memory Shard and persistent `<boxHandle>.clawbox.tech` links need Pro or Max; the one-click OpenClaw/Hermes switch needs Max.
+| **Local Models** | llama.cpp (Gemma 4 E2B ships preinstalled) + Ollama · Kokoro TTS · faster-whisper STT · Qwen3 embeddings |
+| **Coding Agent** | Headless Claude Code (`claude-ds`) in a git worktree, `gh` for pull requests |
+| **Backups** | ClawKeep (Python) → Cloudflare R2 |
+| **Networking** | NetworkManager (WiFi AP), Avahi (mDNS), cloudflared (named + quick tunnels) |
+| **Testing** | Vitest + Playwright |
+
+Full runtime topology in the [Architecture reference](https://docs.clawbox.com/technical/architecture).
+
+## 📁 Project Structure
+
+```text
+├── bench/                  Model benchmark harness (suite, runner, pricing)
+├── clawkeep/               Backup agent (Python) + its systemd units
+├── config/                 Systemd services, captive-portal DNS
+├── docs/                   Internal specs, benchmarks and handoff notes
+├── docs-site/              docs.clawbox.com source (Mintlify)
+├── e2e/                    Playwright end-to-end specs
+├── e2e-install/            Full-install end-to-end suite (Docker)
+├── mcp/                    MCP server + CLI (AI agent interface to the OS)
+├── public/                 Static assets (icons, wallpapers, manifest)
+├── scripts/                WiFi AP, terminal server, voice/TTS, tunnels, firewall, Jetson tuning
+├── src/
+│   ├── app/                Next.js App Router (pages + 217 API routes)
+│   │   └── setup-api/      WiFi, AI models, local AI, memory, coding agent, pets,
+│   │                       channels, files, browser, portal/tunnel, update, system
+│   ├── components/         Setup wizard, desktop environment, built-in apps
+│   ├── hooks/              Window manager, local model management
+│   ├── lib/                Config, network, auth, OAuth, i18n, updater, chat, harness,
+│   │                       coding agent, named tunnel, memory shard, code-projects
+│   ├── tests/              Unit, component and API route tests
+│   └── middleware.ts       Captive portal detection + session auth
+├── production-server.js    Node.js HTTP + WebSocket proxy wrapper
+├── install-x64.sh          x86_64 installer (host preflight, configurable ports)
+└── install.sh              Full system installer (idempotent)
+```
+
+---
+
+## 🧪 Development
+
+```bash
+bun install
+bun run dev              # Port 3000
+bun run dev:privileged   # Port 80 (requires root)
+bun run build
+bun run lint
+bun run test             # Unit + component tests (Vitest)
+bun run test:e2e         # End-to-end tests (Playwright)
+bun run check:mcp-tools  # Assert the MCP tool matrix matches mcp/README.md
+```
+
+**On real hardware:** every pull request of ours into `beta` or `main`, drafts
+included, runs [Nano hardware tests](.github/workflows/nano-hardware-tests.yml):
+the on-device suite on one free Jetson from the nano lab, after which the board
+is cleaned up and released. `skip-nano` opts a PR out, a docs-only PR is
+skipped, and a fork's PR never reaches the lab. What it checks, how cleanup
+works and how to add a test: [docs/nano-hardware-tests.md](docs/nano-hardware-tests.md).
+
+### Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `80` | Web server port |
+| `GATEWAY_PORT` | `18789` | OpenClaw gateway port |
+| `TERMINAL_WS_PORT` | `3006` | Terminal WebSocket PTY port |
+| `NOVNC_WS_PORT` | `6080` | noVNC WebSocket port (remote desktop) |
+| `NETWORK_INTERFACE` | `wlP1p1s0` | WiFi interface for AP |
+| `CANONICAL_ORIGIN` | `http://clawbox.local` | Default redirect origin |
+| `ALLOWED_HOSTS` | `clawbox.local,10.42.0.1,10.43.0.1,localhost` | Trusted hostnames |
+| `SESSION_SECRET` | Auto-generated | Session cookie signing key, persisted in `data/.session-secret` |
+| `CLAWBOX_MCP_TOKEN` | Auto-generated | Bearer token the MCP server uses on `/setup-api`, persisted in `data/.mcp-token` |
+| `OLLAMA_HOST` | `http://127.0.0.1:11434` | Ollama server URL |
+| `LLAMACPP_MODEL` | `gemma4-e2b-it-q4_0` | Bundled local model served by llama.cpp |
+| `CLAWBOX_ROOT` | `/home/clawbox/clawbox` | Project root directory |
+| `CLAWBOX_CONTROL_UI_ORIGINS_FILE` | `/home/clawbox/clawbox/data/control-ui-origins.json` | Extra trusted control UI origins (see below) |
+
+Additional options (OAuth client IDs, ClawBox AI, llama.cpp tuning) live in `.env.example`.
+
+#### Trusted control UI origins
+
+This is only for genuine cross-origin/custom-origin deployments — for example,
+a reverse proxy that serves the Control UI from a different hostname or port.
+Same-origin access via the box's own hostname — bare (`http://clawbox/`) or
+`<hostname>.local` — a Tailscale `.ts.net` name, or a private LAN IP already
+works out of the box (see `ALLOWED_HOSTS` above and the hostname/IP handling in
+`src/lib/gateway-proxy.ts`) and normally needs no entry here.
+
+To trust an additional origin, put a JSON array of exact `http`/`https`
+origins in `data/control-ui-origins.json` (or the path set by
+`CLAWBOX_CONTROL_UI_ORIGINS_FILE`):
+
+```json
+["https://control.example.com", "http://192.0.2.10:8080"]
+```
+
+Entries are validated strictly — no wildcards, credentials, paths, query
+strings, or fragments — and normalized (lowercased scheme/host, default
+ports dropped). Invalid entries are dropped with a warning; a missing file
+is normal and adds nothing. Matching is exact: a configured origin does not
+grant trust to the same hostname on a different scheme or port. See
+`scripts/gateway_origins.py` (loaded by `gateway-pre-start.sh` into the
+gateway's own `allowedOrigins`) and `src/lib/control-ui-origins.ts` (used by
+the Next.js proxy's redirect-origin reflection).
+
+## 🤝 Contributing
+
+Pull requests are welcome:
+
+- **Target the `beta` branch** — it's the integration branch; `main` carries tagged releases.
+- Every PR runs CI (unit tests + e2e + a full-install e2e) and an automated CodeRabbit review.
+- Keep PRs focused — one issue or feature per PR.
+- 🌍 The UI ships in 10 languages — a new string goes into every locale. The catalogues are split by area: `src/lib/translations.ts`, `src/lib/desktop-translations*.ts`, `src/lib/clawkeep-translations.ts` and `src/lib/edition-translations/`. A parity test fails if a locale is missing a key.
+
+---
+
+## ❓ Frequently asked questions
+
+**Who makes ClawBox?**
+ClawBox is made by **ID Robots Ltd.**, a robotics and AI company based in Plovdiv, Bulgaria (EU). ID Robots designs the hardware, builds OpenClaw OS (this repository), and provides all official support and warranty. Official site: [clawbox.com](https://clawbox.com).
+
+**What is the difference between ClawBox and OpenClaw?**
+[OpenClaw](https://github.com/openclaw/openclaw) is the open-source AI agent. **ClawBox is the dedicated hardware appliance that runs it 24/7**, preconfigured, with OpenClaw OS on top — desktop environment, setup wizard, built-in apps, backups and updates. OpenClaw is the software; ClawBox is the box built for it by ID Robots.
+
+**Does ClawBox need a subscription?**
+No. The hardware is a **one-time purchase (€749)**. Optional ClawBox AI plans (Pro / Max) add higher usage limits, ClawKeep backups, Remote Desktop, Memory Shard, the Coding Agent and priority support — and you can instead bring your own Claude, GPT, Gemini or OpenRouter key, sign in with a subscription you already pay for, or run entirely on local models with no external account at all.
+
+**Does ClawBox work without internet?**
+Yes, for local models. **Gemma 4 E2B** (`gemma4-e2b-it-q4_0`, a 3.1 GB Q4_0 build) ships preinstalled on the box's own llama.cpp, and on the OpenClaw and dual editions **Local-only mode** routes every request to it with the cloud providers switched off. Internet is needed only for updates, messaging integrations, browser automation, and optional cloud AI providers.
+
+**Which AI model answers by default?**
+On ClawBox AI it is **DeepSeek V4 Flash** (`deepseek-v4-flash`), with a 1M-token context window. The Max plan uses **DeepSeek 4.1**. You can instead use your own Anthropic, OpenAI, Google or OpenRouter key, sign in with a Claude Pro/Max, ChatGPT Plus/Pro or Google One AI Premium subscription you already pay for, or stay entirely on the box.
+
+**What is the Coding Agent?**
+A headless Claude Code run you hand a whole task to. It works in a git worktree copy of your project (`<project>/.clawbox/worktrees/<runId>`) so it never edits your checkout under you, opens a pull request with `gh`, and then runs an automatic review pass that adversarially reviews its own diff. Runs continue in the background, several can run at once, and you can send a message to one mid-flight to steer it. It needs a Pro or Max plan. Each run keeps its screenshots, test output and a `report.md` in its own evidence folder.
+
+**How do I reach my box from outside my network?**
+Turn on **Settings → Remote Control**. A provisioned box gets a persistent `<boxHandle>.clawbox.tech` address over a named Cloudflare tunnel, so it is the same URL every time. No Cloudflare account is needed. If the named credential is missing or refused, the box falls back to a quick tunnel with a random `*.trycloudflare.com` URL.
+
+**Where do I buy a ClawBox?**
+Only from **[clawbox.com](https://clawbox.com)**. ID Robots ships to 108 countries via DHL Express. Products sold elsewhere under a similar name are not ClawBox and are not covered by our warranty or support.
+
+**Can I run OpenClaw OS on my own Jetson?**
+Yes — this repository is source-available and installs on an NVIDIA Jetson Orin Nano 8GB running JetPack 6.2. See [Quick Start](#-quick-start). Buying a ClawBox gets you the assembled, tested device with case, NVMe storage, warranty and support.
+
+---
+
+## 📄 License
+
+ClawBox is released under the [ClawBox Source Available License v1.0](LICENSE). Free to use, modify, and redistribute for **personal, non-commercial purposes**. Commercial use requires a separate license from [IDRobots Ltd.](https://clawbox.com/) — contact yanko@idrobots.com.
+
+---
+
+<p align="center">
+  <strong><a href="https://clawbox.com/">clawbox.com</a></strong> · <a href="https://docs.clawbox.com">docs.clawbox.com</a> · <a href="https://discord.gg/vsTsaY4Tuk">Discord</a> · <a href="mailto:yanko@idrobots.com">yanko@idrobots.com</a>
+</p>
+
+<p align="center">
+  <sub><strong>ClawBox™</strong> — a private AI assistant appliance that runs OpenClaw. Designed, built and supported by <a href="https://github.com/ID-Robots">ID Robots Ltd.</a>, Plovdiv, Bulgaria 🇪🇺<br/>
+  Personal AI server · Local AI assistant hardware · NVIDIA Jetson Orin Nano · Edge AI appliance · Self-hosted AI · Powered by <a href="https://github.com/openclaw/openclaw">OpenClaw</a></sub>
+</p>

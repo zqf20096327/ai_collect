@@ -1,0 +1,884 @@
+<div align="center">
+
+# 🚀 MCPlex — The MCP Smart Gateway
+
+**Semantic tool routing • Security guardrails • Real-time observability**
+
+[![CI](https://github.com/ModernOps888/mcplex/actions/workflows/ci.yml/badge.svg)](https://github.com/ModernOps888/mcplex/actions/workflows/ci.yml)
+[![Release](https://github.com/ModernOps888/mcplex/actions/workflows/release.yml/badge.svg)](https://github.com/ModernOps888/mcplex/releases)
+[![Glama Score](https://glama.ai/mcp/servers/ModernOps888/mcplex/badges/score.svg)](https://glama.ai/mcp/servers/ModernOps888/mcplex)
+[![License: MIT](https://img.shields.io/badge/License-MIT-cyan.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/Built%20with-Rust-orange.svg)](https://www.rust-lang.org/)
+[![MCP](https://img.shields.io/badge/MCP-2025--11--25-blue.svg)](https://modelcontextprotocol.io)
+[![Enterprise-Audits](https://img.shields.io/badge/Enterprise-Security_Audits-ff00e5.svg)](https://infinitytechstack.uk/consulting)
+
+*Stop dumping 50k tokens of tool definitions into your LLM's context window.*
+*MCPlex intelligently routes only the tools your agent actually needs.*
+
+> 🛡️ **Enterprise MCP Gateway Architecture & Security Audits**: Building production agent infrastructure with hundreds of MCP tools? We offer **fixed-scope 3-day agentic security audits** (£4,500) and **principal systems advisory** (£650). [**Explore Packages & Inquire →**](https://infinitytechstack.uk/consulting)
+
+</div>
+
+---
+
+## The Problem
+
+Every developer building multi-agent AI systems with MCP hits the same wall:
+
+| Pain Point | Impact |
+|-----------|--------|
+| 🧠 **Context Bloat** | 20+ MCP servers = 50k+ tokens of tool definitions consuming your context window |
+| 🔓 **No Security** | No RBAC, no audit trails, tool poisoning vulnerabilities |
+| 👁️ **Blind Operations** | Can't track costs, latency, or debug wrong tool selection |
+| 🔄 **Restart Required** | Config changes require full restart in production |
+| 🕸️ **N×M Complexity** | Orchestrating dozens of servers is an integration nightmare |
+
+## The Solution
+
+MCPlex is a **single-binary Rust gateway** that sits between your AI agent and MCP servers:
+
+```
+Your Agent ──→ MCPlex Gateway ──→ GitHub MCP     (stdio — persistent)
+                    │           ──→ Slack MCP      (stdio — persistent)
+                    │           ──→ Database MCP   (HTTP)
+                    │           ──→ Filesystem MCP  (stdio — persistent)
+                    ▼
+            🧠 Smart Routing (70-90% token savings)
+            🔒 RBAC + Audit Logs + API Key Auth
+            📊 Real-time Dashboard + Prometheus
+            📦 Response Caching (auto-detect read-only)
+            🔑 Multi-Tenant (API key → role mapping)
+            🔥 Hot-reload Config
+```
+
+### Transport Support
+
+MCPlex supports **both** MCP transport types as a first-class citizen:
+
+| Transport | Discovery | Runtime Calls | Connection Model |
+|-----------|-----------|---------------|-----------------|
+| **Stdio** | ✅ Full MCP handshake | ✅ Multiplexed JSON-RPC | Persistent child process (long-lived) |
+| **Streamable HTTP** | ✅ Full MCP handshake | ✅ Standard HTTP POST | Stateless (connection pooling) |
+
+Stdio servers are spawned at startup and kept alive for the gateway's lifetime. The MCP handshake (`initialize` → `notifications/initialized`) runs once, then all subsequent `tools/call`, `resources/read`, and `prompts/get` requests are multiplexed over the same stdin/stdout pipe using JSON-RPC ID correlation.
+
+## ⚡ Quick Start
+
+### 1. Install (Pre-built Binary)
+
+Download the latest release from [GitHub Releases](https://github.com/ModernOps888/mcplex/releases):
+
+```bash
+# Linux / macOS
+curl -LO https://github.com/ModernOps888/mcplex/releases/latest/download/mcplex-linux-x86_64
+chmod +x mcplex-linux-x86_64
+sudo mv mcplex-linux-x86_64 /usr/local/bin/mcplex
+```
+
+### 2. Build from Source
+
+```bash
+git clone https://github.com/modernops888/mcplex.git
+cd mcplex
+cargo build --release
+```
+
+### 3. Configure
+
+```bash
+cp mcplex.toml my-config.toml
+# Edit my-config.toml with your MCP servers
+```
+
+**Minimal config for stdio servers:**
+
+```toml
+[gateway]
+listen = "127.0.0.1:3100"
+dashboard = "127.0.0.1:9090"
+
+[router]
+strategy = "semantic"
+
+[[servers]]
+name = "filesystem"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+
+[[servers]]
+name = "memory"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+```
+
+### 4. Run
+
+```bash
+./target/release/mcplex --config my-config.toml
+
+# Expected output:
+# 🔌 Spawning stdio server 'filesystem': npx ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+# 🤝 MCP handshake complete for 'filesystem'
+# 📡 Server 'filesystem': 11 tools, 0 resources, 0 prompts
+# 🔌 Spawning stdio server 'memory': npx ["-y", "@modelcontextprotocol/server-memory"]
+# 🤝 MCP handshake complete for 'memory'
+# 📡 Server 'memory': 3 tools, 0 resources, 0 prompts
+# ⚡ MCPlex gateway listening on 127.0.0.1:3100
+```
+
+### 5. Connect Your Agent
+
+Point your MCP client to `http://127.0.0.1:3100/mcp` and open the dashboard at `http://127.0.0.1:9090`.
+
+## 🚀 Running as a Service (Deployment)
+
+For persistent environments, run MCPlex as a background service to ensure it starts automatically on boot and restarts if it crashes.
+
+### Linux (`systemd`)
+
+Create a systemd unit file at `/etc/systemd/system/mcplex.service`:
+
+```ini
+[Unit]
+Description=MCPlex Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=your_user
+WorkingDirectory=/path/to/mcplex
+ExecStart=/usr/local/bin/mcplex --config /path/to/mcplex/mcplex.toml
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable mcplex
+sudo systemctl start mcplex
+sudo systemctl status mcplex
+```
+
+### macOS (`launchd`)
+
+Create a launchd plist file at `~/Library/LaunchAgents/com.modernops.mcplex.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.modernops.mcplex</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/mcplex</string>
+        <string>--config</string>
+        <string>/path/to/mcplex.toml</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/mcplex.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/mcplex-error.log</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>
+```
+
+Load and start the service:
+```bash
+launchctl load ~/Library/LaunchAgents/com.modernops.mcplex.plist
+launchctl start com.modernops.mcplex
+```
+
+### Log Rotation
+
+When running as a service, ensure you implement log rotation to prevent infinite log growth. For macOS, add an entry to `/etc/newsyslog.conf`; for Linux, use `logrotate`. MCPlex also has built-in audit log rotation configured via `max_log_size_mb`.
+
+### Service Troubleshooting
+
+| Issue | Resolution |
+|-------|------------|
+| Service fails to start immediately | Check your configuration file syntax by running `mcplex --check --config <path>` manually. |
+| Port already in use | Verify no other service is bound to the `listen` port. Change `gateway.listen` in your config. |
+| `launchd` permission errors | Ensure the `ProgramArguments` path is absolute and executable by the user. |
+| Server respawn loop | Check the `StandardErrorPath` log for fatal bootstrap errors or missing dependencies (e.g., Node.js for `npx` servers). |
+
+---
+
+## 🔌 How to Connect Your Agent
+
+MCPlex is a **transparent MCP proxy** — any MCP client that supports Streamable HTTP can connect to it. Your agent talks to MCPlex as if it were a single MCP server, and MCPlex handles multiplexing, routing, and security behind the scenes.
+
+### Claude Code / Claude Desktop (Recommended — stdio bridge)
+
+Claude Code and Claude Desktop use **stdio transport**. MCPlex ships a cross-platform bridge (`bridge.mjs`) that translates stdio ↔ HTTP. Works on **macOS, Windows, and Linux**.
+
+Add a `.mcp.json` to your project root (Claude Code auto-discovers it):
+
+```json
+{
+  "mcpServers": {
+    "mcplex": {
+      "command": "node",
+      "args": ["/path/to/mcplex/bridge.mjs"],
+      "env": {
+        "MCPLEX_GATEWAY": "http://127.0.0.1:3100/mcp"
+      }
+    }
+  }
+}
+```
+
+For Claude Desktop, add the same config to `claude_desktop_config.json`.
+
+### VS Code / GitHub Copilot (agent mode)
+
+VS Code supports MCP servers natively. Add a `.vscode/mcp.json` to your workspace (or run **MCP: Add Server** from the Command Palette) pointing at the MCPlex bridge:
+
+```json
+{
+  "servers": {
+    "mcplex": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/path/to/mcplex/bridge.mjs"],
+      "env": {
+        "MCPLEX_GATEWAY": "http://127.0.0.1:3100/mcp"
+      }
+    }
+  }
+}
+```
+
+A ready-to-copy template lives at [examples/vscode-mcp.json](examples/vscode-mcp.json).
+
+With the default **meta-tool mode**, Copilot's agent sees just 3 gateway tools (~200 tokens) instead of every tool definition from every connected server — the same 70–90% context savings apply inside your IDE session. Tool discovery happens on demand via `mcplex_find_tools`, and every call is still routed through RBAC, allowlists, audit logging, and the response cache.
+
+### Cursor / Windsurf / HTTP-capable MCP Clients
+
+Clients that support streamable HTTP can connect directly:
+
+```json
+{
+  "mcpServers": {
+    "mcplex-gateway": {
+      "url": "http://127.0.0.1:3100/mcp"
+    }
+  }
+}
+```
+
+### Custom Python Agent
+
+```python
+import requests
+
+GATEWAY = "http://127.0.0.1:3100/mcp"
+HEADERS = {"Authorization": "Bearer YOUR_API_KEY"}  # Optional
+
+# Initialize
+resp = requests.post(GATEWAY, json={
+    "jsonrpc": "2.0", "id": 1, "method": "initialize",
+    "params": {"protocolVersion": "2025-11-25", "capabilities": {},
+               "clientInfo": {"name": "my-agent", "version": "1.0"}}
+}, headers=HEADERS)
+
+# List all tools (MCPlex aggregates from all servers)
+resp = requests.post(GATEWAY, json={
+    "jsonrpc": "2.0", "id": 2, "method": "tools/list"
+}, headers=HEADERS)
+tools = resp.json()["result"]["tools"]
+
+# Call a tool (MCPlex routes to the right server automatically)
+resp = requests.post(GATEWAY, json={
+    "jsonrpc": "2.0", "id": 3, "method": "tools/call",
+    "params": {"name": "create_issue", "arguments": {"repo": "my-repo", "title": "Bug fix"}}
+}, headers=HEADERS)
+```
+
+### How It Catches Your Agent's Calls
+
+MCPlex acts as a **man-in-the-middle proxy** for all MCP traffic:
+
+```
+Your Agent ──POST /mcp──→ MCPlex Gateway ──→ Upstream MCP Server
+                              │                (persistent stdio or HTTP)
+                              ├─ ✅ Auth check (constant-time API key compare)
+                              ├─ 🚦 Rate limit check
+                              ├─ 🧪 Input validation (name charset, 64KB / depth-16 args cap)
+                              ├─ 🔒 RBAC + allowlist/blocklist (role bound to API key)
+                              ├─ 📝 Audit log (every call)
+                              └─ 📊 Metrics (latency, tokens, security events)
+```
+
+Every `tools/call` goes through the security engine and is logged. Every `tools/list` goes through the semantic router. There's no way to bypass it — if your agent uses MCPlex as its MCP endpoint, **all calls are intercepted, checked, and logged**.
+
+## 🤖 Compatible AI Models
+
+MCPlex is model-agnostic — it routes any MCP-compliant client traffic regardless of which LLM is driving it. These are the frontier models actively tested and validated with MCPlex:
+
+| Model | Provider | Context | MCP Client | Best For |
+|-------|----------|---------|-----------|----------|
+| **GPT-6 Astra** | OpenAI | 1M / 1.05M | ChatGPT Work, custom | Flagship reasoning + autonomous agentic tasks |
+| **GPT-6.1 Sol** | OpenAI | 1M / 1.05M | ChatGPT Work, custom | High-precision coding + system architecture |
+| **GPT-5** | OpenAI | 400K | ChatGPT Work, custom | Balanced performance / cost |
+| **o3 / o3-mini** | OpenAI | 200K | Custom, Cursor, IDEs | Deep math, logic & low-latency reasoning |
+| **Claude Opus 5.5** | Anthropic | 500K | Claude Code, Claude Desktop | Frontier multi-step agent workflows & deep code |
+| **Claude Sonnet 5.5** | Anthropic | 400K | Claude Code, Cursor, Windsurf | High-speed coding + everyday agentic tasks |
+| **Claude Haiku 5.5** | Anthropic | 200K | Claude Code, custom | Ultra-low-latency tool routing & subagents |
+| **Claude Fable 5.1** | Anthropic | 1M | Claude Code, Claude Desktop | Long-horizon extended reasoning |
+| **Gemini 4 Argon** | Google DeepMind | 2M | Gemini Spark, custom | Frontier multimodal + massive-context synthesis |
+| **Gemini 3.8 Pro** | Google DeepMind | 2M | Gemini Spark, custom | Multimodal + enterprise Workspace integration |
+| **Gemini 3.8 Flash** | Google DeepMind | 1M | Gemini Spark, custom | High-throughput, cost-efficient agent loops |
+| **DeepSeek V3 / R1** | DeepSeek | 128K | Custom, Open-WebUI, Ollama | Open frontier reasoning, cost efficiency |
+| **Grok 4.7** | xAI | 256K | Custom / open-weight stacks | Real-time reasoning, competitive coding |
+| **Llama 3.3 70B** | Meta | 128K | Ollama, vLLM, local stacks | Self-hosted open-weights tool execution |
+
+The meta-tool pattern (3 gateway tools, ~200 tokens) is particularly effective with models that have smaller default context budgets — MCPlex's token savings become more impactful as model costs rise.
+
+> **Context savings scale with model pricing.** With GPT-6 Astra and Claude Opus 5.5 at frontier pricing, eliminating 40k tokens of tool definitions per request translates to measurable cost reduction at scale.
+
+## 🧠 Semantic Tool Routing
+
+The killer feature. Instead of dumping all tool definitions into your LLM's context, MCPlex uses a **meta-tool pattern** that works with **every standard MCP client** — no custom extensions needed:
+
+| Scenario | Without MCPlex | With MCPlex | Savings |
+|----------|---------------|-------------|---------|
+| 5 servers, 50 tools | ~10,000 tokens | ~200 tokens | **98%** |
+| 10 servers, 100 tools | ~20,000 tokens | ~200 tokens | **99%** |
+| 20 servers, 200 tools | ~40,000 tokens | ~200 tokens | **99.5%** |
+
+### How It Works
+
+When your agent calls `tools/list`, MCPlex returns **3 lightweight meta-tools** (~200 tokens) instead of all real tools:
+
+```
+Agent                        MCPlex Gateway
+  │                               │
+  ├──tools/list──────────────────►│  Returns: mcplex_find_tools, mcplex_call_tool,
+  │                               │           mcplex_list_categories (~200 tokens)
+  │                               │
+  ├──mcplex_find_tools────────────►│  "store a memory"
+  │◄──────────────────────────────┤  → [{name: "create_memory", desc: "...", inputSchema: {...}},
+  │                               │     {name: "save_note", desc: "...", inputSchema: {...}}]
+  │                               │
+  ├──mcplex_call_tool─────────────►│  {name: "create_memory", arguments: {...}}
+  │◄──────────────────────────────┤  → tool result (routed through security + cache + audit)
+```
+
+- **`mcplex_find_tools(query)`** — Search for tools by natural language intent. Returns matching tools with full schemas.
+- **`mcplex_call_tool(name, arguments)`** — Execute a discovered tool. Routes through the full security/audit/cache pipeline.
+- **`mcplex_list_categories()`** — Browse available tool categories (server groups) with tool counts.
+
+This works with Claude Code, Claude Desktop, Cursor, Windsurf, and any other MCP client — no custom extensions or client-side plugins required.
+
+### Routing Mode
+
+MCPlex supports three routing modes via `router.mode`:
+
+| Mode | Behavior | Client Compatibility |
+|------|----------|---------------------|
+| **`metatool`** (default) | Returns 3 gateway meta-tools; agent discovers real tools via `mcplex_find_tools` | ✅ All standard MCP clients |
+| **`passthrough`** | Returns all real tools directly (no routing indirection) | ✅ All standard MCP clients |
+| **`legacy`** | Uses `_mcplex_query` param extension for filtering | ❌ Custom clients only |
+
+### Routing Strategy
+
+Within `metatool` and `legacy` modes, MCPlex uses a routing strategy to rank tools:
+
+- **`semantic`** — Character n-gram embeddings with cosine similarity (recommended)
+- **`keyword`** — TF-IDF keyword matching (zero ML dependency)
+- **`passthrough`** — No filtering (baseline)
+
+```toml
+[router]
+mode = "metatool"            # "metatool", "passthrough", or "legacy"
+strategy = "semantic"        # "semantic", "keyword", or "passthrough"
+top_k = 5                    # Return top 5 most relevant tools
+similarity_threshold = 0.3   # Minimum relevance score
+cache_embeddings = true       # Cache for faster repeated queries
+```
+
+## 🔒 Security Engine
+
+### Role-Based Access Control (RBAC)
+
+```toml
+[security]
+enable_rbac = true
+
+[roles.developer]
+allowed_tools = ["github/*", "database/query_*"]
+
+[roles.admin]
+allowed_tools = ["*"]
+
+[roles.readonly]
+allowed_tools = ["*/list_*", "*/get_*"]
+blocked_tools = ["*/delete_*", "*/drop_*"]
+```
+
+> **Role trust boundary:** a caller's role is only ever established server-side, from a verified `api_key`/`api_keys` match — never from anything a client sends in the request body. When `enable_rbac = true` and no `api_key`/`api_keys` are configured, every tool call is denied by default (no role can be established), and the gateway logs a startup warning so this isn't mistaken for a bug.
+
+### Per-Server Tool Blocklists
+
+```toml
+[[servers]]
+name = "database"
+url = "http://localhost:8080/mcp"
+blocked_tools = ["drop_table", "delete_*", "truncate_*"]
+```
+
+### Structured Audit Logging
+
+Every tool invocation is logged as JSON Lines:
+
+```json
+{"timestamp":"2026-04-10T10:00:00Z","event":"tool_call","tool_name":"github/create_issue","server_name":"github","duration_ms":342,"trace_id":"a1b2c3d4"}
+{"timestamp":"2026-04-10T10:00:01Z","event":"tool_blocked","tool_name":"database/drop_table","reason":"security_policy","trace_id":"e5f6g7h8"}
+```
+
+## 📊 Real-time Dashboard
+
+Built-in observability dashboard at `http://localhost:9090`:
+
+<div align="center">
+
+![MCPlex Dashboard](docs/images/dashboard.png)
+
+</div>
+
+- **Global Metrics** — Total requests, tool calls, errors, tokens saved
+- **Per-Tool Stats** — Invocation count, avg/p50/p95/p99 latency
+- **Server Fleet** — Connected servers, transport type, tool/resource/prompt counts
+- **Live Event Stream** — Real-time feed of all gateway activity with latency tags
+
+Glassmorphism design with animated gradients. Auto-refreshes every 3 seconds. Zero configuration.
+
+By default the dashboard's `/api/*` routes are unauthenticated — fine for `127.0.0.1`-only binds, but if you expose the dashboard beyond localhost, set `gateway.dashboard_api_key` so requests need an `Authorization: Bearer <key>` (or `X-API-Key`) header:
+
+```toml
+[gateway]
+dashboard_api_key = "${MCPLEX_DASHBOARD_API_KEY}"
+```
+
+## 📦 Response Caching
+
+Avoid redundant upstream calls for read-only tools:
+
+```toml
+[cache]
+enabled = true
+ttl_seconds = 300     # 5 minute TTL
+max_entries = 1000    # Max cached responses
+```
+
+Cached responses are partitioned by caller role, so a cache entry from one role/tenant is never served to another. MCPlex **auto-detects** read-only tools by prefix (`list_*`, `get_*`, `search_*`, `query_*`, `describe_*`, `show_*`). You can override with custom patterns:
+
+```toml
+[cache]
+patterns = ["my_custom_tool", "expensive_*"]
+```
+
+Write operations (`create_*`, `update_*`, `delete_*`) are **never cached** by default.
+
+## 🔑 Multi-Tenant API Keys
+
+Map API keys to RBAC roles for team-based access:
+
+```toml
+[api_keys."sk-dev-team-abc123"]
+role = "developer"
+description = "Dev team key"
+
+[api_keys."sk-admin-xyz789"]
+role = "admin"
+description = "Admin key"
+```
+
+When a request comes in with `Authorization: Bearer sk-dev-team-abc123`, MCPlex automatically applies the `developer` role's RBAC policies.
+
+## 🔥 Hot-Reload Configuration
+
+Config changes apply instantly — no restart needed:
+
+```bash
+# Edit config while MCPlex is running
+vim mcplex.toml
+
+# MCPlex automatically detects changes:
+# 🔄 Config file changed, reloading...
+# ✅ Configuration reloaded successfully
+```
+
+## 📖 Full MCP Capability Support
+
+MCPlex aggregates and forwards **all three** MCP capability types from upstream servers:
+
+| Capability | List | Execute/Read | Routing |
+|-----------|------|-------------|---------|
+| **Tools** | `tools/list` → aggregated | `tools/call` → routed to owner | ✅ Semantic / Keyword |
+| **Resources** | `resources/list` → aggregated | `resources/read` → routed by URI | Direct routing |
+| **Prompts** | `prompts/list` → aggregated | `prompts/get` → routed by name | Direct routing |
+
+## Configuration Reference
+
+### `[gateway]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `listen` | string | `127.0.0.1:3100` | MCP client connection address |
+| `dashboard` | string | — | Dashboard address (disabled if not set) |
+| `hot_reload` | bool | `true` | Auto-reload config on file change |
+| `name` | string | `mcplex` | Gateway instance name |
+| `api_key` | string | — | API key for client auth (supports `${ENV}`) |
+| `dashboard_api_key` | string | — | API key for the dashboard `/api/*` routes (supports `${ENV}`). If unset, the dashboard is unauthenticated — bind it to `127.0.0.1` in that case. |
+| `rate_limit_rps` | int | `0` | Max requests/sec per client (0 = unlimited) |
+
+### `[router]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `mode` | string | `metatool` | `metatool`, `passthrough`, or `legacy` |
+| `strategy` | string | `keyword` | `semantic`, `keyword`, or `passthrough` |
+| `top_k` | int | `5` | Maximum tools returned per query |
+| `similarity_threshold` | float | `0.3` | Minimum relevance score (0.0-1.0) |
+| `cache_embeddings` | bool | `true` | Cache tool embeddings |
+
+### `[security]`
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `enable_rbac` | bool | `false` | Enable role-based access control |
+| `enable_audit_log` | bool | `false` | Enable structured audit logging |
+| `audit_log_path` | string | `./logs/audit.jsonl` | Audit log file path |
+| `max_log_size_mb` | int | `100` | Max log file size before rotation (keeps 5 backups) |
+| `circuit_breaker_max_crashes` | int | `5` | Max crashes within the window before respawns are blocked |
+| `circuit_breaker_window_secs` | int | `60` | Sliding window (seconds) for crash counting |
+| `request_timeout_secs` | int | `30` | Steady-state per-request timeout for HTTP and stdio upstream calls, once connected (0 = no timeout) |
+| `default_handshake_timeout_secs` | int | `30` | Default timeout for the initial stdio MCP handshake (`initialize`), before a server is considered failed and enters the respawn loop. Overridable per server — see `servers[].handshake_timeout_secs` below. (0 = no timeout) |
+
+### `[[servers]]`
+
+| Key | Type | Required | Description |
+|-----|------|----------|-------------|
+| `name` | string | ✅ | Unique server name |
+| `command` | string | ⚡ | Executable path for stdio transport |
+| `args` | list | — | Command arguments |
+| `url` | string | ⚡ | URL for HTTP transport |
+| `env` | map | — | Environment variables (supports `${VAR}`) |
+| `allowed_roles` | list | — | Roles allowed to access this server |
+| `blocked_tools` | list | — | Tool blocklist patterns (glob) |
+| `allowed_tools` | list | — | Tool allowlist patterns (glob) |
+| `enabled` | bool | `true` | Enable/disable this server |
+| `handshake_timeout_secs` | int | — | Per-server override for the initial stdio handshake timeout. Falls back to `security.default_handshake_timeout_secs` when unset. Useful for servers with a slow cold start, e.g. `npx` resolving/downloading a package on first run (0 = no timeout) |
+
+⚡ = One of `command` or `url` is required
+
+> **Note:** For stdio servers, `command` should be the **executable path** (e.g. `npx`, `/usr/bin/python3`). Additional arguments go in the `args` array.
+
+> **Handshake timeout vs. request timeout:** the initial stdio `initialize` handshake and steady-state `tools/call` requests use two independent timeouts. A slow-starting server (e.g. `npx` fetching a package on first run) can be given a longer `handshake_timeout_secs` without loosening the timeout applied to every later tool call:
+> ```toml
+> [[servers]]
+> name = "slow-npx-server"
+> command = "npx"
+> args = ["-y", "@some/mcp-server"]
+> handshake_timeout_secs = 90  # default 30s, 0 = no timeout
+> ```
+
+
+### `[roles.<name>]`
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `allowed_tools` | list | Tool patterns this role can access (glob) |
+| `blocked_tools` | list | Tool patterns this role cannot access (glob) |
+
+**Glob Patterns:** `*` matches any characters, `?` matches a single character.
+Examples: `github/*`, `*/query_*`, `database/get_?ser`
+
+## Environment Variables
+
+MCPlex supports `${ENV_VAR}` syntax in configuration:
+
+```toml
+[[servers]]
+name = "github"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+env = { GITHUB_TOKEN = "${GITHUB_TOKEN}" }
+```
+
+## Architecture
+
+```
+┌───────────────────────────────────────────────────────────┐
+│                      MCPlex Gateway                        │
+│                                                           │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐ │
+│  │  Semantic    │  │   Security   │  │   Observability  │ │
+│  │  Router      │  │   Engine     │  │   Collector      │ │
+│  │             │  │              │  │                  │ │
+│  │ • Embeddings │  │ • RBAC       │  │ • Token Savings  │ │
+│  │ • TopK Match │  │ • Allowlist  │  │ • Latency (p99)  │ │
+│  │ • Caching   │  │ • Audit Log  │  │ • Dashboard      │ │
+│  └──────┬──────┘  └──────┬───────┘  └────────┬─────────┘ │
+│         └────────────┬───┘                    │           │
+│                      ▼                        │           │
+│      ┌───────────────────────────────┐        │           │
+│      │     MCP Protocol Multiplexer  │◄───────┘           │
+│      │     + Response Cache          │                    │
+│      └──────────┬────────────────────┘                    │
+└─────────────────┼─────────────────────────────────────────┘
+                  │
+    ┌─────────────┼─────────────────────┐
+    ▼             ▼                     ▼
+MCP Server    MCP Server           MCP Server
+(stdio —      (stdio —             (HTTP —
+ persistent)   persistent)          stateless)
+```
+
+## CLI Reference
+
+```bash
+mcplex [OPTIONS] [COMMAND]
+
+Commands:
+  doctor                 Check the health of a running gateway and its connected servers
+
+Options:
+  -c, --config <FILE>    Config file path [default: mcplex.toml]
+  -v, --verbose          Enable verbose logging
+  --listen <ADDR>        Override gateway listen address
+  --dashboard <ADDR>     Override dashboard listen address
+  --check                Validate config and exit
+  -h, --help             Print help
+  -V, --version          Print version
+```
+
+## 🛡️ Production Hardening
+
+### API Key Authentication
+
+Secure your gateway so only authorized agents can connect:
+
+```toml
+[gateway]
+api_key = "${MCPLEX_API_KEY}"  # Set via environment variable
+```
+
+Clients authenticate via header:
+```
+Authorization: Bearer your-secret-key
+# or
+X-API-Key: your-secret-key
+```
+
+Health checks (`/health`) are always unauthenticated for load balancer probes.
+
+### Rate Limiting
+
+Prevent runaway agents from overwhelming your servers:
+
+```toml
+[gateway]
+rate_limit_rps = 50  # Max 50 requests/sec per client (burst: 100)
+```
+
+Uses a per-client token bucket with 2x burst allowance. Returns `429 Too Many Requests` when exceeded.
+
+### Log Rotation
+
+Audit logs rotate automatically — they won't fill your disk:
+
+```toml
+[security]
+enable_audit_log = true
+audit_log_path = "./logs/audit.jsonl"
+max_log_size_mb = 100  # Rotates at 100MB, keeps 5 backups
+```
+
+Files rotate as: `audit.jsonl` → `audit.jsonl.1` → ... → `audit.jsonl.5` (oldest deleted).
+
+### Network Security
+
+Bind to localhost only (default) for local agents:
+```toml
+[gateway]
+listen = "127.0.0.1:3100"     # Localhost only
+dashboard = "127.0.0.1:9090"  # Dashboard also localhost
+```
+
+For network access, use a reverse proxy (nginx/caddy) with TLS.
+
+### Prometheus Monitoring
+
+MCPlex exposes Prometheus-compatible metrics on the dashboard port for external monitoring:
+
+- **`/api/metrics`** — JSON metrics endpoint
+- **`/api/prometheus`** — Prometheus text exposition format (v0.4.0)
+
+```
+mcplex_requests_total 1234
+mcplex_tool_calls_total 567
+mcplex_errors_total 3
+mcplex_tokens_saved_total 45000
+mcplex_tool_duration_ms{tool="create_issue",quantile="0.95"} 142
+```
+
+## 🔍 AgentLens Integration
+
+MCPlex pairs with [AgentLens](https://github.com/ModernOps888/agentlens) for full-stack agent observability. MCPlex handles execution, AgentLens handles visualization — together they cover 100% of the agent lifecycle. As of v0.4.0, the AgentLens bridge is **fully wired** and active when configured via the `[agentlens]` config section.
+
+### Enable the Bridge (opt-in)
+
+Add to your `mcplex.toml`:
+
+```toml
+[agentlens]
+enabled = true
+url = "http://127.0.0.1:3000/api/ingest"
+session_name = "MCPlex Gateway"
+```
+
+Every tool call, security event, and routing decision is forwarded to AgentLens's timeline replay UI. The bridge is non-blocking (fire-and-forget) — it never slows down the gateway, even if AgentLens is offline.
+
+> **Note:** MCPlex works 100% independently without AgentLens. The bridge is entirely opt-in.
+
+## 🔥 The Forge Integration
+
+MCPlex pairs naturally with [The Forge](https://github.com/ModernOps888/the-forge) — a multi-agent orchestration and code evolution platform that pits frontier models head-to-head on coding challenges.
+
+The Forge exposes its own MCP server, which means you can add it to MCPlex just like any other server:
+
+```toml
+[[servers]]
+name = "forge"
+command = "npx"
+args = ["-y", "the-forge-mcp"]
+allowed_tools = ["forge_orchestrate", "forge_build", "forge_score", "forge_consensus", "forge_research", "forge_chat"]
+allowed_roles = ["developer", "admin"]
+```
+
+With this setup, your agents can invoke Forge tools (multi-model orchestration, code builds, consensus scoring, research synthesis) through the same gateway — with full RBAC, audit logging, and token-saving routing applied automatically.
+
+| Forge Tool | What It Does |
+|------------|-------------|
+| `forge_orchestrate` | Pit GPT-6 Astra / Claude Opus 5.5 / Gemini 4 Argon / Grok 4.7 head-to-head on a coding task |
+| `forge_build` | Execute multi-agent code generation and verification builds |
+| `forge_score` | Score and rank candidate outputs against evaluation rubrics |
+| `forge_consensus` | Synthesize multi-model consensus across competing solutions |
+| `forge_research` | Deep-research a topic across multiple frontier models |
+| `forge_chat` | Interactive multi-model consultation and review |
+
+> MCPlex works 100% independently without The Forge. See [github.com/ModernOps888/the-forge](https://github.com/ModernOps888/the-forge) for setup.
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Run `cargo fmt && cargo clippy -- -D warnings && cargo test`
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+## 🔧 Recent Changes (v0.7.3 — October 2026 Model Horizon &amp; Security Hardening)
+
+- **Spoofed Role Header Stripping (CRITICAL)** — `auth_and_rate_limit_middleware` now unconditionally strips any client-supplied `X-MCPlex-Role` header at middleware entry before evaluating authentication, preventing unauthenticated or single-key callers from spoofing `X-MCPlex-Role: admin`.
+- **Canonical FQN Security &amp; Upstream Bare-Name Dispatch** — `dispatch_real_tool` now resolves `(server_name, bare_name)` first, evaluates `SecurityEngine::is_tool_allowed` against the canonical `server/tool` FQN, keys `ToolCache` by bare tool name, and forwards the bare tool name to upstream MCP servers even when invoked via `server/tool`.
+- **Per-Server `allowed_roles` Enforcement** — `AllowlistEngine` and `SecurityEngine` now enforce `servers[].allowed_roles` alongside tool-level RBAC rules, propagating `trusted_role` across `tools/list` (passthrough &amp; legacy), `mcplex_find_tools`, and `mcplex_list_categories`.
+- **Stdio Child `stderr` Drain &amp; `kill_on_drop(true)`** — Stdio child processes now spawn a background task draining `stderr` to `tracing::debug!` so verbose upstream servers never deadlock on a full OS pipe buffer, and clean up child processes on drop.
+- **Hot-Reload Bare Filename Fix** — `watch_config` now falls back to `.` when `config_path.parent()` is empty (e.g. `--config mcplex.toml`) and handles `EventKind::Create` for atomic editor saves.
+- **Dashboard XSS Hardening &amp; HTML Serving** — Escaped all dynamic server/tool/event fields in `DASHBOARD_HTML`, exempted `GET /` on the dashboard from header-only API key lockout so browsers can load the page shell, and fixed the 7-card `.metrics-grid` layout.
+- **AgentLens Bridge Live Wiring &amp; Saturating Arithmetic** — Wired `state.agentlens` into `dispatch_real_tool` and `handle_meta_find_tools` via non-blocking background tasks and fixed `total_tools.saturating_sub(selected_tools)` underflow.
+- **October 2026 Frontier Model Horizon** — Updated README, `mcplex.toml`, and dashboard model matrix to October 2026 flagships (`GPT-6 Astra`, `GPT-6.1 Sol`, `Claude Opus 5.5`, `Claude Sonnet 5.5`, `Claude Haiku 5.5`, `Claude Fable 5.1`, `Gemini 4 Argon`, `Gemini 3.8 Pro/Flash`, `DeepSeek V3 / R1`, `Grok 4.7`, `Llama 3.3 70B`) and removed retired `Claude 3.7 Sonnet`.
+
+<details>
+<summary>Previous (v0.7.1 — Security Hardening &amp; Configurable Handshake Timeout)</summary>
+
+- **RBAC Self-Assertion Bypass Fixed (HIGH)** — `dispatch_real_tool` previously fell back to a client-supplied `_mcplex_role` request param whenever no server-verified role was established (e.g. no `api_key`/`api_keys` configured). Any caller could self-assert `role: "admin"` and bypass RBAC entirely. The role now comes exclusively from the auth middleware's server-verified `trusted_role`.
+- **Dashboard Authentication** — `/api/*` dashboard routes were previously unauthenticated. Added optional `gateway.dashboard_api_key`; when set, dashboard routes require a matching `Authorization: Bearer`/`X-API-Key` header. Unset by default (backward compatible), with a startup warning to bind localhost-only in that case.
+- **Role-Partitioned Cache** — The tool response cache is now partitioned by caller role, closing a cross-tenant leakage gap in multi-key deployments.
+- **Empty-Secret Rejection** — `validate_config` now rejects `gateway.api_key`/`dashboard_api_key`/`api_keys` that resolve to an empty string (e.g. from an unset `${ENV_VAR}`), instead of silently turning "auth required" into a no-op.
+- **Configurable Stdio Handshake Timeout** (fixes [#20](https://github.com/ModernOps888/mcplex/issues/20)) — the initial `initialize` handshake and steady-state tool calls now use independent timeouts: `security.default_handshake_timeout_secs` (global, default 30s) and `servers[].handshake_timeout_secs` (per-server override) for the handshake, vs. `security.request_timeout_secs` for steady-state calls. Fixes spurious failures on slow-cold-start servers (e.g. `npx` downloading a package on first run). `0 = no timeout` is now actually implemented for both.
+- **Audit Redaction List Expanded** — added `pwd`, `auth`, `cookie`, `session`, `bearer` to the sensitive-key redaction list.
+- **38 tests passing** (up from 32) — new regression tests for the RBAC fix, cache partitioning, and handshake-timeout config.
+
+</details>
+
+<details>
+<summary>Previous (v0.7.0 — Model Ecosystem Refresh)</summary>
+
+- **Compatible Models Dashboard Panel** — Built-in dashboard now shows a `🤖 Compatible Models` panel with colour-coded provider badges for all active frontier models.
+- **Ecosystem Footer** — Dashboard footer now links to AgentLens, The Forge, and GitHub with the current MCP protocol version displayed.
+- **Expanded Server Examples** — `mcplex.toml` and `examples/` updated with `memory`, `fetch`, `brave-search`, `postgres`, `sequential-thinking`, and `forge` (The Forge MCP) server blocks.
+- **The Forge Integration** — New README section with example config and tool table for connecting [The Forge](https://github.com/ModernOps888/the-forge) multi-model arena as an MCP server.
+- **Compatible AI Models Table** — Full model matrix in the README with MCP client and use-case guidance.
+- **Fixed** Python example protocol version `2025-03-26` → `2025-11-25`.
+- **Fixed** missing CHANGELOG comparison links for v0.4.0–v0.6.0.
+
+</details>
+
+<details>
+<summary>Previous (v0.6.0 — Audit Hardening &amp; Denial Telemetry)</summary>
+
+- **Audit Log Secret Redaction** — Values under sensitive keys (`password`, `token`, `api_key`, `secret`, `credential`, etc.) are recursively replaced with `[REDACTED]` before hitting disk; credentials never persist in `audit.jsonl`.
+- **Spoof-Proof Rate Limiting** — Client identity now comes from the real socket address (`ConnectInfo`), falling back to the first `X-Forwarded-For` hop only behind proxies; header spoofing no longer evades limits.
+- **Auth/Rate-Limit Denial Telemetry** — `auth_denied` and `rate_limited` security events now recorded in metrics and visible in the dashboard event stream.
+- **Resource/Prompt Audit Coverage** — `resources/read` and `prompts/get` are now written to the audit trail (`resource_read` / `prompt_get` events); resource URIs capped at 2048 chars.
+- **Panic Fix** — `tools/list` in meta-tool mode no longer panics when fewer real tools than meta-tools are connected (saturating arithmetic).
+- **2 new audit redaction tests** (31 total); live smoke test verified end-to-end.
+
+</details>
+
+<details>
+<summary>Previous (v0.5.0 — Security by Design)</summary>
+
+- **Constant-Time API Key Verification** — Key comparison is no longer vulnerable to timing side-channels.
+- **Trusted Role Binding** — Multi-tenant API keys now bind their RBAC role at the middleware layer (`X-MCPlex-Role` injected server-side). Clients can no longer self-assert a role via `_mcplex_role` when authenticated.
+- **Tool Call Input Validation** — Tool names are restricted to a safe charset (max 128 chars); arguments are capped at 64KB with a max JSON nesting depth of 16. Malformed calls are rejected before touching upstream servers.
+- **Request Body Limit** — Gateway rejects request bodies over 1MB.
+- **Security Telemetry** — New `security_events`, `blocked_tool_calls`, and `rejected_tool_calls` counters, surfaced as dashboard cards plus a live security-posture pill (RBAC/Audit status) in the header.
+- **VS Code / GitHub Copilot Integration** — Documented `.vscode/mcp.json` setup with a ready-to-copy template ([examples/vscode-mcp.json](examples/vscode-mcp.json)) for token-saving meta-tool routing inside IDE sessions.
+- **Dynamic Version Banner** — CLI banner and dashboard header now display the crate version automatically.
+
+</details>
+
+<details>
+<summary>Previous (v0.3.1 — Hardening)</summary>
+
+- **Shared HTTP Client** — Replaced per-call `reqwest::Client::new()` with a pooled static client. Enables HTTP/2 connection reuse, TLS session resumption, and 30s request timeouts.
+- **Circuit Breaker Config** — `circuit_breaker_max_crashes`, `circuit_breaker_window_secs`, and `request_timeout_secs` are now configurable in `[security]` (previously hardcoded).
+- **Env-Var Expansion Fix** — `${ENV_VAR}` expansion now uses a single-pass cursor instead of a `while`-loop, preventing infinite loops if a resolved value itself contains `${`.
+- **Rate Limiter Memory Fix** — Stale client IP entries are now pruned every 100 checks (entries idle >5 min), preventing unbounded HashMap growth.
+
+</details>
+
+---
+
+<div align="center">
+
+**Built with 🦀 Rust for the AI agent community**
+
+*If MCPlex saves your context window, give it a ⭐*
+
+</div>

@@ -1,0 +1,220 @@
+<p align="center">
+  <img src="docs/img/LogoImage.png" alt="LiveActionAOV logo" width="360">
+</p>
+
+# LiveActionAOV
+
+**AI-driven AOV pass generator for VFX plates.** Reads EXR image sequences, runs depth / normals / motion / matte passes, writes sidecar EXRs with Nuke-ready channel conventions.
+
+> **Status:** alpha, pre-v1 release
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=HnosSnK1MKs">
+    <img src="docs/img/youtube-demo.jpg" alt="Watch the LiveActionAOV demo on YouTube" width="760">
+  </a>
+  <br>
+  <a href="https://www.youtube.com/watch?v=HnosSnK1MKs"><b>▶ Watch the demo</b></a> — how it works, end to end
+</p>
+
+---
+
+## Quick start
+
+```powershell
+# Windows (PowerShell or cmd.exe):
+git clone https://github.com/lettidude/LiveActionAOV
+cd LiveActionAOV
+.\install.bat
+```
+
+```bash
+# Linux / macOS:
+git clone https://github.com/lettidude/LiveActionAOV
+cd LiveActionAOV
+./install.sh
+```
+
+> **PowerShell users:** the `.\` prefix is required — PowerShell doesn't run scripts from the current directory by default. `cmd.exe` accepts both `install.bat` and `.\install.bat`.
+
+Then:
+```bash
+uv run liveaov-gui           # preparation GUI
+uv run liveaov --help        # CLI reference
+```
+
+> **First run downloads model checkpoints from Hugging Face.** Expect
+> **~1.5 GB** for a minimal stack (Depth Anything V2 + DSINE + RAFT +
+> SAM 3 + RVM) up to **~12 GB** for the full video-aware stack
+> (DepthCrafter + NormalCrafter + MatAnyone 2). Cached at
+> `~/.cache/huggingface/hub` (Linux/macOS) or
+> `%USERPROFILE%\.cache\huggingface\hub` (Windows). Subsequent runs are
+> offline-capable for any pass whose weights you've already pulled.
+
+### Hugging Face authentication (one-time, required for SAM 3)
+
+**SAM 3** is **gated** on Hugging Face — Meta's license terms, not ours — so the matte pass needs a one-time HF token. Three steps:
+
+1. **Request access** at https://huggingface.co/facebook/sam3 — click **"Agree and access repository"** at the top of the page. Approval is usually instant.
+2. **Create an HF token** at https://huggingface.co/settings/tokens — click **"Create new token"**, any name is fine, **"Read"** scope is sufficient (no write/admin needed). Copy the token string.
+3. **Authenticate locally**, from the project root:
+
+   ```bash
+   uv run hf auth login
+   ```
+
+   (or `uv run huggingface-cli login` on older `huggingface_hub` versions). Paste the token when prompted. It's cached at `~/.cache/huggingface/token` and SAM 3 will download cleanly on the next run.
+
+Prefer env vars? Set `HF_TOKEN=<your-token>` in your shell instead and skip step 3 — `transformers` and `huggingface_hub` pick it up automatically.
+
+If you skip this, the matte pass fails on first use with `OSError: You are trying to access a gated repo. ... 401 Client Error`. Other models in the catalog (Depth Anything V2, DepthCrafter, NormalCrafter, DSINE, MatAnyone 2, RVM, RAFT) are **not** currently gated.
+
+> **Updating to latest:** from the project root, run `.\update.bat` (Windows) or `./update.sh` (Linux/macOS). Pulls the latest code and re-syncs deps. Idempotent if there's nothing new.
+>
+> **What is `uv`?** A fast Python package manager from Astral —
+> drop-in replacement for `pip` + `venv`. The installer scripts grab
+> it for you. See [docs.astral.sh/uv](https://docs.astral.sh/uv/) if
+> you'd rather install it yourself first.
+
+---
+
+## What it does
+
+Given a plate like `/shots/sh020/plate/v003/sh020_plt.####.exr`, the tool produces:
+
+- `/shots/sh020/plate/v003/sh020_plt.utility.####.exr` — sidecar with:
+  - `Z` depth channel
+  - `N.x / N.y / N.z` camera-space normals
+  - `motion.x / motion.y` forward motion vectors (pixels)
+  - `back.x / back.y` backward motion vectors
+  - `matte.r / g / b / a` top-4 soft hero mattes
+  - `mask.<concept>` semantic hard masks
+  - `P.x / P.y / P.z` world-space position (when depth is present)
+  - `ao.a` ambient occlusion (when depth + normals are present)
+
+Original plate is never modified. See [design notes](docs/architecture.md) for architectural details.
+
+---
+
+## The passes, visualized
+
+Every pass lands as a channel in one sidecar EXR. Here's a full utility set baked from a single live-action plate — depth, camera-space normals, forward/backward motion, the matte + Cryptomatte object IDs, world position, ambient occlusion:
+
+<p align="center">
+  <img src="docs/img/aov-contact-sheet.png" alt="Full AOV set from one plate — depth, normals, motion, matte, Cryptomatte, position, AO" width="900">
+</p>
+
+Close-ups — **normals** (camera-space surface orientation, drives relight) and a **Cryptomatte** breakdown (every object gets its own ID, pickable in Nuke just like a CG render):
+
+<p align="center">
+  <img src="docs/img/pass-normals.png" alt="Normals pass — camera-space surface normals" width="430">
+  <img src="docs/img/pass-cryptomatte.png" alt="Cryptomatte pass — per-object IDs from live action" width="430">
+</p>
+
+…and a per-object matte composited back over the plate — the kind of fast, named selection the tool makes from a few clicks:
+
+<p align="center">
+  <img src="docs/img/pass-matte-comp.png" alt="Per-object matte composited over the live-action plate" width="760">
+</p>
+
+> Test plate from the [ActionVFX practice footage library](https://www.actionvfx.com/collections/free-vfx/category).
+
+---
+
+## Interactive roto — click to a soft-edged Cryptomatte
+
+Click an element in the viewport (or drag a box around it); the SAM 3 tracker propagates it across the whole shot into a named **Cryptomatte ID**. Add the **BiRefNet** refiner and the hard mask becomes a roto-grade **soft alpha** — hair, motion blur, fine edges — written to the `matte.*` channels. Preview the mask on the seed frame before committing, refine a click at a time. All local, commercial-clean, scene-referred.
+
+<p align="center">
+  <img src="docs/img/click-to-mask.png" alt="LiveActionAOV Masks tab — click-to-mask: live SAM 3 mask preview with include/exclude points and a per-object list" width="900">
+</p>
+
+The Masks tab: seed objects with a box or a few clicks, preview the SAM 3 mask on the spot, and build a named per-object list — each becomes a Cryptomatte ID at submit. Add BiRefNet and those masks gain soft, roto-grade edges:
+
+<p align="center">
+  <img src="docs/img/birefnet-roto.gif" alt="BiRefNet soft matte over a live-action plate — hair and motion-blur edge detail" width="720">
+</p>
+
+> Soft alpha from the BiRefNet refiner composited over the plate — note the hair and motion-blur edge detail that SAM 3's hard masks can't give on their own. Tip: fewer clicks work better — a box or 2–6 points beats dozens.
+
+---
+
+## The GUI
+
+Drop a plate folder onto the shot list, pick the passes you want, hit **Submit local**. Each model surfaces its license badge inline so you know up-front which combinations are commercial-safe and which require non-commercial confirmation.
+
+<p align="center">
+  <img src="docs/img/gui-passes-tab.jpg" alt="LiveActionAOV GUI — Passes tab" width="900">
+</p>
+
+A loaded shot with the Output tab open — multi-shot batch queueing, proxy resolution, and the "what the model sees" Transformed view in the centre viewport.
+
+<p align="center">
+  <img src="docs/img/gui-loaded-shot.jpg" alt="LiveActionAOV GUI — loaded shot, Output tab" width="900">
+</p>
+
+> Test plate above is from the [ActionVFX practice footage library](https://www.actionvfx.com/collections/free-vfx/category) — used here under their license, which permits incorporation into derivative work like this tool demo.
+
+---
+
+## Nuke plugin — UtilityRelight
+
+A companion Nuke node ships in this repo at
+[`src/live_action_aov/plugins/nuke/UtilityRelight/`](src/live_action_aov/plugins/nuke/UtilityRelight/).
+It consumes a sidecar EXR + a beauty plate and gives Nuke comp artists
+live 3D light placement on the subject — six layered light contributions
+(key, spec, rim, bounce, glow, fog) computed on the GPU via BlinkScript.
+
+**Install (3 steps):** copy `utility_relight.py` + `UtilityRelightKernel.blink` into `~/.nuke/`, register in `~/.nuke/menu.py`, restart Nuke. Full instructions and quick-test recipe in the [user guide](docs/user-guide.md#nuke-plugin--utilityrelight).
+
+Tested on Nuke 16.0.
+
+---
+
+## Documentation
+
+- [User guide](docs/user-guide.md)
+- [Developing plugins](docs/developing-plugins.md)
+- [Architecture](docs/architecture.md)
+- [Install reference](docs/install.md) — alternate GPU configurations (Pascal/Volta, Apple Silicon, ROCm), troubleshooting, slim install with per-pass extras
+
+---
+
+## Compatibility
+
+| Platform | GPU | Status |
+|---|---|---|
+| Windows 11 | NVIDIA RTX 20 / 30 / 40 / 50 series | ✅ **Tested at v0.1.0** |
+| Linux (Ubuntu 22.04+) | NVIDIA RTX 20 / 30 / 40 / 50 series | ⚠️ Expected to work via `install.sh` (CUDA + uv path identical to Windows) but **untested at v0.1.0**. Bug reports welcome. |
+| macOS (Apple Silicon) | M1 / M2 / M3 / M4 (MPS) | ⚠️ **Best-effort.** Some passes work via MPS; fp16 models (DepthCrafter, NormalCrafter, MatAnyone2) are CUDA-only. The GUI refuses Submit and explains when a pass isn't available. |
+| Any platform | AMD GPU (ROCm) | ❌ Untested — wheels exist, none of our passes have been validated against them. |
+| Any platform | CPU-only | ❌ Not a supported configuration — fp16 kernels don't exist on CPU. |
+
+See [docs/install.md](docs/install.md#alternate-gpu-configurations) for manual overrides on older NVIDIA hardware (Pascal / Volta cu121 wheel) and Apple Silicon notes.
+
+---
+
+## Author
+
+**Leonardo Paolini** — VFX compositor / pipeline TD building tools at the intersection of comp and ML.
+
+- Email: [LeonardoVFX@gmail.com](mailto:LeonardoVFX@gmail.com)
+- GitHub: [@lettidude](https://github.com/lettidude)
+- LinkedIn: [leonardopaolinivfx](https://www.linkedin.com/in/leonardopaolinivfx/)
+- IMDb: [Leonardo Paolini](https://www.imdb.com/name/nm5886055/)
+- YouTube: [@LeonardoVFX](https://www.youtube.com/channel/UCZDR5tThQwo9OVVu-NmODbA) — pipeline & VFX-tooling videos
+
+Developed with [Claude](https://claude.com/) (Anthropic).
+
+---
+
+## Support
+
+- **Bug reports / feature requests:** [open an issue](https://github.com/lettidude/LiveActionAOV/issues).
+- **Questions about a specific pass / model wiring:** start a [discussion](https://github.com/lettidude/LiveActionAOV/discussions).
+- **Direct contact:** [LeonardoVFX@gmail.com](mailto:LeonardoVFX@gmail.com) — fastest for studio-pipeline questions.
+
+---
+
+## License
+
+Core: MIT. Individual model plugins have their own licenses — see the license matrix in [architecture notes](docs/architecture.md#license-matrix). Every sidecar EXR carries a `liveActionAOV/<pass>/license` metadata stamp plus a top-level `liveActionAOV/matte/commercial` flag so downstream QC can audit what's shippable.

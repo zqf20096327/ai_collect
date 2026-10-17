@@ -1,0 +1,372 @@
+# ThreeToks
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+An extremely token-frugal agentic framework for small local LLMs.
+
+**Primary Goal**: a *useful* agent even on a 1.5b model on <4GB-class hardware, with
+sub-second decision steps.
+
+**Secondary Goal** (In progress): [Colibri](https://github.com/JustVugg/colibri/tree/main) compatibility for fast glm-5.2 powered agentic AI running on the SSD with <16gb ram — status in [Colibri compatibility](#colibri-compatibility-work-in-progress).
+
+Core idea: the harness walks a **tree of decisions** and renders each one as
+a numbered menu; the model answers with **~3 tokens**. Everything
+deterministic (parsing, page rendering, notes, undo) is code; the model is
+only the policy oracle. Notes are taken by *pointing at numbered sentences*,
+and never by rewriting content. Where a ReAct-style agent might spends 200-500 tokens and
+15-30s per step; ThreeToks could spends only 1-3 tokens and ~0.3s.
+
+- Architecture: [docs/DESIGN.md](docs/DESIGN.md)
+- Writing a new agent: [docs/AGENTS.md](docs/AGENTS.md)
+- Phase-0 experiments: `spikes/` (E1 menu accuracy, E2 KV-cache latency,
+  E3 note-taking quality, E4 reformulation recovery)
+- Default policy model: `qwen3.5:2b` via Ollama, for all nodes.
+  `deepseek-r1:1.5b` is supported (raw-mode think suppression) but is not
+  used by default.
+
+## Install
+
+The core is stdlib-only and runs on a bare install. Every feature beyond
+that is an optional extra: install the package, get the capability; skip
+it, and the TUI still starts and simply leaves that feature out.
+
+| Extra | Enables | Packages |
+|---|---|---|
+| `web` | web-research agent | requests, beautifulsoup4, markdownify |
+| `browser` | Selenium page fetching (`/browser`) | selenium |
+| `stt` | voice input: microphone speech-to-text | vosk, sounddevice |
+| `tts` | voice output: spoken answers | piper-tts, sounddevice, numpy |
+| `voice` | both `stt` and `tts` | — |
+| `camera` | `look` agent (webcam + vision model) | opencv-python |
+| `relay` | `light` agent (GPIO lamp, Raspberry Pi only) | RPi.GPIO (ARM only) |
+
+Global executable via [uv](https://docs.astral.sh/uv/):
+
+```sh
+uv tool install "3toks[web] @ /path/to/ThreeToks"   # pick your extras
+threetoks
+```
+
+Development install into the repo's own environment:
+
+```sh
+uv pip install -e ".[web,browser]"          # research setup
+uv pip install -e ".[web,voice,camera]"     # voice assistant setup
+uv pip install -e ".[web,voice,relay]"      # Raspberry Pi setup
+```
+
+Configuration resolves as `$THREETOKS_CONFIG` > `./config.ini` (dev runs
+from the repo) > the per-user file — `~/.config/threetoks/config.ini` on
+Linux/macOS (`$XDG_CONFIG_HOME` honoured), `%APPDATA%\threetoks\config.ini`
+on Windows. The first `threetoks` start without any config walks you
+through a short setup wizard and writes the per-user file; re-run it any
+time with `/setup` inside the TUI, or just edit the file.
+
+## Quickstart
+
+The default setup requires [Ollama](https://ollama.com) running locally
+with the default model pulled (any other local server works too — see
+[LLM providers](#llm-providers); a cloud API is possible but optional —
+see [Cloud API providers](#cloud-api-providers-optional)):
+
+```sh
+ollama pull qwen3.5:2b
+```
+
+Interactive CLI:
+
+```sh
+threetoks
+# or just 'threetoks'
+python3 -m threetoks
+```
+
+One-shot from the command line:
+
+```sh
+python3 -m threetoks.cli "When was the Eiffel Tower completed?" [--rounds N]
+```
+
+Optional, both improve web research quality:
+
+- **SearXNG** — run a local instance for better search results:
+  `./start_search_engine.sh` (see
+  [infra/searxng/README.md](infra/searxng/README.md)); auto-detected at
+  startup, falls back to scraping Bing, then DuckDuckGo's HTML endpoint,
+  with no setup. Required for the browser modes below.
+- **Chrome browser** — `/browser plain` in the TUI (or `[browser] mode =
+  plain`) drives a real Chrome instead of plain HTTP fetch, for
+  JS-rendered pages; `/browser plain headless` hides the window,
+  `/browser http` reverts. Requires Chrome and the `browser` extra. Chrome
+  hides its automation switches and keeps one profile in
+  `~/.cache/threetoks/chrome-profile`, so solved bot checks and cookies
+  carry over between sessions. When a site shows a bot check, a visible
+  window waits 45 s so you can solve it; a site that stays blocked is
+  skipped for the rest of the session. The `plain` mode pairs with the
+  local SearXNG: startup refuses it (with a pointer to
+  `./start_search_engine.sh`) when no instance answers.
+
+## Agents
+
+`threetoks` dispatches every request through a one-token router:
+the model is shown a menu of agent names + one-line descriptions and picks
+one digit. An invalid or unparseable choice falls back to the first
+registered agent (`casual`).
+
+| Agent | Handles | Notes |
+|---|---|---|
+| `casual` | small talk, quick replies | canned-reply bank ranked by keyword overlap; exact hint match answers with zero model calls; falls through to a bounded free-text reply only when nothing fits |
+| `web` | research questions using internet search | thin wrapper over the judged deep-research loop (below); full vertical with search, page reading, link following, notes |
+| `files` | questions about local files/folders | explorer sandboxed under `services.files_root`; same menu/notes/answer shape as the web vertical; can run a one-line shell command once a deterministic deny-list and a fresh one-token safety judge both clear it |
+| `code` | "where is X", "fix the bug in Y", "compute Z from data.csv", "write a script that…" | four modes behind one menu: navigate (free when the request names the symbol, else a ranked shortlist menu), edit (ranked shortlist → one confirm menu over the function's source → only the changed function is generated → repo tests or an import check judge it → a diff you approve with `y` before anything is written), compute (runs once in `[files] root`, answers with the result), author (plans small functions and writes them one by one). Generated code runs isolated: temp directory, no API keys in its environment |
+| `light` | "turn on the light", relay control for raspberry pi | only registered on a Raspberry Pi with the `relay` extra; clear phrasings are settled by a regex with zero model calls, anything else spends one menu decision |
+| `look` | "what am I holding?", camera questions | only registered with the `camera` extra AND a vision-capable model (llava, qwen-vl, gpt-4o, claude, gemini, ...); one frame, one bounded vision decision |
+
+Slash commands in the TUI: `/help`, `/agents` (list registered agents),
+`/deep N` (set research rounds), `/browser http|plain [on-screen|headless]`,
+`/model NAME` (swap the policy model), `/voice on|off|debug` (talk instead
+of typing; `debug` traces what the microphone hears and why each gate
+dropped it), `/debug [on|off|full]` (show the raw model answer and finish
+reason under each decision; `full` also prints the complete prompt of
+every model call — the request, menu options, and prefill the decision
+actually saw), `/setup` (re-run the config wizard), `/quit`.
+
+Adding an agent is one new module plus one line in the registry — see
+[docs/AGENTS.md](docs/AGENTS.md) for the contract and a minimal example.
+
+## LLM providers
+
+3toks is local-first: no account, no API key, nothing leaves your
+machine.
+
+| Provider | `provider =` | Mode |
+|---|---|---|
+| Ollama (default) | `ollama` | raw — the measured path |
+| LM Studio | `lm-studio` | chat, `localhost:1234` |
+| any local OpenAI-shaped server (llama.cpp, vLLM, [colibri](#colibri-compatibility-work-in-progress), ...) | `custom` + `api_base` | chat |
+
+```ini
+[llm]
+provider = custom
+api_base = http://127.0.0.1:8080/v1
+model = my-local-model
+```
+
+If your local server requires a key, export it as `LLM_API_KEY` —
+otherwise no environment setup is needed. All transports are
+stdlib-only, no SDKs to install.
+
+`[llm] disable_think = true` (the default) starts every raw-mode ChatML
+answer with an empty `<think></think>` block. Thinking Qwen models need
+it: without it, qwen3.8 answers every menu with nothing, and the router
+falls back to `casual`. Set it to `false` to send the plain prompt.
+
+*Debugging*: `/debug on` shows each raw completion and its finish
+reason — `length` means the node's token cap truncated the reply before
+
+## Cloud API providers (optional)
+
+Never required — everything above runs fully local. Cloud APIs exist
+for convenience: trying 3toks before pulling a local model, or checking
+how a bigger model handles the same decision tree. Set `[llm] provider`
+and export the provider's API key:
+
+| Provider | `provider =` | API key env var |
+|---|---|---|
+| Anthropic | `anthropic` | `ANTHROPIC_API_KEY` |
+| OpenAI | `openai` | `OPENAI_API_KEY` |
+| OpenRouter | `openrouter` | `OPENROUTER_API_KEY` |
+| Together | `together` | `TOGETHER_API_KEY` |
+| DeepSeek | `deepseek` | `DEEPSEEK_API_KEY` |
+| Google (Gemini) | `google` | `GOOGLE_API_KEY` |
+
+```ini
+[llm]
+provider = openrouter
+model = qwen/qwen-2.5-7b-instruct
+```
+
+Keys are read from the environment only, never from config files. Cloud
+providers run in the same chat mode described under
+[LLM providers](#llm-providers) — supported, not recommended.
+
+## Colibri compatibility (work in progress)
+
+[Colibri](https://github.com/JustVugg/colibri/tree/main) is a
+llama.cpp-style engine that runs GLM-5.2 (744B MoE, int4) by streaming
+experts from SSD. The intended wiring needs no new code on the 3toks
+side — colibri's `coli serve` speaks the OpenAI chat API, so it plugs in
+as a `custom` provider:
+
+```ini
+[llm]
+provider = custom
+api_base = http://127.0.0.1:8000/v1
+model = glm-5.2     ; must match coli serve's --model-id
+send_seed = false           ; colibri rejects the seed parameter
+```
+
+The pairing is a natural fit: 3toks' append-only prompts line up with
+colibri's per-slot KV prefix reuse (each step only prefills the new
+suffix — the expensive part on an SSD-bound engine), the 3-24-token
+answer caps are the friendliest possible workload for a 0.05-7 tok/s
+decoder, colibri leaves thinking off by default, reports token usage,
+and serializes generation exactly like 3toks' one-request-at-a-time
+loop.
+
+**Partially working.** Colibri rejects two standard request parameters
+with HTTP 400:
+
+- `seed` — solved on the 3toks side: `send_seed = false` under `[llm]`
+  (shown above) omits it. The only cost is reproducibility of the
+  temperature-0.4 third retry; every other attempt runs at temperature
+  0, where a seed changes nothing. With it set, menu decisions complete
+  end-to-end against colibri's server.
+- `stop` — still blocking: pick-many and short-text nodes send a `"\n"`
+  stop sequence; colibri answers "Custom stop sequences are not
+  supported yet." Every vertical uses short-text nodes, so full
+  episodes need `stop` support on the colibri side — server-side
+  truncation would suffice, since the 3toks caps are 3-24 tokens. PR
+  coming (just bought a new SSD so that I can actually run colibri and
+  do proper testing).
+
+**Limitations that remain once it connects:**
+
+- It runs in the same degraded chat mode as every other chat provider
+  (see [LLM providers](#llm-providers)): prefill is a hint, not
+  pre-seeded, so single-digit reliability leans on GLM-5.2's
+  instruction-following. A future path to full raw-mode fidelity is
+  colibri's `/v1/completions` endpoint (raw string prompt, no template)
+  plus a GLM chat template in the family table.
+- The HTTP timeout is a fixed 120s and colibri's non-streaming
+  responses send nothing until generation completes; on slow-SSD
+  hardware a single decision can exceed that. A configurable timeout is
+  on the list.
+- Throughput expectations: colibri decodes at 0.05-7 tok/s depending on
+  hardware. A 3toks episode spends a handful of tokens per step, which
+  is exactly the point — but a multi-step episode is still minutes, not
+  seconds. Sub-second decision steps stay a local-Ollama property.
+
+## Voice, camera, and relay (optional)
+
+Each feature activates purely by installing its extra — no code changes.
+All configuration lives in the `[voice]`, `[camera]`, `[relay]` sections
+of `config.ini` (written with commented defaults by the setup wizard).
+
+**Voice input — `3toks[stt]`** (vosk + sounddevice). `/voice on` in the
+TUI listens on the microphone. Every transcript passes three gates before
+reaching the agents: a hallucination list (junk Vosk invents from
+silence), an echo filter (n-gram match against the assistant's last
+spoken answers, so it never talks to itself), and a one-token pertinence
+menu ("meant for the assistant" vs "background noise") decided by the
+policy model — cost: 1 token per utterance that survives the free gates.
+The vosk model auto-downloads for `[voice] lang` (default `en-us`); set
+`stt_model_path` to use a local one. `/voice debug` traces each raw
+transcript as it arrives, why a gate dropped it (empty, hallucination,
+echo), and whether the pertinence menu judged it directed at you or noise
+— and if nothing at all appears in debug mode while you speak, check your
+OS microphone permission for the terminal you run 3toks in.
+
+**Voice output — `3toks[tts]`** (piper-tts + sounddevice + numpy). Spoken
+answers via a local Piper voice. Voice models are NOT auto-downloaded:
+grab a `.onnx` + `.onnx.json` pair from
+[rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices) and
+point `[voice] tts_model_path` at the `.onnx`. The microphone is
+hard-muted during playback plus `post_speak_delay` seconds of reverb
+decay. Install both sides at once with `3toks[voice]`; either side alone
+also works (voice-in/text-out or type-in/spoken-out). Set
+`[voice] enabled = true` to start the TUI already listening. `/setup`
+includes an optional voice step that walks the two-file piper download
+interactively — it spells out that you need the `.onnx` *and* its
+`.onnx.json` sidecar side by side, offers to open the vosk/piper model
+pages, and re-asks any path that fails its check until you have a working
+one (or keep yours). `/voice on` re-reads the saved config as it starts,
+so a voice setup applies without restarting the TUI — if voice is already
+running, `/voice off` first.
+
+**Camera — `3toks[camera]`** (opencv-python). Registers the `look` agent
+when the configured model is vision-capable. One JPEG frame (device
+`[camera] index`) rides along with a single bounded decision — note that
+an image costs far more tokens than a menu decision, so point this at a
+vision model deliberately, e.g. `ollama pull llava` + `/model llava`.
+
+**Relay — `3toks[relay]`** (RPi.GPIO, installs only on ARM). On a
+Raspberry Pi, registers the `light` agent driving an active-low relay
+board on BCM pin `[relay] pin` (default 17). On any other machine the
+extra installs nothing and the agent stays unregistered. The light agent
+is intentionally minimal — treat it as the **template for your own Pi
+hardware tools**; the step-by-step recipe (hardware module, agent,
+registration, packaging, tests) is in
+[docs/AGENTS.md](docs/AGENTS.md#hardware-agents-raspberry-pi-the-light-agent-is-a-template).
+
+## Deep research
+
+Both the `web` agent and `python3 -m threetoks.cli` run the same judged loop
+(`threetoks/research.py`): run a research episode, then judge the answer.
+Deterministic pre-checks reject obvious junk (empty, digits-only, or
+note-less answers) with zero model calls; anything else goes to the model
+as a **semantic** two-option menu ("states the facts asked for" vs. "vague,
+off-topic, or not a real answer") rather than an abstract yes/no — E1/E4
+found the 1.5b's yes/no confirm was close to a coin flip, while semantically
+worded options are a normal menu decision it handles well. If the judge
+rejects, the model proposes a new search angle that must differ from every
+query already tried, and another round runs over the *same* note store, so
+evidence accumulates across rounds instead of resetting. `--rounds N` /
+`/deep N` cap how many rounds run.
+
+Honest note: answer quality is bounded by the search provider. Both
+SearXNG's upstream engines and the DuckDuckGo HTML fallback rate-limit or
+degrade under heavy use; a run that fails to find an answer often reflects
+a bad search result page, not a bad decision by the model. Running a local
+SearXNG instance (see `infra/searxng/`) reduces but does not eliminate this.
+When the degradation is total the loop now says so instead of improvising:
+a search layer whose every hop is bot-walled ends the run with a "search
+unavailable" answer, and an episode where every page open failed ends with
+"could not open any web page" (each failed open also shows as a `fetch`
+line in the TUI ticker, with the reason), a non-zero CLI exit, and no
+answer synthesis from an empty note store.
+
+## Architecture
+
+See [docs/DESIGN.md](docs/DESIGN.md) for the full design: decision node
+types, the append-only prompt layout, the model/backend strategy, the
+escalation ladder for recovering from misclicks, and the repository layout.
+
+## Experiments 
+
+Phase-0 picked the default policy model and the shape of the decision nodes
+from measured behavior, not guesswork: `qwen3.5:2b` answers menus
+at 76.7% accuracy versus 23-26% for `deepseek-r1:1.5b` (disqualifying it as
+policy model), the escape option had to be rendered as an ordinary last
+numbered choice rather than digit `0` (tiny models essentially never emit an
+out-of-distribution `0`), and a temperature/reshuffle retry ladder recovers
+roughly half of first-attempt failures. Full detail and the open questions
+this leaves are in [docs/DESIGN.md §11](docs/DESIGN.md) and the individual
+`spikes/*/REPORT.md` files.
+
+## Tests
+
+```sh
+python3 -m unittest discover -s tests
+```
+
+## Eval
+
+```sh
+python3 eval/run_eval.py
+```
+
+Scores retrieval (did the notes capture the answer) and answer synthesis
+separately per task; see `eval/tasks.jsonl` and `eval/results/`.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, test conventions,
+and the load-bearing design rules to know before touching the core
+pipeline. Security issues go to [SECURITY.md](SECURITY.md), not a public
+issue. Participation is covered by the [Code of
+Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE)

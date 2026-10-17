@@ -1,0 +1,401 @@
+# X2
+
+An agentic software engineering method: AI agents do the building, the build enforces the rules
+that must always hold, a person decides only at the gates, and the method measures its own cost
+in human turns.
+
+## The code is no longer the treasure
+
+Something strange happened to software in the last few years, and almost nobody outside the
+industry noticed.
+
+For half a century, the most valuable thing a software company owned was its code, the written
+instructions its programs run on. Code was slow and expensive to produce. Companies guarded it
+like gold, because rewriting it could take years and cost millions.
+
+Then AI learned to write it.
+
+Today, an AI assistant can write, and rewrite, working code in minutes. An entire section of a
+program can be regenerated faster than a person could read it. Overnight, code went from the most
+expensive thing a company owns to the cheapest. And anything that can be remade on demand is no
+longer a treasure.
+
+So what is the treasure now?
+
+The decisions. The things no AI can invent for you:
+
+- how a product should be split into parts
+- what information it must keep, and what must always stay true about it
+- what it should look like and how it should feel to use
+- which rules must never, ever break
+
+A banking app can be rebuilt in an afternoon. The decision that no customer's balance may ever
+silently change cannot be rebuilt by anyone but the people responsible for it.
+
+X2 takes this reversal seriously. It was created for teams who let AI do the building, and it
+answers one uncomfortable question: how do you stay in control of a builder that works faster
+than you can watch?
+
+![The X2 engineering loop: engineers decide, agents build, the log improves both](assets/x2-method-engineering-loop.png)
+
+## The trouble with a brilliant, forgetful builder
+
+Imagine hiring a builder who works a hundred times faster than anyone alive, but who forgets
+everything between jobs and has no personal stake in whether the work is any good.
+
+You could hand that builder your rules on paper. It would read them, then forget or ignore them
+on the very next task. This is not a hypothetical; it is how AI coding assistants actually
+behave. A rule that nobody actively checks is only a suggestion.
+
+## What X2 does about it
+
+X2 sorts everything into three piles and puts each one where it cannot go wrong.
+
+**The unbreakable rules go into the machinery.** Instead of living on paper, they are built into
+the automated checks that every piece of work must pass before it ships. Break a rule and the
+work simply fails, no matter what the AI claims. A machine enforces them, so they cannot be
+forgotten.
+
+**The decisions stay with people.** They live in a handful of short documents that humans own and
+humans change. This is the treasure, and it is kept deliberately small.
+
+**The code becomes disposable.** It is regenerated from the decisions whenever needed, like
+printing a fresh copy from a master document. Nobody mourns it.
+
+The result: nothing important depends on the AI remembering anything.
+
+In the method's own vocabulary the three piles are the invariants, the decisions and the
+consequences. [`X2.md`](X2.md) walks through all three, and the reasoning behind them.
+
+## People keep the wheel
+
+The AI does the building, but a person decides at three checkpoints:
+
+1. **Approve the plan.** What is going to be built.
+2. **Approve the design.** What it will look like, confirmed as the target to build toward.
+3. **Accept the finished work.** Only after an independent check confirms it truly runs.
+
+Between checkpoints, the AI must stop and ask whenever it hits a question no document answers.
+
+And "finished" is never taken on the builder's word. Work counts as done only when a report,
+verified by someone who did not build it, shows it was genuinely tested and genuinely works.
+Nobody grades their own homework. The failure this guards against even has a name inside the
+method: **green-but-wrong**, a build where every light is green while the product is quietly not
+what was decided.
+
+## What it has built
+
+**Vemos** is a real-time whiteboard for running facilitated sessions. Editors set a board up and
+hold its scaffold still; participants join from a personal link and contribute freely, and
+everything they touch is governed by rules the product enforces rather than merely records. X2
+built it end to end, and the whole record ships with it in
+[teklabsdigital/x2-examples](https://github.com/teklabsdigital/x2-examples): the stories, the
+locked design, every decision, and the numbered ledger of every human turn it took.
+
+![The editor's screen while the room works: one person drags a card, another rewrites theirs, a line is drawn between two cards, text lands, a highlight sweeps across a note, and a shape appears.](assets/vemos-collaboration-acts.gif)
+
+One canvas with ten people on it, live: cards dragged and rewritten, lines drawn between them,
+text, highlights and shapes landing, every cursor named, every note signed by the person who
+wrote it.
+
+[learn.reqwiseconsulting.com](https://learn.reqwiseconsulting.com) is a free seven-lesson prompt
+course with an AI trainer that marks your work. X2 built it in 2 days, six slices, idea to
+production. Every moment a person had to step in was logged as it happened and published in
+[`record/metrics.md`](record/metrics.md), which is the part most methods cannot show you.
+
+## Get started
+
+You need [Claude Code](https://claude.com/claude-code), because the skills are written for it, plus
+the toolchain of whichever edition you build on. Two editions ship, measured against the same
+claims catalog, each publishing its own conformance record:
+
+| edition | the stack | you need |
+|---|---|---|
+| [`kernel/node-react/`](kernel/node-react/) | Fastify 5 on Node 24, TypeScript end to end, React 19 client, `node:sqlite` as the store | Node 24 |
+| [`kernel/dotnet-react/`](kernel/dotnet-react/) | ASP.NET Core on .NET 9, EF Core, React 19 client, SQL Server as the store | .NET 9 SDK, Node 24, Docker |
+
+The React client is the same in both, composed from [`kernel/shared/`](kernel/shared/), which is
+the home for everything that is not specific to a stack. The Node edition needs nothing beyond the
+runtime, because its database engine ships inside Node itself and there is no container to start.
+The .NET edition runs its engine in Docker and its client on Node.
+
+They are not equally measured, and the records say so rather than averaging it away. The .NET
+edition is the older one and has been through more verification rounds; the Node edition is the
+second witness, built later to test whether the claims are portable at all, and more of its rows
+are still owed. Each edition's conformance table states its own status row by row, and neither is
+reconciled against the other.
+
+Install the plugin once, from inside Claude Code:
+
+```
+/plugin marketplace add teklabsdigital/x2-method
+/plugin install x2@x2
+```
+
+The first command registers this repo as a plugin marketplace; the second installs the skills,
+namespaced under `x2:`, so they are available in every project, including the new repo the method
+creates for you. Type `/x2:` in Claude Code to see them listed.
+
+Invoke a skill:
+
+- **By name.** Type the slash command, such as `/x2:stories`.
+- **By intent.** Say what you want ("I have a product idea", "the app misbehaves at runtime").
+  Each skill declares when it applies, and Claude selects the right one.
+
+Ask for `/x2:help` at any time to see what to run next. Migrating an existing project? Read
+"Greenfield first, and why" further down, then use `/x2:adopt` instead of the flow below.
+
+To work on the method itself, clone the repo and symlink `skills/*` into Claude Code's personal
+skills folder instead; installed that way the skills appear unscoped (`/stories`, `/seed`, and so
+on) rather than under `x2:`.
+
+### From a user story to a running app
+
+X2 works in slices: thin pieces of the product that each work end to end. Start Claude Code and
+describe your product idea. Then follow the flow. You approve at 3 gates and answer the odd
+question; the agent does the rest.
+
+1. **x2:stories** turns your idea into epic-level stories, one line each. *You approve them
+   (gate 1).*
+2. **x2:seed** creates your project repo from an edition and arms the CI gate. Name the edition
+   you want when you run it; it instantiates that edition's manifest.
+3. **x2:decompose** records how the system divides up, the schema and the first slice.
+4. **x2:design** produces the whole-product design prototype. *You approve it (gate 2a).*
+5. **x2:lock** copies the prototype into your repo as the contract to build to. *You approve the
+   lock (gate 2b).*
+6. **x2:derive-tests** derives the acceptance tests from the locked design.
+7. **x2:implement** builds the slice until every check passes. It asks you only when it hits a
+   decision no record answers.
+8. **x2:slice-exit** produces the audited report that declares the slice done. *You accept it
+   (gate 3).*
+
+Then run it: each edition's README has a "Running it" section that starts the app locally, for
+[Node](kernel/node-react/README.md#running-it) and for
+[.NET](kernel/dotnet-react/README.md#running-it). Deployment is per project: the CI loop gates
+every merge, and you attach your own release step to it.
+
+Repeat steps 5 to 8 for each next slice. At project close, **x2:extract** runs the extraction
+loop described in the next section, so what the ledger recorded feeds the method.
+
+## The method keeps score of itself
+
+Every time a person steps in, the moment is logged and classified: a decision only a person could
+take, or a defect in the method or its tooling. The count of those turns per shipped slice is the
+method's price tag, and the goal is to bring it down.
+
+At project close, **x2:extract** mines that log with two lenses. The defect lens catches what
+bit. The churn lens catches what quietly resisted: decisions that never failed a test yet kept
+costing attention, the failure no retrospective surfaces because nothing ever went red. Findings
+change the method only through a human ruling; the sanitized results are published in
+[`record/`](record/), and the next project starts by reading them. Each project is meant to make
+the next one cheaper, and the record shows whether it did.
+
+## Where the evidence stands
+
+The invariants come from 2 production systems. The method itself has now run on three projects,
+every human turn logged, classified and audited. The second is public and running at
+[learn.reqwiseconsulting.com](https://learn.reqwiseconsulting.com); the third, Vemos, is
+published whole, ledger included, in
+[teklabsdigital/x2-examples](https://github.com/teklabsdigital/x2-examples).
+
+Its first headline figure (25 human turns for the pilot's first slice) is retired, by the
+method's own extraction ruling: it mixed counting rules and scopes. The metric history lives in
+[`record/metrics.md`](record/metrics.md) under one counting rule. What travels across projects:
+
+- **Defect share of counted turns fell from about a third on the pilot to about a tenth** on the
+  second project, and held at about a tenth on the third.
+- **The marginal slice is where the method pays out.** After its first slice, the second
+  project's slices cost 1 to 7 counted turns mid-build, one of them zero. The third project's
+  seven slices ran 1 to 18: once fidelity checking against the locked design became
+  deterministic mid-project, the next three slices cost 1 to 2 turns each, and the cost that
+  remained sat where no automated tier can drive a pointer on a direct-manipulation canvas.
+- The pilot's watch classes (bootstrap loss, green-but-not-running, completeness
+  interrogations) went to near zero in the second project.
+
+Treat those numbers the way the method itself demands:
+
+- A sample of three, with no baseline. Nobody has yet built the same product without the method
+  and counted.
+- The third project's extraction is a milestone pass, not a close: workstreams are still open,
+  exit reports are owed, and its numbers can still move.
+- The 2 days is wall clock on one project, self run, and it is not the method's metric. It says
+  nothing about a team that did not write the method. The per-slice turn counts are what the
+  record actually supports.
+- Whole-project totals do not compare across projects; per-slice cost and defect share do,
+  which is why they are the published numbers.
+- The central regeneration claim has not yet run: no module has been regenerated from its
+  decisions.
+
+The kernel, the skills, the acceptance test, an invariants review, the extraction passes and a
+second edition on a different stack have all landed; the open experiments are listed in
+[`X2.md`](X2.md) under "What remains open".
+
+## How X2 compares
+
+Beneath its own vocabulary X2 is a control system more than a coding technique: the point is not
+to write code better, it is to keep people in charge of software produced faster than they can
+read it.
+
+**To Agile.** X2 keeps Agile's engine: thin working slices, requirements that stay open, change
+kept cheap. But every Agile guarantee is carried by human discipline: memory, habit, self-report.
+An AI has none of those and no stake in the outcome. So X2 takes each rule Agile trusts a person
+to hold and hands it to something that cannot forget or fudge: the build.
+
+| | Agile carries it with people | X2 carries it with a mechanism |
+|---|---|---|
+| **Standards** | Heads, wikis, review habits: rules that decay | Compiled into the kernel; a breach fails the build, not a review |
+| **"Done"** | A checklist the team grades itself on | A report audited by someone who didn't build it |
+| **Quality** | Review and pairing, after the code exists | Checks that gate every change, before merge |
+| **Acceptance** | Criteria hand-written per story | Tests derived from the locked prototype |
+| **The asset** | The working code | The decisions; code is regenerated from them |
+| **Progress** | Story points: output, estimated | Human turns per slice: cost, measured |
+| **Improvement** | Retrospectives: opinions, remembered | Extraction: measured churn and defect share, ruled into the method |
+| **Coordination** | Ceremonies keep the team in step | The agent builds; a person decides at the gates |
+
+Agile moved trust from documents to people. X2 moves the part of that trust that must never vary
+from people to the build, and leaves the rest with people, where it belongs. For how X2 answers
+the Agile Manifesto's 4 values, see [`X2.md`](X2.md).
+
+**To the other AI methods.** Two families dominate agentic development today, and X2 belongs to
+neither. Agent-team methods, [BMAD](https://docs.bmad-method.org/) foremost, simulate a human
+team: role agents (analyst, product manager, architect, developer, tester) plan a PRD and an
+architecture document, then shard them into story files an implementing agent executes.
+Spec-driven tools ([Spec Kit](https://github.com/github/spec-kit), [Kiro](https://kiro.dev/),
+[OpenSpec](https://github.com/Fission-AI/OpenSpec)) put a specification ahead of every feature:
+requirements, design and tasks written first, code generated against them.
+
+Both families answer the forgetful builder with documents: write everything down and have the AI
+read it back on every task. X2's answer is mechanism, because prose that nothing checks is a
+suggestion, however good the template that produced it. That difference shows in three places: a
+rule breach fails the build instead of slipping past a reader, "done" is judged from outside
+instead of self-declared, and the method measures its own cost and learns from its own record.
+
+| | Agent-team methods (BMAD) | Spec-driven tools (Spec Kit, Kiro, OpenSpec) | X2 |
+|---|---|---|---|
+| **Rules live in** | Personas, templates, checklists: prose, re-read each task | A constitution or steering files: prose, re-read each task | The kernel; a breach fails the build |
+| **The specification** | PRD and architecture doc, sharded into stories | Requirements, design and tasks per feature | Epic stories plus the locked design prototype |
+| **Acceptance** | Criteria hand-written into each story | Criteria hand-written per requirement | Tests derived from the locked prototype |
+| **"Done"** | The agent team checks its own work | Tasks complete against the spec | An exit report audited outside the builder's context |
+| **The asset** | The documents | The specs | The decisions; code and tests are regenerated |
+| **The team** | Simulated: agents role-play the job titles | One agent walking the spec | Contexts split by incentive: the builder never grades its own record |
+| **Cost** | Unmeasured | Unmeasured | Human turns per shipped slice, logged and classified |
+| **Improvement** | New templates and modules, by hand | New specs, by hand | Extraction: measured churn and defect share, ruled into the method |
+
+The last two rows are the deepest difference. No other method measures what a project cost in
+human attention, so none can show it is getting cheaper, and none has a mechanism that learns
+from its own record.
+
+The honest converse: BMAD and the spec-driven tools are broader today. They run on many stacks
+and many agents, and their communities are large. X2 ships two editions, has run on three
+projects, and says so.
+
+One test cuts through the whole comparison: swap the AI for a better one and see what survives.
+Everything X2 adds, the enforced rules, the derived tests, the outside audit, the logged cost,
+survives that swap unchanged. A method should outlive its generator; a code generator is what
+just got replaced.
+
+## Where it fits best
+
+X2 is overkill for a throwaway prototype, and says so. It earns its keep where the rules are
+non-negotiable and an unwatched builder is most dangerous:
+
+- products that hold data which must never leak between customers
+- health, financial and government software, where the day comes when someone asks for evidence
+  rather than assurances
+- systems other people's software depends on, where a quiet change breaks a stranger's product
+- small teams handing real autonomy to powerful agents, precisely because nobody is left over to
+  re-read everything the agent writes
+
+The claims catalog leans the same way: its deepest families are tenancy, security and the AI
+trust boundary, the places where "the model probably got it right" is not an answer anyone will
+accept. And the claims have already been checked against the control regimes auditors actually
+use (the ASD Essential Eight, SOC 2), so when the evidence question comes, the answer is a
+mapping, not a scramble.
+
+### Greenfield first, and why
+
+X2 works best on a new product. The reasons are mechanical, not a matter of taste.
+
+- **A check armed before the first line cannot be broken.** New projects start green with every
+  check running. Turn the same check on over old code and it reports how much already breaks it,
+  and someone has to fix that or record it as owed.
+- **Some claims are shape, not a check.** Tenancy in the key structure, which layer may depend on
+  which, one deployable unit. New code gets these free. Old code pays in migrations and refactors.
+- **The design is decided once and cannot be retrofitted.** New products design the whole thing up
+  front and derive their tests from it. Adoption locks the screens you already have, because
+  migrating is not redesigning, so whatever was wrong with them is now the contract.
+- **Decisions are almost free when you make them.** New projects write each one down as it happens.
+  Old ones have to dig them out of code written by people who have moved on.
+- **The builder copies what it sees.** Poor practice in the tree teaches the agent to write more of
+  it. A seeded edition teaches it the claims instead.
+
+Underneath all five: X2 treats code as disposable because a decision sits above it. Old code has
+nothing above it. It is the decision, never written down, so there is nothing to regenerate from.
+
+That is not a reason to leave an old system alone. `x2:adopt` runs on a branch behind three gates,
+maps the enforcement you already have rather than rebuilding it, and ends with an honest record of
+where every claim stands. Most teams cannot state that at all. Just expect a migration, not a head
+start: the code, the old docs and the design will disagree, and sorting that out is half the job.
+
+## Why this matters beyond software
+
+For decades, software teams have run on trust in people: their memory, their habits, their
+honesty. That worked because people were doing the building.
+
+The builders are no longer people. X2's wager is that the trust which must never slip should move
+into machinery that cannot forget and cannot fudge, while everything requiring real judgment
+stays with humans.
+
+If AI ends up building most of the world's software, and it is heading that way, then the
+interesting question is no longer who writes the code. It is who makes the decisions, and how
+those decisions are protected from a workforce that never remembers yesterday. X2 is one answer.
+
+## What is in this repository
+
+- [`X2.md`](X2.md): the full method, and the reasoning behind each part of it.
+- [`GLOSSARY.md`](GLOSSARY.md): the record codes (X-8, MET-07, INV-10) the skills and claims cite,
+  each defined in one line.
+- [`kernel/claims/`](kernel/claims/): the 69 claims, the technology-neutral invariants. One file
+  per claim: the harm it prevents, the mechanism that enforces it, and that mechanism's honest
+  limits.
+- [`kernel/dotnet-react/`](kernel/dotnet-react/): a working .NET 9 and React edition that
+  enforces the claims, with the steps to start a new project on it.
+- [`kernel/node-react/`](kernel/node-react/): the Node 24, TypeScript and React edition, built
+  second to test whether the claims are portable, with its own conformance record.
+- [`kernel/shared/`](kernel/shared/): what is not stack-specific, composed into both editions. A
+  hand-edited copy fails the build rather than drifting quietly.
+- [`skills/`](skills/): the 13 skills that run the method, from working out the problem
+  through to a slice that is done and the extraction that follows the project.
+- [`record/`](record/): the published extraction record: the metric history, candidate rules,
+  confirmations, and the negative-space register with its cross-project churn table.
+
+Worked examples live in their own repository,
+[teklabsdigital/x2-examples](https://github.com/teklabsdigital/x2-examples), each published with
+its full record.
+
+## Help improve it
+
+X2 is a sample of three and says so. The feedback worth the most:
+
+- **Run it and publish your ledger.** Open an issue with your turn counts and buckets. That is
+  the method's native evidence.
+- **Challenge a claim.** Name the claim and the failure case. The weakening notes exist to be
+  extended.
+- **Take an open experiment.** The baseline run, the first regeneration and the specification gap
+  are listed in [`X2.md`](X2.md).
+- **Build a third edition.** Two stacks have realised the claims. A third, on a runtime neither of
+  these resembles, is the next real test of "technology-neutral".
+
+Issues and pull requests are welcome.
+
+## Licence
+
+X2 is free to use, commercially or otherwise. Credit is the one condition.
+
+- The method and its documentation: [CC BY 4.0](LICENSE-DOCS). Share and adapt freely; credit
+  "X2 method, Teklabs Digital Pty Ltd, Trevor Attema" with a link to this repository.
+- The source code, meaning the editions and the shared tier composed into them, which is what a
+  seeded project receives: [MIT](LICENSE-CODE).
+
+[`LICENSE`](LICENSE) names the exact directories on each side and is the only place that boundary
+is written, so the three files cannot drift apart.

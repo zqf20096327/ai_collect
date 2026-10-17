@@ -1,0 +1,422 @@
+# CeWL AI
+
+[![Go CI](https://github.com/Chocapikk/cewlai/actions/workflows/go.yml/badge.svg)](https://github.com/Chocapikk/cewlai/actions/workflows/go.yml)
+[![Release](https://img.shields.io/github/v/release/Chocapikk/cewlai)](https://github.com/Chocapikk/cewlai/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Chocapikk/cewlai)](https://goreportcard.com/report/github.com/Chocapikk/cewlai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Replaces CeWL + CUPP in a single Go binary. Crawls HTTP, FTP, SFTP, SMB, and S3 targets, parses 10+ content formats, extracts emails, metadata, and secrets (800+ trufflehog detectors), generates AI-enriched wordlists with 7 providers (incl. opencode) or local models, and mutates passwords - all from one command.
+
+Built on top of the classic [CeWL](https://github.com/digininja/CeWL) concept, rewritten from scratch in Go.
+
+## Install
+
+```bash
+go install github.com/Chocapikk/cewlai/cmd/cewlai@latest
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/Chocapikk/cewlai.git
+cd cewlai
+go build -o cewlai ./cmd/cewlai
+```
+
+## Usage
+
+### Wordlist generation
+
+```bash
+# Basic crawl (classic CeWL mode)
+cewlai -u https://example.com
+
+# With AI enrichment
+cewlai -u https://example.com --ai -p groq
+
+# With password mutations (CUPP-like)
+cewlai -u https://example.com --ai -p groq --mutate
+```
+
+### Secret scanning
+
+```bash
+# Scan a website for leaked API keys, tokens, credentials
+cewlai -u https://example.com --secrets
+
+# Scan an internal file share
+cewlai -u smb://user:pass@192.168.1.10/data --secrets --secrets-file findings.txt
+
+# Scan an FTP server
+cewlai -u ftp://anonymous@ftp.example.com --secrets
+```
+
+### Multi-protocol crawling
+
+```bash
+# FTP
+cewlai -u ftp://anonymous@ftp.example.com
+cewlai -u ftp://user:pass@ftp.example.com/share/docs
+
+# SMB
+cewlai -u smb://user:pass@192.168.1.10/data
+cewlai -u smb://DOMAIN\\user:pass@host/share/path
+
+# SFTP
+cewlai -u sftp://user:pass@host/path/to/files
+cewlai -u sftp://user:pass@host:2222/home/user/data
+
+# S3 (AWS, MinIO, any S3-compatible)
+cewlai -u s3://bucket-name
+cewlai -u s3://bucket-name/prefix?region=eu-west-1
+cewlai -u 's3://bucket?endpoint=http://minio:9000' --auth-user KEY --auth-pass SECRET
+```
+
+### File dump
+
+```bash
+# Dump all files from an S3 bucket to disk
+cewlai -u s3://bucket-name --dump /tmp/loot --secrets
+
+# Mirror a file share
+cewlai -u smb://user:pass@192.168.1.10/data --dump /tmp/share
+
+# Dump a website (all responses saved)
+cewlai -u https://example.com --dump /tmp/site
+```
+
+### Email and metadata extraction
+
+```bash
+cewlai -u https://example.com --email --email-file emails.txt
+cewlai -u https://example.com --meta --meta-file metadata.txt
+```
+
+### AI enrichment
+
+```bash
+export GROQ_API_KEY=gsk_...
+cewlai -u https://example.com --ai -p groq
+```
+
+> [!TIP]
+> Don't know which models are available? List them:
+> ```bash
+> cewlai --list-models -p groq
+> cewlai --list-models -p cerebras
+> ```
+
+> [!WARNING]
+> No API key? The tool tells you what to set:
+> ```
+> $ cewlai -u https://example.com --ai -p groq
+> [-] AI provider error: no API key for groq. Set GROQ_API_KEY or use --api-key
+> ```
+
+### Full example
+
+```bash
+cewlai -u https://example.com -d 3 --ai -p anthropic -m haiku \
+  --lowercase --email --meta --secrets --mutate \
+  -o wordlist.txt --email-file emails.txt --secrets-file secrets.txt
+```
+
+## Flags
+
+```
+Usage: cewlai [<url>] [flags]
+
+AI-Powered Wordlist Generator & Target Recon Tool
+
+Arguments:
+  [<url>]    Target URL to crawl
+
+Flags:
+  -h, --help    Show context-sensitive help.
+
+Target
+  -u, --url=STRING       Target URL to crawl
+  -d, --depth=2          Crawl depth
+  -o, --output=STRING    Output file (default: stdout)
+  -v, --verbose          Verbose output
+      --version          Print version and exit
+      --update           Self-update to latest release
+
+Crawling
+      --user-agent="cewlai/1.0"    User agent for crawler
+      --offsite                    Follow offsite links
+      --proxy=STRING               HTTP proxy URL
+      --auth-type=STRING           Auth type: basic
+      --auth-user=STRING           Auth username
+      --auth-pass=STRING           Auth password
+      --header=HEADER,...          Custom header (repeatable, Key: Value)
+      --exclude=STRING             File with paths to exclude
+      --max-pages=0                Maximum pages to crawl (0 = no limit)
+      --max-files=0                Maximum files to process for FTP/SFTP/SMB
+                                   (0 = no limit)
+  -t, --threads=2                  Number of concurrent crawl threads
+      --no-cache                   Disable crawl cache
+      --cache-ttl=60               Cache TTL in minutes
+      --dump=STRING                Dump all crawled files to directory
+
+Extraction
+  -e, --email                  Extract email addresses
+      --email-file=STRING      Write emails to file
+  -a, --meta                   Extract document metadata
+      --meta-file=STRING       Write metadata to file
+  -s, --secrets                Extract secrets (API keys, tokens, passwords)
+                               via trufflehog detectors
+      --secrets-file=STRING    Write secrets to file
+      --capture-paths          Add URL path components to wordlist
+      --capture-subdomains     Add subdomains to wordlist
+      --capture-domain         Add domain to wordlist
+
+Words
+      --min-word-length=3       Minimum word length
+      --max-word-length=0       Maximum word length (0 = no limit)
+      --lowercase               Lowercase all words
+      --with-numbers            Include words with numbers
+  -c, --count                   Show word frequency count
+  -g, --groups=0                Generate word groups of N
+      --mutate                  Generate word mutations (leet, reverse,
+                                suffixes like CUPP)
+      --mutate-config=STRING    Custom mutation config file (JSON)
+
+AI
+      --ai                 Enable AI enrichment
+  -p, --provider=STRING    AI provider: anthropic, openai, groq, openrouter,
+                           cerebras, huggingface, opencode
+  -m, --model=STRING       Model name or shorthand
+      --api-key=STRING     API key (or use env vars)
+      --base-url=STRING    Custom API base URL for OpenAI-compatible endpoints
+      --list-models        List available models for the selected provider
+      --mode="default"     AI prompt mode: default, passwords, dirs,
+                           subdomains, geo
+      --prompt=STRING      Custom AI system prompt (overrides --mode)
+      --ai-words=200       Number of AI-generated words
+      --ai-context=4000    Max characters of context sent to LLM
+```
+
+## Security and Privacy
+
+> [!CAUTION]
+> Cloud AI providers (Groq, OpenRouter, Cerebras, HuggingFace, Anthropic, OpenAI) receive the crawled context from your target site when you use `--ai`. This includes text content, page titles, metadata, and any other data extracted during the crawl.
+>
+> You have no control over what these providers log, store, retain, or use for model training. Sending client data to a third-party API without authorization may violate your rules of engagement, NDA, or data protection regulations (GDPR, HIPAA, etc.).
+
+> [!TIP]
+> For sensitive engagements, use a local model to keep all data on your machine:
+> ```bash
+> ollama pull llama3
+> cewlai -u https://example.com --ai -p openai -m llama3 \
+>   --base-url http://localhost:11434/v1 --api-key dummy
+> ```
+> No external API calls. No data leaves your network.
+
+---
+
+## AI Providers
+
+> [!NOTE]
+> Tested with Groq and Cerebras. Other providers are supported but not yet fully tested. If you run into issues, please open an issue.
+
+### Paid
+
+| Provider  | Flag           | Models                                                                                         |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------- |
+| Anthropic | `-p anthropic` | `haiku`, `sonnet`, `opus`                                                                      |
+| OpenAI    | `-p openai`    | `gpt-4.1-mini`, `gpt-4.1`, `gpt-4.1-nano`, `gpt-4o-mini`, `gpt-4o`, `o3-mini`, `o3`, `o4-mini` |
+
+### Free (no credit card)
+
+| Provider    | Flag             | Default Model           | Env Var              |
+| ----------- | ---------------- | ----------------------- | -------------------- |
+| Groq        | `-p groq`        | llama-3.3-70b-versatile | `GROQ_API_KEY`       |
+| OpenRouter  | `-p openrouter`  | openrouter/free         | `OPENROUTER_API_KEY` |
+| Cerebras    | `-p cerebras`    | llama-3.3-70b           | `CEREBRAS_API_KEY`   |
+| HuggingFace | `-p huggingface` | Llama-3.3-70B-Instruct  | `HF_TOKEN`           |
+
+### Local (Ollama, LM Studio, vLLM)
+
+```bash
+cewlai -u https://example.com --ai -p openai -m llama3 --base-url http://localhost:11434/v1 --api-key dummy
+```
+
+> No external API calls. No data leaves your network.
+
+### Local opencode server
+
+Route AI enrichment through your own **local `opencode serve`** instance instead of a cloud API. opencode is not OpenAI-compatible, so this provider talks to opencode's own HTTP API and reuses whatever providers/models you already configured in opencode (e.g. `big-pickle`, `bankofai/glm-5.3-flash`).
+
+**Setup**
+
+```bash
+# 1. start the opencode server (default http://localhost:4096)
+opencode serve
+
+# 2. (recommended for remote/exposed setups) protect it
+# cewlai picks the same variable up, or pass it with --api-key
+export OPENCODE_SERVER_PASSWORD="<a-strong-password>"
+
+# 3. run cewlai through it
+cewlai -u https://example.com --ai -p opencode -m big-pickle
+
+# pick a specific provider/model you configured inside opencode
+cewlai -u https://example.com --ai -p opencode -m bankofai/glm-5.3-flash
+
+# non-default port
+cewlai -u https://example.com --ai -p opencode --base-url http://localhost:5000
+
+# list the providers/models opencode exposes to you
+cewlai --list-models -p opencode
+```
+
+**Model format:** `-m providerID/modelID`. The slash is optional — a bare value (e.g. `-m big-pickle`) defaults to provider `opencode`. Default model when `-m` is omitted: `big-pickle`.
+
+> [!NOTE]
+> opencode runs a full agent loop per message, so a batch can be noticeably slower than a direct model call (e.g. ~48s for 100 words). The `--ai-words` target and retry loop still apply. Because the crawl context only travels to your local opencode server, this is the privacy-friendly option for sensitive engagements.
+
+### Proxy and Tor
+
+The `--proxy` flag supports HTTP, HTTPS, and SOCKS5 proxies natively:
+
+```bash
+# HTTP proxy
+cewlai -u https://example.com --proxy http://127.0.0.1:8080
+
+# Tor (SOCKS5)
+cewlai -u https://example.com --proxy socks5://127.0.0.1:9050
+```
+
+> [!TIP]
+> cewlai is compiled with CGO enabled so proxychains should work too. However `--proxy` is more reliable and doesn't require external tools.
+
+---
+
+## AI Modes
+
+| Mode         | Description                                                 |
+| ------------ | ----------------------------------------------------------- |
+| `default`    | General contextual words, industry terms, password patterns |
+| `passwords`  | Likely passwords based on organization context              |
+| `dirs`       | Hidden directories, endpoints, backup files                 |
+| `subdomains` | Likely subdomains for the target                            |
+| `geo`        | Geographic password patterns based on location              |
+
+Custom prompt: `--prompt "Your custom system prompt here"`
+
+## How AI Enrichment Works
+
+1. The crawler visits pages and collects text per page from all sources (HTML, JS, XML, JSON, CSS, metadata, subtitles)
+2. A context summary is built by sampling text evenly across all crawled pages (randomized order, default 4000 chars, configurable with `--ai-context`). This ensures the LLM sees the full breadth of the site, not just the first few pages
+3. The context is sent to the LLM with a specialized prompt (comma-separated output to save tokens). The tool retries until the exact requested word count is reached (`--ai-words`), deduplicating across attempts
+4. The LLM generates contextually related words that are NOT on the site: industry terms, likely passwords, role names, product names, date patterns, location words
+5. Crawled results are cached locally (default 60min TTL, `--no-cache` to bypass). Running different AI modes on the same target reuses the cached crawl instantly
+6. Both crawled and AI-generated words are merged, deduplicated, and sorted
+
+## Features vs CeWL
+
+| Feature                    | CeWL             | CeWL AI                                     |
+| -------------------------- | ---------------- | ------------------------------------------- |
+| Web crawling               | Yes              | Yes                                         |
+| Word extraction            | Yes              | Yes (goquery, cleaner parsing)              |
+| Email extraction           | Yes              | Yes (+ deobfuscation: `[at]`, `(at)`, etc.) |
+| Document metadata          | Yes (exiftool)   | Yes (native Go, no external deps)           |
+| URL component capture      | Yes              | Yes                                         |
+| Word groups                | Yes              | Yes                                         |
+| Word count                 | Yes              | Yes                                         |
+| Proxy/Auth/Headers         | Yes              | Yes                                         |
+| AI enrichment              | No               | Yes (6 providers + local)                   |
+| AI prompt modes            | No               | Yes (5 modes + custom)                      |
+| Single binary              | No (Ruby + gems) | Yes (Go)                                    |
+| Self-update                | No               | Yes                                         |
+| TLS skip                   | No               | Yes                                         |
+| Obfuscated email detection | No               | Yes                                         |
+| JavaScript parsing         | No               | Yes (jsluice, inline + external .js)        |
+| XML/RSS/Atom/SVG parsing   | No               | Yes (sitemap, feeds, SVG text)              |
+| JSON parsing               | No               | Yes (APIs, manifests, configs)              |
+| CSS parsing                | No               | Yes (selectors, variables, URLs, comments)  |
+| Audio/Video metadata       | No               | Yes (ID3, MP4, OGG - title, artist, album)  |
+| Subtitle extraction        | No               | Yes (VTT + SRT transcript text)             |
+| Word mutations (CUPP-like) | No               | Yes (leet, reverse, suffixes, custom JSON)  |
+| AI word count control      | No               | Yes (`--ai-words` with retry loop)          |
+| AI context control         | No               | Yes (`--ai-context` configurable)           |
+| Token optimization         | No               | Yes (comma-separated output)                |
+| Model listing              | No               | Yes (`--list-models` queries provider API)  |
+| API key validation         | No               | Yes (tells you which env var to set)        |
+| Tor/SOCKS5 proxy           | No               | Yes (`--proxy socks5://...`)                |
+| Concurrent crawling        | No (sequential)  | Yes (`-t` configurable threads)             |
+| FTP crawling               | No               | Yes (anonymous + auth, parallel downloads)  |
+| SMB crawling               | No               | Yes (SMB2/3, NTLMv2 auth, URL credentials)  |
+| SFTP crawling              | No               | Yes (SSH password auth, custom port)        |
+| S3 crawling                | No               | Yes (AWS, MinIO, S3-compatible, prefix filter) |
+| Resource following         | `<a>` only       | `<a>` for navigation + separate collector for `<script>`, `<link>`, `<img>`, `<iframe>`, `<track>` (no depth cost) |
+| Error page extraction      | No               | Yes (words from 404, 500, etc.)             |
+| JS URL discovery           | No               | Yes (jsluice URLs are visited)              |
+| HTML comment extraction    | No               | Yes                                         |
+| Secret scanning            | No               | Yes (800+ trufflehog detectors, regex-only)  |
+| File dump                  | No               | Yes (mirror all crawled files to disk)       |
+
+## Library Usage
+
+The packages are importable for use in your own Go tools:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/Chocapikk/cewlai/ai"
+	"github.com/Chocapikk/cewlai/crawler"
+	"github.com/Chocapikk/cewlai/words"
+)
+
+func main() {
+	// Crawl a target (HTTP, HTTPS, FTP, SFTP, SMB, or S3)
+	ctx := context.Background()
+	result, _ := crawler.Crawl(ctx, crawler.CrawlOptions{
+		URL:           "https://example.com",
+		Depth:         2,
+		UserAgent:     "mybot/1.0",
+		ExtractEmails: true,
+		ExtractMeta:   true,
+	})
+
+	// Filter and deduplicate
+	filtered := words.FilterWords(result.Words, 3, 0, true)
+	filtered = words.DeduplicateWords(filtered)
+
+	// AI enrichment
+	provider, _ := ai.NewAIProvider("groq", "", "", "")
+	prompt := ai.ResolvePrompt("passwords", "", 200)
+	maxTokens := ai.MaxTokensForWords(200)
+	aiWords, _ := provider.GenerateWords(ctx, result, prompt, maxTokens)
+
+	// Merge everything
+	final := words.DeduplicateWords(filtered, aiWords)
+	for _, w := range final {
+		fmt.Println(w)
+	}
+}
+```
+
+### Available packages
+
+| Package          | Import                                        | Description                                                      |
+| ---------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| `crawler`        | `github.com/Chocapikk/cewlai/crawler`        | HTTP/FTP/SFTP/SMB/S3 crawling, Source interface, cache, options   |
+| `crawler/parser` | `github.com/Chocapikk/cewlai/crawler/parser`  | Content parsers (HTML, JS, XML, JSON, CSS, PDF, Office, media)   |
+| `words`          | `github.com/Chocapikk/cewlai/words`           | Word splitting, filtering, dedup, counting, grouping, mutations  |
+| `ai`             | `github.com/Chocapikk/cewlai/ai`              | LLM providers, prompt modes, response parsing, model listing     |
+
+## Origin
+
+CeWL has been the go-to wordlist generator since 2012, but it was built in a pre-AI era. It just looks for words on the webpage and that's it. The idea behind this project came from a simple observation: CeWL is kind of old and probably pre-AI, so someone could probably make a more accurate version that uses AI to generate "like words", "industry similar terms", and contextually related passwords. We figured it probably already existed. It didn't.
+
+## Credits
+
+Created by [@Chocapikk](https://github.com/Chocapikk). Original idea by [@stlthr4k3r](https://github.com/stlthr4k3r).
+
+Inspired by [CeWL](https://github.com/digininja/CeWL) by Robin Wood.

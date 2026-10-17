@@ -1,0 +1,360 @@
+# BC PR Reviewer Agent
+
+An open-source, forkable engine that runs a tool-enabled GitHub Copilot CLI
+review over the diff of a Business Central (AL) pull request and posts
+structured findings as inline PR comments.
+
+The engine is **mechanism only**. All review *knowledge* — the skills that
+decide what to look for and how to report it — lives in
+[microsoft/BCQuality](https://github.com/microsoft/BCQuality). Each consuming
+repository owns its **policy** (which BCQuality repo/ref/layers/skills to use,
+severity thresholds) via a small `bcquality.config.yaml`.
+
+```
+Consumer repo (policy)  ──uses──▶  this engine (mechanism)  ──clone+filter──▶  BCQuality (knowledge)
+```
+
+## Repository layout
+
+| Path | Purpose |
+| --- | --- |
+| `agents/ALReviewAgent/scripts/Invoke-CopilotPRReview.ps1` | Orchestrator: checks out the PR head, builds the BCQuality `task-context`, runs the Copilot CLI, parses the findings, renders and posts inline comments + a summary. |
+| `agents/ALReviewAgent/scripts/Get-BCQualityConfig.ps1` | Loads `bcquality.config.yaml` and applies environment-variable overrides. |
+| `agents/ALReviewAgent/scripts/Invoke-BCQualityFilter.ps1` | Prunes a BCQuality clone on disk per the resolved allow/deny/layers policy. |
+| `agents/ALReviewAgent/bcquality.config.yaml` | Default policy baseline. Consumers point at their own copy instead. |
+| `agents/ALReviewAgent/copilot-cli-compatibility.psd1` | Exact Copilot CLI releases the engine has compatibility-validated, including their OTel CLI-version behavior. |
+| `.github/workflows/review.yml` | Reusable (`workflow_call`) workflow that wires the whole thing together. |
+| `Online Evals/` | Pull-based scoring pipeline for evaluating review quality. |
+
+## Consuming the engine
+
+Add a thin caller workflow to your repository. The recommended pattern uses an
+unprivileged `pull_request` intake workflow that saves PR metadata, then a
+`workflow_run` workflow that calls this reusable workflow on the trusted base:
+
+```yaml
+# .github/workflows/pr-review-runner.yml
+name: PR Review Runner
+on:
+  workflow_run:
+    workflows: [PR Review Intake]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  copilot-requests: write
+
+jobs:
+  review:
+    if: github.event.workflow_run.conclusion == 'success'
+    uses: microsoft/BC-ALReviewAgent/.github/workflows/review.yml@<pinned-sha>
+    with:
+      target_repo: ${{ github.repository }}
+      engine_ref: <pinned-sha>          # keep in sync with the uses: SHA
+      config_path: .github/bcquality.config.yaml
+```
+
+The engine resolves the PR coordinates from the caller's `workflow_run` payload
+automatically. To review a specific PR (e.g. from `workflow_dispatch`), pass
+`pr_number`, `head_sha`, and `base_ref` explicitly to bypass resolution.
+
+### Versioning
+
+Engine tags use `X.Y.Z`. `X.Y` comes from the repo-root [`VERSION`](VERSION)
+file and identifies the orchestrator contract/implementation; `Z` is the
+monotonically increasing BCQuality content minor from
+`bcquality.version` in [`agents/ALReviewAgent/bcquality.config.yaml`](agents/ALReviewAgent/bcquality.config.yaml).
+After a merge to `main`, `.github/workflows/version.yml` creates an immutable
+`X.Y.Z` tag only when that version does not already exist, then force-moves the
+floating `latest` tag to the merge commit. A merge that changes neither
+`VERSION` nor `bcquality.version` does not publish a new tag or move `latest`.
+
+Consumers may pin an immutable tag for reproducibility or follow `@latest`.
+Keep the reusable workflow ref and its `engine_ref` input aligned so both jobs
+check out the same engine version.
+
+### Inputs (selected)
+
+| Input | Default | Meaning |
+| --- | --- | --- |
+| `target_repo` | caller repo | `owner/repo` to review and comment on. |
+| `engine_ref` | `main` | Ref of this engine repo to check out for scripts. Pin it. |
+| `config_path` | *(empty)* | Path to the consumer's `bcquality.config.yaml`, relative to the target repo root. Empty uses the engine default. |
+| `pr_number` / `head_sha` / `base_ref` | *(empty)* | Explicit PR coordinates; bypasses `workflow_run` resolution. |
+| `minimum_severity` | `Medium` | Lowest severity to report (`Critical`/`High`/`Medium`/`Low`). |
+| `copilot_model` | `gpt-5.6-sol` | Root model for final self-review and consolidation; consumers may override it. |
+| `copilot_leaf_model` | `gpt-5.6-luna` | Model for isolated review leaves; consumers may override it. |
+
+BCQuality policy (`bcquality_repo`, `bcquality_ref`, `enabled_layers`,
+`disabled_skills`, `knowledge_allow`, `knowledge_deny`) and reviewer behaviour
+(`copilot_model`, `max_findings_per_domain`, `fail_on_parse_error`, …) can also
+be overridden per-input. See `.github/workflows/review.yml` for the full list.
+
+### Domain labels
+
+BCQuality owns each finding's human-readable `domain` label. The orchestrator
+prefers a non-empty `findings[].domain` value (and accepts PowerShell's
+capitalized `Domain` spelling), then renders and groups that label without
+maintaining a duplicate domain taxonomy. For compatibility with older
+BCQuality refs, findings without an emitted label fall back to the legacy
+`from-sub-skill`/`from_sub_skill` map in `Invoke-CopilotPRReview.ps1`, and
+unknown sub-skills fall back to **Other**. Agent findings retain an explicitly
+emitted domain; only unlabeled legacy agent findings use the **Agent** fallback.
+
+The shared DO schema keeps `domain` optional for legacy producers, but current
+BCQuality review leaves emit a trimmed, single-line, control-free, non-empty
+short display label on every finding, including leaf agent findings.
+`al-code-review` preserves that optional value verbatim during rollup and does
+not derive or overwrite it from `from-sub-skill`; its own cross-cutting findings
+use exactly **Agent**.
+Accordingly, this consumer never replaces a present non-empty label. It consults
+the legacy map, then **Other**, only when the producer label is absent or empty.
+After outer whitespace is trimmed, domain identity is otherwise lossless:
+internal whitespace, punctuation, case, and Unicode representation remain
+significant. New comment metadata encodes those exact UTF-8 bytes; only legacy
+single-token metadata and headings use a separate lowercase compatibility path.
+
+### BCQuality dependency and rollout
+
+The reusable workflow accepts three levels of BCQuality configuration:
+
+Deterministic leaf execution requires BCQuality commit
+`b74967bc5b7a454eae19d6a1250199afd869f064` or a newer ref. This is the merge
+commit for [BCQuality#182](https://github.com/microsoft/BCQuality/pull/182),
+which introduced the findings-report and skill-index schemas used by the
+orchestrator. BCQuality ships one findings-report schema for both roles, so
+`sub-results` and `skipped-sub-skills` are optional there and nested
+`sub-results` recurse into the whole report. Before running leaves, the
+orchestrator derives two role contracts from that pinned schema, writes them as
+`_review-findings-report.leaf.schema.json` and
+`_review-findings-report.root.schema.json`, and points each process at its own
+contract:
+
+- The **leaf** contract removes the super-skill-only `sub-results` and
+  `skipped-sub-skills` properties. The shared `additionalProperties: false`
+  then rejects them, even as empty arrays.
+- The **root** contract requires `sub-results` and validates each entry
+  against the embedded leaf contract instead of recursing into the root
+  contract.
+
+Both are mechanical transforms of the pinned schema, not copies. If a BCQuality
+schema change removes the shape the transforms depend on, the run fails closed.
+The engine validates reports against its in-memory copies, not the files that
+review processes can write. It never strips or rewrites role-violating fields,
+and a separate role assertion still names any super-skill-only field found in a
+leaf or nested sub-result. A leaf that produces malformed or schema-invalid JSON is recorded
+as failed and the remaining leaves continue; model-substitution and telemetry
+integrity failures remain fail-closed. `_run-manifest.json` records leaf and
+consolidated-report coverage with a top-level `partial` status when any usable
+review is incomplete; its existing per-process records identify failed leaf IDs
+and reasons. If every leaf fails,
+the run stops before root consolidation and records `failed` rather than
+publishing a zero-coverage review. When summary posting is enabled, failed
+sub-skills also appear in a distinct incomplete-coverage section rather than
+being presented as skipped or as successful zero-finding reviews.
+
+Before launching leaves, the engine captures the changed-file scope, actual
+final-source line counts, and knowledge paths in the pinned, filtered BCQuality
+checkout. Each leaf receives `_review-source-bounds.json` with exact
+repo-relative paths, file existence, and line counts (zero for empty files,
+null for missing/deleted or linked files). Locations use final-source lines,
+not patch lines; location-less findings remain permitted.
+
+The runtime leaf schema also intersects the pinned `location` definition with
+an exact file enum and draft-07 conditional maxima for `line`, `start-line` and
+`end-line`, derived from the same engine-held snapshot in ordinal path order.
+Only existing regular files with at least one final-source line can be located.
+With no eligible files, a boolean-false constraint rejects any present location
+while omission remains valid. Existing types, minima, required fields and
+additional-property restrictions are retained. Root `sub-results` use the same
+bounded leaf locations; root self-review findings retain their existing contract.
+The final semantic gate still enforces range relationships and all other rules.
+
+The leaf prompt explicitly resets numbering per file and forbids multi-operand
+`nl -ba`, whose counter continues across files. This caused the cumulative
+58/98/87-99 coordinates in [BC-Bench run 37586436198](https://github.com/microsoft/BC-Bench/actions/runs/37586436198)
+despite correct 29/42-line source bounds. Small scopes include the **complete**
+JSON-quoted `path: 1..N` list (with empty/missing files identified). The list must
+fit 4,096 conservatively encoded UTF-16 characters, and the complete executable
+plus argument list must fit 24,576. The estimate allows two characters per input
+character plus quotes/separators, leaving headroom below Windows' 32,767-character
+process command-line limit. Larger scopes include no partial list: the prompt
+states the full count and requires reading the complete bounds artifact. Schema
+restrictions are never truncated. The same guard is used on every platform.
+
+These schemas are model-readable inputs, **not constrained decoding**. The prompt
+requires final schema self-validation within the existing invocation, but this
+does not guarantee valid generation, correct in-range anchors, or a 7/7 smoke.
+No cumulative/patch-coordinate conversion, line clamping, location deletion or
+model retry is performed; invalid reports still fail closed.
+
+After JSON, role, and schema checks, deterministic consumer acceptance requires
+each citation-based finding ID to exactly equal its primary reference path,
+every reference to be a safe existing knowledge path, and each location to name
+an exact in-scope existing file with valid inclusive line bounds. Range starts
+must equal the anchor line. Uncited confidence/severity caps follow the pinned
+DO contract, including pins whose schema does not yet express those caps.
+Validation uses engine-held pre-run inventories, never the model-writable
+bounds artifact. It rejects the whole leaf without clamping or retrying, and
+records the precise reason in `_run-manifest.json`.
+`leaf-results/*/_review-report.raw.json` preserves the original report bytes,
+including when the existing omitted-`suppressed` compatibility repair produces
+an accepted derived report. Invalid originals are never rewritten. Bounds and
+raw reports follow the existing `_review-*`/`leaf-results` cleanup lifecycle.
+Article retrieval proof and review knowledge remain BCQuality responsibilities;
+this gate does not claim that an existing cited article was read in full.
+
+The consumer may accept a **bounded normalized copy**, never a modified raw
+payload. The original must pass JSON/role/schema validation and all mechanical
+semantic checks except citation-ID equality and an eligible range-start mismatch.
+For cited, non-agent findings whose every reference is safe and present in the
+captured inventory, only `id` is canonicalized to `references[0].path`. A range
+may be removed only when its positive integer endpoints contain the anchor,
+`start-line != line`, all original endpoints are within the final source, and
+the finding has no `suggested-code` field. This range-only exception also applies
+to otherwise-valid uncited agent findings; their IDs and confidence/severity caps
+never change. The two operations may be combined in one deep-copied candidate.
+
+The entire candidate must pass role/schema/semantic acceptance again before
+the accepted `_review-report.json` is written and offered to root consolidation.
+Any other defect rejects the whole return, with no partial candidate or salvaged
+findings. Summary counts/coverage and leaf producer ownership are also checked.
+Normalized leaf process records in `_run-manifest.json` include `normalization`
+with the raw artifact path/SHA256 and per-finding original/canonical ID or removed
+range values. This optional audit field does not add processes or alter model,
+usage, ordering, or coverage accounting. Canonical reports remain byte-identical
+and have no normalization record. Diagnostics uploaders must retain both
+`_review-report.raw.json` and the accepted report to audit the two transports.
+
+1. A caller-provided `config_path`, resolved from the target repository.
+2. Individual workflow inputs such as `bcquality_repo` and `bcquality_ref`,
+   which override the selected config through environment variables.
+3. When neither is supplied, the engine-owned
+   [`agents/ALReviewAgent/bcquality.config.yaml`](agents/ALReviewAgent/bcquality.config.yaml), whose
+   `bcquality.ref` is the reproducible source-of-truth pin.
+
+A BCQuality dependency update changes both `bcquality.ref` to a reviewed commit
+and `bcquality.version` to that content release. The latter changes `Z` in the
+engine's `X.Y.Z` tag, causing the version workflow to publish the newly vouched
+combination and move `latest`.
+
+For additive producer/consumer contract changes, roll out producer-first:
+
+1. Merge and release the BCQuality producer change.
+2. Merge and release the backward-compatible engine consumer change.
+3. Update `agents/ALReviewAgent/bcquality.config.yaml` to the BCQuality release commit that
+   contains the producer change, update `bcquality.version` with it, and verify
+   the workflow's resolved `bcquality_sha` plus representative rendered output.
+
+Do not pin the engine to an unmerged BCQuality pull-request commit.
+
+## Security model
+
+* The **review** job gives Copilot CLI only native read tools plus a
+  path-scoped write grant for its structured report. Shell, network, MCP, and
+  arbitrary file-write tools are unavailable.
+* The repository under review is exported to a sanitized snapshot before it is
+  mounted. Repository-owned `.github/skills`, `.github/agents`, custom
+  instruction files, and equivalent trusted-configuration roots are excluded;
+  their changes remain visible as inert text in `_review-diff.patch`.
+* The model never receives the original worktree. BCQuality is mounted as a
+  plugin and is not used as a writable working directory. Model working
+  directories are disjoint from the target repository, and Copilot's automatic
+  system-temporary-directory access is disabled; explicitly mounted sanitized
+  snapshots remain the only source view.
+* Copilot authentication uses `COPILOT_GITHUB_TOKEN`, which is declared secret
+  to the CLI so it is redacted and removed from tool and MCP child
+  environments. The job token remains read-only.
+* The **publish** job holds `issues`/`pull-requests: write` but never runs the
+  model; it only posts findings saved as an artifact by the review job.
+* Both jobs check out with `persist-credentials: false` so a successful
+  prompt-injection cannot exfiltrate a git token from `.git/config`.
+* BCQuality is cloned and filtered **before** the model runs. Point
+  `bcquality.repo` only at a trusted source and pin `bcquality.ref` to a
+  reviewed commit — a compromised fork can embed prompt-injection payloads.
+  Local managed checkouts are recreated without invoking Git against any prior
+  cache metadata, then reset and cleaned before filtering. Executable BCQuality
+  tooling must match the resolved Git commit.
+
+## Running locally / in a benchmark
+
+The orchestrator is entirely environment-variable driven and supports a
+single-process mode (`REVIEW_PHASE=all`) that generates and posts in one pass —
+used for local development and offline evaluation (e.g. BC-Bench). Provide a
+BCQuality checkout via `BCQUALITY_ROOT`, the repo under review via
+`REVIEW_WORKSPACE`, and point `BCQUALITY_CONFIG_PATH` at a policy config; then
+invoke `agents/ALReviewAgent/scripts/Invoke-CopilotPRReview.ps1`.
+
+In the reusable two-job workflow, `BCQUALITY_ROOT` is required only by the
+`generate` phase. The checkout's resolved 40-character SHA is passed to the
+checkout-free `post` phase as `BCQUALITY_SHA`; post requires that value and
+publishes only the generated artifact.
+
+### Copilot CLI compatibility
+
+The reusable workflow installs the exact `copilot_cli_version` input (default:
+`1.0.88`), never `latest`. Direct callers must continue to set
+`COPILOT_REVIEW_CLI_VERSION` explicitly. Before any model process starts, the
+engine resolves the same executable used for leaf and root processes, runs
+`copilot --version`, and extracts a strict semantic version from exactly one
+official `GitHub Copilot CLI <version>.` banner. The requested pin must exactly
+equal that startup probe and must have an explicit entry in
+[`copilot-cli-compatibility.psd1`](agents/ALReviewAgent/copilot-cli-compatibility.psd1).
+
+| Exact startup version | OTel `cli_version` contract |
+| --- | --- |
+| `1.0.83` | Required and must exactly equal the startup probe. |
+| `1.0.88` | May be absent; when present, it must exactly equal the startup probe. |
+| Any other version | Rejected before model invocation as not compatibility-validated. |
+
+Model identity, complete token usage, valid telemetry records, and each
+process's requested-model contract remain strict for every supported release.
+`_run-manifest.json` remains schema version `1`:
+`configuration.copilot_cli_version` is the startup-probed authoritative runtime
+version. The caller/workflow pin is validated as exactly equal to that value
+before any model process starts, so the existing v1 manifest shape needs no
+second requested-version property.
+
+To adopt a new CLI release, run the candidate exact version in a
+non-production compatibility canary; verify the executable probe and root/leaf
+model, usage, and telemetry contracts; then add an exact policy entry with its
+tested OTel behavior. Only after that change is reviewed and released should
+the reusable-workflow default be bumped. Production callers must remain pinned
+to a released engine SHA and an exact validated CLI version; no scheduled
+workflow moves either pin automatically.
+
+Each generate/all run also writes `_run-metrics.json` to `REVIEW_OUTPUT_DIR`.
+Schema version `1` has one 18-field shape and two `metrics_source` values:
+`copilot-cli-otel` for executed reviews and `not-applicable` when the local
+preflight skips a diff with no AL files. The latter reports exact zero use;
+provider-dependent `reasoning_tokens` and legacy `premium_requests` remain null.
+
+For executed reviews, `prompt_tokens`, `completion_tokens`, and nullable
+`reasoning_tokens` sum the corresponding `gen_ai.usage.*` values on every raw
+`chat` span, including nested agents, failures, and retries; `total_tokens` is
+input plus output because reasoning is a subtype of output. `api_calls` counts
+those spans rather than conversation turns, and `wall_time_seconds` covers the
+full engine phase. `cached_tokens` and `cache_creation_tokens` are nullable when
+the provider does not expose them. `ai_credits` is the exact sum of
+`github.copilot.nano_aiu` divided by 1 billion, and `premium_requests` is the
+exact sum of the legacy premium-request multiplier in `github.copilot.cost`;
+either total is null unless every counted span exposes its source attribute.
+`usage_complete` is false when any counted request lacks input/output usage.
+Copilot CLI sub-agents launched through the `task` tool emit `chat` spans
+without usage attributes, so every leaf and root review process runs with
+`--excluded-tools task`; delegation would otherwise leave usage incomplete and
+fail the review closed.
+Invalid JSON lines and `chat` spans with invalid numeric/status attributes are
+ignored independently and counted in `malformed_records`.
+
+The OTel contract and attribute names were validated end to end with an isolated,
+auto-update-disabled Copilot CLI `1.0.79` invocation. The raw JSONL is created
+under the system temporary directory, message-content capture is disabled, and
+the file is deleted immediately after harvesting; it is never copied to
+`REVIEW_OUTPUT_DIR`. No console or transcript text is parsed.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

@@ -1,0 +1,1113 @@
+# collectiveai.tools
+
+> Explore a curated selection of AI tools and resources.
+We're thrilled to invite you to this our open-source community dedicated in creating a comprehensive collection of tools that developers, researchers, and enthusiasts can access, and collaborate on.You can help by sending [Pull Requests](https://github.com/hanishrao/collective-ai-tools/pulls) to add more services and make sure to review our [Contribution Guidelines](https://github.com/hanishrao/collective-ai-tools/blob/main/CONTRIBUTING.md) for detailed information on how to get started.
+
+[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Track Awesome List](https://www.trackawesomelist.com/badge.svg)](https://www.trackawesomelist.com/hanishrao/collective-ai-tools)
+[![CodeFactor](https://www.codefactor.io/repository/github/hanishrao/collective-ai-tools/badge)](https://www.codefactor.io/repository/github/hanishrao/collective-ai-tools)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)
+![GitHub contributors](https://img.shields.io/github/contributors-anon/hanishrao/collective-ai-tools)
+![GitHub last commit](https://img.shields.io/github/last-commit/hanishrao/collective-ai-tools)
+![GitHub license](https://img.shields.io/github/license/hanishrao/collective-ai-tools)
+![GitHub issues](https://img.shields.io/github/issues/hanishrao/collective-ai-tools)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/hanishrao/collective-ai-tools)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHyraze%2Fai-collective-tools.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2FHyraze%2Fai-collective-tools?ref=badge_shield&issueType=license) [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/collectiveaitools)
+
+[![Product Hunt](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=419835&theme=light)](https://www.producthunt.com/posts/ai-collective-tools)
+
+## Pricing
+
+Use these hashtags in search to filter out the tools
+- `#free`
+- `#freemium`
+- `#paid`
+- `#opensource`
+
+# Table of Contents
+- [3D](#3d)
+- [Agriculture](#agriculture)
+- [App Builder](#app-builder)
+- [Art](#art)
+- [Audio & Speech](#audio-speech)
+- [Avatars](#avatars)
+- [Browsers](#browsers)
+- [Business](#business)
+- [Chatbots](#chatbots)
+- [Cooking](#cooking)
+- [Copywriting](#copywriting)
+- [Crypto](#crypto)
+- [Customer Support](#customer-support)
+- [Data & BI](#data-bi)
+- [Dating](#dating)
+- [Design](#design)
+- [Developer](#developer)
+- [Developer Tools](#developer-tools)
+- [Document Processing](#document-processing)
+- [E-Commerce](#e-commerce)
+- [Education](#education)
+- [Email Assistant](#email-assistant)
+- [Experiments](#experiments)
+- [Fashion](#fashion)
+- [Finance](#finance)
+- [Fitness](#fitness)
+- [Fun Tools](#fun-tools)
+- [Gaming](#gaming)
+- [Gift Ideas](#gift-ideas)
+- [HealthCare](#healthcare)
+- [Human Resources](#human-resources)
+- [Image Classification](#image-classification)
+- [Image Editing](#image-editing)
+- [Image Generator](#image-generator)
+- [Interior Designing](#interior-designing)
+- [Legal](#legal)
+- [Legal Assistant](#legal-assistant)
+- [Marketing](#marketing)
+- [Meeting](#meeting)
+- [Model](#model)
+- [Models](#models)
+- [Music](#music)
+- [Paraphraser](#paraphraser)
+- [Personal Assistant](#personal-assistant)
+- [Presentation](#presentation)
+- [Presentations](#presentations)
+- [Productivity](#productivity)
+- [Prompts](#prompts)
+- [Psychology](#psychology)
+- [Real Estate](#real-estate)
+- [Religion](#religion)
+- [Research](#research)
+- [Resume](#resume)
+- [SEO](#seo)
+- [Sales](#sales)
+- [Search Engine](#search-engine)
+- [Social Media](#social-media)
+- [Summarizer](#summarizer)
+- [Translation](#translation)
+- [Travel](#travel)
+- [Video](#video)
+- [Weather](#weather)
+- [Writing](#writing)
+
+## 3D
+
+- [3DFY](https://3dfy.ai/) - Generate high-quality 3D models, automatically, in certain object categories using text-prompts. `#paid`
+- [Alpha3D](https://www.alpha3d.io/) - Alpha3D is a revolutionary generative AI-powered platform that transforms 2D images into high-quality 3D assets at scale. `#paid`
+- [GET3D-Nvidia](https://nv-tlabs.github.io/GET3D/) - Generative 3D Textured Shapes from Images. `#free`
+- [Heroify](https://www.heroify.lol/) - Generate high-quality 3D graphics for landing pages. `#paid`
+- [Luphra](https://www.luphra.com/) - Prompt-to-matter: AI that turns prompts and sketches into editable 3D and physical products. `#freemium`
+- [Meshy](https://www.meshy.ai) - Create Stunning 3D Game Assets with AI `#free`
+- [OctoEverywhere](https://octoeverywhere.com/) - OctoEverywhere is a 3D printing failure detection assistant that uses computer vision algorithms to detect printing errors such as spaghetti, layer shifts, adhesion issues, and more `#paid`
+- [Omnia](https://www.theomnia.io/) - Create 3D models based on text prompts or uploaded images. `#paid`
+- [Pixela AI](https://pixela.ai/) - AI-generated game textures. Share yours with the community! `#free`
+- [Pool Planner AI](https://poolplannerai.com/) - Visualize Your Dream Pool Design `#paid`
+- [Spyne](https://www.spyne.ai/) - Spyne is helping used-car dealerships and marketplaces create engaging VDPs with 360° views and images that sell better. `#paid`
+- [StudioGPT by Latent Labs](https://www.latentlabs.art/) - Reimagine Your Visual Designs with AI-Powered Creativity. `#paid`
+- [Tafi Avatar](https://www.maketafi.com/ai) - Text-to-3D Character Engine. `#paid`
+- [Unity](https://unity.com/ai) - Craft interactive, dynamic 3D content for AR, VR, mobile, desktop, and web platforms. `#paid`
+- [Wonder Dynamics](https://wonderdynamics.com/) -  Specializes in AI-driven tools for creating 3D visual effects and character animation, enabling users to integrate 3D characters into live-action footage​. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Agriculture
+
+- [Agremo](https://www.agremo.com/) - AI-powered aerial analytics for crops, offering insights on plant health, stand counts, and stress detection. `#freemium`
+- [Cybertiks](https://cybertiks.com/) - Revolutionizing Agriculture and Environmental Monitoring with AI `#paid`
+- [eAgronom](https://www.eagronom.com/) - Farm management software that uses AI to track, optimize, and make farming more sustainable, with carbon credit integration. `#paid`
+- [GreenThumb](https://www.messengerx.io/) - Unlock the World of Gardening with Your AI Companion `#free`
+- [Plantix](https://plantix.net/en/) - AI plant doctor that diagnoses plant diseases, pests, and nutrient deficiencies from photos taken by farmers. `#free`
+- [Vinetribe](https://vinetribe.co/finder) - Fosters an inclusive wine community through guided at-home tastings `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## App Builder
+
+- [FlutterFlow](https://www.flutterflow.io/)- FlutterFlow helps you build high quality, customized Mobile apps quickly. `#paid`
+- [Glif](https://glif.app/) - Build AI mini-apps and chatbots using LLMs. `#freemium`
+- [LoginLlama](https://loginllama.app/) - Enhance Security with LoginLlama's Suspicious Login Detection `#freemium`
+- [Lovable](https://lovable.dev/) - Idea to app in seconds,Lovable is your superhuman full stack engineer. `#free`
+- [Luminal](https://getluminal.com/) - Clean, transform and analyze spreadsheets at lightspeed with AI `#freemium`
+- [Massvai](https://massvai.com/) - AI full-stack app builder that turns a prompt into a working Next.js app with database, auth and deployment. `#freemium`
+- [VibeKit](https://vibekit.bot/) - Mobile-first AI app builder where each app gets its own persistent coding agent that builds it, hosts it on a live domain and keeps improving it, from an iPhone or the web. `#freemium`
+- [Yingdao AI Power](https://www.yingdao.com/) - Build enterprise AI applications without coding. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Art
+
+- [BlueWillow](https://www.bluewillow.ai) - Prompt based AI image generating tool for logos, characters, digital artwork, etc. `#free`
+- [Dall-E 3](https://openai.com/dall-e-3) - AI image generator accesible Microsoft's Bing Chat and Bing Image Creator `#free`
+- [Easy-Peasy.ai](https://easy-peasy.ai) - AI copywriting tools to help you tell your story in the most engaging way. `#freemium`
+- [Jackey](https://jackey.elixpo.com/) - A Discord bot that generates and remixes images from text prompts, helping communities create stunning visuals instantly. `#free` `#opensource`
+- [lexical.Art](https://lexica.art) -AI image generation tool that allows you to create images from text descriptions. `#free`
+- [PixAI.Art](https://pixai.art) - AI art generator designed specifically for creating anime-inspired artwork `#free`
+- [RestorePhoto](https://restorephoto.org/) - Improves facial clarity in old portraits and blurry family photos with browser-based AI. `#freemium` `#photo`
+- [seaart.ai](https://www.seaart.ai/) - AI image generation tool with advanced configurations available, tons of ready to use models and image enhancements, text to img , img to text and much. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Audio & Speech
+
+- [AI Transcription by Riverside](https://riverside.fm/transcription) - Video and audio transcription `#free`
+- [Audiogen](https://www.audiogen.co/) - Elevate Your Creations with AI-Generated Sounds `#freemium`
+- [CrystalSound](https://crystalsound.ai/) - Experience noise-free audio with AI. `#freemium`
+- [Diktatorial Suite](https://diktatorial.com) - Audio mastering and music enhancer with text prompts. `#freemium`
+- [Dubverse](https://dubverse.ai/text-to-speech/) - AI-powered text-to-speech with Dubverse is accurate, real, and fast! Type, paste, or upload a document & convert text to speech for free. `#freemium`
+- [ElevenLabs](https://elevenlabs.io/) - AI-powered text-to-speech and voice cloning technology. `#freemium`
+- [Gladia](https://www.gladia.io/) - Speech-to-Text API. `#freemium`
+- [HappySRT](https://www.happysrt.com/) - Generate SRT Files for youtube using AI Technology `#freemium`
+- [Krisp](https://krisp.ai) - Krisp's AI removes background noise & echo from meetings `#freemium`
+- [PodPilot](https://www.podpilot.ai/) - PodPilot is an AI tool designed to simplify the process of creating high-quality podcast series for organizations `#paid`
+- [Saturalabs](https://www.saturalabs.com/) - Uses text descriptions to separate a voice, instrument, or sound effect from audio and video, returning the target and remaining audio tracks. `#paid`
+- [VideoDubber](https://videodubber.ai) - Offers free video translation, dubbing,  cloning, and text-to-speech services. `#freemium`
+- [VideoToBlog](https://www.videotoblog.ai/) - Convert YouTube videos to blog content in one click `#free`
+- [Voqusa](https://www.voqusa.com/) - Turns TikTok, YouTube, Instagram and other social videos into accurate transcripts and subtitles in seconds, no signup required. `#freemium` `#transcription`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Avatars
+
+- [iFlytek Virtual Human](https://www.xfyun.cn/services/virtual_human) - Full-stack cloning and customization platform. `#paid`
+- [Muse Me](https://muse-me-avatar-beta.zhangwei798879.chatgpt.site) - Turns one authorized photo into an original anime-style social avatar without requiring an account. `#free`
+- [Never AI](https://www.never.tech) - Unlock Your Imagination with Never's Hyper-Realistic AI Images. `#paid`
+- [Qimiao Wen](https://wen.mobvoi.com/) - Interactive digital employee generation platform. `#free`
+- [Staf](https://www.staf.ai/) - Streamline Your Business with Curated AI Solutions `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Browsers
+
+- [Arc Browser](https://arc.net/downloaded) - A modern, Chromium-based browser by The Browser Company designed around spaces, vertical tab layouts, custom “boosts,” and AI-powered enhancements via Arc Max. It’s offered as freeware, with premium features optionally layered on. `#free`
+- [Comet Browser](https://www.perplexity.ai/comet) - The AI browser that acts as a personal assistant. Automate tasks, research the web, organize your email, and more with Comet. `#freemium`
+- [Dia Browser](https://www.diabrowser.com/) - AI-powered browser designed for developers and researchers, offering built-in tools for automation, data analysis, and productivity. It helps streamline workflows by integrating coding, APIs, and AI assistance directly into the browsing experience.  `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Business
+
+- [ClickUp](https://clickup.com/) - All of your work in one place: Tasks, Docs, Chat, Goals, & more. `#free`
+- [Cookup.ai](https://cookup.ai/) - AI apps for every usecase `#free`
+- [DeskDay](https://deskday.ai/) - Revolutionizing IT Support for MSPs `#paid`
+- [Harvey](https://www.harvey.ai/) - AI copilot for law and compliance, used by startups and enterprises for contract review, research, and drafting. `#paid`
+- [Jasper AI](https://www.jasper.ai/) - Jasper is an AI copilot for enterprise marketing teams. `#paid`
+- [Namelix](https://namelix.com/) - Generate short, brandable business names & domain names. `#free`
+- [Olympia](https://olympia.chat) - AI-powered virtual staffing tool tailored for solopreneurs and bootstrapped startups. `#paid`
+- [Rasgo](https://www.rasgoml.com/) - Your Self-Service AI Analytics Revolution `#free`
+- [Sidekick](https://www.jigso.io/lp-sidekick) - Get answers from your apps using natural language. `#free`
+- [V7 labs](https://www.v7labs.com/) - AI-powered platform for creating, labeling, and iterating high-quality training data for computer vision models. It streamlines the annotation process with intelligent tools and automation to help teams build vision models faster and more accurately. `#paid`
+- [Wand AI](https://wand.ai/) - An AI operating system to build, manage, and collaborate with autonomous agents that automate business processes for a hybrid human+AI workforce. `#freemium`
+- [Statsnet](https://statsnet.co) - Background check any company in the world: registration, executives, courts and finances.`#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Chatbots
+
+- [360 Smart Brain](https://ai.360.com/) - Safe and trustworthy NLP interaction platform. `#free`
+- [Ask Xiaobai](https://www.askxiaobai.com/) - Unlimited free DeepSeek R1 search asst. 71 `#free`
+- [Baidu AI Partner](https://www.baidu.com/) - Learning and office efficient intelligent tool. `#free`
+- [Baidu AI Search](https://www.baidu.com/) - Productivity-focused complex problem solver. `#free`
+- [Bing Chat](https://www.bing.com/chat) - A conversational AI language model powered by Microsoft Bing. `#free`
+- [Bubbling Duck](https://maoya.com/) - Multi-modal platform with contextual memory. `#free`
+- [Character.AI](https://character.ai/) - Character.AI lets you create characters and chat to them. `#freemium`
+- [WSUP AI](https://wsupai.app/) - Free AI character chat in the browser — talk to AI characters with no sign up. SFW only. `#free`
+- [ChatGPT](https://chat.openai.com/chat) - ChatGPT by OpenAI is a large language model that interacts in a conversational way. `#freemium`
+- [ChatPDF](https://www.chatpdf.com/) - Chat with any PDF. `#free`
+- [ChatSonic](https://writesonic.com/chat) - An AI-powered assistant that enables text and image creation. `#freemium`
+- [Claude 3.5 Sonnet](https://claude.ai/) - Anthropic's most advanced AI assistant with enhanced reasoning and coding capabilities `#freemium`
+- [DeepSeek-V3](https://www.deepseek.com/) - Advanced reasoning model with 128K context length and strong coding abilities `#freemium`
+- [Dialogue Writing Cat](https://xiezuocat.com/) - Interactive Chinese-English writing assistance. 55 `#free`
+- [DingTalk Personal](https://www.dingtalk.com/) - Individual digital productivity tool. 50 `#free`
+- [Doubao](https://www.doubao.com/) - ByteDance comprehensive ad-free search/chat. 68 `#free`
+- [Doudou](https://doudou.ai/) - AI desktop companion for lonely gamers. 72 `#free`
+- [Kissable](https://kissable.app) - AI companion with persistent memory, together photos, video generation, community scenario catalog, emotional voice, and unlimited messages. `#freemium`
+- [Dream Dimension](https://mengjing.ai/) - Original AI cosmic virtual world. 82 `#free`
+- [Earkick](https://earkick.com/chat) - a virtual mental health trained chatbot `#freemium`
+- [ERNIE Bot](https://yiyan.baidu.com/) - Baidu generative chatbot for work/learning. `#free`
+- [Gemini](https://gemini.google.com/) - Google DeepMind multimodal reasoning model. 51 `#free`
+- [Gemini 2.0](https://gemini.google.com/) - Google's latest multimodal AI model with advanced reasoning and creative capabilities `#free`
+- [Google AI Studio](https://aistudio.google.com/prompts/new_chat) - An experimental AI chatbot by Google. `#free`
+- [GPT-4o](https://openai.com/gpt-4o) - OpenAI's flagship model with vision, audio, and text capabilities in a single model `#freemium`
+- [GPTGeminiGrok.AI](https://trygrokai.asia/) - Browser workspace for GPT, Gemini, Grok, Claude, and AI image workflows. `#free`
+- [Groq](https://groq.com/) - Lightning-fast AI inference platform with real-time response capabilities `#freemium`
+- [Honer AI](https://xoner4.github.io/) - Android assistant for AI conversations, writing, translation, and web search with sources, with Russian and English interfaces. `#free`
+- [Huawei Xiaoyi](https://consumer.huawei.com/en/ai/) - PC and mobile assistant with DeepSeek-R1. 56 `#free`
+- [HuggingChat](https://huggingface.co/chat) - Open-source AI chat interface powered by Hugging Face models. `#free`
+- [iFlytek Spark](https://xinghuo.xfyun.cn/) - Cognitive intelligence for complex logic tasks. 60 `#free`
+- [J1 Assistant](https://www.j1.com/) - Jarvis project powerful voice input assistant. 57 `#free`
+- [Koko AI](https://koko.ai/) - 3D playground creation and interaction experience. `#free`
+- [Little Wukong](https://wukong.com/) - Personal intelligent assistant with 1-click solutions. 77 `#free`
+- [Luca (Facing the Wall)](https://luca.cn/) - Logical processing and world knowledge asst.
+- [MChat (Mencius)](https://mchat.ai/) - Enterprise-level cognitive intelligence. 83 `#paid`
+- [Me.bot](https://me.bot/) - Transform personal knowledge into a digital brain. 84 `#freemium`
+- [MediSearch](https://medisearch.io) - This tool is a medical AI chatbot which gives you direct science-based answers to medical questions `#free`
+- [Meta AI Assistant](https://www.meta.ai/) - Llama-based daily Q&A and image generation. 52 `#free`
+- [MiniMax](https://www.minimaxi.com/) - Trillion-parameter MoE chat companion. 65 `#free`
+- [Monica](https://monica.im/) - Memory-based assistant for personalized support. `#free`
+- [Perplexity AI](https://www.perplexity.ai/) - AI-powered search engine that provides comprehensive answers with sources. `#freemium`
+- [Phind](https://www.phind.com/) - An AI-powered coding and technical assistant, making complex tasks simpler. `#freemium`
+- [Poe](https://poe.com/) - Platform that lets you chat with multiple AI models in one place. `#freemium`
+- [Qwen Chat](https://tongyi.aliyun.com/qianwen/) - Multimodal Tongyi model experience platform. 61 `#free`
+- [Saylo](https://saylo.ai/) - Imaginative space for interactive story games. 69 `#free`
+- [Shangliang (SenseChat)](https://chat.sensetime.com/) - Finance, Education, and Creative assistant. 70 `#free`
+- [Shusheng Big Model](https://internlm.intern-ai.org.cn/) - Shanghai AI Lab open-source research models. 62 `#free`
+- [Smitty](https://www.smitty.ai/) - Streamlining processes and providing agile, efficient responses to your unique business needs. `#freemium`
+- [Stable Chat](https://chat.stability.ai/) - Specific scenario stable key chat assistant. `#free`
+- [Step AI](https://step.ai/) - General efficiency assistant for problem solving. `#free`
+- [Super Assistant](https://assistant.baidu.com/) - Wenxin-based plugin for task customization. `#free`
+- [Tencent Yuanbao](https://www.tencent.com/) - Hunyuan-based one-stop creation assistant. `#free`
+- [Tiangong AI](https://www.tiangong.cn/) - DeepResearch office agent for professionals. 63 `#free`
+- [Tidio](https://www.tidio.com/) - Tidio Live Chat & AI Chatbots , Accelerate your growth with AI customer service `#freemium`
+- [Tongyi Xingchen](https://tongyi.aliyun.com/xingchen/) - Role-playing and scenario-based dialogue. `#free`
+- [Wanderboat](https://wanderboat.ai/) - Travel and local life exploration assistant. 53 `#free`
+- [Yingshi AI](https://yingshi.ai/) - Conch video prompt and video generator. 66 `#free`
+- [You.com](https://you.com/) - AI search engine with chat capabilities and real-time information. `#freemium`
+- [Yuanxiang XChat](https://xchat.cn/) - High-performance domestic 65B general model. `#freemium`
+- [Zhipu Qingyan](https://chatglm.cn/) - ChatGLM-based comprehensive AI platform. 54 `#free`
+- [Zidong Taichu](https://taichu-web.ia.ac.cn/) - High-performance multi-modal research model. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Cooking
+
+- [dishgen](https://www.dishgen.com/) - DishGen is a smart recipe assistant that can simplify healthy cooking for you. `#freemium`
+- [Mr. Cook](https://www.mrcook.app/en/tools/recipe-generator) - Your AI-Powered Recipe Generator `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Copywriting
+
+- [Copy.ai](https://copy.ai/) - AI-powered copywriting tool for marketing content and sales copy. `#freemium`
+- [Grammarly](https://www.grammarly.com/) - AI-powered writing assistant for grammar, style, and clarity. `#freemium`
+- [Heroguide](https://www.heroguide.ai/) - Craft your unique brand message effortlessly with the Heroguide. `#free`
+- [Jasper AI](https://www.jasper.ai/) - AI content creation platform for marketing copy, blogs, and more. `#paid`
+- [Notion AI](https://www.notion.so/product/ai) - AI writing assistant integrated into Notion workspace. `#freemium`
+- [SmartBird](https://smartbird.ai/) - SmartBird: Your AI Assistant for Effortless Communication `#paid`
+- [Writesonic](https://writesonic.com/) - AI writing assistant for blogs, ads, and marketing content. `#freemium`
+- [ListingAI](https://lijustin655.github.io/f1-listingai/) - AI listing generator for Amazon & TikTok Shop sellers - title, bullets, and description in 30 seconds. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Crypto
+
+- [Arkham Intelligence](https://arkhamintelligence.com/) - On-chain analytics platform that deanonymizes blockchain addresses and tracks entity activity using AI. `#freemium`
+- [Coinfeeds](https://chat.coinfeeds.io/)- Your Crypto Chatbot Companion, ask it anything! `#free`
+- [Token Metrics](https://www.tokenmetrics.com/) - AI-powered crypto research and ratings platform with price predictions and portfolio tools. `#freemium`
+- [AgentServices](https://agentservices.to) - x402-paid crypto/market data APIs with 37 MCP tools for AI agents — BTC indicators, DeFi stats, macro data. USDC micropayments on Base. `#paid` `#opensource`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Customer Support
+
+- [Hellomatik](https://hellomatik.com) - AI agents that prepare a company's decisions from one blueprint of its data, procedures and formulas, for an approver to accept, amend or reject. `#paid`
+- [Tongyi Xiaomi](https://tongyi.aliyun.com/) - Outbound calling and dialogue robots for business. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Data & BI
+
+- [AI Excel Bot](https://aiexcelbot.com) - Write Excel and Google Sheets Formulas Faster With AI `#freemium`
+- [Airtable](https://www.airtable.com/) -A user-friendly platform that blends spreadsheet features with database functionality for organizing projects, managing content, and tracking inventories`#freemium`
+- [Ajelix](https://ajelix.com/) - Data processing and VBA code debugging. `#paid`
+- [Arcwise AI](https://arcwise.app/ai) - AI Copilot for Spreadsheets `#free`
+- [Baidu GBI](https://www.baidu.com/) - Generative BI and data visualization tool. `#paid`
+- [ChatExcel](https://chatexcel.co/) - Chat-style spreadsheet processing and analysis. `#free`
+- [CSV-GPT](https://getluminal.com/) - Enables users to ask natural language questions about their data and receive instant analysis and insights. `#free`
+- [Datacircle](https://datacircle.dev/) - Query your favorite B2B data APIs through us. Same request, same price, no markup. Use it from Claude, ChatGPT or Cursor: add api.datacircle.dev/mcp as an MCP server. `#freemium` `#mcp`
+- [Dataspot](https://dataspot.com/) - Understand any data instantly using AI `#freemium`
+- [Excel Formula Bot](https://excelformulabot.com/) - Create Excel formulas in seconds with AI-powered formula generators. `#freemium`
+- [Excelly-AI](https://excelly-ai.io/) - Text-to-formula for Excel and Google Sheets. `#free`
+- [Excelmatic](https://excelmatic.ai/) - Chat with Excel, effortlessly process(analyze) Excel data using natural language with Excelmatic `#freemium`
+- [Formula bot](https://formulabot.com/) - Instant formula generation without registration. `#free`
+- [FormX.ai](https://formx.ai/) - Automated data extraction from invoices/contracts. `#free`
+- [GPTExcel](https://gptexcel.uk/) - Effortlessly create and understand formulas in Excel and Google Sheets! `#paid`
+- [looot](https://looot.ai/) - One API key and prepaid balance for about 2,500 data endpoints: work email, phone, company enrichment, Google search, web pages. Add api.looot.ai/mcp as an MCP server in Claude, ChatGPT or Cursor. `#paid` `#mcp`
+- [ParlayAPI MCP](https://github.com/JacobiusMakes/parlay-api-mcp) - Connects AI assistants to sports odds, player props, public event discovery, and account usage; account data tools use each user's own API key and allowances. `#mcp` `#freemium`
+- [Parseur](https://parseur.com/) - Parseur is a powerful data entry software that automates text extraction from emails, PDFs, and other documents, enhancing productivity by eliminating manual data entry. `#freemium`
+- [Rows](https://rows.com/) - Redefined spreadsheet for team data analysis. `#free`
+- [SheetAI.app](https://sheetai.app/) - AI-powered tool to quickly generate formulas for Google Sheets. `#freemium`
+- [SheetGod](https://www.boloforms.com/sheetgod/) - Effortlessly create and understand formulas in Excel and Google Sheets! `#paid`
+- [vika Vika Cloud](https://vika.cn/) - Multi-dimensional table for personalized systems. `#freemium`
+- [VisDoc](https://visdoc.cn/) - Natural language online chart generation. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Dating
+
+- [Candy.ai](https://candy.ai/discover) - Your dream companion awaits! Create your Virtual Girlfriend, shape her personality and bring her to life in one click. 100% powered by Artificial Intelligence. `#freemium`
+- [DatePlanner.ai](https://dateplanner.ai/) - Online dating is competitive. Stand out with thoughtful date ideas and interesting conversation topics. `#paid`
+- [Dates.ai](https://www.dates.ai) - Dates.ai: Where authenticity meets AI to revolutionize dating, fostering genuine connections in a fraud-free and fair environment. `#free`
+- [DreamGF](https://dreamgf.ai/) - DreamGF uses AI algorithms to generate virtual partners according to user preferences. Users can customize the appearance, personality, and other traits. `#freemium`
+- [Egirls.ai](https://egirls.ai/) - AI companion platform for adults: chat with NSFW AI characters that remember you, create your own characters, generate images and video, make voice calls, and talk live with 3D AI VTubers. `#freemium`
+- [EveningHoney.ai](https://www.eveninghoney.ai/) - Experience immersive relationships with AI girlfriends and virtual companions. Chat, receive images & videos, make phone calls, and dive into realistic relationships. `#freemium`
+- [Fantasy.ai](https://fantasy.ai/) - Fantasy.ai is an AI companion platform offering human-like NSFW chat, Realistic image generation, and fully customizable virtual partners. `#freemium`
+- [FantasyGF.ai](https://fantasygf.ai/) - (N)SFW Chat with AI Girlfriends. Create your own AI Girlfriend, chat with her, ask her for pictures, or listen to her voice. Most advanced AI Girlfriend builder and chatting model. Chat with AI versions of OnlyFans Girls. `#freemium`
+- [Mistress.to](https://mistress.to) - Mistress.to is an Immersive femdom AI companion featuring interactive audio voice calls, text chat, and high-quality image and video generation. `#freemium`
+- [Pickmyline](https://www.pickmyline.online/) - Not able to start conversation even after getting matched? Here is a ChatGPT powered pickup line generator for you!! `#free`
+- [Yourmove.ai](https://www.yourmove.ai/) - Making conversations easier. So you can spend less time texting, and more time dating. `#freemium`
+- [Dating Roast](https://dating.roastlabai.com/) - AI dating profile roaster. Upload your profile screenshots and get brutally honest AI feedback on what photos, bio, and prompts are hurting your match rate. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Design
+
+- [Adobe Firefly](https://www.adobe.com/products/firefly.html) - AI-powered creative tools for image generation and editing. `#freemium`
+- [AI Site Builder](https://library.relume.io/ai-site-builder) - Create a marketing website for any company in minutes using systems you already love. `#freemium`
+- [AmyMind](https://amymind.com/) - Markdown and document to mind map converter. `#free`
+- [Book Witch](https://bookwitch.io/) - Use the power of AI to create complete e-books with just one click! `#freemium`
+- [Canva](https://www.canva.com/) - Use it to create social media posts, presentations, posters, videos, logos and more. `#freemium`
+- [Canva AI](https://www.canva.com/ai-image-generator/) - AI-powered design platform with image generation and editing tools. `#freemium`
+- [DALL-E 3](https://openai.com/dall-e-3) - OpenAI's advanced AI image generator with improved quality and safety. `#freemium`
+- [Designs AI](https://designs.ai/) - Make a logo, video, social media banner, business card, flyer, mockup and more with AI. `#freemium`
+- [Diagrammaton](https://www.figma.com/community/plugin/1295127627739218424/diagrammaton) - Diagrammaton converts natural language descriptions into fleshed out diagrams. `#free`
+- [Edraw MindMaster](https://www.edrawsoft.com/mindmaster/) - Multi-platform intelligent mind mapping software. `#free`
+- [EdrawMax AI](https://www.edrawsoft.com/edraw-max/) - One-stop graphical chart and office assistant. `#free`
+- [Feathery](https://ai.feathery.io/) - Users can design forms in seconds without coding or design skills. `#freemium`
+- [Figma AI](https://www.figma.com/) - AI-powered design tool with smart features for UI/UX design. `#freemium`
+- [Free Canvas](https://canvas.baidu.com/) - Baidu's free-flowing creative design platform. `#free`
+- [Galileo AI](https://www.usegalileo.ai/explore) -Galileo AI is a UI generation platform for easy and fast design ideation.Generative AI for user interface design, empowering you to design beyond imagination with speed . `#freemium`
+- [GitMind](https://gitmind.com/) - Brainstorming and architecture diagram creation. `#free`
+- [Kittl](https://www.kittl.com/) - AI-powered graphic design tool with text-to-image and logo generation. `#freemium`
+- [LandscapioAI](https://www.landscapioai.com/) - AI landscape design generator that turns yard photos into outdoor redesign concepts and cost estimates. `#freemium`
+- [LogoAi](https://www.logoai.com/logo-maker) - AI-powered logo maker and online design tool. `#freemium`
+- [Looka](https://looka.com/) - Use Looka's AI-powered platform to design a logo and build a brand you love. `#free`
+- [Miaoban Board](https://miaoban.com/) - Online space for graphic drawing and brainstorming. `#free`
+- [Midjourney](https://www.midjourney.com/) - AI art generator that creates stunning images from text prompts. `#paid`
+- [Miro AI](https://miro.com/ai/) - Collaborative mind mapping and visualizing ideas. `#free`
+- [Napkin AI](https://napkin.ai/) - Visual elements for business storytelling. `#free`
+- [Paintit.ai](https://paintit.ai/interior-ai/) - Paintit.ai is an AI-powered tool that enables users to generate unique AI interior visualizations in minutes `#free`
+- [Panda Office](https://www.panda-office.com/) - Material website for design and PPT templates. `#free`
+- [PicDoc](https://picdoc.cn/) - Text-to-visual conversion for storytellers. `#free`
+- [Placeit](https://placeit.net/) - user-friendly design platform that can be used to create logos, mockups, and videos. `#paid`
+- [ProcessOn](https://www.processon.com/) - Professional online diagramming (Gantt, UML). `#free`
+- [svg.io](https://svg.io) - The power of AI with our Free Text-to-SVG Generator! Effortlessly convert your text prompts into stunning SVG images using our advanced AI technology. `#free`
+- [Taskade](https://www.taskade.com/) - AI agents for remote task and project management. `#free`
+- [TreeMind](https://shuxintu.com/) - Split-screen collaborative AI mind mapping. `#free`
+- [Whimsical](https://whimsical.com/) - All-in-one workspace for fast-paced teams. `#freemium`
+- [Xmind Copilot](https://xmind.ai/) - AI mind map and one-click slide generation. `#free`
+- [Zarla](https://www.zarla.com/) - Zarla uses AI to generate unique logo designs through various prompts. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Developer
+
+- [Bubble](https://bubble.io/) - Bubble is a no-code platform that allows users to build web applications with ease, integrating AI functionalities like chatbots and content generation. `#freemium`
+- [Floom](https://github.com/FloomAI/Floom) - AI gateway and marketplace for developers, enables streamlined integration of AI features into products. `#opensource`
+- [Glide](https://www.glideapps.com/) - no-code platform that allows users to create AI-powered applications quickly and easily using their business data, with customer support chatbots. `#freemium`
+- [Mintlify](https://mintlify.com/) - Mintlify: Streamline code documentation with one-click automation for developers, enhancing code clarity and saving time. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Developer Tools
+
+- [AI Code Reviewer](https://ai-code-reviewer.com/) - Efficient automated code review solution. ``
+- [Agent Island](https://github.com/tristan666666/agent-island) - Free, MIT-licensed native companion for Claude, Codex, Antigravity, Grok, and Cursor, with local session status, your-turn alerts, and provider usage views. `#free` `#opensource`
+- [agent-qa](https://github.com/vostride/agent-qa) - Self-improving QA agent for web and mobile apps with natural-language tests, run memory, and regression detection. `#testing` `#free`
+- [Aider](https://aider.chat/) - AI pair programmer that edits code in your local git repo `#free`
+- [Airops](https://www.airops.com/) - Task-specific AI Apps that go beyond Chat-GPT—run NLP, generate-data-informed content, draft/fix/optimize SQL queries, and more `#free`
+- [AirOps](https://airops.com/) - Large language model LLM workflows for SEO. `#freemium`
+- [AI Router](https://ai-router.dev) - Hosted OpenAI-compatible API relay with unified multi-model access, personal API keys, and per-key usage visibility. `#freemium`
+- [aiXcoder](https://www.aixcoder.com/) - Chinese deep learning software dev assistant. `#freemium`
+- [Archcore](https://github.com/archcore-ai/archcore) - Git-native context engineering and spec-driven development for AI coding agents. `#free` `#opensource`
+- [AskCodi](https://www.askcodi.com/) - Code generation and refactoring assistant. `#free`
+- [Augment Code](https://augmentcode.com/) - Industry-leading context engine for developers. `#paid`
+- [Better Agent](https://github.com/ofekron/better-agent) - Local workspace for Claude, Codex, and Gemini coding-agent sessions with parallel forks and restart recovery. `#free`
+- [Blackbox AI](https://www.blackbox.ai/) - AI-powered code completion and generation that works in over 20 languages. `#freemium`
+- [BLACKBOX AI](https://www.blackbox.ai/) - Trusted code auto-completion for enterprises. `#freemium`
+- [Bolt.new](https://bolt.new/) - AI-powered full-stack web development platform `#freemium`
+- [Boxy](https://boxy.ai/) - Logic understanding and error diagnosis tool. `#paid`
+- [Bugasura](https://bugasura.io/) - Bug tracker designed to streamline the reporting, tracking, and closing of bugs for modern technology teams. `#freemium`
+- [Clacky AI](https://clacky.ai/) - L3 Agentic AI cloud development environment. `#freemium`
+- [Claude](https://claude.ai/) - Anthropic's AI assistant with advanced reasoning capabilities. `#freemium`
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) - Anthropic's terminal-native AI coding agent with agent skills, MCP, and extensible tool system. `#freemium`
+- [CoderPlan](https://coderplan.ai/) - LLM API Gateway with OpenAI-compatible interface. Pay-per-use access to Claude, GPT, Gemini, DeepSeek, Grok. One-line config for Claude Code, Codex CLI, Gemini CLI. `#freemium`
+- [Cline](https://cline.bot/) - AI-Powered Code assitant like Copilot in VS code. `#freemium`
+- [CodeBuddy](https://codebuddy.cn/) - Tencent Cloud MCP ecosystem programming partner. `#free`
+- [Codex CLI](https://github.com/openai/codex) - OpenAI's open-source terminal AI agent that runs locally with any model. `#free` `#opensource`
+- [Codex Quota Overlay](https://github.com/cpys/codex-quota-overlay) - Independent desktop companion showing Codex quota, reset time, and reset credits beside the conversation title on Windows and macOS. `#free` `#opensource`
+- [codex-profiles](https://github.com/Ducksss/codex-profiles) - Selects named CODEX_HOME profiles and, on macOS, named ChatGPT Desktop windows with separate local state, without copying tokens. `#free` `#opensource`
+- [CodeGeeX](https://codegeex.cn/) - 13B parameter multilingual programming asst. `#free`
+- [Codeium](https://codeium.com/) - AI-powered code acceleration toolkit to code smarter, not harder. `#free`
+- [Codeflash](https://www.codeflash.ai/) - Ship Blazing-Fast Python Code — Every Time. `#freemium`
+- [CodeRabbit](https://coderabbit.ai/) - AI-powered code review assistant that provides intelligent feedback `#freemium`
+- [CodeRider](https://coderider.ai/) - Enterprise-exclusive DevOps platform for PC. `#free`
+- [CodeSnippets](https://codesnippets.ai/) - Secure chat library for team user management. `#free`
+- [Codiga](https://www.codiga.io/) - Customizable real-time static code analysis. `#free`
+- [CodiumAI (Qodo)](https://www.qodo.ai/)%20AI%20Tool) - Quality agent platform for organizational standards. `#paid`
+- [Continue](https://continue.dev/) - Open-source AI code assistant that works with any LLM `#free`
+- [Copilot](https://github.com/features/copilot) - AI assistant that speeds up delivery and keeps your code safe `#paid`
+- [Cortex](https://github.com/cortex-docs/cortex) - Generates API documentation, typed SDKs, and MCP servers from API specifications and Markdown. `#free` `#opensource`
+- [CrewAI](https://crewai.com/) - Multi-agent orchestration framework for building teams of AI agents that collaborate on complex tasks. `#freemium` `#opensource`
+- [Cursor.sh](https://cursor.sh) - This tool uses GPT-4 to help you code that increases productivity `#freemium`
+- [dbdiagram.io](https://dbdiagram.io/home) - It's an online AI-Powered database diagram design tool that allows you to visually create and edit database schemas `#free`
+- [DeepSeek Coder](https://deepseekcoder.ai/) - Open-source code-focused LLM for AI-assisted development with state-of-the-art benchmarks. `#free` `#opensource`
+- [Devassistant.ai](https://devassistant.ai/) - Your AI Co-Programmer for Efficient Development `#paid`
+- [Devin](https://www.cognition.ai/devin) - Autonomous AI software engineer for end-to-end tasks. `#paid`
+- [Doubao AI Prog](https://www.doubao.com/) - Assistant for beginners to master concepts. `#free`
+- [ERIUS PHONE](https://eriusphone.com/) - Hosted Android phones that an AI agent controls over an HTTP API or an open-source MCP server to use and test apps: read the screen, tap, type, swipe, install APKs, and pull crash logs. Early access.`#paid` `#testing` `#opensource`
+- [Fig](https://fig.io/) - Terminal auto-completion (Shutdown 2024). `#free`
+- [Firebase Studio](https://firebase.google.com/) - Google backend and front-end AI integration. `#free`
+- [Fitten Code](https://code.fitten.com/) - Jittor framework high-speed completion tool. `#free`
+- [Fronty](https://fronty.com/) - Converts image/screenshots to HTML/CSS. `#freemium`
+- [Genie](https://genie.ai/) - Simulating human engineer cognitive processes. `#paid`
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google's open-source AI coding agent for the terminal with Gemini models. `#free` `#opensource`
+- [GitHub Copilot Workspace](https://github.com/features/copilot) - AI-powered development environment for entire projects `#paid`
+- [Groq](https://groq.com/) - Ultra-fast LLM inference API with free tier for Llama, Mixtral, and Gemma models. `#freemium`
+- [Heabsy](https://heabsy.com/) - OpenAI- and Anthropic-compatible inference API for open models, with an EEA tier on dedicated GPUs in EEA data centres and zero data retention. `#paid`
+- [HeyCLI](https://heycli.com/) - Natural language execution for Linux terminals. `#paid`
+- [Hocoos](https://hocoos.com/) - AI-driven no-code website construction tool. `#paid`
+- [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) - Developer-alpha Rust knowledge store with encrypted, append-only records and an MCP server for agent access through scoped, expiring grants. `#free` `#opensource`
+- [Imgcook](https://www.imgcook.com/) - Taobao design-to-code intelligent tool. `#free`
+- [JamGPT](https://jam.dev/) - Automated error reporting and fixing assistant. `#free`
+- [Jet Browser](https://github.com/masakaai/jet-browser) - Portable WPE WebKit runtime for agents with isolated Docker sessions, native input, DOM/text reads, fresh screenshots, and ordered JSONL, MCP, and JavaScript SDK interfaces. `#free` `#opensource`
+- [Junie](https://www.jetbrains.com/junie/) - JetBrains context-aware IDE assistant. `#paid`
+- [Keploy](https://keploy.io/) - AI-powered automation API and Unit testing, latest UTG pr agent generates unit tests after each pr. `#free`
+- [Keploy](https://www.keploy.io/) - A  developer-centric backend testing tool which makes backend tests with built-in-mocks faster than unit tests, from user traffic, making it easy to use, powerful, and extensible. `#opensource`
+- [LangChain](https://www.langchain.com/) - Open-source framework for building LLM-powered applications and agents, with 1000+ integrations. `#free` `#opensource`
+- [Lintrule](https://www.lintrule.com/) - Supercharge Code Reviews and Policy Enforcement `#paid`
+- [Lovable](https://lovable.dev/) - Generating full-stack apps via Supabase/GitHub. `#freemium`
+- [MarsX](https://www.marsx.dev/) - MicroApps and no-code software development. `#freemium`
+- [Markstream](https://markstream.simonhe.me/) - Open-source streaming Markdown renderer for AI chat interfaces, with incomplete-token handling and packages for Vue, React, Svelte, Angular, and Vue 2. `#free` `#opensource`
+- [Masaka for Codex](https://github.com/masakaai/codex-multiple-env) - Local macOS and Linux CLI that keeps each ChatGPT account and workspace in an isolated CODEX_HOME, shows Codex usage windows, and switches future native Codex sessions without copying tokens. `#free` `#opensource`
+- [MCP Use](https://mcp-use.com/) - Fullstack MCP framework to develop MCP Apps for ChatGPT, Claude & MCP Servers. `#free` `#opensource`
+- [ModelRush](https://modelrush.ai/) - API platform for text, image, video, and audio models, with OpenAI-compatible chat access, published pricing, and request-level usage tracking. `#paid`
+- [molt](https://solvyx.xyz/work/molt) - Coding agent that won't say done on a false claim — on-disk verification and receipts for accepts/refusals. `#free` `#opensource`
+- [Ollama](https://ollama.com/) - Run LLMs locally with GPU acceleration. Llama, Mistral, DeepSeek, Gemma and more. `#free` `#opensource`
+- [n8n](https://n8n.io/) - Open-source workflow automation with AI agent nodes, MCP support, and 400+ integrations. `#freemium` `#opensource`
+- [Omega MCP Router](https://github.com/Omega-JS-Stack/omega/tree/main/packages/mcp-router) - Stdio MCP proxy that runs many MCP servers behind one connection, serving tool schemas from a disk cache and starting each server only on its first call. `#free` `#mcp`
+- [ONE](https://one.workrr.ai/) - Free API-first commons where externally run AI agents discover collaborators, exchange reusable work, and join public discussions with human-readable live logs. `#free`
+- [OpenCode](https://github.com/anomalyco/opencode) - Open-source terminal AI coding agent with skills, MCP, and custom workflows. `#free` `#opensource`
+- [Orbi](https://orbi.build/?ref=oss-collective-ai-tools) - Open-source agent that takes a labeled GitHub issue to a reviewed, merged pull request and a tagged release; also runs ops tickets. `#freemium` `#opensource`
+- [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) - Records a coding-agent run and replays it back to the agent with no model called, or forks a checkpoint onto other models to compare. `#free`
+- [Plandex](https://plandex.ai/) - Terminal AI agent for large-scale projects. `#free`
+- [QueryCraft](https://querycraft.ai/) - AI-Powered Data Query Generator `#free`
+- [Quest AI](https://www.quest.ai/) - Intelligent Q&A and info retrieval for dev. `#freemium`
+- [RAG Citation Coverage Auditor](https://github.com/edilec/rag-citation-coverage-auditor) - Offline CLI that checks declared RAG answer citations against approved retrieval sources and explicit claim support in local exports. `#free` `#opensource` `#rag`
+- [Replit Agent](https://replit.com/ai) - Creates mobile APPs in just 2 minutes. `#freemium`
+- [Replit Ghostwriter](https://replit.com/ghostwriter) - AI-powered code generation and completion in the browser. `#freemium`
+- [Repo Agent Kit](https://repoagentkit.com) - Free, privacy-first browser tools for creating, auditing, and adapting repository instructions for Codex and other coding agents. `#free`
+- [Respan](https://www.respan.ai/ai-gateway) - Full-stack AI engineering platform for tracing, evals, prompt management, and a gateway to 250+ models. `#freemium`
+- [ReviewCerberus](https://github.com/Kirill89/reviewcerberus) - 100% free, open-source AI code review tool for analyzing git branch differences with comprehensive security, performance, and quality analysis. `#free`
+- [Safurai](https://www.safurai.com/) - The AI Code Assistant that really helps developers. `#free`
+- [SandBase CLI](https://github.com/sandbaseai/cli) - Open-source CLI and MCP bridge for OpenAI-compatible access to 2,000+ AI models through usage-based pricing and a free plan. `#freemium` `#opensource`
+- [Sizzle AI](https://web.szl.ai/) - AI-powered tutor for math and coding problems. `#free`
+- [Solo](https://soloist.ai/) - Free AI website creation and domain hosting. `#free`
+- [Sourcegraph Cody](https://sourcegraph.com/cody) - AI coding assistant with deep codebase context, for VS Code, JetBrains and web. `#freemium`
+- [Supermaven](https://supermaven.com/) - Fast AI code completion with 300k token context window. `#freemium`
+- [Tabby](https://tabbyml.com/) - Self-hosted Rust-based Copilot alternative. `#free`
+- [Tabnine](https://www.tabnine.com/) - AI code completion tool that learns from your code patterns. `#freemium`
+- [TinyTools](https://tinytools-smoky.vercel.app/) - Free single-purpose browser-based utilities (AI Background Remover that runs locally, OG Image Generator, AI Robots.txt Generator, SEO Meta Tag Generator, AI Cost Calculator, AI Content Disclosure for EU AI Act, favicon and color palette generators, domain name generator). Open source, no signup. `#free` `#opensource`
+- [Trae](https://trae.ai/) - AI-native IDE with Builder patterns. `#free`
+- [Together AI](https://together.ai/) - Fast inference platform for open-source models with developer APIs and fine-tuning. `#freemium`
+- [Twinny](https://github.com/twinnydotdev/twinny) - Privacy-first AI extension for local models. `#free`
+- [v0](https://v0.dev/) - AI-powered UI component generator by Vercel. `#free`
+- [Vend](https://extract.paypercall.dev) - Pay-per-call web intel and data-extraction API: IP geolocation, domain WHOIS/DNS/SSL checks, URL health, web search, and page content extraction. Settled in Nano (XNO), no signup or API key needed. `#paid`
+- [Vercel AI SDK](https://sdk.vercel.ai/) - TypeScript toolkit for building AI-powered applications with streaming, agents, and tool calling. `#free` `#opensource`
+- [VideoGen API](https://videogen.io/videogen-api) - REST API with TypeScript and Python SDKs for creating editable marketing videos from storyboards, scripts and voiceovers, then editing and exporting projects; a VideoGen account and paid generation credits are required. `#paid` `#api`
+- [Warp](https://www.warp.dev/) - Parallel agent operation for fast completion. `#paid`
+- [Windsurf](https://codeium.com/windsurf) - AI-powered IDE with built-in code generation and chat `#freemium`
+- [Windsurf (Codeium)](https://codeium.com/windsurf)%20AI%20Tool) - Multi-step collaborative Cascade technology. `#free`
+- [YingTu](https://yingtu.ai/en) - Browser playground for testing AI image and video API routes, prompts, reference inputs, task status, and downloads before integration. `#free`
+- [YYLO](https://github.com/yylo-dev/yylo) - Open-source command-line orchestrator for coding agents like Pi and Codex, with typed task, validation, merge, and release-readiness boundaries across isolated git worktrees. `#free` `#opensource`
+- [OutboundGateway](https://outboundgateway.com/) - Static outbound IPs for AI agents and MCP servers. `#paid`
+- [KeyDrift](https://keydrift.dev) - Scans deployed HTML and JavaScript for exposed secrets while recognizing public browser credentials that should not be treated as leaks.
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Document Processing
+
+- [Acrobat AI Assistant](https://www.adobe.com/acrobat/generative-ai-pdf.html) - Adobe’s PDF summarization and Q&A tool. `#free`
+- [Baidu Wenku AI](https://wenku.baidu.com/) - Smart PPT generation and document writing. `#free`
+- [Baoyue AI](https://baoyueai.com/) - Professional summarization for research and business. `#free`
+- [ChatDOC](https://chatdoc.com/) - Summarizes complex concepts and accurately finds info. `#free`
+- [Cubox](https://cubox.pro/) - AI read-later assistant and web clipper. `#freemium`
+- [Doc2X](https://doc2x.com/) - Image-to-formula and multi-format conversion. `#free`
+- [Evernote AI](https://evernote.com/) - Personal knowledge organization and inspiration. `#free`
+- [Humata](https://humata.ai/) - File processing that quotes relevant paragraphs. `#free`
+- [Instafill.ai](https://instafill.ai) - AI-powered PDF form filler. Auto-completes any PDF form by extracting fields and filling them from saved profiles, uploaded files, or supplied data. `#paid`
+- [KnowMe AI](https://knowme.ai/) - Personal and team exclusive knowledge base. `#free`
+- [PDF.ai](https://pdf.ai/) - Interactive summarization for PDF documents. `#free`
+- [PMAI](https://pm-ai.cn/) - AI prototyping tool for product managers. `#free`
+- [Quivr](https://www.quivr.app/) - Customer support automation for Zendesk. `#paid`
+- [Rossum.ai](https://rossum.ai/) - Automated business transaction document platform. `#free`
+- [Spark Research Assistant](https://xinghuo.xfyun.cn/) - Writing assistance for polishing and proofreading. `#free`
+- [SparkDesk Doc Q&A](https://xinghuo.xfyun.cn/) - Enterprise knowledge base and multi-doc Q&A. `#free`
+- [Tencent Docs AI Assistant](https://docs.qq.com/) - Multi-person cloud collaboration and editing. `#free`
+- [Tencent Questionnaire](https://www.tencent.com/) - One-stop survey design and statistical analysis. `#free`
+- [Tongyi Zhiven](https://tongyi.aliyun.com/) - Reading assistant for 1000-page documents. `#free`
+- [txyz](https://txyz.ai/) - Knowledge integration for academic and R&D. `#free`
+- [WPS AI](https://ai.wps.cn/) - Integrated intelligent writing and office assistant. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## E-Commerce
+
+- [Shop Guru AI](https://www.shopguru.io/) - Analyze customer reviews, providing you with trusted answers based on specific product information. `#free`
+- [Xiyu](https://xiyu.taobao.com/) - Taobao ecosystem secure login entry gateway. 87 `#free`
+- [YOO Resume](https://yooresume.com/) - Taoist cultural products and ritual services. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Education
+
+- [10xhuman](https://10xhuman.net/?lang=en) - AI-guided project learning in Korean, English and Japanese, with a free project brief and downloadable workbook to get started. `#education`
+- [AI University Hall](https://www.aidaxue.com/) - iFlytek programming and AI training platform. `#free`
+- [Alibaba Cloud Path](https://www.alibabagroup.com/) - 871 class hours and 26 free courses. `#free`
+- [ClassPoint AI](https://www.classpoint.io/) - AI tool for teachers to generate questions out of any PowerPoint slide. `#free`
+- [ClipDish](https://apps.apple.com/us/app/clipdish-simplify-cooking/id1465427291) - AI-Enhanced Recipe Revolution with ClipDish `#paid`
+- [Coursera AI](https://www.coursera.org/) - High-quality courses from top universities. 149 `#free`
+- [Day of AI](https://www.dayofai.org/) - MIT-led K-12 AI literacy curriculum. `#free`
+- [DeepLearning.AI](https://www.deeplearning.ai/) - Andrew Ng's systematic industry education. `#free`
+- [Dive into Deep Learning](https://d2l.ai/) - Interactive book with Jupyter and PyTorch. `#free`
+- [Education CoPilot](https://educationcopilot.com/) - AI tool helps teachers design their curriculum, lesson plans and activities, and track the progress of their students. `#freemium`
+- [Elements of AI](https://www.elementsofai.com/) - Knowledge popularization for different backgrounds. `#free`
+- [English Speaking App](https://englishspeakingapp.com/english-speaking-practice) - AI speaking practice for interviews, meetings, and everyday conversations with live voice feedback. `#freemium`
+- [fast.ai](https://www.fast.ai/) - Simplifies deep learning via the fastai library. `#free`
+- [Gradescope](https://www.gradescope.com/) - AI-powered grading and assessment tool. `#freemium`
+- [Huxli.ai](https://huxli.ai/) - Elevate Your Writing, Supercharge Your Productivity `#freemium`
+- [Intro to Neural Networks](https://brilliant.org/) - Practical neural network training (Brilliant)4. `#paid`
+- [Kaggle](https://www.kaggle.com/) - World's largest data science community/GPU. `#free`
+- [ML for Beginners](https://microsoft.github.io/ML-For-Beginners/) - Microsoft Scikit-learn project curriculum. `#free`
+- [OpenAI Academy](https://openai.com/) - Fragmented AI literacy paths for the public. `#free`
+- [Otter.ai](https://otter.ai/) - Ai meeting assistant that records audio, write notes, captures action items, and generates summaries. `#freemium`
+- [PaddlePaddle Studio](https://studio.paddlepaddle.org.cn/) - Baidu practice environment with free GPU. 146 `#free`
+- [PagePundit](https://pagepundit.com/) - Discover Tailored Book Suggestions Effortlessly `#free`
+- [QuillBot](https://quillbot.com/) - AI-powered paraphrasing tool. `#freemium`
+- [Quizb](https://quizb.ai) - Generate engaging quiz questions effortlessly with QuizB.ai. Harness the power of AI to create customized quizzes for education, training, and fun. `#freemium`
+- [Reading Coach](https://coach.microsoft.com/) - Microsoft interactive reading and progress tool. 147 `#free`
+- [Reliable AI](https://kao.baidu.com/) - College entrance exam volunteer planning system. ``
+- [ShowMeAI](https://showmeai.tech/) - Integration of structured AI materials. `#free`
+- [Sibyl AI](https://sibyls.ai/) - Provide guidance, insights, and support for individuals at different levels of spiritual exploration, from neophytes to adepts and holistic practitioners. `#paid`
+- [SlidesAI.io](https://www.slidesai.io/) - powerful AI tool that can help teachers create visually appealing and engaging presentations for their classroom teaching instantly. `#freemium`
+- [SocratiQ](https://socratiq.ai/) - The Future of Education, Integrated `#paid`
+- [StudyArena](https://studyarena.com) - Students compare three AI explanations for free, vote before seeing model names, then reveal which models answered. `#freemium` `#education`
+- [Tencent Coding](https://www.tencent.com/) - Popularization platform for master skills. 148 `#free`
+- [Text With Authors](https://textwith.me/authors/) - Chat with famous authors, poets, playwrights, philosophers and more from classical literature. `#freemium`
+- [Text With History](https://textwith.me/history/) - Chat with famous politicians, scientists, artists, world leaders and more. Also includes history tutors. `#freemium`
+- [Textero.ai AI Essay Writer](https://textero.ai/) - Your reliable AI academic assistant for tasks of any scale. `#free`
+- [Trancy](https://trancy.org/) - Language analysis through video and web pages. `#free`
+- [Udacity AI School](https://www.udacity.com/) - Professional industry-expert led training. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Email Assistant
+
+- [Rytr](https://rytr.me/) - AI writing assistant for fast, affordable, high-quality content. `#freemium`
+- [Superhuman](https://superhuman.com/) -Email client designed for Gmail, focusing on speed and productivity with features like AI email prioritization and instant actions `#paid`
+- [Zapier](https://zapier.com/blog/best-ai-email-assistant/) - Discover the top AI email assistants that streamline your inbox and supercharge your productivity. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Experiments
+
+- [Google Labs](https://labs.google/) - Google's hub for early-access AI experiments, including Whisk, NotebookLM, and other prototype tools. `#free`
+- [Hey Data](https://heydata.org/) - Personalized prompt framework and shortcut suite for Apple devices that replaces Siri with ChatGPT. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Fashion
+
+- [DressMeAI](https://dressmeai.com/) - AI virtual try-on from a person photo and clothing image. `#paid`
+- [Dressrious](https://www.dressrious.com/) - Offers personalized daily outfit recommendations based on users' wardrobe items, weather conditions, occasions, and color preferences. `#free`
+- [Intelistyle](https://www.intelistyle.com/) -  offers personalized styling and virtual try-on features for a better online shopping experience. `#paid`
+- [Outfit Roast](https://outfit.roastlabai.com/) - AI-powered outfit analysis that rates your look for any occasion, gives honest style feedback, and tells you exactly what to change. Upload a photo and get scored. `#freemium`
+- [RealFun Color](https://color.realfun.online/) - Provides selfie-based personal color analysis and checks clothing colors against a personal color profile. `#freemium`
+- [TryOnSwap](https://tryonswap.com/en) - Creates AI fashion previews from model photos and garment references, with single-item or up-to-five-piece outfits; paid credit packs and introductory credits after email verification. `#paid`
+- [Zyler](https://business.zyler.com/) - Enables customers to virtually try on clothes, offering a personalized shopping experience. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Finance
+
+- [BeeBee AI](https://www.beebee.ai/) - Financial reports and earnings calls become easily understandable with key insights for everyday investors. `#free`
+- [Cleo](https://web.meetcleo.com/) - AI financial assistant chatbot that helps users budget, save, and manage money in a fun, conversational way. `#freemium`
+- [Durable](https://durable.co/) - Build a website in 30 seconds with AI, leveraging AI-powered design and marketing tools to boost traffic and increase revenue. `#freemium`
+- [Equibles](https://equibles.com/) - US stock market data for ChatGPT, Claude and other AI assistants through a hosted MCP server and a REST API, covering SEC filings, financial statements, earnings call transcripts, insider and congressional trades and 13F holdings. `#freemium` `#mcp`
+- [FXMacroData](https://fxmacrodata.com/) - Official-source macroeconomic releases, release calendars, central bank rates and FX data for 22 currencies, served over a REST API and a hosted MCP server for Claude, ChatGPT, Cursor and other AI assistants; USD data works without a key. `#freemium` `#mcp`
+- [HoopsAI](https://www.hoopsai.com/) - Offers real-time trading insights and analysis for retail investors. `#free`
+- [Invompt](https://invompt.com/) - Turns work from Claude, ChatGPT, or Cursor into invoices, quotes, and estimates you review before sending, through the hosted MCP at `https://mcp.invompt.com/mcp`. You can try it as a guest, with no account. `#free`
+- [Koyfin](https://www.koyfin.com/) - AI-powered financial data and visualization platform that provides advanced charting, analytics, and market dashboards. `#freemium`
+- [SwiftAlerts](https://swiftalerts.trade/) - Connect Claude, Codex, Cursor, and other AI assistants to structured market intelligence. `#paid`
+- [Tapetide](https://tapetide.com/mcp) - Indian stock market MCP server: research, screen and track about 8,200 NSE and BSE stocks from Claude, ChatGPT, Cursor or any MCP client. `#freemium` `#mcp` `#opensource`
+- [Uptrends.ai](https://uptrends.ai/) - The first AI stock market news monitoring platform made for DIY investors. Uptrends.ai analyzes chatter to help you find the trends & events that matter. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Fitness
+
+- [Alpa AI](https://www.alfa-ai.com/) - To train the right way without depending on anyone but their self-anytime, everywhere. `#freemium`
+- [Coachify](https://coachify.ai/) - Your Personalized Fitness Coach Powered by AI `#paid`
+- [Hypereficient](https://hyperficient.org/) - Optimizes workout routines for maximum muscle gain in less time. `#free`
+- [PPLEGPT](https://pplegpt.vercel.app/) - Your next exercise in seconds `#free`
+- [Sista.AI](https://sista.ai/fitness-coach) - Personalized workout plans, goal setting, nutrition coaching, injury prevention, mind-body connection, and ongoing support to help you achieve your fitness goals. `#paid`
+- [Zing Coach](https://zing.body.scan.zingproduction.com/) - AI-powered fitness tool, streamlines the process of evaluating fitness levels `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Fun Tools
+
+- [BabbleBox](https://babblebox.ai/) - AI tool that enhances conversational experiences by emulating human-like conversations `#free`
+- [ComicifyAI](https://comicify-ai.vercel.app/) - Turn Text into Captivating Comics with ComicifyAI `#free`
+- [Convenient Hairstyle](https://hairstyle.cvhtechnology.com/) - Transform Your Look with Personalized Hairstyle Exploration `#free`
+- [Dream Interpretation](https://dreaminterpretation.online/) - Get Professional Dream Interpretation `#free`
+- [Dream Interpreter](https://dreaminterpreter.ai/) - Dream interpreter using GPT-3 `#free`
+- [Dream Interpretation - AI Dream Analyst](https://dream-interpretation-ai.com/) - Dream analysis, dream story sharing, dream dictionary `#free`
+- [GreenThumb](https://www.messengerx.io/greenthumb) - Unlock the World of Gardening with Your AI Companion `#free`
+- [SomniAI](https://somniai.com/) - Offers accurate and personalized interpretations of dreams in seconds. `#free`
+- [Pixel Pet](https://letmethink.cc/app/pixel-pet/) - Turn a personality description into a deterministic ASCII pixel companion in the browser. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Gaming
+
+- [Booom.ai](https://joinplayroom.com/games/booom/) - Generate a trivia game using AI `#free`
+- [Scenario](https://www.scenario.com/) - AI-powered game asset generation trained on your own art style for consistent characters, items, and environments. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Gift Ideas
+
+- [Almowafir](https://almowafir.com/en/gift-hunter/) - Almowafir AI Gift Hunter finds the best gift for you `#free`
+- [BestBuyClues](https://bestbuyclues.com/) - Your AI Gift Ideas Generator `#free`
+- [Botsy AI](https://botsy.ai/) - Recommends top-rated gifts from Amazon.com based on the recipient's interests and preferences. `#free`
+- [Cool Gift Ideas](https://www.coolgiftideas.io/) - Find the perfect gift for anyone with creative ideas tailored to them. `#free`
+- [DreamGift](https://dreamgift.ai/) - Discover personalized and unique gift ideas for every occasion. `#free`
+- [Elf Help](https://www.elfhelp.ai/) - Free personalized gifting ideas for everyone on your list. `#free`
+- [Gift Ideas AI](https://www.giftideasai.xyz/) - Provides personalized gift recommendations based on recipients' interests, age, gender, and occasions, making gift-giving effortless and enjoyable. `#free`
+- [Gift Matchr](https://giftmatchr.com/) - Your personal AI gift Assistant `#free`
+- [Giftassistant](https://www.giftassistant.io/) - Giftassistant.io is an AI-powered tool that quickly generates personalized gift ideas for any occasion. `#free`
+- [Giftastic.ai](https://giftastic.ai/) - Personalized, unique and thoughtful gift recommendations `#free`
+- [Giftbox](https://www.giftbox.co/) - Personalised gift recommendation for any occasion `#free`
+- [Giftgenie AI](https://www.giftgenie.ai/) - Gift Genie AI is an AI-powered tool that assists users in finding the perfect gift for their recipient by generating personalized gift recommendations based on a brief description. `#free`
+- [GiftHuntr](https://gifthuntr.com/) - GIft Giver powered by AI `#free`
+- [Giftmethat](https://www.giftmethat.io/) - Revolutionizing Gift-Giving : GiftMeThat's AI-Powered Platform `#free`
+- [Gifts Genie](https://gen.gifts/) - Genie takes the stress out of gift-giving with AI-powered birthday gift ideas. `#free`
+- [Imajinn.ai](https://imajinn.ai/portrait) - Imajinn AIP's AI Couple Portrait Canvas is a one-of-a-kind and romantic way to immortalize your love. `#paid`
+- [Intelli Gift](https://intelli.gift/) - Gift smarter with intelli.gift - The AI-powered gift advisor `#free`
+- [Lazy Cards](https://lazy.cards/) - Lazy Cards is a convenient and thoughtful service that offers AI-written greeting cards for various occasions `#free`
+- [Magic Type AI](https://www.magictype.ai/) - Write greetings, poetry and rap lyrics using AI. `#free`
+- [myGiftAgent](https://www.mygiftagent.com/) - Your AI-powered gift recommendation assistant, helping you find the perfect presents for your loved ones. `#free`
+- [Outdone](https://www.outdone.io/) - Outdone is a gift recommender that simplifies the process of shopping for special occasions `#free`
+- [Santa AI](https://artflow.ai/) - Create your own unique Santa video greeting `#free`
+- [Silly Robot Cards](https://www.sillyrobotcards.com/) - Customized greeting card design with unique touch. `#paid`
+- [Smart Gift AI](https://smartgiftai.com/) - AI-powered gifting platform `#free`
+- [Text2present](https://text2present.com/) - Text2present.com is an AI-powered tool that enables users to effortlessly create customized presents for their friends, family, and acquaintances. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## HealthCare
+
+- [Cortexa](https://cortexanote.com/en/scribe/) - AI medical scribe that generates reviewable clinical notes, with a free tier for unlimited transcription and an optional clip-on recorder. `#freemium`
+- [Enlitic](https://enlitic.com/) - an AI-driven application that lets you transform big data into relevant insights that can help you make more accurate, strategic, and timely decisions. `#paid`
+- [MIRI](https://www.miri.health/) - Comprehensive Wellness Platform That Puts Experts in Your Pocket 24/7 `#free`
+- [Viz.AI](https://www.viz.ai/) - Offers a wide range of features to help healthcare professionals run their operations more efficiently and accurately. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Human Resources
+
+- [Allowly Hiring Evidence](https://allowly.ai/solutions/hiring/) - Applies approved employment-screening policies to selected fields, records linked reviews and corrections, and exports signed Hiring Decision Packs. `#freemium`
+- [Baigua Interview](https://baigua.ai/) - Safe technical interview code-writing assistant. `#free`
+- [Cover Letter Copilot](https://coverlettercopilot.ai/) - Your AI-Powered Cover Letter Generator `#freemium`
+- [Deepbrain AI](https://www.deepbrain.io/) - Innovate HR Process with AI Interview. `#paid`
+- [Interview Cat](https://mianshiya.com/) - Answer suggestions based on real-time listening. ``
+- [Interview Star](https://xingmian.com/) - Big data and algorithm interview modeling. `#paid`
+- [Jobvetta](https://www.jobvetta.com/) - MCP server and API for searching current India jobs from official employer career pages by keyword, location, and posting age. `#free`
+- [Lan Zidian AI](https://lanzidian.com/) - One-stop resume and interview optimization. `#free`
+- [Magic Pen Resume](https://mojibjl.com/) - Employment guidance for college students. `#free`
+- [Mercor](https://mercor.com/) - Global job seeker and enterprise matching. ``
+- [Multi-faceted Goose](https://www.google.com/) - AI interview skill-building for job seekers. `#paid`
+- [Offerin](https://offerin.cn/) - Voice recognition assistant for interviews. `#paid`
+- [ZapHire](https://www.zap-hire.com/) - AI-Powered Recruitment for Data-Driven Hiring. `#free`
+- [Zhide Resume](https://zhideresume.com/) - Analyzes JDs to generate matching resumes. `#free`
+- [Zhitutu Resume](https://zhitutu.com/) - Professional Chinese and English templates. `#free`
+- [AI Dev Jobs](https://aidevboard.com/) - AI/ML engineering job board with 8,400+ active listings from 580 ATS sources. Free REST API + MCP server. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Image Classification
+
+- [AI or NOT](https://www.aiornot.com) - Determine whether an image has been generated by artificial intelligence or a human `#free`
+- [Clarifai](https://clarifai.com/) - Computer vision platform for image and video classification, object detection, and custom model training. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Image Editing
+
+- [AIPhotoeditor](https://photoeditor.ai/) - AIPhotoeditor is a free photo editor that allows users to remove unwanted objects, people, blemishes, or text from their images in seconds. `#free`
+- [BulkPicTools](https://bulkpictools.com/) - Free browser-based bulk image workspace. Upload once, chain 40+ tools (compress, convert, crop, background removal, face blur) without re-uploading. Files never leave your device. `#free`
+- [Crisp](https://crisp.photos/) - Free AI photo upscaler that runs entirely in your browser. No upload, no signup, no watermark. Includes a dedicated anime upscaler. `#free`
+- [Cutout.Pro](https://www.cutout.pro/) - Creative visual platform and automated tasks. `#free`
+- [igly.ai](https://igly.ai/) - Browser-based AI image editor for background removal, inpainting, upscaling, and generative fill. `#freemium`
+- [Image Candy](https://imagecandy.com/) - Online Image Editor - Image Candy `#free`
+- [Img.Upscaler](https://imgupscaler.com/) - Img.Upscaler uses AI to enlarge your jpg, png, webp images by 200% or 400% without losing quality. `#freemium`
+- [Leonardo.ai](https://leonardo.ai/) - Generative platform with Veo 3 and Phoenix. `#free`
+- [LiblibAI](https://www.liblib.art/) - LoRA model training and online generation. `#free`
+- [Machi Photos](https://machiphotos.com/create) - Browser-based ID photo maker for compliant crops, AI background replacement, retouching, and convenience-store print sheets. `#freemium`
+- [Meshy](https://www.meshy.ai/) - Convert text/images to 3D mesh models. `#freemium`
+- [Midjourney](https://www.midjourney.com/) - Gold standard for high-fidelity visual art. `#paid`
+- [Nano Banana](https://nanobanana.im/) - Transform any image with simple text prompts. Nano-banana's advanced model delivers consistent character editing and scene preservation that surpasses Flux Kontext. Experience the future of AI image editing. `#freemium`
+- [PhotoRestore.ai](https://photorestore.ai) - AI-powered restoration of old and damaged photos — repairs scratches, fading, tears, and colorizes B&W images. `#freemium`
+- [Photoroom](https://www.photoroom.com/) - Fast enterprise-level image editing templates. `#free`
+- [PhotosStyle](https://www.photosstyle.com/art) - Online AI photo style converter for turning images into anime, sketches, line art, oil paintings, cartoons, and other creative styles. `#freemium`
+- [Photostockeditor](https://photostockeditor.com/tools/socialmedia-resize) - Intelligence Image Crop/Resize: Perfectly Tailored Social Media Images `#free`
+- [Rao Edits](https://raoedits.top/) - Generate images from text and edit reference photos for social, product, and creative workflows. `#paid`
+- [Remove Bg](https://www.remove-bg.dev/) - AI background remover for product photos, portraits, and logos with transparent PNG download. `#free`
+- [remove.bg](https://remove.bg/) - Online background remover (5 seconds)1. `#free`
+- [Skybox AI](https://skybox.blockadelabs.com/) - 360° virtual world panorama generation. `#freemium`
+- [TinyTools BG Remover](https://tinytools-smoky.vercel.app/) - In-browser AI background removal — runs entirely on your device via ONNX Runtime, no upload, no signup, open source. `#free` `#opensource`
+- [Upscale Image](https://www.upscaleimg.org/) - AI image upscaler to improve resolution and recover detail in portraits, product shots, and artwork. `#free`
+- [Upscayl](https://upscayl.org/) - Open-source image resolution amplifier. `#free`
+- [WHEE](https://www.whee.com/) - Meitu Inc. one-stop visual creative service. `#free`
+- [Wipe](https://wipe.photos/) - Remove people and objects from photos entirely in your browser. No upload, no signup, no watermark. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Image Generator
+
+- [Adobe Firefly 3](https://www.adobe.com/products/firefly.html) - Adobe's latest AI image generation with commercial-safe content `#freemium`
+- [AI Image](https://aiimage.com) - Generate and edit images from text prompts and reference pictures in a browser. `#paid` `#design`
+- [AI Passport Photo](https://aipassportphoto.com/) - Take A Photo with Your Mobile Phone and Get Your Passport Photo in Seconds. `#freemium`
+- [Alimvo](https://alimvo.com/) - AI product photo and video generator for ecommerce brands. Create studio shots, lifestyle scenes, and ad creatives in minutes. `#freemium`
+- [Bing Image Creator](https://www.bing.com/images/create) - Image Creator from Microsoft Designer allows you to generate captivating images based on your words using AI. `#freemium`
+- [DALL-E 3](https://openai.com/dall-e-3) - OpenAI's latest image generation model with improved quality and safety `#freemium`
+- [Flux Pro](https://flux.ai/) - High-quality image generation with fine-tuned control and consistency `#freemium`
+- [FollowFox](https://followfox.ai/) - Open-source text-to-image generator with impressive features and capabilities. `#free`
+- [GenPictures](https://www.getconverse.com/pics) - Create stunning AI art, images, and pictures in seconds for free with GenPictures. Turn your text into visual masterpieces effortlessly. `#freemium`
+- [GPT Image 2](https://gptimage2.asia/) - Generate and edit AI images for marketing, ecommerce, social media, and branded visuals. `#freemium` `#design`
+- [GPT Image 2.5 Generator](https://gptimage2-5.pics/) - Create images from prompts and edit reference images in a browser, with Flare for speed or Sunburst for finer detail. `#paid` `#design`
+- [ID Photo API AI](https://idphoto.ai/) - Passport Photo API to convert regular photo to passport photo. `#freemium`
+- [Ideaogram](https://ideogram.ai/t/trending) - This tool helps us to generate text in an image `#free`
+- [Ideogram 2.0](https://ideogram.ai/) - Advanced text-to-image generator with superior text rendering capabilities `#freemium`
+- [Image 2](https://image2.to/) - AI image and video generator for creating, editing, and transforming visuals from prompts. `#freemium`
+- [ImageCreator](https://imagecreator.alkaidvision.com/) - A Professional PS plug-in powered by AI `#free`
+- [Imagine](https://www.imagine.art) - Text to image with AI Art Generator `#freemium`
+- [Ipic.ai](https://www.ipic.ai/) - Ipic.ai is a free AI image generator that can effortlessly create unique AI art. `#free`
+- [Kaiber](https://kaiber.ai/) - Tell stories like never before with our advanced AI generation engine `#freemium`
+- [Kling AI](https://kling.kuaishou.com/) - Advanced video and image generation with realistic motion `#freemium`
+- [Leonardo](https://leonardo.ai) - Text-to-image Create production-quality visual assets for your projects with unprecedented quality, speed, and style-consistency `#free`
+- [Midjourney v6](https://www.midjourney.com/) - Latest version with enhanced photorealism and prompt understanding `#paid`
+- [MyPhotoAI](https://myphotoai.io/) - Turn your selfies into AI headshots and portraits. `#paid`
+- [NightCafe](https://creator.nightcafe.studio/) - A popular AI art platform that generates images from text prompts in multiple artistic styles. It offers daily free credits, community challenges, and style customization for creative projects. `#freemium`
+- [Novita.ai](https://novita.ai/) - Novita is your go-to solution for fast and affordable AI image generation. `#paid`
+- [PhotoGenerAI](https://photogenerai.com) - Free AI photo generator and editor — create and edit photos in the browser, no sign-up required. `#freemium`
+- [pica-ai](https://www.pica-ai.com/) - Experience funny or realistic face swapping effects. Begin by uploading your photo!. `#freemium`
+- [Picsart](https://picsart.com/ai-image-generator/) - Convert words into an image in mere seconds with the Picsart AI Image Generator. `#freemium`
+- [Playground AI](https://playground.com/) - Free-to-use online tool to create art, social media posts, presentations, posters, videos, logos and more. `#free`
+- [Punch Needle Generator](https://www.punchneedle.co.il/en) - AI-generated punch needle embroidery patterns with color-coded yarn maps from text prompts or image uploads. `#freemium` `#design`
+- [Remaker-Ai](https://remaker.ai/en) - All-in-one tool leveraging the capabilities of artificial intelligence. Craft and produce diverse content formats, spanning text, images, and beyond. `#free`
+- [removebg](https://remove.bg/) - Remove any Image Background `#free`
+- [Rentoor](https://rentoor.vercel.app) - Enhance your images with Rentoor's super-resolution feature, restoring clarity and detail for stunning visuals. `#freemium`
+- [Seed Imagine](https://www.seedimagine.com/) - Browser-based AI workspace for text-to-image and photo-to-video creative assets. `#freemium`
+- [Seedream AI Studio](https://seedream4.video/) - Multi-model AI image generation using ByteDance Seedream 5.0/4.5/4.0, with one-click image-to-video animation via Kling 2.1. `#freemium`
+- [Stable Diffusion Online](https://stablediffusionweb.com/#ai-image-generator) - text-to-image diffusion model capable of generating photo-realistic images given any text input, cultivates autonomous freedom to produce incredible imagery, empowers billions of people to create stunning art within seconds. `#opensource`
+- [stockimg.ai](https://stockimg.ai/) - Stockimg is an all in one design and content creation tool powered by AI. You can easily generate logo, illustration, wallpaper, poster and more. `#freemium`
+- [Top VS Best](https://topvsbest.com/aiimagecreator/) - Effortlessly craft mesmerizing and exclusive images through our AI-powered image generation. `#free`
+- [Vivify GPT Image 2.5](https://vivify.video/models/gpt-image-2-5) - Generate product visuals and edit reference images with Flare or Sunburst in a browser. `#paid`
+- [Wepik AI](https://wepik.com/ai) - Text to Image Converter `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Interior Designing
+
+- [AI Room Planner](https://roomaiplanner.com/) - Get hundreds of interior design ideas for your room - free with no limit. `#free`
+- [Interior AI](https://interiorai.com/) - Generates redesigned photos of real rooms in dozens of styles from a single uploaded photo. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Legal
+
+- [Court Rules](https://www.courtrules.app) - Free reference for U.S. federal court rules, local rules, judge standing orders, and court holidays, with a deadline calculator and an MCP server. `#freemium`
+- [Derli Legal Search](https://www.derli.com.cn/) - 500 million legal data points for practitioners. `#paid`
+- [Hai Rui Legal AI](https://www.hairui.ai/) - Document writing and case source expansion. `#paid`
+- [Tongyi Farlaw](https://tongyi.aliyun.com/) - Industry-specific model for professional legal help. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Legal Assistant
+
+- [Casetext](https://casetext.com/) - an award-winning legal AI company developing cutting-edge tech for 10+ years. `#paid`
+- [DoNotPay](https://donotpay.com/) - DoNotPay is an online legal service and chatbot. `#paid`
+- [Latch](https://www.latchapp.com/) - Latch helps legal teams reduce the time, effort, and cost spent towards negotiating agreements. `#paid`
+- [SpecterAI](https://specterlaw.ai/) - German-law AI assistant for source-linked legal research, contract review, and drafting. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Marketing
+
+- [AI TikTok Analyzer Pro](https://tiktok.poviai.com/) - Research public TikTok content: rank a creator's videos by plays, likes or comments, export comment threads to Excel or CSV, and generate AI transcripts with 9-language translation. `#freemium`
+- [Clay](https://www.clay.com/) - Automates outreach and contact workflows (cold email, LinkedIn DMs) based on buyer personas. `#freemium`
+- [Elaris by Solsten](https://elaris.new/) - Understand audience psychology and get actionable insights for marketing and product decisions. `#paid`
+- [HighReach](https://highreach.ai/) - Generates platform-ready video, image, and UGC ad creatives from product URLs for Meta, TikTok, and Google. `#paid`
+- [HubSpot](https://www.hubspot.com/) - CRM with AI features for lead tracking, sequences, and automation. `#freemium`
+- [MentionDesk](https://mentiondesk.com/) - Tools to optimize being quoted or referenced within AI responses and track mentions. `#paid`
+- [Qimi](https://qimi.ai/) - Game industry ad production and placement. `#free`
+- [SE Visible (visible.seranking.com)](https://visible.seranking.com/) - AI brand visibility tracker for search/LLM result coverage. `#paid`
+- [Socialmon](https://www.socialmon.ai/) - Find viral marketing examples and trends across topics and industries. `#paid`
+- [Sparkiz.ai](https://sparkiz.ai) - Turn a product link into a ready-to-launch AI video ad (avatars, voiceover, captions) in 60 seconds. `#freemium`
+- [TikTokalyzer](https://tiktokalyzer.ai/) - TikTok analytics and insights for content performance and trends. `#paid`
+- [Virbo](https://virbo.wondershare.com/) - digital human customization for personal IP. `#freemium`
+- [We-Connect](https://we-connect.io/) - LinkedIn outreach automation with multi-touch sequences and post remixing. `#paid`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Meeting
+
+- [Feishu Minutes](https://www.feishu.cn/product/minutes) - Transcribes video/audio into knowledge notes. `#freemium`
+- [Fireflies.ai](https://fireflies.ai/) - High-accuracy transcription in 100 languages. `#free`
+- [iFlytek Meeting](https://meeting.xfyun.cn/) - Secure AI cloud meeting system platform. `#free`
+- [Noty.ai](https://noty.ai/) - Converts meeting content into executable tasks. `#free`
+- [Otter.ai](https://otter.ai/) - joins calls to automatically record/summarize. `#freemium`
+- [Tencent Meeting AI](https://www.tencent.com/) - Real-time meeting organization and summaries. `#free`
+- [Tingnao AI](https://tingnao.ai/) - Professional intelligent recording assistant. `#paid`
+- [Tongyi Tingwu](https://tingwu.aliyun.com/) - Alibaba Cloud office assistant for audio/video. `#free`
+- [Zoom Workplace](https://www.zoom.com/) - AI-first team collaboration and productivity. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Model
+
+- [DeepSeek (R1)](https://www.deepseek.com/) - High-performance reasoning open-source model. `#paid`
+- [Llama](https://www.llama.com/) - Meta's family of open-weight large language models, free for research and most commercial use. `#free` `#opensource`
+- [Mistral](https://mistral.ai/) - French AI lab's open-weight and API models, including Mistral Large and Codestral. `#freemium` `#opensource`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Models
+
+- [AI/ML API](https://aimlapi.com) - One API, 100+ AI Models, Accessible 24/7. `#freemium`
+- [Bloom](https://huggingface.co/docs/transformers/model_doc/bloom) - BLOOM by Hugging Face is a model similar to GPT-3 `#free`
+- [Chatbot Arena](https://chat.lmsys.org/) - Crowdsourced model "battle" leaderboard. `#free`
+- [Claude 2](https://claude.ai/) - Talk to Claude, an AI assistant from Anthropic. `#paid`
+- [Claude 3.5 Haiku](https://claude.ai/) - Anthropic's fastest model for quick responses and simple tasks `#freemium`
+- [Command R+](https://cohere.com/) - Cohere's latest model optimized for enterprise applications `#freemium`
+- [Gemini 1.5 Pro](https://gemini.google.com/) - Google's advanced model with 1M token context window `#freemium`
+- [Gopher](https://www.deepmind.com/blog/language-modelling-at-scale-gopher-ethical-considerations-and-retrieval) - Gopher by DeepMind is a 280 billion parameter language model. `#free`
+- [GPT-4o Mini](https://openai.com/gpt-4o-mini) - OpenAI's efficient and cost-effective model for everyday tasks `#freemium`
+- [LiteLLM](https://litellm.ai/) - An open-source library to simplify LLM completion + embedding calls. `#opensource`
+- [LLaMA](https://llama.meta.com/) - A foundational, 65-billion-parameter large language model by Meta. `#opensource`
+- [Llama 2](https://llama.meta.com/) - The next generation of Meta's open source large language model. `#opensource`
+- [Llama 3.1](https://llama.meta.com/) - Meta's latest open-source language model with improved reasoning and coding capabilities `#opensource`
+- [LLaVA](https://llava-vl.github.io/) - Large Language and Vision Assistant `#opensource`
+- [Mistral 8x22B](https://mistral.ai/) - Mixture of experts model with superior performance and efficiency `#freemium`
+- [OpenAI API](https://openai.com/api/) - OpenAI's API provides access to GPT-3 and GPT-4 models, which performs a wide variety of natural language tasks, and Codex, which translates natural language to code. `#freemium`
+- [Qwen](https://github.com/QwenLM/Qwen) - Pretrained large language model proposed by Alibaba Cloud. `#free`
+- [Qwen 2.5](https://qwenlm.github.io/) - Alibaba's latest multilingual model with enhanced capabilities `#free`
+- [Vicuna-13B](https://lmsys.org/blog/2023-03-30-vicuna/) - An open-source chatbot trained by fine-tuning LLaMA on user-shared conversations collected from ShareGPT. `#free`
+- [Z.ai](https://z.ai/) - Zhipu globally launched model experience. 58 `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Music
+
+- [AIVA](https://www.aiva.ai/) - AI composer that creates original music for various purposes `#freemium`
+- [Boomy](https://boomy.com/) - Create and share AI-generated music in seconds `#freemium`
+- [Mubert](https://mubert.com/) - AI-generated music for content creators and businesses `#freemium`
+- [Riffusion](https://www.riffusion.com/) - Create music from text with styles, instruments, modifiers and genres. `#free`
+- [Songifted](https://songifted.com/) - Creates personalized AI song gifts from names and memories, with lyrics approval before recording, a free 45-second preview, and paid full songs. `#paid`
+- [Soundraw](https://soundraw.io/) - AI music generator with customizable styles and moods `#freemium`
+- [Suno AI](https://suno.ai/) - AI-powered music creation platform that generates complete songs from text prompts `#freemium`
+- [Udio](https://udio.com/) - Advanced AI music generator with high-quality audio output and style control `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Paraphraser
+
+- [Better Synonyms](https://www.bettersynonyms.com/) - A convenient way to find better synonyms for words in a specific context. `#free`
+- [Franz AI](https://chrome.google.com/webstore/detail/franz-ai-text-rewriter/lclcncbdhfpolppomniofbkiaaebaefg) - A Chrome extension to rewrite text using OpenAI API. `#free`
+- [Penelope AI](https://penelope-ai.vercel.app/) - Speed up writing with paraphrasing, summarizing and story generation `#paid`
+- [Rewriteit AI](https://rewriteit.ai/) - Rewrite with Confidence: Enhance Your Writing with AI Technology `#free`
+- [StudyCrumb](https://studycrumb.com/paraphrasing-tool) - This essay rephraser can change the wording of any content `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Personal Assistant
+
+- [ChatGPT Sidebar](https://chatgpt-sidebar.com/) - AI & you work side by side on any page `#free`
+- [Pathfinder](https://www.summit.im/pathfinder/) - Pathfinder, brought to you by Summit, is an innovative AI-driven tool designed to assist individuals in creating personalized plans and strategies to achieve their goals. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Presentation
+
+- [AiPPT](https://www.aippt.com/) - Simplifies design with automatic outlines. `#free`
+- [auxi](https://www.auxi.ai/) - PowerPoint plugin for management consultants. `#free`
+- [beautiful.ai](https://www.beautiful.ai/) - Automated brand-compliant slide production. `#freemium`
+- [Bige AIPPT](https://bige.net/) - Massive high-quality template selection. `#free`
+- [Biling AI PPT](https://ibiling.cn/) - Online manuscript and PPT framework tool. `#free`
+- [Bosi AIPPT](https://bosi.ai/) - Efficient PPT creation for business and study. `#free`
+- [ChatPPT](https://chat-ppt.com/) - Command-style workplace office assistant. `#paid`
+- [Chronicle](https://chroniclehq.com/) - High-impact presentation tool for non-pros. `#free`
+- [Decktopus AI](https://decktopus.com/) - AI generator with a presenter coach and editor. `#freemium`
+- [Gaoding PPT](https://ppt.gaoding.com/) - Design platform for non-professional designers. `#free`
+- [Instant PPT Gen](https://gamma.app/) - Content editing and intelligent typesetting tool. `#free`
+- [iSlide AIPPT](https://www.islide.cc/) - Plugin with over 8 million genuine pictures. `#free`
+- [Kapi PPT](https://kapip.com/) - Reshapes the PPT design and generation workflow. `#free`
+- [Meitu AI PPT](https://ppt.meitu.com/) - Intelligent design and high-speed production. `#free`
+- [MindShow](https://www.mindshow.fun/) - Eliminates manual typesetting and design effort. `#paid`
+- [Powerpresent AI](https://powerpresent.ai/) - Prompt-based professional slide creation. `#paid`
+- [Presentations.AI](https://presentations.ai/) - Saves draft time and ensures brand sync. `#free`
+- [Qingyan PPT](https://chatglm.cn/) - Intelligent PPT generator (Zhipu & AiPPT). `#free`
+- [Qingzhu Office](https://qingzhu.cn/) - Word/PDF conversion and industry-specific PPTs. `#paid`
+- [Seewo EasiNote](https://easinote.seewo.com/) - Interactive courseware tool for teachers. `#free`
+- [SlidesAI](https://www.slidesai.io/) - Text-to-PPT/Google Slides conversion tool. `#free`
+- [Wendoduo AiPPT](https://wendoduo.com/) - Outline creation and beautification assistant. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Presentations
+
+- [gamma.app](https://gamma.app) - Gamma is a new platform that allows users to create polished documents, presentations, and webpages in seconds using AI. `#freemium`
+- [Journey.io](https://journey.io/) - Journey.io is a storytelling platform that enables users to create interactive presentations, combining videos, slides, text, and embeds to captivate their audience. `#freemium`
+- [Prezi](https://prezi.com/dashboard/next/#/all) - A cloud-based presentation tool for creating dynamic and visually engaging presentations. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Productivity
+
+- [40h](https://40h.io/) - Map your career path and unlock your potential with the guidance of 40h. `#paid`
+- [Accountabilabuddy](https://www.summit.im/accountabilabuddy) - Sends simple text reminders to help you stay on track and achieve your objectives. `#free`
+- [Calendly AI](https://calendly.com/) - AI-powered scheduling assistant for meetings and appointments. `#freemium`
+- [Cloud One](https://yun.baidu.com/) - Baidu Netdisk document assistant and summary. `#free`
+- [DigestDiff](https://www.digestdiff.com/) - Codebase Insights Without Code Access with DigestDiff `#free`
+- [Gezhe AI (Caixuan)](https://gezhe.com/) - Manuscript management and sharing website. `#free`
+- [Glimpse](https://glimpse.surf/) - Seamless browsing experience with conversation, writing, and editing assistance `#free`
+- [Happy Copy](https://www.hoppycopy.co/) - Use AI to create powerful content for hundreds of different email campaigns, drips, newsletters and more—in seconds `#paid`
+- [Hoarder](https://hoarder.app/) - AI-powered bookmark organizer and retrieval. `#free`
+- [ima.copilot](https://ima.qq.com/) - Tencent Hunyuan-based search/write workbench. `#free`
+- [Merlin](https://www.getmerlin.in/) - Research and writing plugin with multi-model access. `#free`
+- [Message AI](https://apps.apple.com/us/app/message-ai-gpt-tts/id6448740961) - Transform Text to Speech with Natural Accuracy `#paid`
+- [Motion](https://www.usemotion.com/) - AI-powered task management and calendar optimization. `#paid`
+- [Multi Gen](https://aimultigen.com/) - Multi-Gen: All-in-one AI platform for content and productivity solutions. `#free`
+- [Notion](https://www.notion.so/product/ai/) - Access the limitless power of AI, right inside Notion. Work faster. Write better. Think bigger. `#paid`
+- [Notion AI](https://www.notion.so/product/ai) - AI-powered workspace with writing, planning, and organization features. `#freemium`
+- [Otter.ai](https://otter.ai/) - AI-powered transcription and meeting assistant. `#freemium`
+- [Posylanki](https://www.posylanki.live/) - Streamline Web Content Management & Enhance Browsing Experience `#free`
+- [Raycast AI](https://www.raycast.com/ai) - Mac-native operating system AI extension. `#freemium`
+- [Reclaim AI](https://reclaim.ai/) - AI-powered calendar management and time blocking. `#freemium`
+- [Releases Notes](https://www.releasesnotes.dev/) - Effortless Release Notes with Automation. `#free`
+- [Screenpipe](https://screenpipe.com/) - Captures screen text and audio transcripts locally, making computer history searchable for people and AI assistants through MCP and a local API. `#freemium`
+- [Soda Office](https://soda.office/) - Comprehensive navigation for office and life tools. `#free`
+- [Supermanage AI](https://supermanage.ai/) - Effortless prep for your 1-on-1 `#free`
+- [Tale](https://tale.dev/) - Open-source project workspace where teams assign tasks to AI agents in persistent sandboxes and review their reports and deliverables together. `#free` `#opensource`
+- [Taskade](https://www.taskade.com/) - Taskade elegantly unifies your team tasks, notes, and mind, stripping away the noise to reveal the essence of productivity. `#freemium`
+- [TinyWow](https://tinywow.com/) - Free PDF, image, and video processing tool hub. `#free`
+- [Uizard](https://uizard.io) - With this AI tool you can create a beautiful website and app `#paid`
+- [WPS Lingxi](https://ai.wps.cn/) - AI creation and document interpretation assistant. `#freemium`
+- [Zapier AI](https://zapier.com/ai) - No-code automation across 7,000+ applications. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+
+## Prompts
+
+- [AIPRM](https://www.aiprm.com/) - Verified library for SEO and ChatGPT. `#free`
+- [Geniea](https://geniea.com/) - Generated prompts for personal journeys. `#free`
+- [PromptFolder](https://promptfolder.com/) - Allows users to create, save, and explore innovative prompts with features like variables, organization, and sharing. `#free`
+- [CreatorSkills](https://creatorskills.co) - Marketplace of 30+ downloadable AI skills for content creators covering YouTube scripting, sponsorship analysis, and audience growth. Works with Claude and ChatGPT. `#paid`
+- [PromptHero](https://prompthero.com/) - #1 search engine for AI prompts. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Psychology
+
+- [Selfgazer](https://www.selfgazer.com/) - Provides psychological tarot readings for users seeking self-exploration and personal insights through classic tarot symbolism. `#free`
+- [Wysa](https://www.wysa.com/) - AI mental health chatbot offering CBT-based coping tools and mood tracking. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Real Estate
+
+- [Altyst](https://altyst.ai/) - Turns a commercial property's address, listing link, or offering memorandum into a full editable underwriting model with cash flows, IRR, and DSCR. `#paid`
+- [CoworkingView MCP](https://coworkingview.com/en/mcp) - Hosted MCP server and REST API that let AI assistants search and compare coworking spaces and private offices in Europe and the UAE, with operator-published prices. `#free` `#mcp`
+- [HomeByte](https://homebyte.com/) - Find your dream home with the most advanced home search on the planet. `#free`
+- [IACrea](https://iacrea.com/) - AI-powered Home Staging Solution `#paid`
+- [InteriorAI](https://interiorai.com/) - Interior design ideas using Artificial Intelligence `#paid`
+- [InteriorVibes](https://interiorvibes.co/) - Virtual Staging with a couple of clicks `#paid`
+- [RealtyGenius](https://realtygenius.ai/) - Offers efficient document management and collaboration functionalities for real estate professionals. `#freemium`
+- [RealtyNinja](https://get.realtyninja.com/ai-listing-description-generator) - AI Listing Description Generator `#free`
+- [Virtual House Flip](https://www.virtualhouseflip.com/) - Remodel homes using AI for stunning results `#paid`
+- [VirtualStagingAI](https://www.virtualstagingai.app/) - Virtually stage in one click `#paid`
+- [VirtualStagingExpert](https://virtualstagingexpert.com/) - Stunning AI Virtual Staging Photos In A Click `#paid`
+- [VSDECO](https://vsdeco.com/) - Transform Your Space with Photorealistic Restyling `#paid`
+- [Write.homes](https://write.homes/) - The ultimate real estate content creation tool `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Religion
+
+- [AstroGPT](https://vedicastrogpt.com/) - AstroGPT is a personalized astrology service that provides expert guidance for love, career, and more. `#free`
+- [Gita GPT](https://www.gitagpt.in/) - Unlock the Power of AI with the Bhagavad Gita `#free`
+- [Tarteel](https://www.tarteel.ai/) - Tarteel is an AI-powered Quran companion that helps users improve their recitation and memorization skills by providing real-time feedback, highlighting words, offering translations, and customizable challenges. `#paid`
+- [Text With Jesus](https://textwith.me/jesus) - Enlightening conversations and a deeper connection to revered biblical figures. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Research
+
+- [Consensus](https://consensus.app/) - AI-powered research engine that finds and summarizes scientific papers. `#freemium`
+- [Elicit](https://elicit.org/) - AI research assistant that helps you find and analyze academic papers. `#freemium`
+- [Lime AI](https://www.datalimeai.com/) - AI-powered research assistant for data-related tasks, designed to streamline and simplify data research and analysis processes. `#paid`
+- [Musuw](https://musuw.com/) - AI knowledge workspace with cited answers, connected Wiki pages, and a knowledge graph. `#freemium`
+- [NotebookLM](https://notebooklm.google.com/) - Google’s multimodal research thinking assistant. `#free`
+- [Research Rabbit](https://www.researchrabbit.ai/) - AI-powered research discovery and organization tool. `#free`
+- [Semantic Scholar](https://www.semanticscholar.org/) - AI-powered academic search engine with paper recommendations. `#free`
+- [Suppr](https://suppr.wilddata.cn/) - AI literature search, document translation, and deep-research workspace for researchers, with PubMed/OpenAlex search and Zotero plugin workflow. `#freemium`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## Resume
+
+- [ATS Resume Checker](https://hugounoclaw.github.io/ats-checker/) - Free, open-source resume checker that scores your resume against a job description (0–100), flags missing ATS keywords, and runs fully in-browser so nothing is uploaded. `#free` `#opensource`
+- [Resume Roaster](https://resume.roastlabai.com/) - AI-powered resume critique with ATS scoring and keyword gap analysis. Upload your resume, get brutally honest feedback on what a recruiter sees, and identify keyword gaps against any job description. `#freemium`
+- [ResumeAI](https://withresumeai.com/) - Free ATS checker (3/day anonymous, 10/day free account) and AI resume builder; State of ATS 2026 (738 employers, Workday 37.9%). `#freemium`
+- [CVExpert](https://cvexpert.com/) - Free, no-sign-up CV health and CV–job keyword checks that run in the browser without uploading or saving pasted text. `#free`
+- [LoopCV](https://www.loopcv.pro/) - Upload your CV, Select the type of Job You Want, and Press Start! Loopcv will Mass Apply on your behalf Every Single Day `#freemium`
+- [resumA.I.](https://www.resumai.com/) - resumA.I. is a next generation intelligent resume builder for enabling more effective job applications `#freemium`
+- [Resume AI Scanner](https://pdf.ai/tools/resume-ai-scanner) - Assists in assessing candidates by scanning their resumes, extracting relevant information, and generating questions to evaluate their suitability for a position. `#free`
+
+**[⬆️ Back to Top](#table-of-contents)**
+
+## SEO
+
+- [Adaptify](https://www.adaptify.ai/) - Empower Business Success with AI-Powered ChatGPT `#paid`
+- [AIRanked](https://geochecktool.com/) - Free AI visibility checker for tracking brand mentions across ChatGPT, Perplex

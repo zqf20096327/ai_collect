@@ -1,0 +1,264 @@
+# AndroidHarness
+
+<a href="https://play.google.com/store/apps/details?id=com.androidharness.app"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="72"></a>
+<a href="https://buymeacoffee.com/sanuj7"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee" height="72"></a>
+
+[![Debug build](https://github.com/Sanuu7/AndroidHarness/actions/workflows/nightly.yml/badge.svg)](https://github.com/Sanuu7/AndroidHarness/actions/workflows/nightly.yml)
+[![Version](https://img.shields.io/badge/version-2.3-blue)](https://github.com/Sanuu7/AndroidHarness/releases/latest)
+[![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84)](https://developer.android.com/about/versions/oreo)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+
+**An AI coding agent that lives on your Android phone.**
+
+AndroidHarness is a native Android app, written in Kotlin with Jetpack Compose, that works on real code projects directly from the device. It reads and edits files, runs shell commands in a real Linux toolchain with bash, git, python, and node, pushes to GitHub, drives a browser, and streams the whole process into a chat you can inspect. No PC and no root required.
+
+<!-- Screenshots: add two or three device captures to docs/images/ and uncomment this block.
+<p align="center">
+  <img src="docs/images/chat.png" alt="AndroidHarness chat with streaming answers and tool call cards" width="260">
+  <img src="docs/images/diff.png" alt="Side by side diff viewer opened from a chat" width="260">
+  <img src="docs/images/editor.png" alt="Code editor with syntax highlighting and line numbers" width="260">
+</p>
+-->
+
+## Highlights
+
+- **A coding agent, not a chatbot.** File edits, shell, git, tests, browser control, subagents, and a card for every tool call that you can open and inspect.
+- **Free to start.** The built-in keyless provider works with no sign-up, and local GGUF models run fully offline. Cloud keys and ChatGPT plans are optional.
+- **A real shell on a phone.** Commands route by path through Shizuku, a Termux toolchain, or a toybox fallback, with a shell policy and secret redactor on top.
+- **Long runs survive interruptions.** Foreground service, resume cards, a persistent message queue, and optional auto-continue keep work safe across screen-off stretches and connection drops.
+
+## Quick start
+
+1. Install from [Google Play](https://play.google.com/store/apps/details?id=com.androidharness.app), or build from source below.
+2. Grant storage access. On Android 11 and up the app needs All files access so the shell and file tools can use real filesystem paths.
+3. Pick a model. Start instantly with the built-in keyless provider, add an API key in Settings, or download an on-device model from Settings → Local models.
+4. Optional but recommended: install [Shizuku](https://github.com/RikkaApps/Shizuku) or install linux environment inside the app, so shell commands run with proper permissions.
+
+Open a workspace, point the agent at a project, and ask for a change. `/doctor` self-tests every tool family whenever something feels off.
+
+## Features
+
+### Chat
+
+- **Telegram remote control.** Pair a private bot account in Settings → Telegram to continue real chats, choose projects and models, edit files, approve tools and answer agent questions while the app is minimized. A persistent notification offers Pause and Stop, and saved requests/replies remain recoverable after a connection failure. See the [setup and command guide](TELEGRAM.md).
+- Full markdown chat with streaming responses, thinking blocks that report an estimated token count, and a tool call card for every action the agent takes.
+- Responsive markdown tables with compact card previews and an expandable full-sheet viewer with horizontal scroll.
+- File diff sheets open right from tool call cards, so you can inspect a change without leaving the conversation.
+- Turn metrics: response duration, token generation throughput measured over the streaming window itself, first-token latency, and token counts in turn stats.
+- Consecutive tool calls roll up into one compact activity card that expands in place with per-call status indicators.
+- Inline Writing/Edit rows show filenames and animated added/removed line counts while file arguments stream. Tap a row for the syntax-colored preview and token details. Successful writes retain measured counts in chat history. Toggle them in Settings → Chat & commands → Show live code. Providers that return complete arguments at once show the row when those arguments arrive.
+- Verification cards: turns that touch files or run checks end with a list of every build, test, or lint command and its recorded outcome (passed, failed, or unconfirmed). Checks invalidated by a later edit are marked for a recheck.
+- Voice input with live waveforms, transcribed by Groq Whisper (`whisper-large-v3` / `turbo`) or native Android speech. Tap the mic to lock recording, or hold with slide-up lock and slide-left cancel.
+- Fork any assistant turn into a fresh session with cloned context.
+- The last active chat resumes automatically on launch behind shimmering skeleton loading.
+- Long chats open with the most recent messages. Load older messages when needed; pages keep complete turns together, search still jumps to older results, and paging does not change the context used by the model.
+- **Workspaces per chat.** A chat can work in one workspace or several: open Workspaces for this chat from the drawer or the desktop sidebar, tick the projects it should see, set Can edit or Read only for each, and pick the primary where plain paths and new files land. It also works on a draft chat before the first message, without losing what you typed. Every tool call names the workspace it targets, read-only projects refuse edits (Full access does not lift this), commands and Git step aside while any selection is read only, and undo keeps each project's files separate. Other chats and their running tasks stay in their own workspaces.
+- **Projects.** Each project brings together chats, automations, repository, memory, Git branch and pending changes, the last named Build & Test check, and a running or static preview. Files, Terminal and Build & Test open directly in that project without changing another chat's workspace or creating a chat. Project details lets you rename it, and new chats belong to the project they were started from.
+- **Project memory.** Chats in a project share one notes file, edited from the project screen and counted against the same limit the agent uses. Saving compares against the version you loaded, so a draft written while the agent was updating the notes is refused with a reload prompt instead of overwriting newer work, and saving waits while a task is running in that workspace.
+- Message queue for follow-ups, with edit, reorder, remove, and Send now. The queue persists across app restarts, each message starts after that chat's successful Run finished notification, and interruptions keep it waiting.
+- Long-press your own message for Retry, Copy, and Edit. Retry resends it as a fresh turn.
+- The agent can ask you something mid-run, and you can answer from the notification shade or the chat.
+- Optional Caveman reply modes: terse, compressed responses with an intensity dial and optional skill enforcement, configured in their own settings screen.
+- Chat backup: export every chat with its full message history to a JSON file and import it back on any device. The file holds chats and messages only, never API keys or settings.
+- Encrypted settings backup: API provider setup, custom API model IDs, and preferences in one encrypted file, with API keys and MCP configuration included optionally. Local models and their selections are excluded. A failed export names the setting that blocks it instead of a generic error, provider endpoints that work in chat validate here too, and the password can be as short as 6 characters.
+- Workspace layout in Settings → Appearance: Auto, Phone, or Desktop. Wide windows use a desktop workspace with a persistent project/chat sidebar, a focused conversation, resizable file and change panels, and a right-side terminal panel. Narrow windows keep a compact layout.
+- Desktop controls: right-click, long-press, or use a chat's menu to manage it. Tab/Shift+Tab moves focus; Ctrl+L focuses the composer, Ctrl+Enter sends, Ctrl+N starts a chat, Ctrl+Shift+B toggles the sidebar, and Ctrl+Alt+F/T/G opens Files/Terminal/GitHub. Ctrl+S saves in the editor. Enter runs a terminal command; Up/Down recalls commands.
+
+### Scheduled automations
+
+- Schedule a message from the composer's actions menu: pick the date and time, how it repeats (once, daily, hourly, or manual), which chat runs it, the workspace, and the model. The chat shows its scheduled messages above the composer, and every schedule can be paused, resumed, or cancelled from the Automations screen.
+- Occurrence-safe runs: worker retries, resumes after an interruption, and app restarts never send the same prompt twice. Completed tools and queued messages stay in place, a busy chat makes the run wait its turn, and taking the chat over yourself stops the schedule for review instead of fighting your changes.
+- Unmetered-only schedules wait for a connection without a data limit, such as Wi-Fi, so a run never burns metered data.
+- Recurring or interval-based prompt tasks that run in the background through Android WorkManager.
+- An AI-assisted planner that translates plain English instructions into a cron-like schedule and its parameters.
+- An editor bottom sheet with quick suggestion chips, per-automation model selection, and manual run triggers.
+- Run history logs, execution status indicators, and background completion notifications.
+
+### Agent tools
+
+- **Files.** read, write, edit, search, grep, list, move, delete, fuzzy multi-edit, and apply_patch, which checks every hunk header and line count before it touches a file and rolls back atomically on failure. Moves refuse to overwrite an existing destination unless you pass `overwrite=true`. The agent reads images by filename and extracts text from attached PDFs.
+- **Shell.** Run commands with timeouts, launch and manage background processes, install Linux packages, and query Android logs with package, tag, level, and pattern filters.
+- **Git.** status, diff, commit, log, show, branch, checkout, push, and pull, with git identity auto-configured so commits never fail on "author unknown".
+- **Web.** Search through keyless engines or the Brave and Tavily APIs with a key; fetch pages; make raw HTTP requests with JSON bodies, restricted to public addresses (localhost, private ranges, and other non-public destinations are refused, DNS answers are validated before connecting, and redirects are not followed); call the GitHub API with automatic authentication.
+- **Web preview and browser control.** A preview hub for localhost ports, workspace HTML files, and web links, with Eruda DevTools, console logs, and one-tap bug fixing. The agent drives the page itself through browser tools (navigate, snapshot, click, type, scroll, eval, screenshot) behind a floating live-action bubble. Select any element to send its selector, computed styles, console errors, and a screenshot straight to the agent as a fix request.
+- **MCP.** Connect Model Context Protocol servers over stdio or HTTP, add them by pasting a Claude config or a `claude mcp add` command, and sign in with OAuth when the server needs it.
+- **CodeGraph.** Install it from Settings, enable a local index per workspace, and the agent can explore symbols, callers and callees, change impact, affected tests, and incremental sync with no separate configuration.
+- **Subagents.** The task tool spawns subagents that work in parallel on independent chunks, each optionally on a different model. They research read-only by default; with subagent action tools enabled they also edit files and run commands in Act mode, always under the current permission mode.
+- **Subagent settings.** Settings → Sub-Agent settings gives all subagents a separate provider and model, or keeps them on the main agent's model. A saved subagent model takes priority over the task tool's model override.
+- **Skills, todos, and memory.** Skill tools list, view, and manage the markdown skills library from inside a run. A live todo list, a core memory file that loads at the start of every conversation, and searchable topic files for everything else.
+
+### Files and editor
+
+- Workspace file manager: multi-select batch operations (delete, copy, move via destination picker), create, rename, and share files and folders, with open-in-other-apps support.
+- Code editor with multi-color syntax highlighting across Kotlin, Java, Python, JS, TS, HTML, CSS, and Shell, line numbers, unlimited undo and redo, regex find and replace, a word wrap toggle, and encoding preservation.
+- Diff viewer with side-by-side and inline modes, dual line gutters, syntax coloring, and change stats.
+- Files changed tracking per chat with rewind: full-file undo and selective section undo. Undo checks that the preview still matches the file and preserves unrelated sections. Ask about changes sends a whole-file diff or a single section to the agent for an explanation.
+- Select code in the editor and use Ask agent for Explain, Fix, Refactor, or Write tests. The chat opens with the selection, its file and line range as a draft prompt, marked when the buffer has unsaved changes, and nothing is sent until you review and send it.
+- Build & Test dashboard: save project checks such as Gradle, npm, lint, and test commands, watch live output and pass/fail status, jump straight to parsed file errors, and hand a failed run to the agent for repair. It also detects the project's dev, start, and preview scripts, runs the chosen one, opens the server's URL in the preview automatically, and stops the whole process tree on request.
+
+### GitHub integration
+
+- GitHub is the first settings page. Sign in through GitHub's Device Flow (a code you enter in the browser, no auth server) or connect a personal access token. Verified credentials stay in encrypted app storage, and expiring OAuth connections refresh automatically.
+- Import a repository into its own private workspace by browsing your repositories or pasting a public URL, from Settings, the workspace picker, or the chat header.
+- Commit & push from GitHub Settings and the Files menu shows the target repository, branch, and changed files as a folder tree. Tap a folder to open it, long-press to select or deselect everything inside, and move around with the breadcrumb; selections survive going in and out of folders. Folder picks publish the exact changed files, so nested renames and deletions stage correctly while unrelated files are left alone. Commit selected files or retry an existing commit with Push existing commits. App history stays excluded, nothing is force-pushed, and the pushed commit is verified against the remote branch.
+- Save a GitHub push preset for a workspace, repository, and branch, then run it manually, hourly, or daily from Automation without an AI model. Presets wait while a task is using that workspace and record blocked or failed runs in history.
+- `doctor --github` checks the token, git transport, and the free plan's hidden protection limits in one command.
+
+### Remote development over SSH
+
+- Connect to remote Linux machines, servers, or local Termux environments with password or private key authentication, including Ed25519 support via Bouncy Castle.
+- SshFs backs a workspace with SFTP: browse directories, read, write, edit, and view diffs on remote files directly from the app.
+- Remote agent execution: terminal commands, background shell processes, git tools, and package managers run over the SSH connection.
+- A persistent SSH status bar with live connection state and quick reconnect controls.
+- Saved SSH profiles in workspace settings for switching between local and remote workspaces.
+
+### Terminal and shells
+
+Commands route by path, so the agent always runs in the strongest environment the device allows:
+
+| Command target | Runs as | Environment |
+| --- | --- | --- |
+| Privileged commands | shell uid via Shizuku | system access, like adb shell |
+| Workspace commands | app uid | Termux-prefix Linux toolchain with real bash, git, python, and node |
+| Fallback | app uid | bare toybox sh when nothing else is installed |
+
+A shell policy and a secret redactor keep the agent from escaping the workspace, touching system paths without permission, or leaking API keys.
+
+The app-tier shell and the terminal run bundled Bash directly on Android 8 and 9, and through the system dynamic linker from Android 10 up, where Android requires it for app-storage binaries.
+
+### Reliability
+
+- Setup requires storage access before starting. Notifications are optional; you can continue using progress and approvals inside the app without granting notification permission.
+- A foreground service keeps the agent and terminals alive while the screen is off.
+- The privileged shell verifies its connection. The standard Shizuku user service remains the default. If its startup fails on API 11–13, AndroidHarness automatically tries a private pipe-based compatibility runner using the same command and background-job implementation. This bypasses the Android Application initialization crash seen with Shizuku 13.6 on some OEM devices. Compatibility mode is marked ready only after checking the runner's identity and executing a privileged command. Terminal, tools, setup and diagnostics recognize both modes; Shizuku permission is still required.
+- A Shizuku runner that cannot bind shows a failure reason, expandable details and copy actions in Terminal & device and Troubleshooting. Copy startup log reads recent startup logs through Shizuku's main server on API 11–13, even when the runner cannot bind; no computer is needed. Reports include app/server versions, error time and logs filtered to this app's helper and service records. Missing logs and collection failures are reported explicitly. Compatibility recovery keeps the original startup error available without showing the working connection as failed. Late callbacks from old attempts cannot replace the live connection.
+- Interrupted tasks come back as a Resume card. Tool results are saved before the next action, completed writes are not replayed on recovery, and uncertain operations ask you to inspect the current state.
+- Troubleshooting checks the default provider's model catalog, storage, the default workspace, Linux tools, Shizuku, SSH, connected MCP servers, and notifications in one place, and exports a diagnostic report built from a fixed whitelist of states. Credentials, endpoints, names, file paths, chats, and raw logs are never included.
+- Settings → Storage measures shared Linux tools, npm and pip download caches, workspaces, local models, chat data and runtime staging, with per-workspace totals and honest "not measured" notes for SSH, picker-only and unavailable folders. Review cleanup previews exact paths and sizes and deletes only those files after a fresh check, waits for running tasks, tracked background processes and a closed terminal, and shared Linux packages are offered for removal only when nothing requires them and their recorded files are unchanged, quarantining files first so an interruption rolls back.
+- Optional Auto-continue (Context & limits → Recovery) resumes after server or connection interruptions with the same Resume task prompt. It is off by default, with a per-task retry limit of 1 to 5 (default 3). User stops, task limits, and permanent errors still require manual attention.
+- Context & limits lets you edit the saved summary, pin instructions, and remove older model context while retaining the visible chat.
+- Compaction never deletes messages. When a context nears its limit it summarizes a snapshot of the older conversation into a hidden note and commits only if the chat has not changed meanwhile; if anything moved, the summary is refused and your history is kept. /compact can be stopped, a failure is saved in the chat as a card with Details and Retry, and a context that is too large for the model says so instead of quietly dropping the oldest messages.
+- Optional task-wide limits for tokens, estimated USD cost, and active time, including subagents and compaction. Tasks pause at request or action boundaries with progress saved, in-flight work can exceed a limit, and a reached limit is raised before resuming.
+- Approve or deny sensitive actions from the notification shade, with four permission modes up to a full access mode that lifts every sandbox for workspaces you trust.
+- Review and revoke every remembered tool permission individually in their own settings section.
+- Navigation drawer with a quick-access tool strip (Files, Terminal, Automations, Build & Test) and the active provider at a glance.
+
+### Models and providers
+
+- **Continue with ChatGPT.** Add and select eligible ChatGPT accounts in Settings → Connected accounts. Enable Auto-switch at usage limit to try another connected account when a request reaches a confirmed usage limit, before any answer starts streaming. The app refreshes that account's available models, keeps the same model when supported, or uses its fallback choice. Choose which accounts participate and a fallback model for each. Completed tools and queued messages stay saved; if every account is limited, the task pauses. Thinking levels follow the chosen model's supported efforts. Refresh models, check newer models, reconnect, and sign out from each account's menu. Limits & usage opens ChatGPT's usage settings. Sign-ins stay encrypted on the device and are excluded from settings backups.
+- **Built-in keyless Harness provider.** Anonymous free models from Kilo and Pollinations served out of the box, fetched from Kilo's live catalog so retired models drop out on their own, with each model's rate limit shown in the picker and the kilo-auto/free router as the default. No API key needed to start.
+- Anthropic, Google Gemini, and any OpenAI-compatible endpoint with a custom base URL.
+- Custom cloud model IDs typed directly into the model picker sheet.
+- Live model catalog fetch with latency check, per-model price tracking, and a running cost readout, plus a total estimated cost hero on the Stats screen. Stats windows (Today, 1 week, 1 month, Lifetime) count requests by the day they were made on your local calendar, so continuing an old chat never moves earlier work into today.
+- One global thinking ladder from Off to Ultra on every model. Non-native rungs resolve down the chain at request time, never rewriting your pick.
+- Per-chat dual planning: a chat menu toggle that runs Plan mode on one model and execution on another, each picked from the same model sheet, with a toast confirming which model fired and a plan card that survives app restarts. Long plans expand into a complete, formatted, selectable view before approval.
+- Per-chat models: one choice for every chat is the default, as before. Turn off Use the same model in every chat in the picker and each chat remembers its own provider and model for the active, planning and execution roles plus its own thinking level, labelled This chat in the header. Model IDs are saved with the chat, so editing a provider's default later cannot change an older chat, and a chat whose provider or model is gone asks you to pick again instead of sending the request somewhere else.
+- **Fallback chains** (issue #33): up to four backup models across providers take over, in order, when the selected model fails. Quota exhaustion switches immediately, ordinary rate limits and temporary failures retry first (0 to 5 retries), and a partial response is never retried or sent again. Each destination uses its own credentials and your selected model stays selected; the chat notes the switch. Configure a default chain in Settings → Models & providers, or per chat from the picker: Use default, Custom chain, or Off, which also turns off ChatGPT account switching for that chat. Subagents and automatic compaction follow the same chain, a request from a model outside it is refused with a review message rather than sent, Stay within selected provider keeps every request (subagents included) on the selected connection, and settings backups carry the chain with non-portable providers stripped.
+- **One provider list** (issue #34): Settings → Models & providers and the in-chat model picker share the same list. Disable a connection without deleting it (it keeps its key and leaves the pickers until re-enabled, and a search still reveals it one tap away), reorder connections with move up and move down, and search models across every provider, with each hit naming its provider. Order and disabled state persist and travel in settings backups.
+- **Favourites and Recents**: star models in the picker and switch between All, Favourites and Recent collections, with favourites sorted first. Recent keeps the last ten picks per provider with Clear recent, both lists stay on the device and never enter backups, and a favourite whose provider was removed stays visible but cannot be selected.
+- **Provider-first picker**: the sheet shows the current provider in a Choose provider control that opens a searchable provider list with a Manage providers shortcut, with search, Favourites and Recent filters and a thinking-only toggle. Tapping a model stages it and a `Use <model>` button confirms, so scrolling or a stray tap cannot switch models, and a disabled provider asks before it is enabled and used. Show all searches every catalog at once, hidden models and disabled providers included.
+- **Manage models**: decide which of a provider's models appear in quick selection, with search, per-model checkboxes, Select results and Refresh models. Once you customize a provider's list, newly discovered models stay hidden until you add them, a Hidden tag marks what Show all is revealing, and hiding a model never changes a chat that already uses it.
+- **Reasoning indicators**: a colored brain marks reasoning support reported by the provider or set by you on a custom model, a muted brain marks an unconfirmed family-name hint, and tapping it explains the source. Gemini catalogs read the model's own thinking field, so a guess is never presented as a provider report.
+- **Custom provider headers**: add extra HTTP headers to an API connection for gateways that need them, with per-row enable toggles and masked values. They are stored encrypted, sent only to that connection, excluded from chat exports and backups unless keys are included, and redirects are disabled while any header is enabled so credentials cannot leak.
+- **Bulk provider actions**: long-press a provider, or choose Select from its menu, to enable, disable or delete several at once. Multi-delete reviews the exact list first and keeps your checks if it fails, and deleting a provider never reroutes a chat that used it: the chat keeps its selection and asks you to choose again.
+
+### Local models (offline AI)
+
+- Settings → Local models downloads GGUF files and imports safetensors. Supported dense Qwen 2, Qwen 2.5, Qwen 3, and Llama BPE weights are converted on the device to Q4 GGUF, then selected from the chat provider picker.
+- Import file takes a GGUF; Import folder takes safetensors weights with config.json and tokenizer.json. Recommendations include small SmolLM2, Qwen 2.5, and Qwen 3 models in both formats, plus community abliterated variants, with search by name and an Abliterated filter.
+- Check available RAM and storage, and adjust context, input, output, and CPU threads yourself. All models stay visible.
+- Runs on compatible 64-bit devices. Agent tools and dual planning are available; vision needs a compatible GGUF and matching projector. RAM, storage, and context warnings offer Continue. Models run offline after setup, network tools still need a connection, and speed plus tool reliability depend on the model and device.
+
+### Workspace safety
+
+- Sandboxed file access: the agent cannot read or write outside the workspace, symlinks and binary files are refused, and delete guards protect the workspace root.
+- An Aider-style Repo Map indexes codebase symbols automatically and feeds project structure into the agent's context.
+- Workspace ignore files keep builds and caches out of the agent's way.
+- Context hygiene keeps prompts tight and redacts secrets before they reach a model.
+- `/init` writes an AGENTS.md for the project, and `/doctor` runs a 16 point self-test of every tool family.
+
+### Skills and slash commands
+
+- The app ships with a library of markdown skills (git, planning, test driven development, systematic debugging, web design, and more) that the agent loads on demand. They are plain markdown files, so they are easy to edit and you can add your own.
+- Attach a skill to a message, or pull one in with a slash command.
+- `/clear`, `/compact`, `/cost`, `/doctor`, `/init`, `/plan`, `/skills`, plus any skill or snippet by name. `/plan` flips the agent into Plan mode and loads the planning skill automatically.
+
+## FAQ
+
+- **Do I need a PC?** No. Editing, shell, git, GitHub, SSH, and the models all run on the phone.
+- **Do I need an API key?** No. The built-in provider serves free models with no account, and local GGUF models run fully offline. Keys unlock cloud providers when you want them.
+- **Do I need root?** No. Shizuku grants shell-level access over wireless debugging without unlocking the bootloader.
+- **Does it work offline?** Local models run offline after setup. Web search, page fetches, and GitHub need a connection.
+- **Where do my chats and keys go?** Chat traffic goes to the provider you pick, nothing else. Credentials stay in encrypted storage on the device, secrets are redacted before they reach a model, settings backups include API keys only if you ask, and ChatGPT sign-ins are excluded from backups entirely.
+- **Can it damage my files?** It is sandboxed to the workspace, every write is diffable, and Files changed offers rewind, full-file undo, and section undo.
+- **Which devices are supported?** Android 8.0 and up. Local models need a compatible 64-bit device.
+
+## Build from source
+
+Requires JDK 17 and the Android SDK.
+
+```bash
+./gradlew :app:assembleDebug
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+Run the unit tests with:
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
+Debug APKs also build automatically on every push to `main` and nightly from the Actions tab. For the full local setup, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## GitHub setup
+
+In Settings → GitHub, choose **Sign in with GitHub** or **Use a personal access token**.
+
+- Device sign-in displays a code to copy into GitHub in your browser.
+- Enable workflow access only if you need to change GitHub Actions files.
+- Fine-grained PATs must include the target repositories and **Contents: read and write**. Workflow changes also need **Workflows** access.
+- Organization approval or SSO authorization may be required.
+
+Import needs the Linux environment installed. New clones use private app storage, so broad storage permission is unnecessary.
+
+Commit & push works on device repositories with shell access and a GitHub HTTPS origin. SSH workspaces use credentials configured on their host. Push presets bind the saved repository and branch, preserve unrelated staged files, never force-push, and verify the resulting remote commit. Review files first; enabling future changes explicitly lets a preset include later changes in that workspace.
+
+A failed custom AI automation cannot be diagnosed from its prompt alone. Open its history for the actual failure. Common causes include a wrong workspace, missing Git, an SSH remote, insufficient token permissions, newer remote commits, or branch protection. Native push presets avoid credentials in prompts and give step-specific git diagnostics, and a failed push can be retried with **Push existing commits**.
+
+<details>
+<summary>Building with your own OAuth app</summary>
+
+For local builders: register a [GitHub OAuth app](https://github.com/settings/developers), enable **Enable Device Flow**, and set `GITHUB_CLIENT_ID` in the ignored `local.properties` file. Local debug and release builds include that value in the APK. The Client ID stays out of repository source, documentation, and public build workflow configuration. No client secret, callback server, or auth backend is used. Builds without local configuration retain PAT login. Keep a PAT available as a fallback, because GitHub limits Device Flow requests for a shared OAuth app.
+
+</details>
+
+## Developer repo wiki
+
+A generated architecture reference covering the agent engine, tools, providers, the MCP stack, and the workspace layer: [repowiki](https://github.com/Sanuu7/AndroidHarness/tree/main/repowiki). Last updated: 2026-09-06.
+
+## Contributing
+
+Bug reports, fixes, test improvements, and documentation are all welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), and use the issue forms for bug reports and feature requests. Privacy details are in [PRIVACY.md](PRIVACY.md), and release notes are in [CHANGELOG.md](CHANGELOG.md).
+
+## Inspirations
+
+AndroidHarness borrows ideas and design taste from open source projects across the ecosystem:
+
+- [Hermes Agent](https://github.com/NousResearch/hermes-agent)
+- [Aider](https://github.com/Aider-AI/aider)
+- [pi (ohmypi)](https://github.com/earendil-works/pi)
+- [OpenCode](https://github.com/anomalyco/opencode)
+- [Claude Code](https://github.com/anthropics)
+- [Roo Code](https://github.com/RooCodeInc/Roo-Code) / [Cline](https://github.com/cline/cline)
+- [browser-use](https://github.com/browser-use/browser-use)
+- [Termux](https://github.com/termux)
+- [Shizuku](https://github.com/RikkaApps/Shizuku)
+- [CodeGraph](https://github.com/colbymchenry/codegraph)
+- [Caveman](https://github.com/JuliusBrussee/caveman)
+- [llama.cpp](https://github.com/ggerganov/llama.cpp)
+- [sora-editor](https://github.com/Rosemoe/sora-editor)
+- [Eruda](https://github.com/liriliri/eruda)
+
+## License
+
+MIT. See LICENSE.

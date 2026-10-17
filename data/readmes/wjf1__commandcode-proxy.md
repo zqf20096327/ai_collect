@@ -1,0 +1,427 @@
+<div align="center">
+
+# ⚡ CommandCode Proxy
+
+[![version](https://img.shields.io/github/package-json/v/wjf1/commandcode-proxy?style=flat-square&color=6366f1&label=v4)](https://github.com/wjf1/commandcode-proxy/blob/main/package.json)
+[![CI](https://img.shields.io/github/actions/workflow/status/wjf1/commandcode-proxy/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/wjf1/commandcode-proxy/actions/workflows/ci.yml)
+[![node](https://img.shields.io/badge/node-%E2%89%A520-339933?style=flat-square)](./package.json)
+[![license](https://img.shields.io/badge/license-MIT-94a3b8?style=flat-square)](./LICENSE)
+
+**本地部署的 OpenAI / Anthropic 双协议网关，透明代理 CommandCode AI**
+
+任何 OpenAI 风格客户端（Cursor、Continue、Aider、OpenWebUI、Hermes、你自己的代码）直接指向它，
+即可透明使用 CommandCode 后端模型 —— 自带中文仪表盘、用量成本分析与多账号额度轮换。
+
+[快速开始](#quickstart) · [用法](#usage) · [错误码](#errors) · [配置](#config) · [架构](#architecture) · [安全](#security)
+
+**中文** | [English](#english-anchor)
+
+</div>
+
+> [!WARNING]
+> 非官方社区工具。逆向自官方 CommandCode CLI wire 协议（`/alpha/generate`），与 CommandCode 无任何关联。上游协议变动时可能失效。
+
+---
+
+## 📑 目录
+
+- [界面截图](#screenshots)
+- [功能特性](#features)（协议兼容 / 可靠性与安全 / 仪表盘与用量洞察 / 工程与运维）
+- [快速开始](#quickstart)
+- [用法](#usage)
+- [错误码与重试语义](#errors)
+- [配置](#config)
+- [开发](#development)
+- [架构](#architecture)
+- [安全校验](#security)
+- [免责声明与许可证](#license)
+
+---
+
+## 🖼 界面截图
+<a id="screenshots"></a>
+
+除命令行外，代理自带一个**中文 Web 仪表盘**（默认 `http://127.0.0.1:9090`）。以下为实际界面截图（均已脱敏）：
+
+| 控制台总览 | 模型目录 | 账号与鉴权 |
+|:---:|:---:|:---:|
+| ![控制台总览](./docs/screenshots/dashboard-overview.png) | ![模型目录](./docs/screenshots/dashboard-models.png) | ![账号与鉴权](./docs/screenshots/dashboard-accounts.png) |
+
+- **总览** — 一屏掌握运行状态：引擎启停、端口、运行时长、当前账号、绑定地址、鉴权开关、账号数与可用模型数；顶部一键切换引擎。
+- **模型目录** — 官方定价目录（上下文 / 输入 / 输出 / 缓存读 / 缓存写 / 能力 / Deal）实时刷新；支持关键词搜索、GOAT / GO / FREE / DEAL / 视觉 / 推理标签筛选与多列排序；每张卡片底部的「档位」行固定标注该模型在 **Go** 与 **GOAT** 两个套餐下是否可用（GO 靛蓝、GOAT 金色带皇冠；不可用为灰底 ✗），两个档位都不含的模型另标「更高档位」并附可用档位清单。
+- **账号** — 浏览器 OAuth 登录或粘贴 Key；多账号管理与 5 小时额度轮换（≥90% 自动切换）；密钥一律**脱敏显示**。
+
+---
+
+## ✨ 功能特性
+<a id="features"></a>
+
+### 🔌 协议兼容
+
+- **OpenAI `/v1/chat/completions`** — 流式 SSE + 非流式；工具调用（并行工具、流式 `tool_calls` 增量）；视觉（`image_url` base64 / data-URL）；`reasoning_effort` 按模型档位向下对齐；`max_completion_tokens`；透传上游 `totalUsage`
+- **Anthropic `/v1/messages`** — 完整流式块生命周期（`message_start` → `content_block_start/delta/stop` → `signature_delta` → `message_delta` → `message_stop`）；`tool_use` / `tool_result` 往返；thinking 块（签名兼容）；system 块数组
+- **忠实还原 wire 翻译** — 经官方 CLI 源码逐行核对：原始 base64 图片块带 `mediaType`、`tool_search→search_tools` 别名、终止性错误不重试清单（`model_not_in_plan`、`premium_credits_exhausted`、`insufficient credits`）
+- **工具定义全量透传** — 不截断为 15 个：多工具 Agent 宿主（DSH Desktop 等）下发的 30+ 个工具全部转发，避免模型调用到被丢弃的工具而被上游拒绝
+- **模糊模型名解析 + 短别名重映射 + 套餐过滤** — 目录里同时存在短别名（`qwen-3.7-max`）与规范条目（`Qwen/Qwen3.7-Max`）时，别名会被重映射到上游认可的规范 id（上游只认后者，别名透传过去一律 403）；判定取自目录自身——别名条目的 `owned_by` 回指自身——不硬编码任何模型名，同名歧义时不做猜测。未知模型仍**原样透传**（上游给出准确报错，而不是静默换成默认模型）；`GET /v1/models` 支持按档位过滤（fail-open，数据缺失不误杀）
+
+### 🛡 可靠性与安全
+
+- **长连接加固** — 429/5xx/网络错误指数退避重试，**并覆盖上游藏在 HTTP 200 流里的失败**（网关请求失败 / 服务过载 / 无可用 provider）：在把流交给路由之前预判流内事件，因此错误不再被当成模型的回答返回；确定性不可用（区域限制、模型不认识）刻意不重试以免白耗额度；空闲流看门狗（不会无限挂起）；客户端断开立即取消上游；流干净收尾（补 finish、SSE 心跳防代理断连）
+- **出站网络代理与直连双模自愈（Auto-fallback）** — 全局出站 `fetch` 原生支持代理（基于 `undici` 的 `ProxyAgent`），同时内置**代理连通性探针（Auto-fallback）**与**全局 IPv4 优先解析（`ipv4first`）**：代理开启时走极速代理（~600ms），代理未开启或换至无代理终端时自动平滑回退为 IPv4 优先直连，彻底杜绝 IPv6 握手黑洞超时（`UND_ERR_CONNECT_TIMEOUT`）与中途断连；自动加固 `NO_PROXY` 环回白名单
+- **安全默认** — 仅绑定 `127.0.0.1`；可选 `PROXY_API_KEY` 共享密钥（**同时覆盖 API 与管理面**，仪表盘首次访问弹密钥输入）；`/api/*` 写操作校验 Origin；XSS 加固；CORS 仅对公共 API 表面开放；绑定非回环且未鉴权时界面与启动日志双重警告
+- **上游 SSRF 防护（fail-closed）** — 所有服务端上游请求经白名单校验：仅 `http(s)`、拒绝内嵌凭据、默认拒绝环回/私有/保留地址、非回环强制 `https`，详见[安全校验](#security)
+- **结构化错误码** — 17 个稳定错误码 + 可执行提示，按出口分别返回 OpenAI `error.type/code` 与 Anthropic `error.type`，调用方可据此决定等额度、换模型还是改配置（见[错误码表](#errors)）
+- **桌面通知（Windows toast）** — 额度将耗尽、账号被切走、引擎暂停时主动弹出；原生 `Windows.UI.Notifications` 零依赖，30 分钟去重限频；**自诊断**系统通知总开关（被静默拒绝的 toast 只能靠主动检测暴露），`COMMANDCODE_NOTIFY=0` 关闭
+
+### 📊 仪表盘与用量洞察
+
+- **会话明细** — 逐请求记录 input/output token、缓存命中量、耗时、成本、模型、状态；按天趋势折线、模型分布饼图、今日/本周/本月成本卡片；持久化 `~/.commandcode/usage-history.jsonl`（超 20MB 自动轮转），重启不丢
+- **成本口径对齐官方账单** — 优先采用上游 `provider-metadata` 的权威金额（已含峰谷价、缓存折扣）；缺失时本地按**缓存读/写分项 + 峰谷分时**估算；估算值带 `~` 前缀可对照
+- **缓存节省可视化** — 显示缓存命中相比全价输入**省下的金额**及相对账面成本的倍数，直接回答"为何账单远低于直觉"；按每条记录自身时刻的费率计算
+- **峰谷计费提示** — 当前峰/谷档位、切换倒计时与受影响模型的生效费率；切换点按官方边界（UTC 01/04/06/10，周一至周五）计算，跨周末也正确
+- **端到端性能 + 额度燃烧预测** — 每模型吞吐/延迟 P50/P95（口径明确标注端到端）；对官方窗口用量做时间差分，外推"多少分钟后撞限、是否早于重置"（刻意不用本地历史——只覆盖代理流量约 18%，会严重高估剩余时间）。吞吐只统计输出 **≥32 token** 的请求（可用 `PERF_MIN_OUTPUT_TOKENS` 调整，设 0 关闭）：输出过短时 `输出token / 耗时` 的分母趋零，19ms / 3 token 能算出 187 t/s，这类比值没有信息量却会把 P50/P95 整体带飞——它们仍计入延迟统计，只是不算速率。表内按吞吐样本数排序，速率算不出来的行沉到末尾但**不隐藏**（延迟仍属实测）
+- **会话与项目归因** — 会话 ID 取客户端声明的 `x-session-id`（**事实性标识**）；项目只能**推断**（system prompt 文本），逐条标注置信度（`label` 高置信 / `heuristic` 推测），未识别项单列而非猜测；日期分组按客户端时区
+- **官方用量总览 + 计费周期** — Total Tokens / Total Runs / 成功率 / 月度限额对齐官方 usage 页数据源；套餐名、额度上限、`currentPeriodStart/End`、周期进度（订阅额度到期不结转，一眼可见还剩几天）
+
+### 🧰 工程与运维
+
+- **日志持久化** — 全量追加 `logs/proxy.log`（超 5MB 轮转 `.old`），控制台窗口关掉仍可事后排查；错误日志带 `Trace`/`Thread`，可对到用量记录
+- **用量统计缓存** — 45s TTL + 并发去重，仪表盘重复拉取从 ~2.9s 降到毫秒级
+- **崩溃保护** — 5 分钟内 3 次未捕获异常即主动退出，交给服务管理器重启
+- **打包与 CI** — TypeScript + esbuild + `pkg` 单文件 exe；GitHub Actions 全量回归（typecheck → build → vitest）
+- **离线可用的仪表盘** — Tailwind / Font Awesome / Chart.js 全部本地化，不依赖公共 CDN
+- **Anthropic SDK 兼容** — `POST /v1/messages/count_tokens` 本地估算（CJK 感知，不发起上游请求）；OpenAI `stream_options.include_usage` 在收尾 chunk 附带 usage
+- **用量明细透传给客户端** — Anthropic 路由在收尾 `message_delta`（非流式为 `message.usage`）报出 `input_tokens` / `cache_read_input_tokens` / `cache_creation_input_tokens`，OpenAI 路由报出 `prompt_tokens_details.cached_tokens`。客户端因此能看到**缓存命中量**与**上游真实输入量**，而不是只有本地估算的输入总量。两个出口的 `input_tokens` 口径**不同且各自遵循本家规范**：Anthropic 侧 `input_tokens` **只算未命中缓存的输入**，总输入 = `input_tokens + cache_read_input_tokens + cache_creation_input_tokens`（缓存字段**必须**相加）；OpenAI 侧 `prompt_tokens` 已含缓存读，`cached_tokens` 是其子集（**不要**相加）
+- **每日预算告警 + 更新检查** — `DAILY_BUDGET_USD` 当日花费超阈值弹 toast；启动时查询 GitHub Releases，仪表盘头部显示"新版本"徽章
+- **明细导出** — 用量页一键导出 CSV（含 BOM，Excel 直开）
+
+---
+
+## 🚀 快速开始
+<a id="quickstart"></a>
+
+```bash
+npm install
+npm run dev          # http://127.0.0.1:9090
+```
+
+或生产模式：
+
+```bash
+npm run build && npm start
+```
+
+或独立二进制：
+
+```bash
+npm run build:win    # dist/commandcode-proxy-v4.exe —— 零依赖运行（打包需 Node ≥22）
+```
+
+> [!TIP]
+> 首次启动仪表盘会自动打开。通过**浏览器登录（OAuth）**或粘贴 API Key 登录；密钥也会自动从 `~/.commandcode/auth.json` 或 `COMMANDCODE_API_KEY` 加载。
+
+## 🧪 用法
+<a id="usage"></a>
+
+```bash
+# OpenAI 风格（示例用免费模型，任何套餐可直接跑通）
+curl http://127.0.0.1:9090/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model":"meituan/LongCat-2.0:free","messages":[{"role":"user","content":"hi"}]}'
+
+# Anthropic 风格
+curl http://127.0.0.1:9090/v1/messages \
+  -H "Content-Type: application/json" \
+  -d '{"model":"meituan/LongCat-2.0:free","max_tokens":1024,"messages":[{"role":"user","content":"hi"}]}'
+```
+
+> 模型名以仪表盘"模型"页或 `GET /v1/models` 实时目录为准；免费/折扣模型标有 FREE / DEAL 标签。
+
+> [!IMPORTANT]
+> **不支持的字段**（接受但被忽略，不报错）：`stop` / `stop_sequences`、`response_format`、`top_k`、`parallel_tool_calls`、`logprobs`、`n`、`seed` 及频率/存在惩罚。依赖这些字段控制输出形态的客户端请注意；需要 stop 语义请在上游模型侧或客户端侧过滤。
+
+客户端配置：OpenAI 风格 base URL 设为 `http://127.0.0.1:9090/v1`，Anthropic 风格设为 `http://127.0.0.1:9090`，密钥随意（若设置了 `PROXY_API_KEY` 则须一致）。
+
+按套餐筛选可用模型（`plan` 可显式指定，省略则用当前账号套餐；不带 `available` 为完整目录）：
+
+```bash
+curl "http://127.0.0.1:9090/v1/models?plan=individual-go&available=1"
+```
+
+## 🚨 错误码与重试语义
+<a id="errors"></a>
+
+任何失败都返回**稳定错误码 + 可执行提示**，调用方可据此判断该等待额度、换模型还是改配置。
+
+OpenAI 出口（`/v1/chat/completions`）：
+
+```json
+{ "error": { "message": "Upstream error 429: insufficient credits", "type": "rate_limit_error",
+             "code": "RATE_LIMIT", "param": null, "hint": "The plan usage window (5-hour or weekly) is exhausted..." } }
+```
+
+Anthropic 出口（`/v1/messages`）：
+
+```json
+{ "type": "error", "error": { "type": "rate_limit_error", "message": "...",
+                              "code": "RATE_LIMIT", "hint": "..." } }
+```
+
+| `code` | HTTP | 含义 |
+|---|:---:|---|
+| `MISSING_CREDENTIAL` | 401 | 没有任何可用 Key（环境变量/auth.json/账号池皆空） |
+| `INVALID_CREDENTIAL` | 401 | Key 失效或被吊销 |
+| `PROXY_AUTH_REQUIRED` | 401 | 未携带匹配的 `PROXY_API_KEY` |
+| `RATE_LIMIT` | 429 | 5 小时/周额度耗尽，或余额不足 |
+| `MODEL_NOT_IN_PLAN` | 403 | 模型超出当前套餐档位 |
+| `MODEL_NOT_FOUND` | 404 | 模型 id 不存在（刷新目录后重试） |
+| `UNSUPPORTED_OPTION` / `UNSUPPORTED_CONTENT` | 400 | 请求形态或内容无法翻译到上游 wire |
+| `REQUEST_TIMEOUT` / `STREAM_IDLE_TIMEOUT` | 504 | 请求超时 / 流中途静默被看门狗中止 |
+| `NETWORK_ERROR` | 502 | 连不上上游 API |
+| `SERVER_ERROR` | 5xx | 上游 5xx（**保留上游真实状态码**） |
+| `PROVIDER_PROTOCOL_ERROR` | 502 | 上游返回体异常（缺 body 等） |
+| `CATALOG_UNAVAILABLE` | 503 | 模型目录不可用 |
+| `GATEWAY_PAUSED` | 503 | 引擎已在面板暂停 |
+| `GATEWAY_BUSY` | 503 | 达到 `MAX_UPSTREAM_CONCURRENCY` 上限（默认不限制） |
+| `BLOCKED_HOST` | 500 | 上游地址被 SSRF 防护拒绝 |
+| `INTERNAL_ERROR` | 500 | 网关内部异常 |
+
+**重试语义**：`408/409/425/429/500/502/503/504` 按指数退避重试（上限 `upstream.maxRetries`）；一旦命中终止性计费/套餐标记（`model_not_in_plan`、`premium_credits_exhausted`、`insufficient credits`）**立即失败、绝不重试**——重试只会白耗额度。**请求形态本身不合法同样不重试**：上游校验层拒绝的请求（如 `Too big: expected number to be <=200000`、`unrecognized_keys`、`invalid_type`、`context length exceeded`）重试只是把同一份请求再撞一次校验——实测此前会打满 `maxRetries` 次、多花约 1.5s 退避。否决表见 `src/adapters/commandcode/upstream.ts` 的 `DETERMINISTIC_REQUEST_SHAPE`。重试耗尽后仍保留上游真实状态码与错误码，不会包装成"网络故障"。
+
+**上游以 200 报错也会被重试**：上游常把「网关请求失败 / 服务过载 / 无可用 provider」这类失败以 error 事件发在一个 **HTTP 200** 的流里，HTTP 层的重试够不到它——过去它会被并入正文当成模型的回答返回（一轮 16 分钟的工作就以 `[Upstream Error: ...]` 这段文本收场）。现在代理会在把流交给路由**之前**预判流内事件：只要**内容之前**出现可重试的 error 事件，且还有重试预算，就丢弃这次调用并重试（此刻客户端一个字节都没收到，不会重复内容）。**确定性不可用不重试**：区域限制、模型/provider 不认识这类重试只会白耗额度（29 万 token 上下文单次就是 $0.087）。判定细节见 `src/adapters/commandcode/upstream.ts` 的 `classifyProbeEvent`。
+
+> [!NOTE]
+> 流式请求在 HTTP 200 已发出后无法再改状态码，此时错误码会并入内容文本，形如 `[Upstream Error: RATE_LIMIT: ...]`，便于客户端自愈。重试耗尽或遇到确定性不可用时仍是这个行为；识别到的 error 事件原文会同时记入日志（含 model 与 traceId），便于事后追溯。
+
+## ⚙️ 配置
+<a id="config"></a>
+
+| 环境变量 | 默认值 | 作用 |
+|---|---|---|
+| `PORT` | `9090` | 监听端口 |
+| `HOST` | `127.0.0.1` | 绑定地址（`0.0.0.0` 暴露到局域网） |
+| `PROXY_API_KEY` | 未设置 | 要求 `/v1/*` **与管理面 `/api/*`** 携带该密钥（Bearer 或 `x-api-key`）；仪表盘首次访问会弹出密钥输入，本标签页内记住 |
+| `COMMANDCODE_API_KEY` | 取自 auth.json | 上游密钥兜底；无命名账号时账号名显示为 `CLI Key (尾4位 xxxx)` / `Env Key (尾4位 xxxx)`，启动后由 whoami 异步补全真实用户名 |
+| `COMMANDCODE_API_BASE` | `https://api.commandcode.ai` | 上游服务地址 |
+| `COMMANDCODE_UPSTREAM_ALLOWED_HOSTS` | 未设置 | 追加允许的上游 host（逗号分隔，供自建网关/镜像）；环回/私有/保留地址默认拒绝，仅在此显式加入才放行 |
+| `COMMANDCODE_DNS_ORDER` | `ipv4first` | DNS 解析结果排序：`ipv4first` 强制 IPv4 优先（避开恶劣 IPv6 握手超时）；设 `verbatim` 遵循操作系统原始顺序 |
+| `HTTPS_PROXY` / `HTTP_PROXY` | `http://127.0.0.1:7897` | 全局出站 HTTP/HTTPS 代理（用于连接海外 Cloudflare 上游，也可在 `config.json` 的 `upstream.proxy` 中配置） |
+| `NO_PROXY` | `localhost,127.0.0.1,::1` | 绕过出站代理的主机清单（程序会自动强制确保包含本地回环地址） |
+| `COMMANDCODE_VERSION` | `1.27.1` | CLI 版本标识头 |
+| `ROTATION_MODE` | `manual` | `auto-quota` 启用 30 分钟额度检查 |
+| `NO_OPEN_BROWSER` | 未设置 | 设为 `1` 跳过仪表盘自动打开 |
+| `MAX_BODY_MB` | `64` | 入站 JSON 请求体上限（MB）；视觉/多图 base64 负载超默认 1MB 会触发 413，范围 1..1024 |
+| `USAGE_HISTORY_MAX_MB` | `20` | 会话历史大小上限（MB）；超限保留较新的一半，防止无限增长拖慢聚合 |
+| `PERF_MIN_OUTPUT_TOKENS` | `32` | 性能面板的吞吐闸门：输出不足该值（token）的请求只计入延迟、不计入吞吐（分母趋零会让 tok/s 失真）；设 `0` 关闭 |
+| `USAGE_HISTORY_PATH` | `~/.commandcode/usage-history.jsonl` | 用量历史文件路径。测试与多实例部署必须覆盖它，否则会写进生产库 |
+| `COMMANDCODE_LOG_PATH` | `<项目根>/logs/proxy.log` | 运行日志落盘路径（超 5MB 轮转 `.old`） |
+| `DAILY_BUDGET_USD` | 未设置（关） | 每日预算告警：当日累计成本（服务器本地日）达到阈值时弹一次 toast；进程重启会从历史回填当日已计费金额 |
+| `MAX_UPSTREAM_CONCURRENCY` | 不限制 | 上游并发上限；超限请求以 `GATEWAY_BUSY`(503) 快速失败，防失控客户端压起大量长流 |
+| `COMMANDCODE_NOTIFY` | 开 | 设 `0/false/off` 关闭桌面通知 |
+| `LOG_REDACTION` | `on` | 日志密钥脱敏：对 `Authorization: Bearer`、`api-key`/`x-api-key` 键值、裸 `sk-` 令牌、query 中的 token/key 参数打码为 `[REDACTED]`；设 `off` 回退（仅排查密钥问题时临时使用） |
+| `UPSTREAM_REDIRECT` | `conservative` | 上游 3xx 重定向策略：`conservative` 一律不跟随（按上游错误终止）；`follow` 显式放行（逐跳校验，私网/回环/保留地址——含云元数据——永不跟随且不受 allowlist 影响，跨 host 跳转剥离凭据头，最多 5 跳） |
+| `ORIGIN_SCHEME_CHECK` | `on` | 管理面写操作的 Origin scheme 收紧：Origin 协议须与请求协议一致（`https` 页面驱动 `http` 管理接口将被 403）；反代 TLS 终止部署可设 `off` 回退 |
+| `DNS_REBINDING_GUARD` | `on` | 上游域名请求前解析校验：解析结果含私网/保留地址即拒绝（防 DNS rebinding）；设 `off` 回退；IP 字面量 / localhost / allowlist 命中主机跳过解析校验 |
+| `HEALTH_CHECK_INTERVAL_MS` | `300000` | 通道健康检查探活周期（纯旁路，连续失败仅日志告警）；设 `0` 关闭 |
+| `WEBHOOK_URL` | 未设置=关闭 | 告警 Webhook：当日成本/错误率超阈值时 POST JSON（飞书/钉钉/Slack 机器人通用）；配套 `WEBHOOK_COST_USD`、`WEBHOOK_ERROR_RATE`、`WEBHOOK_TIMEOUT_MS`、`WEBHOOK_CHECK_INTERVAL_MS` |
+| `PROMPT_VERSIONS` | 未设置=关闭 | 设 `on` 启用 Prompt 版本管理（`/api/prompts/*`：保存自动快照、按时间戳回滚；`PROMPTS_DIR` 改存储目录） |
+| `RATE_LIMIT_RPM` / `RATE_LIMIT_TPM` | 未设置=关闭 | 每分钟请求数 / token 数上限（60s 滑动窗口，超限 429 + `Retry-After`） |
+| `MODEL_ALLOWLIST` / `MODEL_BLOCKLIST` | 未设置=关闭 | 模型访问控制（精确 id、大小写不敏感；allowlist 优先，命中拦截 403） |
+| `AUDIT_LOG` | `on` | 审计日志（minimal：只记 ts/route/model/tokens/status/duration 元数据，**绝不记消息正文**）；`off` 关闭，`AUDIT_LOG_PATH` 改落盘路径 |
+| `USAGE_STORAGE_BACKEND` | `jsonl` | 用量存储后端（为 SQLite 预留接口，当前仅支持 `jsonl`） |
+
+持久化配置存于可执行文件旁的 `config.json`。同目录的 `.env`（由仪表盘添加账号时自动维护）也会在启动时加载——**已存在的环境变量优先**，docker/systemd 注入不受影响。
+
+## 🛠️ 开发
+<a id="development"></a>
+
+```bash
+npm run typecheck    # tsc --noEmit
+npm test             # vitest —— 单元 + 集成（mock 上游，端到端真实 HTTP 面）
+npm run build:exe    # esbuild 打包
+npm run build:win    # Windows exe
+```
+
+集成测试会拉起一个 mock CommandCode 上游，端到端验证流式 chunk 形状、工具调用往返、推理档位 snap 与 Anthropic 块生命周期。**该进程的 `USAGE_HISTORY_PATH` 必须隔离到临时目录**（`tests/integration.test.ts` 已如此设置）——用量历史是计费与性能面板的数据源，把 mock 流量写进去会凭空造出 2000+ t/s 的假性能数据。若历史上已混入，用下节工具清理。
+
+### 维护工具：清理用量历史中的测试残留
+
+```bash
+node purge-test-usage.mjs            # 预演，只报告会删除哪些记录
+node purge-test-usage.mjs --apply    # 实际清理
+```
+
+判定谓词刻意保守（宁可漏删不可误删）——必须同时满足：已完成、无任何会话/项目/agent 上下文、耗时 <300ms（跨公网调用实测下界 2245ms，本机 mock 才可能这么快）、且该模型从无带上下文的真实流量。写盘前完整备份，被删记录单独留档，并带并发写保护（避免与本机正在写日志的 proxy 抢文件）。`USAGE_HISTORY_PATH` 可指向其它文件。
+
+### 维护工具：为性能面板播种基准数据
+
+```bash
+node bench-models.mjs                              # 预演，列出将要基准的模型
+node bench-models.mjs --run --rounds 5             # 每个模型 5 轮
+node bench-models.mjs --run --rounds 5 --replace   # 先清掉历史基准记录再跑
+```
+
+对套餐内每个可用模型发**真实请求**，让面板一开始就有可比的数据，而不是只有被 agent 调用过的模型才有数。要点：串行执行（并发会让延迟/吞吐互相污染）、提示词固定让输出长度同量级、每请求 150s 超时。为可追溯，请求带 `x-session-id: bench-<时间戳>` 与 `x-zcode-session-type: benchmark`，在会话表里能认出这批流量来自基准。成本安全阀按本地用量历史精确累加，超过 `BENCH_MAX_USD`（默认 4 美元）即中止。
+
+`--rounds N` 让每个模型连续跑 N 轮。**单轮只是一次探针**，面板上该模型的 P50 就是那一次的值；而实测上游存在明显的瞬时失败与波动（同一模型连续请求可见 2.5s 与 6.1s 的差异，也见过随机 `overloaded`），多轮才能给出稳定中位数。`--replace` 会在开跑前清掉所有历史基准记录（按 `sessionId: bench-*` 识别）——必须先清，否则新旧混在一起，"替换数据"会变成"掺入数据"。清理由 `usage-history-io.mjs` 的并发写保护执行，清理前完整备份、被清记录单独留档。
+
+参考量级：62 个模型、5 轮（310 次请求）约 $1.4、耗时 40 分钟左右。
+
+### 维护工具共用的存储层
+
+`usage-history-io.mjs` 提供 `readRecords` / `rewriteSafely` / `backupFile`，被上面两个工具共用。它解决的是"proxy 正在写、工具却要覆盖写"这个冲突：追加哨兵 → 读回确认哨兵是最后一行 → 由本次快照重算 payload → 校验文件尺寸未变 → 原子 rename，任一环节发现并发写入就整体重试。**payload 必须由本次快照构建**（曾在循环外用旧快照预先算好，导致两次读取之间追加的记录被静默覆盖）。残余风险已在模块内记录：尺寸校验与 rename 之间有微秒级窗口。
+
+agent 驱动的自测方案见 [HERMES_TEST_PROMPT.md](./HERMES_TEST_PROMPT.md)。
+
+## 🏗 架构
+<a id="architecture"></a>
+
+```
+src/
+├── index.ts                      # 启动引导、额度轮换调度、可选鉴权钩子
+├── types/index.ts                # OpenAI / Anthropic / CC-wire 契约
+├── adapters/commandcode/
+│   ├── adapter.ts                # 翻译引擎（两种协议 ↔ CC wire，含中文注释）
+│   └── upstream.ts               # HTTP 客户端：重试、空闲看门狗、中止
+├── routes/
+│   ├── chat.ts                   # POST /v1/chat/completions
+│   ├── messages.ts               # POST /v1/messages
+│   ├── models.ts                 # GET /v1/models、refresh
+│   ├── dashboard.ts              # 管理 API 与静态资源路由
+│   └── sse-common.ts             # 双出口共享：SSE 头/事件解析/持久化
+└── utils/
+    ├── config.ts                 # 账号、OAuth 流程、额度轮换
+    ├── models.ts                 # 目录同步 + 官方定价富化 + 模糊解析
+    ├── usage-store.ts            # 会话明细持久化 + 聚合统计
+    ├── plans.ts                  # 套餐档位表 + 模型可用性
+    ├── quota-tracker.ts          # 额度采样与燃烧速率预测
+    ├── request-context.ts        # 会话/项目归因提取
+    ├── notifier.ts               # Windows toast + 自诊断
+    ├── paths.ts                  # 路径解析（logger/config/models 共用）
+    └── logger.ts                 # 净化环形缓冲日志 + 文件落盘
+public/
+├── index.html                    # 仪表盘 SPA（中文界面）
+└── vendor/                       # 本地化的 tailwind / font-awesome / chart.js
+```
+
+## 🔒 安全校验 · Upstream URL safety
+<a id="security"></a>
+
+代理对**所有**服务端上游请求做白名单校验，采用 fail-closed（不满足即拒绝），而非降级放行。
+
+校验顺序：仅允许 `http(s)` → 拒绝内嵌凭据 → 拒绝环回/私有/保留地址（除非显式允许）→ host 属于 `commandcode.ai` 及子域或显式允许清单 → 非回环强制 `https`，全满足才放行。
+
+- **默认只允许** `commandcode.ai` 及其子域；环回（localhost、127.x、::1）、私有（10.x、172.16-31.x、192.168.x、100.64/10 CGNAT）、保留/链路本地（169.254.x、IPv6 ULA/链路本地、198.18/15）及任意公网地址默认一律拒绝，除非运维显式加入允许清单。
+- **环回/私有受控例外**：本地 mock 上游、自建网关/镜像需通过 `COMMANDCODE_UPSTREAM_ALLOWED_HOSTS` **显式**加入才放行。这是**运维显式配置**的受控例外——上游地址只由 `COMMANDCODE_API_BASE` 等运维环境变量决定，不随客户端请求参数变化，因此不存在把客户端输入导向内网的 SSRF 路径。
+- **配套校验**：拒绝非 `http(s)` 协议（防 `file:`、`gopher:` 协议混淆）、拒绝内嵌凭据（`user:pass@host`）、非回环 host 强制 `https`（防降级明文；回环且显式放行时允许 http，供本地 mock）。
+- **运营可视化（v4.22.0）**：概览页「通道健康」「运行开关」两张只读卡片（`GET /api/features` 驱动），探活结果/可用率与六类能力开关一目了然。
+- **Origin scheme 收紧（v4.22.1）**：管理面写操作在 host 比对之上追加 scheme 比对（默认 on，`ORIGIN_SCHEME_CHECK=off` 回退）——混合内容场景的同 host 跨 scheme 驱动被拒绝。
+- **重定向阻断（v4.20.0）**：所有上游请求一律 `redirect: 'manual'`。默认 `conservative`：上游返回 3xx 即按错误终止，永不跟随；`UPSTREAM_REDIRECT=follow` 显式放行后逐跳复检目标——私网/回环/保留地址（含 169.254.169.254 等云元数据）**永不跟随且不受 allowlist 影响**，同 host 跳转保留 POST 与请求体，跨 host 跳转剥离 `Authorization` 凭据头，链条最多 5 跳。
+- **DNS rebinding 防护（v4.20.0）**：`DNS_REBINDING_GUARD=on`（默认）在每个上游请求出口做"请求前解析 + 校验"，域名解析结果含私网/保留地址即拒绝（fail-closed）；`off` 显式回退。IP 字面量、localhost、allowlist 命中主机跳过解析校验。已知残余：lookup 与建连之间存在 TOCTOU 窗口，彻底封闭需固定解析结果建连。
+- **日志密钥脱敏（v4.20.0）**：`LOG_REDACTION=on`（默认）对落盘/环形缓冲/仪表盘的日志行按密钥形态打码（`Bearer`、`api-key`、`sk-` 令牌、query token），防止密钥经 proxy.log 与日志页外泄；`off` 显式回退。
+
+## 📄 免责声明与许可证
+<a id="license"></a>
+
+本项目通过观察官方 CLI 的网络行为来与私有 API 互通。上游协议变动时可能失效，使用可能受 CommandCode 服务条款约束。请用自己的账号与凭据使用。
+
+本项目使用 **MIT 许可证** 发布，详见 [LICENSE](./LICENSE)。
+
+---
+
+## <a id="english-anchor"></a>🇬🇧 English
+
+<div align="center">
+
+**A local, fully-compatible OpenAI / Anthropic API gateway for CommandCode AI**
+
+Point any OpenAI-style client (Cursor, Continue, Aider, OpenWebUI, Hermes, your own code) at it and use CommandCode backend models transparently — with a built-in dashboard, usage & cost analytics and multi-account quota rotation.
+
+</div>
+
+> [!WARNING]
+> Unofficial, community tool. Reverse-engineered from the official CommandCode CLI wire protocol (`/alpha/generate`). Not affiliated with CommandCode; may break when the upstream changes. Use with your own account and credentials. The bilingual sections above (screenshots, security) apply here too.
+
+### Features
+
+**Protocol compatibility**
+
+- **OpenAI `/v1/chat/completions`** — streaming SSE + non-streaming; tool calling (parallel tools, streamed `tool_calls` deltas); vision (`image_url` base64/data-URL); `reasoning_effort` snapped down to per-model tiers; `max_completion_tokens`; usage passthrough from upstream `totalUsage`
+- **Anthropic `/v1/messages`** — full streaming block lifecycle (`message_start` → `content_block_start/delta/stop` → `signature_delta` → `message_delta` → `message_stop`); `tool_use` / `tool_result` round-trip; thinking blocks with signature compatibility; system block arrays
+- **Usage detail reaches the client** — the Anthropic route reports `input_tokens` / `cache_read_input_tokens` / `cache_creation_input_tokens` in the closing `message_delta` (non-streaming: `message.usage`), and the OpenAI route reports `prompt_tokens_details.cached_tokens`. Clients can therefore see **cache hits** and the **upstream's real input count** instead of a locally estimated total. The two exits follow **different conventions, each per its own spec**: on the Anthropic side `input_tokens` counts **only the uncached input**, so total input = `input_tokens + cache_read_input_tokens + cache_creation_input_tokens` (you **must** add the cache fields); on the OpenAI side `prompt_tokens` already includes cache reads and `cached_tokens` is a subset of it (**do not** add them)
+- **Faithful wire translation**, verified line-by-line against the original CLI: raw-base64 image parts with `mediaType`, `tool_search→search_tools` aliasing, terminal-error no-retry list
+- **Full tool passthrough** — no truncation to 15; the 30+ tools issued by multi-tool agent hosts are all forwarded
+- **Fuzzy model resolution + short-alias remapping + per-plan filtering** — when the catalog carries both a short alias (`qwen-3.7-max`) and a canonical entry (`Qwen/Qwen3.7-Max`), the alias is remapped to the id the upstream accepts (the upstream only knows the canonical one; passing the alias through yields a 403). The discriminator comes from the catalog itself — an alias entry's `owned_by` points back at its own id — so no model name is hardcoded, and ambiguous same-name groups are left alone rather than guessed. Unknown models still pass through as-is (upstream returns an accurate error instead of a silently substituted default); `GET /v1/models?plan=…&available=1` (fail-open)
+
+**Reliability & security**
+
+- Exponential-backoff retries on 429/5xx/network errors; **retries also cover failures the upstream reports inside an HTTP 200 stream** (gateway failure / overload / no available provider) by probing events before the stream is handed to the route, so an error is no longer returned as if it were the model's answer — deterministic unavailability (region, unknown model) is deliberately not retried; idle-stream watchdog (no infinite hangs); client-disconnect cancellation; clean stream termination with SSE keepalive comments
+- Secure defaults: loopback-only binding; optional `PROXY_API_KEY` covering **both `/v1/*` and the admin surface `/api/*`** (dashboard prompts on first visit); Origin check on `/api/*` mutations; XSS-hardened dashboard; CORS limited to the public API surface; prominent warnings when bound non-loopback without auth
+- **Ops dashboard (v4.22.0)** — read-only "channel health" & "feature switches" cards on the overview page, driven by `GET /api/features`
+- **Monitoring & ops (v4.21.0)** — channel health probe (bypass-only, warns on consecutive failures), threshold **webhook alerts** (daily cost / error-rate → any bot endpoint), **prompt version management** (`/api/prompts/*` snapshot & rollback, off by default), per-minute **rate limiting** (RPM/TPM, off by default), **model access control** (allow/block list, off by default), **minimal audit log** (metadata only, never message bodies)
+- **SSRF guard, fail-closed** — strict upstream URL allowlist, **redirect blocking** (`redirect: 'manual'` everywhere; opt-in `UPSTREAM_REDIRECT=follow` re-validates every hop, never follows into private/metadata addresses, strips credentials across hosts), **DNS-rebinding guard** (`DNS_REBINDING_GUARD=on` resolves & validates every upstream hostname per request), **log secret redaction** (`LOG_REDACTION=on` masks Bearer/api-key/sk- tokens in logs) — see the bilingual [Upstream URL safety](#security) section
+- **Structured error codes** — 17 stable codes with actionable hints, surfaced as OpenAI `error.type/code` or Anthropic `error.type` (table below)
+- Windows toast notifications for quota exhaustion / account switch / engine pause — native, zero dependencies, 30-min dedupe, with **self-diagnosis** of the system-wide notification switch; disable via `COMMANDCODE_NOTIFY=0`
+
+**Dashboard & usage insight**
+
+- **Per-plan availability on every model card** — the badge row reads the upstream `availability` map instead of a single flattened Go flag, so each card states whether that model is usable on **Go** and on **GOAT** (GO indigo, GOAT gold with a crown; unavailable is a grey ✗). Models on neither plan are tagged *higher tiers* with the list of plans that do include them, and the filter row plus the result counter give Go/GOAT totals
+- Per-request session detail (tokens, cache hits, latency, cost, model, status) with daily trend, model doughnut and today/week/month cards; persisted to `~/.commandcode/usage-history.jsonl` (rotated at 20MB)
+- **Cost reconciled with the official bill** — prefers the authoritative `provider-metadata` amount (peak/off-peak and cache discounts included); local fallback prices cache read/write separately by time-of-day; estimates carry a `~` prefix
+- **Cache savings visualization** — how much cache hits saved versus full input price, and the multiple relative to billed cost
+- **Peak/off-peak indicator** — current tier, countdown to switch, active rates; switch points follow official boundaries (UTC 01/04/06/10, Mon–Fri), weekends handled correctly
+- **End-to-end perf + quota burn-rate projection** — per-model throughput/latency P50/P95 (explicitly end-to-end, not model generation speed); official window usage differenced over time to project minutes-to-cap vs reset. Throughput counts only responses with **≥32 output tokens** (tune via `PERF_MIN_OUTPUT_TOKENS`, set 0 to disable): when output is tiny the divisor collapses and 19ms / 3 tokens reports 187 t/s — a meaningless ratio that nonetheless drags P50/P95 with it. Those requests still count toward latency, just not toward rate. Rows are ordered by throughput sample count, so models with no computable rate sink to the bottom but are **not hidden** — their latency readings are still measurements
+- **Session & project attribution** — session IDs are client-declared (factual); projects are inference-only, labelled per row (`label` high-confidence / `heuristic`), unattributed traffic listed separately; day grouping follows client timezone
+- **Official usage overview + billing cycle** — Total Tokens / Runs / success rate / monthly limit aligned with the official usage page; plan name, caps, `currentPeriodStart/End`, cycle progress
+
+**Engineering & ops**
+
+- Log persistence to `logs/proxy.log` (5MB rotation); error logs carry `Trace`/`Thread` to correlate with usage records
+- Usage-stats cache (45s TTL + in-flight dedupe) — repeated dashboard fetches drop from ~2.9s to milliseconds
+- Outbound proxy & dual-mode resilience: native `ProxyAgent` with live probe and auto-fallback to direct IPv4-first mode when the proxy is offline or on a proxy-free terminal, plus automated `NO_PROXY` protection
+- Crash protection: 3 uncaught exceptions within 5 minutes → intentional `exit(1)` for supervisor restart
+- Packaging: TypeScript + esbuild + single-file Windows exe via `pkg`; GitHub Actions CI (typecheck → build → vitest)
+- Offline-capable dashboard: tailwind / font-awesome / chart.js fully localized, no public CDN dependency
+- Anthropic SDK compatibility: `POST /v1/messages/count_tokens` (local CJK-aware estimate); OpenAI `stream_options.include_usage` on the final chunk
+- Daily budget alerts (`DAILY_BUDGET_USD`) and a GitHub Releases update badge; usage export to CSV
+
+### Quick Start
+
+```bash
+npm install
+npm run dev          # http://127.0.0.1:9090
+```
+
+```bash
+npm run build && npm start     # production
+npm run build:win              # standalone Windows exe
+```
+
+On first launch the dashboard opens automatically. Log in via **Browser (OAuth)** or paste an API key; keys are also auto-loaded from `~/.commandcode/auth.json` or `COMMANDCODE_API_KEY`. Full config table: see the [中文配置](#config) section (env var names are identical).
+
+### Error contract
+
+Every failure returns a **stable code plus an actionable hint** — same envelope shapes as the 中文 section above; the full code/HTTP table lives [there too](#errors) (codes are English identifiers).
+
+> [!IMPORTANT]
+> **Unsupported fields** (accepted but ignored, no error): `stop` / `stop_sequences`, `response_format`, `top_k`, `parallel_tool_calls`, `logprobs`, `n`, `seed`, frequency/presence penalties.
+
+**Retry semantics**: `408/409/425/429/500/502/503/504` are retried with exponential backoff (capped by `upstream.maxRetries`); terminal billing/plan markers (`model_not_in_plan`, `premium_credits_exhausted`, `insufficient credits`) **fail fast and are never retried**, because retrying only burns credits. Exhausted retries preserve the real upstream status and code instead of being reported as a network failure. For streams (HTTP 200 already sent) the code is folded into content as `[Upstream Error: RATE_LIMIT: ...]`.
+
+### Development
+
+```bash
+npm run typecheck    # tsc --noEmit
+npm test             # vitest — unit + integration (mock upstream)
+npm run build:win    # Windows exe
+```
+
+Two environment variables govern the performance panel. `PERF_MIN_OUTPUT_TOKENS` (default `32`) is the throughput gate: responses shorter than this count toward latency but not toward throughput, because a near-zero divisor makes `outputTokens / elapsed` meaningless — 19ms / 3 tokens reports 187 t/s and drags the P50/P95 with it. Set it to `0` to disable. `USAGE_HISTORY_PATH` (default `~/.commandcode/usage-history.jsonl`) must be overridden by tests and multi-instance deployments; that file is the billing and performance data source, so test traffic written into it fabricates performance numbers. If it has already been polluted, run `node purge-test-usage.mjs` (dry-run) and then `--apply` — it backs up first, archives the removed rows, and uses a deliberately conservative predicate that requires a completed request with no session/project/agent context, under 300ms, on a model that has never carried real traffic.
+
+To seed the performance panel with comparable data instead of leaving it sparse, run `node bench-models.mjs --run --rounds N`: it issues **real** requests per available model (real upstream, real spend, recorded by the proxy), sequentially with a fixed prompt so output lengths are comparable. Requests carry `x-session-id: bench-<timestamp>` and `x-zcode-session-type: benchmark` so they are identifiable as benchmark traffic rather than agent workload. A safety valve sums the actual local cost and aborts past `BENCH_MAX_USD` (default 4).
+
+A **single round is only one probe** — the P50 shown for that model is that one measurement, which the sample column discloses. `--rounds N` runs each model N times consecutively for a stable median; it matters because the upstream fails and fluctuates transiently (the same model can answer in 2.5s or 6.1s, and random `overloaded` errors occur). `--replace` clears all previous benchmark records first (identified by `sessionId: bench-*`) — without it you get "mixed in" data rather than "replaced" data, and the median is dragged by the old single probes. Both tools share the concurrency-safe storage layer in `usage-history-io.mjs`, which backs up before rewriting and archives the removed rows. Rough scale: 62 models × 5 rounds (310 requests) ≈ $1.4 and ~40 minutes.
+
+### Disclaimer & License
+
+This project interoperates with a private API by observing the official CLI's network behavior. It may break when the upstream protocol changes, and usage may be subject to CommandCode's terms of service. Released under the **MIT license** — see [LICENSE](./LICENSE).

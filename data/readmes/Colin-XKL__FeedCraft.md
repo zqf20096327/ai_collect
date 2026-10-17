@@ -1,0 +1,178 @@
+![logo.png](asset/logo-header.png)
+
+# FeedCraft
+
+Craft all your feed in one place!
+
+![author](https://img.shields.io/badge/author-Colin-blue)
+![GitHub License](https://img.shields.io/github/license/Colin-XKL/FeedCraft)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Colin-XKL/FeedCraft/docker-publish.yml)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/Colin-XKL/FeedCraft)
+![GitHub Release](https://img.shields.io/github/v/release/Colin-XKL/FeedCraft)
+![GitHub Discussions](https://img.shields.io/github/discussions/Colin-XKL/FeedCraft?link=https%3A%2F%2Fgithub.com%2FColin-XKL%2FFeedCraft%2Fdiscussions)
+![Arch Badge](https://img.shields.io/badge/arch-amd64|arm64-blue)
+![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Colin-XKL/FeedCraft)
+
+Doc: [English](https://feed-craft-doc.vercel.app/en) | [简体中文](https://feed-craft-doc.vercel.app/zh) | [繁體中文](https://feed-craft-doc.vercel.app/zh-tw)
+
+**FeedCraft** is a simple, powerful RSS feed processing tool.  
+It can serve as middleware to handle your RSS feeds; you can use it to extract the main text, perform intelligent translation, generate article summaries through AI, filter articles using natural language, and more.  
+It includes a built-in visual RSS generator (HTML/JSON/Search to RSS) that can turn web pages, JSON API responses, or search results into RSS feeds.
+
+**FeedCraft** 是一个简单、强大的 RSS 源处理工具.
+他可以作为一个中间件处理你的 RSS 源, 你可以用它来提取正文、智能翻译、通过 AI 生成文章摘要、通过自然语言筛选文章等.
+它内置了可视化 RSS 生成器 (HTML/JSON/Search to RSS)，支持将网页、JSON API (Curl) 或搜索结果转换为 RSS 订阅源。
+
+## 核心特性
+
+- 开源可自部署. 可以作为中间件与现有的任何 RSS 阅读器协同使用
+- AI Power, 可以接入 Open AI 接口兼容的 LLM 对 RSS 进行处理, 可自定义 prompt
+- **HTML/JSON/Search to RSS**: 内置可视化 RSS 生成器，支持将网页、JSON API (支持 Curl 语句导入) 或搜索结果转换为 RSS 订阅源
+- 支持**便携模式**(portable mode, 即用即走, 只需要在原 RSS 地址前面加个前缀即可), 和**高级模式**(dock mode,
+  在后台页面自定义 RSS 地址和各类深度加工参数)
+
+## 快速开始
+
+访问以下 URL 格式即可快速调用 FeedCraft 对输入的 RSS 源进行指定的处理
+`https://feed-craft.colinx.one/craft/{craft_name_here}?input_url={input_rss_url}`
+
+FeedCraft 中的几个核心概念:
+
+- AtomCraft(原子工艺), 指要如何处理一个 rss 源, 比如是要进行翻译,还是提取正文,还是 AI 生成摘要等
+- FlowCraft(组合工艺), 多个 AtomCraft 组成的序列, 比如你可以定义一个新的名叫 clean-article 的 FlowCraft,
+  将提取全文、AI 筛选文章、AI 摘要组合到一起,
+- Recipe(配方), 记录了以什么样的 Craft 或 FlowCraft 对某个指定的 rss 源进行处理, 比如你可以指定一个名叫 my-zhihu-daily 的 recipe,
+  对知乎日报的 rss 自动进行 AI 生成摘要的操作, 这个 recipe 对应一个新的 rss 地址, 你可以直接订阅这个地址得到带摘要版本的知乎日报
+
+你可以先开始尝试下面的几个原子工艺(AtomCraft):
+
+- **proxy**: 简易 RSS 代理, 不作任何处理
+- **limit**: 限制文章个数, 默认最新 10 个
+- **fulltext**: 获取全文
+- **fulltext-plus**: 获取全文,但是会模拟浏览器渲染网页,适用于常规模式无法获取到文章内容,动态渲染内容的站点
+- **introduction**: 调用 AI 为文章生成摘要,附加在原文开头
+- **summary**: 调用 AI 总结文章主要内容,附加在原文开头
+- **translate-title**: 调用 AI 翻译文章标题
+- **translate-content**: 调用 AI 翻译文章内容, 只输出翻译后内容
+- **translate-content-immersive**: 调用 AI 翻译文章内容, 沉浸式翻译模式, 每个原文段落后面添加翻译后内容
+- **beautify-content**: 调用 AI 美化文章排版，去除广告和无关信息
+- **ignore-advertorial**: 调用 AI 对文章进行筛选, 排除营销软文
+
+你可以使用提供的 demo 站点快速开始体验 :
+https://feed-craft.colinx.one
+
+例如, 现在你想要阅读这个 RSS 源 `https://feeds.feedburner.com/visualcapitalist`, 但是由于是全英文的不方便快速略读,
+使用 FeedCraft 对标题进行翻译,
+那么只需要将订阅地址改成
+`https://feed-craft.colinx.one/craft/translate-title?input_url=https://feeds.feedburner.com/visualcapitalist` 即可.
+
+(部分 RSS 订阅软件不会自动进行字符转义, 你可以借助 FeedCraft 后台的工具帮你自动进行转义)
+
+你可以使用下面几个 RSS 快速进行测试
+
+- 全英文，有全文
+  https://feeds.feedburner.com/visualcapitalist
+- 全英文，无全文
+  https://ourworldindata.org/atom.xml
+
+\*注意: Demo 站点仅供体验使用
+
+## 部署
+
+你可以通过 docker 快速自行部署一个 FeedCraft 实例,以获得更好的使用体验.
+下面为一个最小 docker compose 示例:
+
+控制台默认账号`admin`, 密码 `adminadmin`, 登陆后请尽快修改默认密码
+
+```yaml
+services:
+  app.feed-craft:
+    image: ghcr.io/colin-xkl/feed-craft
+    # image: colinxkl/feed-craft  # 你也可以使用docker hub的镜像
+    container_name: feed-craft
+    restart: always
+    ports:
+      - "10088:80" # 10088可替换为任何你想使用的端口
+    volumes:
+      - ./feed-craft-db:/usr/local/feed-craft/db # db file
+    environment:
+      FC_BROWSER_PROVIDER: browserless-restful # browserless-restful 或 cdp
+      FC_BROWSER_ENDPOINT: http://service.browserless:3000 # 替换为你的浏览器渲染服务地址
+      FC_REDIS_URI: redis://service.redis:6379/ # 替换为你自己的redis 实例地址
+      FC_LLM_API_BASE: https://xxxxxx # LLM API 接口路径，需要以 “/v1” 结尾
+      FC_LLM_API_KEY: skxxxxxx # 鉴权的key
+      FC_LLM_API_MODEL: gemini-pro/chatgpt-3.5/... # 默认使用的模型
+      FC_LLM_API_TYPE: openai # openai 或 ollama
+      FC_DEFAULT_TARGET_LANG: zh-CN # (Optional) LLM 处理任务的默认目标语言，如 zh-CN, en-US
+```
+
+你也可以直接在一个 compose 文件中把 redis 等附加组件也一起部署好:
+
+```yaml
+version: "3"
+services:
+  app.feed-craft:
+    image: ghcr.io/colin-xkl/feed-craft
+    container_name: feed-craft
+    restart: always
+    ports:
+      - "10088:80" # 10088可替换为任何你想使用的端口
+    volumes:
+      - ./feed-craft-db:/usr/local/feed-craft/db # db file
+    environment:
+      FC_BROWSER_PROVIDER: browserless-restful # browserless-restful 或 cdp
+      FC_BROWSER_ENDPOINT: http://service.browserless:3000 # 替换为你的浏览器渲染服务地址
+      FC_REDIS_URI: redis://service.redis:6379/ # 替换为你自己的redis 实例地址
+      FC_LLM_API_BASE: https://xxxxxx # LLM API 接口路径，需要以 “/v1” 结尾
+      FC_LLM_API_KEY: skxxxxxx # 鉴权的key
+      FC_LLM_API_MODEL: gemini-pro/chatgpt-3.5/... # 默认使用的模型
+      FC_LLM_API_TYPE: openai # openai 或 ollama
+      FC_DEFAULT_TARGET_LANG: zh-CN # (Optional) LLM 处理任务的默认目标语言
+      LOG_LEVEL: info # (Optional) 日志级别，如 info, debug, trace
+  service.redis:
+    image: redis:6-alpine
+    container_name: feedcraft_redis
+    restart: always
+  service.browserless:
+    image: browserless/chrome
+    container_name: feedcraft_browserless
+    environment:
+      USE_CHROME_STABLE: true
+    restart: unless-stopped
+```
+
+## 关于 FeedCraft
+
+FeedCraft 的名称和 Logo 参考并致敬两款游戏: MineCraft 和塞尔达, 初衷和愿景是做一个简单易用、同时足够灵活, 能够有更多可能性的 RSS 工具.
+使用问题、建议等欢迎在 Discussion 区讨论交流
+
+## 赞助商
+
+感谢以下项目对 FeedCraft 的赞助
+
+| 赞助商                                                                                                                                               | 介绍                                                                                                                                                                                                              |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://dn-mars-assets.qbox.me/qiniulogo/img-horizontal-blue-cn.png" alt="qiniu-cloud-logo" width="300">                                   | **感谢 七牛云 提供 AI Token 支持**<br><br>FeedCraft 公共实例的 AI 服务由七牛云赞助.<br>新用户注册可获得 300 万免费 Token 资源包, 更有 GLM、Qwen 多款免费模型可直接使用.<br>[立即领取](https://s.qiniu.com/7nuaie) |
+| <img src="https://cloudcache.tencent-cloud.cn/qcloud/ui/cloud-community/build/base/images/cloud-logo_f8d.svg" alt="tencent-cloud-logo" width="300" > | **感谢 腾讯云 提供服务器资源支持** <br><br>腾讯云大模型 Token Plan, 面向龙虾和 AI 编码场景设计，覆盖多种主流模型、灵活套餐、极速调用。<br>[立即购买](https://curl.qcloud.com/qJIRe25F)                            |
+
+## 许可
+
+GPLv3
+
+## 页面展示
+
+**欢迎页**
+<img width="1900" alt="Xnip2024-08-08_00-48-49" src="https://github.com/user-attachments/assets/d3541f4e-9ab4-4948-9fc7-5b815db225ce">
+
+**RSS 源比较工具**
+你可以输入一个 RSS 源的地址, 然后选择要使用的 AtomCraft, 就可以看到前后的对比.
+如下图我应用的 Craft 是自定义的, 只显示文章标题带有`RSS`的文章, 可以看到筛选后的结果少了很多
+
+<img width="1907" alt="Xnip2024-08-08_01-05-09" src="https://github.com/user-attachments/assets/7abd764a-8b19-4a72-8c94-e3ea442ff385">
+
+**创建 AtomCraft 自定义 Prompt**
+<img width="1918" alt="Xnip2024-08-08_00-46-13" src="https://github.com/user-attachments/assets/ff15fe79-3792-4a96-b991-f121d2a8973e">
+
+**自定义 recipe** 指定使用哪个 AtomCraft 处理哪个 RSS 源
+<img width="1900" alt="Xnip2024-08-08_00-48-34" src="https://github.com/user-attachments/assets/5794de1d-28b6-45ff-8737-16f8adc6ed8a">

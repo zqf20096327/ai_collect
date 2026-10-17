@@ -1,0 +1,200 @@
+# ReCodeAgent: A Multi-agent Workflow for Language-Agnostic Translation and Validation of Large-Scale Repositories
+
+[<img padding="10" align="right" src="https://www.acm.org/binaries/content/gallery/acm/publications/artifact-review-v1_1-badges/artifacts_evaluated_functional_v1_1.png" alt="ACM Artifacts Evaluated - Functional v1.1" width="114" height="113"/>][paper]
+[<img padding="10" align="right" src="https://www.acm.org/binaries/content/gallery/acm/publications/artifact-review-v1_1-badges/artifacts_available_v1_1.png" alt="ACM Artifacts Available v1.1" width="114" height="113"/>][paper]
+
+Artifact repository for the paper [_ReCodeAgent: A Multi-agent Workflow for Language-Agnostic Translation and Validation of Large-Scale Repositories_](http://arxiv.org/abs/2604.07341), accepted at _ASE 2026_, Munich, Germany.
+Authors are [Ali Reza Ibrahimzada][ali], [Brandon Paulsen][brandon], [Daniel Kroening][daniel], and [Reyhaneh Jabbarvand][reyhaneh].
+
+[brandon]: https://www.amazon.science/author/brandon-paulsen
+[daniel]: https://www.kroening.com/
+[ali]: https://alirezai.cs.illinois.edu/
+[reyhaneh]: https://reyhaneh.cs.illinois.edu/index.htm
+
+[paper]: http://arxiv.org/abs/2604.07341
+
+## Getting Started
+
+ReCodeAgent is a language-agnostic framework for autonomous repository-level code translation and validation. It leverages static analysis combined with Large Language Model (LLM) agents to perform high-quality code translation across multiple programming languages efficiently. To simplify the translation task, ReCodeAgent employs a multi-agent workflow with specialized agents (Analyzer, Planning, Translator, Validator) that work together to understand source code structure, plan the translation strategy, implement the translation, and validate functional equivalence.
+
+### Docker Container
+
+For re-running and evaluating ReCodeAgent on more projects, we recommend using our [`Dockerfile`](./docker-env/Dockerfile) to build a docker image. All required dependencies are installed during `docker build`, making it easier for users to interact with ReCodeAgent.
+
+To build a new image from scratch and run it inside a container:
+
+```bash
+bash scripts/start_docker.sh <agent_name> <tool_name> <project_name> <source_language> <target_language>
+bash docker_shell.sh <agent_name>.<tool_name>.<project_name>.<source_language>.<target_language>
+```
+
+### Zenodo
+
+We provide the results of ReCodeAgent from our experiments on [Zenodo](https://doi.org/10.5281/zenodo.19214481):
+
+- `results.zip`: Translations of ReCodeAgent and other ablation agents for all projects, agent trajectories, graphectory analysis, and cost analysis.
+- `results.xlsx`: More detailed results of ReCodeAgent, including per tool and project results.
+
+### Credentials
+
+#### Claude Code
+
+The main experiments in ReCodeAgent use [Claude Code](https://github.com/anthropic/claude-code) as its LLM agent powered by [Claude Sonnet](https://www.anthropic.com/claude/sonnet) model. We use [AWS Amazon Bedrock](https://aws.amazon.com/bedrock/) as provider to interact with the Claude model. To reproduce our results, you are required to make sure your AWS account has Claude model enabled in your desired region. Please configure your credentials by running `aws configure` and pasting your `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `region`, and `model` information. You might need to install the [`awscli`](https://github.com/aws/aws-cli) package if you haven't already.
+
+#### OpenRouter (Open-Source and Other Models)
+
+To use ReCodeAgent with open-source models or other closed-source models (not limited to Claude via Bedrock), you can integrate [OpenRouter](https://openrouter.ai/) by updating the `env` block in [`.claude/settings.local.json`](./.claude/settings.local.json):
+
+```json
+"env": {
+  "OPENROUTER_API_KEY": "<api-key>",
+  "ANTHROPIC_MODEL": "<model-id>",
+  "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+  "ANTHROPIC_AUTH_TOKEN": "<api-key>",
+  "ANTHROPIC_API_KEY": "",
+  "ANTHROPIC_DEFAULT_OPUS_MODEL": "<model-id>",
+  "ANTHROPIC_DEFAULT_SONNET_MODEL": "<model-id>",
+  "ANTHROPIC_DEFAULT_HAIKU_MODEL": "<model-id>",
+  "CLAUDE_CODE_SUBAGENT_MODEL": "<model-id>"
+}
+```
+
+Replace `<api-key>` with your OpenRouter API key and `<model-id>` with the OpenRouter model identifier (for example, `anthropic/claude-sonnet-4` or an open-source model slug from the OpenRouter catalog). Remove any Bedrock-specific variables (such as `CLAUDE_CODE_USE_BEDROCK`) when switching to OpenRouter.
+
+#### Alternative LLM Agents
+
+ReCodeAgent can be configured with other LLM agents and models. Please configure your agent in [`src/utils/model_utils.py`](./src/utils/model_utils.py) and [`src/utils/cmd_utils.py`](./src/utils/cmd_utils.py).
+
+### Project Structure
+
+ReCodeAgent supports multiple translation tools and language pairs:
+
+- **crust**: C to Rust translation
+- **alphatrans**: Java to Python translation
+- **skel**: Python to JavaScript translation
+- **oxidizer**: Go to Rust translation
+
+The project is organized as follows:
+
+```
+recodeagent/
+├── .claude/                    # Claude Code configuration
+├── configs/                    # Configuration files and prompt templatesfor experiments
+├── data/
+│   └── tool_projects/          # Source and target projects organized by tool
+├── docker-env/                 # Docker build and configuration scripts
+├── results/                    # Experiment results and trajectories
+├── scripts/                    # Shell scripts for running experiments
+├── src/
+│   ├── agents/                 # Agent implementations
+│   │   ├── recodeagent/        # Multi-agent pipeline
+│   │   └── baseagent/          # Baseline agent
+│   ├── analysis/               # Result analysis tools
+│   ├── mcp/                    # MCP servers for language analysis
+│   └── utils/                  # Utility functions
+├── CLAUDE.md                   # Claude Code memory
+└── README.md
+```
+
+## Step-by-Step Instructions
+
+### RQ1
+
+Please run the following command to reproduce RQ1 results for a given agent, tool, and project:
+
+```bash
+bash scripts/start_docker.sh <agent_name> <tool_name> <project_name> <source_language> <target_language>
+```
+
+After translation and validation is complete, you can run tests in the target PL to reproduce RQ1 results. Or alternatively, you can unzip `results.zip` and then refer to the `results/recodeagent_translations/` directory for the translations. For all tools except Oxidizer, we obtain validated developer tests from their artifacts. For Oxidizer, we translate and verify tests which are available in `data/oxidizer_translations/`.
+
+### RQ2
+
+Please download test name mapping from the provided `results.xlsx` file on Zenodo and place it in `results/recodeagent_translations/data/tool_projects/<tool>/<project>/test_name_mapping.csv`. Then, run the following command to reproduce RQ2 results for a given tool and project.
+
+```bash
+bash scripts/run_test_comparison.sh <project>
+```
+
+The test comparison results will be stored in `results/recodeagent_translations/data/tool_projects/<tool>/<project>/test_comparison_report.json`.
+
+### RQ3
+
+Please run the following command to reproduce RQ3 results after unziping `results.zip`:
+
+```python
+python src/analysis/ablation.py
+```
+
+The ablation study contains two distinct results: (1) the effectiveness of ReCodeAgent compared to other ablation agents. We produced these results by running RQ1 with different <agent_name> (e.g., noanalyzer, noplanning, novalidator, baseagent-condensed, baseagent-concat) and extracted test pass rates similar to RQ1. (2) the process-centric analysis of agent trajectories using [Graphectory](https://github.com/Intelligent-CAT-Lab/Graphectory) artifacts. We provide the graphectory analysis results in `results/ablation_study/graphectory_analysis/`.
+
+### RQ4
+
+Please run the following command to reproduce RQ4 results after unziping `results.zip`:
+
+```python
+python src/analysis/cost.py 
+```
+
+The cost analysis is based on the trajectories and reports of ReCodeAgent generated during RQ1. We collected all trajectories and reports from experiments and stored them in `results/trajectories/`.
+
+## Building on ReCodeAgent
+
+### Evaluating More Projects
+
+You can evaluate ReCodeAgent on other projects. Please make sure you have:
+
+- Source projects stored under `data/tool_projects/<tool>/<project>/<source_language>/`
+- Appropriate build systems (Makefile, Maven, npm, Cargo, etc.) installed during `docker build`
+
+### Extending Supported Languages
+
+If you need to experiment with other programming languages not supported by ReCodeAgent:
+
+1. Add MCP language server configuration in `configs/claude_mcp_config.json` under [`Dockerfile`](./docker-env/Dockerfile)
+2. Update the Dockerfile to install language-specific tools and compilers
+3. Add language-specific analysis tools if needed
+4. Update prompt templates in `configs/prompt_templates.yaml`
+
+### MCP Servers
+
+ReCodeAgent uses several MCP servers.
+
+- **Language Servers**: For each supported language (rust-analyzer, gopls, pylsp, jdtls, clangd, typescript-language-server)
+- **project-analyzer**: Custom MCP server for analyzing project structure
+- **crust-test-runner**: Custom MCP server for running C tests against Rust translations in CRUST tool
+
+To add more MCP servers:
+
+1. Implement the server in `src/mcp/`
+2. Configure it in `configs/claude_mcp_config.json` under [`Dockerfile`](./docker-env/Dockerfile)
+3. Update the Dockerfile if system dependencies are needed
+4. Update agent prompts to utilize the new server capabilities
+
+## Citation
+
+If you find ReCodeAgent useful in your research, please cite our paper:
+
+```bibtex
+@inproceedings{10.1145/3832783.3837486,
+    author = {Ibrahimzada, Ali Reza and Paulsen, Brandon and Kroening, Daniel and Jabbarvand, Reyhaneh},
+    title = {ReCodeAgent: A Multi-agent Workflow for Language-Agnostic Translation and Validation of Large-Scale Repositories},
+    year = {2026},
+    isbn = {9798400728822},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3832783.3837486},
+    doi = {10.1145/3832783.3837486},
+    abstract = {Most repository-level code translation and validation techniques have been evaluated on a single source-target programming language (PL) pair, owing to the complex engineering effort required to adapt new PL pairs. Programming agents can enable PL-agnosticism in repository-level code translation and validation: they can synthesize code across many PLs and autonomously use existing tools specific to each PL’s analysis. However, state-of-the-art has yet to offer a fully autonomous agentic approach for repository-level code translation and validation of large-scale programs. This paper proposes ReCodeAgent, an autonomous multi-agent approach for language-agnostic repository-level code translation and validation. Users only need to provide the project in the source PL and specify the target PL for ReCodeAgent to automatically translate and validate the entire repository. ReCodeAgent is the first technique to achieve high translation success rates across many PLs. We compare the effectiveness of ReCodeAgent with four alternative neuro-symbolic and agentic approaches to translate 118 real-world projects, with 1,975 LoC and 43 translation units for each project, on average. The projects cover 6 PLs and 4 PL pairs. Our results demonstrate that ReCodeAgent consistently outperforms prior techniques on translation correctness, improving test pass rate by 60.8\% on ground-truth tests, with an average cost of $15.3. We also perform process-centric analysis of ReCodeAgent trajectories to confirm its procedural efficiency. Finally, we investigate how the design choices (a multi-agent vs. single-agent architecture) influence ReCodeAgent performance: on average, the test pass rate drops by 40.4\%, and trajectories become 28\% longer and persistently inefficient.},
+    booktitle = {Proceedings of the 41st IEEE/ACM International Conference on Automated Software Engineering},
+    pages = {2409–2421},
+    numpages = {13},
+    keywords = {Code Translation and Validation, Programming Agents},
+    location = {Munich, Germany},
+    series = {ASE '26}
+}
+```
+
+## Contact
+
+For questions or issues, please open an issue on our GitHub repository.

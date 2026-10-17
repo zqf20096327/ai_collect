@@ -1,0 +1,422 @@
+# Hive
+
+A native desktop app for managing multiple AI coding agent sessions —
+Claude, Codex, Gemini, Copilot, Aider, Pi, plain shells — across projects.
+
+## Status
+
+**Released.** The architecture is stable and in daily use. Latest release:
+[v2.3.0](https://github.com/lucascaro/hive/releases/tag/v2.3.0).
+
+What works:
+- Multi-session daemon (`hived`) — sessions persist across GUI restart
+- Wails-based desktop GUI with xterm.js — full keyboard control,
+  font scaling, dark theme
+- Projects (name, color, working dir) — sidebar tree
+- Agent launcher (Claude, Codex, Gemini, Copilot, Aider, Pi, shell) — hide the
+  agents you don't use and pin favourites to the top in Settings → Agents
+- ACP sessions: pick **ACP** instead of **Terminal** in the launcher
+  (Tab reaches the choice) and Claude, Codex or Pi runs over the Agent
+  Client Protocol (via `npx` and your Node), with a transcript instead of
+  a terminal: messages, plan steps, tool calls, permission requests you
+  allow or deny in place, and a prompt box. Each agent runs in a
+  permission mode you cap in Settings → Agents (Claude: Manual, Codex:
+  Read-only by default); Pi needs unattended tool use allowed there.
+  Gemini and Copilot are marked experimental and stay off until Hive
+  can cap their modes. **Take Over in Terminal** (File menu, command
+  palette) reopens the same conversation in the agent's own CLI, and
+  **Hand Back to ACP** returns it to the transcript with every turn
+- Grid view: per-project (⌘G) or all-sessions (⇧⌘G), spatial arrow nav
+- Multi-window (⇧⌘N) — independent windows share the same daemon
+- BEL → desktop notification + visual pulse on non-focused sessions
+- Per-session state in the sidebar and tile headers — working, idle,
+  waiting for you, exited — derived from what the terminal renders, so
+  every agent and plain shell gets it. Claude sessions get a more
+  precise answer via Claude Code hooks: every session Hive spawns sets
+  `HIVE_SESSION_ID` / `HIVE_SOCKET` in the child's environment, and
+  `hived hook` (invoked by hooks Hive wires through `claude --settings`)
+  reports prompts, turn-end, and permission prompts back to the daemon
+  over that socket. The same hooks carry Claude's task list, shown as a
+  small pie under the session's state dot as the agent works through its
+  plan. Recent Claude models only provide those task tools when a session
+  opts in, so Hive sets `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` for the Claude
+  sessions it starts — on by default, off under Settings → Agents, and
+  never overriding a value you set yourself. Pi sessions get the same precision through a small
+  extension Hive ships with the daemon and loads with `pi -e` — nothing
+  to install, and inert when you run `pi` outside Hive. Pi has no task
+  list of its own, so the extension adds a `hive_todo` tool that feeds
+  the same plan pie — on by default, off under Settings → Agents
+- Plan review. Enable the **Plan review** plugin under Settings →
+  Plugins. It ships with Hive, so there is nothing to install, and it is
+  off by default. When Claude leaves plan mode, or Pi calls
+  the `hive_submit_plan` tool Hive gives it, the agent waits while Hive
+  shows the plan as formatted markdown. You can select passages to comment
+  on, then approve the plan or request changes. Your comments go back to
+  the agent, each quoted with the passage it is about, and the agent
+  revises. If you press Esc, the agent keeps waiting and a bar brings the
+  review back. A waiting session shows a **Review** badge in the sidebar.
+  - With no Hive window open, the agent uses its own terminal approval
+    instead.
+  - If another plan reviewer such as plannotator is installed, it keeps
+    reviewing Claude's plans unless you choose Hive in the plugin's
+    settings. Choosing Hive disables that plugin for the Claude sessions
+    Hive starts.
+- Laya state detection (optional, off by default). Sessions without agent
+  hooks — Aider, Codex, a shell, custom agents — only get a guess at what
+  they are doing. Point Settings → Agents → Agent state detection at a
+  [Laya](https://laya-ai.com/) server you run locally — anything that
+  speaks Laya's `/v1/systemone` API, such as upstream
+  `pip install "laya[serve]" && laya-serve` — and Hive asks it
+  what a settled screen shows: working, idle, waiting for you, waiting
+  for permission, or failed. Hooked sessions keep their hooks; Laya
+  only steps in once an agent has gone 30 seconds without a new report.
+  The state tooltip says "classified from the screen by Laya".
+  - Screen text is sent only to the URL you set; Settings warns when it
+    is not this machine. Put a server API key in Hive's environment as
+    `HIVE_LAYA_API_KEY` — it is never written to disk.
+  - Accuracy depends on the model; see
+    `internal/laya/testdata/corpus/README.md` to score yours.
+- Agent activity — what a Claude or Pi session is doing, without reading
+  its scrollback. ⌘J opens an inspector beside the terminal: the plan's
+  steps with the tool calls each one ran (`Bash · npm test`, never the
+  full arguments), and the whole timeline below. In a grid, ⌘J swaps
+  every tile's terminal for its activity — the plan's tasks, with the tool
+  feed in whatever space they leave — and ⇧⌘J gets there from any view. A
+  session whose agent stops reporting mid-turn greys out and says how long
+  it has been quiet.
+  (Ctrl+Shift+J / Ctrl+Alt+Shift+J on Windows and Linux.)
+- Idea inbox — notes captured against a project instead of derailing the
+  session you are in. Every session Hive spawns can file one from its
+  own shell:
+
+  ```sh
+  hived idea add "the grid loses focus after ⌘G twice"   # kind: idea
+  hived idea add -k bug "sidebar drag handle is 1px off"
+  hived idea list                                        # this project
+  ```
+
+  `hived idea list --all` spans every project. It is refused inside a
+  session — where a note is scoped to the session's own project — so run
+  it from an ordinary shell.
+
+  The project is resolved from the session, so a note lands where the
+  work is even after the session is reassigned. An idea outlives the
+  session that filed it; deleting a *project* deletes its ideas, and
+  Hive refuses that delete while any are still open.
+
+  From the inbox (⇧⌘I, or the badge on a project card), a note can be
+  corrected — its text, its kind and the project it is filed under —
+  or turned into work: **Start session** opens the agent launcher with
+  the project pinned and an opening prompt built from the note — an
+  instruction shaped by its kind ("reproduce it first, find the root
+  cause…" for a bug), with the note itself as the subject, so the agent
+  knows what to do with it rather than only what was noticed. The
+  prompt is editable in the launcher before you pick the agent —
+  sharpening it there does not change the stored note. Claude and Pi
+  get it as their opening argument, and their idea is linked to the new
+  session. For every other agent the prompt is **offered** rather than
+  typed in: a bar above the grid shows the note with **Paste** and
+  **Dismiss**, so you place it once you can see the agent is ready for
+  input — Hive cannot tell an agent's prompt box from its startup
+  "do you trust this directory?" gate, and you can. Paste puts it in
+  the input box without sending it, and links the idea; Dismiss leaves
+  the note in the inbox. The plain shell and custom agents get no
+  prompt at all: the launcher says so before you start. A linked
+  idea's session carries a small idea glyph on its sidebar row
+
+- Session messaging: **⇧⌘M** hands the active session a note — typed into
+  its terminal with Enter, or submitted as a turn for an ACP session. A
+  session that is working refuses it, and the sheet offers to queue the
+  note for when it next settles (typed once, a few hundred milliseconds
+  after). Settled means idle, or an agent that reports its own turns
+  (Claude, Pi) finishing one; an ACP session that is busy refuses the
+  note. "Idle" is the daemon's view: for a plain shell or an agent
+  without hooks that means no output for two seconds, so a session
+  sitting at a question you have not answered may take the note as the
+  answer. **⌥⌘B** (or the bell on a session row) arms a one-shot
+  notification for when the session stops working; it clears after
+  firing, and a daemon restart disarms it. `hived msg <id-or-name> <text…>`
+  does the same from an ordinary shell (exact id or exact name only).
+  Plugins cannot send messages. A Claude Code session receives the note
+  through Claude's own inbox, working or idle, and falls back to the typed
+  path if that is unavailable; a Pi session takes it through Hive's Pi
+  extension the same way (queued behind its current turn), and every other
+  agent gets the typed path
+- In-app updates (macOS): pick a release or latest-commit channel in
+  Settings, then Update → Reload (or Restart, when the daemon changed)
+- What's new: the gift in the sidebar header opens a list of what has
+  shipped, newest release first, plus what is coming. It carries a dot
+  until you have read the current release
+- Help: the question mark beside the gift opens a panel explaining what
+  projects, sessions, worktrees and agents are, with links to the README,
+  docs, issue tracker and releases, and a row into the keyboard-shortcuts
+  overlay. Also reachable from the command palette
+- **Reload GUI** — picks up a new GUI build without touching `hived`,
+  so every running shell and agent survives
+- Menu-bar agent (macOS) — daemon version, session list and attention
+  count, with reload / restart / update actions, live even with every
+  window closed
+
+Not yet shipping: scrollback resume across daemon restart, splits
+inside grid cells, workflows / agent teams, platform installers,
+in-app updates on Linux.
+
+## Build
+
+Requires Go 1.27.1+, Node 24+, and the Wails CLI:
+
+```sh
+scripts/ci-bootstrap.sh  # installs the pinned Wails CLI + generates bindings
+```
+
+Then from the repo root:
+
+```sh
+./build.sh                    # macOS .app at cmd/hivegui/build/bin/hivegui.app
+./build.sh --open             # build then launch
+./build.sh --zip --version v2.3.0   # also write release/<name>.zip
+```
+
+For Windows or Linux, build the GUI and the daemon separately:
+
+```sh
+# Windows (cross-build from macOS works)
+( cd cmd/hivegui && wails build -platform windows/amd64 )
+GOOS=windows GOARCH=amd64 go build -o cmd/hivegui/build/bin/hived.exe ./cmd/hived
+
+# Linux (build natively)
+( cd cmd/hivegui && wails build -platform linux/amd64 )
+GOOS=linux GOARCH=amd64 go build -o cmd/hivegui/build/bin/hived ./cmd/hived
+```
+
+`hivegui` and `hived` must live in the same directory; the GUI
+auto-spawns the daemon at startup.
+
+## The menu bar (macOS)
+
+Hive puts an icon in the menu bar. It reports on the **daemon**, not on
+any window, so it keeps working with every window closed — which is
+also the only time you can't ask the GUI. It shows:
+
+- the running `hived`'s version and build, and a warning line when that
+  daemon is too old for this build to drive;
+- how many sessions are open across how many projects, and how many are
+  waiting on you;
+- every session, `project · session`, with a dot on the ones blocked on
+  you — an agent waiting for input or for a permission answer.
+  Clicking one jumps straight to it, launching Hive if it isn't running.
+
+Plus **Reload GUI**, **Restart Daemon…** (confirmed — it ends every
+running shell and agent), **Check for Updates…**, **Open Hive** and
+**Quit Hive**.
+
+It starts on its own whenever `hived` or a window does, so in normal use
+it is simply there. `Settings ▸ Menu bar ▸ Start at login` additionally
+registers it with macOS so it appears at login before either has run.
+Set `HIVE_NO_MENUBAR=1` to suppress it; an isolated run
+(`HIVE_STATE_DIR` set, e.g. `scripts/dev-iso.sh`) never starts one.
+
+The agent ships inside the app bundle at
+`hivegui.app/Contents/Library/LoginItems/hivebar.app` (whatever you
+renamed the bundle to on install). It is a client like
+the GUI — it talks to the daemon over the wire protocol and never opens
+a PTY of its own.
+
+## Reloading vs restarting
+
+Picking up a new build of Hive does not have to cost you your sessions.
+`hived` outlives the GUI, so when only the GUI has changed, **File ▸
+Reload GUI** relaunches every window and leaves every shell and agent
+running, with its scrollback intact. It needs no confirmation because it
+destroys nothing.
+
+**File ▸ Restart Daemon…** is the other half, and it does end every
+running session — so it confirms first.
+
+Hive decides which you need by comparing the two builds' *daemon
+contract*, an integer that changes only when the daemon's observable
+behaviour does. A frontend-only build leaves it untouched, so a rebuild
+no longer costs you a restart. See
+[docs/design-docs/daemon-contract.md](docs/design-docs/daemon-contract.md).
+
+## Updating
+
+Hive checks for updates in the background — once on launch and every
+six hours. When one is available it puts a dot on the ⤓ button in the
+sidebar header, next to **+**, rather than interrupting you with a
+banner; the dot stays while an update is pending. Click ⤓ (or use **File → Check
+for Updates…** on macOS) to run the check yourself: the result lands in
+the update banner, including "up to date" and check failures, and an
+update you start shows its progress there without being asked. Which
+updates it looks for depends on the channel you pick in
+**Settings → Updates**:
+
+| Channel | Checks | Applying it |
+|---------|--------|-------------|
+| **Release** (default) | A newer tagged release than the running version | Downloads the macOS zip, verifies its SHA-256 against the published `checksums.txt`, unpacks it |
+| **Latest** | Whether your source checkout's upstream branch has commits the running build doesn't | `git pull --ff-only` then `./build.sh` in that checkout |
+
+The release check is a single anonymous `GET` to
+`api.github.com/repos/lucascaro/hive/releases/latest` (no identifying
+data beyond a `User-Agent: hivegui/<build-id>` header). On the release
+channel, untagged dev builds — anything built without `./build.sh
+--version <tag>` — skip the check entirely and never call out; the
+latest channel is the one built for those.
+
+The latest channel pulls and *executes* code, so it refuses any checkout
+whose tracked branch does not come from this repository, and runs git
+with hooks disabled.
+
+The latest channel needs to know where your checkout is. Hive finds it
+by walking up from its own binary, which works for a locally built app;
+for an installed `Hive.app` you point at the directory yourself. It
+refuses to pull over a dirty working tree or a detached HEAD.
+
+The SHA-256 manifest is an **integrity** check: it is published in the
+same release as the zip, so it catches a truncated or corrupted download.
+Provenance is a separate mechanism — macOS builds are signed with a
+Developer ID, notarized and stapled, and the updater pins the Team ID.
+
+**Nothing is downloaded or built until you press Update.** The button
+shows progress while it works, then becomes either **Reload** or
+**Restart**, and the difference matters:
+
+- **Reload** — the update only changes the GUI. Hive relaunches its
+  windows and leaves `hived` running, so every shell and agent keeps
+  going. Nothing is lost and there is no confirmation prompt.
+- **Restart** — the update changes the daemon too. Hive replaces
+  `hived`, which terminates every running shell and agent. This one
+  confirms first; save your work before pressing it.
+
+Hive works out which by asking the staged build's `hived` for its
+*daemon contract* (`hived --version --json`) and comparing it to the
+running daemon's. Only a change the daemon actually exposes bumps that
+contract, so a frontend-only release costs you nothing.
+
+Applying an update in place works on macOS and Windows. On Linux the
+banner keeps its Download button, which opens the release page.
+
+Two things are worth knowing on Windows. The download is checksum-verified
+but not signature-verified — macOS pins the bundle to Hive's Apple Developer
+team, and no Windows release binary is signed, so there is no equivalent
+publisher to pin. And Hive has to be installed somewhere it can write:
+`%LOCALAPPDATA%\Programs\Hive` is the usual spot. Running it out of a
+checkout's own `cmd/hivegui/build/bin` is refused on the latest channel,
+because the build step erases that directory.
+
+## Layout
+
+```
+cmd/
+  hived/           # session daemon
+  hivegui/         # Wails GUI client
+  hivebar/         # macOS menu-bar agent (client, like the GUI)
+internal/
+  wire/            # protocol v1 (frame format + JSON control messages)
+  session/         # one PTY + scrollback
+  registry/        # sessions + projects + persistence
+  daemon/          # socket listener + dispatch
+  agent/           # built-in agent launcher catalog
+  buildinfo/       # version, build id, and the daemon contract
+  menubar/         # starts hivebar from hived and hivegui (no-op off macOS)
+DESIGN.md          # architecture map
+build.sh           # macOS universal build
+```
+
+## Keybinds
+
+These are the defaults. Rebind any of them, and any plugin command, under **Settings → Shortcuts**, where you can also export your keymap to a file and import one (with a preview before anything changes).
+
+| Key | Action |
+|---|---|
+| ⌘T / ⇧⌘T | New session (agent launcher) / in a git worktree |
+| ⌘P / ⇧⌘P | Duplicate session / duplicate choosing the tool |
+| ⌘N | New project |
+| ⇧⌘N | New window |
+| ⌘W | Kill active session |
+| ⌘Z | Reopen the last closed session |
+| ⇧⌘W | Close this window |
+| ⌘G / ⇧⌘G | Per-project grid / all-sessions grid |
+| ⌘⏎ | Grid: focus the active session (single view) |
+| ⌘↑ / ⌘↓ | Previous / next session (focused) / move between tiles vertically (grid) |
+| ⌘← / ⌘→ | Spatial nav between tiles in grid view. In focused mode they move the cursor to the start / end of the line (macOS; ⇧⌘← / ⇧⌘→ do the same). On Windows and Linux use Ctrl+← / Ctrl+→ for word-wise movement, as in any terminal |
+| ⇧⌘↑ / ⇧⌘↓ | Move the session up / down within its project (wraps) |
+| ⌃- / ⌃⇧- | Back / forward through recently visited sessions (Ctrl+Alt+- / Ctrl+Alt+Shift+- on Windows and Linux, where ⌃- is zoom) |
+| ⌘B | Next session needing attention (rang the bell) |
+| ⇧⌘B | Jump back to where you were before the first ⌘B |
+| ⌘[ / ⌘] | Previous / next project |
+| ⌘E | Worktrees in the active project (browse, resume, delete) |
+| ⌘I | Capture an idea for later (note, kind, project) |
+| ⇧⌘I | Ideas captured for the active project |
+| ⇧⌘M | Message the active session: a note sent to it — through the agent's own inbox for Claude Code and Pi, otherwise typed when it is quiet (queued if it is working) |
+| ⌥⌘B | Notify me once when the active session stops working (Ctrl+Alt+Shift+B on Windows and Linux) |
+| ⌘1–9 | Jump to nth session |
+| ⌘= / ⌘- / ⌘0 | Font size up / down / reset |
+| ⌘S | Toggle sidebar |
+| ⌘J / ⇧⌘J | Agent activity: the inspector panel beside the terminal (single view) or the activity grid (grid) / go to the activity grid from any view. Ctrl+Shift+J / Ctrl+Alt+Shift+J on Windows and Linux, where Ctrl+J is the terminal's newline |
+| ⌘F | Find in the active session. On a normal shell it searches the terminal's scrollback and highlights in place; on a full-screen agent (Claude, Pi), where the terminal keeps no scrollback, it searches that session's transcript on disk instead — so it finds text that scrolled away long ago. Search runs bottom-up: the first match is the most recent, Enter steps to older ones, Shift+Enter to newer. Ctrl+Shift+F on Windows and Linux, where Ctrl+F is the shell's forward-char |
+| ⌘-click / ⇧⌘-click | On a file path in a session: open it with the OS default app / open it in the editor set in Settings › Appearance, at the clicked `:line:col`. A file the OS would *run* (an app, a script, an installer) is revealed in the file manager instead of opened. Relative paths resolve against the session's worktree or project directory. Ctrl replaces ⌘ on Windows and Linux |
+| ⇧⌘K / ⌘/ | Command palette / keyboard-shortcuts overlay |
+
+Full list in the app: **⌘/**. (Ctrl replaces ⌘ on Windows and Linux.)
+Plugins can add their own shortcuts; they are listed under **Plugins**
+in that overlay and beside their commands in the palette, and can never
+take one of the shortcuts above.
+
+Archiving has no default key: run **Archive Session** or **Archived Sessions…** from the command palette. Archiving stops the focused session but keeps its worktree and a record that never expires (unlike a close, whose ⌘Z undo lasts 20 closes or 7 days); **Archived Sessions…** lists them all, with a filter, and brings any one back.
+
+### When a session ends
+
+A tile whose process has exited shows a card over the terminal.
+
+| Key | Action |
+|---|---|
+| ⏎ | Close the session |
+| R | Restart it in place (same as **Restart** in the session's menu) |
+| Esc | Dismiss the card and keep the tile |
+
+### Text editing inside a session
+
+These reach the shell or agent CLI rather than the app.
+
+| Key | Action |
+|---|---|
+| ⌦ | Delete the character after the cursor |
+| ⌥⌫ / ⌥⌦ | Delete the word before / after the cursor (macOS) |
+| ⌘⌫ / ⌘⌦ | Delete to start / end of line (macOS) |
+| ⌥← / ⌥→ | Move by word (macOS; Ctrl+← / Ctrl+→ on Windows and Linux) |
+| ⇧⏎ | Insert a newline in the agent's input instead of submitting |
+
+## Plugins
+
+Hive can run **headless plugins**: small programs, in any language, that
+watch what your sessions are doing and act on it — post to a webhook
+when an agent is waiting on you, bridge to a chat app, restart a crashed
+agent. A plugin talks to the daemon over the same wire protocol as the
+app, installs from a local folder or a git URL, and always installs
+disabled. Plugins run with your full user privileges, so only enable
+ones you trust.
+
+Plugins can also add to the app itself: a view for a session (a dialog,
+a panel beside the terminal, a bar above it), commands in the command
+palette with their own shortcuts, a badge on sidebar rows, and a
+section in Settings. A plugin that breaks is stopped on its own and the
+rest of the app carries on.
+
+- Writing one: [docs/plugins.md](docs/plugins.md)
+- The reference plugins: [plugins/webhook/](plugins/webhook/) (in the
+  background) and [plugins/session-notes/](plugins/session-notes/) (in
+  the app: pin a note to a session)
+
+Manage them under **Settings → Plugins**: install from a folder or git
+URL, then enable, disable or remove each one without restarting Hive.
+Installing shows what the plugin will run and asks before enabling it.
+
+## Contributing
+
+See `AGENTS.md` for repo-wide rules, `DESIGN.md` for the architecture
+map, and `CONTRIBUTING.md` for the contribution flow.
+
+## License
+
+MIT — see `LICENSE`.

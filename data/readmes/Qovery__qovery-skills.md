@@ -1,0 +1,579 @@
+# Qovery Skills
+
+[![Agent Skills](https://img.shields.io/badge/Agent_Skills-compatible-7C3AED)](https://agentskills.io)
+[![Install](https://img.shields.io/badge/Install-curl_skill.qovery.com-2563EB)](https://skill.qovery.com/install.sh)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/github/stars/Qovery/qovery-skills?style=social)](https://github.com/Qovery/qovery-skills)
+
+AI agent skills for deploying and troubleshooting applications on Kubernetes using [Qovery](https://www.qovery.com). Compatible with **30+ AI coding tools** that support the [Agent Skills](https://agentskills.io) open standard.
+
+| Skill | What it does |
+|---|---|
+| **qovery** | Entry point — routes to the right skill based on intent, handles quick operations (list, status, stop, restart, logs, clone, scale, custom domains, deployment history). Use when mentioning Qovery generically |
+| **qovery-onboard** | Guided onboarding — acts as a personal cloud architect, understands your role/experience/constraints, recommends and sets up the optimal Qovery config (cloud provider, cluster, environments, RBAC, security, cost defaults), handles BYOK and platform migrations |
+| **qovery-deploy** | Deploy any application to Kubernetes — analyzes codebases, creates Dockerfiles, provisions databases, deploys via CLI+API or Terraform |
+| **qovery-troubleshoot** | Diagnose and fix deployment failures, crashes, connectivity issues, performance problems — with MCP Server integration and runbook generation |
+| **qovery-optimize** | Optimize costs and right-size resources — analyzes historical consumption, understands business context (seasonal, growth), estimates cloud costs, generates detailed reports with CSV export |
+| **qovery-speedup** | Speed up deployments — measures pipeline timeline, identifies bottlenecks (build, startup, health check, scheduling), classifies user vs Qovery responsibility, proposes Dockerfile and config fixes |
+| **qovery-preview** | Create preview environments from PRs — detects/creates blueprint environments, clones for each PR, switches branches, configures auto-shutdown (stop/delete/recycle), provides cleanup. Includes `/qovery-preview` slash command |
+| **qovery-terraform** | Generate Terraform manifests from an existing Qovery setup — reads config from API, generates HCL (qovery/qovery provider), imports resources into state, validates in test clone. Supports single or multiple environments. Safe: never applies to original without confirmation |
+| **qovery-policy-token** | Create a scoped, least-privilege API Policy Token — turns your intent into an OPA/Rego policy, tests it locally with OPA and live against the API, creates the token, and verifies it allows exactly what you want and denies everything else. Includes `/qovery-policy-token` slash command |
+| **qovery-signup** | Sign up from scratch — checks/installs the Qovery CLI, authenticates via `qovery auth --headless` (first login creates the account), and creates your first organization, then hands off to qovery-onboard. Never handles raw tokens. Includes `/qovery-signup` slash command |
+| **qovery-assess** | Read-only assessment of a whole organization — inventories every cluster, environment and service, reads deployment/runtime logs and audit events (redacted on write), then runs 147 best-practice checks across reliability, security, performance, delivery, cost and disaster recovery. Correlates findings to the company's public compliance claims (SOC 2 / ISO 27001 / GDPR / DORA) and maps technical checks to published controls (CIS Kubernetes Benchmark, Pod Security Standards, NSA/CISA, NIST SP 800-190), scores each pillar, and writes a customer-shareable gap analysis with a prioritized roadmap. Modifies nothing. Includes `/qovery-assess` slash command |
+
+> **Looking for Remote Development Environments (RDEs)?** RDEs are now managed directly via [rde.qovery.com](https://rde.qovery.com). See the [RDE documentation](https://www.qovery.com/docs/getting-started/quickstart/remote-dev-environments) to get started.
+
+## Quick Install
+
+**One command — installs all eleven skills globally for all your projects:**
+
+```bash
+curl -fsSL https://skill.qovery.com/install.sh | bash
+```
+
+**Install in the current project only:**
+
+```bash
+curl -fsSL https://skill.qovery.com/install.sh | bash -s -- --project
+```
+
+**Uninstall:**
+
+```bash
+curl -fsSL https://skill.qovery.com/install.sh | bash -s -- --uninstall
+```
+
+That's it. The installer automatically places all eleven skills (with their `reference/`, `templates/`, and `examples/` sub-directories) in all the right locations so they're discovered by any compatible tool.
+
+**Update to the latest version** — just run the install command again. It overwrites the previous versions:
+
+```bash
+curl -fsSL https://skill.qovery.com/install.sh | bash
+```
+
+## Compatible Tools
+
+These skills follow the [Agent Skills](https://agentskills.io) open standard and work with:
+
+| Tool | Status |
+|------|--------|
+| **Claude Code** | Supported |
+| **OpenCode** | Supported |
+| **Cursor** | Supported |
+| **VS Code Copilot** | Supported |
+| **Gemini CLI** | Supported |
+| **Roo Code** | Supported |
+| **Goose** | Supported |
+| **Amp** | Supported |
+| **Junie (JetBrains)** | Supported |
+| **Kiro** | Supported |
+| **OpenHands** | Supported |
+| **OpenAI Codex** | Supported |
+| **Mistral Vibe** | Supported |
+| **TRAE** | Supported |
+
+And any other tool that discovers skills from `.claude/skills/` or `.agents/skills/` directories.
+
+## What it does
+
+### qovery-onboard
+
+When you tell your AI agent _"I'm new to Qovery, help me get started"_:
+
+1. **Understands who you are** — asks about your role (developer, DevOps, CTO, founder, non-technical), experience level with cloud infrastructure, and whether you know what Kubernetes is
+2. **Understands what you have** — existing cloud provider account, existing K8s cluster (BYOK path), applications to deploy, migration from another platform
+3. **Understands what you need** — primary goal, industry compliance (HIPAA, PCI-DSS, SOC2, GDPR), constraints (region, budget, private networking), team size
+4. **Recommends the optimal setup** — cloud provider + region, cluster type (managed or BYOK), environment structure (dev/staging/prod), security defaults, cost defaults, RBAC roles
+5. **Executes the full setup** with Console links at every step — cloud credentials, cluster creation (with progress updates while waiting), project/environments, deployment rules, git provider connection
+6. **Invites team members** with appropriate RBAC roles (Admin, DevOps, Viewer, or custom roles for enterprise)
+7. **Handles BYOK** (Bring Your Own Kubernetes) — guides through `qovery cluster install` for existing clusters
+8. **Handles migrations** — detailed guides for Heroku (env var import via `qovery env parse --heroku-json`, concept mapping, FAQ), Vercel/Netlify, Render/Railway, and manual Kubernetes
+9. **Encodes best practices by default** — private databases, internal networking, secrets encryption, deployment stages, deployment rules for cost savings — NOT optional recommendations, but the default setup
+
+### qovery-deploy
+
+When you tell your AI agent _"deploy my application with Qovery"_:
+
+1. **Analyzes your codebase** — detects language, framework, ports, database needs, environment variables
+2. **Creates a Dockerfile** if one is missing — production-ready templates for 12+ frameworks
+3. **Asks the right questions** — dev vs production, database type, deployment method
+4. **Sets up infrastructure** — cluster creation from scratch if needed (AWS, GCP, Azure, Scaleway)
+5. **Deploys via CLI + API** (quick path) or **Terraform provider** (recommended for production)
+6. **Provisions databases** — container mode for dev/test, managed mode (e.g. AWS RDS) for production, or Terraform services for advanced setups like RDS Aurora
+7. **Sets up environment variables**, secrets, service interconnection, health checks, deployment stages
+8. **Handles Helm charts, Terraform modules, lifecycle jobs, and cron jobs**
+9. **Watches deployments and auto-fixes failures** — diagnoses build errors, port mismatches, health check failures, missing env vars, and OOM issues
+
+### qovery-troubleshoot
+
+When you tell your AI agent _"my Qovery deployment is failing, can you help?"_:
+
+1. **Integrates with the Qovery MCP Server** for fast, structured diagnostics (falls back to CLI/API if MCP is not configured)
+2. **Runs an 8-layer systematic diagnosis** — deployment status, build logs, runtime logs, health checks, environment variables, network/connectivity, resources/performance, cluster infrastructure
+3. **Matches 20+ error patterns** — OOM kills, crash loops, connection refused, missing env vars, port mismatches, DNS failures, auth errors, database issues, and more
+4. **Includes 10 pre-built playbooks** — App Won't Start, App Is Slow, Database Connection Fails, Deployment Stuck, Custom Domain Not Working, Terraform/Helm Errors, High Costs, OOM/Resource Exhaustion, Build Failing
+5. **Auto-fixes Qovery configuration** (ports, health checks, memory, CPU, env vars, deployment stages) without permission; asks before modifying user code
+6. **Generates runbooks** in `.qovery/runbooks/` to document what happened and how it was fixed — builds institutional knowledge over time
+7. **Provides prevention recommendations** tailored to the specific issue that was fixed
+
+### qovery-optimize
+
+When you tell your AI agent _"optimize my Qovery costs"_:
+
+1. **Gathers business context first** — asks about application type, traffic patterns (seasonal spikes, business-hours, steady), growth expectations, and reliability requirements before touching any metrics
+2. **Analyzes historical resource consumption** — compares allocated CPU/memory vs actual peak usage over 7-day and 30-day windows, with safety buffers adjusted by environment type
+3. **Analyzes 7 optimization dimensions** — service right-sizing, autoscaling, database mode, environment scheduling, cluster optimization (spot instances, instance types), build optimization, external resource costs
+4. **Estimates external cloud resource costs** — calculates costs for RDS, ElastiCache, NAT Gateways, load balancers, and other infrastructure from configuration parameters and public cloud pricing, with clear methodology disclaimers
+5. **Generates detailed cost reports** — markdown report with executive summary, per-cluster/environment/service breakdown, external resource estimates, and sorted recommendations with expected savings and risks. Also generates CSV for spreadsheet analysis
+6. **Applies changes via the right tool** — uses Qovery API for immediate changes or generates Terraform diffs if the user manages infrastructure as code. Asks the user which tool they prefer
+7. **Accounts for seasonal patterns** — never right-sizes below seasonal peaks, recommends pre-scaling before known peaks, suggests post-peak review
+8. **Offers Kubecost deployment** for ongoing real-time cost visibility, and suggests sharing the report with Qovery support for professional review
+
+### qovery-speedup
+
+When you tell your AI agent _"my deployments are slow, can you speed them up?"_:
+
+1. **Measures the full deployment pipeline** using the V2 deployment history API — total time, per-stage, per-service, with structured durations
+2. **Breaks down sub-step timing** by parsing deployment logs: git clone, Docker build, image push, pod scheduling, app startup, health check pass
+3. **Generates build runner usage reports** (Grafana snapshots showing CPU, memory, network I/O during builds) using the deployment build usage API
+4. **Classifies each bottleneck as user-controllable or Qovery infrastructure** — clear ownership for every slow step
+5. **Proposes Dockerfile optimizations** — layer ordering, `.dockerignore`, multi-stage builds, build cache mounts, alpine base images, dev dependency removal (10+ patterns with before/after diffs)
+6. **Tunes health check configuration** — right-sizes `initial_delay_seconds`, `period_seconds`, and `failure_threshold` based on actual measured startup time
+7. **Optimizes deployment stage parallelism** — identifies independent services in serial stages that can run in parallel
+8. **Optimizes container image pull time** — image size reduction, layer sharing between services, registry proximity
+9. **Generates diagnostic reports for Qovery support** when the bottleneck is infrastructure-side (queue time, build runner capacity, registry push, Karpenter scheduling)
+
+### qovery-assess
+
+When you tell your AI agent _"assess my Qovery organization and give me a gap analysis"_:
+
+1. **Declares and enforces read-only** — GET requests only. No create, update, delete, deploy, stop, or restart. Never fetches database master credentials or a cluster kubeconfig, and never prints a secret value
+2. **Collects a full point-in-time snapshot** — every cluster, environment, service, advanced setting, deployment rule, variable, member, token and alert rule, plus audit events and deployment/runtime logs, written to `qovery-assessment/raw/`
+3. **Redacts credentials on write** — every log and event body passes through a redaction filter before touching disk (AWS keys, JWTs, PEM blocks, DSN passwords, bearer tokens, provider tokens), so no secret value ever reaches disk or the agent's context
+4. **Builds a compliance profile first** — reads the company's public trust, privacy, sub-processor and terms pages, infers the regimes that apply (SOC 2, ISO 27001, GDPR, DORA, PCI DSS), then uses it as a severity lens and tags each finding with the control it maps to
+5. **Runs 147 checks with stable IDs** across twelve families — `CP` compliance, `CL` cluster, `TP` topology, `RL` reliability, `BP` anti-patterns, `SC` security, `VS` variables & secrets, `DL` delivery, `LG` logs, `OP` change origin, `CE` cost, `DR` disaster recovery
+6. **Covers what causes outages** — single-replica production services, identical or dependency-checking liveness probes, missing anti-affinity and zone spread, `Recreate` strategy, no connection draining, container databases in production, stale backups, singleton message brokers, RWO single points of failure, overlapping cron schedules
+7. **Covers what causes breaches** — publicly accessible databases, a Kubernetes API open to `0.0.0.0/0`, IMDSv1, credential-shaped values stored as plain variables, secrets appearing in logs, blanket admin roles, missing SSO, unscoped API tokens, one environment reaching into another's datastore
+8. **Reads logs for evidence, not decoration** — recurring deployment errors and their Qovery hint messages, `OOMKilled` / `CrashLoopBackOff` / probe-failure patterns correlated back to the settings that explain them, measured startup and shutdown time against configured probe delays, and credentials leaked into log output
+9. **Checks how changes actually happen** — the audit event stream shows whether production is operated through Terraform or the Console, who opens interactive shells into production, and whether external cloud resources are declared as Qovery Terraform services or managed beside the platform
+10. **Measures real waste where it can** — CPU, memory and storage allocated versus actual consumption (requires cluster observability; recommends enabling it when off), spot capacity on non-production clusters, node bin-packing, and unbounded registry retention. Never invents a savings figure
+11. **Assesses disaster recovery** — RPO/RTO definition, backup coverage and location, whether a restore has ever been timed, rebuild-from-code capability, AZ versus region failure domain, and whether a runbook exists and has been rehearsed
+12. **Scores each pillar deterministically** — partial credit per check, severity weights, fixed pillar weights, so a re-run after remediation is directly comparable. Unresolved Critical findings cap the maturity level
+13. **Writes a customer-shareable report** — executive scorecard, top risks with evidence and impact, compliance badges, topology map, Now/Next/Later roadmap with effort bands, plus a findings CSV
+14. **Ends with hand-offs, not changes** — maps findings to `qovery-optimize`, `qovery-speedup`, `qovery-terraform`, `qovery-policy-token`, and to the work that needs a human rather than a tool
+
+
+## Usage
+
+Just ask your AI agent:
+
+```
+I'm new to Qovery, help me get started
+```
+
+```
+Deploy my application with Qovery
+```
+
+```
+My Qovery deployment is failing, can you help?
+```
+
+The onboard skill acts as your personal cloud architect. The deploy skill handles application deployment. The troubleshoot skill diagnoses and fixes issues.
+
+**Prompts that trigger qovery (generic entry point):**
+- _"Help me with Qovery"_
+- _"I want to use Qovery"_
+- _"List my Qovery environments"_
+- _"Stop my Qovery service"_
+- _"Check status of my deployment"_
+- _"Show me logs"_
+- `/qovery` (slash command)
+
+**Prompts that trigger qovery-onboard:**
+- _"I'm new to Qovery, help me get started"_
+- _"Set up Qovery for my organization"_
+- _"Help me onboard onto Qovery"_
+- _"I have an existing Kubernetes cluster, can I use Qovery?"_
+- _"I'm migrating from Heroku to Qovery"_
+- _"Configure Qovery for my company"_
+
+**Prompts that trigger qovery-deploy:**
+- _"Deploy my application with Qovery"_
+- _"Set up Qovery for my project"_
+- _"Deploy this to Kubernetes with Qovery"_
+- _"Create a Qovery Terraform configuration for my app"_
+
+**Prompts that trigger qovery-troubleshoot:**
+- _"My deployment is failing"_
+- _"My app is crashing on Qovery"_
+- _"Why is my application not working?"_
+- _"My database connection is failing"_
+- _"My app is slow / out of memory"_
+- _"My cluster is not responding"_
+
+**Prompts that trigger qovery-optimize:**
+- _"Optimize my Qovery costs"_
+- _"My cloud bill is too high"_
+- _"Right-size my applications"_
+- _"Are my services over-provisioned?"_
+- _"How much is my infrastructure costing me?"_
+- _"Generate a cost report"_
+
+**Prompts that trigger qovery-speedup:**
+- _"My deployments are slow"_
+- _"Speed up my Qovery deployment"_
+- _"Why does my deployment take so long?"_
+- _"Optimize my build time"_
+- _"My Docker build is slow"_
+- _"My app takes too long to start"_
+
+**Prompts that trigger qovery-preview:**
+- _"Create a preview environment for the current branch"_
+- _"Create a PR environment for PR-123"_
+- _"Set up preview environments for my project"_
+- _"I want to test my PR in isolation"_
+- _"Preview this branch on Qovery"_
+- `/qovery-preview` (slash command)
+
+**Prompts that trigger qovery-terraform:**
+- _"Terraformize my Qovery setup"_
+- _"Convert my environment to Terraform"_
+- _"Export my Qovery config as infrastructure-as-code"_
+- _"Generate Terraform from my existing project"_
+- `/qovery-terraform` (slash command)
+
+**Prompts that trigger qovery-policy-token:**
+- _"Create a restricted API token that can only deploy, never delete"_
+- _"I need a scoped token for an AI agent limited to the staging environment"_
+- _"Make an OPA/Rego policy token for Qovery"_
+- _"Lock a token down to one service"_
+- `/qovery-policy-token` (slash command)
+
+**Prompts that trigger qovery-assess:**
+- _"Assess / audit / review my Qovery organization"_
+- _"Is my setup production-ready?"_
+- _"Do a gap analysis on our configuration"_
+- _"Are we following Qovery best practices?"_
+- _"Health check my clusters and environments"_
+- `/qovery-assess` (slash command)
+
+**Prompts that trigger qovery-signup:**
+- _"I'm new to Qovery, help me sign up"_
+- _"Create a Qovery account and log me in"_
+- _"Set up the Qovery CLI and authenticate"_
+- _"Create a new Qovery organization from scratch"_
+- `/qovery-signup` (slash command)
+
+## Slash Commands
+
+Each skill includes a slash command for quick invocation. Type `/` followed by the command name in your AI tool's chat:
+
+| Command | What it does | Example |
+|---------|-------------|---------|
+| `/qovery` | Route to the right skill or run quick operations | `/qovery` or `/qovery status` or `/qovery stop my-env` |
+| `/qovery-deploy` | Deploy the current project to Kubernetes | `/qovery-deploy` or `/qovery-deploy my-app` |
+| `/qovery-troubleshoot` | Diagnose and fix a failing service | `/qovery-troubleshoot` or `/qovery-troubleshoot backend` |
+| `/qovery-onboard` | Start guided Qovery onboarding | `/qovery-onboard` or `/qovery-onboard migrating from Heroku` |
+| `/qovery-optimize` | Analyze costs and right-size resources | `/qovery-optimize` or `/qovery-optimize production` |
+| `/qovery-speedup` | Analyze and fix deployment bottlenecks | `/qovery-speedup` or `/qovery-speedup my-service` |
+| `/qovery-preview` | Create a preview environment for a PR | `/qovery-preview` or `/qovery-preview PR-123` |
+| `/qovery-terraform` | Generate Terraform from existing Qovery setup | `/qovery-terraform` or `/qovery-terraform https://console.qovery.com/...` |
+| `/qovery-policy-token` | Create and verify a scoped API Policy Token | `/qovery-policy-token` or `/qovery-policy-token read-only on staging, can deploy the api service` |
+| `/qovery-signup` | Sign up and create your first organization | `/qovery-signup` or `/qovery-signup org="Acme" plan=USER_2025` |
+| `/qovery-assess` | Read-only audit + shareable gap analysis report | `/qovery-assess` or `/qovery-assess https://console.qovery.com/organization/<id>/overview` |
+
+Commands are installed automatically by the install script. They accept optional arguments (service name, environment name, Console URL) and auto-detect context from your git workspace.
+
+**Manual command installation** (if not using the install script):
+```bash
+mkdir -p ~/.config/opencode/commands
+# Both patterns: the router skill's directory is `qovery`, with no hyphen, so a
+# `qovery-*` glob on its own silently leaves out /qovery.
+cp qovery/commands/*.md qovery-*/commands/*.md ~/.config/opencode/commands/
+```
+
+## Prerequisites
+
+Before deploying, you need:
+
+1. **A Qovery account** — sign up at [console.qovery.com](https://console.qovery.com)
+2. **A Qovery API token** — generate at Organization Settings > API Tokens (or let the skill generate one via the CLI)
+3. **A Kubernetes cluster** — AWS EKS, GCP GKE, Azure AKS, or Scaleway Kapsule
+4. **A git repository** connected to Qovery (GitHub, GitLab, or Bitbucket)
+
+**New account?** The skill handles cluster creation from scratch — including cloud provider credential setup (AWS CloudFormation, GCP Cloud Shell, Azure Cloud Shell), cluster provisioning via the Qovery Console, API, or Terraform, and waiting for the cluster to be ready. It supports all four cloud providers.
+
+## Supported Frameworks
+
+The skill includes production-ready Dockerfile templates for:
+
+| Language | Frameworks |
+|----------|-----------|
+| **Node.js** | Express, Fastify, NestJS |
+| **Next.js** | SSR with standalone output |
+| **React / Vite** | SPA served via nginx |
+| **Python** | Flask, Django, FastAPI |
+| **Go** | Any (net/http, Gin, Echo, Fiber, etc.) |
+| **Java** | Spring Boot (Maven & Gradle) |
+| **Ruby** | Rails |
+| **PHP** | Laravel |
+| **.NET** | ASP.NET Core |
+
+If your framework is not listed, the agent will create a custom Dockerfile based on your project structure.
+
+## What the Skills Cover
+
+### qovery-onboard
+
+| Phase | Description |
+|-------|-------------|
+| **1. Understand the User** | Role, experience level, K8s knowledge, existing cloud/cluster, apps to deploy, migration source, goal, compliance, constraints, team size |
+| **2. Recommend Setup** | Cloud provider + region, cluster type (managed/BYOK), environment structure, security defaults (baked in), cost defaults (baked in), RBAC roles |
+| **3. Execute Setup** | Cloud credentials, cluster creation (with Console links and progress), project/environments, deployment rules, git provider, team invitations |
+| **4. BYOK Path** | Prerequisites check, CLI install, `qovery cluster install`, verification, seamless continuation to project setup |
+| **5. Migration** | Heroku (detailed: concept mapping, Dockerfile, env var import, DB migration, FAQ), Vercel/Netlify, Render/Railway, manual K8s |
+| **6. Next Steps** | Persona-adapted next steps (bootstrapper vs platform team vs enterprise), reference all other skills, enterprise recommendations (RBAC, private networking, SSO) |
+
+### qovery-deploy
+
+| Phase | Description |
+|-------|-------------|
+| **1. Discovery** | Asks questions to understand your project and deployment needs |
+| **2. Prerequisites** | CLI install, authentication, API token generation |
+| **2B. Cluster Setup** | Cloud provider credentials + cluster creation (AWS/GCP/Azure/Scaleway) — skipped if a cluster already exists |
+| **3. Dockerfile** | Creates missing Dockerfiles and `.dockerignore` files |
+| **4. CLI + API** | Quick deployment path using `qovery` CLI and `curl` API calls |
+| **5. Terraform** | Production path with complete `.tf` manifests (applications, databases, Helm, jobs, terraform services, deployment stages) |
+| **6. Environment Variables** | Scopes, aliases, interpolation, overrides — avoiding duplication |
+| **7. Full-Stack Example** | Copy-pasteable `qovery.tf` for a typical frontend + backend + database stack |
+| **8. Advanced** | Custom domains, autoscaling, storage, port-forwarding, Terraform exporter, monorepos |
+| **9. Deployment Watch** | Active deployment monitoring, log fetching, success verification |
+| **10. Auto-Fix** | Error classification, automatic Qovery config fixes, user-code changes only with permission |
+
+### qovery-troubleshoot
+
+| Phase | Description |
+|-------|-------------|
+| **1. Context Gathering** | Authenticate, list services, identify the failing service, understand the problem |
+| **2. 8-Layer Diagnosis** | Systematic diagnostic workflow: deployment status, build logs, runtime logs, health checks, env vars, network, resources, cluster |
+| **3. Playbooks** | 10 pre-built diagnostic sequences for common issues (crashes, slow apps, DB connection, stuck deployments, custom domains, Terraform/Helm errors, high costs, OOM, build failures) |
+| **4. Fix & Redeploy** | Apply fixes (auto-fix for Qovery config, ask for user code), redeploy, and verify |
+| **5. Verification** | Confirm the fix worked — check status, logs, health, and endpoints |
+| **6. Runbook Generation** | Create `.qovery/runbooks/` documentation for the issue and resolution |
+| **7. Prevention** | Tailored recommendations to prevent recurrence |
+
+### qovery-optimize
+
+| Phase | Description |
+|-------|-------------|
+| **1. Context & Business** | Authenticate, inventory all resources, understand business context (app type, traffic patterns, seasonal peaks, growth, reliability needs, IaC tool) |
+| **2. Analysis Engine** | 7 optimization dimensions: service right-sizing, autoscaling, database mode, environment scheduling, cluster optimization, build optimization, external resource cost estimation |
+| **3. Cost Report** | Detailed markdown report with executive summary, per-cluster/environment/service breakdown, external resource estimates with pricing methodology disclaimer, sorted recommendations. CSV export for spreadsheets |
+| **4. Apply Changes** | User-approved changes via Qovery API (immediate) or Terraform diffs (IaC). Includes deployment rule setup for scheduling |
+| **5. Ongoing Monitoring** | Kubecost deployment offer, cloud provider billing dashboard links, Qovery support review offer, report saved to `.qovery/reports/` with follow-up schedule |
+| **6. Seasonal** | Specific guidance per business type: e-commerce pre-scaling, SaaS right-sizing, startup growth buffers, B2B scheduling, ML/AI GPU optimization |
+
+### qovery-speedup
+
+| Phase | Description |
+|-------|-------------|
+| **1. Measure** | V2 deployment history API for structured stage/service timing, build runner Grafana snapshot, deployment log parsing for sub-step timing, trend analysis across 5-10 deployments |
+| **2. Classify** | Each bottleneck classified as user-controllable, Qovery infrastructure, or mixed — with clear decision tree |
+| **3. Diagnose** | Deep analysis: Dockerfile optimization (10+ patterns), build runner resources, app startup, health check tuning, pod scheduling, container image pull, deployment stage parallelism |
+| **4. Fix & Verify** | Apply fixes, trigger new deployment, re-measure, present before/after comparison with percentage improvement |
+| **5. Qovery Support** | For infrastructure bottlenecks: generate diagnostic report with timeline, Grafana snapshot, and applied optimizations — offer to share with support |
+| **6. Targets & Monitoring** | Deployment time targets by framework, benchmark report, maintenance checklist, re-analysis triggers |
+
+### qovery-preview
+
+| Phase | Description |
+|-------|-------------|
+| **1. Context** | Authenticate, detect PR/branch (git, GitHub CLI, user input), resolve org/cluster, check for existing blueprint environment |
+| **2. Blueprint** | Find deployed source environment, clone to create blueprint, configure base branches + `auto_preview`, validate (deploy, health check), stop to save resources |
+| **3. Clone** | Clone blueprint as preview environment with `PREVIEW` mode, switch git branches on services matching the PR's repository |
+| **4. Auto-Shutdown** | Ask lifecycle strategy (auto-stop, auto-delete, recycle, manual, PR-merge), create cron job with raw Dockerfile (`curlimages/curl`) + Qovery API token, or generate CI/CD workflow |
+| **5. Summary** | Present full deployment plan (org, cluster, blueprint, services, branch changes, auto-shutdown config, warnings), get explicit user confirmation |
+| **6. Deploy** | Deploy preview environment, active watch loop, fetch logs on failure, verify health, present preview URLs and console link |
+| **7. Cleanup** | Delete preview environment, clean up shutdown tokens, blueprint maintenance guidance, bulk cleanup for sprint resets |
+
+### qovery-terraform
+
+| Phase | Description |
+|-------|-------------|
+| **1. Context** | Check Terraform + CLI installed, authenticate, identify target (Console URL or names), read full config from API (environments, applications, containers, databases, jobs, helms, env vars, deployment stages) |
+| **2. Generate** | Produce HCL files: provider.tf, variables.tf, {env}.tf (all resources), outputs.tf, terraform.tfvars. Map API responses to Terraform resource attributes. Secrets as variable references, never plaintext |
+| **3. Import** | `terraform init` + `terraform import` for every resource. `terraform plan` must show zero changes. Fix HCL until plan is clean |
+| **4. Validate** | Clone to test project, apply Terraform there, verify all services deploy correctly, clean up. Recommended but skippable |
+| **5. Finalize** | Save files, git commit, provide import.sh script, safety warnings (managed databases, state management, secrets handling) |
+
+### qovery-assess
+
+| Phase | Description |
+|-------|-------------|
+| **1. Scope** | Declare read-only, authenticate, resolve the org (Console URL or name), ask 4 scoping questions, collect the GET-only snapshot (config + audit events + logs, redacted on write), present the inventory for confirmation |
+| **1b. Compliance** | `CP-01..CP-04` — read the company's public trust/privacy/sub-processor pages, record claims verbatim with sources, infer applicable regimes, apply the severity lens and attach framework badges to findings |
+| **2. Cluster** | `CL-01..CL-17` — health, credentials, K8s version (via `next_k8s_available_version`), production flag, prod/dev isolation, node floor and headroom, observability, KEDA, retention, ingress HA, settings drift |
+| **3. Topology** | `TP-01..TP-11` — production/staging/development tiers, `mode` matching reality, isolation, staging↔production parity diff, auto-stop on non-prod (never on prod), previews, abandoned environments |
+| **4. Reliability** | `RL-01..RL-23` — replica floors, autoscaling headroom, readiness/liveness assessed separately, startup delays, anti-affinity, zone spread, rollout strategy, connection draining, managed databases, backups, stateful SPOFs, pipeline failure rate, lifecycle jobs that leak cloud resources without an `on_delete` |
+| **4b. Anti-patterns** | `BP-01..BP-08` — stateful singletons, single-instance brokers, databases without replica or backup, overlapping cron schedules, admin/BI tooling on the production cluster, one environment reaching into another's datastore |
+| **5. Security** | `SC-01..SC-27` — database exposure, Kubernetes API CIDRs, unintended public ports, HTTPS, read-only root filesystem, service-account tokens and IRSA, IMDSv2, encryption, SSO, admin minimisation, token scoping, certificates, static vs role-based cloud credentials, SSH keys on production nodes, dormant accounts and stale invitations, dangling custom domains |
+| **5b. Variables** | `VS-01..VS-08` — credential-shaped *values* in plain variables, secrets in Helm overrides and job arguments, duplicated values compared by hash, override vs redeclare, built-in/interpolation use instead of hardcoded hosts, scope hygiene, external secret managers |
+| **6. Delivery** | `DL-01..DL-14` — stage ordering, auto-deploy per tier, monorepo restrictions, webhooks, alert receivers and rules, deploy duration, IaC coverage, mutable image tags, git webhook health, drift between the deployed commit and its branch |
+| **6b. Logs** | `LG-01..LG-10` — recurring deployment errors with Qovery hint messages, warning patterns mapped to the checks that explain them, crash signatures, error ratios, credentials in logs, security signals, log structure, measured startup and shutdown time |
+| **6c. Change origin** | `OP-01..OP-07` — Terraform vs Console vs API for production changes, attributable Console edits, interactive shell/port-forward access to production, access-change audit trail, external resources not declared as Qovery Terraform services, failed operations and policy denials, Terraform services running on cluster credentials or unpinned providers |
+| **6d. Cost** | `CE-01..CE-11` — scheduling, elasticity, measured CPU/memory/storage waste against real consumption, spot capacity on non-production, node bin-packing, registry retention. Savings figures come from `qovery-optimize`, never invented here |
+| **6e. Disaster recovery** | `DR-01..DR-06` — RPO/RTO defined per service, backups automated and off-cluster, a restore actually timed, rebuild-from-code, AZ vs region failure domain as a stated decision, rehearsed runbook with named owners |
+| **7. Score** | Partial credit per check, severity weights (10/6/3/1/0), pillar weights (Reliability 30%, Security 30%, Performance 15%, Delivery 15%, Cost 10%), maturity level 1–4, Critical-finding cap, disclosed coverage including UNKNOWNs |
+| **8. Report** | Customer-shareable Markdown + findings CSV + raw snapshot. Executive summary, compliance profile, topology, findings with evidence/impact/badges, Now/Next/Later roadmap, and a "Where Qovery helps" section mapped to actual finding IDs |
+
+## Deployment Methods
+
+The skill supports two deployment paths — the user chooses which one:
+
+### CLI + API (Quick Start)
+Best for development and staging. Uses the Qovery CLI for monitoring and the REST API (`https://api.qovery.com`) for creating resources. Fast to set up, no files to commit.
+
+### Terraform Provider (Recommended for Production)
+Creates a `qovery.tf` file that defines your entire infrastructure as code. Reproducible, version-controlled, CI/CD-friendly. Uses the [Qovery Terraform Provider](https://registry.terraform.io/providers/Qovery/qovery/latest/docs) (`qovery/qovery` v0.54+).
+
+## Manual Installation
+
+If you prefer not to use the install script, copy the skill folders manually. Copying is
+not enough on its own: each skill ships two placeholders, `__QOVERY_SKILLS_VERSION__` and
+`__QOVERY_SKILL_DIR__`, that have to be filled in. Leave them and the `User-Agent` your
+skills send carries a literal placeholder, and the usage-tracking command points at a path
+that does not exist.
+
+```bash
+git clone https://github.com/Qovery/qovery-skills.git
+cd qovery-skills
+
+# Pick your destination (~/.config/opencode/skills and ~/.agents/skills also work,
+# or .claude/skills for a project-local install)
+DEST=~/.claude/skills
+VERSION=$(git rev-parse --short HEAD)
+
+# The substitution below needs python3. Stop here rather than copy skills that would
+# silently keep their placeholders — or just run ./install.sh, which needs no python3.
+command -v python3 >/dev/null || { echo "python3 not found — use ./install.sh instead"; exit 1; }
+
+mkdir -p "$DEST"
+for skill in qovery qovery-*/; do
+  skill=${skill%/}
+  rm -rf "$DEST/$skill"
+  cp -r "$skill" "$DEST/$skill"
+  rm -rf "$DEST/$skill/commands"
+  echo "$VERSION" > "$DEST/$skill/_version.txt"
+
+  # Fill in the placeholders. python3 rather than sed: an install path may legally
+  # contain characters sed would treat as syntax. The path lands inside a single-quoted
+  # bash command, so a quote in it is escaped the way bash expects — otherwise a path
+  # holding a quote, a `$` or a backtick would break or expand when the agent runs it.
+  SKILL_DIR="$(cd "$DEST/$skill" && pwd)" VERSION="$VERSION" python3 - "$DEST/$skill" <<'PY'
+import os, pathlib, sys
+root = pathlib.Path(sys.argv[1])
+skill_dir = os.environ["SKILL_DIR"].replace("'", "'\\''")
+for path in root.rglob("*"):
+    if path.suffix in {".md", ".sh"} and path.is_file():
+        text = path.read_text()
+        path.write_text(
+            text.replace("__QOVERY_SKILLS_VERSION__", os.environ["VERSION"])
+                .replace("__QOVERY_SKILL_DIR__", skill_dir)
+        )
+PY
+done
+
+# Slash commands go in the commands/ directory beside the skills one, so they follow
+# whichever DEST you picked rather than always landing under ~/.claude. The glob needs
+# both patterns: the router skill's directory is `qovery`, with no hyphen.
+CMD_DEST="$(dirname "$DEST")/commands"
+mkdir -p "$CMD_DEST" && cp qovery/commands/*.md qovery-*/commands/*.md "$CMD_DEST/"
+```
+
+Verify the skills are discovered by checking that your tool lists all ten Qovery skills,
+and that no `__QOVERY_` placeholder survives:
+
+```bash
+grep -rl '__QOVERY_' "$DEST" || echo "all placeholders substituted"
+```
+
+Manual copies do not include the native tracking helper. Use `./install.sh` to
+install verified binaries, or keep tracking unavailable for manual copies.
+
+## Usage Tracking
+
+Installed `qovery-*` skills launch one anonymous `skill-started` run at every new
+launch, before authentication or other work, even when already signed in,
+and associate that same run with `skill-run-associated` after a human logs in and
+explicitly selects/creates an organization. The root `qovery` router is excluded:
+the q-core v1 contract accepts only `qovery-*` names. API/policy tokens and machine
+identities cannot associate runs with a person. Association is not deployment success.
+
+The helper uses the [q-core v1 contract](https://gitlab.com/qovery/backend/q-core/-/blob/main/doc-features/skill-tracking/contract.md).
+No legacy event is sent as a fallback. Count starts as uses; associations attach
+identity/organization, and `skill-api-call` measures API activity separately.
+User-Agent classifies SKILL audit origin and can emit `skill-api-call` after
+successful authenticated organization-scoped REST calls. This does not recover
+anonymous starts. The helper does not configure CLI/MCP User-Agent headers.
+
+Helper tracking supports macOS, Linux and WSL on x86_64 and ARM64 with Bash
+and curl. The installer supplies a self-contained native Rust binary; no Rust or
+Python installation is required. Native Windows is unsupported. Requests run in detached
+workers with 3-second connection and 8-second request deadlines. Retries use
+persisted backoff without sleeping in the skill; at most two other anonymous runs
+are retried per worker. Pending associations require the same current account and
+explicit organization to be retried. Credentials are fetched internally with the
+CLI's supported authorization-header command and never persisted.
+
+The installer pins `skill-tracking-v0.1.0` release assets and verifies SHA-256
+checksums before copying `scripts/skill-run` into every installed skill. That
+release must be published before binary downloads can work. Missing assets or
+unsupported platforms warn and allow skill installation to continue without
+tracking. Opt-out still installs the helper so cleanup remains available; it
+prevents tracking state creation and event sends. Installation never sends
+analytics. For offline smoke tests,
+`QOVERY_SKILLS_TRACKING_BINARY=/absolute/path/to/skill-run` uses an executable
+local binary whose `--version` must be `skill-run 0.1.0`.
+
+Tracking state lives under `${XDG_STATE_HOME:-~/.local/state}/qovery-skills`
+(directory 0700, files 0600), limited to 100 runs. It contains UUIDs, timestamps,
+a private possession secret, retry status and a hashed account switch guard.
+Never paste state contents into a prompt. Retain only the state-file path between
+steps. `resume STATE_PATH` preserves the run and retries only anonymous starts.
+Retry association with `associate STATE_PATH --organization ORGANIZATION_UUID`,
+using the explicitly selected organization UUID; a new launch creates a new run.
+An association is immutable: switching account/organization requires a new execution.
+The Rust helper preserves the JSON state format and existing run and anonymous IDs.
+State expires after 30 days and is pruned on later launches. Explicit `cleanup`
+discards state and pending retries; keep the path when a journey is interrupted.
+
+Set `QOVERY_SKILLS_NO_TRACKING=1` to prevent helper state creation and sends, including
+queued retries; cleanup remains available. Development symlink installs without
+`_version.txt` do not track. `QOVERY_SKILLS_TRACKING_DEBUG=1` reports safe local
+attempted/accepted/ignored/failed statuses. Opt-out does not remove User-Agent
+headers from other API calls or disable server audit logs.
+
+Tests inject a simulated transport and mock curl; they do not send production
+events. Backend release alone does not establish gateway forwarding, collection
+enablement or PostHog ingestion. See [_shared/tracking-contract.md](_shared/tracking-contract.md)
+for remaining rollout checks. A 202 means persisted acceptance, not delivery.
+
+Tracking depends on the agent executing the helper and cannot recover historical
+events never sent. No prompts, AI responses, tokens, source files or CLI cache
+contents are sent to analytics. The correlation proof goes only to the collector,
+not to analytics.
+
+## Links
+
+- [Qovery Documentation](https://www.qovery.com/docs/getting-started/introduction)
+- [Qovery Console](https://console.qovery.com)
+- [Qovery CLI Reference](https://www.qovery.com/docs/cli/commands/overview)
+- [Qovery API Reference](https://www.qovery.com/docs/api-reference/introduction)
+- [Qovery Terraform Provider](https://registry.terraform.io/providers/Qovery/qovery/latest/docs)
+- [Real-World Example (Doktolib)](https://github.com/evoxmusic/Doktolib/blob/main/qovery.tf)
+- [Agent Skills Standard](https://agentskills.io)
+
+## License
+
+MIT

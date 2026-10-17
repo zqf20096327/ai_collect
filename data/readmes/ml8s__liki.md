@@ -1,0 +1,179 @@
+<h1 align="center">Liki — 专业命理 Skill</h1>
+
+<p align="center">
+  懂命理，用 Liki。<br>
+  排盘由 Go 引擎计算，判断由规则表解释，依据可回溯。<br>
+  八字 · 紫微 · 六爻 · 奇门 · 黄历择日 · 风水 · 起名
+</p>
+
+<p align="center">
+  <a href="./README.en.md"><img alt="English" src="https://img.shields.io/badge/English-4a9e6b?style=flat-square"></a>
+  <a href="https://github.com/ml8s/liki/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ml8s/liki/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="./LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-4a9e6b?style=flat-square"></a>
+  <a href="https://liki.hk"><img alt="website" src="https://img.shields.io/badge/liki.hk-6d5acf?style=flat-square"></a>
+</p>
+
+## 安装
+
+1. **配置 MCP**（二选一）：
+   - **自动**：客户端支持插件 MCP 声明时，skill 自带 `.mcp.json`，启用即自动连接。
+   - **手动**：在客户端添加两个 MCP server：
+     - `counsel-mcp`（判断层）：`https://liki.hk/counsel/mcp`
+     - `engine-mcp`（排盘/风水）：`https://liki.hk/engine/mcp`
+
+   > 子域端点 `/engine/mcp/{domain}`、`/counsel/mcp/{domain}`（bazi / ziwei / liuyao / qimen / naming 等）仅供**多专家分域部署**使用——每个领域专家包各自挂自己的子域（见 `expert-packs/*/.mcp.json`），实现"专家只见自己领域工具"；普通整体安装用上面的**两个聚合端点**即可。
+2. **安装 skill（官方托管源）**：
+
+   ```bash
+   npx skills add https://liki.hk
+   ```
+
+安装后，在支持 Agent Skills 的 AI 客户端中直接提问即可。Skill 启动时会检查版本；提示更新后重新执行：
+
+```bash
+npx skills add https://liki.hk -y
+```
+
+## 快速开始
+
+| 目标 | 直接这样问 |
+| --- | --- |
+| 命理 | `算八字，1990-05-20 12:00 北京出生，男` |
+| 起名 | `宝宝起名，2024-06-10 广州出生，男，姓陈` |
+| 问卦 | `这个项目能成吗？什么时候有结果？` |
+| 择日 | `下个月哪天适合搬家？` |
+| 风水 | `我家风水怎么样？` |
+
+第一次使用命理时，建议提供出生日期、尽量精确的时间、出生城市和性别。信息不全时，Skill 会追问或进入考时流程。
+
+## 能力概览
+
+| 领域 | 覆盖能力 |
+| --- | --- |
+| 命理 | 八字、紫微、大运流年、性格、婚姻、事业、财运、健康、学业、六亲、合盘 |
+| 起名 | 新生儿起名、成人改名、外国人中文名、自选名字评估 |
+| 问卦 | 六爻成败与应期、奇门方向与时机、黄历择日 |
+| 风水 | 八宅命卦与门主灶、玄空飞星、流年风水 |
+
+## 可信度与边界
+
+- 排盘由 Go 天文历算引擎完成，支持真太阳时、经纬度时区和节气计算。
+- 断语来自 829 条规则真值表，命中结果保留因子依据和经典出处。
+- 断语经典依据经审计：每条均标注具体经典（《三命通会》《渊海子平》《滴天髓》《紫微斗数全书》《黄帝内经》《五行大义》等），可回溯。
+- 小运按多流派输出：《三命通会》（男丙寅/女壬申固定）与《星平会海》（由时柱起，阳男阴女顺/阴男阳女逆）分别给出。
+- 160 道命理师大赛真题用于规则链覆盖与零命中检查；它不是独立准确率评测，也不构成命理正确性证明。
+- 出生信息只保留在当前会话；Skill 不索要真实姓名，不在对话之外存储数据。
+- 未命中内置城市表时，`city_coords` 可能将城市名发送到 Nominatim（OSM）完成地理编码；自部署可用 `LIKI_EXTERNAL_GEOCODING=off` 关闭。
+- 命理结论是传统文化视角的条件性解读，不构成医疗、法律、投资或重大人生决策建议。
+
+## 常见问题
+
+### 不知道出生时辰怎么办？
+
+Skill 会追问，或使用真实事件进入考时流程。证据不足时明确标注，不会默认时辰。
+
+### 需要联网吗？
+
+默认需要访问 `engine-mcp` / `counsel-mcp`（liki.hk）。自建部署时，将 skill 内 `.mcp.json` 的公网端点替换为自己的 Caddy 地址；Caddy 分别把 `/engine/*` 与 `/counsel/*` 前缀剥离后转发到对应 MCP 服务。自建服务可用 `LIKI_MCP_TOKEN` 保护入站，并用 `LIKI_ENGINE_MCP_TOKEN` 保护 counsel 到 engine 的出站调用；健康检查保持公开，托管 liki.hk 不启用该开关。
+
+### 出生数据会被存储吗？
+
+不会。出生数据只在当前会话上下文中使用；不写入本地档案，也不提交到反馈。
+
+### 怎么更新？
+
+按提示重新执行 `npx skills add ml8s/liki -y`。版本校验失败时不降级调用旧 RPC。
+
+## 文档
+
+| 文档 | 用途 |
+| --- | --- |
+| [用户指南](./docs/USER_GUIDE.md) | 完整使用说明、领域流程、FAQ 与输出边界 |
+| [反馈模型](./docs/FEEDBACK_MODEL.md) | Agent feedback 的隐私和数据格式 |
+| [运行时模型](./docs/RUNTIME.md) / [版本与发布](./docs/RELEASE_MODEL.md) | 进程、端点、环境变量与日期版本 |
+
+## 开发者
+
+### 开发环境
+
+工具版本以仓内声明文件为准（CI 与本地同源，`make check` 校验本地一致）：
+Node 见 `.nvmrc`、Python 见 `.python-version`、Go 见 `go.mod` + `GOTOOLCHAIN`、golangci-lint 见 `deps/golangci-lint.version`。
+
+```bash
+make hooks         # 安装 git hooks
+make check         # 所有静态检查（格式 + lint + schema + docs）
+make gate          # 推送门槛（lint/check/test/160 题覆盖/runtime validate/发布工件）
+make build-archive # 打包 unified Liki skill
+```
+
+## 架构
+
+Liki 采用「排盘（计算）与判断（规则）正交化」的两层架构，通过标准 MCP 提供能力：
+
+### 领域模型
+
+- **engine（Go）** —— 确定性计算层：天文历算、排盘、历法、黄历。
+  输出结构化盘面/卦象/事实（chart / pan / snapshot），不做命理判断。
+- **counsel（Python）** —— 判断层：八字/紫微判断、六爻/奇门算卦、起名评估（含字库与音韵）。
+  消费 engine 的盘面事实，用规则表（真值表 + 引擎规则表）产出断语与候选项，依据可回溯。
+- **黄历** —— 纯 engine（历法 + 建除事项适配），不走 counsel。
+
+### 服务端点
+
+网关公开服务前缀，服务内只路由 MCP 根路径与领域路径：
+
+| 服务 | 公开端点 | 网关转发到服务内 | 领域 |
+| --- | --- | --- | --- |
+| `engine-mcp` | `/engine/mcp/{domain}` | `/mcp/{domain}` | 排盘 / 历法 / 黄历 / 风水 |
+| `counsel-mcp` | `/counsel/mcp/{domain}` | `/mcp/{domain}` | 判断 / 算卦 / 起名 |
+
+### 调用链
+
+`SKILL.md` 路由 → engine 排盘 → counsel 判断 → 断语（`assertion_id` + 经典依据，可回溯）
+
+### 代码结构
+
+- `engine/` —— Go 引擎（排盘/历法/黄历），分域 MCP 服务
+- `counsel/` —— Python 判断层（多域 MCP server）
+- `skills/liki/` —— skill 能力文档（路由 / 边界 / 领域知识，工具经 `tools/list` 自举）
+- `tests/` —— 内容与集成测试；`scripts/` —— 构建与评测脚本
+
+### 引擎镜像
+
+发布镜像由本地 `make candidate` 构建并推送，promotion 后按 digest 部署：
+`ghcr.io/ml8s/liki-engine@sha256:...`。本地源码开发使用 `engine/dev/docker-compose.yml`。
+
+### 领域工具接口
+
+| 接口 | 用途 |
+| --- | --- |
+| [natal TOOLS](./skills/liki/references/natal/TOOLS.md) | 八字/紫微本命与应期判断的编排与接口（工具经 `tools/list` 自举）|
+| [divination TOOLS](./skills/liki/references/divination/TOOLS.md) | 六爻、奇门、黄历的编排与接口 |
+| [naming ENTRY](./skills/liki/references/naming/ENTRY.md) | 起名：用神取用 + 五行选字（counsel）|
+| [fengshui ENTRY](./skills/liki/references/fengshui/ENTRY.md) | 风水：八宅、玄空与流年（engine）|
+
+### 测试与发布
+
+```bash
+make test           # 所有测试（pytest + Go 引擎全量，含 MCP 集成）
+make golden         # golden 全量（局部诊断入口）
+```
+
+发布流程详见 [Release pipeline](./docs/RELEASE_PIPELINE.md)：`gate → candidate → candidate-test → promotion`。
+
+### 设计原则
+
+- 分层单一职责：根入口、领域入口、App 卡、领域知识和工具层不互相替代。
+- 单一事实源：工具 schema 由 `counsel/app/contracts` 的 Pydantic 模型生成（引擎侧为 `engine/internal/mcpcontract` 的 typed registry，经 `tools/list` 自举），因子和断语来自 CSV 长表与引擎规则表。
+- 双体系显式合参：八字和紫微分侧计算，冲突分层列证。
+- 测试分层：golden、functional、MCP integration 与 160 题规则覆盖/零命中检查分层运行；历史 model-backed 评测资产显式归档。
+
+## 贡献
+
+阅读 [CONTRIBUTING.md](./CONTRIBUTING.md)，提交 PR 前同步更新 `CHANGELOG.md` 和版本面。版本历史见 [CHANGELOG.md](./CHANGELOG.md)。
+
+> 懂命理，用 Liki。
+
+## 许可与声明
+
+MIT。命理结论为传统文化视角，仅供参考；不构成医疗诊断、法律建议、金融投资预测或重大人生决策。

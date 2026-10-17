@@ -1,0 +1,71 @@
+# How to Make QQ Chatbot Better
+
+**让 QQ 上的角色更好聊：从宿主能力、模型表现、人设质量，到 AstrBot 的具体实践。**
+
+你可能已经把机器人接上了 QQ，也给它写了一份喜欢的人设。它能回答问题，却不一定好聊：你补充一句，它还在把上一轮的几条消息慢慢发完；你随手发张表情包，它认真解释画面；提示词越改越长，角色反倒越来越拘谨。
+
+这本书从这些实际体验出发。不追求把机器人装成一个无法识破的真人，而是让它更能接住当前的互动，保留人物特点，也把答应做的事情真正做好。
+
+核心思路很简单：
+
+- **宿主能力**决定这段关系能不能延续到消息之外：能不能等你说完、让等待被看见、发送一张合适的图，或在约好的时间再来找你。不要把这些真实的聊天动作全交给提示词。
+- **模型表现**决定它如何理解上下文、选择表达、使用图片与工具。通用能力强或某条回复惊艳，不等于长期私聊合适。
+- **人设质量**决定对面是谁、在意什么、你们是什么关系、怎样表达。不要用一长串禁令，把所有角色修成同一种“自然”。
+
+三者会互相影响，不是各占三分之一。一个能只发表情的宿主，不保证模型选图贴切；一份写得很好的角色卡，也没法取消宿主已经排队的旧回复。
+
+设想一段日常私聊：你连续补发了两句，它等你说完再接；处理稍慢时，QQ 显示“正在输入”；你发个表情，它也可以只回一张图；你说半小时后要出门，它到时还能来提醒你。最后这一句尤其关键：普通模型只能在收到请求时生成内容，宿主提供时间和调度能力，才让这段关系有了“待会儿再说”的可能。本书沿着这样的互动看能力，再回到 AstrBot 的具体做法。
+
+## 从哪里开始
+
+**还没有搭好机器人**：先读第 1、2 章，再到第 7 章完成 AstrBot + NapCat 的最小安装；选 LLBot 的话，改看[官方脚本安装实例](guides/llbot-with-astrbot.md)。收到第一条回复以后，再改善体验。
+
+**已经能聊天，但感觉不对**：从第 3 章开始。先把消息节奏和表情包能力弄清楚，再决定换模型还是改人设。
+
+**主要想写角色提示词**：读第 5 章。传统第一人称与写作者视角都可以用；本书不要求先选择某一派。
+
+| 章节 | 读完能解决什么 |
+| --- | --- |
+| [1. 我们想要怎样的 LLM RP](chapters/01-what-we-want.md) | 区分“回答得好”和“相处起来对味”，确定自己的目标 |
+| [2. QQ 聊天背后的整条链路](chapters/02-the-stack.md) | 分清 AstrBot、模型、OneBot、LLBot、NapCat 各自做什么 |
+| [3. 宿主先学会等人说完](chapters/03-host-and-turns.md) | 让等待、补充和打断不再被错误的发送节奏放大 |
+| [4. 表情包也是完整的回应](chapters/04-memes-and-images.md) | 分清原生看图与转述，以及纯表情发送与检索 |
+| [5. 人设不只是口吻](chapters/05-persona.md) | 根据自己的偏好写、判断和修改提示词，保留人物而不堆规则 |
+| [6. 选一个适合相处的模型](chapters/06-models.md) | 在实际宿主里比较语感、上下文、工具、延迟与成本 |
+| [7. 实例：AstrBot + NapCat + 宝塔](chapters/07-astrbot-deployment.md) | 先建立可排错的最小闭环，再接入模型与 QQ |
+| [8. 记忆、时间与主动联系](chapters/08-memory-and-tools.md) | 让过去的聊天留得住，也让角色能在约定的未来再开口 |
+| [9. 感觉不对时，怎么找原因](chapters/09-debugging.md) | 用少量有区分力的检查定位问题，避免无限返工 |
+| [10. 插件怎么加，系统怎么养](chapters/10-maintenance.md) | 逐项扩展、检查联动、备份升级，让日常使用稳定下来 |
+
+另一条安装路线：[LLBot 官方脚本：从安装到接入 AstrBot](guides/llbot-with-astrbot.md)。
+
+![AstrBot 主题插画](assets/book/01-astrbot-illustration.jpg)
+
+## 用到的项目
+
+- [AstrBot](https://github.com/AstrBotDevs/AstrBot)：本书的宿主实例。
+- [LuckyLilliaBot / LLBot](https://github.com/LLOneBot/LuckyLilliaBot) 与 [LLOneBot 旧入口](https://github.com/LLOneBot/LLOneBot)：QQ 协议端选项。
+- [NapCatQQ](https://github.com/NapNeko/NapCatQQ) 与 [NapCat-Docker](https://github.com/NapNeko/NapCat-Docker)：本书安装实例使用的协议端与容器项目。
+- [OneBot v11](https://github.com/botuniverse/onebot-11)、[aiocqhttp](https://github.com/nonebot/aiocqhttp)：接口标准与相关 Python SDK，不是同一个概念。
+- [TurnFlow](https://github.com/Yuimi-chaya/astrbot_plugin_turnflow)：私聊消息防抖与未完成回复的动态撤回。
+- [OneBot 私聊输入状态](https://github.com/ctrlkk/astrbot_plugin_input_state_by_nc)：向支持 `set_input_status` 的协议端上报输入状态，不负责补发或打断。
+- [表情包管理器](https://github.com/anka-afk/astrbot_plugin_meme_manager)：表情分类、语义检索与发送。
+- [llm_amnesia](https://github.com/SinkAbyss/astrbot_plugin_llm_amnesia)：手动移除当前会话的最近轮次，不自动清理独立记忆库。
+- [主动消息插件](https://github.com/DBJD-CR/astrbot_plugin_proactive_chat)：按会话触发私聊主动联系；与具体的 FutureTask 任务分开配置。
+- [Role Prompt Authoring](https://github.com/Yuimi-chaya/llm-rp-role-prompt-authoring)：提示词编写、审查与修改方法的参考来源，不是必装运行插件。
+
+项目快照核对于 **2026-09-20**；上下文、部署端口与插件能力的补充核对于 **2026-09-24**，具体参照提交与文档见[来源索引](sources/README.md)。版本会变化，链接到项目不表示所有版本、平台和插件组合都经过本书实机验证。
+
+## 延伸阅读
+
+仓库收录了五篇[文章副本](articles/README.md)，包括人设写作、写作者视角、插件开发、部署教程及 AI 陪伴随笔。正文图片已放在 `assets/`，使用相对路径；直接在 GitHub 打开文章 `.md` 即可加载，不需要部署博客或启用 Git LFS。
+
+这些文章保留了作者不同阶段的思考，不强行改写成一致结论。特别是气泡计数、正反例选择、提示词效果归因和旧部署配置，请先看文章目录中的阅读说明。
+
+## 关于这本书
+
+作者：**Yuimi-chaya**。正文在作者实践与公开文章基础上，使用 AI 辅助整理、核对和编写。TurnFlow 与 Role Prompt Authoring 也是作者维护的项目；推荐它们时会说明适用问题和边界，不把作者身份当成效果证据。
+
+本书主要讨论一对一 QQ 私聊，不是群聊运营、批量发信或绕过平台限制的教程。第三方 QQ 协议端的可用性、账号风险和平台规则需要自行核对；“接上了”不代表获得平台授权或永远稳定。
+
+原创文字和改编文字采用 CC BY-NC-SA 4.0；文章原有代码许可、图片及第三方内容单独处理，见[许可与署名](LICENSE.md)。配图不因为随书提供就自动获得同样的再利用许可。

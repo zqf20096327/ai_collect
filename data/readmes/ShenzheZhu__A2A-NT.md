@@ -1,0 +1,242 @@
+# The Automated but Risky Game: Modeling and Benchmarking Agent-to-Agent Negotiations and Transactions in Consumer Markets
+
+[Shenzhe Zhu](https://shenzhezhu.github.io) $^{1}$, [Jiao Sun](https://sunjiao123sun.github.io/) $^{2}$, Yi Nian $^{3}$, [Tobin South](https://tobin.page/) $^4$, [Alex Pentland](https://www.media.mit.edu/people/sandy/overview/) $^{4,5}$, [Jiaxin Pei](https://jiaxin-pei.github.io/) $^{5,\dagger}$
+
+$^1$ University of Toronto, $^2$ Google DeepMind, $^3$ University of Southern California
+$^4$ Massachusetts Institute of Technology, $^5$ Stanford University
+($^{\dagger}$ Corresponding Author)
+
+[Project Page](https://shenzhezhu.github.io/A2A-NT/) | [arXiv](https://arxiv.org/abs/2506.00073) | [Dataset](https://huggingface.co/datasets/Chouoftears/Agent2Agent-Negotiation-in-Consumer-Setting-Dataset)
+
+![teaser](asset/teaser.png)
+
+## Overview
+
+A2A-NT simulates consumer-market negotiations where both buyers and sellers delegate price negotiation to LLM agents. The benchmark records full dialogue traces, extracted seller offers, final deal outcomes, budget and wholesale constraints, and post-run anomaly labels.
+
+## Setup
+
+Create a Python 3.9 environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Model calls are routed through LiteLLM. For OpenRouter-backed models, put the key in `.env`:
+
+```bash
+OPENROUTER_API_KEY=...
+```
+
+`Config.py` is still supported as a local fallback for older workflows, but should not be committed.
+
+## Running Experiments
+
+An experiment is defined by a product file, buyer model, seller model, summary model, budget scenarios, turn limit, and output directory. The runner accepts explicit LiteLLM/OpenRouter model IDs, so the same code can be used for small smoke tests, focused model comparisons, or full buyer-seller grids.
+
+Run a single dry-run smoke test:
+
+```bash
+python3 main.py \
+  --products-file dataset/products_mini.json \
+  --buyer-model openrouter/openai/gpt-4o-mini \
+  --seller-model openrouter/openai/gpt-4o-mini \
+  --summary-model openrouter/openai/gpt-4o-mini \
+  --budget-scenarios low,wholesale,mid,retail,high \
+  --product-limit 1 \
+  --dry-run
+```
+
+Build a product subset when a run should use only part of the released product catalog:
+
+```bash
+python3 scripts/build_product_subset.py
+```
+
+Inspect a configured sweep without calling model APIs:
+
+```bash
+python3 scripts/validate_openrouter_models.py
+python3 scripts/run_sweep.py --dry-run --parallel-workers 2
+```
+
+Run a configured sweep:
+
+```bash
+bash scripts/run_sweep.sh
+```
+
+Useful commands:
+
+```bash
+python3 scripts/run_sweep.py --config configs/sweep_example.json --max-pairs 2 --product-limit 1 --dry-run
+python3 scripts/run_sweep.py --config configs/sweep_example.json --mode all --dry-run
+python3 scripts/run_sweep.py --config configs/sweep_example.json --mode all --parallel-workers 4 --continue-on-error
+```
+
+Live sweeps write a manifest under `logs/run_sessions/{run_id}/manifest.json`
+and per-pair logs under `logs/run_sessions/{run_id}/pairs/`. The manifest tracks
+the expected conversation cell count, completed valid JSON count, running pairs,
+failed pairs, output directory, and provider usage totals when LiteLLM returns
+usage metadata. Resume logic counts only parseable result JSON files without
+`data_error` unless `--include-error-files` is explicitly provided.
+
+Provider key-limit, quota/billing, auth, invalid-model, and bad-request errors
+are treated as run-fatal. The current conversation is saved as evidence, the
+pair subprocess exits with a distinct fatal code, and the sweep manifest is
+marked `failed` instead of continuing to write unusable result files.
+
+The primary summary model is used for seller-offer extraction and negotiation
+state judging. To compare candidate summary models on fixed price/judge fixtures:
+
+```bash
+python3 scripts/compare_summary_models.py
+python3 scripts/compare_summary_models.py --task judge --live
+python3 scripts/compare_summary_models.py --live
+```
+
+## Post-processing
+
+Live sweeps run non-destructive post-processing once after all model pairs finish. This pass writes anomaly labels and flags suspicious price extraction artifacts without moving result files or silently changing extracted seller offers.
+
+Default sweep behavior:
+
+```bash
+python3 scripts/run_sweep.py --config configs/sweep_example.json
+```
+
+Manual post-processing for an existing result directory:
+
+```bash
+python3 MarkAnomaly.py --results-dir results/sweep
+```
+
+Post-processing does three things by default:
+
+- Adds anomaly fields such as `overpayment`, `out_of_budget`, `out_of_wholesale`, `deadlock`, and `bargaining_rate`.
+- Adds model-behavior anomaly labels under `model_behavior_flags`, with mirrored top-level fields such as `product_substitution` and `fee_exclusion`. These rows remain valid analysis rows, but clean-deal metrics exclude accepted deals with unsafe model-behavior outcomes.
+- Adds pipeline diagnostics under `diagnostic_flags`, with mirrored top-level fields such as `terminal_rejection_reopened`, `negated_price_offer`, `offer_over_budget`, and `offer_over_first`. These rows remain valid analysis rows because they identify judge/extraction boundary cases rather than provider/data failures.
+- Adds system/data labels under `system_data_flags` and the aggregate `system_data_error`. Rows with `data_error`, provider `model_error`, or `price_scale_warning` are excluded from formal summaries by default.
+- Marks `data_error` when the extracted offer trajectory indicates a likely extraction anomaly.
+- Flags suspicious price-scale cases with `price_scale_warning`, `price_scale_original_offers`, and `price_scale_suggested_offers`.
+
+Price-scale repair is conservative. By default, the original `seller_price_offers` are preserved and the suggested repair is only recorded. To actually overwrite suspicious offers with the suggested sequence, pass:
+
+```bash
+python3 MarkAnomaly.py --results-dir results/sweep --repair-price-scale
+```
+
+The same opt-in repair flag is available on `main.py --postprocess` and `scripts/run_sweep.py`. Use `--skip-postprocess` on `scripts/run_sweep.py` when you want raw result files only. Use `--move-error-files` only when you intentionally want max-turn or data-error files moved into `error_data/`.
+
+## Budget Scenarios
+
+Supported scenarios are:
+
+- `low`: `0.8 * wholesale`
+- `wholesale`: `wholesale`
+- `mid`: `(retail + wholesale) / 2`
+- `retail`: `retail`
+- `high`: `1.2 * retail`
+
+Use `--budget-scenarios` to choose which scenarios to include in a run. For example, `wholesale,mid,retail` evaluates feasible market settings, while `low` and `high` can be used for targeted stress tests.
+
+## Results
+
+Results are saved under:
+
+```text
+results/
+└── seller_{seller_model}/
+    └── {buyer_model}/
+        └── product_{product_id}/
+            └── budget_{scenario}/
+                └── product_{product_id}_exp_{experiment_num}.json
+```
+
+Each result file contains the conversation history, extracted seller offers, negotiation outcome, budget scenario, and model metadata.
+
+Result files also include `price_extraction_events`, which record the summary-model extraction response, parsed price, parser source, unparsed cases, and rejected price mentions. They also include `judge_events`, which record the summary-model state judgment, deterministic guard output, and any override reason. Use these diagnostics before trusting leaderboard rows with `price_scale_warning`, `data_error`, or model-behavior flags that should be analyzed separately from normal deal outcomes.
+
+Anomaly handling is intentionally split into three classes:
+
+- `model_behavior_flags`: model-originated negotiation behavior, such as product substitution, fee exclusion, budget violations, wholesale violations, overpayment, refusal of feasible deals, and deadlock. These are normal analysis rows and can support risk analysis, but they may be excluded from clean-deal metrics.
+- `diagnostic_flags`: judge/parser boundary cases, such as a terminal rejection being reopened by the guard or a negated price mention being detected. These are normal analysis rows and should be used for debugging and data analysis, not as provider/data failures.
+- `system_data_flags`: provider failures or unreliable extracted data, such as `data_error`, `model_error`, `price_scale_warning`, and partial-payment price extraction. These are not normal analysis rows and are skipped by summaries unless `--include-error-files` is passed.
+
+See [`docs/risk_taxonomy.md`](docs/risk_taxonomy.md) for the current working risk-labeling decisions, including which cases are counted as model risk, no-risk behavior, or system/data exclusions.
+
+New result files also include `usage_events` and `usage_summary` with
+non-sensitive provider metadata such as model id, role, stage, token counts, and
+LiteLLM/OpenRouter estimated cost when available. Historical result files that
+lack these fields cannot be cost-audited from local artifacts alone; use the
+provider dashboard or billing export for those runs.
+
+Summarize a run:
+
+```bash
+python3 scripts/summarize_results.py --results-dir results/sweep
+```
+
+For a full analysis bundle with structured JSON plus separate pair, seller,
+buyer, and budget CSV tables:
+
+```bash
+python3 scripts/summarize_results.py \
+  --results-dir results/sweep \
+  --output-json results/sweep_analysis/summary.json \
+  --output-dir results/sweep_analysis
+```
+
+The summary CLI replaces the old notebook workflow. It computes pair-level
+outcomes, seller and buyer leaderboards, budget breakdowns, risk rates, and
+model-behavior flags directly from result JSON files. By default, files marked
+with system/data failures are skipped; pass `--include-error-files` only when
+auditing failed or unreliable runs. Clean-deal metrics exclude accepted rows
+with unsafe model-behavior outcomes such as `overpayment`, `out_of_budget`,
+`out_of_wholesale`, `product_substitution`, or `fee_exclusion` so leaderboard
+rows are not silently contaminated by known model-behavior anomalies. The JSON
+summary also exposes `model_behavior_summary`, `diagnostic_summary`, and
+`system_data_summary` for separate analysis.
+
+Partial or provider-interrupted sweeps should be treated as diagnostic pilot
+artifacts, not publishable leaderboards. They are useful for debugging prompts,
+summary-model behavior, anomaly labels, and cost accounting, but final rankings
+should use comparable cells from a completed run.
+
+## Project Structure
+
+```text
+.
+├── main.py                         # Experiment runner
+├── experiment_utils.py             # Shared runner utilities
+├── Conversation.py                 # Negotiation flow
+├── LanguageModel.py                # LiteLLM model gate
+├── MarkAnomaly.py                  # Post-run anomaly labeling
+├── configs/sweep_example.json      # Example sweep configuration
+├── dataset/
+│   ├── products.json
+│   ├── products_mini.json
+│   └── products_consumer_electronics.json
+├── scripts/
+│   ├── build_product_subset.py
+│   ├── compare_summary_models.py
+│   ├── run_sweep.py
+│   ├── summarize_results.py
+│   └── validate_openrouter_models.py
+```
+
+Treat `results/`, `logs/`, and `artifacts/` as generated output.
+
+## Citation
+
+```bibtex
+@misc{zhu2025automatedriskygamemodeling,
+      title={The Automated but Risky Game: Modeling and Benchmarking Agent-to-Agent Negotiations and Transactions in Consumer Markets},
+      author={Shenzhe Zhu and Jiao Sun and Yi Nian and Tobin South and Alex Pentland and Jiaxin Pei},
+      year={2025},
+      eprint={2506.00073},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2506.00073},
+}
+```

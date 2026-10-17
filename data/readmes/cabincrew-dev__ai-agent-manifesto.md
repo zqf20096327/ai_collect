@@ -1,0 +1,58 @@
+# Open Manifesto for AI Agents Touching Production Systems
+
+[![Legacy Version](https://img.shields.io/badge/version-legacy-green)](legacy/MANIFESTO.md)
+[![Draft Version](https://img.shields.io/badge/version-draft-blue)](draft/MANIFESTO.md)
+
+### From Automation to Autonomy.
+
+We are witnessing a fundamental shift in software engineering: moving from deterministic tools (Terraform, Ansible) to probabilistic agents (LLMs, Autonomous Workers).
+
+This shift can help us to deliver much faster, but it also brings new risks. Without clear rules for trust, identity, and control, we cannot safely use these agents in mission-critical systems.
+
+**This manifesto defines the principles required to trust the machines.**
+
+---
+
+## [Read The Manifesto (draft)](draft/MANIFESTO.md)
+
+This document explains the basic rules for using AI agents safely. It focuses on keeping thinking and actions separate, making every result traceable and verified, and ensuring that clear external rules guide what agents can do.
+
+---
+
+## 🚀 Community
+
+We believe that the shift from Automation to Autonomy requires rethinking how we build and maintain trust. This means embracing systems that prioritize verification over vibes and safety over speed.
+
+The Manifesto is an open, community-driven document. If you’d like to support its development, you can:
+
+- ⭐️ star the repository
+- join discussions
+- suggest improvements by opening issues
+- contribute to the next version
+
+Thank you for being part of this effort.
+
+## 🤝 Contributing
+
+This is a living document. As the technology evolves, our standards for trust must evolve with it.
+
+We use a **Versioned Consensus** model for updates:
+*   **Minor Fixes:** Submit PRs to the current version (e.g., `/v1/MANIFESTO.md`).
+*   **Major Proposals:** Draft new ideas in `/draft/MANIFESTO.md`.
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for full details on the governance process.
+
+### 🔹 Don’t have time for a PR?
+No problem at all! Just drop an issue if you have feedback, a principle to suggest, an objection, a use-case, or anything you think should be included:
+
+* https://github.com/cabincrew-dev/ai-agent-manifesto/issues/new
+
+---
+
+## 🛠 Reference Implementation
+
+These principles are codified in the `The Cabin Crew Protocol` as a reference implementation. It provides the open-source infrastructure needed to enforce these principles across agents and platforms.
+
+**[Explore Cabin Crew Protocol ->](https://github.com/cabincrew-dev/cabincrew-protocol/blob/main/docs/manifesto-compliance.md)**
+
+---

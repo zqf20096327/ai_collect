@@ -1,0 +1,1006 @@
+<div align="center">
+
+[![▶ Jev vs ASTRA6 — building the fastest ComputerUse, live in Claude Code](https://img.youtube.com/vi/xk1ltPDrKGw/maxresdefault.jpg)](https://youtube.com/live/xk1ltPDrKGw)
+
+### ▶ Live today at 20:00 — *Jev vs ASTRA6: building the fastest ComputerUse, live in Claude Code*
+
+**Main language: Polish** · **English subtitles**
+
+**The Skill is just the beginning. Next: ComputerUse.**
+
+</div>
+
+---
+
+<div align="center">
+
+# jevskill
+
+**Your agent's context window is full of logs it didn't need to read.**
+
+A Skill that makes Claude Code, Codex, DSH and 20+ other agents stop burning
+tokens on decisions — and start making them for **$0.000013** in **325 ms**.
+
+**A/B tested: 99.3% fewer input tokens, and accuracy up, not down (18/18 vs 15/18).**
+
+**Jev** is TypeSafe's *System One* decision model, and it is the whole engine here.
+Official model page: **[typesafe.ai](https://typesafe.ai/)** · [API docs](https://docs.typesafe.ai/)
+
+[![tests](https://img.shields.io/badge/tests-1788%20passing-brightgreen)](#-does-it-actually-help-ab-tested)
+[![A/B](https://img.shields.io/badge/A%2FB-99.3%25%20fewer%20tokens-blue)](#-does-it-actually-help-ab-tested)
+[![cost](https://img.shields.io/badge/decision-%240.000013-success)](#-cost-per-decision)
+[![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
+[![skills.sh](https://img.shields.io/badge/skills.sh-install-7c3aed)](https://skills.sh/lazniak/jevskill)
+[![Jev](https://img.shields.io/badge/Jev-TypeSafe%20System%20One-0d9488)](https://typesafe.ai/)
+
+```bash
+npx skills add lazniak/jevskill -g     # nothing to compile, no account
+```
+
+**Or let your agent install it** — paste this and it will follow
+[`docs/install.md`](docs/install.md), check its own environment, and verify offline:
+
+```text
+Install jevskill for my current agent. Read and follow
+https://raw.githubusercontent.com/lazniak/jevskill/main/docs/install.md
+```
+
+</div>
+
+---
+
+## The problem nobody budgets for
+
+You paste a failing CI log into your agent. 900 lines. **~35,000 tokens.**
+
+Those tokens don't just cost money once. They sit in the context window **for the
+rest of the session** — re-sent on every single turn, until your agent hits the
+limit, autocompacts, and forgets what it was doing.
+
+```
+900-line CI log        ████████████████████████████████████████  34,989 tokens
+JEV shortlist (3 lines) █                                              320 tokens
+                                                                   ↑ 99.1% gone
+```
+
+`jevskill` asks **[Jev](https://typesafe.ai/)** — TypeSafe's *System One* decision model
+— to find the 3 lines that matter. Your expensive model never sees the other 897.
+
+```
+Without jevskill   5 logs into the session   ████████████████████████  186,945 tok
+With jevskill      5 logs into the session   ██                        13,600 tok
+                                                                  ↓ 92.7% less
+```
+
+## 🚀 The slupek (74–96% less context growth)
+
+Context growth across a real session that pulls in large tool output. Baseline
+session = 12,000 tokens; each log = 34,989 tokens raw vs 320 tokens after JEV.
+
+| Big logs consumed | Without jevskill | With jevskill | Context saved |
+|---|---:|---:|---:|
+| 1 | ████████████████ 46,989 | ████ 12,320 | **73.8%** |
+| 3 | ████████████████████████████████████████ 116,967 | ████ 12,960 | **88.9%** |
+| 5 | ████████████████████████████████████████████████████████████████ 186,945 | █████ 13,600 | **92.7%** |
+| 10 | ████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████ 361,890 | █████ 15,200 | **95.8%** |
+
+> These are **modelled** from a stated baseline and list prices. The 99.3% figure
+> in the A/B section below is **measured** — provider-reported tokens. Trust that
+> one more.
+
+## 💸 What that saves per session
+
+Same session, priced at published list rates. JEV's whole pipeline for 5 logs
+costs **$0.0061** — already subtracted below.
+
+| Main model | Without JEV | With JEV | **You save** |
+|---|---:|---:|---:|
+| Claude Sonnet-class ($3/M) | $0.5608 | $0.0408 | **$0.5200** |
+| GPT-5-class ($1.25/M) | $0.2337 | $0.0170 | **$0.2167** |
+| Claude Opus-class ($15/M) | $2.8042 | $0.2040 | **$2.6002** |
+
+Extrapolated to **20 sessions/day** — roughly one focused agent session per
+working hour:
+
+| | Sonnet-class | GPT-5-class | Opus-class |
+|---|---:|---:|---:|
+| Daily | **$10.40** | **$4.33** | **$51.99** |
+| Monthly | **$312** | **$130** | **$1,560** |
+| Yearly | **$3,795** | **$1,581** | **$18,977** |
+
+> 💡 **The real win isn't the money — it's that your agent stops hitting the
+> context limit.** Fewer tokens in context means fewer autocompactions, fewer
+> "I forgot what we were doing", and longer sessions before quality degrades.
+
+---
+
+## ⚡ What one decision costs
+
+| | Jev | Frontier chat model |
+|---|---:|---:|
+| Latency (p50, measured) | **325 ms** | 2,000–6,000 ms |
+| Cost per decision | **$0.000013** | ~$0.001+ |
+| Output to parse | **none — typed decision** | JSON that sometimes breaks |
+| Malformed output | **impossible** | retry logic you maintain |
+| Probability distribution | **✅ full distribution** | ❌ one label |
+| Output billing | **$0 — generates nothing** | per token written |
+
+**8 questions in one call = 288 ms.** The same 8 questions asked separately =
+3,564 ms. That's **12.4× faster and 4.03× fewer tokens** — because questions
+sharing one state run in parallel.
+
+---
+
+## 🧠 What the hell is Jev?
+
+A model that **doesn't write text**. You give it data plus typed questions; it
+returns typed answers with real probability distributions.
+
+Three primitives, and that's the whole language:
+
+| You need | Primitive | Returns |
+|---|---|---|
+| yes / no | `noul` | `P(true)` — a float, you pick the threshold |
+| one of N things | `choice` | winner + **full distribution** + confidence |
+| how much on a scale | `score` | weighted mean (e.g. `1.4`) + per-level probabilities |
+
+If the answer is **one of N things you can list up front** → Jev does it in
+325 ms for $0.000013.
+If the answer is prose, code, or an open-ended set → use your LLM.
+
+**That's the entire decision rule.** And `jevskill plan` enforces it for free.
+
+---
+
+## 🔥 Install (30 seconds)
+
+### One command, into 20+ agents
+
+```bash
+npx skills add lazniak/jevskill -g
+```
+
+That installs the skill for **Claude Code, Codex, Cursor, Gemini CLI, Windsurf,
+Cline, Copilot, OpenCode, Amp, Goose, Zed, VS Code** and more, via the open
+[Agent Skills](https://agentskills.io) registry. No account, no key, nothing to
+compile — the bundled scripts use only the Python standard library.
+
+Claude Code plugin marketplace users can instead do:
+
+```bash
+/plugin marketplace add lazniak/jevskill
+/plugin install jev@jevskill
+```
+
+### Or from source
+
+```bash
+git clone https://github.com/lazniak/jevskill && cd jevskill
+python -m pip install -e ".[fast]"          # the measurement half (ledger, stats)
+export JEV_API_KEY=apikey_...               # vendor key; Windows: setx JEV_API_KEY "..."
+# or: export OPENROUTER_API_KEY=sk-or-v1-...  # the aggregator route, same price
+
+jevskill doctor          # verifies key, endpoint, latency, live cost
+```
+
+### Both official endpoints — use whichever key you have
+
+The model is served through OpenRouter **and** through TypeSafe's own API. Same
+price. The skill detects which one your key belongs to, or you can say:
+
+```bash
+jevskill doctor                        # auto-detect from the key shape
+jevskill doctor --provider typesafe    # POST api.typesafe.ai/v1/systemone
+jevskill doctor --provider openrouter  # POST openrouter.ai/api/alpha/decisions
+```
+
+| | OpenRouter | TypeSafe (vendor) |
+|---|---|---|
+| Model field | `typesafe/jev-1.13` | `jev-latest` |
+| Key variable | `OPENROUTER_API_KEY` | `JEV_API_KEY` or `TYPESAFE_API_KEY` |
+| Context | 32,000 tokens | **64,000** (32,000 for state + longest question) |
+| Choice options | — | documented max 255 |
+| Score levels | — | documented 2–10 |
+| `usage.cost` | ✅ reported | ❌ absent |
+| Price | $0.042 / Mtok | **identical** |
+| Access | immediate with credits | waitlist, keys in batches |
+
+Model names are **translated automatically** in both directions, because passing
+`typesafe/jev-1.13` to the vendor endpoint is a 404 and passing `jev-latest` to
+OpenRouter is a 422.
+
+Two things worth knowing about the vendor endpoint:
+
+- **It returns no `cost` field.** Recording that as zero would make every decision
+  look free and inflate the savings, so the client computes it from the published
+  rate and marks the provenance (`cost_source: "computed"`).
+- **`jev-latest` is a moving alias.** The response's `model` field reports the
+  versioned id that answered — log it, and pin a version if you have tuned a
+  confidence threshold against it.
+- **It rejects `session_id`** (HTTP 400 `api_usage_error`; the field is an
+  OpenRouter extension), so the client sends it only to OpenRouter and keeps it
+  for the local ledger on both.
+
+**Which one is used?** `--provider`, then `JEVSKILL_PROVIDER`, then the config
+file; a stated provider uses only its own key. With nothing stated, the first key
+found **by name** decides, vendor names first — so `setx JEV_API_KEY …` next to an
+existing OpenRouter key moves traffic to the vendor. Measured live on 2026-09-20
+from Poland: vendor warm p50 292–320 ms, OpenRouter 325–371 ms, identical price.
+
+Full delta table, including error codes: [`api.md`](skills/jev/references/api.md).
+
+### Ask a decision immediately (zero install)
+
+The skill carries its own stdlib-only caller, so this works right after
+`npx skills add`:
+
+```bash
+cd ~/.agents/skills/jev
+
+# a gate
+python scripts/jev_query.py --state-file diff.txt \
+  --question-type noul --name breaks_api \
+  --instructions "Does the diff change a public API signature?"
+
+# reduce 900 log lines to the 8 that matter, reversibly
+python scripts/jev_query.py --state-file build.log --reduce \
+  --instructions 'Does the item at `L{i}` report a problem worth investigating?'
+# REDUCE: 900 items -> 8 kept (98.8% fewer tokens: 34906 -> 414)
+#   rejected 892 items stored; retrieve with:
+#   python scripts/jev_recovery.py rc_92110309381a --grep <pattern>
+```
+
+Pass `--json` for machine-readable output.
+
+Then your agent just... uses it. `SKILL.md` teaches it when to reach for Jev and
+— just as importantly — when **not** to.
+
+---
+
+## 🧪 Does it actually help? A/B tested
+
+Six workloads. One question each with a **checkable answer**. Same answering model
+in every arm, so the only variable is what the model reads. 3 runs per arm.
+
+`fixture` is the whole context, estimated by the repo's own tokeniser. `direct` and
+`with Jev` are the **provider's own reported usage** for what that arm actually sent.
+Both are shown because they are different measurements and a single column had been
+mixing them.
+
+| Workload | fixture (est.) | direct (reported) | Tokens **with Jev** | direct | grep filter | **with Jev** |
+|---|---:|---:|---:|---:|---:|---:|
+| Log needle in haystack | 27,472 | 27,049 | 127 | 3/3 | 3/3 | **3/3** |
+| CSV outlier hunt | 12,065 | 19,223 | 218 | 3/3 | 3/3 | **3/3** |
+| Test-output failure | 19,882 | 16,562 | 142 | 3/3 | 3/3 | **3/3** |
+| Deployment JSON drift | 23,888 | 20,542 | 111 | 3/3 | 3/3 | **3/3** |
+| YAML config drift | 25,133 | 18,134 | 87 | 0/3 | 3/3 | **3/3** |
+| Dashboard HTML alert | 22,064 | 12,120 | 145 | 3/3 | 3/3 | **3/3** |
+| **TOTAL** | | **113,632** | **831** | **15/18** | **18/18** | **18/18** |
+
+**99.3% fewer tokens, and Jev was right 18 times out of 18** — matching the structural
+filter while sending 137× less context than the direct arm.
+
+Look at the JSON row: handed 20,542 tokens of service definitions, the model found
+the one bad image tag. Given 111 tokens of shortlist, it found it every time.
+Reduction is not only a cost optimisation — it is a **signal-to-noise improvement**.
+
+### The YAML row used to lose. It doesn't any more.
+
+Until v0.10.0 this table had a failure in it, and it stayed published: on YAML config
+drift Jev scored **0/3** where a 20-line structural pass scored 3/3. The post-mortem
+was in the repo, because a failure without an explanation is just an anecdote:
+
+Jev **correctly** flagged `prod: true` at p=0.92, but the test asks for the *flag
+name*, which sits on the line **above**. Two things were wrong, and neither was the
+model:
+
+1. the gate was asked about a **line**, and "prod differs from default" is a
+   comparison *between* two lines — no single line can match it;
+2. the window sliced raw lines, so a header could be separated from its values.
+
+The fix is to gate **blocks**: a header plus the lines nested under it, packed into
+windows that never split one. The pair is then in one unit, and the kept text still
+carries the flag's name. That single change took the row from **0/3 to 3/3** with no
+regression on the other five workloads — and, since flat text has no headers, block
+mode degrades to one line per block, which is what it did before.
+
+```bash
+python scripts/jev_query.py --state-file flags.yaml --blocks --reduce --keep 8
+```
+
+So, plainly:
+
+1. **If a regex or a structural pass can answer it, use that.** Free, instant,
+   deterministic. It still ties Jev here, at 18/18.
+2. **Jev earns its place on semantic anomalies** — "looks non-release, unusual, out
+   of pattern" — which no keyword expresses.
+3. **Gate blocks, not lines, when the answer spans lines.** That is now the default
+   in the benchmark, and available to you as `--blocks`.
+
+`n=3` per cell and one cheap answering model: directional, not statistical. The
+`direct` and `grep` arms also feed that sampled model, so they wobble between runs —
+this run's `json_drift` moved 0/3 → 3/3 for `direct` and 2/3 → 3/3 for `grep` with no
+code change to either. Full method and threats to validity in
+[`benchmarks.md`](skills/jev/references/benchmarks.md).
+
+---
+
+## ♻️ Reversible by default — a reduction you can undo
+
+Most context reduction is a **bet**: keep 1% and hope it was the right 1%. Jev
+does not have to work that way. `--reduce` writes every rejected item to a local
+store and hands back a handle.
+
+```
+REDUCE: 900 items -> 8 kept (98.8% fewer tokens: 34906 -> 414)
+  rejected 892 items stored; retrieve with:
+  python scripts/jev_recovery.py rc_92110309381a --grep <pattern>
+```
+
+```bash
+python scripts/jev_recovery.py rc_92110309381a --summary   # what was dropped
+python scripts/jev_recovery.py rc_92110309381a --grep "WARN|ERROR|FATAL"
+python scripts/jev_recovery.py rc_92110309381a --index 42 43
+```
+
+**Measured, not asserted:** on the 900-line log benchmark the gate kept 8 of 14
+salient lines — and recovery surfaced the **6 it had missed**. A 57%-recall gate
+becomes a **100%-recoverable** pipeline. The rejected bytes never leave your
+machine.
+
+### Blocks, when a line is the wrong unit
+
+`--blocks` gates a **header plus the lines nested under it** instead of single
+lines, and never lets a window split one. Use it when the judgement compares two
+lines — "is `prod` different from `default`?" — which no single line can answer:
+
+```bash
+python scripts/jev_query.py --state-file flags.yaml --blocks --reduce \
+  --keep 8 --instructions 'Does `B{i}` drift from its default?'
+```
+
+It accepts a raw text or YAML file, not only a JSON array, and it degrades to one
+block per line on flat text, so a log file behaves exactly as it did before. This is
+what took the A/B suite's YAML row from 0/3 to 3/3 (§ Does it actually help?).
+
+---
+
+## 🔒 What leaves your machine — and what doesn't
+
+This skill sends your logs, diffs and tickets to a third party. That is the deal,
+so the default is to scrub what a decision never needs:
+
+```bash
+$ jevskill ask --state "ERROR auth failed; key sk-or-v1-0123…; password=hunter2"
+  redacted: openrouter_key, password_param
+```
+
+**Redaction is on by default** (v0.7.0). It removes private keys, OpenRouter /
+`sk-` / AWS / GitHub / Slack tokens, JWTs, `Bearer` headers and
+`password=`/`token=`-style parameters, and reports which rules fired — in the
+output and in the ledger row, so a redacted run stays interpretable rather than
+silently different. `--no-redact` sends the state exactly as given.
+
+Email addresses are **not** redacted by default: for triage the address is often
+the signal. `--redact-emails` opts in.
+
+**This is not a general PII policy.** It catches credential-shaped strings, not
+personal or business data. Read what you send.
+
+### Exit code `2` means "the model hesitated"
+
+| Code | Meaning |
+|---|---|
+| `0` | decided / scored |
+| `2` | **at least one answer needs review** — not confident enough to automate |
+| `3` | state over the token budget (nothing was sent) |
+| `1` | input, key, API or protocol error |
+
+`2` is deliberately distinct from `1`, so a harness can tell *"not confident
+enough"* from *"the call failed"* without parsing output. The rules: a `noul`
+inside the middle band, a `choice` whose top probability is low **or** whose
+top-two margin is thin, a `score` below the confidence floor. The defaults
+(`--review-below 0.75`, `--review-margin 0.10`) are **illustrative heuristics, not
+calibrated guarantees** — tune them on your own labelled data
+(`skills/jev/references/prompting.md`).
+
+---
+
+## 🎯 The 9 patterns (your new reflexes)
+
+| Pattern | Say it when… | Coding example |
+|---|---|---|
+| **gate** | you need a yes/no before something expensive | "Does this diff break a public API?" |
+| **triage** | each item needs one label | "Which module owns this failing test?" |
+| **reduce** | there's too much data | "Which 8 of these 900 log lines matter?" |
+| **rank** | you need an order | "Rank these 12 lint findings by impact" |
+| **route** | effort is a choice | "One-line fix or architectural change?" |
+| **verify** | you produced something | "Does this test actually exercise the bug?" |
+| **guard** | an action is irreversible | "Does this touch anything outside the repo?" |
+| **shortlist** | the top two are close | 0.51 vs 0.44 → re-ask over just those |
+| **extract** | messy text → fields | stack trace → exception type, frame |
+
+```bash
+jevskill patterns            # the full palette, free
+jevskill plan "there are too many log lines" --state-file build.log   # free go/no-go
+```
+
+---
+
+## 📦 Large datasets — `jevskill batch`
+
+The case that matters most: N things to decide about, not one thing to decide
+repeatedly. Triage a build log, label a backlog, classify failing tests, filter
+candidates.
+
+```bash
+jevskill batch build.log --text-key line \
+  --question-type choice --name owner \
+  --instructions 'Which team should own `item`?' \
+  --options backend frontend infra unclear \
+  --intent ci-triage --out triaged.jsonl
+```
+
+Measured on 60 log lines, half genuinely salient, both strategies on identical
+items (`python bench/batch_bench.py`):
+
+| | **windowed** (default) | per-item |
+|---|---:|---:|
+| Input tokens | **10,674** | 23,288 |
+| Cost | **$0.000448** | $0.000978 |
+| Wall clock | **667 ms** | 7,979 ms |
+| API calls | **8** | 60 |
+| Salient lines found | **30/30** | 29/30 |
+
+**2.18× fewer input tokens and 12× faster — with no accuracy cost.** Windowed found
+every salient line while one per-item call returned no answer at all.
+
+Three things worth knowing:
+
+- **Name the item as `` `item` `` and the tool rewrites it per item.** Not
+  cosmetic: batching puts many items in one state, which makes the "question does
+  not name its value" failure *more* likely — and that failure is silent. The
+  rewrite is mechanical so it cannot be forgotten.
+- **`--strategy per-item` trades cost for isolation.** One item per call, so a long
+  or ambiguous item cannot influence a neighbour.
+- **Items come from JSONL, a JSON array, or a plain line-per-item file.** The most
+  common input in practice is a file of log lines, so anything that is not JSON is
+  treated as a string.
+
+### Two ways to send less, without asking a worse question
+
+Log files repeat themselves. Both flags below were measured on the live API, and
+both report exactly what they did so the saving is never mistaken for a judgement.
+
+**`--dedupe`** sends identical items once and gives every copy the same answer.
+On 8 lines of which 3 were unique:
+
+| | items decided | input tokens |
+|---|---|---|
+| plain | 8 | 1,029 |
+| `--dedupe` | 8 | **545** (−47%) |
+
+All 8 still come back with an answer — nothing is dropped, it just is not paid for
+twice. **Caveat:** do not use it if a question depends on an item's *position*
+("does `item` differ from the previous line?"). Identical text gets an identical
+judgement, which is exactly the assumption that breaks there.
+
+**`--skip-regex '^DEBUG'`** drops items matching a rule before anything is sent.
+On 8 lines of which 4 were `DEBUG`: **990 → 626 tokens (−36.8%)**. Those items are
+reported as `skipped`, never as items Jev judged — the rule is yours, and
+presenting it as a model decision would inflate the saving.
+
+```bash
+jevskill batch build.log --text-key line --question-type choice --name owner \
+  --options backend frontend infra unclear \
+  --skip-regex '^DEBUG' --dedupe
+```
+
+---
+
+## 🧪 Measured, not marketed
+
+**148 decisions, 1,188 questions, live API.** Every number below came from
+`bench/run.py`, which you can run yourself.
+
+| Experiment | Result |
+|---|---|
+| Warm p50 / p95 latency | **325 ms / 427 ms** |
+| Cost per small decision | **$0.0000133** |
+| Fan-out: 8 questions, 1 call vs 8 calls | **12.4× faster, 4.03× fewer tokens** |
+| State grown 22× (324 → 7,020 tokens) | p50 moved only **353 → 468 ms** |
+| REDUCE: 900 log lines → 8 | **98.8% reduction, 8/14 found** |
+| Guard accuracy (80 labelled lines) | **100%** of 49 judged |
+| Calibration @ P≈0.03 | actual rate **0%** |
+| Calibration @ P≈0.98 | actual rate **100%** |
+
+### Honesty section (read this before you trust the tables above)
+
+A repo that only reports wins isn't measuring. So:
+
+* **A small chat model was cheaper than Jev on a trivial single call** — $0.0000057
+  vs $0.0000133. Jev's case is *structure*, *fan-out*, and *keeping 35k tokens out
+  of context*. Not price-per-token on one tiny question.
+* **Jev is not more accurate than a frontier model.** On TypeSafe's own published
+  table it scores 67.8%, below GPT-5.6 Sol (74.1%). Use it as a **signal
+  generator**, not an oracle.
+* **The first REDUCE design failed**: 99% context reduction while keeping **1 of
+  8** wanted lines. The failing design is preserved behind
+  `bench/run.py --legacy-reduce` so you can reproduce it. The fix is documented in
+  `skills/jev/references/prompting.md`.
+* **Pre-filtering chunks is a cost/recall trade**, not a free win: 2.1× cheaper,
+  5 fewer lines found. Pick by what a miss costs you.
+* **The `shortlist` narrowing loop never fired** in testing — both cases resolved
+  at ≥0.92 confidence. Logic tested, empirical value **unproven**.
+* Savings figures are **modelled** from list prices + a stated 12k baseline, not
+  billed. The token reduction (99.1%) and costs are measured.
+
+---
+
+## 🪤 The trap that cost this repo a whole benchmark run
+
+Asking a question that doesn't **name the value it's about**:
+
+| How the question was asked | The real `ERROR` | Routine noise |
+|---|---:|---:|
+| "Does this single log line report a problem?" | 0.72 | 0.75 |
+| Same, but pointing at `` `L0` `` | **0.96** | **0.03** |
+
+The first version gives numbers that *look* like answers and discriminate
+nothing. Backticked paths are worth **23 points of probability mass**.
+
+---
+
+## 💰 Cost sanity check
+
+At the measured **$0.0000133** per decision, 50,000 decisions cost **$0.66**.
+
+So the question is never *"can we afford a decision?"* — it's *"why is my agent
+making this one by hand, or paying 400× more for a chat model to guess?"*
+
+---
+
+## 🚫 When NOT to use this
+
+Your agent will know, because `jevskill plan` says no for free:
+
+```bash
+$ jevskill plan "write documentation for this module"
+DO NOT USE JEV (prose)
+  The answer is text, code, or an unbounded set. Jev emits no text…
+```
+
+* Writing or refactoring code → **LLM**
+* Summaries, explanations, commit messages → **LLM**
+* Anything `grep` or a regex can answer → **neither**, just run the command
+* Open-ended ("find all possible…") → **LLM**
+* Irreversible actions → Jev is a **tripwire, not an authorisation**. Confirm with
+  a human anyway.
+
+---
+
+## 📊 It measures itself
+
+Every call lands in a local ledger with stage timings, tokens, cost, confidence —
+and, once you pair it with reality, whether it was **right**:
+
+```bash
+jevskill ask --state-file failures.txt --questions @q.json --intent "ci-triage"
+jevskill outcome d_1a2b3c4d5e6f correct    # what actually happened
+jevskill stats                             # what happened, measured
+jevskill advice                            # what to DO about it
+```
+
+### `jevskill advice` — the part that learns when JEV pays off
+
+`stats` reports numbers. `advice` turns them into decisions, per pattern and per
+intent:
+
+```
+JEV advice — 1311 decisions, 49 judged
+  saved $5.3239 (95.3%), accuracy 100%
+
+  [KEEP       ] pattern:gate  (n=73, saved 99%  acc 100%/49)
+                Saves 99% of the data cost at 100% accuracy over 49 judged decisions.
+  [STOP       ] pattern:reduce  (n=1204, saved -523%)
+                Across 1,204 recorded decisions, Jev read 6,017,596 input tokens to
+                replace 966,047. A decision carries its own question text, so on
+                small or heavily chunked states the reading it replaces does not
+                cover the reading it costs.
+  [ESCALATE   ] intent:log-triage  (n=200, saved 95%  acc 71%/60)
+                Saves tokens but is wrong too often to act on unattended — gate
+                on confidence and escalate the uncertain cases.
+```
+
+**`STOP` is the verdict to hunt for.** A state that costs less to read than the
+decision costs to make has not been optimised, it has been ritualised. The
+comparison is **token-for-token** — Jev's own billed input tokens against the tokens
+it replaced — so no price, no scaffolding and no unit conversion can flatter it.
+
+The `reduce` row above is a real result and it is not flattering: the benchmark
+records one decision *per chunk*, and each carries its own question text, so under
+heavy chunking the reading it replaces does not cover the reading it costs. Judge a
+pipeline from pipeline totals, not from per-chunk rows.
+
+Thresholds are printed with every report because they are **policy, not fact**
+(85% accuracy, 20% minimum saving, 5 judged decisions). Change them to match what a
+wrong answer costs you.
+
+
+```
+JEV effectiveness ledger — 148 decisions
+  latency    : p50 360.0 ms   p95 664.5 ms
+  jev cost   : $0.020513
+  vs LLM     : saved 96.3%, 86,972 tokens kept out of LLM context
+  accuracy   : 100.0% over 49 judged decisions
+
+  by pattern:
+    gate         n=73   p50= 371.3 ms  $0.002342  acc 100%
+    reduce       n=71   p50= 352.1 ms  $0.017994
+```
+
+Stage breakdown, from "decided to use the skill" to "output consumed":
+
+```
+  t_decision      0.0 ms    0.0%
+  profile         6.7 ms    0.5%
+  build           0.3 ms    0.0%
+  warm           74.0 ms    5.4%   ← handshake, first call only
+  http          386.5 ms   93.6%   ← network + inference
+  act             0.2 ms    0.0%   ← thresholds + ledger write
+  report          1.6 ms    0.1%
+```
+
+Client overhead is **~4%**. There is nothing left to optimise on this side — the
+leverage is better questions and less state. So the Skill teaches both.
+
+---
+
+## 🖱️ The hot path — one decision per step
+
+The default client is tuned for a *burst* of decisions inside one harness turn.
+An agent loop is the other shape — one decision per step, every few hundred
+milliseconds — and `JevClient(hot=True)` is the same client with that shape's
+priorities: 1.5 s read timeout, 0 retries, one warm connection.
+
+```python
+from jevskill import JevClient
+
+with JevClient(hot=True) as jev:
+    jev.warm()                                   # HEAD /v1/models — free, and enough
+    step = jev.decide(ui_tree, questions)        # target · op · goal_reached · needs_text
+```
+
+Three things here were **measured before being believed**, and one of them lost:
+
+* **Warm-up.** The vendor's cold first decision is 693 ms; a free `HEAD` beforehand
+  makes it 293 ms. A paid warm-up decision ($0.000013) buys 26 ms more. `HEAD` is the default.
+* **Hedging** (a duplicate request after 400 ms) was implemented, then measured on
+  both providers: **66 duplicates fired, 0 won**, and the calls that fired one got
+  slower. It ships off. `hedge=True` turns it on and always costs the loser.
+* **State size.** Latency is flat to ~30 UI elements, then climbs: +125 ms on the
+  vendor and +205 ms on OpenRouter by 240 elements. The answer did not degrade —
+  `target` stayed at 0.97–0.99 with 241 options — so reduce for latency, not accuracy.
+
+`stuck` ("did the last action do nothing?") returned **0.45–0.60 on a screen that
+had obviously changed**, so change detection is a hash diff in code, not a question.
+Every number: [`hotloop.md`](skills/jev/references/hotloop.md) and
+[`bench/cu_results.json`](bench/cu_results.json). The loop itself — what code owns
+and what Jev is asked — is [`act.md`](skills/jev/references/act.md).
+
+## 🖥️ Web console
+
+```bash
+jevskill web                 # http://127.0.0.1:8765, opens your browser
+jevskill web --no-open       # just print the URL
+```
+
+A local page for the half of this that is genuinely awkward on a command line:
+writing a question bundle by hand, and reading the distribution back. State on
+the left with a live token estimate and a budget bar; question cards on the
+right (noul / choice / score) with the nine patterns as one-click templates, a
+`+ unclear` button for the escape hatch, and a JSON view that stays in sync with
+the cards. Answers come back as bars — `noul` labelled as a probability rather
+than a verdict, the winning `choice` in gold with its confidence *and* its
+margin, a **needs review** badge that says which number tripped it — over a mono
+footer with `serialize / http / parse / total`, tokens, cost and its source,
+model, provider and `decision_id`. There is a quick-gate box that turns one
+typed yes/no question into a decision in one keystroke.
+
+Every decision is written to the **same ledger** as `jevskill ask`, tagged
+`which=web`, so `jevskill stats` counts it. With no key the page still loads,
+names the variable to set, and disables Run — it will never draw a simulated
+answer.
+
+**It is localhost-only, single-user and unauthenticated, on purpose.** It binds
+`127.0.0.1` and there is deliberately no `--host` flag: binding an
+unauthenticated endpoint that spends your API key to a routable address is not a
+preference worth offering. Use an SSH tunnel if you need it from elsewhere.
+
+Design: pure black, hairlines, one gold accent spent only on the winner, the
+primary button and the focus ring — no framework, no build step, and it renders
+correctly with web fonts blocked.
+
+## 🖱️ Computer use from the console
+
+The console's second view, **computer use**, takes a command for *this* desktop
+and runs it through the loop from the previous section:
+
+> Otwórz Notatnik, wpisz „hello world" i zapisz jako hello.txt na pulpicie
+
+Jev still decides every step in ~300 ms. What Jev cannot do — understand the
+sentence, write the text, judge whether a sub-goal is finished — goes to a
+**planning model you pick** from a list (any OpenRouter id; the newest of each
+family is recommended with its price per Mtok), and it is consulted only
+*between* steps: to split the command into 1–8 sub-goals, to compose text a
+field needs, to verify a sub-goal's end state, to answer an escalation when Jev
+is unsure, to re-plan when a sub-goal stalls. Choose **none** and the command is
+one goal, quoted text still types, and nothing else is generated. Every model
+call is a ledger row (`which=cu_llm`) with its tokens and cost, so a run's spend
+is Jev *plus* the model and `jevskill stats` shows both.
+
+**How to stop it** — four ways, all of which work while the agent is typing,
+and the panel prints them next to the STOP button:
+
+| | |
+|---|---|
+| **STOP** button | in the panel |
+| **Ctrl+Alt+Esc** | anywhere — polled, never registered, so it works over a full-screen app |
+| **mouse to the top-left corner** | the `pyautogui` convention |
+| `jevskill cu stop` | from any terminal, over SSH, from a scheduled task |
+
+The switch is checked before every decision *and* again before every action
+reaches the desktop. A destructive step (`Delete`, `Send`, `Pay`, …) waits for
+**allow** / **deny** in the panel; STOP denies. A run that starts with the
+console in the foreground waits for you to click the target window rather than
+clicking the browser. The run's window is pinned and read **by handle**, so you
+can keep reading the console or work elsewhere while it runs; it takes the
+foreground only to press keys, and waits for your hands to pause first.
+
+**Dry run** plans for real and simulates the steps — nothing on the desktop is
+touched, no Jev spend — so you can watch the whole flow, the confirm box and
+every stop path before the first live command. The same operator is available
+without the page:
+
+```bash
+jevskill cu run "Open Notepad and type \"hello\"" --model anthropic/claude-sonnet-5
+jevskill cu run "Open Notepad and type \"hello\"" --dry-run      # simulate
+jevskill cu stop                                                  # from another terminal
+```
+
+**It learns from its own runs.** A goal that finished is kept as a *recipe* —
+the actions that changed the screen, keyed by the controls' identity, with the
+quoted text and file names as slots — and the next time that goal comes up,
+with any values, it replays **without a Jev decision or a model call**, every
+step still checked (the control must resolve, the screen must change, a
+destructive control still asks). A finished command remembers its plan; an
+action that changed nothing becomes a *lesson* the model is shown before it
+proposes the same thing again; and a goal's end is checked **in code** — how
+the screen looked when it was last done, the quoted values of `done_when` —
+before any model is asked. The panel lists what was learned and forgets any of
+it (`jevskill cu memory` in the terminal; `--no-memory` to run without it).
+
+**Long missions are a tree.** A command too big for eight one-window goals comes
+back as up to 12 **phases** — one milestone in one program each, with its own
+end state and optional checks in code (a file exists, contains a text, a title
+shows a name). A phase is broken down into goals only when the run reaches it,
+from the screen it sees then, or from memory of how that phase was broken down
+before; a goal that stalls is repaired **inside its phase**, and the level above
+is asked only when the phase cannot recover. Only goals act on the desktop —
+planning, repair and resume only read, and the backend refuses a call from
+anywhere else. **Pause** holds at the next goal boundary; every run checkpoints
+to `cu_runs/<run_id>/` next to the ledger, and a stopped or interrupted run
+**resumes** where it left off — a goal that had already typed or saved is
+checked on the screen first, never blindly redone.
+
+```bash
+jevskill cu run "…a long command…" --model anthropic/claude-sonnet-5 --max-llm-calls 80 --total-budget-s 1800
+jevskill cu runs                  # stopped / interrupted runs that can be resumed
+jevskill cu resume 20260927-221530-a1b2c3
+```
+
+Both are tested offline only (`tests/test_cu_memory.py`, `tests/test_cu_mission.py`
+drive the real operator over a simulated Notepad): the second run of a
+remembered command makes no model call and no loop run and saves the same file.
+**No speed-up is claimed** until a live run measures one.
+
+**It can draw — blind.** A drawing surface (Paint's picture area: a `group` with
+no UI Automation pattern at all) is listed as role `canvas`; a click on it lands
+on its centre, which is what a Fill tool needs. The planner words every piece
+of canvas work as a goal starting with **Draw** ("Draw the wolf's head as a grey
+ellipse left of centre"), and such a goal is **one call** to the planning model,
+which answers with strokes in fractions of the canvas — one point a click, two a
+drag, more a brush path — performed with whatever tool and colour an earlier goal
+selected. Neither model sees a pixel: paint is not in the accessibility tree, so
+the goal ends on the drawing model's word, later parts are told where earlier
+ones went, and no recipe or lesson is ever learned from a stroke. Tested
+offline only (`tests/test_cu_canvas.py`); what the pictures look like is not
+measured.
+
+Measured live on 2026-09-21: *Open Notepad, type "hello world"* was done in
+13.9 s from the panel (`bench/cu_live_first_run.json`); the full command with
+*save as hello.txt on the desktop* saved the file in 60 s on the sixth attempt
+(`bench/cu_live_save_run.json` — the five before it are there too, with what
+each exposed and how it was fixed). See the status section.
+
+## 📁 What's inside
+
+```
+skills/jev/            the Agent Skill — works with NOTHING installed
+  SKILL.md             what your harness loads
+  references/          api · patterns · prompting · benchmarks · commands · measure · hotloop · act · speculate
+  scripts/
+    jev_query.py       stdlib-only caller: decisions + reversible REDUCE
+    jev_recovery.py    read back everything REDUCE rejected
+    jev.py             delegates to the full CLI when the package is installed
+jevskill/              the Python package — the measurement half
+  client.py            Decisions API — warm HTTP/2, retries, per-stage timings; hot mode, async
+  primitives.py        noul / choice / score, with validation that prevents 400s
+  orchestrate.py       pattern selection, profiling, chunking, iteration rules
+  redact.py            scrub credential-shaped strings before state is sent
+  review.py            which answers are too close to call (exit code 2)
+  stats.py             the effectiveness ledger
+  cli.py               doctor · plan · patterns · ask · batch · outcome · stats · advice · web
+  jevtask.py           batching: N items, one question set, measured saving
+  web/                 the local console, two views (decide · computer use): stdlib server (127.0.0.1 only) + static/ page, no build step
+  cu/                  computer use: observe (Windows UIA, `[cu]` extra) · reduce · hashing · decide · act · loop · macros · contract · speculate · consistency · beam
+                       runner (the operator: command → plan tree, an LLM between Jev steps) · killswitch (STOP · Ctrl+Alt+Esc · corner · stop file) · llm (OpenRouter, any model)
+                       experience (recipes · plans · lessons, replayed and checked in code) · agenda (the plan tree) · journal (checkpoints, resume)
+bench/
+  run.py               E1–E7 microbenchmarks (latency, fan-out, REDUCE, guards)
+  ab.py                the A/B evaluation vs the model doing it alone
+  cu_bench.py          per-step decision bench: providers, N=12…240, warm-up, hedging → cu_results.json
+  act_validate.py      the three live calls behind references/act.md §9
+  cu_decide_live.py    the decide bundle on the real fixtures → cu_decide_results.json
+  cu_phase5_live.py    speculation / consistency / beam measured → cu_phase5_results.json
+  cu_observe_bench.py  UIA walk: comtypes CacheRequest vs uiautomation vs pywinauto → cu_observe_results.json
+  cu_tasks.json        10 Windows computer-use tasks with oracles (+ cu_tasks.md)
+  cu_run.py            the task harness: --dry-run (default, synthetic) · --live; cu_report.py renders it
+  cu_learn_live.py     live, needs --live: one command twice, memory on → cu_learn_live.json (not run yet)
+  web_live.json        the one live decision behind CHANGELOG 0.13.0 "Measured live": a ledger row, which=web
+tests/                 1788 tests, offline, green
+docs/install.md        install guide an agent reads and executes
+docs/DESIGN.md         architecture + the mistakes that shaped it
+AGENTS.md              conventions for agents working on this repo
+```
+
+## 🧭 Status & known limits — `v0.15.1`
+
+CLI, skill, bundled scripts, ledger, reference docs and the computer-use half
+(`jevskill.cu`: observe · reduce · hashing · decide · act · loop · macros) are
+complete and offline-tested. What is **not** proven, stated plainly:
+
+* **The live UIA execution path has run against a desktop only through the
+  panel.** `loop.run()` drove Notepad live on 2026-09-21 — typing, key chords, a
+  file dialog observed — but `bench/cu_run.py --live`, the ten tasks with
+  oracles, has still not been run: there is no task-level success rate, and the
+  loop is a measured design with a handful of measured runs, not a benchmarked
+  agent.
+* **The computer-use panel has saved one file, once.** *Open Notepad, type
+  "hello world"* was done in 13.9 s; *save as hello.txt on the desktop* took six
+  attempts (`bench/cu_live_save_run.json`: chords that sent nothing, a window
+  opening behind, a dropped file-name field, the wrong quote typed, a model
+  that never saw the field, a foreground fought over — each fixed with a test)
+  and succeeded in 60.1 s for $0.058. That is one command; the escalation rate
+  over more commands, and how often a first attempt succeeds, are not measured.
+* **Memory and long missions are proven offline only.** Recipes, remembered
+  plans, lessons, code verification, the plan tree, phase repair, pause and
+  resume run in tests against a simulated Notepad; none of it has run on a live
+  desktop yet, so their effect on time and cost is unmeasured and not claimed.
+* **Drawing is proven offline only.** The canvas role, `Draw` goals and strokes
+  run in tests against a hand-built Paint-shaped tree and a fake mouse; the one
+  live Paint run (2026-09-30) predates them and failed — which is why they exist.
+* **No computer-use benchmark result exists yet.** `bench/cu_tasks.json` has the
+  ten tasks and their oracles; `bench/cu_run.py --dry-run` proves the harness,
+  and every dry-run number is marked synthetic.
+* **Four accelerations ship off because they lost when measured**: hedged
+  requests (66 fired, 0 won), speculative planning (1 of 8 hits, +48 % tokens),
+  self-consistency for destructive actions (0 of 28 fired), beam over the cascade
+  (0 of 12 changes). The flags exist; the numbers are in `bench/*.json`.
+* **The destructive name list is English-only.** On a Polish Calculator no name
+  matched and the per-element noul sat at 0.42–0.51 — well under the 0.85 gate.
+  Localise the list before trusting the gate on a non-English desktop.
+* **Redaction is not a PII policy.** It catches credential-shaped strings, not
+  personal or business data, and it is pattern-based — a secret in an unusual shape
+  will pass through. Read what you send.
+* **The review thresholds are heuristics.** `--review-below 0.75` /
+  `--review-margin 0.10` are not calibrated guarantees; they are a starting point to
+  tune on your own labelled data.
+* **The no-key path is instruction, not enforcement.** `SKILL.md` tells the agent to
+  ask before judging in Jev's place and to label simulation; nothing in the CLI can
+  verify that it did.
+
+* **Latency is one location.** Measured from Poland. TypeSafe quotes 70–500 ms
+  depending on distance — measure your own RTT.
+* **The A/B suite is `n=3` per cell with one cheap answering model.** Directional,
+  not statistical, and the `direct` and `grep` arms are sampled too — they moved
+  between runs with no code change.
+* **The `shortlist` narrowing loop never fired** in testing; both cases resolved at
+  ≥0.92 confidence. Logic tested, empirical value unproven.
+* **A deterministic filter still ties Jev** (18/18 each) on these six workloads. If a
+  regex or a structural pass can answer it, use that — Jev's case is the semantic
+  judgement no keyword expresses, and the 137× context reduction.
+* **Line-level gating breaks blocks.** It cost this repo a published 0/3 until
+  v0.10.0. Gate blocks (now the default, and `--blocks` in the bundled script) when
+  the answer spans lines that must stay together. **Still unproven:** a block
+  *deeper* than one level, and the `yaml_drift` row is one workload — not evidence
+  that block mode generalises to every structured format.
+* **The `fixture` column is an estimate.** `CHARS_PER_TOKEN` is calibrated on logs and
+  code; on CSV rows it under-counts (12,065 estimated against 19,223 reported), which
+  is exactly why the reported columns are shown separately.
+* **`triage`, `rank`, `route` and `extract` are structurally inferred**, not
+  separately benchmarked. `gate`, `verify`, fan-out and REDUCE are measured.
+* **Savings in dollars are modelled** from list prices, not billed.
+
+## 📚 Docs
+
+| | |
+|---|---|
+| [`README.md`](README.md) | you're here |
+| [`skills/jev/SKILL.md`](skills/jev/SKILL.md) | the Skill your agent loads |
+| [`skills/jev/references/api.md`](skills/jev/references/api.md) | exact API shapes, both providers, every field, error codes |
+| [`skills/jev/references/patterns.md`](skills/jev/references/patterns.md) | all 9 patterns, worked questions |
+| [`skills/jev/references/prompting.md`](skills/jev/references/prompting.md) | the vendor's 11 failure modes, then 11 rules, each backed by a measurement |
+| [`skills/jev/references/commands.md`](skills/jev/references/commands.md) | every command, flag and script invocation |
+| [`skills/jev/references/benchmarks.md`](skills/jev/references/benchmarks.md) | every number + threats to validity |
+| [`skills/jev/references/measure.md`](skills/jev/references/measure.md) | the ledger, `stats`, `advice`, stage timings — is the skill paying for itself? |
+| [`skills/jev/references/hotloop.md`](skills/jev/references/hotloop.md) | `JevClient(hot=True)`, warm-up and hedging **measured** (hedging lost), latency vs state size on both providers |
+| [`skills/jev/references/act.md`](skills/jev/references/act.md) | the `act` pattern: Jev as the per-step decision core of a GUI loop, validated live |
+| [`skills/jev/references/speculate.md`](skills/jev/references/speculate.md) | speculation, self-consistency, beam over the cascade — measured, all three off |
+| [`bench/cu_tasks.md`](bench/cu_tasks.md) | the 10-task Windows computer-use benchmark: method, oracles, threats to validity |
+| [`docs/research-2026-09-20-jev-cu.md`](docs/research-2026-09-20-jev-cu.md) | research + critique of this skill against the vendor's docs; competitor table |
+| [`docs/plan-2026-09-20.md`](docs/plan-2026-09-20.md) | the phased plan behind 0.12.0 (`TASKS.md` tracks it) |
+| [`CHANGELOG.md`](CHANGELOG.md) | versioned history |
+| [`docs/install.md`](docs/install.md) | install guide written for an **agent** to read and execute |
+| [`docs/DESIGN.md`](docs/DESIGN.md) | why it's built this way |
+
+## 🔗 Related — install both
+
+TypeSafe publishes [its own agent skill](https://docs.typesafe.ai/agent-skill), and
+it is **complementary to this one**, not a competitor:
+
+```bash
+npx skills add typesafe-ai/skills --skill typesafe-ai
+```
+
+| | Their skill | This skill |
+|---|---|---|
+| Purpose | **build apps with** Jev | **use** Jev during a session |
+| Gives the agent | live docs + cookbook routing | a running CLI and bundled scripts |
+| Context reduction | — | reversible REDUCE, measured 98.8% |
+| Measurement | — | per-stage ledger + A/B suite |
+
+Theirs if you are writing an application that calls Jev. This one if you want your
+coding agent to reach for Jev while working.
+
+## 🤝 Contributing
+
+Found a case where Jev wins (or loses) that isn't in the palette? Open an issue
+with the `state`, the questions, and the measured result. Negative results are
+especially welcome — this repo publishes its own.
+
+## 📜 Licence
+
+MIT. Jev and TypeSafe are products of TypeSafe AI. This is an independent client,
+not affiliated with them.
+
+---
+
+## 👤 About me
+
+I build things that have to work when nobody is watching.
+
+| | |
+|---|---|
+| **[lazniak.com](https://lazniak.com)** | **MyWorks** — a catalogue of what I've built. It answers questions about the work through a model on OpenRouter, which is the same route this skill uses. |
+| **[pablogfx.com/timeif](https://pablogfx.com/timeif)** | **TimeIF** — a cinematic, retro-style game. Atmosphere first, and the rendering budget was never the point. |
+
+This repo is the same instinct with a different subject: a decision model is cheap,
+but only if you ask it well and measure whether the answer was worth the round trip.
+
+<div align="center">
+
+**Star it if it saved your context window.** ⭐
+
+</div>

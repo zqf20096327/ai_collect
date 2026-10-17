@@ -1,0 +1,221 @@
+# Bifrost
+
+<p align="center">
+  <strong>高性能 HTTP/HTTPS/SOCKS5 代理服务器</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/bifrost-proxy/bifrost/actions"><img src="https://github.com/bifrost-proxy/bifrost/workflows/CI/badge.svg" alt="CI Status"></a>
+  <a href="https://github.com/bifrost-proxy/bifrost/releases"><img src="https://img.shields.io/github/v/release/bifrost-proxy/bifrost" alt="Release"></a>
+  <a href="https://github.com/bifrost-proxy/bifrost/releases"><img src="https://img.shields.io/github/downloads/bifrost-proxy/bifrost/total" alt="Downloads"></a>
+  <a href="https://github.com/bifrost-proxy/bifrost/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+</p>
+
+> Language: **中文** | [English](README.en.md)
+>
+> · [Documentation site](https://bifrost-proxy.github.io/)
+
+Bifrost 是一个用 Rust 编写的高性能，AI 友好的代理服务器，灵感来源于 Whistle。它提供请求拦截、规则修改、TLS 拦截、脚本扩展、流量查看、请求重放以及 Web UI 管理能力。
+
+
+## 快速开始
+
+安装 CLI；在 macOS 和 Windows 上同时自动安装桌面 App：
+
+方法一：使用脚本安装
+
+macOS / Linux / Git Bash：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bifrost-proxy/bifrost/main/install-binary.sh | bash
+```
+
+Windows PowerShell：
+
+```powershell
+irm https://raw.githubusercontent.com/bifrost-proxy/bifrost/main/install-binary.ps1 | iex
+```
+
+该脚本始终安装 CLI，并在 macOS / Windows 上自动安装同版本桌面 App；Linux 等暂未提供桌面安装包的平台保持 CLI-only。若只需要 CLI，可用 `--no-desktop`（Bash / Git Bash）或 `BIFROST_INSTALL_AUTO_DESKTOP=0`（Bash / PowerShell）跳过桌面端。脚本随后还会安装并信任 CA 证书、安装所有 Bifrost AI skills，并以后台服务启动 Bifrost；安装完成后可直接访问管理端。
+Bash 与 PowerShell 安装脚本都会自动探测 GitHub 直连和内置镜像源，优先使用最快可用的 release 下载地址；受限网络中也可通过 `BIFROST_GITHUB_MIRROR` 指定优先镜像。Windows PowerShell 脚本会把安装目录加入当前会话和 Windows 用户 `Path`；Git Bash 脚本在 Windows 下也会同步写入 Windows 用户 `Path`，新打开的 PowerShell/CMD 可直接执行 `bifrost`。
+
+安装指定版本
+
+macOS / Linux / Git Bash：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bifrost-proxy/bifrost/main/install-binary.sh | bash -s -- --version v0.0.96
+```
+
+Windows PowerShell：
+
+```powershell
+$installer = irm https://raw.githubusercontent.com/bifrost-proxy/bifrost/main/install-binary.ps1
+& ([scriptblock]::Create($installer)) -Version v0.0.96
+```
+
+方法二：使用 npm 安装
+
+```bash
+npm i -g @bifrost-proxy/bifrost
+```
+
+更多安装方法：[`docs/getting-started.md`](docs/getting-started.md)
+
+检查代理：
+
+```bash
+bifrost status
+```
+
+启动后访问管理端：
+
+```text
+http://127.0.0.1:9900/_bifrost/
+```
+
+## 设备可用性检查
+
+手机、平板或另一台电脑配置代理前，优先打开 Web UI 的 `Settings -> Certificate -> Availability Check`。选择当前电脑的局域网 IP 后生成二维码或链接，用目标设备访问即可自动检查三件事：
+
+- 该设备是否已被 Bifrost 代理访问控制允许。
+- 设备是否能访问 Bifrost 的探针端口。
+- 当前浏览器是否已经信任 Bifrost CA 签发的 HTTPS 证书。
+
+检查通过后，页面会显示可点击复制的代理地址 `<局域网 IP>:<端口>`，也可以打开代理二维码继续配置。若检查失败，页面会按 iOS/Android 给出下一步：安装 CA、iOS 进入 `设置 > 通用 > 关于本机 > 证书信任设置` 开启完全信任，或到管理端批准该设备的代理访问。
+
+## 和AI集成
+
+```bash
+bifrost install-skill -y
+```
+
+ASR Daily Agent 支持把一篇日报拆成多个独立研究问题，并由 ChatGPT Web 分别创建会话。研究 fan-out 可选配置 `chatgpt_project_url`；配置后，新会话会归档到指定 ChatGPT Project，同时仍强制使用 Chat 模式和 Pro 模型：
+
+```json
+{
+  "max_questions": 8,
+  "chatgpt_interface_mode": "chat",
+  "chatgpt_model": "pro",
+  "chatgpt_project_url": "https://chatgpt.com/g/g-p-<project-id>/project"
+}
+```
+
+完整 Agent 组合、研究 manifest 和失败边界见 [`design/asr-daily-agent-pipeline.md`](design/asr-daily-agent-pipeline.md)。
+
+## 特性说明
+
+![network.png](assets/network.png) <img width="1500" height="783" alt="image" src="https://github.com/user-attachments/assets/44062a96-47f3-481b-a2b6-e1bda9b3fda9" />
+![scripts.png](assets/scripts.png)
+![rules.png](assets/rules.png)
+![replay.png](assets/replay.png)
+![metrics.png](assets/metrics.png)
+
+- 高性能代理内核：基于 Tokio + Hyper，支持高并发与连接复用
+- 多协议支持：HTTP/1.1、HTTP/2、HTTP/3、HTTPS、SOCKS5、WebSocket、SSE、gRPC
+- TLS 拦截能力：支持 CA 证书生成、按域名动态签发证书、按规则选择拦截/透传，并可对单条上游 HTTPS 规则显式允许不安全证书
+- 规则引擎：支持路由、请求/响应改写、注入、延迟、限速、Mock、脚本处理
+- 管理界面：内置 Web UI，支持规则编辑、流量查看、脚本管理、请求重放
+- 流量重连：统计、增量查询与推送消息提供可选 `database_epoch`，用于识别替换后的数据库并重新获取流量；普通重启保留身份，兼容旧版消息。详见 [`design/traffic-db-startup-resequence.md`](design/traffic-db-startup-resequence.md)
+- 流量恢复与清理：旧备份导致已确认的请求序号回退时，Web UI 会重新读取流量；数据库清理失败时，API 返回错误并保留关联数据与连接状态。
+- Breakpoint：支持在 Web UI 中暂停命中 `breakpoint://request` / `breakpoint://response` 规则的 HTTP request/response，编辑 headers/body 后继续；详见 [`docs/breakpoint.md`](docs/breakpoint.md)
+- 资源风险告警：Performance 页与 `/_bifrost/api/system/memory` 会显示 body/ws 文件 writer 占用及接近句柄上限的告警状态
+- 脚本沙箱：基于 QuickJS，支持 `reqScript`、`resScript`、`decode`
+
+## 开发初始化
+
+克隆仓库后，先执行一次 Git hook 初始化：
+
+```bash
+bash scripts/setup-git-hooks.sh
+# 或
+make setup
+```
+
+这会为当前仓库写入本地 `core.hooksPath=.githooks`，即使机器上配置了全局 `hooksPath`，后续 `git commit` 也会优先执行仓库内的 `.githooks/pre-commit`。默认 pre-commit 会检查工作区格式、桌面端 Tauri 格式，以及 `cargo clippy --workspace --all-targets --all-features -- -D warnings`。
+
+## 用不习惯 CLI？想要使用桌面端 APP？
+
+桌面端适合日常抓包、查看流量、编辑规则和更新 Bifrost，不需要先记住 CLI 命令：
+
+1. 打开 [GitHub Releases](https://github.com/bifrost-proxy/bifrost/releases)。
+2. 选择最新版本的 `Assets`。
+3. macOS 下载与你芯片匹配的 `.dmg`，Apple Silicon 选择 `aarch64-apple-darwin`，Intel Mac 选择 `x86_64-apple-darwin`。
+4. Windows 下载 `.msi`，普通 x64 电脑选择 `x86_64-pc-windows-msvc`，ARM 设备选择 `aarch64-pc-windows-msvc`。
+5. macOS 打开 `.dmg` 后把 `Bifrost.app` 拖到 `Applications`，Windows 双击 `.msi` 按向导安装。
+6. 启动 Bifrost 后等待桌面端完成内置代理后端启动；首次启动会异步检查并安装 Bifrost CA。
+
+如果你希望桌面端也安装命令行能力，打开桌面端 Settings，在 `Desktop Proxy Core` 中点击 `Install CLI & Skills`。详细教程见 [`docs/desktop.md`](docs/desktop.md)。
+
+
+## 基本用法摘要
+
+常见命令：
+
+```bash
+# 查看状态
+bifrost status
+
+# 停止服务
+bifrost stop
+
+# 管理端远程访问与鉴权（Web UI）
+bifrost admin remote status
+bifrost admin remote enable
+bifrost admin passwd
+bifrost admin revoke-all
+
+# 查看流量
+bifrost traffic list
+bifrost traffic search "keyword" --method POST --host api.openai.com --path /v1/responses
+bifrost search "keyword" --req-header
+bifrost search "keyword" --res-body
+
+# 添加规则
+bifrost rule add local-dev --content "example.com host://127.0.0.1:3000"
+
+# 编辑全局默认规则，主端口和所有临时端口都会自动生效
+bifrost rule update Default --content "internal.example.test dns://10.0.0.53"
+```
+
+搜索命令补充说明：
+
+- `bifrost search` 与 `bifrost traffic search` 等价
+- `traffic list` 和搜索默认按请求时间倒序，同时间戳按序号倒序；最新匹配优先，`--limit` 默认 50，搜索的 `--max-results` 显式覆盖 `--limit`
+- 基础过滤支持 `--method`、`--host`、`--path`、`--status`、`--protocol`；path 是字面子串，`%`、`_` 不作为通配符
+- `--req-json/--res-json` 支持根 `$`、点路径、数组下标与 `[*]`；非法路径、时间、header 等值表达式和 include 名称直接报错
+- `--latest 5m` 表示最近 5 分钟，不是只取一条；无关键词的结构化输出可直接使用过滤条件，不进入 TUI
+- `traffic get --ids ID1,ID2` 默认 NDJSON；显式 `--format json-pretty` 返回格式化的 `{"results":[...]}`
+- 搜索范围支持 `--url`、`--req-header`、`--res-header`、`--req-body`、`--res-body`
+- 兼容别名：`--headers` 会同时搜索请求头和响应头，`--body` 会同时搜索请求体和响应体
+
+规则示例：
+
+```txt
+example.com host://127.0.0.1:3000
+api.example.com reqHeaders://x-debug=1&x-env=ppe&x-use-ppe=1
+chatgpt.com http3://
+internal-api.example.test https://10.37.102.138:8080 upstreamUnsafeSsl://true
+```
+
+`reqHeaders://` 与 `resHeaders://` 的单行内联值可用 `&` 分隔多个 Header；若 Header 值本身包含字面 `&`，请使用 JSON 对象或 Values 块的每行一个 Header 写法。
+
+`Default` 是 Bifrost 自动创建的全局默认规则，始终启用且列表置顶。它不能删除、停用、重命名或同步到远端，但内容可以编辑；适合放统一 DNS、通用 header、TLS 兜底等所有端口都需要共享的配置。详见 [`docs/rule.md`](docs/rule.md#10-全局默认规则-default)。
+
+## 文档索引
+
+- 文档总览：[`docs/README.md`](docs/README.md)
+- 项目概览：[`docs/overview.md`](docs/overview.md)
+- 安装与启动：[`docs/getting-started.md`](docs/getting-started.md)
+- CLI 详细命令：[`docs/cli.md`](docs/cli.md)
+- 桌面版安装与构建：[`docs/desktop.md`](docs/desktop.md)
+- 规则语法：[`docs/rule.md`](docs/rule.md)
+- 操作符说明：[`docs/operation.md`](docs/operation.md)
+- 匹配模式：[`docs/pattern.md`](docs/pattern.md)
+- 规则协议手册：[`docs/rules/README.md`](docs/rules/README.md)
+- Scripts 模块与脚本开发：[`docs/scripts.md`](docs/scripts.md)
+- Values 使用说明：[`docs/values.md`](docs/values.md)
+- 请求重放说明：[`docs/replay.md`](docs/replay.md)
+- Breakpoint 使用手册：[`docs/breakpoint.md`](docs/breakpoint.md)
+- 项目结构与模块说明：[`docs/architecture.md`](docs/architecture.md)
+- Agent Skill 安装说明：[`docs/agent-skill.md`](docs/agent-skill.md)

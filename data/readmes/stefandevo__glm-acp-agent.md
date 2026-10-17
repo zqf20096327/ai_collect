@@ -1,0 +1,530 @@
+# glm-acp-agent
+
+An [Agent Client Protocol (ACP)](https://agentclientprotocol.com) agent written in TypeScript that uses the **Z.AI / Zhipu AI GLM** model family (GLM-5.3, GLM-5.3 Flash, GLM-5 Turbo, GLM-4.7) as its reasoning core.
+
+The agent connects to any ACP-compatible IDE or client over **stdio**, streams responses back in real time, and can call a rich set of tools to interact with the user's file system, terminal, and the web.
+
+Streaming responses must include a supported terminal finish reason. An early connection close is reported as an interrupted response, with received text retained for session replay. Tool calls run only after a complete `tool_calls` response; calls in output-limit (`length`) or filtered (`content_filter`) responses are discarded and the corresponding stop reason is preserved.
+
+Completed provider reasoning is retained unchanged in conversation history and saved sessions for subsequent model calls, even when thought display is disabled. `ACP_GLM_STREAM_THINKING=false` controls client display only. Reasoning from cancelled, incomplete, or output-limited responses is not replayed as a completed reasoning chain.
+
+---
+
+## Coding Plan Only
+
+`glm-acp-agent` is intentionally built for the **Z.AI GLM Coding Plan**. It is not a general-purpose Z.AI Open Platform API client.
+
+By default, model calls use the Coding Plan endpoint:
+
+```text
+https://api.z.ai/api/coding/paas/v4
+```
+
+The same Coding Plan API key is used for the agent's GLM model calls and supported Coding Plan tools. General Z.AI API/resource-package billing surfaces, such as direct `/api/paas/v4` Tool API calls, are intentionally out of scope for this ACP agent.
+
+Built-in web tools use Coding Plan-compatible MCP endpoints, not the general `/api/paas/v4` Tool API. If you need general Z.AI API billing, separate resource packages, or non-Coding Plan endpoints, use a different provider configuration or fork this agent for that purpose.
+
+---
+
+## Features
+
+- **Full ACP compliance** – implements `initialize`, `authenticate`, `session/new`, `session/set_mode`, `session/prompt`, `session/cancel`, `session/close`, `session/list`, `session/load`, `session/fork`, `session/resume`, and `session/set_model`, and pushes `session_info_update`, `config_option_update`, `current_mode_update`, and `available_commands_update` notifications
+- **Streaming** – assistant text and reasoning tokens are forwarded as incremental ACP chunks
+- **Tool calling** – agentic loop with a configurable cap of GLM function-calling turns (default 100; see `ACP_GLM_MAX_TURNS` / `--max-turns`)
+- **Thinking mode** – GLM's `reasoning_content` tokens are surfaced as `agent_thought_chunk` blocks so the client can show the model's chain of thought
+- **Session permission modes** – supports `default`, `accept_edits`, and `bypass_permissions` via `session/set_mode`. Clients like DevFlow can use this to toggle between prompting for every edit, auto-approving edits while prompting for commands, or bypassing permissions entirely.
+- **Per-session model switching** – `session/set_model` lets clients change the active GLM model mid-conversation; `session/new` returns the curated `availableModels` list
+- **Slash commands** – commands and skills found under the session's `.claude/` directory are advertised to the client with `available_commands_update`, so `/` autocomplete is populated (see [Slash commands](#slash-commands))
+- **Image input via Coding Plan-native vision or Vision MCP** – `promptCapabilities.image` is advertised; `glm-5.3-flash` sends supported pasted ACP image blocks directly as native `image_url` content parts, while the other advertised coding models (including default `glm-5.3`) route them through Z.AI Vision MCP (`@z_ai/mcp-server`). `glm-5v-turbo` keeps the same native-vision path when re-added via `ACP_GLM_AVAILABLE_MODELS` — it is no longer on the Coding Plan allowlist. Direct chat-image-only models (e.g. `glm-4v-plus`) are intentionally not used.
+- **Session persistence** – conversations are written to `~/.local/state/glm-acp-agent/sessions/` and can be reloaded via `session/load`, branched via `session/fork`, or resumed without replay via `session/resume`
+- **Nine built-in tools** (see below)
+- **Self-sufficient local tools** – directory listings and shell commands always run in the agent process; file tools fall back to local filesystem access when ACP client `fs` capabilities are unavailable
+- **Configurable permissions** – `write_file`, `run_command`, `web_reader`, and non-local `image_analysis` behavior depends on the active session mode (prompts by default)
+- **Protocol-correct stop reasons** – maps model and runtime conditions to ACP `end_turn`, `max_tokens`, `max_turn_requests`, `refusal`, and `cancelled`
+- **Protocol-correct tool statuses** – `pending` → `in_progress` → `completed` / `failed`
+- **Token usage reporting** – aggregated usage is returned on the `session/prompt` response
+
+---
+
+## Architecture
+
+```text
+ACP Client (IDE plugin, CLI, …)
+        │  stdio (ndjson)
+        ▼
+  GlmAcpAgent          ← ACP protocol layer  (src/protocol/)
+        │
+        ├─ GlmClient   ← Z.AI / Zhipu AI Coding Plan Chat Completions  (src/llm/)
+        │
+        ├─ ToolExecutor ← executes tool calls  (src/tools/)
+        │    ├─ read_file / list_files        → ACP client fs for read_file when reads are advertised, else Agent process (Node fs); read_file and list_files workspace-confined, read_file paginated (offset/limit)
+        │    ├─ write_file / edit_file        → ACP client fs when advertised (editor-buffer diffs), else Agent process (Node fs)
+        │    ├─ list_files / run_command     → Agent process (Node fs / child_process)
+        │    ├─ web_search / web_reader      → Z.AI Coding Plan Web MCP (HTTP)
+        │    ├─ image_analysis               → Z.AI Coding Plan Vision MCP (stdio)
+        │    └─ todowrite                    → Agent process (per-session task list; replaces chat narration)
+        │
+        └─ VisionMcpClient ← spawns `npx @z_ai/mcp-server` on demand
+```
+
+The agent process needs network access to `api.z.ai` for chat completions and Web MCP, plus `npx` available on `PATH` so it can launch `@z_ai/mcp-server` for vision. Filesystem and shell operations use paths resolved against the ACP session working directory. `read_file` and `list_files` are confined to the session workspace: paths and symlink targets resolving outside are rejected, and a rejected `list_files` enumerates nothing. It uses the editor buffer when `fs.readTextFile` is advertised, including new buffers whose parent directory exists inside the workspace; otherwise it uses the agent process filesystem. When the client advertises `fs.writeTextFile`, writes and edits are routed through the ACP client so they render as native diffs. Edit-file reads still require both `fs.readTextFile` and `fs.writeTextFile` to use the editor buffer; otherwise they fall back to the agent process filesystem. Writes and arbitrary shell commands still go through ACP `session/request_permission`, as do `web_reader` calls and `image_analysis` calls whose `image_source` is a non-local source, and the permission payload is always the **full** tool arguments — the user approves exactly what will run.
+
+Agent-side `list_files` and local `image_analysis` always use an existing canonical target, even when the client advertises file reads. Only editor-backed `read_file` preserves the caller's absolute alias and allows a missing file for a new editor buffer; those exceptions do not apply to agent-side tools.
+
+Even ACP-backed `read_file` requests use the agent filesystem for canonicalized confinement checks. The workspace and existing parent directories must be visible to the agent with matching path and symlink semantics. If canonicalization is unavailable, the read fails closed; client-only paths do not bypass the containment check. Containment is canonicalization-based hardening, not a race-proof sandbox: a concurrent symlink swap between the check and the open can still redirect a local read, and on client-backed reads the editor's `fs/read_text_file` receives the caller's alias, so a symlink swapped in between the check and the editor read is likewise followed by the editor. On case-insensitive filesystems (the default on macOS APFS and Windows), `realpath` may not normalize letter case consistently between the session workspace and a target path, so the likely failure mode is a false rejection — the safe direction; a cross-platform assertion for this is not feasible in the test suite (Linux CI is case-sensitive, macOS and Windows are not), which is why it is documented here rather than tested.
+
+Client-facing tool cards stay compact: long strings in `rawInput`/`rawOutput` are elided to a short head plus a character count, and every completed or failed card's visible text — including the `read_file` content preview — is bounded to an aggregate 16 KiB UTF-8 budget; oversized previews end with `[… N bytes elided in preview; full result sent to model]` and card titles are elided to 240 characters. The model still receives the full tool result, capped at 256 KiB by `ACP_GLM_TOOL_RESULT_LIMIT_BYTES`; write payloads and permission requests remain complete. Progress narration lives in the `todowrite` task list rather than prose, and reasoning tokens are only forwarded as `agent_thought_chunk` when `ACP_GLM_STREAM_THINKING` is not `false` (the default preserves streaming).
+
+## Client MCP, context, and trust boundary
+
+All MCP transports share an 8 MiB response cap (`MCP_RESPONSE_LIMIT_BYTES`): HTTP response bodies are read incrementally and a larger body cancels the read and fails the tool call, while an oversized or newline-less stdio JSON-RPC frame fails the connection, rejecting pending requests and terminating the child process. The cap applies to client-provided servers and to the built-in Web MCP and Vision MCP clients.
+
+### Client-provided MCP servers
+
+ACP clients may attach MCP server definitions when creating or loading a session. The agent supports client-configured **stdio** and **HTTP** MCP servers. **SSE is unsupported and rejected** when the agent tries to connect. In the ACP SDK capability schema, `mcpCapabilities.http` advertises HTTP support and `mcpCapabilities.sse` advertises SSE support. This agent advertises only `http: true` and does not advertise SSE; the capability object has no stdio flag.
+
+A stdio MCP child starts with a copy of the agent process environment, then the server's configured environment entries override matching inherited values. This can pass credentials such as `Z_AI_API_KEY` to that child. Review client-supplied MCP commands and environment values as trusted code/configuration.
+
+### Context compaction
+
+Before provider requests, the agent estimates context use with a heuristic rather than the provider's tokenizer. When history exceeds the model budget, it can remove older complete exchanges and shorten tool results; the system context and latest user request are retained. If those, the tool schemas, and reserved output/safety space still exceed the model's context window, the request fails with guidance to narrow it or choose a larger-context model. Earlier conversation details may therefore not remain verbatim in model context.
+
+### Trust boundary
+
+The agent does not run tools inside an OS or container sandbox. Shell commands and local filesystem fallbacks run with the agent process's OS-user permissions; shell children inherit its environment, and commands can access the network available to that user. ACP permission prompts and session modes govern consent behavior but do not provide process isolation. Built-in network tools follow that consent model: `web_search` is deliberately silent because its query goes only to Z.AI's service (there is no attacker-chosen host), `web_reader` fetches only the approved initial URL (redirects followed by the reader service are not re-prompted), and `image_analysis` passes non-local sources to Vision only after approval. Treat workspaces, prompts, and MCP configurations as trusted, and use external OS/container isolation when you need a stronger boundary.
+
+---
+
+## Available Tools
+
+| Tool | Runs on | Permission behavior | Description |
+|------|---------|---------------------|-------------|
+| `read_file` | ACP client when fs read capability is advertised, otherwise agent process | Always silent | Read a text file or editor buffer, paginated by offset/limit (default 2000 lines, capped at 5000). Paths and symlink targets resolving outside the workspace are rejected. Local scans are byte-bounded; totals can be unknown and an incomplete line is never given a next offset. |
+| `write_file` | Agent process (ACP client `fs` when advertised) | Mode-dependent | Write or overwrite a text file. Silent in `accept_edits` and `bypass_permissions`. |
+| `edit_file` | Agent process (ACP client `fs` when advertised) | Mode-dependent | Replace one exact, unique snippet in an existing file. It refuses an input or editor buffer over the read/edit budget, and re-validates after permission and progress notification delivery to preserve changes present at the final read. Silent in `accept_edits` and `bypass_permissions`. |
+| `todowrite` | Agent process | Always silent | Create or replace the session's structured task list so multi-step progress is tracked instead of narrated in chat. Each call replaces the list; the tool result renders it back to the model. |
+| `list_files` | Agent process | Always silent | List a directory through a bounded iterator; paths or symlink targets resolving outside the workspace are rejected with no enumeration, and a truncated result is a disclosed subset. |
+| `run_command` | Agent process | Mode-dependent | Run an arbitrary shell command; cancelling a turn terminates its shell process group, while intentionally backgrounded processes survive a normal shell exit. Silent only in `bypass_permissions`. |
+| `web_search` | Agent (Z.AI Coding Plan MCP) | Always silent | Search the web — returns titles, URLs, and summaries. Deliberately silent egress: the query goes to Z.AI's service only; there is no attacker-chosen host. |
+| `web_reader` | Agent (Z.AI Coding Plan MCP) | Mode-dependent | Fetch and parse a web page (markdown or plain text). The approval prompt carries the full URL; rejection, cancellation, or permission transport errors make no network request. The approval covers the initial URL — redirects followed by the reader service are not re-prompted. Silent only in `bypass_permissions`. |
+| `image_analysis` | Agent (Z.AI Vision MCP, stdio) | Mode-dependent (non-local) | Analyze a local image path or remote URL using `@z_ai/mcp-server`. A non-local source requires approval first: the prompt carries the full `image_source`, and rejection, cancellation, or permission transport errors make no Vision MCP call. Non-local sources are silent only in `bypass_permissions`; clearly local paths stay silent in all modes and are workspace-confined — a local `image_source` whose path or symlink target resolves outside the workspace is rejected before any Vision MCP call. |
+
+Editor edits use an optimistic read followed by a full-buffer write. ACP's `fs/write_text_file` request has no version precondition, so edits made during that write RPC can still race with the replacement. The final read preserves unrelated changes already present and rejects a target snippet that has disappeared or become ambiguous.
+
+### Session Modes
+
+Clients can use `session/set_mode` to drive the permission policy:
+
+| Mode ID | Name | `write_file` | `run_command` | `web_reader` | `image_analysis` (non-local) |
+|---|---|---|---|---|---|
+| `default` | Ask for permission | **Prompt** | **Prompt** | **Prompt** | **Prompt** |
+| `accept_edits` | Auto-approve edits | Silent | **Prompt** | **Prompt** | **Prompt** |
+| `bypass_permissions` | Bypass all permissions | Silent | Silent | Silent | Silent |
+
+Reads, listings, `web_search`, and session MCP tool calls are always silent across all modes, while `web_reader` and `image_analysis` with a non-local source follow the mode-dependent approval above. Local `image_analysis` paths stay silent in every mode and are confined to the session workspace.
+
+After the existing leading/trailing whitespace trimming, `image_analysis` skips approval only for clearly local paths: ordinary relative/absolute paths and absolute Windows drive paths such as `C:/images/cat.png`. Scheme-bearing sources (including nonstandard HTTP forms and `file:`/`data:`), network-style paths (`//host/...` or UNC paths), and sources with remaining ASCII control characters require approval. This conservative classification performs no further normalization and does not add format support to the Vision MCP. Local analysis still announces an `in_progress` tool card before dispatch; silent means no permission prompt, not no progress card.
+
+Permission prompts always carry the full, unelided tool arguments, so the user approves exactly what will run. The prompt offers exactly `allow` and `reject`, and a tool runs only when the response selects `allow` with outcome `selected`; anything else — a missing or unrecognised option id, an unknown outcome string, or a null/absent response — is treated as reject. An explicit `cancelled` outcome remains distinct from rejection.
+
+---
+
+## Slash commands
+
+After `session/new`, `session/load`, `session/fork`, and `session/resume`, the agent
+sends an ACP [`available_commands_update`](https://agentclientprotocol.com/protocol/v2/slash-commands)
+notification. Clients such as Zed and Paseo use it to populate their `/` autocomplete.
+Each notification is a full snapshot that replaces the previous list.
+
+The snapshot is built from the same on-disk layout Claude Code uses, read from the
+session's working directory and from `~/.claude` for user-level definitions:
+
+| Path | Command name |
+|---|---|
+| `<cwd>/.claude/commands/commit.md` | `/commit` |
+| `<cwd>/.claude/commands/review/pr.md` | `/review:pr` |
+| `<cwd>/.claude/skills/audit/SKILL.md` | `/audit` |
+
+Project definitions shadow user-level ones with the same name. The `description`
+and `argument-hint` keys of a file's YAML frontmatter become the menu entry's
+description and input hint; without a `description`, the first heading (then the
+first line) of the body is used instead.
+
+Advertised names are sent **without** a leading slash — the client prepends it for
+display and invokes the command by sending `/name …` as ordinary prompt text. When
+that text names an advertised command, the agent injects the definition's body into
+the user message, substituting `$ARGUMENTS` where the file asks for it and otherwise
+appending the typed arguments. Unknown `/foo` is left untouched and reaches the model
+as prose, so typing a slash by accident never fails the turn.
+
+---
+
+## Prerequisites
+
+- **Node.js** 20.19.0+, 22.13.0+, or 24+ (native `fetch` and Web Streams required)
+- **npm** 9 or later
+- A **Z.AI API key** — obtain one at <https://z.ai/manage-apikey/apikey-list>
+
+---
+
+## Installation
+
+### Quick Start
+
+Install the published package globally to get the `glm-acp-agent` command on your `PATH`:
+
+```bash
+npm install -g glm-acp-agent@latest
+```
+
+Then either export your Z.AI API key and run it directly:
+
+```bash
+export Z_AI_API_KEY=your_key_here
+glm-acp-agent
+```
+
+…or run the interactive setup once to persist the key to disk (see [One-time setup](#one-time-setup)) and point any ACP-compatible client at the `glm-acp-agent` command.
+
+### From Source (Development)
+
+Clone the repository if you want to hack on the agent or pin a specific commit:
+
+```bash
+git clone https://github.com/stefandevo/glm-acp-agent.git
+cd glm-acp-agent
+npm install
+npm run build
+```
+
+The build output lands in `dist/`; the rest of this README uses `node dist/index.js` whenever it refers to the source-build entry point.
+
+---
+
+## Configuration
+
+The agent reads its configuration from environment variables, plus an optional credentials file written by `glm-acp-agent --setup`.
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `Z_AI_API_KEY` | One of env / `--setup` | — | API key for the Z.AI / Zhipu AI service. If unset, the credentials file is consulted. |
+| `ACP_GLM_MODEL` | No | `glm-5.3` | Default GLM model for new sessions |
+| `ACP_GLM_AVAILABLE_MODELS` | No | built-in list | Comma-separated list of model ids advertised in `session/set_model` |
+| `ACP_GLM_BASE_URL` | No | `https://api.z.ai/api/coding/paas/v4` | Override the API base URL |
+| `ACP_GLM_MAX_TOKENS` | No | `32768` | Cap on `max_tokens` for each completion. Invalid values fall back to the default with a stderr warning. |
+| `ACP_GLM_MAX_TURNS` | No | `100` | Max model/tool turns per prompt (also settable via `--max-turns`) |
+| `ACP_GLM_COMMAND_TIMEOUT_MS` | No | `120000` | Deadline for each `run_command`, in milliseconds. Invalid values fall back to the default with a stderr warning. |
+| `ACP_GLM_COMMAND_OUTPUT_LIMIT_BYTES` | No | `65536` | Maximum combined bytes captured from each `run_command` stdout and stderr. Further output is drained and reported as truncated. Invalid values fall back to the default with a stderr warning. |
+| `ACP_GLM_TOOL_RESULT_LIMIT_BYTES` | No | `262144` | Inclusive UTF-8 byte limit for every model-facing tool result. It preserves a prefix and suffix with an omitted-bytes marker; values below 128 fall back with a stderr warning. |
+| `ACP_GLM_READ_FILE_LIMIT_BYTES` | No | `8388608` | Maximum local bytes consumed while reading a page or whole file for `edit_file`. A bounded scan may not know the total line count. |
+| `ACP_GLM_LIST_FILES_MAX_ENTRIES` | No | `2000` | Maximum entries collected by `list_files`; larger directories return a disclosed subset. |
+| `ACP_GLM_LIST_FILES_LIMIT_BYTES` | No | `262144` | Maximum bytes assembled for a `list_files` result before its truncation marker. |
+| `ACP_GLM_THINKING` | No | auto-detected | Force thinking mode `true` / `false` |
+| `ACP_GLM_STREAM_THINKING` | No | `true` | Forward reasoning tokens to the client as `agent_thought_chunk`; set `false` to keep reasoning off the wire (the model still thinks — only the client-side stream is silenced) |
+| `ACP_GLM_STREAM_IDLE_TIMEOUT_MS` | No | `300000` | Idle deadline in milliseconds for a stalled model-provider stream read; invalid values fall back to the default with a stderr warning. |
+| `ACP_GLM_SESSION_DIR` | No | `$XDG_STATE_HOME/glm-acp-agent/sessions` | Where session JSON files are persisted |
+| `ACP_GLM_DEBUG` | No | — | Set to `true` or `1` to enable verbose debug logging to stderr (shows model selection, API key resolution, tool calls, and usage stats) |
+| `XDG_CONFIG_HOME` | No | `~/.config` | Where the credentials file is read/written |
+
+### One-time setup
+
+If you'd rather not pass `Z_AI_API_KEY` through your ACP client's environment block, run the interactive setup once and the agent will read the key from disk on subsequent launches:
+
+```bash
+glm-acp-agent --setup
+```
+
+If you're working from a source clone instead of the published package, use the build output directly:
+
+```bash
+node dist/index.js --setup
+```
+
+The key is written to `$XDG_CONFIG_HOME/glm-acp-agent/credentials.json` (default: `~/.config/glm-acp-agent/credentials.json`) with `0600` permissions. The `Z_AI_API_KEY` environment variable, when set, always wins over the file.
+
+### Supported models
+
+The agent advertises only the models on the current Z.AI Coding Plan allowlist:
+
+| Model | Notes |
+|-------|-------|
+| `glm-5.3` | **Default.** Newest 1M-context coding model; thinking mode always on; text-only (images go through Vision MCP) |
+| `glm-5.3-flash` | Native-vision 1M-context model; cheaper Coding Plan quota |
+| `glm-5-turbo` | Faster Coding Plan reasoning model; 128K context |
+| `glm-4.7` | 200K-context reasoning model |
+
+Only models the Coding Plan endpoint serves **under their own name** are advertised. Several ids that used to be listed are now aliases: a request for `glm-5.2` or `glm-5.1` comes back with `"model": "glm-5.3"`, and `glm-4.5-air` comes back as `glm-4.7`. They still work, but advertising them would report a model you are not actually talking to. Z.AI's Coding Plan overview currently also claims `glm-5-turbo` and `glm-4.7` requests are routed to GLM-5.3-Flash; that has not been confirmed by a live probe here, so both ids stay in the picker. `glm-5v-turbo` is no longer on the Coding Plan allowlist — selecting it fails with business code `1311` ("subscription plan does not yet include access").
+
+`ACP_GLM_AVAILABLE_MODELS` lets you advertise any id you like, including the ones above. Custom ids sit outside the supported Coding Plan list — the endpoint rejects any model code Z.AI hasn't whitelisted (business code `1211`). The native-vision path is unchanged, so if your plan does include `glm-5v-turbo`, add it back with `ACP_GLM_AVAILABLE_MODELS` and image blocks still reach it as native `image_url` content parts.
+
+Vision-only chat models (`glm-4v-plus` etc.) are **not** advertised. `glm-5.3-flash` is the built-in native-vision Coding Plan model (`image_url` content parts). Default `glm-5.3`, `glm-5-turbo`, and `glm-4.7` still use the [Vision MCP](#vision-mcp) path. `glm-5v-turbo`, when re-added via the override above, keeps native `image_url` handling as an opt-in exception.
+
+When the model name matches `glm-4.5`, `glm-4.6`, `glm-4.7`, or the `glm-5` family, the agent enables Z.AI's `thinking: { type: "enabled" }` extension and forwards reasoning tokens to the client as `agent_thought_chunk` blocks. This includes `glm-5.3-flash` and `glm-5v-turbo`. `ACP_GLM_THINKING=false` asks for plain completions on models that still accept `thinking.type: "disabled"` (GLM-4.7, GLM-5 Turbo). On GLM-5.3 and GLM-5.3-Flash the flag is a no-op: those models reject `disabled`, so the agent leaves thinking enabled rather than sending it (see [Thought level](#thought-level-reasoning-effort) below).
+
+The provider stream itself is guarded against stalls. The Z.AI SDK's HTTP timeout only covers waiting for response headers — a response whose body stops mid-stream would otherwise hang the turn forever. The agent therefore aborts a provider stream read that produces no data for `ACP_GLM_STREAM_IDLE_TIMEOUT_MS` milliseconds (default `300000`; invalid values for the variable fall back to the default with a stderr warning). On timeout, whatever partial output already reached the user is kept, an `[error]` message is appended as an agent message, the turn ends, and the last valid on-disk session checkpoint is preserved. A slow ACP client back-pressuring chunks it already received does not trip the watchdog — only silence from the provider between reads does.
+
+A dropped network connection is handled separately from a stall. Each provider client has its own connection pool. When a request fails before an HTTP status arrives (`APIConnectionError`, including a connection timeout, or a socket error such as `ECONNRESET`), the agent closes that pool once nothing is still sending on it, and later requests open another. A retry another session already started follows that replacement, so closing the old pool does not fail the retry locally. The OpenAI client retries a failed open twice (`maxRetries: 2`). Those same two retries cover HTTP 408, 409, 429, and 5xx. The agent does not wrap the client in a second retry loop. If the link is still down after that budget, the turn ends with `stopReason: "cancelled"` instead of a JSON-RPC internal error, and the session stays open. A turn that produced no assistant text or tool result drops that user message and asks for it to be sent again. Assistant text or a tool result that already arrived is kept. The next message continues the same session on a new connection. An HTTP status such as 400 or 401 fails the turn.
+
+A socket reset after response bytes have started is not retried. That turn still ends with `stopReason: "cancelled"` and a connection-lost notice, and the text or tool result already in the session stays there. The idle-stream watchdog and an incomplete tool-call stream still fail the turn with an error and leave the previous checkpoint in place.
+
+Cancelling a turn keeps the user's prompt whether or not the history was compacted for that request. When compaction already ran and the cancelled turn produced no reply, the pre-compaction messages are restored and the prompt stays, so the saved checkpoint still contains the earlier exchange. A connection drop with no reply is the path that removes the unsent prompt.
+
+#### Thought level (reasoning effort)
+
+The agent advertises a `thought_level` [SessionConfigOption](https://agentclientprotocol.com) so clients that support config options (e.g. a "Thinking" selector) can control reasoning effort per session. The available levels depend on the active model:
+
+| Model | Levels | Mapping to the Z.AI request |
+|-------|--------|-----------------------------|
+| `glm-5.3` (and `glm-5.2` / `glm-5.1`, which route to 5.3) | `Minimal` / `Low` / `Medium` / `High` / `X-High` / `Max` | `thinking: { type: "enabled" }` + `reasoning_effort` set to the matching value |
+| `glm-5.3-flash` | `Low` / `High` / `Max` | Same mapping; Z.AI only documents these three levels for Flash |
+| other thinking-capable models | `Off` / `On` | `Off` → `thinking: { type: "disabled" }`; `On` → `thinking: { type: "enabled" }` |
+
+**GLM-5.3 and GLM-5.3-Flash have no `Off` level, because thinking cannot be turned off on them.** Sending `thinking: { type: "disabled" }` now errors (it is no longer a silent no-op), so `ACP_GLM_THINKING=false` leaves thinking enabled rather than sending `disabled`. Use `glm-4.7` if you need non-reasoning completions — with the caveat that if Coding Plan really routes turbo/4.7 to Flash, a session that picks `glm-4.7` + thought level `Off` may 4xx.
+
+`reasoning_effort` only takes effect on the GLM-5.3 family; `glm-5-turbo` and `glm-4.7` accept the field without validating it and answer identically either way, so the agent omits it for them. New sessions default to `Max`, which is also Z.AI's default when the field is omitted, so out-of-the-box behaviour is unchanged. Switching models re-clamps the level (an effort-ladder selection reverts to `On` when you move to GLM-4.7; an `Off` selection becomes `Max` on GLM-5.3 / Flash; switching from GLM-5.3 onto Flash maps `minimal`→`low`, `medium`→`high`, `xhigh`→`max`) and pushes a `config_option_update`. Clients that don't support config options simply ignore the advertised option and get the default behaviour.
+
+The endpoint validates `reasoning_effort` against `none | minimal | low | medium | high | xhigh | max` on GLM-5.3. GLM-5.3-Flash's documented values are only `low | high | max`, so the agent advertises that shorter ladder for Flash. `none` is never offered on either model.
+
+`ACP_GLM_PROMPT_IMAGES=false` still hides the image-attachment capability at session startup. With that flag set, clients should not offer image attachments at all.
+
+Switching to a text-only model is rejected while retained conversation history contains native images. Keep an image-capable model or start a text-only session with a textual description; images are never silently discarded or analyzed as part of a model switch. During an active prompt on a native-image model, wait for the turn to finish before switching to text-only capability. Other compatible selections affect subsequent model calls, while an in-flight call keeps its captured model and reasoning level. Restored histories receive the same compatibility check before a provider request.
+
+### Vision MCP
+
+For `glm-5.3-flash` (built-in) and `glm-5v-turbo` (opt-in via `ACP_GLM_AVAILABLE_MODELS`), pasted ACP image blocks with `image/jpeg`, `image/jpg`, or `image/png` are sent directly to chat completions as `image_url` content parts. HTTPS image URLs are forwarded as URLs; inline base64 data is sent as a `data:<mime>;base64,...` URI. Unsupported image MIME types are rejected client-side with an inline `<image_unsupported_format>` annotation so the prompt can continue without a provider 4xx.
+
+For non-native models (including default `glm-5.3`), pasted ACP image blocks are not sent to the chat-completions endpoint. Instead, the agent boots `@z_ai/mcp-server` over stdio (via `npx -y @z_ai/mcp-server@latest`) and calls its `image_analysis` tool. The text result is spliced into the user message as `<image_analysis index="N">…</image_analysis>` so the regular Coding Plan model can reason about it.
+
+Prerequisites:
+
+- `npx` on `PATH` (Node 18+ / npm 9+).
+- The same `Z_AI_API_KEY` used for chat completions; the agent forwards it to the MCP server as `Z_AI_API_KEY` plus `Z_AI_MODE=ZAI`.
+
+The model can also call `image_analysis` explicitly with `{ image_source: "/path/or/url", prompt?: "…" }`. A non-local source requires the same ACP permission approval as `web_reader` before the Vision MCP call — the prompt carries the full `image_source`, and only `bypass_permissions` skips it — while local paths stay silent and are workspace-confined: a local `image_source` whose path or symlink target resolves outside the session workspace is rejected before any Vision MCP call. Vision failures (missing `npx`, MCP startup, quota) are surfaced as actionable errors but never abort the prompt; an inline `<image_analysis_error>` annotation is used so the conversation can continue.
+
+---
+
+## Running
+
+### Standalone (stdio)
+
+If you installed the published package globally, just run the CLI:
+
+```bash
+export Z_AI_API_KEY=your_key_here
+glm-acp-agent
+```
+
+If you built from source, invoke the entry point directly:
+
+```bash
+export Z_AI_API_KEY=your_key_here
+node dist/index.js
+```
+
+The agent speaks the ACP newline-delimited JSON protocol over stdin/stdout. You can connect any ACP-compatible client to it.
+
+### Development mode (watch)
+
+When working from a source clone, run `tsc` in watch mode so `dist/` rebuilds on every save:
+
+```bash
+export Z_AI_API_KEY=your_key_here
+npm run dev        # tsc --watch
+```
+
+---
+
+## Connecting to an ACP Client
+
+### Zed (recommended for local testing)
+
+[Zed](https://zed.dev) is currently the most polished editor for trying out ACP agents locally — it spawns the agent process over stdio and surfaces it in the agent panel. This is the fastest way to iterate on `glm-acp-agent` before publishing it to the ACP registry or to npm.
+
+#### 1. Prerequisites
+
+- A recent build of [Zed](https://zed.dev/download) that supports the `agent_servers` setting
+- Node.js 20.19.0+, 22.13.0+, or 24+ on your `PATH` (`node --version`)
+- A Z.AI API key — create one at <https://z.ai/manage-apikey/apikey-list>
+
+#### 2. Install the agent
+
+Follow either path from the [Installation](#installation) section above:
+
+- **Quick Start** — `npm install -g glm-acp-agent@latest`. Zed can then spawn the agent with `"command": "glm-acp-agent"`.
+- **From source** — clone, `npm install`, `npm run build`. Zed needs the absolute path to the built entry point (no `~`, no `$HOME` shortcuts):
+
+  ```bash
+  echo "$(pwd)/dist/index.js"
+  ```
+
+#### 3. Wire it into Zed
+
+Open (or create) `~/.config/zed/settings.json` and add an `agent_servers` entry. Pick **one** of the two API-key strategies below.
+
+**Option A — inline `env` block (simplest):**
+
+```json
+{
+  "agent_servers": {
+    "glm": {
+      "command": "glm-acp-agent",
+      "env": { "Z_AI_API_KEY": "sk-…" }
+    }
+  }
+}
+```
+
+If you installed from source instead of the published package, replace `command` / `args` with the absolute path to the build output:
+
+```json
+{
+  "agent_servers": {
+    "glm": {
+      "command": "node",
+      "args": ["/absolute/path/to/glm-acp-agent/dist/index.js"],
+      "env": { "Z_AI_API_KEY": "sk-…" }
+    }
+  }
+}
+```
+
+**Option B — credentials file (no key in your editor settings):**
+
+Run the interactive setup once:
+
+```bash
+glm-acp-agent --setup
+```
+
+If you're working from a source clone, use the build output directly: `node dist/index.js --setup`.
+
+The key is written to `~/.config/glm-acp-agent/credentials.json` with `0600` permissions. Then drop the `env` block from the Zed entry — the agent will read the file on launch:
+
+```json
+{
+  "agent_servers": {
+    "glm": {
+      "command": "glm-acp-agent"
+    }
+  }
+}
+```
+
+If `Z_AI_API_KEY` is set in the environment **and** a credentials file exists, the environment variable wins.
+
+#### 4. Verify it works
+
+1. Save `settings.json`. Zed reloads settings automatically.
+2. Open the **agent panel** (use the command palette: `agent panel: toggle focus`).
+3. In the agent picker, select **glm** — Zed labels external agents by their `agent_servers` key.
+4. Start a new thread and send a small prompt that exercises a tool, e.g. `Read package.json and tell me the project name.`
+5. You should see streaming text, a `read_file` tool call that runs without a permission prompt, and (with a thinking-capable model like `glm-5.3`) reasoning surfaced as a separate thought block. Writes and shell commands require approval in the default mode.
+
+#### 5. Iterating on the agent
+
+After editing the source, rebuild:
+
+```bash
+npm run build
+```
+
+Zed spawns a fresh agent process per thread, so the easiest way to pick up changes is to **start a new thread** with the glm agent. If you see stale behavior, fully quit and reopen Zed — that guarantees no in-flight process is reused.
+
+For a tighter inner loop, run `npm run dev` in a terminal so `dist/` rebuilds on every save; you only need to start a new Zed thread to test the latest code.
+
+#### 6. Troubleshooting
+
+- **The "glm" agent doesn't appear in the picker.** — `settings.json` likely has a JSON parse error, or your Zed build is older than `agent_servers` support. Open the Zed log via the command palette (`zed: open log`) and look for settings errors.
+- **`Error: Cannot find module '/.../dist/index.js'`** — you skipped `npm run build`, or the path in `args` is wrong. It must be absolute and point at a file that exists.
+- **`No API key found.`** — neither `Z_AI_API_KEY` nor `~/.config/glm-acp-agent/credentials.json` is set. Use Option A or Option B in step 3.
+- **`HTTP 401: Invalid API key`** — your key is wrong, expired, or for the wrong region. Rotate it on <https://z.ai/manage-apikey/apikey-list>.
+- **A write or command did not run.** — approve the ACP permission prompt for that tool call. Rejected or cancelled prompts are reported back to the model as skipped operations.
+
+### Neovim / VS Code / JetBrains / any ACP client
+
+Any client that supports configuring an ACP agent via a `command` + `args` invocation works the same way:
+
+- If you installed via `npm install -g glm-acp-agent@latest`, set `command` to `glm-acp-agent` (no args required).
+- If you built from source, set `command` to `node` and `args` to `["/absolute/path/to/glm-acp-agent/dist/index.js"]`.
+
+Supply `Z_AI_API_KEY` in the environment, or run `glm-acp-agent --setup` once so the agent reads the key from disk on launch.
+
+### Authentication
+
+The agent advertises two authentication methods at `initialize` time:
+
+1. An **`agent`-default** method — the agent will read the API key itself, either from the `Z_AI_API_KEY` environment variable or from the credentials file written by `glm-acp-agent --setup`.
+2. An **`env_var`** method (experimental SDK extension) describing the `Z_AI_API_KEY` variable so capable clients can prompt the user and inject it.
+
+ACP clients that support the auth-methods proposal will use whichever method they recognise; clients that don't handle auth methods should set `Z_AI_API_KEY` themselves before launching the agent (or run `glm-acp-agent --setup` once and let the agent read it from disk).
+
+---
+
+## Project Structure
+
+```text
+src/
+├── index.ts                  # Entry point – starts stdio connection or --setup flow
+├── setup.ts                  # Interactive credential setup (`--setup`)
+├── llm/
+│   ├── glm-client.ts         # OpenAI-compatible client for Z.AI / Zhipu AI
+│   └── credentials.ts        # API-key resolution (env var > credentials.json)
+├── protocol/
+│   ├── connection.ts         # Sets up the ACP stdio connection
+│   ├── agent.ts              # GlmAcpAgent – ACP protocol implementation
+│   ├── slash-commands.ts     # Discovers .claude commands/skills; expands `/name`
+│   └── session-store.ts      # On-disk persistence for load/fork/resume
+├── tools/
+│   ├── definitions.ts        # Tool JSON schemas (function-calling format)
+│   └── executor.ts           # ToolExecutor – dispatches tool calls
+└── tests/
+    ├── agent.test.ts         # Protocol-level tests for GlmAcpAgent
+    ├── credentials.test.ts   # Credential resolution and --setup persistence
+    ├── executor.test.ts      # Tests for ToolExecutor
+    ├── glm-client.test.ts    # Tests for streaming / tool-call assembly
+    ├── transport-recovery.test.ts # Connection-loss retry and session recovery
+    ├── slash-commands.test.ts # Command discovery and `/name` expansion
+    └── integration.test.ts   # End-to-end tests over the real ACP ndjson transport
+```
+
+---
+
+## Building & Testing
+
+```bash
+npm run build   # one-shot TypeScript compilation → dist/
+npm run dev     # watch mode
+npm test        # build + run unit tests with the node:test runner
+```
+
+The test suite covers:
+
+- ACP protocol-version negotiation, capability advertising, and auth method shape
+- Session lifecycle (`new` / `list` / `close`, filter by `cwd`)
+- Prompt loop streaming, tool-call assembly, max-turn cap, cancellation, stop-reason mapping (`stop` → `end_turn`, `length` → `max_tokens`, `content_filter` → `refusal`, `tool_calls` exhausted → `max_turn_requests`)
+- Content-block conversion (`text`, `resource_link`, embedded `resource`)
+- Token usage reporting on the `PromptResponse`
+- Tool call lifecycle (`pending` → `in_progress` → `completed` / `failed`)
+- Agent-owned local file and shell tools that work without ACP `fs` / `terminal` client capabilities
+- Permission flows for `write_file` and `run_command` (allow / reject / cancel)
+- Shell-quoted argument handling for `list_files` and `run_command`
+- GLM streaming: text deltas, `reasoning_content` deltas, multi-chunk tool-call assembly, and trailing usage
+- Connection loss: one retry budget for a dropped open and for HTTP 408/409/429/5xx, a cancelled turn, an unanswered prompt dropped, partial text or a tool result kept, and the same session accepting the next prompt
+- Image preprocessing through a mocked Vision MCP client and graceful degradation on Vision MCP failures
+
+---
+
+## Troubleshooting
+
+- **`No API key found.`** — either set `Z_AI_API_KEY` in the environment, or run `glm-acp-agent --setup` (or `node dist/index.js --setup` from a source clone) once to store the key on disk.
+- **`HTTP 401: Invalid API key`** — your key is wrong or expired; rotate it on <https://z.ai/manage-apikey/apikey-list>.
+- **`Connection lost. Send the message again when you are back online.`** — the link to Z.AI dropped before this turn produced a reply. The session is still open. Send the prompt again once the network is back.
+- **`Connection lost. Send a message to continue.`** — the link dropped after this turn already produced assistant text or a tool result. That work is still in the session. Send another message to continue.
+- **Writes or commands never get to run.** — make sure your ACP client supports `session/request_permission` and that you approve the prompt for the specific tool call.
+
+---
+
+## License
+
+Apache 2.0 – see [LICENSE](LICENSE).

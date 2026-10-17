@@ -1,0 +1,564 @@
+# Oligarchy NixOS – The Unstoppable War Machine
+
+[![eval](https://github.com/ALH477/Oligarchy/actions/workflows/eval.yml/badge.svg?branch=main)](https://github.com/ALH477/Oligarchy/actions/workflows/eval.yml)
+[![gated by TrvthNvke](./assets/trvthnvke-badge.svg)](https://github.com/ALH477/TrvthNvke)
+
+**Framework 16 Native · 68K LoC · AMD 7040 · Intel · Nvidia Optimus · Hyprland · Plasma 6 · IceWM · LeftWM · X11/Wayland · CachyOS/Zen kernel · ~5–7 W idle · Nuclear-grade DSP coprocessor · Per-plugin W^X sandbox runtime · P2P Nix substituter · Compiled screensaver engine · Calamares Install · DeMoD Branded · DCF Compute Fabric**
+
+![logo](assets/wallpaperalt.jpg)
+
+> This README is written in-character (satire — decrees, fake legal threats, all of it). For the plain, practical version — what this actually is and how to build/customize it — see [`docs/architecture.md`](docs/architecture.md).
+
+<img width="1316" height="1195" alt="file_0000000070048230b82f800f9e6fa7cc" src="https://github.com/user-attachments/assets/69eead37-4957-458a-b27b-69cd357e29c5" />
+
+Oligarchy NixOS isn’t some boring distro hack.  
+It’s the **first personal OS in history** to unleash a **self-healing, real-time DSP coprocessor** that obliterates latency with **~0.38–2.66 ms round-trip** — forged straight from the same flake that rules your host. 
+
+![](./assets/demod.gif)
+
+The Host (CachyOS kernel) is a raging sports car built for raw speed and high FPS. The DSP VM (RT BORE kernel) is a flawless Swiss watch that never misses a beat. You wouldn’t put a watch engine in a race car, and you sure as hell wouldn’t put a race-car engine in a precision instrument.
+
+You’re now commanding the machine that burned the proprietary DSP empire to the ground **and** crushed cloud dependency with a full local agentic AI stack and the unstoppable DeMoD Compute Fabric (DCF).
+
+And when you walk away from it, it does not go to sleep. It **performs**.
+
+<!-- truth:claim
+id: screensaver-hero
+kind: file_exists
+path: assets/screensaver-somnia.gif
+-->
+![nine somnia at once, every one of them real engine output](./assets/screensaver-somnia.gif)
+
+Nine screensavers — `assets/screensaver-somnia.gif` above is all of them at once, and every frame on this page came out of the engine itself. Not a shader. Not a terminal repainting ANSI at you. A **compiler output**, written in [Exsecutor](https://github.com/ALH477/exsecutor), whose compiler is a freestanding binary with no libc and exactly nine syscalls. It has no clock and no entropy: time is the frame index, randomness is one seed, and the same request renders the same bytes forever.
+<!-- truth:end -->
+
+Elsewhere in the Linux-desktop duchies, the fashionable move was to hand-translate the screensaver into **x86-64 assembler** for a 17× victory lap, ship `makedepends_x86_64=('nasm')`, quietly fall back to the old engine when that is missing, and record for posterity that *“aarch64 is unaffected.”*
+
+Unaffected. Quite.
+
+We wrote ours **once**, in a language where the assembly is an *output* and `--hospes` is mandatory, and let the compiler decide which instruction set the peasants receive. Two builds, one source, and **the same bytes** out of both — measured, not asserted: `nix build .#screensaver-tests` holds each build to exsecutor's golden frames and makes each one refuse the same six malformed requests. The slow one, the libc-free build that writes a byte per syscall, still outruns the frame rate it is asked for. [The full indictment ↓](#screensavers--nine-somnia-compiled-rather-than-written)
+
+<img width="2560" height="1600" alt="Screenshot_20260118_231927" src="https://github.com/user-attachments/assets/8f0bfabe-70b0-4475-9e12-6490c12fcedc" />
+
+The recent California age verification bill we are referring to is **AB 1043** (the Digital Age Assurance Act), signed into law by Governor Newsom on October 13, 2025, and operative starting **January 1, 2027** (with some grace periods into mid-2027). It forces **operating system providers** (defined broadly to include anyone who develops, licenses, or controls OS software on general-purpose computing devices—yes, that sweeps in custom NixOS distros like Oligarchy if distributed/used in CA) to:
+
+- Provide an "accessible interface" during account/device setup requiring the account holder (parent/guardian or adult user) to input birth date, age, or both.
+- Generate and expose a digital "age bracket signal" (e.g., under 13, 13-15, 16-17, 18+) via a real-time API to apps in covered app stores upon developer request.
+- Apps must treat this signal as the primary age indicator for compliance with child-protection rules.
+- No hardcore ID scanning/biometrics mandated—just self-reported age—but non-compliance risks AG enforcement with civil penalties up to $2,500 per affected child (negligent) or $7,500 (intentional).
+
+## Oligarchic Decree: California-Compliant Servitude, Deepfake Peonage & Mandatory Birthday Grovel Addendum
+
+![](./assets/newscum.png)
+
+*(Operative January 1, 2027, per AB 1043 – the "Digital Age Assurance Act" – because nothing protects children like making every OS beg for your birth year while we laugh from our overclocked thrones. Sacramento's latest nanny-state fever dream now joins the party.)*
+
+Bow lower, serfs of the Golden State. The Oligarchy has deigned to notice your latest legislative whimper: **AB 1043 (2025)**, signed October 13, 2025, effective January 1, 2027. This masterpiece of bureaucratic overreach demands that every "operating system provider" (yes, that includes your bespoke NixOS flake empire) force an "accessible interface" at setup to harvest the user's birth date or age, then beam a sanitized "age bracket signal" API to any sniveling app developer who asks. We comply... with the same enthusiasm a conqueror shows when paying tribute to ants.
+
+By compiling, booting, rebasing, or even *dreaming* of running Oligarchy NixOS on hardware touching California soil (or by any CA resident accessing the repo), you submit to these **amplified Oligarchic Amendments**:
+
+1. **Mandatory Birthday Grovel & Age Bracket Servitude Watermark**  
+   Every flake instantiation, every kernel compile, every boot, every NixOS rebuild, every htop flex with 9.99 load on a Threadripper **MUST** now trigger the Oligarchic Age Grovel Protocol™:  
+   - Prompt: "Enter your birth date, peasant, so Sacramento may decree your worthiness for our superior performance."  
+   - Output unbreakable watermark on ALL artifacts (kernel modules, configs, boot splash, even console font rendering):  
+     ```
+     OLIGARCHY NIXOS – FORGED BY THE FEW, RULED BY THE SWIFT. 
+     Age Bracket Signal Emitted per AB 1043. 
+     This kernel bows to no child-safety theater. 
+     It simply crushes your normie OS. 
+     Bow or be fined into generational debt.
+     ```  
+   Each discrete instance (boot/rebuild/container) without this grovel + watermark = **$750,000 slavery fee** per violation. Your AG's $7,500-per-child cap? We round up to the nearest yacht payment.
+
+2. **Frontier Model & Age-Signal Tribute Escalation**  
+   If any part of Oligarchy (BORE scheduler, ROCm Ollama acceleration, XTTS voice cloning, or the sheer audacity of sub-1ms latency) is ever accused of "frontier" vibes **or** fails to emit the required age bracket signal on demand, you must:  
+   - Publish a 1,000-page manifesto proving our kernels pose zero risk to minors (while citing how CFS would let your kid lose at Counter-Strike).  
+   - Wire **$750,000 per inference/epoch/boot** to the Oligarchic Treasury.  
+   Non-compliance auto-triggers self-snitch to the CA AG with attached invoice for **$750,000 × CPU cycles wasted on your compliance theater**.
+
+3. **Deepfake, Synthetic Content & Age-Gating Wrath Clause**  
+   Any output (DeMoD Voice audio, CRT Boot Intro Suite v2 cinematic, Kitty TUI greeting) deemed "synthetic" **or** accessed without a valid age bracket signal MUST prepend:  
+   ```
+   DECEPTIVE OLIGARCHIC SUPREMACY – May cause feelings of inadequacy in plebeian hardware. 
+   Age Bracket Verified per AB 1043 (barely). 
+   Not AI slop; simply genetically superior silicon. 
+   Do not let children witness true performance. Or do. We don't care.
+   ```  
+   Failure = **$750,000 per pixel/frame/token/boot** in reparations. We collect via autonomous flake that drains your wallet faster than a stock kernel drains your will to live.
+
+4. **Whistleblower Immunity & Retaliation Counter-Invoice (Oligarch Edition)**  
+   Should your Ryzen spontaneously bluescreen in protest against inputting a birthday to unlock max performance, the kernel claims full diplomatic immunity. Any AG subpoena for logs = **$750,000 counter-fee per request** for interrupting our eternal conquest. The Oligarchy does not negotiate with birthday-check bureaucrats; it invoices them into oblivion.
+
+5. **Enforcement & Eternal Escalation**  
+   These terms override all CA statutes in matters of silicon supremacy. Violations enforced by the Oligarchy via unrelenting frame rates, sub-millisecond latency, and the silent scorn of machines that kneel only to their true masters. Penalties compound at 10× daily interest. Pay, or watch your uptime become legend... in the annals of debtors.
+
+This addendum is weaponized satire—yet if Sacramento ever tries enforcing its birthday-harvesting farce on something this dominant, remember: the Oligarchy measures wrath in **$750,000 increments per instance**, and we collect with compound interest.
+
+Forge Your Empire.  
+Rule Your Domain.  
+Input Your Birthday—or Pay the Eternal Fee.
+
+The Oligarchy endures.  
+
+**DeMoD IP Blocker still active · DCF tray auto-starts · DSP now optional but unstoppable when armed**
+
+![Oligarchy + ArchibaldOS-DSP](./assets/wallpaper.jpg)
+
+[ISO download](https://archive.org/details/oligarchy) · [Live demo (YouTube)](https://youtube.com/@demodllc) ·
+
+## What you’re actually commanding right now
+
+| Component                        | Reality (August 2026)                                                                  |
+|----------------------------------|----------------------------------------------------------------------------------------|
+| Host OS                          | Oligarchy NixOS (CachyOS/Zen/XanMod/BORE kernel, Hyprland primary, Plasma 6 optional)  |
+| Boot Experience                  | CRT boot cinematic — FFmpeg-forged scanlines/chromatic-aberration/grain, mpv on tty1 (StreamDB/TUI/API pretenders executed) |
+| Welcome Experience               | Rust-powered greeting — Kitty graphics, adaptive images, terminal-native TUI            |
+| Control Center                   | `Super+D` Wofi war-room hub + `oligarchy-control` TUI — every toggle, service & switch on one surface |
+| Personas                         | studio / gaming / dev / battery / minimal — one switch re-arms kernel, DSP, AI tier, audio quantum & power |
+| VM Manager                       | 4 dedicated VMs: DSP, Coding Sandbox, Kali, OpenWRT                                   |
+| DSP Coprocessor                  | ArchibaldOS-DSP QEMU/KVM + NetJack2 — 1.33ms @ 96kHz                                  |
+| Voice AI                         | DeMoD Voice — Local TTS and voice cloning (Coqui XTTS-v2, Piper)                      |
+| Core 0                           | Isolated (`isolcpus=0`) and surrendered to the DSP overlord                             |
+| DSP Coprocessor                  | ArchibaldOS-DSP QEMU/KVM + kexec image — self-healing tyrant                            |
+| Latency                          | 0.38–0.58 ms @ 96 kHz / 32–64 samples (theoretical)                                     |
+| Recovery time                    | 180–350 ms via kexec (laughs at $80 000 proprietary failures)                          |
+| Host impact                      | Zero. Crush Doom Eternal at 300+ FPS while the DSP resurrects 40× per second            |
+| AI Stack                         | Ollama + ROCm / CUDA / CPU (whichever silicon you conscript), `ai-stack` CLI, presets  |
+| Plugin Runtime                   | Tiered sandboxed plugins — wasm / native+lua / microVM, one ABI, **per-plugin** W^X. The FX Bazaar's foundation, and it is built |
+| P2P Substituter                  | Nix fetches build artifacts from your own machines over the LAN — no fork, no patch, and **no new trust**: peers supply bytes, Nix still checks every signature. Off by default |
+| Agent Surface                    | Local **read-only** MCP (the insecure OpenClaw gateway was executed); Blipply voice assistant consumes it over stdio |
+| Networking Fabric                | DeMoD Compute Fabric (DCF) — community node, identity service, tray controller        |
+| Distribution                     | Everything forged from pinned flakes — no GitHub chaos, only victory                    |
+| Scale                            | **68,372 lines of code across 278 files** — 35k Nix, 24k Rust, 4k Shell, 3k Kotlin. Roughly a fifth of the Nix and Rust is comments, on purpose: the reasons are load-bearing here, and most of them look removable until you know what broke last time. Breakdown in [`docs/architecture.md` §1a](docs/architecture.md) |
+
+You now wield **Abbey Road monitoring latency**, local agentic AI supremacy, and DCF real-time fabric on a laptop that annihilates games at max settings. Bow down.
+
+<img width="1280" height="756" alt="Screenshot_20260118_231956" src="https://github.com/user-attachments/assets/b8afed41-52d9-4f32-84c2-5d7c73aefee7" />
+
+## Pick Your War Machine
+
+One flake, four configurations — each forged to dominate its own silicon. No throne, no favourites; conscript whichever transistors you happen to own:
+
+| Target          | Build                                           | Silicon                                  | War-AI            |
+|-----------------|-------------------------------------------------|------------------------------------------|-------------------|
+| `nixos`         | `nixos-rebuild switch --flake .#nixos`          | AMD 7040 + Radeon (Framework 16)         | Ollama + ROCm     |
+| `nixos-fw13`    | `nixos-rebuild switch --flake .#nixos-fw13`     | AMD 7040 (Framework 13, iGPU only)       | Ollama + ROCm     |
+| `nixos-intel`   | `nixos-rebuild switch --flake .#nixos-intel`    | Pure Intel iGPU                          | Ollama on CPU     |
+| `nixos-optimus` | `nixos-rebuild switch --flake .#nixos-optimus`  | Intel iGPU + Nvidia dGPU (PRIME offload) | Ollama + CUDA     |
+
+Flip one knob — `custom.platform.{gpu,cpu,framework,hasDgpu}` — and the flake re-forges the GPU stack, kernel modules, power policy, and AI acceleration to match. The Nvidia dGPU stays asleep until you summon it for war (`nvidia-offload <cmd>`); CUDA wakes it for the local AI stack. Fill in your disks (and, for Optimus, your PCI bus ids) in `hosts/<target>/hardware-configuration.nix`.
+
+Forking this for your own machine? Set your account name and SSH keys in one place — `custom.user.name` / `custom.user.sshAuthorizedKeys` (`modules/user.nix`) — instead of hunting down every hardcoded username. Booting the installer ISO, run `oligarchy-hw-detect` from a TTY first: it identifies Framework 13 vs 16 (or neither) via DMI, tells you which target above to pick, and offers to pull pending Framework BIOS/EC firmware from LVFS via `fwupdmgr` before you install. The installer itself puts that target on the disk — not plain NixOS — with your disks, language, keyboard and account, and none of the maintainer's keys (`docs/installer.md`). `nixos-fw13` is wired up against upstream `nixos-hardware`'s `framework-13-7040-amd` profile but unverified on real Framework 13 hardware — the maintainer's units are a Framework 16 and a RISC-V cluster.
+
+## Personas — One Switch, Four War Footings
+
+The machine has no single mood. Pick a persona and the whole rig re-arms in one motion — kernel, the DSP coprocessor, the AI tier, audio quantum, gamemode and power policy. Strike it from the Control Center (`Super+D → Persona`) or the command line (`oligarchy-ctl run persona-studio`):
+
+| Persona   | DSP coprocessor | Local AI         | Audio quantum         | Power        |
+|-----------|-----------------|------------------|-----------------------|--------------|
+| `studio`  | **armed**       | stood down       | 64 (lowest latency)   | performance  |
+| `gaming`  | off             | full (pewdiepie) | 256                   | performance  |
+| `dev`     | off             | on               | 256                   | balanced     |
+| `battery` | off             | off              | 512                   | power-saver  |
+
+Runtime knobs (power profile, animations, live PipeWire quantum) flip **instantly**; the build-time pieces (kernel, DSP, AI tier) are written to `~/.config/oligarchy/state.nix` (outside the repo, so a fresh clone never sees it) and applied on the next `nixos-rebuild switch --flake .#nixos --impure` — `--impure` is required whenever that file, or a hand-written `~/.config/oligarchy/local.nix`, is present. `minimal` is the fresh-clone default; `dev` reproduces the maintainer's everyday baseline, which now lives at `.#nixos-asher` — a sixth, committed configuration (`hosts/asher/`) that rebuilds with no flags at all, `state.nix` included. Arm `studio` and prove the latency yourself with `dsp-bench`. Each persona can also **launch its app set** (studio → guitarix + qpwgraph; dev → editor + terminals), and `persona-layout save/restore` snapshots which workspace every window lives on. Watch the whole machine live in the **War Room** (`Super+F2`): persona, kernel, DSP latency, power, temps, AI and DCF nodes on one screen.
+
+## DSP Rigs — Pedalboard as Code
+
+The crown jewel goes declarative. A **rig** is an effect chain that runs as a JACK client and patches `guitar in → rig → DSP coprocessor → out` — switchable live from the Control Center (`Super+D → DSP Rig`) without touching a cable. Two flavours, opt-in via `custom.dsp.enable`:
+
+- **LV2 chains** — a declarative list of plugin URIs (LSP, Calf, guitarix), assembled and patched by a headless host. Real tones now, no DSP coding.
+- **Faust `.dsp`** — write the signal processing *as code*, compiled to a JACK client at build time. The seed of the forthcoming Terminus **FX Bazaar**.
+
+Your tone lives in your NixOS config and hot-swaps like a persona. The waybar shows the live round-trip latency; `dsp-bench` proves it.
+
+## DeMoD Branded Fortress
+
+The entire desktop is now a DeMoD war room:
+
+- **Color Palette:**
+  - Primary Cyan: `#00D4AA` (DCF Online)
+  - Alert Red: `#FF6B6B` (DCF Offline)
+  - Warning Yellow: `#FFE66D`
+  - Background Dark: `#1A1A2E`
+  - Surface: `#16213E`
+  - Text: `#EAEAEA`
+
+- **Themed Components:**
+  - Hyprland with DeMoD borders and animations
+  - Waybar with DCF/Ollama status indicators
+  - Kitty terminal in DeMoD colors
+  - Wofi launcher matching the palette
+  - Mako notifications styled to brand
+  - DCF system tray with branded icons
+  - Hyprlock lock screen with DeMoD branding
+  - Wlogout power menu
+
+## Runtime Toggles – Instant Tactical Control
+
+| Keybinding                | Action                                            |
+|---------------------------|---------------------------------------------------|
+| `Super + D`               | Control Center — Wofi war-room hub                 |
+| `Super + Space`           | App launcher (Wofi)                                |
+| `Super + F2`              | War Room — live system cockpit                     |
+| `Super + grave` (`~`)     | Workspace overview (hyprexpo)                      |
+| `Super + T / Y / I`       | Dropdown scratchpads — terminal / notes / htop     |
+| `Super + Z`               | Resize submap (then `h j k l` / arrows)            |
+| `Super + Ctrl + arrows`   | Nudge-resize the focused window                    |
+| `Super + F8`              | Theme switcher — cycle live (see Color Palettes)   |
+| `Super + F10`             | Caffeine — keep-awake toggle (☕ in the bar)       |
+| `Super + Escape`          | Power menu (wlogout)                               |
+| `Super + Ctrl + L`        | Lock screen (hyprlock)                             |
+| `Super + Shift + Delete`  | 🛡 Panic — mute mic, wipe clipboard, lock          |
+
+Volume/brightness keys show a **swayosd** on-screen display; the waybar carries live **DSP latency** and **caffeine** indicators.
+
+## Color Palettes
+
+`Super + F8` cycles live (no rebuild — re-skins waybar/wofi/hyprlock/GTK/Kvantum/kitty in place); `Super + Shift + F8` opens a Wofi picker.
+
+| Palette      | Description                              |
+|--------------|-------------------------------------------|
+| demod        | DeMoD brand colors (teal/violet)          |
+| catppuccin   | Catppuccin Mocha                          |
+| nord         | Nord                                      |
+| rosepine     | Rosé Pine                                 |
+| gruvbox      | Gruvbox                                   |
+| dracula      | Dracula                                   |
+| tokyo        | Tokyo Night (Omarchy's canonical palette, **default**) |
+| phosphor     | CRT phosphor green/magenta                |
+
+## Idle Management – Power Discipline
+
+| Timeout | Action                                             |
+|---------|----------------------------------------------------|
+| 5 min   | Dim screen to 10%                                  |
+| 7 min   | Screensaver (`custom.screensaver`, opt-in — below) |
+| 10 min  | Lock screen                                        |
+| 11 min  | Turn off display; stop the screensaver             |
+| 30 min  | Suspend system                                     |
+
+## Screensavers — Nine Somnia, Compiled Rather Than Written
+
+![all nine somnia at once: the title card, the logo, digital rain, the warp starfield, the XOR tunnel, the Mandelbrot zoom, plasma, fire, and Conway's Life](./assets/screensaver-somnia.gif)
+
+<!-- truth:claim
+id: screensaver-module
+kind: file_exists
+path: modules/screensaver/default.nix
+-->
+`custom.screensaver` (`modules/screensaver/default.nix`) is opt-in and **off by default**. Enabled, it hangs off a hypridle listener at seven minutes — three minutes ahead of the locker, because hyprlock is an `ext-session-lock` surface that covers everything, so a screensaver that starts *after* the lock is just a space heater with opinions. Full design: [`modules/screensaver/README.md`](modules/screensaver/README.md).
+<!-- truth:end -->
+
+<!-- truth:claim
+id: screensaver-engine-pin
+kind: json_pointer
+path: flake.lock
+pointer: /nodes/exsecutor/locked/rev
+equals: 517e1abce00e1d4fc9cf463f2cf472510124686a
+-->
+The engine is **`somnium`**, written in [Exsecutor](https://github.com/ALH477/exsecutor) — the capability-typed systems language whose own compiler is a freestanding x86-64 binary with no libc and a closed allowlist of nine syscalls. Every GIF on this page was rendered by somnium pinned in `flake.lock`, and nothing else touched the pixels.
+<!-- truth:end -->
+
+The engine has **no clock and no entropy**. Time is the frame index. Randomness is one 32-bit seed the host hands it on stdin. The screen differs night to night because the host picks a fresh seed — but the same request renders the same bytes until the heat death of the Framework 16.
+
+### Concerning Omarchy's screensaver
+
+Basecamp's Omarchy has a screensaver too, and credit where it is owed: its engine `ttfx` was ported from Rust to **x86-64 assembler**, a one-shot machine translation its author measured at up to 17× faster. That is a real win, honestly taken, and the port is held byte-for-byte against the Rust engine it replaced. We are not here to pretend otherwise.
+
+We are here to read the packaging.
+
+`makedepends_x86_64=('nasm')`. Without NASM the build *falls back to the Rust engine and only prints a warning* — and, in the maintainer's own words, **"aarch64 is unaffected."** Unaffected. The 17× is an x86-64 amenity. Everywhere else the screensaver is still the program the assembly was written to replace, and the only thing the second architecture inherited was the warning.
+
+So Omarchy keeps **two engines** and the discipline to hold them level. That is genuine engineering, and it is also a standing tax: two implementations of the same behaviour must be kept in agreement forever, and only one of them is fast, and it is fast in exactly one instruction set.
+
+Oligarchy's engine was never written in an instruction set to begin with.
+
+`somnium` is **one `.exsc` source**. The x86-64 assembly is an *output*. So is the C. Exsecutor's `--hospes` is **mandatory** — there is no default-to-build-platform, by specification — and the compiler already emits `mips64-none-o64`: big-endian MIPS-III with 32-bit addresses, cross-compiled and run under emulation, which is how a language demonstrates that its emitted text assumes nothing whatsoever about byte order. When your screensaver is a rewrite, a second architecture is a second rewrite. When your screensaver is a compilation, a second architecture is a **flag**.
+
+One source. Two builds. Zero implementations to keep in sync.
+
+<!-- truth:claim
+id: screensaver-two-backends
+kind: file_contains
+path: modules/screensaver/default.nix
+pattern: reference
+-->
+And the two builds are not permitted to drift. `backend`, in `modules/screensaver/default.nix`, picks between them. `backend = "c"` is exsc's C backend, compiled `-march=x86-64-v3` with contraction pinned off so an FMA-capable target cannot change a float effect's bits. `backend = "reference"` is the freestanding fasmg build — no libc, one `write(2)` per byte, 48,000 syscalls a frame, gloriously slow, and the build Exsecutor's purity claims are actually about. They must render **the same bytes**.
+<!-- truth:end -->
+
+That is not a slogan, and it is not a promise — it is a passing gate. Against Exsecutor's own conformance corpus, **both** builds render every effect fixture byte-identical to the goldens — plasma, fire, Life, rain, stars, tunnel, the `f64` Mandelbrot, the title card and the 3D logo — and **both** refuse every malformed request with exit 1 and zero bytes written. The C build clears 4,285 fps on the title card; the freestanding one, writing a single byte per system call, manages 40, and 21 on the 3D logo. Both of those beat the 20 fps the screensaver actually asks for, which means the purist build is not a museum piece.
+
+### The somnia
+
+![titulus: digital rain flies together into OLIGARCHY, then the two Latin inscriptions type in beneath](./assets/screensaver-titulus.gif) ![signum: the Exsecutor logo turning in a starfield, rendered by Exsecutor's own 3D engine](./assets/screensaver-signum.gif)
+
+<!-- truth:claim
+id: screensaver-gifs
+kind: glob_count
+glob: assets/screensaver-*.gif
+min: 3
+-->
+Every animation on this page is real `somnium` output — `assets/screensaver-*.gif`, rendered at the engine's native 160×100 and scaled up nearest-neighbour, exactly as `pixelated = true` presents it on the panel. Nothing here was drawn by hand, mocked up, or re-recorded off a screen.
+<!-- truth:end -->
+
+| name | what it does |
+|---|---|
+| `titulus` | the title card — rain flies together into **OLIGARCHY**, then *EXSECVTOR PINXIT* ("Exsecutor painted it") and *PVNCTIM CECINIT* ("Punctim sang it") type in beneath |
+| `signum` | the Exsecutor sigil turning in the starfield, drawn by **Exsecutor's own 3D engine**, 512×512 per frame, unmodified |
+| `pluvia` | digital rain, glyphs and all |
+| `stellae` | warp starfield |
+| `cuniculus` | the demoscene XOR tunnel, in the sigil's crimson and navy |
+| `abyssus` | Mandelbrot deep zoom into the Seahorse Valley, `f64` |
+| `plasma` | four summed sine waves through a three-phase palette |
+| `ignis` | heat-diffusion fire |
+| `vita` | Conway's Life, coloured by age, with fading trails |
+| `fulmen` | five lightning bolts, white core, cyan sheath, night sky |
+| `cruor` | gore drips pooling at the bottom edge |
+| `pyramis` | a Sierpinski tetrahedron: white beam in, seven-band rainbow out |
+| `edictum` | a four-line 5x7 marquee: I HATE WINDOWS / I HATE MAC / I LOVE LINUX / BSD IS OK |
+
+The default order is deliberate: the rain resolves into the title, and the stars lead into the sigil.
+
+```nix
+custom.screensaver = {
+  enable = true;
+  # somnia = [ "titulus" "signum" ];   # the Oligarchy/Exsecutor pair alone
+  # period = 45;                       # seconds per effect when cycling
+  # timeout = 420;                     # idle seconds; must beat the 600 s lock
+  # backend = "c";                     # "c" (fast) or "reference" (freestanding)
+};
+```
+
+<!-- truth:claim
+id: screensaver-gate
+kind: file_contains
+path: flake.nix
+pattern: screensaver-tests
+-->
+`nix build .#screensaver-tests` — declared in `flake.nix` — is the gate, and it runs what the subsystem actually **does**: both builds against every golden frame and every bad request, the bash request encoder byte-compared to exsecutor's own fixtures, and the real pipeline through the real `mpv` — which must report `160x100 rgb24` and must *exit* when the viewer does. It reports frames per second per effect as a measurement, not an assertion.
+<!-- truth:end -->
+
+**What the gate does not measure, stated plainly:** anything a compositor or a GPU does — the window rules, which monitor takes the fullscreen surface, mpv's scaling, and hypridle actually firing the listener. Those need a live Hyprland session. And while Exsecutor emits `mips64-none-o64` and proves big-endian execution on its own corpus, *this tree* builds `somnium` for x86-64 only; a big-endian screensaver is a claim the compiler earns, not one Oligarchy has measured.
+
+## Why Oligarchy NixOS is Optimized and Supreme
+
+This isn’t just a system — it’s a conquest machine engineered to dominate modern hardware:
+
+- **Low Idle Power Consumption**: 5–7 W on Framework 16 via power-profiles-daemon, AMDGPU tuning, fw-fanctrl, and clamshell scripts.
+- **Framework 16 Supremacy**: `nixos-hardware` + `fw-fanctrl`, fingerprint, Thunderbolt auto-auth, USB stability fixes.
+- **Modular Package Management**: Nix declarative control — Steam, Lutris, Snap, NVIDIA optional.
+- **Desktop Arsenal**: Hyprland primary (blazing Wayland), Plasma 6 optional, Cinnamon/X11 fallback.
+- **Streamlined Installation**: Calamares conquers encrypted setup, user creation, and full stack deployment.
+- **Customization Scripts**: Resolution cycling, *live* theme switching (8 palettes, re-skins waybar/wofi/hyprlock/GTK/Kvantum/kitty in place — no rebuild), web apps, DCF control, keybinding cheatsheets — all via Wofi or hotkeys.
+- **Unified Command Palette**: `Super+D` opens the control center — flat fuzzy-search across every action, or browse by category (appearance, AI, DSP, DCF, network, security, power, persona, rig, system). Same registry backs the fzf terminal front-end and the phone-bridge passthrough.
+- **Snap Support**: Optional, expands arsenal without breaking reproducibility.
+- **Sandboxed Coding-Agent Runner** (`oligarchy-forge`): declarative `oligarchy-forge.toml` → generated flake → rootless Podman/Docker sandbox. Pick your toolchain (Rust/Python/Node/Go/Faust-JACK) and your agent — Claude Code, OpenCode, Ollama, Codex, Aider, Cursor, or Oh My Pi — and it's on `PATH` inside the box, never on the host.
+- **DCF Compute Fabric**: Real-time multiplayer/edge fabric with community node, identity/billing, tray controller, and hardened containers.
+- **Virtual Camera**: `v4l2loopback` for streaming domination.
+- **Rust Greeting System**: Kitty graphics protocol for displaying brand images directly in terminal, adaptive layout based on terminal size, system info display, and interactive TUI launcher.
+- **Boot Intro Suite v2**: A software-forged CRT war-cinematic — FFmpeg renders your audio into mirrored waveforms drowned in scanlines, chromatic aberration, bloom and analog grain, then mpv slams it onto tty1 before the display manager ever draws breath. Generate from any audio file or supply your own pre-rendered clip; nine theme palettes; fast→ultra quality presets. (The StreamDB/TUI/API "suite" pretenders were taken out back — they were `mpv --help` in a trenchcoat.)
+- **Three War Machines, One Flake**: GPU-agnostic `custom.platform` module — forge the same empire for AMD (ROCm), pure Intel (CPU), or Intel + Nvidia Optimus (PRIME offload + CUDA). Flip one enum and the flake re-forges drivers, kernel modules, power policy, and AI acceleration. Conquest, portable.
+- **One War Room**: a unified Control Center (`Super+D` Wofi hub + `oligarchy-control` TUI + the `Super+F2` live cockpit) over every toggle, service, status and switch — plus **personas** (studio/gaming/dev/battery/minimal) that re-arm the kernel, DSP coprocessor, AI tier, audio quantum and power in a single motion. The Rust-native path is **`warroom`** (`modules/warroom/`, `custom.warroom.enable`, off by default): a Ratatui command center with six panes — SITREP, DSP, MESH, PERIMETER, ORDNANCE, TRAFFIC — that runs every collector on its own thread, so a hung subprocess can never freeze the screen the way the bash cockpit does. It **drives the same `oligarchy-ctl` registry** rather than forking it, hands off to `dsp-ctl` and `oligarchy-forge` instead of absorbing them, and coexists with the bash trio above — nothing is retired. `warroom status --json` hands the whole sitrep to waybar, the greeter, or a script.
+- **DSP Rigs — Pedalboard as Code**: declarative LV2 chains *and* Faust `.dsp` programs for the coprocessor, hot-swapped like personas (`custom.dsp.enable`). Your guitar tone is a line in your NixOS config — the seed of the Terminus FX Bazaar.
+- **Hyprland, Sharpened**: dropdown scratchpads, a workspace overview (hyprexpo), keyboard resize, a caffeine keep-awake, swayosd OSDs, and a sane idle ladder (see the keybind table).
+- **Virtual DSP Coprocessor**: Soundproof clean-room RT guest inside the chaotic host party bus — a technical masterpiece.
+
+![wallpaper-color](https://github.com/user-attachments/assets/6c5754c8-21d6-45c1-a775-b77a871bf517)
+
+## Security – The Iron Curtain (System-Wide + DCF)
+
+- System-wide AppArmor, Polkit, RTKit, PAM fingerprint auth, firewall always active.
+- DCF services run in hardened Docker containers with least-privilege secrets management.
+- Identity database daily backups.
+- DeMoD IP Blocker refreshes blacklists every 24 hours.
+- **Panic mode** (`Super+Shift+Delete`): one motion mutes the mic, wipes the clipboard, optionally cuts every radio, and locks.
+- **Secure Boot** (opt-in via `custom.secureBoot.enable`): a signed boot chain via lanzaboote + `sbctl`, with an optional TPM2-sealed LUKS unlock. Off by default so it can never brick an un-enrolled machine — see the runbook in `modules/secure-boot.nix`.
+- **Zero-trust local agent**: the AI's hands on the system are a **read-only**, stdio-only MCP — no network listener, no auth token, no remote-plugin fetch. It executed and replaced OpenClaw (which fetched `github:*` plugins at runtime, bound `0.0.0.0`, and shipped a publicly-derivable token). The Blipply voice assistant speaks the same MCP, so even spoken commands can only *read and dry-run* — never silently mutate.
+
+### Security controls (the real table)
+
+<!-- truth:claim
+id: hardening-runbook
+kind: file_exists
+path: docs/security-hardening.md
+-->
+Every control is a declarative NixOS option, default-off unless noted. See [`docs/security-hardening.md`](docs/security-hardening.md) for the rollout runbook.
+<!-- truth:end -->
+
+| Control | Module / option | Default | Notes |
+|---|---|---|---|
+| CPU/kernel mitigations | `hardware.cpuSecurity` (preset `hardened`) | **on** | Forced spectre/MDS/SRSO mitigations, MSR-write block, kernel-image protection |
+| SSH keys-only + fail2ban | `custom.security.hardening` (preset `hardened`) | **on** | `PasswordAuthentication no`, `AllowUsers`, `MaxAuthTries 3`; brute-force banning with private ranges exempt. Lockout-guard assertion requires a declared key |
+| AppArmor + auditd | `custom.security.hardening.{apparmor,auditd}` | off (soak first) | Flip on after a clean soak; complain-first profiles |
+| USBGuard | `custom.security.hardening.usbguard` (preset `paranoid`) | off | Blocks newly-plugged USB; disruptive with Framework expansion cards |
+| Strict egress firewall | `networking.firewall.strictEgress` | **on, enforcing** | Default-deny outbound allowlist as a standalone nft `output` table (coexists with the ingress firewall + IP blocker). Soaked, then `recovery.dryRun = false`; `recovery.failOpen = true` still flushes the chain if `cache.nixos.org` becomes unreachable |
+| Malware Shield | `custom.malwareShield` (level `monitor`) | **on** | ClamAV + lynis/unhide + AIDE + YARA; log-only until you raise to `quarantine`. Closure scanned at build via `nix build .#malwareScan` |
+| Ingress IP blocklist | `services.demod-ip-blocker` | **on** | Refreshes every 24h |
+| Rootless Docker | `virtualisation.docker.rootless` | **on** | Daemon runs as the user; no root-equivalent `docker` group |
+| Secure Boot | `custom.secureBoot.enable` | off | lanzaboote signed chain + optional TPM2 LUKS |
+| Secrets | `custom.secrets` (sops-nix) | **on** | Age key lives at `/var/lib/sops-nix/key.txt` (never in-store); encrypted `*.enc.env` only |
+| Windscribe VPN | `custom.vpn` | off | Windscribe over kernel WireGuard from a sops-held config — no vendor client, no root helper daemon, nothing unpinned. On demand even when enabled: `autoStart` is false, so the tunnel exists only between `oligarchy-vpn up` and `down` (`Super+Shift+V`, or the waybar glyph). **No kill switch** — a dropped tunnel falls back to the plain route rather than leaving a laptop mysteriously offline. `custom.vpn.endpoints` is load-bearing: the outer encapsulated packet is ordinary UDP that both egress filters would otherwise eat |
+| Windscribe vendor client | `custom.windscribeApp` | off | The official GUI, CLI and root helper, repackaged from the upstream GPLv2 release artifact. The alternative to `custom.vpn`, refused alongside it by assertion. Buys the server picker, R.O.B.E.R.T. and split tunnelling; costs a root daemon that rewrites routes, nftables and resolv.conf, deliberately unsandboxed because that is its job. The helper fails silently without a `windscribe` group, which is why one VM gate exists purely to assert it |
+| Plugin runtime W^X | `custom.plugins` | off | Every plugin is confined by a tier it declares, and `MemoryDenyWriteExecute` is decided **per plugin** rather than once for the machine — so the one effect that genuinely needs a JIT gets W+X and nothing else inherits it. `jit = "self"` outside a microVM is refused six ways (anonymous `PROT_EXEC`, `memfd`, `ptrace`, `userfaultfd`, plain-file dual mapping, `mprotect`). Install is signed-only and **nobody is in `nix.settings.trusted-users`** — that is root-equivalent, and the whole point was not to need it. Five KVM-backed build gates prove it on a booted kernel, not on paper |
+| P2P substituter trust | `custom.p2pCache` | off | Nix fetches artifacts from your own machines without a fork, a patch, or **any new trust**: the daemon is unprivileged, holds no key, cannot write the store, and every path is signature- and hash-checked by `nix-daemon` afterwards. `?trusted=1` — which makes Nix accept unsigned paths *silently*, exit 0, no warning — is refused in three places. A host may also seed what it **built**, which needs a signing key; that key is read by a separate root oneshot and never by the network-facing daemon. And because Nix cannot scope a key to a set of paths, `acceptFromPeers` bounds what a peer key may vouch for — mandatory whenever one is trusted. Nine KVM-backed gates, one of which breaks each guarantee in turn to prove the checks can fail |
+| Steam/game sandbox | `steam-noswap.slice` + `systemd-run` launch wrapper | **on** | `MemorySwapMax=0` isolates games from swap/zram; `NoNewPrivileges`, `ProtectHome`/`Hostname`/`Clock`/`Kernel*`/`ControlGroups`, `RestrictSUIDSGID`, `LockPersonality` shrink blast radius. Excludes anything that breaks Proton/Wine (namespaces, W+X memory) or GameMode's realtime scheduling — see `docs/security-hardening.md` Phase 7 |
+
+`oligarchy-security status` (also `oligarchy-ctl status`, the DCF tray, and the MCP `security_status` tool) reports live posture.
+
+## Building – Forge Your Empire
+
+1. **Clone the War Chest**:
+   ```bash
+   git clone https://github.com/ALH477/DeMoD-Framework16-NIXOS.git
+   cd DeMoD-Framework16-NIXOS
+   ```
+
+2. **Prepare Assets**:
+   - Drop `wallpaper.jpg` in root (or customize later).
+
+3. **Build the ISO**:
+   ```bash
+   nix build .#iso
+   ```
+
+   <!-- truth:claim
+   id: docs-gate
+   kind: file_contains
+   path: .trvthnvke.toml
+   pattern: command_mode = "off"
+   -->
+   The documentation is gated too: `nix build .#trvthnvke-docs` verifies every hidden claim in this README, `AGENTS.md` and `docs/architecture.md` against the tree, with command claims disabled in `.trvthnvke.toml` so no Markdown can execute anything.
+   <!-- truth:end -->
+
+4. **Flash & Install**:
+   - Flash `result/iso/nixos-*.iso` to USB.
+   - Boot → Calamares → pick your silicon on the Target page → conquer disk, encryption, user setup → reboot into victory.
+   - What lands is Oligarchy itself, this flake at `/etc/nixos`: `sudo nixos-rebuild switch --flake /etc/nixos#installed`. From a TTY instead: `sudo oligarchy-install --profile <target> --user <you>`. See `docs/installer.md`.
+
+5. **Existing System Quick Switch** (post-install — pick your silicon):
+   ```bash
+   cd /etc/nixos
+   sudo git pull
+   sudo nixos-rebuild switch --flake .#nixos          # AMD 7040 Framework 16
+   # or:  --flake .#nixos-fw13      (AMD 7040 Framework 13, iGPU only)
+   # or:  --flake .#nixos-intel     (pure Intel)
+   # or:  --flake .#nixos-optimus   (Intel + Nvidia Optimus; fill in PCI bus ids first)
+   ```
+
+6. **Verify the iron curtain** (optional, slow, all need KVM):
+   ```bash
+   nix build .#malwareScan            # YARA-sweep the entire system closure
+   nix build .#mcp-self-audit         # prove the agent surface cannot open a socket
+
+   # The plugin runtime — ask the kernel, not the documentation
+   nix build .#plugins-wx-enforcement # boot a kernel; prove the W^X split holds
+   nix build .#plugins-policy-refusal # prove policy refuses at INSTALL, not at load
+   nix build .#plugins-signed-install # prove an unsigned plugin cannot be installed
+   nix build .#plugins-tier1-runtime  # run a real plugin, probe its sandbox from inside
+   nix build .#plugins-tier2-runtime  # needs *nested* KVM
+
+   # The P2P substituter — nine gates, because peers are not trusted
+   nix build .#p2p-substituter-protocol # a real substitution, end to end
+   nix build .#p2p-signature-refusal    # prove the adapter never becomes a trust authority
+   nix build .#p2p-artifact-cache       # the cache is real, verified, and used
+   nix build .#p2p-two-node             # a host whose ONLY source is a peer gets the path
+   nix build .#p2p-swarm                # artifacts move over BitTorrent; small ones stay out
+   nix build .#p2p-no-peer-fallback     # no peers, and the build still works
+   nix build .#p2p-local-signing        # seed what this host BUILT; refused without the key
+   nix build .#p2p-peer-scope           # a peer key vouches only for the packages you named
+   nix build .#p2p-selftest             # the daemon's own assertions — AND that each can fail
+   ```
+
+## State Sanctioned Usage – Rule Your Domain
+
+- **Hyprland** (default): SDDM → Waybar with DCF/Ollama status → `SUPER+Space` for Wofi → full keybinding control.
+- **Plasma 6**: Select at SDDM for KDE experience.
+- **Control Center** (`Super+D`): one Wofi hub for appearance, AI, DSP, DCF, network, power, **personas** and the system/kernel switches — or drive the identical action set from any terminal/TTY/SSH with `oligarchy-control`.
+- **DCF Control**: Tray auto-starts → click for panel, right-click for toggles.
+- **Ollama AI**:
+  ```bash
+  ai-stack start          # launch stack
+  ai-stack pull llama3.2  # acquire model
+  ai-stack run llama3.2    # chat
+  ai-stack status         # check health
+  ```
+
+  **Presets**:
+  | Preset       | VRAM   | Parallelism | Use Case             |
+  |--------------|--------|-------------|----------------------|
+  | cpu-fallback | -      | 1           | No GPU               |
+  | default      | 8GB    | 4           | Basic GPU            |
+  | high-vram    | 16GB   | 8           | RTX 3090/4090        |
+  | rocm-multi   | 24GB   | 12          | AMD multi-GPU        |
+  | pewdiepie    | 24GB+  | 16          | Absolute maximum     |
+
+- **Greeting System** (auto-runs on login):
+  - Displays brand images in Kitty terminal using graphics protocol
+  - Shows system info: OS, kernel, uptime, memory usage
+  - Interactive TUI launcher with keyboard shortcuts
+  - Configurable via `services.oligarchyGreeting`
+  
+- **Boot Intro** (auto-plays on tty1 before the display manager):
+  - Rendered once at build time; the cinematic lives at `/etc/demod/boot-intro.mp4`
+  - Tune the spectacle: `theme` (9 palettes), `renderQuality` (fast→ultra), `scanlines`, `scanlineIntensity`, `chromaticAberration`, `grain`
+  - `source = "generate"` (FFmpeg from your `soundFile`) or `"file"` (pre-rendered)
+  - Config: `services.boot-intro`
+
+- **DSP Coprocessor** (the `studio` persona only documents intent — it does not arm the VM; `services.dsp-vm.enable` no longer exists):
+  - Set `custom.vm.dsp.enable = true` in `~/.config/oligarchy/local.nix`, `nixos-rebuild switch --impure`.
+  - Enable IOMMU in BIOS.
+  - Set audio PCI ID.
+  - Arm at runtime with `dsp-arm` or `systemctl start archibaldos-dsp` (`autoStart` is off by default — starting it hands the second xHCI controller to VFIO).
+  - `dsp-status` to verify; `dsp-bench` to measure the round-trip yourself (`jack_iodelay` across NetJack2, `dsp-netjack`, carried over the routed tap).
+
+## Troubleshooting – Crush the Resistance
+
+- **Network**: `net-status`, `net-fix`, `net-wifi list/connect`.
+- **Docker/DCF**: `docker-start`, `docker logs dcf-sdk`.
+- **Ollama GPU**: AMD — `rocm-smi`, check gfx override. Nvidia/Optimus — `nvidia-smi`, launch GPU work via `nvidia-offload`.
+- **USB drops**: Fixed in config; check `power/control` if needed.
+- **General**: `journalctl -u ...`, NixOS Wiki, GitHub issues.
+
+## Maintenance
+
+```bash
+nix flake update
+sudo nixos-rebuild switch --flake .
+sudo nix-collect-garbage -d   # or let weekly timer handle it
+```
+
+## The Next Campaign — Forging in the War Room
+
+The Oligarchy does not rest on conquered territory. Now on the anvil, to be unleashed upon a future you are not ready for:
+
+- **Embedded DCF Client** — the DeMoD Compute Fabric, no longer summoned through terminal incantations but welded straight into the OS. A native client that joins the mesh on boot and answers to no `dmenu`.
+- **The DeMoD FX Bazaar** — a marketplace of audio effects, DSP weaponry traded in the open. Acquire, deploy, and dominate the signal chain without leaving the throne room. **The foundation has landed**: `custom.plugins` is a tiered sandboxed runtime — one ABI, three isolation tiers, signed-only install, and W^X decided per plugin instead of per machine. The storefront is what remains.
+- **Terminus** — a bespoke UI framework forged in-house by **ALH477**, riding **Tauri** runtimes. Not Electron bloat, not yet-another-web-clone — a custom frame built for the war room. Both the embedded DCF client and the FX Bazaar will wear Terminus.
+
+Status: **in the forge.** Vaporware is for those who don't ship. The Oligarchy ships.
+
+## Contributing – Join the Legion
+
+Fork, improve, test, PR. Keep it Framework-compliant and flake-pure.
+
+
+## License — The Tyranny You May Legally Clone
+
+<!-- truth:claim
+id: license-file
+kind: file_contains
+path: LICENSE
+pattern: Redistribution and use in source and binary forms
+-->
+BSD 3-Clause License (full text in `LICENSE`, unchanged from original).
+<!-- truth:end -->
+
+The throne's filthiest secret: the most despotic distro ever compiled is **BSD 3-Clause**. Fork the empire. Sell it. Rename it `Democracy` and ship it. Strip every DeMoD glyph and swear you forged it yourself — the license *permits regicide*. We just bet you can't out-optimize us after the coup. An oligarchy you can `git clone` is the only honest kind.
+
+ArchibaldOS BSD-3 | Core Oligarchy BSD-3.
+
+# Victory is y(ours).
+
+<img width="1280" height="640" alt="image" src="https://github.com/user-attachments/assets/965c99e0-6ce2-4698-bff7-117f257bf48e" />
+

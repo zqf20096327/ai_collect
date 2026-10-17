@@ -1,0 +1,317 @@
+# vibops-mcp
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![MCP Tools](https://img.shields.io/badge/MCP_tools-117-58a6ff.svg)](https://github.com/VibOpsai/vibops-mcp)
+[![Tests](https://img.shields.io/badge/tests-4%2C900_passing-brightgreen.svg)]()
+
+The MCP server for **VibOps — The AI Infrastructure Engine**. From code to GPU in one conversation.
+
+## The problem
+
+Getting an AI app from code to production on GPUs requires stitching together 9+ tools — git, Docker, CI/CD, Helm, kubectl, GPU monitoring, cost management, compliance, alerting. Each with its own API, dashboard, and cost model. No single interface spans the full pipeline.
+
+## The solution
+
+`vibops-mcp` connects your AI assistant to VibOps — the engine that clones, builds, deploys, scales, monitors, fixes, and bills your apps and agents on any GPU, any cluster, any cloud. One `pip install`, 117 tools, one conversation.
+
+- **Ship** — clone repos, build containers, deploy models, run Helm/kubectl, trigger pipelines, submit Slurm jobs
+- **Operate** — scale deployments, manage VMs (Proxmox/XO/vSphere/HPE VME), detect and remediate GPU anomalies
+- **Observe** — GPU utilisation, workload breakdown, MTTR, cost estimates, live K8s deployments
+- **Govern** — AI Act compliance, SOC 2/RGPD reports, immutable audit chain, policy management
+- **FinOps** — per-agent cost tracking, budget enforcement, chargeback, spend trends, waste analysis
+
+Every operation goes through your VibOps instance and is recorded in the immutable audit log.
+
+## Installation
+
+```bash
+pip install git+https://github.com/VibOpsai/vibops-mcp.git
+```
+
+Released versions are also on PyPI, if you prefer a pinned one:
+
+```bash
+pip install vibops-mcp
+```
+
+## Configuration
+
+You need two environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `VIBOPS_URL` | Base URL of your VibOps instance, e.g. `https://vibops.example.com` |
+| `VIBOPS_TOKEN` | API token — create one in VibOps → Settings → API Tokens |
+
+## Connecting your client
+
+`vibops-mcp` speaks the Model Context Protocol, so the same server entry works
+in any MCP-compatible client. Add it to your client's MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "vibops": {
+      "command": "vibops-mcp",
+      "env": {
+        "VIBOPS_URL": "https://vibops.example.com",
+        "VIBOPS_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+Where that file lives depends on the client:
+
+| Client | Configuration file |
+|--------|--------------------|
+| Claude Desktop | `~/.config/claude/claude_desktop_config.json` — on macOS, `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Cursor | `.cursor/mcp.json` in the project root, or the global config |
+
+Other MCP clients read the same block from their own configuration file; see
+your client's documentation for its location. Some ship a command that writes
+the entry for you instead of editing the file by hand.
+
+## Available tools
+
+### Observation (16 tools — read-only)
+
+| Tool | Description |
+|------|-------------|
+| `list_clusters` | List clusters and GPU utilisation |
+| `list_kubectl_contexts` | List available kubectl contexts |
+| `get_cluster_deployments` | Live K8s deployment status for a cluster |
+| `get_cluster_rate` | Get configured GPU cost rate for a cluster |
+| `list_jobs` | List recent jobs with optional filters |
+| `get_job` | Get job details and result |
+| `get_job_metrics` | Job success rate, latency P50/P95/P99, error breakdown |
+| `get_gpu_metrics` | Hourly GPU utilisation time-series |
+| `get_workload_breakdown` | Job count by workload type |
+| `get_mttr` | Mean Time To Resolve GPU alerts |
+| `get_cost_estimate` | Estimated GPU spend |
+| `list_gateways` | List registered gateways and status |
+| `list_alerts` | List GPU alerts (open or resolved) |
+| `list_secrets` | List secrets (names only, never values) |
+| `list_providers` | List configured AI/GPU cloud providers |
+| `list_pipelines` | List automation pipelines |
+
+### Actions (18 tools — write)
+
+| Tool | Description |
+|------|-------------|
+| `scale_deployment` | Scale a K8s deployment replica count |
+| `deploy_model` | Deploy an AI model onto a GPU cluster |
+| `helm_upgrade` | Run helm upgrade --install (destructive — requires confirmed=True) |
+| `helm_uninstall` | Uninstall a Helm release (destructive — requires confirmed=True) |
+| `run_kubectl` | Run an arbitrary kubectl command |
+| `git_clone` | Clone a git repository |
+| `create_secret` | Store an encrypted secret |
+| `trigger_pipeline` | Manually trigger an automation pipeline |
+| `slurm_get_cluster_info` | Get Slurm cluster info and partition details |
+| `slurm_list_jobs` | List Slurm jobs with optional filters |
+| `slurm_get_job_status` | Get status of a specific Slurm job |
+| `slurm_get_job_output` | Retrieve stdout/stderr of a completed Slurm job |
+| `slurm_submit_job` | Submit a new Slurm job |
+| `slurm_cancel_job` | Cancel a running or pending Slurm job |
+| `registry_list_repos` | List container registry repositories |
+| `registry_list_tags` | List tags for a container image |
+| `registry_check_image` | Check image details (size, layers, created date) |
+| `registry_delete_tag` | Delete a stale image tag (requires confirmed=True) |
+
+### HPE VME / Morpheus (13 tools)
+
+| Tool | Description |
+|------|-------------|
+| `vme_list_instances` | List all VMs managed by HPE VME |
+| `vme_get_instance` | Get detailed VM status and configuration |
+| `vme_list_servers` | List physical hosts with CPU/memory |
+| `vme_list_clouds` | List configured clouds/zones (KVM, VMware) |
+| `vme_start_instance` | Start a stopped instance |
+| `vme_stop_instance` | Stop a running instance |
+| `vme_restart_instance` | Restart an instance |
+| `vme_create_snapshot` | Create a snapshot (pre-migration) |
+| `vme_list_snapshots` | List snapshots for an instance |
+| `vme_convert_image` | Convert disk format (vmdk → qcow2) — VMware migration |
+| `vme_list_virtual_images` | List available images and templates |
+| `vme_detect_vm_waste` | Detect stopped/idle VMs with recommendations |
+| `vme_get_activity` | Recent audit log from Morpheus |
+
+### Hypervisors — Proxmox, vSphere, Xen Orchestra (30 tools)
+
+Documented last and listed here in full: these were registered and served but
+absent from this README, so a reader counting the sections found 87 of the 117
+the first line promises. They now add up.
+
+**Proxmox VE (5 tools)**
+
+| Tool | Description |
+|------|-------------|
+| `proxmox_list_vms` | List VMs across the cluster with status and sizing |
+| `proxmox_start_vm` | Start a stopped VM |
+| `proxmox_stop_vm` | Stop a running VM (destructive — requires confirmed=True) |
+| `proxmox_migrate_vm` | Migrate a VM to another node (destructive — requires confirmed=True) |
+| `proxmox_create_snapshot` | Snapshot a VM before a risky change |
+
+**VMware vSphere (9 tools)**
+
+| Tool | Description |
+|------|-------------|
+| `vsphere_list_vms` | List VMs with power state, host and resources |
+| `vsphere_get_vm` | Read one VM: power state, host, vCPU, RAM, NICs |
+| `vsphere_get_vm_metrics` | CPU, memory and disk usage for one VM |
+| `vsphere_list_hosts` | List ESXi hosts with capacity |
+| `vsphere_start_vm` | Power a VM on |
+| `vsphere_stop_vm` | Shut a VM down (destructive — requires confirmed=True) |
+| `vsphere_restart_vm` | Restart a VM (destructive — requires confirmed=True) |
+| `vsphere_migrate_vm` | vMotion a VM to another host (destructive — requires confirmed=True) |
+| `vsphere_create_snapshot` | Snapshot a VM |
+
+**Xen Orchestra / XCP-ng (15 tools)**
+
+| Tool | Description |
+|------|-------------|
+| `xo_list_vms` | List VMs across all pools |
+| `xo_start_vm` | Start a VM |
+| `xo_stop_vm` | Cleanly shut a VM down (destructive — requires confirmed=True) |
+| `xo_migrate_vm` | Migrate a VM to another host (destructive — requires confirmed=True) |
+| `xo_snapshot_vm` | Snapshot a VM |
+| `xo_list_srs` | List storage repositories — capacity planning before a migration |
+| `xo_list_tasks` | Running XO tasks |
+| `xo_list_backups` | List configured backup jobs |
+| `xo_run_backup` | Run a backup job now |
+| `xo_restore_backup` | Restore a VM from a backup (destructive — requires confirmed=True) |
+| `xo_rolling_pool_update` | Patch every host in the pool, one at a time (destructive — requires confirmed=True) |
+| `xo_v2v_list_esxi` | List reachable ESXi hosts, for a VMware migration |
+| `xo_v2v_list_vmware_vms` | List the VMs on an ESXi host |
+| `xo_v2v_migrate` | Migrate a VMware VM onto XCP-ng (destructive — requires confirmed=True) |
+| `xo_v2v_status` | Follow a V2V migration in progress |
+
+**Cross-hypervisor**
+
+| Tool | Description |
+|------|-------------|
+| `get_vm_usage` | VM usage and cost across every declared hypervisor |
+
+### Configuration (3 tools)
+
+| Tool | Description |
+|------|-------------|
+| `set_cluster_rate` | Set GPU cost rate for a cluster (admin only) |
+| `register_gateway` | Register a new gateway (returns one-time token) |
+| `delete_gateway` | Revoke a gateway |
+
+### Agent Infrastructure Control Plane (12 tools)
+
+The missing layer between your AI agents and your GPU fleet. Works with any framework (n8n, LangChain, CrewAI, Dify) — just point to the VibOps LLM Proxy.
+
+| Tool | Description |
+|------|-------------|
+| **FinOps per agent** | |
+| `get_agent_usage` | GPU cost per agent — tokens, requests, cost, GPU-hours. *"Which agent costs the most?"* |
+| `get_agent_usage_detail` | Drill-down on one agent — daily breakdown, model distribution, cost trend |
+| `get_agent_budget` | Current budget + MTD spend for an agent |
+| `set_agent_budget` | Set monthly spend limit — soft alert at 80%, hard block at 100% (HTTP 429) |
+| **Model access control** | |
+| `get_agent_model_rules` | List model access rules — which agent can use which LLM |
+| `update_agent_model_rule` | Create a rule: glob patterns, deny-first. *"RH agents → Mistral only"* |
+| **Identity lifecycle** | |
+| `list_agent_identities` | List machine identities for agents |
+| `create_agent_identity` | Create a new machine identity (key shown once) |
+| `rotate_agent_identity` | Rotate the key for an existing identity |
+| `revoke_agent_identity` | Revoke an identity immediately |
+| **Dependency graph** | |
+| `get_agent_dependency_graph` | Full org-wide graph: agent→model, agent→connector, agent→sub-agent |
+| `get_agent_dependencies` | Dependencies for one agent — impact analysis before migration |
+
+### Governance & Compliance (21 tools)
+
+| Tool | Description |
+|------|-------------|
+| `list_anomalies` | List GPU anomalies with optional cluster/status filter |
+| `get_open_anomalies` | Get all currently open anomalies |
+| `resolve_anomaly` | Mark an anomaly as resolved |
+| `list_compliance_controls` | List compliance controls (filter by framework) |
+| `get_compliance_score` | Get the compliance score for a framework (or all) |
+| `update_compliance_control` | Update status, notes, or evidence URL for a control |
+| `list_compliance_reports` | List generated compliance reports |
+| `generate_compliance_report` | Generate a SOC 2, RGPD, or HIPAA report asynchronously |
+| `get_compliance_report` | Poll/retrieve a generated compliance report |
+| `list_audit_logs` | Query the immutable audit log with filters |
+| `verify_audit_chain` | Verify HMAC-SHA256 integrity of the full audit chain |
+| `get_policy` | Get the current organisation policy |
+| `update_policy` | Replace the organisation policy (immediate effect) |
+| `list_eval_rubrics` | List LLM-as-judge evaluation rubrics |
+| `evaluate_job` | Trigger LLM-as-judge evaluation for a job |
+| `get_job_evaluations` | Retrieve evaluation results for a job |
+| `get_ldap_config` | Get LDAP / Active Directory configuration |
+| `update_ldap_config` | Configure or enable/disable LDAP integration |
+| `get_siem_config` | Get SIEM push export configuration |
+| `update_siem_config` | Set Splunk/Datadog SIEM destination |
+| `push_to_siem` | Export audit events to configured SIEM |
+
+### GPU FinOps (4 tools)
+
+| Tool | Description |
+|------|-------------|
+| `get_budget` | Get current GPU budget and consumed spend |
+| `get_chargeback` | Get chargeback breakdown by tenant for a given month |
+| `get_spend_trend` | Get daily GPU spend trend (default: last 30 days) |
+| `get_waste_analysis` | Identify idle GPU resources and cost optimisation opportunities |
+
+## LLM Inference Proxy
+
+VibOps includes a transparent OpenAI-compatible proxy (port 8004) that sits between your AI agents and LLM inference servers (vLLM, Ollama, TGI). Every inference request is logged with agent attribution for FinOps.
+
+Your agents point to the proxy instead of the LLM directly:
+
+```
+# Before
+OPENAI_BASE_URL=http://vllm:8000/v1
+
+# After
+OPENAI_BASE_URL=http://vibops-proxy:8004/v1
+```
+
+Add a `X-VibOps-Agent-Id` header to attribute costs per agent:
+
+```bash
+curl -X POST http://vibops-proxy:8004/v1/chat/completions \
+  -H "X-VibOps-Agent-Id: pricing-agent-v2" \
+  -H "X-VibOps-Team: supply-chain" \
+  -d '{"model": "mistral:7b", "messages": [...]}'
+```
+
+The proxy captures: agent ID, team, model, tokens, latency, GPU cost — visible in the console FinOps dashboard and queryable via `get_agent_usage`.
+
+## Example prompts
+
+```
+"Clone my repo and deploy it on the GPU cluster."
+"Deploy llama3:8b on vibops-dev with 2 replicas."
+"Scale the inference deployment to 4 replicas on prod-cluster."
+"What's our GPU utilisation trend over the last 7 days?"
+"Show me the cost breakdown per cluster this week."
+"Which clusters have open critical GPU alerts?"
+"Are there any open GPU anomalies right now?"
+"Scan my infrastructure and show discovered services."
+"What's our AI Act compliance score and which controls are non-compliant?"
+"Generate a SOC 2 report for Q1 2026."
+"Verify the audit chain hasn't been tampered with."
+"Which agent costs the most in GPU this month?"
+"Show me the inference cost breakdown for the pricing agent."
+"Which agents share the same model, and what does each one cost?"
+"Create a machine identity for the pricing-agent with a 1-year expiry."
+"Show me the spend trend for the last 7 days and flag any waste."
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). All contributions require a DCO sign-off (`git commit -s`).
+
+## License
+
+MIT — free to use, modify, and distribute. See [LICENSE](LICENSE).
+
+Built on [FastMCP](https://github.com/jlowin/fastmcp) and [VibOps](https://vibops.ai) — The AI Infrastructure Engine.

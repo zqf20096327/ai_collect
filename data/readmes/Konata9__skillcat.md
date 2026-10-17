@@ -1,0 +1,171 @@
+<div align="center">
+  <img src="apps/desktop/src/renderer/src/assets/logo.png" alt="SkillCat" width="120" />
+  <h1>SkillCat</h1>
+  <p><strong>Local-first Agent SKILL manager.</strong><br />
+  Inventory every skill, explain what triggers it, find install and semantic problems, and manage them safely through the official <code>skills</code> CLI.</p>
+
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT" /></a>
+    <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey.svg" alt="Platform: macOS and Windows" />
+    <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen.svg" alt="Node >= 22" />
+    <img src="https://img.shields.io/badge/pnpm-11-orange.svg" alt="pnpm 11" />
+  </p>
+
+  <p>
+    English · <a href="README.zh-CN.md">简体中文</a>
+  </p>
+</div>
+
+---
+
+## What is SkillCat?
+
+Agent skills (SKILL.md bundles) are easy to install and easy to lose track of. They pile up in
+global directories, per-project directories, and a dozen agent-specific locations; they shadow each
+other; they drift from the version recorded in the lock file; and their trigger conditions overlap in
+ways no one notices until two skills both claim the same request.
+
+**SkillCat** scans all of them, explains each one, flags concrete problems, and performs
+install / update / remove / search through the official `skills` CLI (bundled with the app) — without
+ever taking over your files behind your back.
+
+- **Reads are local and offline.** Scanning uses the filesystem and lock files only.
+- **Writes are delegated.** Every mutation runs through the official `skills` CLI, so there is one install path, not two.
+- **Analysis is explainable.** Deterministic rules and heuristics are labeled separately; each finding ships with evidence.
+- **AI is optional.** Bring your own model key to score skills, judge duplicate/conflict candidates, and
+  generate read-only optimization suggestions.
+
+## Screenshots
+
+**Skills** — global and per-project inventory, with real link state, trigger profiles and file details.
+
+![Skills view](docs/images/en/skills.png)
+
+| Analysis | Remote search |
+| --- | --- |
+| ![Analysis view](docs/images/en/analysis.png) | ![Remote search](docs/images/en/search.png) |
+
+| Projects | Settings & updates |
+| --- | --- |
+| ![Projects view](docs/images/en/projects.png) | ![Update settings](docs/images/en/settings-updates.png) |
+
+## Features
+
+- **Inventory** — global and per-project skills across 79 known agents (Claude Code, Codex, Cursor,
+  OpenCode, Gemini CLI, Windsurf, Trae, …), with source, lock metadata, and real link state
+  (symlink / dangling / copy drift).
+- **Projects** — auto-discover projects under your scan roots by agent markers; pin and revisit them.
+  The registry stores paths only; removing an entry never deletes files.
+- **Analysis** — deterministic rules (dangling links, missing lock records, copy drift, local edits,
+  cross-scope shadowing, source conflicts) plus heuristics (trigger overlap, negative contradictions,
+  body duplication, missing trigger signals).
+- **Safe operations** — every change streams progress into a drawer with a confirmation step and can
+  be cancelled.
+- **Optimization suggestions** *(optional)* — review a single skill with your model and get actionable,
+  read-only rewrite suggestions (before/after) grounded in the bundled `skill-optimizer` rubric. Results
+  are saved and kept until you regenerate them.
+- **Trigger profiling** — extract positive and negative triggers from `when_to_use`, `dispatch_intent`,
+  descriptions, and "When to Use" sections. Annotate manually in a sidecar without touching skill files.
+- **Runtime activity** *(optional)* — install an agent bridge (OpenCode today) to record which skills
+  actually fire, with trigger phrase, task and per-agent/per-day charts.
+- **Remote search & leaderboard** — browse the skills.sh leaderboard (all-time / trending / hot) and
+  search the public index, then install straight into the current scope.
+- **AI evaluation** *(optional)* — score every skill with your own model, then judge the pre-filtered
+  duplicate/conflict candidate pairs. Results are saved and shown alongside the rule findings.
+- **Desktop polish** — light/dark themes, Chinese/English UI (follows system language), proxy support,
+  and a diagnostic `doctor`.
+
+## Installation
+
+### Requirements
+
+- **macOS** — self-contained; the `skills` CLI is bundled, so **no Node.js install is required**
+- **Windows** — requires [Node.js](https://nodejs.org/) ≥ 22 (the bundled CLI is macOS-only for now)
+- [Node.js](https://nodejs.org/) ≥ 22 and [pnpm](https://pnpm.io/) 11 when building from source
+
+### Option A — Download the app
+
+Grab the latest build from the [Releases](https://github.com/Konata9/skillcat/releases) page:
+
+- **macOS** — `SkillCat-<version>-arm64.dmg` or `SkillCat-<version>-x64.dmg` (Apple Silicon / Intel),
+  then drag **SkillCat** into `/Applications`.
+- **Windows** — `SkillCat-<version>-setup.exe`, then run the installer. Installing / updating skills
+  uses your system Node.js (see [Requirements](#requirements)).
+
+The builds are unsigned. On macOS, Gatekeeper blocks the first launch of a downloaded copy — either
+right-click → **Open**, or clear the quarantine attribute (an app in `/Applications` requires `sudo`):
+
+```bash
+sudo xattr -dr com.apple.quarantine /Applications/SkillCat.app
+```
+
+On Windows, SmartScreen may warn about an unknown publisher — choose **More info → Run anyway**.
+
+### Option B — Build from source
+
+```bash
+git clone https://github.com/Konata9/skillcat.git
+cd skillcat
+pnpm install
+pnpm desktop   # Electron app in development mode
+```
+
+On first run, set a scan root (for example `~/Workspace`) so project-level skills can be discovered.
+
+To produce distributable artifacts under `apps/desktop/release/`, run the script for the target
+platform (`pnpm dist` builds for the current platform):
+
+```bash
+pnpm dist:mac   # macOS: dmg + zip (Apple Silicon and Intel)
+pnpm dist:win   # Windows: x64 NSIS installer
+```
+
+<details>
+<summary>Behind a restrictive network? Use a mirror.</summary>
+
+```bash
+# Install
+ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ \
+  pnpm install --registry=https://registry.npmmirror.com/
+
+# Package
+ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ \
+ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/ \
+  pnpm dist
+```
+
+</details>
+
+## Documentation
+
+Architecture, design decisions and reference material live in [`docs/`](docs/):
+
+| Document | Contents |
+| --- | --- |
+| [docs/architecture.md](docs/architecture.md) | Core + UI model, repository layout, process/IPC, build & packaging |
+| [docs/design.md](docs/design.md) | Read/write split, unified identity, scope model, analysis grading |
+| [docs/analysis-rules.md](docs/analysis-rules.md) | The full deterministic and heuristic rule table |
+| [docs/ai-evaluation.md](docs/ai-evaluation.md) | LLM scoring, pair verdicts, providers, and the remote leaderboard |
+| [docs/configuration.md](docs/configuration.md) | Config/data locations, `config.json` fields, proxy, migration |
+| [docs/integrations.md](docs/integrations.md) | Runtime activity monitoring: adapter model, OpenCode integration, privacy |
+| [docs/development.md](docs/development.md) | Dev commands, project structure, tests, adding a new agent |
+| [docs/troubleshooting.md](docs/troubleshooting.md) | Known limitations and common issues |
+
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR, please run:
+
+```bash
+pnpm typecheck
+pnpm test
+```
+
+## License
+
+[MIT](LICENSE) © 2026 konata9
+
+## Acknowledgements
+
+The bundled `skill-optimizer` skill is adapted from
+[chujianyun/skills](https://github.com/chujianyun/skills/tree/main/skills/skill-optimizer).
+Many thanks to [@chujianyun](https://github.com/chujianyun) for the excellent work.

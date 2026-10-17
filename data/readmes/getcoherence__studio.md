@@ -1,0 +1,78 @@
+<p align="center">
+  <img src="public/lucidstudio-logo.svg" alt="Lucid Studio Logo" width="80" />
+</p>
+
+# <p align="center">Coherence Studio</p>
+
+<p align="center"><strong>AI-powered screen recording and editing. Free and open source.</strong></p>
+
+<p align="center">
+  <a href="https://studio.getcoherence.io">Website</a> &middot;
+  <a href="https://github.com/getcoherence/studio/releases">Download</a> &middot;
+  <a href="https://github.com/getcoherence/studio/issues">Issues</a>
+</p>
+
+---
+
+Coherence Studio is a free, open-source screen recorder with AI-powered editing. Record your screen, and let AI handle the polish — auto-captions, smart trimming, narration, and one-click professional output.
+
+Built by the team behind [Coherence](https://getcoherence.io). Originally forked from [OpenScreen](https://github.com/siddharthvaddem/openscreen) by Siddharth Vaddem.
+
+Go <a href="https://studio.getcoherence.io/pro">Pro</a> to create AI Generated Motion Graphic Videos. Describe what you want or just give it a URL and 13 specialized AI agents handle script, visuals, motion, music, narration, and quality control — like having a motion graphics studio on your laptop.
+
+🚀🚀 Till the end of April, 50 users can get 50% off the Pro version at checkout with code: GITHUB50 🚀🚀
+
+## Features
+
+- Screen recording with native capture (ScreenCaptureKit on macOS, WGC on Windows)
+- Auto-zoom on cursor activity
+- AI-powered auto-captions (Whisper)
+- Smart trimming (removes dead air and loading screens)
+- One-click polish (zoom + captions + background + speed ramps)
+- Auto-narration (AI-generated voiceover)
+- Cursor effects (motion smoothing, click rings, custom styles)
+- Background customization (wallpapers, gradients, solid colors)
+- Annotations (text, arrows, images)
+- Export to MP4 and GIF
+
+https://github.com/user-attachments/assets/a0be0a5f-a986-4f63-bbd7-d16a46f7b2f4
+
+## Installation
+
+Download the latest installer from the [GitHub Releases](https://github.com/getcoherence/studio/releases) page.
+
+### macOS
+
+If macOS blocks the app, run:
+```bash
+xattr -rd com.apple.quarantine /Applications/Studio\ Studio.app
+```
+
+### Linux
+
+```bash
+chmod +x Coherence-Studio-Linux-*.AppImage
+./Coherence-Studio-Linux-*.AppImage
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for your platform
+npm run build:win   # Windows
+npm run build:mac   # macOS
+npm run build:linux # Linux
+
+# Run tests
+npm test
+```
+
+## License
+
+[MIT](./LICENSE) — free for personal and commercial use.

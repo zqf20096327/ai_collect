@@ -1,0 +1,917 @@
+# 🕳️ Rephole
+
+> **RAG-powered code search via simple REST API**
+
+---
+
+## Our Sponsor
+[Artiforge](https://artiforge.ai) is proud to sponsor the development of Rephole.
+
+## 🎯 What is Rephole?
+
+Rephole is an open-source REST API that ingests your codebase and creates a specialized RAG (Retrieval-Augmented Generation) system for intelligent code search, and retrievial.
+
+Unlike traditional code search tools, Rephole understands **semantic relationships** in your code, enabling you to:
+
+- 🔍 Search code by intent, not just keywords
+- 💬 Ask natural language questions about your codebase
+- 🔗 Integrate AI coding assistants into your own products
+
+---
+
+## ✨ Features
+
+- **🚀 Simple REST API** - Integrate in minutes with any tech stack
+- **📦 Multi-Repository Support** - Index and query across multiple codebases
+- **🎨 OpenAI Embeddings** - Powered by `text-embedding-3-small` model
+- **💾 Local Vector Database** - ChromaDB for fast semantic search
+- **🐳 One-Click Deployment** - Docker Compose setup in under 5 minutes
+- **🔒 Self-Hostable** - Keep your code private with on-premise deployment
+- **⚡ Parent-Child Retrieval** - Smart chunking returns full file context
+- **🏷️ Metadata Filtering** - Tag repositories with custom metadata and filter searches
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker & Docker Compose
+- Git
+- An OpenAI API key
+
+### Installation
+
+**Option 1: Docker Compose**
+
+```bash
+# Clone the repository
+git clone https://github.com/twodHQ/rephole.git
+cd rephole
+
+# Configure your environment
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY
+
+# Start Rephole services
+docker-compose up -d
+
+# Start the API server
+pnpm install
+pnpm start:all
+
+# Rephole is now running at http://localhost:3000
+# Worker now running in background on port 3002
+```
+
+---
+
+### Your First Query (60 seconds)
+
+```bash
+# 1. Ingest a repository
+curl -X POST http://localhost:3000/ingestions/repository \
+  -H "Content-Type: application/json" \
+  -d '{
+    "repoUrl": "https://github.com/nestjs/nest.git",
+    "ref": "master"
+  }'
+
+# Response: Job queued (repoId auto-deduced from URL)
+{
+  "status": "queued",
+  "jobId": "01HQZX3Y4Z5A6B7C8D9E0F1G2H",
+  "repoUrl": "https://github.com/nestjs/nest.git",
+  "ref": "master",
+  "repoId": "nest"
+}
+
+# 2. Check ingestion status
+curl http://localhost:3000/jobs/job/01HQZX3Y4Z5A6B7C8D9E0F1G2H
+
+# Response: Job processing
+{
+  "id": "01HQZX3Y4Z5A6B7C8D9E0F1G2H",
+  "state": "active",
+  "progress": 45,
+  "data": {
+    "repoUrl": "https://github.com/nestjs/nest.git",
+    "ref": "master"
+  }
+}
+
+# 3. Search your codebase (once completed)
+#    Note: repoId is required in the URL path
+curl -X POST http://localhost:3000/queries/search/nest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "How do I create a custom decorator?",
+    "k": 5
+  }'
+
+# Response: Array of matching chunks with metadata
+{
+  "results": [
+    {
+      "id": "packages/common/decorators/custom.decorator.ts",
+      "content": "export function CustomDecorator() {\n  return (target: any) => { ... }\n}",
+      "repoId": "nest",
+      "metadata": { "category": "repository" }
+    }
+  ]
+}
+```
+
+---
+
+---
+
+## 📖 Core Concepts
+
+### Ingestion Pipeline
+
+```
+Repository → Clone → Parse → Chunk → Embed → Store → Index
+```
+
+Rephole automatically:
+- Clones your repository
+- Parses code files (supports 20+ languages)
+- Chunks code intelligently (function/class level)
+- Generates embeddings
+- Stores vectors
+- Indexes for fast retrieval
+
+### Query Flow
+
+```
+Question → Embed → Search → Retrieve → Return
+```
+
+When you query:
+- Your question is embedded using the same model
+- Semantic search finds relevant code chunks
+- Return top matches chunks
+
+### Metadata Filtering
+
+Rephole supports custom metadata for organizing and filtering your codebase:
+
+**During Ingestion:**
+```json
+{
+  "repoUrl": "https://github.com/org/backend-api.git",
+  "meta": {
+    "team": "platform",
+    "environment": "production",
+    "version": "2.0"
+  }
+}
+```
+
+**During Search:**
+```bash
+# repoId is required in the URL path
+POST /queries/search/backend-api
+
+# Additional filters go in the request body
+{
+  "prompt": "How does caching work?",
+  "meta": {
+    "team": "platform"
+  }
+}
+```
+
+**Use Cases:**
+- 🏢 **Multi-team organizations**: Filter by team ownership
+- 🌍 **Multi-environment**: Separate staging/production code
+- 📦 **Microservices**: Search within specific services
+- 🏷️ **Project tagging**: Organize by project or domain
+
+---
+
+## 🔧 API Reference
+
+### Base URL
+```
+http://localhost:3000
+```
+
+### Endpoints
+
+#### 1. Health Check
+```http
+GET /health
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
+#### 2. Ingest Repository
+```http
+POST /ingestions/repository
+```
+
+**Request Body:**
+```json
+{
+  "repoUrl": "https://github.com/username/repo.git",
+  "ref": "main",           // Optional: branch/tag/commit (default: main)
+  "token": "ghp_xxx",      // Optional: for private repos
+  "userId": "user-123",    // Optional: for tracking
+  "repoId": "my-repo",     // Optional: auto-deduced from URL if not provided
+  "meta": {                // Optional: custom metadata for filtering
+    "team": "backend",
+    "project": "api",
+    "environment": "production"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "status": "queued",
+  "jobId": "01HQZX3Y4Z5A6B7C8D9E0F1G2H",
+  "repoUrl": "https://github.com/username/repo.git",
+  "ref": "main",
+  "repoId": "repo"         // Auto-deduced or provided repoId
+}
+```
+
+**Notes:**
+- `repoId` is automatically extracted from the repository URL if not provided
+  - `https://github.com/org/my-repo.git` → `repoId: "my-repo"`
+- `meta` fields are attached to all chunks during ingestion
+- Only flat key-value pairs allowed (string, number, boolean values)
+
+---
+
+#### 3. Get Job Status
+```http
+GET /jobs/job/:jobId
+```
+
+**Response:**
+```json
+{
+  "id": "01HQZX3Y4Z5A6B7C8D9E0F1G2H",
+  "state": "completed",  // queued | active | completed | failed
+  "progress": 100,
+  "data": {
+    "repoUrl": "https://github.com/username/repo.git",
+    "ref": "main"
+  }
+}
+```
+
+---
+
+#### 4. Search Code (Semantic)
+```http
+POST /queries/search/:repoId
+```
+
+**Path Parameters:**
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `repoId` | ✅ Yes | Repository identifier to search within |
+
+**Request Body:**
+```json
+{
+  "prompt": "How does authentication work?",
+  "k": 5,              // Optional: number of results (default: 5, max: 100)
+  "meta": {            // Optional: additional metadata filters
+    "team": "backend"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    {
+      "id": "src/auth/auth.service.ts",
+      "content": "import { Injectable } from '@nestjs/common';\n\n@Injectable()\nexport class AuthService {\n  // Full file content...\n}",
+      "repoId": "my-repo",
+      "metadata": {
+        "team": "backend",
+        "category": "repository"
+      }
+    },
+    {
+      "id": "src/auth/guards/jwt.guard.ts",
+      "content": "export class JwtAuthGuard extends AuthGuard('jwt') {\n  // ...\n}",
+      "repoId": "my-repo",
+      "metadata": {
+        "team": "backend",
+        "category": "repository"
+      }
+    }
+  ]
+}
+```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | File path (e.g., `src/auth/auth.service.ts`) |
+| `content` | string | Full file content |
+| `repoId` | string | Repository identifier |
+| `metadata` | object | Custom metadata from ingestion |
+
+**Notes:**
+- **`repoId` is required** in the URL path - you must specify which repository to search
+- Uses parent-child retrieval: searches small chunks, returns full parent documents
+- The `k` parameter is multiplied by 3 internally for child chunk search
+- Returns structured chunk objects with metadata
+- **Additional Filtering:**
+  - Use `meta` in request body for additional filters (team, environment, etc.)
+  - Multiple filters are combined with AND logic
+  
+**Example: Basic search within a repository:**
+```bash
+curl -X POST http://localhost:3000/queries/search/auth-service \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "How do JWT tokens work?",
+    "k": 10
+  }'
+```
+
+**Example: Search with additional metadata filters:**
+```bash
+curl -X POST http://localhost:3000/queries/search/backend-api \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Database connection pooling",
+    "k": 5,
+    "meta": { 
+      "team": "platform",
+      "environment": "production"
+    }
+  }'
+```
+
+---
+
+#### 5. Search Code Chunks (Raw Chunks)
+```http
+POST /queries/search/:repoId/chunk
+```
+
+**Path Parameters:**
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `repoId` | ✅ Yes | Repository identifier to search within |
+
+**Request Body:**
+```json
+{
+  "prompt": "How does authentication work?",
+  "k": 10,             // Optional: number of results (default: 5, max: 100)
+  "meta": {            // Optional: additional metadata filters
+    "team": "backend"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    {
+      "id": "chunk-abc123",
+      "content": "@Injectable()\nexport class AuthService {\n  validateUser(token: string) {\n    // validation logic\n  }\n}",
+      "repoId": "my-repo",
+      "metadata": {
+        "team": "backend",
+        "filePath": "src/auth/auth.service.ts"
+      }
+    }
+  ]
+}
+```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Chunk identifier |
+| `content` | string | **Raw chunk content** (code snippet, not full file) |
+| `repoId` | string | Repository identifier |
+| `metadata` | object | Custom metadata from ingestion |
+
+**Notes:**
+- **Key Difference:** Unlike `/queries/search/:repoId`, this endpoint returns **raw chunks** directly instead of parent documents (full files)
+- Useful when you need **precise code snippets** rather than full file context
+- The `k` parameter returns exactly `k` chunks (not multiplied internally)
+- No parent document lookup is performed - faster response times
+
+**Example: Get precise code snippets:**
+```bash
+curl -X POST http://localhost:3000/queries/search/auth-service/chunk \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "JWT token validation",
+    "k": 5
+  }'
+```
+
+**When to use each endpoint:**
+| Use Case | Endpoint |
+|----------|----------|
+| Need full file context | `POST /queries/search/:repoId` |
+| Need precise code snippets | `POST /queries/search/:repoId/chunk` |
+| Building code completion | `POST /queries/search/:repoId/chunk` |
+| Understanding file structure | `POST /queries/search/:repoId` |
+
+---
+
+#### 6. Get Failed Jobs
+```http
+GET /jobs/failed
+```
+
+**Response:**
+```json
+{
+  "failedJobs": [
+    {
+      "id": "01HQZX3Y4Z5A6B7C8D9E0F1G2H",
+      "failedReason": "Repository not found",
+      "data": { ... }
+    }
+  ]
+}
+```
+
+---
+
+#### 7. Retry Failed Job
+```http
+POST /jobs/retry/:jobId
+```
+
+**Response:**
+```json
+{
+  "message": "Job re-queued successfully",
+  "jobId": "01HQZX3Y4Z5A6B7C8D9E0F1G2H"
+}
+```
+
+---
+
+#### 8. Retry All Failed Jobs
+```http
+POST /jobs/retry/all
+```
+
+**Response:**
+```json
+{
+  "message": "All failed jobs re-queued",
+  "count": 3
+}
+```
+
+---
+
+## 🏗️ Architecture
+
+Rephole uses a **producer-consumer architecture** with two separate services for optimal performance and scalability:
+
+### Architecture Components
+
+#### 1. **API Server** (Producer)
+- **Purpose:** Handle HTTP requests and enqueue background jobs
+- **Port:** 3000
+- **Responsibilities:**
+  - Accept repository ingestion requests
+  - Add jobs to BullMQ queue
+  - Provide job status endpoints
+  - Handle semantic search queries
+  - Return results to clients
+- **Does NOT:** Process repositories or perform heavy computations
+
+#### 2. **Background Worker** (Consumer)
+- **Purpose:** Process repository ingestion jobs asynchronously
+- **Port:** 3002
+- **Responsibilities:**
+  - Clone repositories
+  - Parse code files (AST analysis)
+  - Generate AI embeddings
+  - Store vectors in ChromaDB
+  - Update metadata in PostgreSQL
+- **Does NOT:** Handle HTTP requests or API calls
+
+#### 3. **Redis Queue** (BullMQ)
+- **Purpose:** Reliable job queue between API and Worker
+- **Features:**
+  - Job persistence
+  - Automatic retries (3 attempts)
+  - Exponential backoff
+  - Job status tracking
+  - Failed job management
+
+#### 4. **Vector Database** (ChromaDB)
+- **Purpose:** Store and search code embeddings
+- **Features:**
+  - Fast semantic search
+  - Similarity scoring
+  - Metadata filtering
+
+#### 5. **PostgreSQL**
+- **Purpose:** Store file content and metadata
+- **Data:**
+  - Repository state
+  - File contents (full source code)
+  - Processing metadata
+  - Job history
+
+### Data Flow
+
+**Repository Ingestion:**
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as API Server
+    participant Q as Redis Queue
+    participant W as Worker
+    participant V as VectorDB
+    participant P as PostgreSQL
+
+    C->>A: POST /ingestions/repository
+    A->>Q: Add job to queue
+    A->>C: Return job ID
+    
+    Q->>W: Deliver job
+    W->>W: Clone repository
+    W->>W: Parse code (AST)
+    W->>W: Generate embeddings
+    W->>V: Store vectors
+    W->>P: Store file content
+    W->>Q: Mark job complete
+    
+    C->>A: GET /jobs/job/:id
+    A->>C: Return job status
+```
+
+**Semantic Search:**
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as API Server
+    participant AI as AI Service
+    participant V as VectorDB
+    participant P as PostgreSQL
+
+    C->>A: POST /queries/search
+    A->>AI: Generate query embedding
+    AI->>A: Return vector
+    A->>V: Similarity search (k*3 child chunks)
+    V->>A: Return child chunk IDs
+    A->>P: Fetch parent content
+    P->>A: Return full file content
+    A->>C: Return formatted results
+```
+
+**Scale Worker:** Based on queue length
+```bash
+docker-compose up --scale worker=5
+```
+
+### Technology Stack
+
+**Backend Framework:**
+- NestJS 11.0 (TypeScript)
+- BullMQ 5.63 (Job Queue)
+
+**Databases:**
+- PostgreSQL (Metadata & Content)
+- ChromaDB 3.1 (Vector Storage)
+- Redis (Queue & Cache)
+
+**AI/ML:**
+- OpenAI API (`text-embedding-3-small` model)
+- Tree-sitter (AST Parsing for code structure)
+
+**Infrastructure:**
+- Docker & Docker Compose
+- pnpm (Package Manager)
+
+---
+
+## 🌐 Supported Languages
+
+Rephole uses **tree-sitter** for intelligent AST-based code chunking. The following **37 programming languages** are supported:
+
+### Core Languages
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **TypeScript** | `.ts`, `.mts`, `.cts` | ✅ Full support |
+| **TSX** | `.tsx` | ✅ Full support |
+| **JavaScript** | `.js`, `.jsx`, `.mjs`, `.cjs` | ✅ Full support |
+| **Python** | `.py`, `.pyw`, `.pyi` | ✅ Full support |
+| **Java** | `.java` | ✅ Full support |
+| **Kotlin** | `.kt`, `.kts` | ✅ Full support |
+| **Scala** | `.scala`, `.sc` | ✅ Full support |
+
+### Systems Programming
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **C** | `.c`, `.h` | ✅ Full support |
+| **C++** | `.cpp`, `.cc`, `.cxx`, `.c++`, `.hpp`, `.hxx`, `.h++`, `.hh` | ✅ Full support |
+| **C#** | `.cs` | ✅ Full support |
+| **Objective-C** | `.m`, `.mm` | ✅ Full support |
+| **Go** | `.go` | ✅ Full support |
+| **Rust** | `.rs` | ✅ Full support |
+| **Zig** | `.zig` | ✅ Full support |
+
+### Mobile Development
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **Swift** | `.swift` | ✅ Full support |
+| **Dart** | `.dart` | ✅ Full support |
+
+### Scripting Languages
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **Ruby** | `.rb`, `.rake`, `.gemspec` | ✅ Full support |
+| **PHP** | `.php`, `.phtml` | ✅ Full support |
+| **Lua** | `.lua` | ✅ Full support |
+| **Elixir** | `.ex`, `.exs` | ✅ Full support |
+
+### Functional Languages
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **OCaml** | `.ml`, `.mli` | ✅ Full support |
+| **ReScript** | `.res`, `.resi` | ✅ Full support |
+
+### Web3 / Blockchain
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **Solidity** | `.sol` | ✅ Full support |
+
+### Web Technologies
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **HTML** | `.html`, `.htm`, `.xhtml` | ✅ Full support |
+| **CSS** | `.css` | ✅ Full support |
+| **Vue** | `.vue` | ✅ Full support |
+| **ERB/EJS** | `.erb`, `.ejs`, `.eta` | ✅ Full support |
+
+### Config / Data Languages
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **JSON** | `.json`, `.jsonc` | ✅ Full support |
+| **YAML** | `.yml`, `.yaml` | ✅ Full support |
+| **TOML** | `.toml` | ✅ Full support |
+| **Markdown** | `.md`, `.markdown`, `.mdx` | ✅ Full support |
+
+### Shell & Scripting
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **Bash/Shell** | `.sh`, `.bash`, `.zsh`, `.fish` | ✅ Full support |
+| **Emacs Lisp** | `.el`, `.elc` | ✅ Full support |
+
+### Formal Methods & Verification
+
+| Language | Extensions | AST Parsing |
+|----------|-------|-------------|
+| **TLA+** | `.tla` | ✅ Full support |
+| **CodeQL** | `.ql` | ✅ Full support |
+
+### Hardware Description
+
+| Language | Extensions | AST Parsing |
+|----------|------------|-------------|
+| **SystemRDL** | `.rdl` | ✅ Full support |
+
+### How Language Detection Works
+
+The AST parser automatically detects the programming language based on file extension:
+
+1. **File Extension Detection**: When processing a file, Rephole extracts the file extension
+2. **Grammar Loading**: The appropriate tree-sitter WASM grammar is loaded
+3. **AST Parsing**: The code is parsed into an Abstract Syntax Tree
+4. **Semantic Chunking**: Functions, classes, methods, and other semantic blocks are extracted
+5. **Embedding**: Each chunk is embedded separately for precise retrieval
+
+### Adding New Languages
+
+To add support for a new language:
+
+1. Add the tree-sitter WASM grammar file to `resources/`
+2. Create a query in `libs/ingestion/ast-parser/src/constants/queries.ts`
+3. Add the language config in `libs/ingestion/ast-parser/src/config/language-config.ts`
+
+### Unsupported Files
+
+Files with unsupported extensions are gracefully skipped during ingestion. The system will:
+- Log a debug message about the unsupported extension
+- Continue processing other files
+- Return an empty array for that file's chunks
+
+---
+
+## 🛠️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# API Server
+PORT=3000
+NODE_ENV=production
+
+# Database
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=rephole
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_DB=rephole
+
+# Redis (Queue & Cache)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# ChromaDB (Vector Store)
+CHROMA_HOST=localhost
+CHROMA_PORT=8000
+CHROMA_COLLECTION_NAME=rephole-collection
+
+# OpenAI API
+OPENAI_API_KEY=sk-your-api-key-here
+OPENAI_ORGANIZATION_ID=your-org-id        # Optional
+OPENAI_PROJECT_ID=your-project-id        # Optional
+
+# Vector Store Configuration
+VECTOR_STORE_BATCH_SIZE=1000
+
+# Local Storage
+LOCAL_STORAGE_PATH=repos
+
+# Knowledge Base
+SHORT_TERM_CONTEXT_WINDOW=20
+
+# Logging
+LOG_LEVEL=debug
+```
+
+---
+
+## 🐳 Deployment
+
+### Development (Local)
+
+**Start individual services:**
+
+```bash
+# Terminal 1: API Server
+pnpm install
+pnpm start:api:dev
+
+# Terminal 2: Background Worker
+pnpm start:worker:dev
+
+# Terminal 3: Infrastructure (Redis, PostgreSQL, ChromaDB)
+docker-compose up redis postgres chromadb
+```
+
+### Production (Docker Compose)
+
+**Full stack deployment:**
+
+```bash
+# Build and start all services
+docker-compose up -d
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f api
+docker-compose logs -f worker
+
+# Scale services
+docker-compose up -d --scale worker=3  # Add more workers
+docker-compose up -d --scale api=2     # Add more API instances
+```
+
+**Example `docker-compose.yml`:**
+
+```yaml
+version: '3.8'
+
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: rephole
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: rephole
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rephole"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ChromaDB
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+  # API Server (Producer)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+      - CHROMA_HOST=chromadb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+    restart: unless-stopped
+
+  # Background Worker (Consumer)
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - NODE_ENV=production
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+      - CHROMA_HOST=chromadb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MEMORY_MONITORING=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+    restart: unless-stopped
+    deploy:
+      replicas: 2  # Run 2 workers by default
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:
+```

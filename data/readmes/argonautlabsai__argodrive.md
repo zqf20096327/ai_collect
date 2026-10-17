@@ -1,0 +1,245 @@
+# ARGODRIVE
+
+**Layout, balancer and instruments for running mixture-of-experts models from SSDs.**
+Models of 518 GB to 1.44 TB on a 128 GB laptop: every token waits on disk, so what matters is
+not how much bandwidth you own but how long the slowest required read takes.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="charts/drives-ladder-dark.svg">
+  <img src="charts/drives-ladder.svg" alt="Steady decode speed by drive count for our forks on an M5 Max, 128 GB. Kimi K3 (2.78T): 0.55 tok/s on the internal SSD, 0.75 with one external enclosure, 0.89 with two, 0.96 with three (1.75x). GLM-5.3 (744B): 2.02, 2.44, 2.90, 3.70 (1.83x). DeepSeek V4.1-Flash: upstream ds4 10.18 on the internal SSD; our fork 18.66 on the same SSD (1.83x), 21.05 with one external (2.07x), 22.25 with two (2.19x), one interleaved session on 2026-09-27. Output identical at every rung.">
+</picture>
+
+Three models, three forks, one method: the trunk stays in memory, the routed experts stream
+from NVMe, and every expert read is split across byte-identical replicas on however many
+drives are attached. Kimi K3 (2.78T) goes from 0.55 to 0.96 tok/s, GLM-5.3 (744B) from 2.02
+to 3.70, DeepSeek V4.1-Flash from 18.66 on one drive to 22.25 on three (against upstream ds4 at 10.18 on the same drive), with the same output at every rung.
+
+## What it has done
+
+| model | engine | baseline | best measured | gain |
+|---|---|---|---|--:|
+| DeepSeek V4.1-Flash Q4, 518 GB on disk | ds4 fork | **upstream ds4**, one drive: 17.96 / 10.18 (prompt processing / steady decode, median of six arms in the same session) | one drive, no replicas: **30.98 / 18.66** · three drives: **42.41 / 22.25** | **1.83× / 2.36×** (three drives: decode / prefill); **1.83× / 1.72×** on one drive |
+| GLM-5.3, 744B (434 GB at 4-bit) | ds4 fork | our fork, one drive: 2.02 | four drives: **3.70** · with the scheduling patch **4.21** at 128 tokens | **1.8×** · **2.1×** |
+| Kimi K3, 2.78T | deltafin fork | our fork, one drive: 0.55 | four drives: **0.96** | **1.8×** |
+
+All on an M5 Max, 128 GB. Read the baselines carefully, because they are not the same kind of
+number. The V4.1 row compares against the **pinned upstream ds4 binary** (`bd66c40`, the base the
+fork is built on, compiled with the same toolchain), measured 2026-09-27 in one interleaved session
+with the fork's `v41-stack-20260927` profile on one, two and three drives, with a **byte-identical
+output SHA-256 on every arm**; upstream is the median of six arms, each fork rung the median of two.
+A 28 September profile (post-MoE flush, eviction pre-scan) adds 1.5% on top at 512/512 against our
+own 27 September binary and is not re-run against upstream. The GLM and K3 rows are our own software scaling from one drive
+to four, which is a storage result, not an engine comparison. GLM is 200-token generation;
+K3 is the public 17-token prompt, a median of three runs at every rung. V4.1 is a 512-token
+prompt with 200 generated, medians of interleaved pairs.
+
+**The one-drive V4.1 column is the portable part, and it needs no replicas.** It is the
+selective expert read alone: a 512-token chunk routes to 187 of 384 experts per layer, so the
+stock layer-major sweep reads about twice what the model touches. Anyone with a single SSD
+gets that. The three-drive column adds weighted split reads across internal + two SN8100s at
+10:5:5 — that is what extra devices buy, and it is what the published branch supports.
+
+Time to first token on a 512-token prompt, which is the question everyone asks next:
+**31.5 s → 18.3 s on one drive → 11.7 s on three.**
+
+### Kimi K3, the 2.78T model
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="charts/k3-ladder-dark.svg">
+  <img src="charts/k3-ladder.svg" alt="Kimi K3 at 4-bit streamed from SSD on an M5 Max. Steady decode by drive count: internal SSD only 0.55 tok/s, plus one external 0.75, plus two 0.89, plus three 0.96 (1.75x). Public 17-token prompt, median of three runs per rung.">
+</picture>
+
+The largest of the three: 1.44 TB of 4-bit experts, 384 experts with 8 active per token, run
+by our `deltafin` fork. The ladder is the public 17-token prompt, a median of three runs at
+every rung, output identical throughout. On four drives it holds **1.00 tok/s steady over 512
+generated tokens** and 1.13 over 128. Prefill is the cost at this size: a 512-token prompt
+takes about six minutes to first token, which is why prefix caching and expert-major prefill
+are the next work on it. Package, manifests and results:
+[`argonautlabsai/deltafin`](https://github.com/argonautlabsai/deltafin/tree/main/k3-public-bench).
+
+### GLM-5.3, the 744B model
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="charts/glm-ladder-dark.svg">
+  <img src="charts/glm-ladder.svg" alt="GLM-5.3 744B at 4-bit streamed from SSD on an M5 Max. Steady decode over 200 generated tokens: internal SSD only 2.02 tok/s, plus one external 2.44, plus two 2.90, plus three 3.70. Scheduling patch on four drives: 3.66 to 4.21 tok/s at 128 tokens, 3.46 to 4.02 at 512, byte-identical output.">
+</picture>
+
+Same machine, same method, a model 1.4× the size of V4.1 with 256 experts and 8 active per
+token. The drive ladder is 200 generated tokens on interleaved pairs (2026-09-10); the second
+panel is the scheduling patch measured against the same engine with those optimisations off,
+medians of three interleaved pairs (2026-09-11), four drives. Every arm in both panels produced
+byte-identical output. Time to first token is about 4.5 s on a short prompt and 14 s on a
+108-token one; prefill is the weak spot at this size. The routed experts are the unsloth
+UD-Q4_K_XL release requantised to uniform Q4_K, trunk Q8_0. The GLM patch, harness and requant
+recipe are being published next; until then these are our numbers, not yet reproducible from
+the branch.
+
+### DeepSeek V4.1-Flash, against upstream
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="charts/ladder-dark.svg">
+  <img src="charts/ladder.svg" alt="DeepSeek V4.1-Flash Q4 streamed from SSD on an M5 Max, one interleaved session on 2026-09-27. Prompt processing: upstream ds4 on the internal SSD 17.96 tok/s; our fork 30.98 on the same single drive (1.72x), 36.88 with one external (2.05x), 42.41 with two (2.36x). Steady decode: upstream 10.18; our fork 18.66 (1.83x), 21.05 (2.07x), 22.25 (2.19x).">
+</picture>
+
+**4 October, prefill.** On top of the 30 September read-ahead staging: a continuous prefill reader, Engram
+row-table reads on upstream's prefetch thread from the first layer, and a conditional read-ahead prior (how often an
+expert at one layer followed each expert of the previous layer in 19 other prompts, applied to the prompt's own
+routing). Prompt processing **47.71 tok/s on one drive** (2.76× upstream) and **75.06 with two enclosures**
+(4.34×), qualified against our 30 September binary at +6.4% (512/512) and +6.5% (512/200) with
+byte-identical output. Fork rungs again at a 3,600-expert cache (see the 30 September note above), so the decode rungs sit
+below the first chart, which stays the decode reference. The 30 September session measured 16.12 / 43.75 / 58.13 / 68.29.
+[Qualification package](https://github.com/argonautlabsai/ds4-argodrive/blob/v41-stack-20261004/argodrive/candidates/2026-10-04-engram/README.md) · [Ladder package](https://github.com/argonautlabsai/ds4-argodrive/blob/v41-stack-20261004/argodrive/candidates/2026-10-04-ladder/README.md)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="charts/ladder-prefill-dark.svg">
+  <img src="charts/ladder-prefill.svg" alt="DeepSeek V4.1-Flash Q4 with the 4 October prefill profile, one interleaved session against pinned upstream. Prompt processing: upstream 17.30 tok/s on the internal SSD; our fork 47.71 on the same SSD, 62.99 with one enclosure, 75.06 with two. Steady decode: 10.17 upstream; 16.94, 18.64, 19.31 for the fork at a 3,600-expert cache.">
+</picture>
+
+**The first fork row needs no extra hardware.** Upstream's prefill sweep reads every expert
+of every routed layer, but a 512-token chunk only routes to 187 of 384 — so it reads about
+twice what the model touches. Fixing that alone is worth **1.72× prompt processing on one
+internal SSD**, no replicas involved, and the decode-side work of September (flag readback of the
+router ids, a larger expert cache, fused rounding) makes the same single drive **1.83× upstream on
+steady decode**. Drives after that just shrink each split read further.
+
+Every bar comes from one interleaved session against pinned upstream `bd66c40` (upstream the median
+of six arms, each fork rung the median of two), all with the same output SHA-256.
+
+## What the instruments show
+
+![Per-drive read timeline](charts/read-timeline.png)
+
+*Per-drive throughput across one 200-token run, all four drives sampled together. The first
+~12 s is model load and prompt; decode follows. (Kimi K3 record arm, 2026-09-08.)*
+
+The view that matters most is not this one, though. It is read **latency**: V4.1 decode
+averages 5.2 GB/s, about 19% of these drives' combined ceiling, and still gets faster when
+you add a fourth drive. No throughput chart can explain that. Milliseconds per read can.
+
+## How it works, in five lines
+
+1. One device holds the complete expert set; the others hold usage-weighted replicas.
+2. Each read is split across the devices that hold it, in proportion to measured device rate.
+3. Both read paths dispatch by expected completion time, with shared in-flight counters.
+4. During prefill, layer N+1 is staged while the GPU computes layer N.
+5. Only the experts the router actually selected are read — for V4.1 at 512 tokens that is
+   187 of 384 per layer, so the stock layer-major sweep was reading about twice what the
+   model touches.
+
+## Why more drives help when bandwidth is not the limit
+
+A layer cannot start until **every** routed expert has arrived. So it costs the *maximum*
+over its reads, not the sum. Adding a drive does not mainly add bandwidth — it makes each
+slice of a split read smaller, so the slice that lands last lands sooner. That is why a
+fourth drive moved peak throughput hardly at all and still bought +6.6% prefill and +2.9%
+decode, and it is why aggregate GB/s is the wrong number to optimise.
+
+## The engine branch
+
+The V4.1 work lives in our fork of Salvatore Sanfilippo's ds4:
+
+**[`argonautlabsai/ds4-argodrive` @ `argonaut-v41-benchmark`](https://github.com/argonautlabsai/ds4-argodrive/tree/argonaut-v41-benchmark)** — commit `18fc795`
+
+**What is reproducible from these repos.** A fresh clone of that branch builds `ds4` and
+`ds4-bench` on Apple silicon with the multi-source reader compiled in — not stubs. Verified
+2026-09-15 from a clean clone. Reproducing the *number* additionally needs N byte-identical
+replicas of the 518 GB model file on separate devices, which is a hardware precondition we
+cannot hand you in a repo; the loader checks replica size, not content. A single-drive clone
+runs correctly and simply sees no split.
+
+## Download the Mac beta
+
+[**Download ARGODRIVE for Apple silicon**](https://github.com/argonautlabsai/argodrive/releases/tag/v0.2.0-beta.3) · [**Installation and testing guide**](https://github.com/argonautlabsai/argodrive/blob/beta-20260914/docs/BETA-TESTING.md) · [**Beta source**](https://github.com/argonautlabsai/argodrive/tree/beta-20260914)
+
+Open Live Hardware to check connected drives, memory and activity. Choose a folder of
+supported benchmark runs to inspect results and compare configurations. Report launch,
+drive-discovery or chart issues [on GitHub](https://github.com/argonautlabsai/argodrive/issues).
+Review any attachments for private paths and prompts before sharing.
+
+This is a monitoring and saved-run analysis preview, not an automatic optimizer, and it does
+not include model weights. The beta is ad-hoc signed and not notarized; see the testing guide
+before installing.
+
+## Legacy Deltafin tools and recorded charts
+
+The original Deltafin-specific research toolkit and its historical measurements are retained below. These charts are Kimi/Deltafin recordings, not DeepSeek V4.1 results.
+
+# ArgoDrive tools
+
+Measurement instruments for SSD-streamed mixture-of-experts inference. These
+are the tools that found every gain in the ArgoDrive Deltafin benchmark
+package; they are shared as they are — deltafin-specific, rough, and honest —
+because the results are not credible without them. Paths, drive names and
+role assignments are the ones used on the reference machine (a MacBook Pro
+M5 Max with three Thunderbolt 5 NVMe enclosures); adapt `K3_DIR` and the
+volume names to yours.
+
+## What they show
+
+Per-drive read throughput during one 200-token completion, all four drives
+sampled together at 100 ms by `k3-diskscope`: first as a replay of the sampler's
+record (the bars move as the drives did, at 8× speed), then reduced to one-second windows:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/drives-live-dark.svg">
+  <img src="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/drives-live.svg" alt="Animated replay of the four drives' read throughput during the 200-token record arm, from the sampler">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/read-timeline-dark.svg">
+  <img src="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/read-timeline.svg" alt="Per-drive read throughput during a 200-token run">
+</picture>
+
+The same run reduced to median and peak draw per drive, against each drive's
+standalone ceiling measured with `k3-drive-ceiling.py` while the engine was
+idle — every drive at 88–100% of its own ceiling, which is why the read barrier
+rather than total bandwidth sets the decode speed:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/drive-draw-dark.svg">
+  <img src="https://raw.githubusercontent.com/argonautlabsai/argodrive/main/charts/drive-draw.svg" alt="Per-drive draw under the engine vs standalone ceiling">
+</picture>
+
+Both charts are produced from the sampler CSV and the ceiling tool's output by
+the chart script in the benchmark package
+([`argonautlabsai/deltafin`](https://github.com/argonautlabsai/deltafin/tree/main/k3-public-bench/results/charts)).
+
+| directory | tool | what it does |
+|---|---|---|
+| `monitor/` | `k3-diskscope.c` | 100 ms sampler of per-device read bytes and ops, RAM, CPU and GPU counters, to CSV. `cc -O2 -o k3-diskscope k3-diskscope.c -framework IOKit -framework CoreFoundation` |
+| `monitor/` | `k3-live.py` | local web dashboard on port 8130: live per-drive throughput, arm history with same-length deltas, by-layer barrier report from a per-read trace, CSV exports |
+| `monitor/` | `k3-memsample.sh` | one line per second of macOS memory truth (used / available / wired / swap) |
+| `harness/` | `k3-arm.sh`, `k3-arm-inner.sh`, `k3-measure.sh` | one measured arm: the configuration of record as environment, cold start enforced, swap guard, device map recorded, sampler and memory log per arm, text-identity check |
+| `harness/` | `k3-pressure.c` | memory-pressure step before an arm (records what preceded each measurement) |
+| `harness/` | `k3-stdbench-table.py` | inclusive / steady / first-token table from arm logs; derived prompt-processing rate |
+| `trace/` | `k3-trace-gaps.py` | per-barrier attribution from the engine's read trace: which device landed last, its gap behind the next-to-last, by demand-vs-prefetch, barrier width and layer |
+| `drives/` | `k3-drive-ceiling.py`, `k3-ceiling-run.sh` | standalone read ceiling of an expert directory (whole files, no page cache, N in flight), per drive and per queue depth |
+| `drives/` | `k3-drive-map.py`, `k3-drive-names.example.json` | which physical drive is which — model, serial, whole-disk, bus, direct port or hub — and drift against the last snapshot; run after any replug |
+| `placement/` | `k3-regen-manifests.py` | regenerate and verify placement manifests from the live directories |
+| `placement/` | `k3-stage-wider-bands.py` | widen replica bands by traffic share from a usage trace, with a manifest and rollback script per band |
+
+## How they were used
+
+Every published number came from one `k3-arm.sh` invocation: it exports the
+configuration of record, refuses to run warm or under swap, records the device
+map, starts the sampler and the memory log, runs the engine once, and checks
+the output against the text of record. Arms were run one at a time with the
+dashboard server stopped (its sampler costs about one percent). Read traces
+(`K3_READ_TRACE=<file>`) were taken on separate arms and analysed with
+`k3-trace-gaps.py` and the dashboard's by-layer view, never used for speed
+figures. Drive ceilings were measured with the engine idle.
+
+## What these tools are not
+
+They are not a product and not general-purpose: the sampler and the harness
+assume macOS, the deltafin engine's log format and its `K3_*` environment
+knobs. Nothing here schedules reads or changes the engine; these are
+instruments only.
+
+## Development acknowledgements
+
+Claude, ChatGPT and OpenAI Codex assisted with development and review. Their use is acknowledged here; private chat histories are not part of this repository. Performance and correctness claims are supported by the stated tests and measurements, with limitations recorded separately.
+
+## Licence
+
+MIT.

@@ -1,0 +1,299 @@
+# Deplexity
+
+**Export your Perplexity AI conversations, spaces, and profile — fully offline, no API key required.**
+
+Deplexity is a CLI tool that authenticates via your browser session and exports all your Perplexity AI data into portable formats (JSON, Markdown, PDF). Built in pure Go with zero runtime dependencies.
+
+<p align="center">
+  <img src="demo.gif" alt="Deplexity demo — exporting Perplexity threads to JSON, Markdown, and PDF" width="800">
+</p>
+
+---
+
+## Why Deplexity?
+
+Perplexity AI has no official data export feature. Your research threads, curated spaces, and citation-rich answers are locked inside their platform. Deplexity gives you:
+
+- **Full ownership** of your data in open formats
+- **Offline archives** you can search, version-control, or feed into other tools
+- **PDF reports** with source attribution — no browser or LaTeX needed
+- **Incremental backups** — resumable exports pick up where they left off
+
+---
+
+## Installation
+
+### From source (requires Go 1.26+)
+
+```bash
+go install github.com/clappingmonkey/deplexity/cmd/deplexity@latest
+```
+
+### From source with Bazel
+
+```bash
+bazel build //cmd/deplexity
+# Binary at: bazel-bin/cmd/deplexity/deplexity_/deplexity
+```
+
+### Pre-built binaries
+
+Download from [Releases](https://github.com/clappingmonkey/deplexity/releases).
+
+---
+
+## Quick Start
+
+```bash
+# 1. Authenticate (opens browser — log in to Perplexity)
+deplexity login
+
+# 2. Export everything
+deplexity export
+
+# 3. Check your data
+ls deplexity-export/
+```
+
+That's it. Your threads, spaces, and profile are now in `./deplexity-export/`.
+
+---
+
+## Usage
+
+### Authentication
+
+```bash
+# Interactive browser login (recommended)
+deplexity login
+
+# Headless/server: provide session cookie directly
+deplexity login --cookie "YOUR_SESSION_TOKEN"
+
+# Check session status
+deplexity status
+
+# Remove saved session
+deplexity logout
+```
+
+The session token is stored at `~/.config/deplexity/session.json` (mode 0600).
+
+### Export
+
+```bash
+# Export with defaults (JSON + Markdown)
+deplexity export
+
+# Export to a specific directory
+deplexity export -o ~/backups/perplexity
+
+# Export as PDF
+deplexity export -f pdf
+
+# Export all formats
+deplexity export -f json -f markdown -f pdf
+
+# Re-fetch thread index even if a cached one exists
+deplexity export --refresh
+
+# Verbose output (show API calls and timing)
+deplexity export -v
+
+# Export only threads (skip spaces/profile)
+deplexity export --no-spaces --no-profile
+
+# Adjust rate limiting (milliseconds between requests)
+deplexity export --delay 1000
+
+# Control PDF parallelism (default: auto-detect CPU count)
+deplexity export -f pdf --pdf-workers 4
+
+# Change the per-PDF render timeout (default: 30m; 0 disables)
+deplexity export -f pdf --pdf-timeout 1h
+```
+
+Each PDF is rendered in an isolated helper process. Ctrl+C terminates active PDF
+renderers, and a renderer that exceeds `--pdf-timeout` is killed so one
+pathological document cannot block an unattended export forever. A timeout names
+the affected thread explicitly, leaves any existing PDF unchanged, cancels the
+remaining PDF work, and exits non-zero.
+
+### Resumable Exports
+
+Export runs in two phases:
+
+1. **Phase 1 — Index**: Fetches the list of all threads and caches it in `thread_index.json`. If listing is interrupted, the next run re-lists from the beginning and uses the incomplete cache only to preserve per-thread retry metadata. The upstream list is newest-first and can reorder, so a saved numeric offset is not a safe resume point.
+2. **Phase 2 — Details**: Fetches full content for each thread. Already-fetched threads are skipped automatically.
+
+Use `--refresh` to force re-fetching the thread index (e.g., after new conversations).
+
+If one or more thread details cannot be fetched or written after retries, Deplexity
+keeps and renders every thread that completed successfully, writes the failure
+details to `manifest.json`, and exits with a non-zero status. Re-run the same export
+command to retry the missing threads from the saved checkpoints. A cancelled export
+stops immediately instead of being reported as a partial success.
+
+### Output Structure
+
+```
+deplexity-export/
+├── manifest.json              # Export metadata, thread completeness, and failures
+├── thread_index.json          # Cached thread list (for resumable exports)
+├── profile/
+│   └── user.json
+├── account/                   # Account-wide data (not tied to any space)
+│   ├── account.json           # Global skills metadata (referenced bodies below)
+│   ├── global-skills.md       # Global skills overview (Markdown)
+│   └── skills/                # Global skills' SKILL.md bodies
+│       └── <skill-name>.md
+├── spaces/
+│   ├── index.json
+│   ├── spaces.md
+│   └── <space-name>-<space-id>/
+│       ├── space.json         # Incl. AI instructions, suggested queries, primers, skills metadata
+│       ├── skills/            # Attached skills' SKILL.md bodies (referenced by space.json)
+│       │   └── <skill-name>.md
+│       └── threads/           # Self-contained copies of this space's threads
+│           └── <thread-slug>-<thread-id>/
+│               ├── thread.json
+│               ├── thread.md
+│               ├── thread.pdf
+│               └── sources.json
+└── threads/                   # Canonical flat list of all threads
+    └── <thread-slug>-<thread-id>/
+        ├── thread.json
+        ├── thread.md
+        ├── thread.pdf
+        └── sources.json
+```
+
+Each space folder is self-contained — you can ZIP and share a single space without needing the top-level `threads/` directory.
+
+Thread slugs from Perplexity are preserved in JSON metadata and the manifest. On
+disk, every thread directory also includes a stable UUID-derived suffix so equal or
+normalized slugs cannot overwrite each other. Existing UUID-only thread directories
+remain readable and are left untouched when the canonical path is written. An export
+created before its cached thread index is refreshed can temporarily add an
+identity-suffixed UUID path before the final slug-based path is known; these older
+paths are also retained rather than deleting backup data automatically.
+
+Space exports capture each space's full context: its custom AI instructions, description, suggested queries, primers, and any attached skills. Skill definitions are written as `SKILL.md` files under `spaces/<space-name>-<space-id>/skills/` and referenced from `space.json`. The stable ID suffix prevents different spaces whose names normalize to the same filesystem name from overwriting each other. Older name-only space directories are left untouched when exporting into an existing output directory.
+
+Account-wide **global skills** apply to every request regardless of space, so they are exported once under `account/` rather than duplicated per space. They are captured when spaces are exported (skip them with `--no-spaces`) and are written to JSON and Markdown outputs (`account/account.json`, `account/global-skills.md`, and bodies under `account/skills/`); PDF-only exports do not include them.
+
+For automation, `manifest.json` reports `threads_complete`, `expected_threads`,
+and `failed_threads`. Each failure includes its thread UUID, optional title, stage
+(`fetch`, `write`, or `load`), and error message. `counts.threads` remains the
+number of threads present in the current export.
+
+---
+
+## Export Formats
+
+| Format   | Best For                                    |
+| -------- | ------------------------------------------- |
+| JSON     | Programmatic access, backups, data pipelines |
+| Markdown | Reading, note-taking apps, version control   |
+| PDF      | Sharing, printing, archival                  |
+
+---
+
+## How It Works
+
+1. **Login** — Opens a real Chrome window (or uses a provided cookie). Captures the `__Secure-next-auth.session-token` cookie after you authenticate normally.
+2. **Fetch** — Uses Perplexity's internal REST API with your session cookie. TLS fingerprinting matches a real Chrome browser via [utls](https://github.com/refraction-networking/utls). Adaptive rate limiting keeps requests under Perplexity's anti-abuse threshold (~2 req/s).
+3. **Export** — Converts raw API responses into clean domain models, then renders them in your chosen format(s). Exports are resumable — interrupted runs pick up where they left off.
+
+No credentials are stored — only the session cookie (which expires in ~7 days).
+
+---
+
+## Building
+
+Requires [Bazel 9.1+](https://bazel.build/install):
+
+```bash
+# Build
+bazel build //cmd/deplexity
+
+# Build with version stamping
+bazel build //cmd/deplexity --config=release
+
+# Run tests
+bazel test //...
+
+# Regenerate BUILD files after code changes
+bazel run //:gazelle
+```
+
+Or with plain Go:
+
+```bash
+go build -o deplexity ./cmd/deplexity
+go test ./...
+```
+
+---
+
+## Architecture
+
+```
+cmd/deplexity/       CLI entrypoint (Kong framework)
+internal/
+├── api/             Raw API types + data fetching
+├── auth/            Browser login, cookie management, session validation
+├── client/          HTTP client: utls transport, adaptive rate limiting, retry with backoff
+├── export/          JSON, Markdown, and PDF renderers
+└── models/          Clean domain models (decoupled from API shape)
+```
+
+Key design decisions:
+- **Pure Go** — Single static binary, no CGO, no external tools
+- **Context propagation** — All operations are cancellable (first Ctrl+C cancels gracefully, second force-quits)
+- **Layered architecture** — API types are separate from domain models; exporters are independent
+- **Cloudflare bypass** — Chrome TLS fingerprint via `refraction-networking/utls`
+- **Adaptive rate limiting** — Delay doubles after 429s, halves after sustained success
+- **Two-phase export** — Thread index cached separately; detail fetching skips completed threads
+- **PDF via gpdf** — Declarative grid layout, no browser/wkhtmltopdf/LaTeX dependency
+
+---
+
+## Requirements
+
+- **Go 1.26+** (build only)
+- **Chrome/Chromium** (for `deplexity login` only — auto-downloaded if missing)
+- No runtime dependencies for `export` or `login --cookie`
+
+---
+
+## Security
+
+- Session tokens are stored with `0600` permissions in `~/.config/deplexity/`
+- No credentials are ever logged or transmitted to third parties
+- Requests to Perplexity use the same TLS fingerprint and headers as a real Chrome session
+- Skill bodies are downloaded from the pre-signed storage URLs (Amazon S3) that Perplexity returns; these fetches deliberately carry **no** session cookie or Perplexity headers, so your credentials are never sent off-platform
+
+---
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Run `bazel test //...` (all tests must pass)
+4. Run `bazel run //:gazelle` if you added/removed files
+5. Submit a pull request
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+## Disclaimer
+
+Deplexity is an independent, community-built tool. It is not affiliated with, endorsed by, or sponsored by Perplexity AI. Use responsibly and in accordance with Perplexity's terms of service.

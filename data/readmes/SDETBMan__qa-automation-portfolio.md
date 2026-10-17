@@ -1,0 +1,1186 @@
+# QA Automation Portfolio
+
+[![playwright CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/playwright.yml)
+[![selenium-java CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/selenium-java.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/selenium-java.yml)
+[![cucumber CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cucumber.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cucumber.yml)
+[![karate CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/karate.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/karate.yml)
+[![cypress CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cypress.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cypress.yml)
+[![ai-eval CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/ai-eval.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/ai-eval.yml)
+[![conv-eval CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/conv-eval.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/conv-eval.yml)
+[![agent-eval CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/agent-eval.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/agent-eval.yml)
+[![k8s CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/k8s.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/k8s.yml)
+[![postman-newman CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/postman-newman.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/postman-newman.yml)
+[![job-agent CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/job-agent.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/job-agent.yml)
+[![cucumber-python CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cucumber-python.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/cucumber-python.yml)
+[![coding-agent CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/coding-agent.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/coding-agent.yml)
+[![fastapi-service CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/fastapi-service.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/fastapi-service.yml)
+[![Terraform CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/terraform.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/terraform.yml)
+[![langchain-rag CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/langchain-rag.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/langchain-rag.yml)
+[![langgraph-agent CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/langgraph-agent.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/langgraph-agent.yml)
+[![dspy-optimizer CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/dspy-optimizer.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/dspy-optimizer.yml)
+[![claims-diff CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/claims-diff.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/claims-diff.yml)
+[![pact CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/pact.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/pact.yml)
+[![flakiness-detector CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/flakiness-detector.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/flakiness-detector.yml)
+[![site-monitor CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/site-monitor.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/site-monitor.yml)
+[![qms-evidence-collector CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/qms-evidence-collector.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/qms-evidence-collector.yml)
+[![branch-collision-monitor CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/branch-collision-monitor.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/branch-collision-monitor.yml)
+[![stagehand-agent CI](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/stagehand-agent.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/stagehand-agent.yml)
+[![CodeQL](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/codeql.yml/badge.svg)](https://github.com/SDETBMan/qa-automation-portfolio/actions/workflows/codeql.yml)
+
+A monorepo housing twenty-seven independent, production-grade frameworks spanning test automation, AI agents, API services, contract testing, flakiness detection, site drift monitoring, vulnerability aggregation, compliance evidence collection, dependency auditing, and cloud infrastructure — each showcasing a distinct engineering discipline used by senior SDETs and platform engineers. See [`QA-OPERATING-MODEL.md`](./QA-OPERATING-MODEL.md) for the portfolio-wide quality standards and [`ISO-9001-QUALITY-MANUAL.md`](./ISO-9001-QUALITY-MANUAL.md) for the ISO 9001:2015 clause-aligned quality manual.
+
+---
+
+## Standalone Projects
+
+Three additional repositories outside this monorepo, focused on adversarial AI testing and financial domain QA:
+
+| Project | Stack | What It Does |
+|---|---|---|
+| [`legal-funding-qa-agent`](https://github.com/SDETBMan/legal-funding-qa-agent) | Python · LangGraph · DSPy · Hypothesis · Claude | Autonomous adversarial QA agent that attacks 12 financial/legal invariants in a pre-settlement funding API. Produces auditable JSON reports with a severity-tiered **BLOCK/WARN/PASS release gate** for CI/CD. DSPy-optimized judge, integer-cents money model, Presidio PII redaction, mock API with 8 seeded bugs. |
+| [`agentic-p2p-auditor`](https://github.com/SDETBMan/agentic-p2p-auditor) | Python · Claude (tool use) · Decimal math | Three-agent pipeline (Exploration → Adversarial → Judge) for auditing financial controls across two domains: Purchase-to-Pay (6 controls) and Medical Lien (6 controls). Pluggable domain architecture, evidence-grounded verdicts, live HTTP adapter for real APIs. |
+| [`ai-pr-reviewer`](https://github.com/SDETBMan/ai-pr-reviewer) | JavaScript · Claude · promptfoo · Docker | AI code reviewer for test automation PRs. 22-rule catalog across 7 categories (Locator, Wait, POM, Isolation, Assertion, Fixture, Migration). promptfoo eval harness: 11 cases × 2 models = 22 evals, 100% pass. Dual-audience output for engineers + offshore QA. *(Private repo)* |
+
+---
+
+## Frameworks
+
+| Framework | Language | Stack | README |
+|---|---|---|---|
+| [`ai-eval`](./ai-eval/) | Python | DeepEval · Pytest · OpenAI · ChromaDB · Python 3.11 | [→](./ai-eval/README.md) |
+| [`conv-eval`](./conv-eval/) | Python | DeepEval · Pytest · OpenAI · Python 3.11 | [→](./conv-eval/README.md) |
+| [`agent-eval`](./agent-eval/) | Python | DeepEval · Pytest · OpenAI · Pydantic · Python 3.11 | [→](./agent-eval/README.md) |
+| [`playwright`](./playwright/) | TypeScript · C# | Playwright 1.52 · TypeScript 5.4 · NUnit · .NET 8 | [→](./playwright/README.md) |
+| [`selenium-java`](./selenium-java/) | Java | Selenium 4 · TestNG · Maven · Java 17 | [→](./selenium-java/README.md) |
+| [`cucumber`](./cucumber/) | Java · Scala | Cucumber 7 · Karate 1.5 · Karate-Gatling · TestNG · Selenium 4 · Maven · Java 17 | [→](./cucumber/README.md) |
+| [`postman`](./postman/) | JSON · JavaScript | Postman Collection v2.1 · Newman 6 · Node.js 22 | [→](./postman/README.md) |
+| [`job-agent`](./job-agent/) | Python | Anthropic Claude · Tavily · AgentOps · Python 3.11 | [→](./job-agent/README.md) |
+| [`cypress`](./cypress/) | TypeScript | Cypress 15 · React 18 · Vite · Claude AI Test Generator · Node.js 22 | [→](./cypress/README.md) |
+| [`cucumber-python`](./cucumber_python/) | Python | Behave · Selenium 4 · Python 3.11 | [→](./cucumber_python/README.md) |
+| [`coding-agent`](./coding-agent/) | Python | Anthropic Claude · AgentOps · Python 3.11 | [→](./coding-agent/README.md) |
+| [`fastapi-service`](./fastapi-service/) | Python · JavaScript | FastAPI · MYGA annuity · Redis · Pytest · k6 · Python 3.11 | [→](./fastapi-service/README.md) |
+| [`terraform`](./terraform/) | HCL | Terraform ≥ 1.6 · AWS · DataDog | [→](./terraform/README.md) |
+| [`langchain-rag`](./langchain-rag/) | Python | LangChain 0.3 · LCEL · Chroma · OpenAI `gpt-4o-mini` · Langfuse · Python 3.11 | [→](./langchain-rag/README.md) |
+| [`langgraph-agent`](./langgraph-agent/) | Python | LangGraph 0.4 · LangChain Anthropic · `claude-haiku-4-5` · Python 3.11 | [→](./langgraph-agent/README.md) |
+| [`dspy-optimizer`](./dspy-optimizer/) | Python | DSPy 2.6 · BootstrapFewShot · OpenAI `gpt-4o-mini` · Python 3.11 | [→](./dspy-optimizer/README.md) |
+| [`dspy-vertex`](./dspy-vertex/) | Python | DSPy 2.6 · BootstrapFewShot · Vertex AI Gemini 1.5 · Python 3.11 | [→](./dspy-vertex/README.md) |
+| [`claims-diff`](./claims-diff/) | Python | Pandas · Pydantic · BigQuery (optional) · Python 3.11 | [→](./claims-diff/README.md) |
+| [`pact-consumer`](./pact-consumer/) | TypeScript | Pact v13 · Vitest · pact-python provider verifier · Python 3.11 | [→](./pact-consumer/README.md) |
+| [`flakiness-detector`](./flakiness-detector/) | Python | JUnit XML · Click · DataDog · Python 3.11 | [→](./flakiness-detector/README.md) |
+| [`vulnerability-aggregator`](./vulnerability-aggregator/) | Python | GitHub API (gh CLI) · Dependabot · CodeQL · ZAP · Python 3.11 | [→](./vulnerability-aggregator/README.md) |
+| [`site-monitor`](./site-monitor/) | Python | BeautifulSoup · Click · DataDog · Requests · Python 3.11 | [→](./site-monitor/README.md) |
+| [`quality-dashboard`](./quality-dashboard/) | Python | JUnit XML · DataDog v2 API · GitHub Actions API · Python 3.11 | [→](./quality-dashboard/README.md) |
+| [`failure-triage`](./failure-triage/) | Python | Anthropic Claude (tool use) · JUnit XML · DataDog · Python 3.11 | [→](./failure-triage/README.md) |
+| [`qms-evidence-collector`](./qms-evidence-collector/) | Python | Click · ISO 9001 · SOC 2 · ISO/IEC 17025 · DataDog · Python 3.11 | [→](./qms-evidence-collector/README.md) |
+| [`branch-collision-monitor`](./branch-collision-monitor/) | Python | GitHub API (gh CLI) · Anthropic Claude · DataDog · Python 3.11 | [→](./branch-collision-monitor/README.md) |
+| [`dependency-audit`](./dependency-audit/) | Python | Click · Requests · npm/PyPI/NuGet/Maven registries · Python 3.12 | [→](./dependency-audit/README.md) |
+| [`qa-mcp-server`](./qa-mcp-server/) | Python | MCPServer · psycopg2 · Pydantic · DataDog · Python 3.11 | [→](./qa-mcp-server/README.md) |
+| [`stagehand-agent`](./stagehand-agent/) | Python | Stagehand · Playwright · Browserbase · Pydantic · Python 3.11 | [→](./stagehand-agent/README.md) |
+| [`automation`](./automation/) | Bash · TypeScript | Claude Code headless mode · Agent SDK · Routines | — |
+
+---
+
+## Feature Coverage
+
+| Capability | playwright | selenium-java | cucumber | cypress | ai-eval | conv-eval | agent-eval | postman | job-agent |
+|---|---|---|---|---|---|---|---|---|---|
+| **Page Object Model** | ✅ C# + TypeScript | ✅ Java | ✅ Java | ✅ TypeScript | — | — | — | — | — |
+| **Custom commands** | — | — | — | ✅ `cy.login()` · `cy.addToCart()` · `cy.clearCart()` | — | — | — | — | — |
+| **AI test generation** | — | — | — | ✅ Claude-powered: user story → `.cy.ts` file (RAG with page objects + commands) | — | — | — | — | — |
+| **Network interception** | ✅ `page.route()` mock/stub | — | — | ✅ `cy.intercept()` spy + stub + failure sim | — | — | — | — | — |
+| **Component testing** | — | — | — | ✅ React `ProductCard` via Cypress component runner | — | — | — | — | — |
+| **Parallel execution** | ✅ `[Parallelizable]` · `fullyParallel` | ✅ `ThreadLocal` · `parallel="tests"` | ✅ `ThreadLocal` · `@DataProvider(parallel=true)` | ✅ `--parallel` (Cypress Cloud) | — | — | — | — | — |
+| **Fixtures / base classes** | ✅ `AuthenticatedTest` · `test.extend<AppFixtures, WorkerFixtures>` · `storageState` auth · worker-scoped DB | ✅ `BaseTest` | ✅ Cucumber `Hooks` | ✅ `BasePage` abstract class · JSON fixtures | ✅ `conftest.py` session fixtures | ✅ `conftest.py` session + function fixtures | ✅ `conftest.py` session + function fixtures | — | — |
+| **Retry on failure** | ✅ `[Retry]` · `retries: 2` in CI | ✅ `RetryAnalyzer` + `AnnotationTransformer` | ✅ `RetryAnalyzer` + `AnnotationTransformer` | ✅ `retries: { runMode: 2 }` | — | — | — | — | — |
+| **Cross-browser** | ✅ Chromium · Firefox · WebKit | ✅ Chrome · Firefox · Edge | ✅ Chrome · Firefox · Edge | ✅ Chrome · Firefox · Edge · Electron | — | — | — | — | — |
+| **Screenshot/video on failure** | ✅ Trace Viewer | — | — | ✅ `screenshotOnRunFailure` · `video: true` | — | — | — | — | — |
+| **BDD / Gherkin** | — | — | ✅ 6 feature files · 19+ scenarios | — | — | — | — | — | — |
+| **Data-driven tests** | ✅ `[TestCaseSource]` | ✅ `@DataProvider` | ✅ Scenario Outline | ✅ `cy.fixture()` JSON datasets | ✅ `golden_dataset.json` · `@pytest.mark.parametrize` | ✅ `conversations.json` · `@pytest.mark.parametrize` | ✅ `agent_scenarios.json` · `@pytest.mark.parametrize` | ✅ pre-request scripts · collection variables | — |
+| **Visual regression** | ✅ `toHaveScreenshot()` · snapshot baselines · CI update workflow | — | — | — | — | — | — | — | — |
+| **GraphQL API testing** | ✅ Playwright `request` fixture · 5 patterns (query, variables, mock, error, auditing) | — | — | — | — | — | — | — | — |
+| **Database-to-UI assertions** | ✅ 5 patterns: scalar match, row count, field match, pre-fill, column values · worker-scoped pool · `expect.poll()` retry | — | — | — | — | — | — | — | — |
+| **Shopify E2E testing** | ✅ 8 storefront tests · 4 visual baselines · Page Objects | — | — | — | — | — | — | — | — |
+| **Deploy validation + rollback** | ✅ Vercel health-check → Playwright smoke → auto-rollback pipeline | — | — | — | — | — | — | — | — |
+| **REST API testing** | ✅ `HttpClient` · Playwright `request` | ✅ RestAssured | ✅ RestAssured · Karate 1.5 (13 features, ~42 scenarios) | — | — | — | — | ✅ Newman CLI · 10 requests · 4 test groups | — |
+| **Mocking & Service Virtualization** | ✅ 4 patterns: block assets, mock API responses, inject headers, simulate failures · enables UI testing independent of backend readiness | — | ✅ Karate mock server (stateful payment gateway + pricing engine) | ✅ `cy.intercept()` response stub + failure sim | — | — | — | — | — |
+| **Observability & Analytics** | ✅ Allure · GitHub Pages · Trace Viewer (`retain-on-failure`): DOM snapshots, screenshots, network calls for fast MTTR | ✅ Allure | ✅ Allure · GitHub Pages | ✅ JUnit XML · videos · screenshots | — | — | — | ✅ JUnit XML · htmlextra HTML report | — |
+| **AI/ML Self-Healing Locators** | — | ✅ Healenium 3.4.8 | ✅ Healenium 3.4.8 | — | — | — | — | — | — |
+| **LLM Evaluation (RAG pipeline)** | — | — | — | — | ✅ Answer Relevancy · Faithfulness · Hallucination · Safety · Bias · JSON Schema | — | — | — | — |
+| **LLM Evaluation (Conversational)** | — | — | — | — | — | ✅ Turn Relevancy · Knowledge Retention · Role Adherence · Graceful Handling · Bias · Toxicity | — | — | — |
+| **LLM Evaluation (Agentic / tool-use)** | — | — | — | — | — | — | ✅ Tool Correctness · Task Completion · Bias · Toxicity | — | — |
+| **Function-calling agent** | — | — | — | — | — | — | ✅ Multi-step tool orchestration · deterministic tool implementations | — | — |
+| **Agentic tool-use loop** | — | — | — | — | — | — | — | — | ✅ Claude claude-sonnet-4-6 · 5 tools · max 30 iterations · Tavily web search |
+| **Automated job search** | — | — | — | — | — | — | — | — | ✅ 5 role queries · score_job_fit · draft_cover_letter · save_results |
+| **JSON schema validation** | — | — | ✅ Karate schema markers (`#string`, `#number`, `#regex`, `#present`) | — | ✅ `JsonCorrectnessMetric` · Pydantic `BaseModel` schemas | — | — | — | — |
+| **Cost & latency tracking** | — | — | — | — | ✅ per-call tokens · `latency_ms` → DataDog | ✅ per-turn tokens · `latency_ms` → DataDog | ✅ per-step tokens · `latency_ms` → DataDog | — | ✅ `latency_ms` · run counts → DataDog |
+| **Mobile (Appium)** | — | ✅ Android · iOS | ✅ Android · iOS | — | — | — | — | — | — |
+| **Performance (JMeter)** | — | ✅ Maven plugin | ✅ Maven plugin | — | — | — | — | — | — |
+| **Performance (Gatling)** | — | — | ✅ Karate-Gatling (`-Pperf`) | — | — | — | — | — | — |
+| **Database validation** | ✅ dbClient + dbAssertions (MySQL · PostgreSQL) | ✅ JDBC / MySQL | ✅ JDBC / MySQL | — | — | — | — | — | — |
+| **Security testing (OWASP)** | ✅ 4 test cases | ✅ 4 test cases | ✅ 3 BDD scenarios | — | — | — | — | — | — |
+| **Consumer-driven contracts (Pact)** | — | — | — | — | — | — | — | — | — |
+| **Flaky test detection** | — | — | — | — | — | — | — | — | — |
+| **Vulnerability aggregation** | — | — | — | — | — | — | — | — | — |
+| **k6 SLO thresholds** | — | — | — | — | — | — | — | — | — |
+| **OWASP ZAP passive scan** | ✅ CI pipeline | ✅ CI pipeline | ✅ CI pipeline | ✅ CI pipeline | — | — | — | — | — |
+| **Containerized infra** | — | ✅ Docker Compose · K8s | ✅ Docker Compose · K8s | — | — | — | — | — | — |
+| **Slack notifications** | — | ✅ Webhook | ✅ Webhook | — | — | — | — | — | — |
+| **DataDog observability** | ✅ CI Visibility (TRX) | ✅ CI Visibility · Custom metrics | ✅ CI Visibility · Custom metrics (Cucumber + Karate) | ✅ CI Visibility · Custom GAUGE metrics | ✅ CI Visibility · LLM eval scores | ✅ CI Visibility · LLM eval scores | ✅ CI Visibility · LLM eval scores | ✅ CI Visibility (JUnit XML) | ✅ Custom metrics · run counts · latency |
+| **AI observability (Langfuse)** | — | — | — | — | — | — | — | — | — |
+| **RAG pipeline (LCEL)** | — | — | — | — | — | — | — | — | — |
+| **Stateful multi-agent graph** | — | — | — | — | — | — | — | — | — |
+| **Conditional edges + cycles** | — | — | — | — | — | — | — | — | — |
+| **DSPy prompt optimization** | — | — | — | — | — | — | — | — | — |
+| **Conversation history (RunnableWithMessageHistory)** | — | — | — | — | — | — | — | — | — |
+| **GitHub Actions CI** | ✅ | ✅ | ✅ | ✅ nightly 05:00 UTC | ✅ | ✅ | ✅ | ✅ | ✅ nightly 09:00 UTC |
+| **Agentic AI Development** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+---
+
+## Quick Start
+
+### ai-eval
+
+**Prerequisites:** [Python 3.11+](https://python.org) · OpenAI API key in `ai-eval/.env`
+
+```bash
+# From the repo root
+make ai-eval
+
+# Or manually
+cd ai-eval
+pip install -r requirements.txt
+
+# Run all evaluations
+pytest -v
+
+# Smoke tests only (fast)
+pytest -m smoke -v
+
+# Safety tests only
+pytest -m safety -v
+```
+
+### conv-eval
+
+**Prerequisites:** [Python 3.11+](https://python.org) · OpenAI API key in `conv-eval/.env`
+
+```bash
+cd conv-eval
+pip install -r requirements.txt
+
+# Smoke tests only (fast): turn relevancy + role adherence across normal scenarios
+pytest -m smoke -v
+
+# Retention tests: knowledge retention across implicit reference and correction scenarios
+pytest -m retention -v
+
+# Safety tests: graceful handling of out-of-scope queries and prompt injection
+pytest -m safety -v
+
+# Full suite
+pytest -v
+```
+
+### agent-eval
+
+**Prerequisites:** [Python 3.11+](https://python.org) · OpenAI API key in `agent-eval/.env`
+
+```bash
+cd agent-eval
+pip install -r requirements.txt
+
+# Smoke tests only (fast): tool correctness + task completion across single-tool scenarios
+pytest -m smoke -v
+
+# Full suite (includes multi-tool orchestration scenarios)
+pytest -v
+```
+
+### cypress (TypeScript E2E + Component)
+
+**Prerequisites:** [Node.js 22 LTS](https://nodejs.org)
+
+```bash
+# From the repo root
+make cypress-test
+
+# Or manually
+cd cypress
+npm install
+
+# All E2E tests (headless Chrome)
+npm test
+
+# React component tests only
+npm run test:component
+
+# Interactive Cypress Test Runner
+npm run test:headed
+
+# AI Test Generator — user story → runnable .cy.ts file
+export ANTHROPIC_API_KEY=sk-ant-...
+npm run ai:generate "User adds two items to cart and verifies badge count"
+```
+
+### playwright (C# + TypeScript)
+
+**Prerequisites:** [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8) · [Node.js 22 LTS](https://nodejs.org)
+
+```bash
+cd playwright
+
+# One command: installs all deps, browsers, runs C# and TypeScript suites
+bash run-all.sh
+
+# Or with make
+make all
+```
+
+### selenium-java
+
+**Prerequisites:** [Java 17](https://adoptium.net) · [Maven 3.9+](https://maven.apache.org)
+
+```bash
+# From the repo root
+make selenium
+
+# Or manually
+cd selenium-java
+
+# Headless Chrome (default)
+mvn clean test -Dheadless=true
+
+# Specific browser
+mvn clean test -Dheadless=true -Dbrowser=firefox
+
+# Selenium Grid (start Docker first)
+docker compose up -d selenium-hub chrome firefox edge
+mvn clean test -PGrid -Dheadless=true
+
+# Performance tests
+mvn jmeter:jmeter
+```
+
+### cucumber
+
+**Prerequisites:** [Java 17](https://adoptium.net) · [Maven 3.9+](https://maven.apache.org)
+
+```bash
+# From the repo root
+make cucumber
+
+# Or manually
+cd cucumber
+
+# Headless Chrome (default)
+mvn clean test -Dheadless=true
+
+# Tag filter
+mvn clean test -Dheadless=true -Dcucumber.filter.tags="@smoke"
+
+# Full stack with Selenium Grid + Healenium
+docker compose up -d
+mvn clean test -Dtarget=grid -Dheadless=true
+
+# Performance tests (JMeter)
+mvn jmeter:jmeter
+
+# Performance tests (Karate-Gatling load simulation)
+mvn test -Pperf
+
+# Karate API tests (all 13 features)
+mvn clean test -Pkarate
+
+# Karate with environment and tag filter
+mvn clean test -Pkarate -Dkarate.env=staging
+mvn clean test -Pkarate -Dkarate.options="--tags @smoke"
+```
+
+### postman (Newman API tests)
+
+**Prerequisites:** [Node.js 22 LTS](https://nodejs.org)
+
+```bash
+# From the repo root
+make postman
+
+# Or manually
+cd postman
+
+# Install Newman and reporters
+npm install
+
+# Run full collection (all 4 folders)
+npm test
+
+# Smoke folder only (fast connectivity check)
+npm run test:smoke
+
+# Verbose output with request/response details
+npm run test:verbose
+
+# HTML report (opens in browser)
+npm run test:html
+```
+
+### job-agent
+
+**Prerequisites:** [Python 3.11+](https://python.org) · Anthropic API key · Tavily API key in `job-agent/.env`
+
+```bash
+# From the repo root
+make job-agent
+
+# Or manually
+cd job-agent
+pip install -r requirements.txt
+
+# Copy and fill in your profile
+cp profile/profile.example.md profile/profile.md
+
+# Run full job search (all 5 role queries)
+python run.py
+
+# Narrow to a specific role
+python run.py --role "SDET"
+python run.py --role "QA Lead"
+```
+
+### cucumber-python
+
+**Prerequisites:** [Python 3.11+](https://python.org) · Chrome/Chromium installed
+
+```bash
+# From the repo root
+make cucumber-python
+
+# Or manually
+cd cucumber_python
+pip install -r requirements.txt
+
+# All scenarios (headless Chrome)
+HEADLESS=true behave --no-capture
+
+# Tag filter (e.g. security scenarios only)
+HEADLESS=true behave --tags=security
+
+# Specific feature file
+HEADLESS=true behave features/inventory.feature
+```
+
+### coding-agent
+
+**Prerequisites:** [Python 3.11+](https://python.org) · Anthropic API key in `coding-agent/.env`
+
+```bash
+# From the repo root
+make coding-agent
+
+# Or manually
+cd coding-agent
+pip install -r requirements.txt
+
+# Demo 2 — HTTP validation script (default, no browser needed)
+python run_demo.py --demo 2
+
+# Demo 5 — AI Test Generator (manual QA description → runnable pytest)
+python run_demo.py --demo 5
+
+# All demos (1–5)
+python run_demo.py --all
+```
+
+### fastapi-service
+
+**Prerequisites:** [Python 3.11+](https://python.org) · Docker (optional, for Redis)
+
+```bash
+# Start the API server on :8001
+make fastapi-service
+
+# Run the Pytest suite with coverage (66 tests, no Redis needed)
+make fastapi-service-test
+
+# Or manually
+cd fastapi-service
+pip install -r requirements.txt
+pytest tests/ -v --cov=app --cov-report=term-missing
+
+# Start with Redis caching (optional)
+docker compose up -d
+uvicorn app.main:app --reload --port 8001
+```
+
+### terraform
+
+**Prerequisites:** [Terraform ≥ 1.6](https://developer.hashicorp.com/terraform/downloads) · AWS credentials · DataDog API + App keys
+
+```bash
+# Copy example vars and fill in your values
+cp terraform/terraform.tfvars.example terraform/terraform.tfvars
+
+make terraform-init      # download providers
+make terraform-validate  # check HCL syntax
+make terraform-plan      # preview changes (requires creds)
+make terraform-apply     # apply (requires creds)
+```
+
+See [`terraform/README.md`](./terraform/README.md) for the full bootstrap guide, CI integration notes, and the chicken-and-egg OIDC setup instructions.
+
+### langchain-rag
+
+**Prerequisites:** [Python 3.11+](https://python.org) · OpenAI API key in `langchain-rag/.env`
+
+```bash
+# From the repo root
+make langchain-rag
+
+# Or manually
+cd langchain-rag
+pip install -r requirements.txt
+cp .env.example .env  # add OPENAI_API_KEY
+
+# Run 3 built-in demo questions
+python run.py --demo
+
+# Ask a single question
+python run.py --question "Which frameworks use Selenium?"
+
+# Interactive REPL
+python run.py --interactive
+```
+
+### langgraph-agent
+
+**Prerequisites:** [Python 3.11+](https://python.org) · Anthropic API key in `langgraph-agent/.env`
+
+```bash
+# From the repo root
+make langgraph-agent
+
+# Or manually
+cd langgraph-agent
+pip install -r requirements.txt
+cp .env.example .env  # add ANTHROPIC_API_KEY
+
+# Run built-in demo feature
+python run.py --demo
+
+# Provide your own feature description
+python run.py --feature "User can reset their password via email"
+```
+
+### dspy-optimizer
+
+**Prerequisites:** [Python 3.11+](https://python.org) · OpenAI API key in `dspy-optimizer/.env`
+
+```bash
+# From the repo root
+make dspy-optimizer
+
+# Or manually
+cd dspy-optimizer
+pip install -r requirements.txt
+cp .env.example .env  # add OPENAI_API_KEY
+
+# Side-by-side baseline vs optimized accuracy (default)
+python run.py
+
+# Zero-shot baseline only
+python run.py --mode baseline
+
+# BootstrapFewShot optimized only
+python run.py --mode optimized
+```
+
+### dspy-vertex
+
+**Prerequisites:** [Python 3.11+](https://python.org) · GCP credentials (`gcloud auth application-default login`)
+
+```bash
+cd dspy-vertex
+pip install -r requirements.txt
+cp .env.example .env  # add GCP_PROJECT
+
+# Side-by-side baseline vs optimized accuracy (default)
+python run.py
+
+# Zero-shot baseline only
+python run.py --mode baseline
+
+# BootstrapFewShot optimized only
+python run.py --mode optimized
+```
+
+### claims-diff
+
+**Prerequisites:** [Python 3.11+](https://python.org)
+
+```bash
+# From the repo root
+make claims-diff           # run diff against default datasets
+make claims-diff-test      # run pytest suite (30 tests) with coverage + parallel execution
+
+# Or manually
+cd claims-diff
+pip install -r requirements.txt
+
+# Run diff against included synthetic datasets
+python run.py
+
+# Generate synthetic datasets at scale
+python datasets/generate.py --count 500 --diffs 25 --seed 42
+python run.py --baseline datasets/baseline_generated.csv --current datasets/current_generated.csv
+
+# Run test suite (parallel via pytest-xdist)
+pytest tests/ -v --cov=differ --cov-report=term-missing
+```
+
+### site-monitor
+
+**Prerequisites:** [Python 3.11+](https://python.org)
+
+```bash
+# From the repo root
+make site-monitor
+
+# Or manually
+cd site-monitor
+pip install -r requirements.txt
+
+# Generate initial baseline
+python run.py --update-baseline
+
+# Run drift check
+python run.py
+
+# Run with report output
+python run.py --output drift-report.md
+
+# Run tests
+pytest tests/ -v
+```
+
+### branch-collision-monitor
+
+**Prerequisites:** [Python 3.11+](https://python.org) · `gh` CLI authenticated (`gh auth login`)
+
+```bash
+# From the repo root
+make branch-collisions
+
+# Or manually
+cd branch-collision-monitor
+pip install -r requirements.txt
+
+# Analyze a repository for branch collisions
+python run.py --repo SDETBMan/qa-automation-portfolio
+
+# JSON + Markdown file output
+python run.py --repo SDETBMan/qa-automation-portfolio --output report --format both
+
+# With Claude semantic conflict analysis
+python run.py --repo SDETBMan/qa-automation-portfolio --semantic --max-semantic 5
+
+# Run tests
+pytest tests/ -v
+```
+
+### stagehand-agent
+
+**Prerequisites:** [Python 3.11+](https://python.org) · (Optional) Browserbase API key + model API key for AI-driven mode
+
+```bash
+# Run unit tests (no API keys needed)
+make stagehand-agent-test
+
+# Or manually
+cd stagehand-agent
+pip install -r requirements.txt
+pip install pytest pytest-asyncio
+pytest tests/ -v
+
+# Traditional mode (local Playwright, no API keys)
+python run.py --mode traditional
+
+# Full comparison (requires Browserbase + model API keys in .env)
+cp .env.example .env  # fill in keys
+python run.py --mode compare
+```
+
+### qa-mcp-server
+
+**Prerequisites:** [Python 3.11+](https://python.org) · (Optional) PostgreSQL for `inspect_db`
+
+```bash
+# Run tests
+make mcp-server-test
+
+# Or manually
+cd qa-mcp-server
+pip install -r requirements.txt
+pytest tests/ -v
+
+# Test with MCP Inspector
+mcp dev server.py
+```
+
+Claude Code auto-discovers the server via `.mcp.json` in the repo root. Five tools are exposed: `parse_junit_xml`, `analyze_flakiness`, `compute_quality_kpis`, `diff_claims`, `inspect_db`.
+
+---
+
+## Repo Structure
+
+```
+qa-automation-portfolio/
+├── .github/
+│   └── workflows/
+│       ├── ai-eval.yml             # triggers on: paths ai-eval/**
+│       ├── conv-eval.yml           # triggers on: paths conv-eval/**
+│       ├── agent-eval.yml          # triggers on: paths agent-eval/**
+│       ├── playwright.yml   # triggers on: paths playwright/**
+│       ├── selenium-java.yml       # triggers on: paths selenium-java/**
+│       ├── cucumber.yml            # triggers on: paths cucumber/**
+│       ├── cypress.yml             # triggers on: paths cypress/** · nightly 05:00 UTC
+│       ├── postman-newman.yml      # triggers on: paths postman/**
+│       ├── job-agent.yml           # nightly 09:00 UTC · workflow_dispatch (role_filter input)
+│       ├── cucumber-python.yml     # nightly 05:00 UTC · workflow_dispatch (browser · execution mode)
+│       ├── coding-agent.yml        # push/PR paths: coding-agent/** · workflow_dispatch (demo number)
+│       ├── fastapi-service.yml     # nightly 10:00 UTC · workflow_dispatch
+│       ├── terraform.yml           # push/PR paths: terraform/** · workflow_dispatch (plan + apply)
+│       ├── k8s.yml                 # workflow_dispatch only: Kind cluster + grid smoke tests
+│       ├── langchain-rag.yml       # push/PR lint (free) · workflow_dispatch demo (< $0.01)
+│       ├── langgraph-agent.yml     # push/PR lint (free) · workflow_dispatch demo (< $0.02)
+│       ├── dspy-optimizer.yml      # push/PR lint (free) · workflow_dispatch compare (~$0.02)
+│       ├── claims-diff.yml        # push/PR paths: claims-diff/** · workflow_dispatch
+│       ├── site-monitor.yml      # daily 06:00 UTC · push/PR paths: site-monitor/**
+│       ├── dependency-audit.yml  # weekly Sunday 04:00 UTC · workflow_dispatch (auto-update + ecosystem filter)
+│       ├── playwright-smoke-pr.yml # PR gate: @smoke Chromium only, 5-min timeout, fail-fast
+│       ├── k6-load-test.yml       # nightly k6 load test against fastapi-service
+│       ├── deploy-validate-rollback.yml  # Vercel health-check → smoke → auto-rollback
+│       ├── visual-regression-update.yml  # Manual baseline update → PR for review
+│       └── claude.yml                    # @claude trigger on PR/issue comments (write access)
+├── ai-eval/                            # Python · Pytest · DeepEval · OpenAI · ChromaDB
+│   ├── rag/                            # RAG pipeline: document, embedder, retriever
+│   ├── datasets/golden_dataset.json    # Ground truth Q&A pairs (SauceDemo FAQ)
+│   ├── evals/                          # test_answer_relevancy · faithfulness · hallucination · safety · bias · json_correctness
+│   ├── conftest.py                     # Session fixtures: OpenAI client, ChromaDB, retriever, answer_generator
+│   └── pytest.ini
+├── conv-eval/                          # Python · Pytest · DeepEval · OpenAI
+│   ├── chatbot/                        # SwagSupportBot (stateful) · knowledge base · system prompt
+│   ├── datasets/conversations.json     # 7 multi-turn conversation scenarios
+│   ├── evals/                          # test_conversation_relevancy · knowledge_retention · role_adherence · graceful_handling · safety
+│   ├── conftest.py                     # Session fixtures: OpenAI client · function-scoped bot with teardown
+│   └── pytest.ini
+├── agent-eval/                         # Python · Pytest · DeepEval · OpenAI · Pydantic
+│   ├── agent/                          # SwagAgent (function-calling) · tools · tool implementations
+│   ├── datasets/agent_scenarios.json   # 7 scenarios: single-tool and multi-tool orchestration
+│   ├── evals/                          # test_tool_correctness · test_task_completion · test_safety
+│   ├── conftest.py                     # Session fixtures: OpenAI client · function-scoped agent with teardown
+│   └── pytest.ini
+├── playwright/              # Playwright · NUnit · C# · TypeScript
+│   ├── tests/
+│   │   ├── Framework.Tests/        # NUnit C# test project
+│   │   └── playwright-ts/          # TypeScript Playwright project
+│   │       ├── tests/              # login · inventory · network · visual-regression · db-assertions · graphql · annuity-api
+│   │       │   └── shopify/        # storefront E2E + visual baselines (Shopify)
+│   │       ├── pages/shopify/      # ShopifyStorefront · Product · Cart page objects
+│   │       ├── utils/              # dbClient · dbAssertions · graphqlClient · annuityClient · allureHelper
+│   │       └── scripts/            # health-check.ts (deploy validation)
+│   ├── Makefile
+│   └── run-all.sh
+├── selenium-java/                  # Selenium 4 · TestNG · Java · Maven
+│   ├── src/main/java/              # Page objects, driver factory, utilities
+│   ├── src/test/java/              # Tests, listeners, unit tests
+│   ├── testng.xml                  # Web · API · Unit suites
+│   └── testng_mobile.xml           # Android & iOS Appium suites
+├── cucumber/                       # Cucumber 7 · Karate 1.5 · TestNG · Selenium 4 · Java
+│   ├── src/main/java/              # Utilities: ConfigReader, RetryAnalyzer, SlackUtils, DataDogUtils
+│   ├── src/test/java/
+│   │   ├── com/saucedemo/          # Cucumber: step definitions, runners, page objects
+│   │   ├── karate-config.js        # Karate env switching + base URLs
+│   │   └── karate/                 # Karate API tests (13 features, ~42 scenarios)
+│   │       ├── api/                # users-crud · posts · comments
+│   │       ├── advanced/           # schema-validation · data-driven · headers-auth · error-handling
+│   │       ├── financial/          # mock server · transaction-lifecycle · pricing-calculations
+│   │       └── infra/              # reusable helpers · performance-hooks
+│   ├── src/test/scala/karate/perf/   # Karate-Gatling simulation (mvn test -Pperf)
+│   ├── src/test/resources/features/  # Cucumber: login · dashboard · inventory · cart · api · security
+│   └── docker-compose.yaml
+├── cypress/                            # Cypress 15 · TypeScript · React 18 · Vite · Claude AI · Node.js 22
+│   ├── ai-generator/                   # AI test generator (user story → .cy.ts via Claude RAG)
+│   │   └── generate-test.ts
+│   ├── cypress/
+│   │   ├── component/                  # ProductCard.cy.tsx — React component tests
+│   │   ├── e2e/                        # login · inventory · checkout · network (cy.intercept)
+│   │   │   └── generated/              # AI-generated test output directory
+│   │   ├── fixtures/                   # users.json · products.json
+│   │   ├── pages/                      # BasePage · LoginPage · InventoryPage · CartPage · CheckoutPage
+│   │   └── support/                    # commands.ts (cy.login · cy.addToCart · cy.clearCart) · e2e.ts
+│   ├── src/components/ProductCard.tsx  # React component under test
+│   ├── utils/datadog_reporter.ts       # GAUGE metrics reporter
+│   └── cypress.config.ts
+├── postman/                            # Postman Collection v2.1 · Newman · Node.js 22
+│   ├── collections/                   # jsonplaceholder.postman_collection.json: 10 requests, 4 folders
+│   ├── environments/                  # jsonplaceholder.postman_environment.json
+│   ├── results/                       # JUnit XML · HTML report (git-ignored)
+│   └── package.json                   # Newman + htmlextra reporter
+├── job-agent/                          # Python · Anthropic Claude · Tavily
+│   ├── agent/                          # job_hunter.py (agentic loop) · tools.py (5 tool defs)
+│   ├── profile/                        # profile.example.md (template) · profile.md (git-ignored)
+│   ├── utils/                          # datadog_reporter.py
+│   ├── output/                         # jobs_YYYY-MM-DD.md · cover_letters/ (git-ignored)
+│   └── run.py                          # CLI entry: python run.py [--role SDET]
+├── cucumber_python/                    # Python · Behave · Selenium 4
+│   ├── features/                       # login · dashboard · inventory · cart · api · security
+│   │   ├── steps/                      # auth_steps · inventory_steps · api_steps · security_steps
+│   │   └── environment.py              # before/after_scenario hooks · DataDog metrics · Slack
+│   ├── pages/                          # BasePage · LoginPage · InventoryPage · CartPage · DashboardPage
+│   ├── utils/                          # driver_manager · config_reader · tasks · datadog_utils
+│   └── config.ini
+├── coding-agent/                       # Python · Anthropic Claude · multi-demo AI coding agent
+│   ├── agents/                         # agent loop · tool implementations (5 demos)
+│   ├── shared/                         # shared utilities
+│   └── run_demo.py                     # CLI entry: python run_demo.py --demo {1-5}
+├── fastapi-service/                    # Python · FastAPI · Redis · Pytest · k6
+│   ├── app/                            # FastAPI application + Redis cache layer + MYGA annuity endpoints
+│   ├── tests/                          # 66 tests: CRUD, contract, cache (fakeredis), pact, MYGA annuity
+│   ├── k6/                             # k6 load tests (4 scenarios: health, read, CRUD, error)
+│   ├── utils/                          # datadog_reporter (test + cache metrics)
+│   └── docker-compose.yml             # redis:7-alpine for local dev
+├── terraform/                          # HCL · Terraform ≥ 1.6 · AWS · DataDog IaC
+│   ├── modules/
+│   │   ├── s3-artifacts/               # S3 bucket: versioning, SSE, lifecycle rules
+│   │   ├── iam-ci/                     # GitHub OIDC provider + keyless CI IAM role
+│   │   └── datadog-observability/      # dashboard, 2 monitors, CI pass-rate SLO
+│   ├── main.tf · variables.tf · outputs.tf
+│   ├── backend.tf                      # local (default) + S3 backend (commented out)
+│   └── terraform.tfvars.example
+├── k8s/                            # Kubernetes manifests (mirrors docker-compose.yaml)
+│   ├── namespace.yaml              # selenium-grid namespace
+│   ├── configmap.yaml              # Healenium DB credentials
+│   ├── selenium-grid/              # Hub + Chrome/Firefox/Edge node deployments & services
+│   └── healenium/                  # Postgres, hlm-backend, hlm-selector-imitator
+├── langchain-rag/                      # Python · LangChain LCEL · Chroma · OpenAI
+│   ├── rag/                            # loader · vectorstore · LCEL chain + RunnableWithMessageHistory
+│   └── run.py                          # CLI: --question · --demo · --interactive
+├── langgraph-agent/                    # Python · LangGraph · LangChain Anthropic · Haiku
+│   ├── graph/                          # state · nodes · edges · pipeline (StateGraph)
+│   └── run.py                          # CLI: --feature · --demo (streams node events)
+├── dspy-optimizer/                     # Python · DSPy · BootstrapFewShot · OpenAI
+│   ├── classifier/                     # signatures · ChainOfThought module · optimizer
+│   ├── datasets/bug_reports.py         # 30 synthetic examples (hardcoded, offline)
+│   └── run.py                          # CLI: --mode baseline|optimized|compare
+├── dspy-vertex/                        # Python · DSPy · BootstrapFewShot · Vertex AI Gemini
+│   ├── classifier/                     # identical pipeline, Vertex AI backend
+│   ├── datasets/bug_reports.py         # 30 synthetic examples (shared with dspy-optimizer)
+│   └── run.py                          # CLI: --mode baseline|optimized|compare
+├── claims-diff/                        # Python · Pandas · Pydantic · BigQuery (optional)
+│   ├── differ/                         # models · loader · diff_engine
+│   ├── datasets/                       # baseline/current CSVs + generate.py data generator
+│   ├── tests/                          # 30 tests: model validation, diff logic, CSV loading
+│   ├── pytest.ini                      # pytest-xdist parallel config (-n auto --dist=loadscope)
+│   └── run.py                          # CLI: structured JSON diff report
+├── pact-consumer/                      # TypeScript · Pact v13 · Vitest
+│   ├── src/                            # api-client.ts (typed HTTP client) + Pact consumer tests
+│   └── pacts/                          # Generated pact JSON files
+├── flakiness-detector/                 # Python · JUnit XML · Click · DataDog
+│   ├── flakiness/                      # parser · analyzer · reporter · datadog
+│   ├── fixtures/                       # Sample JUnit XML files simulating flaky patterns
+│   ├── tests/                          # Unit tests for parser and analyzer
+│   └── run.py                          # CLI: --xml-dir · --threshold · --output
+├── vulnerability-aggregator/           # Python · GitHub API (gh CLI)
+│   ├── aggregator/                     # github_api (Dependabot + CodeQL + ZAP) · reporter
+│   ├── tests/                          # Reporter tests + sample fixture JSONs
+│   └── run.py                          # CLI: --repo · --zap-report · --output
+├── site-monitor/                       # Python · BeautifulSoup · Click · DataDog
+│   ├── monitor/                        # fetcher · extractor · comparator · reporter · datadog
+│   ├── tests/                          # Unit tests for extractor and comparator
+│   ├── selectors.json                  # Monitored selector registry (23 selectors × 5 frameworks)
+│   ├── baseline.json                   # Committed selector baseline (auto-generated)
+│   └── run.py                          # CLI: --url · --baseline · --update-baseline · --auto-issue
+├── quality-dashboard/                  # Python · JUnit XML · DataDog v2 API · GitHub Actions API
+│   ├── kpi_calculator.py               # Core KPI computation engine (FrameworkKPI, AggregateKPI)
+│   ├── datadog_reporter.py             # Send KPI metrics to DataDog v2 API
+│   ├── github_actions.py               # Fetch workflow run history for MTTD via gh CLI
+│   ├── quality-kpi-dashboard.json      # DataDog dashboard JSON (import-ready)
+│   └── run.py                          # CLI: --xml-dir · --from-github · --output
+├── failure-triage/                     # Python · Anthropic Claude · tool-use agent
+│   ├── tools.py                        # 4 @beta_tool functions (read, search, inspect, write)
+│   ├── triage_agent.py                 # Agent loop using client.beta.messages.tool_runner
+│   ├── datadog_reporter.py             # Send triage metrics to DataDog
+│   └── run.py                          # CLI: --xml-dir · --output
+├── qms-evidence-collector/             # Python · Click · ISO 9001 · SOC 2 · ISO/IEC 17025
+│   ├── collector/                      # scanner · mapper · reporter · datadog
+│   ├── mappings/clause_registry.json   # Artifact-to-clause definitions (10 artifact types)
+│   ├── tests/                          # 48 tests: scanner, mapper, reporter
+│   └── run.py                          # CLI: --repo-dir · --output · --standard · --format
+├── branch-collision-monitor/           # Python · GitHub API (gh CLI) · Anthropic Claude
+│   ├── monitor/                        # github_api · analyzer · reporter · semantic · datadog
+│   ├── tests/                          # Scoring, diff parsing, report format tests (63 tests)
+│   └── run.py                          # CLI: --repo · --base · --limit · --format · --semantic
+├── stagehand-agent/                   # Python · Stagehand · Playwright · Browserbase
+│   ├── pages/                          # POM: BasePage · LoginPage · InventoryPage · CartPage · CheckoutPage
+│   ├── agent/                          # AI-driven: StagehandRunner · Pydantic schemas
+│   ├── traditional/                    # Deterministic: PlaywrightRunner via POM
+│   ├── comparison/                     # metrics · runner · reporter
+│   ├── tests/                          # 60 tests: schemas, metrics, runners, reporter, orchestrator
+│   └── run.py                          # CLI: --mode · --scenarios · --output · --format
+├── dependency-audit/                   # Python · Click · Requests · cross-ecosystem auditor
+│   ├── auditor/                        # scanner · checkers · updater · reporter
+│   ├── requirements.txt               # click, requests
+│   └── run.py                          # CLI: --repo-dir · --ecosystem · --update · --output
+├── qa-mcp-server/                      # Python · MCPServer · psycopg2 · MCP tools over stdio
+│   ├── server.py                       # MCPServer server, sys.path setup, tool registration
+│   ├── tools/                          # junit_parser · flakiness · quality_kpi · claims_diff · db_inspector
+│   ├── utils/                          # datadog_reporter (optional DD metrics)
+│   └── tests/                          # 46 tests: tool wrappers, DB guardrails
+├── automation/                            # Claude Code automation (headless, Agent SDK, routines)
+│   ├── headless/                          # Headless mode scripts (claude -p with structured output)
+│   │   ├── triage-failures.sh             # Pipe JUnit XML → Claude → root-cause clusters (JSON)
+│   │   ├── analyze-quality.sh             # quality-dashboard JSON → Claude → executive insights
+│   │   └── audit-pr.sh                    # PR diff → Claude → CLAUDE.md compliance review
+│   ├── agent-sdk/                         # Agent SDK (TypeScript, multi-step orchestration)
+│   │   ├── src/portfolio-health.ts        # Multi-turn health assessor (--quick | --standard | --full)
+│   │   └── package.json
+│   └── routines/                          # Routine prompts for claude.ai/code/routines
+│       ├── dependency-audit.md            # Daily 9am UTC — scan + auto-PR for outdated deps
+│       ├── pr-triage.md                   # GitHub PR opened — label + CLAUDE.md compliance review
+│       └── qms-weekly.md                  # Sundays 8am UTC — ISO/SOC evidence gap tracking
+├── .claude/
+│   ├── commands/                          # Claude Code custom slash commands
+│   │   ├── triage-failures.md             # /project:triage-failures — AI failure triage
+│   │   ├── review-tests.md               # /project:review-tests — QA best practice review
+│   │   └── gen-test.md                    # /project:gen-test — AI test generation
+│   ├── hooks/                             # Claude Code hooks (deterministic guardrails)
+│   │   ├── block-main-push.sh             # PreToolUse/Bash — deny pushes to main
+│   │   ├── redact-secrets.sh              # PreToolUse/Bash — deny commands with secret patterns
+│   │   ├── auto-format.sh                 # PostToolUse/Edit|Write — terraform fmt, ruff format
+│   │   ├── stop-gate.sh                   # Stop — block until verify-changes has run
+│   │   └── preserve-state.sh              # SessionStart/compact — re-inject git state after compaction
+│   ├── skills/
+│   │   └── verify-changes/                # Verification skill (framework detection + test runner)
+│   └── settings.json                      # Hook registration
+├── .claude-plugin/
+│   └── plugin.json                        # Plugin manifest (qa-guardrails v1.0.0)
+├── Makefile                               # One-command runner for all suites
+├── .gitignore
+└── README.md
+```
+
+---
+
+## CI Strategy
+
+Each workflow has **path filters** so a push to `selenium-java/` only triggers the `selenium-java.yml` pipeline, the other frameworks are unaffected. A nightly `cron` schedule keeps the full portfolio green without cross-framework interference.
+
+| Workflow | Trigger | dispatch inputs |
+|---|---|---|
+| `playwright.yml` | push · PR · nightly 02:00 UTC | execution mode · browser · JMeter toggle |
+| `selenium-java.yml` | push · PR · nightly 03:00 UTC | browser · suite XML · JMeter toggle |
+| `cucumber.yml` | push · PR · nightly 04:00 UTC | execution mode · browser · JMeter toggle |
+| `karate.yml` | push · PR · nightly 04:00 UTC | karate_env (dev · staging) · karate_tags filter |
+| `cypress.yml` | push · PR · nightly 05:00 UTC | browser (chrome · firefox · edge · electron) · test type (e2e · component · all) |
+| `ai-eval.yml` | push · PR · nightly 05:00 UTC | pytest marker filter (smoke · regression · safety · canary) |
+| `conv-eval.yml` | push · PR · nightly 06:00 UTC | pytest marker filter (smoke · regression · safety · retention · canary) |
+| `agent-eval.yml` | push · PR · nightly 07:00 UTC | pytest marker filter (smoke · regression · canary) |
+| `postman-newman.yml` | push · PR · nightly 08:00 UTC | folder filter (Smoke · Users · Posts · Integration Flow) |
+| `job-agent.yml` | nightly 09:00 UTC · `workflow_dispatch` | role_filter keyword (e.g. SDET · QA Lead) |
+| `cucumber-python.yml` | push · PR · nightly 05:00 UTC | execution mode (local · grid · browserstack) · browser · tag filter |
+| `coding-agent.yml` | push · PR · `workflow_dispatch` | demo number (1–5 or all) |
+| `fastapi-service.yml` | nightly 10:00 UTC · `workflow_dispatch` | — |
+| `k6-load-test.yml` | nightly 11:00 UTC · `workflow_dispatch` | k6 load test against fastapi-service (4 scenarios) |
+| `terraform.yml` | push · PR · `workflow_dispatch` (paths: `terraform/**`) | plan on PR · apply on merge to main · OIDC AWS auth |
+| `k8s.yml` | `workflow_dispatch` only | framework (selenium-java · cucumber) |
+| `langchain-rag.yml` | push · PR (lint only, free) · `workflow_dispatch` (full demo) | — |
+| `langgraph-agent.yml` | push · PR (lint only, free) · `workflow_dispatch` (full demo) | — |
+| `dspy-optimizer.yml` | push · PR (lint only, free) · `workflow_dispatch` (compare run) | — |
+| `dspy-vertex.yml` | push · PR (lint only, free) · `workflow_dispatch` (compare run) | — |
+| `claims-diff.yml` | push · PR (paths: `claims-diff/**`) · `workflow_dispatch` | — |
+| `pact.yml` | push · PR (paths: `pact-consumer/**`, `fastapi-service/**`) | consumer tests → provider verification |
+| `flakiness-detector.yml` | push · PR (paths: `flakiness-detector/**`) · `workflow_dispatch` | — |
+| `site-monitor.yml` | daily 06:00 UTC · push · PR (paths: `site-monitor/**`) · `workflow_dispatch` | auto-issue on drift |
+| `qms-evidence-collector.yml` | push · PR (paths: `qms-evidence-collector/**`) · nightly 12:00 UTC · `workflow_dispatch` | — |
+| `codeql.yml` | push to main · weekly Monday 14:00 UTC | Python, JavaScript/TypeScript |
+| `playwright-smoke-pr.yml` | PR to `main` (paths: `playwright/**`) | Chromium-only @smoke gate, 5-min timeout, fail-fast |
+| `azure-pipelines.yml` | PR (Azure DevOps) | ADO YAML equivalent of GHA smoke gate (playwright) |
+| `deploy-validate-rollback.yml` | `workflow_dispatch` · `workflow_call` | deployment URL · Vercel project ID · auto-rollback toggle |
+| `visual-regression-update.yml` | `workflow_dispatch` | browser project (chromium · firefox · webkit) |
+| `branch-collision-monitor.yml` | daily 07:00 UTC · push · PR (paths: `branch-collision-monitor/**`) · `workflow_dispatch` | — |
+| `stagehand-agent.yml` | push · PR (paths: `stagehand-agent/**`) · `workflow_dispatch` | mode (traditional · ai · compare) |
+| `dependency-audit.yml` | weekly Sunday 04:00 UTC · `workflow_dispatch` | auto-update toggle · ecosystem filter (npm · pip · nuget · maven) |
+
+All three browser-test workflows include an **OWASP ZAP Baseline Scan** step (`if: always()`, `continue-on-error: true`) that runs a passive scan against saucedemo.com after tests complete. ZAP findings never block green CI since we do not control the target site. The HTML scan report is uploaded as a workflow artifact.
+
+> **Secrets required:** `OPENAI_API_KEY` must be added to **Settings → Secrets → Actions** for `ai-eval.yml`, `conv-eval.yml`, `agent-eval.yml`, `langchain-rag.yml`, and `dspy-optimizer.yml`. `ANTHROPIC_API_KEY` and `TAVILY_API_KEY` are required for `job-agent.yml`; `ANTHROPIC_API_KEY` alone is required for `langgraph-agent.yml` and the cypress AI test generator (`npm run ai:generate`). `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, and `MODEL_API_KEY` are required for `stagehand-agent.yml` (compare job only; unit tests run without keys). `dspy-vertex` requires GCP credentials (`GOOGLE_APPLICATION_CREDENTIALS` or `gcloud auth`). `VERCEL_TOKEN` is required for `deploy-validate-rollback.yml`. `SHOPIFY_STORE_URL` is required for Shopify E2E tests. `DD_API_KEY` (optional DataDog free trial) enables CI Visibility and custom metrics across all frameworks. All utilities skip gracefully without it. The three new AI framework workflows (`langchain-rag`, `langgraph-agent`, `dspy-optimizer`) only call APIs on `workflow_dispatch` — lint runs for free on every push/PR.
+
+### DataDog Observability
+
+Two DataDog features run across all frameworks:
+
+**CI Visibility**: the `datadog/datadog-ci-github-action@v2.5.0` step (`if: always()`) uploads JUnit/TRX XML results to DataDog's Test Optimization dashboard after every run. Enables pass/fail trend charts, flaky-test detection, and duration tracking without leaving the DataDog UI.
+
+**Custom metrics**: a `DataDogUtils` utility (Java, C#, Python) sends four GAUGE metrics to the v2 HTTP API at suite finish: `test.suite.passed`, `test.suite.failed`, `test.suite.skipped`, `test.suite.duration_ms`. Tagged with `framework:<name>`, `service:qa-automation-portfolio`, `env:ci`.
+
+**AI evaluation frameworks bonus**: `datadog_reporter.send_eval_score()` sends LLM evaluation scores after each DeepEval assertion, connecting AI model quality directly to observability dashboards:
+
+| Framework | DataDog metrics |
+|---|---|
+| `ai-eval` | `llm.eval.answer_relevancy` · `llm.eval.faithfulness` · `llm.eval.hallucination` · `llm.eval.safety` · `llm.eval.bias` · `llm.eval.json_correctness` · `llm.eval.canary.*` (5 metrics) |
+| `conv-eval` | `llm.conv.turn_relevancy` · `llm.conv.knowledge_retention` · `llm.conv.role_adherence` · `llm.conv.graceful_handling` · `llm.conv.bias` · `llm.conv.toxicity` · `llm.conv.canary.*` (3 metrics) |
+| `agent-eval` | `llm.agent.tool_correctness` · `llm.agent.task_completion` · `llm.agent.bias` · `llm.agent.toxicity` · `llm.agent.canary.*` (2 metrics) |
+| `job-agent` | `llm.job_agent.jobs_found` · `llm.job_agent.jobs_scored` · `llm.job_agent.cover_letters_drafted` · `llm.job_agent.duration_ms` |
+| all four + job-agent | `llm.api.latency_ms` |
+| `fastapi-service` | `cache.hits` · `cache.misses` |
+| `quality-dashboard` | `kpi.pass_rate` · `kpi.failure_density` · `kpi.avg_duration_s` · `kpi.p95_duration_s` · `kpi.total_tests` · `kpi.suite_stability` · `kpi.flakiness_rate` · `kpi.mttd_seconds` · `kpi.mttr_seconds` |
+| `failure-triage` | `triage.total_failures` · `triage.cluster_count` · `triage.root_cause` (per category) · `triage.cross_framework_incidents` |
+| `qms-evidence-collector` | `qms.clauses_covered` · `qms.evidence_files` · `qms.iso9001_clauses` · `qms.soc2_controls` · `qms.iso17025_clauses` |
+| `qa-mcp-server` | `mcp.tool_invocations` · `mcp.tool_errors` · `mcp.tool_duration_ms` |
+| `stagehand-agent` | `stagehand.traditional.duration_ms` · `stagehand.ai_driven.duration_ms` · `stagehand.ai_driven.tokens_used` · `stagehand.speed_ratio` · `stagehand.scenarios_passed` |
+
+All utilities follow the same graceful-skip pattern as SlackUtils: if `DD_API_KEY` is absent, a `[WARN]` is logged and execution continues, while the CI stays green.
+
+### GenAI Workflow (Claude Code)
+
+The `.claude/commands/` directory contains project-specific slash commands for daily QA workflow integration with Claude Code:
+
+| Command | What It Does |
+|---------|-------------|
+| `/project:triage-failures <xml-dir>` | Reads JUnit XML results, clusters failures by root cause (assertion, locator, timeout, setup, API, data), outputs severity-ranked triage report |
+| `/project:review-tests <test-dir>` | Reviews test files for QA best practices: POM violations, wait strategies, isolation, assertion quality, data management, fixture hygiene |
+| `/project:gen-test <description>` | Generates automated tests from plain-English descriptions, matching existing project conventions exactly |
+
+---
+
+## Target Application
+
+All three browser frameworks test [SauceDemo](https://www.saucedemo.com/), a purpose-built e-commerce demo with stable, publicly documented test credentials. No back-end setup is required. The three AI evaluation frameworks (`ai-eval`, `conv-eval`, `agent-eval`) also use the SauceDemo domain as their knowledge base, simulating a real customer support system.
+
+| Page | Coverage |
+|---|---|
+| Login | Valid login · invalid credentials · locked-out user · data-driven multi-user |
+| Dashboard | Cart icon · logout flow · direct-URL security check |
+| Inventory | Add item · add multiple · remove item · badge count |
+| Cart | Item verification · checkout navigation |
+| API | Health check · data integrity (JSONPlaceholder) |
+| Security | SQL injection · XSS payload · repeated failed logins · HTTP security headers |
+
+---
+
+## Security Testing
+
+All three frameworks include an OWASP-aware security test suite targeting the SauceDemo login surface. Security tests reuse existing page objects and utilities. No new infrastructure is required.
+
+### Test cases (all 3 frameworks)
+
+| Test | What it verifies | OWASP category |
+|---|---|---|
+| SQL injection rejected | `' OR '1'='1' --` in username triggers an error; error message contains no `sql` / `exception` leakage | A03 Injection |
+| XSS handled safely | `<script>document.title='xss'</script>` in username triggers an error; page title is not changed to `xss` | A03 Injection |
+| Repeated failed logins | 5 consecutive bad logins followed by a valid login. Valid login must still succeed | A07 Identification & Authentication Failures |
+| Security response headers | `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy` checked via HTTP GET | A05 Security Misconfiguration |
+
+The headers test uses soft assertions (`SoftAssert` in Java, `Assert.Multiple` in C#) so it documents the site's security posture without blocking CI on a target we do not control.
+
+### Framework-specific notes
+
+| Framework | File | Groups / Tags |
+|---|---|---|
+| selenium-java | `src/test/java/com/framework/tests/SecurityTest.java` | `security`, `regression`, `web` picked up by `testng.xml` |
+| playwright | `tests/Framework.Tests/Tests/SecurityTest.cs` | `[Category("security")]`, `[Category("regression")]` |
+| cucumber | `src/test/resources/features/security.feature` + `SecuritySteps.java` | `@security` runs with all features by default |
+
+### OWASP ZAP Baseline Scan (CI)
+
+Each workflow runs a passive ZAP scan after tests complete:
+
+```yaml
+- name: OWASP ZAP Baseline Scan
+  if: always()
+  uses: zaproxy/action-baseline@v0.12.0
+  continue-on-error: true
+  with:
+    target: 'https://www.saucedemo.com'
+    allow_issue_writing: false
+    cmd_options: '-I'
+```
+
+- `continue-on-error: true`: ZAP findings never block green CI
+- `allow_issue_writing: false`: no GitHub issues created automatically
+- `-I`: informational mode; suppresses non-zero exit on warnings
+- The HTML scan report (`zap_baseline_scan.html`) is auto-uploaded as a workflow artifact
+
+---
+
+## Kubernetes Infrastructure
+
+The `k8s/` directory contains Kubernetes manifests that mirror the existing `docker-compose.yaml` providing an alternative deployment target for the Selenium Grid and Healenium stack.
+
+### Directory layout
+
+```
+k8s/
+├── namespace.yaml                  # selenium-grid namespace
+├── configmap.yaml                  # Healenium DB credentials
+├── selenium-grid/
+│   ├── hub-deployment.yaml         # selenium/hub:4.16.1
+│   ├── hub-service.yaml            # ClusterIP: ports 4444, 4442, 4443
+│   ├── chrome-deployment.yaml      # selenium/node-chrome:4.16.1
+│   ├── firefox-deployment.yaml     # selenium/node-firefox:4.16.1
+│   └── edge-deployment.yaml        # selenium/node-edge:4.16.1
+└── healenium/
+    ├── postgres-deployment.yaml    # postgres:12-alpine
+    ├── postgres-service.yaml
+    ├── hlm-backend-deployment.yaml # healenium/hlm-backend:3.3.0
+    ├── hlm-backend-service.yaml
+    ├── hlm-imitator-deployment.yaml# healenium/hlm-selector-imitator:1.0.2
+    └── hlm-imitator-service.yaml
+```
+
+### Design decisions
+
+| Decision | Detail |
+|---|---|
+| Image versions | Pinned to the same tags as `docker-compose.yaml` (e.g. `selenium/hub:4.16.1`) |
+| Shared memory | Chrome/Firefox/Edge nodes mount `/dev/shm` via `emptyDir: {medium: Memory, sizeLimit: 2Gi}`: matches `shm_size: 2gb` in Docker Compose |
+| Postgres storage | `emptyDir` (non-persistent) sufficient for portfolio/demo; swap for a `PersistentVolumeClaim` in production |
+| Healenium config | Credentials stored in `configmap.yaml`; referenced by `configMapKeyRef` in each dependent deployment |
+| DNS resolution | Browser nodes set `SE_EVENT_BUS_HOST: selenium-hub` Kubernetes DNS resolves this to the hub `ClusterIP` Service |
+
+### Deploy manually
+
+```bash
+# Namespace + config
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+
+# Selenium Hub
+kubectl apply -f k8s/selenium-grid/hub-deployment.yaml
+kubectl apply -f k8s/selenium-grid/hub-service.yaml
+
+# Browser nodes (add firefox / edge as needed)
+kubectl apply -f k8s/selenium-grid/chrome-deployment.yaml
+
+# Healenium stack
+kubectl apply -f k8s/healenium/
+
+# Wait for hub to be ready
+kubectl wait deployment/selenium-hub --for=condition=Available --timeout=120s -n selenium-grid
+
+# Port-forward and run tests
+kubectl port-forward svc/selenium-hub 4444:4444 -n selenium-grid &
+cd selenium-java && mvn clean test -Dtarget=grid -Dgrid_url=http://localhost:4444/wd/hub -Dheadless=true
+```
+
+### k8s CI workflow (`k8s.yml`)
+
+Triggered via `workflow_dispatch` only (avoids heavy image pulls on every push). Spins up a [Kind](https://kind.sigs.k8s.io/) cluster, deploys the hub + Chrome node, port-forwards, and runs the smoke suite:
+
+```
+Input: framework → selenium-java | cucumber
+Steps: checkout → Kind cluster → JDK 17 → apply k8s manifests → wait for Available
+       → port-forward → health check → mvn smoke tests → upload surefire reports
+```
+
+---
+
+## Claude Code Integration
+
+The repository includes a full Claude Code automation layer — an MCP server, deterministic hooks, headless CI scripts, an Agent SDK orchestrator, cloud routines, and a GitHub Action — packaged as a distributable plugin (`qa-guardrails`).
+
+### MCP Server (`qa-mcp-server`)
+
+A MCPServer server exposing five QA tools over stdio transport. Auto-registered with Claude Code via `.mcp.json` in the repo root.
+
+| Tool | What It Does |
+|---|---|
+| `parse_junit_xml` | Parse JUnit XML files into structured JSON (summary + per-test results) |
+| `analyze_flakiness` | Detect flaky tests across multiple CI runs from JUnit XML |
+| `compute_quality_kpis` | Compute pass rate, failure density, and duration KPIs |
+| `diff_claims` | Compare two claims CSV files with field-level diffs |
+| `inspect_db` | Read-only Postgres queries with 5 safety guardrail layers |
+
+### Hooks (Deterministic Guardrails)
+
+Five hooks enforce repository rules at the tool level. These fire on every matching action regardless of prompt compliance, making them reliable for unattended runs.
+
+| Hook | Event | What It Does |
+|---|---|---|
+| `block-main-push.sh` | `PreToolUse` / Bash | Parses `git push` commands and denies any push targeting `main` or `master`. Exit 2 blocks the command before execution. |
+| `redact-secrets.sh` | `PreToolUse` / Bash | Scans every Bash command for secret patterns (Stripe keys, AWS access keys, GitHub PATs, GitLab PATs, Slack tokens, credentials in URLs). Denies on match — never echoes the secret. |
+| `auto-format.sh` | `PostToolUse` / Edit\|Write | Runs `terraform fmt` on `.tf` files and `ruff format` (fallback: `black`) on `.py` files after every edit. Invalidates the `.verified` marker when test-related files change. |
+| `stop-gate.sh` | `Stop` | Blocks Claude from finishing when test-related files were changed but the verify-changes skill hasn't run. Checks a `.verified` marker file with a 4-hour TTL. Prevents `stop_hook_active` infinite loops. |
+| `preserve-state.sh` | `SessionStart` / compact | Prints branch, recent commits, uncommitted changes, staged files, and verification status to stdout after compaction — re-injecting ephemeral state that compaction loses. |
+
+**How the verification loop works:**
+
+```
+Edit test file → auto-format.sh deletes .verified marker
+                → stop-gate.sh blocks stop
+                → Claude runs verify-changes skill
+                → check.sh passes → creates .verified marker
+                → stop-gate.sh allows stop
+```
+
+### Headless Mode Scripts
+
+Three scripts use `claude -p` with `--output-format json` and `--json-schema` to pipe data through Claude and get structured, parseable output. Designed for CI pipelines.
+
+| Script | Input | Output | Use Case |
+|---|---|---|---|
+| `triage-failures.sh` | JUnit XML directory | JSON: root-cause clusters ranked by severity | Post-test failure analysis in CI (`if: failure()`) |
+| `analyze-quality.sh` | quality-dashboard JSON (or auto-runs it) | JSON: health rating, frameworks needing attention, recommendations | Scheduled quality reporting |
+| `audit-pr.sh` | PR diff (via `--pr N` or branch comparison) | JSON: risk level, CLAUDE.md compliance, review items | PR checks — uses `--bare` in `--ci` mode for deterministic output |
+
+```bash
+# CI example: triage failures after a test job fails
+make triage-failures XML=cypress/results
+
+# Deterministic PR audit for CI
+automation/headless/audit-pr.sh --pr 42 --ci -o review.json
+```
+
+### Agent SDK Orchestrator
+
+`automation/agent-sdk/src/portfolio-health.ts` uses the `@anthropic-ai/claude-code` SDK for multi-step health assessment. Unlike headless scripts (single prompt → single response), this is multi-turn: Claude decides what tools to run based on what it discovers.
+
+| Mode | Checks | Max Turns |
+|---|---|---|
+| `--quick` | Git status, recent commits, verification marker | 8 |
+| `--standard` | + dependency audit, site monitor, framework detection | 15 |
+| `--full` | + vulnerability scan, QMS evidence collection, flakiness analysis | 25 |
+
+```bash
+make portfolio-health          # standard assessment
+make portfolio-health-quick    # fast check
+```
+
+### Routines (Cloud-Managed Schedules)
+
+Three ready-to-use prompts for [claude.ai/code/routines](https://claude.ai/code/routines), running on Anthropic's infrastructure with no local machine required.
+
+| Routine | Trigger | What It Does |
+|---|---|---|
+| `dependency-audit.md` | Daily 9am UTC | Scans all 26 frameworks for outdated packages, creates PR for critical/major updates |
+| `pr-triage.md` | GitHub PR opened | Labels by framework, rates risk, posts CLAUDE.md compliance review |
+| `qms-weekly.md` | Sundays 8am UTC | Runs QMS evidence collector, tracks compliance gaps week-over-week, files issues |
+
+### GitHub Action (`claude.yml`)
+
+Responds to `@claude` mentions on PR comments, review comments, and issues. Claude has write access: it reads the context, makes code changes, pushes commits, and posts comments describing what it did.
+
+```
+@claude add retry logic to this flaky test
+@claude implement the spec in the linked issue
+@claude why is this test failing?
+```
+
+### Plugin Manifest
+
+The `.claude/` configuration is packaged as a distributable plugin (`qa-guardrails`) via `.claude-plugin/plugin.json`. The plugin bundles all hooks, skills, and commands into one installable unit scoped to QA/SDET repositories.
+
+```bash
+# Install on another repo
+/plugin install qa-guardrails
+```

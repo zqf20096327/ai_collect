@@ -1,0 +1,956 @@
+<h1 align="center">Agent Development Kit (ADK)</h1>
+
+<p align="center">
+  <strong>Build powerful, interoperable AI agents with the Agent-to-Agent (A2A) protocol</strong>
+</p>
+
+> ⚠️ **Early Stage Warning**: This project is in its early stages of development. Breaking changes are expected as the API evolves and improves. Please use pinned versions in production environments and be prepared to update your code when upgrading versions.
+
+<p align="center">
+  <!-- CI Status Badge -->
+  <a href="https://github.com/inference-gateway/adk/actions/workflows/ci.yml?query=branch%3Amain">
+    <img src="https://github.com/inference-gateway/adk/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI Status"/>
+  </a>
+  <!-- Release Workflow Badge -->
+  <a href="https://github.com/inference-gateway/adk/actions/workflows/release.yml">
+    <img src="https://github.com/inference-gateway/adk/actions/workflows/release.yml/badge.svg" alt="Release"/>
+  </a>
+  <!-- Version Badge -->
+  <a href="https://github.com/inference-gateway/adk/releases">
+    <img src="https://img.shields.io/github/v/release/inference-gateway/adk?color=blue&style=flat-square" alt="Version"/>
+  </a>
+  <!-- License Badge -->
+  <a href="https://github.com/inference-gateway/adk/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/inference-gateway/adk?color=blue&style=flat-square" alt="License"/>
+  </a>
+  <!-- Go Version -->
+  <img src="https://img.shields.io/github/go-mod/go-version/inference-gateway/adk?style=flat-square" alt="Go Version"/>
+</p>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+  - [What is A2A?](#what-is-a2a)
+- [🚀 Quick Start](#-quick-start)
+  - [Installation](#installation)
+  - [Examples](#examples)
+- [✨ Key Features](#-key-features)
+- [🛠️ Development](#️-development)
+- [📖 API Reference](#-api-reference)
+  - [Core Components](#core-components)
+  - [Configuration](#configuration)
+- [🔧 Advanced Usage](#-advanced-usage)
+- [🌐 A2A Ecosystem](#-a2a-ecosystem)
+- [📋 Requirements](#-requirements)
+- [🐳 Docker Support](#-docker-support)
+- [📄 License](#-license)
+- [🤝 Contributing](#-contributing)
+- [📞 Support](#-support)
+- [🔗 Resources](#-resources)
+
+---
+
+## Overview
+
+The **A2A ADK (Agent Development Kit)** is a Go library that simplifies building [Agent-to-Agent (A2A) protocol](https://github.com/inference-gateway/schemas/tree/main/a2a) compatible agents. A2A enables seamless communication between AI agents, allowing them to collaborate, delegate tasks, and share capabilities across different systems and providers.
+
+### What is A2A?
+
+Agent-to-Agent (A2A) is a standardized protocol that enables AI agents to:
+
+- **Communicate** with each other using a unified JSON-RPC interface
+- **Delegate tasks** to specialized agents with specific capabilities
+- **Stream responses** in real-time for better user experience
+- **Authenticate** securely using OIDC/OAuth2
+- **Discover capabilities** through standardized agent cards
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+go get github.com/inference-gateway/adk
+```
+
+### Examples
+
+For complete working examples, see the [examples](./examples/) directory:
+
+- **[Minimal](./examples/minimal/)** - Basic A2A server without AI capabilities
+- **[AI-Powered](./examples/ai-powered/)** - Full A2A server with LLM integration
+- **[AI-Powered Streaming](./examples/ai-powered-streaming/)** - AI agent with streaming capabilities
+- **[Callbacks](./examples/callbacks/)** - Lifecycle hooks for guardrails, caching, and logging
+- **[Default Handlers](./examples/default-handlers/)** - Built-in task processing
+- **[Static Agent Card](./examples/static-agent-card/)** - JSON-based agent metadata management
+- **[Streaming](./examples/streaming/)** - Real-time streaming responses
+- **[Input Required](./examples/input-required/)** - Interactive conversation with input pausing
+- **[Artifacts - MinIO](./examples/artifacts-minio/)** - MinIO cloud storage with direct/proxy download modes
+- **[Artifacts - Filesystem](./examples/artifacts-filesystem/)** - Filesystem-based artifact storage
+- **[Artifacts - Autonomous Tool](./examples/artifacts-autonomous-tool/)** - Autonomous tool for artifact creation
+- **[Artifacts - Default Handlers](./examples/artifacts-with-default-handlers/)** - Artifacts with default handlers
+- **[Queue Storage](./examples/queue-storage/)** - Memory and Redis storage backends
+- **[TLS Server](./examples/tls-server/)** - Secure HTTPS with TLS configuration
+- **[Usage Metadata](./examples/usage-metadata/)** - Token usage and execution metrics tracking
+- **[MCP](./examples/mcp/)** - Connect the agent to MCP servers and invoke their tools via a selector
+- **[Protocol Methods](./examples/protocol-methods/)** - End-to-end walk-through of `CancelTask`, `ListTasks`, the `*TaskPushNotificationConfig(s)` methods, `SubscribeToTask`, and `GetExtendedAgentCard`
+
+#### Getting Started
+
+To run any example:
+
+```bash
+cd examples/minimal/server
+go run main.go
+```
+
+Each example includes its own README with setup instructions and usage details.
+
+## ✨ Key Features
+
+### Core Capabilities
+
+- 🤖 **A2A Protocol Compliance**: Full implementation of the Agent-to-Agent communication standard
+- 🔌 **Multi-Provider Support**: Works with <!-- providers:start -->
+  Anthropic (Claude models), Cloudflare Workers AI, Cohere, DeepSeek, Elevenlabs, Google (Gemini), Groq, llama.cpp, MiniMax, Mistral, Moonshot, Nvidia, Ollama, Ollama Cloud, OpenAI (GPT models), Zai
+
+<!-- providers:end -->, and other LLM providers
+
+- 🌊 **Real-time Streaming**: Stream responses as they're generated from language models
+- 🔧 **Custom Tools**: Easy integration of custom tools and capabilities
+- 🧩 **MCP Client**: Connect to [MCP](https://modelcontextprotocol.io) servers and expose their tools to the agent through a selector that keeps only tool metadata in context - see [docs/mcp.md](./docs/mcp.md)
+- 🪝 **Callback Hooks**: Lifecycle hooks for agent, model, and tool execution with flow control
+- 📎 **File Artifacts**: Support for downloadable file artifacts with filesystem and MinIO storage backends
+- 🔐 **Secure Authentication**: Built-in OIDC/OAuth2 authentication support
+- 📨 **Push Notifications**: Webhook notifications for real-time task state updates
+- ⏸️ **Task Pausing**: Built-in support for input-required state pausing and resumption
+- 🗄️ **Multiple Storage Backends**: Support for in-memory and Redis storage with horizontal scaling
+- 📊 **Usage Metadata**: Automatic tracking of LLM token consumption and execution metrics
+
+### Developer Experience
+
+- ⚙️ **Environment Configuration**: Simple setup through environment variables
+- 📊 **Task Management**: Built-in task queuing, polling, and lifecycle management
+- 🏗️ **Extensible Architecture**: Pluggable components for custom business logic
+- 📚 **Type-Safe**: Generated types from A2A schema for compile-time safety
+- 🧪 **Well Tested**: Comprehensive test coverage with table-driven tests
+
+### Enterprise Ready
+
+- 🌿 **Lightweight**: Optimized binary size for efficient deployment
+- 🛡️ **Production Hardened**: Configurable timeouts, TLS support, and error handling
+- ☸️ **Cloud Native**: Ready for cloud-native deployments and orchestration
+- 📊 **Observability**: OpenTelemetry integration for monitoring and tracing
+
+## 🛠️ Development
+
+### Quick Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/inference-gateway/adk.git
+cd adk
+
+# Install dependencies
+go mod download
+
+# Install pre-commit hook
+task precommit:install
+```
+
+### Essential Tasks
+
+| Task                       | Description                               |
+| -------------------------- | ----------------------------------------- |
+| `task a2a:download-schema` | Download the latest A2A schema            |
+| `task a2a:generate-types`  | Generate Go types from A2A schema         |
+| `task lint`                | Run linting and code quality checks       |
+| `task test`                | Run all tests                             |
+| `task precommit:install`   | Install Git pre-commit hook (recommended) |
+
+### Build-Time Agent Metadata
+
+The ADK supports injecting agent metadata at build time using Go linker flags (LD flags). This makes agent information immutable and embedded in the binary, which is useful for production deployments.
+
+#### Available LD Flags
+
+The following build-time metadata variables can be set via LD flags:
+
+- **`BuildAgentName`** - The agent's display name
+- **`BuildAgentDescription`** - A description of the agent's capabilities
+- **`BuildAgentVersion`** - The agent's version number
+
+Your code has to read them. The agent card is the source of truth: `Build()`
+copies the card's `Name`, `Description` and `Version` into the config, and
+`NewA2AServer` only falls back to the `Build*` variables when those card fields
+are empty. The card is what clients fetch from
+`/.well-known/agent-card.json` and what telemetry is labelled with, so populate
+it from the `Build*` variables - as the example below and
+[`examples/default-handlers/`](./examples/default-handlers/) do through their
+config.
+
+#### Usage Examples
+
+**Simple A2A Server Example:**
+
+```go
+package main
+
+import (
+	"cmp"
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	zap "go.uber.org/zap"
+
+	server "github.com/inference-gateway/adk/server"
+	config "github.com/inference-gateway/adk/server/config"
+	types "github.com/inference-gateway/adk/types"
+)
+
+func main() {
+	fmt.Println("🤖 Starting Simple A2A Server...")
+
+	// Initialize logger
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("failed to create logger: %v", err)
+	}
+	defer logger.Sync()
+
+	// Get port from environment or use default
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	// Configuration - the Build* variables carry the ldflags values,
+	// empty when the binary is built without them
+	cfg := config.Config{
+		AgentName:        cmp.Or(server.BuildAgentName, "simple-agent"),
+		AgentDescription: cmp.Or(server.BuildAgentDescription, "A simple A2A server with default handlers"),
+		AgentVersion:     cmp.Or(server.BuildAgentVersion, "0.1.0"),
+		Debug:            true,
+		ServerConfig: config.ServerConfig{
+			Port: port,
+		},
+	}
+
+	// AgentCard.URL is a *string
+	agentURL := fmt.Sprintf("http://localhost:%s", port)
+
+	// Build and start server with default handlers. No agent is configured
+	// here, and the default streaming handler requires one, so the card
+	// advertises streaming: false - see examples/ai-powered/ to enable it.
+	a2aServer, err := server.NewA2AServerBuilder(cfg, logger).
+		WithDefaultTaskHandlers().
+		WithAgentCard(types.AgentCard{
+			Name:            cfg.AgentName,
+			Description:     cfg.AgentDescription,
+			Version:         cfg.AgentVersion,
+			SupportedInterfaces: []types.AgentInterface{
+				{URL: agentURL, ProtocolBinding: "JSONRPC", ProtocolVersion: "1.0"},
+			},
+			Capabilities: types.AgentCapabilities{
+				Streaming:         &[]bool{false}[0],
+				PushNotifications: &[]bool{false}[0],
+			},
+			DefaultInputModes:  []string{"text/plain"},
+			DefaultOutputModes: []string{"text/plain"},
+			Skills:             []types.AgentSkill{},
+		}).
+		Build()
+	if err != nil {
+		logger.Fatal("failed to create A2A server", zap.Error(err))
+	}
+
+	logger.Info("✅ server created")
+
+	// Start server
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() {
+		if err := a2aServer.Start(ctx); err != nil {
+			logger.Fatal("server failed to start", zap.Error(err))
+		}
+	}()
+
+	logger.Info("🌐 server running on port " + port)
+
+	// Wait for shutdown signal
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	logger.Info("🛑 shutting down...")
+
+	// Graceful shutdown
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer shutdownCancel()
+
+	if err := a2aServer.Stop(shutdownCtx); err != nil {
+		logger.Error("shutdown error", zap.Error(err))
+	} else {
+		logger.Info("✅ goodbye!")
+	}
+}
+```
+
+See the [Docker Support](#-docker-support) section for containerized builds.
+
+---
+
+**For detailed development workflows, testing guidelines, and contribution processes, see the [Contributing Guide](./CONTRIBUTING.md).**
+
+## 📖 API Reference
+
+### Core Components
+
+#### A2AServer
+
+The main server interface that handles A2A protocol communication. See [server examples](./examples/) for complete implementation details.
+
+#### A2AServerBuilder
+
+Build A2A servers with custom configurations using a fluent interface. The builder provides methods for:
+
+- `WithAgent()` - Configure AI agent integration
+- `WithDefaultTaskHandlers()` - Use built-in task processing
+- `WithBackgroundTaskHandler()` - Custom background task handling
+- `WithStreamingTaskHandler()` - Custom streaming task handling
+- `WithAgentCardFromFile()` - Load agent metadata from JSON
+- `WithExtendedAgentCard()` - Serve a richer card to authenticated callers via `GetExtendedAgentCard`
+
+See [examples](./examples/) for complete usage patterns.
+
+#### Task Handler Interfaces
+
+The ADK provides two distinct interfaces for handling tasks:
+
+- **`TaskHandler`** - For background/polling scenarios (SendMessage)
+- **`StreamableTaskHandler`** - For real-time streaming scenarios (SendStreamingMessage)
+
+Streaming handlers require an agent to be configured. See [task handler examples](./examples/) for implementation details.
+
+#### AgentBuilder
+
+Build OpenAI-compatible agents using a fluent interface. Supports:
+
+- Custom LLM clients
+- System prompts and conversation limits
+- Tool integration
+- Callback hooks (BeforeAgent, AfterAgent, BeforeModel, AfterModel, BeforeTool, AfterTool)
+- Configuration management
+
+See [AI-powered examples](./examples/ai-powered/) and [callback examples](./examples/callbacks/) for complete agent setup.
+
+#### A2AClient
+
+Client interface for communicating with A2A servers. Supports:
+
+- Task sending and streaming
+- Health monitoring
+- Agent card retrieval
+- Custom configuration
+
+See [`examples/protocol-methods/`](./examples/protocol-methods/) for usage patterns.
+
+#### A2A JSON-RPC Methods
+
+Beyond `SendMessage`, `SendStreamingMessage`, and `GetTask`, the client exposes
+every method in the A2A JSON-RPC surface. Most snippets below are runnable
+against any ADK-built server - the push notification config and
+`GetExtendedAgentCard` methods need the matching capability on the served agent
+card, as noted with each. See [`examples/protocol-methods/`](./examples/protocol-methods/)
+for an end-to-end demo that ties them all together.
+
+##### `CancelTask`
+
+Cancel an in-flight task. Works for tasks in any non-terminal state
+(`SUBMITTED`, `WORKING`, `INPUT_REQUIRED`, `AUTH_REQUIRED`, `UNSPECIFIED`).
+
+```go
+resp, err := a2a.CancelTask(ctx, types.CancelTaskRequest{ID: taskID})
+if err != nil {
+    log.Fatalf("cancel failed: %v", err)
+}
+
+taskBytes, _ := json.Marshal(resp.Result)
+var task types.Task
+_ = json.Unmarshal(taskBytes, &task)
+log.Printf("cancelled task %s → state=%s", task.ID, task.Status.State)
+```
+
+##### `ListTasks`
+
+List tasks the server knows about. `PageSize` controls the page size (server caps
+it at 100; default is 50) and `PageToken` selects the page: pass the
+`NextPageToken` from the previous response, or leave it empty for the first page.
+Iterate until no `NextPageToken` comes back to walk the full result set.
+
+```go
+pageSize := 20
+pageToken := ""
+for {
+    resp, err := a2a.ListTasks(ctx, types.ListTasksRequest{
+        PageSize:  &pageSize,
+        PageToken: &pageToken,
+    })
+    if err != nil {
+        log.Fatalf("list failed: %v", err)
+    }
+
+    listBytes, _ := json.Marshal(resp.Result)
+    var list types.ListTasksResponse
+    _ = json.Unmarshal(listBytes, &list)
+
+    for _, t := range list.Tasks {
+        log.Printf("  task %s [%s]", t.ID, t.Status.State)
+    }
+
+    pageToken = list.NextPageToken
+    if len(list.Tasks) == 0 || pageToken == "" {
+        break
+    }
+}
+```
+
+You can also filter by `ContextID` or by `Status` (a `*types.TaskState`, e.g.
+only `TASK_STATE_COMPLETED`); both are optional pointer fields on
+`types.ListTasksRequest`.
+
+##### `CreateTaskPushNotificationConfig`, `GetTaskPushNotificationConfig`, `ListTaskPushNotificationConfigs`, `DeleteTaskPushNotificationConfig`
+
+Register, inspect, and remove webhook callbacks the server will POST to as a
+task changes state. The four methods share a common identifier (`task.ID`)
+and form a complete CRUD cycle.
+
+```go
+configID := uuid.New().String()
+authToken := "shared-secret"
+
+// set: register a webhook for the task.
+if _, err := a2a.SetTaskPushNotificationConfig(ctx, types.TaskPushNotificationConfig{
+    TaskID: &taskID,
+    ID:     &configID,
+    URL:    "https://example.com/webhook",
+    Token:  &authToken,
+}); err != nil {
+    log.Fatalf("set failed: %v", err)
+}
+
+// get: read the active config.
+if _, err := a2a.GetTaskPushNotificationConfig(ctx, types.GetTaskPushNotificationConfigRequest{
+    TaskID: taskID,
+    ID:     configID,
+}); err != nil {
+    log.Fatalf("get failed: %v", err)
+}
+
+// list: enumerate every config attached to a task.
+if _, err := a2a.ListTaskPushNotificationConfig(ctx, types.ListTaskPushNotificationConfigsRequest{
+    TaskID: taskID,
+}); err != nil {
+    log.Fatalf("list failed: %v", err)
+}
+
+// delete: tear the config down.
+if _, err := a2a.DeleteTaskPushNotificationConfig(ctx, types.DeleteTaskPushNotificationConfigRequest{
+    TaskID: taskID,
+    ID:     configID,
+}); err != nil {
+    log.Fatalf("delete failed: %v", err)
+}
+```
+
+Unlike the other snippets in this section, these four do not work against a
+default ADK server. The server answers `-32003` (push notification not
+supported) unless the served agent card sets
+`capabilities.pushNotifications: true` - the simple server example above sets it
+to `false`. The same flag gates the webhook sender: the builder only installs it
+when the card passed to `WithAgentCard()` / `WithAgentCardFromFile()` declares
+the capability. `CAPABILITIES_PUSH_NOTIFICATIONS` has no effect on its own.
+
+##### `SubscribeToTask`
+
+Re-attach to a streaming task after the original SSE connection has dropped.
+The server rejects tasks in a terminal state with `-32004` (unsupported
+operation); otherwise it first re-emits the current task state, then:
+
+- for `INPUT_REQUIRED` / `AUTH_REQUIRED` tasks it polls the task and streams a
+  status update on every change until the task reaches a terminal state;
+- for `SUBMITTED` / `WORKING` tasks it calls the streaming handler's
+  `HandleStreamingTask` again for that task - it does not forward events from
+  the original stream, so the work is re-run rather than tapped into.
+
+```go
+events, err := a2a.ResubscribeTask(ctx, types.SubscribeToTaskRequest{
+    ID: taskID,
+})
+if err != nil {
+    log.Fatalf("resubscribe failed: %v", err)
+}
+for evt := range events {
+    payload, _ := json.Marshal(evt.Result)
+    log.Printf("event: %s", string(payload))
+}
+```
+
+##### `GetExtendedAgentCard`
+
+The JSON-RPC counterpart to the public `.well-known/agent-card.json`
+endpoint. It returns a _separate_, richer card - the one registered with
+`WithExtendedAgentCard()` - through the JSON-RPC route, so it is subject to the
+server's authentication middleware and can stay invisible to anonymous callers.
+
+Unlike the other snippets in this section, this one does not work against a
+default ADK server. The server answers `-32004` (unsupported operation) when the
+public card does not set `capabilities.extendedAgentCard: true`, and `-32007` when it
+does but no extended card is configured; the client surfaces both as errors, so
+the snippet below would exit via `log.Fatalf`. Register an extended card first:
+
+```go
+server.NewA2AServerBuilder(cfg, logger).
+    WithAgentCard(publicCard).
+    WithExtendedAgentCard(extendedCard). // also flips capabilities.extendedAgentCard on the public card
+    Build()
+```
+
+See [`docs/authentication.md`](./docs/authentication.md) for the full setup.
+
+```go
+resp, err := a2a.GetAuthenticatedExtendedCard(ctx, types.GetExtendedAgentCardRequest{})
+if err != nil {
+    log.Fatalf("authenticated card fetch failed: %v", err)
+}
+cardBytes, _ := json.MarshalIndent(resp.Result, "", "  ")
+log.Println(string(cardBytes))
+```
+
+#### Agent Health Monitoring
+
+Monitor agent operational status with three health states:
+
+- `healthy`: Fully operational
+- `degraded`: Partially operational
+- `unhealthy`: Not operational
+
+See [client examples](./examples/) for implementation.
+
+### LLM Client
+
+Create OpenAI-compatible LLM clients for agent integration. See [AI examples](./examples/ai-powered/) for setup details.
+
+#### Sending Images to a Vision Model
+
+A client can attach an image to a user message as a file part (`raw` base64 bytes or a `url`), and the default
+agent forwards it to the model as an `image_url` content part, in order with the
+text parts:
+
+```go
+img, _ := os.ReadFile("captcha.png")
+b64 := base64.StdEncoding.EncodeToString(img)
+
+resp, err := a2a.SendTask(ctx, types.SendMessageRequest{
+    Message: types.Message{
+        Role: types.RoleUser,
+        Parts: []types.Part{
+            types.CreateTextPart("What does this captcha say?"),
+            types.CreateFilePart("captcha.png", "image/png", &b64, nil),
+        },
+    },
+})
+```
+
+Notes:
+
+- A part's `raw` bytes are inlined as a `data:` URL; a part's `url` is passed
+  through unchanged, so the provider itself must be able to fetch that URL.
+- The operator picks the model: configure a vision-capable one via
+  `AGENT_CLIENT_MODEL`. A model without vision support rejects the request and
+  the task ends as `failed` with the provider's error.
+- Advertise what you accept on the agent card, for example
+  `DefaultInputModes: []string{"text/plain", "image/png"}` - the bundled
+  examples only advertise `text/plain`.
+- Only `image/*` files on user messages are forwarded. Other media types (PDF,
+  audio) are still skipped, and agent-role file parts are never sent, because
+  OpenAI-compatible assistant messages cannot carry images.
+
+### Configuration
+
+Configure your A2A agent using environment variables. All configuration is optional and includes sensible defaults.
+
+#### Core Server Configuration
+
+| Variable                           | Default | Description                                                                                            |
+| ---------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
+| `SERVER_HOST`                      | -       | Bind address; empty listens on every interface, `127.0.0.1` keeps an embedded server loopback-only     |
+| `SERVER_PORT`                      | `8080`  | HTTP server listen port                                                                                |
+| `DEBUG`                            | `false` | Enable debug logging                                                                                   |
+| `AGENT_URL`                        | -       | Stored on the config but never read by the library; the advertised URL comes from the agent card `url` |
+| `STREAMING_STATUS_UPDATE_INTERVAL` | `1s`    | Unused - parsed but not read anywhere in `server/`                                                     |
+
+#### Agent & LLM Configuration
+
+| Variable                                      | Default                 | Description                                  |
+| --------------------------------------------- | ----------------------- | -------------------------------------------- |
+| `AGENT_CLIENT_PROVIDER`                       | -                       | LLM provider (openai, anthropic, groq, etc.) |
+| `AGENT_CLIENT_MODEL`                          | -                       | Model name (e.g., `openai/gpt-4`)            |
+| `AGENT_CLIENT_BASE_URL`                       | -                       | Custom LLM endpoint URL                      |
+| `AGENT_CLIENT_API_KEY`                        | -                       | API key for LLM provider                     |
+| `AGENT_CLIENT_TIMEOUT`                        | `30s`                   | Request timeout                              |
+| `AGENT_CLIENT_MAX_RETRIES`                    | `3`                     | Retry attempts for failed LLM requests       |
+| `AGENT_CLIENT_MAX_CHAT_COMPLETION_ITERATIONS` | `50`                    | Max chat completion rounds                   |
+| `AGENT_CLIENT_MAX_TOKENS`                     | `4096`                  | Maximum tokens per response                  |
+| `AGENT_CLIENT_TEMPERATURE`                    | `0.7`                   | Sampling temperature (0 = leave unset)       |
+| `AGENT_CLIENT_TOP_P`                          | `1.0`                   | Top-p nucleus sampling (0 = leave unset)     |
+| `AGENT_CLIENT_FREQUENCY_PENALTY`              | `0.0`                   | Frequency penalty (0 = leave unset)          |
+| `AGENT_CLIENT_PRESENCE_PENALTY`               | `0.0`                   | Presence penalty (0 = leave unset)           |
+| `AGENT_CLIENT_SYSTEM_PROMPT`                  | _(built-in, see below)_ | System prompt for the agent                  |
+| `AGENT_CLIENT_ENABLE_USAGE_METADATA`          | `true`                  | Serve the usage extension (token usage)      |
+
+`AGENT_CLIENT_SYSTEM_PROMPT` is not empty by default - when unset the agent uses
+the built-in prompt "You are a helpful AI assistant processing an A2A
+(Agent-to-Agent) task. Please provide helpful and accurate responses."
+
+`AGENT_CLIENT_MAX_RETRIES` applies to both LLM paths, with a one second linear
+backoff between attempts. On `CreateChatCompletion` the whole request is retried.
+On `CreateStreamingChatCompletion` - the path agents built with `AgentBuilder`
+use - only opening the stream is retried; once the first delta has been
+forwarded to the caller a broken stream fails instead of replaying events.
+
+Each sampling parameter is only put on the completion request when it is set to a
+non-zero value, so leaving one at `0` keeps the provider's own default.
+
+#### Agent Capabilities
+
+| Variable                          | Default | Description                  |
+| --------------------------------- | ------- | ---------------------------- |
+| `CAPABILITIES_STREAMING`          | `true`  | Enable streaming responses   |
+| `CAPABILITIES_PUSH_NOTIFICATIONS` | `true`  | Enable webhook notifications |
+
+The server does not read `CAPABILITIES_*` itself. The capabilities it advertises
+and acts on come from the agent card passed to `WithAgentCard()` /
+`WithAgentCardFromFile()`, so these variables only matter when your application
+copies them into the card, as the examples do.
+
+#### Authentication (Optional)
+
+| Variable          | Default                                               | Description                                                                                                                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH_ENABLED`    | `false`                                               | Enable OIDC authentication                                                                                                                                                                                                                                  |
+| `AUTH_ISSUER_URL` | `http://keycloak:8080/realms/inference-gateway-realm` | OIDC issuer URL; discovery runs at startup against `{issuer}/.well-known/openid-configuration`. Because a default is set, leaving it unset with `AUTH_ENABLED=true` runs discovery against this Keycloak URL rather than failing - always set it explicitly |
+| `AUTH_CLIENT_ID`  | `inference-gateway-client`                            | OIDC client ID, used as the expected token audience when `AUTH_AUDIENCE` is empty                                                                                                                                                                           |
+| `AUTH_AUDIENCE`   | -                                                     | Comma-separated accepted `aud` values, for example an API identifier                                                                                                                                                                                        |
+| `AUTH_TOKEN`      | -                                                     | Static bearer token that protects `/a2a` without an OIDC issuer (compared in constant time). Mutually exclusive with `AUTH_ENABLED`; declare it on the card with `server.BearerTokenSecuritySchemes()`                                                      |
+
+See [docs/authentication.md](docs/authentication.md) for the full card-driven auth flow: discovery, out-of-band credentials, the authenticated extended card, and authorization via callbacks.
+
+#### Task Management
+
+| Variable                             | Default | Description                                 |
+| ------------------------------------ | ------- | ------------------------------------------- |
+| `TASK_RETENTION_MAX_COMPLETED_TASKS` | `100`   | Max completed tasks to keep (0 = unlimited) |
+| `TASK_RETENTION_MAX_FAILED_TASKS`    | `50`    | Max failed tasks to keep (0 = unlimited)    |
+| `TASK_RETENTION_CLEANUP_INTERVAL`    | `5m`    | Cleanup frequency (0 = manual only)         |
+
+#### Storage Configuration (Optional)
+
+| Variable                 | Default  | Description                                        |
+| ------------------------ | -------- | -------------------------------------------------- |
+| `QUEUE_PROVIDER`         | `memory` | Storage backend: `memory` or `redis`               |
+| `QUEUE_URL`              | -        | Redis connection URL (required when using Redis)   |
+| `QUEUE_MAX_SIZE`         | `100`    | Unused - parsed but not read anywhere in `server/` |
+| `QUEUE_CLEANUP_INTERVAL` | `120s`   | Deprecated, unused (see `TASK_RETENTION_*`)        |
+
+**Storage Backends:**
+
+- **Memory Storage (Default)**: Fast in-memory storage for development and single-instance deployments
+- **Redis Storage**: Persistent storage with horizontal scaling support for production deployments
+
+**Redis Configuration Examples:**
+
+```bash
+# Basic Redis setup
+export QUEUE_PROVIDER=redis
+export QUEUE_URL=redis://localhost:6379
+
+# Redis with authentication
+export QUEUE_URL=redis://:password@localhost:6379
+export QUEUE_URL=redis://username:password@localhost:6379
+
+# Redis with specific database
+export QUEUE_URL=redis://localhost:6379/1
+
+# Redis with TLS (Redis 6.0+)
+export QUEUE_URL=rediss://username:password@redis.example.com:6380/0
+```
+
+#### MCP Client Configuration (Optional)
+
+Connect the agent to [MCP](https://modelcontextprotocol.io) servers and expose their tools through a selector that keeps only tool metadata in the LLM context. Disabled by default and only useful when an LLM is configured. Enable with `MCP_ENABLED=true` and point `MCP_SERVERS` at one or more streamable-HTTP MCP servers; the full list of `MCP_*` variables (timeouts, retry, and polling-backoff tuning) is documented in [docs/mcp.md](./docs/mcp.md#configuration).
+
+#### Artifacts Configuration (Optional)
+
+Enable file artifacts support for downloadable files generated by your agent:
+
+| Variable                               | Default            | Description                                                                                           |
+| -------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------- |
+| `ARTIFACTS_ENABLED`                    | `false`            | Enable artifacts support                                                                              |
+| `ARTIFACTS_SERVER_HOST`                | `localhost`        | Artifacts server host                                                                                 |
+| `ARTIFACTS_SERVER_PORT`                | `8081`             | Artifacts server port                                                                                 |
+| `ARTIFACTS_STORAGE_PROVIDER`           | `filesystem`       | Storage backend: `filesystem` or `minio`                                                              |
+| `ARTIFACTS_STORAGE_BASE_PATH`          | `./artifacts`      | Base path for filesystem storage                                                                      |
+| `ARTIFACTS_STORAGE_BASE_URL`           | _(auto-generated)_ | Override base URL for direct downloads                                                                |
+| `ARTIFACTS_STORAGE_ENDPOINT`           | -                  | MinIO/S3 endpoint URL                                                                                 |
+| `ARTIFACTS_STORAGE_ACCESS_KEY`         | -                  | MinIO/S3 access key                                                                                   |
+| `ARTIFACTS_STORAGE_SECRET_KEY`         | -                  | MinIO/S3 secret key                                                                                   |
+| `ARTIFACTS_STORAGE_BUCKET_NAME`        | `artifacts`        | MinIO/S3 bucket name                                                                                  |
+| `ARTIFACTS_STORAGE_USE_SSL`            | `true`             | Use SSL for MinIO/S3 connections                                                                      |
+| `ARTIFACTS_RETENTION_MAX_ARTIFACTS`    | `5`                | Max artifacts kept per context, oldest removed first (0 = unlimited)                                  |
+| `ARTIFACTS_RETENTION_MAX_AGE`          | `168h`             | Max artifact age, as a Go duration (0 = no age limit). `d` is not a valid unit - use `168h`, not `7d` |
+| `ARTIFACTS_RETENTION_CLEANUP_INTERVAL` | `24h`              | Cleanup frequency (0 = manual only)                                                                   |
+
+`ARTIFACTS_RETENTION_MAX_ARTIFACTS` caps artifacts per context: each cleanup run
+keeps the newest N artifacts under `{contextId}/` and deletes the rest. Both caps
+are enforced by the same background run, on `ARTIFACTS_RETENTION_CLEANUP_INTERVAL`,
+so growth between runs is bounded by the interval, not by the cap alone.
+
+**Storage Backends:**
+
+- **Filesystem Storage (Default)**: Store artifacts locally on disk, suitable for single-instance deployments
+- **MinIO Storage**: Cloud-native object storage with S3 compatibility, ideal for distributed deployments
+
+**Download Modes:**
+
+- **Proxy Mode (Default)**: Downloads go through the artifacts server (port 8081) with authentication and logging
+- **Direct Mode**: Configure `ARTIFACTS_STORAGE_BASE_URL` to enable direct downloads from storage backend
+
+With MinIO, direct download URLs are built as
+`{ARTIFACTS_STORAGE_BASE_URL}/artifacts/{contextId}/{artifactId}/{filename}`. The
+`artifacts` path segment is hard-coded rather than taken from the bucket name, and
+the ADK creates the bucket without a public-read policy, so these URLs only resolve
+when `ARTIFACTS_STORAGE_BUCKET_NAME` is `artifacts` and the bucket allows anonymous
+downloads. `examples/artifacts-minio/docker-compose.yaml` sets that up with
+`mc anonymous set download minio/artifacts`.
+
+**MinIO Configuration Example:**
+
+```bash
+# Enable artifacts with MinIO storage
+export ARTIFACTS_ENABLED=true
+export ARTIFACTS_STORAGE_PROVIDER=minio
+export ARTIFACTS_STORAGE_ENDPOINT=localhost:9000
+export ARTIFACTS_STORAGE_ACCESS_KEY=minioadmin
+export ARTIFACTS_STORAGE_SECRET_KEY=minioadmin
+export ARTIFACTS_STORAGE_USE_SSL=false
+
+# Optional: Enable direct downloads (bypasses artifacts server)
+# Requires the bucket to be named "artifacts" and to allow anonymous downloads
+export ARTIFACTS_STORAGE_BUCKET_NAME=artifacts
+export ARTIFACTS_STORAGE_BASE_URL=http://localhost:9000
+```
+
+**Benefits of Redis Storage:**
+
+- ✅ **Persistent Tasks** - Tasks survive server restarts
+- ✅ **Distributed Processing** - Multiple server instances can share the same queue
+- ✅ **High Performance** - Redis provides fast task queuing and retrieval
+- ✅ **Task History** - Completed and failed tasks are retained based on configuration
+- ✅ **Horizontal Scaling** - Scale to N number of A2A servers processing the same queue
+
+#### TLS Configuration (Optional)
+
+| Variable               | Default | Description             |
+| ---------------------- | ------- | ----------------------- |
+| `SERVER_TLS_ENABLED`   | `false` | Enable TLS/HTTPS        |
+| `SERVER_TLS_CERT_PATH` | -       | Path to TLS certificate |
+| `SERVER_TLS_KEY_PATH`  | -       | Path to TLS private key |
+
+#### Telemetry (Optional)
+
+When enabled, the server exports metrics (Prometheus pull or OTLP push) and can export traces via OTLP over HTTP or gRPC. It also participates in [W3C Trace Context](https://www.w3.org/TR/trace-context/) propagation: incoming `traceparent` and `baggage` headers are extracted, a request-scoped `a2a.request` span is created, and the `session.id` / `gen_ai.tool.call.id` baggage items are surfaced as span attributes. Exporters are selected with the standard `OTEL_*` variables; the original `TELEMETRY_*` variables remain supported as deprecated aliases. See [docs/telemetry.md](./docs/telemetry.md) for the full matrix.
+
+`TELEMETRY_ENABLED=true` is the master switch; the `OTEL_*` variables then choose which exporters run per signal.
+
+| Variable                        | Default                 | Description                                       |
+| ------------------------------- | ----------------------- | ------------------------------------------------- |
+| `TELEMETRY_ENABLED`             | `false`                 | Master switch for the telemetry subsystem         |
+| `OTEL_METRICS_EXPORTER`         | `prometheus`            | Metrics exporter: `prometheus`, `otlp`, or `none` |
+| `OTEL_TRACES_EXPORTER`          | `otlp`                  | Traces exporter: `otlp` or `none`                 |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`   | `http://localhost:4318` | OTLP endpoint base URL for traces and metrics     |
+| `OTEL_EXPORTER_OTLP_PROTOCOL`   | `http/protobuf`         | OTLP transport: `http/protobuf` or `grpc`         |
+| `OTEL_EXPORTER_PROMETHEUS_HOST` | -                       | Prometheus pull host (empty = all interfaces)     |
+| `OTEL_EXPORTER_PROMETHEUS_PORT` | `9090`                  | Prometheus pull port                              |
+
+**Attribute keys** (default to OTel semantic conventions; used for both the baggage member and the span attribute):
+
+| Variable                          | Default               | Description                        |
+| --------------------------------- | --------------------- | ---------------------------------- |
+| `TELEMETRY_ATTR_SESSION_ID_KEY`   | `session.id`          | Session id baggage/attribute key   |
+| `TELEMETRY_ATTR_TOOL_CALL_ID_KEY` | `gen_ai.tool.call.id` | Tool call id baggage/attribute key |
+
+**Deprecated aliases** (superseded by the `OTEL_*` variables above, still honored):
+
+| Variable                   | Default                 | Superseded by                            |
+| -------------------------- | ----------------------- | ---------------------------------------- |
+| `TELEMETRY_METRICS_PORT`   | `9090`                  | `OTEL_EXPORTER_PROMETHEUS_PORT`          |
+| `TELEMETRY_METRICS_HOST`   | -                       | `OTEL_EXPORTER_PROMETHEUS_HOST`          |
+| `TELEMETRY_TRACE_ENDPOINT` | `http://localhost:4318` | `OTEL_EXPORTER_OTLP_ENDPOINT`            |
+| `TELEMETRY_TRACE_HEADERS`  | -                       | `OTEL_EXPORTER_OTLP_HEADERS`             |
+| `TELEMETRY_LOG_*`          | -                       | Reserved - OTLP log export not yet wired |
+
+> The tracing service name is taken from the agent card `name` (the build-time agent identity), not a separate variable.
+
+Library consumers that already run their own OpenTelemetry setup can inject it with `WithTelemetry()` instead of letting the ADK build one from the environment. The injected instance activates the middleware, request spans, and `/metrics` endpoint regardless of `TELEMETRY_ENABLED`:
+
+```go
+srv, err := server.NewA2AServerBuilder(cfg, logger).
+    WithTelemetry(myOtel).
+    WithAgentCard(card).
+    WithDefaultTaskHandlers().
+    Build()
+```
+
+#### Example Configuration
+
+See [configuration examples](./examples/) for complete setup patterns, including environment variables, custom config structs, and programmatic overrides.
+
+## 🔧 Advanced Usage
+
+For detailed implementation examples and patterns, see the [examples](./examples/) directory:
+
+- **[Custom Tools](./examples/ai-powered/)** - Creating and integrating custom tools
+- **[Callback Hooks](./examples/callbacks/)** - Lifecycle hooks for guardrails, caching, and flow control
+- **[Agent Configuration](./examples/static-agent-card/)** - JSON-based agent metadata management
+- **[Task Handling](./examples/default-handlers/)** - Built-in and custom task processing
+- **[Streaming](./examples/streaming/)** - Real-time response handling
+- **[Usage Metadata](./examples/usage-metadata/)** - Tracking token consumption and execution metrics for cost monitoring and performance analysis
+
+## 🌐 A2A Ecosystem
+
+This ADK is part of the broader Inference Gateway ecosystem:
+
+### Related Projects
+
+- **[Inference Gateway](https://github.com/inference-gateway/inference-gateway)** - Unified API gateway for AI providers
+- **[Go SDK](https://github.com/inference-gateway/go-sdk)** - Go client library for Inference Gateway
+- **[TypeScript SDK](https://github.com/inference-gateway/typescript-sdk)** - TypeScript/JavaScript client library
+- **[Python SDK](https://github.com/inference-gateway/python-sdk)** - Python client library
+- **[Rust SDK](https://github.com/inference-gateway/rust-sdk)** - Rust client library
+- **[Rust ADK](https://github.com/inference-gateway/rust-adk)** - Rust A2A Development Kit
+
+### A2A Agents
+
+- **[Awesome A2A](https://github.com/inference-gateway/awesome-a2a)** - Curated list of A2A-compatible agents
+- **[Browser Agent](https://github.com/inference-gateway/browser-agent)** - Web browser automation and interaction agent
+- **[Documentation Agent](https://github.com/inference-gateway/documentation-agent)** - Documentation generation and management agent
+- **[Google Calendar Agent](https://github.com/inference-gateway/google-calendar-agent)** - Google Calendar integration agent
+- **[n8n Agent](https://github.com/inference-gateway/n8n-agent)** - n8n workflow automation integration agent
+
+## 📋 Requirements
+
+- **Go**: 1.26 or later
+- **Dependencies**: See [go.mod](./go.mod) for full dependency list
+
+## 🐳 Docker Support
+
+Build and run your A2A agent application in a container. Here's an example Dockerfile for an application using the ADK:
+
+```dockerfile
+FROM golang:1.26-alpine AS builder
+
+# Build arguments for agent metadata
+ARG AGENT_NAME="My A2A Agent"
+ARG AGENT_DESCRIPTION="A custom A2A agent built with the ADK"
+ARG AGENT_VERSION="0.1.0"
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN go mod tidy && \
+    go build -ldflags "-X 'github.com/inference-gateway/adk/server.BuildAgentName=${AGENT_NAME}' -X 'github.com/inference-gateway/adk/server.BuildAgentDescription=${AGENT_DESCRIPTION}' -X 'github.com/inference-gateway/adk/server.BuildAgentVersion=${AGENT_VERSION}'" -o bin/agent .
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates && \
+    addgroup -g 1001 -S a2a && \
+    adduser -u 1001 -S agent -G a2a
+WORKDIR /home/agent
+COPY --from=builder /app/bin/agent .
+RUN chown agent:a2a ./agent
+USER agent
+CMD ["./agent"]
+```
+
+**Build with custom metadata:**
+
+```bash
+docker build \
+  --build-arg AGENT_NAME="Weather Assistant" \
+  --build-arg AGENT_DESCRIPTION="AI-powered weather forecasting agent" \
+  --build-arg AGENT_VERSION="0.1.1" \
+  -t my-a2a-agent .
+```
+
+## 📄 License
+
+This project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions to the A2A ADK are welcome! Whether you're fixing bugs, adding features, improving documentation, or helping with testing, your contributions make the project better for everyone.
+
+**Please see the [Contributing Guide](./CONTRIBUTING.md) for:**
+
+- 🚀 **Getting Started** - Development environment setup and prerequisites
+- 📋 **Development Workflow** - Step-by-step development process and tools
+- 🎯 **Coding Guidelines** - Code style, testing patterns, and best practices
+- 🛠️ **Making Changes** - Branch naming, commit format, and submission process
+- 🧪 **Testing Guidelines** - Test structure, mocking, and coverage requirements
+- 🔄 **Pull Request Process** - Review process and submission checklist
+
+**Quick Start for Contributors:**
+
+```bash
+# Fork the repo and clone it
+git clone https://github.com/your-username/adk.git
+cd adk
+
+# Install pre-commit hook
+task precommit:install
+```
+
+For questions or help getting started, please [open a discussion](https://github.com/inference-gateway/adk/discussions) or check out the [contributing guide](./CONTRIBUTING.md).
+
+## 📞 Support
+
+### Issues & Questions
+
+- **Bug Reports**: [GitHub Issues](https://github.com/inference-gateway/adk/issues)
+- **Documentation**: [Official Docs](https://docs.inference-gateway.com)
+
+## 🔗 Resources
+
+### Documentation
+
+- [A2A Protocol Specification](https://github.com/inference-gateway/schemas/tree/main/a2a)
+- [API Documentation](https://docs.inference-gateway.com/a2a)
+- [MCP Client Guide](./docs/mcp.md)
+- [Artifacts Guide](./docs/artifacts.md)
+- [Telemetry Guide](./docs/telemetry.md)
+
+---
+
+<p align="center">
+  <a href="https://github.com/inference-gateway">GitHub</a> •
+  <a href="https://docs.inference-gateway.com">Documentation</a>
+</p>

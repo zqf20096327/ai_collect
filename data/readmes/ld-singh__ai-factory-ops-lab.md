@@ -1,0 +1,347 @@
+<div align="center" markdown="1">
+
+<img src="docs/assets/social-preview.svg" alt="AI Factory Operations Lab" width="820">
+
+# AI Factory Operations Lab
+
+**Learn GPU infrastructure without owning a GPU.** Hands-on GPU/HPC infrastructure operations: build, break and diagnose it free on your laptop, then validate the hardware-specific parts on one cheap GPU.
+
+[![GitHub stars](https://img.shields.io/github/stars/ld-singh/ai-factory-ops-lab?style=flat-square&logo=github&color=f9c513)](https://github.com/ld-singh/ai-factory-ops-lab/stargazers)
+[![Read the course](https://img.shields.io/badge/course-read%20online-2ea043?style=flat-square&logo=readthedocs&logoColor=white)](https://ld-singh.github.io/ai-factory-ops-lab/)
+[![Start free](https://img.shields.io/badge/start-%240%20%C2%B7%20no%20GPU-22c55e?style=flat-square)](#what-this-course-costs)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-k3s%20%C2%B7%20kind-326ce5?style=flat-square&logo=kubernetes&logoColor=white)](#)
+[![NVIDIA GPU](https://img.shields.io/badge/NVIDIA-GPU%20Operator%20%C2%B7%20DCGM-76b900?style=flat-square&logo=nvidia&logoColor=white)](#)
+[![vLLM](https://img.shields.io/badge/inference-vLLM-ff6f61?style=flat-square)](#)
+[![Slurm](https://img.shields.io/badge/HPC-Slurm-1f6feb?style=flat-square)](#)
+
+[**📖 Read the course online →**](https://ld-singh.github.io/ai-factory-ops-lab/)
+
+### ⭐ Star this repo if it helps you. It makes the work visible and helps other engineers find it.
+
+</div>
+
+---
+
+A guided, learn-by-doing course in **AI/HPC infrastructure operations**: NVIDIA GPU
+infrastructure concepts, Kubernetes GPU scheduling, Slurm GPU workload management,
+GPU observability, inference serving, and BCM-style cluster lifecycle patterns.
+
+You don't read this repo - you *run* it. Each lesson has you stand something up,
+break it on purpose, diagnose it the way you would on a real cluster, and capture
+the evidence. Most of the course needs **no GPU at all**; one lesson uses a single
+rented GPU VM and is clearly marked.
+
+> **Read this first - how the course works**
+>
+> The best part: **you learn most of this course on your laptop, for free.** The
+> operational discipline of running the NVIDIA GPU stack - GPU scheduling, queueing,
+> sharing decisions, observability, Slurm, cluster lifecycle - is all taught on
+> simulations that reproduce the real control-plane behaviour, no GPU and no cloud bill
+> required. That's the majority of the skills, and you can run every bit of it today.
+>
+> When you want to feel real hardware, the **real-GPU lessons** put those same skills on
+> an actual NVIDIA card - the driver-to-pod path, enforced GPU sharing, real telemetry,
+> real benchmarks - for a **budget of $5-10**: you rent a GPU VM for an hour or two and
+> tear it down when you're done.
+>
+> Every lesson tells you which **mode** it's in (simulation or real GPU) and exactly what
+> it demonstrates. Knowing precisely where "I simulated the control plane" ends and "I ran
+> it on real hardware" begins is itself one of the skills this course teaches - mapped in
+> [`fake-vs-real-limitations.md`](./portfolio-lab/06-validation-reports/fake-vs-real-limitations.md).
+
+---
+
+## Who this course is for
+
+You're comfortable in a terminal and have basic Kubernetes literacy (you know what
+a Pod and a node are), and you want to learn how AI infrastructure platforms are
+actually scheduled, observed, and operated. By the end you'll be able to reason
+about - and demonstrate - GPU scheduling, queueing, the full driver-to-pod GPU
+path, and the operational workflows around them.
+
+No prior NVIDIA GPU stack experience is assumed. No GPU is required to start.
+
+---
+
+## How the course works
+
+Each lesson follows the same rhythm so you always know where you are:
+
+| Section in every lesson | What it gives you |
+|---|---|
+| 🎯 **Learning objectives** | What you'll be able to do after the lesson |
+| 🧭 **Mode & prerequisites** | Simulation or real GPU, and what you need installed |
+| 🔧 **Steps** | Copy-paste commands, each with the **expected output** |
+| 💡 **Why it works** | The concept behind the command - the part that transfers |
+| ✅ **Checkpoint** | A concrete check to confirm the step worked before moving on |
+| 🔬 **What you proved / did NOT prove** | What that lesson's mode does and doesn't establish |
+| ➡️ **Next** | Where to go next |
+
+The two **modes** you'll see throughout:
+
+- **🟦 Simulation mode (no GPU).** kind + KWOK fake nodes with the fake-gpu-operator
+  GPU layer (advertises GPUs + synthetic DCGM metrics), Slurm
+  with fake GRES. Proves *control-plane behaviour*: scheduling, queueing, placement,
+  triage, operational workflow. Nothing below the kubelet.
+- **🟥 Real GPU mode (one NVIDIA GPU).** Real driver, container toolkit, GPU
+  Operator, CUDA pod, DCGM telemetry. Proves the *real runtime path*, single-node.
+
+Lessons 1–5 are entirely simulation mode. Every real-GPU piece is gathered into the
+single optional **Lesson 6**, which runs on one rented GPU - so the sim lessons stay
+free and the hardware work is one clearly-marked session at the end.
+
+---
+
+## The Learning Path
+
+Work through these in order. Lessons 1–1D are the spine; everything after builds on
+the GPU-scheduling mental model you form there. **Lessons 0–5 are all no-GPU
+simulation**; every piece that needs real hardware is gathered into the single,
+optional **Lesson 6** at the end.
+
+| # | Lesson | Mode | GPU? | You'll be able to… |
+|---|---|---|---|---|
+| **0** | [Orientation & setup](#lesson-0---orientation--setup) | - | No | Install the toolchain and verify your machine is ready |
+| **1** | [Kubernetes GPU scheduling](./portfolio-lab/01-k8s-gpu-platform/README.md) | 🟦 Sim | No | Build a fake GPU fleet and diagnose why GPU pods stay Pending |
+| **1B** | [Queue-based scheduling - KAI Scheduler](./portfolio-lab/01-k8s-gpu-platform/kai-scheduler/README.md) | 🟦 Sim | No | Install KAI on a fake GPU fleet (fake-gpu-operator) and **enforce queue quota**; understand borrowing/reclaim/gang and the limits of demoing them on fakes |
+| **1C** | [GPU sharing & fractional GPUs - HAMi](./portfolio-lab/01-k8s-gpu-platform/hami/README.md) | 🟦 Sim | No | Compare time-slicing/MPS/MIG/HAMi and prove fractional **scheduling** on fakes (binpack, per-device accounting); the real isolation half runs in Lesson 6 |
+| **1D** | [GPU fleet scale simulation - Volcano](./portfolio-lab/01-k8s-gpu-platform/volcano-scale-sim/README.md) | 🟦 Sim | No | Scale fake GPU fleets from topology JSON, create queue pressure, and validate Volcano Queue/PodGroup gang-scheduling behaviour |
+| **2** | [Slurm GPU workload management](./portfolio-lab/02-slurm-gpu-platform/README.md) | 🟦 Sim | No | Run a Slurm-in-Docker cluster with fake GRES; schedule GPU jobs, QoS caps, queue pressure, drain/resume |
+| **3** | [GPU observability](./portfolio-lab/03-observability/README.md) | 🟦 Sim | No | Stand up Prometheus/Grafana over synthetic DCGM; build dashboards + SLO alerts; **trip them on purpose** |
+| **3B** | [Inference observability](./portfolio-lab/03-observability/inference-observability/README.md) | 🟦 Sim | No | Token-level SLOs from synthetic vLLM metrics: TTFT/goodput/queue-depth/KV-usage, and alerts that fire under saturation |
+| **4A** | [Inference benchmarks](./portfolio-lab/04-inference-serving/README.md) | 🟦 Sim/harness | No | Run the $0 CPU load harness for TTFT/p95-p99/tokens-per-sec and find the saturation knee; real numbers come in Lesson 6 |
+| **4B** | [The KV cache](./portfolio-lab/04-inference-serving/kv-cache/README.md) | 🟦 Sim | No | Size the KV cache from a model's config: concurrency limits, PagedAttention, GQA, prefix caching |
+| **5** | [BCM-style cluster lifecycle](./portfolio-lab/05-bcm-style-cluster-lifecycle/README.md) | 🟨 Concept+drill | No | Run a provision→health-gate→patch→retire node-lifecycle drill; map it to BCM |
+| **6** | [AI Factory Operator Capstone (real GPU)](./portfolio-lab/real-gpu-session/README.md) | 🟥 Real | Opt (1) | The **only** real-GPU lesson: in one rental, prove the GPU runtime path + real DCGM, HAMi sharing, HAMi + GPU Operator coexistence, and the inference benchmark, then tear down (real Slurm GRES is planned) |
+| **★** | [Your lab notebook](./portfolio-lab/06-validation-reports/) | - | - | Capture evidence; a lesson is only "done" when its report holds real output |
+
+> **Lessons 0–5 (including 1B, 1C, 1D) run entirely on a laptop with no GPU.** The only real
+> hardware is the optional Lesson 6, which consolidates every GPU step into a single cheap
+> rental. Lessons 2, 3 and 5 stand up real clusters/stacks against *fake* GPUs; Lesson 4 ships
+> a $0 CPU harness tier; Lesson 1D scales the fake fleet and adds Volcano queue/gang
+> scheduling drills. The status table is at the bottom of this file.
+
+---
+
+## What this course costs
+
+Designed to be as close to free as is practical. The cost ladder:
+
+| Tier | Lessons | What you pay | What you get |
+|---|---|---|---|
+| **$0 - simulation** | 0, 1, 1B, 1C, 1D, 2, 3, 3B, 4A, 4B, 5 | Nothing - a laptop runs it | All scheduling, queueing, sharing-*decision*, triage, observability-design, inference-capacity, lifecycle, and scale-simulation skills. |
+| **$5-10 - one GPU session** | 6 (the capstone) | A few hours on one rented entry-level NVIDIA GPU VM | The real runtime path, enforced GPU sharing, real DCGM telemetry, and real inference benchmarks (real Slurm GRES is planned) |
+
+Three habits keep the paid tier at $5-10:
+
+1. **It's already one rental session.** Lesson 6 is the only real-GPU lesson by design:
+   it runs the GPU runtime path, HAMi sharing, HAMi + GPU Operator coexistence, and the
+   inference benchmark back-to-back on a single machine (real Slurm GRES is a planned add-on).
+   Set up the host once, run the phases, capture evidence as you go, tear down. See
+   [Lesson 6](./portfolio-lab/real-gpu-session/README.md).
+2. **Cheapest GPU that works.** Everything real-mode here needs only one
+   entry-level datacenter or consumer NVIDIA GPU (T4/L4/A10G-class). You never need
+   an A100/H100 in this course.
+3. **Tear down immediately.** The evidence captures (`scripts/collect-*-evidence.sh`)
+   are the deliverable - once they're on your machine, the VM has no further value.
+   A forgotten GPU VM is the only way this course gets expensive.
+
+---
+
+## Lesson 0 - Orientation & setup
+
+🎯 **Objectives:** get the simulation toolchain installed and confirm your machine
+can run Lesson 1.
+
+🧭 **Mode:** setup (no GPU).
+
+### Step 1 - Install the prerequisites
+
+Simulation mode (Lessons 1–5) needs these. Real GPU mode (Lesson 6) adds an
+NVIDIA GPU machine, covered there.
+
+| Tool | macOS | Linux | Windows (WSL2) |
+|---|---|---|---|
+| Docker | Docker Desktop | docker-ce | Docker Desktop + WSL2 backend |
+| kind | `brew install kind` | release binary | release binary inside WSL2 |
+| kubectl | `brew install kubectl` | apt/release binary | inside WSL2 |
+| helm | `brew install helm` | release binary | inside WSL2 |
+| kwokctl/kwok | `brew install kwok` | release binary | inside WSL2 |
+| jq | `brew install jq` | apt | apt inside WSL2 |
+
+Official install docs:
+- kind: https://kind.sigs.k8s.io/docs/user/quick-start/
+- KWOK: https://kwok.sigs.k8s.io/docs/user/installation/
+- helm: https://helm.sh/docs/intro/install/
+- NVIDIA GPU Operator (for Lesson 6): https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/
+
+### Step 2 - Verify your machine
+
+```bash
+make check
+```
+
+💡 **Why:** this runs [`scripts/check-prereqs.sh`](./scripts/check-prereqs.sh),
+which confirms docker, kind, kubectl, helm, kwok, and jq are present *before* you
+start a lesson - so a missing tool fails here, loudly, instead of halfway through
+building a cluster.
+
+✅ **Checkpoint:** `make check` reports every tool as found. Fix anything it flags
+before continuing.
+
+### Step 3 - See the whole course map as commands
+
+```bash
+make help
+```
+
+💡 **Why:** the [Makefile](./Makefile) is the course's command index. Every `make`
+target maps to a lesson phase, and unimplemented phases print a "not yet"
+message rather than pretending to work.
+
+➡️ **Next:** [Lesson 1 - Kubernetes GPU scheduling](./portfolio-lab/01-k8s-gpu-platform/README.md).
+
+---
+
+## Quick reference - the loops
+
+`make help` is the full command index. The per-lesson loops:
+
+> **Note:** most `make phaseN-*` target numbers are historical *module* numbers and no
+> longer line up with lesson numbers (an earlier renumber kept the targets stable). Each
+> comment below states the lesson it belongs to; `phase1d-*` is named for its lesson.
+
+```bash
+# Lesson 1 - Kubernetes fake-GPU scheduling (kind + KWOK + fake-gpu-operator)
+make phase1-up && make phase1-demo && make phase1-evidence && make phase1-down
+
+# Lesson 1B - queueing with KAI (own Makefile; reuses the Lesson 1 fleet + installs KAI)
+( cd portfolio-lab/01-k8s-gpu-platform/kai-scheduler && make up && make demo-quota )
+
+# Lesson 1C - GPU sharing with HAMi (scheduling sim, no GPU; own Makefile)
+( cd portfolio-lab/01-k8s-gpu-platform/hami/hami-scheduling-sim && make up && make demo-fractional )
+
+# Lesson 1D - GPU fleet scale simulation with Volcano (topology-driven fake fleet)
+make phase1d-up && make phase1d-volcano && make phase1d-demo && make phase1d-evidence && make phase1d-down
+
+# Lesson 2 - Slurm-in-Docker with fake GRES  (targets: phase3-*)
+make phase3-up && make phase3-demo && make phase3-drain && make phase3-evidence && make phase3-down
+
+# Lesson 3 - observability (needs the Lesson 1 cluster up)  (targets: phase4-*)
+make phase4-up && make phase4-break && make phase4-evidence && make phase4-down
+
+# Lesson 4 - inference load harness ($0 CPU tier)  (targets: phase5-*)
+make phase5-serve-cpu && make phase5-bench && make phase5-down
+
+# Lesson 5 - BCM-style lifecycle drill (needs the Lesson 1 cluster up)  (targets: phase6-*)
+make phase6-drill
+
+# Lesson 6 - Real GPU (one rental): guided, no make loop - see portfolio-lab/real-gpu-session/README.md
+```
+
+Each lesson walks its loop with expected output and checkpoints.
+
+---
+
+## Repository map
+
+```
+portfolio-lab/
+  01-k8s-gpu-platform/        Lessons 1, 1B, 1C, 1D - K8s GPU scheduling, queueing (KAI),
+                              sharing (HAMi), scale sim + gang scheduling (Volcano) [sim].
+                              gpu-operator-real/ = Lesson 6's GPU runtime path
+  02-slurm-gpu-platform/      Lesson 2 - Slurm-in-Docker, fake GRES [sim]. slurm-realgpu/ = Lesson 6's real GRES
+  03-observability/           Lesson 3 - fake-dcgm-exporter/ manifests/ dashboards/ scripts/ [sim]
+  04-inference-serving/       Lesson 4 - harness/ (loadgen) + scripts/ (CPU serve) [sim]; real bench in Lesson 6
+  05-bcm-style-cluster-lifecycle/  Lesson 5 - scripts/ lifecycle drill + conceptual BCM mapping
+  real-gpu-session/           Lesson 6 - the one-rental real-GPU capstone (runtime path, HAMi, Slurm GRES, inference)
+  06-validation-reports/      Your lab notebook - what you ran, observed, and proved
+control-plane/                Small FastAPI app unifying K8s + Slurm inventory views
+runbooks/                     Operational runbooks for GPU/Slurm/K8s failure modes
+diagrams/                     Architecture and lifecycle diagrams (Mermaid)
+scripts/                      Prereq checks, evidence collection, cleanup
+
+```
+
+Supporting material you'll be pointed to from inside lessons:
+- **[runbooks/](./runbooks/)** - the operational playbooks each observability alert links to.
+- **[diagrams/](./diagrams/)** - Mermaid diagrams (e.g. [the GPU path to a pod](./diagrams/gpu-path-to-pod.md)) used to anchor the concepts.
+
+---
+
+## What this course proves (and does not)
+
+**Proves:** designing/operating a Kubernetes GPU scheduling environment;
+diagnosing Pending GPU pods; queue policy (quota, borrowing, reclaim, gang
+scheduling) with KAI Scheduler; GPU sharing and fractional-GPU placement with HAMi
+(with enforcement proven on real hardware); Slurm GPU scheduling (GRES/TRES, QoS,
+accounting); GPU-aware observability and the runbooks behind alerts; the full
+driver→pod GPU path on real hardware; standing up and benchmarking inference
+serving; and documenting infrastructure work to a production standard.
+
+**Does NOT prove (in simulation mode):** CUDA kernel performance, NCCL collective
+performance, NVLink/NVSwitch topology, GPUDirect RDMA, MIG isolation, real GPU
+memory pressure/OOM, multi-node distributed training at scale, or production-scale
+fleet operations. Real GPU validation here is single-node by design - it proves the
+runtime path and telemetry, not scale. The full ledger:
+[`fake-vs-real-limitations.md`](./portfolio-lab/06-validation-reports/fake-vs-real-limitations.md).
+
+---
+
+## Course status
+
+A lesson is only marked **Complete** when its validation report in
+[`portfolio-lab/06-validation-reports/`](./portfolio-lab/06-validation-reports/)
+contains real captured output.
+
+| Lesson | Topic | Status |
+|---|---|---|
+| 0 | Repo foundation / Orientation | Complete |
+| 1 | Kubernetes fake-GPU scheduling (simulation) | Complete |
+| 1B | Queue-based scheduling with KAI Scheduler | Runnable; quota enforcement validated. Needs the fake-gpu-operator (not bare KWOK); borrow/reclaim/gang documented with sim limits |
+| 1C | GPU sharing & fractional GPUs with HAMi | Sim validates HAMi's scheduling *decisions* (fractional placement, Pending rejection, `FilteringSucceed`). GPU *sharing* + memory-cap *isolation* are real-GPU only → done in Lesson 6 |
+| 1D | GPU fleet scale simulation with Volcano | Complete (runnable; topology-driven fleet, Volcano scheduler handoff, Queue/PodGroup behaviour, and gang all-or-nothing admission validated with captured output - [gpu-scale-sim-validation.md](./portfolio-lab/06-validation-reports/gpu-scale-sim-validation.md)) |
+| 2 | Slurm GPU workload management | Complete (runnable; validated with captured output) |
+| 3 | Observability | Complete (runnable; metrics/alerts/dashboards validated) |
+| 4 | Inference serving | Harness runnable + validated; real GPU benchmark validated in Lesson 6 Part D (RTX A6000) |
+| 5 | BCM-style cluster lifecycle (conceptual + drill) | Drill runnable + validated; BCM specifics conceptual |
+| 6 | Real GPU (capstone: runtime path, real DCGM, HAMi isolation, Slurm GRES, inference) | **Parts A, B, C & D validated on real hardware.** Part A - runtime path + real `DCGM_FI_*` telemetry ([real-gpu-validation-report.md](./portfolio-lab/06-validation-reports/real-gpu-validation-report.md)). Part B - HAMi GPU sharing: two pods on one card with the slice enforced by HAMi-core ([hami-isolation-validation.md](./portfolio-lab/06-validation-reports/hami-isolation-validation.md)). Part C - HAMi + GPU Operator coexistence: the Operator (device plugin disabled) and HAMi on one node, two pods sharing one card, validated on an NVIDIA L40 ([hami-gpu-operator-coexistence-validation.md](./portfolio-lab/06-validation-reports/hami-gpu-operator-coexistence-validation.md)). Part D - inference benchmark: throughput scaling + the saturation knee on an RTX A6000 ([inference-benchmark-report.md](./portfolio-lab/06-validation-reports/inference-benchmark-report.md)). **Part E (Slurm real GRES, optional) is planned.** |
+
+## Documentation site
+
+The lessons are published as a website at
+**https://ld-singh.github.io/ai-factory-ops-lab/** (MkDocs Material). The lesson
+markdown in this repo is the single source of truth; `scripts/sync-docs.sh` mirrors it
+into `docs/` for the build, and a GitHub Actions workflow
+([`.github/workflows/docs.yml`](.github/workflows/docs.yml)) publishes to GitHub Pages
+on every push to `main`.
+
+Preview locally:
+
+```bash
+pip install -r requirements-docs.txt   # use a venv if your Python is externally managed
+make docs-serve                        # http://localhost:8001
+```
+
+One-time setup to publish: in the GitHub repo, **Settings -> Pages -> Build and
+deployment -> Source: GitHub Actions**.
+
+## License and attribution
+
+All third-party tools (kind, KWOK, run.ai fake-gpu-operator, NVIDIA GPU Operator, KAI
+Scheduler, HAMi, Slurm, Triton, vLLM, Prometheus, Grafana) belong to their respective
+projects; this repo
+only contains configuration, automation and documentation written for this course.
+
+---
+
+## ⭐ Found this useful?
+
+If this course helped you get hands-on with GPU/HPC infrastructure, **[give it a star](https://github.com/ld-singh/ai-factory-ops-lab/stargazers)**. It takes a second, makes the work visible, and helps other engineers find it. Issues, ideas, and PRs are welcome too.
+
+## 👤 Author
+
+**Lovedeep Singh**, Cloud Infrastructure Architect · AWS, Azure, Kubernetes & DevSecOps · building secure, governed cloud platforms.
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-connect-0a66c2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lovedeep-singh-cloud-infra/)
+[![GitHub](https://img.shields.io/badge/GitHub-ld--singh-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/ld-singh)

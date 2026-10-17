@@ -1,0 +1,490 @@
+
+```
+██████╗ ██╗███████╗██████╗  █████╗ ████████╗ ██████╗██╗  ██╗
+██╔══██╗██║██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██║  ██║
+██║  ██║██║███████╗██████╔╝███████║   ██║   ██║     ███████║
+██║  ██║██║╚════██║██╔═══╝ ██╔══██║   ██║   ██║     ██╔══██║
+██████╔╝██║███████║██║     ██║  ██║   ██║   ╚██████╗██║  ██║
+╚═════╝ ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
+```
+
+ <p align="center">
+   <a href="https://github.com/santiagomora2/dispatch/actions/workflows/ci.yml"><img 
+src="https://github.com/santiagomora2/dispatch/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+   <a href="https://github.com/santiagomora2/dispatch/stargazers"><img 
+src="https://img.shields.io/github/stars/santiagomora2/dispatch?style=social" alt="Stars"></a>
+   <a href="https://github.com/santiagomora2/dispatch/network/members"><img 
+src="https://img.shields.io/github/forks/santiagomora2/dispatch?style=social" alt="Forks"></a>
+   <a href="https://github.com/santiagomora2/dispatch/issues"><img src="https://img.shields.io/github/issues/santiagomora2/dispatch" 
+alt="Issues"></a>
+   <a href="https://github.com/santiagomora2/dispatch/blob/main/LICENSE.md"><img 
+src="https://img.shields.io/github/license/santiagomora2/dispatch" alt="License"></a>
+ </p>
+ 
+ <p align="center">
+   <a href="https://pypi.org/project/dispatch-agent/"><img src="https://img.shields.io/pypi/v/dispatch-agent" alt="PyPI version"></a>
+   <a href="https://pypi.org/project/dispatch-agent/"><img src="https://img.shields.io/pypi/dm/dispatch-agent" alt="PyPI downloads"></a>
+   <a href="https://pypi.org/project/dispatch-agent/"><img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+"></a>
+ </p>
+
+A local AI agent harness written in python, built on ollama/openai-compatible providers; with tool calling, streaming, and a persistent memory system. Stripped down to be simple, contain only necessary tools, and not fill up memory with system prompts and unnecesary text.
+
+> Dispatch does not intend to compete with Claude Code, DeepAgents, OpenCode or other famous CLIs.
+
+> It is a tool I built for the love of the game, and is meant to be an easy-to-understand, easy-to-modify, lightweight, local CLI agent that you can study to understand how popular agentic systems and famous Agentic AI CLIs work. 
+
+---
+
+## Index
+
+- [Index](#index) - This section
+- [Installation](#installation) - Setup and prerequisites
+- [Project Structure](#project-structure) - Directory tree overview
+- [How It Works](#how-it-works) - Boot and main loop explained
+- [Tool Registry](#tool-registry) - Available tools
+- [Slash Command Registry](#slash-command-registry) - All slash commands
+- [What's Next](#whats-next) - Planned features
+- [How to build on top of Dispatch](#how-to-build-on-top-of-dispatch) - Adding custom tools/commands
+- [License](#license)
+
+---
+
+## Installation
+
+> Developed and tested on macOS and Linux. Windows should work but is untested.
+
+### Prerequisites
+
+Before installing Dispatch, ensure you have:
+
+**1. Python 3.11+**
+
+Dispatch itself only requires Python. Model provider is configurable.
+
+**2. One model provider (choose one)**
+
+#### Option A: Ollama (local)
+
+Download from [ollama.com](https://ollama.com) or install via package manager:
+
+```bash
+# macOS
+brew install ollama
+
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Windows
+# Download installer from https://ollama.com/download
+```
+
+Start the server and pull a model:
+
+```bash
+ollama serve
+ollama pull qwen3.5:9b
+```
+
+#### Option B: OpenAI-compatible endpoint
+
+Use any server implementing the OpenAI Chat Completions API (local or hosted), for example LM Studio, vLLM, OpenRouter-compatible gateways, etc.
+
+Set your endpoint URL in `config.json` (`openai_base_url`) and export your key env var if required by that provider.
+
+### Install Dispatch
+
+#### Option A: From PyPI (easiest)
+```bash
+pip install dispatch-agent
+dispatch
+```
+
+#### Option B: From source
+```bash
+git clone https://github.com/santiagomora2/dispatch.git
+cd dispatch
+uv tool install --editable .
+```
+
+(Requires `uv`. Install with: `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+
+### Configure
+
+Update `config.json` in the dispatch directory:
+
+```json
+{
+  "provider": "ollama",
+  "model": "qwen3.5:9b",
+  "context_limit": 32000,
+  "mode": "auto",
+  "version": "1.0.0",
+  "auto_compact_tools": true,
+  "openai_base_url": "http://localhost:8000/v1",
+  "openai_api_key_env": "OPENAI_API_KEY"
+}
+```
+
+If using `openai-compatible`, export your API key env var:
+```bash
+export OPENAI_API_KEY=your_key_here
+```
+
+For local OpenAI-compatible servers that don't require auth:
+```bash
+export OPENAI_API_KEY="local"
+```
+
+Then run:
+```bash
+dispatch
+```
+
+Dispatch operates on your current directory while keeping memory and config at the project root.
+
+---
+
+## Project Structure
+
+```
+dispatch/
+├── agent/
+│   ├── cmd/
+│   │   ├── __init__.py         # registry + dispatch
+│   │   ├── arg_completers.py   # contains arg_completer functions for commands
+│   │   ├── memory.py.          # memory commands (/note, /forget, etc.)
+│   │   ├── plan.py             # plan command
+│   │   └── session.py          # session commands (/clear, /compact, /model, etc.)
+│   ├── tools/
+│   │   ├── __init__.py         # registry + dispatch + get_schemas
+│   │   ├── files.py            # file tools (read, write, patch)
+│   │   ├── memory.py           # memory tools (update_memory)
+│   │   ├── session.py          # compact conversation (not callable, handled in main loop)
+│   │   ├── shell.py.           # shell tools (run_shell)
+│   ├── plans/                  # directory where agent's plans and statuses are logged
+│   ├── __init__.py
+│   ├── agent.py                # main loop
+│   ├── completer.py            # slash commands auto-completer
+│   ├── fancy_banner.py         # fancy welcome banner, ways to goodbye 
+│   ├── main.py                 # CLI entrypoint (typer)
+│   ├── paths.py                # ROOT-anchored file
+│   ├── providers/              # provider abstraction (ollama/openai-compatible)
+│   └── system_prompt.py        # system prompt
+├── README.md               
+├── config.json                 # provider, model, context_limit, mode
+├── memory.md                   # persistent agent memory
+├── pyproject.toml              # entry point: `dispatch` command
+├── session.json                # last compact summary
+└── uv.lock
+```
+
+---
+
+## How It Works
+
+### Boot
+
+1. `dispatch` is invoked from anywhere in the terminal
+2. `main.py` calls `run()` in `agent.py`
+3. `agent.py` loads `config.json` (provider, model, context limit)
+4. `.dispatchignore` rules are also injected into the system prompt once at boot (instead of repeating them on every shell tool call)
+5. The message history is initialized with the system prompt
+6. The main loop starts
+
+> `.dispatchignore` are files that dispatch should never read or edit
+> to inject memory at startup, call `/remember` command, made manual to prevent a lot of context entering the model at startup each time
+
+### Main Loop
+
+```
+START
+│
+├── pending_tool_response = False?
+│   YES ──> get user input
+│         ├── "/" ──> run slash command ──> back to START
+│         ├── empty ──> back to START
+│         └── normal ──> append to messages
+│
+├── check token estimate > 80% limit?
+│   YES ──> compact conversation (summarize history) ──> continue
+│
+├── call providers.chat(stream=True, tools=get_schemas())
+│   └── stream chunks to terminal as they arrive
+│       ├── text content ──> print immediately
+│       └── tool_calls ──> accumulate, execute after stream ends
+│
+├── tool_calls found?
+│   YES ──> for each call:
+│         ├── print [dim] tool: name(args)
+│         ├── dispatch(name, args)
+│         ├── append result to messages (role=tool)
+│         └── set pending_tool_response = True ──> back to START (skip user input)
+│
+│   NO  ──> response already streamed
+             wait for next user input ──> back to START
+```
+
+### Tool Registry
+
+Every tool is a decorated Python function in `tools/`:
+
+```python
+@tool(schema_dict, lazy=False)
+def read_file(path: str):
+    ...
+```
+
+* The `@tool` decorator registers the function and its JSON schema into `TOOLS = {}` or into `LAZY{}` if `lazy=True`(tool disabled). 
+* The modules are imported at the bottom of `tools/__init__.py` so decorators run on startup. `get_schemas()` returns all schemas to pass to the active provider. 
+* `dispatch(name, args)` looks up and calls the function, always returning `{"error": "..."}` on failure instead of raising.
+
+### Slash Command Registry
+
+Every slash command is a decorated Python function in `cmd/`:
+
+```python
+@command("note", description="Append a fact to memory", usage="")
+def cmd_note(arg, ctx):
+    ...
+```
+
+* The `@command` decorator registers the function into `COMMANDS = {}` with its name, description, and usage hint. 
+* Modules are imported in `cmd/__init__.py` so decorators run on startup.
+ * `dispatch_command(raw_input, ctx)` parses the command name and argument, looks up the function, and calls it.
+* `ctx` is a dict holding live references to `messages`, `model`, `config`, and `system_prompt` so commands can mutate agent state directly. 
+* The `SlashCompleter` reads from `COMMANDS` at runtime so any new command automatically appears in the `/` menu.
+
+> Flow note: if a command and a tool perform the same function, the command file should import from the corresponding tool file (Example: `/note` uses `save_memory()` tool).
+
+### Path Anchoring
+
+* `paths.py` uses `__file__` to resolve all Dispatch-internal files (config, memory, session) to the project root; regardless of where you invoke `dispatch` from.
+* File operations the agent performs use `os.getcwd()` captured at startup as the working directory.
+
+---
+
+## Current Tools
+
+| Tool | File | What it does |
+|---|---|---|
+| `run_shell` | `tools/shell.py` | Run a shell command with human confirmation, streaming output line by line |
+| `read_file` | `tools/files.py` | Reads a file, returns content with line numbers |
+| `create_file` | `tools/files.py` | Creates a file with an initial skeleton |
+| `patch_file` | `tools/files.py` | Replaces, inserts, or deletes content via `old_str/new_str` |
+| `update_memory` | `tools/memory.py` | Update a section of the agent's persistent memory markdown file|
+
+
+## Current Slash Commands
+
+| Command | Usage | What it does |
+|---|---|---|
+| `/memory` | `/memory` | Print current memory.md |
+| `/note` | `/note <text>` | Append a fact to memory directly |
+| `/forget` | `/forget <section>` | Clear a memory section |
+| `/remember` | `/remember` | Injects memory into the agent|
+| `/clear` | `/clear` | Reset messages, keep memory |
+| `/reset` | `/reset` | Reset messages and memory |
+| `/compact` | `/compact` | Summarize session and replace history |
+| `/compact_tools` | `/compact_tools` | Compact tool results into a summary |
+| `/tools` | `/tools [enable/disable] <tool>` | List, enable, or disable tools |
+| `/auto_compact_tools` | `/auto_compact_tools [enable/disable]` | Enable or disable auto tool compaction |
+| `/model` | `/model [name]` | Show or switch the active model |
+| `/provider` | `/provider [ollama/openai-compatible]` | Show or switch the active provider |
+| `/plan` | `/plan <task>` | Generate and execute a step-by-step plan |
+| `/help` | `/help` | List all available commands |
+| `/exit` | `/exit` | Quit Dispatch |
+
+---
+
+## What's Next
+
+- `/mode` - toggle careful/auto HITL aggressiveness
+- `/retry` - resend last user message
+- `/history` - print condensed message log
+
+> - Maybe in the future MCP servers and custom skills idk
+
+---
+
+## How to build on top of Dispatch
+
+I know it may seem complicated but bear with me, customizing it is actually simple.
+
+### Add a tool
+
+1. **Create your tool** as a python function, return a `dict` even if the function doesn't return anything. Make sure to wrap it in a `try, except` block that returns an error `dict`.
+
+```python
+def read_file(path: str):
+    try:
+        with open(path) as f:
+            lines = f.readlines()
+        numbered = "".join(f"{i+1}: {l}" for i, l in enumerate(lines))
+        return {"content": numbered}
+        # or if the function shouldn't return anything
+        return {"read_file": path}
+    except Exception as e:
+        return {"error": f"An  error occurred while reading the file: {str(e)}"}
+    
+```
+
+
+
+2. **Add the `@tool` decorator** with an adequate description. 
+    - The **description**: think which of these are necessary to tell the agent: what the tool does, when to use it, which tools it may use before/after, examples of usage, etc.
+    - The **parameters** the function recieves: their type and description; which ones are required
+    - Whether or not the tool is disabled on startup (`lazy`)
+
+```python
+@tool({
+    "type": "function",
+    "function": {
+        "name": "read_file",
+        "description": "Read a file and return its contents with line numbers",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string", "description": "Path to the file"}
+            },
+            "required": ["path"]
+        }
+    }
+}, lazy = False)
+def read_file(path: str):
+    try:
+        with open(path) as f:
+            lines = f.readlines()
+        numbered = "".join(f"{i+1}: {l}" for i, l in enumerate(lines))
+        return {"content": numbered}
+    except Exception as e:
+        return {"error": f"An  error occurred while reading the file: {str(e)}"}
+    
+```
+
+It seems like a lot but is really quite simple.
+
+3. If it was in a new file, add the import to `/agent/tools/__init__.py`
+
+```python
+from agent.tools import files, memory, your_new_file #noqa
+```
+
+#### HITL gated
+
+4. If you need a human-in-the-loop confirmation, add the following lines *before* executing the function that needs to be confirmed in the tool and returning.
+
+```python
+from rich.prompt import Confirm # this,
+
+@tool({...})
+def read_file(path: str):
+    try:
+        if not Confirm.ask(f"Read file {path}?"): # this
+          return {"error": "aborted"} # and this
+        with open(path) as f:
+            lines = f.readlines()
+        numbered = "".join(f"{i+1}: {l}" for i, l in enumerate(lines))
+        return {"content": numbered}
+    except Exception as e:
+        return {"error": f"An  error occurred while reading the file: {str(e)}"}
+
+
+```
+
+### Add a slash command
+
+Works very similar to the tool creation.
+
+1. **Create your command** as a python function, only now you may execute some function and then print the result or that the function was executed correctly or completed.
+
+> Note: if a command and a tool perform the same function, just import the function from the corresponding tool file (Example: `/read_file <path>` uses the `read_file(path)` tool we just defined).
+
+```python
+from agent.tools.files import read_file
+from rich.console import Console
+console = Console()
+
+def cmd_read_file(path: str):
+    content = read_file(path).get("content")
+    console.print(content)
+```
+
+2. **Add the `@command` decorator** with an adequate description. 
+    - The **description** will be seen by the user when using `/help` or the auto-completer suggests `/` commands.
+    - The **usage** (optional) is also seen by the user and is basically the argument (or arguments) of your function.
+    - **arg_completer** (also optional) is a function that will give the user the options they can choose as their argument(s).
+
+```python
+@command("read", description="Print a file's content", usage="<path>",
+         arg_completer=None)
+def cmd_read_file(path: str):
+    content = read_file(path).get("content")
+    console.print(content)
+```
+
+3. If it was in a new file, add the import to `/agent/cmd/__init__.py`
+
+```python
+from agent.cmd import memory, files, your_new_file #noqa
+```
+
+This was maybe a bad example because this command isn't actually implemented (why print it in console if you can just open the file) but you get the gist.
+
+#### Arg completer
+
+It is, again, a function that will give the user the options they can choose as their argument(s). For example, the models they can choose when using `/model`:
+
+```python
+import ollama
+
+def get_available_models():
+    try:
+        return [m.model for m in ollama.list().models]
+    except Exception:
+        return []
+  
+@command("model",
+         description="Switch the active Ollama model",
+         usage="<model>",
+         arg_completer=get_available_models)
+def cmd_model(arg, ctx):
+    ctx["model"] = arg
+    console.print(f"[green]Switched to: {arg}[/green]")
+# Oversimplified version for illustrative purposes
+# check agent/cmd/session.py for the actual implementation
+```
+
+Prefer putting it into `arg_completers.py` unless definable as a `lambda`function inside the decorator.
+
+### Everything else
+
+All of the other stuff like welcome banner in the `fancy_banner.py` file or the main loop in `agent.py` can also be modified to make your own version of dispatch and learn how agentic AI and tools work.
+
+### My favorite feature? (personal note)
+
+I really enjoyed implementing `/plan`. 
+
+Because of the natural constraints of running models locally on a computer without that much memory capacity, Mixture of Experts (MoE) models are an attractive option due to their speed and lower memory usage with only some parameters active at inference.
+
+A possible problem when trying to implement a big change suddenly is prompt trajectory: the early tokens heavily influence which experts activate, and a poorly structured initial prompt locks you into a suboptimal expert path for the entire generation.
+
+Hence `/plan`, which breaks the task into a guided reasoning sequence before any action is taken:
+
+    1. Understand & Decompose: Restate the task and break it into discrete subtasks.
+    2. Sequence & Assess Risks: Order the subtasks and note potential risks.
+    3. Finalize Plan: Output a structured markdown plan with steps and placeholders for decisions/artifacts.
+    4. Execute Sequentially: For each step, run it in isolation, allowing tool calls, and update the plan file with progress and artifacts.
+
+I've found it works pretty well with both dense and MoE models. 
+
+The reason for the plan file is not filling up KV cache too quickly, but still having a shared memory between the sub-agents which implement the task (and also have logs for implemented plans); and for MoE models, also having each step activate the appropriate experts for the task.
+
+---
+
+### License
+
+MIT License. Use, modify, teach, learn. It's all yours.
+
+---
+
+Built with ❤️, as always.

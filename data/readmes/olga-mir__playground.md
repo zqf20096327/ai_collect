@@ -1,0 +1,70 @@
+[![E2E Tests](https://github.com/olga-mir/playground/actions/workflows/e2e.yml/badge.svg)](https://github.com/olga-mir/playground/actions/workflows/e2e.yml)
+[![Flux Bootstrap GKE Clusters](https://github.com/olga-mir/playground/actions/workflows/flux-bootstrap.yml/badge.svg)](https://github.com/olga-mir/playground/actions/workflows/flux-bootstrap.yml)
+
+# Playground
+
+A monorepo showcasing modern cloud-native and AI-powered workflows. Built on **Crossplane v2** for platform API abstractions and **FluxCD** for GitOps automation. Serves as a playground for exploring the intersection of infrastructure-as-code, AI agents, and Kubernetes-native tooling.
+
+Write-ups and demos: [Repo's Wiki](https://github.com/olga-mir/playground/wiki) · [demo/](./demo)
+
+# Tech Stack
+
+| Logo | Name | Description | Project Version |
+|------|------|-------------|-----------------|
+| <img src="https://www.gstatic.com/marketing-cms/assets/images/29/8c/e1f2c0994e87b8d7edf2886f9c02/google-cloud.webp=s96-fcrop64=1,00000000ffffffff-rw" width="30"> | GKE | Google Kubernetes Engine is Google Cloud's managed Kubernetes service | v1.36.4 |
+| <img src="https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/dbd2ff92a93e7c8a29bce07cc331e40e6d470efe/site-src/images/logo/logo.svg" width="30"> | Gateway API | Kubernetes Gateway API is a collection of resources that model service networking in Kubernetes, providing expressive, extensible, and role-oriented interfaces. | [v1.6.1](https://github.com/kubernetes-sigs/gateway-api/releases/tag/v1.6.1) |
+| <img src="https://kgateway.dev/feature-api-gateway.svg" width="30"> | kgateway | Kubernetes gateway for AI services, providing a standardized way to connect applications with AI capabilities within the cluster. | [v2.3.5](https://github.com/kgateway-dev/kgateway/releases/tag/v2.3.5) |
+| <img src="https://raw.githubusercontent.com/agentgateway/agentgateway/refs/heads/main/ui/public/favicon.svg" width="30"> | Agent Gateway| Gateway Dataplane for AI workloads (MCP, A2A) | [v1.5.0](https://github.com/agentgateway/agentgateway/releases/tag/v1.5.0) |
+| <img src="https://raw.githubusercontent.com/cncf/artwork/refs/heads/main/projects/crossplane/icon/color/crossplane-icon-color.svg" width="30"> | Crossplane | Open-source Kubernetes add-on that lets you provision and manage cloud infrastructure and external services using Kubernetes-style APIs and declarative configuration. | [v2.4.0](https://github.com/crossplane/crossplane/releases/tag/v2.4.0) |
+| <img src="https://raw.githubusercontent.com/kagent-dev/kagent/33a48ede61be68c84f6adcfddde09db41aeb1ea7/img/icon-dark.svg" width="30"> | kagent | Kubernetes-native AI agent framework that enables the deployment and management of AI agents within Kubernetes clusters. | [v0.9.10](https://github.com/kagent-dev/kagent/releases/tag/v0.9.10) |
+| <img src="https://raw.githubusercontent.com/cncf/artwork/88fa3f88ea2e4bf3e4941be8dc797b6d860c9ade/projects/flux/icon/color/flux-icon-color.svg" width="30"> | FluxCD | GitOps toolkit for Kubernetes that keeps clusters in sync with configuration sources and automates deployments. | [v2.9.4](https://github.com/fluxcd/flux2/releases/tag/v2.9.4) |
+| <img src="https://raw.githubusercontent.com/cncf/artwork/88fa3f88ea2e4bf3e4941be8dc797b6d860c9ade/projects/flux/icon/color/flux-icon-color.svg" width="30"> | Flux Operator | Kubernetes operator for managing Flux installations declaratively via the FluxInstance CRD, eliminating fragile bootstrap scripts. | [v0.58.1](https://github.com/controlplaneio-fluxcd/flux-operator/releases/tag/v0.58.1) |
+| <img src="https://raw.githubusercontent.com/cncf/artwork/refs/heads/main/projects/litmus/icon/color/litmus-icon-color.svg" width="30"> | LitmusChaos | Cloud-native chaos engineering framework for Kubernetes that helps teams find weaknesses in their deployments through controlled chaos experiments. | [litmus-core-3.31.0](https://github.com/litmuschaos/litmus-helm/releases/tag/litmus-core-3.31.0) |
+| <img src="https://raw.githubusercontent.com/kguardian-dev/kguardian/42c78bded4ecfbb25f014a1cfd624711192c78a3/docs/logo/dark.png" width="30"> | kguardian | eBPF-based runtime security tool that observes pod traffic and syscalls to generate least-privilege NetworkPolicy/CiliumNetworkPolicy and SeccompProfile manifests from actual workload behavior. | [chart/v1.23.1](https://github.com/kguardian-dev/kguardian/releases/tag/chart/v1.23.1) |
+
+# Architecture
+
+Three-cluster hub-and-spoke fleet, provisioned in order:
+
+```
+kind (local bootstrap)
+  └─ provisions → GKE control-plane   (Crossplane + Flux + platform services)
+                    └─ provisions → GKE apps-dev   (tenant workloads)
+```
+
+- **Crossplane v2** handles GKE cluster provisioning (no claims — direct namespace-scoped XRs)
+- **Flux GitOps** manages everything on each cluster once bootstrapped
+- **GitHub Actions** bootstraps Flux on new GKE clusters, triggered by Flux notifications
+
+# Deployment
+
+## Prerequisites
+
+- Access to a GCP account with sufficient permissions
+- Tools: `gcloud`, `flux`, `kubectl`, `task`, Claude Code (`claude` CLI)
+- GitHub organisation or personal account
+
+See [docs/github-integration.md](./docs/github-integration.md) for GCP OIDC / GitHub Actions setup.
+
+## Running
+
+```bash
+# Deploy (idempotent — re-run to resume after a partial failure)
+task setup:deploy
+
+# Tear everything down
+task setup:cleanup
+```
+
+→ Diagnostics, load tests, and performance experiments: [docs/operations.md](./docs/operations.md)
+
+# Domain docs
+
+| Doc | Covers |
+|-----|--------|
+| [docs/infrastructure.md](./docs/infrastructure.md) | Crossplane, GKE, kind setup, provisioning flow |
+| [docs/flux-gitops.md](./docs/flux-gitops.md) | Kustomize structure, Flux quirks, image automation |
+| [docs/github-integration.md](./docs/github-integration.md) | GitHub App auth, Actions workflows, notifications |
+| [docs/tenants.md](./docs/tenants.md) | Tenant onboarding, multi-repo GitOps, image promotion |
+| [docs/upgrade-versions.md](./docs/upgrade-versions.md) | Weekly automated version upgrades |
+| [docs/operations.md](./docs/operations.md) | Fleet health check, key commands, load testing |

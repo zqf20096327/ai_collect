@@ -1,0 +1,102 @@
+# Osprey
+
+[![CI](https://github.com/als-apg/osprey/actions/workflows/ci.yml/badge.svg)](https://github.com/als-apg/osprey/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/osprey-framework)](https://pypi.org/project/osprey-framework/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE.txt)
+[![DOI](https://img.shields.io/badge/DOI-10.1063%2F5.0306302-blue)](https://doi.org/10.1063/5.0306302)
+[![Documentation](https://img.shields.io/badge/docs-als--apg.github.io%2Fosprey-blue)](https://als-apg.github.io/osprey)
+
+**An agentic interface to scientific control systems.**
+
+Osprey addresses control-specific challenges: semantic addressing across large channel
+namespaces, protocol-agnostic integration with control stacks, logbook search
+across facility electronic logbooks, and mandatory human oversight for every hardware write.
+
+Built for large scientific facilities, such as particle accelerators.
+
+<p align="center">
+  <img src="docs/source/_static/resources/architecture.png" width="100%"
+       alt="Osprey system architecture, from operator to facility, with the safety gate and approval workflow in-line." />
+</p>
+
+## Quick start
+
+```bash
+# Install the framework as a standalone CLI tool (using uv, recommended).
+# A pre-release needs the flag: uv tool install --prerelease allow osprey-framework
+uv tool install osprey-framework
+
+# Create a minimal deployment repo to verify your setup
+osprey init quickstart --preset hello-world
+cd quickstart
+
+# init seeds .env from the provider keys your shell exports, and says so.
+# When it reports none, copy the example and fill it in:
+# cp .env.example .env
+
+# Render the deployment, then open the web terminal
+osprey build
+osprey web
+```
+
+For a deployment tailored to your detector, beamline, or accelerator subsystem, install the
+`osprey` plugin and run its guided setup skill from your agent session:
+
+```bash
+claude plugin marketplace add als-apg/osprey --sparse .claude-plugin plugins
+claude plugin install osprey@osprey
+```
+
+Then start the agent in an empty directory and type `/osprey:setup`. The skill
+walks you through a guided conversation and produces the deployment repository — a git
+repository whose `profile.yml` is the source of truth. From inside it, `osprey build`
+renders the ready-to-run deployment into `build/`.
+
+## Key features
+
+- **Agent-driven orchestration** — Skills, MCP tools, and explicit dependency declarations
+  let the Osprey agent decompose operator requests into auditable steps with mandatory
+  approval gates.
+- **Control-system safety** — Pattern detection, channel boundary checking, and mandatory
+  human approval for every hardware write.
+- **Protocol-agnostic integration** — EPICS, DOOCS, TANGO, and Mock connectors ship in-tree;
+  LabVIEW and other stacks connect through the
+  [connector interface](https://als-apg.github.io/osprey/contributing/extending-osprey.html).
+- **One agent, any model** — Claude Code is the agent harness, the model behind it is a
+  configuration choice, and the code specific to Claude Code sits in
+  [one adapter package](https://als-apg.github.io/osprey/contributing/extending-osprey.html#agent-harness).
+- **Scalable capability management** — Dynamic classification prevents prompt explosion as
+  toolsets grow.
+
+## Documentation
+
+**[Read the full documentation →](https://als-apg.github.io/osprey)**
+
+Osprey follows CalVer (`vYYYY.M.P`). Public APIs may change between releases — pin a version
+and check the [changelog](CHANGELOG.md) before upgrading.
+
+## Contributing
+
+Contributions are welcome. See the [Contributing Guide](CONTRIBUTING.md) for development
+setup, coding standards, and the pull-request workflow. To report a security issue, please
+follow the [security policy](SECURITY.md) rather than opening a public issue.
+
+## Citation
+
+If you use Osprey in your research, please cite the
+[paper](https://doi.org/10.1063/5.0306302). GitHub's **Cite this repository** button, in the
+sidebar, exports BibTeX and APA directly.
+
+## License
+
+BSD 3-Clause — see [LICENSE.txt](LICENSE.txt). Additional notices, including the
+U.S. Department of Energy's retained rights and Berkeley Lab's Enhancements grant, are in
+[NOTICE](NOTICE).
+
+Copyright (c) 2025, The Regents of the University of California, through Lawrence Berkeley
+National Laboratory (subject to receipt of any required approvals from the U.S. Dept. of
+Energy). All rights reserved.
+
+Questions about your rights to use or distribute this software: contact Berkeley Lab's
+Intellectual Property Office at IPO@lbl.gov.

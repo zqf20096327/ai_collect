@@ -1,0 +1,135 @@
+# 🧠 Nyrobrain Agent Skills (`Anson-Nyrobrain-Skills`)
+
+<img width="868" height="540" src="https://github.com/user-attachments/assets/f25188f6-8d08-4818-9c10-e3e5a9fbe46c" />
+<img width="1371" height="523" src="https://github.com/user-attachments/assets/51d6cb5b-0e5f-4c00-9e5d-187cdaa9c7b8" />
+Welcome to **Nyrobrain Skills**—a high-performance, data-driven AI agent skill layer built for automated quantitative research, strategy optimization, and systematic execution. 
+
+This repository leverages the native agent skill surface, moving away from legacy manual documentation in favor of dynamic, execution-ready system capabilities that plug directly into your Nyrobrain workspace.
+
+https://www.nyrobrain.com/
+
+---
+
+## 🚀 Architectural Overview
+
+Nyrobrain operates on a modular skill-based framework. Instead of copying text instructions manually, these skills graft specialized behaviors straight into your agent's runtime directory (`~/.agents/skills/`), providing isolated context management and robust execution scaffolding.
+
+### Core Skill Surfaces Available:
+* **`/strategy`** – Quantitative alpha research, backtesting parameters, and mathematical signals.
+* **`/portfolio`** – Risk management limits, dynamic asset allocation, and delta hedging rules.
+* **`/execution`** – Order routing logic, liquidity analysis, and slippage mitigation pipelines.
+* **`/deploy`** – Live pipeline production, Docker/VM orchestration, and agentic heartbeat tracking.
+* **`/guide`** – Interactive onboarding, pipeline visualization, and architecture maps.
+
+---
+
+## 📋 Prerequisites
+
+Before adding the skills, make sure your machine has the required package runtime installed (supports macOS, Windows, and Linux):
+
+* **Node.js** (v18 or higher recommended) – [Download Node.js](https://nodejs.org)
+
+or install via bash:
+### 🍏 macOS (via Homebrew)
+If you use Homebrew, open Terminal and run:
+```bash
+brew install node
+```
+
+### 🪟 Windows (via winget)
+Open PowerShell as an Administrator and run:
+```powershell
+winget install OpenJS.NodeJS
+```
+
+### 🐧 Linux (Ubuntu/Debian)
+Open your terminal and run:
+```bash
+sudo apt update && sudo apt install -y nodejs npm
+```
+
+To verify if your system is ready, open your terminal or PowerShell and run:
+```bash
+node -v && npm -v
+```
+
+---
+
+## 📦 Installation
+
+Install the entire Nyrobrain skill suite directly into your local agent environment using a single command:
+
+```bash
+npx skills add AnsonBQ/Anson-Nyrobrain-Skills
+```
+
+### Upgrading Skills
+To pull the latest alpha research strategies and performance adjustments from the main branch, simply re-run the installer or target a specific updates check:
+```bash
+npx skills update AnsonBQ/Anson-Nyrobrain-Skills
+```
+
+---
+
+## ⚙️ Workflow & Pipeline Management
+
+While legacy workflows relied heavily on static setup files inside `docs/pipelines/`, this repository strictly prioritizes dynamic pipeline generation.
+
+### Creating a New Quant Pipeline
+To spin up a new strategy structure with clean boundaries, ask your agent:
+> *"Use `/make-pipeline` to construct a new alpha research loop for [Asset Name]."*
+
+The agent will leverage Nyrobrain's core runtime logic to establish proper workspace scoping and project isolation boundaries automatically.
+
+---
+
+## 🗂️ Repository Structure (Example for reference)
+
+```text
+Anson-Nyrobrain-Skills/
+├── agents/                     # Agents Profile Team Recruitment (use /create-agents skill)
+│   ├── strategy/
+│   │   ├── alpha_idea_proposer.md        # Generates quantitative trade ideas, hypotheses, and feature engineering schemas.
+│   │   └── research_pipeline_allocator.md # Orchestrates compute resources, scheduling backtests pipeline routing and vetting alpha signals.
+│   ├── portfolio/
+│   │   └── dynamic_capital_allocator.md  # Manages risk parity, factor exposure, position sizing, alpha pool and drawdown limits.
+│   ├── execution/
+│   │   ├── performance_monitor.md       # Tracks slippage, fill rates, transaction costs, backtest vs real-run, and real-time PnL.
+│   │   └── data_delay_watcher.md        # Monitors websocket feeds, REST polling latencies, and cross-exchange book synchronization.
+│   └── deploy/
+│       └── runtime_watcher.md           # Oversees agent uptime, health checks, environment states, and failsafe execution.
+│
+├── skills/                     # Active agent skills directory (use /create-skills skill)
+│   ├── strategy/               # Alpha generation & backtesting logic
+│   │   └── SKILL.md
+│   ├── portfolio/              # Risk management & asset sizing
+│   │   └── SKILL.md
+│   ├── execution/              # Order execution & API endpoints
+│   │   └── SKILL.md
+│   └── deploy/                 # Production pipeline controllers
+│       └── SKILL.md
+└── README.md                   # Project documentation
+```
+
+---
+
+## 🛡️ Workspace & Safety Constraints
+
+All Nyrobrain skills operate under rigorous runtime constraints to prevent memory leaks and context pollution during prolonged backtests:
+* **Context Isolation:** Every research process runs under scoped project workspaces.
+* **Execution Heartbeats:** Active pipelines maintain a persistent progress heartbeat (`PROGRESS.md`) to handle unexpected disconnects safely.
+
+---
+
+## 🤝 Contributing & Local Development
+
+If you are developing custom patches or expanding the trading surfaces:
+1. Fork the repository.
+2. Build reusable modules under the `skills/` subdirectory rather than creating standalone text instructions.
+3. Validate your triggers locally before opening a Pull Request.
+
+---
+
+## 💵 Some of the skills required paid API. (non-sponsored)
+* `/deepapi` (https://deepapi.co)
+* `/jev` (https://typesafe.ai)

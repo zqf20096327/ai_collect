@@ -1,0 +1,127 @@
+# QueryMaTe
+[![Discord](https://img.shields.io/badge/Chat-Join%20Discord-7289da?logo=discord&logoColor=white)](https://discord.gg/vArq2xssXt)
+[![Codecov](https://img.shields.io/codecov/c/github/querymt/querymt)](https://app.codecov.io/gh/querymt/querymt)
+[![GitHub contributors](https://img.shields.io/github/contributors/querymt/querymt)](https://github.com/querymt/querymt/graphs/contributors)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/querymt.vscode-querymt?label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=querymt.vscode-querymt)
+
+A unified interface for Large Language Models (LLMs) with support for various providers via a plugin-based architecture.
+
+## Installation
+
+Install the `qmt` and `qmtcode` binaries:
+
+```bash
+curl -sSf https://query.mt/install.sh | sh
+```
+
+Nightly channel:
+
+```bash
+curl -sSf https://query.mt/install.sh | sh -s -- --nightly
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://query.mt/install.ps1 | iex
+```
+
+Windows nightly channel:
+
+```powershell
+$env:QMT_CHANNEL='nightly'; irm https://query.mt/install.ps1 | iex
+```
+
+Add `querymt` to your `Cargo.toml` with the `extism_host` feature:
+
+```toml
+[dependencies]
+querymt = { version = "0.2", features = ["extism_host"] }
+```
+
+## Basic Usage
+
+```rust
+use querymt::builder::LLMBuilder;
+use querymt::chat::ChatMessage;
+use querymt::plugin::{extism_impl::host::ExtismLoader, host::PluginRegistry};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // 1. Initialize registry and register the Wasm loader
+    let mut registry = PluginRegistry::from_path("providers.toml")?;
+    registry.register_loader(Box::new(ExtismLoader));
+
+    // 2. Build the LLM provider
+    let llm = LLMBuilder::new()
+        .provider("openai")
+        .model("gpt-5-mini")
+        .api_key("your-api-key")
+        .build(&registry)
+        .await?;
+
+    // 3. Send a message
+    let response = llm.chat(&[
+        ChatMessage::user().content("Hello!").build()
+    ]).await?;
+
+    println!("{}", response);
+    Ok(())
+}
+```
+
+### Configuration (`providers.toml`)
+
+```toml
+[[providers]]
+name = "openai"
+path = "oci://ghcr.io/querymt/openai:latest"
+```
+
+For a full examples-oriented setup (GHCR providers, local wasm provider builds, and run commands), see `crates/querymt/examples/README.md`.
+
+## Agent
+
+The `querymt-agent` crate (in `crates/agent`) is the high-level agent runtime for QueryMaTe.
+
+If you're new, the easiest way to try it is the `qmtcode` example at `crates/agent/examples/qmtcode.rs`.
+It loads an agent from a TOML config file and supports several transports:
+
+- `--acp`: runs as an ACP stdio server for integrations and tooling
+- `--acp-ws`: runs a standalone ACP WebSocket server at `/acp/ws`
+- `--api`: exposes ACP at `/acp/ws` and SFT export at `/api/export/sft`
+- `--dashboard`: serves the embedded Svelte dashboard over same-origin `/acp/ws`
+
+The transport flags are mutually exclusive.
+
+### Quick start
+
+Run these commands from the workspace root. The `dashboard` feature automatically resolves and builds the pinned querymt-desktop UI; this source build requires Node.js and npm.
+
+```bash
+# ACP stdio mode
+cargo run --example qmtcode -- --acp
+
+# Dashboard mode (default http://127.0.0.1:3000)
+cargo run --example qmtcode --features dashboard -- --dashboard
+
+# Dashboard mode on a custom address
+cargo run --example qmtcode --features dashboard -- --dashboard=0.0.0.0:8080
+```
+
+For advanced use, `QMT_UI_DIST` can select a prebuilt local directory/archive, while a plain `QMT_UI_REVISION` selects a Git SHA, tag, or ref to build instead of the pinned revision.
+
+By default it reads config from `examples/confs/coder_agent.toml`.
+You can also pass your own config path before the mode flag.
+
+### macOS Silicon releases
+
+macOS Silicon users who download the `qmtcode` release binary need to clear the quarantine flag before running it:
+
+```bash
+xattr -dr com.apple.quarantine qmtcode
+```
+
+## Documentation
+
+For everything else, refer to [docs.query.mt](https://docs.query.mt).

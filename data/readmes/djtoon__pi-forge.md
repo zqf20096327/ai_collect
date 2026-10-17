@@ -1,0 +1,224 @@
+<p align="center">
+  <img src="docs/poster.png" alt="pi-Forge: the harness that builds harnesses" width="100%" />
+</p>
+
+# pi-Forge
+
+**pi-Forge is an agent harness that builds agent harnesses**, on top of [pi](https://github.com/earendil-works/pi).
+
+Tell it about your work. It interviews you, then generates a custom agent for that work: specialized tools, a system prompt, guardrails, a theme, a logo, and **domain views** (a 3D molecule viewer, charts, tables, a pixel-sprite editor…). Every harness it builds runs:
+
+- in a **browser UI** with your views, a live plan, and file outputs
+- in the **terminal**
+- **headless** (`-p`, JSON event stream, RPC), for scripts and other apps
+- as a **standalone program** you can zip and share (no Node needed)
+
+The command is `forge`.
+
+---
+
+## Quick start
+
+**You need:** [Node.js](https://nodejs.org) 22.18 or newer, [Git](https://git-scm.com) (on Windows, Git for Windows, whose Git Bash the agent uses), and an API key for a model provider. [Bun](https://bun.sh) is optional and only needed to package harnesses as programs.
+
+```bash
+git clone https://github.com/djtoon/pi-forge.git
+cd pi-forge
+npm install
+npm run doctor            # checks Node, Git Bash, Bun and your model provider
+```
+
+**Set up a model provider**, either way:
+- **Environment:** set `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, or AWS credentials for Bedrock (`AWS_PROFILE`, or `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY`, plus `AWS_REGION`).
+- **Settings page:** start the web UI and add the key under **Settings → Model providers**. It's saved in `~/.forge/credentials.json` on your machine.
+
+**Start pi-Forge:**
+
+```bash
+npm run forge -- web      # browser UI (opens http://127.0.0.1:4317)
+npm run forge             # or the terminal UI
+```
+
+Then describe what you need, for example *"build me a harness for planning 3D prints"* or *"I want an agent that helps me with chemistry research"*. pi-Forge:
+1. asks you a few rounds of questions
+2. proposes a toolkit
+3. writes the spec, the tools and a logo
+4. generates the harness and tests it
+
+Try the bundled example right away:
+
+```bash
+npm run chem -- web       # Chem Lab: PubChem tools, 3D molecule views
+```
+
+---
+
+## Running a harness
+
+Harnesses live in `harnesses/<name>/`. Each has its own settings and chats in `~/.forge/<name>`.
+
+```bash
+node harnesses/<name>/bin/<name>.ts web            # browser UI (add --port N, --no-open)
+node harnesses/<name>/bin/<name>.ts                # terminal UI
+node harnesses/<name>/bin/<name>.ts -p "question"  # headless: print the answer
+node harnesses/<name>/bin/<name>.ts --mode json -p "…"   # headless: JSONL event stream
+node harnesses/<name>/bin/<name>.ts --mode rpc     # headless: controlled over stdin/stdout
+```
+
+## Packaging a harness as a program
+
+```bash
+npm run package -- harnesses/chem                        # for this computer
+npm run package -- harnesses/chem --target linux-x64     # windows-x64, windows-arm64, linux-x64, linux-arm64, darwin-x64, darwin-arm64
+```
+
+Add `--desktop --zip` to put the folder on your Desktop with a zip next to it, ready to share. When pi-Forge finishes building a harness, it asks which systems to package it for (Windows, macOS on Apple Silicon or Intel, Linux) and puts each one on your Desktop. You can also ask pi-Forge to "package chem". The result is `dist/<name>-<target>/`: an executable, the harness and the web UI files. **Zip the folder and share it.** The people you share it with don't need Node or this repo:
+- `chem web`, or double-click `chem-web.cmd` on Windows: browser UI
+- `chem`: terminal UI
+- `chem -p "…"`: headless
+
+Packaging needs Bun.
+
+---
+
+## How it works
+
+```
+you ⇄ pi-Forge (interview, plan, tools, views, logo)
+          │ writes
+          ▼
+   harnesses/<name>/harness.yaml  +  custom/   (your tools, views, logo, skills)
+          │ generates  (templates/ → generated files, tracked in .forge/manifest.json)
+          ▼
+   a pi package + launcher  →  browser · terminal · headless · standalone program
+```
+
+- **`harness.yaml` is the source of truth.** It holds the model, tools, guardrails, system prompt, theme, welcome text and views. Your editor gets completion from `schema/harness.schema.json`.
+- **`custom/` is yours.** Tools go in `custom/extensions/*.ts`, helpers in `custom/lib/`, domain views in `custom/views/`, the logo in `custom/brand/mark.svg`, and skills in `custom/skills/`. The generator never touches this folder.
+- **Everything else is generated.** Editing a generated file by hand is detected and refused; change the spec or the template instead.
+- **Views:** a tool returns `viewResult(text, viewId, data)`. The model reads `text`. The browser draws the view's `web.js`, the terminal draws its `tui.ts`, and JSON/RPC clients get `data`. Views can also stay pinned in the side card.
+- **Keys:** tools that need an API key, an account ID or a program path declare it under `credentials:` in the spec. Each harness's **Settings** page then has a card per service (with a "Get a key" link and a *Needed* badge until it's set), the terminal has `/keys`, and headless runs read the environment variables. Saved keys live in `~/.forge/<name>/credentials.json`, are given to that harness alone, and the browser only sees masked previews. Tools read them with `requireKey("NAME")`, which tells the user where to add a missing key.
+- **Skills:** each harness's know-how (workflows, checklists, standards, reference knowledge) lives in `custom/skills/<name>/SKILL.md`. pi-Forge writes 2-5 per harness; the agent loads one when a task matches, `/skill:<name>` runs one directly, and the Tools page lists them. A harness loads only its own skills, not ones installed elsewhere on your machine.
+- **Add to harness:** every harness's browser UI has an **Add to <Title>** page in the sidebar. It's a chat with pi-Forge's agent, scoped to that one harness, for growing it: new tools, views, data sources with their keys, skills, fixes. pi-Forge writes, validates, generates and smoke-tests the change, then the harness's own agent reloads by itself, so the new tool works in the next message. These chats are kept per harness (`~/.forge/<name>/builder-sessions`). The page needs this repo, so packaged programs don't show it.
+- **MCP servers:** each harness's Settings page can connect MCP servers (GitHub, databases, Figma, Slack and others) by form or by pasting the JSON from a server's README. Their tools become the agent's tools. Servers are saved per harness in `~/.forge/<name>/mcp.json`, and **Test connections** runs pi's own check.
+- **Usage:** every answer shows its tokens and estimated cost, the top bar shows the open chat's total and context use, and Settings → Usage totals today, this month and all time by model.
+- **Safety:** Settings → Safety picks a sandbox mode:
+  - *Workspace only:* file tools stay inside one folder, and every shell command needs your OK.
+  - *Read-only:* no writes and no shell.
+
+  It's a policy inside the harness (its own custom tools and MCP servers run normally), so for full isolation use a container. `guards.sandbox` in the spec sets the default.
+- **Schedules:** the Schedules page runs prompts on their own (every day, weekdays, weekly, or every few hours) while the harness's web UI is running. Each run is saved as a chat with its cost. The page shows the command for Task Scheduler or cron, for runs while the UI is closed.
+- **Plans:** every harness has an `update_plan` tool. For multi-step work, the agent posts a checklist and ticks it off as it goes. You see it beside the chat, or above the input in the terminal.
+- **Models:** a spec names a preferred model, used when its provider has credentials on your machine. A Claude model on Bedrock falls back to the same model from Anthropic when you have an Anthropic key. Otherwise pi picks a model from the provider you set up. Switch models any time from the model dropdown.
+
+### A harness spec
+
+```yaml
+name: chem
+title: Chem Lab
+description: Chemistry research assistant with PubChem tools and molecule views
+model: { provider: amazon-bedrock, id: global.anthropic.claude-opus-5-5, thinking: medium }
+tools:
+  builtin: [read, write, edit, bash, grep, find, ls]
+  custom: [molecule_lookup, molecule_compare, similar_molecules]
+guards:
+  protected_paths: [".env", "**/*.key"]
+  confirm_bash: ["rm -rf"]
+prompt:
+  system: |
+    You are a chemistry research assistant. Use molecule_lookup for any specific compound…
+ui:
+  theme: { name: chem, base: dark, accent: "okhsl(175 60% 66%)" }
+  web:
+    headline: "What are we researching today?"
+    placeholder: "Ask about a molecule, a comparison, or analogs..."
+  views:
+    - { id: molecule, shows: [molecule_lookup], panel: right }
+    - { id: data-table, shows: [molecule_compare, similar_molecules] }
+```
+
+A harness whose tools need keys adds a `credentials:` section:
+
+```yaml
+credentials:
+  - id: openweather
+    label: OpenWeather
+    note: Free tier is enough. Used for live forecasts.
+    url: https://home.openweathermap.org/api_keys
+    tools: [get_forecast]
+    fields:
+      - { env: OPENWEATHER_API_KEY, label: API key }
+      - { env: OPENWEATHER_UNITS, label: Units, secret: false, optional: true, placeholder: metric }
+```
+
+### pi-Forge's tools
+
+| Tool | What it does |
+|---|---|
+| `forge_ask` | Asks you questions in a step-by-step form: checkboxes, "select all", back/next |
+| `forge_init` | Creates `harnesses/<name>/` with a starter spec |
+| `forge_list` | Lists harnesses, views, themes and header art |
+| `forge_validate` | Checks a spec and reports each problem with its exact path |
+| `forge_generate` | Shows the planned changes (dry run), then applies them |
+| `forge_smoke` | A free check that the harness loads, plus an optional live prompt |
+| `forge_check_view` | Checks a view and renders its sample at several widths |
+| `forge_promote_view` | Moves a custom view into `templates/views/` so every harness can use it |
+| `forge_package` | Builds a standalone program from a harness |
+
+Its skills are `harness-interview`, `harness-update`, `tool-builder`, `view-builder` and `skill-builder`, in `forge/custom/skills/`.
+
+When it asks you questions, every question also takes a typed answer, and each round ends with an open "anything else?" box for whatever the questions didn't cover.
+
+---
+
+## Commands
+
+| Command | Does |
+|---|---|
+| `npm run doctor` | Checks that your machine is ready |
+| `npm run forge [-- web]` | Starts pi-Forge |
+| `npm run chem [-- web]` | Starts the example harness |
+| `npm run gen -- harnesses/<name> [--apply] [--diff]` | Regenerates one harness from its spec |
+| `npm run upgrade [-- --pi <version>] [--apply] [--live]` | Updates pi, regenerates all harnesses, type-checks and smoke-tests them |
+| `npm run package -- harnesses/<name> [--target …]` | Builds a standalone program |
+| `npm run check` | Type-checks everything |
+| `npm run verify` | Type check, generator dry run and load checks (what CI runs) |
+
+## Project layout
+
+```
+packages/harness-core   launcher: spec → ~/.forge/<name> → pi (all modes) or the web UI
+packages/harness-spec   harness.yaml schema and validation
+packages/harness-web    browser UI and local server (chats, views, plan, settings, provider keys)
+packages/forge-gen      generator, smoke tests, view checker, packager
+templates/              views, plan tool, guards, header, art, tool templates
+forge/                  pi-Forge itself, a harness like any other
+harnesses/chem          example: chemistry research (PubChem, 3D molecules)
+harnesses/loan-calc     example: loan schedules and comparisons (charts)
+docs/                   architecture notes and images
+```
+
+Harnesses you build are listed in `.gitignore`, so they stay local unless you choose to commit them.
+
+## Troubleshooting
+
+- **"It's not answering":** look at the status line at the bottom of the chat. It shows what the agent is doing right now (thinking, writing a file, running a tool, writing the reply) and for how long, and it survives a page refresh. Long thinking or a big file write can take minutes. A message you send meanwhile shows as *Queued* and reaches the agent after its current step.
+- **A tool says a key is missing:** add it in Settings → *<Harness> keys* (browser), with `/keys` (terminal), or as the environment variable it names.
+
+- **"No model" or auth errors:** run `npm run doctor`, then add a key in Settings or set the environment variable. Check the model dropdown in the message box.
+- **Windows: the agent can't run shell commands:** install Git for Windows. pi uses its Git Bash.
+- **A harness won't start after you edit its tools:** ask pi-Forge to `forge_smoke` it. The load check names the file and line.
+- **Port in use:** `… web --port 4400`. The server also tries the next free port on its own.
+- **A generated file was "edited by hand":** move your change into `custom/` or `harness.yaml`, then regenerate.
+
+## Security
+
+Agents run with your user's permissions: they can read and write files and run commands. Guardrails (`guards:` in the spec) ask before writing protected files or running listed commands, and block them when there's no one to ask. The web UI listens only on `127.0.0.1` and needs a per-run token. Provider keys and each harness's tool keys stay on your machine, and the browser only ever sees masked previews. See [SECURITY.md](SECURITY.md).
+
+## Contributing
+
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/architecture.md](docs/architecture.md).
+
+## License and credits
+
+MIT, see [LICENSE](LICENSE). pi-Forge is built on **[pi](https://github.com/earendil-works/pi)** by Mario Zechner and Earendil Works (MIT). Icons are from the AI Icon Pack (MIT). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

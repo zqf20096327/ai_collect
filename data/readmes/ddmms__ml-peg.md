@@ -1,0 +1,191 @@
+# ML-PEG: ML Performance and Extrapolation Guide
+
+[![PyPI version][pypi-badge]][pypi-link]
+[![Python versions][python-badge]][python-link]
+[![Build Status][ci-badge]][ci-link]
+[![Docs status][docs-badge]][docs-link]
+[![License][license-badge]][license-link]
+[![DOI][doi-badge]][doi-link]
+[![Ask DeepWiki][deepwiki-badge]][deepwiki-link]
+
+🔗 See our live guide: https://ml-peg.stfc.ac.uk
+
+## Contents
+- [Getting started](#getting-started)
+- [Features](#features)
+- [Development](#development)
+- [Docker/Podman images](#dockerpodman-images)
+- [License](#license)
+
+## Getting started
+
+### Dependencies
+
+All required and optional dependencies can be found in [pyproject.toml](pyproject.toml).
+
+
+### Installation
+
+The latest stable release of ML-PEG, including its dependencies, can be installed from PyPI by running:
+
+```
+python3 -m pip install ml-peg
+```
+
+To get all the latest changes, ML-PEG can be installed from GitHub:
+
+```
+python3 -m pip install git+https://github.com/ddmms/ml-peg.git
+```
+
+
+## Features
+
+More details coming soon!
+
+
+## Development
+
+Please ensure you have consulted our [contribution guidelines](contributing.md) and
+[coding style](coding_style.md) before proceeding.
+
+We recommend installing `uv` for dependency management when developing for ML-PEG:
+
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation)
+2. Install ML-PEG with dependencies in a virtual environment:
+
+```shell
+git clone https://github.com/ddmms/ml-peg
+cd ml-peg
+uv sync # Create a virtual environment and install dependencies
+source .venv/bin/activate
+pre-commit install  # Install pre-commit hooks
+pytest -v  # Discover and run all tests
+```
+
+Please refer to the [online documentation](https://ddmms.github.io/ml-peg/developer_guide/index.html)
+for information about contributing new benchmarks and models.
+
+
+### Command-line interface
+
+To help run calculations, analysis, and the application, we provide the `ml_peg`
+command line tool, which is installed with the package. This provides the following
+commands:
+
+```shell
+ml_peg app
+ml_peg calc
+ml_peg analyse
+ml_peg download
+ml_peg list
+```
+
+For example, to run the X23 test with mace-mp-0a and orb-v3-consv-inf-omat, you can run:
+
+```shell
+ml_peg calc --test X23 --models mace-mp-0a,orb-v3-consv-inf-omat
+```
+
+A description of each subcommand, as well as valid options, can be listed using the
+`--help` option. For example:
+
+```shell
+ml_peg calc --help
+```
+
+The `ml_peg list` command provides a further set of subcommands:
+
+```shell
+ml_peg list calcs
+ml_peg list analysis
+ml_peg list app
+ml_peg list models
+```
+
+which list the available tests and categories that may be run for `ml_peg calc`,
+`ml_peg analyse` and `ml_peg app`, and the MLIPs that these can be run for.
+
+
+### Tutorials
+
+We encourage developers new to the ML-PEG framework to work through the detailed
+step-by-step guides provided by our Jupyter Notebook tutorials:
+- [Adding a New Benchmark](docs/source/tutorials/python/adding_benchmark.ipynb) [![badge](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ddmms/ml-peg/blob/main/docs/source/tutorials/python/adding_benchmark.ipynb)
+
+
+## Docker/Podman images
+
+You can use [Docker](https://www.docker.com) or [Podman](https://podman.io/) to build
+and/or run the ML-PEG app yourself.
+
+> [!TIP]
+> The commands below will assume you are using Docker. To use Podman, replace `docker`
+> with `podman`, e.g. `podman pull`, `podman build`, and `podman run`.
+
+A Docker image with the latest changes can be pulled from the
+GitHub container registry, following the command that can be found under this
+repository's [packages](https://github.com/ddmms/ml-peg/pkgs/container/ml-peg-app).
+
+
+> [!NOTE]
+> Currently, this repository only contains images for the linux/amd64 platform.
+> On MacOS with ARM silicon, this can often still be run by setting
+> `--platform linux/amd64` when using `docker run`.
+
+
+Alternatively, to build the container yourself, you can use the
+[Dockerfile](containers/Dockerfile) provided. From the `ml-peg` directory, run:
+
+```
+docker build -t ml-peg-app -f containers/Dockerfile .
+```
+
+Once built, you can mount your current application data and start the app by running:
+
+```
+docker run --volume ./ml_peg/app/data:/app/ml_peg/app/data  --publish 8050:8050 ml-peg-app
+```
+
+> [!TIP]
+> Ensure `ml_peg/app/data` is populated with results before running the container.
+>
+> A compressed zip file containing the current live data can be found at
+> http://s3.echo.stfc.ac.uk/ml-peg-data/app/data/data.tar.gz.
+>
+> This may also be downloaded through the command line using
+> ```
+> ml_peg download --key app/data/data.tar.gz  --filename data.tar.gz
+> ```
+
+
+Alternatively, you can use the [compose.yml](containers/compose.yml) file provided, via
+Docker Compose:
+
+```
+docker compose -f containers/compose.yml up -d
+```
+
+The app should now be accessible at http://localhost:8050.
+
+
+## License
+
+[GNU General Public License version 3](LICENSE)
+
+[pypi-badge]: https://badge.fury.io/py/ml-peg.svg
+[pypi-link]: https://pypi.org/project/ml-peg/
+[python-badge]: https://img.shields.io/pypi/pyversions/ml-peg.svg
+[python-link]: https://pypi.org/project/ml-peg/
+[ci-badge]: https://github.com/ddmms/ml-peg/actions/workflows/ci.yml/badge.svg?branch=main
+[ci-link]: https://github.com/ddmms/ml-peg/actions
+[cov-badge]: https://coveralls.io/repos/github/ddmms/ml-peg/badge.svg?branch=main
+[cov-link]: https://coveralls.io/github/ddmms/ml-peg?branch=main
+[docs-badge]: https://github.com/ddmms/ml-peg/actions/workflows/docs.yml/badge.svg
+[docs-link]: https://ddmms.github.io/ml-peg/
+[license-badge]: https://img.shields.io/badge/License-GPLv3-blue.svg
+[license-link]: https://opensource.org/license/gpl-3-0
+[doi-link]: https://doi.org/10.5281/zenodo.16904444
+[doi-badge]: https://zenodo.org/badge/DOI/10.5281/zenodo.16904444.svg
+[deepwiki-link]: https://deepwiki.com/ddmms/ml-peg
+[deepwiki-badge]: https://deepwiki.com/badge.svg

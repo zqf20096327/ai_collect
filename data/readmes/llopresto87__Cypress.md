@@ -1,0 +1,114 @@
+# CYPRESS
+
+## What CYPRESS is
+
+CYPRESS is an installer that gives the AI coding [tool](DOCUMENTATION.md#term-tool) you already use a written way of working on your repository. It copies three kinds of file into the repository: instruction files, the method itself in Markdown, and a few small Python scripts that need only the standard library of Python 3.14 or newer. It is not a library your code imports, not a service and not a model. Installing only places those files; the work starts when you paste one prompt into a session of your tool, and that session reads your repository and builds its [knowledge graph](DOCUMENTATION.md#term-knowledge-graph): short linked notes about your project that later sessions open a few at a time instead of rereading the code.
+
+From then on, the method in those files asks each session to size its process to the task's risk, to write a [specification](DOCUMENTATION.md#term-specification) and a failing test before the code, and to hand steps that need a clean context to separate [agents](DOCUMENTATION.md#term-agent); the glossary's [skill](DOCUMENTATION.md#term-skill) entry says how an agent differs from a skill. Most of this is asked of the model, and only part of it is checked by a tool: [What it does not do](#what-it-does-not-do) says which part is which.
+
+## Who it is for and not for
+
+It is for developers who work in a code repository through a coding [harness](DOCUMENTATION.md#term-harness) the installer supports: Claude Code, Prime Agent, opencode, Codex or GitHub Copilot. Support is not the same on each: Claude Code and Prime Agent are first-class, opencode is supported, and Codex and GitHub Copilot are deprecated, installed only when you name them and given no new features. The [host capability matrix's support table](documentation/host-capability-matrix.md#support-tiers-adr-0009) and the [host support decision record](docs/decisions/adr-0009-host-support-tiers.md) say what each level means.
+
+The method assumes no language, framework or stack. The reference [corpora](DOCUMENTATION.md#term-corpus) that ship with it are narrower: the library notes lean toward .NET, Java and Node.js, and the legal citations cover one national jurisdiction. Both are placed in your project only when you ask: the library notes page by page, from a list the installer proposes, and the legal citations whole. The [corpora reference](documentation/corpora-and-integrations-reference.md) has the breakdown.
+
+It is not for someone who does not use an AI coding [tool](DOCUMENTATION.md#term-tool), because nothing in the install acts until a session in that tool reads it.
+
+## What installing does to your repository
+
+An install for Claude Code writes the files below into your project. If one of them is already there and differs, your version is kept beside it as a timestamped copy before the new one replaces it, and nothing is merged.
+
+- the [kernel](DOCUMENTATION.md#term-kernel), a short instruction file the harness reads at the start of every session: `CLAUDE.md` at the project root, with `AGENTS.md` beside it as a symlink to it (a copy where symlinks are unavailable); on the other harnesses, or where your project already has a plain `AGENTS.md` and no `CLAUDE.md`, `AGENTS.md` holds the kernel and `CLAUDE.md` is the symlink; with `--kernel-mode compose`, a team's own `AGENTS.md` stays as it is and `CLAUDE.md` imports it ahead of the kernel ([install guide](INSTALL.md#an-instruction-hub-your-team-already-keeps));
+- the harness directory `.claude/`, holding the agent definitions, the [skills](DOCUMENTATION.md#term-skill), slash commands, hook scripts and settings;
+- `docs/graph/`, where the knowledge graph lives: the method's own notes, and a skeleton that the first session fills in from your code, including `docs/graph/models.md`, where you name the model each host runs for each kind of work;
+- the install stamp `.cypress/seed.json`, which records the version and options of the install and keeps any key the installer does not own, and beside it `.cypress/recreated-nodes.txt`, which lists the method's notes this install had to put back because they were missing;
+- `EXPERT_SEED_INSTALL_PROMPT.md`, a local copy of the entry prompt for later sessions;
+- the [source index](documentation/source-index.md) cache under `.cypress/source-index/`, which the install's last step builds from your code. Git ignores it through a `.gitignore` inside it. The install then prints a short report of what the index found and what you still need to set up, with the fix for each item.
+
+Other harnesses get their own directory in place of `.claude/`, such as `.opencode/` or `.prime/agent/`, and the [install guide](INSTALL.md) lists each one.
+
+A file that already matches is left alone. The install stamp `.cypress/seed.json` and the list beside it are replaced without a copy ([backup before replace](DOCUMENTATION.md#enf-backup-before-replace)). Files under `docs/graph/` that belong to your project, such as the graph's index, are only added where missing ([project files kept](DOCUMENTATION.md#enf-plant-files-kept)), with one exception: the installer rewrites the `plant:` entry of `docs/graph/index.md` in place, also without a copy. It adds the entry if it is absent and writes each value you pass on the command line into a line still left as a placeholder, keeping any value already declared.
+
+The install does not touch your application source, `.gitignore`, git history or CI.
+
+## What it costs
+
+| Figure | What it covers, and how it was obtained |
+|---|---|
+| 25 800 bytes | per session on Claude Code: the kernel plus the one-line description of every agent and skill, computed from the [seed](DOCUMENTATION.md#term-seed)'s files by this repository's test run; a lower bound, not a live reading |
+| 11% more tokens | per task, against a session with no method, on one small, well-specified task; measured once ([evidence record](docs/plans/grill-7.29.0-front-door/method-overhead-evidence.md)) |
+
+The always-loaded figure leaves out the notes a session opens on demand, each worker it starts, the text the hooks add to each prompt, and the one-time pass that builds the graph. The [host capability matrix](documentation/host-capability-matrix.md) gives the figure for each other harness. No money figure exists.
+
+## Try it
+
+```sh
+git clone https://github.com/llopresto87/Cypress
+./Cypress/install.sh claude-code --project-dir /path/to/your/project
+```
+
+You need bash and Python 3.14 or newer; with no Python at that version on `PATH`, the installer stops before it writes anything. The clone takes whatever the default branch holds when you run it, not a tagged release. In the second command, put your repository's path in place of the placeholder. That command only places files; its last line says the files are placed and the project's graph is not built yet. Then open a session rooted at your project and paste [`INSTALL_PROMPT.md`](INSTALL_PROMPT.md) into it. That starts the one-time [growth](DOCUMENTATION.md#term-growth) pass, which reads your repository and builds its graph. None of these steps asks you to learn the project's vocabulary first.
+
+On a first install, a harness may need a fresh session before it can start the agents that were just placed; the [delegation notes](core/method/delegation-bounds.md) record when, under `delegation.harness-registration`.
+
+<!-- first-screen-end -->
+
+## How it works
+
+CYPRESS is a written [workflow](DOCUMENTATION.md#term-workflow), not a program. The session reads which steps a task needs and in what order, carries them out itself, and hands the steps that need a clean context to subagents. A few hooks and linters check parts of the work; the rest is left to the model and to you.
+
+The steps are written down as [protocols](DOCUMENTATION.md#term-protocol), procedures a session follows in order, and the [protocols reference](documentation/protocols-reference.md) lists them. The method asks each task to be sorted into a risk [tier](DOCUMENTATION.md#term-tier) first, from a question (T0) to a change to architecture or contracts (T3), and the tier decides how much process the task gets. A T3 change gets a specification, a failing test before the code ([test-first development](DOCUMENTATION.md#term-test-first)), and review by separate workers.
+
+Those workers are [specialists](DOCUMENTATION.md#term-specialist): roles such as `architect`, `tester` and `reviewer`, each defined in one file that names its tools and its model class. The [agents reference](documentation/agents-reference.md) lists all of them.
+
+Before reading code, a session is asked to open the graph's [router](DOCUMENTATION.md#term-router), an index that points to the few [nodes](DOCUMENTATION.md#term-node) a task needs, and to load only those. This is [progressive disclosure](DOCUMENTATION.md#term-progressive-disclosure) applied to your own project. Each fact is meant to live in one node, with every other node linking to it ([one home per fact](DOCUMENTATION.md#term-one-home-per-fact)).
+
+Once grown, your repository is a [plant](DOCUMENTATION.md#term-plant) of the [seed](DOCUMENTATION.md#term-seed), which is this repository. Lessons can travel between them later: [harvest](DOCUMENTATION.md#term-harvest) proposes a plant's lessons back to the seed, and [graft](DOCUMENTATION.md#term-graft) carries an updated seed onto a plant grown earlier. Only the [steward](DOCUMENTATION.md#term-steward) starts either one; the method may propose it and then waits ([steward only](DOCUMENTATION.md#enf-steward-only)).
+
+## Why it is built this way
+
+A coding session works inside a fixed context window, and a session that has read everything has no signal about what matters. The always-loaded part therefore stays small, and the rest is looked up when a task needs it. Process is sized to risk, which spares a typo fix a feature's coordination cost. Specifications and tests come first, so a reviewer can check the work against something written before it. Steps that need a clean context go to separate workers, and one step's reading then does not crowd out the next. What the graph states is meant to be settled, so a later session uses it instead of working it out again. Only facts about your code can go stale, and a session checks those once, at its start, against the branch, commit and uncommitted changes recorded at the last [canonize](DOCUMENTATION.md#term-canonize) close-out.
+
+Each of these choices has a decision record, and the [decision index](docs/decisions/index.md) lists them with their status.
+
+## What it does not do
+
+The method is written for the model to follow, and most of it is a request. For each mechanism, the manual's table of [what each control holds and misses](DOCUMENTATION.md#enforcement) names its class and its gaps.
+
+### Requested, not enforced
+
+- Choosing a task's tier is the model's own call, and no tool sees a tier chosen too low ([tier classification](DOCUMENTATION.md#enf-tier-classification)).
+- Writing a specification before the code is asked of the model. A linter checks a written specification's shape, not when it was written ([spec before code](DOCUMENTATION.md#enf-spec-before-code)).
+- Writing a failing test before the code is asked of the model, and no tool sees the order ([test before code](DOCUMENTATION.md#enf-test-before-code)).
+- Routing each task before reading anything and working through a protocol are asked of the model. The [routing](DOCUMENTATION.md#term-routing) hook adds the route to each prompt and holds nothing ([protocol order](DOCUMENTATION.md#enf-protocol-order), [prompt pointer](DOCUMENTATION.md#enf-route-hook)).
+- The linters report a fault only when someone runs them, and the install adds no CI to your project ([graph lint](DOCUMENTATION.md#enf-graph-lint), [this repository's own checks](DOCUMENTATION.md#enf-seed-gate)).
+- The kernel's byte budget is checked only in this repository's own test run, and nothing re-measures the copy in your project ([kernel budget](DOCUMENTATION.md#enf-kernel-budget)).
+
+### Not yet measured
+
+- The overhead on a large task, one with a specification, several files and a rollback path: not measured. The one overhead figure above was measured once, on a small task.
+- The tokens the one-time growth pass spends on a repository: not measured.
+- Whether the method improves the quality of the work: not measured.
+- Whether a host keeps the kernel's text after it compacts a long session: not recorded.
+
+## Where to go next
+
+- [The manual](DOCUMENTATION.md), the long-form guide
+- [The glossary](DOCUMENTATION.md#glossary), one entry per project word
+- [What each control holds and misses](DOCUMENTATION.md#enforcement)
+- [Agents reference](documentation/agents-reference.md)
+- [Protocols reference](documentation/protocols-reference.md)
+- [Skills and templates reference](documentation/skills-and-templates-reference.md)
+- [Host capability matrix](documentation/host-capability-matrix.md)
+- [What's new in 8.0, 8.1 and 8.2](documentation/whats-new-8.md), with guides to the [source index](documentation/source-index.md) and to [placing corpus pages](documentation/corpus-placement.md)
+- [Decision index](docs/decisions/index.md)
+- [Install guide](INSTALL.md), including upgrade and removal
+- Per-harness notes: [Claude Code](integrations/claude-code/README.md), [Prime Agent](integrations/prime-agent/README.md), [opencode](integrations/opencode/README.md), [Codex](integrations/codex/README.md), [GitHub Copilot](integrations/github-copilot/README.md)
+- To upgrade a plant grown earlier, the [graft prompt](GRAFT_PROMPT.md); to fold a plant's lessons back, the [harvest prompt](HARVEST_PROMPT.md)
+- What changed in each release: the [changelog](CHANGELOG.md)
+
+## License
+
+CYPRESS is released under the MIT License. See [`LICENSE`](LICENSE).
+
+Copyright (c) 2026 Luigi Lopresto.

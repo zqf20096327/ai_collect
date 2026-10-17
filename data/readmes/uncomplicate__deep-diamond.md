@@ -1,0 +1,32 @@
+[New books available for subscription](https://aiprobook.com)
+
+<img src="http://aiprobook.com/img/dlfp-cover.png" alt="Deep Learning for Programmers" title="Deep Learning for Programmers" align="left" width="250"/>
+
+<img src="http://aiprobook.com/img/lafp-cover.png" alt="Numerical Linear Algebra for Programmers" title="Numerical Linear Algebra for Programmers" align="right" width="250"/>
+
+# Deep Diamond
+
+[Adopt your pet function](https://dragan.rocks/articles/18/Patreon-Announcement-Adopt-a-Function) and [become a patron](https://patreon.com/draganrocks).
+
+Deep Diamond is a Clojure library for fast tensors and neural network related computations based on the highly optimized native libraries and computation routines for both CPU and GPU.
+
+## It's in the Clojars!
+
+![](https://clojars.org/uncomplicate/deep-diamond/latest-version.svg)
+
+or
+
+![](https://clojars.org/org.uncomplicate/deep-diamond-base/latest-version.svg)
+![](https://clojars.org/org.uncomplicate/deep-diamond-dnnl/latest-version.svg)
+![](https://clojars.org/org.uncomplicate/deep-diamond-cuda/latest-version.svg)
+![](https://clojars.org/org.uncomplicate/deep-diamond-bnns/latest-version.svg)
+
+You also need to add 2 maven central repositories to your project, as in
+this hello-world project example: [hello-world-aot](https://github.com/uncomplicate/deep-diamond/blob/master/examples/hello-world-aot/project.clj)
+
+
+## License
+
+Copyright © 2019-2025 Dragan Djuric
+
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.

@@ -1,0 +1,146 @@
+# Tana Slime
+
+Tana 是一只史莱姆，陪你度过难熬的工作时光~
+
+<p align="left">
+  <img src="./assets/icons/logo.png" width="200" />
+</p>
+
+## ✨ 特性
+
+- **桌宠**：一只史莱姆，可拖放到副屏养着，陪你上班。
+- **个性化皮肤**：支持自定义配置桌宠资源（静态图片或 SpriteSheet 动画）。
+- **随机消息推送**：通过系统通知，提醒你已赚多少钱、去放松、喝水；支持自定义配置；
+- **日记与 AI 回顾**：使用快捷键 <kbd>ALT</kbd> + <kbd>J</kbd> 唤起速记，随时记录想法、吐槽；每晚生成 AI 回顾，点击通知查看。
+- **现代技术栈**：Vue@3.5 + Vite@7 + TailwindCSS@4.1 + Electron@39 + TypeScript@5.9，激进式更新。
+
+## 👾 实际效果
+
+![Image](https://github.com/user-attachments/assets/e2c3294e-ded2-4e70-9163-048dd76438e4)
+
+![Image](https://github.com/user-attachments/assets/beadde4e-c99f-4712-8320-d8085140373c)
+
+## 🚀 快速开发
+
+### 🛠️ 环境要求
+
+| Node | OS              |
+| ---- | --------------- |
+| v20+ | Linux / Windows |
+
+### 📦 项目运行
+
+```bash
+# 克隆仓库
+git clone https://github.com/cxOrz/tana.git
+cd tana
+
+# 安装依赖
+bun install
+
+# 启动开发模式
+bun run dev
+```
+
+### 🧾 常用脚本
+
+- `bun run dev`：并行启动 Vite、主进程编译与 Electron，适合日常开发。
+- `bun run dev:vite` / `bun run dev:main` / `bun run dev:electron`：分别单独启动前端、主进程监视和 Electron。
+- `bun run build`：构建渲染与主进程产物到 `dist/`。
+- `bun run make`：在构建后生成当前平台的安装包（内部调用 Electron Forge）。
+- `bun run lint` / `bun run lint:fix`：执行 ESLint 检查或自动修复。
+- `bun run format`：使用 Prettier 统一格式。
+- `bun run typecheck`：执行完整的类型检查。
+
+### 🚧 启动参数（调试）
+
+- `--open-journal-input`：打开快速输入窗口。
+- `--open-journal-report`：打开日报总结窗口。
+
+## ⚙️ 配置
+
+- **默认模板**：`src/main/appConfig.json`，配置项可参考这里。
+- **运行时配置**：在用户主目录下 `~/.tana/config.json`，若不存在会在启动时自动生成。
+
+主要配置：
+
+| 关键字     | 描述                               |
+| ---------- | ---------------------------------- |
+| mainWindow | 窗口大小、自定义皮肤资源           |
+| reminders  | 消息列表、间隔                     |
+| journal    | 日志与日报设置，如推送时间、快捷键 |
+| ai         | AI 能力配置（模型、Key、Base URL） |
+
+### 🎨 自定义皮肤
+
+支持使用图片或 SpriteSheet 动画来替换默认的史莱姆。
+
+1. 将图片或 JSON 文件放入配置目录 `~/.tana/` (Windows: `C:\Users\yourName\.tana\`)。
+2. 在 `config.json` 中修改 `mainWindow` 配置。
+
+**示例如下**：
+
+```json
+{
+  //...
+  "mainWindow": {
+    "width": 450, // 窗口的宽高，最好和图片一致
+    "height": 360,
+    "theme": {
+      "custom": true, // 启用自定义
+      "type": "spritesheet", // "image" 或 "spritesheet"
+      "path": "eye-of-cthulhu/eyeofcthulhu.json" // SpriteSheet 的 JSON 文件的路径
+    }
+  }
+  //...
+}
+```
+
+> [!NOTE]
+> 在项目的 `assets` 目录下有一些示例 SpriteSheet 可参考。
+
+
+## 项目结构
+
+```
+.
+├── assets/                  # 应用静态资源（图标等）
+├── src/
+│   ├── main/                # Electron 主进程
+│   │   ├── lib/             # 通用工具函数
+│   │   ├── services/        # 核心逻辑 (配置、日志、提醒)
+│   │   ├── windows/         # 窗口管理
+│   │   ├── ipcHandlers.ts   # IPC 通道注册
+│   │   ├── main.ts          # 主进程入口
+│   │   ├── preload.ts       # 预加载脚本
+│   │   └── trayManager.ts   # 系统托盘管理
+│   ├── renderer/            # Vue 3 渲染进程
+│   │   ├── assets/          # 前端静态资源
+│   │   ├── components/      # Vue 组件
+│   │   ├── hooks/           # 组合式逻辑
+│   │   ├── lib/             # UI 工具与样式
+│   │   ├── views/           # 页面视图
+│   │   ├── App.vue          # 根组件
+│   │   └── main.ts          # 前端入口
+│   └── shared/              # 主渲染共享类型与常量
+│       ├── configTypes.d.ts
+│       ├── constants.ts
+│       ├── index.d.ts
+│       ├── journalTypes.d.ts
+│       └── reminderTypes.d.ts
+├── forge.config.js          # Electron Forge 配置
+├── vite.config.ts           # Vite 配置
+└── package.json             # 依赖与脚本
+```
+
+## 🧭 开发者提示
+
+- 新增 IPC 事件，在 `src/shared/constants.ts` 声明常量；在 `src/main/ipcHandlers.ts` 注册到主进程；在 `src/main/preload.ts` 暴露给渲染进程。
+
+## 贡献
+
+欢迎 Issue 与 Pull Request。提交前请遵循仓库的代码风格，推荐使用 Conventional Commits，并阅读 [`AGENTS.md`](./AGENTS.md) 获取主渲染协作约定。
+
+## 许可证
+
+本项目采用 [MIT License](./LICENSE)。

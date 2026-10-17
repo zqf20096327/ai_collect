@@ -1,0 +1,207 @@
+<!-- template:define:options
+{
+  "nodescription": true
+}
+-->
+![logo](https://liam.sh/-/gh/svg/lrstanley/context7-http?layout=left&icon=fluent-emoji-flat%3Amagic-wand&icon.width=60&bg=geometric)
+
+<!-- template:begin:header -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+
+<p align="center">
+  <a href="https://github.com/lrstanley/context7-http/releases">
+    <img title="Release Downloads" src="https://img.shields.io/github/downloads/lrstanley/context7-http/total?style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/tags">
+    <img title="Latest Semver Tag" src="https://img.shields.io/github/v/tag/lrstanley/context7-http?style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/commits/master">
+    <img title="Last commit" src="https://img.shields.io/github/last-commit/lrstanley/context7-http?style=flat-square">
+  </a>
+
+
+
+
+  <a href="https://github.com/lrstanley/context7-http/actions?query=workflow%3Atest+event%3Apush">
+    <img title="GitHub Workflow Status (test @ master)" src="https://img.shields.io/github/actions/workflow/status/lrstanley/context7-http/test.yml?branch=master&label=test&style=flat-square">
+  </a>
+
+
+
+  <a href="https://codecov.io/gh/lrstanley/context7-http">
+    <img title="Code Coverage" src="https://img.shields.io/codecov/c/github/lrstanley/context7-http/master?style=flat-square">
+  </a>
+
+  <a href="https://pkg.go.dev/github.com/lrstanley/context7-http">
+    <img title="Go Documentation" src="https://pkg.go.dev/badge/github.com/lrstanley/context7-http?style=flat-square">
+  </a>
+  <a href="https://goreportcard.com/report/github.com/lrstanley/context7-http">
+    <img title="Go Report Card" src="https://goreportcard.com/badge/github.com/lrstanley/context7-http?style=flat-square">
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/lrstanley/context7-http/issues?q=is:open+is:issue+label:bug">
+    <img title="Bug reports" src="https://img.shields.io/github/issues/lrstanley/context7-http/bug?label=issues&style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/issues?q=is:open+is:issue+label:enhancement">
+    <img title="Feature requests" src="https://img.shields.io/github/issues/lrstanley/context7-http/enhancement?label=feature%20requests&style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/pulls">
+    <img title="Open Pull Requests" src="https://img.shields.io/github/issues-pr/lrstanley/context7-http?label=prs&style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/releases">
+    <img title="Latest Semver Release" src="https://img.shields.io/github/v/release/lrstanley/context7-http?style=flat-square">
+    <img title="Latest Release Date" src="https://img.shields.io/github/release-date/lrstanley/context7-http?label=date&style=flat-square">
+  </a>
+  <a href="https://github.com/lrstanley/context7-http/discussions/new?category=q-a">
+    <img title="Ask a Question" src="https://img.shields.io/badge/support-ask_a_question!-blue?style=flat-square">
+  </a>
+  <a href="https://liam.sh/chat"><img src="https://img.shields.io/badge/discord-bytecord-blue.svg?style=flat-square" title="Discord Chat"></a>
+</p>
+<!-- template:end:header -->
+
+<!-- template:begin:toc -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+## :link: Table of Contents
+
+  - [Features](#sparkles-features)
+  - [Usage](#gear-usage)
+    - [VSCode, Cursor, etc](#vscode-cursor-etc)
+    - [Container Images (ghcr)](#whale-container-images-ghcr)
+  - [References](#books-references)
+  - [Support &amp; Assistance](#raising_hand_man-support--assistance)
+  - [Contributing](#handshake-contributing)
+  - [License](#balance_scale-license)
+<!-- template:end:toc -->
+
+## :sparkles: Features
+
+**context7-http** is a MCP server that supports HTTP streaming for the [Context7](https://context7.com) project.
+This allows you to utilize the MCP server from anywhere, without installing anything locally.
+
+- HTTP `streamable` support.
+- Provides `resolve-library-uri` and `search-library-docs` tools for finding libraries, and searching their documentation.
+
+> [!WARNING]
+> This server utilizes the `v1` variant of the Context7 API, which may eventually be
+> removed by the Context7 team. Note that the `v2` API requires API keys, is drastically
+> more ratelimited, and expanded use does require paying. [See here](https://context7.com/plans).
+
+---
+
+## :gear: Usage
+
+If you'd like to run context7-http yourself, use the following:
+
+```console
+$ context7-http \
+    --debug \
+    --bind-addr "0.0.0.0:8080" \
+    --base-url https://context7.your-domain.com \ # only needed if using sse, http streamable doesn't need this
+    --trusted-proxies "x-forwarded-for,10.0.0.0/8" \ # if behind a reverse proxy
+    --heartbeat-interval 55s # for those with spotty networks or annoying network proxies
+```
+
+------------
+
+For all examples below, replace `context7.liam.sh` with your own MCP server URL, if you're running your own instance.
+
+Configured endpoints:
+
+- `https://context7.liam.sh/mcp` - HTTP `streamable` endpoint.
+
+Other than swapping out the `mcpServer` block (or similar, depending on your client), usage should match that of the
+[official Context7 documentation](https://github.com/upstash/context7#-with-context7)
+
+### VSCode, Cursor, etc
+
+[Cursor MCP docs](https://docs.cursor.com/context/model-context-protocol#configuring-mcp-servers), and
+[VS Code MCP docs](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) for more info.
+
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "url": "https://context7.liam.sh/mcp"
+    }
+  }
+}
+```
+
+<!-- template:begin:ghcr -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+### :whale: Container Images (ghcr)
+
+```console
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:master
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.5.1
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:latest
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.5.0
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.4.0
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.3.0
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.2.0
+$ docker run -it --rm ghcr.io/lrstanley/context7-http:0.1.0
+```
+<!-- template:end:ghcr -->
+
+## :books: References
+
+- [Context7](https://context7.com) - [repo](https://github.com/upstash/context7)
+- [Model Context Protocol Introduction](https://modelcontextprotocol.io/introduction)
+
+---
+
+<!-- template:begin:support -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+## :raising_hand_man: Support & Assistance
+
+* :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for
+     guidelines on ensuring everyone has the best experience interacting with
+     the community.
+* :raising_hand_man: Take a look at the [support](.github/SUPPORT.md) document on
+     guidelines for tips on how to ask the right questions.
+* :lady_beetle: For all features/bugs/issues/questions/etc, [head over here](https://github.com/lrstanley/context7-http/issues/new/choose).
+<!-- template:end:support -->
+
+<!-- template:begin:contributing -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+## :handshake: Contributing
+
+* :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for guidelines
+     on ensuring everyone has the best experience interacting with the
+    community.
+* :clipboard: Please review the [contributing](.github/CONTRIBUTING.md) doc for submitting
+     issues/a guide on submitting pull requests and helping out.
+* :old_key: For anything security related, please review this repositories [security policy](https://github.com/lrstanley/context7-http/security/policy).
+<!-- template:end:contributing -->
+
+<!-- template:begin:license -->
+<!-- do not edit anything in this "template" block, its auto-generated -->
+## :balance_scale: License
+
+```
+MIT License
+
+Copyright (c) 2025 Liam Stanley <liam@liam.sh>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+_Also located [here](LICENSE)_
+<!-- template:end:license -->

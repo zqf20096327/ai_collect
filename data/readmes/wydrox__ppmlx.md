@@ -1,0 +1,489 @@
+# ppmlx
+
+**Run LLMs on your Mac.** OpenAI-compatible API powered by Apple Silicon.
+
+[![CI](https://github.com/wydrox/ppmlx/actions/workflows/tests.yml/badge.svg)](https://github.com/wydrox/ppmlx/actions)
+[![PyPI](https://img.shields.io/pypi/v/ppmlx)](https://pypi.org/project/ppmlx/)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
+![Platform](https://img.shields.io/badge/platform-Apple%20Silicon-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+## Install
+
+```bash
+uv tool install ppmlx
+```
+
+> Requires macOS on Apple Silicon (M1+) and Python 3.11+
+>
+> Privacy: local MLX inference stays on your Mac. Model downloads, optional analytics, enabled logging or memory, and future remote-provider routes use separate data paths. See [Privacy and data paths](docs/privacy.md).
+
+## Get Started
+
+```bash
+ppmlx pull qwen3.5:9b      # download a model
+ppmlx run qwen3.5:9b       # chat in the terminal
+ppmlx serve                 # start API server on :6767
+```
+
+### curl | sh (one-liner)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/wydrox/ppmlx/main/scripts/install.sh | sh
+```
+
+### From source
+
+```bash
+git clone https://github.com/wydrox/ppmlx
+cd ppmlx
+uv tool install .
+```
+
+### Homebrew
+
+Homebrew tap coming soon. For now, use `uv tool install ppmlx`.
+
+---
+
+## Quick Start
+
+```bash
+# 1. Download a model
+ppmlx pull llama3
+
+# 2. Interactive chat REPL
+ppmlx run llama3
+
+# 3. Start OpenAI-compatible API server on :6767
+ppmlx serve
+```
+
+---
+
+## Benchmarks
+
+Measured on a MacBook Pro M4 Pro (48 GB unified memory, macOS 15.x). Each scenario was run 3 times with `temperature=0` and `max_tokens=8192`; values below are averages.
+
+### GLM-4.7-Flash (4-bit, ~5 GB)
+
+| Scenario | Metric | ppmlx | Ollama | Delta |
+|---|---|---|---|---|
+| **Simple** (short prompt, short answer) | tok/s | 63.1 | 40.5 | **+56%** |
+| | TTFT | 374 ms | 832 ms | **-55%** |
+| **Complex** (short prompt, long answer) | tok/s | 55.6 | 38.8 | **+43%** |
+| | TTFT | 496 ms | 412 ms | +20% |
+| **Long context** (~4 K token prompt) | tok/s | 42.1 | 27.5 | **+53%** |
+| | TTFT | 6,792 ms | 8,401 ms | **-19%** |
+
+### Qwen 3.5 9B (4-bit, ~6 GB)
+
+| Scenario | Metric | ppmlx | Ollama | Delta |
+|---|---|---|---|---|
+| **Simple** | tok/s | 48.2 | 22.7 | **+112%** |
+| | TTFT | 537 ms | 324 ms | +66% |
+| **Complex** | tok/s | 47.2 | 23.0 | **+106%** |
+| | TTFT | 567 ms | 455 ms | +25% |
+| **Long context** | tok/s | 43.2 | 23.7 | **+82%** |
+| | TTFT | 9,212 ms | 11,461 ms | **-20%** |
+
+> **tok/s** = tokens per second (higher is better). **TTFT** = time to first token (lower is better). Delta is relative to Ollama.
+
+**Methodology.** Streaming chat completions over the OpenAI-compatible API; TTFT measured from request start to first SSE content chunk. See [`scripts/bench_common.sh`](scripts/bench_common.sh) and the per-model scripts in `scripts/` for the full, reproducible setup.
+
+That's it. Any OpenAI-compatible tool works out of the box:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:6767/v1", api_key="local")
+response = client.chat.completions.create(
+    model="qwen3.5:9b",
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+print(response.choices[0].message.content)
+```
+
+## Commands
+
+| Command | Description | Key Options |
+|---|---|---|
+| `ppmlx launch` | Interactive launcher (pick action + model) | `-m model`, `--host`, `--port`, `--flush` |
+| `ppmlx serve` | Start API server on :6767 | `-m model`, `--embed-model`, `-i`, `--no-cors` |
+| `ppmlx run <model>` | Interactive chat REPL | `-s system`, `-t temp`, `--max-tokens` |
+| `ppmlx pull [model]` | Download model (multiselect if no arg) | `--token` |
+| `ppmlx list` | Show downloaded models | `-a` all (incl. registry), `--path` |
+| `ppmlx rm <model>` | Remove a model | `-f` skip confirmation |
+| `ppmlx ps` | Show loaded models & memory | |
+| `ppmlx quantize <model>` | Convert & quantize HF model to MLX | `-b bits`, `--group-size`, `-o output` |
+| `ppmlx graph` | Print a temporal memory graph snapshot as JSON | `--project`, `--session`, `--query`, `--status` |
+| `ppmlx memory status/search/list/handoff/compact-stats` | Inspect the experimental local temporal memory graph | `--json`, `--status`, `--scope`, `--session` |
+| `ppmlx memory jobs/worker/rebuild/prune` | Manage async extraction jobs and graph maintenance | `--status`, `--once`, `--max-jobs`, `--dry-run` |
+| `ppmlx memory-eval` | Run the anti-garbage memory eval suite | `--json`, `--dataset`, `--predictions` |
+| `ppmlx compact-eval` | Run long-session rolling-context compaction evals | `--json`, `--output` |
+| `ppmlx answer-quality-eval` | Score compact-answer quality across recall, wrong facts, actionability, grounding, and A/B equivalence | `--json`, `--dataset`, `--template` |
+| `ppmlx answer-quality-replay` | Run real Pi/Claude session quality eval through a live local ppmlx server | `--model`, `--source`, `--base-url` |
+| `ppmlx quality-bench` | Split a real long session into 80% prefix / 20% holdout probes and compare local answers to recorded answers | `--split`, `--max-probes`, `--model` |
+| `ppmlx trace export` / `ppmlx compact-replay` | Export and replay local traces through compact mode | `--project`, `--session`, `--expect` |
+| `ppmlx config` | View/set configuration | `--hf-token` |
+| `ppmlx auth add/list/status/remove` | Manage provider API keys in the macOS Keychain | `--dry-run`, `--env` |
+
+The local agent, voice, prompt cache, draft decoding, RAG, batch, gateway, API documentation, and automatic model routing commands are experimental. Their interfaces can change before a stable release.
+
+## Connect Your Tools
+
+Point any OpenAI-compatible client at `http://localhost:6767/v1` with any API key:
+
+- **Cursor** — Settings > AI > OpenAI-compatible
+- **Continue** — config.json: provider `openai`, apiBase above
+- **LangChain / LlamaIndex** — set `base_url` and `api_key="local"`
+
+## Config
+
+Optional. `~/.ppmlx/config.toml`:
+
+```toml
+[server]
+host = "127.0.0.1"
+port = 6767
+
+[defaults]
+temperature = 0.7
+max_tokens = 2048
+
+[analytics]
+enabled = true
+provider = "posthog"
+respect_do_not_track = true
+```
+
+### Strict local tool runtime
+
+The strict Agent IR runtime is opt-in. It supports buffered, streamed tool turns for Claude Code, Codex over Responses HTTP, OpenCode, and Pi. It formats and validates tool calls. The client harness runs each tool. The proxy runtime does not execute harness tools.
+
+The explicit `ppmlx agent` command is the optional local agent path. It can execute tools that you provide to it.
+
+```toml
+[server]
+agent_runtime = "agent_ir"          # legacy | agent_ir
+continuation_ttl_seconds = 86400
+```
+
+You can also set `PPMLX_AGENT_RUNTIME=agent_ir`. The strict path applies only to requests that use `stream=true` and provide tools. It supports the Chat Completions, Responses HTTP, and Anthropic Messages paths. It buffers one local model turn, validates it, and then sends SSE data. It does not provide live token streaming for a tool turn.
+
+### Remote routing (ADR 0005)
+
+Remote providers (OpenAI, Anthropic) are opt-in via a versioned route policy
+TOML file. Without one, every request stays on the local engine.
+
+```toml
+# ~/.ppmlx/routes.toml
+[routes]
+version = "1"
+# optional local default; must be a full "provider/model" id when set
+default_model = "mlx/Qwen3.5-4B-4bit"
+
+[routes.aliases]
+gpt-remote = ["openai", "gpt-4o-mini"]    # public alias -> provider/model
+
+[[routes.entries]]
+key = "openai-chat:gpt-remote"            # <harness>:<public model>
+candidates = [
+  { provider = "openai",     model = "gpt-4o-mini" },
+  { provider = "anthropic",  model = "claude-3-5-haiku", provider_kind = "anthropic" },
+]
+fallback_errors = ["connection", "timeout"]  # categories eligible for fallback
+```
+
+Enable it on the server:
+
+```toml
+[server]
+route_policy = "/Users/me/.ppmlx/routes.toml"
+```
+
+or with an environment variable: `PPMLX_ROUTE_POLICY=~/.ppmlx/routes.toml ppmlx serve`.
+
+Behavior:
+
+- Requests whose `model` matches a route alias are routed to the first healthy,
+  capability-sufficient candidate; everything else uses the local engine.
+- Capabilities come from each provider adapter's real `capabilities()`; requests
+  needing unsupported capabilities skip that candidate (`missing_capability` is
+  never a fallback trigger).
+- Fallback follows the forbidden-error matrix: only connection/timeout/
+  unavailable/server errors may fall back to the next candidate, and only
+  before the first output event. Once output starts, the route is pinned —
+  no provider switch mid-response.
+- Credentials resolve from the OS keyring via `ppmlx auth add <provider>`
+  (env vars still take precedence when set).
+- Any OpenAI- or Anthropic-compatible gateway works: each candidate accepts an
+  optional `base_url` and `provider_kind` (`"openai"` by default, or
+  `"anthropic"`). The provider name is arbitrary — e.g.
+  `{ provider = "openrouter", model = "anthropic/claude-3.5-haiku",
+  base_url = "https://openrouter.ai/api/v1" }` routes through OpenRouter and
+  reads the `OPENROUTER_API_KEY` environment variable (or a keyring secret
+  stored via `ppmlx auth add openrouter`). An unknown `provider_kind` fails
+  policy validation loudly at startup instead of falling back to local.
+
+### Provider authentication
+
+Remote providers need an API key. `ppmlx auth add` stores it in the macOS
+Keychain; `config.toml` only records a `secret_ref`, never the key itself.
+
+```bash
+ppmlx auth add openai          # prompts for the key (hidden input)
+ppmlx auth list                # providers, key source, availability
+ppmlx auth status openai       # stored? secret_ref? env fallback?
+ppmlx auth remove openai       # delete from Keychain + config
+```
+
+Every command accepts `--dry-run` to show what would change without writing
+anything. Keys are never printed, logged, or written to disk. An
+`OPENAI_API_KEY` / `ANTHROPIC_API_KEY` environment variable takes precedence
+when set.
+
+### Using your Claude subscription with ppmlx
+
+Onboarded users keep their subscription models. When a harness points all
+traffic at ppmlx, ppmlx transparently tunnels Claude Code subscription
+traffic to Anthropic, so `claude-*` requests still run on your
+subscription through the same ppmlx base URL.
+
+How it works:
+
+- ppmlx proxies ALL Anthropic endpoints Claude Code uses (messages with
+  SSE streaming, complete, telemetry) and forwards headers, body, and
+  response stream byte-faithfully. No fingerprint cloning — headers are
+  forwarded exactly as received from Claude Code.
+- Credentials are live-read from your installed, logged-in Claude Code
+  (`~/.claude`). ppmlx stores nothing; Claude Code credential rotation is
+  picked up automatically.
+- Full request and response content enters the memory pipeline with
+  standard secret redaction, tagged with provenance source
+  `anthropic-subscription`.
+
+Prerequisite: Claude Code must be installed AND logged in.
+
+This feature is OFF by default. Enable it with
+`[dangerous] subscription_passthrough = true` in `~/.ppmlx/config.toml`;
+enabling it prints a terms-of-service warning. Use outside Claude Code is
+blocked by default — the tunnel serves your own Claude Code session.
+
+**Warning:** proxying subscription traffic may breach your provider's
+terms of service, up to account termination. This risk is yours. See
+[ADR 0010](docs/architecture/adr/0010-subscription-passthrough.md).
+
+### Memory read endpoints
+
+The experimental local memory graph can be read over HTTP with three
+endpoints: `POST /v1/memory/read/handshake`, `POST /v1/memory/read/search`,
+and `POST /v1/memory/read/stats`. They are loopback-only, like the other
+strict local paths. A client first calls `/handshake` with a grant credential
+to get a short-lived (15-minute) read session, then uses that session on
+`/search` and `/stats`. Every response carries disclosure labels, and a
+feedback-loop guard keeps read results from re-entering stored memory.
+
+**Creating a grant.** Use the CLI to issue a grant; the bearer credential is
+printed once and never stored or logged:
+
+```bash
+ppmlx memory grant create                       # global scope, 30-day TTL
+ppmlx memory grant create --project myproj --ttl-hours 168 --remote-capable
+ppmlx memory grant list                         # never shows credentials
+ppmlx memory grant revoke mrg_...               # kills live sessions too
+```
+
+Pass the printed `mrc_...` token as the credential on `/handshake`.
+
+**Required tool names per endpoint.** Each grant lists the tools it may use;
+the server rejects calls with `403 tool_denied` otherwise:
+
+| Endpoint | Required `allowed_tools` entry |
+|---|---|
+| `/v1/memory/read/search` | `memory_search` |
+| `/v1/memory/read/stats` | `memory_stats` |
+
+The full set of valid tool names is: `memory_search`, `memory_stats`
+(both served in this slice), plus reserved `memory_get_context` and
+`memory_graph_walk`. The `/context` and `/graph-walk` HTTP endpoints from
+ADR 0006 are **not implemented yet** — they are planned for a future slice;
+only `/handshake`, `/search`, and `/stats` are routed today.
+
+The first release supports named output profiles for Grok, Kimi K2, DeepSeek V3, and Qwen models. ppmlx rejects an unknown profile, an unsupported tool schema, an invalid result link, or a request that can lose tool data. In strict mode, tool requests cannot use the legacy path. Responses WebSocket tool requests are rejected until that transport uses the same Agent IR runtime.
+
+For this opt-in release, strict tool traffic must come from the loopback listener. A reverse proxy or a LAN client cannot use this path yet. See the [local Agent IR runtime guide](docs/architecture/local-agent-runtime.md) for the full boundary.
+
+### Experimental local memory
+
+Shadow-mode memory capture stores request/response events and high-precision memory candidates locally in `~/.ppmlx/memory.db`. It does **not** inject memory into prompts yet.
+
+```toml
+[memory]
+enabled = true
+mode = "shadow"   # off | shadow | compact | inject
+# compact mode keeps a rolling prompt tail and renders scoped graph context
+rolling_tokens = 10000
+hot_tail_tokens = 6500
+session_context_tokens = 2000
+compact_threshold_tokens = 12000
+max_context_items = 40
+
+# graph-memory extraction
+# default rule_based extraction runs synchronously; set extractor="model_memory_json" to enqueue async jobs
+extractor = "rule_based"      # rule_based | model_memory_json (llm_json/gemma_json are legacy aliases)
+extraction_model = "gemma-4-e2b"
+extraction_workers = 1
+extraction_max_tokens = 1200       # output tokens per extraction call
+extraction_input_tokens = 6000     # approximate input budget per chunk
+extraction_overlap_tokens = 600    # overlap between chunks for cross-boundary facts
+extraction_max_chunks_per_event = 32
+extraction_timeout_seconds = 45
+```
+
+Modes:
+- `shadow`: store events/candidates only; prompts are unchanged.
+- `compact`: before inference, replace long histories with system context from the graph + a hot tail.
+- `inject`: reserved for compact + broader memory retrieval.
+
+Graph-engine maintenance is local and explicit: `model_memory_json` extraction is asynchronous via durable jobs processed by `ppmlx memory worker`; the default `rule_based` extractor remains synchronous. `llm_json` and `gemma_json` are still accepted as legacy aliases. Long events are split into token-budgeted extraction chunks with overlap before model extraction.
+
+Compact observability is recorded locally in `memory.db` and, if analytics are enabled, sent as privacy-safe aggregate metrics to PostHog. It never sends prompts, responses, tool output, model repo IDs, project IDs, or session IDs.
+
+Tool/MCP outputs are distilled through a plugin-style distiller interface. The built-in generic JSON distiller extracts small evidence-backed atoms such as candidates, prices, availability, specs, source URLs, and rejected items, while raw JSON stays local in the event log.
+
+CLI:
+
+```bash
+ppmlx memory config --enabled --extractor model_memory_json --model gemma-4-e2b
+ppmlx memory config --input-limit 6000 --overlap 600
+ppmlx memory status
+ppmlx memory search "concise answers"
+ppmlx memory list --status active
+ppmlx memory handoff --project tv-shopping --session tv-session-001
+ppmlx memory compact-stats --since 24
+ppmlx memory jobs --status pending
+ppmlx memory worker --once
+ppmlx memory rebuild --dry-run
+ppmlx memory prune --dry-run
+ppmlx graph --project tv-shopping --session tv-session-001 > graph.json
+ppmlx trace export --project tv-shopping --session tv-session-001 --output trace.json
+ppmlx compact-replay trace.json --expect "budget = 5000 PLN"
+ppmlx memory-eval
+ppmlx compact-eval
+ppmlx answer-quality-eval
+ppmlx answer-quality-replay ~/.pi/agent/sessions/.../session.jsonl \
+  --model mlx-community/Qwopus3.5-4B-v3-4bit \
+  --base-url http://127.0.0.1:6767/v1
+ppmlx quality-bench ~/.pi/agent/sessions/.../session.jsonl \
+  --split 0.8 --max-probes 5 \
+  --model mlx-community/Qwopus3.5-4B-v3-4bit
+```
+
+`ppmlx graph` prints a local graph snapshot as JSON. The browser-based graph viewer has been removed; memory data remains local in `memory.db`.
+
+`answer-quality-replay` requires a running local ppmlx server. It generates a compact answer and a local reference answer, selects question-relevant required facts, filters embedded examples/fixtures, and reports recall, wrong facts, actionability, grounding, and A/B equivalence.
+
+`quality-bench` is the stronger quality benchmark: it splits a real transcript by episodes into prefix and held-out suffix, feeds only the compacted prefix plus held-out user turn to the local model, and scores the response against the recorded next assistant answer.
+
+`trace export` is local-only and may include prompts, responses, and tool outputs. Keep exported traces private unless you intentionally want to share them.
+
+## Anonymous Usage Analytics
+
+`ppmlx` supports privacy-preserving anonymous product analytics, disabled by default. On first interactive run, the beta onboarding asks whether you want to help by enabling it.
+
+What is sent:
+- command and API event names such as `serve_started`, `model_pulled`, `api_chat_completions`
+- app version, Python minor version, OS family, CPU architecture
+- a random anonymous install id, used only to count returning beta installs
+- coarse booleans/counters such as `stream=true`, `tools=true`, `batch_size=4`
+
+What is never sent:
+- prompts, responses, tool arguments, file contents, file paths
+- HuggingFace tokens, API keys, repo IDs, model prompts, request bodies
+
+When events are sent:
+- when a CLI command starts
+- when OpenAI-compatible API endpoints are hit
+
+Why:
+- understand which workflows matter most during beta
+- prioritize compatibility work across commands and API surfaces
+- measure adoption without collecting user content
+
+Opt out:
+
+```bash
+ppmlx config --no-analytics
+```
+
+or:
+
+```toml
+[analytics]
+enabled = false
+```
+
+By default, opted-in beta analytics are sent to the maintainer-operated PostHog project. To use your own PostHog sink instead, configure:
+
+```bash
+export PPMLX_ANALYTICS_HOST="https://analytics.example.com"
+export PPMLX_ANALYTICS_PROJECT_API_KEY="your-posthog-project-api-key"
+```
+
+If you prefer, you can also set the same values in `~/.ppmlx/config.toml`.
+
+## API Documentation
+
+When the server is running, interactive API docs are available at:
+
+- **Swagger UI**: [http://localhost:6767/docs](http://localhost:6767/docs)
+- **ReDoc**: [http://localhost:6767/redoc](http://localhost:6767/redoc)
+
+## Architecture
+
+The [proxy architecture decisions](docs/architecture/README.md) define the target contracts for routing, tool use, provider authentication, memory, privacy, and harness compatibility.
+
+## Project Structure
+
+```
+ppmlx/
+  cli.py               # Typer CLI (entry point)
+  server.py            # FastAPI app (OpenAI-compatible routes)
+  engine.py            # MLX LLM inference
+  models.py            # Model registry + HuggingFace download
+  config.py            # Config loading (~/.ppmlx/config.toml)
+  router.py            # Route policy parsing + deterministic routing (ADR 0005)
+  routing_service.py   # Remote routing orchestration (candidates, fallback, pinning)
+  auth.py              # Keychain-backed provider credential storage
+  memory_read.py       # Memory read service (grants, sessions, disclosure labels)
+  providers/
+    base.py            # Provider protocol (SSE streaming, cancellation, capabilities)
+    mlx.py             # Local MLX adapter
+    openai.py          # OpenAI remote adapter
+    anthropic.py       # Anthropic remote adapter
+tests/                 # Full suite, runs without GPU
+```
+
+## Requirements
+
+- macOS on Apple Silicon (M1 or later)
+- Python 3.11+
+- At least 8 GB unified memory (16 GB+ recommended for larger models)
+
+## ppmlx vs Ollama
+
+| | ppmlx | Ollama |
+|---|---|---|
+| Runtime | MLX (Apple-native) | llama.cpp (cross-platform) |
+| Platform | macOS Apple Silicon only | macOS, Linux, Windows |
+| GPU backend | Metal (unified memory) | Metal / CUDA / ROCm |
+| API | OpenAI-compatible | Ollama + OpenAI-compatible |
+| Language | Python | Go + C++ |
+| Quantization | MLX format | GGUF format |
+
+Choose **ppmlx** if you want maximum Apple Silicon performance with a pure-Python, MLX-native stack. Choose **Ollama** if you need cross-platform support or GGUF models.
+
+## License
+
+MIT

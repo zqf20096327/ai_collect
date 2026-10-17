@@ -1,0 +1,1028 @@
+# xapi-to
+
+Agent-friendly command-line interface for [xAPI](https://xapi.to) — discover and call capabilities and APIs from your terminal or AI agent.
+
+## Installation
+
+```bash
+# Via npx (no install needed)
+npx xapi-to --help
+
+# Or install globally with npm
+npm install -g xapi-to
+
+# Or from source
+cd xapi-cli && bun install
+```
+
+The published CLI runs on Node.js 18.17+ (the Undici 6 transport dependency minimum). Bun is only required for local source development and tests.
+
+## Teach Your Agent the xAPI Skill
+
+Paste into Cursor, Claude Code, or any agent that supports skills:
+
+```bash
+npx skills add xapi-labs/xapi-cli
+```
+
+This installs the bundled [`xapi` skill](skills/xapi), which teaches the agent
+how to call social, search, domains/DNS, crypto, BlockPI RPC, Binance Web3, and
+AI services through this CLI. Then just ask
+— "what's the price of BTC" — and it takes it from there. Set up a key first;
+see [Quick Start](#quick-start).
+
+Providers can install the CLI-native [`xapi-provider` skill](skills/xapi-provider/SKILL.md),
+which covers service registration, billing and WebSocket configuration,
+revision publishing, observability, earnings, and linked usage Skills:
+
+```bash
+npx skills add xapi-labs/xapi-cli --skill xapi-provider
+```
+
+Workers projects can also install the standalone [`xapi-workers` skill](skills/xapi-workers/SKILL.md), covering deployment, all six managed resource types, complete consumption queries and cleanup:
+
+```bash
+npx skills add xapi-labs/xapi-cli --skill xapi-workers
+```
+
+## Quick Start
+
+```bash
+# 1. Register a new account (apiKey saved automatically)
+xapi-to register
+# Open the returned private bindUrl to upgrade the virtual account through Twitter OAuth
+
+# 1b. Or register with an inviter's referral code (please replace xapito to your referral code)
+xapi-to register --referral-code xapito
+
+# 2. Or set an existing key without putting it in shell history
+read -rsp 'xAPI key: ' XAPI_KEY_INPUT
+printf '\n'
+printf '%s\n' "$XAPI_KEY_INPUT" | xapi-to config set apiKey=-
+unset XAPI_KEY_INPUT
+
+# 3. Or via env var
+export XAPI_KEY=sk-xxx
+# XAPI_API_KEY is also accepted; XAPI_KEY has higher precedence
+
+# 4. Verify connectivity
+xapi-to config health
+```
+
+## Usage
+
+```
+xapi-to <command> [args] [flags]
+```
+
+### Action Commands
+
+Unified interface for capabilities (built-in) and APIs (third-party). Use `--source capability|api` to filter.
+
+```bash
+xapi-to list                                            # list all actions
+xapi-to list --source capability                        # only built-in capabilities
+xapi-to list --source api --category DeFi               # filter by source and category
+xapi-to list --page 2 --page-size 20                    # pagination
+xapi-to list --service-id <id>                          # filter by service
+
+xapi-to search "twitter"                                # search by keyword
+xapi-to search "token price" --source api               # search APIs only
+xapi-to search "token price" --sort relevance           # strongest text match
+xapi-to search "token price" --sort price               # lowest comparable price
+xapi-to search "twitter" --include-all-versions          # include active non-default majors
+
+xapi-to categories                                      # list all categories
+xapi-to categories --source capability                  # categories for capabilities only
+
+xapi-to services                                        # list all services
+xapi-to services --category Social --page-size 10       # filter and paginate
+
+xapi-to get twitter.tweet_detail                        # get action schema
+xapi-to get-batch twitter.tweet_detail crypto.token.price # get several schemas
+xapi-to call twitter.tweet_detail --input '{"tweet_id":"1234567890"}'  # execute
+xapi-to call serper.search --input '{"body":[{"q":"OpenAI"},{"q":"Cloudflare"}]}' # Serper mini-batch
+xapi-to call ai.text.chat.fast --input '{"messages":[{"role":"user","content":"Hi"}]}' --stream
+```
+
+Direct `serper.*` actions use a nested `body`. Eleven current v7 actions accept
+one request object or a mini-batch array; `serper.reviews` accepts only one
+object. See the bundled [Serper guide](skills/xapi/guides/serper.md) for the
+Action list, examples, and dynamic per-credit billing.
+
+For API Actions, `/` uses the bare service ID (`solana`), while literal `/root`
+uses `solana.root`; `.root` is not a root alias. Use exact discovered IDs and
+endpoint UUIDs without rewriting them. A replacement serving revision can
+invalidate old UUIDs, so rediscover and inspect the new schema on 404 rather
+than falling back to a service alias. Multiple HTTP methods still require
+`--method` when selecting an endpoint.
+
+Single-schema lookup uses `POST /v1/actions/batch` with one ID, retaining
+compatibility with backends without the dedicated `GET /v1/actions/by-id/{id}`
+route. The legacy dynamic GET can collide with collection names such as
+`search`, `categories` and `services`.
+
+For typed Decisions (`state/questions/answers`, no SSE or chat translation),
+use the [AI Gateway guide](skills/xapi/guides/ai_gateway.md). For dedicated
+non-EVM RPC or Aptos JSON/BCS, use the [BlockPI guide](skills/xapi/guides/blockpi.md).
+`call --output` saves a binary response; raw BCS request input currently needs
+the service HTTP Gateway, not JSON Action execution.
+
+Search uses `--sort default|relevance|price`. `default` is the recommended
+order: it considers keyword coverage and match quality first, then favors
+stable built-in capabilities when matches are otherwise comparable.
+`relevance` is source-neutral and selects the strongest text match. `price`
+preserves keyword coverage and an exact action ID first, keeps endpoint-local
+matches ahead of service-only matches, then orders comparable fixed per-call
+USD list prices from low to high. Dynamic, per-token, per-resource, and unknown
+prices appear after comparable prices in the same match bucket and are never
+treated as free. All three modes rank the full matching result set before
+applying `--page` and `--page-size`.
+
+`--stream` forwards an HTTP Server-Sent Events (SSE) response; it is not a
+WebSocket client. Active SSE and raw downloads may run longer than 60 seconds,
+but abort after 60 seconds without data by default. Set
+`XAPI_TRANSFER_IDLE_TIMEOUT_MS` to change that idle timeout.
+
+GPT Live is a WebSocket protocol and cannot be invoked with `xapi-to call`.
+Read [the WebSocket Gateway guide](skills/xapi/guides/ws_gateway.md) and use a
+real WebSocket client. The packaged
+[`examples/openai-gpt-live-text.mjs`](examples/openai-gpt-live-text.mjs)
+demonstrates `session.start`, managed Responses delegation, text events, and a
+graceful `session.close` without placing an xAPI key in source or CLI arguments.
+
+### Async Task Commands
+
+Task helpers built on top of the `task.poll` capability.
+
+```bash
+xapi-to task poll 550e8400-e29b-41d4-a716-446655440000                 # poll once
+xapi-to task wait 550e8400-e29b-41d4-a716-446655440000                 # wait until terminal status
+xapi-to task wait 550e8400-e29b-41d4-a716-446655440000 --interval 1s --timeout 10m
+```
+
+### Provider: Import → Configure → Submit → Wait
+
+`provider` manages APIs owned by your account. It uses `XAPI_API_HOST`
+(default `api.xapi.to`) and the same saved or environment API key as other
+commands. In the xAPI Console API Keys settings, grant `service:create`,
+`service:read`, `service:update`, and `service:publish`. Legacy `allowRegister`
+only grants creation, not the remaining lifecycle permissions. Missing
+permissions return a nonzero exit with the required scope.
+
+Start from [examples/provider/openapi.json](examples/provider/openapi.json),
+replace its upstream URL, service details, and endpoint contract, then run:
+
+```bash
+# Inspect current rules; no API key required
+xapi-to provider spec-rules --format pretty
+
+# Import a raw OpenAPI 3.0.3 JSON object (not a {openApiSpec: ...} envelope)
+xapi-to provider import --file openapi.json > imported.json
+
+# Use the serviceId and revisionId from imported.json (jq is optional)
+PROVIDER_SERVICE_ID=$(jq -er '.serviceId' imported.json)
+PROVIDER_REVISION_ID=$(jq -er '.revisionId' imported.json)
+
+# Save version configuration to move the draft revision to SANDBOX.
+# config.json can be {"description":"Initial release"} when the imported
+# endpoints, authentication, and pricing are already complete.
+xapi-to provider update "$PROVIDER_SERVICE_ID" \
+  --revision "$PROVIDER_REVISION_ID" --file config.json
+
+# Submit the specified revision, then wait for the actual publication result
+xapi-to provider submit "$PROVIDER_SERVICE_ID" \
+  --revision "$PROVIDER_REVISION_ID" --changelog "Initial release"
+xapi-to provider wait "$PROVIDER_SERVICE_ID" \
+  --revision "$PROVIDER_REVISION_ID" --interval 2s --timeout 10m
+
+# Inspect owned services, configuration, version overview, or review reports
+xapi-to provider list --format table
+xapi-to provider get "$PROVIDER_SERVICE_ID" --format pretty
+xapi-to provider versions "$PROVIDER_SERVICE_ID" --format pretty
+xapi-to provider review "$PROVIDER_SERVICE_ID" --revision "$PROVIDER_REVISION_ID"
+```
+
+When scripting these steps, stop on nonzero exit (for example, use `set -e`).
+Import returns the backend validation/preview plus `serviceId`, `revisionId`,
+and `state`. An HTTP 201 with `success: false` is a validation failure and exits
+nonzero; its structured validation errors are preserved. Registration creates
+a new service each time. If a response is lost, inspect `provider list` before
+retrying to avoid duplicate services.
+
+For an authenticated upstream, store credentials in a local JSON object such
+as `{"Authorization":"Bearer YOUR_UPSTREAM_KEY"}` and pass
+`--private-headers-file private-headers.json` to `provider import`. Keep this
+file out of version control. `--file -` and `--private-headers-file -` accept
+stdin, but only one input can consume stdin per command. Files must be JSON;
+YAML and URL imports are not supported in this command group.
+
+`provider update --revision <id>` reads a version configuration object, using the backend
+fields `description`, `baseUrl`, `baseUrls`, `authType`, `privateHeaders`,
+`authConfig`, `openApiSpec`, `endpoints`, and `status`. Prefer structured
+`privateHeaders` for upstream credentials. Endpoint fields include billing
+configuration such as `billingType` and `costPerCall`. Update does not accept
+a raw OpenAPI document; the nested backend field is `openApiSpec: {spec: ...}`.
+Saving that field alone does not re-import endpoint definitions; configure
+`endpoints` explicitly when changing the contract.
+
+- `--mode merge` (default) sends PATCH and preserves omitted fields/endpoints.
+  Existing endpoint edits require `id`, e.g.
+  `{"endpoints":[{"id":"ENDPOINT_ID","costPerCall":"0.002"}]}`.
+- `--allow-new-endpoints` permits ID-less merge entries past the CLI guard;
+  backend matching by stable `endpointKey` or derived method/path still applies.
+  Prefer IDs from the target working revision for ordinary updates.
+- `--mode replace` sends PUT. If `endpoints` is provided, it replaces the
+  endpoint list; include every endpoint you intend to keep. Omitted fields
+  otherwise follow backend PUT semantics. Use full configuration for replacement.
+
+`get` retains its existing service response; `--version v1.0` selects the
+configuration returned by the backend. Find endpoint IDs in
+`currentVersion.endpoints`; `provider versions` returns working revision IDs
+in `majors[].working.id`. For an already-published API, use the existing
+`provider revision start <service-id> <major>` command to create a working revision.
+Cloning creates new endpoint UUIDs and preserves `endpointKey`; re-read the
+working contract after cloning. Use `majors[].servingRevisionId` to identify
+the serving revision. A working revision in `IN_REVIEW` cannot be edited.
+`provider update` without `--revision` continues to update service metadata
+and rate limits. Existing `version update`, `publish`, and positional `review`
+commands remain available. The `submit` and `review --revision` forms are
+additional onboarding commands.
+
+Updates to `IN_REVIEW`, `PUBLISHED`, or `SUSPENDED` revisions return a conflict;
+the backend enforces this check under a transaction lock. When updating
+`privateHeaders`, send the complete desired map: it replaces the old map and
+rebuilds the derived authentication configuration. An empty map without an
+explicit `authConfig` clears those credentials. Omitting both fields preserves them.
+
+`submit` returns `{serviceId, revisionId, submission}`. A successful submission
+does not guarantee publication, but a passing review can automatically publish
+and switch live traffic. `wait` checks the requested revision, succeeds
+only for `PUBLISHED`, and outputs the review report with `success` and `reason`.
+`--changelog` is limited to 2,000 characters by both the CLI and backend.
+Rejection, a draft/sandbox/suspended revision, or a legacy manual-review hold
+exit nonzero. Pending review continues until publication, the timeout (default
+10 minutes), or optional `--max-attempts`. Timeout and attempt-limit results
+include the last received report; polling can be resumed with the same IDs.
+The deadline also bounds in-flight HTTP requests and retry delays.
+
+Reads retry transient errors; writes are never automatically retried. The CLI
+redacts credential fields and known credential values from provider output.
+Redacted reads are for inspection and must not be submitted unchanged as
+configuration. After an ambiguous write failure, use `list`, `get`, or `review`
+to inspect the result before repeating the operation. No npm release is implied
+by a local source checkout; use `bun run src/index.ts provider ...` or build and
+run `node dist/index.js provider ...` while testing unreleased changes.
+
+Use the [AI provider reference](skills/xapi-provider/reference/ai-spec-and-models.md)
+for Decisions and DYNAMIC upstream-cost billing, and
+[HTTP transport](skills/xapi-provider/reference/http-transport.md) for HTTP/2
+OpenAPI metadata, HTTPS/ALPN and update/clear behavior. Import and version update
+already pass these fields; no HTTP/2 CLI client or flag is required.
+
+### Sandbox Commands
+
+Sandbox commands provide an AI-friendly cloud computer lifecycle. The fastest
+safe path is `sandbox run`: it quotes by capabilities, applies a default
+`$0.20/hour` ceiling, creates an instance, waits for `RUNNING`, executes the
+command, and terminates in `finally` even when execution fails.
+
+```bash
+# One-shot execution with automatic cleanup
+xapi-to sandbox run --command 'python3 -c "print(6 * 7)"'
+
+# Arguments after a bare -- are joined as the remote command
+xapi-to sandbox run -- node --version
+
+# Pin a provider and request specific capabilities/resources
+xapi-to sandbox run \
+  --provider cf-edge \
+  --capabilities exec,files,ports \
+  --cpu 1 --memory 1 \
+  --command 'pwd'
+
+# Inspect selection before spending anything
+xapi-to sandbox offerings --format table
+xapi-to sandbox quote --capabilities exec,files --max-hourly-usd 0.10
+
+# Every command has focused help
+xapi-to sandbox create --help
+xapi-to sandbox run --help
+
+# Fine-grained lifecycle for agents that need several tool calls
+xapi-to sandbox create --capabilities exec,files --wait
+xapi-to sandbox exec <id> --command 'npm test' --timeout 120
+xapi-to sandbox file write <id> task.md --file ./task.md
+xapi-to sandbox file read <id> result.json --output ./result.json
+xapi-to sandbox file list <id> --path . --depth 3
+xapi-to sandbox port <id> 8080
+xapi-to sandbox extension <id> runpod.connection_info --input '{}'
+xapi-to sandbox audit <id> --kind operations
+xapi-to sandbox history --state HISTORY --page-size 20
+xapi-to sandbox suspend <id>
+xapi-to sandbox resume <id>
+xapi-to sandbox terminate <id>
+```
+
+For a long-running Web server, select an Offering that explicitly declares
+`backgroundExec` and `ports`, then use the provider-managed background mode:
+
+```bash
+# Confirm the selected row reports background=yes and ports=yes before creating.
+xapi-to sandbox offerings --provider daytona --format table
+
+xapi-to sandbox create \
+  --provider daytona \
+  --capabilities exec,backgroundExec,ports \
+  --wait
+
+xapi-to sandbox exec <id> --provider daytona --background --command \
+  'python3 -m http.server 25319 --bind 0.0.0.0'
+xapi-to sandbox port <id> 25319 --provider daytona
+```
+
+Do not substitute `nohup ... &` on providers that do not declare
+`backgroundExec`: some providers reclaim the command session and its child
+processes as soon as the foreground exec response completes. A successful
+background response means the session was accepted; verify the public URL and
+expected marker before reporting success.
+
+`--format table` is a compact comparison view; truncated cells end with `…`.
+Use the default JSON output when copying a complete quote ID, instance ID, or
+audit payload. Sandbox subcommands reject unknown flags before making a request.
+
+An exact `--offering-id` cannot be combined with `--max-hourly-usd`, because an
+Offering bypasses requirements-based quote selection. Use requirements plus the
+ceiling, or create from a quote whose price was already checked. Successful
+`create` output includes `clientIdempotencyKey`. If `create --wait` fails after
+the instance was accepted, its structured error includes the instance ID,
+observed state, idempotency key, and inspect/terminate recovery commands.
+
+Provider pinning uses a provider-specific gateway such as
+`cf-edge.sandbox.xapi.to`; the CLI also resolves the deployed production aliases
+`daytona-sandbox.sandbox.xapi.to` and `e2b-sandbox.sandbox.xapi.to`, while the
+test gateways remain `daytona.sandbox.test.xapi.to` and
+`e2b.sandbox.test.xapi.to`. Omit `--provider` or use `auto` for cross-provider
+selection. `sandbox run --keep` is deliberately explicit because the instance
+continues billing until later termination. Remote non-zero command exit codes
+are returned as the CLI process exit code after cleanup.
+
+For the test service, override only the Sandbox host; the CLI still refuses to
+send the key outside `*.xapi.to` or localhost:
+
+```bash
+XAPI_SANDBOX_HOST=sandbox.test.xapi.to \
+  xapi-to sandbox run --provider cf-edge --command 'echo test-ok'
+```
+
+The repository includes a real acceptance suite for the original nine Sandbox
+Playground workflows. It exercises catalog/quote, AI coding, CI repair, data analysis,
+parallel agents, GPU connection data, one-shot execution, Cloudflare web
+preview, suspend/resume, audits, billing, history, and a final zero-active-
+instance cleanup gate:
+
+```bash
+# Uses the API key already stored by `xapi-to config set apiKey=-`
+npm run test:sandbox:playground -- --host sandbox.test.xapi.to
+
+# Focused retry or lower-cost run
+npm run test:sandbox:playground -- --host sandbox.test.xapi.to --only 8,9
+npm run test:sandbox:playground -- --host sandbox.test.xapi.to --skip-gpu
+```
+
+Each run writes a redacted JSON report under the operating system temporary
+directory. The key is read from normal CLI configuration or environment and is
+never accepted on the command line or written to the report.
+
+The tenth Playground scenario uses the official OpenAI Agents SDK
+`SandboxAgent` with DeepSeek through the OpenAI Chat Completions-compatible
+`https://ai.xapi.to/v1` gateway and xAPI Sandbox compute. The reusable adapter
+is exported as `xapi-to/openai-sandbox`; its current verified scope is an empty
+Manifest plus the SDK Shell capability. Run the real SDK agent loop against the
+test service with:
+
+```bash
+XAPI_SANDBOX_KEY='sk-sandbox-test-...' \
+XAPI_AI_KEY='sk-ai-production-...' \
+npm run test:sandbox:openai -- \
+  --host sandbox.test.xapi.to \
+  --provider daytona \
+  --model deepseek-v4-pro
+```
+
+The test keeps credentials separate: `XAPI_AI_KEY` is sent only to
+`ai.xapi.to`, while `XAPI_SANDBOX_KEY` is sent only to the selected Sandbox
+Gateway. A production key with both permissions may be supplied to both
+variables. The test disables OpenAI tracing because an xAPI credential is not
+an OpenAI telemetry credential, and configures `useResponses: false` because
+`ai.xapi.to` currently exposes the Chat Completions protocol.
+
+For a shorter, zero-context walkthrough of all three public entry points, run
+the standalone JavaScript demo. It creates its own instances and cleans each
+one up; no quote ID or instance ID needs to be prepared:
+
+```bash
+# Required for the default test host; paste without putting the key on argv.
+read -s XAPI_SANDBOX_KEY && export XAPI_SANDBOX_KEY
+
+# Required by the OpenAI/DeepSeek section; this targets production ai.xapi.to.
+read -s XAPI_AI_KEY && export XAPI_AI_KEY
+
+# Direct HTTP API + local CLI + OpenAI Agents SDK/DeepSeek
+npm run demo:sandbox
+
+# Run only one section
+npm run demo:sandbox -- api
+npm run demo:sandbox -- cli
+npm run demo:sandbox -- openai
+
+unset XAPI_SANDBOX_KEY XAPI_AI_KEY
+```
+
+The default test host uses a dedicated Sandbox credential. The OpenAI section
+uses a separate production AI Gateway credential because there is currently no
+test AI Gateway. The report includes credential source names but no credential
+fragments; the CLI child receives only the Sandbox credential. The demo defaults
+to Daytona and `deepseek-v4-pro`. Its final JSON verifies markers,
+`TERMINATED`, successful operations, settled usage and billing,
+service-calculated costs, and a zero-residual gate scoped to instances created
+by that demo (unrelated account instances do not fail it).
+
+Before the package version containing `xapi-to/openai-sandbox` is published,
+run the same flow directly from this checkout. The example imports the adapter
+from `src/`, defaults to `sandbox.test.xapi.to`, supports separate Sandbox and
+AI Gateway credentials, and always closes the created session:
+
+```bash
+npm run example:sandbox:openai
+
+# Mixed-environment credentials and optional overrides
+XAPI_SANDBOX_KEY='sk-sandbox-test-...' \
+XAPI_AI_KEY='sk-ai-production-...' \
+XAPI_SANDBOX_HOST=sandbox.test.xapi.to \
+XAPI_SANDBOX_PROVIDER=daytona \
+XAPI_MODEL=deepseek-v4-pro \
+npm run example:sandbox:openai
+```
+
+### Hosted Workers Commands
+
+Inspect delayed storage collection separately from the financial ledger:
+
+```bash
+xapi-to workers metering <worker-id> --env preview
+xapi-to workers metering <worker-id> --env preview --json
+```
+
+Human output lists each resource's UTC collection window, source status, sample
+count, last sample and retry times. Missing samples are not zero usage; observed
+samples are not final settlement. An empty or truncated list does not prove
+complete history. This source read is independent of the billing snapshot.
+
+`workers` manages continuously addressable JavaScript applications on
+xAPI-hosted Cloudflare Workers for Platforms.
+It is separate from `sandbox`: use Sandbox for arbitrary shell/build/GPU work,
+and Workers for HTTP, WebSocket, Webhook, Cron, and persistent Agent entrypoints.
+
+```bash
+# New project: build, create/update resources, deploy preview, then promote the
+# exact tested Artifact to production.
+xapi workers templates
+xapi workers init my-agent --template persistent-agent
+cd my-agent
+# Review the plan before resources are created.
+xapi workers plan --env preview
+xapi workers push --env preview
+xapi workers promote --to production
+
+# Existing Cloudflare Worker: Wrangler remains the source of runtime config.
+cd existing-worker
+xapi workers init --from-wrangler ./wrangler.jsonc
+xapi workers plan --env preview
+xapi workers push --env preview
+
+# Code rollback never rolls back KV/D1/R2/DO/Queue/Workflow data or Secrets.
+xapi workers rollback --env production --to previous
+
+# Follow Tail Worker logs and correlate one request or deployment.
+xapi workers logs <worker-id> --env production --tail --since 10m
+xapi workers logs <worker-id> --env production --request-id <request-id>
+```
+
+`workers push` and `workers promote` keep resource creation/binding and Queue/Cron
+`AFTER_CODE`, but do not read or execute D1 SQL. Migrations are explicit:
+
+```sh
+# Local plan only: no backend call or build; remoteStatus: NOT_CHECKED.
+xapi workers d1 migrations plan --binding DB --env preview
+# Remote SQL only: requires a linked workerId and an ACTIVE D1 binding.
+xapi workers d1 migrations apply --binding DB --env preview
+```
+
+Both commands accept `--config PATH` and `--env preview|production`. Apply does
+not create resources or publish code. Ordinary publishing needs no migration-ledger
+repair; code rollback does not undo SQL. See the
+[complete migration workflow](skills/xapi-workers/references/deployment.md#explicit-d1-migrations)
+for first-deployment ordering, receipts, and failure handling.
+
+Choose `init` based on the starting point:
+
+| Starting point | Command |
+| --- | --- |
+| New Worker | `xapi workers init my-agent --template persistent-agent` |
+| Existing React, Vite, Vue, or static Next.js package | `cd app && xapi workers init` |
+| Existing Worker with Wrangler | `xapi workers init --from-wrangler ./wrangler.jsonc` |
+| Next.js SSR | Initialize vinext first, then import its generated Wrangler config |
+
+Existing browser applications can be initialized in place. Detection reads
+`package.json` and preserves the application's existing `dev`, `build`, and
+test scripts:
+
+```bash
+cd existing-web-app
+xapi workers init
+# Run the existing package-manager install command printed by init.
+# plan and push run the configured existing build.
+xapi workers plan --env preview
+xapi workers push --env preview
+```
+
+The initializer preserves package.json, dependencies, scripts and lockfiles.
+It adds a dependency-free `xapi-worker/index.mjs`, `wrangler.jsonc`, and
+`xapi.worker.json`. It does not add `xapi:build` or other package scripts;
+use the existing development command. There is no separate xAPI local runtime. For workspace packages, `init` walks
+to the repository root and honors its declared `packageManager` or lockfile;
+the printed install and build commands are therefore safe for Yarn and pnpm
+monorepos as well as npm and Bun projects. Use `--framework react|vite|vue|next`
+only when automatic package detection is ambiguous. `init` is a one-time
+adapter setup, not a synchronization command; after it creates
+`xapi.worker.json`, use resource commands and `plan` to manage state.
+
+Next.js with `output: 'export'` is treated as static assets. SSR Next.js must
+first create a Workers-compatible bundle with vinext (`npx vinext check`, then
+`npx vinext init`) and import its generated Wrangler configuration. The CLI
+refuses to misclassify an SSR application as a static SPA.
+
+Web projects can declare their browser build separately from Worker modules.
+The CLI preserves supported Wrangler `assets` settings and uploads the files
+through xAPI as Cloudflare native static assets:
+
+```json
+{
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS",
+    "notFoundHandling": "single-page-application",
+    "runWorkerFirst": ["/api/*"]
+  }
+}
+```
+
+`workers plan` shows whether the selected environment has a dedicated hostname.
+When `webAppReady` is false, production promotion asks you to review the base
+path, root-relative routes, and OAuth callbacks without blocking applications
+that deliberately support path-prefix hosting. Project bundles remain one immutable Artifact, including modules and static assets. When the backend advertises direct R2 upload, the CLI uses a temporary checksummed channel and asks xAPI to verify and seal it before deployment. Legacy storage keeps the authenticated multipart fallback; files are not independent deployments. Limits are 64 MiB aggregate module content (no arbitrary 200-module cutoff),
+100,000 assets / 25 MiB per asset, and 100 MiB total decoded project content.
+These are CLI validation limits; the platform and provider also validate uploads.
+
+Environment placement is declared beside the budget. Workers remain globally
+deployed; the data location is inherited only by newly created D1/R2 resources,
+and Smart Placement lets Cloudflare optimize execution near backends:
+
+```json
+{
+  "dailyBudgetUsd": 0.25,
+  "defaultResourceLocation": "apac",
+  "placementMode": "smart"
+}
+```
+
+Use `xapi workers environment <worker-id> preview --data-location apac
+--placement smart` for an already linked project. This changes the environment
+default and deployment metadata; it does not move existing D1/R2 data.
+
+Templates are versioned packages shipped with the CLI, not remote code fetched
+during `init`. `persistent-agent` includes buildable source plus KV, D1, R2,
+Durable Object, Queue, and Workflow declarations. `push` provisions the
+environment-specific resources and returns their binding state; secret values
+remain a separate operation:
+
+```bash
+export APP_TOKEN='replace-with-an-incoming-request-token'
+export MODEL_KEY='replace-with-an-ai.xapi.to-key'
+xapi workers secrets set <worker-id> APP_TOKEN --env preview --from-env APP_TOKEN
+xapi workers secrets set <worker-id> MODEL_KEY --env preview --from-env MODEL_KEY
+```
+
+The project workflow works without Git. `xapi.worker.json` may be committed,
+but Secret values must stay in environment variables or the encrypted Secret
+store. `push` never silently deletes extra stateful resources or Secrets.
+
+Public variables travel with the immutable Artifact. By default, deployment
+replaces public vars: omitted `plain_text` and `json` bindings are removed.
+Top-level Wrangler `keep_vars: true` retains omitted bindings of both types;
+`false` or absence uses replacement. `env.<name>.keep_vars` is ignored with an
+import warning and never overrides the root setting. Named environments have
+their own `vars`, without inheriting root vars. Native `keep_bindings` preserves
+the exact public types requested, so retaining only `json` does not retain
+`plain_text`. A native JSON-string binding stays `json`. Secrets are independent
+and always kept across code deployment, regardless of public-variable retention.
+
+`workers plan` shows public-variable `SET`, `RETAIN`, `REMOVE`, and `REPLACE`
+decisions using live target Cloudflare binding names/types, never values. These
+reads happen during management, not application requests. `SET` applies the
+Artifact value; it does not claim that the old value differs. Promotion derives
+variable intent from the selected immutable preview Artifact and compares it
+with production; local preview files and local production `vars` do not rewrite
+that Artifact.
+
+**Roll out the matching backend before upgrading the CLI.** It must support
+`keepBindings`/`varTypes` and these authenticated reads:
+
+- `GET /api/v1/workers/:id/environments/:environment/variables`
+- `GET /api/v1/workers/:id/artifacts/:artifactId/variable-configuration`
+
+Missing endpoints, failed reads, and malformed responses stop preflight; they
+must never be treated as an empty variable set. Local tests and dry-run bundles
+do not establish cloud verification. See the
+[deployment reference](skills/xapi-workers/references/deployment.md#public-variable-decisions)
+for retention and review details.
+
+For project-managed resources, `xapi.worker.json` is the Git-tracked desired
+state and xAPI is live state. `workers plan` always fetches live state; the CLI keeps no
+third cached copy.
+
+| Intent | Project command | Effect |
+| --- | --- | --- |
+| Declare a new resource | `resources add` | Adds desired state only. |
+| Adjust an existing declaration | `resources update` | Replaces the complete declaration locally; `plan` decides whether live state can follow. |
+| Adopt live-only resources | `resources pull` | Reads live state and merges portable fields locally. |
+| Stop declaring a resource | `resources remove` | Removes desired state only; the live resource remains billable. |
+| Delete resource data | `resources destroy --yes` | Removes the one-environment declaration and requests live deletion. |
+| Reconcile | `workers plan` | Reads and compares current live state without mutation. |
+
+Add desired resources before applying them:
+
+```bash
+xapi workers resources add --env both --type kv --binding CACHE
+xapi workers resources add --env both --type d1 --binding DB \
+  --location apac --read-replication auto
+xapi workers resources add --env both --type r2 --binding FILES --location apac
+xapi workers resources add --env both --type do --binding ROOM --class-name Room
+xapi workers resources add --env both --type queue --binding JOBS
+xapi workers resources add --env both --type workflow --binding PIPELINE
+
+# Replace the complete desired declaration before it has been provisioned.
+xapi workers resources update --env preview --type d1 --binding DB \
+  --location weur --read-replication disabled
+
+xapi workers plan --env preview
+xapi workers push --env preview
+```
+
+`resources add` changes only `xapi.worker.json`; `plan` shows the resulting
+provider operations and `push` applies them. Repeating an identical add is a
+no-op, while reusing a binding for another type is rejected. `--env both`
+declares the same binding independently for preview and production; it does not
+make both environments share one physical resource.
+
+Resource and static-assets binding names are case-sensitive: `Chat`, `CHAT`, and `chat` remain distinct. The CLI preserves nonempty binding and Secret names, including long and non-identifier names; use `env["binding-name"]` when needed. Exported class names retain JavaScript identifier syntax. Provider validation, ownership and duplicate-binding checks still apply; upstream name limits are reported rather than replaced with an xAPI naming subset.
+
+`push` creates missing preview resources only after its full plan passes.
+`promote` performs the same production preflight and, after confirmation,
+creates missing production declarations before activating the exact tested
+preview Artifact. A budget mismatch, missing required Secret or incompatible binding blocks activation.
+An undeclared production resource is retained and unbound by the next deployment.
+The server checks and freezes the required funds. An explicitly selected
+`--retention-price-version` is optional; the CLI adds no mandatory per-type quote step.
+
+`resources update` requires the resource type because it replaces the complete
+portable declaration. Before the project is linked, it can correct any local
+declaration. After linking, it rejects type and Durable Object class changes.
+Changing a live location or D1 replication mode is
+reported as `BLOCKED`: the current xAPI API has no in-place resource update, so
+create a new binding, migrate data, and switch the application explicitly.
+
+Adopt supported live resources that are missing locally with an explicit pull:
+
+```bash
+xapi workers plan --env preview
+xapi workers resources pull --env preview
+git diff -- xapi.worker.json
+xapi workers plan --env preview
+```
+
+`pull` imports compatible live declarations initially, then uses a metadata-only
+`.xapi/resource-sync-*` baseline for a three-way merge. Local edits and removed
+bindings are preserved; remote-only changes are adopted; conflicting edits abort
+without overwriting JSON. It changes no native resources and copies no Secret
+values. A live pending resource keeps its prior baseline observation; it does not
+erase its existing declaration. `--env both` uses independent environment baselines.
+
+Use `resources remove --env ... --binding ...` only when the live resource must
+remain. `plan` explains that the next deployment removes its binding only.
+To delete data, back it up first and run:
+
+```bash
+xapi workers resources destroy --env preview --binding FILES --yes
+```
+
+`destroy` accepts one environment at a time, removes the local declaration
+before requesting deletion, and reports deletion as requested until the live
+resource disappears. If the request fails, the live resource remains visible
+and the user can inspect and explicitly retry deletion. `resources list/create/delete
+<worker-id> ...` remain low-level recovery primitives and do not update project
+files.
+
+Queue consumer omission preserves existing delivery. Disable an owned consumer explicitly before removing its Wrangler declaration. Cron omission preserves triggers; an explicit `triggers.crons` array synchronizes this project's CLI-owned triggers and `[]` clears them. Manual platform HTTP schedules remain independent. See the [event lifecycle and native configuration contract](skills/xapi-workers/references/deployment.md#native-configuration-and-application-deployment-prerequisites). Funding estimates are displayed in the plan; the server checks and prepares protected seven-day funds without a mandatory per-type CLI quote or price-version argument.
+
+Deployment identity includes the code Artifact, remote resource identities,
+environment bindings and compatibility settings. Secret values are independent
+and do not trigger a code deployment. Changing only
+resources or compatibility settings therefore deploys again; repeating an
+unchanged push reuses the current activation. Older deployments without this
+configuration fingerprint require one deployment to establish the baseline.
+
+Removing a resource from `xapi.worker.json` does **not** destroy it: `plan`
+shows the unbinding consequence, and the resource remains billable. `resources destroy` is the
+project-aware destructive operation. Preserve a backup before using it and wait
+until `resources list` no longer returns the binding. A successful deployment
+alone is not proof of deletion or final billing settlement.
+
+In CI,
+set `XAPI_KEY` and `XAPI_API_HOST` explicitly, use a Key restricted to the target
+Worker, and pass `--non-interactive`; safety preflights are still enforced:
+
+```bash
+export XAPI_API_HOST=test.xapi.to
+export XAPI_KEY="$CI_XAPI_KEY"
+xapi workers plan --env preview --format json
+xapi workers push --env preview --non-interactive
+xapi workers promote --to production --non-interactive
+```
+
+The lower-level commands remain available for diagnosis and custom automation:
+
+```bash
+# API keys need workers:read / workers:write scopes.
+xapi-to workers provider-status
+xapi-to workers capabilities --format table
+xapi-to workers bindings --format table
+
+# Both environment budgets are explicit ($0.10-$100/day).
+xapi-to workers create \
+  --name "Daily research agent" \
+  --slug daily-research-agent \
+  --template agent \
+  --preview-budget 0.25 \
+  --production-budget 2
+
+# Upload one bundled ES module, or use --file dist/ --main worker.js for code splitting.
+xapi-to workers upload <worker-id> \
+  --file dist/worker.mjs \
+  --idempotency-key artifact-v1
+
+xapi-to workers deploy <worker-id> \
+  --artifact <artifact-id> \
+  --env preview \
+  --idempotency-key preview-v1
+
+# Secrets are encrypted at rest; prefer reading them from a local env variable.
+MODEL_KEY='...' xapi-to workers secrets set <worker-id> MODEL_KEY \
+  --env preview --from-env MODEL_KEY
+xapi-to workers resources list <worker-id> --env preview --format table
+xapi-to workers secrets list <worker-id> --env preview --format table
+
+# Persistent schedules remain Worker-scoped rather than project resource declarations.
+# A declared Worker consumer delivers Queue bodies to default.queue;
+# a body path does not route to fetch(). Commit by stable task ID before ack:
+# await env.TASK_QUEUE.send({ taskId: 'task_123' });
+xapi-to workers schedules create <worker-id> \
+  --name heartbeat --cron "*/15 * * * *" --timezone UTC \
+  --env preview --path /cron --method POST
+
+# Optional: build source in an ephemeral xAPI Sandbox. A successful result
+# contains artifactId, which is deployed exactly like an upload.
+xapi-to workers build <worker-id> \
+  --project . \
+  --entrypoint src/index.ts \
+  --command "npm install --ignore-scripts && npm run build" \
+  --output dist/worker.mjs \
+  --idempotency-key build-v1
+
+xapi-to workers get <worker-id> --format pretty
+xapi-to workers audit <worker-id> --format table
+xapi-to workers invocations <worker-id> --env production --format table
+xapi-to workers logs <worker-id> --env production --format table
+xapi-to workers usage <worker-id> --env production --format pretty
+xapi-to workers billing-status --format pretty
+xapi-to workers domains list <worker-id> --format table
+xapi-to workers budget <worker-id> production --daily-usd 3
+xapi-to workers delete <worker-id> --yes
+```
+
+Set `XAPI_API_HOST=api.test.xapi.to` for the test control plane. Mutating requests
+are not retried automatically; when a deployment result is uncertain, inspect
+the original operation before choosing an explicit retry with unchanged inputs
+and the same idempotency key; uncertainty is not proof that a write failed.
+
+For a custom hostname, `workers domains attach --xdomain-domain-id` automates
+ownership TXT through xdomain. Without an xdomain record, use the public manual
+DNS flow (the authoritative zone must still belong to the platform CF account):
+
+```sh
+xapi-to workers domains challenge <worker-id> --env preview \
+  --hostname chat.example.com --format json > challenge.json
+# Publish the exact TXT dns.name / dns.value from challenge.json, then:
+xapi-to workers domains attach <worker-id> --env preview --challenge-file challenge.json
+xapi-to workers domains list <worker-id>
+```
+
+Remove that temporary TXT after attachment is accepted. `PROVISIONING` is not
+yet `ACTIVE`; verify TLS/routing and then the application's business route.
+See the bundled [domain guide](skills/xapi-workers/references/domains.md) for
+DNS propagation, expiry and explicit retry instructions. No custom domain is
+required to use a platform-provided public address.
+
+### OAuth
+
+Bind third-party OAuth accounts (e.g. Twitter) to your API key.
+
+```bash
+xapi-to oauth bind --provider twitter                   # bind Twitter account
+xapi-to oauth providers                                 # inspect current providers/default scopes
+xapi-to oauth bind --provider twitter --scopes "<scope list>" # optional explicit override
+xapi-to oauth status                                    # list current bindings
+xapi-to oauth unbind <binding-id>                       # remove a binding
+xapi-to oauth providers                                 # list available providers
+```
+
+### Account
+
+```bash
+xapi-to register                                        # create account, saves apiKey automatically
+xapi-to register --referral-code xapito                 # register with an inviter's referral code (please replace xapito to your referral code)
+xapi-to register xapito                                 # positional shorthand for --referral-code
+xapi-to register --force                                # replace an existing file-based key
+xapi-to balance                                         # show USD balance
+xapi-to usage <request-id>                              # finalized cost + balance-after receipt
+xapi-to usage wait <request-id> --timeout 1m            # poll until a streaming receipt is finalized
+xapi-to earnings                                        # spendable balance + provider earnings
+xapi-to earnings list --status SETTLED --limit 20       # provider earning records
+xapi-to earnings transfer 1 --idempotency-key reinvest-001 # reinvest settled earnings
+xapi-to topup                                           # generate payment URL
+xapi-to topup --method stripe --amount 10               # stripe, $10
+xapi-to topup --method x402                             # x402 (USDC on Base)
+```
+
+`earnings` summary/list require the `earnings:read` scope on the current key;
+`earnings transfer` requires `earnings:transfer`. Transfers are one-way and
+idempotent: reuse a key only when retrying the same amount.
+
+### Provider Management
+
+Provider commands use scoped `XAPI-KEY` routes for service and release
+management without a JWT exchange:
+
+```bash
+xapi-to provider list
+xapi-to provider create --file ./service.json
+xapi-to provider update <service-id> --about-file ./ABOUT.md --website https://example.com
+xapi-to provider update <service-id> --rate-limit-requests 100 --rate-limit-period-seconds 60
+xapi-to provider update <service-id> --clear-rate-limit
+xapi-to provider versions <service-id>
+xapi-to provider revision start <service-id> 1
+xapi-to provider version update <service-id> <version-id> --file ./contract.json
+xapi-to provider diff <service-id> 1
+xapi-to provider publish <service-id> <revision-id> --changelog-file ./CHANGELOG.md
+xapi-to provider metrics <service-id> --days 7
+xapi-to provider events --after '<opaque-next-cursor>'
+```
+
+Service rate limits are optional and supported only for proxied services. Both
+numeric flags are required when setting a limit; the quota is shared by all API
+keys belonging to the same user for that service.
+
+Service usage tutorials are Skill packages. Scaffold one from the serving
+contract, submit it for review, wait for publication, then link it:
+
+```bash
+xapi-to provider skill scaffold <service-id> --output ./my-skill/SKILL.md
+xapi-to skill submit --dir ./my-skill
+xapi-to skill wait <submission-id> --timeout 10m
+xapi-to provider skill link <service-id> <skill-id>
+xapi-to provider skill fingerprint <service-id> --skill-version-id <version-id>
+```
+
+Run `xapi-to provider --help` and `xapi-to skill --help` for the complete
+lifecycle, rollback, deletion, GitHub import, scope, and safety options.
+
+### Config
+
+```bash
+xapi-to config show                                     # show current config
+xapi-to config set apiKey=-                             # paste key, then press Ctrl-D
+xapi-to config health                                   # check backend connectivity
+```
+
+`XAPI_KEY` overrides `XAPI_API_KEY`, and both override the config file. The CLI
+warns when a saved key is shadowed. Unset the environment variable before
+`register`, including `register --force`, so the new account key becomes active.
+
+## Workflow: Always GET before CALL
+
+Before calling any action, always read its schema first to understand required parameters:
+
+```bash
+# 1. Find the action
+xapi-to search "twitter"
+
+# 2. Read its schema
+xapi-to get twitter.tweet_detail
+
+# 3. Call with correct parameters
+xapi-to call twitter.tweet_detail --input '{"tweet_id":"1234567890"}'
+```
+
+For APIs that return binary data, use `--output` to request raw bytes and save
+them directly. The CLI refuses to overwrite an existing file.
+
+```bash
+xapi-to call openrouter.audio_speech \
+  --input '{"body":{"input":"Hello","model":"hexgrad/kokoro-82m","voice":"af_bella"}}' \
+  --output speech.mp3
+```
+
+## Output Formats
+
+Normal command output is JSON by default. `call --stream` writes raw HTTP SSE
+frames, while `call --output` writes raw response bytes to the requested file.
+
+```bash
+xapi-to list --format json                              # default, machine-readable
+xapi-to list --format pretty                            # pretty-printed JSON
+xapi-to list --format table                             # human-readable table
+```
+
+## Environment Variables
+
+| Variable                        | Description                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| `XAPI_KEY`                      | API key (overrides config file)                                                  |
+| `XAPI_API_KEY`                  | Compatible API key alias (overrides config file; lower priority than `XAPI_KEY`) |
+| `XAPI_SANDBOX_KEY`              | Sandbox-only credential for OpenAI SandboxAgent examples/tests                   |
+| `XAPI_AI_KEY`                   | AI Gateway credential for OpenAI-compatible model calls                          |
+| `XAPI_ACTION_HOST`              | Action service host (default: `action.xapi.to`)                                  |
+| `XAPI_API_HOST`                 | Auth/account service host (default: `api.xapi.to`)                               |
+| `XAPI_SANDBOX_HOST`             | Sandbox gateway host (default: `sandbox.xapi.to`)                                |
+| `XAPI_OUTPUT`                   | Default output format (`json`\|`pretty`\|`table`)                                |
+| `XAPI_TRANSFER_IDLE_TIMEOUT_MS` | SSE/download idle timeout in milliseconds (default: `60000`)                     |
+
+Config is stored at `~/.xapi/config.json`.
+
+## Selected Built-in Capabilities
+
+This is a small quick-reference subset, not the complete or permanently fixed
+catalog. Use `xapi-to list --source capability`, `search`, and `get` for the
+current IDs and schemas.
+
+| ID                                | Description                                |
+| --------------------------------- | ------------------------------------------ |
+| `twitter.tweet_detail`            | Get tweet details and replies              |
+| `twitter.user_by_screen_name`     | Get user profile by username               |
+| `twitter.user_tweets`             | Get tweets from a user                     |
+| `twitter.user_tweets_and_replies` | Get tweets and replies from a user         |
+| `twitter.user_media`              | Get media posts from a user                |
+| `twitter.following`               | Get user following list                    |
+| `twitter.followers`               | Get user followers                         |
+| `twitter.retweeters`              | Get tweet retweeters                       |
+| `twitter.search`                  | Search tweets                              |
+| `ai.text.chat.fast`               | Fast AI chat completion                    |
+| `ai.text.chat.reasoning`          | Advanced reasoning chat                    |
+| `ai.text.chat.auto`               | Model-selected chat with provider fallback |
+| `ai.text.summarize`               | Summarize long text                        |
+| `ai.text.rewrite`                 | Rewrite text with different styles         |
+| `ai.embedding.generate`           | Generate vector embeddings                 |
+| `web.search`                      | Web search                                 |
+| `web.search.realtime`             | Realtime web search with time filters      |
+| `web.search.news`                 | News search                                |
+| `crypto.token.price`              | Crypto token price and changes             |
+| `crypto.token.metadata`           | Crypto token metadata                      |
+
+## Security
+
+- General action commands retain compatibility with `xapi.to`, `*.xapi.to`, `xapi.xyz`, `*.xapi.xyz`, and localhost/loopback development hosts. Sandbox commands deliberately apply the stricter `*.xapi.to`/localhost-only policy.
+- The key is stored at `~/.xapi/config.json`; the CLI enforces owner-only Unix permissions — do not expose this file
+- `topup` outputs a payment URL containing the API key — do not share publicly
+
+## License
+
+MIT
+
+### Native framework deployment bundles
+
+Framework output can be exported with Wrangler's `deploy --dry-run --outfile
+dist/app.worker.bundle` and published through `xapi workers push`. The CLI
+retains native module names/types/bytes and separately publishes static Assets.
+See [the Workers guide](skills/xapi/guides/workers.md#framework-builds-publish-wranglers-complete-bundle)
+for configuration, supported metadata and current transport boundaries.

@@ -1,0 +1,334 @@
+# Opytimizer: A Nature-Inspired Python Optimizer
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/recogna-lab/opytimizer/main/assets/logo.png" width="300">
+</div>
+
+[![Latest release](https://img.shields.io/github/release/recogna-lab/opytimizer.svg)](https://github.com/recogna-lab/opytimizer/releases)
+[![DOI](http://img.shields.io/badge/DOI-10.5281/zenodo.4594294-006DB9.svg)](https://doi.org/10.5281/zenodo.4594294)
+[![Build status](https://img.shields.io/github/actions/workflow/status/recogna-lab/opytimizer/build-publish-to-pypi.yml?branch=main)](https://github.com/recogna-lab/opytimizer/actions/workflows/build-publish-to-pypi.yml)
+[![Open issues](https://img.shields.io/github/issues/recogna-lab/opytimizer.svg)](https://github.com/recogna-lab/opytimizer/issues)
+[![License](https://img.shields.io/github/license/recogna-lab/opytimizer.svg)](https://github.com/recogna-lab/opytimizer/blob/main/LICENSE)
+
+## Welcome to Opytimizer.
+Did you ever reach a bottleneck in your computational experiments? Are you tired of selecting suitable parameters for a chosen technique? If yes, Opytimizer is the real deal! This package provides an easy-to-go implementation of meta-heuristic optimizations, supporting both single and multi-objective problems. From agents to search space, from internal functions to external communication, from single to multiple objectives, we will foster all research related to optimizing stuff.
+
+Use Opytimizer if you need a library or wish to:
+* Create your optimization algorithm;
+* Design or use pre-loaded optimization tasks;
+* Mix-and-match different strategies to solve your problem;
+* Because it is fun to optimize things.
+
+Read the docs at [recogna-lab.github.io](https://recogna-lab.github.io/opytimizer/).
+
+Opytimizer is compatible with: **Python 3.6+**.
+
+---
+
+## Package guidelines
+
+1. The very first information you need is in the very **next** section.
+2. **Installing** is also easy if you wish to read the code and bump yourself into, follow along.
+3. Note that there might be some **additional** steps in order to use our solutions.
+4. If there is a problem, please do not **hesitate**, call us.
+5. Finally, we focus on **minimization**. Take that in mind when designing your problem.
+
+---
+
+## Citation
+
+If you use Opytimizer to fulfill any of your needs, please cite us:
+
+```BibTex
+@misc{rosa2019opytimizer,
+    title={Opytimizer: A Nature-Inspired Python Optimizer},
+    author={Gustavo H. de Rosa and Douglas Rodrigues and João P. Papa},
+    year={2019},
+    eprint={1912.13002},
+    archivePrefix={arXiv},
+    primaryClass={cs.NE}
+}
+```
+
+---
+
+## Getting started: 60 seconds with Opytimizer
+
+First of all. We have examples. Yes, they are commented. Just browse to `examples/`, chose your subpackage, and follow the example. We have high-level examples for most tasks we could think of and amazing integrations ([Learnergy](https://github.com/gugarosa/learnergy), [NALP](https://github.com/gugarosa/NALP), [OPFython](https://github.com/gugarosa/OPFython), [PyTorch](https://github.com/pytorch/pytorch), [Scikit-Learn](https://github.com/scikit-learn/scikit-learn), [Tensorflow](https://github.com/tensorflow/tensorflow)).
+
+Alternatively, if you wish to learn even more, please take a minute:
+
+Opytimizer is based on the following structure, and you should pay attention to its tree:
+
+```yaml
+- opytimizer
+    - core
+        - agent
+        - block
+        - cell
+        - environment
+        - function
+        - hyperheuristic
+        - node
+        - optimizer
+        - space
+        - stopping
+    - functions
+        - constrained
+        - multi_objective
+            - weighted
+    - hyperheuristics
+        - adaptive
+            - adaptive_hyperheuristic
+        - generation
+            - component_based
+        - hybrid
+            - hybrid_hyperheuristic
+        - selection
+            - selection_hyperheuristic
+        - adaptation_mechanism
+        - selection_strategy
+    - math
+        - aggregation
+        - distribution
+        - general
+        - hyper
+        - metrics
+        - random
+    - optimizers
+        - multi_objective
+            - evolutionary
+        - single_objective
+            - boolean
+            - evolutionary
+            - misc
+            - population
+            - science
+            - social
+            - swarm
+    - spaces
+        - boolean
+        - graph
+        - grid
+        - hyper_complex
+        - search
+        - tree
+    - utils
+        - callback
+        - constant
+        - exception
+        - history
+        - logging
+        - operators
+        - reference_vectors
+    - visualization
+        - convergence
+        - multi_objective
+        - surface
+```
+
+### Core
+
+Core is the core. Essentially, it is the parent of everything. You should find parent classes defining the basis of our structure. They should provide variables and methods that will help to construct other modules.
+
+### Functions
+
+Instead of using raw and straightforward functions, why not try this module? Compose high-level abstract functions or even new function-based ideas in order to solve your problems. Note that for now, we will only support multi-objective function strategies.
+
+### Hyperheuristics
+
+An adaptive framework designed to automate the selection and generation of optimization strategies, moving beyond fixed meta-heuristics to solve single and multi-objective problems.
+
+### Math
+
+Just because we are computing stuff does not means that we do not need math. Math is the mathematical package containing low-level math implementations. From random numbers to distribution generation, you can find your needs on this module.
+
+### Optimizers
+
+This is why we are called Opytimizer. This is the heart of heuristics, where you can find a large number of meta-heuristics, optimization techniques, anything that can be called an optimizer. Please take a look at the [available optimizers](https://github.com/recogna-lab/opytimizer/wiki/Types-of-Optimizers).
+
+### Spaces
+
+One can see the space as the place that agents will update their positions and evaluate a fitness function. However, the newest approaches may consider a different type of space. Thinking about that, we are glad to support diverse space implementations.
+
+### Utils
+
+This is a utility package. Common things shared across the application should be implemented here. It is better to implement once and use as you wish than re-implementing the same thing repeatedly.
+
+### Visualization
+
+Everyone needs images and plots to help visualize what is happening, correct? This package will provide every visual-related method for you. Check a specific variable convergence, your fitness function convergence, plot benchmark function surfaces, and much more!
+
+---
+
+## Installation
+
+We believe that everything has to be easy. Not tricky or daunting, Opytimizer will be the one-to-go package that you will need, from the first installation to the daily tasks implementing needs. If you may just run the following under your most preferred Python environment (raw, conda, virtualenv, whatever):
+
+```bash
+pip install opytimizer
+```
+
+Alternatively, if you prefer to install the bleeding-edge version, please clone this repository and use:
+
+```bash
+pip install -e .
+```
+
+---
+
+## Environment configuration
+
+Note that sometimes, there is a need for additional implementation. If needed, from here, you will be the one to know all of its details.
+
+### Ubuntu
+
+No specific additional commands are needed.
+
+### Windows
+
+No specific additional commands are needed.
+
+### MacOS
+
+No specific additional commands are needed.
+
+---
+
+## How-To-Use: Minimal Single-Objective Example
+
+Take a look at a quick working example of Opytimizer for single-objective optimization. Note that we are not passing many extra arguments nor additional information to the procedure. For more complex examples, please check our `examples/` folder.
+
+```Python
+import numpy as np
+
+from opytimizer import Opytimizer
+from opytimizer.core import Function
+from opytimizer.optimizers.single_objective.swarm import PSO
+from opytimizer.spaces import SearchSpace
+from opytimizer.core.stopping import MaxIterations
+
+def sphere(x):
+    return np.sum(x ** 2)
+
+n_agents = 20
+n_variables = 2
+n_objectives = 1
+lower_bound = [-10, -10]
+upper_bound = [10, 10]
+
+space = SearchSpace(n_agents, n_variables, n_objectives, lower_bound, upper_bound)
+optimizer = PSO()
+function = Function(sphere)
+
+opt = Opytimizer(space, optimizer, function)
+
+stopping = MaxIterations(1000)
+
+opt.start(stopping_criteria=stopping)
+```
+
+## How-To-Use: Minimal Multi-Objective Example
+
+Here's a simple example of multi-objective optimization using the ZDT1 benchmark function and NSGA-II algorithm:
+
+```Python
+import numpy as np
+from opytimizer import Opytimizer
+from opytimizer.core import Function
+from opytimizer.optimizers.multi_objective.evolutionary import NSGA2
+from opytimizer.spaces import SearchSpace
+from opytimizer.utils.operators import SBXCrossover, PolynomialMutation
+from opytimizer.core.stopping import MaxIterations
+
+def zdt1(x):
+    f1 = x[0]
+    g = 1 + 9 * np.sum(x[1:]) / (len(x) - 1)
+    f2 = g * (1 - np.sqrt(f1/g)) if f1 != 0 else g
+    return np.array([f1, f2])
+
+n_agents = 100
+n_variables = 30
+n_objectives = 2
+
+space = SearchSpace(
+    n_agents=n_agents,
+    n_variables=n_variables,
+    n_objectives=n_objectives,
+    lower_bound=[0] * n_variables,
+    upper_bound=[1] * n_variables
+)
+
+optimizer = NSGA2(
+    crossover_operator=SBXCrossover(rate=1.0, eta=20, n_offspring=2),
+    mutation_operator=PolynomialMutation(rate=1/30, eta=20)
+)
+function = Function(zdt1)
+
+
+opt = Opytimizer(space, optimizer, function)
+
+stopping = MaxIterations(100)
+
+opt.start(stopping_criteria=stopping)
+```
+
+The optimization process will generate a Pareto front, which can be visualized as follows:
+
+<div align="center"> <img src="https://raw.githubusercontent.com/recogna-lab/opytimizer/main/assets/pareto_front.png" width="400"> <p>Final Pareto Front</p> </div>
+<div align="center"> <img src="https://raw.githubusercontent.com/recogna-lab/opytimizer/main/assets/pareto_front_evolution.png" width="400"> <p>Pareto Front Evolution</p> </div>
+
+---
+
+## How-To-Use: GPU-based Optimization Example
+```Python
+import cupy as cp
+
+from opytimizer import Opytimizer
+from opytimizer.core import Function
+from opytimizer.core import Environment
+from opytimizer.optimizers.single_objective.swarm import PSOCuda
+from opytimizer.spaces import SearchSpace
+from opytimizer.core.stopping import MaxIterations
+from opytimizer.visualization import plot_convergence
+
+cp.random.seed(42)
+
+
+def sphere(x):
+    # x shape = (n_agents, n_variables, n_dims) = (60, 10, 1)
+    return cp.sum(x ** 2, axis=(1, 2))
+
+
+n_agents = 60
+n_variables = 10
+n_objectives = 1
+lower_bound = [-10] * n_variables
+upper_bound = [10] * n_variables
+
+gpu_environment = Environment().set_backend('cupy').set_dtype('float32')
+
+space = SearchSpace(n_agents, n_variables, n_objectives,
+                    lower_bound, upper_bound, env=gpu_environment, tensorized=True)
+
+optimizer = PSOCuda()
+function = Function(sphere)
+
+opt = Opytimizer(space, optimizer, function, save_history=True)
+
+stopping = MaxIterations(1000)
+
+opt.start(stopping_criteria=stopping)
+
+plot_convergence(opt.history.best_agent,
+                title='PSO (CuPy) convergence',
+                labels=['PSO (CuPy - Raw Kernels)']
+                ).show()
+```
+
+
+## Support
+
+We know that we do our best, but it is inevitable to acknowledge that we make mistakes. If you ever need to report a bug, report a problem, talk to us, please do so! We will be available at our bests at this repository.
+
+---

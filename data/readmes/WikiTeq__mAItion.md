@@ -1,0 +1,942 @@
+# mAItion
+
+![mAItion](https://github.com/WikiTeq/mAItion/blob/main/mAItion.png?raw=true)
+
+mAItion is an all-in-one ready-to-use AI-powered tool that combines your existing knowledge with LLMs,
+allowing you to chat, search and interact with your data through a slick chat interface. With mAItion
+you can aggregate all your knowledge from many sources using Connectors into a central place and
+interact with your knowledge with ease!
+
+📚 **Documentation:** [docs.maition.com](https://docs.maition.com/)
+
+## ✨ Features
+
+* Support for both local and remote LLMs for embedding and inference
+* Asynchronous data ingestion with deduplication and per-source configurable schedules
+* Data ingestion from S3 buckets with Everything-to-Markdown conversion via [MarkItDown](https://github.com/microsoft/markitdown)
+* Data ingestion from MediaWiki with Wiki-to-Markdown conversion via [html2text](https://github.com/Alir3z4/html2text)
+* SerpAPI search query results ingestion from Google Search results with customizable queries
+* Flexible configuration supporting an arbitrary number of connectors
+* Built with extensibility in mind, allowing for custom connectors addition with ease
+* MCP servers support (stdio, streamable http)
+* Web-search support (through external services and via on-premise services)
+* In-place chat with uploaded documents and images (for multi-modal LLMs)
+* Code execution and Code interpreter
+* Text-to-Speech and Speech-to-Text capabilities
+* Image generator (requires model supporting image generation)
+* Flexible automation capabilities through Functions and Pipelines
+* Multi-user setup with fine-grained groups and permissions
+* Support for multiple customized configurations of LLM models
+
+## ✨ Use-cases
+
+* A single place to chat with your company knowledge that's scattered across many external systems
+* A central space for looking up and refining your existing knowledge across many knowledge bases
+* A tool to find secret knowledge that cannot be found any other way across your scattered data
+* An entry-point into your on-premise hosted LLM models supporting evaluations and per-model settings
+
+## 🌐 Connectors included
+
+* S3 (any AWS compatible Object Storage including AWS, Contabo, B2, Cloudflare R2, OVH, etc)
+* MediaWiki (all versions supported, both private and public wiki)
+* SerpAPI
+* Slack
+* OneDrive for Business
+* SharePoint
+* GitHub (repository files and issues, PAT or GitHub App auth)
+* Notion
+* Dropbox (files and folders with flexible path, extension, and directory filters)
+* Confluence (Cloud and Server/Data Center)
+* BookStack
+
+## 🌐 Extra connectors
+
+Over 100 extra connectors are available at request, including the most popular ones:
+
+* Gmail
+* Google Drive
+* Jira
+* Gitlab
+* Microsoft Teams
+* Microsoft Office 365
+* Trello
+* Web scraper
+* YouTube
+* FTP
+* SCP
+* SSH
+* and many more..
+
+## Quick start
+
+### Requirements
+
+* Docker and Docker Compose
+* OpenRouter or OpenAI API key (a free OpenRouter account works with the default configuration)
+* S3 bucket
+
+### Setup
+
+* Create `.env.rag` file by copying `.env.rag.example` (see https://github.com/wikiteq/rag-of-all-trades for details)
+    * Set `OPENROUTER_API_KEY`
+    * Set `S3_ACCOUNT1_*` values to match your source S3 bucket with files
+* Create `config.yaml` out of `config.yaml.example`
+    * The default config works OK and is configured to:
+        * Use a single S3 bucket as data source
+        * Use `openai/gpt-oss-20b:free` [model](https://openrouter.ai/openai/gpt-oss-20b:free) for rephrase
+        * Use local `sentence-transformers/all-mpnet-base-v2` [model](https://huggingface.co/sentence-transformers/all-mpnet-base-v2) for embeddings
+        * You can change the values if necessary, refer to https://github.com/wikiteq/rag-of-all-trades for details
+* Create `.env` file by copying `.env.openwebui.example`
+    * Set `OPENAI_API_KEY`
+    * Optionally set `OPENAI_DEFAULT_MODEL`
+
+Start the stack by running `docker compose up -d`. Wait until all the services
+become healthy. You can check health status by running `docker compose ps` and checking
+the `STATUS` column of the services:
+
+```bash
+docker compose ps
+NAME                                      IMAGE                                      COMMAND                  SERVICE     CREATED         STATUS                   PORTS
+rag-of-all-trades-openwebui-api-1         ghcr.io/wikiteq/rag-of-all-trades:latest   "sh -c 'alembic upgr…"   api         4 minutes ago   Up 4 minutes (healthy)   8000/tcp
+rag-of-all-trades-openwebui-openwebui-1   ghcr.io/open-webui/open-webui:0.6.5        "/custom-entrypoint.…"   openwebui   4 minutes ago   Up 4 minutes (healthy)   0.0.0.0:3000->8080/tcp, [::]:3000->8080/tcp
+rag-of-all-trades-openwebui-postgres-1    ankane/pgvector:v0.5.1                     "docker-entrypoint.s…"   postgres    4 minutes ago   Up 4 minutes (healthy)   5432/tcp
+rag-of-all-trades-openwebui-redis-1       redis:7                                    "docker-entrypoint.s…"   redis       4 minutes ago   Up 4 minutes (healthy)   6379/tcp
+```
+
+It takes up to a minute for the OpenWebUI to fully boot on cold start.
+
+Once all the services are booted and report healthy status visit http://localhost:3000 and
+login using Admin credentials. The credentials are defined in `X_WEBUI_ADMIN_EMAIL` and `X_WEBUI_ADMIN_PASS`
+of the `.env` file. The default ones are:
+
+* username: `admin@example123.com`
+* password: `q1w2e3r4!`
+
+If you did not change the `ENABLE_OPENAI_API` you will also have LLM provider
+pre-configured with the values you have in the `.env` including the default chat model
+
+Two components handle RAG service communication:
+
+- **Filter function** (`functions/function.py`) — intercepts every user message and injects ROAT context automatically. Enabled globally via Admin Panel → Functions.
+- **Knowledge Base Search tool** (`tools/roat_retrieval.py`) — a Workspace Tool that lets the LLM decide when to query ROAT. Requires a model with native function calling support. Both are automatically provisioned on first boot.
+- **Web Search Tool** (`tools/web_search.py`) — an optional Workspace Tool that lets the LLM search the web via the Tavily API. Enable with `TOOL_WEB_SEARCH_ENABLED=True` in `.env`, then either set `TOOL_WEB_SEARCH_API_KEY` to auto-configure the key on install, or set the `tavily_api_key` valve manually from Workspace → Tools.
+
+## HTTPS with Caddy
+
+mAItion serves all traffic — including static assets — through Open WebUI's Uvicorn server. For production deployments, adding Caddy as a caching reverse proxy provides automatic TLS certificate issuance via Let's Encrypt and speeds up static asset delivery. The `compose.caddy.yaml` overlay also starts a dedicated `redis-caddy` sidecar that Caddy uses as a cache backend: static assets (images, CSS, JS, fonts) are cached for one year with immutable headers, and `manifest.json` is cached for 24 hours. Dynamic chat and API requests bypass the cache entirely and are streamed directly to the browser.
+
+### Requirements
+
+- A public domain (A/AAAA record pointing to your server)
+- Ports **80** and **443** open and publicly reachable (required for the Let's Encrypt HTTP-01 challenge). Set `CADDY_HTTP_PORT` / `CADDY_HTTPS_PORT` in `.env` if you need to publish Caddy on different host ports.
+
+### Setup
+
+1. Add the following to your `.env` file:
+
+   ```bash
+   DOMAIN=maition.example.com
+   ACME_EMAIL=admin@example.com
+   WEBUI_URL=https://maition.example.com
+   ```
+
+   Setting `DOMAIN` to an `http://` URL (e.g. `DOMAIN=http://localhost`) bypasses TLS termination entirely — Caddy will serve the app on plain HTTP. Use this only for local testing.
+
+2. Start the stack with the Caddy overlay by setting `COMPOSE_FILE` so plain `docker compose` picks it up automatically:
+
+   ```bash
+   export COMPOSE_FILE=compose.yaml:compose.caddy.yaml
+   docker compose up -d
+   ```
+
+   Or pass the overlay explicitly with `-f`:
+
+   ```bash
+   docker compose -f compose.yaml -f compose.caddy.yaml up -d
+   ```
+
+   Either way, the overlay clears OpenWebUI's host port binding so only Caddy is externally reachable. Caddy will automatically obtain and renew a TLS certificate, and HTTP requests are redirected to HTTPS automatically.
+
+### Troubleshooting
+
+- **Certificate not issued** — check that ports 80 and 443 are reachable from the public internet and your DNS record is pointing to this server. Run `docker compose logs caddy` to see the ACME challenge output.
+- **Port 80/443 already in use** — another reverse proxy (Traefik, Nginx, etc.) is likely running on the host. Either stop it, or set `CADDY_HTTP_PORT`/`CADDY_HTTPS_PORT` in `.env` to publish Caddy on different host ports — note that Let's Encrypt's HTTP-01 challenge and normal HTTPS access require the public internet to reach ports 80/443, so this only works if you also forward those public ports to your chosen ones, or you're not relying on public TLS (e.g. local testing).
+
+### Certificate persistence
+
+TLS certificates are stored in the `caddy_data` Docker volume. They survive `docker compose down` but are removed by `docker compose down -v`. Do not use `-v` if you want to preserve certificates.
+
+## Connectors configuration
+
+The service supports multiple data sources, including multiple data sources of the same type, each with its own
+ingestion schedule. The connectors to enable are defined via `config.yaml`, and their secrets are defined
+in the `.env.rag` file.
+
+### S3 Connector
+
+The S3 connector ingests documents from S3 buckets and converts them to Markdown format.
+The connector has the following configuration options:
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "s3" # must be s3
+    name: "account1" # arbitrary name for the connector, will be stored in metadata
+    config:
+      endpoint: "${S3_ACCOUNT1_ENDPOINT}" # s3 endpoint
+      access_key: "${S3_ACCOUNT1_ACCESS_KEY}" # s3 access key
+      secret_key: "${S3_ACCOUNT1_SECRET_KEY}" # s3 secret key
+      region: "${S3_ACCOUNT1_REGION}" # s3 region
+      use_ssl: "${S3_ACCOUNT1_USE_SSL}" # use ssl for s3 connection, can be True or False
+      buckets: "${S3_ACCOUNT1_BUCKETS}" # single entry or comma-separated list i.e. bucket1,bucket2
+      schedules: "${S3_ACCOUNT1_SCHEDULES}" # single entry or comma-separated list i.e. 3600,60
+
+  - type: "s3"
+    name: "account2"
+    config:
+      ...
+
+  - type: "s3"
+    name: "account3"
+    config:
+      ...
+```
+
+```dotenv
+# .env.rag
+
+S3_ACCOUNT1_ENDPOINT=https://s3.amazonaws.com
+S3_ACCOUNT1_ACCESS_KEY=xxx
+S3_ACCOUNT1_SECRET_KEY=xxx
+S3_ACCOUNT1_REGION=us-east-1
+S3_ACCOUNT1_USE_SSL=True
+S3_ACCOUNT1_BUCKETS=bucket1,bucket2
+S3_ACCOUNT1_SCHEDULES=3600,60
+```
+
+### MediaWiki Connector
+
+The MediaWiki connector ingests documents from MediaWiki sites and converts them to Markdown format.
+The connector has the following configuration options:
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "mediawiki"
+    name: "wiki1"
+    config:
+      host: "${MEDIAWIKI1_HOST}"
+      path: "/w/"          # optional, default /w/
+      scheme: "https"      # optional, default https
+      page_limit: 500      # optional, max pages per namespace (default: unlimited)
+      namespaces: "0,1"    # optional, comma-separated namespace IDs (default: content namespaces)
+      filter_redirects: true  # optional, exclude redirect pages (default: true)
+      username: "${MEDIAWIKI1_USERNAME}"  # optional, for private wikis
+      password: "${MEDIAWIKI1_PASSWORD}"  # optional, for private wikis
+      schedules: "${MEDIAWIKI1_SCHEDULES}"
+
+  - type: "mediawiki"
+    name: "wiki2"
+    config:
+      host: "${MEDIAWIKI2_HOST}"
+      schedules: "${MEDIAWIKI2_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+MEDIAWIKI1_HOST=wiki.example.org
+MEDIAWIKI1_SCHEDULES=3600
+# Only needed for private wikis requiring login:
+#MEDIAWIKI1_USERNAME=your-bot-username
+#MEDIAWIKI1_PASSWORD=your-bot-password
+```
+
+### SerpAPI Connector
+
+The SerpAPI connector ingests documents from Google Search results and converts them to Markdown format.
+The connector has the following configuration options:
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "serpapi"
+    name: "serp_ingestion1"
+    config:
+      api_key: "${SERPAPI1_KEY}"
+      queries: "${SERPAPI1_QUERIES}"
+      schedules: "${SERPAPI1_SCHEDULES}"
+
+  - type: "serpapi"
+    name: "serp_ingestion2"
+    config:
+
+  - type: "serpapi"
+    name: "serp_ingestion3"
+    config:
+```
+
+```dotenv
+# .env.rag
+
+SERPAPI1_KEY=xxxx
+SERPAPI1_QUERIES=aaa
+SERPAPI1_SCHEDULES=3600
+```
+
+### Web Connector
+
+The Web connector ingests content from web pages. It supports two mutually exclusive modes:
+- **URLs mode**: scrapes a fixed list of URLs
+- **Sitemap mode**: discovers URLs from a `sitemap.xml` with optional `include_prefix` filter
+
+```yaml
+# config.yaml
+
+sources:
+  # URLs mode
+  - type: "web"
+    name: "web1"
+    config:
+      urls: "${WEB1_URLS}"
+      html_to_text: true
+      schedules: "${WEB1_SCHEDULES}"
+
+  # Sitemap mode
+  - type: "web"
+    name: "web2"
+    config:
+      sitemap_url: "${WEB2_SITEMAP_URL}"
+      include_prefix: "${WEB2_INCLUDE_PREFIX}"
+      html_to_text: true
+      schedules: "${WEB2_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+WEB1_URLS=https://example.com/page1,https://example.com/page2
+WEB1_SCHEDULES=60
+WEB2_SITEMAP_URL=https://example.com/sitemap.xml
+WEB2_INCLUDE_PREFIX=/blog/
+WEB2_SCHEDULES=60
+```
+
+### Jira Connector
+
+The Jira connector ingests issues from Jira Cloud or Jira Server/Data Center.
+It supports two authentication modes: `basic` (email + API token) and `token` (Personal Access Token / PAT).
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "jira"
+    name: "jira1"
+    config:
+      server_url: "${JIRA1_SERVER_URL}"
+      auth_type: "basic"        # "basic" (email + API token) or "token" (PAT)
+      email: "${JIRA1_EMAIL}"   # required when auth_type is "basic"
+      api_token: "${JIRA1_API_TOKEN}"
+      jql: "${JIRA1_JQL}"       # JQL query to select issues
+      max_results: 50
+      load_comments: false
+      max_comments: 10
+      schedules: "${JIRA1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+JIRA1_SERVER_URL=https://your-org.atlassian.net
+JIRA1_EMAIL=your-email@example.com
+JIRA1_API_TOKEN=your-api-token
+JIRA1_JQL=project = MYPROJECT ORDER BY updated DESC
+JIRA1_SCHEDULES=3600
+```
+
+### Pipedrive Connector
+
+The Pipedrive connector ingests CRM records from Pipedrive via the REST API v1. Supports activities, deals, notes, organizations, persons, products, projects, leads, tasks, and mails.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "pipedrive"
+    name: "pipedrive1"
+    config:
+      api_token: "${PIPEDRIVE1_API_TOKEN}"
+      load_types:           # optional, default: all entity types
+        - deals
+        - notes
+        - persons
+        - mails
+      max_items: 500        # optional, per-entity limit (default: unlimited)
+      max_retries: 3        # optional, retry attempts on failure (default: 3)
+      filter_mail_folders:  # optional, default: [inbox]
+        - inbox
+        - sent
+      schedules: "${PIPEDRIVE1_SCHEDULES}"
+
+  - type: "pipedrive"
+    name: "pipedrive2"
+    config:
+      api_token: "${PIPEDRIVE2_API_TOKEN}"
+      schedules: "${PIPEDRIVE2_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+PIPEDRIVE1_API_TOKEN=your-pipedrive-api-token
+PIPEDRIVE1_SCHEDULES=3600
+PIPEDRIVE2_API_TOKEN=your-second-pipedrive-api-token
+PIPEDRIVE2_SCHEDULES=3600
+```
+
+### Slack Connector
+
+The Slack connector ingests messages from Slack channels. Each message and each thread reply becomes a separate document in the vector store.
+
+Channels can be specified directly by ID or resolved dynamically via name patterns or regex.
+
+Authentication requires a Slack bot token with the following scopes: `channels:history`, `groups:history`, `channels:read`, `groups:read`, `users:read`. Invite the bot to each target channel (`/invite @YourBot`).
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "slack"
+    name: "slack1"
+    config:
+      token: "${SLACK1_TOKEN}"
+      channel_ids: "${SLACK1_CHANNEL_IDS}"          # comma-separated channel IDs (mutually exclusive with channel_patterns)
+      # channel_patterns: "${SLACK1_CHANNEL_PATTERNS}" # channel name patterns or regex (mutually exclusive with channel_ids)
+      # channel_types: "public_channel,private_channel"  # optional, used with channel_patterns
+      # earliest_date: "2024-01-01"                 # optional: fetch messages from this date
+      # latest_date: "2025-01-01"                   # optional: fetch messages up to this date
+      schedules: "${SLACK1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+SLACK1_TOKEN=xoxb-your-bot-token
+SLACK1_CHANNEL_IDS=C1234567890,C0987654321
+SLACK1_CHANNEL_PATTERNS=general,^dev.*
+SLACK1_SCHEDULES=3600
+```
+
+### Notion Connector
+
+The Notion connector ingests pages from a Notion workspace. Each page becomes a separate document in the vector store.
+
+Three modes are supported: explicit `page_ids`, `database_ids`, or load-all (when neither is set — fetches all pages the integration has access to).
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "notion"
+    name: "notion1"
+    config:
+      integration_token: "${NOTION1_INTEGRATION_TOKEN}"  # Notion integration token (secret_...)
+      page_ids: "${NOTION1_PAGE_IDS}"                    # optional: comma-separated page IDs
+      database_ids: "${NOTION1_DATABASE_IDS}"            # optional: comma-separated database IDs
+      request_delay: 0.3                                 # optional: delay between API calls in seconds
+      schedules: "${NOTION1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+NOTION1_INTEGRATION_TOKEN=secret_your-notion-integration-token
+NOTION1_PAGE_IDS=page-id-1,page-id-2
+NOTION1_DATABASE_IDS=database-id-1
+NOTION1_SCHEDULES=3600
+```
+
+### IMAP Connector
+
+The IMAP connector ingests emails from any IMAP server over implicit TLS or STARTTLS (Gmail, Outlook,
+Exchange, self-hosted, etc.). Each email becomes a document with subject as title, parsed body as
+content, and sender/recipient metadata (including Cc/Bcc). Mailboxes are auto-discovered when not
+specified.
+
+Server certificates are always verified (hostname + trust chain) — self-signed certificates will be
+rejected unless the server's CA is trusted by the environment running the connector.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "imap"
+    name: "imap1"
+    config:
+      host: "${IMAP1_HOST}"
+      port: 993                     # optional, default 993 (IMAPS), or 143 when use_starttls is set
+      username: "${IMAP1_USERNAME}"
+      password: "${IMAP1_PASSWORD}" # app-specific password for Gmail
+      mailboxes: "${IMAP1_MAILBOXES}" # optional, comma-separated; remove this line (not just the env var) to ingest all mailboxes
+      since: "2024-01-01"            # optional, only ingest messages on or after this date (YYYY-MM-DD)
+      use_starttls: false            # optional, default false; connect plaintext then upgrade via STARTTLS instead of implicit TLS
+      schedules: "${IMAP1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+IMAP1_HOST=imap.example.com
+IMAP1_USERNAME=user@example.com
+IMAP1_PASSWORD=your-app-password
+IMAP1_MAILBOXES=INBOX,Sent
+IMAP1_SCHEDULES=3600
+```
+
+### OneDrive Connector
+
+The OneDrive connector ingests files from Microsoft OneDrive for Business (Microsoft 365) using App
+authentication (client credentials). Files can be selected by folder ID, folder path, file IDs, or file
+paths. Recursive subfolder traversal and MIME type filtering are supported.
+
+> **Note:** Only OneDrive for Business is supported. OneDrive Personal accounts are not supported.
+
+The Azure app registration needs the **application** permission `Files.Read.All` with admin consent
+granted. Without it, Graph API calls fail with a 403 error.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "onedrive"
+    name: "onedrive1"
+    config:
+      client_id: "${ONEDRIVE1_CLIENT_ID}"
+      client_secret: "${ONEDRIVE1_CLIENT_SECRET}"
+      tenant_id: "${ONEDRIVE1_TENANT_ID}"
+      userprincipalname: "${ONEDRIVE1_USER_PRINCIPAL_NAME}"
+      folder_path: "Documents/Reports"  # optional: hardcode directly in config
+      folder_id:                        # optional: OneDrive folder ID
+      file_ids:                         # optional: comma-separated file IDs
+      file_paths:                       # optional: comma-separated file paths
+      mime_types:                       # optional: comma-separated MIME types to filter
+      recursive: true                   # optional, default true
+      max_file_size_mb: 50              # optional, default 50; files larger than this are skipped
+      schedules: "${ONEDRIVE1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+ONEDRIVE1_CLIENT_ID=your-azure-app-client-id
+ONEDRIVE1_CLIENT_SECRET=your-azure-app-client-secret
+ONEDRIVE1_TENANT_ID=your-azure-tenant-id
+ONEDRIVE1_USER_PRINCIPAL_NAME=user@your-org.onmicrosoft.com
+ONEDRIVE1_SCHEDULES=3600
+```
+
+### GitHub Connector
+
+The GitHub connector ingests repository files and optionally issues from a GitHub repository.
+Supports PAT and GitHub App authentication, branch or commit targeting, file extension/directory
+filters, and issue label filters.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "github"
+    name: "github1"
+    config:
+      personal_token: "${GITHUB1_PERSONAL_TOKEN}"
+      # GitHub App auth (mutually exclusive with personal_token):
+      #github_app_id: "${GITHUB1_APP_ID}"
+      #github_app_installation_id: "${GITHUB1_APP_INSTALLATION_ID}"
+      #github_app_private_key: "${GITHUB1_APP_PRIVATE_KEY}"
+      owner: "${GITHUB1_OWNER}"
+      repo: "${GITHUB1_REPO}"
+      branch: "main"                    # optional, default "main" (mutually exclusive with commit_sha)
+      #commit_sha: ""                   # optional (mutually exclusive with branch)
+      include_extensions: "md,py"       # optional, comma-separated (mutually exclusive with exclude_extensions)
+      #exclude_extensions: ""           # optional (mutually exclusive with include_extensions)
+      #include_directories: ""          # optional, comma-separated (mutually exclusive with exclude_directories)
+      #exclude_directories: ""          # optional (mutually exclusive with include_directories)
+      include_issues: false             # optional, default false
+      #include_issues_labels: ""        # optional, comma-separated (mutually exclusive with exclude_issues_labels)
+      #exclude_issues_labels: ""        # optional (mutually exclusive with include_issues_labels)
+      concurrent_requests: 5            # optional, default 5
+      schedules: "${GITHUB1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+GITHUB1_PERSONAL_TOKEN=your-personal-access-token
+# GitHub App auth (alternative to personal token):
+#GITHUB1_APP_ID=
+#GITHUB1_APP_INSTALLATION_ID=
+#GITHUB1_APP_PRIVATE_KEY=
+GITHUB1_OWNER=your-org-or-username
+GITHUB1_REPO=your-repo-name
+GITHUB1_SCHEDULES=3600
+```
+
+### Dropbox Connector
+
+The Dropbox connector ingests files from Dropbox using the official Dropbox Python SDK.
+Supports ingesting from specific paths or the entire account root, with optional extension and directory name filters.
+Requires a [Dropbox access token](https://www.dropbox.com/developers/apps) with `files.content.read` and `files.metadata.read` scopes.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "dropbox"
+    name: "dropbox1"
+    config:
+      access_token: "${DROPBOX1_ACCESS_TOKEN}"
+      # Paths to ingest (optional). If omitted, ingests everything from root recursively.
+      paths:
+        - "/Documents/Engineering"
+        - "/Shared/Wiki"
+      # Extension filters (mutually exclusive, optional):
+      #include_extensions: "md,docx,pdf"   # only these extensions
+      #exclude_extensions: "png,jpg,gif"   # all except these
+      # Directory name filters (mutually exclusive, optional):
+      #include_directories: "source,docs"  # only these folder names
+      #exclude_directories: "archive,tmp"  # all except these folder names
+      schedules: "${DROPBOX1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+DROPBOX1_ACCESS_TOKEN=sl.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DROPBOX1_SCHEDULES=3600
+```
+
+### Confluence Connector
+
+The Confluence connector ingests pages from Atlassian Confluence Cloud or Server/Data Center.
+It supports 5 discovery modes and 5 authentication strategies.
+
+**Discovery modes** (exactly one required):
+
+| Mode | Config key | Description |
+|------|-----------|-------------|
+| Space | `space_key` | All pages in a space |
+| Page IDs | `page_ids` | Comma-separated list of page IDs |
+| Label | `page_label` | All pages with a given label |
+| CQL | `cql` | Arbitrary CQL query |
+| Folder | `folder_id` | All pages inside a folder |
+
+**Auth strategies** (mutually exclusive):
+
+| Strategy | Keys | Use case |
+|----------|------|----------|
+| Cloud basic | `username` + `api_token` | Confluence Cloud (recommended) |
+| Server basic | `username` + `password` | Confluence Server / Data Center |
+| Bearer token | `api_token` only | Server/DC PAT — requires `cloud: false` |
+| OAuth2 | `oauth2`: `{client_id: "...", token: {access_token: "...", token_type: "..."}}` | Atlassian OAuth 2.0 |
+| Cookies | `cookies`: browser session cookies dict (e.g. from `atlassian.utils.parse_cookie_file()`) | Session-based auth |
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "confluence"
+    name: "confluence1"
+    config:
+      base_url: "${CONFLUENCE1_BASE_URL}"
+      username: "${CONFLUENCE1_USERNAME}"
+      api_token: "${CONFLUENCE1_API_TOKEN}"
+      space_key: "${CONFLUENCE1_SPACE_KEY}"
+      page_status: "current"        # optional: filter by status
+      max_pages: 50
+      schedules: "${CONFLUENCE1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+CONFLUENCE1_BASE_URL=https://yoursite.atlassian.net/wiki
+CONFLUENCE1_USERNAME=you@example.com
+CONFLUENCE1_API_TOKEN=your-api-token
+#CONFLUENCE1_PASSWORD=your-password  # mutually exclusive with API_TOKEN
+CONFLUENCE1_SPACE_KEY=ENG
+CONFLUENCE1_PAGE_IDS=123456,789012
+CONFLUENCE1_PAGE_LABEL=meeting-notes
+CONFLUENCE1_CQL=space = 'ENG' AND type = page
+CONFLUENCE1_FOLDER_ID=12345
+CONFLUENCE1_SCHEDULES=3600
+```
+
+### SharePoint Connector
+
+The SharePoint connector ingests files from SharePoint document libraries or site pages.
+Authentication is via Microsoft Entra ID (client credentials / app registration).
+
+Supports two modes:
+- **File mode** (`sharepoint_type: file`, default): load files from a drive/folder
+- **Page mode** (`sharepoint_type: page`): load SharePoint site pages
+
+```yaml
+# config.yaml
+
+sources:
+  # Loading files from a SharePoint drive
+  - type: "sharepoint"
+    name: "sharepoint1"
+    config:
+      client_id: "${SHAREPOINT1_CLIENT_ID}"
+      client_secret: "${SHAREPOINT1_CLIENT_SECRET}"
+      tenant_id: "${SHAREPOINT1_TENANT_ID}"
+      # sharepoint_site_id can be provided instead of sharepoint_site_name
+      sharepoint_site_name: "MySite"
+      # sharepoint_host_name and sharepoint_relative_url are passed through to
+      # the reader but do NOT replace sharepoint_site_name / sharepoint_site_id
+      # for site lookup. At least one of site_name or site_id is required.
+      # sharepoint_host_name: "contoso.sharepoint.com"
+      # sharepoint_relative_url: "sites/YourSiteName"
+      # sharepoint_folder_id can be provided instead of sharepoint_folder_path
+      sharepoint_folder_path: "Documents/Reports"
+      sharepoint_type: "file"                   # "file" (default) or "page"
+      recursive: true
+      schedules: "${SHAREPOINT1_SCHEDULES}"
+
+  # Loading SharePoint site pages
+  - type: "sharepoint"
+    name: "sharepoint2"
+    config:
+      client_id: "${SHAREPOINT2_CLIENT_ID}"
+      client_secret: "${SHAREPOINT2_CLIENT_SECRET}"
+      tenant_id: "${SHAREPOINT2_TENANT_ID}"
+      sharepoint_site_name: "TeamSite"
+      sharepoint_type: "page"
+      schedules: "${SHAREPOINT2_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+SHAREPOINT1_CLIENT_ID=your-azure-app-client-id
+SHAREPOINT1_CLIENT_SECRET=your-azure-app-client-secret
+SHAREPOINT1_TENANT_ID=your-azure-tenant-id
+SHAREPOINT1_SCHEDULES=3600
+
+# sharepoint2 (site pages example above) uses its own set of variables:
+SHAREPOINT2_CLIENT_ID=your-azure-app-client-id
+SHAREPOINT2_CLIENT_SECRET=your-azure-app-client-secret
+SHAREPOINT2_TENANT_ID=your-azure-tenant-id
+SHAREPOINT2_SCHEDULES=3600
+```
+
+### BookStack Connector
+
+The BookStack connector ingests shelves, books, chapters, and pages from a BookStack instance via the REST API.
+
+```yaml
+# config.yaml
+
+sources:
+  - type: "bookstack"
+    name: "bookstack1"
+    config:
+      base_url: "${BOOKSTACK1_BASE_URL}"
+      token_id: "${BOOKSTACK1_TOKEN_ID}"
+      token_secret: "${BOOKSTACK1_TOKEN_SECRET}"
+      item_types:              # optional, default: pages
+        - "shelves"
+        - "books"
+        - "chapters"
+        - "pages"
+      schedules: "${BOOKSTACK1_SCHEDULES}"
+```
+
+```dotenv
+# .env.rag
+
+BOOKSTACK1_BASE_URL=https://wiki.example.com
+BOOKSTACK1_TOKEN_ID=your-token-id
+BOOKSTACK1_TOKEN_SECRET=your-token-secret
+BOOKSTACK1_SCHEDULES=3600
+```
+
+## Single Sign-On (SSO)
+
+mAItion inherits full SSO support from OpenWebUI. SSO is disabled by default and configured
+entirely via environment variables in `.env` (copied from `.env.openwebui.example`).
+
+### Google OAuth2 example
+
+1. Create OAuth2 credentials in [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+   Set the authorized redirect URI to `http(s)://your-domain/oauth/google/callback`.
+2. Add to `.env`:
+
+```dotenv
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+ENABLE_OAUTH_SIGNUP=True
+```
+
+3. Restart the OpenWebUI service: `docker compose up -d openwebui`
+4. Visit http://localhost:3000 — a **Continue with Google** button will appear on the login page.
+
+For all supported providers (Microsoft/Azure AD, GitHub, generic OIDC, trusted header SSO),
+full configuration reference, and common gotchas, see the
+[mAItion SSO docs](https://docs.maition.com/configuration/sso) and the
+[OpenWebUI SSO troubleshooting guide](https://docs.openwebui.com/troubleshooting/sso/).
+
+## Embeddings and Inference
+
+### Embeddings support
+
+Both local and remote OpenAI-compatible models are supported for embeddings:
+
+* `Local` (running arbitrary embedding models from HuggingFace)
+* `OpenRouter`
+* `OpenAI` or `OpenAI`-compatible
+
+### Inference support
+
+Both local and remote OpenAI-compatible models are supported for inference:
+
+* `OpenRouter`
+* `OpenAI` or `OpenAI`-compatible
+
+### Embeddings-only HuggingFace local model
+
+You can configure the service to use **local embeddings** only, in this mode
+you can use any embedding model supported by HuggingFace. Inference is disabled in
+this mode, so you won't be able to use the **rephrase** endpoint.
+
+```yaml
+# config.yaml
+
+embedding:
+  provider: local
+  # you can use any embedding model supported by HuggingFace
+  model_config: sentence-transformers/all-MiniLM-L6-v2
+  embedding_dim: 384
+
+inference:
+  provider: None
+  model_config: None
+```
+
+### Embeddings-only OpenRouter/OpenAI model
+
+You can configure the service to use **remote embeddings**, in this mode
+you can use any embedding model supported by OpenRouter/OpenAI. Inference is disabled in
+this mode, so you won't be able to use the **rephrase** endpoint.
+
+```yaml
+# config.yaml
+
+embedding:
+  provider: openrouter
+  model_config: text-embedding-3-small
+  embedding_dim: 1536
+
+inference:
+  provider: None
+  model_config: None
+```
+
+You must set `OPENROUTER_API_KEY` and `OPENROUTER_API_BASE` in the `.env.rag` file.
+
+### Embeddings and inference OpenRouter/OpenAI model
+
+You can configure the service to use **remote embeddings** and **remote inference**, in this mode
+you can use any embedding and inference models supported by OpenRouter/OpenAI.
+
+```yaml
+# config.yaml
+
+embedding:
+  provider: openrouter
+  model_config: text-embedding-3-small
+  embedding_dim: 1536
+
+inference:
+  provider: openrouter
+  model_config: gpt-4o
+```
+
+You must set `OPENROUTER_API_KEY` and `OPENROUTER_API_BASE` in the `.env.rag` file.
+
+## Reference of the `config.yaml`
+
+The `config.yaml` file contains the main configuration of the service.
+
+> Environment variables (`${...}`) in the config file are evaluated at runtime.
+
+```yaml
+sources: # holds the list of sources to ingest from (Connectors)
+
+  - type: # type of the connector (s3, mediawiki, serpapi)
+    name: # arbitrary name for the connector, will be stored in metadata
+    enabled: true # optional, set to false to skip this source entirely (default: true)
+    config:
+      # connector specific configuration
+      schedules: "${S3_ACCOUNT1_SCHEDULES}"
+
+# configures models and dimensions for embeddings
+embedding:
+  provider: openrouter # `openrouter`/`openai` or `local` for local HuggingFace embeddings
+  model_config: text-embedding-3-small # model to use
+  embedding_dim: 1536 # dimensions (check with the model docs)
+
+# configures the LLM provider and model
+inference:
+  provider: openrouter # `openrouter`/`openai`
+  model_config: gpt-4o # model to use
+
+# vector store configuration
+vector_store:
+  table_name: embeddings
+  hybrid_search: true # whether to use hybrid search or not
+  chunk_size: 512 # chunk size for vector indexing
+  chunk_overlap: 50 # overlap between chunks
+  # hnsw indexes settings
+  hnsw:
+    hnsw_m: 16 # number of neighbors
+    hnsw_ef_construction: 64 # ef construction parameter for HNSW
+    hnsw_ef_search: 40 # ef search parameter for HNSW
+    hnsw_dist_method: vector_cosine_ops # distance metric for HNSW
+```
+
+## Tech Stack
+
+* [Rag-Of-All-Trades](https://github.com/wikiteq/rag-of-all-trades) v0.1 as a RAG backend
+* [OpenWebUI](https://github.com/open-webui/open-webui) v0.6.5 as a front-end
+
+## Troubleshooting
+
+### OpenWebUI does not start
+
+The `openwebui` service depends on the `api` service healthiness and will remain pending until the API service
+is online. Check the `api` container for any errors, review the `config.yaml` and `.env.rag` for typos.
+
+### HuggingFace connection timeout
+
+```
+requests.exceptions.ReadTimeout: (ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: da122313-e11f-4d54-b4f3-187abfea0ca3)')
+```
+
+OpenWebUI downloads some HuggingFace models during first boot. Sometimes HuggingFace endpoints may timeout.
+In this scenario just run `docker compose down -v` to wipe the stack and start over with `docker compose up -d`
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=WikiTeq%2FmAItion&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=WikiTeq/mAItion&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=WikiTeq/mAItion&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=WikiTeq/mAItion&type=date&legend=top-left" />
+ </picture>
+</a>

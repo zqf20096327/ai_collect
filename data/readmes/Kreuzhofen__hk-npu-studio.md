@@ -1,0 +1,716 @@
+<a id="top"></a>
+
+<p align="center">
+  <img src="assets/brand/hk_npu_studio_banner_master.png"
+       width="100%"
+       alt="HK NPU STUDIO — Local AI for Snapdragon® PCs">
+</p>
+
+## 🛡️ Badges
+
+<p align="center">
+  <a href="https://github.com/Kreuzhofen/hk-npu-studio/releases">
+    <img src="https://img.shields.io/github/v/release/Kreuzhofen/hk-npu-studio?include_prereleases&style=flat-square&color=0078D4" alt="Release">
+  </a>
+  <a href="https://github.com/Kreuzhofen/hk-npu-studio/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-Evaluation_2.0-808080?style=flat-square" alt="License">
+  </a>
+  <a href="https://github.com/Kreuzhofen/hk-npu-studio/releases">
+    <img src="https://img.shields.io/github/downloads/Kreuzhofen/hk-npu-studio/total?style=flat-square&color=blueviolet" alt="Downloads">
+  </a>
+  <a href="https://github.com/Kreuzhofen/hk-npu-studio/stargazers">
+    <img src="https://img.shields.io/github/stars/Kreuzhofen/hk-npu-studio?style=flat-square&color=gold" alt="Stars">
+  </a>
+  <br>
+  <a href="https://learn.microsoft.com/windows/arm/">
+    <img src="https://img.shields.io/badge/Platform-Windows_11_ARM64-0078D4?style=flat-square&logo=windows11&logoColor=white" alt="Platform">
+  </a>
+  <a href="https://www.qualcomm.com/products/mobile/snapdragon/pcs-and-tablets/snapdragon-x-elite">
+    <img src="https://img.shields.io/badge/Hardware-Snapdragon_X_Elite-D00000?style=flat-square" alt="Snapdragon X Elite">
+  </a>
+  <a href="https://www.qualcomm.com/products/features/ai">
+    <img src="https://img.shields.io/badge/NPU-Qualcomm_Hexagon-EA272A?style=flat-square" alt="Qualcomm Hexagon NPU">
+  </a>
+  <a href="https://github.com/Kreuzhofen/hk-npu-studio/releases/tag/v2.0.0-rc.3">
+    <img src="https://img.shields.io/badge/Status-2.0_RC3-success?style=flat-square" alt="RC3 Status">
+  </a>
+</p>
+
+---
+
+## 📋 Table of Contents
+
+- [About the Project](#-about-the-project)
+- [See HK NPU STUDIO in Action](#see-hk-npu-studio-in-action)
+- [RC3 — Improvements Since RC2B](#-rc3--improvements-since-rc2b)
+- [AI Photo Restoration](#-ai-photo-restoration)
+- [Phoenix Boost](#-phoenix-boost)
+- [Stable Diffusion 3.5 Medium](#-stable-diffusion-35-medium--qai-appbuilder)
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Installation](#installation)
+- [User Guides](#-user-guides--documentation)
+- [System Requirements](#-system-requirements)
+- [Quick Start](#quick-start)
+- [Project Leadership](#-project-leadership)
+- [Phoenix Engine](#-phoenix-engine)
+- [Phoenix Architecture](#-phoenix-architecture)
+- [Supported AI Backends](#supported-ai-backends)
+- [Project Structure](#-project-structure)
+- [Development](#development)
+- [Testing](#-testing)
+- [Diagnostics](#-diagnostics)
+- [FAQ](#-faq)
+- [Support](#-support)
+- [License](#-license)
+- [Trademark Notice](#trademark-notice)
+
+---
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/phoenix_logo_white.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/brand/phoenix_logo_black.png">
+    <img src="assets/brand/phoenix_logo_black.png"
+         width="320"
+         alt="HK NPU STUDIO Phoenix">
+  </picture>
+</div>
+<h2>📖 About the Project</h2>
+
+**HK NPU STUDIO** is an independent source-available proprietary desktop application for local generative AI on Windows 11 ARM64 PCs.
+
+It is built specifically around Snapdragon X hardware and aims to make local AI image generation approachable without forcing users to understand model package layouts, QNN components, ONNX files, or installation internals.
+
+The product goal is deliberately simple:
+
+> **Install HK NPU STUDIO → select a model → generate an image.**
+
+The **Phoenix Engine** coordinates model discovery, validation, installation, activation and inference while keeping supported generation workflows local on the PC.
+
+---
+
+## See HK NPU STUDIO in Action
+
+Real-world examples running locally on Snapdragon® NPU hardware.
+
+### 🔥 Phoenix Boost
+
+Turn simple prompts into richer image prompts while preserving the original intent.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/examples/phoenix-boost/phoenix_boost_comparison.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/examples/phoenix-boost/phoenix_boost_comparison_light.png">
+  <img alt="HK NPU STUDIO Phoenix Boost prompt enhancement comparison" src="docs/images/examples/phoenix-boost/phoenix_boost_comparison.png">
+</picture>
+
+---
+
+### 🖼️ AI Photo Restoration
+
+Recover fine detail and natural texture from low-quality source images.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/examples/photo-restoration/photo_restoration_comparison_16x9.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/examples/photo-restoration/photo_restoration_comparison_16x9_light.png">
+  <img alt="HK NPU STUDIO AI Photo Restoration before and after comparison" src="docs/images/examples/photo-restoration/photo_restoration_comparison_16x9.png">
+</picture>
+
+---
+
+### 🎯 ControlNet Canny
+
+Guide image generation using structural edge information.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/examples/controlnet_canny/controlnet_canny_comparison_16x9.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/examples/controlnet_canny/controlnet_canny_comparison_16x9_light.png">
+  <img alt="HK NPU STUDIO ControlNet Canny input edge map and generated result" src="docs/images/examples/controlnet_canny/controlnet_canny_comparison_16x9.png">
+</picture>
+
+---
+
+## 🚀 RC3 — Improvements Since RC2B
+
+RC3 builds directly on top of RC2B as the baseline, introducing UI responsiveness optimizations, gallery and comparison enhancements, and additional safety and validation measures.
+
+### 🎨 Responsive Phoenix UI & DPI Scaling
+- **Windows Scaling Support:** The affected Phoenix views have been responsively optimized for Windows scaling from 100% to 175%. Wrapping and local scroll areas keep content and critical actions accessible.
+- **Flexible Wrapping:** Control elements wrap dynamically to prevent layout clipping in narrow windows.
+- **Local Scroll Areas:** Long inspectors and sidebars feature local scroll fallbacks to keep critical buttons accessible.
+- **DPI and Theme Improvements:** The interface has been refined for both Dark and Light modes across all supported DPI ranges.
+
+### 🖼️ Enhanced Gallery & Hover Preview
+- **Gallery Filter Toolbar:** The existing gallery toolbar has been rebuilt to be responsive. Searching, sorting, thumbnail sizing, and filtering are preserved. The hover on/off switch was added, and toolbar groups wrap in a controlled manner at low widths.
+- **Safe Output Directory Handling:** Clicking "Open Output Folder" opens the output folder configured for the current user and safely creates it if it does not yet exist.
+- **Optional Hover Preview:** Toggleable and persistent hover preview (state saved across restarts). When enabled, hovering over gallery thumbnails instantly previews the image; disabling it prevents new previews and immediately closes any active preview. Selection, double-click, and context menus remain independent.
+
+### 🔍 Image Comparison & Synchronization
+- **Comparison Tool Panning:** Zoom levels (Fit, 50%, 100%, 200%) are set via a shared toolbar, with mouse-panning supported for enlarged images.
+- **Synchronized Panning:** "Synchronous: On" transfers normalized pan positions between the two image views, while "Synchronous: Off" keeps pan positions independent.
+- **Text-Based Metadata Comparison:** Clear status messages distinguish between missing, one-sided, identical, or differing technical parameters (no visual pixel/color area comparison).
+
+### 🧠 Phoenix Boost Refinements
+- **Compact Boost Preview:** An optimized, space-saving preview displaying prompt and negative prompt comparisons side-by-side.
+- **Sticky Action Bar:** Control actions are fixed and accessible outside the scroll area at the bottom.
+- **Maximizable Preview:** The preview is maximizable and restorable for comfortable prompt inspection, with scroll fallback for long texts.
+
+### 🛡️ Plugins, Safety and Installer
+- **Phoenix-Compliant Plugins:** The plugin installation section uses existing Phoenix components and PHOENIX_THEME-based styling.
+- **Output Safety & Build Protection:** Inno Setup excludes runtime outputs, and build_installer.py rejects the installer build if the frozen staging tree contains a runtime output folder.
+
+---
+
+## 🛠️ AI Photo Restoration
+
+In VERSION 2.0 RC3, **Phoenix Image Lab opens AI Photo Restoration directly**. The FiDeSR Strong release path restores historical, damaged, and black-and-white photos, preserves available detail, removes conservative dust and speck defects with Dust Cleanup V4, and produces a 4× upscaled result.
+
+- **Faithful restoration:** Keeps the restored image anchored to the source instead of adding artificial microtexture.
+- **Native multi-tile processing:** Large sources are processed at native resolution in overlapping tiles and reconstructed at the requested output size.
+- **Local NPU execution:** All FiDeSR neural restoration stages use Qualcomm QNN/HTP on the Snapdragon® Hexagon NPU. CPU processing is limited to deterministic orchestration, I/O, tiling, compositing, and image mathematics; there is no CPU- or GPU-AI fallback for Photo Restore.
+- **Bundled restore models:** The required Photo Restore models are included in the RC3 installer. No separate Photo Restore model download is required.
+- **Grayscale remains grayscale:** RC3 does not expose Colorization or DDColor as a product function.
+
+Generative Fill, Retouch, and Object Removal are not included in the RC3 release interface.
+
+---
+
+## 🔥 Phoenix Boost
+
+Phoenix Boost improves or expands prompts before image generation.
+
+### Deterministic Boost
+
+The deterministic mode works locally without an additional language model. It enhances prompts through reproducible rules and remains available independently of Ollama.
+
+### Phoenix AI Boost
+
+The optional AI-powered mode uses:
+
+- **Ollama** as the local model service
+- **Qwen2.5 3B** as the local language model
+
+Once installed, prompt enhancement runs locally. Phoenix shows the enhanced prompt before generation so the user can see what will be sent to the image pipeline.
+
+> Phoenix Boost is optional. A missing Ollama or Qwen installation must not prevent normal image generation.
+
+---
+
+## 🧠 Stable Diffusion 3.5 Medium — QAI AppBuilder
+
+RC3 continues the automated path for Stable Diffusion 3.5 Medium.
+
+Instead of asking the user to manually assemble individual technical model components, Phoenix coordinates the QAI AppBuilder preparation, model download, import, validation and activation.
+
+The installation UI reports the current stage throughout the process. Complete existing data can be reused where appropriate, while incomplete or stale data is detected rather than accepted as a finished installation.
+
+This workflow was successfully validated from a clean “not installed” state through a real generated image.
+
+---
+
+## ⚡ Features
+
+| Feature Group | Component | RC3 Status | Description |
+|---|---|---:|---|
+| **Platform** | Native Windows ARM64 | ✅ Supported | Designed for Windows 11 ARM64. |
+| **Hardware** | Snapdragon X Plus / X Elite | ✅ Primary target | Optimized around Windows on Snapdragon systems. |
+| **Inference** | Qualcomm QNN / Hexagon NPU | ✅ Integrated | Local accelerated execution for compatible model pipelines. |
+| **Inference** | ONNX Runtime | ✅ Integrated | Local runtime foundation used by supported pipelines. |
+| **Models** | Stable Diffusion 1.5 | ✅ Available | Guided model workflow with supported Qualcomm/NPU package path. |
+| **Models** | Stable Diffusion 2.1 | ✅ Available | Guided Snapdragon/Qualcomm-oriented model workflow. |
+| **Models** | Stable Diffusion 3.5 Medium | ✅ Validated | Guided QAI AppBuilder setup and real generation path validated. |
+| **Models** | SDXL and additional models | 🧪 Experimental | Continued research and development. |
+| **Prompting** | Phoenix Boost | ✅ Supported | Deterministic boost plus optional local AI Boost. |
+| **Prompting** | Ollama + Qwen2.5 3B | ✅ Optional | Local AI-powered prompt enhancement. |
+| **Control** | ControlNet Canny | ✅ Supported where compatible | Structural image guidance for supported model/backend combinations. |
+| **Phoenix Image Lab** | AI Photo Restoration | ✅ RC3 Included | Faithful restoration, Dust Cleanup V4, detail preservation, and 4× upscaling on the Snapdragon® NPU. |
+| **Phoenix Image Lab** | FiDeSR Strong / QNN HTP | ✅ Integrated | Neural Photo Restore stages execute locally on the Qualcomm Hexagon NPU. |
+| **Installer** | Photo Restore models | ✅ Bundled | Required FiDeSR Photo Restore payload is included; no separate restore-model download is needed. |
+| **UX** | Guided First Run | ✅ RC3 Improved | Clearer path from first launch to first image. |
+| **Management** | Model Manager | ✅ RC3 Improved | Guided installation, validation and activation. |
+| **Localization** | EN / DE / ES | ✅ Supported | English, German and Spanish interface. |
+| **Privacy** | Local generation | ✅ Core design | Supported generation runs locally after required setup/downloads. |
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Main Workspace
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/home-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/home-light.png">
+    <img src="docs/images/home-light.png"
+         width="95%"
+         alt="HK NPU STUDIO Home">
+  </picture>
+  <br>
+  <em>The central workspace of HK NPU STUDIO provides quick access to AI image generation, installed models, the gallery, comparison tools, and application settings. System and hardware information is available at a glance.</em>
+</p>
+
+### 🛠️ AI Photo Restoration
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/photo-restore-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/photo-restore-light.png">
+    <img src="docs/images/photo-restore-light.png"
+         width="95%"
+         alt="HK NPU STUDIO AI Photo Restoration">
+  </picture>
+  <br>
+  <em>Restore historical and damaged photographs locally on supported Snapdragon PCs using the Qualcomm Hexagon NPU, with detail-preserving 4× restoration and the required Photo Restore models bundled with the application.</em>
+</p>
+
+### 🎨 AI Image Generation
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/ai-generate-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/ai-generate-light.png">
+    <img src="docs/images/ai-generate-light.png"
+         width="95%"
+         alt="HK NPU STUDIO AI Generate">
+  </picture>
+  <br>
+  <em>Create AI-generated images locally with direct control over models, prompts, presets, resolution, generation parameters, and advanced options. The workspace keeps the complete generation workflow accessible from a single view.</em>
+</p>
+
+### 📦 Model Management
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/model-manager-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/model-manager-light.png">
+    <img src="docs/images/model-manager-light.png"
+         width="95%"
+         alt="HK NPU STUDIO Model Manager">
+  </picture>
+  <br>
+  <em>Install, manage, and review supported AI models directly inside HK NPU STUDIO. Model availability, installation status, and the required components can be handled without leaving the application.</em>
+</p>
+
+### 🔍 Image Comparison
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/compare-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/compare-light.png">
+    <img src="docs/images/compare-light.png"
+         width="95%"
+         alt="HK NPU STUDIO Compare">
+  </picture>
+  <br>
+  <em>Compare generated images side by side with synchronized navigation, zoom, and panning. Image information and generation metadata make it easier to evaluate differences between models, prompts, and settings.</em>
+</p>
+
+### 🖼️ Gallery
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/gallery-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/gallery-light.png">
+    <img src="docs/images/gallery-light.png"
+         width="95%"
+         alt="HK NPU STUDIO Gallery">
+  </picture>
+  <br>
+  <em>Browse and manage locally generated images in one central gallery. Preview results, inspect generation metadata, open images for closer inspection, and quickly return to previous creations.</em>
+</p>
+
+### ⚙️ Settings
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/settings-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/settings-light.png">
+    <img src="docs/images/settings-light.png"
+         width="95%"
+         alt="HK NPU STUDIO Settings">
+  </picture>
+  <br>
+  <em>Configure HK NPU STUDIO to match your system and workflow, including appearance, application behavior, storage locations, and hardware-related options. Settings are kept together in a dedicated configuration workspace.</em>
+</p>
+
+### 🔥 Phoenix Boost
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/Phoenix_Boost_dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/Phoenix_Boost_light.png">
+    <img src="docs/images/Phoenix_Boost_light.png"
+         width="70%"
+         alt="HK NPU STUDIO Phoenix Boost">
+  </picture>
+  <br>
+  <em>Phoenix Boost provides an optimized local AI workflow designed to make supported generation tasks easier and more efficient on Snapdragon® PCs. The dedicated interface brings Phoenix Boost controls and status information together while keeping processing and user data on the local system.</em>
+</p>
+
+### 🧭 Canny-Guided Generation
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/Canny_dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/Canny_light.png">
+    <img src="docs/images/Canny_light.png"
+         width="70%"
+         alt="HK NPU STUDIO Canny-guided generation">
+  </picture>
+  <br>
+  <em>Use Canny-guided generation to preserve important edges and structural information from a source image while creating a new AI-generated result. It provides additional control over composition and geometry while keeping the complete workflow local.</em>
+</p>
+
+---
+
+## Installation
+
+### Option A: Release Installer — Recommended
+
+1. Open the HK NPU STUDIO **Releases** page.
+2. Download `HKNPUStudio-2.0.0-rc.3-ARM64-Setup.exe`.
+3. Run the installer and follow the Windows setup wizard.
+4. Start HK NPU STUDIO from the Start menu or shortcut.
+5. Use the guided Model Manager to set up your first model.
+
+A separate Python installation is not required for normal use of the published installer.
+The installer is approximately **2.015 GB** and already includes the required Photo Restore models, so AI Photo Restoration does not require a separate model download.
+
+### Option B: Development / Source
+
+Development from source requires an appropriate Windows ARM64 development environment and Python 3.11 ARM64.
+
+```powershell
+git clone https://github.com/Kreuzhofen/hk-npu-studio.git
+cd hk-npu-studio
+
+py -3.11-arm64 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
+start_gui.bat
+# or: python gui_v2.py
+```
+
+`requirements.txt` installs the complete core source GUI, including drag and drop.
+Install only the additional backend group you need:
+
+```powershell
+python -m pip install -r requirements-onnx.txt  # CPU ONNX
+python -m pip install -r requirements-qnn.txt   # ONNX Runtime QNN
+python -m pip install -r requirements-qai.txt   # QAI AppBuilder workers
+python -m pip install -r requirements-build.txt # Frozen-app build environment
+python -m pip install -r requirements-dev.txt   # Tests
+```
+
+The QNN and QAI groups require compatible Windows ARM64/Qualcomm components.
+These files do not install the Qualcomm QAIRT/QNN SDK, models, DLC/context binaries,
+Qualcomm sample files, or the separately provisioned Windows ARM64 Torch build.
+
+---
+
+## 📚 User Guides / Documentation
+
+RC3 includes dedicated user documentation in three languages:
+
+- 🇩🇪 **Deutsch:** [Benutzerhandbuch](docs/user-guide/USER_GUIDE_DE.md)
+- 🇬🇧 **English:** [User Guide](docs/user-guide/USER_GUIDE_EN.md)
+- 🇪🇸 **Español:** [Manual de usuario](docs/user-guide/USER_GUIDE_ES.md)
+
+The user guides cover AI Photo Restoration, first-run setup, model installation, Stable Diffusion 3.5 Medium, Phoenix Boost, ControlNet Canny, local data, privacy and troubleshooting.
+
+---
+
+## 💻 System Requirements
+
+| Requirement | Minimum / Target |
+|---|---|
+| **Operating System** | Windows 11 ARM64 |
+| **Processor** | Snapdragon X Plus / Snapdragon X Elite |
+| **Memory** | Model-dependent; 16 GB or more recommended |
+| **Storage** | Application plus sufficient SSD space for selected models |
+| **Internet** | Required for initial application/model/component downloads |
+| **Runtime** | Bundled/managed by the published application where applicable |
+
+Large models require additional disk space. Stable Diffusion 3.5 Medium downloads approximately 3.24 GB of Qualcomm model data during setup, plus temporary/setup files.
+The Photo Restore models are bundled with the RC3 installer and do not require a separate download.
+
+---
+
+## Quick Start
+
+1. Launch **HK NPU STUDIO**.
+2. Check the readiness status on the home page.
+3. Open the **Model Manager**.
+4. Select an available model.
+5. Follow the guided installation if the model is not yet installed.
+6. Wait for validation and activation.
+7. Open image generation.
+8. Enter a prompt.
+9. Optionally use **Phoenix Boost**.
+10. Click **Generate**.
+
+No manual selection of individual QNN/ONNX model components is required for the normal guided workflow.
+
+For AI Photo Restoration, open **Phoenix Image Lab**, select a source photograph, and start Faithful Restore. The required FiDeSR models are already included with RC3.
+
+---
+
+## 👥 Project Leadership
+
+### Holger Kreuzhofen
+*Founder • Lead Developer • Product Owner • Phoenix Engine Architect*
+
+Holger Kreuzhofen is the founder and lead developer of HK NPU STUDIO and the architect of the Phoenix Engine. He is responsible for the product vision, software architecture, engineering direction, user experience and release management of the independent source-available proprietary project.
+
+---
+
+## 🌐 Phoenix Engine
+
+The **Phoenix Engine** is the orchestration layer behind HK NPU STUDIO.
+
+Its responsibilities include:
+
+- model discovery and registry,
+- productive installation-path resolution,
+- package/source validation,
+- model installation and activation,
+- backend selection,
+- prompt processing,
+- inference orchestration,
+- diagnostics and progress reporting,
+- output handling.
+
+RC2/RC2A/RC2B/RC3 increasingly move technical setup complexity behind this orchestration layer so users can focus on selecting a model and creating images.
+
+---
+
+## 🎨 Phoenix Architecture
+
+```mermaid
+flowchart TD
+    UI["Desktop GUI"] -->|Triggers| CTRL["Controllers"]
+    CTRL -->|Configures and Starts| PHX["Phoenix Engine"]
+    PHX --> DISC["Model Discovery & Registry"]
+    PHX --> INSTALL["Model Install & Validation"]
+    PHX --> BOOST["Phoenix Boost"]
+    PHX --> BACKEND["Backend Manager"]
+    PHX --> DIAG["Diagnostics"]
+    PHX --> OUT["Output / History"]
+    INSTALL --> QAI["Qualcomm QAI AppBuilder / Model Sources"]
+    BACKEND --> ORT["ONNX Runtime"]
+    ORT --> CPU["CPU Execution"]
+    ORT --> QNN["Qualcomm QNN / Hexagon NPU"]
+    BOOST --> DET["Deterministic Boost"]
+    BOOST --> AI["Optional Ollama + Qwen2.5 3B"]
+```
+
+The diagram is intentionally high-level. Individual model pipelines can use different runtime and preparation paths.
+
+---
+
+## Supported AI Backends
+
+| Backend / Path | Target | RC3 Status | Notes |
+|---|---|---:|---|
+| **ONNX Runtime CPU** | Snapdragon CPU | ✅ Supported where applicable | Local compatibility and validation path for other supported workflows; it is not a Photo Restore AI fallback. |
+| **Qualcomm QNN** | Hexagon NPU | ✅ Integrated | Hardware-accelerated execution for compatible QNN model pipelines. |
+| **FiDeSR Strong** | Qualcomm QNN / Hexagon HTP | ✅ Photo Restore production path | All neural Photo Restore stages execute on the Snapdragon® NPU. |
+| **Qualcomm QAI AppBuilder** | Qualcomm model workflow | ✅ SD3.5 path validated | Used by the guided Stable Diffusion 3.5 Medium setup path. |
+| **Additional backends / models** | Model-dependent | 🧪 Experimental | Research continues without presenting experimental paths as production-ready. |
+
+---
+
+## 📁 Project Structure
+
+```text
+hk-npu-studio/
+├── app/                  # Application bootstrap/core
+├── assets/               # Branding, icons and visual assets
+├── controllers/          # Workflow and UI orchestration
+├── data/                 # Local application data/metadata
+├── dialogs/              # Dialog windows
+├── docs/                 # Project and user documentation
+│   └── user-guide/       # RC3 user guides (DE / EN / ES)
+├── engine/               # Phoenix Engine and inference/install services
+├── installer/            # Windows installer configuration
+├── locales/              # EN / DE / ES localization
+├── models/               # Development model area
+├── tests/                # Automated tests
+├── tools/                # Setup/support utilities, including SD3.5 setup
+├── widgets/              # Phoenix UI widgets/views
+├── gui_v2.py             # Main development GUI entry point
+├── requirements.txt      # Development dependencies
+└── version.py            # Version information
+```
+
+Installed release builds can use user-local application/model directories rather than the repository paths shown above.
+
+---
+
+## Development
+
+External contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the project development documentation before making substantial changes.
+
+Core principles include:
+
+- keep UI and inference responsibilities separated,
+- preserve Windows ARM64 compatibility,
+- validate model/install state rather than trusting stale metadata,
+- update tests when behavior changes,
+- keep EN/DE/ES localization in sync,
+- avoid breaking already validated model workflows.
+
+---
+
+## 🧪 Testing
+
+The project uses automated tests together with real-device validation.
+
+For development:
+
+```powershell
+python -m pytest
+```
+
+For release-critical model workflows, automated tests alone are not sufficient. RC3 development also uses real Windows-on-Snapdragon user-flow tests, including clean installation, actual image generation, and small and large Photo Restore runs.
+
+---
+
+## 🔍 Diagnostics
+
+HK NPU STUDIO includes diagnostic and progress reporting intended to make local AI workflows understandable and debuggable.
+
+Depending on the active model/backend, diagnostics can expose:
+
+- model and productive path resolution,
+- package/source validation state,
+- active runtime/backend information,
+- installation and activation phases,
+- generation progress,
+- pipeline timing and error information,
+- log output for reproducible troubleshooting.
+
+RC3 places particular emphasis on validating the real model state instead of relying only on previously stored installation metadata.
+Photo Restore diagnostics report the FiDeSR NPU stages and keep input, context, and runtime failures distinguishable without introducing a CPU- or GPU-AI fallback.
+
+---
+
+## ❓ FAQ
+
+### Is HK NPU STUDIO an official Qualcomm product?
+
+No. It is an independent source-available proprietary project and is not affiliated with, sponsored by, or endorsed by Qualcomm Technologies, Inc.
+
+### Which processors are the primary target?
+
+Snapdragon X Plus and Snapdragon X Elite on Windows 11 ARM64.
+
+### Do I need an internet connection?
+
+Initial application/model/component downloads require internet access. After successful setup, supported image generation runs locally and does not require a cloud image-generation service.
+
+### Do I need Python?
+
+Not for normal use of the published Windows installer. Python 3.11 ARM64 is primarily relevant for development and source execution.
+
+### Do I need to download a model for AI Photo Restoration?
+
+No. The required FiDeSR Photo Restore models are bundled with the RC3 installer.
+
+### Do I need Ollama?
+
+Only for the optional **Phoenix AI Boost**. Normal image generation and deterministic Phoenix Boost do not depend on Ollama.
+
+### Which model does Phoenix AI Boost use?
+
+RC3 uses **Qwen2.5 3B** through Ollama.
+
+### How is Stable Diffusion 3.5 Medium installed?
+
+RC3 provides a guided Qualcomm QAI AppBuilder workflow that prepares the source, runs the Qualcomm setup, downloads the required model data, imports it into HK NPU STUDIO, validates it and activates it.
+
+### Is SD3.5 actually tested beyond installation?
+
+Yes. The RC3 flow was validated from a clean not-installed state through successful setup, model validation/activation and a real generated image.
+
+### Which interface languages are available?
+
+English, German and Spanish.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a focused feature branch.
+3. Follow the project architecture and coding guidelines.
+4. Add/update tests where appropriate.
+5. Update documentation when behavior changes.
+6. Open a pull request with a clear description and relevant diagnostics.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+---
+
+## 🔒 Security
+
+Please do not disclose security vulnerabilities publicly. Follow [SECURITY.md](SECURITY.md) for responsible reporting.
+
+---
+
+## 💬 Support
+
+- **Bug reports:** [GitHub Issues](https://github.com/Kreuzhofen/hk-npu-studio/issues)
+- **Feature requests:** [GitHub Issues](https://github.com/Kreuzhofen/hk-npu-studio/issues) / [Discussions](https://github.com/Kreuzhofen/hk-npu-studio/discussions)
+- **Questions and setup help:** [GitHub Discussions](https://github.com/Kreuzhofen/hk-npu-studio/discussions)
+
+When reporting issues, never publish access tokens, credentials or other confidential information.
+
+---
+
+## 📄 License
+
+HK NPU STUDIO is proprietary source-available software and is not open source. Personal evaluation and testing are permitted. Commercial use, redistribution, and reuse of the source code for other products require prior written permission. See [LICENSE](LICENSE) for details.
+
+---
+
+## 💖 Acknowledgements
+
+Thanks to the developers and communities behind:
+
+- ONNX Runtime
+- Qualcomm AI software and QAI AppBuilder
+- Python
+- Hugging Face
+- Stability AI
+- Ollama
+- Qwen
+
+---
+
+## Trademark Notice
+
+Qualcomm, Snapdragon and Hexagon are trademarks or registered trademarks of Qualcomm Incorporated. Windows is a trademark of Microsoft. ONNX is a trademark of The Linux Foundation. Other trademarks belong to their respective owners.
+
+Use of these names describes technical platforms, compatibility or third-party components and does not imply an official partnership or product affiliation.
+
+---
+
+<p align="center">
+  <strong>HK NPU STUDIO</strong><br>
+  <em>Local AI for Snapdragon® PCs</em>
+</p>
+
+<p align="center">
+  <strong>Holger Kreuzhofen</strong><br>
+  Founder • Lead Developer • Product Owner • Phoenix Engine Architect
+</p>
+
+<p align="right">
+  <a href="#top">Back to top</a>
+</p>

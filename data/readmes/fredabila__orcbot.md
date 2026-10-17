@@ -1,0 +1,882 @@
+<div align="center">
+<img src="https://raw.githubusercontent.com/fredabila/orcbot/main/assets/orcbot.jpeg" width="420" alt="OrcBot Hero Banner">
+
+# OrcBot
+### An autonomous agent for multi-channel workflows
+#### Plan tasks, use tools, and deliver results through supported channels.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
+[![Status](https://img.shields.io/badge/Status-Beta-orange.svg)]()
+[![ReAct](https://img.shields.io/badge/Reasoning-ReAct-purple.svg)]()
+[![Open Source Helpers](https://www.codetriage.com/fredabila/orcbot/badges/users.svg)](https://www.codetriage.com/fredabila/orcbot)
+
+**Plan. Execute. Review. Deliver.**
+
+[Features](#features) • [Installation](#installation) • [Quickstart](#quickstart) • [Usage](#usage) • [Configuration](#configuration) • [Self-Training](#self-training-sidecar) • [Autonomy](#autonomy--heartbeat) • [Skills](#skills) • [Plugins](#dynamic-plugin-system) • [Hardware](#hardware--robotics) • [Security](#security--privacy) • [Blog](docs/blog/robotics.md) • [Docs](https://fredabila.github.io/orcbot/docs/)
+
+</div>
+
+---
+
+## What OrcBot does
+
+OrcBot plans multi-step tasks, runs registered tools, and delivers results through supported channels. The current implementation includes pre-execution plan repair, runtime replanning after tool failures, shared execution coordinators, Telegram interactions, and a retrieval-augmented knowledge store.
+
+### Key Capabilities
+
+*   **Task simulation**: Builds a plan before execution and can account for likely tool failures.
+*   **Plugin recovery**: Detects plugin failures and can call `self_repair_skill` to attempt a repair.
+*   **Policy-based configuration**: Applies configured permissions and approval requirements to agent-requested changes.
+*   **Media input**: Processes images, audio, and documents received through supported messaging channels.
+*   **Browser tools**: Navigates pages, detects blank-page results, and falls back between search providers.
+*   **Command and file tools**: Runs configured commands and manages files, subject to the configured safety controls.
+*   **Heartbeat scheduling**: Runs follow-ups and maintenance tasks on a schedule, with backoff when cycles are unproductive.
+*   **Worker processes**: Runs delegated tasks in separate processes and collects their results.
+*   **Completion review**: Checks whether an action has delivered a substantive result before it is marked complete.
+*   **Runtime recovery**: Replans after failed batches and suppresses repeated tool calls.
+*   **Task complexity limits**: Uses task classification to set step and message budgets.
+*   **Skill routing**: Selects skills using task intent and configurable routing rules.
+*   **Admin controls**: Restricts elevated skills to configured administrators and tracks known users.
+*   **Decision pipeline**: Applies deduplication, recovery hints, and safety checks to tool calls.
+*   **Search fallbacks**: Uses browser-based search when configured search providers are unavailable.
+*   **Terminal interface**: Provides a TUI for configuration and worker-process management.
+*   **Plugin loading**: Loads TypeScript and JavaScript skills from the plugin directory.
+*   **Browser loop detection**: Detects repeated browser operations.
+*   **Identity files**: Sets the agent's identity and operating instructions through bootstrap files.
+*   **Event-driven scheduling**: Reacts to scheduler events instead of relying on busy-wait loops.
+*   **Image generation**: Generates and delivers images through supported messaging channels.
+*   **Local models**: Manages Ollama models and supports OpenAI-compatible tool calling.
+*   **Knowledge store**: Ingests documents, URLs, and files for semantic search.
+*   **Telegram controls**: Sends inline buttons and polls, edits and pins messages, and adds reactions.
+*   **Clarification delivery**: Sends `request_supporting_data` questions through the active channel before pausing.
+*   **Self-training sidecar**: Exports accepted trajectories, evaluates candidate models, and requires admin approval for promotion.
+
+---
+
+## Features
+
+OrcBot plans and executes tasks using its registered tools, configured channels, and local data.
+
+---
+
+## Architecture
+
+The system runs locally and connects to external channels and providers. This diagram shows the path from inbound messages through the decision stack, memory, skills, and outbound services.
+
+```mermaid
+flowchart TB
+    %% ── Inbound ──────────────────────────────────────────────
+    subgraph Channels["📡 Channels"]
+        TG[Telegram\nTelegraf]
+        WA[WhatsApp\nBaileys]
+        DC[Discord\ndiscord.js]
+        GW[Gateway\nExpress + WS]
+    end
+
+    User((👤 User)) -->|message / command| Channels
+    CLI[CLI / TUI\norcbot ui] -->|push task| Queue
+
+    %% ── Action Queue ─────────────────────────────────────────
+    Channels -->|inbound → short memory\n+ push action| Queue[(🗂️ Action Queue\npriority · retry · TTL\ndependsOn · chaining)]
+
+    %% ── Agent Core ───────────────────────────────────────────
+    Queue --> Agent
+
+    subgraph AgentCore["🤖 Agent Core  (Agent.ts)"]
+        Agent[Agent\naction loop]
+        Sim[SimulationEngine\npre-task plan]
+        DE[DecisionEngine\nprompt assembly\n+ LLM call\nblocked-plan repair]
+        PR[PromptRouter\n8 modular helpers]
+        PL[DecisionPipeline\nguardrails · dedup\nrecovery hints · loop detection]
+        Parser[ParserLayer\n3-tier JSON fallback]
+        CC[ContextCompactor\ntruncation + summarise]
+        RT[RuntimeTuner\nauto-adjust limits]
+        TT[TokenTracker\nper-model cost]
+    end
+
+    Agent --> Sim
+    Sim --> DE
+    DE --> PR
+    PR --> DE
+    DE --> PL
+    PL --> Parser
+    Parser --> Agent
+    DE <--> CC
+    DE --> TT
+    Agent --> RT
+
+    %% ── LLM ──────────────────────────────────────────────────
+    DE -->|call| LLM[MultiLLM\nrouting + fallback]
+    subgraph LLMProviders["🧠 LLM Providers"]
+        OAI[OpenAI\ngpt-4o / o1]
+        GEM[Google Gemini]
+        BED[AWS Bedrock]
+        NV[NVIDIA NIM]
+        OR[OpenRouter\n200+ models]
+    end
+    LLM --> OAI & GEM & BED & NV & OR
+
+    %% ── Memory ───────────────────────────────────────────────
+    subgraph MemorySystem["🧠 Memory System"]
+        MM[MemoryManager]
+        SM[short memory\nstep observations]
+        EP[episodic memory\nLLM summaries]
+        VM[VectorMemory\nembedding index\ntext-embedding-3-small]
+        DM[DailyMemory\nappend-only .md logs]
+        LM[long memory\nMEMORY.md · LEARNING.md\nUSER.md · JOURNAL.md]
+    end
+    Agent <--> MM
+    MM --> SM & EP & VM & DM & LM
+    DE -->|getRecentContext\nsemanticSearch| MM
+
+    %% ── Storage ──────────────────────────────────────────────
+    subgraph Storage["💾 Storage"]
+        JSON[JSONAdapter\natomic write · .bak · cache]
+        SQLite[SQLiteAdapter]
+    end
+    MM --> JSON
+    MM -.-> SQLite
+
+    %% ── Skills ───────────────────────────────────────────────
+    Agent -->|execute tools| Skills
+
+    subgraph SkillLayer["⚙️ Skills"]
+        SM2[SkillsManager\nregistry · intent routing]
+        CoreSkills["Core Skills\nweb_search · browser_navigate\nhttp_fetch · extract_article\ndownload_file · read_file · write_file\nsend_file · send_voice_note · send_image\ntelegram_send_buttons · telegram_send_poll\ntelegram_react · telegram_edit/pin\nschedule_task · heartbeat_schedule\nrun_command · deep_reason\nrecall_memory · update_user_profile\nupdate_learning · request_supporting_data\nrag_ingest/search/list/delete\nspawn_agent · delegate_task\nmanage_config · system_check\nself_repair_skill · create_custom_skill"]
+        Plugins[Dynamic Plugins\n~/.orcbot/plugins/\nhot-loaded · self-repair]
+    end
+    Skills --> SM2
+    SM2 --> CoreSkills & Plugins
+
+    %% ── Browser + Search ─────────────────────────────────────
+    CoreSkills --> Browser[WebBrowser\nPlaywright stealth\nblank-page guard\n2Captcha]
+    Browser -->|search fallback chain| Search[(Serper → Google\n→ Bing → DDG)]
+
+    %% ── Config ───────────────────────────────────────────────
+    subgraph Config["⚙️ Config"]
+        CM[ConfigManager\nYAML hot-reload\nfeature toggles]
+        CP[ConfigPolicy\nSAFE / APPROVAL / LOCKED]
+    end
+    Agent --> CM
+    CM --> CP
+
+    %% ── Scheduler / Orchestrator ─────────────────────────────
+    Sched[Scheduler\ncroner · EventBus ticks] -->|scheduler:tick| Queue
+    Agent --> Sched
+
+    Orch[AgentOrchestrator] -->|fork| Workers[Worker Processes\nisolated · IPC]
+    Workers -->|results| Agent
+    Agent --> Orch
+
+    %% ── Outbound delivery ────────────────────────────────────
+    CoreSkills -->|3-tier channel detection\nWhatsApp → Discord → Telegram| Channels
+```
+
+### Supervisor Runtime
+
+The current runtime is designed around a supervisor-style loop rather than a fire-and-forget tool chain.
+
+- **Pre-execution repair**: `DecisionEngine` can repair blocked or non-executable plans before the main loop ever runs them.
+- **Shared execution coordinators**: serial, parallel, and bonus-step tool execution now flow through shared helpers in `Agent.ts`, keeping side-effect handling, cooldowns, and failure semantics aligned.
+- **Runtime re-planning**: if a serial or parallel batch fails, OrcBot pauses later queued work, records a workflow signal, and re-plans from the latest failure context.
+- **Bonus-step wrap-up mode**: when max-step review grants extra turns, bonus steps are optimized for safe final delivery rather than fresh exploration.
+- **Completion reconciliation**: if a substantive user-facing delivery succeeded, OrcBot can reconcile final status to `completed` even if guardrails later exhaust the step budget.
+
+These mechanisms define how OrcBot responds to failed tools, blocked plans, and completion limits.
+
+---
+
+## Self-Training Sidecar
+
+OrcBot supports a self-training workflow separate from its action loop. It exports accepted trajectories for offline evaluation, and model promotion requires an administrator.
+
+### Workflow
+
+1. **Capture**: completed actions become redacted trajectories with tool steps, delivery audits, and final user-facing answers.
+2. **Filter**: low-quality runs, unresolved failures, and status-only deliveries are rejected from the training export.
+3. **Prepare**: when enough accepted examples exist, OrcBot writes a JSONL dataset and an offline training manifest.
+4. **Evaluate**: candidate models are scored against accepted trajectories.
+5. **Promote**: an admin explicitly registers a trained candidate model and promotes it into the live config only if the evaluation gate passes.
+
+### Artifacts
+
+- `self-training-trajectories.json`: all captured trajectories
+- `self-training-trajectories.jsonl`: accepted trajectories only
+- `self-training-job.json`: current offline training manifest
+- `self-training-eval-report.json`: latest evaluation output
+- `self-training-launch.json`: background launch audit trail
+- `self-training-candidates.json`: registered model candidates
+- `self-training-promotion.json`: latest promotion record with previous-model context
+
+### Skills
+
+- `get_self_training_status()`
+- `prepare_self_training_job()`
+- `run_self_training_eval(limit?, provider?, modelName?)`
+- `build_self_training_launch_plan(commandTemplate?, cwd?, sessionId?)`
+- `launch_self_training_job(commandTemplate?, cwd?, sessionId?, dryRun?)`
+- `register_self_training_candidate(modelName, provider?, candidateId?, jobId?, notes?)`
+- `promote_self_training_candidate(candidateId?, modelName?, provider?, dryRun?)`
+
+### Safety Model
+
+- Training data is redacted before persistence.
+- Acceptance is gated on goal completion and substantive delivery.
+- Launching training remains an offline/background concern, not an in-loop side effect.
+- Promotion is admin-only and reuses OrcBot's normal `modelName` and `llmProvider` hot-reload path.
+- Every promotion records the previous model so rollback stays explicit.
+
+### Example Config
+
+```yaml
+selfTrainingEnabled: true
+selfTrainingTrainOnIdle: true
+selfTrainingMinQualityScore: 0.72
+selfTrainingMinAcceptedExamples: 25
+selfTrainingEvalPassThreshold: 0.55
+selfTrainingPromotionMinAverageScore: 0.70
+selfTrainingRequireEvalForPromotion: true
+selfTrainingLaunchCommand: python trainer.py --manifest {jobManifestPath} --export {exportPath} --model {modelName}
+```
+
+---
+
+## Hardware & Robotics
+
+OrcBot can connect to hardware through skills and a dedicated bridge. Keep **real-world control in the bridge** (ROS2, MQTT, REST, or a serial gateway), and validate commands before they reach actuators.
+
+**Reference architecture:**
+- **OrcBot Core**: planning, memory, autonomy, and decision pipeline.
+- **Hardware Bridge Service**: a small service that translates high-level intents into robot-specific commands.
+- **Message Bus**: ROS2 topics, MQTT, or a REST endpoint to decouple AI from actuators.
+- **Safety Layer**: rate limits, e-stop, and command validation before hitting motors.
+
+**How OrcBot supports it:**
+- Skills can call HTTP endpoints, shell scripts, or custom plugins to control hardware.
+- The autonomy loop and heartbeat can schedule inspections, patrols, or checks.
+- The decision pipeline guards against loops and invalid actions before they reach actuators.
+
+For a full walkthrough and example integration plan, see the blog: [Robotics + OrcBot](docs/blog/robotics.md).
+
+---
+
+## Installation
+
+You can get started instantly with our one-line installer:
+
+**Linux / macOS**
+```bash
+curl -sSL https://orcbot.ai/install.sh | bash
+```
+
+**Windows (PowerShell)**
+```powershell
+iwr https://orcbot.vercel.app/install.ps1 | iex
+```
+
+**Docker (Recommended for servers)**
+```bash
+# Quick start with Docker Compose
+cp .env.example .env  # Edit with your API keys
+docker compose -f docker-compose.minimal.yml up -d
+
+# Open dashboard at http://localhost:3100
+```
+
+See [Docker Guide](docs/guides/DOCKER.md) for full setup options.
+
+**Manual Installation**
+```bash
+npm install
+npm run build
+npm run setup
+```
+
+**Install from GitHub Packages**
+```bash
+echo "@fredabila:registry=https://npm.pkg.github.com" >> ~/.npmrc
+echo "//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN" >> ~/.npmrc
+npm install -g @fredabila/orcbot
+```
+
+The published package lives in GitHub Packages under `@fredabila/orcbot`. The CLI command remains `orcbot`.
+
+**Publish to GitHub Packages**
+```bash
+npm version patch
+git push --follow-tags
+gh release create v$(node -p "require('./package.json').version") --generate-notes
+```
+
+Publishing is handled by `.github/workflows/publish-package.yml`.
+
+- GitHub Packages publishes `@fredabila/orcbot` using the repository `GITHUB_TOKEN`.
+- npmjs publishes `orcbot` using a repository secret named `NPM_TOKEN`.
+
+To keep the public npm package updated, add an `NPM_TOKEN` repository secret from your npm account automation token.
+
+For local manual npmjs publishing, use:
+
+```bash
+npm run publish:npmjs
+```
+
+If your npm account requires 2FA for publish, pass the current OTP explicitly:
+
+```bash
+npm run publish:npmjs -- --otp=123456
+```
+
+If GitHub Actions fails with `EOTP`, your `NPM_TOKEN` is the wrong type. CI publishing requires an npm `Automation` token because standard publish tokens still require interactive OTP entry.
+
+---
+
+## Documentation
+
+Live docs (GitHub Pages): https://fredabila.github.io/orcbot/docs/
+
+**Key Guides:**
+*   🌐 [**Browser & Identity Improvements**](docs/notes/BROWSER_IDENTITY_IMPROVEMENTS.md) - Loop prevention, state tracking, self-updating system
+*   🔐 [**Google Identity Service**](docs/GOOGLE_IDENTITY.md) - OAuth setup, Gmail OTP workflows, storage model, and security guidance
+*   ☁️ [**Google Workspace CLI Integration**](docs/GOOGLE_WORKSPACE_CLI.md) - Using `gws` as OrcBot's broad Google Workspace backend for Docs, Drive, and more
+*   ⏱️ [**Polling System Guide**](docs/guides/POLLING_USAGE.md) - Event-driven condition monitoring
+*   ⚙️ [**Configuration Guide**](docs/guides/CONFIG_MANAGEMENT.md) - Comprehensive configuration management
+*   🐳 [**Docker Guide**](docs/guides/DOCKER.md) - Container deployment options
+*   📊 [**Testing Guide**](TESTING_GUIDE.md) - Testing strategies and patterns
+*   🔒 [**Security Summary**](docs/notes/SECURITY_SUMMARY.md) - Security features and best practices
+*   🚀 [**Use Cases**](docs/guides/EXTRAORDINARY_USE_CASES.md) - Automation, robotics, and task orchestration
+*   🤖 [**Robotics + OrcBot**](docs/blog/robotics.md) - Hardware integration approach and safety patterns
+*   🧪 [**Self-Training Sidecar Page**](https://orcbot.vercel.app/self-training) - Capture, evaluation, launch, and promotion workflow
+
+---
+
+## Quickstart
+
+```bash
+# Start the autonomous loop (foreground)
+orcbot run
+
+# Start as a background daemon
+orcbot run --daemon
+
+# Check daemon status
+orcbot daemon status
+
+# Stop the daemon
+orcbot daemon stop
+
+# Open the TUI dashboard
+orcbot ui
+
+# Push a task immediately
+orcbot push "Summarize today’s AI news and save to my journal" -p 10
+```
+
+---
+
+## Skills
+
+OrcBot includes core tools for commands, browsing, file operations, messaging, and task scheduling:
+
+| Skill | Description | Usage Example |
+|-------|-------------|---------------|
+| `run_command` | Execute shell commands (PowerShell on Windows). Stdout capped at 8 KB; process tree forcefully killed on timeout. | `run_command("npm test")` |
+| `web_search` | Search with API + browser fallback | `web_search("latest AI news")` |
+| `browser_navigate` | Visit a URL and extract text | `browser_navigate("https://google.com")` |
+| `http_fetch` | Lightweight HTTP GET/POST/PUT without browser | `http_fetch("https://api.example.com/data")` |
+| `extract_article` | Extract clean article text via Readability | `extract_article("https://news.example.com/article")` |
+| `download_file` | Download file with 60 s timeout, 50 MB cap, MIME→extension inference | `download_file("https://example.com/report.pdf")` |
+| `read_file` | Read file with optional line range (start_line/end_line), 20 KB cap | `read_file("/path/to/file.md", 1, 100)` |
+| `write_file` | Write/append to file, 10 MB size guard | `write_file("/path/output.md", "content")` |
+| `send_file` | Send file via WhatsApp, Telegram, or Discord (auto-detected) | `send_file("123456", "/path/img.png", channel="discord")` |
+| `send_voice_note` | TTS → voice note. Discord fallback: audio file attachment | `send_voice_note("user@s.whatsapp.net", "Hello!")` |
+| `send_image` | Generate AI image and send in one step | `send_image("user_id", "a futuristic city", channel="telegram")` |
+| `text_to_speech` | Convert text to .ogg/wav audio file | `text_to_speech("Hello world", voice="nova" [OAI] or "kore" [Google])` |
+| `manage_skills` | Append skill definition to SKILLS.md | `manage_skills("New Skill Definition...")` |
+| `create_skill` | Create a knowledge-based SKILL.md skill | `create_skill("pdf-processor", "Parse PDFs")` |
+| `create_custom_skill` | Create an executable TypeScript plugin skill | `create_custom_skill("stripe-charge", "Charge via Stripe")` |
+| `execute_typescript` | Write, compile, and execute a free-form TS script (with optional filename to save/reuse) | `execute_typescript({code: "...", filename: "myscript.ts"})` |
+| `deep_reason` | Intensive chain-of-thought analysis | `deep_reason("Ethics of AGI")` |
+| `update_user_profile` | Permanently persist user preferences and facts | `update_user_profile("User prefers concise answers")` |
+| `update_learning` | Research topic and save findings to LEARNING.md | `update_learning("WebAssembly 2025")` |
+| `recall_memory` | Semantic search across all memory types | `recall_memory("last deployment discussion")` |
+| `rag_ingest` | Ingest document into RAG vector knowledge store | `rag_ingest(content, "report.md")` |
+| `rag_search` | Semantic search across ingested knowledge | `rag_search("deployment checklist")` |
+| `rag_ingest_url` | Fetch URL and ingest into knowledge store | `rag_ingest_url("https://docs.example.com")` |
+| `schedule_task` | One-off task scheduling (relative or cron) | `schedule_task("in 2 hours", "Send daily report")` |
+| `heartbeat_schedule` | Recurring cron-based autonomous tasks | `heartbeat_schedule("0 9 * * 1-5", "Morning brief")` |
+| `spawn_agent` | Create a named sub-agent for parallel work | `spawn_agent("researcher", "worker")` |
+| `delegate_task` | Create and assign task to agent or orchestrator | `delegate_task("Scrape pricing page", 5)` |
+| `request_supporting_data` | Send a question to user through active channel and pause | `request_supporting_data("Which region?")` |
+| `telegram_send_buttons` | Send Telegram message with inline keyboard buttons | `telegram_send_buttons(chatId, "Choose:", [["A", "B"]])` |
+| `telegram_send_poll` | Send a Telegram poll | `telegram_send_poll(chatId, "Preference?", ["Yes","No"])` |
+| `telegram_react` | React with emoji; falls back to reply if native reactions blocked | `telegram_react(chatId, msgId, "👍")` |
+| `telegram_edit_message` | Edit a previously sent Telegram message | `telegram_edit_message(chatId, msgId, "Updated text")` |
+| `telegram_pin_message` | Pin a message in a Telegram chat | `telegram_pin_message(chatId, msgId)` |
+| `get_system_info` | Get platform, OS, Node version, shell, and command guidance | `get_system_info()` |
+| `system_check` | Verify commands, shared libraries, and file paths exist | `system_check(["node","git"], [], ["/etc/hosts"])` |
+
+---
+
+## Usage
+
+### TUI Mode (Recommended)
+Launch the visual dashboard:
+```bash
+orcbot ui
+```
+- **Manage AI Models**: Dedicated menu for OpenAI and Google Gemini keys.
+- **Manage Connections**: Configure Telegram and other channels.
+- **Gateway + Tailscale Guidance**: `Web Gateway` menu now includes a `Tailscale Setup & Status Guide` flow with checks and recommended hardening steps.
+
+### Direct Commands
+```bash
+# Start the autonomous reasoning loop (foreground)
+orcbot run
+
+# Start as a background daemon
+orcbot run --daemon
+
+# Check daemon status
+orcbot daemon status
+
+# Stop the daemon
+orcbot daemon stop
+
+# Push an orchestration task
+orcbot push "Find the current price of BTC and message it to Frederick on Telegram" -p 10
+```
+
+### Daemon Mode
+
+OrcBot can run as a background daemon, allowing it to operate continuously without keeping a terminal open:
+
+```bash
+# Start in daemon mode
+orcbot run --daemon
+```
+
+When started in daemon mode:
+- The process runs in the background and detaches from the terminal
+- A PID file is written to `~/.orcbot/orcbot.pid`
+- Logs are redirected to `~/.orcbot/daemon.log`
+- The daemon will continue running even after you close the terminal
+
+**Managing the daemon:**
+```bash
+# Check if daemon is running
+orcbot daemon status
+
+# Stop the daemon
+orcbot daemon stop
+
+# View daemon logs
+tail -f ~/.orcbot/daemon.log
+```
+
+**Conflict Prevention:**
+
+OrcBot includes built-in safeguards to prevent conflicts between daemon and non-daemon modes:
+
+- Running `orcbot run --daemon` when a daemon is already active will display an error with the existing PID and instructions to stop it first
+- Running `orcbot run` (foreground mode) when a daemon is active will prevent startup and suggest stopping the daemon first
+- Both modes detect stale PID files (when the process no longer exists) and clean them up automatically
+- Clear error messages guide you to use `orcbot daemon stop` or `orcbot daemon status` to manage conflicts
+
+This ensures you won't accidentally run multiple agent instances that could conflict with each other or duplicate channel connections.
+
+---
+
+### Web Gateway
+
+OrcBot provides a web gateway for remote management via REST API and WebSocket:
+
+```bash
+# Start the web gateway
+orcbot gateway
+
+# Start gateway with agent loop
+orcbot gateway --with-agent
+
+# Custom port and API key
+orcbot gateway -p 8080 -k mysecretkey
+
+# Serve a dashboard
+orcbot gateway -s ./apps/dashboard
+```
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/status` | Agent status & info |
+| GET | `/api/skills` | List all skills |
+| POST | `/api/skills/:name/execute` | Execute a skill |
+| POST | `/api/tasks` | Push a new task |
+| GET | `/api/tasks` | View task queue |
+| GET | `/api/config` | View configuration |
+| PUT | `/api/config/:key` | Update config value |
+| GET | `/api/memory` | View recent memories |
+| GET | `/api/connections` | Channel status |
+| GET | `/api/logs` | Recent log entries |
+| GET | `/api/security` | Security settings |
+| PUT | `/api/security` | Update security settings |
+
+**WebSocket Events:**
+
+Connect to `ws://host:port` for real-time events:
+- `status` - Initial agent status
+- `event` - Agent events (thinking, action, observation, etc.)
+- Actions: `pushTask`, `executeSkill`, `getStatus`, `setConfig`
+
+**Authentication:**
+
+If an API key is configured, include it in requests:
+```bash
+curl -H "X-Api-Key: yourkey" http://localhost:3100/api/status
+```
+
+Configure via TUI (`orcbot ui` → Web Gateway) or config:
+```yaml
+gatewayPort: 3100
+gatewayHost: 0.0.0.0
+gatewayApiKey: your-secret-key
+```
+
+**Recommended for remote access: Tailscale (private mesh network)**
+- Keep the gateway private to your Tailnet instead of exposing port 3100 publicly.
+- Still set `gatewayApiKey` for defense-in-depth.
+
+### MCP Server
+
+OrcBot can also run as an MCP server, either over stdio for local spawned clients or over stateless Streamable HTTP for remote MCP clients.
+
+```bash
+# Start OrcBot as an MCP server and run the agent loop
+orcbot mcp
+
+# Start MCP without auto-starting the agent loop
+orcbot mcp --no-agent-loop
+
+# Start a remote MCP endpoint over Streamable HTTP
+orcbot mcp --http -p 3190 -k my-mcp-token
+```
+
+You can also configure HTTP mode in `orcbot.config.yaml` or via environment variables instead of passing flags every time:
+
+```yaml
+mcpHost: 0.0.0.0
+mcpPort: 3190
+mcpPath: /mcp
+mcpApiKey: your-mcp-token
+```
+
+Supported environment variables are `MCP_HOST`, `MCP_PORT`, `MCP_PATH`, and `MCP_API_KEY`.
+
+The MCP server currently exposes agent-mediated tools for:
+
+- `orcbot_chat`: send a prompt through OrcBot's normal gateway-chat path and wait for a reply
+- `orcbot_queue_task`: enqueue work asynchronously
+- `orcbot_status`: inspect runtime state and queue counts
+- `orcbot_list_skills`: inspect the currently registered skill catalog
+
+For HTTP mode, OrcBot serves MCP at the configured `mcpPath` and a lightweight health check at `/health`. CLI flags override config values. If `mcpApiKey` is unset, OrcBot falls back to `gatewayApiKey` for compatibility. Clients must send the token through `X-Api-Key` or `Authorization: Bearer ...`.
+
+Use stderr for local diagnostics only in stdio mode. Stdout is reserved for the MCP protocol stream.
+- Restrict access with Tailnet ACLs to trusted operators/devices only.
+
+---
+
+## Configuration
+
+OrcBot reads configuration in this order (highest priority first):
+
+1. Environment variables
+2. Local `./orcbot.config.yaml`
+3. Home `~/orcbot.config.yaml`
+4. Global `~/.orcbot/orcbot.config.yaml`
+
+Key settings (excerpt):
+
+- `modelName`: LLM model to use
+- `llmProvider`: Explicit provider selection (`openai`, `google`, `bedrock`, `openrouter`)
+- `openrouterApiKey`: API key for OpenRouter (access 200+ models)
+- `googleOAuthClientId`, `googleOAuthClientSecret`, `googleOAuthRedirectUri`: Google identity service settings for Gmail-backed auth workflows
+- `googleWorkspaceCliPath`, `googleWorkspaceCliAccount`: Optional Google Workspace CLI binary path and default account selector
+- `githubCliPath`: Optional GitHub CLI binary path if `gh` is not already on PATH
+- `telegramToken` / `whatsappEnabled`
+- `maxStepsPerAction`, `maxMessagesPerAction`, `messageDedupWindow`
+- `structuredOutputEnabled`: Set to `false` to stop asking providers for a native JSON response on the decision path. Default on; providers that reject the request are retried without it automatically.
+- `autonomyEnabled`, `autonomyInterval`, `autonomyBacklogLimit`
+- `autonomyAllowedChannels`: List of channels the agent can message proactively (e.g., `["telegram"]`).
+- `skillRoutingRules`: Intent-based skill selection rules
+- `reasoningExposeChecklist`: Set to `true` to send the agent's internal step-by-step checklist to the user before starting complex tasks.
+- `selfTrainingEnabled`, `selfTrainingTrainOnIdle`, `selfTrainingMinAcceptedExamples`
+- `selfTrainingEvalPassThreshold`, `selfTrainingPromotionMinAverageScore`, `selfTrainingRequireEvalForPromotion`
+- `selfTrainingLaunchCommand`: command template with `{jobManifestPath}`, `{exportPath}`, `{modelName}`, `{provider}`, and `{jobId}` placeholders.
+
+### Autonomy Channel Policy
+To prevent background spam, the agent uses `autonomyAllowedChannels` to restrict where it can send "out of the blue" updates.
+*   **Direct Responses:** Always allowed. If you message the bot, it can always reply on that same channel.
+*   **Proactive Updates:** Only allowed on channels listed in `autonomyAllowedChannels`.
+*   **Default:** Empty `[]` (Silent in background).
+
+Example config:
+```yaml
+autonomyAllowedChannels:
+  - telegram
+  - discord
+```
+
+### Agent-Driven Config Management
+
+OrcBot uses configuration policies to govern agent-requested settings changes:
+
+#### Policy-Based Security
+- **SAFE configs** (e.g., `modelName`, `memoryContextLimit`): Agents can modify autonomously
+- **APPROVAL configs** (e.g., API keys): Agents can request changes, requires human approval
+- **LOCKED configs** (e.g., `safeMode`, security settings): Agents cannot modify
+
+#### Autonomous Optimization
+Agent-requested configuration changes can be useful when:
+- Code tasks need more capable models (auto-switch to GPT-4)
+- Complex tasks require more memory context
+- Multi-step workflows need higher step budgets
+- LLM provider is unavailable (auto-fallback to alternatives)
+
+#### Usage
+```javascript
+// Agent can optimize for code tasks
+manage_config({ action: "set", key: "modelName", value: "gpt-4", reason: "Code task benefits from GPT-4" })
+
+// Agent can request approval for sensitive changes
+manage_config({ action: "set", key: "openaiApiKey", value: "sk-new-key", reason: "API key rotation" })
+
+// View pending approvals
+manage_config({ action: "pending" })
+
+// Approve changes
+manage_config({ action: "approve", key: "openaiApiKey" })
+```
+
+See [Config Management Documentation](docs/guides/CONFIG_MANAGEMENT.md) for complete details.
+
+### Google Identity Service
+
+OrcBot can connect to a Google account for mailbox-assisted authentication workflows such as verification emails, magic links, and OTP retrieval.
+
+Setup options:
+
+- TUI: `orcbot ui` -> `Tooling` -> `Google Identity (OAuth + Gmail OTP)`
+- Environment variables: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI`
+- YAML config: `googleOAuthClientId`, `googleOAuthClientSecret`, `googleOAuthRedirectUri`
+
+Core skills:
+
+- `google_identity_status()`
+- `google_identity_connect(client_id?, client_secret?, code_or_redirect_url?, email?)`
+- `google_inbox_search(query, maxResults?)`
+- `google_latest_otp(from_contains?, subject_contains?)`
+
+Operational notes:
+
+- Refresh tokens are persisted under the OrcBot data directory in `google-identity.json`.
+- If `ORCBOT_SECRET_KEY` or `orcbotSecretKey` is set, the refresh token is encrypted before storage.
+- Gmail access is read-only.
+
+Full setup and security guidance: [docs/GOOGLE_IDENTITY.md](docs/GOOGLE_IDENTITY.md)
+
+### Google Workspace CLI
+
+OrcBot can also use the Google Workspace CLI (`gws`) as a broad Google backend for Docs, Drive, Sheets, Calendar, and Gmail operations.
+
+Setup options:
+
+- TUI: `orcbot ui` -> `Tooling` -> `Google Workspace CLI (gws)`
+- Environment variables: `GOOGLE_WORKSPACE_CLI_PATH`, `GOOGLE_WORKSPACE_CLI_ACCOUNT`
+- YAML config: `googleWorkspaceCliPath`, `googleWorkspaceCliAccount`
+
+Core skills:
+
+- `google_workspace_status()`
+- `google_workspace_command(args:array, json?, account?)`
+- `google_docs_create(title, content?, account?)`
+- `google_docs_write(document_id, text, account?)`
+- `google_drive_list(query?, pageSize?, account?)`
+- `google_sheets_create(title, account?)`
+- `google_sheets_read(spreadsheet_id, range, account?)`
+- `google_sheets_append(spreadsheet_id, values|json_values, account?, dryRun?)`
+- `google_calendar_create_event(summary, start, end, calendar?, location?, description?, attendees?, account?, dryRun?)`
+- `google_gmail_triage(max?, query?, labels?, account?)`
+- `google_gmail_send(to, subject, body, cc?, bcc?, account?, dryRun?)`
+- `google_gmail_reply(message_id, body, to?, cc?, bcc?, from?, account?, dryRun?)`
+- `google_gmail_reply_all(message_id, body, to?, cc?, bcc?, remove?, from?, account?, dryRun?)`
+
+Operational notes:
+
+- The TUI can install `@googleworkspace/cli`, run `gws auth setup`, and run `gws auth login` for you.
+- OrcBot executes `gws` without a shell when the agent calls Workspace skills.
+- Workspace write operations remain elevated because they can modify user data.
+
+Full setup and usage guidance: [docs/GOOGLE_WORKSPACE_CLI.md](docs/GOOGLE_WORKSPACE_CLI.md)
+
+---
+
+## Autonomy & Heartbeat
+
+The heartbeat schedules follow-ups and maintenance tasks based on recent activity:
+
+### Scheduling
+- **Exponential Backoff**: When unproductive, heartbeat intervals automatically increase (2x, 4x, 8x) to save resources
+- **Productivity Tracking**: Measures actual work done vs. idle cycles to optimize timing
+- **Context-Aware Actions**: Analyzes recent conversations to determine relevant follow-ups
+
+### Action Types
+- **follow_up**: Continue conversations that need closure
+- **outreach**: Proactively check in with contacts
+- **research**: Learn about topics from recent discussions
+- **maintenance**: Journal updates, memory consolidation
+- **delegate**: Spawn worker agents for parallel tasks
+
+### Completion Audit Codes (Troubleshooting)
+When OrcBot blocks premature completion, logs include a compact code like `AUDIT_BLOCK:ACK_ONLY+UNSENT_RESULTS`.
+
+| Code | Meaning | Typical Fix |
+|------|---------|-------------|
+| `NO_SEND` | No user-visible reply was sent for a channel task | Ensure a channel send skill is called before completion |
+| `UNSENT_RESULTS` | Deep tool output exists after the last sent message | Send a final results message after search/browser/command steps |
+| `NO_SUBSTANTIVE` | Deep/research tools ran, but no substantive delivery was sent | Replace status updates with concrete findings/outcomes |
+| `ACK_ONLY` | Only acknowledgement/status-style messages were sent | Follow ack with one content-rich delivery message |
+| `ERROR_UNRESOLVED` | Tool errors occurred without a substantive recovery/result message | Explain failure + next step, or retry with an alternate strategy |
+| `GENERIC` | Fallback classification for uncategorized audit issue | Inspect action step memories and recent pipeline notes |
+
+You can view these in daemon logs and in the action's short memory entries (look for `completion-audit-blocked`).
+
+### Multi-Agent Orchestration
+For complex tasks, OrcBot can spawn worker processes:
+```bash
+# Workers appear in the TUI with PIDs and status
+orcbot ui  # → Workers menu shows active processes
+```
+- Real Node.js child processes via `fork()`
+- IPC communication with the main agent
+- Shared configuration and isolated execution
+- Automatic cleanup on completion
+
+---
+
+---
+
+## The Reasoning Loop (ReAct)
+
+OrcBot can run several tool-and-observation steps before replying:
+1.  **THOUGHT**: "I need to find news first."
+2.  **ACTION**: Calls `web_search`.
+3.  **OBSERVATION**: Receives news results.
+4.  **RE-REASON**: Uses the results to decide whether another step is needed.
+5.  **FINALIZE**: Completes background tasks and then messages the user.
+
+---
+
+## Decision Pipeline & Safety
+
+OrcBot includes a decision pipeline that applies checks to tool calls and task completion:
+
+### Termination Review Layer
+When an action is ready to finish, a second review checks whether the task has been completed.
+
+### Task Complexity Classifier
+OrcBot uses an LLM-based classifier to label tasks as trivial, simple, standard, or complex. This drives step and message budgets dynamically instead of brittle regex rules.
+
+### Skill Routing Rules
+Configure intent-based skill selection:
+```yaml
+skillRoutingRules:
+  - intent: "search"
+    preferSkills: ["web_search", "browser_navigate"]
+  - intent: "code"
+    preferSkills: ["run_command", "manage_skills"]
+```
+
+### Autopilot Mode
+Enable `autopilotNoQuestions: true` to suppress clarification requests and keep the agent moving autonomously.
+
+### Pipeline Guardrails
+- **Deduplication**: Prevents repeated tool calls within the same action
+- **Safety Checks**: Validates tool parameters and prevents dangerous operations in safe mode
+- **Fallback Logic**: Auto-retries with alternative providers on failure
+- **Information Boundaries**: Non-admin tasks are blocked from journal/learning/episodic context to prevent cross-user leakage
+
+---
+
+## Dynamic Plugin System
+
+OrcBot loads TypeScript or JavaScript plugins from `~/.orcbot/plugins` (or `./plugins`) at runtime.
+
+- **Repair attempt**: If a plugin fails, OrcBot can call `self_repair_skill`.
+- **Runtime loading**: Newly available plugins can be loaded without restarting OrcBot.
+
+---
+
+## Security & Privacy
+
+- **Local data**: memory, logs, and profiles are stored in the configured data directory.
+- **External requests**: channels, model providers, browser search, and skills make network requests when used.
+- **Secret configuration**: API keys and other credentials are loaded through configuration and environment variables.
+- **Safe Mode**: disable command execution and skill creation via `safeMode: true`
+- **Plugin allow/deny**: control which plugins can load with `pluginAllowList` and `pluginDenyList`
+- **Admin-only Skills**: elevated capabilities are gated to configured admins
+
+---
+
+## Recent Changes
+
+### Skill Infrastructure Hardening
+- **`download_file`**: 60 s timeout, 50 MB streaming cap, MIME → file extension inference, uses `dataHome` directory.
+- **`send_file` / `send_voice_note`**: Full 3-tier channel detection (WhatsApp → Discord → Telegram) using action source metadata and JID snowflake pattern. Discord voice notes send as audio file attachments.
+- **`read_file`**: `start_line` / `end_line` parameters for pagination; limit raised from 10 KB to 20 KB.
+- **`write_file`**: 10 MB content guard prevents accidental large writes.
+- **`run_command`**: Reliable Windows process-tree kill via `taskkill /PID … /T /F`; stdout capped at 8 KB with tail-hint.
+- **`request_supporting_data`**: Now actively sends the question through the originating channel before returning the pause sentinel.
+- **`update_learning`**: LLM extraction input capped at 3 000 chars; per-entry storage capped at 3 000 chars to prevent LEARNING.md bloat.
+
+### Telegram Rich UX
+- Inline keyboard buttons (`telegram_send_buttons`)
+- Native polls (`telegram_send_poll`)
+- Emoji reactions with graceful reply fallback (`telegram_react`)
+- Message editing (`telegram_edit_message`)
+- Message pinning (`telegram_pin_message`)
+
+### Browser Infrastructure
+- `navigateEphemeral` now has full anti-bot stealth parity with main browser.
+- `searchGoogle` / `searchBing` / `searchDuckDuckGo` save/restore `lastNavigatedUrl` so browser context is not clobbered by background searches.
+- `extract_article` reuses the shared Playwright browser instead of spawning a new process.
+- Blank-page counter now tracked on the fast `extractContent` path.
+- Search cache hits no longer append `[cache]` suffix into LLM output.
+
+### RAG Knowledge Store
+- `rag_ingest`, `rag_ingest_file`, `rag_ingest_url`, `rag_search`, `rag_list`, `rag_delete`
+- Chunk-based embedding storage with collection namespacing and tag filtering.
+- Automatic HTML→Readability extraction in `rag_ingest_url`.
+
+---
+
+## Contributing
+
+OrcBot is built for extensibility. Contributors can add:
+- **Skills**: New tools in `src/core/Agent.ts`.
+- **Channels**: New communication platforms (Slack, Discord).
+- **Providers**: New LLM interfaces in `MultiLLM.ts` (supports OpenAI, Gemini, Bedrock, OpenRouter).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+### AI-assisted changes
+
+The anti-slop core guidance is in [`antislop.md`](antislop.md). For Copilot coding sessions, [`.github/copilot-instructions.md`](.github/copilot-instructions.md) routes UI and copy changes to that file. This repository currently installs the core guidance only; optional anti-slop skill bundles are not included.
+
+---
+
+<div align="center">
+OrcBot is open source under the MIT License.
+</div>

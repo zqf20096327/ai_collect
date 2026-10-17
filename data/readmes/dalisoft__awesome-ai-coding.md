@@ -1,0 +1,305 @@
+# awesome-ai-coding
+
+A curated list of AI-powered CLI, code editor and IDE's categorized by their usage,
+sorted by minimal plan price.
+
+<a href="https://www.producthunt.com/products/awesome-ai-coding?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-awesome&#0045;ai&#0045;coding" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1008787&theme=light&t=1756027113949" alt="awesome&#0045;ai&#0045;coding - List&#0032;of&#0032;AI&#0045;powered&#0032;code&#0032;editor&#0032;and&#0032;IDE&#0039;s | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
+## Other my awesome lists
+
+- [awesome-storage](https://github.com/dalisoft/awesome-storage)
+- [awesome-hosting](https://github.com/dalisoft/awesome-hosting)
+- [awesome-ui-libraries](https://github.com/dalisoft/awesome-ui-libraries)
+- [awesome-cms](https://github.com/dalisoft/awesome-cms)
+
+## Sponsors
+
+Donations to project with credits on LLM/AI inferences or such bonuses from providers.
+
+_**This project and project author [Qwen Ambassador](https://qwen.ai/ambassador) member.
+thank you Alibaba Qwen team**_
+
+> There amount are not real money, it is credits within sponsor platform.
+
+| Name                                          | Status           | Tier     |
+| --------------------------------------------- | ---------------- | -------- |
+| [Qwen Ambassador](https://qwen.ai/ambassador) | Active           | Platinum |
+| [KiloCode](https://kilo.ai)                   | Previous sponsor | Silver   |
+
+## Status
+
+- ✅ – Trusted and verified by author
+- ⚠️ – Not trusted or broken link
+- ⛔️ – Not recommended
+- ❌ – Not trusted and not recommended
+- 🛑 - End of life
+- Without badge – Not verified by author
+
+## Contents
+
+### Providers navigation
+
+- [Proxy services](#proxy-services)
+- [Subscriptions](#subscriptions)
+- [Intelligent Model Routers](#intelligent-model-routers)
+- [Fusion Model Routers](#fusion-model-routers)
+- [Tokens](https://github.com/dalisoft/awesome-hosting?tab=readme-ov-file#tokens) `[E]`
+
+### Tools navigation
+
+- [IDE & Editors](#ide--editors)
+- [Extensions](#extensions)
+- [SaaS](#saas--web-app)
+- [CLI](#cli)
+
+---
+
+## Providers
+
+### Proxy services
+
+> The proxy services and providers are not guaranteed to being geninue nor legally.
+> Please check your country and company legal terms before using these proxy services
+
+| Name                                         | Minimal plan                                  | Trial | Usage       |
+| -------------------------------------------- | --------------------------------------------- | ----- | ----------- |
+| [Cavoti][proxy-cavoti-ref]                   | [Pro][proxy-cavoti-ref] (0.50 \$/m)           | -     | $30 / month |
+| [AICodeMirror](https://www.aicodemirror.com) | [PRO](https://www.aicodemirror.com) (2 \$/m)  | -     | -           |
+| [aerolink][proxy-aerolink-ref]               | [Builder][proxy-aerolink-ref] (10 \$/m)       | -     | $140 / week |
+| [ccapi][proxy-ccapi-ref]                     | [Pricing][proxy-cavoti-ref] (<= 93% off)      | -     | -           |
+| [CCode](https://www.ccode.dev)               | [Pricing](https://www.ccode.dev) (<= 88% off) | -     | -           |
+| [Packy][proxy-packy-ref]                     | [Pricing][proxy-packy-ref] (<= 71% off)       | -     | -           |
+| [Code0][proxy-code0-ref]                     | [Pricing][proxy-code0-ref] (<= 65% off)       | -     | -           |
+| [ClaudeAPI][proxy-claudeapi-ref]             | [Pricing][proxy-claudeapi-ref] (<= 20% off)   | -     | -           |
+| [B AI](https://b.ai)                         | [Pricing](https://b.ai) (<= unknown)          | -     | -           |
+| [VisionCoder](https://coder.visioncoder.cn)  | -                                             | -     | -           |
+
+### Subscriptions
+
+| Name                                                      | Minimal plan                                                                                                | Trial        | Usage                 |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------ | --------------------- |
+| [Xiaomi Token Plan][xiaomi-ref]                           | [Lite][xiaomi-ref] (6 \$/m)                                                                                 | 12% discount | 4B tokens             |
+| [Alibaba Token Plan][alibaba-token-ref]                   | [Lite][alibaba-token-ref] (8 \$/m)                                                                          | 2$ off       | -                     |
+| [NanoGPT][nano-gpt-ref]                                   | [Pro][nano-gpt-ref] (8 \$/m)                                                                                | -            | -                     |
+| [Chutes](https://chutes.ai)                               | [Plus](https://chutes.ai/pricing) (10 \$/m)                                                                 | -            | 300 msg / day         |
+| [CommandCode GOAT](https://commandcode.ai)                | [GOAT](https://commandcode.ai/pricing) (10 \$/m)                                                            | -            | $70 usage             |
+| [MiniMax Coding][minimax-ref]                             | [Starter][minimax-ref] (10 \$/m)                                                                            | -            | =< 100 prompts / 5-hr |
+| [OpenCode Go][opencode-ref]                               | [Go][opencode-ref] (10 \$/m)                                                                                | $5 credit    | $60 usage             |
+| [Cline Pass](https://cline.bot/cline-pass)                | 10 \$/m                                                                                                     | 50% discount | -                     |
+| [GMICloud](https://www.gmicloud.ai)                       | [Lite](https://www.gmicloud.ai/en/blog/kimi-k3-is-day-0-coming-to-gmi-and-its-in-our-coding-plan) (10 \$/m) |              |                       |
+| [Featherless](https://featherless.ai)                     | [Basic](https://featherless.ai/#pricing) (10 \$/m)                                                          | -            | up-to 15B models      |
+| [wafer](https://wafer.ai) ⛔️                              | [Lite](https://www.wafer.ai) (12 \$/m)                                                                      | -            | 100 req / 5-hr        |
+| [GLM Coding][z-ai-ref]                                    | [Lite][z-ai-ref] (18 \$/m)                                                                                  | -            | =< 120 prompts / 5-hr |
+| [Kilo Pass](https://kilo.ai/features/kilo-pass)           | [Starter](https://kilo.ai/features/kilo-pass)(19 \$/m)                                                      | 50% bonus    | Tokens                |
+| [Kimi Coding](https://www.kimi.com)                       | [Moderato](https://www.kimi.com/membership/pricing) (19 \$/m)                                               | -            | -                     |
+| [Standard Compute](https://standardcompute.com)           | [Starter](https://standardcompute.com/pricing) (19 \$/m)                                                    | ?            | $20 value             |
+| [APIClaw](https://apiclaw.biz)                            | [Plus](https://apiclaw.biz/#pricing) (19 \$/m)                                                              | 50 req free  | 500 req / day         |
+| [ChatGPT Codex](https://chatgpt.com)                      | [Plus](https://chatgpt.com/pricing) (20 \$/m)                                                               | -            | <= 100 prompts / 5-hr |
+| [Claude Code][claude-ref]                                 | [Pro][claude-ref] (20 \$/m)                                                                                 | 1-week free  | <= 30 prompts / 5-hr  |
+| [Google AI](https://one.google.com/about/google-ai-plans) | [Pro](https://one.google.com/about/google-ai-plans) (20 \$/m)                                               | Free plan    | <= 100 prompts / 5-hr |
+| [Nous Portal](https://portal.nousresearch.com)            | [PLUS](https://portal.nousresearch.com) (20 \$/m)                                                           | -            | $22 usage             |
+| [Ollama Cloud](https://ollama.com/pricing)                | [Pro](https://ollama.com/pricing) (20 \$/m)                                                                 | -            | -                     |
+| [synthetic][synthetic-ref]                                | [Standard][synthetic-ref] (20 \$/m)                                                                         | -            | 135 msg / 5-hr        |
+| [Cerebras Code](https://www.cerebras.ai/code) ⛔️          | [Pro](https://www.cerebras.ai/code) (50 \$/m)                                                               | -            | 24 M. Tokens / day    |
+| [Alibaba AI Coding Plan][alibaba-cloud-ref]               | [Pro][alibaba-cloud-ref] (50 \$/m)                                                                          | -            | <= 90,000 req / month |
+| [Zyloo](https://zyloo.io)                                 | [PRO](https://zyloo.io/subscription) (76 \$/m)                                                              | -            | -                     |
+
+### Intelligent Model Routers
+
+This method known as: Auto-switch, Auto Router
+
+| Name                                                                | Fee          | Trial | Tied to                     |
+| ------------------------------------------------------------------- | ------------ | ----- | --------------------------- |
+| [BTL Runtime](https://runtime.badtheorylabs.com)                    | 4%           | $5    | -                           |
+| [Factory Router](https://factory.ai/news/factory-router)            | 0%           | -     | [Droid](https://factory.ai) |
+| [Kilo Auto Efficient](https://kilo.ai/auto-model)                   | 0%           | -     | -                           |
+| [NadirClaw](https://github.com/NadirRouter/NadirClaw)               | -            | -     | -                           |
+| [OpenRouter Auto](https://openrouter.ai/openrouter/auto)            | Platform Fee | -     | -                           |
+| [Orca Router](https://www.orcarouter.ai/solutions/adaptive-routing) | 0%           | -     | -                           |
+| [Weave Router](https://github.com/workweave/router)                 | -            | -     | -                           |
+
+### Fusion Model Routers
+
+This method known as: Fusion, Smart Router.
+
+How it works: it asks Advisor (smart) model for hard question or planning
+while executes with Build (cheap) model.
+
+| Name                                                         | Fee          | Trial | Tied to                                   |
+| ------------------------------------------------------------ | ------------ | ----- | ----------------------------------------- |
+| [Anthropic Advisor](https://code.claude.com/docs/en/advisor) | Model fee    | -     | [Claude API](https://platform.claude.com) |
+| [Devin Fusion](https://cognition.com/blog/devin-fusion)      | 0%           | -     | [Devin CLI](https://devin.ai/cli)         |
+| [OpenRouter Fusion](https://openrouter.ai/openrouter/fusion) | Platform Fee | -     | -                                         |
+| [Sakana Fugu](https://sakana.ai/fugu)                        | Fixed rate   | -     |                                           |
+
+### Tokens
+
+See [AI providers](https://github.com/dalisoft/awesome-hosting#llminference-api) for token-based usage.
+
+---
+
+## IDE & Editors
+
+List of AI-powered IDEs and code editors.
+
+| Name                                       | Minimal plan                                    | Usage        | Trial  | Free plan | Open Source |
+| ------------------------------------------ | ----------------------------------------------- | ------------ | ------ | --------- | ----------- |
+| [BuilderStudio](https://builderstudio.dev) | BYOK                                            | Tokens       | 7-days | Yes       | No          |
+| [FlexPilot AI](https://flexpilot.ai)       | BYOK                                            | Tokens       | -      | -         | Yes         |
+| [humanlayer](https://www.humanlayer.dev)   | BYOK                                            | Tokens       | -      | -         | Yes         |
+| [VoidEditor](https://voideditor.com)       | BYOK                                            | Tokens       | -      | -         | Yes         |
+| [Trae AI](https://trae.ai)                 | [Pro](https://www.trae.ai/pricing) (10 \$/m)    | Subscription | 3 \$/m | Yes       | No          |
+| [Zed](https://zed.dev)                     | [Pro](https://zed.dev/pricing) (10 \$/m)        | Tokens       | 2-week | Yes       | Yes         |
+| [PearAI](https://trypear.ai)               | [Maker](https://trypear.ai/pricing) (15 \$/m)   | Tokens       | No     | Yes       | Yes         |
+| [Windsurf](https://windsurf.com)           | [Pro](https://windsurf.com/pricing) (15 \$/m)   | Subscription | No     | Yes       | No          |
+| [Cursor](https://www.cursor.com)           | [Pro](https://www.cursor.com/pricing) (20 \$/m) | Subscription | 2-week | Yes       | No          |
+| [Aide](https://aide.dev)                   | [Creator](https://aide.dev/pricing) (20 \$/m)   | Subscription | No     | Yes       | Yes         |
+| [Kiro](https://kiro.dev)                   | [Kiro Pro](https://kiro.dev/pricing) (20 \$/m)  | Subscription | 2-week | Yes       | No          |
+| [Qoder][qoder-ref]                         | Pro (20 \$/m)                                   | Subscription | Beta   | Beta      | No          |
+
+---
+
+## Extensions
+
+List of AI-powered coding plugins and extensions. See [feature matrix](./FEATURE_MATRIX.md#extensions).
+
+| Name                                                  | Minimal plan                                                                              | Usage                | Trial     | Free plan | Open Source |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------- | --------- | --------- | ----------- |
+| [Cline](https://github.com/cline/cline)               | BYOK or [see providers](#providers)                                                       | Tokens               | -         | -         | Yes         |
+| [Kilo-Code](https://kilo.ai)                          | BYOK or [see providers](#providers)                                                       | Tokens               | $2 credit | -         | Yes         |
+| [Roo-Code](https://github.com/RooVetGit/Roo-Code)     | BYOK or [see providers](#providers)                                                       | Tokens               | -         | -         | Yes         |
+| [amp](https://ampcode.com)                            | [Pricing](https://ampcode.com/manual#pricing)                                             | Tokens               | $10/day   | Yes       | No          |
+| [TabNine](https://www.tabnine.com)                    | [Dev](https://www.tabnine.com/pricing) (9 \$/m)                                           | Subscription         | 14-day    | Yes       | No          |
+| [GitHub Copilot](https://github.com/features/copilot) | [Pro](https://github.com/features/copilot/plans) (10 \$/m)                                | Tokens               | 30-day    | Yes       | Yes         |
+| [Amazon Q](https://aws.amazon.com/q/developer)        | [Pro](https://aws.amazon.com/q/developer/pricing) (19 \$/m)                               | Subscription         | No        | Yes       | No          |
+| [Droid](https://factory.ai)                           | BYOK or [Pro](https://factory.ai/pricing) (20 \$/m) or [see providers](#providers)        | Tokens               | No        | Yes       | No          |
+| [Continue.dev AI](https://continue.dev)               | BYOK or [Solo](https://hub.continue.dev/pricing) (20 \$/m) or [see providers](#providers) | Tokens, Subscription | -         | -         | Yes         |
+| [Double](https://double.bot)                          | [Pro](https://docs.double.bot/pricing) (20 \$/m)                                          | Subscription         | No        | Yes       | No          |
+| [augment code](https://www.augmentcode.com)           | [Developer](https://www.augmentcode.com/pricing) (50 \$/m)                                | Subscription         | 1-week    | Yes       | No          |
+| [MarsCode](https://www.marscode.com)                  | BYOK or Beta?                                                                             | Tokens               | -         | Yes       | No          |
+
+---
+
+## SaaS / Web-app
+
+List of AI-powered cloud-based developer tools.
+
+| Name                                        | Minimal plan                                             | Trial         | Free plan | Open Source | Stack      |
+| ------------------------------------------- | -------------------------------------------------------- | ------------- | --------- | ----------- | ---------- |
+| [Firebase Studio](https://firebase.studio/) | -                                                        | No            | Yes       | No          | Full       |
+| [Bolt.diy](https://bolt.diy)                | BYOK                                                     | -             | -         | No          | Full-stack |
+| [Softgen](https://softgen.ai)               | BYOK with [Annual](https://softgen.ai/pricing) (33 \$/y) | No            | No        | No          | Full-stack |
+| [Webcrumbs](https://www.webcrumbs.org)      | BYOK                                                     | -             | -         | Yes         | Frontend   |
+| [Blackbox AI](https://blackbox.ai)          | [Pro](https://www.blackbox.ai/pricing) (4 \$/m)          | No            | Yes       | No          | -          |
+| [Memex](https://memex.tech)                 | [Build](https://memex.tech/pricing) (10 \$/m)            | 1,000 credits | Yes       | No          | -          |
+| [Durable](https://durable.co)               | [Starter](https://durable.co/pricing) (15 \$/m)          | No            | No        | No          | Frontend   |
+| [CodeParrot](https://codeparrot.ai)         | [Pro](https://codeparrot.ai/pricing) (19 \$/m)           | 2-week        | No        | No          | Frontend   |
+| [Co](https://www.co.dev)                    | [Pro](https://www.co.dev/pricing) (19 \$/m)              | No            | Yes       | No          | Full-stack |
+| [v0](https://v0.app)                        | [Premium](https://v0.app/pricing) (20 \$/m)              | No            | Yes       | No          | Frontend   |
+| [VibeKit](https://vibekit.bot)              | BYOK or [Builder](https://vibekit.bot/pricing) (20 \$/m) | No            | Yes       | No          | Full-stack |
+| [replit Agent][replit-ref]                  | Pro (20 \$/m)                                            | No            | Yes       | No          | Full-stack |
+| [Wegic](https://wegic.ai)                   | [Starter](https://wegic.ai/pricing) (24 \$/m)            | No            | No        | No          | Frontend   |
+| [Lovable](https://lovable.dev)              | [Pro](https://lovable.dev/pricing) (25 \$/m)             | No            | Yes       | No          | Frontend   |
+| [Bolt.new](https://bolt.new)                | [Pro](https://bolt.new/pricing) (25 \$/m)                | No            | Yes       | No          | Full-stack |
+| [Builder](https://builder.io)               | [Pro](https://www.builder.io/m/pricing) (30 \$/m)        | No            | Yes       | No          | Frontend   |
+
+---
+
+## CLI
+
+List of AI-powered command-line tools. See [feature matrix](./FEATURE_MATRIX.md#cli-agents).
+
+| Name                                                      | Minimal plan                                                                                 | Usage                | Limits                | Trial     | Free plan | Open Source |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------- | --------------------- | --------- | --------- | ----------- |
+| [Aider](https://aider.chat)                               | BYOK                                                                                         | Tokens               | -                     | -         | -         | Yes         |
+| [amp](https://ampcode.com)                                | [Pricing](https://ampcode.com/manual#pricing)                                                | Tokens               | -                     | No        | Yes       | No          |
+| [Atomic Agent](https://atomicagent.io)                    | BYOK                                                                                         | Tokens               | -                     | -         | Yes       | Yes         |
+| [Cline](https://docs.cline.bot/cline-cli/overview)        | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | -         | -         | Yes         |
+| [crush](https://github.com/charmbracelet/crush)           | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | -         | -         | Yes         |
+| [Forge Code](https://forgecode.dev)                       | [See providers](#providers)                                                                  | Tokens               | -                     | -         | -         | Partial     |
+| [Freebuff][freebuff-ref]                                  | Free                                                                                         | Tokens               | $25+                  | -         | Yes       | -           |
+| [Grok](https://grokcli.io)                                | BYOK                                                                                         | Tokens               | -                     | -         | -         | Yes         |
+| [Hermes](https://hermes-agent.nousresearch.com)           | BYOK                                                                                         | Tokens               | -                     | -         | -         | Yes         |
+| [Kilo-Code](https://kilo.ai)                              | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | $2 credit | -         | Yes         |
+| [kolosal](https://github.com/KolosalAI/kolosal-cli)       | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | -         | -         | Yes         |
+| [Mastra Code](https://code.mastra.ai)                     | [See providers](#providers)                                                                  | Tokens               | -                     | -         | -         | No          |
+| [Mistral Vibe](https://github.com/mistralai/mistral-vibe) | Mistral BYOK                                                                                 | Tokens               | -                     | Free      | -         | Yes         |
+| [mu](https://github.com/qybaihe/mu)                       | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | -         | -         | Yes         |
+| [Nanocoder](https://github.com/Nano-Collective/nanocoder) | BYOK or [see providers](#providers)                                                          | Tokens               | -                     | -         | -         | Yes         |
+| [OpenCode](https://github.com/sst/opencode)               | [Zen](https://opencode.ai/docs/zen) or [see providers](#providers)                           | Tokens               | -                     | -         | -         | Yes         |
+| [opencode-rust](https://github.com/vakandi/opencode-rust) | Free                                                                                         | Tokens               | -                     | -         | Yes       | Yes         |
+| [Pi](https://pi.dev)                                      | BYOK                                                                                         | Tokens               | -                     | -         | -         | Yes         |
+| [Qwen Code](https://github.com/QwenLM/qwen-code)          | Free or [see providers](#providers)                                                          | Subscription         | 2,000 req / day       | -         | Yes       | Yes         |
+| [YYLO](https://github.com/yylo-dev/yylo)                  | Free                                                                                         | -                    | -                     | -         | Yes       | Yes         |
+| [CommandCode](https://commandcode.ai)                     | [Go](https://commandcode.ai/pricing) (1 \$/m)                                                | Tokens               | $10 value             | -         | No        | No          |
+| [GitHub Copilot](https://github.com/features/copilot)     | [Pro](https://github.com/features/copilot/plans) (10 \$/m)                                   | Tokens               | -                     | 30-days   | Yes       | No          |
+| [warp Code](https://www.warp.dev)                         | [Pro](https://www.warp.dev/pricing) (15 \$/m)                                                | Subscription         | =< 2,500 req / month  | No        | No        | No          |
+| [Amazon Q](https://aws.amazon.com/q/developer)            | [Pro](https://aws.amazon.com/q/developer/pricing) (19 \$/m)                                  | Subscription         | -                     | No        | Yes       | No          |
+| [Kimi Code](https://www.kimi.com/code)                    | [Moderato](https://www.kimi.com/membership/pricing) (19 \$/m) or [see providers](#providers) | Subscription         | ?                     | -         | Yes       | No          |
+| [Cursor](https://cursor.com/cli)                          | [Pro](https://www.cursor.com/pricing) (20 \$/m)                                              | Tokens               | 200 req / month       | 2-week    | Yes       | No          |
+| [Claude Code][claude-ref]                                 | BYOK or [Pro][claude-ref] (20 \$/m) or [see providers](#providers)                           | Tokens, Subscription | =< 220K tokens / 5-hr | No        | No        | No          |
+| [Codex](https://github.com/openai/codex)                  | BYOK or [Plus](https://openai.com/chatgpt/pricing) (20 \$/m)                                 | Tokens, Subscription | 80 req / 3-hour       | No        | No        | Yes         |
+| [Droid](https://factory.ai)                               | BYOK or [Pro](https://factory.ai/pricing) (20 \$/m) or [see providers](#providers)           | Tokens               | 20M tokens / month    | No        | Yes       | No          |
+| [Qoder][qoder-ref]                                        | Pro (20 \$/m)                                                                                | Subscription         | -                     | Beta      | Beta      | No          |
+| [Rovo Dev](https://www.atlassian.com/software/rovo-dev)   | Standard (20 \$/m)                                                                           | Tokens               | <= 2,000 credits      | 30-days   | No        | No          |
+| [Gemini](https://github.com/google-gemini/gemini-cli)     | BYOK or [Pricing](https://codeassist.google) (22.8 \$/m)                                     | Tokens, Subscription | =< 1,500 req / day    | No        | Yes       | Yes         |
+| [Auggie](https://docs.augmentcode.com/cli)                | [Developer](https://www.augmentcode.com/pricing) (50 \$/m)                                   | Tokens               | -                     | 1-week    | Yes       | No          |
+| [Junie CLI](https://junie.jetbrains.com)                  | -                                                                                            | -                    | -                     | -         | -         | No          |
+
+---
+
+## Tools
+
+| Name                | Link                                            |
+| ------------------- | ----------------------------------------------- |
+| agent-manager       | <https://github.com/YoanWai/agent-manager>      |
+| agenttrace          | <https://github.com/luoyuctl/agenttrace>        |
+| Aident Loadout      | <https://aident.ai>                             |
+| aisw                | <https://github.com/burakdede/aisw>             |
+| ax                  | <https://github.com/Necmttn/ax>                 |
+| CodeOtter           | <https://github.com/dharmeshgurnani/CodeOtter>  |
+| codex-profiles      | <https://github.com/Ducksss/codex-profiles>     |
+| contexttax          | <https://github.com/henrikdukefoss/contexttax>  |
+| coven               | <https://github.com/OpenCoven/coven>            |
+| Helicon             | <https://github.com/HarjjotSinghh/helicon>      |
+| mcp-ai-slop-checker | <https://github.com/parweb/mcp-ai-slop-checker> |
+| nibbl               | <https://github.com/nuromirzak/nibbl>           |
+| orcareplay         | <https://github.com/Continuum-AI-Corp/OrcaReplay> |
+| show-your-work      | <https://github.com/iamumeransari/claude-show-your-work> |
+| sillage             | <https://github.com/MarlBurroW/sillage>         |
+| subagent-tuner      | <https://github.com/Kruhlikau/subagent-tuner>   |
+| toldya              | <https://github.com/singhlabsdev/toldya>        |
+
+---
+
+## Resources
+
+- <https://github.com/inmve/free-ai-coding>
+- <https://whichaiplan.dev> - pricing comparison of AI coding subscriptions, updated weekly
+
+---
+
+## License
+
+MIT
+
+<!-- referral links -->
+
+[alibaba-cloud-ref]: https://www.alibabacloud.com/campaign/ai-scene-coding?referral_code=A924PN
+[alibaba-token-ref]: https://www.alibabacloud.com/en/campaign/ai-landing-page-token?referral_code=A924PN
+[claude-ref]: https://claude.ai/referral/W6Wu0V7qvA
+[freebuff-ref]: https://freebuff.com/?ref=ref-f7917691-dbc6-42ff-bf6d-20cad49ba057
+[minimax-ref]: https://platform.minimax.io/subscribe/coding-plan?code=IqX9pibzpl&source=link
+[nano-gpt-ref]: https://nano-gpt.com/invite/CLnWMCfV
+[opencode-ref]: https://opencode.ai/go?ref=JS7NVJ7BY1
+[proxy-aerolink-ref]: https://aerolink.lat/register?ref=ITZKKUI
+[proxy-cavoti-ref]: https://cavoti.com/register?aff=K6XBNP53XWY9
+[proxy-ccapi-ref]: https://ccapi.us/register?aff=wnpz7zef
+[proxy-claudeapi-ref]: https://console.claudeapi.com/register?aff=Lnhb
+[proxy-code0-ref]: https://console.code0.ai/register?aff=WkDx
+[proxy-packy-ref]: https://www.packyapi.com/register?aff=Ihn8
+[qoder-ref]: https://qoder.com/referral?referral_code=deA28K0MKKQolBB7qYtXRLhGGK5hK5c0
+[replit-ref]: https://replit.com/refer/dalisoft
+[synthetic-ref]: https://synthetic.new/?referral=GemOVdmcB7SNMQG
+[xiaomi-ref]: https://platform.xiaomimimo.com?ref=UZWW8Z
+[z-ai-ref]: https://z.ai/subscribe?ic=WYG1DQWSMW

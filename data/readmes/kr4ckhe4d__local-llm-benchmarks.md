@@ -1,0 +1,2018 @@
+# llama.cpp on AMD Radeon RDNA4 with ROCm: measured local LLM benchmarks
+
+Real measurements of local LLMs on consumer AMD GPUs: an **RX 9070 XT (16 GB)**
+and a **Radeon AI PRO R9700 (32 GB)**, both RDNA4 / gfx1201, on llama.cpp with
+ROCm 7.2 under Linux. Throughput, VRAM fit, GGUF quantization quality (KL
+divergence against BF16), MTP speculative decoding, long context at real
+depth, and running coding agents (Claude Code, aider, Cline) against the
+local models. Every figure here was measured on this machine; scripts and raw
+logs are in [`benchmarks/`](benchmarks/).
+
+**Hardware now:** Ryzen 7 9800X3D, 32 GB DDR5-6000, RX 9070 XT + Radeon AI PRO
+R9700 (48.9 GB VRAM, both PCIe 5.0 x8), CachyOS, ROCm 7.2, llama.cpp b11434.
+
+## Headline results (two cards, 2026-10)
+
+| Model | Setup | Result |
+|---|---|---|
+| Gemma 4 26B-A4B | Q4 + MTP, 128K | **143 tok/s** generation; 53 tok/s with 128K of context filled (removed 2026-10-12) |
+| Gemma 4 31B (dense) | Q6_K + MTP, 128K | 52 tok/s (19 without MTP); 279 tok/s prefill at 128K depth |
+| Qwen3.6 35B-A3B | UD-Q6_K, 128K | 72 tok/s, only 2% below Q4 for 2.3x lower KLD; **3,170 tok/s prefill** at 128K depth |
+| Qwen3.8 27B (dense) | IQ4_XS + MTP | 71 tok/s, 85% draft acceptance (file since replaced by UD-Q6_K) |
+| Qwen3.8 27B | **UD-Q6_K** + MTP | 57 tok/s; KLD vs BF16 0.0020 (IQ4_XS: 0.0179); as good as Q8_0 in Claude Code, 12% faster |
+| GLM-4.7-Flash 30B-A3B | Q4/Q8, 128K | 75 tok/s in an empty context, but **154 tok/s prefill** at 128K depth (attention-bound; removed) |
+| MoE models generally | second card | CPU expert offload gone: **+38% to +183%** generation |
+
+Generation is the 700-token probe in an empty context unless it says "depth";
+filled to 128K, every model keeps 20-51% of that rate. Details and caveats are
+in the linked files.
+
+## Where to look
+
+| File | What it answers |
+|---|---|
+| **[r9700+rx9070.md](r9700+rx9070.md)** | What a second GPU (R9700 beside a 9070 XT) changed: every preset re-fit, MoE without CPU offload, dense models with MTP, all models at 128K depth |
+| [claude-harness.md](claude-harness.md) | Running **Claude Code** against local llama.cpp models: what breaks, fixes, which model to pick, SearXNG web search |
+| [aider-harness.md](aider-harness.md) | Running **aider** against the same router |
+| [`pi-local.sh`](pi-local.sh) | Running the **Pi** coding agent against the router or Strata (the `claude-local.sh` counterpart) |
+| [real-world-testing.md](real-world-testing.md) | Agentic coding through **Cline**: can the models do a job end to end |
+| [big-codebase-guide.md](big-codebase-guide.md) | Using these models on a large codebase |
+| [ddr5-9800x3d.md](ddr5-9800x3d.md) | What moving from DDR4 to DDR5 (5950X to 9800X3D) did to CPU-offloaded MoE |
+| [llama-b11434.md](llama-b11434.md), [llama-a868c3e3c.md](llama-a868c3e3c.md) | llama.cpp version-to-version changes, measured before upgrading |
+| [gsq-rco.md](gsq-rco.md) | ISTA-DASLab GSQ-RCO quants (Qwen3.8-27B and Qwen3.8-Flash-Next) against Unsloth's |
+| [strata.md](strata.md) | Qwen3.8-Flash-Next on the Strata engine: IQ3_XXS at 81-102 tok/s, 99.7% of experts on the two cards |
+| [dflash2-qat-q2.md](dflash2-qat-q2.md) | DFlash2 speculative drafter and QAT Q2_0 for Qwen3.8-27B on 16 GB |
+| [turboquant.md](turboquant.md) | TurboQuant 2-4 bit KV-cache quantization |
+| [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
+| [handover.md](handover.md) | Working notes, including the KLD-vs-BF16 quant study |
+| [`models-preset.ini`](models-preset.ini) | The llama-server router presets, each with the measurements that set it |
+| [`benchmarks/`](benchmarks/) | The scripts (`fit.sh`, `kld-test.sh`, `throughput-test.py`, ...) and raw logs |
+
+---
+
+## Single-card record — CachyPC (RX 9070 XT, 16 GB)
+
+> **Current setup: two GPUs** (Radeon AI PRO R9700 + RX 9070 XT, since
+> 2026-10-05). The two-card measurements, and the presets they set, are in
+> **[r9700+rx9070.md](r9700+rx9070.md)**. Everything below is the single-card
+> record and stays as measured.
+
+## Hardware
+
+Every number in this file was measured on this machine. The right-hand column
+is why each spec keeps showing up in the results.
+
+> **The box changed on 2026-09-21** — Ryzen 9 5950X + 64 GB DDR4-3200 →
+> Ryzen 7 9800X3D + 32 GB DDR5-6000. The GPU, ROCm, llama.cpp and every GGUF
+> are unchanged. **This file is the DDR4 record and stays as measured.** The
+> re-measurement of the tables that host memory actually moves — Qwen3.6 and
+> Laguna `-ncmoe` sweeps (+23-37%), Qwen3.8 as a dense control (unmoved), the
+> thread advice (now 8, not 16), and measured host bandwidth — is in
+> **[ddr5-9800x3d.md](ddr5-9800x3d.md)**. Where the two disagree on a
+> CPU-offloaded number, that file is current. VRAM-fit rows here are
+> unaffected: the card did not change.
+
+> **llama.cpp moved on 2026-10-02** — `b10463` (`7c35571e5`) → build 11345
+> (`a868c3e3c`). Numbers in this file are from `7c35571e5` and stay as
+> measured. The before/after on Qwen3.8 — **prefill +25-28%, generation
+> +3-7%**, MTP acceptance flat — and the rebuilt throughput probe are in
+> **[llama-a868c3e3c.md](llama-a868c3e3c.md)**.
+
+> **llama.cpp moved again on 2026-10-06**, to b11434 (`5e03bdd87`). Measured
+> against 11345 first: Laguna +4%, GLM +5%, gpt-oss-20b −3.6%, Qwen3.8 128K
+> prefill −4%, everything else flat. See **[llama-b11434.md](llama-b11434.md)**.
+
+> **A second card went in on 2026-10-05** — a Radeon AI PRO R9700 (32 GB)
+> beside the 9070 XT, 48.9 GB total, both PCIe 5.0 x8. This file stays the
+> single-card record, and every "16 GB" constraint below is that card's. With
+> two cards, **MoE presets drop CPU offload entirely and gain 38-183%**, flat
+> with context (Gemma 4 143 tok/s, Laguna 90, Qwen3.6 74), and **Qwen3.8 runs
+> IQ4_XS + MTP at every context, 71 tok/s, 3x faster at 128K depth**. Every
+> preset was re-fit; the measurements are in
+> **[r9700+rx9070.md](r9700+rx9070.md)**.
+
+| Component | Spec | Why it matters here |
+|---|---|---|
+| **GPU** | AMD Radeon RX 9070 XT — Navi 48, `gfx1201`, RDNA4, **16,304 MiB VRAM** | The binding constraint on this whole file. Every `-ncmoe`, KV-quant and `-ub` decision is bought against these 16GB |
+| **CPU** | AMD Ryzen 9 5950X — 16C/32T, 64 MiB L3, 5.09 GHz boost | Runs CPU-offloaded expert layers. `-t 32` collapses generation to 23.6 ± 4.6 tok/s on SMT contention; leave threads at 16 |
+| **RAM** | 64 GB DDR4-3200 — 4 × 16 GB, dual channel, all four slots filled | Feeds CPU-offloaded expert layers at ~40 GB/s, which is the real ceiling on every `-ncmoe` row. Qwen3-Coder-Next also holds ~47 GB resident, so that model wants the box otherwise idle |
+| **Storage** | Crucial BX500 1 TB — **SATA** SSD (~540 MB/s) | Not NVMe. This is why cold loads cost what they do: ~93s for the 49 GB Qwen3-Coder-Next, ~30s for a 12.5 GB model. Idle-sleep reloads pay it again |
+| **OS** | CachyOS, kernel 7.1.5 | |
+| **ROCm** | 7.2.53211 (`build/`, `GGML_HIP=ON`, `AMDGPU_TARGETS=gfx1201`) | Wins K-quants by 1.7-2.1x prompt |
+| ~~Vulkan~~ | RADV, Mesa 26.1.6 — **retired 2026-08-17** | Its one win was shallow MXFP4 generation; see below |
+| **llama.cpp** | `b10463` (`7c35571e5`, 2026-08-17) — **now `a868c3e3c`**, see above | Tool calling was broken on `e583f3b4f` and fixed here — see the tool-calling section |
+
+The GPU is `card1` on this box, so VRAM is read from
+`/sys/class/drm/card1/device/mem_info_vram_used` throughout.
+
+**The memory config is worth stating, because `-ncmoe` rows are partly a DDR4
+benchmark.** The four DIMMs are two different kits, interleaved one per channel
+rather than one kit per channel:
+
+| Slot | Module | Rated | Running |
+|---|---|---|---|
+| A1, B1 | G.Skill `F4-3200C16-16GVK` | 3200 CL16 | 3200 |
+| A2, B2 | Corsair `CMW32GX4M2D3600C18` | **3600** CL18 | 3200 |
+
+The Corsair half is downclocked to the G.Skill's SPD speed. That is not
+obviously performance left on the table: four mostly dual-rank DIMMs is
+already the hardest case for a Zen 3 memory controller, and 3200 with all
+slots filled is a reasonable landing point. But anything that moves host
+memory bandwidth moves every CPU-offloaded number in this file, so it belongs
+in the record. (`dmidecode` also reports B1 as single-rank while A1, the same
+part number, reports dual — possibly an SPD reporting quirk, untested either
+way.)
+
+**A BIOS update changes none of this — measured.** The board went from BIOS
+2407 (July 2021) to 3636 (January 2026), roughly four and a half years of
+AGESA updates. Memory still trains at 3200 on all four DIMMs, and Qwen3.6
+re-run under identical conditions moved within noise:
+
+| Config | BIOS 2407 | BIOS 3636 |
+|---|---|---|
+| `-ncmoe 40` prompt / gen | 1198.0 / 31.8 | 1206.1 / 31.0 |
+| `-ncmoe 24` prompt / gen | 1616.2 / 39.0 | 1653.9 / 38.6 |
+
+Prompt up 1-2%, generation down 1-2%, both directions — run-to-run variance,
+not a change. So 3200 is not a firmware limitation; it is what four
+mostly dual-rank DIMMs across two kits will do on this memory controller.
+Worth recording because "maybe a BIOS update" is the obvious next thought
+when host bandwidth looks like the bottleneck, and on this board it is not
+a lever. D.O.C.P is enabled at the G.Skill kit's DDR4-3200 16-18-18-38
+profile, which is the correct setting for the slower of two mismatched kits.
+
+**One backend in production: `build/`, `GGML_HIP=ON` (`AMDGPU_TARGETS=gfx1201`).**
+`switch-model.sh` routed every model to ROCm on 2026-08-17 and still does —
+`BACKEND_OVERRIDE` is an empty hook, no preset points at Vulkan. `build-vulkan/`
+itself was deleted that day but has since been rebuilt more than once (same
+commit as `build/` each time) to spot-check new models against the routing
+decision — see the "Re-verified" notes below. It is not kept installed
+permanently; it is a testing tool, rebuilt on demand and removed after.
+
+---
+
+## Headline: ROCm for everything — and why Vulkan was retired
+
+Measured head-to-head, `llama-bench`, **`-fa 1`** throughout (`llama-bench`
+defaults flash attention *off*, but `llama-server` resolves `auto → enabled`,
+so `-fa 0` numbers do not reflect real serving — an earlier revision of this
+file got that wrong):
+
+| Model | Quant | ROCm pp / tg | Vulkan pp / tg | Use |
+|---|---|---|---|---|
+| Qwen3.6-35B-A3B (`-ncmoe 40 -ub 512`) | Q4_K_M | **706.0** / — | 333.4 / 29.3 | ROCm |
+| Gemma 4-26B-A4B (`-ncmoe 8`) | Q4_K_M | **1949.9** / **50.3** | 1064.7 / 48.0 | ROCm |
+| GPT-OSS-20B, shallow | MXFP4 | **5529.9** / 148.5 | 4952.0 / **180.8** | *was Vulkan* |
+| GPT-OSS-20B, @131k depth | MXFP4 | **1035.2** / **70.5** | 1063.7 / 22.3 | **ROCm** |
+| Qwen3.8-27B, dense (`-ngl 99`) | Q3_K_XL | **1329.4** / **30.64** | 1161.8 / 16.91 | ROCm |
+| Laguna XS.2 33B-A3B (`-ncmoe 16`) | Q4_K_M | **1244.4** / **55.28** | 661.7 / 48.19 | ROCm |
+
+**K-quants (Q4_K_M) → ROCm**, unambiguously: 1.8-2.1x prompt, and it wins
+generation too once flash attention is on (Gemma 50.3 vs 48.0).
+
+**MXFP4 (GPT-OSS) → depends on depth.** Shallow, Vulkan wins generation by 22%
+(180.8 vs 148.5) while ROCm wins prompt by 12%. The two cross over at roughly
+**57 prompt tokens per generated token** — below that ratio Vulkan is faster
+overall, above it ROCm is.
+
+At depth the picture changes completely: **Vulkan's generation collapses to
+22.3 tok/s at 131k** while ROCm holds 70.5 at the same prompt speed. That is
+VRAM pressure — 11.3GB model + 3GB f16 KV + compute against a 16,304 MiB card.
+Quantising KV to q8_0 rescues Vulkan (99.9 tok/s) but halves its prompt speed
+to 532. ROCm with f16 KV is the best 128k configuration overall, so
+`switch-model.sh` used to route `gpt-oss-20b:128k` to ROCm while leaving 32k on
+Vulkan.
+
+### Why it was retired (2026-08-17)
+
+Vulkan's only remaining advantage was shallow MXFP4 generation — 180.8 vs 148.5
+tok/s — and that applied to exactly one preset: `gpt-oss-20b` pinned at 32k.
+Router mode always spawned children from the ROCm binary, so in day-to-day use
+that advantage was never actually being collected. Against it:
+
+* ROCm wins prompt outright at every depth (5529.9 vs 4952.0 shallow).
+* ROCm wins 128k generation by **3.2x** (70.5 vs 22.3).
+* Keeping two builds means two rebuilds per upgrade, and the Vulkan tree had
+  already drifted two commits behind the ROCm one before anyone noticed.
+
+So `gpt-oss-20b` moved to ROCm and `build-vulkan/` was dropped, trading 18% of
+shallow generation on one preset for a single backend with no version skew.
+`BACKEND_OVERRIDE` remains in `switch-model.sh` as an empty hook in case a
+future model reverses the argument.
+
+Combining the ROCm switch with `-ncmoe`/`-ub` tuning gives **4.8x prompt /
++33% generation** over the old Qwen3.6 config (333.4/29.3 → 1616.2/39.0) — but
+note the generation share of that comes from `-ncmoe 40 → 24`, not the backend.
+
+**All Vulkan numbers at the bottom of this file are superseded.**
+
+### Re-verified since retirement (2026-08-25)
+
+`build-vulkan/` gets rebuilt from scratch on demand (`cmake -DGGML_VULKAN=ON`,
+same checkout/commit as `build/` each time — so unlike the drift that partly
+motivated the original retirement, these are not version-skew comparisons),
+spot-checked against a model, then removed again. Two models tested so far
+that hadn't been benched under Vulkan before:
+
+* **Qwen3.8-27B**, dense Q3_K_XL: ROCm wins prompt by 14% (1329.4 vs 1161.8)
+  and **generation by 81%** (30.64 vs 16.91) — the widest generation gap of
+  any model in the table above.
+* **Laguna XS.2 33B-A3B**, Q4_K_M (`-ncmoe 16`): ROCm wins prompt by **88%**
+  (1244.4 vs 661.7) — the widest prompt gap of any model in the table — and
+  generation by 15% (55.28 vs 48.19).
+
+Both confirm the routing decision: ROCm stays the only backend `switch-model.sh`
+spawns.
+
+---
+
+## Why 1M context is possible at all: hybrid attention
+
+Qwen3.6-35B-A3B (`qwen35moe`), Qwen3-Coder-Next (`qwen3next`) and Qwen3.8-27B
+(`qwen35`) are **hybrid attention** models. `full_attention_interval = 4` means
+only every 4th layer keeps a KV cache; the rest are SSM/gated-linear layers
+with a **constant-size recurrent state** that does not grow with context.
+
+| Model | Layers | Layers with KV | KV heads | SSM state | KV @1M (q8_0) |
+|---|---|---|---|---|---|
+| Qwen3.6-35B-A3B | 40 | 10 | 2 | 62.81 MiB | 10,880 MiB |
+| Qwen3-Coder-Next | 48 | 12 | 2 | 75.38 MiB | 13,056 MiB |
+| Qwen3.8-27B | 64 | 16 | **4** | — | **34,816 MiB** |
+| **Nemotron-3-Nano-30B-A3B** | 52 | **6** | 2 | — | **3,264 MiB** |
+
+The first two use 2 KV heads × 256 key/value length — tiny per-layer KV on top
+of the 1-in-4 layer count.
+
+**Qwen3.8-27B is the counter-example, and it matters.** Same
+`full_attention_interval = 4`, but 4 KV heads instead of 2 and 64 layers
+instead of 40-48, so 16 layers keep KV at double the per-layer cost:
+**34,816 bytes/token**, 2.7x Qwen3-Coder-Next. Confirmed exactly, not
+estimated — asking for 131,072 tokens of q8_0 KV fails with `failed to
+allocate ROCm0 buffer of size 4563402752`, which is 4,352 MiB, precisely
+16 × 4 × 256 × 2 × 1.0625 × 131072.
+
+So "hybrid attention" is not by itself a promise of cheap long context. Read
+`head_count_kv` and `block_count` alongside `full_attention_interval` — the
+interval tells you what fraction of layers cache, the other two tell you what
+each of those layers costs.
+
+**This is the whole reason 1M fits in 16GB.** A conventional full-attention
+coder such as Qwen3-Coder-30B-A3B has KV on all 48 layers with 4 KV heads ×
+128 dim ≈ 52 KB/token → **~52 GB of KV at 1M**. Not runnable here at any
+quant. When shopping for long-context models on this box, check
+`full_attention_interval` in the GGUF metadata first; parameter count matters
+far less than attention topology.
+
+### Native context limits — and why the presets stop there
+
+From GGUF metadata:
+
+| Model | Native context | Note |
+|---|---|---|
+| GPT-OSS-20B | **131,072** | already YaRN 32x from a 4,096 base |
+| Qwen3.6-35B-A3B | 262,144 | |
+| Gemma 4-26B-A4B | 262,144 | |
+| Qwen3-Coder-Next | 262,144 | |
+| Muse Glimmer 30B | 131,072 | dense, but 2 KV heads + sliding window |
+| Qwen3.8-27B | 262,144 | **VRAM-capped here** — 131,072 at `UD-Q3_K_XL`, **196,608 at `UD-IQ3_XXS`** (measured 2026-08-21). 262,144 does not fit at any quant tested |
+| Nemotron-3-Nano-30B-A3B | **1,048,576** | reached natively here — no YaRN |
+| Devstral Small 2 24B | 393,216 | **VRAM-capped at 32,768 here** — full attention on 40 layers |
+
+`switch-model.sh` exposes **only contexts within these ranges** (32k/128k/256k).
+Anything beyond needs YaRN RoPE scaling, which trades short-context quality for
+reach — fine as a deliberate experiment, wrong as a preset you might pick by
+accident. GPT-OSS-20B is the sharpest case: its 128K is *already* a 32x YaRN
+stretch, so pushing further stacks a second extension on top.
+
+### If you do want 1M
+
+It works, and the configs below are measured, but you have to opt in by hand.
+**Qwen3-Coder-Next is the only sensible choice** — but it is **no longer on
+disk** (deleted 2026-08-29; see its section below for the re-download). It is
+the only coding-specialist model whose hybrid architecture makes 1M viable in
+16GB. A conventional full-attention coder needs ~52GB of KV at 1M. There is no
+separate "1M" GGUF to download; 1M is a runtime flag on the 262,144-native
+weights.
+
+```bash
+~/llama.cpp/build/bin/llama-server -m models/Qwen3-Coder-Next-UD-Q4_K_M.gguf \
+  -ngl 99 -ncmoe 46 -ub 256 -b 1024 -fa on -ctk q4_0 -ctv q4_0 -c 1048576 \
+  --rope-scaling yarn --rope-scale 4 --yarn-orig-ctx 262144 \
+  -np 1 --host 0.0.0.0 --port 8090
+```
+
+Verified: 13,874 / 16,304 MiB, ~93s cold load. It requires **q4_0 KV** — q8_0
+is 13,056 MiB and the ~1.9GB compute buffer then overflows the card (measured
+failure, not an estimate). Prompt processing drops to ~236 tok/s because the
+fit forces `-ub 256`; generation is barely affected (23.8 vs 25.8).
+
+---
+
+## Verified server configs
+
+Every row below was **actually loaded on the backend named in its section
+heading** and confirmed to reach `server is listening`, with the VRAM figure
+read from
+`/sys/class/drm/card1/device/mem_info_vram_used` while resident. All include
+`-ngl 99`. Contexts are exact token counts, not rounded labels.
+
+### Qwen3.6-35B-A3B — 20.6GB, MoE 35B/~3B active, general
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 16 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,932 | 1,372 |
+| 128K | `-ncmoe 20 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,090 | 2,214 |
+| 256K | `-ncmoe 24 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,471 | 1,833 |
+| *512K †* | `-ncmoe 32 -ub 512 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 13,338 | 2,966 |
+| *1M †* | `-ncmoe 40 -ub 256 -b 1024 -fa on -ctk q8_0 -ctv q8_0` | 15,480 | 824 |
+
+† Beyond native 262,144 — needs YaRN, not a `switch-model.sh` preset.
+
+### Qwen3-Coder-Next — 49.3GB, MoE 80B/~3B active, coding specialist
+
+**Deleted from disk (2026-08-29)** — kept here because the measurements
+stand. It was removed for its footprint, not for capability: 49.3GB on a 914GB
+SATA SSD, ~47GB resident host RAM, and a ~93s cold load every time idle-sleep
+dropped it. Also pulled out of `switch-model.sh` and `models-preset.ini`
+entirely (the way Nemotron, Devstral and Gemma 4-E2B were), rather than left
+dangling pointing at a file that no longer exists. Re-downloading is `hf
+download unsloth/Qwen3-Coder-Next-GGUF Qwen3-Coder-Next-UD-Q4_K_M.gguf` —
+`general.repo_url` on the GGUF is `huggingface.co/unsloth`, base model
+`Qwen/Qwen3-Coder-Next`.
+
+**This deletion costs the only 1M-context coding config in this file** — see
+"If you do want 1M" above. Nothing else on disk replaces it: the 1M row below
+worked only because this model's hybrid attention keeps KV at 13,056 B/token.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 38 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 13,444 | 2,860 |
+| 128K | `-ncmoe 40 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 13,181 | 3,123 |
+| 256K | `-ncmoe 42 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 13,894 | 2,410 |
+| *1M †* | `-ncmoe 46 -ub 256 -b 1024 -fa on -ctk q4_0 -ctv q4_0` | 13,874 | 2,430 |
+
+† Beyond native 262,144 — needs YaRN, not a `switch-model.sh` preset.
+
+Host RAM at these settings is ~47GB (the 46,767 MiB CPU-mapped model buffer),
+so this model wants the machine otherwise idle.
+
+### GPT-OSS-20B — 11.3GB, MoE 21B/~3.6B active — **backend varies by context**
+
+32K on Vulkan (180.7 tok/s generation), 128K on ROCm (Vulkan's generation
+collapses to 22.3 there — see the throughput section). Configs verified on both
+backends. Half its layers use a 768-token sliding window, which is why 128K
+costs only ~3GB of KV:
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | *(none)* | — | — |
+| 128K | *(none)* | 15,326 | 978 |
+| *256K †* | `-fa on -ctk q8_0 -ctv q8_0` | 15,917 | 387 |
+| *512K †* | `-ncmoe 9 -fa on -ctk q8_0 -ctv q8_0` | 16,028 | 276 |
+| *1M †* | `-ncmoe 24 -fa on -ctk q4_0 -ctv q4_0` | 11,632 | 4,672 |
+
+† Beyond native **131,072**, which is itself already a 32x YaRN stretch from a
+4,096 base. These load and produce tokens, but stack a second extension on an
+already-extended model — the least trustworthy rows in this file.
+
+### Gemma 4-26B-A4B — 15.8GB, MoE 25.2B/~3.8B active, 30 layers
+
+**Re-tuned — the old Vulkan values do not load on ROCm.** `-ncmoe 8` @128K and
+`-ncmoe 16` @256K both fail to allocate. ROCm needs roughly double:
+
+| Context | Old (Vulkan) | New (ROCm) | VRAM used | Free |
+|---|---|---|---|---|
+| 32K | `-ncmoe 5` | `-ncmoe 8` | 14,338 | 1,966 |
+| 128K | `-ncmoe 8` ✗ | `-ncmoe 12` | 14,437 | 1,867 |
+| 256K | `-ncmoe 16` ✗ | `-ncmoe 20` | 13,811 | 2,493 |
+
+Gemma 4 hard-caps at 256K. It is *not* a hybrid-attention model, which is why
+its VRAM scales so much worse with context than the two Qwen models.
+
+**MTP speculative decoding: 1.79x, and it needs a 462MB sidecar.** Measured
+2026-08-29. Unlike Qwen3.8, which carries its MTP head in-file as `blk.64`,
+Gemma 4 ships the drafter as a **separate file**
+(`mtp-gemma-4-26B-A4B-it.gguf`), so it needs `-md` as well as `--spec-type
+draft-mtp`. `b10463` already supports the pairing — `gemma4.cpp` exposes the
+post-final-norm hidden state as `h_nextn` for the drafter to read, and
+`gemma4-assistant` is a registered arch. No rebuild.
+
+| Config | `-ncmoe` | Generation | vs baseline |
+|---|---|---|---|
+| Q4_K_M, no MTP | 8 | 51.2 tok/s | — |
+| **Q4_K_M + MTP** | 8 | **93.0 tok/s** | **1.79x** |
+| Q8_0, no MTP | 17 | 28.4 tok/s | — |
+| **Q8_0 + MTP** | 17 | **48.8 tok/s** | **1.72x** |
+
+700-token prompt, temp 0.0, n=3, 32K. Draft acceptance **84%**, mean run 3.5
+tokens — better than the 70.9% DFlash gets on Muse Glimmer. On the serving path
+acceptance drops to 66-71% because the router lets the model think and reasoning
+text drafts worse than code.
+
+The drafter carries **its own KV cache, which grows with context** — ~550 MiB at
+32K but ~1,300 MiB at 128K. That is why the 128K preset moved to `-ncmoe 13`:
+at 12 with MTP attached the fit leaves only 425 MiB, at 13 it leaves 880.
+
+| Context | `-ncmoe` + MTP | Peak | Free |
+|---|---|---|---|
+| 32K | 8 | 15,589 | 715 |
+| 128K | **13** | 15,424 | 880 |
+| 256K | 20 | 15,059 | 1,245 |
+
+**Vision works, and composes with MTP.** Measured 2026-08-29. Gemma 4 is
+multimodal and `b10463` already has the graph — `PROJECTOR_TYPE_GEMMA4V` in
+`clip.cpp`, with `libmtmd` and `llama-mtmd-cli` built. It needs
+`mmproj-F16.gguf` (1.19GB, `clip.vision.projector_type = gemma4v`, 224px),
+which is a separate download. Vision only: llama.cpp also carries `gemma4a` /
+`gemma4ua` audio projectors, but they are not in this file and are not on disk.
+
+The projector costs **~1.9GB of VRAM**, more than its 1.19GB file, so `-ncmoe`
+must rise. At the text preset's `-ncmoe 8` the 32K fit leaves **39 MiB** — the
+unshippable-margin case again. With the MTP drafter attached as well:
+
+| Context | `-ncmoe` 10/11/12 (32K) or 14/15/16 (128K) — free MiB | Ship |
+|---|---|---|
+| 32K | 427 / **880** / 1,334 | `-ncmoe 11` |
+| 128K | 163 / 588 / **1,043** | `-ncmoe 16` |
+
+Verified end to end at both contexts on a probe image, and again through the
+router: read the rendered text `PROBE-770487` exactly, named red circle / blue
+square / green triangle, counted three, and solved rendered arithmetic
+(`7 + 35` → 42). **4/4 every time.** A 640x420 image costs only **~177 prompt
+tokens**. Draft acceptance on the vision turn reached **95.9%, mean run 3.88** —
+the highest measured on this box, because describing an image produces very
+predictable tokens.
+
+Wired as `gemma4-vision-32k` / `gemma4-vision-128k`, separate from the text
+presets: attaching the projector to those would raise `-ncmoe` for everyone and
+cost text-only speed for a capability most turns do not use.
+
+**Q8_0 was tried and is not worth it.** 26.9GB against Q4_K_M's 16.9GB. It fits
+— the model is 84.8% expert tensors, so `-ncmoe` absorbs the extra bits — at
+`-ncmoe` 17/20/24 for 32K/128K/256K with the drafter attached (free 436/644/915).
+But it buys nothing measurable:
+
+| Probe | UD-Q4_K_M | Q8_0 |
+|---|---|---|
+| code-quality | 37/50 (74%) | 33/50 (66%) |
+| cdn-freshness | 36/39 (92%), 6/9 clean | 36/39 (92%), 6/9 clean — *same three dead URLs* |
+| tool calling | ✓ single + parallel | ✓ single + parallel |
+| generation | **51.2** / 93.0 MTP | 28.4 / 48.8 MTP |
+
+**Do not read the code-quality gap as Q8 being worse.** Four checks in 50 is
+exactly the resolution `benchmarks/kld-test.sh` documents this probe as *not*
+having. The honest statement is that the two are indistinguishable on quality
+while Q8 costs 10GB and 47% of generation. Note also that this is not a clean
+bit-depth comparison: `UD-Q4_K_M` is Unsloth Dynamic (imatrix-calibrated, mixed
+precision) while `Q8_0` is flat round-to-nearest with no imatrix. Ordering them
+properly needs KLD against a BF16 reference, which has not been run.
+
+Both quants are wired into `models-preset.ini` and `switch-model.sh`; Q4 is the
+default and Q8 is kept only as the comparison config.
+
+### Muse Glimmer 30B — 12.4GB, **dense** 30B, 52 layers
+
+The only dense model in the set, and the first one where `-ncmoe` is irrelevant —
+every layer goes to the GPU or none does. It fits anyway because of its attention
+layout: **2 KV heads against 32 query heads (16:1 GQA)**, and a 2048-token sliding
+window on 3 of every 4 layers. Only 13 layers keep a full KV cache, so 128K costs
+under a gigabyte.
+
+| Context | Config | VRAM used | Free | Gen tok/s | Draft acceptance |
+|---|---|---|---|---|---|
+| 32K | DFlash, `-ub 512` | 15,422 | 882 | **52.4** | 70.9%, mean run 3.13 |
+| 64K | DFlash, `-ub 256` | 15,374 | 930 | 50.5 | 67.7%, mean run 3.03 |
+| 128K | no DFlash | 14,462 | 1,842 | 31.9 | — |
+
+**Confirmed on the serving path**, not just in a bench: a `muse-glimmer-64k`
+turn in Open WebUI reported `draft_n 1263` against `draft_n_accepted 810` —
+**64.1% acceptance** at 12,573 depth, against the 67.7% measured for this
+preset. Generation was 47.6 tok/s there versus the documented 50.5. Both sit
+just under the bench figures, which is what a real workload at depth should
+look like.
+
+**DFlash is worth 1.64x.** It is a real 1.5GB drafter sidecar (5 blocks,
+`block_size 16`), not a generic draft model — llama.cpp has first-class support
+via `--spec-type draft-dflash` alongside `-md`. It costs ~0.9GB, which is why it
+is dropped at 128K: with it VRAM sits at 16,255 of 16,304 MiB — 49 MiB free — and
+any real prompt OOMs.
+
+**`reasoning_strength` defaults to `high` and will eat your entire token budget
+before writing a single character of content.** It is a Jinja variable in the
+chat template, *not* a system-prompt string — putting "Reasoning: low" in a
+system message does nothing at all. Only `--chat-template-kwargs` sets it:
+
+| Setting | Reasoning output | Result |
+|---|---|---|
+| `high` (default) | 1,611 chars | truncated at the cap, no code |
+| `low` | 428 chars | `finish: stop`, complete answer |
+
+llama.cpp splits it into `reasoning_content`, so `content` stays clean for
+API clients either way — the problem is purely that reasoning consumes the
+`max_tokens` budget.
+
+Its tool-call format is `<atem:function_calls>` / `<atem:invoke>` XML with
+`<|start|>assistant to=self<|message|>` channels — neither Qwen's nor Gemma's
+shape. Whether llama.cpp's parser handles it under a native-tool-call harness
+is **untested**; Cline bypasses the question by using prompt-based XML tools.
+
+### Qwen3.8-27B — 12.5GB, **dense** 27B, 64 layers, hybrid attention, thinking
+
+Arch is `qwen35`, so build `153d324bc` already serves it — no rebuild, and
+upstream has no Qwen3.8-specific commits to pull. It is the first model here
+that is dense *and* hybrid-attention, and the combination is unkind: no
+`-ncmoe` to trade, and 34,816 B/token of KV.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,610 | 1,694 |
+| 64K | `-ub 512 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,543 | 761 |
+| 128K | `-ub 256 -b 2048 -fa on -ctk q4_0 -ctv q4_0` | 16,023 | **281** |
+
+**64K deliberately runs q8_0 at the tighter fit.** The obvious choice is q4_0
+`-ub 1024`, which loads at 14,801 with a comfortable 1,503 MiB free — and that
+is what this preset shipped as initially. It was wrong: q4_0 costs up to 23%
+of generation at exactly the depths this preset exists for. Trading 742 MiB of
+headroom for that back is the better deal. Verified under a 63,756-token
+prompt: no OOM, 5/5 needle recall, ~600 tok/s cold prefill.
+
+Rejected along the way, all measured:
+
+| Attempt | Result |
+|---|---|
+| 128K, q8_0 KV | **fails to allocate** — wants 4,352 MiB of KV |
+| 128K, q4_0, `-ub 1024` | loads at 16,247 — **57 MiB free** |
+| 128K, q4_0, `-ub 512` | loads at 16,127 — 177 MiB free |
+| 64K, q8_0, `-ub 1024` | loads at 15,811 — 493 MiB free, thinner than `-ub 512` for ~nothing |
+| 64K, q4_0, `-ub 1024` | loads at 14,801 — roomy, but 23% slower at depth |
+| 256K, any KV quant | 12,818 MiB weights + 4,608 MiB q4_0 KV > 16,304. Not attempted |
+
+**The 281 MiB margin at 128K is real, not luck.** The obvious worry is the
+Muse Glimmer + DFlash case, where 49 MiB free meant any real prompt OOMed. It
+does not happen here, because the compute buffer is sized from `-ub` at load
+time and does not grow with prompt length. Verified by pushing a
+**127,116-token** prompt through the 128K preset: no OOM, and 5/5 needle
+recall. What that margin does cost you is robustness against *other* GPU
+consumers — 281 MiB is less than any browser compositor, let alone Resolve.
+
+Two GGUF quirks worth knowing:
+
+* `block_count` is **65**, not 64. `blk.64` is a Multi-Token-Prediction head
+  (`nextn.eh_proj`, `nextn.shared_head_norm`, `nextn_predict_layers = 1`) and
+  llama.cpp discards it *by default* — `model has unused tensor blk.64.*
+  -- ignoring`. That is **198.8 MiB** of the file you store and normally never
+  execute.
+  > **Corrected 2026-08-21.** This section used to say the model's own
+  > speculative-decoding mechanism was "unavailable, unlike Muse Glimmer where
+  > DFlash is first-class". That is wrong on build `b10463`. The `ignoring`
+  > message is the default-off path, not a missing feature:
+  > `src/models/qwen35.cpp:97` has `load_block_mtp`, gated on `ml.load_mtp`,
+  > which `--spec-type draft-mtp` sets. It works, and it is worth **2.40x**
+  > generation — see the Dynamic 3.0 section below. It is also far more
+  > expensive than the 198.8 MiB of weights suggests.
+* Unsloth's `UD-Q3_K_XL` reports internally as `Q4_K - Small` at 3.93 BPW.
+  The name is the recipe, not the block type; do not match on it.
+  > **This is Dynamic 2.0-specific.** The Dynamic 3.0 re-quant of the same
+  > filename reports `Q3_K - Large` at 3.80 BPW. Both are correct for their
+  > vintage, which is the point: the filename does not identify the build.
+
+### Qwen3.8-27B, Unsloth Dynamic 3.0 — measured 2026-08-21
+
+`unsloth/Qwen3.8-27B-GGUF` was re-quantised in place on **2026-08-19/20** with
+Unsloth's Dynamic 3.0 recipe. **Same repo, same filenames.** A file pulled on
+2026-08-16 is Dynamic 2.0 and nothing in its name says so, so the only reliable
+check is the byte size or the LFS oid — see `Reading GGUF metadata` below.
+
+Both builds of `UD-Q3_K_XL`, read straight out of the GGUF headers:
+
+| | v2 (pulled 08-16) | v3 (pulled 08-21) |
+|---|---|---|
+| File bytes | 13,441,059,904 | 13,146,393,504 |
+| `general.file_type` | 14 → `Q4_K - Small` | 13 → `Q3_K - Large` |
+| `quantize.imatrix.chunks_count` | **45** | **1,251** |
+| Distinct ggml quant types | 5 | **14** |
+| Trunk BPW (blk.0-63, excl. MTP) | 3.932 | 3.802 |
+
+The imatrix jump 45 → 1,251 chunks is Unsloth's "higher-quality calibration
+dataset" claim, sitting in the metadata where it can be checked. The recipe
+went from a blunt IQ4_XS/IQ3_S split to fourteen types — 96 small tensors
+pinned at Q8_0 (24 MiB total) while large FFN tensors drop to IQ2_S/IQ3_XXS.
+
+**The VRAM saving is bigger than the file shrank, and that is the non-obvious
+part.** Unsloth spent *more* on the MTP head while cutting the trunk harder,
+and llama.cpp skips `blk.64` unless you ask for it:
+
+| Loaded portion | v2 | v3 | Δ |
+|---|---|---|---|
+| Trunk (blk.0-63 + embd + output) | 12,609.1 MiB | 12,192.1 MiB | **−417.0** |
+| `blk.64` MTP head (skipped by default) | 198.8 | 334.7 | +136.0 |
+| File total | 12,807.9 | 12,526.9 | −281.0 |
+
+Measured against a real load, v3 gives back **391 MiB** at 32K (14,409 →
+14,018 model-attributable), not the 417 the headers predict — the 26 MiB gap
+is buffer alignment. Predicting from headers is a good first cut, not a
+substitute for `fit.sh`.
+
+**v3 costs 3.6% of generation, reproducibly.** Same 700-token code prompt,
+`-ub 1024`, q8_0 KV, 32K, n=3 each:
+
+| | run 1 | run 2 | run 3 | mean |
+|---|---|---|---|---|
+| v2 | 30.75 | 30.77 | 30.81 | **30.78** |
+| v3 | 29.70 | 29.69 | 29.61 | **29.67** |
+
+Standard deviation is ~0.05, so this is outside noise. Fourteen quant types
+means more dequant paths than five. You are buying VRAM with throughput.
+
+What the 391 MiB actually buys — every row measured, baseline-subtracted:
+
+| Context | v2 shipped | v3 measured | Verdict |
+|---|---|---|---|
+| 32K, q8_0 | `-ub 1024`, 14,409 | `-ub 1024`, 14,018 (2,023 free) | more headroom, same config |
+| 64K, q8_0 | `-ub 512`, 493 free at `-ub 1024` | **`-ub 1024`, 15,295 (746 free)** | upgrade `-ub` |
+| 128K, q4_0 | `-ub 256`, 281 free | **`-ub 512`, 15,665 (376 free)** | upgrade `-ub` |
+| 128K, q8_0 | impossible | still impossible | needs +2,176 MiB |
+
+Both `-ub` upgrades are worth ~12% prompt by the ubatch sweep further down.
+**v3 buys prefill speed at 64K/128K, not more context.**
+
+Rejected past 128K, all measured on v3 `UD-Q3_K_XL`:
+
+| Attempt | Result |
+|---|---|
+| 144K, q4_0, `-ub 256` | 15,921 — **106 MiB free**, trap zone |
+| 160K, q4_0, `-ub 256` | loads at **16,275 (29 MiB free)** with 150 MiB already on GTT |
+| 176K, q4_0, `-ub 256` | fails — compute pp buffers |
+
+#### The 160K row exposed a hole in `fit.sh`
+
+`fit.sh` scored that 160K config a **pass at `model=13313`, 2,707 MiB free**.
+It is not a pass. VRAM at load was 16,275 MiB and GTT rose 275 → 425 MiB:
+buffers migrated to host memory, and because `fit.sh` reads `PEAK` *after* the
+probe returns, it measured the post-migration figure and reported a comfortable
+fit. The `loaded=` column caught what the headline `model=` column hid.
+
+Reproduced twice. **A row is only trustworthy if `peak >= loaded` and GTT has
+not moved.**
+
+**Fixed 2026-08-21.** `fit.sh` now samples GTT alongside VRAM and refuses any
+row where `peak < loaded` or GTT drifted past `GTT_TOLERANCE` (48 MiB; desktop
+GTT moved <10 MiB across a whole session, a real spill moved 150). It prints
+`SPILL` and exits non-zero. Regression-tested both directions — the 128K
+control still passes at `free=372, gtt+6`, and the 160K row now fails with
+`free_at_load=14, gtt+150`. Note the `peak < loaded` signature only tripped by
+1 MiB on the re-run, so the GTT check is the one doing the work; both are kept
+because they fail independently.
+
+#### MTP speculative decoding: 2.40x, and it needs no new download
+
+`blk.64` is present in **both** v2 and v3, so this is testable on a file you
+already have. `--spec-type draft-mtp` on build `b10463`:
+
+| Config | Generation | Interactive follow-ups |
+|---|---|---|
+| v2 @16K, no MTP | 30.82 tok/s | 2.3-2.6s |
+| **v2 @16K, MTP** | **74.02 tok/s (2.40x)** | — |
+| v3 @16K, no MTP | 29.70 tok/s | 2.3-2.6s |
+| **v3 @16K, MTP** | **69.47 tok/s (2.34x)** | **0.9-1.1s** |
+
+**MTP reaches 32K too, measured 2026-08-29 — but not past it, and not free.**
+The 16K pin was a real ceiling for the *flags it was tried with*, not for MTP
+itself: every failure at 32K used `-ub 1024`. Dropping to `-ub 512` with q4_0
+KV loads.
+
+| Context | MTP fits? | Peak / free | Why |
+|---|---|---|---|
+| 16K | ✓ | 15,723 / 581 | q8_0 KV, the existing preset |
+| **32K** | **✓** | **15,983 / 321** | needs **q4_0 KV + `-ub 512`** |
+| 48K | ✗ | 16,268 / **36** | loads, but 36 MiB free — not shippable |
+| 64K | ✗ | — | fails even at q4_0 + `-ub 256` |
+| 128K | ✗ | — | fails at q4_0 + `-ub 512` |
+
+**The drafter costs ~2.45GB, roughly constant, not the 335 MiB of `blk.64`.**
+That is the real ceiling and it is worth stating plainly, because the obvious
+guess (the head is small, so it should fit anywhere) is wrong. The MTP draft
+context carries its own KV and recurrent-state buffers. Measured at 32K: 13,514
+MiB without the drafter, 15,983 with. So the limit is simply where
+`base(ctx) + 2.45GB` crosses 16,304 — 64K's own baseline is 14,249, which needs
+~16,700 and misses by about 400 MiB. 48K squeaks in at 36 MiB free, which is
+below the margin anything should ship at (see the GTT spill guard in
+`fit.sh`; a 24 MiB "fit" is exactly the case it exists to catch).
+
+At 32K, 700-token probe, n=3: **29.52 → 69.14 tok/s, 2.34x**, draft acceptance
+**86.8%, mean run 3.60** — the highest acceptance measured on this box, above
+Gemma 4's 84% and DFlash's 70.9%. Same config without MTP is 29.52, and the
+current q8_0/`-ub 1024` preset is 29.70, so q4_0 KV costs nothing *shallow*,
+exactly as the KV table predicts (0% at depth 0).
+
+**Two costs, both of which the preset states rather than hides.**
+
+*It must run `Q3_K_XL-v3`.* `IQ4_XS-v3` is 1.1GB larger and OOMs building the
+draft context at **every** context, 16K included — `common_speculative_init_result:
+creating MTP draft context ... allocating 114.02 MiB ... cudaMalloc failed`.
+That 1.1GB is precisely the drafter's headroom. This is also why the 16K MTP
+preset always used Q3_K_XL-v3 while the 32K preset uses IQ4_XS: forced, not
+inconsistent. The fidelity cost is real but bounded — median KLD 0.0108 vs
+0.0074, same top-1 92.94% vs 94.08%, i.e. 7.06% of tokens disagreeing with
+BF16 against 5.92%. Note Q3_K_XL-v3 is already what 64K, 128K and 16K-MTP run;
+IQ4_XS is used at exactly one context.
+
+*It must run q4_0 KV*, which the Tuning section calls the price of admission
+rather than an optimisation: 0% shallow but **-23.1% at 32K depth**. So the
+2.34x above is a shallow-end figure. Projected at real depth it is nearer
+**1.8x**. That projection was wrong, and measuring beat it.
+
+**Measured at depth, 2026-08-29 — 29,353-token haystack, same three configs
+back to back:**
+
+| Config @29.4K | no-think | thinking |
+|---|---|---|
+| IQ4_XS, q8_0, `-ub 1024`, no MTP (the other preset) | 25.13 | 25.47 |
+| Q3_K_XL, q4_0, `-ub 512`, no MTP | 20.08 | 20.27 |
+| **Q3_K_XL, q4_0, `-ub 512`, +MTP** | **48.33** | **49.69** |
+
+Three things fall out, none of them guesses:
+
+* **q4_0's depth penalty is confirmed at -20.1%**, against the -23.1% the KV
+  table predicts at 32K -- consistent, marginally smaller at 29.4K. (A little
+  of that 20% is the quant file rather than the cache: Q3_K_XL-v3 is ~2% slower
+  than IQ4_XS-v3 shallow.)
+* **MTP is worth 2.41x at depth, MORE than the 2.34x it is worth shallow**,
+  even though acceptance *falls* from 86.8% to **70.1% (mean run 3.10)**. At
+  depth each forward pass reads more KV, so amortising one pass across ~3.1
+  accepted tokens saves proportionally more. Speculative decoding pays best
+  exactly where generation is slowest.
+* **Net against the preset you would otherwise run: 1.92x** (48.33 vs 25.13),
+  and thinking does not spoil it -- 49.69 vs 25.47 is 1.95x with reasoning on,
+  acceptance 69.0%.
+
+Acceptance is workload-dependent, not depth-dependent alone: 86.8% on the
+shallow non-thinking code probe, ~70% at depth on both, and as low as **58.9%**
+on a trivial one-liner through the router where the model reasoned at length
+about almost nothing. Prompt processing pays ~9% for the drafter (895 -> 811
+tok/s at depth).
+
+`qwen3.8-32k-mtp` is therefore a **second** preset beside `qwen3.8-32k`, not a
+replacement: speed option against fidelity option, the way `laguna` and
+`laguna-q8` sat side by side before Laguna was removed.
+
+That beats Muse Glimmer's DFlash (1.64x) and puts this model's follow-up
+latency level with GLM-4.7-Flash's 1.1-1.2s.
+
+**The cost is ~2,212 MiB, fixed.** Not the 198.8 MiB of `blk.64` weights —
+`common_speculative_init_result` builds a second full context. Measured
+identical at 8K and 16K, and unchanged by `-b 2048` vs `-b 512`, so it does not
+scale with context or batch. On a 16 GB card holding 12.5 GB of weights that
+caps MTP at **16K**:
+
+| Attempt | Result |
+|---|---|
+| v3 16K, q8_0, `-ub 512`, MTP | **376-415 MiB free** — shippable |
+| v2 16K, q8_0, `-ub 512`, MTP | 140-158 MiB free |
+| v3 32K, MTP | **SPILL** — `free_at_load=28`, GTT **+12,154 MiB** |
+| v3 24K, MTP | 95 MiB free — do not ship |
+| v2 32K, MTP | fails outright |
+| IQ4_XS 8K, MTP | fails outright — no MTP on this tier at any context |
+
+> **Corrected 2026-08-21, by the GTT guard.** The v3-32K-with-MTP row was
+> originally recorded here as "fit.sh passes at 33 MiB free, do not ship". It
+> does not pass. Re-measured with the spill guard it dumps **12 GB** to host
+> memory — `free_at_load=28, gtt+12154`. The conclusion (do not ship) was
+> right; the reason was much worse than the number suggested. Any pre-guard
+> row in this file quoting single- or double-digit free VRAM should be treated
+> the same way until re-measured.
+
+v3 + MTP at 16K verified under a real **14,358-token** prompt: 5/5 needle,
+peak 15,927 MiB, no OOM. **This is the config to pick if you want speed and can
+live inside 16K.** If you cannot, MTP is not for you — the 2.2 GB is not
+negotiable.
+
+#### Trading tier down for context: `UD-IQ3_XXS` reaches 192K
+
+The interesting move for long-context work is not v3 at the same tier, it is
+v3 at a *lower* tier, because Dynamic 3.0's whole claim is that low-bit quants
+hold up. Trunk sizes and BPW, from the headers:
+
+| Quant (v3) | Trunk MiB | Trunk BPW | Max context measured |
+|---|---|---|---|
+| `UD-IQ4_XS` | 13,247.3 | 4.131 | 32K q8_0 / 64K q4_0 |
+| `UD-Q3_K_XL` | 12,192.1 | 3.802 | 128K q4_0 |
+| `UD-IQ3_XXS` | 10,093.0 | **3.148** | **192K q4_0** |
+
+Measured fits:
+
+| Config | Model MiB | Free |
+|---|---|---|
+| IQ4_XS 32K, q8_0, `-ub 1024` | 15,070 | 955 |
+| IQ4_XS 64K, q4_0, `-ub 512` | 15,247 | 780 |
+| IQ4_XS 64K, q8_0, `-ub 512` | **SPILL** | `free_at_load=9`, GTT **+2,314 MiB** |
+| IQ4_XS 128K | fails | — |
+| IQ3_XXS 128K, q4_0, `-ub 512` | 13,886 | 2,141 |
+| **IQ3_XXS 192K, q4_0, `-ub 512`** | **15,355** | **672** |
+| IQ3_XXS 256K, q4_0, `-ub 512` and `-ub 256` | fails | — |
+
+**192K holds more headroom (672 MiB) than the shipped 128K preset does (281).**
+Native 262,144 remains unreachable, so the claim above still stands — but the
+ceiling moved from 131,072 to 196,608.
+
+The obvious worry is that 3.148 BPW is too aggressive to retrieve at that
+depth. It is not, on these probes:
+
+| Probe | Result |
+|---|---|
+| Needle | **5/5 at 189,482 tokens**, peak 15,656 MiB, GTT flat at 275 (no spill) |
+| Semantic | **5/5 at 186,695 tokens** — retrieval by meaning against near-miss distractors |
+| Tool calling | single ✓ `PROBE-770487`, parallel ✓ sum `1,355,528`, three calls with `add_numbers` delegation |
+| Generation, shallow | 28.94 tok/s |
+
+**The cost is prefill, and it is steep.** Cold prefill of that 189K haystack
+took **686 seconds** (~276 tok/s). Cached follow-ups are 5.3-6.2s (needle) and
+4.9-8.8s (semantic). This is a "load the codebase once and work in it" config,
+not one to rebuild the prompt against.
+
+`UD-IQ3_XXS` is the same Dynamic 3.0 build as `UD-Q3_K_XL` — identical imatrix
+(1,251 chunks), byte-identical chat template, `general.file_type` the only
+differing KV key. It is a clean tier comparison, not a different vintage.
+
+#### Which one to run
+
+| Want | Take | Why |
+|---|---|---|
+| Max context | **`UD-IQ3_XXS` @192K, q4_0, `-ub 512`** | 1.5x the old ceiling, 672 MiB free, 5/5 on both recall probes |
+| Max speed, ≤16K | **`UD-Q3_K_XL` v3 + `--spec-type draft-mtp` @16K** | 2.34x generation, ~1s follow-ups |
+| Balanced 32K-128K | `UD-Q3_K_XL` v3, `-ub` upgraded | 391 MiB back, ~12% prompt, −3.6% generation |
+| Best weights ≤32K | `UD-IQ4_XS` | 4.131 BPW, 30.35 tok/s, 955 MiB free |
+| Nothing changes | stay on v2 | it is 3.6% faster at generation than v3 |
+
+**What none of this measures.** Every probe here tests *retrieval*, not
+generation quality. All three quants score 5/5 on needle and semantic at 32K —
+the probes are saturated and cannot separate them. Unsloth's ">10% top-1%
+accuracy" claim is neither confirmed nor refuted by anything in this section;
+that needs KLD or perplexity against the 54 GB BF16.
+
+### Qwen3.5-27B-Uncensored (HauhauCS, Aggressive) — 12.4GB, **dense** 27B, 64 layers
+
+`HauhauCS/Qwen3.5-27B-Uncensored-HauhauCS-Aggressive`, Q3_K_M, added
+2026-08-18. Arch is `qwen35` and it reports 26.90B params over 64 layers with
+the same 3:1 hybrid-attention ratio as Qwen3.8-27B — so it is that model's
+architectural twin one base version back, and the two are directly comparable
+on this card. SHA256 verified against the HF-reported LFS oid.
+
+Q3_K_M was chosen the same way Qwen3.8 landed on Q3_K_XL: Q4_K_M is 16.54GB
+and cannot fit at any context, IQ4_XS is 14.69GB and would leave ~300 MiB, and
+Q3_K_M at 13.29GB is within 150 MiB of the file already proven to fit.
+
+**VRAM figures here are baseline-subtracted, and that is a change.** See the
+note below on why the raw column in the older sections is not reproducible.
+
+| Context | Extra flags | Model MiB | Free at base 701 |
+|---|---|---|---|
+| 32K | `-ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,476 | 1,127 |
+| 64K | `-ub 512 -b 2048 -fa on -ctk q4_0 -ctv q4_0` | 14,657 | 946 |
+| *128K* | `-ub 256 -b 2048 -fa on -ctk q4_0 -ctv q4_0` | 15,571 | **32** |
+
+Rejected, measured:
+
+| Attempt | Result |
+|---|---|
+| 64K, q8_0, `-ub 512` | model 15,608 — **55 MiB free** when measured, negative at the session's worst baseline |
+
+**64K cannot run q8_0 here, and that is the one place this model diverges from
+Qwen3.8.** Qwen3.8 deliberately takes q8_0 at 64K and accepts 761 MiB free,
+because q4_0 costs up to 23% of generation at depth. This model is 266 MiB
+heavier at the same context and that trade is no longer available — q8_0 at
+64K leaves 55 MiB, which is inside the noise of desktop VRAM drift. So the 64K
+preset takes q4_0 and the documented generation penalty with it. At 32K the
+gap is only 67 MiB and the q8_0 config is comfortable.
+
+**128K is listed but should not be a preset.** 32 MiB of headroom is smaller
+than the baseline drift measured *during this session* (see below), so it is
+in the same category as the Muse Glimmer + DFlash case: it loads, it answers,
+and any other GPU consumer breaks it.
+
+#### The raw VRAM column in the older sections is not reproducible — the baseline moved
+
+`fit.sh` was lost and has been rewritten (it is now committed rather than
+living in a scratchpad). Calibrating it against the known Qwen3.8-27B 32K row
+before trusting it produced a 440 MiB disagreement — 15,050 measured against
+14,610 published. The cause is not the script:
+
+| | Published | Re-measured |
+|---|---|---|
+| Raw peak | 14,610 | 15,050 |
+| Desktop baseline | ~201 (implied) | 641 |
+| **Model-attributable** | **14,410** | **14,409** |
+
+The model-attributable figure reproduces to **1 MiB**. What moved is the
+desktop's own VRAM, which every "VRAM used / Free" number in the older
+sections silently includes. That baseline was observed at **395, 641 and 701
+MiB at different points in this one session** — a 306 MiB spread, which is
+larger than the stated headroom of several published configs and larger than
+the entire 128K margin above.
+
+This does not invalidate the older rows; each was true against whatever the
+desktop held that day. But it means the `Free` column there is a measurement
+of the machine's state, not of the model, and configs with sub-300 MiB margins
+are less reproducible than they read. New rows report model-attributable VRAM
+and state the reference baseline.
+
+### Qwen3.5-9B-Uncensored (HauhauCS, Aggressive) — 8.9GB, **dense** 9B, 32 layers
+
+`HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive`, Q8_0, added 2026-08-18.
+SHA256 verified against the HF-reported LFS oid. Same `qwen35` family as
+Qwen3.8-27B and the 27B-Uncensored above, but at 8.95B params over 32 layers —
+**half the layer count, and the same 3:1 hybrid-attention ratio** gives 8
+layers with KV instead of 16. Head count and head dim are unchanged (4 KV
+heads × 256), so the per-token KV cost is exactly half its bigger sibling's:
+**17,408 B/token at q8_0** against the 27B's 34,816.
+
+Q8_0 (9.53GB) was chosen deliberately over a smaller quant. Unlike the 27B,
+VRAM was never the constraint here — weights this light leave room to ask
+what the model can reach, not what it can be shrunk to fit.
+
+**This is the first dense model on this card to reach its full native context
+at full KV precision.** Every other native-262144 model that gets there
+(Qwen3.6, Qwen3-Coder-Next, Gemma 4) is MoE and pays for it in disk size
+(16.9-49.3GB); every dense hybrid-attention model (Qwen3.8, the 27B-Uncensored
+above) is VRAM-capped well short of native. This 9B is dense **and** reaches
+262,144 — the halved KV cost is why.
+
+| Context | Extra flags | Model MiB | Free at base 476-536 |
+|---|---|---|---|
+| 32K | `-ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 9,384 | 6,444 |
+| 128K | `-ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 11,587 | 4,181 |
+| 256K *(native)* | `-ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,524 | 1,304 |
+
+No `-ub` reduction was needed at any context — even at 262,144 the compute
+buffer fits comfortably under `-ub 1024`, unlike the 27B twin, which had to
+drop to `-ub 256` just to reach 128K. **q8_0 KV holds at every context here**;
+there was never a q4_0 tradeoff to make.
+
+Verified under real load, not just the allocation probe: 5/5 needle recall at
+216,208 tokens and 5/5 semantic recall (against near-miss distractors) at
+225,148 tokens, both against the 256K preset, both with no OOM. See Context
+quality below for the full numbers.
+
+Thinking model, same profile as its family: `enable_thinking`, no
+`reasoning_effort`, so `--reasoning-budget` is required for the same reason
+documented under Qwen3.8.
+
+### Nemotron-3-Nano-30B-A3B — 22.8GB, MoE 31.6B/~3.5B active, Mamba2 hybrid
+
+**Deleted from disk (2026-08-17)** — kept here because the throughput and
+fitting measurements below are still correct and still the cheapest 1M-context
+config in this file. It was not removed for anything in this section.
+
+The reason is in [`real-world-testing.md`](real-world-testing.md#when-feedback-is-gamed-nemotron-fabricates-a-dataset):
+run agentically through Cline, it fabricated a full dataset of pre-2024 models
+with real citation URLs attached to invented scores, after its real data
+source failed to resolve — and separately falsified a "clean" verification
+report, claiming files existed and checks passed when they had not, on two
+occasions. Neither is a benchmark-quality problem; both are about whether the
+model's *reports of its own actions* can be trusted, which every number on
+this page assumes.
+
+Arch is `nemotron_h_moe`; the build already had it, so no rebuild. **This is
+the only model here whose 1M context is native.** 52 layers, of which just six
+keep KV — indices 5, 12, 19, 26, 33, 42 — at 2 heads x 128. The rest are
+Mamba-2 and MLP with constant-size recurrent state.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 24 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,747 | 1,557 |
+| 128K | `-ncmoe 24 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,060 | 1,244 |
+| 256K | `-ncmoe 24 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,723 | 581 |
+| 512K | `-ncmoe 28 -ub 512 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,753 | 1,551 |
+| **1M** | `-ncmoe 32 -ub 256 -b 1024 -fa on -ctk q4_0 -ctv q4_0` | **14,104** | **2,200** |
+
+**None of these need YaRN.** Every previous 1M row in this file was a RoPE
+stretch beyond a 262,144-trained range, flagged as the least trustworthy
+configuration here. 1,048,576 is this model's trained context, so the
+long-context rows carry the same status as its short ones.
+
+Against the closest structural match already on the box, at identical `-ncmoe 24`:
+
+| | Qwen3.6-35B-A3B | Nemotron-3-Nano-30B-A3B |
+|---|---|---|
+| Prompt, shallow | 1616.2 | **1912.8** (+18%) |
+| Generation, shallow | 39.0 | **47.5** (+22%) |
+| Generation @131K | 22.2 | **31.7** (+43%) |
+| KV per token (q8_0) | 10,880 B | **3,264 B** |
+| Native context | 262,144 | **1,048,576** |
+| Host RAM | ~20 GB | ~22 GB |
+
+I could not find an axis on which Qwen3.6 wins.
+
+**What blocks 1M is the compute buffer, not the cache.** At `-ub 1024` it asks
+for a 4,038 MiB compute buffer and fails even with heavy expert offload; the KV
+itself is only 3,264 MiB. Dropping to `-ub 256` with q4_0 KV and `-ncmoe 32`
+lands it with 2,200 MiB spare. Worth knowing because the instinct on an
+allocation failure is to raise `-ncmoe`, which does nothing here.
+
+512K at `-ncmoe 24 -ub 512` also "loads" — at 19 MiB free, where the very first
+generation request failed. It is in the rejected pile, not the table; `-ncmoe
+28` is the working value.
+
+Same thinking trap as Qwen3.8: default reasoning returns **zero content** at
+`max_tokens 1200`. `--reasoning-budget 1024` restores it (850 and 4,459 chars at
+1200 and 2000 tokens). Its template uses `enable_thinking`, so `--no-think`
+works on the probes; there is no `reasoning_effort`.
+
+### GLM-4.7-Flash — 16.3GB, MoE 30B/~3B active, `deepseek2` arch (MLA attention)
+
+`unsloth/GLM-4.7-Flash-GGUF`, UD-Q4_K_XL, added 2026-08-18. SHA256 verified
+against the HF-reported LFS oid. First non-Qwen model in this file, and the
+first to use **Multi-head Latent Attention** rather than GQA or a hybrid
+SSM/attention split. Reports as `deepseek2` in llama.cpp — it reuses
+DeepSeek-V2's MLA implementation rather than a GLM-specific code path — which
+matters because it means every number below is really testing this repo's
+first look at MLA, not GLM specifically. Native context 202,752, 47 layers (1
+leading dense, 46 MoE), 64 experts with 4 active. Already supported by this
+build (`LLM_ARCH_DEEPSEEK2`) — no rebuild needed, same as every model so far.
+
+**MLA's KV cache is a single compressed latent per layer, not per-head K and
+V.** `kv_lora_rank = 512` plus a 64-dim decoupled RoPE component gives 576
+elements/layer/token, applied at **every** layer (unlike the qwen35 hybrid
+models, which skip 3 of every 4). Measured empirically by comparing
+model-attributable VRAM at fixed `-ncmoe` across two contexts (32K and 128K,
+`-ncmoe 16` both times): **≈27,915 B/token**, within 3% of the
+576×47×1.0625(q8_0) = 28,764 B/token formula. That's **cheaper than Qwen3.8's
+34,816 B/token**, despite running at every layer instead of a sparse subset —
+compression wins over sparsity here. **q8_0 KV quantization works for MLA on
+this build** — not something I'd have assumed going in; the first attempt at
+`-ncmoe 4` failed to allocate, but that was a plain VRAM shortfall (the error
+named the KV buffer, not the type), confirmed by the exact same flags
+succeeding at `-ncmoe 16`.
+
+The weights (17.52GB) exceed 16GB VRAM by only ~800 MiB — the smallest deficit
+of any MoE model in this file — so `-ncmoe` needed is far lower than Qwen3.6's
+floor of 16, despite a comparable total file size:
+
+| Context | Extra flags | Model MiB | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 12 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,357 | 1,337 |
+| 128K | `-ncmoe 20 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,743 | 1,130 |
+| 202,752 *(native)* | `-ncmoe 28 -ub 512 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,017 | 1,856 |
+
+Rejected, measured: `-ncmoe 8` at 32K loads at 15,649 MiB — **45 MiB free**,
+the same fragile territory already flagged for the 27B-Uncensored's 64K and
+128K configs. `-ncmoe 16` at 128K is worse — **19 MiB free**. `-ncmoe 24` at
+native context gives only 534 MiB free; `-ncmoe 28` was chosen instead for
+1,856 MiB, a real margin, for a ~4-layer CPU-offload cost.
+
+Verified under real load, not just the allocation probe: 5/5 needle recall at
+29,817 tokens and 5/5 semantic recall at 27,185 tokens, both against the 32K
+preset.
+
+Sampling: Z.ai's own recommendation is `--temp 1.0 --top-p 0.95` for general
+use, `--temp 0.7 --top-p 1.0` for tool-calling specifically, and
+`--min-p 0.01` on llama.cpp (its default of 0.05 is higher than upstream's).
+`--repeat-penalty 1.0` (disabled) is also recommended. All tests here ran the
+general-use params, including the tool-calling probe — a single preset
+serving both isn't unusual, but a config tuned purely for tool-calling
+throughput would use the vendor's other numbers. Same thinking profile as the
+rest of this file: `enable_thinking`, no `reasoning_effort`, so
+`--reasoning-budget` and `--no-think` work the same way they do for the Qwen
+models.
+
+### Devstral Small 2 24B — 14.3GB, **dense** 24B coding specialist, Apache 2.0
+
+**Deleted from disk** — kept here because the measurements stand. It was
+removed for its 32K ceiling, not for capability: it is the fastest coder
+measured on this box, and on the one head-to-head quality test it scored
+better than Qwen3-Coder-Next. Re-downloading is ~16 minutes if that trade
+ever looks worth it again.
+
+Arch is `mistral3`, already in the build. It is the mirror image of Nemotron:
+**full attention on all 40 layers** at 8 KV heads x 128, which is **87,040
+B/token** at q8_0 — the most expensive KV in this file, 2.5x Qwen3.8 and 26x
+Nemotron. Its native 393,216 is not remotely reachable; 128K alone would want
+10,880 MiB of cache on top of 13,670 MiB of dense weights.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ub 512 -b 2048 -fa on -ctk q4_0 -ctv q4_0` | 15,663 | 641 |
+
+| Attempt | Result |
+|---|---|
+| 32K, q8_0 KV | **fails to allocate** — wants 2,720 MiB |
+| 32K, q4_0, `-ub 1024` | loads at 15,914 — 390 MiB free |
+| 16K, q8_0, `-ub 1024` | loads at 15,800 — 504 MiB free, *less* room than 32K at q4_0 |
+
+That last row is why only one preset exists: **32K at q4_0 leaves more headroom
+than 16K at q8_0**, so halving the window buys nothing.
+
+**It is the fastest coder here, and the shallowest.** Fully GPU-resident, so no
+`-ncmoe` and no host RAM pressure — 14.3GB against Qwen3-Coder-Next's 49.3GB
+and ~47GB resident.
+
+| Depth | Devstral Small 2 | Qwen3-Coder-Next |
+|---|---|---|
+| 0 | **36.0** tok/s / 1459 pp | ~25 / ~700 |
+| 8K | 32.2 | — |
+| 16K | 28.8 | — |
+| 32K | 24.1 | ~24 |
+| 47K | — | 22.6 |
+| 256K | **unreachable** | ~22 |
+
+44% faster shallow and roughly 2x on prompt, converging with Qwen3-Coder-Next
+by 32K — which is also where it stops. A 33% generation decay across just 32K
+is the steepest per-token in this file, and it is the 87,040 B/token doing it.
+
+So the two coders are complements, not substitutes: **Devstral for short work,
+Qwen3-Coder-Next for depth.**
+
+`-ub` confirms the CPU-offload rule again: **+10.9%** from 256 to 1024
+(1331.0 → 1475.8), against Qwen3.8's +11% and Qwen3.6's +188%. Two independent
+fully-resident models now agree.
+
+Not a thinking model — no `<think>` handling in its template, so unlike Qwen3.8
+and Nemotron it needs no `--reasoning-budget`. The GGUF embeds no sampling
+defaults.
+
+### Laguna XS.2 (Poolside) — 18.9GB, MoE 33B/~3B active, agentic coding, `laguna` arch
+
+> **Removed 2026-10-12** (presets and both files): the least accurate coder here
+> (27/50 code-quality, both quants), and Gemma 4 and Qwen3.6 took its place as
+> the fast MoE. The measurements below stay as the record.
+
+Poolside's own local-scale model, released 2026-07-21. **Every Laguna is MoE** —
+there is no dense variant — and three sizes exist:
+
+| Variant | Total / active | Layers | Attention | Verdict here |
+|---|---|---|---|---|
+| **Laguna XS.2** (XS-2.1) | 33B / 3B | 40 | hybrid, 10 full + 30 SWA(512) | tested, below |
+| Laguna S 2.1 | 118B / 8B | — | hybrid | see below |
+| Laguna M.1 | 225B / 23B | 70 | **global on all layers**, 64 Q / 8 KV | out of reach |
+
+Q4_K_M is the only quant Poolside ships for XS besides BF16 (66.9GB) — no
+Q5/Q6/Q8 official tier, unlike every other model in this file.
+
+**Why S was not tested, 2026-08-23.** Poolside's own Q4_K_M is 68GB against
+62GB of system RAM, so the official quant is out. But bartowski publishes the
+full ladder, and the 3-bit tier *would* fit: `Q3_K_S` 51.6GB or `IQ3_XXS`
+49.5GB, both single-file, against ~57GB available RAM plus 15.8GB VRAM. The
+blocker is not fit, it is speed — S activates **8B** per token against XS's 3B,
+and with 118B of routed experts essentially all CPU-resident, generation lands
+around 5-9 tok/s versus XS's 47. That is a considered-single-answer model, not
+an agentic-loop one, and XS's suite results below did not justify the 50GB
+download. M.1 is doubly out: 225B, and global attention on all 70 layers means
+KV cost scales the way Gemma 4's does rather than the way XS's hybrid does.
+
+`laguna` architecture support landed in upstream llama.cpp on 2026-07-22
+(#25165) and this box's exact checkout (`b10463`, `7c35571e5`) already has it
+compiled into `libllama.so` — no rebuild was needed.
+
+Hybrid attention, 40 layers: 10 full-attention (period 4, dense-first) + 30
+sliding-window (512 tokens), **8 KV heads x 128 dim** — 4x Qwen3.6's 2 KV
+heads, so KV costs more per token despite the same layer-count fraction.
+Context is 262,144 (matches GGUF `laguna.context_length`), but that number is
+already a YaRN 32x stretch from an 8,192 base — same caveat as GPT-OSS-20B's
+131,072, not a directly-trained ceiling.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 16 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,418 | 1,886 |
+| 128K | `-ncmoe 20 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,058 | 1,246 |
+| 256K | `-ncmoe 26 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,814 | 490 |
+
+256K's 490 MiB free is thinner than most rows in this file but passed `fit.sh`
+clean (`peak >= loaded`, GTT flat) — a real fit, just not a roomy one.
+
+**Thinking defaults off in the template** (`enable_thinking | default(false)`)
+but the server does not honour that default on its own: a plain request burned
+its entire 800-token budget on reasoning and returned zero content, the same
+trap documented for Qwen3.8 and Muse Glimmer above. Fix is
+`"chat_template_kwargs": {"enable_thinking": false}` — every probe script in
+`benchmarks/` already sends it, so the suite runs against Laguna unmodified.
+
+**The GGUF does embed sampling defaults**, unlike Muse Glimmer above:
+`general.sampling.temp = 1.0`, `top_p = 1.0`, `min_p = 0.0`. Every probe here
+sends `temperature: 0.0` in the request body, which overrides both those and
+the server's `--temp`, so the scores below are greedy and directly comparable
+to every other row — but a client that sends no temperature will inherit 1.0.
+Other metadata worth knowing: `general.size_label` is `256x2.2B`, and
+`general.name` is a bare git hash rather than a model name, which is why
+`llama-bench` labels it from the architecture as `laguna 30B.A3B`.
+
+**Native tool calling verified, single and parallel.** Single
+`get_probe_token(seed=42)` → `PROBE-770487`; parallel → three calls
+(`PROBE-439563`, `PROBE-915965`, then `add_numbers` → `1355528`), all
+arguments correct. This is the strongest axis measured on the model.
+
+**Coding quality is the weakest in this file, and that is the model, not the
+quant.** The full suite ran on 2026-08-23 at both `Q4_K_M` (Poolside's own)
+and `Q8_0` (bartowski, imatrix) — raw output in
+`benchmarks/laguna-XS-2.1-Q4_K_M/` and `benchmarks/laguna-XS-2.1-Q8_0/`:
+
+| Probe | Q4_K_M | Q8_0 | Field |
+|---|---|---|---|
+| `code-quality` | 27/50 (54%) | **27/50 (54%)** | 30-38/50 (60-76%) |
+| `cdn-freshness` | 18/36 (50%) | **27/36 (75%)** | 30-39 URLs (83-93%) |
+| tool calling | single + parallel ✓ | single + parallel ✓ | ✓ for all tested |
+| throughput (700 tok) | **47.0 tok/s** | 30.2 tok/s | 24.7-30.6 tok/s |
+
+**Q8_0 was run specifically to test whether Poolside's Q4_K_M was holding the
+model back. It was not — for coding.** The 54% is identical at a quant that
+is effectively lossless, so Laguna genuinely sits below every other model here
+on differential stdlib reimplementation. The aggregate hides large per-task
+churn and the `SyntaxError` seen at Q4_K_M does *not* recur at Q8_0; see the
+code-quality section for the full breakdown.
+
+**Library knowledge is a different story — that one was the quant.**
+`cdn-freshness` gained 25 points at Q8_0, dropping three of six hallucinated
+CDN paths. Version-string recall degrades under quantisation well before
+coding ability does.
+
+An earlier note in this section credited Laguna with "correct, complete code"
+on the strength of a single bracket-balance prompt — that prompt was too easy
+to support the claim, which is why the differential suite exists.
+
+**Choosing between them.** Q4_K_M is the speed pick at 47 tok/s and 19GB.
+Q8_0 costs 33GB on disk and drops to 30.2 tok/s — still top of the field —
+and buys materially better library knowledge for no change in coding quality.
+Because Q8_0 pushes more experts to CPU, it is also the *roomier* fit at long
+context: 1,348 MiB free at 256K against Q4_K_M's 490.
+
+| Q8_0 context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ncmoe 26 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 15,556 | 748 |
+| 128K | `-ncmoe 30 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,732 | 1,572 |
+| 256K | `-ncmoe 34 -ub 1024 -b 2048 -fa on -ctk q8_0 -ctv q8_0` | 14,956 | 1,348 |
+
+The GGUF is **93.8% expert tensors** (0.777 GiB per layer at Q8_0), which is
+why a 33GB model runs at all on a 16GB card — `-ncmoe` moves the bulk into
+system RAM and VRAM stays roughly flat. That ratio also makes the fit
+predictable: `0.064*T + (40-N)*0.936*T/40 + KV` sized every row above to
+within 1% before it was measured.
+
+### Gemma 4-E2B — 9.3GB, dense, 35 layers, 1 KV head
+
+**Deleted from disk** — kept here because the measurements stand. Also
+pulled out of `switch-model.sh` and `models-preset.ini` entirely (the way
+Nemotron and Devstral were), rather than left dangling pointing at a file
+that no longer exists. Re-downloading is `hf download
+unsloth/gemma-4-E2B-it-GGUF gemma-4-E2B-it-BF16.gguf` — see the top of this
+section for the exact repo — and re-wiring it needs the
+`--reasoning-budget 1024` fix documented below; the version that shipped
+first did not have it and returned empty content through the router.
+
+`unsloth/gemma-4-E2B-it-GGUF`, BF16 — full precision, no quantisation. Arch is
+`gemma4`, and unlike the 26B-A4B MoE sibling above this one reports
+`enable_moe_block: false` — dense. "E2B" is Google's *effective*-parameter
+label (MatFormer-style); the file itself is ~4.66B raw parameters at BF16
+(9,311,305,568 bytes / 2). Extreme GQA — **1 KV head** at `head_dim 256` —
+and only 7 of 35 layers keep a full KV cache (period-5: layers 4, 9, 14, 19,
+24, 29, 34; the rest are 512-token sliding window). KV is close to free,
+which makes this the cheapest context in the whole file.
+
+By far the lightest model tested here — the 9.3GB of BF16 weights alone are
+smaller than most of the *quantised* MoE models above. Native context
+131,072 fits whole with room to spare: no `-ncmoe` (dense, nothing to
+offload) and no KV quantisation needed anywhere.
+
+| Context | Extra flags | VRAM used | Free |
+|---|---|---|---|
+| 32K | `-ub 1024 -b 2048 -fa on` | 6,374 | 9,930 |
+| 131,072 *(native)* | `-ub 1024 -b 2048 -fa on` | 7,142 | 9,162 |
+
+Raw peak against a 1,194 MiB baseline; model-attributable is 5,180 / 5,948
+MiB respectively — under 6GB to hold the whole native context.
+
+700-token code prompt, temp 0.0, n=3: generation held flat at **~75 tok/s**
+(75.06 / 75.10 / 74.92) — the fastest generation of any model in this file,
+as expected for ~4.7B dense. Prompt processing was inconsistent run to run
+(395.5 → 133.1 → 136.1 tok/s); treat a single pp reading from this model with
+suspicion until re-checked.
+
+Native tool calling verified, single and parallel:
+`get_probe_token(seed=42)` → `PROBE-770487`; parallel → two token calls plus
+an `add_numbers` delegation, all arguments correct.
+
+**It is a thinking model, and `--reasoning-budget` is not optional** — found
+the hard way after wiring this into `switch-model.sh`/`models-preset.ini`
+without it. Unlike Instella-MoE's fork (`instella-moe.md`), this chat
+template does correctly split `reasoning_content` from `content`, but with no
+budget cap the model spends the entire `max_tokens` on reasoning and returns
+`content: ""`, `finish_reason: "length"` — confirmed live through the router.
+Every probe below was already run through `run-suite.sh`, which always sets
+`--reasoning-budget 1024`, so the numbers are unaffected — but a request
+still needs `max_tokens` comfortably above that budget to see real output:
+verified `max_tokens 500` still returns empty content even with the budget
+set (never reaches the cutover), while `max_tokens 2000` produces a normal
+answer (2,319 chars reasoning, 5,684 chars real code, same prompt).
+
+**Coding quality is the weakest measured in this file.** 17/50 (34.0%) on the
+differential suite — below Laguna XS.2's 27/50, previously the floor — and
+two of seven tasks (`glob_match`, `shlex_split`) produced code that did not
+even parse (`SyntaxError`, 0/8 and 0/7). Unlike every quant/architecture
+tradeoff documented elsewhere in this file, this reads as the model simply
+being too small for the task — full BF16 precision rules out quantisation as
+the explanation.
+
+CDN freshness: 27/39 URLs resolve (69%), identical across all 3 runs — the
+same four dead URLs every time (`prop-types@15.8.1`, `recharts/umd`,
+`material-ui@latest`, `@mui/material@5/umd`), consistent with greedy decoding
+at `temperature 0.0`.
+
+---
+
+## Throughput
+
+`llama-bench`, `-r 2`, ROCm build, shallow depth unless noted.
+
+### Qwen3.6-35B-A3B — `-ub 1024`, q8_0 KV, pp4096/tg64
+
+| `-ncmoe` | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 40 | 1198.0 | 31.8 |
+| 36 | 1268.4 | 33.4 |
+| 32 | 1368.0 | 35.7 |
+| 28 | 1472.6 | 35.8 |
+| 24 | 1616.2 | 39.0 |
+| 20 | 1787.3 | 41.9 |
+| 16 | 1974.8 | 43.9 |
+
+Monotonic — every expert layer moved onto the GPU helps. `-ncmoe 12` fails to
+allocate even at minimal context, so 16 is the floor. The usable value is
+whatever the target context leaves room for (see the config table).
+
+### Laguna XS.2 — `-ub 1024`, q8_0 KV, pp4096/tg64
+
+| `-ncmoe` | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 16 | 2074.9 | 46.7 |
+| 20 | 1846.1 | 43.7 |
+| 26 | 1618.4 | 39.3 |
+
+Faster than Qwen3.6-35B-A3B at every matched `-ncmoe` (2074.9 vs 1974.8 at 16,
+1618.4 vs 1616.2 at 24/26) despite an almost identical 18.9GB/20.6GB file
+size — Laguna's 512-wide expert FFN is lighter per active parameter than
+Qwen3.6's.
+
+### Qwen3-Coder-Next — pp2048/tg64
+
+| `-ncmoe` | `-ub` | KV | Prompt tok/s | Gen tok/s |
+|---|---|---|---|---|
+| 38 | 1024 | q8_0 | 722.4 | 25.0 |
+| 40 | 1024 | q8_0 | 697.3 | 25.8 |
+| 42 | 1024 | q8_0 | 680.6 | 25.1 |
+| 44 | 256 | q4_0 | 246.6 | 24.4 |
+| 46 | 256 | q4_0 | 235.7 | 23.8 |
+| 48 | 256 | q4_0 | 225.8 | 21.7 |
+
+The `-ub 256` rows are the 1M-capable configs — note prompt throughput is ~3x
+lower there. 1M costs a lot of prompt speed on this model.
+
+### GPT-OSS-20B — Vulkan, `-fa 1`, depth sweep
+
+| Depth | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 0 | 4921.1 | 180.7 |
+| 32K | 2587.9 | 143.5 |
+| 131K | 1063.7 | **22.3** ← VRAM cliff, use ROCm here |
+
+At 131k on **ROCm** instead: 1035.2 prompt / **70.5** generation — same prompt
+speed, 3.2x the generation. This is why `gpt-oss-20b:128k` is routed to ROCm.
+
+Flash attention is worth having: on Vulkan at depth 0, `-fa 1` gives 4921/180.7
+versus 3775/178.0 with `-fa 0` — **+30% prompt**. The presets pass no `-fa`
+flag, which is fine: `llama-server` defaults to `auto` and resolves it to
+enabled (`sched_reserve: Flash Attention was auto, set to enabled`).
+
+GPT-OSS-20B is by far the fastest model here — fully GPU-resident at 11.3GB
+with no `-ncmoe` at all, reading weights from VRAM at ~640 GB/s instead of
+streaming from DDR4 at ~40 GB/s. Real-world: the same "write a Rust backend and
+React frontend" prompt took **15s** on GPT-OSS-20B vs **1m55s** on
+Qwen3-Coder-Next.
+
+### Gemma 4-26B-A4B — ROCm, `-fa 1`, pp4096/tg64
+
+| `-ncmoe` | Used at | Prompt tok/s | Gen tok/s |
+|---|---|---|---|
+| 8 | 32K | 1960.6 | 49.8 |
+| 12 | 128K | 1603.6 | 42.6 |
+| 20 | 256K | 1276.0 | 33.9 |
+
+Depth sweep at `-ncmoe 8`, tg64 — **the flattest curve of any model here**:
+
+| Depth | Gen tok/s |
+|---|---|
+| 0 | 51.4 |
+| 8K | 49.0 |
+| 16K | 47.5 |
+| 32K | **47.0** |
+
+**8.5% decay across the whole range**, against Qwen3.8's 14% at q8_0 and 34%
+at q4_0, and Qwen3.6's 30% out to 131K. Gemma 4 is not a hybrid-attention
+model and pays for that in VRAM, but what it buys is generation speed that
+barely notices depth.
+
+That makes it the answer to "fastest model that is still a serious 25B+ at
+Q4_K_M": it never drops below 47 tok/s inside 32K, where Qwen3.8 at the same
+depth is at 27.0 and a full quant step lower at Q3_K_XL.
+
+### Qwen3.8-27B — ROCm, `-fa 1`, pp4096/tg64
+
+Ubatch sweep at q8_0 KV, shallow:
+
+| `-ub` | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 256 | 1180.7 | 31.9 |
+| 512 | 1279.7 | 31.9 |
+| 1024 | 1306.9 | 31.9 |
+
+**`-ub` almost does not matter on this model — +11% across the whole range,**
+against +188% on Qwen3.6. That is not a contradiction, it is the mechanism
+showing itself: Qwen3.6 at `-ncmoe 40` streams expert weights from DDR4 every
+batch, and a larger ubatch amortises that transfer. Qwen3.8 is dense and fully
+GPU-resident, so there is no host traffic to amortise and ubatch only trades
+compute-buffer size against a little scheduling overhead. The practical payoff
+is that `-ub 256` — mandatory to fit 128K — costs about 10% here, where the
+same drop costs Qwen3-Coder-Next roughly 3x.
+
+Depth sweep, q4_0 KV, `-ub 256` (the 128K preset):
+
+| Depth | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 0 | 1180.4 | 31.6 |
+| 32K | 551.2 | 20.8 |
+| 131K | 213.4 | **9.6** |
+
+**Those generation figures are the worst case, not the model's.** They were
+measured at q4_0 KV, which costs up to 23% at depth (see Tuning findings). The
+32K preset runs q8_0 and is materially faster:
+
+| Depth | Gen, q8_0 (32K preset) | Gen, q4_0 (128K preset) |
+|---|---|---|
+| 0 | 31.6 | 31.5 |
+| 8K | 30.6 | 27.8 |
+| 16K | 29.4 | 25.1 |
+| 32K | **27.0** | 20.8 |
+
+So Qwen3.8 holds above 30 tok/s to roughly **12K** of depth at q8_0, and is
+still at 27.0 at 32K. An earlier revision of this file put that crossover near
+5K, by reading the q4_0 curve and applying it to the q8_0 preset.
+
+**This is the worst generation decay in the file: 3.3x.** Compare Qwen3.6 over
+the same range, 31.8 → 22.2, only 1.43x. The cause is the same 4-KV-heads ×
+16-layers arithmetic — every generated token reads the whole KV cache, and
+here that cache is 2.7x fatter per token than any other hybrid model in the
+set. At 131K this model generates slower than Qwen3-Coder-Next, an 80B.
+
+So the honest reading of the 128K preset: it fits, it recalls perfectly, and
+it is slow enough that you should reach for 32K or 64K unless you genuinely
+need the window.
+
+#### Real-world check: the same model under Open WebUI
+
+Every number above is `llama-bench`. One serving datapoint from the actual
+path — `qwen3.8-32k` via router mode, Open WebUI with web search enabled,
+five sources pulled into the prompt:
+
+| | Measured | `llama-bench` d0 | `llama-bench` d32K |
+|---|---|---|---|
+| Prompt | **798.4 tok/s** | 1306.9 | 551.2 |
+| Generation | **27.8 tok/s** | 31.6 | 20.8 |
+
+`prompt_n 15065`, `cache_n 11198`, `predicted_n 1071` — so this spans roughly
+11K to 26K of depth, and both figures land between the d0 and d32K rows
+exactly where the sweep predicts. The synthetic curve is not flattering
+itself; it transfers.
+
+Two incidental confirmations: `cache_n 11198` shows the prompt cache reusing
+the prefix across turns, and 1,071 completion tokens with a fully written
+answer is `--reasoning-budget 1024` doing its job — this is precisely the
+shape of request that returned zero content before the cap.
+
+**The 64K KV switch, measured the same way.** Same preset before and after the
+q4_0 → q8_0 change, at comparable depth:
+
+| 64K preset | Depth | Generation |
+|---|---|---|
+| q4_0, `-ub 1024` | 18,566 | 24.4 tok/s |
+| q8_0, `-ub 512` | 17,052 | **29.1 tok/s** |
+
+**+19.7%**, and `llama-bench` had predicted 29.39 at d16384 against 29.15
+measured slightly deeper — within 0.8%. That is the second time the synthetic
+curve has transferred to the serving path without flattering itself, which is
+the reason to keep taking these readings rather than trusting `llama-bench`
+alone.
+
+**Caveat that bit immediately:** the turn totalled 28,701 tokens against a
+32,768 window, 88% full, from five search results plus history. Search-
+augmented chats fill 32K fast. Use `qwen3.8-64k` for those — it trades q8_0
+KV for q4_0, which is a cheap price given the decay you are already paying at
+that depth.
+
+### Qwen3.5-27B-Uncensored — ROCm, `-fa 1`, pp4096/tg64
+
+Ubatch sweep at q8_0 KV, shallow — run against Qwen3.8-27B, its architectural
+twin, at identical settings:
+
+| `-ub` | Prompt | Gen | Qwen3.8 prompt | Qwen3.8 gen |
+|---|---|---|---|---|
+| 256 | 1031.5 | 29.7 | 1180.7 | 31.9 |
+| 512 | 1131.8 | 29.7 | 1279.7 | 31.9 |
+| 1024 | 1153.6 | 29.5 | 1306.9 | 31.9 |
+
+**~12% slower prompt, ~7% slower generation than Qwen3.8 across the board.**
+It also reproduces Qwen3.8's `-ub` finding — +12% across the whole range,
+versus +188% on Qwen3.6 — which is the expected signature of a dense,
+fully-GPU-resident model with no host traffic to amortise.
+
+Depth sweep, q8_0 KV, `-ub 1024` (the 32K preset):
+
+| Depth | Prompt | Gen | Qwen3.8 gen, q8_0 |
+|---|---|---|---|
+| 0 | 1179.4 | 29.8 | 31.6 |
+| 8K | 922.7 | 28.1 | 30.6 |
+| 16K | 757.1 | 26.7 | 29.4 |
+| 32K | 552.8 | **24.5** | 27.0 |
+
+Decay across the range is **1.21x**, against Qwen3.8's 1.17x — the same shape,
+slightly worse, and both far better than the 3.3x that Qwen3.8 shows out to
+131K on the q4_0 curve. Prompt throughput at depth is effectively identical to
+Qwen3.8 (552.8 vs 551.2 at 32K); the deficit is concentrated in generation.
+
+### Qwen3.5-9B-Uncensored — ROCm, `-fa 1`, pp4096/tg64
+
+Ubatch sweep at q8_0 KV, shallow:
+
+| `-ub` | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 256 | 3884.6 | 56.2 |
+| 512 | 4270.3 | 56.3 |
+| 1024 | 4423.4 | 56.2 |
+
+Generation is flat across `-ub` — same dense-model signature as its 27B
+sibling — but **1.9x its generation speed** (56.2 vs 29.5 at `-ub 1024`)
+against 3x fewer parameters (8.95B vs 26.90B). Not a clean params-scaling
+result: the 27B runs Q3_K (12.37GiB resident) against this model's Q8_0
+(8.86GiB), and quant format changes both bytes-per-token bandwidth and
+per-token dequant compute, so this compares two different points on the
+size/speed curve, not "the same model, smaller."
+
+Depth sweep, q8_0 KV, `-ub 1024`, out to the **native ceiling**:
+
+| Depth | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 0 | 4353.5 | 56.6 |
+| 32K | 1742.2 | 49.1 |
+| 131K | 630.4 | 35.7 |
+| 262,080 | 343.6 | **25.8** |
+
+**Decay across the full native range is 2.2x** (56.6 → 25.8). Compare the
+27B-Uncensored's 1.21x decay to just 32K, or Qwen3.8's 3.3x to 131K on the
+q4_0 curve — this model decays over **double the depth range** of either and
+still lands ahead of Qwen3.8's worst-case 9.6 tok/s at 131K. The halved
+per-token KV cost is doing real work here, not just a fit-headroom number.
+
+### GLM-4.7-Flash — ROCm, `-fa 1`, pp4096/tg64, q8_0 KV
+
+`-ncmoe` sweep, shallow, same style as Qwen3.6's table:
+
+| `-ncmoe` | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 28 | 1243.6 | 28.7 |
+| 24 | 1318.7 | 32.3 |
+| 20 | 1375.6 | 35.9 |
+| 16 | 1463.2 | 39.0 |
+| 12 | 1571.9 | 43.3 |
+
+Monotonic, same shape as Qwen3.6 — but GLM reaches Qwen3.6's *best* published
+generation figure (43.9 tok/s at `-ncmoe 16`) at `-ncmoe 12`, needing 4 fewer
+GPU-resident layers to get there. Consistent with the file being 4.6GB
+lighter (17.52GB vs Qwen3.6's 22.1GB): less has to move to hit a given
+residency level.
+
+Depth sweep, `-ncmoe 12` (the 32K preset):
+
+| Depth | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 0 | 1608.2 | 42.2 |
+| 8K | 562.9 | 39.3 |
+| 16K | 338.8 | 35.7 |
+| 32K | 190.2 | **29.5** |
+
+Generation decay is **1.43x** — the exact same ratio as Qwen3.6 over the
+identical range (31.8→22.2, also 1.43x). **Prompt decay is not** — 1608→190
+is **8.5x**, far steeper than Qwen3.8's 2.4x over the same 32K range. This is
+the one clearly worse number for GLM against everything else in this file: a
+long system prompt or deep conversation history costs prompt throughput here
+in a way it doesn't for the hybrid-attention Qwen models. Worth weighing for
+agentic use, where most of the token cost is prompt, not generation.
+
+### Nemotron-3-Nano-30B-A3B — ROCm, `-fa 1`, `-ncmoe 24 -ub 1024`, q8_0 KV
+
+| Depth | Prompt tok/s | Gen tok/s |
+|---|---|---|
+| 0 | 1912.8 | 47.5 |
+| 32K | 1697.3 | 41.7 |
+| 131K | 1225.6 | **31.7** |
+
+**It still generates 31.7 tok/s at 131K** — the only model here above 30 at that
+depth other than Gemma 4, and unlike Gemma 4 it can go to 1M. Decay from 0 to
+131K is 33%, similar in shape to Qwen3.6's but starting 22% higher and ending
+43% higher.
+
+Recall at depth, `--no-think`: **5/5 needle at 127,569 tokens**, cached
+follow-ups 1.1-1.2s against Qwen3.8's 2.6-3.3s at comparable depth.
+
+#### The 1M preset costs prompt throughput, not generation
+
+Measured on the serving path — `nemotron-1m` in Open WebUI with web search, at
+10,717 depth (`cache_n 8236` + `prompt_n 2481`):
+
+| | `nemotron-256k` (`-ncmoe 24 -ub 1024` q8_0) | `nemotron-1m` (`-ncmoe 32 -ub 256` q4_0) |
+|---|---|---|
+| Prompt | 1912.8 tok/s | **488.3 tok/s** |
+| Generation | 41.7 @32K | **38.8 @10.7K** |
+
+**Generation barely notices; prompt drops ~4x.** Two causes compound — `-ub 256`
+instead of 1024, and eight more layers on the CPU — and both hit prefill rather
+than decode. This is the same shape as Qwen3-Coder-Next at 1M (236 vs 697
+prompt, 23.8 vs 25.8 generation), so it looks like a property of what a 1M
+config has to give up on this card rather than anything model-specific.
+
+**Practical consequence: `nemotron-1m` is not a daily driver.** At the ~10K
+depths typical of a search-augmented chat, `nemotron-256k` gives roughly 4x the
+prompt throughput at the same generation speed *and* better KV precision. Pick
+the 1M preset only when the prompt genuinely exceeds 262,144 tokens.
+
+Native tool calling also works through Open WebUI on this model — two
+`search_web` calls with real result blocks in the same turn — and
+`--reasoning-budget 1024` bounded the thinking ("Thought for 11 seconds")
+rather than consuming the answer.
+
+### Generation decay with depth — Qwen3.6, `-ncmoe 40 -ub 1024`
+
+| Depth | Gen tok/s |
+|---|---|
+| 0 | 31.8 |
+| 32K | 28.8 |
+| 131K | 22.2 |
+
+---
+
+## Context quality: measured, not assumed
+
+The common warning is that long-context recall degrades well before the nominal
+window ("lost in the middle"). **On Qwen3-Coder-Next that does not happen
+anywhere inside its native 262,144 range.** Tested two ways at four depths:
+
+| Depth | Needle recall | Semantic recall | Cold prefill | Effective prefill | Cached follow-up |
+|---|---|---|---|---|---|
+| ~9.7K | 5/5 | 5/5 | 19.3s | 502 tok/s | 3.6s |
+| ~38K | 5/5 | 5/5 | 68.8s | 552 tok/s | 4.7s |
+| ~119K | 5/5 | 5/5 | 268.3s | 445 tok/s | 6.5s |
+| ~241K | — | **5/5** | 749.0s | 322 tok/s | 8.3s |
+
+Two probes, in this repo and copied to `~/llama.cpp/`:
+
+> **All probe scripts and their raw per-model output now live in
+> [`benchmarks/`](benchmarks/)** — one folder per model, generated by
+> `benchmarks/run-suite.sh` rather than assembled by hand. This file holds the
+> conclusions; that folder holds the evidence.
+
+- **`needle-test.py`** — plants distinct facts at 5/25/50/75/95% depth and asks
+  for each. The easy case: verbatim fact, distinctive surface form, no
+  competitors.
+- **`semantic-recall-test.py`** — the hard case, and the one that matters for
+  coding. Plants real helper functions among hundreds of similar utilities,
+  then poses tasks describing what each helper *does* without ever naming it,
+  with a deliberate near-miss distractor for each (`chunk_list` by count vs
+  `chunk_by_weight` by weight; `parse_iso_date` vs `coerce_epoch_millis`).
+  Each distractor sits *closer* to the question than its target, so proximity
+  cannot be the cue. This is the "did it notice the helper already exists, or
+  reimplement it" failure mode.
+
+Both score 5/5 everywhere, including the 50% mid-context position. The model
+retrieved on meaning and rejected every near-miss.
+
+**Gemma 4-26B-A4B, thinking disabled via `--reasoning-budget 0`:** semantic
+recall 5/5 at 23,251 tokens, with cached follow-ups at **0.5-0.8s** against
+Qwen3.8's 2.5-3.2s at comparable depth. First run on this probe for anything
+other than Qwen3-Coder-Next.
+
+Note the mechanism: `--no-think` sends `enable_thinking: false`, which is a
+Qwen chat-template variable and does nothing on Gemma 4. `--reasoning-budget 0`
+is the model-agnostic way to force an immediate end of thinking, and is what
+these numbers used.
+
+**`reasoning_budget_tokens` in the request body does not substitute for it.**
+The field exists in the server schema (`server-schema.cpp`) and the tags are
+auto-populated from the chat template, but on `b10463` sending `0` versus `-1`
+produced **byte-identical output** — 928 chars of reasoning either way on
+qwen3.8-27B, on a prompt built to overrun the budget. Measured, not assumed.
+The only control that works is server-side: `--reasoning-budget`, or
+`reasoning-budget =` in `models-preset.ini`.
+
+Which templates actually honour `enable_thinking`, read from the GGUFs on disk:
+
+| Honours `enable_thinking` | Ignores it (other knob) |
+|---|---|
+| GLM-4.7-Flash, Laguna XS.2 (both quants), Qwen3.5-27B/9B, Qwen3.6, Qwen3.8 (all), Gemma 4-26B-A4B | **Muse Glimmer** (`reasoning_strength`, defaults `high`), **GPT-OSS-20B** (`reasoning_effort`, defaults `medium`) |
+
+So the blanket claim above is too broad: Gemma 4-26B-A4B's template *does* carry
+`enable_thinking`, and sets `| default(false)` — thinking is off there unless
+asked for. Only two models on disk genuinely ignore the flag.
+
+**This did not invalidate the stored results, because `run-suite.sh` has always
+launched with `--reasoning-budget 1024`** (hardcoded in the server line, which
+is why it never appears in the `# flags :` header the probe files record). That
+is the server-side control, and it works on every model regardless of template.
+So reasoning was capped at 1024 tokens for every suite run ever generated.
+
+The residual risk is narrower: reasoning tokens still count against
+`max_tokens`, so a 1024-token cap ate into the budget. Worst case that left 176
+tokens of content headroom at tool-calling's old 1200, and 576 at
+code-quality's old 1600 default. Spot-checked on Muse Glimmer — the worst case,
+since it ignores the flag and defaults to `high` — both probes completed
+cleanly at the old budgets: valid parsing code at 2400, a correct tool call at
+1200. **No stored result in `benchmarks/` is known to be truncated.** The
+budgets moved to 12288 to retire the interaction, not to correct a known error.
+
+One stored result cannot be fully cleared, and it is worth naming. **Gemma
+4-E2B** is the only thinking model with a result folder. Its `code-quality` run
+lost two tasks whole — `glob_match` and `shlex_split`, both `DID NOT RUN —
+SyntaxError` — while the other five produced complete, parsing code (`csv_rows`
+7/7, `add_months` 6/6, and `parse_qsl` 0/7 by being *wrong*, not by failing to
+run). Those two are the longest functions in the suite, which is the shape
+truncation would take: under `run-suite.sh`'s `--reasoning-budget 1024` against
+`--max-tokens 2400`, worst case leaves 1,376 tokens of content. A reference
+`glob_match` measured ~900 tokens elsewhere, so it probably fit — but the run
+did not capture the generated code (`--show-code` was off), and the weights were
+deleted 2026-08-29, so this cannot be re-run. Treat that 17/50 as a floor rather
+than a measurement. Every other folder is on a model that emits no reasoning at
+all, so the question does not arise.
+
+The other exception is the deep needle/semantic probes at 60 and 120
+tokens. Those are hand-driven rather than run through `run-suite.sh`, so their
+server flags are not captured in the output files. At 60 tokens any reasoning at
+all yields empty content. Where the README names the flags used
+(`--reasoning-budget 0` for the Gemma 4 semantic-recall run) they are sound;
+where it does not, the artifact cannot confirm it either way.
+
+The throughput probe deliberately keeps `max_tokens: 700`: it measures tok/s
+over a fixed generation length, so 700 is the unit, and truncation cannot bias
+a timing measurement.
+
+**Qwen3.8-27B, spot-checked with `--no-think`:** needle 5/5 at 127,116 tokens
+on the 128K preset (cold prefill 339.2s, ~375 tok/s; cached follow-ups
+2.6-3.3s), and semantic recall 5/5 at 23,474 tokens. Not the full four-depth
+sweep — enough to say that recall is not the reason to avoid its long-context
+mode. Generation speed at that depth is (9.6 tok/s).
+
+**Qwen3.5-27B-Uncensored, `--no-think`, 32K preset (q8_0 KV):** needle 5/5 at
+31,596 tokens and semantic 5/5 at 28,149 tokens. Cached follow-ups 2.4-3.7s,
+matching its Qwen3.8 twin's 2.5-3.2s. Only the 32K preset was probed, since
+that is the only context this model has real headroom at.
+
+This is the most direct evidence available against the model card's "zero
+capability loss" claim, and it is consistent with it — an uncensored fine-tune
+that had damaged retrieval would be expected to drop near-miss distractors
+first, and it drops none. It is not proof: the clean control is stock
+Qwen3.5-27B, which is not on disk, so this compares against a *newer* base
+(Qwen3.8) and cannot separate the fine-tune from the version gap. The ~7%
+generation deficit against Qwen3.8 is a version-and-quant difference, not
+measured evidence of uncensoring cost.
+
+**Qwen3.5-9B-Uncensored, `--no-think`, 256K preset (q8_0 KV, native max):**
+needle 5/5 at 216,208 tokens and semantic 5/5 at 225,148 tokens — deep into
+the native window, not a shallow spot-check, and the first time either recall
+test has run against this card's true context ceiling on a dense model rather
+than a VRAM-capped one. No OOM under either real haystack. Same reasoning
+applies to its "zero capability loss" claim as the 27B above: consistent with
+it, not proof of it, same missing stock-model control.
+
+**The card's headline claim — "0/465 refusals" — is untested here and was not
+attempted.** Every axis in this file is throughput, fit, recall, tool calling
+or code quality; none of them require eliciting the content that claim is
+about. Treat the refusal number as the vendor's, unverified.
+
+**GLM-4.7-Flash, `--no-think`, 32K preset (`-ncmoe 12`, q8_0 KV):** needle 5/5
+at 29,817 tokens and semantic 5/5 at 27,185 tokens. First recall data in this
+file for an MLA-attention model — clean on both, no distinction from the
+GQA/hybrid-attention models tested so far.
+
+Both scripts take `--depth N` against any running server:
+
+```bash
+benchmarks/semantic-recall-test.py --depth 200000
+```
+
+**`semantic-recall-test.py` overshoots `--depth`.** It plants a distractor for
+every target on top of the haystack, so the built prompt runs ~17% over the
+requested figure — `--depth 30000` produced a 35,180-token request and a
+flat HTTP 400 against a 32,768 window. Ask for roughly 80% of your context.
+
+**Limits of this result:** single-hop (each task maps to exactly one helper),
+clean signal (planted docstrings are accurate, unlike real code), and n=5 per
+depth. This rules out a systematic collapse, not a subtle degradation. Nothing
+here covers the beyond-native 512K/1M configs, where YaRN and (at 1M) q4_0 KV
+both plausibly hurt — those remain untested.
+
+### The real cost is prefill, not forgetting
+
+**Prefill throughput nearly halves with depth** — 552 tok/s at 38K down to 322
+at 241K — so cost grows superlinearly. 119K → 241K is 2.02x the tokens but
+2.8x the time.
+
+| | Cold | Warm (cached prefix) |
+|---|---|---|
+| 128K preset | ~4.5 min | ~6.5s |
+| 256K preset | ~12.5 min | ~8.3s |
+
+**Seen in the wild on Qwen3-Coder-Next:** a turn reporting `cache_n 46967`
+against `prompt_n 14` — the entire 47K prefix reused, fourteen tokens new. The
+3,825-token reply cost 169s of generation and essentially nothing in prefill,
+where a cold 47K prompt would have added ~85s. That turn also gives the deepest
+generation reading for this model, **22.6 tok/s at 46,981 depth**, against ~25
+shallow: a 10% drop over a range where Qwen3.8 loses 34% and Nemotron 33%. The
+"barely decays with depth" claim for this model is now measured, not asserted.
+
+A 90x gap. At these depths the prompt cache is not an optimisation, it is the
+entire viability of the mode. **Treat 256K as load-once-then-iterate**: dump a
+subsystem in, then ask twenty questions against it. Any change to the prefix —
+reordering files, editing the system prompt, inserting anything ahead of the
+bulk source — costs the full cold prefill again.
+
+If your workflow rebuilds the prompt every turn, 256K is unusable; use 32K or
+128K, where a cache miss costs 20-270s instead of 750.
+
+So keep context lean because rebuilding it is expensive, **not** because the
+model forgets. If you can hold the prefix stable, there is no measured quality
+reason to avoid the full window.
+
+Practical ceiling: `143,777 tokens exceeds the available context size (131072)`
+— usable input at the 128K preset is ~119K once you leave room for the reply.
+
+## Thinking models: `reasoning_effort` does not bound anything
+
+Muse Glimmer taught that a thinking model's default effort can eat the whole
+token budget, and that `low` fixes it. **Qwen3.8-27B breaks the second half of
+that lesson.** Its `reasoning_effort` defaults to `xhigh`, and the same
+hard-prompt test gives:
+
+| Setting | Reasoning chars | Content chars | finish |
+|---|---|---|---|
+| default (`xhigh`) | 4,684 | **0** | length |
+| `xhigh` | 4,846 | **0** | length |
+| `medium` | 2,574 | **0** | length |
+| `low` | 2,533 | **0** | length |
+| `enable_thinking=false` | 0 | 2,538 | length |
+
+At `max_tokens: 1200`, **every** thinking setting returns zero content. `low`
+halves the reasoning and still answers nothing. Raising the budget does not
+converge either — it scales with whatever you give it:
+
+| Setting | `max_tokens` | Reasoning chars | Content chars |
+|---|---|---|---|
+| `low` | 2,000 | 5,720 | 0 |
+| `low` | 4,000 | 11,822 | 0 |
+| default | 4,000 | 15,926 | 0 |
+| `low` | 8,000 | 28,174 | 0 |
+
+At 8,000 tokens there is still no `</think>` anywhere in the output, and the
+trace reads `I'm truly stuck. Let me try a completely different approach` —
+genuine non-termination, not a parser artifact.
+
+**Fair caveat:** the prompt driving that table is a logic puzzle I wrote which
+may be ill-posed, and models spin on unsolvable problems. On a well-posed hard
+problem the default terminates normally (`stop` at 3,109 tokens). So the claim
+is not "this model never stops thinking" — it is that **nothing in
+`reasoning_effort` puts a ceiling on it**, so a bad prompt can consume any
+budget you set.
+
+The fix is llama.cpp's own flag, not a template kwarg:
+
+| Config | Reasoning chars | Content chars |
+|---|---|---|
+| `--reasoning-budget 1024`, `max_tokens 1200` | 3,135 | **776** |
+| `--reasoning-budget 1024`, `max_tokens 2000` | 4,298 | **3,584** |
+
+`--reasoning-budget N>0` is supported in this build (`-1` unrestricted, `0`
+immediate end, `N` a token cap), so every `qwen3.8` preset sets 1024. Note
+this also retroactively validates the `reasoning-budget = 1024` already in the
+Gemma 4 presets — it is a real cap, not an ignored value.
+
+Two smaller notes:
+
+* An invalid effort value **500s the request** rather than falling back — the
+  chat template calls `raise_exception` and llama.cpp surfaces it as an
+  internal error. `xhigh`/`medium`/`low` are the only accepted strings.
+* One anecdote on whether the thinking is even buying accuracy: asked how many
+  integers ≤ 1000 have exactly 6 divisors (answer 111), thinking mode said
+  **110** and ran out of budget mid-explanation, while `enable_thinking=false`
+  answered 111 and finished. n=1, so not a quality verdict — but it is not
+  evidence for leaving thinking on either.
+
+### The client's `max_tokens` is charged for reasoning too
+
+`--reasoning-budget` bounds the thinking. It does **not** stop that thinking
+from being billed against whatever `max_tokens` the client sends — and the
+answer is written *after* the reasoning, so a cap that is comfortable for a
+non-thinking model silently truncates a thinking one mid-sentence.
+
+Seen in Open WebUI on `qwen3.8-128k`: a news summary stopped in the middle of
+its final list item. Nothing in the server said so. `llama.cpp` logged a
+completely ordinary completion —
+
+```
+release: id 0 | task 576 | stop processing: n_tokens = 13672, truncated = 0
+```
+
+`truncated = 0`, 13,672 tokens against a 131,072 window (10% full), no
+`context full`, no `context shift`, and the reasoning budget never reached.
+Every server-side explanation was ruled out by that one line. The cause was
+Open WebUI's own `max_tokens`, in Controls → Advanced Params. Raising it fixed
+it immediately.
+
+**Rule of thumb: client `max_tokens` must exceed `reasoning-budget` plus the
+answer you actually want.** With `--reasoning-budget 1024` and a typical
+1,200-1,600 token answer, anything under ~2,500 will cut this model off. The
+presets cannot enforce this — it is a client setting.
+
+The tell is the token accounting. In the truncated response, Open WebUI
+reported `output_tokens: 1095` against `completion_tokens: 653`; the ~440
+token gap is reasoning, and content got only what was left. (Do not read that
+gap as exactly the reasoning count — it varies more than the budget allows,
+so Open WebUI appears to fold its follow-up-question and title generations
+into `output_tokens` as well.)
+
+### The probes needed a flag for this
+
+`needle-test.py` sends `max_tokens: 60` and reads only `content`, so against
+any thinking model it scores 0/5 regardless of actual recall — the reasoning
+consumes the budget first. Both probes now take `--no-think`, which sends
+`chat_template_kwargs: {"enable_thinking": false}`:
+
+```bash
+benchmarks/needle-test.py --depth 119000 --no-think
+benchmarks/semantic-recall-test.py --depth 20000 --no-think
+```
+
+This also keeps the comparison fair: every long-context number already in this
+file was measured on Qwen3-Coder-Next, which does not think at all.
+
+### Both probes overshoot `--depth`, by different amounts
+
+Neither script hits the depth you ask for, and the error is large enough to
+push a request past `n_ctx` and get a bare `HTTP 400` back:
+
+| Script | Asked | Built | Overshoot |
+|---|---|---|---|
+| `semantic-recall-test.py` | 30,000 | ~35,000 | **~17%** (adds a distractor per target) |
+| `needle-test.py` | 185,000 | 199,478 | **~7.8%** |
+
+Ask for roughly **80%** of the window on the semantic probe and **90%** on the
+needle probe. A 199,478-token haystack against a 196,608 window fails with
+`request (199478 tokens) exceeds the available context size` in the server log
+and a naked `HTTPError: 400` at the client, which looks like a broken server
+rather than a too-big prompt.
+
+## Coding quality: executed, not read
+
+`code-quality-test.py` scores a model by *running* its output. Seven tasks, each
+asking for a from-scratch reimplementation of a stdlib behaviour; the checks
+compare the model's function against the real one over edge cases plus a seeded
+random batch. 50 checks total.
+
+**The first version of this suite was worthless and the reason is worth
+keeping.** It used self-contained leetcode-style tasks (merge intervals, LRU,
+roman numerals) and every model scored **50/50**. Saturated, exactly like the
+needle probes at 32K. Differential testing against stdlib is what produced
+resolution: matching `urljoin` or `shlex.split` *exactly* is hard, matching them
+on the happy path is easy, and the gap between those is the score.
+
+The suite is validated against stdlib wrappers as reference solutions — all 7
+tasks score 50/50 when the "model" is the real function, so a failure is the
+model's, not the harness's.
+
+| Model | BPW | Checks | Fully-clean tasks |
+|---|---|---|---|
+| Qwen3.8-27B `UD-IQ3_XXS` v3 | 3.148 | **38/50 (76%)** | 3/7 |
+| Qwen3.8-27B `UD-Q3_K_XL` v3 | 3.802 | 35/50 (70%) | 2/7 |
+| Qwen3-Coder-Next `UD-Q4_K_M` | ~4.5 | 34/50 (68%) | 2/7 |
+| Qwen3.8-27B `UD-Q3_K_XL` **v2** | 3.932 | 33/50 (66%) | 2/7 |
+| Qwen3.8-27B `UD-IQ4_XS` v3 | 4.131 | 30/50 (60%) | 2/7 |
+| Laguna XS 2.1 `Q4_K_M` | ~4.5 | 27/50 (54%) | 1/7 |
+| Gemma 4-26B-A4B `UD-Q4_K_M` † | ~5.4 | **37/50 (74%)** | 3/7 |
+| Gemma 4-26B-A4B `Q8_0` † | ~8.5 | 33/50 (66%) | 2/7 |
+| Laguna XS 2.1 `Q8_0` | ~8.5 | 27/50 (54%) | 2/7 |
+
+† The two Gemma 4 rows were measured 2026-08-29 at `--max-tokens 12288`; every
+other row used 2400. They are directly comparable to each other but not exactly
+to the rest of the table. Their 4-check spread is inside this probe's noise
+floor — see the Gemma 4 section.
+
+**BPW does not order this table.** The highest-bit quant scores lowest and the
+lowest-bit quant scores highest. IQ4_XS lost 9 checks in one go by emitting
+Python that does not parse (`urljoin`, `SyntaxError`), which is a generation
+failure rather than a knowledge one — but that is exactly the kind of failure
+that matters in an agentic loop, so it is scored, not excused.
+
+**Laguna XS 2.1 is the only model below the band.** 27/50 is 3 checks under the
+previous floor. At `Q4_K_M`, 6 of those losses come from one task
+(`add_months

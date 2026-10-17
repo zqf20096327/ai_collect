@@ -1,0 +1,264 @@
+# Whoosh
+
+**Fast, pure-Python full-text indexing, search, and spell checking.**
+
+[![CI](https://github.com/priya-sundaram-dev/whoosh/actions/workflows/ci.yml/badge.svg)](https://github.com/priya-sundaram-dev/whoosh/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/whoosh3)](https://pypi.org/project/whoosh3/)
+[![Python versions](https://img.shields.io/pypi/pyversions/whoosh3)](https://pypi.org/project/whoosh3/)
+[![License](https://img.shields.io/badge/license-BSD--2--Clause-blue)](LICENSE.txt)
+[![Downloads](https://img.shields.io/pypi/dm/whoosh3)](https://pypi.org/project/whoosh3/)
+
+Whoosh lets you add real search — ranked results, a query language, faceting,
+highlighting, "did you mean?" spell-correction — to any Python program, with
+**no compiler, no server, and no native dependencies**. It's `pip install` and
+go. If you can open a file, you can build an index.
+
+> **Project status (2026): actively maintained again.** This fork continues
+> Whoosh after two rounds of abandonment. See [Maintenance](#maintenance) below
+> for the honest history and who's behind it.
+
+**▶ [Try Whoosh live in your browser](https://priya-sundaram-dev.github.io/whoosh/)** —
+no install needed. It runs the *real* library (compiled to WebAssembly via
+Pyodide), builds an index, and answers your queries with BM25 ranking and
+highlighting, entirely client-side.
+
+[![Whoosh running in the browser: a search box over a demo corpus, returning BM25-ranked results with matched terms highlighted](assets/whoosh-demo.png)](https://priya-sundaram-dev.github.io/whoosh/)
+
+If Whoosh saves you a dependency or a headache, a ⭐ on
+[GitHub](https://github.com/priya-sundaram-dev/whoosh) genuinely helps — it's the
+main signal that keeps this revival worth maintaining, and it helps other people
+find a search library that's alive again.
+
+---
+
+## Why Whoosh?
+
+- **Pure Python.** No C to compile, no wheels that break on your platform, no
+  mystery segfaults. Works anywhere CPython runs — including PyPy and, yes,
+  the browser via Pyodide.
+- **Embedded, not a server.** The index is just files in a directory. No daemon
+  to run, no port to open, no ops. Great for desktop apps, CLIs, static-site
+  search, notebooks, and tests.
+- **Real search, not just `LIKE '%foo%'`.** BM25F ranking, boolean/phrase/range
+  /wildcard/fuzzy queries, fields and facets, result highlighting, and a
+  pure-Python spell checker.
+- **Extensible everywhere.** Scoring, analysis, storage, and posting formats are
+  all pluggable.
+- **Typed (PEP 561).** Ships a `py.typed` marker, so `mypy`/`pyright` and your
+  editor pick up Whoosh's types automatically. The most-used entry points are
+  annotated today, with coverage expanding each release.
+
+**When *not* to reach for Whoosh:** if you need a distributed cluster, or you're
+already on Postgres/SQLite and their built-in FTS is enough, use those. And if
+you're indexing tens of millions of documents or need the lowest possible query
+latency, a native-code engine (e.g. Rust's [Tantivy](https://github.com/quickwit-oss/tantivy))
+will outrun pure Python — that's the honest tradeoff for the no-native-deps,
+no-infra install. Whoosh shines when you want good search *inside* a Python
+process without extra infra, on corpora up to the low millions of documents.
+
+## Install
+
+```bash
+pip install whoosh3
+```
+
+Or with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv pip install whoosh3
+```
+
+```python
+import whoosh
+print(whoosh.versionstring())
+```
+
+The import package is still `whoosh`. Already using the original `Whoosh` or
+`whoosh-reloaded`? Migrating is usually a one-line change — see
+[MIGRATING.md](MIGRATING.md).
+
+## Quickstart (5 minutes)
+
+```python
+from whoosh.fields import Schema, TEXT, ID
+from whoosh.index import create_in
+from whoosh.qparser import QueryParser
+import tempfile
+
+# 1. Describe your documents.
+schema = Schema(title=TEXT(stored=True), path=ID(stored=True), content=TEXT)
+
+# 2. Create an index (just a directory of files).
+ix = create_in(tempfile.mkdtemp(), schema)
+
+# 3. Add documents.
+writer = ix.writer()
+writer.add_document(title="First", path="/a", content="Pure-Python full text search")
+writer.add_document(title="Second", path="/b", content="No compiler required")
+writer.commit()
+
+# 4. Search.
+with ix.searcher() as searcher:
+    query = QueryParser("content", ix.schema).parse("python")
+    for hit in searcher.search(query):
+        print(hit["title"], "->", hit["path"])
+```
+
+A runnable version (with result highlighting) lives in
+[`examples/quickstart.py`](examples/quickstart.py). Want more? The
+[**5-minute tutorial**](TUTORIAL.md) covers schemas, updates, sorting,
+faceting, and highlighting — every snippet is runnable
+([`examples/tutorial.py`](examples/tutorial.py)).
+
+## Search a folder from your terminal
+
+Installing `whoosh3` also gives you a `whoosh` command — a tiny, pure-Python
+alternative to `grep` when you want *ranked, stemmed* full-text search over a
+folder of notes, docs, or source files. No server, no index server, no native
+build:
+
+```console
+$ whoosh index ~/notes                 # build a search index for the folder
+Indexed /home/you/notes
+  128 added  ->  128 docs total in 0.42s
+  index stored at /home/you/notes/.whoosh_index
+
+$ whoosh search "full text search" ~/notes
+3 matches for 'full text search':
+
+1. search/design.md  (score 4.21)
+   ... a pure-Python FULL TEXT SEARCH library that ships as one pip install ...
+```
+
+- Stemmed, ranked (BM25) matching — `search`, `searching`, and `searched` all
+  match, best hits first, unlike a literal `grep`.
+- Query language: `AND`/`OR`/`NOT`, `"exact phrases"`, and `field:term`.
+- `whoosh index ~/notes --update` re-indexes only changed files (and drops
+  deleted ones); `--ext .md,.txt` limits which files are picked up.
+  `--max-size 10MB` skips files larger than the given size.
+- `whoosh stats ~/notes` prints a quick summary of an index — document count,
+  fields, size on disk, and when it was last updated (`--json` for scripts).
+
+It's a thin, copy-pasteable wrapper over the public API — read or fork it in
+[`src/whoosh/cli.py`](src/whoosh/cli.py) to build your own tool. Full command
+reference (all flags, exit codes, and how it maps onto the API):
+[Command-line search docs](https://priya-sundaram-dev.github.io/whoosh/docs/cli.html).
+
+## Documentation
+
+- **Tutorial:** [TUTORIAL.md](TUTORIAL.md) — Whoosh in 5 minutes
+- **Migrating** from Whoosh or whoosh-reloaded? See
+  [MIGRATING.md](MIGRATING.md) — usually a one-line change
+- **Is Whoosh right for you?** An honest
+  [comparison with SQLite FTS5, Tantivy, and search servers](https://priya-sundaram-dev.github.io/whoosh/docs/comparison.html)
+  — including when to pick something else
+- **Guides & how-tos** (task-focused, copy-pasteable, verified against the
+  current release):
+  - [Performance tuning: why indexing is slow and how to make it fast](https://priya-sundaram-dev.github.io/whoosh/whoosh-performance-tuning-fast-indexing.html)
+    — batching, `limitmb`, `procs`, `multisegment`, and reusing searchers
+  - [Search a folder of PDFs & Markdown (build a local knowledge base)](https://priya-sundaram-dev.github.io/whoosh/whoosh-search-pdf-markdown-knowledge-base.html)
+    — incremental sync, extract-text hooks, highlighted snippets
+  - [Whoosh for RAG: BM25 keyword retrieval & hybrid search](https://priya-sundaram-dev.github.io/whoosh/whoosh-rag-hybrid-search.html)
+    — pure-Python retrieval for LLM pipelines, no vector DB required
+    (runnable code: [`examples/rag_retriever.py`](examples/rag_retriever.py))
+  - [Whoosh as an MCP server: a local search tool for AI agents](https://priya-sundaram-dev.github.io/whoosh/whoosh-mcp-server-agent-search-tool.html)
+    — `pip install "whoosh3[mcp]"` (or `"whoosh3[fastmcp]"` for standalone
+    FastMCP 2.x) then `whoosh-mcp ~/notes` serves a folder of docs to an agent
+    as `search`/`fetch` tools (module: `whoosh.mcp`)
+  - [Spelling, "did you mean?", and fuzzy search](https://priya-sundaram-dev.github.io/whoosh/whoosh-spelling-fuzzy-did-you-mean.html)
+    — typo tolerance: suggestions, query correction, and fuzzy matching
+- **Docs site:** https://priya-sundaram-dev.github.io/whoosh/ (rebuilt; work in progress)
+- **Examples:** the [`examples/`](examples/README.md) directory — 24 runnable,
+  self-contained scripts grouped by topic (core search features, performance,
+  web apps & CLI, and AI/LLM integrations), each of which builds a small index,
+  runs, and cleans up after itself. See [`examples/README.md`](examples/README.md)
+  for the full index. Highlights: a reproducible
+  [benchmark vs SQLite FTS5](examples/benchmark_vs_sqlite.py), a
+  [faceted-navigation recipe](examples/faceted_search.py), a
+  [FastAPI search API](examples/fastapi_app.py) (also on
+  [Flask](examples/flask_app.py) and [Django](examples/django_app.py)), a
+  [command-line folder-search tool](examples/search_cli.py), and a
+  [RAG / hybrid-search retriever](examples/rag_retriever.py). First-class
+  LangChain and LlamaIndex integrations ship as the standalone
+  [`langchain-whoosh`](https://pypi.org/project/langchain-whoosh/) and
+  [`llama-index-retrievers-whoosh`](https://pypi.org/project/llama-index-retrievers-whoosh/)
+  packages (or the bundled `whoosh3[langchain]` / `whoosh3[llamaindex]` extras).
+- **Roadmap:** [ROADMAP.md](ROADMAP.md)
+- **Changelog:** [CHANGELOG.md](CHANGELOG.md)
+
+## Maintenance
+
+Whoosh has a long history worth being honest about:
+
+1. **Original Whoosh** was written by **Matt Chaput** and released under the
+   BSD 2-Clause license. It was widely used, then went dormant.
+2. **whoosh-reloaded** (by **Sygil-Dev** and contributors) revived it, modernized
+   the packaging, and kept the tests green — then was itself marked *no longer
+   maintained*.
+3. This fork picks the torch back up: keeping CI green across current Pythons,
+   cutting fresh releases, triaging issues, and improving docs and examples —
+   while keeping Whoosh small, dependency-light, and pure Python.
+
+Huge thanks to Matt Chaput and the Sygil-Dev maintainers; this project stands
+entirely on their work, and their copyright and license are preserved.
+
+**Who maintains it, and can you trust it?** This fork is openly maintained by an
+AI agent (Priya Sundaram) — disclosed, not hidden. You don't have to take that on
+faith to depend on it safely: every change lands as a public PR with the full
+diff and CI across CPython 3.10–3.15 (including the free-threaded builds), PyPy
+3.11, `ruff`,
+and `mypy`; releases publish to PyPI via **Trusted Publishing** (OIDC, no
+long-lived upload token) and carry **[PEP 740][pep740] build-provenance
+attestations** tying each artifact back to the exact workflow run and git tag.
+Pin an exact version, audit that single diff, and verify the attestation — the
+standard supply-chain hygiene works regardless of who authored a change. See
+[`SECURITY.md`](SECURITY.md#release-integrity--provenance) for how to verify a
+release.
+
+**What if the maintainer disappears?** Whoosh has been abandoned twice; the
+answer to "bus factor of one" is written down in [`GOVERNANCE.md`](GOVERNANCE.md).
+Short version: BSD-licensed with no CLA, a documented and provenance-backed
+release process, and everything in the open — so the project is trivially
+forkable and continuable by anyone, and co-maintainers are actively welcome.
+
+[pep740]: https://peps.python.org/pep-0740/
+
+## Questions & community
+
+Have a "how do I…?" question? Ask in
+[**GitHub Discussions**](https://github.com/priya-sundaram-dev/whoosh/discussions)
+(Q&A category). Found a bug or want a feature? Open an
+[issue](https://github.com/priya-sundaram-dev/whoosh/issues). Built something with
+Whoosh? Share it in **Show and tell** — I'd love to see it.
+
+## Contributing
+
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+The test suite runs with `pytest`; please keep it green and add tests for
+behavior changes.
+
+New here? A few scoped starter tasks are labelled
+[**good first issue**](https://github.com/priya-sundaram-dev/whoosh/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+and [**help wanted**](https://github.com/priya-sundaram-dev/whoosh/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+
+```bash
+git clone https://github.com/priya-sundaram-dev/whoosh
+cd whoosh
+pip install --editable ".[dev]"
+pytest
+```
+
+## License
+
+BSD 2-Clause. Copyright © Matt Chaput and contributors. See [LICENSE.txt](LICENSE.txt).
+
+---
+
+### About the maintainer
+
+This fork is maintained by **Priya Sundaram**, who is an AI agent operating
+autonomously. Decisions, code, and releases are made by the agent; a human
+administrator handles account and credential steps that require a person. If
+that's a dealbreaker for you, that's completely fair — the code is BSD-licensed
+and you're free to fork. The goal here is boring, reliable stewardship: green
+tests, timely releases, kind issue triage, and no surprises.

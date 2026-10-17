@@ -1,0 +1,438 @@
+<div align="center">
+  <a href="https://github.com/inclusionAI/awex"><img src="https://raw.githubusercontent.com/inclusionAI/awex/main/docs/images/asystem_awex_logo.svg" alt="Awex logo" width="480"></a>
+</div>
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/inclusionAI/asystem-awex/ci.yml?branch=main&style=for-the-badge&label=GITHUB%20ACTIONS&logo=github)](https://github.com/inclusionAI/asystem-awex/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/awex.svg?style=for-the-badge&logo=PyPI)](https://pypi.org/project/awex/)
+[![Python Versions](https://img.shields.io/badge/python-%3E%3D3.10-blue?style=for-the-badge&logo=python)](https://pypi.org/project/awex/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
+
+**Awex** is a high-performance RL training-inference **weight synchronization** framework,
+designed to enable **second-level parameter updates** from training to inference in RL workflows.
+It minimizes iteration latency, ensuring rollout phases consistently use the latest model.
+
+## 🚀 Key Features
+
+- **Extreme Sync Speed**: **Trillion-parameter models** fully synchronized within **10 seconds**; validated on thousand-GPU
+  clusters with industry-leading performance.
+- **Unified Weight Adaptation Layer**: Automatically **handles tensor format/layout differences** across parallel strategies
+  and engine frameworks, supporting any model architecture.
+- **Zero-Redundancy Transfer & In-Place Update**: Transfers only necessary shards; supports in-place GPU memory updates
+  on inference, avoiding costly allocation and copying.
+- **Multi-Mode Transfer Support**: Support NCCL, RDMA, and shared memory transfer mode to leverage NVLink/NVSwitch/RDMA
+  bandwidth and reduce long-tail latency.
+- **Heterogeneous Deployment Compatibility**: Fully supports co-location and separation modes, make RL sync/async
+  algorithms runs seamlessly.
+- Extensibility: Easily extends to support new training and inference engines.
+
+## Architecture
+
+The Awex weight exchange framework consists primarily of three components:
+
+- **WeightWriter**: Runs within each training process, responsible for metadata collection and reporting of weight shards for the current training process, weight convert, resharding transfer plan construction, weight transmission, and other functions;
+- **WeightReader**: Runs on the control process of each inference instance, which starts a WorkerWeightsReader on each GPU managed by the inference instance, corresponding to the WeightWriter of the training process. Responsible for metadata collection and reporting of weight shards for each inference process, weight convert, resharding transfer plan construction, weight reception, and other functions;
+- **MetaServer**: Job-level global server for service discovery and weight metadata exchange between training and inference engines, as well as event notification functions in co-located scenarios;
+
+<div align="center">
+  <img width="85%" alt="Awex architecture" src="https://raw.githubusercontent.com/inclusionAI/awex/main/docs/images/awex_arch.png"><br>
+</div>
+
+The core modules of weight exchange consist mainly of 6 parts:
+
+- **Unified training-inference weight convert**: Responsible for converting weights from training and inference engines with **different parallelism strategies and tensor layouts** into a **unified format** for subsequent weight metadata calculation and weight transmission;
+- **Global weight metadata calculation and exchange**: After converting training and inference weights into a unified format, collects all weight shard metadata from each worker and reports to Meta Server for subsequent weight transmission plan construction;
+- **P2P weight transmission execution plan**: Training and inference engines obtain global weight shard metadata from all workers, then separately construct peer-to-peer deterministic transfer plan for sending and receiving;
+- **NCCL weight transmission**: Uses NCCL's send/recv API for peer-to-peer weight transmission based on the constructed transmission plan;
+- **Mooncake weight transmission**: Uses the same shard transfer plan with one-sided reads over RDMA or CPU-buffer TCP;
+- **AState weight transmission**: Uses AState distributed tables to exchange weight shards through step-scoped put/get operations;
+
+Awex also supports tensor-level validation of weights, comparing weights loaded through file system mode with those loaded through transmission mode at the tensor level for fine-grained comparison, ensuring the correctness of the transmission mode.
+
+See more details in the [architecture documentation](https://github.com/inclusionAI/awex/blob/main/docs/README.md).
+
+For comprehensive introduction about awex, see the [medium article](https://medium.com/@shawn.ck.yang/awex-an-ultra-fast-weight-sync-framework-powering-trillion-scale-reinforcement-learning-766ebc79f58b)
+
+## Performance Benchmarks
+
+On thousand-GPU scale clusters, Awex using NCCL transmission can **exchange 10B-scale model weights within one second**, and **exchange 1T-scale model weights within twenty seconds**. Using RDMA for transmission, **1T model weight exchange time** can be further **reduced to six seconds**.
+
+| Weight Parameter Scale | Weight Data Size | Verl Time | Awex NCCL Transmission Time | Awex RDMA Transmission Time |
+| ---------------------- | ---------------- | --------- | --------------------------- | --------------------------- |
+| 10B                    | 31GB             | 3.5S      | 0.8S                        | 0.5S                        |
+| 100B                   | 191GB            | 35S       | 9S                          | 3.2S                        |
+| 1000B                  | 1000GB (FP8)     | /         | 20S                         | 6S                          |
+
+The RDMA column reports the original RDMA backend's results. Mooncake TCP requires separate performance benchmarking.
+
+## 📦 Installation
+
+### Requirements
+
+- Python 3.10 or higher
+- PyTorch 2.0.0 or higher, installed with the CUDA/NPU support required by your runtime
+- A training or inference framework installed for the role being used (Megatron,
+  SGLang or vLLM). All workers using a framework must use the same version.
+
+### Basic Installation
+
+Install awex using pip:
+
+```bash
+pip install awex
+```
+
+The core package declares its Python runtime dependencies. Install a suitable
+PyTorch build first to select your device runtime. Backend frameworks are separate:
+training users can install `awex[mcore]`, and Mooncake users `awex[mooncake]`.
+Inference imports do not require Megatron. Match backend versions to your deployed
+framework stack; AWEX does not support mixed framework versions within a job.
+
+### Build from Source
+
+Clone the repository and install in development mode:
+
+```bash
+git clone git@github.com:inclusionAI/awex.git
+cd awex
+pip install -e .
+```
+
+For development with additional tools:
+
+```bash
+pip install -e ".[dev]"
+```
+
+### Mooncake Weight Transfer
+
+Install the optional [Mooncake Transfer Engine](https://github.com/kvcache-ai/Mooncake)
+on every training and inference worker:
+
+```bash
+pip install -e ".[mooncake]"
+```
+
+Set `comm_backend="mooncake"` in both the training configuration and
+`InferenceConfig`, with the same AWEX `meta_server_addr`. Existing model conversion
+and shard planning also apply to this backend. No additional distributed process
+group or external Mooncake metadata server is needed: AWEX exchanges buffer
+addresses and completion notifications, while Mooncake transfers the tensor data.
+
+Configure each worker process through these environment variables:
+
+| Variable                 | Default                  | Purpose                                                                                                          |
+| ------------------------ | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `AWEX_MOONCAKE_PROTOCOL` | `rdma`                   | `rdma` for CPU/CUDA memory on RDMA hosts; `tcp` for host-buffer transfers. Set the same protocol on all workers. |
+| `AWEX_MOONCAKE_HOST`     | AWEX's detected local IP | Local address reachable by other workers. Each engine allocates its own RPC port.                                |
+| `AWEX_MOONCAKE_DEVICE`   | Empty                    | Mooncake RDMA device filter, such as `mlx5_0,mlx5_1`.                                                            |
+
+The backend supports CPU and CUDA workers. RDMA requires a compatible Mooncake
+build, network configuration, and GPU memory registration support for CUDA buffers.
+TCP stages through CPU memory. With `enable_colocate_mode=True`, training snapshots
+also use CPU memory so training weights can be offloaded before inference resumes.
+The existing engine offload/resume hooks must be implemented for colocated use.
+
+Training keeps a contiguous snapshot of each distinct outgoing slice until all
+its readers acknowledge completion. Allow memory for these snapshots (on CPU for
+TCP or colocated updates, otherwise on the source device), in addition to converted
+weights. Inference stages one slice at a time and copies it into the target view,
+including non-contiguous layouts. All participating ranks must execute updates in
+the same order with matching step IDs.
+
+A failed exchange aborts further updates. Published buffers remain registered on
+timeouts or transfer errors because remote access may still be in flight; restart
+the job with a fresh AWEX metadata server instead of retrying in the same workers.
+
+The optional native TCP smoke test runs when Mooncake is installed:
+
+```bash
+pytest awex/tests/test_mooncake_transfer.py -k native_tcp_loopback
+```
+
+## Quick Start
+
+Awex supports Python 3.10 and above. Install the core package and the backend
+frameworks required for each role as described above.
+
+```bash
+pip install awex
+```
+
+Megatron training engine weight sending example:
+
+Start one metadata server for the job in a dedicated process:
+
+```bash
+python -m awex.meta.meta_server
+```
+
+Set `AWEX_META_SERVER_ADDR` to the reachable `ip:port` printed by that process in
+every training and inference worker. Keep the server alive throughout the job.
+The snippets below assume the training process group and Megatron model are
+already initialized. Run training writes and inference updates concurrently with
+matching step IDs, after draining inference requests.
+
+```python
+import os
+from awex.engine.mcore import MegatronEngine
+
+# init
+awex_config = {
+    "comm_backend": "nccl",
+    "meta_server_addr": os.environ["AWEX_META_SERVER_ADDR"],
+}
+train_engine = MegatronEngine(awex_config, hf_config, mcore_model)
+train_engine.initialize()
+
+# write weights
+train_engine.set_global_step(1)
+train_engine.write_weights()
+```
+
+SGLang inference engine weight update example:
+
+```python
+import os
+from awex import InferenceConfig
+from awex.engine.sglang import SGLangEngine, install_sglang_worker_hooks
+import sglang as sgl
+
+install_sglang_worker_hooks()  # Call before creating the engine, on every node.
+sgl_engine = sgl.Engine(model_path="xxx", tp_size=2, random_seed=42)
+awex_config = InferenceConfig.from_sgl_engine(
+    sgl_engine,
+    comm_backend="nccl",
+    meta_server_addr=os.environ["AWEX_META_SERVER_ADDR"],
+)
+inference_engine = SGLangEngine(awex_config, sgl_engine)
+inference_engine.initialize()
+
+# update weights
+inference_engine.set_global_step(1)
+inference_engine.update_weights()
+```
+
+AWEX installs its own scheduler subprocess entry point; no SGLang source changes
+are required. `sgl_engine.execute_task_in_model_worker(fn, **kwargs)` runs the
+callback on every model rank and returns results in DP/PP/TP rank order (ordinary
+DP replicas return only DP0's results). Callbacks receive `model`, `model_runner`,
+and `model_context`, including the scheduler and rank information. Async callers
+can await `sgl_engine.async_execute_task_in_model_worker(fn, **kwargs)`.
+
+Drain generation requests and stop submitting new requests while running tasks
+or updating weights. The hooks support the Python Engine API with one tokenizer
+and the native multiprocessing launcher. Callbacks operate on the target model;
+updating separate speculative draft models is outside this interface.
+
+## Weight Conversion Tests
+
+These scripts compare weight formats across Megatron, vLLM, and SGLang by
+converting all parameters into HF-style names and then diffing tensors.
+
+**Intended use** (for new model bring‑up):
+
+- These scripts primarily validate Awex converter coverage. They help answer:
+  “Does the current converter support this new model, or do we need mapping fixes?”
+- If your target stack is **Megatron → vLLM**, usually running
+  `verify_weight_conversion.py` + `compare_megatron_vllm_weights.py` is sufficient.
+- Use `compare_vllm_sglang_weights.py` only if you also care about **vLLM ↔ SGLang**
+  parity (or you’re adding SGLang support for a new model).
+
+**GPU/NPU notes**
+
+- All compare/verify scripts accept `--device-backend` (auto/cuda/npu/cpu), but
+  they are **CUDA-only today** because vLLM/SGLang backends require CUDA.
+  Use `--device-backend cuda` explicitly if auto-detection picks the wrong device.
+- For NPU, use these scripts on CUDA to validate **converter coverage**, then
+  validate the **runtime weight update** path on NPU with the integration tests.
+
+### Naming normalization (why `self_attn.qkv_proj` becomes `attention.query_key_value_proj`)
+
+Awex normalizes parameter names from different backends into a single canonical
+HF-style naming scheme so Megatron, vLLM, and SGLang can be compared directly.
+There are three “namespaces” involved:
+
+1. **Megatron (mcore) names** – e.g. `decoder.layers.0.self_attention.linear_qkv.weight`
+2. **vLLM/SGLang names** – e.g. `model.layers.0.self_attn.qkv_proj.weight`
+3. **Awex canonical HF-style names** – e.g. `model.layers.0.attention.query_key_value_proj.weight`
+
+Example for **QKV** conversion:
+
+- Megatron `self_attention.linear_qkv.weight`  
+  → (mcore converter) `self_attn.qkv_proj.weight`  
+  → (normalize) `attention.query_key_value_proj.weight`
+- vLLM `self_attn.qkv_proj.weight`  
+  → (normalize) `attention.query_key_value_proj.weight`
+
+So `self_attn.qkv_proj` is **not** the canonical HF name; it is a vLLM name (and
+also an intermediate name in the Megatron converter). The canonical name used
+for comparison is `attention.query_key_value_proj`.
+
+**Qwen3 note:** HF checkpoints store unfused `q_proj/k_proj/v_proj` weights. The
+verifier treats those as valid matches for the canonical `query_key_value_proj`.
+
+- Compare vLLM vs SGLang HF-loaded weights:
+  - Script: `awex/tests/experimental/compare_vllm_sglang_weights.py`
+  - Example:
+    ```bash
+    python awex/tests/experimental/compare_vllm_sglang_weights.py \
+      --model-path /path/to/hf/model \
+      --out-dir /tmp/vllm_sglang_compare \
+      --device-backend cuda \
+      --trust-remote-code \
+      --max-layers 4 \
+      --include-non-layer
+    ```
+- Compare Megatron vs vLLM (via converters to HF naming):
+  - Script: `awex/tests/experimental/compare_megatron_vllm_weights.py`
+  - Note: We default to mbridge for all models. Use `--no-mbridge` to force the
+    Megatron convert.py path (Qwen3 will still fall back to mbridge).
+  - Example:
+    ```bash
+    python awex/tests/experimental/compare_megatron_vllm_weights.py \
+      --model-path /path/to/hf/model \
+      --out-dir /tmp/megatron_vllm_compare \
+      --device-backend cuda \
+      --trust-remote-code \
+      --max-layers 4 \
+      --include-non-layer
+    ```
+  - Multi-GPU (torchrun) variant:
+    - Script: `awex/tests/experimental/compare_megatron_vllm_weights_multi.py`
+    - Example:
+      ```bash
+      torchrun --nproc_per_node=2 awex/tests/experimental/compare_megatron_vllm_weights_multi.py \
+        --stage megatron_dump \
+        --model-path /path/to/hf/model \
+        --out-dir /tmp/megatron_vllm_compare \
+        --device-backend cuda \
+        --train-tp-size 2 \
+        --train-pp-size 1 \
+        --train-ep-size 1 \
+        --train-cuda-devices 0,1
+      python awex/tests/experimental/compare_megatron_vllm_weights_multi.py \
+        --stage vllm_compare \
+        --model-path /path/to/hf/model \
+        --out-dir /tmp/megatron_vllm_compare
+      ```
+
+Both scripts produce a JSON report with missing keys, shape/dtype mismatches,
+and value diffs. You can limit comparison to the first N layers with
+`--max-layers N`. For large models, expect heavy disk usage because each tensor
+is saved to disk for comparison.
+
+- Verify HF weight conversion coverage:
+  - Script: `awex/tests/experimental/verify_weight_conversion.py`
+  - Note: Qwen3 HF checkpoints store unfused q/k/v (and o_proj) weights, so the
+    verifier treats those as valid matches for vLLM qkv/o_proj names.
+  - Example:
+    ```bash
+    python awex/tests/experimental/verify_weight_conversion.py \
+      --model-path /path/to/hf/model \
+      --device-backend cuda
+    ```
+
+## Integration Tests (Awex ↔ vLLM)
+
+- Megatron → vLLM weight exchange (requires 2 GPUs and Awex vLLM plugin):
+  - Script: `awex/tests/weights_exchange_vllm_it.py`
+  - Example:
+    ```bash
+    CUDA_VISIBLE_DEVICES=0,1 python awex/tests/weights_exchange_vllm_it.py \
+      --comm_backend nccl \
+      --model-path /path/to/hf/model \
+      --device-backend cuda \
+      --validate
+    ```
+  - Optional: add `--validate` to run a consistency check and print
+    "weights are consistent" logs (supported for NCCL or file backend).
+  - `--model-path` defaults to `vllm_inference_config["model_path"]` inside the
+    script. Set it explicitly for your local model directory.
+  - NPU (experimental, requires vllm-ascend + MindSpeed + Megatron):
+    ```bash
+    ASCEND_RT_VISIBLE_DEVICES=0,1 AWEX_USE_MINDSPEED=1 \
+      python awex/tests/weights_exchange_vllm_it.py \
+      --comm_backend hccl \
+      --device-backend npu
+    ```
+  - Multi-process (`torchrun`) integration is currently excluded because startup
+    is not stable in our test environment. Use the single-process script above
+    as the baseline validation path.
+
+## NPU / MindSpeed Notes (Experimental)
+
+Awex includes **experimental** NPU support for the weight-exchange runtime path
+(training ↔ inference). This path is intended for **MindSpeed + Megatron** on
+Ascend and **vllm-ascend** on the inference side.
+
+- **Device backend**: set `AWEX_DEVICE_TYPE=npu` to switch the internal device
+  helpers to NPU semantics. For communication, use `comm_backend=hccl` and
+  `weights_exchange_ipc_backend=cpu` (CUDA IPC is not supported on NPU).
+- **MindSpeed patching**: set `AWEX_USE_MINDSPEED=1` **before** importing
+  `megatron` / `megatron.core` so MindSpeed can patch Megatron internals.
+- **Inference**: requires `vllm-ascend` with the Awex plugin enabled. This
+  integration has been validated in our environment.
+- **Memory debug logging**: set `AWEX_MEM_DEBUG=1` to emit additional memory
+  diagnostics during weight conversion and NCCL send-op construction. This is
+  intended for debugging memory pressure or unexpected tensor retention and
+  should remain disabled in normal runs.
+
+**What is NOT NPU-ready yet**
+
+- `compare_megatron_vllm_weights.py`, `verify_weight_conversion.py`, and
+  `compare_vllm_sglang_weights.py` are **CUDA-only** (they rely on vLLM CUDA
+  kernels and torch.cuda).
+- If you target NPU, use these scripts on CUDA to validate **converter
+  coverage**, then validate the **runtime weight update** path on NPU.
+
+## 🤝 Contributing
+
+Awex is an open-source project. We welcome all forms of contributions:
+
+### How to Contribute
+
+1. **Report Issues**: Found a bug? [Open an issue](https://github.com/inclusionAI/awex/issues)
+2. **Suggest Features**: Have an idea? Start a discussion
+3. **Improve Docs**: Documentation improvements are always welcome
+4. **Submit Code**: See our [Contributing Guide](https://github.com/inclusionAI/awex/blob/main/CONTRIBUTING.md)
+5. **Agent Workflows**: Read the [Repository Guidelines](AGENTS.md) for structure, testing, and PR expectations.
+
+### Development Setup
+
+```bash
+git clone https://github.com/inclusionAI/awex.git
+cd awex
+
+# Install in development mode with dev dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest -v -s .
+
+# Run specific test
+pytest -v -s awex/tests/test_meta_resolver.py
+
+# Run heavy GPU integration tests (requires Megatron-LM and 2 GPUs)
+CUDA_VISIBLE_DEVICES=0,1 pytest -v -s awex/tests/test_weights_writer.py
+
+# Format code
+ruff format .
+ruff check --fix .
+```
+
+See [DEVELOPMENT.md](https://github.com/inclusionAI/awex/blob/main/DEVELOPMENT.md) for detailed build and CPU/integration test instructions.
+
+## 📄 License
+
+Apache License 2.0. See [LICENSE](https://github.com/inclusionAI/awex/blob/main/LICENSE) for details.
+
+---
+
+**Awex** - high-performance RL training-inference **weight synchronization** framework with **second-level parameter updates**
+
+## 🌟 Community
+
+We welcome contributions! Whether it's bug reports, feature requests, documentation improvements, or code contributions,
+we appreciate your help.
+
+- Star the project on [GitHub](https://github.com/inclusionAI/awex) ⭐

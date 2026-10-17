@@ -1,0 +1,112 @@
+# Hermes Desktop Achievements
+
+Achievements, right inside the Hermes desktop app, with unlock notifications.
+
+A full achievements page (score header, tier filters, progress bars, rescan),
+a sidebar nav row, a live statusbar score chip, and a ⌘K command — all backed
+by the `hermes-achievements` dashboard plugin that ships with Hermes Agent.
+
+![Achievements page](docs/achievements-page.png)
+
+## What you get
+
+- **Unlock notifications** — toast, haptic, a chime, and a confetti burst in
+  your theme colors plus the badge's tier color, no page visit required
+- **Discord announcements** — optional webhook posts every unlock and
+  milestone to your server
+- **Tier-specific sounds** — Copper/Silver get the chime, Gold and up and
+  milestones get a five-note fanfare
+- **Score header** — unlocked/total, discovered/secret counts, scan freshness,
+  one-click **Rescan**
+- **Next up strip** — the locked achievements closest to unlocking, with
+  progress bars and next-tier thresholds
+- **Unlock history** — a chronological timeline of every unlock with dates and
+  evidence sessions
+- **Custom achievements** — define your own personal badges, mark them done,
+  get the same celebration
+- **Settings panel** — toggles for confetti, sound, haptic, and the Discord
+  webhook URL, persisted across restarts
+- **Milestone celebrations** — a bigger confetti party at every 10 unlocks
+- **Weekly mini-stats** — unlocks this week, busiest day, tier counts
+- **Export badges** — download the full list as Markdown or JSON
+- **Replay celebrations** — fire the confetti again from any unlocked badge or
+  history entry
+- **Per-session context** — badges earned in the active session, right on the
+  page
+- **Share cards** — 1200×630 canvas PNG export for any unlocked badge, ready
+  to post
+- **Filter tabs** — all / unlocked / discovered / secret / history / custom
+  with live counts
+- **Search and sort** — filter by name, sort by closest, tier, or name
+- **NEW freshness tag** — badges unlocked in the last 48 hours are marked NEW
+- **Statusbar chip** — live score plus the closest next-up achievement in the
+  tooltip; click to open
+- **Command palette** — ⌘K → "Achievements: Open"
+
+## Install
+
+1. **Backend (required):** the Hermes Agent install already ships
+   `plugins/hermes-achievements/` (it mounts `/api/plugins/hermes-achievements/`
+   on `hermes serve`). Make sure it's enabled in `~/.hermes/config.yaml`:
+
+   ```yaml
+   plugins:
+     enabled:
+       - hermes-achievements
+   ```
+
+   Verify it mounted:
+
+   ```bash
+   grep "Mounted plugin API routes: /api/plugins/hermes-achievements" ~/.hermes/logs/agent.log
+   ```
+
+2. **Desktop plugin:** copy the folder into your desktop plugins directory:
+
+   ```bash
+   mkdir -p ~/.hermes/desktop-plugins/hermes-achievements
+   cp plugin.js ~/.hermes/desktop-plugins/hermes-achievements/
+   ```
+
+3. The app watches that directory — the plugin loads within a few seconds.
+   If it doesn't appear: ⌘K → **Reload desktop plugins**.
+
+## Requirements
+
+- Hermes Agent desktop app (v0.19+ recommended)
+- The `hermes-achievements` plugin enabled (bundled with Hermes Agent; see
+  `plugins/hermes-achievements/` in the repo or the dashboard's built-in
+  plugins doc)
+
+## How it works
+
+- **Zero new backend.** The plugin talks to the existing
+  `hermes-achievements` dashboard plugin API over `ctx.rest` →
+  `/api/plugins/hermes-achievements/achievements` — the same scan engine the
+  web dashboard uses.
+- **Unlock watcher.** Polls `/achievements` every 15 seconds and diffs against
+  a known-unlock set persisted in plugin storage. First load seeds the
+  baseline, so restarts never replay old unlocks. New unlocks fire a success
+  toast, haptic, and a two-tone chime, then invalidate the shared React Query
+  cache.
+- **Theme-native.** Cards, chips, and the share card use the app's theme CSS
+  variables, no hardcoded colors, follows light/dark.
+
+## Files
+
+```text
+plugin.js   The whole plugin — plain ESM, loaded uncompiled (jsx() calls, no JSX syntax)
+```
+
+## Development
+
+The desktop plugin SDK docs live in the Hermes Agent repo:
+`website/docs/developer-guide/desktop-plugin-sdk.md`.
+
+Quick iteration loop: edit `plugin.js`, save — the app hot-reloads in place.
+
+## License
+
+MIT. Original plugin by [Tony Simons](https://x.com/tonysimons_), extended by
+[Cliff Wade](https://github.com/CliffWade) with unlock notifications, next-up
+tracking, per-session badges, and share cards.

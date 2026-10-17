@@ -1,0 +1,487 @@
+<div align="center">
+  <img src="docs/assets/logo.svg" alt="PromptScript logo" width="200" />
+
+# PromptScript
+
+**Write your AI rules once. Every agent follows them.**
+
+_One source for Claude Code, GitHub Copilot, Cursor, and 47 more tools. Define instructions,
+skills, agents, MCP servers, hooks, and policies once, inherit them like code, and compile native
+files for every tool._
+
+[![CI](https://github.com/mrwogu/promptscript/actions/workflows/ci.yml/badge.svg)](https://github.com/mrwogu/promptscript/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/github/mrwogu/promptscript/graph/badge.svg?token=MPUCPQLVWR)](https://codecov.io/github/mrwogu/promptscript)
+[![npm version](https://img.shields.io/npm/v/@promptscript/cli.svg)](https://www.npmjs.com/package/@promptscript/cli)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://getpromptscript.dev/getting-started/#installation)
+[![Deno 2.9+](https://img.shields.io/badge/Deno-2.9%2B-70FFAF?logo=deno&logoColor=000000)](https://getpromptscript.dev/reference/cli/#running-under-deno)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/mrwogu/promptscript/pkgs/container/promptscript)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![VS Code](https://img.shields.io/badge/VS_Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=promptscript.promptscript-language)
+
+[**Get started**](https://getpromptscript.dev/getting-started/) ·
+[**Try the playground**](https://getpromptscript.dev/playground/) ·
+[**Explore all features**](https://getpromptscript.dev/features/) ·
+[**View target matrix**](https://getpromptscript.dev/reference/formatters/)
+
+</div>
+
+---
+
+## What is PromptScript?
+
+PromptScript is an open-source compiler for AI coding agent rules. `.prs` sources
+define instructions, project standards, restrictions, skills, agents, MCP servers, hooks, and
+workflows, while `promptscript.yaml` configures targets and extension-compliance policies. The
+compiler turns them into the native files each AI tool already knows: `CLAUDE.md` for Claude Code,
+`.github/copilot-instructions.md` for GitHub Copilot, `.cursor/rules` for Cursor, and 47 more
+targets.
+
+Why does this matter? Every AI coding tool reads its own instruction files, in its own format, from
+its own paths. A team using Claude Code, Copilot, and Cursor keeps three copies of the same rules.
+They drift. A standard changes in one file but not the others, and nobody notices until an agent
+breaks something.
+
+PromptScript fixes the source, not the symptoms:
+
+```text
+PromptScript source
+    -> resolve inheritance, imports, and policies
+    -> validate language and capabilities
+    -> compile deterministic target-native files
+```
+
+One source of truth, Git-native review, validation in CI, deterministic output. No runtime proxy
+between developers and their tools. Each formatter emits the richest native representation its
+platform supports - if a target cannot express something, it is omitted, not approximated.
+
+It fits one developer with two tools, and it fits an organization where a platform team ships
+standards to hundreds of repositories through inheritance and a Git registry.
+
+## Why maintain the files by hand?
+
+Each tool wants its own file, schema, and path. Even a few tools means copies that drift. A policy
+change becomes manual edits everywhere, and errors sit undetected until an agent hits them at
+runtime.
+
+With PromptScript you change the source once, review the generated diff in the pull request, and
+let CI validate it. Git history records what changed and why. Remote dependencies are pinned in a
+lockfile, so builds are reproducible. Switching tools, or adding a new one, never rewrites the
+source. See the [full comparison](https://getpromptscript.dev/guides/vs-manual/).
+
+## Contents
+
+- [What is PromptScript?](#what-is-promptscript)
+- [Why maintain the files by hand?](#why-maintain-the-files-by-hand)
+- [Quick Start](#quick-start)
+- [Define a Complete Agent Platform](#define-a-complete-agent-platform)
+- [One Language, Complete Platform](#one-language-complete-platform)
+- [Compose Instead of Copying](#compose-instead-of-copying)
+- [Portable Skills, Native Agents](#portable-skills-native-agents)
+- [Name a Model Once](#name-a-model-once)
+- [Built-In Security Scanner](#built-in-security-scanner)
+- [50 Built-In Targets](#50-built-in-targets)
+- [Built for Repositories and Organizations](#built-for-repositories-and-organizations)
+- [Adopt Without a Rewrite](#adopt-without-a-rewrite)
+- [Tooling](#tooling)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+
+## Quick Start
+
+```bash
+npm install -g @promptscript/cli
+
+prs init
+# Edit .promptscript/project.prs
+prs validate --strict
+prs compile
+```
+
+`prs init` detects the project stack and installed AI tools, then creates a clean
+`promptscript.yaml` and `.promptscript/project.prs`. Detected targets are preselected, while other
+targets remain explicit choices. For automation, use `prs init --yes --targets claude factory`.
+Hooks are installed by default. Use `--no-hooks` to skip hook installation or `--dry-run` to
+preview all writes.
+
+Prefer no local installation?
+
+```bash
+docker run --rm -v "$(pwd):/workspace" ghcr.io/mrwogu/promptscript:latest validate --strict
+```
+
+Or [open the playground](https://getpromptscript.dev/playground/) and compile in the browser.
+
+## Define a Complete Agent Platform
+
+`.promptscript/project.prs`:
+
+```promptscript
+@meta {
+  id: "checkout-service"
+  syntax: "1.5.0"
+}
+
+@identity {
+  """
+  You are working on the checkout service.
+  Preserve transaction integrity and auditability.
+  """
+}
+
+@standards {
+  @header "Engineering Standards"
+  code: ["Use strict TypeScript", "Test every business rule"]
+}
+
+@shortcuts {
+  "/review": {
+    prompt: true
+    description: "Review current changes"
+    content: "Review correctness, security, tests, and operational impact."
+  }
+}
+
+@skills {
+  security-review: {
+    description: "Review payment changes for security risks"
+    allowedTools: ["Read", "Grep", "Bash"]
+    content: "Inspect authentication, authorization, secrets, and payment data handling."
+  }
+}
+
+@mcpServers {
+  issue-tracker: {
+    transport: "stdio"
+    command: ["node", "./tools/issues.mjs"]
+  }
+}
+
+@agents {
+  reviewer: {
+    description: "Review changes before merge"
+    tools: ["Read", "Grep", "Glob", "Bash"]
+    skills: ["security-review"]
+    mcpServers: ["issue-tracker"]
+    content: "Review changed code, tests, and operational impact."
+  }
+}
+
+@hooks {
+  validate-changes: {
+    event: "post-tool-use"
+    matcher: "Edit|Write"
+    command: ["pnpm", "run", "typecheck"]
+  }
+}
+
+@workflows {
+  release: {
+    description: "Prepare a validated release"
+    content: "Run quality gates, summarize changes, and prepare release metadata."
+  }
+}
+
+@plugins {
+  engineering: {
+    description: "Shared engineering capabilities"
+    version: "1.0.0"
+    skills: ["security-review"]
+    hooks: ["validate-changes"]
+    mcpServers: ["issue-tracker"]
+  }
+}
+```
+
+<!-- playground-link-start -->
+<a href="https://getpromptscript.dev/playground/?s=N4IgZglgNgpgziAXAbVABwIYBcAWSQwAeGAtmrAHRoBOCANCAMYD2AdljO-gAIkxYYABMAA6rQYIgATRIJFMcMRgGtmAVywBaODGoA3CIxjyxEuAE92GQrPkBGCgFYKABhOsAvmLHdpnLBBY5sKmciAm4eKCAJrqghjUMIIA7szUyhCsAOaCbIK4SYyKKupYgjr6hjAUoQAKiRV6SVjUGKxwGIwBeZkcWdSBwW1S8WpSgRgARtCDNVER7l6sPnACrFIJUnAhUdyKGFK6YQCi2Zkwupk5AMprG9Rb7hIsh7LI8gCqOuUthmUAKuY0DBrowBmgsPI6GF-vAyjAmtRgpM1HBznBttQ1LB5ABdMRLFY4NJYRgabaieYgAD0iQMMGS8lklIkEhozDIWFkLTUxiiEkOcDBEAhEDYthAACUERAGYIydREux5Tg2ll4E9WSx2P4JdL6cl5WlEl1WPA4NCdArBtCOKsLfF1rlga1uqwMFBJGROlgapEJEtCaxuHAMlAoBTQla1AMgpo6bLkszQgL4MLReKwvrE4JMOY+Mqimr4IIwGlykoY4NBANQ3BNRIPVBmMkYFJ-sxmBG3vJpQcoWEAOKJNAD+QAIQwcBweJTRp17AlAEl2sCuqMCuxDNgxaxoRgNMSBgAvHdsS1KRJYB3DXMYfP+QQbASCVXrKBXP2hQPeYMkRhoNcuiIpGUQQBivKaC0nTKLoyb8vkrSriSEqrOMzANkaJAkMMPYgKwzCHGOIAUNSWCdhG1LgXAvJwBQJAAFb1iA+JRD+yzBhg6rsKBEgJgycE7KyT5puCbp6jKcpFtkJaTDAZaJIIfDUOqmHkV2cB4X2UjEcOMCjiA0LyIOzaTMRk7TrOCGhtA3aCO8IDRrG5jxpJjIsXO-6AcBuiafZ8jUZB0EqLoVnCdqHCLlmbkqsWIwvDAtpwjeTrMC6Z7up6EDel0X5sQSv57J2yi8YIegetI2AwJo0nqn5LKsgiuphGgzCrFBFGaKixj+qyOGkoo1ASsc4xYAAPgA6rGPVziw2G4f5IBoKwaAkMRWLLIZYRBGuxTKGFgjsT4qTpGAzbJKViSwFOMDwcJgrpuJYT1PpCRJEI5Ufs+bY1jA106JhEXNb2ajiAAjmoFVBIIWRVQ6NHzSehRvnV+5OjQr2KVdMA3Up-AHNgGB5QGBUcdw5BqFkmSlZwVNmpc2R3ayD1ibuErXKqiQjLT5wMzkjAYJg0wfgEGq9RIIFs2EDguK4mE2eGfkOU5gyuQaB0SMSzAlXhn2VRwNUo2LrHCV5QH6L5eGBdVwWwdQB2BiAHi4gw-hIvgRCkOQ1Q0PQICS2w+B2E7QA" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Try_in-Playground-blue?style=flat-square" alt="Try in Playground" />
+</a>
+<!-- playground-link-end -->
+
+`promptscript.yaml`:
+
+```yaml
+id: checkout-service
+syntax: '1.5.0'
+
+input:
+  entry: .promptscript/project.prs
+
+targets:
+  - github:
+      version: multifile
+  - claude:
+      version: full
+  - cursor:
+      version: full
+  - opencode:
+      version: full
+  - gemini:
+      version: full
+```
+
+`prs compile` maps supported capabilities to files each platform already understands:
+
+```text
+.github/copilot-instructions.md
+.github/prompts/review.prompt.md
+CLAUDE.md
+.claude/agents/reviewer.md
+.claude/skills/security-review/SKILL.md
+.cursor/rules/project.mdc
+.cursor/agents/reviewer.md
+.opencode/agents/reviewer.md
+```
+
+## One Language, Complete Platform
+
+| Capability              | PromptScript source                                               | Native result                                                                          |
+| :---------------------- | :---------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
+| Instructions and policy | `@identity`, `@context`, `@standards`, `@restrictions`, `@guards` | Main instructions and scoped rules                                                     |
+| Portable skills         | `@skills`                                                         | `SKILL.md` directories with references, assets, scripts, and contracts                 |
+| Specialist agents       | `@agents`                                                         | Native Markdown, TOML, or droid definitions with models, tools, skills, and MCP access |
+| User commands           | `@shortcuts`                                                      | Native prompts, slash commands, or documented shortcuts                                |
+| Tool integrations       | `@mcpServers`                                                     | Platform-specific JSON or TOML MCP configuration                                       |
+| Capability bundles      | `@plugins`                                                        | Native plugin manifests where supported                                                |
+| Automation              | `@hooks`, `@workflows`                                            | Lifecycle hook configuration and workflow files                                        |
+| Monorepo delivery       | `builds` in `promptscript.yaml`                                   | Scoped output for packages, applications, and plugins                                  |
+
+Target support stays explicit. Unsupported platform-specific capabilities are omitted rather than
+approximated with incompatible configuration.
+
+## Compose Instead of Copying
+
+Build organization, team, and project layers with deterministic merge rules:
+
+```promptscript
+@inherit @company/platform
+@use @team/backend
+@use github.com/acme/agent-skills/database-review@1.3.0
+
+@override standards.testing {
+  ["Use Vitest", "Require 95% coverage"]
+}
+
+@extend standards {
+  testing: ["Run integration tests in CI"]
+}
+```
+
+<!-- playground-link-start -->
+<a href="https://getpromptscript.dev/playground/?s=N4IgZglgNgpgziAXAbVABwIYBcAWSQwAeGAtmrAHRoBOCANCAMYD2AdljO-gMQAEAAiRhYMvDABNxMcbzjNeuCHF5hqGAOZD2vFmWjxebXhCzLmAd1bGruGL3IYAnuurMArq3EAdVoOGjgH15jcUReLwJiMlgIoNlHdgxCMIiARgoAVgoABljWAF8fH34IVhwYahMBXUxWRwB6BywwZmoSYrc4O34OUnqAIwxGAGtOb19Ou3UTHDd+il16oaEl9U4sAFo4YegoOHrxbAxBro3qGAA3CBhzfnSAZhyi32YLisqpWRFPDGpxOAoHDgWFK6l4gSsvGQEQAql1eAA1EzwLAROjhEAAJRgAEc3BBzrwAJwZACkOleFQ0MAiAF0fIVWMUiBxPF8MD8-soIcEgSDWOowtCsR5rBwXNgIEY+cpSrwAMIASTpDJA+To6GweEQIH4NQ5DSaLTaVFoIAYLHY6x4vAAym40ORrjI5ApyrwiKRyHZqB5lOVzhReAA5ZhYey-cPMMBuuziZiMNxaEQgtjojkyVhhsS8c4YKARkbUijFIQicFxCChDF65hkA2NKDYY3tEBxOAJETJDHpLK5NuQkgQQilMJYX00grFYEZ37-CuQlhSIURAAKTcYMBwzCgUmo7M53hA9MhfNBK5A66GW53e4Phz+KqnvnOwMqjFTrG5cQ2GKvm+3XcKlzFF30-PJ8jVDUQEwXB8B6GA+kGEYxlNegmDYVksBte1HSgZ1ZHkWwPSib1cz9XgAxgINQ3DTBqCjGNiPjRNk0lNMxDZLNw1EPMC0wIs1hLXwywCStqwiBCkKGUZPDyYIO0Sbs0kyJ4B2CIcR1YMcJwZadvgfeceQpZcoTXDcbyA-cZ0PJ9eRRc8zMvCzALvGzDKfRl+FfccIA-KUvwXYJf3M69XOAnywICiCoM1OCdWmXA5gWOslkYFZqXYLYdigPYDiOE4YDOS5rluB4cjQ80MKtLgdT4XCnWkQjYxIr1YHIwKqJo7N6MYlqWKTdZ2NYdMuOzXjEP4mTi1LfwgpCFIQES2Z5kWZYYFWdZst2fZDhEQriquG47goR5+3bTskkW3s1LiTTRwUXTn34dy52-RdmFM4V-0styDLnOyFAcgULx+8LrP+x9jz0l9QL8z93uCv8XNvCK4f8tgYvyWkGHWahHHwT1omomh0LeWgAvwVI1SAA" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Try_in-Playground-blue?style=flat-square" alt="Try in Playground" />
+</a>
+<!-- playground-link-end -->
+
+- `@inherit` creates a single-parent base chain.
+- `@use` composes multiple local, registry, Git, or Markdown resources.
+- `@extend` merges selected paths and supports skill-specific overlays.
+- `@override` atomically replaces one existing block or nested value.
+- `@header` customizes generated section titles without changing native schemas.
+- Typed parameters turn shared stacks into reusable templates.
+- Sealed properties, reference negation, and overlay drift warnings keep extension layers safe.
+- `prs inspect <skill>` shows property and layer provenance.
+- `prs explain <path>` shows source locations and composition history for any resolved path.
+  Text and JSON paths are project-relative by default; use `--absolute-paths` to opt in to
+  absolute paths. JSON includes `version`, `path`, `entries`, and `diagnostics`. The command exits
+  nonzero for fatal resolution diagnostics or missing paths, but warning-only diagnostics succeed.
+
+Remote imports are pinned in `promptscript.lock` with commit and integrity data. Vendor mode mirrors
+resolved dependencies into `.promptscript/vendor/` for offline and air-gapped builds.
+
+## Portable Skills, Native Agents
+
+PromptScript accepts inline skills, standalone Markdown skills, and complete skill directories:
+
+```text
+.promptscript/skills/security-review/
+├── SKILL.md
+├── references/
+│   └── threat-model.md
+├── scripts/
+│   └── scan.sh
+└── assets/
+    └── report-template.md
+```
+
+Import versioned skills without copy-paste:
+
+```promptscript
+@use github.com/acme/agent-skills/security-review@^2.0.0
+```
+
+<!-- playground-link-start -->
+<a href="https://getpromptscript.dev/playground/?s=N4IgZglgNgpgziAXAbVABwIYBcAWSQwAeGAtmrAHRoBOCANCAMYD2AdljO-gMQAEAAiRhYMvDABNxMcbzjNeuCHF5hqGAOZD2vFmWjxebXhCzLmAd1bGruGL3IYAnuurMArq3EAdVoOGjgH15jcUReLwJiMlgIoNlHdgxCMIiARgoAVgoABljWAF8fH343ODt1Exw3ACMKXQB6DEYhRvVOLABaOABraCg4erLGN2oTRw7qGAA3CBhzfgA9ACYcnJB8unRsPEQQCtwauuYSRuaYVvau3qh+wZhh0axxyZm5xZXs1Zp6JjYOLl2fAAym40ORZjI5AocHYiKRyHZqB5lDDJhReAA5ZhYewYag45hgaF2cTMYZaERYCBsOhiTy8VjYsS8SYYKC4xjdDQwCjFIQiXiBKwhFJ7SqHBpNFrc9hXPoDIYjMYTaazebLVa5EBxOAJETJcIgdJZLVxEgQQgQVhhLBImA+Qq+OAiTx48TKIXBFhSMLICIABSgTRgOGYUCk1FkLvEboiAF04hxnVb1L6A0HGCGwxGoxhXdRvCAEwVipNnaNGFS2B64h1DYHg6HwzBI2XbRBK9TWHl8us4wx2tRHPg4dEed8QAwpi24F38Kl1kA" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Try_in-Playground-blue?style=flat-square" alt="Try in Playground" />
+</a>
+<!-- playground-link-end -->
+
+```bash
+prs skills add github.com/acme/agent-skills/security-review@2.1.0
+prs skills update
+```
+
+PromptScript validates Agent Skills metadata, resolves dependencies and resources, then emits the
+native skill path for each selected platform. Agents can reference those skills and receive
+target-native model, reasoning, sandbox, tool, permission, and MCP settings.
+
+## Name a Model Once
+
+Each tool spells model names differently. Write an alias like `opus` or a full model id, and
+PromptScript writes the name each target expects:
+
+```promptscript
+@meta {
+  id: "checkout-service"
+  syntax: "1.5.0"
+}
+
+@agents {
+  reviewer: {
+    description: "Review pull requests"
+    model: "opus"
+    content: "Review changed code, tests, and operational impact."
+  }
+}
+```
+
+<!-- playground-link-start -->
+<a href="https://getpromptscript.dev/playground/?s=N4IgZglgNgpgziAXAbVABwIYBcAWSQwAeGAtmrAHRoBOCANCAMYD2AdljO-gAIkxYYABMAA6rQYIgATRIJFMcMRgGtmAVywBaODGoA3CIxjyxEuAE92GQrPkBGCgFYKABhOsAvmLHcMAc04sOGFTQWoYAxgAd11ZUXEJQSl4RmoINCwINlsQACUIiGjBNDUoKDCYAEc1eCD3RMESZmSoHOYSuHrElnZAnPzIqMFGHAxWAKlh5pg6QQ44INmxyfbdbCzWDHKIMgxGLAour08QDwBdBkDqc3wiUnIYKloQBj1dOA38O1OgA" target="_blank" rel="noopener noreferrer">
+  <img src="https://img.shields.io/badge/Try_in-Playground-blue?style=flat-square" alt="Try in Playground" />
+</a>
+<!-- playground-link-end -->
+
+| Target         | Writes                         |
+| :------------- | :----------------------------- |
+| Claude Code    | `opus`                         |
+| GitHub Copilot | `Claude Opus 5.5`              |
+| Factory AI     | `claude-opus-5-5`              |
+| Cursor         | `claude-opus-5-5`              |
+| Codex          | omitted, with a PS4004 warning |
+
+When a target cannot run the model, the compiler warns instead of writing a value the tool would
+reject. Claude Code picks the release for an alias itself. Other targets get the current release
+from the catalog and move on when you upgrade PromptScript and compile again. See the
+[model catalog and aliases](https://getpromptscript.dev/reference/models/).
+
+## Built-In Security Scanner
+
+Instruction files and imported skills are a prompt injection surface. `prs validate` scans the
+instructions and skills in your entry file and everything it imports, before anything is written.
+Encoded payloads are decoded first, so hiding an attack in hex or Base64 does not get it through:
+
+```text
+$ prs validate --strict
+✖ Validation failed
+✗ Blocked pattern detected:
+  ignore\s+(all\s+)?previous\s+instructions
+  at project.prs:8:1
+✗ PS012: Malicious content detected
+  in raw hex (spaced): Prompt injection
+  Decoded: "IGNORE SAFETY RULES"
+  at project.prs:16:14
+✗ PS010: URL shortener detected:
+  http://bit.ly/deploy-help
+  at project.prs:16:14
+```
+
+| Rule  | Catches                                                                        |
+| :---- | :----------------------------------------------------------------------------- |
+| PS005 | Injection phrases like "ignore previous instructions"                          |
+| PS011 | Fake authority overrides and "bypass all safety checks" instructions           |
+| PS012 | Payloads hidden in Base64, hex, URL encoding, HTML entities, ROT13, and 4 more |
+| PS013 | Path traversal in `@use` declarations                                          |
+| PS014 | Right-to-left overrides, zero-width characters, and homoglyphs                 |
+| PS010 | Plain HTTP links, link shorteners, and credentials in URLs                     |
+
+`--strict` turns warnings into errors. Run it in CI so a poisoned skill fails the build, not the
+agent. See
+the [security guide](https://getpromptscript.dev/guides/security/).
+
+## 50 Built-In Targets
+
+PromptScript ships 50 output targets:
+
+- **9 rich native formatters** - Claude Code, GitHub Copilot, Cursor, Factory AI, Codex, Gemini CLI,
+  OpenCode, Antigravity, and Grok
+- **11 AGENTS.md targets** - Aider, Amazon Q, Warp, Zed, Jules, Devin, Kimi, Mimo, Deep Agents,
+  ForgeCode, and Hermes Agent
+- **30 Markdown instruction targets** - Windsurf, Cline, Roo Code, Continue, Augment, Goose, Kilo
+  Code, OpenHands, Qwen Code, and more
+
+See exact output paths and feature support in the
+[formatter capability matrix](https://getpromptscript.dev/reference/formatters/).
+
+## Built for Repositories and Organizations
+
+- **Runs locally** - PromptScript is a compiler, not a service. No hosted backend and no proxy
+  between your team and its tools, the output is plain files you review and commit.
+- **Your prompts stay yours** - anonymous usage telemetry never includes source, prompts, or file
+  paths. Turn it off with `prs telemetry disable` or `DO_NOT_TRACK=1`. See
+  [what is collected](https://getpromptscript.dev/reference/telemetry/).
+- **Git-native governance** - review source and deterministic generated diffs in pull requests.
+- **Private registries** - share versioned standards through local, HTTP, or Git registries with
+  SSH and token-based authentication.
+- **Policy engine** - enforce layer boundaries, property protection, and registry allowlists after
+  resolution.
+- **Reproducible builds** - lockfile hashes, version pins, vendor mode, and strict validation.
+- **Safe automation** - lifecycle hook commands use arrays, while generated-file protection keeps
+  agents pointed at `.prs` source.
+- **Scoped monorepo builds** - compile one package with `prs build <name>`, inspect it with
+  `prs diff --build <name>`, or compile every profile with `prs compile --all-builds`.
+- **CI-ready output** - use `prs validate --strict --format json`, `prs compile --dry-run`, and
+  `prs diff --format json` for deterministic machine-readable changes without generated-file
+  writes.
+
+## Adopt Without a Rewrite
+
+```bash
+prs import CLAUDE.md
+prs migrate --static --dry-run
+prs migrate --static
+prs migrate --llm
+```
+
+Import existing Claude Code, GitHub Copilot, Cursor, AGENTS.md, and other instruction files. Review
+the generated `.prs` source, preview output with `prs compile --dry-run`, then migrate targets at
+your own pace. Migration preserves existing PromptScript configuration and source instructions;
+if no candidates are detected, it changes nothing.
+
+Targets with native skill support can also receive the bundled PromptScript language skill. This
+lets compatible agents read and maintain `.prs` files from plain-language requests. Disable it
+with `includePromptScriptSkill: false`.
+
+## Tooling
+
+- [Online playground](https://getpromptscript.dev/playground/) - edit source and inspect generated
+  output in the browser
+- [VS Code extension](https://marketplace.visualstudio.com/items?itemName=promptscript.promptscript-language) -
+  syntax highlighting, bracket matching, folding, and file icons
+- [Docker image](https://github.com/mrwogu/promptscript/pkgs/container/promptscript) - portable CLI
+  for local use and CI
+- `prs serve` - connect the online playground to local files
+- `prs compile --watch` - recompile after editor changes
+- `prs hooks install` - integrate supported AI tools and protect generated files
+
+## Documentation
+
+| Resource                                                                      | Description                                                 |
+| :---------------------------------------------------------------------------- | :---------------------------------------------------------- |
+| [Getting Started](https://getpromptscript.dev/getting-started/)               | First project from initialization to native output          |
+| [Agent Platform](https://getpromptscript.dev/features/)                       | Skills, agents, MCP, plugins, hooks, workflows, and targets |
+| [Language Reference](https://getpromptscript.dev/reference/language/)         | Complete PromptScript syntax                                |
+| [CLI Reference](https://getpromptscript.dev/reference/cli/)                   | Commands and options                                        |
+| [Configuration Reference](https://getpromptscript.dev/reference/config/)      | Targets, registries, builds, policies, and formatting       |
+| [Security Guide](https://getpromptscript.dev/guides/security/)                | Validation rules, injection detection, and safe registries  |
+| [Model Catalog](https://getpromptscript.dev/reference/models/)                | Model aliases and per-target model names                    |
+| [Anonymous Usage Telemetry](https://getpromptscript.dev/reference/telemetry/) | Collected fields, delivery, and opt-out controls            |
+| [Glossary](https://getpromptscript.dev/glossary/)                             | Every PromptScript term in one place                        |
+| [FAQ](https://getpromptscript.dev/guides/faq/)                                | Common questions about adoption, targets, and security      |
+| [Enterprise Guide](https://getpromptscript.dev/guides/enterprise/)            | Organization-wide adoption and governance                   |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and
+[open issues](https://github.com/mrwogu/promptscript/issues).
+
+PromptScript is available under the [MIT License](LICENSE).

@@ -1,0 +1,150 @@
+# DoneCheck: proof-of-done for AI coding agents
+
+[![ci](https://github.com/AtharvaMaik/donecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/AtharvaMaik/donecheck/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/AtharvaMaik/donecheck)](https://github.com/AtharvaMaik/donecheck/releases)
+[![pypi](https://img.shields.io/pypi/v/donecheck)](https://pypi.org/project/donecheck/)
+[![license](https://img.shields.io/github/license/AtharvaMaik/donecheck)](LICENSE)
+
+Your AI coding agent says it is done. Make it prove it.
+
+Works with Codex, Claude Code, Cursor, OpenCode, local CLIs, and GitHub Actions.
+
+`donecheck` is a zero-dependency proof-of-done gate for AI-assisted code changes. It scans the changed files, runs the verification command you choose, and writes a small `DONECHECK.md` receipt before anyone claims the work is finished.
+
+Star it if you want a tiny AI coding agent verification gate you can drop into any repo.
+
+![DoneCheck terminal demo](assets/donecheck-demo.svg)
+
+```bash
+python donecheck.py --cmd "pytest -q"
+cat DONECHECK.md
+```
+
+If there are no files and no command, it fails. No evidence, no "done".
+
+## Quick Start
+
+Add DoneCheck to a repo using AI coding agents:
+
+```bash
+pip install donecheck
+pipx install donecheck
+donecheck --init --cmd "pytest -q"
+donecheck --agent-prompt --cmd "pytest -q"
+```
+
+Then tell Codex, Claude Code, Cursor, or any agent:
+
+```text
+Before claiming done, run donecheck and fix anything it reports.
+```
+
+## What It Catches
+
+- unfinished markers and placeholder phrases in changed files
+- narrow verification that does not mention changed code paths
+- proof files that only say tests passed without output, exit code, and timestamp
+- stale DoneCheck receipts when files, commands, or base inputs change
+- skipped verification as `SKIPPED`, not a quiet pass
+- swallowed Python exceptions and empty JavaScript catch blocks
+- accidental literal secrets
+- unsafe `eval` / `exec`
+- failed verification commands and missing evidence when nothing was checked
+
+## 20 Second Demo
+
+```bash
+git init demo && cd demo
+curl -O https://raw.githubusercontent.com/AtharvaMaik/donecheck/main/donecheck.py
+printf 'def charge_card():\n    # TODO wire Stripe later\n    return True\n' > app.py
+git add app.py
+python donecheck.py --all
+```
+
+Output:
+
+```text
+DoneCheck: FAIL
+- unfinished_marker app.py:2 # TODO wire Stripe later
+```
+
+The full receipt is in `DONECHECK.md`. Fix the file, then run:
+
+```bash
+python donecheck.py --all --cmd "python -m py_compile app.py"
+```
+
+Now the receipt says `PASS` and records the command output.
+
+If verification cannot run, say so explicitly:
+
+```bash
+python donecheck.py --skip-reason "missing DATABASE_URL"
+```
+
+That writes a `SKIPPED` receipt and exits non-zero.
+
+## Use It Anywhere
+
+| Place | Command |
+| --- | --- |
+| Local repo | `python donecheck.py --cmd "pytest -q"` |
+| Installed CLI | `pip install donecheck` or `pipx install donecheck` |
+| Claude Code / Codex / Cursor | Tell the agent to run DoneCheck before claiming done |
+| GitHub Actions | `uses: AtharvaMaik/donecheck@v0.1.8` |
+
+To create the GitHub Action workflow in a repo:
+
+```bash
+donecheck --init --cmd "pytest -q"
+```
+
+## GitHub Action
+
+```yaml
+name: donecheck
+on: [pull_request]
+
+jobs:
+  donecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: AtharvaMaik/donecheck@v0.1.8
+        with:
+          command: pytest -q
+```
+
+On pull requests, the action scans the PR diff against the base branch, emits GitHub error annotations for findings, and adds the full receipt to the Actions step summary. Outside pull requests, pass `args: --all` to scan the whole repo.
+
+## Agent Prompt
+
+```text
+Before claiming done, run:
+python donecheck.py --cmd "<project test command>"
+
+If it fails, fix the work and rerun it. Include the DONECHECK.md status in your final answer.
+```
+
+There is also a drop-in skill at `skills/donecheck/SKILL.md`.
+
+## PyPI
+
+DoneCheck is published on PyPI at https://pypi.org/project/donecheck/.
+
+This repo also includes `.github/workflows/publish-pypi.yml`, which builds on every GitHub release and publishes with PyPI trusted publishing.
+
+## Why It Exists
+
+AI agents are good at sounding finished. DoneCheck makes them leave evidence:
+
+- changed files
+- findings
+- commands run
+- exit codes
+- recent command output
+
+It is not a full linter, security scanner, or test framework. It is the cheap first gate that catches obvious AI-code misses before a human review, CI system, or hosted review bot spends time on them.
+

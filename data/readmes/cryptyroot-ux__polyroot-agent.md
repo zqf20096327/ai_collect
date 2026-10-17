@@ -1,0 +1,390 @@
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="MIT license" />
+  <img src="https://img.shields.io/badge/version-v1.14.2--stable-blue?style=for-the-badge" alt="version" />
+  <img src="https://img.shields.io/badge/tests-919%2B12-passing-success?style=for-the-badge" alt="tests" />
+  <img src="https://img.shields.io/badge/node-%3E%3D24-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="node" />
+</p>
+
+<h1 align="center">◈ PolyRoot Agent</h1>
+
+<p align="center">
+  <strong>Autonomous AI trading for Polymarket — with the AI nowhere near your keys.</strong><br />
+  The AI proposes trading intents only; a separate deterministic <strong>Executor</strong><br />
+  signs and submits orders through risk gates it cannot override.
+</p>
+
+<p align="center">
+  <a href="#-install-in-one-line-recommended-for-operators">Quickstart</a> ·
+  <a href="#-what-it-is">What it is</a> ·
+  <a href="#-production-installation">Production</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="#-license">License</a>
+</p>
+
+---
+
+> **Status: v1.14.2-stable — single LIVE runtime mode**
+> Production-ready with G4 autonomous pipeline, G5 infrastructure, 30+ AI providers in onboarding, and 972 passing tests (960 contract + 12 property).
+> `LIVE` is the only runtime mode. It trades real money and requires an owner-signed promotion (`polyroot live-promote`).
+
+> [!CAUTION]
+> **Trading involves substantial risk of loss. Nothing here is financial advice.**
+> PolyRoot makes no profit claims, publishes no win rates, and guarantees no
+> returns. Never trade money you cannot afford to lose. Live modes are
+> opt-in, disabled by default, and gated behind explicit owner configuration
+> plus a passing `doctor --live` check.
+
+---
+
+## What it is
+
+PolyRoot is an open, auditable prediction-market trading agent. It watches the
+Polymarket order book, feeds evidence into an LLM that proposes trading
+intents, and routes those intents through a risk-gated, deterministic executor.
+Separation of **reasoning** (AI) from **execution** (code) is the core safety
+property that distinguishes PolyRoot from "ChatGPT-trades-my-wallet" bots.
+
+**What PolyRoot is NOT:** not a profit machine, not a signal service, not
+financial advice. There are no backtest curves, no P&L screenshots and no
+return promises anywhere in this repo — any such claim about a trading bot
+is a red flag, including from us if we ever made one.
+
+**Privacy:** the agent collects no telemetry. No prompts, keys, trades or
+system stats leave your machine except the API calls you configure yourself
+(your AI provider, Polymarket, your RPC endpoint).
+
+## Architecture overview
+
+```
+┌───────────────────────┐      proposes only      ┌───────────────────┐
+│    Intelligence (AI)  │ ──────────────────────► │    Risk Engine    │
+│                       │   TradeIntent (no keys) │     reservations  │
+└───────────────────────┘                         └────────┬──────────┘
+                                                             │ accepted intents
+                                                             ▼
+┌───────────────────────┐                            ┌───────────────────┐
+│  Market Data Adapter  │◄── feeds/evidence ───────── │   EXECUTOR (deterministic) │
+│  (Polymarket + SDK)   │                            │ signs & submits    │
+└───────────────────────┘                            │ holds the keys     │
+                                                       └────────┬──────────┘
+                                                                ▼
+                                                       ┌───────────────────┐
+                                                       │      Ledger       │
+                                                       │  events + outbox  │
+                                                       └───────────────────┘
+```
+
+Key invariants:
+
+- **AI never holds private keys** — it can only _propose_ intents.
+- **Every intent passes the same validator** — read / learn / propose only.
+- **Executor is deterministic + auditable** — every order is a signed,
+  logged, recoverable ledger event.
+- **Risk engine reserves capital** — no intent can size itself beyond policy.
+
+---
+
+## Install in One Line (recommended for operators)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/cryptyroot-ux/polyroot-agent/main/scripts/install.sh | bash
+```
+
+Then open a NEW terminal and type:
+
+```bash
+polyroot          # opens the interactive console
+```
+
+Inside the console you only need four commands: `setup` (guided
+configuration — just press Enter for safe defaults), `logs` (watch what the
+agent is doing), `run` (start the agent), `exit` (back to terminal). Update
+any time with `polyroot update`. See `docs/STAGING_DEPLOY.md` for the full
+staging → LIVE path.
+
+## Quick Start (Development)
+
+### Prerequisites
+
+- **Node.js ≥ 24.0.0**
+- **PostgreSQL 15+** (local or Docker)
+- **npm 11+** (comes with Node.js 24)
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/cryptyroot-ux/polyroot-agent.git
+cd polyroot-agent
+npm ci
+```
+
+### 2. Start Database
+
+```bash
+# Option A: Docker (recommended)
+docker compose up -d postgres
+
+# Option B: Local PostgreSQL
+# Ensure DATABASE_URL in .env points to your instance
+```
+
+### 3. Configure Environment
+
+```bash
+cp .env.example .env
+# Edit .env with your settings (see Configuration section below)
+```
+
+### 4. Verify Wallet Setup (no agent started, no network)
+
+```bash
+polyroot wallet verify
+# PASS on every line = ready. FAIL tells you exactly which variable is wrong.
+```
+
+### 5. Run Migrations
+
+```bash
+npm run migrate:latest
+```
+
+### 6. Build & Run
+
+```bash
+npm run build
+polyroot run         # Starts the agent in LIVE mode (see RUNTIME_MODE)
+```
+
+`polyroot run` trades real money. Grant an owner-signed promotion first:
+
+```bash
+polyroot live-promote
+```
+
+### 7. Verify Installation
+
+```bash
+npm run test:unit        # 707 contract + 12 property = 719 tests
+npm run traceability     # 96/96 structural traceability
+npm run build            # 13/13 packages pass
+npm run lint && npm run typecheck
+```
+
+---
+
+## Production Installation
+
+### 1. Server Requirements
+
+- **OS:** Linux (Ubuntu 22.04+ / Debian 12+)
+- **RAM:** ≥ 4 GB (8 GB recommended)
+- **Disk:** ≥ 20 GB SSD (PostgreSQL + logs)
+- **Network:** Stable connection to Polygon RPC + Polymarket API
+
+### 2. Install Dependencies
+
+```bash
+# Install Node.js 24 (via nvm or binary)
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install PostgreSQL 15
+sudo apt-get install -y postgresql-15 postgresql-client-15
+
+# Install pnpm (optional, faster than npm)
+npm install -g pnpm
+```
+
+### 3. Database Setup
+
+```bash
+sudo -u postgres createuser --superuser polyroot
+sudo -u postgres createdb -O polyroot polyroot
+sudo -u postgres psql -c "ALTER USER polyroot WITH PASSWORD 'secure_password';"
+```
+
+### 4. Application Deploy
+
+```bash
+# Clone to deployment directory
+cd /opt
+git clone https://github.com/cryptyroot-ux/polyroot-agent.git
+cd polyroot-agent
+
+# Install production dependencies
+npm ci --omit=dev
+
+# Build all packages
+npm run build
+```
+
+### 5. Production Configuration
+
+Create `/opt/polyroot-agent/.env`:
+
+```env
+# Database
+DATABASE_URL=postgresql://polyroot:secure_password@localhost:5432/polyroot
+
+# Wallet (Deposit Wallet / Type 3 for Polymarket)
+WALLET_PRIVATE_KEY=0xYOUR_PRIVATE_KEY_HERE
+WALLET_ADDRESS=0xYOUR_WALLET_ADDRESS
+CHAIN_ID=137
+
+# RPC (Polygon Mainnet)
+RPC_URL=https://polygon-rpc.com
+# Or use Alchemy/Infura for reliability:
+# RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/YOUR_KEY
+
+# Runtime
+NODE_ENV=production
+LOG_LEVEL=info
+# LIVE is the only runtime mode
+RUNTIME_MODE=LIVE
+
+# G4 Pipeline tuning (code constants in src/pm/runtime/src/main.ts, not env)
+# minEdgeAfterCost=0.03, capital cap
+
+# Observability (single port serves both endpoints)
+POLYROOT_METRICS_OWNER_KEY=your-owner-key-here
+# POLYROOT_METRICS_HOST=127.0.0.1
+# POLYROOT_METRICS_PORT=9090
+
+# Forecast provider (optional; abstains when unset)
+# POLYROOT_FORECAST_PROVIDER=openai
+# POLYROOT_FORECAST_MODEL=gpt-4o-mini
+# OPENAI_API_KEY=sk-...
+# OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Live wallet identity (required for LIVE)
+# WALLET_ACCOUNT=0xYOUR_PROXY_ACCOUNT_HERE
+# WALLET_FUNDER=0xYOUR_FUNDER_HERE
+```
+
+> [!WARNING]
+> **Wallet hygiene for live modes:** use a dedicated deposit wallet that holds
+> only what you can afford to lose — never your main holdings. Keys stay
+> encrypted in `~/.polyroot/keystore.json` (600) on your own machine and are
+> never transmitted anywhere; the agent needs no withdrawal privileges
+> beyond what Polymarket trading itself requires.
+
+### 6. Run 24/7 as a systemd service (automatic)
+
+The one-line installer (`scripts/install.sh`) already renders and enables
+`polyroot.service` — no manual step needed on a systemd host. It runs the
+trading loop (`cli.js run`) with `Restart=always`, logs to the journal:
+
+```bash
+sudo systemctl status polyroot        # is the 24/7 loop alive?
+sudo journalctl -u polyroot -f        # live logs
+sudo systemctl restart polyroot       # restart (also via `polyroot restart`)
+sudo systemctl stop polyroot          # pause trading (mode/latch stay in DB)
+```
+
+Notes:
+
+- The unit is rendered from `scripts/polyroot.service.template` — never
+  hand-edit `/etc/systemd/system/polyroot.service`; re-run
+  `bash ~/.polyroot/scripts/install-systemd.sh` instead.
+- No secrets in the unit: the CLI loads `~/.polyroot/.env` (600) itself.
+- No hard `Requires=` on distro postgres units: the agent is fail-closed
+  and refuses clearly without a database.
+- Containers/WSL/macOS (no PID-1 systemd): the installer skips gracefully —
+  use `polyroot run` under tmux/screen there.
+
+### 8. Commission Autonomy Charter (Required for LIVE Mode)
+
+> **LIVE trading warning:** beyond the charter sign-off, live modes require a
+> production signer — encrypted keystore or KMS/HSM-backed, never a raw key on disk
+> beyond initial setup — plus a distinct deposit-wallet account/funder triple (verify
+> with `npm start -- wallet verify`). The built-in placeholder signer and mock
+> venue are non-production stubs and the code refuses live operation with them
+> (`REFUSE_LIVE_WITH_STUBS`).
+
+---
+
+## Troubleshooting
+
+| Symptom                         | Likely Cause                          | Fix                                                                                        |
+| ------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `npm run ci` fails on typecheck | Strict TS config                      | Ensure `verbatimModuleSyntax: true`, `exactOptionalPropertyTypes: true` in `tsconfig.json` |
+| Database connection refused     | Postgres not running or wrong URL     | Verify `docker compose ps` or local service, check `DATABASE_URL` in `.env`                |
+| Wallet errors: invalid key      | Incorrect private key format          | Must be 0x-prefixed 64 hex bytes (32 bytes)                                                |
+| RPC timeout/failure             | Network or endpoint issue             | Test RPC URL with curl, verify Polygon Mainnet reachable                                   |
+| Metrics port in use             | Port already in use                   | Kill existing process on 9090 or set `POLYROOT_METRICS_PORT`                               |
+| Order rejected                  | Capital cap exceeded                  | Reduce intent size or raise the commissioned cap                                           |
+| Promotion blocked               | Reality gap or slippage bias too high | Wait for more evidence, adjust tolerances                                                  |
+| Gitleaks detects secrets        | Accidental credential in code/logs    | Remove secrets, run `git reset --hard`, add to `.gitleaksignore` if false positive         |
+| Observability metrics missing   | Metrics server not started            | Set `POLYROOT_METRICS_OWNER_KEY` (serves `:9090/metrics` + `/healthz`)                     |
+
+### Common Commands
+
+```bash
+# Full CI locally
+npm run ci
+
+# Run only unit tests
+npm run test:unit
+
+# Run contract tests
+npm run test:contract
+
+# Run property tests
+npm run test:property
+
+# Check formatting
+npx prettier --check .
+
+# Fix formatting
+npx prettier --write .
+
+# Traceability gate (PRD↔Blueprint)
+npm run traceability
+
+# Generate release manifest
+node scripts/generate-manifest.mjs
+
+# Run Gitleaks scan
+gitleaks detect --source . --no-git --baseline-path .gitleaks_baseline.json --verbose
+
+# Build Docker image
+docker build -t polyroot/trader:dev .
+
+# Start PostgreSQL via Docker
+docker run -d --name postgres -e POSTGRES_USER=polyroot -e POSTGRES_PASSWORD=secure_password -e POSTGRES_DB=polyroot -p 5432:5432 postgres:16-alpine
+```
+
+---
+
+## Configuration Reference
+
+See [`docs/PUBLIC_API.md`](docs/PUBLIC_API.md) for full API reference, runtime modes, and observability.
+
+### Environment Variables (`.env`)
+
+| Variable                             | Description                                       | Example                                                         |
+| ------------------------------------ | ------------------------------------------------- | --------------------------------------------------------------- |
+| `DATABASE_URL`                       | PostgreSQL connection string                      | `postgresql://polyroot:secure_password@localhost:5432/polyroot` |
+| `WALLET_PRIVATE_KEY`                 | Deposit wallet private key (0x-prefixed)          | `0xa1b2c3d4...`                                                 |
+| `WALLET_ADDRESS`                     | Derived wallet address (0x-prefixed)              | `0xAbCdEf12...`                                                 |
+| `CHAIN_ID`                           | Polygon = 137                                     | `137`                                                           |
+| `RPC_URL`                            | Polygon RPC endpoint (HTTPS)                      | `https://polygon-mainnet.g.alchemy.com/v2/YOUR_KEY`             |
+| `NODE_ENV`                           | `development` \| `production`                     | `production`                                                    |
+| `LOG_LEVEL`                          | `debug` \| `info` \| `warn` \| `error`            | `info`                                                          |
+| `RUNTIME_MODE`                       | `LIVE` \| `READ_ONLY`                             | `LIVE`                                                          |
+| `POLYROOT_METRICS_OWNER_KEY`         | Bearer key for `GET /metrics` (`/healthz` public) | _(unset = `/metrics` disabled)_                                 |
+| `POLYROOT_METRICS_PORT`              | Metrics + health port                             | `9090`                                                          |
+| `POLYROOT_FORECAST_PROVIDER`         | `openai` to enable, else abstain                  | `none`                                                          |
+| `POLYROOT_FORECAST_MODEL`            | Model name for the forecast provider              | _(required when enabled)_                                       |
+| `OPENAI_API_KEY` / `OPENAI_BASE_URL` | Credentials for OpenAI-compatible gateway         | _(required when enabled)_                                       |
+| `WALLET_ACCOUNT` / `WALLET_FUNDER`   | Distinct deposit-wallet addresses (live only)     | _(required for LIVE)_                                           |
+
+---
+
+## License
+
+MIT License — see [`LICENSE`](LICENSE) (includes upstream provenance notice).
+
+---
+
+_Status: Production-ready. Live deployment requires Autonomy Charter sign-off and G5 promotion gates passing._

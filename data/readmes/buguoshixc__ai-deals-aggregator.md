@@ -1,0 +1,1352 @@
+# AI 优惠聚合器
+
+一个零构建的静态站点，聚合**国内外 AI 大模型的真实优惠与福利**：新用户免费额度、免费模型、
+学生 / 教师 / 非营利折扣、限时促销。数据每日自动采集两次，经校验后发布到 GitHub Pages。
+
+- 线上地址：https://buguoshixc.github.io/ai-deals-aggregator/
+- 数据文件：`deals.json`（v2 契约，见下文）· `plans.json`（v1 契约 —— **AI Coding 套餐**，
+  与优惠分开建模，见 [数据契约（plans.json v1）](#数据契约plansjson-v1)）
+- v3.0 起还发布：`api-plans.json`（API 计费）· `models.json`（模型身份索引）·
+  `model-registry-links.json`（模型 ↔ 计费条目的显式关系）· `data/index.json`（数据集清单 Manifest）
+
+## v3.0：从「三个页面集合」到「结构化资料库」
+
+v3.0（`v3.0-ai-deals-knowledge-base`）把站点从「优惠 + 套餐 + API 价格页面集合」升级为
+**AI 优惠 / 套餐 / API 计费 / 模型 / 厂商 / 历史变化的结构化资料库**。六个新入口：
+
+| 入口 | 回答什么问题 | 数据来源 |
+|---|---|---|
+| `/plans/` | 长期用什么、按量花多少（枢纽页） | `plans.json` + `api-plans.json` |
+| `/models/` 与 `/models/<slug>/` | 这个模型在本站都有哪些事实（计价条目 / 套餐 / 优惠 / 变化） | `models.json` + 关系层 + 三份真值 |
+| `/vendor/<slug>/` | 这一家厂商的全部资料（优惠 / 套餐 / API / 模型 / 变化 / 订阅） | 既有数据的显式 join |
+| `/archive/` | 消失过的东西去哪了（**资料消失 ≠ 资料删除**） | 三份变化日志重放 |
+| `/docs/data/` | 这些数据怎么用、能不能引用 | `/data/index.json` 清单 |
+| `/feed.xml` `/feed.json` | 站根两份订阅产物（Atom 1.0 / JSON Feed 1.1）—— v3.2 部分反转后**只此两份**（见下面「订阅」一节） | 构建期生成，唯一表 = `scripts/lib/feed.js` 的 `FEED_FILES` |
+
+> **端点命名易踩坑（审计 P3-28，2026-10-04 补文档说明；未新增任何页面/路由）**：
+> ① Manifest 的**真实地址是 `/data/index.json`**（目录 + 文件名），`/data-index.json` 在线上是 404；
+> ② `model-registry-gaps.json` **不发布**（它是**双侧**处置登记 —— Coding 侧 `planId + modelName`、
+> API 侧 `apiPlanId + modelKey`，属关系层补充，只存在于 `scripts/data/`），
+> 因此线上取 `/model-registry-gaps.json` 一定 404 —— 这是**有意不发布**，不是缺文件。
+> 已发布的数据端点以 `/data/index.json` 的 `datasets[].url` 为准（构建期 `assertArtifactCoverage` 双向对账）。
+
+四条 v3.0 才有的纪律（都有可失败断言盯着）：
+
+1. **判据只有一处**：模型身份、厂商门槛、归档状态、Manifest 数字都各只有一个实现模块，
+   页面 / Feed / 自测 / 门禁全部调用它。
+2. **数字可重算**：页面上的每个计数都带 `data-*` 标记，构建期**从盘上现读**再对账。
+3. **「没查到」与「没有」是两句不同的话**：`null` / `unknown` / `unavailable` 各说各的。
+4. **不替用户做判断**：不排序、不推荐、不折价、不出"谁更便宜"；只把事实整理到足以让用户自己判断。允许按官方单价计算成本（见 [API 成本计算器](tools/api-cost/)），但计算是工具不是判断。
+
+新增契约见 [`docs/SCHEMA-v3.0.md`](docs/SCHEMA-v3.0.md)（v3.0 只写新增/改动，既有契约引用旧文档）。
+交付报告与阶段台账见 [`research/v3.0-ai-deals-knowledge-base-report.md`](research/v3.0-ai-deals-knowledge-base-report.md)。
+
+## 设计原则
+
+1. **只收录真实优惠**。定价表、"这是付费产品"这类信息不算优惠，只会以 `type: "tool"` 进入"全部工具"页，
+   默认视图只展示 `type: "deal"` 的优惠。
+2. **落地页指向官方**。聚合站（Layer3Labs 等）作为 `sourceUrl` 署名，卡片主链接给到厂商官方页。
+3. **零产出的采集器不上线**。注册表里只保留实测有产出的来源，避免"代码在跑但没数据"。
+4. **坏数据不发布**。`scripts/validate.js` 是部署门禁，校验不过就不部署。
+5. **不抓登录态**。只抓公开页；需要登录才可见的内容不进自动采集链路。
+6. **不编造、不夸大**。看不到升级路径就不写 `priceLine`，没有可信标签就不写 `features`；
+   卡片上只有一条「数据更新」日期，不给自己盖章说"核对过"。宁可信息少一行，也不给不可信的内容。
+7. **发布产物必须有静态正文**。内容预渲染进 HTML，不依赖 JS 才能被读到；且卡片模板只维护一份
+   （见「预渲染与 SEO/GEO」）。
+8. **不卖排序**。不收录付费推广位；如将来引入推广，必须带 `rel="sponsored"` 与显式标注，
+   且排序、价格说明与推荐理由永不出售。
+
+## 快速开始
+
+```bash
+npm ci                  # 安装依赖（axios + cheerio）
+npm run collect:dry     # 只采集并打印报告，不写盘
+npm run collect         # 全量采集并写入 deals.json
+npm test                # 数据 + 前端静态校验（零依赖，可直接跑）
+npm run test:strict     # 额外校验内容质量指标
+npm run build           # 校验 → 组装并预渲染 dist/ → 产物自检（**覆盖共享发布目录 dist/**）
+npm run build:dev       # 同上，但产物落 dist.dev/ —— 多会话/并行作业时用这个，别覆盖 dist/
+npm run verify          # 真浏览器验收（密度/裁切/hover/筛选/弹层/移动端）
+npm run verify:shots    # 同上，并把截图写到 mockups/.preview/
+npm run selftest:seo    # v1.7 SEO 门禁演练：27 个检查码逐个定向篡改，每个都必须会响
+npm run verify:seo      # v1.7 SEO 独立验收：只读 dist，条目集合/sitemap 成员/索引策略现场重推
+npm run report:seo      # 落地页人读报告：有哪些页 / 哪些主题没成页及原因 / slug 与钉住表
+npm run check:zh        # 译文漂移门禁：对不上 id / 原文已变 / 待译 逐条列出，非零退出即有要办的事
+npm run serve                          # 本地预览源码目录 http://127.0.0.1:8080
+node scripts/serve.js --dir=dist       # 预览发布产物（预渲染后的 index.html）
+```
+
+跑一遍 CI 会跑的全部静态门禁（`npm run verify` 需要浏览器，单列）。
+下面刻意写成**一行**：`&&` 在 bash 与 PowerShell 7 里都能用，而换行续行符两边不一样
+（bash 是 `\`、PowerShell 是反引号），写成多行会让其中一边复制过去跑不起来。
+> ⚠️ **Windows PowerShell 5.1 不支持 `&&`**（那是解析错误，不是命令失败）。那种 shell 下用
+> `cmd /c "…"` 跑这一行；先确认版本：`$PSVersionTable.PSVersion`。
+
+```bash
+npm run test:strict && npm run check:reproducible && npm run plans:rebuild --dry-run && npm run check:plans:reproducible && npm run check:history && npm run migrate:audience:verify && npm run check:zh && npm run selftest:zh && npm run selftest:expiry && npm run selftest:text && npm run selftest:health && npm run selftest:provenance && npm run selftest:history && npm run selftest:changes && npm run selftest:audience && npm run selftest:app-token && npm run selftest:api-cost && npm run selftest:plans && npm run build && npm run check:feed:reproducible && npm run check:ci
+```
+
+> ⚠️ 这一行里面的 `npm run build` **写的就是共享发布目录 `dist/`**，而且它在 CI 语境下是对的 ——
+> `deploy.yml` 的 build 作业跑完直接上传 `dist/`。但**多会话/并行作业**时它会整体换掉别人
+> 正在用的 `dist/`（v3.2 收口期间发生过两次，取证见
+> [`research/v3.2-feed-and-changes-report.md`](research/v3.2-feed-and-changes-report.md)）。
+> 那种场合只把这**一处**换成 `npm run build:dev`（产物落 `dist.dev/`），其余步骤一字不改。
+
+> `migrate:audience:verify` **不需要参数**：它默认跑 `scripts/data/fixtures/` 下那对合成夹具
+> （9 条记录逐分支覆盖）。要比对一次真实的 `migrate.js --audience`，成对传
+> `--before=<旧 deal.json> --after=<新 deal.json>`。
+
+> 本地看效果请一律用 **`npm run build` + `node scripts/serve.js --dir=dist`**：
+> 源码目录里的 `index.html` 还没预渲染，`logos.css` 也尚未生成，直接开是看不到 logo 的。
+
+调规则用的报告：
+
+```bash
+npm run report:tier                    # 分档分布 + 每张卡命中的判据 + 判据读到的原文
+npm run report:tier -- --tier=2        # 只看某一档
+npm run report:vendor                  # 厂商归一并计（多少条脏 vendor 归到了同一家）
+npm run report:tier -- --all           # 连工具条目一起看
+npm run report:changes                 # v1.5 变化雷达：五个分栏逐条列出 + 被抑制的「其他变化」（--json 可机读）
+```
+
+抓 JS 渲染的公开页（可选能力，需要本机装有 Edge 或 Chrome）：
+
+```bash
+npm run collect:headless:dry   # 静态来源 + 无头来源，dry-run
+npm run collect:headless       # 静态来源 + 无头来源，写盘
+npm run collect:headless:list  # 查看含无头来源在内的注册表
+```
+
+常用排查命令：
+
+```bash
+node scripts/collect.js --list                       # 列出已注册采集器
+node scripts/collect.js --only=cn_qianfan --dry-run  # 只跑某个来源
+node scripts/tools/inspect-source.js <url> --rows    # 查看页面表格结构（写采集器用）
+node scripts/tools/find-offers.js <url>              # 探测页面是否含优惠内容
+node scripts/tools/term-count.js <url> 免费 额度      # 判断页面是否 JS 空壳
+node scripts/tools/term-count.js <url> 免费 额度 --render  # 渲染后再探测（SPA 页面）
+node scripts/tools/render-source.js <url> --rows     # 渲染公开页并看表格/优惠信号
+node scripts/tools/render-source.js <url> --diag --wait=文案1|文案2   # 渲染诊断（零产出时用）
+```
+
+## URL 地图（v1.7）
+
+| 路由 | 是什么 | 索引 |
+|---|---|---|
+| `/` | 首页（筛选 + 卡片/列表 + 变化雷达条带 + 按需求入口行） | ✅ |
+| `/student/` `/developer/` `/free-api/` | 按人群 / 福利类型的聚合页（v1.1） | ✅ |
+| `/need/<slug>/` | 按需求找优惠（v1.2，7 页可索引 + 3 页别名） | ✅ / ⛔ |
+| `/category/<slug>/` | 按数据里的分类枚举切的聚合页（5 页，v1.7） | ✅ |
+| `/vendor/<slug>/` | 按**规范厂商名**切的聚合页（9 页，v1.7） | ✅ |
+| `/vendor/` `/category/` | 上面两类页的目录，同时是面包屑的父级（v1.7） | ✅ |
+| `/deal/<id>/` | 每条优惠一个静态页（80 页） | ✅ |
+| `/plans/coding/` | **AI Coding 套餐对比**（v2.2：9 条套餐一张表，可筛选 / 搜索 / 排序 / 逐行展开溯源；只列事实不排名） | ✅ |
+| `/plans/api/` | **API / Token 计费对比**（v2.5：7 条计费记录 / 37 个模型计价条目 / 5 家平台，11 列预渲染静态表；只列事实，零控件） | ✅ |
+| `/tools/api-cost/` | **API 成本计算器**（v3.1：按已收录官方单价计算 token 用量成本；不排序 / 不推荐 / 不跨币种 / 不折算 credits） | ✅ |
+| `/changes/` `/status/` | 变化雷达 / 数据源状态（`/feeds/` 订阅中心已于 2026-10 下架，v3.2 **未**恢复） | ✅ |
+| `feed.xml` `feed.json` | 站根 **2 份**订阅产物（v3.2；**不是页面**，不进 sitemap） | 资源，不进 sitemap |
+
+**合计 115 个 HTML 页**（112 条可索引 + 3 条 noindex 别名），sitemap **112 条**，dist **227 个文件**。
+
+> 📌 **v3.1 追加**：`/tools/api-cost/` **已进 sitemap**（`dist/sitemap.xml` 实测 `<changefreq>monthly</changefreq>` /
+> `<priority>0.7</priority>`，与 [`docs/SCHEMA-v3.1.md`](docs/SCHEMA-v3.1.md) §5 的 `sitemap: 0.7/monthly` 同源）。
+> 它是 **API 计费数据的下游**：只按 `/plans/api/` 已收录的官方单价换算 token 用量，不复算、不新增数据源；
+> 两页**双向可达** —— `/tools/api-cost/` 正文有「查看 API 计费对比表 →」，`/plans/api/` 正文点名这个计算器，
+> 页脚导航两边都在；`verify-site.js` §20b 用「与 `/plans/api/` 双向可达」这条断言守着这个方向。
+
+> ⚠️ 上表是 **v1.7 的 URL 地图快照**（v2.x 的行随后追加，标题未改），其中 `/vendor/<slug>/` 的 9 页、
+> `/plans/coding/` 的 9 条套餐、`/plans/api/` 的 7 条记录、`/feed/**` 的 24 份分源订阅、`/docs/data/`
+> 与 `/feeds/` 两个页面族、以及「合计」一行 **都已经不是当前值**。
+> （v3.2 已把订阅两行改成现役形态：**只恢复站根 `feed.xml` / `feed.json` 两份**，
+> 25 份分源 Feed 与 `/feeds/` 页族不恢复；数据文件出口仍是一份都不发。）v3.0 实测：**dist 173 个 HTML 页 / 170 条可索引 / sitemap 170 条 / 290 个文件**，
+> 厂商页 **19**、套餐 **23** 条、API 计费 **13 条 / 67 个计价条目**、订阅 **24 份（×2 = 48 文件）**。
+> （订阅一行按 **2026-10-04 重算**：`Get-ChildItem -Recurse -File dist/feed` = 48 文件 = 24 份 Feed，含 T12 新增的
+> 5 个 `category-*`；`/feeds/` 页列出 48 个地址。旧文写「25 份（×2 = 50 文件）」是 v3.0 当时读数。）
+> 全部现行数字（deals 134 / plans 23 / api-plans 13·67 / models 44 / 映射 64 / 页 173 / sitemap 170 / dist 290 等）
+> 与逐条重算命令见 [`research/quality-closure/RECLASSIFIED_FINDINGS.md`](research/quality-closure/RECLASSIFIED_FINDINGS.md) §0.2。
+> 当前契约与完整地图见 [`docs/SCHEMA-v3.0.md`](docs/SCHEMA-v3.0.md) 与
+> [`research/v3.0-ai-deals-knowledge-base-report.md`](research/v3.0-ai-deals-knowledge-base-report.md)。
+
+契约（URL / 门槛 / 索引策略 / 27 个检查码）见 [`docs/SCHEMA-v1.7.md`](docs/SCHEMA-v1.7.md)；
+套餐数据与套餐页的契约见 [`docs/SCHEMA-v2.1.md`](docs/SCHEMA-v2.1.md)；
+API / Token 计费的契约见 [`docs/SCHEMA-v2.5.md`](docs/SCHEMA-v2.5.md)；
+「这一版到底发了什么、哪些页为什么没发」见 [`research/v1.7-seo-expansion-report.md`](research/v1.7-seo-expansion-report.md)。
+
+## 数据契约（deals.json v2）
+
+```jsonc
+{
+  "schemaVersion": 2,
+  "updatedAt": "2026-09-21T20:00:00+08:00",
+  "count": 128,
+  "deals": [
+    {
+      "id": "a1b2c3d4e5f6",       // sha1(lower(vendor)|lower(title)|lower(url)) 前 12 位，稳定去重键
+      "title": "…",
+      "vendor": "百度智能云",
+      "url": "https://…",          // 必须是官方优惠/定价页
+      "source": "百度千帆",         // 采集来源
+      "sourceUrl": "https://…",    // 聚合站出处（仅署名，可为 null）
+      "region": "cn",              // cn | global —— 由来源决定，不猜
+      "type": "deal",              // deal | tool
+      "discountInfo": "…",         // type=deal 时必填
+      "pricingModel": "free",      // free | freemium | paid | trial | credits | null
+      "priceLine": "免费 → $20/月 Pro",  // 卡片价格阶梯；无可靠来源时为 null
+      "features": ["15 元代金券", "需实名认证"],  // 卡片特性标签，≤3 个、每个 ≤20 字
+      "category": "API服务",       // 固定 12 类枚举
+      "description": "…",
+      "eligibility": "新用户（需实名认证）",
+      "validity": "自开通起 3 个月",  // 有效期说明（无绝对截止日期时用）
+      "expiresAt": "2026-12-31",    // 绝对截止日期，可为 null
+      "firstSeen": "2026-09-20",
+      "lastSeen": "2026-09-21",
+      "verified": true,             // 人工核验过
+      "verifiedAt": "2026-09-22",   // 核验日期；仅 verified=true 时可填
+      "evidence": [                 // v1.3 可选：有界官方原文片段（≤3 条 × ≤200 字，只人工写）
+        { "field": "discountInfo", "quote": "…官方原话…",
+          "sourceUrl": "https://…官方页…", "capturedAt": "2026-09-22" }
+      ],
+      "zh": {                       // 中文译文（可选）。只增加字段，绝不覆盖英文原文
+        "discountInfo": "…",
+        "description": "…"
+      }
+    }
+  ]
+}
+```
+
+### 卡片三字段的填写纪律
+
+`priceLine` / `features` / `verifiedAt` 是给卡片信息层级用的，**只在有把握时填**：
+
+| 字段 | 规则 |
+|---|---|
+| `features` | 只取该条 `discountInfo` / `validity` 里已写明的事实，≤3 个、每个 ≤20 字。**不从 `description` 自动切分或生成**——没有可信来源就留空，卡片自动回退展示 `discountInfo`。 |
+| `priceLine` | 只有官方页明确给出「免费档 → 付费档」时才填。看不出升级路径就留 `null`，卡片不渲染该行，**不编造价格阶梯**。 |
+| `verifiedAt` | 仅人工逐条回访官方页的条目可填（当前 **32 条**策展数据：`curated_cn` 18 + `curated_global` 14，`node scripts/validate.js` 实测输出「策展数据 32 条」）。自动采集条目一律为 `null`。**这两个字段只留在数据里**（`validate.js` 仍在守「`verified=true` 必须带日期」这条断言），页面上不再渲染核验标签——原因见下文「诚实性约束」。 |
+| `evidence` | v1.3：官方原文片段，**≤3 条 × ≤200 字**，只能用人工写入 `curated_*.json`（或 `audience-overrides.json` 的 `evidenceQuotes`）。超长**拒收**、出处不得是聚合站、必须绑定某个 `field`。全库还有 12000 字与「≤ deals.json 字节 5%」两道预算。契约见 [`docs/SCHEMA-v1.3.md`](docs/SCHEMA-v1.3.md)。 |
+| `history` | v1.4：**构建期派生字段，只进 `dist/deals.json`**。源数据里不能有它（`validate` 白名单与 `check-reproducible` 各拦一道）。真值是 `scripts/data/deal-history.json`（一次性基线 + 追加事件，写入点只有 `scripts/collect.js`）。契约见 [`docs/SCHEMA-v1.4.md`](docs/SCHEMA-v1.4.md)；v1.5 给 `ended` 事件加了一个可选的 `label`（墓碑快照，向后兼容）。 |
+
+新增策展条目并补齐这三个字段的流程：
+
+```bash
+# 1) 在 scripts/data/curated_*.json 加条目（含 features / priceLine / verifiedAt）
+# 2) 校验策展文件本身
+node scripts/validate.js
+# 3) 跑一次采集，把策展数据合并进 deals.json（预渲染读的是 deals.json）
+npm run collect
+# 4) 重新构建产物
+npm run build
+```
+
+> `verifiedAt` 需要填「本次回访官方页的日期」。`scripts/data/backfill-cards.js` 保留了本次
+> 补齐所用的 title → 字段映射，可作为新增条目时的写法参考（重复执行会覆盖日期，勿盲跑）。
+
+分类枚举：对话模型 / 图像绘画 / 视频 / 音频语音 / 编程开发 / 办公效率 / API服务 / 智能体 /
+搜索研究 / 设计创意 / 教育学习 / 其他。
+
+## 数据契约（plans.json v1）
+
+**这一层回答的是另一个问题**：Deals 说"现在有什么优惠"，Plans 说"长期使用时，各平台提供什么套餐"。
+两者**语义分离**：`plans.json` 不写进 `deals.json`，字段不互相注入，判据与门禁也各自独立
+（完整契约见 [`docs/SCHEMA-v2.1.md`](docs/SCHEMA-v2.1.md)）。
+
+```
+scripts/data/curated_plans.json   # 人写事实（价格 / 额度 / 模型 / 限制 / 官方引文）
+        ↓  npm run plans:rebuild  # 归一 + 算 id + 算 derivedMetrics（不联网、不读墙上时钟）
+plans.json                        # 派生产物（当前 9 条）；构建期原样发布到 dist/plans.json
+        ↓  npm run build          # 套上站点的壳与设计变量 + 内联交互脚本，渲染成 /plans/coding/
+/plans/coding/                    # 读者看到的套餐对比页（预渲染的静态表 + 渐进增强的筛选/搜索/排序/展开）
+```
+
+**v2.2 的交互层**（筛选 / 搜索 / 排序 / 行内展开）住在 `scripts/lib/plans-compare.js`：
+它既然是浏览器脚本、又能被 `require` 进自测，所以构建期把它**逐字节内联**进页面 ——
+页面上跑的那一份与离线牙里跑的那一份结构上是同一份。页面自己的"第二事实来源"是
+`<script type="application/json" id="plans-compare-data">` 里的载荷，构建期与 `dist/plans.json`
+**逐字段对账**；无 JS 时那整块控件不存在（`<noscript>` 说明"看到的就是全部 9 条"）。
+完整契约见 [`docs/SCHEMA-v2.1.md`](docs/SCHEMA-v2.1.md) §17。
+
+三条与本项目其它数据层同源的纪律：
+
+1. **原始事实与派生指标分开**。人工文件只写事实；`id` 与 `derivedMetrics` 一律由脚本算。
+   手工改 `plans.json`（尤其手算单价）会被 `check:plans:reproducible` 逐字节比对抓住。
+2. **不猜**。原价未知写 `null`（**不是 0**）；没有固定额度就写 `rate_limited` / `other`
+   并把口径写进 `description`（不编一个 token 数）；查过但来源没说明就写 `"unknown"`（不是 `false`）。
+3. **不为了可比性扭曲厂商计费方式**。"名义 Token 单价"只在五个条件同时成立时产出（额度确实是
+   tokens、额度周期与计费周期一致、币种可处理、当前价明确、折算不随模型变化），否则一律 `null`。
+   当前 9 条**全部为 null** —— 因为没有任何一家厂商在官方页上给出固定 Token 额度（都是积分 /
+   用量池 / 窗口限速）。这是结论，不是缺省。
+
+| 门禁 | 管什么 |
+|---|---|
+| `npm run plans:rebuild --dry-run` | 盘上的 `plans.json` 是否就是来源层产出的那一份（只报差异） |
+| `npm run check:plans:reproducible` | 同上，且不一致即 exit 1（CI 门禁） |
+| `npm run selftest:plans` | 182 项：不该算的绝不算 / id 稳定 / 三态不混 / 只认官方出处 / 可重建 / **页面上不许出现结论性词汇、未知必须显示成「未标注」或「—」** / v2.2 的载荷对账与筛选排序语义（含 7 条牙）（CI 门禁） |
+| `npm run validate`（含 `--strict`） | `plans.json` 的数据合法性 + 与 `providers.json`、`vendor-slugs.json` 的一致性 |
+| `npm run build` 的产物自检 | `dist/plans.json` 与源**逐字节相同**；套餐页从磁盘回读后重跑一遍诚实性断言（含载荷逐字段对账、内联脚本字节比对） |
+| `npm run verify` §19 | 真浏览器：三个数值列与 `plans.json` 逐条对账、宽表在 390/360px 不撑开整页；v2.2 起另加筛选/搜索/排序/展开的行为对账与"无 JS 时零控件" |
+
+> **页面上不许出现的词**只有一处出处（`lib/plans-page.js` 的 `FORBIDDEN_CLAIM_WORDS`：
+> 性价比 / 最划算 / 排行榜 / 综合评分 / TOP 1 …），构建期查我们写下的字节、真浏览器查渲染出来的
+> 文字 —— 两类页面文案的红线从此是**可失败的断言**，不再是文档里的一句话。
+
+### 添加 / 修改一个套餐
+
+```
+1) 只在 scripts/data/curated_plans.json 里改事实，并附上官方页原文引文（≥1 条，≤200 字）
+2) 平台没登记？先在 scripts/data/providers.json 加一行（key / 显示名 / slug / 别名）
+3) npm run plans:rebuild        # 写 plans.json
+4) npm run validate --strict && npm run selftest:plans && npm run check:plans:reproducible
+```
+
+> 价格 / 额度 / 官方页 / 备注怎么改都**不会换 id**（id = `sha1(kind|provider|planName|计费周期)`），
+> 所以改价在后续的 Plan History 里是一件"变化"，而不是"一条记录消失、另一条出现"。
+
+### 优惠 ↔ 套餐关联（v2.4）
+
+优惠与套餐之间那条关系是**显式人工维护**的，单独一个来源文件（完整契约见
+[`docs/SCHEMA-v2.4.md`](docs/SCHEMA-v2.4.md)）：
+
+```
+scripts/data/deal-plan-links.json  # 人写事实：dealId + planIds + provider + basis + 官方引文 + 确认日期
+        ↓  npm run build          # 校验（不过就中止）→ 派生状态与节省金额 → 注入 dist
+dist/deals.json                    # 每条有关系记录多一个 relatedPlans（只进 dist 的派生视图）
+dist/deal-plan-links.json          # 关系表 + 派生 updatedAt/count（发布出去，供外部核对）
+        ↓
+/deal/<id>/ 的「关联的正常套餐」  ↔  /plans/coding/ 的「各套餐当前优惠」（双向深链）
+```
+
+| 门禁 | 管什么 |
+|---|---|
+| `npm run validate`（含 `--strict`） | 关系必须指向真实存在的 deal / plan；provider 必须一致，原始厂商串认不出来就必须写 `providerOverride`（多余的 override 也报错）；引文与 promo 形状；手写派生值即错 |
+| `npm run selftest:deal-plan-links` | 78 项：一优惠↔一套餐/多套餐、一套餐↔多优惠、已结束（过期/历史 ended/记录下架）、节省金额四道门（同套餐/同币种/同周期/全员可享）、候选报告没有写生产关系的路径（CI 门禁） |
+| `npm run build` 的产物自检 | 源 `deals.json` 不许出现 `relatedPlans`；注入与重算逐字段相同；两个页面上的块、锚点落点与深度前缀逐条对账；**没有关系的优惠页一个字节都不多** |
+| `npm run verify` | 真浏览器：读产物重算「哪些关系算当前」，再与 DOM 逐条比对（含"已结束的不得显示成当前优惠"） |
+| `npm run report:deal-plan-links` | 候选报告（`vendor-alias` / `url-host` / `title-mention`），**只供人工 review**，绝不自动写生产关系 |
+
+> 优惠结束后**套餐不会消失**：套餐行变成「暂无当前优惠」，关系改记在「历史优惠」里；
+> 优惠记录被采集层下架后，关系以带快照的 `retired` 记录留在文件里（不留死链）。
+
+### API / Token 计费（v2.5）
+
+**按量计费**是另一个问题（「每百万 token 多少钱」），所以它是**另一份数据、另一条路由、另一套判据**
+—— 不是把套餐 schema 强行复用（完整契约与逐维度对照见 [`docs/SCHEMA-v2.5.md`](docs/SCHEMA-v2.5.md)）：
+
+```
+scripts/data/curated_api_plans.json   # 人写事实：provider + 计费产品 + 逐模型单价 + 官方引文
+        ↓  npm run api-plans:rebuild  # 归一 + 算 id/derivedMetrics + 推进变化日志（写盘前跑完整校验）
+api-plans.json                        # 派生产物（记录 = provider × 计费产品，模型价格是记录内的元素）
+        ↓  npm run build
+/plans/api/                           # 11 列预渲染静态表（零控件）+ 免费额度明细 + 最近变化 + 官方原文
+scripts/data/api-plan-history.json    # 追加式变化日志（与 plans/deals 共用 history-core 内核）
+```
+
+| 这一层与订阅套餐**不同**的三件事 | 做法 |
+|---|---|
+| **单位** | `pricing.unit` 是记录级必填枚举（`per_1M_tokens` / `per_1K_tokens` / `per_1M_characters`）；**全仓没有任何单位换算代码**（自测有静态扫描钉住）。把「每千」乘成「每百万」，会让两个口径不同的数字看起来可比 |
+| **credits** | 卖的是**钱**不是 token：字段白名单无 token 字段 + 额外拒绝键名含 `token` 的键 ⇒「$10 credits = 500 万 tokens」根本没有地方可写；`derivedMetrics` 恒为 `{}` |
+| **模型改名** | API 厂商改模型名很频繁。显示名**不进**被跟踪字段 ⇒ 只改显示名产生**零事件**；换 `modelKey` 才产生「移除 + 新增」，并由「同记录 + 同时增删 + 单价有完全相同项」留档为 `possible_rename`。**检测不等于自动合并** —— 本仓没有合并 modelKey 的代码路径 |
+
+| 门禁 | 管什么 |
+|---|---|
+| `npm run validate`（含 `--strict`） | 契约全量校验（单位与 token 单价的一致性 / 模型条目键 / credits 结构红线 / `derivedMetrics` 逐字节比对 / provider 登记 / 引文）+ 变化日志与当前数据自洽；`--strict` 下条数 < 5 报错 |
+| `npm run check:api-plans:reproducible` | 盘上的 `api-plans.json` 必须等于来源层产出的那一份（逐字节） |
+| `npm run check:api-plan-history` | 基线 + 事件重放逐字段等于当前 `api-plans.json`（元素级字段按 `(modelKey, variant)` 对账） |
+| `npm run selftest:api-plans` | **76 项**离线演练，含 4 条 Tooth Test（credits 被 token 化 / 输入输出价互换 / $·1M 与 $·1K 混淆 / 改名制造假新增），每条**实跑变红再复原**（CI 门禁） |
+| `npm run build` 的产物自检 | 发布数据逐字节一致；页面**从磁盘回读**再跑一遍诚实性断言（含价格六格逐格与数据对账）；无 JS 控件 |
+| `npm run verify` §20 | 真浏览器 **23 项**：行数与 ItemList 声明数 / 三列逐格 / 单位列逐行 / 0 控件 / 锚点 / 面包屑深度 / 390·360px 无溢出 / 平台 logo 真的画出来了 |
+| `npm run report:api-model-renames` | 疑似改名留档，**只报告不合并** |
+
+> **本阶段刻意不做**：模型能力排行榜 / AA 分数 / benchmark / 综合推荐 / 成本模拟器 /
+> 跨币种跨单位换算 / credits→token 折算；`/plans/api/` 也没有筛选排序控件（v1 是预渲染静态表）。
+> 专属订阅源与 `/changes/` 分栏从未上线：`scripts/lib/feeds.js` 的注册表已随 2026-10 的订阅层
+> 下架删除；v3.2 只恢复了**站根两份**订阅产物与首页 / `/changes/` 两处声明，没有分源 Feed。
+
+## 目录结构
+
+```
+index.html                    前端（原生 HTML/CSS/JS，无构建；含预渲染标记与 RENDER-CORE 纯函数区）
+deals.json                    线上数据（优惠 / 福利）
+plans.json                    v2.1：AI Coding 套餐数据（见「数据契约（plans.json v1）」）
+api-plans.json                v2.5：API / Token 计费数据（见「API / Token 计费（v2.5）」）
+robots.txt                    放行搜索引擎与 AI 爬虫（GEO）
+BingSiteAuth.xml              Bing Webmaster Tools 站点归属验证文件（由 Bing 生成，构建期**原样**拷到站点根；
+                              改一个字节就验不过 —— 登记在 build-local.js 的 PUBLIC_FILES）
+assets/logos/
+  manifest.json               厂商 logo 登记表（名称/来源/取图方式/质量）
+  *.png *.svg                 从厂商官网下载的原始文件（见 assets/logos/README.md）
+scripts/
+  collect.js                  采集编排：注册表 → 采集 → 归一 → 去重 → 门槛 → 写盘 → 报告（写盘门槛见文件头注释）
+  validate.js                 数据与前端校验（零依赖，CI 门禁）
+  migrate.js                  v1 → v2 迁移与清洗
+  serve.js                    零依赖本地预览服务器（--dir=dist 可预览产物）
+  lib/
+    schema.js                 v2 契约：makeDeal / validateDeal / 垃圾与优惠信号判定
+    store.js                  读写、合并、过期修剪、发布前断言（采集量骤降只记 degraded 告警，不拦写盘）
+    dedup.js                  标题归一 + 别名表 + 信息量择优合并
+    audience.js               v1.1 六字段的**单一词汇源**：枚举 / 三态 / 分类判据 / 页面措辞
+                               + v1.2 的 NEED_PAGES / NEED_PREDICATES / needsOf（按需求找优惠）
+    audience-audit.js         手写数据「声明了却归一后消失」的对账（拼错枚举不会静默变没写）
+    audience-overrides.js     第二个人工来源（声明式补充）的加载与应用；contrib 只增不减
+    migrate-audience.js       一次性补 provenance 的纯函数（只补出处，**不猜值**）
+    health.js                 采集来源健康状态：状态规则 / 摘要 / 绝对时间格式
+    classify.js               地区判定、有效期抽取
+    official.js               聚合站条目 → 官方页解析
+    http.js                   UA / 超时 / 重试 / 并发限流 / robots.txt
+    browser.js                无头浏览器渲染（可选能力，仅 --headless 时加载）
+    render-core.js            从 index.html 抽取 RENDER-CORE 并在无 DOM 沙箱求值
+    analytics.js              private-analytics-v1：私有分析的唯一配置源 + 唯一 beacon 定义
+                               （ANALYTICS-GUARD 区块就是浏览器里跑的那段源码；见 docs/PRIVATE-ANALYTICS-v1.md）
+    analytics-routes.js       统计范围声明：路由 → 要不要统计（每条带理由；新增页面族必须登记）
+    zh.js                     中文译文覆盖层：英文散文判定 / 原文指纹校验 / 贴到条目上
+    logos.js                  logo 资产装配：manifest → dist/logos/ + dist/logos.css
+    og-image.js               零依赖 OG 分享图生成（手写 PNG 编码 + 点阵字模）
+    report.js                 采集报告表格
+      curated.js                人工策展数据加载
+    provenance.js             v1.3 信息来源：有界官方引文的归一/合并/预算 + 采集事实派生（心跳 join）
+    changes.js                v1.5 变化雷达：分栏/窗口/高价值判定 + 文案微调归一（纯函数、零依赖、无网络）
+    dom-digest.js             v2.0 页面结构摘要（计数/标记/探针命中，**不含正文**）+ 两代跨运行快照
+    plan-schema.js            v2.1 Coding Plan 契约：枚举 / makePlan / validatePlan / deriveMetrics（唯一判据处之一）
+    plans-page.js             v2.1 套餐对比页的**正文渲染**（纯函数）：列模型 / 未知的三种写法 /
+                              结论性词汇清单 / 页面级诚实性断言（构建期与自测共用同一个函数）
+    providers.js              v2.1 Provider 归一：providers.json 的唯一读入口 + 与 vendor-slugs 的 slug 一致性
+    plans-compare.js          v2.2 套餐对比页的**交互逻辑**（筛选/搜索/排序/展开）：纯函数 + 一个 init()，
+                              双宿主（浏览器逐字节内联 / 自测 require 同一份字节）；不含任何结论性文案
+    deal-plan-links.js        v2.4 优惠 ↔ 套餐关系层：关系表的唯一读入/校验入口 + 状态判据 / 节省金额四道门 /
+                              两个方向的派生视图 + 候选报告（判据只有这一处，构建期与自测共用）
+    secret-scan.js            v2.0 密钥模式扫描（产物自检 / 送模型前脱敏 / 牙测试共用同一份模式表）
+  ai/                         v2.0 AI 维护层（**可选、默认关闭、永不进入采集链路**）
+    provider.js               generateStructured()：AI 的唯一出口（永不 throw，失败收敛成 invalid）
+    providers/                openai-compat / anthropic / mock（回放）/ fail（故障注入，仅自检用）
+    schemas.js                候选 JSON Schema（枚举全部从 lib/audience.js 等生产单一出处派生）
+    json-schema.js            零依赖的受限 JSON Schema 校验器
+    candidates.js             候选信封 + 确定性规则 R1–R5（没有同名引文的断言进不来）
+    cache.js                  缓存（key 只由 task/promptVersion/provider/model/inputHash 决定）
+    usage.js / pricing.js     用量与成本记账（金额未知时报「未知」而不是 0）
+    redact.js                 送模型前的 DOM 清洗 / 正文提取 / 截断 / 脱敏
+    extract.js                能力 1：优惠字段提取候选（逐字段引文）
+    dedup.js                  能力 2：疑似重复候选（**不导出任何合并/写入符号**）
+    translate.js              能力 3：翻译草稿（只写 candidates 文件）
+    translate-guard.js        译文确定性守卫（数字/币种/URL/专名/否定/不放大力度）
+    diagnose.js               能力 4：采集器 DOM drift 诊断候选（永不改采集器）
+    patch.js                  能力 5：采集器补丁候选（只出 diff，自证=应用+跑 fixture）
+    audit.js                  能力 6：数据质量审计候选（只报警，要求给出可收敛的确定性规则）
+    maintenance.js            唯一 CLI：--task=extract|dedup|translate|diagnose|audit|patch
+  collectors/
+    index.js                  注册表
+    cn_docs.js                国内：百度千帆免费额度表 / 阿里云百炼 / 智谱免费模型
+    global_deals.js           国外真实优惠：Layer3Labs 折扣表
+    global_directories.js     国外目录站：aitools.fyi / Futurepedia / Futuretools
+    headless.js               无头浏览器来源：智谱活动页 / 火山方舟免费额度与活动
+  data/
+    curated_cn.json           国内人工策展（可核验的官方优惠）
+    curated_global.json       国外人工策展
+    curated_plans.json        v2.1 **plans 的人工来源层**：套餐事实（价格/额度/模型/限制/官方引文）
+                               —— 只写事实，`id` 与 `derivedMetrics` 由脚本算（写在这里会报错）
+    providers.json            v2.1 **provider 归一表**：key / 显示名 / slug / 别名（未登记的平台一律硬红）
+    audience-overrides.json   v1.1 **第二个人工来源**：采集侧条目的六字段声明式补充（每条带引文）
+    source-health.json        采集来源的跨运行状态（每轮 collect 写入，与 deals.json 同批提交）
+    source-probes.json        v2.0 每个采集器依赖的选择器/正则/关键词**声明表**（诊断用的探针）
+    source-snapshots.json     v2.0 每个来源两代页面结构摘要（每轮 collect 写入，**不含正文**）
+    ai-pricing.json           v2.0 AI 价目表（人工维护；未复核的条目不参与成本估算）
+    ai-applied-log.json       v2.0 AI 候选被人工采纳的账（可追溯；由 ai-apply 追加）
+    translations_zh.candidates.json  v2.0 AI 翻译草稿（**不是**译文覆盖层，落地要人点）
+    ai-eval/                  v2.0 评测金标集与回放夹具（extraction / dedup / translation）
+    fixtures/                 采集器最小 DOM 片段：migrate-audience-verify 的合成夹具
+                              + v2.0 的 `*.deals/`、`*.list/`（page.min.html + expected.json + PROVENANCE.md）
+    translations_zh.json      国外英文文案的人工中文译文（键为 deal.id，含原文指纹 src）
+    backfill-cards.js         一次性补齐卡片字段的映射记录（新增条目时作写法参考）
+    aliases.json              产品别名表（跨源去重）
+    official_urls.json        聚合站条目 → 官方页映射
+  tools/                      采集器调试工具与发布产物组装
+    build-local.js            校验 → 组装 dist/ → 预渲染 → 自检（含 v2.0 产物密钥扫描；本地与 CI 同一路径）
+    verify-site.js            真浏览器验收：密度/裁切/hover/筛选/弹层/译文折叠/移动端/分类页/按需求页/状态页（dev，需 playwright-core）
+    check-mobile-chrome.js    390px 下逐控件量裁切/越出视口/横向溢出（含 nav.needs 入口行）
+    check-reproducible.js     可重建性门禁：文件里不许有「没有任何源」的值（五个判据，CI）
+    history-verify.js         v1.4 历史门禁：基线 + 事件重放必须等于当前 deals.json（链 / 生命周期 / 上限，CI）
+    history-baseline.js       一次性历史基线（已存在或已有事件时拒绝重跑）
+    history-audit.js          历史 × git 版本交叉校验（离线，**不进 CI**：浅克隆与历史重写都不适合当闸门）
+    history-selftest.js       v1.4 历史自测（噪音抑制 / 锚点 / 链 / 不误报「消失」/ 上限，CI）
+    changes-selftest.js       v1.5 变化雷达自测（分栏与窗口边界 / 覆盖不变量 / 文案微调 / 上限 / 纯函数，CI）
+    changes-report.js         变化雷达的人读报告（分栏逐条 + 被抑制的其他变化，调规则时先看它）
+    audience-selftest.js      受众字段全部红线守卫（三态 / 仲裁 / 措辞同源 / v1.2 需求注册表，CI）
+    provenance-selftest.js    v1.3 信息来源自测（引文上限与预算 / 四种缺失状态 / 渲染措辞，CI）
+    audience-report.js        覆盖率报告：已知 / unknown / 缺席三栏分列，逐条可审计
+    audience-overrides-extract.js  从 DATA-BACKFILL.md 那张表生成 overrides（与数据对不上就拒绝写）
+    migrate-audience-verify.js     `migrate.js --audience` 的验收比对（默认跑合成夹具，CI）
+    check-ci-consistency.js   看门狗：门禁步骤序列 / 冻结断言名单 / --expect-checks 互相独立（CI）
+    seo-selftest.js           v1.7 SEO 门禁演练（27 个检查码逐个定向篡改 + 干净夹具必须静默 +
+                              门槛分支 + slug/钉住/别名三张表的不变量，CI）
+    seo-verify.js             v1.7 SEO 独立验收（**只读 dist/**，与构建期输入完全不同源，CI）
+    seo-report.js             落地页人读报告（页面清单 / 未成页的主题与原因 / 索引策略 / slug 契约）
+    ai-selftest.js            v2.0 AI 层边界自检（六颗主牙 + 结构性牙；离线、零依赖，CI）
+    fixture-test.js           v2.0 采集器 fixture 回放：解析器行为的契约（离线，CI）
+    build-fixtures.js         v2.0 从真实页面剪最小 DOM 片段并生成 expected（页面改版后手工重建）
+    rebuild-deals.js          v2.0 离线重放 merge 重建 deals.json（不联网；ai-apply 之后自动跑）
+    rebuild-plans.js          v2.1 离线重建 plans.json（curated_plans.json → plans.json；--dry-run 只报差异）
+    check-plans-reproducible.js  v2.1 plans 可重建门禁：盘上那份必须与来源层产出的逐字节相同（CI）
+    plans-selftest.js         v2.1/v2.2 Coding Plan 自测（182 项：不该算的绝不算 / id 稳定 / 三态 / 官方出处 /
+                              可重建 / 载荷逐字段对账 / 筛选排序语义 / 7 条牙，CI）
+    ai-review.js              v2.0 候选审阅表（只读；把「无据的确定」单列一栏）
+    ai-accept.js              v2.0 记录人工决定（只改候选文件，不碰生产数据）
+    ai-apply.js               v2.0 **唯一**会写生产数据的工具：只写两个人工来源层 + 门禁 + 失败回滚
+    ai-usage.js               v2.0 用量与成本报表（token 真实、金额未知时报「未知」）
+    ai-eval.js                v2.0 评测：金标集三臂 + 译文守卫篡改测试
+    zh-apply-candidates.js    v2.0 AI 翻译草稿落地（用当前英文重跑守卫 + 门禁 + 回滚）
+    zh-todo.js                中文翻译待办与脚手架（--json / --scaffold 盖原文指纹 / --orphans）
+    zh-selftest.js            中文译文门禁演练（自恢复，验证坏译文真的会被拦下）
+    tier-report.js            分档与厂商归一报告（调规则时先看它）
+    fetch-logos.js            从厂商官网抓取品牌图标，补进 assets/logos/
+```
+
+契约文档在 `docs/SCHEMA-v1.1.md`（六字段的语义、可信度档位、可重建判据、五条既有约定）、
+`docs/SCHEMA-v1.3.md`（信息来源：证据层 / 派生采集事实 / 引文上限 / 渲染与状态词）、
+`docs/SCHEMA-v1.4.md`（优惠历史：四方案决策 / 存储契约 / 什么算重要变化 / ended 的两种含义 / 上限）
+与 `docs/SCHEMA-v1.5.md`（变化雷达：分栏与窗口 / 高价值判定 / 文案微调归一 / 空态与不可用 / 上限 / 路由与门禁）。
+另有 `docs/SCHEMA-v2.1.md`（Coding Plan 数据模型：`plans.json` v1 的完整契约）。
+
+## 采集来源策略
+
+| 来源 | 类型 | 说明 |
+|---|---|---|
+| 百度千帆 | 国内 | 官方文档「新用户免费额度」表：服务名称 / 赠送 Tokens / 有效期 |
+| 阿里云百炼 | 国内 | 官方帮助文档「新人免费额度」 |
+| 智谱AI | 国内 | 官方文档标注的免费大模型（GLM-4.7-Flash 等） |
+| 智谱AI活动页 | 国内（无头） | 官方价格页营销位：新用户 2000 万 Tokens、邀请返 Tokens、限时五折、缓存限时免费 |
+| 火山方舟 | 国内（无头） | 官方产品页「免费额度」表（文本/图像/语音/向量/联网插件）+ 最新活动 |
+| Layer3Labs | 国外 | 折扣表，每行自带官方链接 |
+| aitools.fyi / Futurepedia / Futuretools | 国外 | 工具目录，主要产出 `type: "tool"` |
+
+**已实测淘汰**（零产出或纯垃圾）：Zapier、BitDegree、AitoolsDirectory、AppSumo（客户端渲染，0 产出）、
+火山引擎文档（旧路径 JS 空壳）、各家控制台（需登录）、
+DeepSeek 官网与 API 文档（用无头浏览器渲染后依然 0 条优惠信号——定价页只有"赠送余额"这一计费说明，
+不是可领取的公开额度，故不注册采集器）。
+
+抓不到但真实存在的优惠，走 `scripts/data/curated_*.json` 人工策展——**内容准确性优先于自动化率**。
+
+## 无头浏览器采集（JS 渲染的公开页）
+
+国内厂商的活动页/产品页多是 SPA，静态 `fetch` 只能拿到几百字节空壳（`cheerio` 解析出 0 条），
+这类来源此前只能靠人工策展。`scripts/lib/browser.js` 用浏览器内核把页面渲染完再取 DOM，
+把它们重新纳入自动采集。
+
+设计约束：
+
+1. **只抓公开页，不做登录态抓取**：不加载用户 profile、不注入 cookie、不传凭据。
+2. **默认不加载**：只有 `collect.js --headless` 才 `require` 无头来源，所以 `validate.js` 依旧是
+   零依赖，不带 `--headless` 的调用完全不依赖 `playwright-core`（CI 的采集步骤显式带 `--headless`）。
+3. **规则驱动、失败安全**：每条产出都对应官网上的一句原文正则，页面改版导致正则不命中时产出为 0，
+   **绝不猜测、不拼接**。新增一条优惠 = 在 `collectors/headless.js` 加一条带原文正则的规则。
+4. **宁可漏采也不发坏数据**：免费额度表结构不匹配（分项对不上）时整行跳过。
+5. **等内容，不等网络空闲**：`goto` 只用 `domcontentloaded`，之后显式等待目标文案出现
+   （`--wait` / `waitForText`）。`networkidle` 在有长轮询/埋点请求的 SPA 上永远不触发，
+   超时后重载页面反而会抓到空壳（CI 上实测过：同一个来源本地 5 条、CI 0 条）。
+6. **装不上内核也不拖垮主链路**：CI 里内核安装步骤是 `continue-on-error`，失败时无头来源各自报错、
+   产出 0 条，静态来源照常采集，报告与运行 Summary 里都能看到。
+
+浏览器内核优先用本机已装的 Edge / Chrome；CI（Ubuntu）上由工作流安装 playwright 自带 chromium。
+出口 IP 已实测可达（`bigmodel.cn` 与 `volcengine.com` 均返回 HTTP 200，无风控特征）。
+
+## 预渲染与 SEO/GEO
+
+页面仍是**单文件、零构建依赖**的原生 HTML/CSS/JS，但发布产物 `dist/index.html` 不是空壳：
+`build-local.js` 在组装阶段把内容**预渲染**进静态 HTML，因此不执行 JS 也能读到完整正文
+（搜索引擎、生成式引擎、社交 unfurl 都直接可读）。
+
+### 八个预渲染标记
+
+源码 `index.html` 里保留标记，构建期替换；替换后若仍有残留，构建直接失败（不发空壳页）：
+
+| 标记 | 构建期替换为 |
+|---|---|
+| `<!--PRERENDER:deals-->` | 默认视图（优惠 Tab、无筛选）的**力度分带 + 卡片** HTML |
+| `<!--PRERENDER:facets-->` | 筛选条的 facet 按钮与实时计数 |
+| `<!--PRERENDER:needs-->` | 「按需求找优惠」入口行（10 枚 `<a>`，无 JS 也在、也能点） |
+| `<!--PRERENDER:changes-->` | v1.5 变化雷达条带（与「跳到档位」共用一行；无变化时是明确空态） |
+| `<!--PRERENDER:topstat-->` | 顶栏右侧汇总（条数 / 更新日期） |
+| `<!--PRERENDER:stats-->` | 结果条（显示多少条卡片 · 国内 / 国外 · 覆盖几个档位） |
+| `<!--PRERENDER:categories-->` | 分类下拉的 `<option>` |
+| `<!--PRERENDER:jsonld-->` | `Organization` / `BreadcrumbList` / `FAQPage` / `ItemList` 四段 JSON-LD |
+| `__SITE_URL__` | 站点绝对地址（避免源码里硬编码第二份 URL） |
+
+### 模板只有一处：RENDER-CORE 纯函数区
+
+卡片模板**不会**在构建期与浏览器端各写一份。`index.html` 内联脚本里用标记划出一块只含
+常量与纯函数的区块：
+
+```
+/* ==== RENDER-CORE:START ==== */
+    常量与档位     TIERS / tierOf / affirmativeText
+    厂商归一       VENDOR_RULES / vendorOf / logoHtml
+    时间与转义     daysUntil / escapeHtml / offerOf / featsOf / tagsHtml
+    折叠           foldKey / foldGroup / foldDeals
+    筛选与渲染     matches / cardsFor / facetBarHtml / cardHtml / gridHtml / detailHtml
+/* ==== RENDER-CORE:END   ==== */
+```
+
+`scripts/lib/render-core.js` 按标记抽出该区块，在**没有 DOM 的 vm 沙箱**里求值。构建期调
+`defaultCards()` + `gridHtml()` 生成静态骨架，浏览器端调 `cardsFor(deals, filters)` 做筛选——
+**默认视图就是同一函数取默认筛选参数的那一次调用**，两条路径不可能分叉。
+
+这条约束是刻意的：一旦有人在区块内引用 `document` / `window` / `state`，构建立即报错，
+而不是悄悄产出一个坏页面。
+
+### 优惠力度分档（排序依据）
+
+默认排序按「拿到手要花多少钱」从低到高，五档：
+
+| 档 | 名称 | 判据（按顺序命中即停） |
+|---|---|---|
+| 1 | 完全免费 | `pricingModel` ∈ {free, freemium} |
+| 2 | 免费额度 | 标题/说明命中「新用户 / 赠送 / 免费额度 / 代金券 / 首月…免费」，或 `pricingModel` ∈ {credits, trial} |
+| 3 | 身份优惠 | 标题/说明命中身份门槛（学生 / 教师 / 非营利 / 初创 / 开源…） |
+| 4 | 折扣促销 | 要付费，但命中折扣或限时 |
+| 5 | 付费为主 | 其余 |
+
+规则全部写在 RENDER-CORE 里，读的都是数据里**已有**的字段，不引入外部评分。
+两个刻意的取舍：
+
+- **判据分两侧读**：`标题 + discountInfo` 是「这是什么优惠」，`eligibility` 是「谁能拿」。
+  身份门槛只在优惠侧成立才算数——目录站抓来的适用条件经常是媒体受众词
+  （`Students, solo builders, app builders…`），拿它当门槛会把普通免费档错划进身份优惠。
+- **先剔除否定句**：采集回来的原文里真有
+  `No standing public student or nonprofit discount was listed…`
+  和 `…the previous student offer ended March 11, 2026`。
+  不剔除就会把「已结束的优惠」挂进身份优惠档。
+
+同一档内按「即将截止优先 → 其次最近更新」排序（严格的旧排序语义细化）。
+`npm run report:tier` 会把每张卡命中的判据和判据读到的原文逐条列出来，调规则先看它。
+
+### 活动期限三分类（「即将截止」排序的依据）
+
+「即将截止」按活动期限分三档排，卡片角标就是这三档：
+
+| 档 | 角标 | 判据 | 排序位置 |
+|---|---|---|---|
+| 1 | `剩 N 天` / `今天截止` | `expiresAt` 有值（绝对截止日期） | 最前，按剩余天数升序 |
+| 2 | `未标注截止日期` | 没有 `expiresAt`，且不满足第三档的判据 | 之后，按最近更新降序 |
+| 3 | `长期活动` | 没有 `expiresAt`，`validity` 命中**正向线索且没有否定线索** | 最后，按最近更新降序 |
+
+后两档都没有绝对日期可比，退回「最近更新优先」——次序因此是确定的，不再取决于
+`deals.json` 的行序；同一天截止的条目也按最近更新兜底。
+
+第三档的判据是**两条正则的与**（`scripts/lib/classify.js` 的 `ONGOING_POSITIVE_RE` /
+`ONGOING_HEDGE_RE`，与 `index.html` 的 `ONGOING:START/END` 块逐字节同源）：
+
+- **正向线索**必须锚在活动/有效期语义上：`长期|常年|永久` 之后 0–6 字内出现
+  `有效|活动|可用|开放|提供|免费`，或 `不限时|无截止日期|不设截止|ongoing|no expiration|
+  always available|no end date`；
+- **否定线索**一票否决：`未标(注)截止|未标明截止|以官方…为准|以…实时…为准|随时结束/调整/变更|
+  不另行通知`。命中即落第二档，**没有例外**。
+
+三条硬规矩：
+
+- **「未标注」不等于「长期」**。第三档是官方原话（"长期有效"），第二档是「我们没查到」。
+  把后者写成前者就是编造，所以宁可分成两档、多一个灰色角标。
+  **2026-09-28 的实测教训**：只有正向子串匹配时，21 条 `ongoing` 里有 11 条自己的
+  `validity` 就写着「官方未标注截止日期」——详情页于是并列「官方未标注截止日期」与
+  「官方…写明长期有效」两行（线上 80 个详情页里 21 页带着伪造的溯源）。判据缺的不是
+  关键词，而是**否定**；源头还有采集器自己造词（`cn_docs.js` 给「官方只写免费、没写期限」
+  的模型加了「长期有效」前缀）。所以判据与出处是**两层**，只修一层页面上仍然自相矛盾。
+- **「某个权益永久」≠「整个优惠活动长期」**。`额度不过期`（讲的是 credits）、`永久五折`
+  （讲的是折扣价）都不判 `ongoing`，落第二档。宁可少标一个「长期活动」，也不替官方扩大承诺。
+- **相对期限不算截止日期**。「自开通起 3 个月」「有效期 1 年」从开通当天起算，没有绝对日期，
+  归入第二档，不折算成 `expiresAt`。
+
+`expiresAt` 只有两个写入途径：人工策展数据里显式填写，或合并时由 `scripts/lib/expiry.js`
+从 `validity`/`discountInfo` 里**抽取写死的绝对日期**——必须带 4 位年份，且日期附近有
+「截止 / 至 / until / through / ends」这类结束语义；发布日期、文档更新日期、模型下线日
+一律不算，早于今天的日期也不收（页面上的往期活动会把本条误判成过期）。抽不到就留空，不猜。
+
+`npm run selftest:expiry`（94 项）验四件事：抽取器的正/负样例、前端三分类与排序次序、
+前后端「长期」正则**逐字节一致**（文本级比对，不只是行为比对）、以及**数据不变量**——
+任何判成 `ongoing` 的条目都不得自带「官方未标注截止日期 / 以官方为准」这类线索。
+`npm run validate --strict` 另有一颗钉子（`checkOngoingGuard()`）：用探针直接验证两层判据都在，
+谁把否定层删掉，strict 立刻红。
+`npm run validate` 会打印当前分布（有截止日期 / 未标注 / 长期活动；2026-09-28 为 0 / 123 / 10）。
+
+现实是：**绝大多数条目的官方页面只写「限时」而不给日期**，所以第一档经常是空的。
+这不是排序失效，而是那个日期在官方页面上确实不存在——宁可留空，也不拿发布日期凑数。
+
+### 厂商 logo
+
+厂商 logo 是**厂商官方品牌图形**，登记在 `assets/logos/manifest.json`，构建期由
+`scripts/lib/logos.js` 生成为 `dist/logos/` + `dist/logos.css`。页面上只写 `data-logo`
+属性，图形由 CSS 提供——因此渲染核心保持纯函数，且**不热链任何第三方 CDN**。
+
+构建期断言「模板引用的 logo key 全部已登记」，缺一个就构建失败。
+
+**拿不到官方图形时退到名称缩写兜底块**（`Wispr Flow → WF`、`KREA → KR`）：
+低饱和深色底 + 白字，`title` / `aria-label` 写明「名称缩写，未取得官方品牌图形」，
+且**绝不与官方图形出现在同一张卡上**（构建与 `npm run verify` 都断言二选一）。
+顺序是硬的——拿得到真图形就绝不用缩写。当前 **77 家厂商里 38 家用官方图形、39 家用缩写兜底**
+（`npm run report:vendor` 实测输出 `官方品牌图形: 38 家 / 名称缩写兜底: 39 家 / 共 77 家`）。
+详见 `assets/logos/README.md`（含直连取不到时怎么走代理 + 真浏览器取图）。
+
+### 中文翻译（国外条目的英文文案）
+
+国外来源（Futuretools / Curated）的 `discountInfo` / `description` / `eligibility` / `validity` / `priceLine`
+是英文散文（这 5 个就是 `scripts/lib/zh.js` 的 `ZH_FIELDS`——允许翻译的字段就是它们），
+而访客以中文为主。做法是**人工译文覆盖层**，不是渲染期机翻：
+
+- 译文集中维护在 `scripts/data/translations_zh.json`，键为 `deal.id`，只放译文。
+- 采集（`collect.js`）与构建（`build-local.js`）**都**调用 `scripts/lib/zh.js` 的 `attach()`，
+  把结果写进 `deals.json` 的 `zh` 字段。浏览器 `fetch('deals.json')` 与构建期预渲染因此
+  读到同一份数据，仍然只有一条代码路径。
+- **英文原文字段一个字节都不改**。译文永远挂在原文下面，详情弹层里渲染成
+  `<details class="zht">`（默认展开，点一下收起，偏好记在 localStorage）。
+- 卡片上给一个 `中文` 胶囊提示「详情页附中文翻译」，放在 `.meta` 行而不是标题旁——
+  那一行是 `nowrap + overflow:hidden` 的横排，加个胶囊不会让标题重排，卡片定高不变。
+- **原文指纹**：每条译文连同它照抄的那段英文一起存进 `src`。英文被采集器改写后指纹对不上，
+  该字段译文**自动停用**并在构建日志里催促复核——宁可不出译文，也不出与原文矛盾的中文。
+- 判定「这段是不是英文散文」由 `scripts/lib/zh.js` 统一负责，构建与工具共用：
+  零汉字 + 拉丁字母 > 8，或有零星汉字但出现英文虚词。踩过的坑是「CJK 占比 < 25% 就算英文」
+  会把 `官方定价页标注多款模型价格为「免费」：文本 Hunyuan-MT-7B、bge-m3……`
+  这种**本来就是中文**的条目误判进来。
+
+```bash
+npm run todo:zh         # 列出待翻译条目（原文 + 已有译文），--json / --scaffold / --orphans
+npm run check:zh        # 译文门禁（硬）：漂移必红；待译按宽限期判（默认 7 天，--grace=N 可调）
+npm run selftest:zh     # 门禁演练：塞坏数据进去，验证构建拦得住、check 也标得出来
+```
+
+构建期门禁：译文不合规（不含汉字 / 字段名非法 / 超长 / 原文为空）**硬失败阻止发布**；
+原文已变则警告并停用该字段；译文键对不上任何条目则告警（条目改名换 URL 会让 id 变化）。
+
+**译文门禁分两档**（2026-09-28 起，此前 `check:zh` 是建议性、却被 `selftest:zh` 反向依赖）：
+
+| 判词 | 内容 | 后果 |
+|---|---|---|
+| **漂移** | 孤儿（对不上 id） / 原文已变停用 / 不合规 / 覆盖层管不到 | **必红**，没有宽限期 |
+| **待译** | 新采进来的英文条目还没人工翻译 | 宽限 7 天内放行（`PENDING_GRACE_DAYS`），数量与「最老 N 天」每次都打印；超期转红 |
+
+为什么不是「待译必红」：自动采集每天两次，任何一条新英文条目都会让下一次人工 push 的 gate
+变红（2026-09-28 e01dcfc 实测就是这条链），系统会长期停在「有新优惠 → 必然 CI 红」。
+为什么待译也不能无声：数量与最老天数进 CI Summary、采集日志与 `/status/` 页面。
+`npm run check:zh -- --grace=0` 可以把待译也当成必红（发布前自查用）。
+
+**年龄从「它进入待译」那天算起**，不是从条目第一次被采集到（`firstSeen`）算起。
+这个区别是必须的：上游改写会让**一条老条目**的译文失效（2026-09-28 实测：Midjourney / Grok
+的英文被换掉，两条中文随之失效），用 `firstSeen` 计时等于「刚失效就超期」，第二天门禁就红
+而人没有反应时间。所以：
+
+- `scripts/data/zh-pending.json`（**入库**的跨运行状态）记下每个 `(条目, 字段)` 进入待译的日期；
+  由 `collect.js` 每轮维护，作者循环 `--scaffold` 收尾时也调同一个纯函数划账
+  （仍在待译的保留原日期、译好的删掉、新出现的记今天），门禁只读 —— **会改文件的检查不是检查**；
+  两边都得划账的理由：账本只该记**还没译**的字段。留着已译好的旧日期，等上游再改写一次、
+  人把译文撤下时会翻出上一轮的日期当成「这条已经等了很多天」，宽限期一天不剩 —— 那是假红；
+- 没有记录时才退回 `firstSeen`；两者都没有就从今天起算（绝不把「不知道它什么时候进来的」
+  当成「它已经陈年」）；
+- `npm run check:zh` 会打印 `（N 天，自 YYYY-MM-DD 起 · 依据 pending|firstSeen|today）`，
+  算的是哪一天一眼可见。
+
+> 顺带一条血泪账：漂移数曾经把 `stale` 与 `dropped` 加了两遍（`lib/zh.js` 里后者就是前者的
+> 计数），于是打印出「漂移 4 处」而分解式只有 2 —— 数字对不上的门禁没人会信，已只计一次。
+
+> 上游改写造成译文失效时，覆盖层那条中文会**自动停用**（指纹对不上），而不是被工具悄悄追认
+> —— 必须有人复核新英文再重新落笔。H2 的红线是**不做机器翻译**，不是「不许人写」：
+> 2026-09-28 那次采集里 Midjourney / Grok 的英文被上游换掉，两条中文随之失效、从覆盖层移除
+> 并进入待译清单（宽限 7 天）；同日人工补译了 Midjourney / Grok / Unboring.ai 三条，账本随即划清。
+
+> 覆盖层是译文的**唯一权威**：源文件 `deals.json` 里不需要手工写 `zh`。
+> 构建时 `build-local.js` 会把贴好译文的整份数据写进 **`dist/deals.json`**——
+> 那才是浏览器 `fetch('deals.json')` 真正拿到的那一份。
+第 1 步的数据校验跑在未贴译文的 `deals.json` 上，所以这道门禁是在构建里单独补的。
+
+### 搜索范围（什么能被搜到）
+
+首页搜索框的 haystack 覆盖：`title` / `vendor` / `discountInfo` / `description` / `category` /
+`source` / `eligibility` / **`validity`** / **`priceLine`** / `features`，
+以及**中文译文 `zh.*`**（含折叠卡成员的译文 `memberZhText`，后者只用于检索、绝不参与渲染）。
+
+规矩是：**用户能看见的文字都必须能被搜到**。译文是渲染出来的正文（卡片「中文」胶囊 +
+详情弹层里的可折叠译文块），把它排除在 haystack 之外会造成「看得见、复制出来搜不到」。
+`npm run verify` 的 §8b 现场从产物里取一条带译文的卡片，拿译文里的中文片段去搜并断言命中
+（优惠视图与「全部工具」视图各验一次，且都不硬编码条目）。
+
+### 原文截断（不把截断的句子伪装成完整句）
+
+`scripts/lib/schema.js` 的 `cleanText()` 是**所有**用户可见文本的唯一入口，它保留截断语义：
+
+- 上游本来就以 `...` / `…` 结尾（aitools.fyi 的 `zhDescription` 实测 15/15 如此）：
+  剥掉原省略号之后**照样补回一个 `…`**。旧实现是把残尾直接删掉，于是屏幕上出现
+  `……Getsolved 将检测和重写整` 这种断在半路的「完整句」。
+- 我们自己按字段上限切：先退到词边界（切点两侧都是拉丁字母时退到最近的空格，退让下限 60%），
+  再补 `…`；中日韩没有词边界，原样切。
+- 两条不变量：**返回值绝不超过上限**（补记号先让位，schema 的长度断言依赖它）、
+  **清洗幂等**（`validateDeal` 会拿 `cleanText(deal.title,150) === deal.title` 复核存量数据）。
+- 采集器的抽句正则同样只认到句读为止（`[^。；;：:\n]`），否则会跨过中文的「；」「：」，
+  抓出 `…额度有效期内是否使用均不会暂停计时； 额度过` 这种半句。
+
+`npm run selftest:text`（46 项）验这些；另有两条**数据不变量**：已存文本必须已是规范形态、
+没有字段以 ASCII 的 `...` 结尾（规范记号只有 `…`）。
+
+### 数据源状态（/status/）
+
+首页页脚的「数据源状态」指向 **`/status/`**（另有机器可读的 `/source-health.json`）：
+每个采集来源的**最近一次**结果与跨运行的连续性——本次/上次条数、状态、连续失败次数、
+连续零产出次数、最近成功时间。状态规则写死在 `scripts/lib/health.js` 的文件头：
+
+| 条件 | 状态 |
+|---|---|
+| 采集器抛异常 | `failed`（`consecutiveFailures+1`，`lastSuccessAt` 不刷成今天） |
+| 无头来源 + 本轮浏览器没起来 | `failed`（页面根本没渲染，不许报正常） |
+| 成功且 `cur=0` | `degraded`；连续 3 次 → `failed` |
+| 成功且 `prev>0` 且 `cur < prev×0.5` | `degraded`（条数骤降） |
+| 其余 | `healthy` |
+
+为什么要公开这一页：首页只写「数据更新 {今天}」，而人工策展条目的 `lastSeen` 每天都在刷新，
+所以「某个来源坏了几天」与「某个来源这次没有新内容」在首页上看起来一样（采集报告只活在
+当次运行的内存里）。`scripts/data/source-health.json` 是**入库**的跨运行状态，由
+`collect.js` 每轮写入、与 `deals.json` 同批提交；`npm run selftest:health`（51 项）钉住
+上面这张规则表，包括「单次零产出不算 failed」「连续 3 次才升级」「浏览器没起来不许报 healthy」。
+
+**它同时满足站点的五条既有约定**（2026-09-29 收口前只满足两条）：
+
+| 约定 | 做法 |
+|---|---|
+| sitemap | 进 `sitemap.xml`，`priority 0.3` —— **低于**详情页 0.7（它是工具页，不是搜索入口） |
+| feed | 声明两个 `rel="alternate"`；自己不产条目（订阅是「内容更新」语义，一页运维表不是更新） |
+| JSON-LD | 两段：`WebPage` + `BreadcrumbList`（**一段一个对象**，不塞进一个数组） |
+| 预渲染 | 表格构建期写死 |
+| 无 JS 可读 | 绝对时间在 `<time datetime>` 里；「2 小时前」只由内联脚本换算，禁用 JS 时读到的仍是完整信息 |
+
+它还**不发** `Dataset` / `ItemList`：机器可读的那一份就是 `source-health.json`，页面上直接链着它。
+把同一份事实声明两次，两次迟早会分家，而分家时两边各自看都自洽 —— 没有任何东西会红。
+
+`npm run verify` 对它有 10 条真浏览器断言，其中最要紧的两条是 **390px / 360px 不产生页面级
+横向溢出**：三列数字与时间都是 `white-space: nowrap`，宽表靠 `.stable-wrap` 内部横滚。
+把那一层去掉，桌面端毫无变化，390px 溢出 121px、360px 溢出 151px（实测）—— 这类缺陷静态检查
+一条都看不见。
+
+### 诚实性约束（与竞品的关键差别）
+
+- 卡片底部只有**一种**新鲜度标注：「数据更新 {lastSeen}」。这里曾分「已核验」（人工逐条回访官方页）
+  与「数据更新」（自动采集）两种角标，但两者并列时反而误导——人工核验那条的日期常常比自动采集的旧，
+  读起来像「这条更不新鲜」，于是整条撤掉（筛选条的「只看已核验」、顶栏的「已核验 N」、详情/对比里的
+  「核验状态」行一并撤掉）。数据字段 `verified` / `verifiedAt` 仍在，`validate.js` 仍守
+  「`verified=true` 必须带 `verifiedAt`」；要恢复展示，改 `stampOf()` 一处即可。
+- 无 `features` 的条目回退展示 `discountInfo`；工具条目显示工具简介（灰条）而**不冒充优惠**
+  （优惠正文用档位配色的竖条，两者视觉上分得开）。
+- 优惠正文只在标点处切一刀加粗前半句，**不改写、不截断、不补写**一个字。
+- 中文译文只出现在**人工逐条翻译过**的条目上：卡片有「中文」胶囊 ⟺ 详情里真有译文块
+  （构建自检与 `npm run verify` 双向断言，两个方向都查）。取不到译文就什么都不渲染，
+  **不机翻、不占位**。译文与英文原文并列展示，原文永远在上、一个字都不删。
+- `FAQPage` 结构化数据**从页面可见的 `<details>` 文案反向解析**生成，保证两者逐字一致
+  （构建自检会校验这一致性）。
+- 页脚明确声明「本站不收录付费推广位，排序与推荐理由不出售」。
+- **详情页有「信息来源」块（v1.3）**：官方页面 / 原始出处 / 收录来源 / 来源类型 / 采集方式 /
+  首次收录 / 最近发现 / 最近成功采集 / 断言依据 / 官方原文片段 —— 十行固定，缺值也出行，
+  但**绝不把「缺失」说成同一句话**：
+  - **不适用** = 人工策展，按设计不经过采集器；
+  - **未知** = 本该有，但来源心跳里没匹配到；
+  - **不可用** = 本次构建根本没有可用的心跳数据。
+
+  「最近成功采集」取自 `source-health.json`（构建期 join，只进 `dist`），不是每条记录自己存的
+  时间戳。块尾固定免责句，**不给优惠下有效性结论**：不渲染 `verified` / `verifiedAt`，
+  也不出现「已核验」「100% 有效」这类词（`validate --strict` 与 `provenance-selftest`
+  对措辞做逐字红线检查）。官方原文片段是**有界引文**：≤3 条 × ≤200 字、只人工写、
+  超长拒收、出处禁聚合站；全库还有字数与占比两道预算——这一层的存在理由就是
+  **不因为要展示而复制第三方全文**。
+
+### 按需求找优惠（v1.2）
+
+首页在筛选条下面有一行「按需求找优惠」入口，把「我是学生 / 我是开发者」的常见诉求
+直接用**静态路由**表达出来，而不是要求用户先把需求翻译成筛选条件：
+
+```
+学生  学生专享12  教育身份可领7  无需信用卡1  国内可用30  完全免费60
+      免费 API45  免费 Tokens44  AI Coding4  免费模型12  开发者 Credits67
+```
+
+十条入口各自对应一个 `/need/<slug>/` 静态页（预渲染表格 + 「为什么在这一页」证据列 +
+双 feed + 三段 JSON-LD + 自指 canonical + 进 sitemap），完整报告见
+`research/v1.2-intent-first-home-report.md`。
+
+**为什么是静态路由而不是 `?need=`**：首页是静态文件，无法按 query string 产出不同内容。
+`?need=free-api` 分享出去，别人打开的是「首页」而不是结果页，爬虫读到的也是首页 ——
+「URL 可分享」与「无 JS 可读」两条会同时落空。这是本轮唯一的形态性决策。
+
+**判据只写一遍**：十条判据在 `scripts/lib/audience.js` 的 `NEED_PREDICATES`，
+结果作为**派生字段** `needs` 写进 `dist/deals.json`（与 `collections` 同构），
+前端只做 `includes()`。**v1.1 的字段契约一个字没改**（见 `docs/SCHEMA-v1.1.md` 第十一节）。
+
+**入口行的数字全部按数据现算**：首页入口上的数字、页面顶部、表格行数、JSON-LD
+`ItemList` 全部同源；文案里禁止写死条数，有断言守着（这条断言写完当轮就抓到
+3 处我自己写死的数字）。
+
+**移动端**：≤760px 换成短标签（专享 / 教育 / 免卡 / 国内 / 免费 / API / Tokens /
+Coding / 模型 / Credits）并排成两列，**切换只用 CSS 媒体查询、不用 JS** ——
+无 JS 的访客在窄屏上也要看到短标签。全称与短标签两个 `<span>` 同时在 DOM 里，
+屏幕阅读器在桌面端读到的仍是全称。
+
+### 变化雷达（v1.5）
+
+v1.4 把「优惠怎么变的」记成了一份可重放验证的变更日志；v1.5 把它变成读者能用的视图 ——
+**首页一行条带 + 一页 `/changes/`**，让人有理由反复回来，而不是搜索一次就走。
+
+| 分栏 | 取什么 | 窗口 |
+|---|---|---|
+| 今日新增 | `created` 且 `at === 基准日` | 当天 |
+| 最近 7 天变化 | 优惠内容 / 领取条件 / 有效期变化（`benefit_changed` / `eligibility_changed` / `expiry_changed`），**以及过去 6 天内首次收录的条目** | 7 天 |
+| 即将结束 | **状态量**：`type=deal` 且 `expiresAt` 落在 7 天内、按基准日算剩余天数 | 前瞻 7 天 |
+| 已结束 | `ended`（每行写明原因：来源不再列出 / 过期下架 / 超出上限 / 判定无效） | 30 天 |
+| 重新出现 | `restored`（曾不再列出、后又观测到） | 30 天 |
+| 其他变化 | 元信息更新（`updated` 类字段）与**文案微调** —— 只在 `/changes/` 的折叠块里，**不上首页** | 7 天 |
+
+**判据只写一遍**：`scripts/lib/changes.js` 的 `buildRadar()` 是纯函数（不读时钟、不联网、零依赖），
+构建期算一次，首页条带与 `/changes/` 页读的是同一份结果。基准日是**数据时间**
+（`deals.json` 的 `updatedAt` 日期），不是构建时刻 —— 这样同一天两次构建的产物逐字节相同。
+它**不注入 `dist/deals.json`**（`dist/deals.json` 的顶层键与源文件保持一致）：这一层的产物是
+两个静态页面，浏览器不需要多拿一份数据。
+
+**普通文案改写不算重大变化**（这一轮点名的红线）：`description` / `lastSeen` / `zh` 在 v1.4 里
+就不被跟踪（产生 0 事件）；v1.5 再补一道 —— 被跟踪的**自由文本**字段若原值与新值在
+「文案归一」（去零宽字符、全角空格、折叠连续空白、trim）之后相同，一律降级为「文案微调」，
+进折叠块并计数，**不上首页**。日期与枚举字段不参与这条判定（差一个字符就是差一个语义）。
+判断全是规则，**没有任何 LLM、没有相似度近似、没有摘要**。
+
+**首页条带不单独占一行**（这是本轮最贵的取舍）：1440×900 实测网格起点 227px、卡片 192px、
+行距 12px、档间分带标题 26px，第三行底边 = 899px —— 距视口底边只剩 **1px**，任何独立成行的
+条带都会把首屏完整可见从 9 张压到 6 张（演练实测：独立成行时网格起点 250px、6 张）。
+所以它与「跳到档位」共用一行（`.hubline`），做成 `flex: 1 1 auto; min-width: 0` 的可伸缩项：
+内容超宽由正文区内部横滑，「全部变化」入口放在横滑容器外面（一个滑走的入口等于没有入口）。
+窄屏上「跳到档位」本身就是四等分整行，条带顺延到下一行（仍是一行 24–28px），
+空态另有一套短文案，避免整句被裁掉半句。
+
+**五条既有约定一个不少**：`/changes/` 有自指 canonical、双 feed、三段 JSON-LD
+（`CollectionPage` / `BreadcrumbList` / `ItemList`）、进 sitemap（`priority 0.8`，介于目录页 0.9
+与详情页 0.7 之间）、无 JS 可读（五栏 + 起算日 + 免责句都在静态 HTML 里）。
+每条雷达行链到该条优惠的详情页，那一页有它的完整「变更记录」（v1.4 的层，v1.5 补上入口与断言）。
+
+**空态与「不可用」分开说**：日志缺失/损坏时说「本次构建没有拿到历史日志」，
+绝不说成「没有变化」；每栏为空还要分清原因 —— 「即将结束」为空可能是「一条都没写绝对截止日期」
+（附实测覆盖数），也可能是「有 N 条写了，但都不在 7 天内到期」。
+
+**交付当天的真实状态**：`scripts/data/deal-history.json` 的起算日是 2026-09-30，
+当天 **0 条事件**、`deals.json` 里 **0 条 `expiresAt`**，所以五个分栏全空、首页条带是明确空态。
+这是如实结果（**不补造历史**）；非空路径由 `selftest:changes` 的夹具与一次**真实数据演练**
+证明（演练造了 6 类变化、跑完 build → verify，再逐字节还原两个文件）。
+
+契约见 [`docs/SCHEMA-v1.5.md`](docs/SCHEMA-v1.5.md)，完成报告见
+`research/v1.5-change-radar-report.md`。
+
+### 二级页残留小字清除：别名页那条例外退役（`secondary-page-residue-v1`，2026-10-09）
+
+三个别名页（`/need/student-only/`、`/need/free-api/`、`/need/dev-credits/`）顶上那条
+`<p class="snote aliasnote">` 与表格题注里的长句**整条删除**（不是写短、不是折叠、不是改名），
+并且把「删掉之后不许回流」做成了会响的机器断言。
+
+**为什么删**（实测，逐条）：
+
+| 上一轮的说法 | 实测 |
+|---|---|
+| 那是「导航更正：读者点进旧地址必须知道该去哪里」 | 句子里**没有**「去目标页」这个动作的可见路径（链接的是页面标题）；读者真正用来导航的是面包屑与站内链接。三个别名页各有 **183 个站内入链来源**（排除三个别名页自身后仍是 183），全站**零入链路由 0** |
+| 那是 USER_REQUIRED，不是维护口径 | 它渲染的是**站务机制**（「保留旧地址可用」「不参与搜索收录」）与**内部判据标识符**（`studentSignal`、`benefitType 含 free_api`）；题注里「共 N 条」还与标题下的 `meta` 行**重复** |
+| （隐含）它已经被门禁看过 | **没被看过**：构建期那条扫描当时用 `class="snote"` **精确串**匹配，对 `<p class="snote aliasnote">` 一条都照不到 —— 「没被咬到」被误读成了「判过没问题」 |
+
+**删完之后**：别名页与其它目录页**同形** —— 首屏只有标题 / 条目数 / 更新时间，
+`<caption>` 逐字是「共 N 条。」，底部折叠块照旧非空（三个别名页在注册表里本来就有自己的
+`userNotes`，共享句也照常进折叠块）。机制一个字没改：`noindex, follow` + **自指** canonical +
+不进 sitemap + 条目集合与目标页逐条相同 + 别名链最长 1 跳。**页面上不再有任何说明文字**
+（零文案入口刻意不做：在 noindex 页的面包屑里塞目标页链接会造出第二套导航语义）。
+
+**三条会响的牙 + 一条反向断言**：
+
+1. 构建期首屏扫描：判据从「非别名页 0 条」升级为**目录页家族（含别名页）0 条**；
+2. `verify-site.js` §22c ③b：**`introNoteRoutes.length === 0`**（不再读别名表 —— 旧判据只算
+   别名表的子集，任何别名表里没有的目录页悄悄长出首屏说明它都不管）；
+3. 构建期**题注形状牙**：目录页家族的 `<caption>` 只允许 `共 N 条。` / `共 N 个入口。` 逐字形状
+   （**条件式**：题注存在就必须匹配；不存在不判 —— 题注在任何浏览器里都不渲染，而它有表格
+   a11y 名的价值，所以本轮只退役它身上的长句、**不删这 45 条题注**）。附反空洞守卫：
+   本产物里存在的题注少于 20 条就红，防「扫描面坏了却静默通过」；
+4. `selftest:audience` 反向断言：`landing-aliases.json` 里每条 `reason` 的**逐字文本**
+   不许出现在任何产物页面（扫全部 `dist/**/index.html`）。
+
+**变异证明**（把删掉的句子注回模板 ⇒ 门禁变红，原始输出入库
+`research/_raw/secondary-page-residue-v1/mutation/`）：R-1（注回 `.aliasnote`）红了 **5 条**
+（构建期首屏扫描 + 说明清单对账 + 浏览器层 ③b + 两条 ⑨ 对账）；R-2（注回长题注）红了题注形状牙。
+
+**换靶如实记**：`need/student-only/` 原本还是 5 条变异牙（M6/M8/M10/M12/M14）与 M1–M4 第一个壳
+的靶页 —— 那条说明删掉后它 `<main>` 内 0 条 `.snote`，变异失去承重面。四壳改成
+`plans/`（12 条说明，原靶页 1 条）/ `status/` / `changes/` / `feeds/`，M14 换 `models/`、
+M15 换 `feeds/`：**目录页家族从此没有任何变异壳**（该家族已无页面级说明可变异），
+而 M1–M4 守的是 `.snote` 的宽柱规则本身 —— 价值随承重面迁移，没有静默。
+
+### 扫描面外的 8 类小字容器 + 「删掉不许回流」扩面（`secondary-page-residue-v2`，2026-10-09）
+
+上一轮（`secondary-page-residue-v1`）收口时留下两件：报告 §8 里 **7 组「待用户确认」**，
+以及**扫描面之外**的 8 类小字容器（`.dsrc-note` / `.ddesc` / `.fdesc` / `.chgnote` / `.pchnote` /
+`.pftdesc` / `.chgmeta` / `.hint`）—— 上一轮对它们**只盘点未判**。本轮把这两件一起收口：
+8 类容器 **86 组 / 352 次出现 / 186 页**逐条裁定，**实删 5 组（4 组容器 + `/models/` 题注末句）、保留 87、挂起 0**。
+
+**删了什么**（11 个源码编辑点 + 17 条数据行，共 28 处文本改动、1164 字可见正文）：
+
+| # | 位置 | 删的片段 | 覆盖 |
+|---|---|---|---|
+| 1 | `scripts/lib/audience.js:826` + `index.html:1347`（权威常量 + 受控副本，**同批**） | `.dsrc-note` 尾半句「；最终以厂商官方页面为准。」（49 → 37 字） | 80 个 `/deal/*` 页 |
+| 2 | `scripts/collectors/headless.js:132/298/313` + `deals.json` 17 条 `description` | `.ddesc` 的「（无头浏览器渲染后提取）」整括号（**改真源**，不做渲染层遮盖） | 17 个 `/deal/*` 页 + `dist/deals.json` |
+| 3 | `plans-hub-page.js:68` / `:104` · `plans-page.js:109` · `api-plans-page.js:88` | 与共享页脚重复的半句（导语尾句 / 折叠条句首 / 两条口径句首） | `/plans/`、`/plans/coding/`、`/plans/api/` |
+| 4 | `scripts/lib/plan-history.js:231` | 上一轮**漏删**的尾句（注释声称删了、字面仍在；留着就是回流活口） | 仅 `ended` 事件回流 Feed，实测 `ended=0` |
+| 5 | `scripts/lib/models-page.js:872` | 题注末句「；「目录状态」是派生分类，「模型角色」来自 registry。」（−30 字） | `/models/` |
+
+**为什么只删半句、不删元素**：`verify-site.js:1926` 的既有断言要求 `.dsrc .dsrc-note` 仍匹配
+`/不构成对优惠是否有效/`（删除面 1），而 `.ddesc` 那 17 页的整条就是来源句（删整条会让这些页一条说明都不剩）。
+删除是**外科式**的：计数与事实留下，只删「自证 / 采集方式 / 与页脚重复的半句 / 内部标识符」。
+
+**保留的 82 组按「谁在承重」分类**（不是口味）：既有断言钉住 **2** 组 · 数据面依赖 **29** 组
+（含 `.fdesc` 的 25 条 —— 它们是 Feed 产物的 description 槽位，改它 = 改 Feed 字节）·
+C 类数据语义 45 组 · D 类交互与结构槽位 5 组。
+上一轮 §8 的 7 组里 6 组同样用**机制性**理由保留（页面族结构下限 `main-snote ≥ 2` / `≥ 4`、
+题注牙 + 表格 a11y 名），**没有一条以「待确认」挂回去**。
+
+**两条新牙**（判据本体 = `build-local.js` 的 `scanResidue()`，接进 `selfCheck()`，**每次构建都跑**；
+`npm run check:residue` 是对**已就绪产物**跑同一份实现的复核，CI 门禁里也是一步）：
+
+1. **删掉不许回流**：整篇产物（304 文件，HTML 剥 script/style/注释、非 HTML 原样判）里
+   **44 条断言字面三遍 0 命中**（原样 · 归一化（实体/零宽/拆标签/折行/全半角/同类标点）· `.json`/`.ndjson` 的 `\uXXXX`）；
+   同时正面断言**页脚保留句「最终以官方页面为准。」186/186 页仍在**、共享页脚**不含**任何登记字面；
+2. **扫描面不许收缩**：8 类容器的**存在性下限** + 两条**关系式**（`.ddesc ≥ 1×详情页数`、`.dsrc-note ≥ 2×详情页数`，
+   基准量从产物现算）+ 反空洞三条（条目 ≥ 30 · **活字面** ≥ 40 · `floor ≥ measured × 0.5`），登记表缺失即**抛错停构建**。
+
+**对抗复核把它推翻过一次，已修（这是本节最该读的一段）**：t6 独立沙盒实测 ——
+**共享页脚的豁免是自证的**：把被删文案写回共享页脚 ⇒ 真构建 exit 0、该句在 186 个页面里出现 **186 次**、
+`check:residue` exit 0（F1 · **high**）。另外 8 条：等价变体旁路（F3）· 反空洞只数数组长度（F5）·
+下限数值无自守（F6）· 25% 余量允许一整族静默消失（F7）· 运行期渲染不在射程（F2）等。
+t10 按发现逐条收紧 —— **豁免机制整段移除**（实测它当时的受益者是 **0 条**）换成正面断言、
+加归一化那一遍、加活字面数与下限自守、加关系式；**仍未修**的射程边界（运行期 JS 渲染 /
+同义改写 / 非 UTF-8 产物 / keep 面没有牙）**如实登记**在报告 §9，不许当作「全都验过了」。
+
+**读数**：`npm run build` ✅（两行新牙在场）· `npm run check:residue` **0 命中 / exit 0** ·
+`verify:seo` **19 项 0 失败** · `verify-site.js --dir=dist` **892 项 / 失败 0**（真浏览器）·
+全站 186 页**四面**（`innerText` / `textContent` / 剥脚本序列化 HTML / **不剥**脚本整份 DOM）0 命中
+（阳性对照：删前产物同一检测每页命中 7 条 → 删后 0）· 正文下限**一页未破**（deal 最小余量 **639**；
+6 个登记残留页逐字复现登记值）· `/deal/*` 移动端只少一行（−22px）、桌面 **Δ0**。
+**数据面**：`deals.json` 的 17 条 `description` 是**唯一**被授权的数据面改动；
+**Feed 50 个文件逐字节 0 变化**；其余数据文件逐字节不变。
+报告：[research/secondary-page-residue-v2-report.md](research/secondary-page-residue-v2-report.md) ·
+普查：[research/secondary-page-residue-v2-census.md](research/secondary-page-residue-v2-census.md)。
+
+### 真浏览器验收
+
+卡片是**固定高度**的，任何一处内容变高都会被 `overflow:hidden` 静默裁掉；logo 簇是 hover
+展开的，很容易把标题挤到换行、把网格行高顶动。这两类问题静态检查都看不见，所以有
+`npm run verify`：起一个本地服务器 + Edge 无头浏览器，跑 **281 项断言**；带基线回归比对的
+`npm run verify:regress` 共 **287 项**（多出的 6 条是回归比对：覆盖条数、卡片数、首屏完整可见、
+页高、外部请求、JS 错误）。
+这两个数字由工具自己打印（`✅ 验收 N 项，失败 0 项`），跑一次就能核。**不要拿源码里 `check(`
+的调用点数去反推**：按行首 `check(` 计是 190 处，与执行项数并不相等 —— 有的调用在循环里
+（分类页 3 条路由 × 5 类断言、10 条需求页 × 7 类断言、状态页 2 个视口各一轮、变化雷达 2 个视口各一轮），
+有的在 `if/else` 里（取样前提不成立时只打印「跳过」，不计一项）。
+无 JS 时的静态骨架、卡片高度是否统一、**每张卡最后一个元素有没有越过内边距**、
+hover 前后卡片高/logo 簇宽/标题宽是否一致、弹层、筛选、排序、搜索、中文译文可搜、
+移动端横向溢出、**锚点导航的真实渲染状态**（量 `getComputedStyle.display` 与几何，
+不只读 `hidden` 属性——`.jump{display:flex}` 是作者级声明，会盖掉 UA 的 `[hidden]{display:none}`，
+2026-09-28 之前它就是「hidden=true 却照样可见可点」）、中文译文的展示与折叠、
+外部请求数、JS 报错数。
+
+### 无障碍与 OG 图
+
+- `og-image.png` 由 `scripts/lib/og-image.js` 用 Node 内置 `zlib` 手写 PNG 编码生成
+  （1200×630），文字用内置 5×7 点阵字模绘制。**取舍**：点阵字模只能绘制 ASCII，因此分享图
+  只画品牌标记与站点名，不做中文排版——换来的是构建仍然零外部依赖、CI 无需装图像库。
+  自检会校验 PNG magic、IHDR 尺寸，以及三处文字确实绘制成功（像素计数下限）。
+- 首页含 `canonical`、`hreflang(zh-CN / x-default)`、`og:*`、`twitter:*`、
+  `<meta name="robots" content="index, follow, max-image-preview:large">`。
+- `robots.txt` 显式放行主流 AI 爬虫（GEO 意图声明）。
+
+## AI 维护层（v2.0 · 可选，默认关闭）
+
+**它不是聊天机器人，也不在采集链路上。** 它做的事是降低*后台维护*的人工成本：
+给采集器坏掉时一个可读的诊断、给人工标注一份带引文的候选、给疑似重复一张候选表、
+给待译文案一份草稿。全部产出都是**候选**，落地必须有人点。
+
+三条纪律（由 `scripts/tools/ai-selftest.js` 与 CI 断言守着，不靠人记）：
+
+```text
+① 采集链路不引用 AI 层           → collect.js / store.js / dedup.js 里不许出现 scripts/ai
+② AI 从不上生产数据              → 只写 curated_*.json 与 audience-overrides.json（两个已有人工来源层）
+③ 无 key / 超时 / 非法 JSON 一律跳过 → 退出码 0，站点照常采集、照常构建、照常发布
+```
+
+日常用法：
+
+```bash
+npm run ai:review                       # 看候选（只读；「无据的确定」单列一栏）
+npm run ai:accept -- --id=<id> --note="…"   # 记录人工决定
+npm run ai:apply  -- --id=<id>          # 落地（写人工来源层 → 离线重建 deals.json → validate --strict；红了回滚）
+
+npm run ai:diagnose                     # 采集器坏了：两代结构摘要 + 探针命中 + 源码 → 候选原因
+npm run ai:extract -- --limit=10        # 优惠字段提取候选（逐字段引文）
+npm run ai:dedup                        # 疑似重复候选（结构上无法自动合并）
+npm run ai:translate                    # 翻译草稿 → scripts/data/translations_zh.candidates.json
+npm run ai:audit                        # 数据质量审计候选（要求给出可收敛的确定性规则）
+npm run ai:patch -- --source=<id>       # 采集器补丁候选（只出 diff；自证=应用+跑 fixture）
+npm run ai:usage                        # 用量与成本
+npm run ai:selftest && npm run fixture:test   # 边界自检与解析器契约（离线，CI 里也跑）
+```
+
+模型与密钥：只从环境变量 / GitHub Secret 读（`AI_PROVIDER` / `AI_MODEL` / `AI_API_KEY` / `AI_BASE_URL`），
+**绝不进仓库、前端、Pages 或生成产物**（`build-local.js` 的产物自检会扫 `sk-` / `Bearer` / 私钥等模式）。
+`AI_PROVIDER=off`（默认）时所有 AI 命令都打印「没有可用的 AI provider」并正常退出。
+线上跑法见 `.github/workflows/ai-maintenance.yml`（只 `workflow_dispatch`、`contents: read`、只出 artifact）。
+
+契约与红线：`docs/AI-MAINTENANCE-v2.0.md`；本轮的成本审计与落点依据：`research/v2.0-maintenance-cost-audit.md`。
+
+## 自动化与部署
+
+**门禁的步骤实现只有一处**：`.github/actions/gate/action.yml`（复合 action，**53 步**）——
+下面这条链**读自 action.yml 本身**（步骤名与顺序的唯一出处；`check-ci-consistency.js` 的
+`GATE_STEP_NAMES` 与它**同名同序、各 53 条**，`npm run check:ci` 的 (10) 号判据钉的就是这件事）：
+
+```
+Install dependencies → Architecture fitness (structure invariants) → Evidence policy (Tier-3 interception)
+→ Validate data (strict) → Reproducibility gate (no value without a source)
+→ History verify (log consistent with deals.json) → Migration verifier (audience provenance backfill)
+→ Translation gate (drift blocks, pending ages out) → Translation self-test → Expiry self-test
+→ Text / cleanText self-test → Source-health self-test → Provenance self-test → Deal-history self-test
+→ Change-radar self-test → SEO self-test → Audience self-test
+→ Roles-note self-test (official_urls note vs live wording) → App-token self-test → AI layer self-test
+→ Collector fixtures (offline replay) → Plans self-test (data + page) → Plan-history self-test
+→ Deal-plan-links self-test → API-plans self-test (data + page)
+→ API-cost self-test (calculator logic + teeth)
+→ API-plans reproducibility (curated → api-plans.json, byte-compare)
+→ API-plan-history verify (log consistent with api-plans.json)
+→ Model-registry self-test (identity + explicit mapping)
+→ Models reproducibility (registry → models.json, byte-compare)
+→ Model-registry links check (explicit mapping only, no similarity)
+→ Coverage report (gap list consistent with data)
+→ Coverage-targets self-test (intent layer + seven derived states)
+→ Model-role vocabulary self-test (registry ↔ freshness contract)
+→ Freshness self-test (catalogStatus branches)
+→ Freshness threshold sensitivity (±90 days, baseline invariants)
+→ **Feed self-test** → Assemble site (same path as deploy.yml)
+→ Models-page self-test (index + detail pages) → Plans-hub self-test (/plans/)
+→ Vendor-pages self-test (/vendor/) → Archive self-test (/archive/, synthetic ended/restored fixtures)
+→ Analytics self-test (bootstrap count / production guard / provider)
+→ Residue guard (deleted copy must not return; container floors)
+→ **Feed reproducibility (build twice, byte-compare)**
+→ Plans reproducibility (curated → plans.json, byte-compare)
+→ Plan-history verify (log consistent with plans.json) → SEO verification (independent, from dist/)
+→ Prepare browser for the real-browser gate → Browser availability decision (never silent)
+→ Real-browser acceptance (verify-site.js) → Regression verify (baseline compare) → Gate conclusion
+```
+
+三条 workflow 共用它，没有第二套测试链。
+（v2.0 的 `ai-maintenance.yml` **刻意不共用**：它不在采集/发布链上，只跑离线自检与候选生成 ——
+让"可选能力"挤进门禁，等于把 AI 的可用性变成站点的可用性。）
+
+> 步骤的**顺序与数量**是一份冻结契约（`check-ci-consistency.js` 的 `GATE_STEP_NAMES`）：
+> 谁把真浏览器验收、回归比对或译文门禁从门禁里拿掉，`npm run check:ci` 立刻红。
+> 所以上面这句「53 步」不是抄来的，是被断言钉住的 —— v3.2 新增的两步是 `Feed self-test`
+> （紧挨 `Assemble site` 之前）与 `Feed reproducibility (build twice, byte-compare)`
+> （紧挨 `Residue guard` 之后）；两步都**不新增断言项数**（`--expect-checks=39` 未动）。
+> 历史口径：v2.0 时代是 27 步（见 `research/v2.0-ai-assisted-maintenance-report.md` §「门禁步骤 27 步」），
+> 之后各轮陆续加步；2026-10-16 实测 = **53 步**（`T7` 的 `08-check-ci.log` 原句：
+> `✓ (10) gate 复合 action 存在且步骤名序列等于冻结清单 — 共 53 步`）。
+
+- `.github/workflows/verify.yml`（**必需检查名 `gate`**）：`pull_request` / `push`(master) /
+  手动。步骤是 checkout → setup-node → 一致性门禁（单行 `run:`，`--expect-checks=N` 是项数的
+  **唯一出处**）→ 调用门禁 action。这个 job **永远不许有 job 级 `if`**（被跳过的 job 报 Success
+  = 没跑却算过），要判断该不该拦就把判断写进步骤里。
+- `.github/workflows/deploy.yml`：`push`(master) / `workflow_run`(Collect) / 手动。
+  job 顺序 **`prepublish`（跑完整门禁）→ `build` → `deploy`**：门禁红则 build/deploy
+  **根本没有机会执行**。`prepublish` 同样没有 job 级 `if`，「上游采集失败就拒绝发布」写成
+  步骤内的显式判定（`::error` + `exit 1`）。
+  **为什么以前不是这样**：此前 gate 与 deploy 是两条互不相干的并行链，`build` 的 if 只看
+  Collect 的结论，而第一句 `event_name != 'workflow_run'` 让每一次人工 push 都无条件发布
+  —— 线上实证：`e01dcfc` 上 `gate=failure` 而 `build`/`deploy=success` 照发。
+- `.github/workflows/collect.yml`：cron **名义**上是每天北京时间 08:00 / 20:00（`0 0 * * *` / `0 12 * * *`
+  = UTC 00:00 / 12:00）采集 → 校验 → **提交前的完整门禁** → 有变化才提交
+  `deals.json` + `scripts/data/source-health.json` + `scripts/data/zh-pending.json`
+  + `scripts/data/source-snapshots.json`（v2.0 起第四份：页面结构摘要，**不含正文**）。
+  四份一起走：数据本身，以及三份跨运行状态。门禁排在 `git push` **之前**：数据有问题
+  就根本不入库（机器人提交一进 master 就会被 deploy 的 workflow_run 接走）。
+  采集步骤为 `node scripts/collect.js --headless`（静态来源 + 无头来源），前面会安装 playwright 自带
+  chromium（这一步失败不阻断采集本身，但会让无头来源在健康表里判成 `headless_unavailable`，
+  进而让**提交前的门禁**失败——这是刻意的，见下）。
+  **实测**：GitHub 的 schedule 队列常把这一跑延后 **3 到 6 小时**。2026-09-23 从 Actions API 复核 4 次
+  schedule 运行的 `created_at`（延后 +3h26m50s 到 +5h55m40s）：
+  `2026-09-21T17:55:40Z`（名义 12:00Z → 北京 09-22 01:55，延后 5h55m40s，run 35635091297）、
+  `2026-09-22T03:26:50Z`（名义 00:00Z → 北京 11:26，延后 3h26m50s，run 35683186610）、
+  `2026-09-22T16:22:56Z`（名义 12:00Z → 北京 09-23 00:22，延后 4h22m56s，run 35753733647）、
+  `2026-09-23T03:27:38Z`（名义 00:00Z → 北京 11:27，延后 3h27m38s，run 35814407156）。
+  所以别把「08:00 / 20:00」当成实际更新时间。
+- `.github/workflows/probe-sources.yml`：**手动触发**的只读探针，验证 Actions 出口 IP 能否访问/渲染
+  智谱活动页与火山方舟（厂商风控或镜像变更后用它复检）。
+- `.github/workflows/ai-maintenance.yml`（v2.0）：**只手动触发**的 AI 维护任务。
+  `contents: read`，跑离线自检 → 跑一个 `--task=` → 上传候选与用量 artifact。
+  **没有 `git commit` / `git push` / 任何发布动作** —— 这一条由 `check-ci-consistency.js`
+  的 (16) 断言守着：谁给它加上提交能力，CI 立刻红。候选入不入库，由人在本地审阅后决定。
+- 采集与发布分离，保证线上产物可复现。
+
+> ⚠️ **为什么部署还要监听 `workflow_run`**
+> GitHub 规定：用仓库自带的 `GITHUB_TOKEN` 推送所产生的事件**不会**再触发其它 workflow。
+> 2026-09-29 起机器人改用**专用 App token** 推送（原因见下一节），而 App token **会**触发
+> workflow —— 于是同一个 SHA 上会同时跑 deploy.yml 的 `push` 链与 `workflow_run` 链，
+> 白跑一遍发布。所以机器人的提交里带 `[skip ci]`，把 push 触发的那条按掉。
+> **这不是猜的**：官方 `Skipping workflow runs` 原文 ——
+> 「Skip instructions only apply to the `push` and `pull_request` events.」
+> 也就是说它**不会**压住 `workflow_run`，发布链照常；反过来，若有人以为它能拦
+> `workflow_run`，站点才会真停更。（同一页还明写：被跳过的 workflow 其检查停在 Pending，
+> 所以数据提交上的 `gate` 永远 Pending —— 它在 master 上、没有 PR 要它，属预期。）
+> **发布只走 `workflow_run` 这一条**：它是唯一能携带「上游采集结论」的触发方式，
+> 无论机器人用哪种身份都必需。
+> 于是同一条链路上 verify.yml 也不会跑（被 `[skip ci]` 按掉的正是它），所以 deploy 的
+> `prepublish` 是唯一的把关点——这也是为什么门禁必须能在发布链里自己跑一遍。
+
+> ⚠️ **发布路径因此依赖 npm registry**：真浏览器验收需要 `playwright-core`，所以门禁里有
+> `npm ci`。此前「发布前无需 npm install」的说法只对 `build-local.js` 那一步成立（它确实零依赖），
+> 现在整条发布链不再与网络无关——这是「gate 全过才发布」的必然代价，如实记录。
+
+> ⚠️ **门禁红时会怎样**：本次不发布，线上继续保留上一份成功版本。定时采集那条链路尤其如此
+> ——浏览器装不上 = 门禁红 = 本次不提交数据、站点停更。这是刻意的取舍（数据正确性 >
+> 更新频率）；逃生口只有一个且必须人工：`workflow_dispatch` 勾 `allow_degraded_run`，
+> Summary 里会明确留下「本次没有做真浏览器验收」。
+
+> ⚠️ **回归比对的代价**：`verify --compare` 对覆盖条数 / 卡片数 / 首屏完整可见条数只允许
+> 「不减少」。合法的数据缩减（过期下架、重新折叠）会拦发布，处置方式是**人工、留痕**地
+> 重刷基线：`npm run verify:baseline`（基线文件 `research/_raw/ours-baseline/verify.json` 在 git 里，
+> 改它必然出现在 diff 里，无法静默绕过）。
+
+### 采集机器人的身份（专用 GitHub App）
+
+定时采集要把数据推进 `master`。如果 `master` 设成「**必须走 PR + 必须过 `gate`**」，
+用仓库自带的 `GITHUB_TOKEN` 推送就会被挡在门外 —— 而采集是无人值守的，
+症状是**每天两次静默失败**。
+
+直觉方案是「把 GitHub Actions 加进 ruleset 的绕过名单」，但**做不到**（2026-09-29 查证）：
+
+- GitHub 文档给出的绕过候选是**穷举**的：仓库/组织/企业管理员、`maintain`|`write` 角色、
+  Teams、Deploy keys（仅 GHES）、**可安装的 GitHub Apps**、Dependabot、Copilot cloud agent
+  —— 里面没有「GitHub Actions」，所以那个选项在界面上**根本不存在**；
+- `github-actions`（App ID **15368**）是**平台原生身份**（每次 `GITHUB_TOKEN` 调用的背后都是它），
+  不是「安装在仓库上的 GitHub App」。用 API 传
+  `actor_type: "Integration", actor_id: 15368` 会返回 **HTTP 422**：
+  `Actor GitHub Actions integration must be part of the ruleset source or owner organization`。
+- 也不能改走「机器人开 PR + 自动合并」：用 `GITHUB_TOKEN` 建的 PR **不会触发**
+  `pull_request` workflow，`gate` 永远 pending，自动合并永远等不到。
+
+于是本项目给机器人一个**自己的 App 身份**，并把它**单独**列进绕过名单 —— 只豁免机器人，不豁免人：
+
+| 项 | 值 |
+|---|---|
+| 权限 | Repository permissions → **Contents: Read and write**（推送提交所需的最小集） |
+| Webhook | **不勾**（不需要） |
+| Secret 1 | `COLLECT_APP_ID` —— App 页面上的 App ID |
+| Secret 2 | `COLLECT_APP_PRIVATE_KEY` —— App 页面底部 *Generate a private key* 下载的 `.pem` **全文** |
+| ruleset 绕过名单 | 只加这个 App（`Repository admin` **不要**加 —— 那等于人也能绕过） |
+
+实现：`scripts/tools/app-token.js`（零依赖，用 Node 原生 `crypto` 签 RS256 JWT，
+再换一次性的 installation token）。三处刻意的设计：
+
+- **换取步骤排在采集之前**：凭据没配好要在 10 秒内失败，而不是等一轮十几分钟的采集跑完
+  才发现最后一步推不上去；
+- **缺 Secret 时明确失败，不退回 `GITHUB_TOKEN`**：退回会在 ruleset 生效后变成一句含混的
+  `GH006`，把真正的原因（凭据没配）藏起来；
+- **token 只进 `$GITHUB_OUTPUT`，且先 `::add-mask::`**：日志里不会出现明文。
+
+`npm run selftest:app-token`（67 项，离线、不起网络）盯住三件最容易写错的事：
+JWT 不超过 GitHub 的 **10 分钟**硬上限、三步的 `Authorization` **都是 App JWT**、
+以及三条失败路径必须给出可照做的报错。它还额外盯住两类真会踩的**输入形态**：
+App 页面下载的私钥是 **PKCS#1**（`-----BEGIN RSA PRIVATE KEY-----`，与顺手生成的 PKCS#8 不同），
+以及「从 `.pem` 复制粘贴进 Secret 输入框」的四种真实变体（CRLF / 漏结尾换行 / 多带空白 /
+换行被压成字面量 `\n`）——实测只有最后一种会炸，而那一种正是 `normalizePrivateKey` 修的。
+`check-ci-consistency` 的断言 **(15)** 再把它钉死：
+把推送退回 `GITHUB_TOKEN` 的改动**在本地完全看不出来**（本机没有 ruleset，`git push` 照样成功），
+只会在线上定时任务里烂掉。
+
+### 更新频率一览
+
+| 内容 | 更新方式 | 频率 |
+|---|---|---|
+| 采集到的优惠 / 工具条目（静态来源） | 自动（GitHub Actions 定时） | 名义每天 2 次（北京 08:00 / 20:00）；**实测常延后 3 到 6 小时**（见上文）；数据无变化则不提交 |
+| 无头来源（智谱活动页 / 火山方舟） | 自动（同上，跑在同一次采集里） | 每天 2 次；内核装不上或页面改版时该来源产出 0 条，不会写坏数据 |
+| 线上页面 | 自动（提交后经 `workflow_run` 触发部署，发布前先过完整门禁） | 跟随采集，或任意一次 `push` |
+| 过期优惠下架 | 自动（每次采集时修剪） | 过期超过 14 天的优惠被移除 |
+| 数据源状态页 `/status/` 与 `/source-health.json` | 自动（每次采集写 `scripts/data/source-health.json`，构建期生成页面） | 跟随采集 |
+| 变化雷达条带与 `/changes/` 页 | 自动（构建期由 `scripts/data/deal-history.json` + `deals.json` 算出，不额外写数据） | 跟随采集与发布 |
+| 变更日志 `scripts/data/deal-history.json` | 自动（`collect.js` 在合并之后与 `deals.json` **同批**写入并提交；无事发生的运行字节不变） | 跟随采集 |
+| 人工策展优惠（`scripts/data/curated_*.json`） | **人工** | 由人修改并推送，无自动更新 |
+| 采集器选择器 / 别名表 | **人工** | 对方站点改版导致零产出时需要人修 |
+
+## 订阅（v1.6 · 2026-10 整族下架 · **v3.2 部分恢复**）
+
+**不需要账号、没有邮件列表、没有推送服务**：订阅就是构建期生成的静态文件，
+把地址粘进任意 RSS / JSON Feed 阅读器即可。**现役入口只有站根两份**：
+
+| 类别 | 路径 | 回答 |
+|---|---|---|
+| 站点级订阅源（**现役**） | `/feed.xml`（Atom 1.0）· `/feed.json`（JSON Feed 1.1） | 本站最近发生的变化（套餐日志 / API 计费日志两支；优惠支今天 0 条，见下） |
+
+> ✅ **v3.2 部分反转（2026-10-16，用户显式授权）**：只恢复**站根两份订阅产物**与**两处声明**。
+> - 文件名 / MIME 的**唯一表**是 `scripts/lib/feed.js` 的 `FEED_FILES`（页面与构建期都从它现取，
+>   全仓不写第二份字面量）。
+> - 声明面：**首页**与 **`/changes/`** 各两条 `rel="alternate"`；**其余 183 页仍是 0 条** ——
+>   这一条没有被放宽：`verify-site.js` 的 `subscriptionDeclarationProblem()` 是**声明制**
+>   （未登记路由「带 `type` 的声明必须 0 条」逐字不变；登记路由要求条数 == 登记条数、type 集合
+>   不重不漏、href 逐路径命中、落点在产物里真实存在且非空、`dir` 缺失即 fail-closed）。
+> - 人类入口：页脚恢复一枚普通 `<a>`「订阅源」（**不是按钮**，无 JS 也能点；相对路径按输出深度解析，
+>   实测 185/185 页落在正确前缀上）。
+> - 产物侧：`lib/published-assets.js` 从「任何 `feed*` 基名判红」改成**逐路径登记**
+>   （`ALLOWED_PATHS` 里点名 `feed.xml` / `feed.json`；未登记仍是红，登记表读不到 ⇒ 退化到「一律判红」）。
+> - 可复现：`npm run check:feed:reproducible`（隔离目录连构两次、逐文件 SHA-256 + 聚合指纹 +
+>   两条墙钟探针）已进门禁链与上面的门禁一行式。
+>
+> ⛔ **不恢复**（边界）：`/feeds/` 订阅中心页族、25 份分源 Feed（`feed/**`）、`scripts/lib/feeds.js`、
+> 以及**任何数据文件出口** —— 除首页自己那份 `assets/data/offers.json` 之外仍是 0 份
+> （`feed.json` 走 `ALLOWED_PATHS` 逐路径登记，**不进** `ALLOWED_DATA` 那份「面向读者的数据集」清单）。
+
+### 历史口径（v1.6 原文，已不适用；保留作史述）
+
+| 类别 | 路径 | 回答 |
+|---|---|---|
+| 优惠 Feed | `/feed.xml`、`/feed/student.*`、`/feed/developer.*`、`/feed/free-api.*`、`/feed/free-tokens.*`、`/feed/ai-coding.*`、`/feed/china.*`、`/feed/vendor/<slug>.*` | 当前有哪些符合这个条件的优惠 |
+| 变化 Feed | `/feed/new.*`（最近新增）、`/feed/changes.*`（最近变化） | 最近发生了什么 |
+
+共 **18 个 Feed × 2 种格式（RSS 2.0 + JSON Feed 1.1）= 36 个静态文件**。要点：
+
+- **条目主链接是本站** `/deal/<id>/`（官方页在正文与 JSON Feed 的 `external_url` 里），
+  这里曾经把 80 条条目全部指向站外。
+- **Stable ID**：优惠条目沿用 `deal.id`（**升级 v1.6 不会给老订阅者重推**）；
+  变化条目用事件身份的哈希。**连续 10 次构建逐字节一致**。
+- **时间只来自数据**：`pubDate` = 首次收录或事件日期；`lastSeen`（每轮采集都刷新）
+  永不进机器可读时间字段。
+- **文案微调与元信息不进订阅**：`description` 改一个标点、换一处分类都不会推给读者。
+- 站点常量（`SITE_URL` / `SITE_NAME` / `xmlEscape` / `VENDOR_*`）的唯一出处是
+  `scripts/lib/site.js`。
+
+> ⚠️ 2026-10 收口：**订阅层与数据出口整族下架** —— `scripts/lib/feeds.js`、
+> `scripts/lib/data-docs.js`、`/feeds/` 与 `/docs/data/` 两个页面族、全部 Feed 与数据文件
+> （除首页自己那份 `assets/data/offers.json`）都已删除。本节原先列的三条命令
+> （`selftest:feeds` / `check:feeds:reproducible` / `report:feeds`）随之删除。
+> **v3.2（2026-10-16，用户显式授权）只把站根两份订阅产物与两处声明请了回来**（见本节开头）；
+> 上面两张表（优惠 Feed / 变化 Feed 及其路径）仍是**历史口径**、不再适用，
+> `/feeds/` 页族与数据出口**没有**恢复。
+
+## 隐私声明
+
+本项目不收集、也不存储任何用户访问数据；站点**不建立本站的访客身份**（无 Cookie 追踪、
+无 localStorage 访客 ID、无指纹、无 IP hash）。
+
+运营观测：生产站使用 **Cloudflare Web Analytics** 观察页面访问与性能趋势。统计结果仅由
+项目维护者查看，**不作为公开数据集发布，也不会写入本仓库**（站点没有公开统计页面）。
+浏览器侧的 Web Analytics Site Token 是**浏览器标识符**而非账户凭据；本仓库不含任何
+Cloudflare 账户 API 凭据，本轮也不调用 Cloudflare Analytics API。
+完整边界、Production Guard 判据（本地 / localhost / 同域其它项目一律不发）与一行关闭方式见
+[docs/PRIVATE-ANALYTICS-v1.md](docs/PRIVATE-ANALYTICS-v1.md)。
+
+## 已知边界
+
+- 需登录的页面（各家控制台）不采集，不做登录态抓取。
+- JS 渲染的公开页已用无头浏览器采集（见上文，已在 CI 里每天跑）；渲染后仍无优惠表述的来源
+  （如 DeepSeek 官网）不注册采集器，改由人工策展维护。厂商改版会让某个来源产出 0 条——
+  这是刻意设计的失败安全，届时用 `scripts/tools/render-source.js` 重新校准规则即可。
+- 促销信息时效性强，`expiresAt` 或 `validity` 字段标注时间信息；发现过期信息欢迎提 issue 修正。
+- **变化雷达的时间维度从 2026-09-30 开始**：此前 134 条没有任何历史事件（v1.4 的基线明确写着
+  「它不是创建事件」），所以雷达不会把它们说成「新增」。变更日志起算日之后，第一次真实变化
+  会在下一次定时采集时落库。交付当天日志是 0 条事件、`deals.json` 里 0 条 `expiresAt`，
+  因此五个分栏全空、首页条带是明确空态 —— 这是事实，不是故障。
+- **人工策展条目没有自动的「来源消失 / 人工移除」信号**（v1.4 写下的边界）：它们的生命周期事件
+  只在记录离开数据集时产生，因此「已结束」栏里的人工策展条目很罕见。

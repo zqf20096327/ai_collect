@@ -1,0 +1,486 @@
+# OpenRegistry - the world's first MCP and API for live company filings directly from official government registries worldwide
+
+[![Official MCP Registry](https://img.shields.io/badge/Official%20MCP%20Registry-io.github.sophymarine%2Fopenregistry-2088FF?logo=anthropic&logoColor=white)](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.sophymarine%2Fopenregistry)
+[![Glama Score](https://glama.ai/mcp/servers/sophymarine/openregistry/badges/score.svg)](https://glama.ai/mcp/servers/sophymarine/openregistry)
+[![Cursor Directory](https://img.shields.io/badge/Cursor%20Directory-openregistry-000000?style=flat&logo=cursor&logoColor=white)](https://cursor.directory/plugins/openregistry)
+[![PulseMCP](https://img.shields.io/badge/PulseMCP-openregistry-7C3AED?style=flat&logoColor=white)](https://www.pulsemcp.com/servers/sophymarine-openregistry)
+[![Smithery](https://img.shields.io/badge/Smithery-openregistry-FF6B35?style=flat&logoColor=white)](https://smithery.ai/servers/sophymarine/openregistry)
+[![Follow @sophymarine on X](https://img.shields.io/badge/Follow%20%40sophymarine-000000?style=flat&logo=x&logoColor=white)](https://x.com/sophymarine)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-D22128.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+Real-time direct access to unmodified data and raw filings of about 80+ official government registries via MCP.
+
+Tools: search companies, get profiles, officers, shareholders, charges, filings, and financial-statement documents.
+
+Covers UK Companies House, Ireland CRO, France RNE, Spain BORME, Italy InfoCamere, Norway Brreg, Poland KRS, Netherlands KVK, Belgium KBO, Switzerland Zefix, Finland, Czechia, Korea, Taiwan, New Zealand, Cayman Island, Australia, Canada and a lot more.
+
+Free tier; paid keys for higher quota and depth.
+
+> **Data licensed from** 🇬🇧 [UK Companies House](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/) · 🇮🇪 [CRO Ireland](https://www.cro.ie/) · 🇳🇴 [Brønnøysund](https://data.norge.no/nlod/en/2.0) · 🇨🇭 [Zefix](https://opendata.swiss/en/terms-of-use#terms_by) · 🇵🇱 [KRS Ministry of Justice](https://api-krs.ms.gov.pl/) — and a lot more.
+
+[![OpenRegistry — walking a UK retailer's shareholders 4 layers deep to the family that owns it](https://raw.githubusercontent.com/sophymarine/openregistry/main/brand/demo.svg)](https://openregistry.sophymarine.com)
+
+> **Above:** an AI agent walks the shareholders of *Iceland Foods Ltd* through 4 UK holding companies — *WD FF MIDCO → ICELAND VLNCO → LANNIS → WD FF LIMITED* — and surfaces the 8 individuals who actually own the chain (Tarsem Dhaliwal **41.35%** as the largest shareholder, Walker family **51.31%** combined). Every share count, every percentage, read verbatim from the registry's own CS01 PDFs.
+
+[![openregistry MCP server](https://glama.ai/mcp/servers/sophymarine/openregistry/badges/card.svg)](https://glama.ai/mcp/servers/sophymarine/openregistry)
+
+**We return the registry's own response — unmodified.** Every field name, every status value, every raw filing byte (XHTML iXBRL / PDF / XBRL) is preserved exactly as the government's system emits it. The identifiers and jurisdiction routing let you reconstruct the government URL for any record. No aggregator markup. No field renames. No document re-rendering. No AI reinterpretation. No stale cache.
+
+**Chain queries across borders in a single prompt** — a UK Ltd → its Luxembourg SARL → its Cayman LP → the Jersey trust → the individual beneficiary, all in one conversation. Walk ownership structures through 80+ jurisdictions to unmask the real person behind any company.
+
+Hosted endpoint: **`https://openregistry.sophymarine.com/mcp`**
+
+A platform by [Sophymarine](https://sophymarine.com).
+
+## The 6 pillars
+
+| | |
+|---|---|
+| **1. Live** | Every tool call is a real-time query to the upstream government registry API at the moment you ask. |
+| **2. Direct-to-government** | No aggregator, no third-party data warehouse, no nightly scrape. Your AI talks to UK Companies House, France INSEE, German Registerportal, Korean FSS OpenDART directly. |
+| **3. Unmodified + source-linked** | Every field name, every status code, every raw filing byte returned verbatim. The registry's own identifiers are preserved so any response traces back to the government record. Enterprise tier adds pre-synthesised `source_url` / `registry_url` / `data_license` fields. |
+| **4. Zero-stale** | No cache layer we control can ever go stale. You see an update the moment the government records it. Contrast with commercial data providers that serve 6-24 hour-old snapshots. |
+| **5. Stable** | Production-grade reliability, running on Cloudflare Workers' global edge + a warm pool of per-jurisdiction workers for stateful registries. |
+| **6. Cross-border** | Chain queries across 80+ registries in a single prompt. Walk UK Ltd → LU SARL → KY LP → individual without leaving the conversation. |
+
+## How OpenRegistry differs
+
+|  | OpenRegistry | OpenCorporates | Companies House API direct | Bureau van Dijk Orbis |
+|---|:---:|:---:|:---:|:---:|
+| Coverage | **80+ national registries** | ~140, mostly aggregated from upstream sources | UK only | ~430M companies, aggregated |
+| Data freshness | **Live** — every call hits upstream | Scrape-and-cache (hours–days lag) | Live | 7-day to quarterly refresh |
+| Field shape | **Verbatim upstream payload** + unified envelope | Normalised to OC's own schema | Per-registry CH schema | BvD's own schema |
+| Source identifier preserved | **Yes** — registry URL reconstructable from response | OC ID is primary; mapping back is lossy | Native | BvD ID is primary |
+| Filing PDFs / iXBRL bytes | **Returned raw** | Metadata only; full bytes paywalled | Native | Paywalled |
+| Cross-border chain walking | **One MCP prompt, ≤80+ jurisdictions** | Manual ID-stitching across countries | Out of scope (UK only) | Limited to BvD-mastered entities |
+| Authentication | **OAuth 2.1 + DCR** | API key (signup required) | API key (signup required) | Per-seat license, **$30k–$50k+/yr** |
+| Made for AI agents | **MCP-native, JSON-RPC over Streamable HTTP** | REST; no MCP wrapper | REST; no MCP wrapper | REST; no MCP wrapper |
+
+**One-liner.** OpenCorporates and BvD are *aggregators* that re-shape and cache; CH-direct is single-jurisdiction. OpenRegistry is the layer between an AI agent and the original government APIs — verbatim, live, multi-country, no API key for the free tier.
+
+Where OpenRegistry deliberately doesn't have data, the response carries a structured `alternative_url` pointing at the AML-obliged-only statutory portal. We don't pretend to have data we don't.
+
+## Quick example calls
+
+Three full request → response examples for the most common tools. All three reproducible on the free tier. Calls are JSON-RPC over MCP Streamable HTTP at `https://openregistry.sophymarine.com/mcp`; for brevity we show the tool name + arguments + the unwrapped response.
+
+### 1. `search_companies` — find a UK company
+
+```jsonc
+// Request
+{
+  "name": "search_companies",
+  "arguments": { "jurisdiction": "GB", "query": "Monzo Bank", "limit": 5 }
+}
+
+// Response (truncated to 1 result)
+{
+  "jurisdiction": "GB",
+  "count": 5,
+  "results": [
+    {
+      "jurisdiction": "GB",
+      "company_id": "09446231",
+      "company_name": "MONZO BANK LIMITED",
+      "status": "active",
+      "incorporation_date": "2015-02-06",
+      "registered_address": "Broadwalk House, 5 Appold Street, London, England, EC2A 2AG",
+      "jurisdiction_data": {
+        "company_number": "09446231",
+        "company_status": "active",
+        "company_type": "ltd",
+        "date_of_creation": "2015-02-06",
+        "title": "MONZO BANK LIMITED",
+        "address_snippet": "Broadwalk House, 5 Appold Street, London, England, EC2A 2AG",
+        "kind": "searchresults#company",
+        "links": { "self": "/company/09446231" }
+        // ... 20+ verbatim CH fields
+      }
+    }
+  ]
+}
+```
+
+### 2. `get_persons_with_significant_control` — UK PSC for a known company
+
+```jsonc
+// Request
+{
+  "name": "get_persons_with_significant_control",
+  "arguments": { "jurisdiction": "GB", "company_id": "OC404063" }
+}
+
+// Response
+[
+  {
+    "jurisdiction": "GB",
+    "psc_id": "...",
+    "name": "[REDACTED — UK CH residential-address suppression]",
+    "kind": "individual-person-with-significant-control",
+    "nature_of_control": ["ownership-of-shares-25-to-50-percent"],
+    "notified_on": "2024-08-15",
+    "is_active": true,
+    "jurisdiction_data": {
+      "etag": "...",
+      "natures_of_control": ["ownership-of-shares-25-to-50-percent"],
+      "notified_on": "2024-08-15",
+      "country_of_residence": "United Kingdom",
+      "date_of_birth": { "month": 7, "year": 1985 },
+      "address": { "country": "United Kingdom" },
+      "links": { "self": "/company/OC404063/persons-with-significant-control/individual/..." }
+      // ... full CH PSC record
+    }
+  }
+]
+```
+
+> **PSC ≠ shareholders.** UK Companies House publishes a structured PSC register and a *separate* (filing-only) statement of capital. They disagree: a 10% shareholder appears in the statement of capital but not in PSC; a corporate trustee appears in PSC without being a shareholder. We surface both via `get_persons_with_significant_control` and `get_shareholders` respectively — see the [shareholders-vs-PSC case study](https://openregistry.sophymarine.com/docs/case-studies/iceland-foods-chain-walk).
+
+### 3. `fetch_document` — raw iXBRL annual accounts bytes
+
+```jsonc
+// Request — get the document_id from list_filings or get_financials first
+{
+  "name": "fetch_document",
+  "arguments": { "document_id": "MzQ0MTUyNDU5N2FkaXF6a2N4", "max_bytes": 5000000 }
+}
+
+// Response (metadata + base64-encoded body)
+{
+  "jurisdiction": "GB",
+  "document_id": "MzQ0MTUyNDU5N2FkaXF6a2N4",
+  "content_type": "application/xhtml+xml",
+  "size_bytes": 348721,
+  "encoding": "base64",
+  "content": "PCFET0NUWVBFIGh0bWwgUFVCTElDIC...",
+  // signed proxy URL for human download / out-of-band fetch
+  "proxy_url": "https://openregistry.sophymarine.com/document/gb/MzQ0MTUyNDU5N2FkaXF6a2N4/content?token=..."
+}
+```
+
+The `content` is the **literal iXBRL bytes** Companies House sends — your AI agent parses or re-renders as it sees fit. We don't re-encode, normalise tags, or extract figures into our own schema. Pass `format: "png"` (Browser Rendering required) to receive a rasterised page-by-page render of scanned PDFs instead.
+
+## Quotas, errors, and back-off
+
+OpenRegistry surfaces three distinct kinds of failure with structured responses so AI agents can branch on them.
+
+### Rate limits
+
+Per-IP for anonymous, per-user for signed-in. The cross-border **fan-out cap** is a separate counter that limits how many *distinct* jurisdictions a caller can hit via `search_companies` in a rolling 60-second window.
+
+When you exceed either limit, the response is HTTP `429`:
+
+```jsonc
+{
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32000,
+    "message": "rate-limited",
+    "data": {
+      "reason": "rate-limited",
+      "retry_after_ms": 12400,
+      "scope": "ip"           // or "user" or "fanout"
+    }
+  }
+}
+```
+
+The HTTP layer also sets the standard `Retry-After: 13` header (seconds, rounded up). **Honour `retry_after_ms` exactly** — exponential back-off on top is unnecessary; the limit window is fixed-rolling, not adaptive. Fan-out cap (`scope: "fanout"`) is a 60-second rolling window — the second your oldest country falls off, you can hit a new one. Pro tier caps at 10 distinct countries / 60s, Max at 30, Enterprise unlimited.
+
+### Statutorily restricted (CJEU C-37/20 and similar)
+
+Some beneficial-ownership registers became access-restricted to AML-obliged entities post-CJEU C-37/20 (DE, ES, IT, NL, LU, AT, MT, PT) and the Cayman Beneficial Ownership Transparency Act. We don't proxy these — the tool returns HTTP `501` with structured guidance:
+
+```jsonc
+{
+  "jurisdiction": "DE",
+  "error": "not_proxied_by_design",
+  "reason": "CJEU-C-37-20",
+  "alternative_url": "https://www.transparenzregister.de",
+  "alternative_access": "AML-obliged entities only (banks, lawyers, notaries, etc.)",
+  "human_message": "The German Transparency Register is statutorily gated since 22 Nov 2022."
+}
+```
+
+This is a *design* response, not a transient failure — retrying won't help. The `alternative_url` is the canonical statutory portal where qualified entities can register for access.
+
+### Upstream errors and tool-level structured 501s
+
+When the upstream registry has its own outage, we surface its error verbatim with a structured wrapper:
+
+```jsonc
+{
+  "jurisdiction": "ES",
+  "error": "upstream_error",
+  "upstream_status": 524,
+  "human_message": "Spain BORME upstream timed out (Madrid bulletin renderer slow). Retry in 30-60s.",
+  "retry_after_ms": 45000
+}
+```
+
+### Recommended client back-off
+
+| Error | Action |
+|---|---|
+| `429 rate-limited` | Sleep `retry_after_ms`, then retry once. |
+| `429 fanout` | Don't retry the same call; route the next request to a country you've already hit in the window. |
+| `501 not_proxied_by_design` | Don't retry. Surface `alternative_url` to the user. |
+| `501 alternative_tool_required` | Re-issue with `alternative_tool` + `alternative_args`. |
+| `5xx upstream_error` | Sleep `retry_after_ms` if present, else 30s. Max 3 retries. |
+| `4xx not_found` | Don't retry. Re-search with `search_companies` to discover a valid id. |
+
+A reference back-off implementation is published in every framework integration guide under [`/docs/integrations`](https://openregistry.sophymarine.com/docs/integrations/langchain).
+
+## Ready-to-use skills
+
+We publish 10 professional Claude Agent Skills for the most common OpenRegistry workflows. Drop them into your Claude Code project's `.claude/skills/` directory or into any Claude-compatible agent — invoke by intent.
+
+| # | Skill | Outcome in one prompt |
+|---|---|---|
+| 1 | [**KYC & Cross-Border Due Diligence**](./skills/kyc-cross-border-due-diligence/SKILL.md) | Full statutory dossier: profile + directors + UBO + shareholders + charges + latest accounts |
+| **2 ⭐** | [**Cross-Border UBO Chain Walker**](./skills/ubo-cross-border-chain-walker/SKILL.md) | **Walk the ownership chain across jurisdictions until you reach the real individual** |
+| 3 | [**Director Search & PEP Screening**](./skills/director-search-pep-screening/SKILL.md) | Every company a person has run + co-director network |
+| 4 | [**Live Company Accounts & XBRL Financials**](./skills/live-company-accounts-xbrl/SKILL.md) | Latest statutory accounts as machine-readable XBRL / iXBRL / PDF + key figures |
+| 5 | [**Corporate Filing Monitor & Event Alert**](./skills/corporate-filing-monitor/SKILL.md) | Material filings in a window, categorised and flagged |
+| 6 | [**Global Company Name Availability Check**](./skills/global-company-name-availability/SKILL.md) | Is a name free to register across 10+ countries? |
+| 7 | [**Industry & Competitor Company Search**](./skills/industry-competitor-search/SKILL.md) | Every company in a sector across N jurisdictions, ranked + enriched |
+| 8 | [**Shell Company Detector**](./skills/shell-company-detector/SKILL.md) | Flag 1-director + no-accounts + overseas-office shells (AML signal) |
+| 9 | [**Phoenix Company Radar**](./skills/phoenix-company-radar/SKILL.md) | Detect dissolved-then-reborn fraud patterns (same director, same address) |
+| 10 | [**Sector Gatekeeper List**](./skills/sector-gatekeeper-list/SKILL.md) | Every CIMA / FCA / BaFin / FSS-licensed regulated entity |
+
+See [`skills/README.md`](./skills/README.md) for the skillpack overview.
+
+### Same 10 workflows, also as MCP prompts
+
+Every skill above is also served by the MCP server as a named **prompt** — so any MCP-compatible client (Claude Desktop, Cursor, Cline, Goose, Zed, …) shows them in its prompt picker without installing skill files. Call `prompts/list` to discover them, `prompts/get` to invoke. Same names: `kyc_cross_border_due_diligence`, `ubo_cross_border_chain_walker`, `director_search_pep_screening`, `live_company_accounts_xbrl`, `corporate_filing_monitor`, `global_company_name_availability`, `industry_competitor_search`, `shell_company_detector`, `phoenix_company_radar`, `sector_gatekeeper_list`.
+
+## Connect
+
+OpenRegistry works with every major MCP-capable client. The same `https://openregistry.sophymarine.com/mcp` endpoint works across all of them.
+
+### Claude Desktop
+
+Settings → Connectors → Add custom connector → paste `https://openregistry.sophymarine.com/mcp`.
+
+For older builds without the Connectors UI, add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://openregistry.sophymarine.com/mcp"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add --transport http openregistry https://openregistry.sophymarine.com/mcp
+```
+
+On Claude Code 2.1.1+ you can also use the JSON form:
+
+```bash
+claude mcp add-json openregistry '{"type":"http","url":"https://openregistry.sophymarine.com/mcp"}'
+```
+
+### Gemini CLI
+
+One-line install via the [`gemini-extension.json`](./gemini-extension.json) manifest in this repo:
+
+```bash
+gemini extensions install https://github.com/sophymarine/openregistry
+```
+
+Or add to `~/.gemini/settings.json` manually (Gemini uses `httpUrl`, not `url`):
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "httpUrl": "https://openregistry.sophymarine.com/mcp"
+    }
+  }
+}
+```
+
+> Google's consumer Gemini app at gemini.google.com does not support custom MCP today — only the CLI and Gemini Enterprise (Google Cloud admin path) do.
+
+### ChatGPT
+
+Plus / Pro / Business / Enterprise / Education plans only (Free tier doesn't expose Developer Mode).
+
+1. Settings → Apps & Connectors → Advanced settings → enable **Developer Mode**.
+2. On the Connectors page, click **Create** and paste `https://openregistry.sophymarine.com/mcp`.
+
+See OpenAI's [developer-mode help article](https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta).
+
+### Perplexity
+
+Pro / Max / Enterprise plans only. Settings → Connectors → Add custom remote connector → paste the URL → choose OAuth. Works in regular chat, the Comet browser, and Computer agent workflows. ([Changelog 2026-03-13](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026).)
+
+### Cursor
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=openregistry&config=eyJ1cmwiOiJodHRwczovL29wZW5yZWdpc3RyeS5zb3BoeW1hcmluZS5jb20vbWNwIn0%3D)
+
+Or add to `~/.cursor/mcp.json` manually:
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "url": "https://openregistry.sophymarine.com/mcp"
+    }
+  }
+}
+```
+
+### VS Code (1.101+, Copilot Agent mode)
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=openregistry&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fopenregistry.sophymarine.com%2Fmcp%22%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_Server-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=openregistry&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fopenregistry.sophymarine.com%2Fmcp%22%7D&quality=insiders)
+
+Or add to `.vscode/mcp.json` (workspace) or User Settings → MCP. VS Code uses `servers` (not `mcpServers`) and requires `type: "http"`:
+
+```json
+{
+  "servers": {
+    "openregistry": {
+      "type": "http",
+      "url": "https://openregistry.sophymarine.com/mcp"
+    }
+  }
+}
+```
+
+> GitHub Copilot in JetBrains, Visual Studio, Xcode, and Eclipse also supports custom MCP via the same `mcp-config.json` pattern — see [docs.github.com/copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp/use-the-github-mcp-server) for the IDE-specific setup. Copilot CLI uses `~/.copilot/mcp-config.json` or the interactive `/mcp add` command.
+
+### Microsoft 365 Copilot (Word / Excel / PowerPoint / Teams / Outlook)
+
+Organization-level deployment via Microsoft Copilot Studio agent path. Requires a Microsoft 365 Copilot license.
+
+1. In **Microsoft Copilot Studio**, open or create an agent → **Tools** → **Add a tool** → **New tool** → **Model Context Protocol**.
+2. Paste `https://openregistry.sophymarine.com/mcp`, then for **Authentication** pick **OAuth 2.0 → Dynamic discovery** (OpenRegistry implements DCR with discovery — zero config).
+3. Publish the agent and submit it for admin approval. After your Global / Teams Admin approves it in the Microsoft 365 admin center, it appears in the **Agent Store** across Teams, Outlook, Word, Excel, and PowerPoint.
+
+See Microsoft's [Copilot Studio MCP docs](https://learn.microsoft.com/en-us/microsoft-copilot-studio/mcp-add-existing-server-to-agent) and the [Agent Store guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-agent-store).
+
+### Cline
+
+Settings → Cline → MCP Servers → Edit settings → paste into `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "url": "https://openregistry.sophymarine.com/mcp",
+      "transport": "streamable-http"
+    }
+  }
+}
+```
+
+See [`llms-install.md`](./llms-install.md) for automated LLM-driven installs.
+
+### Windsurf
+
+Cascade panel → hammer icon (🔨) → **Configure** opens `~/.codeium/windsurf/mcp_config.json`. Add this block (note Windsurf uses `serverUrl`, not `url`), then click **Refresh** (🔄):
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "serverUrl": "https://openregistry.sophymarine.com/mcp"
+    }
+  }
+}
+```
+
+### Anything else speaking MCP
+
+Zed, Goose, Continue, and any other MCP 2025-06-18 client work with the standard config:
+
+```json
+{
+  "mcpServers": {
+    "openregistry": {
+      "url": "https://openregistry.sophymarine.com/mcp"
+    }
+  }
+}
+```
+
+Streamable HTTP transport per [MCP spec 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18). OAuth 2.1 authorization flow (Dynamic Client Registration per RFC 7591 — no API key to paste).
+
+### AI agent frameworks (code samples)
+
+Every major agent framework ships a generic MCP adapter, so OpenRegistry's 27 tools + 10 prompt workflows plug in with zero framework-specific code. Minimum working example per framework:
+
+- **LangChain / LangGraph** (Python) → [openregistry.sophymarine.com/docs/integrations/langchain](https://openregistry.sophymarine.com/docs/integrations/langchain)
+- **LlamaIndex** (Python) → [/docs/integrations/llamaindex](https://openregistry.sophymarine.com/docs/integrations/llamaindex)
+- **CrewAI** (Python) → [/docs/integrations/crewai](https://openregistry.sophymarine.com/docs/integrations/crewai)
+- **Haystack** (Python) → [/docs/integrations/haystack](https://openregistry.sophymarine.com/docs/integrations/haystack)
+- **AutoGen (Microsoft)** (Python) → [/docs/integrations/autogen](https://openregistry.sophymarine.com/docs/integrations/autogen)
+- **Vercel AI SDK** (TypeScript) → [/docs/integrations/vercel-ai-sdk](https://openregistry.sophymarine.com/docs/integrations/vercel-ai-sdk)
+
+## Provenance & Auditability
+
+Every response preserves the upstream registry's identifiers so any fact can be verified at the government record:
+
+- `jurisdiction` + `company_id` → reconstruct the government URL (e.g. `https://find-and-update.company-information.service.gov.uk/company/09446231`)
+- `document_id` → the government's own filing identifier, resolvable back to their portal
+- `jurisdiction_data` → the raw upstream object with every field name preserved
+- Filing documents (XHTML iXBRL / PDF / XBRL) returned as raw bytes — no re-rendering
+
+Enterprise tier pre-synthesises `source_url` / `registry_url` / `registry_name` / `data_license` / `alternative_url` into every response for one-click audit-trail in compliance reports.
+
+## Security and compliance
+
+- **Auth**: OAuth 2.1 + PKCE, passwordless email magic links, RFC 7591 Dynamic Client Registration. No pre-shared API keys.
+- **Privacy**: OpenRegistry proxies official public-registry data.
+- **Rate limits**: per-user for authenticated traffic, per-IP for anonymous — plus a per-jurisdiction upstream-protection cap shared across all users, to keep OpenRegistry a good citizen with the registries we depend on.
+
+## Support
+
+- **Hosted app + account management**: [openregistry.sophymarine.com/account](https://openregistry.sophymarine.com/account)
+- **Tool capability matrix**: call `list_jurisdictions` or visit [openregistry.sophymarine.com/jurisdictions](https://openregistry.sophymarine.com/jurisdictions)
+- **Enterprise inquiries / partnerships**: https://sophymarine.com/about/contact-us
+- **Status + uptime**: [openregistry.sophymarine.com/status](https://openregistry.sophymarine.com/status)
+- **This repo** is documentation only. The OpenRegistry service implementation is closed-source; raise issues here for the *integration experience* (documentation, examples, install flows).
+
+## Security
+
+Found a vulnerability? Please use our [contact form](https://sophymarine.com/about/contact-us) rather than opening a public issue. See [SECURITY.md](./SECURITY.md) for the full reporting policy, scope, and safe-harbor terms.
+
+## Code of Conduct
+
+Participation in this project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md), adapted from the Contributor Covenant 2.1. Report issues to `conduct@sophymarine.com`.
+
+## Contributing
+
+Issues and pull requests are welcome for:
+
+- Bridge bugs (`server.mjs`)
+- Documentation improvements (README, llms-install.md, GEMINI.md)
+- Skill / prompt refinements (`skills/`, `commands/`, `.claude-plugin/`)
+- Brand assets and metadata (`brand/`, `glama.json`, `.mcp.json`, `gemini-extension.json`)
+
+The OpenRegistry service implementation (jurisdiction adapters, MCP server, billing, auth) is closed-source and not accepted via PR. For tool / behavior requests against the hosted service, open an issue describing the use case.
+
+## Changelog
+
+Tagged releases live on the [GitHub Releases](https://github.com/sophymarine/openregistry/releases) page. Versions follow [SemVer](https://semver.org/) — patch for fixes, minor for additive changes, major for breaking changes to the bridge protocol or tool surface contract.
+
+## License
+
+Documentation, skills, and brand assets in this repository are released under [CC-BY-4.0](./LICENSE) — you may share and adapt the material for any purpose with attribution. The `openregistry` stdio bridge (`server.mjs`) is also released under CC-BY-4.0 for consistency. The hosted MCP service implementation is **not** open-source and is operated under separate commercial terms; see the [Tiers](#tiers) section.
+
+See [NOTICE.md](./NOTICE.md) for third-party attribution.
+
+---
+
+**OpenRegistry is a platform by [Sophymarine](https://sophymarine.com).**
+
+© 2026 Sophymarine. OpenRegistry and Sophymarine are trademarks of Sophymarine. Documentation in this repository is published under CC-BY-4.0.

@@ -1,0 +1,944 @@
+# LangSmith Data Migration Tool
+
+A Python CLI for migrating users and roles, datasets, experiments, annotation queues, project rules, prompts, charts, Engine issues, and Fleet resources between LangSmith instances, plus CSV-driven access sync for a single LangSmith deployment.
+
+## Quick Start
+
+```bash
+# Install (requires uv: https://docs.astral.sh/uv/)
+uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.89-py3-none-any.whl"
+
+# Set up environment variables
+export LANGSMITH_OLD_API_KEY="your_source_api_key"
+export LANGSMITH_NEW_API_KEY="your_destination_api_key"
+
+# Test connections
+langsmith-migrator test
+
+# Start migrating
+langsmith-migrator datasets
+```
+
+## Features
+
+- **All-in-One Wizard**: Interactive migration of all resources (`migrate-all`)
+- **Users & Roles**: Migrate custom roles, org members, and workspace memberships between instances
+- **Export Users to CSV**: Export active org and workspace members to a members CSV (`export-users`) that round-trips into the `users --members-csv` importer
+- **Single-Instance Access Sync**: Apply CSV-driven add/update or authoritative access sync to one LangSmith instance (`users --csv ... [--sync]`), including multi-row workspace role unionization for custom ABAC roles
+- **Datasets**: Migrate datasets with examples and file attachments. Attachment downloads are resolved against the source instance (so self-hosted/BYOC sources, which return relative download URLs, work correctly) and pinned to that host
+- **Experiments**: Include experiments, runs, and feedback during dataset migration (`datasets --include-experiments`) or through `migrate-all`
+- **Annotation Queues**: Transfer queue configurations
+- **Project Rules**: Copy automation rules with project mapping and optional project creation in interactive flows
+- **Prompts**: Migrate prompts (latest by default, full history with `--include-all-commits`)
+- **Charts**: Migrate monitoring charts with filter preservation
+- **Custom Model Pricing**: Migrate workspace-custom model price entries (`model-pricing`). Global built-in prices are skipped since they already exist in every workspace. Idempotent: an equivalent entry on the destination is updated in place, or skipped with `--skip-existing`
+- **Engine Issues**: Migrate per-project LangSmith Engine issues-agent configs and detected issues as metadata (`issues`). Run links and trace deep-links are not migrated (see Limitations)
+- **Fleet**: Migrate agents, shared skills, MCP servers, integrations, auth providers, schedules, triggers, webhooks, usage limits, sandbox policies, and workspace secrets (`fleet`)
+- **Long-lived traces**: Migrate traces whose tier is `longlived` between deployments (`traces`), preserving run IDs, `dotted_order` and timestamps verbatim, carrying attachments and re-inlining offloaded payloads. No resumable checkpoint — work is a destination diff per time window, so re-run instead of resuming. Not part of `migrate-all`. **Self-hosted destinations only in practice** (see Limitations)
+- **Context Hub**: Migrate Context Hub agents and skills (the versioned agent/skill repos in the LangSmith Context Hub), including files and repo metadata (description, readme, tags, is_public) (`contexts`). Replays the **full commit history** by default so the destination reproduces the source's commit chain; use `--latest-only` to copy just the latest commit. Also copies **commit tags**, including the `production` / `staging` environment tags behind the Context Hub promote feature, pointing each at the same commit on the destination (`--no-tags` to skip). Lists the same contexts the Context Hub UI shows (external-source repos are hidden by default; use `--include-external` to migrate them too). Scope with `--agents-only` / `--skills-only`; linked-repo commit pins are stripped and reported cross-instance, or preserved with `--same-instance`
+- **Workspace Scoping**: Run resource migrations per workspace pair with explicit IDs or interactive workspace mapping
+- **Remediation & Resume**: Persist migration state, write remediation bundles, print grouped actionable next steps, and retry pending/failed work with `resume`
+- **Interactive CLI**: TUI-based selection with search/filter, plus `--non-interactive` mode for automation
+
+## Limitations
+
+### Trace Migration Assumes a Self-Hosted Destination
+
+`traces` is the only command that depends on the destination accepting **historical**
+run timestamps, and that is a server-side decision. Ingest validates a run's
+`start_time` against a window around now (`RUN_POST_START_TIME_WINDOW_HOURS` and
+`RUN_PATCH_START_TIME_WINDOW_HOURS`, both 24 by default, so roughly the last 24 hours),
+and `V1_INGEST_ENFORCE_TIME_WINDOW_EXCLUDED_ORGS` decides whether a violation is an
+error or just a warning.
+
+- **Self-hosted (and BYOC): configurable, and open by default.** The exclusion list
+  defaults to `["*"]`, which makes enforcement warn-only for every org, so a
+  self-hosted destination accepts migrated timestamps as shipped. If your operators
+  have narrowed it, put the destination org back in the list (or restore `["*"]`) for
+  the duration of the migration. It is a deployment-level environment variable, so it
+  is set wherever you configure the rest of the stack (Helm values, ECS task
+  definition, container env) and needs a restart of the affected services.
+- **LangChain-managed SaaS: not configurable by you.** Anything outside the ~24h window is
+  rejected outright, and because the check fails the *whole* multipart request a batch
+  is lost rather than partially written. Assume `traces` will not work against a SaaS
+  destination unless LangChain has allowlisted the destination org for the migration;
+  ask support before planning a cutover around it.
+
+The pre-flight canary (see "Destination configuration checklist") tests exactly this
+before any of your traces move: it writes one run stamped at the far end of your
+`--since`/`--until` range and reads it back by ID, stopping with
+`historical_ingest_rejected` if the destination refuses or silently rewrites the
+timestamp. Nothing else about `traces` is self-hosted-specific: the archive modes
+(`--to-archive` / `--from-archive`) read from any source, including SaaS, so exporting
+long-lived traces *out* of SaaS to disk or S3 is unaffected.
+
+### Long-Lived Traces Only
+
+The `traces` command migrates **long-lived traces only** (`trace_tier == "longlived"`)
+— the ones deliberately retained for up to 180 days. Short-lived traces are out of
+scope.
+
+What `traces` guarantees:
+
+- **Run IDs are preserved.** `id`, `trace_id`, `parent_run_id` and `dotted_order` are
+  copied verbatim, so run references keep meaning across the move.
+- **Timestamps are preserved.** There is no time-shifting option, flag, or fallback.
+  (Contrast `datasets --include-experiments`, which *does* shift experiment run
+  timestamps — see "Experiment Timestamps Are Rewritten on Migration".)
+- **Tracing projects are mapped, not preserved.** Creating a destination project
+  attempts the source's UUID because a match is convenient, but a rejection is normal
+  progress — nothing depends on the two being equal. Resolution order is
+  `--project-mapping` / `--map-projects` → destination name match → create.
+- **Run IDs are checked per project.** For each `(project, time window)` slice the
+  tool compares the source's long-lived run IDs against the destination's and reports
+  `source = ingested + already present + degraded + blocked`. This checks that the
+  right runs arrived, by ID.
+- **Content is spot-checked, not fully checked.** Up to
+  `--verify-content-sample` runs per window are read back and compared field by
+  field. If a sampled run cannot be read back from the destination, the tool
+  prints a warning and skips that sample; the window can still be reported clean
+  and still advance the watermark. So the watermark means "the right run IDs are
+  there", not "every field was compared".
+- **Attachments and offloaded payloads are carried.** Blobs are fetched through the
+  tool's own configured HTTP session (SSL settings, CA bundles, proxies) and re-inlined;
+  a failed fetch is reported, never silently replaced with a placeholder.
+
+**Direct migration has no resumable checkpoint.** Work is derived from a
+destination diff per time window, not from a saved position. The command does
+still write state: each project's outcome and any remediation data are recorded
+under `.langsmith-migrator/`. Exporting to an archive *does* have checkpoints —
+the window files themselves. If a run is interrupted, just re-run the same command —
+finished windows produce an empty difference. `--since` and `--until` bound the range
+to walk and are both **required and absolute**; `--window` sets the size of one slice
+of it in **hours** (default 24) — widen it when migrating many projects. The bounds are stamps
+rather than relative ages because a relative age denotes a different point in time
+every time it is evaluated, so over a multi-hour run the same float silently slides
+forward. Each project reports a `verified complete from … to …` watermark and a
+ready-to-paste `--since` that redoes about one ingest batch, so no boundary run is
+skipped. `langsmith-migrator resume` does not apply and will say so.
+
+**Ordering dependency: run `model-pricing` before `traces`.** Token and cost rollups are
+not replayed — the destination recomputes them from each run's `usage_metadata` against
+its own price map, so the custom prices must be in place first.
+
+**Same-workspace refusal.** The destination's run identity is
+`(tenant, project, start_time, run id)`, so re-ingesting runs under their original IDs
+into the *same* deployment and workspace duplicates or overwrites the source rather than
+replacing it. The command refuses, regardless of how projects map. Cross-workspace on one
+deployment is fine.
+
+**Retention tier.** The ingest contract has no per-run tier field, so the destination
+*project's* tier is the only lever — and it must be right at ingest time, because the row
+TTL and the blob key prefix are both baked in at insert. Destination projects are
+therefore created with an explicit long-lived tier, and an existing short-lived project is
+raised (and re-read until the raise is observable) before anything is written into it.
+Exposure is scoped to one project at a time: raise → migrate → verify → restore.
+The tier is only put back when that project finishes cleanly. If the run is
+interrupted, or the project has blocked runs, it is **left raised on purpose** so
+a re-run can still ingest long-lived data — and the tool records that it did,
+because otherwise nobody would know a project's retention was changed and not
+changed back. Put it back by re-running until the project is clean, or by hand.
+`--restore-session-tier` defaults on when the source project was not itself long-lived.
+
+**Fidelity repair means a new project, not a re-send.** A run is immutable once fully
+ingested so re-sending a run the destination already holds cannot repair it.
+
+#### Destination configuration checklist
+
+The tool reports rather than requires: the pre-flight prints the destination's advertised
+limits, runs a historical-ingest canary, and names the setting behind any value that will
+hurt. Fixing the destination and re-running costs nothing.
+
+The canary writes to the destination before your traces are migrated. It creates
+or reuses a project called `langsmith-migrator-canary` and leaves one run in it,
+stamped at the far end of your range. Nothing deletes it, so it stays until the
+destination's retention removes it. `--dry-run` skips the canary.
+
+| Setting | Default | Why it matters |
+| --- | --- | --- |
+| `V1_INGEST_ENFORCE_TIME_WINDOW_EXCLUDED_ORGS` | `["*"]` | **Self-hosted only.** On SaaS this is a LangChain-maintained allowlist you cannot set (see "Trace Migration Assumes a Self-Hosted Destination"). Historical timestamps are rejected outright when the ±24h ingest window is enforced, and the *whole* multipart request fails. Keep `*` or add the org. The pre-flight canary — one run stamped at the far end of the requested range, read back by ID — enforces this before your traces are migrated, and stops with `historical_ingest_rejected` if it fails. The run it writes is left behind. |
+| `MAX_FIELD_SIZE_BYTES` | 25 MB | An oversized `inputs`/`outputs` is **silently replaced with a placeholder**, not rejected, and the limit is not advertised. Tell the tool via `--max-field-bytes`; a larger re-inlined payload is then reported as `payload_oversized_for_destination` instead of quietly stubbed. |
+| `MAX_ATTACHMENT_SIZE_BYTES` | 200 MB | Attachments above this are refused. |
+| `TRACE_TIER_TTL_DURATION_SEC_MAP`, `S3_TRACE_TIER_PREFIX_MAP` | `""` | Both need a `longlived` entry or tier handling errors. |
+| `FF_BLOB_STORAGE_ENABLED` | false (auto-true with S3) | Gates the blob side of tier handling. |
+| `DEFAULT_TRACE_TIER` | `shortlived` | Decides whether the explicit long-lived create counts as a tier *increase*. |
+| Destination key's role | — | Needs `PROJECTS_INCREASE_TRACE_TIER`, plus `PROJECTS_DECREASE_TRACE_TIER` when restoring. A 403 stops the pre-flight with `trace_tier_permission_denied`. |
+| Tenant long-lived usage limit | — | Checked once per multipart request; a breach fails the whole request. Confirm headroom for the expected volume. |
+
+Worth tuning for the transfer and reverting afterwards: `BATCH_INGEST_SIZE_LIMIT_BYTES`
+(20 MB default, binding for trace payloads with inlined blobs), `BATCH_INGEST_SIZE_LIMIT`
+(100 runs), `BATCH_INGEST_SCALE_UP_NTHREADS_LIMIT` (16),
+`BATCH_INGEST_SCALE_UP_QSIZE_TRIGGER` (1000, lower it so workers scale before a backlog
+builds), and `TRACER_SESSION_CACHE_SOFT_TTL_SEC` (60, only relevant when raising an
+existing project's tier).
+
+Not migrated by `traces`: short-lived traces, threads, and run-level sharing links.
+`migrate-all` deliberately does not run it — trace volume makes it a separately scoped
+operation.
+
+### Engine Issue Run Links and Trace Deep-Links Are Not Migrated
+
+The `issues` command migrates two LangSmith Engine resource types: per-project issues-agent configs and the detected issues themselves. Detected issues are migrated as **metadata only** (name, description, severity, status, tags, plus the Engine-authored `proposed_fix` and `fix_prompt`).
+
+An issue's linked runs are **not** migrated. Issues reference runs by `run_id`/`trace_id`, and the destination validates every `run_id` against its own run store, so links pointing at source runs would be rejected. Migrating traces first with the `traces` command preserves run IDs (see "Long-Lived Traces Only" above), but re-pointing issue run links is not yet automated. The tool never sends the linked-run list when recreating an issue. To repopulate run links, run Engine on the destination so it re-detects issues against the destination's own traces. For the same reason, `fix_branch`/`fix_pr_number` (source-instance GitHub references) and Engine-generated advisory `actions` are also not sent on create.
+
+Issues-agent configs are recreated with source-instance-only fields stripped (`latest_thread_id`, `latest_run_id`, issue counts, tenant, timestamps). GitHub/Context-Hub linkage (`github_repo_url`, `context_hub_repo_handle`, etc.) is carried over but only works if the destination has the corresponding integrations configured. Engine-generated advisory `actions` on an issue (e.g. suggested evaluators) are not migrated: the destination re-validates them strictly on create and regenerates them when Engine runs there. Tip: migrate datasets/projects first (or use `migrate-all`) so issues map onto existing projects instead of freshly-created empty ones.
+
+By default `issues` migrates every Engine issue and issues-agent config in the workspace. Use `--session <name-or-ID>` to scope the migration to a single tracing project (like the `charts` command's `--session` flag).
+
+Only tracing projects that actually have Engine data (an issues-agent config or detected issues) are mapped/created on the destination -- the tool fetches the Engine data first and then maps only the projects it references, so other tracing projects in the workspace are never recreated. Project mapping also only considers real tracing projects (it applies the same `reference_free` filter the UI uses for "Exclude Experiments"), so experiment/test-run sessions are never recreated either. Note that a raw `GET /api/v1/sessions` call returns both tracing projects and experiment sessions, so the API project count can be higher than what the UI shows by default.
+
+The command is idempotent. Issues-agent configs are skipped if the destination project already has one, and detected issues are skipped if an issue with the same name already exists in the destination project (issue names are unique within a project). Re-running `issues` only migrates what is missing, so it is safe to run repeatedly. If the destination issue list can't be fetched, the tool falls back to creating issues rather than blocking.
+
+### Fleet Secrets and Auth Provider Secrets Are Write-Only
+
+The Fleet API does not return secret values. When migrating workspace secrets, the tool creates placeholder entries on the destination with empty values. You must re-enter each secret's value manually on the destination after migration. Similarly, auth provider `client_secret` values cannot be read from the source and must be re-entered on the destination.
+
+### Fleet Per-User OAuth Connections Cannot Be Migrated
+
+Agent OAuth connections (Gmail, Slack, GitHub, etc.) are tied to individual user tokens and cannot be transferred between instances. After migration, each user must re-authenticate their OAuth connections on the destination. The tool prints remediation steps listing which agents need re-authentication.
+
+### Fleet Agent Ownership Requires a Personal Access Token
+
+Fleet agent ownership is determined by the authenticated user, not by a field in the request body. Workspace API keys (`lsv2_sk_*`) do not carry a user identity, so agents created with them have no owner and become invisible to everyone. To assign ownership of migrated agents, use a **Personal Access Token** (`lsv2_pt_*`) for `LANGSMITH_NEW_API_KEY`. The PAT creator becomes the owner of all migrated agents. After migration, individual users can clone their agents from the workspace to transfer ownership to themselves.
+
+### Fleet Agent Shared Users Are Filtered
+
+The `shared_users` permission (per-user read/run/write access lists) references user IDs that are org-scoped. The tool fetches the destination workspace's active member list and filters `shared_users` to keep only user IDs that exist on the destination. User IDs not found on the destination are removed, and the tool prints a warning. If the destination member list can't be fetched, all `shared_users` are stripped as a safety measure. Re-share agents with any missing users after migration via the Fleet UI.
+
+### Fleet Agent Models Are Substituted When Unavailable
+
+The destination instance may not support the same model IDs as the source (e.g. SaaS vs BYOC may offer different model providers). The tool fetches the destination's model catalog and substitutes unavailable models with a model from the same provider if available, or falls back to the first available model. A warning is logged for each substitution. Set the correct model manually after migration if needed.
+
+### Fleet Existing Resources Are Never Overwritten
+
+All Fleet migrators skip resources that already exist on the destination, regardless of the `--skip-existing` flag. This prevents overwriting org-scoped infrastructure (auth providers, MCP servers, integrations) that may already be correctly configured on the destination. Re-running `fleet` is safe and idempotent.
+
+### Fleet Infrastructure-Level Configuration Is Not API-Migratable
+
+OAuth providers, GitHub App, and Slack app configuration are set at the infrastructure level (Helm chart for self-hosted, or cloud provider console). The tool cannot migrate these. For BYOC deployments, configure OAuth providers in your `langsmith_config.yaml` as described in the [self-hosted Fleet setup docs](https://docs.langchain.com/langsmith/deploy-self-hosted-full-platform#enable-fleet-insights-and-chat).
+
+### Experiment Timestamps Are Rewritten on Migration
+
+The destination's `POST /runs/batch` endpoint rejects runs with timestamps outside a 24-hour window of "now", so historical experiments cannot be replayed with their original timestamps. To migrate experiment runs at all, this tool shifts every run's `start_time`, `end_time`, `dotted_order`, and `events[].time` (and the parent experiment's `start_time`/`end_time`) by a per-experiment delta so the newest timestamp lands at migration time. **Relative offsets between runs within the same experiment are preserved exactly.** The delta is persisted in migration state so resumed migrations apply the same shift to remaining runs.
+
+### Context Hub: Commit History and Linked Repos
+
+- **Full commit history by default**: the tool enumerates each context's commit chain (via `list_prompt_commits`, which works for directory-type repos) and replays every commit oldest-to-newest on the destination, chaining `parent_commit`. Because Context Hub directory commits are content-addressed, this reproduces the source's exact commit hashes and history. Pass `--latest-only` to instead copy just the latest commit as a single fresh commit.
+- **Commit tags and environments**: all commit tags are copied by default, including the `production` / `staging` environment tags that back the Context Hub promote feature. Each tag is re-created on the destination pointing at the commit with the same content-addressed hash. Under `--latest-only`, a tag whose target commit was not migrated is skipped and reported. Use `--no-tags` to skip tag migration entirely.
+- **Linked repos**: a context's `files` map can link to another agent/skill repo (`skills/<name>`, `agents/<name>`) instead of inlining content. Cross-instance, the source-instance commit pin on each link is stripped so the link resolves to the destination's latest commit of the linked repo, and the downgrade is reported. Migrate linked repos separately (and re-pin if you need reproducibility). Pass `--same-instance` to preserve link pins verbatim.
+- **External-source contexts hidden by default**: the tool lists contexts exactly as the Context Hub UI does, which excludes repos whose `source` is `external` (agents/skills created by an external harness such as the Agent Builder, typically with raw-UUID handles). These are hidden by default; pass `--include-external` to migrate them too. Note that externally-created repos often have UUID handles, and the destination rejects a repo handle that does not match `^[a-z][a-z0-9-_]*$` (must start with a lowercase letter), so such repos fail on create and are reported.
+- **Owner**: migrated contexts are owned by the identity behind the destination API key.
+
+## Installation
+
+**Prerequisites**: Python 3.12+, [uv](https://docs.astral.sh/uv/)
+
+### Option 1: uv tool install (Recommended)
+```bash
+uv tool install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.89-py3-none-any.whl"
+
+# To update an existing installation, use --force:
+uv tool install --force "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.89-py3-none-any.whl"
+```
+
+### Option 2: uvx (One-off execution, no install)
+```bash
+uvx --from "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.89-py3-none-any.whl" langsmith-migrator test
+```
+
+### Option 3: pip
+```bash
+pip install "langsmith-data-migration-tool @ https://github.com/langchain-ai/langsmith-data-migration-tool/releases/latest/download/langsmith_data_migration_tool-0.0.89-py3-none-any.whl"
+```
+
+### Option 4: From source (Development/Contributing)
+```bash
+git clone https://github.com/langchain-ai/langsmith-data-migration-tool.git
+cd langsmith-data-migration-tool
+uv sync
+# Run with: uv run langsmith-migrator <command>
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+export LANGSMITH_OLD_API_KEY="your_source_api_key"
+export LANGSMITH_NEW_API_KEY="your_destination_api_key"
+
+# Optional: Custom base URLs (default: https://api.smith.langchain.com)
+export LANGSMITH_OLD_BASE_URL="https://your-source-instance.com"
+export LANGSMITH_NEW_BASE_URL="https://your-destination-instance.com"
+```
+
+Or use a `.env` file (auto-loaded on startup):
+```env
+LANGSMITH_OLD_API_KEY=your_source_api_key
+LANGSMITH_NEW_API_KEY=your_destination_api_key
+LANGSMITH_OLD_BASE_URL=https://your-source-instance.com
+LANGSMITH_NEW_BASE_URL=https://your-destination-instance.com
+LANGSMITH_VERIFY_SSL=true
+```
+
+## Usage
+
+```bash
+# Test connections
+langsmith-migrator test
+
+# Interactive wizard for all resources
+langsmith-migrator migrate-all
+langsmith-migrator migrate-all --rules-create-enabled   # Create migrated rules as enabled
+
+# Datasets
+langsmith-migrator datasets                    # Interactive selection
+langsmith-migrator datasets --all              # All datasets
+langsmith-migrator datasets --include-experiments  # With experiments, runs, and feedback
+
+# Note: When running `datasets` without `--include-experiments`, you'll be prompted
+# interactively whether to include experiments. Experiments include all runs and feedback.
+
+# Annotation queues
+langsmith-migrator queues
+
+# Prompts
+langsmith-migrator prompts
+langsmith-migrator prompts --all --include-all-commits
+
+# Project rules
+langsmith-migrator rules
+langsmith-migrator rules --strip-projects      # As global rules
+langsmith-migrator rules --project-mapping '{"old-project-id": "new-project-id"}'
+langsmith-migrator rules --project-mapping mapping.json   # From file
+langsmith-migrator rules --map-projects         # Interactive TUI project mapping
+langsmith-migrator rules --create-enabled      # Create rules enabled (default: disabled)
+
+# Charts
+langsmith-migrator charts
+langsmith-migrator charts --session "project-name"
+langsmith-migrator charts --map-projects        # Interactive TUI project mapping
+langsmith-migrator charts --project-mapping '{"old-project-id": "new-project-id"}'  # Headless, no TUI
+langsmith-migrator charts --project-mapping mapping.json   # Headless, from file
+langsmith-migrator charts --same-instance       # Reuse source IDs only when both sides share IDs
+
+# Custom model pricing (model-price-map)
+langsmith-migrator model-pricing                # Copy workspace-custom model prices (built-in prices are skipped)
+
+# Fleet resources (agents, skills, MCP servers, etc.)
+langsmith-migrator fleet                        # Migrate all Fleet resources
+langsmith-migrator fleet --skip-agents          # Skip agent migration
+langsmith-migrator fleet --skip-skills --skip-mcp-servers  # Skip specific resources
+langsmith-migrator fleet --agent "My Agent" --agent agent-abc123  # Only these agents (by name or ID)
+langsmith-migrator fleet --agents-owned-only    # Only agents you own or are directly shared
+
+# Long-lived traces (run model-pricing first)
+langsmith-migrator traces                       # Interactive project selection
+langsmith-migrator traces --all                 # All tracing projects
+langsmith-migrator traces --project "my-project" --since 2026-06-01 --until 2026-09-01 --window 168
+langsmith-migrator traces --emit-upgrade-list upgrade.csv  # Leave tiers alone, hand the list to an operator
+langsmith-migrator traces --to-archive /data/archive/run1 --project p --since 2026-06-01 --until 2026-09-01
+langsmith-migrator traces --from-archive /data/archive/run1 --all --since 2026-08-31 --until 2026-09-01
+
+# Utilities
+langsmith-migrator export-users --source -o users.csv  # Export active members to a members CSV
+langsmith-migrator list-projects --source
+langsmith-migrator list_workspaces --source --dest
+langsmith-migrator resume  # Resume pending/failed items from a prior migration session
+langsmith-migrator clean
+```
+
+### Command Overview
+
+- `test`: verify source and destination connectivity before running a migration
+- `migrate-all`: guided end-to-end wizard for users, datasets, prompts, queues, rules, charts, custom model pricing, and Fleet resources
+- `datasets`: migrate datasets; optionally include experiments, runs, and feedback
+- `queues`: migrate annotation queues
+- `prompts`: migrate prompts, optionally with full commit history
+- `rules`: migrate automation rules with project mapping controls
+- `charts`: migrate monitoring charts, either all sessions or one named session/project
+- `model-pricing`: migrate workspace-custom model price entries (global built-in prices are skipped; idempotent, with `--skip-existing`)
+- `fleet`: migrate Fleet resources (agents, skills, MCP servers, integrations, auth providers, schedules, triggers, webhooks, usage limits, sandbox policies, secrets) with `--skip-*` flags for each resource type, and `--agent <name-or-id>` / `--agents-owned-only` to scope which agents (and their schedules/triggers/usage limits) are migrated
+- `issues`: migrate Engine issues-agent configs and detected issues as metadata (`--session` to scope to one tracing project)
+- `contexts`: migrate Context Hub agents and skills, replaying full commit history and tags by default (`--latest-only`, `--no-tags`, `--agents-only`, `--skills-only`, `--include-external`, `--same-instance`)
+- `traces`: migrate long-lived traces (`trace_tier == "longlived"`) with run IDs and timestamps preserved; no resumable checkpoint, so re-run rather than resume (`--since`/`--until` required and absolute, `--window`, `--prefetch-windows`, `--compress-level`, `--skip-attachments`, `--emit-upgrade-list`). Can archive to disk and replay (`--to-archive`, `--from-archive`). Not part of `migrate-all`
+- `users`: migrate users/roles between instances, or run single-instance CSV access sync
+- `export-users`: export active org and workspace members to a members CSV for import via `users --members-csv`
+- `resume`: retry resumable items from a prior session and show grouped manual blockers
+- `list-projects` / `list_workspaces`: inspect project and workspace IDs for mapping
+- `clean`: remove saved migration sessions
+
+### Exporting users to CSV
+
+Use `export-users` to write the active org and workspace members of an instance to a members CSV. The output uses the exact columns the importer expects (`email`, `langsmith_role`, `workspace_id`, `workspace_name`), so an export from one instance feeds straight into `users --members-csv` on another.
+
+```bash
+# Export everything from the source instance (default output: users.csv)
+langsmith-migrator export-users --source -o users.csv
+
+# Export from the destination instead
+langsmith-migrator export-users --dest -o dest_users.csv
+
+# Org-level memberships only (skip workspace members)
+langsmith-migrator export-users --source --org-only -o org_users.csv
+
+# Restrict workspace membership export to specific workspace IDs (repeatable)
+langsmith-migrator export-users --source --workspace ws_a --workspace ws_b -o subset.csv
+```
+
+Notes:
+- **Pending invites are not exported** — only accepted (`active`) memberships are included.
+- Built-in roles are written with their display label (e.g. `Organization Admin`); custom roles use their display name.
+- Members whose role can't be mapped to a CSV label are still exported but with an empty `langsmith_role`; the command lists them so you can fill the value in before importing.
+- `--source` is the default if neither `--source` nor `--dest` is given; `--org-only` cannot be combined with `--workspace`.
+
+When importing into a *different* instance, the CSV's `workspace_id` values are the source workspace IDs — map them to the destination with `users --members-csv ... --source-workspace <SRC> --dest-workspace <DST>` (or `--map-workspaces`).
+
+### Users migration with CSV member input
+
+When running `users`, you can provide member details from CSV instead of source member list APIs:
+
+```bash
+langsmith-migrator users --members-csv examples/users_members_example.csv --map-workspaces
+```
+
+For a single deployed LangSmith instance, `users` can also run as an access-sync command instead of a source→destination migration.
+
+Safe default: add or update access from the CSV without removing anyone:
+
+```bash
+langsmith-migrator users \
+  --api-key "$LANGSMITH_API_KEY" \
+  --url "https://your-langsmith-instance.example.com" \
+  --csv examples/users_members_example.csv
+```
+
+Preview the same run without making changes:
+
+```bash
+langsmith-migrator users \
+  --dry-run \
+  --api-key "$LANGSMITH_API_KEY" \
+  --url "https://your-langsmith-instance.example.com" \
+  --csv examples/users_members_example.csv
+```
+
+Authoritative mode: make the CSV the source of truth for access and remove anything not present:
+
+```bash
+langsmith-migrator users \
+  --api-key "$LANGSMITH_API_KEY" \
+  --url "https://your-langsmith-instance.example.com" \
+  --csv examples/users_members_example.csv \
+  --sync
+```
+
+Equivalent explicit form:
+
+```bash
+langsmith-migrator \
+  --dest-key "$LANGSMITH_API_KEY" \
+  --dest-url "https://your-langsmith-instance.example.com" \
+  users \
+  --single-instance \
+  --members-csv examples/users_members_example.csv \
+  --csv-source-of-truth
+```
+
+In `--single-instance` mode, the command mirrors the provided instance configuration onto both internal clients, so you only need one working LangSmith connection. Workspace rows use the target workspace IDs directly; there is no workspace mapping step. All CSV rows are applied automatically after a single confirmation summary; there is no row-selection step in this mode. `--api-key`/`--url` imply `--single-instance`, `--csv` is a short alias for `--members-csv`, and `--sync` is a short alias for `--csv-source-of-truth`.
+`users --dry-run` is also supported as a command-local preview flag if you prefer to put dry-run after the subcommand instead of before it.
+For cron jobs and other headless runs, `users --non-interactive` is also supported as a command-local alias for the global `langsmith-migrator --non-interactive users ...` form. In headless mode, missing credentials fail fast instead of prompting.
+
+CSV schema:
+
+```csv
+email,langsmith_role,workspace_id,workspace_name
+alice@example.com,Organization Admin,,
+alice@example.com,Workspace Admin,ws_src_prod_us,Production US
+```
+
+Example CSVs:
+- `examples/users_members_example.csv`: minimal org and workspace member rows.
+- `examples/users_members_multi_workspace_roles_example.csv`: users with multiple workspace assignments, including different workspace roles.
+- `examples/users_members_sync_remove_workspace_b_example.csv`: desired-state CSV for `--csv-source-of-truth` when a user should keep Workspace A and lose Workspace B.
+- `examples/users_members_sync_remove_user_example.csv`: desired-state CSV for `--csv-source-of-truth` after a removed user has been omitted entirely.
+- `examples/users_members_pending_mixed_workspace_roles_example.csv`: pending-invite examples for same-role multi-workspace invites and mixed workspace-role rows.
+
+These examples are templates. Do not run them with `--csv-source-of-truth` against a populated target unless the file has been expanded into the full desired org and workspace access state for that target; authoritative sync removes org users, pending invites, and workspace memberships that are not listed.
+
+Notes:
+- `email` and `langsmith_role` are required.
+- `workspace_id` is optional. Leave it empty for org-level role assignments.
+- `workspace_name` is optional. When provided in single-instance CSV sync, it is validated against the target workspace display name, name, or tenant handle; `workspace_id` remains authoritative for applying access.
+- `langsmith_role` should be a built-in LangSmith role name (for example `Organization Admin`, `Organization Operator`, `Organization User`, `Organization Viewer`, `Workspace Admin`, `Workspace User`, or `Workspace Viewer`) or a custom role `display_name`.
+- Multiple rows for the same user and workspace are combined. Built-in workspace roles collapse to the highest-privilege built-in role; custom ABAC roles are unioned with each other and with any built-in workspace role so their policy attachments are preserved.
+- Users who only appear in workspace rows are invited to the org with the source `ORGANIZATION_USER` role before workspace membership is applied.
+- Workspace access is staged before organization invite acceptance. Single-instance CSV users with one workspace role can receive it in the initial org invite; other users, including those with different roles across workspaces, receive pending workspace memberships during phase 3. Accepting the org invite activates all staged memberships, with no post-acceptance rerun needed.
+- Re-running `users` also stages missing workspace access for existing pending org invitees. Older targets that do not support pending workspace membership report a blocker; upgrade the target or rerun after acceptance in that case.
+- `Organization Admin` on a workspace row is treated as org-level admin access only. No explicit workspace membership is created because org admins already have workspace access.
+- Other org-scoped roles cannot be used on workspace rows. If you want org-level access, leave `workspace_id` empty.
+- Workspace-scoped roles such as `Workspace Admin` cannot be used on org-level rows.
+- `--sync` / `--csv-source-of-truth` is the only mode that removes access. Without it, single-instance CSV mode only adds or updates access.
+- `--csv-source-of-truth` is available with `--single-instance` and makes the CSV authoritative for access:
+  - users missing from the CSV are removed from the org
+  - pending org invites missing from the CSV are cancelled
+  - workspace memberships missing from the CSV are removed
+  - workspaces omitted from the CSV are treated as having no desired memberships
+
+Guardrails:
+- `--api-key` and `--url` must be provided together when either is used.
+- `--single-instance` requires `--csv` / `--members-csv`.
+- `--sync` requires `--csv` and cannot be combined with `--skip-existing` or `--skip-workspace-members`.
+- `--single-instance` cannot be combined with workspace mapping flags.
+- `--roles-only` cannot be combined with `--single-instance` or `--members-csv`.
+- If the CSV contains workspace rows and `--skip-workspace-members` is set, the command fails instead of silently ignoring those rows.
+- If the CSV contains workspace-only users, the target instance must have an `ORGANIZATION_USER` role available or the command fails before applying member changes.
+- If the CSV references unknown `workspace_id` values, the command fails before any membership changes are applied.
+
+Operational notes:
+- Authoritative sync can remove active org members, cancel pending invites, and remove workspace memberships. Use an Organization Admin PAT for unattended runs that need removal semantics.
+- If the destination API key cannot manage org members or pending invites, 401/403 responses are reported as Organization Admin PAT blockers with grouped remediation and resume metadata.
+- Pending invites whose org role or workspace access does not match the CSV are refreshed when the target supports invite cancellation; if the target lacks a cancellation endpoint, the command reports an explicit manual follow-up instead of silently accepting stale access.
+
+### CLI Options
+
+```bash
+--source-key TEXT       Source API key
+--dest-key TEXT         Destination API key
+--source-url TEXT       Source base URL
+--dest-url TEXT         Destination base URL
+--no-ssl                Disable SSL verification
+--batch-size INTEGER    Batch size for operations (1-1000, default: 100)
+--workers INTEGER       Number of concurrent workers (1-10, default: 4)
+--dry-run               Run without making changes
+--skip-existing         Skip existing resources instead of updating them
+--preserve-ids          Create datasets, examples, experiments, runs and feedback with their source IDs
+--non-interactive       Disable prompts and exit with code 2 when remediation is required
+--verbose, -v           Verbose output
+```
+
+### Dataset Options
+
+```bash
+--include-experiments   Include experiments with datasets
+--skip-runs             With --include-experiments, create experiments and feedback without replaying runs (requires --preserve-ids)
+--all                   Migrate all datasets
+--all-workspaces        Migrate every source workspace into the destination workspace with the same ID
+--byoc-migration        Self-hosted to BYOC profile: implies --preserve-ids, --non-interactive, --all,
+                        --all-workspaces, --include-experiments and --skip-runs; skips feedback
+```
+
+### Preserving IDs
+
+By default the destination assigns new IDs and the tool keeps a mapping, so
+runs, feedback and `dotted_order` are rewritten to the new IDs. With
+`--preserve-ids` (or `MIGRATION_PRESERVE_IDS=true`) datasets, examples,
+experiments, runs and feedback are created with their source IDs instead, and
+re-runs match existing resources by ID rather than by name or inputs. Use it
+when other data references those IDs, for example trace data copied outside
+this tool.
+
+Preserved runs keep their original timestamps and `dotted_order`, so the
+destination must accept historical ingest the way the `traces` command
+requires (see Limitations). A destination dataset or experiment that already
+uses the same name under a different ID is reported as a conflict.
+
+When run data reaches the destination by another path that keeps run IDs,
+add `--skip-runs` so experiments and feedback are migrated without replaying
+runs; feedback then references the source run IDs directly. When the
+destination workspaces were created with their source IDs too,
+`--all-workspaces` pairs every source workspace with its counterpart and
+fails if one is missing:
+
+```bash
+langsmith-migrator --preserve-ids --non-interactive datasets --all --all-workspaces --include-experiments --skip-runs
+```
+
+`datasets --byoc-migration` uses those settings and also skips feedback, for
+moving a self-hosted installation into a BYOC data plane whose workspaces were
+created from the source inventory. It migrates datasets, examples and experiment
+metadata; runs and feedback arrive through the separate data migration.
+Experiments are marked completed, and the feedback policy is saved so `resume`
+does not revisit them. Older sessions retain their original behavior; rerun
+`datasets --byoc-migration` to use this policy for an older migration:
+
+```bash
+langsmith-migrator datasets --byoc-migration
+```
+
+Org-scoped API keys are supported: the connection check authenticates through
+workspace discovery, and dataset requests use the selected workspace's
+`X-Tenant-ID`. Keys still need access to the source and destination workspaces.
+
+### Prompt Options
+
+```bash
+--all                   Migrate all prompts
+--include-all-commits   Include all commit history
+```
+
+### Rules Options
+
+```bash
+--strip-projects        Strip project associations and create as global rules
+--project-mapping TEXT  JSON string or file path with project ID mapping (e.g., '{"old-id": "new-id"}')
+--map-projects          Launch interactive TUI to map source projects to destination projects
+--create-enabled        Create rules as enabled (default: disabled to bypass secrets validation)
+--all                   Migrate all rules without interactive selection
+```
+
+### Migrate-All Rules Options
+
+```bash
+--rules-create-enabled  Create migrated rules as enabled (default: disabled)
+```
+
+If `--rules-create-enabled` is omitted, `migrate-all` asks interactively whether to create rules enabled.
+The prompt default is `No` (rules are created disabled).
+
+### Migrate-All Options
+
+```bash
+--skip-users            Skip user and role migration
+--skip-datasets         Skip dataset migration
+--skip-experiments      Skip experiment migration
+--skip-prompts          Skip prompt migration
+--skip-queues           Skip annotation queue migration
+--skip-rules            Skip rules migration
+--skip-charts           Skip chart migration
+--include-all-commits   Include all prompt commit history
+--strip-projects        Strip project associations from rules
+--map-projects          Launch interactive TUI to map source projects to destination projects
+--project-mapping TEXT  JSON string or file path with project ID mapping (headless, no TUI; mutually exclusive with --map-projects)
+--rules-create-enabled  Create migrated rules as enabled instead of asking interactively
+```
+
+### Chart Options
+
+```bash
+--session TEXT          Migrate charts for a specific session/project (by name or ID)
+--map-projects          Launch interactive TUI to map source projects to destination projects
+--project-mapping TEXT  JSON string or file path with project ID mapping (headless, no TUI; mutually exclusive with --map-projects)
+--same-instance         Reuse source project/session IDs on destination only when both sides truly share IDs
+```
+
+### Trace Options
+
+```bash
+--project TEXT                  Tracing project (session) name or ID; repeatable
+--all                           Migrate all tracing projects without prompting
+--since TEXT                    Oldest trace to take, absolute: 2026-08-27 or 2026-08-27T18:00:00Z (required)
+--until TEXT                    Youngest trace to take, same form (required)
+--window FLOAT                  Size in HOURS of one slice of the range; fractions fine (default: 24)
+--max-field-bytes INTEGER       Destination MAX_FIELD_SIZE_BYTES; not advertised, so it must be supplied (default: 25 MB)
+--no-verify                     Skip the confirming re-query after ingest (the pre-diff still runs)
+--verify-content-sample INTEGER Runs per window to content-check (default: 100)
+--skip-attachments              Migrate runs without their attachments (recorded as degraded)
+--compress-level INTEGER        zstd level for the ingest body, 1-22 (default: 3)
+--no-compress-upload            Send the ingest body uncompressed
+--prefetch-windows INTEGER      Windows to retrieve concurrently, 1-32 (default: 4); ingest stays serial
+--to-archive LOCATION           Write windows as .tar.zst instead of ingesting: a directory, or s3://bucket/prefix
+--from-archive LOCATION         Replay window files from a directory or s3://bucket/prefix
+--allow-incomplete              Replay a truncated (.partial) window file (local archives only)
+--s3-part-bytes INTEGER         Multipart part size (default 8 MiB, S3 floor 5 MiB)
+--s3-upload-concurrency INTEGER Parts in flight per window (default 4)
+--s3-download-concurrency INTEGER
+                                Ranges in flight per window on replay (default 4)
+--s3-download-chunk-bytes INTEGER
+                                Range size on replay (default 2 MiB)
+--s3-endpoint-url TEXT          S3-compatible endpoint (MinIO/Ceph)
+--s3-sse TEXT                   Server-side encryption: AES256 or aws:kms
+--s3-kms-key-id TEXT            KMS key, with --s3-sse aws:kms
+--s3-storage-class TEXT         e.g. STANDARD_IA
+--map-projects                  Launch interactive TUI to map source projects to destination projects
+--project-mapping TEXT          JSON string or file path with project ID mapping (headless, no TUI)
+--restore-session-tier/--no-restore-session-tier
+                                Restore each destination project's trace tier after verifying it
+                                (defaults on when the source project was not long-lived)
+--into-session-suffix TEXT      Migrate into a separate long-lived project named with this suffix (foo -> fooSuffix)
+--emit-upgrade-list FILE        Leave project tiers alone and write (dest_session_id, trace_id, start_time) per trace
+```
+
+Both range bounds are **required and absolute** — a relative age means a
+different moment every time it is read, which breaks clean resumption.
+The timestamps observed are the trace's (root run's) `start_time` - all
+children of the trace are selected regardless of their individual `start_time`-s.
+
+#### Archive to disk, replay later
+
+`--to-archive DIR` writes each project/window to one compressed `.tar.zst`
+instead of ingesting it; `--from-archive DIR` loads those files into a
+destination. This enables: staged or air-gapped transfer, re-ingest without
+re-reading the source, and capture-once-load-many.
+
+```bash
+# capture one project's history in 6-hour windows, into a dated directory
+langsmith-migrator traces --to-archive /data/archive/$(date -u +%Y%m%dT%H%M%SZ) \
+  --project gtm-agent --source-workspace WS_ID \
+  --since 2026-06-01 --until 2026-09-01 --window 6
+
+# load one day of it back, into projects suffixed with a stamp
+langsmith-migrator traces --from-archive /data/archive/20260901T120000Z \
+  --all --since 2026-08-31 --until 2026-09-01 \
+  --into-session-suffix "-replay-$(date -u +%H%M%S)"
+```
+
+```
+<archive>/<workspace-name>-<workspace-id>/<project-name>-<session-id>/
+    20260901T000000Z__20260901T060000Z.tar.zst     # one window, bounds in the name
+```
+
+#### Archive in S3
+
+Both flags also take `s3://bucket/prefix`, with the same layout, so an archive
+can be copied between a disk and a bucket with `aws s3 sync` and read from
+either. Needs the `s3` extra:
+
+```bash
+uv tool install 'langsmith-data-migration-tool[s3]'
+
+langsmith-migrator traces --to-archive s3://my-bucket/traces/run1 \
+  --project gtm-agent --since 2026-06-01 --until 2026-09-01 --window 6
+```
+
+Credentials come from the usual AWS chain. Prefer a profile or an instance role
+over static `AWS_*` variables for long exports: static keys cannot be refreshed,
+so an export outliving a session token stops partway (safely — re-run to
+continue).
+
+A window is uploaded as a multipart upload and becomes visible only when it
+completes, so there is no `.partial` stage and no `--allow-incomplete`. An
+interrupted export leaves an unfinished upload rather than a readable object;
+the tool aborts its own on exit, and a bucket lifecycle rule is the backstop for
+anything a `kill -9` leaves behind:
+
+```json
+{"Rules": [{"ID": "abort-stale-uploads", "Status": "Enabled", "Filter": {},
+            "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 7}}]}
+```
+
+Transfer tuning is available as flags and as `MIGRATION_S3_*` environment
+variables (`PART_BYTES`, `UPLOAD_CONCURRENCY`, `DOWNLOAD_CONCURRENCY`,
+`DOWNLOAD_CHUNK_BYTES`, `MAX_POOL_CONNECTIONS`, `CONNECT_TIMEOUT`,
+`READ_TIMEOUT`, `MAX_ATTEMPTS`, `RETRY_MODE`, `ENDPOINT_URL`,
+`ADDRESSING_STYLE`, `SSE`, `SSE_KMS_KEY_ID`, `STORAGE_CLASS`). The defaults suit a modest link. The effective values are printed in the
+pre-flight table.
+
+An archive is **plaintext trace data**. Use `--s3-sse` (and a restrictive bucket
+policy) if that matters; note a versioned bucket keeps every re-captured window.
+
+`--dry-run` reads the source and compresses exactly as a real run does, and
+reports the size it would have written, but issues no upload. It is the quick
+way to check reach, credentials, resume state and compression ratio.
+
+- **`--window` (in hours) sets how much goes in one file, before compression.**
+  It is also what bounds how much one worker holds in memory. The size on disk
+  depends on the payloads themselves and on `--compress-level` as well, so the
+  same window can produce very different file sizes for different projects. A
+  bigger window usually compresses better, but makes each checkpoint larger, so
+  re-running after a failure repeats more work.
+- **`ls` tells you what finished.** A window is written as `.partial` and renamed
+  only once complete, in time order — so an interrupted export leaves an
+  unbroken run of files, never a gap in the middle.
+- **To resume, re-run the identical command**; finished windows are skipped. To
+  re-capture one window, delete its file. DO NOT change the time window on re-run!
+- **Compression ratios vary a lot by project** — mostly with how much content
+  repeats between runs. Use `--dry-run`, which compresses for real and reports
+  the size and ratio it would have written, to measure your own data before
+  committing to a long export.
+
+Two things to know before pointing this at real data:
+
+- **Pass `--source-workspace` for any unattended export.** No destination key or
+  `--dest-workspace` is needed, but on a key that sees several workspaces,
+  omitting it opens the interactive workspace mapper — which hangs when stdin is
+  not a terminal. Add `--non-interactive` to make that case fail fast instead.
+- **An archive is unencrypted trace data** — inputs, outputs and attachments in
+  plain text. Give every export its own directory; two exports writing into one
+  directory are going to clash.
+
+#### Throughput
+
+Three settings govern speed, and only one of them trades anything away:
+
+- `--prefetch-windows` (default 4) retrieves several windows at once. **Ingest
+  stays serial and strictly oldest-first whatever this is set to**, so a failure
+  leaves every earlier window complete rather than a hole in the middle. Peak
+  memory is this many windows of payloads plus the one being written — shrink
+  `--window` if that is too much.
+- `--compress-level` (default 3) sets the zstd level for the ingest body, with
+  long-distance matching on. Higher levels shrink the body more and cost more
+  CPU; how much of each depends on how much your projects repeat content between
+  runs. The default is cheap enough to leave alone — raise it only when you are
+  clearly limited by bandwidth rather than CPU, and measure with `--dry-run`
+  first, because the body is built by the same threads that fetch the data.
+- Page size is not an option: `/runs/query` is asked for 1000 runs per page and
+  lowers itself if a deployment advertises a smaller cap. Payload fetches are
+  likewise self-tuning — they start at 500 run IDs per request and halve on a
+  413/502/503, because for a project with large payloads that many IDs makes a
+  response the gateway refuses to serve. A line like `500 IDs per request was
+  refused (502); continuing at 250` is that adjustment, not an error.
+
+`--no-compress-upload` falls back to the SDK's own uncompressed multipart path.
+Compression is also skipped automatically if the SDK internals it needs have
+moved; the pre-flight table says which. The destination is not asked whether it
+supports compression — if it rejects a compressed body, use
+`--no-compress-upload`.
+
+### Users Options
+
+```bash
+--dry-run                  Preview this users sync without making POST/PATCH/DELETE changes
+--non-interactive          Disable prompts for this users run. Same as the global --non-interactive.
+--roles-only               Only migrate custom roles (skip member migration)
+--skip-workspace-members   Skip workspace member migration
+--single-instance, --instance
+                           Use one target LangSmith instance for CSV-driven access sync instead of source→destination migration
+--csv-source-of-truth, --sync
+                           Make the CSV authoritative for single-instance sync: any active org user or pending invite not
+                           present in the CSV will be removed, and workspace memberships not present in the CSV will also
+                           be removed. Without this flag, CSV mode only adds or updates access.
+--members-csv, --csv PATH  CSV file with member details (email, langsmith_role, workspace_id, workspace_name)
+                           Replaces source member API lookups. In --single-instance mode, all CSV rows are applied
+                           automatically.
+--api-key TEXT             API key for the single-instance CSV sync target. Must be provided together with --url.
+--url TEXT                 Base URL for the single-instance CSV sync target. Must be provided together with --api-key.
+--source-workspace TEXT    Source workspace ID (skip auto-detection)
+--dest-workspace TEXT      Destination workspace ID (skip auto-detection)
+--map-workspaces           Force workspace mapping TUI even for single-workspace instances
+```
+
+### Common Workspace Options
+
+These flags are available on `datasets`, `queues`, `prompts`, `rules`, `charts`, `migrate-all`, and `users`:
+
+```bash
+--source-workspace TEXT    Source workspace ID (skip auto-detection)
+--dest-workspace TEXT      Destination workspace ID (skip auto-detection)
+--map-workspaces           Force workspace mapping TUI even for single-workspace instances
+```
+
+Migration proceeds in three phases:
+1. **Role sync** (org-scoped): match built-in roles by name, create/update custom roles
+2. **Org members** (org-scoped): invite missing members, update roles for existing ones
+3. **Workspace members** (per workspace pair): add members to workspaces with correct roles
+
+Rules are created disabled by default. Use `--create-enabled` on the `rules` command to override.
+
+### Migrate-All Users Options
+
+```bash
+--skip-users               Skip user and role migration in migrate-all wizard
+```
+
+When `--skip-users` is omitted, `migrate-all` runs user/role migration as Step 0 before all other resources. Phases 1-2 (roles + org members) run once; phase 3 (workspace members) runs per workspace pair.
+
+### Project Mapping
+
+Rules and charts reference projects by ID. When migrating between instances, project IDs differ.
+
+- **Interactive TUI (`--map-projects`)**: Launch a visual TUI to map source projects to destination projects. Available on `rules`, `charts`, `issues`, and `migrate-all` commands. Select a source project and type a destination name directly — existing projects appear as filterable suggestions below the input, and pressing `Enter` on a unique suggestion records the destination project ID used by downstream chart/rule validation. Supports auto-match by name, skip, and custom name entry. For ID-based chart/rule remapping, unresolved text entries remain unmapped instead of being counted as resolved.
+- **Headless mapping (`--project-mapping`)**: Available on `rules`, `charts`, and `migrate-all`. Supply an explicit source->destination project ID mapping as a JSON string or a file path (e.g. `'{"<source-project-id>": "<dest-project-id>"}'`). Use `list-projects --source` and `list-projects --dest` to get IDs. This runs the mapping with no interactive TUI, so the migration can be driven from a backend/CI onboarding job. For `rules`, the mapping is applied to both top-level project associations and project IDs embedded inside rule filters. Mutually exclusive with `--map-projects`.
+- **Rules queue targets**: When a rule references an annotation queue, the migrator first reuses any saved queue migration mapping, then falls back to an exact-name queue match in the destination workspace. If neither is safe, the rule is exported for remediation instead of being posted with the source queue ID.
+- **Charts**: Without `--map-projects`, project mapping is built automatically by matching project names between source and destination. When both sides point at the same deployment URL but use different API keys/workspaces, charts still remap project/session IDs; the tool does not treat that as `--same-instance`. Workspace-scoped `--map-projects` mappings are resolved against the active workspace pair so duplicate project names in other workspaces are ignored. Chart dependency validation also verifies that saved destination project IDs still exist before migration. Chart filters are normalized to the destination API's `session`/`session_id` project-scoping shape before create or update.
+- **`migrate-all`**: Supports `--strip-projects`, `--map-projects`, `--project-mapping` (headless JSON/file mapping applied to both rules and charts), and `--rules-create-enabled` for rules.
+
+### Interactive Selection
+
+Keyboard shortcuts in resource selection TUI:
+- `↑↓` Navigate | `Space` Toggle | `a` Select all | `n` Clear
+- `/` Search | `Enter` Confirm | `Esc` Cancel
+
+Keyboard shortcuts in project mapper TUI (`--map-projects`):
+- `Enter/Space` Edit destination | `s` Skip | `m` Same name | `u` Unmap
+- `a` Auto-match all | `/` Search | `Ctrl+S` Save | `Esc` Cancel
+
+Keyboard shortcuts in workspace mapper TUI (`--map-workspaces`):
+- `Enter` Pick destination | `n` Create new | `c` Create all unmapped
+- `p` Map projects | `s` Skip | `a` Auto-match all | `u` Unmap
+- `Ctrl+S` Save | `Esc` Cancel
+
+### Workspace Scoping
+
+For multi-workspace organizations, all resource commands support workspace-scoped migration:
+
+```bash
+# Interactive workspace mapping TUI (available on all commands)
+langsmith-migrator datasets --map-workspaces
+langsmith-migrator queues --map-workspaces
+langsmith-migrator prompts --map-workspaces
+langsmith-migrator rules --map-workspaces --map-projects
+langsmith-migrator charts --map-workspaces --map-projects
+langsmith-migrator migrate-all --map-workspaces
+
+# Explicit workspace pair
+langsmith-migrator datasets --source-workspace WS_ID --dest-workspace WS_ID
+```
+
+When using `--map-workspaces`, each command iterates all mapped workspace pairs, running the full fetch/select/migrate flow per pair. For `rules` and `charts` with `--map-projects`, the project mapping TUI is shown per workspace pair so projects are correctly scoped.
+
+### Resume and Remediation
+
+Every migration session persists state and writes a remediation bundle when there are blocked or manual-follow-up items.
+
+- Session state is stored under `~/.langsmith-migrator/state`.
+- Remediation bundles are written under `./.langsmith-migrator/remediation/<session_id>` by default.
+- The CLI prints a **Resolution Summary** with grouped **Actionable Next Steps** instead of one repeated line per failed item.
+- `--non-interactive` disables prompts and exits with status code `2` if manual remediation is still required.
+
+`langsmith-migrator resume` retries pending or failed items from a previous session. Today that includes:
+
+- datasets
+- experiments
+- prompts
+- annotation queues
+- rules
+- charts
+- org members
+- workspace members
+
+Each item gets a budget of three failed attempts before `resume` stops picking it up automatically. Failures are what consume the budget, so an item that failed once still has two retries left. If an item does use up its budget and you want to try again anyway (for example once a network or permissions problem has been resolved), pass `--retry-exhausted`:
+
+```bash
+langsmith-migrator resume --retry-exhausted
+```
+
+Items that are *blocked* rather than failed (a missing dataset dependency, say) are not retried by `resume` at all, since retrying cannot resolve them. Those are listed separately under "Items requiring manual attention" along with the action needed.
+
+For chart items, `resume` revalidates saved `--same-instance` metadata against the current source/destination and workspace context. If the mode changed, it re-resolves the destination project/session before retrying; if that cannot be resolved safely, the item is checkpointed with guidance to rerun `charts` with project mapping. A later successful `charts --map-projects` run marks the prior chart dependency blocker resolved so `resume` does not keep looping on stale blocked state. Global or dataset-only charts that have no project/session dependency can resume with `dest_session_id=None`.
+
+Use `langsmith-migrator clean` to remove saved sessions once you no longer need their state or remediation bundles.
+
+## SSL Certificate Issues
+
+For self-hosted instances with SSL errors:
+
+```bash
+# Use --no-ssl flag
+langsmith-migrator --no-ssl datasets
+
+# Or set environment variable
+export LANGSMITH_VERIFY_SSL=false
+```
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Contributions welcome! Fork, create a feature branch, and submit a Pull Request.
+
+### Release checklist
+
+For release changes, update all of:
+- `pyproject.toml` version
+- `CHANGELOG.md` release notes
+- `README.md` release-facing docs/examples
+
+CI enforces this on pull requests: if `pyproject.toml` or `CHANGELOG.md` changes, `README.md` must also be updated (including dependency-only bumps).
+
+## Support
+
+For issues or questions: [GitHub repository](https://github.com/langchain-ai/langsmith-data-migration-tool)

@@ -1,0 +1,174 @@
+> [!NOTE]  
+> You are using MetaConfigurator? Please [get in touch with us and give us feedback](https://forms.gle/MHKvrkMfdymH8TDs5)!
+
+
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="meta_configurator/public/logo-dark.svg" />
+    <img src="meta_configurator/public/logo.svg" alt="MetaConfigurator logo" height="40" valign="middle" />
+  </picture>
+  MetaConfigurator - A powerful JSON Schema Editor and Form/Code/Documentation Generator
+</h1>
+
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MetaConfigurator/meta-configurator/e2e.yml?label=End%20to%20End%20Tests)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MetaConfigurator/meta-configurator/npm-test.yml?label=Unit%20Tests)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MetaConfigurator/meta-configurator/github-pages.yml?label=Github%20Pages%20Build)
+![GitHub License](https://img.shields.io/github/license/MetaConfigurator/meta-configurator)
+
+
+🚀 What is MetaConfigurator?
+----------------------------
+
+MetaConfigurator is a powerful, user-friendly JSON schema editor and form generator with AI assistance. It simplifies the process of creating and editing structured data files such as configuration files and research data, making it accessible to both technical and non-technical users.
+
+🔗 **Try it out now:**
+
+*   **Stable Release:** [www.metaconfigurator.org](https://www.metaconfigurator.org/)
+
+*   **Experimental Version:** [metaconfigurator.github.io/meta-configurator](https://metaconfigurator.github.io/meta-configurator/)
+
+
+### 🎯 What Can MetaConfigurator Do?
+
+MetaConfigurator is a versatile tool that can be used for:
+
+*   **Schema & Data Model Creation or Editing** – Design and modify JSON Schema structures using an intuitive graphical editor.
+
+*   **Assisted Data Editing** – Edit JSON and YAML files efficiently with structured guidance based on schemas.
+
+*   **Configurator Builder** – Generate custom configurators that can be shared with others via pre-configured links.
+
+
+🌟 Why Use MetaConfigurator?
+----------------------------
+
+Creating structured data files (or schemas) manually can be complex and error-prone. MetaConfigurator removes this friction by providing an intuitive UI for editing JSON and YAML files based on a schema. It’s perfect for both beginners and experts who need a powerful yet easy-to-use tool.
+
+### ✅ Features & Benefits
+
+*   **Visual Schema Editor** – Create and edit JSON schemas using a graphical UI.
+
+*   **Flexible Data Editing** – Edit data using both a GUI and text editor, ensuring maximum flexibility.
+
+*   **Schema Inference & CSV Import** – Automatically generate schemas from CSV files.
+
+*   **Snapshot Sharing** – Share pre-configured links with preloaded schema, data, and settings.
+
+*   **Ontology Integration** – Auto-complete URIs for structured data.
+
+*   **Schema Diagram View** – Visually explore and modify complex schemas.
+
+*   **Custom UI Modes** – Adjust the interface to suit different user levels (beginner & advanced modes).
+
+*   **Pre-configured Configurators** – Generate shareable links that open MetaConfigurator with preloaded settings, acting as a tailor-made configuration tool.
+
+*   **Support for JSON Schema Draft-2020-12** – Ensuring compatibility with modern schema definitions.
+
+*   **Utility Functions for External References** – Automatically resolve/bundle external references and visualize them in the interactive schema diagram.
+
+*   **Code Generation** – Generate source code from JSON schemas in multiple programming languages (Python, Rust, TypeScript, C++, Java, etc.) using [quicktype](https://github.com/glideapps/quicktype/).
+
+*   **Documentation Generation** – Generate documentation from JSON schemas, with export to a Markdown file.
+
+*   **AI-Assisted Schema/Data Creation and Editing** – Use AI to help create or edit schemas and instance data with natural language inputs.
+
+*   **AI-Assisted Transformation of Instance Data** – Automatically transform existing instance data to conform to the target schema using AI-generated mappings, which are then applied deterministically. This also works for very large documents.
+  
+*   **Transformation to JSON-LD** – Convert JSON data to JSON-LD using AI-assisted RML mapping.
+
+*   **RDF Authoring Panel** – Inspect and edit RDF data through two synchronized tabs: **Context** and **Triples** in RDF Panel.
+
+*   **RDF Data Exploration** – Run AI-assisted SPARQL queries on RDF data and inspect or visualize the results.
+
+*   **Knowledge Graph Visualization** – Display RDF triples as an interactive graph, synchronized with the JSON-LD document.
+
+🛠️ Development
+---------------
+
+MetaConfigurator is built with **Vue.js** and **PrimeVue** for an intuitive user experience.
+
+### 🔧 Getting Started
+
+1.  git clone https://github.com/MetaConfigurator/meta-configurator.git
+
+2.  `cd meta-configurator`
+
+3.  `npm install`
+
+4.  `npm run dev`
+
+
+For more details, check out the [Developer Documentation](./documentation_developer).
+
+📖 User Guide & Examples
+------------------------
+
+Explore how to use MetaConfigurator with real-world examples:
+
+*   **[Schema Creation](./documentation_user/examples/schema_creation)** – Learn how to create and edit JSON schemas using different methods (inference from data, exploring existing schemas, manual editing).
+
+*   **[Data Import](./documentation_user/examples/data_import)** – Learn how to load data into MetaConfigurator: JSON/YAML, Turtle, XML, CSV, and the advanced import for many further formats.
+
+*   **[Schema Inference and Refinement](./documentation_user/examples/schema_inference_and_refinement)** – Learn how to derive a JSON schema from data and refine it with examples, enums and references.
+
+*   **[Data to Schema Mapping](./documentation_user/examples/data_to_schema_mapping)** – Learn how to convert data so that it matches a target schema, using AI-generated mapping functions.
+
+*   **[MOF Synthesis Example](./documentation_user/examples/mof_synthesis)** – Demonstrates schema generation, CSV import, and JSON export.
+
+*   **[Configurator Builder](./documentation_user/examples/configurator_building)** – Learn how to create and share pre-configured MetaConfigurator URLs.
+
+*   **[Code Generation](./documentation_user/examples/code_generation)** – Learn how to generate code in multiple programming languages from JSON schemas.
+
+*   **[Schema Selection List](./documentation_user/examples/schema_selection_list)** – Learn how to provide your users with a pre-defined list of schemas to choose from; useful for organizations.
+
+*   **[AI Assistance](./documentation_user/examples/ai_assistance)** – Learn how to use AI-assisted features for schema and data creation/editing, as well as data transformation.
+
+*   **[External References](./documentation_user/examples/external_references)** – Learn how to handle external references in MetaConfigurator.
+
+*   **[Schema Conversion](./documentation_user/examples/schema_conversion)** – Learn how to import schemas from other formats (XSD, SHACL, LinkML, MD-Models, ...) into JSON Schema and export JSON Schema to other formats.
+
+*   **[RDF Panel](./documentation_user/examples/rdf)** – Learn how to use MetaConfigurator to create, explore and edit Semantic RDF data.
+
+📚 Read the full [User Documentation](./documentation_user).
+
+📄 Citing MetaConfigurator
+--------------------------
+
+If MetaConfigurator is useful for your research, please cite it using the following BibTeX entry:
+
+```bibtex
+@article{metaconfigurator2024, 
+year = {2024}, 
+title = {{MetaConfigurator: A User-Friendly Tool for Editing Structured Data Files}}, 
+author = {Neubauer, Felix and Bredl, Paul and Xu, Minye and Patel, Keyuriben and Pleiss, Jürgen and Uekermann, Benjamin}, 
+journal = {Datenbank-Spektrum}, 
+issn = {1618-2162}, 
+doi = {10.1007/s13222-024-00472-7}, 
+abstract = {{Textual formats to structure data, such as JSON, XML, and YAML, are widely used for structuring data in various domains, from configuration files to research data. However, manually editing data in these formats can be complex and time-consuming. Graphical user interfaces (GUIs) can significantly reduce manual efforts and assist the user in editing the files, but developing a file-format-specific GUI requires substantial development and maintenance efforts. To address this challenge, we introduce MetaConfigurator: an open-source web application that generates its GUI depending on a given schema. Our approach differs from other schema-to-UI approaches in three key ways: 1) It offers a unified view that combines the benefits of both GUIs and text editors, 2) it enables schema editing within the same tool, and 3) it supports advanced schema features, including conditions and constraints. In this paper, we discuss the design and implementation of MetaConfigurator, backed by insights from a small-scale qualitative user study. The results indicate the effectiveness of our approach in retrieving information from data and schemas and in editing them.}}, 
+pages = {1--9}
+}
+```
+
+❓ FAQ
+------
+
+### What happens to the data I type into MetaConfigurator?
+
+MetaConfigurator runs entirely **inside your browser** - it does **not** send your schemas, data, or anything you type to any server. The website itself is just a static page delivered by GitHub Pages (like downloading a PDF or image), and all the work happens locally on your computer.
+
+The only exceptions:
+
+- If you **click the “Share Snapshot” button** the snapshot you create is sent to a **University of Stuttgart** server so you can share a unique link with others.
+- If you use the **Advanced Data Import**. Then your data is sent to a **University of Stuttgart** server for advanced import processing and the result returned. The data is not stored/persisted on the server.
+
+Additionally, if you use the optional AI assistance functionality, relevant subsets of your schema and data are shared with the AI endpoint you configure in the MetaConfigurator settings (by default Blablador, a German academic LLM provider).
+
+**See our [full Privacy Policy](PRIVACY.md)** for more information.
+
+📝 License
+----------
+
+MetaConfigurator is open-source software licensed under the **[MIT License](LICENSE)**.
+See the LICENSE file for more details.
+
+🔗 **Join the Community & Contribute!** If you have feature requests, bug reports, or contributions, feel free to open an issue or submit a pull request on GitHub. 🚀

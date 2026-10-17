@@ -1,0 +1,230 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="apps/web/public/static_assets/logos/lumose-logo-icon-text-white.png">
+    <source media="(prefers-color-scheme: light)" srcset="apps/web/public/static_assets/logos/lumose-logo-icon-text-black.png">
+    <img src="apps/web/public/static_assets/logos/lumose-logo-icon-text-black.png" alt="Lumose logo" width="420">
+  </picture>
+</p>
+
+<h1 align="center">
+  <sub><sup>Lumose: Open source diabetes platform with AI-powered analysis at its core.</sup></sub>
+</h1>
+
+<p align="center">
+  <em>Because no one should manage diabetes alone.</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/lumose-health/GlycemicGPT/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/lumose-health/GlycemicGPT/ci.yml?branch=develop&style=for-the-badge&labelColor=1e293b&label=CI&logo=githubactions&logoColor=white" alt="CI"></a>
+  <a href="https://github.com/lumose-health/GlycemicGPT/actions/workflows/security-full-suite.yml"><img src="https://img.shields.io/github/actions/workflow/status/lumose-health/GlycemicGPT/security-full-suite.yml?branch=main&style=for-the-badge&labelColor=1e293b&label=Security&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyMnM4LTQgOC0xMFY1bC04LTMtOCAzdjdjMCA2IDggMTAgOCAxMCIvPjwvc3ZnPg==&logoColor=white" alt="Security Suite"></a>
+  <a href="https://github.com/lumose-health/GlycemicGPT/releases/latest"><img src="https://img.shields.io/github/v/release/lumose-health/GlycemicGPT?style=for-the-badge&labelColor=1e293b&label=Stable&color=22c55e&logo=github&logoColor=white" alt="Stable Release"></a>
+  <a href="https://discord.gg/QbyhCQKDBs" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&labelColor=1e293b&logo=discord&logoColor=white" alt="Join the Lumose Discord server"></a>
+</p>
+
+<p align="center">
+  <a href="https://deepwiki.com/lumose-health/GlycemicGPT"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki: auto-generated, AI-powered wiki of this codebase"></a>
+</p>
+
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="https://glycemicgpt.org/docs/about/roadmap">Roadmap</a> •
+  <a href="#development">Development</a> •
+  <a href="#contributing">Contributing</a> •
+  <a href="#support-the-project">Support</a> •
+  <a href="#disclaimer">Disclaimer</a>
+</p>
+
+---
+
+> **IMPORTANT SAFETY WARNING**
+>
+> This software is **NOT** designed to replace your endocrinologist or healthcare provider. Lumose provides AI-generated suggestions only and should be used as a supplementary tool alongside professional medical care.
+
+---
+
+> **ALPHA SOFTWARE** -- This project is under active development. It is functional and in daily use by the developer, but has not been broadly tested. Use at your own risk and always consult your healthcare provider.
+
+---
+
+> **DATA HANDLING -- READ BEFORE CONFIGURING AN AI PROVIDER**
+>
+> Lumose is BYOAI. You choose the AI provider, and that choice determines where your health data is processed:
+>
+> - **Local AI providers** (running on your own infrastructure -- Ollama, vLLM, llama.cpp, or any other model on hardware you control) -- your glucose, insulin, and pump data never leave your network.
+> - **Cloud AI providers** (any AI service that processes requests on third-party servers, including hosted APIs, subscription products, and AI router/gateway services that forward traffic to upstream cloud models) -- your glucose, insulin, pump, and therapy data are transmitted to that provider for inference, subject to their data-handling policy.
+>
+> The Lumose platform itself does not route AI traffic through Lumose-operated servers; requests go directly from your deployment to your configured provider. The decision about whether health data leaves your network is entirely the user's, made when configuring a provider. See [`docs/concepts/privacy.md`](docs/concepts/privacy.md) for the full breakdown.
+
+---
+
+## Overview
+
+Lumose is an open source diabetes platform built around AI-powered analysis. It connects directly to your CGM and insulin pump for a full standalone experience — real-time monitoring, daily AI briefs, pattern detection, conversational AI chat, and caregiver alerting. Already running Nightscout? Lumose can also pull data from your existing instance and add AI analysis on top, no changes required to your current setup. See the [Relationship to other tools](https://glycemicgpt.org/docs/platform/concepts/relationship-to-other-tools) page for the honest comparison.
+
+**Currently supported devices:**
+
+| Device | Type | Connection | Status |
+|--------|------|------------|--------|
+| Dexcom G7 | CGM | Cloud API | Verified |
+| Tandem t:slim X2 | Insulin Pump | BLE (direct) + Cloud API | Verified |
+| Tandem Mobi | Insulin Pump | BLE (direct) + Cloud API | Protocol-compatible (see note) |
+| Medtronic MiniMed 680G / 770G / 780G | Insulin Pump + CGM | BLE (direct) + Cloud (CareLink) | Unverified (see note) |
+| NovoPen 6 / NovoPen Echo Plus | Smart Insulin Pen | Cloud (via Glooko) | Verified (bolus doses) |
+
+> **Tandem Mobi note:** The Mobi uses the same BLE protocol, authentication, and data formats as the t:slim X2. Our Tandem plugin reads data from both models, but **Mobi support has not been verified against physical hardware**. Protocol compatibility does not guarantee correct operation on untested devices. Use with Mobi hardware is entirely at your own risk — see [MEDICAL-DISCLAIMER.md](MEDICAL-DISCLAIMER.md) for full liability terms. If you have a Mobi and can help validate data reading, please open an issue.
+
+> **Medtronic note:** MiniMed 700-series support is **read-only** and reaches your data two independent ways — pairing the pump [directly to the phone over Bluetooth](docs/daily-use/connecting-medtronic-pump.md) (mobile app, no account) and [CareLink cloud sync](docs/daily-use/connecting-medtronic.md) (web). Both are built and shipping, but the data mapping — especially insulin-on-board and per-model sensor glucose — **has not been verified against physical hardware**, and SmartGuard auto-basal micro-bolus attribution is a known rough edge. Use at your own risk; see [MEDICAL-DISCLAIMER.md](MEDICAL-DISCLAIMER.md). If you have a 680G / 770G / 780G, we'd genuinely value your feedback — please report how it went on [issue #708](https://github.com/lumose-health/GlycemicGPT/issues/708).
+
+Support for reading data from additional pumps and CGMs is planned. The mobile app uses a [capability-based plugin architecture](https://github.com/lumose-health/android-unofficial/blob/main/docs/dev/plugin-architecture.md) for community device data drivers. See [CONTRIBUTING.md](CONTRIBUTING.md) if you'd like to help add data reading support for your device. If your device is not supported directly, the available Nightscout integration can import CGM entries, treatments for boluses, carbohydrates and basal changes, device status including loop and pump telemetry, and profile settings.
+
+**What it does:**
+
+- AI-powered daily briefs, meal analysis, and pattern recognition (BYOAI — bring your own AI key)
+- Conversational AI chat backed by clinical diabetes knowledge base
+- Configurable alerts with caregiver escalation and multi-channel delivery (Telegram, push, in-app)
+- Real-time glucose monitoring with trend charts and Time in Range tracking
+- BLE connectivity to Tandem and Medtronic 700-series pumps (basal, bolus, IoB, reservoir, battery)
+- Nightscout API integration for existing ecosystem users
+- Android phone app + Wear OS companion with watch face complications
+- Self-hosted Docker stack with web dashboard and REST API
+- Up to 10 years of personal diabetes data storage
+- Printable reports for endocrinologist appointments
+
+**Key Principles:**
+
+- **Suggestions only** -- does not control medical devices
+- **BYOAI architecture** -- bring your own AI provider; cloud-hosted providers receive your health data, local providers keep it on your network (see [`docs/concepts/privacy.md`](docs/concepts/privacy.md))
+- **Self-hosted platform** -- the Lumose services run on your infrastructure (Docker or Kubernetes); whether your data leaves your network for AI inference depends on the AI provider you configure
+- **Safety-first** -- pre-validation layer, emergency escalation, medical disclaimers
+
+## Quick Start
+
+> **Looking for the friendly walkthrough?** Read [docs/get-started.md](docs/get-started.md) -- it covers the platform, the Android companion app, the optional watch face, AI provider configuration, and three deployment paths (laptop / home server with Cloudflare Tunnel / cloud VPS) end-to-end. The one-liner below is for developers who already know the stack.
+
+```bash
+git clone https://github.com/lumose-health/GlycemicGPT.git
+cd GlycemicGPT
+cp .env.example .env
+docker compose up --build -d
+```
+
+Services will be available at:
+
+- **Web UI:** http://localhost:3000
+- **API:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
+
+For deployments beyond local development, see:
+
+- [Install with Docker](docs/install/docker.md) -- the full Docker reference + decision table for picking a compose example
+- [Install with Kubernetes](docs/install/kubernetes.md) -- Kustomize-based K8s walkthrough with prebuilt images
+- [`deploy/examples/public-cloud/`](deploy/examples/public-cloud/) -- VPS with Caddy + automatic HTTPS
+- [`deploy/examples/cloudflare-tunnel/`](deploy/examples/cloudflare-tunnel/) -- home server with Cloudflare-managed access (no port forwarding required)
+
+## Architecture
+
+| Component | Technology |
+|-----------|------------|
+| Frontend | Next.js 15, React 19, Tailwind CSS, shadcn/ui |
+| Backend | FastAPI, Python 3.12 |
+| AI Sidecar | TypeScript, Express, multi-provider proxy |
+| Database | PostgreSQL 16, SQLAlchemy 2.0 |
+| Cache | Redis 7 |
+
+The Android phone app, Wear OS watch face, and their [plugin architecture](https://github.com/lumose-health/android-unofficial/blob/main/docs/dev/plugin-architecture.md) for community device data drivers live in the separate [`lumose-health/android-unofficial`](https://github.com/lumose-health/android-unofficial) repository (Kotlin, Jetpack Compose, BLE).
+
+## Development
+
+```bash
+# Start the full stack
+docker compose up --build -d
+
+# Verify services
+curl localhost:8000/health   # API
+docker compose exec api curl -s http://ai-sidecar:3456/health   # AI sidecar (not published to the host)
+# Web UI at http://localhost:3000
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full development setup, branching strategy, and code style guidelines.
+
+## Contributing
+
+We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) before submitting a pull request.
+
+- [Bug Reports](https://github.com/lumose-health/GlycemicGPT/issues/new?template=bug_report.yml)
+- [Feature Requests](https://github.com/lumose-health/GlycemicGPT/issues/new?template=feature_request.yml)
+- [Mobile App Issues](https://github.com/lumose-health/android-unofficial/issues) (Android and Wear OS apps live in android-unofficial)
+- [Discussions](https://github.com/lumose-health/GlycemicGPT/discussions) (questions, ideas, show & tell)
+- [Community Discord](https://discord.gg/QbyhCQKDBs) (real-time chat, questions, dev coordination)
+
+## Support the Project
+
+Lumose is free and open source. Funding flows through [Open Collective](https://opencollective.com/how-it-works), with full public transaction history. For a breakdown of how project funds are used, see the [What the fund covers](https://github.com/lumose-health/.github/blob/main/GOVERNANCE.md#what-the-fund-covers) section in the org governance doc. Stars on GitHub help other people discover the project.
+
+<p align="center">
+  <a href="https://opencollective.com/lumose"><img src="https://opencollective.com/lumose/contribute/button@2x.png?color=blue" alt="Contribute to Lumose on Open Collective" width="280"></a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/lumose-health/GlycemicGPT/stargazers"><img src="assets/buttons/star-on-github.svg" alt="Star Lumose on GitHub" width="280"></a>
+</p>
+
+## Supported by
+
+<a href="https://github.com/1Password/for-open-source"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/1password-dark.svg"><img src="assets/sponsors/1password.svg" alt="1Password for Open Source" width="64" height="64"></picture></a>
+<a href="https://sentry.io/for/good/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/sentry-dark.svg"><img src="assets/sponsors/sentry.svg" alt="Sentry for Good" width="64" height="64"></picture></a>
+
+<sub>Both are in-kind program participation, not financial sponsorship. See [SPONSORS.md](https://github.com/lumose-health/.github/blob/main/SPONSORS.md) for the full record of our support relationships.</sub>
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Disclaimer
+
+> See [MEDICAL-DISCLAIMER.md](MEDICAL-DISCLAIMER.md) for the complete medical and regulatory disclaimer.
+
+> **USE AT YOUR OWN RISK**
+
+### This Software is Not Medical Advice
+
+Lumose is experimental open-source software intended for educational and informational purposes only. It is **NOT** approved by the FDA or any regulatory body for medical use.
+
+### AI Limitations
+
+**AI can and will make mistakes.** Large language models (LLMs) are known to:
+
+- **Hallucinate** - generate plausible-sounding but incorrect information
+- **Misinterpret data** - draw incorrect conclusions from your glucose readings
+- **Provide outdated information** - not reflect the latest medical guidelines
+- **Lack context** - not understand your complete medical history
+
+### Critical Warnings
+
+1. **Do not replace professional medical care.** Always consult with your endocrinologist, diabetes educator, or healthcare provider before making any changes to your diabetes management.
+
+2. **Verify all suggestions.** Any insulin dosing, carb ratio, or correction factor suggestions from AI must be verified with your healthcare team before use.
+
+3. **This is not a medical device.** Lumose does not control any medical devices and provides suggestions only.
+
+4. **Use extreme caution.** Incorrect diabetes management can result in severe hypoglycemia, diabetic ketoacidosis (DKA), or other life-threatening conditions.
+
+### Limitation of Liability
+
+THE AUTHORS AND CONTRIBUTORS OF THIS SOFTWARE ARE NOT LIABLE FOR ANY DAMAGES, INJURIES, OR ADVERSE HEALTH OUTCOMES RESULTING FROM THE USE OF THIS SOFTWARE. BY USING LUMOSE, YOU ACKNOWLEDGE THAT:
+
+- You are using this software at your own risk
+- You will not rely solely on AI-generated suggestions for medical decisions
+- You understand that AI can make errors and hallucinate
+- You will maintain regular care with qualified healthcare professionals
+- You accept full responsibility for any decisions made based on this software's output
+
+**If you experience a diabetes emergency, contact your healthcare provider or emergency services immediately. Do not rely on this software for emergency medical guidance.**
+
+---
+
+<p align="center">
+  <sub>Built with care for the diabetes community. Stay safe. 💙</sub>
+</p>

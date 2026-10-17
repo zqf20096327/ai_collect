@@ -1,0 +1,138 @@
+<p align="center">
+    <a href="https://www.innoshop.com"><img src="https://www.innoshop.com/static/logos/innoshop-logo.png" alt="Total Downloads"></a>
+</p>
+
+---
+
+<p align="center">
+    <a href="https://www.innoshop.com"><img src="https://img.shields.io/badge/License-OSL%203.0-green.svg" alt="Total Downloads"></a>
+    <a href="https://www.php.net"><img src="https://img.shields.io/badge/Language-PHP%208.3-blue.svg" alt="Total Downloads"></a>
+    <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-13-orange" alt="Total Downloads"></a>
+</p>
+
+
+<p align="center">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/sa.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/de.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/us.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/es.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/fr.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/id.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/it.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/jp.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/kh.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/kr.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/my.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/nl.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/pt.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/br.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/ru.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/th.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/tr.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/vn.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/cn.svg">
+    <img class="flag-img" width="32px" height="24px" src="https://flagicons.lipis.dev/flags/4x3/hk.svg">
+</p>
+
+
+# InnoShop
+InnoShop - Innovative Open Source E-commerce System.
+
+InnoShop is an Open Source eCommerce System based on Laravel 13, supporting multiple languages, multiple currencies, integrated with multiple AI models and native MCP (Model Context Protocol) for intelligent automation, and featuring plugin mechanisms and theme template development for enhanced user experience and system extensibility.
+
+## Quick Start
+
+### Requirements
+- PHP >= 8.3 with extensions: bcmath, cURL, dom, fileinfo, libxml, OpenSSL, PDO, simplexml
+- Composer 2.x
+- Node.js >= 18 with npm 9+
+- MySQL 5.7+ / 8.0+ (or SQLite for local try-out)
+
+### Option 1: Composer (Recommended)
+
+```bash
+composer create-project innoshop/innoshop
+cd innoshop
+php artisan serve
+```
+
+The create-project command automatically:
+1. Installs PHP dependencies
+2. Generates the application key
+3. Runs `npm install` and `npm run build` to compile front-end assets
+
+Open http://localhost:8000 in your browser, the installation wizard will guide you through database setup and admin account creation.
+
+### Option 2: Download ZIP (No Node.js Required)
+
+Grab the latest `innoshop-vX.Y.Z.zip` from **GitHub Releases** — it ships with PHP dependencies and compiled front-end assets pre-packaged, so you only need PHP on the server:
+
+- GitHub Releases: <https://github.com/innocommerce/innoshop/releases>
+- Official Site: <https://www.innoshop.com>
+
+```bash
+unzip innoshop-vX.Y.Z.zip -d innoshop
+cd innoshop
+chmod -R 775 storage bootstrap/cache
+php artisan serve
+```
+
+Open the site URL in your browser and follow the installation wizard to configure the database and admin account.
+
+### Option 3: Git Clone (For Contributors)
+
+```bash
+git clone https://github.com/innocommerce/innoshop.git
+cd innoshop
+composer install
+npm install
+npm run build
+cp .env.example .env
+php artisan key:generate
+php artisan serve
+```
+
+## Introduction
+- A globally oriented open source e-commerce system, a culmination of 15 years of continuous industry development.
+- User-friendly, intuitive interface, quick to get started, responsive design.
+- Based on the latest technology, deeply integrated with AI and native MCP (Model Context Protocol) support, multi-language and multi-currency features.
+- Highly cohesive, low coupling modular design, making it simple and convenient for rapid plugin development.
+
+## Documentation
+- https://docs.innoshop.cn/en
+- http://front-api.innoshop.cn
+- http://panel-api.innoshop.cn
+
+## Demo Site
+- Frontend: https://demo.innoshop.cn
+- Backend: https://demo.innoshop.cn/panel
+- Account: admin@innoshop.com
+- Password: 123456
+
+### Frontend Screenshot
+<p align="center">
+    <a href="https://www.innoshop.cn"  target="_blank">
+        <img src="https://www.innoshop.cn/images/readme/front.jpg?v"  alt="Front">
+    </a>
+</p>
+
+### Backend Screenshot
+<p align="center">
+    <a href="https://www.innoshop.com"  target="_blank">
+        <img src="https://www.innoshop.cn/images/readme/panel.jpg?v"  alt="Panel">
+    </a>
+</p>
+
+- If you find `InnoShop` helpful, please do not hesitate to give us a star.
+- Every like from you is the driving force for our continuous improvement.
+
+## Contributors
+
+Thanks to the [Contributors](https://github.com/innocommerce/innoshop/graphs/contributors)
+
+<a href="https://github.com/yushine"><img class="avatar-img" width="32px" height="32px" src="https://github.com/yushine.png"/></a>
+<a href="https://github.com/liuweixxx"><img class="avatar-img" width="32px" height="32px" src="https://github.com/liuweixxx.png"/></a>
+<a href="https://github.com/qxsclass"><img class="avatar-img" width="32px" height="32px" src="https://github.com/qxsclass.png"/></a>
+<a href="https://github.com/NeftaliYagua"><img class="avatar-img" width="32px" height="32px" src="https://github.com/NeftaliYagua.png"/></a>
+<a href="https://github.com/lunan689"><img class="avatar-img" width="32px" height="32px" src="https://github.com/lunan689.png"/></a>
+<a href="https://github.com/LOLU66"><img class="avatar-img" width="32px" height="32px" src="https://github.com/LOLU66.png"/></a>

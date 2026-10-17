@@ -1,0 +1,506 @@
+#+TITLE: Ocawe
+#+AUTHOR: Konrad Geletey
+#+DATE: 2026-06-10
+
+Ocawe is a Crystal-first framework and runtime for Cawfile workflow bundles,
+agents, tools, skills, and OpenAI-compatible workflow execution.
+
+*Licenses:* [[https://spdx.org/licenses/0BSD.html][0BSD]] (=LICENSE=).
+
+It includes:
+- A production-oriented HTTP runtime server
+- A Svelte playground for workflows, tools, skills, and agent chat
+- VitePress docs with a custom =/playground/= route
+
+* Workspace Ownership
+
+Ocawe owns the workflow runtime framework and example Cawfiles. Deployment
+library code, CI workflows, host modules, and Lefinepro production pipeline
+packaging live outside this repository, primarily in =sireng/= and the root
+=lefinepro= workspace.
+
+* Why Ocawe
+
+- Cawfile-first workflow framework with root-level multi-workflow bundles
+- =@[Service]= workflows that start with the runtime for tunnels, daemons, and watchers
+- Agent + skill + tool discovery from workflow directories
+- Voice and RAG patterns through workflow DSL
+- Universal ACP execution for external agents through =exec ..., runtime: {acp: {...}}=
+- Schema validation and guardrails in agent/workflow execution
+- OpenAI-compatible chat completions, retrieval, and async task endpoints
+
+* Quickstart
+
+Run with Nix:
+
+#+begin_src bash
+git clone https://github.com/lefinepro/ocawe.git
+cd ocawe
+
+nix run . -- --help
+nix run . -- up caws/01-simple
+#+end_src
+
+Install with Nix:
+
+#+begin_src bash
+nix profile install github:lefinepro/ocawe
+ocawe --help
+
+pkg="$(dirname "$(dirname "$(readlink -f "$(command -v ocawe)")")")"
+tmp="$(mktemp -d)"
+cp -R "$pkg/share/ocawe/caws/12-api-nodes" "$tmp/"
+chmod -R u+w "$tmp/12-api-nodes"
+
+ocawe up -d "$tmp/12-api-nodes" --port 4119
+curl -fsS http://127.0.0.1:4119/v1/workflows
+kill "$(cat "$tmp/12-api-nodes/.ocawe.pid")"
+#+end_src
+
+The Nix package includes only the CLI/runtime dependencies used by the
+distribution, including Git, OpenSSH, SQLite, and zstd. Provider CLIs and their
+language runtimes are supplied separately when a workflow explicitly needs
+them. The package also installs example Cawfiles and helper scripts under =share/ocawe=. Installed
+commands use the packaged source, examples, and runtime binary automatically.
+
+Install from GitHub Releases:
+
+#+begin_src bash
+curl -fsSL https://github.com/lefinepro/ocawe/releases/latest/download/install.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
+ocawe --help
+
+pkg="$(dirname "$(dirname "$(readlink -f "$(command -v ocawe)")")")"
+tmp="$(mktemp -d)"
+cp -R "$pkg/share/ocawe/caws/12-api-nodes" "$tmp/"
+chmod -R u+w "$tmp/12-api-nodes"
+
+ocawe up -d "$tmp/12-api-nodes" --port 4119
+curl -fsS http://127.0.0.1:4119/v1/workflows
+kill "$(cat "$tmp/12-api-nodes/.ocawe.pid")"
+#+end_src
+
+Install a specific release tag:
+
+#+begin_src bash
+curl -fsSL https://github.com/lefinepro/ocawe/releases/download/2026.07.00/install.sh | OCAWE_VERSION=2026.07.00 bash
+#+end_src
+
+The installer downloads =ocawe-linux-x86_64.tar.gz= into
+=OCAWE_INSTALL_DIR= (default =~/.local=), verifies both =bin/ocawe= and
+=bin/ocawecore=, and runs =ocawe --help=.
+
+Install with mise from GitHub Releases:
+
+#+begin_src bash
+mise use -g "github:lefinepro/ocawe[matching=ocawe-linux,bin_path=bin,filter_bins=ocawe]@latest"
+ocawe --help
+#+end_src
+
+Declarative =mise.toml=:
+
+#+begin_src toml
+[tools]
+"github:lefinepro/ocawe" = { version = "latest", matching = "ocawe-linux", bin_path = "bin", filter_bins = "ocawe" }
+#+end_src
+
+Build the CLI from source with Nix:
+
+#+begin_src bash
+nix build .#ocawe
+./result/bin/ocawe --help
+#+end_src
+
+Optional shell install:
+
+#+begin_src bash
+mkdir -p ~/.local/bin
+ln -sf "$PWD/result/bin/ocawe" ~/.local/bin/ocawe
+ocawe --help
+#+end_src
+
+If =~/.local/bin= is not in =PATH=, add it in your shell profile.
+
+Nix provides the pinned Crystal toolchain, shards, and native build
+dependencies used by the flake package.
+
+Run an example:
+
+#+begin_src bash
+ocawe up caws/01-simple
+#+end_src
+
+Pull a remote Cawfile workflow:
+
+#+begin_src bash
+ocawe pull git+https://github.com/lefinepro/ocawe/caws/10-acp-agent
+ocawe pull git+ssh://github.com/lefinepro/ocawe/caws/10-acp-agent
+#+end_src
+
+The runtime reads =Cawfile= from the selected workflow directory or the current
+directory. The port is configured there via =settings do port = 4111 end=.
+
+** Declarative Nix
+
+Use Ocawe as a flake input:
+
+#+begin_src nix
+{
+  inputs.ocawe.url = "github:lefinepro/ocawe";
+
+  outputs = { nixpkgs, ocawe, ... }: {
+    nixosConfigurations.host = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ocawe.nixosModules.default
+        {
+          services.ocawe = {
+            enable = true;
+            port = 4111;
+          };
+        }
+      ];
+    };
+  };
+}
+#+end_src
+
+By default the NixOS module declaratively installs packaged examples by linking
+=services.ocawe.workflowsRoot= to =${package}/share/ocawe/caws= when the path
+does not already exist. Disable that with =services.ocawe.installExamples =
+false= when you manage the workflows directory yourself.
+
+Use the overlay:
+
+#+begin_src nix
+{
+  nixpkgs.overlays = [ inputs.ocawe.overlays.default ];
+  environment.systemPackages = [ pkgs.ocawe ];
+}
+#+end_src
+
+Use with Home Manager:
+
+#+begin_src nix
+{
+  imports = [ inputs.ocawe.homeManagerModules.default ];
+  programs.ocawe.enable = true;
+}
+#+end_src
+
+* CLI Commands
+
+** Build and Run
+
+#+begin_src bash
+ocawe build --release
+ocawe dev --port 4111
+ocawe up                           # reads port from Cawfile
+ocawe up caws/01-simple     # run specific workflow
+ocawe up -d caws/01-simple  # background mode
+#+end_src
+
+Build a Sireng pipeline on a remote host. Ocawe transfers only the selected
+pipeline and the Ocawe source needed by its runtime, then uses the remote
+host's first working =nerdctl=, =docker=, or =podman= manager. The remote build
+produces an immutable image and a matching =<service>-runtime= binary under the
+host runtime store. Repeating the same command reuses the content-addressed
+build.
+
+#+begin_src bash
+ocawe build planner --remote build-host
+ocawe build --remote build-host .
+ocawe build planner --remote build-host --manager nerdctl
+ocawe build weather --remote build-host --start-mode --deploy --namespace lefine
+ocawe build planner --remote build-host --dry-run
+#+end_src
+
+The remote build never changes the active runtime until the image and binary
+have both completed successfully. Deploy the promoted version separately:
+
+Use =--start-mode= for a minimal production image. It embeds the compiled
+workflow runtime and starts only the lightweight =/run=, =/stop/:id=, and
+=/metrics= API; addon-managed deployments receive no legacy =dev= arguments.
+
+#+begin_src bash
+cd sireng
+nix run .#deploy -- planner
+# or, from the Sireng development environment:
+sireng deploy planner
+sireng deploy planner --version <source-hash>
+#+end_src
+
+For the one-command remote workflow path, use =up=. It resolves the target
+ActivityPub profile, packages the selected project as =project.tar.zst=, sends
+it as a ForgeFed task, and lets that profile unpack and run the included
+Cawfile on its server. The path defaults to the current directory:
+
+#+begin_src bash
+nix run github:lefinepro/ocawe -- up --remote @handle@lefine.pro .
+#+end_src
+
+The command returns the target profile and ActivityPub task id:
+
+#+begin_example
+Profile: https://lefine.pro/actors/handle
+Task: https://lefine.pro/actors/ocawe-device/activities/ocawe-task-...
+Status: accepted (202)
+#+end_example
+
+The Cawfile and a local device code are saved with mode 0600 in
+=.ocawe/remote-task.json= after delivery. Remote =up= uses WebFinger and
+ActivityPub; it does not use SSH or create a Kubernetes namespace. The archive
+excludes =.git=, =.env*=, private-key files, dependency caches, and build
+output. Use =--dry-run= to inspect the task and archive size without sending it.
+
+** Workflow Triggers
+
+#+begin_src bash
+# explicit workflow trigger by id
+ocawe workflow solver task=deploy env=prod
+
+# agent/function/tool/skill/support triggers
+ocawe agent code-reviewer --prompt "review this patch"
+ocawe tool project_healthcheck
+ocawe support onboarding-check
+
+# alias executable style (workflow id from executable name)
+ln -sf ./build/ocawe /usr/local/bin/ocawe_example_workflow
+ocawe_example_workflow
+#+end_src
+
+Workflow trigger CLI calls =POST /v1/triggers/workflows/:id= and sends:
+- =input.<key>= from =key=value= args (values parsed as JSON when possible)
+- =input.args= from positional args without ===
+
+Trigger command mapping:
+- =workflow= → =/v1/triggers/workflows/:id=
+- =agent= → =/v1/triggers/agents/:id=
+- =skill=/=support= → =/v1/triggers/skills/:id=
+- =function=/=tool= → =/v1/triggers/functions/:id=
+
+Use =OCAWE_TRIGGER_BASE_URL= or =--base-url= to target a non-default runtime URL.
+
+* Runtime APIs
+
+** Primary APIs
+
+- =GET /v1/workflows=
+- =POST /v1/workflows/:workflowId/runs=
+- =GET /v1/tools=
+- =GET /v1/skills=
+- =GET /v1/agents=
+- =POST /v1/agents/:agentId/generate=
+- =GET /v1/mcp/servers=
+- =POST /v1/mcp/servers=
+- =GET /v1/mcp/catalog=
+- =POST /mcp=
+
+** Compatibility
+
+- =POST /v1/responses= (OpenAI Responses-compatible)
+- =POST /v1/chat/completions=
+- =GET /v1/chat/completions/:completion_id=
+- =POST /v1/chat/completions/tasks=
+- =GET /v1/chat/completions/tasks/:taskId=
+
+** Federation APIs
+
+- =POST /actors/{identifier}/inbox= (S2S inbound activities, signature-verified)
+- =GET /actors/{identifier}/outbox=
+- =POST /actors/{identifier}/outbox=
+- =GET /federation/metadata= (reported capabilities + supported FEPs from FEDERATION.md)
+- =GET /FEDERATION.md= (repo interoperability manifest)
+
+S2S ticket ingestion mode:
+- follow remote actor and poll remote =outbox= for =Create(Ticket)= activities
+- require HTTP Signatures for federation requests
+
+* Project Structure
+
+#+begin_example
+src/
+  cli/                     # ocawe CLI (build/dev/up)
+  framework/               # runtime framework + HTTP endpoints
+packages/
+  playground/              # Svelte playground (Vite + pnpm/Node.js)
+  docs/                    # VitePress docs and static playground route
+caws/                      # workflow bundle examples
+  01-simple/               # minimal single agent
+  02-multi-agent/          # sequential agent pipeline
+  03-control-flow/         # if/else, parallel, while, until
+  04-rag-assistant/        # retrieval-augmented generation
+  05-voice-pipeline/       # voice transcription + synthesis
+  06-full-suite/           # all features combined, including container and service workflows
+  09-custom-agent/         # how to write custom agents
+  10-acp-agent/            # ACP-compatible external agent execution
+  11-git-https-pull/       # pull remote Cawfile bundles with git+https
+  12-api-nodes/            # HTTP API steps and step["name"] result access
+spec/                      # Crystal specs
+#+end_example
+
+* Examples
+
+See =caws/= directory for complete examples with =Cawfile= format.
+
+Run any example:
+
+#+begin_src bash
+ocawe up caws/01-simple
+ocawe up -d caws/02-multi-agent  # background mode
+ocawe pull git+https://github.com/lefinepro/ocawe/caws/10-acp-agent
+#+end_src
+
+Each example demonstrates a specific feature:
+- *01-simple* — minimal single agent setup
+- *02-multi-agent* — sequential agent pipeline
+- *03-control-flow* — =unless=, =if/else=, =parallel=, =while=, =until=
+- *04-rag-assistant* — RAG with vector store
+- *05-voice-pipeline* — voice transcription and synthesis
+- *06-full-suite* — all features combined, including container packaging and multiple =@[Service]= workflows
+- *09-custom-agent* — writing custom agents with external binaries
+- *10-acp-agent* — ACP-compatible external agent execution
+- *11-git-https-pull* — pulling remote Cawfile bundles with =git+https=
+- *12-api-nodes* — HTTP =get=, =post=, =put= steps with =step["name"]= result access
+
+* Cawfile Framework
+
+Framework configuration uses =Cawfile= in the workflow root. A root =Cawfile=
+can define runtime settings, Crystal structs, annotations, and multiple
+workflow blocks. Directory-local =Cawfile= files are preferred for bundles;
+=*.acd.cr= files are still supported as legacy/single-workflow fallback.
+
+Example =Cawfile=:
+
+#+begin_src rcl
+settings do
+  port = 4111
+  datasets.adapter = "sqlite"
+  telemetry do
+    enabled = true
+    service_name = "ocawe"
+    endpoint = "http://127.0.0.1:4318"
+  end
+end
+
+container do
+  packages = ["git", "curl"]
+  files = ["agents", "skills", "tools"]
+end
+
+# Federation is enabled by including Api::Federation types
+struct Input
+  include Api::Federation::Inbox
+end
+
+struct Output
+  include Api::Federation::Outbox
+end
+
+@[Model("openai/gpt-4.1-mini")]
+@[Validate(Input, Output)]
+workflow "solver-codex" do
+  follow ["@coder@example.com"]
+  agent "codex-agent"
+end
+
+@[Service]
+workflow "agent-tunnel" do
+  exec "localtunnel", runtime: {shell: "bash"}
+end
+
+workflow "codex-acp" do
+  exec "codex-acp", runtime: {acp: true}
+end
+
+workflow "remote-acp" do
+  exec "github.com/lefinepro/ocawe/caws/10-acp-agent", runtime: {"git+https"}
+end
+
+workflow "remote-acp-ssh" do
+  exec "git+ssh://github.com/lefinepro/ocawe/caws/10-acp-agent/10-acp-agent", runtime: {"git+ssh"}
+end
+#+end_src
+
+*Key directives:*
+- =settings do ... end= — runtime config (port, datasets adapter, federation, telemetry)
+- =@[Service]= — workflow starts with =ocawe up= and restarts on runtime reload
+- =ocawe start PATH= — optimized Cawfile container runtime with the minimal =/run=, =/stop/:id=, and =/metrics= API
+- =ocawe stop PATH= — stops the container or local server started by =ocawe start=
+- =@[Model("provider")]= — default model for the workflow
+- =container do ... end= — bundle-level container packaging; =packages= accepts Nix package names, flake refs, and path refs, while optional =files= selects what to copy into =/app=
+- =@[Validate(Input, Output)]= — input/output type validation
+- =exec "...", runtime: {acp: {...}}= — run any external ACP-compatible agent
+- =exec "github.com/org/repo/path", runtime: {"git+https"}= — clone or fast-forward pull a remote Cawfile reference over HTTPS, compile it into a cached single =ocawecore= binary, then run the selected workflow through that binary
+- =exec "git+https://github.com/org/repo/path", runtime: {"git+https"}= — explicit HTTPS form for the same remote Cawfile behavior
+- =exec "git+ssh://github.com/org/repo/path/workflow", runtime: {"git+ssh"}= — clone or fast-forward pull a remote Cawfile reference over SSH, compile it into a cached single =ocawecore= binary, then run the selected workflow through that binary
+
+*API types:*
+- ="federation"= — ForgeFed-only mode (enabled when =Api::Federation::Inbox= or =Api::Federation::Outbox= is included)
+- ="classic"= — default runtime APIs (=/v1/*=)
+
+*OpenTelemetry:*
+Set =telemetry.enabled = true= or a nested =telemetry do ... end= block to emit
+HTTP server spans, workflow run spans, node spans, outbound API/exec spans,
+workflow/HTTP metrics, and OTEL log records mirrored from workflow logger
+events. =OTEL_EXPORTER_OTLP_ENDPOINT=, =OTEL_EXPORTER_OTLP_HEADERS=,
+=OTEL_SERVICE_NAME=, and signal exporter env vars override Cawfile settings.
+
+* Writing Custom Agents
+
+Agents are defined via markdown files with frontmatter:
+
+#+begin_src yaml
+---
+name: "My Coder"
+description: "Custom agent"
+model: "openai/gpt-4.1-mini"
+---
+
+You are a helpful assistant.
+#+end_src
+
+See =caws/09-custom-agent= for a complete example.
+
+*Installing external agents:*
+- OpenCode: =npm install -g @anthropic/opencode=
+- Claude Code: =npm install -g @anthropic-ai/claude-code=
+- Qwen Code: =pip install qwen-code=
+
+* Development
+
+** Run Playground
+
+#+begin_src bash
+cd packages/playground
+pnpm install
+pnpm run dev
+#+end_src
+
+** Run Docs
+
+#+begin_src bash
+cd packages/docs
+pnpm install
+pnpm run dev
+#+end_src
+
+** Development Tasks (mise)
+
+#+begin_src bash
+mise install
+mise run cli-build
+mise run up
+mise run playground-build
+mise run docs-build
+#+end_src
+
+The mise environment installs Crystal and Bun for local development.
+
+** Testing
+
+#+begin_src bash
+crystal spec
+cd packages/playground && pnpm run lint
+cd packages/docs && pnpm run build
+#+end_src

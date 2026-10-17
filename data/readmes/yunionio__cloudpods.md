@@ -1,0 +1,123 @@
+# Cloudpods
+
+[![CircleCI](https://circleci.com/gh/yunionio/cloudpods.svg?style=svg)](https://circleci.com/gh/yunionio/cloudpods)
+[![Go Report Card](https://goreportcard.com/badge/github.com/yunionio/cloudpods)](https://goreportcard.com/report/github.com/yunionio/cloudpods)
+
+[English](./README.md) | [简体中文](./README-CN.md)
+
+## What is Cloudpods?
+
+<img src="https://v1.cloudpods.org/images/cloudpods_logo_green.png" alt="Cloudpods" height="100">
+
+Cloudpods is a cloud-native open source unified multi/hybrid-cloud platform developed with Golang, i.e. Cloudpods is *a cloud on clouds*. Cloudpods is able to manage not only on-premise KVM/baremetals, but also resources from many cloud accounts across many cloud providers. It hides the differences of underlying cloud providers and exposes one set of APIs that allow programatically interacting with these many clouds.
+
+Cloudpods also provides **AI Cloud**, a unified management platform for large language model (LLM) inference and AI container applications, helping enterprises deploy, schedule, and operate AI workloads on a single platform, seamlessly integrated with the Cloudpods private cloud / multi-cloud resource ecosystem.
+
+## Who needs Cloudpods?
+
+* Those who need a simple solution to virtualize a few physical servers into a private cloud
+* Those who need a compact and fully automatic baremetal lift-cycle management solution
+* Those who want to turn a VMware vSphere virtualization cluster into a private cloud
+* Those who need a cohesive view of both public and private cloud in a hybrid cloud setup
+* Those who need a centric portal to access multiple accounts from multiple public clouds
+* Those who is currently using a single cloud account, but will not lose the possibility to adopt multicloud strategy
+* Those who need to deploy and manage LLM inference services and AI container applications with GPU support
+
+## Features
+
+See [Introduction](https://www.cloudpods.org/docs/introduction/) for details.
+
+### AI Cloud
+
+* **AI Inference Services**: Deploy and manage LLM inference instances (Ollama, vLLM, SGLang, and more) with GPU scheduling, model mounting, and inference service address allocation.
+* **AI Application Management**: One-stop deployment of LLM application orchestration, agent assistants, image generation, and other AI container applications.
+* **Model Library**: Unified management of model sources, versions, and caches, supporting multi-instance reuse and offline distribution.
+* **Templates and Images**: Define resource specifications (CPU/memory/GPU) through templates, manage container runtime environments through images.
+* **GPU Operations**: Automatic GPU device detection and registration, unified NVIDIA/CUDA environment configuration and management.
+
+Supported AI workloads:
+* AI Inference: Ollama, vLLM, SGLang
+* AI Applications: OpenClaw, Dify, ComfyUI, Hermes Agent
+
+### Supported cloud providers
+
+* Public Clouds:
+  * AWS
+  * Azure
+  * Google Cloud Platform
+  * Alibaba Cloud
+  * Huawei Cloud
+  * Tencent Cloud
+  * UCloud
+  * Ctyun (China Telecom)
+  * ECloud (China Mobile)
+  * JDCloud
+  * Volcengine
+  * Baidu Cloud
+  * Kingsoft Cloud
+  * QingCloud
+  * Oracle Cloud
+  * China Unicom Cloud
+* Private Clouds:
+  * OpenStack
+  * ZStack
+  * Alibaba Cloud Apsara
+  * Huawei HCSO
+  * Nutanix
+  * BingoCloud
+  * OceanBase
+* On-premise resources:
+  * Lightweight private cloud built on KVM
+  * VMware vSphere vCenter/ESXi
+  * Proxmox VE
+  * Baremetals (IPMI, Redfish API)
+  * Object storages (Minio, Ceph, XSky)
+  * NAS (Ceph)
+
+### Supported resources
+
+* Servers: instances, disks, network interfaces, networks, vpcs, storages, hosts, wires, snapshots, snapshot policies, security groups, elastic IPs, SSH keypairs, images
+* Load Balancers: instances, listeners, backend groups, backends, TLS certificates, ACLs
+* Object Storage: buckets, objects
+* NAS: file_systems, access_groups, mount_targets
+* RDS: instances, accounts, backups, databases, parameters, privileges
+* Elastic Cache: instances, accounts, backups, parameters
+* DNS: DNS zones, DNS records
+* VPC: VPCs, VPC peering, inter-VPC network, NAT gateway, DNAT/SNAT rules, route tables, route entries
+
+## Getting started
+
+Please refer to the document [Getting Started](https://www.cloudpods.org/en/docs/getting-started/) to select the appropriate scenario for installation.
+
+## Documentations
+
+* [Cloudpods Documents](https://www.cloudpods.org/en)
+
+* [Swagger API](https://www.cloudpods.org/en/docs/swagger/)
+
+
+## Who is using Cloudpods?
+
+Please check this [issue](https://github.com/yunionio/cloudpods/issues/11427) for the user list of Cloudpods. If you are using Cloudpods, you are welcome to leave your information by responding the issue. Thank you for your support.
+
+## Contact
+
+* See [Contact Us](https://www.cloudpods.org/en/docs/contact/) for details.
+
+* Telegram: [cloudpods](https://t.me/cloudpods_org)
+
+## Changelog
+
+See [Release Notes](https://www.cloudpods.org/en/docs/release-notes/) and [Changelog](https://www.cloudpods.org/en/docs/development/changelog/) for details.
+
+## Contribution
+
+You are welcome to do any kind of contribution to the project. Please refer to [CONTRIBUTING](./CONTRIBUTING.md) for guidelines.
+
+## License
+
+Apache License 2.0. See [LICENSE](./LICENSE).
+
+## AI-generated doc
+
+[DeepWiki](https://deepwiki.com/yunionio/cloudpods) provides an amazing AI-generated doc of this project, you may refer to it for more detailed and comprehensive understanding of codes.

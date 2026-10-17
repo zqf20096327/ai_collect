@@ -1,0 +1,507 @@
+# Solvela
+
+> **Solvela** *(n.)* — the place where settlement happens. From Latin *solvere* (to settle, to pay) + Romance *-ela*. A Solana-native settlement layer for AI agents.
+
+No API keys, no accounts -- just wallets.
+
+![Rust](https://img.shields.io/badge/rust-stable-F97316?style=flat&logo=rust&logoColor=white)
+![Gateway License](https://img.shields.io/badge/gateway-BUSL--1.1-F97316?style=flat)
+![Libraries & SDKs License](https://img.shields.io/badge/libraries%20%26%20sdks-Apache--2.0-F97316?style=flat)
+[![CI](https://github.com/solvela-ai/solvela/actions/workflows/ci.yml/badge.svg)](https://github.com/solvela-ai/solvela/actions/workflows/ci.yml)
+![Solana](https://img.shields.io/badge/solana-mainnet-F97316?style=flat&logo=solana&logoColor=white)
+
+AI agents pay for LLM API calls with USDC-SPL on Solana via the [x402 protocol](https://www.x402.org/). The gateway verifies payments on-chain, routes requests through a 15-dimension smart scorer, and proxies to the optimal provider. All settlement happens in USDC on Solana -- no custodial accounts, no subscription tiers, no invoices.
+
+---
+
+## Architecture
+
+```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#F97316', 'primaryTextColor': '#F0F0F4', 'primaryBorderColor': '#F97316', 'lineColor': '#9999AA', 'secondaryColor': '#2a2a2a', 'tertiaryColor': '#1a1a1a'}}}%%
+flowchart LR
+    Client["Client\nSDK / CLI / MCP"]
+    Gateway["Gateway\nAxum + x402 Middleware"]
+    Router["Smart Router\n15-dim Scorer"]
+    Provider["Provider\nOpenAI / Anthropic / Google\nxAI / DeepSeek / NVIDIA"]
+    Solana["Solana\nUSDC-SPL"]
+    Cache["Redis\nResponse Cache\nReplay Protection"]
+    DB["PostgreSQL\nUsage Tracking"]
+    Escrow["Escrow Program\nAnchor PDA Vault"]
+
+    Client -->|"HTTPS + x402"| Gateway
+    Gateway --> Router
+    Router --> Provider
+    Gateway <-->|"Verify / Settle"| Solana
+    Gateway <-->|"Cache / Dedup"| Cache
+    Gateway -->|"Log Spend"| DB
+    Solana --- Escrow
+```
+
+---
+
+## Features
+
+### Smart Routing
+
+15-dimension rule-based scorer classifies requests into complexity tiers (Simple, Medium, Complex, Reasoning) and maps them to optimal models. microsecond-scale, zero external calls per scoring decision. Routing profiles: `eco`, `auto`, `premium`, `free` (with aliases like `cheap`/`budget`, `balanced`/`default`, `best`/`quality`, `oss`/`open`). Model aliases resolve shortcuts to specific models: `opus`, `sonnet`, `haiku`, `gpt5`, `gemini`, `flash`, `grok`, `deepseek`, `reasoner`, `o3-mini`.
+
+### x402 Payments
+
+USDC-SPL payments on Solana via the x402 protocol. Two payment schemes: direct `TransferChecked` (pre-signed) and trustless Anchor escrow with PDA vaults (deposit/claim/refund). Ed25519 signature verification, ATA derivation, replay protection via Redis `SET NX EX`.
+
+### Multi-Provider Support
+
+OpenAI, Anthropic, Google, xAI, DeepSeek, and NVIDIA NIM (a free Nemotron tier plus paid models). Provider adapters translate between the gateway's OpenAI-compatible format and each provider's native API. Circuit breaker per provider with automatic fallback.
+
+### Service Marketplace
+
+Proxy any x402-enabled external service through the gateway. Admin-controlled registration with SSRF prevention, background health monitoring, and a configurable platform fee (default 5%, suspended on the hosted gateway).
+
+### Prometheus Monitoring
+
+15 production metrics behind an admin-gated `/metrics` endpoint. Request counters, duration histograms, payment status, provider latency, cache hit rates, escrow claim tracking, and fee payer balance gauges. All metrics prefixed with `solvela_`.
+
+### SDKs
+
+Client libraries for **Python**, **TypeScript**, and **Go**. Each ships wallet management, on-chain signing, response caching, session tracking, degraded response detection, and a 7-step smart chat flow. Plus framework-level packages: an **MCP server** (Claude Code, Cursor, Claude Desktop, OpenClaw), a **Vercel AI SDK provider**, an **OpenClaw provider** plugin, a **signer-core** primitives package shared across the TypeScript ecosystem, and an **npm CLI shim** that bundles the Rust `solvela` binary.
+
+The `solvela` CLI includes a host-config installer that sets up the MCP server in one command:
+
+```bash
+solvela mcp install --host=claude-code    # delegates to claude mcp add (user scope)
+solvela mcp install --host=cursor         # writes ~/.cursor/mcp.json with envFile
+solvela mcp install --host=claude-desktop # writes platform-specific config
+solvela mcp install --host=openclaw       # runs openclaw mcp set solvela ...
+```
+
+The installer never writes `SOLANA_WALLET_KEY` to disk. Store it in `~/.solvela/env`
+(chmod 0600) or your shell profile. See the [MCP server security guide](sdks/mcp/README.md#security) for details.
+
+### Security
+
+- Payment verification: ed25519 signature + ATA derivation + `TransferChecked` discriminator
+- Replay prevention: Redis `SET NX EX 120` on transaction signatures
+- Prompt guard: injection, jailbreak, and PII detection middleware
+- Rate limiting: per-wallet (pubkey), not spoofable via `X-Forwarded-For`
+- CORS: explicit allowlist, no wildcard
+- Secret redaction: custom `Debug` impls on all config structs
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Rust (latest stable; CI builds on `dtolnay/rust-toolchain@stable`)
+- Docker and Docker Compose (for PostgreSQL + Redis)
+- At least one LLM provider API key
+
+### Build and Run
+
+```bash
+git clone https://github.com/solvela-ai/solvela.git
+cd solvela
+cargo build
+```
+
+Start backing services and configure the environment:
+
+```bash
+docker compose up -d
+cp .env.example .env
+```
+
+Edit `.env` and add at least one provider API key (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.) and your Solana recipient wallet.
+
+```bash
+RUST_LOG=info cargo run -p gateway
+```
+
+The gateway listens on `http://localhost:8402`.
+
+### Make a Request
+
+```bash
+# Check pricing
+curl http://localhost:8402/pricing | jq '.models[0]'
+
+# Request a completion (returns 402 with cost breakdown)
+curl -s -X POST http://localhost:8402/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "auto", "messages": [{"role": "user", "content": "Hello"}]}'
+
+# With payment (base64-encoded PAYMENT-SIGNATURE header)
+curl -X POST http://localhost:8402/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "PAYMENT-SIGNATURE: <base64-encoded-payment>" \
+  -d '{"model": "openai/gpt-4o", "messages": [{"role": "user", "content": "Hello"}]}'
+```
+
+---
+
+## Payment Flow
+
+```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#F97316', 'primaryTextColor': '#F0F0F4', 'primaryBorderColor': '#F97316', 'lineColor': '#9999AA', 'secondaryColor': '#2a2a2a', 'tertiaryColor': '#1a1a1a'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant G as Gateway
+    participant S as Solana
+    participant P as Provider
+
+    C->>G: POST /v1/chat/completions
+    G->>C: 402 Payment Required (cost breakdown)
+    C->>S: Sign USDC-SPL TransferChecked
+    C->>G: POST /v1/chat/completions + PAYMENT-SIGNATURE
+    G->>S: Verify payment on-chain
+    G->>P: Forward request
+    P->>G: Response
+    G->>C: Response (JSON or SSE stream)
+```
+
+The 402 response includes a `cost_breakdown` with per-token pricing, estimated totals, and accepted payment schemes (`exact` and optionally `escrow`). The client signs a USDC-SPL transfer for the quoted amount and retries with the signed payment in the `PAYMENT-SIGNATURE` header.
+
+---
+
+## Supported Models
+
+| Provider | Model | Input (per 1M tokens) | Output (per 1M tokens) | Context |
+|----------|-------|-----------------------|------------------------|---------|
+| OpenAI | `gpt-5.2` | $1.75 | $14.00 | 400K |
+| OpenAI | `gpt-4o` | $2.50 | $10.00 | 128K |
+| OpenAI | `gpt-4o-mini` | $0.15 | $0.60 | 128K |
+| OpenAI | `gpt-4.1` | $2.00 | $8.00 | 1M |
+| OpenAI | `gpt-4.1-mini` | $0.40 | $1.60 | 1M |
+| OpenAI | `gpt-4.1-nano` | $0.10 | $0.40 | 1M |
+| OpenAI | `o3` | $2.00 | $8.00 | 200K |
+| OpenAI | `o3-mini` | $1.10 | $4.40 | 200K |
+| OpenAI | `o4-mini` | $1.10 | $4.40 | 200K |
+| OpenAI | `gpt-oss-120b` | Free | Free | 128K |
+| Anthropic | `claude-opus-4-8` | $5.00 | $25.00 | 200K |
+| Anthropic | `claude-opus-4-7` | $5.00 | $25.00 | 200K |
+| Anthropic | `claude-opus-4-6` | $5.00 | $25.00 | 200K |
+| Anthropic | `claude-sonnet-4-6` | $3.00 | $15.00 | 200K |
+| Anthropic | `claude-sonnet-4-5-20250929` | $3.00 | $15.00 | 200K |
+| Anthropic | `claude-haiku-4-5-20251001` | $1.00 | $5.00 | 200K |
+| Google | `gemini-3.1-flash-lite` | Free | Free | 1M |
+| Google | `gemini-3.1-pro` | $2.00 | $12.00 | 1M |
+| Google | `gemini-2.5-flash` | $0.30 | $2.50 | 1M |
+| Google | `gemini-2.5-flash-lite` | $0.10 | $0.40 | 1M |
+| xAI | `grok-3` | $3.00 | $15.00 | 131K |
+| xAI | `grok-3-mini` | $0.30 | $0.50 | 131K |
+| xAI | `grok-4-fast-reasoning` | $0.20 | $0.50 | 2M |
+| xAI | `grok-code-fast-1` | $0.20 | $1.50 | 256K |
+| DeepSeek | `deepseek-chat` | $0.28 | $0.42 | 128K |
+| DeepSeek | `deepseek-reasoner` | $0.28 | $0.42 | 128K |
+| DeepSeek | `deepseek-coder` | $0.28 | $0.42 | 128K |
+| NVIDIA | `nvidia/nvidia/llama-3.1-nemotron-nano-8b-v1` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/llama-3.1-nemotron-ultra-253b-v1` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/llama-3.3-nemotron-super-49b-v1` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/nemotron-3-nano-30b-a3b` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/nemotron-3-super-120b-a12b` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/nemotron-3-ultra-550b-a55b` | Free | Free | 131K |
+| NVIDIA | `nvidia/nvidia/nemotron-mini-4b-instruct` | Free | Free | 4K |
+| NVIDIA | `nvidia/meta/llama-4-maverick-17b-128e-instruct` | Free | Free | 1M |
+| NVIDIA | `nvidia/meta/llama-4-scout-17b-16e-instruct` | Free | Free | 1M |
+| NVIDIA | `nvidia/meta/llama-3.3-70b-instruct` | Free | Free | 131K |
+| NVIDIA | `nvidia/qwen/qwen3-coder-480b-a35b-instruct` | Free | Free | 256K |
+| NVIDIA | `nvidia/deepseek-ai/deepseek-r1` | Free | Free | 160K |
+| NVIDIA | `nvidia/mistralai/mistral-large-3-675b-instruct-2512` | Free | Free | 256K |
+| NVIDIA | `nvidia/minimaxai/minimax-m2.7` | Free | Free | 200K |
+| NVIDIA | `nvidia/minimaxai/minimax-m3` | Free | Free | 200K |
+| NVIDIA | `nvidia/nvidia/llama-3.3-nemotron-super-49b-v1.5` | $0.10 | $0.40 | 131K |
+| NVIDIA | `nvidia/nvidia/nvidia-nemotron-nano-9b-v2` | $0.04 | $0.16 | 131K |
+
+All prices are provider cost in USDC. The gateway software includes a configurable platform fee (default 5%); the hosted service at api.solvela.ai runs with the fee suspended. See `config/models.toml` for the full registry or query `GET /pricing` at runtime.
+
+> **Free-tier data-use notice.** The `free` profile routes to NVIDIA NIM free-tier Nemotron models (tiered by complexity), with `gemini-3.1-flash-lite` as a fallback if NIM is unavailable. These are served via the upstream providers' **free** API tiers, whose terms may permit the provider to use submitted prompts and generated responses to improve their products (and human reviewers may process them) — do not send sensitive data through the free tier. The free tier is also rate-limited and shared per gateway key, so treat it as a demo/evaluation tier rather than a model to build production load on. Paid models on this list are not subject to those free-tier data-use policies.
+
+---
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/v1/chat/completions` | OpenAI-compatible chat (x402 paid) |
+| `POST` | `/v1/messages` | Anthropic-native `/v1/messages` relay — byte-for-byte passthrough for Anthropic-provider models (x402 paid) |
+| `POST` | `/v1/search` | Web search via the service marketplace ($0.01/query, x402 paid; platform fee is configurable, suspended on hosted service) |
+| `POST` | `/v1/images/generations` | OpenAI-compatible image generation (x402 paid) |
+| `POST` | `/v1/services/{id}/proxy` | Proxy to x402-enabled external service |
+| `POST` | `/v1/services/register` | Register external service (admin) |
+| `POST` | `/v1/escrow/settle` | Client-initiated escrow claim after stream completion |
+| `POST` | `/a2a` | A2A protocol JSON-RPC endpoint |
+| `GET` | `/v1/models` | List available models with pricing |
+| `GET` | `/v1/services` | Service marketplace discovery |
+| `GET` | `/v1/supported` | x402 payment method discovery |
+| `GET` | `/v1/nonce` | Durable nonce for replay-safe transactions |
+| `GET` | `/v1/wallet/{address}/stats` | Wallet spend statistics (session auth) |
+| `GET` | `/v1/escrow/config` | Escrow program configuration |
+| `GET` | `/v1/escrow/health` | Escrow claim metrics (admin) |
+| `GET` | `/v1/admin/stats` | Aggregate gateway statistics (admin) |
+| `GET` | `/.well-known/agent-card.json` | A2A AgentCard for agent discovery (v0.3 canonical path; `/.well-known/agent.json` kept as a backward-compat alias) |
+| `GET` | `/pricing` | Per-model USDC cost breakdown |
+| `GET` | `/health` | Gateway health check |
+| `GET` | `/metrics` | Prometheus metrics (admin) |
+
+Enterprise org/team/budget/audit endpoints live under `/v1/orgs/...` and `/v1/wallets/{wallet}/budget`. See [Enterprise docs](https://docs.solvela.ai/enterprise) for the full CRUD reference.
+
+---
+
+## SDKs
+
+### Python
+
+```bash
+pip install solvela-sdk
+```
+
+```python
+import asyncio
+from solvela import SolvelaClient
+from solvela.types import ChatRequest, ChatMessage, Role
+
+async def main():
+    client = SolvelaClient()  # defaults to https://api.solvela.ai
+    response = await client.chat(ChatRequest(
+        model="openai/gpt-4o",
+        messages=[ChatMessage(role=Role.USER, content="Hello!")],
+    ))
+    print(response.choices[0].message.content)
+
+asyncio.run(main())
+```
+
+### TypeScript
+
+```bash
+npm install @solvela/sdk
+```
+
+```typescript
+import { SolvelaClient, ChatRequest, ChatMessage } from '@solvela/sdk';
+
+const client = new SolvelaClient({
+  config: { gatewayUrl: 'https://api.solvela.ai' },
+});
+const response = await client.chat(
+  new ChatRequest('openai/gpt-4o', [new ChatMessage('user', 'Hello!')]),
+);
+console.log(response.choices[0].message.content);
+```
+
+### Go
+
+```bash
+go get github.com/solvela-ai/solvela/sdks/go
+```
+
+```go
+import (
+    "context"
+    solvela "github.com/solvela-ai/solvela/sdks/go"
+)
+
+wallet, _, _ := solvela.CreateWallet()
+client, _ := solvela.NewClient(wallet, nil,
+    solvela.WithGatewayURL("https://api.solvela.ai"),
+)
+resp, _ := client.Chat(context.Background(), &solvela.ChatRequest{
+    Model: "openai/gpt-4o",
+    Messages: []solvela.ChatMessage{
+        {Role: solvela.RoleUser, Content: "Hello!"},
+    },
+})
+```
+
+The bundled `UnimplementedSigner` is a placeholder — supply a custom `Signer` (or use the Python / TypeScript SDK) to actually settle payments. See [`sdks/go/README.md`](./sdks/go/README.md).
+
+### MCP (Claude Code)
+
+Published as [`@solvela/mcp-server`](https://www.npmjs.com/package/@solvela/mcp-server). Install with the `solvela` CLI (above) or add it directly:
+
+```bash
+# Claude Code MCP config:
+# command: npx
+# args: ["-y", "@solvela/mcp-server"]
+# Tools: chat, smart_chat, web_search, wallet_status, list_models, spending, deposit_escrow
+```
+
+---
+
+## CLI
+
+The `solvela` CLI provides wallet management, model discovery, chat, and diagnostics.
+
+```bash
+cargo install solvela-cli
+
+solvela wallet init          # Generate Solana keypair
+solvela models               # List models and pricing
+solvela chat "Explain x402"  # Chat with auto-routing
+solvela health               # Gateway health check
+solvela stats                # Wallet spend statistics
+solvela doctor               # Run diagnostics
+```
+
+---
+
+## Development
+
+### Build
+
+```bash
+cargo build                           # Debug build (full workspace)
+cargo check                           # Faster type checking
+cargo check -p gateway                # Single crate
+cargo build --release                 # Release build
+```
+
+### Test
+
+```bash
+# Rust workspace — run `cargo test` for current counts; suites are growing
+cargo test                            # All workspace tests
+cargo test -p gateway                 # gateway unit + integration
+cargo test -p solvela-x402            # x402 protocol
+cargo test -p solvela-router          # smart router
+cargo test -p solvela-protocol        # wire-format types
+
+# Single test
+cargo test -p gateway test_health_endpoint -- --exact
+
+# Escrow program (standalone, not in workspace)
+cargo test --manifest-path programs/escrow/Cargo.toml
+
+# SDK tests (mcp + ai-sdk-provider + openclaw-provider live in this repo)
+cd sdks/mcp && npm test
+
+# In-repo SDK test suites:
+#   Python:     (cd sdks/python && pytest)
+#   TypeScript: (cd sdks/typescript && npm test)
+#   Go:         (cd sdks/go && go test ./...)
+```
+
+### Lint
+
+```bash
+cargo fmt --all && cargo clippy --all-targets --all-features -- -D warnings
+```
+
+### Local Development Stack
+
+```bash
+docker compose up -d                  # PostgreSQL 16 + Redis 7
+cp .env.example .env                  # Configure provider keys
+RUST_LOG=info cargo run -p gateway    # Starts on :8402
+```
+
+Both PostgreSQL and Redis are optional. The gateway degrades gracefully when either is absent -- spend logs go to stdout, replay protection falls back to fail-open, and response caching is disabled.
+
+---
+
+## Configuration
+
+Environment variables use the `SOLVELA_` prefix. Provider API keys follow the standard `<PROVIDER>_API_KEY` convention.
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | At least one provider key | OpenAI API key |
+| `ANTHROPIC_API_KEY` | | Anthropic API key |
+| `GOOGLE_API_KEY` | | Google/Gemini API key |
+| `XAI_API_KEY` | | xAI/Grok API key |
+| `DEEPSEEK_API_KEY` | | DeepSeek API key |
+| `SOLVELA_SOLANA_RPC_URL` | Yes | Solana RPC endpoint |
+| `SOLVELA_SOLANA_RECIPIENT_WALLET` | Yes | USDC payment destination (base58) |
+| `SOLVELA_SOLANA_FEE_PAYER_KEY` | For escrow | Hot wallet key for claim transactions |
+| `SOLVELA_SOLANA_ESCROW_PROGRAM_ID` | For escrow | Anchor escrow program ID |
+| `SOLVELA_PORT` | No | Gateway port (default: `8402`) |
+| `SOLVELA_ADMIN_TOKEN` | No | Admin auth for `/metrics` and `/v1/escrow/health` |
+| `DATABASE_URL` | No | PostgreSQL connection string |
+| `REDIS_URL` | No | Redis connection string |
+| `SOLVELA_CORS_ORIGINS` | No | Comma-separated allowed CORS origins |
+
+> **Legacy:** the gateway also accepts the same vars under the old `RCR_*` prefix with a deprecation warning. Use `SOLVELA_*` for new deployments.
+
+See [`.env.example`](.env.example) for the full reference. Configuration files live in `config/`:
+
+- `models.toml` -- Model registry with per-token pricing (6 providers, 44 models)
+- `default.toml` -- Server host/port, Solana RPC URL, monitor thresholds
+- `services.toml` -- x402 service marketplace registry
+
+---
+
+## Project Structure
+
+```
+crates/
+  gateway/          Axum HTTP server, routes, middleware, provider adapters
+  x402/             x402 protocol, Solana verification, escrow, fee payer pool
+  router/           Smart routing, 15-dimension scorer, profiles, model registry
+  protocol/         Shared wire-format types (solvela-protocol, published to crates.io)
+  cli/              solvela CLI binary (wallet, chat, models, health, stats, doctor)
+programs/
+  escrow/           Anchor escrow program (deposit/claim/refund, PDA vault)
+sdks/
+  python/           pip install solvela-sdk
+  typescript/       npm install @solvela/sdk
+  go/               go get github.com/solvela-ai/solvela/sdks/go
+  cli-npm/          @solvela/cli — npm-distributed wrapper around the Rust CLI (pre-release)
+  mcp/              Claude Code MCP server
+  signer-core/      Shared x402 parser + payment-signer primitives
+  ai-sdk-provider/  Vercel AI SDK provider for Solvela
+  openclaw-provider/ OpenClaw plugin (Solvela as first-class LLM provider)
+config/
+  models.toml       Model registry + pricing
+  default.toml      Gateway configuration
+  services.toml     Service marketplace registry
+migrations/         PostgreSQL migrations (idempotent, auto-applied on startup)
+```
+
+---
+
+## Deployment
+
+Solvela is deployed on Fly.io:
+
+| Resource | URL / Name |
+|----------|------------|
+| Gateway | `api.solvela.ai` (Fly app: `solvela-gateway`) |
+| PostgreSQL | `solvela-pg` (Fly Postgres 17.2) |
+| Redis | `solvela-cache` (Upstash, ord + iad) |
+
+```bash
+# Deploy (fly.toml lives at the repo root)
+fly deploy -a solvela-gateway
+
+# Set provider keys
+fly secrets set -a solvela-gateway OPENAI_API_KEY=... ANTHROPIC_API_KEY=...
+
+# Check status
+fly status -a solvela-gateway
+curl https://api.solvela.ai/health
+```
+
+See [`STATUS.md`](./STATUS.md) for live shipping status and [`CHANGELOG.md`](./CHANGELOG.md) for chronological history.
+
+## Licensing
+
+Solvela uses a **per-component license split**. Pick the license of the piece you're integrating, not "the project's license" — there is no single one.
+
+| Component | License | Why |
+|---|---|---|
+| **Gateway** (`crates/gateway`, `solvela-gateway` binary) | [BUSL-1.1](./LICENSE) → MIT on 2030-05-02 | The hosted product. Free for non-production, internal first-party production, and small commercial use (under $1M annual revenue derived from the Licensed Work). Re-hosting it as a managed service to third parties requires a commercial license. Becomes MIT four years after each release. |
+| **Protocol crate** (`solvela-protocol`) | [Apache-2.0](./LICENSE-APACHE) | Wire-format types. Reuse encouraged; Apache's explicit patent grant covers the protocol surface. |
+| **x402 crate** (`solvela-x402`) | [Apache-2.0](./LICENSE-APACHE) | Reference x402 implementation for Solana. Reuse encouraged. |
+| **Router crate** (`solvela-router`) | [Apache-2.0](./LICENSE-APACHE) | Routing primitives and 15-dim scorer. |
+| **CLI crate** (`solvela-cli`) | [Apache-2.0](./LICENSE-APACHE) | End-user tooling. |
+| **Escrow program** (`programs/escrow`) | [Apache-2.0](./LICENSE-APACHE) | On-chain Anchor program. Permissive license + patent grant signals broad, safe reuse. |
+| **SDKs** (`sdks/*`) | [Apache-2.0](./LICENSE-APACHE) | Client libraries. The patent grant matters here — the SDKs build and broadcast USDC transactions. |
+| **Dashboard / docs site** (`dashboard/`) | [Apache-2.0](./LICENSE-APACHE) | Front-end. |
+
+### Trademark
+
+"Solvela" and the Solvela logo are trademarks of the Solvela Contributors. The licenses above grant code rights only — they do not grant trademark rights. If you fork the gateway and run it yourself, please rename it.
+
+### Contributing
+
+By contributing you agree your contribution is licensed under the license of the component you're modifying (see the table above). All commits must be signed off (`git commit -s`) per the [Developer Certificate of Origin](https://developercertificate.org/). See [CONTRIBUTING.md](./CONTRIBUTING.md).

@@ -1,0 +1,571 @@
+<p align="center">
+  <img src="assets/logo.png" alt="MarketClaw" width="200">
+</p>
+
+<h1 align="center">MarketClaw</h1>
+
+<p align="center">
+  <strong>AI-powered marketing agent that lives in your chat.</strong><br>
+  <em>Telegram, Discord, Slack — or build your own channel.</em>
+</p>
+
+<p align="center">
+  <a href="https://marketclaw.dev">🌐 marketclaw.dev</a> •
+  <a href="https://www.npmjs.com/package/marketclaw">📦 npm</a> •
+  <a href="https://github.com/helixdata/MarketClaw/discussions">💬 Discussions</a>
+</p>
+
+Build in public, automate your marketing, never forget your campaigns.
+
+[![Website](https://img.shields.io/badge/website-marketclaw.dev-coral)](https://marketclaw.dev)
+[![npm version](https://img.shields.io/npm/v/marketclaw.svg)](https://www.npmjs.com/package/marketclaw)
+[![CI](https://github.com/helixdata/MarketClaw/actions/workflows/ci.yml/badge.svg)](https://github.com/helixdata/MarketClaw/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/helixdata/MarketClaw/blob/main/CONTRIBUTING.md)
+[![GitHub Discussions](https://img.shields.io/github/discussions/helixdata/MarketClaw)](https://github.com/helixdata/MarketClaw/discussions)
+
+---
+
+## What is MarketClaw?
+
+MarketClaw is an AI marketing assistant that:
+
+- 💬 **Lives in your chat** — Telegram, Discord, Slack, or build your own channel
+- 🧠 **Remembers everything** — Products, campaigns, brand voice
+- 📝 **Creates content** — Tweets, LinkedIn posts, Product Hunt launches
+- 📊 **Manages campaigns** — Organize posts, track metrics, measure ROI
+- 💰 **Tracks costs** — Know exactly what you're spending per campaign
+- ⏰ **Schedules posts** — Set it and forget it
+- 🤖 **Automates tasks** — "Check inbox every hour and respond to leads"
+- 🔌 **Pluggable** — Swap AI providers, add skills, [build your own](./docs/SKILLS.md)
+
+Think of it as your marketing co-pilot that's always on, always learning, and never forgets a campaign.
+
+---
+
+## Quick Start
+
+### Install via npm (recommended)
+
+```bash
+npm install -g marketclaw
+marketclaw setup
+marketclaw start
+```
+
+### Or clone from source
+
+```bash
+git clone https://github.com/helixdata/MarketClaw.git
+cd MarketClaw
+npm install
+npm run build
+marketclaw setup
+marketclaw start
+```
+
+That's it. Open your configured channel (Telegram, Discord, or Slack) and start chatting.
+
+---
+
+## Updating
+
+```bash
+# npm installation
+marketclaw update
+
+# or manually
+npm update -g marketclaw
+
+# git installation
+marketclaw update
+# or: git pull && npm install && npm run build
+```
+
+---
+
+## Features
+
+### 🔀 Multi-Provider AI
+
+Use any AI provider:
+
+| Provider | Description |
+|----------|-------------|
+| **Anthropic** | Claude models (default) |
+| **OpenAI** | GPT-4o, o1, etc. |
+| **Groq** | Ultra-fast inference |
+| **Gemini** | Google's models |
+| **Ollama** | Local models, privacy |
+| **OpenRouter** | Access any model |
+
+### 🛠️ Built-in Tools
+
+- **Scheduling** — Post later, set reminders
+- **Knowledge base** — Store product info, search with embeddings
+- **Brand identity** — Colors, voice, taglines, typography per product
+- **Image library** — Store, tag, and search product images
+- **Document reading** — Extract text from PDF, Word (.docx/.doc), and text files
+- **Document generation** — Create PDF reports and PowerPoint presentations
+- **Web search & research** — Search the web, extract content, compile research reports
+- **Email** — Outreach via Resend, monitor inbox
+- **Social** — Twitter, LinkedIn, Product Hunt (via skills)
+- **Browser automation** — Post to 10 platforms via Chrome extension (no API costs!)
+- **Images** — Generate with DALL-E, analyze with vision
+- **Leads** — Simple CRM
+- **Calendar** — Google Calendar integration for event management
+
+### 💬 Chat-First
+
+Works where you already are — Telegram, Discord, Slack, or CLI. Natural conversation, inline buttons, image sharing.
+
+```
+You: "Schedule a tweet about our new feature for tomorrow 9am"
+Bot: ✅ Scheduled! I'll post "..." tomorrow at 9:00 AM.
+
+You: "What posts are scheduled this week?"
+Bot: 📅 3 posts scheduled:
+     • Tomorrow 9am - Twitter
+     • Wed 2pm - LinkedIn  
+     • Fri 10am - Twitter thread
+```
+
+### 🧠 Persistent Memory
+
+MarketClaw remembers:
+- Your products and their features
+- Brand voice and guidelines
+- Campaign history
+- What works and what doesn't
+
+```
+~/.marketclaw/workspace/
+├── BRAND.md           # Your brand voice
+├── products/          # Product details
+├── campaigns/         # Campaign history
+└── knowledge/         # Product knowledge base
+```
+
+### 🤖 Sub-Agents
+
+Delegate tasks to specialized AI agents:
+
+| Agent | Name | Specialty |
+|-------|------|-----------|
+| 🐦 | Tweety | Twitter threads, viral hooks |
+| 💼 | Quinn | LinkedIn, B2B content |
+| ✉️ | Emma | Email marketing, outreach |
+| 🎨 | Pixel | Visual content, images |
+| 📊 | Dash | Analytics, metrics |
+| 🔍 | Scout | Research, competitor intel |
+| 🚀 | Hunter | Product Hunt launches |
+
+```
+You: "Ask Tweety to write a thread about building in public"
+Bot: 🐦 Tweety completed the task:
+     1/ Building in public is scary. Here's why you should do it anyway...
+```
+
+### 👥 Team Management
+
+Multi-user support with roles:
+
+- **Admin** — Full access, manage team
+- **Manager** — Approve content, post
+- **Creator** — Draft content (needs approval)
+- **Viewer** — Read-only analytics
+
+```
+You: "Add @jane as a creator for ProofPing"
+Bot: ✅ Added Jane to the team (creator for ProofPing)
+```
+
+### ✅ Approval Workflow
+
+Quality control for team content:
+
+```
+Creator: "Request approval for this tweet"
+Bot: 📝 Notifying approvers...
+
+Manager: "approve"
+Bot: ✅ Approved! Ready to post.
+```
+
+### 🎨 Brand Identity
+
+Define your brand for consistent content:
+
+```
+You: "Set ProofPing brand colors: primary #FF6B35, accent #00D9C0"
+Bot: ✅ Updated brand colors for ProofPing
+
+You: "ProofPing voice is warm and reassuring, never corporate"
+Bot: ✅ Updated brand voice for ProofPing
+
+You: "What are ProofPing's brand guidelines?"
+Bot: 🎨 ProofPing Brand:
+     Colors: primary #FF6B35, accent #00D9C0
+     Voice: warm, reassuring friend
+     Tagline: "Someone's always got your back"
+```
+
+The agent automatically uses brand guidelines when creating content.
+
+### 🔍 Web Search & Research
+
+Search the web and extract content for research:
+
+```
+You: "Research AI marketing trends"
+Bot: # Research: AI marketing trends
+
+     Found 5 sources:
+     1. **The Rise of AI in Marketing** - How brands are using...
+     2. **Marketing Automation 2024** - Key trends to watch...
+
+You: "Search for Product Hunt launch tips from this week"
+Bot: Found 5 recent results:
+     • How to Launch on Product Hunt (2 days ago)
+     • Top Tips from #1 Products (5 days ago)
+     ...
+
+You: "Fetch the content from https://example.com/article"
+Bot: Extracted 3,500 characters from the article...
+```
+
+Tools: `web_search`, `web_fetch`, `research_topic`
+
+### 🖼️ Product Image Library
+
+Store and search product images:
+
+```
+You: "Add this screenshot to ProofPing" [attaches image]
+Bot: ✅ Added "screenshot.png" to ProofPing library
+
+You: "Find ProofPing screenshots showing the dashboard"
+Bot: 📸 Found 3 images:
+     • App Store Hero (screenshot) - iPhone showing main dashboard
+     • Dashboard Dark Mode (screenshot) - Dark theme variant
+     • Check-in Flow (screenshot) - Step-by-step check-in
+
+You: "List all ProofPing logos"
+Bot: 📸 2 logo images found...
+```
+
+Features:
+- Semantic search ("find mockups showing check-in")
+- Tag and type filtering
+- Auto dimension detection
+- URL or file upload
+
+### 👁️ Vision Support
+
+Send images and MarketClaw can analyze them:
+
+```
+You: [sends competitor's landing page screenshot]
+     "What's good about this landing page?"
+
+Bot: Here's my analysis:
+     ✅ Clear value proposition above the fold
+     ✅ Strong social proof with logos
+     ⚠️ CTA could be more prominent
+     ...
+```
+
+Works across Telegram, Discord, and Slack with Claude, GPT-4o, and Gemini.
+
+### 🌐 Browser Automation
+
+Post to social media via Chrome extension — no API costs, posts like a human:
+
+| Platform | Actions |
+|----------|---------|
+| 🐦 Twitter/X | Post |
+| 💼 LinkedIn | Post |
+| 🤖 Reddit | Post, comment |
+| 📸 Instagram | Comment, DM |
+| 🔶 Hacker News | Submit, comment, upvote |
+| 🚀 Product Hunt | Upvote, comment |
+| 📘 Facebook | Post, comment, like |
+| 🧵 Threads | Post, reply, like |
+| 🦋 Bluesky | Post, reply, like, repost |
+| ▶️ YouTube | Comment, like, subscribe |
+
+```
+You: "Post to Twitter: Just shipped a new feature! 🚀"
+Bot: ✅ Posted to Twitter successfully
+
+You: "Upvote this Product Hunt launch"
+Bot: ✅ Upvoted on Product Hunt
+
+You: "Comment on this HN post: Great insights!"
+Bot: ✅ Comment posted to Hacker News
+```
+
+**Multi-account support:** Name your Chrome profiles (Work, Personal, Client1) and target specific accounts:
+
+```
+You: "Post to Twitter from my work account: Company announcement"
+Bot: ✅ Posted to Twitter (Work profile)
+```
+
+See [extension/README.md](./extension/README.md) for setup and full documentation.
+
+### 💰 Cost Tracking
+
+Monitor and control API spending:
+
+```
+You: "How much have we spent this week?"
+Bot: 💰 Total: $12.45 (156 operations)
+     By Tool: generate_image: $8.00, send_email: $2.15
+     By Agent: Pixel: $8.00, Emma: $2.15
+     By Provider: gemini: $8.00, resend: $2.15
+
+You: "Set a $50 monthly budget"
+Bot: ✅ Budget "Monthly Limit" created: $50/monthly (global)
+```
+
+Features:
+- Per-tool, per-agent, per-product cost attribution
+- Daily/weekly/monthly budgets with warn or block actions
+- Trend analysis and reporting
+
+---
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Required
+TELEGRAM_BOT_TOKEN=your-token
+
+# AI Provider (pick one)
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+GROQ_API_KEY=gsk_...
+GOOGLE_API_KEY=AIza...
+OPENROUTER_API_KEY=sk-or-...
+
+# Optional integrations
+RESEND_API_KEY=re_...
+BRAVE_SEARCH_API_KEY=BSA...
+TWITTER_COOKIES=...
+```
+
+### Config File
+
+`~/.marketclaw/config.yaml`:
+
+```yaml
+channels:
+  telegram:
+    enabled: true
+    botToken: ${TELEGRAM_BOT_TOKEN}
+    allowedUsers: [123456789]
+
+providers:
+  default: anthropic
+  anthropic:
+    model: claude-sonnet-4-5-20250514
+
+agent:
+  name: MarketClaw
+  emoji: 🦀
+  voice: friendly    # professional, casual, friendly, playful
+  persona: your friendly marketing assistant
+```
+
+See [docs/SETUP.md](./docs/SETUP.md) for detailed configuration.
+
+---
+
+## Architecture
+
+```
+src/
+├── index.ts           # Agent startup
+├── cli.ts             # CLI commands
+├── setup.ts           # Interactive setup wizard
+├── providers/         # AI providers (swappable)
+│   ├── anthropic.ts
+│   ├── openai.ts
+│   ├── groq.ts
+│   ├── gemini.ts
+│   ├── ollama.ts
+│   └── openrouter.ts
+├── channels/          # Chat interfaces (modular)
+│   ├── telegram.ts
+│   ├── discord.ts
+│   ├── slack.ts
+│   └── cli.ts
+├── browser/           # Browser automation
+│   ├── extension-bridge.ts  # WebSocket server
+│   └── tools.ts       # 18 browser tools
+├── agents/            # Sub-agent system
+│   ├── specialists.ts # Built-in specialists
+│   ├── registry.ts    # Agent management
+│   └── tools.ts       # delegate_task, etc.
+├── team/              # Multi-user management
+│   ├── manager.ts     # Team CRUD
+│   ├── permissions.ts # Tool-level permissions
+│   └── tools.ts       # Team management tools
+├── approvals/         # Content approval workflow
+│   ├── manager.ts     # Approval logic
+│   └── tools.ts       # approve, reject, etc.
+├── tools/             # Agent capabilities
+│   ├── scheduler-tools.ts
+│   ├── knowledge-tools.ts
+│   ├── twitter-tools.ts
+│   └── ...
+├── memory/            # Persistent state
+├── knowledge/         # RAG/embeddings
+└── scheduler/         # Cron jobs
+
+extension/             # Chrome extension
+├── manifest.json      # Extension manifest (v0.4.0)
+├── background.js      # WebSocket client
+├── popup.html/js      # Extension UI
+└── content-scripts/   # Platform automation (10 platforms)
+```
+
+---
+
+## CLI Commands
+
+```bash
+# Agent
+marketclaw start        # Start the agent
+marketclaw setup        # Interactive setup
+marketclaw status       # Show status
+
+# Products
+marketclaw products list
+marketclaw products add "ProductName" --tagline "..."
+
+# Knowledge
+marketclaw kb init <product>
+marketclaw kb index <product>
+marketclaw kb search <product> "query"
+
+# Scheduling
+marketclaw cron list
+marketclaw cron add -s "every day at 9am" -m "Check metrics"
+
+# Config
+marketclaw config
+
+# Logs
+marketclaw logs list    # List log files
+marketclaw logs tail    # View recent logs
+marketclaw logs search "error"  # Search logs
+```
+
+---
+
+## Documentation
+
+- [Setup Guide](./docs/SETUP.md) — Detailed installation & configuration
+- [Channels](./docs/CHANNELS.md) — Telegram, Discord, Slack, CLI
+- [Providers](./docs/PROVIDERS.md) — Configure AI providers
+- [Browser Automation](./docs/BROWSER-AUTOMATION.md) — Setup guide for Chrome extension
+- [Brand Identity](./docs/BRAND.md) — Colors, voice, taglines, typography
+- [Image Library](./docs/IMAGE-LIBRARY.md) — Store & search product images
+- [File Attachments](./docs/FILE-ATTACHMENTS.md) — Generate PDF & PowerPoint files
+- [Web Search](./docs/WEB-SEARCH.md) — Search the web & extract content
+- [Calendar](./docs/CALENDAR.md) — Google Calendar integration
+- [Sub-Agents](./docs/SUB-AGENTS.md) — Specialist agents & delegation
+- [Team](./docs/TEAM.md) — Multi-user roles & permissions
+- [Approvals](./docs/APPROVALS.md) — Content approval workflow
+- [Costs](./docs/COSTS.md) — Cost tracking & budgets
+- [Logging](./docs/LOGGING.md) — Structured logging & debugging
+- [Daemon](./docs/DAEMON.md) — Running as a background service
+- [Tools](./docs/TOOLS.md) — Available tools & how to add more
+- [Skills](./docs/SKILLS.md) — Plugin system
+- [API Reference](./docs/API.md) — Complete tool reference
+- [Architecture](./docs/ARCHITECTURE.md) — System design overview
+- [FAQ](./docs/FAQ.md) — Common questions
+- [Contributing](./docs/CONTRIBUTING.md) — How to contribute
+
+---
+
+## Roadmap
+
+- [x] Multi-provider AI
+- [x] Telegram interface
+- [x] Persistent memory
+- [x] Tool system
+- [x] Scheduling
+- [x] Knowledge base
+- [x] Sub-agents system
+- [x] Team management
+- [x] Approval workflow
+- [x] Modular channels (Telegram, Discord, Slack)
+- [x] Cost tracking & budgets
+- [x] Brand identity management
+- [x] Product image library
+- [x] Vision/image support
+- [x] Web search & research tools
+- [x] Google Calendar integration
+- [x] Browser automation (10 platforms via Chrome extension)
+- [ ] Calendar-campaign sync (auto-create events for scheduled posts)
+- [ ] Notion integration
+- [ ] Google Ads integration
+- [ ] Content templates
+- [ ] Audience personas
+- [ ] Competitor monitoring
+- [ ] Skills/Marketplace
+- [ ] Microsoft Teams channel
+- [ ] Analytics dashboard
+- [ ] Web dashboard
+
+---
+
+## Contributing
+
+Contributions welcome! See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
+
+```bash
+# Development
+npm run dev       # Watch mode
+npm run typecheck # Type checking
+npm run lint      # Linting
+```
+
+---
+
+## Inspiration
+
+- [Clawdbot](https://github.com/clawdbot/clawdbot) — Personal AI agent
+- [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw) — Trait-driven architecture
+
+---
+
+## Disclaimer
+
+MarketClaw automates posting to social media platforms. **You are responsible for:**
+
+- Complying with each platform's Terms of Service
+- Content you create and post
+- Securing your API keys and credentials
+- API costs from connected providers
+
+See [DISCLAIMER.md](./DISCLAIMER.md) for full terms.
+
+---
+
+## License
+
+MIT © Brett Waterson
+
+---
+
+<p align="center">
+Built with 🦀 for indie hackers who'd rather ship than schedule
+</p>

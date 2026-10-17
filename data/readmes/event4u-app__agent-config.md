@@ -1,0 +1,562 @@
+<p align="center"><a href="https://event4u.app"><img alt="event4u Agent Config" src=".github/assets/banner.png"></a></p>
+
+# Agent Config — every claim machine-checked, including the artifact counts in these badges
+
+[![Smoke](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke.yml) [![Public install smoke (3 OS × 2 Node)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml/badge.svg)](https://github.com/event4u-app/agent-config/actions/workflows/smoke-public-install.yml) [![npm](https://img.shields.io/npm/v/@event4u/agent-config?style=flat-square&label=npm&color=orange)](https://www.npmjs.com/package/@event4u/agent-config) [![agent-config MCP server](https://glama.ai/mcp/servers/event4u-app/agent-config/badges/score.svg)](https://glama.ai/mcp/servers/event4u-app/agent-config) [![MCP Toplist](https://mcptoplist.com/badge/glama%2Fevent4u-app%2Fagent-config.svg)](https://mcptoplist.com/server/glama%2Fevent4u-app%2Fagent-config) [![downloads](https://img.shields.io/npm/dm/@event4u/agent-config?style=flat-square&label=downloads%2Fmonth&color=orange)](https://www.npmjs.com/package/@event4u/agent-config)
+
+[![Skills](https://img.shields.io/badge/Skills-300-orange?style=flat-square)](dist/agent-src/skills/) [![Rules](https://img.shields.io/badge/Rules-122-orange?style=flat-square)](dist/agent-src/rules/) [![Commands](https://img.shields.io/badge/Commands-205-orange?style=flat-square)](dist/agent-src/commands/) [![Guidelines](https://img.shields.io/badge/Guidelines-121-orange?style=flat-square)](docs/guidelines/) [![Personas](https://img.shields.io/badge/Personas-29-orange?style=flat-square)](dist/agent-src/personas/) [![Advisors](https://img.shields.io/badge/Advisors-5-orange?style=flat-square)](dist/agent-src/personas/advisors/) <!-- claim:published-artifact-counts -->
+
+<sub>**How these are counted** — one canonical counter, `agent-config` → `update_counts --check`, re-derives all six from the tree and fails CI when one is off by one. Two bases are not what the linked directory shows, so they are stated here rather than left to be inferred: **Commands 205** counts every command file **recursively** (the linked directory holds 60 at its top level) and **Rules 122** counts the **source** rules while the linked projection holds 121 — one rule is dormant and is not projected. **Personas 29** excludes the directory README. Counts are of files and directories: none of them measures quality, activation or adoption. <!-- claim:published-artifact-counts --></sub>
+
+**Try it in 30 seconds** — drop one read-only subagent into any repo and watch it check "done": `@production-validator check this branch is actually done`. No wizard, no lock-in, nothing else installed — the [30-second wedge ↓](#quickstart) is the whole first step. Start at the proof, not the catalog: **[event4u-app.github.io/agent-config/proof/](https://event4u-app.github.io/agent-config/proof/)**.
+
+![The trust surface running green — every "verify it yourself" command from a real, CI-re-executed run](docs/media/proof-demo.gif)
+
+**Every public claim in this README is machine-checked — [verify it yourself](docs/proof.md).** In a market that runs on unbacked headline numbers, this one binds each claim to resolvable evidence or fails its own build.
+
+> **Choose your experience — developer · founder · content · agency · finance · ops. Add packs. Get a focused command set, not a 500-artefact dump.** Bring your own AI provider.
+
+**A deep library of skills, commands and governed rules** — plus a capability router that loads the right skill on intent and multi-agent orchestration with consensus review. The whole layer is compiled into **20 host agents** — of 23 detected, 3 being export-only<!-- claim:host-agent-count --> (Claude Code, Cursor, Augment, Cline, Windsurf, Copilot, Gemini CLI, Codex, Continue, Zed, JetBrains, Aider and more). **Resident processes are permitted only under [the supervision policy](docs/decisions/ADR-249-supervised-resident-process-permitted-under-governance.md) this repository adopted on 2026-08-27** — a rule, not a description of anything running today. Six role-shaped entry paths sit on top, so any host becomes a reliable team member — without locking you to a single model or vendor.
+
+## Try it in 30 seconds
+
+```bash
+# 1. Install — on a terminal with a display, the browser wizard launches
+#    automatically; the same TypeScript installer runs the real install behind it.
+npx -y @event4u/agent-config init
+
+# 2. Pick your profile + tools in the wizard, click Finish.
+#    (Writes ~/.event4u/agent-config/, ~/.claude/, ~/.cursor/, …)
+
+# 3. First real task — agent refines, plans, verifies.
+/work "your first real task"
+```
+
+**Try one thing in 30 seconds** — before the full suite, drop in a single
+self-contained subagent and see the discipline on your own repo:
+
+```bash
+mkdir -p .claude/agents
+curl -fsSL https://raw.githubusercontent.com/event4u-app/agent-config/main/docs/wedge/production-validator/production-validator.md \
+  -o .claude/agents/production-validator.md
+# then in Claude Code:  @production-validator check this branch is actually done
+```
+
+`production-validator` is read-only and installs nothing else — it gates "done"
+by hunting mocks/stubs on the shipped path and demanding real-system evidence
+([what it does](docs/wedge/production-validator/README.md)). Like it? The full
+suite installs in one command — [Quickstart ↓](#quickstart).
+
+---
+
+### What's different
+
+Deep **and** disciplined and honest about what it deliberately is not:
+
+- **Depth that routes itself** — a capability router loads the right skill on intent, not a 500-artefact context dump.
+- **Governance on every host** — rules compiled into each tool's native format; deterministic runtime hooks added on hook-capable hosts. This config-space, host-agnostic governance is the moat ([the governance advantage](docs/governance-advantage.md) · [enforcement by host](docs/enforcement-by-host.md)).
+- **Surgical uninstall** — removes only its own keys from a shared host config (matched by JSON-pointer + SHA-256), never a neighbour tool's entries.<!-- claim:surgical-uninstall -->
+- **Pack-scoped install** — writes the active pack only, not a 500-artefact dump.
+
+**What it deliberately is *not*** — the core is a governance layer with optional, individually opt-in embedded engines (code intelligence, gated reach, the setup GUI, the bench lab — [the embedded-engine doctrine](docs/decisions/ADR-124-embedded-engine-doctrine.md)): **no mandatory or always-on daemon, no separate state database, no self-rewriting memory, no auto-build pipeline.** Engines are never mandatory, never default-on without measured lift and terminate with the command that invoked them. The host agent runs the loop; every learned change is human-reviewed; the same layer stays portable across tools. Capability without a process to babysit.
+
+> **Where this comes from (honest provenance).** The skills, rules and personas
+> are distilled from real production work on TypeScript and PHP codebases. The
+> governance mechanics are stack-agnostic, but the domain heuristics are richest
+> where they were forged — treat coverage on other stacks as promising, not
+> proven and tell us where it falls short.
+
+See exactly [what works on which host](docs/capability-matrix.md) or jump to [things you can do in a minute](docs/cookbook.md).
+
+### Pick your profile — six entry paths
+
+`agent-config setup` writes `profile.id` to `.agent-settings.yml` and sends you
+to that profile's first screen. Each experience page carries the full detail —
+who it's for, first commands and skills, packs and flows — and what is
+deliberately *not* loaded.
+
+| Profile | Audience | Experience page |
+|---|---|---|
+| 👩‍💻 [`developer`](docs/profiles.md#profile-developer) | IC engineer | [page](docs/experiences/developer.md) |
+| ✍️ [`content_creator`](docs/profiles.md#profile-content_creator) | Writers, ghostwriters, marketers | [page](docs/experiences/content_creator.md) |
+| 🚀 [`founder`](docs/profiles.md#profile-founder) | Solo / early-stage founder | [page](docs/experiences/founder.md) |
+| 🏛 [`agency`](docs/profiles.md#profile-agency) | Multi-client delivery shop | [page](docs/experiences/agency.md) |
+| 💼 [`finance`](docs/profiles.md#profile-finance) | CFO / fractional finance / FP&A | [page](docs/experiences/finance.md) |
+| 🛡 [`ops`](docs/profiles.md#profile-ops) | RevOps, support, SRE-adjacent | [page](docs/experiences/ops.md) |
+
+**Not sure which one?** The wizard asks a single 8-option role question and maps
+to the closest profile. Source-of-truth
+[`src/agent-src/profiles/`](src/agent-src/profiles/) · schema
+[`docs/contracts/profile-system.md`](docs/contracts/profile-system.md) · beyond
+software [`user-types/`](src/agent-src/user-types/) (galabau · metalworking ·
+truck — see [Beyond software](#beyond-software)).
+
+### Workflows, not raw commands
+
+You don't memorize commands — you run a **work journey**. Four flows span the
+developer story end-to-end:
+
+| Flow | Start with | The journey |
+|---|---|---|
+| 🔍 **Discovery** | `/feature:plan` · `/research` | explore → plan → estimate → refine, *before* building |
+| 🔨 **Implementation** | `/work` · `/implement-ticket` | plan → implement → verify → commit |
+| 🔎 **Review** | `/review-changes` · `/judge` | self-review → judge → quality-fix → threat-model |
+| 🚢 **Delivery** | `/commit` · `/pr:create` | commit in chunks → open PR → answer review |
+
+Composed skills and the canonical path per flow: [`docs/flows.md`](docs/flows.md).
+
+<p align="center">
+  <a href="CHANGELOG.md">CHANGELOG</a> ·
+  <a href="MIGRATION.md">Upgrade to 14.x</a> ·
+  <a href="CHANGELOG.md#breaking--v400-unified-setup-road-to-unified-setup">Breaking changes</a> ·
+  <a href="https://github.com/event4u-app/agent-config/releases/latest">Latest release</a> ·
+  <a href="https://github.com/event4u-app/agent-config/discussions">Discussions</a>
+</p>
+
+<p align="center">
+  <sub>Distribution: <code>npm install @event4u/agent-config</code>. Major bumps follow <a href="CONTRIBUTING.md#versioning-policy">semver</a>; each ships a <a href="CHANGELOG.md#breaking--v400-unified-setup-road-to-unified-setup"><code>### Breaking</code></a> entry — all majors indexed in <a href="BREAKING_CHANGES.md">BREAKING_CHANGES.md</a>.</sub>
+</p>
+
+---
+
+> **Creative Pack — cinematic AI video.** script → character-locked image → motion+audio prompt → provider render → stitched clip, with `AIV_DRYRUN=true` as the cost-safety default. A first-class capability inside the **content / creator** experience — no longer the package's headline. See [`/video:from-script`](.augment/commands/video/from-script.md).
+
+> **Legal Pack — not legal advice.** The EU/DE legal pack (contract/NDA/DPA review, triage) is a **research-and-drafting aid only** — it does not provide legal advice, does not replace a qualified lawyer and must not be relied on for any concrete matter. It produces general information and general templates, never individual-case examination. Read [`LEGAL_NOTICE.md`](LEGAL_NOTICE.md) before use.
+
+> Full catalog — every skill, rule, command, guideline: [`docs/catalog.md`](docs/catalog.md). The headline is the **experience** (profile + packs) **and** the depth behind it.
+
+## Use it in your project
+
+Run from a consumer repo — bootstrap via `npx`, the agent picks up
+your stack and you ship work end-to-end. New install? Start with the
+[Quickstart](#quickstart). Already installed? [Supported tools](#supported-tools)
+shows the wired AIs; [`docs/featured-commands.md`](docs/featured-commands.md)
+lists the end-to-end workflows (`/implement-ticket`, `/work`,
+`/commit`, `/pr:create`). Deeper tour: [2-minute demo](#2-minute-demo--implement-ticket).
+
+**Install scope.** Pick **one** scope per machine — project-local (default, recommended for application repos) or user-global (recommended for tooling repos / dotfiles). The installer refuses a second, conflicting scope via the `scope_guard` pre-flight. Details: [`docs/contracts/install-scopes.md`](docs/contracts/install-scopes.md). Cleanup when needed: `bash src/scripts/cleanup_other_scope.sh --confirm`.
+
+## Prove it
+
+Don't take the claims on trust — **verify them.** [`docs/proof.md`](docs/proof.md)
+is generated from source: a claim→evidence table (every public claim binds to a
+resolvable pointer or CI fails), honest-null benchmarks *including the runs where
+the package changed nothing* and a "verify it yourself" block you run on a fresh
+checkout. It fails CI if it drifts from its sources — reproducibility is the
+proof. Read it at
+[event4u-app.github.io/agent-config/proof/](https://event4u-app.github.io/agent-config/proof/),
+with the comparison frame at [`docs/us-vs-the-category.md`](docs/us-vs-the-category.md).
+Freshest measured row: in one post-fix session, advisory context injection cut language-mirror violations 555 → 19 while the two blocking guards went 8 → 0 and 1 → 0 — advisory reduced massively, only blocking eliminated. One session and a post-hoc reading, so a recorded prior rather than a law.<!-- claim:conformance-advisory-vs-blocking -->
+
+Maintaining a skills catalog yourself? The **anti-reskin gate** that blocks
+find-replace re-skin PRs here runs on yours too — [`docs/anti-reskin-gate.md`](docs/anti-reskin-gate.md).
+
+Audit-disciplined by construction — every memory consult, decision key and hook
+concern lands in `agents/runtime/state/` so you can replay it.
+[Core principles](#core-principles) names the four invariants.
+
+## Contribute
+
+Working on the package itself? [Development](#development) covers the
+`task ci` pipeline, [Requirements](#requirements) the toolchain,
+[Maintainer telemetry](#maintainer-telemetry-opt-in-default-off) the
+opt-in measurement loop. Source-of-truth tree is
+`src/` (`src/skills`, `src/rules`, `src/agent-src/`); never hand-edit `.augment/` or `dist/agent-src/`.
+
+**Security.** Disclosure policy: [`SECURITY.md`](SECURITY.md). Threat model: [`docs/threat-model.md`](docs/threat-model.md).
+
+---
+
+## Quickstart
+
+**One command. Detection-driven — your installed AI tools are found and
+pre-selected. Nothing is written until you click Finish. No YAML by hand.**
+
+Those four are structural — properties of the code path, not of your machine.
+How *long* it takes is not: that is dominated by network and registry latency.
+CI measures the install → `doctor` wall-clock on every umbrella run and
+publishes it with its conditions, as evidence rather than as a promise.
+
+**The one command is [above ↑](#try-it-in-30-seconds).**
+
+**Headless / CI:** `init` skips the GUI on CI, a non-TTY, a headless host or any CLI-mode flag; it runs the non-interactive installer instead. The GUI and the CLI share one installer (`src/scripts/install.ts`), so both produce identical results. Flags, the full opt-out set and `--dry-run`: [`docs/wizard.md`](docs/wizard.md) · [`gui-wizard` § When the GUI is skipped](docs/contracts/gui-wizard.md#when-the-gui-is-skipped).
+
+**Pick specific AIs:** `--tools=claude-code,cursor,augment,…` (any subset). `--gui` forces the loopback-bound, CSRF-gated picker past the TTY and headless checks; it does **not** override `CI`, `AGENT_CONFIG_NO_UI` or a CLI-mode flag; combining it with one of those exits non-zero rather than quietly running the CLI install.
+
+**Verify hook coverage:** `npx @event4u/agent-config hooks:status` (`--strict` for CI, `--format json` for tooling).
+
+> **Scope (v2.5+):** `init` writes **global** only — `~/.event4u/agent-config/`, `~/.claude/`, `~/.cursor/`, …. The project tree gets `agents/overrides/` only. `--project` is maintainer-only behind `AGENT_CONFIG_DEV_MODE=1` ([ADR-020](docs/decisions/ADR-020-global-only-consumer-scope.md), [dev-mode](docs/maintainers/dev-mode.md)).
+
+Migrating from v1.x? `npx @event4u/agent-config migrate` — [`docs/migration/v1-to-v2.md`](docs/migration/v1-to-v2.md).
+
+---
+## What `agent-config` is — and what it isn't
+
+A **content layer** — skills, rules, commands, guidelines, personas — distributed via npm and projected into every supported AI tool's native config format. Skills use [`SKILL.md`](https://agentskills.io) with package-specific frontmatter keys.<!-- claim:skill-format-package-keys -->
+
+It is **not** an agent runtime. The agent loop, the LLM dispatcher and tool orchestration stay with the host tool (Claude Code, Augment, Cursor, Cline, Windsurf, Gemini CLI, Copilot). Think of it as a playbook and style guide for those tools — not a replacement.
+
+| In scope | Out of scope |
+|---|---|
+| Skills, rules, commands, guidelines, personas | Agent loop / LLM dispatcher |
+| Multi-tool projection + condensation pipeline | Execution engine inside the package |
+| Memory helpers (`memory-add`, `memory-promote`) | Cross-tool observability dashboard |
+| Linters, CI, frontmatter validation against [JSON-Schema](scripts/schemas/) ([contract](agents/reference/docs/frontmatter-contract.md)) | Runtime GUI / web dashboard |
+| Skill orchestration via citations + deterministic helpers | Opinionated *automatic* skill-resolver (ML / relevance ranking that decides for you) |
+| User-driven projection-time filtering by profile + packs ([ADR-040](docs/decisions/ADR-040-execution-model-projection-time-filtering.md)) | A *runtime* resolver / daemon (mid-session switching — conditional, post-6.0.0) |
+
+### What your agent is asked to do
+
+| Default behavior | With agent-config |
+|---|---|
+| Guess and edit blindly | Analyze code before changing it |
+| Drift from project conventions | Follow detected stack conventions |
+| Skip or invent tests | Write tests in the project's framework |
+| Generic commit messages | Conventional Commits with scope + ticket links |
+| Skip quality checks | Run the project's quality pipeline and fix reported errors |
+| Open PRs without context | Structured PR descriptions from Jira / Linear / GitHub |
+| Claim "done" without proof | Verify with real execution before claiming done |
+
+---
+
+## 2-minute demo — `/implement-ticket`
+
+The flagship command. Drives a ticket end-to-end through a fixed linear flow — and **blocks on ambiguity instead of guessing**.
+
+```
+/implement-ticket PROJ-123
+```
+
+The agent runs this sequence:
+
+```
+refine → memory → analyze → plan → implement → test → verify → report
+```
+
+- **Refines** the ticket if acceptance criteria are vague.
+- **Queries memory** for past decisions, invariants, incidents.
+- **Plans** the change; you confirm before any file is touched.
+- **Implements** under `minimal-safe-diff` + `scope-control` — no drive-by edits.
+- **Tests** (targeted first, full suite on success).
+- **Reviews** the diff through four judges (bugs, security, tests, code quality).
+- **Reports** changes, verdicts, follow-ups — then stops. `/commit` and `/pr:create` are suggestions, never auto-run.
+
+Any ambiguity halts the flow with numbered options — never a silent guess. Persona comes from `.agent-settings.yml` (`roles.active_role`): `senior-engineer` (default), `qa` or `advisory` (plan-only).
+
+→ [Command reference](dist/agent-src/commands/implement-ticket.md) · [Flow contract](docs/contracts/implement-ticket-flow.md)
+
+### Sibling — `/work` (free-form prompt)
+
+Same engine, no ticket required:
+
+```
+/work add a CSV export endpoint to the audit-log controller
+```
+
+The first pass scores the prompt on five dimensions and routes on the band:
+
+| Band | Score | Action |
+|---|---|---|
+| **high** | `≥ 0.8` | Silent proceed — AC + assumptions in the report |
+| **medium** | `0.5–0.79` | Halts with assumptions report; confirm or edit |
+| **low** | `< 0.5` | Halts with **one** clarifying question on the weakest dimension |
+
+After the band gate, the flow is identical to `/implement-ticket`. Free-form goal → `/work`; ticket payload → `/implement-ticket`.
+
+→ [Command reference](dist/agent-src/commands/work.md) · [`refine-prompt` skill](dist/agent-src/skills/refine-prompt/SKILL.md)
+
+**After the run:** `agent-config explain last` reconstructs the trace (route · memory · council · halts · provider) — read-only, PII-scrubbed, offline. [Docs](docs/customization.md#explainability--explain-last)
+
+### Product UI track
+
+UI-shaped work routes to one of three directive sets — `ui` (full audit→design→apply→review→polish→report), `ui-trivial` (≤ 1 file, ≤ 5 lines: apply→test→report), `mixed` (backend + UI: contract→ui→stitch). Existing-UI audit is a **hard gate** ([`ui-audit-gate`](dist/agent-src/rules/ui-audit-gate.md)); polish has a 2-round ceiling with a11y precedence. Stack detection → `blade-livewire-flux` / `react-shadcn` / `vue` / `plain`.
+
+→ [Mental model](docs/ui-track-mental-model.md) (1 page) · [Flow contract](docs/contracts/ui-track-flow.md)
+
+---
+
+## Customize
+
+### Profiles — how much governance gets loaded
+
+Safety floor (non-destructive defaults · ask-before-guessing · mirror-the-user's-language) ships in **every** profile. What changes is how much extra coaching gets pulled in.
+
+| Profile | What you get | When to pick it |
+|---|---|---|
+| **`minimal`** | Non-negotiable safety floor only. Cheapest, fastest. | Quick questions · throw-away scripts · CI · tight token budgets |
+| **`balanced`** (default) | Safety floor + everyday coaching (sensible defaults, review nudges, common pitfalls). | Day-to-day work |
+| **`full`** | Everything, including long-tail rules normally only maintainers need. | Working on `agent-config` itself · audits · max-fidelity demos |
+
+Under the hood: kernel-only · kernel + tier-1 · kernel + tier-1 + tier-2. Details: [`rule-router`](docs/contracts/rule-router.md) · [`kernel-membership`](docs/contracts/kernel-membership.md) · [Configure →](docs/customization.md).
+
+> **Stability:** [`STABILITY.md`](docs/contracts/STABILITY.md) for the full matrix. Work Engine (`/work` + `/implement-ticket`): **beta**. Runtime Dispatcher: **stable**. Tool Adapters: **experimental** (`full` profile only).
+
+### `.agent-user.md` and Ghostwriter — voice primitives
+
+| Primitive | Voice | Disclosure |
+|---|---|---|
+| [`personas/*.md`](dist/agent-src/personas/) | Review-lens (internal critique) | n/a |
+| `.agent-user.md` (project root, gitignored) | The maintainer's own voice — `/post-as:me` | None (you are the author) |
+| [`agents/reference/ghostwriter/<slug>.md`](docs/contracts/ghostwriter-schema.md) (gitignored) | Documented public figure — `/post-as:ghostwriter` | **Mandatory, non-removable** footer |
+
+Create the user file interactively: `/agents user init` ([schema](docs/contracts/agent-user-schema.md)). Ghostwriter cluster: `/ghostwriter:fetch <url-or-name>` runs an attestation gate; private individuals rejected; paywalled / leaked / DM content banned at the schema level.
+
+### Self-hosted MCP on Cloudflare — zero local install
+
+Skills, commands, rules and guidelines can be served as an MCP endpoint from your own Cloudflare Worker, reachable over HTTP by any MCP client. Two auth modes: `public` (default) and `bearer-auth` (operator opt-in, `MCP-Token` Wrangler secret).
+
+```bash
+task mcp:cloud:login         # one-time, opens browser
+task mcp:cloud:setup         # check → r2-create → r2-verify → whoami
+task mcp:cloud:secret-put    # opt in to bearer-auth (recommended for private deploys)
+```
+
+→ Operator walkthrough: [`mcp-cloud-setup`](docs/setup/mcp-cloud-setup.md) · Per-client config: [`mcp-client-config`](docs/setup/mcp-client-config.md) · Endpoints: [`mcp-cloud-endpoints`](docs/setup/mcp-cloud-endpoints.md).
+
+> **Scope — Lite, not Full.** The Worker serves read-only governance (skills · commands · rules · guidelines · contexts) as MCP prompts and resources, plus small read-only tools (`memory_lookup`, `chat_history_read`, `list_*`). It does **not** execute the repository's local scripts (linters, audits, `task ci`, work-engine hooks) — those require local install per [Quickstart](#quickstart).
+
+> The built-in **local stdio** server is listed in the [Glama MCP Registry](https://glama.ai/mcp/servers/event4u-app/agent-config) — it requires a local checkout, not a turnkey install ([ADR-067](docs/decisions/ADR-067-glama-registry-listing.md)).
+
+### Deployment posture
+
+| Shape | Status | Path |
+|---|---|---|
+| **Single-user workspace** | ✅ today | `npx @event4u/agent-config init` — single machine, single user; no remote sync |
+| **Small team (3–10 people)** | ✅ today | Shared `agents/overrides/` Git repo + shared NAS for knowledge — no code change, no new server. Recipe: [`docs/deploy/small-team-recipe.md`](docs/deploy/small-team-recipe.md) |
+| **Organization mode** (SSO · central policy · team context · internal connectors) | ⏸ not started | Each shape gated on a recruited customer + funded audit + maintainer ADR. Posture rationale: [`docs/deploy/team-deployment-posture.md`](docs/deploy/team-deployment-posture.md) |
+
+Organization-mode features (SSO, central policy, OAuth connectors, team-context) stay cancelled by design until a recruited customer and a funded security audit lift them; the small-team recipe is the supported path meanwhile. Each is a stable cancellation row in [`team-deployment-posture`](docs/deploy/team-deployment-posture.md).
+
+---
+
+## Harness expectations
+
+Three classes of install/runtime behaviour look like package bugs and are host-harness behaviour the package cannot control: sibling-plugin namespaces, deferred tools surfaced via `ToolSearch` and cross-scope skill drift. Diagnostics and the package's response: [`docs/contracts/harness-expectations.md`](docs/contracts/harness-expectations.md). When a skill appears twice, start with `task probe:skills`.
+
+## Supported tools
+
+### Project-installed (`npx`)
+
+| Tool | Rules | Skills | Commands | How it works |
+|---|---|---|---|---|
+| **Claude Code** | ✅ | ✅ | ✅ | Reads `.claude/` |
+| **Cursor** | ✅ | — | ☑️ | Reads `.cursor/rules/` + commands via AGENTS.md |
+| **Cline** | ✅ | — | ☑️ | Reads `.clinerules/` + commands via AGENTS.md |
+| **Windsurf** | ✅ | — | ☑️ | Reads `.windsurfrules` + commands via AGENTS.md |
+| **Gemini CLI** | ✅ | — | ☑️ | Reads `GEMINI.md` |
+| **GitHub Copilot** | ✅ | — | ☑️ | Reads `.github/copilot-instructions.md` |
+| **Roo Code** | ✅ | — | ☑️ | Auto-discovers `.roo/rules/*.md` + AGENTS.md |
+| **Codex CLI** | ✅ | — | ☑️ | Auto-discovers `AGENTS.md` |
+| **Continue.dev** | ✅ | — | ☑️ | Auto-discovers `.continue/rules/*.md` + AGENTS.md |
+| **Aider** | 📌 | — | — | Manual `read:` in `.aider.conf.yml` |
+| **Augment** (VSCode/IntelliJ) | 📌 | — | — | Global-only; project writes marker |
+| **Claude Desktop** | 📌 | — | — | Global-only |
+
+✅ native &nbsp; ☑️ text reference (in AGENTS.md, not invokable as native slash-command) &nbsp; 📌 marker only &nbsp; — not available
+
+> **Team reproducibility:** every tool you `init` is recorded in `agents/installed-tools.lock` (committed, machine-managed). New team members run `npx @event4u/agent-config sync` after cloning; CI gates drift with `agent-config validate`. Schema: [`installed-tools-manifest`](docs/guidelines/agent-infra/installed-tools-manifest.md).
+
+### Plugin-installed (optional, global)
+
+| Tool | Install |
+|---|---|
+| **Augment CLI** · **Copilot CLI** | [Install →](docs/installation.md) — rules + skills + commands, marketplace-updated |
+
+> **Claude Code: the marketplace plugin is deprecated** (single-surface
+> model). The npx/npm file projection now carries content **and** the
+> deterministic hooks (registered in a managed `~/.claude/settings.json`
+> block by `agent-config global` / `upgrade`), so the plugin only duplicates
+> skill/command listings while its git-SHA snapshot rots silently. Existing
+> installs: `claude plugin uninstall agent-config@event4u-agent-config` —
+> `agent-config doctor` flags the duplicate surface.
+
+Keep the global install current with `agent-config upgrade` (latest) or
+`agent-config refresh --global` (same-version re-install); `agent-config doctor`
+flags a missing-from-`PATH` binary or broken hook wiring. See
+[getting-started § Keeping current](docs/getting-started.md#keeping-current) ·
+[Troubleshooting](#troubleshooting).
+
+### The command surface at a glance
+
+| Command | What it does |
+|---|---|
+| `agent-config init` | One-shot install — opens the browser wizard (recommended path or step-by-step) |
+| `agent-config init --project` | Initialize a project: minimal `agents/` bridge + managed `.gitignore` block |
+| `agent-config config` | Open the configuration GUI — global settings hub (simple + advanced tiers, search, reset-to-default) |
+| `agent-config config --project` | Open the project configuration surface |
+| `agent-config setup` | Re-run the guided onboarding wizard (prefilled from your current state) |
+| `agent-config upgrade` | Update the global install to the latest release + additively sync settings |
+| `agent-config doctor` | Read-only health/drift report |
+
+### Cloud / Hosted-agent surfaces
+
+For platforms where the package's scripts cannot run, artefacts are built for paste-in or upload:
+
+- **Linear AI** (Codegen, Charlie, …) — `dist/linear/{workspace,team,personal}.md`
+- **Claude.ai Web Skills** — `dist/cloud/<skill>.zip`
+
+→ [Install →](docs/installation.md#linear-ai-codegen-charlie-)
+
+---
+
+## Works with agent-switch
+
+[`agent-switch`](https://github.com/event4u-app/agent-switch) is the companion
+CLI for running several agent accounts on one machine: it isolates each account
+in its own profile (`CLAUDE_CONFIG_DIR` per profile), so switching accounts
+never means logging out and back in. The two compose — **agent-switch isolates
+the accounts, agent-config governs what the agents do inside them**. When
+agent-config runs under an agent-switch profile it says so in the settings hub,
+warns before writes that would land in a shared (cross-profile) tree and
+accepts a host-supplied config root so its own settings stay profile-scoped.
+
+→ [How the two compose →](docs/guides/works-with-agent-switch.md)
+
+---
+
+## Who this is for
+
+A stack-agnostic governance core (orchestration · role modes · command clusters · quality gates · audit discipline), plus stack-specific skill sets:
+
+| Stack | Coverage |
+|---|---|
+| **Laravel · modern PHP** (deepest) | Pest · PHPStan · Rector · ECS · Eloquent · Livewire/Flux · Horizon · Pulse · Reverb · Pennant |
+| **Symfony** | `symfony-workflow` (DI · Doctrine · Messenger · voters · Twig) + project-analysis |
+| **Next.js App Router** | `nextjs-patterns` (RSC · Server Actions · caching · route handlers) + UI `react-shadcn` |
+| **Zend / Laminas** | project-analysis + shared PHP coder/quality skills |
+| **React · Node / Express** | project-analysis + UI `react-shadcn` |
+| **Vue · plain HTML** | UI directive set (`vue` / `plain`) |
+| **Cross-stack** | API design · testing · security · database · Docker · Git · CI · review · threat modeling · observability |
+
+### Beyond software
+
+The same orchestration core drives non-software trades via [`user-types/`](src/agent-src/user-types/): [`galabau-field-crew`](src/agent-src/user-types/galabau-field-crew.md) · [`metalworking-shop`](src/agent-src/user-types/metalworking-shop.md) · [`truck-driver`](src/agent-src/user-types/truck-driver.md). Contribute your own — [5-minute scaffold](src/agent-src/user-types/_template/).
+
+---
+
+## Data governance & domain safety
+
+Three domain-safety rules ([`domain-safety-pii`](src/rules/domain-safety-pii.md), [`domain-safety-disclaimer`](src/rules/domain-safety-disclaimer.md), [`domain-safety-retention`](src/rules/domain-safety-retention.md)) act as per-domain output floors across ~12 areas — PII redaction (support / finance / recruiting / marketing), advice disclaimers (legal / financial / medical / consulting), retention guidance (finance / support), ops floors (logging / export). Full surface → rule → floor matrix: [`docs/safety.md`](docs/safety.md). Beta contracts: [`memory-visibility-v1`](docs/contracts/memory-visibility-v1.md) · [`decision-trace-v1`](docs/contracts/decision-trace-v1.md).
+
+### Code provenance & license governance
+
+Every diff is checked against a **license policy derived from the target repo's own detected license** (precedence-ordered; sources disagree → escalate, never guess) and a **strict linter over our borrow ledger** ([`provenance/borrows.jsonl`](provenance/) → [`docs/THIRD-PARTY-NOTICES.md`](docs/THIRD-PARTY-NOTICES.md)) that fails a deny-class or unknown license, a missing transformation note or a rename-only-phrased one — wired into `ci`/`ci-strict`. `license-compliance-audit` runs a similarity scan on demand, invoked by a human and never by a pipeline. This is provenance-governed borrow discipline with an audited trail — not a copy detector.
+
+<!-- provenance-scope-box -->
+#### Scope & limits
+
+- **Unconscious training-data reproduction is not detectable at this layer.** No tool here — or anywhere — can see what a model's training data contained; this system governs what gets consciously borrowed and recorded, never what a model silently recalls.
+- **Detection, where it exists, covers a knowledge base of known OSS only** — a subset of all code that has ever existed, never a model's training corpus.
+- **No CI-facing detection gate exists.** A deterministic scanner (jscpd offline + SCANOSS online) was built and measured against a frozen synthetic corpus, but missed its own pre-registered thresholds (measured: recall 12/16, false positives 2/12, SCANOSS rename-only recall 0/8) — see [`docs/CLAIMS.md`](docs/CLAIMS.md#claim-provenance-gate-effectiveness). It ships in **no form** in CI, not even advisory — only as the on-demand skill above.
+- **Rename-only laundering is not detected** by anything we ship or evaluated. The ledger's transformation-note check rejects a rename-only-*phrased* note, but it cannot catch an undisclosed rename-only copy that was never logged.
+
+Reduces and documents risk — never eliminates it.
+
+### Maintainer telemetry (opt-in, default-off)
+
+Local-only artefact-engagement log. Set `telemetry.artifact_engagement.enabled: true` in `.agent-settings.yml`. Records which skills / rules / commands / guidelines the agent consults during `/implement-ticket` / `/work`. JSONL under the project root, nothing uploaded. Reports: `npx @event4u/agent-config telemetry:report`.
+
+### Context-aware command suggestion
+
+When a prompt matches a command's purpose ("setze ticket ABC-123 um" → `/implement-ticket`), the agent surfaces matches as numbered options — **nothing auto-executes**. Per-conversation off: `/command-suggestion-off`. Settings: `commands.suggestion.{enabled,blocklist,confidence_floor}` in `.agent-settings.yml`.
+
+---
+
+## Core principles
+
+- **Analyze before implementing** — no guessing, no blind edits
+- **Verify with real execution** — no "should work"
+- **Challenge to improve** — agents are thought partners, not yes-machines
+- **Strict by design** — quality over flexibility
+- **Governed runtime** — resident processes require supervision, scoped writes and a stop control
+
+---
+
+## Documentation
+
+| Document | Content |
+|---|---|
+| [**Getting Started**](docs/getting-started.md) | First run, 3-test experience, profiles, next steps |
+| [**Installation**](docs/installation.md) | All install paths, Composer/npm, orchestrator details |
+| [**Architecture**](docs/architecture.md) | System layers, content pipeline, tool support matrix |
+| [**Customization**](docs/customization.md) | Overrides, AGENTS.md, agent settings, cost profiles |
+| [**Quality & CI**](docs/quality.md) | Linting, CI pipeline, condensation system |
+| [**Migration**](docs/MIGRATION.md) | Per-version upgrade steps |
+| [**Showcase**](docs/showcase.md) | More examples & expected behavior |
+
+Browse content: [all commands](dist/agent-src/commands/) · [skills catalog](docs/skills-catalog.md) · [full catalog](docs/catalog.md) · [`llms.txt`](llms.txt).
+
+---
+
+## Troubleshooting
+
+First stop for any install problem: `agent-config doctor` — it flags a
+missing-from-`PATH` binary, binary↔plugin version drift, stale orphans and
+manifest issues, each with a one-line fix hint.
+
+For "why didn't rule/hook X fire?" questions: `agent-config routing:doctor`
+— a read-only, live diagnosis that reports every session-start gate as
+ACTIVE/INACTIVE with the concern's own reason (e.g.
+`session-canary: ACTIVE for "Alex"` vs `INACTIVE — no name on any settings
+layer`), the platform's concern chain, host hook registration and router +
+projection freshness. Deeper hook internals (fail-open/closed posture, last
+dispatcher feedback per concern): `agent-config hooks:doctor`.
+
+
+Upgrade and staleness symptoms — a command or skill missing after an upgrade,
+skills appearing twice, an interrupted upgrade, `command not found`, stale
+project files: [`docs/troubleshooting.md` § Upgrade and staleness](docs/troubleshooting.md#upgrade-and-staleness).
+
+---
+
+## Development
+
+Working on the package itself? Edit `src/` (the source of truth — `src/skills`, `src/rules`, `src/agent-src/`), regenerate trees:
+
+```bash
+task sync             # regenerate dist/agent-src/ and .augment/
+task generate-tools   # regenerate .claude/, .cursor/, .clinerules/, .windsurfrules
+task ci               # full pipeline — green before PR
+task test             # unit + integration tests
+task dev:setup        # boot the onboarding wizard against the working tree
+```
+
+**Invoking the CLI from a source checkout:** `./agent-config <command>` (the maintainer shim at the repo root → `scripts/agent-config` → `dist/cli/agent-config.js`). `npx @event4u/agent-config` doesn't resolve in the source repo without a prior `npm link`, since there's no `node_modules/.bin/agent-config` symlink — use `./agent-config` instead. Build the TS binary with `npm run build:cli` if `dist/cli/agent-config.js` is missing.
+
+→ Full project structure and commands: [**docs/development.md**](docs/development.md) · [CONTRIBUTING.md](CONTRIBUTING.md). Stack: **TypeScript** throughout — CLI, UI and the build / lint scripts. MCP registry payloads render under `dist/mcp/` ([submission checklist](docs/distribution/mcp-submission-checklist.md)).
+
+---
+
+## Requirements
+
+- **Node ≥ 20.11** — `npx @event4u/agent-config init` is the canonical install path. No Python anywhere on the install path (the Python installer retired with the TypeScript migration).
+- **Platform:** macOS 12.3+, Linux, WSL2. Git Bash needs Developer Mode for symlinks. Contributors rebuilding `.augment/` also need [Task](https://taskfile.dev/).
+
+### Windows
+
+Native PowerShell / cmd is **not supported for the file install** — use WSL2
+for the full installed tree. The supported native-Windows surface is the
+**MCP stdio server**: point any MCP client at
+
+```bash
+npx -y @event4u/agent-config mcp-server
+```
+
+and the governance content (prompts, resources, tools) is available without
+the file install. Porting the bash dispatcher to native Windows is
+**demand-gated**: a named Windows adopter who cannot use WSL2 or the MCP
+path reopens it (see `agents/roadmaps/` — road-to-credible-install Phase 3).
+
+## Funding
+
+The package is free, MIT and stays that way — no paid tier, no dual
+licensing. If it saves you time and you want to chip in, the GitHub Sponsor
+button at the top of the repo is the whole mechanism. If you would rather not,
+use it anyway; nothing here is gated on it.
+
+## License
+
+[MIT](LICENSE).
+
+<!-- Official MCP Registry package validation marker -->
+mcp-name: io.github.event4u-app/agent-config

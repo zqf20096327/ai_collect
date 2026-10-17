@@ -1,0 +1,250 @@
+# Handwritten Text Synthesis and Recognition
+
+The `pySarah` project provides a solution for Handwritten Text Recognition (HTR) using [Tensorflow](https://www.tensorflow.org/). It includes a tutorial and a set of tools for data processing, model training, testing, and inference. The HTR model can be trained on various datasets and supports different levels of recognition. The project also supports generative and language models that make up the workflow for handwriting synthesis and spelling correction.
+
+The project provides support for [MLflow Tracking](https://mlflow.org/docs/latest/tracking.html#tracking), which enables better tracking and management of training and testing phases. MLflow allows logging and comparing experiments, tracking metrics, and storing trained models for reproducibility. The [MLflow Dashboard](https://mlflow.org/docs/latest/tracking.html#explore-runs-and-results) can be explored and experiments tracked with `mlflow ui`.
+
+## Getting Started
+
+The steps below describe how to get started with the project.
+
+### Requirements
+
+- Python >=3.11, <3.13
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/arthurflor23/handwritten-text-recognition.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd handwritten-text-recognition
+```
+
+3. Create and activate the virtual environment:
+
+```bash
+python3 -m venv .venv
+```
+
+- For Linux/Mac:
+
+```bash
+source .venv/bin/activate
+```
+
+- For Windows:
+
+```
+.venv\Scripts\activate
+```
+
+4. Install requirements
+
+```
+pip install -r requirements.txt
+```
+
+### Datasets
+
+The project supports a wide range of datasets for handwritten text recognition. The following datasets are already integrated into the project and can be easily used for training and evaluation.
+
+- [Bentham](https://drive.google.com/file/d/1do3tS7vd-QaUxkeBwPE4Phia99-J_AUq/view?usp=sharing) [[paper]](https://doi.org/10.1109/DAS.2014.23)
+
+- [BRESSAY](https://zenodo.org/records/11637681) [[paper]](https://doi.org/10.1007/978-3-031-70536-6_19)
+
+- [CVL-Database](https://drive.google.com/file/d/1H0M2lHdxUCLs7eKjk2q7fNBYU0-PkLDo/view?usp=sharing) [[paper]](https://doi.org/10.1109/ICDAR.2013.117)
+
+- [CVL-Digits](https://drive.google.com/file/d/1jPZtUtiARgrbFaCfPyPg_UZrgwYHJ7Td/view?usp=sharing) [[paper]](https://doi.org/10.1109/ICFHR.2014.136)
+
+- [EMNIST](https://drive.google.com/file/d/107Lzd-5fAkt3XLdOgTWH5yQeqd3QHbKf/view?usp=sharing) [[paper]](https://doi.org/10.1109/ijcnn.2017.7966217)
+
+- [IAM](https://drive.google.com/file/d/1z6gOT4U_eTsCguSCWAz3IaQwTD8TXwDw/view?usp=sharing) [[paper]](https://doi.org/10.1007/s100320200071)
+
+- [MNIST](https://drive.google.com/file/d/1QwW7RgxQjJ83nJQ5dMw4mWawyCcpwRp8/view?usp=sharing) [[paper]](http://yann.lecun.com/exdb/mnist/)
+
+- [ORAND-CAR](https://drive.google.com/file/d/1jkT2ow85eob9hK4xygdOjlIT6zNMUlAG/view?usp=sharing) [[paper]](https://doi.org/10.1109/ICFHR.2014.136)
+
+- [Parzival](https://drive.google.com/file/d/1szhdRxYRCkkIehQaLgTk3YD9At563BSU/view?usp=sharing) [[paper]](http://dx.doi.org/10.1109/ICDAR.2011.20)
+
+- [RIMES](https://drive.google.com/file/d/1iax6qNqKtg0PHZl68HnJy2WRFQ2IcRLM/view?usp=sharing) [[paper]](https://hal.science/hal-01395332)
+
+- [Saint Gall](https://drive.google.com/file/d/1X66lsJFEK-RixO4dQ0DP9ZH6yVc64P2m/view?usp=sharing) [[paper]](https://dl.acm.org/doi/10.1145/2037342.2037348)
+
+- [Washington](https://drive.google.com/file/d/1MuKc3D3SoWVUJPYqhmnOT9Xd-CWnmpk4/view?usp=sharing) [[paper]](http://dx.doi.org/10.1016/j.patrec.2011.09.009)
+
+### Fonts
+
+The project also supports font prototypes as input. Folders of `.ttf` files placed under `fonts/` are loaded by the batch generator for training and evaluation. A collection of open fonts is available [here](https://drive.google.com/file/d/1cVpMpcdcHutcn_Yo25_NvqhyguyFvztX/view?usp=sharing).
+
+## Parameters
+
+The project has several command-line parameters that can be used to customize its behavior. The list of available parameters is outlined below, along with their descriptions.
+
+#### Models
+
+- `--synthesis`: Specify synthesis model (e.g., flor).
+- `--recognition`: Specify recognition model (e.g., flor).
+- `--segmentation`: Specify segmentation model (e.g., flor).
+- `--writer-identification`: Specify writer identification model (e.g., flor).
+- `--spelling`: Specify spelling model (e.g., openai).
+
+#### MLflow
+
+- `--synthesis-run-id`: Synthesis model run id or index.
+- `--recognition-run-id`: Recognition model run id or index.
+- `--segmentation-run-id`: Segmentation model run id or index.
+- `--writer-identification-run-id`: Writer identification model run id or index.
+- `--experiment-name`: MLflow experiment name.
+- `--finished-runs`: Only finished runs for selection.
+
+#### Dataset
+
+- `--source`: Source data (e.g., iam).
+- `--text-level`: Text structure level (e.g., line).
+- `--image-shape`: Image dimensions (height, width, channels).
+- `--char-width`: Character width for image normalization.
+- `--mask-by-text`: Mask data by text length.
+- `--order-by-text`: Sort data by text length.
+- `--training-ratio`: Training partition ratio.
+- `--validation-ratio`: Validation partition ratio.
+- `--test-ratio`: Test partition ratio.
+- `--illumination` : Apply illumination compensation.
+- `--binarization` : Apply binarization method.
+- `--lazy-mode`: Activate lazy loading.
+- `--enable-graph`: Enable prototype graph inputs.
+
+#### Augmentor
+
+- `--mixup`: Mixup transformation (probability, opacity, iterations).
+- `--erode`: Erode transformation (probability, kernel size, iterations).
+- `--dilate`: Dilate transformation (probability, kernel size, iterations).
+- `--elastic`: Elastic transformation (probability, kernel size, alpha).
+- `--perspective`: Perspective transformation (probability, alpha).
+- `--shear`: Shear transformation (probability, alpha).
+- `--rotate`: Rotate transformation (probability, alpha).
+- `--scale`: Scale transformation (probability, alpha).
+- `--shift-y`: Vertical translation (probability, alpha).
+- `--shift-x`: Horizontal translation (probability, alpha).
+- `--salt-and-pepper`: Salt and Pepper noise (probability, alpha).
+- `--gaussian-noise`: Gaussian noise (probability, alpha).
+- `--gaussian-blur`: Gaussian blur filter (probability, kernel size).
+- `--graph-rotate`: Graph rotate transformation (probability, max angle).
+- `--graph-scale`: Graph scale transformation (probability, max variation percentage).
+- `--graph-noise`: Graph noise transformation (probability, standard deviation).
+- `--disable-augmentation`: Disable data augmentation.
+
+#### Synthesis
+
+- `--discriminator-steps`: Repetition of steps for discriminator training in synthesis workflow.
+- `--generator-steps`: Skipping steps for generator training in synthesis workflow.
+- `--monitor-samples`: Number of sample images saved by the training monitor.
+
+#### Training
+
+- `--training`: Perform training pipeline.
+- `--training-step-factor`: Factor for training steps.
+- `--epochs`: Maximum number of epochs.
+- `--batch-size`: Batch size.
+- `--learning-rate`: Learning rate.
+- `--plateau-factor`: Learning rate reduction factor.
+- `--plateau-cooldown`: Cooldown after plateau.
+- `--plateau-patience`: Plateau patience epochs.
+- `--patience`: Stop after no improvement.
+- `--synthesis-probability`: Training with synthetic data.
+
+#### Test
+
+- `--test`: Perform test pipeline.
+- `--top-paths`: Top paths for prediction.
+- `--beam-width`: CTC decoder beam width.
+
+#### Inference
+
+- `--inference`: Perform inference pipeline.
+- `--image`: Image path for recognition.
+- `--bbox`: Bounding box (x, y, width, height).
+- `--text`: Text for synthesis.
+
+#### Others
+
+- `--check`: Perform check pipeline.
+- `--input-path`: Path to input data.
+- `--fonts-path`: Path to fonts data.
+- `--output-path`: Path to output data.
+- `--gpu`: GPU index or sequence of indices.
+- `--seed`: Seed value.
+- `--verbose`: Verbosity level.
+
+### Usage
+
+The project offers a range of functionalities through command-line parameters, which can be combined to match specific needs. Below are some examples of usage.
+
+**Example 1: Train the recognition model across multiple datasets**
+
+```bash
+python sarah --source iam --recognition flor --training --gpu 0;
+python sarah --source rimes --recognition flor --training-ratio 0.9 --validation-ratio 0.1 --training --gpu 0;
+```
+
+These commands train the Flor recognition model independently on the IAM and RIMES datasets. For RIMES, the data is split into 90% training and 10% validation.
+
+**Example 2: Test the recognition model across multiple datasets**
+
+```bash
+python sarah --source iam --recognition flor --test --recognition-run-id -1;
+python sarah --source rimes --recognition flor --test --recognition-run-id -1;
+```
+
+These commands run the test pipeline on IAM and RIMES using the Flor recognition model. The `--recognition-run-id -1` flag selects the most recently logged MLflow run for each dataset.
+
+**Example 3: Train the synthesis model on the combined dataset**
+
+```bash
+python sarah --source all-in-one --synthesis flor --training-ratio 1.0 --validation-ratio 0.0 --test-ratio 0.0 --training --gpu 0;
+```
+
+This command trains the Flor synthesis model on the combined source, using the full dataset for training with no validation or test partitions.
+
+## Tutorial Notebook
+
+A tutorial material is provided to help with getting started. It offers a step-by-step guide to exploring the main pipeline of the project.
+
+The tutorial is designed to be beginner-friendly and can be easily run on [Google Colab](https://research.google.com/colaboratory/), a cloud-based Jupyter notebook environment. It provides a hands-on experience of the project's features and demonstrates the usage of various parameters and functionalities.
+
+The tutorial covers:
+
+- The project's pipeline.
+- Setup of required dependencies and environment.
+- Exploration of different parameters.
+- Execution of data training and testing pipelines.
+- Insights applicable to specific context problems.
+
+The material is available in the [Tutorial Jupyter Notebook](https://github.com/arthurflor23/handwritten-text-recognition/blob/master/tutorial.ipynb) located in the project repository. The notebook instructions describe how to run the code and explore the features.
+
+## References
+
+The following references provide additional insights and background information related to Handwritten Text Recognition, and citations are appreciated if any of these works have contributed to related research or projects.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Toselli, Alejandro H. and Lima, Estanislau B. [HTR-Flor: A Deep Learning System for Offline Handwritten Text Recognition](https://doi.org/10.1109/SIBGRAPI51738.2020.00016). 33rd SIBGRAPI Conference on Graphics, Patterns and Images (SIBGRAPI), 2020.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Toselli, Alejandro H. and Lima, Estanislau B. [HTR-Flor++: A Handwritten Text Recognition System Based on a Pipeline of Optical and Language Models](https://doi.org/10.1145/3395027.3419603). Proceedings of the ACM Symposium on Document Engineering, 2020.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Lima, Estanislau B. and Toselli, Alejandro H. [HDSR-Flor: A Robust End-to-End System to Solve the Handwritten Digit String Recognition Problem in Real Complex Scenarios](https://doi.org/10.1109/ACCESS.2020.3039003). IEEE Access, vol. 8, pp. 208543-208553, 2020.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Toselli, Alejandro H. [Towards the Natural Language Processing as Spelling Correction for Offline Handwritten Text Recognition Systems](https://doi.org/10.3390/app10217711). Applied Sciences, 2020.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Toselli, Alejandro H. and Lima, Estanislau B. [A Robust Handwritten Recognition System for Learning on Different Data Restriction Scenarios](https://doi.org/10.1016/j.patrec.2022.04.009). Pattern Recognition Letters, 2022.
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Moura, Gabriel C. D. and Toselli, Alejandro H. [Data Augmentation for Offline Handwritten Text Recognition: A Systematic Literature Review](https://doi.org/10.1007/s42979-023-02583-6). SN Computer Science, 2024.
+
+- Neto, A. F. S., Bezerra, B. L. D., Araujo, S. S., Souza, W. M. A. S., Alves, K. F., Oliveira, M. F., Lins, S. V. S., Hazin, H. J. F., Rocha, P. H. V., Toselli, A. H.: [BRESSAY: A Brazilian Portuguese Dataset for Offline Handwritten Text Recognition](https://doi.org/10.1007/978-3-031-70536-6_19). In: 18th International Conference on Document Analysis and Recognition (ICDAR). Springer, Athens, Greece (9 2024).
+
+- Neto, A. F. S., Bezerra, B. L. D., Araujo, S. S., Souza, W. M. A. S., Alves, K. F., Oliveira, M. F., Lins, S. V. S., Hazin, H. J. F., Rocha, P. H. V., Toselli, A. H.: [ICDAR 2024 Competition on Handwritten Text Recognition in Brazilian Essays – BRESSAY](https://doi.org/10.1007/978-3-031-70552-6_21). In: 18th International Conference on Document Analysis and Recognition (ICDAR). Springer, Athens, Greece (9 2024).
+
+- Neto, Arthur F. S. and Bezerra, Byron L. D. and Toselli, Alejandro H. [HTSR-Pollen: Handwritten Text Synthesis and Recognition System to Overcome Data Scarcity](https://doi.org/10.1109/ACCESS.2026.3681630). IEEE Access, vol. 14, pp. 54395-54413, 2026.

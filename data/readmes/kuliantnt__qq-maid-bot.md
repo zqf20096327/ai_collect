@@ -1,0 +1,419 @@
+<div align="center">
+  <img src="docs/img/logo.png" alt="小女仆机器人" width="180" />
+  <h1>小女仆机器人</h1>
+  <p><strong>一个会聊天、会记事、会调用工具，也会主动推送的轻量、自托管、多入口 AI Agent 机器人。</strong></p>
+  <p>
+    <a href="https://github.com/kuliantnt/qq-maid-bot/actions/workflows/ci.yml"><img src="https://github.com/kuliantnt/qq-maid-bot/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+    <a href="https://github.com/kuliantnt/qq-maid-bot/releases"><img src="https://img.shields.io/github/v/release/kuliantnt/qq-maid-bot" alt="Release" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/kuliantnt/qq-maid-bot" alt="License" /></a>
+    <a href="https://deps.rs/repo/github/kuliantnt/qq-maid-bot"><img src="https://deps.rs/repo/github/kuliantnt/qq-maid-bot/status.svg" alt="Dependencies" /></a>
+    <img src="https://img.shields.io/badge/maid-online-ff69b4" alt="Maid Status" />
+    <img src="https://img.shields.io/badge/女仆浓度-100%25-ff69b4" alt="Maid Purity" />
+  </p>
+  <p><sub>Rust 单进程 · 约 25 MiB 常驻内存 · 默认空闲时 3 个线程 · Provider 无关 Agent Loop · 多模态输入 · 主动推送 · 模型自动降级</sub></p>
+</div>
+
+项目使用 Rust 构建，当前以 QQ 官方机器人为主要入口，同时支持 OneBot 11 和可选的微信服务号文本入口。它在同一个进程中提供多轮会话、受控长期记忆、Todo 与提醒、RSS 推送、本地知识检索、联网查询、多模态理解和 Tool Calling。
+
+> 💡 仓库早期以 QQ 机器人为主，因此仍保留 `qq-maid-bot` 名称。当前项目正在从 QQ 官方机器人演进为多入口平台型小女仆机器人。
+
+当前稳定版本为 `v0.26.0`，项目进入 `26.x` 版本线。本版本把 Web Console 迁移到 React 19 + Vite，保留现有部署管理员认证、同源与 CSRF 保护，以及可复现构建并嵌入 Rust 二进制的部署方式。升级说明见 [Releases](https://github.com/kuliantnt/qq-maid-bot/releases) 和 [CHANGELOG.md](./CHANGELOG.md)，控制台配置见 Wiki [配置中心](https://github.com/kuliantnt/qq-maid-bot/wiki/配置中心)，先攻与骰点用法见 Wiki [骰子使用教程](https://github.com/kuliantnt/qq-maid-bot/wiki/骰子使用教程)。
+
+使用、安装和配置优先看 [项目 Wiki](https://github.com/kuliantnt/qq-maid-bot/wiki)：从第一次对话、一键安装、Docker / GHCR、配置中心与 `/console/` 首次向导，到 NapCat、`/ops` 运维和 Codex 长任务，都按场景拆开了。仓库内 `docs/` 与各 crate README 更偏开发边界和实现细节。
+
+想直接使用骰点功能，可查看 [骰子使用教程](./docs/guides/dice.md)。
+
+想试试周易起卦，可发送 `/起卦`、`/算卦` 或 `/卜卦`（别名 `/iching`）；这是不调用模型的本地确定性命令，结果会作为当前会话回执保存，之后可以直接追问，完整使用说明见 Wiki [使用说明](https://github.com/kuliantnt/qq-maid-bot/wiki/使用说明)。
+
+想开一局跑团，可用 `/ri` 录入先攻、`/init` 查看和推进回合、`/rh` 投暗骰；紧凑写法如 `/ri18 哥布林`、`.initend` 也可用。完整语法、身份提醒和平台投递边界见 Wiki [骰子使用教程](https://github.com/kuliantnt/qq-maid-bot/wiki/骰子使用教程)。
+
+## 快速开始
+
+想先把小女仆叫来值班？选一种顺手的部署方式即可。运行机器人至少需要启用一个消息入口，并配置一个可用的模型 Provider；使用 QQ 官方入口时，还需要准备 QQ 开放平台的 AppID 和 AppSecret。
+
+| 我想这样部署 | 建议入口 |
+| --- | --- |
+| Linux 主机，省心安装 | [Linux 一键安装](#linux-一键安装推荐) |
+| 已有 Docker / Compose 环境 | [Docker 部署 · 人话版](./docs/deployment/docker-simple.md)，5 分钟按步骤跑起来 |
+| Windows 主机 | [Windows 一键安装](#windows-一键安装) |
+| 参与开发或调试源码 | [从源码运行](#从源码运行) |
+
+拿不准就选 Linux 一键安装；熟悉容器的话，直接跟着 Docker 人话版走。
+
+### Linux 一键安装（推荐）
+
+安装脚本会根据 CPU 架构下载最新 Release，无需安装 Rust：
+
+```bash
+curl -fsSL https://github.com/kuliantnt/qq-maid-bot/raw/refs/heads/master/scripts/qbot.sh -o /tmp/qbot.sh
+bash /tmp/qbot.sh deploy
+
+qbot install                 # 交互询问是否启用 Web 控制台
+# qbot install --web false   # 仅 CLI / 文件配置，不启用 /console/
+qbot config bot
+qbot config ai
+qbot start
+qbot status
+```
+
+安装完成后，小女仆的日常值班状态可以这样查看：
+
+```bash
+qbot log       # 跟随日志
+qbot health    # 健康检查
+qbot restart   # 重启服务
+qbot update    # 更新版本
+```
+
+<details>
+<summary>GitHub 下载不稳定？展开配置可信代理</summary>
+
+可设置 `QBOT_GITHUB_PROXY`（单个代理前缀）或 `QBOT_GITHUB_PROXIES`（空格分隔的多个代理前缀）指向自己信任的加速源。安装器会依次尝试官方源和所有代理；任一来源失败会自动尝试下一个，且只有压缩包格式有效、SHA-256 校验通过才会继续安装：
+
+```bash
+export QBOT_GITHUB_PROXIES="https://gh-proxy-a.example.com https://gh-proxy-b.example.com"
+qbot install
+```
+
+代理前缀必须是 `https://域名/` 形式的完整前缀，脚本会把它拼接在 `https://github.com/<仓库>/releases/download/<版本>/<文件>` 前面后再下载。
+
+</details>
+
+### Windows 一键安装
+
+在 PowerShell 中下载安装器：
+
+```powershell
+$p = "$env:TEMP\qbot.ps1"
+Invoke-WebRequest `
+  https://github.com/kuliantnt/qq-maid-bot/raw/refs/heads/master/scripts/qbot.ps1 `
+  -OutFile $p `
+  -UseBasicParsing
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File $p install
+```
+
+Windows 端支持与 Linux 相同的代理变量（`QBOT_GITHUB_PROXY` / `QBOT_GITHUB_PROXIES`）。下载失败时同样会自动尝试下一个来源，并校验 ZIP 与 SHA-256：
+
+```powershell
+$env:QBOT_GITHUB_PROXIES = "https://gh-proxy-a.example.com https://gh-proxy-b.example.com"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\qbot.ps1" install
+```
+
+然后编辑配置并启动：
+
+```powershell
+& "$HOME\qq-maid-bot\qbot.cmd" config path
+notepad "$HOME\qq-maid-bot\config\.env"
+& "$HOME\qq-maid-bot\qbot.cmd" start
+& "$HOME\qq-maid-bot\qbot.cmd" status
+```
+
+当前 Windows Release 仅提供 x86_64 版本。更完整的安装与排障说明见 Wiki [安装手册](https://github.com/kuliantnt/qq-maid-bot/wiki/安装手册)；手动下载 Release、开机启动和更新细节也可对照 [runtime 运行文档](./runtime/README.md#release-包)。
+
+### Docker Compose
+
+第一次用 Docker 部署？直接打开 **[Docker 部署 · 人话版](./docs/deployment/docker-simple.md)**，跟着步骤走，大部分配置都可以在网页里完成。
+
+服务器部署推荐使用 GHCR 镜像与 Docker Compose。运行镜像不包含 Rust 或 Node.js，默认不映射管理端口，并以非 root 用户运行。首次启动、持久化目录、按 digest 升级回滚、多实例和测试环境自动部署见 [Docker 与 Compose 部署](./docs/deployment/docker.md)；配置迁移、备份恢复与 schema 回滚边界见 [配置迁移、备份恢复与安全升级](./docs/deployment/migration-backup.md)。
+
+普通用户也可以直接从 Docker Hub 拉取最新正式镜像：
+
+```bash
+docker pull kuliantnt/qq-maid-bot:latest
+```
+
+### 从源码运行
+
+需要已安装 Rust 工具链：
+
+```bash
+git clone https://github.com/kuliantnt/qq-maid-bot.git
+cd qq-maid-bot
+cp runtime/config/.env.example runtime/config/.env
+vim runtime/config/.env
+make local
+runtime/botctl.sh status
+```
+
+开发调试、Windows 源码构建和测试命令见 Wiki [开发维护文档](https://github.com/kuliantnt/qq-maid-bot/wiki/开发维护文档) 或仓库 [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)。
+
+## 26.x 版本线更新
+
+当前稳定版本为 `v0.26.0`。需要查看本版本线的详细变更和配置迁移提示时，再展开下面的更新记录：
+
+<details>
+<summary>展开查看 26.x / 25.x / 24.x 版本更新</summary>
+
+- **Web Console React 改版**（v0.26.0，PR #703）：全部管理页面与首次认证流程迁移到 React 19 + Vite；配置中心恢复供应商连接、模型发现与覆盖、Agent 策略、主题和背景编辑。Todo、Memory、知识库等仍调用原有受保护 API，敏感值只显示配置状态，保存继续使用 revision 冲突保护。现有 `/console/` 地址、管理员会话、同源与 CSRF 边界不变；无需 SQLite migration、必填环境变量或配置迁移。升级后请刷新控制台并重新登录，再核对供应商连接和模型路线。
+
+- **摘要权限隔离与视觉候选原图保留**（v0.25.3，PR #705）：新旧会话摘要统一作为非指令历史数据读取，独立系统规则限制其权限；普通聊天、流式和 Tool Loop 仅对非视觉候选副本降级图片，后续视觉候选仍可收到原图。候选顺序和错误 fallback 条件不变，无需清库、SQLite migration 或配置迁移。
+- **工具成功后不再追加错误回执**（v0.25.2，PR #701）：列车 / 联网搜索等只读工具成功后再出现退化缺参调用时，服务端调用轨迹把冗余续调关联到已有成功结果，回复只保留真实成功事实，参数错误不再追加在正确结果之后；原始失败仍回填模型用于补全参数。同请求只读缓存命中的紧凑回执不再被 Train 误判为解析失败，新目标、新日期、新选项、批量调用、写操作和超时仍是独立失败。脱敏诊断新增 `agent_tool_attempts`（只含轮次与结果下标）。本版本无 SQLite migration、配置迁移或必填环境变量。
+
+- **基础先攻、暗骰与当前玩家提醒**（v0.25.1，PR #698/#699）：新增 `/ri` 先攻录入和 `/init` 查看、推进、清空、维护，支持固定值、D20 修正、指定骰式、优势／劣势和批量录入；`/rh` 暗骰在私聊直接返回，OneBot 群聊经 Notification Outbox 私发，QQ 官方群缺少可信 C2C 目标时明确拒绝。`/init` 子命令和 `/ri18`、`/ri+5`、`/ri优势+4` 等 SealDice 风格紧凑写法可用，推进到使用默认名称录入的玩家时按平台发送结构化 Mention。先攻表为进程内临时状态，重启清空，无 SQLite migration、配置迁移或必填环境变量。
+
+- **供应商与模型管理闭环（首个 25.x 版本）**（v0.25.0，PR #691/#692/#694/#696）：
+  - **统一供应商管理**：Web Console 供应商页新增“＋ 新建供应商”弹窗，支持 OpenCode 三预设以及 OpenAI、DeepSeek、BigModel、Gemini 等受信模板，也支持自定义 Connection 的新建、编辑、启停与删除；自定义连接使用服务端生成的独立 Credential Slot，Secret 走认证加密存储与双 revision 校验，不做品牌专用的前端 CRUD。
+  - **连接诊断**：对内置供应商可一键发起最小真实连接诊断，复用 LLM 载荷并限制超时、响应大小、并发与重定向，返回分阶段状态、耗时、HTTP 状态与脱敏分类，不返回上游正文。
+  - **Effective Model Catalog**：`qq-maid-llm` 内嵌 Models.dev 规范化快照（MIT License，可完全离线启动），合并公式为 `base_catalog + official_compatibility_patches + user_overrides`；支持 `config/models.json`（路径可用 `MODELS_CONFIG_FILE` 指定）本地追加、字段覆盖与 `enabled=false` 禁用，且禁止覆盖 Base URL、auth、Credential、Adapter、Route、工具权限等敏感字段。
+  - **模型发现与管理**：供应商卡片新增“管理模型”，读取连接自身 `/models` 并与 Catalog 合并补全 display name、上下文窗口、最大输出、模态、价格、能力及逐字段 provenance；来源区分 connection discovery / catalog / local override，支持搜索、筛选、分批展示，并通过受保护 metadata / override API（独立 opaque revision、原子替换、安全文件校验与脱敏审计）落盘，可把选中的 `provider:model-id` 直接追加进现有 Route。
+  - **DeepSeek Responses 接入**：新部署默认 DeepSeek 模型为 `deepseek-v4-flash`（走 Responses）；旧 `deepseek-chat` / `deepseek-reasoner` 精确匹配时继续走 Chat Completions，协议选择发生在请求前，不根据 HTTP 错误切换。`provider_native` 搜索类型可通过 `deepseek:<model>` 使用原生 `web_search`；旧 Chat 模型在搜索前收到可操作的迁移提示而不是直接失败。同时修复 Responses 流式搜索收到 `response.completed` 后等待 HTTP EOF 导致的卡死问题。
+  - **Codex Radar 修复与并发优化**：适配新版 `/api/intelligence-efficiency-metrics` 效能接口，`/radar codex` 的模型 IQ 榜单重新显示 Astra；陈旧额度不再误报当前 5h 暂停状态；metrics 与 community ratings 改为并发请求，最坏等待从约 30 秒收敛到一个基础请求加一个可选请求的并行窗口。
+  - **升级提示**：无 SQLite migration、必填环境变量或运行时入口变化；`models.json` 为可选新文件，缺省时使用内嵌快照；停用或删除仍被 Route/搜索引用的连接会被服务端拒绝并列出引用位置，请先在 Web Console 中调整引用。
+
+- **微信服务号客服长文本与周易起卦别名**（v0.24.6，PR #690）：慢请求客服补发按 2048 个 UTF-8 字节安全分片并对同一收件人串行发送，避免长文本丢失或多轮回复交错；新增 `/起卦`、`/卜卦` 中文别名，带参数时不回显问题，只提示默念后重新起卦。
+- **周易起卦命令**（v0.24.5，PR #687）：发送 `/算卦` 或 `/iching` 使用固定六轮三钱法（`3d2+3`）在本地起卦，展示六爻、本卦、动爻、之卦和卦辞/译文/注释；不调用模型、不进入 pending 或 Tool Loop，结果作为当前会话回执保存，后续可用自然语言继续追问，带参数形式静默忽略。
+- **DND / CoC 骰子规则偏好与 fallback 修复**（v0.24.4，PR #686）：`.set dnd` / `.set coc` 按 conversation 保存默认骰式，分别使用 D20 / D100 和对应的判定方向；AI DM 超时、Provider 错误或非法结构化输出时，fallback 文案从实际 `RollResult` 派生，CoC 不再显示矛盾的 D20，显式骰式仍保持“指定骰子表达式投掷”。
+- **AI DM D20 判定与简单骰子表达式**（v0.24.2，PR #679）：`/roll d100`、`/roll 2d6` 等 `dM` / `NdM` 表达式由 Core 本地结算；`/roll <问题>` 由独立 AI DM 先制定并校验判定方案，再由 Core 使用 CSPRNG 掷骰和确定性模板结算。AI DM 看不到骰值，Provider 异常、超时或非法输出会明确降级为普通本地 D20。
+- **通用骰子表达式与 SealDice 兼容**（v0.24.3，PR #683）：支持修正、多段骰子、重复投掷、取骰、优势/劣势、奖励/惩罚骰，以及 `/r`、`/rd`、`/rap`、`/rab`、`/r2d6`、`.r2d6` 等常见写法。`/r` / `/rd` 尾随文本只作为本地原因；只有 `/roll <骰式> <问题>` 进入 Entertainment DM。完整示例与限制见 [骰子使用教程](./docs/guides/dice.md)。
+- **默认 D20 娱乐命令**（v0.24.1，PR #676）：私聊或群聊发送 `/roll` 即可由程序本地掷出 1–20；不调用模型、不创建 session，也不消费 pending 状态。
+- **Memory 管理与 Agent 回执收口**（v0.24.0）：部署管理员可在 Web Console 中分页筛选、创建、编辑、归档和恢复 Memory，高影响操作使用 opaque reference、版本校验与二次确认；自然语言 Agent 统一可信工具结果与最终正文，未完成工具轮次不再伪装成功，并新增不进入模型链路的 Codex Slash 彩蛋与完整中文星期展示。
+
+### 配置方式变化
+
+0.19 及之前需要在 `config/.env` 中手写凭证和开关；0.20 起推荐新部署走 `/console/` 引导，Docker / Release / 源码共用同一配置中心与运维 CLI，旧 `.env` 部署继续可用。
+
+完整变更与升级说明见 [CHANGELOG.md](./CHANGELOG.md)。
+
+</details>
+
+## 能做什么
+
+- **聊天与上下文**：管理多轮会话，理解图片，并结合引用消息继续追问；共享群聊历史会区分发言成员，降低昵称、偏好和身份信息串线风险；可用 `/set 昵称` 或 `/nn` 管理当前会话展示名。
+- **Todo 与提醒**：新增、修改、完成、恢复和删除待办，支持单次提醒、重复提醒和每日摘要；列表可按今天 / 明天 / 本周 / 逾期 / 关键词组合筛选。群主或管理员可用 `/todo group` 管理本群未完成 Todo。
+- **查询与订阅**：查询天气、火车时刻和网页信息，支持多对象对比式联网搜索；订阅 RSS/Atom 并主动推送更新。
+- **记忆与知识库**：个人记忆、群内个人画像和群公共记忆分域管理，并按场景与可见性召回。用户明确要求“记住”时可直接保存；可选的确定性整理（`MEMORY_CONSOLIDATION_ENABLED`）与 Session Dream（`MEMORY_DREAM_ENABLED`）分开开关。Dream 只从会话消息提取安全长期事实，写入个人记忆或当前成员群画像，不覆盖已确认记忆；本地 Markdown 可自动索引并按需检索。
+- **受控工具与运维命令**：模型只能调用服务端注册并按场景放行的工具；管理员可通过默认关闭的 `/ops` 白名单命令触发固定程序，结果以真实执行或持久化结果为准。
+- **多模型路由**：支持 OpenAI、Gemini、MiMo、DeepSeek 和 OpenAI-compatible Provider，并可按候选链自动降级。DeepSeek 新部署默认使用 V4 Flash Responses，旧 Chat 配置保留兼容路径，详见 [协议选择规则](qq-maid-llm/README.md#deepseek-responses-使用边界)。
+
+## 平台支持
+
+| 平台 | 状态 | 当前能力 |
+| --- | --- | --- |
+| QQ 官方机器人 | 主要入口 | C2C、群聊、图片理解、引用上下文、流式回复和主动推送 |
+| OneBot 11 | 可选 | 单账号反向 WebSocket，支持私聊、群聊、图片理解、文件摘要和纯文本主动推送 |
+| 微信服务号 | 可选 | 明文/AES 文本回调、同步回复和按 UTF-8 字节安全分片的慢请求客服补发 |
+
+OneBot 11 当前主要面向 NapCat，详细限制与接入步骤见 Wiki [用 NapCat 接入小女仆](https://github.com/kuliantnt/qq-maid-bot/wiki/Napcat接入)（仓库技术版：[OneBot 11 接入文档](./docs/development/onebot11-napcat.md)）。微信服务号默认关闭，配置方式见 [runtime 运行文档](./runtime/README.md#微信服务号文本回调配置)。
+
+## 配置方式
+
+v0.20.x 起推荐新部署通过 `/console/` 网页完成配置，也可在安装时选择关闭 Web，仅用 `qbot config` 与文件配置。启用控制台时，启动后浏览器打开 `http://127.0.0.1:8787/console/`，从启动日志中找到 `bootstrap.token` 建立首位管理员，按向导分步保存。旧 `.env` 部署可继续使用，也可先 `qq-maid-bot config migrate` dry-run 再显式导入。
+
+配置分为多层：
+
+| 文件 | 用途 |
+| --- | --- |
+| `runtime/config/.env` | 入口凭证、Provider API Key、私有 Base URL、数据库和日志路径等部署配置 |
+| `runtime/config/runtime.toml` | WebUI 与人工编辑共享的程序受管普通运行配置；不存在时首次启动安全创建空配置 |
+| `runtime/config/agent.example.toml` | Release 中用于参考、开发和升级迁移的 Agent 策略示例；活动配置为本地 `config/agent.toml` |
+| `runtime/config/ops.toml` | 可选的 `/ops` 管理员、允许群、固定程序及独立 Codex 长任务策略；默认不存在且全部关闭 |
+| `runtime/config/secrets/master.key` | SQLite 敏感密文的独立主密钥；必须持久化、严格限权并单独备份 |
+| `runtime/config/secrets/bootstrap.token` | 首位部署管理员初始化用短时单次令牌；Unix 创建为 `0600`，Windows 依赖安装目录 ACL 且当前未主动收紧（见 [#522](https://github.com/kuliantnt/qq-maid-bot/issues/522)）；不提交；读取该文件完成初始化 |
+
+完整环境变量以 [`.env.example`](./runtime/config/.env.example) 为准，配置中心优先级与安全边界见 [配置中心清单](./docs/development/config-center.md)。首次启动从二进制内嵌的同版默认模板生成未跟踪的 `config/agent.toml`；Release 中的 [`agent.example.toml`](./runtime/config/agent.example.toml) 仅用于参考、开发和升级迁移，修改该外部示例不会改变首次生成内容。`/ops` 配置从 [`ops.example.toml`](./runtime/config/ops.example.toml) 复制为未跟踪的 `ops.toml` 后填写，具体步骤见 Wiki [用 `/ops` 在 QQ 里做运维](https://github.com/kuliantnt/qq-maid-bot/wiki/ops运维命令) 与 [用 `/ops codex` 跑长任务](https://github.com/kuliantnt/qq-maid-bot/wiki/ops-codex)。调整模型、工具、场景策略或白名单运维命令时，不需要修改业务代码。
+
+聊天命令默认使用 `/` 前缀；可在 Web 控制台“命令设置”中通过下拉框改为 `#` 或 `*`，也可设置 `runtime.toml` 的 `command.prefix` / 环境变量 `CHAT_COMMAND_PREFIX`。前缀必须是一个可见非空白字符，修改后重启生效；自定义后旧 `/` 不再触发普通命令。默认前缀下 `/` 与 `.` 都是命令前缀，例如 `/help` 与 `.help`、`/nn` 与 `.nn` 会进入同一条 Core 命令通道；点号只在消息开头生效，具体命令和参数由 Core 统一判断。配置其他前缀时不额外放开点号。
+
+未配置 Provider 或平台入口的新实例会以 `setup_required` 启动。访问默认同源 `/console/`，读取服务器本地 `config/secrets/bootstrap.token` 建立首位部署管理员后，可分步保存 Provider、QQ/OneBot/微信入口、主要功能开关、模型路线和 Tool Calling；普通值与人工编辑共享受管 TOML，secret 不回传原文。约 22 字符的短时单次 Bootstrap token 在新生成时同时写入权限受限文件，并通过一次 `info` 启动日志事件输出；状态查询、有效 token 复用和后续重启不会重复输出，成功使用后文件立即删除。忘记密码时可在登录页生成同路径的一次性重置 token，完成重置后旧管理员会话全部失效。完成配置后按当前部署方式重启，完整预检通过才进入机器人正常运行态。
+
+生产反向代理必须保留原始 `Host`、协议（`X-Forwarded-Proto`）并设置 `WEB_CONSOLE_TRUSTED_PROXY_IPS` 为代理实际连接 IP；应用不会直接信任客户端伪造的转发头。HTTPS 生产请显式设置 `WEB_CONSOLE_SECURE_COOKIES=true`，控制台会使用 `Secure`、`HttpOnly`、`SameSite=Strict` 和 `__Host-` Cookie；本机 HTTP 开发保持默认关闭。
+
+配置文件、SQLite、日志、私有 Prompt 和知识资料都可能包含敏感信息，不要提交到公开仓库。
+
+## 使用示例
+
+```text
+你：明天下午三点提醒我检查服务器日志
+机器人：已新增待办：检查服务器日志
+        提醒：明天 15:00
+
+你：查看今天待办
+机器人：📅 今天待办 · 共 2 项
+        1. 检查服务器日志
+        2. 更新周报
+
+你：完成第一条
+机器人：已完成待办：检查服务器日志
+
+你：（发送一张报错截图）这是什么问题
+机器人：这张图里的主要错误是……
+
+你：/rss add https://example.com/feed.xml Rust News
+机器人：已添加订阅：Rust News
+
+你：/roll
+机器人：🎲 掷出了 17 / 20
+
+你：/roll 2d6
+机器人：🎲 2d6：4 + 5 = 9
+
+你：/r 1d20+3
+机器人：🎲 1d20+3：14 + 3 = 17
+
+你：/r 2d20 说服守卫
+机器人：🎲 “说服守卫” 2d20：14 + 18 = 32
+
+你：/roll 2d20 我能否说服守卫
+机器人：🎲 命运检定
+难度：容易（DC 16）
+投掷：2d20：14 + 18 = 32
+
+管理员：/ops status
+机器人：运维任务 status 已受理，完成后会通知你。
+
+管理员：/ops codex 检查当前项目为什么构建失败，并修复相关问题
+机器人：Codex 任务已受理
+        任务 ID：ops-a82f31
+        取消：/ops cancel ops-a82f31
+
+你：/memory 我习惯使用 Asia/Shanghai 时区
+机器人：🧠 已记住
+        范围：个人记忆
+        内容：你习惯使用 Asia/Shanghai 时区
+```
+
+<p align="center">
+  <a href="docs/img/readme-chat-demo.png">
+    <img src="docs/img/readme-chat-demo.png" alt="QQ 聊天效果" width="42%" />
+  </a>
+  <a href="docs/img/readme-health-demo.png">
+    <img src="docs/img/readme-health-demo.png" alt="botctl 终端效果" width="42%" />
+  </a>
+</p>
+
+## 架构概览
+
+```mermaid
+flowchart LR
+    platform["QQ / OneBot / 微信"] --> gateway["Gateway<br/>接入与收发"]
+    gateway --> core["Core<br/>会话与业务编排"]
+    core --> llm["LLM<br/>模型路由与 Tool Loop"]
+    core --> tools["Tools<br/>Todo / RSS / 查询 / 记忆"]
+    core --> db[(SQLite)]
+    tools --> db
+    core --> gateway
+```
+
+根目录 Cargo Workspace 统一管理四个 crate：
+
+| 目录 | 职责 |
+| --- | --- |
+| `qq-maid-gateway-rs/` | 平台接入、事件转换、过滤去重和消息发送 |
+| `qq-maid-core/` | `CoreService`、会话、记忆、Todo、RSS、知识库和业务 Tool |
+| `qq-maid-llm/` | 模型协议、Provider 路由、fallback、SSE 和 Tool Loop |
+| `qq-maid-common/` | 身份、消息结构、时间、Markdown 和脱敏等共享基础能力 |
+
+依赖方向保持为 `gateway -> core -> llm -> common`。更详细的模块边界、项目结构和开发约定见 [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)。
+
+同一个架构，换个说法：
+
+```text
+用户说话 → 女仆长接单 → 各部门互相甩锅 → 工具拿真实结果说话 → SQLite 留档 → 大模型继续背锅
+```
+
+## 安全边界
+
+- 只有注册到 Tool Registry 并被当前场景放行的工具可以调用；群聊默认不进入 Tool Loop。
+- Todo 高风险操作和记忆清空、群画像停用等破坏性操作需要二次确认；明确的新增记忆请求校验通过后直接写入。
+- 个人记忆、群内个人画像和群公共记忆分别校验 actor、scope、可见性与管理员权限；共享群聊历史使用脱敏成员引用区分发言人。
+- 工具执行、Todo 写入和记忆保存都以真实结果为准，模型文案不能代替执行结果。
+- `/ops` 默认关闭，只执行配置中的固定程序与参数规则，不走 Shell，不让模型随意拼命令；私聊需管理员白名单，群聊还需允许群且角色为群主 / 管理员。
+- 日志与诊断默认脱敏，不应输出凭证、完整平台 ID 或聊天正文；私聊 `/ping` 只在当前用户自己查看时展示稳定 `user_id`，便于填写 `/ops` 白名单。
+- 部署管理控制台使用服务端管理员 Session、同源校验和 CSRF 保护，仍只应部署在本机或受控内网，不应将 8787 端口直接暴露到公网。
+
+## 常见问题
+
+| 现象 | 优先检查 |
+| --- | --- |
+| 启动后立即退出 | 查看日志，确认入口配置完整且 Provider API Key 有效 |
+| QQ 收不到消息 | 确认 QQ 开放平台事件权限和 Gateway WebSocket 连接状态 |
+| 群聊不回复 | 默认 `mention` 模式只响应 @ 或对机器人消息的回复 |
+| 模型调用失败 | 检查 API Key、`OPENAI_BASE_URLS` 和模型前缀；兼容网关可能需要 `OPENAI_API_MODE=chat_only` |
+| `/ops` 不生效 | 确认存在 `config/ops.toml`、`enabled = true`，以及管理员 / 允许群 / 命令白名单；见 Wiki [用 `/ops` 在 QQ 里做运维](https://github.com/kuliantnt/qq-maid-bot/wiki/ops运维命令) |
+| 升级后无法启动 | 对比新版 `config/.env.example` 是否新增或调整配置项；若仍使用旧 `OPENAI_BASE_URL`，请迁移到 `OPENAI_BASE_URLS` |
+
+使用 `qbot health` 检查服务状态。网络和上游问题可运行发布包中的 `diagnose-network.sh`；完整排障方式见 [runtime 运行文档](./runtime/README.md#控制脚本和诊断)。
+
+## 文档导航
+
+使用、安装和配置优先看 [项目 Wiki](https://github.com/kuliantnt/qq-maid-bot/wiki)。仓库内的开发、部署、设计与历史文档已统一收口到 [docs 文档导航](./docs/README.md)。
+
+| 文档 | 适合什么时候看 |
+| --- | --- |
+| [项目 Wiki](https://github.com/kuliantnt/qq-maid-bot/wiki) | 使用说明、安装手册、NapCat、天气、`/ops`、Codex 等场景化教程 |
+| Wiki [使用说明](https://github.com/kuliantnt/qq-maid-bot/wiki/使用说明) | 第一次和机器人说话、能力边界和新用户自测 |
+| [骰子使用教程](./docs/guides/dice.md) | 骰式、重复投掷、取骰、SealDice 写法与 Entertainment DM |
+| Wiki [安装手册](https://github.com/kuliantnt/qq-maid-bot/wiki/安装手册) | Linux / Windows 一键安装、配置、升级和排障 |
+| Wiki [用 NapCat 接入小女仆](https://github.com/kuliantnt/qq-maid-bot/wiki/Napcat接入) | 用 OneBot 11 / NapCat 接 QQ |
+| Wiki [用 `/ops` 在 QQ 里做运维](https://github.com/kuliantnt/qq-maid-bot/wiki/ops运维命令) | 配置管理员、固定程序、botmon 和异步回执 |
+| Wiki [用 `/ops codex` 跑长任务](https://github.com/kuliantnt/qq-maid-bot/wiki/ops-codex) | 配置 Codex、NVM 环境和专项排障 |
+| Wiki [插件开发](https://github.com/kuliantnt/qq-maid-bot/wiki/插件开发) | 自己写一个 Tool / 插件 |
+| [docs 文档导航](./docs/README.md) | 仓库内开发、部署、设计、调研和任务归档的完整索引 |
+| [runtime/README.md](./runtime/README.md) | 运行目录、环境变量、控制脚本和诊断细节 |
+| [Docker 部署 · 人话版](./docs/deployment/docker-simple.md) | 5 分钟跑起来，大白话步骤，大部分配置在网页完成 |
+| [Docker 与 Compose 部署](./docs/deployment/docker.md) | GHCR、容器首次启动、持久化、多实例、测试部署和回滚 |
+| [配置迁移、备份恢复与安全升级](./docs/deployment/migration-backup.md) | CLI 预检、旧配置 dry-run、SQLite 一致性备份、恢复和 schema 回滚边界 |
+| [控制台用户数据 API](./docs/development/console-user-data-api.md) | 独立前端使用的用户偏好与通用文件接口契约 |
+| [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) | 开发环境、架构边界、常用命令和检查要求 |
+| [Gateway README](./qq-maid-gateway-rs/README.md) | 平台事件和消息发送实现 |
+| [Core README](./qq-maid-core/README.md) | 会话、命令和业务编排实现 |
+| [LLM README](./qq-maid-llm/README.md) | Provider、路由、SSE 和 Tool Loop 实现 |
+| [Web Console README](./web-console/README.md) | 构建并增量维护用于替代旧前端的管理控制台 |
+
+## 参与项目
+
+项目主要面向个人部署和开发者使用，仍在持续演进。提交 Issue 或 PR 前请阅读 [CONTRIBUTING.md](./CONTRIBUTING.md)，并避免附带 API Key、平台凭证、真实用户数据、聊天记录或私有知识资料。
+
+- [GitHub Issues](https://github.com/kuliantnt/qq-maid-bot/issues)
+- [版本变更](./CHANGELOG.md)
+- [贡献者与鸣谢](./CONTRIBUTING.md#鸣谢)
+
+## 今天女仆会不会罢工
+
+- [x] 能聊天、能看图片
+- [x] 能记 Todo、能设提醒
+- [x] 能看天气、查火车
+- [x] 能读 RSS、主动推送
+- [x] 能查知识库、能联网搜索
+- [x] 能自动切换模型、自动降级
+- [x] 有 Provider 无关的统一 Agent Loop
+- [x] 有受控长期记忆、明确新增直写和破坏性操作确认
+- [x] 可选 Session Dream 与确定性记忆整理
+- [x] 能在引用上一条消息或图片时保留上下文
+- [x] 有管理员白名单 `/ops` 运维入口
+- [ ] 接入更多可验证的业务 Tool
+- [ ] 把 Todo、RSS 与后续能力打磨成完整通知平台
+- [ ] 真正理解人类
+- [ ] 阻止作者继续重构
+
+## 赞助小店
+
+项目接受小额赞助或相关服务合作。具体介绍和链接后续补齐。
+
+| 名称 | 说明 |
+| --- | --- |
+| <a href="https://codexauv.com/register?aff=UNKHTN42CDRT"><img src="docs/img/AUV_LOGO.png" alt="CodexAuv" width="200" /></a> | [CodexAuv](https://codexauv.com/register?aff=UNKHTN42CDRT) 提供面向开发者和企业团队的 AI 模型聚合与机器人托管服务 |
+
+## 你可能不需要它，如果：
+
+- 你只想要一个十行 Python 自动回复脚本
+- 你不想维护数据库
+- 你认为几万行 Rust 不算轻量
+- 你希望模型可以不经确认直接操作宿主机
+- 你不会在凌晨三点突然重构整个 LLM 层
+
+## License
+
+本项目基于 [MIT License](./LICENSE) 开源。
+
+## 社区
+
+有问题、建议，或想一起折腾？欢迎来 **[雪主任的工坊](https://qm.qq.com/q/sXg1SaKJXi)** 社区交流反馈。
+
+
+<!--
+你居然看到了这里。
+
+运行：
+qq-maid-bot --summon-maid
+-->

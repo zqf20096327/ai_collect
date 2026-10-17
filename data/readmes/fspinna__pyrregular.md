@@ -1,0 +1,214 @@
+![Pyrregular: irregular time series datasets and benchmarks](https://github.com/fspinna/pyrregular/blob/main/assets/images/logo_01.png?raw=true)
+
+# Pyrregular: Irregular Time Series Datasets and Benchmarks
+
+**Published at ICLR 2026** · benchmark of 34 datasets and 12 classifiers · `pip install pyrregular`
+
+Pyrregular is a Python framework for irregular time series: irregularly sampled
+data with uneven sampling, missing observations, signals recorded at different
+times, and variable-length sequences. It provides:
+
+- **datasets**: the 34 naturally irregular datasets of the ICLR 2026 benchmark,
+  and more added over time, in one standardized format, downloaded on demand
+  with `load_dataset` (`list_datasets()` shows them all);
+- **a representation that keeps the irregularity**: a sparse xarray format, with
+  conversions to dense arrays for sktime, aeon, tslearn and PyPOTS;
+- **models and benchmarks**: ready-to-use classification and regression pipelines,
+  including the 12 classifiers evaluated in the paper.
+
+*Irregular time series made easy.*
+
+|               | **[📖 Documentation](https://fspinna.github.io/pyrregular/)** · **[⚙️ Tutorials](https://github.com/fspinna/pyrregular/blob/main/docs/notebooks)**                                                                                                                                                                                               |
+|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **CI/CD**     | [![build](https://github.com/fspinna/pyrregular/actions/workflows/build.yml/badge.svg)](https://github.com/fspinna/pyrregular/actions/workflows/build.yml) [![docs](https://github.com/fspinna/pyrregular/actions/workflows/sphinx.yml/badge.svg)](https://github.com/fspinna/pyrregular/actions/workflows/sphinx.yml) [![pypi publish](https://github.com/fspinna/pyrregular/actions/workflows/python-publish.yml/badge.svg)](https://github.com/fspinna/pyrregular/actions/workflows/python-publish.yml) [![models](https://github.com/fspinna/pyrregular/actions/workflows/models.yml/badge.svg)](https://github.com/fspinna/pyrregular/actions/workflows/models.yml) 
+| **Code**      | [![PyPI version](https://img.shields.io/pypi/v/pyrregular.svg)](https://pypi.org/project/pyrregular/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyrregular) [![!black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)                                                   |
+| **Community** | [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/fspinna/pyrregular/issues)                                                                                                                                                                                   |
+| **Paper**     | [![ICLR 2026](https://img.shields.io/badge/ICLR-2026-4b44ce.svg)](https://openreview.net/forum?id=qetBM8nLkf) [![arXiv](https://img.shields.io/badge/arXiv-2505.06047-b31b1b.svg)](https://arxiv.org/pdf/2505.06047)                                                                                                                                                                                                              |
+
+# Installation
+
+You can install via pip with:
+
+```bash
+pip install pyrregular
+```
+
+For the third-party models, install all of them:
+
+```bash
+pip install "pyrregular[models]"
+```
+
+or only the family you need: `borf`, `sktime`, `tslearn`, `pypots`, `jax`
+(e.g. `pip install "pyrregular[sktime]"`). The extra for each pipeline is listed in the table below.
+
+
+# Quick Guide
+## List datasets
+If you want to see all the datasets available, you can use the `list_datasets` function:
+
+```python
+from pyrregular import list_datasets
+
+df = list_datasets()
+```
+
+
+## Load a dataset
+To load a dataset, you can use the `load_dataset` function. For example, to load the "Garment" dataset, you can do:
+
+```python
+from pyrregular import load_dataset
+
+df = load_dataset("Garment.h5")
+```
+
+The dataset is saved in the default os cache directory, which can be found with:
+
+```python
+import pooch
+
+print(pooch.os_cache("pyrregular"))
+```
+
+The repository is hosted at: https://huggingface.co/datasets/splandi/pyrregular/
+
+The datasets are versioned: each pyrregular release downloads a fixed version of the files,
+tagged on Hugging Face (currently [`data-v1`](https://huggingface.co/datasets/splandi/pyrregular/tree/data-v1)).
+To use the data of an older release, install that release (e.g. `pip install "pyrregular==0.3.1"`).
+
+## Downstream tasks
+### Classification
+To use the dataset for classification, you can just "densify" it:
+
+```python
+from pyrregular import load_dataset
+
+df = load_dataset("Garment.h5")
+X, _ = df.irr.to_dense()
+y, split = df.irr.get_task_target_and_split()
+
+X_train, X_test = X[split != "test"], X[split == "test"]
+y_train, y_test = y[split != "test"], y[split == "test"]
+
+# We have ready-to-go models from various libraries:
+from pyrregular.models.rocket import rocket_pipeline
+
+model = rocket_pipeline
+model.fit(X_train, y_train)
+model.score(X_test, y_test)
+```
+
+There are several pipelines available in `pyrregular.models`:
+
+| 💾 **Library** | 📖 Source                                                | 🔗 **Pipeline** | ℹ️ **Type**                                                   | 📦 **Extra** |
+|----------------|----------------------------------------------------------|-----------------|---------------------------------------------------------------|--------------|
+| `fast-borf`    | Spinnato et al. (2024)                                   | **borf**        | dictionary-based transform + **lgbm** classifier              | `borf`       |
+| `fast-borf`    | [Spinnato (2026)](https://arxiv.org/abs/2609.39268)      | **iborf**       | time-aware dictionary-based transform + **ridge** classifier  | `borf`       |
+| `sktime`       |                                                          | **rifc**        | interval-based transform + **lgbm** classifier                | `sktime`     |
+| `diffrax`      | Kidger et al. (2020)                                     | **ncde**        | neural controlled differential equations                      | `jax`        |
+| `pypots`       | Cao et al. (2018)                                        | **brits**       | bidirectional recurrent imputation network                    | `pypots`     |
+| `pypots`       | Che et al. (2018)                                        | **grud**        | gated recurrent unit with decay                               | `pypots`     |
+| `pypots`       | Zhang et al. (2021)                                      | **raindrop**    | graph neural network                                          | `pypots`     |
+| `pypots`       | Du et al. (2023)                                         | **saits**       | self-attention-based imputation transformer                   | `pypots`     |
+| `pypots`       | Wu et al. (2022)                                         | **timesnet**    | temporal 2d-variation transformer                             | `pypots`     |
+| `sktime`       | Ke et al. (2017)                                         | **lgbm**        | gradient boosted tree                                         | `sktime`     |
+| `sktime`       | Dempster et al. (2021)                                   | **rocket**      | kernel-based transform + **lgbm** classifier                  | `sktime`     |
+| `sktime`       | Bagheri et al. (2016)                                    | **svm**         | support vector machine with distance kernel                   | `sktime`     |
+| `tslearn`      | Sakoe & Chiba (1978)                                     | **knn**         | distance-based with dynamic time warping                      | `tslearn`    |
+
+**Notes**
+- `iborf` is in `pyrregular.models.borf` (`from pyrregular.models.borf import iborf_pipeline`) and uses the
+  timestamps: give it `X, _ = df.irr.to_dense(concatenate_time=True, normalize_time=True)`.
+- `raindrop` also needs `torch-scatter`, built for your torch/CUDA version
+  (see the [PyG install instructions](https://github.com/rusty1s/pytorch_scatter#installation)).
+- To reproduce the paper, `list_paper_models()` lists its 12 models and
+  `pyrregular.models.get_paper_model(name)` returns a fresh copy of each pipeline. The paper's BORF
+  is the aeon implementation (`pip install "pyrregular[aeon]"`).
+- These pipelines wrap fast-moving third-party libraries. They are tested weekly against the latest
+  versions, but an upstream release can break one between pyrregular releases; to reproduce the paper
+  results exactly, pin the library versions.
+
+### Regression
+Regression is still work in progress, but is available for some datasets:
+
+```python
+from pyrregular import load_dataset
+from sklearn.pipeline import make_pipeline
+from aeon.transformations.collection.dictionary_based import BORF
+from sklearn.linear_model import LassoCV
+
+df = load_dataset("Garment.h5")
+X, _ = df.irr.to_dense()
+y, split = df.irr.get_task_target_and_split("regression")
+
+X_train, X_test = X[split != "test"], X[split == "test"]
+y_train, y_test = y[split != "test"], y[split == "test"]
+
+borf_pipeline = make_pipeline(
+    BORF(),
+    LassoCV(),
+)
+model = borf_pipeline
+model.fit(X_train, y_train)
+model.score(X_test, y_test)
+```
+
+
+# Available Datasets
+
+| 📈 Dataset                                   | 📖 Source                                                             |
+|----------------------------------------------|---------------------------------------------------------------------|
+| Alembics Bowls Flasks                        | Spinnato & Landi, 2025                                              |
+| AllGestureWiimoteX                           | Guna et al., 2014                                                   |
+| AllGestureWiimoteY                           | Guna et al., 2014                                                   |
+| AllGestureWiimoteZ                           | Guna et al., 2014                                                   |
+| Animals                                      | Ferrero et al., 2018                                                |
+| AsphaltObstaclesCoordinates                  | Souza, 2018                                                         |
+| AsphaltPavementTypeCoordinates               | Souza, 2018                                                         |
+| AsphaltRegularityCoordinates                 | Souza, 2018                                                         |
+| CharacterTrajectories                        | Williams et al., 2006                                               |
+| DodgerLoopDay                                | Ihler et al., 2006                                                  |
+| DodgerLoopGame                               | Ihler et al., 2006                                                  |
+| DodgerLoopWeekend                            | Ihler et al., 2006                                                  |
+| Geolife                                      | Zheng et al., 2009; Zheng et al., 2008; Zheng et al., 2010          |
+| GestureMidAirD1                              | Caputo et al., 2018                                                 |
+| GestureMidAirD2                              | Caputo et al., 2018                                                 |
+| GestureMidAirD3                              | Caputo et al., 2018                                                 |
+| GesturePebbleZ1                              | Mezari & Maglogiannis, 2018                                         |
+| GesturePebbleZ2                              | Mezari & Maglogiannis, 2018                                         |
+| GPS Data of Seabirds                         | Browning et al., 2018                                               |
+| InsectWingbeat                               | Chen et al., 2014                                                   |
+| JapaneseVowels                               | Kudo et al., 1999                                                   |
+| Localization Data for Person Activity        | Vidulin et al., 2010                                                |
+| MelbournePedestrian                          | City of Melbourne, 2019                                             |
+| MIMIC-III Clinical Database (Demo)           | Johnson et al., 2016; Johnson et al., 2019; Goldberger et al., 2000 |
+| PAMAP2 Physical Activity Monitoring          | Reiss & Stricker, 2012                                              |
+| PhysioNet 2012                               | Silva et al., 2012                                                  |
+| PhysioNet 2019                               | Reyna et al., 2020                                                  |
+| PickupGestureWiimoteZ                        | Guna et al., 2014                                                   |
+| PLAID                                        | Gao et al., 2014                                                    |
+| Productivity Prediction of Garment Employees | Imran et al., 2021                                                  |
+| ShakeGestureWiimoteZ                         | Guna et al., 2014                                                   |
+| SpokenArabicDigits                           | Hammami & Bedda, 2010                                               |
+| Taxi                                         | Moreira-Matias et al., 2013                                         |
+| Vehicles                                     | Chorochronos Archive, 2019                                          |
+
+
+
+
+
+# Citation
+If you use this package in your research, please cite the following paper:
+
+```bibtex
+@inproceedings{
+    spinnato2026pyrregular,
+    title={{PYRREGULAR}: A Unified Framework for Irregular Time Series, with Classification Benchmarks},
+    author={Francesco Spinnato and Cristiano Landi},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026},
+    url={https://openreview.net/forum?id=qetBM8nLkf}
+}
+```
+

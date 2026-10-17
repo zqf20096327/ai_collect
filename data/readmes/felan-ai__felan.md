@@ -1,0 +1,273 @@
+<h1 align="center"><img src="docs/assets/felan-logo.svg" alt="" width="38" height="39" align="absbottom"> Felan Code</h1>
+
+<p align="center">
+  <strong>Get the job done. Waste less.</strong><br>
+  An open-source, model-portable coding agent built for cost-efficient,
+  verifiable software work.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@felan-ai/felan"><img src="https://img.shields.io/npm/v/@felan-ai/felan?style=flat&colorA=222222&colorB=CB3837" alt="npm version"></a>
+  <a href="https://github.com/felan-ai/felan/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/felan-ai/felan/ci.yml?branch=main&style=flat&label=CI&colorA=222222&colorB=3FB950" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/felan-ai/felan?style=flat&colorA=222222&colorB=58A6FF" alt="MIT license"></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-%3E%3D22.19-5FA04E?style=flat&colorA=222222" alt="Node.js 22.19 or newer"></a>
+  <a href="https://discord.gg/skNd4GSzZ"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat&logo=discord&logoColor=white&labelColor=222222" alt="Join Felan on Discord"></a>
+</p>
+
+Felan Code is built around one rule: an optimization only counts when the task still
+succeeds. It combines model routing, progressive context, compact tool output,
+explicit task state, and estimated API-equivalent savings for supported
+optimizations.
+
+**Correctness first. Efficiency by design.**
+
+> [!IMPORTANT]
+> The local agent runs with your user's filesystem and process permissions. It
+> is a host application, not a sandbox. Use an isolated host for untrusted
+> projects or commands.
+
+## 41.9% lower aggregate AI model cost in controlled benchmarks
+
+Across seven controlled, extension-specific comparisons, candidate
+configurations used `$13.1193` versus `$22.5774` for their baselines when
+summing median-reduced case costs—a **41.9% reduction**. Individual results
+ranged from 14.5% to 66.0%. Each extension was measured separately against its
+disabled baseline, not as one all-enabled configuration. Every candidate met
+its configured quality gate.
+
+| Extension | Quality vs baseline | Cost vs baseline | Secondary result |
+| --- | ---: | ---: | ---: |
+| [Subagents](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/subagents/results.html) | 100% | **23.7% lower** | — |
+| [MarkItDown](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/markitdown-cost/results.html) | 100% | **31.0% lower** | 13.8% fewer prompt tokens |
+| [Concise output](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/output-style-concise/results.html) | 100% | **14.5% lower** | 16.4% fewer output tokens |
+| [Prewalk](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/prewalk/results.html) | 100% | **66.0% lower** | — |
+| [RTK](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/rtk/results.html) | 83.3% | **26.6% lower** | 40.6% fewer prompt tokens |
+| [Codebase Memory](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/codebase-memory/results.html) | 100% | **27.8% lower** | 7.8% shorter agent-step duration |
+| [Session Compaction](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/benchmarks/session-compaction/results.html) | 100% | **45.2% lower** | 52.1% fewer prompt tokens |
+
+**[View the methodology, cases, and full benchmark results](https://felan-ai.github.io/felan/results/2026-09-felan-extensions/)**
+
+## Install and run
+
+Felan Code supports Node.js 22.19.0 or newer. Run the published package without a
+global installation:
+
+```sh
+npx @felan-ai/felan
+```
+
+Or install the `felan` command:
+
+```sh
+npm install --global @felan-ai/felan
+felan
+```
+
+Connect a provider inside the TUI with `/login`, then start working:
+
+```sh
+felan "inspect this project and explain how to run its tests"
+felan --continue
+felan savings
+felan --diagnostics
+felan update
+```
+
+Initial messages start the interactive TUI by default. Use `--mode text` for a
+one-shot final response or `--mode json` for Pi-compatible JSONL session events.
+Both modes support `--continue` and exact `--provider`, `--model`, and
+`--thinking` selection. A verified global npm installation also supports the finite
+`felan update` command. See [Getting started](docs/getting-started.md) for
+first-run setup and [Local CLI](docs/user-guide/local-cli.md) for all accepted
+commands, flags, and local state.
+
+## Efficient by design
+
+Felan Code treats correctness as the constraint and cost as the optimization target.
+Fewer tokens can support that goal, but they are not the outcome: a cheaper run
+that fails is not an efficiency win.
+
+| Boundary | What Felan Code does |
+| --- | --- |
+| **Model routing** | Prewalk can start a task with a stronger planner and continue the same conversation trajectory on a configured implementation model. |
+| **Context control** | Progressive nested instructions, scoped subagents, lazy MCP discovery, and bounded research keep context focused on the current work. |
+| **Tool output** | RTK-backed command rewriting and post-tool compaction reduce noisy model input while preserving failures, complete JSON, and recoverable output. |
+| **Explicit state** | Dependency-aware tasks, structured questions, retained subagent records, and local project memory keep decisions and progress inspectable. |
+| **Measurement** | `/savings`, `felan savings`, and the Powerline footer report estimated API-equivalent cost avoided by supported optimizations. |
+
+Felan Code is developed against **cost per verified task**, not token count alone.
+The extension evaluations in [`evals/`](evals/README.md) hold the task,
+starting repository, verifier, timeout, and environment equivalent when
+comparing configurations. Correctness is primary; cost, token usage, and
+latency are supporting measurements. Read
+[Efficient execution and savings](docs/concepts/efficient-execution.md) for the
+measurement boundaries and claim limits.
+
+## Local agent, portable core
+
+`@felan-ai/felan` is the package for Felan Code, the account-free local terminal
+agent. The Felan cloud
+platform at [felan.ai](https://felan.ai) and
+[app.felan.ai](https://app.felan.ai) composes the same portable core and
+extensions as a managed host. Each host owns the boundaries that cannot be
+portable:
+
+| Felan Code | Felan cloud platform |
+| --- | --- |
+| Runs on your machine from `@felan-ai/felan` | Runs as managed background agents |
+| Uses provider-owned local credentials; no Felan account required | Adds tenant/team workflows, integrations, visibility, and guardrails |
+| Stores sessions and project memory under the local agent directory | Provides host-managed storage, credentials, and integrations |
+| Applies a fixed source-controlled built-in and resource policy | Chooses the managed host's policy and integrations |
+
+Read [Architecture](docs/concepts/architecture.md) for the ownership boundary
+and [Local memory architecture](docs/concepts/local-memory.md) for the local
+versus host-managed memory lifecycle.
+
+## Built for software work
+
+| Workflow | What Felan Code adds |
+| --- | --- |
+| **Delegate and inspect** | Tracked asynchronous subagents with bounded nesting, live transcripts, steering, continuation, cancellation, and completion notices. |
+| **Plan and hand off** | A shared task graph with prerequisites, ownership, acceptance criteria, ready/blocked views, verified results, and same-session Prewalk model routing. |
+| **Ask instead of guessing** | Searchable one-question and one-to-four-question wizards with multi-select, freeform answers, comments, and timeout handling. |
+| **Load context where it applies** | Cwd instructions plus progressive nested `AGENTS.md`/`CLAUDE.md` discovery and explicit Agent Skills. |
+| **Remember locally** | An account-free, project-scoped Markdown wiki with bounded evidence ingestion, validation, citations, and retryable host-owned publication. |
+| **Retrieve web evidence** | Provider-backed URL discovery, bounded matching text/PDF passages, and explicit SSRF-untrusted remote content boundaries. |
+| **Connect external tools carefully** | A lazy OAuth-only remote MCP gateway, explicit credential ownership, and bounded untrusted remote results. |
+| **Use the right model tools** | Shared `read`/`bash` tools with background processes, GPT-specific `apply_patch`, and RTK-backed command/output optimization. |
+| **Inspect efficiency** | Session, project, and retained local estimates through `/savings`, `felan savings`, and the default Powerline footer. |
+| **Keep the TUI readable** | Grouped tool activity, full-call inspection, agent/task/process overlays, and an ANSI-aware Powerline footer. |
+
+The [extension catalog](docs/reference/extension-catalog.md) maps each workflow
+to its package, host boundary, commands, and runtime conditions.
+
+## Explicit host boundaries
+
+Felan Code keeps the local host narrow in some places on purpose:
+
+- only source-controlled built-in extensions, explicitly requested local Pi
+  extension paths, and optional standard Pi extension directories are loaded in
+  the interactive TUI;
+- ambient Pi packages, prompts, themes, project settings, and package resources
+  are filtered;
+- model credentials and MCP OAuth tokens belong to the local host;
+- web, document, browser, MCP, memory, and model-facing remote content are
+  bounded and treated as untrusted; and
+- missing binary dependencies degrade safely and require explicit interactive
+  installation or disablement.
+
+Use repeatable `--extension`/`-e` flags to load local Pi extension files or
+directories for the interactive TUI, or set `piExtensions.user` /
+`piExtensions.project` in `$FELAN_AGENT_DIR/settings.json` to opt in to
+`~/.pi/agent/extensions` and trusted `<cwd>/.pi/extensions`. These extensions
+execute with the current user's permissions. Felan does not install
+network/package sources and does not pass them to headless, ACP, or subagent
+sessions. Project directories require a Felan folder-trust prompt stored in
+`$FELAN_AGENT_DIR/trust.json`.
+
+These controls do not sandbox ordinary shell or filesystem operations. Read the
+[runtime and security guide](docs/concepts/runtime-and-security.md) before
+using Felan Code with sensitive repositories.
+
+## Architecture
+
+<!-- Standalone source: docs/diagrams/felan-runtime-architecture.html -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/felan-runtime-architecture-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/diagrams/felan-runtime-architecture-light.svg">
+  <img alt="Felan runtime architecture: Felan Code and the Felan cloud platform compose portable extensions over Agent Core and pinned Pi packages." src="docs/diagrams/felan-runtime-architecture-light.svg">
+</picture>
+
+**Felan wraps [Pi](https://github.com/earendil-works/pi); it does not fork Pi.**
+Pinned Pi packages provide the model, session, extension, and TUI primitives;
+Felan owns the host contracts, feature behavior, policy, storage, and
+presentation around them.
+
+Behavior stays in its owning layer: `apps/tui` owns local policy, storage, and
+presentation; `ext-*` packages own portable feature behavior; and Agent Core
+owns adapter-neutral runtime contracts and base composition.
+
+## Documentation
+
+The [documentation hub](docs/README.md) routes readers by audience:
+
+- [Getting started](docs/getting-started.md)
+- [Local CLI](docs/user-guide/local-cli.md)
+- [Configuration](docs/user-guide/configuration.md)
+- [Commands and shortcuts](docs/user-guide/commands-and-shortcuts.md)
+- [Agents, tasks, and Prewalk](docs/user-guide/agents-tasks-and-prewalk.md)
+- [Context and memory](docs/user-guide/context-and-memory.md)
+- [Web, MCP, browser, and documents](docs/user-guide/web-mcp-and-browser.md)
+- [Efficient execution and savings](docs/concepts/efficient-execution.md)
+- [Architecture](docs/concepts/architecture.md)
+- [Runtime and security](docs/concepts/runtime-and-security.md)
+- [Comparisons with Codex, OpenCode, Claude Code, Pi, and Oh My Pi](docs/comparisons/README.md)
+- [Contributing](CONTRIBUTING.md)
+- [Release process](docs/maintainers/releasing.md)
+
+## Repository map
+
+| Package | Purpose | Documentation |
+| --- | --- | --- |
+| [`@felan-ai/felan`](apps/tui/README.md) | Felan Code and the `felan` binary | [Local CLI](docs/user-guide/local-cli.md) |
+| [`@felan-ai/agent-core`](packages/agent-core/README.md) | Portable runtime contracts, prompt, tools, model tiers, and Pi composition | [Architecture](docs/concepts/architecture.md) |
+| [`@felan-ai/ext-subagents`](packages/ext-subagents/README.md) | Tracked asynchronous subagent protocol | [Agents and tasks](docs/user-guide/agents-tasks-and-prewalk.md) |
+| [`@felan-ai/ext-tasks`](packages/ext-tasks/README.md) | Dependency-aware root-session task graph | [Agents and tasks](docs/user-guide/agents-tasks-and-prewalk.md) |
+| [`@felan-ai/ext-prewalk`](packages/ext-prewalk/README.md) | Same-session planner-to-implementation handoff | [Agents and tasks](docs/user-guide/agents-tasks-and-prewalk.md) |
+| [`@felan-ai/ext-ask-user`](packages/ext-ask-user/README.md) | Structured one-to-four-question input | [Commands](docs/user-guide/commands-and-shortcuts.md) |
+| [`@felan-ai/ext-context`](packages/ext-context/README.md) | Progressive nested project context | [Context and memory](docs/user-guide/context-and-memory.md) |
+| [`@felan-ai/ext-context-view`](packages/ext-context-view/README.md) | Estimated context-window usage inspector | [Context and memory](docs/user-guide/context-and-memory.md) |
+| [`@felan-ai/ext-insights`](packages/ext-insights/README.md) | Local session analytics reports | [Commands](docs/user-guide/commands-and-shortcuts.md) |
+| [`@felan-ai/ext-prompt-history`](packages/ext-prompt-history/README.md) | TUI prompt-history picker | [Commands](docs/user-guide/commands-and-shortcuts.md) |
+| [`@felan-ai/ext-memory`](packages/ext-memory/README.md) | Portable local-first memory contracts | [Memory architecture](docs/concepts/local-memory.md) |
+| [`@felan-ai/ext-output-style`](packages/ext-output-style/README.md) | Validated concise, explanatory, and custom response instructions | [Configuration](docs/user-guide/configuration.md#output-style) |
+| [`@felan-ai/ext-web-access`](packages/ext-web-access/README.md) | Bounded web discovery and matching text/PDF passages | [Web access](docs/user-guide/web-mcp-and-browser.md) |
+| [`@felan-ai/ext-mcp`](packages/ext-mcp/README.md) | Portable OAuth-only remote MCP gateway | [MCP](docs/user-guide/web-mcp-and-browser.md) |
+| [`@felan-ai/ext-felan-api`](packages/ext-felan-api/README.md) | Single authenticated Felan API gateway | [Configuration](docs/user-guide/configuration.md#felan-api) |
+| [`@felan-ai/ext-browser`](packages/ext-browser/README.md) | Reviewed `agent-browser` CLI integration | [Browser](docs/user-guide/web-mcp-and-browser.md) |
+| [`@felan-ai/ext-markitdown`](packages/ext-markitdown/README.md) | Bounded office-document conversion | [Documents](docs/user-guide/web-mcp-and-browser.md) |
+| [`@felan-ai/ext-background-bash`](packages/ext-background-bash/README.md) | Background processes, PTY input, and logs | [Commands](docs/user-guide/commands-and-shortcuts.md) |
+| [`@felan-ai/ext-codex`](packages/ext-codex/README.md) | GPT-specific structured tools and request controls | [Configuration](docs/user-guide/configuration.md) |
+| [`@felan-ai/ext-rtk-optimizer`](packages/ext-rtk-optimizer/README.md) | RTK command rewriting and output compaction | [Runtime dependencies](docs/reference/runtime-dependencies.md) |
+| [`@felan-ai/ext-codebase-memory`](packages/ext-codebase-memory/README.md) | Structural code search, symbol reads, and bounded grep augmentation | [Runtime dependencies](docs/reference/runtime-dependencies.md) |
+| [`@felan-ai/ext-powerline`](packages/ext-powerline/README.md) | ANSI-aware local TUI footer | [Local CLI](docs/user-guide/local-cli.md) |
+| [`@felan-ai/ext-session-title`](packages/ext-session-title/README.md) | Automatic first-prompt session names | [Local CLI](docs/user-guide/local-cli.md) |
+| [`@felan-ai/ext-session-compaction`](packages/ext-session-compaction/README.md) | Bounded verified session compaction and active-lineage recall | [Context and memory](docs/user-guide/context-and-memory.md) |
+
+## Develop from source
+
+Repository development and CI use Node.js 22.20.0 and pnpm 9.15.5:
+
+```sh
+git clone https://github.com/felan-ai/felan.git
+cd felan
+corepack enable
+pnpm install --frozen-lockfile
+pnpm build
+node apps/tui/dist/cli.js
+```
+
+Run the complete build, type-check, test, license, packaging, and packed
+installation suite with:
+
+```sh
+pnpm verify
+```
+
+To review the Felan Code Pi themes in a browser, run `pnpm theme:preview` and open
+`http://127.0.0.1:4173`. Use `pnpm theme:preview:check` for a no-write
+validation or `pnpm theme:preview:build` to generate the ignored local artifact
+at `.artifacts/theme-preview/index.html`. The preview is a visual review aid;
+the Pi TUI remains the runtime source of truth.
+
+See [Contributing](CONTRIBUTING.md) and the
+[maintainer architecture map](docs/maintainers/architecture-map.md) before
+changing a shared runtime or public package.
+
+## Community and license
+
+[Join the Felan Discord community](https://discord.gg/skNd4GSzZ) to connect with
+users and contributors.
+
+Felan is licensed under the [MIT License](LICENSE). See [NOTICE](NOTICE) for
+third-party attribution and immutable upstream review details.

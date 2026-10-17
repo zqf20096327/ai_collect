@@ -1,0 +1,761 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme/wordmark-dark.svg">
+    <img src="assets/brand/contextbridge-wordmark.svg" width="240" alt="ContextBridge">
+  </picture>
+</p>
+
+<h1 align="center">Your AI resources. One connected pool.</h1>
+
+<p align="center">Own the compute. Route the work.<br>Connect local models, private machines and model APIs without replacing them.</p>
+
+<p align="center">
+  <a href="https://github.com/IamAngusU/ContextBridge/releases/latest"><img src="docs/assets/readme/badge-release.svg" height="38" alt="Download the latest release"></a>
+  <a href="LICENSING.md"><img src="docs/assets/readme/badge-core.svg" height="38" alt="Core: AGPL-3.0-only"></a>
+  <a href="docs/compatibility.md"><img src="docs/assets/readme/badge-interfaces.svg" height="38" alt="Defined integration surfaces: Apache-2.0"></a>
+  <a href="docs/operations.md"><img src="docs/assets/readme/badge-platforms.svg" height="38" alt="Windows, Linux and macOS"></a>
+  <a href="https://github.com/angusu-de/ContextBridge/actions/workflows/ci.yml"><img src="https://raw.githubusercontent.com/angusu-de/ContextBridge/ci-proof/proof/public-proof.svg?proof-layout=v2" height="42" alt="Live public CI mirror proof"></a>
+</p>
+<p align="center"><sub>Public CI mirror: <a href="https://github.com/angusu-de/ContextBridge">separate GitHub account</a>, same maintainer · live status uses the ContextBridge badge-system design · reproducibility proof, not a third-party audit.</sub></p>
+
+<p align="center"><a href="#get-running">Install</a> · <a href="#connect-your-devices">Connect devices</a> · <a href="#just-prompt-the-pool">Prompt the pool</a> · <a href="#send-work-from-your-app">Send a job</a> · <a href="#measured-overhead">Benchmarks</a> · <a href="#uninstall">Uninstall</a> · <a href="docs/README.md">Docs</a></p>
+
+ContextBridge turns the AI resources you already have into one controlled pool.
+
+Once a machine, runtime or model API joins the pool, it stops being another one-off integration. Your apps can send work to CB and either let it choose a compatible resource or tell it exactly what may be used.
+
+At the simple end, you just prompt the pool. At the other end, you can constrain providers, models, worker groups, hardware requirements, egress, cost and other execution details.
+
+```text
+website / app / CLI / MCP
+          |
+          |  "do this"
+          v
+    ContextBridge
+          |
+          +-- gaming PC
+          +-- old workstation
+          +-- laptop
+          +-- VPS
+          +-- Ollama
+          +-- llama.cpp
+          +-- model API
+          +-- adapter
+```
+
+**No, this is not an Ollama wrapper with a WebSocket attached.**
+
+Ollama is one possible resource. So is llama.cpp. So is an OpenAI-compatible model API. Machines are resources too. If a useful new runtime, router or API appears tomorrow, CB should not need to replace it. Ideally, it becomes another capability in the pool.
+
+The relay authenticates and queues jobs, applies configured policy, filters incompatible workers and ranks the remaining resources using current capacity and capability evidence. It records what actually handled the work. Workers connect outbound, so the machines doing the work do not need public inbound ports.
+
+## Built for messy real-world networks
+
+CB is developed against a deliberately messy setup, not a clean two-node demo that has never seen a router reboot.
+
+My development pool has included a gaming PC, three older workstations, a TERRA mini PC, a Samsung laptop, Kali and Ubuntu systems, multiple Linux VPSes, local model runtimes and remote model APIs.
+
+Several ordinary shared-hosting sites, with no GPU and no useful local AI compute of their own, already submit work into the same pool over HTTPS.
+
+I test the annoying parts too: Wi-Fi disappearing at the router instead of a polite process shutdown, real connection loss and reconnects, partial and complete outages, malformed provider responses and mixed CB versions during development.
+
+The point is not to pretend distributed systems never fail. It is to know **where** they failed and avoid making things worse by guessing. An uncertain post-dispatch state is not silently replayed just because retrying would look prettier in a demo.
+
+| Your setup | What CB adds |
+| --- | --- |
+| Website on shared hosting, model on your PC | The site submits a job over HTTPS; the worker connects outbound and does the work elsewhere. |
+| A random collection of PCs, servers and laptops | They become one capability-aware pool instead of separate integrations. |
+| Local models plus remote model APIs | Both can sit behind the same job boundary. |
+| Multiple apps sharing the same resources | Each app gets its own scoped producer credential instead of a shared admin secret. |
+| You just want something done | Send the task and let CB choose a compatible resource. |
+| You care exactly where and how it runs | Add provider, model, group, hardware, egress, cost and other supported requirements. |
+
+Connect **Ollama**, managed **llama.cpp**, **OpenAI-compatible model APIs** and optional external adapters. Get durable jobs, routing explanations, schedules, deterministic pipelines, bounded multi-step planning, MCP, configurable cost and egress boundaries, optional E2EE and free [conformance checks](docs/compatibility.md).
+
+No ContextBridge cloud account is required for self-hosting.
+
+### Control model at a glance
+
+| Question | Current answer |
+| --- | --- |
+| Does CB require a user profile? | No. Local-only use and self-hosted pools work without a CB account or human login. |
+| What are named `cluster` accounts? | Local selectors for a relay URL, producer credential and optional customer-held pool authority. They prevent accidental credential mixing; they are not username/password identities or a sandbox between people sharing one OS login. |
+| Does Core authenticate people with passwords or passkeys? | No. Core authenticates services, producers, workers, observers and administrators with scoped credentials and cryptographic worker/pool identity. A UI may use a passkey for its own human session and keep CB credentials in its backend; Core does not currently act as an identity provider. |
+| Can one node be restricted? | Yes. Worker groups/tags, allowed tasks, providers, models, concurrency and hardware/capability evidence are hard placement inputs. Producer credentials independently limit tenants, providers, priority, queue/rate use, egress, E2EE and scheduled-action authority. |
+| Can a node stop taking new work temporarily? | Yes: `contextbridge cluster node drain NODE_ID`; `resume` reopens admission. Running work is not silently killed. |
+| Can a device stay connected without contributing compute? | Yes. Configure it as `client`/`sender`; it can submit authorized work without worker heartbeats or assignments. |
+| Are ports random? | Stable loopback defaults are `32145` (local service), `32150` (relay) and `32151` (opt-in LAN TLS listener). `cluster configure --listen auto` selects a free relay port at configuration time. CB does not silently move an established endpoint later; a conflict fails visibly so clients are not redirected to an unexpected service. |
+| Does CB steal window focus? | Ordinary services and workers do not open a browser. `dashboard` is an explicit UI command and supports `--no-open`; managed Windows restarts use a hidden process. |
+| Is MCP tied to OpenAI? | No. The stdio MCP server is client-neutral. Its five bounded tools expose status, contract validation, durable submission, result retrieval and local arithmetic/random integers; submitted jobs may target any route the credential and pool policy permit. |
+
+See [customer-controlled pools](docs/customer-controlled-pools.md),
+[pool placement](docs/pools-and-placement.md), [operations](docs/operations.md),
+[security](docs/security.md) and [application integrations](docs/integrations.md)
+for the exact trust and API boundaries.
+
+## Get running
+
+Install ContextBridge first, then choose what this device should do. A relay or
+sender needs no GPU, local model, or Ollama installation.
+
+### Windows PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/IamAngusU/ContextBridge/main/install.ps1 | iex
+```
+
+### Linux / macOS
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/IamAngusU/ContextBridge/main/install.sh | sh
+```
+
+The installer starts with four plain-language outcomes:
+
+```text
+Create a new pool      coordinate other devices
+Join an existing pool  contribute this device's resources
+Use an existing pool   send work only
+Use only this device   keep execution local
+```
+
+Choose **Use ContextBridge only on this device** for the shortest single-PC
+path. Choose **Create a new pool** when this machine should coordinate other
+devices; CB then asks separately whether it should also run work. Execution
+resources such as Ollama or managed llama.cpp are requested only for devices
+that will actually execute jobs. You can change participation later; joining a
+different pool needs approval. Changing the pool coordinator is not an ordinary
+role change.
+
+For **Join an existing pool**, choose either a trusted LAN join bundle for a
+private LAN/VLAN/VPN path or the pool owner's HTTPS relay URL. A join bundle
+pins the exact relay identity; CB never treats discovery or a private IP as
+trust.
+
+The installer downloads the latest release, verifies its published checksum,
+and creates a private configuration.
+
+> [!NOTE]
+> This README tracks current `main`, while the install commands above deliberately download the latest published release. Until the next release catches up, newer main-only commands such as `cluster estimate`, `cluster lan relocate`, and `pair --interactive` require a build from current source. Release/onboarding parity is tracked in #36.
+> Instructions frozen with the currently published binary remain available in
+> the [v0.8.0 README](https://github.com/IamAngusU/ContextBridge/blob/v0.8.0/README.md)
+> and inside every release archive. CI executes the published binary against
+> the curated onboarding contract, so a newer release cannot silently leave
+> this warning or the main-only labels stale.
+
+To run the first real model request, have Ollama running with at least one
+installed text-generation model, or select the managed-runtime path during
+installation. Open a **new terminal**. If the installer did not start the
+service, run `contextbridge run` and leave that terminal open. In another
+terminal:
+
+```sh
+contextbridge doctor
+contextbridge cluster chat --provider ollama --model auto --artifacts off --prompt "Reply exactly with CB-OK"
+```
+
+For ordinary human use, the shorter command resolves unambiguous arithmetic and
+random-integer requests with real local tools. Other requests take their provider
+and model from the configured `default` route and let the pool place the work:
+
+```powershell
+cb do "What is 10 times 3?"
+cb do "Was macht 10 mal 3 / 30?"
+cb do "Gib mir eine Zufallszahl zwischen 1 und 1000"
+```
+
+The second calculation returns `1`, using bounded exact arithmetic, not a model
+guess. Tool results explicitly say **local · no model or pool job**. `--tools off`
+disables this shortcut; `/tools auto|off` changes an interactive session. An
+explicit provider/model/profile/group/reasoning selection disables automatic
+local tools unless `--tools auto` is also supplied. Attachments, required artifacts,
+fresh adapter sessions and E2EE remain on their requested execution path. Compound
+or unsupported requests are not extracted into partial calculations; this is not
+yet a general autonomous tool-selection loop. MCP clients can explicitly use the
+same bounded resolver through `contextbridge.local_tool` with a `prompt` string.
+
+Run `cb do` without a prompt for an interactive session. `cluster chat` remains
+the explicit surface for provider, model, profile, artifact, E2EE, and budget
+overrides; `do` accepts those same flags when they are needed. Put flags before
+a trailing prompt, for example `cb do --e2ee "Explain this locally"`, or use
+`--prompt` to make a mixed invocation unambiguous.
+
+Your local relay queues the request, your worker runs a compatible installed model, and the answer returns to the terminal. `auto` selects an available compatible model, not a promised quality tier.
+
+Already have a model from Hugging Face? Compatible GGUF models can be declared,
+downloaded at an immutable revision with LFS SHA-256 verification, and run via
+managed llama.cpp. Other model formats need a runtime that can execute them,
+then join through Ollama, an OpenAI-compatible endpoint, or an adapter. CB never
+treats a discovered file as executable proof. See [Models and runtimes](docs/models.md).
+
+Commands use the installer-created configuration automatically. For a custom installation, append `--config /path/to/config.yml`. Read [install.ps1](install.ps1) / [install.sh](install.sh) before executing them, or use the [release archives](https://github.com/IamAngusU/ContextBridge/releases/latest).
+
+To change what an installed device does without memorizing role flags, run
+`contextbridge guide` in a real terminal. It asks for the intended outcome, derives
+safe existing/default values, requests only unresolved connection data, shows a
+redacted provenance summary, and saves nothing until you confirm. Scripts, CI,
+MCP and redirected input never prompt; use deterministic `cluster configure`
+flags there. See [Guided CLI setup](docs/guided-setup.md).
+
+If you cloned the repository or used GitHub's **Code -> Download ZIP**, run the
+checked-out installer directly:
+
+```powershell
+# Windows, from the extracted repository directory
+.\install.ps1
+```
+
+```sh
+# Linux/macOS, from the extracted repository directory
+sh ./install.sh
+```
+
+Those scripts still install the latest checksummed release binary; a source
+ZIP is not itself a platform binary and is not an offline installer. For an
+offline/manual installation, download the matching platform archive and
+`SHA256SUMS` from [Releases](https://github.com/IamAngusU/ContextBridge/releases/latest).
+
+### Connect an app without reading YAML
+
+If an app accepts an OpenAI-compatible base URL, let CB generate a private,
+ready-to-load environment file:
+
+```sh
+contextbridge integrate openai --write-env .contextbridge.env
+```
+
+Point the app at that file, or run `contextbridge integrate openai` to see the
+non-secret settings. Existing files are never overwritten and the token is
+hidden unless you explicitly request `--show-token`. For an MCP client:
+
+```sh
+contextbridge integrate mcp --json
+```
+
+Before opening the app, `contextbridge integrate openai --check` verifies the
+service, local credential and selected route without inference. Add `--live`
+only when you intentionally want one bounded real model request.
+
+Already use LiteLLM? Keep it. ContextBridge does not depend on it, but can
+generate a secret-free model entry plus a separate private environment file:
+
+```sh
+contextbridge integrate litellm --write-config ./litellm-contextbridge.yaml --write-env ./.contextbridge-litellm.env
+```
+
+This optional layering exposes CB as one LiteLLM model named `contextbridge`;
+direct CB clients continue to work unchanged. See the
+[LiteLLM example and authority boundaries](examples/litellm/README.md).
+
+Copy the emitted server entry into the client's MCP configuration. See
+[Application integrations](docs/integrations.md) for the native job API, PHP,
+shared hosting and security boundaries. A remote website uses its own scoped
+producer token; do not expose the local service token to browser JavaScript.
+Create that credential directly on the relay without printing its secret:
+
+```sh
+contextbridge integrate relay --subject my-server-app --max-jobs-per-hour 120 --max-queued-jobs 8 --max-priority 20 --write-env ./contextbridge-producer.env
+```
+
+The [minimal Python and Node.js examples](examples/server-app/README.md) use
+only their standard runtimes and demonstrate durable submit, bounded polling
+and terminal-result handling.
+
+For a custom dashboard, desktop client, website backend, or terminal UI,
+create a separate read-only observer credential and use the reusable
+dependency-free JavaScript client:
+
+```sh
+contextbridge integrate ui --subject my-dashboard --write-env ./contextbridge-ui.env
+node examples/server-app/javascript-observe.mjs
+```
+
+It exposes versioned pool, node, job, pipeline, timing, capability and event
+data without granting submit/cancel authority. Keep its token in the trusted
+backend or desktop secret store, never in a public browser bundle.
+
+> [!TIP]
+> Trying CB does not lock you in. `contextbridge uninstall --dry-run` previews removal without stopping or deleting anything. [Uninstall keeps your configuration and data by default.](#uninstall)
+
+## Connect your devices
+
+A **relay** coordinates the pool. A **worker** runs the job. An **application token** lets another client submit work. Workers connect outbound; they need no public inbound ports.
+
+<!-- release-compat: main-only: cluster estimate -->
+> [!NOTE]
+> **Current `main` only:** `cluster estimate` is not part of the currently
+> published v0.8.0 binary. Build current source to use it.
+
+Once a job is assigned, `contextbridge cluster estimate JOB_ID` can show a
+clearly labelled, non-authoritative p50–p90 range learned from this pool's own
+bounded successful history. It shows `unavailable` instead of inventing an ETA
+when comparable evidence is sparse, stale, disabled, or already exceeded.
+
+No VPS, public DNS or Internet connection is required for a pool that stays on
+one private LAN. Initialize a relay-owned TLS identity, transfer the public
+join bundle through a trusted local channel, and join the worker:
+
+```sh
+# relay machine
+contextbridge cluster lan init
+
+# worker machine
+contextbridge cluster lan join --bundle ./contextbridge-lan-join.json --name home-pc
+```
+
+The bundle pins the relay certificate; CB does not weaken the boundary to
+cleartext private-network HTTP. See [Secure offline LAN pools](docs/offline-lan.md)
+for approval, firewall, air-gap and WAN-loss behavior.
+
+<!-- release-compat: main-only: cluster lan relocate -->
+> [!NOTE]
+> **Current `main` only:** `cluster lan relocate` is not part of the currently
+> published v0.8.0 binary. The v0.8.0 LAN identity remains pinned, but this
+> convenience command requires a current-source build.
+
+If the relay later gets a new private IP or local DNS name,
+`contextbridge cluster lan relocate` creates a same-key relocation bundle;
+workers accept it only after the live new endpoint proves the identity they
+already pinned.
+
+<details>
+<summary><strong>Set up a relay, pair another machine and issue an app token</strong></summary>
+
+### 1. Choose the coordination host
+
+Install CB on your server. Replace `https://relay.example.net` below with your relay's real HTTPS address. Set up an HTTPS reverse proxy with WebSocket support to `127.0.0.1:32150`; the commands below do not create DNS, certificates or the proxy.
+
+Stop an existing managed instance before changing roles (`contextbridge stop`; use its service manager if applicable), then configure and start the relay:
+
+```sh
+contextbridge cluster configure --mode relay --listen 127.0.0.1:32150 --public-url https://relay.example.net
+contextbridge run
+```
+
+Keep the local service on loopback. Only expose the relay through HTTPS. A coordination-only host needs no model or GPU. [Deployment and operations](docs/operations.md).
+
+### 2. Join each compute device
+
+Install CB on the device with your models. If it is already running, stop it before changing roles. Then:
+
+```sh
+contextbridge cluster configure --mode worker --relay-url https://relay.example.net --name home-pc
+contextbridge pair
+```
+
+Pairing prints a code and waits. In a **second terminal on the relay host**, inspect pending requests and approve the matching code:
+
+<!-- release-compat: main-only: pair --interactive -->
+> [!NOTE]
+> **Current `main` only:** the published v0.8.0 `pair` command requires its
+> explicit flags; the guided `--interactive` form requires a current-source
+> build.
+
+If the device has not been fully configured yet, use
+`contextbridge pair --interactive`; it asks only for the unresolved safe
+values and shows a redacted confirmation before contacting the relay.
+
+```sh
+contextbridge cluster pairing
+contextbridge cluster pairing --approve PAIRING-CODE
+```
+
+Replace `PAIRING-CODE` with the code shown on that device. After approval, run `contextbridge run` on the worker. Its identity is saved locally; you do not copy the relay admin token to it. Repeat with a distinct name for each device.
+
+For a one-line Windows worker install, PowerShell must invoke the downloaded
+text as a script block so the options reach the installer (options appended to
+`iex` itself do not):
+
+```powershell
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/IamAngusU/ContextBridge/main/install.ps1'))) `
+  -Provider ollama `
+  -RelayUrl 'https://relay.example.net' `
+  -NodeName 'home-pc'
+```
+
+The supplied relay URL infers worker mode. `NodeName` is optional and defaults
+to the operating-system hostname. The equivalent unattended Linux/macOS
+installation is:
+
+```sh
+tmp="$(mktemp)"
+curl -fsSL https://raw.githubusercontent.com/IamAngusU/ContextBridge/main/install.sh -o "$tmp"
+CONTEXTBRIDGE_NONINTERACTIVE=1 \
+CONTEXTBRIDGE_PROVIDER=ollama \
+CONTEXTBRIDGE_RELAY_URL=https://relay.example.net \
+CONTEXTBRIDGE_WORKER_NAME=home-pc \
+sh "$tmp"
+rm -f "$tmp"
+```
+
+Both commands still stop at the short-lived pairing approval. Supplying a
+relay URL removes redundant setup questions; it does not bypass trust.
+
+On the relay host, check the pool and send a job:
+
+```sh
+contextbridge cluster status
+contextbridge cluster chat --provider ollama --model auto --artifacts off --prompt "Which tasks can you help with?"
+```
+
+### 3. Give an application its own token
+
+On the running relay host, using its private configuration:
+
+```sh
+contextbridge cluster token create --role producer --subject my-app --max-jobs-per-hour 120 --max-queued-jobs 8 --max-priority 20
+```
+
+This prints token JSON. Store it securely; **never give an application the relay admin token**. The optional limits are stored with the credential and enforced durably by the relay. `--max-priority 20` prevents that producer from promoting work above priority 20; explicit `0` allows normal and lower-priority work only, while omission preserves the historical ceiling of 100. `--providers ollama --egress local_only` can additionally prevent that credential from selecting a remote route. For a separate CLI client, save the returned JSON as a private **UTF-8** file named `producer-token.json` and transfer it through a secure channel. Do not commit it.
+
+An out-of-tree channel can receive narrowly scoped authority to preview,
+confirm, list and cancel future adapter actions without an admin token or a
+private timer. The opt-in policy binds a stable presence UID to one v2 profile
+and principal plus explicit action kinds and opaque destinations. See
+[scoped scheduled adapter actions](docs/scoped-scheduled-actions.md); ordinary
+producer tokens have no such authority.
+
+`tenant_id` is a caller-selected namespace and policy selector, not customer
+authentication. For a customer- or project-specific token, add
+`--allowed-tenants customer-42`; a single value is applied when omitted and a
+different value fails before policy selection. Multiple comma-separated
+values require the client to choose one exact allowed value. See
+[Producer identity and tenant labels](docs/tenancy.md).
+
+For an application that must never submit cleartext payloads, issue a separate
+credential with `--require-e2ee`. The relay then rejects cleartext admission
+with `privacy.e2ee_required`; a forgotten client flag cannot silently weaken
+that credential. This is payload confidentiality, not relay anonymity or a
+zero-knowledge claim. Use the credential only with clients that implement CB's
+one-time encrypted assignment flow.
+
+List credential metadata or revoke a known token ID without exposing secrets:
+
+```sh
+contextbridge cluster token list
+contextbridge cluster token revoke tok_0123456789abcdef0123456789abcdef
+```
+
+On that client, install CB in **client/sender** mode, then point it at the relay and load the credential:
+
+```sh
+contextbridge cluster configure --mode client --relay-url https://relay.example.net
+contextbridge cluster login --token-file ./producer-token.json
+contextbridge cluster chat --provider ollama --model auto --artifacts off --prompt "Reply exactly with POOL-OK"
+```
+
+The client submits work without joining as a worker. Login stores the token in its private config; remove the temporary token file when no longer needed. Use `--role observer` when issuing a read-only monitoring credential.
+
+Several people or projects can use separate named accounts on one client:
+
+```sh
+contextbridge cluster login --account alice --token-file ./alice-token.json --pool-authority-file ./alice-authority.json
+contextbridge cluster login --account bob --token-file ./bob-token.json --activate=false
+contextbridge cluster account list
+contextbridge cluster chat --account alice --provider ollama --prompt "Private pool turn"
+contextbridge cluster logout --account alice
+```
+
+`cluster account use NAME` changes the default; `--account` selects one account
+for a single chat, submission, or route preview. Distinct OS logins already get
+distinct default configuration directories and are required when local users
+must be unable to read one another's credentials. Named accounts inside one OS
+login prevent accidental pool/token mixing but are not a local-user sandbox.
+`cluster logout` removes only the selected local credential association. It
+does not revoke the relay credential or delete a customer authority file; use
+`cluster token revoke` separately when the credential itself must stop working.
+
+### 4. Change a device's role later
+
+Roles are reversible. Stop the managed process before changing the role so a
+previous worker cannot keep accepting assignments with an old in-memory
+configuration. To retain the CLI/API as a sender but stop contributing local
+execution capacity:
+
+```sh
+contextbridge stop
+contextbridge cluster configure --mode client --relay-url https://relay.example.net
+contextbridge run
+```
+
+`sender` is accepted as an alias for `client`. The saved worker identity stays
+on that device, but the restarted service does not send worker heartbeats or
+accept assignments. A sender also needs its own scoped producer credential as
+shown in step 3.
+
+To contribute the device again:
+
+```sh
+contextbridge stop
+contextbridge cluster configure --mode worker --relay-url https://relay.example.net --name home-pc
+contextbridge doctor
+contextbridge run
+```
+
+When the saved identity still belongs to that relay, no new pairing is needed.
+If `doctor` reports a missing or incompatible worker identity, run
+`contextbridge pair` and approve the new code on the relay. Switching to
+`local` disables the relay and worker services while keeping the local bridge
+available; revoke or remove a saved producer credential separately when the
+device must also lose permission to submit remote work.
+
+For your own app, use the producer token with the [native job API or PHP client](docs/integrations.md). The local OpenAI-compatible API uses the **local service token**, not the relay producer token. [Pool and placement details](docs/pools-and-placement.md).
+
+</details>
+
+## Just prompt the pool
+
+Once a client has a producer credential, you do not need to build a job file just to use the pool:
+
+```sh
+contextbridge cluster chat --provider ollama --model auto --artifacts off --prompt "Summarize this in three bullets: ..."
+```
+
+The answer comes back to the same terminal. For the shortest round-trip check:
+
+```console
+$ contextbridge cluster chat --provider ollama --model auto --artifacts off --prompt "Reply exactly with CB-OK"
+  → requested: ollama · model auto
+ai  › CB-OK
+  ↳ used: ollama · qwen2.5:latest
+  ✓ 1.8s · <worker-id>
+```
+
+The `ai ›` line is the model answer. ContextBridge then shows execution metadata so you can see what actually handled the job. The selected model, worker ID and timing depend on your pool.
+
+Prefer one live surface? Run `contextbridge console`. With a configured scoped
+producer credential, its bounded command row can `send TEXT`, list `jobs`, open
+an owned `job`/`result`, and request `cancel`; without that credential it stays
+read-only. It is never a host shell, never inherits relay-admin authority merely
+because it runs beside the relay, and piped input cannot turn it into a mutation
+surface. While you type, it shows the effective character and relay-payload
+limits, highlights incomplete/invalid values, and offers only compatible next
+flags and live provider/model choices. See
+[operations](docs/operations.md#observe-diagnose-and-stop).
+
+Attach one or several local images when the selected worker/model supports vision:
+
+```sh
+contextbridge cluster chat --provider ollama --model auto --attach-image ./photo.jpg --artifacts off --prompt "Describe what is visible. Do not guess unreadable text."
+```
+
+Repeat `--attach-image` up to 12 times for comparison or OCR batches. PNG,
+JPEG, WebP and GIF are accepted; all input images share an 8 MiB decoded
+budget. The job carries the exact count, aggregate bytes and media types as
+routing requirements. A worker whose verified model passport cannot satisfy a
+known hard limit is not eligible; an unknown limit is shown as unknown, never
+invented as zero.
+
+```sh
+contextbridge cluster chat --provider ollama --model auto --attach-image ./before.png --attach-image ./after.png --artifacts off --prompt "List only the visible differences."
+```
+
+You can also put hard requirements on the request. For example, if your relay policy classifies Ollama as local and your workers advertise a `private` group:
+
+```sh
+contextbridge cluster chat --provider ollama --group private --egress local_only --e2ee --artifacts off --prompt "Summarize this private note: ..."
+```
+
+`--group private` restricts placement to workers in that group. `--e2ee` encrypts prompt and result payloads between the producer and the reserved worker; the relay still sees coordination metadata. `--egress local_only` is an enforced boundary only when execution policy is enabled and the provider is correctly classified. Worker owners can separately restrict allowed tasks, providers, models, and concurrency. For supported remote providers, `--max-cost-usd` can request a hard cost ceiling; unverifiable pricing fails closed when that ceiling is required.
+
+Operators can make E2EE mandatory for one producer credential with
+`cluster token create --require-e2ee` or `integrate relay --require-e2ee`.
+See the exact [privacy boundary and visibility matrix](docs/privacy.md).
+
+<details>
+<summary><strong>What can I attach today?</strong></summary>
+
+| Input | Current native path |
+| --- | --- |
+| Text prompt | `cluster chat --prompt "..."` |
+| One or several images | Repeat `--attach-image FILE` up to 12 times for PNG/JPEG/WebP/GIF; max 8 MiB decoded in aggregate |
+| UTF-8 text file | Read the authorized file in your app and send its contents as `payload.text` |
+| PDF / DOCX / spreadsheet | Extract the text or selected pages first, or use a separate integration |
+| ZIP / arbitrary files | No generic native file-upload field today; CB does not unpack or execute a ZIP because its path was mentioned in a prompt |
+| Returned files | Capable adapters can return verified artifacts; up to 12 share the aggregate 12 MiB decoded budget |
+
+A path or URL inside prompt text does not give ContextBridge permission to read or fetch it. See the [pool input and control examples](examples/pool/README.md) for text/JSON jobs, application uploads, policy setup, and artifact handling.
+
+</details>
+
+## Send work from your app
+
+**Shared hosting works too:** your server-side PHP application posts a job to the relay and retrieves the result later. The [PHP client](examples/php/ContextBridgeClient.php) needs PHP 8.1+, cURL and outbound HTTPS, not a CB process, shell access or a GPU on the web host. The relay and workers run elsewhere.
+
+This is a real pool request. Save it as `job.json` ([example file](examples/pool/text-job.json)):
+
+```json
+{
+  "contract_version": "contextbridge.job.v1",
+  "source": "my-web-app",
+  "requirements": { "task": "generation", "provider": "ollama" },
+  "payload": {
+    "provider": "ollama",
+    "prompt": "Summarize the supplied text in two sentences.",
+    "text": "Delivery moved to Friday. Notify support.",
+    "output": { "mode": "text", "max_bytes": 4096 }
+  },
+  "max_attempts": 1
+}
+```
+
+From a configured CLI client, preview admission and then submit:
+
+```sh
+contextbridge cluster contract validate --file ./job.json --json
+contextbridge cluster submit --file ./job.json
+```
+
+### Get the answer back
+
+Application code does not parse terminal output. The durable flow is:
+
+```text
+submit -> job ID -> worker runs -> completed -> result.output.text
+```
+
+For a completed text job, the relevant part of the JSON result looks like this:
+
+```json
+{
+  "status": "completed",
+  "result": {
+    "output": {
+      "mode": "text",
+      "text": "Delivery moved to Friday. Notify support."
+    }
+  }
+}
+```
+
+So in any language that can send and read JSON, the answer is simply `result.output.text`. The native relay API accepts the job at `POST /v1/cluster/jobs?compact=1`; fetch it later with `GET /v1/cluster/jobs/JOB_ID?compact=1`.
+
+The included PHP client makes the same flow small. For a CLI script, worker, or other process where waiting is acceptable:
+
+```php
+<?php
+
+require __DIR__ . '/ContextBridgeClient.php';
+
+$relay = getenv('CONTEXTBRIDGE_RELAY_URL') ?: '';
+$token = getenv('CONTEXTBRIDGE_PRODUCER_TOKEN') ?: '';
+$client = new \ContextBridge\ContextBridgeClient($relay, $token);
+
+$request = json_decode(
+    file_get_contents(__DIR__ . '/job.json'),
+    true,
+    64,
+    JSON_THROW_ON_ERROR,
+);
+
+// Use one stable, persisted idempotency key for one logical operation.
+$accepted = $client->submit($request, 'order-123-summary');
+$job = $client->wait($accepted['id']);
+
+echo $job['result']['output']['text'] ?? '';
+```
+
+For a normal web request, do not keep PHP open waiting for the model. Persist the returned job ID, then read it in a later authenticated request or cron/worker:
+
+```php
+$accepted = $client->submit($request, $operationId);
+$jobId = $accepted['id']; // persist this
+
+// Later:
+$job = $client->job($jobId);
+if (($job['status'] ?? '') === 'completed') {
+    $answer = $job['result']['output']['text'] ?? null;
+}
+```
+
+Handle `failed` and `cancelled` separately. Text output can also report `truncated: true` when it reaches the requested byte limit. See the [complete PHP example](examples/pool/README.md#3-submit-from-php-shared-hosting) for production-oriented error handling, polling and idempotency.
+
+**Your job, your constraints:** choose a provider/model, worker group, JSON keys or output size. Egress and cost limits require enabled operator policy and supported enforcement; a prompt cannot grant extra permissions. Text files can supply text, one supported image can be attached, and capable adapters can return files. There is no generic `files[]` upload field.
+
+[PHP submission, polling, text/JSON examples and file boundaries](examples/pool/README.md) · [Operator and per-job controls](examples/pool/README.md#4-choose-what-a-job-may-use-and-return). The PHP example uses HTTPS, not E2EE; keep producer tokens server-side.
+
+## Measured overhead
+
+**Coordination, not inference.** Dated development measurements from **20, 27, and 28 September 2026**, with 128 samples after 8 warmups and one concurrent client:
+
+| Operation | Current Windows i9 p50 / p99 | Windows i7 laptop p50 / p99 | Linux VPS p50 / p99 |
+| --- | ---: | ---: | ---: |
+| Durable submit → read → cancel | 2.547 / 10.177 ms | 10.525 / 12.568 ms | 7.498 / 26.753 ms |
+| Small E2EE job + result | 0.128 / 0.244 ms | 0.125 / 0.188 ms | 0.207 / 0.277 ms |
+| Verify a 64 KiB artifact | 0.065 / 0.137 ms | 0.067 / 0.163 ms | 0.118 / 0.246 ms |
+
+Queue throughput: **389.6 ops/s** on the current Windows i9-12900K desktop snapshot, **94.9 ops/s** on the current Windows i7-1355U laptop, and **114.2 ops/s** on the shared two-vCPU Linux VPS. Sampled idle benchmark-process + relay RSS: **15.4 / 15.1 / 13.3 MiB**, respectively; the laptop value is the three-run median because its representative timing run had a disclosed working-set outlier. No models were running in these measurements.
+
+These are different machines and source/toolchain snapshots, not an OS or CPU comparison or an SLA. Model execution and cross-device network latency are excluded; workstation background load, laptop thermals, and shared-VPS noisy-neighbour contention were uncontrolled. The five current VPS runs ranged from 111.4 to 218.7 ops/s on the same binary, so shared-host variance is material. The prior 76.1 ops/s laptop snapshot, pre-fix 315.3 ops/s desktop snapshot, and faster 20 September i9 observation remain published as historical evidence rather than being overwritten. [Exact commits, methodology, raw reports, controlled A/B, p95, concurrency 1/4/16/64 and limits](docs/limits-and-performance.md). Reproduce on your hardware with `contextbridge benchmark --json`.
+
+## Command desk
+
+<p align="center">
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/assets/readme/command-desk-mobile.svg">
+    <img src="docs/assets/readme/command-desk.svg" width="800" alt="Command reference: dashboard, models, pool status, route preview, worker conformance, benchmarks and uninstall preview. Copyable commands below.">
+  </picture>
+</p>
+
+<details>
+<summary><strong>Copy commands and explore automation</strong></summary>
+
+```sh
+contextbridge dashboard
+contextbridge models
+contextbridge cluster status
+contextbridge cluster node drain NODE_ID
+contextbridge route explain --file ./job.json
+contextbridge cluster conformance worker --json
+contextbridge cluster conformance resilience --json
+contextbridge benchmark --json
+contextbridge uninstall --dry-run
+```
+
+For `route explain`, use a native cluster job such as [examples/cluster-job.json](examples/cluster-job.json). Pool commands require a configured, running relay and an authorized credential. Route previews and conformance checks do not send inference requests; uninstall dry-run does not stop or remove anything.
+
+<!-- release-compat: main-only: adapter conformance -->
+
+| Want to… | Command / guide |
+| --- | --- |
+| Connect an OpenAI-compatible app | `contextbridge integrate openai --write-env .contextbridge.env` · [Integrations](docs/integrations.md) |
+| Register an optional local adapter | `contextbridge adapter setup PROFILE ...` · [Out-of-tree adapters](docs/adapters.md) |
+| Test an out-of-tree adapter | `contextbridge adapter conformance --adapter PATH ...` · [Adapter Conformance v1](docs/adapters.md#free-adapter-conformance-v1) |
+| Add CB to an existing LiteLLM gateway | `contextbridge integrate litellm --write-config ./litellm-contextbridge.yaml --write-env ./.contextbridge-litellm.env` · [Example](examples/litellm/README.md) |
+| Submit durable jobs from n8n or another workflow engine | Keep the workflow external and use a stable operation ID · [Example](examples/external-workflow/README.md) |
+| Connect an MCP client | `contextbridge mcp serve` · [Integrations](docs/integrations.md) |
+| Build a custom dashboard or terminal UI | `contextbridge integrate ui --subject my-ui --write-env ./contextbridge-ui.env` · [Management API](docs/management-api.md) |
+| Inspect schedules | `contextbridge schedule list` · [Automation](docs/automation.md) |
+| Drain or resume a worker for maintenance | `contextbridge cluster node drain\|resume NODE_ID` · [Pools and placement](docs/pools-and-placement.md) |
+| Export or verify execution evidence | `contextbridge cluster receipt show JOB_ID` · [Execution receipts](docs/execution-receipts.md) |
+| Reproduce local durability invariants | `contextbridge cluster conformance resilience` · [Field validation](docs/field-validation.md) |
+| Plan bounded multi-step work | [Agents and approval boundaries](docs/bounded-agent.md) |
+| Check for an update without installing it | `contextbridge update check` |
+
+</details>
+
+## Uninstall
+
+**Preview first. Nothing is stopped or removed:**
+
+```sh
+contextbridge uninstall --dry-run
+```
+
+Then remove the installer-owned program and integrations, keeping configuration and managed data:
+
+```sh
+contextbridge uninstall
+```
+
+Acts on **this machine only**, not the whole pool. Active work blocks removal unless explicitly overridden. To deliberately remove locally managed data as well, review [the separate `--purge` option and preserved paths](docs/operations.md#remove-contextbridge-safely). No purge or force flag is needed for an ordinary uninstall.
+
+## Open by design. Precise about trust
+
+Self-hosting is fully functional. CB coordinates existing runtimes; it does not pool VRAM or split a model itself. Optional or credential-required E2EE protects job payloads, **not coordination metadata**. Configurable policies are not all enabled by default. Ambiguous execution is not silently retried.
+
+Releases include checksums, SBOMs and third-party notices; AGPL releases also publish corresponding source. Build records are explicitly unsigned. Free conformance is separate from the future **ContextBridge Verified** program. [Security](docs/security.md) · [Supply chain](docs/supply-chain.md) · [Verification](docs/verification.md).
+
+**License:** current core **AGPL-3.0-only**; explicitly listed schemas, examples and interface documents **Apache-2.0**; published **v0.6.0–v0.6.3 remain MIT**. [Exact boundaries](LICENSING.md) · [Project identity](TRADEMARKS.md).
+
+**Early-stage, pre-1.0 software.** Reviews, reproducible bug reports and integration feedback are welcome. External core-code PRs are paused pending the contributor agreement. [Contributing](CONTRIBUTING.md) · [Report a vulnerability privately](SECURITY.md) · [All documentation](docs/README.md).

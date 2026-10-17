@@ -1,0 +1,161 @@
+# [![bibr 🦫 — bibr chew paper.pdf | bibr.org](https://raw.githubusercontent.com/scienceverse/bibr/main/docs/assets/readme-banner.png)](https://bibr.org)
+
+<!-- badges: start -->
+[![PyPI version](https://img.shields.io/pypi/v/bibr.svg)](https://pypi.org/project/bibr/)
+[![Docs](https://img.shields.io/badge/docs-bibr.org-blue)](https://bibr.org)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+![Made in Europe](https://img.shields.io/badge/Made_in_Europe-003399?logo=european-union&logoColor=FFCC00)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![codecov](https://codecov.io/gh/scienceverse/bibr/graph/badge.svg?token=Mt0vQyE4qX)](https://codecov.io/gh/scienceverse/bibr)
+<!-- badges: end -->
+
+**bib**liography **r**odent 🦫 - a modern scientific extraction pipeline. Chews through papers, powered by open source and Metascience. Originally built for [Metacheck](https://github.com/scienceverse/metacheck) with accuracy as a priority.
+
+- Reads PDF, DOCX, JATS XML, HTML, and ePub.
+- Extracts metadata, references, full text, tables, figures, and equations into a
+  [versioned JSON format](https://bibr.org/reference/schema/), and writes whole corpora
+  as Parquet tables for pandas, polars, DuckDB, or R.
+- Exports reference lists as BibTeX, RIS, or CSL-JSON for Zotero and other reference managers.
+- Includes sentence and page references to help check extractions against the source.
+- Works through the CLI, Python, an HTTP API, a web demo, or MCP.
+- Lets you choose local or cloud models, limit page ranges, and skip extraction stages.
+
+> **Alpha:** Expect bugs and uneven extraction quality. Current evaluation is strongest
+> for English-language social science papers. See [where bibr is strong and where it isn't](https://bibr.org/limitations/).
+
+## Get started
+
+To try bibr on one paper without installing anything, upload it at
+[try.bibr.org](https://try.bibr.org).
+
+Requires Python 3.11–3.14 and the
+[system prerequisites](https://bibr.org/getting-started/install/#system-prerequisites).
+Install from PyPI in a project managed by [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv init --python 3.12 paper-extraction
+cd paper-extraction
+uv add bibr
+uv run bibr setup
+uv run bibr chew paper.pdf -o result.json   # any PDF you copied into the folder
+```
+
+In an existing Python environment, you can also install with
+`python -m pip install bibr` and run `bibr setup` / `bibr chew` directly.
+
+The setup wizard detects your hardware, configures OCR and the LLM, and offers to
+install any additional dependencies. Core installs run bibr's trained models through
+ONNX Runtime; PyTorch, the demo, MCP, and hardware-specific serving runtimes are
+[optional extras](https://bibr.org/getting-started/install/#extras). The first run may
+download models and runtimes. See the [tester guide](https://bibr.org/tester-guide/)
+for platform-specific instructions and the
+[source installation guide](https://bibr.org/getting-started/install/#installing-from-source-contributors)
+for development setup.
+
+## Usage
+
+### Command line
+
+```bash
+uv run bibr chew papers/ -o results/   # Process a directory
+uv run bibr batch papers/ --out corpus/  # Resumable corpus run, plus Parquet tables
+uv run bibr tables results/ --out tables/  # JSON exports → one Parquet file per table
+uv run bibr references results/ -o refs.bib  # Reference lists → BibTeX (.ris, CSL-JSON .json)
+uv run bibr chew paper.pdf --dry-run   # Preview the processing plan
+uv add 'bibr[demo]'                    # Add the optional web demo
+uv run bibr demo                       # Open it locally
+```
+
+References are parsed locally by default. Use `--refs llm` to parse them with the
+LLM, or `--refs off` to skip them. More options: [CLI reference](https://bibr.org/reference/cli/).
+
+`bibr setup` picks a local model when your hardware can run one. Otherwise it offers
+Claude Haiku 5.5, which receives the page images and extracted text and needs an Anthropic
+API key. Without a `.env` from `bibr setup` (in the current folder or `~/.bibr/`), metadata
+extraction uses Google Gemini and needs `GOOGLE_API_KEY`.
+`bibr chew paper.pdf --dry-run` shows where each stage runs before anything is sent.
+
+### Python
+
+```python
+import bibr
+
+result = bibr.chew("paper.pdf")
+print(result.title)
+references = result.references.df  # pandas DataFrame
+result.save("result.json")
+
+bibr.write_tables(bibr.chew("papers/"), "tables/")  # corpus → Parquet, keyed by paper_id
+bibr.write_references(result, "refs.bib")  # reference list → BibTeX, RIS, or CSL-JSON
+```
+
+See the [Python guide](https://bibr.org/guides/library/) for batch processing and
+reusing loaded models with `bibr.Chewer`.
+
+## LLM use
+
+bibr uses LLMs selectively for tasks such as front-page metadata. `bibr setup`
+recommends a model for your hardware: bibr's fine-tuned Qwen3.5 4B or 2B model
+on an NVIDIA GPU (vLLM on Linux, llama.cpp on Windows), the same models as MLX
+builds on Apple Silicon, or Claude Haiku 5.5 as a hosted model
+([how they compare](https://bibr.org/guides/extraction-models/)). You can disable downstream LLM extraction
+with `--no-llm`, which returns structural output; PDF OCR may still use a
+vision-language model. The [LLM use note](https://bibr.org/llm-use/) covers these choices
+and how agentic LLMs helped develop bibr. It is a work in progress.
+
+## Documentation
+
+- [Configuration](https://bibr.org/guides/configuration/) — OCR, LLMs, reference parsing, and presets.
+- [Deployment](https://bibr.org/guides/deployment/) — HTTP API (`bibr serve`), Docker, hardware, and authentication.
+- [MCP server](https://bibr.org/guides/mcp/) — extraction tools for agents (`bibr mcp`).
+- [JSON schema](https://bibr.org/reference/schema/) and [pipeline architecture](https://bibr.org/guides/architecture/).
+- [Evaluating extraction quality](https://bibr.org/contributing/evaluation/) on papers from your workflow.
+
+## Citation
+
+If you use bibr in research, please cite the software and report the version you
+used. Use GitHub's **Cite this repository** button or the
+[citation metadata](https://github.com/scienceverse/bibr/blob/main/CITATION.cff)
+to generate a citation. When a Zenodo archive is available for your release,
+cite its version-specific DOI so readers can identify the exact software used.
+Otherwise, cite the repository URL together with the version or commit.
+
+## Contributing
+
+Bug reports, test papers, and contributions are welcome. See
+[CONTRIBUTING.md](https://github.com/scienceverse/bibr/blob/main/CONTRIBUTING.md)
+for development setup, tests, and pull requests.
+
+Development began privately in December 2025. This public repository starts with
+a clean source snapshot for the 0.5.0 launch; the earlier development history
+remains private. Selected early design documents and their original contributions
+are preserved in the [project history](https://github.com/scienceverse/bibr/tree/main/history).
+
+---
+
+## Acknowledgments
+
+Special thanks to **[Daniël Lakens (@Lakens)](https://github.com/Lakens)** and **[Lisa DeBruine (@debruine)](https://github.com/debruine)**, for putting faith and patience in the project, and being generous with their time and insight
+ to help make bibr 🦫 better for everyone.
+
+Also thanks to the whole [Metacheck](https://www.scienceverse.org/metacheck/) team, and **TU Eindhoven**.
+
+We are grateful to the open-source projects that bibr builds on:
+
+- [PaddleOCR-VL-1.6](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.6) (PaddlePaddle) — default OCR recognizer
+- [GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) (Z.ai / Tsinghua University) — explicit compatibility backend and fallback
+- [Qwen3.5](https://huggingface.co/Qwen) (Alibaba Qwen) — base of bibr's fine-tuned extraction models
+- [GROBID](https://github.com/kermitt2/grobid) — a major source of inspiration for structured scientific document parsing
+- [LitServe](https://lightning.ai/docs/litserve/home) (Lightning AI) — serving infrastructure
+- [PP-DocLayoutV3](https://github.com/PaddlePaddle/PaddleOCR) (PaddlePaddle) — document layout analysis
+- [wtpsplit](https://github.com/segment-any-text/wtpsplit) — sentence segmentation
+- [Crossref](https://www.crossref.org/) — reference metadata enrichment
+
+---
+
+## License
+
+[AGPL-3.0-or-later](https://github.com/scienceverse/bibr/blob/main/LICENSE.md).
+The export schema documents in [`docs/schema/`](https://github.com/scienceverse/bibr/tree/main/docs/schema) are dedicated to
+the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/),
+so other tools can adopt the format freely.

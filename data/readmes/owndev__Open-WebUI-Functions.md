@@ -1,0 +1,358 @@
+# Open-WebUI-Functions
+
+![GitHub stars](https://img.shields.io/github/stars/owndev/Open-WebUI-Functions?style=social)
+![GitHub forks](https://img.shields.io/github/forks/owndev/Open-WebUI-Functions?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/owndev/Open-WebUI-Functions?style=social)
+![GitHub top language](https://img.shields.io/github/languages/top/owndev/Open-WebUI-Functions)
+![GitHub contributors](https://img.shields.io/github/contributors/owndev/Open-WebUI-Functions)
+![GitHub License](https://img.shields.io/github/license/owndev/Open-WebUI-Functions)
+
+![Main Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/main.svg)
+
+[![GitVersion Badge](https://github.com/owndev/Open-WebUI-Functions/actions/workflows/gitversion-badge.yml/badge.svg)](https://github.com/owndev/Open-WebUI-Functions/actions/workflows/gitversion-badge.yml)
+[![GitHub Release](https://github.com/owndev/Open-WebUI-Functions/actions/workflows/github-release.yml/badge.svg)](https://github.com/owndev/Open-WebUI-Functions/actions/workflows/github-release.yml)
+
+**Open-WebUI-Functions** is a collection of Python-based functions that extend [Open WebUI](https://github.com/open-webui/open-webui) with additional **pipelines**, **filters**, and **integrations**. These functions make it easier to connect external AI providers, process data, and tailor the Open WebUI experience to real-world workflows.
+
+## 📚 Contents
+
+- [🔎 Overview](#-overview)
+- [🏷️ Version](#️-version)
+- [✨ Features](#-features)
+- [🏗️ Project structure](#️-project-structure)
+- [🔗 Prerequisites](#-prerequisites)
+- [🚀 Installation](#-installation)
+- [🛡️ Security features](#️-security-features)
+- [🧩 Pipelines](#-pipelines)
+- [🔍 Filters](#-filters)
+- [🤝 Integrations](#-integrations)
+- [🧪 Testing](#-testing)
+- [💪 Contributing](#-contributing)
+- [📜 License](#-license)
+- [💬 Support](#-support)
+- [💫 Star history](#-star-history)
+
+## 🔎 Overview
+
+This repository focuses on reusable Python functions for Open WebUI. It includes provider-specific pipelines, request and response filters, optional analytics helpers, secure secret handling, and both streaming and non-streaming integrations.
+
+## 🏷️ Version
+
+| Branch | Version |
+| --- | --- |
+| **`main`** | ![Main Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/main.svg) |
+| **`hotfix/*`** | ![Hotfix Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/hotfix.svg) |
+| **`release/*`** | ![Release Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/release.svg) |
+| **`dev`** | ![Dev Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/dev.svg) |
+| **`feature/*`** | ![Feature Version](https://owndev-public.github.io/badges/owndev/Open-WebUI-Functions/version/feature.svg) |
+
+> These badges are generated and updated automatically by the [GitVersion Badge workflow](https://github.com/owndev/Open-WebUI-Functions/actions/workflows/gitversion-badge.yml) for all GitFlow branch types.
+
+## ✨ Features
+
+- 🧩 **Custom pipelines**: Extend Open WebUI with AI processing pipelines, including model inference and data transformations.
+- 🔍 **Filters for data processing**: Apply custom filtering logic to refine, manipulate, or preprocess input and output data.
+- 🤝 **Azure AI support**: Seamlessly connect Open WebUI with **Azure OpenAI** and other **Azure AI** models.
+- 🤝 **N8N workflow integration**: Enable interactions with [N8N](https://n8n.io/) for automation.
+- 📱 **Flexible configuration**: Use environment variables to adjust function settings dynamically.
+- 🚀 **Streaming and non-streaming support**: Handle both real-time and batch processing efficiently.
+- 🛡️ **Secure API key management**: Automatically encrypt sensitive information such as API keys.
+
+## 🏗️ Project structure
+
+```text
+.
+├── docs/
+│   ├── azure-ai-citations.md
+│   ├── azure-ai-integration.md
+│   ├── google-gemini-integration.md
+│   ├── infomaniak-integration.md
+│   ├── n8n-integration.md
+│   ├── n8n-tool-usage-display.md
+│   ├── setup-azure-log-analytics.md
+│   └── testing.md
+├── filters/
+│   ├── google_search_tool.py
+│   ├── time_token_tracker.py
+│   └── vertex_ai_search_tool.py
+├── pipelines/
+│   ├── azure/
+│   ├── google/
+│   ├── infomaniak/
+│   └── n8n/
+└── tests/
+    └── e2e/          # Docker-based end-to-end tests (run.sh)
+```
+
+## 🔗 Prerequisites
+
+> [!IMPORTANT]
+> To use these functions, make sure the following requirements are met:
+>
+> 1. **An active Open WebUI instance**: You must have [Open WebUI](https://github.com/open-webui/open-webui) installed and running.
+> 2. **Required AI services (if applicable)**: Some pipelines depend on external AI services, such as [Azure AI](https://ai.azure.com/).
+> 3. **Admin access**: You must have administrator privileges in Open WebUI to install functions.
+> 4. **Python packages**: Some functions list extra Python packages in the `requirements:` line of their header (for example, the Google Gemini pipeline needs `google-genai`, which Open WebUI no longer bundles as of 0.11.4). Open WebUI installs them automatically unless `ENABLE_PIP_INSTALL_FRONTMATTER_REQUIREMENTS=false` or `OFFLINE_MODE=true` is set; in that case, install them into your Open WebUI image yourself (see [Gemini requirements](./docs/google-gemini-integration.md#requirements)).
+
+## 🚀 Installation
+
+> [!TIP]
+> Follow these steps to install and configure functions in Open WebUI.
+
+1. **Ensure admin access**
+
+> [!NOTE]
+> You must be an admin in Open WebUI to install functions.
+
+2. **Open Admin Settings**
+   - Navigate to the **Admin Settings** section in Open WebUI.
+
+3. **Open the Functions tab**
+   - Go to the **Functions** tab in the admin panel.
+
+4. **Create a new function**
+   - Click **Add New Function**.
+   - Copy the function code from this repository and paste it into the function editor.
+
+5. **Set environment variables if required**
+   - Some functions require API keys or provider-specific configuration through environment variables.
+
+> [!IMPORTANT]
+> Set [WEBUI_SECRET_KEY](https://docs.openwebui.com/getting-started/env-configuration/#webui_secret_key) for secure encryption of sensitive API keys. This is **required** for the encryption features to work properly.
+
+6. **Save and activate**
+   - Save the function, and it will be available inside Open WebUI.
+
+## 🛡️ Security Features
+
+> [!WARNING]
+> **API key security**: Always use encryption for sensitive information such as API keys.
+
+### API key encryption
+
+The functions include a built-in encryption mechanism for sensitive information:
+
+- **Automatic encryption**: API keys and other sensitive data are automatically encrypted when stored.
+- **Encrypted storage**: Values are stored with an `encrypted:` prefix followed by the encrypted data.
+- **Transparent usage**: Encryption and decryption happen automatically when values are accessed.
+- **No extra configuration required**: Everything works out of the box when [WEBUI_SECRET_KEY](https://docs.openwebui.com/getting-started/env-configuration/#webui_secret_key) is set.
+
+> [!IMPORTANT]
+> To enable encryption, set the `WEBUI_SECRET_KEY` environment variable:
+>
+> ```bash
+> # Set this in your Open WebUI environment or .env file
+> WEBUI_SECRET_KEY="your-secure-random-string"
+> ```
+
+## 🧩 Pipelines
+
+> [!NOTE]
+> Pipelines are processing functions that extend Open WebUI with **custom AI models**, **external integrations**, and **data manipulation logic**.
+
+### 1. [Azure AI Foundry Pipeline](./pipelines/azure/azure_ai_foundry.py)
+
+> [!TIP]
+> **Azure OpenAI integration made easy**
+>
+> This pipeline provides seamless integration with Azure OpenAI and other Azure AI models, with advanced features such as Azure AI Search (RAG) for every model and multiple model support.
+
+- Enables interaction with **Azure OpenAI** and other **Azure AI** models.
+- **Azure AI Search / RAG for any chat endpoint and model** (v3.0.0, breaking): the pipeline queries your search index itself with simple, semantic, vector or hybrid queries from the existing `AZURE_AI_DATA_SOURCES` configuration, writes search queries for follow-up questions (`AZURE_AI_SEARCH_QUERY_GENERATION`) and adds the documents to the prompt; the Search key can be stored encrypted in `AZURE_AI_SEARCH_KEY`. A failed search ends with `Error: Azure AI Search: …` instead of an answer without your documents. Azure OpenAI On Your Data, which Microsoft retires on October 14, 2026, is no longer used: requests with `data_sources` end with an error ([#187](https://github.com/owndev/Open-WebUI-Functions/issues/187)); see [Migrating from On Your Data (2.x)](./docs/azure-ai-integration.md#migrating-from-on-your-data-2x), or stay on [v2.8.1](https://github.com/owndev/Open-WebUI-Functions/blob/3ff6cf9/pipelines/azure/azure_ai_foundry.py) until then.
+- **Native OpenWebUI citations support** 🎯: Rich citation cards, source previews, relevance scores, and automatic `[docX]` → clickable markdown link conversion, also for streamed answers. Answers with `[docX]` references show only the referenced documents; answers without any show all retrieved documents (default) or none with `AZURE_AI_SHOW_ALL_CITATIONS_WITHOUT_REFERENCES=false`.
+- **Search only where it helps**: Background tasks (titles, tags, follow-ups) skip Azure AI Search and add no sources. Tools (including Open WebUI's built-in tools), function calling and token usage keep working in chats with Azure AI Search; tool rounds reuse the documents of the answer instead of searching again.
+- **Relevance scores**: semantic reranker, BM25 keyword, vector and hybrid scores from Azure AI Search are displayed as a relevance percentage on citation cards, with independently configurable normalization via `BM25_SCORE_MAX` and `RERANK_SCORE_MAX`.
+- Supports multiple models via `AZURE_AI_MODEL` (semicolon- or comma-separated, for example `gpt-4o;gpt-4o-mini`) or automatic model extraction from the Azure OpenAI URL.
+- **Large predefined model catalogue** (GPT-4o, GPT-5, o3, o4-mini, Phi-4, DeepSeek-R1/V3, Mistral, Llama 3.x, Cohere, Grok, and more) via `USE_PREDEFINED_AZURE_AI_MODELS`.
+- Customizable pipeline display prefix via `AZURE_AI_PIPELINE_PREFIX`.
+- **Flexible authentication**: `api-key` header (default) or `Authorization: Bearer` token via `AZURE_AI_USE_AUTHORIZATION_HEADER`.
+- **Token usage tracking**: Requests `stream_options.include_usage` in streaming mode so token counts are saved to the Open WebUI database, also in chats with Azure AI Search.
+- Filters valid parameters to ensure clean requests.
+- Handles both streaming and non-streaming responses.
+- Provides configurable error handling and timeouts; a stream that fails ends with an `Error: …` message instead of an empty or cut-off answer, and streamed events of up to 4 MiB are read.
+- Supports encryption of sensitive information such as API keys.
+
+🔗 [Azure AI Pipeline in Open WebUI](https://openwebui.com/f/owndev/azure_ai)
+
+🔗 [Learn more about Azure AI](https://azure.microsoft.com/en-us/solutions/ai)
+
+📖 [Azure AI citations documentation](./docs/azure-ai-citations.md)
+
+### 2. [N8N Pipeline](./pipelines/n8n/n8n.py)
+
+> [!TIP]
+> **N8N workflow automation integration**
+>
+> Connect Open WebUI with N8N to leverage powerful workflow automation. It includes configurable AI agent tool usage display for better transparency into agent actions.
+
+- Integrates **Open WebUI** with **N8N**, an automation and workflow platform.
+- **AI agent tool usage display (v2.2.0)** 🛠️: Shows tool calls from N8N AI Agent workflows with three verbosity levels (minimal, compact, detailed) and customizable length limits (non-streaming mode only).
+- Streaming and non-streaming support for real-time and batch data processing.
+- Parses n8n native streaming (NDJSON), Server-Sent Events and plain-text streams without leaking SSE framing into the answer.
+- Forwards token usage from the workflow's non-streamed JSON reply to Open WebUI.
+- Shows error chunks of an n8n stream in the answer and ends a failed or interrupted stream with an error status.
+- Sends Open WebUI tasks (title, tags, follow-ups, ...) without `chat_id`, so they stay out of the workflow's chat memory.
+- Sends messages from Open WebUI to an **N8N webhook**.
+- Supports real-time message processing with dynamic field handling.
+- Enables automation of AI-generated responses inside an **N8N workflow**.
+- Supports encryption of sensitive information such as API keys.
+- Includes an example [N8N workflow](./pipelines/n8n/Open_WebUI_Test_Agent.json) for the [N8N Pipeline](./pipelines/n8n/n8n.py).
+
+> [!IMPORTANT]
+> **Tool usage display limitation**: The AI agent tool call display currently works only in **non-streaming mode** due to N8N's current streaming implementation. The code is future-proof and will work automatically when N8N adds `intermediateSteps` to streaming responses.
+
+🔗 [N8N Pipeline in Open WebUI](https://openwebui.com/f/owndev/n8n_pipeline)
+
+🔗 [Learn more about N8N](https://n8n.io/)
+
+📖 [N8N tool usage display documentation](./docs/n8n-tool-usage-display.md)
+
+### 3. [Infomaniak](./pipelines/infomaniak/infomaniak.py)
+
+- Integrates **Open WebUI** with **Infomaniak**, a Swiss web hosting and cloud services provider.
+- Sends messages from Open WebUI to an **Infomaniak AI Tool**.
+- Streaming and non-streaming support with token usage tracking and status updates.
+- Supports encryption of sensitive information such as API keys.
+
+🔗 [Infomaniak Pipeline in Open WebUI](https://openwebui.com/f/owndev/infomaniak_ai_tools)
+
+🔗 [Learn more about Infomaniak](https://www.infomaniak.com/en/hosting/ai-tools)
+
+### 4. [Google Gemini](./pipelines/google/google_gemini.py)
+
+- Integrates **Open WebUI** with **Google Gemini**, a generative AI model by Google.
+- Supports integration with the Google Generative AI API or Vertex AI API for content generation.
+- Sends messages from Open WebUI to **Google Gemini**.
+- Supports encryption of sensitive information such as API keys.
+- Supports both streaming and non-streaming responses (streaming is automatically disabled for image generation models, including released IDs such as `gemini-3.1-flash-image`).
+- **Thinking & reasoning**: Configurable thinking levels for Gemini 3 models, with the levels each model supports (for example `low` / `high` on `gemini-3-pro`, `minimal` to `high` on `gemini-3-flash`, `low` / `medium` / `high` on `gemini-3.1-pro`, `minimal` / `high` on `gemini-3.1-flash-image` and `gemini-3.1-flash-lite-image`, `minimal` / `medium` / `high` on `gemini-nano-banana-2.1`) and thinking budgets (0–32 768 tokens) for Gemini 2.5 models, with per-chat override support.
+- **Native reasoning display**: Thinking appears as Open WebUI's own reasoning block, live ("Thinking..." with a spinner) while Gemini thinks and as "Thought for N seconds" afterwards, with the title in each user's Open WebUI language. Google Search grounding uses Open WebUI's localized search statuses (the queries, then "Searched N sites").
+- **Lean history**: Previously rendered thinking summaries are stripped from assistant messages before the conversation is replayed to the API (configurable).
+- Provides configurable error handling and timeouts: temporary API errors are retried (`GOOGLE_RETRY_COUNT`) for streaming and non-streaming requests, and every started status (image, video) is closed when a request fails or is stopped.
+- **Advanced image processing**: Optimized image handling with configurable compression, resizing, and quality settings.
+- **Configurable parameters**: Environment variables for image optimization (quality, max dimensions, format conversion).
+- **Multi-image history**: Image edits across turns: the generated and uploaded images of a saved chat are sent with the edit request (temporary chats send only your own uploads), also for everyone who replies in a chat shared with "Allow replies" (Open WebUI 0.12; who may read a chat or file is decided by Open WebUI's own access checks, and a file another participant names is used only if that participant may read it too). Configurable image limit that keeps the current and the newest images, hash-based deduplication, and automatic `[Image N]` labels so the model can reference earlier images.
+- **Image generation (Gemini 3)**: Configurable aspect ratio (for example `16:9` or `1:1`) and resolution (`1K`, `2K`, or `4K`) for Gemini 3 image models, with per-user valve overrides.
+- **Nano Banana image models**: `gemini-nano-banana-2.1`, `gemini-3.1-flash-image` and `gemini-3.1-flash-lite-image` are detected as image models; each generated image is uploaded once (interim thought images are skipped unless no final image arrives). API clients get generated images and videos as links in the answer. Google Search grounding is left out for the image models without Search support (`gemini-2.5-flash-image`, `gemini-3.1-flash-lite-image`). Newer image models outside Gemini 3 / Nano Banana naming can be added via `GOOGLE_IMAGE_GENERATION_MODELS` without a code change.
+- **Video generation (Veo)**: Generate videos with Google Veo models (3.1, 3, 2). Configurable aspect ratio, resolution, duration, negative prompt, and person generation controls. Supports text-to-video and image-to-video for all supported Veo models. Videos are automatically uploaded and embedded with playback controls.
+- **Token usage tracking**: Returns prompt, completion, and total token counts to Open WebUI for automatic persistence in the database, for streaming and non-streaming responses.
+- **Background tasks**: Works as the Open WebUI task model for title, tag and follow-up generation (without Google Search grounding, even when the chat uses it) and for context compaction, where a failed or empty summary leaves Open WebUI's own summary of the compacted messages instead of an error text.
+- **Model whitelist & additional models**: Restrict the visible model list via `GOOGLE_MODEL_WHITELIST` and add SDK-unsupported models via `GOOGLE_MODEL_ADDITIONAL`; changes show on the next model list refresh, without waiting for the model cache TTL.
+- Grounding with Google Search via the [google_search_tool.py filter](./filters/google_search_tool.py)
+- Grounding with Vertex AI Search via the [vertex_ai_search_tool.py filter](./filters/vertex_ai_search_tool.py)
+- [Native tool calling through Open WebUI's tool loop](./docs/google-gemini-integration.md#native-tool-calling) (built-in, workspace, MCP, OpenAPI, terminal and direct tools, tool approval); tool calls are returned to API clients
+- Works with Open WebUI 0.12's [Tool Search](./docs/google-gemini-integration.md#tool-search-open-webui-012) (tools found by `search_tools` are declared to Gemini so it can call them) and [compaction during long tool runs](./docs/google-gemini-integration.md#context-compaction-during-tool-runs)
+- Configurable API version support
+
+🔗 [Google Gemini Pipeline in Open WebUI](https://openwebui.com/f/owndev/google_gemini)
+
+🔗 [Learn more about Google Gemini](https://ai.google.dev/gemini-api/docs?hl=en)
+
+> [!NOTE]
+> **For LiteLLM users**: To use Google Gemini models through LiteLLM, configure LiteLLM directly in Open WebUI under **Admin Panel → Settings → Connections → OpenAI** instead of using this pipeline. For more information about LiteLLM, visit the [official LiteLLM GitHub repository](https://github.com/BerriAI/litellm).
+
+## 🔍 Filters
+
+> [!NOTE]
+> Filters allow **preprocessing and post-processing** of data within Open WebUI.
+
+### 1. [Time Token Tracker](./filters/time_token_tracker.py)
+
+> [!NOTE]
+> **Performance monitoring for AI interactions**
+>
+> Track response times, token usage, and optionally send analytics to Azure Log Analytics for more complete observability.
+
+- Measures **response time** and **token usage** for AI interactions.
+- Supports tracking of **total token usage** and **per-message token counts**.
+- Can calculate token usage for all messages or only a subset.
+- Uses OpenAI's `tiktoken` library for token counting (accurate only for OpenAI models).
+- Falls back to an estimate (about 4 characters per token) while no `tiktoken` encoding is loaded, for example on offline installations without a `tiktoken` cache, so the chat still goes through. The encoding is downloaded in the background; requests do not wait for it (the very first one at most 5 seconds). Estimated counts are marked: `tokensEstimated` in the Log Analytics record and the log line, `~` in the status message.
+- Also works for API requests. Since Open WebUI 0.10, the filter's outlet step runs for them too. There is no chat window to show a status message, but the metrics are still logged and sent to Log Analytics.
+- On Open WebUI 0.11, response time and request tokens stay correct when Open WebUI adds RAG context or a code interpreter prompt to the user message after the filter's inlet step.
+- Optionally sends a record per response to an [Azure Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview) (`SEND_TO_LOG_ANALYTICS=true`) in the background (10 second timeout), so responses do not wait for Log Analytics: through the **Logs Ingestion API** (data collection rule; Microsoft Entra ID with a client secret, a managed identity on App Service / Functions / Container Apps / VMs, or AKS workload identity), or through the deprecated HTTP Data Collector API as a fallback. `LOG_ANALYTICS_INGESTION_API` selects `auto` (default), `logs_ingestion`, `data_collector` or `both`.
+
+> [!WARNING]
+> Microsoft ended support for the HTTP Data Collector API on September 14, 2026; ingestion still works (TLS 1.2+), but not with Azure Monitor Private Link (AMPLS). Since 2.7.0 the filter supports the [Logs Ingestion API](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-ingestion-api-overview) that replaces it, and logs a one-time warning while it still uses the Data Collector API. See [How to set up Azure Log Analytics](./docs/setup-azure-log-analytics.md), including how to migrate the existing `OpenWebuiMetrics_CL` table and keep its column names.
+
+🔗 [Time Token Tracker in Open WebUI](https://openwebui.com/f/owndev/time_token_tracker)
+
+🔗 [How to set up Azure Log Analytics](./docs/setup-azure-log-analytics.md)
+
+### 2. [Google Search Tool](./filters/google_search_tool.py)
+
+- Companion filter for the [Google Gemini pipeline](./pipelines/google/google_gemini.py). Requires Open WebUI 0.9.0 or newer.
+- When **Web Search** is switched on for a chat, it replaces Open WebUI's own web search with Google Search grounding and the URL context tool.
+- Attach it to your Gemini models only. As a global filter it would switch off Open WebUI's web search for all other models too.
+- Requests without a `features` object (API clients, channel replies, automations) pass through unchanged.
+- Does not check Open WebUI's per-user web search permission, see the [limitations](./docs/google-gemini-integration.md#web-search-and-access).
+
+🔗 [Web search with Gemini](./docs/google-gemini-integration.md#web-search-and-access)
+
+### 3. [Vertex AI Search Tool](./filters/vertex_ai_search_tool.py)
+
+- Companion filter for the [Google Gemini pipeline](./pipelines/google/google_gemini.py) in Vertex AI mode. Requires Open WebUI 0.9.0 or newer.
+- Turns on Vertex AI Search grounding when a request asks for the `vertex_ai_search` feature.
+- Gets the data store from the request's `params.vertex_rag_store` or, if that is not set, from the `VERTEX_AI_RAG_STORE` environment variable.
+
+🔗 [Grounding with Vertex AI Search](./docs/google-gemini-integration.md#grounding-with-vertex-ai-search)
+
+## 🤝 Integrations
+
+### Azure AI
+
+See the [Azure AI integration guide](./docs/azure-ai-integration.md).
+
+### N8N
+
+See the [N8N integration guide](./docs/n8n-integration.md).
+
+### Infomaniak
+
+See the [Infomaniak integration guide](./docs/infomaniak-integration.md).
+
+### Google
+
+See the [Google Gemini integration guide](./docs/google-gemini-integration.md).
+
+## 🧪 Testing
+
+Every function is tested end-to-end against a real Open WebUI container with mocked provider APIs (Gemini, Azure OpenAI / AI Foundry, n8n, Infomaniak, Azure Log Analytics). Only Docker and bash are needed (Git Bash works on Windows):
+
+```bash
+tests/e2e/run.sh                              # all suites on the pinned Open WebUI image
+tests/e2e/run.sh --image v0.11.3-slim gemini  # one suite on another Open WebUI release
+tests/e2e/check_owui_api.sh latest            # static check of the Open WebUI APIs the functions use
+```
+
+The five suites (gemini, azure, n8n, infomaniak, filters) run about 500 checks in 15-20 minutes. Results are reported as `PASS`, `FAIL` or `KNOWN` (a failure that matches a registered known bug, shown with its issue and the branch with the pending fix). See the [testing guide](./docs/testing.md) for options, debugging and how to add scenarios.
+
+## 💪 Contributing
+
+> [!TIP]
+> We welcome contributions of all kinds. You do not need to write code to contribute.
+>
+> For detailed onboarding and contribution guidance, see [CONTRIBUTING.md](./.github/CONTRIBUTING.md).
+
+## 📜 License
+
+This project is licensed under the [Apache License 2.0](./LICENSE). See the [LICENSE](./LICENSE) file for details.
+
+## 💬 Support
+
+> [!NOTE]
+> If you have any questions, suggestions, or need assistance, please open an [issue](https://github.com/owndev/Open-WebUI-Functions/issues/new/choose) to connect with us. 🤝
+
+## 💫 Star History
+
+<a href="https://star-history.com/#owndev/Open-WebUI-Functions&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=owndev/Open-WebUI-Functions&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=owndev/Open-WebUI-Functions&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=owndev/Open-WebUI-Functions&type=Date" />
+  </picture>
+</a>
+
+---
+
+Created by [owndev](https://github.com/owndev) — let's make Open WebUI even more amazing together. 💪

@@ -1,0 +1,478 @@
+[![deepwiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ondata/istat_mcp_server)
+[![Newsletter](https://img.shields.io/badge/newsletter-ondata-FF6719?logo=substack)](https://ondata.substack.com/)
+
+# ISTAT MCP Server
+
+[English](README.md) | [Italiano](./README_IT.md)
+
+MCP server for accessing Italian statistical data from the ISTAT SDMX API.
+
+## Overview
+
+This Model Context Protocol (MCP) server provides Claude Desktop with access to Italian statistical data from ISTAT (Istituto Nazionale di Statistica) through the SDMX REST API. It implements a two-layer caching mechanism to minimize API calls and provides eight tools for discovering, querying, and retrieving statistical data.
+
+## Features
+
+- **8 MCP Tools** for data discovery and retrieval:
+  - `discover_dataflows` - Find available datasets by keywords (with blacklist filtering)
+  - `get_structure` - Get dimension definitions and codelists for a datastructure ID
+  - `get_constraints` - Get available constraint values for each dimension with descriptions (combines structure + constraints + codelist descriptions; the same output is available from the `istat-get-constraints-cli` command, see SKILL.md)
+  - `get_codelist_description` - Get descriptions in Italian/English for codelist values
+  - `get_concepts` - Get the Italian or English description of an ISTAT concept by ID (wraps the `istat-get-concepts-cli` command)
+  - `get_data` - Fetch actual statistical data in TSV table format (with blacklist validation)
+  - `get_cache_diagnostics` - Debug tool to inspect cache status
+  - `get_territorial_codes` - Resolve ISTAT REF_AREA codes for Italia, ripartizioni, regioni, province, and comuni
+
+- **Recommended Workflow** (simple and efficient):
+  1. **Discover**: Use `discover_dataflows` to find the dataflow you're interested in
+  2. **Get Complete Metadata**: Use `get_constraints` to see all dimensions with valid values AND descriptions in one call
+     - This is the **RECOMMENDED** approach - one call instead of many
+     - Internally combines `get_structure` + `get_codelist_description` for all dimensions
+     - All data cached for 1 month → subsequent calls are instant
+     - Returns complete information ready for building filters in `get_data`
+  3. **Fetch Data**: Use `get_data` with the appropriate dimension filters to retrieve actual data
+  
+  **Alternative workflow** (manual approach):
+  - Use `get_structure` with a datastructure ID to see dimensions and their codelists
+  - Then call `get_codelist_description` manually for each codelist you need
+  - Use `get_concepts` to get the Italian or English description of a specific concept ID (e.g. a dimension name)
+
+- **Two-Layer Cache**:
+  - In-memory cache (cachetools) for fast access during session
+  - Persistent disk cache (diskcache) that survives restarts
+
+- **Rate Limiting**: Maximum 4 API calls per minute with automatic queuing
+
+- **Retry Logic**: Exponential backoff on transient errors
+
+- **Dataflow Blacklist**: Filter out specific dataflows from all queries
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/ondata/istat_mcp_server.git
+cd istat_mcp_server
+```
+
+2. Create a virtual environment and install dependencies (Python >=3.11 required):
+
+**With uv (recommended):**
+```bash
+uv sync
+```
+`uv sync` automatically creates a `.venv` directory and installs all dependencies into it. To run commands manually, activate it first:
+```bash
+# Linux/macOS
+source .venv/bin/activate
+# Windows
+.venv\Scripts\activate
+```
+
+**With pip:**
+```bash
+python -m venv .venv
+# Linux/macOS
+source .venv/bin/activate
+# Windows
+.venv\Scripts\activate
+pip install -e .
+```
+
+3. Create a `.env` file (optional, uses defaults if not present):
+```bash
+cp .env.example .env
+```
+
+Optional: for slow `availableconstraint` responses used by `get_constraints`, set:
+```bash
+AVAILABLECONSTRAINT_TIMEOUT_SECONDS=180
+```
+
+## MCP Client Configuration
+
+This server works with any MCP-compatible client. The sections below cover the most common ones.
+
+[Claude Desktop](#claude-desktop) | [Claude Code](#claude-code) | [Gemini CLI](#gemini-cli) | [VS Code](#vs-code) | [Codex CLI](#codex-cli) | [Claude Desktop on Windows with Python on WSL2](#claude-desktop-on-windows-with-python-on-wsl2)
+
+> In all examples, replace `/path/to/istat_mcp_server` with the actual path to this directory, and `python` with `python3` if needed on your system.
+
+### Claude Desktop
+
+Add to your Claude Desktop configuration file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "istat": {
+      "command": "python",
+      "args": ["-m", "istat_mcp_server"],
+      "cwd": "/path/to/istat_mcp_server"
+    }
+  }
+}
+```
+
+**Note**: if `python` is not found in your system PATH, replace `"python"` in `"command"` with the absolute path to your Python executable (e.g. `/usr/bin/python3` or `C:\Python311\python.exe`).
+
+### Claude Code
+
+**Add globally** (available in all your projects):
+
+```bash
+claude mcp add -s user istat -- python -m istat_mcp_server --cwd /path/to/istat_mcp_server
+```
+
+**Add for the current project only** (creates or updates `.mcp.json` in the project folder):
+
+```bash
+claude mcp add istat -- python -m istat_mcp_server --cwd /path/to/istat_mcp_server
+```
+
+Or add manually to `.mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "istat": {
+      "command": "python",
+      "args": ["-m", "istat_mcp_server"],
+      "cwd": "/path/to/istat_mcp_server"
+    }
+  }
+}
+```
+
+> `-s user` makes the server available globally across all your projects. Without it, the server is scoped to the current project only.
+
+### Gemini CLI
+
+**Add globally:**
+
+```bash
+gemini mcp add -s user istat -- python -m istat_mcp_server --cwd /path/to/istat_mcp_server
+```
+
+Or add manually to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "istat": {
+      "command": "python",
+      "args": ["-m", "istat_mcp_server"],
+      "cwd": "/path/to/istat_mcp_server"
+    }
+  }
+}
+```
+
+### VS Code
+
+Add to your User Settings or `.vscode/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "istat": {
+      "command": "python",
+      "args": ["-m", "istat_mcp_server"],
+      "cwd": "/path/to/istat_mcp_server"
+    }
+  }
+}
+```
+
+### Codex CLI
+
+Add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.istat]
+command = "python"
+args = ["-m", "istat_mcp_server"]
+cwd = "/path/to/istat_mcp_server"
+```
+
+### Claude Desktop on Windows with Python on WSL2
+
+If you run Claude Desktop on Windows but have Python and this server installed inside WSL2, use `wsl.exe -e` to bridge the two environments. Point to the Python executable inside your virtual environment:
+
+```json
+{
+  "mcpServers": {
+    "istat": {
+      "command": "wsl.exe",
+      "args": [
+        "-e",
+        "/home/<your-user>/path/to/istat_mcp_server/.venv/bin/python",
+        "-m", "istat_mcp_server"
+      ]
+    }
+  }
+}
+```
+
+Replace `/home/<your-user>/path/to/istat_mcp_server` with the actual WSL path to this directory.
+
+> **Note:** Claude Code runs natively inside WSL2 and uses the standard configuration above. The `wsl.exe` wrapper is only needed for Claude Desktop running on the Windows side.
+
+## Skill (Recommended)
+
+This project includes an [Agent Skill](https://agentskills.io/) in `skills/istat-mcp/` that guides the model through the correct workflow step by step. **It is strongly recommended to install the skill** for a better experience: it reduces errors, avoids unnecessary API calls, and produces more accurate results.
+
+### Claude Code CLI
+
+```bash
+claude skills add ./skills/istat-mcp
+```
+
+### Claude Desktop
+
+1. Open **Claude Desktop**
+2. Click the **Settings** icon (gear icon, bottom-left)
+3. Select **Skills** in the left sidebar
+4. Click **"Add Skill"**
+5. Browse to the `skills/istat-mcp` folder inside this repository and select it
+6. The skill will appear in the list as **istat-mcp** — make sure it is enabled
+
+## Dataflow Blacklist Configuration
+
+You can exclude specific dataflows from all queries using environment variables. This is useful for filtering out problematic or unwanted datasets.
+
+### Configuration via .env file
+
+Add the `DATAFLOW_BLACKLIST` variable to your `.env` file:
+
+```bash
+# Exclude specific dataflows (comma-separated list)
+DATAFLOW_BLACKLIST=149_577_DF_DCSC_OROS_1_1,22_315_DF_DCIS_POPORESBIL1_2
+```
+
+### Behavior
+
+- **discover_dataflows**: Blacklisted dataflows are automatically filtered out from results
+- **get_data**: Attempts to fetch data from blacklisted dataflows will return an error message
+
+### Use Cases
+
+- Exclude deprecated dataflows
+- Filter out problematic datasets that cause errors
+- Hide internal or test dataflows from users
+
+## Usage Examples
+
+Once configured, you can ask Claude questions like:
+
+**Step 1: Discover dataflows**
+- "Show me all available dataflows about population"
+- "Find dataflows related to agriculture"
+
+**Step 2: Get complete constraint information (RECOMMENDED)**
+- "Get constraints for dataflow 101_1015_DF_DCSP_COLTIVAZIONI_1"
+  - Returns all dimensions with valid values AND Italian/English descriptions
+  - One call instead of multiple `get_structure` + `get_codelist_description` calls
+  - Everything cached for 1 month
+
+**Step 2 Alternative: Explore structure and codelists manually**
+- "Show me the structure of datastructure DCSP_COLTIVAZIONI"
+- "Get descriptions for codelist CL_ITTER107 to find Italian regions"
+- "Show me all values in codelist CL_AGRI_MADRE for crop types"
+
+**Step 3: Fetch data with filters**
+- "Fetch population data for Italy from 2020 to 2023"
+- "Get agricultural data for dataflow 101_1015_DF_DCSP_COLTIVAZIONI_1 filtered by REF_AREA=IT and TYPE_OF_CROP=APPLE"
+
+## HTTP transport, Docker and Kubernetes
+
+The server runs over stdio by default. For network deployments the package also ships an
+HTTP host (`istat_mcp_server.http_server`, installed with the `http` extra) that exposes the
+same tools over MCP streamable-HTTP:
+
+```bash
+uv sync --extra http
+istat-mcp-http                       # or: python -m istat_mcp_server.http_server
+curl http://localhost:8000/health    # {"status":"ok"}
+```
+
+- `/mcp/` is the MCP endpoint (`/mcp` redirects to `/mcp/`); `/health` is for probes.
+- `PORT` (default `8000`) and `HOST` (default `0.0.0.0`) set the listen address.
+- `MCP_ISTAT_TOKEN`, when set, requires `Authorization: Bearer <token>` on `/mcp`.
+- `LOG_DIR` and `PERSISTENT_CACHE_DIR` should point to writable directories when the
+  package directory is read-only (the container image sets them under `/tmp`).
+
+A `Dockerfile` builds the HTTP host image from `uv.lock` (`docker build -t istat-mcp-server .`),
+and `charts/istat-mcp-server` is a Helm chart that deploys it with optional Gateway API
+exposure, autoscaling, NetworkPolicy and bearer-token authentication. See
+[`charts/istat-mcp-server/README.md`](charts/istat-mcp-server/README.md).
+
+## Development
+
+Run tests:
+```bash
+pytest
+```
+
+Format code:
+```bash
+ruff format .
+```
+
+Check code:
+```bash
+ruff check .
+```
+
+## Project Structure
+
+```
+.
+├── src/
+│   └── istat_mcp_server/
+│       ├── __init__.py
+│       ├── __main__.py        # Entry point for `python -m istat_mcp_server`
+│       ├── server.py          # MCP server initialization
+│       ├── api/               # API client and models
+│       │   ├── client.py      # HTTP client with rate limiting
+│       │   └── models.py      # Pydantic models
+│       ├── cache/             # Two-layer cache system
+│       │   ├── manager.py     # Cache façade
+│       │   ├── memory.py      # In-memory cache
+│       │   └── persistent.py  # Disk cache
+│       ├── cli/               # Standalone CLI commands
+│       │   ├── get_concepts_cli.py     # istat-get-concepts-cli <concept_id>
+│       │   └── get_constraints_cli.py  # istat-get-constraints-cli <dataflow_id> [--dimension DIM]
+│       ├── tools/             # MCP tool handlers
+│       │   ├── discover_dataflows.py
+│       │   ├── get_structure.py
+│       │   ├── get_constraints.py
+│       │   ├── get_codelist_description.py
+│       │   ├── get_concepts.py       # wraps CLI via subprocess
+│       │   ├── get_data.py
+│       │   ├── get_cache_diagnostics.py
+│       │   └── get_territorial_codes.py
+│       └── utils/             # Utilities
+│           ├── logging.py
+│           ├── validators.py
+│           └── blacklist.py
+├── tests/                     # Test suite
+├── cache/                     # Runtime cache (git-ignored)
+├── log/                       # Log files (git-ignored)
+├── .env.example
+├── pyproject.toml
+└── README.md
+```
+
+## Cache Configuration
+
+The server uses a sophisticated two-layer caching strategy:
+
+- **Memory Cache**: Fast in-process cache with 5-minute TTL
+- **Persistent Cache**: Disk-based cache with configurable TTLs:
+  - Dataflows: 7 days
+  - Structures/Codelists: 1 month
+  - Data: 1 day (24 hours) — stores the processed TSV result, not raw XML
+
+Relevant `.env` variables:
+- `MEMORY_CACHE_TTL_SECONDS=300`
+- `DATAFLOWS_CACHE_TTL_SECONDS=604800`
+- `METADATA_CACHE_TTL_SECONDS=2592000`
+- `OBSERVED_DATA_CACHE_TTL_SECONDS=86400`
+- `AVAILABLECONSTRAINT_TIMEOUT_SECONDS=180`
+
+Cache is stored in the `./cache` directory by default.
+
+## Logging and Debugging
+
+The server automatically creates log files in the `./log` directory with the following features:
+
+- **Automatic Rotation**: Log files are rotated when they reach 10MB
+- **Retention**: Last 5 log files are kept
+- **Dual Output**: Logs are written both to file and stderr (for Claude Desktop logs)
+
+### Log Levels
+
+Control the verbosity via the `LOG_LEVEL` environment variable in `.env`:
+
+```bash
+LOG_LEVEL=DEBUG  # Maximum detail for debugging
+LOG_LEVEL=INFO   # Default, standard operations
+LOG_LEVEL=WARNING # Only warnings and errors
+LOG_LEVEL=ERROR  # Only errors
+```
+
+### Finding Logs
+
+- **Server Logs**: `./log/istat_mcp_server.log`
+- **Claude Desktop Logs**: 
+  - Windows: `%APPDATA%\Claude\logs\`
+  - macOS: `~/Library/Logs/Claude/`
+
+### Debug Cache Issues
+
+The log file shows:
+- Cache directory path at startup
+- Cache operations (with DEBUG level)
+- API calls and retries
+- Tool invocations
+
+Use the `get_cache_diagnostics` tool in Claude Desktop to inspect cache status in real-time.
+
+## SDMX API Usage Notes
+
+### Rate Limiting
+
+The ISTAT SDMX API is rate-limited. The server makes at most 4 calls per minute (`RateLimiter` in `ApiClient`) and automatically queues requests when the limit is reached.
+
+### Accept Headers
+
+The ISTAT SDMX API requires specific `Accept` headers depending on the endpoint and desired format. Using a generic `application/json` may return empty responses.
+
+**Data (CSV):**
+
+```bash
+curl -H "Accept: application/vnd.sdmx.data+csv;version=1.0.0" \
+  "https://esploradati.istat.it/SDMXWS/rest/data/{dataflow_id}/ALL/"
+```
+
+**Structure/Constraints (JSON):**
+
+```bash
+curl -H "Accept: application/vnd.sdmx.structure+json; version=1.0" \
+  "https://esploradati.istat.it/SDMXWS/rest/availableconstraint/{dataflow_id}/all/all?mode=available"
+```
+
+**Structure/Constraints (XML, default):**
+
+```bash
+curl "https://esploradati.istat.it/SDMXWS/rest/availableconstraint/{dataflow_id}/all/all?mode=available"
+```
+
+## Related tools
+
+- **[opensituas](https://github.com/ondata/opensituas)** — Codes and history of every Italian territorial unit, from the CLI. The join key for any ISTAT dataset.
+- **[opensdmx](https://github.com/ondata/opensdmx)** — Official statistics from Eurostat, ISTAT, OECD, and other SDMX providers — no hallucinations, only published figures.
+- **[CKAN MCP Server](https://github.com/ondata/ckan-mcp-server)** — Turn any CKAN open data portal into a natural-language conversation.
+
+## License
+
+MIT License
+
+## Contributing
+
+Contributions are welcome! Please open an issue or pull request.
+
+## Author
+
+- Vincenzo Patruno: https://www.linkedin.com/in/vincenzopatruno/
+- Andrea Borruso: https://www.linkedin.com/in/andreaborruso
+
+## References
+
+- ISTAT SDMX API: https://esploradati.istat.it/SDMXWS/rest/
+- Model Context Protocol: https://modelcontextprotocol.io/
+- Guide to the ISTAT SDMX API (in Italian): https://ondata.github.io/guida-api-istat/

@@ -1,0 +1,148 @@
+🌐 **English** | [简体中文](README_CN.md)
+
+<div align="center">
+
+# Wonderful Launcher for ComfyUI on Windows
+
+### You downloaded a ComfyUI workflow. Now make it actually run.
+
+[![GitHub Release](https://img.shields.io/github/v/release/hu-haibin/wonderful-launcher-comfyui?style=for-the-badge&logo=github&label=Latest%20Release)](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/latest)
+[![Product Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhu-haibin%2Fwonderful-launcher-comfyui%2Fmain%2Fstats%2Fdownloads.json&query=%24.current_product_downloads&style=for-the-badge&logo=github&label=Product%20Downloads)](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows)](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/latest)
+
+[**Download 2.1.15**](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/tag/v2.1.15) · [**Official Website**](https://wonderfullauncher.com/) · [**Docs**](https://wonderfullauncher.com/docs) · [**Report Issues**](https://github.com/hu-haibin/wonderful-launcher-comfyui/issues)
+
+</div>
+
+---
+
+## Download
+
+- **Recommended**: [Wonderful Launcher 2.1.15 Setup](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/tag/v2.1.15)
+- **Installer file**: `WonderfulLauncher-Setup-v2.1.15.exe`
+- **Checksum file**: `SHA256SUMS.txt` in the same release
+
+> [!WARNING]
+> Do not download GitHub's auto-generated `Source code.zip` or `Source code.tar.gz`. They are source archives, not Windows installers.
+
+> [!TIP]
+> The normal installer is self-contained. You do not need to install Microsoft .NET Desktop Runtime separately.
+
+> [!IMPORTANT]
+> If an older build downloads an update but opens the old app again, run the latest **Setup Installer** above. It keeps launcher data, converges legacy `ModelFinder` / `Wonderful Launcher` data into `WonderfulLauncher`, clears old update state, and starts the latest app.
+
+<p align="center">
+  <img src="assets/screenshots/home-launch-surface.png" alt="Wonderful Launcher home screen" width="86%" />
+</p>
+
+---
+
+## If this sounds familiar
+
+You found a workflow you want to try. You open it in ComfyUI, and suddenly there are red nodes, missing models, dependency errors, or a startup log that only says what broke after you already lost ten minutes.
+
+That is the annoying part this launcher is built for. It keeps the practical cleanup work close to the ComfyUI package you are actually using:
+
+| What you are trying to do | What the launcher helps with |
+|---------------------------|------------------------------|
+| “I already have ComfyUI somewhere.” | Import ComfyUI Desktop or a portable ComfyUI folder. |
+| “I want a clean package instead of fixing this mess.” | Download and deploy a fresh ComfyUI package. |
+| “ComfyUI does not start.” | Show the startup log and run approved dependency repair tasks. |
+| “This workflow says models are missing.” | Match model names and download or place files into the expected folders. |
+| “The workflow has missing nodes.” | Install custom nodes and dependencies without hunting through folders. |
+| “I have several ComfyUI packages but one model library.” | Share a model directory between packages. |
+| “I want to generate images and keep history nearby.” | Keep image generation, references, history, and Photoshop handoff in one workspace. |
+
+The goal is not to replace ComfyUI. It is to remove the boring “why is this workflow not running on my machine?” work around it.
+
+---
+
+## What's new in 2.1.15
+
+Released on August 11, 2026. [Open the full GitHub Release](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/tag/v2.1.15).
+
+- **Focused desktop navigation**: Canvas Lab is no longer shown in the public navigation. The normal image workspace remains the supported generation path.
+- **More useful local model drops**: when a dropped model cannot be matched to an open workflow, the launcher now lets you choose a destination inside the active ComfyUI models directory instead of ending at a dead end.
+- **Clearer runtime actions**: ComfyUI start and stop states use distinct visual treatment so the next action is easier to read.
+- **Safer release updates**: release and installer smoke checks now verify that the published root, isolated profile, and installer handoff belong to the candidate being tested.
+
+Validation for this release: focused workspace, localization, updater, and update-proxy tests passed before packaging. The self-contained installer and isolated published-root smoke are verified as part of this release process.
+
+---
+
+## Quick start
+
+### 1. Install
+
+1. Open the [latest installer release](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/tag/v2.1.15).
+2. Download `WonderfulLauncher-Setup-v2.1.15.exe`.
+3. Run the installer and open Wonderful Launcher.
+
+This repository is the public download, screenshots, and issue-tracking surface. It is not a public source-code mirror for the desktop app.
+
+### 2. Tell the launcher where your ComfyUI is
+
+- If you already have ComfyUI, choose **Import ComfyUI** and select the folder that contains `main.py`, or the portable parent folder that contains a `ComfyUI` subfolder.
+- If you want a clean environment, open ComfyUI settings, choose a disk and runtime package, then deploy and start it from the Home page.
+
+Avoid selecting folders such as `models`, `custom_nodes`, `output`, `python_embeded`, or a folder that only contains workflow files.
+
+### 3. Let the workflow tell you what is missing
+
+When a workflow opens with red nodes or missing assets, follow the normal repair loop:
+
+1. inspect missing models or nodes
+2. download or place the missing files
+3. install missing custom nodes or dependencies
+4. restart or rerun ComfyUI
+5. verify that the workflow generates output
+
+## FAQ
+
+<details>
+<summary><b>Why do I still see ModelFinder or mf in some Windows places?</b></summary>
+
+Wonderful Launcher is the public product name. Some internal identifiers intentionally remain `ModelFinder` or `mf` to preserve installed paths, update compatibility, logs, and Windows identity.
+
+</details>
+
+<details>
+<summary><b>Do I need to install Python first?</b></summary>
+
+No. In the normal path, Wonderful Launcher manages the ComfyUI Python environment for you.
+
+</details>
+
+<details>
+<summary><b>Can it manage my existing ComfyUI install?</b></summary>
+
+Yes. Use **Import ComfyUI** and select the folder that contains `main.py`, or the portable parent folder that contains a `ComfyUI` subfolder.
+
+</details>
+
+<details>
+<summary><b>Does the Agent run repair actions automatically?</b></summary>
+
+No. Write or repair actions require your approval. The Agent helps with diagnosis and can run supported launcher tools after you approve them.
+
+</details>
+
+<details>
+<summary><b>Is macOS or Linux supported?</b></summary>
+
+Not currently. This repository publishes Windows desktop builds.
+
+</details>
+
+---
+
+## Releases and repository scope
+
+The GitHub Releases page is kept intentionally sparse: only the latest installer is shown to normal users. Older tags are preserved for history, but older release pages may be removed so new users are not encouraged to download stale builds.
+
+- [Latest Release](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/latest)
+- [Wonderful Launcher 2.1.15](https://github.com/hu-haibin/wonderful-launcher-comfyui/releases/tag/v2.1.15)
+
+Release notes live on GitHub Releases and the current README summary. This repository intentionally avoids a separate pile of stale per-version note files.
+
+This repository intentionally does not expose the full desktop source tree. Public release assets are the Windows installer and checksum file attached to GitHub Releases.

@@ -1,0 +1,197 @@
+<h1 align="center">✨ skilless.ai</h1>
+
+<p align="center">
+  <strong>Empower Your Agent with Real Data</strong>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-green.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.12+"></a>
+  <a href="https://github.com/brikerman/skilless.ai/stargazers"><img src="https://img.shields.io/github/stars/brikerman/skilless.ai?style=for-the-badge" alt="GitHub Stars"></a>
+</p>
+
+<p align="center">
+  <a href="#quick-install">Quick Install</a> · <a href="README.zh.md">中文</a> · <a href="#four-core-tools">Core Tools</a> · <a href="#three-ai-skills">AI Skills</a> · <a href="https://skilless.ai">Website</a>
+</p>
+
+---
+
+## Why Skilless?
+
+Your AI is great at writing and thinking — but ask it to go look something up, and it hits a wall:
+
+- 🔍 "Find recent reviews of this product" → **no good free search**, everything useful costs money
+- 🌐 "Read what's on this webpage" → **returns raw HTML soup**, completely unreadable
+- 📺 "What does this YouTube video cover?" → **can't extract subtitles**, too much manual work
+- 📡 "Follow these news feeds and summarize updates" → **have to write the code yourself**
+
+**Skilless turns this into one command:**
+
+```bash
+curl -LsSf https://skilless.ai/install | bash
+```
+
+Auto-detects your environment, creates an isolated virtual environment, installs all dependencies. Zero system pollution, no sudo required, uninstalls cleanly.
+
+---
+
+## What You Can Do After Installing
+
+> 💡 **Recommended:** Use [OpenCode](https://opencode.ai) — open source, free, works great with Skilless out of the box. Also compatible with OpenClaw, Kilo Code, Cursor, and Claude Code.
+
+Just tell your AI what you need — it reads the skill files and figures out the rest:
+
+- "Find reviews of this product online" → searches the web
+- "Read what's on this page and summarize it" → extracts clean content from any URL
+- "What does this YouTube video talk about?" → pulls the transcript
+- "What's new in this RSS feed?" → parses and summarizes the feed
+
+**You don't need to remember any commands.** That's the point.
+
+---
+
+## Real-World Use Cases
+
+### 📹 Video Download
+- **YouTube** → Download videos for offline viewing, extract subtitles, or get transcripts
+- **Bilibili** → Save Chinese videos locally, extract CC and danmaku
+- **TikTok, Twitter/X, Twitch, Vimeo** → Download clips, VODs, and videos without watermarks
+- **1700+ more sites** → Dailymotion, Rumble, Odysee, SoundCloud, Reddit video, and more
+
+### 📝 Video Subtitles & Transcripts
+- Extract auto-generated or manual subtitles from any video
+- Organize fast-paced content into readable notes
+- Translate video subtitles to your language
+- Generate summaries from video transcripts
+
+### 🎵 Media Processing
+- Extract audio from video as MP3
+- Compress large video files to save space
+- Convert between formats (mkv→mp4, wav→mp3, etc.)
+
+### 🔍 Web Search
+- "Help me compare noise-canceling headphones under $300" → searches reviews across the web
+- "What's the latest news on AI video generation?" → finds and summarizes recent articles
+- "Research the best practices for RAG systems" → semantic search for technical content
+
+### 🌐 Web Content
+- "Read this article and summarize the key points" → extracts clean content
+- "Extract the main points from this documentation" → parses technical docs
+- "What does this page say about X?" → finds specific information
+
+### 📊 Deep Research
+- **Multi-source comparison** → "Compare the top 5 project management tools and recommend one for a small team"
+- **Travel planning** → "Create a 7-day Tokyo guide with food and attraction recommendations"
+- **Industry analysis** → "Research all video generation AI models and create a comprehensive report"
+- **Fact-checked reports** → cross-validated information from multiple sources
+
+### ✍️ Content Writing
+- Draft professional emails on any topic
+- Write articles backed by real research
+- Create documentation with proper citations
+
+---
+
+**Real Example:** A user recently asked: *"Research all the video generation models on the market and create a comprehensive report."* Skilless automatically searched, read sources, cross-checked facts, and produced a structured multi-section report — all in one conversation.
+
+---
+
+## Three AI Skills
+
+Skills are installed as `SKILL.md` files under `~/.agents/skills/`. Your Agent reads them automatically and knows when to use which capability:
+
+| Skill | Purpose |
+|-------|---------|
+| **Brainstorming** | Turn vague ideas into actionable plans through dialogue — proposes 2-3 options with trade-offs |
+| **Research** | Multi-source cross-validated deep research — transforms AI from text generator to active researcher |
+| **Writing** | Produce articles, docs, and reports backed by real research data |
+
+### Skill Ecosystem
+
+The three skills work together as a connected system — each can invoke the others when needed:
+
+```mermaid
+graph LR
+  B["🧠 Brainstorming"] -->|need data| R["🔍 Research"]
+  B -->|document plan| W["✍️ Writing"]
+  R -->|write report| W
+  R -->|clarify scope| B
+  W -->|gather data| R
+  W -->|clarify brief| B
+```
+
+---
+
+## Quick Install
+
+**Mac / Linux**
+
+```bash
+curl -LsSf https://skilless.ai/install | bash
+```
+
+**Windows (PowerShell)**
+
+```powershell
+Invoke-RestMethod https://skilless.ai/install.ps1 | Invoke-Expression
+```
+
+<details>
+<summary>What does this command actually install?</summary>
+
+1. **Installs uv** — ultra-fast Python package manager, placed in `~/.local/bin`
+2. **Network detection** — auto-detects your environment and switches to local mirrors (Tsinghua TUNA in China) if needed
+3. **Isolated deployment** — creates a fully isolated virtual environment in `~/.agents/skills/skilless/` with all dependencies: `yt-dlp` `fastmcp` `jina reader` `feedparser`
+4. **Exposes CLI** — generates the `skilless.ai` executable, ready to use immediately
+
+*Zero system pollution · No sudo required · Easy to uninstall*
+</details>
+
+---
+
+## Technology Stack
+
+| Tool | Purpose |
+|------|---------|
+| [Jina Reader](https://github.com/jina-ai/reader) | Web page extraction |
+| [Exa](https://exa.ai) | AI semantic search, free, no key needed |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | Video & subtitle extraction, 1700+ sites |
+| [feedparser](https://github.com/kurtmckee/feedparser) | RSS/Atom parsing |
+| [uv](https://github.com/astral-sh/uv) | Ultra-fast Python package manager, isolated deployment |
+
+---
+
+## FAQ
+
+<details>
+<summary><strong>Do I need API keys?</strong></summary>
+
+No. All tools use free tiers: Exa search is accessed for free via MCP, Jina Reader requires no key, yt-dlp runs entirely locally.
+</details>
+
+<details>
+<summary><strong>Does this modify my system environment?</strong></summary>
+
+No. Everything is installed in an isolated virtual environment under `~/.agents/skills/skilless/`. No sudo, no changes to global Python or Node.js.
+</details>
+
+<details>
+<summary><strong>Which AI tools are supported?</strong></summary>
+
+Any tool that reads SKILL.md files from `~/.agents/skills/` will work. We recommend **[OpenCode](https://opencode.ai)** — it's open source and free. Also works with OpenClaw, Kilo Code, Cursor, and Claude Code.
+</details>
+
+<details>
+<summary><strong>How do I uninstall?</strong></summary>
+
+```bash
+rm -rf ~/.agents/skills/skilless
+rm -rf ~/.agents/skills/skilless-*
+```
+</details>
+
+---
+
+## License
+
+[MIT](LICENSE)

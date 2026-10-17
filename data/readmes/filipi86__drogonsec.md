@@ -1,0 +1,442 @@
+<div align="center">
+
+# 🛡️ Drogonsec Security Scanner
+
+[![CI/CD](https://github.com/filipi86/drogonsec/actions/workflows/ci.yml/badge.svg)](https://github.com/filipi86/drogonsec/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![OWASP Top 10 2025](https://img.shields.io/badge/OWASP-Top%2010%3A2025-orange.svg)](https://owasp.org/Top10/2025/)
+[![Go 1.26.6+](https://img.shields.io/badge/Go-1.26.6+-00ADD8.svg)](https://golang.org)
+[![GitHub Release](https://img.shields.io/github/v/release/filipi86/drogonsec)](https://github.com/filipi86/drogonsec/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/filipi86/drogonsec)](https://github.com/filipi86/drogonsec/issues)
+
+</div>
+
+<img alt="The DrogonSec banner: the ASCII logo, the engines it runs — SAST, SCA, leaks, git-history and IaC — and the version of the build" src="docs/assets/banner.gif" />
+
+
+> An open-source, comprehensive security scanner combining SAST, SCA, and secret detection aligned with OWASP Top 10:2025 — created for intelligent remediation.
+
+---
+
+## What's New in v0.4.0
+
+**Full-depth SCA.** The dependency engine now reads the tree that actually
+ships — every transitive package, at the version installed — for all eight
+supported ecosystems, instead of the handful a manifest declares.
+
+- **Every ecosystem in full:** lockfiles and installed trees for npm, Yarn,
+  Python, PHP, Rust (new) and Ruby; the package manager's own cache for Go and
+  Dart; and **Maven resolved offline** by Maven's own rules, matching
+  `mvn dependency:tree` artifact for artifact. `gradle.lockfile` is read too.
+- **Dependency paths:** every SCA finding says how the package got there —
+  `Required : via com.example:core` — so the fix lands on the dependency a
+  developer can actually change.
+- **SBOM dependency graph:** the CycloneDX export carries every edge, for Grype,
+  Trivy and Dependency-Track.
+- **Stable fingerprints:** every finding keeps its identity across scans and
+  code moves, in JSON and as SARIF `partialFingerprints`.
+- **Fixed:** Maven dependencies were never matched against an advisory, and
+  manifest version ranges no longer produce false positives.
+
+Full details in the [CHANGELOG](CHANGELOG.md#040---2026-09-28).
+
+---
+
+## Documentation
+
+📖 **Full Documentation:** -->  [Drogonsec Doc](https://cross-intel.com/opensource/drogonsec)
+
+---
+
+## Features
+
+| Engine | Description |
+|--------|-------------|
+| **SAST** | Static Application Security Testing for 20+ languages |
+| **SCA**  | Software Composition Analysis — the full transitive tree, not just what you declared |
+| **Leaks** | Secret detection — 50+ patterns (AWS, GCP, GitHub, JWT, SSH keys...) |
+| **IaC**  | Infrastructure as Code misconfigurations (Terraform, Kubernetes) |
+| **AI**   | AI-powered remediation — Ollama (local/free) or cloud providers |
+
+### Security Frameworks
+- **OWASP Top 10:2025** — All 10 categories covered (including 2 new: Supply Chain & Mishandling Exceptions)
+- **CWE** — Common Weakness Enumeration mapping
+- **CVSS 3.1** — Severity scoring
+- **SARIF 2.1** — GitHub/Azure DevOps integration
+
+### Supported Languages
+`Python` `Java` `JavaScript` `TypeScript` `Go` `Kotlin` `C#` `PHP` `Ruby` `Swift` `Dart` `Elixir` `Erlang` `Shell` `C/C++` `HTML` `Terraform` `Kubernetes` `Nginx`
+
+### Dependency Coverage
+
+A manifest names a handful of packages, at version *ranges*. A lockfile names
+every package that will actually be installed, at the version it will be
+installed at — and that second group is nearly all the code you ship, and where
+nearly all the advisories are. So the column that matters is **depth**:
+
+| Ecosystem | Read from | Depth |
+|---|---|---|
+| **Node.js** | `package-lock.json`, `yarn.lock`, `node_modules/`, `package.json` | Full tree |
+| **Python** | `poetry.lock`, `uv.lock`, `Pipfile.lock`, `.venv/`, `pyproject.toml`, `requirements.txt` | Full tree |
+| **PHP** | `composer.lock`, `vendor/composer/installed.json`, `composer.json` | Full tree |
+| **Rust** | `Cargo.lock`, `Cargo.toml` | Full tree |
+| **Ruby** | `Gemfile.lock` | Full tree |
+| **Go** | `go.mod`, routes from the module cache | Full set |
+| **Java** | `pom.xml` resolved offline against `~/.m2`, `gradle.lockfile` | Full tree |
+| **Dart** | `pubspec.lock`, `pubspec.yaml` | Full tree |
+
+For npm, Python and PHP the engine falls back through three sources — the
+lockfile, then the installed tree on disk (`node_modules/`, a virtualenv,
+`vendor/`), then the manifest. A repository that does not commit a lockfile is
+still scanned in full after an install.
+
+For Go, Dart and Java the edges come from the package manager's own cache — the
+module cache, the pub cache, the Maven local repository — which already holds
+every dependency's manifest once the project has been built. Maven, which has no
+lockfile, is resolved offline by Maven's own rules (parent POMs, imported BOMs,
+nearest-wins, dependency management, exclusions) and matches
+`mvn dependency:tree` artifact for artifact.
+
+Every finding carries whether the package is **direct** and, where the source
+records it, the route that introduced it:
+
+```
+#8 [CRITICAL] guzzlehttp/psr7 1.9.1
+  CVE      : CVE-2026-49214  CVSS: 9.0
+  Required : via guzzlehttp/guzzle
+  Fixed in : 2.10.2
+```
+
+**A range is not a version.** A dependency read from a manifest is checked
+against advisories only when the requirement names a single release.
+`lodash: "4.17.15"` is checked; `lodash: "^4.17.15"` is not — it installs
+4.17.21, and reporting the advisories for 4.17.15 would name a version you never
+installed. Those packages still appear in the inventory and the SBOM, and the
+scan says how many it had to skip. Committing a lockfile is the fix, and it buys
+the transitive tree at the same time.
+
+**No network.** Resolving a range against a registry would answer a different
+question — what would install *today* — and would put a scan that runs
+air-gapped on the far side of the internet.
+
+Full detail in [docs/modules.md](docs/modules.md#sca-engine--software-composition-analysis).
+
+---
+
+## Quick Start
+
+### Installation
+
+**Go Install (requires Go 1.26.6+):**
+```bash
+go install github.com/filipi86/drogonsec/cmd/drogonsec@latest
+```
+
+**From source:**
+```bash
+git clone https://github.com/filipi86/drogonsec
+cd drogonsec
+make install
+```
+
+**Docker:**
+```bash
+docker run --rm -v $(pwd):/scan ghcr.io/filipi86/drogonsec scan /scan
+```
+
+### Basic Usage
+
+```bash
+# Scan current directory
+drogonsec scan .
+
+# Scan with JSON output
+drogonsec scan ./myproject --format json --output report.json
+
+# Scan with HTML report
+drogonsec scan . --format html --output report.html
+
+# Scan with AI remediation (local Ollama — free, no API key needed)
+drogonsec scan . --enable-ai
+
+# Scan with AI remediation (cloud provider — requires API key)
+AI_API_KEY="..." drogonsec scan . --enable-ai --ai-provider anthropic
+
+# Scan git history for secrets
+drogonsec scan . --git-history
+
+# Only report HIGH and CRITICAL
+drogonsec scan . --severity HIGH
+
+# Disable specific engines
+drogonsec scan . --no-sca
+drogonsec scan . --no-leaks
+drogonsec scan . --no-sast
+```
+
+---
+
+## Output Formats
+
+### Text (default)
+```
+Drogonsec Security Scanner
+═══════════════════════════════════════════
+  Target : /path/to/project
+  SAST   : enabled
+  SCA    : enabled
+  Leaks  : enabled
+═══════════════════════════════════════════
+
+═══ SAST FINDINGS ══════════════════════
+  #1 [HIGH] SQL Injection via string formatting
+  File     : src/users.py:42
+  Rule     : PY-001
+  OWASP    : A05:2025 - Injection
+  CWE      : CWE-89  CVSS: 9.8
+  Fix      : Use parameterized queries...
+```
+
+### JSON
+```json
+{
+  "version": "0.4.0",
+  "stats": { "total_findings": 5, "critical": 1, "high": 3 },
+  "sast_findings": [ ... ],
+  "sca_findings": [ ... ],
+  "leak_findings": [ ... ]
+}
+```
+
+### SARIF (GitHub Security Integration)
+```yaml
+# .github/workflows/security.yml
+- name: DrogonSec Scan
+  run: drogonsec scan . --format sarif --output results.sarif
+  
+- name: Upload to GitHub Security
+  uses: github/codeql-action/upload-sarif@v4
+  with:
+    sarif_file: results.sarif
+```
+
+### CycloneDX SBOM
+
+Export a [CycloneDX](https://cyclonedx.org) 1.5 Software Bill of Materials of the
+dependencies discovered by the SCA engine. The output is consumable by tools
+like Grype, Trivy, and Dependency-Track.
+
+```bash
+drogonsec scan . --format cyclonedx --output sbom.json
+```
+
+> **Note:** where a lockfile or an installed tree is available, the SBOM covers
+> the full transitive set and carries the CycloneDX `dependencies` graph — every
+> edge, so a consumer can work out for itself which component pulled in a
+> vulnerable one. An ecosystem read from a manifest alone contributes its
+> declared components without edges, because a manifest records none. SPDX
+> output is planned for a later release.
+
+---
+
+## Configuration
+
+Create `.drogonsec.yaml` in your project root:
+
+```yaml
+scan:
+  min_severity: LOW
+  workers: 4
+  git_history: false
+  ignore_paths:
+    - node_modules
+    - vendor
+    - dist
+
+engines:
+  sast:
+    enabled: true
+  sca:
+    enabled: true
+  leaks:
+    enabled: true
+    min_entropy: 3.5
+
+ai:
+  enabled: false
+  high_severity_only: true
+
+fail_on:
+  critical: true
+  high: true
+```
+
+---
+
+## AI-Powered Remediation
+
+DrogonSec includes AI-powered remediation, providing intelligent, context-aware fixes for detected vulnerabilities. **Ollama + DeepSeek Coder** is the recommended open-source option — **Ollama is open-source (MIT license)** and runs 100% locally with no data leaving your machine.
+
+### Local AI (Ollama) — Recommended for OSS
+
+```bash
+# 1. Install Ollama (https://ollama.com)
+# macOS: brew install ollama
+
+# 2. Pull the recommended model
+ollama pull deepseek-coder
+
+# 3. Scan with AI (auto-detects local Ollama)
+drogonsec scan . --enable-ai
+
+# Use a different model
+drogonsec scan . --enable-ai --ai-provider ollama --ai-model codellama
+```
+
+### Cloud AI (API Key Required)
+
+```bash
+# Anthropic
+AI_API_KEY="sk-ant-..." drogonsec scan . --enable-ai --ai-provider anthropic
+
+# OpenAI-compatible
+AI_API_KEY="sk-..." drogonsec scan . --enable-ai \
+  --ai-provider openai \
+  --ai-model gpt-4o
+
+# Custom endpoint
+AI_API_KEY="..." drogonsec scan . --enable-ai \
+  --ai-provider custom \
+  --ai-endpoint https://your-endpoint/v1/messages
+
+# Example output:
+# 🤖 AI Remediation:
+# The SQL injection in line 42 allows attackers to manipulate your query...
+# Corrected code:
+#   cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+```
+
+### Bring Your Own AI
+
+Any OpenAI-compatible endpoint works as a custom provider:
+
+```bash
+AI_API_KEY="your-key" drogonsec scan . --enable-ai \
+  --ai-provider custom \
+  --ai-endpoint https://your-api/v1/messages
+```
+
+### Security Hardening
+
+The AI client includes several defensive controls, documented in [docs/security.md](docs/security.md):
+
+- **No HTTP redirects** — refuses 3xx responses to prevent `x-api-key` leaking to a third-party host via `302 Location: …`
+- **HTTPS enforcement** — non-loopback HTTP endpoints are rejected; only `https://` or `http://127.0.0.1`/`http://localhost` are accepted
+- **HMAC-SHA256 cache integrity** — every cached response is tagged with a per-user key under `~/.drogonsec/ai-cache/cache.key` (`0600`); tampered entries are discarded on read
+- **Ollama shape validation** — auto-detection requires a valid `{"models":[...]}` response from `/api/tags`, not just HTTP 200 on port 11434
+- **Cache + output perms** — cache dir is `0700`, every cached file and every `--output` report is `0600` (reports embed code snippets and secrets)
+
+---
+
+## Shell Completion
+
+Drogonsec supports rich tab-completion for bash, zsh, fish, and PowerShell — with inline descriptions for enum flags, context-aware model suggestions, and directory-only completion for scan paths. See the [Usage docs](docs/usage.md#shell-completion) for details.
+
+```bash
+# Interactive install (detects shell, previews, asks for confirmation)
+drogonsec completion install
+
+# Preview only — no files modified
+drogonsec completion install --dry-run
+
+# Manual (bash / zsh)
+source <(drogonsec completion bash)
+source <(drogonsec completion zsh)
+```
+
+> **Security note:** `--ai-key` is deliberately excluded from completion so API keys are never captured by shell history-completion caches. Always pass keys via `AI_API_KEY`.
+
+---
+
+## OWASP Top 10:2025 Coverage
+
+| # | Category | Status |
+|---|----------|--------|
+| A01 | Broken Access Control | ✅ 23 rules |
+| A02 | Security Misconfiguration | ✅ 31 rules |
+| A03 | Software Supply Chain Failures 🆕 | ✅ SCA Engine |
+| A04 | Cryptographic Failures | ✅ 18 rules |
+| A05 | Injection | ✅ 45 rules |
+| A06 | Insecure Design | ✅ 15 rules |
+| A07 | Authentication Failures | ✅ 20 rules |
+| A08 | Software or Data Integrity Failures | ✅ 9 rules |
+| A09 | Security Logging & Alerting Failures | ✅ 11 rules |
+| A10 | Mishandling of Exceptional Conditions 🆕 | ✅ 8 rules |
+
+---
+
+## Secret Detection Patterns
+
+Drogonsec detects 50+ secret patterns including:
+
+- **Cloud:** AWS Access Keys, GCP API Keys, Azure Storage Keys
+- **SCM:** GitHub tokens (classic, fine-grained, OAuth, App)
+- **Payment:** Stripe Secret/Restricted Keys
+- **Communication:** Slack Bot/App tokens, Webhook URLs
+- **Email:** SendGrid API Keys
+- **Crypto:** RSA/EC/SSH/PGP private keys, JWT tokens
+- **DB:** Connection strings (PostgreSQL, MySQL, MongoDB, Redis)
+- **Generic:** Hardcoded passwords, API keys, secrets
+
+---
+
+## Architecture
+
+```
+drogonsec/
+├── cmd/drogonsec/          # CLI entrypoint
+├── internal/
+│   ├── analyzer/       # Main orchestrator
+│   ├── engine/         # SAST rules engine (20+ languages)
+│   ├── leaks/          # Secret detection engine
+│   ├── sca/            # Dependency analysis engine
+│   ├── reporter/       # Text/JSON/SARIF/HTML/CycloneDX reporters
+│   ├── ai/             # AI remediation engine (Ollama + Cloud)
+│   └── config/         # Types and configuration
+└── rules/              # YAML rule definitions (community-extensible)
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Areas to contribute:
+- New security rules for any language
+- Additional secret patterns  
+- Parser improvements
+- Documentation
+- Bug fixes
+
+See [CONTRIBUTING](CONTRIBUTING.md) for guidelines. All participants are expected to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+To report a security vulnerability, please follow our [Security Policy](SECURITY.md) — do not open a public issue.
+
+---
+
+## License
+
+Apache License 2.0 — See [LICENSE](LICENSE)
+
+---
+
+## Credits
+
+Inspired by Horusec. DrogonSec is its modern, actively maintained, and updated with enhanced capabilities.
+
+Built with: Go, Cobra, Viper, go-git.
+
+---
+
+## Maintained by
+
+This open-source project is maintained and supported by **[CROSS-INTEL](https://cross-intel.com)**.

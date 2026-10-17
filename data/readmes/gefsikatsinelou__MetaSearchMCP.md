@@ -1,0 +1,781 @@
+# MetaSearchMCP
+
+Open-source metasearch backend for MCP, AI agents, and LLM workflows.
+
+MetaSearchMCP aggregates results from multiple search providers, normalizes them into a stable JSON schema, and exposes both an HTTP API and an MCP server for agent tooling.
+
+## Positioning
+
+- MCP-first metasearch backend
+- Structured search API for AI pipelines
+- Multi-provider search orchestration with deduplication and fallback
+- Python FastAPI alternative to browser-first metasearch projects
+
+## Why It Exists
+
+Most search aggregators are designed around browser UX: HTML pages, pagination, and interactive result cards. Agents and LLM workflows need a different contract: predictable JSON, stable field names, partial-failure tolerance, and provider-level execution metadata.
+
+MetaSearchMCP is built for that machine-consumable workflow. The design is centered on search orchestration, normalized contracts, and MCP integration.
+
+## Core Features
+
+- Concurrent multi-provider aggregation
+- Unified result schema for web, academic, developer, and knowledge sources
+- Provider-level timeout isolation and partial-failure handling
+- Result deduplication across engines
+- Provider selection by explicit names or semantic tags such as `web`, `academic`, `code`, and `google`
+- Final result caps for agent-friendly payload sizing
+- HTTP API with OpenAPI docs
+- MCP server over stdio for Claude Desktop, Cline, Continue, and similar clients
+- Configurable provider allowlist via environment variables
+
+## Google Support
+
+Google support now includes a direct scraper provider implemented inside this project.
+
+The direct Google implementation uses browser-like requests, consent cookie handling, locale-aware query parameters, and resilient HTML result parsing. It is implemented locally in this repository.
+
+Currently supported Google providers:
+
+| Provider | Env var | Notes |
+|---|---|---|
+| Direct Google | `ALLOW_UNSTABLE_PROVIDERS=true` | Primary path; HTML scraping, best effort, may be blocked from datacenter IPs |
+| [serpbase.dev](https://serpbase.dev) | `SERPBASE_API_KEY` | Pay-per-use; typically cheaper for low-volume usage |
+| [serper.dev](https://serper.dev) | `SERPER_API_KEY` | Includes a free tier, then pay-per-use |
+
+Provider priority for `/search/google` is now `google` first, then `google_serpbase`, then `google_serper`.
+
+## Supported Providers
+
+### Google
+
+| Provider | Name | Method |
+|---|---|---|
+| Direct Google | `google` | HTML scraping with browser-like request handling |
+| SerpBase | `google_serpbase` | Hosted Google SERP API |
+| Serper | `google_serper` | Hosted Google SERP API |
+
+### Web Search
+
+| Provider | Name | Method |
+|---|---|---|
+| DuckDuckGo | `duckduckgo` | HTML scraping |
+| Bing | `bing` | RSS feed |
+| Yahoo | `yahoo` | HTML scraping, best effort |
+| Brave | `brave` | Official Search API |
+| You.com | `youcom` | Official Search API |
+| Mwmbl | `mwmbl` | Public JSON API |
+| Marginalia | `marginalia` | Public JSON API, no key required |
+| Ecosia | `ecosia` | HTML scraping |
+| Mojeek | `mojeek` | HTML scraping |
+| Startpage | `startpage` | HTML scraping, best effort |
+| Qwant | `qwant` | Internal JSON API, best effort |
+| Yandex | `yandex` | HTML scraping, best effort |
+| Baidu | `baidu` | JSON endpoint, best effort |
+| Seznam | `seznam` | HTML scraping (Czech web), no key required |
+| Naver | `naver` | HTML scraping (Korean web), no key required |
+| Ahmia | `ahmia` | HTML scraping (Tor .onion services), no key required |
+
+### Knowledge And Reference
+
+| Provider | Name | Method |
+|---|---|---|
+| Wikipedia | `wikipedia` | MediaWiki API |
+| Wikidata | `wikidata` | Wikidata API |
+| Wikiquote | `wikiquote` | MediaWiki API |
+| Wikisource | `wikisource` | MediaWiki API, no key required |
+| Wikibooks | `wikibooks` | MediaWiki API, no key required |
+| Wiktionary | `wiktionary` | MediaWiki API, no key required |
+| Wikivoyage | `wikivoyage` | MediaWiki API, no key required |
+| Wikiversity | `wikiversity` | MediaWiki API, no key required |
+| Wikispecies | `wikispecies` | MediaWiki API, no key required |
+| Internet Archive | `internet_archive` | Advanced Search API |
+| Wayback Machine | `wayback` | Internet Archive capture profile (how a URL or domain was archived over time: per-year capture counts, the months inside each year, first/latest capture dates and links replaying each year, with optional trailing year such as `example.com 2015`), no key required |
+| Common Crawl | `common_crawl` | Common Crawl open web index (what the monthly crawls contain for a URL, domain or path prefix: each crawled URL with its capture count, first/latest capture dates, HTTP statuses, MIME types, languages, distinct content versions, and the WARC file plus byte range that stores the page body, with an optional trailing crawl such as `example.com CC-MAIN-2024-10`), no key required |
+| Open Library | `openlibrary` | Open Library search API |
+| Datamuse | `datamuse` | Word-association/thesaurus REST API, no key required |
+| DictionaryAPI | `dictionaryapi` | dictionaryapi.dev keyless English dictionary API (Wiktionary-derived definitions per sense: part of speech, definition text, usage example, synonyms/antonyms and phonetic/audio pronunciation, with one ranked hit per definition), no key required |
+| Jisho | `jisho` | Japanese-English dictionary API (JMDict/JMNedict lookups with readings and JLPT level), no key required |
+| Tatoeba | `tatoeba` | Tatoeba public JSON API (collaborative example sentences with translations in hundreds of languages: sentence text, language, contributor, licence, alternative-script transcription, audio and translations into other languages), no key required |
+| Urban Dictionary | `urbandictionary` | Urban Dictionary public JSON API (crowd-sourced slang and idiom definitions: definition, example usage, author, up/down votes and submission date) with autocomplete term suggestions, no key required |
+| Nobel Prize | `nobel` | Official Nobel Prize API v2 (awards by year/category), no key required |
+| OEIS | `oeis` | OEIS JSON search API (integer sequences by terms, A-number or keywords: sequence name, terms, offset, keyword flags, author), no key required |
+| Bible (bible-api.com) | `bible` | bible-api.com keyless scripture lookup (Bible passages by reference such as `john 3:16`, `romans 8:28` or a whole chapter like `psalms 23`: each verse returned with its book, chapter, verse number and World English Bible text), no key required |
+| Qur'an (quran.com) | `quran` | quran.com keyless scripture search (Qur'an verses by keyword such as `mercy` or `patience`: each result returned with its surah:ayah reference, the Arabic verse text and a translated verse text), no key required |
+
+### Places And Geocoding
+
+| Provider | Name | Method |
+|---|---|---|
+| Open-Meteo Geocoding | `openmeteo` | Geocoding REST API, no key required |
+| Open-Meteo Weather | `weather` | Forecast API (current conditions — temperature, apparent temperature, humidity, wind, WMO weather description — plus the daily high/low and precipitation probability for a place name, with the resolved coordinates and timezone), no key required |
+| OpenStreetMap (Nominatim) | `nominatim` | Nominatim public API, no key required |
+| OpenStreetMap (Overpass) | `overpass` | Overpass API feature search (named OpenStreetMap features — shops, amenities, museums, stations, parks and other tagged places — scoped to a country: category, address, opening hours, contact details and coordinates, plus a link to the OSM feature page), no key required |
+| Nager.Date | `nager` | Public-holiday calendar REST API (public holidays by country), no key required |
+| REST Countries | `restcountries` | REST Countries API (countries and territories by name: common and official names, ISO 3166 codes, capital, region and subregion, population, area, currencies and languages, plus the country record link), no key required |
+
+### Education Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Hipolabs Universities | `universities` | Hipolabs Universities directory search (higher-education institutions by name: country, state/province, website and e-mail domain), no key required |
+
+### Nature And Biodiversity
+
+| Provider | Name | Method |
+|---|---|---|
+| iNaturalist | `inaturalist` | Observations REST API, no key required |
+| GBIF | `gbif` | GBIF species backbone REST API, no key required |
+
+### Natural Hazards And Seismology
+
+| Provider | Name | Method |
+|---|---|---|
+| USGS Earthquake Catalog | `earthquake` | USGS FDSN event search API (recent earthquakes by place name, or by minimum magnitude for a numeric query: magnitude, location, depth, coordinates, time, tsunami and alert metadata, plus a link to the event page), no key required |
+
+### Developer Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| GitHub | `github` | GitHub REST API |
+| GitLab | `gitlab` | GitLab REST API |
+| Codeberg | `codeberg` | Codeberg REST API |
+| Stack Overflow | `stackoverflow` | Stack Exchange API |
+| Sourcegraph | `sourcegraph` | Streaming search API, no key required |
+| Hacker News | `hackernews` | Algolia HN API |
+| Hugging Face | `huggingface` | Hub REST API, no key required |
+| Reddit | `reddit` | Reddit API |
+| npm | `npm` | npm registry API |
+| PyPI | `pypi` | JSON API |
+| RubyGems | `rubygems` | RubyGems search API |
+| crates.io | `crates` | crates.io API |
+| lib.rs | `lib_rs` | HTML scraping |
+| Clojars | `clojars` | Clojars JSON search API (Clojure libraries with latest version and description), no key required |
+| Docker Hub | `dockerhub` | Docker Hub search API |
+| Artifact Hub | `artifacthub` | Artifact Hub packages search API (Helm charts, operators, policies, container images), no key required |
+| Flathub | `flathub` | Flathub API v2 search (Linux desktop apps), no key required |
+| Snapcraft | `snapcraft` | Snap Store v2 snaps/find API (Linux snaps), no key required |
+| MacPorts | `macports` | MacPorts ports REST API (macOS/Darwin packages: version, license, platforms, categories, maintainers, build variants and dependencies), no key required |
+| JetBrains Marketplace | `jetbrains` | JetBrains searchPlugins API (IDE plugins), no key required |
+| Open VSX | `open_vsx` | Open VSX search API (VS Code-compatible extensions), no key required |
+| Mozilla Add-ons (AMO) | `amo` | AMO API v5 (Firefox browser extensions), no key required |
+| WordPress.org Plugins | `wordpress_plugins` | WordPress.org Plugins API (WP plugins), no key required |
+| WordPress.org Themes | `wordpress_themes` | WordPress.org Themes API (WP themes), no key required |
+| GNOME Extensions | `gnome_extensions` | extensions.gnome.org extension-query API (GNOME Shell extensions), no key required |
+| VS Code Marketplace | `vscode_marketplace` | Public gallery extensionquery API (VS Code extensions), no key required |
+| pkg.go.dev | `pkg_go_dev` | HTML scraping |
+| MetaCPAN | `metacpan` | MetaCPAN REST API |
+| Maven Central | `maven` | Solr search API, no key required |
+| NuGet | `nuget` | NuGet.org v3 search query API, no key required |
+| Packagist | `packagist` | Packagist search.json API (PHP/Composer), no key required |
+| Hex | `hex` | Hex.pm packages API (Elixir/Erlang), no key required |
+| pub.dev | `pubdev` | pub.dev JSON API (Dart/Flutter), no key required |
+| Hackage | `hackage` | Hackage packages API (Haskell/Cabal), no key required |
+| R (CRAN / r-universe) | `runiverse` | r-universe search API (R packages on CRAN, Bioconductor and r-universe universes: title, description, maintainer, stars, reverse dependencies, topics, last update), no key required |
+| Anaconda | `anaconda` | Anaconda.org search API (conda packages), no key required |
+| AUR | `aur` | Arch Linux AUR RPC API (community packages), no key required |
+| Arch Linux (official) | `archlinux` | Arch Linux packages JSON search API (official core/extra repos: version, repo, arch, maintainers, licences, dependencies, update dates), no key required |
+| Chocolatey | `chocolatey` | Chocolatey community OData search feed (Windows packages), no key required |
+| Debian Sources | `debian` | sources.debian.org search API (Debian source packages with version history per suite — stable/testing/sid/backports — and archive area), no key required |
+| Terraform Registry | `terraform` | Terraform Registry search API (reusable modules + providers for AWS, Azure, GCP, Kubernetes, ...), no key required |
+| IETF Datatracker | `ietf` | IETF Datatracker documents API (RFCs and Internet-Drafts by title/abstract, with standards level, stream and page count), no key required |
+| Software Heritage | `software_heritage` | Software Heritage origin search API (universal archive of public source code: repository URLs by keyword across GitHub, GitLab, Bitbucket, ... with visit types, snapshot availability, visit count, last-visited date and a link to the archived record), no key required |
+
+### Academic Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| arXiv | `arxiv` | Atom API |
+| PubMed | `pubmed` | NCBI E-utilities |
+| Semantic Scholar | `semanticscholar` | Graph API |
+| CrossRef | `crossref` | REST API |
+| OpenAlex | `openalex` | OpenAlex REST API, no key required |
+| INSPIRE-HEP | `inspirehep` | INSPIRE-HEP literature API (high-energy physics papers, preprints, citations), no key required |
+| OpenAIRE | `openaire` | OpenAIRE Graph search API (300M+ open research records from repositories & aggregators), no key required |
+| HAL Open Science | `hal` | HAL search API (French national open-access repository: articles, preprints, theses, book chapters), no key required |
+| DOAJ | `doaj` | DOAJ public REST API, no key required |
+| DOAB | `doab` | DOAB public REST API (peer-reviewed open-access books and monographs), no key required |
+| ERIC | `eric` | ERIC (Education Resources Information Center) search API (education research: journal articles, reports and conference papers, with accession id, authors, journal/source, abstract, subject descriptors, publication type and year, peer-review status, education level and ISSN), no key required |
+| Europe PMC | `europepmc` | Europe PMC REST API (PubMed + preprints), no key required |
+| PLOS | `plos` | PLOS keyless open-access search API (full-text search across PLOS journals — PLOS ONE, PLOS Biology, PLOS Medicine and others: article title, journal, publication date, authors and abstract, with a DOI resolver link), no key required |
+| ClinicalTrials.gov | `clinicaltrials` | ClinicalTrials.gov v2 API (clinical studies), no key required |
+| DataCite | `datacite` | DataCite DOI search API, no key required |
+| Figshare | `figshare` | Figshare public articles API (research data, datasets), no key required |
+| Zenodo | `zenodo` | Zenodo REST API, no key required |
+| Dryad | `dryad` | Dryad REST API v2 (curated open-access research datasets with authors, abstract, keywords, field of science and licence, plus DOI and download link), no key required |
+| Harvard Dataverse | `harvard_dataverse` | Harvard Dataverse search API (research datasets: description, authors, DOI, publication date, publisher dataverse, subjects, file count and version), no key required |
+| OSF Preprints | `osf_preprints` | OSF API v2 (PsyArXiv, SocArXiv, etc.), no key required |
+| ORCID | `orcid` | ORCID public API (researcher profiles), no key required |
+| ROR | `ror` | Research Organization Registry API (universities, institutes, labs), no key required |
+| UniProt | `uniprot` | UniProt REST API (protein knowledgebase), no key required |
+| MyGene.info | `mygene` | BioThings MyGene.info gene annotation API (gene symbols, names, organism, chromosome, aliases), no key required |
+| MyVariant.info | `myvariant` | BioThings MyVariant.info variant annotation API (dbSNP rsID, gene, protein/coding change, ClinVar significance and conditions, CADD score), no key required |
+| RCSB PDB | `rcsb_pdb` | RCSB Protein Data Bank search + GraphQL data API (3D structures: title, method, resolution, citation), no key required |
+| Reactome | `reactome` | Reactome Content Service search API (curated biological pathways, reactions, proteins and small molecules: stable identifier such as `R-HSA-70171`, entity type, species, compartment and pathway summary), no key required |
+| InterPro | `interpro` | EMBL-EBI InterPro API (protein families, domains and functional sites integrated from Pfam, PANTHER, PRINTS, PROSITE, CDD, SMART and others: stable accession such as `IPR000023`, entry type, integrating member-database signatures and Gene Ontology terms), no key required |
+| KEGG | `kegg` | KEGG REST API (Kyoto Encyclopedia of Genes and Genomes full-text search across genes, pathways, diseases, drugs and compounds: stable entry id such as `hsa:10022` or `map04910`, linked database and description), no key required |
+| ClinVar | `clinvar` | NCBI ClinVar E-utilities API (clinically reported human genetic variants: variant title such as `NM_000465.4(BARD1):c.188T>G`, gene, germline clinical significance and review status, associated traits, molecular consequences), no key required |
+| Open Targets | `opentargets` | Open Targets Platform keyless GraphQL search API (drug discovery: therapeutic targets like `ENSG00000139618`, diseases like `MONDO_0007254` and drugs like `CHEMBL941` by keyword, each with the Open Targets stable identifier, entity type, description and a platform.opentargets.org link), no key required |
+| EBI Ontology Lookup Service | `ols` | EMBL-EBI OLS4 full-text search over 250+ biomedical and biological ontologies (Gene Ontology, MeSH, ChEBI, HGNC, HPO, MONDO, NCIT): term labels, stable identifiers such as `GO:0006915`, definitions, synonyms and the ontology each term belongs to, no key required |
+| ChEMBL | `chembl` | ChEMBL REST API (drugs, molecular formula/SMILES/ATC), no key required |
+| PubChem | `pubchem` | PubChem PUG REST API (compound names/synonyms, molecular formula, molecular weight, canonical SMILES, IUPAC name, InChIKey), no key required |
+| RxNorm | `rxnorm` | NLM RxNorm REST API (clinical drug terminology), no key required |
+| MyChem.info | `mychem` | BioThings MyChem.info API (chemical and drug annotations aggregated from ChEMBL, DrugBank, ChEBI, DrugCentral, PubChem, UNII: preferred name, formula, weight, SMILES, CAS, approval phase, cross-references), no key required |
+| Google Books | `google_books` | Google Books API, no key required |
+| Project Gutenberg | `gutendex` | Gutendex API (public-domain ebooks), no key required |
+| LibriVox | `librivox` | LibriVox keyless API for free public-domain audiobooks (full-text keyword search: authors with birth/death years, language, copyright year, section count, total running time, description and links to the canonical page, Project Gutenberg source text, RSS feed and zip download), no key required |
+| DBLP | `dblp` | DBLP bibliography API (computer-science publications), no key required |
+| OpenReview | `openreview` | OpenReview API v2 note search (submissions to ICLR, NeurIPS, ICML, COLM and workshops: title, authors, abstract, keywords, venue and review status, primary area, TLDR, discussion and PDF links), no key required |
+| zbMATH Open | `zbmath` | zbMATH Open REST API (mathematical literature: Zbl number, authors, venue, MSC classification, reviews), no key required |
+| openFDA | `openfda` | openFDA drug approvals API, no key required |
+| NIH RePORTER | `nih_reporter` | NIH RePORTER v2 API (U.S. federally funded research projects: title, abstract, principal investigators, funding institute, fiscal-year award amount, organization, project period), no key required |
+| Grants.gov | `grants_gov` | Grants.gov search API (U.S. federal funding opportunities: description, agency, posted/forecasted status, open and close dates, CFDA numbers, award ceiling/floor, funding instruments, eligible applicants), no key required |
+| J-STAGE | `jstage` | J-STAGE Web API article search (Japanese scholarly journals: English and Japanese titles, authors, journal, ISSN, volume/number/pages, publication year and DOI), no key required |
+| NSF Awards | `nsf_awards` | NSF awards API (U.S. National Science Foundation funded research: award id, title, abstract, principal investigators and co-PIs, awardee organisation and location, programme, directorate and division, start/end dates, obligated and estimated-total amounts, award type, CFDA number, programme officer), no key required |
+
+### Health Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| MedlinePlus | `medlineplus` | MedlinePlus/NLM web service (consumer health topics: plain-language summary, publishing organization, alternative names, MeSH terms, topic groups), no key required |
+| DailyMed | `dailymed` | DailyMed/NLM Content Service (the official repository of FDA Structured Product Labeling documents — current prescription and OTC drug labels by drug name: title, SPL version, published date and stable setid), no key required |
+
+### Legal Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| CourtListener | `courtlistener` | Free Law Project REST API, no key required |
+| Federal Register | `federal_register` | federalregister.gov documents API (agency rules, proposed rules, notices, presidential documents), no key required |
+
+### Nonprofit Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| ProPublica Nonprofit Explorer | `propublica_nonprofits` | ProPublica Nonprofit Explorer v2 search API (IRS register of U.S. tax-exempt organizations: EIN, legal and secondary names, city/state, NTEE category, IRS subsection, Form 990 filing history), no key required |
+
+### Patent Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Google Patents | `google_patents` | Public XHR query API, no key required |
+
+### Open Data Portals
+
+| Provider | Name | Method |
+|---|---|---|
+| European Open Data Portal | `eu_open_data` | data.europa.eu search API (public-sector datasets harvested from EU member states and institutions: description, publisher, catalogue, country, subjects, formats, licence), no key required |
+| U.S. Open Data Catalog | `us_open_data` | catalog.data.gov Catalog API (U.S. public-sector datasets harvested from federal, state, local, tribal, university and non-profit publishers: description, organization, publisher, keywords, themes, distribution formats, popularity), no key required |
+| Australian Open Data Portal | `au_open_data` | data.gov.au CKAN Action API (Australian public-sector datasets harvested from federal, state and local publishers: description, organization, author, tags, distribution formats, resource count, licence), no key required |
+| UK Open Data Catalogue | `uk_open_data` | ckan.publishing.service.gov.uk CKAN Action API (UK public-sector datasets harvested from central government, agencies, local authorities and other public bodies: description, organization, author, tags, distribution formats, resource count, licence), no key required |
+| Canadian Open Data Portal | `ca_open_data` | open.canada.ca CKAN Action API (Canadian public-sector datasets harvested from federal, provincial, territorial and municipal publishers: description, organization, author, keywords, subjects, distribution formats, resource count, licence), no key required |
+| Irish Open Data Portal | `ie_open_data` | data.gov.ie CKAN Action API (Irish public-sector datasets harvested from government departments, local authorities, agencies and other public bodies: description, organization, author, tags, distribution formats, resource count, licence), no key required |
+| Italian Open Data Portal | `it_open_data` | dati.gov.it CKAN Action API (Italian public-sector datasets harvested from ministries, regions, local authorities and other public bodies: description, organization, author, tags, distribution formats, resource count, licence), no key required |
+| French Open Data Portal | `fr_open_data` | data.gouv.fr udata search API (French public-sector datasets harvested from ministries, public agencies, regions, local authorities and other public bodies: description, organization, tags, distribution formats, resource count, licence), no key required |
+| German Open Data Portal | `govdata_de` | GovData (www.govdata.de) CKAN Action API (German public-sector datasets harvested from the federal government, the Bundesländer, municipalities and other public bodies: description, organization, publisher, tags, categories, distribution formats, resource count, licence), no key required |
+| Dutch Open Data Portal | `nl_open_data` | data.overheid.nl CKAN Action API (Dutch public-sector datasets harvested from central government, provinces, municipalities, water authorities and other public bodies: description, organization, publisher, authority, tags, categories, distribution formats, resource count, licence), no key required |
+| Spanish Open Data Portal | `es_open_data` | datos.gob.es Linked Data API (Spanish public-sector datasets harvested from the central government, the autonomous communities, provinces and municipalities: description, keywords, topical categories, distribution formats, publisher, publication/update dates), no key required |
+| CERN Open Data | `cern_opendata` | CERN Open Data (opendata.cern.ch) Invenio API (research datasets, simulated events, software and documentation published by the LHC experiments — ALICE, ATLAS, CMS, LHCb — and other CERN collaborations: abstract, authors, keywords, experiment, DOI, record type, publication date, distribution formats, availability, licence, publisher), no key required |
+| DBnomics | `dbnomics` | DBnomics search API (economic and financial datasets and time series from official statistical organisations — OECD, Eurostat, IMF, BIS, World Bank, national statistics offices: dataset name, description, provider and series counts), no key required |
+
+### Government Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| GOV.UK | `gov_uk` | GOV.UK Search API (UK government guidance, publications, announcements, consultations and detailed guides from departments and public bodies: title, link, description, format, organisations, world locations, update date), no key required |
+| CPSC Recalls | `cpsc` | saferproducts.gov recall web service (U.S. Consumer Product Safety Commission recalls of consumer products by keyword: recall title, number, description, hazard, recalling firm, product category, units, country of manufacture and a cpsc.gov link), no key required |
+
+### Development Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| World Bank Documents & Reports | `worldbank_documents` | World Bank document search API (development publications, working papers, project and country documents: title, type, publication date, language, report number, project, country, abstract, PDF and text links), no key required |
+
+### News Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Google News | `google_news` | Public RSS feed, no key required |
+| GDELT | `gdelt` | Public DOC 2.0 API, no key required |
+| Bing News | `bing_news` | Public RSS feed, no key required |
+| Wikinews | `wikinews` | MediaWiki API, no key required |
+| Spaceflight News | `spaceflight_news` | Spaceflight News API, no key required |
+| Lobsters | `lobsters` | Lobste.rs JSON API, no key required |
+
+### Social Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Mastodon | `mastodon` | Mastodon public API, no key required |
+| Bluesky | `bluesky` | Bluesky AppView public API, no key required |
+| Lemmy | `lemmy` | Lemmy public API, no key required |
+
+### Media Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Wikimedia Commons | `wikimedia_commons` | MediaWiki API, no key required |
+| Openverse | `openverse` | Openverse REST API, no key required |
+| Iconify | `iconify` | Iconify search API (200,000+ open-source vector icons from 150+ icon sets: keywords, set name, author, licence, SVG URL), no key required |
+| Flickr | `flickr` | Public feed API, no key required |
+| Unsplash | `unsplash` | Unsplash REST API (requires `UNSPLASH_ACCESS_KEY`) |
+| Wallhaven | `wallhaven` | Wallhaven public JSON API (high-resolution desktop wallpapers: resolution and aspect ratio, file size/type, category, purity, colours, views/favourites, full-size image and thumbnail URLs), no key required |
+| Civitai | `civitai` | Civitai public REST API (community generative-AI image models — Stable Diffusion checkpoints, LoRAs and more by keyword: model type, tags, creator, download/like counts and the newest version's base model, trained words, download URL and preview image), no key required |
+| NASA | `nasa` | NASA Image and Video Library API, no key required |
+| Met Museum | `metmuseum` | Met Museum public collection API, no key required |
+| Art Institute of Chicago | `artic` | AIC public collection API, no key required |
+| Cleveland Museum of Art | `clevelandart` | CMA open-access API, no key required |
+| Victoria and Albert Museum | `vam` | V&A public collection API (decorative arts, design, fashion and sculpture: object type, title, maker with association, production date and place, current location and on-display status, IIIF image URLs), no key required |
+| PeerTube | `peertube` | Public REST API, no key required |
+| Dailymotion | `dailymotion` | Public REST API, no key required |
+| TVMaze | `tvmaze` | TVMaze public API, no key required |
+| Library of Congress | `loc_gov` | loc.gov public JSON API, no key required |
+| Radio Browser | `radio_browser` | Radio Browser public API, no key required |
+| MusicBrainz | `musicbrainz` | MusicBrainz public API (recordings/artists), no key required |
+| Discogs | `discogs` | Discogs database search API, no key required |
+| Deezer | `deezer` | Deezer public search API (streaming-catalog tracks with previews), no key required |
+| Audius | `audius` | Audius public REST API (independent, artist-uploaded music tracks with artist, genre, mood, duration, play counts and a direct stream URL when the track is streamable), no key required |
+| Kitsu | `kitsu` | Kitsu anime & manga catalog API (JSON:API), no key required |
+| AniList | `anilist` | AniList GraphQL API (anime, manga & light novels with synopsis, format, status, genres, community scores, popularity, studio and cover image), no key required |
+| MyAnimeList (Jikan) | `jikan` | Jikan keyless REST API mirroring MyAnimeList (anime by keyword: type, source, release status, air dates, episode count, rating, community score, rank, popularity, members, season, studios, genres, synopsis and cover image), no key required |
+| MangaDex | `mangadex` | MangaDex public REST API (manga titles & alternate titles with synopsis, status, year, content rating, demographic, chapter/volume counts, genres, authors/artists and cover image), no key required |
+| VNDB | `vndb` | VNDB Kana API (the Visual Novel Database: visual novels by keyword with alternate title, release date, rating and vote count, cover image, description, developers and platforms), no key required |
+| Steam | `steam` | Steam Store search API, no key required |
+| Scryfall | `scryfall` | Scryfall Magic: The Gathering card search API (names, rules text, sets, prices), no key required |
+| Yu-Gi-Oh! (YGOPRODeck) | `yugioh` | YGOPRODeck Yu-Gi-Oh! Trading Card Game database (fuzzy card-name search: card type, attribute/race, ATK/DEF, level or link rating, rules text, archetype, banlist status, first printing and market price), no key required |
+| Modrinth | `modrinth` | Modrinth search API (Minecraft mods, plugins, modpacks, shaders, resource packs and datapacks: summary, author, categories, mod loaders, supported Minecraft versions, download/follower counts, licence and client/server side support), no key required |
+| TheMealDB | `themealdb` | TheMealDB public API, no key required |
+| TheCocktailDB | `cocktaildb` | TheCocktailDB public API, no key required |
+| Open Food Facts | `openfoodfacts` | Open Food Facts public search API, no key required |
+| Open Brewery DB | `openbrewerydb` | Open Brewery DB public search API (breweries worldwide by name, city or region: type, full address, coordinates, phone and website), no key required |
+| TheSportsDB | `thesportsdb` | TheSportsDB public API (teams & players), no key required |
+| RemoteOK | `remoteok` | RemoteOK public jobs API (remote developer jobs), no key required |
+| Remotive | `remotive` | Remotive public jobs API (keyword-searchable remote jobs), no key required |
+| Jobicy | `jobicy` | Jobicy public jobs API (remote job postings with company, industry, job type, location, seniority level and salary range), no key required |
+| iTunes | `itunes` | iTunes Search API (podcasts), no key required |
+| fyyd | `fyyd` | fyyd podcast episode search API (episode-level search across the keyless fyyd directory: episode title, description, audio enclosure URL and MIME type, duration, season/episode numbers, publication date and artwork, falling back to a show-level search for programme names), no key required |
+| PoetryDB | `poetrydb` | PoetryDB keyless API (public-domain poetry searchable by title, author or full text of the poem's lines, returning the title, author, line count and lines), no key required |
+| Star Wars (SWAPI) | `swapi` | The Star Wars API (SWAPI) keyless search across all six canon collections — people, films, planets, species, starships and vehicles — interleaving hits round-robin with each record's canonical swapi.dev link and a compact fact snippet, no key required |
+| PokéAPI | `pokeapi` | PokéAPI keyless National Pokédex search (1300+ Pokémon species by name: National Pokédex number, types, abilities, height, weight, base experience and a sprite link), no key required |
+| D&D 5e API | `dnd5e` | The keyless D&D 5e API (dnd5eapi.co) for Dungeons & Dragons System Reference Document reference content — spells (with level), monsters and equipment by name — with each hit linked to its canonical dnd5eapi.co record, no key required |
+
+### Space Sources
+
+| Provider | Name | Method |
+|---|---|---|
+| Launch Library 2 | `spacelaunch` | The Space Devs launch database API (historical & upcoming launches), no key required |
+| NASA Exoplanet Archive | `exoplanet` | Exoplanet Archive TAP API (confirmed exoplanets by planet or host-star name: discovery year/method, orbital period, radius, mass, distance, equilibrium temperature), no key required |
+
+### Finance Sources
+
+| Provider | Name | Key Required | Free Tier |
+|---|---|---|---|
+| Yahoo Finance | `yahoo_finance` | No | Unofficial endpoint, no key needed |
+| Alpha Vantage | `alpha_vantage` | `ALPHA_VANTAGE_API_KEY` | 25 req/day — [get key](https://www.alphavantage.co/support/#api-key) |
+| Finnhub | `finnhub` | `FINNHUB_API_KEY` | 60 req/min — [get key](https://finnhub.io/register) |
+| CoinGecko | `coingecko` | No | Cryptocurrency search API, no key needed |
+| NVD | `nvd` | No | NIST NVD CVE vulnerability search API, no key needed |
+| CISA KEV | `cisa_kev` | No | CISA Known Exploited Vulnerabilities catalog (CVEs exploited in the wild), no key needed |
+| OSV.dev | `osv` | No | Open source vulnerability search over the OSV.dev database (GitHub Security Advisories, PYSEC, RustSec, Go, OSS-Fuzz and the Debian/Ubuntu/Alpine trackers: advisory summary, severity and CVSS vector, CWE identifiers, CVE/GHSA aliases, affected packages with their vulnerable version ranges and first fixed version, publication dates and advisory links); accepts an advisory id (`GHSA-jf85-cpcp-j695`, `CVE-2021-44228`), a package with an ecosystem (`pypi:requests@2.19.0`, `npm lodash 4.17.11`, `maven:org.apache.logging.log4j:log4j-core`) or a bare package name (`lodash@4.17.11`) searched across the default ecosystems, no key needed |
+| Shodan InternetDB | `internetdb` | No | Host exposure lookup for an IP address (open ports, reverse-DNS hostnames, CPEs, tags and known CVEs), no key needed |
+| ipwho.is | `ipwhois` | No | IP geolocation and network-ownership lookup (continent, country, region, city, postal code, coordinates, EU membership, ASN, ISP/organisation and domain behind the prefix, local timezone and country flag); accepts an IP address such as `8.8.8.8` or `https://8.8.8.8/status`, no key needed |
+| RDAP | `rdap` | No | Domain registration lookup (registrar, registry status flags, registration/expiry/update dates, delegated nameservers, DNSSEC state), no key needed |
+| DNS (DNS-over-HTTPS) | `dns` | No | DNS record lookup for a hostname over DNS-over-HTTPS (address records A/AAAA, mail exchangers MX, name servers NS, text records TXT, aliases CNAME and other record types, with answer TTLs and DNSSEC authentication state); accepts `example.com`, `example.com MX` or `MX example.com`, no key needed |
+| crt.sh (Certificate Transparency) | `crtsh` | No | Certificate Transparency log search (TLS certificates issued for a domain, deduplicated by serial: certificate common name and subject alternative names for subdomain discovery, issuing CA, validity window and serial number); accepts `example.com`, `https://example.com/path` or `*.example.com`, no key needed |
+| urlscan.io | `urlscan` | No | Search public urlscan.io scans of web pages (for a domain, URL, IP, ASN or file hash: the scanned URL, HTTP status, server software, resolved IP, country, ASN, page title, transfer statistics, scan time, and links to the report and screenshot); accepts `example.com`, `https://example.com/login`, `8.8.8.8` or native urlscan syntax such as `page.country:RU`, no key needed |
+| Frankfurter | `frankfurter` | No | ECB daily FX reference rates, no key needed |
+| SEC EDGAR | `sec_edgar` | No | SEC full-text + company filings API (unstable flag), no key needed |
+| GLEIF | `gleif` | No | Global Legal Entity Identifier registry (company legal names, jurisdiction, status), no key needed |
+| USAspending | `usaspending` | No | Federal award search API (U.S. government contracts and grants: award id, recipient, awarded amount, description, awarding/funding agency, award type, start and end dates), no key needed |
+
+### Deals And Shopping
+
+| Provider | Name | Method |
+|---|---|---|
+| CheapShark | `cheapshark` | CheapShark public deals API (current PC game price drops across digital stores: sale price, normal price, discount, store, ratings), no key required |
+
+## Installation
+
+One-command local install:
+
+```bash
+python scripts/install.py
+```
+
+Install, run tests, and start the HTTP API:
+
+```bash
+python scripts/install.py --dev --test --run
+```
+
+Deploy with Docker Compose:
+
+```bash
+python scripts/install.py --mode docker
+```
+
+The installer creates `.env` from `.env.example` when `.env` does not already exist. Existing `.env` files are kept unless `--force-env` is passed.
+
+Manual install:
+
+```bash
+git clone https://github.com/gefsikatsinelou/MetaSearchMCP
+cd MetaSearchMCP
+pip install -e ".[dev]"
+```
+
+Or with `uv`:
+
+```bash
+uv pip install -e ".[dev]"
+```
+
+## Configuration
+
+Copy `.env.example` to `.env` and configure any providers you want to enable.
+
+```bash
+cp .env.example .env
+```
+
+Key settings:
+
+```env
+HOST=0.0.0.0
+PORT=8000
+DEFAULT_TIMEOUT=10
+AGGREGATOR_TIMEOUT=15
+
+SERPBASE_API_KEY=
+SERPER_API_KEY=
+BRAVE_API_KEY=
+YDC_API_KEY=
+GITHUB_TOKEN=
+STACKEXCHANGE_API_KEY=
+REDDIT_CLIENT_ID=
+REDDIT_CLIENT_SECRET=
+NCBI_API_KEY=
+SEMANTIC_SCHOLAR_API_KEY=
+ALPHA_VANTAGE_API_KEY=
+FINNHUB_API_KEY=
+
+ENABLED_PROVIDERS=
+ALLOW_UNSTABLE_PROVIDERS=false
+MAX_RESULTS_PER_PROVIDER=10
+```
+
+To enable You.com, set `YDC_API_KEY` and either let it participate in the default web-provider pool or explicitly target it with `providers: ["youcom"]`.
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "playwright locator best practices",
+    "providers": ["youcom"],
+    "params": {"num_results": 5}
+  }'
+```
+
+## Running
+
+### HTTP API
+
+```bash
+python -m metasearchmcp.server
+# or
+metasearchmcp
+```
+
+The API starts on `http://localhost:8000`.
+
+### MCP Server
+
+```bash
+python -m metasearchmcp.broker
+# or
+metasearchmcp-mcp
+```
+
+The MCP server communicates over stdio.
+
+### Docker
+
+```bash
+docker build -t metasearchmcp .
+docker run --rm -p 8000:8000 --env-file .env metasearchmcp
+```
+
+Or with Compose:
+
+```bash
+docker compose up --build
+```
+
+## HTTP API
+
+### `POST /search`
+
+Aggregate across all enabled providers or a selected provider subset.
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "rust async runtime",
+    "providers": ["duckduckgo", "wikipedia"],
+    "params": {"num_results": 5, "max_total_results": 8, "language": "en"}
+  }'
+```
+
+You can also narrow providers by tags:
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "transformer attention",
+    "tags": ["academic", "knowledge"],
+    "params": {"num_results": 5, "max_total_results": 6}
+  }'
+```
+
+When multiple tags are provided, the default behavior is `tag_match="any"`.
+Set `tag_match` to `"all"` when you want providers that satisfy every requested tag:
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "npm cli argument parser",
+    "tags": ["code", "packages"],
+    "tag_match": "all",
+    "params": {"num_results": 5, "max_total_results": 6}
+  }'
+```
+
+`num_results` controls how many results each provider can contribute. `max_total_results` caps the final merged response after deduplication.
+
+### `POST /search/google`
+
+Search Google through the configured Google provider chain. If `ALLOW_UNSTABLE_PROVIDERS=true`, MetaSearchMCP will prefer the direct `google` provider automatically.
+
+```bash
+curl -X POST http://localhost:8000/search/google \
+  -H "Content-Type: application/json" \
+  -d '{"query": "site:github.com rust tokio"}'
+```
+
+To force the direct Google route explicitly:
+
+```bash
+curl -X POST http://localhost:8000/search/google \
+  -H "Content-Type: application/json" \
+  -d '{"query": "site:github.com rust tokio", "provider": "google"}'
+```
+
+### `POST /search/batch`
+
+Run several queries in a single round-trip against the same provider/tag filters.
+
+```bash
+curl -X POST http://localhost:8000/search/batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "queries": ["rust async runtime", "python asyncio"],
+    "providers": ["duckduckgo", "wikipedia"],
+    "params": {"num_results": 3, "max_total_results": 5}
+  }'
+```
+
+Queries (1-20) are executed concurrently and each yields its own `SearchReport`. A per-query error (e.g. an aborted provider) does not fail the other queries; the response is `{"count": N, "queries": [...], "results": [...]}`, where each entry is either a report or `{"query": ..., "error": ...}`.
+
+### `POST /search/bio`
+
+Run a search across biomedical/life-science providers tagged `bio` (UniProt, ClinicalTrials.gov, PubMed, Europe PMC).
+
+```bash
+curl -X POST http://localhost:8000/search/bio \
+  -H "Content-Type: application/json" \
+  -d '{"query": "BRCA1 protein structure", "params": {"num_results": 5}}'
+```
+
+It honors the same provider/tag filters as the aggregate `/search` endpoint; when no tags are supplied it defaults to `["bio"]`.
+
+### `GET /search/suggest`
+
+Query autocomplete suggestions for a partial search term. Uses the public DuckDuckGo autocomplete endpoint — no API key required.
+
+```bash
+curl "http://localhost:8000/search/suggest?q=python&limit=5"
+```
+
+Returns `query`, `suggestions`, `count`, and `source` (`duckduckgo`). `limit` defaults to 8 and is capped at 20.
+
+### `GET /providers`
+
+Return the currently available provider catalog.
+
+The response includes provider descriptions and a tag-to-provider index for quick discovery.
+
+You can filter the catalog by tag:
+
+```bash
+curl "http://localhost:8000/providers?tag=academic&tag=web"
+```
+
+Use `tag_match=all` to require every tag instead of the default any-match behavior:
+
+```bash
+curl "http://localhost:8000/providers?tag=code&tag=packages&tag_match=all"
+```
+
+### `GET /health`
+
+Simple health check endpoint. Returns service status, version, provider count, and the current provider name list.
+
+### `GET /cache/stats`
+
+Inspect the shared in-memory search result cache (used by the orchestrator to avoid re-hitting external providers for identical requests within the TTL window).
+
+```bash
+curl "http://localhost:8000/cache/stats"
+```
+
+Returns `enabled`, `entries` (live cached results), `max_entries` (capacity), `ttl_seconds`, and `insertions` (total keys written since process start — a monotonic counter unaffected by expiry or eviction).
+
+## Response Schema
+
+Every aggregated response includes:
+
+- `engine`
+- `query`
+- `results`
+- `related_searches`
+- `suggestions`
+- `answer_box`
+- `timing_ms`
+- `providers`
+- `errors`
+
+Every result item includes:
+
+- `title`
+- `url`
+- `snippet`
+- `source`
+- `rank`
+- `provider`
+- `published_date`
+- `extra`
+
+Example response:
+
+```json
+{
+  "engine": "metasearchmcp",
+  "query": "rust async runtime",
+  "results": [
+    {
+      "title": "Tokio - An asynchronous Rust runtime",
+      "url": "https://tokio.rs",
+      "snippet": "Tokio is an event-driven, non-blocking I/O platform...",
+      "source": "tokio.rs",
+      "rank": 1,
+      "provider": "duckduckgo",
+      "published_date": null,
+      "extra": {}
+    }
+  ],
+  "related_searches": [],
+  "suggestions": [],
+  "answer_box": null,
+  "timing_ms": 843.2,
+  "providers": [
+    {
+      "name": "duckduckgo",
+      "success": true,
+      "result_count": 10,
+      "latency_ms": 840.1,
+      "error": null
+    }
+  ],
+  "errors": []
+}
+```
+
+## MCP Tools
+
+MetaSearchMCP exposes these MCP tools:
+
+- `search_web`
+- `search_google`
+- `search_academic`
+- `search_github`
+- `compare_engines`
+- `search_finance`
+- `search_code`
+- `search_news`
+- `search_social`
+- `search_images`
+- `search_videos`
+- `search_bio`
+- `list_providers`
+- `provider_health`
+
+`search_web` also accepts optional `tags` so agents can limit search to categories such as `web`, `academic`, `code`, or `google`. When multiple tags are present, `tag_match="all"` requires a provider to satisfy the full set.
+All search tools accept `max_total_results` to keep the final payload compact.
+
+Example Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "MetaSearchMCP": {
+      "command": "metasearchmcp-mcp",
+      "env": {
+        "ALLOW_UNSTABLE_PROVIDERS": "true",
+        "SERPBASE_API_KEY": "your_key",
+        "SERPER_API_KEY": "your_key"
+      }
+    }
+  }
+}
+```
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+uvicorn metasearchmcp.server:app --reload
+```
+
+## Architecture
+
+The public package is organized around these modules:
+
+- `contracts.py`: request/response data models (Pydantic schemas)
+- `config.py`: application settings loaded from environment variables
+- `catalog.py`: provider discovery, filtering, and selection by name or tags
+- `orchestrator.py`: concurrent search execution across providers and result assembly
+- `merge.py`: URL canonicalization and cross-engine result deduplication
+- `ranking.py`: optional consensus/relevance result re-ranking (opt-in via `RANK_RESULTS`)
+- `server.py`: FastAPI application and Uvicorn server entrypoint
+- `broker.py`: MCP server exposing search tools over stdio
+- `api/routes.py`: HTTP endpoint handlers (search, suggest, health, providers catalog)
+- `cli.py`: interactive first-run setup wizard (metasearchmcp-setup)
+
+Entry-point wrappers (`main.py` for HTTP, `mcp_server.py` for MCP) and legacy
+compatibility shims (`aggregator.py`, `dedup.py`, `schema.py`) are kept for
+backwards compatibility.
+
+## Roadmap
+
+- Caching and provider-aware query reuse
+- Better scoring and ranking signals across providers
+- Streaming aggregation responses
+- Provider health telemetry
+- More first-party API integrations where they improve reliability
+
+## License
+
+MIT

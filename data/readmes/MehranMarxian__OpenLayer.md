@@ -1,0 +1,691 @@
+<p align="center">
+  <img src="docs/assets/openlayer-icon-152.png" alt="OpenLayer" width="88" height="88">
+</p>
+
+<h1 align="center">OpenLayer</h1>
+
+<p align="center">
+  <b>The free, open-source ComfyUI plugin for Photoshop.</b><br>
+  Local AI layers, inside Photoshop.
+</p>
+
+<p align="center">
+  <img alt="Latest release" src="https://img.shields.io/github/v/release/MehranMarxian/OpenLayer?include_prereleases&label=release&color=6f5bd6">
+  <img alt="Photoshop 2024+" src="https://img.shields.io/badge/Photoshop-2024%2B-31a8ff">
+  <img alt="Runs locally" src="https://img.shields.io/badge/runs-100%25%20locally-1f9c6b">
+  <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-blue">
+  <a href="https://github.com/MehranMarxian/OpenLayer/stargazers"><img alt="Star this repo" src="https://img.shields.io/badge/%E2%AD%90-Star%20this%20repo-f5c518"></a>
+  <br>
+  <a href="https://exchange.adobe.com/apps/cc/1e827d3d"><b>Get it on Adobe Exchange</b></a>
+  ·
+  <a href="https://github.com/MehranMarxian/OpenLayer/releases/latest/download/openlayer-latest.ccx">Download the latest .ccx</a>
+  ·
+  <a href="https://mehran-ahmadi.com/OpenLayer/">Website</a>
+  ·
+  <a href="docs/getting-started.md">Getting started</a>
+  ·
+  <a href="https://github.com/MehranMarxian/OpenLayer/discussions">Discussions</a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/v0200/dashboard-artist-dark-crop.webp" alt="The OpenLayer panel in Photoshop, Artist-Friendly Dark theme" width="300">
+</p>
+
+- **Free, with no subscription.** No credits, no metering, no account, no upload quota.
+- **Nothing leaves your computer.** ComfyUI runs on your own machine, on your own models.
+- **Results arrive as real layers in Photoshop** — named, positioned, and editable. Not a flattened PNG
+  you paste in and hope for.
+- **Fourteen generation tools**, from text-to-image and editing by instruction through inpainting and background removal to
+  multi-image composition and depth/line-art/normal passes, plus an experimental one that splits a
+  flat picture back into layers.
+- **Now with Qwen-Image 2.1** — transparent cut-out layers straight from the model, lettering that
+  comes out spelled right at native 2K, and instruction editing. Its weights are for research and
+  evaluation only, so the 2.1 presets are opt-in, never a default, and labelled "(research licence)".
+
+**You need:** Photoshop 2024+ · a local [ComfyUI](https://github.com/comfyanonymous/ComfyUI) server ·
+a GPU with 8 GB VRAM or more (12 GB is what this project targets).
+
+**How it fits together:** ComfyUI is a free app that runs AI image models on your own graphics card.
+OpenLayer is the panel inside Photoshop that talks to it — you work in Photoshop, ComfyUI does the
+generating in the background, and every result comes back as a layer.
+
+> **Alpha.** `v0.38.0-alpha` is a public testing checkpoint, not production software. It is stable
+> enough to work with, and honest about where it stops — see [what works and what does
+> not](docs/known-limitations.md).
+
+## The tools
+
+Every tool reads from your open document and writes back to it as a layer. Nothing is uploaded
+anywhere; ComfyUI runs on your own machine.
+
+| Tool | What it does |
+| :--- | :--- |
+| **Text to Image** | Generate a new layer from a prompt — or a transparent cut-out |
+| **Image to Image** | Use the active layer as visual input |
+| **Edit Image** | Change a layer or a selection by describing it — "make the jacket red", or bring in a second layer: "put the teapot from `<image2>` here" |
+| **Sketch to Image** | Guide generation with your line art |
+| **Inpaint** | Repaint a selection in place |
+| **Outpaint** | Extend canvas content beyond the edges |
+| **Upscale** | Enhance generated or selected layers |
+| **Remove Background** | Cut the subject out onto its own layer, with real alpha |
+| **Layer Maps** | Read a depth, line-art or normal pass off a layer, at its exact size |
+| **Prompt from Layer** | Describe a layer back into prompt text |
+| **Unflatten** ✦ | Split one flat layer into separate layers, each with real transparency |
+| **Live Painting** | Paint and watch the model respond live |
+| **Style Reference** | Borrow a reference layer's mood and colour |
+| **Multi-Reference** ✦ | Compose one image from several layers |
+| **Layer Tools** | Export layers, selections, and masks |
+| **History** · **Prompt Wallet** | Review past generations; save and reuse favourite prompts |
+| **Setup** · **Settings** | See what you still need to download; defaults, ports, diagnostics |
+
+<sub>✦ experimental</sub>
+
+**An AI assistant can drive it too.** Every generation tool except Live Painting is reachable over
+the Model Context Protocol, so Claude or Codex can work the panel's own buttons in your open document — "generate a
+foggy forest, then upscale it" instead of eleven clicks. Off by default, and it runs entirely on your
+machine: see [Agent Bridge (MCP)](#agent-bridge-mcp) for what it is and how to start it.
+
+## See it in Photoshop
+
+Real sessions, not mockups — every result a local generation on a 12 GB card, landing in the
+document as an ordinary layer. **Click any picture to see it full size.**
+
+<table>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v060/text-to-image-photoshop.webp"><img src="docs/assets/v060/text-to-image-photoshop.webp" alt="OpenLayer generating an image inside Photoshop and importing it as a layer" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Text to Image</b> — prompt in, layer out<br>
+      Type what you want, press Generate, and the picture arrives in your open document as a new
+      named layer. Progress and preview stay beside the canvas the whole time.<br>
+      <sub>Recorded on an earlier build; the panel looks different now.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/sketch-to-image.webp"><img src="docs/assets/v0200/sketch-to-image.webp" alt="A white line drawing of a dog rendered as a finished illustration" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Sketch to Image</b> — your drawing, finished<br>
+      The line drawing on the right goes in; the illustration comes out. Pose, ears and tail follow
+      your strokes exactly — the model only fills in the rest.
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/sketch-abstract.webp"><img src="docs/assets/v0200/sketch-abstract.webp" alt="An abstract painted face generated through Sketch to Image" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Sketch to Image</b> — from a painted source<br>
+      Not only for line art: give it a shaded or painted layer and it keeps your shapes and values.
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/live-painting.webp"><img src="docs/assets/v0200/live-painting.webp" alt="Live Painting turning a painted silhouette into a photographic eagle" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Live Painting</b> — paint rough, watch it render<br>
+      Brush a crude shape and the preview turns it into a photograph while you paint.
+      <b>Import Refined as Layer</b> keeps the one you like.
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/multi-reference.webp"><img src="docs/assets/v0200/multi-reference.webp" alt="A figure in a yellow raincoat composed into a neon-lit rainy street" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Multi-Reference</b> ✦ — several layers, one picture<br>
+      A street layer and a figure layer composed into one scene. Clothing, props, setting and light
+      carry across; <b>a specific person's face does not</b>, and the panel tells you so.
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/unflatten-hiker.webp"><img src="docs/assets/v0200/unflatten-hiker.webp" alt="Unflatten splitting a mountain photograph into three layers in Photoshop" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Unflatten</b> ✦ — one flat photo back into layers<br>
+      A single photograph came back as three layers with real masks — look at the Layers panel.
+      The small white speck in the middle mask is the hiker, on his own layer, with the mountain
+      behind him already painted in (<a href="docs/assets/v0200/unflatten-masks.webp">masks close up</a>).
+      Needs a subject standing clear of its background; edges are a starting point for Select and Mask.<br>
+      <sub>Photo: <a href="https://commons.wikimedia.org/wiki/File:Hiking_in_the_mountains_in_Schilt_(Unsplash).jpg">Hiking in the mountains in Schilt</a>, CC0.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="280" valign="top">
+      <a href="docs/assets/v0200/outpaint.webp"><img src="docs/assets/v0200/outpaint.webp" alt="Outpaint extending a photographic interior beyond the original canvas" width="260"></a>
+    </td>
+    <td valign="top">
+      <b>Outpaint</b> ✦ — grow the canvas<br>
+      Enlarge the canvas in Photoshop, and the model paints what belongs in the new space.
+      Experimental — try it on a duplicate.
+    </td>
+  </tr>
+</table>
+
+<sub>✦ experimental</sub>
+
+**Watch it run** — full sessions against a real ComfyUI and a real Photoshop window, unedited:
+[Inpaint and Outpaint, live](https://www.youtube.com/watch?v=LD_gPQoCAnw) ·
+[Start to finish, one server](https://www.youtube.com/watch?v=Mh5EddKxZew)
+<sub>(recorded on an earlier build)</sub>
+
+<details>
+<summary><h3>Installation</h3></summary>
+
+**Install from [Adobe Exchange](https://exchange.adobe.com/apps/cc/1e827d3d) (Install button, Creative Cloud does the rest), or download the `.ccx` and double-click it. Then start ComfyUI.** That is the whole process — the details
+below are for when something does not go that way, and for building from source.
+
+You will also need the Adobe Creative Cloud desktop app, which is what installs the `.ccx`.
+
+### 1. Install the plugin
+
+**Option A, Adobe Exchange:** open the [OpenLayer listing](https://exchange.adobe.com/apps/cc/1e827d3d) and click **Install**. Creative Cloud installs it and Photoshop lists it under **Plugins › OpenLayer**. The listing carries the version Adobe approved (v0.37.0) and can trail the latest GitHub release. It is not yet shown to visitors in the EU, so use Option B there.
+
+**Option B, the latest alpha:** use the **Download** button above, or grab
+[`openlayer-latest.ccx`](https://github.com/MehranMarxian/OpenLayer/releases/latest/download/openlayer-latest.ccx)
+directly, and **double-click it**. Creative Cloud installs the panel. Photoshop then lists it under
+**Plugins › OpenLayer**. Release notes for the version you just got are on the
+[Releases page](https://github.com/MehranMarxian/OpenLayer/releases).
+
+Two things worth knowing:
+
+- The Exchange install is Adobe-reviewed. The direct `.ccx` is **not signed**, so Creative Cloud shows a
+  "not verified by Adobe" prompt for it. That is expected — click through it.
+- Keep the `.ccx` on the **same drive as Photoshop**. The installer only searches the drive the file
+  is sitting on, so a `.ccx` on `D:` with Photoshop on `C:` fails silently.
+
+<details>
+<summary>If double-clicking does nothing (a Windows 11 quirk)</summary>
+
+Creative Cloud sometimes opens with no progress and no error. Install directly instead:
+
+```text
+"C:\Program Files\Common Files\Adobe\Adobe Desktop Common\RemoteComponents\UPI\UnifiedPluginInstallerAgent\UnifiedPluginInstallerAgent.exe" /install "path\to\openlayer-latest.ccx"
+```
+
+`UnifiedPluginInstallerAgent.exe /list all` shows what is installed and `/remove OpenLayer`
+uninstalls it. `/list` needs `all` or the exact product name (`"Photoshop 2025 64"`) — a partial name
+like `"Photoshop"` prints nothing and no error, which looks exactly like "nothing installed".
+
+</details>
+
+Verified on Windows 11 with Photoshop 2025. **macOS and other Photoshop versions are unverified** —
+reports either way are welcome.
+
+### 2. Start ComfyUI
+
+Use your normal launch command. OpenLayer defaults to `8188`, which is ComfyUI's own default port, so
+an untouched install already matches:
+
+```bash
+python main.py --listen 127.0.0.1 --port 8188 --preview-method auto
+```
+
+**You do not have to move your server.** If ComfyUI is already running somewhere else, open
+**Settings › Find ComfyUI Active Port** — OpenLayer scans for it, connects, and reports `Ready`.
+
+> **Upgrading from v0.20 or earlier? The default port changed from `8190` to `8188`.**
+> OpenLayer used `8190` for twenty releases; it now uses the port ComfyUI itself starts on.
+> If you had ever connected successfully, your address was saved and **nothing changes for you**.
+> If the panel does come up pointing at `8188` while your server is on `8190`, it scans for the
+> running server by itself on first launch — and **Settings › Find ComfyUI Active Port** puts it
+> back in one click at any time. `8190` is still in the scan list.
+
+`--preview-method auto` is optional but recommended: it streams live sampler previews into the panel
+while generating.
+
+### 3. Get the starter model
+
+On a fresh ComfyUI, open **Setup** in the panel. From v0.39, its **Start here** card downloads
+**FLUX.2 Klein 4B** (Apache-2.0, three files, 12.5 GB, no sign-in) with one button, into the right
+ComfyUI folders, and checks each file against the checksum Hugging Face publishes. Once it is in,
+Text to Image and Image to Image open on Klein. [What it runs and why](#start-here--125-gb-and-five-tools-work).
+
+### 4. Generate
+
+Open a document, open the panel, open a tool, type a prompt, press **Generate**. Full first-run
+walkthroughs for each tool are in [**Getting started**](docs/getting-started.md).
+
+<details>
+<summary>Building from source instead</summary>
+
+Needs Node.js 18+ and the Adobe UXP Developer Tool.
+
+```bash
+npm install
+npm run build
+```
+
+Then load `dist/manifest.json` in the UXP Developer Tool and click **Load**.
+
+```bash
+npm run typecheck   # local checks, no Photoshop or ComfyUI needed
+npm test
+npm run dev         # panel layout iteration in a browser
+npm run package     # writes the .zip and .ccx into packages/
+```
+
+</details>
+</details>
+
+<details>
+<summary><h3>Required files</h3></summary>
+
+You do not need all of this. Most tools share the same few files, so the list is much shorter than it
+looks — and the panel's **Setup** screen shows this same list checked against your own machine, with
+the folder each file goes in and whether you already have it. It works with ComfyUI stopped, which is
+the state most people are in when they go looking.
+
+Sizes are as Hugging Face reports them. **"Add-on"** below means a ComfyUI custom node — an extension
+you install once through ComfyUI-Manager, not something you download into a models folder.
+
+### Start here — 12.5 GB, and five tools work
+
+The **FLUX.2 Klein 4B** stack is the best ratio in the whole list. Apache-2.0, ungated, no add-ons,
+and every node it uses is core ComfyUI. It generates a 1024×1024 image in about 12 seconds on a
+4070 Ti. From v0.39, the **Start here** card at the top of **Setup** downloads all three files with
+one button, and Text to Image and Image to Image open on Klein once they are in.
+
+| File | Folder | Size |
+| :--- | :--- | ---: |
+| `flux-2-klein-4b-fp8.safetensors` | `models/diffusion_models/` | 4.07 GB |
+| `qwen_3_4b.safetensors` | `models/text_encoders/` | 8.04 GB |
+| `flux2-vae.safetensors` | `models/vae/` | 336 MB |
+
+That is **Text to Image, Image to Image, Edit Image, Inpaint and Multi-Reference** — five tools,
+12.5 GB. Inpaint also needs the
+[comfyui-inpaint-cropandstitch](https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch) add-on,
+and Inpaint and Multi-Reference are experimental. Add `4x-UltraSharp.pth` (67 MB,
+`models/upscale_models/`) and **Upscale** works too.
+
+### Also get an SD 1.5 checkpoint
+
+**Three more tools are built on SD 1.5 and cannot run without one.** It is not pinned or downloadable
+from Setup, because any SD 1.5 checkpoint works and the choice is yours —
+`epicrealism_naturalSinRC1VAE.safetensors` is what the presets are tested against. Roughly 2 GB, into
+`models/checkpoints/`.
+
+| Tool | Why it needs one |
+| :--- | :--- |
+| **Style Reference** | Its only preset is SD 1.5 — without a checkpoint the tool cannot run at all |
+| **Live Painting** | The fast tier pairs an SD 1.5 checkpoint with an LCM LoRA from `models/loras/` |
+| **Sketch to Image** | All three ControlNet presets (LineArt, Scribble, Depth) build on SD 1.5 |
+
+It also unlocks the **Standard checkpoint** preset in Text to Image, Image to Image and Inpaint. If
+you have ever used ComfyUI or Automatic1111 before, you almost certainly have one already.
+
+**Two tools need nothing at all:** Layer Tools works with ComfyUI stopped, and Upscale costs 67 MB.
+
+### The five stacks
+
+Almost every preset is one of these. Install a stack once and every tool that uses it lights up.
+
+| Stack | Files | Size | Licence |
+| :--- | :--- | ---: | :--- |
+| **FLUX.2 Klein 4B** | Klein 4B fp8 + `qwen_3_4b` + `flux2-vae` | 12.5 GB | Apache-2.0, ungated |
+| **Z_image_Turbo** | `z_image_turbo_bf16` + `qwen_3_4b` + `ae` | 20.7 GB | ungated |
+| **Krea-2 Turbo** | Krea-2 fp8 + `qwen3vl_4b_fp8` + `qwen_image_vae` | 18.6 GB | ungated |
+| **Flux Fill** | `flux1-fill-dev` + `clip_l` + `t5xxl_fp16` + `ae` | 34.2 GB | **non-commercial** |
+| **Qwen-Image 2.1** | 2.1 int8 + `qwen3vl_8b_w4a8` + `qwen_image_2.1_vae` | 14.2 GB | **research only** · ComfyUI 0.37+ |
+
+`qwen_3_4b.safetensors` (8.04 GB) is shared by Klein *and* Z_image_Turbo — if you have one, the other
+costs 12.3 GB, not 20.7 GB. `ae.safetensors` is shared by Z_image_Turbo and Flux Fill.
+
+<details>
+<summary><b>Text to Image</b> — Klein, Z-Image, Krea-2, or any checkpoint you own</summary>
+
+| Preset | Needs | Extra |
+| :--- | :--- | :--- |
+| Standard checkpoint | any SD 1.x / SDXL checkpoint you already have | — |
+| FLUX.2 Klein | **Klein stack** | — |
+| Z_image_Turbo | **Z_image_Turbo stack** | — |
+| Krea-2 Turbo | **Krea-2 Turbo stack** | — |
+| Qwen-Image 2.1 | **Qwen-Image 2.1 stack** | research licence · the one preset with **Transparent Background** · native 2K |
+| Flux1-dev fp8 | `flux1-dev-fp8.safetensors` → `models/checkpoints/` (17.3 GB) | non-commercial licence |
+| Flux.2 dev (GGUF) | `flux2-dev-Q4_K_M.gguf` (20.1 GB) + `mistral_3_small_flux2_fp8.safetensors` (18.0 GB) + `full_encoder_small_decoder.safetensors` (250 MB) | add-on: [ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF) · non-commercial · **also needs the `gguf` Python package inside ComfyUI's environment — without it the add-on registers no nodes and gives no error at all** |
+
+</details>
+
+<details>
+<summary><b>Image to Image</b> — nothing new if you did Text to Image</summary>
+
+Every Image to Image preset reuses a stack you may already have: **Klein**, **Z_image_Turbo**,
+**Krea-2 Turbo**, or your own SD 1.x / SDXL checkpoint. **Edit Image** has two: **Klein** (the
+default) and **Qwen-Image 2.1**, which keeps a cut-out layer a cut-out (research licence).
+
+No add-ons. **0 extra GB** if the matching Text to Image preset already runs.
+
+</details>
+
+<details>
+<summary><b>Sketch to Image</b> — a ControlNet on top of a stack you have</summary>
+
+All five presets need the [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux)
+add-on for the line/depth preprocessors.
+
+| Preset | Needs | Extra |
+| :--- | :--- | ---: |
+| LineArt ControlNet | your SD 1.5 checkpoint + `control_v11p_sd15_lineart_fp16.safetensors` → `models/controlnet/` | 723 MB |
+| Scribble ControlNet | your SD 1.5 checkpoint + `control_v11p_sd15_scribble_fp16.safetensors` | 723 MB |
+| Depth ControlNet | your SD 1.5 checkpoint + `control_v11f1p_sd15_depth_fp16.safetensors` | 723 MB |
+| Z-Image Fun ControlNet (Lite) | **Z_image_Turbo stack** + the lite patch → `models/model_patches/` | +2.02 GB |
+| Z-Image Fun ControlNet (Full) | **Z_image_Turbo stack** + the full patch → `models/model_patches/` | +6.71 GB |
+
+Lite and full are not ranked — the full weights render shaded work more photographically, the lite
+weights hold bold sparse line art that the full weights flatten into a filled shape.
+
+</details>
+
+<details>
+<summary><b>Inpaint</b> — cheapest via Klein, best-known via Flux Fill</summary>
+
+| Preset | Needs | Add-on |
+| :--- | :--- | :--- |
+| FLUX.2 Klein (crop & stitch) | **Klein stack** — 0 extra GB if you have it | [comfyui-inpaint-cropandstitch](https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch) |
+| Flux Fill | **Flux Fill stack** (34.2 GB, non-commercial) | — |
+| Flux Fill (crop & stitch) | **Flux Fill stack** — 0 extra GB | [comfyui-inpaint-cropandstitch](https://github.com/lquesada/ComfyUI-Inpaint-CropAndStitch) |
+| Standard checkpoint | your own SD 1.x **inpaint** checkpoint | — |
+
+Crop-and-stitch samples the masked area at a fixed 1024 and blends the patch back, so a small mask on
+a large document no longer samples a few hundred pixels.
+
+</details>
+
+<details>
+<summary><b>Outpaint</b> — the Flux Fill stack, shared with Inpaint</summary>
+
+**Flux Fill stack** (34.2 GB, non-commercial licence). No add-on. **0 extra GB** if Inpaint's Flux
+Fill preset already runs — it is the same four files.
+
+</details>
+
+<details>
+<summary><b>Upscale</b> — 67 MB, the cheapest tool here</summary>
+
+`4x-UltraSharp.pth` → `models/upscale_models/` (67 MB). `RealESRGAN_x4plus.pth` also works. No add-on.
+
+This is a pixel/model upscale, not a generative one — no prompt, no tiled diffusion.
+
+</details>
+
+<details>
+<summary><b>Prompt from Layer</b> — about 1.1 GB</summary>
+
+`Florence-2-base-PromptGen-v2.0` → `models/LLM/` (the whole repo folder, about 1.1 GB).
+Add-on: [ComfyUI-Florence2](https://github.com/kijai/ComfyUI-Florence2).
+
+</details>
+
+<details>
+<summary><b>Unflatten</b> — 30 GB, and shares nothing</summary>
+
+The one stack that reuses nothing else. Every node it needs is core ComfyUI, so there is no add-on.
+
+| File | Folder | Size |
+| :--- | :--- | ---: |
+| `qwen_image_layered_fp8mixed.safetensors` | `models/diffusion_models/` | 20.5 GB |
+| `qwen_2.5_vl_7b_fp8_scaled.safetensors` | `models/text_encoders/` | 9.38 GB |
+| `qwen_image_layered_vae.safetensors` | `models/vae/` | 254 MB |
+
+`qwen_image_layered_vae.safetensors` is **not** the same file as Krea-2's `qwen_image_vae.safetensors`,
+despite the near-identical name. About two minutes for four layers on a 12 GB card.
+
+</details>
+
+<details>
+<summary><b>Multi-Reference</b> — free if you have Klein</summary>
+
+**Klein stack**, and nothing else. No add-on — `ReferenceLatent` and the rest are core ComfyUI.
+**0 extra GB** if any Klein preset already runs.
+
+Or the **Qwen-Image 2.1 stack** (research licence), which names references in the prompt as
+`<image1>`, `<image2>`, keeps transparent layers' edges, and takes about 30 seconds per reference.
+
+</details>
+
+<details>
+<summary><b>Style Reference</b> — 2.6 GB on top of an SD 1.5 checkpoint</summary>
+
+| File | Folder | Size |
+| :--- | :--- | ---: |
+| `ip-adapter-plus_sd15.safetensors` | `models/ipadapter/` | 98 MB |
+| `CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors` | `models/clip_vision/` | 2.53 GB |
+
+Plus any SD 1.5 checkpoint. Add-on:
+[ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus).
+
+</details>
+
+<details>
+<summary><b>Live Painting</b> — bring your own SD 1.5 checkpoint and an LCM LoRA</summary>
+
+The fast tier needs any SD 1.5 checkpoint plus an **LCM LoRA** in `models/loras/` — the panel finds it
+by looking for `lcm` in the filename. Neither is pinned, so neither appears on the Setup screen; if
+you have no LCM LoRA the fast tier has nothing to select.
+
+The refine tier reuses the **Krea-2 Turbo stack** — 0 extra GB if you have it.
+
+</details>
+
+<details>
+<summary><b>Layer Tools</b> — nothing</summary>
+
+No models, no add-ons. It exports layers, selections and masks to a file or into ComfyUI's `input/`
+folder, and works with ComfyUI stopped.
+
+</details>
+
+### If you eventually want everything
+
+Roughly **192 GB**, deduplicated. Installing every preset's stack separately, ignoring the sharing,
+would be about 427 GB — that gap is why the stacks above are worth understanding. Seven files are
+licence-restricted: four are non-commercial (`flux1-dev-fp8`, `flux1-fill-dev`,
+`flux2-dev-Q4_K_M.gguf`, `mistral_3_small_flux2_fp8`), and the three Qwen-Image 2.1 files are for
+research and evaluation only. The panel will not fetch those for you; use the link and read the
+licence before selling anything made with them.
+
+</details>
+
+<details>
+<summary><h3>Agent Bridge (MCP)</h3></summary>
+
+Ask Claude — or Codex, or anything else that speaks the **Model Context Protocol** — to generate an
+image, upscale a layer, caption a selection or compose a scene, and it works the panel's own buttons
+in your open document. "Make me a foggy forest at 1024 square, then upscale it" is a sentence, not
+eleven clicks.
+
+**It presses buttons; it cannot touch your document.** The bridge holds no Photoshop and no ComfyUI
+code. Its only two verbs are *ask the panel to run a tool it already has* and *read back what the
+panel said happened*, so an agent-driven generation and a clicked one are the same code path — the
+same document binding, the same transactional import, the same one-run-at-a-time lockout. Ask for a
+second generation mid-run and it is refused with "OpenLayer is busy", exactly as a second click would
+be.
+
+**Thirteen** generation tools are reachable — every one except Live Painting:
+
+`text_to_image` · `image_to_image` · `edit_image` · `sketch_to_image` · `inpaint` · `outpaint` · `upscale` ·
+`prompt_from_layer` · `style_reference` · `multi_reference` · `unflatten` · `remove_background` ·
+`layer_maps`
+
+Plus `get_panel_state`, which answers instantly without touching Photoshop — ask for that first if
+anything seems wrong.
+
+### Running it
+
+**It is not in the `.ccx` download.** A plugin package inside Photoshop cannot install or start a Node
+program, so the bridge lives in this repository and is off by default at both ends. Clone or download
+the repo, then:
+
+**1. Install once**
+
+```bash
+cd bridge && npm install
+```
+
+**2. Start the hub, and leave it running** — like ComfyUI, it stays up
+
+```bash
+npm run hub
+```
+
+**This is the step people miss.** Nothing connects until the hub is listening, and registering the
+client below does *not* start it.
+
+**3. Register it with your AI client, once**
+
+```bash
+claude mcp add openlayer -- node /absolute/path/to/OpenLayer/bridge/src/main.mjs
+```
+
+**4. In Photoshop:** open the panel → **Setup** → turn on **Agent Bridge**.
+
+Order between steps 2–4 barely matters; the client connects to the hub lazily on its first tool call.
+Only the hub has to be running by the time you actually ask for something.
+
+### Worth knowing
+
+- **Nothing here is Claude-specific.** It is a standard MCP server over stdio, so Claude Code and
+  Desktop, Codex CLI, VS Code agent mode, Cursor, Windsurf, Zed, Cline and Continue all work. Only
+  where you paste the config differs — the command is always the same.
+- **Two processes on purpose.** The hub is long-lived and owns `127.0.0.1:8199`; the thing your client
+  launches is a thin agent that connects to it. That is what lets several clients drive one panel at
+  once, and lets you restart your AI client without the panel dropping. Use `--port <n>` to move the
+  socket — pass it to **both** commands and set the same port in Setup.
+- **"Ask the Agent for a Prompt"**, under the Text to Image prompt box, sends a question the *other*
+  way. It needs a client that supports MCP **sampling**, which is optional in the protocol — a client
+  without it gets an instant, clear refusal rather than a hang. `get_panel_state` reports
+  `answeringAgents`, which tells you whether the button can work at all right now.
+- **Check it without Photoshop or ComfyUI:** `npm run smoke` in `bridge/` boots the real bridge,
+  attaches a fake panel, and drives a full tool call over MCP.
+
+Design notes and the full protocol are in [`docs/mcp-bridge.md`](docs/mcp-bridge.md); the bridge's own
+[`bridge/README.md`](bridge/README.md) covers its internals.
+
+</details>
+
+<details>
+<summary><h3>Troubleshooting</h3></summary>
+
+**The panel opens but ComfyUI does not connect**
+
+Confirm the server is reachable, then click **Settings › Find ComfyUI Active Port** — it will find a
+server on any port.
+
+```bash
+curl http://127.0.0.1:8188/system_stats
+```
+
+**It connected before the update and does not now**
+
+The default port moved from `8190` to `8188` in `v0.25.0-alpha`. Click **Settings › Find ComfyUI
+Active Port** — `8190` is still scanned, so this is a one-click fix — or type your address into the
+server field and press **Save Settings** to pin it.
+
+**The checkpoint list is empty**
+
+Click **Check ComfyUI** after ComfyUI has *fully* started. If it is still empty, confirm your models
+are installed in ComfyUI and that the server URL in OpenLayer matches the running port.
+
+**Generate fails**
+
+Run **Settings › Check Workflow Health**. It names the exact model file or ComfyUI node that is
+missing, and the folder it belongs in. For a custom workflow, node IDs need mapping in
+`src/comfy/presetRegistry.ts` — see [custom workflows](docs/custom-workflows.md).
+
+**Image to Image fails with a model mismatch**
+
+Use an SD 1.x or SDXL checkpoint with `img2img-basic` first. SD3, SD3.5 and Flux checkpoints stay
+visible but are marked experimental for this preset — they usually need a dedicated preset.
+
+**Import Result as New Layer fails**
+
+Open a document in Photoshop before importing. OpenLayer imports into the *active* document.
+
+**The plugin does not appear in Photoshop**
+
+If you installed the `.ccx`, check **Plugins › OpenLayer**. If you built from source, run
+`npm run build` and load `dist/manifest.json` in the UXP Developer Tool.
+
+**A macOS install gives a blank panel**
+
+Use v0.10.0-alpha or newer. Earlier packages were built with backslash entry paths that macOS `unzip`
+flattens.
+
+**Unflatten hands the picture back unchanged**
+
+The subject fills the frame. Unflatten needs something standing in front of something else; a
+close-up has no front and back to find. This is about composition, not about whether the image was
+photographed or generated.
+
+</details>
+
+<details>
+<summary><h3>Project structure</h3></summary>
+
+```text
+.
+├── bridge/          MCP server — lets an AI assistant drive the panel
+├── docs/            Landing page, guides, and design notes
+├── scripts/         Packaging and setup-pack tooling
+├── src/
+│   ├── comfy/       ComfyUI client, preset registry, workflow builder
+│   ├── photoshop/   UXP layer capture, import, selection and mask handling
+│   ├── ui/          Panel screens and components
+│   ├── utils/
+│   ├── workflows/
+│   │   ├── api/     Runnable API-format graphs submitted to ComfyUI
+│   │   └── source/  GUI-editable graphs you can open in ComfyUI
+│   ├── index.html
+│   ├── main.ts
+│   ├── manifest.json
+│   └── styles.css
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
+```
+
+The panel is TypeScript built with Vite into a UXP plugin for Photoshop. Presets are declared in
+`src/comfy/presetRegistry.ts`; each one points at an API-format graph in `src/workflows/api/` and an
+editable twin in `src/workflows/source/`, and a checker keeps the pair in sync.
+
+</details>
+
+## Privacy
+
+Filesystem access is for temporary files; network access is to reach ComfyUI on `127.0.0.1`. Nothing
+— no image, prompt, model name, or diagnostic — is ever sent anywhere else. No telemetry, no account.
+
+## Documentation
+
+[Getting started](docs/getting-started.md) ·
+[Model & VRAM guide](docs/model-guide.md) ·
+[What works, what does not](docs/known-limitations.md) ·
+[Custom workflows](docs/custom-workflows.md) ·
+[Workflow notes](docs/workflow-notes.md) ·
+[Agent bridge](bridge/README.md) ·
+[Testing](docs/testing.md) ·
+[Roadmap](docs/roadmap.md)
+
+## Contributing
+
+Testing reports are the most valuable thing you can send — what broke, on what card, with which
+model — in [Discussions](https://github.com/MehranMarxian/OpenLayer/discussions) or as an
+[issue](https://github.com/MehranMarxian/OpenLayer/issues).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+OpenLayer™ — the OpenLayer name and logo may not be used by derivative works without permission.
+
+[Privacy Policy](https://mehran-ahmadi.com/OpenLayer/privacy.html) ·
+[Terms of Service](https://mehran-ahmadi.com/OpenLayer/terms.html)
+
+<p align="center">
+  <sub>Built by <a href="https://mehran-ahmadi.com/">Mehran Ahmadi</a>. If OpenLayer is useful to you,
+  a star helps other artists find it.</sub>
+</p>

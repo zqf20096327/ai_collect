@@ -1,0 +1,146 @@
+# NVIDIA RecSys Examples
+
+# Overview
+NVIDIA RecSys Examples is a collection of optimized recommender models and components. 
+
+The project is organized into three parts:
+
+## Examples
+- [HSTU recommender examples](./examples/hstu/README.md) for large-scale ranking and retrieval training, with [TorchRec](https://github.com/pytorch/torchrec), [Megatron-Core](https://github.com/NVIDIA/Megatron-LM/tree/main/megatron/core), DynamicEmb, training benchmarks, and optimized HSTU attention through `fbgemm_gpu_hstu`
+- [HSTU inference](./examples/hstu/inference/README.md) with paged GPU KV cache, asynchronous host KV onload/offload, [Triton Inference Server](https://github.com/triton-inference-server/server), CUDA graph optimization, and C++ deployment with AOTInductor
+- [Semantic ID generative recommender examples](./examples/sid_gr/README.md) for SID-GR training and retrieval, including hierarchical semantic-ID prediction, Megatron-Core decoder support, TorchRec jagged tensors, baseline beam generation, and KV-cache `generate_beam_decode()`
+- [SID-GR inference](./examples/sid-gr-inference/README.md) for long-context, short-decode, large-beam serving with ContextKV/BeamKV/BeamPath runtime abstractions, continuous batching, CUDA graph replay, HTTP `/generate`, and SGLang comparison benchmarks
+
+## Standalone GPU Libraries
+- [DynamicEmb](./corelib/dynamicemb/README.md) for model-parallel dynamic embedding tables with GPU/host hash-table storage, TorchRec `EmbeddingCollection` and `EmbeddingBagCollection` integration, admission and eviction controls, cache/prefetch support, fused pooling/sequence kernels, and Torch-exportable inference embedding tables
+- [RecSys KVCache Manager](./corelib/recsys_kvcache_manager/README.md) for user-ID-based KV-cache reuse in generative recommender inference, with paged GPU KV tables, asynchronous onboarding/offloading, native pinned-host storage, FlexKV-backed lower-tier storage, and FlexKV CPU breakdown analysis
+- [Beam search decode attention](./corelib/gr_decode_atten/README.md) kernels for SID-GR KV-cache generation, with fused and 3-kernel paths across SM8x, SM90, SM100, and SM120 GPUs
+
+## Agentic Performance Optimization
+- [Talos](./corelib/talos/README.md) for end-to-end automated optimization of a PyTorch model: it profiles the real workload, rewrites the hotspots it finds, verifies every change for numerical correctness and measured speedup, and iterates until the gains run out — driven entirely by a coding agent (Claude Code, Codex and others), with no human in the loop
+
+# What's New
+- **[2026/9/13]** 🎉v26.08 released!
+  - Adds [Talos](./corelib/talos/README.md), an agent-driven PyTorch optimization toolkit that profiles real workloads, optimizes one measured hotspot at a time, and independently verifies numerical correctness and end-to-end speedup. The included DIN, DIEN, HSTU, and OneRec workloads show 2.22×–3.29× speedups.
+  - Adds DynamicEmb delta replay through `replay_increment()`, completing the `incremental_dump()` pipeline for synchronizing training updates to serving replicas without reloading a full checkpoint. See the [DynamicEmb API guide](./corelib/dynamicemb/DynamicEmb_APIs.md#replay_increment).
+  - Adds weighted-SUM support for DynamicEmb-backed TorchRec `EmbeddingBagCollection` in training and evaluation, including mixed-dimension tables and fused forward/backward kernels. See [Weighted EmbeddingBagCollection](./corelib/dynamicemb/DynamicEmb_APIs.md#weighted-embeddingbagcollection).
+  - Stores DynamicEmb checkpoints in each table's native `float32`, `float16`, or `bfloat16` precision, reducing checkpoint size for lower-precision tables while preserving compatibility with older float32 checkpoints.
+  - Upgrades NV-Embedding-Cache and extends the [HSTU AOTInductor workflow](./examples/hstu/inference_aoti/README.md) with version-aware Python export and native C++ loading.
+- **[2026/8/10]** 🎉v26.07 released!
+  - Adds a `torch.export`-compatible RecSys KVCache backend and an end-to-end [HSTU AOTInductor inference workflow](./examples/hstu/inference_aoti/README.md) with packaged models, native C++ replay, a FlexKV-backed runtime, and Triton Server deployment; also publishes refreshed [AOTI and KV-cache benchmarks](./examples/hstu/inference_aoti/benchmark/README.md).
+  - Improves [SID-GR inference](./examples/sid-gr-inference/README.md) with shared decode CUDA-graph memory pools and logits buffers, and adds opt-in, SGLang-compatible weight hot updates from disk or colocated CUDA IPC for slime-style RL workflows. See the [weight hot-update guide](./examples/sid-gr-inference/docs/weight_hot_update.md).
+  - Extends [DynamicEmb](./corelib/dynamicemb/README.md) with compound `(TIMESTAMP, LFU)` eviction and optional JIT-compiled custom score functions, enabling policies such as time-decayed LFU.
+  - Adds opt-in retention and readback of keys evicted from DynamicEmb's last storage tier through `EvictedItemMode.RETAIN_KEY` and `pop_evicted_keys()`, and upgrades `incremental_dump()` to return structured `DeltaDumpResult` records with keys, values, evicted keys, slot indices, and metadata. See the [DynamicEmb APIs](./corelib/dynamicemb/DynamicEmb_APIs.md).
+- **[2026/7/14]** 🎉v26.06 released!
+  - Optimizes the RecSys-FlexKV inference path (bulk `slot_mapping` device-to-host copy, vectorized slot expansion, batched onboarding, and SSD tier) and adds a FlexKV inference benchmark covering the three cache-tier hit paths (GPU-hit, host/CPU-hit, and SSD-hit). See [RecSys KVCache Manager](./corelib/recsys_kvcache_manager/README.md) and the [FlexKV CPU breakdown](./corelib/recsys_kvcache_manager/test/FLEXKV_CPU_BREAKDOWN.md).
+  - Adds DynamicEmb incremental dump for LFU tables via a compound `LruLfu` score policy, and fixes the padded-buffer optimizer for mixed embedding dimensions and host VMM tensor sizing to avoid virtual-address-space exhaustion. See [DynamicEmb](./corelib/dynamicemb/README.md).
+  - Updates FBGEMM for Blackwell HSTU attention and adds phase-selective CUDA-graph benchmark profiling with percentile (P10) reporting and attention heatmaps. See the [HSTU inference benchmark](./examples/hstu/inference/benchmark/README.md).
+  - Extends [SID-GR inference](./examples/sid-gr-inference/README.md) with a shared-prefix-length argument and an environment-variable control for GR decode attention.
+<details>
+<summary>More</summary>
+
+- **[2026/6/15]** 🎉v26.05 released!
+  - Adds a new [SID-GR inference example](./examples/sid-gr-inference/README.md) for large-beam generative retrieval serving and benchmarking.
+  - Enables HSTU + DynamicEmb end-to-end training on Blackwell (`sm_100`) and refreshes HSTU benchmark fixes, docs, and training examples.
+  - Extends beam-search decode attention to SM8x and improves DynamicEmb, segmented unique, and FlexKV benchmark coverage.
+- **[2026/5/20]** 🎉v26.04 released!
+  - Refactors the previous async KV-cache manager into a standalone [RecSys KVCache Manager package](corelib/recsys_kvcache_manager/), a new FlexKV backend for multi-node/multi-tier KV storage, LLM-style KV APIs, and updated HSTU inference examples.
+  - Introduces a new [beam-search decode attention kernel](./corelib/gr_decode_atten/) and CuTe kernels plus a `generate_beam_decode()` entry point, enabling more efficient KV-cache-based beam generation for the SID-GR model with vectorized masking utilities.
+- **[2026/4/14]** 🎉v26.03 released!
+  - We added Torch export and AOTInductor packaging for end-to-end HSTU C++ inference. See the [HSTU inference overview](./examples/hstu/inference/README.md) and the [C++ inference guide](./examples/hstu/inference_aoti/guide_to_hstu_aoti_inference_setup.md).
+  - We improved DynamicEmb with table fusion and expansion, relaxed embedding-table alignment (no longer power-of-two), and capacity sizing aligned to `bucket_capacity`. See [DynamicEmb](./corelib/dynamicemb/README.md).
+  - We added an HSTU end-to-end training benchmark suite with progressive optimizations. See the [HSTU training benchmark](./examples/hstu/training/benchmark/README.md) and [E2E benchmark notes](./examples/hstu/training/benchmark/E2E_BENCHMARK.md).
+  - We published HSTU inference benchmark results on B200 in the [HSTU inference benchmark](./examples/hstu/inference/benchmark/README.md).
+  - We migrated HSTU attention to `fbgemm_gpu_hstu`, removed the legacy compatibility layer, and improved the training stack (fewer device-to-host syncs in jagged tensor handling, balancer tuning, and debug logging). See [HSTU training setup](./examples/hstu/training/README.md).
+
+- **[2026/2/13]** 🎉v26.01 released!
+  - We optimized HSTU KVCacheManager, moving Python-based KV cache management to optimized C++ implementation with asynchronous onload/offload operation and compression support. [Benchmark](https://github.com/NVIDIA/recsys-examples/tree/main/examples/hstu/inference/benchmark#1-end-to-end-inference-performance) shows onload and offload latency can be fully hidden under HSTU inference.
+  - We introduced a HSTU training optimization with workload-balanced batch shuffling for data parallel training.
+  - We added caching and prefetching support for `EmbeddingBagCollection`.
+
+- **[2026/1/13]** 🎉v25.12 released!
+  - Added Triton Inference Server support for HSTU inference. Follow [the HSTU inference Triton example](./examples/hstu/inference/README.md#example-hstu-model-inference-with-triton-inference-server) to try it out.
+  - We introduced our first semantic-id retrieval model example. Follow the semantic‑id retrieval (sid_gr) [documentation](https://github.com/NVIDIA/recsys-examples/tree/main/examples/sid_gr) to run it. 
+
+- **[2025/12/10]** 🎉v25.11 released!
+  - DynamicEmb supports embedding admission, that decides whether a new feature ID is allowed to create or update an embedding entry in the dynamic embedding table. By controlling admission, the system can prevent very rare or noisy IDs from consuming parameters and optimizer state that bring little training benefit.
+
+- **[2025/11/11]** 🎉v25.10 released!
+  - HSTU training example supports sequence parallelism.
+  - DynamicEmb supports LRU score checkpointing, gradient clipping.
+  - Decouple scaling sequence length from the maximum sequence length limit in HSTU attention and extend HSTU support to the SM89 GPU architecture for training.
+
+- **[2025/10/20]** 🎉v25.09 released!
+  - Integrated prefetching and caching into the HSTU training example.
+  - DynamicEmb now supports distributed embedding dumping and memory scaling.
+  - Added kernel fusion in the HSTU block for inference, including KVCache fixes.
+  - HSTU attention now supports FP8 quantization.
+
+- **[2025/9/8]** 🎉v25.08 released!
+  - Added cache support for DynamicEmb, enabling seamless hot embedding migration between cache and storage.
+  - Released an end-to-end HSTU inference example, demonstrating precision aligned with training.
+  - Enabled evaluation mode support for DynamicEmb.
+
+- **[2025/8/1]** 🎉v25.07 released!
+  - Released HSTU inference benchmark, including a paged KV-cache HSTU kernel, a KV-cache manager based on TensorRT-LLM, CUDA graph, and other optimizations.
+  - Added support for Tensor Parallelism in the HSTU layer.
+
+- **[2025/7/4]** 🎉v25.06 released!
+  - DynamicEmb lookup module performance improvements and LFU eviction support.
+  - Pipeline support for HSTU example, recompute support for HSTU layer, and customized CUDA ops for jagged tensor concat.
+
+- **[2025/5/29]** 🎉v25.05 released! 
+  - Enhancements to DynamicEmb functionality, including support for EmbeddingBagCollection, truncated normal initialization, and initial_accumulator_value for Adagrad.
+  - Fusion of operations like layernorm and dropout in the HSTU layer, resulting in about 1.2x end-to-end speedup.
+  - Fix convergence issues on the Kuairand dataset.
+</details>
+
+For more detailed release notes, please refer to our [releases][releases].
+
+# Get Started
+The examples we supported:
+- [HSTU recommender examples](./examples/hstu/README.md)
+- [HSTU inference](./examples/hstu/inference/README.md) — KV cache, Triton Inference Server, [C++ AOTInductor](./examples/hstu/inference_aoti/guide_to_hstu_aoti_inference_setup.md)
+- [SID based generative recommender examples](./examples/sid_gr/README.md)
+- [SID-GR inference example](./examples/sid-gr-inference/README.md)
+
+# Benchmarks
+- [HSTU inference](./examples/hstu/inference/benchmark/README.md)
+- [HSTU training](./examples/hstu/training/benchmark/README.md)
+- [Dynamic embedding](./corelib/dynamicemb/benchmark/README.md)
+
+# Contribution Guidelines
+Please see our [contributing guidelines](./CONTRIBUTING.md) for details on how to contribute to this project.
+
+# Resources
+## Video
+- [RecSys Examples 中的训练与推理优化实践](https://www.bilibili.com/video/BV1msMwzpE5B?buvid=638d217658211387f0a20e730604a780&from_spmid=united.player-video-detail.drama-float.0&is_story_h5=false&mid=V%2FD40L0stVy%2BZTgWdpjtGA%3D%3D&plat_id=116&share_from=ugc&share_medium=iphone&share_plat=ios&share_session_id=2DD6CE30-B189-4EEC-9FD4-8BAD6AEFE720&share_source=WEIXIN&share_tag=s_i&spmid=united.player-video-detail.0.0&timestamp=1749773222&unique_k=Sjcfmgy&up_id=1320140761&vd_source=7372540fd02b24a46851135aa003577c)
+- [基于CUTLASS 3 的HSTU attention 算子开发与优化](https://www.bilibili.com/video/BV1TsMwzWEzS?buvid=638d217658211387f0a20e730604a780&from_spmid=united.player-video-detail.drama-float.0&is_story_h5=false&mid=V%2FD40L0stVy%2BZTgWdpjtGA%3D%3D&plat_id=116&share_from=ugc&share_medium=iphone&share_plat=ios&share_session_id=2DD6CE30-B189-4EEC-9FD4-8BAD6AEFE720&share_source=WEIXIN&share_tag=s_i&spmid=united.player-video-detail.0.0&timestamp=1749773222&unique_k=Sjcfmgy&up_id=1320140761&vd_source=7372540fd02b24a46851135aa003577c&spm_id_from=333.788.videopod.sections)
+
+## Blog
+- [NVIDIA Platform Delivers Lowest Token Cost Enabled by Extreme Co-Design](https://developer.nvidia.com/blog/nvidia-extreme-co-design-delivers-new-mlperf-inference-records/)
+- [NVIDIA recsys-examples: 生成式推荐系统大规模训练推理的高效实践（上篇）](https://mp.weixin.qq.com/s/K9xtYC3azAccShpJ3ZxKbg)
+
+# Community
+Join our community channels to ask questions, provide feedback, and interact with other users and developers:
+- GitHub Issues: For bug reports and feature requests
+- [NVIDIA Developer Forums](https://forums.developer.nvidia.com/)
+
+# References
+If you use RecSys Examples in your research, please cite:
+
+```
+@Manual{,
+  title = {RecSys Examples: A collection of recommender system implementations},
+  author = {NVIDIA Corporation},
+  year = {2024},
+  url = {https://github.com/NVIDIA/recsys-examples},
+}
+```
+
+For more citation information and referenced papers, see [CITATION.md](./CITATION.md).
+
+# License
+This project is licensed under the Apache License - see the [LICENSE](./LICENSE) file for details.
+
+[releases]: https://github.com/NVIDIA/recsys-examples/releases

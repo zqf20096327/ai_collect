@@ -1,0 +1,462 @@
+# Engram
+
+**Local-first context compression for AI coding tools.** Reduces redundant tokens by compressing conversation history across every LLM call.
+
+---
+
+## What is Engram?
+
+Every time an AI coding tool sends a request to an LLM, it re-sends the same context: who you are, what you're working on, your preferences, your project structure. This redundancy costs real money and eats into context windows.
+
+Engram reduces it. It runs locally as a lightweight daemon and compresses your **conversation context** (message history, tool results, responses) across every LLM call. The result: smaller prompts, lower costs, and more room in the context window for what actually matters.
+
+> **Note:** Identity compression (CLAUDE.md / system prompt codebook compression) is currently disabled for Anthropic/Claude due to compatibility issues. System prompts pass through verbatim. Context compression and redundancy control are fully active.
+
+### How It Works
+
+Engram applies two active compression stages:
+
+1. **Context compression** — Older conversation history is collapsed into a `[CONTEXT_SUMMARY]` block at the local HTTP proxy while the most recent turns remain verbatim.
+2. **Redundancy control** — Large tool outputs are checked for repeated content so Claude can respond with concise delta-only summaries instead of restating everything.
+
+```mermaid
+flowchart LR
+    A["Claude Code request<br/>15 prior messages"] --> B["Engram Proxy"]
+    B --> C["Keep recent window<br/>last 8 messages"]
+    B --> D["Compress older head<br/>first 7 messages"]
+    D --> E["[CONTEXT_SUMMARY]<br/>user: ...<br/>assistant: ..."]
+    C --> F["Tail messages unchanged"]
+    E --> G["Rewritten request"]
+    F --> G
+    G --> H["Anthropic / Claude API"]
+```
+
+### Key Numbers
+
+| Metric | Value |
+|--------|-------|
+| Context compression | ~40-60% token reduction |
+| Startup overhead | <50ms |
+| Memory footprint | ~30MB resident |
+
+## Quick Start
+
+```bash
+# Install via Homebrew (macOS/Linux)
+brew install pythondatascrape/tap/engram
+
+# Or download a release binary
+curl -fsSL https://github.com/pythondatascrape/engram/releases/latest/download/engram_$(uname -s | tr A-Z a-z)_$(uname -m | sed 's/x86_64/amd64/').tar.gz | tar xz
+sudo mv engram /usr/local/bin/
+
+# Or install from source
+go install github.com/pythondatascrape/engram/cmd/engram@latest
+
+# Install for Claude Code — one command, no manual steps
+engram install --claude-code
+
+# Restart Claude Code and start using Engram immediately
+```
+
+### What `engram install --claude-code` does
+
+The Anthropic provider supports `claude-opus-5-5`, `claude-sonnet-5-5`, and
+`claude-haiku-5-5`, alongside the older model IDs. The transparent proxy forwards
+the model selected by your client without substitution.
+
+For older Anthropic models, Engram compresses only plain text conversation history.
+Requests containing tool calls, tool results, thinking, images, or other non-text
+blocks pass through unchanged. This preserves parallel tool-call pairing and
+signed thinking context. Claude 5.5 history is preserved from the first request,
+including text-only turns, so later thinking can reuse its original prefix.
+Optional server-side tool-result clearing restores
+token savings for Claude 5.5 without rewriting this history; see Configuration
+below. Streaming response bodies and API errors pass through.
+
+Use current client settings for Claude 5.5. In particular, Opus 5.5 rejects
+disabled/manual thinking and forced tool choice (`any` or `tool`); use adaptive
+thinking and `auto` or `none`. Engram preserves these settings rather than
+silently changing their meaning. See the
+[Anthropic migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide).
+
+Starting in v0.3.0, a single install command handles everything:
+
+1. Copies the Engram plugin into `~/.claude/plugins/`
+2. Registers the statusline in `~/.claude/settings.json`
+3. Creates `~/.engram/engram.yaml` with working defaults (if not already present)
+4. Installs the daemon as a background service (launchd on macOS, systemd on Linux)
+5. Starts the service immediately
+6. Verifies the daemon socket and proxy are reachable
+7. **Exits non-zero if any step fails** — no silent partial installs
+
+After install, restart Claude Code. No `engram serve` step is required for normal use.
+
+## CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `engram install --claude-code` | Zero-touch install for Claude Code — daemon, config, and plugin in one step |
+| `engram install --openclaw` | Install for OpenClaw |
+| `engram install` | Auto-detect and install for all supported clients |
+| `engram analyze` | Analyze your project and show compression opportunities |
+| `engram advisor` | Show optimization recommendations based on session data |
+| `engram serve` | Start the compression daemon manually (advanced) |
+| `engram status` | Show daemon status, active sessions, and savings |
+
+Every command supports `--help` for detailed usage.
+
+### Common flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--config` | `~/.engram/engram.yaml` | Path to configuration file |
+| `--socket` | `~/.engram/engram.sock` | Unix socket path |
+
+## Integrations
+
+### Claude Code
+
+```bash
+engram install --claude-code
+# Restart Claude Code — compression is active immediately
+```
+
+Engram registers as a Claude Code plugin, starts the local background service, and routes Claude requests through the local proxy. In a fresh session:
+
+- the `SessionStart` hook registers the real Claude session ID with the proxy
+- `CLAUDE.md` is collected and compressed directly into an identity block
+- `POST /v1/messages` requests are rewritten before upstream so older history becomes a `[CONTEXT_SUMMARY]` block
+- large tool outputs go through Engram's redundancy check so Claude can avoid re-sending repeated output
+
+For end users, the flow is: install, restart Claude Code, and start working.
+
+**Manual install** (if you prefer explicit steps):
+
+```bash
+engram install --claude-code   # installs plugin + daemon
+engram status                  # confirm daemon is running
+```
+
+**Claude Code Skills**
+
+| Skill | Invocation | Description |
+|-------|-----------|-------------|
+| Codebook Manager | `/engram:codebook` | Show, diff, init, or validate your active codebook |
+| Codebook Wizard | `/engram:engram-codebook` | Interactive wizard — builds identity + prompt codebook from scratch, scoped to session, project, or global |
+| Token Report | `/engram:report` | Generate a session token savings report |
+| Settings | `/engram:config` | Edit plugin configuration interactively |
+
+The **Codebook Wizard** (`/engram:engram-codebook`) is the fastest way to wire up compression for a new project. It reads your `CLAUDE.md`, derives identity dimensions, builds a prompt vocabulary from your project's domain language, and writes a `.engram-codebook.yaml` + `engram.yaml` in two minutes. Behavioral dimensions that `derive_codebook` misses from prose-style CLAUDE.md files are pre-populated and reviewable before writing.
+
+### OpenClaw
+
+```bash
+engram install --openclaw
+```
+
+OpenClaw support is currently plugin installation only. The zero-touch daemon, readiness verification, and automatic proxy wiring shipped for Claude Code first.
+
+### SDKs
+
+For custom integrations, Engram provides thin client SDKs in three languages. All connect to the local daemon over a Unix socket.
+
+**Python:**
+```python
+from engram import Engram
+
+async with await Engram.connect() as client:
+    result = await client.compress({"identity": "...", "history": [], "query": "..."})
+```
+
+**Go:**
+```go
+client, _ := engram.Connect(ctx, "")
+defer client.Close()
+result, _ := client.Compress(ctx, map[string]any{...})
+```
+
+**Node.js:**
+```javascript
+import { Engram } from "engram";
+
+const client = await Engram.connect();
+const result = await client.compress({identity: "...", history: [], query: "..."});
+```
+
+See the [Integration Guide](docs/integration-guide.md) for details.
+
+## Configuration
+
+Engram's config file lives at `~/.engram/engram.yaml` and is created automatically during install. The most common settings to adjust:
+
+```yaml
+# ~/.engram/engram.yaml
+server:
+  port: 4433          # daemon JSON-RPC port
+
+proxy:
+  port: 4242          # HTTP proxy port (Claude Code routes through this)
+  openai_port: 4243   # OpenAI-compatible proxy port (optional, 0 = disabled)
+  window_size: 8      # default: keep the last 8 messages verbatim, summarize older history
+  anthropic_context:
+    enabled: true               # opt in; disabled by default
+    trigger_tokens: 50000        # start clearing above this input size
+    keep_tool_uses: 5            # retain the most recent tool exchanges
+    clear_at_least_tokens: 25000 # avoid small clearings that disrupt caching
+    exclude_tools: []           # tool names whose results should be retained
+```
+
+Run `engram serve --help` for the full list of options.
+
+Restart the daemon after changing the configuration. `anthropic_context` applies
+to requests for `claude-opus-5-5`,
+`claude-sonnet-5-5`, and `claude-haiku-5-5`. Engram adds Anthropic's context
+management beta and asks the API to clear older tool results. All thinking and
+tool inputs remain intact. Existing client `context_management` settings take
+precedence and their history is never locally compressed. Unknown models and
+disabled configurations retain the existing pass-through behavior.
+
+`trigger_tokens` must be positive; `keep_tool_uses` and
+`clear_at_least_tokens` must be non-negative. Zero `clear_at_least_tokens` omits
+the minimum-clear requirement. Tool clearing can invalidate prompt caches, so
+cleared tokens do not directly translate to a guaranteed dollar saving. See
+[Anthropic context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing).
+
+For managed requests, Engram records server-reported cleared tokens in session
+total savings, including JSON and streaming responses. Cached input tokens are
+included in total input accounting; identity/context breakdowns are unavailable
+on this path. The HTTP trailer `X-Engram-Cleared-Input-Tokens`, available after
+reading the response, also reports the cleared-token count. Without reported
+edits this count is zero; missing usage is not estimated as measured savings.
+The full conversation still travels to Anthropic, so these savings reduce model
+input context rather than request upload size.
+
+## OpenAI-Compatible Proxy
+
+When `openai_port` is set (default: **4243**), Engram exposes a second listener that accepts standard OpenAI API calls and applies the same context-compression pipeline before forwarding to OpenAI.
+
+**Supported endpoints:**
+- `POST /v1/chat/completions` — Chat Completions API (streaming and non-streaming)
+- `POST /v1/responses` — Responses API (streaming and non-streaming)
+
+**Quick test:**
+```bash
+curl http://localhost:4243/v1/chat/completions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"ping"}]}'
+```
+
+**Point an OpenAI SDK at the proxy:**
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="...",
+    base_url="http://localhost:4243/v1",
+)
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+```
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: "http://localhost:4243/v1",
+});
+```
+
+Engram compresses `messages` (or `input` for the Responses API) using the same window-based summarisation as the Anthropic proxy, then forwards the full request — headers, `model`, `tools`, `tool_choice`, `stream`, etc. — unmodified to `api.openai.com`.
+
+## Demo
+
+See the [Travelbound demo project](https://github.com/pythondatascrape/travelbound) for a working example that shows Engram compressing a real project's context from ~4,200 tokens to ~380 tokens.
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md) — Install and configure Engram for your first project
+- [CLI Reference](docs/cli-reference.md) — Full command documentation with examples
+- [Integration Guide](docs/integration-guide.md) — Configure Claude Code, OpenClaw, and SDK setup
+- [Changelog](CHANGELOG.md) — Release history
+
+## Best Use
+
+> **Note:** Identity compression (codebook-based system prompt compression) is currently disabled for Anthropic/Claude. The codebook workflow described below applies to OpenAI and custom SDK integrations. For Claude Code users, context compression is active automatically; system prompts pass through verbatim.
+
+Engram's context compression is automatic once installed. For SDK integrations, you can also wire in identity compression via the codebook workflow.
+
+### Why This Matters (SDK / OpenAI)
+
+> **Note:** The identity compression workflow below applies to **OpenAI and custom SDK integrations**. For Claude Code, system prompts pass through verbatim — Anthropic's API does not currently support the codebook protocol.
+
+Every LLM call re-sends your identity: who you are, what you prefer, how you work. Written as prose, that identity is verbose by design — natural language is redundant. Engram replaces prose with a derived codebook so the same information travels in a fraction of the tokens.
+
+| Format | Example | ~Tokens |
+|--------|---------|---------|
+| Plain prose | `"I prefer concise responses without summaries. I'm a senior Go engineer who has been writing Go for ten years. I'm working on a CLI tool targeting macOS and Linux."` | ~45 |
+| Codebook (key=value) | `role=engineer lang=go exp=10y platform=macos,linux style=concise no_summaries=true` | ~14 |
+| **Savings** | | **~69%** |
+
+At scale — a full CLAUDE.md, system prompt, and project instructions — this compression reaches **96–98%**. That headroom goes directly toward more productive context: longer conversation history, bigger diffs, more tool results.
+
+### How Codebooks Work
+
+Engram's `derive_codebook` MCP tool scans your CLAUDE.md and project instructions, extracts structured dimensions, and produces a compact codebook. On the first turn, the codebook definition is sent once so the model understands the format. Every subsequent turn references keys only.
+
+```
+# First turn — definition sent once
+codebook: role(enum:engineer,researcher) lang(text) style(enum:concise,verbose) no_summaries(bool)
+
+# All subsequent turns — keys only
+role=engineer lang=go style=concise no_summaries=true
+```
+
+You can also define codebooks manually in YAML for domain-specific applications:
+
+```yaml
+# ~/.engram-codebook.yaml
+name: my-project
+version: 1
+dimensions:
+  - name: role
+    type: enum
+    values: [engineer, researcher, designer]
+    required: true
+
+  - name: lang
+    type: text
+    required: true
+
+  - name: style
+    type: enum
+    values: [concise, verbose]
+    required: false
+
+  - name: no_summaries
+    type: boolean
+    required: false
+```
+
+Pass the override path to `derive_codebook` and it merges your explicit dimensions with anything auto-detected:
+
+```python
+result = await client.compress({
+    "identity": open("CLAUDE.md").read(),
+    "yamlOverridePath": ".engram-codebook.yaml",
+    ...
+})
+```
+
+### Maximizing Your Codebook
+
+**1. Make dimensions specific and bounded.** Enum and boolean fields compress best — they map to a single token. Free-text fields still compress, but less aggressively.
+
+```yaml
+# Good — bounded enum
+- name: experience
+  type: enum
+  values: [junior, mid, senior, staff]
+
+# Less efficient — open text
+- name: experience
+  type: text
+```
+
+**2. Prefer `required: true` for your most-repeated attributes.** Required dimensions are always included in the serialized output and always stripped from subsequent prose. Optional ones are only emitted when set.
+
+**3. Use `check_redundancy` before sending responses.** The MCP tool flags prose that re-states what the codebook already encodes, so you can strip it before it enters context.
+
+```python
+# In a PostToolUse hook or response filter
+check = await mcp.check_redundancy(content=llm_response)
+if check["redundant"]:
+    llm_response = check["stripped"]  # codebook entries removed
+```
+
+**4. Run `engram analyze` after your first session.** It reads session data and suggests dimensions you haven't captured yet — common repeated phrases that are good codebook candidates.
+
+```bash
+engram analyze
+# → Suggested dimensions: deadline_pressure (bool), test_style (enum: tdd,bdd,none)
+```
+
+### Updating LLM Calls to Use Engram
+
+For transparent proxy use in Claude Code, no code changes are needed after `engram install --claude-code` — requests route through Engram automatically.
+
+For SDK use, replace the direct Anthropic/OpenAI base URL with the local proxy:
+
+**Before:**
+```python
+import anthropic
+client = anthropic.Anthropic(api_key="...")
+
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    system="You are a concise senior Go engineer. I prefer no trailing summaries. "
+           "I'm working on a macOS/Linux CLI. My style preference is direct and brief...",
+    messages=[{"role": "user", "content": "..."}]
+)
+```
+
+**After (proxy):**
+```python
+import anthropic
+import httpx
+
+# Route through Engram's local proxy — older history is summarized before upstream
+client = anthropic.Anthropic(
+    api_key="...",
+    http_client=httpx.Client(proxies="http://localhost:4242")
+)
+
+# Same call — Engram compresses identity and older context before forwarding
+response = client.messages.create(
+    model="claude-sonnet-4-6",
+    system="You are a concise senior Go engineer...",  # compressed automatically
+    messages=[{"role": "user", "content": "..."}]
+)
+```
+
+**After (MCP tools, explicit):**
+```python
+from engram import Engram
+
+async with await Engram.connect() as client:
+    # Derive codebook from your identity text once per session
+    codebook = await client.derive_codebook(content=open("CLAUDE.md").read())
+
+    # Compress identity — use the returned block as your system prompt prefix
+    compressed = await client.compress_identity()
+    # compressed["block"] → "role=engineer lang=go style=concise no_summaries=true"
+
+    response = anthropic_client.messages.create(
+        model="claude-sonnet-4-6",
+        system=compressed["block"],  # ~14 tokens instead of ~450
+        messages=[{"role": "user", "content": "..."}]
+    )
+```
+
+### Plain-Text vs. Structured Context: A Comparison
+
+| Attribute | Plain-Text CLAUDE.md | Engram Codebook |
+|-----------|---------------------|-----------------|
+| Format | Natural language prose | `key=value` pairs |
+| Tokens (typical) | 300–800 | 10–30 |
+| Sent every turn | Yes | Keys only (definition sent once) |
+| LLM interpretability | High (verbose) | High (structured, unambiguous) |
+| Redundancy detection | None | `check_redundancy` strips re-stated values |
+| Manual tuning | Edit CLAUDE.md | Edit `.engram-codebook.yaml` |
+| Auto-derived | — | `derive_codebook` extracts from CLAUDE.md |
+| Identity compression | — | **~96–98%** (OpenAI/SDK only; disabled for Claude) |
+
+The key insight: plain-text identity is high-fidelity but pays a large per-turn token tax. A codebook pays a one-time definition cost and then transmits identity in a handful of tokens for every turn that follows. On a 50-turn session, a 400-token identity compressed to 15 tokens saves ~19,000 tokens — roughly equivalent to adding 15 pages of usable context back to your window.
+
+## License
+
+Engram Source Available License — see [LICENSE](LICENSE). Commercial use and Compression Technology require written consent from the author.

@@ -1,0 +1,309 @@
+# Phoenix VCS
+
+**Regenerative version control that compiles intent to working software.**
+
+Phoenix takes a specification written in plain language, extracts structured requirements, and generates a working application — database, API, validation, and UI — with full traceability from every line of spec to every line of generated code.
+
+```
+spec/todos.md (40 lines)  →  phoenix bootstrap  →  working app
+```
+
+## What it does
+
+Write what you want in a markdown spec:
+
+```markdown
+## Tasks
+
+- A task has a title, a priority (urgent, high, normal, low), and an optional due date
+- Users can create tasks by providing at least a title
+- Users can mark a task as complete or reopen a completed task
+- Users can filter tasks by status, project, or priority
+- Overdue tasks must be visually highlighted
+```
+
+Phoenix compiles this through a pipeline:
+
+```
+Spec → Clauses → Canonical Requirements → Implementation Units → Generated Code
+```
+
+Each transformation is tracked. Change one line in the spec and Phoenix knows exactly which code needs to regenerate — and which doesn't.
+
+## Quick start
+
+```bash
+# Install
+git clone https://github.com/chad/phoenix.git
+cd phoenix
+npm install
+npm run build
+npm link
+
+# Create a project with the sqlite-web-api architecture
+mkdir my-app && cd my-app
+mkdir spec
+
+# Write your spec
+cat > spec/app.md << 'EOF'
+# My App
+
+## Items
+
+- An item has a name and a quantity
+- Users can create, view, update, and delete items
+- Name must not be empty
+EOF
+
+# Generate
+npx phoenix init --arch=sqlite-web-api
+npx phoenix bootstrap
+
+# Run
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+## Architecture targets
+
+Phoenix doesn't just generate code — it compiles to an **architecture**. The architecture target defines the runtime, frameworks, patterns, and conventions. The spec defines *what*, the architecture defines *how*.
+
+The first built-in target is `sqlite-web-api`:
+- **HTTP**: [Hono](https://hono.dev)
+- **Database**: [better-sqlite3](https://github.com/WiseLibs/better-sqlite3)
+- **Validation**: [Zod](https://zod.dev)
+- **Pattern**: Route modules with shared DB, migration system, Zod schemas
+
+New architectures can be added by creating a single file in `src/architectures/`. The pipeline doesn't change — only the compilation target.
+
+## The pipeline
+
+```
+┌──────────┐    ┌──────────┐    ┌──────────────┐    ┌──────┐    ┌───────────┐
+│ Spec     │ →  │ Clauses  │ →  │ Canonical    │ →  │ IUs  │ →  │ Generated │
+│ (markdown)│    │ (parsed) │    │ Requirements │    │      │    │ Code      │
+└──────────┘    └──────────┘    └──────────────┘    └──────┘    └───────────┘
+                                                                      │
+     ◄──────────── Provenance edges track every transformation ───────┘
+```
+
+- **Spec ingestion**: Parses markdown into content-addressed clauses with semantic hashes
+- **Canonicalization**: Extracts typed requirements (REQUIREMENT, CONSTRAINT, INVARIANT, DEFINITION, CONTEXT) with confidence scores and relationship edges
+- **IU planning**: Groups requirements into Implementation Units with risk tiers, contracts, and boundary policies
+- **Code generation**: LLM generates real implementations guided by architecture-specific prompts and few-shot examples, with typecheck-and-retry
+- **Selective invalidation**: Change one spec line → only the dependent subtree regenerates
+
+## Visualization
+
+```bash
+npx phoenix inspect
+```
+
+Opens an interactive pipeline visualizer in your browser. Click the **Spec** tab to see your spec text with hover highlighting — click any line to trace its path through clauses → canonical nodes → IUs → generated files.
+
+## CLI
+
+```bash
+# Pipeline
+phoenix init [--arch=NAME]    # Initialize a project
+phoenix bootstrap             # Full pipeline: ingest → canonicalize → plan → generate
+phoenix ingest [--verbose]    # Ingest spec changes — classifies each change, marks affected IUs stale
+phoenix diff                  # Show clause-level diffs
+phoenix canonicalize          # Extract canonical requirements (reports canonical stability)
+phoenix upgrade [--apply]     # Shadow-canonicalize: classify a pipeline upgrade before committing
+phoenix plan                  # Plan Implementation Units
+phoenix regen [--iu=ID|--all] # Regenerate — SELECTIVE by default (only the stale subtree)
+
+# Trust surface
+phoenix status                # Trust dashboard — the primary UX
+phoenix drift                 # Check generated files for drift
+phoenix label <file> --kind=… # Label a manual edit (waiver | temporary_patch | promote_to_requirement)
+phoenix evals [--iu=ID]       # Generate durable evaluations (the oracle) + record evidence
+phoenix attest <iu> --kind=…  # Record manual evidence (threat_note | human_signoff | static_analysis | …)
+phoenix evaluate              # Evaluate evidence against risk-tier policy
+
+# Provenance
+phoenix why <file>            # Trace a generated file back to the spec lines that produced it
+phoenix journal [--verify]    # Show/verify the append-only, hash-chained provenance chain
+phoenix inspect               # Interactive pipeline visualization
+phoenix bot "<command>"       # Bots that execute real operations (SpecBot/ImplBot/PolicyBot)
+
+# Measurement
+phoenix selftest              # Phoenix's own capability eval — the Red/Green scorecard
+phoenix bench [--res=…]       # The pipeline vs. the same model WITHOUT it (see bench/)
+phoenix bench report [--html] # Read the append-only results; measure nothing new
+```
+
+Set `PHOENIX_NO_LLM=1` to force deterministic stub generation (offline / reproducible runs).
+
+## Examples
+
+### [library-api](examples/library-api/) — **start here**
+
+The demo. A lending service — members, books, loans — generated from a
+[118-line spec](examples/library-api/spec/library.md) with three related entities, derived
+availability counts, a borrowing limit, and rules that answer `409` rather than `400`. This
+build passes **51/51** of the bench's independent behavioural checks, driven against the
+booted service over HTTP.
+
+```bash
+cd examples/library-api && npm install && npm run dev
+```
+
+It ships its `.phoenix/` state, so `phoenix why`, `journal --verify`, `ingest` and selective
+regeneration all work straight from a clone — including the honest parts: `phoenix status`
+reports 3 errors and 13 warnings on a service that passes every behavioural check, and the
+README explains why both are true. See [the walkthrough](examples/library-api/README.md).
+
+### [todo-app](examples/todo-app/)
+
+A Todoist-style task manager generated from a [user-centric spec](examples/todo-app/spec/todos.md). Features:
+- Tasks with priorities, due dates, projects, completion tracking
+- Projects with colors and active task counts
+- Filtering by status, priority, and project
+- Stats summary with completion percentage
+- Full web UI with sidebar, forms, filters
+- REST API for integration with external tools
+
+All generated from ~40 lines of behavioral requirements.
+
+### [phoenix-self](examples/phoenix-self/)
+
+Phoenix specifying itself. The [PRD](PRD.md) decomposed into 6 specs covering ingestion, canonicalization, implementation, integrity, operations, and platform. Used to stress-test the canonicalization pipeline on real-world complexity.
+
+### Other examples
+
+- [settle-up](examples/settle-up/) — Expense splitting with debt simplification
+- [pixel-wars](examples/pixel-wars/) — Real-time multiplayer territory game
+- [tictactoe](examples/tictactoe/) — Multiplayer game with matchmaking
+- [taskflow](examples/taskflow/) — Task management with analytics
+
+## How it works under the hood
+
+### Canonicalization
+
+Every spec sentence is scored against 5 canonical types using a keyword rubric with configurable weights. The resolution engine deduplicates nodes via token Jaccard similarity, infers typed edges (constrains, refines, defines, invariant_of), and builds a hierarchical graph. The pipeline was optimized through 32 automated experiments (autoresearch-style) across 18 gold-standard specs.
+
+### Code generation
+
+The LLM receives a structured prompt with:
+1. Canonical requirements, constraints, invariants, and definitions for the IU
+2. Architecture-specific system prompt (import rules, patterns, conventions)
+3. Few-shot code examples showing the exact patterns to follow
+4. Related context from other spec sections
+5. Sibling module mount paths (so the web UI knows where the API lives)
+
+If generation fails or doesn't typecheck, the system retries with error feedback. If that fails, it falls back to architecture-aware stubs that still produce valid, mountable modules.
+
+### Drift detection & labeling
+
+Phoenix tracks a manifest of every generated file's content hash. `phoenix status` compares the working tree against the manifest and flags any unlabeled manual edits as errors. `phoenix label` turns an edit into an explained divergence: a signed **waiver**, an expiring **temporary_patch**, or a **promote_to_requirement** that records a pending promotion until the change is harvested into the spec — so a hand-fix is never silently lost on the next regeneration.
+
+### Selective invalidation
+
+Change one spec line and `phoenix ingest` classifies the change (A/B/C/D), then walks the provenance graph — clause → canonical nodes → IUs → dependent IUs — to mark exactly the affected subtree stale. `phoenix regen` then regenerates only that subtree by default. A formatting-only edit invalidates nothing; a meaning change invalidates precisely its dependents.
+
+### Provenance & trust
+
+Every transformation appends a hash-chained event to `.phoenix/journal.jsonl`. `phoenix why <file>` traces any generated file back through its IU, model, and promptpack to the exact spec lines that produced it; `phoenix journal --verify` proves the chain is intact. Durable evaluations (`phoenix evals`) derived from the canonical graph give regeneration an oracle, and are recorded as risk-tiered evidence. The truthfulness of `phoenix status` itself is measured by a fault-injection CI harness (precision + recall over seeded faults).
+
+## Measurement: the bench
+
+`phoenix selftest` asks *"does Phoenix still do what Phoenix claims?"*. It cannot answer the
+question a sceptic asks first: **how much of the working application is the pipeline, and how
+much is a capable model being capable?**
+
+`phoenix bench` answers that one. It produces the same application three ways, judges all three
+with the same oracle — boot it for real, drive it over HTTP, assert — and records every run:
+
+| Arm | What produced the code |
+|---|---|
+| `phoenix` | the full pipeline as shipped, driven through the compiled CLI |
+| `baseline` | the same spec text, the same model, one call, no pipeline |
+| `intent` | one sentence and the runtime contract — nothing else |
+
+Every rate is printed beside its 95% Wilson interval, because `4/5` and `40/50` are the same
+rate and different facts. Overlapping intervals mean *these runs do not distinguish these
+rates* — never that one arm is better. Smoke runs, dirty-tree runs and runs with no declared
+sample size stay visible in the results and are excluded from every aggregate. The results are
+append-only JSONL under `bench/results/`, and the published page at
+**<http://chadfowler.com/phoenix/>** is regenerated from them by CI on every push — the
+results are the record, the page is derived, and there is deliberately no committed copy to
+drift from them.
+
+```bash
+phoenix bench --dry           # what the run costs, spends nothing
+phoenix bench --res=coarse    # 5 samples on every arm
+phoenix bench report --html   # rebuild the page from the recorded runs
+```
+
+See [bench/README.md](bench/README.md) for the discipline, the refusals, and what a run must be
+before it may be cited.
+
+### The first thing it found
+
+On `todo-api` (coarse, n=5, claude-sonnet-5) the pipeline scored **0/5 [0.00, 0.43]** against a
+**5/5 [0.57, 1.00]** single call to the same model. Every Phoenix sample failed the same way:
+the spec states `POST /tasks` and `GET /stats`, and the generated server mounts `/task` and
+`/task-summary`, because the mount path comes from the implementation unit's *name* rather than
+from the interface the spec declares. The app typechecks, boots, and `phoenix status` is green.
+
+That is a conservation-layer bug — the interface is the durable asset and the pipeline treated
+it as a derived detail — and it is exactly the class of failure `phoenix selftest` cannot see,
+because every capability it asserts is about Phoenix's internals. Full write-up, including the
+false passes that made the number look less bad than it was, in
+[bench/FINDINGS.md](bench/FINDINGS.md).
+
+## Status
+
+Alpha. The full pipeline works end-to-end — spec to working app with complete, verifiable traceability. The `sqlite-web-api` architecture target generates functional CRUD APIs with web UIs from behavioral specs.
+
+Implemented: A/B/C/D classification + D-rate trust loop, selective invalidation, two-layer identity (stable anchors + content hashes) with a canonical-stability metric, evidence collection with artifact-hash staleness, drift labeling, IU dependency graph + IU-level boundary enforcement, cascade, durable-evaluation generation, an append-only hash-chained provenance journal with `phoenix why`, shadow-pipeline upgrades, executing bots, and a fault-injection meta-eval of the trust dashboard.
+
+What's next:
+- **Honour the interface the spec declares** — route mounting is derived from IU names today, which
+  is what the bench caught first (see [bench/FINDINGS.md](bench/FINDINGS.md))
+- **Bench cases that ask a harder question** — a spec too large for one call, and a change-then-regenerate
+  case where selective invalidation is the thing being measured
+- More architecture targets (Express + Postgres, Cloudflare Workers + D1, CLI apps)
+- Incremental (per-clause) canonicalization to make the whole cycle selective, not just regen
+- Running generated evaluations against a live app (integration-level oracle) in addition to the structural check
+- Multi-file spec projects with cross-references
+- Freeq transport for the bots
+
+## Acknowledgements
+
+**[Sedum](https://github.com/livecodelife/sedum)** by [@livecodelife](https://github.com/livecodelife)
+— and its [published eval results](https://livecodelife.github.io/sedum/) — are the direct
+inspiration for `phoenix bench`.
+
+Sedum makes the opposite bet to Phoenix about where a model belongs: its model *selects* from a
+closed, team-authored vocabulary of code-injection actions and everything after that response is
+deterministic, where Phoenix lets the model synthesize and puts the determinism in the gates,
+the oracle and the provenance chain. Reasonable people can disagree about that, and we do.
+
+What is not up for disagreement is Sedum's *measurement* discipline, which was ahead of ours in
+every respect that matters:
+
+- **A ladder of arms, not a single number.** Sedum reports its own tool beside a `baseline` arm
+  (the record without the action catalog) and an `intent` arm (one sentence). It publishes the
+  runs where the baseline is indistinguishable from the tool. A rate with no control is
+  unfalsifiable, and we had no control at all.
+- **Every rate with its interval.** 95% Wilson, the fraction never printed alone, no p-values,
+  and an explicit refusal to turn overlapping intervals into a verdict.
+- **Sample size as a property of the question** — smoke / coarse / fine, with a run below its
+  declared size refused rather than recorded.
+- **Honest exclusions that stay visible.** Smoke, dirty-tree and unstated runs are kept in the
+  append-only log, shown on the page, and counted in nothing.
+- **Refusing to print a number that is constant by construction**, and saying why instead.
+- **Behaviour split three ways** — working / disagreed / broke — because a service that never
+  booted and one that booted and answered wrongly are different findings.
+
+Phoenix's bench adopts all of it. The arms, the interval discipline, the citability flags, the
+fixture digest, the plan-before-you-spend planner and the "this page adds no measurement of its
+own" stance are Sedum's ideas applied to a different pipeline. Thank you.
+
+## License
+
+MIT

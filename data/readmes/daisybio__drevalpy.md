@@ -1,0 +1,272 @@
+# DrEvalPy: Python Cancer Cell Line Drug Response Prediction Suite
+
+[![DOI](https://img.shields.io/badge/paper-10.1038%2Fs41467--026--72903--w-be2635?logo=Paper&link=https%3A%2F%2Fdoi.org%2F10.1038%2Fs41467-026-72903-w)](https://doi.org/10.1038/s41467-026-72903-w)
+[![PyPI version](https://img.shields.io/pypi/v/drevalpy.svg)](https://pypi.org/project/drevalpy/)
+![Python versions](https://img.shields.io/pypi/pyversions/drevalpy)
+[![License](https://img.shields.io/github/license/daisybio/drevalpy)](https://opensource.org/licenses/MIT)
+[![Read the Docs](https://img.shields.io/readthedocs/drevalpy/latest.svg?label=Read%20the%20Docs)](https://drevalpy.readthedocs.io/)
+[![Test status](https://github.com/daisybio/drevalpy/actions/workflows/run_tests.yml/badge.svg)](https://github.com/daisybio/drevalpy/actions?workflow=Tests)
+[![Precommit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18302237.svg)](https://doi.org/10.5281/zenodo.18302237)
+
+**News:** Our paper is out on [Nature Communications](https://www.nature.com/articles/s41467-026-72903-w)!
+
+Documentation at [ReadTheDocs](https://drevalpy.readthedocs.io/en/latest/index.html#).
+
+**Focus on Innovating Your Models — DrEval Handles the Rest!**
+
+- DrEval is a toolkit that ensures drug response prediction evaluations are statistically sound, biologically meaningful, and reproducible.
+- Focus on model innovation while using our automated standardized evaluation protocols and preprocessing workflows.
+- A flexible model interface supports all model types (e.g. Machine Learning, Stats, Network-based analyses)
+
+By contributing your model to the DrEval catalog, you can increase your work's exposure, reusability, and transferability.
+
+![DrEval](docs/_static/img/overview.png)
+
+---
+
+Use DrEval to build drug response models that have an impact
+
+1. Maintained, up-to-date baseline catalog, no need to re-implement literature models
+2. Gold standard datasets for benchmarking
+3. Consistent application-driven evaluation
+4. Ablation studies with permutation tests
+5. Cross-study evaluation for generalization analysis
+6. Optimized nextflow pipeline for fast experiments
+7. Easy-to-use hyperparameter tuning
+8. Paper-ready visualizations to display performance
+
+---
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/_static/img/leaderboard_dark.png?v=4">
+  <source media="(prefers-color-scheme: light)" srcset="docs/_static/img/leaderboard_light.png?v=4">
+  <img alt="DrEvalPy Leaderboard" src="docs/_static/img/leaderboard_dark.png?v=4">
+</picture>
+
+In the critical difference diagram, you can see which models outperform which other models significantly.
+The diagram is based on the average ranks of the models across all datasets and metrics, and the
+critical difference is calculated using the Nemenyi test. If model A is outside the bar corresponding to model B, it
+is significantly better (if it lies to the left) or worse (if it lies to the right) than model B.
+
+<picture>
+  <img alt="Critical difference diagram showing which models significantly outperform which other models"
+src="docs/_static/img/critical_difference_algorithms_LCO.svg?v=4">
+</picture>
+
+---
+
+This project is a collaboration of the Technical University of Munich (TUM, Germany)
+and the Freie Universität Berlin (FU, Germany).
+
+## Demo
+
+Check out our demo notebook in Colab:
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daisybio/drevalpy/blob/development/dreval_colab_demo.ipynb)
+
+Expected runtime on a normal machine:
+
+- Standalone demo: 38 minutes
+- Nextflow demo: 5 minutes
+
+## Installation
+
+Using pip:
+
+```bash
+pip install drevalpy
+```
+
+Optional Ray Tune support (for parallel hyperparameter tuning):
+
+```bash
+pip install "drevalpy[multiprocessing]"
+```
+
+On a regular machine, the installation should take about a minute.
+
+Using docker:
+
+```bash
+docker pull ghcr.io/daisybio/drevalpy:latest
+```
+
+From source:
+
+```bash
+git clone https://github.com/daisybio/drevalpy.git
+cd drevalpy
+pip install poetry
+pip install poetry-plugin-export
+poetry install
+```
+
+Check your installation by running in your console:
+
+```bash
+drevalpy --help
+```
+
+## Quickstart
+
+To run models from the catalog, you can run:
+
+```bash
+drevalpy --run_id my_first_run --models NaiveTissueMeanPredictor NaiveDrugMeanPredictor --dataset_name TOYv1 --test_mode LCO
+```
+
+This will download a small toy drug response dataset, train our baseline models which just predict the drug or tissue means or the mean drug and cell line effects.
+It will evaluate in "LCO" which is the leave-cell-line-out splitting strategy using 7 fold cross validation.
+The results will be stored in
+
+```bash
+results/my_first_run/TOYv1/LCO
+```
+
+You can visualize them using
+
+```bash
+drevalpy report --run_id my_first_run --dataset_name TOYv1
+```
+
+This will create an index.html file in the results directory which you can open in your web browser.
+
+You can also run a drug response experiment using Python:
+
+```python
+from drevalpy.experiment import drug_response_experiment
+from drevalpy.models import MODEL_FACTORY
+from drevalpy.datasets import AVAILABLE_DATASETS
+
+naive_mean = MODEL_FACTORY["NaivePredictor"] # a naive model that just predicts the training mean
+enet = MODEL_FACTORY["ElasticNet"] # An Elastic Net based on drug fingerprints and gene expression of 1000 landmark genes
+simple_nn = MODEL_FACTORY["SimpleNeuralNetwork"] # A neural network based on drug fingerprints and gene expression of 1000 landmark genes
+
+toyv1 = AVAILABLE_DATASETS["TOYv1"](path_data="data")
+
+drug_response_experiment(
+            models=[enet, simple_nn],
+            baselines=[naive_mean], # Ablation studies and robustness tests are not run for baselines.
+            response_data=toyv1,
+            n_cv_splits=2, # the number of cross validation splits. Should be higher in practice :)
+            test_mode="LCO", # LCO means Leave-Cell-Line out. This means that the test and validation splits only contain unseen cell lines.
+            run_id="my_first_run",
+            path_data="data", # where the downloaded drug response and feature data is stored
+            path_out="results", # results are stored here :)
+            hyperparameter_tuning=False) # if True (default), hyperparameters of the models and baselines are tuned.
+```
+
+This will run the ElasticNet and SimpleNeuralNetwork models on the TOYv1 dataset, using the NaivePredictor as a baseline. The results will be stored in `results/my_first_run/TOYv1/LCO`.
+To obtain evaluation metrics, you can use:
+
+```python
+from drevalpy.visualization.create_report import create_report
+
+create_report(
+    run_id="my_first_run",
+    dataset=toyv1.dataset_name,
+    path_data= "data",
+    result_path="results",
+)
+```
+
+We recommend the use of our Nextflow pipeline for computational demanding runs and for improved reproducibility.
+No knowledge of Nextflow is required to run it. The nextflow pipeline is available here: [nf-core/drugresponseeval](https://github.com/nf-core/drugresponseeval).
+
+## Example Report
+
+[Browse our benchmark results here.](https://dilis-lab.github.io/drevalpy-report/)
+You can reproduce the whole analysis by running the following commands:
+
+```bash
+# Main run
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id main_results \
+    --dataset_name CTRPv2 \
+    --cross_study_datasets CTRPv1,CCLE,GDSC1,GDSC2 \
+    --models DIPK,MultiViewRandomForest \
+    --baselines SimpleNeuralNetwork,RandomForest,MultiViewNeuralNetwork,NaiveMeanEffectsPredictor,GradientBoosting,SRMF,ElasticNet,NaiveTissueMeanPredictor,NaivePredictor,SuperFELTR,NaiveCellLineMeanPredictor,NaiveDrugMeanPredictor \
+    --test_mode LPO,LCO,LTO,LDO \
+    --randomization_mode SVRC,SVRD \
+    --randomization_type permutation \
+    --measure LN_IC50
+
+# EC50 run
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id ec50_run \
+    --dataset_name CTRPv2 \
+    --cross_study_datasets CTRPv1,CCLE,GDSC1,GDSC2,PDX_Bruna,BeatAML2 \
+    --models RandomForest \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LCO \
+    --measure pEC50
+
+# AUC run
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id auc_run \
+    --dataset_name CTRPv2 \
+    --cross_study_datasets CTRPv1,CCLE,GDSC1,GDSC2,PDX_Bruna,BeatAML2 \
+    --models RandomForest \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LCO \
+    --measure AUC
+
+# Invariant ablation run
+# Run this on CPU
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id invariant-rf \
+    --dataset_name CTRPv2 \
+    --models MultiViewRandomForest \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LPO,LCO,LDO \
+    --randomization_mode SVRC,SVRD \
+    --randomization_type invariant \
+    --measure LN_IC50
+
+# modify the profile to run this on GPU, if possible
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id invariant-dipk \
+    --dataset_name CTRPv2 \
+    --models DIPK \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LPO,LCO,LDO \
+    --randomization_mode SVRC,SVRD \
+    --randomization_type invariant \
+    --measure LN_IC50
+
+## Inference on BeatAMl2, PDX_Bruna
+# run this on CPU
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id infer_pdx_beat \
+    --dataset_name CTRPv2 \
+    --cross_study_datasets PDX_Bruna,BeatAML2 \
+    --models RandomForest,SimpleNeuralNetwork,GradientBoosting,SRMF,ElasticNet,NaivePredictor,NaiveDrugMeanPredictor,NaiveCellLineMeanPredictor \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LPO,LCO,LDO \
+    --measure LN_IC50
+
+# modify profile to run this on GPU, if possible
+nextflow run nf-core/drugresponseeval \
+    -profile docker \
+    --run_id dipk_pdx_beat \
+    --dataset_name CTRPv2 \
+    --cross_study_datasets PDX_Bruna,BeatAML2 \
+    --models DIPK \
+    --baselines NaiveMeanEffectsPredictor \
+    --test_mode LPO,LCO,LDO \
+    --measure LN_IC50
+```
+
+## Contact
+
+Main developers:
+
+- [Judith Bernett](mailto:judith.bernett@tum.de), [Data Science in Systems Biology](https://www.mls.ls.tum.de/daisybio/startseite/), TUM
+- [Pascal Iversen](mailto:Pascal.Iversen@hpi.de), [Data Integration in the Life Sciences](https://www.mi.fu-berlin.de/w/DILIS/WebHome), FU Berlin, Hasso-Plattner-Institut

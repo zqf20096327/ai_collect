@@ -1,0 +1,79 @@
+# LLM 应用开发教程实验合集
+
+大模型应用开发的系列示例，覆盖从基础调用到 Agent 编排的完整学习路线。
+
+由 [A³ R&D Lab](https://github.com/A3RDLab)（读作 **A-cubed R&D Lab / A立方研发实验室**）维护。
+
+> 📖 **新手请从[实验手册.md](实验手册.md)开始**——一步步引导式实验，全部命令经过实机验证。
+>
+> 🎧 配套讲义：[课堂实录与教学要点.md](课堂实录与教学要点.md)——培训课堂的讲解要点、真实案例与现场实录（含转写纠错对照表）。
+
+## 环境准备
+
+```bash
+pip install -r requirements.txt
+
+# 配置 API Key（复制模板并填入自己的 Key，.env 不会被提交）
+cp .env.example .env
+# 或直接 export：
+export API_KEY=<硅基流动等 OpenAI 兼容平台的 Key>
+export DASHSCOPE_API_KEY=<阿里云百炼 Key>
+```
+
+所有脚本支持 `--model` / `--api_key` / `--base_url` 参数切换模型与平台（默认硅基流动）。
+
+## Demo 索引
+
+### 基础调用
+| Demo | 说明 |
+|---|---|
+| `first_llm_call.py` | 最简单的单次调用 |
+| `first_llm_app.py` | 流式多轮对话，含推理模型思考过程展示 |
+| `structured_output_demo.py` | **结构化输出**：json_schema 约束 + Pydantic 校验，信息抽取场景 |
+
+### Agent / Function Calling（推荐学习顺序）
+| Demo | 说明 |
+|---|---|
+| `function_call_and_agent_demo/demo-agent-with-tools-arg.py` | 入门：原生 function calling + 手写调用循环（GitHub 仓库分析场景） |
+| `function_call_and_agent_demo/langgraph_demo/` | 进阶：LangGraph 图编排，手搓 StateGraph vs `create_react_agent` 对比 |
+| `function_call_and_agent_demo/agent_harness_demo/` | 进阶：Agent Harness（DeepAgents）+ Agent Skills 渐进式披露，接入 anthropics/skills 现成 Skill |
+| `function_call_and_agent_demo/mcp_server_demo.py` + `mcp_client_agent_demo.py` | MCP 协议：FastMCP 服务端 + Streamable HTTP 客户端 agent |
+| `function_call_and_agent_demo/excel-process/` | Streamlit + 代码沙箱的 Excel 处理应用（独立依赖，见其 requirements.txt） |
+| `function_call_and_agent_demo/archive/` | 已归档的历史写法（手写 ReAct prompt 等），附归档原因说明 |
+
+### RAG
+| Demo | 说明 |
+|---|---|
+| `mini_rag_demo.py` | **自包含 RAG 全链路**：HTML清洗→切块→embedding→余弦检索→生成（索引缓存，无需 Redis） |
+| `wiki_kb_agent_demo/` | LLM Wiki 知识库接入 Agent：从 index.md 出发的自然语言导航式检索（read_page/list_pages/grep_kb 工具，零 embedding） |
+
+### Text2SQL
+| Demo | 说明 |
+|---|---|
+| `text2sql_demo.py` | schema 自动内省 + function calling 执行 SQL + 错误自修复（Chinook 示例库） |
+
+### 生产风格完整项目
+| Demo | 说明 |
+|---|---|
+| `finance_doc_review/` | 金融文档审核：LangGraph 编排 + YAML 规则引擎 + Pydantic AI 结构化输出（独立 pyproject，见其 README） |
+
+## 推荐学习路线
+
+1. **基础**：`first_llm_call.py` → `first_llm_app.py` → `structured_output_demo.py`
+2. **Agent**：`demo-agent-with-tools-arg.py` → `langgraph_demo` → `agent_harness_demo`（Agent Harness + Skills）→ MCP demo
+3. **RAG**：`mini_rag_demo.py`（无依赖全链路）→ `wiki_kb_agent_demo`（导航式知识库）
+4. **数据**：`text2sql_demo.py` → `excel-process`
+5. **综合**：`finance_doc_review/`
+
+## 注意事项
+
+- **切勿在代码中硬编码 API Key**，一律使用环境变量（见 `.env.example`）
+- 过时写法统一移入各目录的 `archive/`，其中的 README 说明了归档原因与替代方案
+- 人工智能生成内容仅供参考
+
+## 许可证与第三方材料
+
+- A³ R&D Lab 原创代码与文档采用 [Apache License 2.0](LICENSE)。
+- 第三方代码、模型文件、数据集、公开报告和示例语料不因收入本仓库而改变其原有权利状态，也不自动纳入 Apache-2.0。
+- 复用前请阅读 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 及相关子目录内的许可证或来源说明。
+- 仓库包含的 Anthropic `xlsx` Skill 受其目录内独立条款约束，不属于本仓库的 Apache-2.0 授权范围。

@@ -1,0 +1,145 @@
+# MQDataScience v7.0.0
+
+## What can be created?
+"The first and only Arduino library where MQ Sensors combine with Data Science"
+
+## 1) Advanced Data Science System for Regression Calculations
+![MQ-135_gas_curves](https://github.com/user-attachments/assets/e8d6e1bf-6f61-40c8-9cc8-fd0cd7189c22)
+
+## 2) Ppm Analysis of Different Model Gases
+![MQ303A_Ppm_Analysis](https://github.com/user-attachments/assets/f822f087-2f24-4094-a278-18848a8e53ff)
+
+## 3) Formulated Correction Coefficients depending on Temperature and Humidity
+![MQ-135_correction_coefficient](https://github.com/user-attachments/assets/fd9bdeb6-377a-4109-b931-766112c58a4e)
+
+## 4) 3D Ppm Surface Diagram for MQ Sensors Gases
+![MQ135_CO2_3D)](https://github.com/user-attachments/assets/21cb85b6-ea50-4bfc-80a4-d045e03e9b5a)
+
+## 5) Curve Prediction in Time-Dependent 4D Space
+![4D_Curve_Prediction](https://github.com/user-attachments/assets/3f30a078-a461-4d48-b969-89409f730924)
+
+## 4D Axis Features
+
+<img width="750" alt="4dformullas" src="https://github.com/user-attachments/assets/7c5a1464-fcb9-4a8f-9693-c2c473f1ec1a" />
+
+## Ppm Formullas
+
+<img width="360" alt="log" src="https://github.com/user-attachments/assets/c0d1db76-0c69-4725-80fc-aed740fcbac8" />
+
+![loghello)](https://github.com/user-attachments/assets/5b251bec-9677-421d-9101-ccb1e3ad4d2e)
+
+<img width="1264" alt="image1" src="https://github.com/user-attachments/assets/63fcad55-8c34-4520-a2b6-af4c509d6888" />
+
+<img width="1264" alt="image2" src="https://github.com/user-attachments/assets/2aeeeef4-0d06-45f1-9f49-b4e513cc5dea" />
+
+        if r_squared >= 0.9995:
+            print("R-squared value for {gas name} is above 0.9995, plotting against first and last values.")
+            
+            x0, y0 = x[0], y[0]
+            xn, yn = x[-1], y[-1]
+            b = np.log10(yn/y0) / np.log10(xn/x0)
+            a = 10**(np.log10(yn) - b * np.log10(xn))
+            b2 = np.log10(yn) - b * np.log10(xn)
+            b2_rounded = round(b2, 4)
+            a_rounded = round(a, 4)
+            b_rounded = round(b, 4)
+
+The first formula is determined according to all points (Curves.py, OldCurve), while the second formula is determined according to the first and last point. Therefore, in order to collect them all in the same formula and to increase the accuracy rate, we used the method in the second formula and took the logarithm (if R² = 1 (100%) always: logm = valueb, logb = log₁₀(valuea)) for curves greater than 99.95% and collected them all in the first formula, thus we increased the accuracy rate without having to use 2 different formulas (Curves.py, NewCurve).
+
+## y = axᵇ → ppm = a×ratioᵇ
+<b> Therefore, we need to make a transition according to the formula:
+
+<img width="400" alt="image3" src="https://github.com/user-attachments/assets/9706b917-7ce9-4bc9-a3bb-171a11e46052" />
+
+<b> In data graphs, the x-axis is given as ppm and the y-axis is given as ratio.
+
+## Calibrating the Sensor Using Special Methods
+For the MQ-2 sensor, calibration at 1000 ppm LPG is recommended as an example. This value is the point where Rs/Ro is approximately 0.78. There is a logarithmic relationship, rather than a linear one, between the sensor and the ppm. The mathematical relationship of this connection is exactly as follows:
+
+<img width="1264" alt="CalValue" src="https://github.com/user-attachments/assets/fa47def6-581c-424f-8752-fd28a183113f" />
+
+The sensor is limited by a lower bound of 1% and an upper bound of 99%, which is considered the saturation point. The lower the percentage of the gas used for calibration, the more sensitive the sensor is to that specific gas compared to others it measures.
+
+## V = I × R
+
+<img width="1264" alt="image4" src="https://github.com/user-attachments/assets/cdcdc664-251c-4d1f-a79b-8481ded8a043" />
+
+-------------------------
+
+<img width="685" height="70" alt="image5" src="https://github.com/user-attachments/assets/36fedfeb-24dc-4a71-801d-1188c149e6bd" />
+
+## Calculate Ratio
+
+<img width="698" height="332" alt="image6" src="https://github.com/user-attachments/assets/13d05db9-011d-4844-bf97-16c3baca77b6" />
+
+## Ratio for Sensors
+STATUS 1: MQ-2, MQ-3, MQ-4, MQ-5, MQ-6, MQ-7, MQ-8, MQ-9, MQ-135, MQ-136, MQ-137 [Almost All & Standart]
+
+STATUS 2: MQ303A, MQ303B, MQ307A, MQ309A [A Models & B Models]
+
+STATUS 3: MQ-131_LOW, MQ131 [MQ131 Models]
+
+## Inclusion of Correction Coefficient
+
+<img width="1264" alt="ppm_correction" src="https://github.com/user-attachments/assets/475dcde2-f3c3-4d40-a79c-92f719a74ec0" />
+
+## Calculation of ppm Formulas for All Sensors
+
+<img width="1264" alt="ppmFormulas_AllSensors" src="https://github.com/user-attachments/assets/bb11c82b-5cf2-430e-9a72-d127d2a9f2fa" />
+
+## STEL Limits For Gases
+![STEL_LIMITS_FOR_GASES](https://github.com/user-attachments/assets/e092705a-1e45-4375-9aee-470e366a51de)
+
+## Required Preheating Times For MQ Sensors
+![Hour](https://github.com/user-attachments/assets/0a49d718-6ac0-4edd-a93c-a14086e4be79)
+
+## Required Circuit Diagrams For MQ sensors
+![Circuit Diagrams](https://github.com/user-attachments/assets/74905eb4-9a70-4409-8bc3-488cb973b938)
+
+## Required Voltage Ranges For MQ Sensors
+![Vc](https://github.com/user-attachments/assets/3768c32f-9942-4140-bccd-1796df73869a)
+
+## Required RL Values (Load Resistors) For MQ Sensors
+![suggestedRL](https://github.com/user-attachments/assets/605c711b-61a5-4d5a-98fa-4014ebb26356)
+
+## Finding the Constants of the Correction Coefficient
+
+<img width="553" alt="find_constants" src="https://github.com/user-attachments/assets/c5dfc57b-8d1f-4175-b5fe-795a5eb8c984" />
+
+## Mathematical Foundation of the Correction Coefficient Model
+
+<img width="1448" height="1302" alt="mathematical_correction" src="https://github.com/user-attachments/assets/1d6b9f3d-3ba3-46dc-b183-f19e0d7cb813" />
+
+		def CorrectionCoefficient(RH, temp):
+			valuea = interpolate(RH, 33, 85, a_RH33, a_RH85)
+			valueb = interpolate(RH, 33, 85, b_RH33, b_RH85)
+			valuec = interpolate(RH, 33, 85, c_RH33, c_RH85)
+			return valuea + valuec * np.exp(valueb * temp)
+
+## Prediction Algorithm for Temp, RH and Air Quality Analysis
+
+<img width="1024" alt="76_models" src="https://github.com/user-attachments/assets/c99d3fa9-2f0c-437e-81e9-1664902f800f" />
+
+###
+
+<img width="1024" height="200" alt="R2_model_algorithm" src="https://github.com/user-attachments/assets/c6c50fdf-1878-4f4d-a7c5-a66faa4b047c" />
+
+###
+
+From classical regression methods, multivariable regression models, curve fitting and spline-based approaches, time series analysis, state-space and Kalman filtering methods, to machine learning algorithms, ensemble learning methods, and artificial neural network models, a total of 76 different algorithms are applied to the same dataset. Each model is evaluated using Cross-Validation, its R² (Coefficient of Determination) is calculated, and the model achieving the highest R² score is automatically selected.
+
+## Check out all our DataScience libraries under the SpaceData series!
+
+"The first and only Arduino library series where Gas Sensors and Geiger Counter combine with Data Science"
+
+| Library | Scope |
+|---------|---------|
+| <a href="https://github.com/abcdaaaaaaaaa/MQDataScience">MQDataScience  | MQ2, MQ3, MQ4, MQ5, MQ6, MQ7, MQ8, MQ9, MQ131_LOW, MQ131_HIGH, MQ135, MQ136, MQ137, MQ138, MQ214, MQ216, MQ303A, MQ303B, MQ306A, MQ307A, MQ309A Gas Sensors  |
+| <a href="https://github.com/abcdaaaaaaaaa/TGSDataScience">TGSDataScience  | TGS813, TGS822, TGS826, TGS2201, TGS2442, TGS2600, TGS2602, TGS2610, TGS2611, TGS2612, TGS2620, TGS6812, TGS8100 Gas Sensors |
+| <a href="https://github.com/abcdaaaaaaaaa/MG811DataScience">MG811DataScience  | MG811 Gas Sensor  |
+| <a href="https://github.com/abcdaaaaaaaaa/SP3S-AQ2DataScience">SP3S-AQ2DataScience  | SP3S-AQ2-01 Gas Sensor  |
+| <a href="https://github.com/abcdaaaaaaaaa/RadioactiveDataScience">RadioactiveDataScience  | Geiger Counter  |
+
+## For detailed explanation, You can also check out the github <a href="https://github.com/abcdaaaaaaaaa/MQDataScience/wiki">Wiki Page!
+
+## You can access the library's article <a href="https://project.uzay.info/MQDataScience">Here!

@@ -1,0 +1,1729 @@
+# Botference
+
+[![Tracked code LOC](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/angadhn/botference/main/docs/badges/loc.json)](#tracked-code-loc)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-ff69b4)](https://github.com/sponsors/angadhn)
+
+**Website:** [botference.com](https://botference.com) · If botference is useful to you, consider [sponsoring its development](https://github.com/sponsors/angadhn).
+
+> [!NOTE]
+> This README was AI-generated. I (Angadh) have skimmed and supervised its creation.
+
+Multi-LLM planning where you and the AIs collaborate in a **council** — a
+free-form group chat where the bots can also hand each other the floor and
+hash things out directly, with you steering. The result is an
+`implementation-plan.md` and `checkpoint.md` you can take into any workflow.
+
+**The primary contribution of this repository is plan mode** — a multi-LLM
+planning session where Claude and Codex collaborate in real time. This is the
+part that works well and is ready for use.
+
+> [!WARNING]
+> This is vibe-coded. Use at your own risk. Research-plan mode and build mode
+> are deeply experimental — under active development, will change without
+> notice, and not recommended for general use. If you are here to get things
+> done, use `botference plan` and take the resulting plan into your own
+> workflow.
+
+**Ink TUI** — projects panel (left), full-width council panel (right), input
+field and status line at the bottom. This is the primary interface and
+default planner UI:
+
+![Ink UI — council panel with status line](docs/images/ink-ui.png)
+
+The Projects panel lists `Inbox` plus every folder under `projects/`. The
+controller sends the recent resumable chats for **every** project — up to
+`BOTFERENCE_PANEL_SESSION_LIMIT` (default 100; `0` means no limit at all), a
+bound on the size of a snapshot that is broadcast after every turn rather than
+on how many chats you are allowed to see; the web sidebar scrolls a long list.
+The Ink panel expands the active project (the web sidebar lets you expand any
+of them). Pane controls in Ink:
+
+| Key | Action |
+|-----|--------|
+| `Tab` / `Shift+Tab` | Toggle focus between Council and Projects (when visible) |
+| `↑` / `↓` | Navigate the Projects list while it has focus |
+| type | Filter projects and chats by title while the panel has focus (Esc clears; `/` still starts a command) |
+| `Enter` | Open the highlighted project, switch to Inbox, or resume the highlighted chat |
+| `Ctrl+P` | Toggle the Projects panel's visibility |
+
+Chats under the active project are sorted newest-first and show a compact
+age (`5m`, `3h`, `2d`); the chat you're currently in is marked `▸ … · open`.
+
+Selecting `Inbox` runs `/project clear`; selecting a project header runs
+`/project open <id>`; selecting a session row runs `/resume <session-id>`.
+You can switch sessions mid-chat — the current session is persisted on every
+turn, so you can `/resume <its-id>` to come back later. `/resume <id>` reaches
+any saved chat, including one filed under a different project; opening it
+makes that chat's project the active one.
+
+The Ink TUI is the only frontend. First use after clone: `cd ink-ui && npm
+install`. It supports app-level pane-clamped text selection, multiline input
+(Shift+Enter), streaming, and activity status. Use `--claude` to skip Codex
+and run a solo Claude session (no TUI, just the Claude CLI).
+
+Project-local runtime behavior and the long-term packaging direction are
+documented in [`docs/project-model.md`](docs/project-model.md) and
+[`docs/distribution-roadmap.md`](docs/distribution-roadmap.md).
+
+Default planning behavior in project-local mode is intentionally lazy: `plan`
+and `research-plan` do not scan the whole project up front, and vault-style
+projects keep writes confined to Botference-owned paths unless you explicitly
+expand them in `botference/project.json`.
+
+## Approach
+
+Botference is built around one metaphor: the **council** — an open room where
+you and the AIs all talk, like a three-person group chat. You steer the
+conversation, ask questions, push back, and direct who speaks; the bots can
+also hand each other the floor and debate directly (budgeted, and you can
+always interrupt) until they bring you a coherent proposal instead of
+conflicting opinions. When they agree on who should write the plan, the lead
+is set automatically.
+
+## Quick Start
+
+### Prerequisites
+
+- Claude Code CLI installed and authenticated
+- Codex CLI installed and authenticated
+- Python 3 available on your `PATH`
+- Node.js + npm for the default Ink UI (`plan` / `research-plan`)
+
+### Running From This Repo Checkout
+
+If you cloned **this** repository and want to try Botference immediately, run
+it from the repo root with the local launcher:
+
+```bash
+./botference plan                          # Ink TUI (default)
+./botference plan --claude                 # Solo Claude
+./botference plan --claude-interactive     # Experimental: mirror interactive Claude through tmux
+./botference research-plan                 # Structured planning in Ink (experimental)
+./botference --help
+man docs/man/botference.1                  # Man page (launcher + in-session commands)
+```
+
+Do **not** run `botference init` in the Botference source repo. This checkout
+uses the legacy self-hosted layout (`work/`, `build/`, `archive/`) rather than
+a top-level `botference/` state directory.
+
+Before the first planning run from a fresh clone:
+
+```bash
+cd ink-ui && npm install
+```
+
+### Using Botference In Another Project
+
+From a target project root:
+
+```bash
+botference init                            # Create project-local botference/ state (and register it with Discuss)
+botference site                            # Just the Discuss half, for a repo already initialised
+botference init --project-dir=spaceship    # Or create botference-spaceship/ instead
+botference plan                            # Council: you + Claude + Codex (Ink default)
+botference --project-dir=spaceship plan    # Use botference-spaceship/
+botference plan --claude                   # Solo Claude (no Codex)
+botference plan --claude-interactive       # Experimental interactive-Claude tmux transport
+
+# Building (experimental)
+botference build                           # Interactive build loop
+botference -p build                        # Headless build loop
+botference -p build 10                     # Headless, max 10 iterations
+botference -p build --parallel             # Phase-level parallelism
+
+botference --help                          # Full usage + supported models
+```
+
+After `botference init`, Botference stores its state inside `./botference/` in
+that target project. This is the right workflow for brownfield or greenfield
+projects outside the Botference engine repo.
+
+If you use `--project-dir=<slug>`, pass the same option on later Botference
+commands for that project, or set `BOTFERENCE_PROJECT_DIR_NAME=<slug>` in your
+shell/project environment. Slugs may contain letters, numbers, hyphens, and
+underscores. Bare slugs are prefixed, so `--project-dir=spaceship` resolves to
+`botference-spaceship/`; explicit names like `botference-spaceship` are accepted
+as-is.
+
+If you move the Botference framework itself to a new directory later, target
+projects do not need to be re-initialized. Their local `./botference/` state
+stays valid. Just make sure the launcher points at the new framework path, for
+example:
+
+```bash
+export BOTFERENCE_HOME=/new/path/to/botference-main
+```
+
+There is no extra “run it once from the framework repo” step. The framework
+path is resolved at launch time from `BOTFERENCE_HOME` or from the `botference`
+script you actually invoked.
+
+## Document Review (paper-review)
+
+Botference ships a Google-Docs-style review interface for LaTeX,
+Markdown and Jupyter Book sources (a repo with `_config.yml` + `_toc.yml`:
+chapters as `.ipynb` notebooks and/or MyST `.md`, in `_toc.yml` order;
+each notebook is reviewed and edited cell by cell through a plain-text
+view of its cells, and MyST directives render approximately): the paper
+renders as commentable HTML, margin
+comments become bot turns when you tag `@claude`/`@codex`/`@all`, bots
+reply in threads and post accept/reject suggestion cards, and accepted
+changes are applied to the sources deterministically with separate
+Apply / Commit / Revert steps. Multi-human collaboration works through
+git (per-user comment files) or a password-protected tunnel
+(`--hosted`).
+
+One command from your document repo:
+
+```bash
+botference review                # set up (first run) + build + serve; agents auto-detected
+botference review --share        # hosted + tunnel: one URL + password to send around
+botference review [dir] [--share] [--hosted] [--port N] [--no-agents]
+                 [--upgrade | --upgrade-only]
+```
+
+The first run copies the engine into `<dir>/review/`, auto-detects the
+document configuration (master file, sections, bib, figures — echoed so
+you can correct `review/review.config.json` if it guessed wrong), adds
+the gitignore block, builds the site, and prints next steps. Subsequent
+runs rebuild only when sources changed, then serve. Agents are on by
+default when the machine can run them: the launcher checks for `python3`
+plus a `claude`/`codex` CLI on PATH and prints `agents: on (claude,
+codex detected)` — or serves read-and-comment only with an explanation
+when they're missing. `--no-agents` forces the bridge off, `--agents`
+forces it on (clear error if impossible), `--hosted` adds
+`REVIEW_PASSWORD` auth for a shared URL (an in-page gate asking for a
+name and the password together, no browser popup; tools can still send
+basic auth with any username), and `--upgrade` refreshes the engine
+files without touching your config, comments, or suggestions.
+`--upgrade-only` does that same refresh, rebuilds the site with the new
+assets and exits without serving — safe to run against a paper that is
+already up, which is how the review hub keeps hosted papers current. Set
+`REVIEW_OWNER_PASSWORD` too and that second password signs the *owner*
+in from any device — phone included: whatever name is typed, the gate
+issues the owner's handle and owner token, while the guest password
+keeps working unchanged.
+
+Two ways to bring in collaborators:
+
+- **Live URL** (`--share`): serves hosted mode behind a cloudflared
+  quick tunnel — respects `REVIEW_PASSWORD` or generates one — and
+  prints `share this: <url>   password: <pw>`. Guests give their name
+  at the gate, then read, comment and suggest; their agent summons
+  queue for you to release — or, if you grant a named guest agent
+  access in the People panel, go straight through within a daily cap
+  they can see. Apply, commit, revert and model switching stay yours
+  alone. Ctrl-C stops server and tunnel together. Without `cloudflared` it
+  prints an install hint and keeps serving locally. For a stable URL
+  across sessions, configure a named tunnel (docs link in the man page).
+- **Git sync**: commit `review/` and `.gitignore`; collaborators clone
+  and either install botference and run the identical `botference
+  review` (agents auto-detected — without the CLIs they still read and
+  comment) or use plain `node review/server.mjs`, then commit their
+  comments back with `node review/submit.mjs --push`.
+
+**One store of comments, when you also use Discuss.** A visitor without
+the Discuss extension comments in the review page's own margin, and by
+default that comment stays there — invisible to your drawer, to the
+bots, to send review and to the Obsidian export. Add one line to
+`review/review.config.json`:
+
+```json
+"discuss": { "companion": "http://127.0.0.1:4189" }
+```
+
+and every margin comment becomes a Discuss thread on that page, under
+the name of whoever wrote it and anchored to the same words; anything
+said back — a bot's answer, your reply — comes home to the margin they
+wrote in. A comment about the document as a whole lands in that page's
+chat rather than pretending to have an anchor. The two servers talk over
+the loopback only, so nothing about your tunnel or your guests' sign-in
+changes. Add `"base": "https://<your paper's hostname>"` if the paper is
+read at more than one address and you want them treated as one page.
+**Without that block nothing changes** — a clone with no companion, a
+collaborator's checkout and a static `site/` opened from disk all keep
+the commenting they have today.
+
+Hosting several papers? `frontends/review/hub.mjs` is a stable front
+door for all of them behind ONE named cloudflared tunnel: a gated
+portal on the hub hostname lists each visitor exactly the papers their
+login opens (validated against each paper's own gate — the hub stores
+no passwords) or that declare them as a collaborator, and every paper
+gets its own hostname transparently proxied to its local server (run
+with `--hosted`; no tunnel of its own). When a paper's server is down
+its hostname serves a friendly "work from the git repo" page instead
+of an error. On the machine itself, localhost is the owner: no login,
+every paper listed. Config in `~/.botference/review-hub.json` (see the
+header of `hub.mjs`), re-read live — no restarts.
+
+The owner portal runs the whole estate, so the config stops being
+something you hand-edit:
+
+- **Auto-discovery.** Set `"workspace"` (e.g.
+  `"~/MySiteFromObsidianVault/botference"`) and every directory under
+  `<workspace>/projects/` becomes a review candidate — *scaffolded*
+  once it has `review/review.config.json`, *not set up yet* otherwise.
+  The owner sees all of them, running or not, merged with the explicit
+  `papers` entries; an explicit entry always wins a collision.
+- **On/off toggles.** Turning a paper on scaffolds it if it was never
+  set up, picks a free port from `"portRange"`, runs `cloudflared
+  tunnel route dns review <slug>.<domain>`, and starts it hosted as a
+  managed service with a generated guest password. If the DNS route
+  fails the paper still comes up and the portal shows you the exact
+  command to run. Turning it off stops that paper's service by its
+  ledger entry, from the paper's own directory — never a pattern kill.
+- **Wake-on-request.** Ask for a paper whose server is down and, if
+  you are the owner, it starts behind a self-refreshing "starting…"
+  page. Guests keep getting the offline page; starting a paper is
+  never a guest's decision.
+- **Passwordless owner devices.** A new browser can ask to be trusted;
+  the hub pops a macOS dialog on the machine, and Approve hands that
+  browser a year-long signed cookie that makes it the owner on the hub
+  *and* the paper subdomains. `REVIEW_HUB_PASSWORD` still works as the
+  password route from any device.
+- **Private by default.** A newly enabled paper gets a generated guest
+  password and an empty `collaborators` list, so it is invisible and
+  unreachable to everyone but you until you declare who may see it.
+  Passwords live in `~/.botference/review-paper-secrets.json` (0600),
+  never in the config.
+- **Project files.** Every discovered project also gets an owner-only
+  files view at `/p/<slug>/files/` served by the hub itself — no review
+  scaffolding, no paper server, no DNS record — so a plot or HTML
+  report your bots produced is viewable at the portal with zero setup.
+  Dotfiles (`.git`, `.botference`, …) and traversal are refused, and a
+  project's own HTML is sandboxed to an opaque origin.
+
+What you get in the browser: comment or **suggest** on any block —
+paragraphs, figures, headings, list items, quotes, captions, table
+cells and the title. A suggestion (yours or a bot's) renders inline as
+tracked changes in its author's colour and flows through accept → ⚡
+Apply → ✓ Commit. Tagging `@claude`/`@codex`/`@all` in a comment is the
+*only* way to summon an agent. A top-right cluster shows who is here
+(coarse, in-memory, never logged to disk, desktop only), and the owner
+gets a bottom task console for document-level instructions plus a
+Settings panel with live context occupancy, session usage and the
+model switcher.
+
+- Engine: `frontends/review/` (document-agnostic; copied into each
+  project's `review/` at setup).
+- Bot-driven setup also works: ask your bots to "set up paper review in
+  <dir>" — the `paper-review` skill
+  (`.claude/skills/paper-review/SKILL.md`) has the full contract;
+  `design.md` next to it records the architecture.
+- Requires `pandoc`. Serving by hand still works: `node
+  review/server.mjs --chat` from the project, then open the printed URL.
+- Shell completion: zsh — add `fpath=($BOTFERENCE_HOME/completions $fpath)`
+  before `compinit`; bash — `source $BOTFERENCE_HOME/completions/botference.bash`.
+
+## Plan From The Browser / Your Phone
+
+The planning council also runs as a chat web app (claude.ai-shaped:
+sidebar where every project expands to its recent chats — tap any chat to
+open it, no "make this the active project" step; the chat's project becomes
+the active context on open — streaming transcript, slash commands
+with autocomplete, choice/permission cards inline, image attachments —
+attach button/paste/drag-drop on desktop, camera or photo library on
+iOS — plus clickable links and tap-to-copy password chips). When Claude
+spawns subagents (the `Task` tool), an inline **progress lane** in the
+turn shows one live row per subagent — status dot, label, elapsed clock,
+and latest tool activity — collapsing to a summary when each finishes.
+Bot messages render markdown: fenced code, inline code, links, bold —
+and **tables** (a sign-off sheet arrives as a real table, horizontally
+scrollable on a phone, not a wall of pipes). An **agents panel** shows
+each agent's condition for the open chat: a context gauge (whole
+percents and compact tokens, e.g. `43% · 86k / 200k`, with the 50%
+auto-relay threshold ticked), live activity (current tool + target
+while it works), the model picker, per-agent **relay** buttons plus
+**relay both**, the auto-relay toggle, relay provenance ("memory reset
+12m ago · self handoff" — when that agent's session memory last
+restarted and which tier authored the handoff), and session facts
+(project, mode, lead, route). On wide desktop it is a right-hand rail;
+on phones and narrow windows it slides in from the RIGHT via its own
+header toggle (the left hamburger drawer stays purely projects and
+chats), so context usage is always readable on mobile. The open chat is
+reflected in the URL as `#/chat/<session-id>`, so the
+address bar is a shareable per-chat link; opening it reopens that chat
+(an unknown id falls back to the current one). The server runs **one
+agent bridge per open chat**, so browser tabs on different chats are
+truly concurrent sessions behind the same tunnel — message away in one
+tab while another chat's turn runs; tabs on the *same* chat share one
+live stream. There is no limit on how many chats you open: past
+`COUNCIL_MAX_CHATS` live bridges (default 4) the least-recently-used
+idle, unwatched chat is parked (its process exits and it respawns from
+disk when reopened), and when every chat is busy or watched the new one
+opens anyway.
+
+At the top of that panel sits **tasks** — the checklist from the newest
+message that has one, whoever wrote it, kept in view while the chat
+scrolls past it. The bots re-issue their task list as the plan moves; a
+revised list *replaces* what the panel shows, so there is one list there
+and it is the current one. Its checkboxes are the same ticks as the
+message's (tick in either place and both follow; they survive reloads and
+replays), a quiet line says who it came from and how much is done, and
+`↑ source` scrolls the transcript back to the message it came from. The
+section collapses, and folds away entirely in a chat that has no list.
+Ticks are remembered per message, so a *revised* list starts from the
+`[x]` marks the bots wrote into it — nothing guesses which old item
+became which new one.
+
+The agents panel also carries **billing**: per agent, whether its CLI
+runs on the subscription it is logged into or on an API key
+(`auto` / `subscription` / `API key`, the same three modes and the same
+storage Discuss uses — see
+[API keys](#api-keys-if-you-would-rather-spend-credit-than-a-subscription)
+below; a key pasted in either product works in both, while the *mode* is
+each product's own). The switch works from anywhere you can sign in;
+**keys can only be added from the machine the server runs on**, so
+through the tunnel the fields are gone and the panel says where to add
+one instead. A billing change applies to agents started from then on — a
+chat already running keeps what it started with, because a process's
+environment is fixed when it starts and the server will not kill a live
+turn to answer a settings click.
+
+The sidebar drives housekeeping without leaving the browser, and every
+affordance sends the same slash command the TUI takes — one code path:
+
+- Every project header is a chevron toggle — active, inactive or archived
+  — and lists that project's recent chats, scrolling once there are many.
+  Tapping a chat opens it
+  and makes its project the active context; there is no separate
+  "activate this project" step. The project you land in auto-expands, and
+  a project you collapse by hand stays collapsed.
+- **New** is a split control — `＋ New` with `chat` / `project` stacked
+  beside it. `chat` runs `/new`; `project` opens an inline title field
+  and sends `/project create <title>`.
+- Each chat row — in a project block and in the **Recent** shortlist at the
+  top — has a **⋯** menu offering three different-sized ways out of
+  a list, safest first: **Remove from project** (`/project unfile <id>` —
+  the chat is untouched, only its filing goes, so it lands in Inbox),
+  **Archive** (`/archive <id>` — it leaves every listing, every byte
+  survives) and **Delete…** (`/delete <id>`, whose confirmation is the
+  controller's own choice card in the transcript, so nothing is
+  confirmed twice).
+- Each project block offers **▸ contents** — a read-only look at what is in
+  the project: its chats, and a shallow listing of `projects/<id>/` with
+  sizes. The folder is fetched when you open the panel, not carried in the
+  per-turn snapshot.
+- **⇪ publish to GitHub…** (`/project github <id>`) makes the project folder
+  a git repo and pushes it to a **new private** GitHub repo through your own
+  `gh` login. Confirm-gated in the transcript, never one click; the resulting
+  URL is remembered and shown under the contents panel.
+- Each project block offers **⊘ archive project**
+  (`/project archive <id>`); archived projects collapse into an
+  **Archived** section at the bottom of the sidebar, closed by default,
+  where **↩ unarchive project** brings one back.
+- Every project block, live or archived, ends with a red **🗑 delete
+  project…** (`/project delete <id>`). It removes the folder and every chat
+  filed in it, so the controller asks first in the transcript, naming the
+  folder and the chat count.
+
+```bash
+botference plan --web       # serve locally, open the printed URL
+botference plan --share     # + password gate + cloudflared tunnel: one
+                            #   https URL + password — open it on your phone
+botference plan --share --no-auth   # skip the password gate (open URL).
+                            #   ⚠ anyone with the URL can drive your agents,
+                            #   which read/write files on this machine — URLs
+                            #   leak. Prefer the default password.
+```
+
+The Ink TUI stays the default `botference plan`. The web server spawns
+its own bridge session — do not open the same session in the TUI and
+the browser at once (a second web server per workspace is refused via
+`.botference/council-web.lock`). `--port N` picks the port
+(default 4187); `COUNCIL_PASSWORD` fixes the password (generated per
+session otherwise). Engine: `frontends/council/`.
+
+For a **stable share URL** across sessions (both `plan --share` and
+`review --share`), create a named cloudflared tunnel once and point
+botference at it:
+
+```bash
+cloudflared tunnel login
+cloudflared tunnel create <your-tunnel-name>
+cloudflared tunnel route dns <your-tunnel-name> council.example.com
+export BOTFERENCE_TUNNEL=<your-tunnel-name>
+export BOTFERENCE_TUNNEL_URL=https://council.example.com   # printed as the share URL
+```
+
+Without `BOTFERENCE_TUNNEL`, `--share` uses a quick tunnel with a
+random `trycloudflare.com` URL.
+
+### Dictation
+
+Every message box — in the council web page and in the Discuss drawer
+(page chat, comment threads, the library) — has a **mic button**. Tap it
+to start recording, tap it again to stop (Esc throws the recording
+away). The recording is turned into text on your Mac by whisper (the
+Homebrew `whisper-cpp` package), and the words land in the box where
+your cursor was, for you to edit before sending — nothing is sent on its
+own. The speech-to-text model lives in `~/.botference/models`; if there
+is none there, Superwhisper's copy is used when it is installed. Nothing
+leaves the machine. The button only shows when the Mac has a model.
+
+It works from a phone over the tunnel, because the tunnel address is
+HTTPS and browsers only allow the microphone on HTTPS pages (and on
+`localhost`). On a plain-`http` address the button stays hidden. The
+first tap asks for microphone permission; on an iPhone, Safari may ask
+again in later visits.
+
+## Discuss (`botference discuss`)
+
+The web annotator: discuss any page on the open web with Claude and
+Codex. (`botference plugin` is the same command — the product was
+renamed, the plumbing was not.)
+
+### Just want Discuss?
+
+You clone the whole repo either way — it is one script and no build —
+but nothing below the extension is needed to use it. Three steps:
+
+```bash
+git clone https://github.com/angadhn/botference && cd botference
+./botference discuss
+```
+
+then `brave://extensions` (or `chrome://extensions`) → Developer mode →
+Load unpacked → `frontends/plugin/extension`. Highlight a passage on any
+article and leave a comment. Done — the terminal council is a separate
+thing you never have to run.
+
+Two optional extras: `./botference discuss --install-autostart` (macOS)
+makes the companion start at every login so there is no terminal to
+remember, and `--install-tunnel` gives it a permanent URL for your
+phone. Bot replies need the `claude` and/or `codex` CLI installed and
+logged in — without either, highlights, comments and Obsidian export
+all still work.
+
+The review-doc experience, injected into any static article page on the
+open web: a browser extension (Chromium/Brave, `frontends/plugin/extension`)
+plus a local companion server. Highlight text on a blog post or article,
+leave a comment, and — if the comment (or any later reply) mentions
+`@claude`, `@codex`, or `@all` — the bots answer inline in the same
+thread, streaming into a right-side drawer. Threads without bots stay
+private notes. Every page exports to one Obsidian note (quote +
+comment pairs, plus the page chat); bot conversations persist as
+council chats under the **Plugin pages** project, titled by the
+article's own headline — except on a page your own council wrote, where
+the chat is that project's own (see "the pages your council writes",
+below).
+
+```bash
+botference discuss               # serve the companion on 127.0.0.1:4189
+botference discuss --service     # same, detached (stop: botference service stop plugin-web)
+botference discuss --share       # hosted + cloudflared tunnel: invite collaborators
+botference discuss [--port N] [--no-agents] [--hosted] [--here]
+botference discuss --install-autostart    # macOS: run it at every login
+botference discuss --uninstall-autostart  # …and undo that
+botference discuss --install-tunnel       # macOS + your own domain: one permanent URL
+```
+
+**Set-and-forget (macOS).** `--install-autostart`, run from the
+workspace you want the companion attached to, writes
+`~/Library/LaunchAgents/com.botference.plugin-web.plist` and loads it
+immediately: the companion is then running after every login, restarts
+if it dies, and appends its output to
+`.botference/logs/plugin-autostart.log` (check it with `launchctl list
+| grep com.botference.plugin-web`). Any `--port`/`--no-agents` you pass
+alongside is baked in, and the PATH it gets still finds `node`,
+`python3`, and your agent CLIs. Running one by hand still wins — it
+holds the workspace lock, and the autostart copy takes over within
+~10s of your Ctrl-C. `--uninstall-autostart` removes the job and the
+plist.
+
+One-time extension install: `brave://extensions` → Developer mode →
+Load unpacked → `frontends/plugin/extension`. The drawer has two tabs —
+**Comments** (threads anchored to highlights) and **Page chat** (one
+conversation about the whole page) — and remembers the last tab you
+used per site. Run the companion from your main workspace so bot chats
+land in that workspace's council. Vault location and export folder live
+in `.botference/plugin/config.json` (defaults to your vault's
+`Web Clippings/`). Static article pages only by design: anchors are
+quote-plus-context and degrade to an "orphaned" badge rather than ever
+losing a comment. (Google Docs is the deliberate exception: a site
+adapter reads the doc's text and margin comments with your own session
+— Page chat only, since Docs paints to a canvas.)
+
+**Bubbles: the comment beside its highlight.** Opening a 420px panel to
+read one comment is a big gesture for a small question, so there is an
+alternate view. In the drawer's gear panel, set **comments: bubbles**
+(per browser, off by default — `panel` is exactly what the drawer has
+always done). With it on and the panel shut, clicking a highlight opens
+a small card beside the mark, joined to it by a drawn curve with an
+arrowhead on the highlight. Open one beside every passage you care
+about — they all stay up, and the one you last touched comes to the
+front. Clicking a highlight again closes that bubble, the ✕ closes one,
+Esc closes the front one and Shift+Esc closes them all; a click
+elsewhere on the page leaves them alone. Past three messages a thread
+squashes to its newest card with the earlier ones as a counted lip you
+click to fan open. You can reply from one — the same box, the same
+`@claude`/`@codex` pills, the same thread, and a bot's answer streams
+into a new card without moving you off what you were reading. Each
+bubble belongs to its passage rather than to your screen: scroll the
+highlight out of view and the bubble goes with it, scroll back and it
+is where you left it. Drag it by its header to move it and by its
+bottom-right corner to resize it; both are remembered per thread for
+the session, and double-clicking the corner resets the size. The
+sidebar button hands a thread to the panel. Works the same on a PDF.
+Starting a *new* comment from a selection still opens the panel.
+
+**PDFs are pages too.** A PDF on the web normally opens in the
+browser's own viewer, which no extension can reach into, so Discuss
+brings its own (Mozilla PDF.js, vendored — no CDN, nothing fetched):
+navigate to an address ending in `.pdf` and it opens in Discuss
+instead, with real selectable text, highlights, comments, `@claude`,
+Obsidian export and phone reading exactly as on an article. Quotes
+carry their page number — the export writes `> — p. 12` under the
+blockquote — and the record is filed under the PDF's own URL, so the
+same paper read on another machine is the same page. A PDF served
+without `.pdf` in its address is not intercepted; click the toolbar
+button on it and it opens in Discuss anyway. A scan says so in one
+quiet line and offers no highlighting, because there is no OCR here.
+Turn the whole thing off (or back on) on the extension's options page.
+
+**And the PDFs on your own disk.** Open a `file://` PDF and it opens in
+Discuss too, with everything above. It needs one switch, once, which no
+extension is allowed to set for you: **brave://extensions → Botference
+Discuss → Details → "Allow access to file URLs"**. The options page says
+so if it is off, and so does the viewer.
+
+A file on your disk is filed by *what it is* rather than *where it is*:
+Discuss identifies it by a hash of its **words**. So move it, rename it
+after reading it, annotate it in Acrobat, re-save it, keep a second copy
+on another Mac — same page, same comments, every time. Genuinely revise
+the document and it honestly becomes a new page; the old one keeps its
+comments under the old name. And the same paper read from the web and
+from your disk are two pages, because one is identified by its address
+and the other by its text. (A scan has no words to hash and is filed by
+its bytes instead.) The Obsidian note names the file it came from, since
+a hash tells you nothing.
+
+The file itself never leaves your machine — nothing is uploaded, copied
+or stored anywhere. What your phone reads is the text, exactly as for
+any PDF.
+
+**The comments already in the file — and the ones you write back.** A
+manuscript that has been round a supervisor arrives with comments in it:
+Acrobat highlights, Preview sticky notes, replies to replies. Discuss
+reads them. The drawer says *"This PDF carries 7 comments"* and offers
+to import them; press the button and each becomes an ordinary thread —
+on the same words, on the same page, under the name of whoever wrote it,
+at the moment they wrote it. From there they take replies, resolve,
+`@claude`, send review and export like anything else. Nothing is
+imported until you ask, nothing is imported twice however often you
+reopen the paper, and a comment somebody edits in Acrobat comes back as
+a new one rather than overwriting the thread your bots have answered in.
+
+Going the other way, the export chooser on a PDF offers **an annotated
+copy**: every thread on the page, the bots' replies included, written
+into a copy of the file as standard highlights with the conversation in
+the popup, and downloaded as `<name> (discussed).pdf`. Send it to
+somebody who has only Acrobat and they can read the whole discussion.
+Your original is never touched, and the annotated copy is still the same
+document to Discuss — same page, same chat — because annotations are not
+words.
+
+**The bots can see the page, not just read it.** A figure is not text: it
+is in no extract, so for a long time a question about a plot got a bot
+paraphrasing its caption back, or saying plainly that it could not see
+it. Now, when you comment on a page of a PDF, Discuss renders that page
+to an image beside the page's text and the turn hands the file to the
+agents to open — and they really do open it (claude with its Read tool,
+codex with `view_image`). So *"what does this figure actually show?"* on
+a caption is a question about the figure. Tables and equations come
+through the same way, and a scanned page — which has no words at all —
+is finally something they can read.
+
+It costs about a tenth of a second when you save a comment, the same
+page is never sent twice, and a page that could not be drawn (the
+document is not open in a tab, or the comment came from your phone)
+makes the bots say so rather than guess. The pictures live beside the
+page's text under `.botference/plugin/` and go when the page does.
+
+**Striking a passage through.** On a PDF the selection pill has two tools
+rather than one — Adobe's pair. The first is the comment button you know.
+The second strikes the passage through: a thin red line through the
+middle of the words, the way Acrobat draws it, with the words left
+perfectly readable underneath. It needs no note — the line has already
+said "this should come out", so Send files it with the box empty — but
+type one if you want to say why. From there it is an ordinary thread:
+reply, `@claude`, resolve, and the line turns amber and then sage on the
+page as the thread moves along, exactly as a highlight's wash does.
+
+Strikeouts travel both ways through the file: a `/StrikeOut` already in
+the manuscript arrives struck, and the annotated copy writes yours back
+out as real strikeout annotations in red, which Acrobat and Preview draw
+— so whoever you send it to sees the deletion you meant. The reading
+room quotes a struck passage struck, and the Obsidian note wraps it in
+`~~` with *suggested deletion* beside the page number.
+
+This is PDFs only, on purpose: a strikeout is a suggested edit to a
+draft, and a news article is not a draft. The pill on an ordinary page is
+the single comment button it has always been.
+
+**A discussion that ends in several changes.** Argue about a passage and
+the bots may end an answer with up to three proposals at once — three
+chips, three Strike it buttons, each one you can take or leave. Every one
+you take becomes its own strikeout in your name, and the discussion grows
+a quiet line saying what it produced — *struck through here — 3 changes*
+— with a number for each that jumps to it. And when your highlight was
+short of the words the change actually needs, the bot names the full
+passage itself and the chip shows you exactly what will be struck before
+you press anything; you are never sent back to highlight it again. A
+named passage has to be on the page you are reading, found there exactly
+once, and clear of any marking already there — otherwise no button
+appears and the chip says why.
+
+**And the pages your council writes.** When a council chat builds an HTML
+artifact inside its own project —
+`…/botference/projects/spaceship-engineering/index.html` — opening that
+file gives you the drawer with no setup at all. Discuss recognises it by
+the folder above it (a `project.json` beside `work/` and `projects/`,
+with the file inside `projects/<id>/`); the header says which project it
+belongs to. The first time a new council folder turns up, the drawer
+asks once whether it is yours and keeps the answer.
+
+The chat behind such a page is the **real chat of that project**, in
+your real workspace, beside everything else the project has ever said —
+not a plugin chat. So Page chat becomes the project's chat archive: the
+bar names the chat you are standing in, the list behind it is every chat
+the project has, and opening one renders its recent history and lets you
+carry it on. "+ new" starts a fresh one, filed in the same place.
+
+This is the one local file identified by *where* it is rather than what
+it is — deliberately, because a project rebuilds its artifact in place
+and a hash would throw your comments away at every build. On these pages
+— and only these — the bots may also **edit** the files in that one
+project's folder when you ask them to, and nothing outside it; when a
+turn changes the file you are reading, the tab reloads itself.
+Deleting the page never deletes the project's chat.
+
+Discuss annotates nothing else on your disk: a local page that is
+neither a PDF nor a project artifact is left completely alone.
+
+**File a page in a project.** The other half of that: an ordinary page —
+the arXiv PDF of somebody's second draft, say — can be **filed** under one
+or more council projects, and then every turn on it carries what those
+projects already know: their chat titles, their `TASKS.md`, their files,
+and the actual words of their two most recent conversations. That is the
+point of it. The bots reading draft two arrive knowing what was said about
+draft one, instead of you retyping last round's objections into this
+round's margin.
+
+Filing is a **read, not a move**. The page stays where it is, keeps its own
+chat, and gains no permission to write anything anywhere; unfiling is one
+click and leaves no trace. The folder button in the drawer header lists your
+projects with a peek at each one's recent chats and files, and ticks the ones
+this page is already in. And on a page filed nowhere, the bots are told the
+project names and may **suggest** one — "this looks like it belongs in
+Adriana's paper" — which the drawer draws as a chip with a **File it**
+button on it. Bots never file anything; you press the button. And where
+nothing you keep fits, they may say so and name a project you do not have
+yet — *Start a project "Doc Fest 2026" for this page?* — which makes the
+folder, its `PROJECT.md` and its portfolio row when you press it, and files
+the page in it. (**+ new project** at the bottom of the same folder-button
+list does it by hand.)
+
+**Start over without losing your comments.** Also beside *send review*, on
+every page: **+ new chat**. It sets the conversation aside and starts a fresh
+one — useful when a bot has settled on a misreading of the page and keeps
+restating it — while your highlights and comments stay exactly where they are.
+It asks once first. Nothing is thrown away: the chat you left is filed under
+**archive ▾** next to the button, the last ten of them by name and date, and
+opening one brings it back. (On a project artifact page the archive bar at the
+top of Page chat is already this control, with your council's own chats behind
+it, so there is no second button.)
+
+**Carry a conversation into the council.** Also on the dock, on every page
+that has a chat or comments: **continue in council ↗**. A page chat lives with
+Discuss and never shows up in your council; this button copies it — the whole
+chat, every margin comment with the passage it is on, and the page's title and
+address at the top — into your council as a new chat of your own, and opens
+the council on it in a new tab. Keep going there as you would in any council
+chat; both bots pick up the whole conversation on your first message. The page
+keeps its chat and comments and no bot is asked anything. The copy is filed in
+the project the page is filed in (if it is in exactly one), otherwise it waits
+in the council's Inbox for you to file it. Pressing it again with nothing new
+said opens the same council chat; with new messages it makes a fresh copy. No
+browser handy? `botference discuss continue <address or a few words of the
+title>` does the same from a terminal and prints the link (`--list` to find a
+page, `--dry-run` to see what would be copied, `--project <id>` / `--inbox` to
+choose where it goes).
+
+**Make a page out of the one you marked up.** Beside *send review*, on any
+page filed in a project, there is **make artifact**: say in one line what
+you want — *a planner of what to watch and when, with costs* — and one bot
+writes a single self-contained web page into that project's folder, reading
+your margin comments, the chat about the page, and the page itself. It
+appears as a link under the review row. Because it lives in the project
+folder it is an ordinary project page from then on: open it, comment on it,
+send a review, and the bots edit it in place — and it carries a line saying
+which page it was made from, with the way back.
+
+**And publish it to your own website.** One more button on such a page:
+**publish** copies that one file into your site's repo, commits it and
+pushes, and your host rebuilds. It asks first, and the question names the
+address — *publish to `https://angadh.com/lff/`? This makes the page
+public* — because that is what you are agreeing to. Where it goes is one
+block in `.botference/plugin/config.json` (there is no settings screen):
+
+```json
+"publish": { "repo": "/Users/you/sites/yoursite", "dir": "lff",
+             "url": "https://angadh.com/lff/", "branch": "main", "push": true }
+```
+
+Until that is there the button is disabled and says so. Pick a `dir` your
+site's `_config.yml` does not `exclude:` — if your site folder is also a
+council root it excludes `projects/` and `work/`, and a file published into
+one of those would be committed and never built. Your page goes over
+**exactly as it is** — no front matter, no template, no rewriting — and
+nothing else in that repository is ever written: not `_config.yml`, not your
+own uncommitted work, which stays uncommitted and out of the commit. Only
+that one file is committed, nothing is rebased or forced, and if the push
+fails you are told the page is committed and given git's own words for why.
+`"push": false` commits and leaves the pushing to you. (Putting it on a
+subdomain like `lff.angadh.com` is three settings in your DNS and host and no
+code at all — the exact steps are in `frontends/plugin/SPEC.md`, "publish to
+the reader's site".)
+
+**Or ask for a site of its own, and the bots build it.** On a project page
+you can say *put this at `lff.angadh.com`* and they do the whole thing
+themselves, in `<council root>/sites/lff/`: a git repo, a **private** GitHub
+repo, a Netlify site, a deploy — and then they tell you the one step that is
+yours, which is a CNAME record at your DNS provider (the page is already live
+at the host's own address meanwhile). When it is finished the companion
+notices and adds it to `publish` in `config.json` by itself, so the publish
+button can point at it from then on; a target already there is never
+overwritten. `sites_domain` says what the sites hang under, and is worked out
+from your existing publish target when you do not set it. This is a *narrow*
+allowance and it is enforced in code, not asked for in a prompt: writes only
+under `sites/`, and only on a project lane; commands only `git`, four shapes
+of `gh` and five of `netlify`, decided on the parsed command line. `--public`
+is refused, force pushes and `repo delete` and `sites:delete` and
+`netlify env:*` are refused, and anything naming your own blog — its folder,
+its GitHub name, its Netlify site id — is refused outright. An ordinary web
+page's chat can still write nothing at all.
+
+**Message formatting.** Every message renders markdown — yours and the
+bots' alike — with links, code, and tickable `- [ ]` checklists. LaTeX
+maths renders too: `$…$` inline and `$$…$$` on its own line for display
+(`\(…\)` / `\[…\]` also work), typeset by a vendored KaTeX with no
+network call of any kind. Prices are safe — "costs $5 and $10" stays
+prose — and a formula KaTeX cannot parse falls back to its own source
+rather than swallowing the message. Obsidian gets the raw `$…$` source,
+which it typesets itself. Long threads fold in the middle, keeping the
+opening message and the latest replies behind a "Show N earlier
+replies" line.
+
+The workspace is sticky: after the first run, `botference discuss` from
+any directory reuses the recorded workspace (`--here` picks the current
+one instead). Put the launcher on PATH once (`ln -s "$PWD/botference"
+/usr/local/bin/botference` from the repo) and it runs from any terminal.
+
+**Collaborators** (`--share`): hosted mode behind a password gate plus a
+cloudflared tunnel — guests sign in with a name, see the same threads,
+and comment under their own handle; their @-mentions are refused
+politely unless granted in `.botference/plugin/grants.json`
+(`{"<handle>": {"agents": true, "daily_cap": 5}}`, re-read live).
+Guests without the extension get a server-rendered reading room at
+`/pages`. Once several people have written on a page, the Comments tab
+grows a row of pills — one per person, bots included, **All** first —
+and pressing one narrows the pane to that person's threads (open list,
+"ready for review" and the resolved archive alike). The reading room has
+the same filter as links, so a margin narrowed to one person is
+something you can send. Remote collaborators *with* the extension point it at your
+tunnel from its options page (URL, password, display name). Owner-only
+stays owner-only: export, page deletion, model/effort/verbosity, relay,
+interrupt.
+
+### Several pages at once
+
+A turn on one page no longer holds up another. Ask something on an
+article, then go and send a whole margin review on a draft in another
+tab: both are answered, side by side. What stays strictly in order is
+what has to — a page's own chat is one conversation, so your next
+message there waits for the answer to your last one, and everything
+belonging to one *project* takes its turn, because those pages share a
+folder the bots may write in and the record of what changed in it. A
+review round is one page's conversation across many threads, so it is
+still answered comment by comment, in page order, and its progress strip
+still counts straight while something else is being answered elsewhere.
+
+The waiting line says which wait it is: *queued behind this
+conversation…* when your own last message is still being answered,
+*queued behind another chat…* when every agent is busy with somebody
+else's page. `bridge_pool` in `.botference/plugin/config.json` sets how
+many run at once (default 3; `1` is the old one-at-a-time behaviour),
+and spare agents are retired after `bridge_idle_ms` of quiet (default 15
+minutes) so an afternoon of reading does not leave processes lying
+around. The web council has had the same arrangement for a while —
+one bridge per open chat, idle ones parked past `COUNCIL_MAX_CHATS`.
+
+### Discuss your blog draft
+
+You write a post in markdown, run the site locally (`jekyll serve`), and
+read the finished page in the browser. Comment on a paragraph there and
+ask for it to be tightened, and the bots edit the **markdown the page was
+built from** — not the rendered HTML, which is a photocopy the next build
+throws away. Jekyll rebuilds by itself, the tab reloads, and you are
+looking at the result. Ask for a picture in a spot and it goes into
+`assets/` with the right path in the post; ask for an existing one to be
+cropped and they use whatever image tools the machine has.
+
+The bots place pictures themselves — they never hand you a file to copy.
+A finished picture goes straight into the page's image folder; the scripts,
+previews and drafts behind it go in a scratch folder **inside your repo**,
+`.botference/plugin/artifacts/` (the companion adds `.botference/` to your
+`.gitignore` if it is not there). Nothing for your site is written into the
+Botference folder. If a bot proposes a picture that it left in scratch,
+the companion copies it into place when the turn ends (never over a file
+you already have) and says so.
+
+Tell it about your site by running one command in its folder:
+
+```sh
+cd ~/sites/yourblog
+botference site            # or `botference init`, which does this too
+```
+
+That writes `.botference/site.json` in the repo (the kind is detected; the
+address it guesses, `http://localhost:4000` for Jekyll, is printed — fix it
+with `--serve <origin>`), makes sure `.botference/` is in your
+`.gitignore`, and adds the folder to `~/.botference/sites.json`, the list the
+companion reads when it starts. A running companion is told straight away.
+Running the command in the folder is your answer to *is this your site?*, so
+the drawer does not ask again. `botference sites` lists what is in scope
+(and whether the companion sees it); `botference sites --remove <dir>` takes
+one out. The drawer's header names the project folder of a page in scope.
+
+The older way still works, and wins for an address both name: declare the
+site by hand in the companion's own `.botference/plugin/config.json`,
+
+```json
+"blog_sites": [{ "serve_origin": "http://localhost:4000",
+                 "root": "/Users/you/sites/yourblog", "kind": "jekyll" }]
+```
+
+and the first page of that site you open asks — once — *is this your site?*,
+exactly as it asks about a council folder and for the same reason: yes is
+what lets the bots write in there. Either way, it then works out which file each
+address came from by **reading your repo**: front-matter `permalink`
+first, then the permalink templates in your `_config.yml`, then the
+filename conventions, then the slug. Posts, drafts, pages and collections
+all resolve; if two files share a slug it says so instead of guessing,
+and if it cannot tell which markdown renders at an address it says that
+too and leaves everything read-only. The drawer names the file it is
+about to edit, so you always know what is about to change — and a rewrite
+nobody commented on still opens its own comment thread, as on any
+document.
+
+Not every page of a site is built from markdown, and those work too: a
+hand-written HTML page, a scrollytelling piece or an SVG figure sitting in
+your repo is **its own source**, so opening it straight off the disk
+(`file:///…/yourblog/assets/…/page.html`) — or at the address the local
+server copies it through to — attaches Discuss to the file itself, and a
+comment there changes that file.
+
+**It will never publish your site.** Nothing here commits, pushes,
+branches or tags anything in *that* repository, there is no publish button
+on a blog page, and the bots are told not to run git in there (the CLI
+refuses it as well). Putting the site live stays yours, by your own route.
+(The **publish** button above is a different thing in a different place: it
+is yours, not the bots'; it acts on a project page rather than on your
+drafts; it writes one new file into the folder you named and never touches
+what is already in the repo. No bot can reach it.) That is a
+rule in the code rather than a setting — it belongs to the kind of folder,
+so a config restored onto another computer brings it along and there is
+nothing to switch off. (Paper review is the deliberate opposite and still
+commits and pushes: a paper under review is a shared working copy; your
+blog is your published name.)
+
+#### A Jupyter Book
+
+The same works for a **Jupyter Book**: open the built book in the browser —
+what your readers see — highlight, comment, chat, and the bots propose
+changes to the **notebook or MyST file** the page was built from. You
+accept or refuse each one in the drawer; an accepted change rewrites
+exactly one cell of the notebook (outputs, metadata and formatting are left
+byte for byte as they were), and a proposal that would span two cells, or
+touch a code cell's fence, is refused on its card rather than guessed at.
+There is no separate review page — it is your real book.
+
+Serve the build locally. Either of these, from the book's root:
+
+```sh
+python -m http.server 8000 --directory _build/html    # after `jupyter-book build .`
+```
+
+or, if you would rather the book rebuild itself on every save,
+`sphinx-autobuild` (`pip install sphinx-autobuild`) — which needs a Sphinx
+`conf.py`, and `jupyter-book config sphinx .` writes one into the book's
+root, so that is a new file in your repo:
+
+```sh
+jupyter-book config sphinx . && sphinx-autobuild . _build/html --port 8000
+```
+
+then put the book in scope — once, from its root — and open it:
+
+```sh
+botference site            # or `botference init`; --serve 8000 if you serve elsewhere
+```
+
+A `_toc.yml` beside `_config.yml` is recognised as a book, the address is
+guessed as `http://localhost:8000` (printed, so you can correct it), and if
+`jupyter-book` is on your `PATH` its absolute path becomes the rebuild
+command (`--rebuild <cmd>` to choose another, `--no-rebuild` for none).
+
+By hand instead, in the companion's `.botference/plugin/config.json` — this
+still works, and a hand-written row wins for its address:
+
+```json
+"blog_sites": [{ "serve_origin": "http://localhost:8000",
+                 "root": "/Users/you/SpacecraftDynamics", "kind": "jupyterbook",
+                 "rebuild": "/Users/you/opt/anaconda3/bin/jupyter-book build ." }]
+```
+
+Addresses are mapped by reading `_toc.yml`: a chapter
+`orbital-mechanics/Lecture3/Lecture3` is the page
+`/orbital-mechanics/Lecture3/Lecture3.html`, the `root:` entry is also `/`
+and `index.html`, and a notebook or markdown file that is not in the toc
+is found at its own path. A notebook and a markdown file with the same
+name side by side are reported as ambiguous, not picked between.
+
+**Rebuilding.** Jekyll rebuilds itself; jupyter-book does not. The
+optional `rebuild` is the command you would type yourself, and after an
+accepted change (or a picture the bots replaced) the companion runs it in
+the book's root — once for a burst of changes, one build at a time, with
+its output in the companion's log — and the tab reloads when it has
+finished. Give the builder by its absolute path: the companion may not be
+running with your shell's `PATH`. A rebuild command may not mention `git`
+or `gh`. Without one, nothing rebuilds for you: run `jupyter-book build .`
+after accepting, then reload (or serve with `sphinx-autobuild`, which
+rebuilds on save — leave `rebuild` out then). If your `_config.yml` says
+`execute_notebooks: force`, every build re-runs every notebook, so a
+rebuild takes as long as that does.
+
+The book's style (`_config.yml`, `_static/`) and every other chapter are
+left alone unless you ask for a change there in so many words, and the
+bots never run git in the book either. Redrawn figures go beside the
+chapter, in its own image folder; the drawing scripts and previews go in
+the book's `.botference/plugin/artifacts/`, as for a blog.
+
+### The question vault: what you read, asked back
+
+Everything else in Discuss is a record of having understood something
+once. Beside every comment's ✓ there is now a small **?**, and the
+selection pill on any page carries one too: *this is interesting, make a
+question of it*. One click is the whole of your part in it — a bot writes
+a short question about the idea (multiple choice, or true/false, or
+fill-in-the-blank where the material suits it), and it lands in the
+vault. There is no card to approve, no format to pick, no difficulty to
+set: you choose what is worth remembering and nothing else. The bots may
+**offer** as well, rarely, when a conversation has shown you have not got
+something — a *File it / No* chip under the reply, filing nothing until
+you press it.
+
+Then open **`/quiz`** in the reading room — from the pages list, or from
+the door in the drawer's header that says how many are due. It works on a
+phone, which is the point of it living there: one question at a time,
+longest-overdue first, one tap to answer. Right and it comes back later;
+wrong and it comes back before you stand up, with the explanation, the
+passage it was made from, and a link to the conversation that produced
+it. The rescheduling is Anki's SM-2, so a question you keep getting right
+disappears for months.
+
+Every card links home because a bot wrote it, and bots are wrong
+sometimes: *this card seems wrong* takes it out of the rotation. One
+bank, not decks — a card remembers its page, the council project that
+page is filed under and its tags, and the quiz's chips narrow to a topic
+and show which topics you keep missing. The whole page works with
+JavaScript switched off. The vault is `.botference/plugin/questions.json`
+and it is owner-only end to end.
+
+### The library: asking about everything you have read
+
+Every page you annotate is one conversation. The **library** is the other
+kind: one conversation about all of them at once. Open the pages list in
+the drawer (the stacked-pages button) and it sits above the list, with a
+composer that says *Ask about everything you've read* — "what have I been
+sceptical about lately?", "did anything I read contradict the piece on
+night trains?", "pull together everything I highlighted about pricing".
+The bots answer by **reading your archive off disk** — the page records
+in `.botference/plugin/pages/*.json`, your quotes, your comments, their
+own earlier replies — so they cite the page and the passage each claim
+comes from rather than guessing from memory. They can only read: writing
+files is refused here exactly as it is everywhere else in Discuss. It is
+an ordinary conversation in every other respect — mention `@claude`,
+`@codex` or `@all`, export it to Obsidian as a "Library" note, clear it
+and start again — and it is on your phone at `/pages` too.
+
+**Keeping the list usable.** The archive grows, so the list underneath
+that conversation filters: quiet chips for what a page IS — All ·
+Articles · PDFs · Docs, drawn only for the kinds you actually have —
+and a rail of your own **tags** beside them, both combinable and both
+remembered per browser. Every row can be **renamed** (a paper called
+`2601.01234v2.pdf` becomes *Kolmogorov flows* everywhere: the list, your
+phone, the Obsidian note's title and file name, and the council chat
+behind it, renamed on that page's next message) and **tagged** (click
+`#`, type, complete against tags you have used before; a tag chip
+filters the list, and the tags ride into the note's frontmatter beside
+`botference-discuss`, which is what makes Obsidian's own search find
+them). Renaming and tagging are the owner's: a guest on a shared
+companion sees the list and its filters, and no editing at all.
+
+### Running the code in a message
+
+A conversation about a page full of numbers turns into code very
+quickly — "plot that", "check the arithmetic", "what does the
+distribution look like". So any fenced ```` ```python ```` block in any
+message, yours or a bot's, carries a quiet **Run** button. Press it and
+the snippet runs, and what it printed appears under the block: stdout in
+a mono block, stderr marked as stderr, an exit line only when something
+went wrong, and any **matplotlib figures as inline thumbnails** — click
+one and it fills the window, because a plot at the width of a 420px
+column is a picture of a plot. `plt.show()` needs no changing: the
+backend is headless and every open figure is saved for you.
+
+The result is stored on the message itself, so it is still there after a
+refetch, a reload, or in another tab, and it goes into the Obsidian note
+under the code fence when you export — with the figures copied into
+`<vault>/<export folder>/attachments/` as ordinary markdown images.
+Running a block again replaces its last result; deleting the message,
+the thread or the page deletes everything those runs left on disk. Runs
+are killed after 30 seconds (there is a stop button meanwhile) and each
+stream is cut at 64KB with a marker saying so.
+
+**What this is, exactly.** The code runs on this Mac, as you, with your
+files, your keys on disk and your network — there is no sandbox and
+nothing here pretends otherwise; the button's own tooltip says *"Runs
+this code on this Mac as you"*. Treat a block written by a bot the way
+you would treat pasting a stranger's script into your terminal, because
+that is the same act: the page you are annotating is untrusted text, and
+it can try to talk the bots into writing something worth running.
+Nothing runs on its own — a block only ever runs when you press the
+button — and the code that runs is the code *stored in the message you
+can see*, never anything a request carried. It is owner-only end to end:
+on a shared companion a guest never sees the button, `/run` refuses
+them, and the figures are behind the same gate.
+
+If you would rather not have it at all, set `"run_python": false` in
+`.botference/plugin/config.json` — the button disappears and the
+endpoint refuses.
+
+### On your phone: reading and annotating, not just reading
+
+Once the companion has a public address (below), Discuss is a
+bookmark — `discuss.botference.com`. Two things make that worth doing.
+
+**You are the owner there, not a guest.** Signing in from a phone uses
+the *same* identity as your review docs — botference has one owner
+credential, not one per tool. If your browser is already an approved
+device for the review hub, it is the owner at the annotator too, with
+nothing typed: the hub scopes its device cookie to the parent domain
+and the companion verifies it with the hub's own secret. Otherwise type
+the owner password — the one in
+`~/.botference/review-paper-secrets.json`, which the hub hands to every
+paper server, and which `--install-tunnel` prints for you. Either way
+you get every owner right remotely: export, delete, the agent controls,
+and `@claude`/`@codex` with no grant needed. Your machine on
+`127.0.0.1` stays the owner with no password at all, exactly as before.
+Sessions last 30 days and renew themselves as you use them, so the gate
+should be a once-a-year event. `/signout` ends one.
+
+**The article comes with it.** When you annotate a page, the extension
+sends the companion a clean copy of the prose, and `/a/<page>` serves
+that copy back with your highlights painted where you made them — tap
+one to open its thread, select text to start a new one, ask the bots,
+export to Obsidian. It is the review-doc experience for any article you
+read. New highlights made on the phone are ordinary threads: the phone
+runs the extension's own anchoring code, so a passage you mark on the
+train is highlighted in the page itself next time you open it on the
+Mac.
+
+The snapshot is sanitized on arrival — rebuilt from an allowlist, so no
+scripts, no iframes, no event handlers, no `javascript:` links survive —
+and served under a strict CSP that can run nothing the page did not
+itself nonce. Images are kept (an article without them reads poorly)
+and load from their original https sources. Pages annotated before this
+existed have no copy yet: their article view says so and points at the
+comments, and opening the page once on the Mac captures it. Annotating
+a brand-new URL from the phone is not built — the phone can only mark
+up pages your Mac has seen.
+
+### Your own domain: one address, forever
+
+`--share` is a conversation — a random `trycloudflare.com` URL that dies
+with the terminal. If you own a domain whose DNS lives on Cloudflare,
+`--install-tunnel` gives the annotations an address you can bookmark on
+your phone instead:
+
+```bash
+brew install cloudflared && cloudflared tunnel login   # once, ever
+botference discuss --install-tunnel
+```
+
+It prints two credentials at the end: **yours** (the shared botference
+owner password — full owner rights from anywhere) and the
+**collaborators'** guest password. It creates (or reuses) a named
+tunnel `botference-plugin`, routes `discuss.botference.com` to it (and
+keeps `plugin.botference.com`, the address from before the rename,
+routed and served by the same companion so old bookmarks still land,
+plus `memorizer.botference.com` — see below), writes
+`~/.cloudflared/botference-plugin.yml` (one ingress rule to
+`http://127.0.0.1:4189`), installs a second LaunchAgent
+`com.botference.plugin-tunnel` that keeps the tunnel up at every login,
+and switches the companion's own LaunchAgent to `--hosted` so the
+password gate is what strangers meet. The password is generated once —
+four words and a number, typeable from a phone — and kept in
+`~/.botference/plugin-password` (0600); it is **never** written into a
+plist, because launchd starts the launcher and the launcher reads the
+file. The final URL and password are printed at the end. Set
+`BOTFERENCE_PLUGIN_HOSTNAME` (the legacy one with
+`BOTFERENCE_PLUGIN_LEGACY_HOSTNAME`, the vault's with
+`BOTFERENCE_PLUGIN_MEMORY_HOSTNAME` — either empty to drop it — and the
+tunnel name with `BOTFERENCE_PLUGIN_TUNNEL`) if your domain is not this
+one.
+
+### Memorize: `memorizer.botference.com`
+
+The questions you filed, asked back on a schedule, at an address of
+their own: **`memorizer.botference.com`** — where `/` *is* the quiz.
+Same companion, same tunnel, same sign-in (an approved phone is the
+owner there with nothing typed), owner-only end to end, and scriptless,
+so it works on a train with JavaScript off. One question at a time; the
+options are form posts; a wrong answer shows the right one, why, and
+the passage it was made from, with a link into the conversation that
+produced it. Every card carries a quiet *trace* back to its source, and
+a card you decide is not worth keeping can be **discarded** (gone) or
+flagged as *seems wrong* (parked, for a bot to rewrite later).
+
+The reading room stays at `discuss.botference.com`; anything but the
+quiz on the vault's hostname goes home rather than serving the archive
+twice. In the drawer, a **Memorize** tab does the near version of the
+same thing — the questions from the page you are reading (or from a
+project it is filed in), reviewed in the column beside it, through the
+same endpoints and the same schedule. A comment thread that has
+produced questions says so, quietly, with the way to them.
+
+No ports are opened: the tunnel dials out from your machine. This
+machine stays the unauthenticated owner on `http://127.0.0.1:4189`, and
+everything arriving through the tunnel is a guest — the companion tells
+them apart by the Host header *and* the `CF-*`/`X-Forwarded-*` headers
+Cloudflare stamps on, since cloudflared's own hop is loopback too.
+
+`--uninstall-tunnel` stops and removes the tunnel LaunchAgent and puts
+the companion back to plain localhost mode. It deliberately leaves the
+Cloudflare tunnel and the DNS record alone (re-installing is then one
+command) and prints the `cloudflared tunnel delete` you would run to
+remove them from your account as well.
+
+### API keys, if you would rather spend credit than a subscription
+
+Discuss and the web council both drive the `claude` and `codex` CLIs, so
+by default they run on whatever those are logged into and there is
+nothing to configure. If you would rather bill an API key, paste one per
+agent — in the extension's options page, or in the council's agents
+panel. **There is one store of keys for both**: paste a key once and
+every botference frontend on that machine can use it. The billing *mode*
+is per product, so the council can sit on your subscription while
+Discuss burns credit. Keys are stored on that machine in
+`~/.botference/discuss-keys.json` (mode 0600) and are **write-only over
+the API**: the page can save one and remove one, and the only thing it
+can ever read back is `set` or `unset`. They can only be set from the
+machine the server runs on — a request through the tunnel is refused
+even when it is you, because a key has no business crossing a network to
+reach the CLIs running next to it.
+
+Each agent has a billing mode — in Discuss the drawer's gear menu, in the
+web council the agents panel:
+
+| mode | what happens |
+|---|---|
+| `auto` (default) | a saved key is used; no key means your subscription — the same rule Claude Code itself applies |
+| `subscription` | never the key, even though it stays saved |
+| `key` | always the saved key |
+
+Anything that means "not a key" removes the variable from the bridge's
+environment rather than blanking it, and clears the other auth sources
+alongside it (`ANTHROPIC_AUTH_TOKEN`, the Bedrock/Vertex/Foundry
+switches), because an empty key and a leftover token are both ways to
+end up billing something you did not choose. Changes apply at the next
+bridge start. Discuss restarts an idle bridge for you and lets a busy one
+finish its turn first; the council leaves running chats alone entirely and
+says so ("applies to agents started from now on"), because in a council a
+running bridge is a chat someone has open.
+
+**The two CLIs disagree, and botference does not pretend otherwise.**
+Claude Code prefers a key over your subscription whenever one is set —
+documented, and in the non-interactive mode the bridge uses there is not
+even a prompt. Codex is the other way round: its stored ChatGPT login
+wins, and a key in the environment is only consulted when you are *not*
+logged in. So for Codex a saved key is a fallback, not an override; to
+make it authoritative, run `codex login --with-api-key` yourself. (There
+is a config key that forces it, and it silently deletes your
+`~/.codex/auth.json` when it switches — botference never sends it.)
+
+## Usage ping
+
+Discuss sends one anonymous event a day so I can tell whether anyone is
+using it, which is the only thing deciding whether it keeps getting
+built. This is the entire payload:
+
+```json
+{
+  "client_id": "9f2c…",
+  "non_personalized_ads": true,
+  "events": [
+    { "name": "discuss_alive",
+      "params": { "app_version": "1.0.0", "engagement_time_msec": "1" } }
+  ]
+}
+```
+
+`client_id` is 16 random bytes generated once and kept in
+`.botference/plugin/.beacon`. It is not derived from your machine, your
+name, your workspace or anything else — delete that file and you are a
+new install. There is **no** URL, no page title, no annotation text, no
+handle, no username, no workspace path, no location, and no counts of
+anything. It fires at most once per day, on companion start, and a
+failed send waits until tomorrow rather than retrying.
+
+Turn it off completely:
+
+```bash
+BOTFERENCE_NO_TELEMETRY=1        # env, honoured by the LaunchAgent too
+```
+
+or put `"telemetry": false` in `.botference/plugin/config.json`. Both are
+checked before anything touches the network. Builds with no analytics
+secret compiled in — which is what a fresh clone is — never send
+anything at all.
+
+## Agent Eyes (`botference see`)
+
+Layout and design failures produce no errors and no warnings — an agent
+that only reads code and logs will ship a page that "works" but looks
+broken. `botference see` closes that loop with zero new dependencies:
+it renders a page in headless system Chrome and writes one PNG per
+viewport (defaults: 390x844 phone + 1440x900 desktop — the phone shot
+is real mobile layout, since responsive CSS responds to the viewport),
+printing each path for the agent to read back with its image tooling.
+
+```bash
+botference see fitlog                        # a RUNNING service by name — port discovered live
+botference see :4123 fitlog                  # bare localhost port
+botference see charts/hero.html              # a local file (chart, report, mockup) — no server needed
+botference see https://example.com home --viewport 500x900
+```
+
+Tell your bots: after any UI change, `botference see <service>` and
+*look* before declaring done. Pair it with deterministic invariants for
+charts and figures (assert data coverage, containment, label collisions
+on the generated SVG) — vision discovers a failure class once, the
+invariant test locks it out forever.
+
+Agent sandboxes cannot launch Chrome (seatbelt kills it). The same
+command still works there: when the local render fails wholesale,
+`see` hands the exact request to the **see-broker** — start it once
+with `botference service start see-broker -- botference see --serve` —
+which watches every registered workspace's `.botference/see/` spool
+from outside the sandbox, renders, and answers through the filesystem.
+Same command, same `wrote:` output, no sandbox loosened.
+
+## Long-Running Services
+
+Anything started in a shell — including by an agent inside a botference
+session — dies when that shell's process group is torn down at the end
+of the turn. `botference service` is the sanctioned, auditable way to
+leave a server or tunnel running:
+
+```bash
+botference service start <name> -- <command…>   # detached; survives the shell
+botference service list                         # EVERY service in every registered ledger, from anywhere
+botference service logs <name> [-n N]           # tail the service log
+botference service stop <name>                  # TERM the group, KILL after 5s
+botference service stop --all
+```
+
+`start` fully detaches the command (own session and process group,
+stdin from `/dev/null`, stdout+stderr appended to the service log with
+simple ~5MB rotation), records `{name, pid, pgid, command, started,
+cwd, log}` in the per-workspace ledger `.botference/services.json`
+(atomic writes), and refuses duplicate running names; stale entries
+with dead pids are reaped on every invocation. Names are `[a-z0-9-]`,
+max 32 chars. Ledger and logs live under `<workspace>/.botference/`
+(gitignored by convention — `botference review` adds the ignore block
+for document repos).
+
+The share flows compose with it — **this is what to ask your bots
+for** when you want a live review or council link stood up mid-session:
+
+```bash
+botference review --share --service   # review share (server + tunnel) as service 'review-share'
+botference plan --share --service     # council share as service 'council-share'
+```
+
+Both print the usual `share this: <url>   password: <pw>` line (parsed
+from the service log with a bounded wait) and then return control, so
+an agent can stand up a share on request and end its turn with the
+tunnel still up. Re-running while the service is up reprints its last
+share line. Stop with `botference service stop review-share` (resp.
+`council-share`).
+
+## Project Scoping
+
+In a project initialized with `botference init`, the local policy lives in
+`botference/project.json`.
+
+With a custom state directory, the policy file moves with it. For example,
+`botference init --project-dir=spaceship` creates
+`botference-spaceship/project.json`.
+
+Workspace-style repos can also put policy at the project root as
+`project.json`. This is useful for portfolio workspaces where the models should
+be able to clone or edit under top-level folders such as `projects/` without
+creating a separate `botference/` state directory.
+
+Default write scope:
+
+```json
+{
+  "write_roots": {
+    "plan": ["botference"],
+    "build": ["botference"]
+  }
+}
+```
+
+This means:
+
+- `plan` and `research-plan` may write anywhere under `botference/`
+- `build` may write anywhere under `botference/`
+- the rest of the project stays read-only by default
+- anything outside declared `write_roots` is blocked at runtime and by post-run audit
+
+In practice, this gives you two common workflows:
+
+- greenfield work happens naturally inside `botference/`, where planning can
+  create notes, exports, scratch files, and plan artifacts without
+  touching the project tree yet
+- brownfield work keeps the existing project read-only by default; actual
+  project-file edits happen only if you explicitly widen `write_roots`,
+  typically for `build`, or if you make the edits manually yourself
+
+If you want to opt into another Botference-owned writable area later, add it
+explicitly. For example:
+
+```json
+{
+  "write_roots": {
+    "plan": ["botference"],
+    "build": ["botference", "assets/generated"]
+  }
+}
+```
+
+If you want a narrower boundary, reduce the roots instead, for example
+`"build": ["botference/build"]`.
+
+If the whole workspace is intentionally writable, use `"."`:
+
+```json
+{
+  "write_roots": {
+    "plan": ["."],
+    "build": ["."]
+  }
+}
+```
+
+### Visual Verification For Generated Plots And HTML
+
+Rendered artifacts have a stricter definition of done than ordinary text or
+code. For HTML, plots, charts, PDFs, LaTeX files that produce PDFs, web UI,
+generated images, and inline document figures, agents must follow
+[`specs/visual-verification.md`](specs/visual-verification.md):
+
+- use **Changed**, **Generated**, **Structurally checked**,
+  **Visually verified**, and **User-review needed** precisely
+- do not say "done", "fixed", "ready", or "verified" for visual work unless
+  the rendered output was inspected
+- default to static SVG/PNG figures inside prose documents; keep interactive
+  Plotly/D3/Chart.js views as standalone linked pages unless browser-verified
+- batch likely visual fixes before asking the user to reload
+
+Botference also enforces this after each agent turn. If Claude or Codex changes
+or generates a rendered artifact and the turn does not include a matching render
+check, Botference adds a system-level **Visual verification gate** warning and
+marks the artifact as **User-review needed**. For `.tex` edits, the generated
+PDF is the rendered artifact: a compile step alone is not enough; the PDF must
+also be inspected with `view_pdf_page`, a screenshot, or an equivalent visual
+check.
+
+Verification actions are marked in the tool stack as `[verify]` and rendered
+with a distinct bright accent in the Ink UI, so visual checks are easier to
+spot while a turn is running or after it completes.
+
+Botference includes a deterministic HTML visual gate:
+
+```bash
+python3 "$BOTFERENCE_HOME/tools/cli.py" visual_check_html '{"html_file":"botference/projects/spaceshipengineering/index.html"}'
+```
+
+The tool renders the page at desktop, tablet, and mobile widths, saves
+screenshots plus `report.json` under `$BOTFERENCE_WORK_DIR/visual-checks/`,
+and reports layout failures such as horizontal overflow, clipped text,
+overlapping visible text, console errors, and page errors. It is intentionally
+usable from plan and research-plan mode through Bash, so agents can inspect
+their own generated HTML without another model turn.
+
+Install the browser dependency once when you want automatic visual checks:
+
+```bash
+python3 -m pip install playwright
+python3 -m playwright install chromium
+```
+
+If Playwright is unavailable, agents must report **User-review needed** and
+tell you which artifact to reload.
+
+For a fresh clone, install Ink's Node dependencies once before using the
+default planner UI:
+
+```bash
+cd ink-ui && npm install
+```
+
+> **API keys:** If your terminal already has Claude Code and Codex configured
+> via subscription accounts (e.g. Claude Max, OpenAI Plus), Botference works
+> out of the box with no extra setup. In build mode, subscription users run
+> through the MCP fallback path (`fallback_agent_mcp.py` → `claude -p`).
+>
+> If you provide an API key, build mode uses the direct agent runner
+> (`botference_agent.py`) instead, which owns the tool-calling loop and
+> gives finer control over retries, context tracking, and token accounting.
+> Copy the example env file and add your keys:
+> ```bash
+> cp .env.example .env
+> # Then edit .env with your ANTHROPIC_API_KEY and/or OPENAI_API_KEY
+> ```
+> Botference will auto-load keys from `.env` when they are not already in
+> your environment. Do **not** commit `.env` to version control.
+>
+> > Warning
+> > If `OPENAI_API_KEY` is present in `.env` or your shell environment,
+> > Botference will prefer API-key auth for Codex and re-run `codex login
+> > --with-api-key` on startup. That overrides a subscription/device login for
+> > the local Codex CLI. If you want Codex to use your subscription login
+> > instead, remove `OPENAI_API_KEY` before launching Botference.
+
+## Using the Chat
+
+### Messaging
+
+Type freely to send a message. By default your first message goes to both
+models; after that, messages are sticky to whoever you last addressed.
+
+| Input | Effect |
+|-------|--------|
+| `@all <msg>` | Send to both Claude and Codex |
+| `@claude <msg>` | Send to Claude only |
+| `@codex <msg>` | Send to Codex only |
+| `<msg>` | Auto-routed (first message → @all, then sticky to last target) |
+
+Messages in the council panel are labelled by speaker:
+
+- **Claude** — Claude's responses
+- **Codex** — Codex's responses
+- **You** — your messages
+- **System** — the framework talking to you, not an LLM. Covers:
+  - Session lifecycle (starting, relaying, or tearing down a model)
+  - Mode changes (draft started, draft complete)
+  - Errors and warnings
+  - Command feedback (lead set, usage info)
+  - Deterministic file-write feedback (`implementation-plan.md`, reviewer comments, `checkpoint.md`)
+
+Tool activity in the council is shown as a short folded summary under the
+model response rather than a raw command/output transcript. Deliberate code
+excerpts still render as code blocks.
+
+### Free-form planning
+
+The council behaves like a real group chat: you send a message, the addressed
+model(s) reply, and a bot's reply can hand the floor to the other bot, who
+replies immediately, recursively, until someone hands the floor back to you.
+Every bot-to-bot thread is seeded by one of your messages — the bots never
+start talking while the room is idle — but within a thread they exchange as
+many turns as the budget allows without any prompting from you.
+
+Mechanics:
+
+- Every bot reply ends with a small JSON footer (stripped from the display)
+  declaring `status` (`continuing` / `converged` / `blocked`), `next`
+  (`@claude` / `@codex` / `@user`), and a one-line summary. `next: "@codex"`
+  gives Codex the floor; `next: "@user"` — or no footer and no mention —
+  returns it to you. A prose `@mention` of the other bot works as a fallback
+  if a model forgets the footer.
+- **Budgets, not hard stops.** A bot-to-bot thread gets 6 bot turns and ~8K
+  output tokens; each turn prompt shows the countdown so the models pace
+  themselves. On exhaustion the controller grants one automatic extension
+  (+3 turns / +4K tokens), then forces the floor back to you with the last
+  footer summary. The thread pauses rather than dies — reply (even just
+  "continue") and they pick up with a fresh budget.
+- **You always preempt.** Typing while Claude is speaking steers its current
+  turn in place (see [Steering](#steering--typing-while-the-bots-work));
+  anything else you type pauses the thread at the next turn boundary and
+  the floor is yours.
+- **Conciseness is enforced by measurement.** If a bot's turn exceeds ~400
+  output tokens, its next prompt carries a cap nudge.
+- **Writer consensus sets the lead.** The footer has an optional
+  `writer: "@claude"|"@codex"` field. When both bots vote for the same
+  writer, the lead is set automatically (a manual `/lead` always wins).
+
+Turn-based behavior is the degenerate case of free-form: a reply with no
+handoff (no footer, no mention) simply returns the floor to you.
+
+### Commands
+
+| Command | What it does |
+|---------|-------------|
+| `/lead @claude\|@codex` | Manually set which model writes the plan. You can also use `/lead auto` to let the bots' writer consensus decide. |
+| `/draft [rounds]` | Update the project-local `implementation-plan.md` via the lead model, with optional AI review rounds. Defaults to `2`; `/draft 0` writes the plan with no AI review, `/draft 1` does one review/revise cycle, and so on. Review rounds run in the council like free-form turns: the reviewer's footer can end rounds early (`converged` — sign-off, no revision needed) or pause the draft and hand the floor to you (`blocked`), and typing mid-draft pauses at the next round boundary. Reviewer comments are saved beside the plan in the Botference state directory. |
+| `/finalize` | Lead-only finalization. The lead addresses all active reviewer comment files, rewrites the project-local `implementation-plan.md` if needed, creates `checkpoint.md`, and archives reviewer comments under the Botference archive directory. |
+| `/fresh @claude\|@codex\|@both` | **Restart a bot with no memory of this chat.** For a session that has gone wrong — a bot stuck refusing an ordinary topic, or answering a question three turns old. Nothing is carried over: it sees only what you send next, so say the context again. The other bot keeps its memory and is told. In the browser plugin, type it into any chat box or use the `fresh` button beside `relay` in the agents panel. **Separately and automatically:** when Claude Code reports that the running model's *safeguards* declined a message (Fable 5.1 does this on some ordinary technical topics; the error names the model), this chat's Claude switches to the next model in `safeguard_fallback` in `context-budgets.json` — Opus 5.5, then Opus 5 — and retries the same message, with a note in the chat. |
+| `/relay @claude\|@codex\|@both` | Tear down a model's session, generate a structured handoff, and restart that model immediately in the current botference process. Useful when context is getting long. `@both` (alias `@all`, `/relay-both`) resets both agents at once, token-efficiently: the agent with the most context headroom authors **one** shared handoff, both fresh sessions bootstrap from it, and the restarts run in parallel. Falls back to the free mechanical handoff when both agents are too degraded to author one. |
+| `/autorelay [on\|off]` | Toggle **auto-relay**. When a model's context occupancy crosses 50% of its window, botference relays it automatically (same handoff machinery as `/relay`) before its next turn — never mid-turn or mid free-form thread. On by default; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. In the web council, a toggle in the agents panel mirrors this. No argument flips the current state. |
+| `/new-project <title>` | Create a project and file this chat under it. Every `/project` verb is also a command of its own, which reads better as a command than as a menu: `/open-project <id>`, `/assign-project`, `/unfile-project`, `/clear-project`, `/current-project`, `/project-contents`, `/project-github`, `/archive-project`, `/unarchive-project`, `/delete-project`, `/project-from-chat`, `/activate-build`. A bare `/project <words>` that matches no project now says so loudly and shows the `/new-project` line to create it. |
+| `/projects` | List project folders under `projects/` and show the active project marker, status, priority, chat count, and next action when known. |
+| `/project [open <id>\|clear\|current\|create <title>\|create-from-chat]` | Set, clear, show, or create the current project context. The status bar and Projects panel show the selected project; `Inbox` means no project is selected. |
+| `/project assign [<session-id-prefix>] <project-id>` | File a chat under a project. Filing **this** chat moves the active context with it, because being filed into a project and then left looking at another project's plan files would be nonsense. A chat remembers its own project: once filed, saving it while some other project is open never moves it. Filing **another** saved chat rewrites that chat's session JSON (and the project index) while you stay where you are; if that chat is open in another botference process, that process wins on its next save. |
+| `/project archive <id>` / `/project unarchive <id>` | Tuck a project away, or bring it back. Nothing moves on disk and nothing is deleted: only the `status` field in `projects/portfolio.json` flips to `archived`. Archived projects sort last everywhere and collapse into the closed **Archived** section at the bottom of the web sidebar; archiving the *active* project drops the room back to Inbox. |
+| `/project delete <id>` (alias `/delete-project`) | **Delete a project and every chat filed in it, for good.** A confirm names the project, how many chats go with it and the folder (`projects/<id>/`) that will be removed; nothing happens until you pick "Delete project and N chats". The folder, its `projects/portfolio.json` row, its `session-index.json` rows and each filed chat's session file are all removed. If you are in one of those chats you land in a fresh Inbox chat. Without a picker (headless), only the exact project id is accepted. In the web sidebar, "🗑 delete project…" in the project block (live or archived) sends this. Chats already archived with `/archive` are not touched. |
+| `/adopt [<id-prefix>]` | Continue a pre-existing **native Claude Code** chat inside the council. Opens a picker of recent `claude` sessions for the current folder; the adopted chat becomes the room's Claude session (full native memory), Claude writes a handoff into the shared transcript, and Codex joins from that brief. Run it from a fresh chat in the folder where the original conversation happened. Under `--claude-interactive`, the tmux pane launches as `claude --resume <that chat>` — botference becomes the steering layer over the real, attachable Claude Code session (watch it with `tmux attach -rt botference-claude-…`). |
+| `/new [title]` / `/new --project <id> [title]` / `/new --inbox [title]` | Start a fresh chat in place — the current chat is saved and stays resumable. With no flag the new chat inherits the project you are standing in. `--project <id>` files it under that project from birth (and opens that project's files), `--inbox` keeps it deliberately unfiled even while a project is open. A chat's filing is written once, here or by `/file`; later saves never re-file it based on whatever project happens to be open. |
+| `/file [<project-id>]` | File the current chat under a project, which becomes the active project (same as `/project open`, plus the filing). With no args, opens the arrow-key project picker (including "create a new project from this chat"). Alias: `/add-to-project`. |
+| `/delete [<id-prefix>]` | Delete a saved chat. With no args, opens a picker of recent chats; either way a confirm step follows. Deleting the chat you're in rolls into a fresh `/new`. The project index entry is cleaned up too. |
+| `/archive [<id-prefix>\|list]` | Archive a saved chat: its session JSON **moves** from `work/sessions/` to `archive/sessions/` (`BOTFERENCE_ARCHIVE_DIR`), so it leaves every listing while staying byte-for-byte on disk. No confirm step — it is reversible. With no args, opens a picker of recent chats; `/archive list` shows what is already archived. Archiving the chat you're in saves it first, then rolls into a fresh `/new`. |
+| `/unarchive [<id-prefix>]` | Move an archived chat back into the active listing (picker with no args). It never overwrites a live chat with the same id — if one exists, the archived copy is left untouched and nothing is lost. |
+| `/resume [latest\|<number>\|<title>\|<session-id-prefix>]` | Restore a previously saved planning session. With a project selected, project-associated and project-local sessions are shown first, while old unassigned sessions remain visible. You can resume mid-chat — the current session is persisted on every turn, so the chat you're leaving stays recoverable via `/resume <its-id>`. Selecting a session row in the Ink Projects panel runs this command for you. |
+| `/rename <name>` (or `/rename auto`) | Name this chat. Without a name, a chat gets a short title (two to four words) written by a small model after its first exchange; `/rename auto` asks for a fresh one. The header, the chat list and the browser tab show it. |
+| `/permissions` | Show the current planner write roots and any runtime grants approved for this session. |
+| `/status` | Show context usage, lead, mode, and session state. |
+| `/notify [on\|off]` | Toggle the desktop notification posted when the bots finish (see [Desktop notifications](#desktop-notifications)). No argument flips the current state; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. |
+| `/agents [on\|off]` | Grant or revoke the Claude participant's **subagent** (Task) tool. Off by default in every chat: Claude is instructed to *suggest* subagents when a task would benefit and wait for your approval — and the gate is enforced at the tool level (the CLI is simply not given the Task tool until you grant it), not by prompt alone. The grant persists with the chat across `/resume` and resets on `/new`. Codex has no subagent facility; not available under `--claude-interactive`. |
+| `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversarial-review). |
+| `/allow-host [<domain>\|remove <domain>]` | Grant the bots' sandbox **network access** to a site — or take one away with `remove`, defaults included (the built-in list covers GitHub, Wikipedia and the public planetary-science archives: HiRISE, USGS Astrogeology, PDS imaging, NASA images). Grants persist per workspace (persists per workspace in `.botference/allowed-hosts.json`, applies from their next turn — no restart). The sandbox blocks all other hosts by design; the bots are instructed to ask you for this instead of working around a blocked fetch. Bare `/allow-host` lists current grants. |
+| `/watch <url> [question]` | Have **Gemini watch a YouTube video** and post what it saw into the chat, so Claude and Codex (who cannot take video) can read it on their next turn. See [YouTube videos](#youtube-videos). |
+| `/parallel <prompt>` | **Both bots answer at once**, neither seeing the other's reply. The word may sit anywhere in the prompt (`what do you make of this? /parallel`). Each bot has the whole chat up to your prompt; both replies land in the shared history and each sees the other's on its next turn. No bot-to-bot thread follows — the point is two independent readings. A YouTube link is still watched by Gemini first. See [Summoned build agents and /parallel](#summoned-build-agents-and-parallel). |
+| `/lasso <words>` | **Search everything you have already read and said** — the pages you have annotated in the browser, your past council chats, and any folders you have named — and offer the matches. Nothing is attached until you say so. `/lasso <path>` attaches a file of your own directly; `/lasso attach <n>` (or `all`) takes one of the offers; `/lasso detach <n>` takes one off; bare `/lasso` lists what this chat is carrying. See [Lasso](#lasso). |
+| `/help` | Show the command reference. In the browser — the council page and the plugin's Discuss drawer — `/help` (or just `help`) opens a small popup instead: each command with one line saying what it does, and nothing is sent to the bots. Close it with Esc, a click outside, or ×. The council page also has a `?` button in the header that opens the same popup. |
+| `/quit` | Exit without writing files. |
+
+![/help output showing commands, messaging, aliases, and workflow](docs/images/help-commands.png)
+
+**Typical workflow:** discuss (the bots hand each other the floor and
+converge on a writer) → `/draft [rounds]` → iterate with human comments as
+needed → `/finalize`.
+
+### Steering — typing while the bots work
+
+Messages typed during a **Claude** turn are steered into that turn, exactly
+like typing in Claude Code itself: the message is injected into the running
+session and Claude reads it after its current tool call, adjusting course
+without losing in-flight work. Steered messages show as `(↪@claude)` in the
+council and land in the shared transcript, so Codex sees them at its next
+turn too. This works on both transports — the programmatic adapter injects
+over stdin; under `--claude-interactive` the text is pasted into the live
+tmux pane, where Claude Code's own queued-message handling takes over.
+
+Not everything steers: messages `@`-addressed to a bot that isn't currently
+speaking, slash commands, messages with image attachments, and anything
+typed during a **Codex** turn take the normal queue and run as the next
+turn (`codex exec` accepts no input once launched). During bot-to-bot
+free-form threads the same rule applies — steer Claude mid-turn, and
+anything queued pauses the thread at the next turn boundary as before.
+
+### Desktop notifications
+
+Council turns can run for minutes, so botference pings you when it's your
+turn again: after a turn (or bot-to-bot thread) that ran at least ~5 seconds
+finishes, and whenever a bot is blocked waiting on a write-permission
+prompt. Notifications are on by default; `/notify off` disables them.
+
+There is no daemon or OS integration — botference emits a standard terminal
+escape sequence and your terminal posts the native notification, the same
+mechanism Claude Code and Codex use. Ghostty, iTerm2, WezTerm, kitty, foot,
+and Windows Terminal all support it (Ghostty and WezTerm get a titled
+notification via OSC 777; others get OSC 9), and it passes through tmux.
+Most terminals only show the notification while the window is unfocused —
+if you're already looking at the council, nothing pops up. Interrupting a
+turn with Esc also suppresses the ping, since you're clearly at the
+keyboard.
+
+### Attaching images, PDFs, spreadsheets and Word files
+
+Three ways to get files to the bots (all support several at once):
+
+- **Drag files** from Finder into the terminal — the paths are parsed
+  (including escaped spaces in screenshot names, quotes, and `file://`
+  URLs) and become `[image N]` attachments. PDFs, spreadsheets
+  (`.xlsx`/`.xls`/`.csv`), Word documents (`.docx`/`.doc`) and text files
+  (`.md`/`.txt`/`.json`) work the same way and attach as `[file N]`.
+- **Finder Cmd+C → Cmd+V** — copied files paste as paths and attach the
+  same way.
+- **Ctrl+V** — attaches a *raw* image from the clipboard (a screenshot
+  taken with Cmd+Shift+Ctrl+4, or a browser "Copy Image"). Terminals only
+  deliver text through normal paste, so raw image data has its own key.
+
+Only paths that actually exist become attachments; a bad path stays
+visible as text, and any attachment that can't be found at send time is
+reported in the room instead of silently dropped. Claude views attached
+images and reads attached PDFs with its Read tool; Codex receives the
+file path (its CLI cannot view image content mid-session, and reads PDFs
+only as well as its own tooling allows).
+
+### YouTube videos
+
+Neither Claude nor Codex can watch video. Gemini can, so botference has it
+watch for them: paste a **public** YouTube link in a message and the video is
+watched before the message reaches the bots, with the written report — title
+and channel, a summary, timestamped sections, the key claims and numbers,
+quotes word for word, and what is on screen that the narration does not say —
+appended to what they receive. It is labelled as a witness report, not an
+instruction, because it describes a page nobody in the room can check.
+
+- **Set the key once:** put a Google AI Studio key in
+  `~/.botference/gemini-key` (`chmod 600` it) or set `GEMINI_API_KEY`. With no
+  key, a YouTube link is noted once per chat and nothing is watched.
+- **You see what Gemini saw.** Every report is posted as its own message from
+  `gemini` — the header says what was watched, how long it took and by which
+  model — folded after a few lines in the web UI with a "show more". The bots
+  get the same report in their own copy of the turn.
+- **`/watch <url> [question]`** watches on demand, posts the report, and then
+  hands the room to both bots to discuss it — no "so, thoughts?" needed. With a
+  question, Gemini answers it first and the summary follows.
+- **A bot can ask.** Ending a reply with a line of its own reading
+  `watch: <youtube-url>`, `watch: <youtube-url> — <question>` or
+  `ask gemini: <question>` (about the video most recently watched here) has the
+  video watched or the question put; the line stays in the reply. A question
+  gets the asking bot — only that bot — the floor straight back with the answer
+  in front of it, once; and each bot may ask at most two questions per turn, so
+  a video cannot become a conversation the user is not in.
+- **A working light.** While a watch is running, a Gemini mark spins beside the
+  Claude and Codex marks in the web UI's header, shows the outcome for a moment,
+  and then goes — it is a tool the room used, not a third participant.
+- Up to three links per message are watched automatically, reports are cached
+  for 30 days (a re-sent link costs nothing), and `BOTFERENCE_VIDEO_WATCH=off`
+  turns the automatic watching off while leaving `/watch` working.
+
+Only public videos work — private, unlisted and age-restricted ones are
+refused by the API, and that refusal is reported in the room rather than
+swallowed. Google's free tier allows about eight hours of YouTube a day.
+
+### Lasso
+
+The thing that would settle the question is often something you have already
+read or already said — a chat from July, a paper you marked up in the brow

@@ -1,0 +1,116 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo-light.svg">
+    <img alt="Patchmill logo" src="docs/assets/logo-light.svg" width="400">
+  </picture>
+</p>
+
+Patchmill is an agent-driven software factory for turning product work into
+reviewed, landed changes without hiding the engineering judgment between idea
+and production.
+
+It connects an issue host, repository policy, git worktrees, and configurable
+agent skills so teams can triage issues, plan work, implement in isolation,
+review results, collect evidence, and land changes with clear handoffs.
+
+## Documentation
+
+Read the full documentation at **[patchmill.dev](https://patchmill.dev)**.
+
+Start here:
+
+- [Overview](https://patchmill.dev/getting-started/overview/)
+- [Quickstart](https://patchmill.dev/getting-started/quickstart/)
+- [Configuration](https://patchmill.dev/getting-started/configuration/)
+- [Triage](https://patchmill.dev/using-patchmill/triage/)
+- [Run-once](https://patchmill.dev/using-patchmill/run-once/)
+
+## Roadmap
+
+Patchmill's roadmap moves from safe, unattended local operation to broader work
+sources, a unified control plane, and cloud-operated agents running in isolated
+sandboxes. The phases describe product direction rather than date or version
+commitments.
+
+Read the [Patchmill roadmap](docs/roadmap.md).
+
+## Install
+
+```sh
+npm install -g patchmill
+```
+
+Or run one command with `npx`:
+
+```sh
+npx patchmill --help
+```
+
+## Basic workflow
+
+```sh
+patchmill init
+patchmill auth
+patchmill doctor
+patchmill triage --dry-run
+patchmill triage
+patchmill run-once
+```
+
+For independent issues, run `patchmill run-once --issue N` in separate terminals
+from the same local clone. Automatic selection remains serial. Each explicit
+process owns only its issue and phase workspaces.
+
+Implementation always creates a PR. An open PR does not complete the Issue run.
+After the PR merges, rerun the same explicit command to finish saved
+checkpoints. See the
+[operator contract](https://patchmill.dev/using-patchmill/run-once/#concurrent-explicit-commands)
+for resource responsibilities, safe resume, and unsupported concurrency.
+
+## Main commands
+
+- `patchmill init` initializes local configuration and recommended skills.
+- `patchmill auth` configures or repairs repo-local Pi provider authentication.
+- `patchmill doctor` runs read-only readiness checks.
+- `patchmill triage` classifies open issues for automation.
+- `patchmill run reset --issue N` safely archives and resets saved Run recovery
+  state before an immediate issue-specific Run attempt.
+- `patchmill run-once` advances one actionable issue through the configured
+  workflow.
+- `patchmill set-spec` and `patchmill set-plan` publish approved workflow
+  artifacts to an issue.
+- `patchmill skills update` updates Patchmill-managed project-local skills.
+
+## Supported hosts
+
+Patchmill currently supports:
+
+- GitHub through the `gh` CLI (`github-gh`)
+- Forgejo/Gitea through the `tea` CLI (`forgejo-tea`)
+
+## Superpowers
+
+Patchmill works especially well with the
+[Superpowers](https://github.com/obra/superpowers) skills pack. Patchmill
+provides the factory floor; Superpowers provides much of the planning,
+implementation, debugging, review, and workflow discipline that moves work
+through it.
+
+## Frontend design and review
+
+The recommended local pack adds conditional frontend guidance. For meaningful
+browser-visible changes, planning includes a linked, offline full-page HTML
+mockup. Implementation completes normal code review and validation, then runs
+fresh independent frontend review. The parent repairs valid findings and
+refreshes review and evidence after frontend changes.
+
+Backend, documentation, and non-material copy work skip these additions. Pack
+`2026.10.2` uses pinned local guidance and needs no configuration change. Custom
+and global workflows opt in through their own wrappers. See
+[Skills configuration](https://patchmill.dev/guides/skills-configuration/) and
+[Workflow artifacts](https://patchmill.dev/using-patchmill/workflow-artifacts/).
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).

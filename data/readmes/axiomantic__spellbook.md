@@ -1,0 +1,1030 @@
+
+<p align="center">
+  <img src="./docs/assets/book.svg" alt="Spellbook" width="300">
+</p>
+
+<h1 align="center">Spellbook</h1>
+
+<p align="center">
+  <em>A harness-augmentation layer for AI coding assistants. Skills, commands, hooks, and a shared MCP server that runs across Claude Code, Antigravity, OpenCode, Codex, Gemini CLI, ForgeCode, and Pi.</em><br>
+  Primary platform: Claude Code. Basic support for Antigravity, OpenCode, Codex, Gemini CLI, ForgeCode, and Pi.
+</p>
+
+<p align="center">
+  <a href="https://github.com/axiomantic/spellbook/blob/main/LICENSE"><img src="https://img.shields.io/github/license/axiomantic/spellbook?style=flat-square" alt="License"></a>
+  <a href="https://github.com/axiomantic/spellbook/stargazers"><img src="https://img.shields.io/github/stars/axiomantic/spellbook?style=flat-square" alt="Stars"></a>
+  <a href="https://github.com/axiomantic/spellbook/issues"><img src="https://img.shields.io/github/issues/axiomantic/spellbook?style=flat-square" alt="Issues"></a>
+  <a href="https://axiomantic.github.io/spellbook/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square" alt="Documentation"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/axiomantic/spellbook"><img src="https://img.shields.io/badge/Built%20with-Spellbook-6B21A8?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzAuNjY3IiBoZWlnaHQ9IjE3MC42NjciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSIjRkZGIiB4bWxuczp2PSJodHRwczovL3ZlY3RhLmlvL25hbm8iPjxwYXRoIGQ9Ik0yMy4xNjggMTIwLjA0YTMuODMgMy44MyAwIDAgMCAxLjM5MSA0LjI4NWMxLjM0NC45NzcgMy4xNjQuOTc3IDQuNTA4IDBMNjQgOTguOTVsMzQuOTMgMjUuMzc1YTMuODEgMy44MSAwIDAgMCAyLjI1NC43MzQgMy44IDMuOCAwIDAgMCAyLjI1NC0uNzM0IDMuODMgMy44MyAwIDAgMCAxLjM5MS00LjI4NWwtMTMuMzQtNDEuMDY2IDM0LjkzLTI1LjM3OWEzLjgzIDMuODMgMCAwIDAgMS4zOTQtNC4yODVjLS41MTItMS41ODItMS45ODQtMi42NDgtMy42NDQtMi42NDhsLTQzLjE4NC4wMDQtMTMuMzQtNDEuMDdDNjcuMTI5IDQuMDE3IDY1LjY2IDIuOTUxIDY0IDIuOTUxcy0zLjEzMyAxLjA2Ni0zLjY0OCAyLjY0NWwtMTMuMzQgNDEuMDY2SDMuODMyYy0xLjY2IDAtMy4xMzMgMS4wNjYtMy42NDQgMi42NDhzLjA0NyAzLjMwNSAxLjM5MSA0LjI4NWwzNC45MyAyNS4zNzl6bTEwLjkzNC04Ljg0NGw4LjkzNC0yNy40OCAxNC40NDkgMTAuNDk2em01OS43OTMgMEw3MC41MTYgOTQuMjA4bDE0LjQ0OS0xMC40OTZ6bTE4LjQ3Ny01Ni44NjdMODguOTkzIDcxLjMxM2wtNS41MTYtMTYuOTg0ek02NC4wMDEgMTkuMTgxbDguOTMgMjcuNDg0SDU1LjA2OHpNNTIuNTc5IDU0LjMyOWgyMi44NGw3LjA1OSAyMS43MjMtMTguNDc3IDEzLjQyNi0xOC40OC0xMy40MjZ6bS0zNi45NTMgMGgyOC44OTVsLTUuNTE2IDE2Ljk4NHoiLz48L3N2Zz4=" alt="Built with Spellbook"></a>
+</p>
+
+<p align="center">
+  <a href="https://axiomantic.github.io/spellbook/"><strong>Documentation</strong></a> ·
+  <a href="https://axiomantic.github.io/spellbook/getting-started/installation/"><strong>Getting Started</strong></a> ·
+  <a href="https://axiomantic.github.io/spellbook/skills/"><strong>Skills Reference</strong></a>
+</p>
+
+---
+## Table of Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Quick Install](#quick-install)
+  - [Windows Quickstart](#windows-quickstart)
+- [What Spellbook Does](#what-spellbook-does)
+  - [The orchestrator pattern](#the-orchestrator-pattern)
+  - [Epistemic rigor](#epistemic-rigor)
+  - [Named failure modes](#named-failure-modes)
+  - [Quality gates](#quality-gates)
+  - [Composition](#composition)
+  - [Self-improvement](#self-improvement)
+- [The develop Skill](#the-develop-skill)
+  - [How it works](#how-it-works)
+  - [Parallelization](#parallelization)
+  - [What it handles](#what-it-handles)
+- [What's Included](#whats-included)
+  - [Skills (62 total)](#skills-62-total)
+  - [Commands (108 total)](#commands-108-total)
+  - [Agents (16 total)](#agents-16-total)
+- [Platform Support](#platform-support)
+  - [AI Coding Assistants](#ai-coding-assistants)
+  - [Operating Systems](#operating-systems)
+  - [YOLO Mode](#yolo-mode)
+- [Example Workflows](#example-workflows)
+  - [Implementing a Feature](#implementing-a-feature)
+  - [Large Feature with Context Exhaustion](#large-feature-with-context-exhaustion)
+  - [Test Suite Audit and Remediation](#test-suite-audit-and-remediation)
+  - [Parallel Worktree Development](#parallel-worktree-development)
+  - [Cross-Assistant Handoff](#cross-assistant-handoff)
+- [Recommended Companion Tools](#recommended-companion-tools)
+  - [Heads Up Claude](#heads-up-claude)
+  - [MCP Language Server](#mcp-language-server)
+- [Key Skills](#key-skills)
+- [Development](#development)
+  - [Serve Documentation Locally](#serve-documentation-locally)
+  - [Run MCP Server Directly](#run-mcp-server-directly)
+- [Research backing](#research-backing)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments)
+- [Attribution](#attribution)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+---
+
+## Quick Install
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/axiomantic/spellbook/main/bootstrap.sh | bash
+```
+
+The installer requires Python 3.10+ and git, then automatically installs uv and configures skills for detected platforms.
+
+**Upgrade:** `cd ~/.local/share/spellbook && git pull && python3 install.py`
+
+**Uninstall:** `python3 ~/.local/share/spellbook/uninstall.py`
+
+See [Installation Guide](https://axiomantic.github.io/spellbook/getting-started/installation/) for advanced options.
+
+### Windows Quickstart
+
+```powershell
+irm https://raw.githubusercontent.com/axiomantic/spellbook/main/bootstrap.ps1 | iex
+```
+
+**Requirements:** Python 3.10+, git, and PowerShell 5.1+.
+
+- Symlinks require **Developer Mode** enabled in Windows Settings (falls back to junctions or copies otherwise)
+- Service management uses **Windows Task Scheduler**
+- Install location: `%LOCALAPPDATA%\spellbook`
+
+## What Spellbook Does
+
+Spellbook is a harness-augmentation layer for AI coding assistants. The *harness* is the runtime that hosts the agent loop and executes tools (Claude Code, Codex, OpenCode, Gemini CLI, ForgeCode). Spellbook plugs into whichever harness you are running and adds skills, slash commands, hooks, profiles, and a shared MCP server (memory, focus stints, session resume) on top.
+
+Three things distinguish it from harness-native features and from other skill collections:
+
+- **Harness-agnostic.** The same skills, commands, and memory work across every supported harness on the same project. Switch from Claude Code to OpenCode mid-task and the workflow continues.
+- **Shared centralized MCP server.** Memories, focus stints, and session-resume state live in one place, so context stored from a Claude Code session surfaces in an OpenCode session on the same repo. No individual harness ships this.
+- **Skills + hooks layer no harness ships natively.** Autonomy enforcement, quality gates, parallel subagent dispatch, and a session resume protocol sit on top of whatever the harness provides.
+
+Instead of just telling an assistant about your codebase, Spellbook gives the assistant structured workflows for research, design, implementation, testing, and review, along with guardrails for the specific ways LLMs tend to cut corners.
+
+### The orchestrator pattern
+
+The main agent dispatches subagents rather than doing implementation work directly. This keeps the main context window free for strategic coordination instead of filling it with source code, and it means each subagent starts with a fresh perspective rather than carrying accumulated assumptions. Parallel dispatch lets multiple tasks run simultaneously.
+
+### Epistemic rigor
+
+The system is designed to distrust its own outputs. [Fact-checking][fact-checking] treats every claim as a hypothesis to verify. [Green mirage auditing][auditing-green-mirage] asks whether a test would actually fail if the code were broken, which is a different question from whether the test passes. [Hunch verification][verifying-hunches] intercepts moments of claimed discovery and requires reframing them as testable hypotheses. [Dehallucination][dehallucination] names the specific ways LLMs confabulate and provides recovery protocols.
+
+Test-driven development is treated as an epistemic practice: tests written before implementation answer "what should this do?" while tests written after answer "what does this do?" -- and the system's quality gates are designed around that difference.
+
+Hallucination prevention draws on peer-reviewed research. [Chain-of-Verification][cove-protocol] self-interrogation (Dhuliawala et al., 2023) requires verification skills to generate and answer questions about their own claims before finalizing verdicts. [Atomic claim decomposition][decompose-claims] (Min et al., FActScore, EMNLP 2023) breaks compound statements into independently verifiable units. API hallucination detection checklists in [code review][code-review] and [quality enforcement][enforcing-code-quality] catch the specific pattern where LLMs generate syntactically valid but non-existent API calls.
+
+### Named failure modes
+
+LLMs fail in predictable ways, and Spellbook names those patterns so it can build mechanical countermeasures. Seven rationalization patterns are catalogued and blocked. Three consecutive fix failures trigger architectural reassessment instead of a fourth attempt. Research stagnation triggers a plateau breaker. A devil's advocate review that finds zero issues is flagged as incomplete.
+
+### Quality gates
+
+Every substantial skill runs as a sequence of phases with mandatory gates between them. Tests must pass, code review must clear, claims must verify against source, and tests must actually catch regressions. These gates cannot be bypassed by YOLO mode or autonomy settings -- YOLO grants permission to act without asking, but not to skip verification.
+
+### Composition
+
+Skills invoke skills. [`develop`][develop] orchestrates [design-exploration], [writing-plans], [test-driven-development], [requesting-code-review], [fact-checking], [auditing-green-mirage], and [finishing-a-development-branch]. [`debugging`][debugging] invokes [verifying-hunches] and [isolated-testing]. When a skill outgrows its scope, it splits into a thin orchestrator and supporting commands.
+
+### Self-improvement
+
+Some skills exist to improve other skills. [Usage analytics][analyzing-skill-usage] measure completion and correction rates. The [skill-writing skill][writing-skills] applies TDD to skill creation itself. [Instruction engineering][instruction-engineering] codifies prompt research into technique, and [prompt sharpening][sharpening-prompts] audits for ambiguity. A/B testing compares skill versions against each other so improvements can be measured rather than assumed.
+
+## The develop Skill
+
+You say "add dark mode" or "migrate the auth system to OAuth2" or "build a webhook delivery pipeline with retry logic." The [`develop`][develop] skill orchestrates the full feature lifecycle through 20+ specialized skills and commands. The first question it asks is how involved you want to be:
+
+**Fully autonomous.** Describe the feature and walk away. It researches your codebase, surfaces ambiguities, resolves them, designs the architecture, writes a detailed implementation plan, builds with test-driven development, reviews its own code, fact-checks its claims, audits its tests for false confidence, and opens a PR. Each step runs in a fresh subagent with its own quality gate.
+
+**Highly interactive.** The same pipeline with the same rigor, but you stay in the conversation. Ambiguities become specific questions grounded in what it found in your code, and architectural tradeoffs come with evidence. Checkpoints pause for your input.
+
+**Or anywhere between.** You can run mostly autonomous with pauses only for critical decisions, and set the level once at the start.
+
+### How it works
+
+The system classifies your request by complexity using mechanical heuristics -- file count, behavioral change, test impact, structural change, integration points. Trivial changes exit the skill entirely. Simple changes follow a lightweight path with automatic upgrade if they turn out harder than expected. Standard and complex features get the full pipeline:
+
+1. **Research** -- Subagent explores your codebase. Answers come with confidence levels and `file:line` evidence. Every unknown is catalogued.
+2. **Discovery** -- Each ambiguity becomes a specific question. In autonomous mode, it answers its own questions with further research. A devil's advocate reviews the understanding document before design begins.
+3. **Design** -- Architecture design exploration with tradeoff analysis. A checkability pass runs first: it decides by machine the claims a machine can decide, so the reviewer keeps its judgment for the parts that need judgment. A design doc auditor then checks whether someone could implement from the doc without guessing, and flags every gap.
+4. **Planning** -- Atomic implementation plan with TDD steps. A checkability pass builds and runs checks for the claims the plan makes about itself -- the dependency graph is acyclic, every declared dependency exists, every cited path and symbol exists. Each check must go red on a known-bad input before its green result counts as evidence. A plan auditor then verifies interface contracts, behavior assumptions, and cross-task dependencies. If a review round mostly finds defects that the previous round's repairs caused, the loop stops and the recurring class of defect becomes a check.
+5. **Implementation** -- Test-driven execution with per-task code review, fact-checking, and completion verification. Parallel tracks can run in isolated git worktrees with dependency-ordered smart merge.
+6. **Verification** -- Green mirage audit: would these tests catch real regressions? Comprehensive claim validation against design and plan. Full test suite.
+7. **Finish** -- PR with branch-relative description, local merge, or keep the branch. Worktree cleanup.
+
+For features too large for one context window, it generates self-contained work packets and hands them off to separate sessions.
+
+### Parallelization
+
+Three strategies, chosen at the start:
+
+- **Conservative** -- Sequential execution. Safest, simplest.
+- **Maximize parallel** -- Independent tasks dispatch as concurrent subagents with conflict detection and integration testing.
+- **Per-track worktrees** -- One git worktree per parallel track, running simultaneously, merged in dependency order with three-way conflict analysis and per-round test verification.
+
+### What it handles
+
+Complete feature implementation, greenfield project creation, refactoring (with automatic behavior-preservation mode), and migrations. Bug fixes route to the dedicated [debugging] skill. Simple changes get a lightweight path; complex multi-track features get work packets and parallel sessions.
+
+## What's Included
+
+### Skills (62 total)
+
+Reusable workflows for structured development:
+
+| Category | Skills |
+|----------|--------|
+| **Core Workflow** | [design-exploration]†, [writing-plans]†, [executing-plans]†, [test-driven-development]†, [debugging], [verifying-hunches], [isolated-testing], [using-git-worktrees]†, [finishing-a-development-branch]† |
+| **Code Quality** | [enforcing-code-quality], [code-review], [advanced-code-review], [adversarial-review], [auditing-green-mirage], [fixing-tests], [fact-checking], [finding-dead-code], [distilling-prs], [requesting-code-review]† |
+| **Feature Dev** | [develop], [reviewing-design-docs], [reviewing-impl-plans], [reviewing-prs], [devils-advocate], [merging-worktrees], [resolving-merge-conflicts], [creating-issues-and-pull-requests] |
+| **Autonomous Dev** | [autonomous-mode], [gathering-requirements], [dehallucination], [reflexion], [analyzing-domains], [assembling-context], [designing-workflows], [deep-research], [fractal-thinking] |
+| **Specialized** | [async-await-patterns], [using-lsp-tools], [managing-artifacts], [polish-repo], [generating-diagrams], [tooling-discovery], [dedupe], [estimating-tickets], [rounding-up-worktree-sessions] |
+| **Meta** | [using-skills]†, [writing-skills]†, [writing-commands], [instruction-engineering], [sharpening-prompts], [optimizing-instructions], [dispatching-parallel-agents]†, [smart-reading], [analyzing-skill-usage], [documenting-tools], [documenting-projects], [testing-strategy], [opportunity-awareness], [branch-context], [writing-copy] |
+| **Session** | [emotional-stakes], [agent2agent] |
+
+*† Derived from [superpowers](https://github.com/obra/superpowers)*
+
+[design-exploration]: https://axiomantic.github.io/spellbook/latest/skills/design-exploration/
+[writing-plans]: https://axiomantic.github.io/spellbook/latest/skills/writing-plans/
+[executing-plans]: https://axiomantic.github.io/spellbook/latest/skills/executing-plans/
+[test-driven-development]: https://axiomantic.github.io/spellbook/latest/skills/test-driven-development/
+[debugging]: https://axiomantic.github.io/spellbook/latest/skills/debugging/
+[verifying-hunches]: https://axiomantic.github.io/spellbook/latest/skills/verifying-hunches/
+[isolated-testing]: https://axiomantic.github.io/spellbook/latest/skills/isolated-testing/
+[using-git-worktrees]: https://axiomantic.github.io/spellbook/latest/skills/using-git-worktrees/
+[enforcing-code-quality]: https://axiomantic.github.io/spellbook/latest/skills/enforcing-code-quality/
+[advanced-code-review]: https://axiomantic.github.io/spellbook/latest/skills/advanced-code-review/
+[adversarial-review]: https://axiomantic.github.io/spellbook/latest/skills/adversarial-review/
+[auditing-green-mirage]: https://axiomantic.github.io/spellbook/latest/skills/auditing-green-mirage/
+[fixing-tests]: https://axiomantic.github.io/spellbook/latest/skills/fixing-tests/
+[fact-checking]: https://axiomantic.github.io/spellbook/latest/skills/fact-checking/
+[finding-dead-code]: https://axiomantic.github.io/spellbook/latest/skills/finding-dead-code/
+[requesting-code-review]: https://axiomantic.github.io/spellbook/latest/skills/requesting-code-review/
+[develop]: https://axiomantic.github.io/spellbook/latest/skills/develop/
+[reviewing-design-docs]: https://axiomantic.github.io/spellbook/latest/skills/reviewing-design-docs/
+[reviewing-impl-plans]: https://axiomantic.github.io/spellbook/latest/skills/reviewing-impl-plans/
+[reviewing-prs]: https://axiomantic.github.io/spellbook/latest/skills/reviewing-prs/
+[devils-advocate]: https://axiomantic.github.io/spellbook/latest/skills/devils-advocate/
+[merging-worktrees]: https://axiomantic.github.io/spellbook/latest/skills/merging-worktrees/
+[resolving-merge-conflicts]: https://axiomantic.github.io/spellbook/latest/skills/resolving-merge-conflicts/
+[async-await-patterns]: https://axiomantic.github.io/spellbook/latest/skills/async-await-patterns/
+[using-lsp-tools]: https://axiomantic.github.io/spellbook/latest/skills/using-lsp-tools/
+[managing-artifacts]: https://axiomantic.github.io/spellbook/latest/skills/managing-artifacts/
+[generating-diagrams]: https://axiomantic.github.io/spellbook/latest/skills/generating-diagrams/
+[tooling-discovery]: https://axiomantic.github.io/spellbook/latest/skills/tooling-discovery/
+[estimating-tickets]: https://axiomantic.github.io/spellbook/latest/skills/estimating-tickets/
+[rounding-up-worktree-sessions]: https://axiomantic.github.io/spellbook/latest/skills/rounding-up-worktree-sessions/
+[code-review]: https://axiomantic.github.io/spellbook/latest/skills/code-review/
+[using-skills]: https://axiomantic.github.io/spellbook/latest/skills/using-skills/
+[writing-skills]: https://axiomantic.github.io/spellbook/latest/skills/writing-skills/
+[instruction-engineering]: https://axiomantic.github.io/spellbook/latest/skills/instruction-engineering/
+[sharpening-prompts]: https://axiomantic.github.io/spellbook/latest/skills/sharpening-prompts/
+[optimizing-instructions]: https://axiomantic.github.io/spellbook/latest/skills/optimizing-instructions/
+[dispatching-parallel-agents]: https://axiomantic.github.io/spellbook/latest/skills/dispatching-parallel-agents/
+[smart-reading]: https://axiomantic.github.io/spellbook/latest/skills/smart-reading/
+[polish-repo]: https://axiomantic.github.io/spellbook/latest/skills/polish-repo/
+[analyzing-skill-usage]: https://axiomantic.github.io/spellbook/latest/skills/analyzing-skill-usage/
+[documenting-tools]: https://axiomantic.github.io/spellbook/latest/skills/documenting-tools/
+[documenting-projects]: https://axiomantic.github.io/spellbook/latest/skills/documenting-projects/
+[writing-commands]: https://axiomantic.github.io/spellbook/latest/skills/writing-commands/
+[writing-copy]: https://axiomantic.github.io/spellbook/latest/skills/writing-copy/
+[finishing-a-development-branch]: https://axiomantic.github.io/spellbook/latest/skills/finishing-a-development-branch/
+[emotional-stakes]: https://axiomantic.github.io/spellbook/latest/skills/emotional-stakes/
+[testing-strategy]: https://axiomantic.github.io/spellbook/latest/skills/testing-strategy/
+[opportunity-awareness]: https://axiomantic.github.io/spellbook/latest/skills/opportunity-awareness/
+[branch-context]: https://axiomantic.github.io/spellbook/latest/skills/branch-context/
+[agent2agent]: https://axiomantic.github.io/spellbook/latest/skills/agent2agent/
+[dedupe]: https://axiomantic.github.io/spellbook/latest/skills/dedupe/
+[distilling-prs]: https://axiomantic.github.io/spellbook/latest/skills/distilling-prs/
+[creating-issues-and-pull-requests]: https://axiomantic.github.io/spellbook/latest/skills/creating-issues-and-pull-requests/
+[gathering-requirements]: https://axiomantic.github.io/spellbook/latest/skills/gathering-requirements/
+[autonomous-mode]: https://axiomantic.github.io/spellbook/latest/skills/autonomous-mode/
+[dehallucination]: https://axiomantic.github.io/spellbook/latest/skills/dehallucination/
+[reflexion]: https://axiomantic.github.io/spellbook/latest/skills/reflexion/
+[analyzing-domains]: https://axiomantic.github.io/spellbook/latest/skills/analyzing-domains/
+[assembling-context]: https://axiomantic.github.io/spellbook/latest/skills/assembling-context/
+[designing-workflows]: https://axiomantic.github.io/spellbook/latest/skills/designing-workflows/
+[deep-research]: https://axiomantic.github.io/spellbook/latest/skills/deep-research/
+[fractal-thinking]: https://axiomantic.github.io/spellbook/latest/skills/fractal-thinking/
+[cove-protocol]: https://axiomantic.github.io/spellbook/latest/skills/shared-references/cove-protocol/
+[decompose-claims]: https://axiomantic.github.io/spellbook/latest/commands/decompose-claims/
+
+### Commands (108 total)
+
+| Command | Description |
+|---------|-------------|
+| [/a2a] | Inter-session agent messaging bus (open inbox, send, check, reply) |
+| [/create-issue] | Create a GitHub issue with proper template discovery and population |
+| [/create-pr] | Create a pull request with proper template discovery and population |
+| [/crystallize] | Transform SOPs into agentic CoT prompts |
+| [/crystallize-consolidate] | Consolidate accumulated rules: merge overlaps, collapse redundancy, retire deprecated |
+| [/crystallize-verify] | Structurally isolated adversarial review of crystallized output |
+| [/decompose-claims] | Decompose text into atomic, independently verifiable claims |
+| [/dead-code-setup] | Initialize dead code analysis with git safety and scope selection |
+| [/dead-code-analyze] | Extract and triage code items for dead code verification |
+| [/dead-code-report] | Generate dead code findings report with deletion plan |
+| [/dead-code-implement] | Execute approved deletions with verification |
+| [/dedupe-setup] | Phase 1: Configure target dirs and segmentation for semantic dedupe |
+| [/dedupe-analyze] | Phase 2: LLM judgment loop detecting semantically-equivalent instruction blocks |
+| [/dedupe-report] | Phase 3: Render proposed consolidations into a reviewable report |
+| [/dedupe-apply] | Phase 4: Apply approved consolidations with diffs and rollback |
+| [/deep-research-interview] | Phase 0: Structured interview and Research Brief generation |
+| [/deep-research-investigate] | Phase 2: Triplet search engine with plateau detection and micro-reports |
+| [/deep-research-plan] | Phase 1: Thread decomposition, source strategy, and convergence criteria |
+| [/design-assessment] | Generate assessment frameworks for evaluative skills/commands |
+| [/develop-configure] | The develop orchestrator body: phases, gates, ceremony lock, and ledger |
+| [/docs-audit] | Phase 1 project analysis for documentation planning |
+| [/docs-plan] | Phase 2 TOC generation, tone assignment, and build config |
+| [/docs-write] | Phase 3 documentation generation with adaptive tone per section |
+| [/docs-review] | Phase 4 documentation quality gate with 8 measurable criteria and iteration |
+| [/handoff] | Custom session compaction |
+| [/distill-session] | Extract knowledge from sessions |
+| [/feature-config] | Phase 0 configuration wizard for feature workflow |
+| [/feature-discover] | Phase 1.5 informed discovery with disambiguation |
+| [/feature-research] | Phase 1 codebase research and ambiguity detection |
+| [/feature-design] | Phase 2 design document creation and review |
+| [/feature-implement] | Phase 3 implementation planning, review, and approval gate |
+| [/feature-implement-execute] | Phase 4 implementation with TDD and code review |
+| [/fractal-think-seed] | Seed phase: Create graph and generate seed sub-questions |
+| [/fractal-think-work] | Phase 2: Dispatch workers for recursive fractal exploration |
+| [/fractal-think-harvest] | Phase 3: Read completed graph, verify synthesis, format result |
+| [/simplify] | Code complexity reduction |
+| [/simplify-analyze] | Analyze code for simplification opportunities |
+| [/simplify-transform] | Apply simplification transformations |
+| [/simplify-verify] | Verify simplification preserved behavior |
+| [/address-pr-feedback] | Handle PR review comments |
+| [/move-project] | Relocate projects safely |
+| [/audit-green-mirage] | Test suite audit |
+| [/verify]† | Verification before completion |
+| [/systematic-debugging]† | Methodical debugging workflow |
+| [/scientific-debugging] | Hypothesis-driven debugging |
+| [/design-explore]† | Design exploration |
+| [/write-plan]† | Create implementation plan |
+| [/execute-plan]† | Execute implementation plan |
+| [/execute-work-packet] | Execute a single work packet with TDD |
+| [/execute-work-packets-seq] | Execute all packets sequentially |
+| [/estimate-scope] | Ingest a test card, validate constraints, decompose into repo-tagged tickets |
+| [/estimate-point] | Multi-agent consensus pointing + AI productivity multiplier per ticket |
+| [/estimate-buffer] | PERT three-point estimation + Brooks's Law resource scaling |
+| [/estimate-report] | Produce the final structured estimation report |
+| [/merge-work-packets] | Merge completed packets with QA gates |
+| [/pr-dance] | Loop PR through CI + bot review until merge-ready |
+| [/pr-distill] | Analyze PR, categorize changes by review necessity |
+| [/pr-distill-bless] | Save discovered pattern for future distillations |
+| [/polish-repo-audit] | Phases 0-1 of polish-repo: Reconnaissance gathering and audit scorecard generation |
+| [/polish-repo-community] | Phase 3 of polish-repo: Community infrastructure, issue templates, roadmap, contributor experience, and signs of life |
+| [/polish-repo-identity] | Phase 3 of polish-repo: Visual identity, badges, GitHub metadata, topics, and documentation strategy |
+| [/polish-repo-naming] | Phase 3 of polish-repo: Naming workshop, tagline crafting, and positioning strategy |
+| [/polish-repo-readme] | Phase 3 of polish-repo: README authoring from scratch, improvement, or replacement |
+| [/advanced-code-review-plan] | Phase 1: Strategic planning for code review |
+| [/advanced-code-review-context] | Phase 2: Context analysis and previous review loading |
+| [/advanced-code-review-review] | Phase 3: Deep multi-pass code review |
+| [/advanced-code-review-verify] | Phase 4: Verification and fact-checking of findings |
+| [/advanced-code-review-report] | Phase 5: Report generation and artifact output |
+| [/fact-check-extract] | Extract and triage claims from code |
+| [/fact-check-verify] | Verify claims against source with evidence |
+| [/fact-check-report] | Generate findings report with bibliography |
+| [/review-plan-inventory] | Context, inventory, and work item classification |
+| [/review-plan-contracts] | Interface contract audit |
+| [/review-plan-behavior] | Behavior verification and fabrication detection |
+| [/review-plan-completeness] | Completeness checks and escalation |
+| [/audit-mirage-analyze] | Per-file anti-pattern analysis with scoring |
+| [/audit-mirage-cross] | Cross-cutting analysis across test suite |
+| [/audit-mirage-report] | Report generation and fix plan |
+| [/review-design-checklist] | Document inventory and completeness checklist |
+| [/review-design-verify] | Hand-waving detection and interface verification |
+| [/review-design-report] | Implementation simulation, findings, and remediation |
+| [/fix-tests-parse] | Parse and classify test failures |
+| [/fix-tests-execute] | Fix execution with TDD loop and verification |
+| [/request-review-plan] | Review planning and scope analysis |
+| [/request-review-execute] | Execute review with checklists |
+| [/request-review-artifacts] | Generate review artifacts and reports |
+| [/merge-worktree-execute] | Execute worktree merge sequence |
+| [/merge-worktree-resolve] | Resolve merge conflicts |
+| [/merge-worktree-verify] | Verify merge and cleanup |
+| [/finish-branch-execute] | Analyze branch and execute chosen strategy |
+| [/finish-branch-cleanup] | Post-merge cleanup |
+| [/code-review-audit] | Multi-pass deep-dive audit with zero-tolerance posture |
+| [/code-review-feedback] | Process received code review feedback |
+| [/code-review-give] | Review others' code |
+| [/code-review-tarot] | Roundtable-style collaborative review |
+| [/write-skill-test] | Skill testing with pressure scenarios |
+| [/writing-commands-create] | Command creation with schema, naming, and frontmatter |
+| [/writing-commands-review] | Command quality checklist and testing protocol |
+| [/writing-commands-paired] | Paired command protocol and assessment framework |
+| [/reflexion-analyze] | Full reflexion analysis workflow |
+| [/test-bar] | Generate floating QA test overlay for visual testing |
+| [/test-bar-remove] | Clean removal of test-bar overlay |
+| [/ie-techniques] | Reference for 16 proven instruction engineering techniques |
+| [/ie-template] | Template and example for engineered instructions |
+| [/ie-tool-docs] | Guidance for writing tool/function documentation |
+| [/sharpen-audit] | Audit prompts for ambiguity with executor predictions |
+| [/sharpen-improve] | Rewrite prompts to eliminate ambiguity |
+| [/write-readme] | Standalone README generation with writing guide enforcement |
+
+*† Derived from [superpowers](https://github.com/obra/superpowers)*
+
+[/a2a]: https://axiomantic.github.io/spellbook/latest/commands/a2a/
+[/create-issue]: https://axiomantic.github.io/spellbook/latest/commands/create-issue/
+[/create-pr]: https://axiomantic.github.io/spellbook/latest/commands/create-pr/
+[/crystallize]: https://axiomantic.github.io/spellbook/latest/commands/crystallize/
+[/crystallize-consolidate]: https://axiomantic.github.io/spellbook/latest/commands/crystallize-consolidate/
+[/crystallize-verify]: https://axiomantic.github.io/spellbook/latest/commands/crystallize-verify/
+[/dead-code-setup]: https://axiomantic.github.io/spellbook/latest/commands/dead-code-setup/
+[/dead-code-analyze]: https://axiomantic.github.io/spellbook/latest/commands/dead-code-analyze/
+[/dead-code-report]: https://axiomantic.github.io/spellbook/latest/commands/dead-code-report/
+[/dead-code-implement]: https://axiomantic.github.io/spellbook/latest/commands/dead-code-implement/
+[/dedupe-setup]: https://axiomantic.github.io/spellbook/latest/commands/dedupe-setup/
+[/dedupe-analyze]: https://axiomantic.github.io/spellbook/latest/commands/dedupe-analyze/
+[/dedupe-report]: https://axiomantic.github.io/spellbook/latest/commands/dedupe-report/
+[/dedupe-apply]: https://axiomantic.github.io/spellbook/latest/commands/dedupe-apply/
+[/deep-research-interview]: https://axiomantic.github.io/spellbook/latest/commands/deep-research-interview/
+[/deep-research-investigate]: https://axiomantic.github.io/spellbook/latest/commands/deep-research-investigate/
+[/deep-research-plan]: https://axiomantic.github.io/spellbook/latest/commands/deep-research-plan/
+[/design-assessment]: https://axiomantic.github.io/spellbook/latest/commands/design-assessment/
+[/develop-configure]: https://axiomantic.github.io/spellbook/latest/commands/develop-configure/
+[/docs-audit]: https://axiomantic.github.io/spellbook/latest/commands/docs-audit/
+[/docs-plan]: https://axiomantic.github.io/spellbook/latest/commands/docs-plan/
+[/docs-write]: https://axiomantic.github.io/spellbook/latest/commands/docs-write/
+[/docs-review]: https://axiomantic.github.io/spellbook/latest/commands/docs-review/
+[/handoff]: https://axiomantic.github.io/spellbook/latest/commands/handoff/
+[/distill-session]: https://axiomantic.github.io/spellbook/latest/commands/distill-session/
+[/feature-config]: https://axiomantic.github.io/spellbook/latest/commands/feature-config/
+[/feature-discover]: https://axiomantic.github.io/spellbook/latest/commands/feature-discover/
+[/feature-research]: https://axiomantic.github.io/spellbook/latest/commands/feature-research/
+[/feature-design]: https://axiomantic.github.io/spellbook/latest/commands/feature-design/
+[/feature-implement]: https://axiomantic.github.io/spellbook/latest/commands/feature-implement/
+[/feature-implement-execute]: https://axiomantic.github.io/spellbook/latest/commands/feature-implement-execute/
+[/fractal-think-seed]: https://axiomantic.github.io/spellbook/latest/commands/fractal-think-seed/
+[/fractal-think-work]: https://axiomantic.github.io/spellbook/latest/commands/fractal-think-work/
+[/fractal-think-harvest]: https://axiomantic.github.io/spellbook/latest/commands/fractal-think-harvest/
+[/simplify]: https://axiomantic.github.io/spellbook/latest/commands/simplify/
+[/simplify-analyze]: https://axiomantic.github.io/spellbook/latest/commands/simplify-analyze/
+[/simplify-transform]: https://axiomantic.github.io/spellbook/latest/commands/simplify-transform/
+[/simplify-verify]: https://axiomantic.github.io/spellbook/latest/commands/simplify-verify/
+[/address-pr-feedback]: https://axiomantic.github.io/spellbook/latest/commands/address-pr-feedback/
+[/move-project]: https://axiomantic.github.io/spellbook/latest/commands/move-project/
+[/audit-green-mirage]: https://axiomantic.github.io/spellbook/latest/commands/audit-green-mirage/
+[/verify]: https://axiomantic.github.io/spellbook/latest/commands/verify/
+[/systematic-debugging]: https://axiomantic.github.io/spellbook/latest/commands/systematic-debugging/
+[/scientific-debugging]: https://axiomantic.github.io/spellbook/latest/commands/scientific-debugging/
+[/design-explore]: https://axiomantic.github.io/spellbook/latest/commands/design-explore/
+[/write-plan]: https://axiomantic.github.io/spellbook/latest/commands/write-plan/
+[/execute-plan]: https://axiomantic.github.io/spellbook/latest/commands/execute-plan/
+[/execute-work-packet]: https://axiomantic.github.io/spellbook/latest/commands/execute-work-packet/
+[/estimate-scope]: https://axiomantic.github.io/spellbook/latest/commands/estimate-scope/
+[/estimate-point]: https://axiomantic.github.io/spellbook/latest/commands/estimate-point/
+[/estimate-buffer]: https://axiomantic.github.io/spellbook/latest/commands/estimate-buffer/
+[/estimate-report]: https://axiomantic.github.io/spellbook/latest/commands/estimate-report/
+[/execute-work-packets-seq]: https://axiomantic.github.io/spellbook/latest/commands/execute-work-packets-seq/
+[/merge-work-packets]: https://axiomantic.github.io/spellbook/latest/commands/merge-work-packets/
+[/pr-dance]: https://axiomantic.github.io/spellbook/latest/commands/pr-dance/
+[/pr-distill]: https://axiomantic.github.io/spellbook/latest/commands/pr-distill/
+[/pr-distill-bless]: https://axiomantic.github.io/spellbook/latest/commands/pr-distill-bless/
+[/polish-repo-audit]: https://axiomantic.github.io/spellbook/latest/commands/polish-repo-audit/
+[/polish-repo-community]: https://axiomantic.github.io/spellbook/latest/commands/polish-repo-community/
+[/polish-repo-identity]: https://axiomantic.github.io/spellbook/latest/commands/polish-repo-identity/
+[/polish-repo-naming]: https://axiomantic.github.io/spellbook/latest/commands/polish-repo-naming/
+[/polish-repo-readme]: https://axiomantic.github.io/spellbook/latest/commands/polish-repo-readme/
+[/advanced-code-review-plan]: https://axiomantic.github.io/spellbook/latest/commands/advanced-code-review-plan/
+[/advanced-code-review-context]: https://axiomantic.github.io/spellbook/latest/commands/advanced-code-review-context/
+[/advanced-code-review-review]: https://axiomantic.github.io/spellbook/latest/commands/advanced-code-review-review/
+[/advanced-code-review-verify]: https://axiomantic.github.io/spellbook/latest/commands/advanced-code-review-verify/
+[/advanced-code-review-report]: https://axiomantic.github.io/spellbook/latest/commands/advanced-code-review-report/
+[/fact-check-extract]: https://axiomantic.github.io/spellbook/latest/commands/fact-check-extract/
+[/fact-check-verify]: https://axiomantic.github.io/spellbook/latest/commands/fact-check-verify/
+[/fact-check-report]: https://axiomantic.github.io/spellbook/latest/commands/fact-check-report/
+[/review-plan-inventory]: https://axiomantic.github.io/spellbook/latest/commands/review-plan-inventory/
+[/review-plan-contracts]: https://axiomantic.github.io/spellbook/latest/commands/review-plan-contracts/
+[/review-plan-behavior]: https://axiomantic.github.io/spellbook/latest/commands/review-plan-behavior/
+[/review-plan-completeness]: https://axiomantic.github.io/spellbook/latest/commands/review-plan-completeness/
+[/audit-mirage-analyze]: https://axiomantic.github.io/spellbook/latest/commands/audit-mirage-analyze/
+[/audit-mirage-cross]: https://axiomantic.github.io/spellbook/latest/commands/audit-mirage-cross/
+[/audit-mirage-report]: https://axiomantic.github.io/spellbook/latest/commands/audit-mirage-report/
+[/review-design-checklist]: https://axiomantic.github.io/spellbook/latest/commands/review-design-checklist/
+[/review-design-verify]: https://axiomantic.github.io/spellbook/latest/commands/review-design-verify/
+[/review-design-report]: https://axiomantic.github.io/spellbook/latest/commands/review-design-report/
+[/fix-tests-parse]: https://axiomantic.github.io/spellbook/latest/commands/fix-tests-parse/
+[/fix-tests-execute]: https://axiomantic.github.io/spellbook/latest/commands/fix-tests-execute/
+[/request-review-plan]: https://axiomantic.github.io/spellbook/latest/commands/request-review-plan/
+[/request-review-execute]: https://axiomantic.github.io/spellbook/latest/commands/request-review-execute/
+[/request-review-artifacts]: https://axiomantic.github.io/spellbook/latest/commands/request-review-artifacts/
+[/merge-worktree-execute]: https://axiomantic.github.io/spellbook/latest/commands/merge-worktree-execute/
+[/merge-worktree-resolve]: https://axiomantic.github.io/spellbook/latest/commands/merge-worktree-resolve/
+[/merge-worktree-verify]: https://axiomantic.github.io/spellbook/latest/commands/merge-worktree-verify/
+[/finish-branch-execute]: https://axiomantic.github.io/spellbook/latest/commands/finish-branch-execute/
+[/finish-branch-cleanup]: https://axiomantic.github.io/spellbook/latest/commands/finish-branch-cleanup/
+[/code-review-audit]: https://axiomantic.github.io/spellbook/latest/commands/code-review-audit/
+[/code-review-feedback]: https://axiomantic.github.io/spellbook/latest/commands/code-review-feedback/
+[/code-review-give]: https://axiomantic.github.io/spellbook/latest/commands/code-review-give/
+[/code-review-tarot]: https://axiomantic.github.io/spellbook/latest/commands/code-review-tarot/
+[/write-skill-test]: https://axiomantic.github.io/spellbook/latest/commands/write-skill-test/
+[/writing-commands-create]: https://axiomantic.github.io/spellbook/latest/commands/writing-commands-create/
+[/writing-commands-review]: https://axiomantic.github.io/spellbook/latest/commands/writing-commands-review/
+[/writing-commands-paired]: https://axiomantic.github.io/spellbook/latest/commands/writing-commands-paired/
+[/reflexion-analyze]: https://axiomantic.github.io/spellbook/latest/commands/reflexion-analyze/
+[/test-bar]: https://axiomantic.github.io/spellbook/latest/commands/test-bar/
+[/test-bar-remove]: https://axiomantic.github.io/spellbook/latest/commands/test-bar-remove/
+[/ie-techniques]: https://axiomantic.github.io/spellbook/latest/commands/ie-techniques/
+[/ie-template]: https://axiomantic.github.io/spellbook/latest/commands/ie-template/
+[/ie-tool-docs]: https://axiomantic.github.io/spellbook/latest/commands/ie-tool-docs/
+[/sharpen-audit]: https://axiomantic.github.io/spellbook/latest/commands/sharpen-audit/
+[/sharpen-improve]: https://axiomantic.github.io/spellbook/latest/commands/sharpen-improve/
+[/write-readme]: https://axiomantic.github.io/spellbook/latest/commands/write-readme/
+
+### Agents (16 total)
+
+| Agent | Description |
+|-------|-------------|
+| [code-reviewer]† | Specialized code review |
+| [chariot-implementer] | Tarot: Implementation specialist |
+| [emperor-governor] | Tarot: Resource governor |
+| [hierophant-distiller] | Tarot: Wisdom distiller |
+| [justice-resolver] | Tarot: Conflict synthesizer |
+| [lovers-integrator] | Tarot: Integration specialist |
+| [queen-affective] | Tarot: Emotional state monitor |
+| [git-committer] | Narrowing-role: git commit operations |
+| [git-pusher] | Narrowing-role: git push operations |
+| [implementer] | Narrowing-role: code implementation |
+| [jira-mutator] | Narrowing-role: JIRA write operations |
+| [jira-reader] | Narrowing-role: JIRA read operations |
+| [pr-creator] | Narrowing-role: PR creation |
+| [pr-merger] | Narrowing-role: PR merge operations |
+| [test-runner] | Narrowing-role: test execution |
+| [web-researcher] | Narrowing-role: web research |
+
+*† Derived from [superpowers](https://github.com/obra/superpowers)*
+
+[code-reviewer]: https://axiomantic.github.io/spellbook/latest/agents/code-reviewer/
+[chariot-implementer]: https://axiomantic.github.io/spellbook/latest/agents/chariot-implementer/
+[emperor-governor]: https://axiomantic.github.io/spellbook/latest/agents/emperor-governor/
+[hierophant-distiller]: https://axiomantic.github.io/spellbook/latest/agents/hierophant-distiller/
+[justice-resolver]: https://axiomantic.github.io/spellbook/latest/agents/justice-resolver/
+[lovers-integrator]: https://axiomantic.github.io/spellbook/latest/agents/lovers-integrator/
+[queen-affective]: https://axiomantic.github.io/spellbook/latest/agents/queen-affective/
+[git-committer]: https://axiomantic.github.io/spellbook/latest/agents/git-committer/
+[git-pusher]: https://axiomantic.github.io/spellbook/latest/agents/git-pusher/
+[implementer]: https://axiomantic.github.io/spellbook/latest/agents/implementer/
+[jira-mutator]: https://axiomantic.github.io/spellbook/latest/agents/jira-mutator/
+[jira-reader]: https://axiomantic.github.io/spellbook/latest/agents/jira-reader/
+[pr-creator]: https://axiomantic.github.io/spellbook/latest/agents/pr-creator/
+[pr-merger]: https://axiomantic.github.io/spellbook/latest/agents/pr-merger/
+[test-runner]: https://axiomantic.github.io/spellbook/latest/agents/test-runner/
+[web-researcher]: https://axiomantic.github.io/spellbook/latest/agents/web-researcher/
+
+## Platform Support
+
+### AI Coding Assistants
+
+| Platform | Support Level | Notes |
+|----------|---------------|-------|
+| **Claude Code** | Primary, full support | All features: skills, hooks, MCP tools, subagent orchestration |
+| **Antigravity** | Basic support | Skills, MCP server, rules sidecar (`rules/spellbook.md`). |
+| **OpenCode** | Basic support | Skills, MCP server, YOLO agents. Some hooks and MCP tools are Claude Code-specific. |
+| **Codex** | Basic support | Skills, MCP server. No subagent Task tool; skills that require it will prompt you to use Claude Code. |
+| **Gemini CLI** | Basic support | Skills via MCP, native extension. No subagent Task tool. |
+| **ForgeCode** | Basic support | Skills via MCP, AGENTS.md context. Built-in agents (Forge, Sage, Muse) detected; custom agents fall through. |
+| **Goose** (AAIF) | Basic support | Skills via `~/.agents/skills/` (Agent Skills standard), MCP server in `~/.config/goose/config.yaml` (streamable_http), global hints at `~/.agents/AGENTS.md`, project `.goosehints` template. Requires goose v1.18.0+ for skills, v1.41.0+ for global hints. |
+
+Some MCP tools, hooks, and skills depend on Claude Code APIs that other platforms do not expose. These features are noted in their documentation. Contributions to extend coverage for other platforms are welcome -- see [Contributing](#contributing).
+
+### Operating Systems
+
+| OS | Status | Service Manager |
+|----|--------|-----------------|
+| **macOS** | Full | launchd (starts on login) |
+| **Linux** | Full | systemd user service |
+| **Windows** | Beta | Windows Task Scheduler |
+
+> **Windows users:** Windows support is experimental. The installer, MCP server, and skills all work on Windows. Symlinks require Developer Mode enabled (falls back to junctions or copies otherwise). See [Windows quickstart](#windows-quickstart) below.
+
+### YOLO Mode
+
+> [!CAUTION]
+> **YOLO mode gives your AI assistant full control of your system.**
+>
+> It can execute arbitrary commands, write and delete files, install packages, and make irreversible changes without asking permission. A misconfigured workflow or hallucinated command can corrupt your project, expose secrets, or worse.
+>
+> **Cost warning:** YOLO mode sessions can run indefinitely without human checkpoints. This means:
+> - Per-token or usage-based pricing can accumulate rapidly
+> - Credit limits or usage caps can be exhausted in a single session
+> - Long-running tasks may consume significantly more resources than expected
+>
+> **Only enable YOLO mode when:**
+> - Working in an isolated environment (container, VM, disposable branch)
+> - You have tested the workflow manually first
+> - You have backups and version control
+> - You understand what each platform's flag actually permits
+> - You have set appropriate spending limits or usage caps
+>
+> **You are responsible for what it does.** Review platform documentation before enabling.
+
+For fully automated workflows (no permission prompts), each platform has its own flag:
+
+| Platform | Command | What it does |
+|----------|---------|--------------|
+| Claude Code | `claude --dangerously-skip-permissions` | Skips all permission prompts |
+| Gemini CLI | `gemini --yolo` | Enables autonomous execution |
+| OpenCode | `opencode --agent yolo`[^2] | Spellbook agent with all tools allowed |
+| OpenCode | `opencode --agent yolo-focused`[^2] | Spellbook agent, low temp for precision |
+| Codex | `codex --full-auto` | Workspace writes + on-request approval |
+| Codex | `codex --yolo` | Bypasses all approvals and sandbox |
+
+[^2]: The `yolo` and `yolo-focused` agents are provided by spellbook, not built into OpenCode. They are [OpenCode agent definitions](https://opencode.ai/docs/agents/) with `permission: "*": "*": allow` for all tools, installed to `~/.config/opencode/agent/` by the spellbook installer.
+
+Without YOLO mode, you'll be prompted to approve each file write, command execution, etc. The workflows still function, but require manual approval at each step.
+
+**OpenCode YOLO agents (spellbook-provided):**
+- `yolo` (temperature 0.7): Balanced agent for general autonomous work
+- `yolo-focused` (temperature 0.2): Precision agent for refactoring, bug fixes, and mechanical tasks
+
+These agents grant "allow" permission for all tools (write, edit, bash, webfetch, task). They are symlinked from `spellbook/opencode/agent/` to `~/.config/opencode/agent/` during installation.
+
+See platform documentation for details: [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenCode](https://opencode.ai/docs/agents/), [Codex](https://developers.openai.com/codex/cli/reference/), [Gemini CLI](https://github.com/google-gemini/gemini-cli).
+
+## Example Workflows
+
+These examples illustrate what typical Spellbook sessions look like. They are representative, not transcripts of specific sessions.
+
+### Implementing a Feature
+
+The core workflow: request a feature, answer a few questions, and let the skill handle research, design, and implementation.
+
+```
+> Add dark mode toggle to settings
+
+Skill(develop)
+
+  I'll help implement dark mode. First, let me gather preferences.
+
+  Execution mode:
+    - Fully autonomous (Recommended)
+    - Interactive
+
+> Fully autonomous
+
+Task(Explore)
+
+  Found: src/context/ThemeContext.tsx, src/components/Settings.tsx
+  React app with styled-components, existing light theme only.
+
+  Theme persistence:
+    - localStorage (Recommended)
+    - User account (backend)
+    - System preference only
+
+> localStorage
+
+Writing design doc...
+  ~/.local/spellbook/docs/.../plans/dark-mode-design.md
+
+Writing implementation plan...
+  ~/.local/spellbook/docs/.../plans/dark-mode-impl.md
+
+Task(Implement ThemeContext updates)
+  Tests written, implementation complete, code review passed
+
+Task(Add toggle to Settings)
+  Tests written, implementation complete, code review passed
+
+Task(Add CSS variables)
+  Tests written, implementation complete, code review passed
+
+All tests passing. Dark mode implemented.
+Ready to merge or create PR.
+```
+
+### Large Feature with Context Exhaustion
+
+When implementing a complex feature, context can fill up before work completes. The workflow handles this gracefully.
+
+```
+> Implement webhook delivery with retry logic and dead letter queue
+
+Skill(develop)
+
+  I'll help you implement the webhook delivery system. Let me first
+  understand the current codebase architecture and gather requirements.
+
+Task(Explore)
+
+  Found: src/events/, src/queue/, src/models/Webhook.ts
+  Current event system uses Redis pub/sub. No existing retry logic.
+
+  Retry strategy:
+    - Exponential backoff (Recommended)
+    - Fixed interval
+    - Linear backoff
+
+> Exponential backoff
+
+Writing implementation plan to:
+  ~/.local/spellbook/docs/Users-me-myproject/plans/webhook-delivery-impl.md
+
+  ...
+
+Task(Backend API) [in background]
+  Implementing retry queue with exponential backoff...
+
+Task(Worker Service) [in background]
+  Building delivery worker with circuit breaker...
+
+Task(Dead Letter Queue) [in background]
+  Setting up DLQ with monitoring hooks...
+
+  ...
+
+Task Output(non-blocking) ad8b5e4
+  Task is still running...
+
+  Warning: Context low. Run /compact to compact and continue.
+```
+
+When context runs low, name and distill the session for later:
+
+```
+> /rename webhook-delivery
+
+Session renamed to: webhook-delivery
+
+> /distill-session webhook-delivery
+
+Skill(distill-session)
+
+  Found session: webhook-delivery
+  Processing 847 messages across 3 compact boundaries...
+
+  Task(Chunk 1 Summary) [in background]
+  Task(Chunk 2 Summary) [in background]
+  Task(Chunk 3 Summary) [in background]
+
+  Synthesizing summaries...
+
+  Distilled session saved to:
+    ~/.local/spellbook/distilled/Users-me-myproject/webhook-delivery-20260106-143022.md
+
+  To continue in a new session:
+    1. Start new Claude Code session
+    2. Type: "continue work from ~/.local/spellbook/distilled/Users-me-myproject/
+              webhook-delivery-20260106-143022.md"
+```
+
+Start fresh and resume exactly where you left off:
+
+```
+> /clear
+
+> continue work from ~/.local/spellbook/distilled/Users-me-myproject/
+  webhook-delivery-20260106-143022.md
+
+Read(~/.local/spellbook/distilled/.../webhook-delivery-20260106-143022.md)
+
+SECTION 0: MANDATORY FIRST ACTIONS
+
+  Executing restoration sequence...
+
+Skill(develop, --resume-from Phase3.Task4)
+
+  Resuming webhook delivery implementation.
+
+  Prior work completed:
+    Design approved (exponential backoff, 5 retries, 1hr max)
+    Database migrations for delivery_attempts table
+    Retry queue infrastructure
+  Remaining:
+    Worker service (in progress - 60% complete)
+    Dead letter queue
+    Monitoring dashboard
+
+Read(~/.local/spellbook/docs/.../webhook-delivery-impl.md)
+
+  Continuing from Phase 3, Task 4: Complete worker service...
+```
+
+### Test Suite Audit and Remediation
+
+Discover tests that pass but don't actually verify behavior, then fix them.
+
+```
+> /audit-green-mirage
+
+Skill(auditing-green-mirage)
+
+  Analyzing test suite: tests/**/*.test.ts
+  Found 247 test cases across 34 files.
+
+  Task(Analyze auth tests) [in background]
+  Task(Analyze api tests) [in background]
+  Task(Analyze util tests) [in background]
+
+  ...
+
+  Audit complete. Report saved to:
+    ~/.local/spellbook/docs/Users-me-myproject/audits/auditing-green-mirage-20260106-091522.md
+
+  Summary:
+    SOLID (actually verify behavior)      189 tests (76%)
+    GREEN MIRAGE (false confidence)        58 tests (24%)
+
+    Critical issues:
+      12 tests mock the thing tested
+       8 tests have no meaningful assert
+      38 tests check implementation
+
+> Fix the critical issues from the audit
+
+Skill(fixing-tests)
+
+  Loading audit report...
+  Found 58 tests requiring remediation.
+
+  Starting with highest-impact fixes (mocked implementations)...
+
+Read(tests/auth/login.test.ts)
+
+Edit(tests/auth/login.test.ts)
+
+  - jest.mock('../services/AuthService')  // Mocks the thing we're testing!
+  + // Test actual AuthService behavior with test database
+```
+
+### Parallel Worktree Development
+
+Split work across isolated branches, merge when complete.
+
+```
+> Let's design a new notification system
+
+Skill(design-exploration)
+
+  I'll explore the notification system requirements with you.
+
+  ...design discussion, interface contracts established...
+
+  Design document saved to:
+    ~/.local/spellbook/docs/Users-me-myproject/plans/notifications-design.md
+
+> Set up worktrees to implement this in parallel
+
+Skill(using-git-worktrees)
+
+  Creating isolated worktrees for parallel development:
+
+    .worktrees/notif-backend     (branch: feature/notif-backend)
+    .worktrees/notif-frontend    (branch: feature/notif-frontend)
+    .worktrees/notif-tests       (branch: feature/notif-tests)
+
+  Interface contracts copied to each worktree.
+
+> Work on all three tracks
+
+Task(.worktrees/notif-backend) [in background]
+  Implementing notification service, queue, templates...
+
+Task(.worktrees/notif-frontend) [in background]
+  Building NotificationCenter component, hooks, real-time updates...
+
+Task(.worktrees/notif-tests) [in background]
+  Writing integration tests against interface contracts...
+
+  ...
+
+> Merge the worktrees back together
+
+Skill(merging-worktrees)
+
+  Analyzing 3 worktrees for merge:
+
+  Step 1: Dependency analysis
+    notif-tests depends on: notif-backend, notif-frontend
+    notif-frontend depends on: notif-backend (types only)
+    notif-backend: no dependencies (merge first)
+
+  Step 2: 3-way diff analysis
+    No conflicts detected. Interface contracts honored.
+
+  Step 3: Merge sequence
+    Merged notif-backend -> main
+    Merged notif-frontend -> main
+    Merged notif-tests -> main
+
+  Step 4: Validation
+    All tests pass
+    Type check clean
+    Worktrees cleaned up
+
+  Ready to push or create PR.
+```
+
+### Cross-Assistant Handoff
+
+Move work between different AI coding assistants without losing context.
+
+```
+# In Codex, context is running low on a complex refactor...
+
+> /distill-session
+
+Session distilled to:
+  ~/.local/spellbook/distilled/Users-me-myproject/refactor-auth-20260106-162033.md
+
+# Open Claude Code CLI in terminal...
+
+> continue work from ~/.local/spellbook/distilled/Users-me-myproject/
+  refactor-auth-20260106-162033.md
+
+Loading distilled session...
+
+  Context restored:
+    Refactoring auth from session-based to JWT
+    4 of 7 services migrated
+    Current: PaymentService (blocked on token refresh)
+    Decision: Chose sliding window refresh (not fixed expiry)
+
+  Continuing with PaymentService migration...
+```
+
+The distilled file compresses ~50K tokens of conversation into ~3K words of actionable context.
+
+## Recommended Companion Tools
+
+These tools are not necessary but contribute to better development workflows with coding assistants.
+
+### Heads Up Claude
+
+Statusline for Claude Code CLI showing token usage and conversation stats. Helps you track how much context you have left and how much of your subscription quota you have used.
+
+```bash
+git clone https://github.com/axiomantic/heads-up-claude.git ~/Development/heads-up-claude
+cd ~/Development/heads-up-claude && ./install.sh
+```
+
+### MCP Language Server
+
+LSP integration for semantic code navigation, refactoring, and more.
+
+```bash
+git clone https://github.com/axiomantic/mcp-language-server.git ~/Development/mcp-language-server
+cd ~/Development/mcp-language-server && go build
+```
+
+## Key Skills
+
+Five skills worth highlighting:
+
+**develop** -- Full-lifecycle feature orchestrator. Takes a feature from idea to merged code through research, requirements discovery, design, planning, TDD implementation, code review, and branch finishing. Automatically classifies complexity (trivial through epic) and enforces quality gates at every phase transition.
+
+**fractal-thinking** -- Recursive question decomposition. Decomposes any question into a persistent graph of sub-questions, dispatches parallel workers to explore each branch, detects convergence and contradiction across branches, and synthesizes answers bottom-up. The graph persists in SQLite and survives context compaction, so exploration can resume across sessions.
+
+**auditing-green-mirage** -- Test integrity auditor. Finds tests that pass but prove nothing: empty assertions, tautological checks, over-mocked reality, tests that cannot fail. If your CI is green but your code is broken, this skill identifies where the illusion lives and why.
+
+**fact-checking** -- Claim verification engine. Extracts factual claims from documents, designs, or code comments, then dispatches parallel verification agents to trace each claim to evidence in the codebase. Produces a graded trust report with sourced verdicts.
+
+**advanced-code-review** -- Multi-phase deep review. Builds a semantic model of the codebase, generates a review plan, and executes deep analysis across architectural, security, performance, and correctness dimensions. Then verifies its own findings against the code before reporting, reducing false positives.
+
+## Development
+
+### Serve Documentation Locally
+
+```bash
+uv pip install -e ".[docs]"
+mkdocs serve
+```
+
+Then open http://127.0.0.1:8000
+
+### Run MCP Server Directly
+
+```bash
+# Install as a daemon that starts on boot
+spellbook server install
+
+# Then configure your assistant to use HTTP transport
+claude mcp add --transport http spellbook http://127.0.0.1:8765/mcp
+```
+
+This runs a single MCP server instance that all sessions connect to via HTTP.
+
+## Research backing
+
+Spellbook's ceremonies grew from practice, not from the literature — but independent research supports many of them. Where that research is real and on point:
+
+- **The "green mirage" — tests that pass without verifying behavior.** Spellbook's green-mirage audit asks of every test, *would this fail if the code were broken?* This is the coding face of *reward hacking* / *specification gaming*, a documented failure mode where an agent satisfies the literal metric without the intended outcome (Amodei et al., *Concrete Problems in AI Safety*, arXiv:1606.06565; Krakovna et al., DeepMind, *Specification gaming*, 2020). It's not hypothetical: an audit found a material share of SWE-bench patches pass their tests yet are wrong or incomplete (*SWE-Bench+*, arXiv:2410.06992 — 9.26% incorrect / 5.56% incomplete on Lite; 12.5% / 9.82% on Verified), and mutation analysis found 77% of SWE-bench Verified instances admit a surviving mutant (arXiv:2604.01518).
+- **Mutation as the measure of a test's strength.** Spellbook's TDD rule — every assertion names the mutation it kills, and no check counts until it has gone red on deliberately broken code — is mutation testing, established since the late 1970s (DeMillo, Lipton & Sayward, 1978; framework: Stryker). A test that still passes when the code is broken proves nothing.
+- **Constrained beats unconstrained autonomy.** Spellbook runs one orchestrator dispatching narrowly-scoped subagents, each with only its local context, the reviewer never the author. Research finds unconstrained multi-turn autonomy amplifies early mistakes (*Agentless*, arXiv:2407.01489, FSE'25) and that hierarchical orchestration with per-subagent context isolation manages exactly this (*BOAD*, arXiv:2512.23631; *Confucius Code Agent*, arXiv:2512.10398).
+- **Granularity at the acceptance boundary.** Spellbook's plan skills collapse work items that are only jointly acceptable, resisting over-decomposition — consistent with the Agentless finding that excess decomposition inflates context and compounds error (arXiv:2407.01489).
+- **Specification before code.** Spellbook's design-doc → plan → TDD flow, its discovery/clarify pass, and its loading of project governance (AGENTS.md) as binding constraints parallel spec-driven development — an executable contract before code, a "constitution" of principles, a clarify step that interrogates the spec before building (*Spec-Driven Development*, arXiv:2602.00180; GitHub Spec Kit). This part of the literature *argues* the case rather than measuring it.
+
+Full bibliography: [Research Citations](docs/reference/citations.md).
+
+## Documentation
+
+Full documentation available at **[axiomantic.github.io/spellbook](https://axiomantic.github.io/spellbook/)**
+
+- [Installation Guide](https://axiomantic.github.io/spellbook/getting-started/installation/)
+- [Platform Support](https://axiomantic.github.io/spellbook/getting-started/platforms/)
+- [Skills Reference](https://axiomantic.github.io/spellbook/skills/)
+- [Commands Reference](https://axiomantic.github.io/spellbook/commands/)
+- [Architecture](https://axiomantic.github.io/spellbook/reference/architecture/)
+- [Contributing](https://axiomantic.github.io/spellbook/reference/contributing/)
+
+## Contributing
+
+**Want Spellbook on your coding assistant?** (Cursor, Cline, Roo, Kilo, Continue, GitHub Copilot, etc.)
+
+Spellbook requires **agent skills** support. Agent skills are prompt files that automatically activate based on trigger descriptions (e.g., "Use when implementing features" or "Use when tests are failing"). This is different from MCP tools or programmatic hooks.
+
+If your assistant supports agent skills with description-based triggers, see the [**Porting Guide**](docs/contributing/porting-to-your-assistant.md) for instructions on adding support.
+
+**Improving platform coverage:** Claude Code is the primary supported platform. OpenCode, Codex, Gemini CLI, and ForgeCode have basic support. Some MCP tools, hooks, and skills are Claude Code-specific, but they can usually be implemented for other platforms. If you use one of these platforms and want fuller coverage, contributions are welcome.
+
+## Acknowledgments
+
+Spellbook includes content derived from [obra/superpowers](https://github.com/obra/superpowers) by Jesse Vincent:
+
+| Type | Current Name | Original Name |
+|------|--------------|---------------|
+| Skill | design-exploration | brainstorming |
+| Skill | dispatching-parallel-agents | dispatching-parallel-agents |
+| Skill | executing-plans | executing-plans + subagent-driven-development |
+| Skill | finishing-a-development-branch | finishing-a-development-branch |
+| Skill | requesting-code-review | requesting-code-review |
+| Skill | test-driven-development | test-driven-development |
+| Skill | tooling-discovery | tooling-discovery |
+| Skill | using-git-worktrees | using-git-worktrees |
+| Skill | using-skills | using-superpowers |
+| Skill | writing-plans | writing-plans |
+| Skill | writing-skills | writing-skills |
+| Command | /design-explore | brainstorm |
+| Command | /write-plan | write-plan |
+| Command | /execute-plan | execute-plan |
+| Command | /verify | verification-before-completion (skill) |
+| Command | /systematic-debugging | systematic-debugging (skill) |
+| Agent | code-reviewer | code-reviewer |
+
+See [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES) for full attribution and license details.
+
+## Attribution
+
+Built something with Spellbook? We'd love to see it! Add this badge to your project:
+
+```markdown
+[![Built with Spellbook](https://img.shields.io/badge/Built%20with-Spellbook-6B21A8?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzAuNjY3IiBoZWlnaHQ9IjE3MC42NjciIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBmaWxsPSIjRkZGIiB4bWxuczp2PSJodHRwczovL3ZlY3RhLmlvL25hbm8iPjxwYXRoIGQ9Ik0yMy4xNjggMTIwLjA0YTMuODMgMy44MyAwIDAgMCAxLjM5MSA0LjI4NWMxLjM0NC45NzcgMy4xNjQuOTc3IDQuNTA4IDBMNjQgOTguOTVsMzQuOTMgMjUuMzc1YTMuODEgMy44MSAwIDAgMCAyLjI1NC43MzQgMy44IDMuOCAwIDAgMCAyLjI1NC0uNzM0IDMuODMgMy44MyAwIDAgMCAxLjM5MS00LjI4NWwtMTMuMzQtNDEuMDY2IDM0LjkzLTI1LjM3OWEzLjgzIDMuODMgMCAwIDAgMS4zOTQtNC4yODVjLS41MTItMS41ODItMS45ODQtMi42NDgtMy42NDQtMi42NDhsLTQzLjE4NC4wMDQtMTMuMzQtNDEuMDdDNjcuMTI5IDQuMDE3IDY1LjY2IDIuOTUxIDY0IDIuOTUxcy0zLjEzMyAxLjA2Ni0zLjY0OCAyLjY0NWwtMTMuMzQgNDEuMDY2SDMuODMyYy0xLjY2IDAtMy4xMzMgMS4wNjYtMy42NDQgMi42NDhzLjA0NyAzLjMwNSAxLjM5MSA0LjI4NWwzNC45MyAyNS4zNzl6bTEwLjkzNC04Ljg0NGw4LjkzNC0yNy40OCAxNC40NDkgMTAuNDk2em01OS43OTMgMEw3MC41MTYgOTQuMjA4bDE0LjQ0OS0xMC40OTZ6bTE4LjQ3Ny01Ni44NjdMODguOTkzIDcxLjMxM2wtNS41MTYtMTYuOTg0ek02NC4wMDEgMTkuMTgxbDguOTMgMjcuNDg0SDU1LjA2OHpNNTIuNTc5IDU0LjMyOWgyMi44NGw3LjA1OSAyMS43MjMtMTguNDc3IDEzLjQyNi0xOC40OC0xMy40MjZ6bS0zNi45NTMgMGgyOC44OTVsLTUuNTE2IDE2Ljk4NHoiLz48L3N2Zz4=)](https://github.com/axiomantic/spellbook)
+```
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details.

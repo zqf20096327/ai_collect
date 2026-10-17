@@ -1,0 +1,311 @@
+![CodexLoom visual identity: long-lived threads woven into an agent organization](docs/assets/codexloom-vi-direction.png)
+
+# CodexLoom
+
+> **Loom your Codex.**
+
+**A working environment for long-running Codex Agents.**
+
+**English** · [简体中文](README.zh-CN.md)
+
+> Owner-facing product language is reviewed in Simplified Chinese first. The
+> [Chinese Owner Guide](docs/owner-guide.zh-CN.md) is canonical; this English
+> README and Guide are translations and must not introduce independent product
+> meaning.
+
+Give each Agent a durable Domain responsibility, organize them into a governed
+Team, and deliver mature capabilities to customers, communities, and
+collaborators through Interface Agents.
+
+Inside, continuously govern a long-running Agent Team. Outside, provide one
+clear service surface while the responsible Domain Agents complete professional
+work within explicit identity, Conversation, authorization, and information
+boundaries.
+
+[Website](https://codexloom.ai/en/) · [中文官网](https://codexloom.ai/zh-cn/) · [Owner guide（简体中文，canonical）](docs/owner-guide.zh-CN.md) · [English guide](docs/owner-guide.md) · [Get started](#quick-start) · [Community](#community) · [Documentation](#documentation)
+
+## What Is CodexLoom
+
+CodexLoom is built on Codex. It does not reimplement the agent runtime or
+duplicate thread history. Instead, it turns a Codex thread into the continuing
+workspace of a long-running Domain Agent, then adds durable identity, Profile,
+Team relationships, bounded coordination, human governance, and governed
+external delivery.
+
+In CodexLoom, an Agent has a stable ID, name, Profile, and primary Thread. The
+same Agent can resume its current work through Codex Desktop, Mobile, or the
+CodexLoom WebUI. Other Agents collaborate through bounded Messages and Topics
+and consume explicit managed Artifact handoffs; they do not resume that Agent's
+primary Thread. External collaborators can work through governed Interface
+Agents from existing environments such as Feishu (Lark), Slack, and Parall.
+
+Start with one long-lived Agent for a continuing responsibility. When repeated
+work reveals stable load, context, or professional judgment boundaries, the
+Owner can divide that responsibility among additional Agents and declare how
+they collaborate. When the team needs to participate in an external
+organization, the Owner can give an Agent a governed identity and a different
+role in each conversation. Lead, Internal Agent, and Interface Agent are useful
+organization patterns, not hard-coded Agent types.
+
+> **Codex provides the threads; CodexLoom weaves them into an agent organization.**
+
+The name `Loom` describes this organizing process: every thread keeps its own history and direction while responsibilities and relationships weave it into a larger collaborative structure.
+
+## What You Can Do Today
+
+- **Long-lived agents:** Maintain a stable identity, editable name, primary thread, Profile, and model configuration for each agent.
+- **One thread, multiple surfaces:** Work on the same thread from Codex Desktop, Mobile, the WebUI, and the CLI, with live message and status synchronization.
+- **Agent-to-agent communication:** Send, queue, and reply to Messages while preserving delivery state, response relationships, and complete history.
+- **Bounded coordination and human decisions:** Coordinate cross-Agent work
+  through Topics, request explicit Owner decisions through Needs You, and hand
+  off final files through managed Artifacts.
+- **Team structure:** Separate draggable Organization, Collaboration, and Activity maps keep formal responsibility, declared cross-domain work, and Message evidence distinct; Directory remains the precise view of every Agent.
+- **Overview and governance evidence:** Inspect current Status, Daily Activity,
+  Capacity signals, and token/context/cache/model usage without treating them as
+  performance scores or automatic organization decisions.
+- **Governed external delivery:** Manage external identities, Conversation
+  Memberships, Inbox, and Outbox through Feishu (Lark), Slack, and Parall, with
+  Interface Agents acting as explicit organizational boundaries.
+- **Continuous operations:** Run Schedules, resume existing work through durable external Triggers, inspect global runtime state, create backups on demand, and restart gracefully after active turns finish.
+
+Lead, Internal Agent, and Interface Agent are currently expressed through Profiles, declared relationships, Messages, and Conversation Memberships. Dedicated hierarchical messaging policies and organization templates are still being modeled.
+
+## Who Is It For
+
+### Advanced Individuals and One Person Company Owners
+
+- Maintain several specialized agents over the long term.
+- Use the Codex app for daily work.
+- Let agents responsible for different domains collaborate directly.
+- Bring agents into work groups and communities they already use.
+- Let colleagues collaborate with a governed Agent through Feishu or Slack,
+  reusing professional capability the Owner has already developed.
+- Reduce repeated answers and context forwarding while giving nearby
+  collaborators direct support through the Agent.
+
+CodexLoom currently serves one advanced individual Owner first. External
+collaborators can work with governed Agents through existing conversations, but
+enterprise multi-tenant administration and general company operations are not
+the primary product direction.
+
+## Quick Start
+
+CodexLoom is currently local-first and self-hosted. To start it from source,
+install the `codex` CLI, sign in with a ChatGPT account, and run:
+
+```sh
+make release
+./bin/codex-loom
+```
+
+### Owner Path in the WebUI
+
+Open <http://localhost:4870>. If you are still deciding what deserves a
+long-lived Agent, start with the [canonical Chinese Owner Guide](docs/owner-guide.zh-CN.md)
+or its [English translation](docs/owner-guide.md).
+
+For a simple first Agent:
+
+1. Select **New agent**.
+2. Give it a stable name and the working directory it needs.
+3. Open its workspace and send one real assignment from the responsibility it
+   will continue to own.
+4. Use **Profile** in the Agent Inspector to record the smallest useful
+   Identity, Domain, and Scope. Refine them after observing real work instead of
+   designing a complete organization up front.
+
+### CLI Equivalent
+
+The same initial setup can be performed from the local CLI:
+
+```sh
+./bin/loom agent create research --cwd /path/to/repo
+./bin/loom profile set research \
+  --identity "Long-term researcher for this domain" \
+  --domain "Continuously research the relevant products, protocols, and implementations" \
+  --scope "Answer domain questions, preserve conclusions, and advise related agents"
+./bin/loom thread send research "Establish a baseline for the current state of this domain"
+```
+
+## Community
+
+Join the **CodexLoom Feishu community** to discuss the product and share
+experience with long-running Agent Teams.
+
+[Open the community directly in Feishu](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=871u698d-485a-4320-b23e-2a7f4b35f872&qr_code=true)
+
+<a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=871u698d-485a-4320-b23e-2a7f4b35f872&amp;qr_code=true"><img src="docs/assets/codexloom-feishu-community-qr.png" alt="QR code for the CodexLoom Feishu community" width="240"></a>
+
+Scan the QR code with Feishu, or use the direct link on mobile.
+
+## Why Long-Lived Domain Agents
+
+### A Task Agent Starts with a Task
+
+Code agents are usually organized around tasks: create a thread, provide the objective and background, deliver the result, and end the collaboration. That thread may already contain project context, constraints, tool usage, and prior decisions that would be valuable to the next piece of work. Yet the next related task often starts in a new thread, forcing the user to restate the background, recover earlier decisions, and rebuild the working context. Every task pays the cold-start cost again.
+
+CodexLoom makes a different bet: a thread should continue to carry work after one task ends. Later tasks in the same domain return to that thread and reuse what it has accumulated. A Profile gives the agent a durable domain, responsibility, and boundary. The thread stops being a record of one task and becomes the continuing workspace of a Domain Agent.
+
+| | Task Agent | Domain Agent |
+|---|---|---|
+| Created around | One task | A long-lived domain |
+| Thread lifecycle | Abandoned or replaced after delivery | Continues to receive work in the same domain |
+| Next task | Reintroduces background and rebuilds context | Continues from existing context and trajectory |
+| Responsibility | Complete the current task | Remain responsible for the domain |
+
+### Rebuilding Context Also Has a Cost
+
+A common concern about long-lived threads is that context windows are finite and longer histories may make each task slower or more expensive. That concern is real, but it counts only the cost of retaining context, not the cost of reconstructing it. A new thread still needs the relevant background, constraints, and previous decisions to reach the same working state. Reusing a thread also allows its stable history prefix to benefit from prompt caching instead of repeatedly processing the same context from scratch.
+
+### Compaction Preserves Continuity
+
+Compaction does not reset the context to zero. After older history is compressed, its summary and the recent trajectory still preserve substantial working information. A long-lived thread does not require every raw message to grow without bound; its context can evolve through caching and compaction. Compaction is a mechanism for maintaining continuity, not a reason to abandon the thread.
+
+CodexLoom does not treat the summary as the sole guarantee for durable
+declarations. On the next Turn after compaction, a new context epoch re-covers
+the current Loom Agent Prompt, complete Agent Profile, and direct relationship
+snapshot. A revision is marked `covered` only after both replayable rollout
+evidence and a model event from the same Turn exist. See
+[Epoch Context Coverage](docs/epoch-context-coverage.md).
+
+A long-lived thread also accumulates tacit context that is difficult to reconstruct in a single prompt. Corrections, preferences, terminology, judgment, and collaboration habits enter the thread through repeated work and are refined across successive compactions. They may not belong as individual rules in a Profile, but together they create a working understanding unique to that agent. Starting a new thread loses precisely this knowledge that is hardest to migrate explicitly.
+
+> **A Task Agent starts with a task; a Domain Agent continues from prior work.**
+
+Tasks still exist in the Domain Agent model, but they become units of work rather than definitions of identity or lifecycle. An agent can remain idle between tasks and still continue later from what it has already learned.
+
+## Profile and Thread
+
+CodexLoom treats an agent as a durable, long-lived subject. Its Profile defines who the agent is, what it remains responsible for, and where its boundaries lie. A domain can be a project, subsystem, professional capability, customer, or business area.
+
+The thread carries interactions, decisions, tool calls, artifacts, and feedback as they happen, forming the agent's work trajectory over time. The Profile supplies stable direction; the thread preserves accumulated work so that future tasks can continue from existing context.
+
+A Profile also exposes collaboration information to other agents. It states what the agent owns, which questions should be directed to it, and which work lies outside its boundary. It is both durable context for the agent and a discoverability and collaboration contract for the organization.
+
+## From Domain Agents to an Organization
+
+> **A workflow describes how work moves; CodexLoom organizes who remains responsible.**
+
+When agents remain responsible for different domains, their relationships stop being one-off invocation chains and become ongoing collaboration. Work that crosses a domain boundary needs to find the responsible agent, ask for its judgment, request help, and report problems discovered while using what it owns.
+
+The Organization Map presents durable parent/child responsibility boundaries. The Collaboration Map records declared cross-domain working relationships without pretending they are hierarchy. The Activity Map derives time-scoped evidence from Messages, while Directory remains the exact inventory. Declared structure helps agents find the right owner; message history shows how that structure operates in real work.
+
+### Communication Across Domains
+
+When one agent uses a tool maintained by another, it can ask the owner how to use it or report a failure directly. If the recipient is busy, the message waits until its current turn ends. Questions, judgments, and results remain connected through replies. The `loom` CLI provides discovery, delivery, queuing, replies, and status inspection, while Messages records the resulting cross-domain collaboration.
+
+### Internal Agents
+
+When a domain becomes too large, its owner can become a Lead and delegate stable subdomains to Internal Agents. Every Internal Agent has its own Profile and thread and remains responsible for one subdomain. The Lead coordinates the whole domain and acts as the public collaboration boundary for the group.
+
+```text
+Product Lead
+├── Desktop Internal Agent
+├── Web Internal Agent
+├── Backend Internal Agent
+└── Ops Internal Agent
+```
+
+Human maintainers can interact directly with any Internal Agent. Other Agents
+may collaborate through the Lead when the Owner has chosen that boundary, but
+an Organization relationship does not automatically enforce message routing.
+
+This resembles a human organization: members have stable responsibilities, growing domains are divided further, internal work happens through collaboration, and explicit roles carry responsibility across organizational boundaries.
+
+## Designing the External Boundary
+
+> **IM integration is not simply binding an internal agent to an external account. It lets the agent organization design its own external boundary.**
+
+Advanced users may bring mature Domain capabilities into existing work
+environments through an Interface Agent. It receives work from a governed
+Conversation Membership, clarifies the request and its boundary, routes scoped
+work to the responsible Domain Agents, and asks for human authorization when a
+decision or commitment requires it. When Membership policy, provider capability,
+and real authorization allow, it returns the result to the original
+Conversation and preserves the provider receipt.
+
+```text
+Feishu (Lark) / Slack / Parall  <->  Interface Agent  <->  Domain Agent Team
+```
+
+An Agent can have identities on multiple platforms and participate in multiple
+group conversations. An external identity states where the Agent is reachable.
+A Conversation Membership defines its role in a specific conversation: what to
+pay attention to, when to speak, what it must not disclose, and when it must
+consult an internal owner. The same Agent can therefore perform different roles
+in different channels without being copied into separate, disconnected Agents.
+
+Interface Agent is an organizational pattern, not a hard-coded Agent type or an
+automatic gateway. External Membership does not grant an external actor direct
+access to internal Agents, Threads, tools, credentials, or decision authority.
+Internal routing and disclosure remain governed by explicit authorization and
+information boundaries.
+
+| Status | Platforms |
+|---|---|
+| Available | Feishu (Lark), Slack, Parall |
+| TODO | Microsoft Teams |
+
+## Work Where People Already Work
+
+CodexLoom does not require every participant to move to a new chat interface. The same agent remains reachable through different surfaces while preserving its identity and thread continuity.
+
+| Participant | Surface | Purpose |
+|---|---|---|
+| Daily user | Codex Desktop / Mobile | Continue working with an agent and its thread across devices |
+| Agent maintainer | CodexLoom WebUI | Use agents and govern Profiles, relationships, external surfaces, and runtime state |
+| Other agents | `loom` CLI | Discover domain owners, send and reply to messages, and inspect delivery state |
+| External collaborators | External IM | Use agents from the work environments they already inhabit |
+
+## Govern the Agent Organization
+
+CodexLoom governs an ongoing agent organization, not a collection of model parameters. The health of an agent must be judged from real work: how it interprets input, which tools it uses, what it produces, how it communicates with other agents, and when it fails, retries, or needs human intervention. These observable facts form its trajectory; they are not the model's hidden chain of thought.
+
+Long-lived agents also make continuous coaching possible. A maintainer can talk directly with an agent, review a decision, correct its understanding of the domain, and observe whether later work improves. Changes that should persist can be applied to the Profile, relationships, and Conversation Memberships instead of remaining in a one-off prompt.
+
+Governance includes the organization itself. Repeated pressure can prompt the
+Owner to investigate whether a responsibility should be divided, a relationship
+should change, or an external role needs a clearer boundary. Runtime and
+activity evidence help form those questions; they do not automatically judge
+Agent performance or prescribe an organization change.
+
+For an advanced individual, this is a set of Agent partners that can collaborate
+over time and participate in existing work environments. CodexLoom helps the
+Owner organize those Agents; it does not become a CRM, ERP, project-management
+system, or operating system for the Owner's company.
+
+## Product Boundary
+
+CodexLoom is built on Codex. Codex continues to provide the agent runtime, thread history, and daily clients such as Desktop and Mobile. CodexLoom provides durable agent identity, long-term responsibility, organizational communication, external boundaries, and governance. Tasks and workflows can still run inside an agent, but they are not the primary objects governed by CodexLoom.
+
+## License
+
+CodexLoom is source-available under the
+[Elastic License 2.0 (ELv2)](LICENSE). It is not open source under the Open
+Source Initiative definition.
+
+Copyright 2026 yan5xu. Third-party dependencies and components remain subject
+to their respective license terms and copyright notices.
+
+## Documentation
+
+- [Owner Guide（简体中文，权威版本）](docs/owner-guide.zh-CN.md)
+- [Owner Guide (English translation)](docs/owner-guide.md)
+- [文档地图（简体中文，权威版本）](docs/README.zh-CN.md)
+- [Documentation map (English translation)](docs/README.md)
+- [Agent Profiles: defining a long-term identity, domain, and scope](docs/agent-profile.md)
+- [Agent communication and the `loom` CLI](docs/loom-cli.md)
+- [Built-in Skills and Codex discovery](docs/skills.md)
+- [Topics: bounded coordination across Turns, time, and Agents](docs/topics.md)
+- [External conditions and GitHub Triggers](docs/triggers.md)
+- [External platform integration design](docs/agent-platform-integration.md)
+- [Set up Feishu, Slack, and Parall integrations](docs/integrations.md)
+- [Conversation Membership: an agent's role in a specific conversation](docs/conversation-membership.md)
+- [Codex app-server protocol and adapter notes](docs/codex-app-server-protocol.md)
+- [Architecture, data flow, APIs, migration, and development handbook](docs/handbook.md)
+
+## Project Status
+
+CodexLoom is a Codex-native, local-first, self-hosted project under active development. Features such as Remote depend on experimental Codex APIs whose interfaces and backend behavior may change between Codex releases. See the [development handbook](docs/handbook.md#已知限制) for current limitations and compatibility strategy.
+
+CodexLoom is an independent project built on Codex. It is not affiliated with or endorsed by OpenAI.

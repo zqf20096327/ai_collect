@@ -1,0 +1,85 @@
+# Claude Code: The Definitive Guide to Agentic Development
+
+A technical book about Claude Code — written entirely by Claude Code in one weekend,
+refreshed for July 2026.
+
+[Video overview of the project](https://www.youtube.com/watch?v=5W7SAP3LCow)
+
+## Download
+
+- **[EPUB](https://github.com/vkorost/weekend-diy-book/releases/latest/download/Claude-Code-Definitive-Guide.epub)** — for e-ink readers (Kindle, Kobo, reMarkable, Boox)
+- **[PDF](https://github.com/vkorost/weekend-diy-book/releases/latest/download/Claude-Code-Definitive-Guide.pdf)** — for screens and printing
+- **[Word](https://github.com/vkorost/weekend-diy-book/releases/latest/download/Claude-Code-Definitive-Guide.docx)** — for editing and annotation
+
+All three are attached to the [latest release](https://github.com/vkorost/weekend-diy-book/releases/latest) and always point at the current edition.
+- **[Combined Markdown](combined.md)** — read it on GitHub directly
+
+## What This Is
+
+A book for experienced Claude Code users who want to get significantly better. It covers agentic orchestration, MCP integrations, CI/CD automation, prompt craft for agentic tools, large codebase strategies, failure recovery, team adoption, and the economics of AI-assisted development.
+
+This is not a beginner's guide. If you've never used Claude Code, start with the [official documentation](https://code.claude.com/docs). This book assumes months of daily usage and teaches what you haven't figured out on your own.
+
+## Who Made This
+
+**Written by:** Claude Code (Anthropic's agentic coding tool)
+**Instructed by:** Vladimir Korostyshevskiy
+
+The original book was produced using a multi-agent pipeline. The July 2026
+edition was checked against the current Claude Code CLI and Anthropic's official
+documentation, then rebuilt as Markdown, EPUB, and PDF.
+
+Source material included Anthropic's official documentation and publicly available usage examples gathered by multiple AI systems. Usage examples emphasize front office trading technology environments. No company names, product names (other than Claude Code), or individual names appear in the text. No content is directly quoted from any source.
+
+## Write Your Own
+
+The most interesting file in this repo isn't the book — it's the assignment file.
+
+**[claude_code_book_assignment.md](claude_code_book_assignment.md)** contains the complete instructions that produced this book. Fork this repo, replace the source materials with research on your own topic, adjust the chapter plan, and run the assignment in Claude Code. You'll have a book by end of day.
+
+The exact cost depends on manuscript length, model selection, review depth, and
+how much of the pipeline is rerun.
+
+## Repository Contents
+
+```
+├── README.md                            # This file
+├── LICENSE                              # CC0 1.0 Universal
+├── claude_code_book_assignment.md       # Agent team assignment (the "recipe")
+├── about_this_book.md                   # About page included in the book
+├── metadata.yaml                        # EPUB/PDF build metadata
+├── cover.jpg                            # Cover image
+├── combined.md                          # Full manuscript in one file
+├── quick_reference.md                   # Command/config cheat sheet
+└── chapters/                            # Individual chapter files
+    ├── 01-still-using-it-wrong.md
+    ├── 02-permission-trust.md
+    ├── 03-context-engineering.md
+    ├── 04-multi-agent-orchestration.md
+    ├── 05-mcp.md
+    ├── 06-cicd-headless.md
+    ├── 07-ide-integration.md
+    ├── 08-prompt-craft.md
+    ├── 09-large-legacy-codebases.md
+    ├── 10-failure-modes.md
+    ├── 11-team-adoption.md
+    ├── 12-economics-strategy.md
+    ├── 15-appendix-a-commands.md
+    ├── 16-appendix-b-config.md
+    └── 17-appendix-c-troubleshooting.md
+```
+
+## Rebuild the Book
+
+If you modify any chapter files:
+
+```bash
+./build.sh
+```
+
+The build requires Pandoc and XeLaTeX. It deterministically assembles the
+chapter sources before producing both formats.
+
+## License
+
+This work is dedicated to the public domain under [CC0 1.0 Universal](LICENSE).

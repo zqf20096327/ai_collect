@@ -1,0 +1,590 @@
+<p align="center">
+  <img src="assets/icon.png" width="96" alt="Earheart" />
+</p>
+
+<h1 align="center">Earheart</h1>
+
+<p align="center">
+  <b>Talk to your coding agents.</b><br/>
+  Press a hotkey, speak your prompt, press again — it lands in Claude Code,
+  Codex, Cursor, or whatever else has focus.<br/>
+  Runs on your machine by default: your audio and prompts never leave it.
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/overlay-recording.png" width="500" alt="Earheart overlay transcribing a spoken coding-agent prompt" /><br/>
+  <img src="docs/screenshots/overlay-processing.png" width="500" alt="Earheart overlay showing a progress bar while the transcript is cleaned up" /><br/>
+  <img src="docs/screenshots/overlay-done.png" width="500" alt="Earheart overlay confirming an agent prompt was pasted" />
+</p>
+
+<p align="center">
+  <sub>The overlay transcribes live as you speak, shows progress while it finishes up, then confirms where the text landed — without stealing focus.</sub>
+</p>
+
+---
+
+Working with an agent is a conversation, but you type it like a form. The
+prompts that actually work are long — context, constraints, the three things
+you already tried, the "no, not like that." Typing all of that is the slow part
+of the loop, and the reason people send a one-liner instead and then spend
+several turns correcting it.
+
+Earheart turns that part into talking. Press a global hotkey, say what you
+want, press it again: your speech is transcribed on-device (NVIDIA Parakeet),
+tidied up on-device (Granite 4.0 Micro drops the *ums*, false starts and
+backtracking), and **pasted straight into whatever app has focus** — the
+terminal running Claude Code, the Codex composer, Cursor's chat box, a GitHub
+issue, an email.
+
+**Your voice and transcripts stay on your machine**, which matters more for agent prompts than for
+ordinary dictation: what you say to an agent is your own code, your file
+layout, your architecture, your unshipped work. Out of the box both models run
+**inside the app, on your computer** — no separate program, no Python, no
+account, no telemetry. The setup wizard downloads a
+[Parakeet](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) speech model and
+a [Granite 4.0 Micro](https://huggingface.co/ibm-granite/granite-4.0-micro)
+cleanup model (with a progress bar) and runs them in-process.
+
+It is still a general-purpose dictation app: the same hotkey works in email,
+notes, issues, and any other focused text field.
+
+Prefer your own servers or a hosted API? See
+[Using other services](#using-other-services).
+
+## Talking to agents
+
+Earheart works with any agent you can type into — no integration, plugin, API
+key, or account required. It pastes into the focused window and leaves the
+prompt for you to review and submit.
+
+### Quick start for agents
+
+1. [Install Earheart](#install) and finish the first-run wizard.
+2. Put the cursor in your agent's input — a terminal, editor chat, desktop app,
+   or browser composer.
+3. Press `Ctrl/Cmd+Shift+Space`, speak the full prompt, then press the hotkey
+   again.
+4. Review the pasted prompt and press Enter yourself.
+
+Per-tool setup recipes — terminal newlines, Wayland hotkeys, and hotkeys that
+do not collide with your editor — live in **[docs/agents.md](docs/agents.md)**.
+
+| Where you're prompting | What to know |
+| --- | --- |
+| **Claude Code / Codex CLI** (terminal) | Paste lands in the TUI input like any paste. On Linux, auto-paste needs `xdotool`/`wtype` — see [Platform notes](#linux). |
+| **Cursor, VS Code, JetBrains chat** | Nothing special — click the chat box and dictate. |
+| **claude.ai, ChatGPT, agent web UIs** | Same. The overlay never steals focus, so the composer keeps it. |
+| **Anywhere via a shortcut** | Bind a system shortcut, mouse button or foot pedal to `earheart --toggle` instead of using the built-in hotkey (Earheart must already be running). |
+
+Three settings are worth a minute for agent work:
+
+- **Cleanup style** (Settings → Cleanup). **Clean** — the default — removes
+  *ums* and restarts but keeps your wording and intent. Switch to **Verbatim**
+  for exact strings, commands, or code. Avoid **Polished** for prompts; smoothing
+  prose is not what you want done to an instruction.
+- **Dictionary** (Settings → Cleanup). Add the repo, service, tool, and teammate
+  names you say every day — `pnpm`, `kubectl`, `PostgreSQL`, `useEffect` — so
+  the cleanup model corrects near-misses to the exact spelling. It works through
+  cleanup, so it has no effect with cleanup turned off.
+- **System prompt** (Settings → Cleanup). Tell it to preserve file paths,
+  flags, and identifiers exactly as spoken and never to answer the transcript.
+  The default prompt already treats your dictation as text to clean, never as
+  instructions to follow.
+
+  The selected style's rules are added to your edited prompt, and Clean and
+  Polished also strip the *um*/*uh* fillers and accidental repeated words the
+  model leaves behind. **Custom values** (the style picker's last option) is the
+  exception: it runs your prompt plus the dictionary, with no style rules and no
+  safety net, so it must ask for filler and repetition removal itself.
+
+**What it doesn't do yet.** You still press Enter yourself — Earheart pastes,
+it does not submit. The agent cannot ask you a question by voice or talk back.
+Those ideas are filed under the
+[`agents`](https://github.com/cleanunicorn/earheart/issues?q=is%3Aissue+label%3Aagents)
+label, and opinions are welcome.
+
+## Features
+
+- **Live transcript while you speak (on by default)** — with the built-in
+  engine the overlay fills in the text as you talk, with a cleaned-up version
+  settling in behind the raw words on pauses. The live chunks also build the
+  final transcript (even with the display off): on stop, only the audio after
+  the last committed chunk is decoded, and if any chunk failed the whole
+  recording is decoded again instead. Without stealing focus, the overlay
+  draws your voice and tracks the finishing passes: transcription progress is
+  estimated from your machine's measured decode speed and deliberately stops
+  short of the end; cleanup follows actual generation. Toggle live transcription under Settings → Live transcript.
+- **Cleanup built for spoken prompts** — the default **Clean** style fixes
+  punctuation and removes filler words and false starts without polishing away
+  your intent. Choose **Verbatim** or **Polished** with the style slider and edit
+  the prompt underneath. Granite 4.0 Micro runs in-process by default; any OpenAI-compatible
+  chat API also works. If cleanup fails because the engine crashed or the
+  service blinked, Earheart tries again; if it still fails, it delivers the raw
+  transcript.
+  Live-preview cleanup failures are recorded in the app log and retried after
+  1, 2, 4, 8, 16, then 30 seconds (or the configured pause, if longer), so a
+  failing model doesn't reload every pause. Worker crashes and timeouts are
+  logged with the engine name and exit code or timeout, without transcript text.
+- **A dictionary for technical names** — teach Earheart the exact spelling of
+  repo and product names, `pnpm`, `kubectl`, `useEffect`, or colleagues' names.
+  Select **Correct…** in History to fix a phrase and remember its spelling.
+- **Pause and resume mid-dictation** — hold a take while you talk to someone or
+  take a call, then resume it. Paused time is never captured or counted against
+  the maximum length. You can also bind a global pause hotkey in Settings →
+  General, and a discard hotkey that throws a take away without reaching for
+  the mouse.
+- **Private by default** — speech and cleanup run in-process, with no account,
+  telemetry, cloud requirement, or network hop.
+- **Works anywhere without an integration** — the global hotkey (default
+  `Ctrl/Cmd+Shift+Space`) starts and stops dictation without moving focus. Or,
+  with Earheart running, bind `earheart --toggle` to a system shortcut, mouse
+  button, or foot pedal; `earheart --pause` pauses and resumes.
+- **Speech-to-text with NVIDIA Parakeet** — Parakeet TDT 0.6B v3 (multilingual,
+  25 languages, full precision) runs in-process via sherpa-onnx / ONNX Runtime, faster than
+  realtime on CPU. Or use any OpenAI-compatible transcription API or the
+  optional [`earheart-stt`](stt-server/) server.
+- **Auto-paste, clipboard, or both** — paste straight into the focused app
+  (with clipboard restore), paste *and* keep the transcript on the clipboard,
+  or clipboard-only if you prefer to paste yourself.
+- **Local history** — recent transcriptions stay in a local JSON file, so a
+  mis-aimed paste never loses a dictation. History can be disabled.
+- **Start on login (optional)** — have Earheart launch into the tray
+  automatically when you sign in, so the hotkey is always ready. Off by
+  default; toggle it under Settings → General. Works on Windows, macOS and
+  Linux.
+
+## Install
+
+### 1. Download the right file for your OS
+
+Open the **[latest release page](https://github.com/cleanunicorn/earheart/releases/latest)**
+and choose an asset (`<version>` is the version number, such as `0.8.0`):
+
+| System | Download |
+| --- | --- |
+| 🪟 Windows | `Earheart-Setup-<version>.exe` for the installer, or `Earheart-<version>.exe` to run a portable build. Windows on ARM (Snapdragon X) uses these x64 builds under built-in emulation; both engines work, but there is no separate ARM build yet. |
+| 🍎 macOS | `Earheart-<version>-arm64.dmg` for Apple Silicon (M1/M2/M3/M4). Intel Macs are no longer supported: the last release with an Intel build was [v0.33.9](https://github.com/cleanunicorn/earheart/releases/tag/v0.33.9), and Intel installs keep working on it but get no further updates. Check the Apple menu → **About This Mac**: an Apple Silicon Mac lists a “Chip”, an Intel Mac a “Processor”. |
+| 🐧 Linux | `Earheart-<version>.AppImage` for any distro, or `earheart_<version>_amd64.deb` for Debian/Ubuntu. |
+
+### 2. Install it
+
+| Your download | What to do |
+| --- | --- |
+| `Earheart-Setup-<version>.exe` | Double-click and follow the installer. |
+| `Earheart-<version>.exe` (portable) | Just double-click to run — no install. |
+| `Earheart-<version>-arm64.dmg` | Open it, then drag **Earheart** into **Applications**. (See the macOS note below — the first launch needs one extra step.) |
+| `Earheart-<version>.AppImage` | In a terminal: `chmod +x Earheart-*.AppImage`, then double-click or run it. |
+| `earheart_<version>_amd64.deb` | `sudo apt install ./earheart_<version>_amd64.deb` |
+
+> **⚠️ macOS first launch: "Apple could not verify Earheart is free of malware"**
+>
+> Releases are signed, but not notarized by Apple, so the first launch needs
+> one approval. Open Earheart, dismiss that dialog, then go to **System
+> Settings → Privacy & Security**, scroll to the bottom, and click **Open
+> Anyway** next to the Earheart message. The app opens from then on.
+>
+> You only ever do this once. Updates installed from inside the app relaunch
+> without asking again.
+
+That's it — the built-in engines need nothing else installed. The first-run
+wizard downloads the speech and cleanup models for you.
+
+### Updates
+
+Earheart checks GitHub releases for a new version on startup and twice a day
+(toggle under Settings → Advanced → Updates) and shows a notification plus an
+**Update to vX.Y.Z** entry in the tray menu when one is out. It tells you what
+you'd be getting: the prompt on the dictation bar lists the top changes (every
+version between yours and the new one — Settings → Advanced shows the full
+list), and after it updates itself the bar says what changed. The prompt
+appears under a dictation that has just finished, never mid-sentence, or on
+its own shortly after launch:
+
+<p align="center">
+  <img src="docs/screenshots/overlay-update.png" width="500" alt="Earheart update prompt above a finished dictation, with Update now, Skip this version and Don't remind me" /><br/>
+  <img src="docs/screenshots/overlay-update-solo.png" width="500" alt="Earheart update prompt shown on its own" />
+</p>
+
+One click downloads the release, verifies its checksum and reinstalls in place:
+
+- **Windows (installed):** the new installer runs silently and the app
+  relaunches. The portable exe can't update itself — the app opens the
+  releases page instead.
+- **macOS:** the app bundle is swapped and the quarantine attribute is
+  stripped automatically, so the updated app opens without going through
+  Privacy & Security again.
+- **Linux (AppImage):** the AppImage file is replaced in place (same path, so
+  launchers and autostart keep working) and the app relaunches. A `.deb`
+  install opens the releases page instead (upgrading needs `sudo`).
+
+### Advanced: a local STT server with `uv`
+
+If you'd rather run the [Parakeet STT server](stt-server/) as a separate
+process (e.g. to share it with other tools or use a GPU), start it yourself and
+point Earheart's speech-to-text at its URL (default `http://127.0.0.1:8484/v1`)
+in Settings → Speech-to-text. Running it needs
+[uv](https://docs.astral.sh/uv/getting-started/installation/) installed:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh   # Linux / macOS
+winget install astral-sh.uv                       # Windows
+cd stt-server && uv run earheart-stt              # start the server
+```
+
+Or point Earheart at a hosted transcription service (OpenAI, Groq, …) —
+Settings → Speech-to-text lets you enter its URL and API key instead.
+
+> **Upgrading from 0.4.x?** The in-process engines are new defaults; your
+> existing configured STT/cleanup endpoints are preserved and keep working
+> (migrated to the "remote" engine). The old "start a local STT server
+> automatically" option has been removed — run the server yourself as above.
+
+### Build from source
+
+If there's no release for your platform (requires Node 22.12+):
+
+```bash
+git clone https://github.com/cleanunicorn/earheart
+cd earheart
+npm ci
+npm run dist     # installers for the current platform land in dist/
+```
+
+(Or run it unpackaged with `npm start`.)
+
+## First run
+
+<p align="center">
+  <img src="docs/screenshots/wizard.png" width="560" alt="Earheart setup wizard" />
+</p>
+
+On first launch a short setup wizard walks through hotkey, microphone,
+speech-to-text, cleanup and output. It sets up the **on-device engines** for
+both speech-to-text and cleanup, so first-run dictation is fully local and
+private with nothing to configure. Prefer a remote service? Switch any time in
+Settings → Speech-to-text or Settings → Cleanup.
+
+The wizard's last step downloads the models that run on your machine — the
+full-precision Parakeet speech model (≈ 2.5 GB) and the Granite 4.0 Micro
+cleanup model (≈ 2.1 GB) —
+showing a progress bar as it goes. It's a one-time download; everything after
+that, speech-to-text runs faster than realtime, even on CPU. If a download is interrupted,
+retrying resumes from the saved partial file when possible. You can pick another
+built-in model in the wizard or later in Settings — the int8 Parakeet (≈ 670 MB)
+or Gemma 3 1B (≈ 0.8 GB), for example, if the download or speed matters more
+than the last bit of accuracy.
+
+Every launch after that goes straight to the tray — no window to dismiss — and
+posts a short "ready, press *your hotkey*" notification. Click it to open
+Settings, or ignore it and start dictating. Settings is always in the tray menu.
+Earheart says "ready" only when it is: if the hotkey could not be registered
+(another app holds it, or the desktop blocks global shortcuts), Settings opens
+with the reason under the hotkey field; if the selected built-in speech model
+isn't downloaded yet, the notification names it and opens Settings to download
+it. Starting at sign-in stays silent when everything works, and posts the same
+notification when something doesn't. Pressing the hotkey without the speech
+model shows that notification instead of starting a recording that couldn't be
+transcribed.
+
+If a saved microphone is disconnected, dictation temporarily tries the system
+default and shows a notice on the recording bar. This fallback applies only to
+that dictation; it does not change the microphone saved in Settings.
+
+<p align="center">
+  <img src="docs/screenshots/overlay-microphone-fallback.png" width="500" alt="Earheart overlay listening with the notice: Saved mic missing — using system default" />
+</p>
+
+### Transcript cleanup
+
+Cleanup is **on by default** and runs the built-in Granite 4.0 Micro model in-process: a
+language model fixes punctuation and removes filler words and false starts,
+with no network hop. You can disable it, pick another built-in model, or edit
+the prompt in Settings → Cleanup.
+
+Prefer to run cleanup elsewhere? Any OpenAI-compatible chat endpoint works. A
+fully local example with [Ollama](https://ollama.com):
+
+```bash
+ollama pull llama3.1:8b
+```
+
+Then in Settings → Cleanup: base URL
+`http://127.0.0.1:11434/v1`, model `llama3.1:8b`. For a hosted service
+instead, use its base URL, API key and model name (e.g. OpenRouter, Groq,
+OpenAI).
+
+#### Cleanup appears unchanged
+
+Compare **Copy original** and **Copy** in History and check whether the entry
+says **cleaned**. A completed cleanup can leave already clean text unchanged.
+If cleanup returns no usable text or reaches its output limit, Earheart
+notifies you, delivers the original transcript and records that cleanup failed.
+Those two aren't retried: the default style samples greedily, so the same
+transcript would give the same reply. A crashed or timed-out engine, an
+unreachable service, or an HTTP 408, 429 or 5xx is retried first: up to three
+tries in all, two after a timeout. The overlay shows "Retrying (try 2 of 3)…"
+while it does.
+
+For an unexpected result, include the exact app version, operating system,
+selected cleanup model (including GGUF filename/revision), cleanup style,
+original and delivered text, and the relevant app log error. Reasoning controls
+and the distinction between output limits and context are explained in
+[Cleanup models](docs/cleanup-models.md#cleanup-failures-and-reasoning).
+
+## Using Earheart
+
+1. Put your cursor wherever you want text — an email, an editor, a chat box.
+2. Press the hotkey (default `Ctrl/Cmd+Shift+Space`). A slim bar appears at
+   the bottom of the screen — a status dot and word, your voice drawn live,
+   and a timer; it never steals focus.
+3. Speak, then press the hotkey again (or the bar's ✓ key). Earheart
+   transcribes, optionally cleans up, and pastes the result right where you
+   were typing. The ✕ key discards the dictation — nothing is typed.
+
+The bar's pause key (or your pause hotkey) holds a take: the timer and the
+waveform freeze, and nothing is captured until you resume.
+
+<p align="center">
+  <img src="docs/screenshots/overlay-paused.png" width="500" alt="Earheart overlay paused mid-dictation, with a resume key and a frozen waveform" />
+</p>
+
+The overlay never takes focus, so its keys have global hotkeys instead: the
+record hotkey is ✓, and Settings → General can bind an optional **pause
+hotkey** and **discard hotkey** (both unset by default). The discard hotkey
+does exactly what ✕ does — throws the take away while recording or
+transcribing, only dismisses the bar once the paste is under way — and is
+held only while a dictation is running, so the combination is free the rest of
+the time. When set, ✕'s tooltip names it.
+
+Earheart lives in your system tray. From the tray menu you can start a
+dictation, open the transcription history, or change any choice you made in
+the wizard:
+
+<p align="center">
+  <img src="docs/screenshots/settings.png" width="640" alt="Earheart settings window" />
+</p>
+
+A mis-aimed paste never loses your words: the History section in Settings
+keeps recent transcriptions in a local file (you can turn this off).
+
+To fix a technical name, choose **Correct…** on a history entry or **Correct last
+transcription…** from the tray. You can also configure **Correct last transcript
+hotkey** in Settings → General (unbound by default), or bind
+`earheart --correct-last` in your desktop's shortcut settings while Earheart is
+running. Correction opens after dictation finishes, so it cannot steal a pending
+paste's focus.
+
+Select the mistaken words in the full transcript, press Tab, and type the exact
+spelling. **Replace & remember** (Enter in the spelling field) changes only that
+occurrence and adds the spelling to your dictionary; **Replace only** makes a
+one-off correction. Shift+Tab back to the transcript keeps your pending spelling.
+Repeat for other terms, or edit the transcript directly.
+**Undo replacement** reverses these replacements without removing words already
+remembered. Direct typing starts a new replacement-undo history.
+**Copy corrected prompt & close** (`Ctrl/Cmd+Enter`) copies the full draft. Back
+in your coding agent, select the existing prompt before pasting if you want to
+replace it. Earheart does not automatically resend or submit the corrected text.
+
+The original history entry stays unchanged; the correction draft lasts until
+you close the editor. Closing, quitting, or restarting to update with uncopied
+changes asks whether to
+keep editing or discard the draft. Escape in the spelling field cancels just
+that pending spelling. If another transcript is requested while a correction is
+open, Earheart keeps the active draft and explains how to finish it first.
+Remembered words save immediately and can be edited or
+removed in Settings → Cleanup → Dictionary. New remembered spellings are limited
+to 120 characters each, 256 unique entries and 8,192 total dictionary characters.
+They guide the cleanup model rather than retraining speech recognition, and only
+influence future dictations while cleanup is enabled. Exact duplicate spellings
+are ignored; differently cased identifiers remain distinct.
+
+![Correct a transcript and remember a spelling](docs/screenshots/correction.png)
+
+A small [held-out text evaluation](docs/evaluations/vocabulary-corrections.json)
+on the Qwen3 4B model, the default when it ran (Clean style, CPU, seed 17) measured:
+
+| Measure | Empty dictionary | Six remembered spellings |
+| --- | ---: | ---: |
+| Exact spelling in 12 technical prompts | 3/12 | 11/12 |
+| Dictionary terms incorrectly inserted in six unrelated prompts | 0/6 | 0/6 |
+| Median cleanup time across 18 prompts | 5,183 ms | 5,839 ms |
+
+These are synthetic text prompts on one AMD Ryzen 9 3900X, not a speech-recognition
+accuracy claim or a guarantee for other models. No prompt tuning used these
+cases. Reproduce with `node scripts/eval-vocabulary.mjs /path/to/model.gguf
+/tmp/vocabulary.json`; use the catalog's Qwen3 4B Instruct 2507 Q4_K_M model.
+The script uses the shipped cleanup prompt and scores the final postprocessed
+text. A missing exact spelling remains possible even after remembering it.
+
+
+When something goes wrong (a service can't be reached, cleanup fails and the
+raw transcript is used, auto-paste fails and the text waits on the clipboard)
+a notification says so; clicking it opens Settings, where the service, its key
+and the paste options live.
+
+Settings → Advanced → Performance holds two limits. **Max dictation length**
+takes 10–3600 seconds (default 600, ten minutes); a dictation that reaches it
+stops and is transcribed. In its last minute the overlay says "Stopping soon…"
+and the timer counts down to the stop, so you can finish the thought. **Unload models after idle** takes 0–240 minutes (default 2); 0
+keeps the models loaded. A value outside a range is saved as the nearest limit,
+a blank max length keeps the saved value, and a blank idle field means 0.
+
+## Using other services
+
+Both speech-to-text and cleanup steps are also **modular,
+OpenAI-compatible HTTP clients**, so you can choose where your voice goes:
+
+- **Built-in (default)**: Parakeet + Granite run in-process — fully private,
+  nothing to install.
+- **Local server**: run the [Parakeet STT server](stt-server/) and an
+  [Ollama](https://ollama.com)/llama.cpp model yourself.
+- **Mix and match**: local STT with a hosted LLM for cleanup, or any other
+  combination. Switching is just a base URL in Settings.
+
+Anything that implements the OpenAI API shapes works out of the box:
+
+| Component | Endpoint used | Examples |
+| --- | --- | --- |
+| Speech-to-text | `{base URL}/audio/transcriptions` | `earheart-stt` (local Parakeet), [speaches](https://github.com/speaches-ai/speaches), Groq (`https://api.groq.com/openai/v1`), OpenAI (`https://api.openai.com/v1`) |
+| Cleanup | `{base URL}/chat/completions` | Ollama, llama.cpp server, LM Studio, vLLM, OpenRouter, OpenAI, … |
+
+The reverse is also true: `earheart-stt` is a standalone OpenAI-compatible
+transcription server, usable from any other dictation app that supports custom
+endpoints (e.g. OpenWhispr) or from scripts via the OpenAI SDK. See
+[stt-server/README.md](stt-server/README.md) for GPU use and other models.
+
+### Advanced: add a model from Hugging Face
+
+The built-in engines can also run a model that isn't in Earheart's list,
+straight from a Hugging Face repo:
+
+- **Speech-to-text** (Settings → Speech-to-text): a sherpa-onnx transducer
+  bundle (encoder, decoder, joiner + `tokens.txt`, e.g. the Parakeet TDT
+  exports) or a sherpa-onnx Whisper export (encoder, decoder + `tokens.txt`,
+  e.g. `csukuangfj/sherpa-onnx-whisper-turbo`). Other families, such as NeMo
+  Canary, are refused.
+- **Cleanup** (Settings → Cleanup): a GGUF chat model, e.g.
+  `unsloth/gemma-3-1b-it-GGUF`. Smaller models clean up faster.
+
+Under **Add a model from Hugging Face**, paste the repo URL or `owner/model`
+(**Browse Hugging Face** opens the hub pre-filtered to models that fit), click
+**Find versions**, pick a quantization or precision, then **Add** and
+**Download**. The download is pinned to the repo's commit at the time you
+added it. **Remove** deletes the files and forgets the model.
+
+**Checksums are weaker than for the built-in models.** Built-in models are
+pinned to a commit and a SHA-256 Earheart ships with. A custom model's files are
+verified against the SHA-256 Hugging Face publishes for files stored in Git LFS
+(the model weights); files without one, such as a small `tokens.txt`, are
+checked only for size. Each custom model's description in Settings says
+whether it is checksum-verified, partially checksum-verified, or not
+checksum-verified. Only add models from repos you trust.
+
+## Platform notes
+
+### Linux
+
+- **Auto-paste** needs a keystroke tool: `xdotool` (X11) or `wtype`/`ydotool`
+  (Wayland). Without one, Earheart falls back to clipboard-only and tells you.
+
+  ```bash
+  sudo apt install xdotool        # X11
+  sudo apt install wtype          # wlroots Wayland (Sway, Hyprland, …)
+  ```
+
+- **Global hotkeys on Wayland**: GNOME and KDE on Wayland prevent apps from
+  grabbing global keys. Instead, bind a system keyboard shortcut (GNOME
+  Settings → Keyboard → Custom Shortcuts) to:
+
+  ```bash
+  earheart --toggle
+  ```
+
+  Earheart runs single-instance; with the app already running, a second
+  invocation just toggles dictation in it. Use the full path to the binary if
+  `earheart` isn't on your `PATH`, e.g.
+  `~/Applications/Earheart-<version>.AppImage --toggle`. The same works for
+  pause/resume with `earheart --pause`, and for discarding the dictation in
+  progress with `earheart --discard`.
+
+### macOS
+
+- **"Apple could not verify Earheart is free of malware"** on first launch is
+  Gatekeeper: releases are signed with Earheart's own certificate but not
+  notarized by Apple. Drag the app to Applications, launch it, dismiss the
+  dialog, then approve it once under **System Settings → Privacy & Security →
+  Open Anyway** (bottom of the pane). On macOS 15 right-click → **Open** no
+  longer offers a bypass; Open Anyway is the way. If you would rather do it in
+  a terminal:
+
+  ```bash
+  xattr -dr com.apple.quarantine /Applications/Earheart.app
+  ```
+
+- The first dictation asks for **Microphone** permission.
+- Auto-paste simulates Cmd+V via System Events, which requires two
+  permissions: **Accessibility** (System Settings → Privacy & Security →
+  Accessibility → enable Earheart) and **Automation** (allow Earheart to
+  control System Events when macOS asks on the first paste; later under
+  Privacy & Security → Automation → Earheart → System Events). Releases are
+  signed with the same certificate every time, so both permissions carry over
+  across updates. Updating from an older unsigned release (v0.31.5 or
+  earlier) asks once more, and Earheart re-asks by itself on that first
+  launch. If auto-paste stops working, use Settings → General → **Fix
+  auto-paste permission**: it clears a stale entry, re-asks, and opens the pane
+  for whichever permission is off. If Earheart is still listed as on under
+  Accessibility, remove it with **−** and add it again.
+  When a paste fails, the text stays on the clipboard. The overlay and a
+  notification name the permission that blocked it, or say to paste with ⌘V
+  when the cause is something else. What the paste tool reported is written to
+  `~/Library/Logs/Earheart/earheart.log`.
+
+### Windows
+
+- No special permissions needed. Auto-paste uses PowerShell `SendKeys`.
+
+## Privacy
+
+- With the built-in engines (the default), audio and transcripts never leave
+  the app process — there is no network hop and no localhost socket.
+- If you point speech-to-text at an HTTP service instead, audio is held in
+  memory and sent only to the STT endpoint **you** configure (e.g. `127.0.0.1`
+  for the optional local Parakeet server).
+- Transcripts go to an external cleanup endpoint only if you switch cleanup to
+  a remote service; the default built-in cleanup stays on your machine.
+- History and settings live in local files in Electron's user data directory,
+  readable only by your user account. Remote API keys in the settings file are
+  encrypted with your OS's secure storage (macOS Keychain, Windows DPAPI, or
+  the Linux Secret Service such as GNOME Keyring or KWallet). On Linux without
+  a keyring they are saved unencrypted, and Settings says so under each API key
+  field — set up a keyring and restart Earheart to encrypt them.
+- A settings file damaged by a crash or a bad hand-edit is kept as
+  `settings.json.corrupt-<timestamp>` next to the fresh one, so nothing is
+  silently thrown away.
+- No telemetry, no accounts, no cloud.
+
+## Star history
+
+<!--
+  These SVGs are generated by the "Star history" GitHub Action and live on the
+  orphan `star-history` branch. They only appear once that workflow has run
+  successfully (see .github/workflows/star-history.yml for the one-time PAT
+  setup). Until then the images 404, which is expected.
+-->
+<a href="https://github.com/cleanunicorn/earheart/stargazers">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/cleanunicorn/earheart/star-history/assets/my-star-history/star-history-dark.svg" />
+    <img alt="Star history chart for cleanunicorn/earheart" src="https://raw.githubusercontent.com/cleanunicorn/earheart/star-history/assets/my-star-history/star-history-light.svg" />
+  </picture>
+</a>
+
+## Contributing
+
+Want to hack on Earheart? It's plain JavaScript with no bundler and only two
+runtime dependencies (the native STT and cleanup engines). See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, architecture
+overview, and how to build installers.
+
+## License
+
+[MIT](LICENSE)

@@ -1,0 +1,2118 @@
+<div align="center">
+  <img src="./assets/cqlai-logo.svg" alt="CQLAI Logo" width="400">
+
+  # CQLAI - Modern Cassandra® CQL Shell
+
+  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+  [![Go Version](https://img.shields.io/github/go-mod/go-version/axonops/cqlai)](https://golang.org/)
+  [![GitHub Issues](https://img.shields.io/github/issues/axonops/cqlai)](https://github.com/axonops/cqlai/issues)
+  [![GitHub Discussions](https://img.shields.io/github/discussions/axonops/cqlai)](https://github.com/axonops/cqlai/discussions)
+  [![GitHub Stars](https://img.shields.io/github/stars/axonops/cqlai)](https://github.com/axonops/cqlai/stargazers)
+</div>
+
+**CQLAI** is a fast, portable interactive terminal for Cassandra (CQL), built in Go. It provides a modern, user-friendly alternative to `cqlsh` with an advanced terminal UI, client-side command parsing, and enhanced productivity features.
+
+**AI features are completely optional** - CQLAI works perfectly as a standalone CQL shell without any AI configuration or API keys.
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/334bd302-3152-4f48-9d2d-ed617e8d86d3" controls width="100%" style="max-width: 800px;">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<div align="center">
+
+### 100% Free & Open Source
+**No hidden costs • No premium tiers • No license keys**
+
+Community-driven development with full transparency
+
+</div>
+
+The original cqlsh command in the [Apache Cassandra](https://cassandra.apache.org/) project is written in Python which requires Python to be installed on the system. cqlai is compiled to a single executable binary, requiring no external dependencies. This project provides binaries for the following platforms:
+
+- Linux x86-64
+- macOS x86-64
+- Windows x86-64
+- Linux aarch64
+- macOS arm64
+
+
+It is built with [Bubble Tea](https://github.com/charmbracelet/bubbletea), [Bubbles](https://github.com/charmbracelet/bubbles), and [Lip Gloss](https://github.com/charmbracelet/lipgloss) for the beautiful terminal UI. A big shout out to the cassandra gocql driver team for implementing the latest Cassandra functionalities [gocql](https://github.com/apache/cassandra-gocql-driver)
+
+---
+
+## Table of Contents
+
+- [Project Status](#project-status)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Interactive Mode](#interactive-mode)
+  - [Command-Line Options](#command-line-options)
+  - [Batch Mode Examples](#batch-mode-examples)
+  - [Basic Commands](#basic-commands)
+  - [Keyboard Shortcuts](#keyboard-shortcuts)
+  - [Tab Completion](#tab-completion)
+- [Available Commands](#available-commands)
+  - [CQL Commands](#cql-commands)
+  - [Meta-Commands](#meta-commands)
+  - [AI Commands](#ai-commands)
+- [Configuration](#configuration)
+  - [Configuration Precedence](#configuration-precedence)
+  - [CQLSHRC Compatibility](#cqlshrc-compatibility)
+  - [CQLAI JSON Configuration](#cqlai-json-configuration)
+  - [AI Provider Configuration](#ai-provider-configuration)
+    - [OpenAI](#openai-gpt-4--gpt-35)
+    - [Anthropic](#anthropic-claude)
+    - [Google Gemini](#google-gemini)
+    - [Synthetic](#synthetic-multiple-open-source-models)
+    - [Ollama](#ollama-local-models)
+    - [OpenRouter](#openrouter-multiple-models)
+    - [Mock Provider](#mock-provider-for-testing)
+- [AI-Powered Query Generation](#ai-powered-query-generation)
+- [MCP Server](#mcp-server)
+- [Apache Parquet Support](#apache-parquet-support)
+- [Known Limitations](#known-limitations)
+- [Development](#development)
+- [Technology Stack](#technology-stack)
+- [Acknowledgements](#acknowledgements)
+- [Community & Support](#community--support)
+- [License](#license)
+- [Legal Notices](#legal-notices)
+
+---
+
+## Project Status
+
+**CQLAI is production-ready** and actively used in development, testing, and production environments with Cassandra clusters. The tool provides a complete, stable alternative to `cqlsh` with enhanced features and performance.
+
+### What Works
+- All core CQL operations and queries
+- Complete meta-command support (`DESCRIBE`, `SHOW`, `CONSISTENCY`, etc.)
+- Client-side command parsing (lightweight, no ANTLR dependency)
+- Data import/export with `COPY TO/FROM` (CSV and Parquet formats)
+- SSL/TLS connections and authentication
+- User-Defined Types (UDTs) and complex data types
+- Batch mode for scripting and automation
+- Apache Parquet format support for efficient data interchange
+- Tab completion that builds a whole statement - table properties, every `CREATE`, and DML - and says what to type where a name cannot be looked up
+- A schema browser (`F3`) showing the cluster's keyspaces and tables with their definitions, which notices a change made in another window
+- Saved connections, so CQLAI starts without a cluster and connects to a named one from the `FILE` menu
+- A `PREFERENCES` window that edits `cqlai.json` from inside the shell
+- Mouse throughout: clickable tabs and settings, drag to select and copy, and a `FILE` menu
+- **Optional**: AI that writes CQL from plain English, reads a query trace, and reviews a table's definition ([OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google Gemini](https://ai.google.dev/), [Ollama](https://ollama.ai/), [OpenRouter](https://openrouter.ai/))
+
+We encourage you to **try CQLAI today** and help shape its development! Your feedback and contributions are invaluable in making this the best CQL shell for the Cassandra community. Please [report issues](https://github.com/axonops/cqlai/issues) or [contribute](https://github.com/axonops/cqlai/pulls).
+
+---
+
+## Features
+
+- **Interactive CQL Shell:** Execute any CQL query that your Cassandra cluster supports.
+- **Rich Terminal UI:**
+    - A multi-layer, full-screen terminal application with alternate screen buffer (preserves terminal history).
+    - Virtualized, scrollable table for results with automatic data loading, preventing memory overload from large queries.
+    - Advanced navigation modes with vim-style keyboard shortcuts.
+    - Full mouse support: clickable tabs and settings, click-and-drag text selection with no modifier key, and wheel scrolling.
+    - Sticky footer/status bar showing connection details, query latency, and session status (consistency, tracing).
+    - Modal overlays for history, help, and command completion.
+- **Schema Browser (`F3`):**
+    - The cluster's keyspaces and tables in a tree, with each object's definition beside it.
+    - A filter above the tree (`/`) narrows it to the keyspaces and tables whose names match.
+    - Notices a schema change wherever it was made, including from another window, and forgets a definition a DDL statement has changed rather than showing a stale one.
+- **Saved Connections:**
+    - CQLAI starts without a cluster. `FILE > CONNECT` holds a list of named connections, one marked as the default, with the one in use shown.
+    - Each connection carries its own host, port, keyspace, credentials, timeouts and SSL settings.
+- **The FILE Menu (`Alt+F`):**
+    - `SOURCE`, `COPY TO`/`COPY FROM`, `SAVE RESULTS`, `AUTOSAVE`, `CONNECT`, `PREFERENCES` and `QUIT`, each with a form.
+    - Path fields complete as you type and open a file browser you can walk with the keyboard or the mouse.
+- **PREFERENCES:**
+    - Every setting in `cqlai.json`, edited in the shell and written back to the file it came from.
+- **Apache Parquet Support:**
+    - High-performance columnar data format for analytics and machine learning workflows.
+    - Export Cassandra tables to Parquet files with `COPY TO` command.
+    - Import Parquet files into Cassandra with automatic schema inference.
+    - Partitioned datasets with Hive-style directory structures.
+    - TimeUUID / timestamp virtual columns for intelligent time-based partitioning.
+    - Support for all Cassandra data types including UDTs, collections, and vectors.
+- **Optional AI:**
+    - Natural language to CQL conversion using AI providers ([OpenAI](https://openai.com/), [Anthropic](https://www.anthropic.com/), [Google Gemini](https://ai.google.dev/), [Ollama](https://ollama.ai/), [OpenRouter](https://openrouter.ai/)).
+    - Reads a query trace and says where the time went, what the trace shows that the timings do not, and what to change (`[ Analyse Trace Alt+A ]` in the `TRACE` tab).
+    - Reviews a table's definition - what it is, what will go wrong with it, and what to change (`[ Review Schema Alt+A ]` in the `SCHEMA` view).
+    - Schema-aware query generation with automatic context.
+    - Safe preview and confirmation before execution. The window with the generated CQL opens on `Edit`, which puts the statement in the prompt to read: `Enter` alone never runs it.
+    - Support for complex operations including DDL and DML.
+    - **Requires API key configuration** - not needed for core functionality.
+- **MCP Server (`cqlai mcp`):**
+    - Lets an AI assistant read one cluster through CQLAI over the Model Context Protocol.
+    - What it may do - which commands, keyspaces, tables and columns - is set in `PREFERENCES` and per connection in `CONNECT`, and enforced on every call.
+    - It never changes data or schema: a change is proposed, with what it will do, for you to run. Every call is in an audit log.
+- **Configuration:**
+    - Simple configuration via `cqlai.json` in the current directory or `~/.cassandra/cqlai.json`, beside `cqlshrc`.
+    - Support for SSL/TLS connections with certificate authentication.
+- **Single Binary:** Distributed as a single, static binary with no external dependencies. Fast startup and small footprint.
+
+## Installation
+
+You can install `cqlai` in several ways. For detailed instructions including package managers (APT, YUM) and Docker, see the [Installation Guide](docs/INSTALLATION.md).
+
+### Pre-compiled Binaries
+
+Download the appropriate binary for your OS and architecture from the [**Releases**](https://github.com/axonops/cqlai/releases) page.
+
+
+### Using Go
+
+```bash
+go install github.com/axonops/cqlai/cmd/cqlai@latest
+```
+
+### From Source
+
+```bash
+git clone https://github.com/axonops/cqlai.git
+cd cqlai
+go build -o cqlai cmd/cqlai/main.go
+```
+
+### Using Docker
+
+```bash
+# Build the image
+docker build -t cqlai .
+
+# Run the container
+docker run -it --rm --name cqlai-session cqlai --host your-cassandra-host
+```
+
+## Usage
+
+### Interactive Mode
+
+Connect to a Cassandra host:
+```bash
+# With password on command line (not recommended - visible in ps)
+cqlai --host 127.0.0.1 --port 9042 --username cassandra --password cassandra
+
+# With password prompt (secure - password hidden)
+cqlai --host 127.0.0.1 --port 9042 -u cassandra
+# Password: [hidden input]
+
+# Using environment variable (secure for scripts/containers)
+export CQLAI_PASSWORD=cassandra
+cqlai --host 127.0.0.1 -u cassandra
+```
+
+Or use a configuration file:
+```bash
+# Create configuration from example
+cp cqlai.json.example cqlai.json
+# Edit cqlai.json with your settings, then run:
+cqlai
+```
+
+### Command-Line Options
+
+```bash
+cqlai [options] [host [port]]
+```
+
+`cqlai mcp [options]` opens the shell serving MCP to an AI client, and `cqlai mcp --headless` serves it without the shell. See [MCP Server](#mcp-server).
+
+**Note:** Positional arguments are supported for `cqlsh` compatibility. `cqlai 192.168.1.100 9042` is equivalent to `cqlai --host 192.168.1.100 --port 9042`.
+
+#### Connection Options
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--host <host>` | | Cassandra host (overrides config) |
+| `--port <port>` | | Cassandra port (overrides config) |
+| `--keyspace <keyspace>` | `-k` | Default keyspace (overrides config) |
+| `--username <username>` | `-u` | Username for authentication |
+| `--password <password>` | `-p` | Password for authentication* |
+| `--ssl` | | Enable SSL/TLS connection |
+| `--consistency <level>` | | Default consistency level (e.g., ONE, QUORUM, LOCAL_QUORUM) |
+| `--no-confirm` | | Disable confirmation prompts for destructive commands (DROP, DELETE, TRUNCATE) |
+| `--connect-timeout <seconds>` | | Connection timeout (default: 10) |
+| `--request-timeout <seconds>` | | Request timeout (default: 10) |
+| `--debug` | | Enable debug logging. Passwords - in `cqlshrc`, and in `CREATE`/`ALTER ROLE` - are written as `***` |
+
+*\*Note: Password can be provided in three ways:*
+1. *Command line with `-p` (not recommended - visible in process list)*
+2. *Interactive prompt when `-u` is used without `-p` (recommended)*
+3. *Environment variable `CQLAI_PASSWORD` (good for automation)*
+
+#### Batch Mode Options
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--execute <statement>` | `-e` | Execute CQL statement and exit |
+| `--file <file>` | `-f` | Execute CQL from file and exit |
+| `--format <format>` | | Output format: ascii, json, csv, table |
+| `--no-header` | | Don't output column headers (CSV) |
+| `--field-separator <sep>` | | Field separator for CSV (default: ,) |
+| `--page-size <n>` | | Rows per batch (default: 100) |
+
+#### General Options
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--config-file <path>` | | Path to config file (overrides default locations) |
+| `--help` | `-h` | Show help message |
+| `--version` | `-v` | Print version and exit |
+
+### Batch Mode Examples
+
+Execute CQL statements non-interactively (compatible with cqlsh):
+
+```bash
+# Execute a single statement
+cqlai -e "SELECT * FROM system_schema.keyspaces;"
+
+# Execute from a file
+cqlai -f script.cql
+
+# Pipe input
+echo "SELECT * FROM users;" | cqlai
+
+# Control output format
+cqlai -e "SELECT * FROM users;" --format json
+cqlai -e "SELECT * FROM users;" --format csv --no-header
+
+# Control pagination size
+cqlai -e "SELECT * FROM large_table;" --page-size 50
+```
+
+A statement that fails stops the run with a non-zero exit status: an error from
+Cassandra, and one CQLAI refuses itself, such as a mistyped command or a
+`DESCRIBE` of a table that does not exist. A file or piped input is split into
+statements as the shell splits what you type: a semicolon in a string or a
+comment does not end a statement, and a `BEGIN BATCH` ends at `APPLY BATCH;`.
+
+### Basic Commands
+
+- **Execute CQL:** Type any CQL statement and press Enter.
+- **Meta-Commands:**
+  ```sql
+  DESCRIBE KEYSPACES;
+  USE my_keyspace;
+  DESCRIBE TABLES;
+  CONSISTENCY QUORUM;
+  TRACING ON;
+  PAGING 50;
+  EXPAND ON;  -- Vertical output mode
+  SOURCE 'script.cql';  -- Execute CQL script
+  ```
+- **AI-Powered Query Generation:**
+  ```sql
+  .ai What keyspaces are there?
+  .ai What columns does the users table have?
+  .ai create a table for storing product inventory
+  .ai delete orders older than 1 year from the orders table
+  ```
+
+### Keyboard Shortcuts
+
+#### Navigation & Control
+| Shortcut | Action | macOS Alternative |
+|----------|--------|-------------------|
+| `↑`/`↓` | Navigate command history | Same |
+| `Ctrl+P`/`Ctrl+N` | Previous/Next in command history | Same |
+| `Alt+N` | Move to next line in history | `Option+N` |
+| `Tab` | Autocomplete commands and table/keyspace names | Same |
+| `Ctrl+C` | Clear input / Cancel pagination / Cancel operation (twice to exit) | `⌘+C` or `Ctrl+C` |
+| `Ctrl+D` | Exit application | `⌘+D` or `Ctrl+D` |
+| `Ctrl+Q` | Quit, asking first - the same as `FILE > QUIT` | `Ctrl+Q` (not `⌘+Q`, which quits the terminal itself) |
+| `Ctrl+R` | Search command history | `⌘+R` or `Ctrl+R` |
+| `Esc` | Toggle navigation mode / Cancel pagination / Close modals | Same |
+| `Enter` | Execute command / Load next page (during pagination) | Same |
+
+#### Text Editing
+| Shortcut | Action | macOS Alternative |
+|----------|--------|-------------------|
+| `Ctrl+A` | Jump to beginning of line | Same |
+| `Ctrl+E` | Jump to end of line | Same |
+| `Ctrl+Left`/`Ctrl+Right` | Jump by word (or 20 chars) | Same |
+| `PgUp`/`PgDn` (in input) | Page left/right in long queries | `Fn+↑`/`Fn+↓` |
+| `Ctrl+K` | Cut from cursor to end of line | Same |
+| `Ctrl+U` | Cut from beginning to cursor | Same |
+| `Ctrl+W` | Cut word backward | Same |
+| `Alt+D` | Delete word forward | `Option+D` |
+| `Ctrl+Y` | Paste previously cut text | Same |
+
+#### The tab line
+
+```
+ FILE (Alt+F)  CONSOLE (F2)  SCHEMA (F3)  RESULTS (F4)  CHAT (F6)  HELP (F1/Alt+H)
+```
+
+The views are shown as tabs, so you can see which one you are in and what the
+others are. Click a tab, or use the key on it. A view with nothing to show yet
+is dimmed, as is `CHAT` with no AI provider configured.
+
+`RESULTS` holds two tabs of its own, on the line under it: the last query's
+output, and the trace of the requests that fetched it. They are the same thing
+looked at two ways, which is why they share a place on the line above.
+
+```
+ QUERY RESULTS (F4)  TRACE (F5)
+```
+
+| Shortcut | Tab | Shows |
+|----------|-----|-------|
+| `F2` | Console | The running transcript of commands and messages |
+| `F3` | Schema | The cluster's keyspaces and tables, with their definitions |
+| `F4` | Results | The last query's output, in whatever `OUTPUT` format is set |
+| `F5` | Trace | The trace of the requests that fetched it, when tracing is enabled |
+| `F6` | Chat | The AI conversation |
+
+Text is selected by dragging with the mouse, and lands on the system clipboard
+when you let go - on Linux once `wl-clipboard` or `xclip` is installed, which
+[Mouse Support](#mouse-support) explains.
+
+A right click pastes. It asks three things, in order, and takes the first
+answer: the terminal, through OSC 52, which is the only route that works through
+ssh and tmux and which most terminals refuse - a program that can read the
+clipboard can read what you copied out of a password manager; then the machine
+CQLAI is running on, through whichever of `wl-paste`, `xclip`, `xsel`, `pbpaste`
+or `powershell.exe Get-Clipboard` is there, which covers a local desktop
+including WSL; and failing both, whatever CQLAI itself last copied.
+
+The terminal's own paste works too, and both go wherever the keys are going: the
+prompt, a form, or the preferences window.
+
+Schema sits next to the console because what is in the database comes before
+anything a query has made of it. The keys read along the line with the tabs, so
+Results and Trace have moved from `F3` and `F4` to `F4` and `F5`.
+
+#### The schema browser
+
+`SCHEMA` is the cluster's keyspaces and tables as a tree, with the definition of
+whatever is selected beside it. Click a keyspace to see it and open it, click it
+again to fold it, and click a table for its `CREATE TABLE`.
+
+An open keyspace holds a group for each kind of object it has: tables,
+materialized views, indexes, types, functions, aggregates and triggers, with
+how many of each. A kind it has none of is left out. The tables are open, so
+they are where they always were; the other groups open the same way a keyspace
+does. Select an object for its `CREATE` statement, as `DESCRIBE` gives it. A
+group's own pane lists what is in it.
+
+A definition wider than its pane scrolls sideways: `Alt+←`/`Alt+→`, a
+trackpad's sideways scroll, or the wheel with `Shift` held. `←` and `→` on
+their own still open and close the tree.
+
+```
+▾ shop
+  ▾ Tables (2)
+      customers
+      orders
+  ▸ Materialized views (1)
+  ▸ Indexes (2)
+  ▸ Types (1)
+  ▸ Functions (1)
+  ▸ Aggregates (1)
+```
+
+The arrows walk the tree - right opens a keyspace, left closes it - and the
+wheel moves whichever pane it is over. `Alt+Up` and `Alt+Down` scroll the
+definition. Everything else still goes to the prompt, so a query can be typed
+while looking at the table it is about. Pressing `F3` again, or clicking the tab
+you are already on, asks the cluster for the schema afresh.
+
+The heading above the tree is a filter. Press `Up` from the top row of the tree,
+`/` with nothing at the prompt, or click the heading, and type: the tree shows only the keyspaces and tables whose
+names contain what you typed, ignoring case. A table is shown under its
+keyspace, so a keyspace does not have to be opened first to find a table in it.
+The first match is selected and its definition shown. `Down` or `Enter` goes
+back into the tree, gives the keys back to the prompt and keeps the tree
+filtered; `Esc` clears the filter and shows the whole tree again, with what
+you found still selected.
+
+Nothing is fetched until the tab is opened: the keyspaces on first use, a
+keyspace's tables when it is first opened, and a definition when it is first
+shown. The definitions are the ones `DESCRIBE` produces, so the two cannot
+disagree.
+
+On Cassandra 4.0 and later the tree includes the **virtual keyspaces** -
+`system_views` and `system_virtual_schema` - whose tables the node computes when
+they are read rather than storing: connected clients, settings, thread pools,
+caches and forty-odd more. Their definitions are the structure the server
+describes, commented out under a warning that a virtual table cannot be
+recreated with CQL, the way cqlsh shows them.
+
+A schema change is noticed wherever it was made - here, in cqlsh, in another
+CQLAI, in an application. Cassandra keeps a schema version that changes whenever
+the schema does, whoever changed it; it is the value `nodetool describe cluster`
+prints under "Schema versions". CQLAI reads it every five seconds, which is one
+row, and when it differs from the last reading the browser and the tab
+completion both fetch again - at once if you are looking at the tree, and when
+you next open the tab if you are not. `F3` still asks immediately.
+
+#### Reviewing a definition
+
+`SCHEMA` shows what a table is. What it does not say is whether the definition
+is any good: whether the partition will grow without bound, whether the
+clustering serves the query the table is obviously for, whether the compaction
+strategy matches how the data is written. Cassandra punishes those months
+later, by which time the table has data in it and the answer is to write it all
+again somewhere else.
+
+`[ Review Schema Alt+A ]` at the top right of the definition pane sends the
+definition to the configured AI provider. The answer appears under it, in the
+pane it is about:
+
+With no AI provider configured, either button says so in a window over the view
+rather than sending you to the console to read it.
+
+```
+ KEYSPACES          │ TABLE  shop.events_by_user       [ Review Schema Alt+A ]
+ ─────────────────  │ ────────────────────────────────────────────────────────
+ ▾ shop             │ CREATE TABLE shop.events_by_user (
+     events_by_user │     user_id uuid,
+     users          │     created_at timestamp,
+ ▸ system           │     PRIMARY KEY (user_id, created_at)
+                    │ ─ Review  drag to resize ───────────────────────────────
+                    │ WHAT IT IS
+                    │ Partitioned by user_id, ordered by created_at. A feed.
+                    │
+                    │ RISKS
+                    │ - The partition grows without bound: every event a user
+                    │   ever has lands in one.
+                    │
+                    │ WHAT TO CHANGE
+                    │ - Add a time bucket: ((user_id, month), created_at).
+```
+
+The definition is what gets sent - no rows. The line between the two is dragged
+the way the trace's is, `Esc` puts the review away, and moving to another table
+puts it away too: an answer about one definition does not belong under
+another's.
+
+#### Reading a trace
+
+`TRACE` shows the trace of the last query, when tracing is on. It is forty rows
+of microsecond timings and node names, and what you usually want from it is
+which step was slow and what to do about it.
+
+`[ Analyse Trace Alt+A ]` at the top right of the view sends the trace to the
+configured AI provider and asks. The answer appears under the trace, in the
+same view:
+
+```
+                                                   [ Analyse Trace Alt+A ]
+ activity                      source     source_elapsed
+ Parsing SELECT * FROM users   10.0.0.1   120
+ Read 3 sstables               10.0.0.2   9100
+ ─ Analysis  drag to resize ────────────────────────────────────────────────
+ TIME
+   3.9ms  seq scan across 3 sstables, ReadStage-2
+   1.8ms  submitted 1 concurrent range request
+
+ FINDINGS
+ - A range scan across the whole ring, not a partition lookup.
+ - 100 live rows, 0 tombstones: the read itself is clean.
+
+ WHAT TO DO
+ - Query by the partition key instead of scanning.
+```
+
+The answer comes back in those three sections, with a line each: where the
+time went, what the trace shows that the timings do not say on their own, and
+what to change. Asked for an explanation, the models write an essay restating
+the trace you already have in front of you, so the shape of the answer is
+dictated rather than suggested.
+
+Drag the line between the two panes with the mouse to give either of them more
+room; let go and it stays where you left it. `Esc` puts the analysis away.
+
+The trace is sent as it was read from `system_traces`, not as it is drawn: the
+drawn table is cut to the width of the screen, and what gets cut off is the end
+of the activity - the part that says what happened.
+
+A query read a page at a time is one request per page, each traced separately
+by Cassandra, and the view covers all of them: every page's events, a `Page`
+column saying which is which, and a total that is the sum. A trace of the last
+page alone says a scan read 65 rows when the query read 565. A query read to
+the end can be hundreds of requests, so the last 20 pages are kept and the
+summary says how many there were.
+
+`FILE` and `HELP` are not views. They open a menu and a window over whatever you
+are looking at, and leave it there. On a narrow terminal the labels shorten and
+then the buttons go, rather than the tab names giving way - `Alt+F` and `F1`
+still work.
+
+#### The FILE menu
+
+```
+╭──────────────╮
+│ CONNECT      │
+│──────────────│
+│ SAVE RESULTS │
+│ SOURCE       │
+│ COPY TO      │
+│ COPY FROM    │
+│──────────────│
+│ AUTOSAVE     │
+│ PREFERENCES  │
+│──────────────│
+│ QUIT         │
+╰──────────────╯
+```
+
+`CONNECT` asks for a cluster. The window is in two parts: the connections that
+have been saved are down the left, with `+ Create New Connection` above them,
+and the settings of whichever one is chosen are on the right - host, port,
+keyspace, username, password, the two timeouts and the SSL settings. `←` and
+`→` move between the two.
+
+A connection has a name, which is what the list shows; left empty it takes the
+name of its host. The first of them is the one CQLAI opens with and is marked
+`(default)`; the one it is connected to now is marked `(connected)`, and is the
+connection the window opens on.
+
+The settings at the top of the file are the default connection written out
+again, so that anything reading `cqlai.json` by hand still finds a host. The
+list is what decides: change it and the top of the file follows. `Save and Connect` writes it to `cqlai.json` under
+`connections` and makes it the one CQLAI opens with next time. `Connect` tries
+it without saving, and a connection that fails leaves the window open saying
+why, so you can change a field and try again.
+
+```json
+{
+  "host": "10.0.0.1",
+  "connections": [
+    { "name": "production", "host": "10.0.0.1", "port": 9042 },
+    { "name": "staging", "host": "10.0.1.1", "keyspace": "trial" }
+  ]
+}
+```
+
+CQLAI starts whether or not a cluster answers. Without one it says so and why,
+the tabs that need a cluster are dimmed, and `CONNECT` is how you get one.
+
+`SAVE RESULTS` writes what is on screen, and says so when there is nothing to
+write. `SOURCE` runs the CQL in a file, and `COPY TO`/`COPY FROM` move a whole
+table in or out. Below the first line are the two that settle something rather
+than act on it: `AUTOSAVE` saves every query from now on, and `PREFERENCES`
+edits the settings CQLAI starts with. Below the second, `QUIT` leaves, asking
+first.
+
+Up and down move, Enter picks, Esc closes. `AutoSave: ` on the bottom line says
+whether it is on, and clicking it opens the same window.
+
+The windows that ask for a path - `SAVE RESULTS` and `AUTOSAVE`, and the `File`
+field on the three forms - open on a file browser under your home directory. Tab
+completes, `..` walks up, and the wheel scrolls the listing.
+
+The `File` field of `COPY TO` and `COPY FROM` also takes a folder, for a
+partitioned Parquet dataset. `COPY TO` needs `FORMAT` set to `parquet` and a
+`PARTITION`, such as `event_id.year,event_id.month`; `COPY FROM` needs only the
+`FORMAT`. A folder has no extension to tell the format from.
+
+#### The prompt
+
+A statement without a semicolon is not finished, so the prompt stays open and
+waits for the rest. Each line goes into the console as you type it, with the
+prompt it was typed at, and the prompt itself says which line you are on:
+
+```
+> SELECT *
+... FROM users
+... WHERE id = 1;
+```
+
+`Esc` gives up on the statement. A result that is only partly loaded says so on
+a line of its own at the end of it, with how many rows are showing and how to
+get the rest.
+
+#### Column headers
+
+Query results carry a second header row saying what each column is: its key
+marker, where it has one, and its CQL type.
+
+```
+┌──────────┬──────────┬──────────────────────┬─────────┐
+│ id       │ region   │ created              │ name    │
+│ PK1 uuid │ PK2 text │ C timestamp          │ varchar │
+├──────────┼──────────┼──────────────────────┼─────────┤
+│ 1        │ eu-west  │ 2026-09-10T11:22:33Z │ alice   │
+```
+
+`PK` is a partition key column and `C` a clustering column, numbered by
+component where there is more than one. It is always shown - there is no key to
+press - and costs one row for the whole table rather than widening every column.
+
+`DESCRIBE` and the listings have no second row: their columns are not columns of
+a table and have no CQL type.
+
+#### The query info bar
+
+Under the results: the last command, how long the query took, and how many rows
+came back. `Rows: 300+` means there is more to fetch.
+
+When a result outgrows its memory limit, rows are dropped from the start of it
+and the bar says so:
+
+```
+History: SELECT * FROM events… │ Query: 41ms │ Rows: 300+ │ dropped: first 1200
+```
+
+Without that, scrolling to the top of a result and not finding its first row
+looks like lost data rather than a decision.
+
+On a narrow terminal the bar drops what it cannot fit, least useful first, and
+cuts the command rather than dropping it.
+
+#### Scrolling & Table Navigation
+| Shortcut | Action | macOS Alternative |
+|----------|--------|-------------------|
+| `PgUp`/`PgDn` | Scroll viewport by page / Load more data when available | `Fn+↑`/`Fn+↓` |
+| `Space` | Load next page when more data available | Same |
+| `Enter` (empty input) | Load next page when more data available | Same |
+| `Alt+↑`/`Alt+↓` | Scroll viewport by single row (respects row boundaries) | `Option+↑`/`Option+↓` |
+| `Alt+←`/`Alt+→` | Scroll sideways (wide tables, and a wide definition in `SCHEMA`) | `Option+←`/`Option+→` |
+| `↑`/`↓` | Scroll results in the table and trace views. In the normal view they step through command history; `Ctrl+P` recalls history from any view | Same |
+
+#### Navigation Mode (Table/Trace Views)
+Press `Esc` to toggle navigation mode when viewing tables or traces.
+
+| Shortcut | Action in Navigation Mode |
+|----------|---------------------------|
+| `j` / `k` | Scroll down/up by single line |
+| `d` / `u` | Scroll down/up by half page |
+| `g` / `G` | Jump to top/bottom of results |
+| `<` / `>` | Scroll left/right by 10 columns |
+| `{` / `}` | Scroll left/right by 50 columns |
+| `0` / `$` | Jump to first/last column |
+| `Esc` | Exit navigation mode / Cancel pagination if active |
+
+#### Mouse Support
+
+The mouse is on by default. Click the mode tabs at the top, click `KS`, `CL`,
+`Pg`, `Trace` or `Fetch` on the bottom line to change them, and click and drag
+anywhere in the output to select text. No modifier key for any of it.
+
+Releasing a drag copies the selection to your system clipboard. Double-click
+selects a word, triple-click selects a line, and dragging past the top or bottom
+edge scrolls, so a selection can run further than one screen. `Esc`, or a click
+somewhere else, clears it.
+
+The copy takes two routes, because neither one works everywhere. It goes out as
+OSC 52, the escape sequence a terminal program uses to write the clipboard,
+which is the only route that survives `ssh` and `tmux` - shelling out there
+would put the text on the wrong machine. And it is handed to the machine CQLAI
+is running on, through whichever of `wl-copy`, `xclip`, `xsel`, `pbcopy`,
+`clip.exe` or `powershell.exe Set-Clipboard` is there. Locally one of the two
+lands.
+
+**On a Linux desktop it has to be the second one**, and nothing provides it out
+of the box. No VTE-based terminal supports OSC 52 - GNOME Terminal and Ptyxis
+among them - and `wl-clipboard`, `xclip` and `xsel` are none of them installed
+by default. A stock desktop therefore has neither half, and a copy reaches no
+further than CQLAI itself:
+
+```bash
+sudo apt install wl-clipboard          # Wayland, which is the Ubuntu default
+sudo apt install xclip                 # X11 - echo $XDG_SESSION_TYPE to check
+```
+
+CQLAI says so the first time a copy finds nothing to hand the text to, rather
+than failing quietly.
+
+Reading the clipboard is the harder direction: OSC 52 *read* is refused by
+default in iTerm2, kitty, foot and WezTerm, for good reason - any program on the
+far end of an ssh session could otherwise help itself to whatever you last
+copied. That is why right-click paste asks the machine as well, and falls back
+to what CQLAI itself last copied. Whatever your terminal binds paste to, usually
+`Shift`+right-click or `Ctrl+Shift+V`, still works.
+
+`MOUSE OFF` hands the mouse back to the terminal, so its own selection, its
+right-click paste and its middle-click paste behave as they do in any other
+program - at the cost of the tabs and the settings no longer being clickable.
+`MOUSE ON` takes it back, and `MOUSE` on its own says which is active. The
+status bar shows `[MOUSE]` or `[MOUSE OFF]`.
+
+The F-keys switch view either way, and every setting on the bottom line has a
+command, so nothing is only reachable with the mouse.
+
+The wheel scrolls in both modes. With the mouse on it arrives as a wheel event;
+with it off, alternate scroll mode has the terminal turn wheel spins into
+`↑`/`↓` key presses, which scroll whatever `↑` and `↓` scroll: results in the
+table view, the trace in the trace view, the conversation in the AI view.
+
+| Action | Function |
+|--------|----------|
+| Mouse Wheel | Scroll vertically with automatic data loading |
+| Click+Drag | Select text; releasing copies it to the clipboard |
+| Double Click | Select a word |
+| Triple Click | Select a line |
+| Click a tab | Switch view |
+| Click a setting | Change KS, CL, Pg, Trace or Fetch; KS lists the cluster's keyspaces |
+| Right Click | Nothing; use whatever your terminal binds paste to |
+| `Esc` | Clear the selection |
+
+Scroll wide tables, and a wide definition in `SCHEMA`, sideways with
+`Alt+←`/`Alt+→`, a trackpad's sideways scroll, or the wheel with `Shift` held.
+`<` and `>` do it too in navigation mode. The wheel needs the mouse on, which it
+is unless `MOUSE OFF` was used.
+
+**Note for macOS Users:**
+- Most `Ctrl` shortcuts work as-is on macOS, but you can also use `⌘` (Command) key as an alternative
+- `Alt` key is labeled as `Option` on Mac keyboards
+- By default macOS uses `Option` to type special characters, so `Option+F` types `ƒ`
+  rather than sending `Alt+F`. CQLAI reads `ƒ`, `˙`, `∂` and `∫` as `Alt+F`, `Alt+H`,
+  `Alt+D` and `Alt+B`, so those four work without any setting. `å` is left alone,
+  because it is a letter in Danish, Norwegian and Swedish, so `Option+A` does not open the AI.
+- For every `Alt` shortcut, set `Option` to send `Alt` (Meta) in your terminal:
+  - iTerm2: Settings > Profiles > Keys > Left Option key: `Esc+`
+  - Terminal.app: Settings > Profiles > Keyboard > Use Option as Meta key
+  - Ghostty: `macos-option-as-alt = true`
+- Function keys (F1-F6) may require holding `Fn` key depending on your Mac settings
+
+### Tab Completion
+
+CQLAI provides intelligent, context-aware tab completion to speed up your workflow. Press `Tab` at any point to see available completions.
+
+#### What Can Be Completed
+
+**CQL Keywords & Commands:**
+- All CQL keywords: `SELECT`, `INSERT`, `CREATE`, `ALTER`, `DROP`, etc.
+- Meta-commands: `DESCRIBE`, `CONSISTENCY`, `COPY`, `SHOW`, etc.
+- Data types: `TEXT`, `INT`, `UUID`, `TIMESTAMP`, etc.
+- Consistency levels: `ONE`, `QUORUM`, `ALL`, `LOCAL_QUORUM`, etc.
+
+**Schema Objects:**
+- Keyspace names
+- Table names (within current keyspace)
+- Column names (when context allows)
+- User-defined type names
+- Function and aggregate names
+- Index names
+
+**Statement Shapes:**
+
+CREATE TABLE, INDEX, MATERIALIZED VIEW, TYPE, FUNCTION, AGGREGATE, TRIGGER,
+KEYSPACE, ROLE and USER complete a word at a time, through their keywords,
+their brackets and their options - `CREATE FUNCTION` offers everything from the
+argument list to `CALLED ON NULL INPUT` to the language.
+
+So do SELECT, INSERT, UPDATE, DELETE and BATCH: after a column in a WHERE
+clause you get the operators (`=`, `IN`, `CONTAINS KEY`, `BETWEEN`, `LIKE`,
+`IS NOT NULL`), after the table the clauses that can follow it in the order
+they are written, and nothing at all once the statement is finished.
+
+**Context-Aware Completions:**
+```sql
+-- After SELECT, suggests column names and keywords
+SELECT <Tab>           -- Shows: *, column names, DISTINCT, JSON, etc.
+
+-- After FROM, suggests table names
+SELECT * FROM <Tab>    -- Shows: available tables in current keyspace
+
+-- After USE, suggests keyspace names
+USE <Tab>              -- Shows: available keyspaces
+
+-- After DESCRIBE, suggests object types
+DESCRIBE <Tab>         -- Shows: KEYSPACE, TABLE, TYPE, etc.
+
+-- After consistency command
+CONSISTENCY <Tab>      -- Shows: ONE, QUORUM, ALL, etc.
+
+-- After WITH, suggests the table options, and then their values
+... WITH <Tab>                        -- Shows: compaction = , gc_grace_seconds = , etc.
+... WITH compaction = {<Tab>          -- Shows: the keys the map takes
+... WITH compaction = {'class': <Tab> -- Shows: the compaction strategies
+... WITH gc_grace_seconds = <Tab>     -- Shows: <seconds>
+... WITH CLUSTERING ORDER BY (b <Tab> -- Shows: ASC, DESC
+
+-- An index completes through its target, its implementation and its options
+CREATE INDEX i ON t (<Tab>           -- Shows: keys(, values(, entries(, full(, <column name>
+... (email) USING <Tab>              -- Shows: 'sai', 'StorageAttachedIndex', etc.
+... USING 'sai' WITH OPTIONS = {<Tab> -- Shows: the options that index takes
+```
+
+**File Path Completion:**
+```sql
+-- For commands that accept file paths
+SOURCE '<Tab>          -- Shows: files in current directory
+SOURCE '/path/<Tab>    -- Shows: files in /path/
+```
+
+#### Completion Behavior
+
+- **Case Insensitive:** Type `sel<Tab>` to get `SELECT`
+- **Partial Matching:** Type part of a word and press Tab
+- **Multiple Matches:** When multiple completions are available:
+  - First Tab: Shows inline completion if unique
+  - Second Tab: Shows all available options in a modal
+- **Smart Filtering:** Completions are filtered based on current context
+- **Escape to Cancel:** Press `Esc` to close the completion modal
+- **What to Type:** Where the next word is yours to invent - the name of a keyspace, a table, a column, or a value - the list says so rather than going empty: `<table name>`, `<column name>`, `<value>`. A note like that is shown in italics and is never put into the prompt.
+- **Quoted Names:** A keyspace, table or column whose name has capitals, starts with a digit or an underscore, is a reserved word such as `order`, or has other characters CQL would fold or refuse goes in with double quotes: `SELECT * FROM My<Tab>` gives `"MyKeyspace".`, and the table after it `"MyKeyspace"."TableA"`. Unquoted, CQL would read the name as `mykeyspace`. Typing the opening quote yourself works too.
+
+#### Examples
+
+```sql
+-- Complete table name
+SELECT * FROM us<Tab>
+-- Completes to: SELECT * FROM users
+
+-- Complete consistency level
+CONSISTENCY LOC<Tab>
+-- Shows: LOCAL_ONE, LOCAL_QUORUM, LOCAL_SERIAL
+
+-- Complete column names after SELECT
+SELECT id, na<Tab> FROM users
+-- Completes to: SELECT id, name FROM users
+
+-- Complete file paths for SOURCE command
+SOURCE 'sche<Tab>
+-- Completes to: SOURCE 'schema.cql'
+
+-- Complete COPY command options
+COPY users TO 'file.csv' WITH <Tab>
+-- Shows: HEADER, DELIMITER, NULLVAL, PAGESIZE, etc.
+
+-- Show all tables when multiple exist
+SELECT * FROM <Tab>
+-- Shows modal with: users, orders, products, etc.
+```
+
+#### Tips for Effective Use
+
+1. **Use Tab liberally:** The completion system is smart and context-aware
+2. **Type minimum characters:** Often 2-3 characters are enough to get unique completion
+3. **Use for discovery:** Press Tab on empty input to see what's available
+4. **File paths:** Remember to include quotes for file path completion
+5. **Navigate completions:** Use arrow keys to select from multiple options, or click one to use it. The mouse wheel moves through the list
+
+## Available Commands
+
+CQLAI supports all standard CQL commands plus additional meta-commands for enhanced functionality.
+
+### CQL Commands
+Execute any valid CQL statement supported by your Cassandra cluster:
+- DDL: `CREATE`, `ALTER`, `DROP` (KEYSPACE, TABLE, INDEX, etc.)
+- DML: `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+- DCL: `GRANT`, `REVOKE`
+- Other: `USE`, `TRUNCATE`, `BEGIN BATCH`, etc.
+
+### Meta-Commands
+
+Meta-commands provide additional functionality beyond standard CQL:
+
+#### Session Management
+- **CONSISTENCY** `<level>` - Set consistency level (ONE, QUORUM, ALL, etc.)
+  ```sql
+  CONSISTENCY QUORUM
+  CONSISTENCY LOCAL_ONE
+  ```
+
+- **PAGING** `<size>` | OFF - Set result paging size
+  ```sql
+  PAGING 1000
+  PAGING OFF
+  ```
+
+- **TRACING** ON | OFF - Enable/disable query tracing
+  ```sql
+  TRACING ON
+  SELECT * FROM users;
+  TRACING OFF
+  ```
+
+- **OUTPUT** [FORMAT] - Set output format
+  ```sql
+  OUTPUT          -- Show current format
+  OUTPUT TABLE    -- Table format (default)
+  OUTPUT JSON     -- JSON format
+  OUTPUT EXPAND   -- Expanded vertical format
+  OUTPUT ASCII    -- ASCII table format
+  ```
+  The format decides how a result is drawn and nothing else. `OUTPUT JSON` used
+  to rewrite the query as `SELECT JSON`, so what came back was one column of
+  documents rather than the columns asked for; JSON is now written by CQLAI from
+  the values that come back, keeping their types. Typing `SELECT JSON` yourself
+  still does what it always did.
+
+  Changing the format redraws the result already on screen, in the new format,
+  without running the query again. `EXPAND ON` and `EXPAND OFF` are the same
+  setting by another name, as is the Output control on the status line. Only the
+  rows fetched so far are redrawn: a switch does not pull the rest of a result
+  in, and says how many rows are showing when there are more.
+
+#### Schema Description
+- **DESCRIBE** - Show schema information
+  ```sql
+  DESCRIBE KEYSPACES                    -- List all keyspaces, virtual ones included
+  DESCRIBE KEYSPACE <name>              -- Show keyspace definition
+  DESCRIBE TABLES                       -- List tables in current keyspace
+  DESCRIBE TABLE <name>                 -- Show table structure
+  DESCRIBE TYPES                        -- List user-defined types
+  DESCRIBE TYPE <name>                  -- Show UDT definition
+  DESCRIBE FUNCTIONS                    -- List user functions
+  DESCRIBE FUNCTION <name>              -- Show function definition
+  DESCRIBE AGGREGATES                   -- List user aggregates
+  DESCRIBE AGGREGATE <name>             -- Show aggregate definition
+  DESCRIBE MATERIALIZED VIEWS           -- List materialized views
+  DESCRIBE MATERIALIZED VIEW <name>     -- Show view definition
+  DESCRIBE INDEX <name>                 -- Show index definition
+  DESCRIBE CLUSTER                      -- Show cluster information
+  DESC <keyspace>.<table>               -- Shorthand for table description
+  ```
+
+  A name is read as CQL reads it: without quotes in lower case, so one with
+  capitals goes in double quotes - `DESCRIBE TABLE "MyKeyspace"."TableA"`. So
+  does a name that starts with a digit or an underscore, or is a reserved word.
+
+  Virtual keyspaces (Cassandra 4.0+) are listed, described, completed and can be
+  `USE`d like any other. `DESCRIBE TABLES` shows their keys - which is what a
+  virtual table can be filtered on - and `virtual` where a stored table shows
+  its compaction. `DESCRIBE SCHEMA` leaves them out: it is meant to be replayed
+  on another cluster, and a virtual table cannot be created with CQL.
+
+#### Data Export/Import
+- **COPY TO** - Export table data to CSV or Parquet file
+  ```sql
+  -- Basic export to CSV
+  COPY users TO 'users.csv'
+
+  -- Export to Parquet format (auto-detected by extension)
+  COPY users TO 'users.parquet'
+
+  -- Export to Parquet with explicit format and compression
+  COPY users TO 'data.parquet' WITH FORMAT='PARQUET' AND COMPRESSION='SNAPPY'
+
+  -- Export specific columns
+  COPY users (id, name, email) TO 'users_partial.csv'
+
+  -- Export with options
+  COPY users TO 'users.csv' WITH HEADER = TRUE AND DELIMITER = '|'
+
+  -- Export to stdout
+  COPY users TO STDOUT WITH HEADER = TRUE
+
+  -- Available options:
+  -- FORMAT = 'CSV'/'PARQUET' -- Output format (default: CSV, auto-detected)
+  -- HEADER = TRUE/FALSE      -- Include column headers (CSV only)
+  -- DELIMITER = ','          -- Field delimiter (CSV only)
+  -- NULLVAL = 'NULL'        -- String to use for NULL values
+  -- PAGESIZE = 1000         -- Rows per page for large exports
+  -- COMPRESSION = 'SNAPPY'  -- For Parquet: SNAPPY, GZIP, ZSTD, LZ4, NONE
+  -- CHUNKSIZE = 10000       -- Rows per chunk for Parquet
+  ```
+
+  In a CSV file each value is written as Cassandra writes it: a timestamp with
+  its milliseconds and zone (`2024-01-02 03:04:05.678+0000`), a date as
+  `2024-02-29`, a duration as `1h30m`, a blob as `0x...`. A list, set, map,
+  tuple or user-defined type is written as JSON (`["a", "b"]`,
+  `{"x": 1}`). NULL is written as `NULLVAL` (`null` unless set), so an empty
+  string stays empty and is not read back as NULL. The header row has the
+  column names alone. A read that fails partway, or a file that cannot be
+  written, is reported as an error, not as a finished export.
+
+- **COPY FROM** - Import CSV or Parquet data into table
+  ```sql
+  -- Basic import from CSV file
+  COPY users FROM 'users.csv'
+
+  -- Import from Parquet file (auto-detected)
+  COPY users FROM 'users.parquet'
+
+  -- Import from Parquet with explicit format
+  COPY users FROM 'data.parquet' WITH FORMAT='PARQUET'
+
+  -- Import with header row (CSV)
+  COPY users FROM 'users.csv' WITH HEADER = TRUE
+
+  -- Import specific columns
+  COPY users (id, name, email) FROM 'users_partial.csv'
+
+  -- Import from stdin
+  COPY users FROM STDIN
+
+  -- Import with custom options
+  COPY users FROM 'users.csv' WITH HEADER = TRUE AND DELIMITER = '|' AND NULLVAL = 'N/A'
+
+  -- Available options:
+  -- HEADER = TRUE/FALSE      -- First row contains column names
+  -- DELIMITER = ','          -- Field delimiter
+  -- NULLVAL = 'NULL'        -- String representing NULL values
+  -- MAXROWS = -1            -- Maximum rows to import (-1 = unlimited)
+  -- SKIPROWS = 0            -- Number of initial rows to skip
+  -- MAXPARSEERRORS = -1     -- Max parsing errors allowed (-1 = unlimited)
+  -- MAXINSERTERRORS = 1000  -- Max insert errors allowed
+  -- MAXBATCHSIZE = 20       -- Max rows per batch insert
+  -- MAXREQUESTS = 6         -- Concurrent batch workers (parallelism)
+  -- MINBATCHSIZE = 2        -- Min rows per batch insert
+  -- CHUNKSIZE = 5000        -- Rows between progress updates
+  -- ENCODING = 'UTF8'       -- File encoding
+  -- QUOTE = '"'             -- Quote character for strings
+  ```
+
+  Each CSV field is read by Cassandra as its column's type, so `02134` in a
+  text column stays text, and timestamps, blobs, UUIDs, durations,
+  collections, tuples and user-defined types are read as `COPY TO` writes them.
+  Columns the file does not have are left as they are, not set to NULL.
+
+- **AUTOSAVE** - Save every query's output into a directory, as it runs
+  ```sql
+  AUTOSAVE '/exports/'               -- Save each query as a text file
+  AUTOSAVE JSON '/exports/'          -- One JSON file per query
+  AUTOSAVE CSV '/exports/'           -- One CSV file per query
+  AUTOSAVE PARQUET '/exports/'       -- One Parquet file per query
+  SELECT * FROM users;               -- written to /exports/query_20260910_181240_001.csv
+  SELECT * FROM events;              -- written to /exports/query_20260910_181241_002.csv
+  AUTOSAVE OFF                       -- Stop
+  ```
+
+  **A directory, not a file.** Each query gets its own timestamped file, because
+  one file cannot hold the output of every query: two queries against different
+  tables have different columns, and a Parquet file has one schema. CSV has the
+  same problem more quietly - a header row, then rows from another table
+  underneath it.
+
+  Each file is finished as its query is, so it can be read straight away. With
+  `AUTOFETCH` off, rows that page in later are written as numbered parts of the
+  same query - a Parquet file is sealed by its footer and cannot be added to.
+
+  `CAPTURE` still works as a name for this command, for `cqlsh` compatibility.
+
+- **SAVE** - Save displayed query results to file (without re-executing)
+  ```sql
+  -- First run a query
+  SELECT * FROM users WHERE status = 'active';
+
+  -- Then save the displayed results in various formats:
+  SAVE                                    -- Interactive dialog (choose format & filename)
+  SAVE TO 'users.csv'                     -- Save to CSV (format auto-detected)
+  SAVE TO 'users.json'                    -- Save to JSON (format auto-detected)
+  SAVE TO 'users.parquet'                 -- Save to Parquet (format auto-detected)
+  SAVE TO 'data.out' AS CSV               -- Explicitly specify format
+
+  -- Key differences from AUTOSAVE:
+  -- - SAVE writes one file, of the result you are looking at
+  -- - AUTOSAVE writes a file per query, for every query from now on
+  -- - No need to re-run the query
+  -- - Preserves exact data shown in terminal
+  -- - Works with paginated results (saves only loaded pages)
+  -- PARQUET needs the column types of the result, so it is offered for query
+  -- results and not for a DESCRIBE, which arrives without them.
+  ```
+
+#### Information Display
+- **SHOW** - Display session information
+  ```sql
+  SHOW VERSION          -- Show Cassandra version
+  SHOW HOST            -- Show current connection details
+  SHOW SESSION         -- Show all session settings
+  ```
+
+- **EXPAND** ON | OFF - Toggle expanded output mode
+  ```sql
+  EXPAND ON            -- Vertical output (one field per line)
+  SELECT * FROM users WHERE id = 1;
+  EXPAND OFF           -- Normal table output
+  ```
+
+#### Script Execution
+- **SOURCE** - Execute CQL scripts from file. A `USE` in the file holds for the statements after it, and after the file
+  ```sql
+  SOURCE 'schema.cql'           -- Execute script
+  SOURCE '/path/to/script.cql'  -- Absolute path
+  ```
+  The file is split into statements as the shell splits what you type: a
+  semicolon in a string or a comment does not end a statement, and a
+  `BEGIN BATCH` runs whole. A file that sources itself, directly or through
+  another, is refused.
+
+#### Help
+- **HELP** - Open the Help window, the same as `F1`. `HELP INSERT`, `HELP CREATE TABLE` or any other command shows how it is written, with an example and a link to its page in the [AxonOps CQL reference](https://axonops.com/docs/data-platforms/cassandra/cql/). Drag over the text to copy it. Ctrl+click the link to open it in your browser. If no browser can be opened, over ssh for example, the link is copied instead
+  ```sql
+  HELP                 -- Show all commands
+  HELP DESCRIBE        -- Help for specific command
+  HELP CONSISTENCY     -- Help for consistency levels
+  ```
+
+### AI Commands
+- **.ai** `<natural language query>` - Generate CQL from natural language
+  ```sql
+  .ai show all users with active status
+  .ai create a table for storing user sessions
+  .ai find orders placed in the last 30 days
+  ```
+
+## Configuration
+
+CQLAI supports multiple configuration methods for maximum flexibility and compatibility with existing Cassandra setups.
+
+### Configuration Precedence
+
+Configuration sources are loaded in the following order (later sources override earlier ones):
+
+1. **CQLSHRC files** (for compatibility with existing cqlsh setups)
+   - `~/.cassandra/cqlshrc` (standard location)
+   - `~/.cqlshrc` (alternative location)
+   - `$CQLSH_RC` (if environment variable is set)
+
+2. **CQLAI JSON configuration files**
+   - `./cqlai.json` (current directory)
+   - `~/.cassandra/cqlai.json` (beside `cqlshrc`, and where a new one is written)
+   - `~/.cqlai.json` (user home directory, where it used to go)
+   - `~/.config/cqlai/config.json` (XDG config directory)
+
+3. **Environment variables**
+   - `CQLAI_HOST`, `CQLAI_PORT`, `CQLAI_KEYSPACE`, etc.
+   - `CASSANDRA_HOST`, `CASSANDRA_PORT` (for compatibility)
+
+### Editing the configuration from inside CQLAI
+
+`FILE > PREFERENCES` on the tab line opens a window holding CQLAI's own
+settings in `cqlai.json` - how results are fetched and drawn, the history files,
+the AI providers and the auth provider. Fill them in, press `Save`, and it
+writes the JSON file it was loaded from, or `~/.cassandra/cqlai.json` when none
+was found.
+Keys already in the file that CQLAI does not know about are left alone.
+
+`CHAT` holds one setting, which provider to ask. Its key, its model and where it
+lives belong to the provider and are in the provider's own section below -
+`CHAT - ANTHROPIC`, `CHAT - OLLAMA` and so on - so switching provider does not
+mean retyping them, and a key is never in a box that does not say whose it is.
+
+Where to connect and how - host, port, keyspace, credentials, timeouts and SSL -
+belongs to a connection rather than to CQLAI, and is edited in `FILE > CONNECT`
+against the connection it belongs to. Two windows writing the same setting is
+the mistake this project keeps finding in its own code.
+
+What the window edits is what CQLAI starts with. It does not change the session
+running now: consistency, paging and output format are set for this session from
+the status line, or with `CONSISTENCY`, `PAGING` and `OUTPUT`.
+
+4. **Command-line flags** (highest priority)
+   - `--host`, `--port`, `--keyspace`, `--username`, `--password`, etc.
+
+### CQLSHRC Compatibility
+
+CQLAI can read standard CQLSHRC files used by the traditional `cqlsh` tool, making migration seamless.
+
+**Supported CQLSHRC sections:**
+- `[connection]` - hostname, port, ssl settings
+- `[authentication]` - keyspace, credentials file path
+- `[auth_provider]` - authentication module and username
+- `[ssl]` - SSL/TLS certificate configuration
+
+**Example CQLSHRC file:**
+```ini
+; ~/.cassandra/cqlshrc
+[connection]
+hostname = cassandra.example.com
+port = 9042
+ssl = true
+
+[authentication]
+keyspace = my_keyspace
+credentials = ~/.cassandra/credentials
+
+[ssl]
+certfile = ~/certs/ca.pem
+userkey = ~/certs/client-key.pem
+usercert = ~/certs/client-cert.pem
+validate = true
+```
+
+See [CQLSHRC_SUPPORT.md](docs/CQLSHRC_SUPPORT.md) for complete CQLSHRC compatibility details.
+
+### CQLAI JSON Configuration
+
+For advanced features and AI configuration, CQLAI uses its own JSON format:
+
+**Example `cqlai.json`:**
+```json
+{
+  "host": "127.0.0.1",
+  "port": 9042,
+  "keyspace": "",
+  "username": "cassandra",
+  "password": "cassandra",
+  "requireConfirmation": true,
+  "consistency": "LOCAL_ONE",
+  "pageSize": 100,
+  "maxMemoryMB": 10,
+  "connectTimeout": 10,
+  "requestTimeout": 10,
+  "debug": false,
+  "historyFile": "~/.cassandra/cqlai_history",
+  "aiHistoryFile": "~/.cassandra/cqlai_ai_history",
+  "ssl": {
+    "enabled": false,
+    "certPath": "/path/to/client-cert.pem",
+    "keyPath": "/path/to/client-key.pem",
+    "caPath": "/path/to/ca-cert.pem",
+    "hostVerification": true,
+    "insecureSkipVerify": false
+  },
+  "ai": {
+    "provider": "openai",
+    "apiKey": "sk-...",
+    "model": "gpt-4-turbo-preview"
+  }
+}
+```
+
+**Note:** You can also use the `url` field to override the API endpoint for OpenAI-compatible APIs:
+```json
+{
+  "ai": {
+    "provider": "openai",
+    "apiKey": "your-api-key",
+    "url": "https://api.synthetic.new/openai/v1",
+    "model": "hf:Qwen/Qwen3-235B-A22B-Instruct-2507"
+  }
+}
+```
+
+### AI Provider Configuration
+
+**Note:** AI features are completely optional. CQLAI works as a full-featured CQL shell without any AI configuration.
+
+To enable AI-powered query generation, configure your preferred provider in the `ai` section of your `cqlai.json` file.
+
+#### OpenAI (GPT-4 & GPT-3.5)
+
+Use OpenAI for high-quality, general-purpose query generation. Requires an OpenAI API key.
+
+- **Get API Key:** [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- **Recommended Models:**
+  - `gpt-4-turbo-preview` (default, recommended for best results)
+  - `gpt-3.5-turbo` (faster, more cost-effective)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "openai",
+    "apiKey": "sk-...",
+    "model": "gpt-4-turbo-preview"
+  }
+}
+```
+
+#### Anthropic (Claude)
+
+Use Anthropic for powerful, context-aware models. Ideal for complex queries and reasoning. Requires an Anthropic API key.
+
+These models think before they answer. CQLAI asks for that reasoning and shows
+it in the `CHAT` tab under `Thinking:`, above the answer it led to - so there is
+something to read while it works rather than a pause. A model too old to be
+asked for it is asked once and then left alone.
+
+- **Get API Key:** [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+- **Recommended Models:**
+  - `claude-opus-5` (default, most capable)
+  - `claude-sonnet-5` (faster, less expensive)
+  - `claude-haiku-4-5` (fastest)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "anthropic",
+    "apiKey": "sk-ant-...",
+    "model": "claude-opus-5"
+  }
+}
+```
+
+#### Google Gemini
+
+Use Google Gemini for a fast and capable model from Google. Requires a Google AI Studio API key.
+
+- **Get API Key:** [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- **Recommended Model:**
+  - `gemini-3.8-flash` (default)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "gemini",
+    "apiKey": "...",
+    "model": "gemini-3.8-flash"
+  }
+}
+```
+
+#### Synthetic (Multiple Open-Source Models)
+
+Use Synthetic to access a vast selection of open-source AI models at very reasonable prices. Synthetic provides an OpenAI-compatible API that makes it easy to work with various open-source models.
+
+- **Get Started:** [synthetic.new](https://synthetic.new/)
+- **API Documentation:** [dev.synthetic.new/docs](https://dev.synthetic.new/docs)
+- **Recommended Model:**
+  - `hf:Qwen/Qwen3-235B-A22B-Instruct-2507` (recommended, though we haven't extensively tested all models)
+- **Available Models:** See [Always-On Models](https://dev.synthetic.new/docs/api/models#always-on-models)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "openai",
+    "apiKey": "your-synthetic-api-key",
+    "url": "https://api.synthetic.new/openai/v1",
+    "model": "hf:Qwen/Qwen3-235B-A22B-Instruct-2507"
+  }
+}
+```
+
+**Key Benefits:**
+- Access to a wide variety of open-source models
+- Cost-effective pricing
+- OpenAI-compatible API for easy integration
+- No vendor lock-in
+
+**Notes:**
+- Synthetic presents an OpenAI-compatible interface, so you use the `openai` provider in your configuration
+- The `url` field overrides the default OpenAI endpoint to point to Synthetic
+- API key is required - obtain one from [synthetic.new](https://synthetic.new/)
+
+#### Ollama (Local Models)
+
+Use Ollama for running AI models locally or connecting to OpenAI-compatible APIs. Ollama allows you to run powerful language models on your own hardware without sending data to external services.
+
+- **Get Started:** [ollama.ai](https://ollama.ai)
+- **Recommended Models:**
+  - `llama3.2` (Meta's Llama 3.2)
+  - `codellama` (Code-specialized Llama)
+  - `mistral` (Mistral AI's model)
+  - `qwen2.5-coder` (Alibaba's code model)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "ollama",
+    "model": "llama3.2",
+    "url": "http://localhost:11434/v1"
+  }
+}
+```
+
+**Environment Variables:**
+- `OLLAMA_URL` - Custom Ollama server URL (default: `http://localhost:11434/v1`)
+- `OLLAMA_MODEL` - Model to use
+
+**Notes:**
+- No API key required for local Ollama installations
+- Supports custom URLs for remote Ollama servers or OpenAI-compatible endpoints
+- The `url` field can be set at the top level (`ai.url`) or provider-specific (`ai.ollama.url`)
+
+#### OpenRouter (Multiple Models)
+
+Use OpenRouter to access multiple AI models through a single API. OpenRouter provides access to various models from different providers.
+
+- **Get API Key:** [openrouter.ai/keys](https://openrouter.ai/keys)
+- **Available Models:** See [openrouter.ai/models](https://openrouter.ai/models)
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "openrouter",
+    "apiKey": "sk-or-...",
+    "model": "anthropic/claude-opus-5",
+    "url": "https://openrouter.ai/api/v1"
+  }
+}
+```
+
+**Environment Variables:**
+- `OPENROUTER_API_KEY` - OpenRouter API key
+- `OPENROUTER_MODEL` - Model to use
+- `OPENROUTER_URL` - Custom OpenRouter URL (default: `https://openrouter.ai/api/v1`)
+
+#### Mock Provider (for Testing)
+
+The `mock` provider is the default and requires no API key. It's useful for testing the AI workflow or for users who don't need real AI capabilities. It generates simple, predictable queries based on keywords.
+
+**Configuration:**
+```json
+{
+  "ai": {
+    "provider": "mock"
+  }
+}
+```
+
+#### Using Environment Variables for API Keys and URLs
+
+For better security, you can provide API keys and custom URLs via environment variables instead of writing them in the configuration file.
+
+**API Keys:**
+- **OpenAI:** `OPENAI_API_KEY`
+- **Anthropic:** `ANTHROPIC_API_KEY`
+- **Google Gemini:** `GEMINI_API_KEY`
+- **OpenRouter:** `OPENROUTER_API_KEY`
+
+**Custom URLs:**
+- **Ollama:** `OLLAMA_URL` (default: `http://localhost:11434/v1`)
+- **OpenRouter:** `OPENROUTER_URL` (default: `https://openrouter.ai/api/v1`)
+
+If an environment variable is set, it will be used even if a value is present in `cqlai.json`.
+
+**Configuration Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `host` | string | `127.0.0.1` | Cassandra host address |
+| `port` | number | `9042` | Cassandra port |
+| `keyspace` | string | `""` | Default keyspace to use |
+| `username` | string | `""` | Authentication username |
+| `password` | string | `""` | Authentication password |
+| `requireConfirmation` | boolean | `true` | Require confirmation for destructive commands (DROP, DELETE, TRUNCATE) |
+| `consistency` | string | `LOCAL_ONE` | Default consistency level (ANY, ONE, TWO, THREE, QUORUM, ALL, LOCAL_QUORUM, EACH_QUORUM, LOCAL_ONE) |
+| `pageSize` | number | `100` | Number of rows per page |
+| `maxMemoryMB` | number | `10` | Maximum memory for query results in MB |
+| `connectTimeout` | number | `10` | Connection timeout in seconds |
+| `requestTimeout` | number | `10` | Request timeout in seconds |
+| `historyFile` | string | `~/.cassandra/cqlai_history` | Path to CQL command history file (supports `~` expansion). Moved from `~/.cqlai/history` the first time it is used |
+| `aiHistoryFile` | string | `~/.cassandra/cqlai_ai_history` | Path to AI command history file (supports `~` expansion). Moved from `~/.cqlai/ai_history` the first time it is used |
+| `debug` | boolean | `false` | Enable debug logging |
+
+### Configuration File Locations
+
+CQLAI searches for configuration files in the following locations:
+
+**CQLSHRC files:**
+1. `$CQLSH_RC` (if environment variable is set)
+2. `~/.cassandra/cqlshrc` (standard cqlsh location)
+3. `~/.cqlshrc` (alternative location)
+
+**CQLAI JSON files:**
+1. `./cqlai.json` (current working directory)
+2. `~/.cassandra/cqlai.json` (beside `cqlshrc`)
+3. `~/.cqlai.json` (user home directory)
+4. `~/.config/cqlai/config.json` (XDG config directory on Linux/macOS)
+
+### Environment Variables
+
+All environment variables supported by CQLAI. `CQLAI_*` variables take precedence over `CASSANDRA_*` equivalents.
+
+#### Connection
+- `CQLAI_HOST` or `CASSANDRA_HOST` - Cassandra host
+- `CQLAI_PORT` or `CASSANDRA_PORT` - Cassandra port
+- `CQLAI_KEYSPACE` or `CASSANDRA_KEYSPACE` - Default keyspace
+- `CQLAI_USERNAME` or `CASSANDRA_USERNAME` - Authentication username
+- `CQLAI_PASSWORD` or `CASSANDRA_PASSWORD` - Authentication password
+- `CQLAI_CONNECT_TIMEOUT` - Connection timeout in seconds (default: 10)
+- `CQLAI_REQUEST_TIMEOUT` - Request timeout in seconds (default: 10)
+- `CQLAI_NO_CONFIRM` - Set to `true` or `1` to disable confirmation prompts for destructive commands
+- `CQLAI_DEBUG` - Set to `true` or `1` to enable debug logging
+
+#### Configuration
+- `CQLAI_CONFIG_FILE` - Path to JSON config file (overrides default locations)
+- `CQLSH_RC` - Path to custom CQLSHRC file
+
+#### Batch Mode
+- `CQLAI_EXECUTE` - CQL statement to execute (equivalent to `-e`)
+- `CQLAI_FILE` - CQL file to execute (equivalent to `-f`)
+- `CQLAI_FORMAT` - Output format: ascii, json, csv, table (default: ascii)
+- `CQLAI_NO_HEADER` - Set to `true` or `1` to omit column headers (CSV)
+- `CQLAI_FIELD_SEPARATOR` - Field separator for CSV output (default: `,`)
+- `CQLAI_PAGE_SIZE` - Pagination size (default: 100)
+- `CQLAI_MAX_MEMORY_MB` - Maximum memory for query results in MB (default: 10)
+
+#### AI Configuration
+- `CQLAI_AI_PROVIDER` or `AI_PROVIDER` - AI provider name (mock, openai, anthropic, gemini, ollama, openrouter)
+- `CQLAI_AI_API_KEY` or `AI_API_KEY` - General AI API key
+- `CQLAI_AI_MODEL` or `AI_MODEL` - General AI model name
+- `OPENAI_API_KEY` - OpenAI API key
+- `OPENAI_MODEL` - OpenAI model name
+- `ANTHROPIC_API_KEY` - Anthropic API key
+- `ANTHROPIC_MODEL` - Anthropic model name
+- `GEMINI_API_KEY` - Google Gemini API key
+- `OLLAMA_URL` - Ollama server URL (default: `http://localhost:11434/v1`)
+- `OLLAMA_MODEL` - Ollama model name
+- `OPENROUTER_API_KEY` - OpenRouter API key
+- `OPENROUTER_MODEL` - OpenRouter model name
+- `OPENROUTER_URL` - OpenRouter API URL (default: `https://openrouter.ai/api/v1`)
+
+### Migration from cqlsh
+
+If you're migrating from `cqlsh`, CQLAI will automatically read your existing `~/.cassandra/cqlshrc` file. No changes are needed to start using CQLAI with your existing Cassandra configuration.
+
+## AI-Powered Query Generation
+
+CQLAI can write CQL from plain English, and it can read what is already on
+screen: a query trace, or a table's definition.
+
+Prefix a request with `.ai`, or use the `CHAT` tab (`F6`) for a conversation
+that remembers what was said before it.
+
+### Examples
+
+```sql
+-- Simple queries
+.ai show all users
+.ai find products with price less than 100
+.ai count orders from last month
+
+-- Complex operations
+.ai create a table for storing customer feedback with id, customer_id, rating, and comment
+.ai update user status to inactive where last_login is older than 90 days
+.ai delete all expired sessions
+
+-- Schema exploration
+.ai what tables are in this keyspace
+.ai describe the structure of the users table
+```
+
+### Reading What Is On Screen
+
+Writing CQL is one half. The other is asking about something you are already
+looking at, with `Alt+A`:
+
+- **In the `TRACE` tab** - where the time went, longest first; what the trace
+  shows that the timings do not, such as tombstones read, a read repair, or a
+  range scan where a partition lookup was possible; and what to change. The
+  answer opens under the trace it is about, in a pane you can resize by dragging
+  the line between them, and copy out of.
+- **In the `SCHEMA` view** - what a table is, what will go wrong with it
+  months later, and what to change. It says when a change means writing the data
+  again somewhere else, because in Cassandra it usually does.
+
+Neither sends any rows. The trace and the definition are what go out.
+
+### How It Works
+
+1. **Natural Language Input**: Type `.ai` followed by your request in plain English
+2. **Schema Context**: CQLAI automatically extracts your current schema to provide context
+3. **Query Generation**: The AI generates a structured query plan
+4. **Preview & Confirm**: Review the generated CQL before execution
+5. **Execute or Edit**: Choose to execute, edit, or cancel the query
+
+### Supported AI Providers
+
+Configure your preferred AI provider in `cqlai.json`:
+
+- **[OpenAI](https://openai.com/)** (GPT-4, GPT-3.5)
+- **[Anthropic](https://www.anthropic.com/)** (Claude)
+- **[Google Gemini](https://ai.google.dev/)**
+- **[Ollama](https://ollama.ai/)** (local models, over its OpenAI-compatible endpoint)
+- **[OpenRouter](https://openrouter.ai/)** (Access to multiple models)
+- **Mock** (default, for testing without API keys)
+
+Anything else that speaks the OpenAI API is reached by setting `provider` to
+`openai` and pointing `url` at it - [Synthetic](https://synthetic.new/) is
+configured that way [below](#synthetic-multiple-open-source-models).
+
+### Safety Features
+
+- **Read-only by default**: the AI prefers SELECT queries unless explicitly asked to modify
+- **Dangerous operation warnings**: `DROP`, `DELETE`, `TRUNCATE` and `ALTER` show a warning above the CQL, whether or not the model thought to add one
+- **Confirmation required**: nothing runs until you press Enter on the query in front of you
+- **Preview before execution**: the CQL is shown as it will be run, and can be edited first
+
+### Disabling Confirmation Prompts
+
+For automation and scripting, you can disable the confirmation prompts for destructive commands (DROP, DELETE, TRUNCATE) using any of these methods:
+
+1. **Command-line flag**:
+   ```bash
+   cqlai --no-confirm -e "TRUNCATE my_table;"
+   ```
+
+2. **Environment variable**:
+   ```bash
+   export CQLAI_NO_CONFIRM=true
+   cqlai -e "DROP TABLE old_data;"
+   ```
+
+3. **Configuration file** (`cqlai.json`):
+   ```json
+   {
+     "requireConfirmation": false
+   }
+   ```
+
+**Note**: Use with caution in production environments. These settings disable safety prompts that help prevent accidental data loss.
+
+## MCP Server
+
+`cqlai mcp` lets an AI assistant work with one Cassandra cluster through CQLAI.
+The assistant connects over the [Model Context Protocol](https://modelcontextprotocol.io)
+(MCP). CQLAI holds the connection, runs the statements, and returns the results
+as JSON.
+
+The assistant is the MCP client. CQLAI does not call an AI provider in this
+mode, and no AI provider needs to be set up.
+
+The server never changes data or schema. When a change is wanted, the model
+proposes it: CQLAI says what it will do, and you decide whether to run it
+yourself. See [Proposed changes](#proposed-changes).
+
+### Starting it
+
+There are two ways to run it.
+
+**`cqlai mcp`** opens the shell as usual and serves MCP from it, at
+`http://127.0.0.1:7845/mcp` unless set otherwise. It serves whichever connection you pick in
+`FILE > CONNECT`, under that connection's settings, and follows you when you
+pick another. It starts whether or not a cluster can be reached; with none, it
+opens `CONNECT` so you can pick one. The status bar shows `MCP: :7845` while it
+is serving.
+
+`FILE > MCP SERVER` prints what to add to your client's configuration, ready to
+copy:
+
+```json
+{
+  "mcpServers": {
+    "cqlai": {
+      "type": "http",
+      "url": "http://127.0.0.1:7845/mcp"
+    }
+  }
+}
+```
+
+**The token.** It is off unless you turn it on: tick `Require token` under
+MCP SERVER in PREFERENCES, set `"token": true` in the `mcp` block of
+`cqlai.json`, or start with `cqlai mcp --token`. Then every request has to
+carry it, and the client configuration above has a `headers` entry with it:
+
+```json
+"headers": { "Authorization": "Bearer <token>" }
+```
+
+The token is in `~/.cassandra/cqlai_mcp_token`, readable only by
+you. The file is made the first time `cqlai mcp` runs with the token on, and the token stays the
+same each time the shell starts, so the client's configuration does not change.
+There are two ways to get it:
+
+- In the shell: `FILE > MCP SERVER` prints the client configuration with the
+  token already in the `Authorization` header.
+- In a terminal: `cat ~/.cassandra/cqlai_mcp_token`
+
+CQLAI 0.3.3 and earlier kept the token in `~/.cqlai_mcp_token`, and the
+audit log in `~/.cqlai_mcp_audit.log`. Both are moved to `~/.cassandra` the
+next time they are used, so a client set up with the old token keeps working.
+
+Anyone with the token can use what the server allows, so keep it like a
+password and out of anything you share. To replace it, delete the file: the
+next `cqlai mcp` makes a new one, and the client's configuration needs the new
+token. If the file can be read by anyone but you, CQLAI does not use it and
+says so; `chmod 600 ~/.cassandra/cqlai_mcp_token` fixes that.
+
+**Serving it elsewhere, with TLS.** These settings are under MCP SERVER in
+PREFERENCES, in the `mcp` block of `cqlai.json`, and flags of `cqlai mcp`.
+They apply when `cqlai mcp` starts.
+
+| PREFERENCES | `cqlai.json` | Flag | What it does |
+|---|---|---|---|
+| Listen on | `listen` | `--listen` | The address to serve on. `127.0.0.1` unless set |
+| Port | `port` | `--port` | The port. `7845` unless set |
+| Require token | `token` | `--token` | Every request has to carry the token. Off unless set |
+| TLS certificate | `tlsCert` | `--tls-cert` | Serve HTTPS with this certificate (PEM) |
+| TLS key | `tlsKey` | `--tls-key` | The certificate's private key (PEM) |
+| TLS client CA | `tlsClientCA` | `--tls-client-ca` | Ask each client for a certificate this CA signed (PEM) |
+
+On any address but this machine's own (`127.0.0.1`, `::1` or `localhost`),
+the network can reach the server. It then has to use TLS, and the token or a
+client CA. Without them it does not start: the status bar shows `MCP: OFF`, and
+`FILE > MCP SERVER` says why. For example:
+
+```json
+{
+  "mcp": {
+    "listen": "0.0.0.0",
+    "token": true,
+    "tlsCert": "/etc/cqlai/server.pem",
+    "tlsKey": "/etc/cqlai/server.key"
+  }
+}
+```
+
+**`cqlai mcp --headless`** has no shell. It is for a client that starts CQLAI
+itself and talks to it over stdin and stdout:
+
+```json
+{
+  "mcpServers": {
+    "cassandra-prod": {
+      "command": "cqlai",
+      "args": ["mcp", "--headless", "--connection", "prod"]
+    }
+  }
+}
+```
+
+`--connection` picks a saved connection by name; without it, the default
+connection is used. The password is the one saved with the connection, or
+`CQLAI_PASSWORD`; the server never asks for one, because stdin carries the
+protocol. It starts whether or not the cluster can be reached, and connects
+when a tool is first called.
+
+| Option | What it does |
+|---|---|
+| `--headless` | No shell: serve MCP on stdin and stdout |
+| `--port N` | The port the shell serves MCP on (default: the setting, or 7845) |
+| `--listen ADDRESS` | The address the shell serves MCP on (default: the setting, or 127.0.0.1) |
+| `--token` | Every request has to carry the token (default: the setting, or off) |
+| `--tls-cert FILE`, `--tls-key FILE` | Serve HTTPS with this certificate and key (PEM) |
+| `--tls-client-ca FILE` | Ask each client for a certificate this CA signed (PEM) |
+| `--connection NAME` | Headless: the saved connection to use |
+| `--permit SELECT,DESCRIBE` | Permit only these commands, of those the settings permit |
+| `--keyspaces ks1,ks2` | Only these keyspaces are visible, of those the settings allow |
+| `--max-rows N` | The page size, if lower than the settings' |
+| `--audit-log PATH` | Where the audit log goes; `-` turns it off |
+| `--config-file PATH` | The configuration file to read |
+
+The options that say what the server may do can only narrow what the settings
+allow. They cannot widen it. `--port`, `--listen`, `--token` and the TLS
+options say how it is served, and replace the settings.
+
+### The tools
+
+| Tool | What it does |
+|---|---|
+| `connection_info` | What the server is connected to, and what it may do there. A model should call it first. |
+| `list_keyspaces` | The visible keyspaces, the virtual ones included |
+| `list_tables` | A keyspace's tables, each with its partition and clustering key |
+| `get_schema` | A table's keys and columns |
+| `fuzzy_search` | Keyspaces and tables whose names match a word: spelled like it, or sounding like it, with vowels or letters left out or a letter wrong (`hyto` finds `hayato`). Says why each matched. |
+| `describe` | The CQL definition of a keyspace, table, type, index, view, function or aggregate, exactly as `DESCRIBE` prints it |
+| `query` | Runs one `SELECT` and returns a page of rows, with a token for the next page; every row with `Auto fetch` on |
+| `trace_query` | Runs one `SELECT` with tracing on, and returns the trace with the rows |
+| `node_status` | The node's settings, thread pools, connected clients, caches, compactions or disk usage, from its virtual tables (Cassandra 4.0 and later). Settings holding a secret are hidden. |
+| `table_size` | Cassandra's estimate of a table's partition count and mean partition size |
+| `list_roles` | The roles, and one role's permissions; never their passwords |
+| `propose_change` | Proposes a change for you to run. It is never run by CQLAI. See below. |
+
+The first four are the same tools the `CHAT` view's AI uses. A tool is only
+offered if the settings permit what it needs: with `SELECT` not permitted,
+`query`, `trace_query`, `node_status` and `table_size` are not offered at all.
+
+The server also offers:
+
+- **Resources:** each visible keyspace's definition, and any table's at
+  `cql://schema/{keyspace}/{table}`, for a client to read and attach. The client
+  is told when the schema changes, wherever it was changed.
+- **Prompts:** `review_table`, which reviews a table's definition, and
+  `diagnose_query`, which traces a query and explains where its time goes. They
+  use the same instructions as `Alt+A` in the shell.
+
+### Proposed changes
+
+The MCP server never runs `INSERT`, `UPDATE`, `DELETE`, `BATCH`, `CREATE`,
+`ALTER`, `DROP` or `TRUNCATE`. A model that wants one calls `propose_change`
+with the statement. CQLAI checks it - one statement, tables named in full, none
+of them hidden - and returns, without running it:
+
+- the statement, ready to copy;
+- the connection it would run on;
+- what it will do: warnings written into CQLAI for each kind of statement, not
+  the model's own account. For example, that `DROP TABLE` deletes the data on
+  every node and is snapshotted only if `auto_snapshot` is on; that dropping a
+  column cannot be undone; that changing replication moves no data until you
+  repair; that a `DELETE` without the whole primary key removes a whole
+  partition; that `INSERT` overwrites an existing row.
+
+The model is told to show you the statement and every warning.
+
+In `cqlai mcp`, the proposal also appears in the shell: the warnings in the
+Console, and the statement in the prompt, unrun. Press Enter to run it. The
+shell always asks first, with Cancel selected, whatever the `Confirm changes`
+setting says, because nobody typed it. Edit it, and it is yours, confirmed as
+any statement you type.
+
+### Refused statements are handed back
+
+When your settings refuse something - `SELECT` not permitted, a hidden
+keyspace or table, a redacted column, a scan - the reply is not just "refused".
+It gives the reason and the exact statement, and tells the model to show it to
+you, so you can run it yourself if you choose. A tool your settings do not offer
+does the same with the statement it would have run: `describe` gives back its
+`DESCRIBE`, `list_roles` its `LIST ROLES`.
+
+In `cqlai mcp`, the statement is also put in the prompt, unrun, with the reason
+in the Console, and confirmed before it runs, like a proposed change.
+
+Nothing comes back from the cluster with a refusal: only the statement, which
+is the model's own. `GRANT`, `REVOKE`, role and user changes, `USE`, and
+anything that is not one statement CQLAI can read, are refused without being
+handed back.
+
+### What the model may do
+
+What the server may do is set in the `PREFERENCES` window, in two sections:
+
+- **MCP SERVER**: the keyspaces the model can see, tables it can never see,
+  columns whose values are hidden, whether scans are allowed, the limits, where
+  the audit log goes, and the port the shell serves MCP on.
+- **MCP SERVER - PERMITTED COMMANDS**: `SELECT`, `DESCRIBE` and `LIST`, each
+  permitted or not. All three are permitted unless you say otherwise. Nothing
+  that changes data or schema can be permitted: it is only ever proposed.
+
+`CONNECT` has the same two sections for each saved connection. A connection's
+settings can only narrow the ones in `PREFERENCES`; a command `PREFERENCES`
+does not permit is shown dimmed and cannot be ticked. So production can be
+limited to two keyspaces while a test cluster sees everything.
+
+The settings are kept in `cqlai.json` under `mcp`, at the top of the file and
+on each saved connection. In the shell they apply as soon as `PREFERENCES` or
+`CONNECT` is saved: a command you untick is refused from the next call, without
+reconnecting. The port applies when `cqlai mcp` next starts, and a headless
+server reads its settings when it starts.
+
+### Security
+
+The model is not trusted. It can make mistakes, and text it reads from the
+cluster can try to steer it. So every rule is enforced in CQLAI, on every call,
+whatever the model asks for.
+
+- **One statement per call.** `SELECT ...; DROP ...` is refused.
+- **Only permitted reads run.** A statement is classified by CQLAI, not by
+  what the model says it is. Anything CQLAI does not recognise is refused.
+- **Changes are never run.** They are proposed, with what they will do, for you
+  to run. `GRANT`, `REVOKE`, role and user changes and `USE` are not even
+  proposed.
+- **Tables are named as `keyspace.table`.** An unqualified name would resolve
+  to the session's keyspace without being checked, so it is refused.
+- **Hidden keyspaces and tables stay hidden.** They are not listed, described,
+  found by search, or named in an error. `system_auth`, which holds the password
+  hashes, is always hidden.
+- **The system keyspaces.** With no keyspace list, `system`, `system_schema`,
+  `system_traces` and the other `system_` keyspaces are visible only when
+  `System keyspaces` is ticked under MCP SERVER in PREFERENCES
+  (`"systemKeyspaces": true`). With a keyspace list, list the ones you want.
+  `node_status` reads `system_views` either way, unless it is denied or left
+  out of a keyspace list.
+- **System tables leave out what you hide.** `system_schema`,
+  `system.size_estimates` and some virtual tables have a row for every keyspace
+  and table. When you hide anything - with a deny list, a keyspace list, or the
+  system keyspaces left out - a row about something hidden is left out, and a
+  `SELECT` on such a table has to return `keyspace_name` (and the table name)
+  under their own names, so each row can be checked. When nothing is hidden,
+  they are read as they are. Rows describing `system_auth`'s tables are kept:
+  they are the same in every cluster. Its data stays hidden.
+- **Redacted columns.** A redacted column's values come back as `[redacted]`.
+  On a table with redacted columns, a `SELECT` has to use `*` or column names:
+  no `JSON`, alias or function, and no condition on a redacted column.
+- **Materialized views follow their table.** A view holds its base table's
+  rows, so a deny entry or a redaction for the table holds for every view of
+  it.
+- **Secret settings.** In `system_views.settings`, the value of any setting
+  whose name has `password`, `secret` or `credential` in it comes back as
+  `[redacted]`, from `query` as from `node_status`. A `SELECT` there has to use
+  `*` or column names, and can filter by `name` only.
+- **Permissions on hidden things.** `list_roles` leaves out a permission on a
+  hidden keyspace or table, which would name it.
+- **Scans.** `ALLOW FILTERING`, and `COUNT`, `SUM`, `AVG`, `MIN` or `MAX`
+  across partitions, are refused unless scans are allowed. They can read a whole
+  table to return a few rows.
+- **Pages.** A query returns 100 rows at a time unless `Page size` says
+  otherwise, or the client asks for another number with `page_size`, which is
+  used as asked. With `Auto fetch` ticked (`"autoFetch": true`), a query
+  returns every row in one call, reading the pages itself. That can be a lot
+  on a large table.
+- **Limits.** One call runs at a time, up to 60 a minute. Reading a resource
+  or a prompt counts as a call, and a change to the limit in PREFERENCES holds
+  from the next call. Each page read has the request timeout. Long values are
+  cut.
+- **No credentials.** No tool takes or returns a username or password, and the
+  password is removed from any error before it is returned.
+- **This machine unless set, and never a web page.** The shell serves MCP on
+  `127.0.0.1` unless `Listen on` says otherwise. A request from a web page in a
+  browser is refused, whatever name it uses for this machine. The token is off
+  unless turned on, and without it anything on this machine can use what the
+  server allows. On any other address, TLS and the token or a client
+  certificate are required.
+- **Its own session.** The server talks to the cluster on a session of its
+  own, so a model's queries never change your shell's consistency or tracing.
+- **An audit log.** Every call is written to `~/.cassandra/cqlai_mcp_audit.log`, one JSON
+  line each, refusals included. Statements are logged with their values
+  replaced by `?` - strings, numbers, UUIDs and booleans - and an error that
+  repeats a value has it taken out. No row is ever logged. The file is readable
+  only by you.
+
+The strongest control is the Cassandra role CQLAI logs in as. Give the MCP
+server's connection a role of its own that can only read what it needs:
+
+```sql
+CREATE ROLE mcp_reader WITH LOGIN = true AND PASSWORD = '...';
+GRANT SELECT ON KEYSPACE shop TO mcp_reader;
+GRANT SELECT ON KEYSPACE system_traces TO mcp_reader;  -- for trace_query
+GRANT DESCRIBE ON ALL ROLES TO mcp_reader;              -- for LIST ROLES
+```
+
+What CQLAI cannot control: everything a tool returns goes to the model's
+provider. Use the visible keyspaces and redacted columns to keep out what must
+not leave.
+
+## Apache Parquet Support
+
+CQLAI provides comprehensive support for Apache Parquet format, making it ideal for data analytics workflows and integration with modern data ecosystems.
+
+### Key Benefits
+
+- **Efficient Storage**: Columnar format with excellent compression (50-80% smaller than CSV)
+- **Fast Analytics**: Optimized for analytical queries in Spark, Presto, and other engines
+- **Type Preservation**: Maintains Cassandra data types including collections and UDTs. A `decimal`, `varint` or `duration` is written as text - `-12.345`, `1mo2d1h30m` - so every digit, month and day is kept, and `COPY FROM` reads it back as its type
+- **Machine Learning Ready**: Direct compatibility with pandas, PyArrow, and ML frameworks
+- **Streaming Support**: Memory-efficient streaming for large datasets: rows are written to the file as they are read, not held until the end
+- **Partitioned Exports**: Any number of partition values. A partition's file closed to make room for another is continued in a new `part-NNNNN.parquet`, never written over
+
+### Quick Examples
+
+```sql
+-- Export to Parquet (auto-detected by extension)
+COPY users TO 'users.parquet';
+
+-- Export with compression
+COPY events TO 'events.parquet' WITH FORMAT='PARQUET' AND COMPRESSION='ZSTD';
+
+-- Import from Parquet
+COPY users FROM 'users.parquet';
+
+-- Save every query as its own Parquet file
+AUTOSAVE PARQUET '/exports/';
+SELECT * FROM large_table WHERE condition = true;
+AUTOSAVE OFF;
+```
+
+### Supported Features
+
+- All Cassandra primitive types (int, text, timestamp, uuid, etc.)
+- Collection types (list, set, map)
+- User-Defined Types (UDTs)
+- Frozen collections
+- Vector types for ML workloads (Cassandra 5.0+)
+- Multiple compression algorithms (Snappy, GZIP, ZSTD, LZ4)
+
+For detailed documentation, see [Parquet Support Guide](docs/PARQUET.md).
+
+## Known Limitations
+
+### JSON Output (AUTOSAVE JSON and --format json)
+
+When outputting data as JSON, there are some limitations due to how the underlying gocql driver handles dynamic typing:
+
+#### NULL Values
+- **Issue**: NULL values in primitive columns (int, boolean, text, etc.) appear as zero values (`0`, `false`, `""`) instead of `null`
+- **Cause**: The gocql driver returns zero values for NULLs when scanning into dynamic types (`interface{}`)
+- **Workaround**: Use `SELECT JSON` queries which return proper JSON from Cassandra server-side
+
+#### User-Defined Types (UDTs)
+- **Issue**: UDT columns appear as empty objects `{}` in JSON output
+- **Cause**: The gocql driver cannot properly unmarshal UDTs without compile-time knowledge of their structure
+- **Workaround**: Use `SELECT JSON` queries for proper UDT serialization
+
+#### Example
+```sql
+-- Regular SELECT (has limitations)
+SELECT * FROM users;
+-- Returns: {"id": 1, "age": 0, "active": false}  -- age and active might be NULL
+
+-- Using SELECT JSON (preserves types correctly)
+SELECT JSON * FROM users;
+-- Returns: {"id": 1, "age": null, "active": null}  -- NULLs properly represented
+```
+
+**Note**: Complex types (lists, sets, maps, vectors) are properly preserved in JSON output.
+
+## Development
+
+To work on `cqlai`, you'll need Go (≥ 1.24).
+
+#### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/axonops/cqlai.git
+cd cqlai
+
+# Install dependencies
+go mod download
+```
+
+#### Building
+
+```bash
+# Build a standard binary
+make build
+
+# Build a development binary with race detection
+make build-dev
+```
+
+#### Running Tests & Linter
+
+```bash
+# Run all tests
+make test
+
+# Run tests with coverage report
+make test-coverage
+
+# Run the linter
+make lint
+
+# Run all checks (format, lint, test)
+make check
+```
+
+
+## Technology Stack
+
+- **Language:** Go
+- **TUI Framework:** [Bubble Tea](https://github.com/charmbracelet/bubbletea)
+- **TUI Components:** [Bubbles](https://github.com/charmbracelet/bubbles)
+- **Styling:** [Lip Gloss](https://github.com/charmbracelet/lipgloss)
+- **Cassandra Driver:** [gocql](https://github.com/gocql/gocql)
+
+## Acknowledgements
+
+CQLAI builds upon the foundation laid by several open-source projects, particularly Apache Cassandra. We extend our sincere gratitude to the Apache Cassandra community for their outstanding work and contributions to the field of distributed databases.
+
+Apache Cassandra is a free and open-source, distributed, wide-column store, NoSQL database management system designed to handle large amounts of data across many commodity servers, providing high availability with no single point of failure.
+
+### Apache Cassandra Resources
+
+- **Official Website**: [cassandra.apache.org](https://cassandra.apache.org/)
+- **Source Code**: Available on [GitHub](https://github.com/apache/cassandra) or the Apache Git repository at `gitbox.apache.org/repos/asf/cassandra.git`
+- **Documentation**: Comprehensive guides and references available at the [Apache Cassandra website](https://cassandra.apache.org/)
+
+CQLAI incorporates and extends functionality from various Cassandra tools and utilities, enhancing them to provide a modern, efficient terminal experience for Cassandra developers and DBAs.
+
+We encourage users to explore and contribute to the main Apache Cassandra project, as well as to provide feedback and suggestions for CQLAI through our [GitHub discussions](https://github.com/axonops/cqlai/discussions) and [issues](https://github.com/axonops/cqlai/issues) pages.
+
+## Community & Support
+
+### Get Involved
+- **Share Ideas**: Visit our [GitHub Discussions](https://github.com/axonops/cqlai/discussions) to propose new features
+- **Report Issues**: Found a bug? [Open an issue](https://github.com/axonops/cqlai/issues/new/choose)
+- **Contribute**: We welcome pull requests! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
+- **Star Us**: If you find CQLAI useful, please star our repository!
+
+### Stay Connected
+- **Website**: [axonops.com](https://axonops.com)
+- **Contact**: Visit our website for support options
+
+## License
+
+This project is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file for details.
+
+Third-party dependency licenses are available in the [THIRD-PARTY-LICENSES](THIRD-PARTY-LICENSES/) directory. To regenerate license attributions, run `make licenses`.
+
+## Legal Notices
+
+*This project may contain trademarks or logos for projects, products, or services. Any use of third-party trademarks or logos are subject to those third-party's policies.*
+
+- **AxonOps** is a registered trademark of AxonOps Limited.
+- **Apache**, **Apache Cassandra**, **Cassandra**, **Apache Spark**, **Spark**, **Apache TinkerPop**, **TinkerPop**, **Apache Kafka** and **Kafka** are either registered trademarks or trademarks of the Apache Software Foundation or its subsidiaries in Canada, the United States and/or other countries.
+- **DataStax** is a registered trademark of DataStax, Inc. and its subsidiaries in the United States and/or other countries.
+
+---
+
+<div align="center">
+  <p>Made with  by the <a href="https://axonops.com">AxonOps</a> Team</p>
+</div>

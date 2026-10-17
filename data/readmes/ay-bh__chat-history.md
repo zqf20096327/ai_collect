@@ -1,0 +1,218 @@
+# chat-history
+
+CLI for **agents** to search, inspect, and export **Claude Code**, **OpenAI Codex**, and **Cursor** conversation history.
+
+Most usage is via an agent skill (`SKILL.md`) that tells Claude Code / Codex / Cursor when and how to call this tool — not interactive human browsing.
+
+<img src="docs/assets/usage.png" alt="Agent using chat-history to summarize past project work" width="420" />
+
+Scoring logic ported from [claude-historian-mcp](https://github.com/Vvkmnn/claude-historian-mcp), [claude-history](https://github.com/raine/claude-history), and [search-sessions](https://github.com/sinzin91/search-sessions), with Cursor transcript parsing inspired by [cursor-history](https://github.com/S2thend/cursor-history).
+
+## Setup (for agents)
+
+```bash
+cargo install chat-history
+```
+
+`cargo install` puts `chat-history` and `ch` on `PATH` (`~/.cargo/bin/`).
+
+The first time you run `chat-history` / `ch`, it quietly installs the bundled agent skill to:
+
+- `~/.claude/skills/chat-history/SKILL.md`
+- `$CODEX_HOME/skills/chat-history/SKILL.md` (or `~/.codex/...`)
+- `~/.cursor/skills/chat-history/SKILL.md`
+
+On Windows, the same paths are under `%USERPROFILE%`. Later CLI upgrades refresh **managed** copies automatically (those written by this CLI, tracked via a `.chat-history-managed` sidecar). User-edited skills are left alone. Skills installed by older versions without that sidecar are left alone by the quiet path — run `install-skill` once after upgrading to adopt them.
+
+Optional explicit install / reinstall:
+
+```bash
+chat-history install-skill           # refresh managed + adopt legacy (pre-sidecar) installs
+chat-history install-skill --force   # overwrite even user-edited skills
+```
+
+The skill is active immediately — no restart needed.
+
+### Running inside agent sandboxes
+
+Codex, Claude Code and Cursor can run commands in a sandbox that allows writes only inside the project and temporary directories. The caches live under `~/.chat-history/cache`, so a sandboxed search may not be able to update them. When that happens, `chat-history` automatically uses a user-private writable temporary directory: on Unix it tries shared `/tmp` first, then the OS/session temp directory. Shared `/tmp` lets the cache survive across agent sessions; a session-specific temp directory lasts only as long as that directory is retained.
+
+Each cache is seeded from the home copy only when needed and when no SQLite sidecars are present; otherwise it is built in the fallback directory. A listing needs only the catalog, not the search index. One `Note:` line is printed when the fallback cache directory is created, and later reuse is quiet. If no writable cache directory is available, search warns and builds an in-memory index instead.
+
+To let sandboxed searches use the shared cache directly, allow writes to `~/.chat-history`:
+
+| Tool | Setting |
+|---|---|
+| Codex | `~/.codex/config.toml`: `[sandbox_workspace_write]` `writable_roots = ["~/.chat-history"]` |
+| Claude Code | `~/.claude/settings.json`: `"sandbox": {"filesystem": {"allowWrite": ["~/.chat-history"]}}` |
+| Cursor | `~/.cursor/sandbox.json`: `"additionalReadwritePaths": ["/home/you/.chat-history"]` (absolute path) |
+
+`CHAT_HISTORY_CACHE_DIR` and `--cache-dir` are used exactly as given and never replaced.
+
+### Build from source
+
+```bash
+git clone https://github.com/ay-bh/chat-history.git
+cd chat-history
+cargo install --path .
+```
+
+Run any `chat-history` command once to install the skill (or `chat-history install-skill`).
+
+## Agent usage
+
+When a user asks about past conversations, recent work, or something they discussed before, call the CLI. For search, prefer JSON output so the agent can parse results reliably. `inspect` and `view` return text.
+
+### Preferred invocations
+
+```bash
+# List recent sessions
+chat-history
+chat-history --from yesterday -s
+chat-history -L                         # current workspace only
+
+# Search — BM25 searches metadata and transcripts together
+chat-history search "auth error" --compact        # one line per hit, for agents
+chat-history search "auth error" --json           # structured, for scripts
+chat-history search "timeout" --scope errors --json
+chat-history search "trade" --scope similar --json
+chat-history search <full-uuid> --json          # with --timeframe: only if the session was active in the window
+
+# Summarize a session
+chat-history inspect --last
+chat-history inspect <partial-uuid>
+chat-history inspect <id> <id> --brief   # several sessions, a few lines each
+
+# Read / export / resume / locate
+chat-history view --last --plain
+chat-history view <id> --tools
+chat-history view <id> --plain --around 42        # a search hit's ordinal ± 2 messages
+chat-history view <id> --plain --grep "cloudflare|dns" --max-chars 600 --head 12
+chat-history view <id> --plain --tail 6
+chat-history view <id> --plain --role user        # only the person's messages (user | assistant | tool)
+chat-history export <id> -o session.md
+chat-history resume <id>                  # Claude / Codex / Cursor chats with a CLI store; others print a hint
+chat-history find <id>                    # absolute path for further tooling
+
+# Shell completions (bash, zsh, fish, elvish, powershell)
+chat-history completions zsh
+```
+
+`ch` is a drop-in alias: `ch search "auth" --compact`.
+
+### Narrowing scope
+
+These filters apply to session listing, `search`, and `--last` selection. Explicit session-id lookups (`inspect` / `view` / `export` / `resume` / `find`) resolve by id and ignore date/source/project filters. `--sidechains` still controls whether sidechain sessions are loaded at all.
+
+```bash
+# Listing / search / --last filters
+chat-history --source claude              # claude | codex | cursor | cursor-agent | cursor-ide
+                                          # cursor = cursor-agent = transcripts + CLI metadata; cursor-ide = sidebar
+chat-history --project chat-history
+chat-history --branch feature-xyz
+chat-history --from "3 days ago" --to today
+chat-history --sidechains                 # include hidden subagent/sidechain sessions
+
+# Apply workspace scope to a search (-L works before or after the subcommand)
+chat-history search "auth" --compact -L
+
+# Listing-only presentation flags
+chat-history --from yesterday -s          # group by day
+chat-history -k "auth" -v                 # show IDs and paths
+```
+
+Date formats: `YYYY-MM-DD`, `today`, `yesterday`, `"3 days ago"`, `"last week"`, `"last month"`.
+
+### Search behavior for agents
+
+| Flag | Why |
+|---|---|
+| `--group-by session\|message` | Defaults to conversations with additional matches; choose message rows explicitly. |
+| `--json` | Machine-readable output on `search` and `view` (fields below). Not available on `inspect` or the session list. |
+| `--compact` | `search` only: one line per hit with short id, date, source, directory, `#ordinal`, title, excerpt, and `(also #a #b)` for further matches. About a sixth the size of `--json` on real queries. |
+| `--rebuild-index` | Reparse all sessions into the BM25 index. |
+| `--cache-dir PATH` / `--no-cache` | Store the BM25 index elsewhere, or build it in memory for this search. |
+
+`search --json` uses a `{ "query", "count", "results" }` envelope. Result items include `session_id`, `source`, `also_ide`, `date`, `summary`, `project`, `score`, `role`, `ordinal`, `timestamp`, `snippet`, `tools`, and `files` (`additional_matches` items carry `ordinal` and `timestamp` too). `role` is `user` (the person), `assistant`, or `tool` (command output, file contents and other tool results, which Claude Code stores as user records). `ordinal` is the message's position in the transcript — pass it to `view <id> --around <ordinal>` — and is `null` for title and first-prompt matches. Items also carry `metadata_only`, true for Cursor CLI sessions without a readable transcript.
+
+`view --json` returns `{ "session_id", "source", "project", "message_count", "messages" }`. `messages` holds the messages the view options select (`--around`, `--grep`, `--role`, `--head`/`--tail`), each with `ordinal`, `role`, `timestamp`, `content`, `tools`, and `truncated` (true when `--max-chars` cut the content). A gap between ordinals means messages were skipped; a `--grep` with no match gives an empty list.
+
+Scopes: `all` (default), `errors`, `similar`, `tools`, `files`. Use `--timeframe today|week|month|Nd` and `--limit N` (default 15) to constrain results.
+
+`--timeframe` excludes untimestamped messages and first-prompt previews; Cursor recovers missing message times from IDE data when possible. Titles use session activity timestamps.
+
+Human-readable results include an 8-char UUID prefix. Pass it to `find` for any row; `inspect`, `view`, and `export` require a transcript. `resume` works for Claude, Codex, and Cursor chats with a store under `~/.cursor/chats`; other Cursor rows print the chat's **title** and `DIR:` so you can open it in the sidebar.
+
+`--json` still includes `session_id`. For IDE Agent chats the JSON `source` is `cursor` (the jsonl store) even though the human tag is `cursor-ide`; those items carry `"also_ide": true`; `resume` launches the Agent CLI when a `~/.cursor/chats` store exists for the id and prints the sidebar hint otherwise.
+
+### Interpreting output
+
+- Display tags: `claude` = Claude Code, `codex` = Codex, `cursor-agent` = Agent transcripts / CLI chats, `cursor-ide` = Cursor IDE sidebar
+- Cursor IDE **Agent mode** writes SQLite **and** a jsonl with the same composer id. Search lists that pair **once** as `cursor-ide`. `--source cursor` / `cursor-agent` includes transcripts and CLI chat metadata; `--source cursor-ide` is SQLite.
+- Cursor rows marked `[metadata only]` support `find`, `resume`, and title search, but not `inspect`, `view`, `export`, or message search.
+- Header line: source, date, short id, score, `DIR:` spawn directory (`$HOME` shown as `~`)
+- Title / match text is on the following indented line
+- `★ N.N` = relevance (higher is better)
+- `inspect` → duration, messages, model, tokens, tools, files, accomplishments (the first informative sentence of the reply that ended each turn), key decisions. It takes several ids; `--brief` prints each as a header, what was asked, its latest substantive result (the last reply with an informative sentence, so a closing "All set" does not hide it), and up to five files it read or edited, the project's first (agent config and scratch files left out). Files come from tool calls, so a listed file was not necessarily changed
+- Claude Code titles come from `ai-title` / `custom-title` JSONL when available
+- Subagent/sidechain sessions are omitted unless `--sidechains`; this includes Cursor transcripts under `agent-transcripts/*/subagents/` (tagged `[subagent]`)
+- Codex commentary-phase messages are hidden once a turn has a final answer; interrupted turns keep commentary
+
+## Data sources
+
+| Source | Path |
+|---|---|
+| Claude Code | `~/.claude/projects/*/*.jsonl` (+ optional legacy `sessions-index.json`) |
+| Codex | `$CODEX_HOME/sessions/YYYY/MM/DD/rollout-*.jsonl` (default `~/.codex`) |
+| Cursor Agent | `~/.cursor/projects/*/agent-transcripts/` (`--source cursor`, alias `cursor-agent`) |
+| Cursor CLI metadata | `~/.cursor/chats/*/*/{meta.json,store.db}` (same source; discovers CLI-only sessions) |
+| Cursor IDE | `.../Cursor/User/globalStorage/state.vscdb` (`CURSOR_USER_DIR`; `--source cursor-ide`) |
+| Cursor subagents | `.../agent-transcripts/*/subagents/*.jsonl` |
+
+Cursor Agent chats found in both transcript and IDE data are shown once as `cursor-ide`. Noise is filtered automatically. Transcripts are read to the end; each tool output keeps its first 12 KiB and last 4 KiB.
+
+### Metadata cache
+
+Session discovery caches titles, first-prompt previews, and other extracted metadata from unchanged sources in `~/.chat-history/cache/catalog-v1.db`. This metadata cache does not store transcripts. BM25 uses a separate, disposable `search-v3.db` containing message text and full-text postings; it refreshes only changed sessions. Search results themselves are not cached. Discovery and workspace/store checks remain live, so added or deleted transcripts still appear immediately. On one local profile, a warm Claude extraction fell from about 300ms to 10ms.
+
+The cache tracks file metadata and SQLite WAL/journal changes. Unavailable, corrupt, or locked caches fall back to reading the sources. If the default directory is not writable, for example inside an agent sandbox, both caches move to a user-private copy under the temp directory (see [Running inside agent sandboxes](#running-inside-agent-sandboxes)). Set `CHAT_HISTORY_NO_CACHE=1` to bypass it or `CHAT_HISTORY_CACHE_DIR` to move it; deleting the cache rebuilds it on the next command. New cache directories and databases are user-private on Unix.
+
+### Optional Cursor hook
+
+To register new Cursor IDE transcripts outside the default directory layout, add this [stop hook](https://cursor.com/docs/hooks) to your existing `~/.cursor/hooks.json`:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "stop": [{ "command": "chat-history cursor-hook" }]
+  }
+}
+```
+
+The hook is opt-in and does not backfill old or cloud history. It records transcript paths, workspace roots, model identifiers, and Cursor version in `~/.chat-history/cursor-hooks.db`; it does not store prompts, tool output, or email. Cursor Agent CLI chats are discovered separately from `~/.cursor/chats`.
+
+## Search scoring
+
+**BM25:** Unicode token and prefix matching over overlapping transcript passages, titles, first prompts, project paths, and branches. Rare terms contribute more; repeated mentions saturate, and exact terms receive additional weight over prefix-only matches. Matching all query chunks and matching their ordered phrase add small ranking bonuses while partial matches remain eligible. Recency breaks score ties. JSON retains small positive scores at full precision; scores are not confidence values and cannot be compared across queries.
+
+Tool output is indexed in its own field at 0.3× the weight of conversation text, so a log that repeats a term does not outrank the message where it was discussed; it still matches when nothing else does. Output of chat-history itself (a tool call that ran `chat-history` or `ch`) is shown by `view` but never indexed, since it repeats other sessions. Search leaves out the conversation it runs inside, identified by `CLAUDE_CODE_SESSION_ID` (Claude Code), `CODEX_THREAD_ID` (Codex) or `CURSOR_CONVERSATION_ID` (Cursor's agent); a full-UUID lookup still finds it, and clearing the variable (`CLAUDE_CODE_SESSION_ID= chat-history search …`) includes it.
+
+BM25 returns one row per conversation, with a match-aware excerpt from its strongest passage and up to two additional matching messages. `--limit` counts conversations. JSON preserves the primary result fields and adds `additional_matches` with each extra match's score, role, snippet, tools and files. Use `--group-by message` for individual message rows (at most three per conversation). `CHAT_HISTORY_SEARCH_GROUP_BY=session|message` sets this preference; explicit flags override it. `--scope similar` defaults to message rows.
+
+The first search indexes discovered history; later searches validate source fingerprints. When Cursor's shared database changes, search hashes the rows for each conversation and reparses only conversations whose dependencies changed. Reading these rows still has a cost; unchanged database observations reuse their hashes. Filters do not change the indexed collection statistics. `--scope similar` ranks user messages by word overlap with the query instead of BM25. Queries are plain text; filename and identifier components stay adjacent and share the index’s Unicode analyzer; this is prefix search, not arbitrary infix or typo matching.
+
+Explicit flags override environment values. `CHAT_HISTORY_CACHE_DIR` selects the cache location, `CHAT_HISTORY_NO_CACHE=1` bypasses both disk caches, and `CHAT_HISTORY_REBUILD_INDEX=true` forces a search-index refresh. A search-local `--cache-dir` overrides the BM25 directory only; `--no-cache` builds BM25 in memory. Unavailable, corrupt, or write-locked search caches fall back to in-memory BM25 with a stderr warning.
+
+See [docs/search-architecture.md](docs/search-architecture.md) for the design, ranking policy, failure handling, and alternatives considered.
+
+## Credits
+
+- [claude-historian-mcp](https://github.com/Vvkmnn/claude-historian-mcp) — multi-signal relevance, query similarity, importance heuristics
+- [claude-history](https://github.com/raine/claude-history) — prefix matching, separator normalization, recency, cwd project paths
+- [search-sessions](https://github.com/sinzin91/search-sessions) — two-tier search, field weights, natural-language dates, per-session cap
+- [cursor-history](https://github.com/S2thend/cursor-history) — multi-format Cursor transcript parsing
+
+## License
+
+MIT

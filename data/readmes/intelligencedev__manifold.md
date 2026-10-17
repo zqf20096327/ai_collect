@@ -1,0 +1,173 @@
+# Manifold
+
+Manifold is an **experimental** platform for long-horizon workflow automation with teams of AI assistants.
+
+It supports OpenAI, Google, and Anthropic models, along with OpenAI-compatible APIs for self-hosted open-weight models served through [llama.cpp](https://github.com/ggml-org/llama.cpp) or [vLLM](https://github.com/vllm-project/vllm).
+
+> [!WARNING]
+> Manifold is an experimental frontier AI platform. Do not deploy it in production environments that require strong stability guarantees unless this README explicitly states otherwise.
+
+## What Manifold does
+
+Manifold is built for workflows that go beyond one-shot prompts. It gives you a workspace where specialists, tools, projects, and workflows can work together on multi-step objectives over extended periods.
+
+## Features
+
+### Agent chat
+
+Use a traditional chat interface to assign objectives to specialists. Agent specialists can be configured to render visualizations in addition to text responses.
+
+![chat](docs/img/chat.webp)
+
+_Specialists can collaborate across multiple turns. Manifold is designed to take advantage of the long-horizon capabilities of frontier models and can work on complex objectives for hours._
+
+### Image generation
+
+Manifold supports image generation with OpenAI and Google models, as well as local image generation through a custom ComfyUI MCP client.
+
+![image generation](docs/img/imggen.webp)
+
+_Example ComfyUI-generated image using a custom workflow._
+
+### Observability (work in progress)
+
+![chat](docs/img/overview.webp)
+
+### Pulse - Scheduled Tasks
+
+Schedule tasks for agent specialists to execute in time intervals, daily, or only once at a defined date and time. Send results to various external services. Matrix is natively supported, but Skills or MCP's can extend the channels Manifold has access to.
+
+![pulse](docs/img/pulse.webp)
+
+### Workflow editor
+
+Design agent workflows with a visual flow editor. __MCP tools are exposed as nodes automagically. Saved workflows become tools that can be invoked by specialists or inserted as nodes into other workflows.__ It's workflows all the way down.
+
+![workflow editor](docs/img/flow.webp)
+
+![workflow editor 2](docs/img/flow2.webp)
+
+### Specialist registry
+
+Define and configure AI agents, then build your own team of experts.
+
+![specialists](docs/img/specialists.webp)
+
+### Projects
+
+Configure projects as agent workspaces.
+
+Each project is isolated to its own root path. Agents load project skills from that project's `skills/` folder, and can also discover universal read-only skills from `$HOME/.manifold/skills` and `$HOME/.agents/skills` through dedicated skill tools.
+
+![projects](docs/img/projects.webp)
+
+### Integrated tools and MCP support
+
+Manifold includes built-in tools for agent workflows and supports MCP to extend agent capabilities. You can configure multiple MCP servers and enable tools individually to manage context size more precisely.
+
+![mcp](docs/img/mcp.webp)
+
+### Prompts, datasets, and experiments playground
+
+Create, iterate on, and version prompts that can be assigned to agents. Configure datasets and run experiments to understand how prompt changes affect agent behavior.
+
+![playground](docs/img/playground.webp)
+
+## Deploy a fresh clone
+
+The recommended first-run path is Docker-based and does **not** require a local Go, Node, or `pnpm` toolchain.
+
+### Prerequisites
+
+For a basic local deployment, you need:
+
+- Docker with Docker Compose support
+- An LLM API key or a reachable OpenAI-compatible endpoint
+- A writable host directory to use as `WORKDIR`
+
+Optional local tooling is only needed if you are developing Manifold itself:
+
+- Node 22 and `pnpm` for running the frontend outside Docker
+- Go 1.26.3 for local binary builds
+- Chrome or another Chromium-compatible browser if you plan to use browser-driven tools from a host build
+
+### Fast path
+
+```bash
+cp example.env .env
+cp config.yaml.example config.yaml
+
+# Edit .env and set at minimum:
+#   OPENAI_API_KEY=...
+#   WORKDIR=/absolute/path/to/your/manifold-workdir
+
+docker compose up -d manifold
+```
+
+Then open <http://localhost:32180>.
+
+### Self-contained host run
+
+Manifold can run without external database or telemetry services when you build the `manifold` binary locally. SQLite is the default durable backend, and Postgres is optional:
+
+```yaml
+databases:
+  backend: sqlite
+  defaultDSN: ""
+  sqlite:
+    path: "~/.manifold/manifold.db"
+
+obs:
+  otlp: ""
+  local:
+    enabled: true
+  clickhouse:
+    dsn: ""
+```
+
+Check local storage before startup with:
+
+```bash
+./dist/manifold storage doctor --json
+```
+
+With that configuration, `manifold` stores durable state in SQLite with FTS5 and Vec1 enabled, and serves metrics, logs, and traces from bounded process-local telemetry. You still need an LLM provider, which can be a remote API key or a local OpenAI-compatible endpoint.
+
+For the full deployment walkthrough, see:
+
+- [QUICKSTART.md](./QUICKSTART.md)
+- [docs/deployment.md](./docs/deployment.md)
+- [docs/matrix-gateway.md](./docs/matrix-gateway.md)
+- [docs/video-generation.md](./docs/video-generation.md)
+
+## Developers
+
+### Frontend feature gates
+
+`make build-manifold` is the standard host build for Manifold. It builds `dist/manifold` with the Forge backend, embedded frontend, and stable UI feature gate. Stable builds do render frontend undocumented features still in active development.
+
+To build the same backend and embedded frontend with beta UI links enabled, use either command:
+
+```bash
+make build-manifold-beta
+make build-manifold FEATURE_GATE=beta
+```
+
+The build passes `FEATURE_GATE` through to Vite as `VITE_MANIFOLD_FEATURE_GATE`.
+
+### Release packages
+
+Release artifacts are zip files that contain the runtime `manifold` binary and the example configuration files needed to bootstrap a deployment:
+
+- `manifold` or `manifold.exe`
+- `config.yaml.example`
+- `specialists.yaml.example`
+- `mcp.yaml.example`
+- `example.env`
+- `THIRD_PARTY_NOTICES.txt`
+
+The `agent` one-shot CLI and `openapi` generator are developer tools and are not required for the Manifold server, UI, or API runtime.
+
+### Forge harness
+
+Standard Manifold builds use the Forge backend. The stricter guarded harness modes for workflow enforcement, tool-error recovery, and control-flow-safe compaction are still controlled by runtime configuration. See [docs/forge_harness.md](./docs/forge_harness.md) for modes, configuration, rollout guidance, and deterministic scenario tests.

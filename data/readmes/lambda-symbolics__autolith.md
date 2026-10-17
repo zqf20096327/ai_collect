@@ -1,0 +1,115 @@
+#+TITLE: Autolith
+#+SUBTITLE: A live, self-modifying Common Lisp terminal agent
+#+STARTUP: content
+
+#+ATTR_HTML: :alt Autolith terminal interface
+[[file:docs/autolith-banner.png]]
+
+[[file:LICENSE][https://img.shields.io/badge/license-ISC-42b28a.svg]]
+[[https://autolith.rocks][https://img.shields.io/badge/web-autolith.rocks-42b28a.svg]]
+[[https://lambda-symbolics.com/autolith/docs][https://img.shields.io/badge/docs-guide-42b28a.svg]]
+[[https://zulip.lambda-symbolics.com][https://img.shields.io/badge/chat-Zulip-42b28a.svg]]
+
+Autolith, or AL, is a terminal agent inside a live Common Lisp image. It can
+observe, self-modify, discover, introspect its own code, its live state and what
+it's doing. This lets Autolith adapt to the user's preferences or to what is needed
+for the task. This may sound unstable, but Autolith creates generations of this
+image your or it can rollback to. Even a full frontal lobotomy is not a showstopper
+as AL will just reload into a recovery image and diagnose and optionally fix the
+issue.
+
+Autolith has a moderate focus on good ergonomics, good visuals, following XDG
+standards and similar, and minimal intrusiveness. It is not a "small game engine",
+but it is pretty close to a Lisp Machine.
+
+Autolith supports the following platforms
+- Linux (x86_64 + aarch64)
+- MacOS (x86_64 + aarch64)
+- FreeBSD (x86_64)
+- NetBSD (x86_64)
+- OpenBSD (x86_64)
+- Windows (x86_64)
+
+Adding more platform support is always welcome!
+
+Autolith questions and issues can be discussed on the
+[[https://zulip.lambda-symbolics.com][Lambda Symbolics Zulip]].
+
+* Sections
+
+- [[file:docs/guide.org][Guide]]
+- [[file:docs/architecture.org][Architecture]]
+- [[file:docs/skills.org][Skills]]
+- [[file:docs/mcp.org][MCP]]
+- [[file:docs/rlm.org][RLM]]
+- [[file:AGENTS.md][Contributor rules]]
+- [[https://github.com/chakanysystems/autolith-remote][Autolith Remote]]
+
+* Install
+
+Standalone binary releases are available for Linux, MacOS, the BSDs and Windows.
+Nix packages are also available.
+
+On Linux, MacOS and the BSDs, the curl-into-sh installer installs or updates the
+packaged release for your platform. Inspect the
+[[https://sh.lambda-symbolics.com/autolith][installer script]] before piping it into a shell, or trust us with your life,
+hehe.
+
+#+BEGIN_SRC sh
+curl -fsSL https://sh.lambda-symbolics.com/autolith | sh
+#+END_SRC
+
+On Windows, download the x86-64 ZIP from the
+[[https://github.com/lambda-symbolics/autolith/releases/latest][latest release]], extract it into a writable folder, and run
+=.\bin\autolith.cmd= from PowerShell.
+
+Nix also supplies the complete runtime:
+
+#+BEGIN_SRC sh
+nix run github:lambda-symbolics/autolith
+#+END_SRC
+
+To build from a source checkout instead, follow the
+[[file:docs/guide.org][guide]]'s Source checkout section.
+
+Authenticate providers either with web flows or API keys:
+
+#+BEGIN_SRC sh
+autolith auth chatgpt
+autolith auth copilot
+autolith auth gemini
+autolith auth grok
+autolith auth nous
+autolith auth anthropic
+autolith auth fireworks
+autolith auth opencode
+autolith auth openrouter
+autolith auth mistral
+#+END_SRC
+
+Then start Autolith:
+
+#+BEGIN_SRC sh
+autolith
+#+END_SRC
+
+* Update
+If you want to pull an update, you can do so easily:
+
+#+BEGIN_SRC lisp
+(update)
+#+END_SRC
+
+Or do *autolith update* in your shell.
+
+* Friends of Autolith
+
+- [[https://github.com/yogthos/samizdat/][samizdat]]
+- [[https://github.com/browep/cl-sm-harness][sm-harness]]
+- [[https://github.com/kleisli-io/kli][kli]]
+- [[https://pricklypear.rocks/][pricklypear]]
+- [[https://github.com/DeadMeme5441/fractal-engine][fractal-engine]]
+- [[https://github.com/sm-th/oh-my-lisp][oh-my-lisp]]
+- [[https://github.com/ghuntley/jiti][jiti]]
+- [[https://github.com/1hachem/lisptc][lisptc]]
+- [[https://github.com/mattneel/elixos][elixos]]

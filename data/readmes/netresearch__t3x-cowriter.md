@@ -1,0 +1,225 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
+# AI Cowriter for TYPO3
+
+<!-- CI/Quality -->
+[![CI](https://github.com/netresearch/t3x-cowriter/actions/workflows/ci.yml/badge.svg)](https://github.com/netresearch/t3x-cowriter/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/netresearch/t3x-cowriter/graph/badge.svg)](https://codecov.io/gh/netresearch/t3x-cowriter)
+
+<!-- Security -->
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/netresearch/t3x-cowriter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/netresearch/t3x-cowriter)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11853/badge)](https://www.bestpractices.dev/projects/11853)
+[![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
+
+<!-- Standards -->
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%2010-brightgreen.svg)](https://phpstan.org/)
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-blue.svg)](https://www.php.net/)
+[![TYPO3 v13](https://img.shields.io/badge/TYPO3-v13-orange.svg)](https://typo3.org/)
+[![TYPO3 v14](https://img.shields.io/badge/TYPO3-v14-orange.svg)](https://typo3.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Latest Release](https://img.shields.io/github/v/release/netresearch/t3x-cowriter)](https://github.com/netresearch/t3x-cowriter/releases)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-3.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
+<!-- TYPO3 TER -->
+![Composer](https://typo3-badges.dev/badge/t3_cowriter/composer/shields.svg)
+![Downloads](https://typo3-badges.dev/badge/t3_cowriter/downloads/shields.svg)
+![Extension](https://typo3-badges.dev/badge/t3_cowriter/extension/shields.svg)
+![Stability](https://typo3-badges.dev/badge/t3_cowriter/stability/shields.svg)
+![TYPO3](https://typo3-badges.dev/badge/t3_cowriter/typo3/shields.svg)
+![Version](https://typo3-badges.dev/badge/t3_cowriter/version/shields.svg)
+
+AI-powered content assistant for TYPO3 CKEditor - write better content with help from AI.
+
+![Cowriter dialog in TYPO3 v14 backend](Documentation/Images/CowriterHero.png)
+
+## Features
+
+- **Task-based dialog**: Select from predefined tasks (Improve, Summarize, Extend, Fix Grammar, Translate) with result preview before inserting
+- **Vision / Alt Text**: Analyze images and generate descriptive alt text via the CKEditor toolbar
+- **Translation**: Translate selected text into 10+ languages directly from the toolbar dropdown
+- **Prompt Templates**: Load reusable prompt presets from the backend for consistent content generation
+- **Tool Calling**: Structured function calling that lets the LLM query TYPO3 content during conversations
+- **CKEditor Integration**: Four toolbar components — main dialog, vision, translation, and templates
+- **Multi-Provider Support**: Works with all LLM providers supported by nr-llm (OpenAI, Claude, Gemini, etc.)
+- **Secure Backend Proxy**: API keys never exposed to frontend — all requests proxied through TYPO3 backend
+- **Context control**: Choose between selected text or full content element as context
+- **Ad-hoc instructions**: Add custom instructions per request (e.g., "Write in formal tone")
+- **Rate limiting**: 20 requests/minute per backend user
+- **Streaming**: Server-Sent Events for real-time completions
+- **Content sanitization**: Frontend DOMParser-based sanitization with CKEditor's HTML processing pipeline
+
+## Requirements
+
+- PHP 8.2+
+- TYPO3 v13.4 LTS or v14.3 LTS
+- [netresearch/nr-llm](https://github.com/netresearch/t3x-nr-llm) 0.38, 0.39 or 0.40 (LLM provider abstraction)
+
+## Installation
+
+Install via Composer:
+
+```bash
+composer require netresearch/t3-cowriter
+```
+
+## Configuration
+
+### 1. Configure nr-llm Extension
+
+First, set up at least one LLM provider in the nr-llm extension:
+
+1. Navigate to **Admin Tools → LLM Management**
+2. Add a provider (e.g., OpenAI with your API key)
+3. Create a model configuration
+4. Create an LLM configuration and set it as default
+
+### 2. Add CKEditor Preset
+
+#### Option A: Use the included preset
+
+Add the cowriter preset to your Page TSconfig:
+
+```typoscript
+RTE.default.preset = cowriter
+```
+
+#### Option B: Extend your existing preset
+
+Add to your RTE configuration YAML:
+
+```yaml
+editor:
+  config:
+    importModules:
+      - { module: '@netresearch/t3_cowriter/cowriter', exports: ['Cowriter'] }
+    toolbar:
+      items:
+        - cowriter
+        - cowriterVision
+        - cowriterTranslate
+        - cowriterTemplates
+```
+
+## Usage
+
+1. Open a content element with a rich text field in the TYPO3 backend
+2. Optionally select text in CKEditor (or leave empty to use full content)
+3. Click the **Cowriter** button in the toolbar
+4. A dialog opens where you can:
+   - **Select a task** (Improve Text, Summarize, Extend, Fix Grammar, Translate to EN/DE)
+   - **Choose context scope** — selected text or whole content element
+   - **Add instructions** — optional ad-hoc rules like "Write in formal tone"
+5. Click **Execute** — the task is sent to the LLM
+6. Review the result in the preview area
+7. Click **Insert** to replace content, or **Retry** to re-execute
+
+### Available tasks
+
+Tasks are managed in the nr-llm extension (`tx_nrllm_task` table) with `category = 'content'`. Default tasks:
+
+| Task | Description |
+|------|-------------|
+| Improve Text | Enhance readability and quality |
+| Summarize | Create a concise summary |
+| Extend / Elaborate | Add depth and detail |
+| Fix Grammar & Spelling | Correct grammar and spelling |
+| Translate to English | Translate to English |
+| Translate to German | Translate to German |
+
+## Architecture
+
+```
+CKEditor Toolbar
+  ├─ cowriter         → [CowriterDialog] → AIService.js → AjaxController
+  ├─ cowriterVision   → AIService.js     ──────────────→ VisionController
+  ├─ cowriterTranslate→ AIService.js     ──────────────→ TranslationController
+  ├─ cowriterTemplates→ AIService.js     ──────────────→ TemplateController
+  └─ (tool calling)   → AIService.js     ──────────────→ ToolController
+                                                              ↓
+                                                   [LlmServiceManagerInterface]
+                                                              ↓
+                                                        [nr-llm Provider]
+                                                              ↓
+                                                        [External LLM API]
+```
+
+All LLM requests are proxied through the TYPO3 backend. API keys are stored encrypted and never exposed to the browser.
+
+## Development
+
+### Prerequisites
+
+- DDEV for local development
+- PHP 8.2+ with required extensions
+
+### Setup
+
+```bash
+ddev start
+ddev composer install
+ddev install-v14
+```
+
+### Testing
+
+```bash
+# Run all quality checks (lint, phpstan, rector, code style)
+make ci
+
+# Run all tests (unit, functional, integration, e2e)
+make test
+
+# Individual test suites
+make test-unit           # Unit tests
+make test-functional     # Functional tests
+make test-integration    # Integration tests
+make test-e2e            # End-to-end tests
+
+# Code quality
+make lint               # PHP-CS-Fixer
+make phpstan            # PHPStan level 10
+```
+
+### Test Coverage
+
+Target: >80% code coverage
+
+```bash
+make test-coverage
+open var/coverage/unit/index.html
+```
+
+## Security
+
+- API keys stored in nr-llm with sodium encryption
+- All backend AJAX endpoints require TYPO3 authentication
+- Frontend DOMParser-based content sanitization via CKEditor's HTML processing pipeline
+- TYPO3 backend route authentication with nonce-based URL tokens
+- Content Security Policy (CSP) compatible
+
+What users can expect from the extension in terms of security — what editor
+content leaves the system and to whom, how AI output enters the editor, the
+threat model, trust boundaries and the controls that implement them — is in
+[docs/SECURITY-ASSURANCE.md](docs/SECURITY-ASSURANCE.md).
+
+## Migration to v3.x
+
+Version 3.0 requires TYPO3 v13.4+ and PHP 8.2+. It removes the frontend-only architecture
+and uses the nr-llm extension for provider-agnostic LLM access. API keys are no longer stored
+in extension settings.
+
+See [CHANGELOG.md](CHANGELOG.md) for migration details.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
+## Contact
+
+[Netresearch DTT GmbH](https://www.netresearch.de/) - Your TYPO3 and eCommerce experts.
+
+> [Twitter](https://twitter.com/netresearch) | [LinkedIn](https://www.linkedin.com/company/netresearch/) | [GitHub](https://github.com/netresearch)

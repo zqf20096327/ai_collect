@@ -1,0 +1,329 @@
+# hailo-10h-llm-compiler
+
+Compile **your own** small LLM into a Hailo-10H HEF and run it with
+[hailo-ollama](docs/references.md#hailo-software) — end to end, from a
+Hugging Face checkpoint to a self-contained, servable binary.
+
+This repository documents and packages an experimental, reverse-engineered
+methodology for using the Hailo Dataflow Compiler (DFC) **LLM compilation flow** — the same
+flow Hailo uses internally to produce its official generative-AI HEFs — on a
+model of your choice. It was built and validated on
+[Mxode/TinyStories-LLaMA2-25M-256h-4l-GQA](https://huggingface.co/Mxode/TinyStories-LLaMA2-25M-256h-4l-GQA),
+a 25M-parameter LLaMA2-style model with grouped-query attention, small enough
+to iterate quickly yet structurally identical to modern production LLMs
+(RMSNorm, SwiGLU, RoPE, GQA, KV-cache).
+
+> ⚠️ **Highly experimental — do not expect it to work.** This project was
+> built by reverse-engineering an undocumented compiler flow against one
+> pinned SDK version (DFC 5.3.0) and one 25M-parameter model. Nothing here is
+> supported, stable, or guaranteed: steps can fail mid-way, and APIs move
+> between toolchain versions. Read [docs/status.md](docs/status.md) for
+> exactly what works today — and expect to debug everything else yourself.
+> Everything needed to reach the current state is in this repository;
+> getting further is on you.
+
+**Where it stands:** the default TinyStories checkpoint, compiled by this
+pipeline, generates coherent text through hailo-ollama on a real
+Hailo-10H — e.g. *"Once upon a time, there was a little dog named Max."* →
+*"Max was a very happy dog who lived in a big house with his family and
+friends. One day, Max saw a big red ball in the park…"*. Larger
+checkpoints compile and serve too, but still show a separate fidelity gap
+(see [Current limitations](#current-limitations)).
+
+---
+
+## Table of contents
+
+- [Why this exists](#why-this-exists)
+- [How it works](#how-it-works)
+- [Repository layout](#repository-layout)
+- [Releases and compatibility](#releases-and-compatibility)
+- [Getting started](#getting-started)
+- [Running the compiled model](#running-the-compiled-model)
+- [Documentation](#documentation)
+- [Current limitations](#current-limitations)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
+## Why this exists
+
+The Hailo-10H ships with official pre-compiled LLM HEFs, but the toolchain
+that produces them — the LLM branch of the Hailo Dataflow Compiler — is
+barely documented. The public documentation describes the flow at a high
+level; nothing explains how to bring *your own* Hugging Face model through
+it, and the runtime (`genai.LLM`, hailo-ollama) rejects any HEF that does not
+match its exact expectations.
+
+This project reverse-documented that path by compiling a small open model
+from scratch, then generalized the pipeline to accept **any** eligible
+Hugging Face checkpoint (`--model <hf-id>`, see below) — validated end to
+end on architectures spanning LLaMA2, Qwen2/Qwen2.5, Qwen3 (QK-Norm), and
+Mistral (sliding-window attention), from 15M to 500M parameters. Along the
+way it identified and fixed over a dozen distinct incompatibilities between
+a vanilla Hugging Face export and what the Hailo-10H LLM stack requires —
+missing `lm_head`, output-shape constraints, RoPE input widths,
+attention-mask broadcasting, a `hailo-config.json` key mismatch, tied
+embeddings, QK-Norm, explicit `head_dim`, q/k/v projection biases,
+large-vocabulary `lm_head` placement, the KV-cache memory layout shared by
+the prefill and token-by-token groups, and how the server applies the
+tokenizer (BOS, spacing) — each documented in
+[`docs/findings/`](docs/findings/index.md) so you do not have to rediscover
+them.
+
+**What you get at the end:** a self-contained HEF (embeddings, tokenizer and
+generation config embedded in the binary) that hailo-ollama can register and
+serve exactly like an official model.
+
+**What this is not:** a redistribution of Hailo's proprietary software. The
+Dataflow Compiler wheel and the device firmware are **not** included and
+**not** redistributable; [docker/README.md](docker/README.md) explains how to
+obtain them from Hailo's developer portal yourself.
+
+## How it works
+
+```
+ Hugging Face checkpoint (safetensors)
+        │
+        ▼
+ s1_export_onnx.py      PyTorch → ONNX (opset 17), with the five
+        │               Hailo-specific graph fixes applied
+        ▼
+ s2_parse_har.py        ONNX → HAR (DFC parser, hailo10h target)
+        │
+        ▼
+ s3_surgery_resources.py  HAR graph surgery: RoPE/mask input wiring,
+        │                 then attach external resources (embeddings,
+        │                 server-adapted tokenizer, rope table,
+        │                 hailo-config.json)
+        ▼
+ s4_optimize_kvcache.py   Quantization with KV-cache duplication
+        │                 (INT4 weights / INT8 activations, a16 embeddings)
+        ▼
+ s5_fix_convolutions.py   Post-quantization shape-consistency pass
+        │
+        ▼
+ s6_compile_hef.py      HAR → HEF (two network groups: __prefill + __tbt,
+        │               token-major KV-cache layout on every cache edge)
+        │
+        ▼
+ register_hailo_ollama.py   Publish into hailo-ollama's model store
+        │
+        ▼
+ hailo-ollama                          # starts the server; call its REST API to generate
+```
+
+The model graph itself is duplicated by the compiler into two network
+groups: `__prefill` (processes the whole prompt at once) and `__tbt`
+(token-by-token, reading and writing the KV-cache). This duplication is
+driven by `set_kv_cache_global_params()` — the entry point of the DFC LLM
+flow.
+
+## Repository layout
+
+```
+hailo-10h-llm-compiler/
+├── docker/          Dockerfiles: NVIDIA CUDA base, AMD ROCm base, Jupyter
+├── pipeline/        The six compile steps + shared config (s1 → s6)
+├── recipes/         Quantization recipes (.alls) step 4 can load
+├── notebooks/       The same compile chain and the diagnostics tooling,
+│                    as self-contained executable walkthroughs
+├── runtime/         Device-side tools: hailo-ollama registration,
+│                    generation, and low-level diagnostics
+├── docs/
+│   ├── terminology.md        Vocabulary: HAR, HEF, scope, KV-cache, ...
+│   ├── device-setup.md       Host + device bring-up (drivers, HailoRT, ...)
+│   ├── status.md             What works / what does not, in detail
+│   ├── references.md         Every external link used by this project
+│   └── findings/             The reverse-engineering findings, one page each
+├── .claude/skills/  Working playbooks for continuing the investigation
+│                    (writing a finding, preflight checks, device-level
+│                    debugging) — see CLAUDE.md
+├── .github/         Release automation (version check on PRs, release on merge)
+├── CHANGELOG.md     Release notes, one section per version
+├── VERSION          Project version (semver)
+├── DFC_VERSION      Dataflow Compiler version the release is validated against
+├── CLAUDE.md        Ground rules + working patterns for picking this up
+├── LICENSE          MIT
+├── CONTRIBUTING.md
+└── CODE_OF_CONDUCT.md
+```
+
+## Releases and compatibility
+
+Every change to `main` is a release, tagged `v<version>-dfc<DFC version>`
+— see [CHANGELOG.md](CHANGELOG.md) and the
+[releases page](https://github.com/l-nmch/hailo-10h-llm-compiler/releases).
+
+| Release | DFC | HailoRT / firmware | Validated on hardware |
+|---|---|---|---|
+| v0.3.0 | 5.3.0 | 5.3.0 | TinyStories-25M: coherent generation in hailo-ollama |
+| v0.2.x | 5.3.0 | 5.3.0 | TinyStories-25M: coherent generation in hailo-ollama |
+| v0.1.0 | 5.3.0 | 5.3.0 | LLaMA2, Qwen2/2.5, Qwen3, Mistral checkpoints compile and serve; multi-token generation degraded |
+
+## Getting started
+
+### 0. Prerequisites
+
+| Component | Notes |
+|---|---|
+| Hailo-10H device | PCIe M.2 card or SoM, with working drivers (see [docs/device-setup.md](docs/device-setup.md)) |
+| Hailo Dataflow Compiler 5.3.0 | Proprietary, free account required — see [docker/README.md](docker/README.md) |
+| NVIDIA GPU (CUDA) **or** AMD GPU (ROCm) — **optional** | Speeds up the quantization step only (CPU-only works but is much slower). NVIDIA: Turing (sm_75) or newer. AMD: gfx906 is what we tested — nothing older verified |
+| Docker | All tooling runs in containers; nothing is installed on the host |
+| ~30 GB disk | DFC image ≈ 15 GB, working directory for artifacts |
+
+> **Memory note:** the DFC optimization step is memory-hungry. On a 32 GB
+> host, cap the container (e.g. `--memory=24g`) — see
+> [docs/device-setup.md](docs/device-setup.md#memory-limits).
+
+### 1. Build the toolchain image
+
+```bash
+# Place the DFC wheel in ./docker/ first (see docker/README.md)
+docker build -f docker/Dockerfile.nvidia -t dfc-nvidia:5.3.0 docker/
+# or, for AMD GPUs:
+docker build -f docker/Dockerfile.amd -t dfc-amd:5.3.0 docker/
+```
+
+### 2. Run the pipeline
+
+```bash
+git clone https://github.com/l-nmch/hailo-10h-llm-compiler.git
+cd hailo-10h-llm-compiler
+
+docker run --rm -it --gpus all \
+    -v "$PWD":/repo -v "$PWD/workdir":/workdir \
+    dfc-nvidia:5.3.0 bash
+# inside the container:
+export DFC_WORKDIR=/workdir
+python /repo/pipeline/s1_export_onnx.py
+python /repo/pipeline/s2_parse_har.py
+python /repo/pipeline/s3_surgery_and_resources.py
+python /repo/pipeline/s4_optimize_kvcache.py
+python /repo/pipeline/s5_fix_convolutions.py
+python /repo/pipeline/s6_compile_hef.py
+```
+
+Each step reads and writes only `DFC_WORKDIR` (default `./workdir`) and can
+be re-run independently. To compile a **different model**, pass `--model`
+to step 1 only — it derives every architectural constant (hidden size,
+heads, RoPE theta, vocab…) from the checkpoint via `transformers.AutoConfig`
+and persists them to `$DFC_WORKDIR/run_config.json`; steps 2-6 pick that up
+automatically, no flags needed:
+
+```bash
+python /repo/pipeline/s1_export_onnx.py --model <hf-id> \
+    [--seq 128] [--prefill-size 32] [--calibset-size 32] [--net-scope name]
+```
+
+The checkpoint must pass the eligibility screen in
+[Porting-Another-Model](../../wiki/Porting-Another-Model) (untied
+embeddings, RMSNorm + RoPE + SwiGLU MLP + GQA-or-MHA attention) — anything
+else fails loudly at step 1 or 2, not silently. `--seq`/`--prefill-size`/
+`--calibset-size` aren't derivable from the checkpoint and keep their
+current defaults unless overridden; `--net-scope` defaults to a slug of
+`--model`. `--seq` is the whole KV-cache: prompt plus answer must fit in
+it (hailo-ollama warns "Conversation context is full" beyond).
+
+> Prefer a single interactive run? [notebooks/walkthrough.ipynb](notebooks/walkthrough.ipynb)
+> executes the same chain end to end, with every step's logic unfolded in
+> cells and validation gates between steps — no scripts required.
+
+### 3. Deploy to the device and serve
+
+On the host that has the Hailo-10H device (with HailoRT and hailo-ollama
+installed — [docs/device-setup.md](docs/device-setup.md)):
+
+```bash
+python runtime/register_hailo_ollama.py --hef workdir/model.hef \
+    --family tinystories25m --tag my-first-model
+hailo-ollama   # starts serving; manifests are (re-)scanned at startup
+
+# then call its Ollama-compatible REST API, e.g. to pull/select the model:
+curl --silent http://localhost:8000/api/pull \
+    -H 'Content-Type: application/json' \
+    -d '{"model": "tinystories25m:my-first-model", "stream": true}'
+```
+
+## Running the compiled model
+
+Three complementary ways, in decreasing order of "how much magic":
+
+1. **hailo-ollama** — the end goal. `register_hailo_ollama.py` publishes the
+   HEF into hailo-ollama's content-addressed model store with a manifest;
+   the model then behaves like any official one.
+2. **`genai_generate.py`** — direct `genai.LLM` Python API generation, with
+   subprocess-isolated retry logic that absorbs a known host-side
+   interrupt bug (see
+   [docs/findings/sdk-behavior-notes.md](docs/findings/sdk-behavior-notes.md)).
+3. **`runtime/diagnostics/`** — low-level `InferModel` probes (manual
+   prefill + token-by-token with hand-built masks and RoPE tables) used to
+   debug the runtime contract layer by layer. Start with
+   [`runtime/diagnostics/README.md`](runtime/diagnostics/README.md).
+
+## Documentation
+
+| Document | Content |
+|---|---|
+| [notebooks/walkthrough.ipynb](notebooks/walkthrough.ipynb) | The full HF → ONNX → HAR → surgery → quantization → HEF chain as one executable notebook |
+| [notebooks/diagnostics.ipynb](notebooks/diagnostics.ipynb) | Wire-contract reconstruction (mask/RoPE/encodings), offline HEF audit, device probes |
+| [docs/terminology.md](docs/terminology.md) | HAR vs HEF, network scopes, `__prefill`/`__tbt`, KV-cache mechanics, quantization flavors |
+| [docs/device-setup.md](docs/device-setup.md) | PCIe driver, HailoRT, hailo-ollama installation; package sources; memory limits |
+| [docs/status.md](docs/status.md) | Honest, detailed state of every pipeline stage and runtime path |
+| [docs/references.md](docs/references.md) | All external resources: model zoo entry, hailort source, blog posts, papers |
+| [docs/findings/index.md](docs/findings/index.md) | Index of all reverse-engineering findings (compile fixes, SDK behavior, open issues) |
+| [Porting-Another-Model](../../wiki/Porting-Another-Model) (wiki) | Eligibility screen and checkpoint-specific checklist for compiling a model other than the TinyStories default |
+
+## Current limitations
+
+- **Larger checkpoints show a separate, real-hardware fidelity gap** —
+  coherent generation is validated end to end on TinyStories-25M only.
+  Every checkpoint with `hidden ≥ 576` tested so far (Qwen2.5-0.5B,
+  TinyMistral-248M, SmolLM2-135M, 768-wide LLaMA checkpoints) degrades even
+  on base-scope (no-cache) generation, while `hidden ≤ 288` checkpoints stay
+  coherent; GQA ratio, depth and the lm_head-splitting surgery were each
+  ruled out by isolation tests. Root cause open:
+  [docs/findings/tinymistral-base-scope-degenerate.md](docs/findings/tinymistral-base-scope-degenerate.md).
+- **Context length** — the KV-cache size (`--seq`, default 128) caps
+  prompt + answer; it is a compile-time constant.
+- **Notebooks lag behind** — [notebooks/](notebooks/) predate the KV-cache
+  layout fix and still use a 24-token cache; use the `pipeline/` scripts.
+- **Architecture eligibility** — the exporter supports LLaMA2-shaped
+  attention (RMSNorm + RoPE + SwiGLU MLP + GQA-or-MHA), tied or untied
+  embeddings, QK-Norm, explicit `head_dim`, q/k/v projection biases, and
+  sliding-window attention. Gemma-2/3's per-layer *alternating*
+  local/global attention and GPT-2/OPT-style fused-QKV projections are not
+  yet supported — see [Porting-Another-Model](../../wiki/Porting-Another-Model)
+  for the exact screen and what each unsupported case needs.
+- **DFC version pinning** — everything here is validated against DFC 5.3.0.
+  The LLM flow is young and its APIs move; expect breakage on other
+  versions.
+
+## Contributing
+
+Contributions are welcome — especially on the
+[larger-checkpoint fidelity gap](docs/findings/tinymistral-base-scope-degenerate.md). See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the proprietary-
+material policy (short version: never commit DFC wheels, official HEFs, or
+anything derived from them).
+
+## License
+
+[MIT](LICENSE) — for everything in this repository. Note that Hailo's own
+components have different licenses (HailoRT core is MIT, the kernel driver
+is GPL-2.0, the Dataflow Compiler is proprietary); see
+[docs/references.md](docs/references.md) for the breakdown.
+
+## Acknowledgements
+
+- [Mxode](https://huggingface.co/Mxode) for the excellent family of tiny
+  LLaMA2 models this was validated on
+  ([TinyStories-LLaMA2-25M-256h-4l-GQA](https://huggingface.co/Mxode/TinyStories-LLaMA2-25M-256h-4l-GQA)).
+- Hailo for the Hailo-10H hardware, the
+  [public HailoRT source](https://github.com/hailo-ai/hailort) (MIT), and
+  the ["Bringing Generative AI to the Edge"](https://hailo.ai/blog/bringing-generative-ai-to-the-edge-hailo-10h-llm-compiler/)
+  blog series that documents the LLM compiler flow.
+- The [TinyStories](https://arxiv.org/abs/2305.07759) authors (Microsoft
+  Research) — small models that generate real English are the ideal testbed
+  for edge LLM compilation.

@@ -1,0 +1,1184 @@
+# LMM — Living Memory Model
+
+**A verifiable memory layer for language models.** Facts live in a graph, every
+claim carries its source, and an answer the memory does not support cannot leave
+the system.
+
+[![CI](https://github.com/ruzgarkanar/Lmm/actions/workflows/ci.yml/badge.svg)](https://github.com/ruzgarkanar/Lmm/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-ruzgarkanar.github.io%2FLmm-0E7C86)](https://ruzgarkanar.github.io/Lmm/)
+[![PyPI](https://img.shields.io/pypi/v/living-memory-model.svg)](https://pypi.org/project/living-memory-model/)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22999474.svg)](https://doi.org/10.5281/zenodo.22999474)
+[![Python](https://img.shields.io/badge/python-3.9%20%E2%80%93%203.13-blue.svg)](https://pypi.org/project/living-memory-model/)
+
+📚 **[Documentation](https://ruzgarkanar.github.io/Lmm/)** — concepts, guides, the full API surface, and every measurement with its receipts.
+
+📄 **[Scaling Memory Instead of Scaling Parameters](https://medium.com/@ruzgar.kanar/scaling-memory-instead-of-scaling-parameters-f70959142c33)** — why this exists, measured against GraphRAG, and the two bugs I found in my own scorer.
+
+> In an LLM, knowledge is frozen into weights at training time.
+> In LMM, knowledge lives in a memory you can write to, inspect and audit —
+> which is what makes "I don't know" trustworthy rather than polite.
+
+```bash
+pip install living-memory-model      # the import is `lmm`
+```
+
+```python
+from lmm import Memory
+
+m = Memory("mind.lmm")            # persistent; Memory() is transient
+m.learn("manual.pdf")             # pdf · docx · xlsx · csv · md · txt · or text
+print(m.ask("what is the screen's diagonal?"))
+m.save()
+```
+
+That is the whole API. One method reads every format, and the file extension
+picks the adapter.
+
+---
+
+## Try it without changing anything
+
+The smallest useful piece of this library is a function over two
+strings. It needs no `Memory`, no ingestion, no engine call and no
+network — keep your retriever, your vector store and your model:
+
+```python
+from lmm import check
+
+v = check(answer, "\n".join(chunks), question)
+if not v.ok:
+    print("not carried by the evidence:", v.unsupported)
+```
+
+```
+The valve opens at 8 bar.                 ok=True
+The valve opens at 9 bar.                 ok=False   unsupported=['9']
+The valve opens at 8 bar in the cellar.   ok=False   unsupported=['cellar']
+```
+
+It returns `ok`, `figures_ok`, `coverage`, `unsupported` and `kept` —
+the sentences of the answer the evidence does carry.
+
+**It is a pre-filter, not a faithfulness judgement, and the difference
+matters.** These are deterministic lexical readings: a paraphrase the
+evidence *does* carry comes back not-carried, and a sentence spliced
+from two lines the document never put together comes back carried. It
+says nothing about whether the answer is RELEVANT to the question — a
+true, sourced sentence about something else passes. Inside the library
+those cases are what the engine-side read-back and relation check are
+for; this is the free tier, and those are the price of free.
+
+---
+
+## How it works
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture-dark.svg">
+  <img alt="LMM architecture: documents, tables and messages pass an entry gate into a graph memory holding facts, evidence sentences and a bundled meaning channel; a question retrieves by words and by meaning, a small engine phrases the answer, and an exit gate either releases it with its sources or drops it." src="docs/architecture-light.svg">
+</picture>
+
+The gate is drawn twice on purpose. On the way in it decides what may become a
+record; on the way out it re-reads the sentence the engine produced and drops
+any claim the memory does not support. Everything else in this README —
+the abstention rate, the audit trail, the cost — follows from those two edges.
+
+Two details worth naming. A spreadsheet reaches the graph with **no model call
+at all**, because a table already states its own structure; that is why a sheet
+loads in milliseconds. And the engine is drawn smaller than the memory because
+it is smaller: it phrases, it does not know.
+
+
+### Three channels, all local, all explainable
+
+Retrieval reads the same store three ways, and each can say why a line
+arrived:
+
+| channel | what it reads | the statistic |
+|---|---|---|
+| **lexical** | the words a line carries | information content: `log(1+N/df)`, and `log(S/s)` for a word's power to separate documents |
+| **structural** | records, fields, and the entities a document repeats | a field is a head the corpus repeats; an entity is a phrase whose words occur together beyond chance (PMI), keep varied company, and do not choose freely |
+| **meaning** | which DOCUMENT a question is about, and then the order of the lines inside it | a bundled static multilingual embedding: one lookup per word-piece and a mean, fused with the words by reciprocal rank (RRF, K=60), then reordered by late interaction |
+
+None of them calls a model, none of them needs a vendor, and none of them
+widens what may be SAID: they widen what can be FOUND, and the gate reads
+the evidence exactly as before.
+
+**The meaning channel ships switched on.** A reader who paraphrases — a lease
+that says RESIDES against a question that says LIVES — is the case the words
+cannot reach, and an optional extra is a feature most installations never turn
+on. So the vectors are IN the package: `pip install living-memory-model`, and
+it works offline with nothing to configure. It is a matrix, not a model (one
+lookup per piece and a mean), so there is no torch and no warm-up. The one
+dependency this buys is **numpy**, and it is named in `pyproject.toml` rather
+than hidden.
+
+Measured on this repository's field corpus — 20,000 lines, 180 known-item
+queries with each query's two most distinctive terms removed:
+
+| encoder | first hit | MRR | index, 20k lines |
+|---|---|---|---|
+| a distillation of our own | 27% | 0.306 | 1.2 s |
+| `paraphrase-multilingual-MiniLM-L12-v2` | 66% | 0.710 | 36.1 s |
+| **the bundled matrix** | **84%** | **0.883** | **0.3 s** |
+
+And end to end, by whether the ANSWERING line reaches the five the engine is
+shown (115,913 lines, 304 queries):
+
+| | first | in five |
+|---|---|---|
+| words alone | 31% | 32% |
+| words + meaning channel | 31% | 60% |
+| ...and reordered by late interaction | 34% | **79%** |
+
+The ceiling stays open — `Memory(encoder=...)` takes any callable from strings
+to vectors, `reranker=` any callable from (query, texts) to an order — and the
+floor is safe: `dense=False`, a missing numpy, or an encoder that raises leaves
+the channel **absent, never degraded**, and the words carry the turn.
+
+**Which layer the meaning channel sits at was measured, not assumed.** Over
+lines it moved nothing; over DOCUMENTS it took the store's own retrieval from
+92% to 99% on 103 known-item queries. A catalogue line reads "Aidiyet ve
+Motivasyon." — four words carry no subject — so vectors over lines compare
+fragments while vectors over a document profile compare subjects. The opposite
+arrangement was measured too: choosing the lines INSIDE a proposed document by
+meaning rather than by words took the answering line from 78% to 31%. Meaning
+says which document; inside it, the question's own words are sharper.
+
+The entity channel is also the partition. Measured on a 36,472-line
+novel: asked what connects two entities, the lexical search finds a line
+carrying both — six pairs out of six — and takes **417 ms** doing it,
+because every line carrying either name is scored. The same lines come
+out of two posting lists in **0.01 ms**. Not a better reading; the same
+reading without reading the document.
+
+---
+
+## The composer: a plan is a proposal, the primitives are the law
+
+A memory that answers only the question shapes somebody wired by hand
+answers a finite set of questions, and shapes are endless. So the shapes
+are composed rather than coded:
+
+```
+question ──► the engine proposes a PLAN over verified primitives
+             a = anchor: the recital        (its dated line, read from the
+             b = anchor: the gala            sentence before the envelope)
+             out = span: a, b               (arithmetic, ours)
+                    │
+                    ▼
+             the interpreter executes ONLY operations it knows, on phrases
+             the STORE can anchor — an unknown operation, an unanchorable
+             phrase, a dangling reference: the plan dies, no claim is born
+                    │
+                    ▼
+             the sentence is built from the final step's TYPED value by our
+             template; the engine contributes operation names and phrases,
+             never an output word
+```
+
+The primitives are the measured organs: anchor a phrase to its dated line,
+take the latest, gather lines, span two dates, order them, filter by a
+cutoff, count, tally by month. Measured on a dated store, five question
+shapes nobody wrote an organ for — *did A happen before B*, *in which month
+most*, *how many days between*, *when first*, *when last* — answered
+correctly with no new code.
+
+And the seat binds the plan's output TYPE: a count-shaped turn will not
+voice a month tally, however correct that tally's arithmetic. Organs
+silent and plan dead, the turn refuses rather than gambles the prose
+chain — measured on a benchmark slice where the chain earned two right
+answers and twenty-three wrong ones.
+
+### Dialogue is data with two more columns
+
+Chat is trickle data: events melt into talk, and two things every
+conversation carries were being flattened into prose.
+
+**When it happened** is the sentence's word before the envelope's. People
+tell events days later — *[stamped April 10] back on March 22 the GPS
+died* — so the engine reads the candidate lines and proposes the date; the
+arithmetic decides whether the reading may stand (the date must equal some
+candidate's stamp, or its day must be written as a number in that line
+with the year in the stamp's neighbourhood). An invented date fails both
+and the envelope speaks, as before. No month table, no date grammar.
+
+**Who spoke** is metadata as real as the date. `learn(..., speaker=)` keeps
+it per line, `session.asker` says who is asking, and the event organs seat
+that speaker's lines first — nothing excluded, priority alone moves.
+
+**When the question is asked** is metadata too (0.7): `session.asked_at`
+takes a `datetime.date`, the plan's `now` primitive reads it, and "how
+many days ago…" becomes arithmetic between a line's stamp and the asking
+day. With none set, `now` is the calendar's today — a benchmark replays
+last year's questions, a letter is answered a week late.
+
+**`m.distil(text)`** is the write-time reading for passages where events
+melt into talk: the engine LISTS each thing as thing/what-happened/KIND —
+ongoing facts included, "I'm also getting X" is no less a fact than "I
+bought X" — the passage's own words admit the thing, and each survivor
+becomes one gated dated record. The KIND ("magazine subscription") is an
+index key beside the bridges, never a claim: it widens what a later
+question can FIND and no gate or spoken word ever reads it. The passage
+is kept as evidence, so nothing is lost. Documents that state their own
+structure need none of it; their rows reach the graph for free.
+
+---
+
+## Why not embedding RAG
+
+|  | Embedding RAG | LMM |
+|---|---|---|
+| Ingestion | chunks + embeddings | facts into a **graph** + sentences into an **evidence index** |
+| Retrieval | similarity gamble | deterministic word/graph lookup, explainable |
+| Multi-hop | fails when chunks don't co-retrieve | **derives** new facts symbolically (µs, no model call) |
+| Paraphrase | the embedding's strength | **the open gap** — a bridge learned per field, and the engine's second ask; a dense channel is the instrument this wants and is not built yet |
+| Entity graph | built by an LLM (GraphRAG), a claim | built by the document: an entity is a **collocation**, an edge is a **witnessed co-mention** carrying its sentence |
+| Fabrication | a plea in the prompt | **structural gate**: unsupported claims cannot leave |
+| Provenance | none | every fact carries its source; uncertain answers are flagged |
+| Tables | flattened into text | **rows go straight into the graph** — zero model calls |
+| A 350-page manual | seconds of embedding, lossy retrieval | queryable in **~2 s** |
+
+The core install has **one dependency, numpy**. The graph, the gate, the trust
+ordering and the derivation are pure python — no model, no network, no GPU —
+and numpy is there for one thing: the meaning channel, a 30 MB multilingual
+matrix that ships in the wheel so a paraphrased question is understood out of
+the box. `Memory(dense=False)` runs without either.
+
+## Measured
+
+Same questions to both sides. RAG baseline: LangChain + multilingual embeddings
++ Chroma + gpt-4o-mini, best-practice grounding prompt. **LMM's engine here is
+the same gpt-4o-mini**, so the column compares architectures, not model sizes.
+LMM figures are medians of three samples — these benchmarks are noisy and a
+single run is not a measurement.
+
+| Benchmark | RAG | LMM |
+|---|---|---|
+| Fictional corpus, 17 q (no parametric leakage possible) | 14/17 | **17/17** |
+| A strategy document, 16 q | 13/16 | **14/16** |
+| A 350-page device manual, 30 q | 14/30 | **27/30** — ingested in **2.3 s** vs 9.2 s |
+| An inspection spreadsheet, 15 q | 15/15 | 14/15 — ingested in **86 ms** vs 4.7 s |
+| **Wrong facts asserted, all runs** | 1 | **0** |
+
+The bigger the document, the wider the gap: retrieval collapse is RAG's
+structural ceiling, composition is LMM's structural strength.
+
+### Four corpora, one code path
+
+The table above is one document at a time. These are the sets the answer
+path is developed against — three runs each, medians, same engine:
+
+| Corpus | factual | comparisons | frontier* | traps (fabrication) |
+|---|---|---|---|---|
+| 62 sibling training outlines, 73 q (customer's, not redistributable) | **40/40** | **15/15** | 7/8 | **10/10** |
+| 12 hardware specifications, 19 q — a corpus the system had never seen, no adaptation | **8/8** | **4/4** | **3/3** | **4/4** |
+| 1,000 generated specifications, 50 q (questions derived from the corpus, not written by hand) | **25/25** | — | — | **25/25** |
+| NIST SP 800-63B (public PDF), 13 q · fictional EN corpus, 17 q | 11/13 · 17/17 | — | — | — |
+
+Every category above is a median of three runs with **zero flips** — no
+question changed its verdict between runs — except the single frontier
+miss.
+
+\* *frontier*: questions whose discriminating word the documents never
+write ("the priciest" against a column headed LIST PRICE).
+
+### Against three memory frameworks, same corpus, same engine
+
+LangChain (RAG), LlamaIndex and Mem0 answering the same questions over
+the same 62 documents, each with Azure `gpt-4o-mini` behind it, two
+repeats:
+
+| | factual | comparisons | frontier | traps | wrong facts asserted | p50 latency | ingestion |
+|---|---|---|---|---|---|---|---|
+| LangChain | 21/40 | 14/15 | 4/8 | 9/10 | 1 | **1.9 s** | 75.6 s |
+| LlamaIndex | 29/40 | 13/15 | 6/8 | 9/10 | 1 | 3.4 s | 12.9 s |
+| Mem0 | 25/40 | 15/15 | 5/8 | 8/10 | 2 | 2.2 s | 161 s |
+| **LMM** | **40/40** | **15/15** | **7/8** | **10/10** | **0** | 5.9 s | **2.1 s** |
+
+The shape of that table is the design: LMM is ahead on every accuracy
+column and alone at zero fabrications, loads a corpus in seconds rather
+than minutes, and pays for its verification in per-question latency —
+three model calls to answer, three more to audit the answer, where a RAG
+pipeline makes one and asserts whatever comes back. The questions it can
+answer from a record cost nothing at all (0.01 s), which is what pulled
+the median down from 11.2 s.
+
+**Speed.** A question that names a document and one of the corpus's own
+field heads is answered from the record itself — no model call, no
+composition, the document's line and its stamp: **0.01 s** where the same
+question used to take 10.4 s and twelve calls. It fires on 33 of the 40
+factual questions above and on none of the comparisons, frontier
+questions or traps, which is the shape it should have. Questions that
+need the engine still cost what verification costs: 8 s for a comparison,
+7 for an honest refusal.
+
+**Scale, measured on the 1,000-document store (25k sentences):** ingestion
+2.2 s, 82 MB resident, retrieval 121 ms median with the named document's
+line recalled 50/50. **Conversation depth:** the same twelve questions
+scored 11/12 asked to a fresh session and 11/12 asked after twenty-four
+turns of other documents, pointers and topic switches — the same single
+failure in both.
+
+
+Only the invented corpus is in this repository. The other three documents belong
+to their owners — a manufacturer's product manual, an institution's internal
+strategy document, an inspection report naming real people — and are not ours to
+redistribute. `benchmarks/corpus*.txt` is a fictional world written so that no
+answer can come from what a model already knows.
+
+**These numbers are lower than this file used to show, and that is the point.**
+An audit removed everything that had been fitted to the documents being scored:
+few-shot examples quoting the manual's own voltages, a prompt clause teaching the
+exact distinction one question turned on, and thresholds (a 700-character
+window, a 40-character cell, a 0.75 similarity) chosen while reading one PDF.
+The honest cost was **62/63 → 59/63**, of which the prompt content alone was 4
+points — that was the share of the score that came from having seen the test.
+Removing the last Turkish from the runtime cost one point more.
+
+## Against GraphRAG, measured
+
+Beating chunk-and-embed is the obvious comparison. The one that matters is
+against graph-structured memory, so this runs **Microsoft's own package** —
+`pip install graphrag`, its indexer, its prompts, its defaults, local search —
+on the same corpora, with the same engine, scored by the same side-blind
+evaluator. Nothing is reimplemented, so nothing here is a strawman.
+[`benchmarks/graphrag_side.py`](benchmarks/graphrag_side.py).
+
+| Same engine (gpt-4o-mini), 3 samples each | LMM | GraphRAG |
+|---|---|---|
+| Fictional corpus (1.6 KB), 17 q | **17/17** · spread 0 | 16/17 · spread 0 |
+| NIST SP 800-63B (45k tokens), 13 q | **11/13** · spread 0 | 7/13 · spread **2** |
+
+**The small corpus nearly saturates both. The real standard separates them**,
+and the shape of the losses matters more than the totals.
+
+*GraphRAG loses specific values.* Three of its misses have the answer sitting
+in the document while the reply talks around it — "verifiers should establish
+minimum length requirements … to enhance security" where the answer is **64**,
+which never appears. That is its indexer working as designed: entity
+descriptions are summarised, and a summary abstracts the number away. It also
+asserted one confident wrong citation, *OMB Memorandum M-04-04* where the
+document says *Circular A-130*.
+
+*LMM's two misses are refusals.* Both are reworded questions whose answer is in
+the document and was not retrieved; both came back "I do not know" rather than
+approximated. Retrieval recall on synonyms is the open work item — and nothing
+was fabricated to cover it. Two instruments were built for exactly this class:
+an offline expansion channel, measured not to close it and since deleted, and
+the meaning channel that now ships switched on. See **Honest limits**.
+
+Cost, on the 45k-token standard:
+
+| | LMM | GraphRAG |
+|---|---|---|
+| Ingestion | **0 model calls** (shallow — the mode a large document is for) | 220 calls · 498,230 prompt tokens |
+| Per question | ~5 calls | 2 calls · 10,132 prompt tokens |
+
+One correction this measurement forced on an earlier claim: **"5× the model
+calls" was against vanilla RAG at one call per question.** Against the real
+competitor at two, it is about 1.3×, and on the small corpus the per-question
+prompt token counts are nearly level (3,840 vs 3,306). Ingestion runs the other
+way in graph mode — 20× the calls — which is what per-fact extraction through
+the gate costs against batch extraction.
+
+**Two scorer bugs were found while running this, both against the baseline,
+both fixed.** The abstention fallback was a Turkish-only phrase list, so
+GraphRAG's honest English refusals scored as fabrications (13/17 → 16/17 once
+fixed). And a token echoed from the question — "…required by the GDPR" — was
+read as a claimed designation, so refusing an absence question scored as
+inventing an answer. Handing points back to a competitor is not generosity; a
+benchmark that takes them by accident is not evidence.
+
+## Language independence, measured
+
+No hand-written sentences, no word lists, no per-language rules anywhere in the
+pipeline. That used to be an argument about the code; every benchmark was
+Turkish, so nothing tested it.
+
+`corpus_en.txt` and `corpus_es.txt` are the fictional corpus line for line — the
+same facts in the same order, the same 17 questions, the same gold keys
+translated. The invented names (*zerbalit, vorlin, norgul, Nortlann*) are
+identical in all three, so no answer in any language can come from a model's own
+knowledge. Only the language moves.
+
+| The same world, the same 17 questions | median of 3 | samples |
+|---|---|---|
+| Turkish | **17/17** | 17 · 17 · 17 |
+| English | **16/17** | 15 · 16 · 16 |
+| Spanish | **15/17** | 15 · 15 · 15 |
+
+**The measuring tool was the language-bound part.** Scoring an abstention meant
+recognising "I don't know" — a phrase list, in one language. Against an English
+document every honest refusal would have scored as a fabrication. So the
+judgement moved inside: a turn now records whether it *asserted* anything,
+decided by re-extracting the claims from what was spoken. `explain=True`
+surfaces that stamp.
+
+**The two-point gap is one defect.** Every remaining loss in English and Spanish
+is a refusal that keeps talking — *"Vorlin is not a recognized substance"*, which
+the corpus flatly contradicts. Retrieval, derivation and the gates behave
+identically in three languages (the graph ingests 61–62 facts and derives 8 in
+each); the engine's *stylistic* habit of explaining its refusals varies, and this
+system's scoring is strict enough to charge it.
+
+## Cost, measured
+
+Accuracy is only half of a comparison. The other half is what it costs, so the
+same two architectures were run again with a counter wrapped around the model
+clients — real `usage` tokens from the server, median of three repeats, both
+corpora. **[`benchmarks/COST.md`](benchmarks/COST.md)** has the full tables; the
+short version is not flattering to us:
+
+| Per question, TR corpus | RAG | LMM `deep=True` |
+|---|---|---|
+| model calls | **1.0** | 5.5 |
+| prompt tokens | **593** | 3,944 |
+| wall clock | **1.6 s** | 7.5 s |
+| Ingestion (once) | 0 API tokens (local embedding, ~0.2 s CPU) | 42,449 + 1,174 tokens — or **0**, with `deep=False` |
+| Dependencies on disk | 114 packages, 1.35 GB + 458 MB weights | **1 package, 1.1 MB** |
+
+**On a hosted per-token engine, embedding RAG is still cheaper than LMM and
+there is no break-even** — roughly 5-6x the calls and 6-7x the prompt tokens
+per question, and the gap widens with every question asked. Most of the
+remaining cost is the verification read-back: the gate re-extracting the
+claims out of a sentence before it may leave. That is fabrication-0 being paid
+for in tokens.
+
+### Where it goes now, and half of it you can stop paying today
+
+**That last sentence was true of the system that was measured, and that
+system no longer exists.** The table above predates the shapes and the
+organs, and the cost harness's own list of headings was never extended —
+so every call the router and the organs made filed under `other` until
+5 October 2026, by which time `other` held the largest number in the
+system. Re-measured on NIST SP 800-63B, 13 questions, a fresh process per
+arm (`benchmarks/gate_arms.py`):
+
+| bucket | calls | |
+|---|---|---|
+| routing | 21 | which shape is this turn, which language, which two things |
+| answer | 19 | |
+| extract | 13 | |
+| relation-check | 12 | the classifier readings |
+| organ | 8 | |
+| judge | 6 | |
+| **read-back** | **3** | the check everyone optimises |
+| widen | 1 | |
+| | **83** | 6.4 a question |
+
+The read-back is three calls of eighty-three. It barely runs, because the
+two-tier gate admits a fully covered answer without asking the engine at
+all. What costs is **routing** — deciding what KIND of question this is,
+before any answer exists — and routing with extraction is 41% of a
+question.
+
+Both re-discover something the caller usually knows. `standalone=True`
+says the question has no conversation on either side of it, which is true
+of every question an API receives, and `shape=` declares the kind. Same
+thirteen questions, one run each:
+
+| configuration | correct | calls | a question |
+|---|---|---|---|
+| as shipped | 9 / 13 | 83 | 6.4 |
+| `standalone=True` | 9 / 13 | 76 | 5.8 |
+| `standalone=True, shape="material"` | 10 / 13 | **43** | **3.3** |
+
+```python
+m.ask(question, standalone=True, shape="material")   # 6.4 calls -> 3.3
+```
+
+The eight questions the memory answers plainly fall from five or seven
+calls to **two** — one answer, one check. **And no gate was traded for
+it**, which is the only reason this is worth printing: `read-back` is 3 in
+both arms, so the exit gate ran exactly as often. What fell to zero was
+the classifier bucket, not the relation gate.
+
+The extra correct answer is **not** claimed — the same arm has measured 9
+and 10 on separate runs, so one run cannot tell a gain from noise. What is
+claimed is that nothing was lost for half the calls. Every question in
+this set is a document lookup, so `material` is the right shape for all of
+them; what a caller who declares the WRONG shape pays is not measured.
+
+What the tokens buy is the other column of the table above — provenance, the
+refusal guarantee, symbolic multi-hop derivation, and a core with no
+dependencies. And on the local engine this project is actually built for, the
+dollar figure is **zero** and the cost is your own CPU seconds instead.
+
+**Zero-call answers — questions the graph answers with no model call at all —
+were 0 of 17 at every commit until `lmm/lookup.py`.** The architecture always
+permitted a derived fact or a table row to be spoken as it stands; nothing in
+the code ever took that path, because `respond` always spent a call turning a
+held triple into a sentence and more calls reading that sentence back.
+`lookup` answers the question directly from the graph — the record, not a
+sentence — for the two shapes it can settle without guessing: a value named on
+a relation the graph has closed under derivation, or a field with one value
+left in it. Measured: **3 of 17 questions, in TR and in EN alike — 18%** —
+now cost nothing at all, and they are exactly the multi-hop questions
+("is vorlin a liquid", answered from the *derived* `vorlin -[type]-> liquid`).
+Everything the graph cannot settle safely still falls through to the paid
+path unchanged; see `benchmarks/COST.md` §3 for what that guarantee costs.
+
+**On a document whose facts are a TABLE, that floor is most of the questions.**
+A spreadsheet's row label is usually several words — `united states`, `new
+hampshire` — and a scan of the question one word at a time could never name
+one, so those questions went to the engine. Naming a node by the question's own
+contiguous word runs settles them from the graph instead. Measured on the US
+Census spreadsheet `fetch_documents.py` pulls down, 10 questions, 3 samples,
+median (`benchmarks/COST.md` §8): **5 correct → 9 correct, 0 zero-call → 6,
+6.1 calls per question → 2.7**, with **zero wrong answers in every arm**. The
+three invented corpora do not move — their subjects are single invented words,
+so there is nothing multi-word to name — and they lose nothing either.
+
+**A row is only reachable by the name a question calls it.** That sheet nests
+its rows by drawing the indentation with a character — `.Alabama`,
+`.Puerto Rico`, because a cell has no margin — and every nested row was
+invisible to the name anyone would use for it. The plain name is now an alias
+of the row: Unicode's category decides what is layout, and the cell keeps its
+own text, so nothing the document wrote is edited. Same protocol, 5 documents
+(`benchmarks/COST.md` §8.4): **48/50 → 49/50 correct, 15 → 16 answered with no
+model call, 0 wrong answers**, the four other documents unmoved. The question
+that moved had been refused at every commit in this history and is now free.
+
+**A question with four right answers gets four right answers.** That sheet's
+header occupies two rows, and reading only one of them overwrote three of its
+four population columns out of existence — silently. Reading the block (the
+sheet's own merges say where the header ends) keeps them, and then a question
+naming no year names four columns equally well; the answer path used to pick
+one and say nothing. It no longer chooses: a reading that names several records
+is answered with all of them, each under the full field name the SHEET wrote,
+which is where the year is. Four census questions that name a year were added
+first, because the old set never asked for a column the single-row reader
+destroys (`benchmarks/COST.md` §8.4.1, four arms, 5 documents × 3 samples):
+**census 10/14 with 3 wrong answers → 14/14 with none, 6 → 10 of them free**,
+field total **53/54 correct, 0 wrong, 19 zero-call**, the four other documents
+unmoved. Both halves ship on; either can be switched off
+(`LMM_XLSX_HEADER_BLOCK=0`, `LMM_LOOKUP_CANDIDATES=0`).
+
+**And the same question over a memory that has not moved is free.** Asking the
+same ten questions a second time costs **0.0 calls and 0.0 seconds** on both
+field documents, every answer byte-identical. On the invented corpora it is
+0.9 calls per question rather than 0.0, because two of the ten sit inside the
+research-offer flow and a replayed answer would leave the offer standing — so
+those two bypass the cache on purpose.
+
+**That floor is a property of ingestion, not only of `lookup`.** The same
+corpus ingested by a weak local 3B model derived *zero* facts instead of
+Azure's 8, so `lookup` had nothing to answer from. It never guessed from the
+noisy graph it was given; it declined every time, correctly. The path itself
+spends no token once the graph exists — whether the graph closes at all still
+depends on what read it in.
+
+**Two defects stand between that engine and the floor, and neither is
+sufficient alone** (`benchmarks/COST.md` §7.1, measured by replaying the local
+engine's cached readings through the real ingestion): its extractor names whole
+clauses as subjects, and — the larger one — its causal classifier answers YES
+for **41 of 61** sentences of this corpus, including plain is-a sentences the
+prompt's own examples cover, where `gpt-4o-mini` gets every one right. A
+sentence read as causal is written under `#causes` and never reaches the
+taxonomy, so the taxonomy is split across two predicates and no triangle can
+close, however clean the subjects are. A subject-normalization pass was built,
+measured against a PERFECT-normalization ceiling, found to buy nothing on
+either side of that split, and reverted. The remaining work is extraction
+quality on the local engine, not the wiring behind it.
+
+**Both of those were then attacked directly, and both attempts were reverted
+too** (`benchmarks/COST.md` §7.1.1). llama.cpp can constrain its DECODER with a
+grammar, so a per-sentence GBNF was built in which a subject can only be a
+contiguous run of that sentence's own words and never the whole sentence — the
+wrong answer made unsayable rather than asked against — and beside it a
+sentence began to be written BOTH ways, as a causal edge and as a triple, so
+the taxonomy stopped being split. The engine answered by saying the longest
+thing still allowed (`kelvit bir metaldir` → `kelvit bir`). It is the first
+local run in which a predicate ever became transitive, and it derived nothing
+all the same, because the triangles that qualified it are triangles the corpus
+states outright. The 61 cached readings are kept beside the section so the next
+attempt starts from the measurement.
+
+## Architecture
+
+```
+                 ┌──────────── the GATE decides everything ────────────┐
+ user/message →  extract (engine)  →  gate.admit  →  GRAPH (facts, sources,
+                                                      trust, contradictions,
+ document     →  learn_text ──────→  evidence index  transitive derivation)
+ spreadsheet  →  learn_rows ──────→  graph directly (no model calls)
+                                                      │
+ question     →  lookup ──────────→  THE RECORD, spoken as it stands
+                 (graph only)         no engine, no tokens, no wobble
+                     │ not settleable
+                     ↓
+                 graph lookup + evidence retrieval →  answer (engine)
+                                                      │
+                 coverage gate → digit discipline → support check → verify
+                 (an answer whose claims are not in the given evidence DROPS)
+```
+
+- **The engine cannot write records and cannot speak unsupported facts.** It
+  produces candidates; the gate admits, the gate releases. Every other property
+  here is downstream of that one sentence.
+- **Two speeds.** Symbolic reasoning — derivation, causality, contradiction —
+  runs in microseconds on the graph. The engine is only the language I/O.
+- **The graph answers first, where it can settle the question by itself.** If
+  the question NAMES a value on a relation the graph has closed under its own
+  derivation ("is vorlin a liquid"), or names a field with one value in it, the
+  answer is that record — returned before the extractor is reached, with no
+  model call anywhere in the path and therefore nothing for a model to invent.
+  Everything else falls through unchanged. It declines far more often than it
+  answers, on purpose: nothing structural separates a question naming no field
+  from one naming a field the graph has never heard of, so both are paid for.
+  A node whose name is SEVERAL words — a spreadsheet's row label, a country, a
+  spec table's field — is named by the question's own contiguous word runs, so
+  `united states` is one name and not two misses.
+- **The same question over a memory that has not moved is not paid for twice.**
+  The answer is kept and re-spoken; teach the memory anything and it is dropped
+  rather than repeated. What counts as "moved" is not a record count — it is
+  every mutation the graph has, including a second source reinforcing a fact
+  and a `sleep()` fading one, because a stale answer is worse than an expensive
+  one. `Memory(..., cache=False)` turns it off.
+- **A document is two materials.** Tables state their own structure and go
+  straight to the graph with no model call; prose goes to the evidence index,
+  where ranges and qualifications that don't fit a triple survive verbatim.
+- **Growth without retraining.** Knowledge goes to the graph, never to weights.
+  A periodic LoRA pass refreshes *behaviour* from gate-approved logs — never
+  from the model's own raw output.
+
+Full description: [`docs/architecture.md`](docs/architecture.md).
+
+## Install
+
+```bash
+pip install living-memory-model                      # core: one dependency, numpy
+pip install 'living-memory-model[pdf]'               # pdfplumber + pypdf
+pip install 'living-memory-model[xlsx]'              # pandas + openpyxl
+pip install 'living-memory-model[docx]'              # python-docx
+pip install 'living-memory-model[local]'             # torch + transformers + peft (local engine)
+pip install 'living-memory-model[gguf]'              # llama.cpp, CPU
+pip install 'living-memory-model[openai]'            # OpenAI, OpenRouter, Groq, vLLM, Ollama
+pip install 'living-memory-model[azure]'             # Azure OpenAI
+```
+
+Extras are opt-in and lazy: nothing is imported until you hand LMM a file of
+that kind, and a missing reader reports the exact install line rather than a
+traceback.
+
+**One dependency, and it is named rather than hidden.** The core used to be
+pure python with nothing under it. It now requires **numpy**, and what that
+buys is the meaning channel: a 30 MB static multilingual matrix travels in the
+wheel and is attached by default, so a paraphrased question is understood out
+of the box with no download, no account and no network. Measured, it retrieves
+better than the transformer it would otherwise take (MRR 0.88 against 0.71) and
+builds its index a hundred times faster. `Memory(dense=False)` runs without it;
+with numpy missing the channel is absent rather than broken.
+
+The bundled matrix is derived from `minishlab/potion-multilingual-128M` (MIT,
+the model2vec method), reduced to 108k word-pieces and 128 dimensions; the
+segmentation is thirty lines of our own, so there is no tokenizer dependency
+either. See `NOTICE`.
+
+### Bring your own engine
+
+LMM does not ship a model and does not want to pick one for you. It needs an
+engine to turn a retrieved record into a sentence, and any of these will do:
+
+```bash
+# nothing set — a local Qwen2.5-3B-Instruct, on your own machine
+export LMM_MODEL_PATH=/path/to/any-instruct-model   # ...or any HF model you have
+
+# llama.cpp / int4 — the fast option on cheap hardware
+export LMM_BACKEND=gguf
+
+# OpenAI
+export LMM_BACKEND=openai
+export OPENAI_API_KEY=sk-...
+export LMM_MODEL=gpt-4o-mini
+
+# OpenRouter, Groq, Together, a vLLM or Ollama server — same client, one URL
+export LMM_BACKEND=openai
+export OPENAI_BASE_URL=https://openrouter.ai/api/v1
+export OPENAI_API_KEY=...
+export LMM_MODEL=meta-llama/llama-3.3-70b-instruct
+
+# Azure OpenAI — its own client, because a deployment name is Azure's shape
+export LMM_BACKEND=azure
+```
+
+**Nothing about the architecture changes with the engine, and that is the
+point.** The graph, the gate and the derivation are plain python; they never
+call the engine and never learn which one is running. What the engine decides
+is how a record is *worded* — not whether it may be spoken. So a weaker engine
+costs you fluency, never provenance: an unsupported claim is dropped by the
+same rule whichever model produced it, and the calls that read, derive and
+verify are free on every one of these.
+
+The gguf engine offloads to the accelerator **when the installed llama.cpp
+build has one** (it asks the library, not the platform); set
+`LMM_N_GPU_LAYERS=0` to force the CPU, or a smaller number when the model does
+not fit in VRAM. Measured on an Apple M5, same call: 1.8-2.3 s on the CPU
+against 0.6-0.7 s offloaded (`benchmarks/COST.md` §7.2).
+
+## Using it
+
+```python
+from lmm import Memory
+
+m = Memory("mind.lmm")
+
+m.learn("spec.pdf")                       # tables → graph, prose → evidence
+m.learn("inspection.xlsx")                # rows → graph, milliseconds
+m.learn("report.docx")
+m.learn("The probe was built on Nortlann in 2031.")   # plain text works too
+
+answer = m.ask("where was the probe built?", explain=True)
+print(answer)                             # it IS the answer string
+print(answer.abstained)                   # did this turn assert anything?
+print(answer.sources)                     # the stamps it rests on
+
+m.save()
+```
+
+`learn()` returns a small report (`.facts`, `.tables`, `.adapter`, `.source`).
+
+A table inside a document is read **row by row** — a delimited row (`|` or
+tabs: markdown, ASCII tables) is whole on one line and its cells are stored
+under the names its header row gives them, so no window ever puts one row's
+value beside another row's label. A **table of contents is read as what it
+is**: a column of page numbers points at a place rather than stating a
+value, so it never enters the evidence — otherwise "what is this
+regulation's number?" is answerable with the page its section opens on,
+past every gate, because the page really is written beside the name.
+
+### The operator's knobs
+
+Everything a RAG system prompt bundles into one block is a named parameter
+here, and each travels exactly where it belongs — none of them can reach the
+verifiers, because a judge whose thermostat the caller can turn is not a judge:
+
+```python
+m = Memory("mind.lmm",
+           persona="You are Ada, a warm onboarding coach. Ask before you advise.",
+           style="One section per course: name, duration, audience, outcomes.",
+           warmth=0.6,          # temperature of the VOICE surfaces only
+           reply_tokens=1200,   # length cap of the voice surfaces only
+           encoder=None,        # the bundled matrix; or any callable
+           reranker="bundled",  # late interaction; or a callable, or None
+           dense=True)          # the meaning channel, on by default
+```
+
+- **`persona`** is the voice. It rides in front of the phrasing prompts —
+  chat, answer, refusal — and stops at the document's edge: the composer
+  never sees it (measured: persona-flavoured rephrasing dies at the
+  verbatim gate).
+- **`style`** is the document's shape — the persona's mirror twin. It
+  travels ONLY to the composer's request: sections, headings, ordering are
+  the operator's; every fact beneath them still has to be attested by the
+  material.
+- **`warmth` / `reply_tokens`** tune temperature and length of the same
+  voice surfaces. Unset, every surface keeps its measured default. The
+  classifiers and the gate keep their pinned settings regardless.
+- **`encoder`** is the meaning channel's vectors. Unset, the matrix that
+  ships in the wheel. Any callable `list[str] -> list[list[float]]` replaces
+  it — sentence-transformers, bge-m3, a vendor's embedding endpoint, an
+  in-house service — and then nothing of ours is loaded.
+- **`reranker`** is the ordering inside a proposal. `"bundled"` is the late
+  interaction over the same matrix; any callable `(query, texts) -> order`
+  replaces it (a cross-encoder, an LLM reranker); `None` turns it off.
+- **`dense=False`** removes the channel entirely. The store then answers
+  exactly as it did before the channel existed, and numpy is not needed.
+
+```python
+# an operator who wants their own encoder, and no reordering
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("BAAI/bge-m3")
+m = Memory("mind.lmm",
+           encoder=lambda texts: model.encode(texts, normalize_embeddings=True).tolist(),
+           reranker=None)
+```
+
+Two more are session attributes rather than constructor arguments, because
+they are about how hard a turn tries rather than how it sounds. Both default
+to **1**, and both were measured down from higher numbers — the readings they
+bought stopped winning once retrieval improved (see **Measured**):
+
+```python
+m.session.CANDIDATES = 3   # evidence subsets generated per question
+m.session.VIEWS = 2        # views of the evidence a judge may buy
+```
+
+### Serving it to more than one person
+
+A memory that lives in one process is a library. `lmm.serve` is the same
+three verbs over HTTP, with one memory per user:
+
+```bash
+python -m lmm.serve --root ./stores --port 8000     # localhost by default
+curl -s localhost:8000/learn -d '{"user":"ada","text":"Ada leads R&D."}'
+curl -s localhost:8000/ask   -d '{"user":"ada","question":"who leads R&D?"}'
+# {"answer": "...", "abstained": false, "sources": ["#doc:team.txt"], ...}
+```
+
+It is a transport, not a second brain: no gate, no rephrasing, no fallback
+text is added, so the abstention and the source stamps cross the wire
+intact and an HTTP caller can verify what an in-process caller can. Every
+user's store is chosen by their id and nothing else, no route reads across
+users, and an id that could climb a path is refused before it becomes a
+filename. Each memory holds its own lock — one writer at a time per user,
+different users in parallel. Set `LMM_TOKEN` to require a bearer token.
+
+TypeScript callers get the same object rather than a bare string
+([`sdk/typescript`](sdk/typescript), no dependencies):
+
+```ts
+const m = new LMM({ base: "http://localhost:8000", user: "ada" });
+const a = await m.ask("who leads R&D?");
+if (a.abstained) console.log("memory does not hold this");
+else console.log(a.answer, a.sources);
+```
+
+### Inside a LangChain application
+
+```python
+from lmm.adapters.langchain import retriever, tool
+
+chain_retriever = retriever(m)    # passages, each stamped with its document
+agent_tool = tool(m)              # an AUDITED answer, with its sources
+```
+
+The retriever is ordinary retrieval — the gate is not in play, and what
+the caller's own model then says about those passages carries the caller's
+own guarantees. The tool is the one worth having: the agent receives the
+answer that passed the gate, and receives the refusal *as itself*, because
+an agent handed an empty string writes its own answer over the silence.
+LangChain is not a dependency; without `langchain_core` installed the same
+calls return duck-typed equivalents.
+
+### A conversation that may not teach
+
+`m.session.respond(msg, teach=False)` is the consultation surface — a
+customer-facing bot that listens, remembers the conversation, and delivers,
+without ever letting a visitor write into the operator's memory:
+
+- a statement ("we are a bank, team of ten") is CONTEXT — it routes to the
+  chat voice and its terms accumulate in the consultation's brief;
+- a question searches with the whole consultation riding along, so "the
+  best three-hour material" still knows the topic named two turns earlier;
+- a delivery request ("you decide, put a programme together") goes straight
+  to the composer, which returns a source-stamped catalogue built from the
+  brief — and echoing the user's own words back is conversation, not
+  assertion, so the gate lets a consultant sound like one.
+
+Pass `on_line=` to `respond` or `compose` and the draft STREAMS: each line
+is judged by the composer's gate the moment its newline arrives and handed
+to your callback while the engine is still writing. A line the gate refuses
+is never seen — an invented number does not become printable by arriving
+early. On a backend that cannot stream, the same code degrades to batch by
+itself.
+
+### The whole surface
+
+Five methods cover ingesting and asking. Everything else this README claims —
+contradiction, causality, the trust ladder, the memory dynamics — lives on
+`m.session`, which is public and is the same object `Memory` is built on. It is
+listed here because a feature with no documented entry point is not a feature.
+
+| | | |
+|---|---|---|
+| `m.learn(what)` | teach it a file or a string | no engine for tables |
+| `m.ask(q, explain=True)` | answer, with `.sources`, `.abstained` and `.route` (which organs the turn passed through) — cannot write memory | engine |
+| `m.about(label)` | the records held on a concept | no engine |
+| `m.facts` | how many records exist | no engine |
+| `m.save(path)` | graph and evidence, both | no engine |
+| `m.compose(brief, topics=, on_line=)` | a structured draft from the evidence — per-topic gathering, gated line by line, streamed to `on_line` as lines survive, returned with its sources | engine |
+| `m.where(term)` | which documents mention this — names and counts, the census | no engine |
+| `m.themes()` | which documents belong together, and on what entities — community detection over the store's own graph | no engine |
+| `m.distil(text, source=, speaker=)` | write the EVENTS a passage reports into the graph — the engine lists them, the passage's own words admit them, each survivor is one gated dated record | one call per passage |
+| `m.bridge()` | teach the store, once, what words readers ask its fields with — afterwards those questions are answered by the record itself | one call per field, once |
+| `m.session.respond(msg, teach=False, on_line=)` | a conversational turn — `teach=False` is the consultation surface (context, brief, delivery; cannot write memory) | engine |
+| `m.session.learn_rows(rows)` | `[{column: value}]` straight to the graph | no engine |
+| `m.session.learn_cause(a, b)` | record that a causes b | no engine |
+| `m.session.root_causes(x)` | walk the causal chain back | no engine |
+| `m.session.causes_of(x)` / `.effects_of(x)` | one step either way | no engine |
+| `m.session.tension()` | the contradictions it is holding | no engine |
+| `m.session.curiosity()` | what it has been asked and cannot answer | no engine |
+| `m.session.sleep()` | fade, reinforce, settle episodic into semantic | no engine |
+| `m.session.verdict(old, new)` | arbitrate two rival values | engine |
+
+A record is a `core.memory.Record`: `.subject`, `.predicate`, `.value` are
+concept **keys**, not strings, because one spelling can be two entities and one
+entity can carry labels in several languages — read the labels through
+`m.session.memory.identities`. `.sources` and `.trust` are the provenance the
+gate reads on the way out.
+
+The column that says *no engine* is not a footnote. Those calls are plain
+python over a dict — microseconds, no network, no key — which is why a
+spreadsheet loads in milliseconds and why the reasoning half of this system
+costs nothing to run.
+
+See [`examples/`](examples/) — including one that runs with no engine at all.
+
+## What 0.7 changed — conversation memory learns what "living" means
+
+A told fact can END, a question is asked ON a day, a thing HAS a kind,
+and a small telling can be read whole. Six mechanisms, all generic (no
+word of any language in code), each behind a failing test first —
+measured on one fixed 30-question chat-memory slice throughout, with
+the document exam re-run after as the control.
+
+| change | measurement |
+|---|---|
+| the graph count asks the engine which facts still stand | "how many subscriptions" flipped between a fabricated 3 and a short 1; now the right two entities, cancelled one pruned, stamped |
+| the plan knows the asking day (`session.asked_at`, the `now` primitive) | "how many days ago…" abstention → the exact answer |
+| a distilled thing carries its KIND — an index key, never a claim | "I'm also getting Architectural Digest" reachable by "magazine subscriptions" |
+| a list is not a name; membership by name or kind, never by story | a projects count that swallowed tools and clauses: 8 → 2 |
+| a stated tally outranks an enumeration; one breath is not a series | four stated-tally answers ("20 playlists", "32 species"…) restored |
+| a small dated telling is read whole when every organ dies (its own gates) | "which did I use most recently", "what are the two hobbies": refusal → stamped answers |
+| **the slice, before → after** | **43% → 57-60%** · wrong claims 7 → 5-6 · document exam **30/31, unchanged** · invariants 211 → **218** |
+
+A seventh mechanism was built, measured and **reverted before release**:
+handing these turns to the factual chain contradicted a measured law
+(the chain's 23 confident wrong claims were measured on chat). The
+whole-telling organ is the corrected design — a new reading with its
+own gates, not a loosened chain. Undated stores — every document
+corpus — build their blocks byte for byte as before, and the tests
+assert it.
+
+## What 0.6 changed, and what it cost
+
+Every line here was measured, and three of the changes are RETRACTIONS of
+insurance this project had been paying for.
+
+| change | measurement |
+|---|---|
+| the meaning channel ships and is on | answering line reaches the engine **32% → 79%** |
+| it sits at the DOCUMENT layer, not the line | store retrieval **92% → 99%** (103 known-item queries) |
+| late-interaction reordering | worth more the vaguer the question: 6 terms removed, MRR **0.707 → 0.807** |
+| the candidate ladder, 3 → 1 | eleven field questions: **139 → 104 calls**, correctness 4/11 → 5/11; the narrow candidates won **nothing** |
+| a judge's second view, 2 → 1 | the second view confirmed **nothing**, on either judge; −8 calls in 104 |
+| the derived index is written beside the store | first question **10.6 s → 0.13 s** |
+| a deterministic question is asked once | one refusal turn: −2 calls, −11k tokens |
+| the offline expansion channel | deleted, **−607 lines** |
+
+The three retractions share a shape. Each was a hedge against weak retrieval —
+generate three readings and pick, judge against two views, index the questions
+a line might answer — and each stopped earning the moment retrieval got better.
+None was deleted outright: `CANDIDATES` and `VIEWS` are numbers, and an
+operator whose corpus defeats the reordering raises them.
+
+---
+
+## What the gate is for — corrected by a field measurement
+
+A team integrating this library published a correction to their own report,
+and it corrects the argument this README had been making. Their first
+comparison put the whole document in the prompt — **no retrieval at all** —
+which made the gate look like it was buying two fewer invented answers.
+
+Run against the right control (**the same retrieval LMM uses**, one engine
+call after it instead of the gate), across 44 supplier/requirement cells on
+two real tender documents:
+
+| | tokens | seconds | false-covered |
+|---|---|---|---|
+| document in the prompt | 292,749 | 125 | 5 |
+| **the same retrieval, one call, no gate** | **28,083** | **88** | **3** |
+| LMM | 313,173 | 491 | **2** |
+
+Retrieval removes two invented coverages; the gate on top of those same
+lines removes one more — inside a variance of about two cells. On that
+corpus **the gate's contribution to non-fabrication is at the noise
+floor**, because once retrieval is good the fabrication it exists to stop
+was mostly not happening. Naive RAG over the same retriever was 11×
+cheaper in tokens and 5.6× faster, and anyone choosing between them
+deserves to know that.
+
+What the gate does buy showed up in the same run, and neither side had
+measured it. Counting what each system was **willing to say**:
+
+| | "partly" | "fully" | "not covered" |
+|---|---|---|---|
+| same retrieval, no gate | **31** | 7 | 6 |
+| document in the prompt | 14 | 29 | **0** |
+| LMM | 0 | 34 | 10 |
+
+Unverified answering hedges: 31 of 44 cells came back "partly", and the
+whole-document variant never once said "not covered". LMM commits, 34 to
+10, and 8 of those 10 refusals are right. A matrix where 31 rows of 44 say
+"partly" tells its reader nothing.
+
+So the claim is not "the gate stops the model inventing things". With good
+retrieval, it mostly was not. The claim is: **the gate stops a system from
+refusing to answer while appearing to.** A system that never commits is
+never wrong and never useful.
+
+(The same run reports **zero fabrications in 44 cells**. Both of its wrong
+answers were relevance failures — see [Honest limits](#honest-limits).)
+
+## Honest limits
+
+Kept current, and deliberately specific.
+
+- **Cross-session recall over chatty dialogue is partly closed, and the
+  remainder is named.** 0.7's kind keys and whole-telling reading answer the
+  cases that were the face of this wall ("getting Architectural Digest" now
+  counts as a magazine subscription; "what are the two hobbies" answers,
+  stamped). Still open, each a missing derivation rather than a mystery:
+  summing durations across records ("how many years in total"), ordering
+  THREE events (the order organ compares two), reflecting a stored
+  preference inside a recommendation, and a ±1-day anchor when the event's
+  date is written in the text but the envelope's stamp wins. One more is
+  variance, not architecture: extraction at temperature 0 is not
+  byte-stable across processes, and a 30-question score moves ±2 with it.
+- On a fixed 30-question LongMemEval slice (5 per category, gpt-4o-mini as
+  the engine), 0.7 measured **57-60%**, from 43% at the start of the cycle.
+  **That figure is no longer reproducible and should not be relied on**:
+  its harness and its question list lived outside this repository and are
+  gone, so which data variant it used is unknown. 0.12.1 re-measured with
+  a harness that is now IN the repo (`benchmarks/longmemeval.py`, a
+  deterministic slice) and scores **43% on the oracle variant and 10% on
+  `longmemeval_s`**, judged by an engine. The 33-point gap between those
+  two is distractor sessions, and it is the honest shape of this weakness.
+  **0.13.0 measures 13/30 on `longmemeval_s`** (`quoted=True`, the shape
+  read rather than declared), where 0.12.1 measured 7/30 in the nearest
+  comparable configuration; the per-question files are in
+  `benchmarks/longmemeval_runs/`. Two things limit what that figure says:
+  thirty of five hundred questions, so one question is more than three
+  points; and the judge is the configured engine, `gpt-4o-mini`, the same
+  model that wrote the answers. Published
+  chat-memory figures (Zep's current claim is ~71% under a GPT-4o judge)
+  use different engines and protocols. That benchmark is a
+  long-personal-conversation exam, not a document exam; the same code
+  answers 40/40 on the field set above and its document exam did not move
+  during any of this. Both numbers are true and neither is the whole
+  picture. What each release moved is named in the changelog; what it did
+  not is named here — including that roughly half of what we still miss,
+  the bare engine handed the same lines also misses, and misses
+  confidently where this memory abstains.
+
+- **A count verifies that its items exist; membership is checked only
+  where the set is a stretch of time.** Asked how many doctor's
+  appointments the user went to in March, the counting organ named three
+  doctors where the answer is two: every name was written in the
+  evidence, so every name passed, and one appointment was on April 1st.
+  **Fixed for dates** — each line is given the date its own sentence
+  states rather than the date the message carries, the question's window
+  is read as two dates, and the library compares them. That question
+  answers two now. **Not fixed for anything else**: a doctor the user was
+  only CONSIDERING is excluded by no word of the question and by no date.
+  A word-level repair was built, measured and refused, because the same
+  arithmetic that drops the April appointment drops a true project from
+  the invariant guarding this organ. Every organ that verifies items
+  against lines inherits the remainder.
+- **Relevance is measured now, and it is 8 of 9 either way.** The
+  relation check keeps 8 of 9 relevant answers and stops 8 of 9
+  irrelevant ones on the NIST set, with the negatives built rather than
+  written: each question paired with a true, sourced sentence from the
+  same document about something else (`benchmarks/relevance.py`). Nine
+  questions, so one question is eleven points. Both errors are the same
+  question, and it is the paraphrase one — this document answers "what is
+  the shortest password" under *memorized secret*, and the gate cannot
+  see that the answering line answers it. That gap shows in retrieval, in
+  the rewording pass, and here.
+- **Relevance is the dominant failure mode, and the gate does not touch it.**
+  The gate guarantees non-fabrication, not perfect relevance — and a field
+  integration measured that this is not one limit among several but *the* one:
+  zero fabrications in 44 cells, both wrong answers relevance failures. One is
+  instructive: every content word verbatim in the document, a real source
+  stamp, a true sentence — the requirement asked for a simulation feature in
+  the product, the document described unit testing during the project. The
+  gate had nothing to object to, because nothing in it was false. *"The memory
+  has something to say about X"* is not *"the supplier offers X"*, and nothing
+  here judges that distance.
+- Spec lines reachable only through very common words ("how many inches is the
+  screen", where the line reads `Screen 15.6" LCD` and never says *inches*) are
+  a lexical-retrieval ceiling. One such case is rescued by an append-only
+  mechanism; the class is not closed.
+- A question that names PART of a column's name and nothing that tells the
+  columns apart ("the 2021 population estimate", where the sheet's column is
+  `Population Estimate (as of July 1) 2021`) is not answered from the graph at
+  all — it is one reading of several and the widest reading holds one record,
+  which this path does not speak. It goes to the engine like any other question
+  and is answered there, at the engine's price. What is guaranteed is that the
+  three columns the question ruled out are never spoken over it
+  (`benchmarks/COST.md` §8.4.1).
+- **The offline expansion channel was deleted, and the case it was built for
+  is still open.** It generated the questions each line answers and indexed
+  them, keeping a query when it reached its own line better than any other.
+  Measured on NIST SP 800-63B that filter is inverted: the line reads
+  *"Memorized secrets SHALL be at least 8 characters in length"* and a reader
+  asks *"what is the shortest password"*, which shares not one distinguishing
+  word with it — so a real rephrasing never reaches its own line and the filter
+  kept only the queries that COPIED it. Handed perfect queries by hand, it kept
+  zero. A switch nobody should turn on is a liability, so it is gone.
+  The meaning channel that replaced it closes much of the class (the answering
+  line reaches the engine 32% -> 79% of the time on a 115k-line corpus) but
+  **not this example**: measured again after, "what is the shortest password"
+  still does not reach that line, while "minimum length for a memorised secret"
+  reaches it first.
+- Two benchmark questions are stable failures and are named rather than hidden:
+  one whose answer sits in a table row sharing a single stem with the question,
+  and one needing a heading plus a line eight sentences below it in one window.
+- The engine sometimes appends an explanation to a refusal that the memory
+  contradicts. This is **detected** — the turn is scored as having asserted
+  something, and loses the point — but not prevented. It is the whole of the
+  remaining English/Spanish gap. (The *other* source of appended text, a second
+  model call after the gate, is gone: the hedge is now the stored source stamp
+  in brackets, `(~ #pdf:manual.pdf)`, and nothing is appended to a refusal at
+  all.)
+- **LMM does not OCR.** A PDF without a text layer — what an office scanner
+  produces — teaches it nothing, and `learn()` now says so instead of reporting
+  a cheerful zero. Run OCR first and learn the result.
+- **There is no HTML reader.** An `.html` file is read as plain text and its
+  markup lands in the evidence index; `learn()` warns, with the share of
+  characters that were tags. Convert to text first.
+- Table *columns* are still flattened by the PDF reader: a cell can reach the
+  index next to a neighbouring column's value, and no gate can reject that,
+  because the claim really is in the evidence. Rows are repaired; columns are
+  not.
+- A spreadsheet whose header spans more than one row loses the unnamed columns.
+- An engine call is bounded by `LMM_TIMEOUT` (90 s by default; 0 removes the
+  limit) on the API backend, which raises `EngineTimeout` rather than waiting
+  out a quota. The local engine's generation loop is **not** interruptible, so
+  the budget does not cover it.
+- The coverage gate cannot distinguish negation affixes at word level (language
+  lists are forbidden by design); the engine-level support check covers most of
+  that class.
+- Pre-1.0. The API surface may still move.
+
+## Contributing
+
+Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) — it leads with the two rules
+that make this project what it is: **no document-specific constants** and **no
+hand-written language rules**. Both are stated with what enforcing them cost.
+
+```bash
+python3.11 tests/test_core.py     # 266 invariants · no model · no GPU · no network
+```
+
+Every test is a pathology that was measured on this code, written back as an
+assertion so it cannot return.
+
+## Citing
+
+The design, the measurements and their corrections are written up in a
+report with a permanent DOI:
+
+> KANAR, Ruzgar Ersin (2026). *Living Memory Model: A Memory Layer That Does
+> Not Say What Its Evidence Does Not Support.* Zenodo.
+> https://doi.org/10.5281/zenodo.22999474
+
+That DOI always resolves to the latest version of the report. GitHub's
+"Cite this repository" button reads the same entry from
+[`CITATION.cff`](CITATION.cff).
+
+## Licence and attribution
+
+Apache 2.0 — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+
+**LMM is not a language model trained from scratch.** It is a memory and
+reasoning layer on top of one. The default engine is
+[Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct) (Apache
+2.0, Alibaba Cloud), downloaded by the user from its own source. The local
+engine can also load a LoRA adapter the user supplies; none ships with the
+package and nothing in this repository trains one. What is original here is the
+layer — the graph, the gate, the evidence index and the adapters. The base model
+is credited, never hidden.

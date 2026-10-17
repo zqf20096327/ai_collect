@@ -1,0 +1,232 @@
+# jevcut
+
+Turn a long video into short clips that stand on their own — for Shorts, Reels, TikTok,
+or just a highlights reel. One command in, ranked mp4s out.
+
+```bash
+uv run jevcut run talk.mp4 --model lemonfox
+```
+
+![jevcut cutting 62 clips out of a 97-minute podcast, live in the terminal](assets/demo.gif)
+
+jevcut transcribes the video, finds the moments worth clipping, decides exactly where
+each one starts and stops, drops anything that doesn't stand alone or turns out to be an
+ad, and writes ranked mp4s plus a page to watch them on, best first.
+
+**What makes it different:** code lists every place a clip could start or end — sentence
+ends, pauses, speaker changes — and never lets a model name a timestamp. Jev
+([TypeSafe](https://docs.typesafe.ai/models.md)'s System One model) only ever judges the
+clip that one candidate edge would make, or picks among candidates code has already
+enumerated. See [What jevcut does differently](#what-jevcut-does-differently).
+
+**Measured, not asserted.** On 38 hand-labelled videos across 13 genres, jevcut beats
+five simpler approaches — scoring every sentence, fixed windows, padding the top sentence,
+and two that keep jevcut's own choice of moment but set the edges in code — on recall, on
+how often both edges land where a human would cut, and on precision. Full numbers in
+[BENCHMARKS.md](BENCHMARKS.md); why each result came out the way it did is in
+[RESEARCH.md](RESEARCH.md). It costs about 3¢ of Jev per hour of video
+([What it costs](#what-it-costs)); transcription is extra.
+
+**Scope: v1 clips verbal content** — podcasts, interviews, talks, panels, comedy, streams
+where people talk. The judge is Jev over transcript text, so a moment carrying no words
+(a crash, a scream, a stunt) is invisible to it by construction. That is a deliberate v1
+boundary, not an oversight: see [issue 021](issues/021-event-clips.md).
+
+See [ROADMAP.md](ROADMAP.md) and [`issues/`](issues/) for what's built and what's next.
+
+---
+
+## The bet
+
+Every auto-clipper on the market fails the same way: the clip is *roughly* in the right
+place but starts mid-thought, opens on a pronoun with no referent, or ends before the
+punchline lands. That is not a "find the interesting part" problem. It is a **boundary
+problem**, and boundaries are where existing Jev-based tools are weakest too:
+
+| Tool | Boundary method | Weakness |
+| --- | --- | --- |
+| [jevmeter](https://github.com/ChetasLua/jevmeter) | highest rolling average over a 10–15s stretch | finds energy, not a self-contained thought |
+| [jev-skip](https://github.com/valentynkit/jev-skip) | 30s caption windows snapped to sentence ends | window granularity is coarser than a cut |
+| [youtube-sponsor-detection](https://github.com/trungdq88/youtube-sponsor-detection) | scan → anchor → trace back to lead-in | **right idea** — jevcut steals this and generalizes it |
+
+## What jevcut does differently
+
+1. **Code lists the edges; Jev judges the clips they make.** Code enumerates every
+   plausible cut (sentence end, speech pause ≥350ms, speaker change) and never lets a
+   model name a timestamp. *This took two tries.* First Jev was to pick a cut from a
+   `Choice` — a tuned constant offset kept matching it. Then code placed and repaired the
+   clip by rule — on eight labeled videos that dropped 57% of moments for a ragged edge.
+   Now code offers every real opening and ending as a candidate and Jev judges the clip
+   each would make: recall on the pilot set went 0.23 → 0.41. Edges are still the weak
+   point (few land inside a labeler's acceptable range), and the numbers are in
+   [RESEARCH.md](RESEARCH.md), with the early experiments in
+   [`eval/experiments/`](eval/experiments/) for anyone who wants to disagree.
+
+   **Jev is spent where arithmetic cannot compete even in principle:** whether a moment is
+   worth clipping, whether the clip stands alone, whether the payoff lands inside the cut.
+   No offset or snapping rule answers those — there is nothing for it to compute on.
+
+2. **A cascade, not dense scoring.** A cheap windowed pass finds candidate anchors; only
+   around those does jevcut judge candidate clips. The plan was ~20× fewer requests than
+   scoring every sentence; measured, it spends about as many (~520 per hour of video),
+   because every clip's candidate endings are judged. The requests went into boundaries
+   instead of into scoring every sentence. See [What it costs](#what-it-costs).
+
+3. **An explicit standalone gate — now the main event.** Dedicated Nouls for the failure
+   modes that actually kill clips: starts mid-thought, dangling pronoun, payoff never
+   lands. Every candidate edge is judged; a clip no candidate can make pass is dropped — never shipped. Under-clip on
+   purpose. **No open-source clipper we read has any output check at all** — autoclip asks
+   its model for self-containment as a scoring criterion and never verifies the clip it
+   cut. See [docs/PRIOR-ART.md](docs/PRIOR-ART.md).
+
+4. **Live with a lookback ring buffer.** Live detection is always *late*, so the start is
+   never "now". On trigger, one retro `Choice` over the buffered cut points recovers the
+   real start. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#live-mode).
+
+5. **Measured, not asserted.** Every claim above is an issue with a metric attached.
+   [docs/EVAL.md](docs/EVAL.md) defines the harness and the baselines we must beat before
+   any of this is worth believing.
+
+## What it costs
+
+Measured on the pilot eval set (8 videos, 4.6 hours of media, 2026-09-24), per hour of
+video:
+
+| | Jev requests | cost |
+| --- | --- | --- |
+| Transcription, Lemonfox (`--model lemonfox`) | – | ~$0.17 |
+| Scan: finding the moments worth clipping | ~85 | |
+| Boundary search: opening, endings, ad check | ~430 | |
+| **Jev total** | **~520** | **~$0.03** |
+
+Jev bills about **$0.05 per 1,000 requests** here (as reported per call, ~1,100 input
+tokens each), so the model calls are the cheap part: transcribing costs five times more.
+Local Whisper makes transcription free and finds fewer moments ([BENCHMARKS.md](BENCHMARKS.md)).
+
+**Requests, not dollars, are the budget that matters.** Jev allows 1,200 requests a
+minute, so at ~520 per hour of video one account backfills about two hours of video a
+minute. Three things keep the count down:
+
+- **The scan reads windows, not sentences.** About five minutes of transcript per
+  request, picking up to six moments from each.
+- **Openings are one question.** Every candidate start point is marked in the
+  transcript and a single Choice picks one, instead of judging each separately.
+- **Endings stop early.** A clip ends at the earliest point where its thought is
+  finished, so jevcut judges candidate endings in time order, two at a time, and stops
+  at the first that works: once one does, no later ending can change the pick. Same
+  clips, 25% fewer requests on the pilot set. `--all-endings` turns this off, for eval
+  runs that want every ending judged and on record.
+
+The first plan estimated ~32 requests per hour, one judgment per clip. Judging every
+candidate edge instead is what raised recall from 0.23 to 0.54, and it costs about what
+dense per-sentence scoring was estimated at (~600 per hour).
+[docs/COST-MODEL.md](docs/COST-MODEL.md) has the plan and the measurement side by side.
+
+## Layout
+
+```
+docs/       design: concepts, architecture, question specs, cost model, eval plan, prior art
+issues/     the work, one file per task, numbered and dependency-ordered
+src/        the pipeline: transcript, cut points, scan, boundaries, gate, ranking, render
+tests/      unit tests; no API key, model or media needed
+scripts/    check_docs.py — do the docs still describe the code?
+eval/       a synthetic fixture and the research experiments; no labeled set yet (011)
+```
+
+## Running it
+
+```bash
+uv sync --extra dev          # add --extra asr for Whisper (brings the CUDA runtime, so an
+                             # NVIDIA GPU is used), --extra shots for scene detection
+uv run pytest                # no API key needed
+uv run ruff check .          # lint; the known findings are listed below
+uv run python scripts/check_docs.py   # do the docs still describe the code?
+
+# a real video, end to end -> ranked mp4s, an editable edl.json, clips.fcpxml (the cut,
+# importable by Premiere/Resolve/Final Cut) and index.html (a page to watch them on, best
+# first, with the scores that ranked them), all in clips/talk/.
+# At a terminal it shows live progress, every moment kept or dropped and why, a ranked
+# table and a run summary; piped, or with --plain, it prints one line per event
+# a second run on the same video reuses its transcript, so ASR runs once (a transcript
+# made from a different video is never reused); Jev answers are cached
+uv run jevcut run talk.mp4 --language en
+# optional, on run or clip: --vertical centre-crops to 9:16 at 1080x1920 (no face
+# tracking yet), --captions burns in word-level captions from the transcript
+uv run jevcut run talk.mp4 --language en --vertical --captions
+# the best-measured transcript is hosted: --model lemonfox (LEMONFOX_API_KEY in
+# .env.local; $0.50 per 3 hours of audio). It punctuates where Whisper small does not and
+# labels speakers, which raised recall on every label set (BENCHMARKS.md, lemonfox-asr)
+uv run jevcut run talk.mp4 --language en --model lemonfox
+
+# the same in two steps
+uv run jevcut transcribe talk.mp4 --model small --language en --out t.json
+uv run jevcut clip t.json --media talk.mp4 --out clips/talk/
+
+# clips.fcpxml is written beside edl.json whenever the source video is known, so the cut
+# opens in Premiere, DaVinci Resolve or Final Cut with every clip as its own sequence,
+# trimmable: it points at the source, not at the rendered mp4s, so the handles are still
+# there. Re-make it from an EDL you have edited by hand:
+uv run jevcut fcpxml clips/talk/edl.json
+
+# without ASR, from the synthetic fixture
+uv run jevcut transcribe x --from-json eval/fixtures/interview.words.json --out t.json
+
+# score every labeled video's run against its labels (eval/labels-v2, issue 011); no API
+# calls. What a label means -- the shortest cut that works, opening on its hook -- is
+# eval/RUBRIC.md. Score a change against the second labeler too: eval eval/labels-v2-b
+uv run jevcut eval --note "what changed"
+# how much two independent labelers agree -- the noise floor any boundary error sits on
+uv run jevcut agree eval/labels-v2 eval/labels-v2-b
+# every measured version, re-scored against every label set -> BENCHMARKS.md. After a
+# change is kept: jevcut bench --snapshot NAME --what "..." --commit SHA --gate-requests N
+uv run jevcut bench
+# the same as a web page of bar charts (template: eval/benchmarks/page.template.html)
+uv run python scripts/bench_page.py benchmarks.html
+
+# the stages one at a time
+uv run jevcut cuts t.json --out c.json
+uv run jevcut region t.json L009   # the transcript around one anchor, with cut points marked
+uv run jevcut scan t.json          # Pass C — costs real requests
+uv run jevcut smoke                # one live Noul, traced
+```
+
+`eval/fixtures/interview.words.json` is a synthetic word list, so from there on no ASR
+model is needed, and `cuts` and `region` need no API key either.
+
+**Lint.** The tree is formatted and `ruff check` reports three findings, all left on
+purpose: one long line in `cli.py` that is a Noul criterion string — splitting it risks
+losing a space in prompt text that has to read exactly as written — and an `l` loop
+variable with its single-element slice in `test_render.py`, where `next(...)` would only
+trade an `IndexError` for a `StopIteration` in a test that fails either way.
+
+The formatting run is listed in `.git-blame-ignore-revs`. Turn it on with
+`git config blame.ignoreRevsFile .git-blame-ignore-revs` so blame skips it.
+
+**Reaching Jev.** Two backends, same code above them. `openrouter` (the default) posts to
+`/api/alpha/decisions` with `typesafe/jev-1.13` and needs `OPENROUTER_API_KEY`;
+`typesafe` uses the first-party SDK and `TYPESAFE_API_KEY`. Copy `.env.example` to
+`.env.local` — it is gitignored, and a variable already set in your shell always wins.
+
+## Writing your own Jev questions
+
+The lessons from tuning jevcut's questions are a standalone Claude Code skill, with
+scripts that check its rules (a question linter, the spread test, a threshold calibrator):
+**[jev-questions-skill](https://github.com/VBS2004/jev-questions-skill)**. Every rule in it
+carries a number measured here, and it is about System One in general, not clipping.
+
+## Review
+
+[docs/REVIEW-LOG.md](docs/REVIEW-LOG.md) records what a review of M0 found, with the
+reproduction for each defect. Worth reading before trusting any of this.
+
+## Reading order
+
+**[docs/CONCEPTS.md](docs/CONCEPTS.md)** → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) →
+[docs/QUESTIONS.md](docs/QUESTIONS.md) → [ROADMAP.md](ROADMAP.md) → pick an issue.
+
+Start with CONCEPTS: it defines the sentence IDs, cut points and regions that every other
+document uses without explaining.
+
+## License
+
+[MIT](LICENSE).

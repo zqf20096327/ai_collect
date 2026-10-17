@@ -1,0 +1,191 @@
+<h1 align="center">Pensar Apex</h1>
+
+<p align="center">
+AI-powered penetration testing using autonomous agents — directly in your terminal. Run blackbox and whitebox pentests that explore, reason, and surface real vulnerabilities.
+
+</p>
+
+<p align="center">
+Want to run from the cloud or integrate it with your CI/CD? See <a href="https://docs.pensar.dev/console">Pensar Console</a>.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@pensar/apex"><img src="https://img.shields.io/npm/v/@pensar/apex?label=latest" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@pensar/apex"><img src="https://img.shields.io/npm/v/@pensar/apex/canary?label=prerelease&color=yellow" alt="npm prerelease version"></a>
+  <!-- <a href="https://www.npmjs.com/package/@pensar/apex"><img src="https://img.shields.io/npm/dm/@pensar/apex" alt="npm downloads"></a> -->
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache 2.0 License"></a>
+  <a href="https://docs.pensar.dev/apex"><img src="https://img.shields.io/badge/docs-docs.pensar.dev/apex-purple?logo=readthedocs&logoColor=white" alt="Documentation"></a>
+  <a href="https://discord.gg/pensar"><img src="https://img.shields.io/badge/Discord-Join%20Us-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+</p>
+
+<!-- <p align="center">
+  <img src="screenshot.png" alt="Pensar Apex Screenshot" width="800">
+</p> -->
+
+## Use Cases
+
+### Developers
+
+- Run `/pentest` before merging a PR — catch vulnerabilities as naturally as running tests
+- Get actionable findings with severity scores, evidence, and suggested fixes — no security background needed
+- Integrate into CI/CD via headless CLI commands or Pensar Console
+
+### Security Engineers
+
+- Deploy agent-driven swarm testing across large attack surfaces
+- Use `/operator` mode for manual investigation, exploit chaining, and validation
+- Automate repetitive testing workflows with persistent memory that accumulates across engagements
+- Scale across teams and projects through Pensar Console
+
+## Installation
+
+| Method                          | Command                                              |
+| ------------------------------- | ---------------------------------------------------- |
+| **Quick Install** (macOS/Linux) | `curl -fsSL https://pensarai.com/install.sh \| bash` |
+| **Homebrew**                    | `brew tap pensarai/tap && brew install apex`         |
+| **npm**                         | `npm install -g @pensar/apex`                        |
+| **Windows** (PowerShell)        | `irm https://www.pensarai.com/apex.ps1 \| iex`       |
+
+## Usage
+
+Open the Apex TUI:
+
+```bash
+pensar
+```
+
+### Herdr
+
+Apex automatically reports its state when launched inside
+[Herdr](https://herdr.dev/docs/add-herdr-support/). The sidebar shows `working`
+during a turn, `blocked` when approval, plan review, or answers are needed, and
+`idle` when Apex is ready for input. Terminal-attached CLI agent commands also
+report their activity. No plugin or additional Apex configuration is required.
+
+Herdr 0.9.2 or later can restore the current conversation after a server restart.
+Keep `pensar` on your `PATH`; Apex supplies a resume command with the session ID,
+active model, and obfuscation setting. The saved session restores its operator
+mode and approval settings. Restored sessions wait for your next prompt.
+
+You can also reopen a session directly:
+
+```bash
+pensar --resume <session-id>
+pensar --resume <session-id> --model <model-id>
+```
+
+State reporting and release also work with older Herdr versions. Reports run in
+the background with a short timeout, and Herdr failures do not interrupt Apex.
+
+### Headless CLI
+
+Run pentests without the TUI for scripting, CI, or evalgate integration:
+
+```bash
+# Basic pentest
+pensar pentest --target https://example.com
+
+# With extended thinking and task-driven mode
+pensar pentest --target https://example.com --extended-thinking --task-driven
+
+# Whitebox (with source code access)
+pensar pentest --target https://example.com --cwd ./my-app
+
+# Targeted pentest with specific objectives
+pensar targeted-pentest --target https://example.com --objective "Test authentication bypass"
+```
+
+| Flag                           | Command                   | Description                                    |
+| ------------------------------ | ------------------------- | ---------------------------------------------- |
+| `--target <url>`               | pentest, targeted-pentest | Target URL (required)                          |
+| `--cwd <path>`                 | pentest                   | Source code path for whitebox mode             |
+| `--mode <mode>`                | pentest                   | `exfil` for pivoting and flag extraction       |
+| `--model <model>`              | pentest, targeted-pentest | AI model (default: auto-selected)              |
+| `--extended-thinking`          | pentest                   | Enable extended thinking for supported models  |
+| `--task-driven`                | pentest                   | Enable task-driven architecture (experimental) |
+| `--prompt <text\|@file>`       | pentest                   | Custom guidance for the agent                  |
+| `--threat-model <text\|@file>` | pentest                   | Threat model to guide testing                  |
+| `--objective <text>`           | targeted-pentest          | Testing objective (repeatable)                 |
+
+### Hoonify inference
+
+Connect **Hoonify** in `/providers` or set `HOONIFY_API_KEY`, then select a
+discovered model in `/models`. Headless commands accept
+`--model-provider hoonify --model <catalog-model-id>`. See
+[Hoonify setup](docs/hoonify.md) for model discovery, token budgets, and live checks.
+
+### Custom inference endpoints
+
+Bring an OpenAI-compatible endpoint and bearer token through `customProviders`
+configuration or the `APEX_CUSTOM_PROVIDERS` worker environment variable. Select
+it with `--model-provider <id> --model <model>`, or choose its declared models in
+the operator's `/models` picker. See [custom inference setup](docs/custom-inference.md)
+for GLM settings, headless job configuration, and a live connection test.
+
+### Logging
+
+Apex routes diagnostic/operational logging through a centralized structured logger
+(`src/core/logger`). It writes one-line JSON to **stderr** when output is not a TTY — keeping
+it separate from the program's stdout and easy to ship to a log pipeline (e.g. CloudWatch) —
+and pretty, colorized output in an interactive terminal. User-facing CLI/TUI output stays on
+stdout.
+
+Set the level (most → least verbose: `debug` < `info` < `warn` < `error`, default `info`):
+
+```bash
+pensar pentest --target https://example.com --log-level debug   # or --verbose / --quiet
+PENSAR_LOG_LEVEL=debug pensar ...                                # via environment
+PENSAR_DEBUG=1 pensar ...                                        # back-compat alias for debug
+```
+
+Resolution order: CLI flag → `PENSAR_LOG_LEVEL` → `PENSAR_DEBUG` → default `info`.
+`PENSAR_LOG_FORMAT=json|pretty` forces the output format. When Apex runs as a managed agent,
+`PENSAR_LOG_LEVEL` is supplied by the host environment.
+
+### W&B Weave Tracing
+
+Stream step-level agent traces to Weights & Biases Weave for analysis and fine-tuning:
+
+```bash
+export WANDB_API_KEY=your-key
+export WANDB_ENTITY=your-entity
+# WANDB_PROJECT defaults to "apex-traces"
+pensar pentest --target https://example.com
+```
+
+Traces include reasoning steps, tool calls, token usage, and state checkpoints. When credentials are not set, tracing is silently disabled.
+
+### OpenTelemetry (Observability)
+
+Apex emits OpenTelemetry spans for agent runs, LLM calls, and tool executions through `@opentelemetry/api`. Spans are no-ops unless your process registers an OpenTelemetry SDK as the global tracer provider; Apex ships no SDK.
+
+Register an SDK before importing Apex code:
+
+- **Sentry**: install `@sentry/node` ≥ 9.27 and add `Sentry.vercelAIIntegration()` to your `Sentry.init` integrations.
+- **Any OTel backend** (Honeycomb, Tempo, Datadog, etc.): register `@opentelemetry/sdk-node` with an OTLP exporter.
+
+Spans follow [OTel GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/). Only span shape (model, token counts, latency, tool names) is captured by default; set `AI_TRACE_RECORD_PAYLOADS=true` to also record prompts, tool I/O, and outputs.
+
+## Kali Linux Container (Optional)
+
+For **best performance**, run Apex in the included Kali Linux container with preconfigured pentest tools:
+
+```bash
+cd container
+cp env.example .env  # add your API keys
+docker compose up --build -d
+docker compose exec kali-apex bash
+```
+
+Inside the container, run:
+
+```bash
+pensar
+```
+
+---
+
+### ⚠️ Responsible Use
+
+This repository contains tools for **authorized security testing** only.
+Before use, please read and agree to the [Responsible Use Disclosure](./RESPONSIBLE_USE.md).

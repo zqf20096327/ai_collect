@@ -1,0 +1,431 @@
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/webkubor/picx-images-hosting@master/blog/projects/keyring-banner/cs-token4ai-1784197546810397000.png" alt="Kyvault Banner" width="100%">
+</p>
+
+<h1 align="center">🔐 Kyvault</h1>
+
+<p align="center">
+  <strong>AI 时代开发者密钥与资产台账管理器 — 你存一次，AI 永远看不到明文。</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/webkubor/kyvault/releases"><img src="https://img.shields.io/github/v/release/webkubor/kyvault?style=for-the-badge&color=coral" alt="Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/webkubor/kyvault?style=for-the-badge&color=gold" alt="License"></a>
+  <a href="https://github.com/webkubor/kyvault/releases/latest"><img src="https://img.shields.io/github/downloads/webkubor/kyvault/total?style=for-the-badge&color=orange" alt="Downloads"></a>
+  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/Rust-静态二进制-orange?style=for-the-badge" alt="Rust"></a>
+  <a href="#-安装"><img src="https://img.shields.io/badge/依赖-零运行时-4c9a6b?style=for-the-badge" alt="零运行时依赖"></a>
+</p>
+
+---
+
+## 🎯 为什么需要 Kyvault？ (核心对比)
+
+| 功能 | Kyvault | .env | 1Password | Vault |
+|------|---------|------|-----------|-------|
+| **AI 安全 (别名注入)** | **✅ 绝对安全** | ❌ 泄漏明文 | ✅ 安全但慢 | ✅ 复杂难用 |
+| **时效覆写 (自动防腐)** | **✅ 失效必改** | ❌ 无校验 | ❌ 手动更新 | ❌ 手动更新 |
+| **多平台 CLI 智能连接** | **✅ 一键连接** | ❌ 不支持 | ❌ 不支持 | ❌ 不支持 |
+| **纯本地存储 (零网络)** | **✅ 极速响应** | ✅ 本地 | ❌ 依赖云端 | ❌ 依赖云端 |
+| **多账户多密钥** | **✅ 支持** | ❌ 不支持 | ✅ 支持 | ✅ 支持 |
+| **API Key 验证 (含余额)**| **✅ 自动验证** | ❌ 不支持 | ❌ 不支持 | ❌ 不支持 |
+| **轻量依赖** | **✅ 极简** | ✅ 极简 | ❌ 庞大 | ❌ 庞大 |
+
+---
+
+## 🔥 一屏特性亮点
+
+* 🔒 **AI 安全别名注入 (AI-Safe)**: AI 只能看到无害别名（如 `github_token`），运行时单向注入，彻底防止密钥在 AI 聊天日志或训练数据中泄露。
+* 🌐 **本地极客 Web GUI 与向导 (Web GUI & Wizard)**: 一键 `ky ui` 唤起本地极客暗黑风面板；`ky wizard` 提供终端四步分类引导，彻底告别命名不统一。
+* 🛡️ **Auth Guard 多因素授权守卫 (Multi-Factor Guard)**: 根密钥加密为 `master.key.enc`，支持本地 SSH 公钥无感解锁 + Google Authenticator 动态门禁。
+* 🤖 **多平台 CLI 智能对接 (AI Connect)**: 一键 `ky connect`，自动将规则和技能注入 `Gemini/agy/Claude/Codex/Hermes/DSH` 记忆与规则库。
+* 🖥️ **开发者加密台账中心 (Developer Ledger)**: 加密管理服务器账号密码、云服务租金、CLI 客户端多 Profile 凭证令牌，支持 URI 寻址。
+* ⚡ **极简短命令 (First-Class `ky`)**: `ky` 作为官方第一公民，敲 `ky list`、`ky run`、`ky ui` 享受最极客的开发者心流。
+
+---
+
+## ⚡ 30 秒上手
+
+```bash
+# 1. 一键安装（自动就绪 kyvault 与短命令 ky）
+curl -fsSL https://raw.githubusercontent.com/webkubor/kyvault/main/install.sh | bash
+
+# 2. 一键连接本地所有 AI 智能体 (Claude / Codex / agy / Hermes / Cursor)
+ky connect
+
+# 3. 极客 Web GUI 可视化录入与检索（自动打开本地浏览器）
+ky ui
+
+# 4. 或命令行引导式规范录入
+ky wizard
+
+# 5. AI 零明文注入运行（代码与日志中绝对安全）
+ky run --env GITHUB_TOKEN=secret://github/pat -- git push
+```
+
+> 💡 **关于快捷短命令 `ky`**：`ky` 是 `kyvault` 的官方第一公民短命令，两者完全等价。敲 `ky list`、`ky run`、`ky ui` 即可体验极致的极客开发流。
+
+---
+
+## 🔥 核心亮点
+
+### 🔒 1. AI 编码原生安全 (AI-Safe Alias Injection)
+* **痛点**：传统的 `.env` 文件或内存环境变量会被 Cursor、Claude Code、GitHub Copilot 等 AI 助手读取其上下文，导致密钥直接暴露在 AI 提供商的聊天日志或训练数据中。
+* **解法**：`kyvault` 采用**别名映射注入机制**。AI 在代码和提示词中只能看到无害的“别名”（如 `github_token`），而在运行时（Runtime）通过 `kyvault run` 动态且单向地将明文注入子进程。AI 永远接触不到明文，从源头上杜绝了数据泄露。
+
+### 🤖 2. 智能连接，AI 零配置感知 (Zero-Config AI Connect)
+* **一键连接**：内置 `kyvault connect` 命令，能自动发现并注入当前机器的全局 Gemini/Claude 规则与当前项目的 `.agents/` 技能文件。
+* **IDE 无感对接**：自动识别项目目录并追加安全别名规则到 `.cursorrules` 与 `.copilotinstructions`。AI 智能体在理解您的项目时会“自动学会”使用 `kyvault`，实现零人工介入的主动安全运维。
+
+### 🖥️ 3. 加密资产台账中心 (Developer Ledger & CLI Multi-Tokens)
+* **服务器台账**：将服务器 IP、root 登录密码、云服务商及月度租用成本以第一公民的数据结构集中加密记录，统一支持 `secret://server/<host>/[ip|root-password]` 的 URI 寻址解密。
+* **CLI 多账户管理**：支持针对同一个 CLI 工具（如 `studio-cli`、`git`）管理多套 Profile（如主账户、测试账户、部署账户）的 Token，多账户环境一键读取，杜绝身份混淆。
+
+### 🔑 4. 纯本地军事级加密 (Local Military-Grade Encryption)
+* **高强度加密**：采用业界公认安全的 **AES-256-GCM**（认证加密），所有数据在写入磁盘前均完成高强度加密。
+* **零网络依赖**：100% 纯本地运行，不发起任何外网连接，绝无任何 SaaS 云端数据泄漏或被拖库的潜在风险。密钥完全掌握在您自己手中。
+
+> **⚠️ name 是别名，不要填密钥本身。**
+> `secret://<platform>/<name>` 里的 `name` **不加密** —— 它是寻址用的，`list` 会原样打印。
+> 把密钥填进 name 等于「加密存了一份、明文又漏一份」，加密就白做了。
+>
+> ```bash
+> ✅ kyvault set secret://deepseek/api-key -        # 可读别名
+> ✅ kyvault set secret://github/main-pat -         # 多账号用 pat-work / pat-personal
+> ❌ kyvault set secret://deepseek/sk-9dcea1111... - # 密钥当 name
+> ```
+>
+> **当前（v2.2.0）`set` 不会校验 name** —— 上述「密钥当 name」会被原样接受、`list` 也会
+> 原样打印出来。这个判断只能靠人做，所以把它写进红线清单：往 `set` 里塞
+> `sk-...` / `ghp_...` 之类当 name 的，等于自废加密。
+>
+> 如果将来加了 name 校验（按 `sk-`/`ghp_`/`glpat-`/`AKIA`/`AIza` 等已知前缀匹配），届时 `list`
+> 对历史数据会打码显示 `…{last4}`（值的最后 4 位，目前已是这个格式）。在此之前——守住入参即可。
+
+### 🔄 5. 极简无缝迁移 (.env Migration)
+* **无感导入**：支持一键导入项目已有的 `.env` 配置文件，并自动匹配最适合 AI 使用的变量别名。
+* **支持 Dry-Run**：在实际导入前提供安全预览机制，清晰掌握数据结构变化。
+
+---
+
+## 📖 使用指南
+
+### 账户管理
+
+```bash
+# 保存账户（用户名+密码）
+kyvault account set github user@gmail.com mypassword123
+kyvault account set github admin@gmail.com adminpass456
+
+# 读取密码
+kyvault account get github user@gmail.com
+
+# 列出平台下所有账户
+kyvault account list github
+
+# 删除账户
+kyvault account delete github user@gmail.com
+```
+
+### 密钥管理
+
+```bash
+# 保存平台密钥（API Key、Token 等）
+kyvault key set github ghp_xxxxxxxxxxxx
+kyvault key set openai sk-xxxxxxxxxxxx
+
+# 读取密钥
+kyvault key get github ghp_xxxxxxxxxxxx
+
+# 列出平台下所有密钥
+kyvault key list github
+
+# 删除密钥
+kyvault key delete github ghp_xxxxxxxxxxxx
+```
+
+### 平台查询
+
+```bash
+# 列出所有平台及摘要
+kyvault platform
+
+# 查看指定平台详情
+kyvault platform github
+```
+
+### AI 集成
+
+```bash
+# 推代码
+kyvault run --env GITHUB_TOKEN=ghp_xxxxxxxxxxxx -- git push
+
+# 调 API
+kyvault run --env OPENAI_API_KEY=sk-xxxxxxxxxxxx -- python app.py
+
+# 多个密钥
+kyvault run --env TOKEN1=secret1 --env TOKEN2=secret2 -- python script.py
+```
+
+### 别名系统
+
+```bash
+# 创建别名（AI 只认识这个）
+kyvault alias set github_token secret://github/ghp_xxxxxxxxxxxx
+
+# 用别名注入
+kyvault run --env GITHUB_TOKEN=github_token -- git push
+```
+
+### 从 .env 迁移
+
+```bash
+# 预览（不实际导入）
+kyvault import --file .env --dry-run
+
+# 导入全部
+kyvault import --file .env
+
+# 只导入 GitHub 相关
+kyvault import --file .env --prefix GITHUB_
+```
+
+### 🤖 AI 智能体一键连接 (AI Connect)
+
+通过全局和项目本地的智能规则，使您本地的 AI 编码助手（如 Cursor、VSCode Copilot、Claude Code 等）能够立即读懂密钥库及别名别称，彻底避免明文泄漏：
+```bash
+# 一键自动对接全局 Gemini 规则和当前项目下的 .agents/、.cursorrules 和 .copilotinstructions
+kyvault connect
+```
+
+### 🖥️ 服务器密码与租金台账 (Server Ledger)
+
+以第一公民命令格式加密存储您的所有服务器台账，支持以 `secret://` 的形式让 AI 直接寻址解密：
+```bash
+# 1. 保存服务器（必填：主机名、IP、root密码；可选：月租成本、云服务商）
+kyvault server set my-host 120.46.12.3 rootpwd123 --cost "99元/月" --provider "腾讯云"
+
+# 2. 查询全部台账信息
+kyvault server get my-host
+
+# 3. 指定读取单个加密字段（支持 secret:// URI 路由兼容，完美服务 AI）
+kyvault server get my-host --field ip            # 输出: 120.46.12.3
+kyvault get secret://server/my-host/root-password # 输出: rootpwd123
+```
+
+### 🔌 CLI 客户端多 Token 维护 (CLI Multi-Tokens)
+
+用于多账户、多环境切换的 CLI 统一 Token 凭证维护：
+```bash
+# 1. 为指定 CLI 的不同账户存储 Token
+kyvault cli set studio-cli webkubor jwt_token_main
+kyvault cli set studio-cli test-user jwt_token_test
+
+# 2. 查询指定 Profile 的加密令牌
+kyvault cli get studio-cli webkubor             # 输出: jwt_token_main
+kyvault get secret://cli/studio-cli/test-user   # 输出: jwt_token_test
+```
+
+---
+
+## 📁 安全架构与 master.key 核心规范
+
+```
+~/.config/kyvault/store/ (GitLab 团队仓库)
+├── auth.json        # Auth Guard 授权方法配置 (SSH 指纹、TOTP 加密 secret)
+├── master.key.enc   # 加密态根密钥 (SSH 公钥派生 AES 密钥加密，替代明文 master.key)
+├── secrets.json     # AES-256-GCM 加密密文 (入仓 Git 同步)
+├── meta.json        # 审计元信息 (脱敏, 记录更新时间、last4、scopes、组织)
+└── .lock            # 跨进程文件排他锁 (防止 Agent 并发写入冲突)
+```
+
+### 🛡️ Auth Guard 多因素授权守卫 (v2.4.0+)
+
+`master.key` 不再以明文存储。通过 `kyvault auth setup`，将 master.key 用 SSH 公钥材料派生的 AES 密钥加密为 `master.key.enc`，明文自动删除。
+
+- **SSH Key 绑定**（主力）：零交互自动解锁。只要本机 SSH 公钥还在且指纹匹配，Agent 毫无感知。支持绑定多把公钥，任一把匹配即可。
+- **TOTP 谷歌验证器**（可选）：对 `master-key --reveal` 等敏感操作额外要求 6 位动态验证码。
+- **策略**：`any_one`（默认）——任意一种方法通过即解锁。
+
+```bash
+# 首次启用
+kyvault auth setup
+
+# 查看守卫状态
+kyvault auth status
+
+# 添加/移除授权方法
+kyvault auth add ssh ~/.ssh/id_ed25519.pub
+kyvault auth add totp
+kyvault auth remove ssh-id_rsa
+
+# 回退到明文模式
+kyvault auth disable
+```
+
+### 🔑 什么是 master.key？
+`master.key` 是在本地生成的 32 字节（256 位）高强度安全随机数（以 44 字符的标准 Base64 编码保存）。
+它是整套密钥库加解密的**唯一根凭据**：
+1. **纯本地计算**：kyvault 使用 `SHA-256(Base64Decode(master.key))` 派生 AES 密钥，对每条凭证生成独立 12 字节随机 Nonce 进行 AES-256-GCM 认证加密。解密零网络依赖。
+2. **物理隔离与绝对不入仓**：`master.key` / `master.key.enc` 被 `.gitignore` 强力排除，`kyvault gitlab push` 前会进行双重防泄露检查。
+3. **本地查看与迁移备份**：
+   ```bash
+   kyvault master-key           # 查看路径、权限、SHA-256 指纹
+   kyvault master-key --reveal  # 导出明文（备份至 1Password / 换机迁移）
+   ```
+
+### 存储结构 (secrets.json)
+
+```json
+{
+  "github": {
+    "accounts": {
+      "user@gmail": "encrypted_password_1",
+      "admin@gmail": "encrypted_password_2"
+    },
+    "keys": {
+      "ghp_xxx": "encrypted_key_1",
+      "ghp_yyy": "encrypted_key_2"
+    }
+  }
+}
+```
+
+- **加密算法**: AES-256-GCM（认证加密）
+- **密钥派生**: SHA-256
+- **密钥保护**: Auth Guard（SSH Key / TOTP 加密 master.key）
+- **存储与同步**: 本地脱机解密，GitLab 团队密文同步
+- **权限与并发**: master.key.enc 仅当前用户可读写 (0600)，跨进程 `.lock` 排他锁
+
+---
+
+## 📋 命令速查
+
+| 快捷 | 完整 | 用途 | 示例 |
+|------|------|------|------|
+| - | `kyvault init` | 初始化主密钥与目录 | `kyvault init` |
+| - | `kyvault master-key` | 查看主密钥路径与指纹 | `kyvault master-key` (加 `-r` 显明文) |
+| **账户管理** | | | |
+| `kyvault account set` | `kyvault account set` | 存账户 | `kyvault account set github user@gmail pass` |
+| `kyvault account get` | `kyvault account get` | 读密码 | `kyvault account get github user@gmail` |
+| `kyvault account list` | `kyvault account list` | 列账户 | `kyvault account list github` |
+| `kyvault account delete` | `kyvault account delete` | 删账户 | `kyvault account delete github user@gmail` |
+| **密钥管理** | | | |
+| `kyvault key set` | `kyvault key set` | 存密钥 | `kyvault key set github ghp_xxx value` |
+| `kyvault key get` | `kyvault key get` | 读密钥 | `kyvault key get github ghp_xxx` |
+| `kyvault key list` | `kyvault key list` | 列密钥 | `kyvault key list github` |
+| `kyvault key delete` | `kyvault key delete` | 删密钥 | `kyvault key delete github ghp_xxx` |
+| **平台查询** | | | |
+| - | `kyvault platform` | 平台列表 | `kyvault platform` |
+| `kyvault platform <name>` | `kyvault platform <name>` | 平台详情 | `kyvault platform github` |
+| **API 验证** | | | |
+| - | `kyvault check` | 验证 key 有效性与余额 | `kyvault check openai --key sk-xxx` |
+| - | `kyvault providers` | 支持平台列表 | `kyvault providers` |
+| **AI 集成** | | | |
+| - | `kyvault run` | 注入env单向执行 | `kyvault run --env X=val -- cmd` |
+| - | `kyvault connect` | AI 智能对接 (全Agent规则) | `kyvault connect` |
+| **加密资产台账** | | | |
+| - | `kyvault server set` | 存服务器台账 | `kyvault server set host 1.1.1.1 pw` |
+| - | `kyvault server get` | 读服务器台账 | `kyvault server get host` |
+| - | `kyvault server list` | 列服务器台账 | `kyvault server list` |
+| - | `kyvault server delete`| 删服务器台账 | `kyvault server delete host` |
+| - | `kyvault cli set` | 存 CLI Token | `kyvault cli set tool prof token` |
+| - | `kyvault cli get` | 读 CLI Token | `kyvault cli get tool prof` |
+| - | `kyvault cli list` | 列 CLI Token | `kyvault cli list` |
+| - | `kyvault cli delete`| 删 CLI Token | `kyvault cli delete tool prof` |
+| **GitLab 团队协作** | | | |
+| - | `kyvault gitlab status` | 团队库同步与安全检查 | `kyvault gitlab status` |
+| - | `kyvault gitlab pull` | 拉取最新密文与元信息 | `kyvault gitlab pull` |
+| - | `kyvault gitlab push` | 提交推送密文 (严查key) | `kyvault gitlab push` |
+| - | `kyvault gitlab sync` | 自动同步 (pull+push) | `kyvault gitlab sync` |
+| - | `kyvault gitlab setup`| 克隆团队仓库至本地 | `kyvault gitlab setup git@gitlab.com:org/vault.git` |
+| **Auth Guard 守卫** | | | |
+| - | `kyvault auth setup` | 交互式首次配置 | `kyvault auth setup` |
+| - | `kyvault auth add` | 添加授权方法 | `kyvault auth add ssh ~/.ssh/id_ed25519.pub` |
+| - | `kyvault auth list` | 查看已绑定方法 | `kyvault auth list` |
+| - | `kyvault auth remove` | 移除授权方法 | `kyvault auth remove ssh-id_rsa` |
+| - | `kyvault auth disable` | 关闭守卫 | `kyvault auth disable` |
+| - | `kyvault auth status` | 守卫状态概览 | `kyvault auth status` |
+| **引导与图形界面** | | | |
+| - | `kyvault ui` | 启动本地极客 Web GUI（自动唤起浏览器） | `kyvault ui` (或 `ky ui`) |
+| - | `kyvault wizard` | 交互式分类引导向导 (规范URI) | `kyvault wizard` (或 `ky wizard`) |
+| **自检与更新** | | | |
+| - | `kyvault doctor` | 工具自检修复 | `kyvault doctor` |
+| - | `kyvault update` | 在线升级工具 | `kyvault update` |
+
+---
+
+## 🤖 兼容平台
+
+### LLM 大模型
+
+| 平台 | Logo | 验证 | 别名注入 |
+|------|------|------|----------|
+| OpenAI | 🟢 | `kyvault check openai --key sk-xxx` | ✅ |
+| DeepSeek | 🔵 | `kyvault check deepseek --key sk-xxx`（含余额） | ✅ |
+| 智谱 AI | 🟣 | `kyvault check zhipu --key xxx`（含余额） | ✅ |
+| Moonshot (Kimi) | 🌙 | `kyvault check moonshot --key sk-xxx`（含余额） | ✅ |
+| Anthropic (Claude) | 🟠 | `kyvault check anthropic --key sk-ant-xxx` | ✅ |
+| Google Gemini | 💎 | `kyvault check gemini --key xxx` | ✅ |
+| 通义千问 | ☁️ | `kyvault check qwen --key sk-xxx` | ✅ |
+| MiniMax | 🔷 | `kyvault check minimax --key xxx` | ✅ |
+| 字节豆包 | 🫘 | `kyvault check doubao --key xxx`（含余额） | ✅ |
+| Groq | ⚡ | `kyvault check groq --key gsk_xxx` | ✅ |
+| Together AI | 🤝 | `kyvault check together --key xxx` | ✅ |
+| OpenRouter | 🔀 | `kyvault check openrouter --key sk-or-xxx` | ✅ |
+| Fireworks AI | 🔥 | `kyvault check fireworks --key xxx` | ✅ |
+| SiliconFlow | 🧊 | `kyvault check siliconflow --key sk-xxx` | ✅ |
+| 百川 | 🌊 | `kyvault check baichuan --key xxx` | ✅ |
+| 讯飞星火 | ✨ | `kyvault check spark --key xxx` | ✅ |
+| 阿里云百炼 | ☁️ | `kyvault check aliyun --key xxx`（含余额） | ✅ |
+
+### 开发与运维平台
+
+| 平台 | Logo | 验证 | 别名注入 |
+|------|------|------|----------|
+| GitHub | 🐙 | `kyvault check github --key ghp_xxx` | ✅ |
+| Cloudflare | 🧡 | `kyvault check cloudflare --key cloudflare_token` | ✅ |
+| GitLab | 🦊 | `kyvault check gitlab --key glpat-xxx` | ✅ |
+| Feishu | 🐦 | `kyvault check feishu --key tenant_access_token` | ✅ |
+
+## 🤝 贡献
+
+欢迎贡献！请查看 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+```bash
+# 开发环境
+git clone https://github.com/webkubor/kyvault.git
+cd kyvault
+cd rust
+cargo test          # 含老库兼容测试（对着 tests/fixtures 里 Python 1.x 写的密钥库解）
+cargo fmt --check   # CI 门禁，本地先跑
+cargo clippy --all-targets -- -D warnings
+```
+
+## 📄 许可证
+
+本项目基于 MIT 许可证开源，详情见 [LICENSE](LICENSE)。
+
+## 🌐 线上文档
+
+发布/渠道/配图等运营资料不在本仓库维护，迁到了 [gitlab.com/webkubor/hermes-ops-skills](https://gitlab.com/webkubor/hermes-ops-skills) 的 `docs/kyvault-ops-plan.md`。原因：本仓库的密钥后端之一是 Cloudflare D1（远程 HTTP 数据库），线上文档不应该被 D1 的网络抖动绑住。
+
+## ❓ FAQ & 常见问题
+
+#### Q: 本地只有 Node 环境，需要安装 Python 吗？
+**A: 不需要。**  
+Kyvault 是一个 Rust 静态二进制，加密走 `aes-gcm`（AES-256-GCM）、TLS 走 `rustls`。**不需要 Python、不需要 Node、不需要 Rust 工具链**，下载即用。
+
+这一点是刻意的：密钥库是所有需要凭据的工作的底座，它不该依赖任何一个可能坏掉的运行时。此前的 Python 版就吃过这个亏——某些机器上解释器的 TLS 验证会整体失效（同一条证书链 `openssl verify` 判 OK、`curl` 连得通，唯独 Python 报 `CERTIFICATE_VERIFY_FAILED`），密钥写入通道当场只读。
+
+---
+
+## 🌟 觉得好用？支持一下！
+
+如果您喜欢 Kyvault，请为本项目在 GitHub 上点个 **Star ⭐️**！您的每一个 Star 都是我们持续优化的最大动力！  
+👉 **[GitHub 仓库链接](https://github.com/webkubor/kyvault)**
+
+---
+
+<p align="center">
+  Built with 🔐 by <a href="https://github.com/webkubor">webkubor</a>
+</p>

@@ -1,0 +1,333 @@
+# jev-windows-agent
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](pyproject.toml)
+[![Platforms](https://img.shields.io/badge/platform-windows%20%7C%20macos-lightgrey.svg)](#install)
+
+**A Windows UI Automation extension of [`arc-cua`](https://github.com/shhivv/arc-cua) — the superfast action layer for computer-use agents.**
+
+Windows UI Automation (UIA) backend for LLM computer-use / desktop-automation agents — click, type, and navigate real Windows apps (Notepad, Settings, Spotify, File Explorer) from a structured, JEV-driven decision loop instead of screenshot-and-guess. Works with GPT, Claude, Gemini, DeepSeek, or any planner via OpenRouter.
+
+> Original `arc-cua` project and macOS backend by [shhivv](https://github.com/shhivv), built by [Isle](https://tryisle.com) — managed desktop environments for computer-use agents. This repository extends it with a Windows UI Automation (`WindowsUIABackend`) perception + execution backend, OpenRouter transport support, and optional confidence gating, while keeping the original runtime, validation, and JEV decision policy untouched. See [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`docs/windows-backend-handoff.md`](docs/windows-backend-handoff.md) for what changed and why.
+
+---
+
+## Demo
+
+`jev plan --yes --request "Open Apple Music and play my liked songs"` on Windows 11 — the planner proposes a one-step plan, then JEV live-renders each decision (action, target, confidence, top candidates) as it navigates the sidebar, opens the "Favourite Songs" playlist, and hits play:
+
+https://github.com/VBS2004/jev-windows-agent/raw/main/docs/media/demo.mp4
+
+SUBTASK_COMPLETE after 4 actions — no frontier-model call in the loop.
+
+---
+
+`jev-windows-agent` lets a planner or CUA agent hand off bounded desktop subtasks to a fast decision model that executes the UI loop — no frontier model needed for every click.
+
+See [`ARCHITECTURE.md`](ARCHITECTURE.md) for how it all fits together, [`docs/walkthrough.md`](docs/walkthrough.md) for a module-by-module code tour, and [`docs/windows-backend-handoff.md`](docs/windows-backend-handoff.md) for the Windows port's implementation notes.
+
+```python
+from jev_windows_agent import execute_payload
+
+result = execute_payload(executor, {
+    "goal": "Play Get Lucky by Daft Punk in Spotify",
+    "inputs": {"search_query": "Get Lucky Daft Punk"},
+    "verification": ["Spotify shows Get Lucky as the current track"],
+    "constraints": ["Do not modify the user's library"],
+    "max_actions": 15,
+})
+
+# result: {"status": "SUBTASK_COMPLETE", "actions_taken": 4}
+```
+
+Any GPT, Claude, Gemini, local model, or deterministic planner can generate that payload. The planner deliberately lives outside the package.
+
+---
+
+## Why
+
+Computer-use agents should not need a frontier model to reason about every individual click.
+
+A typical CUA loop:
+
+```text
+observe → large model → click → observe → large model → type → observe → large model → click
+```
+
+`jev-windows-agent` separates high-level reasoning from low-level execution:
+
+```text
+planner / LLM
+     ↓
+bounded subtask
+     ↓
+jev-windows-agent
+     ↓
+JEV → action → action → action → action
+     ↓
+return to planner
+```
+
+The optimization target is **fewer expensive reasoning calls per completed task**, not fewer UI actions.
+
+---
+
+## How it works
+
+```text
+any planner / CUA
+        |
+        | Subtask(goal, inputs, verification, constraints)
+        v
++-----------------------+
+|   jev-windows-agent   |
+|                       |
+| observe desktop       |
+| AX + local OCR        |
+|         v             |
+| build legal           |
+| action space          |
+|         v             |
+| JEV decision          |<------+
+|         v             |       |
+| freshness guard       |       |
+|         v             |       |
+| execute UI            |       |
+|         v             |       |
+| wait for UI settle    |-------+
++-----------+-----------+
+            |
+            v
+SUBTASK_COMPLETE / BLOCKED / NEEDS_AGENT
+            |
+            v
+         planner
+```
+
+### JEV
+
+JEV is the decision backend that powers the action loop. Given structured desktop state (elements, roles, values), it selects the next UI operation from a dynamically built action space — it can only pick targets and operations the current desktop actually exposes.
+
+JEV is accessed through [TypeSafe](https://typesafe.com). One JEV call can resolve the operation and its parameters in parallel.
+
+### The agent owns intent
+
+The upstream agent decides what needs to happen, what literal text may be used, what must not happen, and what counts as success. JEV chooses which element to target and which operation to perform — but never invents arbitrary text. Literal values always originate from the agent via `inputs`.
+
+### Caller-supplied shortcuts
+
+Supply extra keyboard shortcuts for an individual subtask, with descriptions that tell JEV what they do:
+
+```python
+from jev_windows_agent import Subtask
+
+task = Subtask(
+    goal="Save the current document",
+    verification=("The document has no unsaved changes",),
+    shortcuts={"MOD+S": "Save the current document in this editor"},
+)
+```
+
+The same `shortcuts` map is accepted by `execute_payload`. JEV receives these choices alongside the existing default hotkeys and chooses a chord when it selects `HOTKEY`. A supplied description can also clarify a default shortcut's meaning in the current app. The defaults are unchanged, and supplied shortcuts apply only to that subtask.
+
+```python
+result = execute_payload(executor, {
+    "goal": "Save the current document",
+    "verification": ["The document has no unsaved changes"],
+    "shortcuts": {"MOD+S": "Save the current document in this editor"},
+})
+```
+
+Chords use uppercase key names and one or more `MOD`, `CTRL`, `ALT`, `SHIFT`, or `WIN` modifiers, for example `MOD+S`, `CTRL+ALT+7`, or `SHIFT+F12`. `MOD` means Command on macOS and Ctrl on Windows; `WIN` is the Windows key (Windows only — macOS rejects it rather than pressing something else). Supported keys include A-Z, 0-9, F1-F20, navigation keys, and named punctuation keys; see [the keyboard vocabulary](src/jev_windows_agent/keyboard.py). The macOS backend uses US/ANSI physical key positions. Each shortcut is one chord, not a sequence of actions.
+
+Malformed declarations fail when the subtask is created. JEV can choose only offered chords; runtime validation also rejects hotkeys outside the defaults and the current subtask's declarations, including decisions from custom policies.
+
+### Hybrid macOS perception
+
+`jev-windows-agent` combines two local perception sources:
+
+- **Accessibility (AX)** — semantic controls: buttons, fields, menus, roles, values, native actions
+- **Apple Vision OCR** — visible screen text with bounding boxes, for apps with incomplete accessibility
+
+Both normalize into `DesktopElement`s that JEV reasons over. JEV receives structured elements and IDs, not screenshots.
+
+### Windows UI Automation perception
+
+On Windows, `WindowsUIABackend` reads the foreground window through UI Automation (UIA) and executes UIA patterns (Invoke, Toggle, SelectionItem, ExpandCollapse, Value, RangeValue), with `SendInput` for keyboard, scroll, and pointer events. It produces the same `DesktopElement`s, so the runtime and JEV policy are unchanged. There is no OCR fallback yet: apps that draw their own UI, and Chromium web content without accessibility enabled, expose little to UIA.
+
+### Runtime-owned settling
+
+After a mutating action, `jev-windows-agent` re-observes the UI until the desktop is structurally stable or a timeout is reached. The decision model decides **what to do**; the runtime decides **when the UI is ready to reason over again**.
+
+### Terminal states
+
+| Status | Meaning |
+|---|---|
+| `SUBTASK_COMPLETE` | Verification criteria appear satisfied |
+| `BLOCKED` | Cannot make progress with available operations |
+| `NEEDS_AGENT` | Higher-level reasoning required or action budget reached |
+
+The caller owns overall task completion.
+
+---
+
+## Install
+
+macOS and Windows.
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+
+pip install -e '.[macos]'
+```
+
+On Windows (PowerShell):
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\Activate.ps1
+
+pip install -e '.[windows]'
+```
+
+Set a key for Jev, either TypeSafe's own or an OpenRouter key:
+
+```bash
+export TYPESAFE_API_KEY=...      # TypeSafe's endpoint directly
+export OPENROUTER_API_KEY=...    # or: Jev via OpenRouter's Decisions API
+```
+
+(PowerShell: `$env:OPENROUTER_API_KEY = "..."`.) With only `OPENROUTER_API_KEY` set, `TypeSafeJevPolicy()` routes through OpenRouter (`https://openrouter.ai/api/alpha/decisions`, model `~typesafe/jev-latest`); `TypeSafeJevPolicy.via_openrouter()` does so explicitly. A `TYPESAFE_API_KEY` takes precedence. The request and typed answers are identical on both routes, so every validation applies unchanged.
+
+### macOS permissions
+
+The terminal/editor running Python needs both:
+
+- **Accessibility** — System Settings → Privacy & Security → Accessibility
+- **Screen Recording** — System Settings → Privacy & Security → Screen Recording (required for OCR)
+
+Restart the terminal after granting permissions if necessary.
+
+---
+
+## Examples
+
+### Deterministic architecture demo
+
+No API key required:
+
+```bash
+python examples/effects_demo.py
+```
+
+### macOS probes
+
+```bash
+python examples/macos_ax_probe.py   # Inspect frontmost app's AX tree
+python examples/ocr_probe.py        # Inspect visible text via Apple Vision
+```
+
+### Spotify
+
+Play a track using OCR-heavy workflow:
+
+```bash
+python examples/test_spotify.py
+```
+
+### System Settings
+
+Change macOS appearance using Accessibility-heavy workflow:
+
+```bash
+python examples/test_settings.py
+```
+
+### Windows
+
+`pip install -e .` also installs a `jev` command — a colorful terminal front end over the same code as the plain-text examples below:
+
+```powershell
+jev run --process notepad --launch notepad.exe `
+    --goal "Type the exact line into the document" `
+    --verify "The editor shows the exact line" `
+    --input "line=Hello from jev"
+
+jev plan --request "Turn on dark mode, then open Notepad and write today's date"
+jev plan --yes --request "Open Apple Music and play my liked songs"   # approve every step up front
+```
+
+`jev run` takes the same flags as `windows_task.py` below; `jev plan` takes the same flags as `planner.py`. `--yes` (`-y`) approves the whole plan up front and runs it in one go — it still stops if a step doesn't complete, rather than compounding a mistake. Both live-render JEV's decisions (action, target, confidence, top candidates) as they stream in, and `jev plan` shows the proposed multi-step plan as a table before asking you to confirm each step. Also runnable without installing, as `python -m jev_windows_agent.cli`.
+
+```powershell
+python examples/windows_uia_probe.py --process notepad   # Inspect an app's UIA tree
+python examples/windows_notepad_smoke.py                 # End-to-end run, no API key
+python examples/test_notepad.py                          # JEV edits and saves a file in Notepad
+```
+
+Run your own plain-English subtask against any window (the run is pinned to that window):
+
+```powershell
+python examples/windows_task.py --window Settings --launch ms-settings: `
+    --goal "Open the Colors page inside Personalization" `
+    --verify "Settings is showing the Colors page of Personalization" `
+    --constraint "Do not change any setting; only navigate"
+```
+
+Text JEV should type goes in `--input name="value"`; JEV picks which input to use but never invents text.
+
+`windows_task.py` runs one bounded step in one window that you name — you're acting as the planner. For a request spanning several apps, `examples/planner.py` adds a thin planning layer above JEV: a cheap LLM (DeepSeek by default) turns your request into an ordered list of single-window steps, shows you the whole plan, and runs each step through the same JEV loop only after you confirm it:
+
+```powershell
+python examples/planner.py --request "Turn on dark mode, then open Notepad and write today's date"
+```
+
+Needs `DEEPSEEK_API_KEY` (see `.env.example`). JEV still can't invent a click or a target — the planner only ever hands it the same goal/verify/input shape you'd type by hand.
+
+The smoke test and JEV example work on a file they create in a temp directory. Windows 11 Notepad opens files as tabs beside your own documents, so `test_notepad.py` scopes the backend so JEV cannot observe (and so cannot act on) any other tab or window.
+
+### Windows limitations
+
+- Foreground window only, as on macOS. The backend acts on whatever is in front, so avoid using the machine during a run, or scope the backend as `test_notepad.py` does.
+- Picking the window: with `--launch`, a task runs in the window that launch opened (or the window a single-instance app such as Settings brings forward), never in an older window that happens to match. Without `--launch`, exactly one window must match or the matching one must already be in front; with several candidates the run stops rather than guessing, since typing replaces the target's text.
+- Opening an app: put its ordinary name in `--launch` ("Apple Music", "Spotify", "Calculator"). Any installed app, Store or desktop, is looked up in the Start menu by name, so you don't need its path or package id; a command, path, or URI (`notepad.exe`, `ms-settings:`) is used as written.
+- Windows keys JEV can use: the media keys (`MEDIA_PLAY_PAUSE`, `MEDIA_NEXT`, `MEDIA_PREV`) are offered by default on Windows — they're global, so they reach a music app that isn't the window in front. `WIN`, `WIN+R` and friends are in the vocabulary but *not* offered by default: they open the Start menu, which is a different window, and a run scoped to one window would go blind. Declare them in a subtask's `shortcuts` if you actually want them.
+- Launching an app can be slow. Windows' app-activation broker was observed taking 40s+ to bring Notepad forward while several Notepad windows were already open; `--launch` is bounded (`resolve_window`'s `timeout_s`, 30s by default) and fails with a clear message rather than hanging past it.
+- A non-elevated process cannot automate an elevated (administrator) window; `observe()` raises `PermissionError`.
+- Hotkeys use US-layout virtual keys. Typed text is layout-independent.
+- `SET_VALUE` follows what UIA reports as writable. In File Explorer that includes file items, where setting the value renames the file; the policy can still only use values the planner supplied.
+- A control named "Play" doesn't always start playback. In Apple Music, JEV clicked one and playback did not begin — some controls that read as Play only queue or select. `MEDIA_PLAY_PAUSE` is the reliable path for playback, which is why it's offered by default; whether JEV prefers it to a visible button is its own call.
+- Chromium and Electron apps (Spotify, VS Code, Discord) switch accessibility off when idle, and the first look at a cold one sees only the window frame. The backend waits up to 2.5s for the real tree, but a first run after a long idle can still come back `BLOCKED` with nothing to act on; running it again works, because the first attempt woke the tree.
+- `NEEDS_AGENT` on a task that looks done is usually JEV declining to claim success it can't observe, not a crash. Check the result's reason and the screen before assuming the action didn't happen.
+
+---
+
+## What's been verified live
+
+The Windows backend is exercised against real apps, not only unit tests. Confirmed end to end on Windows 11:
+
+| Works | Notes |
+|---|---|
+| Notepad: type and save | `windows_notepad_smoke.py`, `test_notepad.py`, `jev run` — verified on disk |
+| Settings: search, navigate | "Open the Colors page inside Personalization" — 2 actions, unattended |
+| Apple Music: launch by name, navigate | Launches via Start-menu lookup, reaches the playlist; see the "Play" caveat above |
+| Media keys | `MEDIA_PLAY_PAUSE` started Apple Music playback |
+| File Explorer, Chrome frame | Perception only (`windows_uia_probe.py`): stable element ids, 60–140ms per observation |
+
+Not yet verified: multi-app plans running unattended start to finish, and anything inside browser or Electron *content* (see the OCR gap in the roadmap).
+
+---
+
+## Roadmap
+
+AX + OCR covers native and Electron desktop workflows on macOS; Windows has UI Automation, with an OCR fallback still to come. The next perception frontier is custom graphical interfaces — video timelines, CAD canvases, node graphs, spatial drag targets — which can be added as perception providers while keeping the same `DesktopElement` and execution interfaces.
+
+---
+
+## More documentation
+
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — how the system fits together: ownership, data flow, safety mechanisms, both backends
+- [`docs/walkthrough.md`](docs/walkthrough.md) — a guided, module-by-module tour of the code
+- [`docs/internals.md`](docs/internals.md) — concept-level notes on perception, freshness, and OCR stability
+- [`docs/windows-backend-handoff.md`](docs/windows-backend-handoff.md) — the Windows UIA backend's spec, implementation status, and known limitations

@@ -1,0 +1,363 @@
+<!--
+  SPDX-License-Identifier: Apache-2.0
+  Copyright 2026 Fabio Marcello Salvadori
+-->
+
+<p align="center">
+  <img src="https://github.com/madeinplutofabio/neural-computation-protocol/raw/main/NCP-logo.png" alt="NCP Logo" width="200" />
+</p>
+
+<h1 align="center">NCP — Neural Computation Protocol</h1>
+
+<p align="center">
+  <strong>Composable, auditable micro-agent graphs for agentic AI systems.</strong><br/>
+  Route cheap deterministic work to WASM “Bricks”. Escalate only when needed.
+</p>
+
+<p align="center">
+  <a href="https://github.com/madeinplutofabio/neural-computation-protocol/actions/workflows/validate.yml"><img alt="CI" src="https://github.com/madeinplutofabio/neural-computation-protocol/actions/workflows/validate.yml/badge.svg" /></a>&nbsp;<a href="https://crates.io/crates/ncp-runtime"><img alt="ncp-runtime on crates.io" src="https://img.shields.io/crates/v/ncp-runtime?logo=rust&label=ncp-runtime" /></a>&nbsp;<a href="https://crates.io/crates/ncp-mcp-server"><img alt="ncp-mcp-server on crates.io" src="https://img.shields.io/crates/v/ncp-mcp-server?logo=rust&label=ncp-mcp-server" /></a>&nbsp;<a href="https://pypi.org/project/ncp-langgraph/"><img alt="ncp-langgraph on PyPI" src="https://img.shields.io/pypi/v/ncp-langgraph?logo=python&label=ncp-langgraph" /></a>&nbsp;<a href="https://docs.rs/ncp-runtime"><img alt="docs.rs" src="https://img.shields.io/docsrs/ncp-runtime" /></a>&nbsp;<a href="https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/rust-toolchain.toml"><img alt="MSRV" src="https://img.shields.io/crates/msrv/ncp-runtime" /></a>&nbsp;<a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" /></a>&nbsp;<a href="https://doi.org/10.5281/zenodo.19570209"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.19570209.svg?v=1" alt="DOI"></a>&nbsp;<a href="https://github.com/madeinplutofabio/neural-computation-protocol/releases"><img alt="Release" src="https://img.shields.io/github/v/release/madeinplutofabio/neural-computation-protocol?display_name=tag&include_prereleases" /></a>&nbsp;<a href="https://github.com/madeinplutofabio/neural-computation-protocol/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/madeinplutofabio/neural-computation-protocol?style=social" /></a>
+</p>
+
+---
+
+**Docs:** [Adoption guide](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/docs/ADOPTION_GUIDE.md) · [Benchmarks](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/BENCHMARK.md) · [Cost model](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/COST_MODEL.md) · [Roadmap](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/docs/ROADMAP.md) · [Spec](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/spec/ncp-v0.2.3.md) · [Contributing](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/CONTRIBUTING.md) · [Security](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/SECURITY.md)
+
+**Status:** Protocol v0.2.3 + validator are stable. Reference runtime is available via [GitHub Releases](https://github.com/madeinplutofabio/neural-computation-protocol/releases/latest), [GHCR](https://github.com/madeinplutofabio/neural-computation-protocol/pkgs/container/ncp), and [crates.io](https://crates.io/crates/ncp-runtime) (Phase 3A.1 complete). [`ncp-mcp-server v0.1.0`](https://crates.io/crates/ncp-mcp-server) is live on crates.io (Phase 3A.2 complete). [`ncp-langgraph v0.1.0`](https://pypi.org/project/ncp-langgraph/0.1.0/) is live on PyPI (Phase 3A.3 complete). Next adoption work: brick packs + SDKs.
+
+## What is NCP?
+
+NCP is an open protocol + reference implementation for building **agentic systems from small, sandboxed WASM functions** (**Bricks**) wired into **directed graphs**.
+
+Instead of “LLM for everything”, you build a graph that:
+
+- runs **cheap deterministic steps** first (validation, parsing, routing, extraction, policy checks)
+- escalates to **expensive / slow steps** only when needed (LLMs, retrieval, heavy ML inference)
+- emits **traceable, replayable** execution metadata (hashes + provenance)
+
+### Core concepts
+
+| Concept | What it is |
+|---|---|
+| **Brick** | Pure-functional WASM computation unit. No filesystem. No network. No ambient authority. Deterministic by default. |
+| **Graph** | Bricks connected by typed edges with routing policies (success/error), threshold gating, and field mapping. |
+| **Runtime** | The executor: sandboxes Bricks, enforces resource limits, routes signals deterministically, and produces traces. |
+
+```mermaid
+flowchart LR
+  Host["MCP-compatible host"] -->|tools/call| Server["ncp-mcp-server"]
+  LangGraph["LangGraph (Python via ncp-langgraph)"] -->|spawns over stdio| Server
+  Server -->|invokes| Runtime["ncp-runtime"]
+  Manifest["Graph Manifest"] --> Runtime
+  Runtime -->|executes| BrickA["Brick (WASM)"]
+  Runtime -->|executes| BrickB["Brick (WASM)"]
+  BrickA --> Runtime
+  BrickB --> Runtime
+  Runtime --> Trace["Trace"]
+  Runtime --> Results["Results"]
+```
+
+**Core insight:** Bricks are commodity (reusable, swappable). Graphs are product (your topology + thresholds + weights).
+
+---
+
+## Why teams use NCP
+
+- **Cost**: avoid paying LLM tokens for requests your deterministic path can handle.
+- **Latency**: keep most requests in microseconds; reserve 100ms–2s paths for the hard tail.
+- **Auditability**: every invoke can be traced (hashes, step counters, trigger provenance).
+- **Safety**: WASM sandbox + explicit limits; no prompt-injection surface inside deterministic bricks.
+- **Composability**: swap bricks / rewire graphs without changing application code.
+
+### Who this is for
+
+If you ship “agentic” workflows in production and your **latency or LLM bill keeps climbing**, NCP is for:
+
+- **CEOs/CTOs**: reduce inference spend and make behavior more predictable.
+- **Platform/AI engineers**: build a fast deterministic path + a controlled LLM tail.
+- **SRE/DevOps**: tighten limits, reduce surprise load, and get replayable traces for incidents.
+- **Product teams**: iterate by rewiring graphs instead of rewriting code.
+
+### When NCP is a good fit
+
+- you have **high volume** requests with a “long tail” that truly needs an LLM
+- you want **repeatable / testable** agent behavior (deterministic fast path)
+- you need **clear boundaries**: what can run, for how long, with how much memory
+
+---
+
+## Benchmarks
+
+Benchmarks are in [`BENCHMARK.md`](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/BENCHMARK.md) with full methodology, raw JSON, and reproduction commands.
+
+**In practice:** if you can keep ~90% of requests off the LLM, your average latency and cost drop ~10×. The benchmark suite proves this curve end-to-end (mixed datasets + simulated 200ms LLM).
+
+> **Important:** the **µs numbers** are *runtime overhead* (fast path). The win comes from avoiding **ms–s** LLM calls on requests that don’t need “thinking”.
+
+### A concrete example
+
+Support triage:
+- 90% are “boring”: password reset, invoice request, status updates → deterministic bricks handle them.
+- 10% are messy: angry customers, edge cases → escalate to LLM.
+
+That’s exactly what NCP is built for: a **cheap, deterministic fast path** + an **explicit escalation path**.
+
+Highlights below use the **Linux run** in `bench/results/linux/`:
+
+### 1) Runtime overhead is tiny
+
+Single-step graph (**echo-pipeline**) p50 is **15µs**.
+Two-step graph (**echo-chain**) p50 is **34µs**.
+
+That includes: CBOR envelope build + WASM invoke + result decode + routing/mapping overhead.
+
+### 2) “LLM avoidance” turns into real speedups
+
+We measure a synthetic mixed workload where an LLM call costs **200ms** (simulated by `thread::sleep(200ms)` after matching the “LLM brick”). This models network-bound LLM calls without vendor dependencies.
+
+- **LLM-only baseline** (every request hits the 200ms “LLM”): mean **200.2ms**
+- **Hybrid 90/10** (90% handled deterministically): mean **20.0ms** (**~10× lower**)
+- **Hybrid 97/3** (97% handled deterministically): mean **6.0ms** (**~33× lower**)
+
+These results are measured end-to-end by cycling a dataset (`--dataset`) so the latency distribution includes both fast-path and slow-path requests in one run.
+
+**Cost follows the same curve**: if you avoid LLM calls, you avoid LLM spend. See [`COST_MODEL.md`](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/COST_MODEL.md).
+
+---
+
+## Install
+
+Three ways to get a working `ncp` CLI — full matrix (per-OS commands, checksums, architecture coverage) in [`docs/INSTALL.md`](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/docs/INSTALL.md):
+
+- **Download** a release archive: https://github.com/madeinplutofabio/neural-computation-protocol/releases/latest
+- **Docker** (Linux x86_64): `docker run --rm ghcr.io/madeinplutofabio/ncp:v0.3.5 --version`
+- **`cargo install`** (any platform with Rust 1.94+): `cargo install ncp-runtime --bin ncp --locked`
+
+For developers building from source, see [Quick start](#quick-start-runtime) below.
+
+---
+
+## Quick start (runtime)
+
+Prereqs: **Rust 1.94+**.
+
+New here? Start with **docs/ADOPTION_GUIDE.md** — what to build first, how to choose bricks, how to design “fast path vs LLM path”, and how to deploy NCP in a service.
+
+```bash
+git clone https://github.com/madeinplutofabio/neural-computation-protocol.git
+cd neural-computation-protocol
+
+# Build the reference runtime
+cargo build -p ncp-runtime --release
+
+# Run a graph (2-step example: echo_a -> echo_b with field mapping)
+cargo run -p ncp-runtime --release -- run examples/graphs/echo-chain/graph.yaml \
+  --input examples/graphs/echo-chain/sample.json
+
+# Optional: write trace to file (JSONL)
+cargo run -p ncp-runtime --release -- run examples/graphs/echo-pipeline/graph.yaml \
+  --input examples/graphs/echo-pipeline/sample.json --trace trace.jsonl
+```
+
+### Benchmark quick start
+
+```bash
+# Pure runtime overhead
+cargo run -p ncp-runtime --release --bin ncp-bench -- \
+  examples/graphs/echo-pipeline/graph.yaml \
+  --input examples/graphs/echo-pipeline/sample.json \
+  --warmup 500 --runs 20000
+
+# Mixed workload + simulated LLM latency
+cargo run -p ncp-runtime --release --bin ncp-bench -- \
+  examples/graphs/support-routing-stubbed/graph.yaml \
+  --dataset bench/datasets/support-routing-90-10.jsonl \
+  --warmup 100 --runs 1000 \
+  --simulate-llm-ms 200 --llm-brick-pattern echo
+```
+
+---
+
+## Use NCP from an MCP-compatible host
+
+Install the MCP adapter:
+
+```bash
+cargo install ncp-mcp-server --locked
+```
+
+Validate a graph before wiring it into a host:
+
+```bash
+ncp-mcp-server \
+  --graph /absolute/path/to/graph.yaml \
+  --brick-dir /absolute/path/to/bricks \
+  --trace-dir /absolute/path/to/traces \
+  --check
+```
+
+Run the adapter as a stdio MCP server:
+
+```bash
+ncp-mcp-server \
+  --graph /absolute/path/to/graph.yaml \
+  --brick-dir /absolute/path/to/bricks \
+  --trace-dir /absolute/path/to/traces
+```
+
+Minimal host config shape:
+
+```json
+{
+  "mcpServers": {
+    "ncp-my-graph": {
+      "command": "/absolute/path/to/ncp-mcp-server",
+      "args": [
+        "--graph",
+        "/absolute/path/to/graph.yaml",
+        "--brick-dir",
+        "/absolute/path/to/bricks",
+        "--trace-dir",
+        "/absolute/path/to/traces"
+      ]
+    }
+  }
+}
+```
+
+Each `--graph` becomes one MCP tool. The host sends a `tools/call`; NCP runs the graph; the adapter returns `structuredContent` plus a text mirror; and, when `--trace-dir` is set, each call writes a `<trace_id>.jsonl` trace.
+
+For ready-to-customize examples, see [examples/mcp/](https://github.com/madeinplutofabio/neural-computation-protocol/tree/main/examples/mcp).
+
+---
+
+## Use NCP from LangGraph (Python)
+
+If your agent stack is Python and uses [LangGraph](https://github.com/langchain-ai/langgraph), wrap any NCP graph as a LangGraph node with `ncp-langgraph`. The adapter spawns `ncp-mcp-server` under the hood; you write idiomatic LangGraph `StateGraph` code.
+
+Install both:
+
+```bash
+cargo install ncp-mcp-server --version 0.1.0 --locked
+python -m pip install ncp-langgraph
+```
+
+Minimal LangGraph integration:
+
+```python
+from typing import Any, TypedDict
+
+from langgraph.graph import END, START, StateGraph
+
+from ncp_langgraph import NCPNode
+
+
+class State(TypedDict, total=False):
+    company_url: str
+    qualification: dict[str, Any]
+    ncp_trace: dict[str, Any]
+
+
+qualify_lead = NCPNode.from_subprocess(
+    graph="/abs/path/to/lead-qualification.yaml",
+    brick_dir="/abs/path/to/bricks",
+    output_key="qualification",
+    timeout=30.0,
+)
+
+builder = StateGraph(State)
+builder.add_node("qualify_lead", qualify_lead)
+builder.add_edge(START, "qualify_lead")
+builder.add_edge("qualify_lead", END)
+compiled = builder.compile()
+
+result = compiled.invoke({"company_url": "https://example.com"})
+# result["qualification"] -- the NCP graph's output_json
+# result["ncp_trace"]     -- {"result_type", "trace_id", "trace_path"}
+```
+
+`NCPNode.__call__` returns a partial state update; LangGraph merges it according to your `StateGraph`'s schema + reducers. State is not mutated.
+
+For ready-to-run examples, see [examples/langgraph/](https://github.com/madeinplutofabio/neural-computation-protocol/tree/main/examples/langgraph). For the full design contract (locked signature, exception model, v0.1.0 limitations), see [`docs/LANGGRAPH_ADAPTER.md`](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/docs/LANGGRAPH_ADAPTER.md).
+
+---
+
+## Specification + tooling
+
+- **Protocol version:** v0.2.3
+- **Canonical spec:** `spec/ncp-v0.2.3.md`
+- **JSON Schemas:** `schemas/` (Draft 2020-12)
+- **Validator:** `tools/ncp-validate/`
+- **Reference runtime:** `runtime/` (Rust + Wasmtime 43)
+- **Conformance vectors:** `conformance/`
+
+### Validator quick start
+
+Prereqs: Node.js 18+.
+
+```bash
+cd tools/ncp-validate
+npm install
+npm run build
+
+# Validate a brick or graph manifest
+node dist/cli.js brick ../../examples/bricks/echo/manifest.yaml
+node dist/cli.js graph ../../examples/graphs/echo-chain/graph.yaml
+```
+
+---
+
+## Repository structure
+
+```
+spec/            Protocol specification (Markdown + PDF releases)
+schemas/         JSON Schema for all NCP structures
+runtime/         Reference runtime (Rust) + bench harness
+crates/          Adapter crates (ncp-mcp-server: stdio MCP adapter)
+bricks/          Reference brick implementations (Rust -> WASM)
+examples/        Brick + graph manifests, fixtures, and demo graphs
+examples/mcp/    MCP host config snippet, smoke recipes, CI smoke script
+bench/           Datasets + machine-readable results (Windows + Linux)
+tools/           Validator CLI (ncp-validate)
+conformance/     Test vectors for runtime implementors
+docs/            Roadmap and design notes
+```
+
+---
+
+## Roadmap
+
+High-level roadmap lives in [`docs/ROADMAP.md`](https://github.com/madeinplutofabio/neural-computation-protocol/blob/main/docs/ROADMAP.md).
+
+If you’re evaluating NCP today:
+- Phase 1 (Spec + Validator): ✅ complete
+- Phase 2 (Reference Runtime + Benchmarking): ✅ complete
+- Phase 3 (Integrations + distribution): 🚧 in progress
+
+---
+
+## Get involved
+
+If you find NCP useful, please consider giving us a star on GitHub: it helps attract more security experts and framework authors into the community.
+
+If you want NCP to be useful in real systems, the best help is:
+
+- **Adapters / integrations** (MCP tool server, LangGraph node wrapper)
+- **Brick packs** (reusable deterministic bricks: validators, extractors, routers)
+- **Conformance** (vectors + cross-runtime test harness)
+- **Docs** (clear patterns, examples, and “how to adopt” guides)
+
+Start here:
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+
+---
+
+## License
+
+Apache-2.0 — see `LICENSE` and `NOTICE`.
+
+---
+
+Maintained by [![Linkedin](https://i.sstatic.net/gVE0j.png) @fmsalvadori](https://www.linkedin.com/in/fmsalvadori/)
+&nbsp;
+[![GitHub](https://i.sstatic.net/tskMh.png) MadeInPluto](https://github.com/madeinplutofabio)

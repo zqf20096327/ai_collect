@@ -1,0 +1,143 @@
+# Novel Workspace MCP
+
+[![CI](https://github.com/LiZh132707/novel-workspace-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/LiZh132707/novel-workspace-mcp/actions/workflows/ci.yml)
+[![Latest Release](https://img.shields.io/github/v/release/LiZh132707/novel-workspace-mcp?display_name=tag&sort=semver)](https://github.com/LiZh132707/novel-workspace-mcp/releases)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+**English · [中文](README.zh-CN.md) · [日本語](README.ja.md)**
+
+> From a single idea to a complete long-form novel.
+
+Novel Workspace MCP is a production-oriented AI writing workspace for long-form fiction. It keeps world-building, characters, chapter plans, timelines, facts, foreshadowing, context, and revisions in one auditable project state.
+
+## Three ways to use it
+
+1. **Local web studio** — a focused browser workspace for planning, drafting, reviewing, and exporting.
+2. **MCP server** — a tool surface for LM Studio, Claude Desktop, Codex, and other MCP clients.
+3. **Codex Skill** — install `skills/novel-workspace/` and invoke `$novel-workspace` for state-aware writing workflows. Source and package installs can locate it with `novel-workspace skill-path`.
+
+## Model backends
+
+Use a local LM Studio server by default, or connect to any OpenAI-compatible API. Set `NOVEL_LLM_PROVIDER=local` or `api` in a private `.env` file. API keys never belong in source code, screenshots, or Git history.
+
+The web studio defaults to English. Use the Language menu in the sidebar to switch to Chinese or Japanese; the preference is stored only in your browser. Release notes are maintained in English in [`CHANGELOG.md`](CHANGELOG.md).
+
+Source checkouts keep runtime data under the repository for portable local development. Package installations use the operating system's user data directory. Set `NOVEL_WORKSPACE_HOME` to choose an explicit location; model credentials remain in environment variables or a private `.env` file.
+
+`novel-workspace config --json` produces a support-friendly report with paths and provider settings while exposing only whether secrets are configured. `novel-workspace backup` creates CRC-verified, atomic archives for every novel project; add `--novel NAME` to select one project.
+
+## What it does
+
+### Batch planning and reports (v2.13)
+
+Select foreshadows, preview per-record changes, then atomically reschedule, resolve, reopen, reprioritize, or retag the whole selection. Every selected revision is checked; one conflict cancels the batch. Ownership filters and quick views help separate author plans from automatic tracking.
+
+Export **all filtered matches** as JSON or Markdown, with notes/evidence opt-in and explicit completeness limits. The same engine is available through `novel-workspace foreshadows list|export|batch`, two new MCP tools, and the bundled Skill. No model calls or chapter rewrites are required. See [batch workflow, CLI examples, and report limits](docs/FORESHADOW_BATCH.md).
+
+### Foreshadow planner (v2.12)
+
+Open **Timeline → Foreshadow planner** to plant, edit, reschedule, resolve, cancel, or reopen a foreshadow. Use due-window, status, priority, tag, and text filters; inspect payoff deadlines, evidence, and the last 50 changes. The planner supports English, Chinese, and Japanese and can copy the visible page as JSON.
+
+Manual creation or editing makes a record **author-managed**: derived-state rebuilds preserve it, and automatic summaries no longer resolve it. New automatic resolutions require one exact ID or text match, never a substring guess. MCP exposes `get_foreshadow_board`, `create_foreshadow`, and `update_foreshadow` with optional revision checks. See [lifecycle rules and examples](docs/FORESHADOW_PLANNER.md).
+
+### Manuscript diagnostics workbench (v2.11)
+
+Open **Dashboard → Manuscript diagnostics** for chapter inventory, length trends, optional length targets, estimated reading time, missing/empty chapters, filename conflicts, and exact cross-chapter repeated paragraphs with chapter/line evidence. Filter an inclusive chapter range and download JSON or Markdown. The controls support English, Chinese, and Japanese; structured findings and exported reports are English.
+
+The same read-only engine is available through MCP `inspect_manuscript(start_chapter=1, end_chapter=20)` and `novel-workspace inspect --novel NAME --json`. It makes no model calls and never rewrites chapters or stored word counts. Excerpts are off by default. See [diagnostic metrics, limits, and CLI examples](docs/MANUSCRIPT_DIAGNOSTICS.md).
+
+### Inspectable project backups (v2.10)
+
+Click **Project backups** beside the global search button to create a backup, browse existing ZIPs, verify integrity, or download a copy. New controls support English, Chinese, and Japanese. Verification is read-only and never overwrites a novel. Use **Import novel / project** to restore a downloaded archive as a separate project.
+
+For scripts, use `novel-workspace backup --list --novel NAME --json` or `novel-workspace backup --verify FILENAME --json`. Both accept `--output-dir` to inspect a custom backup directory; filenames must belong to that directory, not arbitrary filesystem paths. Verification checks CRC, paths, and a JSON-object `state.json`, and reports SHA-256. Limits are 10,000 entries, 1 GB expanded, and 2 MB for project state. A passing result is not proof of authorship, narrative completeness, or a full restore rehearsal. Inventory alone does not imply successful verification.
+
+### NPC and character relationships
+
+Open **Characters → Character relationships** to inspect directed connections, strength scores (-100 to 100), and expandable chapter evidence. Filter by a focal character, role (including NPC), or an inclusive chapter cutoff. NPC filters also show connected characters; a chapter cutoff respects the configured appearance range of registered characters.
+
+MCP provides the same view through `get_character_network(chapter=10, role_tier="NPC")`; add `character="Bob"` to focus on one NPC. Each filter is optional and combined filters intersect. Current profile metadata is not a historical roster snapshot. Undated relationship prose is shown only in the latest view, and unresolved descriptions remain notes, not invented people. Observations do not substitute for author approval.
+
+Example legacy descriptions: `friend: Bob, Cara: mentor` or `朋友：小明，阿青：导师`. Names must match existing profiles. Recorded chapter relationships take precedence over undated profile descriptions for the same directed pair.
+
+- Guided novel creation: premise, world, rules, style, outline, volumes, opening plan, and characters.
+- Chapter pipeline: brief → plan → draft → quality gate → summary → continuity handoff.
+- Long-form continuity: facts, timeline, character arcs, foreshadowing, causal checks, canonical locks, and travel rules.
+- Safe editing: working drafts, savepoints, diffs, recovery, imports, exports, and transactional history revision.
+- Persistent background jobs with resumable logs and strict single-concurrency model access.
+
+## Quick start
+
+### Style preset browser (v2.8)
+
+Open **Story bible → Style presets** to browse built-in and project-specific presets, preview the full instructions, and append them to or replace the style editor. These actions do not save automatically: review your edits, then click **Save story bible**. Replacing non-empty editor content asks for confirmation. The controls support English, Chinese, and Japanese; preset content keeps its original language.
+
+MCP clients can use `get_style_preset(name, source="custom", include_rendered=True)` to retrieve the same Markdown preview as the web studio. `source` accepts `auto`, `builtin`, or `custom`; explicit sources never silently fall back. With `auto`, `prefer_custom=True` prioritizes a custom preset. Create project-specific presets with the existing `save_style_preset` tool.
+
+### Product preview
+
+![Novel Workspace local writing studio](docs/assets/web-studio.png)
+
+![Novel Workspace MCP architecture](docs/architecture/overview.svg)
+
+[▶ Watch the 11-second product trailer (MP4)](docs/assets/demo.mp4) · [90-second demo storyboard](docs/demo.md)
+
+See the lightweight [demo storyboard](docs/demo.md) and the [community launch checklist](COMMUNITY.md).
+
+```bash
+uv sync
+uv run novel-workspace doctor
+uv run novel-workspace config
+uv run novel-workspace serve
+```
+
+Open `http://127.0.0.1:8765`. For the MCP server:
+
+```bash
+uv run novel-workspace mcp
+```
+
+See [`.env.example`](.env.example) for local/API configuration and the [Chinese README](README.zh-CN.md) for the complete tool catalog.
+
+For Docker or one-click startup, use `docker compose up --build` or `scripts/start.ps1` / `scripts/start.sh`. Tagged releases are also published to `ghcr.io/lizh132707/novel-workspace-mcp`.
+
+```bash
+docker run --rm -p 127.0.0.1:8765:8765 \
+  -e NOVEL_LLM_PROVIDER=api \
+  -e NOVEL_LLM_BASE_URL=http://host.docker.internal:1234/v1 \
+  -v novel_workspace_storage:/app/storage \
+  ghcr.io/lizh132707/novel-workspace-mcp:latest
+```
+
+### Secure remote access
+
+The CLI and Docker Compose bind the Web Studio to loopback by default. Before publishing it on a LAN or through a reverse proxy, set a random `NOVEL_WEB_ACCESS_TOKEN` of at least 16 characters. Browsers use HTTP Basic authentication (`novel` as the username and the token as the password); API clients may send `Authorization: Bearer <token>` or `X-Novel-Workspace-Token`. `/healthz` and `/readyz` remain public for probes.
+
+Cross-origin access is disabled by default. If a separate frontend needs it, set `NOVEL_WEB_CORS_ORIGINS` to an exact comma-separated allowlist such as `https://studio.example.com`; wildcard origins are rejected. Docker Compose can be deliberately exposed with `NOVEL_WEB_BIND_ADDRESS=0.0.0.0` after access protection is configured.
+
+Create on-demand archives without adding runtime data to Git:
+
+```bash
+uv run novel-workspace backup --json
+uv run novel-workspace backup --novel MyNovel --output-dir /safe/backups
+```
+
+The release workflow builds wheel and source distributions and attaches them to GitHub Releases. PyPI Trusted Publishing is available as an explicit maintainer action after the PyPI project is linked to this repository.
+
+## Development
+
+```bash
+python -m pip install -e ".[dev]"
+pytest -q
+```
+
+CI validates Python 3.10 and 3.12, the CLI doctor, frontend JavaScript syntax, and the full Python and frontend regression suites.
+
+## Project status
+
+The repository is intentionally data-free for public development. Runtime storage, logs, model assets, and local secrets are ignored by Git. Contributions, issue reports, and new provider adapters are welcome; see [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).
+
+## License
+
+MIT © LiZh132707

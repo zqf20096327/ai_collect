@@ -1,0 +1,441 @@
+<p align="center">
+  <img src="docs/banner.svg" alt="open-infra — the cloud experience you know, on the hardware you own" width="920">
+</p>
+
+<p align="center">
+  <a href="https://github.com/harn3ss/open-infra/releases"><img src="https://img.shields.io/github/v/release/harn3ss/open-infra?sort=semver" alt="Release"></a>&nbsp;
+  <a href="https://github.com/harn3ss/open-infra/actions/workflows/build-console.yml"><img src="https://github.com/harn3ss/open-infra/actions/workflows/build-console.yml/badge.svg" alt="Build console"></a>&nbsp;
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/harn3ss/open-infra" alt="License: Apache-2.0"></a>
+</p>
+
+> A **self-hosted cloud that speaks AWS**, running entirely inside your own trust boundary.
+> Point your existing AWS **SDK, CLI, Terraform, or CloudFormation** at it and it answers the way AWS
+> does — SigV4-authenticated, **twenty-five services and counting, each backed by a real datastore and
+> proven by a real-SDK compatibility probe**. Or declare intent in one `infra.yaml` and `git push`.
+> Either way you get an AWS-like managed surface — autoscaling HTTPS apps, managed databases, object
+> storage, queues, VMs, serverless + GPU inference, an analytics lake, CDC pipelines, Active Directory —
+> GitOps-reconciled on hardware you control and built to a **NIST 800-53 control framework**:
+> secure-by-default, least-privilege, fully audited. The experience feels like AWS; the bill is $0.
+
+**Two ways in, one platform.**
+
+**1 — Your existing AWS tooling, unchanged.** Set one env var and the opt-in shim answers as AWS,
+authenticating each request's SigV4 signature against your open-infra IAM and enforcing the *same* policy
+the console does:
+
+```sh
+export AWS_ENDPOINT_URL=http://aws-shim.open-infra-aws-shim.svc.cluster.local:4566
+aws s3 cp ./report.pdf s3://reports/                       # real MinIO, behind SigV4 + RBAC
+aws sqs send-message --queue-url .../jobs --message-body '{"id":42}'
+aws rds create-db-instance --engine postgres --db-instance-identifier orders …  # a real Postgres
+aws secretsmanager get-secret-value --secret-id db/creds   # Vault-encrypted, versioned
+```
+
+**2 — Or declare intent** and let GitOps reconcile the whole desired state (hosting, DB, storage,
+queues, DNS, TLS, autoscaling) — no raw Kubernetes authored by you:
+
+```yaml
+# infra.yaml — you write intent, the platform produces infrastructure
+apiVersion: openinfra.dev/v1
+kind: Application
+metadata:
+  name: my-api
+spec:
+  image: ghcr.io/me/my-api
+  port: 8080
+  scaling: { min: 1, max: 10, targetCPUPercent: 70 }
+  domain: my-api.example
+  database: { engine: postgres, name: myapidb }
+  storage:  { buckets: [uploads] }
+  queues:   [jobs]
+```
+
+Three surfaces, one set of objects and one policy world underneath: the **AWS wire protocol** (the shim),
+**`infra.yaml`/GitOps + Terraform**, and the **web console**.
+
+---
+
+## Why
+
+The guiding principle: **the user writes intent, the platform produces
+infrastructure.** open-infra is *glue + developer experience* on top of proven
+CNCF projects — not a reinvention of databases or storage.
+
+| AWS | open-infra | Tool |
+|---|---|---|
+| EC2 / ECS | container orchestration | k3s |
+| ASG | autoscaling | HPA |
+| ALB / ELB | ingress + LB | Traefik + MetalLB |
+| API Gateway | HTTP API front door (`kind: HttpApi`) | Traefik IngressRoute → Functions/Applications; TLS, per-route methods, CORS, rate-limit, JWT authorizer |
+| Route 53 | DNS | sslip.io / Cloudflare |
+| ACM | TLS | cert-manager |
+| S3 | object storage | MinIO |
+| EBS | block volumes (`kind: Volume`) | Longhorn |
+| EFS / FSx | shared file storage (`kind: FileShare`) | Samba (SMB) on Longhorn |
+| RDS | managed SQL (`engine: postgres`/`mysql`) | CloudNativePG / MariaDB |
+| RDS (SQL Server–compatible) | drop-in for SQL Server apps (`engine: babelfish`) | Babelfish for PostgreSQL (TDS 1433 + T-SQL) |
+| RDS Proxy | pooled, connection-bounded DB endpoint (`kind: DatabaseProxy`) | tds-proxy — TDS-aware pool (reuse + connection cap) |
+| DynamoDB | document store (`engine: mongo`) | FerretDB on DocumentDB-Postgres |
+| OpenSearch Vector | vector search (`database.vector: true`) | pgvector |
+| DMS | DB migration + CDC (`kind: Migration`) | Debezium + apply-sink + Crossplane |
+| DMS (multi-master) | bidirectional replication (`kind: Replication`) | Debezium + apply-sink (HLC last-write-wins) |
+| Glue / DMS / Kinesis / Lambda (visual) | data-movement pipelines (`kind: DataFlow`) | drag-and-drop canvas → Debezium + NATS + apply-sink |
+| Athena + Glue | serverless SQL over the lake (`kind: Query`) | DuckDB (files) or Trino + an Iceberg REST catalog (tables), on MinIO |
+| SQS / SNS | queues + pub/sub | NATS JetStream |
+| Kinesis | streaming CDC (`kind: Stream`) | Debezium → NATS JetStream |
+| ElastiCache | cache | Valkey (Redis-compatible) |
+| Lambda | serverless (`kind: Function`) | Knative — scale-to-zero |
+| Step Functions | workflow orchestration (`kind: StateMachine`) | owned Amazon States Language engine → Functions (experimental) |
+| AppSync | resolver-first GraphQL (`kind: GraphQLApi`) | open-appsync — VTL-faithful engine (experimental) |
+| Bedrock | managed inference (`kind: Model`) | Ollama on GPU + NVIDIA device plugin |
+| SageMaker Training | model training (`kind: TrainingJob`) | run-once GPU batch Job → artifacts to object store (experimental) |
+| SageMaker Model Registry | model registry + serving (`kind: ModelPackage` → `kind: Model` `serve`) | versioned, approvable artifacts promoted to a key-gated endpoint (experimental) |
+| SageMaker Batch Transform | offline batch inference (`kind: BatchTransform`) | run-once GPU-capable job scores a dataset → predictions to object store (experimental) |
+| SageMaker Automatic Model Tuning | hyperparameter tuning (`kind: TuningJob`) | grid-search sweep runs a Training Job per combination, keeps the best (experimental) |
+| SageMaker Processing | data processing (`kind: ProcessingJob`) | run-once GPU-capable job, N named inputs/outputs in the object store (experimental) |
+| SageMaker Model Monitor | drift monitoring (`kind: ModelMonitor`) | scheduled CronJob, built-in tabular drift check → report to object store (experimental) |
+| SageMaker Feature Store | online feature store (`kind: FeatureGroup`) | per-group Valkey + PutRecord/GetRecord API for real-time features (experimental) |
+| EC2 | virtual machines (`kind: VirtualMachine`) | KubeVirt + CDI (Linux + Windows) |
+| Directory Service | Active Directory (`kind: Directory`) | Samba AD DC |
+| Security Groups | firewall rule sets (`kind: SecurityGroup`) | Cilium NetworkPolicy |
+| IAM | users, groups, policies, roles (`kind: User`/`Group`/`Policy`/`Role`) | k8s RBAC + impersonation, with a permission boundary |
+| CloudFormation / CDK | a stack template | `infra.yaml` → Crossplane, **or** the `cfn` engine that ingests a template ([`docs/cloudformation.md`](docs/cloudformation.md)) |
+| Terraform / OpenTofu | infra as HCL | [`harn3ss/openinfra`](https://registry.terraform.io/providers/harn3ss/openinfra/latest) provider |
+| CloudWatch | metrics/logs | Prometheus + Grafana + Loki |
+| CloudTrail | audit trail | k8s API-server audit log → Loki, with a console **Audit** view (every action attributed to a person) |
+| Cost Explorer | "what AWS would've charged" | console panel pricing live capacity vs AWS list rates |
+| Secrets Manager | secrets | Sealed Secrets |
+| AWS Backup | backup/DR | Velero |
+| Fault Injection Simulator | chaos engineering (`kind: FaultInjection`) | Chaos Mesh |
+
+Full mapping and rationale: [`docs/architecture.md`](docs/architecture.md).
+
+That table is **concept parity** — an open-infra-native surface that *feels* like AWS. Alongside it is
+**wire parity**: for apps (and IaC) that must speak the AWS protocol unchanged, the opt-in AWS-SDK shim
+answers as AWS for **twenty-five probe-proven services** — see
+[AWS-SDK compatibility](#aws-sdk-compatibility-the-shim). Concept parity to build native; wire parity to
+lift-and-shift what you already have.
+
+---
+
+## Quickstart
+
+> **You need:** one or more Linux boxes (a single box is fine for `dev` mode),
+> a non-root user with sudo, and ~10 minutes. See
+> [`docs/quickstart.md`](docs/quickstart.md) for the full walkthrough.
+
+```bash
+git clone https://github.com/harn3ss/open-infra
+cd open-infra
+cp config.example.yaml config.yaml     # edit: LAN IP pool, domain, mode
+./install.sh                            # installs k3s + Argo CD + the platform
+```
+
+Then deploy your first app:
+
+```bash
+./cli/open-infra init      # scaffold an infra.yaml in your app repo
+./cli/open-infra deploy    # render + commit to the GitOps repo; Argo does the rest
+./cli/open-infra status    # see what's running
+```
+
+A 15-line `infra.yaml` becomes a running, autoscaling, HTTPS app with a database
+and a bucket — with **zero raw Kubernetes** authored by you.
+
+---
+
+## How it works
+
+```
+git push infra.yaml ──► GitHub Action (build image, push, bump tag)
+                              │
+                              ▼
+                        GitOps state repo ──► Argo CD reconciles
+                              │
+   ┌──────────────────── k3s cluster (your boxes) ────────────────────┐
+   │  Application CR ──► Crossplane Composition fans out to:           │
+   │     Deployment + Service + Ingress + HPA                          │
+   │     + CloudNativePG database  + MinIO bucket  + NATS stream       │
+   │  cert-manager (TLS) · Traefik+MetalLB (LB) · ExternalDNS (DNS)    │
+   │  Prometheus/Grafana/Loki (observability) · Sealed Secrets · Velero│
+   └──────────────────────────────────────────────────────────────────┘
+```
+
+A **web console** ships with the platform — an AWS-console-style UI over every
+resource (Applications, Functions, Models, Virtual Machines, Databases, Volumes,
+File Shares, Buckets, Queries, Queues, Data Flows, Streams, Active Directory,
+Security Groups, Nodes/GPUs, Monitoring, Cost Explorer, Snapshots) plus a full
+**Security & Identity** section (sign-in, Users, Groups, Policies, Roles — IAM with a
+permission boundary — plus an **Audit** trail, all admin-gated) with per-resource detail pages and actions
+(object browser, model playground, the drag-and-drop **Data Flows** canvas + guided
+replication wizard, create/delete). See [`docs/console.md`](docs/console.md), and
+[`docs/auth.md`](docs/auth.md) / [`docs/iam.md`](docs/iam.md) for the identity model.
+
+See [`docs/architecture.md`](docs/architecture.md) for the full diagram and the
+public-edge story (Cloudflare Tunnel + optional Lightsail/WireGuard).
+
+### Or use Terraform
+
+Everything the console can create is also a typed Terraform resource, published as
+[`harn3ss/openinfra`](https://registry.terraform.io/providers/harn3ss/openinfra/latest):
+
+```hcl
+terraform {
+  required_providers {
+    openinfra = { source = "harn3ss/openinfra", version = "~> 0.1" }
+  }
+}
+
+resource "openinfra_database" "orders" {
+  name   = "orders"
+  engine = "postgres"
+}
+
+resource "openinfra_function" "resize" {
+  name  = "image-resize"
+  image = "ghcr.io/harn3ss/image-resize:latest"
+  gpu   = 1
+}
+```
+
+Three ways in, same objects underneath — `infra.yaml` through GitOps, the console, or
+Terraform. Use Terraform when open-infra is one part of a wider estate and you want the
+same plan to cover your DNS, TLS and cloud accounts. See
+[`docs/terraform.md`](docs/terraform.md).
+
+---
+
+## AWS-SDK compatibility (the shim)
+
+Point an unmodified AWS SDK, CLI, Terraform, or CloudFormation at open-infra and it answers as AWS. The
+shim verifies each request's SigV4 signature against an open-infra access key, resolves the caller to their
+open-infra principal, enforces the **same** RBAC + permission boundary the console uses (**one policy
+world — not a parallel auth**), calls the real backend, and re-dresses the response in AWS's exact
+byte-shape. It is **not** an emulator: the services it fronts hit **durable backends**, not fakes, so —
+unlike LocalStack — fidelity isn't bounded by what a mock chose to implement.
+
+**Twenty-five services are fronted, and every one is proven by a real-AWS-SDK compatibility probe** (`probe/aws-shim-*.sh`,
+exit 0 live) — not asserted, observed:
+
+| | | |
+|---|---|---|
+| **S3** → MinIO | **SQS** → Postgres | **KMS** → Vault Transit |
+| **STS** (identity + `AssumeRole`) | **SNS** → durable SQS fan-out | **Secrets Manager** → Vault-KMS-encrypted, versioned |
+| **Lambda** → Knative `Function`s | **EventBridge** → scheduled + event-driven | **RDS** → **real PostgreSQL** (CloudNativePG) |
+| **DynamoDB** → FerretDB (+ transactions) | **AppSync** → open-appsync (experimental) | **CloudWatch Logs** → Postgres |
+| **SSM Parameter Store** → Postgres + KMS-encrypted `SecureString` | **API Gateway** (HTTP API v2) → runtime proxy to Lambda | **CloudWatch** (metrics + alarms) → alarms that evaluate + fire SNS |
+| **Kinesis Data Streams** → ordered, sharded, replayable (Postgres) | **Cognito** (user pools) → real RS256 JWTs (JWKS-verifiable) | **IAM** (roles/policies/users) → AWS policy JSON→Cedar |
+| **Step Functions** → owned ASL engine; Tasks run under the state machine's IAM role (per-execution STS) | **CloudFormation** → the owned cfn engine; stacks provision under the caller's authority (impersonation) | **ECS** → service + task definition collate into one `kind: Application` (the cfn engine); caller-authority via impersonation |
+
+```sh
+# An unmodified AWS SDK / CLI, aimed at open-infra — one env var.
+export AWS_ENDPOINT_URL=http://aws-shim.open-infra-aws-shim.svc.cluster.local:4566
+aws sts get-caller-identity                            # → your open-infra principal, as an ARN
+aws s3 cp ./x.txt s3://my-bucket/                      # → real MinIO, behind SigV4 + RBAC
+aws kms generate-data-key --key-id alias/app --key-spec AES_256   # → real Vault Transit envelope key
+```
+
+The access key is verified by **recomputing and constant-time-comparing** the signature — naming a key
+without holding its secret is rejected, exactly as AWS returns `SignatureDoesNotMatch`. Access keys are a
+sub-resource of `kind: User`; authorization is the same impersonated check everything else uses. Each
+service is a per-service handler that **graduated one at a time** — built → exercised → *proven by a probe*
+→ counted — and several carry **deliberate, documented divergences** (AppSync/open-appsync is experimental;
+RDS refuses MultiAZ/replicas/`StorageEncrypted`; SQS refuses FIFO; and so on — the honest carve-outs are
+listed per service). Services the shim has **not** made faithful — Route 53, EKS, and the
+rest of AWS — return an **honest `501`**, never a silent fake: **narrow and proven beats broad and
+hand-wavy**. "Twenty-five probe-proven services" is not "all of AWS"; it is a specific, verified surface.
+
+Opt-in, **OFF by default** — enable with `components.awsShim: true`. Full detail — client setup, the
+identity model, the per-service matrix, the divergences, and the probes — is in
+[`docs/aws-shim.md`](docs/aws-shim.md). (For AWS templates without the wire protocol, the `cfn` engine
+ingests a CloudFormation template directly — [`docs/cloudformation.md`](docs/cloudformation.md).)
+
+(GPU-backed managed inference — `kind: Model`, open-infra's "Bedrock" — is in
+[`docs/gpu.md`](docs/gpu.md).)
+
+---
+
+## Status
+
+**Validated on a live 3-node cluster (2 with GPUs).** One `install.sh` stands up
+k3s + MetalLB + Argo CD; the app-of-apps reconciles the platform (cert-manager,
+MinIO, CloudNativePG, MariaDB, FerretDB, NATS, Valkey, Longhorn, kube-prometheus-stack
++ Loki, Sealed Secrets, Knative, Velero, KubeVirt). The validated architecture is
+**amd64**; **arm64** is partially supported — the control plane and `install.sh` run
+natively, and the first-party images are now published for arm64 (`-arm64` tags) — but the kinds
+that use them don't run by default yet (the compositions still pin the amd64 `:latest`; babelfish
+stays amd64-only) (see [`docs/architecture-support.md`](docs/architecture-support.md)). The public
+abstractions are shipped and exercised on that cluster — but **maturity varies by
+capability** (see [Maturity & guarantees](#maturity--guarantees)):
+
+- **`Application`** — Deployment/Service/Ingress/HPA, plus managed databases
+  (Postgres / MySQL / MongoDB), object storage, and queues — with per-app
+  quotas, limits, and NetworkPolicies.
+- **`Model`** — GPU-backed, OpenAI-compatible inference (open-infra's "Bedrock").
+- **`Function`** — Knative scale-to-zero serverless (open-infra's "Lambda").
+- **`VirtualMachine`** — real VMs via KubeVirt (open-infra's "EC2"): an OS
+  catalog (Linux + Windows), persistent disk, SSH/RDP. See
+  [`docs/virtual-machines.md`](docs/virtual-machines.md).
+- **`Volume`** — EBS-style block volumes (Longhorn): create, hotplug-attach to VMs,
+  snapshot/restore.
+- **`FileShare`** — shared SMB file storage (open-infra's "EFS/FSx"), with a Connect
+  helper (Windows `net use` / Linux `mount`).
+- **`Directory`** — managed Active Directory (Samba AD DC) for Windows domain join.
+- **`FaultInjection`** — chaos engineering (open-infra's "Fault Injection Simulator"):
+  declare a fault (pod-kill, network partition/latency/loss, CPU/memory stress, clock skew,
+  IO latency) scoped to a namespace + label selector; it compiles to a blast-radius-enforced
+  Chaos Mesh experiment. Ships a curated library that validates the platform's own resilience
+  (CNPG failover, CDC offset durability, mesh convergence). See [`docs/chaos.md`](docs/chaos.md).
+- **Managed databases (RDS)** — declared by an `Application`'s `database:` block:
+  PostgreSQL (CloudNativePG), MySQL (MariaDB), or MongoDB (FerretDB), with HA,
+  **Start/Stop** (data-retaining hibernation), and a live **Peek** (connections / CDC lag /
+  top queries). See [`docs/databases.md`](docs/databases.md).
+- **`Migration`** — AWS-DMS-style DB migration + CDC on a Debezium + apply-sink engine:
+  full-load or continuous sync into a target SQL database, with a console wizard and
+  a live status view (lag, per-table throughput, dead-letter). See
+  [`docs/migrations.md`](docs/migrations.md).
+- **`Replication`** — bidirectional / multi-master replication (open-infra's
+  "SymmetricDS"): keep databases in sync both ways, across engines
+  (e.g. SQL Server ⇄ PostgreSQL ⇄ MySQL), with origin-marker loop prevention and
+  Hybrid-Logical-Clock last-write-wins conflict resolution. See
+  [`docs/replication.md`](docs/replication.md).
+- **`Stream`** — Kinesis-style streaming CDC: a headless Debezium Server publishes a
+  source database's row changes as real-time events onto NATS JetStream for
+  event-driven consumers. See [`docs/streaming.md`](docs/streaming.md).
+- **`DataFlow`** — a visual data-movement pipeline (open-infra's "Glue + Step
+  Functions for data"): a drag-and-drop console canvas where you chain databases,
+  message topics, transform **functions**, and object-store buckets, then deploy the
+  whole topology as one resource. Replication, migration, CDC-to-topic, and ETL
+  transforms are all just edge types on the same canvas — with a guided setup wizard,
+  live per-edge lag/dead-letter overlay (colour-blind-safe), and right-click **Peek**
+  per-step metrics. Multi-master flows can **auto-sync their table set** across members
+  (`autoSyncTables`). See [`docs/dataflow.md`](docs/dataflow.md).
+- **`Query`** — open-infra's **Athena**: serverless SQL over the data lake with no
+  database to load into. Point SQL at files in a bucket (`read_parquet('s3://…')`)
+  and get results back; the console has an Athena-style editor (code editor, a
+  bucket/file tree, results grid, query history). Each query runs once in a
+  throwaway DuckDB pod and writes results to an output location. See
+  [`docs/query.md`](docs/query.md).
+
+**Reach anything from the LAN.** Every resource takes `expose: true` to get a
+real LAN IP (MetalLB LoadBalancer) — Applications, Models, Databases, VMs;
+Functions are LAN-reachable via the Knative gateway (`expose: false` makes them
+cluster-local). VMs reach in-cluster services (databases, file shares) through their
+host node at `<nodeIP>:<nodePort>`; a fully on-LAN VM mode (`network: macvtap`, a real
+DHCP lease — the VM becomes a first-class LAN host) is the **supported** direct-LAN mode (opt-in via
+`networking.vmLan`). The older `network: bridge` is superseded and does not work on this stack —
+see [`docs/virtual-machines.md`](docs/virtual-machines.md).
+
+---
+
+## Continuous chaos testing
+
+The platform is **continuously tested against failure**, and we publish exactly what we break.
+[**docs/chaos-scenarios.md**](docs/chaos-scenarios.md) is a living gallery — one diagram per
+scenario showing the resource **chain**, the **⚡ fault-injection point**, and the **invariant**
+that must hold (recover / tolerate / deny). It spans the nightly suite (which runs every night on a
+self-hosted runner and asserts each fault actually landed) plus the hand-driven composite and
+targeted batches.
+
+The page is **auto-generated** from [`chaos/scenarios.json`](chaos/scenarios.json) by
+[`tools/chaosdoc`](tools/chaosdoc), so the diagrams can never drift from the source-of-truth — and
+findings are recorded honestly, in the open (e.g. a managed non-HA MariaDB can't act as a CDC
+source). See also [`docs/chaos.md`](docs/chaos.md) and [`docs/chaos-oracle.md`](docs/chaos-oracle.md).
+
+---
+
+## Maturity & guarantees
+
+open-infra spans two kinds of thing, and they don't carry the same risk. Read this
+before you point it at data you can't afford to lose.
+
+**Stable — the PaaS surface.** `Application` (Deployment/Service/Ingress/HPA),
+`Model`, `Function`, `VirtualMachine` (with `VmImage` golden images), `Volume`,
+`FileShare`, `Directory`, `SecurityGroup`, and managed databases (Postgres / MySQL /
+Mongo, including HA and Start/Stop) are the day-to-day surface. A failure here is a
+restart or a rollback — the PaaS promise: recoverable, no data at stake. These run
+continuously on the reference cluster.
+
+**Experimental — the distributed-systems primitives.** `Replication`
+(bidirectional / multi-master), cross-engine `Migration`, multi-master
+`DataFlow`, and `Stream` (one-way CDC onto NATS — no conflict resolution, so the
+last-write-wins caveats below don't apply to it, but it rides the same capture
+engine) ride a change-data-capture engine (Debezium → NATS → apply-sink) with
+Hybrid-Logical-Clock last-write-wins conflict resolution. This is the most capable
+part of open-infra and the least forgiving: a conflict-resolution bug is not a
+crash you notice — it's a **silently lost or diverged write** you may find weeks
+later. Correctness here rests on design plus an automated suite: a
+[convergence harness](docs/convergence-harness.md) that drives concurrent/conflicting
+writes and asserts every member ends identical with zero lost writes — now driven
+**unattended, nightly** by a [chaos suite](docs/chaos-suite.md) that partitions the
+mesh, kills its own capture/sink pods, fails over a managed Postgres primary, forces a
+backward clock, and runs all of it at once, with every scenario asserting the fault
+*actually landed*. The bar to call this Stable is **30
+consecutive green nights with zero unexplained reds**, which has not yet been met;
+until it is, this stays **Experimental**: use it, keep an authoritative
+source, and don't make multi-master the system of record for data you can't
+reconstruct.
+
+**Experimental — the analytics surface.** `Query` (Athena-style serverless SQL) and the
+lakehouse behind its `trino` engine (the Iceberg REST catalog) are **one release old**, and
+their security posture was rewritten the release after that. A query pod runs **untrusted,
+user-supplied SQL**, so it is confined: a least-privilege S3 identity (read only an
+allow-list of buckets, write only to `query-results` — never the MinIO root creds), a
+NetworkPolicy permitting egress only to DNS/MinIO/Trino, a non-root read-only-rootfs pod
+with no service-account token, and DuckDB with local-filesystem access locked off. See
+[docs/query.md](docs/query.md). **Treat the read allow-list as the trust boundary:** anything
+you add to it is readable by anyone who can submit a Query. The Trino engine is hardened the
+same way (non-root, read-only rootfs, dropped caps, no service-account token); per-namespace
+query identities (workgroups) remain a tracked follow-up.
+
+**Experimental — the chaos tooling.** `FaultInjection` compiles to Chaos Mesh with the blast
+radius enforced (namespace + label selector, time-boxed). It's test tooling, not a workload
+primitive — and one advertised type, **`io-latency`, is currently inert on this cluster**
+(Chaos Mesh's `toda` injector panics, so the fault is created and silently never injects).
+See [docs/chaos.md](docs/chaos.md).
+
+**What's tested, concretely** (`.github/workflows/test.yml`, `go test`): the
+pure CDC logic (driver dialects, cross-engine type mapping, the temporal-coercion
+rules that decide how a `DATE`/`timestamp` value lands in another engine),
+composition rendering (so, e.g., "Start" always un-hibernates a database, and the
+`Query` engine pod cannot silently lose its non-root / read-only-rootfs / no-token /
+scoped-credential sandbox — that pod runs untrusted SQL, so each guarantee is pinned
+and the guard is proven to fail when any one is removed), and the MySQL HLC's
+monotonicity under a backward wall clock. These are an **enforced gate**,
+not advisory: the release and both image-build workflows run the suite as a required
+job, so no image is built, signed, or pushed unless it passes on that ref (verified by
+a live red build — see [docs/ci.md](docs/ci.md)). **Nightly, unattended** on a
+self-hosted runner (`.github/workflows/nightly-chaos.yml`): the multi-master mesh is
+partitioned, its capture and sink are killed mid-write, a managed CNPG primary is
+failed over, the HLC is driven backwards, and all of it is combined — each run
+asserting the mesh re-converges byte-identical *and* that the fault actually bit. A
+red night blocks the release. **Not yet automated:** real Longhorn replica loss (it
+would endanger the one shared cluster — it needs a separate validation cluster), and
+incremental-snapshot back-load of rows added to a table *after* a flow starts
+(create-then-insert syncs fully; back-loading a pre-populated, late-added table is a
+known gap).
+
+**One maintainer, one cluster.** open-infra is built and validated by one person on
+one live cluster. The direction of travel is to make correctness *mechanical*
+(tests, CI, chaos-as-verification) rather than attention-dependent — calibrate trust
+accordingly, especially for the experimental tier.
+
+From **v2.0.0** the changelog states each capability's tier explicitly, and breaking
+changes to the stable surface get a major-version bump.
+
+## Security & compliance
+
+open-infra is built to a control framework, not just a feature list: it is
+**secure-by-default** (authentication required, fault injection and other privileged
+capabilities off unless opted in, least-privilege service identities) and its capabilities
+map to the **NIST SP 800-53** families behind FedRAMP. It ships the *technical* controls and
+evidence so an operator can pursue an authorization — it does not claim to *be* certified.
+See [`docs/security-and-compliance.md`](docs/security-and-compliance.md) for the honest posture
+and the control-family mapping.
+
+---
+
+## License
+
+[Apache-2.0](LICENSE). Contributions welcome — see
+[CONTRIBUTING.md](CONTRIBUTING.md).

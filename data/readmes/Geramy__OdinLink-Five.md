@@ -1,0 +1,289 @@
+# OdinLink-Five
+
+**Thunderbolt 5 RDMA for Linux — kernel driver, libibverbs provider, NCCL/RCCL plugins**
+
+OdinLink turns a Thunderbolt cable into a high-speed RDMA interconnect between machines. It provides the full `ibv_*` verbs API so any verbs-aware application (NCCL, MPI, PyTorch DDP) can use Thunderbolt DMA without code changes.
+
+```
+80 Gbps  ·  sub-µs latency  ·  zero-copy GPU  ·  standard ibv_verbs API
+```
+
+
+#Thunderbolt 4 Test / USB4v1
+
+![USB4v1 / Thunderbolt 4 Test](https://github.com/Geramy/OdinLink-Five/blob/main/assets/Screenshot_2026-02-20_13-50-36.png)
+
+
+#Thunderbolt 5 Test / USB4v2
+![USB4v2 / Thunderbolt 5 Test](https://github.com/Geramy/OdinLink-Five/blob/main/assets/Screenshot_2026-02-27_10-07-33.png)
+---
+
+## Progress
+
+| Layer | Component | Status |
+|-------|-----------|--------|
+| 🟢 | Kernel module (`odl_tb5.ko`) | NHI ring DMA, XDomain handshake, loopback mode |
+| 🟢 | Userspace library (`libodl_tb5.so`) | C API, stream I/O, mmap, DMA-buf |
+| 🟢 | Verbs provider (`libodl_tb5_verbs.so`) | `ibv_open_device`, `ibv_reg_dmabuf_mr`, QP/CQ lifecycle |
+| 🟢 | rdma-core plugin (`libodl_tb5-rdmav34.so`) | Auto-discovered by `ibv_devinfo` |
+| 🟢 | Async I/O | `poll()` + `O_NONBLOCK` ioctls end-to-end |
+| 🟢 | No-cable testing | `loopback=1` module param + mock library |
+| 🟢 | RCCL/NCCL net plugin | **Supported GPU path** — `librccl-net.so` / `libnccl-net-ODL_TB5.so` (see [`docs/GPU.md`](docs/GPU.md)) |
+| 🟡 | NCCL verbs / IB transport | Works only with `LD_PRELOAD=libodl_tb5_verbs.so` health checks; RCCL `dlopen`s libibverbs and **bypasses** preload — use the net plugin |
+| 🟡 | rdma-core provider plugin | Needs a sysfs RDMA device to load; inert on OdinLink-only hosts — use `LD_PRELOAD` for `ibv_devinfo` |
+| 🟡 | Async DMA-buf | Needs callback-based cleanup — stream path is already async via poll() |
+
+## Quick Start
+
+### Build & Run
+
+```bash
+sudo apt install build-essential cmake linux-headers-$(uname -r) libibverbs-dev rdma-core pkg-config gcc-14
+git clone https://github.com/johndpope/OdinLink-Five.git
+cd OdinLink-Five && mkdir build && cd build
+cmake .. -DBUILD_VERBS=ON && make -j$(nproc) odl_tb5_verbs odl_tb5_verbs_provider
+
+# Test without cable:
+sudo insmod driver/odl_tb5.ko loopback=1
+ibv_devinfo                     # Should show odl_tb5 device
+build/verbs/tests/test_verbs_basic
+```
+
+### Point-to-Point (two machines)
+
+```bash
+# Machine A:
+sudo insmod driver/odl_tb5.ko
+build/cli/odl_tb5_cli server -d 0
+
+# Machine B (wait for dmesg "entering READY state" first):
+sudo insmod driver/odl_tb5.ko
+build/cli/odl_tb5_cli client -d 0 -t bandwidth -b 64K,1M,4M
+```
+
+### RCCL (AMD) — use the net plugin, not verbs/IB
+
+```bash
+cmake --build . --target rccl_net_odl_tb5
+# Build tree already has librccl-net.so symlink; or:
+export LD_LIBRARY_PATH=$PWD/rccl:$PWD/lib:$LD_LIBRARY_PATH
+# Confirm logs say:  Using network ODL_TB5   (NOT Socket)
+```
+
+```python
+from odinlink import RemoteStore   # Ubuntu trainer → Mac RAM over TB-IP
+mac = RemoteStore("tb5://<mac-bridge-ip>")
+mac.put("kv.42", cuda_tensor)
+```
+
+Full install → [`docs/INSTALL.md`](docs/INSTALL.md) · GPU → [`docs/GPU.md`](docs/GPU.md) · **Ubuntu + PyTorch + Mac RAM** → [`docs/PYTORCH.md`](docs/PYTORCH.md) · **which TB card** → [`docs/HARDWARE.md`](docs/HARDWARE.md) (`scripts/tb-hw-check.sh`)
+
+## Architecture
+
+```
+┌────────────────────────────────────────────────────┐
+│  Application (NCCL, MPI, PyTorch, ibv_* API)       │
+├────────────────────────────────────────────────────┤
+│             libibverbs (libibverbs.so.1)            │
+├────────────────────────────────────────────────────┤
+│  libodl_tb5-rdmav34.so  (verbs provider plugin)    │
+├────────────────────────────────────────────────────┤
+│  libodl_tb5.so  (OdinLink C API)                   │
+├────────────────────────────────────────────────────┤
+│  odl_tb5.ko  (kernel module — NHI DMA)             │
+├────────────────────────────────────────────────────┤
+│  Thunderbolt 5 NHI DMA Engine                       │
+└────────────────────────────────────────────────────┘
+```
+
+## Components
+
+| Component | Binary | Description |
+|-----------|--------|-------------|
+| Kernel driver | `odl_tb5.ko` | NHI ring DMA, XDomain handshake, char device |
+| Library | `libodl_tb5.so` | C API wrapping ioctls, streams, mmap |
+| Verbs provider | `libodl_tb5_verbs.so` | Standalone `ibv_*` via symbol interposition |
+| Verbs plugin | `libodl_tb5-rdmav34.so` | rdma-core provider plugin (`ibv_devinfo`) |
+| NCCL plugin | `libnccl-net-ODL_TB5.so` | NVIDIA GPU collectives |
+| RCCL plugin | `librccl_net_odl_tb5.so` | AMD GPU collectives |
+| CLI tool | `odl_tb5_cli` | Bandwidth, latency, jitter, MIMO tests |
+| Loopback module | `loopback=1` param | Fake peer for no-cable testing |
+| Mock library | `libodl_tb5_mock.so` | LD_PRELOAD simulation (no kernel needed) |
+
+### GPU and daemon/tray → [`docs/GPU.md`](docs/GPU.md), [`docs/INSTALL.md`](docs/INSTALL.md)
+
+## Verbs API Coverage
+
+| Operation | Status | Notes |
+|-----------|--------|-------|
+| `ibv_open_device` | ✅ | Symbol interposition + rdma-core plugin |
+| `ibv_query_device` | ✅ | Attributes from peer info |
+| `ibv_query_port` | ✅ | Port state from peer connection |
+| `ibv_alloc_pd` / `ibv_dealloc_pd` | ✅ | Protection domains |
+| `ibv_reg_mr` / `ibv_dereg_mr` | ✅ | Host memory registration |
+| `ibv_reg_dmabuf_mr` | ✅ | Zero-copy GPU memory (Linux DMA-buf) |
+| `ibv_create_cq` / `ibv_destroy_cq` | ✅ | Eventfd-based completion queues |
+| `ibv_poll_cq` / `ibv_req_notify_cq` | ✅ | Poll + eventfd notification |
+| `ibv_create_qp` / `ibv_destroy_qp` | ✅ | RC QP → stream mapping |
+| `ibv_modify_qp` | ✅ | RESET → INIT → RTR → RTS |
+| `ibv_post_send` | ✅ | Async via workqueue + poll() |
+| `ibv_post_recv` | ✅ | Non-blocking via poll() |
+| `ibv_query_qp` | ✅ | State + capabilities |
+
+## Async I/O Model
+
+```
+ibv_post_send(qp, wr, NULL)
+    │
+    ▼  (non-blocking, returns immediately)
+Enqueue WR → per-QP submission queue
+    │
+    ▼  (worker thread)
+poll(fd, POLLOUT)  ← kernel signals TX readiness
+    │
+    ▼
+ioctl(STREAM_SEND) ← O_NONBLOCK, never blocks
+    │
+    ├── -EAGAIN → re-queue WR, poll again
+    └── success → post struct ibv_wc → CQ → eventfd
+```
+
+## Testing Without Hardware
+
+```bash
+# Option 1: kernel loopback (real module, fake peer)
+sudo insmod driver/odl_tb5.ko loopback=1
+build/verbs/tests/test_verbs_basic
+
+# Option 2: user-space mock (no kernel module at all)
+mkfifo /dev/odl_tb5_0
+LD_PRELOAD=verbs/tests/libodl_tb5_mock.so \
+  LD_LIBRARY_PATH=build/verbs:build/lib \
+  build/verbs/tests/test_verbs_mock_loopback
+```
+
+## Smoke Tests (with hardware)
+
+Verbose logging is essential for diagnosing failures. Use the provided helper
+script which captures everything automatically:
+
+```bash
+# Full smoke test suite — all logs go to smoke-test-<timestamp>/:
+./scripts/smoke-test.sh
+
+# Run only the verbs provider test:
+./scripts/smoke-test.sh -t verbs
+
+# Bandwidth test (two machines, machine A first):
+sudo ./scripts/smoke-test.sh -t bandwidth -m server   # Machine A
+sudo ./scripts/smoke-test.sh -t bandwidth -m client   # Machine B
+
+# Custom output directory:
+./scripts/smoke-test.sh -o /tmp/odl-debug
+```
+
+Verbose logging is also available manually:
+
+```bash
+# Watch kernel driver logs (run in a separate terminal):
+sudo dmesg -w | grep odl_tb5
+
+# Trace all verbs calls — set level 1–5 (5 = most verbose):
+export ODL_VERBS_DEBUG=5
+```
+
+### Manual smoke test steps
+
+**1. Kernel module + device node**
+
+```bash
+sudo insmod driver/odl_tb5.ko
+sudo chmod 666 /dev/odl_tb5_0    # allow non-root access
+ls -l /dev/odl_tb5_0             # appears only when a TB5 peer is connected
+```
+
+**2. Full test suite** (3 suites: device, lib API, plugin)
+
+```bash
+build/tests/odl_tb5_test
+```
+
+**3. Verbs provider lifecycle test**
+
+```bash
+build/verbs/tests/test_verbs_basic
+```
+
+Exercises: device discovery, context open, PD/MR/CQ/QP lifecycle, post_send/post_recv.
+
+**4. End-to-end bandwidth** (two machines)
+
+```bash
+# Machine A:
+build/cli/odl_tb5_cli server -d 0
+
+# Machine B (wait for dmesg: "odl_tb5: entering READY state"):
+build/cli/odl_tb5_cli client -d 0 -t bandwidth
+```
+
+**5. ibv_devinfo discovery**
+
+```bash
+# Preferred health check on OdinLink-only hosts (no other RDMA NIC):
+LD_PRELOAD=build/verbs/libodl_tb5_verbs.so ibv_devinfo
+
+# The rdma-core directory plugin (libodl_tb5-rdmav34.so) only loads when
+# sysfs already exposes an unclaimed RDMA device — on pure OdinLink machines
+# it is inert. See docs/TROUBLESHOOTING.md.
+```
+
+## Module Parameters
+
+| Param | Default | What it does |
+|-------|---------|--------------|
+| `e2e=0` | 1 (on) | Disables end-to-end flow control handshake. **Only needed for old TB3 controllers** that choke on E2E. TB4/TB5 leave this alone. |
+| `loopback=1` | 0 (off) | Creates fake devices with no cable — data loops back inside your own machine. For testing without a peer. |
+| `protocol=1` | 0 (OdinLink) | Switches to Apple's protocol ID (0xFA57) so macOS peers can discover OdinLink. For Mac↔Linux only. |
+| `odl_ring_size=1024` | 4096 | Number of DMA packet slots per ring. Larger = smoother bursts, more RAM. On `iommu=pt` (identity IOMMU) hosts the default may fail to allocate — use 1024, or let probe auto-downgrade. |
+
+```bash
+# Examples:
+sudo insmod driver/odl_tb5.ko                       # TB4/TB5, default everything
+sudo insmod driver/odl_tb5.ko e2e=0                 # old TB3 controller
+sudo insmod driver/odl_tb5.ko loopback=1            # no cable, just testing
+sudo insmod driver/odl_tb5.ko protocol=1            # talk to macOS
+sudo insmod driver/odl_tb5.ko odl_ring_size=1024    # iommu=pt / RAM-constrained
+```
+
+## Debug
+
+```bash
+export ODL_VERBS_DEBUG=5     # Trace all verbs calls
+sudo dmesg -w | grep odl_tb5 # Kernel driver logs
+```
+
+Troubleshooting → [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md)
+
+## Cross-Platform: macOS
+
+Apple ships `libthunderboltrdma.dylib` + `libibverbs` on macOS 26.5, but
+the kernel extension is a stub — `IORDMAFamily` is not shipped. Mac
+Thunderbolt RDMA is not currently functional. OdinLink is the only
+working implementation. See [`COMPAT.md`](COMPAT.md).
+
+## Repository
+
+| Resource | Link |
+|----------|------|
+| Install guide | [`docs/INSTALL.md`](docs/INSTALL.md) |
+| GPU / NCCL / RCCL | [`docs/GPU.md`](docs/GPU.md) |
+| Troubleshooting | [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) |
+| Packaging / .deb | [`docs/PACKAGING.md`](docs/PACKAGING.md) |
+| Agent instructions | [`AGENTS.md`](AGENTS.md) |
+| Verbs provider manual | [`verbs/VERBS_PROVIDER.md`](verbs/VERBS_PROVIDER.md) |
+| Cross-platform compat | [`COMPAT.md`](COMPAT.md) |
+
+## License
+
+- **Kernel driver** (`odl_tb5.ko`): GPL v2
+- **All userspace**: MIT

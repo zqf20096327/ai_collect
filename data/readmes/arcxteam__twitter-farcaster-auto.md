@@ -1,0 +1,92 @@
+<h1 align="center">A Tools Auto Scrolling and Refresh For Social Media/Networking</h1>
+
+<img width="1422" height="853" alt="auto-scrollx" src="https://github.com/user-attachments/assets/454bc5b4-2ad7-491c-ab54-a4a43aafa6ce" />
+
+---
+
+> [!IMPORTANT]
+> <mark>This tools for auto scrolling and refreshes on social media/networking homepages.
+> It's intended for personal use only and should not be used to violate platform rules.
+> The developer is not responsible for any account restrictions or bans resulting from misuse.
+> **© 2025 Greyscope&Co, by. 0xgrey. Open-Sources - Licensed under MIT.**</mark>
+
+
+## Support Platform
+
+[![reddit](https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/home)
+[![twitter](https://img.shields.io/badge/Twitter/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/home)
+[![farcaster](https://img.shields.io/badge/farcaster-855DCD?style=for-the-badge&logo=farcaster&logoColor=white)](https://farcaster.xyz)
+[![bluesky](https://img.shields.io/badge/bluesky-0285FF?style=for-the-badge&logo=bluesky&logoColor=white)](https://bsky.app/)
+[![tiktok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)](https://www.tiktok.com/)
+[![instagram](https://img.shields.io/badge/Instagram-ED1D44?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/)
+[![linkedin](https://img.shields.io/badge/linkedin-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/feed/)
+[![quora](https://img.shields.io/badge/quora-B92B27?style=for-the-badge&logo=quora&logoColor=white)](https://www.quora.com/)
+
+### Video Platform (TikTok & Instagram)
+  - **TikTok**: Auto-scrolls through video feed — advances to next video each interval
+  - **Instagram Feed & Explore**: Scrolls normally like other social feeds
+  - **Instagram Reels**: Uses advanced multi-strategy navigation (keyboard, button click, scroll-snap, wheel event) to advance between reels
+  - **Scroll Time** controls how long each video plays before auto-advancing. Set 5–20 seconds depending on preference
+
+## Unsupport - To Be Add Soon
+[![StackOverflow](https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white)](https://stackoverflow.com/)
+[![YouTube](https://img.shields.io/badge/-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/)
+
+
+## Extensions Update 
+
+![Update](https://img.shields.io/badge/Releases_Version-v1.2.2-brightgreen)
+
+https://github.com/user-attachments/assets/618ec5cd-f51f-4f67-88a9-4e14ba22d970
+
+---
+
+<h1 align="center">Make Great Every Scroll</h1>
+
+## Setting Features & Tips
+
+### Mode 1: Timed Refresh (Default)
+  - Scroll Time: 0.2 seconds - any value (controls scroll speed)
+  - Refresh Tabs: 10 minutes (fixed interval, always active as safety net)
+  - Auto Reload: ❌ Unchecked
+  - Behavior: Scrolls continuously, reloads page every N minutes
+
+### Mode 2: Smart Auto Reload
+  - Scroll Time: 0.2 seconds - any value (controls scroll speed)
+  - Refresh Tabs: Still active as backup timer
+  - Auto Reload: ✅ Checked
+  - Behavior: Detects when scroll stops moving (stale detection) → reloads automatically when content truly ends
+  - Refresh timer remains as safety fallback
+
+### Mode 3: Video Platforms (TikTok / Instagram Reels)
+  - Scroll Time: 5–20 seconds recommended (controls how long each video plays before advancing)
+  - Works on TikTok feed and Instagram Reels (`/reels/`, `/reel/`)
+  - Instagram Feed & Explore scroll normally like other social feeds
+  - Auto-advances to next video using multi-strategy: keyboard, button click, scroll-snap, wheel event
+
+> Tips!! in the first open an extensions after toogle click **START** <mark>it's need trigger a Contents-DOM inject scroll or click any menu or refresh in socials platform</mark>
+
+## Quick Installing 
+
+### 1. Local Web Browser → Chrome/Chromium/Firefox/Edge
+
+  Follow this for use on browser like chrome extensions
+
+1. **On this repo:** Navigate to
+   - On top click → `<> Code → Download ZIP`
+   - Or Direct download → https://codeload.github.com/arcxteam/twitter-farcaster-auto/zip/refs/heads/main
+2. **Extract ZIP file:**
+3. **Tab or settings:** Go to
+   - Open `chrome://extensions`
+   - Developer mode → Switch to `active`
+   - Load unpacked → Go to folder after extract file ZIP → `Select one folder`
+4. **This was success inital load to chrome extension, Try!! open**
+
+### 2. Run Fully Google Chrome on Linux server (VPS)
+
+1. **Follow this guide:**
+   - Use 2 methode only chrome client by Kasm or use XFCE dekstop environment (GUI)
+   - Visit to [Setup Full-Control Browser Google Chrome on Linux Server (VPS)](https://github.com/arcxteam/Chrome-Linux-Desktop)
+   - This a fully control Google Chrome
+
+<img width="1437" height="445" alt="image" src="https://github.com/user-attachments/assets/a919ac71-c107-4c20-afc5-fc21bbf1e000" />

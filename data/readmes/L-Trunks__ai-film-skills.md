@@ -1,0 +1,421 @@
+# ai-film-skills
+
+**A directing knowledge base for locally-generated AI short films** — six Claude Skills about *what to decide*, not *how to install things*.
+
+[中文](./README.zh-CN.md) · [Gallery](./docs/gallery.md) · [Two kinds of skill](./docs/how-skills-differ.md) · [MiniMax H3 on 12 GB](./docs/minimax-h3-local-deploy.md) · [Attribution](./ATTRIBUTION.md)
+
+> **Install it and it works.** Easiest path — paste this at Claude Code:
+> *"Install this skill for me: https://github.com/L-Trunks/ai-film-skills — clone it and run install.sh"*
+> Then say "make a short film." The skill itself is methodology and knowledge; it depends on no scripts, no models, no GPU.
+>
+> To run the reference implementations too, set three paths in `examples/scripts/config.py`
+> and run `python doctor.py` first.
+
+---
+
+## Watch first
+
+Four films, all produced on one **RTX 4070 Ti (12 GB)**. No cloud API in the generation path.
+
+The clips below are silent GIFs. **Full versions with sound**:
+▶ [The Jailer](./docs/assets/yuzu.mp4) · [Mirror — Below the Clock Tower](./docs/assets/jingxiang-zhonglou.mp4) ·
+[Mirror — Rooftop](./docs/assets/jingxiang-tiantai.mp4) · [Nine Tails](./docs/assets/jiuwei.mp4) ·
+[Shan Hai](./docs/assets/shanhai.mp4)
+
+### *The Jailer* — long-shot, episodic drama with dialogue
+
+<img src="./docs/assets/yuzu.gif" width="400">
+
+▶ **[48-second clip, with sound](./docs/assets/yuzu.mp4)** — episodes 1–2, from 1'34" to 2'22".
+
+Two episodes, 40 and 34 shots, 1'47" each. Native lip-synced dialogue from the model,
+re-voiced in post. **This is the first one where the audience checks your work**: the same
+character has to still be the same character forty shots later, and the lines have to line up.
+
+It also overturned two of our own conclusions — that over-long prompts should be cut down,
+and that `audio: BGM throughout` was unbreakable. Both are written up in the
+[gallery](./docs/gallery.md).
+
+> ⚠️ **Where this stops.** We ran two more episodes and then called it: on a 12 GB card
+> this pipeline makes films, not series. At 736×416 and ~7 min per 5-second shot, 68 shots
+> is an overnight run for 1'45" of finished cut — and at 0.31 MP a face in a medium shot is
+> 40–90 px, so 76% of character shots are forced to be close-ups. Episodic drama needs
+> mid-shots to play scenes. Neither limit is a craft problem and **neither goes away by
+> picking a simpler art style** — ours already was one. Everything below still holds on
+> cloud APIs or bigger cards; see
+> [`dialogue-drama.md`](./skills/local-ai-film/knowledge/dialogue-drama.md) for the full
+> write-up.
+
+### *Mirror* — when the line above stops working, ship excerpts instead
+
+<img src="./docs/assets/jingxiang-zhonglou.gif" width="400">
+
+▶ **[Below the Clock Tower, 33 seconds, with sound](./docs/assets/jingxiang-zhonglou.mp4)** —
+9 shots, 8 lines, two women in shot/reverse-shot.
+
+<img src="./docs/assets/jingxiang-tiantai.gif" width="400">
+
+▶ **[Rooftop, 14 seconds, with sound](./docs/assets/jingxiang-tiantai.mp4)**
+
+Same card, same H3 setup. **The only thing that changed is the deliverable: from "a film" to
+"a few 30-second passages that hold up."** All 58 segments were still generated (3 h 21 min,
+zero failures) — they just stopped being the product and became the pool to pick from.
+
+Three things this film taught:
+
+- **Excerpts are chosen by shot size, not by plot.** Wide establishing shots and two-hander
+  full shots put faces too small to survive; over-the-shoulder and close-ups hold up.
+  **A 30-second passage can contain zero wide shots** — the information they would have carried
+  is cheaper to put in dialogue and sound than in a mushy establishing frame.
+- **An excerpt is not a slice of the full film's timeline; it is re-edited from scratch.**
+  Shot/reverse-shot that worked across the whole film has half its reverses outside the excerpt,
+  and what's left reads as "one still image moving its mouth."
+- **The first pass was scrapped entirely, and the cause was not the art style — it was having
+  no character reference image.** Pure text-to-image across 47 keyframes is 47 independent
+  draws. The second pass anchored on "hair silhouette + high-saturation iris + one hard marker
+  that cannot drift" and came out with zero costume bleed. See
+  [`chain-consistency.md`](./skills/local-ai-film/knowledge/chain-consistency.md).
+
+⚠️ This film is also where `knowledge/grid-review.md` (the grid method) and `pitfalls.md`
+item ⑲ (intermediate directories serving stale data) came from — we earned both the hard way.
+
+### *Nine Tails* — long-shot, chained: 58 segments joined into one film
+
+<img src="./docs/assets/jiuwei.gif" width="400">
+
+Tail frame becomes the next head frame, one character throughout. Narration and subtitles
+added in post; one BGM track across the whole film.
+**57 generation runs / 5 GPU-hours**, of which 17 were thrown away and redone.
+
+### *Shan Hai* — short-shot family, trailer
+
+<img src="./docs/assets/shanhai.gif" width="400">
+
+**Not one mythical beast appears in full** — only traces. That wasn't a style choice, it was
+forced by the model: the creatures of the *Classic of Mountains and Seas* have no photographic
+basis, so shooting them head-on always looks fake. Six shots out of thirty survived.
+
+> More stills and breakdowns in the [gallery](./docs/gallery.md).
+
+---
+
+## The three problems this solves
+
+Making short films with AI, the things that actually block you are never the API calls:
+
+**① Every film comes out the same.**
+Once you write one structure that works, you'll unconsciously reuse it forever. This happened to us: four trailers (one *Shan Hai* plus three SCP pieces) compared shot by shot, and shot 25 in all four is "takes off the face covering, near-total darkness," while shot 36 in all four is "extreme wide, empty landscape." Writing *"remember to vary it"* in the docs does nothing — we wrote exactly that, and still collided.
+
+**② Nowhere to record what you learned the hard way.**
+"Glow compositing in YUV tints the whole film magenta." "Any prompt describing *something absent that left a trace* will make the model draw the absent thing." You can't search for this. You buy it with GPU time, and if you don't write it down you buy it again three months later.
+
+**③ Parameters welded to one model.**
+"2.04 seconds per shot is a hard limit" — true only for LTX-2.3. Change models and it's worthless, but nothing in the docs tells you which numbers are laws of physics and which are just properties of one machine.
+
+---
+
+## The three answers
+
+### Anti-homogenization: orthogonal variables + a two-layer fingerprint
+
+Before writing any shot, you fill in five orthogonal dimensions and must differ from recent films:
+
+| Dimension | Values |
+|---|---|
+| Time structure | linear / reverse / loop / parallel cut / single-moment slices |
+| POV | omniscient / follow one person / surveillance·instrument / object's view / absent |
+| Tempo | steady / accelerate-to-burst / front-loaded / two breaths / fully static |
+| Audio | BGM throughout / dialogue-driven / SFX-driven / ambient only / total silence / desynced |
+| Ending | empty wide / return to first shot / hard cut to black / unresolved / mundane |
+
+But **checking that table alone will not catch real repetition.** Those three SCP films could each have filled it differently and still come out shot-for-shot identical, because the repetition lives one level down — at *section function → concrete shot design*.
+
+So the fingerprint records two layers and blocks at each:
+
+```
+vars       ≥3 dimensions collide  →  reselect (hard block)
+structure  same as any of last 3  →  requires an explicit justification
+signature  ≥2 fields collide      →  redesign (regardless of vars)
+```
+
+`signature` holds opening framing, ending framing, peak device, and climax pattern — the concrete choices. That third rule is the one that actually catches the SCP problem.
+
+Edit structures are demoted from *truth* to *one option among several*, stamped with a usage record:
+
+```yaml
+used_by: [Shan Hai, SCP-Breach, SCP-Archive, SCP-Field]
+use_count: 4
+```
+
+Seeing `use_count: 4` makes you pick something else. Far more effective than writing "please do not reuse."
+
+### Swapping models: profiles + self-calibration
+
+Every model-dependent number moves out of the prose into a profile, and formulas take variables:
+
+```
+shot_count = (target_sec - transition) / (max_shot_sec - transition)
+                                          ↑ a variable, no longer a hardcoded 2.0417
+```
+
+**Only one profile in this repo has real data** — `ltx-2.3-q4-12g`, which we measured. We do not ship numbers for Wan, HunyuanVideo, Kling or Jimeng, because we haven't run them; copying figures out of their docs would be fabrication, and getting caught fabricating costs more trust than the convenience is worth.
+
+What you get instead is a blank template plus a **five-step calibration** to measure your own:
+
+| To measure | How |
+|---|---|
+| `max_shot_sec` | Fix one keyframe, render at 2s/3.5s/5s, find where the subject drifts out, take the step before |
+| `align_to` | Feed a non-divisible size and read the error, or read the VAE compression rate |
+| `restart_each_shot` | Run two shots back to back; does the second OOM or slow down? |
+| `text_sensitivity` | Put a signboard/menu in the subject, render 3×, count the garbled text |
+| `motion_style` | Write "she slowly turns her head to the window" and see if it overshoots |
+
+### Pitfalls: their own document, quotable directly
+
+`knowledge/pitfalls.md` is the real asset here. A few samples:
+
+- **Glow chains must run in RGB.** `blend=screen` is per-plane; in YUV it screens the U/V chroma planes too and tints everything magenta. Run the chain in `format=gbrp`, convert to `yuv420p` on the way out.
+- **Absence cannot be prompted directly.** Ask for "a chair cushion with the dent of someone who sat there" and you get a person sitting in the chair. Negations must be enumerated: "nobody in the chair, no body, no limbs, no clothing anywhere in frame."
+- **Keep text-bearing objects out of the subject.** A negative prompt for "no watermark" will not stop text the subject itself implies. Signs, menus, labels, packaging, road signs — **the fix is changing the subject, not adding negatives.**
+- **The more dramatic, the faker.** Volcanoes and calving glaciers sit in the model's overfit zone: the training data is all render art, so it always looks AI. Ordinary moments read as real.
+- **Face-consistency threshold is 0.28, not 0.5.** Embedding cosine similarity between two images of the same AI-generated character is inherently lower than for photos of real people. Borrowing the real-photo threshold rejects every good image you have.
+- **Text in your prompt gets painted into the frame.** Not just quoted dialogue. One segment failed three times running, rendering in turn: the narration line, the words "twenty-five or so" from a supporting-character description, and the stage direction "bowed slightly." **Numerals are the highest risk**, and appending "no text, no watermark" does nothing — all three versions had that line.
+- **Generic upscalers wreck small faces.** Below ~110px face width, ESRGAN melts features together and grows crosshatch artifacts on skin; above 150px it's harmless. Fix it at generation time — an upscaler cannot invent detail that was never generated. **Raising the generation resolution is the cheapest lever**: 0.3 MP → 0.5 MP is a 1.30× linear scale, turning an 86px face into 112px, and you only need to raise it for the shots that need it. Faces under ~60px need a different framing, not a different parameter. Deciding per shot in post is the last-resort fallback, and what it buys you is "stops inventing," not "fixed."
+- **Face restoration is a liability for non-human characters.** CodeFormer turned pale amber fox-spirit irises grey-blue; `fidelity=0.9` didn't stop it. Its prior for "normal human face" is too strong.
+- **Rebuild timestamps after concat.** Without `setpts=N/FPS/TB` the encoder silently drops frames (6062 → 6013 measured), and the loss accumulates — audio drifts further out of sync the longer the film runs.
+- **A simile gets rendered as a literal object.** "A burn scar on his wrist, *about the size of a
+  large coin*" — and the wrist gets an actual coin-shaped thing on it. This is harder to catch than
+  a stray `never X`, because reading the sentence back, you don't feel like you mentioned a coin.
+- **Intermediate directories silently serve stale data.** The shape is always "A generates B,
+  downstream reads only B" — A gets updated, B never re-runs, nothing reports an error. Our post
+  chain had four of them (voice-over, upscale, lip-sync table, SFX table). The worst: two days of
+  voice work never reached the finished film, **and I greenlit it twice — because I was measuring
+  A while the film was reading B**. Two fixes: an mtime gate as the first statement of every
+  downstream script, and **acceptance evidence must come from the finished artifact itself**;
+  measuring an intermediate directory does not count.
+- **When a composition instruction doesn't execute, it's a weight fight, not a wording problem.**
+  Thirty words of instruction get diluted by three hundred words of style anchor and set
+  description, and the frame collapses back to the model's default. Two levers work: repeat the
+  instruction **at both the head and the tail** of the prompt, and write composition as something
+  physically incapable of holding anything else ("the top third is sky only, the bottom third is
+  ground only, he fits inside the band between them"). Piling on adjectives does **not** work.
+  Cutting the prompt down does work — but it buys obedience with picture quality, which is a bad
+  trade whenever the background is load-bearing.
+
+Chained long-form (dozens of segments joined tail-to-head) has its own body of pitfalls in
+`knowledge/chain-consistency.md`: character drift needs periodic re-anchoring, the anchor prompt
+must carry the full character description, empty shots must never be anchored, and the lead's
+"white hair" bleeds onto everyone else in frame.
+
+Films **with dialogue** add a whole second set — `knowledge/dialogue-drama.md`: a shared constants
+layer for characters and sets, a **give-up list** of the six things the model cannot do (so you
+stop burning rerolls on them), one single source of truth for every line of dialogue, and four
+post-production bugs that only appear when several correct timelines are laid on top of each other.
+
+### Signing off shot by shot: the grid method (optional, off by default)
+
+`knowledge/grid-review.md`. On a job that produces dozens of shots, the easiest mistake is
+**substituting "the batch runner didn't error and the files exist" for "is it any good"** — we made
+it three times in one day (final keyframes, candidate keyframes, video segments), and one batch
+that passed every automated check turned out, on human review, to have six shots facing the wrong
+way.
+
+The method: build a grid driven by the shot table itself; a cell counts only once a human has
+looked at the picture and signed it off. **The signature is bound to a hash of the prompt** (edit
+the prompt and the signature expires — without this it degrades back into "does the file exist"
+within two or three rounds), and **nothing goes downstream until every cell is signed** (once
+upscaling / editing / mixing have run, changing one cell costs ten times as much).
+
+> ⛔ **It is off by default, and you have to ask first.** Every sign-off round feeds a contact
+> sheet into the context as an image — dozens of images over one film, so **token usage and context
+> pressure go up noticeably**. It trades money for "every cell has actually been looked at," and
+> that trade is the user's call, not Claude's.
+
+One rule for whoever is doing the signing: **crop and zoom the cell you're unsure about before you
+convict it — never rule on the thumbnail.** We misread thumbnails twice (once mistaking a
+character's back-of-head and bare shoulder for "a thigh"), and both times nearly went off to fix a
+shot list that had nothing wrong with it.
+
+### Running unattended: turn "I can't tell" into a number
+
+`knowledge/auto-review.md`. Overnight there is nobody to ask, and saving the doubtful shots for
+morning means the GPU burned all night for nothing. So every "should this pass?" becomes something
+computable: *shot from behind* → face count == 0; *subject in the left third* → keypoint bbox
+centre x; *wide shot showing the whole body* → knee/ankle keypoint scores.
+
+**The part people skip is the one that matters: regression-test the checker against known-good
+footage before you trust it, and look for false positives, not misses.** An unvalidated checker
+spends the night killing good frames by a wrong rule — worse than having no checker. Ours turned
+up three classes of its own false positives (direction words read as positions; a ground-level
+shot of shoes counted as "8 people"; the wrong person measured in an over-shoulder shot) — and,
+as a free side-effect, four genuine defects in footage we had already shipped.
+
+---
+
+## The six skills
+
+One hub does the directing; five satellites each own a stage and can also be triggered on their own.
+
+| Skill | Owns |
+|---|---|
+| **local-ai-film** ★ | The hub. Opening ritual (profile → variables → fingerprint), pitfalls, execution |
+| emotion-to-camera-language | Translates "atmospheric" into light position / depth of field / camera position / subject state |
+| lock-character-reference | Locking a character reference, and what to do when it won't stabilize |
+| shot-breakdown | Filtering a batch of generations; when to stop rerolling |
+| rhythm-density | Per-shot durations and density contrast |
+| material-driven-storyboard | Reverse-engineering a storyboard when you lack the footage |
+
+The opening flow:
+
+```
+1.  Pick a profile      → profiles/
+2.  Roll the variables  → directing/variables.md
+3.  Check fingerprints  → directing/fingerprint.md   ← collision means start over
+4.  Pick/write skeleton → directing/structures/
+5.  Compute shots/segs  → formula pulls from profile
+6.  Write shots         → prompt-craft.md or shot-list-prompt.md
+7.  Probe              → shot-breakdown
+8.  Batch run          → examples/scripts/
+8.5 Sign off shots     → knowledge/grid-review.md   ⛔ off by default, ask first
+9.  Post               → knowledge/post-production.md
+10. Review             → knowledge/pitfalls.md, item by item
+                         unattended? → knowledge/auto-review.md
+11. Write fingerprint  → films.jsonl                ← close the loop or it all stops working
+```
+
+Steps 1–3 gate step 6. Step 11 closes the loop — skip it and the whole mechanism silently dies.
+
+**If the film has dialogue, read `knowledge/dialogue-drama.md` before step 6** — the constants
+layer, the give-up list and the single-source-of-truth rule for dialogue all have to be settled
+before you write shots. Retrofitting them is a rewrite.
+
+### Three orthogonal forks
+
+**By model family** (the profile's `family` field):
+
+| | short-shot | long-shot |
+|---|---|---|
+| Examples | LTX, Wan | MiniMax H3 |
+| One generation yields | one continuous shot, 2–5s | one segment of 1–3 shots, 5–15s |
+| Hard cuts within a generation | impossible | works |
+
+The two families' knowledge **contradicts each other** — action arcs, text-bearing objects, and
+how to write relationships all flip between them. Know which family you're on before reading.
+
+**By production mode**: one-off (atmospheric pieces, trailers) or chained (narrative films —
+tail frame becomes the next head frame, one character throughout). Chaining works on both
+families but requires reading `chain-consistency.md`.
+
+**By whether there's dialogue**: silent films can dodge character consistency entirely (masks,
+backlit silhouettes, one of ours is 17 shots with no face in any of them). A film with dialogue
+can't dodge anything — the audience checks. That fork requires `dialogue-drama.md` and, on a
+`long-shot` model with native audio, the `episode-drama` skeleton.
+
+---
+
+## Usage
+
+### Step 1 — install the skills (you're done here)
+
+**Easiest path — paste this at Claude Code:**
+
+```
+Install this skill for me: https://github.com/L-Trunks/ai-film-skills
+Clone it and run install.sh
+```
+
+It will clone the repo, run the installer, and drop all six skills into `~/.claude/skills/`.
+Re-running is safe — an existing directory of the same name is backed up before it's replaced.
+
+<details>
+<summary>Prefer to do it yourself</summary>
+
+```bash
+git clone https://github.com/L-Trunks/ai-film-skills
+cd ai-film-skills
+bash install.sh                # Windows: powershell -ExecutionPolicy Bypass -File install.ps1
+```
+
+Pass `--project` to install into the current project's `.claude/skills/` instead of your home directory.
+
+Or just copy them by hand:
+
+```bash
+cp -r skills/* ~/.claude/skills/
+```
+
+</details>
+
+Then tell Claude Code "make a short film" or "batch-run some atmospheric videos."
+
+**That's it — the skill is fully usable at this point.** It walks you through the opening
+ritual, blocks homogenization via the fingerprint, picks the route that matches your model,
+writes the shot list, and steers you around the several dozen pitfalls in `knowledge/`.
+None of that **needs scripts, models or a GPU** — it works just as well if you generate
+through a cloud API.
+
+> **Using Codex or another agent?**
+> They don't have Claude Code's skill auto-triggering, but these documents are plain Markdown
+> methodology — clone the repo, point your agent at `skills/local-ai-film/SKILL.md`, and it will
+> still walk you through the whole process. You just have to name the file each time.
+
+### Step 2 (optional) — calibrate your own profile
+
+```
+Follow the five steps in profiles/calibration.md — about 40 minutes locally
+```
+
+It works without this, but **your shot counts and durations will be wrong**, because the
+formulas read `max_shot_sec` out of a profile, and the shipped one was measured on my machine.
+
+### Step 3 (optional) — run the reference scripts
+
+`examples/scripts/` is my machine's implementation. Everything machine-specific lives in
+`config.py`, so you never have to grep through the scripts:
+
+```bash
+# pick one
+export AIFILM_COMFY=/path/to/ComfyUI          # 1. environment variables
+export AIFILM_PY=/path/to/python
+export AIFILM_ROOT=/path/to/output
+
+cp config.py config_local.py                  # 2. a local override (already gitignored)
+                                              # 3. or just edit config.py's defaults
+```
+
+Then check your setup:
+
+```bash
+python doctor.py
+```
+
+It verifies the ComfyUI directory, the interpreter, ffmpeg, the model files, whether ComfyUI
+is actually running and whether you have enough VRAM — and for anything missing, tells you
+which variable to change.
+
+---
+
+## Two kinds of skill live here, in two different formats
+
+This is deliberate, not an oversight:
+
+| | Distilled (RIA) | Hands-on |
+|---|---|---|
+| Which | The five satellites | local-ai-film |
+| Source | Methodology distilled from others' published work | Measured by us |
+| Format | R / I / A1 / A2 / E / B | Assembly flow + knowledge + profiles |
+| Trust | `verified: secondhand` | `verified: measured here` + hardware stated |
+
+Every number carries a `verified` field. **"I measured this" and "I heard this" must stay distinguishable** — that separation is what makes the rest of the repo trustworthy.
+
+`local-ai-film` is deliberately *not* forced into the RIA format. It's firsthand experience with no source text to quote; applying the template would only manufacture a fake citation section.
+
+---
+
+## Attribution
+
+The five satellite skills distill methodology from several creators' public work. The `R` sections have been rewritten in our own words; original sources are listed in [ATTRIBUTION.md](./ATTRIBUTION.md).
+
+## License
+
+Content is CC-BY-4.0. Code under `skills/local-ai-film/examples/scripts/` is MIT.

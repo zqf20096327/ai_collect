@@ -1,0 +1,151 @@
+# ollamarama-matrix
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Matrix Protocol](https://img.shields.io/badge/chat-Matrix-green.svg)](https://matrix.org/)
+[![Ollama](https://img.shields.io/badge/AI-Ollama-orange.svg)](https://ollama.com/)
+[![GitHub](https://img.shields.io/github/stars/h1ddenpr0cess20/ollamarama-matrix?style=social)](https://github.com/h1ddenpr0cess20/ollamarama-matrix)
+
+Ollamarama is a powerful AI chatbot for the Matrix chat protocol powered by the Ollama Chat API. Transform your Matrix rooms with an AI that can roleplay as virtually anything you can imagine — privately and locally.
+
+## Documentation
+
+- [Overview](docs/index.md)
+- [Getting Started](docs/getting-started.md)
+- [Ollama Setup](docs/ollama.md)
+- [Configuration](docs/configuration.md)
+- [Commands](docs/commands.md)
+- [Tools & MCP](docs/tools-and-mcp.md)
+- [Docker](docs/docker.md)
+- [CLI Reference](docs/cli.md)
+- [Operations & E2E](docs/operations.md)
+- [Architecture](docs/architecture.md)
+- [Development](docs/development.md)
+- [Migration](docs/migration.md)
+- [Legacy Map](docs/legacy-map.md)
+- [Security](docs/security.md)
+- [AI Output Disclaimer](docs/ai-output-disclaimer.md)
+
+## Features
+
+- Dynamic personalities with quick switching
+- Per‑user history, isolated per room and user
+- Collaborative mode to talk across histories
+- Admin controls for model switching and resets
+- Custom system prompts for specialized tasks
+
+## Related Projects
+
+- IRC version: <https://github.com/h1ddenpr0cess20/ollamarama-irc>
+- CLI version: <https://github.com/h1ddenpr0cess20/ollamarama>
+
+## Installation
+
+Options depending on how you prefer to run it:
+
+- From source (installs CLI):
+  - Clone this repo, then run: `pip install .`
+  - Or use pipx for isolation: `pipx install .`
+- From source without installing the package:
+  - `pip install -r requirements.txt`
+  - Run with: `python -m ollamarama --config config.json`
+
+After installation, use the `ollamarama-matrix` command. For E2E encryption, ensure `libolm` is installed; see [Operations & E2E](docs/operations.md).
+
+## Quick Start
+
+### Prerequisites
+
+Install and familiarize yourself with Ollama to run local LLMs.
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Pull at least one model (recommended):
+
+```bash
+ollama pull qwen3
+```
+
+For deeper setup and verification steps, see [Ollama Setup](docs/ollama.md).
+
+### 1) Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2) Configure
+
+Create or edit `config.json` at the repo root. See [Configuration](docs/configuration.md) for a minimal example, full schema, and validation guidance.
+
+### 3) Run
+
+Preferred (installed command):
+
+```bash
+ollamarama-matrix --config config.json
+```
+
+Fetch models from the server (ignores `ollama.models` in config):
+
+```bash
+ollamarama-matrix --config config.json --server-models
+```
+
+Short form:
+
+```bash
+ollamarama-matrix -S --config config.json
+```
+
+Alternatively, run as a module:
+
+```bash
+python -m ollamarama --config config.json
+```
+
+### 4) Try It
+
+- The bot logs in and joins the rooms listed in `matrix.channels`
+- Send `.ai hello` or `BotName: hello` in a joined room
+- The bot replies and maintains per‑user history
+- Invites to other rooms are declined automatically (the bot replies and leaves)
+
+## Usage Guide
+
+Common commands (see [Commands](docs/commands.md) for the full list):
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `.ai <message>` or `botname: <message>` | Chat with the AI | `.ai Hello there!` |
+| `.x <user> <message>` | Continue another user's conversation | `.x Alice What did we discuss?` |
+| `.persona <text>` | Change your personality | `.persona helpful librarian` |
+| `.custom <prompt>` | Use a custom system prompt | `.custom You are a coding expert` |
+| `.reset` / `.stock` | Clear history (default/stock prompt) | `.reset` |
+| `.history [on,off,toggle]` | Enable or disable your conversation history | `.history off` |
+| `.model [name]` (admin) | Show/change model | `.model qwen3` |
+| `.clear` (admin) | Reset globally for all users | `.clear` |
+| `.help` | Show inline help | `.help` |
+| `.verbose [on,off,toggle]` (admin) | Control inclusion of brevity clause for new conversations | `.verbose on` |
+| `.thinking [on,off,toggle]` (admin) | Show or hide the thinking placeholder while generating | `.thinking off` |
+
+## Encryption Support
+
+- Works in encrypted Matrix rooms using `matrix-nio[e2e]` with device verification.
+- Requires `libolm` available to Python for E2E. If unavailable, you can run without E2E; see [Getting Started](docs/getting-started.md) (Install Dependencies).
+- Persist the `store/` directory to retain device keys and encryption state.
+
+## Community & Policies
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Security](docs/security.md)
+- [Not a Companion](docs/not-a-companion.md)
+- [AI Output Disclaimer](docs/ai-output-disclaimer.md)
+
+## License
+
+Apache-2.0 — see [LICENSE](LICENSE) for details.

@@ -1,0 +1,811 @@
+# claux
+
+A terminal-based AI coding assistant written in Rust. Streams responses, executes tools, manages sessions, and stays out of your way.
+
+## Features
+
+- **Streaming chat** with tool execution (Read, Write, Edit, Glob, Grep, Bash, WebFetch, Agent)
+- **Image input** — attach PNG, JPEG, GIF, or WebP files in the TUI/REPL or one-shot mode
+- **Interactive permissions** — prompts before writes, `y/n/a`; `a` remembers a narrow command family such as `cargo test` when one can be identified safely, otherwise it remembers only the exact Bash command. Type a message at the prompt instead to deny the tool and steer the model with it
+- **Mid-turn steering** — type while claux is running tools and press Enter; the running tool is cancelled, remaining queued tools are skipped, and your message reaches the model immediately
+- **Interrupt anywhere** — Ctrl+C during a turn cancels it cleanly (in-flight tool calls are paired with interrupted results, so the conversation stays valid); press Ctrl+C twice within 2s to quit the app (Ctrl+D still exits immediately)
+- **Session persistence** — SQLite-backed with search; full transcripts including tool calls and results, so `/resume` and `--resume` restore exactly what the model saw. Histories from older versions are repaired on load
+- **Safe turn checkpoints** — `/diff` shows exactly what the last turn changed; `/undo-turn` restores it only when no file has been edited since, so later human work is never overwritten
+- **Observable compaction** — live context utilization, provider-anchored
+  counts, and before/after compaction reports
+- **Model selection** — search configured models by provider, profile, or model when starting a TUI session; `/model <profile>` safely switches providers while preserving the chat
+- **Sub-agents** — Agent tool spawns scoped sub-conversations. Sub-agents inherit the parent session's permission mode, so a sub-agent can't act with more authority than you granted the session. Because sub-agents run non-interactively, any tool the mode would prompt for is denied rather than auto-run (Plan denies all writes; Bypass allows all)
+- **Auto-compact** — triggers when conversation gets large
+- **Task-preserving compaction** - summarizes older history into an objective,
+  constraints, decisions, progress, and remaining work while retaining recent
+  turns verbatim. Later corrections take precedence. Bounded summary requests
+  recover from overflow; failed, empty, or non-shrinking summaries leave history
+  unchanged. Original conversation messages are archived separately.
+- **Cost tracking** — per-model token usage and USD estimates
+- **Prompt caching** — automatic Anthropic cache breakpoints on the system prompt and conversation, cutting input cost and latency on long sessions
+- **Context assembly** — git status, CLAUDE.md, environment info in system prompt. Checked-in CLAUDE.md is loaded only for trusted projects (the user's `~/.claude/CLAUDE.md` always is), and each file is size-capped
+- **TUI mode** — full-screen ratatui interface with `--tui`
+- **Visible activity**: the input border shows whether the model is responding, tools are queued, or a tool is executing, with elapsed time and a notice after ten seconds without updates. Bash shows a live, bounded output tail. Completed tools retain an output preview, including failures; Ctrl+O while idle expands or collapses results (up to the last 20 KB per tool). Ctrl+C interrupts a silent turn.
+- **Background jobs**: ask Claux to run a Bash command in the background and keep chatting. F6 or `/jobs` opens the TUI dashboard with status, elapsed time, and bounded live output. Use arrows to select, PgUp/PgDn to scroll output, `x` to cancel, and Esc/F6 to return to chat. `/jobs <id>` and `/jobs cancel <id>` also work in the REPL. Completion notices do not start another model request automatically; the model can inspect results through the Jobs tool on your next turn.
+- **Save recovery**: a persistent `UNSAVED` footer warns if session storage fails. Ctrl+S retries; session-changing commands and normal exits are paused until saving succeeds. If shutdown cannot save, Claux attempts a private recovery JSON export in the temporary directory and prints its location. Copy that export somewhere permanent for manual recovery. Diagnostic logs are buffered (up to 64 KB) until the terminal is restored, so they cannot overwrite the active TUI.
+- **Terminal restoration**: the TUI restores keyboard modes, bracketed paste, colors, the main screen, and the cursor on exit, startup failure, or panic unwinding. On Unix, SIGTERM, SIGHUP, and external SIGINT request a graceful shutdown, including cancellation and session saving. If shutdown takes more than five seconds, Claux stops waiting, restores the terminal, and attempts to save repaired partial history. SIGKILL cannot be handled; use `reset` if a forced kill leaves your shell in raw mode.
+- **Multi-provider** — Anthropic, OpenAI, Ollama, or any OpenAI-compatible endpoint
+- **Native system prompt** — claux speaks as claux; the full prompt is readable in `src/context.rs`, and what you read is what the model gets
+- **Markdown rendering** — code blocks, bold, headers in the TUI
+
+Background jobs retain the same Bash permissions, sandbox, and timeout (two minutes by default, at most ten minutes). Up to four jobs run concurrently; the latest 32 results are retained in memory, with up to 50 KB captured per output stream. Jobs share your working directory, so avoid conflicting writes. They survive turn cancellation but stop on session close, model switch, or normal application exit. They are not persistent services and cannot be resumed after restart. One-shot runs and sub-agents remain foreground-only. `/undo-turn` waits until jobs have stopped.
+
+## Screenshots
+
+The TUI in action. These are generated by [tuishot](https://github.com/ducks/tuishot)
+from claux's own code — `cargo test` fails if they drift, so they can't go
+stale.
+
+![Session browser with two projects](docs/screens/home-populated.svg)
+
+![Creating a new session](docs/screens/home-new-session.svg)
+
+![Background job dashboard](docs/screens/chat-background-jobs.svg)
+
+## Install
+
+```bash
+# From crates.io
+cargo install claux
+
+# From source
+cargo install --path .
+```
+
+Requires Rust 1.88+. The included `shell.nix` uses the latest stable toolchain,
+matching CI.
+
+Every release publishes a `SHA256SUMS` file and a `<asset>.sha256` next to
+each binary. Verify a download before running it:
+
+```bash
+tag=v20260908.0.0
+curl -fsSLO "https://github.com/ducks/claux/releases/download/$tag/claux-linux-x86_64"
+curl -fsSLO "https://github.com/ducks/claux/releases/download/$tag/SHA256SUMS"
+sha256sum --check --ignore-missing SHA256SUMS
+```
+
+Harnesses that pin a release should pin the digest from that file as well,
+so a re-tagged or tampered asset fails closed.
+
+## First run
+
+Create a starter configuration for Anthropic, OpenAI, OpenRouter, OpenCode Go,
+Vercel AI Gateway, or Ollama,
+then verify authentication, required executables, configured hooks/MCP
+servers, project trust, and provider connectivity:
+
+```bash
+claux config init --provider anthropic
+claux doctor
+
+# Other examples
+claux config init --provider openai --model gpt-5.6-sol
+claux config init --provider openrouter --model anthropic/claude-sonnet-5
+claux config init --provider opencode-go --model glm-5.3
+claux config init --provider vercel --model zai/glm-5.3-flash
+claux config init --provider ollama --model llama3
+claux doctor --offline  # configuration checks without a network request
+```
+
+The generated file contains environment-variable names, never API keys, and is
+created with private permissions. Run `config init` again with another provider
+to add it without replacing existing settings or comments. `--force` explicitly
+starts over.
+
+Built-in provider defaults and capabilities share one registry. Explicit
+`base_url`, `protocol`, and `api_key_env` settings remain authoritative, including
+for gateways. `doctor` probes the configured endpoint. Hosted built-ins require
+a key; generic compatible endpoints and Ollama can remain keyless.
+
+The TUI opens on the session browser. Starting a session lets you choose one
+named model profile; opening an existing session restores its exact provider,
+endpoint, protocol, and model:
+
+```toml
+default_profile = "sonnet"
+
+[providers.anthropic]
+type = "anthropic"
+api_key_env = "ANTHROPIC_API_KEY"
+
+[providers.openrouter]
+type = "openai"
+base_url = "https://openrouter.ai/api/v1"
+name = "openrouter"
+protocol = "chat_completions"
+api_key_env = "OPENROUTER_API_KEY"
+prompt_caching = true
+
+# Vercel AI Gateway is also a generic OpenAI-compatible provider.
+[providers.vercel]
+type = "openai"
+base_url = "https://ai-gateway.vercel.sh/v1"
+name = "vercel"
+protocol = "chat_completions"
+api_key_env = "AI_GATEWAY_API_KEY"
+
+[model_profiles.sonnet]
+provider = "anthropic"
+model = "claude-sonnet-5"
+display_name = "Sonnet"
+
+[model_profiles.gpt]
+provider = "openrouter"
+model = "openai/gpt-5.6"
+display_name = "GPT via OpenRouter"
+
+[model_profiles.vercel-glm-5-3-flash]
+provider = "vercel"
+model = "zai/glm-5.3-flash"
+display_name = "GLM-5.3 Flash via Vercel AI Gateway"
+```
+
+Saved sessions never contain API keys. They retain a credential-free transport
+snapshot and resolve credentials from the current matching provider config or
+saved environment-variable name when reopened. If that credential is no longer
+available, the TUI returns to the session browser with a recovery message.
+
+Compatible OpenAI-style providers can opt into prompt-prefix caching with
+`prompt_caching = true`. OpenRouter configuration created by `claux config
+init` enables it by default and sends an ephemeral top-level cache control on
+each request. Provider-reported cache reads and writes appear in Claux usage
+output when the selected model supports them.
+
+## Auth
+
+OpenRouter users can authorize Claux without manually copying an API key:
+
+```bash
+claux auth login openrouter
+```
+
+The command uses OAuth PKCE, opens OpenRouter in the browser, and receives the
+result through a temporary localhost callback. On a remote or headless host,
+use `claux auth login openrouter --headless`; OpenRouter will display a
+single-use code to paste into the terminal. The resulting user-controlled API
+key is stored outside `config.toml` in Claux's platform configuration directory
+(`~/.config/claux/credentials/openrouter` on Linux) with user-only permissions. Use
+`claux auth status openrouter` or `claux auth logout openrouter` to inspect or
+remove it.
+
+For local integrations that must supply the saved key to another process,
+`claux auth token openrouter` prints it to standard output. Treat that output
+as a secret. Replaybook can use this command on the host while continuing to
+keep the real credential out of VM snapshots and benchmark artifacts.
+
+To compare the native tokenization behavior of two or more OpenRouter models:
+
+```bash
+claux tokenizer-fingerprint stealth/ox-alpha z-ai/glm-5.3
+```
+
+The command sends a fixed multilingual, source-code, whitespace, emoji, and
+Unicode probe corpus with one-token completions. It compares prompt-token
+deltas rather than absolute counts to reduce chat-template overhead. Matching
+fingerprints are evidence of shared tokenization behavior, not proof that two
+model identifiers serve the same model. Pass `--format json` for structured
+data or `--format markdown` for a readable report with the complete probe
+vectors. The existing `--json` shorthand remains supported.
+
+Use `--output FILE` to write the completed report atomically without relying
+on shell redirection. Claux checkpoints each completed model in its platform
+cache directory. If a provider becomes unavailable after some models finish,
+rerun the same ordered model list with `--resume`; completed fingerprints are
+reused and can also be rendered into another format without new inference:
+
+```bash
+claux tokenizer-fingerprint stealth/ox-alpha z-ai/glm-5.3 \
+  --format markdown --output ox-vs-glm.md
+
+# If the provider interrupts the run, repeat it with:
+claux tokenizer-fingerprint stealth/ox-alpha z-ai/glm-5.3 \
+  --format markdown --output ox-vs-glm.md --resume
+```
+
+Before the first inference request, Claux validates every supplied model ID
+against OpenRouter's catalog. Typos and accidentally passed shell operators
+therefore fail without spending credits.
+
+To check provider-reported spending and key limits without making an inference
+request:
+
+```bash
+claux usage status                 # OpenRouter by default
+claux usage status openrouter --json
+```
+
+OpenRouter reports key usage, an optional spending limit, remaining allowance,
+and daily/weekly/monthly counters through its read-only key endpoint. Account-
+wide credits require a management key and are not queried. Providers without a
+configured usage endpoint are reported as unavailable; Claux never renders an
+unknown balance as zero.
+
+OpenCode Go can be queried explicitly with `claux usage status opencode-go` when
+`OPENCODE_GO_API_KEY` (or `OPENCODE_API_KEY`) is set, or a key was saved with
+`claux auth login opencode-go`. It reports the account-wide
+rolling 5-hour, weekly, and monthly usage windows and reset times. OpenCode Go's
+credit-wallet balance is separate and is not exposed by that endpoint.
+
+OpenCode Go and Vercel AI Gateway use API keys rather than Claux's OpenRouter
+OAuth flow. Save either key securely with an interactive prompt:
+
+```bash
+claux auth login opencode-go
+claux auth login vercel
+```
+
+Use `claux auth status`, `claux auth token`, or `claux auth logout` with the
+same provider name to inspect, export, or remove a saved key. The keys are
+stored separately with user-only permissions and are used as a fallback after
+the configured `api_key`, `api_key_cmd`, and environment variable.
+
+For each named provider, claux resolves authentication in order:
+
+1. `api_key` in its provider table
+2. `api_key_cmd` (shell command that returns a key)
+3. The provider's `api_key_env` environment variable
+4. A credential saved by `claux auth login` for that provider
+
+Provider usage commands also prefer a nonblank environment key over a saved
+credential. OpenCode Go accepts its legacy `OPENCODE_API_KEY` variable after
+`OPENCODE_GO_API_KEY` when using the built-in key environment.
+
+Claude Free, Pro, and Max subscription credentials are not supported. Use an
+Anthropic API key or an OpenAI-compatible endpoint such as OpenRouter.
+
+### Legacy single-provider configuration
+
+Existing flat configuration remains supported:
+
+```toml
+model = "llama3"
+openai_base_url = "http://localhost:11434/v1"
+openai_provider_name = "ollama"
+```
+
+API keys via command also remain supported (works with 1Password, Vault, etc.).
+The command runs through `sh -c` (`cmd /C` on Windows) with no stdin and is
+killed after 30 seconds, so a secret manager waiting for an interactive unlock
+fails with a warning and claux falls back to the environment variable:
+
+```toml
+model = "gpt-4o"
+openai_base_url = "https://api.openai.com/v1"
+openai_api_key_cmd = "op read 'op://vault/OpenAI/key'"
+openai_provider_name = "openai"
+```
+
+## Usage
+
+```bash
+# Interactive REPL (default)
+claux
+
+# Full-screen TUI
+claux --tui
+
+# One-shot
+claux -p "explain this error"
+
+# One-shot with one or more images
+claux -p "compare these screenshots" --image before.png --image after.png
+
+# Machine-readable one-shot result with usage and cost
+claux -p "explain this error" --output-format json
+
+# Also retain the conversation and every tool input/result for evaluation
+claux -p "repair the service" --output-format json \
+  --transcript ./artifacts/claux-transcript.json
+
+# Resume a session
+claux --resume 20260401-143022
+```
+
+JSON output has a versioned contract suitable for CI, agent evaluations, and
+other automation:
+
+```json
+{
+  "schema_version": 1,
+  "result": "...",
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": {
+    "input_tokens": 123,
+    "output_tokens": 45,
+    "cache_read_tokens": 67,
+    "cache_creation_tokens": 0,
+    "cost_usd": 0.00123
+  },
+  "outcome": { "status": "completed", "result": "..." }
+}
+```
+
+`cost_usd` uses provider-reported cost when available, otherwise configured or
+built-in model pricing. It is `null` when neither source is available.
+
+The JSON document is written on failure too, so a supervisor never has to
+parse stderr. `result` is then `null` and `outcome` classifies what happened:
+
+```json
+{
+  "schema_version": 1,
+  "result": null,
+  "model": "deepseek/deepseek-v4-flash",
+  "usage": { "input_tokens": 9000, "output_tokens": 300, "cache_read_tokens": 0, "cache_creation_tokens": 0, "cost_usd": null },
+  "outcome": {
+    "status": "error",
+    "message": "API error: openrouter API error (429 Too Many Requests) ...",
+    "failure": { "kind": "rate_limited", "retryable": true, "http_status": 429, "retry_after_ms": 20000, "attempts": 4 }
+  }
+}
+```
+
+`failure.kind` is one of `context_exceeded`, `output_limit_exceeded`,
+`malformed_tool_arguments`, `rate_limited`, `unavailable`, `authentication`,
+`model_not_found`, `policy_rejection`, `protocol_error`, `network`,
+`cancelled`, or `other`. The same object appears under `outcome.failure` in
+the transcript. Both additions are backwards compatible with the existing
+schema versions.
+
+Rate limits, provider 5xx responses, and transport failures are retried up to
+three times with exponential backoff before the turn fails, honoring a capped
+`Retry-After` when the provider sends one. Retries never reissue a request
+after a tool call has been surfaced, and waiting stops immediately on `SIGINT`
+or `SIGTERM`. Each retry is recorded as a model round with `status: "retry"`
+and its failure kind in the transcript.
+
+The one-shot exit status encodes the failure kind so a caller that does not
+read JSON can still tell a rate limit from a bad credential:
+
+| Exit code | Meaning |
+|-----------|---------|
+| `0` | completed |
+| `1` | unclassified error, including configuration errors before the engine starts |
+| `2` | usage error (invalid arguments) |
+| `10` | cancelled by `SIGINT` or `SIGTERM` |
+| `11` | provider rate limited or unavailable after retries |
+| `12` | authentication or billing rejected |
+| `13` | context window exceeded after compaction attempts |
+| `14` | provider policy rejection |
+| `15` | protocol error, including malformed tool arguments and empty completions |
+| `16` | model or endpoint not found |
+| `17` | network failure after retries |
+| `18` | output token limit reached at the maximum budget |
+
+Codes `10` through `18` never collide with SSH's `255` or the shell's `126`,
+`127`, and `128+signal` codes, so a supervisor running claux over SSH can
+attribute a failure correctly.
+
+`--transcript FILE` writes a separate, versioned JSON artifact containing the
+final conversation state, outcome, usage, and a complete ordered tool trace.
+While a turn is running, Claux atomically checkpoints the artifact after model
+rounds and tool batches with `outcome.status` set to `running`. Normal
+completion replaces that checkpoint with the final completed or error outcome.
+The tool trace is retained independently of context compaction, so earlier
+tool calls are not lost when the model's active history is summarized.
+Transcript schema version 2 also records total turn duration, each streamed
+provider round with its usage and duration, and each tool call's monotonic
+start offset, duration, and read-only classification. These monotonic timings
+measure elapsed execution without depending on the host wall clock. Failed
+turns write the partial transcript before returning the error. Failures before
+the engine starts, such as invalid configuration, cannot produce a transcript.
+Claux creates transcript files with private permissions on Unix.
+
+### Conversation compaction and archives
+
+Auto-compaction budgets the incoming prompt, system prompt, tool schemas, and
+reserved response tokens before a model request. The default threshold is 80%
+of the configured context window; `auto_compact_threshold = 0` disables proactive
+compaction. `/compact` runs it manually. Summary requests retry output-limit
+failures with a larger generation budget, bounded by three attempts and context
+headroom, while keeping the handoff text within its original token budget. `/context` reports the input estimate;
+the response budget is additional headroom used by the compaction decision.
+
+Compaction keeps a recent tail of up to four user turns, bounded by the smaller
+of 16,000 tokens, one eighth of the context window, and one third of the current
+history. Long tool loops can retain a suffix at a boundary with no outstanding
+tool calls. The older prefix becomes a task handoff describing the current
+objective; the first request is no longer pinned indefinitely. Recent images
+remain intact. Older images are represented as attachment markers in summaries.
+
+Summaries use independent provider requests with no tools and at most 4,096
+output tokens, also bounded by the configured response budget and context
+window. Oversized excerpts are folded in chronological chunks. A summary
+overflow halves the chunk budget and retries, with at most three attempts and
+32 chunks per attempt. The active history changes only after all chunks succeed
+and the result reduces context. Repeated summarization remains lossy; older
+requirements depend on the handoff's accuracy.
+
+Interactive sessions store original conversation events in a separate append-only
+SQLite archive. Saving the archive and active context is atomic; compaction does
+not add synthetic handoffs to the archive. Resume restores both. Existing
+sessions seed their archives from the messages still stored at migration time;
+previously discarded history cannot be recovered. Deleting a session deletes
+its archive too. Export a session's archive as JSON with:
+
+```bash
+claux archive <session-id-or-prefix>
+```
+
+One-shot `--transcript` artifacts include an `archive` field alongside the active
+`messages` and tool trace. Tool outputs are still capped before entering model
+history and the archive; archiving does not recover truncated output.
+
+In one-shot mode, `SIGINT` and `SIGTERM` cancel the active provider request or
+tool, pair interrupted tool calls with results, and write the partial
+transcript before the process exits. This lets supervisors enforce a deadline
+without discarding the investigation that occurred before it.
+
+Transcripts contain raw tool inputs and the exact results returned to the
+model. They may therefore include source code, command output, or credentials
+the agent explicitly read. Capture is opt-in; store and share these artifacts
+accordingly.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/help` | Show available commands |
+| `/cost` | Token usage and estimated cost |
+| `/compact` | Summarize conversation to free context |
+| `/auto` | Toggle auto permission mode for this session |
+| `/context` | Show context utilization, threshold, and remaining headroom |
+| `/diff` | Show file changes made by the last turn |
+| `/undo-turn` | Safely undo the last turn's file changes |
+| `/image <path>` | Attach an image to the next prompt (repeatable) |
+| `/model [profile]` | Show configured models or safely switch provider/model profile |
+| `/voice` | Toggle voice mode: Ctrl+T records and transcribes, replies are spoken (TUI only) |
+| `/resume [id]` | List or resume past sessions |
+| `/clear` | Clear screen |
+| `/exit` | Exit |
+
+Turn checkpoints cover Git-tracked files and non-ignored untracked files.
+Ignored files and paths outside the repository are deliberately excluded.
+`/undo-turn` first verifies that every affected file still matches the end of
+the turn; if anything changed afterward, it refuses the entire undo.
+Replacements are staged beside their targets before restoration. If a rename
+or removal fails partway through, the in-memory checkpoint records completed
+restores. Correct the reported problem and retry `/undo-turn`; already-restored
+files are verified against their restored contents, so later edits remain protected.
+This is recoverable within the running session, not a crash-persistent transaction.
+
+## Config
+
+`--resume ID` accepts an exact session ID or a unique prefix. Missing and
+ambiguous IDs are errors. This flag resumes the REPL; it cannot be combined
+with `--print` or `--tui` (use the TUI session browser instead). `/resume`
+lists stored metadata without loading full conversations. Session saves retain
+unchanged rows, including inline images, and replace only the changed suffix.
+
+Headless invocations can use `--config PATH` (or `CLAUX_CONFIG`, with the flag
+taking precedence), `--base-url URL`, `--protocol chat_completions|responses|anthropic`,
+and `--reasoning-effort LEVEL`. These transport overrides apply to the selected
+model for this invocation and do not rewrite configuration. Credentials still
+come from the selected provider. A missing explicitly selected config is an error.
+`--native-fs-policy workspace_only|unrestricted` and
+`--bash-fs-policy auto|workspace_write|unrestricted` apply the same trust checks
+as project configuration; loosening containment requires `--trust-project` or
+an already trusted project.
+
+Chat Completions uses `reasoning_effort` for generic endpoints. OpenRouter's
+reasoning and cache extensions are sent only to `openrouter.ai`; OpenAI's
+endpoint uses `max_completion_tokens`. Anthropic thinking is not yet supported:
+setting `reasoning_effort` there produces a warning rather than enabling thinking.
+
+Turns are limited to 200 model rounds by default (`max_rounds` in config,
+minimum 1). Sub-agents have a 50-round limit and a ten-minute deadline.
+Provider streams have a 120-second idle timeout. Context commands have a
+three-second deadline and a 16 KiB output cap. Instruction and memory files
+are read up to 40,000 bytes each; combined instructions are capped at 160,000
+bytes, reserving space for user-global instructions.
+
+Global: `~/.config/claux/config.toml`
+
+```toml
+default_profile = "sonnet"
+permission_mode = "default"  # default | accept-edits | auto | bypass | plan
+native_tool_filesystem_policy = "workspace_only" # workspace_only | unrestricted
+bash_filesystem_policy = "auto" # auto | workspace_write | unrestricted
+
+# Project-local .claux.toml files may tighten permission and filesystem
+# policies without trust, but cannot loosen them unless their directory is
+# listed here or --trust-project is passed for the invocation.
+# Project-local .mcp.json uses the same boundary.
+# CLAUDE.md instructions checked into a project (in the working directory and
+# its ancestors) are also only loaded for trusted projects; the user's own
+# ~/.claude/CLAUDE.md is always loaded. Each CLAUDE.md is capped at 40k chars.
+trusted_projects = ["/absolute/path/to/a/trusted/project"]
+
+[providers.anthropic]
+type = "anthropic"
+api_key_env = "ANTHROPIC_API_KEY"
+
+[providers.openai]
+type = "openai"
+base_url = "https://api.openai.com/v1"
+name = "openai"
+protocol = "responses"
+api_key_env = "OPENAI_API_KEY"
+# Compatibility escape hatch for endpoints that close a complete SSE stream
+# without a finish_reason or [DONE]. Keep false unless the endpoint requires it.
+allow_eof_without_finish_reason = false
+
+[model_profiles.sonnet]
+provider = "anthropic"
+model = "claude-sonnet-5"
+display_name = "Sonnet"
+
+[model_profiles.openai-coder]
+provider = "openai"
+model = "gpt-5.6-sol"
+display_name = "OpenAI Coder"
+reasoning_effort = "medium"
+
+# `reasoning_effort` also works with compatible Chat Completions providers
+# such as OpenRouter. Returned reasoning state is preserved across tool rounds
+# but is not rendered as assistant text.
+
+# Optional per-profile metadata overrides. OpenRouter context windows are
+# discovered automatically and cached locally; an explicit value takes
+# precedence. Other compatible providers use built-in knowledge or this
+# override because their model-catalog APIs are not standardized.
+# context_window = 1050000
+# [model_profiles.openai-coder.pricing]
+# input = 5.0
+# output = 30.0
+# cache_read = 0.5
+# cache_write = 6.25
+
+# Optional pricing overrides, in USD per million tokens. Built-in prices are
+# used for known models; unknown models display "Cost: unavailable". This
+# model-ID keyed form remains supported for shared or legacy configuration.
+# [model_pricing."gpt-5.6-sol"]
+# input = 5.0
+# output = 30.0
+# cache_read = 0.5
+# cache_write = 6.25
+```
+
+Per-project: `.claux.toml` in the project root (overrides global).
+
+### Native tool filesystem policy
+
+`native_tool_filesystem_policy` controls Claux's built-in Read, Write, Edit,
+Glob, and Grep tools. The default, `workspace_only`, resolves paths and symlinks
+before allowing access and rejects paths outside the directory where Claux was
+started. It also rejects search patterns which traverse to a parent directory.
+
+Set the global value to `unrestricted` when native tools must work across the
+filesystem. A project-local `.claux.toml` may tighten this policy without trust,
+but may only loosen it for a trusted project.
+
+This is application-level containment for native file tools. MCP tools are not
+contained by this setting and continue to use Claux's project-trust boundary.
+
+### Bash filesystem policy
+
+`bash_filesystem_policy` controls operating-system containment for commands
+spawned by the Bash tool:
+
+- `auto` (the default) uses Linux Landlock workspace-write containment when
+  fully available. Otherwise it emits a warning and preserves unrestricted
+  behavior.
+- `workspace_write` requires Linux Landlock and fails closed when the kernel
+  cannot completely enforce the policy.
+- `unrestricted` runs Bash with the user's normal filesystem access.
+
+Workspace-write commands can read the filesystem but may only write beneath the
+directory where Claux started, system temporary directories, `/dev/null`, and
+the repository's Git metadata. Allowing temporary paths keeps compilers and
+other development tools functional. Symlink traversal does not grant access to
+targets outside these writable roots.
+
+Run `claux doctor` to see the effective Bash policy on the current system.
+
+The Bash permission prompt and `permission_mode` remain separate from
+containment: approving a command authorizes it to run, but does not disable the
+sandbox. Claux never retries a sandbox-denied command unrestricted. A trusted
+project may explicitly select `unrestricted`; an untrusted project may only
+tighten the global policy.
+
+### Child process environment
+
+Bash commands, hooks, and MCP servers start with a copy of claux's environment
+that has provider credentials removed: every `api_key_env` named in the loaded
+configuration, plus any variable ending in `_API_KEY` or starting with
+`ANTHROPIC_`, `OPENAI_`, `OPENROUTER_`, `AI_GATEWAY_`, or `OPENCODE_`. Keys
+resolved with `api_key_cmd` never enter the environment at all.
+
+By default `SSH_AUTH_SOCK` and `DOCKER_HOST` are removed as well, so a command
+run by the model cannot use your SSH agent or reach a remote Docker daemon.
+This also means `git push` over an agent-held key and rootless or remote
+Docker do not work inside the Bash tool. Set `strip_agent_sockets = false` in
+the global config to keep those handles; a project `.claux.toml` may only
+turn stripping on unless the project is trusted.
+
+### Voice mode
+
+The TUI can take input from a microphone and read replies aloud. Nothing is
+linked in; each stage is a command you configure, so any local engine works
+and claux never ships audio or model code. Voice settings are global only. A
+project `.claux.toml` cannot set them even when trusted, because a command
+claux runs on every reply is arbitrary code execution.
+
+```toml
+[voice]
+enabled = false        # /voice toggles it per session
+record_cmd = "pw-record --rate 16000 --channels 1 --format s16 {file}"
+transcribe_cmd = "whisper-cli -m ~/models/ggml-medium.bin -l auto -nt -np -f {file}"
+auto_submit = false    # true sends the transcript without a review step
+speak_default = "en"
+transcribe_timeout_secs = 60
+
+[voice.speak]
+en = "piper -m ~/voices/en_US-lessac-medium.onnx --output-raw | aplay -q -r 22050 -f S16_LE -t raw -"
+cs = "piper -m ~/voices/cs_CZ-jirka-medium.onnx --output-raw | aplay -q -r 22050 -f S16_LE -t raw -"
+```
+
+- `record_cmd` runs until it receives SIGINT and must leave audio at
+  `{file}` (quoted for you). Ctrl+T starts it; Ctrl+T again stops it.
+- `transcribe_cmd` is given the same `{file}` and prints the text. The
+  transcript lands in the input line for you to check and edit before Enter,
+  unless `auto_submit` is on.
+- `[voice.speak]` maps a language code to a command that reads text on stdin
+  and plays it. A reply can mix languages: the model wraps target-language
+  spans in `[cs]...[/cs]` style tags and each span goes to that language's
+  command; untagged text uses `speak_default`. Any key stops playback.
+
+Voice commands run with the same scrubbed environment as Bash commands and
+hooks, so they never see provider credentials. The REPL and one-shot modes do
+not use voice.
+
+## Hooks
+
+Run a command on a lifecycle event. Each `[[plugins]]` entry runs its
+`command` when the matching `trigger` fires. Nothing about the command lives
+in claux - it's your config, so a hook can drive anything: a status light, a
+notification, a logger, a metrics counter.
+
+```toml
+[[plugins]]
+name = "lamp-idle"
+command = "glow-hook"
+args = ["purple"]
+trigger = "on_session_start"
+
+[[plugins]]
+name = "lamp-working"
+command = "glow-hook"
+args = ["blue"]
+trigger = "on_tool_start"
+
+[[plugins]]
+name = "lamp-your-turn"
+command = "glow-hook"
+args = ["green"]
+trigger = "on_turn_end"
+
+[[plugins]]
+name = "lamp-needs-you"
+command = "glow-hook"
+args = ["orange"]
+trigger = "on_permission_request"
+```
+
+| Trigger | Fires when |
+|---------|-----------|
+| `on_context_build` | building the system prompt (stdout is injected as context) |
+| `on_session_start` | a session starts |
+| `on_tool_start` | a tool call begins |
+| `on_tool_complete` | a tool call finishes |
+| `on_turn_end` | the agent finishes a turn and control returns to you |
+| `on_permission_request` | the agent blocks on a permission prompt (it needs you) |
+| `on_permission_check` | before every tool call; stdout can allow, deny, or ask (see below) |
+
+The example above is a [glow](https://github.com/ducks/glow) status lamp: your
+keyboard's RGB tracks what claux is doing. `on_context_build` is special - its
+stdout is added to the system prompt; the rest are bounded side effects. Hook
+commands run concurrently with a 10-second timeout and bounded captured output.
+
+### Permission check hooks
+
+An `on_permission_check` hook runs before every tool call, after the mode and
+`[permissions]` rules have produced a proposed decision. It receives:
+
+| Variable | Value |
+|----------|-------|
+| `CLAUX_TOOL_NAME` | the tool, e.g. `Bash` |
+| `CLAUX_TOOL_INPUT` | the raw tool input as JSON |
+| `CLAUX_TOOL_READ_ONLY` | `true` or `false` |
+| `CLAUX_PERMISSION_MODE` | the active mode |
+| `CLAUX_PERMISSION_DECISION` | the proposed decision: `allow`, `ask`, or `deny` |
+
+Print nothing to accept the proposal, or print one JSON object:
+
+```json
+{"decision": "deny", "reason": "no network installs on this host"}
+```
+
+The most restrictive answer wins across hooks: any `deny` denies, any `ask`
+turns an allow into a prompt, and `allow` clears a prompt. A deny from a rule
+or from `plan` mode is final; no hook can lift it. Hooks run with the same
+10-second timeout and credential-free environment as other hooks, and a hook
+that fails or prints something other than the JSON object is ignored with a
+warning.
+
+## Permission Modes
+
+| Mode | Reads | File edits | Bash |
+|------|-------|------------|------|
+| `default` | auto | prompt | prompt |
+| `accept-edits` | auto | auto | prompt |
+| `auto` | auto | auto | recognized development commands auto; other commands prompt |
+| `bypass` | auto | auto | auto |
+| `plan` | auto | denied | denied |
+
+In `accept-edits` mode, Agent, MCP, and other non-read-only tools still require
+explicit approval. An MCP tool whose server marks it `readOnlyHint: true` is
+treated as read-only and auto-allowed in every mode except `plan`; a server
+you chose to run is trusted to describe its own tools, and the hint changes
+only prompting, never containment. Sub-agents inherit the parent permission mode; because they
+are non-interactive, operations that would require another prompt are denied.
+
+`auto` mode also runs sandboxed development commands, including compound local
+workflows, without prompting. It allows sub-agents, which inherit the same
+policy. Destructive or privileged commands, remote and publishing actions,
+MCP tools, and future mutating tools still require approval. Use `bypass` only
+when every tool call should run without a prompt. Permission rules and
+filesystem containment continue to apply in every mode.
+
+### Permission rules
+
+Rules refine a mode per tool and per call. Each entry is a tool name, or a
+tool name with a glob matched against the call's subject: the command for
+Bash, the path for Read, Write, and Edit, the path or pattern for Glob and
+Grep, the URL for WebFetch, the prompt for Agent. `*` matches every tool.
+
+```toml
+[permissions]
+allow = ["Bash(cargo *)", "Bash(git status)", "Edit(src/**)"]
+deny  = ["Bash(sudo *)", "Bash(rm -rf *)", "Write(.git/**)"]
+ask   = ["Edit(Cargo.toml)", "Read(.env*)"]
+```
+
+Evaluation order for each call:
+
+1. `deny` rules always win, even in `bypass` mode and over a session
+   "always allow".
+2. A session "always allow" from an earlier prompt.
+3. `ask` rules force a prompt where the mode would auto-allow.
+4. `allow` rules skip the prompt the mode would show. They never override
+   `plan` mode's write denial.
+5. Otherwise the mode decides.
+
+A project `.claux.toml` may add `deny` and `ask` rules without trust. It may
+only add `allow` rules when the project is trusted. A malformed rule is a
+configuration error, so a typo in a deny rule cannot be silently skipped.
+Sub-agents inherit the parent's rules.
+
+## Agent evaluations
+
+Claux has fixture-driven behavioral evaluations for complete multi-round turns,
+including real tool execution in isolated workspaces, permissions, steering,
+file outcomes, recovery, and provider stream failures:
+
+```bash
+cargo test evals::deterministic_agent_contracts -- --nocapture
+```
+
+They require no credentials or network and run as a dedicated CI check.
+An ignored paid-provider smoke test and manual workflow are also available;
+see [`evals/README.md`](evals/README.md).
+
+## License
+
+MIT

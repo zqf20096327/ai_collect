@@ -1,0 +1,132 @@
+<p align="center">
+  <a href="https://github.com/coddy-project/coddy-agent/releases/latest"><img src="https://img.shields.io/github/v/release/coddy-project/coddy-agent?sort=semver&display_name=tag" alt="Latest release" /></a>
+  <a href="https://github.com/coddy-project/coddy-agent/actions/workflows/tests-on-pr.yaml"><img src="https://github.com/coddy-project/coddy-agent/actions/workflows/tests-on-pr.yaml/badge.svg" alt="Tests on PR" /></a>
+  <a href="https://github.com/coddy-project/coddy-agent/actions/workflows/security.yaml?query=branch%3Amain"><img src="https://github.com/coddy-project/coddy-agent/actions/workflows/security.yaml/badge.svg?branch=main" alt="Security scan" /></a>
+  <a href="go.mod"><img src="https://img.shields.io/github/go-mod/go-version/coddy-project/coddy-agent?label=go&logo=go&logoColor=white" alt="Go version" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/coddy-project/coddy-agent" alt="MIT License" /></a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/coddy-logo-wordmark.svg" alt="Coddy agent" height="156" />
+</p>
+
+<p align="center">
+  <strong>A general-purpose agent in one static Go binary.</strong><br />
+  A console TUI, an ACP server for editors, an OpenAI-compatible API with an embedded web UI, a Telegram gateway, a cron scheduler, a swarm relay for fleets of nodes and a remote mode, all over the same sessions.<br />
+  ReAct loop, filesystem and shell tools, MCP, rules, skills, subagents, hooks, background tasks, long-term memory, context compaction and project trust for what arrives with a checkout.
+</p>
+
+| Desktop (1920×1080) | Mobile (390×844) |
+|---|---|
+| ![Start screen](docs/assets/screenshot-fullhd-start.png) | ![Mobile start](docs/assets/screenshot-mobile-start.png) |
+
+![Console turn with a tool call](docs/assets/screenshot-console-chat.png)
+
+Coddy is a **harness**: the same agent core is reachable from a terminal through the console TUI, from an editor over the [Agent Client Protocol](https://agentclientprotocol.com/), from a browser or any OpenAI client over HTTP, from Telegram through the messenger gateway, and from cron through the scheduler. Every surface shares the sessions under `~/.coddy`, so a conversation started in a chat is live in the browser and can be continued in either. It runs in `scratch` and distroless images with a read-only root filesystem, needs no runtime, and is built for fleets of containers as much as for one laptop.
+
+## Install
+
+```bash
+curl -fsSL https://coddy.dev/install.sh | bash
+```
+
+```powershell
+irm https://coddy.dev/install.ps1 | iex
+```
+
+The installer puts `coddy` on `PATH`, creates `~/.coddy/config.yaml` from the release `config.example.yaml` when it is missing and, on Linux and macOS, installs the man page and the shell completions. Every release also publishes `.deb` and `.rpm` packages, a Homebrew cask in the tap [coddy-project/homebrew-coddy-agent](https://github.com/coddy-project/homebrew-coddy-agent), archives for Linux, macOS, Windows and [Android under Termux](docs/getting-started/android.md), and the image `ghcr.io/coddy-project/coddy-agent` for `docker compose up -d`. The packages and the cask recommend tmux, for a console session that outlives the terminal, without installing it. Details for each route are in [Install](docs/getting-started/install.md) and [Docker](docs/getting-started/docker.md); building from source is `make build TAGS="http ui scheduler memory cli gateway swarm metrics"` after `git clone`, see [Build from source](docs/contributing/build.md).
+
+On macOS, Homebrew installs it from Coddy's own tap and `brew upgrade` follows the releases:
+
+```bash
+brew install coddy-project/coddy-agent/coddy
+```
+
+Then give it a model. Put a provider key into `~/.coddy/config.yaml`, or export `OPENAI_API_KEY` and let the defaults pick it up:
+
+```yaml
+providers:
+  - name: openai
+    type: openai
+    api_key: "${OPENAI_API_KEY}"
+
+models:
+  - model: "openai/gpt-6.1-sol"
+    max_tokens: 1050000
+    reasoning_default: high
+
+agent:
+  model: "openai/gpt-6.1-sol"
+```
+
+`coddy -t` checks the file and `coddy --dry-run` probes what it points at. Anthropic, NeuralDeep, ChatGPT sign-in through the Codex backend, a Devin account signed in through the browser ([Devin](docs/features/devin.md)), Ollama, llama.cpp and any other OpenAI-compatible server are covered in [Configuration](docs/getting-started/configuration.md). The first five minutes on every surface are in [Quickstart](docs/getting-started/quickstart.md); upgrades are `coddy update -y`, which ends with the release notes of every version it skipped over ([Update](docs/getting-started/update.md)).
+
+## Surfaces
+
+| Surface | Start it | What you get | Guide |
+|---|---|---|---|
+| Console | `coddy` | A terminal chat with streamed tool calls, permission prompts, a model picker, `!!` for a local shell, `coddy -c` to continue, `coddy -p "..."` for one-shot answers, `git diff | coddy -p "review"` and `coddy -i brief.md` for piped data and long prompts | [Console](docs/surfaces/console.md), [video](docs/assets/video/console.mp4) |
+| Web UI and HTTP API | `coddy serve` | The embedded single-page app on `http://127.0.0.1:12345/`, OpenAI-compatible `/v1/*` endpoints and the `/coddy` REST surface, Swagger at `/docs/` | [Web UI](docs/surfaces/web-ui.md), [HTTP API](docs/reference/http-api.md), [video](docs/assets/video/web-ui.mp4) |
+| Editors | `coddy acp` | Zed, VS Code, Obsidian and scripts as ACP clients, with Coddy's modes, models, permissions and skills in the editor's composer | [Editors](docs/surfaces/editors.md), [Zed video](docs/assets/video/zed-acp.mp4), [VS Code video](docs/assets/video/vscode-acp.mp4) |
+| Telegram | `coddy serve` with `gateways.telegram.enable` | A bot with per-user sessions, access levels and group isolation; the same chat is live in the web UI | [Telegram gateway](docs/surfaces/gateway.md) |
+| Pachca | `coddy serve` with `gateways.pachca.enable` | A Pachca (Пачка) integration bot for direct chats, groups and threads; reads its events history, so no public address is needed | [Pachca gateway](docs/surfaces/pachca.md) |
+| Scheduler | `coddy serve` with `scheduler.enable` | Cron jobs as Markdown files, each run a session of its own | [Scheduler](docs/operate/scheduler.md) |
+| Swarm | `coddy serve` with `swarm.enable` | A relay that lists and reaches many Coddy nodes, including ones that can only dial out | [Swarm](docs/operate/swarm.md), [video](docs/assets/video/swarm.mp4) |
+| Metrics | `coddy serve` with `metrics.enable` | A Prometheus exporter on a port of its own: provider calls and tokens, turns, background tasks and the session disk, with alert rules for the common failures | [Monitoring](docs/operate/monitoring.md) |
+| Remote | `coddy --remote host:port` | The console, an editor or the browser driving a `coddy serve` on another machine | [Remote mode](docs/operate/remote.md) |
+
+`coddy serve` runs whatever `config.yaml` enables in one process. On Linux, `coddy serve install` runs it as a systemd user service of your account, working in `~/Coddy` (`coddy serve uninstall` removes it); elsewhere `coddy serve --daemon` keeps it running in the background with `status`, `stop` and `restart` ([coddy serve and the daemon](docs/operate/serve.md)).
+
+## What it does
+
+- **Three operating modes**: `agent` with every tool, `plan` for planning and text files, `ask` for read-only research, switched from any surface ([Operating modes](docs/features/modes.md)).
+- **Rules and project files**: the first of `.coddy/rules`, `.agents/rules`, `.cursor/rules`, `.claude/rules` and `.codex/rules` that holds rules, so a mirror kept for another agent is not loaded twice, and nested `AGENTS.md` are picked up as the agent works without moving the cached system prompt; your own `~/.coddy/AGENTS.md`, `~/.coddy/DESIGN.md` and `~/.coddy/rules` apply in every workspace ([Rules and instructions](docs/features/rules.md)).
+- **Skills**: `SKILL.md` packs become slash commands. Six ship inside the binary and are there on the first run - `/rpa-init`, `/rpa-feat`, `/rpa-bugfix`, `/rpa-gen-rules`, `/configure-coddy` and `/crossreview` (a quorum code review over external code-agent CLIs and internal reviewers) - and more install from skills.sh, the skillsbd registry or any repository ([Skills](docs/features/skills.md)).
+- **Subagents**: `spawn_agent` delegates a bounded task to a child with its own context and session, tools and permissions only narrowing; a child rides out a dropped provider connection, and `resume` continues a run that stopped short in its own session instead of starting over ([Subagents](docs/features/subagents.md)).
+- **Session goal**: `/goal <objective>` keeps the agent working until a second model, judging the tool results rather than the agent's claims, finds the objective met and a read-only verifier confirms it in the files; a watchdog cuts stalled or looping turns, and the goal shows in the web UI and the console ([Session goal and supervisor](docs/features/session-supervisor.md)).
+- **Feature worktrees**: `worktree_create` fetches the default branch from `origin`, creates a feature worktree and moves the active session into it; the web composer and History show its branch under the main project ([Git worktrees](docs/features/worktrees.md)).
+- **Hooks**: your own commands at every lifecycle point, in Claude Code's `hooks.json` shape, able to deny, approve or rewrite a tool call ([Hooks](docs/features/hooks.md)).
+- **MCP servers** over stdio, streamable HTTP and SSE, from the global and project `mcp.json` files or the editor, with a trust gate for what arrives with a checkout; connected all at once and, in the console, after the first frame ([MCP servers](docs/features/mcp.md)).
+- **Mentions**: `@` points at a file anywhere on disk, a line range, a folder, another session, a rule, a subagent or a web page, with the same fuzzy completion in the console and the browser; each is read once into the message that names it, so the provider's prompt cache holds ([Mentions](docs/features/mentions.md)).
+- **Documentation built in**: this documentation ships inside the binary - a reader in the web UI, F1 in the console, `coddy docs` in the shell - searched offline, and the agent looks itself up with its own `coddy_docs_search` and `coddy_docs_read` tools or a `@coddy:<page>` mention ([Built-in documentation](docs/features/built-in-docs.md)).
+- **Message queue**: steer a running turn at its next step or queue a separate turn after it, with images attached; every browser and console viewing the session sees the same queue ([Message queue](docs/features/message-queue.md)).
+- **Background tasks**: detached commands and subagent runs that wake the agent when they finish, in the Tasks panel of the web UI and `/tasks` in the console ([Background tasks](docs/features/background-tasks.md)).
+- **Preview server**: "run this on a web server, I want to try it myself" - the agent serves the project directory on a free localhost port and hands you the link, no `python -m http.server` needed ([Preview server](docs/features/preview-server.md)).
+- **Context compaction and long-term memory**: `/compact` and automatic summarisation at a threshold, result eviction with `keep_result`, a memory subagent that runs per turn in the background, recalls what the notes hold and saves what you ask it to keep ([Compaction](docs/features/compaction.md), [Memory](docs/features/memory.md)).
+- **Self-configuration**: the agent edits its own YAML through staged `config_*` tools; nothing lands until you approve the commit ([config.yaml reference](docs/reference/config.md)).
+- **Sessions everywhere**: bundles on disk, resume from any surface, history rewind on message edit, `/export` to Markdown, HTML or JSON ([Sessions](docs/features/sessions.md), [Session export](docs/features/session-export.md)).
+- **Any model**: OpenAI, Anthropic, NeuralDeep, ChatGPT through Codex, the models of a Devin account ([Devin](docs/features/devin.md)), Ollama, llama.cpp, vLLM and every OpenAI-compatible API, with reasoning levels and multimodal attachments per model and retries that honour `Retry-After` ([Configuration](docs/getting-started/configuration.md)).
+- **Usage and limits**: the quota behind the current model in the console footer and in the web UI for providers that publish one (NeuralDeep, Codex and Devin today), and a turn that hits a limit can wait for the reset and resume by itself ([Console](docs/surfaces/console.md), [config.yaml reference](docs/reference/config.md)).
+- **Config check, dry run and hot reload**: `coddy -t` validates `config.yaml` against the embedded schema with `file:line:col` and a fix line, `--dry-run` probes paths, providers and models, ports, MCP servers, the Telegram token, remotes and swarm joins before anything starts, and a running `coddy serve` picks up an edited file without a restart ([Configuration](docs/getting-started/configuration.md), [coddy serve](docs/operate/serve.md)).
+- **Fleets**: a swarm relay lists and reaches many nodes, mounts their sessions into one list, routes across rings and pulls in nodes that can only dial out through a reverse tunnel; `--remote` drives a `coddy serve` on another machine from the console, an editor or the browser ([Swarm](docs/operate/swarm.md), [Remote mode](docs/operate/remote.md)).
+- **In the browser**: seven themes, English and Russian, `@` mentions and multimodal attachments in the composer, a History grouped by folder with tags, pins and an archive, a plan document card, a Tasks panel, the documentation reader, a scheduler editor and a swarm map with the topology; it installs as an app and notifies you when the agent finishes or waits for you ([Web UI](docs/surfaces/web-ui.md)).
+
+- **Closed when it is on a network**: a bearer token gates the API for clients, and an optional password sign-in gates the browser - `coddy serve set-password`, or `CODDY_HTTP_USER` / `CODDY_HTTP_PASSWORD` in `~/.coddy/.env` - so a `coddy serve` on `0.0.0.0` is not readable by whoever finds the port ([Remote mode](docs/operate/remote.md#the-sign-in-form), [Security and trust](docs/operate/security.md)).
+
+Project trust is one decision for MCP servers, hooks and subagents that arrive with a repository: nothing from a checkout runs until you approve that exact file ([Security and trust](docs/operate/security.md)).
+
+## Documentation
+
+| Goal | Start here |
+|---|---|
+| Install and run it for the first time | [Quickstart](docs/getting-started/quickstart.md), [Install](docs/getting-started/install.md) |
+| Read this documentation offline, from the app, the console or the shell | [Built-in documentation](docs/features/built-in-docs.md) |
+| Give it a model or check a config file | [Configuration](docs/getting-started/configuration.md), [config.yaml reference](docs/reference/config.md) |
+| Use it from a terminal, a browser, an editor or Telegram | [Console](docs/surfaces/console.md), [Web UI](docs/surfaces/web-ui.md), [Editors](docs/surfaces/editors.md), [Telegram gateway](docs/surfaces/gateway.md) |
+| Run it as a service or reach it from elsewhere | [coddy serve](docs/operate/serve.md), [Remote mode](docs/operate/remote.md), [Swarm](docs/operate/swarm.md), [Scheduler](docs/operate/scheduler.md) |
+| Bound what it may execute | [Security and trust](docs/operate/security.md), [Operating modes](docs/features/modes.md) |
+| Teach it your project | [Rules](docs/features/rules.md), [Skills](docs/features/skills.md), [Subagents](docs/features/subagents.md), [Hooks](docs/features/hooks.md), [MCP servers](docs/features/mcp.md) |
+| Look something up | [CLI reference](docs/reference/cli.md), [Environment variables](docs/reference/environment-variables.md), [Slash commands](docs/reference/slash-commands.md), [Tools](docs/reference/tools.md), [HTTP API](docs/reference/http-api.md), [ACP protocol](docs/reference/acp-protocol.md) |
+| Fix something | [Troubleshooting](docs/getting-started/troubleshooting.md), [Changelog](docs/getting-started/changelog.md) |
+| Combine features for a task | [Tutorials](docs/tutorials/coddy-in-ci.md), the swarm ones included: [a relay and its nodes](docs/tutorials/swarm-relay-and-nodes.md), [a chain of relays](docs/tutorials/swarm-multi-hop.md), [working with remote nodes](docs/tutorials/swarm-remote-nodes.md), [Android phones as nodes](docs/tutorials/swarm-android-nodes.md) |
+| Change Coddy itself | [Contributing](CONTRIBUTING.md), [Architecture](docs/contributing/architecture.md), [AGENTS.md](AGENTS.md), [DESIGN.md](DESIGN.md) |
+
+The whole map is [docs/README.md](docs/README.md). Agents that read documentation get the same pages as <https://coddy.dev/llms.txt> and <https://coddy.dev/llms-full.txt>, and the config file carries a JSON Schema at <https://coddy.dev/config.schema.json> for editor validation. How Coddy compares with other agent harnesses is on [coddy.dev/compare](https://coddy.dev/compare/).
+
+## Contributing
+
+Bug reports and pull requests are welcome at [github.com/coddy-project/coddy-agent](https://github.com/coddy-project/coddy-agent). [CONTRIBUTING.md](CONTRIBUTING.md) covers the development environment, the test runs and what a change must carry; [AGENTS.md](AGENTS.md) is the map coding agents read before they touch the tree.
+
+## License
+
+MIT, see [LICENSE](LICENSE).

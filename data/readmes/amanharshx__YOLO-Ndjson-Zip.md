@@ -1,0 +1,250 @@
+<div align="center">
+
+# YOLO NDJSON Converter
+
+**Convert YOLO NDJSON annotation exports to popular ML formats - fast, private, and cross-platform.**
+
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platforms](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg)](#installation)
+[![Homebrew](https://img.shields.io/badge/Homebrew-tap-FBB040?logo=homebrew)](https://github.com/amanharshx/homebrew-tap)
+[![Built with Tauri](https://img.shields.io/badge/Built%20with-Tauri%20v2-ffc131.svg)](https://v2.tauri.app)
+[![Rust](https://img.shields.io/badge/Rust-%23dea584.svg?logo=rust&logoColor=black)](#tech-stack)
+[![TypeScript](https://img.shields.io/badge/TypeScript-%23007ACC.svg?logo=typescript&logoColor=white)](#tech-stack)
+
+[![CI](https://github.com/amanharshx/yolo-ndjson-zip/actions/workflows/ci.yml/badge.svg)](https://github.com/amanharshx/yolo-ndjson-zip/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/amanharshx/yolo-ndjson-zip/graph/badge.svg)](https://codecov.io/gh/amanharshx/yolo-ndjson-zip)
+[![GitHub Release](https://img.shields.io/github/v/release/amanharshx/yolo-ndjson-zip)](https://github.com/amanharshx/yolo-ndjson-zip/releases)
+
+<br>
+
+<img src="assets/readme-demo.gif" width="720" alt="YOLO NDJSON Converter demo">
+
+</div>
+<br>
+
+> Select your Ultralytics NDJSON export, pick an output format, and get a ready-to-train ZIP - everything runs locally, nothing leaves your machine.
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Supported Formats](#supported-formats)
+- [Installation](#installation)
+- [NDJSON Input Format](#ndjson-input-format)
+- [Roadmap](#roadmap)
+- [Tech Stack](#tech-stack)
+- [Releases & Versioning](#releases--versioning)
+- [Update Security](#update-security)
+- [Contributing](#contributing)
+- [Security](#security)
+- [License](#license)
+
+---
+
+[**YOLO NDJSON Converter**](https://yolondjson.zip) is a desktop app that converts [Ultralytics](https://www.ultralytics.com/) YOLO's NDJSON annotation exports into ready-to-use datasets for YOLO, COCO, Pascal VOC, and other ML formats. Select your file, pick a format, and get a ZIP with images, labels, and config files.
+
+## Features
+
+- **12 Output Formats** - YOLO26 through Darknet, COCO JSON, Pascal VOC, TFRecord, CreateML
+- **7 Task Types** - Detection, Segmentation, Semantic Segmentation, Pose Estimation, Classification, OBB, Depth Estimation
+- **Parallel Downloads** - 100 concurrent connections for fast image fetching
+- **Privacy-First** - Everything runs locally; your data never leaves your device
+- **Cross-Platform** - macOS, Windows, and Linux
+- **~5 MB Binary** - Tauri + Rust keeps the app tiny compared to Electron alternatives
+
+---
+
+## Supported Formats
+
+| Format | Status | Compatible Tasks |
+|--------|:------:|------------------|
+| YOLO26 | ✅ | Detection, Segmentation, Semantic, Pose, Classification, OBB, Depth |
+| YOLOv12 | ✅ | Detection, Segmentation, Pose, Classification, OBB |
+| YOLO11 | ✅ | Detection, Segmentation, Pose, Classification, OBB |
+| YOLOv9 | ✅ | Detection, Segmentation |
+| YOLOv8 | ✅ | Detection, Segmentation, Pose, Classification, OBB |
+| YOLOv7 | ✅ | Detection |
+| YOLOv5 | ✅ | Detection, Segmentation, Classification |
+| YOLO Darknet | ✅ | Detection, Classification |
+| COCO JSON | ✅ | Detection, Segmentation, Semantic, Pose, OBB |
+| Pascal VOC XML | ✅ | Detection, Segmentation (boxes only), Semantic (boxes only), Classification |
+| CreateML JSON | 🔜 | Detection, Classification |
+| TFRecord | 🔜 | Detection |
+
+> **Note on Semantic Segmentation:** Semantic datasets are exported as **polygon segmentation labels** (identical in shape to instance-segmentation polygons). Only **YOLO26** trains them *as semantic* (omit `masks_dir` so the loader rasterizes polygons → dense masks). Other YOLO versions and COCO can still use the exported polygons as **instance-segmentation annotations**; Pascal VOC keeps only their bounding boxes.
+
+> **Note on Depth Estimation:** Depth datasets export to YOLO only, as RGB images in `{split}/images/` and their 16-bit depth PNGs in `{split}/depth/`. `data.yaml` declares `task: depth` and the dataset's `depth_scale` (default 1000). An image whose depth map fails to download is left out with it.
+
+> **Note on unsupported combinations:** A task the chosen format can't represent (for example COCO + Classification or YOLO Darknet + Segmentation) is rejected before any image downloads, and the error lists the formats that support it.
+
+---
+
+## Installation
+
+### Quick Install
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://yolondjson.zip/install.ps1 | iex
+```
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://yolondjson.zip/install.sh | sh
+```
+
+**macOS (Homebrew):**
+
+```bash
+brew tap amanharshx/tap
+brew install --cask yolo-ndjson-converter
+```
+
+Or download the latest release directly from [GitHub Releases](https://github.com/amanharshx/yolo-ndjson-zip/releases).
+
+### Troubleshooting
+
+> **Note:** The app is not yet code-signed (Apple Developer account costs $99/year, Windows EV certificate ~$300/year). I'm planning to get these when I can afford them. For now, you may see security warnings:
+
+<details>
+<summary><b>macOS</b> — "App is damaged and can't be opened"</summary>
+
+Run this command in Terminal after installing:
+```bash
+xattr -cr "/Applications/YOLO NDJSON Converter.app"
+```
+Then open the app again.
+
+</details>
+
+<details>
+<summary><b>Windows</b> — "Windows protected your PC" (SmartScreen)</summary>
+
+1. Click **"More info"**
+2. Click **"Run anyway"**
+
+Or: Right-click the `.exe` → **Properties** → Check **"Unblock"** → **Apply**
+
+</details>
+
+### Auto Updates
+
+The app supports automatic updates.
+
+When a new version is released:
+
+1. Open the app
+2. Click **Updates** (top right)
+3. If a new version is available, click **Update**
+4. Restart the app to finish installing
+
+Updates are downloaded securely from GitHub Releases and verified using cryptographic signatures.
+
+### Build from Source
+
+**Prerequisites:** [Rust](https://rustup.rs/), [Bun](https://bun.sh/), [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/)
+
+```bash
+git clone https://github.com/amanharshx/yolo-ndjson-zip.git
+cd yolo-ndjson-zip
+bun install
+bun run tauri dev        # development
+bun run tauri build      # local production build
+```
+
+> **Note:** Local builds are unsigned and intended for development only. Official signed builds are generated automatically via GitHub Releases.
+>
+> **Note:** The backend Sentry DSN (if set) is compiled in at build time via `SENTRY_DSN_BACKEND`.
+
+### Tests
+
+```bash
+# Rust unit tests
+cd src-tauri && cargo test
+
+# Frontend unit tests
+bun run test
+```
+
+---
+
+## NDJSON Input Format
+
+The app expects newline-delimited JSON with this structure:
+
+```jsonl
+{"type":"dataset","task":"detect","name":"My Dataset","class_names":{"0":"cat","1":"dog"}}
+{"type":"image","file":"img1.jpg","url":"https://...","width":640,"height":480,"split":"train","annotations":{"bboxes":[[0,0.5,0.5,0.2,0.3]]}}
+{"type":"image","file":"img2.jpg","url":"https://...","width":640,"height":480,"split":"valid","annotations":{"bboxes":[[1,0.3,0.4,0.1,0.2]]}}
+```
+
+Pose rows use `[class_id, cx, cy, width, height, keypoints...]`. Dataset records may include
+`"kpt_shape":[number_of_keypoints, 2|3]`. Add `kpt_shape` when a 2D keypoint payload length is divisible
+by both 2 and 3, such as hand-21 or dog-18, because its dimensions cannot be inferred safely.
+
+---
+
+## Roadmap
+
+### Export Formats
+
+- [x] YOLO (YOLOv5 → YOLO26)
+- [x] COCO JSON
+- [x] Pascal VOC XML
+- [ ] CreateML JSON *(coming soon)*
+- [ ] TFRecord *(coming soon)*
+
+### Task Types
+
+- [x] Detection
+- [x] Segmentation
+- [x] Semantic Segmentation
+- [x] Pose Estimation
+- [x] Classification
+- [x] OBB (Oriented Bounding Box)
+- [x] Depth Estimation
+
+---
+
+## Tech Stack
+
+- **Frontend** - React 19 + TypeScript, Tailwind CSS, Vite
+- **Backend** - Rust + Tauri v2
+- **Package Manager** - Bun
+
+---
+
+## Releases & Versioning
+
+This project uses automated releases.
+
+- Versions follow semantic versioning (`MAJOR.MINOR.PATCH`)
+- Merging changes into `main` automatically prepares the next release
+- Releases are built and published via GitHub Actions
+
+All official binaries are available on the [GitHub Releases](https://github.com/amanharshx/yolo-ndjson-zip/releases) page.
+
+---
+
+## Update Security
+
+All releases are cryptographically signed.
+
+The built-in updater verifies signatures before installing updates to ensure authenticity and prevent tampering.
+
+---
+
+## Contributing
+
+Contributions are welcome! Whether it's a bug fix, new format, or documentation improvement - every bit helps. Please read the [Contributing Guide](CONTRIBUTING.md) before opening a pull request.
+
+## Security
+
+To report a security vulnerability, please see [SECURITY.md](SECURITY.md).
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

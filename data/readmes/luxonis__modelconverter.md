@@ -1,0 +1,863 @@
+# ModelConverter - Compilation Library
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![PyPI](https://img.shields.io/pypi/v/modelconv?label=pypi%20package)](https://pypi.org/project/modelconv/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/modelconv)](https://pypi.org/project/modelconv/)
+
+[![CI](https://github.com/luxonis/modelconverter/actions/workflows/ci.yaml/badge.svg)](https://github.com/luxonis/modelconverter/actions/workflows/ci.yaml)
+[![Publish](https://github.com/luxonis/modelconverter/actions/workflows/publish.yaml/badge.svg)](https://github.com/luxonis/modelconverter/actions/workflows/publish.yaml)
+[![codecov](https://codecov.io/gh/luxonis/modelconverter/graph/badge.svg?token=EIPEE2RJ1F)](https://codecov.io/gh/luxonis/modelconverter)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+Convert your **ONNX**, **OpenVINO IR** and **TensorFlow Lite** models to a format compatible with any generation of Luxonis camera using the **Model Compilation Library**.
+
+`ModelConverter` is in an experimental public beta stage. Some parts might change in the future.
+
+For complete CLI and Python API documentation, see the
+[ModelConverter documentation and API reference](https://docs.luxonis.com/software-v3/ai-inference/conversion/rvc-conversion/offline/modelconverter/modelconverter-api-reference/).
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [YAML Configuration File](#yaml-configuration-file)
+  - [NN Archive Configuration File](#nn-archive-configuration-file)
+- [Online Usage](#online-usage)
+- [Local Usage](#local-usage)
+  - [Official Docker Images](#official-docker-images)
+  - [Build Instructions](#build-instructions)
+    - [Prerequisites](#prerequisites)
+    - [Building the Images](#building-the-images)
+    - [Local Image Tagging and CLI Usage](#local-image-tagging-and-cli-usage)
+    - [GPU Support](#gpu-support)
+  - [Inputs, Outputs and the Cache](#inputs-outputs-and-the-cache)
+    - [Managing the cache](#managing-the-cache)
+    - [Migrating from `shared_with_container`](#migrating-from-shared_with_container)
+  - [Running ModelConverter](#running-modelconverter)
+    - [Available CLI Options](#available-cli-options)
+    - [Handling Large ONNX Files (Exceeding 2GB)](#handling-large-onnx-files-exceeding-2gb)
+    - [Examples](#examples)
+- [Multi-Stage Conversion](#multi-stage-conversion)
+- [Interactive Mode](#interactive-mode)
+- [Calibration Data](#calibration-data)
+- [Inference](#inference)
+  - [Inference Example](#inference-example)
+- [Benchmarking](#benchmarking)
+- [[RVC4] DLC model analysis](#rvc4-dlc-model-analysis)
+
+## Installation
+
+The easiest way to use ModelConverter is to use the `modelconverter` CLI.
+The CLI is available on PyPI and can be installed using `pip`.
+
+```bash
+pip install modelconv
+```
+
+Run `modelconverter --help` to see the available commands and options.
+
+## Configuration
+
+There are two main ways to configure the conversion process:
+
+1. **NN Archive**:
+   You can use an [NN Archive](https://docs.luxonis.com/software-v3/ai-inference/nn-archive/#NN%20Archive) as input. An NN Archive includes a model in one of the supported formats—ONNX (.onnx), OpenVINO IR (.xml and .bin), or TensorFlow Lite (.tflite)—alongside a `config.json` file. The config.json file follows a specific configuration format as described under the `Configuration` section.
+2. **YAML Configuration File (Legacy)**:
+   An alternative way to configure the conversion is through a YAML configuration file. For reference, you can check [defaults.yaml](configs/defaults.yaml) and other examples located in the [configs](configs) directory.
+
+**Modifying Settings with Command-Line Arguments**:
+In addition to these two configuration methods, you have the flexibility to override specific settings directly via command-line arguments. By supplying `key-value` pairs in the CLI, you can adjust particular settings without explicitly altering the config files (YAML or NN Archive). For further details, refer to the [Examples](#examples) section.
+
+In the conversion process, you have options to control the color encoding format in both the YAML configuration file and the NN Archive configuration. Here’s a breakdown of each available flag:
+
+### YAML Configuration File
+
+The `encoding` flag in the YAML configuration file specifies the format that the **ONNX model expects** (`from`), and the format that **DepthAI** will use at runtime (`to`). It allows you to specify color encoding as follows:
+
+- **Single-Value `encoding`**:
+  Setting encoding to a single value, such as *"RGB"*, *"BGR"*, *"GRAY"*, or *"NONE"*, will automatically apply this setting to both `encoding.from` and `encoding.to`. For example, `encoding: RGB` sets both `encoding.from` and `encoding.to` to *"RGB"* internally.
+
+- **Multi-Value `encoding.from` and `encoding.to`**:
+  Alternatively, you can explicitly set `encoding.from` and `encoding.to` to different values. For example:
+
+  ```yaml
+  encoding:
+    from: RGB
+    to: BGR
+  ```
+
+  This configuration indicates that the **ONNX model** expects inputs in **RGB format**, and the converter will transform the input data to **BGR format** for **DepthAI** execution.
+
+> [!NOTE]
+> When encoding is omitted, inputs with a known batched image shape and layout (`NCHW` or `NHWC`, with one or three channels) receive image defaults: `RGB` to `BGR`, or `GRAY` for a single channel. Inputs with a known non-image shape or layout default to `NONE`. A batchless `CHW` or `HWC` input is ambiguous and is therefore treated as raw by default; set `encoding` explicitly if it represents an image. When shape or layout metadata is unavailable, the legacy `RGB` to `BGR` default is retained.
+
+> [!NOTE]
+> Certain options can be set **globally**, applying to all inputs of the model, or **per input**. If specified per input, these settings will override the global configuration for that input alone. The options that support this flexibility include `scale_values`, `mean_values`, `encoding`, `data_type`, `shape`, and `layout`.
+
+> [!NOTE]
+> A single `mean_values` or `scale_values` value is broadcast to every channel. A list must contain either one value to broadcast or one value per channel, and scale values must be non-zero. ONNX preprocessing embedding currently supports `NCHW` and `NHWC` inputs.
+
+> [!IMPORTANT]
+> Use RGB, BGR, or GRAY encoding only when the input channels represent an image. Packed tensors, feature maps, and other non-image inputs—including tensors with nonstandard channel counts—must use `encoding: NONE`, which makes them raw tensor inputs rather than DepthAI image inputs.
+
+### NN Archive Configuration File
+
+In the NN Archive configuration, there are two flags related to color encoding control:
+
+- **`dai_type`**:
+  Provides comprehensive control over the input type, including both **color encoding** (e.g., RGB, BGR, GRAY) and **memory layout** (planar `NCHW` vs. interleaved `NHWC`). The value of this flag should always reflect what the original ONNX model expects (not what DepthAI will generate at runtime). \
+  For example:
+
+  - If the ONNX model was trained with RGB planar inputs, use:
+
+    ```json
+    "dai_type": "RGB888p"
+    ```
+
+  - If the ONNX model was trained with BGR interleaved inputs, use:
+
+    ```json
+    "dai_type": "BGR888i"
+    ```
+
+> [!NOTE]
+> You can check the `enum Type` in the [DepthAI API documentation](https://docs.luxonis.com/software-v3/depthai/depthai-components/messages/img_frame) for all possible values of `dai_type`.
+
+- **`reverse_channels` (Deprecated)**:
+  A simpler flag controlling only channel order:
+
+  - `True`: Assumes the ONNX model expects RGB inputs. Since DepthAI always generates BGR images, the converter will insert extra ONNX nodes to swap the channels.
+  - `False`: Assumes the ONNX model expects BGR inputs. No channel reordering is performed.
+
+  This flag is deprecated and will be replaced by the `dai_type` flag in future versions.
+
+- **`interleaved_to_planar` (Deprecated)**:
+  A legacy NN Archive flag that described whether input data was interleaved (`NHWC`) or planar (`NCHW`). ModelConverter preserves the archive's declared `layout`; use `dai_type` for current archives.
+
+  The flag is retained for compatibility and emits a deprecation warning, but it does not override `layout`.
+
+  This flag is deprecated and will be replaced by the `dai_type` flag in future versions.
+
+> [!NOTE]
+> If neither `dai_type` nor `reverse_channels` are provided, the input to the model is considered to be *"RGB"*.
+
+> [!NOTE]
+> If both `dai_type` and `reverse_channels` are provided, the converter will give priority to `dai_type`.
+
+> [!IMPORTANT]
+> Provide mean/scale values in the original color format used during model training (e.g., RGB or BGR). Any necessary channel permutation is handled internally—do not reorder values manually.
+
+## Online Usage
+
+You can run model conversion directly in the cloud using our [HubAI SDK](https://github.com/luxonis/hubai-sdk), either with Python or using the CLI.
+
+## Local Usage
+
+If you prefer not to share your models with the cloud, you can run the conversion locally.
+
+### Official Docker Images
+
+We provide official Docker images for `RVC2`, `RVC3` and `RVC4` platforms.
+Images for Hailo need to be built manually, as described in the [Build Instructions](#build-instructions) section.
+
+The following images are available on [Luxonis GitHub Container Registry](https://github.com/orgs/luxonis/packages?tab=packages&q=modelconverter):
+
+**RVC2**
+
+- `ghcr.io/luxonis/modelconverter-rvc2:2021.4.0-latest`
+- `ghcr.io/luxonis/modelconverter-rvc2:2022.3.0-latest`
+
+**RVC3**
+
+- `ghcr.io/luxonis/modelconverter-rvc3:2022.3.0-latest`
+
+**RVC4**
+
+- `ghcr.io/luxonis/modelconverter-rvc4:2.32.6-latest`
+- `ghcr.io/luxonis/modelconverter-rvc4:2.41.0-latest`
+
+Using these prebuilt official images is the recommended way to get started with local conversions. Running a command like the one below will automatically download the latest versions of the default images:
+
+```bash
+modelconverter convert rvc4 --path <config_or_archive>
+```
+
+or if you want specific publicly available tool version:
+
+```bash
+modelconverter convert rvc4 --tool-version 2.41.0 --path <config_or_archive>
+```
+
+### Build Instructions
+
+> [!NOTE]
+> Build locally only when the [official Docker images](#official-docker-images) do not meet your requirements.
+
+#### Prerequisites
+
+In local mode, `ModelConverter` requires `docker` to be installed on your system.
+It is recommended to use Ubuntu OS for the best compatibility.
+On Windows or MacOS, it is recommended to install `docker` using the [Docker Desktop](https://www.docker.com/products/docker-desktop).
+Otherwise, follow the installation instructions for your OS from the [official website](https://docs.docker.com/engine/install/).
+
+In order for the images to be built successfully, you need to download additional packages depending on the selected platform and the desired version of the underlying conversion tools.
+
+##### RVC2
+
+Requires `openvino-<version>.tar.gz` to be present in `docker/extra_packages/`.
+
+- Version `2022.3.0` archive can be downloaded from [here](https://drive.google.com/file/d/1IXtYi1Mwpsg3pr5cDXlEHdSUZlwJRTVP/view?usp=share_link).
+
+- Version `2021.4.0` archive can be downloaded from [here](https://storage.openvinotoolkit.org/repositories/openvino/packages/2021.4/l_openvino_toolkit_dev_ubuntu20_p_2021.4.582.tgz)
+
+You only need to rename the archive to either `openvino-2022.3.0.tar.gz` or `openvino-2021.4.0.tar.gz` and place it in the `docker/extra_packages` directory.
+
+##### RVC3
+
+Only the version `2022.3.0` of `OpenVino` is supported for `RVC3`. Follow the same instructions as for `RVC2` to use the correct archive.
+
+##### RVC4
+
+Requires `snpe-<version>.zip` archive to be present in `docker/extra_packages`. When building locally via the CLI, the tool will attempt to download the archive automatically if it is missing, but only when a **full SNPE build version** is provided (e.g. `2.41.0.251128`) and that version exists in the Qualcomm catalog. If you pass only the short version (e.g. `2.41.0`), the CLI expects either the image or archive to already be present. After the first download though you can use the local image with the short or long version.
+You can also download different SNPE versions manually from [here](https://softwarecenter.qualcomm.com/catalog/item/Qualcomm_AI_Runtime_Community). After downloading, rename the archive according to the version number and place it in the `docker/extra_packages` directory.
+
+Example (auto-download only on first build, afterwards available as `2.41.0.251128` or `2.41.0` ):
+
+```bash
+modelconverter convert rvc4 --tool-version 2.41.0.251128 --path <config_or_archive>
+```
+
+Example (short version, assumes archive or image already present):
+
+```bash
+# Place the archive ahead of time (or run the command above beforehand):
+# docker/extra_packages/snpe-2.41.0.zip
+modelconverter convert rvc4 --tool-version 2.41.0 --path <config_or_archive>
+```
+
+##### HAILO
+
+Requires `hailo_ai_sw_suite_<version>:1` docker image to be present on the system. You can obtain the image by following the instructions on [Hailo website](https://developer.hailo.ai/developer-zone/sw-downloads/).
+
+After you obtain the image, you need to rename it to `hailo_ai_sw_suite_<version>:1` using `docker tag <old_name> hailo_ai_sw_suite_<version>:1`.
+
+#### Building the Images
+
+This section is optional if you are using the `modelconverter` CLI, as it will automatically build the images for you.
+
+In other cases, navigate to the root directory of the repository and run the following command:
+
+```bash
+docker build -f docker/$PLATFORM/Dockerfile \
+             -t luxonis/modelconverter-$PLATFORM:<tool-version>-latest .
+```
+
+If you want to build the image with a different version of the underlying conversion tools than is the default one, you also need to pass the `--build-arg` flag with the desired version. For example, to build the `RVC2` image with `2021.4.0`, use:
+
+```bash
+docker build -f docker/rvc2/Dockerfile \
+             -t luxonis/modelconverter-rvc2:2021.4.0-latest \
+             --build-arg VERSION=2021.4.0 .
+```
+
+> [!NOTE]
+> When the `--build-arg` flag is not provided, the Dockerfiles (`docker/<platform>/Dockerfile`) fall back to their built-in default tool versions:
+>
+> - RVC2: `2022.3.0`
+> - RVC4: `2.41.0`
+
+#### Local Image Tagging and CLI Usage
+
+When using **locally built Docker images** with the `modelconverter` CLI, there are **two supported ways** to make sure the CLI uses the correct image. Both approaches are valid and can be chosen based on your workflow.
+By default, the CLI looks for images using the following tag pattern:
+
+- **RVC2**: `luxonis/modelconverter-rvc2:<tool-version>-latest`
+- **RVC4**: `luxonis/modelconverter-rvc4:<tool-version>-latest`
+
+Where `<tool-version>` is the value provided via the `--tool-version` CLI argument.
+
+If you build images with a custom tag (for example, `luxonis/modelconverter-rvc2:my-custom-tag`), the CLI will not detect them automatically and will instead try to pull the image with the default tag from the registry. You can still use custom-tagged images, but you must explicitly specify them using `--image/docker-image`, as described in Option 2 below.
+
+**Option 1: Version-Matched Image Tagging**
+
+In this approach, you tag your locally built images using the `<version>-latest` scheme so that they are automatically discovered by the CLI when `--tool-version` is provided.
+
+Example for RVC2 with OpenVINO `2021.4.0`:
+
+```bash
+docker build -f docker/rvc2/Dockerfile \
+  -t luxonis/modelconverter-rvc2:2021.4.0-latest \
+  --build-arg VERSION=2021.4.0 .
+```
+
+Then run the CLI with:
+
+```bash
+modelconverter convert rvc2 --tool-version 2021.4.0 --path <config_or_archive>
+```
+
+This option works well if you want your locally built images to behave exactly like the official images expected by the CLI.
+
+**Option 2: Explicit Image Selection via `--image/docker-image`**
+
+Alternatively, you can explicitly tell the CLI which Docker image to use via the `--image/docker-image` option.
+
+- `--image/docker-image` accepts the **full Docker image name**.
+- If the value **includes a tag** (for example `luxonis/modelconverter-rvc4:my-custom-tag`), it is used **exactly as provided**.
+- If the value **does not include a tag**, the CLI uses the image name as provided and appends a tag constructed using the existing logic based on the `--tool-version` (i.e. `<tool-version>-latest` or `<tool-version>-dev`).
+- When `--image/docker-image` is provided **with an explicit tag**, it takes precedence over `--tool-version`, which is ignored.
+
+This option removes the need to re-tag locally built images and is recommended when working with custom images or non-standard tagging schemes.
+
+Example using a fully specified image name:
+
+```bash
+modelconverter convert rvc4 \
+--image luxonis/modelconverter-rvc4:my-custom-tag \
+--path <config_or_archive>
+```
+
+Example letting the CLI construct the tag automatically:
+
+```bash
+# Resolves to: luxonis/modelconverter-rvc4:2.41.0-latest
+modelconverter convert rvc4 \
+--image luxonis/modelconverter-rvc4 \
+--tool-version 2.41.0 \
+--path <config_or_archive>
+```
+
+#### GPU Support
+
+To enable GPU acceleration for `hailo` conversion, install the [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+
+### Inputs, Outputs and the Cache
+
+You can pass models, config files, calibration data and NN archives to the CLI
+by **any path on your machine** (relative or absolute) — or by a remote URL
+(`s3://`, `gs://`, ...). There is no need to place files in a special directory.
+
+- **Inputs** you pass on the CLI are copied into a hidden, auto-managed cache
+  (`${XDG_CACHE_HOME:-~/.cache}/modelconverter`) so the container can read them.
+  Identical files are de-duplicated by content hash and reused across runs.
+- When you pass a **config file**, the local files it references internally
+  (model, calibration data, quantization script, encodings, `.bin`) are staged
+  alongside it. Relative references are resolved **relative to the config
+  file's directory**; absolute paths and remote URLs work from anywhere. Only
+  the files the config actually names are copied, never the directory it
+  happens to live in.
+- **Outputs** are written to an `output/` directory in your current working
+  directory, owned by you (not `root`):
+
+```txt
+output/
+└── <output_dir>/
+    ├── resnet18.onnx
+    ├── resnet18.dlc
+    ├── modelconverter.log
+    ├── config.yaml
+    ├── buildinfo.json
+    └── intermediate_outputs/
+        └── <intermediate files generated during the conversion>
+```
+
+The top-level config `name` names the conversion package.
+If omitted or null, it defaults to the archive basename (without its archive extension),
+unpacked directory name, model stem for a flat config, or explicit `stages` keys joined by dashes.
+
+NN Archives are named `<name>.<platform>.tar.xz`; `--to native` creates no
+archive. Both modes use the default output subfolder
+`<sanitized_name>_to_<platform>_<YYYY_MM_DD_HH_MM_SS>` (UTC).
+`--output-dir` overrides this directory independently of `name`, under
+`output/` when using Docker. An existing destination is replaced only if
+empty or marked as previous conversion output; other contents are refused.
+
+The resolved `name` also names an implicit single stage in a flat config.
+Explicit `stages` keys are preserved. Imported NN Archives use
+`model.metadata.name` for the main stage key, independently of the package name. Package naming
+does not rename model files, model metadata, or tensors.
+
+For example, converting `bundle.tar.xz` to RVC4 produces
+`bundle.rvc4.tar.xz` in `output/bundle_to_rvc4_<timestamp>/` by default.
+Without a name override, archive output directories use the archive basename,
+even when the model metadata has a different name.
+
+> [!NOTE]
+> The conversion runs inside the container, so the paths it logs are
+> container-side ones. `/app/output/<output_dir>` is `output/<output_dir>` on
+> your machine, and `/app/shared_with_container/...` is a staged input in the
+> cache.
+
+#### Managing the cache
+
+The cache holds staged inputs and downloaded remote files. Inspect or clear it
+with:
+
+```bash
+modelconverter cache info    # show cache location and disk usage
+modelconverter cache clean       # remove cache contents after confirmation
+modelconverter cache clean -y    # remove it non-interactively
+```
+
+Inputs are cached in full — directories included — and ModelConverter warns
+when a single one exceeds 1 GiB. When an input changes, the copy staged from
+it is replaced rather than kept alongside the new one.
+
+The cache is kept within a size budget, 50 GiB by default. Before each
+conversion, entries are evicted least-recently-used first until the cache fits
+again; nothing a running conversion is using is ever removed. Set
+`MODELCONVERTER_CACHE_MAX_SIZE` to change the budget (`20GiB`, `500M`, …) or
+to `0` to let the cache grow without limit:
+
+```bash
+MODELCONVERTER_CACHE_MAX_SIZE=20GiB modelconverter convert rvc4 --path config.yaml
+```
+
+#### Migrating from `shared_with_container`
+
+Earlier versions resolved CLI paths relative to `shared_with_container` in the
+current directory. ModelConverter now accepts normal filesystem paths and
+remote URLs. To migrate:
+
+- Update scripts and CI so paths previously relative to
+  `shared_with_container` point to the actual files. Relative paths start from
+  the current directory; absolute paths and remote URLs also work.
+- Relative paths inside config files now start from the config file's
+  directory. Configs stored beside their model and calibration data need no
+  changes.
+- Outputs now go to `output/<output_dir>` instead of
+  `shared_with_container/outputs/<output_dir>` and belong to the user running
+  ModelConverter.
+- Move any files you need out of `shared_with_container`, then delete the
+  directory. Files created by older versions may require `sudo` to remove.
+
+### Running ModelConverter
+
+You can run the built image either manually using the `docker run` command or using the `modelconverter` CLI.
+
+1. Set your credentials as environment variables (if required):
+
+   ```bash
+   export AWS_SECRET_ACCESS_KEY=<your_aws_secret_access_key>
+   export AWS_ACCESS_KEY_ID=<your_aws_access_key_id>
+   export AWS_S3_ENDPOINT_URL=<your_aws_s3_endpoint_url>
+   ```
+
+2. Create the mounted directories, unless you are using the `modelconverter` CLI
+   (which creates them for you):
+
+   ```bash
+   mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/modelconverter" output
+   ```
+
+   A rootful Docker daemon creates a missing bind-mount source itself, and it
+   creates it as `root`. The container hands both directories back to you on
+   exit, but creating them up front means they are yours from the start.
+
+3. Execute the conversion:
+
+- If using the `modelconverter` CLI (recommended — it handles staging inputs and
+  fixing output ownership for you):
+
+  ```bash
+  modelconverter convert <platform> --path <s3_url_or_path> [ config overrides ]
+  ```
+
+- If using Docker Compose:
+
+  ```bash
+  # Used by the entrypoint to preserve ownership with rootful Docker.
+  export HOST_UID=$(id -u) HOST_GID=$(id -g)
+  docker compose run <platform> convert <platform> ...
+  ```
+
+- If using the `docker run` command (mount the cache read-write and a local
+  `output` directory, and pass your identity so results are chowned back to you):
+
+  ```bash
+  docker run --rm -it \
+    -v ${XDG_CACHE_HOME:-$HOME/.cache}/modelconverter:/app/shared_with_container/ \
+    -v $(pwd)/output:/app/output/ \
+    -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_S3_ENDPOINT_URL=$AWS_S3_ENDPOINT_URL \
+    luxonis/modelconverter-<platform>:<tool-version>-latest \
+    convert <platform> \
+    --path <s3_url_or_path> [ config overrides ]
+  ```
+
+  > [!NOTE]
+  > With a raw `docker run`, only the cache and `output` directories are mounted,
+  > so files must be referenced by remote URL or already be inside the cache. The
+  > `modelconverter` CLI removes this limitation by copying local inputs into the
+  > cache for you.
+
+> [!IMPORTANT]
+> Do not run ModelConverter with `sudo`: its outputs will remain owned by
+> `root`. Give your user access to the Docker daemon, then run the CLI normally.
+
+#### Available CLI Options
+
+Below is a table of common command-line options available when using the `modelconverter convert` command:
+
+| Option                                             | Short | Type   | Description                                                                                                                                                |
+| -------------------------------------------------- | ----- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--path`                                           |       | PATH   | Path to the configuration file or NN Archive                                                                                                               |
+| `--to`                                             |       | CHOICE | Output format: `native` or `nn_archive`                                                                                                                    |
+| `--main-stage`                                     |       | TEXT   | Name of the stage with the main model                                                                                                                      |
+| `--tool-version`                                   |       | TEXT   | Version of the underlying conversion tools to use. Available options differ based on the platform (RVC2, RVC3, RVC4, HAILO)                                |
+| `--image/docker-image`                             |       | TEXT   | Full Docker image name to use. If a tag is included, it is used as-is and overrides `--tool-version`, otherwise, the tag is derived from `--tool-version`. |
+| `--archive-preprocess` / `--no-archive-preprocess` |       | FLAG   | For single-stage conversion, force preprocessing into NN Archive metadata instead of embedding it in the model; requires `--to nn_archive`                 |
+
+> [!NOTE]
+> This table is not exhaustive. For more detailed information about available options, run `modelconverter convert --help` in your command line interface. You can also check all the `[ config overrides ]` available at [defaults.yaml](configs/defaults.yaml).
+
+> [!NOTE]
+> By default, ModelConverter first tries to embed preprocessing in the model. For single-stage NN Archive output, valid preprocessing that cannot be embedded is moved to archive metadata and conversion is retried with a warning. This fallback is not supported for multi-stage conversions. Native output fails instead because it has nowhere to preserve that preprocessing.
+
+**RVC4 Quantization Mode**
+
+The `rvc4.quantization_mode` CLI option allows you to choose between different pre-defined quantization modes for RVC4 conversions. The available modes are:
+
+- `INT8_STANDARD`: Standard INT8 quantization **with calibration** (default), for optimal performance (FPS) and model size.
+- `INT8_ACCURACY_FOCUSED`: INT8 quantization **with calibration**. This mode utilizes more advanced quantization techniques that may improve accuracy without reducing performance or increasing the model size, depending on the model.
+- `INT8_INT16_MIXED`: Mixed INT8 and INT16 quantization **with calibration**. This mode uses 8-bit weights and 16-bit activations across all layers for improved numeric stability and accuracy at the cost of reduced performance (FPS) and increased model size.
+- `INT8_INT16_MIXED_ACCURACY_FOCUSED`: Mixed INT8 and INT16 quantization **with calibration**. This mode uses more advanced quantization techniques that may improve accuracy while using 8-bit weights and 16-bit activations across all layers, at the cost of reduced performance (FPS) and increased model size.
+- `INT16_STANDARD`: Standard INT16 quantization **with calibration**. This mode uses 16-bit weights and 16-bit activations across all layers.
+- `FP16_STANDARD`: FP16 quantization **without calibration**, for models that require higher accuracy and numeric stability, at the cost of performance (FPS) and increased model size.
+- `CUSTOM`: Custom quantization mode, where the user can specify more advanced options in the configuration file or via command-line arguments.
+
+> [!IMPORTANT]
+> When `rvc4.quantization_mode` is set to anything other than `CUSTOM`, the default settings for that mode will override any custom settings provided in the configuration file or via command-line arguments (via the `rvc4.snpe_onnx_to_dlc_args`, `rvc4.snpe_dlc_quant_args`, or `rvc4.snpe_dlc_graph_prepare_args` options).
+
+#### Handling Large ONNX Files (Exceeding 2GB)
+
+When working with ONNX models that exceed 2GB in size, the model data must be stored using ONNX's external data mechanism. This separates the model structure from the large weight data.
+
+For detailed instructions on creating ONNX models with external data, please refer to the [ONNX External Data documentation](https://onnx.ai/onnx/repo-docs/ExternalData.html).
+
+**Requirements for ModelConverter:**
+When using the ModelConverter with large ONNX models, the external data file **must** have the exact same name as the .onnx file, but with the `.onnx_data` suffix.
+For example:
+
+- Model file: `model.onnx`
+- External data file: `model.onnx_data`
+
+> [!IMPORTANT]
+> This naming convention is a **hard requirement** for the conversion process to work correctly.
+
+**NN Archive Requirements:**
+When providing an NN Archive as input to the converter:
+
+- Both the ONNX model file (`.onnx`) and its corresponding external data file (`.onnx_data`) must be included in the archive.
+- The naming convention described above must be maintained within the archive.
+
+#### Examples
+
+Use `resnet18.yaml` config, but override `calibration.path`:
+
+```bash
+modelconverter convert rvc4 --path configs/resnet18.yaml \
+                        calibration.path s3://path/to/calibration_data
+```
+
+Override inputs and outputs with command line arguments:
+
+```bash
+modelconverter convert rvc3 --path configs/resnet18.yaml \
+                        inputs.0.name input_1 \
+                        inputs.0.shape "[1,3,256,256]" \
+                        outputs.0.name output_0
+```
+
+Specify all options via the command line without a config file:
+
+```bash
+modelconverter convert rvc2 --path path/to/yolov6n.onnx \
+                        scale_values "[255,255,255]" \
+                        inputs.0.encoding.from RGB \
+                        inputs.0.encoding.to BGR \
+                        shape "[1,3,256,256]" \
+                        outputs.0.name out_0 \
+                        outputs.1.name out_1 \
+                        outputs.2.name out_2
+```
+
+> [!WARNING]
+> If you modify the default stages names (`stages.stage_name`) in the configuration file (`config.yaml`), you need to provide the full path to each stage in the command-line arguments. For instance, if a stage name is changed to `stage1`, use `stages.stage1.inputs.0.name` instead of `inputs.0.name`.
+
+## Multi-Stage Conversion
+
+The converter supports multi-stage conversion. This means conversion of multiple
+models where the output of one model is the input to another model. For multi-stage
+conversion you must specify the `stages` section in the config file, see [defaults.yaml](configs/defaults.yaml)
+and [multistage.yaml](configs/multistage.yaml) for reference.
+
+The output directory structure would be (assuming RVC4 conversion):
+
+```txt
+output_path/
+├── config.yaml
+├── modelconverter.log
+├── stage_name1
+│   ├── config.yaml
+│   ├── intermediate_outputs/
+│   ├── model1.onnx
+│   └── model1.dlc
+└── stage_name2
+    ├── config.yaml
+    ├── intermediate_outputs/
+    ├── model2.onnx
+    └── model2.dlc
+```
+
+## Interactive Mode
+
+Run the container interactively without any arguments after the platform name:
+
+```bash
+modelconverter shell rvc4
+```
+
+Inside, you'll find all the necessary tools for manual conversion.
+The `modelconverter` CLI is available inside the container as well.
+
+## Calibration Data
+
+Calibration data can be a mix of images (`.jpg`, `.png`, `.jpeg`) and `.npy`, `.raw` files.
+Image files will be loaded and converted to the format specified in the config.
+When the NN Archive metadata holds the preprocessing, the converted model does
+not contain it. ModelConverter then normalizes and color-converts the image and
+the random calibration samples itself, before the quantizer reads them. Thus
+calibration uses the numeric domain that the model gets at runtime.
+
+LDF datasets are also supported as calibration data by setting `calibration.path` to `<dataset_name>:<split>`, or `<dataset_name>:<split>:<loader_plugin>` when using a custom loader.
+
+For image calibration, use the correct resize method. When converting an NNArchive,
+ModelConverter inherits each input's `preprocessing.resize_mode`, if present.
+Set `calibration.resize_method` in `config.yaml` or through a CLI override to
+select a method or override the archive's value.
+
+> [!NOTE]
+> Multi-input LDF datasets are not currently supported for calibration data.
+
+> [!IMPORTANT]
+> `.npy` and `.raw` calibration files must contain backend-ready values;
+> ModelConverter does not apply image preprocessing to them. Hailo and RVC3
+> expect batchless, channel-last samples (`HWC` for images). Hailo also accepts
+> a leading singleton batch axis in `.npy` files. RVC4/SNPE expects
+> channel-last image tensors (normally `NHWC`).
+>
+> This also applies to linked multi-stage tensor files. ModelConverter prepares
+> image files and its generated random calibration samples for the backend.
+
+> [!NOTE]
+> You cannot use a custom RVC4 `--input_list` when the NN Archive holds the
+> preprocessing. ModelConverter cannot inspect or transform the raw buffers in
+> that list.
+
+## Inference
+
+A basic support for inference. To run the inference, use `modelconverter infer <platform> <args>`.
+For usage instructions, see `modelconverter infer --help`.
+
+The input files must be provided in a specific directory structure.
+
+```txt
+input_path/
+├── <name of first input node>
+│   ├── 0.npy
+│   ├── 1.npy
+│   └── ...
+├── <name of second input node>
+│   ├── 0.npy
+│   ├── 1.npy
+│   └── ...
+├── ...
+└── <name of last input node>
+    ├── 0.npy
+    ├── 1.npy
+    └── ...
+```
+
+**Note**: The files may be images (`.jpg`, `.png`, `.jpeg`), `.npy` arrays or `.raw` buffers. Images are loaded and converted to the format specified in the config. `.npy` and `.raw` files are sent to the model with no preprocessing, so they must be provided in the correct format and shape.
+
+The output files are then saved in a similar structure.
+
+### Inference Example
+
+For `yolov6n` model, the input directory structure would be:
+
+```txt
+input_path/
+└── images
+    ├── 0.npy
+    ├── 1.npy
+    └── ...
+```
+
+To run the inference, use:
+
+```bash
+modelconverter infer rvc4 \
+  --model-path <path_to_model.dlc> \
+  --output-dir <output_dir_name> \
+  --input-path <input_path> \
+  --config <path_to_config.yaml>
+```
+
+Results are written to `output/<output_dir_name>` in your current working
+directory — the same `output/` the conversions use — with the run's log next to
+it:
+
+```txt
+output/
+├── <output_dir_name>/
+│   ├── output1_yolov6r2
+│   │   ├── 0.npy
+│   │   ├── 1.npy
+│   │   └── ...
+│   ├── output2_yolov6r2
+│   │   └── <outputs>
+│   ├── output3_yolov6r2
+│   │   └── <outputs>
+│   └── .modelconverter_inference
+└── <output_dir_name>.log
+```
+
+The hidden `.modelconverter_inference` file marks the directory as holding
+inference results. Rerunning with the same `--output-dir` clears the previous
+results and starts clean, but a directory without that marker is never touched:
+
+```txt
+Refusing to overwrite '/app/output/mnist_to_rvc4_2026_01_01_00_00_00': it is
+not empty and does not hold inference results. Pass a different `--output-dir`.
+```
+
+So an `--output-dir` that collides with a conversion's output directory fails
+instead of deleting it. An empty directory, or one that does not exist yet, is
+always accepted.
+
+## Benchmarking
+
+The ModelConverter additionally supports benchmarking of converted models.
+
+To install the package with the benchmarking dependencies, use:
+
+```bash
+pip install modelconv[bench]
+```
+
+To run the benchmark, use `modelconverter benchmark <platform> <args>`.
+
+For usage instructions, see `modelconverter benchmark --help`.
+
+**Example:**
+
+```bash
+modelconverter benchmark rvc4 --model-path <path_to_model.tar.xz>
+```
+
+The command prints a table with the benchmark results to the console and
+optionally saves the results to a `.csv` file.
+
+> [!IMPORTANT]
+> **Device Connection Requirements for RVC4**: The device must be connected and accessible either using the [Android Debug Bridge (ADB)](https://developer.android.com/tools/adb) or via SSH for the benchmarking to work in the following cases:
+>
+> - When `--device-monitor` is enabled (requires ADB or SSH connection to the device to calculate power consumption)
+> - When benchmarking is conducted using the SNPE tools (with `--no-dai-benchmark`; default is `--dai-benchmark`)
+>
+> The tool can find the correct device automatically but you can also specify it with the `--device-id` flag.
+
+> [!NOTE]
+> **Duration Control**:
+> There are two ways how to specify the duration of the benchmark:
+>
+> `depthai` backend (default):
+>
+> - `--benchmark-time`: The duration of the benchmark in seconds (default is 20 seconds).
+> - `--input-fps`: The rate at which inputs are sent. It accepts `-1`
+>   for no limit or a positive float (default is `-1`).
+>
+> `SNPE` backend (only **RVC4** with `--no-dai-benchmark`):
+>
+> - `--num-images`: The number of images to run through the model (default is 500). The total benchmark time will depend on the model size and complexity, as well as the device performance. Too many images may lead to an out-of-memory error, while too few images may lead to less accurate results. Adjust this parameter based on your specific situation and requirements.
+
+> [!NOTE]
+> Benchmark input support depends on the platform and backend:
+>
+> - **RVC2**: `--model-path` can be a local `.blob`, an NN Archive (`.tar.xz`), or a model slug from [Luxonis HubAI](https://hub.luxonis.com/ai).
+> - **RVC4** with `--dai-benchmark` (default): `--model-path` can be an NN Archive (`.tar.xz`) or a model slug from [Luxonis HubAI](https://hub.luxonis.com/ai).
+> - **RVC4** with `--no-dai-benchmark`: `--model-path` can be an NN Archive (`.tar.xz`), a model slug from [Luxonis HubAI](https://hub.luxonis.com/ai) or a `.dlc` file.
+>   In the case of a `.dlc` file, the tool `snpe-dlc-info` must be available in `PATH` either on the host machine or on the device.
+>
+> HubAI benchmark slugs use `[team/]model[:variant[:version-or-hash]]`.
+> Resolution requires exactly one instance for the benchmark platform;
+> ambiguous matches raise an error. Versions have three integer components
+> (`1.2.3`); other third segments are hashes. See the
+> [full resolution rules](https://github.com/luxonis/modelconverter/blob/main/modelconverter/utils/hubai_utils.py).
+> `HUBAI_API_KEY` is required for private models.
+
+> [!NOTE]
+> If you experience Segmentation Faults (core dumps) during benchmarking on RVC4 using the SNPE backend (`--no-dai-benchmark`), it may be due to the device running out of memory. Try decreasing the value of `--num-images` (the default is 500) to reduce RAM usage.
+
+## [RVC4] DLC model analysis
+
+ModelConverter offers additional analysis tools for the RVC4 platform. The tools provide an in-depth look at the following:
+
+1. The outputs of all layers in comparison to the ground truth ONNX model,
+2. The cycle usage of each layer on an RVC4 device.
+3. Visualizations for fast and easy comparison of multiple models.
+
+This gives the user better insight into the successful quantization of a model, helps discover potential speed bottleneck layers, and allows for the comparison of different quantization parameters.
+
+To install the package with the analysis dependencies, use:
+
+```bash
+pip install modelconv[analysis]
+```
+
+There are several options to run the tools. The most general approach is:
+
+```bash
+modelconverter analyze \
+  --dlc-model-path <dlc_model> \
+  --onnx-model-path <onnx_model> \
+  --image-dirs <input_name_1> <path_to_input_images_1> \
+               ...
+               <input_name_n> <path_to_input_images_n>
+```
+
+If the model accepts only one input, there is no need to specify the input name and the tools can simply be ran as:
+
+```bash
+modelconverter analyze \
+  --dlc-model-path <dlc_model> \
+  --onnx-model-path <onnx_model> \
+  --image-dirs <path_to_input_images>
+```
+
+For other usage instructions run `modelconverter analyze --help`
+
+> [!NOTE]
+> It is important to ensure that you are using the correct ONNX model for comparison. Before converting to DLC, ModelConverter can modify the ONNX files by adding normalization layers or simplifying the graph. The ONNX model that is actually converted to DLC is typically located at `output/<output_dir>/intermediate_outputs/model_name-modified.onnx`
+>
+> For the DLC argument, you should use the final top-level DLC from the conversion output directory (for example `output/<output_dir>/model_name.dlc`), not the intermediate DLCs in `intermediate_outputs/`. This is because `modelconverter analyze` compares the ONNX reference model against the DLC that will actually run on the device, so the final deployable DLC is the correct default target. If you need to debug where differences are introduced during conversion, you can also analyze the intermediate `*-modified.dlc` or `*-modified-quantized.dlc` artifacts, but they represent earlier conversion stages rather than the final device-ready model.
+>
+> If the model has multiple inputs, make sure that each input directory has the same number of images. The tool alphabetically sorts images in each directory and assumes that images with the same index are used as one input.
+>
+> Recommended number of input images is less than 50.
+
+> [!IMPORTANT]
+> The analysis requires the RVC4 device to be connected and accessible using the [Android Debug Bridge (ADB)](https://developer.android.com/tools/adb). Ensure that the device is connected and ADB is properly configured and the commands `snpe-net-run` and `snpe-diagview` can be executed in it.
+
+The tool creates two CSV files located in `output/analysis/model_name/`. One file contains output statistics for each layer, while the other contains statistics on cycle usage.
+
+There is also a visualization option that displays all CSV files in `output/analysis/`. This offers a fast and easy way to inspect different model conversion parameters. For more usage instructions, run `modelconverter visualize --help`. To create the visualizations, simply run:
+
+```bash
+modelconverter visualize <path_to_dir>
+```
+
+This command will create interactive pyplot scatter plots and cycle usage bar plots in a local web browser, as well as save both HTML files for easier access in the future.

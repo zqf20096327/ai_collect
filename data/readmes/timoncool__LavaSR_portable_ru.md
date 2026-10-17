@@ -1,0 +1,174 @@
+<div align="center">
+
+# LavaSR Portable
+
+**Портативное улучшение и суперразрешение аудио для Windows — LavaSR, установка в один клик, 100% офлайн.**
+
+[![Stars](https://img.shields.io/github/stars/timoncool/LavaSR_portable_ru?style=flat-square)](https://github.com/timoncool/LavaSR_portable_ru/stargazers)
+[![License](https://img.shields.io/github/license/timoncool/LavaSR_portable_ru?style=flat-square)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/timoncool/LavaSR_portable_ru?style=flat-square)](https://github.com/timoncool/LavaSR_portable_ru/commits)
+[![Downloads](https://img.shields.io/github/downloads/timoncool/LavaSR_portable_ru/total?style=flat-square)](https://github.com/timoncool/LavaSR_portable_ru/releases)
+
+</div>
+
+Портативная русская версия [LavaSR](https://github.com/ysharma3501/LavaSR) — ультрабыстрой модели улучшения речи.
+
+## Возможности
+
+- **Повышение частоты дискретизации** — апсемплинг с 8-48 кГц до чистых 48 кГц
+- **Шумоподавление** — удаление фонового шума из речи
+- **Пакетная обработка** — обработка множества файлов за раз с сохранением в output/
+- **Запись с микрофона** — улучшение записи в реальном времени
+- **Полная изоляция** — ничего не устанавливается в систему
+- **Поддержка GPU и CPU** — NVIDIA GTX 10xx и новее, или CPU
+
+## Системные требования
+
+| Параметр | Требование |
+|----------|-----------|
+| ОС | Windows 10/11 (64-bit) |
+| GPU | NVIDIA GTX 10xx+ (рекомендуется) или CPU |
+| VRAM | ~500 МБ |
+| ОЗУ | 4 ГБ+ |
+| Диск | ~2 ГБ (Python + зависимости + модель) |
+| Интернет | Для первой установки и загрузки модели |
+
+## Совместимость GPU
+
+| Серия | Архитектура | CUDA |
+|-------|-------------|------|
+| GTX 10xx | Pascal | 11.8 |
+| RTX 20xx | Turing | 11.8 |
+| RTX 30xx | Ampere | 12.6 |
+| RTX 40xx | Ada Lovelace | 12.8 |
+| RTX 50xx | Blackwell | 12.8 |
+
+## Установка
+
+1. Скачайте или клонируйте репозиторий:
+   ```
+   git clone <URL_РЕПОЗИТОРИЯ>
+   ```
+   Или скачайте ZIP-архив и распакуйте.
+
+2. Запустите установщик:
+   ```
+   install.bat
+   ```
+   Следуйте инструкциям — выберите вашу видеокарту, всё остальное автоматически.
+
+3. Для запуска используйте:
+   ```
+   run.bat
+   ```
+   Интерфейс откроется в браузере автоматически по адресу http://127.0.0.1:7860
+
+## Использование
+
+1. Запустите `run.bat`
+2. Загрузите аудиофайл или запишите с микрофона
+3. Настройте параметры (частота дискретизации, шумоподавление)
+4. Нажмите «Улучшить аудио»
+5. Прослушайте результат и сохраните при необходимости
+
+## Поддерживаемые форматы
+
+WAV, MP3, FLAC, OGG, M4A и другие (через librosa/ffmpeg)
+
+## Структура папок
+
+```
+LavaSR_portable_ru/
+├── app.py              # Приложение
+├── install.bat         # Установщик
+├── run.bat             # Запуск
+├── update.bat          # Обновление
+├── requirements.txt    # Зависимости
+├── python/             # Портативный Python (создаётся при установке)
+├── models/             # Кэш моделей HuggingFace (создаётся при установке)
+├── ffmpeg/             # Портативный FFmpeg (создаётся при установке)
+├── output/             # Сохранённые результаты
+├── temp/               # Временные файлы
+└── cache/              # Кэш
+```
+
+## Изоляция
+
+Приложение полностью изолировано от системы:
+- Портативный Python (не требует установки)
+- Все кэши (HuggingFace, PyTorch, temp) хранятся локально
+- Ничего не записывается в системные папки пользователя
+- Можно перенести на USB-накопитель
+
+## Решение проблем
+
+**Ошибка «CUDA out of memory»:**
+- Закройте другие приложения, использующие GPU
+- Попробуйте переустановить с выбором CPU
+
+**Ошибка при загрузке модели:**
+- Проверьте интернет-соединение
+- Удалите папку `models/` и запустите заново
+
+**Не открывается браузер:**
+- Откройте http://127.0.0.1:7860 вручную
+
+**Ошибка установки PyTorch:**
+- Обновите драйверы NVIDIA
+- Переустановите с другой версией CUDA
+
+## Производительность
+
+| Устройство | Скорость |
+|-----------|----------|
+| GPU (NVIDIA) | ~5000x реального времени |
+| CPU | ~60x реального времени |
+
+Размер модели: ~50 МБ, потребление VRAM: ~500 МБ.
+
+## Благодарности
+
+- [LavaSR](https://github.com/ysharma3501/LavaSR) — оригинальная модель (Yatharth Sharma)
+- [Vocos](https://github.com/gemelo-ai/vocos) — нейровокодер
+- [UL-UNAS](https://github.com/langtech-bsc/vocos) — архитектура шумоподавления
+
+## Лицензия
+
+Apache 2.0 (следует лицензии оригинального LavaSR)
+
+## Другие проекты [@timoncool](https://github.com/timoncool)
+
+| Проект | Описание |
+|--------|----------|
+| [ACE-Step Studio](https://github.com/timoncool/ACE-Step-Studio) | AI-студия музыки — песни, вокал, каверы, клипы |
+| [Foundation Music Lab](https://github.com/timoncool/Foundation-Music-Lab) | Генерация музыки + редактор таймлайна |
+| [VibeVoice ASR](https://github.com/timoncool/VibeVoice_ASR_portable_ru) | Портативное распознавание речи |
+| [Qwen3-TTS](https://github.com/timoncool/Qwen3-TTS_portable_rus) | Портативный TTS с клонированием голоса |
+| [SuperCaption Qwen3-VL](https://github.com/timoncool/SuperCaption_Qwen3-VL) | Портативное описание изображений |
+| [VideoSOS](https://github.com/timoncool/videosos) | AI-видеопродакшн в браузере |
+
+## Авторы
+
+- **Nerual Dreming** ([t.me/nerual_dreming](https://t.me/nerual_dreming)) — [neuro-cartel.com](https://neuro-cartel.com) | основатель [ArtGeneration.me](https://artgeneration.me)
+- **Нейро-Софт** ([t.me/neuroport](https://t.me/neuroport)) — репаки и портативки нейросетей
+
+## Поддержать автора
+
+Я создаю опенсорс софт и занимаюсь исследованиями в области ИИ. Большая часть всего, что я делаю, находится в открытом доступе. Ваши пожертвования позволяют мне создавать и исследовать больше, не отвлекаясь на поиск еды для продолжения существования =)
+
+**[Все способы поддержки](https://github.com/timoncool/ACE-Step-Studio/blob/master/DONATE.md)** | **[dalink.to/nerual_dreming](https://dalink.to/nerual_dreming)** | **[boosty.to/neuro_art](https://boosty.to/neuro_art)**
+
+- **BTC:** `1E7dHL22RpyhJGVpcvKdbyZgksSYkYeEBC`
+- **ETH (ERC20):** `0xb5db65adf478983186d4897ba92fe2c25c594a0c`
+- **USDT (TRC20):** `TQST9Lp2TjK6FiVkn4fwfGUee7NmkxEE7C`
+
+
+## Star History
+
+<a href="https://github.com/timoncool/LavaSR_portable_ru/stargazers">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="docs/stars-dark.svg" />
+   <source media="(prefers-color-scheme: light)" srcset="docs/stars-light.svg" />
+   <img alt="Star History Chart" src="docs/stars-light.svg" />
+ </picture>
+</a>

@@ -1,0 +1,334 @@
+# featrs
+
+[![Crates.io](https://img.shields.io/crates/v/featrs)](https://crates.io/crates/featrs)
+[![Docs.rs](https://img.shields.io/docsrs/featrs)](https://docs.rs/featrs)
+[![CI](https://github.com/featrs/featrs/actions/workflows/ci.yml/badge.svg)](https://github.com/featrs/featrs/actions/workflows/ci.yml)
+[![GitHub Stars](https://img.shields.io/github/stars/featrs/featrs?style=social)](https://github.com/featrs/featrs)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Feature engineering library for Rust, inspired by scikit-learn.
+
+Built on [Polars](https://pola.rs) — all transformations operate natively on `DataFrame` and preserve column names.
+
+> **Read the write-up:** why a feature engineering API designed for NumPy arrays
+> changes when it moves to named Polars columns, and what `AutoScaler` decides
+> per column, is at
+> [adityavikram.dev/blog/featrs-scikit-learn-for-rust](https://adityavikram.dev/blog/featrs-scikit-learn-for-rust).
+
+## Installation
+
+```toml
+[dependencies]
+featrs = "0.4"
+```
+
+## Quick start
+
+```rust
+use featrs::prelude::*;
+
+let mut scaler = StandardScaler::new();
+scaler.fit(data.clone())?;
+let scaled = scaler.transform(data)?;
+```
+
+## Features
+
+| Category | Component | Description |
+|---|---|---|
+| **Scaling** | `StandardScaler` | Z-score normalization (mean 0, variance 1) |
+| | `MinMaxScaler` | Scale to `[0, 1]` or custom range |
+| | `RobustScaler` | Scale using median and IQR (outlier-robust) |
+| | `MaxAbsScaler` | Scale by maximum absolute value; training values map to `[-1, 1]`, sparsity preserved |
+| | `AutoScaler` | Pick the scaler per column from the column's own statistics (sparsity, outliers, skew, kurtosis) |
+| | `Winsorizer` | Clip extreme values at configurable quantiles (outlier capping) |
+| | `OutlierClipper` | Clip outliers via IQR, Z-score, or MAD statistical fences |
+| | `KBinsDiscretizer` | Bin continuous features into `n_bins` discrete bins (uniform, quantile, or k-means) as ordinal or one-hot |
+| **Normalization** | `Normalizer` | Row-wise L1, L2, or Max normalization |
+| | `Binarizer` | Threshold-based binarization; in Float64 columns, nulls and NaN pass through as null |
+| **Encoding** | `OneHotEncoder` | Create binary dummy columns for categories; unseen categories error by default (`HandleUnknown`) |
+| | `LabelEncoder` | Encode labels as `0..n_classes-1` integers |
+| | `OrdinalEncoder` | Per-column category → integer encoding |
+| | `CountEncoder` | Replace categories with their raw occurrence counts |
+| | `FrequencyEncoder` | Replace categories with their observed relative frequencies |
+| | `BinaryEncoder` | Encode categories as binary digit columns using `max(1, ceil(log₂(n_categories)))` columns |
+| | `TargetEncoder` | Replace categories with the smoothed mean of a supervised target |
+| | `LeaveOneOutEncoder` | Replace categories with a leave-one-out supervised target mean (no self-leak on training rows) |
+| | `CyclicalEncoder` | Sin/cos encoding for cyclical features (hour, month) |
+| | `FeatureHasher` | Hash strings into a fixed number of buckets |
+| | `StringCleaner` | Trim, normalize case, and regex-replace string values |
+| | `RareCategoryGrouper` | Group rare and unseen categories into `"Other"` |
+| **Imputation** | `SimpleImputer` | Fill nulls with mean, median, mode, or constant |
+| | `AutoImputer` | Pick the imputation strategy per column from the column's null fraction and skew |
+| | `MissingIndicator` | Binary columns marking where values were missing |
+| **Feature Generation** | `PolynomialFeatures` | Generate polynomial and interaction features |
+| | `Lagger` | Create lag features for time-series forecasting |
+| | `RollingAggregator` | Rolling window mean, std, min, max, sum |
+| | `ExpandingAggregator` | Expanding (cumulative) window mean, sum, min, max, std |
+| | `ExponentiallyWeightedMovingAverage` | EWMA mean, variance, and std with exponential decay |
+| | `Difference` | Differencing (`x[t] - x[t-1]`) and percentage change |
+| | `DatetimeFeatures` | Extract year/month/weekday/quarter/… components from date columns |
+| | `TimeSince` | Elapsed time from a reference timestamp (`{column}_since_{unit}`) in seconds…weeks |
+| | `HolidayEncoder` | Binary `{column}_is_holiday` indicator for a country's statutory holidays (US, GB, DE, FR, JP, IN) |
+| **Text** | `CharacterNGramVectorizer` | Character n-gram term-count features (char, or char-within-word-boundary) |
+| | `CountVectorizer` | Bag-of-words term counts from a tokenized text column |
+| | `TFIDFVectorizer` | TF-IDF weights from a text column (word counts reweighted by inverse document frequency) |
+| **Pipeline** | `Pipeline` | Sequentially chain multiple transformers |
+| | `ColumnTransformer` | Apply different transformers to different columns |
+| | `FeatureUnion` | Apply every transformer to the full input and concatenate the outputs |
+| **Selection** | `VarianceThreshold` | Remove low-variance features |
+| | `SelectKBest` | Select top-k features by statistical test (ANOVA F) |
+| | `SelectPercentile` | Select the top N% of features by statistical test |
+| | `CorrelationThreshold` | Drop features highly correlated with others |
+| | `MutualInformationSelector` | Rank/select top-k features by mutual information with the target |
+| **Auto** | `AutoTypeDetector` | Auto-detect column types (incl. numeric-string columns) and apply default transforms |
+| **Diagnostics** | `DataQualityReport` | Summarise nulls, per-column stats and outliers, cardinality, duplicate rows/columns, constant columns, and the preprocessing it recommends |
+
+## Examples
+
+Every snippet is a fragment: it assumes a `df: DataFrame` is already in scope and
+shows the transformer calls alone. Wrap the body in a function returning
+`Result<_, featrs::traits::Error>` to run it as written.
+
+### StandardScaler
+
+```rust
+use featrs::prelude::*;
+
+let mut scaler = StandardScaler::new();
+scaler.fit(df.clone())?;
+let scaled = scaler.transform(df)?;
+```
+
+### AutoScaler
+
+```rust
+use featrs::prelude::*;
+
+let mut scaler = AutoScaler::new();
+scaler.fit(df.clone())?;
+// Which scaler each Float64 column got, e.g. "StandardScaler+RobustScaler".
+println!("{:?}", scaler.chosen_name());
+let scaled = scaler.transform(df)?;
+```
+
+### Pipeline
+
+```rust
+use featrs::prelude::*;
+
+let mut pipeline = Pipeline::new(vec![
+    ("scale".into(), Box::new(StandardScaler::new())),
+    ("poly".into(), Box::new(PolynomialFeatures::new(2)?)),
+])?;
+pipeline.fit(df.clone())?;
+let result = pipeline.transform(df)?;
+```
+
+### ColumnTransformer
+
+```rust
+use featrs::prelude::*;
+
+let ct = ColumnTransformer::new(
+    vec![("scale".into(), Box::new(StandardScaler::new()), vec!["feat_a".into()])],
+    Remainder::Passthrough,
+);
+```
+
+### FeatureUnion
+
+Every transformer receives the full input and their outputs are concatenated
+horizontally. Transformers that preserve their input column names collide, so
+pair the union with branches that emit distinct columns.
+
+```rust
+use featrs::prelude::*;
+
+let mut union = FeatureUnion::new(vec![
+    (
+        "scaled_a".into(),
+        Box::new(ColumnTransformer::new(
+            vec![("s".into(), Box::new(StandardScaler::new()), vec!["feat_a".into()])],
+            Remainder::Drop,
+        )),
+    ),
+    (
+        "scaled_b".into(),
+        Box::new(ColumnTransformer::new(
+            vec![("s".into(), Box::new(StandardScaler::new()), vec!["feat_b".into()])],
+            Remainder::Drop,
+        )),
+    ),
+])?;
+union.fit(df.clone())?;
+let result = union.transform(df)?;
+```
+
+### PolynomialFeatures (builder pattern)
+
+```rust
+use featrs::prelude::*;
+
+let pf = PolynomialFeatures::builder()
+    .degree(3)
+    .include_bias(false)
+    .interaction_only(true)
+    .build()?;
+```
+
+### Feature Selection
+
+```rust
+use featrs::prelude::*;
+
+let mut vt = VarianceThreshold::new(0.01);
+vt.fit(features.clone())?;
+let filtered = vt.transform(features)?;
+
+let mut skb = SelectKBest::new(5, Box::new(FClassif::new()));
+skb.fit(features.clone(), target)?;
+let selected = skb.transform(features)?;
+```
+
+### Time Series — Lag Features
+
+```rust
+use featrs::prelude::*;
+
+let mut lagger = Lagger::new(&["sales", "revenue"], &[1, 7, 30]);
+lagger.fit(df.clone())?;
+let lagged = lagger.transform(df)?;  // adds sales_lag_1, sales_lag_7, ...
+```
+
+### Time Series — Rolling Windows
+
+```rust
+use featrs::prelude::*;
+use featrs::time_series::rolling::RollingFn;
+
+let mut rolling = RollingAggregator::new(&["price"], 7, RollingFn::Mean);
+rolling.fit(df.clone())?;
+let result = rolling.transform(df)?;  // adds price_mean_7
+```
+
+### Time Series — Differencing
+
+```rust
+use featrs::prelude::*;
+
+let mut diff = Difference::diff(&["sales"], 1);
+diff.fit(df.clone())?;
+let result = diff.transform(df)?;  // adds sales_diff_1
+
+let mut pct = Difference::pct_change(&["price"], 1);
+pct.fit(df.clone())?;
+let result = pct.transform(df)?;  // adds price_pct_1
+```
+
+### Cyclical Encoding
+
+```rust
+use featrs::prelude::*;
+
+let mut enc = CyclicalEncoder::new(&["hour"], 24);
+enc.fit(df.clone())?;
+let result = enc.transform(df)?;  // adds hour_sin, hour_cos
+```
+
+### Feature Hasher
+
+```rust
+use featrs::prelude::*;
+
+let mut fh = FeatureHasher::new(&["user_id", "category"], 100);
+fh.fit(df.clone())?;
+let hashed = fh.transform(df)?;  // 100 hashed columns
+```
+
+### AutoImputer
+
+```rust
+use featrs::prelude::*;
+
+let mut imp = AutoImputer::new();
+imp.fit(df.clone())?;
+// Which strategy each Float64 column got, e.g. "Mean+Median".
+println!("{:?}", imp.chosen_name());
+let filled = imp.transform(df)?;
+```
+
+### Missing Indicator
+
+```rust
+use featrs::prelude::*;
+
+let mut ind = MissingIndicator::all();
+ind.fit(df.clone())?;
+let marked = ind.transform(df)?;  // adds {col}_missing where nulls exist
+```
+
+### Auto-Type Detection
+
+```rust
+use featrs::prelude::*;
+
+let mut atd = AutoTypeDetector::new()
+    .cat_threshold(30)             // one-hot if < 30 unique values
+    .hash_buckets(200)             // hash to 200 buckets otherwise
+    .numeric_string_threshold(0.9); // >= 90% numeric-looking -> passthrough
+atd.fit(df.clone())?;
+let result = atd.transform(df)?;
+```
+
+### Data Quality Report
+
+```rust
+use featrs::prelude::*;
+
+let report = DataQualityReport::from_dataframe(&df)?;
+// Per-column findings and frame-level totals.
+println!("{} nulls in {} cells", report.overall.total_nulls, report.overall.total_cells);
+for r in &report.columns {
+    println!("{}: {:?} cardinality, {} unique", r.name, r.cardinality, r.unique_count);
+}
+// Preprocessing suggestions: DropColumn, ImputeColumn, ScaleColumn, EncodeColumn,
+// RemoveDuplicates (CleanStrings is reserved for a later revision).
+for rec in &report.recommendations {
+    println!("{rec:?}");
+}
+report.print_summary();      // to_markdown() written to stdout
+let md = report.to_markdown();  // GitHub-friendly tables
+```
+
+## Roadmap
+
+Work is tracked in [GitHub milestones](https://github.com/featrs/featrs/milestones). Open issues are grouped by release so contributors can pick a target and see what ships with it.
+
+| Milestone | Focus | Target |
+|---|---|---|
+| [v0.4.0](https://github.com/featrs/featrs/milestone/1) | New transformers: scalers, encoders, cleaners | Released (Aug 2026) |
+| [v0.4.1](https://github.com/featrs/featrs/milestone/7) | Correctness fixes for encoders, discretizers, and variance | Released (Sep 2026) |
+| [v0.5.0](https://github.com/featrs/featrs/milestone/2) | Text, time-series, feature selection | Released (Oct 2026) |
+| [v0.6.0](https://github.com/featrs/featrs/milestone/3) | Pipeline composition & automation (FeatureUnion, AutoPipeline, SchemaValidator) | Nov 2026 |
+| [v0.7.0](https://github.com/featrs/featrs/milestone/4) | Performance workstream (benchmarks, Polars-native kernels, rayon, ahash) + LazyFrame & streaming | Dec 2026 |
+| [v0.8.0](https://github.com/featrs/featrs/milestone/5) | Quality & docs hardening (lints, doc tests) | Dec 2026 |
+| [v1.0.0](https://github.com/featrs/featrs/milestone/6) | Persistence (serde), tracing, ONNX export, pipeline versioning | Mar 2027 |
+
+The performance milestones are ordered: benchmarks (Phase 0) land first, then Polars-native kernels, rayon, and ahash. ahash must stabilize before serde persistence ships so the on-disk hash format never changes.
+
+New contributors: start with a `good first issue` in the next milestone.
+
+## Resources
+
+- [Crates.io](https://crates.io/crates/featrs)
+- [Docs.rs](https://docs.rs/featrs)
+- [GitHub](https://github.com/featrs/featrs)
+
+## Star History
+
+[![Star History](https://starchart.cc/featrs/featrs.svg?variant=adaptive)](https://starchart.cc/featrs/featrs)
+
+## License
+
+MIT

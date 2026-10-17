@@ -1,0 +1,802 @@
+[![CI/CD](https://github.com/tdspora/syngen/actions/workflows/action-build-deploy.yml/badge.svg?branch=main)](https://github.com/tdspora/syngen/actions/workflows/action-build-deploy.yml)
+
+# EPAM Syngen
+
+EPAM Syngen is an unsupervised tabular data generation tool. It is useful for generation of test data with a given table as a template. Most datatypes including floats, integers, datetime, text, categorical, binary are supported. The linked tables i.e., tables sharing a key can also be generated using the simple statistical approach.
+The source of data might be in CSV, Avro and Excel format and should be located locally and be in UTF-8 encoding.
+
+The tool is based on the variational autoencoder model (VAE). The Bayesian Gaussian Mixture model is used to further detangle the latent space.
+
+## Prerequisites
+
+Python 3.10 or 3.11 is required to run the library. The library is tested on Linux and Windows operating systems.
+You can download Python from [the official website](https://www.python.org/downloads/) and install manually, or you can install Python [from your terminal](https://docs.python-guide.org/starting/installation/). After the installation of Python, please, check whether [pip is installed](https://pip.pypa.io/en/stable/getting-started/).
+
+## Getting started
+
+Before the installation of the library, you have to [set up the virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
+
+You can install the library with:
+
+```bash
+pip install syngen
+```
+
+
+The training and inference processes are separated with two CLI entry points. The training one receives paths to the original table, metadata json file or table name and used hyperparameters.<br>
+
+To start training with defaults parameters run:
+
+```bash
+train --source PATH_TO_ORIGINAL_CSV \
+    --table_name TABLE_NAME
+```
+
+This will train a model and save the model artifacts to disk.
+
+To generate with defaults parameters data simply call:
+
+```bash
+infer --table_name TABLE_NAME
+```
+
+<i>Please notice that the name should match the one you used in the training process.</i><br>
+This will create a csv file with the synthetic table in <i>./model_artifacts/tmp_store/TABLE_NAME/merged_infer_TABLE_NAME.csv</i>.<br>
+
+Here is a quick example:
+
+```bash
+train --source ./examples/example-data/housing.csv –-table_name Housing
+infer --table_name Housing
+```
+
+As the example you can use the dataset <i>"Housing"</i> in [examples/example-data/housing.csv](examples/example-data/housing.csv).
+In this example, our real-world data is <a href="https://www.kaggle.com/datasets/camnugent/california-housing-prices" target="_blank">"Housing"</a> from Kaggle.
+
+## Features
+
+### Training
+
+You can add flexibility to the training and inference processes using additional hyperparameters.<br>
+For training of single table call:
+
+```bash
+train --source PATH_TO_ORIGINAL_CSV \
+    --table_name TABLE_NAME \
+    --epochs INT \
+    --row_limit INT \
+    --drop_null BOOL \
+    --reports STR \
+    --batch_size INT \
+    --log_level STR \
+    --fernet_key STR
+```
+
+*Note:* To specify multiple options for the *--reports* parameter, you need to provide the *--reports* parameter multiple times.
+For example:
+```bash
+train --source PATH_TO_ORIGINAL_CSV \
+    --table_name TABLE_NAME \
+    --reports accuracy \
+    --reports sample
+```
+The accepted values for the parameter <i>"reports"</i>:
+ - <i>"none"</i> (default) - no reports will be generated
+ - <i>"accuracy"</i> - generates an accuracy report to measure the quality of synthetic data relative to the original dataset. This report is produced after the completion of the training process, during which a model learns to generate new data. The synthetic data generated for this report is of the same size as the original dataset to reach more accurate comparison.
+ - <i>"sample"</i> - generates a sample report (if original data is sampled, the comparison of distributions of original data and sampled data is provided in the report)
+ - <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of an accuracy report
+ - <i>"all"</i> - generates both accuracy and sample reports<br>
+Default value is <i>"none"</i>.
+
+Among the metrics in the accuracy report, <i>"Mean clusters homogeneity"</i> measures whether synthetic records occupy the same regions of the joint feature space as the original ones: continuous and categorical columns are pooled from both datasets and split into clusters (the number of clusters is chosen on the original data alone, via the Davies-Bouldin score, and capped at 50 000 rows for that search), then each cluster is scored on how evenly it mixes original and synthetic rows. A value close to 1 means the two datasets are well mixed in every cluster; a value close to 0 means some cluster contains rows from only one of them.
+
+To train one or more tables using a metadata file, you can use the following command:
+
+```bash
+train --metadata_path PATH_TO_METADATA_YAML
+```
+
+Parameters that you can set up for training process:
+
+- <i>source</i> – required parameter for training of single table, a path to the file that you want to use as a reference
+- <i>table_name</i> – required parameter for training of single table, an arbitrary string to name the directories
+- <i>epochs</i> – a number of training epochs. Since the early stopping mechanism is implemented the bigger value of epochs is the better
+- <i>row_limit</i> – a number of rows to train over. A number less than the original table length will randomly subset the specified number of rows
+- <i>drop_null</i> – whether to drop rows with at least one missing value
+- <i>batch_size</i> – if specified, the training is split into batches. This can save the RAM
+- <i>reports</i> - controls the generation of quality reports, might require significant time for big tables (>10000 rows)
+- <i>metadata_path</i> – a path to the metadata file containing the metadata
+- <i>column_types</i> - might include the section <i>categorical</i> which contains columns explicitly defined as categorical by the user
+- <i>log_level</i> - logging level for the process
+- <i>fernet_key</i> - the name of the environment variable that kept the value of the fernet key used to encrypt the sample data of the original data. If the fernet key is not set, the original data will be stored in '.pkl' format. If the fernet key is set, the original data will be encrypted and stored securely in '.dat' format. The same fernet key should be used for both training and inference processes to ensure that the original data can be decrypted correctly.
+
+Requirements for parameters of training process:
+* <i>source</i> - data type - string
+* <i>table_name</i> - data type - string
+* <i>epochs</i> - data type - integer, must be equal to or more than 1, default value is 10
+* <i>row_limit</i> - data type - integer
+* <i>drop_null</i> - data type - boolean, default value - False
+* <i>batch_size</i> - data type - integer, must be equal to or more than 1, default value - 32
+* <i>reports</i> - data type - if the value is passed through CLI - string, if the value is passed in the metadata file - string or list, accepted values: <i>"none"</i> (default) - no reports will be generated, <i>"all"</i> - generates both accuracy and sample reports, <i>"accuracy"</i> - generates an accuracy report, <i>"sample"</i> - generates a sample report, <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of a report. Default value is <i>"none"</i>. In the metadata file multiple values can be specified as a list of available options (<i>"accuracy"</i>, <i>"sample"</i>, <i>"metrics_only"</i>) to generate multiple types of reports simultaneously, e.g. [<i>"metrics_only"</i>, <i>"sample"</i>]
+* <i>metadata_path</i> - data type - string
+* <i>column_types</i> - data type - dictionary with the key <i>categorical</i> - the list of columns (data type - string)
+* <i>log_level</i> - data type - string, must be one of the next values - *TRACE*, *"DEBUG"*, *"INFO"*, *"WARNING"*, *"ERROR"*, *"CRITICAL"*, default value is *"INFO"*
+* <i>fernet_key</i> - data type - string, the name of the environment variable that kept the value of the fernet key. It must be a 44-character URL-safe base64-encoded string, default value is None
+
+### Inference (generation)
+
+You can customize the inference processes by calling for one table:
+
+```bash
+infer --size INT \
+    --table_name STR \
+    --run_parallel BOOL \
+    --batch_size INT \
+    --random_seed INT \
+    --reports STR \
+    --log_level STR \
+    --fernet_key STR
+```
+
+*Note:* To specify multiple options for the *--reports* parameter, you need to provide the *--reports* parameter multiple times.
+For example:
+```bash
+infer --table_name TABLE_NAME \
+    --reports accuracy \
+    --reports metrics_only
+```
+The accepted values for the parameter <i>"reports"</i>:
+ - <i>"none"</i> (default) - no reports will be generated
+ - <i>"accuracy"</i> - generates an accuracy report that compares original and synthetic data patterns to verify the quality of the generated data
+ - <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of an accuracy report
+ - <i>"all"</i> - generates an accuracy report<br>
+Default value is <i>"none"</i>.
+
+To generate one or more tables using a metadata file, you can use the following command:
+
+```bash
+infer --metadata_path PATH_TO_METADATA
+```
+
+The parameters which you can set up for generation process:
+
+- <i>size</i> - the desired number of rows to generate
+- <i>table_name</i> – required parameter for inference of single table, the name of the table, same as in training
+- <i>run_parallel</i> – whether to use multiprocessing (feasible for tables > 50000 rows)
+- <i>batch_size</i> – if specified, the generation is split into batches. This can save the RAM
+- <i>random_seed</i> – if specified, generates a reproducible result
+- <i>reports</i> - controls the generation of quality reports, might require significant time for big generated tables (>10000 rows)
+- <i>metadata_path</i> – a path to metadata file
+- <i>log_level</i> - logging level for the process
+- <i>fernet_key</i> - the name of the environment variable that kept the value of the fernet key used to encrypt the sample data of the original data. If the fernet key is not set, the original data will be stored in '.pkl' format. If the fernet key is set, the original data will be encrypted and stored securely in '.dat' format. The same fernet key should be used for both training and inference processes to ensure that the original data can be decrypted correctly.
+
+Requirements for parameters of generation process:
+* <i>size</i> - data type - integer, must be equal to or more than 1, default value is 100
+* <i>table_name</i> - data type - string
+* <i>run_parallel</i> - data type - boolean, default value is False
+* <i>batch_size</i> - data type - integer, must be equal to or more than 1
+* <i>random_seed</i> - data type - integer, must be equal to or more than 0
+* <i>reports</i> - data type - if the value is passed through CLI - string, if the value is passed in the metadata file - string or list, accepted values: <i>"none"</i> (default) - no reports will be generated, <i>"all"</i> - generates an accuracy report, <i>"accuracy"</i> - generates an accuracy report, <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of a report. Default value is <i>"none"</i>. In the metadata file multiple values can be specified as a list of available options (<i>"accuracy"</i>, <i>"metrics_only"</i>) to generate multiple types of reports simultaneously
+* <i>metadata_path</i> - data type - string
+* <i>log_level</i> - data type - string, must be one of the next values - *TRACE*, *"DEBUG"*, *"INFO"*, *"WARNING"*, *"ERROR"*, *"CRITICAL"*, default value is *"INFO"*
+* <i>fernet_key</i> - data type - string, the name of the environment variable that kept the value of the fernet key. It must be a 44-character URL-safe base64-encoded string, default value is None
+
+The metadata can contain any of the arguments above for each table. If so, the duplicated arguments from the CLI
+will be ignored.
+
+### Linked tables generation
+
+To generate one or more tables, you might provide metadata in yaml format. By providing information about the relationships
+between tables via metadata, it becomes possible to manage complex relationships across any number of tables.
+You can also specify additional parameters needed for training and inference in the metadata file and in this case,
+they will be ignored in the CLI call.
+
+*Note:* By using metadata file, you can also generate tables with absent relationships.
+In this case, the tables will be generated independently.
+
+The yaml metadata file should match the following template:
+
+```yaml
+global:                                     # Global settings. Optional parameter. In this section you can specify training and inference settings which will be set for all tables
+  train_settings:                           # Settings for training process. Optional parameter
+    epochs: 10                              # Number of epochs if different from the default in the command line options. Optional parameter
+    drop_null: False                        # Drop rows with NULL values. Optional parameter
+    row_limit: null                         # Number of rows to train over. A number less than the original table length will randomly subset the specified rows number. Optional parameter
+    batch_size: 32                          # If specified, the training is split into batches. This can save the RAM. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates both accuracy and sample reports, "accuracy" - generates an accuracy report, "sample" - generates a sample report, "metrics_only" - outputs the metrics information only to standard output without generation of a report. Multiple values can be specified as a list to generate multiple types of reports simultaneously, e.g. ["metrics_only", "sample"]. Might require significant time for big tables (>10000 rows).
+
+  infer_settings:                           # Settings for infer process. Optional parameter
+    size: 100                               # Size for generated data. Optional parameter
+    run_parallel: False                     # Turn on or turn off parallel training process. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates an accuracy report, "accuracy" - generates an accuracy report, "metrics_only" - outputs the metrics information only to standard output without generation of a report. Multiple values can be specified as a list to generate multiple types of reports simultaneously. Might require significant time for big generated tables (>10000 rows).
+    batch_size: null                        # If specified, the generation is split into batches. This can save the RAM. Optional parameter
+    random_seed: null                       # If specified, generates a reproducible result. Optional parameter
+
+  encryption:
+    fernet_key: null                       # The name of the environment variable that kept the value of the fernet key used to encrypt the sample data of the original data. If the fernet key is not set, the original data will be stored in '.pkl' format. If the fernet key is set, the original data will be encrypted and stored securely in '.dat' format. The same fernet key should be used for both training and inference processes to ensure that the original data can be decrypted correctly. Optional parameter
+
+CUSTOMER:                                   # Table name. Required parameter
+  train_settings:                           # Settings for training process. Required parameter
+    source: "./files/customer.csv"          # The path to the original data. Supported formats include local files in '.csv', '.avro' formats. Required parameter
+    epochs: 10                              # Number of epochs if different from the default in the command line options. Optional parameter
+    drop_null: False                        # Drop rows with NULL values. Optional parameter
+    row_limit: null                         # Number of rows to train over. A number less than the original table length will randomly subset the specified rows number. Optional parameter
+    batch_size: 32                          # If specified, the training is split into batches. This can save the RAM. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates both accuracy and sample reports, "accuracy" - generates an accuracy report, "sample" - generates a sample report, "metrics_only" - outputs the metrics information only to standard output without generation of a report. Multiple values can be specified as a list to generate multiple types of reports simultaneously, e.g. ["metrics_only", "sample"]. Might require significant time for big tables (>10000 rows).
+    column_types:
+      categorical:                          # The list of columns explicitly defined as categorical by the user. Optional parameter
+        - gender
+        - marital_status
+
+  format:                                   # Settings for reading and writing data in '.csv', '.psv', '.tsv', '.txt', '.xls', '.xlsx' format. Optional parameter
+    sep: ','                                # Type: string or null. Delimiter to use. Use "\\t" as an alias for the tab character. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. In a generated data: if the value is longer than 1 character, it falls back to "," with a warning.
+    quotechar: '"'                          # Type: string, must be exactly 1 character. The character used to denote the start and end of a quoted item. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats.
+    quoting: minimal                        # Type: string (case-insensitive) - ["all", "minimal", "non-numeric", "none"]. Controls field quoting behavior: "minimal" - quotes only fields containing special characters (delimiter, quotechar, '\r', '\n' or any of the characters in lineterminator); "all" - quotes all fields; "non-numeric" - quotes all non-numeric fields; "none" - never quotes fields (if the current delimiter, quotechar, escapechar, '\r', '\n' or any of the characters in lineterminator occurs in output data it is preceded by the current escapechar character). Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats.
+    escapechar: '"'                         # Type: string or null, must be exactly 1 character. One-character string used to escape other characters. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats.
+    encoding: null                          # Type: string or null. A string representing the encoding to use in the output file. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats.
+    header: infer                           # Type: integer, "infer", list of integers, or null. Row number(s) to use as the column names and the start of the data. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. In a generated data: null → false (no header row written); any other value → true (header written)
+    skiprows: null                          # Type: integer, list of integers, or null. Line numbers to skip (0-indexed) or number of lines to skip at the start of the file. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data
+    on_bad_lines: error                     # Type: string (case-insensitive) - ["error", "warn", "skip"]. Specifies what to do upon encountering a bad line (a line with too many fields): "error" - raise an error; "warn" - raise a warning and skip the line; "skip" - skip the line silently. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data.
+    engine: null                            # Type: string or null - ["c", "python", "pyarrow"]. Parser engine to use. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data.
+    na_values: null                         # Type: list of strings or null. Additional strings to recognize as NA/NaN. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. In a generated data: only the first element is used as the NA representation ('na_rep'); remaining elements are ignored.
+    sheet_name: 0                           # Type: integer, string, list of integers/strings, or null. Name or index of the sheet in the Excel file. Default: 0 (first sheet). Optional parameter. Applicable for '.xls', '.xlsx' formats.
+
+  infer_settings:                           # Settings for infer process. Optional parameter
+    destination: "./files/generated_data_customer.csv" # The path where the generated data will be stored. If the information about 'destination' isn't specified, by default the synthetic data will be stored locally in '.csv'. Supported formats include local files in '.csv', '.avro' formats. Optional parameter
+    size: 100                               # Size for generated data. Optional parameter
+    run_parallel: False                     # Turn on or turn off parallel training process. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates an accuracy report, "accuracy" - generates an accuracy report, "metrics_only" - outputs the metrics information only to standard output without generation of a report. Multiple values can be specified as a list to generate multiple types of reports simultaneously. Might require significant time for big generated tables (>10000 rows).
+    batch_size: null                        # If specified, the generation is split into batches. This can save the RAM. Optional parameter
+    random_seed: null                       # If specified, generates a reproducible result. Optional parameter
+
+  encryption:
+    fernet_key: null                        # The name of the environment variable that kept the value of the fernet key used to encrypt the sample data of the original data. If the fernet key is not set, the original data will be stored in '.pkl' format. If the fernet key is set, the original data will be encrypted and stored securely in '.dat' format. The same fernet key should be used for both training and inference processes to ensure that the original data can be decrypted correctly. Optional parameter
+
+  keys:                                     # Keys of the table. Optional parameter
+    PK_CUSTOMER_ID:                         # Name of a key. Only one PK per table.
+      type: "PK"                            # The key type. Supported: PK - primary key, FK - foreign key, TKN - token key
+      columns:                              # Array of column names
+        - customer_id
+      regex_patterns:                       # Regex pattern for generating key values. Optional parameter. Applicable for PK and UQ key types only. Useful if the generation of the key column should follow specific rule(-s).
+        customer_id: "CUST-[0-9]{6}"        # Pattern to generate values for the specified column. E.g., "CUST-123456"
+
+    UQ1:                                    # Name of a key
+      type: "UQ"                            # One or many unique keys
+      columns:
+        - e_mail
+      regex_patterns:
+        e_mail: "[a-z]{5,10}\\.[a-z]{3,7}@(gmail|yahoo|outlook)\\.com"  # E.g., "johnd.smith@gmail.com"
+    FK1:                                    # One or many foreign keys
+      type: "FK"
+      columns:                              # Array of columns in the current table
+        - e_mail
+        - alias
+      references:
+        table: "PROFILE"                    # Name of the parent table
+        columns:                            # Array of columns in the parent table
+          - e_mail
+          - alias
+
+    FK2:
+      type: "FK"
+      columns:
+        - address_id
+      references:
+        table: "ADDRESS"
+        columns:
+          - address_id
+
+
+ORDER:                                      # Table name. Required parameter
+  train_settings:                           # Settings for training process. Required parameter
+    source: "./files/order.csv"             # The path to the original data. Supported formats include local files in 'csv', '.avro' formats. Required parameter
+    epochs: 10                              # Number of epochs if different from the default in the command line options. Optional parameter
+    drop_null: False                        # Drop rows with NULL values. Optional parameter
+    row_limit: null                         # Number of rows to train over. A number less than the original table length will randomly subset the specified rows number. Optional parameter
+    batch_size: 32                          # If specified, the training is split into batches. This can save the RAM. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates both accuracy and sample reports, "accuracy" - generates an accuracy report, "sample" - generates a sample report, "metrics_only" - outputs the metrics information only to standard output without generation of a report, e.g. ["metrics_only", "sample"]. Might require significant time for big tables (>10000 rows).
+    column_types:
+      categorical:                          # The list of columns explicitly defined as categorical by the user. Optional parameter
+        - gender
+        - marital_status
+
+  infer_settings:                           # Settings for infer process. Optional parameter
+    destination: "./files/generated_data_order.csv" # The path where the generated data will be stored. If the information about 'destination' isn't specified, by default the synthetic data will be stored locally in '.csv'. Supported formats include local files in 'csv', '.avro' formats. Required parameter
+    size: 100                               # Size for generated data. Optional parameter
+    run_parallel: False                     # Turn on or turn off parallel training process. Optional parameter
+    reports: none                           # Controls the generation of quality reports. Optional parameter. Accepted values: "none" (default) - no reports will be generated, "all" - generates an accuracy report, "accuracy" - generates an accuracy report, "metrics_only" - outputs the metrics information only to standard output without generation of a report. Multiple values can be specified as a list to generate multiple types of reports simultaneously.  Might require significant time for big generated tables (>10000 rows).
+    batch_size: null                        # If specified, the generation is split into batches. This can save the RAM. Optional parameter
+    random_seed: null                       # If specified, generates a reproducible result. Optional parameter
+
+  format:                                   # Settings for reading and writing data in '.csv', '.psv', '.tsv', '.txt', '.xls', '.xlsx' format. Optional parameter
+    sep: ','                                # Type: string or null. Delimiter to use. Use "\\t" as an alias for the tab character. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. On save: if the value is longer than 1 character, it falls back to "," with a warning
+    quotechar: '"'                          # Type: string, must be exactly 1 character. The character used to denote the start and end of a quoted item. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats
+    quoting: minimal                        # Type: string (case-insensitive) - ["all", "minimal", "non-numeric", "none"]. Controls field quoting behavior: "minimal" - quotes only fields containing special characters (delimiter, quotechar, or line terminator); "all" - quotes all fields; "non-numeric" - quotes all non-numeric fields; "none" - never quotes fields (if the delimiter appears in output data, it is preceded by the escape character). Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. On save: converted to the corresponding csv.QUOTE_* integer constant
+    escapechar: '"'                         # Type: string or null, must be exactly 1 character. One-character string used to escape other characters. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats
+    encoding: null                          # Type: string or null. A string representing the encoding to use in the output file. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats
+    header: infer                           # Type: int, "infer", list of ints, or null. Row number(s) to use as the column names and the start of the data. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. On save: null → false (no header row written); any other value → true (header written)
+    skiprows: null                          # Type: int, list of ints, or null. Line numbers to skip (0-indexed) or number of lines to skip at the start of the file. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data
+    on_bad_lines: error                     # Type: string (case-insensitive) - ["error", "warn", "skip"]. Specifies what to do upon encountering a bad line (a line with too many fields): "error" - raise an error; "warn" - raise a warning and skip the line; "skip" - skip the line silently. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data
+    engine: null                            # Type: string or null - ["c", "python", "pyarrow"]. Parser engine to use. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. Load-only: stripped on save, not applied when writing generated data
+    na_values: null                         # Type: list of strings or null. Additional strings to recognize as NA/NaN. Optional parameter. Applicable for '.csv', '.psv', '.tsv', '.txt' formats. On save: only the first element is used as the NA representation (na_rep); remaining elements are ignored
+    sheet_name: 0                           # Type: int, string, list of ints/strings, or null. Name or index of the sheet in the Excel file. Default: 0 (first sheet). Optional parameter. Applicable for '.xls', '.xlsx' formats
+
+  encryption:
+    fernet_key: null                        # The name of the environment variable that kept the value of the fernet key used to encrypt the sample data of the original data. If the fernet key is not set, the original data will be stored in '.pkl' format. If the fernet key is set, the original data will be encrypted and stored securely in '.dat' format. The same fernet key should be used for both training and inference processes to ensure that the original data can be decrypted correctly. Optional parameter
+
+  keys:                                     # Keys of the table. Optional parameter
+    pk_order_id:
+      type: "PK"
+      columns:
+        - order_id
+
+    FK1:
+      type: "FK"
+      columns:
+        - customer_id
+      references:
+        table: "CUSTOMER"
+        columns:
+          - customer_id
+```
+
+*Note:*
+<ul>
+<li>In the section <i>"global"</i> you can specify training and inference settings for all tables. If the same settings are specified for a specific table, they will override the global settings</li>
+<li>If the information about <i>"destination"</i> isn't specified in <i>"infer_settings"</i>, by default the synthetic data will be stored locally in <i>".csv"</i> format</li>
+</ul>
+
+<i>You can find the example of metadata file in [examples/example-metadata/housing_metadata.yaml](examples/example-metadata/housing_metadata.yaml)</i><br>
+
+By providing the necessary information through a metadata file, you can initiate training and inference processes using the following commands:
+
+```bash
+train --metadata_path=PATH_TO_YAML_METADATA_FILE
+infer --metadata_path=PATH_TO_YAML_METADATA_FILE
+```
+Here is a quick example:
+
+```bash
+train --metadata_path="./examples/example-metadata/housing_metadata.yaml"
+infer --metadata_path="./examples/example-metadata/housing_metadata.yaml"
+```
+
+If `--metadata_path` is present and the metadata contains the necessary parameters, other CLI parameters will be ignored.<br>
+
+### Ways to set the value(s) in the section "reports" of the metadata file
+
+The accepted values in the section <i>"reports"</i> in <i>"train_settings"</i>:
+ - <i>"none"</i> (default) - no reports will be generated
+ - <i>"accuracy"</i> - generates an accuracy report to measure the quality of synthetic data relative to the original dataset. This report is produced after the completion of the training process, during which a model learns to generate new data. The synthetic data generated for this report is of the same size as the original dataset to reach more accurate comparison.
+ - <i>"sample"</i> - generates a sample report (if original data is sampled, the comparison of distributions of original data and sampled data is provided in the report)
+ - <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of an accuracy report
+ - <i>"all"</i> - generates both accuracy and sample reports<br>
+Default value is <i>"none"</i>.
+
+Examples how to set the value(s) in the section <i>"reports"</i> in <i>"train_settings"</i>:
+```yaml
+
+reports: none
+
+reports: all
+
+reports: accuracy
+
+reports: metrics_only
+
+reports: sample
+
+reports:
+  - accuracy
+  - metrics_only
+  - sample
+```
+The accepted values for the parameter <i>"reports"</i> in <i>"infer_settings"</i>:
+ - <i>"none"</i> (default) - no reports will be generated
+ - <i>"accuracy"</i> - generates an accuracy report to verify the quality of the generated data
+ - <i>"metrics_only"</i> - outputs the metrics information only to standard output without generation of an accuracy report
+ - <i>"all"</i> - generates an accuracy report<br>
+Default value is <i>"none"</i>.
+
+Examples how to set the value(s) in the section <i>"reports"</i> in <i>"infer_settings"</i>:
+```yaml
+
+reports: none
+
+reports: all
+
+reports: accuracy
+
+reports: metrics_only
+
+reports:
+  - accuracy
+  - metrics_only
+```
+
+
+### Docker images
+
+The train and inference components of <i>syngen</i> is available as public docker image:
+
+<https://hub.docker.com/r/tdspora/syngen>
+
+To run dockerized code (see parameters description in *Training* and *Inference* sections) for one table call:
+
+```bash
+docker pull tdspora/syngen
+docker run --rm \
+  --user $(id -u):$(id -g) \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=train \
+  --table_name=TABLE_NAME \
+  --source=./model_artifacts/YOUR_CSV_FILE.csv
+
+docker run --rm \
+  --user $(id -u):$(id -g) \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=infer \
+  --table_name=TABLE_NAME
+```
+
+PATH_TO_LOCAL_FOLDER is an absolute path to the folder where your original csv is stored.
+
+You can add any arguments listed in the corresponding sections for infer and training processes in the CLI call.
+
+To run dockerized code by providing the metadata file simply call:
+
+```bash
+docker pull tdspora/syngen
+docker run --rm \
+  --user $(id -u):$(id -g) \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=train \
+  --metadata_path=./model_artifacts/PATH_TO_METADATA_YAML
+
+docker run --rm \
+  --user $(id -u):$(id -g) \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=infer \
+  --metadata_path=./model_artifacts/PATH_TO_METADATA_YAML
+```
+
+You can add any arguments listed in the corresponding sections for infer and training processes in the CLI call, however, they will be
+overwritten by corresponding arguments in the metadata file.
+
+#### CPU deployment mode
+
+Set `SYNGEN_DEPLOYMENT_MODE` when starting the container to select the CPU policy:
+
+- `dedicated` is the default. Use it when one training or inference job owns the
+  host; Syngen uses its available CPU budget without forcing idle OpenMP/MKL
+  threads to sleep.
+- `shared` is for CI/CD or orchestration that runs multiple Syngen containers on
+  one host. It configures idle OpenMP/MKL threads to sleep. Both modes use the
+  container's cgroup CPU quota or CPU affinity when calculating the CPU budget.
+
+For shared deployments, set a CPU quota or CPU affinity for every container.
+Without one, each container can see the whole host and cannot reliably divide
+resources among its peers.
+
+The variable applies equally to Docker, the installed CLI, and SDK imports.
+
+```bash
+docker run --rm \
+  -e SYNGEN_DEPLOYMENT_MODE=shared \
+  --cpus=4 \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=infer \
+  --metadata_path=./model_artifacts/PATH_TO_METADATA_YAML
+```
+
+#### MLflow monitoring
+
+Set the `MLFLOW_TRACKING_URI` environment variable to the desired MLflow tracking server, for instance:
+http://localhost:5000/. You can also set the `MLFLOW_ARTIFACTS_DESTINATION` environment variable to your preferred path
+(including the cloud path), where the artifacts should be stored. Additionally, set the `MLFLOW_EXPERIMENT_NAME`
+environment variable to the name you prefer for the experiment.
+To get the system metrics, please set the `MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING` environment variable to `true`.
+By default, the metrics are logged every 10 seconds, but the interval may be changed by setting the environment variable
+`MLFLOW_SYSTEM_METRICS_SAMPLING_INTERVAL` (for more detailed description look [here](https://mlflow.org/docs/latest/system-metrics/index.html))
+
+When using Docker, ensure the environmental variables are set before running the container.
+
+The provided environmental variables allow to track the training process, and the inference process, and store
+the artifacts in the desired location.
+You can access the MLflow UI by navigating to the provided URL in your browser. If you store artifacts in remote storage,
+ensure that all necessary credentials are provided before using Mlflow.
+
+```bash
+docker pull tdspora/syngen:latest
+docker run --rm -it \
+  --user $(id -u):$(id -g) \
+  -e MLFLOW_TRACKING_URI='http://localhost:5000' \
+  -e MLFLOW_ARTIFACTS_DESTINATION=MLFLOW_ARTIFACTS_DESTINATION \
+  -e MLFLOW_EXPERIMENT_NAME=test_name \
+  -e MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true \
+  -e MLFLOW_SYSTEM_METRICS_SAMPLING_INTERVAL 10 \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=train \
+  --metadata_path=./model_artifacts/PATH_TO_METADATA_YAML
+
+docker run --rm -it \
+  --user $(id -u):$(id -g) \
+  -e MLFLOW_TRACKING_URI='http://localhost:5000' \
+  -e MLFLOW_ARTIFACTS_DESTINATION=MLFLOW_ARTIFACTS_DESTINATION \
+  -e MLFLOW_EXPERIMENT_NAME=test_name \
+  -e MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true \
+  -e MLFLOW_SYSTEM_METRICS_SAMPLING_INTERVAL 10 \
+  -v PATH_TO_LOCAL_FOLDER:/src/model_artifacts tdspora/syngen \
+  --task=infer \
+  --metadata_path=./model_artifacts/PATH_TO_METADATA_YAML
+```
+
+### How to keep the original data secure
+
+In the current implementation, a sample of the original data is securely stored on disk.
+To ensure data security, it is recommended to provide the name of the environment variable that kept the value of the fernet key value via the `fernet_key` parameter,
+either through the command-line interface (CLI) or a metadata file.
+The Fernet key enables encryption of the stored data, ensuring its protection.
+
+*Fernet key usage during inference*:
+During inference, previously encrypted data may need to be decrypted to enable comparisons with synthetic data for report generation.
+If the data was encrypted during the training process, the same Fernet key used for encryption must be provided during inference to successfully
+decrypt the data and generate reports.
+
+*Please, pay attention:*
+Please, store the Fernet key securely. If the key is lost, encrypted data cannot be recovered.
+
+*Note:* To generate a Fernet key, you can use the following code:
+
+```python
+from cryptography.fernet import Fernet
+
+cipher = Fernet.generate_key().decode("utf-8")
+```
+Then you should set the generated key as an environment variable in your terminal:
+
+```bash
+export YOUR_FERNET_KEY_NAME='YOUR_GENERATED_FERNET_KEY'
+```
+
+
+## Using SDK (Programmatic Interface)
+
+In addition to the CLI, *Syngen* provides a Python SDK for programmatic access to the main functionality. The SDK is useful when you want to integrate synthetic data generation into your Python applications, notebooks, or data pipelines.
+
+### SDK Classes
+
+The SDK provides two main classes:
+
+#### `Syngen` - Core functionality for a training, inference, and report generation
+
+```python
+from syngen.sdk import Syngen
+
+
+# Training
+Syngen(source="path/to/data.csv", table_name="my_table").train(
+    epochs=10,
+    row_limit=1000,
+    batch_size=32,
+    log_level="DEBUG",
+    reports="all"
+)
+
+Syngen(metadata_path="path/to/metadata.yaml").train(log_level="DEBUG")
+
+# Inference
+Syngen(source="path/to/data.csv", table_name="my_table").infer(
+  size=1000,
+  random_seed=42,
+  reports="accuracy"
+)
+
+Syngen(metadata_path="path/to/metadata.yaml").infer(log_level="DEBUG")
+
+# Generate reports separately for a certain table
+Syngen(metadata_path="path/to/metadata.yaml").generate_quality_reports(
+  table_name="my_table",
+  reports=["accuracy", "sample"]
+)
+```
+
+#### `DataIO` - Data loading and saving
+
+```python
+from syngen.sdk import DataIO
+
+data_io = DataIO(
+  path="data.csv",
+  sep=',',
+  encoding='utf-8',
+  header=0
+)
+df = data_io.load_data()
+
+data_io.save_data(df)
+```
+
+### Key SDK features
+
+- **Training and inference**: All CLI parameters are available as method arguments
+- **Report generation**: Generate quality reports separately for a certain table after a training/inference processes
+- **Data I/O**: Load and save data in multiple formats (*CSV*, *Avro*, *Excel*) with custom settings
+- **Encryption support**: Use a Fernet key for secure data handling
+- **Metadata support**: Use a metadata file for complex workflows with multiple tables
+- **Format configuration**: Customize delimiters, encodings, and other format-specific settings for loading data
+- **Loader function**: Provide a custom data loader function for advanced data loading scenarios with an opportunity to skip the process of saving the sample of the original data on the disk
+
+### Custom data loader function
+
+SDK allows you to provide a custom data loader function instead of `source` during the initialization of the `Syngen` class.
+This is useful when you need to load the original data with specific parameters, or from formats that require
+custom handling, and at the same time keep the original data secure by skipping the process
+of saving the sample of the original data on the disk.
+
+#### How it works
+
+The `loader` attribute of the class `Syngen` accepts an object of the function.
+
+##### Requirements for a custom loader function
+
+Your custom loader function must:
+1. Accept a single parameter: the name of the table as a string
+2. Return a pandas DataFrame
+3. Be importable from Python's module system
+
+```python
+import pandas as pd
+
+def my_custom_loader(table_name: str) -> pd.DataFrame:
+    # Your custom loading logic here
+    pass
+```
+
+#### The example: the complete workflow
+
+1. Create a custom loader function
+2. Use it for training and inference:
+
+```python
+from syngen.sdk import Syngen
+import pandas as pd
+
+
+def my_custom_loader(table_name: str) -> pd.DataFrame:
+    # Custom logic to load data based on table_name
+    if table_name == "my_table":
+        return pd.read_csv(f"path/to/{table_name}.csv")
+    else:
+        raise ValueError(f"Unknown table name: {table_name}")
+
+
+launcher = Syngen(loader=my_custom_loader, table_name="my_table")
+
+launcher.train(
+    epochs=10,
+    row_limit=1000,
+    batch_size=32,
+    log_level="DEBUG",
+    reports="all"
+)
+
+launcher.infer(
+  size=1000,
+  random_seed=42,
+  reports="accuracy"
+)
+```
+
+### SDK Examples
+
+For detailed examples and usage patterns, please refer to the [SDK demonstration notebook](demo-notebooks/SDK_demonstration.ipynb)
+
+
+## Syngen Installation Guide for MacOS ARM (M1/M2) with Python 3.10 or 3.11
+
+### Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- Python 3.10 or 3.11
+- Homebrew (optional but recommended for managing dependencies)
+
+### Installation Steps
+
+1. **Upgrade pip**: Ensure you have the latest version of `pip`.
+
+    ```sh
+    pip install --upgrade pip
+    ```
+
+2. **Install Setuptools, Wheel, and Cython**: These packages are necessary for building and installing other dependencies.
+
+    ```sh
+    pip install setuptools wheel 'Cython<3'
+    ```
+
+3. **Install Fastavro**: Install a specific version of `fastavro` to avoid build issues.
+
+    ```sh
+    pip install --no-build-isolation fastavro==1.5.1
+    ```
+
+4. **Install Syngen**: Now, you can install the Syngen package.
+
+    ```sh
+    pip install syngen
+    ```
+
+5. **Install TensorFlow Metal**: This package leverages the GPU capabilities of M1/M2 chips for TensorFlow.
+
+    ```sh
+    pip install tensorflow-metal
+    ```
+
+#### From source (development)
+
+Download repository from GitHub by cloning or zip file.
+Then install it in editable mode.
+
+```sh
+    pip install -e .
+```
+
+To also install the test dependencies (`pytest` and friends), use the `test` extra:
+
+```sh
+    pip install -e ".[test]"
+```
+
+### Additional Information
+
+- **Homebrew**: If you do not have Homebrew installed, you can install it by running:
+
+    ```sh
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ```
+
+- **Python 3.10**: Ensure you have Python 3.10 installed. You can use pyenv to manage different Python versions:
+
+    ```sh
+    brew install pyenv
+    pyenv install 3.10.0
+    pyenv global 3.10.0
+    ```
+OR
+- **Python 3.11**: Ensure you have Python 3.11 installed. You can use pyenv to manage different Python versions:
+
+    ```sh
+    brew install pyenv
+    pyenv install 3.11.0
+    pyenv global 3.11.0
+    ```
+
+### Verifying Installation
+
+To verify the installation, run the following command to check if Syngen is installed correctly:
+
+```sh
+python -c "import syngen; print(syngen.__version__)"
+```
+
+If the command prints the version of Syngen without errors, the installation was successful.
+
+### Troubleshooting
+
+If you encounter any issues during installation, consider the following steps:
+
+- Ensure all dependencies are up-to-date.
+- Check for any compatibility issues with other installed packages.
+- Consult the Syngen [documentation](https://github.com/tdspora/syngen) or raise an issue on GitHub.
+
+## Contribution
+
+We welcome contributions from the community to help us improve and maintain our public GitHub repository. We appreciate any feedback, bug reports, or feature requests, and we encourage developers to submit fixes or new features using issues.
+
+If you have found a bug or have a feature request, please submit an issue to our GitHub repository. Please provide as much detail as possible, including steps to reproduce the issue or a clear description of the feature request. Our team will review the issue and work with you to address any problems or discuss any potential new features.
+
+If you would like to contribute a fix or a new feature, please submit a pull request to our GitHub repository. Please make sure your code follows our coding standards and best practices. Our team will review your pull request and work with you to ensure that it meets our standards and is ready for inclusion in our codebase.
+
+We appreciate your contributions, and thank you for your interest in helping us maintain and improve our public GitHub repository.

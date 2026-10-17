@@ -1,0 +1,193 @@
+# CADPilot
+
+**English** | [Chinese](README.zh-CN.md)
+
+**AI pilots FreeCAD.** CADPilot is an MCP (Model Context Protocol) server that gives AI clients (Cherry Studio, Claude Code, ZCode, Kimi Code, Claude Desktop, …) full control of [FreeCAD](https://www.freecad.org/): create documents, build constrained sketches, run parametric features, assemble parts with persistent joints, and verify geometry, all via tool calls over XML-RPC.
+
+## Showcase
+
+Models built by the AI through CADPilot (demo files live in [`examples/`](examples/)):
+
+| Backpack | Desk Fan |
+| :---: | :---: |
+| [<img src="examples/Backpack.png" width="300" alt="Backpack modeled by CADPilot">](examples/Backpack.FCStd) | [<img src="examples/DeskFan.png" width="300" alt="Desk fan modeled by CADPilot">](examples/DeskFan.FCStd) |
+| **Violin** | **Leaf** |
+| [<img src="examples/Violin.png" width="300" alt="Violin modeled by CADPilot">](examples/Violin.FCStd) | [<img src="examples/Leaf.png" width="300" alt="Leaf modeled by CADPilot">](examples/Leaf.FCStd) |
+
+## Features
+
+* **Parametric modeling, end to end**: spreadsheet-driven variables, fully constrained sketches, PartDesign features (pad/pocket/revolution/…), dress-up ops, and a multi-view 2D→3D visual hull, all through one unified `cad()` tool.
+* **Step journal & review loop**: every mutation is also journaled on the FreeCAD side and shown in the **Steps panel** dock: run planned steps, accept the good ones (soft lock), reject or roll back the rest, edit parameters in place, and replay the whole build from the journal. `execute_code` is a first-class citizen: a snippet that changes the model is wrapped in a transaction and becomes a rollback-able, replayable step, while a read-only inspection never blocks a rollback. Hand edits in the GUI sync back into the recorded steps; session rollback remains for whole-session undo.
+* **Persistence**: sessions, patterns, and settings survive restarts as JSON under `~/.cadpilot/`; pause a session today, resume it tomorrow.
+* **Geometry sensing**: measure volumes/areas, inspect face/edge topology, and check interference after every step; quantitative feedback replaces guesswork on complex models.
+* **Data-driven assembly**: named anchors, residual-checked mates, connectivity audits, and persistent joints (FreeCAD 1.1 Assembly workbench) with declarative priority trimming.
+* **Workflow memory**: successful modeling recipes are stored as reusable patterns and recalled on demand; the agent gets better the more you use it.
+* **Built-in troubleshooting**: the `diagnose` tool probes the RPC port, the FreeCAD process, the addon install and its logs on Windows/macOS/Linux, ends with a concrete fix, and works even while FreeCAD is down or frozen. `get_addon_log` reads the addon's debug ring buffer even when the GUI is wedged.
+* **Token-friendly**: text-first responses with screenshots on demand via `get_view` (384 px cap, file delivery), a tiny tool surface, and on-demand operation docs keep context usage low.
+
+## Installation
+
+### Step 1: Install the FreeCAD addon
+
+FreeCAD addon directory:
+
+* Windows:
+  * FreeCAD 1.1: `%APPDATA%\FreeCAD\v1-1\Mod\`
+  * FreeCAD 1.0: `%APPDATA%\FreeCAD\Mod\`
+* macOS:
+  * FreeCAD 1.1: `~/Library/Application Support/FreeCAD/v1-1/Mod/`
+  * FreeCAD 1.0: `~/Library/Application Support/FreeCAD/v1-0/Mod/`
+* Linux:
+  * Ubuntu: `~/.FreeCAD/Mod/` or `~/snap/freecad/common/Mod/` (snap installs)
+  * Debian: `~/.local/share/FreeCAD/Mod`
+  * Arch / CachyOS (FreeCAD 1.1 from `extra/freecad`): `~/.local/share/FreeCAD/v1-1/Mod/`
+
+Copy the `addon/CADPilot` directory into the addon directory:
+
+```bash
+git clone https://github.com/LBurny/cadpilot.git
+cd cadpilot
+
+# Linux (Ubuntu/Debian)
+mkdir -p ~/.FreeCAD/Mod/
+cp -r addon/CADPilot ~/.FreeCAD/Mod/
+
+# macOS (FreeCAD 1.1)
+mkdir -p ~/Library/Application\ Support/FreeCAD/v1-1/Mod/
+cp -r addon/CADPilot ~/Library/Application\ Support/FreeCAD/v1-1/Mod/
+
+# Windows (PowerShell, FreeCAD 1.1)
+Copy-Item -Recurse addon/CADPilot "$env:APPDATA\FreeCAD\v1-1\Mod\"
+```
+
+Restart FreeCAD, select **CADPilot** from the workbench list, and start the RPC server with the **Start RPC Server** command in the **CADPilot** toolbar. To start it automatically on every launch, enable **Auto-Start Server** in the **CADPilot** menu.
+
+### Step 2: Install the MCP server
+
+#### Option A: PyPI (recommended)
+
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, no explicit install is needed, since `uvx` fetches the package from PyPI on first use:
+
+```bash
+uvx cadpilot
+```
+
+Or with pip: `pip install cadpilot`
+
+#### Option B: From source
+
+```bash
+git clone https://github.com/LBurny/cadpilot.git
+cd cadpilot
+uv sync
+```
+
+Then use this MCP client configuration instead of the one below, and **replace `/path/to/cadpilot` with the actual clone path** (`--no-sync` skips the editable rebuild on every launch, which would fail while another server instance is running):
+
+```json
+{
+  "mcpServers": {
+    "cadpilot": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/cadpilot", "run", "--no-sync", "cadpilot"]
+    }
+  }
+}
+```
+
+The server speaks MCP on stdio and connects to FreeCAD's XML-RPC addon on `localhost:9875`. You normally don't run it by hand; your AI client launches it via the configuration below.
+
+## Client setup
+
+All MCP clients that support stdio servers use the same configuration: **command** `uvx`, **args** `["cadpilot"]`. Paste this snippet into your client's MCP configuration (Claude Code, Kimi Code, Cherry Studio, ZCode, Claude Desktop, Cursor, …):
+
+```json
+{
+  "mcpServers": {
+    "cadpilot": {
+      "command": "uvx",
+      "args": ["cadpilot"]
+    }
+  }
+}
+```
+
+### Startup options
+
+Tool responses are text-only; the `get_view` tool captures a view screenshot on demand. Each capture is written under `~/.cadpilot/screenshots/` (newest 100 kept) and the response carries only its file path, so no image data enters the context; a multimodal client opens the PNG with its own file-reading tool. Startup flags:
+
+* `--only-text-feedback`: never return screenshots, even when requested (hard guarantee for text-only models)
+* `--host <ip>`: connect to a FreeCAD instance on another machine
+* `--no-auto-audit`: skip the connectivity audit after each mutation (for very large models)
+
+Flags are appended to the args list, for example:
+
+```json
+{
+  "mcpServers": {
+    "cadpilot": {
+      "command": "uvx",
+      "args": ["cadpilot", "--only-text-feedback"]
+    }
+  }
+}
+```
+
+## Remote connections
+
+By default the RPC server listens on `localhost` only. To control FreeCAD from another machine:
+
+1. In the **CADPilot** toolbar, enable **Remote Connections** (the server binds to `0.0.0.0` on next restart) and click **Configure Allowed IPs** to enter a comma-separated list of allowed IP addresses or CIDR subnets, e.g. `192.168.1.100, 10.0.0.0/24`. Only listed addresses can connect; restart the RPC server after changing settings.
+2. Point the MCP server at that machine: `"args": ["cadpilot", "--host", "192.168.1.100"]`.
+
+## Troubleshooting
+
+Something not talking? Ask the AI to run the **`diagnose`** tool. It checks the RPC port, the FreeCAD process, the addon install and its logs (Windows/macOS/Linux), ends with a concrete fix, and works even when FreeCAD is frozen or not running. The two rules that solve most cases:
+
+1. Addon changes load only at startup, so **restart FreeCAD** after installing or updating the addon.
+2. The MCP tool list is built at startup, so **restart the MCP client** after changing the server config or version.
+3. If every document call times out while `ping` still answers, a modal dialog (typically FreeCAD's document-recovery dialog after an unclean shutdown) is holding the queue; `diagnose(dismiss=true)` closes it with Cancel semantics.
+
+## Tools
+
+* **`cad`** is the unified CAD mutation tool: `create_object` / `edit_object` / `delete_object` / `batch`, parametric feature ops (`boolean` / `fillet` / `chamfer` / `loft` / `sweep` / `mirror` / `pattern` / `move`), appearance (`color`: shape color, transparency, line and display settings, for one object or the whole document), Sketcher/PartDesign ops (`variables` / `sketch` / `pad` / `pocket` / `revolution` / `groove` / `thickness` / `draft` / `datum_plane` / `hull`). Edge/face selectors are fed by `get_topology`; every mutation is transactional and rollback-able.
+* **`execute_code` / `execute_code_async` / `get_task_result`** run arbitrary Python in FreeCAD (GUI-thread safe), or background-safe code for long OCCT computations with polling. A run that changes the document is transactional, so it rolls back and replays like any other step; a failing snippet is rolled back cleanly.
+* **Modeling sessions**: `session` (actions `start` / `status` / `get_steps` / `rollback` / `redo` / `add_note` / `pause` / `resume` / `list` / `complete`): step recording with rollback via FreeCAD's native transaction undo.
+* **Step planning & journal**: `step_plan` submits a modeling plan to the FreeCAD-side journal without executing it; `step_control` drives the review loop shared with the Steps panel: `run_next` / `run_all` / `run_to` / `rollback_to` / `reexecute` / `accept` / `reject` / `update` / `insert` / `replay` / `snapshot` / `clear_plan` / `reset`. The journal lives on the document itself, so the panel works even with the RPC server stopped.
+* **Knowledge hierarchy**: `save_pattern` / `recall_patterns` (reusable workflow memory), `inspect_freecad` (runtime API introspection), `operation_help` (per-operation reference docs).
+* **Geometry sensing**: `measure_geometry` / `get_topology` / `check_interference` / `get_positioning_info`: quantitative feedback after each modeling step.
+* **Assembly**: `get_anchors` / `set_anchors` / `assemble` / `align_shapes` / `verify_assembly` for data-driven spatial positioning; `assembly_session` for mate-based assembly with persistent joints (FreeCAD 1.1 Assembly workbench) and declarative priority trimming.
+* **Documents & views**: `create_document` / `list_documents` / `get_objects` (pass `obj_name` for one object's properties) / `get_view` (the only screenshot tool; captures capped at 384 px on the long edge by default).
+* **Diagnostics**: `diagnose` (cross-platform fault probing that works with FreeCAD down) and `get_addon_log` (the addon's ring-buffer debug log, readable while the GUI is wedged).
+
+See the [design document](docs/DESIGN.md) for the architecture behind these tools, and try the demo model [`examples/Backpack.FCStd`](examples/Backpack.FCStd) in FreeCAD.
+
+## Documentation
+
+* MCP design document: [English](docs/DESIGN.md) | [Chinese](docs/DESIGN.zh-CN.md)
+* [Changelog](CHANGELOG.md)
+
+## Development
+
+```bash
+git clone https://github.com/LBurny/cadpilot.git
+cd cadpilot
+uv sync
+uv run pytest          # run the test suite
+uv run ruff check .    # lint
+uv run cadpilot        # run the MCP server from source
+```
+
+Two layers of tests back the tool surface. The unit suite runs without FreeCAD: it includes a wire-contract test that compares every copy of the XML-RPC interface (client proxy, addon handler, test double) so a renamed method or a changed argument count fails in CI instead of at runtime. `tests/live_complex_verify.py` is the live half: complex real-scenario builds (a parametric flange, a shelled enclosure, a hinge assembly, journal and session semantics) that assert analytic volumes against a running FreeCAD, and each stress round adds its cases there instead of writing throwaway probes. Run it with FreeCAD open:
+
+```bash
+.venv/Scripts/python.exe tests/live_complex_verify.py   # Windows; needs FreeCAD + the addon running
+```
+
+## Acknowledgments
+
+This project was originally based on [neka-nat/freecad-mcp](https://github.com/neka-nat/freecad-mcp) by Shirokuma (k tanaka). Many thanks to the original authors; parts of this project are derived from their work (MIT License).
+
+## License
+
+MIT, see [LICENSE](./LICENSE).

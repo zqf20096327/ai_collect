@@ -1,0 +1,720 @@
+<p align="center">
+  <img src="assets/vir_graph_spiral.svg" width="140" height="140" alt="vir logo">
+</p>
+
+<h1 align="center">vir</h1>
+
+<p align="center">
+  Karpathy's LLM Wiki, built automatically from your Claude Code and Codex sessions.<br>
+  Plain markdown you own: best in Obsidian, fine without it.
+</p>
+
+<p align="center">
+  <img src="docs/graph.png" width="900" alt="Obsidian graph view of a vault distilled by vir: session notes, articles, PDFs, and topic pages, cross-linked">
+</p>
+
+<!--
+GitHub topics (add manually: repo → About → ⚙ → Topics):
+claude, claude-code, ai-memory, obsidian, knowledge-base, llm,
+developer-tools, mcp, local-first, cross-platform, llm-wiki
+-->
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@djolex999/vir-cli"><img src="https://img.shields.io/npm/v/@djolex999/vir-cli?color=7c6af7&label=npm" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@djolex999/vir-cli"><img src="https://img.shields.io/npm/dw/@djolex999/vir-cli?color=4fd1a0" alt="npm downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22d3ee" alt="license"></a>
+  <a href="#project-status"><img src="https://img.shields.io/badge/tests-1411%20passing-22c55e" alt="tests"></a>
+  <a href="#project-status"><img src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux-lightgrey" alt="platforms"></a>
+  <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-server-c084fc" alt="mcp"></a>
+  <a href="#"><img src="https://img.shields.io/badge/local--first-yes-f59e0b" alt="local-first"></a>
+  <a href="https://github.com/djolex999/vir"><img src="https://img.shields.io/github/stars/djolex999/vir?style=social" alt="stars"></a>
+</p>
+
+That graph is my vault. Every node is a plain markdown file that vir wrote by
+reading my Claude Code transcripts. It lives in Obsidian next to my own notes.
+There is no server, no account, no export step. Uninstall vir tomorrow and the
+vault stays yours.
+
+## Two numbers
+
+**396 sessions.** Claude Code prunes transcripts after about 30 days. 396 of my
+distilled sessions now exist nowhere except this vault. The decisions and
+gotchas inside them would otherwise be gone.
+
+**1,386 transcripts, 410 notes.** Of the 1,386 transcripts vir has read on my
+machine, 562 were subagent runs, workflow phases, or sidechains — skipped by
+default — and 361 had nothing durable in them. 410 became notes. The vault holds
+your work, not your tooling's.
+
+Numbers from my machine, September 2026. Yours will differ. Website:
+[virwiki.dev](https://virwiki.dev).
+
+## Quick start
+
+```bash
+npm install -g @djolex999/vir-cli
+vir init
+vir run
+```
+
+`vir init` is a wizard: which coding agents you use, provider, models, notes
+folder. `vir run` does one pass
+over your sessions and writes notes. When you like the output,
+`vir schedule install` registers a daemon that keeps the vault current.
+
+## Supported agents
+
+| Agent | Sessions | Status |
+|---|---|---|
+| Claude Code | `~/.claude/projects/` | ✅ |
+| Codex (CLI, IDE extension, desktop app) | `~/.codex/sessions/` | ✅ new in 0.26 |
+| Cursor | — | planned |
+
+`vir init` asks which agents you use and pre-checks the ones it finds. To add
+Codex to an existing install, re-run `vir init`, or set `codexSessionsDir` in
+`~/.vir/config.json`:
+
+```json
+{ "codexSessionsDir": "~/.codex/sessions" }
+```
+
+A project you work on from both agents is one project: vir names it by the
+folder you started in, the same way for each. Codex desktop chats started
+outside a repo (`~/Documents/Codex/…`) are grouped as one `codex-scratch`
+project. Codex subagent and review threads are skipped, like Claude Code's
+sidechains.
+
+Things to know about Codex:
+
+- **New Codex projects start undecided.** Codex sessions run larger than
+  Claude Code's, so nothing is distilled until you include a project. Run
+  `vir run --dry-run` first to see the estimate, then `vir projects`.
+- **Archived Codex threads are not distilled.** vir reads
+  `~/.codex/sessions/` only; archiving a thread moves it out of reach.
+- **No API key needed with a ChatGPT plan:** `provider: "codex-cli"`
+  distills through `codex exec` (experimental, see
+  [Cost](#codex-subscription-codex-cli-experimental)). Any other provider
+  works too.
+
+## What it does
+
+Vir reads transcripts from `~/.claude/projects`, filters out the noise,
+classifies what survives with Haiku, and distills durable knowledge with
+Sonnet. Notes are typed: patterns, gotchas, decisions, tools. Three input
+sources feed one vault:
+
+- **Claude Code sessions.** Retroactive: months of existing history become
+  notes in one run.
+- **Web articles** clipped to a folder, e.g. via Obsidian Web Clipper.
+- **PDFs and papers.**
+
+Everything embeds into one vector space (Ollama, optional, TF-IDF fallback).
+`vir query "<question>"` searches it and synthesizes an answer. An MCP server
+exposes the vault to Claude Code or Codex mid-session, so the agent consults
+past decisions instead of rediscovering them. `vir sync-claude` feeds the best
+notes back into your CLAUDE.md files, and into AGENTS.md files that already
+exist (`~/.codex/AGENTS.md`, project roots), with a diff and your confirmation.
+
+<p align="center">
+  <img src="assets/demo.gif" width="800" alt="vir distilling Claude Code sessions into notes in an Obsidian vault">
+</p>
+
+New in 0.25: `vir connect` finds a lesson you keep re-learning across sessions
+and proposes it as a rule, quoting each note it came from. You review it, and
+`vir sync-claude` adds it to CLAUDE.md only with a yes for that rule.
+
+<p align="center">
+  <img src="assets/demo-connect.gif" width="800" alt="vir connect finds one recurring lesson; vir review --insights shows the proposed rule with its three quoted sources; vir sync-claude asks y/n for that rule before writing it into the project's CLAUDE.md">
+</p>
+
+```
+Claude Code sessions
+      ↓
+     vir
+      ↓
+markdown notes (Obsidian vault optional)
+      ↓
+  CLAUDE.md
+      ↓
+better sessions
+      ↓
+     ...
+```
+
+## The pattern
+
+In April 2026, Andrej Karpathy described a pattern he calls the **LLM Wiki**:
+AI work that feeds back into itself through a persistent, curated, structured
+artifact, instead of resetting at the end of every session. He published the
+idea file at
+[karpathy/llm-wiki.md](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+and ended his post saying: _"I think there is room here for an incredible new
+product instead of a hacky collection of scripts."_
+
+Several open source implementations of this pattern now exist
+([lucasastorian/llmwiki](https://github.com/lucasastorian/llmwiki),
+[Pratiyush/llm-wiki](https://github.com/Pratiyush/llm-wiki),
+[nashsu/llm_wiki](https://github.com/nashsu/llm_wiki) among them). Each takes
+a different shape.
+
+Vir is the one built from your own coding sessions, and it is Obsidian-native
+when you want it. In Obsidian it is a frontend, not just a storage location: a
+sidebar plugin
+([vir-obsidian](https://github.com/djolex999/vir-obsidian)),
+dataview-compatible frontmatter, wikilinked notes that show up in the graph.
+It reads AI coding session transcripts retroactively, so months of existing
+history become a queryable knowledge base in one run. Without Obsidian it is a
+folder of markdown, and `vir query` and the MCP server work with no editor at
+all.
+
+[Karpathy's post →](https://x.com/karpathy/status/2039805659525644595)
+
+## Quality controls
+
+Auto-distilled notes can be wrong. The most common concern from early users:
+_"if your distillations are wrong, Claude treats them as truth and you get
+worse results, not better."_ Fair. Vir addresses it in layers:
+
+- **Transcript filtering.** Workflow transcripts, subagent sidechains, and
+  headless SDK agent runs are detected structurally and excluded before any
+  API call. Every skip is recorded with a reason, and every skip is
+  reversible: flip the knob and the transcripts re-enter on the next run.
+- **Project triage.** `vir projects` shows every project with session counts
+  and estimated pending cost. Include or exclude each one. Undecided projects
+  are a visible state, never a silent default.
+- **Confidence scores on every note**, written into the frontmatter
+  (`confidence: 0.xx`). A cheap heuristic pre-filter drops low-signal sessions
+  before any LLM call; classification then scores what survives, and anything
+  at or below `0.6` is dropped before the more expensive distill step.
+- **Opt-in `CLAUDE.md` sync.** Nothing vir generates touches your prompt
+  context automatically. `vir sync-claude` shows a diff and waits for your
+  confirmation. You decide what reaches Claude.
+- **Plain markdown output.** Every note is a file in your notes folder. Read
+  it, edit it, delete it. Nothing is hidden in a database you can't inspect.
+- **Lint and dedupe.** `vir lint` flags contradictions and stale notes;
+  `vir dedupe` merges near-duplicate notes that have drifted apart.
+- **Active learning** via `vir review`. Walk through new distillations and
+  approve, edit, or reject each one. Verified notes get a ranking boost in
+  retrieval (in `vir query` and the MCP server). Rejected notes move to `.rejected/`,
+  recoverable, not deleted.
+- **Measured retrieval.** Ranking defaults are set by a retrieval eval over
+  judged queries, not by feel: pure relevance by default, with MMR diversity
+  (`retrievalDiversity`) available when you want it.
+- **Recurring lessons become rules, only with your yes.** `vir connect` looks
+  for a lesson you've written down in at least 3 sessions over at least a
+  week (by embedding each "What Was Learned" item), and has the model state it
+  as one rule, with a verbatim quote from every note it cites; quotes that
+  aren't in the note are thrown out. Proposed rules live in `insights/rules/`,
+  stay out of search until you accept them in `vir review --insights`, and
+  reach CLAUDE.md only through `vir sync-claude`, which asks about each rule
+  separately and never adds one under `--force`. Rejected rules stay rejected
+  even after the source notes are rewritten. Needs an embedding provider.
+- **Topic synthesis** via `vir compose "<topic>"`. Embedding-searches the
+  vault for related notes and synthesizes them into a single topic page under
+  `topics/`, with each source wikilinked so it backlinks in Obsidian's graph.
+  `--dry-run` previews the sources and cost for free.
+- **Cost transparency.** `vir run --dry-run` estimates per-session cost before
+  you spend a cent; `vir cost` reports the actuals (total, median, p90, top
+  sessions) from a local `~/.vir/cost.log`. Pricing is provider-aware
+  (Anthropic list rates and Kie's discount), so the numbers reflect your
+  bill, not a blended guess.
+- **Reliable failures.** Every command exits non-zero on failure. A provider
+  outage is one clear failure, not a retry storm: a cheap preflight probe
+  runs before the distill loop. Sessions that fail 3 times in a row are
+  parked until you retry them with `vir reconcile --force`.
+
+The bet: with these controls, signal-to-noise stays high enough that the
+vault is a net positive. If your discipline is strong enough to maintain
+`CLAUDE.md` and `lessons.md` by hand, you may not need this. If, like most of
+us, you let those files drift after the first week, vir catches what slips
+through.
+
+## How vir compares
+
+The LLM Wiki space has grown fast. Honest comparison:
+
+### vs other LLM Wiki implementations
+
+|                                   | Vir                          | lucasastorian/llmwiki         | Pratiyush/llm-wiki                       | nashsu/llm_wiki           |
+| --------------------------------- | ---------------------------- | ----------------------------- | ---------------------------------------- | ------------------------- |
+| Language                          | TypeScript / Node            | Python                        | Python                                   | Cross-platform desktop    |
+| Distribution                      | `npm install -g`             | Local app + hosted SaaS       | `git clone` + python                     | Desktop app installer     |
+| Obsidian integration              | Native (sidebar plugin)      | Markdown output               | Outputs to vault                         | Own UI, no Obsidian       |
+| Input sources                     | Claude Code, Codex, web clips, PDFs | PDFs, docs upload             | Claude Code, Cursor, Cline, Codex, Gemini | Documents, mixed sources  |
+| Retroactive on existing sessions  | ✓                            | n/a                           | from install forward                     | n/a                       |
+| MCP server                        | ✓                            | ✓                             | ✓                                        | ✓                         |
+| License                           | MIT                          | open source + hosted commercial | MIT                                    | open source               |
+
+### vs Claude Code memory tools
+
+|                                     | Vir              | claude-mem           | claude-memory      | mem0              |
+| ----------------------------------- | ---------------- | -------------------- | ------------------ | ----------------- |
+| Reads existing Claude Code sessions | ✓                | from install forward | from install forward | n/a             |
+| Markdown output                     | ✓                | ChromaDB             | LanceDB            | various backends  |
+| Setup                               | `npm install -g` | Bun + uv + Python    | pnpm + LM Studio   | API/cloud setup   |
+| License                             | MIT              | Apache 2.0           | MIT                | open core + cloud |
+
+Different tools for different needs:
+
+- **If you want a polished cross-platform desktop app** for general document
+  knowledge bases, use lucasastorian/llmwiki or nashsu/llm_wiki.
+- **If you want multi-agent support** with a rich entity/concept page taxonomy
+  and don't care about Obsidian integration depth, use Pratiyush/llm-wiki.
+- **If you want a heavyweight Claude Code memory plugin** with real-time
+  capture and vector storage, use claude-mem.
+- **If you're building AI applications that need to remember users**
+  long-term, use mem0 (different layer entirely).
+- **If you want an LLM Wiki that reads your existing Claude Code sessions**,
+  Obsidian-native or just a folder of markdown, use vir.
+
+## Numbers from a real run
+
+Output from my first run across 226 Claude Code sessions:
+
+| Metric              | Value                                             |
+| ------------------- | ------------------------------------------------- |
+| Sessions scanned    | 226                                               |
+| Notes distilled     | 126                                               |
+| Avg confidence      | 0.91                                              |
+| High signal (≥0.8)  | 121 of 126                                        |
+| Projects covered    | 8 projects                                        |
+| Knowledge breakdown | 54 patterns · 47 decisions · 23 gotchas · 2 tools |
+
+Other LLM Wiki implementations would produce similar results with the same
+input. The distinguishing question for vir is workflow fit: does
+retroactive distillation of your own sessions, Obsidian-native when you want
+it, match how you actually work?
+
+Example query against the distilled vault:
+
+```bash
+$ vir query "what gotchas should I know about my auth implementation"
+```
+
+Based on the notes, here are the key auth gotchas:
+
+JWT dual-token setup needs silent refresh on mount. Access tokens
+expire in 15 min; without a mount-time refresh check, users hit
+401s on first load after a break.
+Middleware runs before the session is hydrated. Do not read
+session data in middleware to gate routes; check the JWT directly
+from the cookie instead.
+Password reset tokens must be single-use and hashed at rest.
+Storing raw tokens in the DB leaks them if the DB is compromised.
+OAuth callback URLs must be registered exactly. Trailing slashes,
+http vs https, and localhost port mismatches all cause silent
+redirect failures with no useful error message.
+Logout must clear both the access token cookie and the refresh
+token. Clearing only one leaves the session partially alive.
+
+sources 4 · via embedding · searched 126
+
+## Prerequisites
+
+- macOS or Linux (systemd or cron)
+- Node.js 20+
+- Claude Code (sessions at `~/.claude/projects/`) and/or Codex (sessions at
+  `~/.codex/sessions/`)
+- A folder for notes. An Obsidian vault works great but is optional; see
+  [Without Obsidian](#without-obsidian).
+- A distill provider — any one of:
+  - Anthropic API key (predictable per-session cost, no effect on your Claude Code limits)
+  - Your Claude Code subscription (`provider: "claude-cli"` — free and keyless; distills consume your Claude Code usage limits)
+  - Kie.ai API key (~72% cheaper, third-party proxy — used for testing and calibration runs, not recommended for your real vault)
+  - Your ChatGPT plan through the Codex CLI (`provider: "codex-cli"` — experimental, keyless; distills consume your Codex usage limits)
+- Optional: Ollama + `nomic-embed-text` for semantic search
+
+
+## Without Obsidian
+
+vir writes plain markdown with YAML frontmatter. Obsidian is the nicest way to
+browse it, but nothing depends on it:
+
+- **Any editor works.** Notes are ordinary `.md` files under `<notes folder>/vir/`.
+  `[[wikilinks]]` read fine as text, and VS Code with Foam or Markdown Memo
+  resolves them as links.
+- **No editor needed for retrieval.** `vir query "<question>"` and the MCP server
+  (`vir mcp install`) search the folder directly.
+- **Point `vir init` at any folder.** If no Obsidian vault exists, it suggests
+  `~/notes` and creates it.
+
+## Cost
+
+Vir runs two API calls per session: a Haiku classify (cheap) and a distill
+(the main cost). Cost depends on session size and your provider.
+
+### The zero-dollar option: `claude-cli`
+
+With `provider: "claude-cli"` vir shells out to your installed `claude`
+binary instead of calling an API — no key, no per-session dollars. The
+trade: every distill consumes your Claude Code subscription quota (the same
+limits your interactive sessions use), and that quota has no meter. vir
+therefore caps claude-cli runs at 25 sessions per run (the rest are picked
+up next cycle), halts immediately if your subscription limit is hit (with
+the reset time; nothing is retried against the wall), and records these
+calls in `cost.log` with cost marked not-applicable — never a fake $0.00.
+The API path remains the default.
+
+### Codex subscription: `codex-cli` (experimental)
+
+With `provider: "codex-cli"` vir distills through `codex exec` on your
+ChatGPT login: no key, no per-session dollars, and the same quota rules as
+`claude-cli` (25-session cap per run, halt on a usage limit, cost logged as
+not-applicable). Codex picks the model (`models.classify` / `models.distill`
+set to `"default"`); set a model id there to pin one.
+
+Every call runs read-only, ephemeral (no new rollout in `~/.codex/sessions`,
+so vir never distills its own calls) and with Codex's tools switched off:
+no shell, web search, apps, plugins or subagents, because the prompt carries
+transcript text vir doesn't control. Your global `~/.codex/AGENTS.md` still
+loads, as `~/.claude/CLAUDE.md` does for `claude-cli`. Each call carries about
+16k tokens of Codex's own preamble. Verified on codex-cli 0.160.1; a Codex
+version that doesn't know one of the switched-off features makes the call
+fail with an "update Codex" message rather than run with tools vir hasn't
+checked.
+
+### Real cost shape (measured on 226 historical sessions via Kie)
+
+| Metric | Sonnet | Haiku |
+|---|---|---|
+| Median session | $0.07 | $0.025 |
+| p90 session | $0.20 | $0.07 |
+| Long-tail outliers (5-hour epics) | $0.25-$0.30 | $0.08-$0.10 |
+| 226-session backfill | ~$21 | ~$7 |
+
+Costs assume Kie.ai pricing (~28% of Anthropic direct). Multiply by ~3.5x for
+Anthropic direct rates.
+
+### What drives cost
+
+Distill output dominates. A multi-hour session with hundreds of tool calls
+distills to ~4500 output tokens, plus 25-30k input tokens after tool-call
+filtering. Vir strips large tool outputs and oversized skill loads before
+distillation; on one real 517-tool-call session that took the distill input
+from ~217k to ~95k tokens without dropping signal.
+
+### Cost controls
+
+- `vir run --dry-run` previews per-session cost before any API call.
+- `vir run` asks for confirmation when more than 20 new sessions are queued.
+- `vir cost --since 7d` aggregates real (not estimated) token usage from
+  `~/.vir/cost.log`; `--by-session` and `--top 5` surface outliers.
+- `vir run --force-model haiku|sonnet` overrides the distill model per run.
+
+### Hybrid routing
+
+Haiku is ~3x cheaper than Sonnet and captures equal-or-more concrete detail
+on routine and tool-heavy sessions. Calibration showed it only misses
+higher-order architectural lessons on decision-heavy and very large sessions.
+Hybrid routing exploits that. When `models.distillFast` is set, each session
+routes after classification:
+
+- `category === "decision"` → `models.distill` (Sonnet)
+- `inputTokens > models.distillThreshold` (default `100000`) → `models.distill`
+- otherwise → `models.distillFast` (Haiku)
+
+New installs (`vir init`) enable hybrid by default. Existing installs are
+unaffected on upgrade: with `distillFast` unset, `models.distill` is used for
+every session exactly as before.
+
+## Platform support
+
+| Platform        | Daemon             | Notifications                 | Status       |
+| --------------- | ------------------ | ----------------------------- | ------------ |
+| macOS           | launchd            | Vir.app (osascript fallback)  | Stable       |
+| Linux (systemd) | systemd user timer | notify-send                   | Experimental |
+| Linux (cron)    | crontab            | notify-send                   | Experimental |
+| Windows         | Not supported      | none                          | Planned      |
+
+On macOS, notifications come from a small bundled helper, so they show as
+**vir** with the vir icon rather than "Script Editor". macOS asks once
+whether to allow them. `vir init` triggers that prompt, and so does
+`vir notifications` at any time. Until you allow them, vir falls back to
+osascript.
+
+Linux support is **experimental and untested**. `vir schedule install`
+prefers a systemd user timer and falls back to a crontab entry when systemd
+is absent. Please report issues at
+[github.com/djolex999/vir/issues](https://github.com/djolex999/vir/issues)
+with your distro, init system, and Node version.
+
+## Commands
+
+| Command                     | Cost  | Description                               |
+| --------------------------- | ----- | ----------------------------------------- |
+| `vir init`                  | free  | Interactive setup                         |
+| `vir run`                   | cheap | Process new sessions                      |
+| `vir run --full`            | $$    | Reprocess all sessions                    |
+| `vir run --rewrite-only`    | free  | Reformat notes, no API calls              |
+| `vir run --articles-only`   | cheap | Distill only web articles                 |
+| `vir run --pdfs-only`       | $$    | Distill only PDFs                         |
+| `vir run --dry-run`         | free  | Estimate per-session cost, exit before LLM |
+| `vir run --force-model <m>` | cheap | Override distill model: `haiku` \| `sonnet` |
+| `vir projects`              | free  | Per-project triage: counts + pending cost |
+| `vir projects include <p>`  | free  | Track a project                           |
+| `vir projects exclude <p>`  | free  | Stop tracking (existing notes untouched)  |
+| `vir cost`                  | free  | API cost report (total/median/p90/top)    |
+| `vir query "<question>"`    | cheap | Semantic search your vault                |
+| `vir queries`               | free  | Retrieval report: method split, degraded rate, dead-weight notes |
+| `vir compose "<topic>"`     | $$    | Synthesize a topic page from related notes |
+| `vir connect --dry-run`     | free  | Find lessons you keep re-learning; show candidates + cost |
+| `vir connect`               | $     | Propose those lessons as cited rules (≤10 LLM calls) |
+| `vir summarize <project>`   | cheap | Cross-session project synthesis           |
+| `vir summarize --week`      | cheap | Period summary of the week's notes        |
+| `vir lint`                  | cheap | Find orphans, stale notes, contradictions |
+| `vir dedupe`                | cheap | Interactive duplicate detection + merge   |
+| `vir review`                | free  | Walk new notes: approve/edit/reject       |
+| `vir review --restore <note>` | free | Put one rejected note back            |
+| `vir audit`                 | cheap | Model judges each note; verdicts feed `vir review --audited` |
+| `vir audit --dry-run`       | free  | Notes, batches and est. cost, no model call |
+| `vir review --audited`      | free  | Walk notes vir audit flagged, worst first |
+| `vir review --insights`     | free  | Accept, edit or reject rules proposed by `vir connect` |
+| `vir audit --apply-rejects` | free  | Move fresh reject verdicts to `.rejected/` (reversible) |
+| `vir lint --strays`         | free  | Note files with no live DB row (retitle debris) |
+| `vir lint --strays --fix`   | free  | Move retitle debris to `archived/` (only when a live copy exists) |
+| `vir lint --legacy-related` | free  | Pre-0.12.0 notes whose stored Related holds content a rewrite drops |
+| `vir lint --legacy-related --fix` | free | Move that content into `## Details`, re-render the notes |
+| `vir prune`                 | free  | Dry run: agent-derived notes to demote    |
+| `vir prune --apply`         | free  | Demote them to `.rejected/` (never deletes) |
+| `vir prune --restore`       | free  | Put every pruned note back, exactly       |
+| `vir sync-claude`           | free  | Inject top knowledge into CLAUDE.md (and existing AGENTS.md; `--no-agents`, `--agents-only`; `--backfill-lessons` is a cheap paid step for older gotchas) |
+| `vir embed`                 | free  | Generate embeddings for semantic search   |
+| `vir embed --setup`         | free  | Install the local embedding provider (no Ollama needed) |
+| `vir schedule install`      | free  | Register the background daemon            |
+| `vir status`                | free  | Knowledge base breakdown + daemon status  |
+| `vir doctor`                | cheap | 15 install/config checks                  |
+| `vir notifications`         | free  | Allow vir's macOS notifications + send a test |
+| `vir reconcile`             | $$    | Retry sessions that failed, cache-bypassed |
+| `vir mcp install`           | free  | Register the MCP server with Claude Code  |
+
+Most commands take `--dry-run`, `--yes`, or `--json` where they make sense;
+run `vir <command> --help` for the full flag list. `vir query --json` and
+`vir doctor --json` are the machine contracts the
+[vir-obsidian](https://github.com/djolex999/vir-obsidian) plugin consumes.
+
+## Use vir from any agent (skill)
+
+vir ships an [Agent Skills](https://agentskills.io) skill that teaches Claude
+Code, Codex, Cursor and other skill-aware agents to check your notes before
+they work: search with `vir query --json` (free, no LLM call), cite the notes
+they use, and verify them against the current code.
+
+```bash
+npx skills add djolex999/vir
+```
+
+The skill is read-only. It never writes your notes, never runs paid commands
+like `vir run` unless you ask, and if vir isn't installed it tells you how to
+set it up instead of installing it. It prefers the MCP server when that's
+registered, and falls back to reading the notes folder directly. Source:
+[`skills/vir/SKILL.md`](skills/vir/SKILL.md).
+
+## MCP server (Claude Code and Codex)
+
+Vir runs as an MCP server, letting your coding agent consult your vault
+mid-session instead of relying on static CLAUDE.md / AGENTS.md content.
+
+```bash
+vir mcp install                  # Claude Code: registers via `claude mcp add`
+vir mcp install --target codex   # Codex: prints the config to add
+```
+
+For Codex, vir never edits `~/.codex/config.toml` itself; it prints the block
+(or run `codex mcp add vir -- vir mcp`):
+
+```toml
+[mcp_servers.vir]
+command = "vir"
+args = ["mcp"]
+```
+
+Restart the agent. The vault is now queryable mid-session via six tools:
+`vir_query`, `vir_status`, `vir_recent_notes`, `vir_recent_articles`,
+`vir_project_summary`, `vir_compose`. `vir_query` takes a `type` filter
+(`session` | `article` | `topic` | `pdf` | `all`). Human-verified notes
+(approved via `vir review`) get a +0.2 score boost; pass `verified_only: true`
+to see only those. The server never writes the vault. `vir_query` is the one tool
+that spends tokens: it synthesizes an answer with your provider, and
+`synthesize: false` returns just the matching notes.
+
+To unregister: `vir mcp uninstall`.
+
+## Semantic search (optional)
+
+Vir works out of the box with keyword search (TF-IDF). No embedding setup is
+required, ever. For semantic search, pick one of two providers; vir detects
+whichever is present:
+
+**One command, no Ollama:**
+
+```bash
+vir embed --setup      # installs fastembed + bge-small-en-v1.5 into ~/.vir
+                       # (~233 MB + ~128 MB model; states cost, asks first)
+```
+
+**Or Ollama** (768d, slightly larger model):
+
+```bash
+brew install ollama
+ollama pull nomic-embed-text
+ollama serve
+```
+
+Then:
+
+```bash
+vir embed
+vir query "how do I handle rate limiting in Next.js"
+```
+
+Every stored vector records the model that produced it. Vectors from
+different models are never compared; if you switch providers,
+`vir embed --force` re-embeds the index after telling you what it costs.
+Falls back to keyword search automatically when no provider is available,
+and says so: `via tfidf (no provider)`. Results rank by pure relevance by
+default; `retrievalDiversity` (0..1) turns on MMR reranking, which trades
+relevance for diversity. A verified note gets a small boost only when it
+already ranks near the top, so it wins near-ties without displacing more
+relevant notes.
+
+## Config reference
+
+Located at `~/.vir/config.json`.
+
+| Field               | Default                     | Description                                                |
+| ------------------- | --------------------------- | ---------------------------------------------------------- |
+| `vaultPath`         | (required)                  | Absolute path to your notes folder (Obsidian vault optional) |
+| `outputDir`         | `vir`                       | Subdir inside vault                                        |
+| `claudeProjectsDir` | `~/.claude/projects`        | Claude Code sessions                                       |
+| `cadenceHours`      | `3`                         | Daemon run frequency (hours)                               |
+| `provider`          | `anthropic`                 | `anthropic` \| `claude-cli` (subscription, keyless) \| `kie` |
+| `anthropicApiKey`   | (unset)                     | Required if `provider=anthropic`                           |
+| `kieApiKey`         | (unset)                     | Required if `provider=kie`                                 |
+| `filterThreshold`   | `0.4`                       | Heuristic pre-filter (0..1)                                |
+| `articlesDir`       | (unset)                     | Folder of clipped articles. Unset → article ingestion off  |
+| `pdfsDir`           | (unset)                     | Folder of PDFs. Unset → PDF ingestion off                  |
+| `workflowTranscripts` | `exclude`                 | Workflow/sidechain transcripts: `exclude` \| `include`     |
+| `agentTranscripts`  | `exclude`                   | Headless SDK agent transcripts: `exclude` \| `include`     |
+| `projects`          | (unset)                     | Per-project `include`/`exclude` map; absent = undecided    |
+| `filterToolCalls`   | `moderate`                  | Tool-output filtering: `aggressive` \| `moderate` \| `off` |
+| `retrievalDiversity`| `0`                         | MMR diversity (0..1); 0 = pure relevance                   |
+| `logQueries`        | `true`                      | Log retrievals to `~/.vir/queries.jsonl`; `false` = off    |
+| `embeddingProvider` | (unset)                     | `ollama` \| `local` \| `none`; unset = auto-detect         |
+| `models.classify`   | `claude-haiku-5-5`          | Classify model (Kie keeps Haiku 4.5)                       |
+| `models.distill`    | `claude-sonnet-5`           | Distill model for decision-heavy and large sessions        |
+| `models.distillFast`| (unset)                     | Cheap model for routine sessions; set → hybrid routing on  |
+| `models.distillThreshold` | `100000`              | Input-token ceiling above which `distill` is forced        |
+| `pricing`           | (built-in)                  | Optional per-provider `$/1M` overrides                     |
+
+## Vault structure
+
+```
+vault/vir/
+  index.md       # full catalog of every note vir has written
+  log.md         # chronological append log of each run
+  patterns/      # reusable approaches worth repeating
+  gotchas/       # bugs, footguns, and edge cases
+  decisions/     # architecture decisions with their rationale
+  tools/         # per-tool knowledge and usage notes
+  articles/      # web articles distilled from your clips folder
+  pdfs/          # distilled PDFs and papers
+  topics/        # synthesized topic pages (vir compose)
+  projects/      # cross-session project summaries
+  summaries/     # weekly/monthly period summaries (derived, never indexed)
+  archived/      # deduplicated notes (kept, never deleted)
+```
+
+## State & logs
+
+```
+~/.vir/config.json   # configuration
+~/.vir/vir.db        # SQLite (hashes, embeddings, content)
+~/.vir/cost.log      # per-call cost records (JSONL)
+~/.vir/daemon.log    # daemon run log
+~/.vir/queries.jsonl # retrieval log (JSONL, rotates at 5 MB, one .1 kept)
+```
+
+### Query logging
+
+Every `vir query` and MCP `vir_query` retrieval appends one record to
+`~/.vir/queries.jsonl`: the query text, which notes surfaced at what rank and
+score, the search method (embedding vs TF-IDF fallback), and latency. It never
+records the synthesized answer.
+
+This log stays on your machine — it is **never transmitted anywhere**. It
+exists so `vir queries` can tell you which notes actually earn their place in
+retrieval (and which never surface), and it is the baseline for future ranking
+improvements. Delete it any time; disable it with `"logQueries": false` in
+`~/.vir/config.json`.
+
+## Project status
+
+|                |                                           |
+| -------------- | ----------------------------------------- |
+| Version        | 0.24.2                                    |
+| Tests          | 1073 passing                              |
+| Platforms      | macOS (launchd), Linux (systemd/cron)     |
+| Node           | 20+                                       |
+| First-run cost | $1 to $5 (Kie.ai optional, ~72% cheaper)  |
+| Ongoing cost   | ~$0.05 per run                            |
+
+## Roadmap
+
+Shipped:
+
+- [x] Linux support (systemd timer + cron fallback), experimental
+- [x] Active learning: `vir review`, verified notes boosted in retrieval
+- [x] Web article ingestion (a clipped-markdown folder → same vault)
+- [x] PDF and paper ingestion
+- [x] Obsidian plugin: [vir-obsidian](https://github.com/djolex999/vir-obsidian), sidebar queries against the vault
+- [x] Topic synthesis: `vir compose` builds topic pages from related notes
+- [x] Transcript filtering: workflow, sidechain, and SDK-agent transcripts detected and skipped by default
+- [x] Project triage: `vir projects`, per-project include/exclude with pending-cost estimates
+- [x] Duplicate detection and merge: `vir dedupe`
+- [x] Obsidian optional: any folder of markdown works (0.24.3)
+- [x] Any agent can read your notes: `npx skills add djolex999/vir` (0.25.0)
+- [x] Recurring lessons become reviewed rules: `vir connect` (0.25.0)
+- [x] Codex sessions, and a keyless `codex-cli` provider (0.26.0)
+
+Not built:
+
+- [ ] Windows support
+- [ ] GUI installer for non-developers
+- [ ] More input sources: code repos, images
+- [ ] Export to anchor-plugin skill format
+- [ ] Cursor sessions (Codex shipped in 0.26.0)
+- [ ] Connect pass v2: flag decisions that contradict each other or went stale
+
+## Contributing
+
+PRs welcome. Open an issue first for large changes. Built with TypeScript
+strict; run `npm run build` and `npm test` before submitting. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
+
+```bash
+git clone https://github.com/djolex999/vir
+cd vir
+npm install
+npm run build
+npm test
+```
+
+## License
+
+MIT
+
+## Author & credits
+
+Built by Djordje Marković / GrowthQ Lab DOO.
+
+Vir (вир) is the Serbian word for _whirlpool_: the place where a river pulls
+everything in and concentrates it. Sessions flow in, vir pulls out what
+matters, and deposits it somewhere permanent.
+
+Inspired by Andrej Karpathy's LLM Wiki pattern and Uros Pesic's KB Brain
+concept.
+
+[GitHub](https://github.com/djolex999) ·
+[LinkedIn](https://www.linkedin.com/in/djmarkovic/) ·
+[npm](https://www.npmjs.com/~djolex999) ·
+[GrowthQ Lab](https://growthqlab.com)

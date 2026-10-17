@@ -1,0 +1,403 @@
+# 🚀 Completed Machine Learning & Deep Learning Series
+
+> A completed, hands-on learning series covering Python, NumPy, machine learning, and deep learning through practical notebooks and projects.
+
+![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?logo=jupyter)
+![NumPy](https://img.shields.io/badge/NumPy-Latest-blueviolet?logo=numpy)
+![Pandas](https://img.shields.io/badge/Pandas-Latest-150458?logo=pandas)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-Latest-11557c?logo=matplotlib)
+![Scikit--learn](https://img.shields.io/badge/Scikit--learn-Latest-f7931e?logo=scikit-learn&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-Latest-ff6f00?logo=tensorflow&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Complete-success)
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Prerequisites & Setup](#prerequisites--setup)
+- [Learning Modules](#learning-modules)
+  - [NumPy Fundamentals](#numpy-fundamentals)
+  - [Pandas Fundamentals](#pandas-fundamentals)
+  - [Pandas Exercises](#pandas-exercises)
+  - [Data Visualization](#data-visualization)
+  - [Statistics](#statistics)
+  - [Foundation_For_ML](#foundation_for_ml)
+  - [Ensemble Learning](#ensemble-learning)
+  - [Model Tuning](#model-tuning)
+  - [Deep Learning](#deep-learning)
+  - [Recurrent Neural Networks](#recurrent-neural-networks)
+  - [Dimensionality Reduction](#dimensionality-reduction)
+  - [NLP (ML approach)](#nlp-ml-approach)
+  - [Hugging Face Transformers](#hugging-face-transformers)
+  - [Supervised Learning](#supervised-learning)
+  - [Unsupervised Learning](#unsupervised-learning)
+  - [Streamlit App](#streamlit-app)
+- [Roadmap](#roadmap)
+- [Best Practices](#best-practices)
+- [Contributing](#contributing)
+- [License](#license)
+
+## 📚 Overview
+
+Notebook-first workspace for building strong ML foundations with short, focused lessons and runnable examples.
+
+### Project Status: Core Curriculum Complete ✅
+
+The planned learning path from Python and NumPy fundamentals through machine learning, deep learning, NLP, and Transformer pipelines is complete. Documentation and example notebooks may still receive occasional updates.
+
+## ✨ Features
+
+- ✅ **65 notebooks** — 13 NumPy, 3 NumPy exercises, 10 Pandas, 2 Pandas exercises, 7 Data Viz, 6 Statistics, 3 Foundation projects, 3 Ensemble notebooks, 2 Model Tuning notebooks, 5 Deep Learning notebooks, 2 Supervised notebooks, 2 Unsupervised notebooks, 1 Dimensionality Reduction, 2 NLP notebooks, 4 Hugging Face Transformers notebooks
+- ✅ **Hands-on** — notebook-first, progressive difficulty
+- ✅ **Setup documented** — dependency installation and environment guidance included
+- ✅ **Complete** — the planned ML and DL learning series is finished
+
+## 🔧 Prerequisites & Setup
+
+### Requirements
+
+- **Python 3.8+**, **pip**, and **Jupyter Notebook/Lab**
+- A GPU runtime is recommended for the Hugging Face and TensorFlow notebooks.
+
+### Installation
+
+1. **Clone**
+
+   ```bash
+   git clone https://github.com/gyr0byte/ML-Foundations.git "Machine Learning"
+   cd "Machine Learning"
+   ```
+
+2. **Create a virtual environment** (recommended)
+
+   ```bash
+   # Windows
+   python -m venv .venv
+   .venv\Scripts\activate
+
+   # macOS/Linux
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
+
+3. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Launch Jupyter**
+
+   ```bash
+   jupyter notebook
+   ```
+
+### Running Notebooks
+
+Many notebooks load local datasets with relative paths such as `heart.csv` or `IPL.csv`. Open Jupyter from the folder that contains the notebook and its dataset, or update the dataset path in the notebook before running it. Run cells from top to bottom because later cells often depend on variables, models, or preprocessing created earlier.
+
+### Getting Started
+
+- Start at `NumPy/1_numpy_arrays.ipynb`, finish NumPy, then move to Pandas.
+- Run cells top-to-bottom and experiment with the examples.
+- Move to Data Visualization with `Data Visualization/matplotlib.ipynb`.
+- Continue with `Data Visualization/Distributionplot.ipynb`.
+- Continue with `Data Visualization/Categoricalplot.ipynb`.
+- Continue with `Data Visualization/Matrixplot.ipynb`.
+- Continue with `Data Visualization/Regression.ipynb`.
+- Continue with `Data Visualization/plotlyandcufflinks.ipynb`.
+- Continue with `Data Visualization/IPL_capstone_project.ipynb`.
+- Move to Statistics with `Statistics/1_outliers.ipynb`.
+- Continue with `Statistics/2_Ztest.ipynb`, `Statistics/3_Ttest.ipynb`, `Statistics/4_Two_sample_T_test.ipynb`, `Statistics/5_chi_square_test.ipynb`, and `Statistics/6_ANNOVA_test.ipynb`.
+- Move to Foundation_For_ML with `Foundation_For_ML/1_foundation_project.ipynb`, `Foundation_For_ML/2_foundation_project.ipynb`, and `Foundation_For_ML/3_FORD_car_price_prediction.ipynb`.
+- Continue with `Ensemble_Learning/bagging.ipynb`, `Ensemble_Learning/boosting.ipynb`, and `Ensemble_Learning/stacking.ipynb`.
+- Continue with `Model_Tuning/cross_validation.ipynb` and `Model_Tuning/grid_search_cv.ipynb`.
+- Move to `Supervised_Learning/1_Logistic_Regression.ipynb` and `Supervised_Learning/2_heart_disease_pred.ipynb`.
+- Finish with `Unsupervised_Learning/k_means_clustering.ipynb` and `Unsupervised_Learning/DBSCAN.ipynb`.
+- Explore Dimensionality Reduction with `Dimensionality_Reduction/pca_dimension.ipynb`.
+- Try NLP notebooks in `NLP( ML approach )/bag_of_words.ipynb` and `NLP( ML approach )/emotion_prediction.ipynb`, then review the supporting model and dataset files in the same folder.
+- Continue with `Deep_Learning/ANN/basic_neural_network.ipynb` and `Deep_Learning/ANN/small_project.ipynb`.
+- Explore CNN with `Deep_Learning/CNN/cnn.ipynb`.
+- Learn recurrent neural network basics with `Deep_Learning/RNN/1_rnn_basics.ipynb`.
+- Continue with LSTM and GRU architectures in `Deep_Learning/RNN/2_lstm_and_gru.ipynb`.
+- Explore Hugging Face Transformers with `LLM_HuggingFace/Chapter1_Transformer_Models/1_pipelines_overview.ipynb`.
+- Learn how pipelines work internally with `LLM_HuggingFace/Chapter2_Using_Transformers/1_behind_the_pipeline.ipynb`.
+- Continue with tokenizer workflows in `LLM_HuggingFace/Chapter2_Using_Transformers/2_tokenizer_pipeline.ipynb`.
+- Learn how to process multiple sequences in `LLM_HuggingFace/Chapter2_Using_Transformers/3_handling_multiple_sequences.ipynb`.
+
+### Hugging Face Transformers Setup
+
+The Hugging Face chapters cover sentiment analysis, zero-shot classification, text generation, fill-mask prediction, named-entity recognition, summarization, translation, tokenization, model inputs, base models, and sequence-classification models.
+
+It is recommended to run this notebook in **Google Colab with a GPU runtime**. Some examples download large pretrained models and can require substantial RAM, disk space, and processing time on a local CPU.
+
+#### Google Colab
+
+1. Open any notebook in `LLM_HuggingFace/Chapter1_Transformer_Models/` or `LLM_HuggingFace/Chapter2_Using_Transformers/` in Google Colab.
+2. Select **Runtime > Change runtime type** and choose a GPU, such as **T4 GPU**, when available.
+3. Clone the repository and install its dependencies in a Colab cell:
+
+   ```python
+   !git clone https://github.com/gyr0byte/ML-Foundations.git "Machine Learning"
+   %cd "Machine Learning"
+   !pip install -r requirements.txt
+   ```
+
+4. Run the notebook cells from top to bottom. The first run downloads the required models from Hugging Face and may take several minutes.
+
+For local execution, create the virtual environment described above, install `requirements.txt`, and make sure the machine has enough available memory and disk space for the downloaded models.
+
+### Streamlit App
+
+The heart-disease prediction example can be launched from its directory:
+
+```bash
+cd Supervised_Learning
+streamlit run app.py
+```
+
+The app uses the saved model, scaler, and feature-column artifacts in `Supervised_Learning/`. Run it from that directory so the relative file paths resolve correctly.
+
+### Data and Model Artifacts
+
+The repository includes the datasets used by the notebooks, but some large datasets and generated model artifacts may be excluded by `.gitignore`. If a referenced file is missing after cloning, rerun the notebook that creates it or obtain the required dataset from its documented source before continuing.
+
+## 📖 Learning Modules
+
+### NumPy Fundamentals
+
+- 13 core notebooks + 3 exercises in `NumPy/`.
+
+### Pandas Fundamentals
+
+- 10 core notebooks in `Pandas/`, including IPL analysis, company data, and Titanic survival analysis.
+
+### Pandas Exercises
+
+- 2 practice notebooks in `Pandas/pandas_exercise/`.
+
+### Data Visualization
+
+- 7 notebooks in `Data Visualization/` covering Matplotlib basics, distribution plots, categorical plots, matrix plots, regression plots, Plotly/Cufflinks, and an IPL capstone.
+- Assets: `Data Visualization/basic_plot.png`, `Data Visualization/zoro.jpg`.
+
+### Statistics
+
+- 6 notebooks in `Statistics/` covering outlier detection and handling, Z-test, T-test, Two-sample T-test, Chi-square test, and ANOVA test hypothesis testing.
+
+### Foundation_For_ML
+
+- 3 project notebooks in `Foundation_For_ML/` applying statistical and exploratory analysis to real-world datasets.
+
+### Ensemble Learning
+
+- 3 notebooks in `Ensemble_Learning/` covering bagging, boosting, and stacking.
+
+### Model Tuning
+
+- 2 notebooks in `Model_Tuning/` covering cross-validation and grid search.
+
+### Deep Learning
+
+- 5 notebooks spanning `Deep_Learning/ANN/`, `Deep_Learning/CNN/`, and `Deep_Learning/RNN/`:
+  - 2 ANN notebooks covering a basic neural network and a small deep learning project.
+  - 1 CNN notebook covering convolutional neural networks.
+  - 2 RNN notebooks covering recurrent neural networks, LSTM, and GRU architectures.
+
+### Recurrent Neural Networks
+
+- 2 completed notebooks in `Deep_Learning/RNN/` covering recurrent neural networks, LSTM, and GRU architectures.
+- `Deep_Learning/RNN/2_lstm_and_gru.ipynb` is complete.
+
+### Supervised Learning
+
+- 2 notebooks in `Supervised_Learning/` covering logistic regression and heart-disease prediction.
+
+### Dimensionality Reduction
+
+- 1 notebook in `Dimensionality_Reduction/` covering PCA for dimensionality reduction.
+
+### NLP (ML approach)
+
+- 2 notebooks in `NLP( ML approach )/` covering bag-of-words and an emotion-prediction example.
+- Supporting files in the same folder include a trained model artifact and dataset text used in the workflow.
+
+### Hugging Face Transformers
+
+- 4 notebooks in `LLM_HuggingFace/`:
+  - Chapter 1 introduces common Transformer pipelines.
+  - Chapter 2 covers pipeline internals, tokenization, model inputs, `AutoModel`, `AutoModelForSequenceClassification`, and multiple-sequence batching.
+- Google Colab with a GPU runtime is recommended because some pretrained models are large and computationally intensive.
+
+### Unsupervised Learning
+
+- 2 notebooks in `Unsupervised_Learning/` covering k-means clustering and DBSCAN.
+
+### Streamlit App
+
+- `Supervised_Learning/app.py` provides an interactive heart-disease prediction demo backed by a saved SVM model.
+
+## 📁 Project Structure
+
+```
+Machine Learning/
+|-- README.md                               # Project overview and guide
+|-- requirements.txt                        # Python dependencies
+|-- LICENSE                                 # License for reuse and distribution
+|-- .gitignore                              # Git ignore patterns
+|-- Data Visualization/                     # Data visualization modules
+|   |-- matplotlib.ipynb                    # Matplotlib basics and plots
+|   |-- Distributionplot.ipynb              # Distribution plots
+|   |-- Categoricalplot.ipynb               # Categorical plots
+|   |-- Matrixplot.ipynb                    # Matrix plots
+|   |-- Regression.ipynb                    # Regression plots
+|   |-- plotlyandcufflinks.ipynb            # Plotly and Cufflinks
+|   |-- IPL_capstone_project.ipynb          # IPL capstone project
+|   |-- IPL.csv                             # IPL dataset
+|   |-- basic_plot.png                      # Sample plot image asset
+|   `-- zoro.jpg                            # Image asset used in notebooks
+|-- NumPy/                                  # NumPy fundamentals modules
+|   |-- 1_numpy_arrays.ipynb                # Arrays basics
+|   |-- 2_arrays_types.ipynb                # Data types (dtypes)
+|   |-- 3_dimension_shapes.ipynb            # Dimensions & shapes
+|   |-- 4_indexing_slicing_iteration.ipynb  # Advanced indexing
+|   |-- 5_statistics.ipynb                  # Statistical operations
+|   |-- 6_broadcasting_vectorize.ipynb      # Broadcasting & vectorization
+|   |-- 7_boolean_arrays.ipynb              # Boolean indexing
+|   |-- 8_linear_algebra.ipynb              # Linear algebra operations
+|   |-- 9_size_of_objectsInMemory.ipynb     # Memory size exploration
+|   |-- 10_useful_numpy_function.ipynb      # Useful NumPy utilities
+|   |-- 11_numpy_operations.ipynb           # NumPy operations overview
+|   |-- 12_Reshaping_inDepth.ipynb          # Reshaping deep dive
+|   |-- 13_plotting_graphs_numpy.ipynb      # Plotting graphs with NumPy
+|   `-- numpy_exercises/                    # Practice notebooks
+|       |-- general_qns.ipynb               # Mixed practice questions
+|       |-- nepali_cricket_score.ipynb      # Practice with real-world data
+|       `-- valid_sudoku.ipynb              # NumPy practice exercise
+|-- Pandas/                                 # Pandas fundamentals modules
+|   |-- 1_series.ipynb                      # Series basics
+|   |-- 2_DataFrames.ipynb                  # DataFrames basics
+|   |-- 3_Missing_Data.ipynb                # Missing data handling
+|   |-- 4_Merging_Joining_Concatination.ipynb # Merging and joining
+|   |-- 5_GroupByAggregation.ipynb          # GroupBy and aggregation
+|   |-- 6_pivot_tables.ipynb                # Pivot tables and reshaping
+|   |-- 7_Operations.ipynb                  # Pandas operations
+|   |-- 8_ipl_analysis.ipynb                # IPL data analysis
+|   |-- 9_company.ipynb                     # Company data analysis
+|   |-- 10_titanic.ipynb                    # Titanic survival analysis
+|   |-- deliveries.csv                      # IPL deliveries dataset
+|   |-- ipl_matches.csv                     # IPL matches dataset
+|   |-- Fortune_500_Companies.csv           # Company dataset
+|   |-- titanic_data.csv                    # Titanic passenger dataset
+|   `-- pandas_exercise/                    # Pandas practice notebooks
+|       |-- Countries.csv                   # Sample dataset
+|       |-- Countries.ipynb                 # Country data practice
+|       |-- feature_extraction.ipynb        # Feature extraction practice
+|       `-- topanime.csv                    # Sample dataset
+|-- Statistics/                             # Statistical methods modules
+|   |-- 1_outliers.ipynb                    # Outlier detection and handling
+|   |-- 2_Ztest.ipynb                       # Hypothesis testing: Z-test
+|   |-- 3_Ttest.ipynb                       # Hypothesis testing: T-test
+|   |-- 4_Two_sample_T_test.ipynb           # Hypothesis testing: Two-sample T-test
+|   |-- 5_chi_square_test.ipynb             # Hypothesis testing: Chi-square test
+|   `-- 6_ANNOVA_test.ipynb                 # Hypothesis testing: ANOVA test
+|-- Foundation_For_ML/                      # Foundation ML projects
+|   |-- 1_foundation_project.ipynb          # Foundation ML project 1
+|   |-- 2_foundation_project.ipynb          # Foundation ML project 2
+|   |-- 3_FORD_car_price_prediction.ipynb    # Ford car price prediction project
+|   |-- ford.csv                             # Ford car dataset
+|   |-- heart.csv                            # Heart disease dataset
+|   `-- insurance.csv                        # Insurance dataset
+|-- Ensemble_Learning/                      # Ensemble learning notebooks
+|   |-- bagging.ipynb                       # Bagging ensemble notebook
+|   |-- boosting.ipynb                      # Boosting ensemble notebook
+|   `-- stacking.ipynb                      # Stacking ensemble notebook
+|-- Model_Tuning/                           # Hyperparameter tuning notebooks
+|   |-- cross_validation.ipynb              # Cross-validation notebook
+|   `-- grid_search_cv.ipynb                # Grid-search CV notebook
+|-- Deep_Learning/                          # Deep learning notebooks
+|   |-- ANN/                                # Artificial neural networks
+|   |   |-- basic_neural_network.ipynb      # Basic neural network example
+|   |   `-- small_project.ipynb             # Small deep learning project
+|   `-- CNN/                                # Convolutional neural networks
+|   |   `-- cnn.ipynb                       # CNN model training and evaluation
+|   `-- RNN/                                # Recurrent neural networks
+|       |-- 1_rnn_basics.ipynb              # RNN basics
+|       `-- 2_lstm_and_gru.ipynb            # LSTM and GRU architectures
+|-- LLM_HuggingFace/                        # Hugging Face Transformer examples
+|   `-- Chapter1_Transformer_Models/
+|       `-- 1_pipelines_overview.ipynb      # Common Transformer pipelines
+|   `-- Chapter2_Using_Transformers/
+|       |-- 1_behind_the_pipeline.ipynb        # Pipeline internals and model inputs
+|       |-- 2_tokenizer_pipeline.ipynb         # Tokenizer workflows
+|       `-- 3_handling_multiple_sequences.ipynb # Multiple-sequence batching
+|-- Supervised_Learning/                    # Supervised learning notebooks
+|   |-- 1_Logistic_Regression.ipynb         # Logistic regression notebook
+|   |-- 2_heart_disease_pred.ipynb          # Heart-disease prediction notebook
+|   |-- app.py                              # Streamlit app for the prediction workflow
+|   |-- columns.pkl                         # Model feature columns
+|   |-- heart.csv                           # Heart disease dataset
+|   |-- scaler.pkl                          # Saved scaler object
+|   `-- SVM_heart_model.pkl                 # Saved SVM model
+|-- Dimensionality_Reduction/               # Dimensionality reduction modules
+|   `-- pca_dimension.ipynb                 # PCA dimensionality reduction
+|-- NLP( ML approach )/                     # Natural Language Processing notebooks
+|   |-- bag_of_words.ipynb                  # Bag-of-words example
+|   |-- emotion_prediction.ipynb            # Emotion prediction example
+|   |-- stacking_clf.pkl                    # Trained NLP model artifact
+|   `-- train.txt                            # NLP training text data
+`-- Unsupervised_Learning/                  # Unsupervised learning notebooks
+    |-- k_means_clustering.ipynb            # K-means clustering notebook
+    `-- DBSCAN.ipynb                        # DBSCAN clustering notebook
+```
+
+## 🗺️ Roadmap
+
+### Completed Learning Path ✅
+
+- [x] NumPy fundamentals (13 modules)
+- [x] NumPy exercises (3 notebooks)
+- [x] Pandas fundamentals (10 notebooks)
+- [x] Pandas exercises (2 notebooks)
+- [x] Data visualization (7 notebooks)
+- [x] Statistical methods (6 notebooks)
+- [x] Foundation For ML (3 notebooks)
+- [x] Ensemble Learning (3 notebooks)
+- [x] Model Tuning (2 notebooks)
+
+- [x] **Supervised Learning** — Logistic regression and classification workflows _(2 notebooks)_
+- [x] **Unsupervised Learning** — K-means clustering and DBSCAN _(2 notebooks)_
+- [x] **Deep Learning** — Neural network basics with TensorFlow/Keras _(5 notebooks)_
+- [x] **Recurrent Neural Networks** — RNN, LSTM, and GRU architectures _(2 notebooks)_
+- [x] **Dimensionality Reduction** — PCA _(1 notebook)_
+- [x] **NLP** — Bag-of-words and emotion prediction _(2 notebooks)_
+- [x] **Hugging Face Transformers** — Pipelines, tokenizers, and batching _(4 notebooks)_
+
+## 🏆 Best Practices
+
+- Follow PEP 8 and use descriptive names
+- Keep cells focused with short markdown context
+- Keep minimum dependency versions current in `requirements.txt`
+
+## 🤝 Contributing
+
+Suggestions and improvements are welcome.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/improvement`)
+3. Make your changes
+4. Commit your changes (`git commit -am 'Add improvement'`)
+5. Push to the branch (`git push origin feature/improvement`)
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Happy Learning! 🎓**
+
+_Last Updated: October 2026_

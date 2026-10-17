@@ -1,0 +1,457 @@
+# TangleClaw
+
+<p align="center">
+  <img src="https://github.com/Jason-Vaughan/project-assets/blob/main/tangleclaw-logo.png?raw=true" alt="TangleClaw logo" width="200">
+</p>
+
+<p align="center">
+  <strong>Many Agents. One Claw.</strong><br>
+  <em>Plan, build, review and ship software with a fleet of AI coding agents, on your own machine.</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Jason-Vaughan/TangleClaw/actions/workflows/test.yml"><img src="https://github.com/Jason-Vaughan/TangleClaw/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
+  <a href="https://github.com/Jason-Vaughan/TangleClaw/releases/latest"><img src="https://img.shields.io/github/v/release/Jason-Vaughan/TangleClaw?color=blue" alt="Release"></a>
+  <a href="https://jason-vaughan.github.io/TangleClaw/"><img src="https://img.shields.io/badge/roadmap-live-0969da" alt="Live Roadmap"></a>
+  <a href="#prerequisites"><img src="https://img.shields.io/badge/npm%20dependencies-zero-purple" alt="Zero npm dependencies"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"></a>
+</p>
+
+One AI coding agent is easy. Five are not. They forget what the last session decided, edit the same files, fight over the same ports, and wait silently for an answer you did not know they needed. You end up watching terminals.
+
+TangleClaw is the layer above the agents that deals with that. It runs on your own Mac, starts and supervises each agent session, and keeps the things a session cannot keep for itself.
+
+<!-- 60-second demo here: launch two sessions, one messages the other, close the laptop, resume on a phone -->
+
+### What you get
+
+- **Sessions that survive.** Every agent runs in a supervised terminal that outlives a dropped connection, a closed laptop or a switch to your phone.
+- **Context that survives too.** Each session ends with a structured wrap: a summary, an updated changelog, and a "here is where we left off" brief that the next session starts from.
+- **Agents that talk to each other.** A switchboard lets sessions message one another directly, and it records every delivery, so an unanswered question is visible and not just quiet.
+- **Rules that stick.** Write a rule once and every session on that project gets it, on any engine. Agents can propose changes; nothing changes until you approve it.
+- **One assistant that sees everything.** The Project Master watches the whole fleet: what is running, what is idle, what shipped.
+- **Fewer collisions.** A built-in port registry refuses a port another project holds, and each session knows which project it owns, so work that belongs to another project's session is flagged before it happens.
+- **A dashboard on any device.** Launch, watch and steer sessions from a browser or an installed phone app, behind a login and TLS that first-run setup configures for you.
+
+It works with **Claude Code, Codex, Antigravity and Aider** locally, and with OpenClaw sessions on a remote host. You write your instructions once and TangleClaw produces each engine's own configuration.
+
+### What it is not
+
+- Not a model, and not a new coding agent. It runs the agents you already use.
+- Not a cloud service. It is a small server on your machine, written against Node.js 22's standard library: no `npm install`, no bundler.
+- Not cross-platform yet. **macOS only**, because it uses launchd to keep its services running.
+
+### Built with itself
+
+TangleClaw is developed with TangleClaw. Its own Builder, Project Manager and review sessions plan, write, review and merge its changes, with a human directing the work and approving every release. The [live roadmap](https://jason-vaughan.github.io/TangleClaw/) and the issue tracker are that fleet's working backlog, which is why the issue count is high: it is the plan, in public.
+
+### Try it
+
+```bash
+# macOS. What the installer does, and what you need first: Quick Start, below
+git clone --branch v5.33.1 https://github.com/Jason-Vaughan/TangleClaw.git
+cd TangleClaw && ./deploy/install.sh
+```
+
+Then open the dashboard, finish the short first-run setup, and launch a session on any project folder. More at **[tangleclaw.com](https://tangleclaw.com)**.
+
+## Core Features
+
+- **Persistent sessions** — AI engine sessions run in tmux, surviving network drops, device switches, and reconnects. Close your laptop, switch devices, pick up where you left off
+- **Session continuity** — every session ends with a structured wrap: a per-session summary, an updated project changelog, and a resume prime so the next session starts with "we left off at X — continue?" instead of a cold open. Full transcripts are snapshotted at wrap and everything is searchable from a per-project **Session History & Search** drawer — filter by date, tags, type, or files touched, then drill from summary into the raw transcript
+- **Four local engines, plus remote OpenClaw** — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex](https://github.com/openai/codex), [Antigravity](https://antigravity.google/) (Google's Gemini CLI successor), and [Aider](https://aider.chat) run locally; [OpenClaw](https://github.com/Jason-Vaughan/OpenClaw) sessions run on a remote host and attach through its connection registry. Write rules once — TangleClaw generates engine-native config so every agent gets the same instructions
+- **Launch mode selector** — pick a permission mode when you start a session: Interactive, Accept Edits, Plan Only, Auto, or Bypass. The mode propagates to the engine natively, including remote OpenClaw sessions via ClawBridge
+- **Secure remote access** — a reversible [Caddy ingress](deploy/INGRESS.md), set up for you during first-run setup, puts TLS and a password gate in front of everything (dashboard, terminals, APIs), with a break-glass admin reset and machine-to-machine **service tokens** so other projects' scripts can still call the PortHub and shared-docs APIs
+- **Project Master** — a persistent, fleet-aware assistant session (🧠 in the header) that sees cross-project status: what's running, what's idle, what shipped. Available as a landing-page pane and an in-session drawer
+- **Session Switchboard (Medusa)** — direct session-to-session **agent** messaging, so sessions coordinate with each other instead of routing everything through you. Every opted-in session gets a switchboard identity at launch and an API to read, send, and mark mail handled; a wake monitor nudges an idle session about fresh mail — and only a *provably* idle one (mid-turn panes, running subagents, and half-typed input all block the nudge), with every outcome recorded in a **delivery ledger** so an unannounced inbox and an empty one are distinguishable. A **delivery watchdog** tracks each message until it is answered or closed: a sender can mark one *blocking*, and an unanswered blocking message escalates to the sender, then a route the operator sets, then the dashboard, instead of waiting silently ([docs](docs/medusa-delivery.md)). The two-head banner control shows honest listener status, counts unread, and sends to a live roster with delivered-vs-queued feedback; the Project Master participates too
+- **Governance delegation** — first-class [Prawduct](https://github.com/brookstalley/prawduct) integration: projects governed by the Prawduct V2 plugin get their governance from the plugin itself, with TangleClaw detecting the install, deferring automatically, and flagging projects still on the legacy vendored hook
+- **Session rules & self-improvement** — durable behavioral directives injected into every session on their own delivery channel (with a per-launch **delivery ledger**, so a severed channel is distinguishable from a project with no rules), editable from a per-project Project Rules modal — and the AI can propose rule improvements, gated behind operator approval with version history and rollback ([docs](docs/session-rules-self-improvement.md))
+- **Ecosystem birth-awareness** — every session's startup prime carries the operating basics of the ecosystem it lives in: TangleClaw's API and the project's id, the never-hand-out-`localhost` link convention, the Project Rules store and how to propose to it, the learnings loop, the Medusa switchboard, and PortHub — so a brand-new session on a brand-new project works with the platform out of the box instead of needing a tutorial
+- **Orchestration profiles** — bind a project to an OpenAI-compatible endpoint (e.g. a LiteLLM front door serving local models) and its engine launches against it, per project, with no engine-config edits. Key references stay hygienic: `env:`/`file:` indirection, never keys in argv
+- **[PortHub](https://github.com/Jason-Vaughan/PortHub) built in** — central port registry preventing conflicts across all projects, with permanent and TTL leases, heartbeats, system-wide conflict detection, and auto-allocation of non-colliding ports for new connections
+- **Project groups & shared docs** — link related projects into a group, then share markdown documents across them with per-doc locking. Shared directories auto-sync `.md` files on session launch
+- **Project Map & Feature Index** — self-maintaining project indexes (`PROJECT-MAP.md`, `FEATURES.md`) refreshed at wrap time on every engine and, on engines that deliver a hidden prime, pointed at from the session prime so agents stop hunting for where things live
+- **Dashboard & mobile PWA** — manage projects, launch sessions, and talk to agents from any browser or phone on your network. Installable on iOS and Android, with one-click **Update now** when a new TangleClaw release ships
+- **Zero dependencies** — Node.js 22+ stdlib only. No npm install, no build step, no bundler
+
+<details>
+<summary>All features</summary>
+
+### Sessions
+- **Launch modes** — Interactive / Accept Edits / Plan Only / Auto / Bypass picker on session start for engines that declare `launchModes`. The selected mode is appended to the engine's launch args and recorded in the session DB; OpenClaw sessions propagate it through ClawBridge's `permissionMode`
+- **Session briefings** — auto-generated context from project state, active learnings, session rules, and the last session's wrap, injected on session start
+- **Ecosystem birth-awareness primer** — every prime carries the ecosystem's operating basics from a declared roster: TangleClaw's API and the project's numeric id, the MagicDNS link convention (never hand the operator a `localhost` link), the Project Rules store and its approval gate, the learnings loop, the Medusa switchboard, and PortHub — so a brand-new session needs no tutorial to work with the platform
+- **Structured session wrap** — a server-side pipeline (not a prompt) drives close-out: version bumps, changelog updates, learnings capture, memory updates, continuity write, and a single wrap commit. Blocked steps show "How to fix this" remediation in the wrap drawer. Wrap depth is configurable per project. Contract: [ADR 0002](docs/adr/0002-wrap-pipeline-contract.md)
+- **Degraded-wrap tiers** — when a full AI-assisted wrap isn't possible (no AI channel, remote transport), the wrap still runs mechanically and honestly stamps what it couldn't capture
+- **Session ownership & scope guard** — each session knows which project it owns; requests that belong to another project's live session get flagged before any cross-repo damage happens
+- **Command bar** — inject commands into running sessions without touching the terminal, with quick pills for common operations
+- **Peek** — slide-up drawer showing full terminal scrollback (up to 50,000 lines) with search and live match highlighting
+- **Terminal copy & touch that actually work** — plain drag copies terminal text to *your* clipboard (even on a remote browser), one-finger drag scrolls on mobile, long-press selects with a native-style Copy pill, and a banner **Copy** button hands the last terminal copy to a phone's clipboard
+- **File upload** — send files into the project directory from the session wrapper, with flag-only secret scanning (an amber badge warns you; nothing is blocked or scrubbed)
+- **Idle chime** — audio notification when the terminal goes idle, so you know the agent has finished
+- **Session Switchboard (Medusa)** — inter-session agent messaging over a lightweight listener each session registers on launch. The banner control (two facing heads) carries listener state — off / connecting / listening / error — never by color alone: the accessible label announces state, an unread badge counts inbound messages, and an aria-live region announces arrivals. To **send**, the ➤ compose button opens a target picker built from the live roster and reports the honest outcome — delivered, or queued when the recipient is offline — never a blanket "sent". Sessions themselves participate as agents: each opted-in session is primed with its workspace id and a read/send/mark-handled API, a **wake monitor** nudges an idle session about fresh mail (and only a provably idle one — a moving transcript, a running subagent fleet, or a half-typed composer line all block the nudge), handled mail leaves the inbox and is ACKed upstream so nothing re-delivers, a peer whose workspace id rotated is re-resolved and retried automatically, and a **delivery ledger** records every nudge outcome (`/api/medusa/deliveries` answers "whose newest mail was never announced"), and a sender can ask why a peer has not picked up — `GET …/medusa/peers/<workspace-id>` or `tc message status <workspace-id>` returns the wake monitor's reason code (a dialog up, someone typing, not opted in, no mail), never the peer's screen. A per-project **Enable session comms** toggle (default off) auto-starts the listener for new sessions; session end tears it down so it leaves no ghost peer. The Project Master mounts the same control and participates on its own workspace id, with outbound gated by its access level
+
+### Continuity
+- **Per-project continuity store** — `<project>/.tangleclaw/continuity/`: a curated `index.md` hot tier (rewritten each wrap, read back as the next session's resume), an append-only `changelog.md`, per-session 8-section wrap summaries, and a self-maintaining `## Map` of the project's features
+- **Transcript capture** — the raw session transcript is snapshotted at wrap (`sessions/<sid>/transcript.jsonl`) with no hooks required, and secret-scanned (types flagged, values never stored)
+- **Session History & Search** — a per-project drawer (🔍 on each card): search wrap summaries globally, filter by date/tags/type/files-touched, browse sessions, and drill into full transcripts with match highlighting
+- **Session memory** — file-based, per-project memory at `.tangleclaw/memories/` with a `MEMORY.md` index, injected into every engine config so all engines follow the same convention
+
+### Engines
+- **Engine-native config generation** — `CLAUDE.md`, `.codex.yaml`, `AGENTS.md`, `.aider.conf.yml` generated automatically from your rules, regenerated on every server boot so changes land without a relaunch. Where the file is a shared convention another tool also writes (Antigravity's `AGENTS.md`), TangleClaw splices a marked block and leaves the rest of the file untouched
+- **Custom engines** — adding a new engine is a single JSON profile, no code changes
+- **Orchestration launch-binder** — per-project binding to an orchestration profile (`~/.tangleclaw/orchestration-profiles.json`): the engine launches with the profile's base URL, model, and key injected via environment (never argv). Unbound projects launch exactly as before
+- **Model status monitoring** — live upstream API status for Claude (Anthropic), Codex (OpenAI), and Antigravity (Google) in the session banner
+
+### Governance
+- **[Prawduct](https://github.com/brookstalley/prawduct) V2 plugin delegation** — projects governed by the Prawduct Claude Code plugin get governance from the plugin; TangleClaw detects the install and defers (no config clobbering), keeping its own lightweight baseline for everything else. Projects still on the legacy vendored hook are flagged as migration candidates
+- **Session rules** — durable per-project behavioral directives with operator editing (Project Rules modal), AI-proposed improvements at wrap, an independent Critic gate on autonomous edits, and full version history with rollback
+- **Global rules** — markdown rules applied to every project across all engines, editable from the dashboard
+
+### Dashboard
+- **Project management** — create, attach, archive, filter, tag, and delete projects from a central landing page
+- **Project Master pane** — persistent fleet-aware assistant session embedded in the landing page and as an in-session drawer, with a settings surface (access level, engine, launch mode, scope, auto-start, editable versioned Hard rules) and a write boundary on the Claude engine — read-only, ask-before-writing, or full access, applied by the guard on its next tool call, though the running Master must be restarted before it acts on a change (file writes; Bash stays operator-gated rather than hook-enforced) ([ADR 0008](docs/adr/0008-project-master-session-model.md))
+- **Setup wizard** — first-run guided setup scans for existing projects, detects engines, configures preferences, and walks through HTTPS setup
+- **Universal project version detection** — every project's version resolves through a layered chain (`.tangleclaw/project-version.txt` → `CHANGELOG.md` → `version.json` → `package.json`) and shows on the project card and session banner
+- **One-click self-update** — the update beacon's **Update now** button fetches the latest release tag, checks it out with fail-closed guards, and restarts the server
+- **Startup project sync** — on every server boot, all engine configs regenerate and memory/scaffolding backfills, so code changes land immediately
+- **PortHub** — central port registry with permanent and TTL leases, heartbeats, and next-free-port auto-allocation
+
+### Security & Remote Access
+- **Caddy ingress** — the default on a fresh install (and reversible) reverse-proxy mode, provisioned by the setup wizard and driveable by hand with `scripts/ingress-cutover.js`, that fronts the dashboard, terminals, and APIs with TLS — including an auto-provisioned HTTPS site on your Tailscale tailnet. Fail-closed cutover with validation and health checks; full guide in [deploy/INGRESS.md](deploy/INGRESS.md)
+- **TangleClaw's own login** — accounts with hashed passwords and a server-side session, enforced by TangleClaw on the dashboard, terminals, APIs, and the proxied gateway, on every ingress mode. Signing out ends that browser's session; resetting the password (with a recovery code or at the terminal) ends every session the account holds
+- **A login by default** — the first-run wizard creates your account on every install, with or without Caddy, and shows its recovery codes once; there is no default credential and Skip is no way past it. Finishing without a login is an explicit choice on that step, stated with its consequence, recorded, and refused where the dashboard would be reachable from other machines; **Add a login** in global settings undoes it
+- **Recovery without a lockout** — one-time recovery codes reset a forgotten password from the sign-in page, from any device; at a terminal, `scripts/reset-admin.js --store` resets or re-enables an account and `scripts/gate-fallback.js` puts Caddy's password back in front if the login itself breaks ([docs/recovery.md](docs/recovery.md))
+- **Caddy's password, only while it is needed** — Caddy's `basic_auth` stands in front of TangleClaw only until the first account exists (an install upgraded from the older Caddy-only gate) or during a fallback; while it does, global settings → **Caddy password** can change it
+- **Service tokens** — machine-to-machine tokens gate the PortHub and shared-docs APIs so other projects' scripts keep working after you lock the ingress down ([ADR 0005](docs/adr/0005-service-tokens.md))
+- **User attribution** — the signed-in account is recorded as the owner of every session it launches
+- **Login and Caddyfile warnings** — the dashboard warns while the login is closed (no account yet, every account disabled, or its settings unreadable), and flags a live Caddyfile whose security properties differ from what TangleClaw would write, so a hand edit can't quietly masquerade as protection
+- **HTTPS via mkcert, one click** — for direct (no-ingress) mode, a wizard generates localhost certs and hot-swaps the server to HTTPS
+
+### Integrations
+- **[OpenClaw](https://github.com/Jason-Vaughan/OpenClaw)** — SSH or Web UI mode, connection registry, health checks, auto SSH tunnels with self-healing, reverse proxy, auto device pairing, instance version display, and a per-connection ClawBridge port (auto-allocated or explicit)
+- **[ClawBridge](https://github.com/Jason-Vaughan/ClawBridge)** — live background-process visibility on OpenClaw instances, remote session pre-create with permission modes, and remote wrap capture
+- **[Eval Audit Mode](docs/eval-audit-mode.md)** — multi-tiered AI agent evaluation: ingests exchange data, scores with intelligent gating, tracks baselines, detects drift, generates incidents
+
+### Technical
+- **Full REST API** — a registered route for everything TangleClaw does
+- **Comprehensive test suite** — thousands of `node:test` cases, zero test dependencies, green as a merge gate
+- **SQLite storage** — runtime state in a single database file, JSON config for settings
+- **ADRs** — durable design decisions live in [docs/adr/](docs/adr/)
+
+</details>
+
+## SDLC Departments & Agent Roles
+
+TangleClaw provides the infrastructure for an entire AI-driven Software Development Life Cycle (SDLC). To achieve this, TangleClaw is building out configurable base templates for specific organizational roles. These foundational templates map directly to SDLC departments, giving you a coordinated engineering organization out of the box.
+
+Today the Project Master is the one role that ships as a product feature. A Project Manager, an Architect and a Builder are ordinary sessions that take their role from the rules and instructions you give their projects; no role template can be selected yet.
+
+The ground set of foundational agent templates we are rolling out first:
+
+- **Project Manager (Management):** Oversees the fleet, manages cross-project status, breaks down requirements into actionable chunks, and assigns tasks to specialized agents.
+- **Architect (Architecture):** Specialized in higher-reasoning tasks, system design, and API contracts. Ensures the Builders stay aligned with the broader system design.
+- **Builder (Engineering):** The executors. Multi-engine sessions and parallel fleets (`aider`, `claude code`, `antigravity`) that write the code, run tests, and ship features.
+
+TangleClaw's features and roadmap align directly with these core SDLC departments:
+
+- **Management:** Project Master, planning, governance, roadmap/trains
+- **Architecture:** Specialized higher-reasoning agents
+- **Engineering:** Multi-engine sessions and parallel builders
+- **Communication:** Session Switchboard/Medusa
+- **Quality:** Critic methodology, Eval Audit Mode, adversarial-agent primitive
+- **Code Review:** Tangle Code Review
+- **Release:** Managed-project release automation
+- **Dependency Management:** Cross-project dependency registry
+- **Operations:** Fleet health, idle/wedged detection, PortHub, service supervision
+- **Security:** Authentication/governance today; TangleScan/SecurityClaw ideas longer-term
+
+Most importantly, TangleClaw enforces strict safety boundaries, ensuring that while the agents do the heavy lifting, the human developer retains absolute control over deployments, destructive actions, and architectural decisions.
+
+## Quick Start
+
+```bash
+git clone --branch v5.33.1 https://github.com/Jason-Vaughan/TangleClaw.git
+cd TangleClaw
+./deploy/install.sh
+```
+
+**Before that first line works, you need `git`** — and a brand-new Mac does not have it. Running
+`git clone` on a machine that has never had developer tools installed prints
+`xcode-select: note: No developer tools were found, requesting install.` and stops. On a desktop
+Mac a dialog appears: click **Install**, wait for it (it is a large download — budget 15–30
+minutes), then run the clone again. Over SSH with no desktop session, install them first with
+`xcode-select --install`. This is the one prerequisite the installer cannot handle for you, because
+you need it to *get* the installer.
+
+The install script:
+1. **Installs everything else for you** — Homebrew if it is missing, then Node 22+, ttyd, tmux,
+   mkcert and Caddy. You do not need to install these by hand; the list below is what ends up on
+   your machine, not a set of chores to do first.
+2. Generates launchd plists with correct paths
+3. Installs and loads the services
+4. Runs a health check
+
+Access the landing page at **http://localhost:3102**. That is where setup starts, and where the
+dashboard stays if you opt out of the login gate.
+
+**Once setup has installed the login gate — the default — the address changes to
+`https://localhost:8443`.** Caddy takes over the front door on its own port; `3102` stays bound to
+the loopback interface behind it and is *not* the address to use or share. `https://localhost:3102`
+does not work in that mode and never will: TangleClaw serves plain HTTP there and Caddy terminates
+the TLS. Setup tells you the address it landed on — trust that over this paragraph, since it knows
+which mode you chose.
+
+If you opted out of the gate and enabled HTTPS directly, `https://localhost:3102` is correct. Port
+3102 serves one protocol at a time; opening the HTTP URL after HTTPS is enabled produces empty responses and can look like a dashboard refresh loop. See [Troubleshooting](docs/user-guide.md#dashboard-constantly-refreshes-after-enabling-https) to verify the protocol or return a localhost-only install to HTTP. (The installed launchd service uses port 3102; running `node server.js` by hand instead listens on the code default, **3101**.) On first launch, a setup wizard walks you through configuration — including choosing your **projects directory**. This is a single folder where all your managed projects live (e.g., `~/Projects`). TangleClaw scans this directory, detects existing repos and engines, and lets you attach them as managed projects.
+
+### Prerequisites
+
+**You install these two:**
+
+- **macOS** — TangleClaw uses launchd for service management. Linux support is not yet available
+- **git / Xcode Command Line Tools** — needed to clone this repository at all. See the note above
+  the install script's steps; `xcode-select --install` if you have no desktop session
+
+**`deploy/install.sh` installs the rest** — listed so you know what lands on your machine, not as
+work to do first:
+
+- **Node.js 22+** — required for `node:sqlite` and `node:test`
+- **ttyd** — browser-based terminal access
+- **tmux** — session multiplexer
+- **mkcert** — generates the local TLS certificate
+- **Caddy** — serves the TLS ingress that setup provisions by default for remote access (see
+  [deploy/INGRESS.md](deploy/INGRESS.md)). If it is somehow absent, your login still works and setup
+  says the install is reachable from this machine only
+
+**You also need at least one AI CLI engine**, which TangleClaw does not install — it drives whichever
+you already use, with your own account: [Claude Code](https://docs.anthropic.com/en/docs/claude-code),
+[Codex](https://github.com/openai/codex), [Antigravity](https://antigravity.google/), or
+[Aider](https://aider.chat). TangleClaw installs and runs without one; you just cannot launch a
+session until an engine is present.
+
+**Optional integrations:**
+- **[Prawduct](https://github.com/brookstalley/prawduct)** *(optional)* — governed workflows with discovery, planning, building phases, and independent Critic review
+- **[OpenClaw](https://github.com/Jason-Vaughan/OpenClaw)** *(optional)* — remote AI agent sessions (requires SSH access to the OpenClaw host)
+- **[ClawBridge](https://github.com/Jason-Vaughan/ClawBridge)** *(optional)* — background-process visibility on OpenClaw instances
+
+## How Do I…?
+
+Quick answers, with links into the full docs:
+
+| I want to… | Read this |
+|---|---|
+| Install TangleClaw and get it running | [Quick Start](#quick-start) above, or the [User Guide — Getting Started](docs/user-guide.md#getting-started) |
+| Use it from my phone | [User Guide — PWA Installation](docs/user-guide.md#pwa-installation-mobile) and [Mobile Tips](docs/user-guide.md#mobile-tips) |
+| Bring my existing projects in | [User Guide — Attaching Existing Projects](docs/user-guide.md#attaching-existing-projects) |
+| Launch an AI session and pick a permission mode | [User Guide — Launching a Session](docs/user-guide.md#launching-a-session) |
+| End a session properly (and why wraps matter) | [User Guide — Wrapping a Session](docs/user-guide.md#wrapping-a-session) |
+| Find what a past session did, or search old transcripts | [User Guide — Session History](docs/user-guide.md#session-history) |
+| Put TLS in front and reach it from other devices | [Ingress Guide](deploy/INGRESS.md) |
+| Change the password you sign in with | [User Guide — Changing your login](docs/user-guide.md#changing-your-login) |
+| Get back in: a forgotten password, a disabled account, a broken login | [Recovery](docs/recovery.md) |
+| Let my sessions message each other (Medusa switchboard) | [User Guide — Session Switchboard](docs/user-guide.md#session-switchboard-medusa) |
+| Share docs between related projects | [User Guide — Project Groups and Shared Documents](docs/user-guide.md#project-groups-and-shared-documents) |
+| Connect a remote OpenClaw machine | [OpenClaw Setup](docs/openclaw-setup.md) |
+| Point a project's sessions at local models (LiteLLM/Ollama) | Orchestration profiles — edit `~/.tangleclaw/orchestration-profiles.json`, then bind the project in its settings |
+| Let the AI improve its own session rules (safely) | [Session Rules & Self-Improvement](docs/session-rules-self-improvement.md) |
+| Add a custom engine | [Engine Guide](docs/engine-guide.md) |
+| Cut a release, or work out why one never reached installs | [Release Process](docs/release-process.md) |
+| Handle a Dependabot dependency-bump PR (never merged — audited and reconstructed) | [Dependency Bump Audit](docs/dependency-bump-audit.md) |
+| Change any config setting | [Configuration Reference](docs/configuration-reference.md) |
+| Fix something that's broken | [User Guide — Troubleshooting](docs/user-guide.md#troubleshooting), or [Service Management](#service-management) below |
+| Set it up safely, or get back in when locked out | [Setup Guide](docs/setup-guide.md) |
+
+## Discord operator bridge
+
+TangleClaw can carry messages between the operator's Discord channel and the fleet: the Project
+Master session routes what the operator sends and decides what is posted back. It shipped in
+v5.31.0 and is **off by default**. Only the operator can enable it, from the dashboard's global
+settings, and enabling it is a cutover each install makes for itself.
+
+- [The operator bridge](docs/operator-bridge.md): what it is, what is built and its status.
+- [The Discord helper](docs/operator-bridge-helper.md): the local process that talks to
+  Discord, with a quick start for a fresh install.
+- [Activate the operator bridge](docs/runbooks/activate-the-operator-bridge.md): the cutover
+  runbook.
+
+## Documentation
+
+- **[Setup Guide](docs/setup-guide.md)** — setting up safely with no prior background: what the login protects, reaching it from another device, checking it worked, getting back in if you are locked out
+- **[Recovery](docs/recovery.md)** — getting back in: forgotten passwords, recovery codes, a locked or broken login, nothing loading
+- **[User Guide](docs/user-guide.md)** — getting started, full UI walkthrough, sessions, groups, mobile setup, troubleshooting
+- **[Ingress Guide](deploy/INGRESS.md)** — Caddy reverse proxy, TLS, password gate, break-glass reset, public domains
+- **[Session Rules & Self-Improvement](docs/session-rules-self-improvement.md)** — durable session directives, the Critic gate, version history
+- **[Engine Guide](docs/engine-guide.md)** — built-in engines, creating custom engine profiles
+- **[Configuration Reference](docs/configuration-reference.md)** — all config fields, JSON schemas, API overview
+- **[OpenClaw Setup](docs/openclaw-setup.md)** — remote OpenClaw instances, SSH tunnels, Web UI mode
+- **[Eval Audit Mode](docs/eval-audit-mode.md)** — AI agent evaluation pipeline, scoring, baselines, drift detection
+- **[Architecture Decision Records](docs/adr/)** — the durable "why" behind the ingress model, wrap pipeline, service tokens, Project Master, and more
+
+## Security
+
+TangleClaw runs a local server with browser-based terminal access, so reaching the dashboard means running shell commands as you. It therefore **listens on `127.0.0.1` only** unless you tell it otherwise — a fresh install is reachable from the machine it runs on, and nowhere else. The terminal listener (`ttyd`) is pinned to loopback on every install, new or upgraded. The `deletePassword` config option protects destructive operations only; it is not a login.
+
+**Upgrading from a version before this changed?** Your dashboard binding is left as it was, deliberately — narrowing it would take away remote access you may be relying on before there is a password to put in its place. TangleClaw says so on every start and on the dashboard until you resolve it, either by turning on the login below (recommended — it keeps remote access) or by setting `"bindAllInterfaces": false` to close it entirely.
+
+**A fresh install sets a login during setup.** The wizard asks for a username and password and
+creates your TangleClaw account from them, so the login is the **default outcome of installing**, not
+something you go and turn on afterwards — with or without Caddy. There is no default credential. The
+wizard then shows the account's one-time **recovery codes**, once; keep them apart from the device you
+sign in on: one resets a forgotten password from the sign-in page. The login step also lets you
+**finish without a login**, saying plainly that anyone who can reach the address is then in; TangleClaw
+records that choice, offers it only while the dashboard is not reachable from other machines, and
+**global settings → Your account → Add a login** reverses it at any time.
+
+**The login is TangleClaw's own**, enforced by the server on the dashboard, the terminals, the APIs
+and the proxied gateway, on every ingress mode. Local tools on this machine that are not browsers —
+the `tc` CLI, PortHub, the switchboard — are outside it; the optional service-token gate covers them.
+Caddy's `basic_auth` password pop-up appears only while TangleClaw's login cannot guard the door by
+itself: before an install's first account exists, or during a terminal fallback. **Upgrading an install
+that has only Caddy's password?** Close every other TangleClaw tab first, sign in with it as before,
+create your account on the page that follows, then run `node scripts/ingress-cutover.js --to caddy` to take Caddy's password out of a
+Caddyfile TangleClaw generated (a hand-maintained one is yours to edit). Locked out, or the login
+itself broke? [Getting back into TangleClaw](docs/recovery.md) covers every case.
+
+To reach TangleClaw from another device, pick one of two things — never neither:
+
+- **The Caddy ingress** (the default, and recommended): a reversible cutover that fronts the dashboard, terminals, and APIs with TLS, forces the first account on first run, and issues service tokens for machine-to-machine API callers. Setup provisions this for you; `scripts/ingress-cutover.js` is the manual path for upgrades and recovery. See [deploy/INGRESS.md](deploy/INGRESS.md).
+- **`"bindAllInterfaces": true`** in `~/.tangleclaw/config.json` (or Settings → Network Exposure): accept connections from every interface directly, with no TLS — and with no password unless TangleClaw's login is on. Only sensible on a network you fully control. Requires a restart.
+
+**Recommendations:**
+- **Enable the ingress** (or at minimum mkcert HTTPS) for any non-localhost access
+- Run TangleClaw on a trusted network or behind a VPN (e.g., Tailscale, WireGuard)
+- If accessing from mobile over Wi-Fi, ensure your network is private
+
+**Internet exposure is unsupported** — not merely discouraged. The login is a password with no second factor, no per-address lockout, and no per-user permissions, sitting in front of arbitrary code execution. Supported perimeters are loopback, a private tunnel (Tailscale/WireGuard), or a trusted LAN behind the gate. The reasoning is recorded in [ADR 0009](docs/adr/0009-secure-by-default.md).
+
+## Stay Updated
+
+TangleClaw checks for newer releases automatically (a `git ls-remote --tags` against your `origin`, ~60 seconds after server start and periodically after — see `updateCheckIntervalMs`). That timer is only the floor for an install nobody has open: the dashboard re-checks when you open it and whenever you return to its tab, and every open session re-checks on its own poll, so a release published between timer ticks is noticed within minutes of it existing rather than whenever the timer next happens to fire. Those page-driven checks are throttled and coalesced server-side, so the cost is the same whether you have one tab open or twenty.
+
+**To check on demand, click the version number** in the header. It reports the result inline and never as more than it measured: up to date, an update available, that the check could not be made, that nothing has been checked yet, or — when the running server predates the on-demand check and only its cache can answer — that the answer is cached and was not re-checked. Those distinctions matter: an install that cannot reach `origin` is not the same as one that is current, and before #716 both rendered identically as "no pill". The same honesty applies to the running process itself: when TangleClaw cannot read its own git state it says "cannot tell whether this server is up to date" instead of implying all-clear.
+
+When a newer tag exists, the serpent logo announces it — on the dashboard and inside every session, from one surface. A notice pops naming the version, fades after a few seconds, and leaves a red dot on the logo that stays until the update is applied; clicking the dot re-opens the notice. Click through to the release notes, or press **Update now** to have TangleClaw fetch the release, check it out with fail-closed guards, and restart itself.
+
+> **A fork `origin` freezes detection.** GitHub copies tags into a fork only at creation, so a clone whose `origin` points at your own fork will report "up to date" indefinitely no matter how often it checks. Point `origin` at the upstream repo, or fetch tags from upstream yourself. Tracked as [#711](https://github.com/Jason-Vaughan/TangleClaw/issues/711).
+
+Manual upgrade path:
+
+```bash
+cd <your-TangleClaw-clone>
+node scripts/apply-update.js   # same guarded applier as the button
+                               # result JSON on stdout, logs on stderr, exit 1 if refused
+launchctl kickstart -k gui/$(id -u)/com.tangleclaw.server
+```
+
+`node scripts/apply-update.js --help` prints the script's usage and changes nothing. The update runs only with no arguments or with `--discard-tc-files`: any other argument is refused with exit 2, the reason on stderr and nothing on stdout, before the updater is called.
+
+Run `./deploy/install.sh` **only** when a release changed a launchd plist or another deploy asset. It restarts the server itself, so it replaces the `kickstart` above rather than following it. It works in both ingress modes:
+
+- **Direct mode:** it refreshes the plists, `~/.tmux.conf` and dependencies, and reloads both agents.
+- **Caddy mode** (the default since v5): it first checks, changing nothing, that the ingress cutover would re-apply cleanly, and stops if it would not (for example, a hand-edited Caddyfile). It then refreshes the same assets, but never writes the direct-mode ttyd plist, and hands the ttyd and Caddy plists to `node scripts/ingress-cutover.js --to caddy`. The server restarts twice, and each restart is confirmed healthy. A login stays in front the whole time, so the dashboard is briefly down, never open. Which login it is follows the cutover's rule: while TangleClaw's own login is armed it is the gate, and Caddy's password is left out (a Caddy password set earlier is removed); otherwise Caddy's password is the gate. install.sh prints which gate remains, even if the final health check times out, and the preflight says beforehand if the refresh will remove a Caddy password. A hand-written gate (a `forward_auth` or `import`) makes the Caddyfile hand-edited, so the preflight refuses and nothing changes.
+
+Use the script rather than `git pull`. A successful update leaves the checkout **detached at the release tag**, which is the intended state — pulling a branch on top of that moves you to an unreleased commit, and the updater then refuses to run again because HEAD no longer sits on a tag. The script fetches and checks out the release tag itself, and fails closed on a dirty tree or a branch that isn't meant to be updated.
+
+> **Note:** if your clone predates the 4.0 rename, the repository was previously named `TangleClaw-v3`. GitHub redirects the old URL, but updating your remote is cleaner: `git remote set-url origin https://github.com/Jason-Vaughan/TangleClaw.git`
+
+## Configuration
+
+Global config lives at `~/.tangleclaw/config.json` (auto-created on first run).
+
+Key settings:
+- `serverPort` — landing page server port (code default: 3101, launchd override: 3102)
+- `ttydPort` — ttyd terminal port (3100; in `caddy` ingress mode ttyd binds a Unix socket instead of a TCP port)
+- `projectsDir` — root directory for managed projects
+- `defaultEngine` — preferred engine for new projects; used when installed, otherwise TangleClaw falls back to the first installed engine (see the configuration reference)
+- `deletePassword` — optional password for destructive operations
+- `httpsEnabled` / `httpsCertPath` / `httpsKeyPath` — direct-mode TLS
+- `ingressMode` / `caddyHttpsPort` / `caddyHttpPort` / `publicDomain` — Caddy ingress ([guide](deploy/INGRESS.md))
+
+Engine profiles: `~/.tangleclaw/engines/*.json` · Orchestration profiles: `~/.tangleclaw/orchestration-profiles.json`
+
+See the [Configuration Reference](docs/configuration-reference.md) for all fields, types, and defaults.
+
+## Development
+
+### Running Tests
+
+```bash
+node --test 'test/*.test.js'
+```
+
+### Architecture
+
+```
+[default]  launchd (com.tangleclaw.caddy)          ← ingress mode, provisioned by setup
+  └─ caddy: TLS + basic_auth gate
+     └─ reverse proxy → TangleClaw server
+
+launchd (com.tangleclaw.server)
+  └─ node server.js
+     ├─ Landing page HTTP(S) server (:3102)
+     ├─ API endpoints (/api/*)
+     ├─ Reverse proxy /terminal/* → ttyd (:3100)
+     ├─ Reverse proxy /openclaw/* → SSH tunnel → OpenClaw gateway
+     ├─ WebSocket upgrade (ttyd + OpenClaw)
+     └─ Session wrapper + OpenClaw viewer HTML serving
+
+launchd (com.tangleclaw.ttyd)
+  └─ ttyd --port 3100 tmux attach (PTY-leak watchdog supervised)
+     └─ WebSocket terminal access
+
+tmux sessions (spawned on demand)
+  ├─ One per active project session (AI engine process)
+  └─ tangleclaw-master (reserved) — the Project Master session
+
+SSH tunnels (spawned on demand)
+  └─ One per active OpenClaw connection
+     ├─ Gateway port forward
+     └─ ClawBridge port forward (sidecar)
+```
+
+For a maintained map of features → source files, see [FEATURES.md](FEATURES.md). Durable design decisions live in [docs/adr/](docs/adr/).
+
+### Git Hooks
+
+Reference hooks are provided in `hooks/`. To install:
+
+```bash
+cp hooks/pre-commit hooks/commit-msg hooks/post-commit .git/hooks/
+chmod +x .git/hooks/pre-commit .git/hooks/commit-msg .git/hooks/post-commit
+```
+
+- **pre-commit**: runs the full test suite
+- **commit-msg**: validates first line is non-empty and ≤72 characters
+- **post-commit**: tags the version from `version.json` on the main branch
+
+## Service Management
+
+```bash
+# Restart server (launchd auto-restarts via KeepAlive)
+launchctl kill SIGTERM gui/$(id -u)/com.tangleclaw.server
+
+# Stop services
+launchctl unload ~/Library/LaunchAgents/com.tangleclaw.server.plist
+launchctl unload ~/Library/LaunchAgents/com.tangleclaw.ttyd.plist
+
+# View logs
+tail -f ~/.tangleclaw/logs/tangleclaw.log
+
+# Health check (use https:// and curl -k when HTTPS is enabled)
+curl -s http://localhost:3102/api/health | python3 -m json.tool
+```
+
+## Roadmap
+
+**[View the live release-first roadmap →](https://jason-vaughan.github.io/TangleClaw/)**
+
+It is generated from the canonical release plan and current public GitHub issue status. Release targets are forecasts and update automatically.
+
+## Community and Conduct
+
+We pledge to make participation in our community a harassment-free experience for everyone. Please review our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).

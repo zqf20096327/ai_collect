@@ -1,0 +1,145 @@
+# airails.dev
+
+Home of Spec-Driven BCE ([**sbce.space**](https://sbce.space)) — development conventions, [SKILLS.md](https://agentskills.io/specification), and [AGENTS.md](https://agents.md) for building modern Java and web applications, and for migrating legacy enterprise systems onto that stack.
+
+## Installation
+
+Download the repository without `git`, then run the installer:
+
+```
+curl -fsSL https://raw.githubusercontent.com/AdamBien/airails/main/downloadSkills | java --source 25 /dev/stdin
+cd airails
+./installSkills
+```
+
+Or clone it with `git` instead of the first step:
+
+```
+git clone https://github.com/AdamBien/airails
+cd airails
+./installSkills
+```
+
+The installer finds all skills and prompts before copying to each supported agent directory (`~/.claude/skills`, `~/.vibe/skills`, `~/.kiro/skills`, `~/.copilot/skills`, `~/.agents/skills`, `~/.config/goose/skills`).
+
+Without a JDK or `git`, download the prepacked zip for your agent from the rolling [skills release](https://github.com/AdamBien/airails/releases/tag/skills) and unzip it into the home directory:
+
+```
+curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-claude.zip
+unzip -o airails-claude.zip -d ~
+```
+
+Each zip contains all skills with the agent's skills directory baked into the entry paths: `airails-claude.zip`, `airails-vibe.zip`, `airails-kiro.zip`, `airails-copilot.zip`, `airails-codex.zip`, `airails-goose.zip`. The agent-neutral `airails-skills.zip` holds the same skills under a plain `skills/` prefix — unzip it into any agent's configuration directory or a custom location:
+
+```
+curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-skills.zip
+unzip -o airails-skills.zip -d ~/.claude
+```
+
+AI agents installing the skills themselves should follow [AGENTS.md](AGENTS.md) — `installSkills` requires an interactive terminal.
+
+Manage installed skills:
+
+```
+./installSkills -l           # list available and installed skills
+./installSkills -d <name>    # delete a skill by name
+./installSkills -h           # show help
+```
+
+## Skill Layers
+
+The skills compose in layers. Each layer fixes one set of decisions; the layers above it ask for that decision instead of making it. A lower layer applies wherever the composed skill is silent, and the composed skill specializes it, never contradicts it. A fixed decision is one the agent does not rediscover per task.
+
+1. **Linguistic** — wording and test shape. [ears-tests](bce/ears-tests): six EARS patterns, each mapping to a fixed precondition/trigger/response tuple; one statement id yields one test row; the subject is always the BC.
+2. **Semantic** — scope and naming. [sbce](bce/sbce): one capability spec equals one BC equals one package; boundary operations are verb-noun and transport-neutral; requirement ids are stable and never renumbered.
+3. **Architectural** — structure and vocabulary. [bce](bce/bce) and [concerns](java/concerns): layer responsibilities, package structure, naming bans.
+4. **Technological** — runtime, layout, build, verification loop. Stack skills: [java-cli-script](java/java-cli-script), [java-cli-app](bce/java-cli-app), [microprofile-server](bce/microprofile-server), [aws-cdk](bce/aws-cdk), [web-static](web/web-static), [web-sprinkles](web/web-sprinkles), [web-components](web/web-components). Building blocks: [zb](java/zb), [zargs](java/zargs), [zcfg](java/zcfg), [zcl](java/zcl), [zjson](java/zjson). Layers 1–3 ask the stack skill where code lands and whether it is green.
+5. **Idiomatic** — syntax and style. [java-conventions](java/java-conventions), [javascript-conventions](web/javascript-conventions), [web-conventions](web/web-conventions): defaults wherever the stack skill is silent.
+6. **Judgment** — the definition of done. [system-tests](bce/system-tests) is the neutral rule, realized by [web-system-tests](web/web-system-tests), [zunit](java/zunit), [continuous-testing](bce/continuous-testing), and [characterization-tests](migrations/characterization-tests). The stack's own test loop is the oracle; the agent never self-certifies convergence.
+
+Outside the sequence:
+
+- **Exclusive grounding** — the selection rule for layers 4 and 5: standards first, zero dependencies, no build step. The model's prior on public standards, gated by the Baseline snapshot in [web-conventions](web/web-conventions).
+- **Controlled decompression** — modifiers reopen one decision each: [showtime](bce/showtime) skips verification, [web-latest](web/web-latest) lifts the Baseline policy, [web-pwa](web/web-pwa) adds offline support, [web-performance-reviewer](web/web-performance-reviewer), [web-standards-reviewer](web/web-standards-reviewer), and [bce-reviewer](bce/bce-reviewer) add opt-in reviews. Transformers apply layers 3–5 to existing code: [java-distiller](java/java-distiller), [python-to-java](java/python-to-java), [simplifier](migrations/simplifier); [enterprisifier](java/enterprisifier) inverts them.
+- **Recovery and projection** — [capability-brief](bce/capability-brief) captures greenfield intent as a use case or user story and feeds layer 2; the migration skills recover domain vocabulary from legacy code and feed it likewise: [concept-extractor](migrations/concept-extractor), [concept-clarifier](migrations/concept-clarifier), [bc-carver](migrations/bc-carver), [concept-annotator](migrations/concept-annotator), routed by [migration-advisor](migrations/migration-advisor). [readme](documentation/readme), [bce-diagrams](documentation/bce-diagrams), [mermaid](documentation/mermaid), and [drawio](documentation/drawio) render layers 2 and 3 for humans.
+
+## What's Inside
+
+### Spec-Driven BCE (SBCE)
+
+One capability spec equals one business component, and the spec is the boundary contract ([sbce.space](https://sbce.space)). Declare the capability, then converge the code against the stack's own test loop.
+
+- [**sbce**](bce/sbce) — The workflow: `new` decomposes a feature into capability specs, `apply` converges code to spec; composes with bce and a stack skill (java-cli-app, microprofile-server, web-components)
+- [**ears-tests**](bce/ears-tests) — Parameterized (table-driven) tests generated from the EARS requirement statements in a capability spec, one labeled row per requirement id
+- [**capability-brief**](bce/capability-brief) — A use case or user story completed with the domain owner against a completeness checklist, so `/sbce new` authors the spec in one shot without questions
+
+### Java
+
+- [**java-conventions**](java/java-conventions) — Composable Java 25 code conventions: modern syntax, naming, visibility, streams, and exceptions across all Java contexts
+- [**concerns**](java/concerns) — @Concern marker annotations recording why a class or package exists: starter kinds for observability and external systems, plus admission rules for when a project-specific kind is worth adding
+- [**java-cli-script**](java/java-cli-script) — Zero-dependency, single-file executable Java scripts for system-wide use via PATH; longer scripts group members into Boundary/Control/Entity interface namespaces (composes bce)
+- [**java-distiller**](java/java-distiller) — Simplifies, modernizes, and refactors existing code into idiomatic Java 25
+- [**python-to-java**](java/python-to-java) — Converts Python scripts to zero-dependency Java 25 CLI programs
+- [**enterprisifier**](java/enterprisifier) — Deliberately overengineers code with maximum patterns, indirections, and abstractions, for comedic or educational purposes
+- [**zb**](java/zb) — Zero Dependencies Builder for compiling, building, and packaging Java 21+ projects
+- [**zb-release-pipeline**](java/zb-release-pipeline) — GitHub Actions pipeline that builds a zb project and publishes the JAR as a GitHub Release
+- [**zargs**](java/zargs) — Zero-dependency, enum-based argument parsing for Java CLI applications
+- [**zcfg**](java/zcfg) — Zero Dependency Configuration Utility for loading properties and application configuration
+- [**zcl**](java/zcl) — Zero-dependency Colour Logger for colored terminal output in Java applications
+- [**zhtmldb**](java/zhtmldb) — Agent datastore: key-value records stored as browsable, git-diffable XHTML pages, driven through the zhtmldb CLI
+- [**zjson**](java/zjson) — JSON parsing and generation by copying the org.json source into the project, no Maven/Gradle dependency
+- [**zunit**](java/zunit) — Generates and runs zunit tests for java-cli-app projects
+- [**zllm-scripts**](java/zllm-scripts) — Read-only, root-confined replacements for find, grep, cat, and clipboard commands, plus a JavaScript import inventory, that agents and composing skills run instead of OS shell commands
+
+### Web
+
+- [**web-conventions**](web/web-conventions) — Composable baseline for all web frontends: semantic HTML, accessibility, design tokens, and Baseline browser-support policy
+- [**javascript-conventions**](web/javascript-conventions) — Composable JavaScript baseline: ES modules, syntax, collections, asynchrony, errors, JSDoc types, and the per-feature Baseline lookup that picks the newest usable ECMAScript
+- [**web-static**](web/web-static) — Modern static websites using semantic HTML and CSS without external dependencies or build systems; composes web-conventions
+- [**web-sprinkles**](web/web-sprinkles) — Static sites enhanced with small, self-contained ES modules: enhancement contract, the CSS-versus-script cut line, and a verification pass with the scripts removed; composes web-static and javascript-conventions
+- [**web-components**](web/web-components) — Single-page applications using web components, BCE layering, lit-html, Redux Toolkit, and client-side routing; composes web-conventions
+- [**web-system-tests**](web/web-system-tests) — Browser-driven system tests with Playwright against a running frontend: `tests/` layout, `baseURL` plus `webServer`, accessibility-tree locators, cross-engine runs, opt-in coverage; the web realization of system-tests
+- [**web-latest**](web/web-latest) — Modifier for experiments and PoCs that lifts the Baseline browser-support policy: newest web platform features without fallbacks, with a declared support floor; composes on top of web-static, web-sprinkles, or web-components
+- [**web-performance-reviewer**](web/web-performance-reviewer) — Opt-in performance review of the rendered site through Chrome DevTools MCP: throttled traces, Core Web Vitals thresholds, network waterfall, heap-snapshot leak checks for SPAs; never part of the verification loop; composes on top of web-static, web-sprinkles, or web-components
+- [**web-standards-reviewer**](web/web-standards-reviewer) — Terse review of an existing web project against the web-standards and essential-dependencies rules of the detected stack skill: build step, non-essential dependencies, platform APIs replacing hand-rolled code; one line per finding; review only
+- [**web-pwa**](web/web-pwa) — Modifier adding offline support via a hand-written service worker with a versioned Cache API precache, and installability via a web app manifest; no build step, no generated code; composes on top of web-static, web-sprinkles, or web-components
+
+### BCE
+
+- [**bce**](bce/bce) — Composable, technology-neutral architecture rules for the Boundary-Control-Entity pattern: business components, layer responsibilities, and package structure
+- [**bce-reviewer**](bce/bce-reviewer) — Terse review of BC carving, the per-BC cohesion/coupling ratio, and BCE layering against bce, one line per finding; full codebase or incremental (uncommitted changes, git range); review only
+- [**system-tests**](bce/system-tests) — Composable, technology-neutral conventions for black-box system tests exercising the running system through its public surface; stack skills own launch mechanics and test syntax
+- [**java-cli-app**](bce/java-cli-app) — Multi-file Java 25 CLI applications packaged as executable JARs with zb
+- [**microprofile-server**](bce/microprofile-server) — Architecture and coding conventions for long-running MicroProfile/Jakarta EE server applications using BCE pattern
+- [**aws-cdk**](bce/aws-cdk) — Create and review Java AWS CDK v2 infrastructure with BCE layering: thin stacks over reusable constructs, business components named after AWS services, region pinning, `grant*` permissions, and synthesis-based tests
+- [**continuous-testing**](bce/continuous-testing) — Test-driven loop on top of microprofile-server: builds, starts the server, and runs Unit, Integration, and System Tests after every change
+- [**showtime**](bce/showtime) — Live coding mode on top of any project skill: generates code without running tests or builds, for demos and workshops
+
+### Migrations
+
+Migrate legacy, overengineered enterprise systems — Java or web — onto a modern stack ([migrations/](migrations/)). Three entry paths: rehost unchanged, replatform by simplifying in place, or rearchitect toward BCE by recovering the domain vocabulary and carving business components. Every code-changing step is bracketed by recorded behavior; analysis steps produce documentation for human review before any code changes.
+
+- [**migration-advisor**](migrations/migration-advisor) — Front door: assesses the system from shallow read-only signals plus a short interview, recommends an entry path and an ordered skill sequence in `migration/PLAN.md`; routes, never executes
+- [**concept-extractor**](migrations/concept-extractor) — Mines candidate domain concepts from every naming source (schema, UI labels, contracts, code); writes `migration/CONCEPTS.md`, seeds `migration/GLOSSARY.md`
+- [**concept-clarifier**](migrations/concept-clarifier) — Resolves open questions and glossary hypotheses with a domain expert, live or via `migration/INTERVIEW.md`; records answers with provenance
+- [**bc-carver**](migrations/bc-carver) — Clusters confirmed concepts into candidate business components; documents the as-is → to-be diff in `migration/CARVING.md`
+- [**concept-annotator**](migrations/concept-annotator) — Projects concepts, target BC, and refactoring hints into per-package `package-info.java` migration notes
+- [**characterization-tests**](migrations/characterization-tests) — Pins observed behavior of the running legacy system as replayable golden masters; records before, replays after the lift and each carving step; composes with system-tests and the stack skill
+- [**simplifier**](migrations/simplifier) — Replatform mode: modernizes code and removes external dependencies on the lifted system, one pass at a time under the characterization green bar; structure preserved
+
+### Documentation
+
+- [**bce-diagrams**](documentation/bce-diagrams) — High-level overview diagrams showing interactions between business components, subsystems, and services
+- [**drawio**](documentation/drawio) — Draw.io overview diagrams with BCE shape mapping and consistent visual style
+- [**mermaid**](documentation/mermaid) — Mermaid overview diagrams for architecture and component visualization
+- [**readme**](documentation/readme) — Conventions for writing README.md files targeting advanced developers
+
+### Quickstarters
+
+- [**quarkus-microprofile**](https://github.com/AdamBien/quarkus-microprofile) — Quarkus MicroProfile template with BCE architecture, REST endpoints, CDI, and System Tests
+- [**bce.design**](https://github.com/AdamBien/bce.design) — Web Components starter with lit-html, Redux Toolkit, and standards-based routing (Navigation API + URLPattern)
+- [**ebank**](https://github.com/AdamBien/ebank) — CRUD with Quarkus, JPA, and PostgreSQL
+- [**java-cli-app**](https://github.com/AdamBien/java-cli-app) — Template for building zero-dependency Java CLI applications with zb
+- [**zeeds**](https://github.com/AdamBien/zeeds) — Zero-dependency Java 25+ source files as starting points, run directly with `java filename.java`
+
+powered by [airhacks.industries](https://airhacks.industries)

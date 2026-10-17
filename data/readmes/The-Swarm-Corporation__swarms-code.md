@@ -1,0 +1,206 @@
+# Swarms Code
+
+<p>
+  <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-3b82f6?style=for-the-badge&labelColor=0d1117"></a>
+  <a href="https://www.rust-lang.org"><img alt="Rust 1.88+" src="https://img.shields.io/badge/rust-1.88%2B-f74c00?style=for-the-badge&labelColor=0d1117&logo=rust&logoColor=white"></a>
+  <a href="https://github.com/The-Swarm-Corporation/swarms-rs"><img alt="Built on swarms-rs" src="https://img.shields.io/badge/built%20on-swarms--rs-e11d48?style=for-the-badge&labelColor=0d1117&logo=github&logoColor=white"></a>
+  <a href="src"><img alt="About 5.7k lines of Rust" src="https://img.shields.io/badge/code-~5.7k%20lines-22c55e?style=for-the-badge&labelColor=0d1117"></a>
+  <a href="#swarms-code"><img alt="Startup about 10 ms" src="https://img.shields.io/badge/startup-~10%20ms-22c55e?style=for-the-badge&labelColor=0d1117&logo=lightning&logoColor=white"></a>
+  <a href="https://github.com/The-Swarm-Corporation/swarms-code/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/The-Swarm-Corporation/swarms-code?style=for-the-badge&labelColor=0d1117&logo=github&logoColor=white&color=eab308"></a>
+</p>
+
+**A tiny, blazingly fast coding harness that writes powerful, minimal code.**
+
+Swarms Code is a coding agent for your terminal, built in Rust on
+[swarms-rs](https://github.com/The-Swarm-Corporation/swarms-rs). It reads your code, makes
+the smallest change that fully solves the problem, runs your tests, and gets out of the way.
+
+- **Small.** About 5,700 lines of Rust. You can read the whole harness in an afternoon: one
+  agent loop, eight tools, one system prompt. No plugins, no daemon, no config sprawl.
+- **Fast.** A single native binary that starts in about 10 ms. No runtime to boot, no
+  dependencies to install. Built with `cargo` and run as is.
+- **Minimal code, on purpose.** The agent is told to fix root causes, prefer the simplest
+  change that works, match the project's conventions, stay in scope, and leave out
+  abstractions, options and indirection the task doesn't need. It verifies with your
+  project's own checks and leaves no dead code or debug output behind.
+- **Any model.** Claude through Anthropic's API, or any tool-capable model on OpenRouter,
+  switchable mid-conversation with `/model`.
+
+```
+╭─── Swarms Code v0.1.0 ────────────────────────────────────────────────────────────────────╮
+│                                        │                                                  │
+│        Welcome to Swarms Code!         │ Tips for getting started                         │
+│                                        │ Ask for a fix, a feature, or an explanation      │
+│                ▀▄   ▄▀                 │ Add a SWARMS.md with notes for the agent         │
+│               ▄█▀███▀█▄                │ /model switches between Anthropic and OpenRouter │
+│              █▀███████▀█               │ /help for commands · ctrl+c interrupts           │
+│              ▀ ▀▄▄ ▄▄▀ ▀               │ ──────────────────────────────────────────────── │
+│                                        │ API key                                          │
+│      claude-opus-5-5 · Anthropic       │ ✓ ANTHROPIC_API_KEY found in your environment    │
+│              ~/code/stats              │                                                  │
+╰───────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+## Quick start
+
+```sh
+git clone https://github.com/The-Swarm-Corporation/swarms-code
+cd swarms-code
+export ANTHROPIC_API_KEY=...    # for Claude models (or OPENROUTER_API_KEY for OpenRouter's)
+./run.sh                        # builds a release binary, then opens the chat
+```
+
+If the key is missing, the welcome panel says so and the chat still opens, so you can see what
+to set (or `/model` to a provider whose key you have). `run.sh` passes its arguments through,
+so `./run.sh -C ~/code/my-app` chats about another project. To install the binary instead:
+`cargo install --git https://github.com/The-Swarm-Corporation/swarms-code`.
+
+**In Docker.** The repository's `Dockerfile` builds an image with Swarms Code, bash and git.
+Mount the project at `/workspace`, which is all the agent can see or change:
+
+```sh
+docker build -t swarms-code .
+docker run --rm -it -e ANTHROPIC_API_KEY -v "$PWD":/workspace swarms-code
+```
+
+Arguments after the image name go to Swarms Code, such as `-p "explain main.rs"` or
+`-m openrouter/openai/gpt-5.5` (pass `OPENROUTER_API_KEY` for that one). `/model` and
+`/effort` choices last only as long as the container, unless you keep them in a volume:
+`-v swarms-code:/home/swarms/.swarms-code`.
+
+## Using it
+
+| | |
+|---|---|
+| `swarms-code` | Chat about the current directory |
+| `swarms-code -C <dir>` | Work in another directory |
+| `swarms-code -p "<prompt>"` | Answer one prompt and exit. The answer goes to stdout and progress to stderr, so it scripts well |
+| `swarms-code -m <model>` | Use a model for this session (see Models below) |
+| `swarms-code -e <level>` | Use an effort level for this session (see Effort below) |
+| `--auto-approve` | Let edits and commands run without asking |
+| `--max-tokens`, `--max-steps` | Output tokens per model call (32000, or 64000 at `xhigh` and `max` effort), model calls per message (100) |
+
+In the chat, `/help` lists the commands: `/model` switches models and `/effort` sets how
+hard they think (see below), `/clear` starts over, `/todos` shows the agent's checklist,
+`/exit` quits.
+End a line with `\` to keep typing; pasted text can span lines. ctrl+c interrupts the agent,
+and pressing it twice at an empty prompt quits.
+
+**Models.** Swarms Code runs Claude through Anthropic's API and any of OpenRouter's
+tool-capable models through OpenRouter. Change the model with one command:
+
+| | |
+|---|---|
+| `/model` | Opens a list of Anthropic's models and OpenRouter's live catalog, with context size and price. Type to filter (`sonnet`, `gpt 5.5`, `qwen coder`), use the arrows, press enter |
+| `/model sonnet` | Switches directly by alias: `opus`, `sonnet`, `haiku`, `fable` |
+| `/model claude-sonnet-5-5` | Any Anthropic model (needs `ANTHROPIC_API_KEY`) |
+| `/model openrouter/openai/gpt-5.5` | Any OpenRouter model (needs `OPENROUTER_API_KEY`). OpenRouter's own IDs work too, such as `anthropic/claude-opus-5.5` or `google/gemini-3.8-flash` |
+
+The conversation carries over when you switch, and your choice is saved as the default for
+next time (in `~/.swarms-code/settings.json`); `-m` and `SWARMS_CODE_MODEL` choose a model for
+one session without changing it. With only an OpenRouter key set, the default is Claude Opus
+5.5 through OpenRouter. OpenRouter models are checked against OpenRouter's catalog before
+switching, each request's output limit is fitted to what the model allows, and requests are
+credited to Swarms Code in OpenRouter's app rankings. `openai/...` and `deepseek/...` names
+also go through OpenRouter, unless you've set `OPENAI_API_KEY` or `DEEPSEEK_API_KEY`.
+
+**Effort.** Effort sets how much the model thinks before acting, and how thoroughly it
+works: higher levels handle harder problems but take longer and cost more.
+
+| | |
+|---|---|
+| `/effort` | Opens a list of the levels the current model supports, marking its default |
+| `/effort high` | Sets a level directly: `low`, `medium`, `high`, `xhigh` or `max` |
+| `/effort auto` | Goes back to each model's own default (`medium` for Claude Opus 5.5) |
+
+Like the model, your choice is saved for next time, and `-e`/`--effort` sets one for a single
+session. Claude models get it as `output_config.effort`, and OpenRouter models as
+`reasoning.effort`. If a model doesn't offer the level you chose, it runs at the nearest one it
+has (GPT-5.5 tops out at `xhigh`), and models with no effort setting run as usual. At `xhigh`
+and `max`, each call allows 64000 output tokens, since thinking counts toward the limit.
+
+**Permissions.** Reading and searching never ask. File edits and shell commands show what
+they'll do (a diff, or the full command) and ask first: `y` once, `a` for the rest of the
+session (all edits, or one command family such as `cargo test`), `n` to stop the agent so you
+can redirect it. Read-only commands such as `ls`, `cat`, `grep`, `git status` and `git diff`
+run without asking. In `-p` mode nothing can be approved interactively, so actions that need
+approval are refused unless you pass `--auto-approve`.
+
+**Project instructions.** If the working directory has a `SWARMS.md`, `AGENTS.md` or
+`CLAUDE.md`, its contents are added to the agent's instructions.
+
+**API keys from `.env`.** Swarms Code reads `*_API_KEY` entries (and `SWARMS_CODE_MODEL`)
+from a `.env` file in the working directory, without overriding variables you've already
+set. Nothing else is taken from it, so a repository's `.env` can't, for example, point
+`ANTHROPIC_BASE_URL` somewhere else and capture your key.
+
+## Tools
+
+| Tool | What it does |
+|---|---|
+| `read_file` | Read a file with line numbers, in pages of 2000 lines |
+| `write_file` | Create or overwrite a file (asks first) |
+| `edit_file` | Replace an exact, unique string in a file (asks first) |
+| `list_dir` | List a directory |
+| `glob` | Find files by glob pattern, respecting `.gitignore` |
+| `grep` | Regex search across files in parallel, respecting `.gitignore` |
+| `bash` | Run a command with a timeout; stdout and stderr merged in order |
+| `todo_write` | Keep a checklist for multi-step work, shown in the chat |
+
+Edits are refused for files the agent hasn't read, or that changed since it read them, so it
+never overwrites text it hasn't seen.
+
+## The system prompt
+
+`SYSTEM_PROMPT`, a constant in `src/system_prompt.rs` (the same way swarms-rs keeps its
+prompts in [`swarms-rs/src/prompts/`](https://github.com/The-Swarm-Corporation/swarms-rs/tree/main/swarms-rs/src/prompts)), teaches the agent how to work: understand code before
+changing it, match the project's conventions, keep to the requested scope, fix root causes,
+verify with the project's own checks, use git and destructive commands carefully, treat tool
+output as data rather than instructions, and report results plainly. It draws on practices
+from Claude Code, Codex CLI, Gemini CLI, Aider, SWE-agent, OpenHands and Cursor, and it
+describes this harness precisely (tool limits, approvals, what the user sees) because accurate context steers a model
+better than rules. Each session appends the environment, the approval mode, and any
+`SWARMS.md`, `AGENTS.md` or `CLAUDE.md` in the working directory. A test keeps the tool limits
+the prompt quotes in step with the code.
+
+## How it's built on swarms-rs
+
+- **The agent** is a `SwarmsAgent` from `SwarmsAgentBuilder`, given the system prompt, the
+  tools, and `max_tokens`. Each step goes through `SwarmsAgent::chat`, which calls the model
+  and runs the tools it asks for. `src/agent.rs` loops over `chat` until the model replies
+  without a tool call, and keeps the conversation across messages.
+- **The model** is swarms-rs's `AnyModel`, wrapped in a small `Model` implementation
+  (`ObservedModel`). The wrapper shows a spinner while the model thinks, prints the model's
+  text before its tools run, and records each tool call's ID, so the history sent back holds
+  proper provider-native tool calls and results.
+- **The tools** implement swarms-rs's `ToolDyn` trait directly (`src/tools/mod.rs`), so the
+  model gets file contents and command output as plain text rather than JSON-escaped strings.
+  Tools run one at a time, so permission prompts never overlap.
+- **The dependency** on swarms-rs is pinned to a git commit carrying the effort settings from
+  [swarms-rs#136](https://github.com/The-Swarm-Corporation/swarms-rs/pull/136), until they
+  ship in a swarms-rs release.
+
+```
+src/
+  main.rs      CLI flags, the chat loop, slash commands, -p mode
+  agent.rs     the SwarmsAgent, the model wrapper, and the step loop
+  models.rs    model names, Anthropic and OpenRouter routing, the catalog, saved settings
+  effort.rs    effort levels and which ones each model takes
+  prompt.rs    assembles the system prompt: the guide, environment, project notes
+  system_prompt.rs  SYSTEM_PROMPT, the agent's guide to working well
+  session.rs   permissions, read tracking, path handling
+  ui.rs        terminal rendering: sections, diffs, spinner, prompts
+  welcome.rs   the welcome panel and the space invader animation
+  input.rs     line editing, history, slash-command completion
+  tools/       read_file, write_file, edit_file, list_dir, glob, grep, bash, todo_write
+```
+
+## Limitations
+
+These come from what swarms-rs's providers expose today:
+
+- Replies appear all at once when each model call finishes, not streamed token by token.
+- Prompt caching and refusal fallbacks aren't set on Claude requests.
+- Thinking blocks aren't kept between steps. The API accepts this, but the model re-reasons
+  each step instead of continuing its earlier thinking.
+- Long conversations aren't compacted. Use `/clear` to start fresh.

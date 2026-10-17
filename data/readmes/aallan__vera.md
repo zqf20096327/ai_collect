@@ -1,0 +1,378 @@
+# Vera
+
+[![Vera — A language designed for machines to write](assets/vera-social-preview.jpg)](https://veralang.dev)
+
+[![CI](https://github.com/aallan/vera/actions/workflows/ci.yml/badge.svg)](https://github.com/aallan/vera/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/veralang)](https://pypi.org/project/veralang/)
+[![codecov](https://codecov.io/gh/aallan/vera/graph/badge.svg)](https://codecov.io/gh/aallan/vera)
+[![Mutation score](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/aallan/vera/main/mutation.json)](https://github.com/aallan/vera/issues/387)
+
+**Vera** (v-ERR-a) is a programming language designed for large language models to write. The name comes from the Latin *veritas* (truth). Programs compile to WebAssembly and run at the command line, in the browser, or on stock WASI Preview 2 hosts (the IO and Random surface).
+
+<!-- vera:run fn="safe_divide" args="2 10" stdout="5" -->
+```vera
+public fn safe_divide(@Int, @Int -> @Int)
+  requires(@Int.1 != 0)
+  ensures(@Int.result == @Int.0 / @Int.1)
+  effects(pure)
+{
+  @Int.0 / @Int.1
+}
+```
+
+There are no variable names. `@Int.0` is the most recent `Int` binding; `@Int.1` is the one before. The `requires` clause is a precondition `vera verify` checks at every call site. The `ensures` clause is a postcondition the SMT solver proves statically. The function is `pure` — no side effects of any kind. If a contract is wrong, `vera verify` refuses the program with a counterexample; a contract the solver can't decide becomes a runtime check. The compiled program checks its contracts at run time, so a proof that is wrong traps instead of returning a wrong answer; a contract code generation cannot express, such as a quantified `ensures`, is reported as a runtime check but is not compiled into one.
+
+## Why?
+
+Programming languages have always co-evolved with their users. Assembly emerged from hardware constraints. C from operating systems. Python from productivity needs. If models become the primary authors of code, it follows that languages should adapt to that too.
+
+The biggest problem models face is coherence over scale, not syntax. Models struggle with maintaining invariants across a codebase, understanding the ripple effects of changes, and reasoning about state over time. They're pattern matchers optimising for local plausibility, not architects holding the entire system in mind. The [empirical literature](https://arxiv.org/abs/2307.12488) shows that models are particularly vulnerable to naming-related errors like choosing misleading names, reusing names incorrectly, and losing track of which name refers to which value.
+
+Vera addresses this by making everything explicit and verifiable. The model doesn't need to be right, it needs to be checkable. Names are replaced by structural references. Contracts are mandatory. Effects are typed. Every function is a specification that the compiler can verify against its implementation.
+
+See the **[FAQ](FAQ.md)** for deeper questions about the design — why no variable names, what gets verified, how Vera compares to Dafny/Lean/Koka/F*, and the empirical evidence behind the design choices.
+
+## What Vera looks like
+
+Four examples that show what makes Vera different. For the full tour — contracts, refinement types, ADTs, effects, exception handling, recursion, Markdown, JSON, HTML, HTTP, SQL, LLM inference — see **[EXAMPLES.md](EXAMPLES.md)**.
+
+### Contracts the compiler proves
+
+A precondition like `requires(@Int.1 != 0)` becomes a static obligation at every call site.  A call to `safe_divide` whose divisor the verifier can show may be zero is refused with a counterexample (`E501`); a divisor it can neither prove non-zero nor show may be zero is checked at run time (`E532`).
+
+<!-- vera:run fn="safe_divide" args="2 10" stdout="5" -->
+```vera
+public fn safe_divide(@Int, @Int -> @Int)
+  requires(@Int.1 != 0)
+  ensures(@Int.result == @Int.0 / @Int.1)
+  effects(pure)
+{
+  @Int.0 / @Int.1
+}
+```
+
+The compiler synthesises the same obligations for primitive operations themselves.  Computing `@Int.1 / @Int.0` where the verifier finds the divisor can be zero is refused by `vera verify` (E526), not left to a runtime trap (an opaque or untranslatable divisor it can neither prove non-zero nor witness a zero for stays Tier 3, guarded at runtime by the zero-divisor trap); an array index is proved in bounds where the length is statically known, refused (E527) where provably out of bounds, and otherwise bounds-checked at runtime; `@Nat` subtraction underflow and `@Int` → `@Nat` narrowing are checked the same way.  So a division or array index that `vera verify` reports as proven cannot divide by zero or index out of range for any input (`INT_MIN / -1` has no obligation and traps at run time); where it can't prove one — an opaque divisor, a dynamic array length, or an op inside a closure body — the runtime guard catches it rather than silently producing a wrong value.  (Float division is exempt: divide-by-zero yields inf/NaN, not a trap.)
+
+### Effects are explicit
+
+Vera is pure by default. A function that calls an LLM says so in its signature. A caller that doesn't permit `<Inference>` cannot invoke it. A caller that doesn't permit `<Http>` cannot invoke it either. Both callers must declare the full effect row.
+
+<!-- vera:no-run category="network" reason="calls Http, so a run would reach the network" -->
+```vera
+public fn research_topic(@String -> @Result<String, String>)
+  requires(string_length(@String.0) > 0)
+  ensures(true)
+  effects(<Http, Inference>)
+{
+  let @Result<String, String> = Http.get(
+    string_concat("https://search.example.com/?q=", @String.0));
+  match @Result<String, String>.0 {
+    Ok(@String) -> Inference.complete(
+      string_concat("Summarise this research:\n\n", @String.0)),
+    Err(@String) -> Err(@String.0)
+  }
+}
+```
+
+Six lines of logic. The signature carries all the ceremony — parameter types, contracts, effect declarations — so the body reads like a pipeline. Run a real example with `VERA_ANTHROPIC_API_KEY=sk-ant-... vera run` [`examples/inference.vera`](examples/inference.vera).  See [`ENVIRONMENT.md`](ENVIRONMENT.md) for all `VERA_*` environment variables (provider keys, runtime knobs, debug flags).
+
+### SQL injection won't compile
+
+Nearly every SQL injection starts the same way: a query assembled from a value that came from outside the program. Vera makes that unwriteable. The SQL text of `DB.query` / `DB.execute` has to be written into the source, so the query is fixed when the program compiles, and outside data can only reach the database through the `?` placeholders and the params array.
+
+<!-- vera:no-run category="fixture" reason="queries a users table the block does not create" -->
+```vera
+public fn find_user(@String -> @Result<Array<Array<Option<String>>>, String>)
+  requires(string_length(@String.0) > 0)
+  ensures(true)
+  effects(<DB>)
+{
+  DB.query("SELECT name, email FROM users WHERE name = ?", [Some(@String.0)])
+}
+```
+
+Build the query out of the parameter instead — `string_concat("SELECT ... WHERE name = '", @String.0)` — and the program does not compile. `E207` names string-assembly as the injection vector and gives the placeholder rewrite as the fix. This is not a lint you configure, a taint analysis you run, or a scanner you remember to point at the code: it is a rule about where a string came from, enforced by the type checker, so the injectable form has no path to a running program. Try it: [`examples/database.vera`](examples/database.vera).
+
+### Errors are instructions
+
+Traditional compilers produce diagnostics for humans: `expected token '{'`. Vera produces instructions for the model that wrote the code. Every error includes what went wrong, why, how to fix it with a concrete code example, and a spec reference.
+
+```
+[E001] Error at main.vera, line 2, column 1:
+
+    {
+    ^
+
+  Function is missing its contract block. Every function in Vera must declare requires(), ensures(), and effects() clauses between the signature and the body.
+
+  Vera requires all functions to have explicit contracts so that every function's behaviour is mechanically checkable.
+
+  Fix:
+
+    Add a contract block after the signature:
+
+      private fn example(@Int -> @Int)
+        requires(true)
+        ensures(@Int.result >= 0)
+        effects(pure)
+      {
+        ...
+      }
+
+  See: Chapter 5, Section 5.2 "Function Declaration Syntax"
+```
+
+Diagnostics carry stable codes, which `vera errors` lists, and are available as structured JSON via the `--json` flag.
+
+## Getting started
+
+### Prerequisites
+
+- Python 3.11+
+- Git
+- Node.js 22+ *(optional, for browser runtime and parity tests)*
+
+### Installation
+
+Install the released `veralang` distribution from PyPI:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m pip install veralang
+```
+
+The distribution is named `veralang`, but the installed command remains
+`vera`, and Python code still imports it as `import vera`. For editor and agent integration through the language server, install
+`python -m pip install "veralang[lsp]"`. Do not run `pip install vera`: that
+name belongs to an unrelated project on PyPI. The wheel ships the compiler and
+the `vera` command only — the bundled `examples/`, the conformance suite, and
+the specification live in the repository, not in the wheel.
+
+**Upgrading to 0.2.0:** the checker and verifier are stricter than in 0.1.x, so 0.2.0 refuses some programs 0.1.13 accepted — most often a recursive function with neither `decreases` nor `Diverge` (`E137`), a `decreases` measure whose `@Nat` subtraction can underflow, such as the count-up `@Nat.1 - @Nat.0 + 1` (`E502`), or a name, type or effect the checker cannot resolve, which is an error rather than a warning. The [CHANGELOG](CHANGELOG.md) lists each new check.
+
+The GitHub source route is the recommended environment for agents and for
+anyone learning the language — it provides the examples, conformance programs,
+and spec that [SKILL.md](SKILL.md) teaches from, alongside the toolchain — and
+it remains the route for compiler development, unreleased changes, and testing
+the current `main` branch:
+
+```bash
+git clone https://github.com/aallan/vera.git
+cd vera
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m pip install -e ".[dev]"
+```
+
+`[dev]` includes everything (tests, linters, the language server). For a lighter
+source install that only adds editor/agent support to the base toolchain, use
+`python -m pip install -e ".[lsp]"` — see [LSP_SERVER.md](LSP_SERVER.md).
+
+#### Supported platforms
+
+CI tests every pull request on Ubuntu x86_64 and Windows against Python 3.12, and every release, the pull request that raises the version, and main every night on:
+
+- **macOS 15 (Sequoia) and macOS 26 (Tahoe)** on Apple Silicon, against Python 3.11, 3.12, 3.13
+- **Ubuntu 24.04 LTS** on x86_64, against Python 3.11, 3.12, 3.13
+- **Ubuntu 24.04 LTS** on aarch64, against Python 3.12 (advisory job — does not gate merges)
+- **Windows Server 2025** on x86_64, against Python 3.11, 3.12, 3.13
+
+Not tested in CI; every dependency publishes wheels for them:
+
+- Linux x86_64 with glibc 2.27+ (Ubuntu 18.04+ / Debian 10+ / RHEL 8+)
+- Linux aarch64 with glibc 2.38+ on Python 3.11 / 3.13 (the 3.12 cell is CI-tested above; e.g. Ubuntu 23.10+)
+- macOS 15+ on Intel (x86_64)
+
+Out of scope — `pip install -e .` will fail at dependency resolution (clear "no matching distribution" error rather than a cryptic source-build failure):
+
+- **macOS 14 (Sonoma) and earlier** — see [#691](https://github.com/aallan/vera/issues/691) for the documented decision and workarounds
+- **Linux aarch64 with glibc < 2.38** (e.g. Ubuntu 22.04 LTS aarch64) — see [#701](https://github.com/aallan/vera/issues/701)
+
+The macOS 15+ baseline reflects [TelemetryDeck's macOS version distribution data](https://telemetrydeck.com/survey/apple/macOS/versions/): macOS 26 (~75%) and macOS 15 (~24%) account for ~99% of the macOS install base; macOS 14 is ~1.4% and falling. The cost of supporting older macOS versions does not earn its keep at that share.
+
+### The workflow
+
+![The workflow: an LLM agent writes Vera with mandatory contracts; vera check and vera verify prove the types and contracts, feeding every diagnostic — description, rationale, fix, spec_ref — straight back to the agent; when the proofs hold, vera run executes the WebAssembly on CLI, browser, WASI or HTTP.](assets/diagrams/workflow.svg)
+
+```
+$ vera check examples/absolute_value.vera
+OK: examples/absolute_value.vera
+
+$ vera verify examples/safe_divide.vera
+OK: examples/safe_divide.vera
+Verification: 6 verified (Tier 1)
+
+$ vera run examples/hello_world.vera
+Hello, World!
+```
+
+`vera check` parses and type-checks. `vera verify` adds contract verification via Z3 — Tier 1 contracts (decidable arithmetic, comparisons, Boolean logic, ADTs, termination) are proved automatically; contracts Z3 cannot decide become Tier 3 runtime checks, and the few sites with no runtime guard are disclosed as warnings (`E504`, `E506`) rather than counted in either tier. A function's premises are checked first: a `requires` or `assume` that can never hold is refused (`E538`), so a contradiction proves nothing. A query that runs out of solver time falls back to Tier 3; `--timeout-ms` raises the budget. `vera run` compiles to WebAssembly and executes; a runtime trap names its cause (`@Nat` underflow, a failed contract or `assert`, an index out of bounds, an escaped exception) with a fix.
+
+```bash
+vera run file.vera --fn f -- 42           # call function f with argument 42
+vera compile --target browser file.vera   # emit browser bundle
+vera compile --target wasi-p2 file.vera   # emit a WASI Preview 2 component (IO and Random)
+vera run --target wasi-p2 file.vera       # execute under the built-in WASI 0.2 host
+vera serve file.vera                      # serve handle(Request -> Response) over HTTP (default :8000)
+vera compile --target wasi-p2 --world server file.vera  # wasi:http server component for wasmtime serve
+vera test file.vera                       # contract-driven testing via Z3 + WASM
+vera fmt file.vera                        # format to canonical form
+vera verify --json file.vera              # JSON diagnostics for agent feedback loops
+vera verify --timeout-ms 60000 file.vera  # raise the per-query Z3 budget (default 10000 ms)
+vera check --explain-slots file.vera     # show slot resolution table (which @T.n maps to which param)
+vera lsp                                 # serve the Language Server Protocol over stdio (see LSP_SERVER.md)
+vera version                             # print the installed version
+vera builtins --json                     # list the built-in function registry (no file needed)
+vera effects --json                      # list the effect and ability registry (no file needed)
+vera errors --json                       # list the diagnostic-code registry (no file needed)
+```
+
+`vera compile --target browser` produces a self-contained bundle (wasm + JS runtime + HTML) that runs in any browser — no build step, no bundler. Mandatory parity tests ensure identical behaviour between the command-line and browser runtimes for the pure-language surface (arithmetic, ADTs, pattern matching, closures, contracts, effects-as-host-imports, etc.).  Two operations on that surface reach identity by emitting a canonical form the specification states rather than by the hosts happening to agree — `json_stringify` (spec §9.7.1) and `md_render` (§9.7.3) — so their tests assert the expected string as well as cross-host equality.  `md_parse` reaches it a third way: §9.7.3 states the grammar itself — the character classes it is written in, the order the block constructs claim a line, the width a list continuation loses — and both parsers read one shared table of its patterns, with a generated corpus parsed by both hosts on every PR and the resulting ADTs compared byte for byte.  Distinct from that: `Inference.complete`, `DB.query` and `DB.execute` return `Err` from every browser call by definition of the target, because the credential each needs would be readable from page source — reach them through a server-side endpoint called with `Http`, which does run in the browser.  The IO surface is the other documented exception: terminal Vera programs that rely on `IO.sleep` for animation pacing or ANSI escape codes for cursor control compile cleanly to `--target browser` but render the escapes as literal text and freeze the tab while sleeping — the browser target expects Vera to be the pure simulation core and JavaScript to drive timing and rendering ([SKILL.md §Browser compilation](SKILL.md#browser-compilation) has the recommended pattern).
+
+`vera compile --target wasi-p2` targets **WASI Preview 2 for the IO and Random surface**: it emits a binary WebAssembly component whose host imports are implemented over WASI 0.2 interfaces, runnable by any stock wasip2 host (`wasmtime run` needs no flags and no Vera bindings). Programs using host families beyond IO/Random are rejected with a diagnostic naming the family — never silently compiled against the core target. See [spec chapter 13](spec/13-wasi.md) for the architecture, the supported surface, and the documented divergences (WASI 0.2's ok/err-only exit codes, no structured trap frames across the component boundary). With `--world server`, the same contract-verified `handle(Request -> Response)` program `vera serve` hosts natively compiles to a `wasi:http/incoming-handler` component that stock `wasmtime serve` runs unmodified — verified HTTP handlers as a portable deployment artifact (`--world server` is only valid together with `--target wasi-p2`; the CLI rejects other combinations).
+
+### Editor support
+
+Vera ships a [language server](LSP_SERVER.md) (`vera lsp`, via the optional `[lsp]` extra) that keeps a warm incremental Z3 session between keystrokes — diagnostics, proofs, hover, slot go-to-definition, and typed-hole completion at editor latency, plus custom proof-delta methods for coding agents. See **[LSP_SERVER.md](LSP_SERVER.md)** for setup and the full protocol surface.
+
+- **[VS Code extension](https://marketplace.visualstudio.com/items?itemName=veralang.vera-language)** — install from the Marketplace with `code --install-extension veralang.vera-language`; starts the language server automatically, plus syntax highlighting and language configuration ([source](editors/vscode/))
+- **[Vim package](editors/vim-veralang/)** — syntax highlighting for Vim 8+ and Neovim, installed as a native package or through a plugin manager (the filetype is `veralang`, not `vera`, which Vim has used for an unrelated language since 2005)
+- **[TextMate bundle](editors/textmate/)** — syntax highlighting for Sublime Text and other TextMate-grammar editors (any editor with a generic LSP client can use `vera lsp` directly)
+
+## For agents
+
+Vera ships with these files for LLM agents:
+
+- [`SKILL.md`](SKILL.md) — Complete language reference. Covers syntax, slot references, contracts, effects, common mistakes, and working examples.
+- [`AGENTS.md`](AGENTS.md) — Instructions for any agent system (Copilot, Cursor, Windsurf, custom). Covers both writing Vera code and working on the compiler.
+- [`CLAUDE.md`](CLAUDE.md) — Project orientation for Claude Code. Key commands, layout, workflows, and invariants.
+- [`DE_BRUIJN.md`](DE_BRUIJN.md) — Deep dive into Vera's typed slot references: the academic background, worked examples, the commutative-operations trap, and connections to proof assistants and LLM code-generation research.
+- [`TOOLCHAIN.md`](TOOLCHAIN.md) — The CLI cookbook: driving the toolchain to write, verify, test, run, and debug Vera, plus the `builtins`/`effects`/`errors` introspection commands.
+
+**Claude Code** discovers `SKILL.md` and `CLAUDE.md` automatically in this repo. For other projects, install the skill manually:
+
+```bash
+mkdir -p ~/.claude/skills/vera-language
+cp /path/to/vera/SKILL.md ~/.claude/skills/vera-language/SKILL.md
+```
+
+**Other models** — include `SKILL.md` in the system prompt, as a file attachment, or as a retrieval document. The file is self-contained and works with any model that can read markdown.
+
+Every Vera example in `SKILL.md`, this README, the FAQ, `EXAMPLES.md`, the spec and the website is checked, verified and, where it names an expected output, run in CI, or carries a marker that says why it is not (a fragment, or a deliberate mistake), so an agent learns from code that passes the toolchain.
+
+**Essential rules** for writing Vera code:
+
+1. Every function needs `requires()`, `ensures()`, and `effects()` between the signature and body
+2. Use `@Type.index` to reference bindings — `@Int.0` is the most recent `Int`, `@Int.1` is the one before
+3. Declare all effects — `effects(pure)` for pure functions, `effects(<IO>)` for IO, etc.
+4. Recursive functions need a `decreases()` clause, or `Diverge` in their effect row if they may not terminate (`E137`)
+5. Match expressions must be exhaustive
+
+## Project status
+
+Vera is in **active development**, released to [PyPI](https://pypi.org/project/veralang/) as `veralang` with notes for each [release](https://github.com/aallan/vera/releases). **[TESTING.md](TESTING.md#overview)** counts the test suite, the conformance programs and the examples, and **[HISTORY.md](HISTORY.md)** tells how the compiler was built. Known bugs and limitations are tracked in **[KNOWN_ISSUES.md](KNOWN_ISSUES.md)**.
+
+The reference compiler — parser, AST, type checker, contract verifier (Z3), WASM code generator, module system, browser runtime, and runtime contract insertion — is working. The language specification is in draft, in [`spec/`](spec/).
+
+**Key features delivered:** [typed De Bruijn indices](DE_BRUIJN.md) (`@T.n`), mandatory contracts, termination checking (`decreases`, or `Diverge` for a function that may not terminate), algebraic effects (IO, Http, HttpServer, State, Exceptions, Async, Inference, DB, Random, Diverge; handlers compile for `State` and `Exn` only), refinement types, constrained generics (Eq, Ord, Hash, Show), algebraic data types, pattern matching, modules, the built-in functions `vera builtins` lists (strings, arrays, maps, sets, decimals, math, JSON, HTML, Markdown, regex, base64, URL), contract-driven testing, runtime traps that name their cause, canonical formatter, browser runtime, three-tier verification design (Z3 static and runtime fallback shipped; the Z3-guided tier is specified but not implemented), a [language server](LSP_SERVER.md) with warm incremental verification and agent-facing proof-delta methods, and contract-verified HTTP handlers served natively (`vera serve`) or as wasi:http components for stock `wasmtime serve` (`--target wasi-p2 --world server`).
+
+**What's next:** the path from "working language" to "the language agents actually use" — see **[ROADMAP.md](ROADMAP.md)** for the four strategic milestones. The flagship goal is a verified MCP tool server where contracts guarantee tool schemas at compile time. **[VeraBench](https://github.com/aallan/vera-bench)** — a 60-problem benchmark across 5 difficulty tiers — covers 9 models across 3 providers (VeraBench v0.0.18, measured on Vera v0.1.8). The headline result: six of the nine write 100% correct Vera, a language none of them was trained on. Vera has the highest score, or level with it, for six of the nine models. The metric is **% solved** (pass@1): a refusal, a compile failure, a crash and a wrong answer all count alike as not solved. This is the first sweep in which all 60 problems are graded, so a single problem moves a score by 1.7 percentage points and most gaps are one or two problems wide — see the [full report](https://github.com/aallan/vera-bench) for details.
+
+Known bugs and open issues are tracked on the **[issue tracker](https://github.com/aallan/vera/issues)**. See **[KNOWN_ISSUES.md](KNOWN_ISSUES.md)** for a consolidated list.
+
+The compiler is a seven-stage pipeline — see [vera/README.md](vera/README.md) for the architecture in depth:
+
+![The compiler pipeline and module map: parse, transform and resolve feed the two-pass type checker, where naming.py answers what any type expression is called for every later stage; after checking, vera verify proves each contract obligation or defers it to a runtime guard, with a warm-verification sidecar for the LSP, while vera compile emits WAT and WASM for the wasmtime host, the browser bundle, or a WASI 0.2 component.](assets/diagrams/architecture.svg)
+
+<details>
+<summary><strong>Project structure</strong></summary>
+
+```
+vera/
+├── SKILL.md                       # Language reference for LLM agents
+├── AGENTS.md                      # Instructions for any AI agent system
+├── CLAUDE.md                      # Project orientation for Claude Code
+├── FAQ.md                         # Design rationale and comparisons
+├── EXAMPLES.md                    # Language tour with code examples
+├── HISTORY.md                     # How the compiler was built
+├── ROADMAP.md                     # Forward-looking language roadmap
+├── KNOWN_ISSUES.md                # Known bugs and limitations
+├── DESIGN.md                      # Technical decisions and prior art
+├── TESTING.md                     # Testing reference (single source of truth)
+├── CONTRIBUTING.md                # Contributor guidelines
+├── CHANGELOG.md                   # Version history
+├── LICENSE                        # MIT licence
+├── spec/                          # Language specification, a file per chapter
+├── vera/                          # Reference compiler (Python)
+│   ├── grammar.lark               #   Lark LALR(1) grammar
+│   ├── parser.py                  #   Parser module
+│   ├── ast.py                     #   Typed AST node definitions
+│   ├── transform.py               #   Lark parse tree → AST transformer
+│   ├── resolver.py                #   Module path resolution
+│   ├── checker/                   #   Type checker (mixin package)
+│   ├── verifier.py                #   Contract verifier (Z3)
+│   ├── codegen/                   #   Code generation
+│   ├── wasm/                      #   WASM translation
+│   ├── browser/                   #   Browser runtime
+│   ├── formatter.py               #   Canonical code formatter
+│   ├── errors.py                  #   LLM-oriented diagnostics
+│   ├── obligations/               #   Reified proof obligations + warm incremental verification
+│   ├── lsp/                       #   Language server (see LSP_SERVER.md)
+│   └── cli.py                     #   Command-line interface
+├── docs/                          # GitHub Pages site (veralang.dev)
+├── editors/                       # VS Code extension (LSP client + grammar), Vim package, TextMate bundle
+├── examples/                      # Example Vera programs
+├── tests/                         # Test suite (see TESTING.md)
+└── scripts/                       # CI and validation scripts
+```
+
+</details>
+
+For compiler architecture and internals, see [`vera/README.md`](vera/README.md). For testing details, see **[TESTING.md](TESTING.md)**.
+
+## Design
+
+See **[DESIGN.md](DESIGN.md)** for the full technical decisions table (representation, references, contracts, effects, verification, memory, target, grammar, diagnostics, data types, polymorphism, collections, error handling, recursion, naming) and **[prior art](DESIGN.md#prior-art)** (Eiffel, Dafny, F*, Koka, Liquid Haskell, Idris, SPARK/Ada, bruijn, TLA+/Alloy).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to Vera. For compiler internals, see [vera/README.md](vera/README.md).
+
+## Citation
+
+If you use Vera in your research, please cite:
+
+```bibtex
+@software{vera2026,
+  author = {Allan, Alasdair},
+  title = {Vera: a programming language designed for LLMs to write},
+  year = {2026},
+  url = {https://github.com/aallan/vera}
+}
+```
+
+## Licence
+
+Vera is licensed under the [MIT License](LICENSE).
+
+Every dependency Vera redistributes is under a permissive licence compatible with MIT. `scripts/check_licenses.py` enforces this for the Python side on every commit that changes `pyproject.toml` and in CI, checking installed packages transitively; the npm packages the VS Code extension bundles are listed here, and no gate checks them.
+
+| Dependency | Licence | Role |
+|-----------|---------|------|
+| [Lark](https://github.com/lark-parser/lark) | MIT | LALR(1) parser generator |
+| [z3-solver](https://github.com/Z3Prover/z3) | MIT | SMT solver for contract verification |
+| [wasmtime](https://github.com/bytecodealliance/wasmtime) | Apache-2.0 WITH LLVM-exception | WebAssembly runtime |
+| [pygls](https://github.com/openlawlibrary/pygls) | Apache-2.0 | Language-server framework (`[lsp]` extra) |
+| [lsprotocol](https://github.com/microsoft/lsprotocol) | MIT | LSP type definitions (`[lsp]` extra) |
+| [vscode-languageclient](https://github.com/microsoft/vscode-languageserver-node) | MIT | LSP client bundled into the VS Code extension |
+
+The first three are the toolchain's runtime dependencies; `pygls` and `lsprotocol` arrive with the `[lsp]` extra, which the editor integration needs. `vscode-languageclient` is bundled into the `.vsix` along with its own transitives — `vscode-jsonrpc`, `vscode-languageserver-protocol`, `vscode-languageserver-types`, `vscode-languageserver-textdocument` and `brace-expansion` (MIT), `semver` (ISC), and `minimatch` (BlueOak-1.0.0). ISC and BlueOak-1.0.0 are permissive and impose no condition MIT does not.
+
+Copyright &copy; 2026 Alasdair Allan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

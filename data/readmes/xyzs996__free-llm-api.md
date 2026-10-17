@@ -1,0 +1,228 @@
+# Free LLM APIs
+
+English · [简体中文](README_zh.md)
+
+[![CI](https://github.com/xyzs996/free-llm-api/actions/workflows/ci.yml/badge.svg)](https://github.com/xyzs996/free-llm-api/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![providers](https://img.shields.io/endpoint?url=https%3A%2F%2Fxyzs996.github.io%2Ffree-llm-api%2Fbadges%2Fproviders.json&label=providers)](https://xyzs996.github.io/free-llm-api/)
+[![sources checked](https://img.shields.io/endpoint?url=https%3A%2F%2Fxyzs996.github.io%2Ffree-llm-api%2Fbadges%2Fchecked.json&label=sources%20checked)](https://xyzs996.github.io/free-llm-api/methodology.html)
+
+Permanent free tiers, no-card options, direct API key links, models, and verified limits — every claim points to an official source.
+
+> 13 permanent provider free tiers · 13 require no credit card · 13 are OpenAI compatible · sources reviewed 2026-08-22. No keys are distributed here. A probe describes one sampled request, not provider-wide uptime.
+
+**[Browse the live directory](https://xyzs996.github.io/free-llm-api/) · [Pick by model](https://xyzs996.github.io/free-llm-api/#browse) · [Set up a coding agent](docs/clients.md) · [Check your own key](https://xyzs996.github.io/free-llm-api/verify.html)**
+
+[![Filterable LLM free-tier status page](docs/assets/status-page.png)](https://xyzs996.github.io/free-llm-api/)
+
+Star this repository to bookmark the dataset and follow releases. A star changes nothing about any provider's keys, credits, or limits, and this project gives nothing in return for one.
+
+## Pick a free API by goal
+
+| Goal | Pick | Why it appears here | Start |
+| --- | --- | --- | --- |
+| Highest published daily request limit | [GroqCloud](https://xyzs996.github.io/free-llm-api/provider/groq.html) | 1,000 requests/day published | [Get API key](https://console.groq.com/keys) |
+| Highest published requests per minute | [SiliconFlow](https://xyzs996.github.io/free-llm-api/provider/siliconflow.html) | 1,000 RPM published | [Get API key](https://cloud.siliconflow.com/account/ak) |
+| Works with the browser key checker | [Google Gemini API](https://xyzs996.github.io/free-llm-api/provider/gemini.html) | Browser CORS check supported | [Get API key](https://aistudio.google.com/apikey) |
+| Fast path for coding agents | [GroqCloud](https://xyzs996.github.io/free-llm-api/provider/groq.html) | Documented OpenAI-compatible coding setup | [Get API key](https://console.groq.com/keys) |
+
+These are rule-based shortcuts, not paid placements. Open the [filterable directory](https://xyzs996.github.io/free-llm-api/) for all 26 providers.
+
+Free is not the same as cheap enough to keep running, and the number you need is what replaces the free tier once it runs out. Same maintainer, [re-reading OpenRouter's whole catalog every day](https://github.com/xyzs996/llm-api-pricing) — **60 models on 2026-08-22**, cheapest five first:
+
+| Model | Input / M tokens | Output / M tokens | Design Arena `agents` |
+| --- | --- | --- | --- |
+| Gemini 3.7 Flash *(batch)* | $0.1875 | $0.9375 | #3 androidnative |
+| Gemini 3 Flash Preview *(batch)* | $0.25 | $1.50 | #9 agenticslides |
+| MiniMax M3 | $0.30 | $1.20 | #10 python-pptxslides |
+| Gemini 3.6 Flash *(batch)* | $0.375 | $1.875 | #6 agenticgamedev |
+| GLM 4.7 | $0.40 | $1.75 | #27 androidnative |
+
+A `(batch)` row is the queued price, not the interactive one — an agent waiting on the reply pays the other number. All 60 rows as [JSON](https://cdn.jsdelivr.net/gh/xyzs996/llm-api-pricing@main/data/prices.json) or [CSV](https://cdn.jsdelivr.net/gh/xyzs996/llm-api-pricing@main/data/prices.csv), re-read tomorrow.
+
+A row price is not a request price. **12 of those 60 rows carry a second, higher rate card that switches on when the prompt gets long** — and it applies to *every* token in the request, including the ones before the threshold, so a prompt one token over the line costs about double one token under it. The thresholds are 200k and 272k prompt tokens. The counter-intuitive part: the bigger the advertised context window, the smaller the share of it the advertised price covers — `x-ai/grok-4.20` advertises 2 000k of context at $1.25 per million input and steps to $2.50 at 200k, so **90% of that window bills at a number that is not in its row**. None of the five above is one of them, which is most of why they are the cheap ones. Both numbers ride on every row of the JSON and CSV as `long_context_from` and `long_input_per_million`.
+
+A row price is not an hour price either. DeepSeek's V4 line runs two rate cards off the clock: peak is `01:00 - 04:00 and 06:00 - 10:00 UTC, Monday through Friday`, and every other hour is off-peak at exactly half. Since 2026-08-23 the entire weekend is off-peak too — 14 hours a week that most published summaries, and most of the billing code I have read, still charge at 2x. Per million: `deepseek-v4-flash` input $0.22 off-peak against $0.44 peak, `deepseek-v4-pro` output $1.98 against $3.96. A nightly batch moved a few hours earlier pays half, and no code change buys that. [Which hours, and the two instants where a UTC weekday and a Beijing weekday disagree](https://xyzs996.github.io/llm-api-pricing/deepseek-peak-hours.html).
+
+A list price is what a vendor publishes; what a month of it came to is a different number, and only somebody who paid it can tell you. The same repository keeps those too — every figure quoted in a write-up, with **the full sentence it came from** on every row:
+
+| Price | Unit | The sentence it was published in |
+| --- | --- | --- |
+| `$0.06 / $0.2` | per million | At the low end, MiniMax M3 runs $0.06 to $0.2 per million and draws 60% to 70% of its revenue from outside its home market. [→](https://github.com/xyzs996/llm-api-pricing/discussions/12) |
+| `$0.19 / $5` | per million tokens | Chinese AI models provide a cost-effective alternative to their American counterparts, with input costs as low as $0.19 per million tokens, compared to OpenAI's $5-12. [→](https://markyanai.medium.com/how-chinese-ai-agent-tools-leverage-1-6-billion-free-tokens-69b483c4eb6a) |
+| `$1` | per million tokens | Top-tier Chinese models such as GLM5.2 and DeepSeek V4 Pro sit near $1 per million tokens at inference gross margins of 10% to 20%. [→](https://github.com/xyzs996/llm-api-pricing/discussions/12) |
+| `$1.25 / $4.25` | per million | Meta priced Muse Spark 1.1 at $1.25 per million input and $4.25 per million output, roughly 75% and 83% below Anthropic's Opus, and the tradeoff is visible in the benchmarks, since it leads on MCP Atlas and JobBench while trailing on SWE-Bench Pro and DeepSWE 1.1. [→](https://github.com/xyzs996/llm-api-pricing/discussions/12) |
+| `$3` | per million input tokens | The $3 per million input tokens price point means developers should carefully evaluate whether the premium model's capabilities justify the increased costs for their specific use cases. [→](https://github.com/xyzs996/llm-api-pricing/discussions/22) |
+
+A `$1.43` is never left ambiguous between per million tokens, per month and per seat, because the sentence travels with it. Readable in code as [JSON or CSV](https://cdn.jsdelivr.net/gh/xyzs996/llm-api-pricing@main/data/figures.json), or as prose: [where the token bill actually goes](https://github.com/xyzs996/llm-api-pricing/discussions/37).
+
+Paying for a model whose bill surprised you? [Name it in one line](https://github.com/xyzs996/llm-api-pricing/issues/new?template=figure.yml&came_from=free-llm-api%2FREADME.md) — one field, and it decides which price gets chased next.
+
+## Permanent free tiers
+
+These Provider Free Tiers are the main list: they do not expire like trial credits, and none currently require a credit card.
+
+| Provider | Models | Published limits | Card | OpenAI compatible | Get API key |
+| --- | --- | --- | --- | --- | --- |
+| [Google Gemini API](https://xyzs996.github.io/free-llm-api/provider/gemini.html) | Free-tier eligibility varies by model<br>gemini-2.5-flash<br>gemini-2.5-flash-lite | [Dynamic / model-dependent](https://ai.google.dev/gemini-api/docs/rate-limits) | Not required | Yes | [Open](https://aistudio.google.com/apikey) |
+| [GroqCloud](https://xyzs996.github.io/free-llm-api/provider/groq.html) | openai/gpt-oss-120b<br>openai/gpt-oss-20b<br>openai/gpt-oss-safeguard-20b | [30 RPM, 1,000 requests/day](https://console.groq.com/docs/rate-limits) | Not required | Yes | [Open](https://console.groq.com/keys) |
+| [SambaNova Cloud](https://xyzs996.github.io/free-llm-api/provider/sambanova.html) | DeepSeek-V3.1<br>Meta-Llama-3.3-70B-Instruct<br>gpt-oss-120b | [20 RPM, 20 requests/day](https://sambanova-systems.mintlify.dev/docs/en/models/rate-limits.md) | Not required | Yes | [Open](https://cloud.sambanova.ai/apis) |
+| [Cohere](https://xyzs996.github.io/free-llm-api/provider/cohere.html) | command-a-03-2025<br>command-r-plus<br>embed-v4.0 | [20 RPM](https://docs.cohere.com/docs/rate-limits) | Not required | Yes | [Open](https://dashboard.cohere.com/api-keys) |
+| [Cloudflare Workers AI](https://xyzs996.github.io/free-llm-api/provider/cloudflare-workers-ai.html) | @cf/meta/llama-3.3-70b-instruct-fp8-fast<br>@cf/openai/gpt-oss-120b<br>@cf/qwen/qwen2.5-coder-32b-instruct | [Dynamic / model-dependent](https://developers.cloudflare.com/workers-ai/platform/pricing/) | Not required | Yes | [Open](https://dash.cloudflare.com/profile/api-tokens) |
+| [Hugging Face Inference Providers](https://xyzs996.github.io/free-llm-api/provider/huggingface.html) | deepseek-ai/DeepSeek-V3-0324<br>openai/gpt-oss-120b<br>200+ models routed across partner providers | [Dynamic / model-dependent](https://huggingface.co/docs/inference-providers/pricing) | Not required | Yes | [Open](https://huggingface.co/settings/tokens) |
+| [SiliconFlow](https://xyzs996.github.io/free-llm-api/provider/siliconflow.html) | Qwen/Qwen3-8B<br>THUDM/GLM-4-9B-0414<br>deepseek-ai/DeepSeek-R1 | [1,000 RPM](https://docs.siliconflow.com/en/userguide/rate-limits/rate-limit-and-upgradation) | Not required | Yes | [Open](https://cloud.siliconflow.com/account/ak) |
+| [Fireworks AI](https://xyzs996.github.io/free-llm-api/provider/fireworks.html) | accounts/fireworks/models/llama-v3p3-70b-instruct<br>accounts/fireworks/models/gpt-oss-120b | [10 RPM](https://docs.fireworks.ai/guides/quotas_usage/account-quotas) | Not required | Yes | [Open](https://app.fireworks.ai/settings/users/api-keys) |
+| [Z.AI Open Platform](https://xyzs996.github.io/free-llm-api/provider/zai.html) | GLM-4.7-Flash<br>GLM-4.5-Flash<br>GLM-4.6V-Flash | [Dynamic / model-dependent](https://docs.z.ai/guides/overview/pricing) | Not required | Yes | [Open](https://z.ai/manage-apikey/apikey-list) |
+| [Mistral La Plateforme](https://xyzs996.github.io/free-llm-api/provider/mistral.html) | mistral-small-latest<br>open-mistral-nemo<br>codestral-latest | [Dynamic / model-dependent](https://docs.mistral.ai/) | Not required | Yes | [Open](https://console.mistral.ai/api-keys) |
+| [Alibaba Cloud Model Studio](https://xyzs996.github.io/free-llm-api/provider/dashscope.html) | qwen-plus<br>qwen-turbo<br>qwen3-coder-plus | [Dynamic / model-dependent](https://www.alibabacloud.com/help/en/model-studio/rate-limit) | Not required | Yes | [Open](https://bailian.console.alibabacloud.com/) |
+| [Pollinations.AI](https://xyzs996.github.io/free-llm-api/provider/pollinations.html) | openai<br>mistral<br>Community-hosted open models | [4 RPM](https://github.com/pollinations/pollinations/blob/master/APIDOCS.md) | Not required | Yes | [Open](https://pollinations.ai/) |
+| [Ollama Cloud](https://xyzs996.github.io/free-llm-api/provider/ollama-cloud.html) | gpt-oss:120b-cloud<br>gpt-oss:20b-cloud<br>qwen3-coder:480b-cloud | [Dynamic / model-dependent](https://docs.ollama.com/cloud) | Not required | Yes | [Open](https://ollama.com/settings/keys) |
+
+## Other access options
+
+These entries can still be useful, but they are aggregators, trial credits, retiring tiers, or metered services — not permanent Provider Free Tiers.
+
+| Provider | Access type | Models | Published limits | Card | OpenAI compatible | Get API key |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Novita AI](https://xyzs996.github.io/free-llm-api/provider/novita.html) | Metered access | Llama 3.1 8B Instruct<br>OpenAI: GPT OSS 20B<br>BAAI:BGE-M3 | [Dynamic / model-dependent](https://novita.ai/pricing) | Not required | Yes | [Open](https://novita.ai/settings/key-management) |
+| [Moonshot AI (Kimi)](https://xyzs996.github.io/free-llm-api/provider/moonshot.html) | Metered access | kimi-k2-0905-preview<br>moonshot-v1-8k<br>moonshot-v1-128k | [Dynamic / model-dependent](https://platform.kimi.ai/docs/pricing/limits) | Not required | Yes | [Open](https://platform.moonshot.ai/console/api-keys) |
+| [Cerebras Inference](https://xyzs996.github.io/free-llm-api/provider/cerebras.html) | Free trial credit | gpt-oss-120b<br>gemma-4-31b | [5 RPM](https://inference-docs.cerebras.ai/support/rate-limits) | Required | Yes | [Open](https://cloud.cerebras.ai/) |
+| [Vercel AI Gateway](https://xyzs996.github.io/free-llm-api/provider/vercel-ai-gateway.html) | Free trial credit | Free Tier eligible model subset<br>openai/gpt-oss-120b<br>moonshotai/kimi-k2 | [Dynamic / model-dependent](https://vercel.com/docs/ai-gateway/pricing) | Not required | Yes | [Open](https://vercel.com/dashboard/ai-gateway) |
+| [IBM watsonx.ai](https://xyzs996.github.io/free-llm-api/provider/watsonx.html) | Free trial credit | ibm/granite-3-8b-instruct<br>meta-llama/llama-3-3-70b-instruct<br>mistralai/mistral-large | [Dynamic / model-dependent](https://www.ibm.com/products/watsonx-ai/pricing) | Not required | No | [Open](https://dataplatform.cloud.ibm.com/registration/stepone) |
+| [OpenRouter](https://xyzs996.github.io/free-llm-api/provider/openrouter.html) | Free model aggregator | Model IDs ending in :free<br>openrouter/free | [20 RPM, 50 requests/day](https://openrouter.ai/docs/api-reference/limits) | Not required | Yes | [Open](https://openrouter.ai/settings/keys) |
+| [GitHub Models](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/) | Retired free tier<br>Retired 2026-07-30 | Retired — the model catalog is gone | [Dynamic / model-dependent](https://github.blog/changelog/2026-07-01-github-models-is-being-fully-retired-on-july-30-2026/) | Not required | Yes | Closed to new users |
+| [Together AI](https://xyzs996.github.io/free-llm-api/provider/together.html) | Metered access | meta-llama/Llama-3.3-70B-Instruct-Turbo<br>openai/gpt-oss-120b<br>Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo | [Dynamic / model-dependent](https://docs.together.ai/docs/serverless/rate-limits) | Not required | Yes | [Open](https://api.together.ai/settings/api-keys) |
+| [Nebius Token Factory](https://xyzs996.github.io/free-llm-api/provider/nebius.html) | Metered access | deepseek-ai/DeepSeek-V3<br>meta-llama/Llama-3.3-70B-Instruct<br>Qwen/Qwen3-235B-A22B | [Dynamic / model-dependent](https://docs.tokenfactory.nebius.com/ai-models-inference/rate-limits) | Not required | Yes | [Open](https://tokenfactory.nebius.com/) |
+| [Perplexity API](https://xyzs996.github.io/free-llm-api/provider/perplexity.html) | Metered access | sonar<br>sonar-pro<br>sonar-reasoning | [50 RPM](https://docs.perplexity.ai/docs/admin/rate-limits-usage-tiers) | Not required | Yes | [Open](https://www.perplexity.ai/account/api/keys) |
+| [DeepInfra](https://xyzs996.github.io/free-llm-api/provider/deepinfra.html) | Metered access | deepseek-ai/DeepSeek-V3<br>Qwen/Qwen3-Next-80B-A3B-Instruct<br>meta-llama/Llama-4-Scout-17B-16E | [Dynamic / model-dependent](https://deepinfra.com/pricing) | Not required | Yes | [Open](https://deepinfra.com/dash/api_keys) |
+| [Chutes](https://xyzs996.github.io/free-llm-api/provider/chutes.html) | Metered access | zai-org/GLM-5<br>Qwen/Qwen3-32B<br>unsloth/Mistral-Nemo-Instruct-2407 | [Dynamic / model-dependent](https://chutes.ai/pricing) | Not required | Yes | [Open](https://chutes.ai/app/api) |
+| [Scaleway Generative APIs](https://xyzs996.github.io/free-llm-api/provider/scaleway.html) | Metered access | llama-3.3-70b-instruct<br>gpt-oss-120b<br>qwen3-coder-30b-a3b-instruct | [Dynamic / model-dependent](https://www.scaleway.com/en/docs/generative-apis/reference-content/rate-limits/) | Required | Yes | [Open](https://console.scaleway.com/) |
+
+Limits marked dynamic or model-dependent are intentionally not replaced with guessed numbers. Follow the linked official source for the current quota.
+
+## Quick start
+
+After creating your own Groq API key, the OpenAI SDK needs only a different Base URL and model id:
+
+```python
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ["GROQ_API_KEY"],
+    base_url="https://api.groq.com/openai/v1",
+)
+
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+)
+print(response.choices[0].message.content)
+```
+
+For coding agents, generate a client-specific configuration that reads the key from your environment:
+
+```bash
+npx free-llm-api setup claude-code
+```
+
+Client guides: [Claude Code](docs/claude-code.md) · [Codex CLI](docs/codex.md) · [Cline](docs/cline.md) · [all clients](docs/clients.md).
+
+## Pull the catalog into your own code
+
+Every row on this page is one file, published with no key and `Access-Control-Allow-Origin: *`:
+
+```bash
+curl -s https://xyzs996.github.io/free-llm-api/providers.json
+```
+
+A row carries `base_url`, `openai_compatible`, `credit_card_required`, `browser_check`, the published `limits`, and the `official_sources` each limit was read from — every one of them dated. That is enough for a program to pick a provider instead of a person re-reading the table above. The 23 that speak OpenAI and ask for no card:
+
+```bash
+curl -s https://xyzs996.github.io/free-llm-api/providers.json | jq -r '.[] | select(.openai_compatible and .credit_card_required == false) | "\(.id)\t\(.base_url)"'
+```
+
+For a build that should not reach a Pages host, [the same bytes are on a CDN](https://cdn.jsdelivr.net/gh/xyzs996/free-llm-api@main/data/providers.json). `@main` follows the branch; put a tag there to freeze it.
+
+## Check a key you already have
+
+Open the [browser key checker](https://xyzs996.github.io/free-llm-api/verify.html). Nothing is installed or stored: the request goes from your browser straight to the chosen provider. Its Content Security Policy allows the 26 catalog origins and no analytics or project server. 21 providers answer cross-origin browser requests; blocked providers get an equivalent `curl` command.
+
+## Answered in full, with the sources
+
+These three answer a question this page only gets to in passing. Each opens with a direct answer, then shows the reviewed figures behind it and the date each was read:
+
+- [Which free LLM APIs work without a credit card — and what are the published limits?](https://github.com/xyzs996/free-llm-api/discussions/2) — every permanent free tier that asks for no card, with the limit each one publishes and the ones that publish none.
+- [What are the Gemini, Groq and OpenRouter free tier rate limits right now?](https://github.com/xyzs996/free-llm-api/discussions/3) — the per-minute and per-day figures each one documents, why one of the three publishes no single number, and what that means for quoting it.
+- [Which free LLM APIs are OpenAI compatible, and what base URL do I point my coding agent at?](https://github.com/xyzs996/free-llm-api/discussions/4) — the base URL for every compatible provider, the one that is not a drop-in, and what the compatible flag does not promise.
+
+## Why trust this list
+
+- Every limit and lifecycle claim links to an official source and carries a review date.
+- Trial credit, metered access, aggregators, and retiring tiers are separated from permanent free tiers.
+- No working API keys are stored or distributed. Use environment variables for your own credentials.
+- A probe describes one sampled request, not provider-wide uptime. A `429` does not reveal the key's remaining quota.
+
+Run probes explicitly outside CI. Keys are read only from the provider environment variable:
+
+```bash
+GROQ_API_KEY=YOUR_API_KEY npm run probe -- --provider groq
+```
+
+The ignored `data/probe-output.json` contains only a bounded classification, status, latency, and timestamp — never the key, response body, or raw exception. Read the full [methodology](https://xyzs996.github.io/free-llm-api/methodology.html).
+
+## Changed this week
+
+Week of 2026-08-22. First re-check since publication. Every source was read again: GitHub Models is gone, Novita has no free rows left, and Groq dropped both Llama models from the free table. Two entries could not be re-read and keep their old check date.
+
+- **Lifecycle — GitHub Models:** Retired on 2026-07-30 as announced: playground, model catalog, inference API and BYOK endpoints are all gone. Kept as a tombstone entry.
+- **Lifecycle — Novita AI:** inclusionai/Ling-3.0-flash and Mind Lab Macaron V1 Venti are no longer priced at zero; no model on the pricing table is free any more. Moved to metered access.
+- **Lifecycle — Moonshot AI (Kimi):** Docs moved to platform.kimi.ai. The lowest tier still requires a $1 recharge before any call goes through, so the entry moved out of the permanent free tier list into metered access.
+- **Limits changed — GroqCloud:** llama-3.3-70b-versatile and llama-3.1-8b-instant left the free plan table. openai/gpt-oss-safeguard-20b, qwen/qwen3.6-27b and groq/compound-mini are in it. The RPM/RPD columns now quote openai/gpt-oss-120b at 30 RPM / 1K RPD.
+- **Limits changed — Cerebras Inference:** zai-glm-4.7 left the Free Trial table; only gpt-oss-120b and gemma-4-31b remain at 5 RPM / 30K TPM / 1M TPH / 1M TPD.
+- **Added — Z.AI Open Platform:** GLM-4.6V-Flash, a vision model, is now listed at $0 across every pricing column alongside GLM-4.7-Flash and GLM-4.5-Flash.
+- **Added — SambaNova Cloud:** DeepSeek-V3.2 and gemma-4-31B-it appear in the free table as preview models, on the same 20 RPM / 20 RPD / 200K TPD numbers.
+- **Corrected (4):** Pollinations.AI, Nebius Token Factory, Vercel AI Gateway, Cloudflare Workers AI
+
+Every entry above is dated and sourced in the catalog below. Full history: [`data/changelog.json`](data/changelog.json).
+
+A free tier closing turns into a bill, and this catalog stops where the free tier does. What the paid ones actually cost, per million tokens, each figure carrying the sentence it was published in: [the field notes cost table](https://github.com/xyzs996/llm-api-pricing).
+
+## Contributing
+
+Corrections are the contribution this project runs on: a limit that moved, a provider that closed signups, or a link that died. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [correction form](https://github.com/xyzs996/free-llm-api/issues/new?template=correction.yml).
+
+Not sure enough to file one? [Say it in one line](https://github.com/xyzs996/free-llm-api/issues/new?template=heard.yml&came_from=README.md) — one field, no link, no screenshot, no source. Somebody else can go find the page.
+
+## Data and local development
+
+- `data/providers.json` is the reviewed source dataset.
+- [`llms.txt`](https://xyzs996.github.io/free-llm-api/llms.txt) is the whole catalog as one text file: every provider on one line with its limit, its base URL and the date that limit was read.
+- `data/changelog.json` records weekly changes.
+- `README.md`, `docs/providers.json`, and the static pages are generated deterministically.
+- `npm run validate` rejects stated quotas without an official source.
+
+Run the generated site locally:
+
+```bash
+npm run render && npm run serve
+```
+
+Open `http://127.0.0.1:4173`. Node.js 20+ is required; there are no runtime dependencies and no API keys are needed.
+
+## Security
+
+This repository contains no working credentials. Keep probe keys in environment variables and redact Authorization headers from reports. See [SECURITY.md](SECURITY.md).
+
+## Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=xyzs996/free-llm-api&type=Date)](https://star-history.com/#xyzs996/free-llm-api&Date)
+
+## Related projects
+
+- [Free Tier LLM Router](https://github.com/xyzs996/free-tier-llm-router) combines your own provider keys behind one local endpoint with controlled failover.
+- [AI Coding Field Notes](https://github.com/xyzs996/llm-api-pricing) publishes every figure it has cited — anything carrying a unit — as [JSON and CSV](https://cdn.jsdelivr.net/gh/xyzs996/llm-api-pricing@main/data/figures.json), each row paired with the sentence it came from, plus the write-ups behind them.
+
+## Need one stable endpoint?
+
+If rotating free-tier keys and handling different limits becomes the work, [create a PekPik API account](https://aiapiv2.pekpik.com/register?utm_source=github&utm_medium=repo&utm_campaign=free-llm-api) for one OpenAI-compatible hosted endpoint. The free directory above remains usable without it.

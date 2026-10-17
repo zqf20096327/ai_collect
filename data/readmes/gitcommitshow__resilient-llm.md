@@ -1,0 +1,255 @@
+# Resilient LLM
+[![npm version](https://img.shields.io/npm/v/resilient-llm.svg)](https://www.npmjs.com/package/resilient-llm) [![license](https://img.shields.io/npm/l/resilient-llm.svg)](LICENSE)
+
+A minimalist but robust LLM integration layer designed to ensure reliable, seamless interactions across multiple LLM providers by intelligently handling failures and rate limits.
+
+![banner](./banner.png)
+
+ResilientLLM makes your AI Agents or LLM apps production-ready by dealing with challenges such as:
+
+- ❌ Unstable network conditions
+- ⚠️ Inconsistent errors
+- ⏳ Unpredictable LLM API rate limit errors
+
+Check out [examples](./examples/), ready to ship.
+
+### Key Features
+
+- **Unified API**: One `.chat()` works seamlessly across OpenAI, Anthropic, Google, OpenRouter, Ollama, and custom providers
+- **Built-in Resilience**: Automatic retries, exponential backoff, and circuit breakers handle failures gracefully
+- **Token Bucket Algorithm**: Automatically enforces provider rate limits intelligently
+- **Automatic Token Counting**: Accurate token estimation for every request, no manual calculation needed
+- **Multi-Provider Fallback**: Seamlessly switches to alternative providers when one fails
+
+## Installation
+
+```bash
+npm i resilient-llm
+```
+
+## Quickstart
+
+```javascript
+import { ResilientLLM } from 'resilient-llm';
+
+const llm = new ResilientLLM({
+  aiService: 'openai', // or 'anthropic', 'google', 'openrouter', 'ollama'
+  model: 'gpt-5-nano',
+  maxTokens: 2048,
+  temperature: 0.7,
+  rateLimitConfig: {
+    requestsPerMinute: 60,      // Limit to 60 requests per minute
+    llmTokensPerMinute: 90000   // Limit to 90,000 LLM tokens per minute
+  },
+  retries: 3, // Number of times to retry when req. fails and only if it is possible to fix by retry
+  backoffFactor: 2 // Increase delay between retries by this factor
+});
+
+const conversationHistory = [
+  { role: 'system', content: 'You are a helpful assistant.' },
+  { role: 'assistant', content: 'Hi, I am here to help.' },
+  { role: 'user', content: 'What is the capital of France?' }
+];
+
+(async () => {
+  try {
+    const { content, toolCalls, metadata } = await llm.chat(conversationHistory);
+    console.log('LLM response:', content);
+  } catch (err) {
+    console.error('Error:', err);
+  }
+})();
+```
+
+**Handling Error:** typescript users can import `ResilientLLMError` and use the `error.code` to deal with various errors. The canonical list is [`ResilientLLMErrorCode`](./lib/ResilientLLMError.ts) in the source. Javascript users can use the error object properties { name="ResilientLLMError", code, message, metadata, retryable }.
+
+## Key Methods
+
+**Instance methods**
+
+```javascript
+const llm = new ResilientLLM(llmOptions);
+```
+
+- **`llm.chat(conversationHistory, llmOptions?)`** - Send chat completion requests with automatic retries and rate limiting
+- **`llm.abort()`** - Cancel all ongoing requests for this instance
+
+**Static public methods**
+
+```javascript
+import { ResilientLLM } from 'resilient-llm';
+```
+
+- **`ResilientLLM.estimateTokens(text)`** - Estimate token count for any text string
+
+
+```javascript
+import { ProviderRegistry } from 'resilient-llm';
+```
+
+- **`ProviderRegistry.list(options?)`** - List all configured LLM providers (AI services such as openai, anthropic, etc.)
+- **`ProviderRegistry.getModels(providerName?, apiKey?)`** - Get all models for a provider
+- **`ProviderRegistry.configure(providerName, config)`** - Configure or update a provider with custom settings
+- **`ProviderRegistry.hasApiKey(providerName)`** - Check if an API key is configured for a provider
+
+See the [full API reference](./docs/reference.md) for complete documentation.
+
+## Structured output (JSON + schema)
+
+Use `llm.chat(..., { responseFormat })` when you need the assistant to return **machine-readable JSON**, optionally matching a **specific JSON Schema**.
+
+```javascript
+// JSON mode (single JSON object)
+const { content: obj } = await llm.chat(messages, { responseFormat: { type: 'json_object' } });
+```
+<details>
+<summary>
+[Advanced] JSON output with a specific schema
+</summary>
+
+```javascript
+const conversationHistory = [{ role: 'user', content: 'Add 2 and 3 and respond ONLY with JSON having sum and explanationSteps' }];
+const { content: result } = await llm.chat(conversationHistory, {
+  responseFormat: {
+    type: 'json_schema',
+    json_schema: {
+      name: 'math_answer',
+      schema: {
+        type: 'object',
+        properties: {
+            sum: { type: 'number' },
+            explanationSteps: {
+                type: 'array',
+                items: { type: 'string' }
+            }
+        },
+        required: ['sum', 'explanationSteps'],
+        // Anthropic Messages structured output requires explicit false here for object roots.
+        additionalProperties: false
+      }
+   }
+});
+
+// `result` is a parsed JS object (not a string).
+console.log(JSON.stringify(result))
+// {
+//  content: {
+//    sum: 5,
+//    explanationSteps: [
+//      "Add 2 and 3.",
+//      "The result is 5."
+//    ]
+//  },
+//  metadata: { requestId: "unique-id", finishReason: "stop", .... }
+//
+// If the model returns invalid JSON or fails schema validation,
+// `llm.chat(...)` throws a StructuredOutputError with `code` and `validation` details.
+```
+</details>
+
+For all supported shapes (including plain schema objects) and parsing/validation behavior, see [`responseFormat` docs](./docs/reference.md#responseformat-json-mode--schema-mode).
+
+## Supported LLM Providers
+
+ResilientLLM comes with built-in support for all text chat completion models provided by **OpenAI**, **Anthropic**, **Google/Gemini**, **OpenRouter**, and **Ollama** APIs.
+
+**Adding custom providers:** You can add support for other LLM providers (e.g., Together AI, Groq, self-hosted vLLM, or any OpenAI/Anthropic-compatible API) using `ProviderRegistry.configure()`. See the [Custom Provider Guide](./docs/custom-providers.md) for detailed instructions and examples.
+
+## API Key Setup
+
+API keys are required for most LLM providers.
+The simplest way is using environment variables:
+
+```bash
+export OPENAI_API_KEY=sk-your-key-here
+export ANTHROPIC_API_KEY=sk-ant-your-key-here
+export GOOGLE_API_KEY=your-key-here
+export OPENROUTER_API_KEY=your-key-here
+export OLLAMA_API_KEY=your-key-here
+```
+
+For more ways to configure API key, see the [API Key Configuration guide](./docs/reference.md#api-key-configuration) in the reference documentation.
+
+## Free LLM API Setup
+
+You can try ResilientLLM without paid provider keys using [OpenRouter](https://openrouter.ai/) free models. OpenRouter routes requests to free models (with rate limits); no credit card is required to sign up.
+
+1. Sign up at [openrouter.ai](https://openrouter.ai/) (email or GitHub).
+2. Open **Keys** in the dashboard ([openrouter.ai/keys](https://openrouter.ai/keys)).
+3. Click **Create Key**, give it a name, and copy the key (starts with `sk-or-`).
+
+You can then use `openrouter/free` model which randomly selects a free model.
+
+
+```javascript
+import { ResilientLLM } from 'resilient-llm';
+
+const llm = new ResilientLLM({
+  aiService: 'openrouter',
+  model: 'openrouter/free',
+  apiKey: 'sk-or-***'
+});
+
+const { content } = await llm.chat([
+  { role: 'user', content: 'What is the capital of France?' }
+]);
+
+console.log(content);
+```
+
+The output might be extremely poor with `openrouter/free` model. If so, try a specific [free model from this list](https://openrouter.ai/models?max_price=0&output_modalities=text) or use a one of the [popular paid models](https://openrouter.ai/models?output_modalities=text&order=most-popular).
+
+## Examples and Playground
+
+Complete working projects using Resilient LLM as core library to call LLM APIs with resilience.
+
+![Playground screenshot](./examples/chat-basic/demo.jpg)
+
+- [Minimal AI Chat](./examples/chat-basic/)
+- [React Playground](./examples/playground-react/) - Interactive playground to test and experience ResilientLLM with multiple LLM providers, conversation management, and version control
+
+## Motivation
+
+ResilientLLM is a resilient, unified LLM interface featuring circuit breaker, token bucket rate limiting, caching, and adaptive retry with dynamic backoff support.
+
+In 2023, I developed multiple AI Agents and LLM Apps. I chose to **not** use the complex tools like Langchain just to make a simple LLM API call. A simple class to encapsulate my LLM call (`llm.chat`) was enough for me. Each app was using different LLM and configurations. For every new project, I found myself copying the same LLM orchestration code with minor adjustments. With each new release of those projects, I added some bug-fixes and essential features this LLM orchestration code. It was a tiny class, so there was not a major problem in syncing back those improvements to other projects. Soon, I had a class that unified API calls to multiple LLMs in a single interface `unifiedLLM.chat(conversationHistory, llmOptions)`, it was working flawlessly, on my development machine.
+
+When I deployed my AI agents on production, they started facing failures, some predictable (e.g. hitting LLM provider's rate limits), some unpredictable (Anthropic's overload error, network issues, CPU/memory spikes leading to server crash, etc.). Some of these issues were already dealt with a simple exponential backoff and retry strategy. But it was not good enough to put it out there on production. I could have put a rate limit gateway in front of my app server but that wouldn't have the enough user/app context/control to recover from these failures and leave the gap for unpredictable errors. Also it would have been an extra chore and expense to manage that gateway. So for the multiple agentic apps that I was creating, the LLM calls had to be more resilient, and the solution to deal with most of these failures had to be in the app itself.
+
+Vercel AI SDK seemed to offer convenient and unified abstractions. It seemed to even follow a more structured approach than mine (Vercel has adapters for each LLM provider) which enables advanced use cases such as supporting multi-modal APIs out-of-the-box for many providers (for which adapters are created by Vercel). This was a good approach to allow more use cases than what my tiny LLM class was doing, but I wanted to make the interface more production-ready(resilient) and unified (support new LLM API for the same AI agent use cases - chat/tool-calls, etc.). Only after diving deeper, I understood that it does not focus on resilience except for a simple backoff/retry strategy similar to what I had. Langchain was still more complex than needed, and it didn't have everything I needed to make my LLM orchestration more robust.
+
+The final solution was to extract tiny LLM orchestration class out of all my AI Agents and added circuit breakers, adaptive retries with backoff, and token bucket rate limiting while responding dynamically to API signals like retry-after headers. I used JavaScript/Node.js native features such as `AbortController` to bring control to abort on-demand or timeout.
+
+This library solves my challenges in building production-ready AI Agents such as:
+- unstable network conditions
+- inconsistent error handling
+- unpredictable LLM API rate limit errors
+
+This library aims to solve the same challenges for you by providing a resilient layer that intelligently manages failures and rate limits, enabling you (developers) to integrate LLMs confidently and effortlessly at scale.
+
+## Scope
+
+### What's in scope
+
+- **Unified LLM Interface**: Simple, consistent API across multiple LLM providers (OpenAI, Anthropic, Google Gemini, Ollama)
+- **Resilience Features**: Circuit breakers, adaptive retries with exponential backoff, and intelligent failure recovery
+- **Rate Limiting**: Token bucket rate limiting with automatic token estimation and enforcement
+- **Production Readiness**: Handling of network issues, API rate limits, timeouts, and server overload scenarios
+- **Basic Chat Functionality**: Support for conversational chat interfaces and message history
+- **Request Control**: AbortController support for on-demand request cancellation and timeouts
+- **Error Recovery**: Dynamic response to API signals like retry-after headers and provider-specific error codes
+
+### What's not in scope
+
+- **Complex LLM Orchestration**: Advanced workflows, chains, or multi-step LLM interactions (use LangChain or similar for complex use cases)
+- **Multi-modal Support**: Image, audio, or video processing capabilities
+- **Tool/Function Calling**: Advanced function calling or tool integration features
+- **Streaming Responses**: Real-time streaming of LLM responses
+- **Vector Databases**: Embedding storage, similarity search, or RAG (Retrieval-Augmented Generation) capabilities
+- **Fine-tuning or Training**: Model training, fine-tuning, or custom model deployment
+- **UI Components**: Frontend widgets, chat interfaces, or user interface elements
+- **Data Processing Pipelines**: ETL processes, data transformation, or batch processing workflows
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

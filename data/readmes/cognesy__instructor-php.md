@@ -1,0 +1,598 @@
+
+# About This Monorepo
+
+This monorepo contains a set of dev-friendly, framework agnostic components offering 4 main capabilities:
+
+- **Instructor for PHP** - structured data extraction in PHP - powered by LLMs, designed for simplicity, transparency, and control; supports custom LLM output processors (not just JSON),
+- **Polyglot for PHP** - unified inference, asynchronous batch inference (Early Access), embeddings, and typed decision APIs - write code once, deploy with providers such as OpenAI, Anthropic, Gemini, Ollama, and TypeSafe; you can write your own drivers,
+- **Retrieval for PHP** - vector storage, document indexing, semantic search, and bounded evidence context for RAG,
+- **Agent SDK for PHP** - lightweight but powerful agent SDK, supports custom tools, lifecycle hooks, subagents, context management, custom stop / continuation criteria, observability via events, packaged capabilities, agent templates, session management, and more.
+
+Framework integration packages:
+
+- **Laravel Package** - first-party Laravel integration for facades, HTTP transport, native agents, telemetry, logging, and testing
+- **Symfony Package** - first-party batteries-included Symfony integration package, currently being introduced under `packages/symfony`
+
+## Read More
+
+- Official website https://instructorphp.com
+- Docs website (Mintlify) https://docs.instructorphp.com
+- Docs (Github Pages) https://cognesy.github.io/instructor-php/
+
+## Overview of Capabilities
+
+The library offers a set of small, focused building blocks.
+
+### Structured output
+
+Purpose: turn messy model output into typed PHP data.
+Benefit: you stop hand-parsing JSON or text before using LLM results.
+
+```php
+use Cognesy\Instructor\StructuredOutput;
+
+final class Person {
+    public string $name;
+    public int $age;
+}
+
+$person = StructuredOutput::using('openai')
+    ->with(messages: 'Jason is 28 years old.', responseModel: Person::class)
+    ->get();
+```
+
+Detailed docs: [packages/instructor/docs/](packages/instructor/docs/)
+
+### Unified inference
+
+Purpose: call different LLM providers through one API.
+Benefit: switch providers without rewriting request code.
+
+```php
+use Cognesy\Polyglot\Inference\Inference;
+
+$text = Inference::using('openai')
+    ->withMessages('Say hello in one sentence.')
+    ->get();
+```
+
+Detailed docs: [packages/polyglot/docs/](packages/polyglot/docs/)
+
+### Batch inference (Early Access)
+
+Purpose: submit requests to provider-native asynchronous batch APIs.
+Benefit: process many requests in the background, then check status and fetch results
+through one API, with cancellation and job listing where supported.
+
+```php
+use Cognesy\Messages\Messages;
+use Cognesy\Polyglot\BatchInference\BatchInference;
+use Cognesy\Polyglot\BatchInference\Collections\BatchItems;
+use Cognesy\Polyglot\BatchInference\Data\BatchItem;
+use Cognesy\Polyglot\Inference\Data\InferenceRequest;
+
+$batches = BatchInference::using('mistral');
+$job = $batches->submit(BatchItems::of(
+    BatchItem::of('summary-1', new InferenceRequest(
+        messages: Messages::fromString('Summarize this document.'),
+    )),
+));
+
+$reference = $job->reference(); // persist $reference->toArray() to resume later
+$job = $batches->retrieve($reference); // check status when needed
+```
+
+Detailed docs: [BatchInference API](packages/polyglot/docs/batch-inference/overview.md) and
+[provider capabilities](packages/polyglot/docs/batch-inference/providers.md).
+
+### Embeddings
+
+Purpose: generate vectors through the same provider layer.
+Benefit: keep retrieval and inference in one stack.
+
+```php
+use Cognesy\Polyglot\Embeddings\Embeddings;
+
+$vectors = Embeddings::using('openai')
+    ->withInputs(['hello world'])
+    ->vectors();
+```
+
+Detailed docs: [packages/polyglot/docs/](packages/polyglot/docs/)
+
+### Structured decisions
+
+Purpose: evaluate application state with typed yes/no, choice, and score questions.
+Benefit: use probabilities to decide when to act or ask for review.
+
+```php
+use Cognesy\Polyglot\Decision\Collections\Questions;
+use Cognesy\Polyglot\Decision\Decision;
+use Cognesy\Polyglot\Decision\Questions\Noul;
+
+$answers = Decision::using('typesafe')
+    ->with(
+        input: 'I was charged twice. Please refund the duplicate.',
+        questions: Questions::of(new Noul(
+            id: 'refund_requested',
+            instructions: 'Does the customer explicitly request a refund?',
+        )),
+    )
+    ->get();
+
+$refundProbability = $answers->noul('refund_requested')->probability();
+```
+
+Detailed docs: [Decision API](packages/polyglot/docs/decision/overview.md) and
+[full example](examples/B06_Decisions/DecisionPrimitives/run.php).
+
+### Vector stores and retrieval
+
+Purpose: persist embeddings, index documents, retrieve evidence, and assemble
+bounded RAG context.
+Benefit: use replaceable in-memory, Qdrant, or Pgvector stores without coupling
+retrieval to generation.
+
+```php
+use Cognesy\Retrieval\Retrieval;
+use Cognesy\Retrieval\Query\VectorQuery;
+
+$hits = Retrieval::fromStore($store)
+    ->withQuery(new VectorQuery($queryVector, maxResults: 5))
+    ->get();
+```
+
+Detailed docs: [packages/retrieval/README.md](packages/retrieval/README.md)
+
+### Agents SDK
+
+Purpose: build tool-using agents as a simple loop over state.
+Benefit: add tools and control flow without inventing your own agent runtime first.
+
+```php
+use Cognesy\Agents\AgentLoop;
+use Cognesy\Agents\Data\AgentState;
+
+$result = AgentLoop::default()->execute(
+    AgentState::empty()->withUserMessage('What is 2+2?')
+);
+```
+
+Detailed docs: [packages/agents/docs/](packages/agents/docs/)
+
+### Code agent bridges
+
+Purpose: drive external coding agents like Codex, Claude Code, and OpenCode from PHP.
+Benefit: automate reviews, summaries, and coding workflows through one interface.
+
+```php
+use Cognesy\AgentCtrl\AgentCtrl;
+
+$response = AgentCtrl::codex()->execute('Summarize this repository.');
+```
+
+Detailed docs: [packages/agent-ctrl/docs/](packages/agent-ctrl/docs/)
+
+### Framework integration
+
+Purpose: install framework-native runtime wiring instead of assembling your own glue.
+Benefit: get a supported bundle or package surface for container bindings, events, observability, and testing.
+
+- Laravel package: [packages/laravel/](packages/laravel/)
+- Symfony package: [packages/symfony/](packages/symfony/)
+
+Symfony docs highlights:
+
+- quickstart: [packages/symfony/docs/quickstart.md](packages/symfony/docs/quickstart.md)
+- configuration: [packages/symfony/docs/configuration.md](packages/symfony/docs/configuration.md)
+- operations: [packages/symfony/docs/operations.md](packages/symfony/docs/operations.md)
+- migration: [packages/symfony/docs/migration.md](packages/symfony/docs/migration.md)
+
+
+
+
+## Usage
+
+### Installation
+
+You can install Instructor via Composer:
+
+```bash
+composer require cognesy/instructor-php
+```
+
+### Basic Example
+
+This is a simple example demonstrating how Instructor retrieves structured information from provided text (or chat message sequence).
+
+Response model class is a plain PHP class with typehints specifying the types of fields of the object.
+
+```php
+use Cognesy\Instructor\StructuredOutput;
+
+// Step 0: Create .env file in your project root:
+// OPENAI_API_KEY=your_api_key
+
+// Step 1: Define target data structure(s)
+class Person {
+    public string $name;
+    public int $age;
+}
+
+// Step 2: Provide content to process
+$text = "His name is Jason and he is 28 years old.";
+
+// Step 3: Use Instructor to run LLM inference
+$person = (new StructuredOutput)
+    ->withResponseClass(Person::class)
+    ->withMessages($text)
+    ->get();
+
+// Step 4: Work with structured response data
+assert($person instanceof Person); // true
+assert($person->name === 'Jason'); // true
+assert($person->age === 28); // true
+
+echo $person->name; // Jason
+echo $person->age; // 28
+
+var_dump($person);
+// Person {
+//     name: "Jason",
+//     age: 28
+// }    
+```
+> **NOTE:** Instructor supports classes / objects as response models. In case you want to extract simple types or enums, you need to wrap them in Scalar adapter - see section below: Extracting Scalar Values.
+>
+
+### Validation
+
+Instructor validates results of LLM response against validation rules specified in your data model.
+
+> For further details on available validation rules, check [Symfony Validation constraints](https://symfony.com/doc/current/validation.html#constraints).
+
+```php
+use Cognesy\Instructor\StructuredOutput;
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Person {
+    public string $name;
+    #[Assert\PositiveOrZero]
+    public int $age;
+}
+
+$text = "His name is Jason, he is -28 years old.";
+$person = (new StructuredOutput)
+    ->withResponseClass(Person::class)
+    ->with(
+        messages: [['role' => 'user', 'content' => $text]],
+    )
+    ->get();
+
+// if the resulting object does not validate, Instructor throws an exception
+```
+
+
+### Max Retries
+
+In case maxRetries parameter is provided and LLM response does not meet validation criteria, Instructor will make subsequent inference attempts until results meet the requirements or maxRetries is reached.
+
+Instructor uses validation errors to inform LLM on the problems identified in the response, so that LLM can try self-correcting in the next attempt.
+
+```php
+use Cognesy\Instructor\StructuredOutput;
+use Cognesy\Instructor\StructuredOutputRuntime;
+use Cognesy\Polyglot\Inference\LLMProvider;
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Person {
+    #[Assert\Length(min: 3)]
+    public string $name;
+    #[Assert\PositiveOrZero]
+    public int $age;
+}
+
+$text = "His name is JX, aka Jason, he is -28 years old.";
+$runtime = StructuredOutputRuntime::fromProvider(LLMProvider::new())
+    ->withMaxRetries(3);
+
+$person = (new StructuredOutput($runtime))
+    ->with(
+        messages: [['role' => 'user', 'content' => $text]],
+        responseModel: Person::class,
+    )
+    ->get();
+
+// if all LLM's attempts to self-correct the results fail, Instructor throws an exception
+```
+
+
+### Output Modes
+
+Instructor supports multiple output modes through `Cognesy\Instructor\Enums\OutputMode` to allow working with various models depending on their capabilities.
+- `OutputMode::Json` - generate structured output via LLM's native JSON generation 
+- `OutputMode::JsonSchema` - use LLM's strict JSON Schema mode to enforce JSON Schema
+- `OutputMode::Tools` - use tool calling API to get LLM follow provided schema
+- `OutputMode::MdJson` - use prompting to generate structured output; fallback for the models that do not support JSON generation or tool calling
+
+Additionally, you can use `OutputMode::Text` to get LLM to generate text output without any structured data extraction.
+
+- `OutputMode::Text` - generate text output
+- `OutputMode::Unrestricted` - generate unrestricted output based on inputs provided by the user (with no enforcement of specific output format)
+
+
+## Unified LLM API
+
+Instructor ecosystem uses [Polyglot](https://github.com/cognesy/instructor-polyglot) as an unified inference API layer supporting 20+ LLM providers.
+
+Polyglot takes care of translation of familiar OpenAI chat completion API conventions into LLM provider specific idioms / APIs, so you can easily switch between LLM providers without rewriting your LLM connectivity code.
+
+### Example (using sync API)
+
+```php
+use Cognesy\Polyglot\Inference\Inference;
+
+$message = Inference::using('openai') // specify LLM connection preset (defined in config)
+    ->with(messages: 'What is capital of Germany')
+    ->get();
+
+echo $message->content()->toString();
+```
+
+### Example (using streaming API)
+
+```php
+use Cognesy\Polyglot\Inference\Inference;
+
+$stream = Inference::using('anthropic') // specify LLM connection preset (defined in config)
+    ->withMessages([['role' => 'user', 'content' => 'Describe capital of Brasil']])
+    ->withOptions(['max_tokens' => 256])
+    ->withStreaming()
+    ->stream()
+    ->deltas();
+
+foreach ($stream as $delta) {
+    echo $delta->messageChunks->textDelta();
+}
+```
+
+### Example (customize LLM connection)
+
+```php
+use Cognesy\Polyglot\Inference\Config\LLMConfig;
+use Cognesy\Polyglot\Inference\Inference;
+
+$answer = Inference::fromConfig(LLMConfig::fromArray([
+    'driver' => 'deepseek',
+    'apiUrl' => 'https://api.deepseek.com',
+    'endpoint' => '/chat/completions',
+    'model' => 'deepseek-v4-flash',
+]))
+    ->withMessages([['role' => 'user', 'content' => 'What is the capital of France']])
+    ->withOptions(['max_tokens' => 64])
+    ->get();
+
+echo $answer;
+```
+
+
+## Documentation
+
+Check out the [documentation website](https://docs.instructorphp.com/) for more details and examples of how to use Instructor for PHP.
+
+
+
+
+
+
+
+## Feature Highlights
+
+### Core features
+
+- Get structured responses from LLMs without writing boilerplate code
+- Validation of returned data
+- Automated retries in case of errors when LLM responds with invalid data
+- Integrate LLM support into your existing PHP code with minimal friction - no framework, no extensive code changes
+- Framework agnostic - use it with Laravel, Symfony, your custom framework, or - with no framework at all
+
+### Various extraction modes
+
+- Supports multiple extraction modes through `Cognesy\Instructor\Enums\OutputMode`
+- `OutputMode::Json` - use response_format to get LLM follow provided JSON Schema
+- `OutputMode::JsonSchema` - use strict JSON Schema mode to get LLM follow provided JSON Schema
+- `OutputMode::Tools` - use tool calling API to get LLM follow provided JSON Schema
+- `OutputMode::MdJson` - extract via prompting LLM to nudge it to generate provided JSON Schema
+
+### Flexible inputs
+
+- Process various types of input data: text, series of chat messages or images using the same, simple API
+- 'Structured-to-structured' processing - provide object or array as an input and get object with the results of inference back
+- Demonstrate examples to improve the quality of inference
+
+### Customization
+
+- Define response data model the way you want: type-hinted classes, JSON Schema arrays, or dynamic data shapes with `Structure` class
+- Customize prompts and retry prompts
+- Use attributes or PHP DocBlocks to provide additional instructions for LLM
+- Customize response model processing by providing your own implementation of schema, deserialization, validation and transformation interfaces
+
+### Sync and streaming support
+
+- Supports both synchronous or streaming responses
+- Get partial updates & stream completed sequence items
+
+### Observability
+
+- Get detailed insight into internal processing via events
+- Debug mode to see the details of LLM API requests and responses
+
+### Support for multiple LLMs / API providers
+
+- Easily switch between LLM providers
+- Support for most popular LLM APIs (incl. OpenAI, Gemini, Anthropic, Cohere, Azure, Groq, Mistral, Fireworks AI, Together AI)
+- OpenRouter support - access to 100+ language models
+- Use local models with Ollama
+
+### Other capabilities
+
+- Developer friendly LLM context caching for reduced costs and faster inference (for Anthropic models)
+- Developer friendly data extraction from images (for OpenAI, Anthropic and Gemini models)
+- Generate vector embeddings using APIs of multiple supported LLM providers
+
+### Documentation and examples
+
+- Learn more from growing documentation and 100+ cookbooks
+
+
+
+
+## What is Instructor?
+
+Instructor is a library that allows you to extract structured, validated data from multiple types of inputs: text, images or OpenAI style chat sequence arrays. It is powered by Large Language Models (LLMs).
+
+Instructor simplifies LLM integration in PHP projects. It handles the complexity of extracting structured data from LLM outputs, so you can focus on building your application logic and iterate faster.
+
+Instructor for PHP is inspired by the [Instructor](https://jxnl.github.io/instructor/) library for Python created by [Jason Liu](https://twitter.com/jxnlco).
+
+![image](docs/images/concept.png)
+
+Here's a simple CLI demo app using Instructor to extract structured data from text:
+
+![image](docs/images/extraction.gif)
+
+
+## How Instructor Enhances Your Workflow
+
+Instructor introduces three key enhancements compared to direct API usage.
+
+### Response Model
+
+Specify a PHP class to extract data into via the 'magic' of LLM chat completion. And that's it.
+
+Instructor reduces brittleness of the code extracting the information from textual data by leveraging structured LLM responses.
+
+Instructor helps you write simpler, easier to understand code: you no longer have to define lengthy function call definitions or write code for assigning returned JSON into target data objects.
+
+### Validation
+
+Response model generated by LLM can be automatically validated, following set of rules. Currently, Instructor supports only Symfony validation.
+
+You can also provide a context object to use enhanced validator capabilities.
+
+### Max Retries
+
+You can set the number of retry attempts for requests.
+
+Instructor will repeat requests in case of validation or deserialization error up to the specified number of times, trying to get a valid response from LLM.
+
+### Support for LLM Providers
+
+Instructor offers out-of-the-box support for the following LLM providers:
+
+- A21 / Mamba
+- Anthropic
+- Azure OpenAI
+- Cerebras
+- Cohere (v2 OpenAI compatible)
+- Deepseek
+- Fireworks
+- Google Gemini (native and OpenAI compatible)
+- Groq
+- HuggingFace
+- Inception
+- Minimaxi
+- Mistral
+- Moonshot / Kimi
+- Ollama (on localhost)
+- OpenAI
+- OpenRouter
+- Perplexity
+- Qwen
+- Sambanova
+- xAI / Grok
+
+For usage examples, check Hub section or `examples` directory in the code repository.
+
+
+
+
+## Instructor in Other Languages
+
+Check out implementations in other languages below:
+
+- [Python](https://useinstructor.com) (original)
+- [Javascript](https://js.useinstructor.com/) (port)
+- [Elixir](https://hexdocs.pm/instructor/Instructor.html) (port)
+- [Ruby](https://ruby.useinstructor.com/) (port)
+
+If you want to port Instructor to another language, please reach out to us on [Twitter](https://twitter.com/jxnlco) we'd love to help you get started!
+
+
+
+
+
+## Instructor Packages
+
+This repository is a monorepo containing all Instructor's components (required and optional). It hosts all that you need to work with LLMs via Instructor.
+
+Individual components are also distributed as standalone packages that can be used independently.
+
+![image](docs/images/instructor-packages.svg)
+
+Links to read-only repositories of the standalone package distributions:
+
+- [instructor-addons](https://github.com/cognesy/instructor-addons) - extra capabilities and common LLM-related problem solutions
+- [instructor-aux](https://github.com/cognesy/instructor-aux) - external tools and integrations, e.g. used by Instructor examples
+- [instructor-config](https://github.com/cognesy/instructor-config) - configuration management for Instructor
+- [instructor-evals](https://github.com/cognesy/instructor-evals) - LLM output evaluation tools
+- [instructor-events](https://github.com/cognesy/instructor-events) - events and event listeners for Instructor
+- [instructor-http-client](https://github.com/cognesy/instructor-http-client) - easily switch between underlying HTTP client libraries (out-of-the-box support for Guzzle, Symfony, Laravel)
+- [instructor-http-pool](https://github.com/cognesy/instructor-http-pool) - concurrent HTTP request execution for fan-out workloads
+- [instructor-hub](https://github.com/cognesy/instructor-hub) - CLI tool for browsing and running Instructor examples
+- [instructor-messages](https://github.com/cognesy/instructor-messages) - chat message sequence handling for Instructor
+- [instructor-polyglot](https://github.com/cognesy/instructor-polyglot) - use single API for inference and embeddings across most of LLM providers, easily switch between them (e.g., develop on Ollama, switch to Groq in production)
+- [instructor-schema](https://github.com/cognesy/instructor-schema) - object schema handling for Instructor
+- [instructor-setup](https://github.com/cognesy/instructor-setup) - CLI tool for publishing Instructor config files in your app
+- [instructor-struct](https://github.com/cognesy/instructor-struct) - get dev friendly structured outputs from LLMs
+- [instructor-tell](https://github.com/cognesy/instructor-tell) - CLI tool for executing LLM prompts in your terminal
+- [instructor-templates](https://github.com/cognesy/instructor-templates) - text and chat template tools used by Instructor, support Twig, Blade and ArrowPipe formats
+- [instructor-utils](https://github.com/cognesy/instructor-utils) - common utility classes used by Instructor packages
+
+> NOTE: If you are just starting to use Instructor, I recommend using the `instructor-php` package. It contains all the required components and is the easiest way to get started with the library.
+
+
+
+
+
+
+## License
+
+This project is licensed under the terms of the MIT License.
+
+
+## Support
+
+If you have any questions or need help, please reach out to me on [Twitter](https://twitter.com/ddebowczyk) or [GitHub](https://github.com/cognesy/instructor-php/issues).
+
+
+
+## Contributing
+
+If you want to help, check out some of the issues. All contributions are welcome - code improvements, documentation, bug reports, blog posts / articles, or new cookbooks and application examples.
+
+
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+<a href="https://github.com/cognesy/instructor-php/graphs/contributors">
+  <img alt="Contributors" src="https://contrib.rocks/image?repo=cognesy/instructor-php" />
+</a>

@@ -1,0 +1,183 @@
+<p align="center">
+<img src="./assets/project_banner.gif" alt="Project banner" height="300"/>
+</p>
+
+# Index-RAG (i-RAG): Storing Text Location in Vector Databases for QA tasks
+## *The Future of Citation-Accurate RAG Systems*
+[![AI](https://img.shields.io/badge/AI-C21B00?style=for-the-badge&logo=openaigym&logoColor=white)]()
+[![LLMs](https://img.shields.io/badge/LLMs-1A535C?style=for-the-badge&logo=openai&logoColor=white)]()
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=ffdd54)]()
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-darkgreen.svg?style=for-the-badge&logo=github&logoColor=white)](./LICENSE.md)
+
+> **Revolutionary RAG Technology**: Store document locations directly in vector databases for unprecedented citation accuracy and retrieval precision.
+
+---
+
+## Data ingestion
+
+[![Ingestion](./assets/Ingestion.gif)](./assets/Ingestion.gif)
+
+## 🔥 Why i-RAG Will Transform Your RAG Applications
+
+**Tired of RAG systems that can't tell you where their information comes from?** i-RAG solves the fundamental problem of citation accuracy in RAG by embedding document locations alongside content.
+
+### 🎯 The Problem with Traditional RAG
+- **Lost Citations**: Standard RAG chunks documents arbitrarily, making it impossible to provide precise source locations
+- **Hallucinated Sources**: Systems claim information comes from "page 5" when they don't actually track page numbers
+- **Slow Reasoning-Based Alternatives**: Solutions like [VectifyAI/PageIndex](https://github.com/VectifyAI/PageIndex) sacrifice speed for accuracy
+- **Citation Gaps**: Critical limitations exposed in [recent research](https://arxiv.org/abs/2510.13975)
+
+### 🚀 i-RAG: The Breakthrough Solution
+
+i-RAG introduces **paragraph-level indexing with multi-question-based embeddings** - a fundamentally better approach that addresses all major RAG limitations while maintaining lightning-fast retrieval.
+
+## Why store index:
+
+We store multiple embeddings per paragraph based on AI-generated questions and the original paragraph text. If each embedding is stored with its text, the storage space used increases. Storing text locations helps in precise citations including file name, page number, and line number without needing to store the entire text multiple times.
+
+## ✨ Revolutionary Advantages
+
+### 🎯 **Precise Citations Made Easy**
+- **Exact Location Tracking**: Every retrieved result includes document URL, page number, and line number
+- **Source Transparency**: No more guessing - know exactly where your AI's information comes from
+- **Academic-Grade Citations**: Perfect for research, legal, and compliance applications
+
+### 🧠 **Addresses Critical RAG Limitations**
+- **Solves Citation Accuracy Issues**
+- **Future-Proof Architecture**: Built to handle the next generation of citation requirements
+
+### ⚡ **Superior Performance vs. Alternatives**
+- **Faster than Reasoning-Based RAG**: I-RAG delivers speed while maintaining accuracy
+- **Multiple Retrieval Pathways**: Question-based embeddings create numerous entry points per paragraph. Duplicate or consecutive chunks can be merged to optimize context for accurate question-answering.
+- **Lightweight Setup**: No need for complex reasoning models or extensive infrastructure
+- **Scalable Architecture**: Handles large document collections with ease
+
+## 🛠️ Quick Start: Get Started in Minutes
+
+### Prerequisites
+- Python 3.8+
+- Pinecone account
+- API keys for Cohere and OpenAI
+
+### Installation
+```bash
+git clone https://github.com/Pro-GenAI/Index-RAG
+cd Index-RAG
+pip install -e .
+cp .env.example .env
+# Configure your API keys in .env
+```
+
+### Launch Your Citation-Accurate RAG System
+```bash
+# Host the embedding models
+python index_rag/host_models.py &
+
+# Ingest documents with precise location tracking
+python -c "from index_rag.utils.ingestion import ingest_document; ingest_document('your-document.pdf')"
+
+# Start the RAG API server for an OpenAI-compatible API
+python index_rag/utils/server.py &
+```
+
+### Query with Perfect Citations
+```python
+import openai
+
+client = openai.OpenAI(
+	api_key="dummy",
+	base_url="http://localhost:8001/v1"
+)
+
+response = client.chat.completions.create(
+	model="RAG-app",
+	messages=[{"role": "user", "content": "What is compound interest?"}]
+)
+
+print(response.choices[0].message.content)
+# Sample output: "According to Investopedia (investopedia.pdf, page 12, line 45),
+# compound interest is the interest on a loan or deposit calculated based ..."
+```
+
+## 📊 Performance That Speaks for Itself
+
+## Results
+
+Evaluation comparison (Index-RAG vs Baseline RAG):
+
+| Metric | Baseline RAG | Index-RAG | Improvement |
+|---|---:|---:|---:|
+| `precision@1` | `0.666667` | `0.833333` | 🟢 **+25.00%** |
+| `precision@5` | `0.366667` | `0.383333` | 🟢 **+4.55%** |
+| `mrr` | `0.819444` | `0.916667` | 🟢 **+11.86%** |
+| `ndcg@10` | `0.866228` | `0.933542` | 🟢 **+7.77%** |
+
+Evaluation script: [`index_rag/scripts/evaluate.py`](./index_rag/scripts/evaluate.py).
+
+| Feature | i-RAG | Traditional RAG | Reasoning-Based RAG |
+|-------------------|------------------------------|----------------|------------|
+| Citation Accuracy | ✅ Exact (URL + Page + Line) | ❌ Approximate | ✅ Exact   |
+| Retrieval Speed   | ✅ Fast                      | ✅ Fast        | ❌ Slow    |
+| Setup Complexity  | ✅ Simple                    | ✅ Simple      | ❌ Complex |
+| Scalability       | ✅ High                      | ✅ High        | ⚠️ Limited |
+
+## 🎯 Perfect For
+
+- **Academic Research**: Cite sources with surgical precision
+- **Legal Applications**: Track document provenance exactly
+- **Financial Analysis**: Provide investment advice with source verification
+- **Medical Documentation**: Reference exact locations in medical literature
+- **Compliance Systems**: Audit trails with document coordinates
+- **Educational Platforms**: Teach with verifiable source material
+
+## 🔧 Technical Architecture
+
+### Core Components
+- **Paragraph-Level Processing**: Natural document segmentation
+- **Question Generation**: LLM-powered question creation per paragraph
+- **Multi-Vector Storage**: Pinecone with text location metadata
+- **OpenAI-Compatible API**: Drop-in replacement for existing applications
+- **FastAPI Backend**: High-performance model serving
+
+### Supported Formats
+- PDF documents with page and line number tracking
+- Extensible to other document types
+- Metadata preservation for all document properties
+
+## 🚀 Why Developers Choose i-RAG
+
+### For Startups
+- **Rapid Deployment**: Get citation-accurate RAG in minutes, not weeks
+- **Cost Effective**: No expensive reasoning models required
+- **Scalable**: Grows with your document collection
+
+### For Enterprises
+- **Compliance Ready**: Perfect for regulated industries requiring source verification
+- **Audit Trails**: Complete provenance tracking for all AI responses
+- **Integration Friendly**: OpenAI-compatible API works with existing tools
+
+### For Researchers
+- **Citation Precision**: Academic-grade source attribution
+- **Reproducible Results**: Exact location tracking enables verification
+- **Benchmark Ready**: Superior performance on citation-aware evaluations
+
+<!-- ## 📈 Roadmap: What's Coming Next
+
+- **Multi-Modal Support**: Images, tables, and charts with location tracking
+- **Advanced Reranking**: Context-aware result ordering
+- **Batch Processing**: High-throughput document ingestion
+- **Custom Embeddings**: Domain-specific embedding models
+- **Real-Time Updates**: Streaming document processing -->
+
+### Get Started Today
+1. ⭐ Star this repository
+2. 📖 Read the documentation
+3. 🚀 Deploy your first citation-accurate RAG system
+4. 🤝 Share your success stories
+
+---
+
+**i-RAG**: Because AI should never have to say "I don't know where that came from."
+
+*Built with ❤️ for the future of trustworthy AI systems*
+

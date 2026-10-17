@@ -1,0 +1,354 @@
+# tui-design
+
+[![Release](https://img.shields.io/github/v/release/gfargo/tui-design-skill?label=release&color=2da44e)](https://github.com/gfargo/tui-design-skill/releases)
+[![Skills](https://www.skills.sh/b/gfargo/tui-design-skill)](https://www.skills.sh/gfargo/tui-design-skill)
+[![Validate](https://github.com/gfargo/tui-design-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/gfargo/tui-design-skill/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+An agent skill for designing and building **clean, professional, minimal terminal UI (TUI) applications and command-line tools** — for Codex, Claude, and compatible skill-aware agents, across Go, Rust, Python, and TypeScript.
+
+Use it for greenfield builds, design reviews, refactors, library decisions, and "should I use Bubble Tea or Ratatui?"-class questions. Covers the universal patterns (layouts, color, keybindings, discoverability) plus per-ecosystem deep-dives for Bubble Tea, Ratatui, Textual, and Ink.
+
+**[What it covers](#what-the-skill-covers) · [When it triggers](#when-the-skill-triggers) · [Example prompts](#example-prompts) · [Install](#install) · [Build](#build) · [Evaluate](#evaluation) · [Repo layout](#repository-layout) · [Contributing](#contributing)**
+
+---
+
+> ### 📦 Also in the [`gfargo/skills`](https://github.com/gfargo/skills) marketplace
+>
+> This skill now also lives in my central skills marketplace, alongside my other skills (like [`vhs-cli-demos`](https://github.com/gfargo/skills), for capturing screenshots + demo GIFs of terminal apps). Add it once and get them all:
+>
+> ```bash
+> /plugin marketplace add gfargo/skills
+> /plugin install terminal@gfargo-skills   # → terminal:tui-design  +  terminal:vhs-cli-demos
+> ```
+>
+> This standalone repo still works exactly as before (including `npx skills` and the `.skill` release download) — use it if you only want `tui-design` on its own. The central marketplace is the better pick if you want my whole collection from a single source.
+
+---
+
+## What the skill covers
+
+The skill uses progressive disclosure: its 139-line `SKILL.md` carries the workflow, routing table, and cross-cutting contracts, then loads one authoritative reference per topic on demand. The nine Markdown files total about 4,400 lines, but the agent does not need all of that context for every question.
+
+**Top-level (`SKILL.md`):**
+- Product classification: one-shot CLI, summon–choose–exit tool, or full-screen session
+- Single-source routing for layouts, visual systems, interactions, ecosystem APIs, CLI contracts, and case studies
+- Two reflexes applied to every layout review — the **clutter audit** (make "feels busy" countable) and **pressure-test the floor** (responsive behavior at 80×24 and narrower), even when the user didn't ask about them
+- Cross-cutting contracts for lifecycle, non-blocking work, redraws, cell width, output streams, semantic color, keyboard access, and plain-mode fallbacks
+- A build workflow, bottom-heavy test pyramid, verification matrix, and prioritized review checklist
+
+**References (loaded as needed):**
+- `ecosystem-go.md` — Bubble Tea, Lipgloss, Bubbles, Huh, tview, gocui, Cobra, Wish, gum
+- `ecosystem-rust.md` — Ratatui, Crossterm, color-eyre panic safety, Cursive, clap, cliclack, async with Tokio
+- `ecosystem-python.md` — Textual (TCSS, reactive, workers, Pilot testing, `textual serve`), Rich, prompt_toolkit, Typer, questionary
+- `ecosystem-typescript.md` — Ink (used by Claude Code, GitHub Copilot CLI, Gemini CLI), @clack/prompts, @inquirer/prompts, OpenTUI, color-library tradeoffs, argument-parser comparison
+- `cli-basics.md` — `clig.dev` / 12-Factor / POSIX / XDG / `sysexits` synthesis for non-TUI CLIs, plus shell integration hooks, shipping/update/telemetry etiquette, and first-run auth flows, and a VHS fallback for demo recordings
+- `visual-patterns.md` — deep dive on the 7 layouts, inline vs alt-screen (and the receipt-pattern exit contract), borders, color tiers, semantic tokens, density, the clutter audit, responsive design (the breakpoint ladder + the floor), tables, status bars, progress, disconnected/timeout states, theming, Nerd Font icon conventions, localization (translation growth, right-to-left text, ambiguous-width characters, locale formatting), and accessibility (what screen readers hear, the plain-mode contract, reduced motion)
+- `interaction-patterns.md` — keybinding philosophies, focus management, forms and settings-screen design, terminal modes and protocols (bracketed paste, kitty keyboard, mouse and focus reporting, synchronized output, cursor and title restore, color queries, and a tmux/screen/Zellij/SSH/Windows environment matrix), OSC 8/52/9 (hyperlinks, clipboard-over-SSH, notifications), the fzf/lazygit/k9s/helix patterns dissected, confirmation friction levels, undo/redo
+- `exemplar-apps.md` — case studies of lazygit, k9s, btop, fzf, helix, yazi, atuin, htop, Posting, Harlequin, Claude Code, starship, and others
+
+---
+
+## When the skill triggers
+
+Once installed, a compatible agent can reach for this skill automatically when you ask about:
+
+- **Building** a TUI or CLI ("build me a TUI for monitoring my docker containers")
+- **Reviewing or refactoring** existing terminal UIs ("here's my Ratatui code, what's wrong with it?")
+- **Library / framework choices** ("Bubble Tea vs Ratatui vs Textual vs Ink for a kanban app")
+- **Specific design questions** ("how should I lay out a multi-pane git client", "should I support mouse")
+- **Naming a known TUI app** as inspiration (lazygit, k9s, btop, helix, fzf, yazi, atuin)
+- **Phrases like** "terminal app," "ncurses-style," "interactive shell tool," "CLI dashboard," "fzf-like picker"
+
+It stays out of browser/web UI, native GUI, editor/font configuration, and backend or shell work when no terminal interface is part of the request.
+
+---
+
+## Example prompts
+
+**Build:**
+> "I want to build a TUI for monitoring my homelab — five docker hosts each running ~20 containers. I'd like to see CPU/mem/network at a glance and drill into any container's logs. I'm comfortable with Go and Rust. What would you build and how would you lay it out?"
+
+**Review:**
+> "Here's the layout of my Ratatui app: status bar at top with a progress bar, three panels horizontally split (file list 30%, diff 50%, commit log 20%), no footer. Keys are vim-style hjkl plus single letters. What's wrong with this from a UX perspective and what would you change?"
+
+**Library decision:**
+> "I'm starting a new TUI project in 2026 and torn between Bubble Tea, Ratatui, Textual, and Ink. It's a project management tool — kanban-board-style with multiple lists, drag-to-move, syncs to a backend, will be installed by ~5,000 internal users at our company. What would you pick and why?"
+
+---
+
+## Install
+
+### Option A — Claude Code (plugin marketplace, recommended)
+
+```bash
+/plugin marketplace add gfargo/tui-design-skill
+/plugin install tui-design@tui-design-marketplace
+```
+
+To update later when the skill improves:
+
+```bash
+/plugin marketplace update tui-design-marketplace
+```
+
+### Option B — Vercel's `npx skills` (cross-agent, no Claude Code required)
+
+The pinned CLI below requires Node.js 22.20 or newer. It auto-detects compatible agents, but the examples name the target explicitly so the destination is unambiguous:
+
+```bash
+# Install for Claude Code in the current project
+npx --yes skills@1.5.22 add gfargo/tui-design-skill -a claude-code
+
+# Install into Claude Code's global skill directory
+npx --yes skills@1.5.22 add gfargo/tui-design-skill -a claude-code -g
+
+# Install for another agent
+npx --yes skills@1.5.22 add gfargo/tui-design-skill -a cursor
+npx --yes skills@1.5.22 add gfargo/tui-design-skill -a codex
+
+# List skills installed via npx skills
+npx --yes skills@1.5.22 list
+
+# Update later
+npx --yes skills@1.5.22 update tui-design
+```
+
+`npx skills` discovers this skill via the same `marketplace.json` used by Option A. `-g` means the selected agent's global skill directory; the exact path depends on that agent. Upgrade the pinned CLI deliberately after checking its Node requirement and install behavior.
+
+### Option C — Claude.ai (upload the .skill file)
+
+1. Download the latest [`tui-design.skill`](https://github.com/gfargo/tui-design-skill/releases/latest) from Releases (or build it yourself — see *Build* below).
+2. In Claude.ai, go to **Settings → Customize → Skills → Upload skill** and select the file.
+3. Toggle the skill on.
+
+> Skills require code execution to be enabled in your Claude.ai settings.
+
+### Option D — Claude Code (direct, without plugin marketplace)
+
+```bash
+mkdir -p ~/.claude/skills
+cd ~/.claude/skills
+git clone https://github.com/gfargo/tui-design-skill.git
+ln -s tui-design-skill/plugins/tui-design/skills/tui-design tui-design
+```
+
+### Optional: screenshots and demo GIFs
+
+The skill hands screenshot and demo-GIF requests to the `vhs-cli-demos` skill when it is installed and otherwise falls back to its own short VHS guidance. `vhs-cli-demos` lives in the [`gfargo/skills`](https://github.com/gfargo/skills) marketplace:
+
+```bash
+npx --yes skills@1.5.22 add gfargo/skills --skill vhs-cli-demos -a claude-code
+```
+
+In Claude Code, `/plugin install terminal@gfargo-skills` installs it together with that marketplace's own copy of `tui-design`, so use that bundle instead of Option A, not alongside it.
+
+---
+
+## Build
+
+Every published release automatically gets a `tui-design.skill` asset attached by CI (see `.github/workflows/release.yml`), so the [latest release](https://github.com/gfargo/tui-design-skill/releases/latest) is the easiest source.
+
+To build it yourself instead:
+
+```bash
+git clone https://github.com/gfargo/tui-design-skill.git
+cd tui-design-skill
+./scripts/package-skill.sh        # writes dist/tui-design.skill
+```
+
+The output is `dist/tui-design.skill`—a deterministic zip containing the exact `tui-design/` allowlist in `scripts/skill-files.txt` (`SKILL.md`, `agents/openai.yaml`, and eight references), which the packager, the validator, and the packaging tests all read, ready to install in a compatible agent. Packaging rejects symlinks, generated files, caches, and undeclared resources. It requires Bash, `zip`, `unzip`, and the common GNU/BSD forms of `find`, `cp`, `chmod`, `touch`, and `mktemp`. Run `./scripts/validate-release.sh` to validate manifests, Codex metadata, the core-size and duplication budgets, Markdown structure, sample markers, eval JSON and harness tests, archive integrity, and repeatable output; that validator also requires Python 3.9 or newer, and CI runs it on Python 3.9 and 3.14.
+
+### Code-sample checks
+
+CI compiles and tests the pasteable samples in the references against pinned framework versions (`.github/workflows/samples.yml`), so they cannot drift from real APIs. A fence opts in with a `check=<harness>/<name>` word after its language, such as ```` ```go check=go/counter ````; short illustrative fragments stay unmarked.
+
+Each harness in `tests/samples/` (`go`, `rust`, `python`, `typescript`) is a small project pinned by its lockfile. Its `*.tmpl` files hold the wrapper code a sample needs (imports, `main`, stub types, tests) and a placeholder line such as `<<sample go/counter>>` where the sample goes. A placeholder can take `from="…"`, `until="…"`, and `drop="…"` line prefixes to use part of a sample, for example to place a fence's declarations at package level and its trailing `case` fragment inside a wrapper `switch`. `./scripts/check-samples.py verify`, which `validate-release.sh` runs, fails when a marked sample has no template or a template names a missing sample.
+
+To mark a sample, add `check=<harness>/<name>` to its fence, put `<<sample <harness>/<name>>>` in a `.tmpl` file of that harness with any wrapper it needs, and run the checks. Each harness needs its own toolchain: Go 1.26+, Cargo, Node 22+, and a Python with the harness requirements installed:
+
+```bash
+python3 -m venv tests/samples/.build/venv
+tests/samples/.build/venv/bin/pip install -r tests/samples/python/requirements.txt
+```
+
+```bash
+PYTHON=tests/samples/.build/venv/bin/python ./scripts/check-samples.sh
+```
+
+Pass harness names (`./scripts/check-samples.sh rust typescript`) to check a subset. Rendered projects land in the gitignored `tests/samples/.build/`; compile errors point at the rendered file, and the render step prints which reference line each sample came from. Keep the harness pins in step with `scripts/reference-inventory.json`.
+
+## Evaluation
+
+The committed eval sets contain prompts and assertion rubrics. `scripts/eval_harness.py` turns them into auditable runs while staying provider-neutral: the runner command reads a prompt from stdin and writes one response to stdout, and it is invoked directly without a shell.
+
+```bash
+# Run the same set without skill injection.
+python3 scripts/eval_harness.py run \
+  --eval-set evals/v151-correction-evals.json \
+  --condition baseline --provider "provider-name" --model "exact-model-id" \
+  --runner-version "runner 1.2.3" --repeat 2 \
+  -- path/to/model-runner --its-arguments
+
+# Run it with a clean-context instruction pointing at this skill.
+python3 scripts/eval_harness.py run \
+  --eval-set evals/v151-correction-evals.json \
+  --condition with-skill --provider "provider-name" --model "exact-model-id" \
+  --runner-version "runner 1.2.3" --temperature 0 --repeat 2 \
+  -- path/to/model-runner --its-arguments
+```
+
+Each schema-v3-or-later `run.json` declares a machine-readable schema URI and records the caller-supplied exact provider/model identifiers, runner version, exposed seed and temperature, system-prompt status or hash, repetitions, runner executable name and argv hash, git commit and dirty state, host metadata, eval-set and skill hashes, prompt and response hashes, timings, exit codes, and raw artifact paths. Use `--system-prompt-file` to record only a known prompt's SHA-256 and byte length, `--no-system-prompt` when there truly is none, or neither when the runner does not expose it. Exact runner arguments are private by default; add `--record-runner-argv` only when they contain no credentials or signed URLs and the evidence needs full command reproduction. Generated work stays under ignored `evals/runs/`; copy only reviewed evidence intended for the repository into `evals/results/`. Keep credentials in the runner's environment.
+
+Grades are a separate schema-v3-or-later JSON artifact with a grader kind, name, prompt version and SHA-256, plus one ordered boolean result per rubric assertion and trial. Schema v4 also machine-links that digest to the grading-prompt file inside the evidence bundle. Model graders record provider, model, runner version, and generation metadata. The scoring command reconstructs the complete expected trial set from the eval source and rejects missing trials or assertions before calculating aggregate and per-case pass rates. Summary validation requires the grades and recomputes every aggregate rather than trusting recorded totals:
+
+```bash
+python3 scripts/eval_harness.py score \
+  --run evals/runs/RUN_ID/run.json \
+  --grades evals/runs/RUN_ID/grades.json
+
+python3 scripts/eval_harness.py validate \
+  --run evals/runs/RUN_ID/run.json \
+  --grades evals/runs/RUN_ID/grades.json \
+  --summary evals/runs/RUN_ID/summary.json \
+  --require-completed
+```
+
+Use `--prepare-only` when the model interface cannot be called as a command; it still generates the exact baseline or with-skill prompts and records the intended provider and model. The validator continues to accept schema-v2 artifacts. Evidence is portable: schema-v5 runs record the absolute skill path their with-skill prompts embedded as `skill_invocation_path`, so any checkout can reconstruct and verify them, and older with-skill bundles take that path through `--recorded-skill-path`. When eval or skill inputs have changed since a run, point `--source-root` at a clean checkout of the commit recorded in its `run.json`; `./scripts/validate-evidence.sh` does that for every committed bundle and runs in CI. See [`evals/README.md`](evals/README.md), `python3 scripts/eval_harness.py --help`, and the integration tests for the complete artifact contract.
+
+The reviewed v1.6.1 evidence under `evals/results/v1.6.1-forward-test/` is a complete single-snapshot run of all seven correction cases: 25/25 assertions with exact provider, model, runner, source commit, skill hash, raw outputs, grades, and summary recorded.
+
+Trigger rates are measured separately, through each host's install path and with prompts that never name the skill. The v1.8.0 calibration in [`evals/results/v1.8.0-trigger-calibration/`](evals/results/v1.8.0-trigger-calibration/report.md) ran 42 prompts three times on each host. Positive prompts triggered 57/57 on both Claude Code (`claude-opus-5-5`) and Codex (`gpt-6.1-sol`, low effort). Adjacent prompts triggered 0/45 on Claude and 1/45 on Codex, and unrelated prompts 0/9 on both, so the description is unchanged. `evals/trigger-evals.json` keeps the earlier, unverified measurement for reference.
+
+`evals/results/v1.6.0-forward-test/` predates the harness (schema 1, recorded from a dirty working tree, no `run.json`); it holds informal design notes, is not validated, and is not evidence of model behavior.
+
+The v1.7 lifecycle evidence under `evals/results/v1.7.0-lifecycle-forward-test/` is a single clean-source snapshot: five framework and cross-framework cases, 25/25 assertions graded by a Codex agent (the bundle's `grader.kind` says `human`; see its `GRADER-CORRECTION.md`), schema-v3 runner and grading provenance, and a summary that the harness recomputes from the complete trial set.
+
+The repeated comparison under [`evals/results/v1.7.0-lifecycle-comparison/`](evals/results/v1.7.0-lifecycle-comparison/comparison.md) runs the same five cases three times per condition with the exact v1.7 runner, model, reasoning effort, eval set, and skill snapshot. The isolated baseline scored 63/75 (84%) and the explicit with-skill condition scored 69/75 (92%); all three paired repetitions measured the same +8 percentage-point difference. The report preserves case-level outcomes, variance, limitations, and complete schema-v4 evidence bundles.
+
+The v1.8.0 evidence round ran the v1.7.1 and v1.7.3 correction sets and the three v1.8.0 sets on both hosts, plus the v1.7 lifecycle set on Claude. Both hosts used the released v1.8.0 skill, three repetitions per case and condition, the isolated runners in [`scripts/runners/`](scripts/runners/), and the same blind Claude Opus 5.5 grader, which records a note for every assertion. The hosts ran different models at different settings, so read each column on its own and don't add or rank them:
+
+| Eval set | Claude Code, `claude-opus-5-5`: baseline → with skill | Codex CLI, `gpt-6.1-sol` at low effort: baseline → with skill |
+|---|---|---|
+| v1.7.3 corrections | 81.1% → 99.1% | 72.1% → 94.6% |
+| v1.7.1 corrections | 78.1% → 96.9% | 67.7% → 90.6% |
+| v1.7 lifecycle | 74.7% → 100% | not rerun |
+| v1.8.0 terminal modes | 78.9% → 100% | 64.9% → 96.5% |
+| v1.8.0 accessibility | 73.7% → 96.5% | 49.1% → 86.0% |
+| v1.8.0 localization | 93.3% → 100% | 60.0% → 93.3% |
+
+On both hosts, every paired repetition favored the with-skill condition. The reports in [`evals/results/v1.8.0-claude-comparison/`](evals/results/v1.8.0-claude-comparison/comparison.md) and [`evals/results/v1.8.0-codex-comparison/`](evals/results/v1.8.0-codex-comparison/comparison.md) give case-level results, variance, and limitations: Claude graded its own family's answers, most with-skill scores sit near the ceiling, and one rubric (`lazygit-config-format`) conflicted with its prompt and has since been corrected. Every with-skill prompt named the skill, so these numbers measure what the skill adds once loaded, not whether it triggers on its own. Eval sets without a recorded run are labelled rubric-only in their `notes`.
+
+## Reference freshness
+
+The framework references (`plugins/tui-design/skills/tui-design/references/ecosystem-*.md`) carry version-sensitive guidance for Bubble Tea, Ratatui, Textual, and Ink — pinned "current version" claims and tag-pinned source-code citations that can age even though the surrounding design guidance stays correct. `scripts/reference-inventory.json` is the explicit, hand-maintained list of those claims and links; `scripts/check-reference-freshness.py` audits it:
+
+```bash
+python3 scripts/check-reference-freshness.py
+```
+
+For each `pinned_version` entry it compares the pinned version against that framework's primary package registry (Go module proxy, crates.io, PyPI, or npm) at the claim's stated precision (major/minor/patch). For each `engine_floor` entry it reads declared fields such as `engines.node` or `peerDependencies.react` from the package's latest npm manifest and flags any change, so a raised runtime floor shows up for review. For each `source_link` entry it checks that the citation still resolves, rewriting `github.com/.../blob/...` URLs to `raw.githubusercontent.com` first since GitHub's web frontend can 403 well-behaved automated requests regardless of whether the file exists. Network failures and ambiguous statuses (redirects that don't resolve, non-404/410 error codes) are reported as **unknown**, never as a hard failure — a transient outage or a scraper-hostile block is not evidence that a reference is actually stale or broken, and treating it as such would train reviewers to ignore the audit. Only **stale** (registry has moved past the pinned precision) or **broken** (a confirmed 404/410) findings fail the run.
+
+The audit never edits `reference-inventory.json` or any reference content — it only reports what a human should review. `.github/workflows/reference-freshness.yml` runs it weekly and on demand (`workflow_dispatch`), posting the full report to the job summary and failing the job when something needs review. Update `reference-inventory.json` by hand when a reference's pinned version, citation URL, or precision changes; add an entry when new version-sensitive guidance is introduced. An audit failure is a prompt to review the cited claim and update the prose if it's actually wrong — not an instruction to bump the pinned number without checking the framework's current behavior still matches what's written.
+
+---
+
+## Repository layout
+
+```
+tui-design-skill/
+├── AGENTS.md                      # repository and release-note conventions
+├── .claude-plugin/
+│   └── marketplace.json          # plugin marketplace catalog
+├── .github/
+│   └── workflows/
+│       ├── release.yml               # validates + attaches the tagged .skill release asset
+│       ├── validate.yml              # validates pull requests and main
+│       ├── samples.yml               # builds and tests marked reference code samples
+│       └── reference-freshness.yml   # weekly + on-demand framework-reference audit
+├── scripts/
+│   ├── eval_harness.py           # records, scores, and validates model eval runs
+│   ├── runners/                  # isolated Claude Code and Codex runners, the blind grader, and the trigger probe
+│   ├── check-reference-freshness.py # audits pinned framework versions and source links
+│   ├── reference-inventory.json  # explicit list of version-sensitive references to audit
+│   ├── package-skill.sh          # deterministically builds dist/tui-design.skill
+│   ├── skill-files.txt           # the packaged file allowlist (one source of truth)
+│   ├── validate-release.sh       # checks metadata, content, eval JSON, and package output
+│   ├── check-samples.py          # extracts marked code samples into their harnesses
+│   ├── check-samples.sh          # builds and tests the rendered sample harnesses
+│   └── validate-evidence.sh      # revalidates committed eval evidence from any checkout
+├── tests/
+│   ├── test_eval_harness.py      # runner/scoring/integrity integration tests
+│   ├── test_reference_freshness.py # freshness-audit unit/CLI tests (offline fixture server)
+│   ├── test_check_samples.py     # sample-extraction unit tests
+│   ├── samples/                  # Go, Rust, Python, and TypeScript sample harnesses
+│   ├── test_packaging.py         # exact package-contract regression tests
+│   ├── test_validate_release.py  # release-validator negative tests
+│   └── test_validate_evidence.py # evidence-revalidation fixture tests
+├── plugins/
+│   └── tui-design/
+│       ├── .claude-plugin/
+│       │   └── plugin.json       # plugin manifest
+│       └── skills/
+│           └── tui-design/
+│               ├── SKILL.md      # slim routing + cross-cutting core (139 lines)
+│               ├── agents/
+│               │   └── openai.yaml # Codex UI and invocation metadata
+│               └── references/
+│                   ├── ecosystem-go.md
+│                   ├── ecosystem-rust.md
+│                   ├── ecosystem-python.md
+│                   ├── ecosystem-typescript.md
+│                   ├── cli-basics.md
+│                   ├── visual-patterns.md
+│                   ├── interaction-patterns.md
+│                   └── exemplar-apps.md
+├── evals/                        # versioned prompt/assertion sets and curated results
+│   ├── README.md                 # evidence, privacy, and schema contract
+│   ├── schema/v3/ … schema/v5/   # versioned run, grade, and summary JSON Schemas
+│   ├── grading/                  # versioned grading prompts for model graders
+│   ├── evals.json
+│   ├── build-evals.json
+│   ├── tier2-content-evals.json
+│   ├── tier3-content-evals.json
+│   ├── v151-correction-evals.json
+│   ├── v160-structural-evals.json
+│   ├── v161-correction-evals.json
+│   ├── v170-lifecycle-evals.json
+│   ├── v171-correction-evals.json
+│   ├── v173-correction-evals.json
+│   ├── v174-correction-evals.json
+│   ├── v180-accessibility-evals.json
+│   ├── v180-l10n-environments-evals.json
+│   ├── v180-terminal-modes-evals.json
+│   ├── v180-trigger-evals.json
+│   ├── trigger-evals.json
+│   └── results/                  # reviewed, committed run evidence
+├── CHANGELOG.md
+├── README.md
+├── LICENSE
+└── .gitignore
+```
+
+The nesting (`plugins/tui-design/skills/tui-design/`) is the Claude Code plugin format used by the marketplace. The optional `agents/openai.yaml` follows OpenAI's skill metadata format so Codex can present and invoke the same skill cleanly.
+
+---
+
+## License
+
+[MIT](./LICENSE) — use it, fork it, ship it.
+
+## Contributing
+
+Issues and pull requests welcome. Particularly useful contributions:
+
+- **Fixes to ecosystem references** when libraries change (a new Bubble Tea or Lipgloss major, Ratatui adds new widgets, Textual ships new APIs)
+- **New exemplar apps** worth studying with concrete lessons
+- **Clarifications** where the skill's advice produced unexpected results in real use
+- **Translations** of the skill into other languages
+
+When opening a PR that changes skill behavior, follow the [`evals/README.md`](evals/README.md) evidence contract and include the eval set, exact provider/model/runner metadata, exposed generation settings, repetitions, grading provenance, and validated summary. Do not claim an improvement from prompts and assertions alone.
+
+## Acknowledgements
+
+The principles in this skill draw on the public design wisdom of the Charm team (Bubble Tea, Lipgloss), the Ratatui maintainers, the Textual team at Textualize, the Ink maintainers, the [`clig.dev`](https://clig.dev) authors, and the many TUI authors whose apps are studied as exemplars within. The synthesis is mine; the design tradition is theirs.

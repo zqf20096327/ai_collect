@@ -1,0 +1,395 @@
+<div align="center">
+
+```text
+ ██╗  ██╗ █████╗ ███████╗███████╗
+ ╚██╗██╔╝██╔══██╗╚══███╔╝╚══███╔╝
+  ╚███╔╝ ███████║  ███╔╝   ███╔╝ 
+  ██╔██╗ ██╔══██║ ███╔╝   ███╔╝  
+ ██╔╝ ██╗██║  ██║███████╗███████╗
+ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝
+```
+
+# Xazz
+
+**A Rust-based AI pipeline governance layer — safe fine-tuning data preparation, inference gates, and static security guardrails in one compiled script.**
+
+*Scripting on the surface. Compiled at its core. Guarded before it runs.*
+
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Language: .xzz](https://img.shields.io/badge/Language-.xzz-orange.svg)]()
+[![Backend: Polars](https://img.shields.io/badge/Backend-Polars-red.svg)]()
+[![DL Engine: Burn](https://img.shields.io/badge/DL%20Engine-Burn-purple.svg)]()
+[![Version: v0.3.1](https://img.shields.io/badge/Version-v0.3.1-green.svg)](https://github.com/x1zzdev/Xazz/releases)
+[![CI](https://github.com/x1zzdev/Xazz/actions/workflows/ci.yml/badge.svg)](https://github.com/x1zzdev/Xazz/actions/workflows/ci.yml)
+
+[English](README.md) · [한국어](README_kr.md) · [日本語](README_ja.md) · [简体中文](README_zh.md)
+
+<img src="docs/assets/ide_run_result.png" alt="Xazz Visual IDE — a real Full Run against xazz-server, with node canvas, generated .xzz source and a run receipt" width="100%">
+
+**↑ The Visual IDE running a real pipeline end-to-end: node canvas, generated `.xzz`, training metrics, and a SHA-256 run receipt.**
+
+</div>
+
+---
+
+## Why Xazz?
+
+Xazz's position in the stack is deliberate: **AI engines are becoming commodity hardware and kernels; governance is not.** As Burn repositions toward an embedded inference + LoRA/QLoRA fine-tuning engine, Xazz focuses on the layer above it — turning raw pipelines into auditable, policy-governed AI operations. The language exists to make that governance executable, not to replace Python or compete with engines.
+
+Python owns AI prototyping — but at pipeline scale three structural costs keep showing up:
+
+| The Python problem | What it costs you | Xazz's answer |
+| :--- | :--- | :--- |
+| Type errors and NaN crash **at runtime** — often mid-training | Wasted GPU cycles, re-queued clusters, 2 a.m. debugging | **Compile-time null & type safety** (`Option<T>`) — errors surface as `line:col` diagnostics before execution |
+| Data crosses **language walls** (pandas → NumPy → PyTorch) | Repeated memory copies at every boundary | **Direct-buffer tensors** — one Rust process reads Arrow buffers directly, with the remaining copies (f64→f32, columnar→row-major, host→device) made explicit in the memory model |
+| No security or privacy layer anywhere in the pipeline | PII leaks, no audit trail, no regulatory story | **Policy-as-Code guardrails, differential privacy, SHA-256 audit log** — built into the language runtime |
+
+Xazz is not a wrapper around existing libraries. The parser, AST, static type checker, typed IR, lowering, and DL compilation engine are all designed and implemented from scratch in Rust — so a single `.xzz` script controls the whole path from CSV to trained model. `.xzz` compiles to a **typed IR** once, and the runtime consumes that IR once (instead of re-parsing the source and interpreting the raw AST directly against Polars/Burn).
+
+### Why not just DuckDB / Polars / pandas?
+
+A fair first reaction is "this is Polars or DuckDB with extra syntax." The distinction is *what the language is responsible for*. DuckDB and Polars are excellent **execution engines** — and Xazz runs on Polars. What they do not do on their own is decide whether a pipeline is *allowed* to run: type/null correctness, PII and secret exposure, differential-privacy budget, and an auditable record are gates you otherwise re-implement as application glue around each engine, differently every time. Xazz makes those gates part of the compiled pipeline, enforced in one static pass over a typed IR before a single row is read. If all you need is fast SQL/DataFrame execution, DuckDB and Polars are the right tools; Xazz targets the case where the pipeline itself must be compiled, governed, and audited.
+
+<div align="center">
+<img src="docs/figures/pipeline-flow.svg" alt="Xazz end-to-end pipeline: compile phase (lexer, parser, type check, guardrail, typed IR, process isolation) and execute phase (Polars, DP noise, tensor bridge, training, results, audit log)" width="94%">
+</div>
+
+---
+
+## Quick Start
+
+### Option A — Pre-built release (recommended)
+
+1. Download the archive for your platform from [Releases](https://github.com/x1zzdev/Xazz/releases):
+
+   | Platform | Archive |
+   |----------|---------|
+   | Windows x64 | `xazz-<version>-windows-x64.zip` |
+   | Linux x64 | `xazz-<version>-linux-x64.tar.gz` |
+   | macOS arm64 | `xazz-<version>-macos-arm64.tar.gz` |
+
+2. Extract it and add the directory to your `PATH`.
+
+   > **Important:** keep `xazz` and `xazz-runner` together — `xazz run` spawns `xazz-runner` as a process-isolated subprocess (with an execution timeout; this is isolation, not an OS sandbox).
+
+3. Verify:
+
+   ```bash
+   xazz --help
+   ```
+
+   CLI output is English by default; set `XAZZ_LANG=ko` for Korean diagnostics.
+
+### Option B — Build from source
+
+Requires Rust stable.
+
+```bash
+git clone https://github.com/x1zzdev/Xazz.git
+cd Xazz
+cargo build --release -p xazz -p xazz-runner
+# both binaries land in target/release/
+```
+
+Optional GPU / ONNX acceleration is a Cargo feature on `xazz-exec`
+(`wgpu`, `cuda`, `onnx`, `onnx-cuda`, `onnx-tensorrt`, `onnx-directml`,
+`onnx-coreml`) and is selected at runtime with `XAZZ_BACKEND` / `XAZZ_DEVICE`.
+See [docs/GPU_BACKENDS.md](docs/GPU_BACKENDS.md) for the build matrix, platform
+requirements, and device-selection variables.
+
+### Option C — Local browser demo with Docker
+
+With Docker Compose installed, clone this repository and run `docker compose up` at its root, then open <http://127.0.0.1:8005>. The IDE includes a synthetic air-quality sample and **Check safe example / Check unsafe example** buttons under Monitor. Those buttons perform a static policy check; they do not execute either example. Full Run executes the current pipeline and requires explicit confirmation. Compose uses a Docker-managed `xazz-data` volume for runs, audit records, uploads, and artifacts. **Existing `./data` users must follow the [upgrade steps](docs/DOCKER.md#upgrading-from-the-earlier-data-bind-mount) before switching mounts.**
+
+### Your first pipeline (60 seconds)
+
+```bash
+xazz new my-project    # scaffold a project + sample CSV
+cd my-project
+xazz import data.csv   # auto-infer the schema → writes a type block into main.xzz
+xazz run main.xzz      # compile + execute
+xazz run main.xzz --opt  # optional: enable the typed-IR optimization pass
+```
+
+That's the whole loop. `xazz import` reads your CSV (EUC-KR/CP949 auto-detected), infers column types, and generates the schema declaration for you. If your file uses another separator pass `--delimiter ';'` (a single ASCII character), and if the first row is data rather than a header pass `--no-header` — the columns are then named `column_1..N`.
+
+`--opt` turns on the typed-IR optimization pass (e.g. filter reordering) before execution — it preserves pipeline semantics and is equivalence-tested against the unoptimized path.
+
+---
+
+## The Language in 30 Lines
+
+**Scenario:** load air-quality CSV, clean it with null-safe Polars preprocessing, train a deep-learning model with direct-buffer tensor conversion.
+
+### Python (pandas + PyTorch)
+
+```python
+import pandas as pd
+import torch
+import torch.nn as nn
+
+# 1. Preprocessing (no static checks — NaN risk lives until runtime)
+df = pd.read_csv("air_data.csv")
+df["pm10"] = df["pm10"].fillna(df["pm10"].mean())
+X = torch.tensor(df[["temp", "humidity"]].values, dtype=torch.float32)
+y = torch.tensor(df[["pm10"]].values, dtype=torch.float32)
+
+# 2. PyTorch model & training (memory copies + verbose boilerplate)
+class Predictor(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(nn.Linear(2, 64), nn.ReLU(), nn.Linear(64, 1))
+    def forward(self, x): return self.net(x)
+
+model = Predictor()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+criterion = nn.MSELoss()
+# ... (manual training loop required)
+```
+
+### Xazz (.xzz)
+
+```xzz
+// 1. Schema declaration (compile-time null safety)
+type AirData = {
+    station:  string,
+    temp:     float,
+    humidity: float,
+    pm10:     Option<float>,
+}
+
+// 2. Ultra-fast lazy preprocessing via Polars
+v dataset = load("air_data.csv") :: AirData
+    |> fillNull("pm10", strategy: "mean")
+    |> select(["station", "temp", "humidity", "pm10"])
+
+// 3. Declarative Burn deep-learning model
+model AirPredictor {
+    Dense(64) -> ReLU() -> Dense(1)
+}
+
+// 4. One integrated pipeline: train → predict → visualize
+v trained = dataset
+    |> train(AirPredictor, target: "pm10", epochs: 10)
+
+v prediction = dataset
+    |> predict(trained, as: "pm10_pred")
+    |> chart {
+        type:  line,
+        x:     station,
+        y:     pm10_pred,
+        title: "PM10 Prediction",
+    }
+```
+
+| | Python (pandas + PyTorch) | Xazz (.xzz) |
+|---|---|---|
+| Pipeline scope | Fragmented — pandas and PyTorch glued by hand | Unified end-to-end DSL (preprocessing → DL) |
+| Tensor conversion | Memory copy overhead at every boundary | Direct Arrow buffer handoff — remaining copies explicitly modeled |
+| Type & null safety | Runtime exceptions (NaN / TypeError) | Compile-time static guard (`Option<T>`) |
+| Model boilerplate | Manual tensor layout & dimension wiring | Auto-inferred feature dims & loss function |
+
+---
+
+## It Runs — Really
+
+Every image below is captured from this repository: the binaries in `target/release`, the demos in `demo/`, the IDE in `visual-ide/`, against the bundled Seoul air-quality sample.
+
+**Static analysis catches the typo before execution** — with a did-you-mean suggestion and `line:col` in JSON output. See the [diagnostic gallery](docs/CHECK_DIAGNOSTICS.md) for four reproducible cases:
+
+<img src="docs/assets/demo_check.png" alt="xazz check output: column 'temperture_c' does not exist — did you mean col(temperature_c)?" width="80%">
+
+**Polars preprocessing + HTML chart rendering** (`demo/preprocess_chart.xzz`):
+
+<img src="docs/assets/demo_preprocess.png" alt="xazz run demo/preprocess_chart.xzz — lexer, parser, 4 pipelines, chart output and result table" width="80%">
+
+**Burn deep-learning training** (`demo/deep_learning.xzz`) — model declaration compiled to Burn layers, real epoch losses, checkpoint written:
+
+<img src="docs/assets/demo_training.png" alt="xazz run demo/deep_learning.xzz — AirPredictor compiled to Burn, 5 epochs of training, checkpoint saved" width="80%">
+
+**Differential privacy noise injection** (`demo/dp.xzz`) — Laplace mechanism with an explicit epsilon budget:
+
+<img src="docs/assets/demo_dp.png" alt="xazz run demo/dp.xzz — DP applied: laplace, epsilon=1, budget 1.00/10.00" width="80%">
+
+**The Visual IDE** — full run receipt with SHA-256 code hash, real training loss and DP budget monitoring:
+
+<div align="center">
+<img src="docs/assets/ide_monitor.png" alt="Visual IDE monitor: Burn training loss, differential privacy budget (epsilon consumed), policy-as-code guardrail panel" width="94%">
+</div>
+
+---
+
+## Architecture
+
+Xazz is a modularized Rust workspace. The CLI stays a 2–5 MB binary; heavyweight engines live behind the `xazz-runner` subprocess boundary.
+
+<div align="center">
+<img src="docs/figures/workspace-stack.svg" alt="Xazz workspace stack: developer surface (Visual IDE, CLI, REST API) → toolchain (xazz-core, xazz-compiler, xazz-exec, xazz-runner, xazz-server) → engines (Polars, Burn, Tokio/Axum, sLM)" width="94%">
+</div>
+
+| Crate | Role |
+| :--- | :--- |
+| **`xazz`** | CLI entry point (`run`, `check`, `import`, `emit`, `policy`, `sde`, `new`) |
+| **`xazz-core`** | AST, tokens, errors, **Typed IR** (ir), shared types |
+| **`xazz-compiler`** | Lexer → Parser → AST → **static analysis → Typed IR** → optimizer → emit |
+| **`xazz-exec`** | Runtime that consumes the Typed IR: `lower` (DataOp→Polars), `dl` (Burn), `dp`, `chart` |
+| **`xazz-runner`** | Process-isolated subprocess bridge (IPC) with execution timeout |
+| **`xazz-server`** | Axum REST API, SHA-256 audit log, sLM correction hook, IDE serving |
+
+Deep details live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/WORKSPACE.md](docs/WORKSPACE.md). New to the terms? See the [glossary](docs/GLOSSARY.md). The diagrams have [editable sources and regeneration steps](docs/figures/README.md).
+
+---
+
+## Performance
+
+Same 4-stage pipeline (drop nulls → dual filter → group-by aggregates → fill + count), executed by pandas 3.0.6 and Xazz on real Seoul air-quality data (8 source files, 2008–2026). Median of 3 runs after warmup; each engine reports its own internal pipeline time.
+
+<div align="center">
+<img src="docs/assets/benchmark_chart.png" alt="Benchmark: latency scaling across 228K/912K/4.09M rows and speedup bars — 2.04x, 3.84x, 2.14x vs pandas" width="94%">
+</div>
+
+- **Faster at every scale**: 2.04× vs pandas at 228K rows (76 ms vs 155 ms), 3.84× at 912K rows (143 ms vs 548 ms) and 2.14× at 4.09M rows (1,148 ms vs 2,457 ms) — with lower peak RSS at every scale (405 MB vs 635 MB at 4.09M rows). The gap is widest at 912K rows and narrows again at 4.09M rows.
+- Both sides are measured as **pipeline execution only** — the Python interpreter boot (~0.3–0.7 s) is excluded from pandas, and Xazz reports its own `[xazz:timing]` pipeline marker, so the comparison is apples-to-apples. Peak RSS uses the process tree for both engines.
+- Source comes from Apache Arrow columnar memory + Polars LazyFrame query optimization + multithreaded native execution.
+- **Out-of-core execution:** `load()` now returns a lazy scan (`scan_csv`/`scan_parquet`/`scan_ipc`), so sources stay on disk until the terminal collect — no full-file materialization upfront. For very large workloads set `XAZZ_STREAMING=1` to collect through Polars' streaming engine (unsupported plans fall back to in-memory automatically). See [docs/ROADMAP.md](docs/ROADMAP.md) Track A2.
+- Honest footnote: Polars' multithreading trades higher peak RSS for latency — pandas holds more rows per thread, Polars parallelizes across them. Note the benchmark data itself is not committed (it is built from the Seoul air-quality sources).
+
+**Measurement provenance.** Measured 2026-10-13 on one Windows 11 host: Intel Core Ultra 9 185H (16 physical / 22 logical cores), 63.5 GiB RAM, Python 3.12.12, pandas 3.0.6, NumPy 2.5.3, release build of commit `f1e55cb`. The host spec, library versions, binary SHA-256s and input-file hashes are recorded in the `provenance` block of `benches/benchmark_results.json`, and `benches/results/windows-cpu-readme-2026-10-13.verification.json` is an independent row-by-row re-check of the same run. These figures replace the earlier 0.76×/1.44×/1.30× numbers, which came from a different, unrecorded host and an older runtime (before `load()` became a lazy scan); the input data and pipeline are unchanged. Reproduce it yourself:
+
+```bash
+git lfs pull                                    # fetch examples/data (Git LFS)
+python benches/make_scale_data.py               # build scale datasets from examples/data
+python benches/run_readme_benchmark.py          # pandas vs xazz, median of 3
+python benches/render_benchmark_chart.py        # regenerate the chart above
+
+# optional: 200M-row scale (out-of-core + streaming)
+python benches/make_scale_data.py --xlarge      # ~200M rows, several GB
+python benches/run_readme_benchmark.py --xlarge
+```
+
+### Where the speed comes from
+
+<div align="center">
+<img src="docs/figures/zero-copy.svg" alt="Direct-buffer tensor handoff: pandas→PyTorch copies 3 times across 2 language walls; Xazz reads shared Arrow buffers directly and models the remaining copy boundaries explicitly" width="94%">
+</div>
+
+<div align="center">
+<img src="docs/figures/compile-time-safety.svg" alt="Python: crash at epoch 30 burns GPU hours; Xazz: compile error in milliseconds before any GPU contact" width="94%">
+</div>
+
+---
+
+## Security & Privacy
+
+**Policy-as-Code guardrails** scan the pipeline *before* execution — PII patterns (RRN, phone, card numbers with Luhn validation), secrets, and custom rules. Violations are blocked with structured JSON reports; an optional local sLM hook (Ollama, e.g. Qwen2.5-Coder) proposes safe corrections that are re-verified by the same policy engine before adoption — your code stays on the machine by default. See [docs/SECURITY_GUARDRAIL.md](docs/SECURITY_GUARDRAIL.md).
+
+**Differential privacy** — Laplace/Gaussian mechanisms with ε **and δ** composition accounting. Each query records `(εᵢ, δᵢ)`; `PrivacyBudget` accumulates `Σεᵢ`, `Σδᵢ` and refuses queries that would exceed either budget. Budget state is visible in the IDE monitor. See [docs/design/dp-spec.md](docs/design/dp-spec.md).
+
+**SHA-256 append-only audit log** — every operation is hashed and chained; tampering is verifiable via the `xazz-server` API (`/security/audit`, `/security/verify`).
+
+**GenAI governance direction (Track F)** — as inference and LoRA/QLoRA fine-tuning become embedded (burn-engine), Xazz extends the same three gates to GenAI: a compile-time input gate for prompt literals, a runtime output gate that re-scans LLM responses, and fine-tuning data sanitization (PII / dedup / bias) before training data reaches the engine. See [docs/ROADMAP.md](docs/ROADMAP.md) Track F.
+
+| Layer | Mechanism | Status |
+|---|---|---|
+| Static guardrails | PII/secret detection, execution blocking, `--fix` proposals | Stable |
+| Differential privacy | Laplace / Gaussian, per-session ε·δ composition accounting, IDE monitor | Stable |
+| Audit infrastructure | SHA-256 hash chain, append-only, API verification | Stable |
+| sLM auto-fix | Local Ollama model hook (Qwen2.5-Coder), deterministic fallback | Preview |
+
+---
+
+## Features
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| `xazz run` | Compile and execute `.xzz` pipelines (`--json` for machine-readable results, `--opt` for the typed-IR optimization pass) | Stable |
+| `xazz check` | Static semantic analysis — undeclared variables/columns, duplicate declarations, invalid casts, with did-you-mean hints and `line:col` spans | Stable |
+| `xazz import` | Auto-infer schema → generate `type` block (CSV EUC-KR/CP949, Parquet, Arrow; CSV `--delimiter`/`--no-header`) | Stable |
+| `import "mod.xzz"` | Module system — share `type`/`model`/`v` pipelines across files (cycle-fail-closed) | Stable |
+| `import "std/..."` | Embedded standard library — reusable schemas (`std/common`) and models (`std/math`, `std/models`) | Stable |
+| `xazz-lsp` | Language server — `xazz check` diagnostics + hover/go-to-def/rename via symbol table (Track B3) | Stable |
+| VS Code extension | `vscode-xazz/` — LSP client, Run/Check commands, syntax highlighting (Track E1) | Preview |
+| Docker image | `Dockerfile` + `docker-compose.yml` — server + runner + exec + IDE, mountable `/data`; ports/volumes/permissions in [`docs/DOCKER.md`](docs/DOCKER.md); GHCR multi-arch tags on release (Track E2, #176) | Preview |
+| CI action | `.github/actions/xazz` composite action + policy-gate workflow (Track E3) | Preview |
+| `xazz new` | Scaffold project with sample CSV and runnable example | Stable |
+| `xazz emit rust` | Transpile `.xzz` → Rust source (Polars LazyFrame + Burn) | Stable |
+| `xazz policy` | Policy-as-Code guardrail — block PII/secret leaks pre-execution | Stable |
+| `model {}` + `train()` | Burn DL model declaration & training (Adam + MSE, validation split, early stopping, hyperparameter sweep with `metric:` selection and `sort:`/`top:` report ordering, checkpoints) | Stable |
+| `withDp(epsilon:)` | Differential-privacy noise (laplace / gaussian) with budget tracking | Stable |
+| Built-in `chart {}` | Render results as bar / line / pie / scatter (HTML) | Stable |
+| `load()` + `save()` | Columnar sources (`.parquet`/`.arrow`) auto-detected by extension; `sep:`/`header:` CSV options; write CSV/Parquet/Arrow artifacts | Stable |
+| DuckDB connector | `load("duckdb://...?sql=...")` — in-memory or file-backed DuckDB as a pipeline source; bundled (no system install); limits in [`docs/CONNECTORS.md`](docs/CONNECTORS.md) (Track A3) | Stable |
+| PostgreSQL connector | `load("postgres://...?sql=...")` — PostgreSQL query as a pipeline source; unencrypted `NoTls` TCP, see [`docs/CONNECTORS.md`](docs/CONNECTORS.md) (Track A3) | Stable |
+| `Option<T>` type system | Null-safe column declarations — `fillNull` on a non-nullable column is a compile error | Stable |
+| 26 pipeline operators | `filter`, `groupBy`, `agg([...])`, `join`, `withColumn`, `cast`, `sample`, `median`, `std`, … | Stable |
+| Visual IDE | Node-based pipeline editor + monitor, served by `xazz-server` | Stable |
+| Run history | SQLite-persisted run records — `GET /runs`, `GET /runs/:id` (Track C1) | Stable |
+| Auth & multi-tenant | `XAZZ_SERVER_TOKEN` / `XAZZ_TENANT_TOKENS` + `X-Xazz-Tenant`; `XAZZ_ADMIN_TOKEN` + `X-Xazz-Actor` (or `XAZZ_ADMIN_ACTORS=token:actor` to pin the actor, which then ignores `X-Xazz-Actor` so CLI `--actor` has no effect) for delegated policy changes — tenant-scoped run history & audit (Track C2) | Stable |
+| Server config | `xazz-server` environment variables — auth, DP budgets, policy-history retention, bind/paths — in [`docs/SERVER.md`](docs/SERVER.md) (Track C2) | Stable |
+| Pipeline catalog | `POST /catalog` — pipeline catalog + column lineage from the Typed IR (Track C3) | Stable |
+| Python bindings | `xazz.check/run/policy` from Python — same diagnostics as the CLI (Track C4) | Stable |
+| `xazz sde` | Synthetic data generation engine | Stable |
+| `xazz registry` | Browse/install policy packs (`xazz.policy.json`) and stdlib modules (`std/`) — offline; `registry deploy` / `registry undeploy` push/remove a tenant's pack via the server (Track E4/C2) | Stable |
+| `xazz policy-status` / `xazz policy-ttl` | Read a tenant's policy state from a running server (`history`/`ttl`/`ttl-history`) and set/clear its policy-history retention window override (`--json`/`--cursor`/`--actor`) (Track C2) | Stable |
+| `xazz dp window` / `xazz dp budget` / `xazz dp reset` | Read or change a tenant's DP budget on a running server — `window set`/`clear`/`history` (`--window-secs`/`--json`/`--cursor`/`--limit`/`--actor`), read the current spend/remaining envelope (`dp budget`), and clear the ledger + audit the actor (`dp reset`/`dp reset-history`, both cursor-pageable) (Track C2) | Stable |
+| `xazz sanitize` | Fine-tuning data sanitization — PII scan, duplicate & bias checks (Track F3) | Stable |
+| Model provenance | Policy registry gate — `hf://` model references, license/unknown-weights blocking (Track F5) | Stable |
+
+---
+
+## Limitations & Non-goals
+
+Xazz is pre-1.0. We would rather state what is **not** verified than let you discover it after installing. This section is mirrored in the release notes.
+
+- **CPU is the default and the only fully verified path.** GPU support is optional, selected at runtime via `XAZZ_BACKEND` / `XAZZ_DEVICE`, and never required to run a `.xzz` pipeline.
+  - `burn-wgpu` (cross-vendor) passed real-hardware acceptance on Windows 11 / RTX 4070 Laptop + Intel Arc iGPU (2026-09-25).
+  - `burn-cuda` compiles and fails closed to CPU when no driver is present, but its gated parity test has **not** run on a CUDA-driver host yet.
+  - ONNX Runtime export/inference is wired, but its gated acceptance test has **not** passed on a standard toolchain: `ort-sys` ships prebuilt binaries only for `*-windows-msvc` (the Windows GNU toolchain fails), and the macOS `coreml` run is pending. See [docs/GPU_BACKENDS.md](docs/GPU_BACKENDS.md).
+- **No native Python extension yet.** `import xazz` is a pure-Python adapter over the CLI, not a PyO3 module — it returns the same diagnostics as the CLI but pays a subprocess boundary. The PyO3 path and the NumPy/Pandas → Arrow handoff are deferred. See [docs/ROADMAP.md](docs/ROADMAP.md) Track C4.
+- **`xazz emit rust` is a reference emitter, not a second runtime.** New language features land in `xazz-exec` first; the emitted Rust can lag on some training options (e.g. single-run `validation_split` / early stopping, per-epoch sweep columns). `xazz run` is the source of truth — treat the emitted code as readable reference output.
+- **The container image and clean-host smoke are pending the next tag.** The `Dockerfile` and `docker compose up` demo work from a local build, but the GHCR multi-arch image is published only on a `v*` tag, and the [clean-host smoke checklist](docs/DOCKER.md#smoke-checklist-clean-host) has not been recorded against a published tag yet.
+- **Benchmarks are single-host.** The numbers in [Performance](#performance) are provenance-stamped but come from one Windows laptop; they have not been reproduced on a second host or on Linux/macOS yet, so read the ratios as representative, not as a guarantee.
+- **Not a sandbox.** `xazz-runner` is process isolation with an execution timeout, not an OS-level sandbox. Policy-as-Code blocks known-bad pipeline shapes before execution; see [docs/SECURITY_GUARDRAIL.md](docs/SECURITY_GUARDRAIL.md) for the `PATH`-shadowing deployment caveat.
+
+**Non-goals:** replacing pandas / Polars / DuckDB as compute engines, replacing PyTorch as a training framework, or competing on GPU kernel performance. Xazz is the compile-and-governance layer *above* those engines.
+
+---
+
+## Roadmap
+
+| Phase | Goal | Status |
+|-------|------|--------|
+| Phase 1 — Core Language | DSL syntax, type system, compiler pipeline | ✅ Complete |
+| Phase 2 — Execution Layer | Polars integration, CLI tooling, chart output | ✅ Complete |
+| Phase 3 — IDE Integration | Visual IDE, graphical pipeline editor | ✅ Complete |
+| Phase 4 — Typed IR & Optimizer | Single typed intermediate representation, double-parse removal, IR optimizer (`--opt`) | ✅ Complete (v0.3.0) |
+| Phase 5 — Expanded Language | More operators, join improvements, schema evolution | 🚧 In progress |
+| Phase 5.5 — Data Scale | Columnar sources & artifact output (`load`/`save`: Parquet, Arrow) | ✅ save/load (#52) |
+| Phase 6 — AI Expansion | GPU backends (burn-cuda / burn-wgpu), distributed training, NQP | 🔭 Planned |
+| Phase 7 — GenAI Governance | Prompt input gate, LLM output re-scan, fine-tuning data sanitization (burn-engine LoRA/QLoRA pairing), model provenance | 🔭 Planned (Track F) |
+| Track G — Community | Multi-language docs + Discussions, release/contribution guides, local playground | 🚧 In progress ([#155](https://github.com/x1zzdev/Xazz/issues/155)) |
+
+**Scale roadmap:** the full plan to grow data volume, program size, team/org reach, and ML depth — with per-item GitHub issues and an execution order — lives in [docs/ROADMAP.md](docs/ROADMAP.md).
+
+---
+
+## Contributing
+
+Xazz is an open-source project. Ask questions and share ideas in [Discussions](https://github.com/x1zzdev/Xazz/discussions); report reproducible bugs in [Issues](https://github.com/x1zzdev/Xazz/issues); contribute code via Pull Requests. Report vulnerabilities [privately](https://github.com/x1zzdev/Xazz/security/advisories/new).
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for local build instructions and contribution guidelines.
+
+---
+
+## License
+
+Apache-2.0 — see [LICENSE](LICENSE).  
+Commercial entitlement (product keys) is a *contract marker*, enforced legally — see [docs/design/licensing.md](docs/design/licensing.md).
+
+---
+
+<div align="center">
+
+**Xazz — 2026**
+
+</div>

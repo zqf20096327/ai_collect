@@ -1,0 +1,413 @@
+<p align="center">
+  <h1 align="center">WHEELER</h1>
+  <p align="center">Reliable, trustworthy, trackable AI workflows for science.</p>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/v0.16.1-blue" alt="v0.16.1">
+  <img src="https://img.shields.io/badge/status-beta-yellow" alt="Status: Beta">
+  <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/Claude%20Code-native-orange" alt="Claude Code Native"></a>
+  <a href="https://learn.chatgpt.com/docs/codex/cli"><img src="https://img.shields.io/badge/OpenAI%20Codex-native-000000?logo=openai&logoColor=white" alt="OpenAI Codex Native"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-blue.svg" alt="Python 3.11+"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://doi.org/10.5281/zenodo.20498885"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20498885-blue.svg" alt="DOI"></a>
+</p>
+
+Wheeler is a thinking partner for scientists, native to Claude Code and OpenAI Codex. Both hosts load the same Wheeler plugin: the same research acts, the same provenance rules, and the same MCP servers. You can discuss a question, plan an investigation, execute analyses, and write up results without changing workflows when you change hosts.
+
+Wheeler's knowledge graph, project artifacts, and MCP servers run locally. Wheeler itself needs no separate model API key or hosted Wheeler service. Content leaves your machine only when you send it through your chosen AI host or explicitly invoke an external research integration.
+
+> Named after great physicist John Archibald Wheeler, Niels Bohr's longtime collaborator. Wheeler and Bohr worked by talking. Bohr would pace, thinking out loud. Wheeler would push back, sharpen the question, sketch the math. The best ideas emerged from the conversation, not from either person alone. That's the model here.
+
+---
+
+## Quick Start
+
+Install the `wh@wheeler` plugin in the host you use.
+
+**Claude Code**
+
+```bash
+claude plugin marketplace add maxwellsdm1867/wheeler
+claude plugin install wh@wheeler
+```
+
+**OpenAI Codex**
+
+```bash
+codex plugin marketplace add maxwellsdm1867/wheeler
+codex plugin add wh@wheeler
+```
+
+Then create a Wheeler project. The plugin already supplies the skills and MCP servers, so the initializer only needs to create the project state and choose its graph:
+
+```bash
+uvx wheeler init my-research-project --skip-install --skip-mcp
+cd my-research-project
+```
+
+Launch your host and start Wheeler:
+
+```text
+Claude Code:  claude  →  /wh:start
+Codex:        codex   →  $start
+Either host:  say “start a Wheeler research session”
+```
+
+The plugin also includes Wheeler Voice. Requests such as “check Wheeler,” “use Wheeler to plan this,” or “find papers with Wheeler” route to the appropriate installed act without requiring command syntax.
+
+For direct access to the Wheeler CLI, install it globally and initialize without duplicating the plugin-managed skills or MCP configuration:
+
+```bash
+uv tool install wheeler
+wheeler init my-research-project --skip-install --skip-mcp
+```
+
+Run `wheeler doctor` to verify the Wheeler runtime, Neo4j connectivity and TLS, and project isolation. Its host/plugin diagnostics currently inspect Claude Code and legacy `~/.claude` installs; on Codex, use `codex plugin list` to confirm `wh@wheeler` is installed.
+
+**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/), [Neo4j Desktop](https://neo4j.com/download/) or Neo4j Aura, and either [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [OpenAI Codex](https://learn.chatgpt.com/docs/codex/cli). New to all this? Walk through the **[Getting Started Guide](docs/GETTING-STARTED.md)**.
+
+### Plugin details
+
+Wheeler's 40 research acts, Wheeler Voice router, and four MCP servers ship together in one plugin. Claude Code invokes an act as `/wh:<act>`; Codex invokes the same act as `$<act>`. For example, planning is `/wh:plan` in Claude Code and `$plan` in Codex.
+
+Claude Code installation:
+
+```
+/plugin marketplace add maxwellsdm1867/wheeler
+/plugin install wh@wheeler
+```
+
+Codex installation:
+
+```bash
+codex plugin marketplace add maxwellsdm1867/wheeler
+codex plugin add wh@wheeler
+```
+
+The plugin works in every project and ships from v0.14.0. Use your host's marketplace upgrade command to receive updates. To try Wheeler from a clone, point Claude Code at the checkout with `claude --plugin-dir <path-to-clone>`, or pass that checkout to `codex plugin marketplace add` before `codex plugin add wh@wheeler`.
+
+`wheeler install` is the LEGACY path: it copies the act files into `~/.claude/commands/wh/`. Those files SHADOW the plugin. Claude Code resolves `/wh:plan` to a file in `~/.claude/commands/wh/` before it looks at the plugin's skills, with no error and no warning, so a machine with both keeps running stale local copies of every act and never sees a plugin update.
+
+If you installed Wheeler before the plugin existed, switch over with:
+
+```bash
+wheeler migrate-to-plugin
+```
+
+It lists exactly what it will remove (act files, agents, hooks, the statusLine entry, and the `wheeler_*` MCP registrations), asks once, then prints the Claude Code plugin commands. It is idempotent and safe to run when there is nothing to migrate. This migration is only for the legacy Claude installation; Codex has no equivalent `~/.claude` shadowing path. `wheeler install` refuses to run while the Claude plugin is present, and `wheeler doctor` reports that collision.
+
+### Neo4j credentials
+
+`wheeler login` stores them in the OS keychain instead of a shell profile. Easiest route is Aura's own credentials file:
+
+```bash
+wheeler login --aura-file neo4j-credentials.txt   # or bare `wheeler login` to type the fields
+wheeler login --status                            # which of env, keychain, wheeler.yaml, or default supplies each setting
+```
+
+The credential is validated by connecting before it is stored, and the password is never written to a file or echoed. Environment variables still win over the keychain, so existing setups keep working. See the [Getting Started Guide](docs/GETTING-STARTED.md) for the full walkthrough.
+
+### From source
+
+```bash
+git clone https://github.com/maxwellsdm1867/wheeler.git
+cd wheeler
+uv sync --extra dev              # editable install + tests + ruff + mypy + build
+uv run wheeler init ~/my-research-project
+```
+
+`bin/setup.sh` is still around for the full bootstrap (Neo4j in Docker, schema init, git hooks, zsh completions).
+
+---
+
+## Why Wheeler
+
+Science requires reproducibility. As AI gets embedded in research workflows, the gap between "AI helped me" and "here's the auditable chain of how this result was produced" becomes a credibility problem.
+
+Wheeler is built on four pillars:
+
+**Traceable results.** When Wheeler creates a finding, it automatically records what script ran, what data it consumed, what papers informed the approach, and when it happened. One tool call builds the full provenance chain. The agent focuses on science; infrastructure handles bookkeeping.
+
+**Change propagation.** When a script changes or data is updated, Wheeler flags every downstream finding as stale and reduces its stability score. You always know what to trust and what needs re-verification.
+
+**Context management.** All components read from and write to the same graph, so a finding from data analysis immediately informs subsequent literature searches, experimental design, and manuscript preparation. Information is progressively disclosed and retrieved only when relevant.
+
+**Executable research artifact.** The knowledge graph moves beyond the static PDF. It is an executable map of discovery: any scientist can inherit the full experimental context of a project, explore how results connect, and build directly on top of prior work.
+
+---
+
+## The Workflow
+
+Wheeler gives you a fluid cycle, not a rigid pipeline. Enter at any point, skip stages, repeat them.
+
+Speak naturally on either host and Wheeler Voice will route the request. If you prefer explicit commands, Claude Code uses `/wh:<act>` and Codex uses `$<act>`. The tables below use bare act names because the underlying act is the same on both hosts.
+
+```text
+ TOGETHER         you + wheeler, thinking out loud
+ discuss  plan  chat  pair  write  note  ask
+                         |
+                         v  remaining work is grinding
+ HANDOFF          propose independent tasks
+ handoff          you approve, modify, or keep talking
+                         |
+                         v
+ INDEPENDENT      wheeler works alone
+ wh queue "..."   logged, stops at decision points
+                         |
+                         v
+ RECONVENE        results + flags + surprises
+ reconvene        back to TOGETHER
+```
+
+Every plan and execution renders a self-contained **visual brief**: the question and sub-questions, figure mockups (pre-registered sketches) paired with the real result figures, a pipeline flow chart, and the data sources. The `discuss` act reads that brief to interpret the results with you like a colleague, referencing figures by number and running quick checks against the data to strengthen or disprove a point.
+
+### A typical session
+
+The flow we design for, end to end:
+
+1. **`discuss`** — talk through the question until it is sharp. Wheeler asks like a colleague, grounds the conversation in what the graph already knows, and locks the decisions.
+2. **`plan`** — Wheeler structures the investigation into waves of tasks and, before any data is touched, **pre-registers the figures**: what each one plots and how competing hypotheses would look different in it. On approval it renders a **visual brief** (question, mockups, pipeline, data sources) so you react to a picture, not prose. Seeing the mockup often sends one more round of sharpening back into the plan.
+3. **`execute`** — Wheeler runs the WHEELER-assigned tasks, logs findings with full provenance, then regenerates the brief as a **report**: each pre-registered mockup now sits beside its real result figure, success criteria are marked, and result tables tuck into dropdowns.
+4. **`discuss`** (again, on the results) — hand Wheeler the brief and interpret together: what holds, what is fragile, what the next question is. Wheeler references figures by number, pulls related findings from the graph, and can run a quick check against the data to settle a contested point, registering whatever you endorse back into the graph.
+5. **`write`** drafts from the endorsed findings with strict citations, or **`plan`** opens the follow-up investigation. **`close`** sweeps the session into a synthesis.
+
+You can enter at any step, skip stages, or loop steps 2 to 4 as the work demands.
+
+### Commands
+
+| Command | What it does |
+|---------|-------------|
+| `start` | Route to the right act (or type your task) |
+| `discuss` | Think like a colleague: sharpen the question, or interpret a plan's results from its brief (runs checks against the data, cites figures by number) |
+| `plan` | Structure tasks with waves, assignees, checkpoints; render a visual brief with figure mockups |
+| `execute` | Run analyses, log findings with provenance; pair mockups with the real result figures in a report |
+| `write` | Draft text with strict citation enforcement |
+| `ingest` | Bootstrap graph from existing code, data, papers |
+| `add` | General-purpose ingest: text, DOI, file, URL |
+| `note` | Quick-capture an insight, observation, or idea |
+| `compile` | Compile graph into synthesis documents with citations |
+| `dream` | Consolidate: promote tiers, detect communities, link orphans |
+| `pair` | Live co-work: scientist drives, Wheeler assists |
+| `ask` | Query the graph, trace provenance chains |
+| `status` | Show progress, suggest next action |
+| `handoff` | Propose tasks for independent execution |
+| `reconvene` | Review results from independent work |
+
+<details>
+<summary>More commands</summary>
+
+| Command | What it does |
+|---------|-------------|
+| `chat` | Quick discussion, no execution |
+| `triage` | Triage GitHub issues against planned work |
+| `report` | Generate work log from graph (time period) |
+| `close` | End-of-session provenance sweep |
+| `pause` / `resume` | Save and restore investigation state |
+| `update` | Check for Wheeler updates |
+| `dev-feedback` | File bugs from inside your session |
+
+</details>
+
+### Claude-only headless launcher
+
+The source checkout includes a convenience launcher for unattended Claude Code tasks:
+
+```bash
+wh queue "search for papers on SRM models"   # sonnet, 10 turns, logged
+wh quick "check graph status"                 # haiku, 3 turns, fast
+wh dream                                      # graph consolidation
+```
+
+The `wh` launcher is a bash script in `bin/wh` that shells out to `claude -p`. It ships only with the source tree, not the PyPI wheel, and is not the Codex plugin interface. To enable it after a `uv tool install`, clone the repo and symlink it: `sudo ln -sf $PWD/bin/wh /usr/local/bin/wh`. A host-neutral `wheeler queue / quick / dream` is on the roadmap.
+
+**Wheeler never does your thinking.** Every task gets tagged: SCIENTIST (judgment calls), WHEELER (grinding), or PAIR (collaborative). Decision points are flagged as checkpoints, not guessed at.
+
+---
+
+## How It Works
+
+### Provenance-completing tool calls
+
+The core primitive: one tool call creates a finding AND its full [W3C PROV-DM](https://www.w3.org/TR/prov-dm/) provenance chain. You never write this directly; Wheeler's acts handle it. But under the hood, this is what happens:
+
+```python
+add_finding(
+    description="Midget and parasol cells have similar clusters of fitted SRM parameters",
+    confidence=0.85,
+    execution_kind="script",                    # auto-creates Execution activity
+    used_entities="D-abc123,S-def456",          # auto-links inputs
+)
+```
+
+Wheeler internally creates the Finding, an Execution activity node, links inputs (Dataset, Script) via USED, links the output via WAS_GENERATED_BY, sets a stability score, and dual-writes to Neo4j and JSON. The provenance chain is always complete because the agent never had to remember to create it.
+
+### Stability and invalidation
+
+Every entity carries a stability score (0.0-1.0) encoding epistemic trust: primary data = 1.0, published papers = 0.9, validated scripts = 0.7, LLM-generated findings = 0.3. When an upstream entity changes, stability decays downstream: `new = source * (0.8 ^ hops)`. Changed scripts propagate stale flags through the entire dependency chain.
+
+### The knowledge graph
+
+The graph is an index over files, not a document store. Each node stores an ID, type, tier, title, path, and timestamps. Full content lives in `knowledge/{id}.json`. Human-browsable rendering lives in `synthesis/{id}.md` (Obsidian-compatible with YAML frontmatter and `[[backlinks]]`). When you need connections, ask the graph. When you need content, read the file.
+
+**11 entity types:** Finding, Hypothesis, OpenQuestion, Dataset, Paper, Script, Execution, Document, ResearchNote, Plan, Ledger.
+
+**15 relationship types:** 6 W3C PROV standard (USED, WAS_GENERATED_BY, WAS_DERIVED_FROM, WAS_INFORMED_BY, WAS_ATTRIBUTED_TO, WAS_ASSOCIATED_WITH) + 9 Wheeler semantic (SUPPORTS, CONTRADICTS, CITES, APPEARS_IN, RELEVANT_TO, AROSE_FROM, DEPENDS_ON, CONTAINS, APPLIES_TO).
+
+### Node-linked lessons
+
+Say “Wheeler, remember how we fixed that query” and `/wh:lesson` decides how to preserve the correction: a harness fix, note, evidence task, or reusable procedure. For a procedure it resolves the relevant database, script, dataset, or other graph node, asking about target or scope only when ambiguous. Node-bearing graph reads return a short description when that node is encountered, including through a returned neighbor; the agent reads the full skill only when its current task fits. Learned skills stay under `.notes/lessons/`, outside the automatically loaded skill catalog.
+
+Each version records its problem statement, benchmark task, source episode, optional harness dependencies, and authoring model/environment. Actual evaluations separately record their model, environment, and result artifacts. `capture_lesson` saves or revises it, `accept_skill` activates an endorsed candidate, and `retire_skill` removes obsolete guidance without deleting history. Session close also proposes uncaptured lessons. The capture tool records benchmark tasks; it does not execute them. See [implementation and test scope](docs/artifact-triggered-skills-design.md).
+
+
+**51 MCP tools** across 4 servers (core, queries, mutations, ops).
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete technical spec: module dependency map, PROV schema, MCP tool listing, hardening patterns, design decisions.
+
+### Service integrations
+
+External research tools land in the graph as provenance-tracked nodes. The model is a sandwich: an act reads graph context and shapes the request, the tool's own CLI runs (owning its auth and retries), and one deterministic Python ingest writes the result back through the triple-write. Every call is one Execution whose status is truthful: a failed or incomplete job is recorded as failed with no fabricated outputs (the external-call failsafe), never masquerading as a clean run. Four [Ai2 Asta](https://github.com/allenai/asta-plugins) services ship today (Paper Finder, Semantic Scholar, Theorizer, Literature Reports), routed by the `asta` act (`/wh:asta` in Claude Code, `$asta` in Codex).
+
+Adding a new service is its own loop: the **`wheeler-service-creator`** skill scaffolds the adapter (registry contract, ingest, act, and test) with the failsafe baked in, then a bundled auditor checks data-safety, provenance, and conventions before it lands. See ARCHITECTURE.md "Service Integrations".
+
+---
+
+## What's New
+
+<details open>
+<summary><b>v0.16.1</b> (2026-09-15): lessons follow their artifacts</summary>
+
+- **Artifact-linked lessons**: Save reusable procedures with their target database, script, or dataset, retaining the original problem, benchmark task, revision history, and author/model provenance.
+- **Mandatory duplicate checks**: The lesson writer inventories linked workflows and drafts before saving, updates matching procedures with minimal edits, and creates a separate skill only for a distinct workflow.
+- **Lazy, scoped discovery**: Graph reads expose applicability summaries without preloading learned skills, skip unrelated operations, and offer scoped pagination when more descriptions remain.
+- **Reliable native routing**: Read-only MCP annotations unblock Codex discovery, while revision and state checks prevent superseded or inactive procedures from becoming guidance, with native-host evaluation results documented in the repository.
+- **Lighter, resilient sessions**: Projects can disable unused Obsidian synthesis, and an empty timestamp no longer aborts the session-close sweep.
+
+</details>
+
+<details>
+<summary><b>v0.16.0</b> (2026-09-15): pointers, versions, and one call to register</summary>
+
+- **Register a whole execution in one call**: `register_batch` takes the Execution, its findings, every produced file and every edge at once, with `@alias` references so no id has to round-trip through the model. Chosen by measurement over five alternatives: 3 turns instead of 75 on a 43-edge execution.
+- **Nodes carry a content version**: every node has `content_version` and `content_hash`, the state before each edit is kept in `knowledge/versions/`, edges record which version of each endpoint they were made against, and a citation can pin one (`[F-3a2b@2]`) so it reports as outdated when the node moves on. Nodes written before this are read as version 1 and never migrated.
+- **Listings return pointers**: `query_*` and search return `{id, type, headline, updated, content_version, degree}` by default, with the full text one `full=true` or one `show_node` away. Every disclosure level scored the same on a ten-task benchmark, so the smallest won.
+- **Tools return what you act on**: write results drop the echo of what you just sent, `show_node` reads many nodes at once and can answer "has this changed", and raw Cypher is capped and scoped. Replayed over a month of real sessions this removes 42 percent of result bytes.
+- **Fixes**: OpenQuestion nodes are visible to the `/wh:close` sweep again, and the statusline percentage matches `/context`.
+
+</details>
+
+<details>
+<summary><b>v0.15.0</b> (2026-08-11): one graph per project, on any machine</summary>
+
+- **A stored path means the same file on every machine.** Artifact paths are recorded as `${PROJECT}/src/run.py` and resolved per machine through named roots (`project`, plus anything you map in `~/.wheeler/config.yaml`, e.g. a Google Drive folder). Registering the same file twice, from a different directory or after moving the project, now finds the existing node instead of creating a second one.
+- **A shared graph no longer invalidates itself when opened elsewhere.** Every node records the machine, database and project that wrote it, and staleness is three-valued: only a file this machine owns can cascade. Opening a graph written on another computer used to report every script `FILE_NOT_FOUND` and mark everything downstream stale.
+- **A project names its own database, and its credential names only the server.** `neo4j.profile` in `wheeler.yaml` selects a keychain slot per project, so one project can move to a cloud instance without touching any other on the machine. An explicit `database:` beats the credential's, which is what lets several projects share one server and each keep its own graph.
+- **Several local Neo4j instances at once.** Neo4j Desktop starts one; the `bin/neo4j` inside each instance has no such limit. `wheeler db instances / start / stop / assign-ports` find them (including the JRE Desktop hides), give each its own **seven** ports (bolt, http, routing, backup, cluster, raft, discovery, not just bolt), and refuse to rewrite ports under a running server.
+- **Failures name the fix.** `wheeler db check` separates the three identical-looking local failures: the instance is stopped, no instance serves that port, or it is up but has no such database. `wheeler init` walks you onto a local instance or an Aura one, and `wheeler keepalive` stops a free cloud instance from being deleted after 90 days idle.
+
+</details>
+
+---
+
+## Architecture
+
+```text
+Claude Code or OpenAI Codex (interactive)
+    └── wh plugin
+        ├── Wheeler Voice: natural-language intent router
+        ├── shared skills/
+        │   ├── 40 generated act stubs
+        │   ├── Claude Code: /wh:<act>
+        │   ├── Codex: $<act>
+        │   └── get_act(host=...): canonical instructions + host tool names
+        └── MCP servers
+            ├── wheeler_core: health, status, context, search, cypher
+            ├── wheeler_query: read-only query_* tools
+            ├── wheeler_mutations: add_*, link, delete, update, merge
+            └── wheeler_ops: staleness, citations, consistency
+
+Claude Code only (source checkout, unattended)
+    └── bin/wh → claude -p → structured logs in .logs/*.json
+```
+
+<details>
+<summary>Code structure</summary>
+
+```text
+wheeler/
+├── build_plugin.py          # Generate the shared Claude/Codex plugin tree
+├── _data/plugin_skills/     # Hand-authored cross-host skills (Wheeler Voice)
+├── models.py                # Pydantic v2: 11 node types, prefix mappings
+├── config.py                # YAML loader, Pydantic config models
+├── provenance.py            # Stability scoring, invalidation propagation
+├── consistency.py           # Cross-layer drift detection and repair
+├── mcp_core.py              # Split server: health, context, search (12)
+├── mcp_query.py             # Split server: query_* read-only (11)
+├── mcp_mutations.py         # Split server: add_*, lessons, link, delete, update, register_batch (22)
+├── mcp_ops.py               # Split server: staleness, citations (10)
+├── mcp_shared.py            # Shared: trace IDs, decorators, config
+├── knowledge/               # File I/O: read, write, list, render, migrate
+├── graph/                   # Neo4j backend, circuit breaker, schema, context
+├── search/                  # Embeddings, RRF fusion, graph-expanded search
+├── validation/              # Citation validation, ledger quality metrics
+├── tools/graph_tools/       # Provenance-completing mutations + queries
+└── workspace.py             # Project file scanner
+
+tests/                        # 3648 tests
+docs/                         # Getting started, architecture, project spec
+```
+
+</details>
+
+---
+
+## Contributing
+
+**Bug reports:** Use the `dev-feedback` act (`/wh:dev-feedback` in Claude Code, `$dev-feedback` in Codex) from inside a session to file structured issues, or report at [GitHub Issues](https://github.com/maxwellsdm1867/wheeler/issues).
+
+**Tests:** `python -m pytest tests/ -v` (3648 tests). E2E tests require a running Neo4j: `python -m pytest tests/e2e/ -v`.
+
+**Architecture:** See [ARCHITECTURE.md](ARCHITECTURE.md) for the full technical spec (module dependency map, PROV schema, MCP tool listing, hardening patterns).
+
+**Project docs:**
+- [Mission](docs/mission.md) — four pillars, target audience, design north star
+- [Tech stack](docs/tech-stack.md) — components, infrastructure patterns, current gaps
+- [Roadmap](docs/roadmap.md) — shipped versions, v0.9.0 phases, v1.0 criteria
+- [Getting started](docs/GETTING-STARTED.md) — install walkthrough with Neo4j Desktop
+- [Project spec](docs/PROJECT-SPEC.md) — original design specification
+
+## Citation
+
+If you use Wheeler in your research, please cite it:
+
+```bibtex
+@software{hong_wheeler_2026,
+  author    = {Hong, Arthur and Rieke, Fred},
+  title     = {{Wheeler: Reliable, trustworthy, trackable AI workflows for science}},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.20498885},
+  url       = {https://doi.org/10.5281/zenodo.20498885}
+}
+```
+
+## Integrations
+
+Wheeler integrates with external research services so their output lands in the knowledge graph as provenance-tracked nodes, and so those services can act on Wheeler's own work and context. The first integration is [AllenAI Asta](https://github.com/allenai/asta-plugins): Wheeler ships tools (adapters) for four Asta services, **Paper Finder**, **Semantic Scholar**, **Theorizer**, and **Literature Reports**, routed by the `asta` act (`/wh:asta` in Claude Code, `$asta` in Codex). Each call reads the current graph to shape the request, runs the Asta service, and writes the result back with full provenance (what it `USED`, what it `WAS_GENERATED_BY`, and how the new results connect to the existing graph). A failed call is recorded as failed rather than silently lost.
+
+The integration layer is provider-agnostic and growing. Adding a new external tool is its own workflow: the `wheeler-service-creator` skill scaffolds the adapter, bakes in the provenance and failsafe wiring, and audits it before it lands. See [ARCHITECTURE.md](ARCHITECTURE.md) "Service Integrations" for the design, and the [roadmap](docs/roadmap.md) for where this is headed.
+
+## Acknowledgments
+
+Wheeler's Asta integration shells out to the [Asta toolkit](https://github.com/allenai/asta-plugins) from the [Allen Institute for AI (Ai2)](https://allenai.org). The Paper Finder, Semantic Scholar, Theorizer, and Literature Reports services are Ai2's work ([asta.allen.ai](https://asta.allen.ai)); Wheeler does not vendor or reimplement them, it invokes the upstream `asta` CLI and marshals the results into the knowledge graph with provenance. Credit and thanks to the Ai2 Asta team.
+
+Wheeler's equation discovery is **a plug-in for [LLM-SR](https://github.com/deep-symbolic-mathematics/LLM-SR), not a method of Wheeler's own**. The `llmsr-discover` act drives the LLM-SR pipeline from Claude Code or Codex and records the result with provenance. LLM-SR (MIT) is the work of Parshin Shojaee, Kazem Meidani, Shashank Gupta, Amir Barati Farimani, and Chandan K. Reddy, published at ICLR 2025 as ["LLM-SR: Scientific Equation Discovery via Programming with Large Language Models"](https://arxiv.org/abs/2404.18400), and it builds in turn on [**FunSearch**](https://github.com/google-deepmind/funsearch) (Apache-2.0) from Google DeepMind, published in Nature as ["Mathematical discoveries from program search with large language models"](https://doi.org/10.1038/s41586-023-06924-6).
+
+The adapter delegates candidate generation to the active host (`claude` or `codex`) instead of requiring a separate model API key, so upstream's sampler and orchestration loop cannot be used as shipped. `wheeler/integrations/llmsr/vendor/` carries the six modules the driver needs, adapted from their pipeline; the substituted modules are the sampler and the loop. Every other change to their code is environmental (package-relative imports, Python 3.12 AST renames, dropping the `absl` and `torch` dependencies, a macOS `fork` context, and a numpy softmax so `scipy` stays optional). **The search algorithm, the island model, and the program-manipulation logic are theirs, untouched.** One further piece is substituted rather than changed, and only by default: the SCORING seam. A spec declares an `@evaluate.run` that fits a candidate's constants and returns its score, and by default the driver does not call it, scoring instead through Wheeler's own fit/metric seam so the metric is pluggable, the fitted constants are recoverable, and each group can refit its own. A run created with `wheeler llmsr init --use-spec-evaluate` calls the spec's own `@evaluate.run` instead, in upstream's data shape and reading upstream's bare-float return, so a spec that trains its own model inside `evaluate` runs unmodified. The door is a declared flag, never inferred from the spec text. Their scoring code is here unaltered; what changes is only whether the driver takes that path.
+
+If you publish results from the `llmsr-discover` act, cite LLM-SR (and FunSearch where appropriate), not Wheeler. For the complete and actively maintained implementation, the benchmark problems, and the authors' own documentation, go upstream. Full per-file attribution, both licenses, and BibTeX entries are in [`wheeler/integrations/llmsr/vendor/NOTICE.md`](wheeler/integrations/llmsr/vendor/NOTICE.md). Credit and thanks to the LLM-SR authors and to the FunSearch team.
+
+## License
+
+[MIT](LICENSE)

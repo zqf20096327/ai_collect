@@ -1,0 +1,280 @@
+# Agent Intelligence Configuration (agentic)
+
+> **18 areas · 10 Software specs · 8 DevOps specs · 7 SDLC agents + 2 specialists · 105+ skills · 73+ workflows**
+
+A unified catalog of agentic specializations and the `agentic` CLI. Install orchestrator-ready rules, skills, workflows,
+and prompts into any project — and run a full SDLC agent team out of the box.
+
+- [Website](https://sawrus.github.io/agent-guides/)
+- [Coverage scorecard](https://claude.ai/public/artifacts/8177bc3d-3b2f-48a6-8232-47c5b02b20f3)
+- [CLI usage guide](docs/agentic-usage.md)
+- [JEV native hooks and real CLI testing](docs/jev-integration/README.md)
+- [JEV research and opt-in CLI prototype](docs/jev-rnd/README.md)
+- [Releases (prebuilt binaries)](https://github.com/sawrus/agent-guides/releases)
+- [NPM package](https://www.npmjs.com/package/@jetrabbits/agentic)
+
+## Coverage snapshot
+
+![agent-guides · Coverage & Efficiency Report](images/coverage_scorecard.png)
+
+Coverage report for the current catalog across areas, specs, skills, and workflows.
+
+---
+
+## Why agent-guides is different
+
+Most agent prompt libraries give you a smarter *single agent*. agent-guides gives you a **coordinated team**:
+
+```
+@product-owner → @team-lead → @developer → @qa → @devops-engineer
+```
+
+Each role has hard boundaries, explicit handoff criteria, and measurable success metrics. The Product Owner orchestrates
+the full SDLC; no other agent library ships this out of the box.
+
+Works with **Claude Code**, **opencode**, **Cursor**, **Codex**, **kilocode**, **antigravity** and **Gemini**.
+
+---
+
+## What this is
+
+agent-guides is a structured knowledge base for AI coding agents. Instead of writing long system prompts, you install
+focused, composable guidance files that agents load on demand based on the task at hand.
+
+Each **area** (e.g., `devops/kubernetes`) provides:
+
+| File type           | Purpose                                   | When loaded                        |
+|:--------------------|:------------------------------------------|:-----------------------------------|
+| `AGENTS.md`         | Navigation index, load order, constraints | First — always                     |
+| `rules/*.md`        | Hard constraints the agent must follow    | Always, for the active spec        |
+| `skills/*/SKILL.md` | Technical capabilities and patterns       | On demand, matching "When to load" |
+| `workflows/*.md`    | Orchestrated step-by-step processes       | On `/command` trigger              |
+| `prompts/*.md`      | Human copy-paste templates (EN + RU)      | Reference / paste                  |
+
+---
+
+## Repository structure
+
+```text
+agent-guides/
+├── areas/
+│   ├── software/              # Application development
+│   │   ├── general/           # Shared baseline — all software specs inherit from here
+│   │   ├── backend/           # REST/GraphQL APIs, services, database access
+│   │   ├── frontend/          # Components, accessibility, performance, CSS
+│   │   ├── full-stack/        # End-to-end product features
+│   │   ├── data-engineering/  # dbt, warehouses, pipelines, streaming
+│   │   ├── mlops/             # Training, evaluation, serving, monitoring
+│   │   ├── mobile/            # iOS, Android, React Native, Flutter
+│   │   ├── platform/          # K8s manifests, IaC, CI/CD, secrets
+│   │   ├── qa/                # Test strategy, coverage, flakiness, performance
+│   │   └── security/          # Threat modeling, SAST/DAST, auth, compliance
+│   └── devops/                # Platform and operations
+│       ├── kubernetes/        # Cluster bootstrap, workload ops, RBAC, upgrades
+│       ├── ci-cd/             # GitHub Actions, GitLab CI, quality gates, supply chain
+│       ├── infrastructure/    # Terraform, Ansible, IaC standards, drift detection
+│       ├── observability/     # Prometheus, Loki, Tempo, Grafana, SLOs
+│       ├── sre/               # SLOs, error budgets, incidents, chaos engineering
+│       ├── networking/        # Ingress, TLS, service mesh, DNS, VPC
+│       ├── devsecops/         # Shift-left, SBOM, OPA/Kyverno, container hardening
+│       └── database-ops/      # PostgreSQL, Redis, migrations, backup/restore
+├── extensions/
+│   ├── opencode/              # OpenCode agent definitions, commands, skills
+│   │   └── agents/            # SDLC agents + post-task specialists for .opencode/agents/
+│   ├── claude/                # Claude Code configs
+│   │   └── agents/            # SDLC agents + post-task specialists for .claude/agents/
+│   ├── antigravity/           # Antigravity platform configs
+│   ├── codex/                 # Codex custom agents and override configs
+│   │   └── agents/            # SDLC agents + post-task specialists for .codex/agents/
+│   └── gemini/                # Gemini-specific configs
+│   │   └── agents/            # SDLC agents + post-task specialists for .gemini/agents/
+├── areas/template/            # Authoring templates — start here for new content
+├── docs/                      # Setup and usage guides
+├── AGENTS.md                  # Root agent guidance (loaded into every project)
+└── src/                       # Rust CLI installer (self-contained binary)
+```
+
+---
+
+## Quick start
+
+### Requirements
+
+`agentic` is a single self-contained binary — no runtime dependencies. The
+knowledge base (areas, extensions) is embedded into the binary.
+
+- required: nothing (the binary works standalone)
+- optional: `python3` + `pip` (only for the MemPalace integration), agent
+  binaries such as `codex`, `opencode`, `claude`, `gemini` (for doctor smoke
+  checks and actual agent work)
+
+### Install
+
+Via npm (thin launcher that fetches the platform binary on first run):
+
+```bash
+npx @jetrabbits/agentic@latest
+```
+
+Or bootstrap the latest release binary (linux x86_64/aarch64, macOS Intel/ARM):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sawrus/agent-guides/main/install | bash
+```
+
+Or download a binary for your platform from
+[GitHub Releases](https://github.com/sawrus/agent-guides/releases) and run:
+
+```bash
+./agentic self-install --force
+```
+
+Build from source (Rust toolchain required):
+
+```bash
+make release-build && make install
+```
+
+### Run
+
+```bash
+agentic
+```
+
+### Upgrade
+
+```bash
+agentic upgrade
+agentic upgrade --project-dir /path/to/project
+agentic upgrade --force --dry-run
+agentic upgrade --force
+```
+
+`upgrade` downloads the newest release binary from GitHub Releases and
+atomically replaces the installed one, then synchronizes project instructions using
+the new executable. Recognizable legacy artifacts are adopted; non-overlapping
+local edits are merged. Conflicts are replaced after backup, and fully user-owned
+instructions are preserved. `--force` rebuilds Agentic artifacts without prompts,
+using manifest settings or `default + software.general` when settings are unavailable.
+Unrelated project files and global configuration are preserved. Backups live in
+`.agentic-backups/` and may contain credentials; exclude them from source control.
+See [smart upgrade behavior](docs/agentic-upgrade/README.md) for details.
+
+### Full instructions
+
+- [CLI usage guide](docs/agentic-usage.md)
+- [Installed CLI lifecycle](docs/agentic-lifecycle.md)
+
+## See agentic in action
+
+![how to use agentic](images/how_to_use_agentic.gif)
+
+Interactive walkthrough of the `agentic` CLI flow: choose a target project, pick agent platforms, and install the
+guidance bundle.
+
+---
+
+## SDLC Agent team
+
+The same 7-agent SDLC team works across **Claude Code**, **OpenCode**, **Codex**, and any tool that supports agent or
+subagent files. Agentic also ships post-task review specialists for instruction quality and docs/memory hygiene, automatic for hooked workflows and optional elsewhere.
+
+| Agent             | Role                                           | Invoke when                                   |
+|:------------------|:-----------------------------------------------|:----------------------------------------------|
+| `product-owner`   | Scope, acceptance criteria, SDLC orchestration | Start of any feature; final acceptance        |
+| `pm`              | Planning, milestones, risk register            | Scope is defined, execution needs tracking    |
+| `team-lead`       | Architecture, code review, quality gates       | Planning and pre-release sign-off             |
+| `developer`       | Implementation, tests, delivery                | Implementation plan is approved               |
+| `qa`              | Verification, defect classification, go/no-go  | Developer hands off an increment              |
+| `designer`        | UX flows, accessibility, design-system review  | Planning and implementation review            |
+| `devops-engineer` | CI/CD, IaC, platform reliability               | Anything touching infra, pipelines, or deploy |
+
+Each agent has a `vibe` (one-line personality), `Identity`, `Communication Style`, `Success Metrics`, and explicit
+`Boundaries` — so roles never overlap and handoffs are always documented.
+
+Post-task specialists run outside the mandatory SDLC role matrix. The six delivery workflows listed in the [Review Pipeline](docs/review-pipeline.md) invoke both automatically after successful top-level delivery:
+
+| Agent                  | Role                                             | Invoke when                                      |
+|:-----------------------|:-------------------------------------------------|:-------------------------------------------------|
+| `instruction_reviewer` | Post-task instruction effectiveness review       | Successful delivery workflow with a review hook |
+| `memory_curator`       | Post-task docs and memory hygiene recommendations         | Successful delivery workflow with a review hook      |
+
+See [Review Pipeline](docs/review-pipeline.md) for the guidance-mode pipeline and `.reviews/<task-id>/` output
+convention. The installed [REVIEW_PIPELINE.md](REVIEW_PIPELINE.md) is loaded only at review time. Reports are compact, evidence-backed, and advisory; no instructions, docs, or memory are changed automatically.
+
+| Platform    | Agent path                      | Format                         | Guide                                                                                           |
+|:------------|:--------------------------------|:-------------------------------|:------------------------------------------------------------------------------------------------|
+| Claude Code | `project/.claude/agents/*.md`   | Markdown with YAML frontmatter | [Claude Code subagents](https://docs.claude.com/en/api/agent-sdk/subagents)                     |
+| OpenCode    | `project/.opencode/agents/*.md` | Markdown with frontmatter      | [OpenCode agents](https://opencode.ai/docs/agents/) · [repo setup note](docs/opencode_setup.md) |
+| Codex       | `project/.codex/agents/*.toml`  | TOML custom agents             | [Codex subagents](https://developers.openai.com/codex/subagents)                                |
+| Gemini      | `project/.gemini/agents/*.toml` | Markdown with YAML frontmatter | [Gemini subagents](https://geminicli.com/docs/core/subagents)                                   |
+
+---
+
+## What gets installed where
+
+`agentic` installs shared guidance into `.agent/` and selected IDE files into directories like `.claude/`,
+`.opencode/`, and `.codex/`. Generated runtime guidance goes to `AGENTS.md`; OpenCode also gets `.opencode/AGENTS.md`.
+
+```text
+project/.agent/
+├── rules/       ← constraints active for every task in this project
+├── skills/      ← capabilities loaded on demand
+├── workflows/   ← processes triggered by slash commands
+└── prompts/     ← human-paste templates
+```
+
+---
+
+## Agent IDE options (interactive install)
+
+### MCP
+
+- `opencode-docs` (safe): adds OpenCode documentation through a local MCP server.
+- `playwright` (sensitive): adds browser automation through Playwright MCP.
+- `kubernetes` (dangerous): adds Kubernetes cluster access through Kubernetes MCP.
+- `youtube-transcript` (safe): adds YouTube transcript lookup through a local MCP server.
+- `docker-mcp` (dangerous): adds Docker MCP Gateway as the generated `docker` MCP server.
+- `context7` (safe): adds a remote MCP server for up-to-date framework, library, SDK, and API documentation.
+- `mempalace` (sensitive): adds a local memory MCP server for project context discovery and reuse.
+- `anydb` (dangerous): adds database access through AnyDB MCP.
+
+### OpenCode Plugins
+
+- `Telegram Notifications`: sends Telegram notifications when an OpenCode session becomes idle, including the final
+  response or an attachment for long output. Stored internally as `telegram-notification`.
+- `Agent Model Mapping`: maps `.opencode/agents/*.md` roles to main and fallback OpenCode models during interactive
+  `agentic install`/`agentic tui`. Stored internally as `agent-model-mapper`; OpenCode startup never prompts or writes
+  project files.
+
+### OpenCode Model Profiles
+
+- `OpenAI Model Profile`: applies the bundled OpenAI model mapping from `extensions/opencode/profiles/openai/`.
+- `GitHub Copilot Model Profile`: applies the bundled GitHub Copilot model mapping from
+  `extensions/opencode/profiles/githubcopilot/`.
+- User profiles: place `opencode.json` files under `$HOME/.config/agentic/opencode/profiles/<profile-id>/`. For
+  example, `$HOME/.config/agentic/opencode/profiles/DT/opencode.json` appears in the optional OpenCode plugin menu as
+  `DT profile`, and `$HOME/.config/agentic/opencode/profiles/GH/opencode.json` appears as `GH profile`.
+- `none`: applies no model profile and does not copy the baseline `extensions/opencode/opencode.json` just for profile
+  selection. OpenCode MCPs, Telegram notifications, and model mapping may still create or update `.opencode/opencode.json`
+  when those options are selected.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for authoring standards, templates, and the pull request process.
+
+Quick checklist before opening a PR:
+
+- [ ] Used the appropriate template from `areas/template/`.
+- [ ] No `{{PLACEHOLDER}}` values remain.
+- [ ] Spec map in `AGENTS.md` updated.
+- [ ] Constraints in rules use imperative language.
+- [ ] Prompt examples include both EN and RU blocks.
+
+---
+
+## License
+
+See [LICENSE](LICENSE) if present, or contact the maintainers.

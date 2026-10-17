@@ -1,0 +1,442 @@
+<h1 align="center"><img width=150 src="https://github.com/s-nagaev/chibi/raw/main/docs/logo.png" alt="Chibi Logo"></h1>
+
+<p align="center">
+  <strong>Your Digital Companion. Not a Tool. A Partner.</strong><br/>
+  <span>Self-hosted, asynchronous Telegram bot that orchestrates multiple AI providers, tools, and sub-agents to get real work done.</span>
+</p>
+
+<p align="center">
+  <a href="https://github.com/s-nagaev/chibi/actions/workflows/build.yml"><img src="https://github.com/s-nagaev/chibi/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://www.codefactor.io/repository/github/s-nagaev/chibi"><img src="https://www.codefactor.io/repository/github/s-nagaev/chibi/badge" alt="CodeFactor"></a>
+  <a href="https://hub.docker.com/r/pysergio/chibi"><img src="https://img.shields.io/docker/pulls/pysergio/chibi" alt="Docker Pulls"></a>
+  <a href="https://pypi.org/project/chibi-bot/"><img src="https://static.pepy.tech/personalized-badge/chibi-bot?period=total&units=INTERNATIONAL_SYSTEM&left_color=GRAY&right_color=BLUE&left_text=pip+installs" alt="PyPI Downloads"></a>  
+  <a href="https://hub.docker.com/r/pysergio/chibi/tags"><img src="https://img.shields.io/badge/arch-arm64%20%7C%20amd64-informational" alt="Architectures"></a>
+  <a href="https://github.com/s-nagaev/chibi/blob/main/LICENSE"><img src="https://img.shields.io/github/license/s-nagaev/chibi" alt="License"></a>
+  <a href="https://chibi.bot"><img src="https://img.shields.io/badge/docs-chibi.bot-blue" alt="Documentation"></a>
+
+<p align="center">
+  <strong>🌍 Read this in other languages:</strong><br/>
+  <a href="docs/README.es.md">Español</a> •
+  <a href="docs/README.pt-BR.md">Português (Brasil)</a> •
+  <a href="docs/README.uk.md">Українська</a> •
+  <a href="docs/README.id.md">Bahasa Indonesia</a> •
+  <a href="docs/README.tr.md">Türkçe</a> •
+  <a href="docs/README.ru.md">Русский</a> •
+  <a href="docs/README.ja.md">日本語</a> •
+  <a href="docs/README.zh-TW.md">繁體中文</a> •
+  <a href="docs/README.zh-CN.md">简体中文</a>
+</p>
+
+---
+
+Chibi is built for the moment you realize you need more than “an AI tool.” You need a **partner** that can coordinate models, run work in the background, and integrate with your systems - without you babysitting prompts.
+
+**Chibi** is an asynchronous, self-hosted **Telegram-based digital companion** that orchestrates multiple AI providers and tools to deliver outcomes: code changes, research syntheses, media generation, and operational tasks.
+
+---
+
+## Why Chibi
+
+- **One interface (Telegram).** Mobile/desktop/web, always with you.
+- **Provider-agnostic.** Use the best model for each task - without vendor lock-in.
+- **Autonomous execution.** Sub-agents work in parallel; long tasks run asynchronously.
+- **Tool-connected.** Filesystem + terminal + MCP integrations (GitHub, browser, DBs, etc.).
+- **Self-hosted.** Your data, your keys, your rules.
+
+---
+
+## Supported AI providers (and endpoints)
+
+Chibi supports multiple providers behind a single conversation. Add one key or many - Chibi can route per task.
+
+### LLM providers
+
+First-party model providers:
+
+- **Alibaba Cloud** (Qwen)
+- **Anthropic** (Claude)
+- **DeepSeek**
+- **Google** (Gemini)
+- **MiniMax**
+- **Mistral AI**
+- **Moonshot AI** (Kimi)
+- **OpenAI** (GPT models)
+- **Xiaomi** (MiMo models)
+- **xAI** (Grok)
+- **ZhipuAI** (GLM models)
+
+Model resellers and inference aggregators:
+
+- **Baseten**
+- **Cheaper Inference**
+- **Cloudflare Workers AI**
+- **DeepInfra**
+- **Entrim**
+- **Featherless**
+- **Fireworks AI**
+- **GreenPT**
+- **Lyceum**
+- **Melious**
+- **Nebius**
+- **Novita AI**
+- **OpenRouter**
+- **Parasail**
+- **SambaNova**
+- **SiliconFlow**
+- **Together AI**
+
+### OpenAI-compatible endpoints (self-host / local)
+
+- **Ollama**
+- **vLLM**
+- **LM Studio**
+- **Any** OpenAI-compatible API
+
+### Multimodal providers (optional)
+
+- **Images:** Google (Imagen, Nano Banana), OpenAI (GPT Image), Alibaba (Qwen Image, Wan), xAI (Grok Imagine), ZhipuAI (GLM Image, CogView), MiniMax (Image-01), and any reseller-aggregator providing access to image generation models
+- **Video:** Alibaba (Wan), ZhipuAI (CogVideoX), MiniMax (Hailuo); the per-user monthly limit is configured via the `VIDEO_GENERATIONS_LIMIT` environment variable
+- **Music:** Suno, ElevenLabs Music
+- **Voice (TTS/STT):** ElevenLabs, OpenAI (GPT-4o Transcribe / TTS), Gemini (Transcribe), Together AI (Whisper, Kokoro), Xiaomi (MiMo TTS), Custom OpenAI-compatible (self-hosted)
+
+> Exact model availability depends on your configured provider keys and enabled features.
+
+---
+
+## 🚀 Quick Start (pip)
+
+Install Chibi via pip and run it as a command-line application:
+
+```bash
+# Install the package
+pip install chibi-bot
+
+# Set up the agent (add API keys, update settings, etc)
+chibi config
+
+# Start the bot
+chibi start
+```
+
+The bot will run as a background service. Use CLI commands to manage it.
+
+### CLI Commands
+
+| Command         | Description                           |
+|-----------------|---------------------------------------|
+| `chibi start`   | Start the bot as a background service |
+| `chibi stop`    | Stop the running bot                  |
+| `chibi restart` | Restart the bot                       |
+| `chibi config`  | Generate or edit configuration        |
+| `chibi logs`    | View bot logs                         |
+
+---
+
+## Local client frontends
+
+Chibi can serve its local clients over the versioned local JSONL protocol:
+
+```bash
+chibi stdio --tui
+chibi stdio --vscode
+chibi stdio --pycharm
+chibi stdio --neovim
+```
+
+The command is intended to be started by the client frontend, not used interactively. Chibi owns the `v1`
+protocol and supports compatible clients that negotiate the same version. The stdio process writes protocol
+frames only to stdout and diagnostics to stderr. Existing Chibi command, tool, permission and moderation
+behavior remains authoritative; the client adds no tool policy layer.
+
+---
+
+## 🚀 Quick start (Docker)
+
+Create `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  chibi:
+    image: pysergio/chibi:latest
+    restart: unless-stopped
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}  # Required
+      OPENAI_API_KEY: ${OPENAI_API_KEY}          # Or any other provider
+      # Add more API keys as needed
+    volumes:
+      - chibi_data:/app/data
+
+volumes:
+  chibi_data: {}
+```
+
+1) Get a bot token from [@BotFather](https://t.me/BotFather)
+
+2) Put secrets into `.env`
+
+3) Run:
+
+```bash
+docker-compose up -d
+```
+
+Next:
+- **Installation guide:** https://chibi.bot/installation
+- **Configuration reference:** https://chibi.bot/configuration
+
+---
+
+## 🔑 Getting API Keys
+
+Each provider requires its own API key. Here are the direct links:
+
+**First-party model providers:**
+- **Alibaba** (Qwen, Wan): [modelstudio.console.alibabacloud.com](https://modelstudio.console.alibabacloud.com?tab=playground#/api-key)
+- **Anthropic** (Claude): [console.anthropic.com](https://console.anthropic.com/)
+- **DeepSeek**: [platform.deepseek.com](https://platform.deepseek.com/)
+- **Google** (Gemini, Nano Banana, Imagen, Voice): [aistudio.google.com/apikey](https://aistudio.google.com/app/apikey)
+- **MiniMax** (Voice, MiniMax-M2.x): [minimax.io](https://www.minimax.io)
+- **Mistral AI**: [console.mistral.ai](https://console.mistral.ai/)
+- **Moonshot** (Kimi): [platform.moonshot.cn](https://platform.moonshot.cn/)
+- **OpenAI** (GPT, DALL·E): [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- **xAI** (Grok): [console.x.ai](https://console.x.ai/)
+- **ZhipuAI** (GLM, CogView): [z.ai/manage-apikey/apikey-list](https://z.ai/manage-apikey/apikey-list)
+
+**Model resellers and inference aggregators:**
+- **Baseten**: [baseten.co](https://baseten.co/)
+- **Cheaper Inference**: [cheaperinference.com](https://cheaperinference.com/)
+- **Cloudflare Workers AI**: [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+- **DeepInfra**: [deepinfra.com](https://deepinfra.com/)
+- **Entrim**: [entrim.ai](https://entrim.ai/)
+- **Featherless**: [featherless.ai](https://featherless.ai/)
+- **Fireworks AI**: [fireworks.ai](https://fireworks.ai/)
+- **GreenPT**: [greenpt.com](https://greenpt.com/)
+- **Lyceum**: [lyceum.technology](https://lyceum.technology/)
+- **Melious**: [melious.ai](https://melious.ai/)
+- **Nebius**: [nebius.com](https://nebius.com/)
+- **Novita AI**: [novita.ai](https://novita.ai/)
+- **OpenRouter**: [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys)
+- **Parasail**: [parasail.io](https://parasail.io/)
+- **SambaNova**: [sambanova.ai](https://sambanova.ai/)
+- **SiliconFlow**: [siliconflow.com](https://siliconflow.com/)
+- **Together AI**: [together.ai](https://together.ai/)
+
+**Creative Tools:**
+- **ElevenLabs** (Voice): [elevenlabs.io](https://elevenlabs.io/)
+- **Suno** (Music, unofficial): [sunoapi.org](https://sunoapi.org/)
+
+> 📖 **Full guide with setup instructions:** [chibi.bot/guides/get-api-keys](https://chibi.bot/guides/get-api-keys)
+
+---
+
+## Try this in the first 5 minutes
+
+Paste these into Telegram after you deploy.
+
+1) **Planning + execution**
+> Ask me 3 questions to clarify my goal, then propose a plan and execute step 1.
+
+2) **Parallel work (sub-agents)**
+> Spawn 3 sub-agents: one to research options, one to draft a recommendation, one to list risks. Return a single decision.
+
+3) **Agent mode (tools)**
+> Inspect the project files and summarize what this repo does. Then propose 5 improvements and open a checklist.
+
+4) **Background task**
+> Start a background task: gather sources on X and deliver a synthesis in 30 minutes. Keep me updated.
+
+---
+
+## What makes Chibi different
+
+### 🎭 Multi-provider orchestration
+Chibi can keep context while switching providers mid-thread, or choose the best model per step - balancing **cost**, **capability**, and **speed**.
+
+### 🤖 Autonomous agent capabilities
+- **Recursive delegation:** spawn sub-agents that can spawn their own sub-agents
+- **Background processing:** long-running tasks execute asynchronously
+- **Filesystem access:** read/write/search/organize files
+- **Terminal execution:** run commands with LLM-moderated security
+- **Persistent memory:** conversation history survives restarts with context management/summarization
+- **Skills:** built-in skills ship inside the package and work out of the box after install; drop your own `.md` files into the `skills_dir` to add custom ones (a same-name file overrides a built-in) — the agent can load them into its system prompt on demand (`load_skill`)
+
+### 🔌 Extensible via MCP (Model Context Protocol)
+Connect Chibi to external tools and services (or build your own):
+
+- GitHub (PRs, issues, code review)
+- Browser automation
+- Docker / cloud services
+- Databases
+- Creative tools (Blender, Figma)
+
+If a tool can be exposed via MCP, Chibi can learn to use it.
+
+### 🎨 Rich content generation
+- **Images:** Nano Banana, Imagen, Qwen, Wan, GPT Image, Grok Imagine, GLM Image
+- **Video:** Wan (Alibaba), CogVideoX (ZhipuAI), Hailuo (MiniMax)
+- **Music:** Suno (including custom mode: style/lyrics/vocals)
+- **Voice:** transcription + text-to-speech (ElevenLabs, OpenAI)
+
+---
+
+## Use cases
+
+**Developers**
+```
+You: “Run the tests and fix what’s broken. I’ll work on the frontend.”
+Chibi: *spawns sub-agent, executes tests, analyzes failures, proposes fixes*
+```
+
+**Researchers**
+```
+You: “Research the latest developments in quantum computing. I need a synthesis by tomorrow.”
+Chibi: *spawns multiple research agents, aggregates sources, delivers a report*
+```
+
+**Creators**
+```
+You: “Generate a cyberpunk cityscape and compose a synthwave track to match.”
+Chibi: *generates an image, creates music, delivers both*
+```
+
+**Teams**
+```
+You: “Review this PR and update the documentation accordingly.”
+Chibi: *analyzes changes, suggests improvements, updates docs via MCP*
+```
+
+---
+
+## Privacy, control, and safety
+
+- **Self-hosted:** your data stays on your infrastructure
+- **Public Mode:** users can bring their own API keys (no shared master key required)
+- **Access control:** whitelist users/groups/models
+- **Storage options:** local volumes, Redis, or DynamoDB
+- **Tool safety:** agent tools are configurable; terminal execution is moderated and can be restricted
+
+---
+
+### `MAX_HISTORY_TOKENS` — context summarization threshold (breaking default change)
+
+`MAX_HISTORY_TOKENS` is the threshold at which Chibi auto-summarizes a conversation to keep context manageable. Its **semantics changed**: it now compares against the **real, provider-reported prompt token count** (the entire outgoing request: system prompt + activated skills + tool schemas + tool-call arguments + per-message structural overhead + conversation content) instead of the old heuristic that measured only conversation `content` + `role`. The real figure is **~4.8x larger** than the old estimate for an identical conversation (see `fix_context_size/context_size_accounting_analysis.md` for the measured breakdown).
+
+- **Default re-based:** `64000` -> `100000`. The new value protects the smallest commonly-supported context window (128k tokens): `100000` is ~78% of a 128k window (so summarization fires *before* a 128k model overflows) and ~50% of a 200k window (leaving comfortable headroom). The old `64000` was a history-only estimate that was never hit before a real overflow, because the estimate under-counts Cyrillic ~2x and excludes the fixed per-turn overhead (system prompt ~3.7k, tool schemas ~6.8k, activated skills ~5.9k, `user_info` ~0.75–3k) — so a 128k model overflowed at ~128k real tokens while the heuristic still reported well under 64k.
+- **Migration:** if you set `MAX_HISTORY_TOKENS` explicitly in your `.env`, your old value was tuned against the old history-only estimate and now compares against a truthful figure that is ~4.8x larger for the same conversation. Re-tune it to the **~100k scale** (e.g. `64000` -> `100000`) so summarization fires before your smallest model's context window overflows, not after. If you never set it, the new default applies automatically.
+- The cold-start fallback (first turn after a process restart, when no provider data is cached yet) still uses the old heuristic so summarization remains functional.
+
+### `REACTIVE_CONTEXT_RECOVERY` — one-shot retry after context overflow
+
+`REACTIVE_CONTEXT_RECOVERY` (default: `true`) is the reactive safety net that complements the proactive `MAX_HISTORY_TOKENS` threshold. When a provider rejects a request with a typed `context_length_exceeded` error, Chibi automatically summarizes the conversation history and retries the turn **exactly once**. If the retry succeeds, the user receives a normal answer (with a short note that context was compressed). If the retry overflows again or recovery fails for any reason, the turn falls back to the existing apology path — the summarization+retry loop can never run more than once per original turn. Set to `false` to disable reactive recovery and keep the pre-existing behavior (log + apology, no retry).
+
+### Working directory is thread-scoped (`WORKING_DIR`)
+
+The agent's working directory - used for terminal commands and reported to the model as its current CWD - is **thread-scoped**, mirroring how the selected LLM model is bound per thread.
+
+- **Default:** comes from the `WORKING_DIR` setting (default `~/chibi`) through the legacy user-level value; fresh deployments inherit the setting directly.
+- **Per-thread override:** any thread/conversation can override its working directory **in isolation** via the agent's `set_working_dir` tool (LLM-driven only - there is no slash command, available when `FILESYSTEM_ACCESS` is enabled). This lets two agents in different threads work on different projects simultaneously without interfering.
+- **Resolution order:** thread override → legacy user-level directory → `WORKING_DIR` setting.
+- **Path normalization:** values you set are expanded to absolute paths on save (`~/x` becomes `/abs/x`); untouched defaults keep their raw form.
+- **Sub-agents** spawned within a thread share that thread's working directory - the same effective path is injected into their system prompts and tool calls.
+- Overrides **survive thread cloning**: `/new_thread_with_current_context` carries the working directory over together with messages and model preferences.
+
+---
+
+### Corporate proxies / TLS inspection: connection resets (`WinError 64`)
+
+On corporate networks with TLS-inspecting (MITM) proxies, long single-shot LLM requests (30–120 s with no visible traffic) can be killed as "idle" — you see `ConnectionResetError` / `WinError 64` in the logs or a generic connection error in the chat. Chibi automatically retries such failures **4 times with growing waits (~30 s → 180 s)** on every provider family and, if all retries fail, reports a clear "connection was interrupted" message instead of a generic error. If the problem persists, set `HTTPS_PROXY` to your corporate proxy (if it whitelists the AI API hosts) or ask IT to whitelist the provider hosts (`api.openai.com`, `api.anthropic.com`, `*.googleapis.com`, `api.mistral.ai`).
+
+**A note on Gemini specifically:** the `google-genai` SDK silently switches its async transport to `aiohttp` whenever `aiohttp` happens to be importable in the environment. In a Chibi install that is always the case — `aiohttp` arrives as a hard dependency via two independent chains (`dashscope`, and `chromadb → kubernetes`), so the issue is not dashscope-only. The bare `aiohttp` session has no MITM-aware proxy/transport handling, and its keep-alive connections get killed by TLS-inspecting proxies with raw `aiohttp.client_exceptions.ServerDisconnectedError` tracebacks. Chibi now forces all Gemini async traffic onto its MITM-aware `httpx` client (client-level `HttpOptions(httpx_async_client=...)` on every `google.genai.Client` construction), so Gemini connections go through the same proxy-aware, retrying transport as the other providers.
+
+---
+
+## Provider failover
+
+Chibi can automatically - or manually, if you prefer - fall back to another provider when an LLM request fails on **rate limits, server errors, timeouts or network failures** (context overflow and moderation errors are deliberately not failover triggers: they have their own recovery paths).
+
+### Configuration
+
+Two environment variables control the behaviour, independently for the **main chat** and for **sub-agent requests**:
+
+- `FAILOVER_CHAIN_MASTER` - fallback chain for main chat requests
+- `FAILOVER_CHAIN_SUBAGENT` - fallback chain for sub-agent requests
+
+Each value is exactly one of:
+
+| Value | Behaviour |
+|-------|-----------|
+| `auto` *(default)* | Automatic fallback ladder (see below) |
+| `disabled` | No fallback for the role: a single attempt, honest failure |
+| `provider/model, provider/model, ...` | Manual ordered chain |
+
+Examples:
+
+```
+FAILOVER_CHAIN_MASTER=auto
+FAILOVER_CHAIN_SUBAGENT=openai/gpt-4o,anthropic/claude-sonnet-4
+```
+
+The pair grammar splits on the **first** slash only - providers never contain slashes, while model names may (e.g. `google/gemini-3.5-flash-lite`). Validation is non-fatal by design: every invalid entry (empty, missing slash, empty provider/model part, duplicate pair) produces a clear warning and is skipped - a malformed chain never prevents Chibi from starting.
+
+### AUTO semantics (default, zero config)
+
+1. **The primary is attempted first.** The happy path is untouched: no registry lookups, no cooldown-store access, no extra latency until the primary actually fails.
+2. **Cooldown on failure.** When provider X fails to serve model Y, X is put on a **20-minute cooldown** (the only persistent state - Redis when configured, in-memory otherwise). The cooldown affects only auto-selection; manual choices are never blocked.
+3. **Same model, another provider.** If model Y exists at another provider (exact-name match against the in-memory model registry), the request is retried there.
+4. **Next provider's default model.** If Y exists nowhere else, the request is retried on the next provider's default model.
+5. **Honest failure.** If nothing works, the last provider error is raised as-is. No model mixing, no silent degradation.
+
+Within a single request no (provider, model) pair is ever retried, and a provider whose model list could not be enumerated is skipped as a same-model candidate but remains a default-model candidate.
+
+### MANUAL semantics (opt-in, per role)
+
+An ordered chain of `provider/model` pairs fully replaces the auto ladder for that role. The head of the chain is the primary; the cooldown never blocks a manual chain (explicit user choice).
+
+### Warnings
+
+Every fallback attempt is announced - an in-chat warning for master requests, a log warning for sub-agent requests - and the final failure, when it comes, is always reported honestly.
+
+---
+
+## Documentation
+
+- **Start here:** https://chibi.bot
+- Introduction & philosophy: https://chibi.bot/introduction
+- Installation: https://chibi.bot/installation
+- Configuration: https://chibi.bot/configuration
+- Agent mode: https://chibi.bot/agent-mode
+- MCP guide: https://chibi.bot/guides/mcp
+- Support / troubleshooting: https://chibi.bot/support
+
+---
+
+## System requirements
+
+- **Minimum:** Raspberry Pi 4 / AWS EC2 t4g.nano (2 vCPU, 512MB RAM)
+- **Architectures:** `linux/amd64`, `linux/arm64`
+- **Dependencies:** Docker (and optionally Docker Compose)
+
+---
+
+## Contributing
+
+- Issues: https://github.com/s-nagaev/chibi/issues
+- PRs: https://github.com/s-nagaev/chibi/pulls
+- Discussions: https://github.com/s-nagaev/chibi/discussions
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting.
+
+---
+
+## License
+
+MIT  -  see [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+  <strong>Ready to meet your digital companion?</strong><br/>
+  <a href="https://chibi.bot/start"><strong>Get Started →</strong></a>
+</p>

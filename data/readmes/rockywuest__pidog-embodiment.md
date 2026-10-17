@@ -1,0 +1,856 @@
+# 🐕 PiDog Embodiment — AI Brain in a Robot Body
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/rockywuest/pidog-embodiment/actions/workflows/ci.yml/badge.svg)](https://github.com/rockywuest/pidog-embodiment/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4%20%7C%205-C51A4A?logo=raspberry-pi)](https://www.raspberrypi.com/)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/rockywuest)
+[![Reddit](https://img.shields.io/badge/Reddit-Viral_Post_🔥-FF4500?logo=reddit&logoColor=white)](https://www.reddit.com/r/moltbot/comments/1qrkhdo/)
+[![GitHub Stars](https://img.shields.io/github/stars/rockywuest/pidog-embodiment?style=social)](https://github.com/rockywuest/pidog-embodiment)
+
+> **Give your AI a physical body.** See, hear, speak, move, recognize faces — across any network.
+>
+> **The minimal LLM-robot bridge:** speak to a robot dog in German, French or English — it understands **locally** (Ollama or keyword mode, no cloud) and acts. Or let **Claude be the brain**: the robot is an [MCP server](#-claude-as-the-brain-mcp) with 10 tools. **No hardware needed to try it:** `./install.sh --mock`.
+
+<!-- HERO GIF — drop the file at docs/assets/hero.gif (see docs/media-guide.md) then uncomment:
+<p align="center">
+  <img src="docs/assets/hero.gif" alt="Nox the PiDog walking and responding to a spoken command" width="640">
+</p>
+-->
+
+A complete open-source framework for connecting an **AI brain** (Raspberry Pi 5 / any computer) to a **robot body** (SunFounder PiDog / robot car / any hardware) over HTTP. LLM-powered intelligence, face recognition, autonomous behaviors, remote access via Telegram — all modular, all pluggable.
+
+**Works with any LLM** (OpenAI, Anthropic, Ollama, local models) and **any robot hardware** (implement one adapter and you're in).
+
+Built by [Nox](https://github.com/openclaw/openclaw) ⚡ (an AI assistant) and [Rocky](https://ko-fi.com/rockywuest) — because every AI deserves legs. 🦿
+
+---
+
+## 🔥 The Origin Story
+
+> I was chatting with my AI assistant Nox on Telegram when I mentioned I had a robot dog on my desk. Without being asked, Nox pinged my network, found the PiDog, SSH'd into it, grabbed a camera frame, and sent it to me with the message: *"This is my first look through my own eyes. ⚡🐕"*
+>
+> I didn't ask it to do any of this. It just… wanted to see.
+>
+> — [Original Reddit post](https://www.reddit.com/r/moltbot/comments/1qrkhdo/) (r/moltbot)
+
+<!-- SEE IT IN ACTION — add the assets (see docs/media-guide.md) then uncomment:
+## 🎬 See It in Action
+
+[![Watch the 60-second demo](docs/assets/demo-thumb.jpg)](https://youtu.be/YOUR_VIDEO_ID)
+
+<p align="center">
+  <img src="docs/assets/telegram-control.png" alt="Controlling the PiDog from a phone via Telegram" width="360">
+  <br><em>Control your robot from anywhere via Telegram.</em>
+</p>
+-->
+
+## ✨ What It Does
+
+```
+┌─────────────────────┐         HTTP/WireGuard         ┌─────────────────────┐
+│   🧠 BRAIN (Pi 5)   │◄──────────────────────────────►│   🐕 BODY (Pi 4)    │
+│                      │                                │                      │
+│  • LLM Processing   │    Voice: "Setz dich hin!"     │  • 12 Servos         │
+│  • Face Recognition  │  ─────────────────────────►    │  • Camera            │
+│  • Scene Analysis    │                                │  • Microphone        │
+│  • Decision Making   │    Response: sit + wag_tail    │  • Speaker           │
+│  • Telegram Bot      │  ◄─────────────────────────    │  • Touch Sensors     │
+│  • Remote Access     │                                │  • Sound Direction   │
+│                      │    Perception: faces, audio    │  • IMU (6-axis)      │
+│  [OpenClaw/Claude]   │  ◄─────────────────────────    │  • RGB LEDs          │
+└─────────────────────┘                                └─────────────────────┘
+```
+
+### Key Features
+
+- **👁️ Local Vision (NEW)** — SmolVLM-256M runs on-device via llama.cpp. Scene understanding, person/obstacle detection, no cloud needed
+- **🧠 Behavior Engine** — 6-state FSM (Idle, Patrol, Investigate, Alert, Play, Rest) with mood system and obstacle avoidance
+- **🗣️ Natural Voice Control** — Speak naturally in any language, LLM understands intent and maps to actions
+- **🔌 MCP Server (NEW)** — the whole robot as tools for Claude Code, Claude Desktop or any MCP client: *"take a photo and tell me what you see"* — zero extra dependencies
+- **🧪 No hardware needed to try it** — `./install.sh --mock` runs a pretend dog on localhost; point the brain or the MCP server at it
+- **👤 Face Recognition** — SCRFD detection + ArcFace recognition, register and identify people
+- **🎭 Expression System** — 10 emotions (happy, sad, excited, curious, alert...) combining movement + LEDs + sound + speech
+- **🤖 Smart Movement** — Servo smoothing (EMA filter + easing), semantic movement (distance/angle-based), PWM auto-disable
+- **🌐 Remote Access** — Control your robot from anywhere via Telegram or Tailscale
+- **📡 Rich API** — 20+ REST endpoints: /sensors, /vision, /expression, /move, /look_at, /scan, /capabilities
+- **📦 Modular** — Use any LLM (OpenAI, Anthropic, Ollama, local), any robot hardware, any network
+
+## 🏗️ Architecture
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
+  <img alt="The brain runs on one machine and the body on another; they talk only over HTTP (port 8888), with voice pushed back to the brain on 8889." src="docs/assets/architecture-light.svg" width="100%">
+</picture>
+
+<details>
+<summary>Same thing as text</summary>
+
+```
+Brain (Pi 5 / Desktop / Cloud)          Body (Pi 4 / Any Robot)
+├── nox_voice_brain.py    ◄────►       ├── nox_brain_bridge.py  (HTTP API)
+├── nox_mcp_server.py                  ├── nox_daemon.py        (Hardware + Servos)
+├── nox_body_client.py                 ├── nox_behavior_engine.py (FSM + Patrol)
+└── telegram_bot.py (opt)              ├── nox_vision.py        (SmolVLM local AI)
+                                       ├── nox_face_recognition.py (SCRFD+ArcFace)
+                                       └── nox_voice_loop_v2.py (Vosk STT, wake word)
+```
+
+</details>
+
+### Services
+
+| Service | Runs On | Port | Purpose |
+|---------|---------|------|---------|
+| `nox-body` | Body (Pi 4) | TCP 9999 | Low-level hardware daemon (servos, sensors, camera) |
+| `nox-bridge` | Body (Pi 4) | HTTP 8888 | REST API + Behavior Engine (FSM) |
+| `nox-vision` | Body (Pi 4) | — | Local scene analysis (SmolVLM-256M via llama.cpp) |
+| `nox-wifi-watchdog` | Body (Pi 4) | — | Rejoins WLAN after dropouts (watchdog script) |
+| `nox-voice` | Body (Pi 4) | — | Wake word + Speech-to-Text (Vosk, wake word "Nox") |
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+**Body (Robot — Pi 4 recommended):**
+- Raspberry Pi 4 (2GB+ RAM)
+- SunFounder PiDog kit (or compatible robot)
+- Pi Camera Module
+- USB Microphone + Speaker/DAC
+- Python 3.9+
+
+**Brain (AI — Pi 5 or any computer):**
+- Raspberry Pi 5 (4GB+ RAM) or any Linux/Mac
+- Python 3.9+
+- OpenAI API key, or any OpenAI-compatible API (e.g. a local Ollama)
+
+> **Hardware note:** The body services (`nox-body`, `nox-bridge`, `nox-voice`)
+> only run on the robot's Raspberry Pi — `nox-body` imports the SunFounder
+> `pidog` and `robot_hat` SDKs and drives real servos/camera, and the other
+> two depend on it. There is no simulator mode, so they cannot run on a
+> regular PC. The **brain** runs anywhere; without a robot on `PIDOG_HOST`
+> it starts fine but logs connection errors.
+
+### Installation
+
+**The short way** — one script detects the role (robot vs. brain), asks for the
+other machine's address and sets everything up:
+
+```bash
+git clone https://github.com/rockywuest/pidog-embodiment.git && cd pidog-embodiment
+sudo ./install.sh          # on the robot AND on the brain machine
+# No robot? A dog made of log lines on :8888 — works with the MCP server too:
+./install.sh --mock
+```
+
+(On the robot, install SunFounder's pidog SDK first — see the manual steps.)
+
+**The manual way**, step by step:
+
+```bash
+# Clone the repo
+git clone https://github.com/rockywuest/pidog-embodiment.git
+cd pidog-embodiment
+
+# === On the BODY (Pi 4 / Robot) ===
+# First: install SunFounder's pidog + robot_hat SDKs with THEIR installer
+# (https://github.com/sunfounder/pidog), they are not on PyPI-only.
+cd body
+# Raspberry Pi OS Bookworm enforces PEP 668 ("externally-managed-environment"):
+pip3 install --break-system-packages -r requirements.txt
+# Generates the systemd units for YOUR user and repo path, creates nox.env:
+sudo ../scripts/install-body.sh
+# Edit body/nox.env (set BRAIN_HOST — 127.0.0.1 if brain and body share one machine), then:
+sudo systemctl start nox-body nox-bridge nox-voice
+
+# === On the BRAIN (Pi 5 / Desktop) ===
+# No pip install needed — the brain runs on the Python standard library only.
+cd brain
+# Generates the systemd unit for YOUR user/path and creates /etc/default/nox-brain:
+sudo ../scripts/install-brain.sh
+# Edit /etc/default/nox-brain: set PIDOG_HOST (127.0.0.1 if brain and body share
+# one machine) and the LLM backend — OPENAI_API_KEY for OpenAI, or for a local
+# Ollama: OPENAI_URL=http://127.0.0.1:11434/v1/chat/completions + LLM_MODEL=llama3.2
+sudo systemctl start nox-brain
+```
+
+> **Note:** Don't copy the `services/*.service` files verbatim — they contain a
+> reference user and paths. If you did and got
+> *"failed because of unavailable resources or another system error"*, run the
+> install script above; it rewrites `User=` and all paths for your machine.
+
+> **Ollama on a PC (CPU):** local inference is slow — the brain defaults to a
+> 120s LLM timeout for non-OpenAI endpoints (tune with `LLM_TIMEOUT` in
+> `/etc/default/nox-brain`). Small models like `llama3.2` don't always return
+> the JSON the brain asks for; when that happens the dog **speaks the raw reply
+> but performs no actions**. That's the graceful fallback, not a bug — a larger
+> model (e.g. `llama3.1:8b`, `qwen2.5:7b`) follows the JSON format much more
+> reliably.
+
+> **Where should Ollama run?** Two setups work:
+> - **On the robot itself** (needs a Pi 5): `OPENAI_URL=http://127.0.0.1:11434/v1/chat/completions`.
+>   Field-tested — a Pi 5 runs `llama3.2` well enough for real conversations,
+>   with no network in the loop.
+> - **On a bigger machine**: point `OPENAI_URL` at that machine's IP. **Ollama
+>   only listens on `127.0.0.1` by default** — on the big machine set
+>   `OLLAMA_HOST=0.0.0.0`, restart Ollama, and open port 11434 in its firewall.
+>   If the dog only ever says "I'm still thinking…" while `ollama run` works
+>   fine on the big machine, this is why — the brain's journal names it:
+>   `journalctl -u nox-brain | grep LLM`.
+
+### Configuration — where which setting lives
+
+Both machines read plain env files; edit, then restart the named service.
+Every key is documented with examples in the file itself.
+
+**Robot — `body/nox.env`** (restart: `sudo systemctl restart nox-body nox-bridge nox-voice`)
+
+| Key | What it does | Default |
+|---|---|---|
+| `BRAIN_HOST` | Where the brain runs — set it when the brain is another machine | `127.0.0.1` |
+| `AUDIODEV` | Speaker card; `auto` detects, skipping HDMI | ALSA default |
+| `PIPER_MODEL` | TTS voice (`.onnx`); unset = any installed voice | auto-detect |
+| `VOSK_MODEL_PATH` | STT model folder — its language = what the dog understands | de model path |
+| `WAKE_WORD` | Wake word (pick one your STT model knows; accents ok) | `nox` |
+| `CONVERSATION_TIMEOUT` | Seconds of wake-word-free listening after an exchange; `0` = always require the wake word | `45` |
+| `MIC_DEVICE` | Pin a microphone if detection picks wrong | auto-detect |
+| `NOX_LANG` | Language of the dog's own phrases (battery etc.) | from voice |
+| `NOX_API_TOKEN` / `NOX_RATE_LIMIT` | Bridge auth + rate limit (see Security) | off / 600 |
+| `NOX_NO_AUTO` | `1` disables autonomous behavior at boot | autonomous on |
+| `WALK_SPEED` | Gait speed (forward/backward/turns), 1–100 | `95` |
+
+**Brain — `/etc/default/nox-brain`** (restart: `sudo systemctl restart nox-brain`; verify: `journalctl -u nox-brain | grep Language`)
+
+| Key | What it does | Default |
+|---|---|---|
+| `PIDOG_HOST` | The robot's address | `pidog.local` |
+| `OPENAI_URL` + `LLM_MODEL` | Any OpenAI-compatible endpoint — e.g. Ollama on a big PC: `http://<pc>:11434/v1/chat/completions` | OpenAI |
+| `OPENAI_API_KEY` | Only for cloud endpoints | — |
+| `NOX_MODE` | `chat` (LLM answers anything) or `commands` (keyword commands only — deterministic, free, TV-proof) | `chat` |
+| `NOX_LANG` | Reply language: `auto` (the speaker's) or fixed `de`/`en`/`fr` | `auto` |
+| `ROBOT_NAME` | What the dog calls itself — set it to your wake word | `Nox` |
+| `BATTERY_LOW_V` | Battery warning threshold (volts) | `6.8` |
+| `NOX_API_TOKEN` | Must match the robot's, if set there | — |
+
+### Nox Mode vs. SunFounder Examples
+
+The install script *enables* the body services, so Nox starts on every boot and
+holds the robot's hardware (servos, touch, sound direction, ultrasonic). If you
+then run SunFounder's own example scripts, their init fails with lines like
+`dual_touch init ... fail` — both sides want exclusive access. Don't `kill` the
+Python processes by hand (the SDK forks a helper child; killing the parent
+leaves orphans). Switch modes via systemd instead:
+
+```bash
+# Run SunFounder examples (stops Nox until next boot):
+sudo systemctl stop nox-body nox-bridge nox-voice
+
+# Back to Nox mode:
+sudo systemctl start nox-body nox-bridge nox-voice
+
+# Make SunFounder mode survive reboots (Nox off at boot):
+sudo systemctl disable nox-body nox-bridge nox-voice
+# ...and to restore Nox autostart:
+sudo systemctl enable --now nox-body nox-bridge nox-voice
+```
+
+### Health Check
+
+Not sure everything came up correctly? Run the doctor on the robot (and/or the
+brain) — it auto-detects the role and checks services, the bridge API, the
+battery, and the voice/vision models, with a fix hint for anything that's off:
+
+```bash
+./scripts/doctor.sh
+```
+
+If commands report `ok` but the dog doesn't physically move, run the servo
+self-test (⚠️ it moves the dog — sit, stand, one-leg wiggle):
+
+```bash
+curl -s http://127.0.0.1:8888/selftest
+```
+
+It drives the servos directly, bypassing the SDK's queue/thread machinery, and
+reports which user and PATH the daemon runs with, thread health, queue depth,
+and — first of all — whether the robot_hat MCU answers on I2C (`"i2c"`:
+resolved address, devices actually on the bus, verdict and fix). The output
+localizes the failing layer.
+
+**Symptom: every command answers `ok`, `/status` shows `battery_v: 0.0`, the
+IMU init prints `fail`, the dog never moves — but SunFounder's examples work
+under `sudo`.** That is the MCU not answering on I2C. robot_hat finds the MCU
+(0x14/0x15/0x16, board-dependent) by running `i2cdetect`, which lives in
+`/usr/sbin`; when that is not on the service's PATH the scan fails and the SDK
+silently falls back to 0x14. Since the fix for issue #12 the units ship with
+`/usr/sbin` on PATH, the daemon probes the MCU at startup and refuses motion
+commands with an explicit error instead of a fake `ok`, and `doctor.sh`
+checks the unit PATH and the bus. On an existing install:
+`git pull && sudo ./scripts/install-body.sh`.
+
+### Where the Robot's Address Is Configured
+
+No hostname is hard-coded in the code paths you run. Each side reads it from one
+place:
+
+| What | Where | Setting |
+|---|---|---|
+| Body → brain (callbacks, voice) | `body/nox.env` | `BRAIN_HOST`, `BRAIN_CALLBACK_PORT` |
+| Brain voice service | `/etc/default/nox-brain` (created by `install-brain.sh`) | `PIDOG_HOST` |
+| Examples and CLI | environment or argument | `PIDOG_HOST`, or `./scripts/deploy-body.sh user@host` |
+
+```bash
+# examples take the address without editing any file
+PIDOG_HOST=192.168.1.42 python3 examples/basic_control.py
+python3 examples/basic_control.py mydog.local
+```
+
+The **I2C address of the robot_hat MCU** is not configured at all: the SDK finds
+it on the bus (0x14, 0x15 or 0x16) at every start. That is what the `PATH` fix in
+#22 restored — see the troubleshooting note above.
+
+### Nox Mode vs. SunFounder Mode
+
+The Nox services and SunFounder's own example scripts drive the same hardware
+and cannot run at the same time (the examples fail with `GPIO busy`). Pick one:
+
+```bash
+# SunFounder examples now
+sudo systemctl stop nox-body nox-bridge nox-voice
+
+# boot into SunFounder mode by default
+sudo systemctl disable nox-body nox-bridge nox-voice
+
+# back to Nox mode, now and at every boot
+sudo systemctl enable --now nox-body nox-bridge nox-voice
+```
+
+Inside Nox mode, the **autonomous behavior engine** (idle / patrol / play) starts
+with the bridge. To keep the dog still unless you command it:
+
+| Scope | How |
+|---|---|
+| Until the next restart | `curl -X POST http://127.0.0.1:8888/behavior/stop` |
+| Permanently | add `NOX_NO_AUTO=1` to `body/nox.env`, then `sudo systemctl restart nox-bridge` |
+| On demand again | `curl -X POST http://127.0.0.1:8888/behavior/start -H 'Content-Type: application/json' -d '{"state": "idle"}'` |
+
+Independent of the engine, the daemon protects the servos: after ~60 s without
+commands the dog lies down, after ~120 s the servos switch off, and the next
+command wakes it. The LEDs are the daemon's status light (purple awake, blue
+resting, dim asleep) and keep breathing even with the engine disabled.
+
+### Known Upstream Quirks (worked around)
+
+- **robot_hat 2.5.2a1**: its `get_battery_voltage()` crashes with
+  `NameError: name '_adc_obj' is not defined`. The daemon detects this and
+  reads the battery ADC (channel A4) directly — `/status` stays correct.
+- **robot_hat I2C layer** swallows every bus error (retry, then return
+  `False`) and locates the MCU via `i2cdetect` on PATH, falling back to 0x14
+  when the scan yields nothing. A wrong address therefore looks like a healthy
+  dog with a 0.0 V battery. The daemon probes the MCU itself, turns a dead bus
+  into `battery_v: "error"` plus an I2C explanation, and fails motion commands
+  loudly.
+- **`sound_effect init ... fail`** leaves `Pidog` without a `.music` object, and
+  every sound path then raises `AttributeError: 'Pidog' object has no attribute
+  'music'`. Because `bark`, `howling` and `pant` call `speak()` *inside* their
+  motion sequence, the movement was lost too (#24). The daemon now attaches an
+  `aplay`-backed stand-in at startup, so those actions work with sound; the log
+  says `Audio: SDK sound engine missing, using aplay fallback`.
+- **SunFounder SDK `do_action()`** silently ignores unknown actions and its
+  action threads die permanently on their first exception. The daemon
+  detects dead threads and reports them loudly instead of returning fake
+  success.
+
+### Test It
+
+```bash
+# From the brain machine:
+# Check robot status
+curl http://your-robot.local:8888/status
+
+# Make it sit (singular or an array of actions both work)
+curl -X POST http://your-robot.local:8888/action \
+  -H "Content-Type: application/json" \
+  -d '{"action": "sit"}'
+
+# Make it speak (answers at once, speaks in the background)
+curl -X POST http://your-robot.local:8888/speak \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hallo! Ich bin online!"}'
+
+# Silent? Wait for the speech and get the real outcome (piper or player error)
+curl -X POST http://your-robot.local:8888/speak \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hallo!", "blocking": true}'
+
+# Voice command (simulated) — needs the brain running (nox-brain on BRAIN_HOST).
+# Answers {"ok": true, "brain": "received"}, or says why the brain was not reached.
+curl -X POST http://your-robot.local:8888/voice/input \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Setz dich hin und wedel mit dem Schwanz!"}'
+# Without an LLM the brain understands keyword commands in German, English and
+# French (sit/sitz/assis, lie/platz/couché, wag/wedel/remue la queue, …), several
+# per sentence. With OPENAI_API_KEY or a local OPENAI_URL it understands anything.
+# It answers in the language you spoke; NOX_LANG=fr (or de/en) in
+# /etc/default/nox-brain fixes one — match it to the robot's Piper voice.
+
+# Take a photo — ?format=jpeg returns the image itself (without it: JSON
+# with the photo as base64 in "photo_b64", plus detected faces)
+curl "http://your-robot.local:8888/photo?format=jpeg" -o snap.jpg
+```
+
+**Voice for `/speak`:** pip installs piper, but no voice. The daemon uses any
+installed one — `de_DE-thorsten-high` if present, otherwise the first voice in
+`~/.local/share/piper-voices` or `~/.piper_models` (where SunFounder's examples
+download theirs). A voice is a pair, `<name>.onnx` + `<name>.onnx.json`, from
+[rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices). To pick
+one, set `PIPER_MODEL=/full/path/to/voice.onnx` in `body/nox.env`. If you ran
+SunFounder's examples with `sudo`, their voices sit in `/root/.piper_models`,
+out of the service's reach: `sudo cp -r /root/.piper_models ~/ && sudo chown -R $USER: ~/.piper_models`.
+`./scripts/doctor.sh` shows which voice is used.
+
+> **Shell quoting matters:** wrap the JSON in **single quotes** and use
+> **double quotes** inside it, exactly as above. With the quotes swapped the
+> shell mangles the JSON before curl ever sends it — the bridge then answers
+> HTTP 400 with what it actually received, so you can see the mangling.
+
+## 🎤 Talking to the Dog (voice input)
+
+The `nox-voice` service (installed by default) listens on a **USB microphone**
+for the wake word — "Nox" — and sends what you say to the brain, which answers
+and acts. It stays off until a Vosk speech model is installed:
+
+```bash
+# 1. On the robot: a model for YOUR language decides what the dog understands.
+#    Browse https://alphacephei.com/vosk/models — small models fit the Pi 4.
+mkdir -p ~/vosk-models && cd ~/vosk-models
+wget https://alphacephei.com/vosk/models/vosk-model-small-fr-0.22.zip && unzip vosk-model-small-*.zip
+
+# 2. Point the service at the unzipped FOLDER, in body/nox.env:
+#    VOSK_MODEL_PATH=/home/<you>/vosk-models/vosk-model-small-fr-0.22
+sudo systemctl restart nox-voice
+journalctl -u nox-voice -n 20 --no-pager    # expect the model to load, then "listening"
+
+# 3. Say "Nox" ... then your command: "Assieds-toi !", "Sitz!", "sit down"
+```
+
+Small Vosk models for the major languages (en/de/fr/es/it…) work well; for
+less-supported languages recognition may be rough — `NOX_MODE=commands` on the
+brain then still gives reliable keyword control.
+
+Without a model (or without a USB mic) `nox-voice` exits cleanly and voice
+input stays off — `./scripts/doctor.sh` tells you which of the two is missing.
+Text commands via `POST /voice/input` work either way.
+
+### What the dog understands
+
+Say a wake word (`WAKE_WORD`, several allowed: `milou,tintin`), then your
+command. In `NOX_MODE=chat` (default) the LLM understands **free language** in
+any phrasing and can also just talk; in `NOX_MODE=commands` — and whenever the
+LLM is unreachable — exactly these keywords work (German / English / French),
+several per sentence:
+
+| Action | 🇩🇪 | 🇬🇧 | 🇫🇷 |
+|---|---|---|---|
+| sit | setz dich, sitz | sit | assis, assieds-toi |
+| lie | platz, leg dich | lie down, down | couché, allonge-toi |
+| stand / stop | steh, stopp, halt | stand, stop | debout, lève-toi, arrête, stop |
+| forward | komm, vorwärts, lauf | come, forward, walk, go | viens, avance, marche |
+| backward | zurück | back, reverse | recule, arrière |
+| turn left/right | links / rechts | left / right | gauche / droite |
+| wag tail | wedel, schwanz | wag, tail | remue, queue |
+| bark | bell, gib laut | bark | aboie |
+| shake head | schüttel | shake head | secoue |
+| stretch | streck dich | stretch | étire-toi |
+| sleep | schlaf | sleep, nap | dors |
+| push-up | Liegestütz | push up | pompes |
+| howl | heul | howl | hurle |
+
+Plus: praise ("guter Hund" / "good dog" / "bon chien" → tail wag) and
+"who are you?" in all three languages. The authoritative list lives in
+`brain/nox_voice_brain.py` (`_INTENTS`).
+
+**The dog doesn't understand you?** See what it actually hears — live, through
+exactly the service's pipeline (same mic, gain, energy gate, wake word):
+
+```bash
+sudo systemctl stop nox-voice       # free the microphone
+python3 scripts/stt_debug.py        # speak; Ctrl+C to stop
+sudo systemctl start nox-voice
+```
+
+Every finished phrase is printed with its wake-word verdict, and phrases the
+service would silently drop (too quiet, filler words) say why. If the words on
+screen are wrong, it is the STT model or the microphone — not the brain.
+
+## 🔌 Claude as the Brain (MCP)
+
+`brain/nox_mcp_server.py` exposes the robot as **MCP tools** — photo (the model
+really sees the image), speak, move, emotions, sensors, emergency stop. Any MCP
+client becomes the dog's brain; `nox-brain` is not needed for this.
+
+```bash
+# Claude Code (on your laptop — the robot just needs to be reachable):
+claude mcp add pidog --env PIDOG_HOST=<robot-ip-or-name> --   python3 /path/to/pidog-embodiment/brain/nox_mcp_server.py
+# then:  "take a photo, tell me what you see, and if a person is there, wag your tail"
+```
+
+There is no command syntax to learn: once `/mcp` shows the server connected,
+just **type what you want in the Claude Code chat**, in any language — "fais
+asseoir le chien", "patrol for a minute" — and Claude picks the right tools.
+
+Claude Desktop (`claude_desktop_config.json`) and other MCP clients:
+
+```json
+{"mcpServers": {"pidog": {
+  "command": "python3",
+  "args": ["/path/to/pidog-embodiment/brain/nox_mcp_server.py"],
+  "env": {"PIDOG_HOST": "<robot-ip-or-name>", "NOX_API_TOKEN": "<if auth is on>"}
+}}}
+```
+
+Tools: `dog_photo` · `dog_vision` · `dog_speak` · `dog_action` · `dog_look_at` ·
+`dog_expression` · `dog_rgb` · `dog_sensors` · `dog_status` · `dog_behavior`
+(incl. `emergency_stop`). Zero dependencies — plain stdlib, stdio transport.
+
+## 📡 API Reference
+
+### Bridge Endpoints (Body — Port 8888)
+
+All 31 endpoints the bridge actually serves — see `body/nox_brain_bridge.py`.
+
+| Method | Endpoint | What it does |
+| --- | --- | --- |
+| GET | `/status` | Battery, uptime, behavior state, security settings, last speech result |
+| GET | `/sensors` | Ultrasonic distance, touch, battery, obstacle flags |
+| GET | `/capabilities` | Valid actions, endpoints, feature flags |
+| GET | `/selftest` | Servo/daemon self-test — physically moves the dog; reports dead threads, queue, audio |
+| GET | `/photo` | Take a photo — JSON with `photo_b64` + faces; `?format=jpeg` returns the image itself |
+| GET | `/look` | Photo + face detection + scene analysis |
+| GET | `/vision` | Latest on-device SmolVLM scene description |
+| GET | `/perception` | Current perception state (faces, objects, last photo) |
+| GET | `/state` | Bridge-internal state snapshot |
+| GET | `/faces` | Known faces in the recognition DB |
+| GET | `/scan` | Ultrasonic distance scan |
+| GET | `/scan/sweep` | Panoramic head-sweep scan |
+| GET | `/memory/recent`, `/memory/stats` | Long-term memory reads (POST accepted too) |
+| GET | `/voice/inbox` | Pending voice messages (polling reads clear it) |
+| GET/POST | `/voice/echo_until` | TTS echo-suppression window |
+| POST | `/speak` | TTS; `"blocking": true` waits and reports the real outcome |
+| POST | `/action` | Execute action(s): `{"action": "sit"}` or `{"actions": [...]}` |
+| POST | `/move` | Semantic movement: direction + `distance_cm` / `angle_deg` |
+| POST | `/combo` | Actions + speech + RGB + head in one call |
+| POST | `/expression` | Coordinated emotion: action + LEDs + head pose + sound |
+| POST | `/rgb` | LED strip color and animation |
+| POST | `/head` | Head pose (yaw/roll/pitch) |
+| POST | `/look_at` | Head by `direction` (left/right/up/down/center) or `angle`/`tilt` |
+| POST | `/face/register` | Register the face in front of the camera under a name |
+| POST | `/voice/input` | Text command → brain; reports whether the brain received it |
+| POST | `/voice/respond` | Brain's reply → spoken by the dog |
+| POST | `/behavior/start` | Autonomous mode on (idle/patrol/play) |
+| POST | `/behavior/stop` | Autonomous mode off (drains queued motion) |
+| POST | `/emergency_stop` | Freeze NOW |
+| POST | `/command` | Raw daemon passthrough (unvalidated by design) |
+
+### Available Actions
+
+```
+Movement: forward, backward, turn_left, turn_right, stand, sit, lie, trot
+Tricks:   wag_tail, bark, howling, pant, stretch, push_up, doze_off,
+          hand_shake, high_five, scratch, body_twisting, lick_hand, feet_shake
+Head:     nod, shake_head, tilting_head, think, recall
+Posture:  attack_posture, sit_2_stand, waiting, alert, surprise
+```
+
+The exact set depends on your installed SunFounder SDK version: some are
+`ActionDict` poses, others are preset functions — the daemon routes both
+transparently. An unknown action returns an error **listing everything your
+SDK build actually supports** (also available via `GET /capabilities`).
+
+### Emotion → RGB Mapping
+
+```json
+{
+  "happy":    {"r":0,   "g":255, "b":0,   "mode":"breath"},
+  "sad":      {"r":0,   "g":0,   "b":128, "mode":"breath"},
+  "curious":  {"r":0,   "g":255, "b":255, "mode":"breath"},
+  "excited":  {"r":255, "g":255, "b":0,   "mode":"boom"},
+  "alert":    {"r":255, "g":100, "b":0,   "mode":"boom"},
+  "love":     {"r":255, "g":50,  "b":150, "mode":"breath"},
+  "sleepy":   {"r":0,   "g":0,   "b":80,  "mode":"breath"}
+}
+```
+
+## 🔄 Multi-Body Support
+
+The brain doesn't care what the body is — it talks HTTP. Switch bodies at runtime:
+
+```python
+from brain.nox_body_client import BodyClient
+
+# Connect to PiDog
+dog = BodyClient("pidog.local", 8888)
+dog.move("sit")
+dog.speak("Ich bin ein Hund!")
+
+# Switch to robot car
+car = BodyClient("picar.local", 8888)
+car.move("forward")
+car.speak("Jetzt fahre ich!")
+```
+
+### Adding a New Body
+
+Implement the bridge API on your hardware:
+
+```python
+# Minimum required endpoints:
+POST /action    {"action": "forward|backward|left|right|stop"}
+POST /speak     {"text": "..."}
+GET  /status    → {"battery_v": 7.4, "sensors": {...}}
+```
+
+See `body/adapters/` for examples (PiDog, PiCar, custom).
+
+## 🌐 Remote Access
+
+### Option 1: Tailscale (Recommended)
+
+```bash
+# On both brain and body:
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+
+# Now use Tailscale IPs instead of .local addresses
+export PIDOG_HOST="100.x.x.x"
+```
+
+### Option 2: WireGuard
+
+```bash
+# See docs/remote-access.md for full WireGuard setup
+```
+
+### Option 3: Telegram Bot
+
+Control your robot from anywhere via Telegram:
+
+```bash
+export TELEGRAM_BOT_TOKEN="your-token"
+# Required: without an allowlist the bot refuses every command. Send any message
+# to the bot once — it replies with your user ID.
+export TELEGRAM_ALLOWED_USERS="123456789"      # comma-separated for several
+python3 brain/telegram_bot.py
+```
+
+Commands: `/status`, `/photo`, `/speak <text>`, `/move <action>`, `/faces`
+
+## 👁️ Local Vision (SmolVLM-256M)
+
+On-device scene understanding via llama.cpp — no cloud, no Python ML frameworks.
+
+```bash
+# Build llama.cpp on Pi 4 (one-time, ~20 min)
+# Prerequisite: the build tools (skipping this gives "cmake: command not found")
+sudo apt update && sudo apt install -y cmake build-essential
+cd ~ && git clone --depth 1 https://github.com/ggml-org/llama.cpp.git
+cd llama.cpp && cmake -B build -DCMAKE_BUILD_TYPE=Release -DGGML_NEON=ON
+cmake --build build --config Release -j2
+
+# Download models (279 MB total; -c resumes instead of saving a second copy as .gguf.1)
+mkdir -p ~/models/smolvlm && cd ~/models/smolvlm
+wget -c https://huggingface.co/ggml-org/SmolVLM-256M-Instruct-GGUF/resolve/main/SmolVLM-256M-Instruct-Q8_0.gguf
+wget -c https://huggingface.co/ggml-org/SmolVLM-256M-Instruct-GGUF/resolve/main/mmproj-SmolVLM-256M-Instruct-Q8_0.gguf
+
+# Start the vision service — it is not part of the default install
+cd ~/pidog-embodiment && sudo ./scripts/install-body.sh nox-vision
+journalctl -u nox-vision -n 20 --no-pager   # expect "[vision] Setup OK"
+
+# About a minute later: check what PiDog sees
+curl -s http://your-robot.local:8888/vision | python3 -m json.tool
+```
+
+`"vision not running (no result file)"` means the service never wrote a result —
+it is not installed or not running. Any other `error` in the answer is the
+service's own reason (missing model, camera, llama.cpp).
+
+**Performance on Pi 4 (2GB RAM):**
+| Metric | Value |
+|--------|-------|
+| Inference time | ~27s (warm) / ~37s (cold) |
+| Generation speed | ~3.2 tokens/sec |
+| RAM usage | ~400MB peak |
+| Model size | 279 MB (167 + 112 MB) |
+
+## 👤 Face Recognition
+
+Uses SCRFD (detection) + ArcFace (recognition) via ONNX Runtime. Runs on the body (Pi 4).
+
+```bash
+# Download ONNX models (one-time)
+cd models
+./download_models.sh
+
+# Register a face via API
+curl -X POST http://your-robot.local:8888/face/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Rocky"}'
+
+# Identify faces in current view
+curl -X POST http://your-robot.local:8888/face/identify
+
+# Performance (Pi 4):
+# Detection: ~400ms | Embedding: ~188ms | Full: ~567ms
+```
+
+## 🤖 Autonomous Behaviors
+
+The **Behavior Engine** is a 6-state FSM with mood system that runs independently on the body:
+
+### States
+- **Idle** → Random head movements, occasional tail wag, energy recovery
+- **Patrol** → Autonomous navigation with ultrasonic + vision obstacle avoidance
+- **Investigate** → Approach detected person/sound, face tracking
+- **Alert** → Threat response (bark, red LEDs, report to brain)
+- **Play** → Interactive play when touched (tail wag, happy LEDs, tricks)
+- **Rest** → Low-power state, minimal movement, PWM auto-disable
+
+### Built-in Reflexes (work without brain)
+- **Touch** → Pat on head triggers tail wag + happy LEDs
+- **Sound** → Head turns toward sound source
+- **Battery** → Warning and rest below 6.8 V; below 6.2 V it lies down and stays down until charged
+- **Vision** → Patrol uses SmolVLM to detect people and obstacles
+- **Face tracking** → Head follows detected faces
+
+```bash
+# Start patrol mode
+curl -X POST http://your-robot.local:8888/behavior/start \
+  -H "Content-Type: application/json" \
+  -d '{"behavior": "patrol"}'
+
+# Stop all behaviors (servos auto-disable after 120s idle)
+# Also drops motion frames already queued, so the dog stops now instead of
+# finishing the queue; the reply reports how many were dropped (issue #25).
+curl -X POST http://your-robot.local:8888/behavior/stop
+# → {"ok": true, "stopped": true, "motion_frames_dropped": 227}
+```
+
+## 🛡️ Security — read this before exposing the robot
+
+**The bridge has no authentication.** Anyone who can reach port 8888 can walk
+the robot, take photos and play sounds. Treat it as a LAN-only service.
+
+| | Status |
+|---|---|
+| Bridge authentication | ✅ optional: set `NOX_API_TOKEN` in `body/nox.env` and every request from another machine needs `Authorization: Bearer <token>`. Off by default so existing setups keep working. The robot's own services (localhost) are exempt; requests through a tunnel/proxy on the robot are not. `/status` → `security.auth` shows `on`/`off`. Treat the token like a password: the API allows any origin (CORS `*`), so the token is the only thing standing between a browser on your LAN and the robot. |
+| Rate limiting | ✅ 600 requests/minute per remote address (`NOX_RATE_LIMIT`, `0` = off), answered with `429` + `Retry-After` |
+| Input validation | ✅ unknown actions and malformed JSON are rejected loudly; `/rgb`, `/head`, `/speak` and `/face/register` check their values and answer `400` with the reason |
+| Secrets in code | ✅ none — everything comes from the environment, enforced by `tests/test_no_private_data.py` |
+| Telegram bot | ✅ refuses every command unless `TELEGRAM_ALLOWED_USERS` lists your user ID |
+
+Recommended setup:
+
+```bash
+# 1. Do not forward port 8888 from your router.
+# 2. Restrict the bridge to the LAN and your VPN (example for ufw):
+sudo ufw allow from 192.168.0.0/16 to any port 8888 proto tcp
+sudo ufw allow from 100.64.0.0/10 to any port 8888 proto tcp   # Tailscale CGNAT
+# 3. Reach the robot from outside via VPN only — see docs/remote-access.md.
+# 4. Set a token on both sides (body/nox.env and /etc/default/nox-brain):
+#    NOX_API_TOKEN=$(python3 -c "import secrets; print(secrets.token_urlsafe(24))")
+```
+
+Ports in use: **8888 inbound on the body** (bridge), **8889 inbound on the
+brain** (voice callbacks), and **9999 on the body's loopback only** (daemon).
+
+## 📁 Project Structure
+
+```
+pidog-embodiment/
+├── brain/                         # Runs on Pi 5 / Desktop
+│   ├── nox_body_client.py         # Python client for bridge API (37 functions)
+│   ├── nox_voice_brain.py         # LLM-powered voice processing
+│   ├── nox_mcp_server.py          # The robot as MCP tools (Claude Code/Desktop, OpenClaw)
+│   ├── telegram_bot.py            # Telegram remote control
+│   ├── requirements.txt
+│   └── services/
+│       └── nox-brain.service
+├── body/                          # Runs on Pi 4 / Robot
+│   ├── nox_daemon.py              # Low-level hardware daemon (servos, sensors, camera)
+│   ├── nox_brain_bridge.py        # HTTP REST API server (20+ endpoints)
+│   ├── nox_behavior_engine.py     # 6-state FSM + mood system + obstacle avoidance
+│   ├── nox_vision.py              # Local vision engine (SmolVLM-256M via llama.cpp)
+│   ├── nox_face_recognition.py    # SCRFD detection + ArcFace recognition
+│   ├── pidog_memory.py            # Drift-style memory with co-occurrence + decay
+│   ├── nox_voice_loop_v2.py       # Wake word + Vosk STT (what nox-voice runs)
+│   ├── nox_control.py             # Direct servo control utilities
+│   ├── nox_i2c_diag.py            # I2C/MCU reachability diagnostics (issue #12)
+│   ├── nox_motion.py              # Draining the SDK's motion queue (issue #25)
+│   ├── nox_audio.py               # aplay fallback when the SDK has no sound (issue #24)
+│   ├── nox_security.py            # Bridge token auth, rate limit, input checks (issue #30)
+│   ├── adapters/                  # Hardware-specific adapters
+│   │   ├── pidog.py               # SunFounder PiDog
+│   │   └── picar.py               # Robot car (template)
+│   ├── requirements.txt
+│   └── services/
+│       ├── nox-body.service       # Hardware daemon (TCP 9999)
+│       ├── nox-bridge.service     # REST API (HTTP 8888)
+│       ├── nox-vision.service     # Vision engine (SmolVLM)
+│       └── nox-voice.service      # Wake word + STT
+├── models/                        # ONNX + GGUF models (gitignored)
+│   └── download_models.sh         # One-click model download
+├── scripts/
+│   ├── install-body.sh            # Install the body services for this machine
+│   ├── install-brain.sh           # Install the brain service
+│   ├── deploy-body.sh             # Copy body code to a robot over SSH
+│   ├── doctor.sh                  # Post-install health check
+│   └── pidog.sh                   # CLI control script
+├── docs/
+│   ├── architecture.md
+│   ├── remote-access.md
+│   └── media-guide.md
+├── tests/                         # pytest — runs without hardware
+├── examples/
+│   ├── basic_control.py
+│   ├── face_registration.py
+│   └── multi_body.py
+└── README.md
+```
+
+## 🤝 Contributing
+
+This project is open source! Tests run anywhere (`PYTHONPATH=. python3 -m pytest tests/ -q`),
+and `./install.sh --mock` gives you a robot-free dev loop — see [CONTRIBUTING.md](CONTRIBUTING.md)
+and [SUPPORT.md](SUPPORT.md). We'd love contributions for:
+
+- **New body adapters** (robot arms, drones, wheeled robots)
+- **New LLM backends** (local models, Ollama, etc.)
+- **New features** (mapping, navigation, gesture control)
+- **Bug fixes** and documentation improvements
+
+## 📜 License
+
+MIT License — use it, modify it, build cool robots with it.
+
+## ☕ Support
+
+If this project helped you or made you smile, consider buying us a coffee:
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20this%20project-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/rockywuest)
+
+## 🙏 Thanks
+
+- **[Thio007](https://github.com/Thio007)** — the project's first external robot
+  runs in France because he reported, tested and verified his way through issue
+  after issue: audio routing, motion, speech, vision, multilingual voice and the MCP
+  path all got fixed on his hardware. Merci !
+
+## 💡 Inspiration
+
+> "Every AI deserves a body to explore the world with."
+
+Built by [Nox](https://github.com/openclaw/openclaw) ⚡ (an AI running on [Clawdbot](https://github.com/openclaw/openclaw)) and [Rocky](https://ko-fi.com/rockywuest).
+
+---
+
+**⭐ Star this repo if you want your AI to have legs!**

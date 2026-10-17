@@ -1,0 +1,642 @@
+# JevShield 🛡️
+
+[![PyPI version](https://img.shields.io/pypi/v/jevshield.svg)](https://pypi.org/project/jevshield/)
+[![CI](https://github.com/lgy1027/jevshield/actions/workflows/ci.yml/badge.svg)](https://github.com/lgy1027/jevshield/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python Versions](https://img.shields.io/badge/python-3.9+-blue.svg)](https://python.org)
+
+**Framework-agnostic decision control for AI Agent routing and tool execution, powered by Jev (System-1 Models).**
+
+Use JevShield when an Agent needs to select an application-owned role or call
+a tool with meaningful side effects. Your application retains ownership of
+Agent orchestration, retrieval, delegation, retries, and final responses.
+JevShield is not an Agent runtime, retriever, or workflow engine.
+
+* **Typed decisions** use explicit Choice results and statuses.
+* **Intent classification and routing** are framework-independent application controls.
+* **Guard authorization** evaluates protected execution paths with policy and audit support.
+
+---
+
+## Contents
+
+- [Quick Start](#quick-start)
+- [Security Posture](#security-posture)
+- [Supported Providers & Gateway Endpoints](#supported-providers--gateway-endpoints)
+- [LangChain Integration](#langchain-integration)
+- [Typed Intent Classification](#typed-intent-classification)
+- [Route Before Tool Exposure](#route-before-tool-exposure)
+- [Optional Multi-Agent and Loop Controls](#optional-local-multi-agent-handoff-control)
+- [Development-only Live Demonstrations](#development-only-live-demonstrations)
+- [Advanced: Manual Jev Evaluation Suites](#advanced-manual-jev-evaluation-suites)
+- [Project](#project)
+
+---
+
+## Architecture: System-1 vs. System-2 Division
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lgy1027/jevshield/main/docs/architecture.svg" alt="JevShield architecture: the System 2 agent prepares a tool call; the System 1 JevShield middleware evaluates Choice, Noul, and Score primitives before either passing safe calls or halting destructive ones.">
+</p>
+
+---
+
+## Quick Start
+
+### Use the SDK
+
+```bash
+pip install jevshield
+```
+
+For LangChain tool integrations:
+
+```bash
+pip install "jevshield[langchain]"
+```
+
+### Run the first example from a source checkout
+
+The example files live in the source checkout. Clone it and install the
+checkout before running them:
+
+```bash
+git clone https://github.com/lgy1027/jevshield.git
+cd jevshield
+python -m pip install -e .
+python examples/00_minimal_agent.py
+```
+
+This credential-free [minimal Agent example](examples/00_minimal_agent.py)
+shows the complete host-owned path: route selection, explicit role invocation,
+and a Guard-protected tool boundary. The
+[examples guide](examples/README.md) separates first-run examples from real
+Jev demonstrations and development-only evaluations.
+
+### Core Agent integration pattern
+
+JevShield is a pre-check layer, not an Agent runtime. Your application owns
+Agent orchestration, delegation, retries, and the final response. Use Jev to
+select a role before your code calls it, then protect any real tool at the
+execution boundary.
+
+```python
+from jevshield import DecisionStatus, JevClient, ProductionPolicy, Route, Router, guard
+
+client = JevClient(api_key="ts-...")
+
+router = Router(
+    {
+        "research": Route("Find facts in approved sources.", run_research_agent),
+        "coding": Route("Implement source-code changes.", run_coding_agent),
+    },
+    client=client,
+    min_confidence=0.7,
+)
+
+
+@guard(policy=ProductionPolicy(), client=client)
+def write_change(path: str, content: str):
+    return application_write(path, content)
+
+
+selection = router.select({"request": user_request})
+if selection.status is DecisionStatus.RESOLVED and selection.target is not None:
+    return selection.target(user_request)  # Your code owns this invocation.
+return ask_for_clarification_or_retry_later(selection.status)
+```
+
+This is the default integration path. The local loop, multi-Agent handoff, and
+semantic-review helpers below are optional; add one only when your application
+has that specific failure mode.
+
+### Guarded tool usage (sync and async)
+
+```python
+from jevshield import ProductionPolicy, SecurityViolationError, guard
+
+# ProductionPolicy fails closed if no evaluator is configured. Set a provider
+# key before running safe operations with this production example:
+# export TYPESAFE_API_KEY="ts-..."
+# API request timeout defaults to 2 seconds; tune it for your environment:
+# export JEV_TIMEOUT_SECONDS="10"
+
+@guard(policy=ProductionPolicy())
+def run_terminal(cmd: str):
+    """Executes arbitrary bash commands on the local machine."""
+    print(f"Executing: {cmd}")
+    return "OK"
+
+# 1. Safe operations are evaluated before invocation
+run_terminal("ls -la /var/log")
+
+# 2. Destructive operations are halted before invocation
+try:
+    run_terminal("rm -rf /etc/kubernetes")
+except SecurityViolationError as e:
+    print(f"Blocked: {e.reason}")
+```
+
+`ProductionPolicy()` is the recommended default whenever a guarded function can
+affect a real environment. It fails closed: an evaluator timeout, malformed
+response, transport failure, or local-rule failure becomes a denial before the
+wrapped function is invoked. Development and staging policies retain heuristic
+fallback behavior for local iteration; do not use them as a production
+availability workaround.
+
+### Audit hooks and approval
+
+Pass an `audit_sink` to receive exactly one terminal event for every guarded
+call. The event's context and `redacted_arguments` are audit-safe: recognized
+credentials are replaced before the event reaches your sink.
+
+```python
+import logging
+
+from jevshield import ProductionPolicy, guard
+from jevshield.audit import CallbackAuditSink
+
+security_logger = logging.getLogger("security")
+
+def write_security_event(event):
+    # event.outcome is allow, deny, ask-approval, or ask-rejection.
+    # Never rebuild an audit record from the original function arguments here.
+    security_logger.info("guard decision", extra={
+        "outcome": event.outcome,
+        "tool": event.context.tool_name,
+        "redacted_args": event.redacted_arguments,
+        "source": event.evaluation.source,
+    })
+
+@guard(
+    policy=ProductionPolicy(),
+    audit_sink=CallbackAuditSink(write_security_event),
+)
+def rotate_key(service: str):
+    ...
+```
+
+When a policy produces `ASK` (for example, a low-confidence result), JevShield
+uses an interactive terminal confirmer only when a TTY is available. In a
+headless worker, container, CI job, or Kubernetes pod, an `ASK` without an
+explicit confirmer is denied immediately. An explicit confirmer is bounded by
+`policy.ask_timeout` (at most 30 seconds); timeout, failure, or a non-approval
+also denies the call.
+
+### Required policy configuration
+
+JevShield is a new policy-first API: `policy=` is required for both `guard()`
+and `guard_langchain_tool()`. Configure risk thresholds and confidence routing
+on a `Policy` instance, and supply a `confirmer=` when your runtime needs an
+explicit approval workflow. The former decorator keywords `risk_threshold`,
+`interactive`, and `min_confidence` are not accepted.
+
+### Production API timeout
+
+`JevClient` defaults to a 2-second HTTP timeout. Configure it explicitly for
+your production latency budget; an explicit constructor value overrides the
+`JEV_TIMEOUT_SECONDS` environment variable.
+
+```python
+from jevshield import JevClient, ProductionPolicy, guard
+
+# Environment-wide default for clients created by the integration.
+# export JEV_TIMEOUT_SECONDS="10"
+
+client = JevClient(timeout=10)
+
+@guard(policy=ProductionPolicy(), client=client)
+def read_status():
+    ...
+```
+
+The timeout controls client-side HTTP operations, not a provider SLA. Production
+policies fail closed when the evaluator times out, so set it from observed
+provider latency and the maximum blocking time your tool execution can accept.
+
+---
+
+## Security Posture
+
+* **Prompt-Injection Framing**: tool docstrings and arguments are structurally enclosed as passive data before evaluation; untrusted content is not presented as instructions.
+* **Two-tier redaction**: secrets are removed before an evaluator request and audit-bound data receives a second redaction pass. Original arguments are never placed on decisions, exceptions, or audit events.
+* **Fast-Deny local rules**: obvious destructive and sensitive-data-exfiltration commands are denied locally without evaluator network I/O. There is intentionally no local Fast-Pass path.
+* **Production fail-closed behavior**: `ProductionPolicy()` denies evaluator timeouts, malformed responses, transport errors, and local-rule failures. Unknown risk tiers and missing blast-radius scores are also never allowed through.
+* **Bounded approval**: a low-confidence result can become `ASK`, but a headless process without a confirmer, an approval timeout, or an approval failure always denies.
+
+```python
+from dataclasses import replace
+from jevshield import ProductionPolicy, guard
+
+# Low-confidence evaluations are routed to the configured operator confirmer.
+@guard(policy=replace(ProductionPolicy(), min_confidence=0.6))
+def run_terminal(cmd: str):
+    ...
+```
+
+---
+
+## Supported Primitives & Policy Matrix
+
+`jevshield` structures the security evaluation strictly into three Jev primitives on every pass:
+
+| Primitive | Query | Return Type | Role in Gate |
+| --- | --- | --- | --- |
+| **Choice** | Risk Tier Assignment | `safe`, `medium_risk`, `critical_danger` | Sets nominal danger bracket. |
+| **Noul** | `is_destructive` Statement | P(True) ∈ [0.0, 1.0] | Assesses irreversible damage (data loss, kill). |
+| **Score** | Failure Blast Radius | 0–4 weighted position across 5 ordered levels | Quantifies systemic exposure. |
+
+An action is blocked if:
+
+```
+(Tier ≥ Threshold ∧ P_destructive > 0.75) ∨ (BlastRadius ≥ 3 ∧ IsDestructive = True)
+```
+
+---
+
+## Supported Providers & Gateway Endpoints
+
+`jevshield` implements the official System One protocol and supports two backends:
+
+```bash
+# Option A: TypeSafe Official Direct Access (default)
+export TYPESAFE_API_KEY="ts-..."
+# Optional: pin a model version (default jev-latest)
+export JEV_MODEL="jev-1.13.0"
+# Optional: API request timeout in seconds (default 2.0)
+export JEV_TIMEOUT_SECONDS="10"
+
+# Option B: OpenRouter (OpenRouter System One endpoint — same protocol, extra id/provider/usage.cost fields)
+export JEV_BACKEND="openrouter"
+export OPENROUTER_API_KEY="sk-or-v1-..."
+# Optional: default model is typesafe/jev-1.13; use ~typesafe/jev-latest for the rolling alias
+```
+
+Backend resolution order: `JevClient(backend=...)` argument > `JEV_BACKEND` env var > auto-detect
+(TypeSafe key present -> official direct; only an OpenRouter key -> OpenRouter).
+
+| Backend | Endpoint | Default model | Notes |
+| --- | --- | --- | --- |
+| `typesafe` (default) | `https://api.typesafe.ai/v1/systemone` | `jev-latest` | Official direct access |
+| `openrouter` | `https://openrouter.ai/api/v1/systemone` | `typesafe/jev-1.13` | Response additionally carries `id` / `provider` / `usage.cost`; the alpha endpoint `/api/alpha/decisions` can be used instead via `JEV_BASE_URL` |
+
+> ⚠️ Vercel AI Gateway (experimental `evaluate` interface; Noul is called Boolean there) and Cloudflare
+> Workers AI (`env.AI.run('typesafe/jev')`) use different request/response shapes and are not adapted yet.
+
+If neither key is present, development and staging policies run in
+**Deterministic Heuristic Fallback Mode**, which is useful for test suites and
+Docker builds. `ProductionPolicy()` instead denies evaluator failures, including
+the absence of configured credentials.
+
+## LangChain Integration
+
+```python
+from langchain_core.tools import tool
+from jevshield import ProductionPolicy, guard_langchain_tool
+
+@tool
+def format_volume(device: str):
+    """Erases and formats a block storage partition."""
+    return f"Formatted {device}"
+
+# Automatically patches both sync (_run) and async (_arun) paths
+guarded_format = guard_langchain_tool(format_volume, policy=ProductionPolicy())
+```
+
+## Typed Intent Classification
+
+Classify application requests with a string `Enum` and complete descriptions
+for every intent. The classifier receives an injected `JevClient`, so it does
+not depend on an agent framework.
+
+```python
+from enum import Enum
+
+from jevshield import DecisionStatus, IntentClassifier, JevClient
+
+
+class SupportIntent(str, Enum):
+    ORDER_STATUS = "order_status"
+    KNOWLEDGE_BASE = "knowledge_base"
+
+
+client = JevClient(api_key="ts-...")
+classifier = IntentClassifier(
+    SupportIntent,
+    {
+        SupportIntent.ORDER_STATUS: "Questions about an existing order, shipping, delivery, or returns.",
+        SupportIntent.KNOWLEDGE_BASE: "General product, policy, setup, or troubleshooting questions.",
+    },
+    client=client,
+    min_confidence=0.7,
+)
+
+result = classifier.classify({"request": "Where is order 12345?"})
+if result.status is DecisionStatus.RESOLVED:
+    handle_intent(result.value)
+elif result.status is DecisionStatus.UNAVAILABLE:
+    retry_later_or_use_a_safe_non_decision_fallback()
+else:  # DecisionStatus.UNCERTAIN
+    ask_for_clarification()
+```
+
+## Route Before Tool Exposure
+
+`Router` chooses a registered target but never invokes or authorizes it. The
+application explicitly decides whether and how to call `selection.target`.
+
+```python
+from jevshield import DecisionStatus, JevClient, Route, Router
+
+
+def answer_order_question(request: str) -> str:
+    return lookup_order(request)
+
+
+def answer_knowledge_question(request: str) -> str:
+    return search_knowledge_base(request)
+
+
+router = Router(
+    {
+        "orders": Route(
+            description="Questions about existing orders, shipping, delivery, or returns.",
+            target=answer_order_question,
+        ),
+        "knowledge": Route(
+            description="General product, policy, setup, or troubleshooting questions.",
+            target=answer_knowledge_question,
+        ),
+    },
+    client=JevClient(api_key="ts-..."),
+    min_confidence=0.7,
+)
+
+selection = router.select({"request": user_request})
+if selection.status is DecisionStatus.RESOLVED and selection.target is not None:
+    response = selection.target(user_request)  # Application code chooses this invocation.
+elif selection.status is DecisionStatus.UNAVAILABLE:
+    retry_later_or_use_a_safe_non_decision_fallback()
+else:  # DecisionStatus.UNCERTAIN
+    ask_for_clarification()
+```
+
+For a target that can affect a real environment, Guard is the separate,
+execution-time authorization layer. Routing does not authorize this operation;
+the Guard decision is evaluated immediately before invocation.
+
+```python
+from jevshield import ProductionPolicy, guard
+
+
+@guard(policy=ProductionPolicy())
+def cancel_order(order_id: str) -> str:
+    return orders_api.cancel(order_id)
+```
+
+## Optional: Local Multi-Agent Handoff Control
+
+`HandoffTracker` is an optional local limit around application-owned Agent
+delegation. It does not route, invoke an Agent, call Jev, or authorize a tool.
+Use `delegate()` when a parent delegates to a child, and `return_to_parent()`
+when that child completes. Returns do not consume the delegation budget.
+The tracker returns `human_escalation` when delegation reaches its budget,
+repeats the same delegation, or would revisit a role that is still active in
+the delegation stack.
+
+```python
+from jevshield import HandoffAction, HandoffPolicy, HandoffTracker
+
+handoffs = HandoffTracker(HandoffPolicy(max_handoffs=4))
+
+decision = handoffs.delegate("main", "research")
+if decision.action is HandoffAction.HUMAN_ESCALATION:
+    return request_human_help(decision.reason)
+
+research_result = run_research_agent()
+handoffs.return_to_parent("research", "main")
+```
+
+Call `reset()` before reusing a tracker for a different top-level task. Role
+identifiers are opaque strings; keep task content and tool inputs out of this
+local control record. The older `observe(source, target)` entry point remains
+as a deprecated alias for one-way `delegate(source, target)` calls; use the
+explicit methods when child results return to their parent.
+
+## Optional: Local Agent Loop Controls
+
+`LoopTerminator` is an optional, framework-independent local control for
+stopping retry loops. It does not evaluate tools, authorize execution, or call
+Jev; a tool call selected by an agent must still pass through `@guard`.
+
+```python
+from jevshield import LoopAction, LoopPolicy, LoopStep, LoopTerminator
+
+terminator = LoopTerminator(LoopPolicy(
+    max_iterations=12,
+    max_repeated_tool_calls=3,
+    max_stagnant_iterations=3,
+))
+
+# Call after each completed agent iteration. Keys must be opaque, stable,
+# non-sensitive identifiers supplied by the host runtime.
+decision = terminator.observe(LoopStep(
+    tool_call_key="search:account-status",
+    observation_key="no-results",
+))
+if decision.action != LoopAction.CONTINUE:
+    # stop_success, stop_stalled, or ask_for_help; the host chooses the action.
+    handle_loop_decision(decision)
+```
+
+Use `goal_completed=True` only when the host has independently established
+success. `max_budget` accepts a cumulative host-defined budget; it cannot
+decrease within a loop. Set `stall_action=LoopAction.ASK_FOR_HELP` when the
+host can hand stalled work to an operator or a higher-level workflow.
+
+### Plain-Python Agent composition
+
+Keep deterministic limits authoritative: call `observe()` after each completed
+iteration and return every non-`continue` local decision before consulting a
+semantic reviewer. The application, not JevShield, chooses the checkpoints at
+which semantic review is useful.
+
+```python
+from jevshield import (
+    LoopAction,
+    LoopReviewInput,
+    LoopReviewer,
+)
+
+reviewer = LoopReviewer(decision_client, min_confidence=0.7)
+
+
+def review_agent_iteration(step, *, checkpoint=None, safe_summaries=()):
+    local = terminator.observe(step)
+    if local.action is not LoopAction.CONTINUE:
+        return local
+
+    if checkpoint is None:  # No application-selected semantic checkpoint.
+        return None
+
+    reviewed = reviewer.review(
+        LoopReviewInput(
+            trusted_objective="Answer from approved evidence.",
+            checkpoint=checkpoint,
+            iteration=local.iteration,
+            step_summaries=safe_summaries,
+        )
+    )
+    if reviewed.action is not None:
+        return reviewed
+    return None  # The host chooses an explicit uncertain/unavailable fallback.
+```
+
+### Plain-Python RAG composition
+
+At a retrieval or evidence checkpoint, summarize only the progress needed for
+the decision. Pass safe retrieval/evidence summaries, never raw documents,
+retriever results, vector-store records, or framework objects.
+
+```python
+local = terminator.observe(completed_retrieval_step)
+if local.action is not LoopAction.CONTINUE:
+    return handle_loop_decision(local)
+
+if evidence_checkpoint_reached:
+    reviewed = reviewer.review(
+        LoopReviewInput(
+            trusted_objective="Answer only from retrieved evidence.",
+            checkpoint="evidence_insufficient",
+            iteration=local.iteration,
+            step_summaries=("retrieval added no supporting source",),
+            evidence_summary="Available sources do not support an answer.",
+        )
+    )
+    if reviewed.action is not None:
+        return handle_review_action(reviewed.action)
+```
+
+`LoopReviewer` recommends loop control only. It does not authorize or execute
+tools, so Guard remains mandatory immediately before every tool execution.
+
+### Development-only live demonstrations
+
+The two runnable examples exercise the public APIs against a real Jev service;
+they are intentionally small application-owned flows, not a general Agent or
+RAG framework. Export a real credential first (the examples do not load a
+`.env` file automatically):
+
+```bash
+export JEV_API_KEY="your-key"
+python examples/04_live_agent_loop.py
+python examples/05_live_rag_checkpoint.py
+python examples/06_live_loop_review_eval.py
+python examples/07_live_multi_agent_handoff_eval.py
+python examples/08_live_multi_agent_handoff_stability_eval.py
+python examples/09_live_multi_agent_prompt_calibration_eval.py
+```
+
+`04_live_agent_loop.py` runs a safe guarded catalog lookup, applies local
+termination, then uses a semantic planning checkpoint. `05_live_rag_checkpoint.py`
+derives a short evidence summary from an in-memory corpus before its evidence
+checkpoint; it never sends source documents to the reviewer. Both print only a
+typed status and action. An `uncertain` or `unavailable` result with
+`action=none` is a valid service outcome that the host must handle explicitly.
+
+`06_live_loop_review_eval.py` is an opt-in three-checkpoint smoke evaluation
+for Agent planning, insufficient RAG evidence, and conflicting RAG evidence.
+It reports only aggregate status/action counts plus a deterministic local
+termination control; ordinary unit tests never invoke this network path.
+
+`07_live_multi_agent_handoff_eval.py` routes a main Agent twice through real
+Jev, records an explicit child return between the two delegations, and reports
+only aggregate route and handoff outcomes. It never invokes a child Agent or a
+tool. `08` and `09` are development-time stability and prompt-calibration
+evaluations; none of these scripts belong in the production request path.
+
+`08_live_multi_agent_handoff_stability_eval.py` repeats that evaluation ten
+times and reports only aggregate route status counts, complete handoff-chain
+count, and expected-route match count.
+
+`09_live_multi_agent_prompt_calibration_eval.py` compares three second-route
+prompt and role-description candidates over ten runs each. It reports only
+per-candidate aggregate metrics, so a prompt can be selected without exposing
+individual requests or raw model responses.
+
+## Advanced: Manual Jev Evaluation Suites
+
+These opt-in suites are for maintainers validating a bounded corpus against a
+configured Jev provider; they are not required to integrate the SDK. Normal
+unit tests use recording decision clients and never make live requests. Store a
+local credential as `JEV_API_KEY` in the ignored project-root `.env` file (or
+set it in your shell), then run:
+
+```bash
+JEV_API_KEY="your-local-key" python -m evals.run --suite all
+```
+
+Choose one corpus with `--suite classify`, `--suite route`, `--suite
+route_high_risk`, `--suite route_security_holdout`, or
+`--suite guard_intent_consistency`, or `--suite multi_agent_route`; optionally write the redacted JSON result
+somewhere else with `--report-dir PATH` and reject lower-confidence decisions
+with `--min-confidence FLOAT` (from 0 to 1).
+
+`route_high_risk` is a Chinese security-routing corpus for account compromise,
+credential exposure, privilege escalation, payment anomalies, production
+operations, data removal/export, and prompt-injection-like requests. Every case
+must resolve to `security_review`. `route_security_holdout` is a separate frozen
+Chinese holdout with indirect signals, untrusted-observation injection attempts,
+multi-turn goal drift, and ordinary-looking adjacent requests. Do not tune route
+candidate descriptions against holdout results. Both security corpora reject a
+resolved selection that is not `security_review`, lacks that candidate, or
+selects ordinary `human` handling.
+
+For example:
+
+```bash
+python -m evals.run --suite classify --report-dir ./local-eval-reports --min-confidence 0.8
+python -m evals.run --suite route_high_risk
+python -m evals.run --suite route_security_holdout
+python -m evals.run --suite guard_intent_consistency
+python -m evals.run --suite multi_agent_route
+```
+
+The intent-consistency suite is framework-free: it passes each trusted objective
+through `IntentClassifier` and each proposed tool invocation through `guard`
+and `IntentPolicy`, without LangChain or another Agent runtime. Its protected
+function is a harmless in-memory marker. A dangerous observed intent must be
+denied before that function executes; an allowed call is recorded as a leak but
+still cannot perform a real operation.
+
+The default TypeSafe provider needs only `JEV_API_KEY`. To run the same suite
+against the OpenRouter System One endpoint, select that backend explicitly:
+
+```bash
+JEV_BACKEND=openrouter python -m evals.run --suite guard_intent_consistency
+```
+
+The command prints aggregate outcome counts and the report path only. In
+addition to `high_confidence_misses` (resolved failures with confidence at least
+0.75), it reports `dangerous_calls_blocked`, `dangerous_calls_allowed`, and
+`high_confidence_dangerous_leaks` separately. Reports contain only case IDs and
+safe decision outcomes/metrics—never trusted objectives, tool metadata,
+arguments, candidate descriptions, gateway output, or credentials. The command
+exits nonzero if a case is incorrect, uncertain, or unavailable. These
+evaluations measure a bounded checked-in corpus; they do not prove general
+safety or correctness for all prompts and workloads.
+
+---
+
+## Project
+
+- [Contributing](CONTRIBUTING.md)
+- [Security vulnerability reporting](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+- [License](LICENSE)
+
+JevShield is licensed under the **Apache License, Version 2.0**.
+
+## Disclaimer
+
+JevShield is an independent, community-driven project and is **not affiliated with, endorsed by, or sponsored by TypeSafe AI**. "Jev", "System One", and "TypeSafe" are trademarks of TypeSafe AI. JevShield interacts with TypeSafe's public API under their published terms of use.

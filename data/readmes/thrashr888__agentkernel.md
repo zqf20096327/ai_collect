@@ -1,0 +1,720 @@
+# agentkernel
+
+Run AI coding agents in secure, isolated microVMs. Sub-125ms boot times, real hardware isolation.
+
+<img alt="AgentKernel Desktop App" src="./docs/desktop.png" />
+
+## Installation
+
+```bash
+# Homebrew (macOS / Linux)
+brew tap thrashr888/tap && brew install agentkernel
+
+# Or with the install script
+curl -fsSL https://raw.githubusercontent.com/thrashr888/agentkernel/main/install.sh | sh
+
+# Or with Cargo
+cargo install agentkernel
+
+# Then run setup to download/build required components
+agentkernel setup
+```
+
+## Quick Start
+
+```bash
+# Run any command in an isolated sandbox (auto-detects runtime)
+agentkernel run python3 -c "print('Hello from sandbox!')"
+agentkernel run node -e "console.log('Hello from sandbox!')"
+agentkernel run ruby -e "puts 'Hello from sandbox!'"
+
+# Run commands in your project
+agentkernel run npm test
+agentkernel run cargo build
+agentkernel run pytest
+
+# Create from a template
+agentkernel sandbox create my-project --template python
+agentkernel sandbox start my-project
+agentkernel exec my-project -- pytest
+
+# Or auto-name from your git branch
+agentkernel sandbox create --branch -B docker
+
+# Run with a specific image
+agentkernel run --image postgres:16-alpine psql --version
+```
+
+## The `run` Command
+
+The fastest way to execute code in isolation. Creates a temporary sandbox, runs your command, and cleans up automatically.
+
+```bash
+# Auto-detects the right runtime from your command
+agentkernel run python3 script.py      # Uses python:3.12-alpine
+agentkernel run npm install            # Uses node:22-alpine
+agentkernel run cargo test             # Uses rust:1.85-alpine
+agentkernel run go build               # Uses golang:1.23-alpine
+
+# Override with explicit image
+agentkernel run --image ubuntu:24.04 apt-get --version
+
+# Explicitly build and use the current project's Dockerfile
+agentkernel run --build -- npm test
+
+# Keep the sandbox after execution for debugging
+agentkernel run --keep npm test
+
+# Use a config file
+agentkernel run --config ./agentkernel.toml npm test
+
+# Emit a signed execution receipt
+agentkernel run --receipt ./run-receipt.json -- python3 -c "print('ok')"
+agentkernel receipt verify ./run-receipt.json
+agentkernel receipt replay ./run-receipt.json
+```
+
+## Auto-Detection
+
+agentkernel automatically selects the right Docker image based on:
+
+1. **Command** (for `run`) - Detects from the command you're running
+2. **Project files** - Detects from files in your directory
+3. **Procfile** - Parses Heroku-style Procfiles
+4. **Config file** - Uses `agentkernel.toml` if present
+
+Command-driven runs do not implicitly build a Dockerfile found in the working directory. Use `--build`, or select a Dockerfile through a config or template, when you want a project image build.
+
+### Supported Languages
+
+| Language | Project Files | Commands | Docker Image |
+|----------|--------------|----------|--------------|
+| JavaScript/TypeScript | `package.json`, `yarn.lock`, `pnpm-lock.yaml` | `node`, `npm`, `npx`, `yarn`, `pnpm`, `bun` | `node:22-alpine` |
+| Python | `pyproject.toml`, `requirements.txt`, `Pipfile` | `python`, `python3`, `pip`, `poetry`, `uv` | `python:3.12-alpine` |
+| Rust | `Cargo.toml` | `cargo`, `rustc` | `rust:1.85-alpine` |
+| Go | `go.mod` | `go`, `gofmt` | `golang:1.23-alpine` |
+| Ruby | `Gemfile` | `ruby`, `bundle`, `rails` | `ruby:3.3-alpine` |
+| Java | `pom.xml`, `build.gradle` | `java`, `mvn`, `gradle` | `eclipse-temurin:21-alpine` |
+| Kotlin | `*.kt` | - | `eclipse-temurin:21-alpine` |
+| C# / .NET | `*.csproj`, `*.sln` | `dotnet` | `mcr.microsoft.com/dotnet/sdk:8.0` |
+| C/C++ | `Makefile`, `CMakeLists.txt` | `gcc`, `g++`, `make`, `cmake` | `gcc:14-bookworm` |
+| PHP | `composer.json` | `php`, `composer` | `php:8.3-alpine` |
+| Elixir | `mix.exs` | `elixir`, `mix` | `elixir:1.16-alpine` |
+| Lua | `*.lua` | `lua`, `luajit` | `nickblah/lua:5.4-alpine` |
+| HCL/Terraform | `*.tf`, `*.tfvars` | `terraform` | `hashicorp/terraform:1.10` |
+| Shell | `*.sh` | `bash`, `sh`, `zsh` | `alpine:3.24` |
+
+### Procfile Support
+
+If your project has a `Procfile`, agentkernel parses it to detect the runtime:
+
+```procfile
+web: bundle exec rails server -p $PORT
+worker: python manage.py runworker
+```
+
+## Persistent Sandboxes
+
+For longer-running work, create named sandboxes:
+
+```bash
+# Create a sandbox
+agentkernel sandbox create my-project --dir .
+
+# Create from a template with auto-expiry
+agentkernel sandbox create ci-test --template node-ci --ttl 1h
+
+# Create per-branch sandboxes (auto-named from git branch)
+agentkernel sandbox create --branch -B docker
+
+# Start it
+agentkernel sandbox start my-project
+
+# Run commands
+agentkernel exec my-project -- npm test
+agentkernel exec my-project -- python -m pytest
+
+# Attach an interactive shell
+agentkernel attach my-project
+
+# SSH into a sandbox (certificate-authenticated)
+agentkernel sandbox create my-box --ssh -B docker
+agentkernel sandbox start my-box
+agentkernel ssh connect my-box
+
+# Stop and remove
+agentkernel sandbox stop my-project
+agentkernel sandbox remove my-project
+
+# List all sandboxes (shows IP addresses for running containers)
+agentkernel sandbox list
+agentkernel sandbox list --project my-app
+```
+
+## Security Profiles
+
+Control sandbox permissions with security profiles:
+
+```bash
+# Default: moderate security (network enabled, no mounts)
+agentkernel run npm test
+
+# Restrictive: no network, read-only filesystem, all capabilities dropped
+agentkernel run --profile restrictive python3 script.py
+
+# Permissive: network, mounts, environment passthrough
+agentkernel run --profile permissive cargo build
+
+# Disable network access specifically
+agentkernel run --no-network curl example.com  # Will fail
+```
+
+| Profile | Network | Mount CWD | Mount Home | Pass Env | Read-only |
+|---------|---------|-----------|------------|----------|-----------|
+| permissive | Yes | Yes | Yes | Yes | No |
+| moderate | Yes | No | No | No | No |
+| restrictive | No | No | No | No | Yes |
+
+## SSH Access
+
+SSH into sandboxes with automatic certificate authentication. No passwords, no manual key setup.
+
+```bash
+# Create an SSH-enabled sandbox
+agentkernel sandbox create dev --ssh -B docker
+agentkernel sandbox start dev
+
+# SSH in (ephemeral certs are generated automatically)
+agentkernel ssh connect dev
+
+# Run a command over SSH
+agentkernel ssh connect dev -- ls -la
+
+# Record a session (asciicast format)
+agentkernel ssh connect dev --record ./session.cast
+
+# Use the raw ssh command (printed on connect)
+ssh -i ~/.agentkernel/ssh/dev/client_key -p 52341 sandbox@localhost
+
+# Generate SSH config for IDE integration (VS Code Remote-SSH, etc.)
+agentkernel ssh config dev >> ~/.ssh/config
+```
+
+**How it works:**
+- `--ssh` injects an OpenSSH server into the container at creation time
+- A CA keypair is generated per-sandbox; client certs are signed on each `ssh` connect
+- Certs are short-lived (30 minutes by default) and stored in `~/.agentkernel/ssh/<name>/`
+- Password and keyboard-interactive auth are disabled — cert-only
+- For Vault-based cert signing, set `vault_addr` and `vault_ssh_mount` in config
+
+## Templates
+
+Pre-configured sandbox environments for common use cases. 18+ built-in templates, or save your own.
+
+```bash
+# List available templates
+agentkernel template list
+
+# Create a sandbox from a template
+agentkernel sandbox create my-project --template python
+agentkernel sandbox create ci --template rust-ci
+
+# Save a running sandbox as a reusable template
+agentkernel template save --from my-sandbox my-custom-template
+
+# Add/remove custom templates
+agentkernel template add my-template /path/to/template.toml
+agentkernel template remove my-template
+```
+
+Built-in templates include: `python`, `node`, `rust`, `go`, `ruby`, `java`, `dotnet`, `php`, `elixir`, `c-cpp`, `shell`, `terraform`, `python-ci`, `node-ci`, `rust-ci`, `data-science`, `web-dev`, `fullstack`.
+
+## Snapshots & Sessions
+
+Save and restore sandbox state, or tie sandbox lifecycle to agent conversations.
+
+```bash
+# Snapshots: save and restore sandbox state
+agentkernel snapshot take my-sandbox --name before-upgrade
+agentkernel snapshot list
+agentkernel snapshot restore before-upgrade --as rollback
+
+# Firecracker only: preserve memory and running processes
+agentkernel sandbox pause my-sandbox
+agentkernel sandbox fork my-sandbox --as candidate-b
+# candidate-b is running; the source remains paused and reusable
+agentkernel sandbox resume my-sandbox
+
+# Sessions: agent conversation lifecycle
+agentkernel session start --name feature-x --agent claude -B docker
+agentkernel session save feature-x
+agentkernel session resume feature-x
+agentkernel session list
+agentkernel session delete feature-x
+```
+
+The full-state lifecycle is distinct from filesystem snapshots. It initially
+requires Firecracker 1.16.1 on an exactly compatible x86_64 Linux/KVM host;
+other backends return an explicit unsupported error instead of silently losing
+process state. The CLI lifecycle commands require a running `agentkernel serve`
+process to own the Firecracker VMM. Forks duplicate guest memory and filesystem
+state, including userspace identifiers and any credentials already inside the
+guest. See the [Firecracker full-state operations
+guide](docs/operations/firecracker-full-state.md).
+
+## Pipelines & Parallel Execution
+
+Chain sandboxes with data flow, or fan-out jobs across sandboxes.
+
+```bash
+# Pipelines: sequential multi-step execution with data flow
+agentkernel pipeline pipeline.toml
+
+# Parallel: run independent jobs concurrently
+agentkernel parallel \
+  --job "lint:node:22-alpine:npx eslint ." \
+  --job "test:node:22-alpine:npm test" \
+  --job "build:rust:1.85-alpine:cargo build"
+```
+
+Pipeline steps are defined in TOML with `name`, `image`, `command`, and optional `input`/`output` directories for data passing between steps.
+
+## LLM Model Governance
+
+The host-side LLM proxy can enforce tenant-scoped model allowlists before an
+upstream request is forwarded. Enable it in the trusted server configuration:
+
+```toml
+[enterprise]
+enabled = true
+org_id = "acme"
+
+[llm_governance]
+enabled = true
+
+[llm_governance.tenants.acme]
+openai = ["gpt-4o", "gpt-4o-mini"]
+anthropic = ["claude-3-5-sonnet"]
+```
+
+Provider and model names are trimmed and normalized to lowercase. The provider
+is derived from the proxy's validated destination registry; a request cannot
+choose a tenant or substitute a provider. Missing, malformed, or unlisted
+models are rejected with `403` before forwarding, and only normalized metadata
+is written to the governance audit trail. Governance-enabled sandboxes require
+a validated tenant identity at creation and fail closed if one is unavailable.
+When `[llm_governance].enabled` is `false` or absent, existing proxy behavior is
+unchanged.
+
+## Secrets — Credential Isolation
+
+AI agents need API keys to call LLMs, but putting secrets inside sandboxes defeats the purpose of isolation. A compromised agent could exfiltrate your credentials to any host.
+
+agentkernel solves this with **network-layer secret injection** (the Gondolin pattern): secrets never enter the VM. Instead, a host-side proxy intercepts outbound HTTPS requests and injects credentials at the network layer, scoped to specific domains.
+
+```bash
+# Inject OPENAI_API_KEY into requests to api.openai.com only
+agentkernel sandbox create my-agent --secret OPENAI_API_KEY:api.openai.com
+
+# Inside the sandbox:
+# - curl https://api.openai.com/v1/models → Authorization header injected automatically
+# - curl https://evil.com → blocked (403)
+# - echo $OPENAI_API_KEY → "ak-proxy-managed" (placeholder, not the real key)
+```
+
+The sandbox sees placeholder env vars so tools don't fail existence checks, but the real secret never crosses the VM boundary. Unauthorized hosts are blocked entirely. This is a fundamentally different security model from injecting secrets as environment variables or mounted files.
+
+Three vault backends for storing secrets: file (default), environment variables (CI/CD), or OS keychain (macOS Keychain, Linux secret-service). File-based injection via VSOCK is also supported for secrets that aren't HTTP headers.
+
+```bash
+# Secrets vault: store API keys and credentials
+agentkernel secret set ANTHROPIC_API_KEY sk-ant-...
+agentkernel secret get ANTHROPIC_API_KEY
+agentkernel secret list
+agentkernel secret delete ANTHROPIC_API_KEY
+
+# Image cache management
+agentkernel images list --all
+agentkernel images pull python:3.12-alpine
+agentkernel images prune
+
+# Export/import sandbox configs
+agentkernel sandbox export-config my-sandbox > my-sandbox.toml
+agentkernel sandbox import-config my-sandbox.toml --as new-sandbox -B docker
+
+# Export sandbox filesystem
+agentkernel sandbox export my-sandbox -o backup.tar
+```
+
+## Maintenance
+
+```bash
+# Garbage collection (remove expired/stopped sandboxes)
+agentkernel sandbox gc
+agentkernel sandbox gc --dry-run
+
+# Clean up everything (containers, images, cache)
+agentkernel sandbox clean --all
+
+# System diagnostics
+agentkernel doctor
+agentkernel stats
+
+# Performance benchmarking
+agentkernel benchmark
+agentkernel benchmark --backends docker,podman --iterations 5 --warmup 1
+agentkernel benchmark --backends docker --json --output benchmark.json
+./autoresearch/run_eval.sh
+
+# Shell completions
+agentkernel completions bash > /etc/bash_completion.d/agentkernel
+agentkernel completions zsh > ~/.zfunc/_agentkernel
+agentkernel completions fish > ~/.config/fish/completions/agentkernel.fish
+```
+
+## Configuration
+
+Create `agentkernel.toml` in your project root:
+
+```toml
+[sandbox]
+name = "my-project"
+base_image = "python:3.12-alpine"    # Explicit Docker image
+
+[agent]
+preferred = "claude"    # claude, gemini, codex, opencode
+git_name = "AgentKernel Agent"
+git_email = "agent@agentkernel.dev"
+
+[resources]
+vcpus = 2
+memory_mb = 1024
+
+[security]
+profile = "restrictive"    # permissive, moderate, restrictive
+network = false            # Override: disable network
+```
+
+Most projects don't need a config file - agentkernel auto-detects everything.
+
+## HTTP API
+
+Run agentkernel as an HTTP server for programmatic access:
+
+```bash
+# As a background service (recommended — survives reboots)
+brew services start thrashr888/agentkernel/agentkernel
+
+# On macOS this starts the AgentKernel HTTP API. The Firecracker VM-pool
+# daemon is Linux/KVM-only; macOS uses Apple Containers or Docker instead.
+
+# Or run manually
+agentkernel serve --host 127.0.0.1 --port 18888
+
+# With API key authentication
+agentkernel serve --api-key "sk-my-secret-key"
+
+# With multiple keys from a file (one per line)
+agentkernel serve --api-key-file /etc/agentkernel/api-keys
+```
+
+### Secure local Firecracker control
+
+CLI and MCP Firecracker lifecycle/file/exec delegation uses the server's local
+control endpoint. TCP loopback remains the default. For a private Unix-domain
+socket, configure the server and clients explicitly:
+
+```bash
+agentkernel serve --control-socket "$HOME/.agentkernel/control.sock" \
+  --api-key-file "$HOME/.agentkernel/api-keys"
+export AGENTKERNEL_CONTROL_SOCKET="$HOME/.agentkernel/control.sock"
+agentkernel sandbox start my-sandbox
+```
+
+`--control-socket` may also be set as `api.control_socket` in
+`agentkernel.toml`; `AGENTKERNEL_CONTROL_SOCKET` is accepted by both server and
+clients when a process-wide explicit setting is more convenient. The socket is
+created with mode `0600`, stale sockets are removed only when they are confirmed
+Unix sockets, and regular files or symlinks are never replaced. An explicit
+socket selection fails closed if it is unavailable; it never falls back to TCP.
+The TCP API remains available for other callers (and may use `--tls`), while
+Unix-socket clients use the private local endpoint. Delegated requests carry
+`AGENTKERNEL_API_KEY` when configured. Health and read-only delegation have
+bounded deadlines; stateful lifecycle and exec requests remain unbounded so a
+client never reports an ambiguous timeout while the server-owned operation is
+still running.
+
+### Authentication
+
+When `--api-key` or `--api-key-file` is set, requests must include an `Authorization: Bearer <key>` header except for the public operational endpoints `GET /health`, `GET /status`, `GET /metrics`, and `GET /stats`. Multiple keys can be provided via repeated `--api-key` flags or a key file. Keys can also be set via the `AGENTKERNEL_API_KEY` env var or in `agentkernel.toml`.
+
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/health` | Health check (no auth required) |
+| GET | `/status` | Server version and backend info (no auth required) |
+| GET | `/metrics` | Prometheus metrics (no auth required) |
+| GET | `/stats` | Sandbox count and resource usage (no auth required) |
+| POST | `/run` | Run command in temporary sandbox |
+| GET | `/sandboxes` | List all sandboxes (supports `?label=key:value` filter) |
+| POST | `/sandboxes` | Create a sandbox (supports `labels`, `description`) |
+| GET | `/sandboxes/{name}` | Get sandbox info |
+| PATCH | `/sandboxes/{name}` | Update sandbox metadata (labels, description) |
+| DELETE | `/sandboxes/{name}` | Remove sandbox |
+| POST | `/sandboxes/{name}/exec` | Execute command in sandbox |
+| POST | `/gc` | Garbage-collect expired sandboxes |
+
+### Example
+
+```bash
+# Run a command
+curl -X POST http://localhost:18888/run \
+  -H "Content-Type: application/json" \
+  -d '{"command": ["python3", "-c", "print(1+1)"], "profile": "restrictive"}'
+
+# Response: {"success": true, "data": {"output": "2\n"}}
+
+# Create sandbox with labels
+curl -X POST http://localhost:18888/sandboxes \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-sandbox", "labels": {"env": "prod", "team": "ml"}}'
+
+# Get stats (for fleet load balancing)
+curl http://localhost:18888/stats
+# Response includes sandbox_count, resource_usage (cpu_percent, memory_used_mb, etc.)
+```
+
+## Multi-Agent Support
+
+Check which AI coding agents are available:
+
+```bash
+agentkernel agents
+```
+
+Output:
+```
+AGENT           STATUS          API KEY
+---------------------------------------------
+Claude Code     installed       set
+Gemini CLI      not installed   missing
+Codex           installed       set
+OpenCode        installed       set
+```
+
+## SDKs
+
+Official client libraries for the agentkernel HTTP API:
+
+| SDK | Package | Install | Docs |
+|-----|---------|---------|------|
+| **Node.js** | [`agentkernel`](https://www.npmjs.com/package/agentkernel) | `npm install agentkernel` | [Guide](docs/sdks/nodejs.md) |
+| **Python** | [`agentkernel-sdk`](https://pypi.org/project/agentkernel-sdk/) | `pip install agentkernel-sdk` | [Guide](docs/sdks/python.md) |
+| **Go** | [`agentkernel`](https://pkg.go.dev/github.com/thrashr888/agentkernel/sdk/golang) | `go get github.com/thrashr888/agentkernel/sdk/golang` | [Guide](docs/sdks/golang.md) |
+| **Rust** | [`agentkernel-sdk`](https://crates.io/crates/agentkernel-sdk) | `cargo add agentkernel-sdk` | [Guide](docs/sdks/rust.md) |
+| **Swift** | `AgentKernel` | Swift Package Manager | [Guide](docs/sdks/swift.md) |
+
+```typescript
+import { AgentKernel } from "agentkernel";
+
+const client = new AgentKernel();
+
+// Run a command in a temporary sandbox
+const result = await client.run(["python3", "-c", "print(1+1)"]);
+console.log(result.output); // "2\n"
+
+// Sandbox session with automatic cleanup
+await using sandbox = await client.sandbox("my-session");
+await sandbox.exec(["npm", "install"]);
+const tests = await sandbox.exec(["npm", "test"]);
+```
+
+All SDKs support sandbox sessions with automatic cleanup, streaming output (SSE), and configuration via environment variables or explicit options. See [SDK documentation](docs/sdks/index.md) for all languages.
+
+## Why agentkernel?
+
+AI coding agents execute arbitrary code. Running them directly on your machine is risky:
+- They can read/modify any file
+- They can access your credentials and SSH keys
+- Container escapes are a real threat
+
+agentkernel uses **Firecracker microVMs** (the same tech behind AWS Lambda) to provide true hardware isolation:
+
+| Feature | Docker | agentkernel |
+|---------|--------|-------------|
+| Isolation | Shared kernel | Separate kernel per VM |
+| Boot time | 1-5 seconds | <125ms |
+| Memory overhead | 50-100MB | <10MB |
+| Escape risk | Container escapes possible | Hardware-enforced isolation |
+
+## Platform Support
+
+| Platform | Backend | Status |
+|----------|---------|--------|
+| Linux (x86_64, aarch64) | Firecracker microVMs | Full support |
+| Linux (x86_64, aarch64) | Hyperlight Wasm | Experimental |
+| macOS 26+ (Apple Silicon) | Apple Containers | Full support (VM isolation) |
+| macOS (Apple Silicon, Intel) | Docker | Full support (~220ms) |
+| macOS (Apple Silicon, Intel) | Podman | Full support (~300ms) |
+| Kubernetes cluster | K8s Pods | Full support |
+| Nomad cluster | Nomad Jobs | Full support |
+
+On macOS, agentkernel automatically selects the best available backend:
+1. **Apple Containers** (macOS 26+) - True VM isolation, ~940ms
+2. **Docker** - Fastest container option, ~220ms
+3. **Podman** - Rootless/daemonless, ~300ms
+
+Firecracker and Hyperlight require KVM (Linux only).
+
+## Orchestration Backends
+
+Deploy agentkernel on Kubernetes or Nomad for team and cloud environments. Sandboxes run as pods or job allocations with warm pools for fast acquisition.
+
+```bash
+# Kubernetes
+agentkernel run --backend kubernetes -- python3 -c "print('hello from k8s')"
+
+# Nomad
+agentkernel run --backend nomad -- python3 -c "print('hello from nomad')"
+```
+
+Install with Helm or Nomad Pack:
+
+```bash
+# Kubernetes (Helm)
+helm install agentkernel oci://ghcr.io/thrashr888/charts/agentkernel \
+  --namespace agentkernel-system --create-namespace
+
+# Nomad (job file)
+curl -fsSLO https://raw.githubusercontent.com/thrashr888/agentkernel/main/deploy/nomad/agentkernel.nomad.hcl
+nomad job run agentkernel.nomad.hcl
+```
+
+Features: warm pools, NetworkPolicy/network isolation, Kubernetes CRDs (AgentSandbox, AgentSandboxPool), configurable resource limits. See [Orchestration docs](docs/operations/index.md) for details.
+
+## Agent Plugins
+
+Use agentkernel with your AI coding agent. The `plugin install` command sets up MCP server configs, skills, and commands for each agent.
+
+```bash
+agentkernel plugin install claude     # Claude Code: skill + MCP config
+agentkernel plugin install codex      # Codex: MCP config
+agentkernel plugin install gemini     # Gemini CLI: MCP config
+agentkernel plugin install opencode   # OpenCode: TypeScript plugin
+agentkernel plugin install mcp        # Any MCP-compatible agent
+
+agentkernel plugin list               # Show install status
+```
+
+### What Gets Installed
+
+| Agent | Files | How It Works |
+|-------|-------|--------------|
+| Claude Code | `.claude/skills/agentkernel/SKILL.md`, `.claude/commands/sandbox.md`, `.mcp.json` | Skill teaches Claude when/how to sandbox. `/sandbox` command for explicit use. MCP server provides tools. |
+| Codex | `.mcp.json` | MCP server provides `run_command`, `create_sandbox`, `exec_in_sandbox` tools. |
+| Gemini CLI | `.gemini/settings.json` | MCP server provides sandbox tools via Gemini's MCP integration. |
+| OpenCode | `.opencode/plugins/agentkernel.ts` | TypeScript plugin auto-creates session sandboxes. Requires `agentkernel serve`. |
+| Generic MCP | `.mcp.json` | Works with any MCP-compatible agent. |
+
+### Usage in Claude Code
+
+Once installed, Claude uses agentkernel for isolated execution:
+
+```
+/sandbox python3 -c "print('Hello from sandbox!')"
+/sandbox npm test
+/sandbox cargo build
+```
+
+## Performance
+
+| Mode | Platform | Latency | Use Case |
+|------|----------|---------|----------|
+| **Hyperlight Pool** | Linux | **<1µs** | Sub-microsecond with pre-warmed runtimes (experimental) |
+| Hyperlight (cold) | Linux | ~41ms | Cold start Wasm runtime |
+| Daemon (warm pool) | Linux | 195ms | API/interactive - fast with full VM isolation |
+| Docker | macOS | ~220ms | macOS development (fastest) |
+| Podman | macOS | ~300ms | macOS development (rootless) |
+| Podman | Linux | ~310ms | Linux without KVM (fastest, daemonless) |
+| Docker | Linux | ~350ms | Linux without KVM |
+| Firecracker (cold) | Linux | ~800ms | One-off commands |
+
+See [BENCHMARK.md](BENCHMARK.md) for detailed benchmarks and methodology.
+
+## Daemon Mode (Linux)
+
+For the fastest execution on Linux, use daemon mode to maintain a pool of pre-warmed VMs:
+
+```bash
+# Start the daemon (pre-warms 3 VMs)
+agentkernel daemon start
+
+# Run commands (uses warm VMs - ~195ms latency)
+agentkernel run echo "Hello from warm VM!"
+
+# Check pool status
+agentkernel daemon status
+# Output: Pool: Warm VMs: 3, In use: 0, Min/Max: 3/5
+
+# Stop the daemon
+agentkernel daemon stop
+```
+
+The daemon maintains 3-5 pre-booted Firecracker VMs. Commands execute in ~195ms vs ~800ms for cold starts - a **4x speedup**.
+
+## Hyperlight Backend (Linux, Experimental)
+
+Hyperlight uses Microsoft's hypervisor-isolated micro VMs to run WebAssembly with dual-layer security (Wasm sandbox + hypervisor boundary). This provides the fastest isolation with ~68ms latency.
+
+**Requirements:**
+- Linux with KVM (`/dev/kvm` accessible)
+- Build with `--features hyperlight`
+
+```bash
+# Build with Hyperlight support
+cargo build --features hyperlight
+
+# Run Wasm modules (experimental)
+agentkernel run --backend hyperlight module.wasm
+```
+
+**Key differences from Firecracker:**
+- Runs WebAssembly modules only (not arbitrary shell commands)
+- ~68ms startup vs 195ms daemon mode (2.9x faster)
+- Sub-millisecond function calls after runtime is loaded
+- Requires AOT-compiled Wasm modules for best performance
+
+See [BENCHMARK.md](BENCHMARK.md) for detailed Hyperlight benchmarks.
+
+**When to use daemon mode:**
+- Running an API server
+- Interactive development
+- Many sequential commands
+- Low latency requirements
+
+**When to use ephemeral mode:**
+- One-off commands
+- Clean VM per execution
+- Memory-constrained environments
+
+## Documentation
+
+- [Getting Started](docs/getting-started/index.md) - Installation, quick start, benchmarks
+- [Commands](docs/commands/index.md) - Full CLI reference
+- [Features](docs/features/index.md) - Desktop app, browser automation, secrets, durable objects
+- [Agents](docs/agents/index.md) - Claude Code, OpenCode, Codex, Gemini, and more
+- [Configuration](docs/config/index.md) - `agentkernel.toml`, security profiles, backends
+- [API](docs/api/index.md) - HTTP API and MCP server
+- [SDKs](docs/sdks/index.md) - Node.js, Python, Go, Rust, Swift
+- [Operations](docs/operations/index.md) - Kubernetes, Nomad, deployment
+- [Firecracker full-state lifecycle](docs/operations/firecracker-full-state.md) - pause, resume, fork, compatibility, and native KVM validation
+- [Changelog](docs/changelog.md)
+
+## Examples
+
+See the `examples/` directory for language-specific configurations:
+
+```bash
+./scripts/run-examples.sh     # Run all examples
+```

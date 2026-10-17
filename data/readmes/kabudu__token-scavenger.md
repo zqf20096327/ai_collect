@@ -1,0 +1,476 @@
+<p align="center">
+  <img src="resources/TokenScavengerLogo.png" alt="TokenScavenger Logo" width="200">
+</p>
+
+<h1 align="center">TokenScavenger</h1>
+
+<p align="center">
+  <a href="https://github.com/kabudu/token-scavenger/actions/workflows/ci.yml"><img src="https://github.com/kabudu/token-scavenger/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+</p>
+
+**A lightweight, single-binary, self-hosted OpenAI-compatible LLM router that intelligently scavenges local and free-tier tokens first - with smart fallback to paid providers when you allow it.**
+
+**Just change the `base_url` in your OpenAI SDK** and TokenScavenger handles the rest: provider credentials, routing logic, model discovery, circuit breakers, usage tracking, and a beautiful operator dashboard - all in one Rust binary backed by SQLite.
+
+<p align="center">
+  <img src="resources/ArchitectureDiagram.svg" alt="TokenScavenger architecture diagram showing OpenAI SDK clients routing through TokenScavenger to local, free-tier, and allowed paid providers" width="960">
+</p>
+
+## Why TokenScavenger?
+
+- **Maximize local and free inference** across local OpenAI-compatible servers and permanent free-tier providers without managing dozens of API endpoints.
+- **Zero runtime overhead** — one static binary, no Docker or Python/Node required for basic use.
+- **Production-grade resilience** — circuit breakers, health checks, retries, and full observability.
+- **Beautiful built-in UI** — monitor usage, routing decisions, and provider health in real time.
+- **Drop-in replacement** for OpenAI, LangChain, Vercel AI SDK, LlamaIndex, etc.
+
+## Features
+
+- **Free-tier-first routing** with configurable fallback chains
+- **Tool-aware routing** for agentic clients, preferring stronger tool-call
+  providers automatically when OpenAI `tools` are present
+- **Opt-in subtask routing** for labelled agent runs: rules choose an economy,
+  standard, or advanced model group per subtask, with process-local affinity
+  for that subtask's tool loop. Disabled by default. See
+  [subtask routing](documentation/agent-routing.md).
+- **Model intelligence layer** with smart groups, task tags, modality flags,
+  context-window awareness, and catalog freshness scoring
+- **Full OpenAI-compatible API** (chat completions + streaming SSE, embeddings, `/v1/models`)
+- **19 built-in providers** with automatic model discovery, including local OpenAI-compatible upstreams
+- **Circuit breakers, retries & health monitoring**
+- **Prometheus metrics**, request traces, incident feed, and diagnostic bundles
+- **Embedded web UI** with live dashboard, observability, logs, and config editor
+- **Team-ready admin auth** with role-aware access and external identity headers
+  from OIDC-capable reverse proxies
+- **Project-scoped API keys and budgets** for per-app usage attribution,
+  model-group permissions, paid-fallback controls, hierarchical caps, and key
+  revocation
+- **Deployment controls** for encrypted credential persistence, self-update,
+  SBOM/provenance release artifacts, retention, Homebrew, and Kubernetes
+- **SQLite persistence** (WAL mode) for usage accounting and audit log
+- **Interactive setup wizard** and CLI tools
+- **Single static binary** (~15–25 MB)
+
+## Supported API Surface
+
+| Endpoint                      | Purpose                                                     |
+| ----------------------------- | ----------------------------------------------------------- |
+| `POST /v1/chat/completions`   | OpenAI-compatible chat completions, including streaming SSE |
+| `POST /v1/embeddings`         | OpenAI-compatible embeddings where supported upstream       |
+| `GET /v1/models`              | Merged public model catalog                                 |
+| `GET /healthz`, `GET /readyz` | Health and readiness probes                                 |
+| `GET /metrics`                | Prometheus metrics                                          |
+| `GET /ui`                     | Embedded operator dashboard                                 |
+| `GET /admin/request-traces`   | Recent request trace summaries                              |
+| `GET /admin/incidents`        | Incident feed from health, config, and routing events       |
+| `GET /admin/projects`         | Project-scoped client keys, budgets, usage, and exports     |
+
+Error responses use the OpenAI-style `{"error": ...}` envelope. Upstream rate-limit exhaustion returns `429` with `rate_limit_exceeded` and `Retry-After` when known; non-rate-limit route exhaustion remains `503 route_exhausted`. See [API behavior](documentation/api-behavior.md) for the full status-code contract.
+
+## Quick Start
+
+### 1. Install TokenScavenger
+
+The simplest install path on macOS or Linux with Homebrew is:
+
+```bash
+brew tap kabudu/tap
+brew install tokenscavenger
+tokenscavenger setup
+tokenscavenger -c ~/.config/tokenscavenger/tokenscavenger.toml
+```
+
+You can also download a prebuilt binary for your platform from the
+[latest GitHub release](https://github.com/kabudu/token-scavenger/releases/latest).
+
+Each release includes self-contained binaries and SHA256 checksums. Download the
+matching artifact and start it:
+
+```bash
+chmod +x tokenscavenger-*
+./tokenscavenger-*
+```
+
+macOS releases are distributed as signed and notarized archives:
+
+```bash
+unzip tokenscavenger-v*-aarch64-apple-darwin.zip
+./tokenscavenger
+```
+
+On first run, TokenScavenger detects the absence of a config file and offers to
+run the interactive setup wizard. Follow the prompts to configure your server,
+providers, and API keys. The wizard writes a configuration to
+`~/.config/tokenscavenger/tokenscavenger.toml`.
+
+To use an existing config file:
+
+```bash
+./tokenscavenger-* -c tokenscavenger.toml
+```
+
+### 2. Get API keys
+
+Sign up for API keys from your preferred providers:
+
+| Provider      | Sign Up                                       |
+| ------------- | --------------------------------------------- |
+| Groq          | https://console.groq.com/                     |
+| Google Gemini | https://aistudio.google.com/                  |
+| OpenRouter    | https://openrouter.ai/                        |
+| Cerebras      | https://inference-docs.cerebras.ai/           |
+| Mistral       | https://console.mistral.ai/                   |
+| NVIDIA NIM    | https://build.nvidia.com/                     |
+| Cloudflare    | https://developers.cloudflare.com/workers-ai/ |
+| DeepSeek      | https://platform.deepseek.com/                |
+| xAI Grok      | https://console.x.ai/                         |
+
+### 3. Configure manually, if preferred
+
+Create `tokenscavenger.toml`:
+
+```toml
+[server]
+bind = "0.0.0.0:8000"
+# Optional: require Authorization: Bearer <key>
+# master_api_key = "${TOKENSAVENGER_KEY}"
+# Optional browser origins allowed by CORS
+allowed_cors_origins = []
+
+[database]
+path = "tokenscavenger.db"
+max_connections = 8
+
+[logging]
+level = "info"
+# Optional; defaults to tokenscavenger.log beside the SQLite database
+# file_path = "/var/log/tokenscavenger/tokenscavenger.log"
+max_files = 7
+
+[routing]
+free_first = true
+allow_paid_fallback = false
+# Optional: retry an empty upstream SSE response once as a non-streaming call
+# to the same provider/model, before any bytes are sent to the client.
+recover_empty_stream_with_non_streaming = false
+
+[routing.stream_first_content_timeout_ms]
+"reasoning:deep" = 180000
+
+[[providers]]
+id = "groq"
+enabled = true
+api_key = "${GROQ_API_KEY}"
+free_only = true
+discover_models = true
+
+[[providers]]
+id = "google"
+enabled = true
+api_key = "${GEMINI_API_KEY}"
+free_only = true
+discover_models = true
+```
+
+Environment variables are expanded automatically (`${VAR_NAME}` syntax).
+
+### 4. Other installation methods
+
+You can also build from source:
+
+```bash
+cargo build --release
+./target/release/tokenscavenger -c tokenscavenger.toml
+```
+
+See [documentation/deployment.md](documentation/deployment.md) for Docker,
+systemd, Kubernetes manifests, reverse proxy, Homebrew tap automation,
+self-update, retention, restore, and migration rollback options.
+
+### 5. Use it
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="optional-master-key"
+)
+
+response = client.chat.completions.create(
+    model="chat:default",  # or any model group
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+print(response.choices[0].message.content)
+```
+
+If a hosted harness such as Cursor cannot reach local endpoints, see [External harnesses with Cloudflare Quick Tunnels](documentation/getting-started.md#external-harnesses-with-cloudflare-quick-tunnels) for a temporary authenticated HTTPS endpoint.
+
+## Architecture
+
+TokenScavenger is a single Rust binary using Axum + Tokio + SQLite with these subsystems:
+
+```
+src/
+  api/          OpenAI-compatible routes, auth, error taxonomy
+  app/          Application state, startup/shutdown lifecycle
+  config/       TOML config loading, validation, env var expansion
+  db/           SQLite pool, migrations (9 tables), helpers
+  discovery/    Model discovery, curated catalog, merge logic
+  metrics/      Prometheus counters/histograms, structured tracing
+  providers/    19 provider adapter implementations
+  resilience/   Circuit breakers, health tracking, retry/backoff
+  router/       Route planning engine, policy, model groups, fallback
+  ui/           Embedded operator web UI (9 views)
+  usage/        Usage accounting, aggregation, pricing
+  util/         Secret redaction, time utilities
+```
+
+## CLI Commands
+
+The `tokenscavenger` binary provides server, setup, configuration, and service-management modes:
+
+| Command                            | Description                                                                             |
+| ---------------------------------- | --------------------------------------------------------------------------------------- |
+| `tokenscavenger` (no args)         | Starts the server. On first run, prompts to run the setup wizard if no config is found. |
+| `tokenscavenger setup`             | Run the interactive first-time setup wizard.                                            |
+| `tokenscavenger config`            | Edit an existing configuration file interactively.                                      |
+| `tokenscavenger service install`   | Install TokenScavenger as a background service on supported platforms.                  |
+| `tokenscavenger service uninstall` | Remove the installed background service on supported platforms.                         |
+
+### `tokenscavenger setup`
+
+Walks you through creating a configuration file from scratch — server bind address,
+master API key, routing preferences, and provider credentials. The wizard stores
+the resulting config at `~/.config/tokenscavenger/tokenscavenger.toml`.
+
+### `tokenscavenger config`
+
+Loads an existing configuration file and presents an interactive menu where you
+can edit each section: server settings, database, routing, resilience, and
+providers. Changes are saved back to the file.
+
+### `tokenscavenger service install`
+
+Installs TokenScavenger as a background service after a config file exists. Run
+`tokenscavenger setup` first if this is a fresh machine.
+
+On macOS, this creates and loads:
+
+```text
+~/Library/LaunchAgents/com.tokenscavenger.server.plist
+```
+
+On Linux, this prints the `systemd` commands needed to create, enable, and start
+`/etc/systemd/system/tokenscavenger.service` with `sudo`.
+
+```bash
+tokenscavenger service install
+```
+
+### `tokenscavenger service uninstall`
+
+Removes the macOS LaunchAgent when running on macOS. On Linux, it prints the
+`systemd` commands needed to stop, disable, remove, and reload the service.
+
+```bash
+tokenscavenger service uninstall
+```
+
+Config search order:
+
+1. `./tokenscavenger.toml` (current directory)
+2. `~/.config/tokenscavenger/tokenscavenger.toml`
+3. `~/.tokenscavenger.toml`
+
+## Configuration Reference
+
+See [documentation/configuration.md](documentation/configuration.md) for the full configuration schema.
+
+## API Behavior
+
+See [documentation/api-behavior.md](documentation/api-behavior.md) for endpoint coverage, error response semantics, `429` backoff behavior, `503 route_exhausted`, and streaming fallback rules.
+
+## Agentic Tool Calls
+
+When a chat request includes OpenAI `tools`, TokenScavenger keeps the normal
+model-group eligibility rules but automatically reprioritizes the remaining
+attempts toward providers and models with stronger tool-call behavior. This
+helps agent clients such as Hermes get real `tool_calls` instead of prose like
+"I'll inspect that" without requiring a separate model group.
+
+## Policy-Based Routing
+
+Routing can be scored by `min_cost`, `min_latency`, `balanced`,
+`quality_first`, or `local_only`, with per-model-group overrides. Optional hard
+budgets can cap estimated spend per request, per day, per provider/day, or per
+model-group/day. Route-plan diagnostics show score components, estimated cost,
+latency, failure rate, and budget skip reasons.
+
+## Project-Scoped API Keys
+
+Operators can create named projects for applications, teams, or environments and
+issue OpenAI-compatible bearer keys for each one. Project keys are shown once,
+stored only as hashes, and can be revoked independently from the instance master
+key.
+
+Project policy is enforced before provider calls. It can restrict model groups,
+paid fallback, providers, local/free-only privacy profiles, per-request cost,
+daily request/token/cost budgets, sliding-window quotas, organization and
+environment caps, and key-level caps. Request traces, usage events, exports, and
+Prometheus project metrics carry `project_id` and a key prefix, never plaintext
+keys.
+
+The Projects UI shows each project's active model-group, provider, privacy, and
+paid-fallback policy at a glance. Operators can open an in-app usage panel for
+per-project request attribution, token totals, estimated spend, key prefixes,
+and the same CSV or redacted diagnostic exports exposed by the admin API.
+
+## Model Intelligence
+
+TokenScavenger normalizes model families, task tags, modality flags, context
+windows, JSON/tool support, reasoning hints, embeddings support, and catalog
+freshness into the merged model catalog. Built-in smart model groups such as
+`chat:default`, `fast:chat`, `cheap:code`, `reasoning:deep`,
+`vision:balanced`, `longctx:frontier`, `free:openrouter`, and the
+`agent-economy` / `agent-standard` / `agent-advanced` subtask tiers sit on top
+of the normal model-group system, so operators can edit or override them in the
+UI.
+
+`free:openrouter` is pinned to OpenRouter's stable `openrouter/free` router,
+which selects from the free models available at request time. This avoids
+shipping short-lived model IDs. The selected upstream may log
+prompts and completions, so do not use this group for sensitive data without
+checking the current model and provider data policy.
+
+The former `preview:ox-alpha` / `preview:union-alpha` groups targeting
+OpenRouter's temporary `stealth/*` previews were retired in October 2026.
+For coding and long-running agentic work, use `reasoning:deep` instead.
+
+Because long-horizon reasoning models may take longer to emit their first
+meaningful streaming event, operators running `reasoning:deep` workloads can
+raise its first-content timeout by requested model
+group, qualified `provider/model`, or upstream model ID under
+`routing.stream_first_content_timeout_ms`.
+
+For providers that intermittently finish an SSE response without content while
+the equivalent non-streaming request succeeds, operators can enable
+`routing.recover_empty_stream_with_non_streaming`. Recovery is bounded to one
+same-provider, same-model request and only runs before meaningful content has
+been forwarded, so it cannot splice or replay a partially delivered response.
+The normalized response is translated back into OpenAI-compatible content,
+tool-call, usage, finish-reason, and `[DONE]` events.
+
+Chat and streaming route planning uses this metadata to reroute before calling
+an upstream when a model cannot satisfy requested tools, JSON mode, vision input,
+or known context-window requirements. `/admin/route-plan` exposes the same
+compatibility decisions for dry-run diagnostics.
+
+## Provider Support Matrix
+
+See [documentation/provider-matrix.md](documentation/provider-matrix.md) for details on each provider's API format, free tier limits, and known quirks.
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for six high-value enhancements that can push TokenScavenger toward an operator-grade LLM traffic control plane.
+
+## Deployment
+
+See [documentation/deployment.md](documentation/deployment.md) for deployment options including Docker, systemd, and cross-compilation.
+
+For team deployments, TokenScavenger can trust identity headers from an
+OIDC-capable reverse proxy such as oauth2-proxy, Dex, Authelia, Keycloak, Zitadel,
+or a cloud identity proxy. Groups map to read-only, operator, config editor,
+credential manager, and admin roles for the operator UI and admin API.
+
+Self-update is enabled by default in current releases. The admin UI checks
+GitHub releases in the background and shows an update CTA when a newer compatible
+artifact is available for the running platform. Update checks are best-effort:
+network failures never break the admin UI, and the diagnostic error is exposed
+from `/admin/update/check`.
+
+For self-update testing, start from a release that already contains the
+self-update UI and API. Very old binaries, including v0.3.4, predate the admin
+update CTA, so changing `[updates]` in their config cannot make the button
+appear. Use a later pre-v0.3.6 binary or a versioned Homebrew formula when you
+need an older install that can update itself to the latest release.
+
+## Operator UI
+
+Open `http://localhost:8000/ui` in your browser for the operator dashboard with views for:
+
+- Dashboard — system status, uptime, provider count
+- Providers — enable/disable, inspect health and breaker state
+- Models — compare discovered and curated models with intelligence metadata
+- Routing — view fallback order and smart/custom model group configuration
+- Usage — token counts and estimated costs
+- Projects — project keys, policy restrictions, budget caps, usage attribution,
+  CSV exports, and scoped diagnostics
+- Observability — request traces, incident feed, and diagnostic bundle export
+- Health — per-provider health states
+- Logs — real-time log stream via SSE
+- Config — view and edit current effective configuration
+- Audit — configuration change history
+
+![Management Console](resources/ConsoleScreenshot.png)
+
+Config changes made through the web UI take effect immediately without restarting
+the application. Server bind address, routing policy, resilience settings, and
+provider credentials can all be modified at runtime. Changes are persisted to a
+sidecar overrides file so they survive restarts.
+
+## Releases
+
+New releases are prepared through a pull request, then published from the
+merged `master` branch:
+
+1. Bump the version in `Cargo.toml` and `Cargo.lock`. Promote the changelog
+   entry with `python3 scripts/changelog_release.py prepare --version X.Y.Z`
+   and open a pull request with those changes.
+2. Wait for the required CI checks, then merge the pull request.
+3. Navigate to **Actions → Release** in the GitHub repository, choose `master`,
+   and click **Run workflow**.
+
+The workflow:
+
+- Verifies the merged version and changelog, then creates a git tag (`vX.Y.Z`)
+- Builds binaries for Linux (x86_64), signed/notarized macOS (ARM64), and Windows (x86_64)
+- Creates a GitHub release with all binaries, checksums, an SPDX SBOM, and
+  GitHub artifact attestations attached
+- Updates `kabudu/homebrew-tap` when `HOMEBREW_TAP_TOKEN` is configured with
+  write access to that tap repository
+- Generates release notes from commit history
+
+macOS signing and notarization require these GitHub repository secrets:
+`APPLE_DEVELOPER_ID_CERTIFICATE_BASE64`,
+`APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD`, `APPLE_CODESIGN_IDENTITY`,
+`APPLE_ID`, `APPLE_TEAM_ID`, and `APPLE_APP_SPECIFIC_PASSWORD`.
+Homebrew tap publishing requires `HOMEBREW_TAP_TOKEN`.
+
+Each release binary is self-contained — download the one for your platform and run
+it. On first execution the built-in setup wizard guides you through configuration.
+
+## Development
+
+```bash
+# Run tests
+cargo test
+
+# Build release binary
+cargo build --release
+
+# Check for warnings
+cargo clippy --all-targets --all-features
+
+# Format code
+cargo fmt --all
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).

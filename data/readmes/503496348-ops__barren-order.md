@@ -1,0 +1,201 @@
+<!-- ZHIXIE_PROFILE_POLISH_START -->
+
+<p align="left">
+<a href="https://github.com/503496348-ops/barren-order/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/503496348-ops/barren-order?style=social"></a>
+<a href="https://github.com/503496348-ops/barren-order/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/503496348-ops/barren-order"></a>
+<img alt="License" src="https://img.shields.io/github/license/503496348-ops/barren-order">
+<a href="https://github.com/503496348-ops/barren-order/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/503496348-ops/barren-order/actions/workflows/ci.yml/badge.svg"></a>
+<img alt="Domain" src="https://img.shields.io/badge/domain-%E5%A4%9AAgent%E5%8D%8F%E4%BD%9C-blue">
+</p>
+
+## Highlights
+
+- **Product**: BarrenOrder / 荒原序列 BarrenOrder
+- **Domain**: 多Agent协作
+- **Maintained by**: [503496348-ops](https://github.com/503496348-ops) product matrix
+- **Delivery posture**: one-click setup, doctor diagnostics, smoke test, convergence gate, and clean-clone verification are part of the maintenance standard.
+
+## Quality Gates
+
+```bash
+./install.sh
+python3 scripts/doctor.py
+python3 scripts/smoke.py
+python3 scripts/product_convergence_gate.py --json
+python3 -m pytest tests/ -q
+```
+
+<!-- ZHIXIE_PROFILE_POLISH_END -->
+
+## 一键安装 / One-click Quickstart
+
+```bash
+bash install.sh
+python3 scripts/doctor.py
+python3 scripts/smoke.py
+```
+
+- `bash install.sh`：自动执行 setup + smoke，适合第一次使用。
+- `python3 scripts/doctor.py`：检查环境、入口文件和产品门禁，失败时给出修复建议。
+- `python3 scripts/smoke.py`：执行产品收敛门禁和轻量核心冒烟验证。
+
+# 荒原序列 · Barren Order
+
+多Bot协作解决方案 — 让两个或多个Hermes Bot在飞书群内通过互相@实现协作。
+
+## Standing Team Runtime
+
+BarrenOrder now includes a standing-team runtime command-surface specification: manager-only ingress, worker evidence return, slash-command operations, message deduplication, visibility filters, approval gates, and health verification. See `references/team-runtime-command-surface.md`.
+
+## Agent Team Bridge Runtime
+
+`scripts/team_bridge_runtime.py` adds a zero-LLM delivery planner for standing teams: human messages become manager inbox writes, manager delegation becomes worker pane injection, duplicates/cross-team events are dropped with stable reason codes, and `/login codex <agent>` produces a token-safe device-auth recovery plan with isolated `CODEX_HOME`.
+
+## 概述
+
+荒原序列是一个多Agent协作框架，支持：
+- **Bot-to-Bot通信**: 通过飞书@mention实现跨Bot任务分发
+- **主持者-执行者模式**: 战略Bot分配任务，执行Bot完成并汇报
+- **工作流编排**: DAG引擎，支持条件分支、并行执行、重试机制
+- **共享记忆**: 四级作用域（GLOBAL/AGENT/SESSION/WORKFLOW），TTL过期+快照恢复
+- **运行时防偏航**: 主持者唯一入口、intent锚定、审批硬暂停、健康验证
+
+## 快速开始
+
+```bash
+# 安装
+pip install barren-order
+
+# 配置飞书Bot
+barren-order init --workspace your-feishu-group
+
+# 启动协作
+barren-order start --bots bot-a,bot-b --mode coordinator-executor
+```
+
+## 使用场景
+
+- **信息采集+分析**: Bot A采集数据，Bot B分析并生成报告
+- **代码审查+部署**: Bot A审查代码，Bot B执行部署
+- **内容创作+发布**: Bot A生成内容，Bot B排版并发布
+
+## 技术架构
+
+- **通信层**: 飞书@mention消息解析与路由，支持Bot-to-Bot直接对话
+- **运行时路由**: `RoutingDecision` 输出稳定 reason code，支持 manager-only 入口、worker→manager 回报、去重、自循环/跨团队拦截
+- **团队桥接计划**: `BridgeRuntime` 输出 inbox writes、pane injections、ops command 和稳定 drop reason，支持 Codex device-auth 登录恢复
+- **任务调度**: DAG工作流引擎（WorkflowBuilder/WorkflowExecutor），支持条件分支和并行
+- **intent状态机**: 原始意图不可变，`需审批` 硬暂停，终态任务不可复活
+- **状态管理**: 四级作用域记忆系统（GLOBAL/AGENT/SESSION/WORKFLOW），TTL过期+快照恢复；团队经验池支持 pinned core + 按需召回
+- **健康验证**: PID/cmdline/heartbeat/agent probe 多层检查，避免“进程活着但协作已卡死”
+- **错误处理**: max_retries + retry_delay重试，降级策略，人工介入兜底
+
+## API
+
+```python
+from barren_order import Coordinator, Executor
+
+coordinator = Coordinator(bot_id="bot-a")
+executor = Executor(bot_id="bot-b")
+
+coordinator.register(executor)
+result = coordinator.dispatch("分析竞品数据", target="bot-b")
+```
+
+## License
+
+MIT
+
+---
+
+## 组织与社群入口
+
+**元素碰撞 · AtomCollide-AI 智能体实验室**：面向学习者、创作者与自动化实践者，持续沉淀可复用的 AI Agent 产品、工作流与工程经验。使命：**for the learner**。
+
+> 请选择 1 个常用社群加入，内容全域同步，无需重复加入。
+
+### 知识库
+
+| 知识库 | 链接 |
+|---|---|
+| 踩坑合集 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/CjV9wG8IHiIpWikCdFEcxfErnne) |
+| 商业化案例库 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/LdIxwlrKGibFEVkWMocc2K9KnBh) |
+| 科普专栏 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/K1RPwM8zji9ZchkxlOmcivUgnJe) |
+| Open Build | [进入](https://vcnvmnln7wit.feishu.cn/wiki/CThswol0PiNJJbkhgT1cZIxanLb) |
+| LLM / Agent / 研究报告 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/KwGQwS2TciT2EdkSBBtcYnbsnSd) |
+| Skill 封装合集 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/PDfpwqJZUibTyBkUa7TcZZ6Onpd) |
+| 社区治理运营 | [进入](https://vcnvmnln7wit.feishu.cn/wiki/MSEGwrdnTiiF9Dk8qCVcNW6InJg) |
+
+### 社群邀请
+
+| 社群 | 链接 |
+|---|---|
+| AI 探索交流 1 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=074vd565-6084-455c-ac52-9703e89a0697) |
+| AI 探索交流 2 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=60bj94f0-1a67-48a7-abbb-9172b161c2b0) |
+| AI 探索交流 3 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=13do1920-db46-4444-b635-005680beaf58) |
+| AI 探索交流 4 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=f17o1b86-06f6-4f10-911a-69a299a25fe3) |
+| AI 探索交流 5 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=2bbh6ab6-22c2-4753-b973-74bb1a2edcc9) |
+| AI 探索交流 6 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=d19r19f7-2f47-42ba-b1ec-cb0342cf2e80) |
+| AI 探索交流 7 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=fe9vdacc-7316-4b4d-ae4a-fdbcf56315e6) |
+| AI 探索交流 8 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=103kfae8-1fd7-424f-984f-d66c210e42d1) |
+| AI 探索交流 9 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=239p3cad-2f83-4baa-a230-f40386067548) |
+| AI 探索交流 10 区 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=880r7cf5-3638-45ff-afb9-7944de991872) |
+| AI 探索交流 — 网文作家 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=6a3v579b-ab43-4e1a-87f9-be63bab88da7) |
+| AI 探索交流群 — 音乐达人 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=76at299e-73da-4eeb-9eba-32161e98f2f8) |
+| AI 探索交流群 — 微笑驿站 | [加入](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=f2av73d0-6bb4-4a9f-9095-5fbbe83e49ec) |
+
+---
+
+AtomCollide-智械工坊团队出品。更多产品见：[AtomCollide Product Matrix](https://503496348-ops.github.io/atomcollide-product-matrix/)。
+
+
+## 示例输出
+
+本仓库的最小可验证使用路径：
+
+1. 阅读 README 的 Quick Start / 使用说明，完成本地安装或配置。
+2. 按仓库提供的命令、脚本或入口运行一次最小任务。
+3. 对照本产品定位验证输出：**荒原序列（BarrenOrder）** 属于 **多Agent协作** 产品，目标是把输入材料转化为可检查、可复用的结果。
+4. 若运行环境暂不可用，先通过 README、CHANGELOG、CI 状态和源码结构完成静态验收，再补充真实截图或录屏。
+
+> 维护要求：后续每次发布都应把真实运行截图、CLI 输出、网页截图或 API 响应样例补充到本节，避免仓库首页只描述能力、不展示结果。
+
+## Governance Links
+
+- [LICENSE](LICENSE)
+- [CHANGELOG](CHANGELOG.md)
+- [SECURITY](SECURITY.md)
+- [CONTRIBUTING](CONTRIBUTING.md)
+
+## 会前情报任务流
+
+BarrenOrder 新增 `scripts/pre_meeting_taskflow.py`：主持者可把人物会前调研拆成自述线、旁观线、事件线、业务线四个 manager-only worker 任务。证据包必须覆盖四线且无阻塞，才进入最终会前简报。
+
+验证：`python3 -m pytest tests/test_pre_meeting_taskflow.py -v`
+
+## Agent Team Bridge Runtime
+
+新增 `scripts/team_bridge_runtime.py`：把团队消息规划为 `DELIVER/DROP/OPS`，保证主持者入口、worker pane 注入、重复消息去重、跨团队拦截与 `/login codex` 认证恢复都可被单元测试锁死。
+
+验证：`python3 -m pytest tests/test_team_bridge_runtime.py -q`
+
+## 2026-07-03 运行时增强
+
+- 新增仓库级 Agent Flow 契约：支持任务输入模板渲染、审批字段校验、未知执行者引用检查。
+- 交付物包含可导入模块与定向单元测试。
+
+## 2026-07-03 产品收敛门禁
+
+- 新增 `scripts/product_convergence_gate.py`：从远端干净 clone 后可运行 `python3 scripts/product_convergence_gate.py --json`，检查 SKILL/README、入口文件、smoke 目标、测试与外部融合引用是否自洽。
+- 新增 `tests/test_product_convergence_gate.py`：确保门禁在产品仓库中真实可执行，避免后续增强只停留在孤岛模块。
+
+
+## Lark Coding Agent Bridge 融合增强
+
+- 荒原序列新增 Lark Coding Agent Bridge Runtime：chat/topic/comment scope、agent-aware session catalog、workspace policy fingerprint、active-run 去重。
+- 新增模块：`scripts/team_chat_bridge_runtime.py`
+- 来源模式：飞书/Lark 消息入口、本地 Claude/Codex 执行、会话 fingerprint、profile 隔离与安全门禁。
+
+## Generic orchestration lifecycle
+
+Adds a product-neutral lifecycle state machine with review, verification, pending confirmation, and role/action permission checks. Use it when coordinating multi-agent work without themed role names.

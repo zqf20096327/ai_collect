@@ -1,0 +1,495 @@
+<!--
+  (c) 2026 Jose AI (https://www.linhut.cn)
+  https://github.com/linhut/document-ai-assistant
+  Licensed under the MIT License. See the LICENSE file for details.
+-->
+
+# AI 公文智能优化助手
+
+<p align="center">
+  <img src="https://img.shields.io/badge/AI-Document-orange?style=for-the-badge&logo=robot&logoColor=white" alt="AI Document">
+  <img src="https://img.shields.io/badge/公文-GB%2FT%209704-blue?style=for-the-badge&logo=microsoftword&logoColor=white" alt="GB/T 9704">
+</p>
+
+<p align="center">
+  <strong>Official Document AI Assistant</strong><br>
+  基于 GB/T 9704 标准的公文格式智能检测与优化桌面应用
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.6.1-blue" alt="version">
+  <img src="https://img.shields.io/badge/python-3.12+-green" alt="python">
+  <img src="https://img.shields.io/badge/node-20+-green" alt="node">
+  <img src="https://img.shields.io/badge/electron-35-blue" alt="electron">
+  <img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="license">
+  <img src="https://img.shields.io/badge/tests-120%2B%20passed-brightgreen" alt="tests">
+  <img src="https://img.shields.io/github/stars/linhut/document-ai-assistant?style=social" alt="stars">
+  <img src="https://img.shields.io/github/forks/linhut/document-ai-assistant?style=social" alt="forks">
+</p>
+
+<p align="center">
+  <a href="https://doc.linhut.cn" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/项目介绍-doc.linhut.cn-blue?style=for-the-badge&logo=google-chrome&logoColor=white" alt="项目介绍" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="#-功能界面">功能界面</a> ·
+  <a href="#-功能特性">功能特性</a> ·
+  <a href="#-快速开始">快速开始</a> ·
+  <a href="#-技术架构">技术架构</a> ·
+  <a href="#-ai-配置">AI 配置</a> ·
+  <a href="#-gongwen-skill">gongwen-skill</a> ·
+  <a href="#-项目结构">项目结构</a> ·
+  <a href="#-社区与友链">社区与友链</a> ·
+  <a href="#-开发日志">开发日志</a>
+</p>
+ 
+---
+
+## 🧩 gongwen-skill
+
+> **[gongwen-skill](https://github.com/linhut/gongwen-skill)** — 本项目的 AI Agent 独立发行版，将公文格式引擎打包为可被 Claude Code 等 Agent 直接调用的 Skill。克隆即用，无需桌面端/数据库，支持格式检查、自动修复、模板生成、版头版记页码注入、内容优化差异对比。适合命令行自动化和 AI 工作流场景。
+>
+> 🚀 **[立即体验 gongwen-skill →](https://github.com/linhut/gongwen-skill)** — 桌面端用户也可在应用内使用全部功能
+
+---
+
+## 🖥 功能界面
+
+<table>
+  <tr>
+    <td align="center"><b>工作台</b></td>
+    <td align="center"><b>文档处理</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/617ad742-75a6-4a98-938b-cb27819fb1d9" alt="工作台" width="400"></td>
+    <td><img src="https://github.com/user-attachments/assets/0cda25cd-707c-475c-b265-905b41984e43" alt="文档处理" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>校审中心</b></td>
+    <td align="center"><b>模板中心</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/17b4843a-a74b-471a-bb50-a19b754eb47b" alt="校审中心" width="400"></td>
+    <td><img src="https://github.com/user-attachments/assets/b98a7681-06c0-4ef9-b91d-fc6d7b2baa65" alt="模板中心" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>AI 配置</b></td>
+    <td align="center"><b>关于</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/d18e8bf0-1c3d-4ace-a5bb-22c8f57aade7" alt="AI 配置" width="400"></td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/11131fc8-13fc-4ba5-b41b-49d692a4e46a" alt="关于" width="400"><br>
+      <img src="https://github.com/user-attachments/assets/28c057e1-fd2a-4352-9d08-38f7ea8e9b59" alt="关于-详情" width="400">
+    </td>
+  </tr>
+</table>
+
+---
+
+## 📋 功能特性
+
+- **格式检测** — 依据 GB/T 9704 标准自动检查公文格式（字体、字号、缩进、行距、页边距等），每个文种生效 38–41 条检查规则（公共基础层 + 文种层三层合并）
+- **智能修复** — 一键自动修复格式问题，每个文种 34 条修复规则，生成优化后的 .docx 文档
+- **标准证据链** — 每条检查规则关联 GB/T 9704-2012 对应条款（standard_ref），自动生成标准证据矩阵 `docs/gbt9704-audit-matrix.md`
+- **要素语义校验** — 对文号、成文日期、发文机关署名等要素做语义级校验（CHK-S 系列规则），发现"格式正确但语义错误"的问题
+- **AI 深度分析** — 接入大模型进行语义级分析，按 22 种文种定制检查规则，发现规则引擎无法识别的问题
+- **22 种文种** — 支持通知、报告、请示、会议纪要、决定、决议、函、通报等全部法定公文文种
+- **多 AI 服务商** — 支持 DeepSeek、通义千问、智谱、Moonshot、MiniMax、腾讯混元、豆包等 23+ 服务商
+- **AI 建议应用** — AI 发现的问题可勾选后一键应用到文档
+- **模板管理** — 内置官方模板 + 自定义模板，支持三级优先级合并
+- **A4 实时预览** — 左右分栏布局，左侧格式设置 + 右侧 A4 预览，支持版头版记、Markdown 转公文、表格渲染
+- **Markdown 转公文** — 识别 # 标题、**加粗**、列表、表格等 Markdown 语法并自动转为公文格式
+- **AI 模型监控** — 每 60 秒自动检测所有已配置 AI 模型的可用性，实时显示在线状态和延迟
+- **格式提取器** — 从已有文档中提取格式信息，自动生成规则模板
+- **本地运行** — 数据不离开本机，API Key 加密存储
+
+---
+
+
+### 方式一：一键启动（Windows）
+
+双击 `启动应用.bat`，自动安装依赖并启动。
+
+### 方式二：手动启动（Windows / Linux / 信创）
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/linhut/document-ai-assistant.git
+cd document-ai-assistant
+
+# 2. 启动后端
+cd backend
+pip install -r requirements.txt
+python main.py
+
+# 3. 启动前端（新终端）
+cd frontend
+npm install
+npm run electron:dev
+```
+
+### 环境要求
+
+| 依赖 | 版本 | 说明 |
+|------|------|------|
+| Python | >= 3.12 | <a href="https://python.org" target="_blank" rel="noopener noreferrer">下载地址</a> |
+| Node.js | >= 20 | <a href="https://nodejs.org" target="_blank" rel="noopener noreferrer">下载地址</a> |
+
+### 构建桌面安装包
+
+```bash
+# Windows
+cd frontend
+npm run electron:build:preview
+# 输出: frontend/release/AI公文智能优化助手 Setup X.X.X.exe
+
+# Linux x86_64 (需在 Linux 环境执行)
+npm run electron:build:linux
+# 输出: frontend/release/*.AppImage + *.deb
+
+# Linux ARM64 (鲲鹏/飞腾，需在对应架构执行)
+npm run electron:build:linux:arm64
+```
+
+### 信创环境部署指南
+
+> 以下指南覆盖 UOS、银河麒麟、OpenEuler 等主流信创系统，提供从环境搭建到应用启动的完整步骤。
+
+#### 一、UOS / Deepin（x86_64）
+
+```bash
+# 1. 安装系统依赖
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv nodejs npm libreoffice-common fonts-wqy-zenhei
+
+# 如果 Node.js 版本低于 20，需安装 nvm 升级：
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+
+# 2. 安装公文字体（项目自带）
+sudo mkdir -p /usr/share/fonts/custom
+sudo cp TTF/*.TTF /usr/share/fonts/custom/ 2>/dev/null
+sudo cp TTF/*.ttf /usr/share/fonts/custom/ 2>/dev/null
+sudo fc-cache -fv
+
+# 3. 克隆项目
+git clone https://github.com/linhut/document-ai-assistant.git
+cd document-ai-assistant
+
+# 4. 创建 Python 虚拟环境并安装依赖
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 5. 启动后端（后台运行）
+nohup python main.py > ../backend.log 2>&1 &
+
+# 6. 启动前端
+cd ../frontend
+npm install
+npm run electron:dev
+
+# 7. .doc/.wps 转换依赖 LibreOffice（apt 已安装）
+# 后端会自动调用 libreoffice --headless 进行格式转换
+```
+
+#### 二、银河麒麟 Kylin（ARM64 鲲鹏/飞腾）
+
+```bash
+# 1. 安装系统依赖
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv nodejs npm libreoffice-common fonts-wqy-zenhei
+
+# Node.js 升级到 20+（Kylin 自带版本可能较低）
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+
+# 2. 安装公文字体
+sudo mkdir -p /usr/share/fonts/custom
+sudo cp TTF/*.TTF /usr/share/fonts/custom/ 2>/dev/null
+sudo cp TTF/*.ttf /usr/share/fonts/custom/ 2>/dev/null
+sudo fc-cache -fv
+
+# 3. 克隆项目
+git clone https://github.com/linhut/document-ai-assistant.git
+cd document-ai-assistant
+
+# 4. Python 环境
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 5. 启动后端
+nohup python main.py > ../backend.log 2>&1 &
+
+# 6. 启动前端
+cd ../frontend
+npm install
+npm run electron:dev
+```
+
+#### 三、OpenEuler / Anolis（x86_64 / ARM64）
+
+```bash
+# 1. 安装系统依赖（OpenEuler 使用 dnf）
+sudo dnf install -y python3 python3-pip nodejs npm libreoffice-core libreoffice-writer wqy-zenhei-fonts
+
+# Node.js 升级
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+
+# 2. 安装公文字体
+sudo mkdir -p /usr/share/fonts/custom
+sudo cp TTF/*.TTF TTF/*.ttf /usr/share/fonts/custom/ 2>/dev/null
+sudo fc-cache -fv
+
+# 3. 克隆项目
+git clone https://github.com/linhut/document-ai-assistant.git
+cd document-ai-assistant
+
+# 4. Python 环境
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 5. 启动后端
+nohup python main.py > ../backend.log 2>&1 &
+
+# 6. 启动前端
+cd ../frontend
+npm install
+npm run electron:dev
+```
+
+#### 四、龙芯 MIPS64 / 申威 SW64（纯 Web 模式）
+
+> 龙芯/申威架构上 Electron 不可用，使用纯 Web 模式：后端本地运行 + 浏览器访问。
+
+```bash
+# 1. 安装 Python（龙芯 loongnix 自带，申威需编译安装）
+sudo apt install -y python3 python3-pip python3-venv libreoffice-common
+
+# 2. 克隆项目
+git clone https://github.com/linhut/document-ai-assistant.git
+cd document-ai-assistant
+
+# 3. Python 环境
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 4. 启动后端（监听 0.0.0.0 支持局域网访问）
+python main.py
+
+# 5. 打开系统自带浏览器（Firefox / 360 安全浏览器）
+# 访问 http://127.0.0.1:8765 即可使用
+```
+
+#### 信创环境注意事项
+
+| 事项 | 说明 |
+|------|------|
+| **公文字体** | 项目 `TTF/` 目录包含 3 个核心字体（仿宋_GB2312、方正小标宋简、楷体_GB2312），安装后执行 `fc-cache -fv` |
+| **格式转换** | `.doc`/`.wps` 转 `.docx` 依赖 LibreOffice headless，信创系统通常预装 WPS 或 LibreOffice |
+| **AI 功能** | 需联网访问 AI 服务商 API（DeepSeek/通义千问等），信创内网环境需配置代理或使用 Ollama 本地模型 |
+| **Node.js 版本** | Electron 35 需要 Node.js >= 20，信创系统自带版本可能较低，用 nvm 升级 |
+| **Pydantic 兼容性** | 龙芯/申威上如遇 Pydantic v2 编译失败，可降级：`pip install 'pydantic<2'` |
+| **防火墙** | 局域网访问需开放 8765 端口：`sudo firewall-cmd --add-port=8765/tcp --permanent` |
+
+---
+
+## 🏗 技术架构
+
+```
+Electron Shell
+  ├── React 19 + TypeScript + Vite + TailwindCSS + Radix UI
+  │     ├── A4 实时预览（左右分栏：设置面板 + 实时渲染）
+  │     ├── 校审中心（规则检查 + AI 分析 + 分组合并显示）
+  │     └── Markdown 转公文（标题/加粗/列表/表格 → Word 格式）
+  └── FastAPI Backend (Python 3.12+)
+        ├── Document Pipeline: Parse → Check → Fix → Generate
+        │     ├── Parser: 段落/Run/表格/版头版记/行距(EMU→pt)
+        │     ├── Generator: 段落替换 + 表格定位插入(insert_after_index)
+        │     └── Modifier: 加粗范围裁剪/Markdown转换/标点规范化
+        ├── Rule Engine: 88 基础规则 × 22 文种合并（每文种生效 38–41 条检查 / 34 条修复，YAML 配置）
+        │     └── 三级合并: official < custom < user
+        ├── AI Manager: 23+ 服务商 (Strategy 模式)
+        │     └── 模型健康检测: 每 60s 自动探测可用性 + 延迟
+        └── SQLite: 文档、检查结果、AI 配置（Fernet 加密）
+```
+
+| 类别 | 技术 |
+|------|------|
+| 前端框架 | React 19 + TypeScript + Vite |
+| UI 组件 | Radix UI + TailwindCSS |
+| 桌面壳 | Electron 35 |
+| 后端框架 | FastAPI (Python 3.12+) |
+| 文档处理 | python-docx（解析/生成/修改） |
+| 数据存储 | SQLite + SQLAlchemy |
+| AI 接入 | OpenAI 兼容协议 + Anthropic Claude (Strategy 模式) |
+| 预览渲染 | A4 实时预览（版头版记/表格/Run级加粗） |
+| 规则配置 | YAML（三级合并继承：official < custom < user） |
+
+---
+
+## 🤖 AI 配置
+
+在应用内「AI 配置」页面选择服务商并填入 API Key，支持：
+
+| 服务商 | 默认模型 | 说明 |
+|---|---|---|
+| DeepSeek | deepseek-chat | 国产首选，性价比高 |
+| 阿里云百炼 | qwen-turbo | 通义千问系列 |
+| 智谱 AI | glm-4-flash | GLM 系列 |
+| Moonshot | moonshot-v1-8k | Kimi 长上下文 |
+| 豆包 / 火山方舟 | doubao-1.5-pro | 字节跳动 |
+| MiniMax | MiniMax-Text-01 | 海螺 AI |
+| 腾讯混元 | hunyuan-lite | 腾讯 |
+| OpenRouter | openai/gpt-4o-mini | 聚合 100+ 模型 |
+| Ollama | qwen2.5:7b | 本地模型，无需联网 |
+| 自定义 | — | 任意 OpenAI 兼容接口 |
+
+---
+
+## 📂 项目结构
+
+```
+├── backend/                    # Python 后端
+│   ├── api/routes/             # FastAPI 路由 (9个: documents/check/optimize/ai/settings/templates/rules/template_download/office)
+│   ├── core/document/          # 文档处理
+│   │   ├── parser.py           #   解析器 (段落/Run/表格/版头/行距EMU转换)
+│   │   ├── generator.py        #   生成器 (段落替换 + 表格定位插入)
+│   │   ├── modifier.py         #   修改器 (加粗范围/Markdown转换/标点规范化)
+│   │   ├── models.py           #   数据模型 (DocumentModel/Table/Paragraph/Run)
+│   │   └── format_extractor.py #   格式提取器 (从文档生成规则模板)
+│   ├── core/rules/             # 规则引擎 (加载/检查/修复/管理)
+│   ├── ai/                     # AI Provider 架构 (OpenAI/Claude/DeepSeek/Ollama/Custom)
+│   ├── services/               # 业务服务
+│   │   ├── document_service.py #   文档处理编排
+│   │   └── model_health.py     #   模型可用性定时检测 (60s)
+│   └── db/                     # 数据模型 (Document/AIConfig/CheckResult)
+├── frontend/                   # Electron + React 前端
+│   ├── electron/               # Electron 主进程 (main.ts/preload.ts)
+│   └── src/
+│       ├── pages/              # 页面 (Workspace/CheckCenter/EnhancedA4Preview/AISettings/Templates/...)
+│       ├── components/         # 组件 (A4PreviewModal/Sidebar/PageHeader/ui/*)
+│       ├── hooks/              # 自定义 Hooks (useDocumentConfig)
+│       ├── api/                # API 客户端 (axios + 拦截器)
+│       └── lib/                # 工具库 (cn/utils/ai-status)
+├── rules/official/             # 22 种文种 YAML 规则 (_common.yaml + 类型特定)
+├── templates/                  # 公文模板 (official + user)
+└── tests/                      # 自动化测试
+```
+
+---
+
+## 📊 与同类工具对比
+
+| 维度 | 本项目 | AIPoliDoc | 小恐龙公文助手 |
+|---|---|---|---|
+| AI 分析 | ✅ 23+ 服务商 | ✅ 仅 DeepSeek | ❌ 无 |
+| 规则检查 | ✅ 22 文种 × 38–41 条/文种（证据矩阵 879 条） | ❌ 无 | ❌ 无 |
+| 文种覆盖 | 22 种法定文种 | 学术论文为主 | 通用公文 |
+| 独立运行 | ✅ 桌面应用 | ✅ 桌面应用 | ❌ 需 Word |
+| 开源 | ✅ MIT | ✅ MIT | ❌ 闭源 |
+| 自动修复 | ✅ 34 条修复规则/文种（三层合并） | ❌ | ✅ 格式化 |
+| AI 建议应用 | ✅ 勾选应用 | ❌ | ❌ |
+| 测试覆盖 | ✅ 39 个测试 | ❌ | ❌ |
+
+---
+
+## ❓ FAQ
+
+**Q: 启动后提示"无法连接到后端服务"？**
+A: 确认后端已运行（终端显示 `Uvicorn running on http://127.0.0.1:8765`）。如果端口被占用，运行 `python main.py --force`。
+
+**Q: AI 分析报错 429（限流）？**
+A: API 请求频率超限，系统会自动重试（最多 5 次）。等待 1-2 分钟后重试，或切换到其他 AI 服务商。
+
+**Q: 优化后的文档字体不对？**
+A: 请确保系统安装了公文字体（仿宋_GB2312、黑体、楷体_GB2312、方正小标宋简体）。TTF 目录下有字体文件，双击安装即可。
+
+**Q: 如何添加自定义规则？**
+A: 在「规则管理」页面可以查看和编辑规则。自定义规则保存在 `data/user_rules/`，优先级高于官方规则。
+
+**Q: 支持哪些文档格式？**
+A: 支持 `.docx`、`.doc`、`.wps` 三种格式。`.doc` 和 `.wps` 文件会自动转换为 `.docx` 后处理。
+
+---
+
+## 📝 开发日志
+
+详见 [CHANGELOG.md](./CHANGELOG.md)
+
+---
+
+## 🤝 社区与友链
+
+<p align="center">
+  <em>感谢以下开源项目和社区对本项目的支持与启发</em>
+</p>
+
+<p align="center">
+  <a href="https://linux.do/" target="_blank" rel="noopener noreferrer">
+    <img src="assets/LinuxDo.png" alt="LinuxDo" width="120" />
+  </a>
+</p>
+<p align="center">
+  <a href="https://linux.do/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/LinuxDo-感谢社区的支持与关注-orange?style=for-the-badge&logo=linux&logoColor=white" alt="LinuxDo" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://python-docx.readthedocs.io/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/python--docx-文档处理引擎-blue?style=for-the-badge&logo=python&logoColor=white" alt="python-docx" />
+  </a>
+  <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/FastAPI-后端框架-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  </a>
+  <a href="https://www.electronjs.org/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Electron-桌面壳-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron" />
+  </a>
+  <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/React-前端框架-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
+  </a>
+</p>
+
+<p align="center">
+
+  <a href="https://www.mohurd.gov.cn/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/GB%2FT%209704-党政机关公文格式-red?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMyA3djEwbDkgNSA5LTVIN0wxMiAyeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==" alt="GB/T 9704" />
+  </a>
+  <a href="https://github.com/linhut/document-ai-assistant/stargazers" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Star-支持本项目-yellow?style=for-the-badge&logo=github&logoColor=white" alt="Star" />
+  </a>
+</p>
+
+---
+
+## 📄 许可证
+
+[MIT License](./LICENSE)
+
+---
+
+## Star History
+
+<!-- star-history:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=linhut/document-ai-assistant&type=Date&theme=dark">
+  <img alt="Star history" src="https://api.star-history.com/svg?repos=linhut/document-ai-assistant&type=Date">
+</picture>
+<!-- star-history:end -->

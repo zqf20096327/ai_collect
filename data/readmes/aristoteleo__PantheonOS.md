@@ -1,0 +1,289 @@
+<div align="center">
+
+<img src="docs/source/_static/pantheon-github-banner.png" alt="PantheonOS — A framework for building evolvable and distributed multi-agent systems." width="100%" />
+
+[Official Site][official-site] · [Online App][online-app] · [Desktop App][desktop-release-link] · [Documents][docs] · [Feedback][github-issues-link]
+
+[official-site]: https://pantheonos.stanford.edu/
+[online-app]: https://app.pantheonos.stanford.edu/
+[docs]: https://pantheonos.readthedocs.io/en/latest/
+
+</div>
+
+<div align="center">
+
+<!-- SHIELD GROUP -->
+
+[![][website-shield]][website-link]
+[![][online-app-shield]][online-app]
+[![][desktop-shield]][desktop-release-link]
+[![][store-shield]][store-link]
+[![][manuscript-shield]][manuscript-link]
+[![][slack-shield]][slack-link]
+[![][discord-shield]][discord-link]
+<br/>
+[![][x-shield]][x-link]
+[![][github-forks-shield]][github-forks-link]
+[![][github-stars-shield]][github-stars-link]
+[![][github-issues-shield]][github-issues-link]
+[![][github-license-shield]][github-license-link]
+[![][python-shield]][python-link]
+[![][status-shield]]()
+
+</div>
+
+## `1` [What is PantheonOS?](#1-what-is-pantheonos)
+
+PantheonOS is an **evolvable and privacy-preserving multi-agent framework** designed to reconcile generality with domain specificity. PantheonOS automates, scales and accelerates data sciences, with a particular focus on end-to-end single cell biology analyses. Cruicially, PantheonOS leverages agentic code evolution to optimize state-of-the-art and nascent algorithms, achieving super-human performance on specialized scientific tasks. 
+
+### Key Highlights
+
+- **Evolvable** — [Pantheon-Evolve](https://pantheonos.stanford.edu/projects/evolve) module enables agents to improve algorithms and code through genetic-algorithm-driven agentic code evolution
+- **Multi-Agent Teams** — PantheonTeam, Sequential, Swarm, Mixture-of-Agents (MoA), and AgentAsTool team patterns for flexible orchestration
+- **Distributed Architecture** — NATS-based messaging for scalable, fault-tolerant deployments across machines. With [Pantheon-Fleet](https://pantheonos.stanford.edu/blog/pantheon-fleet), agents can directly control a distributed network of machines.
+- **Friendly Interfaces** — Interactive CLI (`pantheon cli`) and Chatroom UI (`pantheon ui`)
+- **[Pantheon Store](https://app.pantheonos.stanford.edu/#/store)** — A community marketplace with 1,000+ curated agents, teams, and skills for biomedical AI, installable via UI or CLI
+
+## `2` [Quick Start & Community](#2-quick-start--community)
+
+| | |
+| :--- | :--- |
+| [![][online-app-shield]][online-app] | Play with our Web UI! |
+| [![][desktop-shield]][desktop-release-link] | Download the latest desktop app release. |
+| [![][store-shield]][store-link] | Browse 1,000+ agents, teams, and skills! |
+| [![][install-shield]][install-link] | `pip install pantheon-agents` |
+| [![][slack-shield-badge]][slack-link] | Join our Slack community! |
+| [![][discord-shield-badge]][discord-link] | Join our Discord community! |
+
+## `3` [Installation](#3-installation)
+
+> [!NOTE]
+> **Security update — the June 2026 "Hades" incident is resolved.** The trojanized
+> `pantheon-agents` 0.6.1 and 0.6.2 releases have been removed from PyPI and the
+> account restored; current releases are clean, so install from PyPI as usual. If you
+> installed 0.6.1 or 0.6.2 during the incident, uninstall it and rotate any credentials
+> that were present on that machine.
+
+### Desktop App
+
+Download the latest Pantheon Desktop app:
+
+- [Desktop release page][desktop-release-link]
+
+Open the release page to download the latest version for your platform.
+
+### Using uv (Recommended)
+
+[uv](https://github.com/astral-sh/uv) is a fast Python package manager that handles dependencies efficiently.
+
+```bash
+# Install uv (if not already installed)
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Clone and install
+git clone https://github.com/aristoteleo/PantheonOS.git
+cd PantheonOS
+uv sync
+
+# With optional dependencies
+uv sync --extra knowledge  # RAG/vector search support
+uv sync --extra claw       # PantheonClaw mobile gateway channels
+uv sync --extra r          # R language support (requires R installed)
+```
+
+### Using pip
+
+```bash
+# Basic installation
+pip install pantheon-agents
+
+# With optional dependencies (e.g. RAG / vector search)
+pip install "pantheon-agents[knowledge]"
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/aristoteleo/PantheonOS.git
+cd PantheonOS
+uv sync --extra dev --extra knowledge
+
+# Run tests
+uv run pytest tests/
+```
+
+### Using Docker
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/nanguage/pantheon-agents)](https://hub.docker.com/r/nanguage/pantheon-agents)
+
+Run Pantheon in a containerized environment with everything pre-configured:
+
+```bash
+# Pull the image
+docker pull nanguage/pantheon-agents:latest
+
+# Run in standalone mode (for local use)
+docker run -it --rm \
+  -e PANTHEON_MODE=standalone \
+  -v $(pwd)/workspace:/workspace \
+  -p 8080:8080 \
+  nanguage/pantheon-agents:latest
+```
+
+After startup, copy the displayed connection URL to your browser and start using Pantheon. The Docker image reads factory templates directly from the running image, so startup does not copy templates into `/workspace` or container home. User-created project overrides still persist under the mounted `/workspace/.pantheon/` directory.
+
+For detailed Docker usage, deployment modes, and configuration options, see the [Docker documentation](https://github.com/aristoteleo/PantheonOS/tree/main/pantheon-agents/docker).
+
+## `4` [Usage](#4-usage)
+
+### CLI Mode
+
+```bash
+# Start the interactive REPL
+pantheon cli
+```
+
+### Chatroom UI
+
+```bash
+# Start the multi-agent chatroom
+pantheon ui --auto-start-nats --auto-ui
+```
+
+### API Usage
+
+Please refer to our [Documents][docs] for detailed API usage, including creating agents, using toolsets, and building teams.
+
+## `5` [Replayable Trajectories](#5-replayable-trajectories)
+
+Interactive replays of real multi-agent Pantheon sessions. Click any card to open the session step-by-step in the Pantheon UI — see every message, every file, every tool call.
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fmouse_embryo_e6_tangram_3d.zip"><img src="docs/source/_static/trajectories/mouse_embryo_e6_tangram_3d.jpg" height="220" alt="E6 Mouse Embryo Tangram + 3D Visualization"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fmouse_embryo_e6_tangram_3d.zip">🐭 E6 Mouse Embryo Tangram + 3D Visualization</a></b>
+<br/>
+Run Tangram deconvolution on E6.0 mouse embryo binned spatial transcriptomics (51,711 spots across 6 embryos, 16,732 shared genes) using the TOME atlas reference subset to timepoints 5.5/6.25 and 5 cell types (Epi, ExE, EmVE, PE, ExVE).
+</td>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fimmune_oncology_gene_panel_design.zip"><img src="docs/source/_static/trajectories/immune_oncology_gene_panel_design.jpg" height="220" alt="Immune Oncology Gene Panel Design"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fimmune_oncology_gene_panel_design.zip">🧬 Immune Oncology Gene Panel Design</a></b>
+<br/>
+Design a 1000-plex human immune oncology gene profiling panel using multi-agent collaboration.
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fhuman_heart_3d_disease_gene_pattern.zip"><img src="docs/source/_static/trajectories/human_heart_3d_disease_gene_pattern.jpg" height="220" alt="3D Human Fetal Heart Disease Gene Pattern"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fhuman_heart_3d_disease_gene_pattern.zip">🫀 3D Human Fetal Heart Disease Gene Pattern</a></b>
+<br/>
+Map congenital heart disease genes onto a 3D PCW12 human fetal heart using MERFISH spatial transcriptomics and scRNA-seq.
+</td>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fatac_spatial_mapping_moscot.zip"><img src="docs/source/_static/trajectories/atac_spatial_mapping_moscot.jpg" height="220" alt="ATAC Spatial Mapping via MOSCOT"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fatac_spatial_mapping_moscot.zip">🗺️ ATAC Spatial Mapping via MOSCOT</a></b>
+<br/>
+Spatially map fetal heart snATAC-seq onto MERFISH 3D coordinates using MOSCOT optimal transport.
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fspatial_ligand_receptor_disease.zip"><img src="docs/source/_static/trajectories/spatial_ligand_receptor_disease.jpg" height="220" alt="Spatial Ligand-Receptor Disease Analysis"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fspatial_ligand_receptor_disease.zip">🧬 Spatial Ligand-Receptor Disease Analysis</a></b>
+<br/>
+Run spatial ligand-receptor (CCI) interaction analysis on MOSCOT-imputed disease gene data using the Spateo spatial_cci skill.
+</td>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fheart_merfish_data_overview.zip"><img src="docs/source/_static/trajectories/heart_merfish_data_overview.jpg" height="220" alt="Heart MERFISH Data Overview"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fheart_merfish_data_overview.zip">🫀 Heart MERFISH Data Overview</a></b>
+<br/>
+Exploratory data overview of fetal heart MERFISH spatial transcriptomics.
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fmulti_channel_cell_segmentation.zip"><img src="docs/source/_static/trajectories/multi_channel_cell_segmentation.jpg" height="220" alt="Multi-Channel Cell Segmentation"/></a>
+<br/>
+<b><a href="https://pantheon-ui.aristoteleo.com/#/replay?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FNaNg%2FPantheon-Agent-Trajectory%2Fresolve%2Fmain%2Fmulti_channel_cell_segmentation.zip">🧬 Multi-Channel Cell Segmentation</a></b>
+<br/>
+Compare cell segmentation tools on a 3-channel embryo image (membrane / DAPI / brightfield).
+</td>
+<td width="50%" valign="top">
+<sub><i>More trajectories coming soon — <a href="https://huggingface.co/datasets/NaNg/Pantheon-Agent-Trajectory">browse the full dataset on HuggingFace →</a></i></sub>
+</td>
+</tr>
+</table>
+
+## `6` [Contributing](#6-contributing)
+
+Contributions of all types are more than welcome! Whether it's publishing skills to the [Pantheon Store][store-link] or contributing code, feel free to check out our GitHub [Issues][github-issues-link] to dive in.
+
+[![][pr-welcome-shield]][pr-welcome-link]
+[![][store-contribute-shield]][store-link]
+
+## License
+
+This project is [BSD 2-Clause](./LICENSE) licensed.
+
+Copyright © 2026 [Qiu Lab](https://www.devo-evo.com/).
+
+<!-- LINK GROUP -->
+
+[github-contributors-link]: https://github.com/aristoteleo/PantheonOS/graphs/contributors
+[github-contributors-shield]: https://img.shields.io/github/contributors/aristoteleo/PantheonOS?color=c4f042&labelColor=black&style=flat-square
+[github-forks-link]: https://github.com/aristoteleo/PantheonOS/network/members
+[github-forks-shield]: https://img.shields.io/github/forks/aristoteleo/PantheonOS?color=8ae8ff&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/aristoteleo/PantheonOS/issues
+[github-issues-shield]: https://img.shields.io/github/issues/aristoteleo/PantheonOS?color=ff80eb&labelColor=black&style=flat-square
+[github-license-link]: https://github.com/aristoteleo/PantheonOS/blob/main/LICENSE
+[github-license-shield]: https://img.shields.io/badge/license-BSD--2--Clause-white?labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/aristoteleo/PantheonOS/stargazers
+[github-stars-shield]: https://img.shields.io/github/stars/aristoteleo/PantheonOS?color=ffcb47&labelColor=black&style=flat-square
+
+[website-link]: https://pantheonos.stanford.edu/
+[website-shield]: https://img.shields.io/badge/official--website-55b467?labelColor=black&logo=safari&logoColor=white&style=flat-square
+[desktop-release-link]: https://github.com/aristoteleo/PantheonOS/releases/tag/desktop-latest
+[desktop-shield]: https://img.shields.io/badge/desktop-download-1f6feb?labelColor=black&logo=github&logoColor=white&style=flat-square
+[manuscript-link]: https://pantheonos.stanford.edu/paper
+[manuscript-shield]: https://img.shields.io/badge/manuscript-read-red?labelColor=black&logo=arxiv&logoColor=white&style=flat-square
+[x-link]: https://x.com/PantheonOS
+[x-shield]: https://img.shields.io/badge/X-follow-000000?labelColor=black&logo=x&logoColor=white&style=flat-square
+[bluesky-link]: https://bsky.app/profile/pantheonos.bsky.social
+[bluesky-shield]: https://img.shields.io/badge/bluesky-follow-0085FF?labelColor=black&logo=bluesky&logoColor=white&style=flat-square
+[online-app-shield]: https://img.shields.io/badge/online%20app-try%20now-369eff?labelColor=black&logo=googlechrome&logoColor=white&style=flat-square
+[discord-link]: https://discord.com/invite/UHsuzAyz
+[discord-shield]: https://img.shields.io/badge/discord-join-5865F2?labelColor=black&logo=discord&logoColor=white&style=flat-square
+[discord-shield-badge]: https://img.shields.io/badge/discord-join-5865F2?labelColor=black&logo=discord&logoColor=white&style=flat-square
+
+[slack-link]: https://join.slack.com/t/pantheonos/shared_invite/zt-3bmj318fo-vAWtJA01VkcqyHsleduFjQ
+[slack-shield]: https://img.shields.io/badge/slack-join-4A154B?labelColor=black&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik01LjA0MiAxNS4xNjVhMi41MjggMi41MjggMCAwIDEtMi41MiAyLjUyM0EyLjUyOCAyLjUyOCAwIDAgMSAwIDE1LjE2NWEyLjUyNyAyLjUyNyAwIDAgMSAyLjUyMi0yLjUyaDIuNTJ2Mi41MnptMS4yNzEgMGEyLjUyNyAyLjUyNyAwIDAgMSAyLjUyMS0yLjUyIDIuNTI3IDIuNTI3IDAgMCAxIDIuNTIxIDIuNTJ2Ni4zMTNBMi41MjggMi41MjggMCAwIDEgOC44MzQgMjRhMi41MjggMi41MjggMCAwIDEtMi41MjEtMi41MjJ2LTYuMzEzek04LjgzNCA1LjA0MmEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMS0yLjUyQTIuNTI4IDIuNTI4IDAgMCAxIDguODM0IDBhMi41MjggMi41MjggMCAwIDEgMi41MjEgMi41MjJ2Mi41Mkg4LjgzNHptMCAxLjI3MWEyLjUyOCAyLjUyOCAwIDAgMSAyLjUyMSAyLjUyMSAyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMSAyLjUyMUgyLjUyMkEyLjUyOCAyLjUyOCAwIDAgMSAwIDguODM0YTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIyLTIuNTIxaDYuMzEyem0xMC4xMjIgMi41MjFhMi41MjggMi41MjggMCAwIDEgMi41MjItMi41MjFBMi41MjggMi41MjggMCAwIDEgMjQgOC44MzRhMi41MjggMi41MjggMCAwIDEtMi41MjIgMi41MjFoLTIuNTIyVjguODM0em0tMS4yNjggMGEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMyAyLjUyMSAyLjUyNyAyLjUyNyAwIDAgMS0yLjUyLTIuNTIxVjIuNTIyQTIuNTI3IDIuNTI3IDAgMCAxIDE1LjE2NSAwYTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIzIDIuNTIydjYuMzEyem0tMi41MjMgMTAuMTIyYTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIzIDIuNTIyQTIuNTI4IDIuNTI4IDAgMCAxIDE1LjE2NSAyNGEyLjUyNyAyLjUyNyAwIDAgMS0yLjUyLTIuNTIydi0yLjUyMmgyLjUyem0wLTEuMjY4YTIuNTI3IDIuNTI3IDAgMCAxLTIuNTItMi41MjMgMi41MjcgMi41MjcgMCAwIDEgMi41Mi0yLjUyaDYuMzEzQTIuNTI4IDIuNTI4IDAgMCAxIDI0IDE1LjE2NWEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMiAyLjUyM2gtNi4zMTN6Ii8+PC9zdmc+&style=flat-square
+[slack-shield-badge]: https://img.shields.io/badge/slack-join-4A154B?labelColor=black&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik01LjA0MiAxNS4xNjVhMi41MjggMi41MjggMCAwIDEtMi41MiAyLjUyM0EyLjUyOCAyLjUyOCAwIDAgMSAwIDE1LjE2NWEyLjUyNyAyLjUyNyAwIDAgMSAyLjUyMi0yLjUyaDIuNTJ2Mi41MnptMS4yNzEgMGEyLjUyNyAyLjUyNyAwIDAgMSAyLjUyMS0yLjUyIDIuNTI3IDIuNTI3IDAgMCAxIDIuNTIxIDIuNTJ2Ni4zMTNBMi41MjggMi41MjggMCAwIDEgOC44MzQgMjRhMi41MjggMi41MjggMCAwIDEtMi41MjEtMi41MjJ2LTYuMzEzek04LjgzNCA1LjA0MmEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMS0yLjUyQTIuNTI4IDIuNTI4IDAgMCAxIDguODM0IDBhMi41MjggMi41MjggMCAwIDEgMi41MjEgMi41MjJ2Mi41Mkg4LjgzNHptMCAxLjI3MWEyLjUyOCAyLjUyOCAwIDAgMSAyLjUyMSAyLjUyMSAyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMSAyLjUyMUgyLjUyMkEyLjUyOCAyLjUyOCAwIDAgMSAwIDguODM0YTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIyLTIuNTIxaDYuMzEyem0xMC4xMjIgMi41MjFhMi41MjggMi41MjggMCAwIDEgMi41MjItMi41MjFBMi41MjggMi41MjggMCAwIDEgMjQgOC44MzRhMi41MjggMi41MjggMCAwIDEtMi41MjIgMi41MjFoLTIuNTIyVjguODM0em0tMS4yNjggMGEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMyAyLjUyMSAyLjUyNyAyLjUyNyAwIDAgMS0yLjUyLTIuNTIxVjIuNTIyQTIuNTI3IDIuNTI3IDAgMCAxIDE1LjE2NSAwYTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIzIDIuNTIydjYuMzEyem0tMi41MjMgMTAuMTIyYTIuNTI4IDIuNTI4IDAgMCAxIDIuNTIzIDIuNTIyQTIuNTI4IDIuNTI4IDAgMCAxIDE1LjE2NSAyNGEyLjUyNyAyLjUyNyAwIDAgMS0yLjUyLTIuNTIydi0yLjUyMmgyLjUyem0wLTEuMjY4YTIuNTI3IDIuNTI3IDAgMCAxLTIuNTItMi41MjMgMi41MjcgMi41MjcgMCAwIDEgMi41Mi0yLjUyaDYuMzEzQTIuNTI4IDIuNTI4IDAgMCAxIDI0IDE1LjE2NWEyLjUyOCAyLjUyOCAwIDAgMS0yLjUyMiAyLjUyM2gtNi4zMTN6Ii8+PC9zdmc+&style=flat-square
+
+[pypi-link]: https://pypi.org/project/pantheon-agents
+[pypi-shield]: https://img.shields.io/pypi/v/pantheon-agents?color=369eff&labelColor=black&logo=pypi&logoColor=white&style=flat-square
+
+[python-link]: https://www.python.org/downloads/
+[python-shield]: https://img.shields.io/badge/python-3.10%2B-3776AB?labelColor=black&style=flat-square&logo=python&logoColor=white
+[status-shield]: https://img.shields.io/badge/status-beta-orange?labelColor=black&style=flat-square
+
+
+[store-link]: https://app.pantheonos.stanford.edu/#/store
+[store-shield]: https://img.shields.io/badge/store-explore-8B5CF6?labelColor=black&logo=googlechrome&logoColor=white&style=flat-square
+
+[install-link]: #3-installation
+[install-shield]: https://img.shields.io/badge/install-from%20source-2ea043?labelColor=black&logo=github&logoColor=white&style=flat-square
+
+[store-contribute-shield]: https://img.shields.io/badge/store-contribute-8B5CF6?labelColor=black&logo=googlechrome&logoColor=white&style=for-the-badge
+
+[pr-welcome-link]: https://github.com/aristoteleo/PantheonOS/pulls
+[pr-welcome-shield]: https://img.shields.io/badge/👌_pr_welcome-%E2%86%92-ffcb47?labelColor=black&style=for-the-badge

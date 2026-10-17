@@ -1,0 +1,127 @@
+<p align='center'>
+<img src='supaclaw.jpeg' width='200' alt='SupaClaw'>
+</p>
+
+# SupaClaw 
+
+Built entirely on Supabase built-in features. Use within your Supabase account or fully self-host.
+
+***Why?***
+
+Because why not.
+
+I use Supabase daily. I know it. I trust it. I'm already self-hosting it for production projects. It already ships with every primitive needed. 
+
+And of course the big one:
+
+**Security**:
+
+- No access to any credentials, but agent still can do everything
+- Bash, but as a simulated environment for most use cases, whitelisted for most others and VM -sandbox where really needed
+- No access to destructive actions without audit/revert option (e.g. database delete actions, delete files)
+- Access: Auth, JWT secured endpoints, Row level security
+- Database backups serve as full system snapshot backup (All data , all files)
+
+## Where SupaClaw is different
+
+SupaClaw is not trying to out-feature OpenClaw. It optimizes for a different goal: 
+
+> Supabase-native operations with minimal moving parts + Supabase goodies out of the box (e.g. Admin Dashboard, API's, SDK's). Fast cloud setup on only Supabase (no other Cloud provider or infrastructure needed) or private self hosting later.
+
+- **One control plane:** Database, storage, auth, logs, cron, and edge runtime are all native Supabase primitives that can be managed via the built-in Admin Dashboard.
+- **Durable by design:** Inbound events are persisted and queued first, then processed by workers with retry + idempotency semantics.
+- **SQL-driven scheduling:** Scheduled work is managed by Postgres (`pg_cron`) instead of a custom always-on scheduler process.
+- **Serverless worker loop:** Webhook ingest and agent execution run as edge functions, with cron as a durable backstop.
+- **Data properly stored:** Messages, jobs, and tasks are directly inspectable and debuggable in SQL and Supabase dashboard views.
+- **Lower infra overhead:** No dedicated daemon host, no separate queue broker, no extra orchestration layer, instead production ready, battle tested & secure tech
+
+# Quickstart
+
+Get SupaClaw running in under 5 minutes.
+
+## Prerequisites
+
+1. **Supabase CLI installed**: Install via `brew install supabase/tap/supabase`
+2. **Deno CLI installed**: Install via `brew install deno`
+3. **Docker Desktop App**: Must be running on your machine
+4. **AI API Key**: Get one from [Anthropic](https://console.anthropic.com) or [OpenAI](https://platform.openai.com)
+
+## Interactive setup walkthrough
+
+Use this script to get guided through all steps. It discovers already set config and running services and idempotently installs/migrates/starts everything step by step.
+
+```bash
+bash ./scripts/install.sh
+```
+
+In a nutshell this script basically runs:
+
+```bash
+supabase start
+supabase db push --local
+ngrok http 54321
+supabase storage cp (agent files)
+select vault.create_secret(...)
+curl -sS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook"
+supabase functions serve
+```
+
+For a detailed walkthrough documentation (for local or cloud deployment) look at [DEPLOY.md](DEPLOY.md)
+
+**That's it.** No daemon setup, no complex config, no VPS, no security headaches.
+
+## Architecture
+
+For fancy diagrams look into [ARCHITECTURE.md](ARCHITECTURE.md)
+
+Check out [PRD.md](PRD.md) to see how I briefed my coding agents.
+
+For security-minded folks, see [SECURITY.md](SECURITY.md).
+
+## Roadmap
+
+### Done (v0.1.0)
+- ✅ Core architecture
+- ✅ Supabase integration (schema + jobs)
+- ✅ Multi channel support (Telegram, Slack, Teams, Discord, ..)
+- ✅ Memory tables + hybrid search (FTS + pgvector)
+- ✅ File Tools (read/write/list/edit)
+- ✅ Web Tools (web-search/web-fetch)
+- ✅ Skills
+- ✅ Cron tool (reminders, scheduled tasks, recurring jobs)
+- ✅ Bash tool (In Memory Filesystem)
+
+### Next (v0.2.0)
+- [ ] Bash tool (CLI's)
+- [ ] Self access via Github
+- [ ] Connectors (calendar, email, etc.)
+- [ ] Web chat UI
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/vincenzodomina/supaclaw/issues)
+
+## Contributions
+
+...are welcome! 
+
+Fork it, tweak it, PR it, repeat!
+
+## Credits
+
+Inspired by [OpenClaw](https://github.com/openclaw/openclaw) - amazing project
+
+Built with: 
+- [Supabase](https://supabase.com) - the goat
+- [Vercel AI SDK](https://ai-sdk.dev/) - awesome multi provider support
+- [OpenCode](https://github.com/sst/opencode) - inspiration for the tools
+
+> This project is not affiliated with Supabase
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**SupaClaw**: Keep it yours. 🦀

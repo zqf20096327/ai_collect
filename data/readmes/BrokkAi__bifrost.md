@@ -1,0 +1,226 @@
+<h1 align="center">Bifrost</h1>
+
+<p align="center">
+  <a href="https://bifrost.brokk.ai/">
+    <img src="docs/src/assets/bifrost-social-card.svg" alt="Bifrost — code intelligence for AI, with structural queries and multi-language analysis designed for repository-scale use" width="720">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/BrokkAi/bifrost/releases/latest"><img src="https://img.shields.io/github/v/release/BrokkAi/bifrost" alt="Latest release"></a>
+  <a href="https://crates.io/crates/brokk-bifrost"><img src="https://img.shields.io/crates/v/brokk-bifrost" alt="crates.io"></a>
+  <a href="https://pypi.org/project/brokk-bifrost-searchtools/"><img src="https://img.shields.io/pypi/v/brokk-bifrost-searchtools" alt="PyPI"></a>
+  <a href="https://www.npmjs.com/package/@brokkai/bifrost"><img src="https://img.shields.io/npm/v/%40brokkai%2Fbifrost" alt="npm"></a>
+  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/BrokkAi/bifrost" alt="Apache-2.0"></a>
+</p>
+
+<p align="center">
+  <a href="#run-your-first-query">Quickstart</a> ·
+  <a href="https://bifrost.brokk.ai/">Documentation</a> ·
+  <a href="https://bifrost.brokk.ai/evaluate-bifrost/">Ten-minute evaluation</a> ·
+  <a href="https://discord.gg/geYkWUeH">Discord</a>
+</p>
+
+## Why Bifrost?
+
+`bifrost` is Brokk's Rust-based static analysis toolbox for AI coding harnesses,
+editors, and large repositories.
+
+Bifrost gives every supported language a shared intermediate representation, so
+the same structural query and navigation workflows work across a mixed-language
+repository instead of stopping at language boundaries.
+
+- **One multi-language IR.** Parse unbuilt or partially broken workspaces and
+  normalize their source structure for cross-language analysis.
+- **A real query language.** Use JSON CodeQuery or the Rune Query Language
+  (RQL) to find language-neutral code shapes and traverse indexed declarations,
+  references, calls, imports, and type relationships.
+- **Built for agents and editors.** Expose structured MCP tools to coding
+  agents, LSP features to editors, and the same analyzer through the CLI,
+  Python, and Rust.
+- **Designed for active repositories.** Snapshot isolation, incremental updates,
+  content-based caching, and git/worktree awareness keep analysis responsive as
+  a repository changes.
+
+See [Choose Bifrost](https://bifrost.brokk.ai/choose-bifrost/) for the
+right interface for your workflow, and the [Language and Analysis
+Capabilities](https://bifrost.brokk.ai/capabilities/) matrix for
+language-by-language support, precision tiers, and current analysis boundaries.
+
+## Run Your First Query
+
+Install the released CLI, clone the small verified evaluation fixture, and run
+its saved RQL query:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/BrokkAi/bifrost/refs/heads/master/install.sh | bash
+git clone --depth 1 https://github.com/BrokkAi/bifrost.git
+cd bifrost/docs/fixtures/ten-minute-evaluation
+bifrost --root . --query-file queries/find-audit.rql
+```
+
+Users with [uv](https://docs.astral.sh/uv/) or
+[pipx](https://pipx.pypa.io/) can instead run `uv tool install brokk-bifrost` or
+`pipx install brokk-bifrost`; both install the same native `bifrost` command
+from a platform wheel in an isolated environment. `uvx brokk-bifrost --version`
+runs it without a persistent install.
+
+Node users can run `npm install -g @brokkai/bifrost` or use
+`npx -y @brokkai/bifrost --version`. The npm package installs the same released
+native command for the current platform.
+
+The installer downloads the checksum-verified release binary into `~/.local/bin`
+on macOS (Apple Silicon and Intel), glibc 2.28+ Linux (x86-64 and ARM64), WSL,
+and Android under Termux. Homebrew users on macOS and glibc Linux can run
+`brew install brokkai/tap/bifrost` instead. On Windows, use the published
+archive or build from source. Musl distributions such as Alpine have no
+supported prebuilt release; users can attempt a source build with
+`cargo install brokk-bifrost --locked`. See
+[Install Bifrost](docs/src/content/docs/install.md) for the full platform
+table.
+
+The result identifies the normalized Python call and its exact source location:
+
+```json
+{
+  "isError": false,
+  "structuredContent": {
+    "results": [
+      {
+        "enclosing_symbol": "src.app.handle",
+        "end_line": 5,
+        "kind": "call",
+        "language": "python",
+        "path": "src/app.py",
+        "result_type": "structural_match",
+        "start_line": 5,
+        "text": "audit(value)"
+      }
+    ],
+    "truncated": false
+  }
+}
+```
+
+Continue with the [ten-minute
+evaluation](https://bifrost.brokk.ai/evaluate-bifrost/) to run the same
+query through the CLI, an MCP-connected coding agent, and VS Code.
+
+## See Bifrost in Action
+
+### Turn Source into a Query in VS Code
+
+<p align="center">
+  <a href="https://bifrost.brokk.ai/rune-ir/">
+    <img src="docs/src/assets/bifrost-vscode-query-playground.gif" alt="Selecting Python source in VS Code, inspecting its normalized Rune IR, using the generated starter RQL, and browsing the exact query result" width="900">
+  </a>
+</p>
+
+Select a source construct and run **Bifrost: Show Rune IR** to inspect its
+language-neutral `.rune` form and get a conservative starter RQL query. Run that
+query from the editor, browse typed results grouped by file, and jump to the
+exact source range. The extension also provides definitions, references, hover,
+rename, symbols, hierarchy, diagnostics, completion, and other LSP features.
+
+### Use the Same Analyzer from the CLI
+
+<p align="center">
+  <a href="https://bifrost.brokk.ai/cli/">
+    <img src="docs/src/assets/bifrost-cli-query.gif" alt="Running a saved RQL query with the Bifrost CLI and receiving an exact structured match" width="900">
+  </a>
+</p>
+
+Run saved RQL or JSON queries directly, or call the same named tools exposed over
+MCP for shell scripts and reproducible analysis workflows.
+
+## Language Coverage
+
+Bifrost includes analyzers for C, C++, C#, Go, Java, JavaScript, Kotlin, PHP,
+Python, Ruby, Rust, Scala, and TypeScript. See the [capability
+matrix](https://bifrost.brokk.ai/capabilities/) for the supported
+analysis and precision boundaries in each language.
+
+## Documentation
+
+The public documentation site lives in [`docs/`](docs/) and is published at
+[bifrost.brokk.ai](https://bifrost.brokk.ai/).
+
+Useful starting points:
+
+- [Choose the right Bifrost interface](docs/src/content/docs/choose-bifrost.md)
+- [Third-party notices](docs/src/content/docs/third-party-notices.md)
+- [Install Bifrost](docs/src/content/docs/install.md)
+- [Evaluate Bifrost in ten minutes](docs/src/content/docs/evaluate-bifrost.md)
+- [MCP server and toolsets](docs/src/content/docs/mcp.md)
+- [LSP server](docs/src/content/docs/lsp.md)
+- [CLI usage](docs/src/content/docs/cli.md)
+- [Code querying](docs/src/content/docs/code-querying.md)
+
+Run the docs site locally with:
+
+```bash
+cd docs
+npm install
+npm run dev
+```
+
+GitHub Pages publication is handled by `.github/workflows/docs.yml`. Release tag
+builds publish both the latest docs site and a versioned snapshot under
+`versions/<tag>/`.
+
+## Repository Layout
+
+The repository is organized around the public product surfaces:
+
+- **Core analysis:** [`crates/`](crates/) contains the Rust workspace crates;
+  [`src/`](src/) provides the top-level facade and CLI; [`schemas/`](schemas/)
+  holds shared data contracts.
+- **Integrations and distribution:** [`editors/zed/`](editors/zed/) contains the
+  Zed extension; the VS Code extension is maintained in
+  [`BrokkAi/bifrost-lsp`](https://github.com/BrokkAi/bifrost-lsp).
+  [`plugins/`](plugins/) contains coding-agent plugins; [`npm/`](npm/),
+  [`packaging/`](packaging/), and
+  [`bifrost_searchtools/`](bifrost_searchtools/) expose or package the analyzer.
+- **Documentation and examples:** [`docs/`](docs/) is the documentation site;
+  [`examples/`](examples/) contains runnable examples.
+- **Open analysis content:**
+  [`BrokkAi/bifrost-packs`](https://github.com/BrokkAi/bifrost-packs) is the home
+  for open semantic packs and policy rules, including contributions, generation,
+  and independently versioned releases. The v0.13 engine ships without product
+  rules; LSP/MCP and other hosts acquire compatible releases through the verified
+  cache flow. Parser assets and separate semantic-model packs remain engine
+  inputs. The engine retains pack tooling and regression fixtures; [`.bifrost/`](.bifrost/)
+  contains project-level analysis defaults.
+- **Development support:** [`benchmark/`](benchmark/) covers reproducible
+  measurements; [`scripts/`](scripts/) and [`tools/`](tools/) hold maintenance
+  and release helpers. Root manifests plus `.github/`, `.cargo/`, and `.config/`
+  define builds, checks, and automation.
+
+## License and Commercial Use
+
+Bifrost's public open core is licensed under `Apache-2.0` and may be used in
+research, internal systems, hosted services, and commercial products. Read the
+[License](https://bifrost.brokk.ai/license-use-cases/) page for the project
+terms and [Third-Party Notices](https://bifrost.brokk.ai/third-party-notices/)
+for the additional terms that apply to official binaries and semantic packs.
+
+## Contributing
+
+<p><strong>Project contributors</strong>&nbsp;&nbsp;
+  <a href="https://github.com/jbellis"><img src="https://github.com/jbellis.png?size=96" width="40" height="40" alt="@jbellis" title="@jbellis"></a>
+  <a href="https://github.com/DavidBakerEffendi"><img src="https://github.com/DavidBakerEffendi.png?size=96" width="40" height="40" alt="@DavidBakerEffendi" title="@DavidBakerEffendi"></a>
+  <a href="https://github.com/foundev"><img src="https://github.com/foundev.png?size=96" width="40" height="40" alt="@foundev" title="@foundev"></a>
+  <a href="https://github.com/sontek"><img src="https://github.com/sontek.png?size=96" width="40" height="40" alt="@sontek" title="@sontek"></a>
+  <a href="https://github.com/alexswearingen"><img src="https://github.com/alexswearingen.png?size=96" width="40" height="40" alt="@alexswearingen" title="@alexswearingen"></a>
+  <a href="https://github.com/joshuadavidthomas"><img src="https://github.com/joshuadavidthomas.png?size=96" width="40" height="40" alt="@joshuadavidthomas" title="@joshuadavidthomas"></a>
+</p>
+
+<sub>The public repository is projected from Bifrost's open-core source, so its
+GitHub contributor graph does not reflect everyone who helped build the project.</sub>
+
+For local development, test commands, repository-local Python workflow, and
+release tagging, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Contribute open semantic models and policies to
+[`Bifrost-packs`](https://github.com/BrokkAi/bifrost-packs). Engine, parser,
+catalog, and policy-evaluation improvements belong here.

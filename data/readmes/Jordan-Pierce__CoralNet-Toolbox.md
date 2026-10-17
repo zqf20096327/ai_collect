@@ -1,0 +1,222 @@
+# CoralNet-Toolbox 🪸🧰
+
+<div align="center">
+<img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/coralnet_toolbox.png" alt="CoralNet-Toolbox" width="300">
+<p><strong>AI-Powered Annotation for Coral Reef Analysis</strong>. An unofficial toolkit to supercharge your <a href="https://coralnet.ucsd.edu/">CoralNet</a> workflows.</p>
+</div>
+
+<div align="center">
+
+[![Python Version](https://img.shields.io/pypi/pyversions/CoralNet-Toolbox.svg?style=for-the-badge&logo=python&logoColor=white)](https://pypi.org/project/CoralNet-Toolbox)
+[![Version](https://img.shields.io/pypi/v/CoralNet-Toolbox.svg?style=for-the-badge&color=blue)](https://pypi.python.org/pypi/CoralNet-Toolbox)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Jordan-Pierce/CoralNet-Toolbox?style=for-the-badge)](https://github.com/Jordan-Pierce/CoralNet-Toolbox)
+[![Downloads](https://img.shields.io/pepy/dt/coralnet-toolbox.svg?style=for-the-badge&color=brightgreen)](https://pepy.tech/project/coralnet-toolbox)
+
+[![PyPI Passing](https://img.shields.io/github/actions/workflow/status/Jordan-Pierce/CoralNet-Toolbox/pypi.yml?style=for-the-badge&label=PyPI%20Build&logo=github)](https://pypi.org/project/CoralNet-Toolbox)
+[![Windows](https://img.shields.io/github/actions/workflow/status/Jordan-Pierce/CoralNet-Toolbox/windows.yml?style=for-the-badge&label=Windows&logo=windows&logoColor=white)](https://pypi.org/project/CoralNet-Toolbox)
+[![macOS](https://img.shields.io/github/actions/workflow/status/Jordan-Pierce/CoralNet-Toolbox/macos.yml?style=for-the-badge&label=macOS&logo=apple&logoColor=white)](https://pypi.org/project/CoralNet-Toolbox)
+[![Ubuntu](https://img.shields.io/github/actions/workflow/status/Jordan-Pierce/CoralNet-Toolbox/ubuntu.yml?style=for-the-badge&label=Ubuntu&logo=ubuntu&logoColor=white)](https://pypi.org/project/CoralNet-Toolbox)
+
+</div>
+
+Marine imaging technology is advancing rapidly, capturing more data than ever before. To keep pace, the instinct of the tech industry is often to build entirely new, fully automated pipelines that disrupt how scientists naturally work. However, this ignores the reality of ecological research: laboratories already rely on stringent standards, deeply established protocols, and decades of domain expertise. CoralNet-Toolbox recognizes that the goal shouldn't be to force a new way of working, but to respect and protect the processes that already yield rigorous scientific results.
+
+## ⚡ Get Started
+
+**1. Create Conda Environment (Recommended)**
+
+```bash
+# Create and activate custom environment
+conda create --name coralnet12 python=3.12 -y
+conda activate coralnet12
+
+# Install uv
+pip install uv
+```
+
+> **Python version**: **3.12 is recommended**, and **3.11** is fully supported. Python 3.10 still installs but is deprecated: it reaches end-of-life in October 2026, and newer releases of several dependencies already require 3.11 or 3.12. Python 3.13 and later are not supported yet.
+>
+> Already on an older environment (for example `coralnet10`)? Python cannot be upgraded in place — see [Moving an Existing Environment to Python 3.12](https://jordan-pierce.github.io/CoralNet-Toolbox/installation/#moving-an-existing-environment-to-python-312) for the steps.
+
+**2. (Optional) GPU Acceleration**
+If you have an NVIDIA GPU with `CUDA`, install `PyTorch` with `CUDA` support for full acceleration.
+
+```bash
+# Example for CUDA 12.8 for a NVIDIA 5090 (blackwell); use your version of CUDA
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+```
+
+**3. Install**
+
+```bash
+# Use UV for the fastest installation
+uv pip install coralnet-toolbox
+```
+> **Fallback**: If UV fails, use regular pip: `pip install coralnet-toolbox`
+
+**4. Launch**
+
+```bash
+coralnet-toolbox
+```
+
+### 🎯 **GPU Status Indicators**
+- **🐢** CPU only
+- **🐇** Single GPU
+- **🚀** Multiple GPUs  
+- **🍎** Mac Metal (Apple Silicon)
+
+*Click the icon in the bottom-left to see available devices*
+
+
+### ⚠️ Platform-Specific Notes
+
+#### macOS Users
+
+Version `1.0.0` and greater relies heavily on a package (`PyQtADS`) that cannot be installed on your operating system. Please do not upgrade from `0.0.105` until this is resolved. Instead, use `Docker` for installation — see the [Installation Guide](https://jordan-pierce.github.io/CoralNet-Toolbox/installation) for details.
+
+### 🔧 Running into Issues?
+
+#### **Upgrading**
+```bash
+# Upgrade coralnet-toolbox only (without upgrading other packages)
+uv pip install --upgrade coralnet-toolbox
+```
+
+> **Note**: Using `-U` or `--upgrade-all` upgrades **all packages**, which may trigger a regression to the CPU version of `torch`. To avoid this, use the command above to upgrade only coralnet-toolbox. If you do experience a regression, use `pip` to uninstall `torch` and `torchvision`, then re-install the `CUDA` version.
+
+#### **Removing Packages**
+
+To remove a problematic package, type the following:
+
+```bash
+uv pip uninstall package-name-here
+```
+
+#### **Starting Fresh (New Environment)**
+
+To delete an old environment and create a fresh one:
+
+```bash
+# Deactivate if already in the environment
+conda deactivate
+
+# Delete the old environment (coralnet10 is the old Python 3.10 one)
+conda env remove --name coralnet10
+
+# Confirm when prompted
+y
+
+# Create a new environment (see "Get Started" section above for details)
+conda create --name coralnet12 python=3.12 -y
+conda activate coralnet12
+pip install uv
+uv pip install coralnet-toolbox
+```
+
+-----
+
+## 📚 Resources & Advanced Details
+
+
+* [**Installation Guide**](https://jordan-pierce.github.io/CoralNet-Toolbox/installation): Detailed setup for CUDA, Windows, and Mac.
+* [**User Manual**](https://jordan-pierce.github.io/CoralNet-Toolbox/usage): A complete guide to all tools and features.
+* [**Hot Keys**](https://jordan-pierce.github.io/CoralNet-Toolbox/hot-keys): Keyboard shortcuts to accelerate your workflow.
+* [**AI Tutorial**](https://jordan-pierce.github.io/CoralNet-Toolbox/classify): Learn to train your own classification models.
+
+<details open>
+<summary><h3>📺 <strong>Watch the Demo Videos</strong></h3></summary>
+
+<div align="center">
+  <a href="https://youtube.com/playlist?list=PLG5z9IbwhS5NQT3B2jrg3hxQgilDeZak9&feature=shared">
+    <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/toolbox_qt.PNG" alt="Video Tutorial Series" width="80%" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  </a>
+  
+  <p><strong>🎬 Complete playlist covering all major features and workflows</strong></p>
+</div>
+</details>
+
+## From Bottleneck to Pipeline
+
+Traditional benthic imagery analysis is time-consuming. Manual annotation, data management, and model training are often separate, complex tasks. CoralNet-Toolbox unifies this process, turning a research bottleneck into an integrated, AI-accelerated pipeline.
+
+<div align="center">
+
+### 📝 **Core Annotation Tools**
+
+| <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Patches.gif" alt="Patch Annotation" width="250" style="border-radius: 8px;"/><br>**🎯 Patch Annotation** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Rectangles.gif" alt="Rectangle Annotation" width="250" style="border-radius: 8px;"/><br>**📐 Rectangle Annotation** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Polygons.gif" alt="Polygon Annotation" width="250" style="border-radius: 8px;"/><br>**🔷 Multi-Polygon Annotation** |
+|:---:|:---:|:---:|
+
+### 🤖 **AI-Powered Analysis**
+
+| <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Classification.gif" alt="Classification" width="250" style="border-radius: 8px;"/><br>**🧠 Image Classification** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Object_Detection.gif" alt="Object Detection" width="250" style="border-radius: 8px;"/><br>**🎯 Object Detection** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Instance_Segmentation.gif" alt="Instance Segmentation" width="250" style="border-radius: 8px;"/><br>**🎭 Instance Segmentation** |
+|:---:|:---:|:---:|
+
+### 🔬 **Advanced Capabilities**
+
+| <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Segment_Anything.gif" alt="SAM" width="250" style="border-radius: 8px;"/><br>**🪸 Segment Anything (SAM)** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Classifying_Polygons.gif" alt="Polygon Classification" width="250" style="border-radius: 8px;"/><br>**🔍 Polygon Classification** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Work_Areas.gif" alt="Work Areas" width="250" style="border-radius: 8px;"/><br>**📍 Region-based Detection** |
+|:---:|:---:|:---:|
+
+### ✂️ **Editing & Processing Tools**
+
+| <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Cut.gif" alt="Cut Tool" width="250" style="border-radius: 8px;"/><br>**✂️ Cut** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Combine.gif" alt="Combine Tool" width="250" style="border-radius: 8px;"/><br>**🔗 Combine** | <img src="https://github.com/Jordan-Pierce/CoralNet-Toolbox/releases/download/docs-assets/Simplify.gif" alt="Simplify Tool" width="250" style="border-radius: 8px;"/><br>**🎨 Simplify** |
+|:---:|:---:|:---:|
+
+</div>
+
+## 🌊 Success Stories
+
+> **Using CoralNet-Toolbox in your research?** 
+> 
+> We'd love to feature your work! Share your success stories to help others learn and get inspired.
+
+---
+
+
+## 🌍 About CoralNet
+
+Coral reefs are among Earth's most biodiverse ecosystems, supporting marine life and coastal communities worldwide. However, they face unprecedented threats from climate change, pollution, and human activities.
+
+**[CoralNet](https://coralnet.ucsd.edu/)** is a revolutionary platform enabling researchers to:
+- Upload and analyze coral reef photographs
+- Create detailed species annotations
+- Build AI-powered classification models
+- Collaborate with the global research community
+
+The **CoralNet-Toolbox** extends this mission by providing advanced AI tools that accelerate research and improve annotation quality.
+
+---
+
+## 📄 Citation
+
+If you use CoralNet-Toolbox in your research, please cite:
+
+```bibtex
+@misc{CoralNet-Toolbox,
+  author = {Pierce, Jordan and Battista, Tim and Sandin, Stuart and Kuester, Falko},
+  title = {CoralNet-Toolbox: Human-in-the-Loop Annotation and Model Development for Benthic Imagery},
+  year = {2025},
+  howpublished = {\url{https://github.com/Jordan-Pierce/CoralNet-Toolbox}},
+  note = {GitHub repository}
+}
+```
+
+---
+
+## ⚖️ Legal & Licensing
+
+<div align="center">
+
+### ⚠️ **Disclaimer**
+*This is a scientific product and not official communication of NOAA or the US Department of Commerce. All code is provided 'as is' - users assume responsibility for its use.*
+
+### 📋 **License**
+*Software created by US Government employees is not subject to copyright in the United States (17 U.S.C. §105). The Department of Commerce reserves rights to seek copyright protection in other countries.*
+
+</div>
+
+---
+
+<div align="center">
+  <p><em>Empowering researchers • Protecting ecosystems • Advancing science</em></p>
+</div>

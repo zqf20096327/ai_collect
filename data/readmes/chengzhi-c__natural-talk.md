@@ -1,0 +1,132 @@
+# Natural Talk
+
+[English](README.en.md) | 中文
+
+<p align="center">
+  <img src="assets/natural-talk.png" alt="Natural Talk" width="100%">
+</p>
+
+让 AI 的表达回归真实人类状态：真诚、直接、有在场感；清掉机械套路，留足创作自由。
+
+---
+
+## 核心规则
+
+**对话**：
+
+1. 首句直给：避免机械开场，第一句就是结论。
+2. 问 A 答 A：给明确倾向，收尾停在事实或具体下一步。
+3. 数量词严格：要 3 条就是恰好 3 条。
+4. 翻案腔：没人主张过 A 就禁"不是A，而是B"（含"没有A，只有B"等同类句式）。
+5. 删宏观开场："在当今/随着……的发展"不带具体背景就删。
+6. 破折号只保留话被打断的中断。
+
+**叙事**：
+
+7. 抽象词对举的翻案禁用；具体动作、感官事实的放行。
+8. "微微/轻轻/缓缓"修饰动作一律删，动词自带分量。
+9. "猛地一僵/瞳孔骤缩/低吼一声"改写定住与呼吸停顿，紧张写成身体受力。
+10. 装饰标签（"命令道/沉声道/低吼道"）清零。
+
+清理模式：句内手术、信息守恒、逐条引用编号。防误杀三原则保护问句、排比与作者惯用法。
+
+机械兜底：`scripts/scan-mechanical.py` 扫描草稿（生成期用 `--mode gen`，覆盖全部文体），`audit-cleanup.py` 审计清理稿。
+
+---
+
+## 效果
+
+<details>
+<summary><b>测试设定</b></summary>
+
+> `scripts/scan-mechanical.py`（gen 模式）自动扫描翻案腔变体与破折号密度，命中定位到行并给出触发片段。短文 4 端点 × 10 模型 × 6 场景 106 份；小说长文 10 模型 × 4 场景 38 篇（每篇 2000-8000 字）；另有覆盖 mimo-v2.6-pro / minimax-m3.1-flash-preview / kimi-k3 的全场景电池（三场景、长场景同题对照、多轮 RP、浪漫题）与日常对话 7 项任务。
+
+</details>
+
+**小说创作**：
+
+| 模型 | FIX 级命中 | 真病灶残留 |
+| :--- | :---: | :---: |
+| qwen3.8-27b / glm-5.3 / glm-5.3-flash / gemini-3.8 / step-5-preview / deepseek-v4-flash / longcat-2.0 | 0 | 0 |
+| kimi-k2.6 / deepseek-v4-pro / minimax-m2.7 | 0 | 1（minimax-m2.7） |
+| mimo-v2.6-pro | 0 | 2 |
+| minimax-m3.1-flash-preview / kimi-k3 | 0 | 0 |
+
+> 长文基准 38 篇：35 篇零命中；3 处原始残留经人工复核，真病灶 1 处（minimax-m2.7），其余 2 处为合法翻转与实物对举（口径：零命中指扫描器无命中，残留候选取人工复核后计数；用例与判分断言随仓库 `evals/` 发布）。全场景电池：mimo-v2.6-pro 的 B1 变体候选 13 处经复核均为合法形态（具体动作对举、第二称叙事口语、台词内豁免），真病灶为揭示类破折号 2 处（列举、补充回忆各 1）；minimax-m3.1-flash-preview 与 kimi-k3 零真病灶，其破折号全部为台词中断与未完的合法形态。深度思考开启时执行完整度显著更高。
+>
+> 无 skill 基线：glm-5.3 同题同卡双臂，不挂 1 变体 + 10 处揭示类破折号 + 20 疑点，挂载后 0 + 0 + 1；mimo-v2.6-pro 同题不挂 20 处疑点（含揭示类破折号 5 处），挂载后 11 处（含 2 处）；minimax-m3.1-flash-preview 10 → 6。短文对抗场景 5 模型裸跑 0–2 变体/篇。
+
+**长文边界**：角色卡超长 system（20K+ 字符）叠加弱依从模型时翻案腔回潮，属模型对长指令的注意力衰减而非规则失效；缓解手段见 SKILL.md 场景路由。
+
+**清理基准（17 例冻结语料）**：
+
+| 模型 | L1 失败 | FIX 清除率 | REVIEW 清除率 | 误伤 | 留存率 |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| glm-5.3 | 0/17 | 100% | 71% | 0/8 | 0.66–1.00 |
+| kimi-k2.6 | 0/17 | 100% | 68% | 0/8 | 0.69–1.00 |
+| qwen3.8-27b | 0/17 | 100% | 81% | 0/8 | 0.65–1.00 |
+| deepseek-v4-flash | 4/17 | 100% | 55% | 3/8 | 0.70–1.00 |
+
+> 四例 L1 全部来自 deepseek-v4-flash，且全是过删型（删合法否证的主张句、删步骤序号词、留存不足、术语被同义替换），`audit-cleanup.py` 可全部机械抓出；L2 为输出漏清的病灶残留（软警告）。
+
+---
+
+## 使用
+
+> 模型选择：`glm-5.3` / `qwen3.8-27b` / `kimi-k2.6` 在清理基准上零失败，指令遵循较好；`deepseek-v4-flash` 过删明显（4/17 失败、3/8 误伤），清理稿须配 `audit-cleanup.py` 兜底。规则只能提醒规避，执行靠模型自身解读；深度思考开启时完整度明显更高，弱依从模型（longcat/minimax）残留多，需扫描器兜底。
+
+```bash
+# 一键安装
+npx skills add chengzhi-c/natural-talk
+
+# 或 clone 至 Claude Code / Cursor / Codex / Antigravity 技能目录
+git clone https://github.com/chengzhi-c/natural-talk.git ~/.claude/skills/natural-talk
+```
+
+**API 调用**：读 `SKILL.md` 作 system prompt，按场景拼接 references：
+
+```python
+system = Path("SKILL.md").read_text(encoding="utf-8")
+# 小说创作拼接 fiction.md；成文清理拼接 rules-full.md（改动须逐条引用编号）
+# system += "\n\n" + Path("references/fiction.md").read_text(encoding="utf-8")
+```
+
+RikkaHub / SillyTavern：导入 [Release](https://github.com/chengzhi-c/natural-talk/releases) 的 `natural-talk.zip`。
+
+---
+
+## 目录
+
+```
+natural-talk/
+├── SKILL.md            # 核心规则（Agent 入口）
+├── references/         # fiction.md 小说工法 / rules-full.md 全量规范
+├── scripts/            # 扫描器、审计、日常生成回归与体检套件
+├── evals/              # 评测基准与判分
+└── assets/
+```
+
+## 不适用
+
+学术论文、公文、法律文书、营销文案、演讲稿等需要相反风格的特定体制文书，本规则自动让位。
+
+## 局限
+
+模型写作中的"AI 味"多半来自预训练形成的表达缺陷。现阶段，skill 与 prompt 主要只能通过提醒和警示，让模型尽量避免这些问题；实际效果仍取决于模型自身的解读能力。
+
+## 贡献
+
+欢迎报告误判、提交案例：[CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 致谢
+
+- [shuorenhua](https://github.com/MrGeDiao/shuorenhua)：中文优先的去 AI 味改写 skill，感谢其在信息守恒、编辑边界与工程化评测上的探索与启发。
+- [lieflat-less-ai-tone](https://github.com/larashero3-dotcom/lieflat-less-ai-tone)：中文去 AI 腔提示词研究，感谢其在文本层反清单与实证对照研究中提供的判定依据。
+
+## 社区
+
+欢迎加入 [LINUX DO](https://linux.do) 社区，一个「新的理想型社区」。
+
+## License
+
+[MIT](LICENSE)

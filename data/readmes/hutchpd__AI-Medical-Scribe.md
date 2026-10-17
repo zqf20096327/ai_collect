@@ -1,0 +1,358 @@
+# AI Medical Scribe
+
+![Demo](demo.gif)
+
+AI Medical Scribe is a browser-based prototype for live consultation transcription, on-device summarisation, document drafting, structured extraction, confidence-aware review-mode highlighting, local append-only audit logging, structured client-side FHIR export, and optional direct browser-based FHIR delivery to a configured endpoint.
+
+It is designed as a local-first front end. Session capture, notes, summaries, generated documents, FHIR exports, settings, and customisation are all handled in the browser with no project backend.
+
+## Why
+
+Most AI medical scribes rely on cloud processing and external APIs.
+
+This project explores a different approach:
+- no backend
+- no API keys
+- no data leaving the device by default
+
+## Features
+
+- Live consultation transcription using Chrome's speech recognition support.
+- Manual note capture alongside the live transcript.
+- Important-moment markers inside the transcript timeline.
+- On-device AI summary generation after transcription stops.
+- Rich text document drafting from transcript content using configurable templates.
+- Structured extraction that turns transcript, manual notes, and summaries into clinically useful buckets (for example: problems, medications, allergies, investigations, follow-up actions, diagnoses, safety netting, and admin tasks).
+- Review mode with confidence highlighting, provenance cues, stale/needs-review badges, and quick actions to help clinicians validate outputs faster.
+- Confidence indicators that make uncertainty explicit rather than treating all transcript and generated output as equally reliable.
+- Local append-only session audit log for trust and traceability of important user/system actions.
+- Client-side FHIR R4 document Bundle export for the active session or a selected history session, with structured Composition sections and optional clinical resources.
+- Optional direct browser-side POST of FHIR export payloads to a configured endpoint, with download-based export still available.
+- Session history with review, edit, duplicate, archive, and delete workflows.
+- Encrypted session storage at rest using the browser Web Crypto API, enabled by default.
+- App-level lock and unlock controls with inactivity auto-lock for sensitive session content.
+- Explicit privacy controls for retention, purge-on-close, ephemeral consultations, and destructive local deletion.
+- Local customisation for organisation name, colour, snippets, tags, and document templates.
+- Ephemeral-by-default consultation capture, with explicit save into encrypted browser storage.
+
+## Requirements
+
+This prototype currently depends on Chrome features that are still rolling out unevenly.
+
+### Browser
+
+- A recent Chrome build is required.
+- For local web-page prototyping, Chrome Canary or a recent Chrome build with the relevant built-in AI flags enabled is usually the most reliable setup.
+- The app should be served on `localhost` for Prompt API prototyping.
+
+### Platform
+
+Current Chrome documentation for Gemini Nano-based built-in AI features points to these general requirements:
+
+- Windows 10 or 11, macOS 13+, Linux, or ChromeOS on Chromebook Plus devices.
+- At least 22 GB free space on the volume containing the Chrome profile.
+- Either a GPU with more than 4 GB VRAM, or a CPU-based system with at least 16 GB RAM and 4 CPU cores.
+- An unmetered network connection for the initial model download.
+
+These built-in AI APIs do not currently work on mobile browsers.
+
+
+## Setup
+
+You can run the app in two ways:
+
+#### Option A: Open directly (simplest)
+
+Open the HTML file directly in Chrome, simply download the zip file, extract and open ai_medical_scribe.html
+
+```text
+file:///path/to/ai_medical_scribe.html
+```
+
+This is the quickest way to get started and works for most features in this prototype.
+
+#### Option B: Serve via localhost (recommended for Prompt API prototyping)
+
+Run a local static file server from the project folder. For example:
+
+```bash
+python -m http.server 8080
+```
+
+Then open:
+
+```text
+http://localhost:8080
+```
+
+Some Chrome built-in AI features are documented for use on `localhost`, so this setup may be more reliable across different Chrome versions.
+
+Opening via `file://` works in current Chrome builds, but future versions may require `localhost` for some built-in AI features.
+
+If you encounter issues with AI features not being available, try switching to the `localhost` setup.
+
+### 2. Enable Chrome built-in AI flags
+
+Open:
+
+```text
+chrome://flags
+```
+
+Enable:
+
+```text
+chrome://flags/#optimization-guide-on-device-model
+```
+
+Then enable whichever Prompt API flag exists in your Chrome build, for example:
+
+```text
+chrome://flags/#prompt-api-for-gemini-nano
+```
+
+or:
+
+```text
+chrome://flags/#prompt-api-for-gemini-nano-multimodal-input
+```
+
+After changing flags, relaunch Chrome.
+
+### 3. Let Chrome download the on-device model
+
+The first use of Prompt API features may trigger a model download for the current origin.
+
+You can check model status in DevTools:
+
+```js
+await LanguageModel.availability({
+  expectedOutputLanguage: 'en',
+  expectedOutputs: [{ type: 'text', languages: ['en'] }]
+});
+```
+
+Typical responses include:
+
+- `unavailable`
+- `downloadable`
+- `downloading`
+- `available`
+
+### 4. Inspect model diagnostics if needed
+
+Useful Chrome diagnostics pages:
+
+```text
+chrome://on-device-internals
+```
+
+```text
+chrome://components
+```
+
+In some Chrome builds, `chrome://components` may show `Optimization Guide On Device Model`, which can be a useful sanity check.
+
+## Quick Demo
+
+1. Open `ai_medical_scribe.html` in Chrome
+2. Click "Start session"
+3. Speak or simulate a consultation
+4. Stop session to generate summary
+5. Use Structured View and Review Mode to validate extracted and generated content before finalising
+6. Open History to inspect the local audit timeline and optionally export it as text or JSON
+
+## How It Works
+
+### Transcription
+
+Live transcription uses `webkitSpeechRecognition` when it is available in the browser.
+
+### Summaries
+
+Consultation summaries are generated on-device using Chrome's Prompt API when available, with Summarizer API fallback support in this prototype.
+
+### Documents
+
+Document drafts are generated from the transcript using Chrome's on-device model path and stored as editable rich text HTML.
+
+### Structured Extraction
+
+After a session is stopped, the app can extract clinically useful buckets from transcript content, manual notes, and generated summary text.
+
+What this adds in practice:
+
+- A structured view that surfaces key buckets such as problems, medications, allergies, investigations, follow-up actions, diagnoses, safety netting, and admin tasks.
+- Conservative extraction heuristics designed to reduce over-capture while still surfacing high-value items.
+- Manual refresh and in-history editing support, so extracted values remain clinician-controlled.
+- Reuse of structured buckets in downstream outputs, including FHIR resource enrichment and document-generation context.
+
+### Review Mode
+
+Review mode provides a focused quality-check pass for stopped sessions so clinicians can verify what was generated, what was extracted, and what may need attention.
+
+What this adds in practice:
+
+- Confidence-aware transcript highlighting, including a low-confidence-only filter.
+- Review sections for transcript, summary, structured extraction, and generated documents.
+- Provenance labels that indicate whether structured values appear to come from transcript, notes, or summary text.
+- Stale and needs-review badges that flag content likely affected by later edits.
+- Quick review actions (for example regenerate summary/document, re-run extraction, and jump to relevant transcript entries).
+
+### Confidence Indicators
+
+Confidence indicators are designed to make uncertainty visible instead of implying all output is equal.
+
+What this adds in practice:
+
+- Transcript entries are grouped into confidence bands (for example high, medium, and low) for faster clinician triage.
+- Review mode can filter directly to low-confidence transcript segments.
+- Confidence labels and visual emphasis help clinicians decide where to verify first.
+
+### Local Audit Log
+
+Each session now keeps a local append-only audit trail for trust and traceability.
+
+What this adds in practice:
+
+- Important actions are logged with timestamp, type, actor, detail, and lightweight metadata.
+- Events include lifecycle actions (start/pause/resume/stop), edits, generation actions, structured extraction runs, FHIR download/send, archive/restore/delete, and lock/unlock activity.
+- Frequent edit logging is debounced to avoid noisy per-keystroke event spam (for example manual notes are logged as "manual notes updated").
+- The audit timeline is viewable in History and can be copied or exported as `.txt` or `.json`.
+- Audit data remains local to the browser, and metadata is intentionally limited (no secrets and no full document bodies in event metadata).
+
+### FHIR Export
+
+Sessions can be exported as a FHIR R4 JSON document Bundle directly in the browser, or sent from the browser to a configured FHIR endpoint.
+
+What that means in practice:
+
+- The app can package a consultation into a structured healthcare data document rather than only plain text or HTML.
+- The export is built on demand from the current in-browser session object and can either be downloaded as a `.json` file or POSTed directly to a user-configured endpoint.
+- No project backend is used and the generated FHIR is not stored separately in local storage.
+- The Bundle is document-style and includes a `Composition` as the first entry, plus the related `Encounter`, `Organization`, optional `Patient` and `Practitioner`, and `DocumentReference` resources for transcript, manual notes, and generated documents.
+- `Composition` sections are now structured around SOAP-style narrative content, making the export more readable and easier to extend.
+- Lightweight structured extraction heuristics can also add optional `Condition`, `MedicationStatement`, and `ServiceRequest` resources when the transcript or notes contain recognisable problem, medication, investigation, or follow-up content.
+- Internal validation checks run before export so missing required fields or broken intra-bundle references are caught before download or send.
+- Endpoint delivery is optional and user-triggered. The app supports plain POST, bearer-token auth, or custom-header auth, plus a simple endpoint test action from Settings.
+- Some endpoints may reject direct browser requests because of CORS or server policy. In those cases, download-based export still works.
+
+### Storage
+
+Sessions, notes, settings, customisation, summaries, and generated documents are handled in-browser only. By default, local data is stored in browser local storage. FHIR exports are generated on demand for download and are not persisted by the app unless the user chooses to keep the downloaded file.
+
+Session records now also include a local append-only audit event history used for in-app traceability views and optional local export.
+
+If direct FHIR delivery is configured, the endpoint URL and non-secret integration settings are stored locally, but bearer tokens and custom header values remain in memory only for the current tab and are cleared on refresh.
+
+The app now also supports optional local privacy protections for session data:
+
+- Encrypted storage at rest for saved session history using AES-GCM via the browser Web Crypto API.
+- Passphrase unlock mode, which allows encrypted history to be reopened after refresh.
+- Session-only key mode, which keeps the key in memory only and makes encrypted history unavailable after refresh.
+- App-level lock and unlock behaviour, including automatic locking after inactivity.
+- Ephemeral consultation mode for memory-only sessions until the user explicitly saves them. New consultations start in this mode by default.
+- Retention-based cleanup, delete archived sessions, delete all sessions, and best-effort purge on browser close.
+
+## Privacy
+
+This app does not send transcript, summary, document, or FHIR export data to any backend controlled by this project. AI summaries and document generation use Chrome's on-device model and do not rely on external AI services.
+
+Saved history is encrypted by default, and new consultations begin in ephemeral in-memory mode until you explicitly save them. FHIR authentication secrets are intentionally kept in memory only for the current tab and are not written to browser local storage.
+
+## Manual Regression Checklist
+
+Use this checklist after touching storage, document generation, or FHIR integration code.
+
+1. Start a new consultation and confirm it begins in ephemeral mode with a privacy message explaining that it stays in memory until explicitly saved.
+2. Attempt to save a consultation before unlocking secure local storage and confirm the app prompts for the passphrase instead of silently writing plaintext history.
+3. Unlock secure local storage, save a consultation, refresh the app, and confirm encrypted history stays locked until the correct passphrase is entered.
+4. Generate a document containing hostile markup samples such as `javascript:` links, inline event handlers, unsupported tags, and SVG payloads, then confirm the preview strips executable or unsupported content.
+5. Configure bearer-token or custom-header FHIR auth, refresh the app, and confirm the secret fields are blank while the endpoint URL and other non-secret settings remain.
+6. Test FHIR send failure paths for invalid endpoint URL, missing token/header value, embedded-frame blocking, timeout, and non-2xx responses, then confirm the UI shows actionable errors.
+7. Exercise microphone denial, missing audio device, and network interruption scenarios, then confirm the session state pauses or stops cleanly and the user sees a specific recovery message.
+Additional notes:
+
+- Session data is handled locally in the browser.
+- Saved session history is encrypted before it is written to local storage.
+- Sensitive consultation content can be hidden behind an in-app lock screen while the tab remains open.
+- Local deletion and retention controls are user-driven and happen in the browser only.
+- If you configure an external FHIR endpoint and click Send FHIR, the selected export payload is sent directly from your browser to that endpoint.
+- Endpoint credentials configured for direct send are kept in memory only for the current tab and are not written to browser local storage.
+- The initial built-in model download is managed by Chrome, not by this app.
+- Speech transcription uses the browser's speech recognition engine. If you need a stricter privacy statement for transcription itself, verify the behaviour of that browser feature in your target deployment environment before making broader claims.
+
+## Troubleshooting
+
+### `LanguageModel` or `Summarizer` is undefined
+
+- Make sure the app is running on `localhost`.
+- Confirm the required Chrome flags are enabled.
+- Relaunch Chrome after changing flags.
+- Check `chrome://on-device-internals`.
+- Run `LanguageModel.availability(...)` in DevTools to confirm whether the model is available or still downloading.
+
+### The model never becomes available
+
+- Check that the device meets Chrome's hardware requirements.
+- Confirm there is sufficient free disk space.
+- Make sure the first model download can occur over an unmetered connection.
+
+### Document or summary generation fails
+
+- Confirm the selected session is stopped and contains transcript content.
+- Check that Prompt API is available in the current Chrome build.
+- Review DevTools for availability or permission-related errors.
+
+### Send FHIR fails
+
+- Confirm a valid HTTP or HTTPS endpoint URL is configured in Settings.
+- If authentication is required, verify the selected auth mode and credential value.
+- Some servers do not allow direct browser-originated requests. Check for CORS or preflight failures in DevTools.
+- If the endpoint rejects the payload, try Download FHIR first and inspect the JSON manually.
+
+### Speech recognition does not start
+
+- This prototype currently depends on Chrome speech recognition support.
+- If speech recognition is unavailable, the app can still be used for manual notes, history, local summaries from existing transcript content, and document drafting from saved sessions.
+
+## Architecture
+
+- Frontend: HTML + JavaScript
+- Transcription: Browser speech recognition
+- AI: Chrome built-in Prompt API (on-device Gemini Nano)
+- Interoperability export: Client-side FHIR R4 document Bundle generation with optional browser-side endpoint POST
+- Storage: Browser local storage
+
+## Roadmap
+
+Possible next steps for the prototype:
+
+- Better surfacing of model download and readiness state in the UI.
+- More document templates and template versioning.
+- Additional interoperability exports beyond the current plain text, HTML, and FHIR JSON outputs.
+- Clearer browser capability diagnostics for transcription, Prompt API, and Summarizer fallback.
+- Improved session search, filtering, and document management across history.
+- Optional packaging as a local desktop wrapper or PWA for easier deployment.
+
+## Known Limitations
+
+- Depends on Chrome built-in AI APIs that are still evolving and may change.
+- Requires relatively modern hardware to run on-device models.
+- Speech recognition behaviour depends on the browser implementation.
+- Not suitable for clinical use.
+
+## References
+
+- Chrome built-in AI getting started: https://developer.chrome.com/docs/ai/get-started
+- Chrome Prompt API: https://developer.chrome.com/docs/ai/prompt-api
+- Chrome client-side translation overview: https://developer.chrome.com/docs/ai/translate-on-device
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+
+This project is provided for educational and experimental purposes only.
+It is not a medical device and must not be used for diagnosis or clinical decision-making.

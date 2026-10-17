@@ -1,0 +1,634 @@
+<h3 align="center">
+  <img
+    src="https://github.com/Kikobeats/isolated-function/blob/master/logo.png?raw=true"
+    width="200">
+  <br>
+  <p>isolated-function</p>
+  <a target="_blank" rel="noopener noreferrer nofollow"><img
+      src="https://img.shields.io/github/tag/Kikobeats/isolated-function.svg?style=flat-square"
+      style="max-width: 100%;"></a>
+  <a href="https://coveralls.io/github/Kikobeats/isolated-function"
+    rel="nofollow"><img
+      src="https://img.shields.io/coveralls/Kikobeats/isolated-function.svg?style=flat-square"
+      alt="Coverage Status" style="max-width: 100%;"></a>
+  <a href="https://www.npmjs.org/package/isolated-function" rel="nofollow"><img
+      src="https://img.shields.io/npm/dm/isolated-function.svg?style=flat-square"
+      alt="NPM Status" style="max-width: 100%;"></a>
+</h3>
+
+# Why isolated-function?
+
+Sometimes your application needs to let users customize a piece of behavior with JavaScript.
+
+That code might be a function template for an AI agent, a customer-defined workflow, a plugin, a webhook transform, or an automation rule. You provide the shape of the function and the runtime context; users provide the custom logic. You want the useful part: programmable behavior without turning the rest of your application into the execution environment.
+
+**isolated-function** gives you a small API for turning user-customizable function templates into controlled executions:
+
+- give it a function or generated function template
+- pass runtime arguments into it
+- choose what it is allowed to do
+- set memory and timeout limits
+- run it
+- get back the result, logs, errors, and timing data
+
+It is useful when your product needs user-defined logic, but you still want a narrow execution contract around what that logic can receive, return, import, and access.
+
+# What it does
+
+At a high level, isolated-function wraps a JavaScript function and runs it away from your main process.
+
+The core use case is giving your product a controlled function template that users can customize. Your application owns the template, runtime arguments, dependencies, permissions, timeout, memory, result shape, logging, and cleanup. Users only customize the part of the function you intentionally expose.
+
+This is the pattern used by [`@browserless/function`](https://github.com/microlinkhq/browserless/tree/master/packages/function): it lets users build functions that can access a Puppeteer `page` and related browser context, then runs those functions through isolated-function.
+
+It can:
+
+- run untrusted code in a separate process
+- restrict filesystem, network, worker, and child-process access through the [Node.js Permission Model](https://nodejs.org/api/permissions.html#permission-model)
+- stop runaway code with memory, wall-clock, and CPU limits
+- detect dependencies used by the function
+- install and bundle those dependencies with [esbuild](https://esbuild.github.io/)
+- reuse installed dependencies across executions
+- allow only the packages you explicitly trust
+- return profiling data for compile, spawn, run, and total time
+
+# What it is not
+
+isolated-function is not a virtual machine, microVM, container runtime, or hypervisor-based sandbox.
+
+It isolates JavaScript by running it in a separate Node.js process with Node.js permissions and resource limits. That is useful for many plugin, workflow, webhook, and AI-agent use cases, but it is not the same security boundary as KVM, Firecracker, Kata Containers, gVisor, or another VM-backed isolation layer.
+
+If you need to execute hostile multi-tenant code, use isolated-function behind a stronger runtime boundary such as a locked-down container, gVisor, Kata Containers, Firecracker, or another hypervisor-backed execution environment.
+
+# Installation
+
+```bash
+pnpm add isolated-function
+```
+
+# Your first isolated function
+
+First create an isolated-function instance. You can call it with no options:
+
+```js
+const isolatedFunction = require('isolated-function')()
+```
+
+Or pass shared options that apply to every function created from that instance:
+
+```js
+const isolatedFunction = require('isolated-function')({
+  tmpdir: '/tmp/isolated-function-deps',
+  nodePaths: [require('path').resolve(__dirname, 'node_modules')]
+})
+```
+
+- tmpdir controls where isolated-function installs and reuses dependencies.
+- nodePaths points to directories where dependencies may already be installed, so matching packages can skip installation.
+
+Then wrap a normal JavaScript function:
+
+```js
+const sum = isolatedFunction((y, z) => y + z, {
+  memory: 128, // in MB
+  timeout: 10000 // in milliseconds
+})
+```
+
+Now call it like any other async function:
+
+```js
+const { value, profiling } = await sum(3, 2)
+
+console.log(value) // 5
+console.log(profiling.total) // total execution time in milliseconds
+```
+
+When your application shuts down, clean up the shared dependency cache:
+
+```js
+await isolatedFunction.teardown()
+```
+
+That is the basic loop: create a sandboxed function, run it, read the result.
+
+## Minimal privilege execution
+
+By default, hosted code runs with minimal privileges. If it tries to use a restricted capability, isolated-function fails the execution instead of giving the code access.
+
+For example, this function tries to write to `/etc/passwd`:
+
+```js
+const fn = isolatedFunction(() => {
+  const fs = require('fs')
+  fs.writeFileSync('/etc/passwd', 'foo')
+})
+
+await fn()
+// => PermissionError: Access to 'FileSystemWrite' has been restricted.
+```
+
+The function ran in its own process, and the filesystem write was blocked.
+
+The child does not inherit the parent environment. Only `PATH` and the sandbox `NODE_OPTIONS` are passed. Values the function needs should be arguments, not env vars.
+
+## Granting specific permissions
+
+Some functions need more access. Grant only the permissions that function needs with `allow.permissions`.
+
+```js
+const fn = isolatedFunction(
+  () => {
+    const { execSync } = require('child_process')
+    return execSync('echo hello').toString().trim()
+  },
+  {
+    allow: { permissions: ['child-process'] }
+  }
+)
+
+const { value } = await fn()
+console.log(value) // 'hello'
+```
+
+See [#allow.permissions](#permissions) for the full list.
+
+## Auto install dependencies
+
+Hosted code can bring its own dependencies. isolated-function parses `require` and `import` calls, installs the packages, and bundles the function before running it.
+
+```js
+const isEmoji = isolatedFunction(input => {
+  /* this dependency only exists inside the isolated function */
+  const isEmoji = require('is-standard-emoji@1.0.0') // default is latest
+  return isEmoji(input)
+})
+
+await isEmoji('🙌') // => true
+await isEmoji('foo') // => false
+```
+
+The hosted code and its dependencies are bundled into a single file with [esbuild](https://esbuild.github.io/) before execution.
+
+Dependencies are installed into a shared persistent directory and reused across invocations, so only the first call that requires a given package pays the install cost.
+
+Installation runs in-process through [upm](https://github.com/unjs/upm), so no package manager needs to be on the `PATH`. Package lifecycle scripts never run, a required package without a version resolves to its latest release with no minimum release age, and downloaded packages are cached in upm's shared store (`~/.upm/store`, or `UPM_STORE`).
+
+## Restricting allowed dependencies
+
+If the code is untrusted, do not let it install arbitrary packages. Use `allow.dependencies` to define the packages it may use:
+
+```js
+const fn = isolatedFunction(
+  input => {
+    const isEmoji = require('is-standard-emoji')
+    return isEmoji(input)
+  },
+  {
+    allow: { dependencies: ['is-standard-emoji', 'lodash'] }
+  }
+)
+
+await fn('🙌') // => true
+```
+
+If the code tries to require a package not in the allowed list, a `DependencyUnallowedError` is thrown **before** any package install happens:
+
+```js
+const fn = isolatedFunction(
+  () => {
+    const malicious = require('malicious-package')
+    return malicious()
+  },
+  {
+    allow: { dependencies: ['lodash'] }
+  }
+)
+
+await fn()
+// => DependencyUnallowedError: Dependency 'malicious-package' is not in the allowed list
+```
+
+> **Security Note**: Even with the sandbox, arbitrary package installation is dangerous because packages can execute code during installation via `preinstall`/`postinstall` scripts. Installation never runs those lifecycle scripts, but providing an `allow.dependencies` whitelist is the recommended approach for running untrusted code.
+
+## Execution profiling
+
+Any hosted code execution will be run in their own separate process:
+
+```js
+/** make a function to consume ~128MB */
+const fn = isolatedFunction(() => {
+  const storage = []
+  const oneMegabyte = 1024 * 1024
+  while (storage.length < 78) {
+    const array = new Uint8Array(oneMegabyte)
+    for (let ii = 0; ii < oneMegabyte; ii += 4096) {
+      array[ii] = 1
+    }
+    storage.push(array)
+  }
+})
+
+const { value, profiling } = await fn()
+console.log(profiling)
+// {
+//   cpu: 42.5,
+//   memory: {
+//     total: 128204800,
+//     used: 85198848,
+//     heap: 2831776,
+//     external: 83961856
+//   },
+//   phases: {
+//     install: 0,
+//     build: 12,
+//     spawn: 48,
+//     run: 54,
+//     total: 102
+//   }
+// }
+```
+
+Each execution includes profiling data:
+
+- **cpu** — CPU time (user + system) consumed by the process, in milliseconds.
+- **memory** — Memory breakdown, in bytes, sampled when the function returns. No single number describes the memory a function used, so each field answers a different question:
+  - **total** — Resident set size of the whole isolate process. Includes the ~43MB Node.js runtime baseline, so it is never zero.
+  - **used** — `total` minus the baseline measured before the function ran. This is the part attributable to the function.
+  - **heap** — V8 heap in use. This is the only field bounded by the [`memory`](#memory) limit.
+  - **external** — Off-heap memory (`Buffer`, `ArrayBuffer`, typed arrays). **Not** bounded by the [`memory`](#memory) limit, and invisible to `total` until the pages are written to.
+- **phases** — Wall-clock time breakdown of each execution stage, in milliseconds:
+  - **install** — Time installing npm dependencies the code requires. `0` when it requires none, or they are already present.
+  - **build** — Time bundling the code with esbuild. Each `instance(code)` call builds again; with [`slot`](#slot), it is only the time to fill an already built shell.
+  - **spawn** — Process creation, Node.js boot, and template setup overhead.
+  - **run** — User function execution time.
+  - **total** — End-to-end wall-clock time.
+
+## Resource limits
+
+You can limit a **isolated-function** with memory:
+
+```js
+const fn = isolatedFunction(() => {
+  const storage = []
+  while (true) storage.push('x'.repeat(1024))
+}, { memory: 64 })
+
+await fn()
+// =>  MemoryError: Out of memory
+```
+
+> [!IMPORTANT]
+> The `memory` limit bounds the **V8 heap** (`profiling.memory.heap`), which is where ordinary objects and strings live. It does **not** bound off-heap memory (`profiling.memory.external`): `Buffer`, `ArrayBuffer`, and typed arrays are allocated outside the heap and can grow past the limit without raising `MemoryError`. If a function must be held to a total memory budget, enforce it outside the process (for example a cgroup) rather than relying on `memory` alone.
+
+or by execution time:
+
+```js
+const fn = isolatedFunction(() => {
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+  await delay(duration)
+  return 'done'
+}, { timeout: 50 })
+
+await fn(100)
+// =>  TimeoutError: Execution timed out
+```
+
+The timeout option enforces both a wall-clock limit (`SIGKILL`) and a CPU time limit (`RLIMIT_CPU`). A CPU-bound infinite loop will be terminated by the kernel via `SIGXCPU`:
+
+```js
+const fn = isolatedFunction(() => {
+  while (true) { Math.random() }
+}, { timeout: 5000 })
+
+await fn()
+// => CpuTimeError: CPU time limit exceeded
+```
+
+## Logging
+
+The logs are collected into a `logging` object returned after the execution:
+
+```js
+const fn = isolatedFunction(() => {
+  console.log('console.log')
+  console.info('console.info')
+  console.debug('console.debug')
+  console.warn('console.warn')
+  console.error('console.error')
+  return 'done'
+})
+
+const { logging } = await fn()
+
+console.log(logging)
+// {
+//   log: ['console.log'],
+//   info: ['console.info'],
+//   debug: ['console.debug'],
+//   warn: ['console.warn'],
+//   error: ['console.error']
+// }
+```
+
+## Error handling
+
+Any error during **isolated-function** execution will be propagated:
+
+```js
+const fn = isolatedFunction(() => {
+  throw new TypeError('oh no!')
+})
+
+const result = await fn()
+// TypeError: oh no!
+```
+
+You can also return the error instead of throwing it with `{ throwError: false }`:
+
+```js
+const fn = isolatedFunction(
+  () => {
+    throw new TypeError('oh no!')
+  },
+  { throwError: false }
+)
+
+const { isFulfilled, value } = await fn()
+
+if (!isFulfilled) {
+  console.error(value)
+  // TypeError: oh no!
+}
+```
+
+# API
+
+## isolatedFunction([options])
+
+Creates an isolated-function instance. All functions created from the same instance share the same dependencies directory.
+
+### options
+
+#### tmpdir
+
+Type: `string`<br>
+Default: `path.join(os.tmpdir(), 'isolated-fn-deps')`
+
+The directory used for installing code dependencies. Dependencies are installed once and reused across invocations, so only the first call that requires a given package pays the install cost.
+
+```js
+const isolatedFunction = require('isolated-function')({
+  tmpdir: '/tmp/my-isolated-deps'
+})
+```
+
+#### esbuild
+
+Type: `object`
+
+Extra [esbuild](https://esbuild.github.io/api/#build) options merged into the compile step. Also accepted per call.
+
+```js
+const isolatedFunction = require('isolated-function')({
+  esbuild: {
+    external: ['fsevents'],
+    define: { 'process.env.FOO': '"bar"' }
+  }
+})
+```
+
+#### memory
+
+Type: `number`<br>
+Default: `Infinity`
+
+Set the function memory limit, in megabytes.
+
+#### throwError
+
+Type: `boolean`<br>
+Default: `true`
+
+When `false`, returns the error instead of throwing it as `{ value: error, isFulfilled: false }`.
+
+#### host
+
+Type: `object`
+
+Methods the code can call back into the host, reachable inside the isolate as `globalThis.__isolated_host(name, args)`. Each one is resolved when the code asks for it and never before, so work the code never reaches costs nothing.
+
+```js
+const isolatedFunction = require('isolated-function')()
+
+const fn = isolatedFunction(
+  async () => {
+    const html = await globalThis.__isolated_host('content')
+    return html.length
+  },
+  {
+    host: {
+      content: async () => expensiveFetch(url)
+    }
+  }
+)
+
+await fn() //=> { value: 4512, ... }
+```
+
+`expensiveFetch` runs only because the code awaited `content`. A code that returns `42` without asking never triggers it.
+
+In TypeScript the call is typed by the exported `HostCall`, since the global exists only inside the isolate:
+
+```ts
+import { HostCall } from 'isolated-function'
+
+const { __isolated_host: host } = globalThis as unknown as { __isolated_host: HostCall }
+```
+
+The same method and arguments resolve once per run, so asking twice costs one resolution.
+
+Passing `host` opens an IPC channel to the child. The isolate runs untrusted code and can write to that channel descriptor directly, so treat every argument as untrusted input: a message proves that something in the child asked, never that your code asked. A method absent from `host` is refused without being reached, and a malformed message is ignored.
+
+A call the code starts but never awaits does not take the run down, and a value the channel cannot carry, such as a `BigInt`, rejects that call rather than hanging it.
+
+#### Naming your own phases
+
+`profiling.phases` reports where a run spent its time, but `run` is a single number covering everything the code did. When that number is the one you are trying to explain, the code can name spans inside it:
+
+```js
+const fn = isolatedFunction(async () => {
+  const browser = await globalThis.__isolated_time('connect', () => connectSomewhere())
+  return browser.title()
+})
+
+const { profiling } = await fn()
+profiling.phases //=> { install: 0, build: 2, connect: 812, spawn: 31, run: 848, total: 1204 }
+```
+
+`__isolated_time(name, thunk)` records how long the thunk took, returns its value, and records the span even when it throws. Repeating a name adds to it rather than replacing it, so a span inside a loop totals.
+
+A span recorded with `__isolated_time` reduces `run`, so `install`, `build`, `spawn`, your spans and `run` add up rather than double-counting: `run` becomes the time no span was open for.
+
+What is subtracted is the union of the intervals a span covered, not the sum of their durations. Nesting one span inside another does not subtract it twice, and two overlapping spans are counted once between them. The consequence is that the named durations themselves can overlap, so adding all of them up can exceed `total` even though `run` is right — reconstruct the whole from `install`, `build`, `spawn` and `run`, not from every name.
+
+A span named `install`, `build`, `spawn`, `run` or `total` is ignored: the thunk still runs and returns its value, but nothing is recorded and `run` is untouched. Those names belong to the runner, and recording one would subtract time that is then invisible.
+
+A program that names nothing reports exactly the phases it did before.
+
+Time the host spends waiting, such as on a build another call is performing, belongs to no phase, so the parts can add up to less than `total`.
+
+#### slot
+
+Type: `string`
+
+Code to place where `code` contains the `SLOT` placeholder. Use it when you wrap many different pieces of code in the same surrounding program: the program is bundled once and cached, and each call only fills the slot, so it skips esbuild entirely.
+
+```js
+const isolatedFunction = require('isolated-function')()
+const { SLOT } = isolatedFunction
+
+const program = `async (input) => {
+  const transform = ${SLOT}
+  return transform(input)
+}`
+
+await isolatedFunction(program, { slot: 'x => x * 2' })(21) // => 42
+await isolatedFunction(program, { slot: 'x => x + 1' })(21) // => 22, no rebuild
+```
+
+`code` must be a string containing `SLOT` exactly once, and the slot code must be an expression (typically a function).
+
+Slot code is evaluated at global scope, like top-level CommonJS code: it sees globals, `require`, `module`, `exports`, `__filename` and `__dirname`, and `this` is `exports`, but **not** variables declared in the surrounding program. Pass whatever it needs as arguments, as in the example above. This also means nothing esbuild does to the program (renaming or removing its variables) can change what the slot code sees.
+
+Some slot code needs esbuild to see it, so it falls back to a full build of the filled program, with the same result as not using `slot`:
+
+- it requires an npm package (it must be installed and bundled), loads one dynamically with `import()`, uses `import.meta`, or calls `require` with a computed specifier. Builtins such as `require('path')` stay on the cached path.
+- it mentions a key of `esbuild.define`, which only applies to code present at build time.
+
+A syntax error in the slot code rejects with a `SyntaxError`, as a full build does. The first call pays the build of the program (reported in `profiling.phases`, including any `install`); later calls only fill the slot.
+
+#### timeout
+
+Type: `number`<br>
+Default: `Infinity`
+
+Timeout after a specified amount of time, in milliseconds. Enforces both a wall-clock limit (via `SIGKILL`) and a CPU time limit (via `RLIMIT_CPU`/`SIGXCPU`).
+
+#### allow
+
+Type: `object`<br>
+Default: `{}`
+
+Configuration object for allowed permissions and dependencies.
+
+```js
+const fn = isolatedFunction(
+  () => {
+    const { execSync } = require('child_process')
+    const lodash = require('lodash')
+    return lodash.uniq([1, 2, 2, 3])
+  },
+  {
+    allow: {
+      permissions: ['child-process'],
+      dependencies: ['lodash']
+    }
+  }
+)
+```
+
+##### permissions
+
+Type: `string[]`<br>
+Default: `[]`
+
+An array of permissions to grant to the isolated function based on [Node.js Options](https://nodejs.org/api/cli.html#options)
+
+When empty, the function runs with minimal privileges and will throw an error if it attempts to access restricted resources. Available permissions are:
+
+- `addons` — e.g. <small>*`require('native-module')`*</small><br/>
+  Allow loading native C++ addons.
+
+- `child-process` — e.g. <small>*`execSync('echo hello')`*</small><br/>
+  Allow spawning child processes via `child_process` module.
+
+- `ffi` *(Node.js v26+)* — e.g. <small>*`ffi.open('libc.so')`*</small><br/>
+  Allow foreign function interface calls to shared libraries.
+
+- `fs-read` — e.g. <small>*`fs.readFileSync('/etc/hosts')`*</small><br/>
+  Allow reading from the filesystem. Supports path scoping: `fs-read=/etc/hosts`.
+
+- `fs-write` — e.g. <small>*`fs.writeFileSync('/tmp/out.txt', data)`*</small><br/>
+  Allow writing to the filesystem. Supports path scoping: `fs-write=/tmp`.
+
+- `inspector` — e.g. <small>*`require('inspector').open()`*</small><br/>
+  Allow the inspector protocol for debugging.
+
+- `net` *(Node.js v25+)* — e.g. <small>*`http.get('http://example.com')`*</small><br/>
+  Allow outbound network connections.
+
+- `wasi` — e.g. <small>*`new WASI({ args, env })`*</small><br/>
+  Allow WebAssembly System Interface operations.
+
+- `worker` — e.g. <small>*`new Worker('./task.js')`*</small><br/>
+  Allow creating worker threads.
+
+##### dependencies
+
+Type: `string[]`<br>
+Default: `undefined`
+
+A whitelist of package names that are allowed to be installed. When provided, only packages in this list can be required/imported by the isolated function.
+
+This is a critical security feature when running untrusted code, as it prevents arbitrary package installation which could lead to remote code execution via malicious packages.
+
+```js
+const fn = isolatedFunction(
+  () => {
+    const lodash = require('lodash')
+    const axios = require('axios')
+    return lodash.get({ a: 1 }, 'a')
+  },
+  {
+    allow: { dependencies: ['lodash', 'axios'] }
+  }
+)
+```
+
+When `allow.dependencies` is not provided, any package can be installed (default behavior for backwards compatibility).
+
+## => fn([...args])
+
+Type: `function`
+
+The isolated function to execute. You can pass arguments over it.
+
+## instance.teardown()
+
+Type: `function`
+
+Removes the shared dependencies directory. Call this once when shutting down the server to clean up resources.
+
+```js
+await isolatedFunction.teardown()
+```
+
+# Environment Variables
+
+### `ISOLATED_FUNCTIONS_MINIFY`
+
+Default: `true`
+
+When is `false`, it disabled minify the compiled code.
+
+### `DEBUG`
+
+Pass `DEBUG=isolated-function` for enabling debug timing output.
+
+# License
+
+**isolated-function** © [Kiko Beats](https://kikobeats.com), released under the [MIT](https://github.com/Kikobeats/isolated-function/blob/master/LICENSE.md) License.<br>
+Authored and maintained by Kiko Beats with help from [contributors](https://github.com/Kikobeats/isolated-function/contributors).
+
+> [kikobeats.com](https://kikobeats.com) · GitHub [@Kiko Beats](https://github.com/Kikobeats) · X [@Kikobeats](https://x.com/Kikobeats)

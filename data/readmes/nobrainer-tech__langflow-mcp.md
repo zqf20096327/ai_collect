@@ -1,0 +1,794 @@
+# langflow-mcp-server
+
+[![npm version](https://badge.fury.io/js/langflow-mcp-server.svg)](https://www.npmjs.com/package/langflow-mcp-server)
+[![npm downloads](https://img.shields.io/npm/dm/langflow-mcp-server.svg)](https://www.npmjs.com/package/langflow-mcp-server)
+[![GitHub release](https://img.shields.io/github/v/release/nobrainer-tech/langflow-mcp)](https://github.com/nobrainer-tech/langflow-mcp/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-974%20passing-brightgreen.svg)](https://github.com/nobrainer-tech/langflow-mcp)
+[![MCP Badge](https://lobehub.com/badge/mcp/nobrainer-tech-langflow-mcp)](https://lobehub.com/mcp/nobrainer-tech-langflow-mcp)
+
+A Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to Langflow workflow automation platform.
+
+## Overview
+
+langflow-mcp-server serves as a bridge between Langflow's workflow automation platform and AI models, enabling them to understand and work with Langflow flows effectively.
+
+**API Compatibility**: This server is built on the [Langflow API documentation](https://docs.langflow.org/api) and supports Langflow API version **1.12.4** in the 1.12.x family. The latest stable upstream release check on **2026-09-30** found `v1.12.4` (published **2026-09-29**). The `v1.12.3` to `v1.12.4` comparison of the client-relevant API found no new, removed, or renamed routes and no fields added to or removed from the request and response models this server uses. The patch is a security-hardening release that tightens access and validation rules, so Langflow may now reject calls it used to accept (for example `globals` or `tweaks` from a non-owner on a flow that stores the owner's credentials, unknown audit-log `result` or `actor_type` filters, unsafe file names, or a second role in the same assignment scope); the client surfaces those errors through its normal error handling. Workflow runs expose the optional `expose_graph_state` control added in 1.12.3: omitted or `null` uses the protocol default (conversation-only for AG-UI, graph events for Langflow); synchronous runs ignore it, and stream or background runs by a non-owner of a shared flow always run with it off. Existing client methods pass MCP project responses through and surface the MCP server endpoint's 404 through normal error handling. Memory Base creation exposes the optional `embedding_provider` added in 1.12.1. The 1.12.x API family adds headless agentic execution, provider descriptors, project upsert, governance policy endpoints, and a Kubernetes-style readiness probe. Existing A2A, v2 workflow HITL/public execution, and public build lifecycle support remains available.
+
+**Versioning**: From `4.10.0` onward, the npm minor version mirrors the supported Langflow minor - `langflow-mcp-server@4.<langflow_minor>.x` targets Langflow `1.<langflow_minor>.x` (so `4.12.x` targets Langflow `1.12.x`, `4.11.x` targets Langflow `1.11.x`). The patch component is used for fixes within the same Langflow minor.
+
+The **2026-10-05** source review reconfirmed [Langflow 1.12.4](https://github.com/langflow-ai/langflow/releases/tag/v1.12.4) as the latest stable release. Audit-log queries support credential actors and include/exclude event filters in both MCP modes. Enabled-provider, enabled-model, and store list filters use repeated query keys, as required by Langflow's list parameters. Regression tests check the actual HTTP requests, including requests from an installed npm tarball in both MCP modes. This evidence covers source contracts and local HTTP fixtures, not an end-to-end run against every Langflow deployment. Langflow 1.12.4 also changes the knowledge-base chunk-preview default separator to an empty string and applies fallback separators to keep chunks within the requested size. Development builds of Langflow 1.13 are not covered by the compatibility claim above.
+
+### Consolidated Tools Mode
+
+**Consolidated Tools Mode** is an architecture that groups the 236 individual tools into **29 action-based meta-tools**. This significantly reduces token usage and improves AI assistant context management.
+
+| Mode | Tools | Best For |
+|------|-------|----------|
+| Standard | 236 tools | Full granular control |
+| Consolidated | 29 tools | Reduced token usage, better context |
+
+To enable consolidated mode:
+```bash
+LANGFLOW_CONSOLIDATED_TOOLS=true
+```
+
+**Consolidated tools:**
+- `flow` - All flow operations (list, get, create, update, delete, download, upload, replace, expand, batch, public, note_translations)
+- `flow_execution` - Run flows (run, run_advanced, run_session, webhook, process, predict)
+- `flow_version` - Flow versions and lifecycle events (list, create, get, delete, activate, get_events, create_event)
+- `build` - Build operations (start, status, cancel, public build lifecycle, vertices)
+- `workflow` - Run and manage v2 workflows (run with request-level globals, get_result, stop, plus HITL/public execution)
+- `agentic` - Agentic assistant + sandbox (assist, assist_stream, assist_run, check_config, execute, get_file, reset_session)
+- `folder` - Folder management (list, get, create, update, delete, download, upload)
+- `project` - Project management (list, get, create, update, upsert, delete, download, upload)
+- `variable` - Variable operations (list, create, update, delete, detect)
+- `knowledge_base` - Knowledge base management (list, get, delete, bulk_delete, upload, create, preview/list chunks, ingest, cancel_ingest, test_connection, list_connectors, ingest_folder, ingest_connector, metadata_keys, list_runs, get_run)
+- `memory` - Memory bases (create, list, get, list_sessions, list_messages, update, delete, flush, mismatch, regenerate) — experimental Langflow API
+- `file` - Flow-scoped file operations (list, upload, download, delete, get_image)
+- `file_v2` - User-scoped v2 files (list, upload, get, rename, delete, delete_all, batch_download, batch_delete)
+- `monitor` - Monitoring (builds, messages, sessions, transactions, job_queue)
+- `trace` - Execution traces (list, get, delete, delete_by_flow)
+- `model` - Models and providers (list, providers, provider descriptors, enabled, default get/set/delete, mapping, validate, options)
+- `governance` - Langflow 1.12.x provider, catalog, and policy-bundle administration
+- `authz` - RBAC authorization (roles, role assignments, teams, shares, audit, my permissions)
+- `user` - User management (list, get_current, update, reset_password, create)
+- `auth` - Authentication (login, auto_login, logout, refresh, api keys, save_store_key)
+- `store` - Component store (list, get, tags, likes, save_api_key, create, like, update_custom)
+- `registration` - User registration (get, register)
+- `validation` - Code/prompt validation (code, prompt)
+- `mcp_server` - MCP server management (list, get, create, update, delete)
+- `mcp_project` - MCP project config/install (get/update config, get_installed, install, composer_url)
+- `extension` - Langflow extensions (reload, events)
+- `response` - OpenAI-compatible responses (create)
+- `system` - System info (health, version, logs, pictures, voices, session, webhook_events, health_check, healthz)
+- `a2a` - A2A (Agent-to-Agent) protocol (list_agents, agent_card, jsonrpc)
+
+It provides structured access to:
+
+- **Flow Management** - Create, read, update, delete, and execute Langflow flows
+- **Flow Execution** - Run flows with inputs and trigger webhooks
+- **Build Operations** - Compile, validate, and monitor flow builds
+- **Import/Export** - Upload and download flows and projects
+- **Organization** - Manage folders and projects
+- **Configuration** - Manage global variables
+- **Knowledge Bases** - Manage RAG document collections
+- **Component Discovery** - List all available Langflow components
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 20 or newer installed on your system
+- A running Langflow instance
+- Langflow API key
+
+### Installation
+
+```bash
+# Install from npm
+npm install -g langflow-mcp-server
+
+# OR clone the repository
+git clone https://github.com/nobrainer-tech/langflow-mcp.git
+cd langflow-mcp
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your Langflow instance URL and API key
+```
+
+### Configuration
+
+Edit `.env` file:
+
+```env
+LANGFLOW_BASE_URL=http://localhost:7860
+LANGFLOW_API_KEY=your-api-key-here
+MCP_MODE=stdio
+LOG_LEVEL=info
+```
+
+### Claude Desktop Setup
+
+Add to your Claude Desktop config file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+**Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "langflow": {
+      "command": "npx",
+      "args": ["-y", "langflow-mcp-server"],
+      "env": {
+        "LANGFLOW_BASE_URL": "http://localhost:7860",
+        "LANGFLOW_API_KEY": "your-api-key-here",
+        "LANGFLOW_CONSOLIDATED_TOOLS": "true",
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error"
+      }
+    }
+  }
+}
+```
+
+**Alternative (local installation):**
+```json
+{
+  "mcpServers": {
+    "langflow": {
+      "command": "node",
+      "args": ["/absolute/path/to/langflow-mcp/dist/mcp/index.js"],
+      "env": {
+        "LANGFLOW_BASE_URL": "http://localhost:7860",
+        "LANGFLOW_API_KEY": "your-api-key-here",
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error"
+      }
+    }
+  }
+}
+```
+
+Restart Claude Desktop after updating configuration.
+
+### Claude Code, Codex, and other MCP hosts
+
+The server supports both standard MCP transports: local `stdio` and remote
+Streamable HTTP. MCP clients use the same tool and schema surface regardless
+of transport. Use `stdio` when the host can launch a local process; use HTTP
+when the server runs as a separately deployed service.
+
+#### Codex CLI — local stdio
+
+```bash
+codex mcp add langflow \
+  --env LANGFLOW_BASE_URL=http://localhost:7860 \
+  --env LANGFLOW_API_KEY=your-api-key-here \
+  -- npx -y langflow-mcp-server
+```
+
+#### Claude Code — local stdio
+
+```bash
+claude mcp add langflow \
+  -e LANGFLOW_BASE_URL=http://localhost:7860 \
+  -e LANGFLOW_API_KEY=your-api-key-here \
+  -- npx -y langflow-mcp-server
+```
+
+#### Remote Streamable HTTP
+
+Start the server with an explicit bearer token when binding outside the local
+machine. `HOST=127.0.0.1` is the secure default; use `HOST=0.0.0.0` only with
+authentication and a TLS-terminating reverse proxy.
+
+```bash
+MCP_MODE=http \
+HOST=0.0.0.0 \
+PORT=3000 \
+AUTH_TOKEN=replace-with-a-long-random-token \
+LANGFLOW_BASE_URL=https://langflow.example.com \
+LANGFLOW_API_KEY=your-api-key-here \
+npx -y langflow-mcp-server
+```
+
+The MCP endpoint is `https://your-host.example/mcp`; the health endpoint is
+`https://your-host.example/health`. For browser-based callers, set
+`MCP_ALLOWED_ORIGINS` to a comma-separated list of exact HTTPS origins. Wildcard
+origins are rejected.
+
+Codex CLI can keep the bearer token in an environment variable:
+
+```bash
+export LANGFLOW_MCP_TOKEN='set-this-in-your-shell'
+codex mcp add langflow-remote \
+  --url https://your-host.example/mcp \
+  --bearer-token-env-var LANGFLOW_MCP_TOKEN
+```
+
+The environment variable must be present whenever Codex starts or reconnects
+to this server.
+
+Claude Code accepts the same Streamable HTTP endpoint:
+
+```bash
+export LANGFLOW_MCP_TOKEN='set-this-in-your-shell'
+claude mcp add --transport http --scope user \
+  --header "Authorization: Bearer ${LANGFLOW_MCP_TOKEN}" \
+  langflow-remote https://your-host.example/mcp
+```
+
+This stores the header in the Claude MCP configuration; keep that configuration
+outside source control. Hosts such as Cloud Code, Gemini
+clients, and other MCP-compatible tools can use the same `/mcp` endpoint when
+they support Streamable HTTP; their configuration syntax is host-specific and
+has not been claimed as an end-to-end test in this repository.
+
+### Docker Deployment
+
+The MCP server can be run in a Docker container for easier deployment and isolation.
+
+#### Quick Start with Docker
+
+```bash
+# Clone the repository
+git clone https://github.com/nobrainer-tech/langflow-mcp.git
+cd langflow-mcp
+
+# Create .env file with your configuration
+cp .env.example .env
+# Edit .env with your Langflow instance URL and API key
+
+# Build and run with docker-compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the server
+docker-compose down
+```
+
+#### Building Docker Image
+
+```bash
+# Build the image
+docker build -t langflow-mcp-server:latest .
+
+# Run in stdio mode (for Claude Desktop)
+docker run -it --rm \
+  -e LANGFLOW_BASE_URL=http://localhost:7860 \
+  -e LANGFLOW_API_KEY=your-api-key \
+  langflow-mcp-server:latest
+
+# Run in HTTP mode (for remote access)
+docker run -d \
+  -p 3000:3000 \
+  -e MCP_MODE=http \
+  -e HOST=0.0.0.0 \
+  -e PORT=3000 \
+  -e AUTH_TOKEN=your-secure-token \
+  -e MCP_ALLOWED_ORIGINS=https://your-client.example \
+  -e LANGFLOW_BASE_URL=http://langflow:7860 \
+  -e LANGFLOW_API_KEY=your-api-key \
+  langflow-mcp-server:latest
+```
+
+#### Docker Compose Configuration
+
+The included `docker-compose.yml` supports both stdio and HTTP modes:
+
+```yaml
+# STDIO mode (default)
+environment:
+  - MCP_MODE=stdio
+  - LANGFLOW_BASE_URL=http://localhost:7860
+  - LANGFLOW_API_KEY=your-key
+
+# HTTP mode
+environment:
+  - MCP_MODE=http
+  - PORT=3000
+  - AUTH_TOKEN=your-secure-token
+  - MCP_ALLOWED_ORIGINS=https://your-client.example
+```
+
+## Available MCP Tools
+
+Once connected, Claude can use:
+- **Standard mode**: 236 individual tools
+- **Consolidated mode**: 29 action-based tools (recommended for reduced token usage)
+
+> **Note**: Raw Langflow transport endpoints (`/api/mcp/*`) and doc-rendering
+> endpoints (`/docs`, `/redoc`, `/openapi.json`) are intentionally **not** exposed as
+> tools — they are protocol/transport surfaces, not data operations.
+
+### Standard Mode Tools (236 tools)
+
+### Flow Management (13 tools)
+- **`create_flow`** - Create a new Langflow flow
+- **`list_flows`** - List all flows with pagination and filtering
+- **`get_flow`** - Get details of a specific flow by ID
+- **`update_flow`** - Update an existing flow
+- **`delete_flow`** - Delete a single flow
+- **`delete_flows`** - Delete multiple flows at once
+- **`replace_flow`** - Replace a flow's full definition
+- **`expand_flows`** - Expand flows with embedded component data
+- **`upload_flow`** - Upload a flow from JSON data
+- **`download_flows`** - Download multiple flows as JSON export
+- **`get_basic_examples`** - Get pre-built example flows
+- **`batch_create_flows`** - Create multiple flows in one operation
+- **`get_public_flow`** - Get a public flow without authentication
+
+### Flow Execution (7 tools)
+- **`run_flow`** - Execute a flow with input configuration (supports streaming)
+- **`run_flow_advanced`** - Advanced flow execution with full control
+- **`run_flow_session`** - Execute a flow within a session context
+- **`trigger_webhook`** - Trigger a flow via webhook endpoint
+- **`get_webhook_events`** - Get webhook trigger events for a flow
+- **`process_flow`** - Legacy process endpoint for flows
+- **`predict_flow`** - Legacy predict endpoint for flows
+
+### Flow Versions & Events (7 tools)
+- **`list_flow_versions`** - List versions of a flow
+- **`create_flow_version`** - Create a new flow version
+- **`get_flow_version`** - Get a specific flow version
+- **`delete_flow_version`** - Delete a flow version
+- **`activate_flow_version`** - Activate a specific flow version
+- **`get_flow_events`** - Get lifecycle events for a flow
+- **`create_flow_event`** - Create a lifecycle event for a flow
+
+### Build Operations (9 tools)
+- **`build_flow`** - Build/compile a flow and return job_id for async execution
+- **`get_build_status`** - Poll build status and events for a specific job
+- **`cancel_build`** - Cancel a running build job
+- **`build_public_flow`** - Build a public flow without authentication
+- **`get_public_build_events`** - Get events for a public build job
+- **`cancel_public_build`** - Cancel a public build job
+- **`get_task_status`** - Get status of an async task
+- **`build_vertices`** - Get vertex build order for a flow
+- **`stream_vertex_build`** - Stream real-time build events for a vertex
+
+### Workflows (v2) (7 tools)
+- **`run_workflow`** - Run a v2 workflow
+- **`get_workflow_result`** - Get the result of a workflow run
+- **`stop_workflow`** - Stop a running workflow
+- **`list_pending_workflows`** - List pending HITL requests for a flow
+- **`get_workflow_events`** - Re-attach to a workflow job event stream
+- **`resume_workflow`** - Resume a workflow with a request ID and optional decision
+- **`run_public_workflow`** - Run a public stream-only workflow
+
+### Agentic (5 tools)
+- **`agentic_assist`** - Get agentic assistance for a flow component
+- **`agentic_assist_stream`** - Get streaming agentic assistance for a flow component
+- **`agentic_assist_run`** - Run the assistant headlessly and persist flow changes
+- **`agentic_check_config`** - Check whether agentic features are configured
+- **`agentic_execute`** - Execute an agentic flow by name
+
+### Responses (2 tools)
+- **`create_response`** - Create an OpenAI-compatible response
+- **`get_session`** - Get a response/conversation session
+
+### Folder Management (7 tools)
+- **`list_folders`** - List all folders with pagination
+- **`create_folder`** - Create a new folder
+- **`get_folder`** - Get folder details by ID
+- **`update_folder`** - Update folder name, description, or parent
+- **`delete_folder`** - Delete a folder
+- **`download_folder`** - Download entire folder as archive
+- **`upload_folder`** - Upload folder from archive
+
+### Project Management (8 tools)
+- **`list_projects`** - List all projects with pagination
+- **`create_project`** - Create a new project
+- **`get_project`** - Get project details by ID
+- **`update_project`** - Update project name or description
+- **`upsert_project`** - Create or update a project at a caller-supplied ID
+- **`delete_project`** - Delete a project
+- **`upload_project`** - Upload a project from JSON data
+- **`download_project`** - Download a project as JSON export
+
+### Variable Management (5 tools)
+- **`list_variables`** - List all global variables
+- **`create_variable`** - Create a new variable
+- **`update_variable`** - Update variable properties
+- **`delete_variable`** - Delete a variable
+- **`detect_variables`** - Detect variables referenced in a value/template
+
+### Knowledge Base Management (11 tools)
+- **`list_knowledge_bases`** - List all available knowledge bases
+- **`list_knowledge_bases_detailed`** - List knowledge bases with detailed metadata
+- **`get_knowledge_base`** - Get detailed information about a specific knowledge base
+- **`create_knowledge_base`** - Create a new knowledge base
+- **`delete_knowledge_base`** - Delete a specific knowledge base
+- **`bulk_delete_knowledge_bases`** - Delete multiple knowledge bases at once
+- **`upload_knowledge_base`** - Upload a file to create/update a knowledge base
+- **`preview_knowledge_base_chunks`** - Preview how a document will be chunked
+- **`list_knowledge_base_chunks`** - List stored chunks for a knowledge base
+- **`ingest_knowledge_base`** - Ingest documents into a knowledge base
+- **`cancel_knowledge_base_ingest`** - Cancel an in-progress ingest job
+
+### File Management (5 tools)
+- **`upload_file`** - Upload a file to a specific flow
+- **`download_file`** - Download a file from a flow
+- **`list_files`** - List all files in a flow
+- **`delete_file`** - Delete a file from a flow
+- **`get_file_image`** - Get an image file from a flow
+
+### Files (v2) (8 tools)
+- **`list_files_v2`** - List all user-scoped v2 files
+- **`upload_file_v2`** - Upload a v2 file
+- **`get_file_v2`** - Get v2 file metadata or content
+- **`rename_file_v2`** - Rename a v2 file
+- **`delete_file_v2`** - Delete a v2 file
+- **`delete_all_files_v2`** - Delete all v2 files
+- **`batch_download_files_v2`** - Download multiple v2 files
+- **`batch_delete_files_v2`** - Delete multiple v2 files
+
+### Component Discovery & Custom Components (3 tools)
+- **`list_components`** - List all available Langflow components
+- **`create_custom_component`** - Create a new custom component
+- **`update_custom_component`** - Update an existing custom component
+
+### Monitoring & Analytics (12 tools)
+- **`get_monitor_builds`** - Get build execution history for a flow
+- **`get_monitor_messages`** - Query chat/message history with filtering
+- **`get_monitor_message`** - Get details of a specific message
+- **`update_monitor_message`** - Update a stored message
+- **`get_monitor_sessions`** - List all chat session IDs
+- **`get_monitor_session_messages`** - Get all messages for a session
+- **`migrate_monitor_session`** - Migrate messages between sessions
+- **`get_monitor_transactions`** - List transaction logs for a flow
+- **`delete_monitor_builds`** - Delete build history for a flow
+- **`delete_monitor_messages`** - Delete multiple messages by ID
+- **`delete_monitor_session_messages`** - Delete all messages for a session
+- **`delete_monitor_sessions`** - Delete chat sessions
+
+### Traces (4 tools)
+- **`list_traces`** - List execution traces with filters
+- **`get_trace`** - Get a specific execution trace
+- **`delete_trace`** - Delete a specific trace
+- **`delete_traces`** - Delete all traces for a flow
+
+### Shared Messages (5 tools)
+- **`get_shared_messages`** - Get shared messages
+- **`get_shared_sessions`** - Get shared sessions
+- **`update_shared_message`** - Update a shared message
+- **`migrate_shared_session`** - Migrate a shared session
+- **`delete_shared_session`** - Delete a shared session
+
+### Models & Providers (13 tools)
+- **`list_models`** - List available models
+- **`list_model_providers`** - List all model providers
+- **`list_model_provider_descriptors`** - List providers with stable IDs and display names
+- **`list_enabled_providers`** - List enabled providers
+- **`list_enabled_models`** - List enabled models
+- **`set_enabled_models`** - Enable/disable models
+- **`get_default_model`** - Get the default model for a type
+- **`set_default_model`** - Set the default model for a type
+- **`delete_default_model`** - Remove the default model for a type
+- **`get_provider_variable_mapping`** - Get provider-to-variable mapping
+- **`validate_model_provider`** - Validate provider credentials
+- **`get_language_model_options`** - Get language model options
+- **`get_embedding_model_options`** - Get embedding model options
+
+### User Management (5 tools)
+- **`list_users`** - List all users (admin only)
+- **`get_current_user`** - Get current authenticated user info
+- **`update_user`** - Update user profile information
+- **`reset_user_password`** - Reset password for a user (admin only)
+- **`create_user`** - Create a new user (admin only)
+
+### API Key Management (3 tools)
+- **`list_api_keys`** - List all API keys for the user
+- **`create_api_key`** - Create a new API key
+- **`delete_api_key`** - Delete an API key
+
+### Authentication (4 tools)
+- **`login`** - Authenticate with username and password
+- **`auto_login`** - Auto-login with stored credentials
+- **`refresh_token`** - Refresh authentication token
+- **`logout`** - Logout and invalidate session
+
+### Registration (2 tools)
+- **`get_registration`** - Check whether registration is enabled
+- **`register_user`** - Register a new user account
+
+### Store & Marketplace (9 tools)
+- **`check_store`** - Check if component store is enabled
+- **`check_store_api_key`** - Validate a store API key
+- **`save_store_api_key`** - Save a store API key
+- **`list_store_components`** - Browse available components in the store
+- **`get_store_component`** - Get details of a store component
+- **`create_store_component`** - Publish a component to the store
+- **`like_store_component`** - Like a store component
+- **`list_store_tags`** - List all component tags in the store
+- **`get_user_likes`** - Get components liked by user
+
+### Validation (2 tools)
+- **`validate_code`** - Validate Python code for custom components
+- **`validate_prompt`** - Validate prompt template syntax
+
+### MCP Servers (v2) (5 tools)
+- **`list_mcp_servers`** - List MCP servers registered with Langflow
+- **`get_mcp_server`** - Get an MCP server by name
+- **`create_mcp_server`** - Create an MCP server
+- **`update_mcp_server`** - Update an MCP server
+- **`delete_mcp_server`** - Delete an MCP server
+
+### MCP Project Management (5 tools)
+- **`get_mcp_project_config`** - Get MCP config for a project
+- **`update_mcp_project_config`** - Update MCP config for a project
+- **`get_mcp_project_installed`** - Get installed MCP clients for a project
+- **`install_mcp_project`** - Install MCP for a project into a client
+- **`get_mcp_project_composer_url`** - Get the MCP composer URL for a project
+
+### Starter & Templates (1 tool)
+- **`list_starter_projects`** - List available starter templates
+
+### Profile & Media (2 tools)
+- **`list_profile_pictures`** - List available profile pictures
+- **`get_profile_picture`** - Get a specific profile picture
+
+### Integration Tools (1 tool)
+- **`list_elevenlabs_voices`** - List ElevenLabs text-to-speech voices
+
+### System & Health (5 tools)
+- **`get_version`** - Get Langflow API version information
+- **`health_check`** - Check Langflow instance health status
+- **`get_health_check`** - Get a detailed health-check report
+- **`get_healthz`** - Get the Kubernetes-style readiness report
+- **`get_logs`** - Retrieve system logs (supports streaming)
+
+### Authorization / RBAC (23 tools, Langflow 1.10.0)
+- **`list_authz_roles`**, **`get_authz_role`**, **`create_authz_role`**, **`update_authz_role`**, **`delete_authz_role`** - Manage roles
+- **`list_authz_role_assignments`**, **`create_authz_role_assignment`**, **`delete_authz_role_assignment`** - Manage role assignments
+- **`list_authz_teams`**, **`get_authz_team`**, **`create_authz_team`**, **`update_authz_team`**, **`delete_authz_team`** - Manage teams
+- **`list_authz_team_members`**, **`add_authz_team_member`**, **`remove_authz_team_member`** - Manage team members
+- **`list_authz_shares`**, **`get_authz_share`**, **`create_authz_share`**, **`update_authz_share`**, **`delete_authz_share`** - Manage resource shares
+- **`get_authz_audit`** - Query the authorization audit log (superuser)
+- **`get_my_permissions`** - Get the caller's effective permissions
+
+### Memory Bases (10 tools, Langflow 1.12.3 - experimental)
+- **`create_memory_base`**, **`list_memory_bases`**, **`get_memory_base`** - Manage memory bases
+- **`list_memory_base_sessions`**, **`list_memory_base_messages`** - Inspect tracked sessions/messages
+- **`update_memory_base`**, **`delete_memory_base`** - Update/delete a memory base
+- **`flush_memory_base`**, **`check_memory_base_mismatch`**, **`regenerate_memory_base`** - Lifecycle operations
+
+### Knowledge Base Overhaul (7 tools, Langflow 1.10.0)
+- **`test_knowledge_base_connection`** - Test a vector backend connection
+- **`list_knowledge_base_connectors`** - List available ingestion connectors
+- **`ingest_knowledge_base_folder`**, **`ingest_knowledge_base_connector`** - Ingest from a server folder or connector
+- **`get_knowledge_base_metadata_keys`** - List distinct metadata keys/values
+- **`list_knowledge_base_runs`**, **`get_knowledge_base_run`** - Inspect ingestion runs
+
+### Extensions & Misc (6 tools, Langflow 1.10.0)
+- **`reload_extension_bundle`** - Reload an extension bundle (requires server-side flag)
+- **`get_extension_events`** - Poll extension events for the current user
+- **`get_agentic_file`** - Read a file from the per-user agentic sandbox
+- **`reset_agentic_session`** - Reset agentic session/sandbox state
+- **`get_flow_note_translations`** - Get localized note-node translations for a flow
+- **`get_job_queue_metrics`** - Job-queue metrics snapshot (superuser)
+
+### Langflow 1.12.x Governance (12 tools)
+- **`get_model_provider_policy`**, **`replace_model_provider_policy`** - Read or replace the install-wide approved-provider policy
+- **`get_catalog_component_policy`**, **`replace_catalog_component_policy`** - Read or replace blocked component keys
+- **`get_catalog_template_policy`**, **`replace_catalog_template_policy`** - Read or replace blocked template keys
+- **`get_catalog_policy_usage`**, **`get_catalog_policy_usage_flows`** - Inspect component usage across flows
+- **`get_policy_bundle`**, **`replace_policy_bundle`** - Read or atomically replace the combined governance policy
+- **`list_policy_bundle_history`**, **`rollback_policy_bundle`** - Inspect or roll back policy revisions
+
+Policy replacement operations are superuser-only and use complete sets. Read the
+current policy revision before writing so optimistic concurrency conflicts are
+handled explicitly.
+
+> The v2 workflow runner (`run_workflow` / `workflow` action `run`) also accepts request-level
+> `globals`, the preferred replacement for the deprecated
+> `X-LANGFLOW-GLOBAL-VAR-*` headers.
+
+### A2A Protocol (3 tools, Langflow 1.12.x)
+- **`list_a2a_agents`** - List available A2A (Agent-to-Agent) agents
+- **`get_a2a_agent_card`** - Get a flow's A2A agent card (`.well-known/agent-card.json`)
+- **`invoke_a2a_jsonrpc`** - Invoke a flow via the A2A JSON-RPC endpoint (passthrough envelope)
+
+> A2A endpoints require server-side enablement (`LANGFLOW_A2A_ENABLED`); otherwise
+> requests surface as a thrown `Failed to ...` error.
+
+### v2 Workflow HITL & Public Execution (4 tools, Langflow 1.12.x)
+- **`list_pending_workflows`** - List pending human-in-the-loop requests for a required `flow_id`
+- **`get_workflow_events`** - Re-attach to a workflow job event stream by job ID
+- **`resume_workflow`** - Resume a paused HITL workflow with `request_id` and an optional decision
+- **`run_public_workflow`** - Run a public (unauthenticated-eligible) workflow
+
+> The `get_workflow_events` and `run_public_workflow` endpoints return server-sent-event
+> streams; the initial payload is captured but streaming is not incrementally surfaced.
+
+### External / Trusted-JWT Authentication (Langflow 1.11.x)
+
+Langflow 1.11.x adds external trusted-JWT / JIT-provisioning authentication. This is
+controlled entirely by the Langflow **server** environment and adds **no MCP tools**:
+`EXTERNAL_AUTH_ENABLED`, `EXTERNAL_AUTH_TOKEN_HEADER`/`EXTERNAL_AUTH_TOKEN_COOKIE`,
+`EXTERNAL_AUTH_JWKS_URL`, `EXTERNAL_AUTH_ISSUER`/`EXTERNAL_AUTH_AUDIENCE`/`EXTERNAL_AUTH_ALGORITHMS`,
+`EXTERNAL_AUTH_*_CLAIM`, and `EXTERNAL_AUTH_ACCESS_CEILING_*`. The MCP client keeps using its
+API key / Bearer token as before.
+
+## Example Usage
+
+```typescript
+// Create a new flow
+create_flow({
+  name: "My Automation Flow",
+  description: "A flow that processes data"
+})
+
+// List all flows
+list_flows({
+  page: 1,
+  size: 50
+})
+
+// Get flow details
+get_flow({
+  flow_id: "flow-uuid-here"
+})
+
+// Update a flow
+update_flow({
+  flow_id: "flow-uuid-here",
+  name: "Updated Flow Name"
+})
+
+// Execute a flow
+run_flow({
+  flow_id_or_name: "my-flow-name",
+  input_request: {
+    input_value: "Hello World",
+    output_type: "chat",
+    input_type: "chat"
+  },
+  stream: false
+})
+
+// Trigger via webhook
+trigger_webhook({
+  flow_id_or_name: "my-flow",
+  input_request: {
+    input_value: "Process this data"
+  }
+})
+
+// Build a flow (compile/validate)
+build_flow({
+  flow_id: "flow-uuid-here",
+  log_builds: true,
+  event_delivery: "polling"
+})
+
+// Check build status
+get_build_status({
+  job_id: "job-uuid-from-build",
+  event_delivery: "polling"
+})
+
+// List knowledge bases (RAG)
+list_knowledge_bases()
+
+// Get knowledge base details
+get_knowledge_base({
+  kb_name: "my-documents"
+})
+
+// Create a folder
+create_folder({
+  name: "My Flows",
+  description: "Organized flows"
+})
+
+// Create a project
+create_project({
+  name: "My Project",
+  description: "Project description"
+})
+
+// Manage variables
+create_variable({
+  name: "API_KEY",
+  value: "secret-key",
+  type: "string"
+})
+
+// Get basic examples
+get_basic_examples()
+
+// List all components
+list_components()
+```
+
+## Development
+
+```bash
+# Build
+npm run build
+
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+
+# Type checking
+npm run typecheck
+
+# HTTP development server with automatic TypeScript reload
+npm run dev:http
+```
+
+## Project Structure
+
+```
+langflow-mcp/
+├── src/
+│   ├── mcp/
+│   │   ├── index.ts       # MCP server entry point
+│   │   ├── http.ts        # Streamable HTTP transport
+│   │   ├── server.ts      # MCP server implementation
+│   │   └── tools.ts       # Tool definitions
+│   ├── services/
+│   │   └── langflow-client.ts  # Langflow API client
+│   ├── types/
+│   │   └── index.ts       # TypeScript types
+│   └── utils/
+│       └── logger.ts      # Logging utility
+├── .env.example           # Example configuration
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Attribution
+
+Developed with [NoBrainer.Tech Flow](https://github.com/nobrainer-tech/nobrainer-tech-flow) for scoped implementation, independent reviews and release verification.
+
+This project is inspired by and follows the structure of [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) by Romuald Czlonkowski. Special thanks to the n8n-mcp project for the excellent MCP server architecture and implementation patterns.
+
+## License
+
+MIT License - see LICENSE for details.
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Run tests (`npm test`)
+4. Submit a pull request
+
+## Acknowledgments
+
+- [Langflow](https://github.com/logspace-ai/langflow) team for the workflow automation platform
+- [Anthropic](https://anthropic.com) for the Model Context Protocol
+- [czlonkowski/n8n-mcp](https://github.com/czlonkowski/n8n-mcp) for the inspiration and architecture
+
+## Releasing
+
+Release through `.github/workflows/publish.yml` on GitHub-hosted runners. The npm Trusted Publisher must use owner `nobrainer-tech`, repository `langflow-mcp`, workflow `publish.yml`, an empty environment and permission to run `npm publish`. No stored npm write token is required.
+
+After reviewed changes are merged, push a new stable tag matching `package.json` and the lockfile. The workflow checks that the tag belongs to master, runs typecheck, tests, packaged MCP smoke and security audit, then publishes and verifies the exact npm commit and provenance before creating the GitHub Release. Existing tags must not be moved.
+
+The provenance check binds the attestation's package, tarball SHA-512 digest, source repository and commit. It does not perform cryptographic verification of Sigstore signatures.
+
+For tags created from 4.12.1 onward, recover an interrupted release by running the workflow at that exact tag (for example `gh workflow run publish.yml --ref v4.12.1`). This keeps the build source aligned with GitHub's provenance identity. An already-published version is accepted only when its commit and provenance match; it is never overwritten.
+
+---
+
+Built with ❤️ for the Langflow community

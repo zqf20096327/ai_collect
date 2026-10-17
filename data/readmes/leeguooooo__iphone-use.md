@@ -1,0 +1,306 @@
+<p align="center">
+  <img src="assets/icon-1024.png" alt="iphone-use icon" width="120">
+</p>
+
+<h1 align="center">iphone-use</h1>
+
+<p align="center"><strong>Let AI agents use your real iPhone.</strong><br>
+Claude Code, Codex or any MCP client reads the screen as text, taps, types and swipes in any app, including the ones with no API.</p>
+
+<p align="center">
+  <a href="https://github.com/leeguooooo/iphone-use/releases/latest"><img src="https://img.shields.io/github/v/release/leeguooooo/iphone-use?label=release" alt="Latest release"></a>
+  <a href="https://github.com/leeguooooo/iphone-use/actions/workflows/pr-checks.yml"><img src="https://github.com/leeguooooo/iphone-use/actions/workflows/pr-checks.yml/badge.svg" alt="PR checks"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm_Shield_1.0.0-blue.svg" alt="License: PolyForm Shield 1.0.0"></a>
+  <img src="https://img.shields.io/badge/platform-macOS%2015%2B-lightgrey" alt="Platform: macOS 15+">
+  <img src="https://img.shields.io/badge/iPhone-iOS%2015%2B-black" alt="iPhone: iOS 15+">
+  <img src="https://img.shields.io/badge/built%20with-Rust-orange" alt="Built with Rust">
+  <img src="https://img.shields.io/badge/MCP-server-success" alt="MCP server">
+</p>
+
+<p align="center">
+  <strong>English</strong> ·
+  <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/leeguooooo/iphone-use/main/install.sh | sh
+```
+
+https://github.com/user-attachments/assets/ee298774-bf3e-4fd0-9a08-481b20904f61
+
+<sub>1-minute demo, real iPhone recordings · [中文版](https://github.com/user-attachments/assets/6192e8a6-ab2d-4dfc-b2e9-2c971f527d55)</sub>
+
+<table>
+<tr><td align="center" width="960">
+
+**Advertisement · Available**
+
+### Advertise here
+
+Showcase your product here and support ongoing maintenance.
+
+[**Ask about advertising**](mailto:leeguoooo@gmail.com?subject=iphone-use%20advertising%20inquiry&body=Product%20%2F%20company%20name%3A%0AProduct%20URL%3A%0APlacement%20%28README%20%2F%20website%20%2F%20both%29%3A%0ACampaign%20dates%3A%0ABudget%20%2F%20currency%20%28optional%29%3A%0A) · leeguoooo@gmail.com
+
+</td></tr>
+</table>
+
+## Paid setup and project sponsorship
+
+Need help setting up a real iPhone, connecting your agent or creating an iOS app test flow? Email us with your environment, the workflow and expected result, and where you are stuck. We review feasibility and agree on scope, acceptance criteria and a quote before work starts.
+
+[**Ask about paid setup**](mailto:leeguoooo@gmail.com?subject=iphone-use%20paid%20setup%20inquiry&body=Target%20website%20or%20app%20%28public%20information%20only%29%3A%0AWorkflow%20and%20expected%20result%3A%0AEnvironment%20%28Mac%20%2F%20Xcode%20%2F%20iPhone%20%2F%20iOS%20%2F%20agent%20client%29%3A%0ACurrent%20blocker%3A%0ABudget%20%2F%20currency%20%28optional%29%3A%0APreferred%20timeline%3A%0A) · [Discuss sponsorship](mailto:leeguoooo@gmail.com?subject=iphone-use%20sponsorship&body=I%20would%20like%20to%20support%20ongoing%20maintenance.%0APreferred%20contribution%20%28one-time%20or%20monthly%29%3A%0AAmount%20%2F%20currency%3A%0A) · leeguoooo@gmail.com
+
+Want to support ongoing maintenance? Email us to discuss a one-time or recurring contribution.
+
+Community bug reports and feature requests remain welcome on GitHub. Please keep credentials and private account data out of inquiries.
+
+## Why iphone-use
+
+- **Any app, no API needed.** It works on Health, banking and payment apps (even the ones that black out screen capture), chat apps and your own app under test.
+- **USB or Wi-Fi.** Set the phone up once with a cable; after that it can be driven over Wi-Fi through an encrypted tunnel.
+- **Old iPhones too.** iOS 15 and later, without updating the phone.
+- **Fast.** Its own XCTest device runner reads the screen in about 0.1 s. A tap that returns the settled screen takes about 1.9 s ([numbers](#speed)).
+- **Honest results.** Every action reports whether it was applied, not sent, or unknown, and whether a retry is safe. Taps on covered elements are refused, not passed off as done.
+- **Replayable flows.** A task done once becomes a flow that replays in one call, with no model and no tokens.
+- **Remote control for people, too.** Drive the phone yourself from a browser or another iPhone, on the LAN or from anywhere: a live H.264 screen, mouse and keyboard, and pairing by QR code. Agents and people share one phone without stepping on each other ([details](#remote-control-for-people)).
+- **Watch the agent live.** The phone's screen shows in the agent host's side panel (where MCP Apps is supported), in a browser, or in the iOS app.
+- **Nothing on the Mac moves.** It never touches the Mac's screen, cursor or focus.
+
+## What you can ask
+
+```text
+Open Health and tell me how many steps I walked each day this week.
+Find the newest message from Mom in WeChat and read it to me.
+Collect every transaction on this bank statement page, all the way to the end.
+Write this 2,000-word draft into a new note in Notes.
+Run my app's login test on the real phone and tell me which step fails.
+```
+
+The agent finds an app by its name (`launch_app {"app": "Health"}`) and types long text (up to 20,000 characters) in one step. It can read a list across pages and say whether it reached the end.
+
+## How it works
+
+```text
+ Claude Code / Codex / any MCP client ──MCP──┐
+ scripts and other agents ─────────────HTTP──┤
+                                             ▼
+                          iphone-use daemon on your Mac ──USB or Wi-Fi──▶ XCTest runner on the iPhone
+                                             ▲
+ you, in a browser or the iOS app ───────────┘
+```
+
+One daemon per phone runs on the Mac. It reads the screen as an accessibility tree (text, not pixels), sends taps and typing through a small XCTest runner it installs on the phone, and checks that the screen has settled before it answers. Agents and people go through the same daemon, and one of them holds the phone at a time.
+
+## Install
+
+**You need**
+
+- A Mac with macOS 15 or later, and Xcode signed in to an Apple ID (a free one works).
+- An iPhone with iOS 15 or later and Developer Mode on (Settings → Privacy & Security → Developer Mode).
+- A USB cable for the first setup. Plug the iPhone in and unlock it before you install.
+
+The installer then sets the phone up and shows an agent opening Settings and reading it. It registers the MCP server with Claude Code and Codex, and with Cursor and Claude Desktop when they are installed (`IPHONE_USE_NO_CLIENT_SETUP=1` skips those two), and opens the control page in your browser with a one-time sign-in, so there is no password to copy. If anything is missing, it says what and how to fix it.
+
+```bash
+iphone-use status    # is the phone ready for agents?
+iphone-use doctor    # what is missing, and how to fix it
+iphone-use setup     # set the phone up again (after a new iPhone or Xcode)
+iphone-use try       # a harmless check: open Settings, read the screen, go Home
+iphone-use login     # sign a browser in again, with a QR code for the iPhone
+iphone-use upgrade   # update everything
+~/.iphone-use/uninstall.sh --dry-run   # what uninstalling would remove (drop --dry-run to do it)
+```
+
+### Or ask your agent to install it
+
+Paste this into Codex or Claude Code on the Mac the iPhone is plugged into:
+
+```text
+Install iphone-use (https://github.com/leeguooooo/iphone-use) on this Mac so you can drive my iPhone.
+1. Run: curl -fsSL https://raw.githubusercontent.com/leeguooooo/iphone-use/main/install.sh | sh
+2. Run `iphone-use doctor`. Fix what it reports that can be fixed from the terminal, and run
+   `iphone-use setup` when it tells you to.
+3. Some steps only I can do: signing in to an Apple ID in Xcode, tapping Trust on the iPhone,
+   turning on Developer Mode, unlocking the phone. For those, stop, tell me exactly what to do,
+   and wait until I say it is done. Never ask me for a password or a code.
+4. Run `iphone-use doctor` again until nothing is missing, then `iphone-use try`.
+5. If the phone_* tools are not loaded in this chat yet, tell me to start a new chat.
+```
+
+### Codex and Claude Code plugins
+
+Each adds the skill and the MCP server; they still need the install above:
+
+```bash
+codex plugin marketplace add leeguooooo/iphone-use && codex plugin add iphone-use@iphone-use
+```
+
+In Claude Code:
+
+```text
+/plugin marketplace add leeguooooo/iphone-use
+/plugin install iphone-use@iphone-use
+```
+
+## Remote control for people
+
+The same daemon that serves agents lets you drive the phone yourself:
+
+- **From a browser.** The live screen arrives as H.264 encoded on the phone: native resolution at about 50 fps on the LAN, and a lighter mode for slow links. Click to tap, drag to swipe, hold to long-press, scroll with the wheel or trackpad. Type straight into the phone with your input method, and ⌘V pastes. The Controls panel lists the screen's elements so you can tap by label, and the Flow panel records what you do as a replayable flow. The page follows your browser's language (English or Chinese), with a switch in the sidebar.
+- **From another iPhone.** The native iOS app (minimum deployment target iOS 15) pairs by scanning a QR code on the Mac's page, with no address or password to type. It plays the screen with the hardware decoder and switches between your phones. Install it with `iphone-use setup-app`, which signs it with your own team; with a paid team the app also controls its own phone with no Mac ([details](docs/guide.md#install-the-app)).
+- **Screens hidden from capture.** Banking and payment apps black out screen capture; there you see a live wireframe of the screen's elements instead of a blank picture, and you can still tap through it.
+- **From anywhere.** Reach the Mac through an authenticated HTTPS reverse proxy or a VPN such as Tailscale, and control the phone from outside your network ([security notes](docs/guide.md#security)).
+- **No collisions.** A phone has one owner at a time. While you are in control, an agent waits or is told who holds the phone, and the reverse is true too.
+
+Nothing on the Mac moves while you do it: no window takes focus and the cursor stays put.
+
+## Use it from an agent
+
+A daemon on your Mac drives the phone and offers the same control in three forms:
+
+- an **MCP server** for Claude Code, Codex, Claude Desktop, Cursor and other MCP clients;
+- an **HTTP API** for agents and scripts (`/agent/*`);
+- a **web page and a native iOS app** for people ([remote control](#remote-control-for-people)).
+
+The installer registers the MCP server with Claude Code, Codex, Cursor and Claude Desktop when they are present (`IPHONE_USE_NO_CLIENT_SETUP=1` leaves Cursor and Claude Desktop alone). Any other MCP client needs only the command; on this Mac the server finds the daemon and its token by itself:
+
+```json
+{
+  "mcpServers": {
+    "iphone-use": {
+      "command": "/Users/YOU/Applications/iPhoneUse.app/Contents/MacOS/iphone-use-mcp"
+    }
+  }
+}
+```
+
+<details>
+<summary>Config for Cursor, VS Code, Claude Desktop, Gemini CLI, opencode, Windsurf</summary>
+
+Use the absolute path (replace `YOU`) and merge the entry into the file; keep the servers already there.
+
+- **Cursor**: `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project), the `mcpServers` block above.
+- **Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`, the `mcpServers` block above; quit and reopen the app.
+- **Gemini CLI**: `~/.gemini/settings.json` (or `.gemini/settings.json` in a project), the `mcpServers` block above.
+- **Windsurf / Devin Desktop**: `~/.codeium/windsurf/mcp_config.json` (newer builds: `~/.config/devin/mcp_config.json`), the `mcpServers` block above.
+- **VS Code / Copilot**: `.vscode/mcp.json` in a workspace, or **MCP: Open User Configuration** for every workspace. The key is `servers`:
+
+  ```json
+  {
+    "servers": {
+      "iphone-use": {
+        "type": "stdio",
+        "command": "/Users/YOU/Applications/iPhoneUse.app/Contents/MacOS/iphone-use-mcp"
+      }
+    }
+  }
+  ```
+
+- **opencode**: `~/.config/opencode/opencode.json` (or `opencode.json` in a project). The key is `mcp` and the command is an array:
+
+  ```json
+  {
+    "$schema": "https://opencode.ai/config.json",
+    "mcp": {
+      "iphone-use": {
+        "type": "local",
+        "command": ["/Users/YOU/Applications/iPhoneUse.app/Contents/MacOS/iphone-use-mcp"],
+        "enabled": true
+      }
+    }
+  }
+  ```
+
+</details>
+
+Or call the HTTP API directly:
+
+```bash
+AUTH="Authorization: Bearer $TOKEN"; CTL="X-Phone-Control: 1"
+curl -s -H "$AUTH" $HOST/agent/elements                     # the screen as text + a snapshot token
+curl -s -H "$AUTH" -H "$CTL" -X POST "$HOST/agent/input?return=delta" \
+  -d '{"type":"tap","element":7,"snapshot":"…"}'            # tap, then what changed (~2 s)
+```
+
+For app developers and testers the same tools also read the phone's logs and crash reports, record the screen to MP4, install a build (`.ipa`, `.app` or an https link), set a simulated location, and keep per-app notes that agents read when they enter the app. `IPHONE_USE_MCP_TOOLS=readonly` exposes only the tools that read, and `iphone-use-mcp --listen 127.0.0.1:PORT` serves MCP over HTTP. A loopback listener is reachable only from the same Mac; for a client on another machine, put it behind an authenticated tunnel, or listen on another address with `IPHONE_USE_MCP_TOKEN` set (it is required off loopback).
+
+No phone at hand? While you develop, drive an iOS Simulator the same way (preview, needs Xcode): `iphone-use simulator start "iPhone 16 Pro"` builds and starts everything, then point the agent at it with `claude mcp add iphone-sim -e IPHONE_USE_INSTANCE=sim -- iphone-use-mcp`. See [Simulators](docs/guide.md#simulators-preview).
+
+See the [MCP tools](crates/mcp/README.md) and the [Agent API reference](docs/agent-api.html).
+
+## Safety and privacy
+
+- **Secrets stay with you.** For logins, passcodes and Face ID the agent stops and asks you to finish on the phone. It never asks for the password or the code.
+- **Limits the agent cannot talk its way past.** The daemon refuses apps you block (`IPHONE_USE_BLOCKED_APPS`, for example `Wallet, Passwords`) and caps the actions per task (`IPHONE_USE_MAX_ACTIONS`), whatever the agent's prompt says ([details](docs/agent-reference.md#owner-limits-and-the-activity-feed)).
+- **You see what it does.** The web page shows each action over the live screen in plain words, for example `Tapped “Wi-Fi”`. Typed text is never kept, only its length.
+- **Local by default.** The daemon listens on `127.0.0.1:44321` behind a password, and the runner on the phone accepts only requests signed with a per-launch token. The iOS 15/16 LAN path is unencrypted ([security](docs/guide.md#security)).
+- **No telemetry.** This build sends no usage data ([telemetry](docs/telemetry.md) · [privacy policy](docs/privacy.md)).
+
+## Flows: do a task once, replay it with no model
+
+Tasks you repeat are kept as **flows**: reviewed per-app scripts that replay without a model, so they cost no tokens. The official registry is **[leeguooooo/iphone-use-flows](https://github.com/leeguooooo/iphone-use-flows)**. Record a flow in the browser's Flow panel and publish it there with a PR.
+
+Agents find flows on their own: when one enters an app, the response lists that app's flows. After an agent does a multi-step task in an app that has none, it asks whether to save the task as a flow; the daemon has already recorded the steps as a draft. The daemon keeps the registry fresh by itself (`IPHONE_USE_FLOWS_NO_AUTO_UPDATE=1` turns that off, `IPHONE_USE_FLOWS_NO_SUGGEST=1` silences the save suggestions).
+
+```bash
+MCP=~/Applications/iPhoneUse.app/Contents/MacOS/iphone-use-mcp
+$MCP flow update                            # sync the registry (sha256-checked)
+$MCP flow list                              # what is available
+$MCP flow run health/export-all-zh-cn       # replay one; failures say which step and why
+$MCP flow draft --out my-task.json          # what you just did on the phone, as a draft flow
+```
+
+Flows also make rerunnable test suites (`$MCP test suite.yaml`, with an exit code ready for CI) and scheduled runs the daemon starts on a cron line (`$MCP schedule add`): see [Testing and scheduled runs](docs/testing.md).
+
+## Speed
+
+iphone-use drives the phone through its own XCTest runner ([`runner/`](runner/README.md)). It speaks the WebDriverAgent HTTP API, and it is built for speed:
+
+- It reads the screen with one accessibility snapshot of a fixed attribute set, instead of walking the element tree attribute by attribute.
+- It synthesizes touches directly and does not wait for the app to go idle before acting; the daemon checks afterwards that the screen has settled.
+- It is one small app with a built-in HTTP server and MJPEG stream; there are no extra dependencies on the phone.
+
+Measured on the same iPhone 13 over USB, against [agent-device](https://github.com/callstack/agent-device) (October 2026):
+
+| | iphone-use runner | agent-device |
+|---|---|---|
+| Read the screen (accessibility tree) | 0.08–0.135 s | ~0.7 s |
+| Tap, then wait for the screen to settle | 1.0 s | 2.8–3.3 s |
+
+Through the full agent API, a tap by label that returns the settled change takes about 1.9 s on an iPhone 17 Pro Max; the WebDriverAgent-based release took 4.2 s. The live view streams at 27–28 fps. Each phone gets its own daemon and runner, so two phones driven at the same time run as fast as either one alone.
+
+## More
+
+- [Full guide](docs/guide.md): browser and iOS app, flows and the flow registry, Wi-Fi and iOS 15/16, lifecycle, configuration, security, development.
+- [Agent API reference](docs/agent-api.html) · [MCP tools](crates/mcp/README.md) · [Architecture](docs/direct-device-architecture.html) · [Device setup pitfalls](docs/wda-setup.html) · [Device runner](runner/README.md) · [Privacy](docs/privacy.md)
+- [Product guide](https://blog.leeguoo.com/en/posts/iphone-use/): installation, MCP setup, flows and how it compares.
+- Issues and ideas: [GitHub issues](https://github.com/leeguooooo/iphone-use/issues).
+
+## License
+
+[PolyForm Shield 1.0.0](LICENSE). This project is source-available. Non-competing use, modification and distribution are permitted subject to the license; using the software to provide a competing product or service, including a free one, is prohibited. See [licensing scope and third-party notices](LICENSING.md).
+
+<!-- use-family -->
+## The `*-use` family
+
+Small, composable CLIs that give an AI agent hands on one real thing. Same shape
+everywhere: `curl … install.sh | sh` to install, JSON on stdout, and a companion
+skill that teaches your agent to drive it — each repo's own README says how to
+install its skill, since the right way differs per project and per release.
+
+| Repo | Gives your agent |
+|---|---|
+| [chrome-use](https://github.com/leeguooooo/chrome-use) | A real browser — logged-in sessions, forms, scraping, screenshots |
+| [mail-use](https://github.com/leeguooooo/mail-use) | Email — read, search, send, triage across Gmail / QQ / 163 / any IMAP |
+| [wechat-use](https://github.com/leeguooooo/wechat-use) | WeChat on macOS — send messages, query contacts and history |
+| [discord-use](https://github.com/leeguooooo/discord-use) | Discord — messages, channels, forums, webhooks (REST-only, Rust) |
+| [cookie-use](https://github.com/leeguooooo/cookie-use) | Many logged-in accounts per site — capture, switch, apply sessions |
+| [profile-use](https://github.com/leeguooooo/profile-use) | Your personal profile, safely — fill signup / KYC / checkout forms |
+| [bitwarden-use](https://github.com/leeguooooo/bitwarden-use) | Bitwarden / Vaultwarden — headless passkey (FIDO2) login |
+| [chatgpt-use](https://github.com/leeguooooo/chatgpt-use) | Your ChatGPT subscription as a coding-agent backend — no API key |
+| [computer-use](https://github.com/leeguooooo/computer-use) | The macOS desktop itself |
+| [pixcake-use](https://github.com/leeguooooo/pixcake-use) | Read-only PixCake probing — snapshot / diff / SQLite inspection |
+
+## Author
+
+Built by **郭立 (Guo Li / leeguoo)** — [leeguoo.com](https://leeguoo.com/about) · [GitHub](https://github.com/leeguooooo) · [X](https://x.com/leeguooooo) · more tools in the [*-use family](https://github.com/leeguooooo/plugins).

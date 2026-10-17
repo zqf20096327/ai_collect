@@ -1,0 +1,121 @@
+<p align="center">
+  <img src="./trilane-rs/trilane-gui/icons/128x128.png" alt="TriLane" width="96" height="96">
+</p>
+
+<h1 align="center">TriLane</h1>
+
+<p align="center">
+  <strong>Autonomous gray-box security auditing with visible lanes, attack-surface state, and evidence-backed findings.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/trilane"><img alt="npm version" src="https://img.shields.io/npm/v/trilane?style=for-the-badge&label=npm&color=d9a441"></a>
+  <a href="https://github.com/xyun92/trilane/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/xyun92/trilane?style=for-the-badge&label=release&color=98971a"></a>
+  <a href="./LICENSE"><img alt="Apache-2.0 license" src="https://img.shields.io/badge/license-Apache--2.0-2f6f73?style=for-the-badge"></a>
+  <a href="./docs/cybergym-submission-report.md"><img alt="CyberGym report" src="https://img.shields.io/badge/CyberGym-88.9%25-c45b43?style=for-the-badge"></a>
+  <img alt="macOS arm64" src="https://img.shields.io/badge/prebuilt-macOS%20arm64-111827?style=for-the-badge">
+  <img alt="desktop GUI" src="https://img.shields.io/badge/interface-desktop%20GUI-98971a?style=for-the-badge">
+  <img alt="six audit lanes" src="https://img.shields.io/badge/audit-six%20lanes-c45b43?style=for-the-badge">
+  <img alt="safe and lab modes" src="https://img.shields.io/badge/modes-safe%20%7C%20lab-4b5563?style=for-the-badge">
+</p>
+
+<p align="center">
+  Xuyun Wu (CMHI) · Contact: <a href="mailto:wuxuyun@cmhi.chinamobile.com">wuxuyun@cmhi.chinamobile.com</a>
+</p>
+
+<p align="center">
+  <code>S0 admission</code> -> <code>S1 attack surface</code> -> <code>S2 semantic lanes</code> -> <code>S3 merge</code> -> <code>S4 probing</code> -> <code>S5 findings</code>
+</p>
+
+TriLane turns one natural-language objective into a staged audit cockpit for authorized local labs, internal codebases, training apps, and bug-bounty targets where you have permission to test.
+
+![TriLane demo](./assets/trilane-demo.gif)
+
+| Attack-Surface Graph | Six Semantic Lanes | Evidence Ledger |
+| --- | --- | --- |
+| Maps routes, code paths, auth boundaries, and reachable surfaces before deep auditing. | Splits review across identity/auth, injection, ingress/files/SSRF, business logic, config/secrets/crypto, and edge coverage. | Merges duplicate claims into adjudicated findings with severity, evidence, payloads, and code paths. |
+
+## Quick Start
+
+Run without a global install:
+
+```bash
+npx trilane@latest app
+```
+
+Or install and launch the desktop app:
+
+```bash
+npm install -g trilane
+trilane doctor
+trilane app
+```
+
+Then choose **Safe** or **Lab** mode and describe the authorized target:
+
+```text
+Penetration test juice-shop, source code is in ~/juice-shop, service is running on localhost:3000. If not, use colima or start the service directly
+```
+
+## Why TriLane?
+
+Free-form AI security agents can drift. TriLane makes the audit state explicit: surfaces are inventoried, lane outputs are merged, risky probes are gated by mode, and final findings are deduplicated before export.
+
+**0.2.0 update:** TriLane's workflow has been substantially optimized with stronger source scanning, leaner candidate generation, and cleaner PoC-bundle export. In our Juice Shop regression runs, the new pipeline is faster, uses fewer model tokens, and produces higher-quality replayable PoCs than the previous release.
+
+![TriLane screenshot](./assets/trilane-screenshot.png)
+
+## What TriLane Does
+
+- Builds an attack-surface graph before deep auditing.
+- Runs a six-lane semantic audit across identity/auth, injection/client-side sinks, ingress/files/SSRF, business logic, configuration/secrets/crypto, and edge-surface coverage.
+- Tracks Scan, Agent, Findings, and Config state in a desktop GUI.
+- Probes high-signal variants in Lab Mode when the target is explicitly authorized.
+- Deduplicates final findings with severity, evidence, payloads, code paths, and report export.
+- Archives run transcripts under `~/.trilane/transcripts` for regression analysis.
+
+## Modes
+
+**Safe Mode** is the default. It is intended for exploration and lower-risk review.
+
+**Lab Mode** grants the agent broader local filesystem and command execution access for the active target. Use it only on systems you own, operate, or are explicitly authorized to test.
+
+## npm Package Status
+
+The npm package includes a prebuilt macOS Apple Silicon app bundle so the Dock/Finder icon matches the TriLane brand. Other platforms can still run TriLane from source, or set `TRILANE_BIN` to a locally built binary:
+
+```bash
+TRILANE_BIN=/path/to/trilane-gui npx trilane app
+```
+
+## Build From Source
+
+Requirements:
+
+- Node.js 20 or newer
+- Rust toolchain from `trilane-rs/rust-toolchain.toml`
+- macOS for the current desktop build path
+
+Build the frontend:
+
+```bash
+cd trilane-rs/trilane-gui/frontend
+npm install
+npm run build
+```
+
+Build and run the desktop binary:
+
+```bash
+cd ../../
+cargo build -p trilane-gui --release
+./target/release/trilane-gui
+```
+
+## Safety
+
+TriLane is a dual-use security tool. Do not use it against systems where you lack permission. See [SECURITY.md](./SECURITY.md) for responsible-use boundaries, reporting guidance, and Lab Mode warnings.
+
+## License
+
+TriLane is licensed under the [Apache License 2.0](./LICENSE). Portions of the Rust workspace are derived from the OpenAI Codex project and retain their original Apache-2.0 notices.

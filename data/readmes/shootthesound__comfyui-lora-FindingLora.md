@@ -1,0 +1,158 @@
+<h1 align="center">Finding LoRA — for ComfyUI</h1>
+
+<p align="center">
+  A LoRA loader with <strong>bookmarks</strong>, <strong>trigger-word storage and click-to-copy</strong>, <strong>fuzzy search</strong>, a <strong>built-in stack of up to 10 more LoRAs with per-LoRA strengths</strong>, and a <strong>one-click button to drop another loader inline beside this one and wire it into the model chain automatically</strong>.<br>
+  Stop scrolling a thousand-LoRA dropdown. Stop manually re-wiring whenever you want to stack another LoRA.
+</p>
+
+<p align="center">
+  <a href="https://buymeacoffee.com/lorasandlenses"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee"></a>
+</p>
+
+<p align="center">
+  <img src="node.png" alt="LoRA Loader (Finding LoRA) node — bookmarks bar, LoRA picker, bookmark/edit-trigger buttons, LoRA Strength slider, and Chain another LoRA Loader" width="520">
+</p>
+
+---
+
+### Why I built this
+
+I have over a thousand LoRAs. ComfyUI's stock LoRA Loader makes me scroll a giant dropdown to find any of them, then if I want to stack another I have to drag out a second loader, wire its `MODEL` in, wire its `MODEL` out, and remember the trigger words. Every part of that workflow is friction I've felt hundreds of times.
+
+This pack is what I wished the stock loader was: bookmark the LoRAs you actually use; type a few characters to find any LoRA in the folder; store the trigger words once and copy them with a click; chain another loader with a single button that wires itself into the model line for you. Each feature is small in isolation; together they make the most-used node in my workflow feel sharp instead of clumsy.
+
+I haven't seen another LoRA-loader pack do this combination — bookmarks + trigger storage + click-to-copy + fuzzy search + auto-chaining — so here it is.
+
+---
+
+### What's new vs the stock LoRA Loader
+
+- **No more horrible left/right chevron dropdowns.** Both the LoRA picker and the bookmark picker open a proper modal on click. Default view is alphabetical with the current selection highlighted and scrolled into view, so a thousand-LoRA list lands you near where you were. Start typing to fuzzy-search — same picker, no separate search button.
+- **📖 Bookmark button.** One click bookmarks the currently-selected LoRA. The button label flips to **📕 Remove bookmark** when the active LoRA is bookmarked.
+- **📚 Bookmarks bar.** A second clickable bar above the LoRA picker shows the active bookmark and opens a picker modal listing every bookmarked LoRA. Picking one *sets* the LoRA picker — the bookmark and the active LoRA always agree.
+- **✏️ Trigger word storage.** When you bookmark, you're optionally prompted for a trigger word or phrase. The trigger displays on a read-only line when a bookmarked LoRA is selected, *and* gets emitted as a `STRING` output you can wire into your prompt-encoding chain.
+- **📋 Click-to-copy trigger.** Click the displayed trigger row to copy the phrase straight to your clipboard — paste it directly into a `CLIPTextEncode`. Shows a quick toast confirming the copy.
+- **🔗 Chain another LoRA Loader.** A button at the bottom spawns a fresh copy of the node beside the current one and splices it into the model chain. Any downstream `MODEL` connections get re-routed through the new node — `(upstream) → this node → new node → (former downstream)`. Stack as many LoRAs as you want without manual rewiring.
+
+  <img src="chained-nodes.png" alt="Two Finding LoRA loaders side-by-side — the second was spawned by clicking 'Chain another LoRA Loader' on the first; the model line is wired through automatically" width="780">
+- **➕ LoRA stack — up to 10 more LoRAs in the same node.** Below the strength slider, a green **➕ Add another LoRA** row opens the same fuzzy-search picker and adds a stacked LoRA with its own strength. Only the rows in use are shown — one add row at first, growing to a maximum of 10 stacked LoRAs (plus the main one). Each row: click the name to swap it (search included), `◀ ▶` to step the strength, drag between them to scrub, double-click to type a value, `✕` to remove. The stack is applied to the model in order after the main LoRA, and triggers from bookmarked stacked LoRAs are included in the `trigger` output.
+- **💾 LoRA sets — save and recall whole combinations.** Once you've stacked at least one extra LoRA, a **💾 Save LoRA Set** button appears: give the combination a name and the node's full config (main LoRA + strength + entire stack) is saved. **📂 Load LoRA Set** is always visible and opens a searchable picker of your saved sets — pick one and the node reconfigures itself; hover a row's 🗑 to delete a set. Saving under an existing name overwrites it.
+- **🔍 Real fuzzy search built into the picker.** Type in the picker modal to fzf-style fuzzy match across every LoRA in your `loras/` folder. Substring matches always rank above scattered ones — typing `snoys` puts every name containing `snoys` at the top, before scattered subsequence matches sneak past on bonus points.
+
+  <img src="lora-picker.png" alt="LoRA picker modal — alphabetical with current selection highlighted, type to fuzzy-search across the whole loras folder" width="640">
+
+- **📚 Bookmark picker.** Same modal UX, scoped to your saved favourites — type a few characters and it filters down instantly.
+
+  <img src="bookmarks-picker.png" alt="Bookmarks picker modal — type to filter, ↑/↓ + Enter to apply" width="640">
+- **Bookmarks persist globally + sync live across nodes.** Stored at `<ComfyUI>/user/finding-lora/bookmarks.json`. Add a bookmark on one node and every other Finding LoRA node on the canvas updates immediately — no restart, no refresh.
+- **All-canvas custom rendering.** Every widget on the node — pickers, buttons, the strength slider — is canvas-drawn so text alignment is consistent and the node escapes the Vue-button-quirks that other custom-node packs run into. The strength widget keeps the standard interactions: click `◀ ▶` to step, drag the body to scrub, double-click for direct entry.
+
+---
+
+### Quick start
+
+1. Drop the `comfyui-lora-FindingLora` folder into `ComfyUI/custom_nodes/`.
+2. Restart ComfyUI.
+3. Add the **LoRA Loader (Finding LoRA)** node from the `loaders` category.
+4. Wire it just like the stock `LoRA Loader (Model Only)` — `MODEL` in, `MODEL` out, plus a second **`trigger`** `STRING` output.
+
+Then:
+
+- Click the **🎛 LoRA:** bar → modal opens at your current selection alphabetically. Click any name, or type `kase` and hit Enter, you've got `character_kasey_v3.safetensors` selected.
+- Click **📖 Bookmark this LoRA** → optional trigger word entry.
+- Next time, click **📚 Bookmarks:** to pick straight from your favourites.
+- Click the trigger row to copy the trigger phrase to your clipboard.
+- Click **➕ Add another LoRA** to search for and add up to 10 more LoRAs inside the same node, each with its own strength.
+- Click **💾 Save LoRA Set** to name and save the whole combination; **📂 Load LoRA Set** brings any saved set back with one click.
+- Click **🔗 Chain another LoRA Loader** to drop another copy of the node beside this one and weave it into the model chain automatically.
+
+---
+
+### Inputs and outputs
+
+#### Required
+- `model` (MODEL)
+- `lora_name` (selected via the picker bar, but stored as a string)
+- `strength_model` (FLOAT, default 1.0) — labelled **LoRA Strength** on the node face
+
+#### Optional
+- `lora_stack` (STRING, JSON) — up to 10 additional LoRAs with per-LoRA strengths, managed by the stack rows on the node face. You never edit the JSON directly; it's the serialised form of the ➕ rows.
+
+#### Outputs
+- `model` (MODEL) — with the main LoRA and every stacked LoRA applied, in order
+- `trigger` (STRING) — trigger words/phrases saved against the bookmarks of the applied LoRAs (main + stack), comma-joined; empty string if none are bookmarked. Wire into your prompt encoder via a string-concat node to auto-prepend trigger words to your prompt.
+
+This is a **model-only** loader — no `clip` input or output, matching ComfyUI's stock `LoraLoaderModelOnly` for Klein 9B / Flux 2 / Wan / Z-image and any pipeline where CLIP isn't part of the LoRA chain.
+
+---
+
+### UI reference
+
+| Element | What it does |
+|---|---|
+| 📚 Bookmarks: | Click → picker modal listing all bookmarks. Type to filter. |
+| 🎛 LoRA: | Click → picker modal listing every LoRA. Default view is alphabetical scrolled to current. Type to fuzzy-search. ↑/↓ navigate, Enter selects, Esc cancels. |
+| 📖 Bookmark this LoRA | Bookmark the current LoRA. Prompts for an optional trigger word/phrase. |
+| 📕 Remove bookmark | Active LoRA is already bookmarked. Click to remove (with confirmation). |
+| ✏️ Edit Trigger Word | Edit the trigger word/phrase for the active bookmark. (When the active LoRA isn't bookmarked yet, the same button reads "Add trigger word (bookmark first)" and offers to bookmark on the spot.) |
+| 🔑 trigger row | Visible only when the active LoRA is bookmarked AND has a trigger saved. Click it to copy the trigger to your clipboard — a small 📋 hint icon sits at the right of the row. |
+| LoRA Strength | Click `◀ / ▶` to step ±0.01, drag the middle to scrub, double-click for direct entry. |
+| ➕ Add another LoRA | Opens the fuzzy-search picker and adds a stacked LoRA row (up to 10). Only rows in use are shown. |
+| ➕n stack row | Click the name to swap that LoRA (search included). `◀ / ▶` step its strength ±0.01, drag between them to scrub, double-click to type. `✕` removes the row. |
+| 💾 Save LoRA Set | Visible once the stack has at least one entry. Prompts for a name and saves the node's full LoRA config (main + strength + stack). Existing name → overwrite. |
+| 📂 Load LoRA Set | Always visible. Searchable picker of saved sets — selecting one applies the whole config to the node. 🗑 on a row deletes that set (with confirmation). |
+| 🔗 Chain another LoRA Loader | Spawn another copy of the node beside this one and splice it into the model chain. Existing downstream `MODEL` connections are re-routed through the new node automatically. |
+
+---
+
+### Search / fuzzy details
+
+The search algorithm is a simplified fzf with a hard tier for substring matches:
+
+- **Tier 1 — substring match.** Any filename literally containing the query as a contiguous substring scores in a band that no scattered match can reach. So if you type `snoys`, every filename containing `snoys` ranks above every filename where `s/n/o/y/s` is just scattered. Earlier-in-the-name and word-boundary substring matches get extra bonuses; gentle length penalty as the tie-breaker.
+- **Tier 2 — scattered subsequence (fzf-style).** All characters in the query must appear in the target **in order**. Bonuses for consecutive chars, word-boundary starts (after `_` `-` `.` `/` `\` or whitespace) and camelCase boundaries. Length penalty as tie-breaker.
+
+Top 200 results are shown to keep the UI fast even on huge libraries.
+
+---
+
+### Storage
+
+LoRA sets live beside the bookmarks at `<ComfyUI>/user/finding-lora/lora-sets.json` — same deal: a plain JSON file (`{"sets": [{name, lora_name, strength_model, stack: [...]}]}`) you can back up or bulk-edit, restart to pick up direct edits.
+
+Bookmarks are stored as a single JSON file at `<ComfyUI>/user/finding-lora/bookmarks.json`. Format:
+
+```json
+{
+  "version": 1,
+  "bookmarks": [
+    { "lora_name": "character_kasey_v3.safetensors", "trigger": "kasey, blue eyes, freckles" },
+    { "lora_name": "style_arcane_concept.safetensors", "trigger": "arcane style" }
+  ]
+}
+```
+
+Live editable on disk if you want to bulk-import or back up. Restart ComfyUI to pick up changes you make to the file directly.
+
+---
+
+### Routes (for the curious)
+
+The pack registers six HTTP routes on ComfyUI's server, namespaced under `/finding-lora/` so they don't clash with anything else:
+
+- `GET  /finding-lora/list` — returns all bookmarks
+- `POST /finding-lora/add` — `{ lora_name, trigger }` adds or updates a bookmark
+- `POST /finding-lora/remove` — `{ lora_name }` removes a bookmark
+- `GET  /finding-lora/sets/list` — returns all saved LoRA sets
+- `POST /finding-lora/sets/save` — `{ name, lora_name, strength_model, stack }` adds or overwrites a set
+- `POST /finding-lora/sets/remove` — `{ name }` deletes a set
+
+Frontend talks to those, file storage stays server-side.
+
+---
+
+### Support
+
+If this saves you scroll-time, consider supporting development:
+
+<a href="https://buymeacoffee.com/lorasandlenses"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee"></a>

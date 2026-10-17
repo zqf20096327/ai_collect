@@ -1,0 +1,352 @@
+# bonsai-ninja
+
+[![CI](https://github.com/gromhacks/bonsai-ninja/actions/workflows/ci.yml/badge.svg)](https://github.com/gromhacks/bonsai-ninja/actions/workflows/ci.yml)
+[![Hardening checks](https://github.com/gromhacks/bonsai-ninja/actions/workflows/hardening-checks.yml/badge.svg)](https://github.com/gromhacks/bonsai-ninja/actions/workflows/hardening-checks.yml)
+[![Rulepack audit](https://github.com/gromhacks/bonsai-ninja/actions/workflows/pack-audit.yml/badge.svg)](https://github.com/gromhacks/bonsai-ninja/actions/workflows/pack-audit.yml)
+[![crates.io](https://img.shields.io/crates/v/bonsai-ninja.svg)](https://crates.io/crates/bonsai-ninja)
+
+## See it in a few seconds
+
+![Terminal walkthrough: index a Python project, map its modules, read the HTTP input, trace six compiler-resolved functions, and inspect a critical command-injection flow](assets/bonsai-ninja-python-demo.gif)
+
+This 24-second walkthrough uses real terminal output from the current release
+build: index a deliberately vulnerable Python project, map its modules, read
+the HTTP input, and follow a six-function compiler corridor to a critical
+source-to-sink command-injection finding. Commands stay visible in full;
+scrollback is excerpted and pauses are edited. Colors, locations, stable IDs,
+and flow annotations come directly from the CLI.
+
+After installing bonsai-ninja, reproduce it from this checkout:
+
+```bash
+cd examples/python/language_gauntlet
+bonsai-ninja index . --no-progress
+bonsai-ninja tree . --max-depth 2 --no-progress
+bonsai-ninja read-file . --file entrypoints/http.py --lines 24:31 --no-progress
+bonsai-ninja inspect-graph . --from handle_request --to CommandRunner.execute --compact --no-progress
+bonsai-ninja security . taint-analysis --tag command-injection --no-progress
+```
+
+For a local release build instead of an installed command, first run
+`alias bonsai-ninja="$PWD/target/release/bonsai-ninja"` from the repository root.
+
+> **Project maturity:** bonsai-ninja is an ambitious early-stage project.
+> Compiler-backed analysis and security modeling across 20 languages leave a
+> lot of room for parser gaps, unresolved dynamic behavior, incorrect findings,
+> performance problems, and ordinary bugs. The current local release gates
+> pass and the tool is ready for people to use, but it is not perfect and
+> should not be the sole basis for a security decision. We are publishing it
+> now to gather real-world feedback, failing examples, rule contributions, and
+> engineering help from the community.
+
+bonsai-ninja is a local code-intelligence and static-analysis engine. It maps
+repositories, resolves symbols and calls, traces behavior across files,
+inspects dataflow, exports graph facts, and reports source-to-sink security
+findings from one compiler-style pipeline.
+
+The project is MIT licensed. It does not require a hosted service, upload
+source code, or reserve analysis features for a paid tier.
+
+## Use cases
+
+### Code intelligence for agents and developers
+
+**Give agents facts, not file dumps.** With tight symbol, file, and kind
+selectors, bonsai-ninja lets an agent ask for the smallest useful slice of a
+repository: the definition, callers, references, arguments, exact corridor,
+raw taint flow, or source file around one symbol. That means less prompt
+waste, less repeated reading, and answers tied to compiler evidence.
+
+Use it to map an unfamiliar repository, find the code behind a symptom, follow
+behavior across files, review change impact, or debug the analyzer itself with
+AST, HIR, CFG, resolver, call-edge, and taint diagnostics.
+
+### Security review
+
+Use the same compiler facts to inventory sources, sinks, sanitizers, and
+dependencies, then prove modeled source-to-sink paths with the sparse IDG
+fixed point. Findings can be reviewed in the terminal, emitted as JSON or
+SARIF for automation, or rendered as an HTML report from the same canonical
+result. The analysis is
+evidence for human review—not a guarantee that code is safe—and completion
+metadata makes unresolved static behavior visible.
+
+### Structured export for model and agent research
+
+Native export exposes compiler, symbol, callgraph, control-flow, dataflow, and
+compiled-IDG facts in a machine-readable form. GraphML, Cypher, and NetworkX
+views support graph tooling. These artifacts can be inputs to retrieval,
+training-data construction, evaluations, code-reasoning experiments, or
+tool-using agents; bonsai-ninja produces the evidence and does not train or
+validate a model by itself. The versioned native contract is published as
+[JSON Schema v14](schemas/bonsai-native-export-v14.schema.json).
+
+Our small exploratory tests produced encouraging results, but they are not a
+general model-quality claim. We would love to see independent teams take the
+idea further, publish reproducible evaluations, and tell us where it fails—
+whether that is an academic or independent lab, a product team, or a
+local-model hobbyist.
+
+### What the pipeline provides
+
+| Capability | Practical benefit |
+|---|---|
+| Tree-sitter compiler frontends | Parse 20 languages into typed declarations, calls, imports, values, control flow, and dataflow facts |
+| Focused `search`, `refs`, `calls`, and `read-file` | Retrieve a small, source-backed context slice before asking for heavier semantics |
+| Bounded `inspect-graph` declaration packets | Retrieve source, signature, imports, direct resolved callers and callees, and external-call evidence without recursively expanding a call tree |
+| Compressed `inspect-graph --from/--to` corridors | Follow compiler-evidenced behavior across files and report unresolved dynamic edges instead of inventing them |
+| AST, HIR, CFG, resolver, edge, and taint diagnostics | Inspect both the target program and the analyzer's reasoning instead of guessing from text |
+| Sparse IDG taint fixed point | Complete source-to-sink reachability over the admitted static graph without a hidden depth, file, iteration, or result cap |
+| Stable IDs, explicit page cursors, JSON, and the Rust SDK | Let agents cite evidence, detect when coverage continues, and automate repeatable review workflows |
+| JSON, GraphML, Cypher, and NetworkX export | Feed structured compiler evidence and explicit completeness metadata into downstream research and tooling |
+| Local execution and external caches | Keep source on the machine while reusing validated compiler work across queries |
+
+## Scale, measured
+
+**30,055 source files. Completed modeled analysis.** The latest completed
+fresh-generation Elasticsearch reference-host run used a 3 GiB semantic-worker scheduling
+budget. Selected results from the
+[current verification record](docs/RELEASE_READINESS.md):
+
+| Cache state and operation | Measured time | Result |
+|---|---:|---|
+| Empty cache: default structural `index` | 53.84s | Complete syntax/construct generation |
+| After structural index: default `index` | 2.79s | Compiler generation validated root-only |
+| Empty cache: `index --semantic` | 5m 58.32s | Complete reusable compiler, linkage, callgraph, retrieval, and IDG generation |
+| Empty analysis cache: production taint analysis | 1m 59.97s | Requested analysis without requiring whole-workspace semantic prewarm |
+| After index: semantic generation reopen | 2.57s | Validated sidecar reuse |
+| After index: default `inspect-graph` | 46.24s | Requested structural and taint evidence |
+| After index: production taint analysis | 1m 30.78s | Requested fixed point completed without a semantic cap |
+| After index: default native export | 3m 46.12s | Complete native document streamed and validated |
+
+The semantic-generation row is specifically `index --semantic`, which users
+request when they want reusable semantic sidecars prepared up front.
+Ordinary `index` is the lighter syntax/declaration warm-up and does not force a
+whole-workspace callgraph or IDG build; ordinary commands can also compute
+their requested facts on demand. The structural rows use a separate empty
+cache on the same 30,055-source checkout; warm validation checks the exact
+source fingerprint ledger without reopening every source body.
+
+That semantic prewarm is intentional whole-workspace work, not normal
+command startup. The 3 GiB setting schedules semantic workers rather than
+limiting operating-system RSS, and compressed export changes representation,
+not graph meaning. These are measurements on one reference host, not latency
+promises for every repository or CI runner. Unsupported Gradle dependency
+formats remain explicit coverage warnings; completing the modeled analysis
+does not mean every dependency manifest was understood. Full methodology,
+current SLOs, and separately labeled historical memory/export measurements live in
+[Release Readiness](docs/RELEASE_READINESS.md).
+
+## Supported languages
+
+The release includes 20 Tree-sitter frontends:
+
+C, C++, C#, Dart, Elixir, Erlang, Go, Java, JavaScript, Kotlin, Lua,
+Objective-C, Perl, PHP, Python, Ruby, Rust, Scala, Swift, and TypeScript.
+
+Each adapter owns its grammar and language syntax; shared analysis consumes
+typed compiler facts, while framework and security meaning stays in
+`security-patterns/`. See [Language Support](docs/language-support.mdx) for the
+frontend contract and known dynamic limits.
+
+The release binary embeds that YAML rulepack and uses the same loader and
+validator after materializing a content-addressed OS-cache generation. Security
+commands therefore work outside the source checkout; `--rules-dir` remains the
+deterministic custom/editable-pack override.
+
+## Accuracy contract
+
+bonsai-ninja treats analysis as a compiler pipeline:
+
+```text
+source -> Tree-sitter adapter -> typed compiler IR -> resolver/callgraph
+       -> IDG fixed point -> query, security, SDK, and export views
+```
+
+Production taint reachability is a sparse monotone IDG fixed point. It has no
+BFS name search, call-depth ceiling, iteration limit, file limit, or result
+cap. Memory budgets can change worker concurrency, cache retention, and spill
+behavior; they do not change semantic scope.
+
+Throughout this documentation, **exact** or **exhaustive** describes completion
+over the static facts admitted by the frontends and resolver: the engine does
+not silently stop that modeled work at a product-imposed cap. It does not mean
+that the static model recovers every possible runtime behavior, that every
+adapter or rule is bug-free, or that an empty result proves a program safe.
+
+Static analysis cannot resolve every runtime-generated call. Reflection,
+unexpanded macros, computed imports, dynamic dispatch, and metaprogramming can
+lack enough source evidence. In those cases the tool reports diagnostics or
+`analysis_incomplete_reasons`; it does not invent a resolved edge. Always
+check completion metadata before treating an empty result as proof that no
+path exists.
+
+Pagination is presentation only. If output reports another page, follow the
+printed page or cursor before claiming complete coverage. `--all` removes
+paging for an intentional exhaustive artifact; it does not enable a different
+analysis mode.
+
+## Install
+
+Install the published Rust package from crates.io:
+
+```bash
+# Requires Rust 1.88 or newer.
+cargo install bonsai-ninja --locked
+bonsai-ninja --version
+```
+
+Cargo installs the newest published stable release. Use `--version <VERSION>`
+when a deployment needs to pin an exact bonsai-ninja release.
+
+To replace an older Cargo-installed release with the current one:
+
+```bash
+cargo install bonsai-ninja --locked --force
+```
+
+Or build the release binary from a checkout:
+
+```bash
+git clone https://github.com/gromhacks/bonsai-ninja.git
+cd bonsai-ninja
+bash scripts/build-release.sh
+./target/release/bonsai-ninja --version
+```
+
+The tag workflow publishes the same version to crates.io and builds release
+archives for Linux, macOS, and Windows on x64 and arm64. See
+[Platform And Architecture Support](docs/platform-support.mdx) for source-build
+requirements and parser delivery constraints on other targets. When a tagged
+archive is published, verify its SHA-256 checksum and GitHub/Sigstore
+provenance before installing:
+
+```bash
+shasum -a 256 -c bonsai-ninja-<target>.tar.gz.sha256
+gh attestation verify bonsai-ninja-<target>.tar.gz \
+  --repo gromhacks/bonsai-ninja
+```
+
+## Quickstart
+
+Terminal severity labels use red for critical, orange for high, yellow for
+medium, blue for low, and gray-blue for info in every theme. Dense tables adapt
+to narrow terminals without dropping fields; findings lead with the compiler
+chain and source/sink locations. See [Output Formats](docs/output-formats.mdx).
+
+Use the release binary. Add `--no-color --no-progress` for scripts and agent
+workflows.
+
+```bash
+# Explain workspace roots and language coverage.
+./target/release/bonsai-ninja index ./my-app --no-color --no-progress --format json
+
+# Find an anchor before requesting heavier semantic work.
+./target/release/bonsai-ninja search ./my-app --query verify_token \
+  --context 8k --no-color --no-progress
+
+# Inspect the target: signature, direct callers/callees, imports, its compiler
+# flow, and expanded taint call stacks, without expanding transitive paths.
+./target/release/bonsai-ninja inspect-graph ./my-app --query verify_token \
+  --context 16k --no-color --no-progress
+
+# Run production-oriented security analysis.
+./target/release/bonsai-ninja security ./my-app taint-analysis \
+  --context 16k --no-color --no-progress
+
+# Work backward from every matched sink through exact compiler value lineage.
+./target/release/bonsai-ninja security ./my-app sink-analysis \
+  --context 16k --no-color --no-progress
+
+# Triage one flagged dependency: usage sites and complete source-to-sink flows.
+./target/release/bonsai-ninja security ./my-app dependency-analysis \
+  --framework node-serialize --no-color --no-progress
+
+# Write every production-profile result to SARIF for CI.
+./target/release/bonsai-ninja security ./my-app taint-analysis \
+  --format sarif --all \
+  --output-path findings.sarif.json --no-color --no-progress
+```
+
+The bundled rulepack defaults `source-analysis`, `sink-analysis`, and
+`taint-analysis` to its `production` profile: remote-input review, every sink
+severity, and common non-production path exclusions. Add an explicit severity
+floor such as `--severity high` only when the consumer wants to narrow the
+complete default finding set. Independently, compiler-backed commands exclude
+adapter-classified minified JavaScript/TypeScript bundles by default so
+generated distribution artifacts do not dominate indexing, graphs, security,
+or export. Add the global `--minified-js` switch when bundle internals are in
+scope. Use `--profile all --minified-js` together for an unfiltered security
+audit over every supported source representation. `tree` remains a direct
+filesystem view and still displays excluded bundles.
+
+The complete walkthrough is in [Getting Started](docs/getting-started.mdx).
+For any unfamiliar option, use the binary's `--help` and the
+[CLI Reference](docs/cli-reference.mdx).
+
+## Choose the smallest command
+
+| Need | Command |
+|---|---|
+| Files and directories | `tree` |
+| Workspace and language summary | `index` (prints the workspace `context`) |
+| Text or symbol anchor | `search` |
+| Declarations, classes, imports, entry points | `defs`, `classes`, `imports`, `entrypoints` |
+| Calls, arguments, references | `calls`, `args`, `refs` |
+| Local facts and the bounded compiler packet for one target | `inspect-graph --query` |
+| Exact compressed source-to-target corridor | `inspect-graph --from ... --to ...` |
+| Backward influence around a symbol | No CLI command: `inspect-graph --query` on the symbol plus `refs` / `vars` for read and write sites; the SDK `slices` API for programmatic slices |
+| One source file and connected context | `read-file` |
+| Reopen a stable result ID | `show` |
+| Parser or semantic internals | `dump-*`, `diagnostics` |
+| Security model or findings | `security` |
+| Downstream paths from sources | `security source-analysis` |
+| Upstream paths into sinks | `security sink-analysis` |
+| A flagged dependency's usage sites and source-to-sink taint flows | `security dependency-analysis` |
+| Downstream graph artifact | `export` |
+
+`tree` is a direct filesystem walk. It does not initialize the compiler,
+rulepack, callgraph, IDG, or security engine. Syntax inventory commands also
+avoid whole-workspace semantic work unless their requested result requires it.
+
+## Go deeper
+
+- [Documentation home](docs/index.mdx)
+- [Getting Started](docs/getting-started.mdx)
+- [Concepts](docs/concepts.mdx)
+- [CLI Reference](docs/cli-reference.mdx)
+- [Language Support](docs/language-support.mdx)
+- [Output Formats](docs/output-formats.mdx)
+- [Configuration](docs/configuration.mdx)
+- [CI Integration](docs/ci-integration.mdx)
+- [Rule Authoring Tutorial](docs/rule-authoring-tutorial.mdx)
+- [Rust SDK](docs/contributing/sdk.mdx)
+- [Contributing](docs/contributing/contributing.mdx)
+- [Release Readiness](docs/RELEASE_READINESS.md)
+
+Generated and executable coverage evidence lives in
+[Taint Coverage Matrix](docs/TAINT_COVERAGE_MATRIX.md),
+[Coverage Baseline](docs/COVERAGE_BASELINE.md), and
+[language_gauntlet Coverage](docs/LANGUAGE_GAUNTLETS.md). Current validation evidence
+and release commands live only in
+[Release Readiness](docs/RELEASE_READINESS.md).
+
+## Contributing and license
+
+Contributions should preserve the compiler/rule boundary and include the
+smallest positive and negative tests that prove the behavior. Start with
+[Contributing](CONTRIBUTING.md) and the
+[PR Review Checklist](docs/contributing/review-checklist.mdx). Participation is
+governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Use the guided GitHub issue forms for reproducible product defects, analysis
+quality reports, and feature proposals. Do not attach private source code,
+credentials, generated analysis caches, or proprietary findings to a public
+issue.
+
+Report exploitable vulnerabilities through the private process in
+[Security Policy](SECURITY.md), not through a public issue.
+
+bonsai-ninja is licensed under the [MIT License](LICENSE). Dependency license
+policy is documented in
+[Third-Party Licenses](docs/contributing/third-party-licenses.mdx).

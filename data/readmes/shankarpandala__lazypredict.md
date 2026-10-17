@@ -1,0 +1,430 @@
+# Lazy Predict
+
+[![image](https://img.shields.io/pypi/v/lazypredict.svg)](https://pypi.python.org/pypi/lazypredict)
+[![Publish](https://github.com/shankarpandala/lazypredict/actions/workflows/publish.yml/badge.svg)](https://github.com/shankarpandala/lazypredict/actions/workflows/publish.yml)
+[![Documentation](https://github.com/shankarpandala/lazypredict/actions/workflows/docs.yml/badge.svg)](https://shankarpandala.github.io/lazypredict/)
+[![Downloads](https://pepy.tech/badge/lazypredict)](https://pepy.tech/project/lazypredict)
+[![CodeFactor](https://www.codefactor.io/repository/github/shankarpandala/lazypredict/badge)](https://www.codefactor.io/repository/github/shankarpandala/lazypredict)
+[![Citations](https://img.shields.io/badge/Citations-43-blue)](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=4325808232671020176,16284230108871951652&as_sdt=5)
+
+Lazy Predict helps build a lot of basic models without much code and helps understand which models work better without any parameter tuning.
+
+- Free software: MIT license
+- Documentation: <https://shankarpandala.github.io/lazypredict/>
+
+## Features
+- Over 40 built-in machine learning models
+- Automatic model selection for classification, regression, and **time series forecasting**
+- **20+ forecasting models**: statistical (ETS, ARIMA, Theta), ML (Random Forest, XGBoost, etc.), deep learning (LSTM, GRU), and pretrained foundation models (TimesFM)
+- Automatic seasonal period detection via ACF
+- Multiple categorical encoding strategies (OneHot, Ordinal, Target, Binary)
+- Built-in MLflow integration for experiment tracking
+- **GPU acceleration**: XGBoost, LightGBM, CatBoost, cuML (RAPIDS), LSTM/GRU, TimesFM
+- Support for Python 3.9 through 3.13
+- Custom metric evaluation support
+- Configurable timeout and cross-validation
+- Intel Extension for Scikit-learn acceleration support
+
+## Installation
+
+### pip (PyPI)
+
+```bash
+pip install lazypredict
+```
+
+### conda (conda-forge)
+
+```bash
+conda install -c conda-forge lazypredict
+```
+
+### Optional extras (pip only)
+
+Install with boosting libraries (XGBoost, LightGBM, CatBoost):
+
+```bash
+pip install lazypredict[boost]
+```
+
+Install with time series forecasting support:
+
+```bash
+pip install lazypredict[timeseries]          # statsmodels + pmdarima
+pip install lazypredict[timeseries,deeplearning]  # + LSTM/GRU via PyTorch
+pip install lazypredict[timeseries,foundation]    # + Google TimesFM (Python 3.10-3.11)
+```
+
+Install with all optional dependencies:
+
+```bash
+pip install lazypredict[all]
+```
+
+## Usage
+
+To use Lazy Predict in a project:
+
+```python
+import lazypredict
+```
+
+## Classification
+
+Example:
+
+```python
+from lazypredict.Supervised import LazyClassifier
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+
+data = load_breast_cancer()
+X = data.data
+y = data.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=123)
+
+clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
+models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+
+print(models)
+```
+
+### Advanced Options
+
+```python
+# With categorical encoding, timeout, cross-validation, and GPU
+clf = LazyClassifier(
+    verbose=1,                          # Show progress
+    ignore_warnings=True,               # Suppress warnings
+    custom_metric=None,                 # Use default metrics
+    predictions=True,                   # Return predictions
+    classifiers='all',                  # Use all available classifiers
+    categorical_encoder='onehot',       # Encoding: 'onehot', 'ordinal', 'target', 'binary'
+    timeout=60,                         # Max time per model in seconds
+    cv=5,                               # Cross-validation folds (optional)
+    use_gpu=True                        # Enable GPU acceleration
+)
+models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+```
+
+**Parameters:**
+- `verbose` (int): 0 for silent, 1 for progress display
+- `ignore_warnings` (bool): Suppress scikit-learn warnings
+- `custom_metric` (callable): Custom evaluation metric
+- `predictions` (bool): Return prediction DataFrame
+- `classifiers` (str/list): 'all' or list of classifier names
+- `categorical_encoder` (str): Encoding strategy for categorical features
+  - `'onehot'`: One-hot encoding (default)
+  - `'ordinal'`: Ordinal encoding
+  - `'target'`: Target encoding (requires `category-encoders`)
+  - `'binary'`: Binary encoding (requires `category-encoders`)
+- `timeout` (int): Maximum seconds per model (None for no limit)
+- `cv` (int): Number of cross-validation folds (None to disable)
+- `use_gpu` (bool): Enable GPU acceleration for supported models (default False)
+
+| Model                          |   Accuracy |   Balanced Accuracy |   ROC AUC |   F1 Score |   Time Taken |
+|:-------------------------------|-----------:|--------------------:|----------:|-----------:|-------------:|
+| LinearSVC                      |   0.989474 |            0.987544 |  0.987544 |   0.989462 |    0.0150008 |
+| SGDClassifier                  |   0.989474 |            0.987544 |  0.987544 |   0.989462 |    0.0109992 |
+| MLPClassifier                  |   0.985965 |            0.986904 |  0.986904 |   0.985994 |    0.426     |
+| Perceptron                     |   0.985965 |            0.984797 |  0.984797 |   0.985965 |    0.0120046 |
+| LogisticRegression             |   0.985965 |            0.98269  |  0.98269  |   0.985934 |    0.0200036 |
+| LogisticRegressionCV           |   0.985965 |            0.98269  |  0.98269  |   0.985934 |    0.262997  |
+| SVC                            |   0.982456 |            0.979942 |  0.979942 |   0.982437 |    0.0140011 |
+| CalibratedClassifierCV         |   0.982456 |            0.975728 |  0.975728 |   0.982357 |    0.0350015 |
+| PassiveAggressiveClassifier    |   0.975439 |            0.974448 |  0.974448 |   0.975464 |    0.0130005 |
+| LabelPropagation               |   0.975439 |            0.974448 |  0.974448 |   0.975464 |    0.0429988 |
+| LabelSpreading                 |   0.975439 |            0.974448 |  0.974448 |   0.975464 |    0.0310006 |
+| RandomForestClassifier         |   0.97193  |            0.969594 |  0.969594 |   0.97193  |    0.033     |
+| GradientBoostingClassifier     |   0.97193  |            0.967486 |  0.967486 |   0.971869 |    0.166998  |
+| QuadraticDiscriminantAnalysis  |   0.964912 |            0.966206 |  0.966206 |   0.965052 |    0.0119994 |
+| HistGradientBoostingClassifier |   0.968421 |            0.964739 |  0.964739 |   0.968387 |    0.682003  |
+| RidgeClassifierCV              |   0.97193  |            0.963272 |  0.963272 |   0.971736 |    0.0130029 |
+| RidgeClassifier                |   0.968421 |            0.960525 |  0.960525 |   0.968242 |    0.0119977 |
+| AdaBoostClassifier             |   0.961404 |            0.959245 |  0.959245 |   0.961444 |    0.204998  |
+| ExtraTreesClassifier           |   0.961404 |            0.957138 |  0.957138 |   0.961362 |    0.0270066 |
+| KNeighborsClassifier           |   0.961404 |            0.95503  |  0.95503  |   0.961276 |    0.0560005 |
+| BaggingClassifier              |   0.947368 |            0.954577 |  0.954577 |   0.947882 |    0.0559971 |
+| BernoulliNB                    |   0.950877 |            0.951003 |  0.951003 |   0.951072 |    0.0169988 |
+| LinearDiscriminantAnalysis     |   0.961404 |            0.950816 |  0.950816 |   0.961089 |    0.0199995 |
+| GaussianNB                     |   0.954386 |            0.949536 |  0.949536 |   0.954337 |    0.0139935 |
+| NuSVC                          |   0.954386 |            0.943215 |  0.943215 |   0.954014 |    0.019989  |
+| DecisionTreeClassifier         |   0.936842 |            0.933693 |  0.933693 |   0.936971 |    0.0170023 |
+| NearestCentroid                |   0.947368 |            0.933506 |  0.933506 |   0.946801 |    0.0160074 |
+| ExtraTreeClassifier            |   0.922807 |            0.912168 |  0.912168 |   0.922462 |    0.0109999 |
+| CheckingClassifier             |   0.361404 |            0.5      |  0.5      |   0.191879 |    0.0170043 |
+| DummyClassifier                |   0.512281 |            0.489598 |  0.489598 |   0.518924 |    0.0119965 |
+
+## Regression
+
+Example:
+
+```python
+from lazypredict.Supervised import LazyRegressor
+from sklearn import datasets
+from sklearn.utils import shuffle
+import numpy as np
+
+diabetes  = datasets.load_diabetes()
+X, y = shuffle(diabetes.data, diabetes.target, random_state=13)
+X = X.astype(np.float32)
+
+offset = int(X.shape[0] * 0.9)
+
+X_train, y_train = X[:offset], y[:offset]
+X_test, y_test = X[offset:], y[offset:]
+
+reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+
+print(models)
+```
+
+### Advanced Options
+
+```python
+# With categorical encoding, timeout, and GPU
+reg = LazyRegressor(
+    verbose=1,                          # Show progress
+    ignore_warnings=True,               # Suppress warnings
+    custom_metric=None,                 # Use default metrics
+    predictions=True,                   # Return predictions
+    regressors='all',                   # Use all available regressors
+    categorical_encoder='ordinal',      # Encoding: 'onehot', 'ordinal', 'target', 'binary'
+    timeout=120,                        # Max time per model in seconds
+    use_gpu=True                        # Enable GPU acceleration
+)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+```
+
+**Parameters:**
+- `verbose` (int): 0 for silent, 1 for progress display
+- `ignore_warnings` (bool): Suppress scikit-learn warnings
+- `custom_metric` (callable): Custom evaluation metric
+- `predictions` (bool): Return prediction DataFrame
+- `regressors` (str/list): 'all' or list of regressor names
+- `categorical_encoder` (str): Encoding strategy for categorical features
+  - `'onehot'`: One-hot encoding (default)
+  - `'ordinal'`: Ordinal encoding
+  - `'target'`: Target encoding (requires `category-encoders`)
+  - `'binary'`: Binary encoding (requires `category-encoders`)
+- `timeout` (int): Maximum seconds per model (None for no limit)
+- `use_gpu` (bool): Enable GPU acceleration for supported models (default False)
+
+| Model                         |   Adjusted R-Squared |   R-Squared |     RMSE |   Time Taken |
+|:------------------------------|---------------------:|------------:|---------:|-------------:|
+| ExtraTreesRegressor           |           0.378921   |  0.520076   |  54.2202 |   0.121466   |
+| OrthogonalMatchingPursuitCV   |           0.374947   |  0.517004   |  54.3934 |   0.0111742  |
+| Lasso                         |           0.373483   |  0.515873   |  54.457  |   0.00620174 |
+| LassoLars                     |           0.373474   |  0.515866   |  54.4575 |   0.0087235  |
+| LarsCV                        |           0.3715     |  0.514341   |  54.5432 |   0.0160234  |
+| LassoCV                       |           0.370413   |  0.513501   |  54.5903 |   0.0624897  |
+| PassiveAggressiveRegressor    |           0.366958   |  0.510831   |  54.7399 |   0.00689793 |
+| LassoLarsIC                   |           0.364984   |  0.509306   |  54.8252 |   0.0108321  |
+| SGDRegressor                  |           0.364307   |  0.508783   |  54.8544 |   0.0055306  |
+| RidgeCV                       |           0.363002   |  0.507774   |  54.9107 |   0.00728202 |
+| Ridge                         |           0.363002   |  0.507774   |  54.9107 |   0.00556874 |
+| BayesianRidge                 |           0.362296   |  0.507229   |  54.9411 |   0.0122972  |
+| LassoLarsCV                   |           0.361749   |  0.506806   |  54.9646 |   0.0175984  |
+| TransformedTargetRegressor    |           0.361749   |  0.506806   |  54.9646 |   0.00604773 |
+| LinearRegression              |           0.361749   |  0.506806   |  54.9646 |   0.00677514 |
+| Lars                          |           0.358828   |  0.504549   |  55.0903 |   0.00935149 |
+| ElasticNetCV                  |           0.356159   |  0.502486   |  55.2048 |   0.0478678  |
+| HuberRegressor                |           0.355251   |  0.501785   |  55.2437 |   0.0129263  |
+| RandomForestRegressor         |           0.349621   |  0.497434   |  55.4844 |   0.2331     |
+| AdaBoostRegressor             |           0.340416   |  0.490322   |  55.8757 |   0.0512381  |
+| LGBMRegressor                 |           0.339239   |  0.489412   |  55.9255 |   0.0396187  |
+| HistGradientBoostingRegressor |           0.335632   |  0.486625   |  56.0779 |   0.0897055  |
+| PoissonRegressor              |           0.323033   |  0.476889   |  56.6072 |   0.00953603 |
+| ElasticNet                    |           0.301755   |  0.460447   |  57.4899 |   0.00604224 |
+| KNeighborsRegressor           |           0.299855   |  0.458979   |  57.5681 |   0.00757337 |
+| OrthogonalMatchingPursuit     |           0.292421   |  0.453235   |  57.8729 |   0.00709486 |
+| BaggingRegressor              |           0.291213   |  0.452301   |  57.9223 |   0.0302746  |
+| GradientBoostingRegressor     |           0.247009   |  0.418143   |  59.7011 |   0.136803   |
+| TweedieRegressor              |           0.244215   |  0.415984   |  59.8118 |   0.00633955 |
+| XGBRegressor                  |           0.224263   |  0.400567   |  60.5961 |   0.339694   |
+| GammaRegressor                |           0.223895   |  0.400283   |  60.6105 |   0.0235181  |
+| RANSACRegressor               |           0.203535   |  0.38455    |  61.4004 |   0.0653253  |
+| LinearSVR                     |           0.116707   |  0.317455   |  64.6607 |   0.0077076  |
+| ExtraTreeRegressor            |           0.00201902 |  0.228833   |  68.7304 |   0.00626636 |
+| NuSVR                         |          -0.0667043  |  0.175728   |  71.0575 |   0.0143399  |
+| SVR                           |          -0.0964128  |  0.152772   |  72.0402 |   0.0114729  |
+| DummyRegressor                |          -0.297553   | -0.00265478 |  78.3701 |   0.00592971 |
+| DecisionTreeRegressor         |          -0.470263   | -0.136112   |  83.4229 |   0.00749898 |
+| GaussianProcessRegressor      |          -0.769174   | -0.367089   |  91.5109 |   0.0770502  |
+| MLPRegressor                  |          -1.86772    | -1.21597    | 116.508  |   0.235267   |
+| KernelRidge                   |          -5.03822    | -3.6659     | 169.061  |   0.0243919  |
+
+## Time Series Forecasting
+
+LazyForecaster benchmarks 20+ forecasting models on your time series in a single call:
+
+```python
+import numpy as np
+from lazypredict.TimeSeriesForecasting import LazyForecaster
+
+# Generate sample data (or use your own)
+np.random.seed(42)
+t = np.arange(200)
+y = 10 + 0.05 * t + 3 * np.sin(2 * np.pi * t / 12) + np.random.normal(0, 1, 200)
+
+y_train, y_test = y[:180], y[180:]
+
+fcst = LazyForecaster(verbose=0, ignore_warnings=True)
+scores, predictions = fcst.fit(y_train, y_test)
+print(scores)
+```
+
+| Model                         |     MAE |    RMSE |   MAPE |   SMAPE |    MASE | R-Squared | Time Taken |
+|:------------------------------|--------:|--------:|-------:|--------:|--------:|----------:|-----------:|
+| Holt                          | 0.8532  | 1.0285  | 6.3241 | 6.1758  | 0.6993  |  0.7218   |     0.03   |
+| SARIMAX                       | 0.8791  | 1.0601  | 6.5012 | 6.3414  | 0.7205  |  0.7045   |     0.12   |
+| Ridge_TS                      | 0.9124  | 1.0843  | 6.7523 | 6.5721  | 0.7478  |  0.6912   |     0.01   |
+| ...                           |   ...   |   ...   |  ...   |   ...   |   ...   |    ...    |     ...    |
+
+### With Exogenous Variables
+
+```python
+# Optional exogenous features
+X_train = np.column_stack([np.sin(t[:180]), np.cos(t[:180])])
+X_test = np.column_stack([np.sin(t[180:]), np.cos(t[180:])])
+
+scores, predictions = fcst.fit(y_train, y_test, X_train, X_test)
+```
+
+### Advanced Options
+
+```python
+fcst = LazyForecaster(
+    verbose=1,                          # Show progress
+    ignore_warnings=True,               # Suppress model errors
+    predictions=True,                   # Return forecast values
+    seasonal_period=12,                 # Override auto-detection
+    cv=3,                               # Time series cross-validation
+    timeout=30,                         # Max seconds per model
+    sort_by="RMSE",                     # Sort metric (MAE, MAPE, SMAPE, MASE, R-Squared)
+    forecasters="all",                  # Or list: ["Holt", "AutoARIMA", "LSTM_TS"]
+    max_models=10,                      # Limit number of models
+    use_gpu=True,                       # GPU acceleration for supported models
+    foundation_model_path="/path/to/timesfm-weights",  # Local model weights (offline)
+)
+scores, predictions = fcst.fit(y_train, y_test)
+```
+
+**Parameters:**
+- `verbose` (int): 0 for silent, 1 for progress display
+- `ignore_warnings` (bool): Suppress per-model exceptions
+- `predictions` (bool): Return a second DataFrame of forecasted values
+- `seasonal_period` (int/None): Seasonal cycle length; ``None`` auto-detects via ACF
+- `cv` (int/None): Number of ``TimeSeriesSplit`` folds for cross-validation
+- `timeout` (int/float/None): Maximum training seconds per model
+- `sort_by` (str): Metric to sort by (``"RMSE"``, ``"MAE"``, ``"MAPE"``, ``"SMAPE"``, ``"MASE"``, ``"R-Squared"``)
+- `forecasters` (str/list): ``"all"`` or a list of model names
+- `n_lags` (int): Number of lag features for ML/DL models (default 10)
+- `n_rolling` (tuple): Rolling-window sizes for feature engineering (default (3, 7))
+- `max_models` (int/None): Limit total models to train
+- `custom_metric` (callable): Additional metric ``f(y_true, y_pred) -> float``
+- `use_gpu` (bool): Enable GPU acceleration for supported models (default False)
+- `foundation_model_path` (str): Local path to pre-downloaded foundation model weights (e.g. TimesFM)
+
+**Available model categories:**
+- **Baselines:** Naive, SeasonalNaive
+- **Statistical (statsmodels):** SimpleExpSmoothing, Holt, HoltWinters_Add, HoltWinters_Mul, Theta, SARIMAX
+- **Statistical (pmdarima):** AutoARIMA
+- **ML (sklearn):** LinearRegression_TS, Ridge_TS, Lasso_TS, ElasticNet_TS, KNeighborsRegressor_TS, DecisionTreeRegressor_TS, RandomForestRegressor_TS, GradientBoostingRegressor_TS, AdaBoostRegressor_TS, ExtraTreesRegressor_TS, BaggingRegressor_TS, SVR_TS, XGBRegressor_TS, LGBMRegressor_TS, CatBoostRegressor_TS
+- **Deep Learning (torch):** LSTM_TS, GRU_TS
+- **Foundation (timesfm):** TimesFM
+
+## GPU Acceleration
+
+Enable GPU acceleration for supported models with `use_gpu=True`:
+
+```python
+from lazypredict.Supervised import LazyClassifier, LazyRegressor
+
+# Classification with GPU
+clf = LazyClassifier(use_gpu=True, verbose=0, ignore_warnings=True)
+models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+
+# Regression with GPU
+reg = LazyRegressor(use_gpu=True, verbose=0, ignore_warnings=True)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+
+# Time Series with GPU
+from lazypredict.TimeSeriesForecasting import LazyForecaster
+fcst = LazyForecaster(use_gpu=True, verbose=0, ignore_warnings=True)
+scores, predictions = fcst.fit(y_train, y_test)
+```
+
+**Supported GPU backends:**
+- **XGBoost** — `device="cuda"`
+- **LightGBM** — `device="gpu"`
+- **CatBoost** — `task_type="GPU"`
+- **cuML (RAPIDS)** — GPU-native scikit-learn replacements (auto-discovered when installed)
+- **LSTM / GRU** — PyTorch CUDA
+- **TimesFM** — PyTorch CUDA
+
+Falls back to CPU automatically if no CUDA GPU is available.
+
+## Categorical Encoding
+
+Lazy Predict supports multiple categorical encoding strategies:
+
+```python
+from lazypredict.Supervised import LazyClassifier
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Example with categorical features
+df = pd.read_csv('data_with_categories.csv')
+X = df.drop('target', axis=1)
+y = df['target']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+# Try different encoders
+for encoder in ['onehot', 'ordinal', 'target', 'binary']:
+    clf = LazyClassifier(
+        categorical_encoder=encoder,
+        verbose=0,
+        ignore_warnings=True
+    )
+    models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+    print(f"\n{encoder.upper()} Encoding Results:")
+    print(models.head())
+```
+
+**Note:** Target and binary encoders require the `category-encoders` package:
+```bash
+pip install category-encoders
+```
+
+## Intel Extension Acceleration
+
+For improved performance on Intel CPUs, install Intel Extension for Scikit-learn:
+
+```bash
+pip install scikit-learn-intelex
+```
+
+Lazy Predict will automatically detect and use it for acceleration.
+
+## MLflow Integration
+
+Lazy Predict includes built-in MLflow integration. Enable it by setting the MLflow tracking URI:
+
+```python
+import os
+os.environ['MLFLOW_TRACKING_URI'] = 'sqlite:///mlflow.db'
+
+# MLflow tracking will be automatically enabled
+reg = LazyRegressor(verbose=0, ignore_warnings=True)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+```
+
+Automatically tracks:
+- Model metrics (R-squared, RMSE, etc.)
+- Training time
+- Model parameters
+- Model artifacts

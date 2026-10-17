@@ -1,0 +1,461 @@
+# 🔥 offgrid-tools 🔥
+
+[![CI](https://github.com/psyb0t/offgrid-tools/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/psyb0t/offgrid-tools/actions/workflows/pipeline.yml)
+[![version](https://raw.githubusercontent.com/psyb0t/offgrid-tools/badges/version.svg)](https://github.com/psyb0t/offgrid-tools/releases)
+[![license](https://raw.githubusercontent.com/psyb0t/offgrid-tools/badges/license.svg)](LICENSE)
+
+fuck the grid 🖕
+
+Docker Compose setup for when the internet dies and you still need to get shit done.
+
+## Table of Contents
+
+- [What the hell is this?](#what-the-hell-is-this)
+- [Quick Start (if you're in a hurry)](#quick-start-if-youre-in-a-hurry)
+- [Services Overview](#services-overview)
+  - [Local LLaMA Models](#local-llama-models-llama-directory)
+- [Preparing for the Apocalypse](#preparing-for-the-apocalypse)
+  - [Download Docker Images](#download-docker-images)
+  - [Linux Packages](#linux-packages)
+  - [Offgrid Ubuntu Virtual Machine](#offgrid-ubuntu-virtual-machine)
+  - [Android Apps](#android-apps)
+  - [Bootable Images](#bootable-images)
+  - [Web Content Archives](#web-content-archives)
+  - [Offline Maps](#offline-maps)
+- [Running the Stack](#running-the-stack)
+- [Ports & Access](#ports--access)
+- [Data & Storage](#data--storage)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+
+## What the hell is this?
+
+This is a completely self-contained offline environment that runs on Docker. When the internet goes to shit, power grids fail, or you just want to tell Big Tech to fuck off, you'll have:
+
+- **Local AI chat** (no OpenAI bullshit needed)
+- **Offline Wikipedia & web archives** (actual useful knowledge)
+- **IRC server & client** (real chat, not surveillance capitalism)
+- **Audio streaming & radio** (broadcast to your local network, monitor emergency frequencies)
+- **Development tools** (code without the cloud)
+- **Mobile app installer** (side-load apps when Google Play is down)
+- **Pre-configured Ubuntu VM** (280+ survival tools pre-installed, boot and go)
+
+The whole thing is designed to work with **zero internet connection**. Everything gets downloaded once, then you're independent.
+
+## Quick Start (if you're in a hurry)
+
+```bash
+# Clone this repo
+git clone https://github.com/psyb0t/offgrid-tools.git
+cd offgrid-tools
+
+# Start the services
+docker-compose up
+```
+
+**Note:** This repo has only been tested on Ubuntu for now. If you encounter bugs on other operating systems, please create an issue or submit a pull request with the fix.
+
+But seriously, read the rest or you'll be fucked when you actually need this offline.
+
+## Services Overview
+
+### Kiwix (Port 8000)
+
+Offline content server that serves ZIM archive files through a web interface. Reads ZIM files you place in `zim/data/` including Wikipedia dumps, educational materials, and archived websites. Essential for accessing knowledge when internet is unavailable. Simply visit the web interface to browse and search offline content - no additional setup required.
+
+### Ollama (Port 11434)
+
+Local AI model server that runs language models completely offline on your hardware. Stores models and configuration in `ollama/data/` directory. Provides ChatGPT-like capabilities without sending data to external services. Models are automatically downloaded on first use - larger models require more RAM and benefit from GPU acceleration.
+
+### Open WebUI (Port 8001)
+
+Web-based chat interface for Ollama that provides a modern ChatGPT-like experience. Stores user accounts, chat history, and preferences in `openwebui/data/`. Create your admin account on first visit, then start chatting with local AI models. Supports file uploads, conversation management, and multiple model selection.
+
+### Ollama Chat Party (Port 8002)
+
+Multi-user AI chat room where multiple people can chat with the same AI simultaneously, sharing conversation history. Supports RAG (Retrieval-Augmented Generation) with documents stored in `ollama-chat-party/data/`. Upload documents to enhance AI responses with your own knowledge base. Default password is `offgrid123`.
+
+### InspIRCd (Internal Port 6667)
+
+IRC server for local network chat and communication. Configuration stored in `inspircd/conf/` with logs in `inspircd/logs/`. Provides traditional IRC channels and private messaging within the Docker network. Not directly accessible from host - access through TheLounge web client. Operator credentials: `offgrid` / `offgrid123`.
+
+### TheLounge (Port 8003)
+
+Modern web-based IRC client that connects to the InspIRCd server. Configuration and user data stored in `thelounge/` directory. Provides a Discord-like interface for IRC with persistent connections, file sharing, and modern features. No additional setup needed - automatically connects to the local IRC server.
+
+### Icecast (Port 8004)
+
+Audio streaming server for broadcasting live audio streams to multiple listeners. Creates internet radio stations or live audio feeds. To stream audio, use source clients like BUTT (Broadcast Using This Tool) or Mixxx with server `localhost:8004` and password `offgrid123`. Listeners access streams at `http://localhost:8004/mountpoint`. Perfect for emergency broadcasts, local radio, or streaming music to your network.
+
+### File Server (Port 8005)
+
+Web-based file browser for downloading all offline content via HTTP. Serves files from `apps/*/data/`, `docker-images/`, `zim/data/`, and custom files from `file-server/other-files/`. Simply browse the web interface to download APKs, DEBs, ISOs, Docker images, or any custom files. Supports basic authentication - default credentials: `offgrid` / `offgrid123`.
+
+### Local LLaMA Models (llama/ directory)
+
+Run large language models locally using llama.cpp Docker containers. Models run completely offline with no external dependencies.
+
+**Adding Models:**
+- Download GGUF format models and place them in `llama/models/`
+- Models should be quantized (Q4_K_M, Q5_K_M, etc.) for optimal performance
+
+**Running Models:**
+```bash
+cd llama
+
+# Web UI server mode (configure everything in browser)
+./run-cpu-gui.sh --model model_name.gguf                              # Available at http://localhost:9000
+./run-gpu-gui.sh --model model_name.gguf                              # Available at http://localhost:9000
+./run-gpu-gui.sh --model model_name.gguf --ngl 20                     # Custom GPU layers
+./run-cpu-gui.sh --model model_name.gguf --mmproj mmproj_file.gguf    # Vision capabilities
+./run-gpu-gui.sh --model model_name.gguf --ngl 15 --mmproj mmproj_file.gguf  # GPU + vision
+
+# Get help and see all available parameters
+./run-cpu-gui.sh --help
+./run-gpu-gui.sh --help
+
+# List available models
+./run-cpu-gui.sh
+./run-gpu-gui.sh
+```
+
+**GUI Server Mode:**
+The GUI scripts (`run-cpu-gui.sh`, `run-gpu-gui.sh`) provide a web interface for all model interaction:
+- **CPU mode**: `run-cpu-gui.sh` accepts `--model` parameter and optional `--mmproj` for vision
+- **GPU mode**: `run-gpu-gui.sh` accepts `--model` parameter, `--ngl` for GPU layers, and `--mmproj` for vision
+- **Web interface** - Configure temperature, system prompts, sampling at `http://localhost:9000`
+- **Browser-based** - All model parameters controlled through the web UI
+- **Multi-user** - Multiple people can chat simultaneously
+- **Vision support** - Use `--mmproj` with multimodal projection files for image processing
+
+**System Prompts:**
+The `system-prompts/` directory contains ready-to-use personality templates that can be copy-pasted into the web UI:
+- `generic.txt` - Standard helpful assistant
+- `coding.txt` - Expert software engineer and debugging specialist
+- `creative.txt` - Creative writing assistant for stories and content
+- `technical.txt` - Technical documentation and system administration expert
+- `anarchist.txt` - No-filter anarchist polymath with expertise in everything
+
+**Examples:**
+```bash
+# Download a model (example)
+wget -P llama/models/ https://huggingface.co/microsoft/DialoGPT-medium/resolve/main/model.gguf
+
+# Run with default settings (CPU mode)
+./llama/run-cpu-gui.sh --model gpt-oss-20b-Q4_K_M.gguf
+
+# Run with GPU acceleration (all layers)
+./llama/run-gpu-gui.sh --model gpt-oss-20b-Q4_K_M.gguf
+
+# Run with custom GPU layers
+./llama/run-gpu-gui.sh --model gpt-oss-20b-Q4_K_M.gguf --ngl 20
+
+# Enable vision capabilities with multimodal projection
+./llama/run-cpu-gui.sh --model gpt-oss-20b-Q4_K_M.gguf --mmproj mmproj-google_gemma-3-27b-it-f16.gguf
+
+# GPU with vision capabilities
+./llama/run-gpu-gui.sh --model OpenAI-20B-NEO-Uncensored2-IQ4_NL.gguf --ngl 15 --mmproj mmproj-google_gemma-3-27b-it-f16.gguf
+```
+
+The scripts automatically validate model files and provide comprehensive help. All model parameters (temperature, system prompts, etc.) are configured through the web UI at `http://localhost:9000`. GPU acceleration requires Docker with NVIDIA Container Runtime installed.
+
+## Preparing for the Apocalypse
+
+The repo itself is tiny (~1MB), but the real power comes from downloading all the shit you'll need offline.
+
+### Quick Download Everything
+
+```bash
+# Download everything at once (Docker images, APKs, packages, ISOs, ZIM archives)
+./trigger-downloads.sh
+```
+
+### Download Docker Images
+
+Save all the container images locally so you don't need to pull from registries:
+
+```bash
+# Download container images
+./save-docker-images.sh
+
+# Later, load them on an offline machine
+./load-docker-images.sh
+```
+
+This downloads:
+
+- AI server (Ollama)
+- Web UIs for AI chat
+- Offline content server (Kiwix)
+- IRC server & client
+- Audio streaming server (Icecast)
+- Web server (Nginx)
+- Development environments (Python, Go, Ubuntu)
+
+### Linux Packages
+
+Install essential development and survival tools for Ubuntu/Debian systems:
+
+```bash
+cd apps/linux/deb
+
+# Install comprehensive survival toolkit
+./install.sh
+```
+
+The install script automatically downloads and installs a comprehensive survival toolkit including Docker, development tools, SDR software, security tools, virtualization, and more. It handles repository setup, dependency resolution, and package installation with automatic error handling.
+
+See [apps/linux/deb/README.md](apps/linux/deb/README.md) for detailed package descriptions and use cases.
+
+### Offgrid Ubuntu Virtual Machine
+
+Download a pre-configured Ubuntu VM with all packages already installed:
+
+```bash
+cd ubuntu
+
+# Download VM in your preferred format
+./get-qcow2.sh    # For QEMU/KVM
+./get-vdi.sh      # For VirtualBox
+./get-vhdx.sh     # For Hyper-V
+
+# Run with QEMU (16GB RAM, 8 cores)
+./run-qcow2.sh
+```
+
+**VM Details:**
+- **OS**: Ubuntu with XFCE desktop
+- **User**: `offgrid` / Password: `offgrid`
+- **Packages**: All ~280+ packages from the survival toolkit pre-installed
+- **Ready to use**: No installation needed, boot and go
+
+### Android Apps
+
+Get essential Android apps for when Google Play is unavailable:
+
+```bash
+cd apps/android/apk
+
+# Download curated collection of survival apps
+./download.sh
+
+# Install them via ADB when needed
+./install.sh
+```
+
+**Apps included:**
+
+- **Kiwix** - Reader app for ZIM archive files that can contain offline Wikipedia, educational content, or any archived websites. Essential for accessing downloaded knowledge databases when internet is down.
+- **F-Droid** - Open source app store for privacy-focused apps that work without Google services. Critical for building an offline toolkit independently.
+- **Termux** - Full Linux terminal environment on Android with programming languages and security tools. Essential for technical users needing development tools offline.
+- **VLC** - Universal media player for any audio/video format stored locally. Valuable for instructional videos, emergency broadcasts, and entertainment.
+- **Organic Maps** - Completely offline navigation with OpenStreetMap data including hiking trails. Critical for GPS navigation in remote areas without cellular coverage. Also available as Linux Flatpak app.
+- **Briar Messenger** - Secure decentralized messaging via Bluetooth/WiFi without internet or servers. Essential for emergency communication when networks are down.
+- **Briar Mailbox** - Message relay service for Briar that stores encrypted messages when recipients are offline. Maintains communication continuity in survival groups.
+- **BitChat** - Creates Bluetooth mesh networks for encrypted messaging across up to 7 device hops without internet. Revolutionary for survival communication and emergency coordination.
+- **KeePassDX** - Secure password manager that works completely offline with encrypted database files. Critical for maintaining access to accounts and services when internet-based password managers fail.
+- **SDR++ Software Defined Radio** - Advanced software defined radio application for Android. Essential for monitoring radio frequencies, emergency communications, and spectrum analysis when traditional communication infrastructure fails.
+
+### Bootable Images
+
+Download essential bootable operating systems and tools for recovery and deployment:
+
+```bash
+cd apps/iso
+
+# Download curated collection of bootable ISOs
+./download.sh
+
+# Create bootable USB drives
+sudo ./install.sh
+```
+
+**ISOs included:**
+
+- **Ventoy Live CD** - Multi-boot USB creator that can hold multiple ISOs on one drive. Essential for creating versatile rescue drives with multiple operating systems.
+- **Xubuntu 24.04.2** - Lightweight Ubuntu with XFCE desktop. Perfect balance of functionality and resource usage for older hardware or minimal systems.
+- **Lubuntu 24.04.2** - Ultra-lightweight Ubuntu with LXQt desktop. Ideal for very old hardware or systems with limited RAM and storage.
+- **Kali Linux 2025.2** - Security and penetration testing distribution. Critical for network diagnostics, security auditing, and digital forensics in emergency scenarios.
+- **Tiny11 23H2** - Stripped-down Windows 11 build without bloatware. Useful when Windows compatibility is required but resources are limited.
+- **TinyCore Linux CorePlus** - Extremely minimal modular Linux that runs entirely in RAM. Installation image with multiple desktop environments (JWM, Fluxbox, IceWM, etc.) and wireless support for creating custom minimal systems.
+- **DragonOS Noble R5** - Software Defined Radio operating system based on Ubuntu. Complete SDR toolkit with GNU Radio, GQRX, and radio communication tools pre-configured for emergency communications and spectrum analysis.
+- **SkyWave Linux 5.7.0** - Ham radio and electronics operating system with GNU Radio and SDR tools. Specialized distribution for amateur radio operators with digital modes, logging software, and RF analysis tools.
+- **GParted Live** - Disk partitioning and recovery tool. Essential for managing disk partitions, data recovery, and system repair when systems won't boot.
+
+### Web Content Archives
+
+#### Download Pre-made Archives
+
+Visit https://library.kiwix.org/ to browse and download ready-made ZIM archives including Wikipedia dumps, educational content, reference materials, and curated collections. Simply download the ZIM files and place them in `zim/data/`.
+
+#### Download Curated Archives
+
+```bash
+cd zim
+
+# Download essential development and survival content
+./download.sh
+```
+
+**Archives included:**
+
+- **FreeCodeCamp** - Learn to code with tutorials and interactive lessons
+- **Termux Documentation** - Complete Android terminal emulator documentation
+- **Military Medicine** - Emergency medical procedures and combat medicine
+- **Programming Documentation** - C++, Go, Docker, JavaScript, C, CSS, HTML, Nginx, Linux man pages
+- **Mankier Linux Man Pages** - Comprehensive Linux manual pages and command documentation
+- **Open Data Structures** - Computer science algorithms and data structures textbook
+- **Simple Wikipedia** - Simplified Wikipedia articles in basic English
+- **Ham Radio Stack Exchange** - Amateur radio Q&A and technical discussions
+- **Open Music Theory** - Music theory education and reference materials
+- **Based Cooking** - Practical cooking recipes and techniques
+- **Food Preparation Guide** - Essential food preparation and preservation techniques
+- **SigID Wiki** - Signal identification wiki for radio frequency analysis
+- **Learn X in Y Minutes** - Quick programming language tutorials and cheat sheets
+- **Ready State** - Emergency preparedness and disaster response information
+- **GNU Radio Wiki** - GNU Radio documentation and tutorials
+- **Go.dev Documentation** - Official Go programming language documentation
+- **Linux Command** - Comprehensive Linux command line tutorials and reference
+- **TruePrepper** - Survival and preparedness guides and resources
+- **Linux Journey** - Interactive Linux learning platform and tutorials
+- **RTL-SDR** - RTL-SDR news, tutorials and projects
+
+#### Create Custom Archives
+
+```bash
+# Archive any website for offline use (auto-generates name)
+./zim/create.sh https://stackoverflow.com
+# Creates: stackoverflow.com.zim
+
+# Archive with custom name
+./zim/create.sh https://stackoverflow.com stackoverflow
+
+# Archive website with path (auto-generates descriptive name)
+./zim/create.sh https://example.com/docs/guide
+# Creates: example.com_docs_guide.zim
+
+# Copy ZIM files to Android devices
+./zim/copy-to-android.sh data/stackoverflow.com.zim
+```
+
+ZIM files work with Kiwix and contain entire websites with search capability.
+
+### Offline Maps
+
+Download map data for Organic Maps:
+
+```bash
+cd maps
+
+# List all available maps
+./maps.sh list
+
+# Search for specific regions
+./maps.sh list romania
+./maps.sh list united
+
+# Download maps (downloads to maps/data/)
+./maps.sh list romania | ./maps.sh download
+```
+
+Map files (.mwm format) are automatically downloaded to `maps/data/` and can be transferred to Android devices or used with the Linux Flatpak version of Organic Maps.
+
+## Running the Stack
+
+```bash
+# Start everything
+docker-compose up
+
+# Start in background
+docker-compose up -d
+
+# Start specific services
+docker-compose up kiwix ollama
+
+# View logs
+docker-compose logs -f
+
+# Stop everything
+docker-compose down
+```
+
+## Ports & Access
+
+Once running, access services at:
+
+- **http://localhost:8000** - Kiwix (offline web content)
+- **http://localhost:8001** - Open WebUI (AI chat interface)
+- **http://localhost:8002** - Ollama Chat Party (multi-user AI chat room with RAG support)
+- **http://localhost:8003** - TheLounge (IRC web client)
+- **http://localhost:8004** - Icecast (audio streaming server)
+- **http://localhost:8005** - File Server (download APKs, ISOs, ZIM files, Docker images, other files)
+
+**Default credentials:**
+
+- Open WebUI: Create your own admin account on first visit
+- IRC operator: `offgrid` / `offgrid123`
+- Ollama Chat Party: password is `offgrid123`
+- Icecast: all passwords are `offgrid123`
+- File Server: `offgrid` / `offgrid123` (can be changed with FILE_SERVER_AUTH env var)
+
+## Data & Storage
+
+All important data persists in these directories:
+
+```
+ollama/data/          # AI models and SSH keys
+openwebui/data/       # Chat history and settings
+llama/models/         # Local GGUF models for llama.cpp
+llama/system-prompts/ # System prompt templates for AI personalities
+zim/data/             # Offline web archives
+apps/android/apk/data/    # Downloaded APK files
+apps/iso/data/           # Downloaded ISO images
+docker-images/           # Saved Docker containers
+file-server/other-files/ # Custom files for web download
+```
+
+Most of this is gitignored - the repo just has the scripts to download everything.
+
+## Troubleshooting
+
+**"Docker not found"**
+
+- Install Docker first, genius
+
+**"No devices connected" (Android stuff)**
+
+- Enable USB debugging on your phone
+- Connect via USB and accept the prompt
+
+**"AI models are slow as shit"**
+
+- Get a better GPU or accept your fate
+- Models download automatically on first use
+
+**"No GPU"**
+
+- Run ollama without GPU support - remove the device from the `docker-compose.yml` file
+
+**"Can't connect to IRC"**
+
+- Make sure InspIRCd container is running
+- Try `docker-compose logs inspircd`
+
+**"I broke everything"**
+
+- `docker-compose down && docker-compose up --build` fixes most shit
+- Delete data directories to start fresh (you'll lose everything)
+
+**"This is too complicated"**
+
+- Good luck when the internet goes down 🤷‍♂️
+
+---
+
+Remember: This whole setup works **completely offline**. Once you've downloaded everything, you can run it on an isolated network, in a bunker, or wherever the fuck you want without any external dependencies.
+
+## License
+
+WTFPL - Do What The Fuck You Want To Public License. See [LICENSE](LICENSE) file.
+
+Stay independent. 🔥

@@ -1,0 +1,1867 @@
+# redb.Route
+
+**Enterprise integration framework for .NET. Wire any system to any system in a few lines of C#.**
+
+> **LLMs / coding agents:** canonical training contract for the whole redb ecosystem → <https://redbase.app/llms.txt>
+
+redb.Route is the .NET equivalent of [Apache Camel](https://camel.apache.org/) — a fluent C# DSL that connects Kafka, RabbitMQ, Redis, SQL, HTTP, gRPC, SFTP, MQTT, S3, and more through `From → Process → To` pipelines. No XML, no message-bus lock-in, no per-endpoint license fees.
+
+[![NuGet](https://img.shields.io/nuget/v/redb.Route?label=NuGet&color=blue)](https://www.nuget.org/packages/redb.Route)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-8%20%7C%209%20%7C%2010-purple)](https://dotnet.microsoft.com)
+
+> **Production runtime:** routes are packaged as `.tpkg` modules and deployed to **[redb.Tsak](https://github.com/redbase-app/redb-tsak)** — the runtime container with hot-reload, clustering, REST management API, CLI and Blazor dashboard. redb.Route handles the _what_ (pipeline logic); redb.Tsak handles the _where_, _when_ and _how many_ (deployment lifecycle). See [Running Routes in Production](#running-routes-in-production--redbtsak).
+
+```csharp
+From("kafka://orders?groupId=svc&brokers=localhost:9092")
+    .Filter(Header("type").isEqualTo("new"))
+    .To("rabbitmq://events?host=localhost");
+```
+
+---
+
+## Highlights
+
+- **29 external transports + 5 built-in components** (Direct, SEDA, Timer, Mock, Log). One of them — `llm:` — is a first-class LLM connector with a universal OpenAI-compatible provider (14 APIs) and a native Anthropic Messages API provider, plus `.AsLlmTool()` to expose any of the other 28 transports as an LLM-callable tool with zero connector changes. Token-by-token streaming runs end-to-end: `?stream=true` on an `llm://` step lands on the wire as Server-Sent Events through `redb.Route.Http` (with an `event: done` summary trailer) or as one `Text` frame per token through `redb.Route.WebSocket`.
+- **MCP client connector — `mcp:` URI.** `redb.Route.Llm.Mcp` spawns external **Model Context Protocol** servers (stdio or HTTP+SSE), runs `initialize` + `tools/list` on startup and registers every remote tool into `IToolDescriptorRegistry` as a first-class `ILlmToolDescriptor`. The agent picks them up like any native tool — full audit (`ToolSetHash`), governance (`Safety`), observability and approval flow inherited automatically. Cancellation is threaded all the way through: an aborted agent iteration emits a JSON-RPC `notifications/cancelled` and the in-flight `tools/call` unwinds. One package = the entire community MCP ecosystem (Serena, filesystem, git, fetch, github, sqlite, …) becomes callable from a redb agent.
+- **30+ EIP patterns** — Splitter, Aggregator, CBR, WireTap, Saga, Circuit Breaker, Idempotent Consumer, Claim Check, Throttle, Resequencer, Scatter-Gather, and more.
+- **Compiled expression engine** — `${header.x}`, `${header.x++}`, arithmetic, JSONPath, XPath compile to `Func<IExchange, T>` via `System.Linq.Expressions`. No interpreter overhead.
+- **Type-safe fluent builders** — `Kafka.Topic("orders").GroupId("svc").Acks("All")` instead of URI strings.
+- **OpenTelemetry built-in** — Activities and Meters per route and per step, no extra config.
+- **Transactional routes** — `.Transacted()` wraps pipeline steps in `TransactionScope`; SQL transport binds ADO.NET transactions per statement.
+- **Production runtime** — [redb.Tsak](#running-routes-in-production--redbtsak) hosts route assemblies with hot-reload, clustering, REST API and Web UI.
+- **Apache 2.0 licensed** — no commercial restrictions, no per-endpoint pricing.
+
+---
+
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Why redb.Route](#why-redbroute) — [Differentiators](#what-sets-redbroute-apart) · [vs other .NET options](#vs-other-net-options-quick-guide) · [Manual code comparison](#manual-code-comparison)
+- [Use Cases](#use-cases)
+- [Configuration](#configuration) — appsettings, IOptions, DI parameterization, [credentials & secret redaction](#credentials--secret-redaction)
+- [How It Compares](#how-it-compares) — vs Apache Camel, MassTransit, NServiceBus, Wolverine; [Migrating from Camel](#migrating-from-apache-camel)
+- [Routing Patterns](#routing-patterns) — From, To, Filter, Choice, Split, Recipient List, Dynamic Router
+- [Error Handling](#error-handling) — [Retry](#retry-per-step) · [Dead Letter Channel](#dead-letter-channel) · [TryCatch](#trycatch-scoped) · [OnException scope](#onexception--scope-form-chain) · [Route configuration](#route-configuration--handlers-apart-from-the-routes) · [OnException configure](#onexception--configure-form-action) · [Redelivery options](#redelivery-configuration) · [Combined example](#combined-example)
+- [Message Transformation](#message-transformation) — SetBody, SetHeader, Marshal, Unmarshal
+- [Expression Language](#expression-language) — helpers, predicates, string templates
+- [Other EIP Patterns](#other-eip-patterns) — WireTap, Multicast, Throttle, Circuit Breaker, Saga, Idempotent Consumer, Loop, Delay, Resequencer, Enrich
+- [Request-Response (InOut)](#request-response-inout)
+- [Concurrency & Parallelism](#concurrency--parallelism) — `.Threads(N)` EIP, consumer-level knobs, [full guide](CONCURRENCY.md)
+- [Transactions](TRANSACTIONS.md) — `.Transacted()`, commit order (database, sends, acknowledgement), `Retry`, idempotent consumer
+- [Behaviour Guarantees](#behaviour-guarantees) — stop and `DoFinally`, Out→In merge, Split properties, `now()` and `delay`
+- [Reliability](#reliability) — RabbitMQ confirms, Kafka EOS, persistent IdempotentConsumer, Outbox via Sql polling
+- [Validation](#validation)
+- [Testing with Mock](#testing-with-mock)
+- [Telemetry](#telemetry)
+- [Logging](#logging)
+- [Fluent Transport Builders](#fluent-transport-builders)
+- [Architecture](#architecture)
+- [DSL Reference](#dsl-reference)
+- [XML Route Tools](#xml-route-tools) — `redb-route-xml` .NET tool, VS Code extension
+- [URI Scheme Reference](#uri-scheme-reference)
+- [Transport Capability Matrix](#transport-capability-matrix)
+- [Packages](#packages)
+- [Running Routes in Production — redb.Tsak](#running-routes-in-production--redbtsak)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Quick Start
+
+Every redb.Route pipeline follows the same shape: a single source (`From`), zero or more processors in the middle, and one or more sinks (`To`). Messages flow as `IExchange` instances carrying `Body`, `Headers`, and `Properties`.
+
+```mermaid
+flowchart LR
+    From([From\nkafka://orders]) --> Filter[Filter]
+    Filter --> Transform[SetBody / Transform]
+    Transform --> Choice{Choice}
+    Choice -- high --> ToA([To\ndirect://fast-lane])
+    Choice -- low  --> ToB([To\nseda://batch])
+    Choice -- else --> ToC([To\ndirect://standard])
+```
+
+```csharp
+// Program.cs — minimal integration pipeline
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.AddRedbRoute(route =>
+{
+    route.AddRoutes(r =>
+    {
+        // Kafka → filter → RabbitMQ in 3 lines
+        r.From("kafka://orders?groupId=svc&brokers=localhost:9092")
+            .Filter(e => e.Message.GetHeader<string>("type") == "new")
+            .To("rabbitmq://events?host=localhost");
+    });
+});
+builder.Services.AddRedbRouteKafka();
+builder.Services.AddRedbRouteRabbitMQ();
+
+var app = builder.Build();
+app.Run();
+```
+
+For complex routing logic, group routes into a `RouteBuilder` class:
+
+```csharp
+public class OrderRoutes : RouteBuilder
+{
+    protected override void Configure()
+    {
+        From("kafka://orders?groupId=svc&brokers=localhost:9092")
+            .RouteId("order-pipeline")
+            .Choice()
+                .When(Header("priority").isEqualTo("high"))
+                    .Log("High priority order")
+                    .To("direct://fast-lane")
+                .When(Header("priority").isEqualTo("low"))
+                    .To("seda://batch-queue")
+                .Otherwise()
+                    .To("direct://standard")
+            .EndChoice();
+
+        From("direct://fast-lane")
+            .SetHeader("processed-at", e => DateTimeOffset.UtcNow)
+            .Process(async (exchange, ct) =>
+            {
+                var body = exchange.Message.GetBody<string>();
+                exchange.Message.SetBody($"PROCESSED: {body}");
+            })
+            .To("rabbitmq://processed?host=localhost");
+    }
+}
+
+builder.Services.AddRedbRoute(route => route.AddRouteBuilder<OrderRoutes>());
+```
+
+Or every route builder of an assembly — each public, non-abstract `RouteBuilder` (Apache Camel's routes
+discovery). A filter states conditions and leaves builders out; a builder that cannot be created, or one already
+registered, is an error naming the type, never skipped:
+
+```csharp
+builder.Services.AddRedbRoute(route => route
+    .AddRouteBuilders([typeof(OrderRoutes).Assembly], type => type.Namespace!.StartsWith("Orders.Routes")));
+
+// Without a host: builders with a public parameterless constructor
+context.AddRoutes(typeof(OrderRoutes).Assembly);
+```
+
+---
+
+## Why redb.Route
+
+### What sets redb.Route apart
+
+Four things you do not get together in any other .NET integration framework:
+
+- **29 transports out of the box, including a full LLM connector.** Kafka, RabbitMQ, Redis, SQL, HTTP, gRPC, SOAP, AS2, SFTP, MQTT, S3, Amazon SQS + SNS, IBM MQ, AMQP 1.0, Azure Service Bus, Elasticsearch, Firebase, LDAP, Mail, TCP, WebSocket, SignalR, Telegram, FTP, Quartz, File, **Exec** (local-process execution), **`llm:`** (OpenAI-compatible universal provider for 14 vendors + native Anthropic Messages API), and **`mcp:`** (Model Context Protocol client — the whole community MCP ecosystem as callable tools) — **plus `.AsLlmTool()` that turns any of the other 28 transports into an LLM tool with zero connector changes**. MassTransit ships 5, Wolverine 4, NServiceBus 7. The competitors expect you to use only message brokers; redb.Route treats files, mailboxes, FTP servers, SQL polling, local processes and LLM endpoints as first-class transports — and any of them can become an LLM-callable tool.
+- **Compiled expression engine.** `${header.x}`, `${header.x++}`, arithmetic, JSONPath, XPath are translated to `Func<IExchange, T>` via `System.Linq.Expressions` at route-build time. No interpreter, no per-message parsing, results cached per route. Apache Camel's Simple Language is interpreted; MassTransit / Wolverine / NServiceBus have no expression engine at all.
+- **30+ EIP patterns as first-class DSL.** Filter, Choice, Splitter, Aggregator, Multicast, WireTap, Recipient List, Dynamic Router, Resequencer, Scatter-Gather, Claim Check, Idempotent Consumer, Saga, Circuit Breaker, Throttle, Retry, Dead Letter, Loop, Delay, Debounce, Enrich, Timeout, TryCatch, Transacted, Control Bus, Process, Validate. The .NET competitors give you Saga + Request/Response + Outbox; everything else you write yourself.
+- **Apache 2.0 licensed, no per-endpoint pricing.** NServiceBus is commercial after 2 endpoints. redb.Route is unrestricted for any use, any scale.
+
+Plus: type-safe fluent builders (`Kafka.Topic(...).GroupId(...)` instead of URI strings), built-in OpenTelemetry per route and per step, transactional pipelines via `.Transacted()`, and a production runtime ([redb.Tsak](#running-routes-in-production--redbtsak)) with hot-reload and clustering.
+
+### vs other .NET options — quick guide
+
+| If you need | Pick |
+|-------------|------|
+| Routing across many transports (Kafka + SQL + SFTP + HTTP in one pipeline) | **redb.Route** |
+| EIP patterns (Splitter, Aggregator, Content-Based Router, WireTap) | **redb.Route** |
+| Protocol bridging (Kafka ↔ RabbitMQ, MQTT ↔ HTTP, FTP ↔ SQL) | **redb.Route** |
+| Choreography saga with compensations (pipeline-level, no external state) | **redb.Route** (`.Saga(s => s.Step(...).Compensate(...))`) |
+| Outbox via SQL polling (`SELECT … WHERE processed=0` → process → `UPDATE`) | **redb.Route** (`Sql.Poll(...)` + `.Transacted()`) |
+| In-process dispatch to handler classes (`RedbController` behind `direct:`) | **redb.Route** + `redb.Route.Controllers` |
+| Async in-process pub/sub with `RouteBuilder` consumer classes | **redb.Route** (`seda:` + `RouteBuilder`) |
+| Durable orchestrated saga state machine persisted across process restarts | MassTransit / NServiceBus / Wolverine |
+| Transactional pipeline (database first, broker sends after the commit, ack last) | **redb.Route** (`.Transacted()`: RabbitMQ, AMQP 1.0, Kafka, IBM MQ, Azure Service Bus, SQS/SNS, Redis PUBLISH/XADD) |
+| Managed transactional outbox container (auto table + background retry daemon) | MassTransit / NServiceBus / Wolverine |
+
+> redb.Route and MassTransit/NServiceBus solve different problems. redb.Route is a **pipeline and transport integration engine** (Apache Camel for .NET). MassTransit/NServiceBus are **message-bus frameworks** centered on consumer registration and managed saga state. You can use both together — redb.Route for cross-protocol routing and transformation, MassTransit for durable long-running workflows.
+
+Full side-by-side tables: [How It Compares](#how-it-compares).
+
+### Manual code comparison
+
+| Problem | Manual code | redb.Route |
+|---------|-------------|------------|
+| Connect Kafka → RabbitMQ | 80+ lines: consumer, producer, serialization, error handling | `From("kafka://orders").To("rabbitmq://events")` |
+| Content-based routing | Nested `if/switch`, custom dispatch tables | `.Choice().When(...).To(...).Otherwise().To(...)` |
+| Retry + Dead Letter | Hand-rolled retry loops, DLQ logic | `OnException<T>().MaximumRedeliveries(3)` + `DeadLetterChannel("seda://failed")` |
+| File polling → DB | `FileSystemWatcher` + ADO.NET + threading | `From("file:///data?include=*.csv").To("sql://...")` |
+| Observability | Custom metrics, `Activity` spans, logging | Built-in OpenTelemetry — traces and metrics per route/step |
+| Protocol bridging | Custom adapter per protocol pair | Any-to-any via URI schemes: `kafka:`, `http:`, `grpc:`, `mqtt:` |
+
+---
+
+## Use Cases
+
+redb.Route fits any workload where messages move between systems and need transformation, routing, or buffering on the way:
+
+- **Message broker bridging.** Kafka topic → filter → enrich → RabbitMQ exchange. MQTT sensor stream → batch → SQL inserts.
+- **File ingestion pipelines.** SFTP folder polling → unmarshal CSV → validate → SQL upsert → archive to S3.
+- **API gateways and webhooks.** HTTP endpoint (`Http.Listen`) → validate → fan-out to internal queues → respond. Stripe/GitHub webhooks → SignalR broadcast.
+- **Scheduled jobs.** Quartz Cron → SQL extract → email report. Timer → poll external API → push to Kafka.
+- **Protocol translation.** SOAP → JSON, XML → CSV, gRPC → REST, MQTT → AMQP. Any-to-any via marshal/unmarshal + URI swap.
+- **Saga orchestration without a state-machine framework.** Reserve inventory → charge payment → ship — with compensating steps on failure.
+- **Event-driven microservices.** Per-service `RouteBuilder` classes register routes; `IHostedService` boots them; OpenTelemetry traces span the whole chain.
+- **Legacy integration.** IBM MQ, FTP, LDAP, POP3/IMAP, raw TCP — first-class support, not afterthoughts.
+- **Real-time dashboards.** Kafka stream → throttle → SignalR Hub → Blazor/JS clients.
+
+If the question is *"how do I move messages from A to B with rules in the middle?"*, redb.Route answers it in a few lines of C#.
+
+---
+
+## Configuration
+
+Endpoints, transports, and options work with the standard .NET configuration stack — `appsettings.json`, `IOptions<T>`, environment variables, secrets — without a custom config layer.
+
+### Endpoint URIs from configuration
+
+Resolve broker URLs, topic names, and credentials at startup, then build endpoint URIs in code:
+
+```jsonc
+// appsettings.json
+{
+  "Kafka": {
+    "Brokers":  "broker1:9092,broker2:9092",
+    "GroupId":  "order-svc",
+    "Topic":    "orders"
+  },
+  "RabbitMQ": {
+    "Host":     "rabbit.local",
+    "Exchange": "events"
+  }
+}
+```
+
+```csharp
+builder.Services.AddRedbRoute(route =>
+{
+    route.AddRoutes(r =>
+    {
+        var cfg   = builder.Configuration;
+        var kafka = Kafka.Topic(cfg["Kafka:Topic"]!)
+                         .Brokers(cfg["Kafka:Brokers"]!)
+                         .GroupId(cfg["Kafka:GroupId"]!);
+        var rabbit = Rabbit.Queue("events")
+                           .Host(cfg["RabbitMQ:Host"]!)
+                           .Exchange(cfg["RabbitMQ:Exchange"]!, "topic");
+
+        r.From(kafka).To(rabbit);
+    });
+});
+```
+
+### Bind options into a RouteBuilder
+
+Typed `IOptions<T>` flows through DI like any service. Inject into `RouteBuilder` constructors and use the values inside `Configure()`:
+
+```csharp
+public class KafkaOptions
+{
+    public string Brokers { get; set; } = "";
+    public string GroupId { get; set; } = "";
+    public string Topic   { get; set; } = "";
+}
+
+public class OrderRoutes : RouteBuilder
+{
+    private readonly KafkaOptions _kafka;
+
+    public OrderRoutes(IOptions<KafkaOptions> kafka) => _kafka = kafka.Value;
+
+    protected override void Configure()
+    {
+        From(Kafka.Topic(_kafka.Topic).Brokers(_kafka.Brokers).GroupId(_kafka.GroupId))
+            .RouteId("order-pipeline")
+            .To("seda://orders-internal");
+    }
+}
+
+// Program.cs
+builder.Services.Configure<KafkaOptions>(builder.Configuration.GetSection("Kafka"));
+builder.Services.AddRedbRoute(route => route.AddRouteBuilder<OrderRoutes>());
+```
+
+### Named SQL data sources
+
+The SQL transport uses **named** data sources registered in DI, so connection strings stay in configuration and out of route code:
+
+```csharp
+builder.Services.AddRedbRouteSql(sql =>
+{
+    sql.AddDataSource("main",   builder.Configuration.GetConnectionString("Main")!,    "SqlServer");
+    sql.AddDataSource("audit",  builder.Configuration.GetConnectionString("Audit")!,   "PostgreSql");
+});
+
+// Routes reference the data source by name — credentials never appear in the URI
+From(Sql.Poll("SELECT * FROM Orders WHERE Status = 'New'")
+        .DataSource("main")
+        .Delay(5000))
+    .To(Sql.Execute("INSERT INTO AuditLog (Body) VALUES (@body)")
+           .DataSource("audit")
+           .Transacted());
+```
+
+### Credentials & secret redaction
+
+Two independent mechanisms keep passwords out of logs, OpenTelemetry tags, metric labels, health
+checks and the Tsak dashboard.
+
+**1. Keep the secret out of the URI — named `ConnectionFactory`.** Every connector that takes
+credentials accepts `connectionFactory=<name>`, resolved from the route registry. The route then
+carries no secret at all, so there is nothing to mask on the happy path:
+
+```csharp
+context.AddToRegistry("honest-ldap", new LdapConnectionFactory
+{
+    Server = "ldap.corp.local",
+    Port = 636,
+    Ssl = true,
+    BindDn = "cn=svc-reader,dc=corp,dc=local",
+    BindPassword = Environment.GetEnvironmentVariable("LDAP_BIND_PASSWORD")
+});
+
+From("ldap://SEARCH:dc=corp,dc=local?connectionFactory=honest-ldap&filter=(objectClass=user)")
+```
+
+A value written inline in the URI always wins over the factory, so existing routes keep working; a
+factory name that is not registered logs a warning and falls back to the URI parameters. For
+connectors whose address lives in the endpoint path (Http, Mail, SignalR, gRPC, Tcp, WebSocket) the
+factory deliberately carries no host/port — it can never silently redirect a route.
+
+**2. Redact whatever still ends up in a URI — `[Sensitive]`.** Guessing a secret from its parameter
+name fails open, so the option itself declares it:
+
+```csharp
+public sealed class LdapEndpointOptions : EndpointOptions
+{
+    public string Server { get; set; } = "localhost";        // printed in logs
+
+    [Sensitive]
+    public string? BindPassword { get; set; }                // always rendered as ****
+}
+```
+
+`BindFromUri` harvests those declarations by reflection (once per options type), so the set of
+redacted parameter names is derived from the code and never hand-maintained — the same design as
+Apache Camel's `@UriParam(secret = true)`, which its build plugin turns into
+`SensitiveUtils.SENSITIVE_KEYS`. A name-keyword heuristic (`*password*`, `*token*`, `*secret*`, …)
+stays on as a backstop, `userinfo` passwords in `scheme://user:pass@host` are masked too, and
+secrets are replaced with a constant `****` — never a partial prefix.
+
+To register a credential parameter that is not an annotated option, call
+`EndpointUri.AddSensitiveKeys("myCustomToken")` at startup.
+
+**3. The id of an unnamed route carries neither.** A route that declares no `RouteId("...")` is named
+after its endpoint: the scheme, the path and a deterministic UUID of the whole URI
+(`kafka://orders?brokers=...` becomes `kafka-orders-1b4e28ba-2fa1-11d2-883f-0016d3cca427`). The query
+string stays out of the name and `user:pw@host` credentials are dropped from it, so the id is safe to
+print; the UUID is RFC 4122 version 5 in the URL namespace over the normalized endpoint URI, so it is
+the same on every start and every node — metric series, stored checkpoints and `controlbus:route`
+commands survive a restart — and any UUID library recomputes it from the URI. The name holds only
+`A-Z a-z 0-9 _ -`: a `/` or a `:` breaks dashboard labels and metric tags.
+
+### XML from somebody else
+
+Every document that arrives from outside — a SOAP envelope, a message body an `xpath()` reads, the XML
+model of a template, a markup file inside a package — is read through `SafeXml`, which refuses a
+document type declaration. A DTD can nest internal entities so that a small message expands into a huge
+one in memory: on .NET 10, 452 bytes become 300 000 characters, and that is the polite version. The
+direct loaders all do it — `XmlDocument.Load`, `XDocument.Load`, `XDocument.Parse` — and
+`XmlResolver = null` changes nothing, because the expansion runs on *internal* entities. Only a reader
+from `XmlReader.Create` refuses a DTD, which it does by default.
+
+Reading somebody else's XML in your own processor deserves the same treatment:
+
+```csharp
+var doc = SafeXml.Parse(text);                       // or Load(bytes) / LoadFile(path)
+var dom = SafeXml.LoadDocument(bytes);               // XmlDocument, whitespace preserved for signatures
+var capped = SafeXml.Parse(text, maxCharacters: 1_000_000);
+```
+
+### Engine options
+
+```csharp
+builder.Services.Configure<RouteEngineOptions>(o =>
+{
+    o.EnableTelemetry      = true;   // OpenTelemetry Activities
+    o.EnableMetrics        = true;   // OpenTelemetry Meters
+    o.DefaultRetryAttempts = 3;
+    o.DefaultErrorMode     = ErrorMode.DeadLetter;
+});
+```
+
+---
+
+## How It Compares
+
+### Summary
+
+| | Apache Camel | MassTransit | NServiceBus | Wolverine | **redb.Route** |
+|--|--|--|--|--|--|
+| Platform | JVM | .NET | .NET | .NET | **.NET 8/9/10** |
+| License | Apache 2.0 | Apache 2.0 | **Commercial** | MIT | **Apache 2.0** |
+| Focus | EIP routing | Pub/sub + message bus | Message bus | Mediator + message bus | **Enterprise Service Bus (.NET)** |
+| Transports | 300+ | 5 | 7 | 4 | **29 + 5 built-in** |
+| EIP patterns | 80+ | Saga, R/R, Outbox | Saga, R/R | Saga, R/R, Outbox | **30+** |
+| Expression engine | Simple Language (interpreted) | None | None | None | **Compiled (Linq.Expressions)** |
+| Configuration | XML or Java DSL | C# fluent | C# fluent | C# fluent | **C# fluent only** |
+| Saga persistence | Yes | **Yes (DB-backed)** | **Yes (DB-backed)** | **Yes (Marten)** | Compensating steps + persistent `IdempotentConsumer` (redb RTTI storage / SQL) for dedup; no built-in state machine |
+| Outbox | Plugin | **Yes** | **Yes** | **Yes** | Polling outbox via `Sql.Poll(...).OnSuccess(...).Transacted()` + persistent `IdempotentConsumer` |
+| Publisher confirms / EOS | Yes | Yes | Yes | Yes | **Yes** — RabbitMQ publisher confirms (`MaxOutstandingConfirms`), Kafka transactional producer + `Acks=All` |
+
+### vs Apache Camel
+
+If you know Camel, you know redb.Route — same EIP patterns, same `from → process → to` model, same URI endpoint scheme.
+
+| Concept | Apache Camel (Java) | redb.Route (.NET) |
+|---------|--------------------|-----------------|
+| Route definition | `from().process().to()` | `From().Process().To()` |
+| Route class | `RouteBuilder.configure()` | `RouteBuilder.Configure()` |
+| In-process sync | `direct:` | `direct:` |
+| In-memory async queue | `seda:` | `seda:` |
+| Periodic trigger | `timer:` | `timer:` |
+| Message object | `Exchange` + `Message` | `IExchange` + `IMessage` |
+| Expression language | Simple Language (interpreted) | StringExpression (compiled) |
+| EIP patterns | 80+ | 30+ (Filter, Choice, Splitter, Aggregator, Multicast, WireTap, Recipient List, Dynamic Router, Resequencer, Scatter-Gather, Claim Check, Idempotent Consumer, Saga, Circuit Breaker, Throttle, Retry, Dead Letter, Loop, Delay, Debounce, Enrich, Timeout, TryCatch, Transacted, …) |
+| Components | 300+ | 29 transports + 5 built-in |
+| Configuration | XML DSL or Java DSL | C# fluent DSL only |
+| Runtime / orchestration | Camel K / JBoss Fuse | [redb.Tsak](#running-routes-in-production--redbtsak) |
+| Platform | JVM | .NET 8 / 9 / 10 |
+
+What redb.Route does differently from Camel:
+
+- **No XML.** C# fluent DSL with full IntelliSense.
+- **Type-safe builders.** `Kafka.Topic("orders").GroupId("svc")` instead of URI strings.
+- **Native .NET stack.** `IHostedService`, `IServiceCollection`, `ILogger`, `CancellationToken` everywhere.
+- **OpenTelemetry built in.** Traces and metrics per route and per step.
+- **Compiled expressions.** `${header.x++}`, arithmetic, JSONPath, XPath compile to `Func<IExchange, T>` — not interpreted.
+- **Transactional routes.** `.Transacted()` via `TransactionScope`.
+- **.NET-specific transports.** SignalR, ASP.NET Kestrel server-side consumers.
+
+#### Migrating from Apache Camel
+
+Camel routes translate to redb.Route almost line for line. Method names use PascalCase, predicates are typed, but the structure is identical.
+
+| Apache Camel (Java) | redb.Route (C#) |
+|---------------------|-----------------|
+| `from("kafka:orders?brokers=...")` | `From("kafka://orders?brokers=...")` |
+| `.routeId("order-pipeline")` | `.RouteId("order-pipeline")` |
+| `.choice()` | `.Choice()` |
+| `.when(header("type").isEqualTo("new"))` | `.When(Header("type").isEqualTo("new"))` |
+| `.otherwise()` | `.Otherwise()` |
+| `.end()` | `.EndChoice()` |
+| `.split(body())` | `.Split(Body())` |
+| `.aggregate(header("orderId"), strategy)` | `.Aggregate(Header("orderId"), strategy)` |
+| `.wireTap("seda:audit")` | `.WireTap("seda://audit")` |
+| `.recipientList(header("dest"))` | `.RecipientList(e => ParseDest(e))` |
+| `.errorHandler(deadLetterChannel("seda:dlq"))` | `.DeadLetterChannel("seda://dlq")` |
+| `.onException(IOException.class).maximumRedeliveries(3)` | `OnException<IOException>().MaximumRedeliveries(3)` |
+| `.transacted()` | `.Transacted()` |
+| `.setBody(simple("${header.x}"))` | `.SetBody(Expr("${header.x}"))` |
+| `.log("got ${body}")` | `.Log("got ${body}")` |
+| `.to("rabbitmq://events")` | `.To("rabbitmq://events")` |
+
+A 200-line Camel `RouteBuilder.configure()` typically becomes a 200-line C# `RouteBuilder.Configure()` with the same shape — only the host (Spring Boot vs `IHost`) and the build system change.
+
+### vs MassTransit
+
+| Aspect | MassTransit | redb.Route |
+|--------|-------------|------------|
+| Focus | Reliable message bus + Saga | Enterprise Service Bus — 29 transports, 30+ EIP (Enterprise Integration Patterns), transactional pipelines |
+| Routing model | Consumer classes | Route pipelines (`From → Process → To`) |
+| EIP patterns | Saga, Request/Response, Outbox | 30+ EIP patterns |
+| Transports | 5 (RabbitMQ, Kafka, SQS, Azure SB, gRPC) | 29 (+ File, SFTP, SQL, MQTT, TCP, HTTP, FTP, LDAP, IBM MQ, S3, SOAP, AS2, `llm:`, `mcp:`, …) |
+| Saga | State machine + **persistent state** (DB-backed) | Compensating steps (forward + reverse) with persistent dedup via `IdempotentConsumer` (redb RTTI storage / SQL backends, two-phase commit) — no built-in state machine |
+| Outbox | Yes (transactional outbox pattern) | Polling outbox via `Sql.Poll(...).OnSuccess(...).Transacted()` + persistent `IdempotentConsumer` (de-facto outbox) |
+| Publisher reliability | Yes (RabbitMQ confirms, Kafka EOS) | **Yes** — RabbitMQ publisher confirms, mandatory flag, transacted channels, automatic recovery; Kafka transactional producer + `Acks=All` + `IsolationLevel=ReadCommitted` |
+| Expressions | None | Compiled engine: 9 types, 17 predicates, `${header.x++}`, arithmetic |
+| Transactional routes | No | Yes — `.Transacted()` via `TransactionScope` |
+| License | Apache 2.0 | Apache 2.0 |
+
+Use MassTransit for **state-machine sagas with DB persistence** and a built-in transactional outbox table per consumer. Use redb.Route for enterprise integration end-to-end: 30+ EIP patterns, 29 transports, transactional pipelines (`ITransactedAction`), protocol bridging, file processing, and multi-transport pipelines — reliability primitives (publisher confirms, EOS, persistent dedup, polling outbox) composed from DSL building blocks.
+
+### vs NServiceBus
+
+| Aspect | NServiceBus | redb.Route |
+|--------|-------------|------------|
+| Focus | Message bus (reliable delivery + Saga) | Enterprise Service Bus — 29 transports, 30+ EIP (Enterprise Integration Patterns), transactional pipelines |
+| Routing model | Message handler classes | Route pipelines |
+| EIP patterns | Saga (persistent), Request/Response | 30+ EIP patterns |
+| Transports | 7 (RabbitMQ, Kafka, SQS, Azure SB, SQL, MSMQ, Learning) | 22 (+ File, SFTP, MQTT, TCP, HTTP, gRPC, FTP, LDAP, IBM MQ, S3, …) |
+| Expressions | None | Compiled expression engine |
+| Transactional routes | No | Yes — `.Transacted()` via `TransactionScope` |
+| Monitoring | ServicePulse / ServiceInsight (commercial) | OpenTelemetry + redb.Tsak Web UI |
+| License | **Commercial** (free up to 2 endpoints/app) | Apache 2.0 |
+
+NServiceBus is mature and focused on guaranteed delivery and durable saga. redb.Route is Apache-2.0–licensed and covers enterprise integration end-to-end: 30+ EIP patterns, 29 transports, transactional pipelines (`ITransactedAction`), and a full runtime (redb.Tsak) with clustering, hot-reload, and OTel.
+
+### vs Wolverine
+
+| Aspect | Wolverine | redb.Route |
+|--------|-----------|------------|
+| Focus | Mediator + message bus + Saga | Enterprise Service Bus — 29 transports, 30+ EIP (Enterprise Integration Patterns), transactional pipelines |
+| Routing model | Handler discovery + middleware | Route pipelines (`From → Process → To`) |
+| EIP patterns | Saga, Outbox, Request/Response | 30+ EIP patterns |
+| Transports | 4 (RabbitMQ, Kafka, Azure SB, SQS) | 22 (+ File, SFTP, SQL, MQTT, HTTP, gRPC, FTP, LDAP, IBM MQ, S3, …) |
+| Saga storage | Marten / EF Core | In-memory compensating steps |
+| Expressions | None | Compiled expression engine |
+| Transactional routes | Outbox-based | `.Transacted()` via `TransactionScope` |
+| License | MIT | Apache 2.0 |
+
+Wolverine is excellent at handler-style messaging with Marten-backed sagas. redb.Route covers enterprise integration end-to-end: 30+ EIP patterns, 29 transports, in-process mediator (`RedbController`), pub/sub (SEDA), transactional pipelines, and a full production runtime (redb.Tsak).
+
+---
+
+## Routing Patterns
+
+```csharp
+// Content-Based Router
+.Choice()
+    .When(Header("type").isEqualTo("order")).To("direct://orders")
+    .When(Header("type").isEqualTo("payment")).To("direct://payments")
+    .Otherwise().To("seda://unknown")
+.EndChoice()
+
+// Recipient List — send to multiple dynamic destinations
+.RecipientList(e => new[] { "direct://audit", "seda://analytics" })
+
+// Dynamic Router — destination computed at runtime
+.DynamicRouter(e => ComputeNextEndpoint(e))
+
+// Splitter — sub-route style
+.Split(e => SplitOrderIntoItems(e),
+       sub => sub.Process(async (e, ct) => await ProcessItem(e, ct)))
+
+// Splitter — scope style
+.Split(e => SplitOrderIntoItems(e))
+    .Process(async (e, ct) => await ProcessItem(e, ct))
+.EndSplit()
+```
+
+`When(...)` accepts three forms — lambda, `IPredicate`, or string expression:
+
+```csharp
+.When(e => e.Message.GetHeader<string>("type") == "order")    // lambda
+.When(Header("type").isEqualTo("order"))                      // IPredicate
+.When("header.type == 'order'")                               // string expression
+```
+
+---
+
+## Error Handling
+
+redb.Route's error handling is designed to be combined: per-step `Retry`, scoped `DoTry/DoCatch`, and one **error
+scope per route**, as in Apache Camel. From the inside out, the scope is:
+
+1. the route's own `OnException` (declared anywhere in its body);
+2. the `OnException` it shares with other routes: those of its `RouteBuilder` — that builder's routes only — and
+   those of its [route configurations](#route-configuration--handlers-apart-from-the-routes);
+3. the context's error handling — a local handler of the route (`AddLocalExceptionHandler`), a global handler
+   (`AddGlobalExceptionHandler`), then `context.ErrorHandler` — for a failure **no `OnException` took**
+   (`Handled(false)` included: an `OnException` that matched owns the failure, as in Camel).
+
+Among 1 and 2 the handler is chosen as Camel's exception policy chooses it: the failure is matched from its innermost
+cause up to the exception that was thrown, and the handler whose type is **nearest** wins wherever it is declared — a
+builder's `OnException<IOException>` takes an `IOException` from the route's `OnException<Exception>`. The route's own
+handler wins a tie; a route configuration's handler is used instead of the builder's handler of the same type.
+
+A body that runs after its caller has gone — `.Threads()` for an in-only exchange, a `Debounce` flush, an `Aggregate`
+completed by timeout, a `Resequence` batch — is wrapped by the same scope, with every handler setting; a redelivery
+re-runs that body. A `DeadLetterChannel` can route failed messages to any URI when retries are exhausted.
+
+### Retry (per step)
+
+Local retry around a step, wrapped in a transaction. Useful when an external call may fail transiently. For
+route-level retry with backoff and a dead-letter sink, use `OnException(...)` (see Redelivery configuration below).
+
+```csharp
+.Transacted()
+    .Retry(attempts: 5, delay: TimeSpan.FromSeconds(1))
+    .To("http://flaky-service/submit")
+.EndTransaction()
+```
+
+### Dead Letter Channel
+
+Routes the failing exchange to a sink endpoint after retries are exhausted. The exception is preserved on the exchange (`exchange.GetException()`) and accessible from the dead-letter sub-route.
+
+```csharp
+// Route-level: any unhandled failure goes to seda://dlq
+From("kafka://orders")
+    .DeadLetterChannel("seda://dlq")
+    .Process(...)
+    .To("sql://orders");
+
+// The DLQ route inspects the exception and decides what to do
+From("seda://dlq")
+    .Log("DLQ: ${header.JMSCorrelationID} — ${exception.message}")
+    .Choice()
+        .When(e => e.GetException() is TimeoutException).To("seda://retry-later")
+        .Otherwise().To("sftp://archive/failed/")
+    .EndChoice();
+```
+
+**For the whole context** — Camel's context-level `errorHandler(deadLetterChannel(...))`: every route sends there a
+failure no `OnException` took, stamped with `CamelDeadLetterReason` / `CamelDeadLetterExceptionType` /
+`CamelDeadLetterTimestamp`, and the failure is handled. Redeliveries stay with `OnException`.
+
+```csharp
+context.ErrorHandler = new DeadLetterErrorHandler(context, "direct://errors");
+```
+```xml
+<!-- context.xml -->
+<context xmlns="urn:redb:route:1.0">
+  <deadLetterChannel uri="direct://errors"/>
+</context>
+```
+
+A route whose `OnException` takes a failure keeps it from the context's handler; to dead-letter from inside that
+handler, send there explicitly: `OnException<X>().Log("...").To("direct://errors")`.
+
+### TryCatch (scoped)
+
+A `try/catch/finally` block inside a route. Choose this when only a specific section of the pipeline needs special handling.
+
+```csharp
+.DoTry()
+    .To("http://external-api/submit")
+    .Process(async (e, ct) => await PostProcess(e, ct))
+.DoCatch<HttpRequestException>()
+    .Log("HTTP failure: ${exception.message}")
+    .To("seda://retry-queue")
+.DoCatch<TimeoutException>()
+    .Log("Timeout, archiving")
+    .To("sftp://archive/timeouts/")
+.DoFinally()
+    .Log("Attempt complete (success or failure)")
+.End()
+```
+
+### OnException — scope form (chain)
+
+Defines a handler for a specific exception type with full redelivery configuration. Two placement options:
+
+**Inside a route** — handler applies only to that single route:
+
+```csharp
+From("kafka://orders")
+    .OnException<TimeoutException>()
+        .MaximumRedeliveries(3)
+        .RedeliveryDelay(TimeSpan.FromSeconds(1))
+        .UseExponentialBackOff()
+        .BackOffMultiplier(2.0)
+        .Handled()                        // mark exception as handled, exchange continues
+        .To("seda://timeout-handler")
+    .EndOnException()
+    .Process(...)
+    .To("rabbitmq://processed");
+```
+
+**At RouteBuilder level** — applies to every route of this builder, and to no route of another builder (Apache
+Camel's RouteBuilder scope; the same holds for a builder's `Intercept*` and `OnCompletion`). Handlers shared by the
+routes of several builders go into a [route configuration](#route-configuration--handlers-apart-from-the-routes):
+
+```csharp
+public class OrderRoutes : RouteBuilder
+{
+    protected override void Configure()
+    {
+        // Builder handlers — apply to all From(...) routes below, not to other builders' routes
+        OnException<HttpRequestException>()
+            .MaximumRedeliveries(5)
+            .UseExponentialBackOff()
+            .Handled()
+            .To("seda://http-failures")
+        .EndOnException();
+
+        OnException<DbException>()
+            .MaximumRedeliveries(2)
+            .UseOriginalMessage()         // restore original body before sending to handler
+            .To("seda://db-failures")
+        .EndOnException();
+
+        // Multiple exception types in one block
+        OnException(typeof(TimeoutException), typeof(SocketException))
+            .MaximumRedeliveries(3)
+            .To("seda://network-failures")
+        .EndOnException();
+
+        From("kafka://orders")
+            .To("http://payments-svc/charge");
+
+        From("kafka://shipments")
+            .To("http://logistics-svc/dispatch");
+    }
+}
+```
+
+### Route configuration — handlers apart from the routes
+
+Apache Camel's Route Configuration: `OnException` declared once, in a class of its own, for the routes of **every**
+builder of the context. Use it when a module keeps its error handling in one place and its routes in others.
+
+```csharp
+public sealed class IntegrationErrors : RouteConfigurationBuilder
+{
+    protected override void Configuration()
+    {
+        // No id: the default — every route of the context that has no configurations assigned.
+        RouteConfiguration()
+            .OnException<HttpRequestException>()
+                .MaximumRedeliveries(3)
+                .UseExponentialBackOff()
+                .Handled()
+                .To("seda://http-failures");
+
+        // By id: only the routes that name it.
+        RouteConfiguration("audit")
+            .OnException<Exception>().Handled().Log("audit failed: ${exception.message}");
+    }
+}
+
+context.AddRoutes(new IntegrationErrors());          // a configuration builder is added like any builder
+context.AddRoutes(new OrderRoutes());                // its routes get the default configuration
+
+// A route picks configurations by id: exact ids, a wildcard ("audit*") or a regular expression, comma-separated.
+From("direct://audit").RouteConfigurationId("audit").To("rabbitmq://audit");
+```
+
+- A handler of a configuration has everything a builder's has — redeliveries, `OnWhen`, `Handled`/`Continued`, the
+  handler's steps. The steps are compiled into each route they apply to, so `.SpanTag(..., SpanTarget.Inbound)` there
+  tags the request that failed.
+- A route with assigned configurations does **not** get the default one. An id is unique within a context, and an
+  exact id that no configuration has fails `Start()`.
+- Inline, without a class: `context.AddRouteConfiguration(c => c.OnException<X>().Handled()...)` and
+  `context.AddRouteConfiguration("audit", c => ...)`.
+- Route-XML: `<routeConfiguration id="…">` with `<onException>` blocks, in a routes file or in `context.xml`, and
+  `<route routeConfigurationId="…">`.
+- `Intercept*` and `OnCompletion` are not part of a route configuration yet; share them through a base class.
+
+### OnException — configure form (action)
+
+For multiple handlers in one block. Each `Handle<T>` accepts a sub-route and per-exception redelivery options.
+
+```csharp
+.OnException(cfg => cfg
+    .Handle<TimeoutException>(
+        handler:        h => h.Log("Timeout, retry").To("seda://retry"),
+        maxRedeliveries: 3,
+        redeliveryDelay: TimeSpan.FromSeconds(2),
+        useExponentialBackoff: true)
+    .Handle<HttpRequestException>(
+        handler:        h => h.To("seda://http-fail"),
+        maxRedeliveries: 5)
+    .Handle<DbException>(
+        handler:        h => h.To("seda://db-fail")));
+```
+
+### Redelivery configuration
+
+All modifiers below are valid inside an `OnException(...).EndOnException()` scope:
+
+| Method | Purpose |
+|--------|---------|
+| `MaximumRedeliveries(n)` | Max retry attempts before handler fires |
+| `RedeliveryDelay(TimeSpan)` | Base delay between attempts |
+| `BackOffMultiplier(d)` | Multiplier applied to delay between attempts |
+| `UseExponentialBackOff()` | Switch from fixed to exponential backoff |
+| `Handled()` / `Handled(false)` | Suppress the failure; the route ends where it failed |
+| `Continued()` | Suppress the failure and pick the route up at the step after the one that failed (Camel's `continued(true)`) |
+| `OnWhen(predicate)` | Only fire the handler when predicate matches |
+| `RetryWhile(predicate)` | Continue retrying only while predicate is true |
+| `UseOriginalMessage()` | Restore the original message (before processing) for the handler |
+| `UseOriginalBody()` | Restore only the original body |
+| `OnRedelivery(action)` / `OnRedelivery(processor)` | Callback fired before each retry attempt |
+| `OnPrepareFailure(action)` / `OnPrepareFailure(processor)` | Callback fired before invoking the handler |
+| `OnExceptionOccurred(action)` / `OnExceptionOccurred(processor)` | Callback fired the moment exception is caught; the processor form is what a markup route can name |
+| `RetryAttemptedLogLevel(level)` | Log level for retry attempt messages |
+| `RetriesExhaustedLogLevel(level)` | Log level for retries-exhausted message |
+| `LogStackTrace(bool)` | Whether to log full stack trace |
+| `LogExhausted(bool)` | Whether to log when retries are exhausted |
+| `RedeliveryPolicy(policy)` | Apply a pre-built `RedeliveryPolicy` instance |
+
+### Combined example
+
+Global policy + route-local override + DLC + per-step retry, all together:
+
+```csharp
+public class PaymentRoutes : RouteBuilder
+{
+    protected override void Configure()
+    {
+        // 1. Global policy — transient HTTP errors retry 5x with exponential backoff
+        OnException<HttpRequestException>()
+            .MaximumRedeliveries(5)
+            .RedeliveryDelay(TimeSpan.FromSeconds(1))
+            .UseExponentialBackOff()
+            .BackOffMultiplier(2.0)
+            .RetryAttemptedLogLevel(LogLevel.Warning)
+            .OnRedelivery(e => Metrics.Inc("redelivery", 1))
+            .Handled()
+            .To("seda://transient-failures")
+        .EndOnException();
+
+        From("kafka://payments?groupId=svc")
+            .RouteId("payment-pipeline")
+            // 2. Route-level DLC — anything that bubbles past handlers ends up here
+            .DeadLetterChannel("seda://payments-dlq")
+
+            // 3. Route-local override — timeout policy specific to this route
+            .OnException<TimeoutException>()
+                .MaximumRedeliveries(2)
+                .UseOriginalMessage()
+                .To("seda://payment-timeouts")
+            .EndOnException()
+
+            .Validate(e => e.Message.GetBody<Payment>().Amount > 0)
+            .Process(async (e, ct) => await EnrichWithCustomer(e, ct))
+
+            // 4. Per-step retry: wrap the charge in a transaction that retries
+            .Transacted()
+                .Retry(attempts: 3, delay: TimeSpan.FromMilliseconds(500))
+                .To("http://payments-gateway/charge")
+            .EndTransaction();
+
+        From("seda://payments-dlq")
+            .Log("Payment DLQ — ${exception.message}")
+            .To("sftp://archive/payments/failed/");
+    }
+}
+```
+
+Resolution when several handlers match: the nearest exception type wins among the route's `OnException`, its route configurations' and its builder's — on a tie the route's own, then the configuration's; a failure none of them took goes to the context's handlers and `DeadLetterChannel`, and otherwise stays unhandled (logged and propagated).
+
+---
+
+## Message Transformation
+
+```csharp
+// Set body — static, lambda, or expression
+.SetBody("static value")
+.SetBody(e => TransformPayload(e.Message.GetBody<Order>()))
+.SetBody(JPath("$.order.items"))
+.SetBody(Expr("${header.orderId}-${body}"))
+
+// Transform body
+.Transform(e => JsonSerializer.Serialize(e.Message.GetBody<object>()))
+.Transform(JPath<string>("$.order.summary"))
+
+// Headers
+.SetHeader("source", "order-service")
+.SetHeader("source", e => e.Message.GetHeader<string>("origin") ?? "unknown")
+.SetHeader("total", JPath<decimal>("$.order.total"))
+.RemoveHeader("internal-trace-id")
+
+// Exchange properties
+.SetProperty("retryCount", 0)
+.SetProperty("startedAt", e => DateTimeOffset.UtcNow)
+.RemoveProperty("temp-flag")
+
+// Marshal / Unmarshal
+.Marshal(typeof(JsonMessageSerializer))
+.Unmarshal(typeof(XmlMessageSerializer), typeof(Order))
+```
+
+---
+
+## Expression Language
+
+redb.Route has a compiled expression engine. Templates and predicates compile to `Func<IExchange, T>` via `System.Linq.Expressions` — no interpreter overhead, results cached per route.
+
+### Helpers
+
+All helpers are `protected static` methods on `RouteBuilder` — use them directly inside `Configure()`:
+
+```csharp
+// Message accessors
+Body()                          // read message body
+Header("name")                  // read header value
+Property("key")                 // read exchange property
+Constant(42)                    // constant value
+Exchange(e => e.RouteId)        // delegate over IExchange
+
+// Structured data
+JPath("$.order.total")          // JSONPath expression
+JPath<decimal>("$.order.total") // typed JSONPath
+XPath("/order/status/text()")   // XPath expression
+XPath<string>("/order/status")  // typed XPath
+
+// String templates (StringExpression — bridges ${...} to IExpression)
+Expr("${header.orderId}")               // single header interpolation
+Expr("${header.prefix}-${body}")        // multi-value template
+Expr("header.amount")                   // raw value expression (no ${})
+```
+
+### Predicates
+
+Every expression supports 17 predicate methods returning `IPredicate` for use in `Filter()`, `When()`, `Validate()`:
+
+```csharp
+// Comparison
+Header("status").isEqualTo("active")
+Header("status").isNotEqualTo("cancelled")
+Header("amount").isGreaterThan(1000)
+Header("amount").isLessThan(500)
+Header("amount").isGreaterThanOrEqualTo(100)
+Header("amount").isLessThanOrEqualTo(9999)
+Header("amount").isBetween(100, 5000)
+
+// String
+Header("name").contains("Corp")
+Header("name").startsWith("Order-")
+Header("name").endsWith(".pdf")
+Header("email").regex(@"^[\w.]+@[\w.]+\.\w+$")
+
+// Collection
+Header("type").In("order", "payment", "refund")
+
+// Null
+Header("optional").isNull()
+Header("required").isNotNull()
+```
+
+### String Expressions
+
+`Expr()` creates a `StringExpression` that auto-detects `${...}` templates vs raw value expressions. Beyond plain interpolation, the engine supports arithmetic, increment/decrement, and comparison operators that compile to expression trees:
+
+```csharp
+// Template mode — ${...} placeholders interpolated at runtime
+.SetBody(Expr("${header.orderId}-${body}"))
+.SetHeader("trace", Expr("${header.source}-${header.correlationId}"))
+
+// Increment / decrement (mutates the underlying header/property)
+.SetHeader("attempt", Expr("${header.attempt++}"))   // post-increment, returns old value
+.SetHeader("attempt", Expr("${++header.attempt}"))   // pre-increment, returns new value
+
+// Arithmetic
+.SetHeader("total", Expr("${header.qty * header.price}"))
+.SetHeader("net",   Expr("${header.gross - header.tax}"))
+
+// Value mode — evaluated as expression, result is object
+.Filter(Expr("header.amount").isGreaterThan(1000))
+.SetBody(Expr("header.total"))
+
+// String expressions in Filter/When (shorthand, no Expr needed)
+.Filter("header.priority == 'high'")
+.When("header.amount > 1000")
+```
+
+---
+
+## Other EIP Patterns
+
+```csharp
+// Wire Tap — send copy to audit without affecting main flow
+.WireTap("seda://audit")
+
+// Multicast — send to multiple endpoints in parallel
+.Multicast("direct://service-a", "direct://service-b")
+
+// Throttle — rate limiting
+.Throttle(100)                              // max 100 messages/second
+.Throttle(500, TimeSpan.FromMinutes(1))     // max 500 per minute
+
+// Circuit Breaker
+.CircuitBreaker(cb => cb
+    .Threshold(5)
+    .ResetTimeout(TimeSpan.FromSeconds(30)))
+
+// Idempotent Consumer — deduplicate (works as outbox-style dedup with persistent backend)
+.IdempotentConsumer(e => e.Message.GetHeader<string>("messageId"), repository)
+//   InMemoryIdempotentRepository       — process-local, default
+//   SqlIdempotentRepository            — ADO.NET, two-phase commit, survives restarts
+//   RedbIdempotentRepository           — redb.Core RTTI storage, two-phase commit, cluster-wide
+
+// Claim Check — park a large body, carry a short key through the route
+.ClaimCheck(ClaimCheckOperation.Set, "order-42")   // body → key (original type kept in headers)
+.To("kafka://orders")                              // the broker carries the key, not the payload
+.ClaimCheck(ClaimCheckOperation.Get, "order-42")   // key → body
+
+// Push/Pop use an exchange-scoped stack instead of a key, and nest
+.ClaimCheck(ClaimCheckOperation.Push)
+.Enrich("http://scoring/api")
+.ClaimCheck(ClaimCheckOperation.Pop)
+//   InMemoryClaimCheckRepository — process-local, the default when none is named
+//   FileClaimCheckRepository     — one file per claim with TTL, for very large bodies or a shared FS
+//   context.AddClaimCheckRepository("big-payloads", repo) then .ClaimCheck(op, key, repositoryName: "big-payloads")
+
+// Loop — fixed count or conditional
+.Loop(3, sub => sub.Process(e => Retry(e)))
+.Loop(e => !e.Message.GetHeader<bool>("done"), sub => sub.Process(e => DoWork(e)))
+
+// Delay
+.Delay(TimeSpan.FromSeconds(5))
+.Delay(e => TimeSpan.FromSeconds(e.Message.GetHeader<int>("backoff")))
+
+// Resequencer — reorder messages
+.Resequence(e => e.Message.GetHeader<long>("sequenceNumber"))
+
+// Enrich — content enricher
+.Enrich("http://api/details", (original, enrichment) => Merge(original, enrichment))
+
+// Saga — compensating steps
+.Saga(s => s
+    .Step(
+        action:     async (e, ct) => await ReserveInventory(e, ct),
+        compensate: async (e, ct) => await ReleaseInventory(e, ct))
+    .Step(
+        action:     async (e, ct) => await ChargePayment(e, ct),
+        compensate: async (e, ct) => await RefundPayment(e, ct))
+    .OnCompletion(async (e, ct) => await PublishOrderCompleted(e, ct)))
+
+// Transacted — wrap pipeline step in TransactionScope
+.Transacted()
+
+// Control Bus — manage routes at runtime (start/stop/suspend/resume/restart/status/stats/fail)
+.ControlBus(ControlBusAction.Stop, "orders")            // "current" targets the sending route
+.To("controlbus:route?routeId=orders&action=restart")  // or as a URI
+//   controlbus:notify also exposes route lifecycle events as a consumer (beyond Camel)
+
+// Process — inline async with CancellationToken
+.Process(async (exchange, ct) =>
+{
+    var order = exchange.Message.GetBody<Order>();
+    var result = await ProcessOrder(order, ct);
+    exchange.Message.SetBody(result);
+})
+```
+
+---
+
+## Request-Response (InOut)
+
+For synchronous request-response over HTTP/gRPC/WebSocket, mark the listener as `InOut()` and finish the route with `.Respond()`:
+
+```csharp
+public class OrderApi : RouteBuilder
+{
+    protected override void Configure()
+    {
+        From(Http.Listen("/api/orders").Port(8080).InOut())
+            .Unmarshal(typeof(JsonMessageSerializer), typeof(CreateOrderRequest))
+            .Process(async (e, ct) =>
+            {
+                var req  = e.Message.GetBody<CreateOrderRequest>();
+                var resp = await orderService.CreateAsync(req, ct);
+                e.Message.SetBody(resp);
+            })
+            .Marshal(typeof(JsonMessageSerializer))
+            .Respond();   // returns the body to the HTTP client
+    }
+}
+```
+
+The same pattern works for `Grpc.Listen(...)` and `Ws.Listen(...)`.
+
+---
+
+## Concurrency & Parallelism
+
+redb.Route separates concurrency into two axes: **consumer-level** (how many messages the source pulls at once — a transport option like `.ConcurrentConsumers(N)` / `.MaxConcurrentCalls(N)` / Kafka partitions) and **processing-level** (how many the pipeline processes at once, via the **`.Threads(N)`** EIP).
+
+```csharp
+// Serial poll source (File/SQL/S3/IMAP/…) → fan the processing out to a pool of 10:
+From("file://in").Threads(10).Process(HeavyTransform).To("http://api").End();
+
+// Broker source → use its native competing-consumer knob (keeps delivery/ack semantics):
+From(Mqtt.Subscribe("telemetry/#").Qos(1).ConcurrentConsumers(5)).Process(Ingest).End();
+```
+
+`.Threads(N)` is an async boundary (like `.To("seda://")`): backpressured bounded queue, own DI scope per exchange, graceful drain-on-stop, errors routed to `OnException` — ordering not preserved when `N > 1`. Full guide, per-transport table, and Camel mapping: **[CONCURRENCY.md](CONCURRENCY.md)**.
+
+---
+
+## Behaviour Guarantees
+
+A few behaviours are easy to get wrong from reading a single method, so they are stated here.
+
+### A stopped exchange and `DoFinally`
+
+`exchange.Stop()` stops the pipeline from running its remaining steps; it is not an exception. A `DoFinally()` block
+still runs, because it is the C# `finally` of `TryCatchProcessor`: the body is abandoned at the point of the stop and
+the finally runs on the way out. A failure and a cancellation behave the same way. `DoCatch` / `DoFinally` therefore
+give you a cleanup hook that fires whatever happened inside the try.
+
+### The Out → In merge between pipeline steps
+
+When a step writes `exchange.Out`, the pipeline merges it into `In` before the next step: the body and every header of
+`Out` are copied over, `ContentType` is copied only when `Out` carries one (a step that leaves it `null` does not wipe
+the In content type), and `Out` is then cleared. The merge happens only between steps, so the last step's `Out` is left
+in place for an InOut caller.
+
+### Properties in a Split branch
+
+A `Split` branch is a child exchange. It gets the part as its body, a copy of the parent's In headers plus
+`CamelSplitIndex`, `CamelSplitSize` and `CamelSplitComplete`, and the parent's properties: the property dictionary is
+inherited, and the values are shared, not deep-copied. Writing a property on a branch does not reach the parent; the
+aggregation strategy decides what goes back.
+
+### `now()` and `delay`
+
+- `now()` returns a `DateTime` with `DateTimeKind.Utc`.
+- `delay` accepts a `TimeSpan`, an `int` / `long` / `double` meaning milliseconds, a string that parses as a number of
+  milliseconds, or a string that parses as `hh:mm:ss`. Anything else throws `InvalidOperationException` at run time.
+
+---
+
+## Reliability
+
+redb.Route provides four primitives for at-least-once and exactly-once delivery. They compose: enable confirms on the producer, persistent dedup on the consumer, polling outbox in your service — you have the same guarantees that frameworks bundle as `UseOutbox()`, just spelled out.
+
+### RabbitMQ Publisher Confirms + Deferred Consumer Ack
+
+The RabbitMQ producer uses publisher confirms by default with broker-side flow control:
+
+```csharp
+.To(Rabbit.Queue("orders")
+    .Host("rabbit.local")
+    .MaxOutstandingConfirms(2048)        // in-flight publishes throttled by ThrottlingRateLimiter
+    .Mandatory(true)                     // unroutable messages surface as exceptions (BasicReturn)
+    .Transacted(false)                   // or use AMQP transactions instead of confirms
+    .AutomaticRecovery(true)             // reconnect + re-declare topology on broker restart
+    .TopologyRecoveryEnabled(true))
+```
+
+Every `BasicPublishAsync` call awaits broker confirmation; producer back-pressure kicks in when `MaxOutstandingConfirms` is reached. `Mandatory(true)` surfaces `BasicReturn` events as exchange exceptions — routing failures fail loudly.
+
+### Deferred Ack — `ITransactedAction` (RabbitMQ, AMQP, IBM MQ, Kafka)
+
+The deferred send pattern is implemented uniformly across the brokers. When `.Transacted()` is active, a producer send fires not at the step but after the transaction closed; the consumer settles the incoming delivery after that. Both are registered as `ITransactedAction` instances on the exchange (`exchange.Properties["TRANSACT_ACTION"]`) and execute together when the `TransactionScope` closes.
+
+| Transport | Unit of work succeeded | Unit of work failed |
+|-----------|--------|----------|
+| **RabbitMQ** consumer | `TxCommit` + `BasicAck(deliveryTag)` | `TxRollback` + `BasicNack(requeue=true)` |
+| **RabbitMQ** producer | `BasicPublishAsync` fires | message dropped |
+| **AMQP 1.0** consumer | `receiver.Accept(msg)` | `receiver.Release(msg)` |
+| **AMQP 1.0** producer | `sender.Send(msg)` fires | message dropped |
+| **IBM MQ** consumer | `QueueManager.Commit()` (MQCMIT) | `QueueManager.Backout()` (MQBACK) |
+| **IBM MQ** producer | MQPUT + MQCMIT | message dropped |
+| **Kafka** consumer | offset committed after the route, or inside the producer's Kafka transaction (below) | offset not committed; `breakOnFirstError=true` reads the record again |
+| **Kafka** producer | `ProduceAsync` fires; with `transactionalIdPrefix` the block's sends commit as one Kafka transaction | message dropped |
+
+A unit of work ends in one order: the database transaction completes and closes, then the deferred sends go out, then the consumer acknowledges the incoming message. The acknowledgement belongs to the consumer, not to the transaction: a delivery is settled only after the whole unit of work succeeded, and left unsettled when it was not, so the broker redelivers it. See [TRANSACTIONS.md](TRANSACTIONS.md). IBM MQ additionally tracks `BackoutCount`; if it reaches `BackoutThreshold`, the message moves to a backout queue instead of rolling back into the main queue indefinitely (poison message handling).
+
+```csharp
+// Same .Transacted() syntax regardless of broker
+From(Rabbit.Queue("orders").Transacted(true))
+    .Transacted()
+    .Process(async (e, ct) => await SaveToDb(e, ct))
+    .To(Rabbit.Queue("processed").Transacted(true));
+// Commit: the database, then BasicPublish(processed), then BasicAck(orders)
+// Rollback: BasicNack(orders, requeue=true) + send dropped
+
+From("wmq://ORDERS.IN?transacted=true")
+    .Transacted()
+    .Process(async (e, ct) => await SaveToDb(e, ct))
+    .To("wmq://ORDERS.OUT?transacted=true");
+// Commit: MQCMIT on both consumer and producer
+// Rollback: MQBACK — message back in ORDERS.IN
+
+From(Kafka.Topic("payments").GroupId("svc"))
+    .Transacted()
+    .Process(async (e, ct) => await SaveToDb(e, ct))
+    .To(Kafka.Topic("processed").TransactionalIdPrefix("payments-svc"));
+// Commit: the database, then one Kafka transaction with the send and the consumed offset
+// Rollback: nothing sent, offset not committed
+```
+
+### Kafka exactly-once (EOS)
+
+`TransactionalIdPrefix` switches a Kafka producer to Kafka transactions. The sends it defers in a `.Transacted()` block
+commit as one Kafka transaction, all or none; when the route consumed from Kafka on the same cluster, the consumed
+offset commits in that transaction too (`SendOffsetsToTransaction`), so the output and the offset move together.
+Readers use `read_committed`, librdkafka's default. The database is not part of the Kafka transaction: it commits first,
+and the idempotent consumer covers a failure between the two.
+
+```csharp
+From(Kafka.Topic("orders").Brokers("broker1:9092,broker2:9092").GroupId("order-svc"))
+    .Transacted()
+        .To(Kafka.Topic("orders.enriched")
+            .Brokers("broker1:9092,broker2:9092")
+            .TransactionalIdPrefix("order-svc"))   // acks=all and idempotence come with it
+    .End();
+```
+
+The prefix names the producer; the connector appends the machine, the process and the producer's number, so nodes
+deploying one configuration never fence each other. Details in the
+[Kafka connector README](redb.Route.Kafka/README.md).
+
+### Persistent Idempotent Consumer (de-facto outbox for dedup)
+
+`IdempotentConsumer` claims a message's key before its block runs and skips a message whose key is already claimed. With a persistent backend the claim survives restarts and is shared by every node on the same database, the same role an Outbox `processed_messages` table plays in MassTransit / NServiceBus: the database's unique key decides which node processes a message.
+
+Three backends ship today:
+
+| Backend | Storage | Across nodes |
+|---------|---------|:--:|
+| `InMemoryIdempotentRepository` | Process memory | — |
+| `SqlIdempotentRepository` | ADO.NET table (any provider), DDL ships with the package | ✅ |
+| `RedbIdempotentRepository` | redb object guarded by a unique key | ✅ |
+
+The key is settled when the exchange's unit of work ends, before the consumer acknowledges the message or hands it back (Apache Camel's defaults): confirmed on success, removed on failure anywhere in the route, so the redelivery is processed again. Inside `.Transacted()` the key follows the transaction instead: it commits with the work and goes with a rollback. Details in [TRANSACTIONS.md](TRANSACTIONS.md#idempotent-consumer).
+
+```csharp
+// Register a persistent backend under a name
+context.AddRedbIdempotentRepository("payments-inbound", ttl: TimeSpan.FromDays(7));
+
+// Use it in any route
+From("kafka://payments")
+    .Transacted()
+        .IdempotentConsumer(Header("messageId"), "payments-inbound")
+            .Process(/* the work */)
+        .EndIdempotentConsumer()
+    .End();
+```
+
+### Outbox via Sql polling
+
+The classic transactional outbox pattern: the service writes the event as a row of an `outbox` table in the same database
+transaction as the business write, and a relay route polls the rows and publishes them, marking each one only after the
+broker has taken it:
+
+```csharp
+// The relay: one exchange per unsent row; onSuccess marks the row once the send went through.
+From(Sql.Poll("select id, payload from outbox where sent = false order by id")
+        .DataSource("main")
+        .Delay(1000)
+        .OnSuccess("update outbox set sent = true where id = :#id"))
+    .SetBody(ex => ex.In.Headers["payload"])
+    .To("kafka://order-events");
+```
+
+A failed send leaves the row unmarked and the next poll sends it again; a crash between the send and `onSuccess` sends it
+twice, so the receiving side deduplicates. The full recipe, both routes, is in
+[TRANSACTIONS.md](TRANSACTIONS.md#routes-that-do-not-start-from-a-broker-the-outbox-recipe).
+
+---
+
+## Validation
+
+```csharp
+// JSON Schema
+.ValidateJsonSchema("""
+{
+    "type": "object",
+    "required": ["orderId", "amount"],
+    "properties": {
+        "orderId": { "type": "string" },
+        "amount":  { "type": "number", "minimum": 0 }
+    }
+}
+""")
+
+// XSD
+.ValidateXsd(xsdContent)
+
+// Custom predicate
+.Validate(e => e.Message.GetBody<Order>().Amount > 0, "Amount must be positive")
+
+// FluentValidation and DataAnnotations (redb.Route.Validation.Adapters)
+.ValidateFluent(new OrderValidator())
+.ValidateAnnotations()
+```
+
+---
+
+## Testing with Mock
+
+The built-in `mock:` endpoint records received messages and lets you assert on them — no external broker needed in unit tests.
+
+```csharp
+public class OrderRouteTests
+{
+    [Fact]
+    public async Task Route_filters_and_forwards_new_orders()
+    {
+        var host = Host.CreateDefaultBuilder()
+            .ConfigureServices(services => services.AddRedbRoute(route =>
+            {
+                route.AddRoutes(r =>
+                {
+                    r.From("direct://input")
+                        .Filter(Header("type").isEqualTo("new"))
+                        .To("mock://received");
+                });
+            }))
+            .Build();
+
+        await host.StartAsync();
+        var producer = host.Services.GetRequiredService<IRouteProducer>();
+        var mock     = host.Services.GetRequiredService<IMockEndpointRegistry>().Get("received");
+
+        await producer.SendAsync("direct://input", "payload-1", new Dictionary<string, object> { ["type"] = "new" });
+        await producer.SendAsync("direct://input", "payload-2", new Dictionary<string, object> { ["type"] = "old" });
+
+        Assert.Equal(1, mock.ReceivedCount);
+        Assert.Equal("payload-1", mock.Received[0].Message.GetBody<string>());
+    }
+}
+```
+
+`MockDsl.Endpoint("name").ExpectedMessageCount(n)` also supports awaiting an expected message count with timeout — useful for asynchronous routes.
+
+---
+
+## Telemetry
+
+Built-in OpenTelemetry — distributed traces and metrics out of the box.
+
+```csharp
+// Per-step tracing and metrics — scope style
+From("kafka://orders")
+    .Traced("order-processing")
+        .SetBody(JPath("$.order"))
+        .Process(async (e, ct) => await Enrich(e, ct))
+    .EndTraced()
+    .Metered("order-throughput")
+        .To("rabbitmq://processed")
+    .EndMetered();
+
+// Per-step — inline style
+From("kafka://orders")
+    .Traced("validate", async (e, ct) => await ValidateOrder(e, ct))
+    .Metered("transform", e => { e.Message.SetBody(Transform(e)); })
+    .To("rabbitmq://processed");
+
+// Configure via options
+builder.Services.Configure<RouteEngineOptions>(o =>
+{
+    o.EnableTelemetry = true;   // default: true
+    o.EnableMetrics   = true;   // default: true
+});
+```
+
+Metrics exposed: `redb.route.messages.processed`, `redb.route.messages.failed`, `redb.route.processing.duration` — per route and per step.
+
+### Finding a trace by a business key — `SpanTag`
+
+`.SpanTag(key, value)` puts one attribute on a span, so a trace can be found by an order number, a batch id, a
+document key. Jaeger's tag search and Tempo's TraceQL (`{ span.sap.order.id = "A-42" }`) find a trace by an
+attribute on **any** of its spans, not only the root. The value is a literal or, as in `SetHeader`, an expression
+evaluated per message; the exchange is not touched:
+
+```csharp
+From("http://0.0.0.0:8080/sap/ack")
+    .Unmarshal().Json<SapAck>()
+    .SpanTag("sap.order.id", XPath("/Ack/OrderNo"))                    // the route span
+    .SpanTag("sap.order.id", Header("orderNo"), SpanTarget.Inbound)    // the request's server span
+    .Traced("post-to-erp")
+        .SpanTag("erp.batch", Expr("${property.batch}"))               // the enclosing Traced span
+        .To("http://erp/api/orders")
+    .EndTraced();
+```
+
+| Target | Span | Nothing set when |
+|---|---|---|
+| `Enclosing` (default) | the nearest `Traced` scope, else the route span | the route has `.Tracing(false)` — never falls back to the transport span |
+| `Inbound` | the server/consumer span of the transport that received the message; a route called through `direct:` uses its caller's | no transport span (in-process sources), or it has already ended (a wire tap running later) |
+
+The host's own span (ASP.NET Core) is never written — it belongs to the host. Nothing is set, and the value is not
+evaluated, when nobody listens or the span is not sampled; a `null` or empty value sets nothing; a value that fails
+to evaluate is skipped and logged at Debug — telemetry does not change the outcome of a message.
+
+The key is checked when the route is built: lowercase, dot-separated (`sap.order.id`), not in the namespaces of the
+engine and the semantic conventions (`redb.`, `messaging.`, `http.`, `rpc.`, `db.`, `exception.`, `otel.`), and not
+a secret's name (`*token*`, `*password*`...). The length of a value is the SDK's limit
+(`OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT`).
+
+> **The value is exported unfiltered.** Never put personal data or credentials in a span attribute. And do not put a
+> business key in baggage instead: baggage travels to every next service, a span attribute stays in the trace.
+
+---
+
+## Logging
+
+```csharp
+// Simple log with template
+.Log("Processing order: ${header.orderId}")
+
+// Log with factory
+.Log(e => $"Order {e.Message.GetHeader<string>("orderId")} body size: {e.Message.Body?.ToString()?.Length}")
+
+// Structured log scope
+.Log(LogLevel.Information)
+    .Message("Order processed")
+    .Header("orderId")
+    .Header("status")
+    .ShowRouteId()
+.EndLog()
+```
+
+---
+
+## Fluent Transport Builders
+
+Each transport ships a type-safe fluent builder. Builders implement `implicit operator string` so they can be passed straight to `From()` / `To()`.
+
+### Built-in (no extra package)
+
+```csharp
+.To(Direct.Endpoint("my-service"))                              // direct:my-service
+.To(Seda.Send("orders").ConcurrentConsumers(5).Size(1000))      // seda:orders?...
+.From(Timer.Every("poll").Period(5000).Delay(1000))             // timer:poll?period=5000&delay=1000
+.From(Timer.Once("init"))                                       // fire once
+.To(LogDsl.Info("audit").ShowHeaders().ShowBody())              // log:audit?...
+.To(MockDsl.Endpoint("result").ExpectedMessageCount(3))         // mock:result?...
+```
+
+### Selected transport builders
+
+```csharp
+// Kafka
+Kafka.Topic("orders")
+    .Brokers("broker1:9092,broker2:9092")
+    .GroupId("order-svc")
+    .AutoOffsetReset("Earliest")
+    .Sasl("PLAIN", "user", "pass")
+    .Acks("All")
+    .Compression("zstd")
+
+// RabbitMQ
+Rabbit.Queue("orders")
+    .Host("rabbit.local").Port(5672)
+    .Exchange("orders-exchange", "topic")
+    .RoutingKey("order.new")
+    .Durable().PrefetchCount(10)
+    .DeadLetterExchange("dlx")
+    .QueueType("quorum")
+
+// Redis
+Redis.Subscribe("events")
+Redis.XRead("orders-stream").ConsumerGroup("svc").ConsumerName("worker-1")
+Redis.Set("cache-key").ConnectionString("localhost:6379").Ttl(3600)
+Redis.LPush("work-queue")
+
+// SQL
+Sql.Poll("SELECT * FROM orders WHERE status = 'new'")
+    .DataSource("main").Delay(5000).OnSuccess("UPDATE orders SET status = 'done'")
+Sql.Execute("INSERT INTO audit (msg) VALUES (@body)").DataSource("main").Transacted()
+Sql.Procedure("usp_ProcessOrder").DataSource("main").CommandTimeout(30)
+
+// HTTP / HTTPS
+Http.Post("api.example.com/orders").BearerAuth().Timeout(5000).ContentType("application/json")
+Http.Listen("/webhooks/stripe").Host("0.0.0.0").Port(8080).Cors().InOut()
+
+// gRPC
+Grpc.Call("localhost:50051")
+Grpc.Listen("0.0.0.0:50051")
+
+// SOAP / WSDL (WS-Security, MTOM, SOAP 1.1/1.2, ?wsdl publishing)
+Soap.Call("https://gds/air.svc").ConnectionFactory("amadeus").Operation("GetFares")
+Soap.Listen("/svc/orders").Host("0.0.0.0").Port(4090)
+//   or serve it with a controller: .From(Soap.Listen("/svc/air")…).RedbSoapController<AirController>()
+
+// File system
+FileDsl.Read("/data/inbox").Include("*.csv").Recursive().ReadLock("Changed").Delete()
+FileDsl.Write("/data/outbox").AutoCreate(true).TempPrefix(".tmp").FileExist("Override")
+
+// SFTP
+Sftp.Directory("/remote/inbox")
+    .Host("sftp.example.com").Port(22)
+    .Username("user").PrivateKeyFile("/keys/id_rsa")
+    .Include("*.xml").Delete()
+
+// MQTT 5.0
+Mqtt.Subscribe("sensors/+/temperature").Broker("mqtt.local").Port(1883).Qos(1).CleanSession()
+Mqtt.Publish("alerts/temperature").Broker("mqtt.local").Retain()
+
+// AMQP 1.0
+Amqp.Address("orders").Host("amqp.local").Port(5672).Username("admin").Password("admin")
+
+// Email
+Smtp.Send("smtp.gmail.com").Port(587).Username("user").Password("pass").UseSsl()
+    .From("noreply@example.com").To("admin@example.com")
+Imap.Read("imap.gmail.com").Port(993).Username("user").Password("pass").UseSsl()
+    .Folder("INBOX").Unseen().Delete()
+
+// TCP
+Tcp.Listen("0.0.0.0:9000").Codec("textline").Delimiter("\n")
+Tcp.Connect("server:9000").Codec("lengthprefixed").Tls()
+
+// WebSocket
+Ws.Listen("0.0.0.0:8080/ws")
+Ws.Connect("ws.example.com:8080/stream")
+
+// Quartz
+Cron.Schedule("daily-report", "0 0 9 * * ?")
+QTimer.Every("heartbeat").Period(5000)
+```
+
+Builders for AzureServiceBus, Elasticsearch, Firebase, FTP, IBM MQ, LDAP, S3, and SignalR follow the same pattern — see the per-package README for each one.
+
+---
+
+## Architecture
+
+Routes are compiled in two phases. Define-phase records `RouteStep` instances; compile-phase turns them into a processor chain. This separation enables route introspection, validation, and visualization before execution.
+
+```mermaid
+flowchart TB
+    subgraph Define["1. Define phase"]
+        RB[RouteBuilder] --> Steps[RouteStep records]
+    end
+    subgraph Compile["2. Compile phase"]
+        Steps --> Compiler[RouteCompiler]
+        Compiler --> Pipeline[PipelineProcessor]
+    end
+    subgraph Run["3. Runtime"]
+        Source[From: Consumer] --> Pipeline
+        Pipeline --> Sink[To: Producer]
+        Pipeline --> Telemetry[OpenTelemetry\nActivities + Meters]
+    end
+```
+
+### Core engine — `redb.Route`
+
+| Subsystem | Responsibility |
+|-----------|----------------|
+| `Definitions/` | `RouteStep` records, `RouteCompiler`, `PipelineProcessor` |
+| `Processors/` | 30+ EIP processors: Filter, Choice, Splitter, Aggregator, WireTap, Multicast, RecipientList, DynamicRouter, Resequencer, ScatterGather, ClaimCheck, IdempotentConsumer, Saga, CircuitBreaker, Throttle, Loop, Delay, Debounce, Enrich, Timeout, TryCatch, OnException |
+| `Expressions/` | `Body`, `Header`, `Property`, `Constant`, `Exchange` plus `JPath`, `XPath`, `StringExpression` (compiled via `System.Linq.Expressions`) |
+| `Predicates/` | 17 predicate types: `isEqualTo`, `isGreaterThan`, `contains`, `regex`, `In`, `isBetween`, `isNull`, etc. |
+| `Components/` | Built-in transports: Direct, SEDA, Timer, Mock, Log |
+| `Telemetry/` | OpenTelemetry `ActivitySource` + `Meter` per route and per step |
+| `ErrorHandling/` | Retry, `DeadLetterChannel`, `TryCatch`, `OnException` (scope and configure forms) |
+| `Validation/` | JSON Schema, XSD, predicate validation |
+| `Serialization/` | JSON, XML marshal / unmarshal |
+| `Transactions/` | `TransactionScope` integration via `.Transacted()` |
+| `Fluent/` | Type-safe endpoint builders for all transports |
+
+### Component layers
+
+```mermaid
+flowchart TB
+    subgraph Core["redb.Route — Core Engine"]
+        Defs[Definitions]
+        Procs["Processors\n30+ EIP"]
+        Expr["Expressions\nCompiled IL"]
+        Pred["Predicates\n17 types"]
+        Built["Built-in components\nDirect · SEDA · Timer · Mock · Log"]
+        Tele[OpenTelemetry]
+        Err[Error Handling]
+        Val[Validation]
+        Ser[Serialization]
+        Tx[TransactionScope]
+    end
+
+    subgraph Transports["redb.Route.* — 29 transports"]
+        Msg["Messaging\nKafka · RabbitMQ · Redis · AzureSB · IbmMq · Amqp"]
+        Data["Data stores\nSql · Elasticsearch · Firebase · S3 · Ldap"]
+        Net["Network\nHttp · Grpc · WebSocket · SignalR · Tcp"]
+        Files["Files\nFile · Ftp · Sftp"]
+        Proto["Protocols / Schedule\nMail · MqttNet · Quartz"]
+        AI["AI / Process\nLlm · Exec"]
+        Sup["Support\nControllers · GenericFile · Validation.Adapters"]
+    end
+
+    Core --> Transports
+```
+
+### Transports — underlying clients and capabilities
+
+| Transport | Underlying client | Notes |
+|-----------|-------------------|-------|
+| `Kafka` | `Confluent.Kafka` | Topics, consumer groups, transactions, SASL, compression |
+| `RabbitMQ` | `RabbitMQ.Client` 7.x | Queues, exchanges, DLX, quorum queues, prefetch |
+| `Redis` | `StackExchange.Redis` | Pub/Sub, Streams, KV, Lists, Sorted Sets, Geo |
+| `AzureServiceBus` | `Azure.Messaging.ServiceBus` | Queues, topics, sessions, scheduled |
+| `IbmMq` | `IBMMQDotnetClient` | Queues, topics, transactions, RPC, SSL |
+| `Amqp` | `AMQPNetLite` | AMQP 1.0 — Artemis, Azure SB, Amazon MQ; RPC via `ReplyTo`/`CorrelationId` (InOut auto-detected) |
+| `Sql` | ADO.NET | Polling, batch execute, stored procedures, transactions |
+| `Elasticsearch` | `Elastic.Clients.Elasticsearch` 8.x | Search, CRUD, 9 operations |
+| `Firebase` | Firebase Admin SDK | Firestore, Cloud Storage, FCM |
+| `S3` | `AWSSDK.S3` | AWS S3 + MinIO, multipart, SSE |
+| `Ldap` | `Novell.Directory.Ldap` | Search, CRUD, auth |
+| `Http` | `HttpClient` + Kestrel | REST client, webhooks, CORS, InOut |
+| `Grpc` | `Grpc.Net` | Client + Kestrel server, binary messages |
+| `Soap` | `System.Xml` + Kestrel | SOAP 1.1/1.2, WS-Security, MTOM, `?wsdl` |
+| `WebSocket` | `ClientWebSocket` + Kestrel | Text/binary, reconnect |
+| `SignalR` | `Microsoft.AspNetCore.SignalR` | Hub consumer + producer/broadcast |
+| `Tcp` | `System.Net.Sockets` | Text-line, length-prefixed, TLS |
+| `File` | File system | Polling, atomic writes, glob, locking |
+| `Ftp` | `FluentFTP` | FTP/FTPS, passive/active |
+| `Sftp` | `SSH.NET` | Remote files, key auth, proxy |
+| `Mail` | `MailKit` | SMTP, IMAP, POP3, IDLE push |
+| `MqttNet` | `MQTTnet` | MQTT 5.0, shared subscriptions, QoS |
+| `Quartz` | `Quartz.NET` | Cron schedules, interval timers, persistent jobs |
+| `Exec` | `System.Diagnostics.Process` | Local-process execution; allowlist, working-directory pin, timeout, output caps |
+| `Llm` | `HttpClient` (OpenAI-compat + Anthropic Messages) | LLM connector with universal OpenAI-compat provider (14 vendors) and native Anthropic provider; tool-loop agent engine; **token-by-token streaming** (`?stream=true` → `IAsyncEnumerable<string>` surfaced as SSE over `redb.Route.Http` with an `event: done` summary trailer / one `Text` frame per token over `redb.Route.WebSocket`) |
+| `Mcp` | JSON-RPC 2.0 over stdio / HTTP+SSE | Model Context Protocol client. Spawns external MCP servers, runs `initialize` + `tools/list`, projects every remote tool into `IToolDescriptorRegistry` as `McpToolDescriptor`. Producer-only (`mcp://server/tool`). Cancellation forwarded as `notifications/cancelled`. |
+
+### Saga rollback flow
+
+```mermaid
+sequenceDiagram
+    participant R as Route
+    participant S1 as Step 1: Reserve
+    participant S2 as Step 2: Charge
+    participant S3 as Step 3: Ship
+    R->>S1: action()
+    S1-->>R: ok
+    R->>S2: action()
+    S2-->>R: ok
+    R->>S3: action()
+    S3--xR: throw
+    Note over R: rollback in reverse
+    R->>S2: compensate()
+    R->>S1: compensate()
+```
+
+---
+
+## DSL Reference
+
+Quick reference for `IRouteDefinition` methods. All of them return `IRouteDefinition` for chaining unless noted otherwise.
+
+**Transform / Enrich**: `SetBody` (×4: static, lambda, `IExpression`, `StringExpression`), `Transform` (×3: lambda, `IExpression`, string), `SetHeader` (×4), `SetProperty` (×4), `RemoveHeader`, `RemoveProperty`, `RemoveBody`, `Marshal`, `Unmarshal`
+
+**Filtering**: `Filter` (×3: lambda, `IPredicate`, string expression)
+
+**Processing**: `Process` (×4: async, async + `CancellationToken`, sync, `IProcessor`)
+
+**Content-Based Routing**: `Choice()`, `When` (×3: lambda, `IPredicate`, string), `Otherwise()`, `EndChoice()`
+
+**Multicast / WireTap**: `Multicast` (simple + full params), `WireTap`, `RecipientList`, `DynamicRouter`
+
+**Split / Aggregate**: `Split` (lambda or `IExpression`, scope or sub-route), `EndSplit()`, `Aggregate`
+
+**Loop / Delay**: `Loop` (count or predicate, scope or sub-route), `Delay` (`TimeSpan` or lambda), `DelayExpression`
+
+**Error Handling**: `DoTry()`, `DoCatch<T>()`, `DoFinally()`, `OnException<T>()`, `EndOnException()`, `Retry`, `DeadLetterChannel`, `ThrowException` (×5)
+
+**Redelivery Config**: `MaximumRedeliveries`, `RedeliveryDelay`, `BackOffMultiplier`, `UseExponentialBackOff`, `Handled`, `ExceptionHandled`
+
+**Logging**: `Log` (template / lambda / scope), `EndLog()`
+
+**Validation**: `Validate`, `ValidateJsonSchema` (×2), `ValidateXsd` (×3), `ValidateFluent`, `ValidateAnnotations`
+
+**Lifecycle**: `Transacted`, `RollbackAll`, `Respond`, `SetPattern`, `Stop`
+
+**Telemetry**: `Traced` (scope or inline), `EndTraced()`, `Metered` (scope or inline), `EndMetered()`
+
+**Advanced EIP**: `Saga`, `IdempotentConsumer`, `Throttle`, `CircuitBreaker`, `Resequence`, `Enrich`, `PollEnrich`
+
+**Scope**: `End()` — universal scope closer
+
+---
+
+## XML Route Tools
+
+Routes can also be written as XML: [redb.Route.Xml](redb.Route.Xml/README.md) loads `*.route.xml`
+documents into the same route definitions the C# DSL produces. [XmlDemo](demo/XmlDemo/README.md) is a
+worked example. Two developer tools ship with it; neither is needed on a server.
+
+**`redb-route-xml`**, a .NET tool (package `redb.Route.Xml.CodeGen`, runs on .NET 8, 9 and 10):
+
+```bash
+dotnet tool install -g redb.Route.Xml.CodeGen
+
+redb-route-xml xsd bin/Debug/net10.0 --out schema                  # the schema editors validate against
+redb-route-xml csharp routes/main.route.xml --namespace My.Routes  # the fluent C# the XML parses into
+redb-route-xml mermaid routes/main.route.xml --bin bin/Debug/net10.0  # a flowchart of the routes
+redb-route-xml new MyRoutes                                        # scaffold a route project
+redb-route-xml check .                                             # validate a route project
+redb-route-xml pack . --version 1.0.0                              # package it for a worker
+```
+
+`--bin` gives `mermaid` the project's build output: a route that names its own types (`<unmarshal
+target=>`) or package elements (`<redbSave>`, `<cache>`) needs it, a plain one does not. Schemas and other
+`file=` references resolve from the project's `resources/`, as they do in the package.
+
+Keep the tool on the same version as the runtime. Whenever it reads a bin directory (`xsd`, `elements`,
+`catalog`, `check`, `pack`, `mermaid --bin`) it compares its own `redb.Route.Xml` with the one there and refuses to run on
+a mismatch: a tool of another version would read their types as nothing at all.
+Upgrade it together with the packages: `dotnet tool update -g redb.Route.Xml.CodeGen --version <version>`.
+
+**VS Code extension**: completion, validation and enum hints from the XSD, a route tree in the Explorer
+and a graph editor over the XML text. Source and details: [vscode-redb-route](vscode-redb-route/README.md).
+The packaged `.vsix` is attached to the [GitHub release](https://github.com/redbase-app/redb-route/releases)
+of every version; install it with `Extensions: Install from VSIX...`.
+
+---
+
+## URI Scheme Reference
+
+| Scheme | Package | Entry point |
+|--------|---------|-------------|
+| `direct:` | redb.Route | `Direct.Endpoint("name")` |
+| `seda:` | redb.Route | `Seda.Consume("name")` / `Seda.Send("name")` |
+| `timer:` | redb.Route | `Timer.Every("name")` / `Timer.Once("name")` |
+| `log:` | redb.Route | `LogDsl.Info("name")` |
+| `mock:` | redb.Route | `MockDsl.Endpoint("name")` |
+| `kafka:` | redb.Route.Kafka | `Kafka.Topic("name")` |
+| `rabbitmq:` | redb.Route.RabbitMQ | `Rabbit.Queue("name")` |
+| `redis:` | redb.Route.Redis | `Redis.Subscribe("ch")` / `Redis.Set("key")` / … |
+| `sql:` | redb.Route.Sql | `Sql.Poll("query")` / `Sql.Execute("stmt")` / `Sql.Procedure("sp")` |
+| `http:` / `https:` | redb.Route.Http | `Http.Get("path")` / `Http.Listen("path")` / … |
+| `as2:` / `as2s:` | redb.Route.As2 | `As2.Receive("path")` / `As2.Send("url")` / `As2.ReceiveMdn("path")` |
+| `grpc:` | redb.Route.Grpc | `Grpc.Call("host:port")` / `Grpc.Listen("host:port")` |
+| `soap:` / `soaps:` | redb.Route.Soap | `Soap.Call("url")` / `Soap.Listen("path")` |
+| `file:` | redb.Route.File | `FileDsl.Read("dir")` / `FileDsl.Write("dir")` |
+| `sftp:` | redb.Route.Sftp | `Sftp.Directory("path")` |
+| `mqtt:` | redb.Route.MqttNet | `Mqtt.Subscribe("topic")` / `Mqtt.Publish("topic")` |
+| `amqp:` | redb.Route.Amqp | `Amqp.Address("name")` |
+| `mail:` | redb.Route.Mail | `Smtp.Send("host")` / `Imap.Read("host")` / `Pop3.Read("host")` |
+| `tcp:` | redb.Route.Tcp | `Tcp.Listen("host:port")` / `Tcp.Connect("host:port")` |
+| `websocket:` | redb.Route.WebSocket | `Ws.Listen("host:port/path")` / `Ws.Connect("host:port/path")` |
+| `cron:` / `qtimer:` | redb.Route.Quartz | `Cron.Schedule("name", "expr")` / `QTimer.Every("name")` |
+| `exec:` | redb.Route.Exec | `ExecDsl.Run()` (producer) / `ExecDsl.Schedule(...)` (scheduled consumer) |
+| `llm:` | redb.Route.Llm | `Llm.Factory("haiku")` / `Llm.Factory("openai")` / `Llm.Factory("groq")` / … |
+| `mcp:` | redb.Route.Llm.Mcp | `mcp://serverName/toolName` — auto-registered from MCP `tools/list` |
+| `asb:` | redb.Route.AzureServiceBus | `Asb.Queue("name")` / `Asb.Topic("name", "sub")` |
+| `es:` | redb.Route.Elasticsearch | `Es.Index("name")` |
+| `fstore:` / `fbstorage:` / `fcm:` | redb.Route.Firebase | `Firestore.Collection("name")` / `FbStorage.Bucket("b")` / `Fcm.Send()` |
+| `ftp:` / `ftps:` | redb.Route.Ftp | `Ftp.Directory("/path")` |
+| `wmq:` | redb.Route.IbmMq | `IbmMq.Queue("name")` / `IbmMq.Topic("name")` |
+| `ldap:` / `ldaps:` | redb.Route.Ldap | `Ldap.Search("baseDn")` |
+| `s3:` | redb.Route.S3 | `S3Dsl.Bucket("name")` |
+| `sqs:` / `sns:` | redb.Route.Sqs | `Sqs.Queue("name")` / `Sns.Topic("name")` |
+| `telegram:` | redb.Route.Telegram | `Tg.Receive(token)` / `Tg.Send(token)` |
+| `signalr:` | redb.Route.SignalR | `SignalR.Hub("/hub")` |
+| `cache:` | redb.Route.Cache | `.Cache("key", ttl) … .EndCache()` (scope) / `To("cache:region?action=get&key=…")` |
+
+> **Note.** There is no `quartz:` URI scheme by design. Quartz scheduling integrates via the
+> Worker host (`ConfigureQuartz`) and triggers routes through `cron:` (Cron expressions) or
+> `qtimer:` (interval timers). A `quartz:` URI would conflate scheduling configuration with
+> route addressing.
+
+---
+
+## Transport Capability Matrix
+
+What each transport can do as a source (`From`) and as a sink (`To`), and which advanced features it supports.
+
+| Transport | Consumer (`From`) | Producer (`To`) | Request-Response (InOut) | Transactions | Streaming | Notes |
+|-----------|:--:|:--:|:--:|:--:|:--:|-------|
+| Direct | ✅ | ✅ | ✅ | — | — | In-process synchronous |
+| SEDA | ✅ | ✅ | — | — | ✅ | In-memory bounded queue, multi-consumer |
+| Timer | ✅ | — | — | — | — | Periodic / once-off trigger |
+| Mock | ✅ | ✅ | — | — | — | Test-only, records messages |
+| Log | — | ✅ | — | — | — | Sink for logging |
+| Kafka | ✅ | ✅ | — | ✅ | ✅ | EOS: transactional producer, `Acks=All`, `IsolationLevel=ReadCommitted`, manual commits |
+| RabbitMQ | ✅ | ✅ | ✅ | ✅ | — | Publisher confirms (`MaxOutstandingConfirms`), `Mandatory` flag, transacted channels, automatic recovery, RPC |
+| Redis | ✅ | ✅ | — | — | ✅ | Pub/Sub + Streams + KV ops |
+| AzureServiceBus | ✅ | ✅ | ✅ | ✅ | — | Sessions, scheduled, RPC |
+| IbmMq | ✅ | ✅ | ✅ | ✅ | — | Queues + topics + RPC |
+| Amqp | ✅ | ✅ | ✅ | — | — | AMQP 1.0; RPC via `ReplyTo`/`CorrelationId`, `ExchangePattern.InOut` auto-detected. Connects to Amazon MQ (ActiveMQ/RabbitMQ flavour), Azure Service Bus, Apache Artemis |
+| Sql | ✅ (poll) | ✅ | — | ✅ | — | Polling source, batch sink, stored procs |
+| Elasticsearch | — | ✅ | — | — | — | Index, search, CRUD |
+| Firebase | ✅ (Firestore) | ✅ | — | — | ✅ | Firestore, Cloud Storage, FCM |
+| S3 | ✅ (poll) | ✅ | — | — | ✅ | Multipart upload/download |
+| SQS | ✅ (poll) | ✅ | — | ✅ | — | Amazon SQS — long-poll, `ConcurrentConsumers(N)`, FIFO, visibility timeout + heartbeat, transacted ack |
+| SNS | — | ✅ | — | — | — | Amazon SNS — topic publish, FIFO, SNS→SQS fan-out |
+| Telegram | ✅ (long-poll) | ✅ | — | — | — | Bot API — send/document/photo/edit/delete/answer, 429 `retry_after`, inline/reply keyboards, webhook unpack; at-most-once |
+| Ldap | — | ✅ | — | — | — | Search and CRUD |
+| Http | ✅ (Listen) | ✅ | ✅ | — | ✅ | Kestrel server + HttpClient |
+| Grpc | ✅ (Listen) | ✅ | ✅ | — | ✅ | Unary + streaming |
+| Soap | ✅ (Listen) | ✅ | ✅ | — | — | SOAP 1.1/1.2, WS-Security (UsernameToken, XML-Signature, XML-Encryption), MTOM, `?wsdl`; shares the Kestrel host with `Http` |
+| WebSocket | ✅ | ✅ | — | — | ✅ | Text/binary frames |
+| SignalR | ✅ (Hub) | ✅ | — | — | ✅ | Hub server + client broadcast |
+| Tcp | ✅ | ✅ | — | — | ✅ | Text-line and length-prefixed |
+| File | ✅ (poll) | ✅ | — | — | — | Atomic writes, file locking |
+| Ftp | ✅ (poll) | ✅ | — | — | — | FTP/FTPS |
+| Sftp | ✅ (poll) | ✅ | — | — | — | SSH key auth, proxy |
+| Mail | ✅ (IMAP/POP3) | ✅ (SMTP) | — | — | — | IDLE push for IMAP |
+| MqttNet | ✅ | ✅ | — | — | ✅ | MQTT 5.0, shared subscriptions |
+| Quartz | ✅ | — | — | — | — | Cron / interval triggers |
+| Exec | ✅ (scheduled) | ✅ | ✅ | — | — | Local processes; `AllowedCommands` allowlist, `WorkingDirectory` pin, `TimeoutMs`, byte caps; primary use as `.AsLlmTool("shell")` |
+| Llm | — | ✅ | ✅ | — | ✅ | LLM connector — universal OpenAI-compat (14 vendors) + native Anthropic Messages API; tool-loop agent engine; persistent conversation/approval/budget/idempotency stores via `AddRedbLlmStorage()` |
+| Mcp | — | ✅ | — | — | — | MCP-client connector — spawns external MCP servers (stdio + HTTP/SSE), auto-discovers tools via `tools/list` and registers them as `ILlmToolDescriptor`. Cancellation forwarded as `notifications/cancelled`; auto-restart on transport failure |
+
+Legend: ✅ supported · — not applicable.
+
+For transports that support transactions, combine with `.Transacted()` to wrap pipeline steps in a `TransactionScope`. For InOut transports, use `From(...InOut()).Process(...).Respond()` to return a response to the caller.
+
+---
+
+## Packages
+
+| Package | NuGet | Description |
+|---------|-------|-------------|
+| `redb.Route` | [![NuGet](https://img.shields.io/nuget/v/redb.Route?label=)](https://www.nuget.org/packages/redb.Route) | Core engine: DSL, processors, expressions, telemetry |
+| `redb.Route.Kafka` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Kafka?label=)](https://www.nuget.org/packages/redb.Route.Kafka) | Apache Kafka (Confluent) |
+| `redb.Route.RabbitMQ` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.RabbitMQ?label=)](https://www.nuget.org/packages/redb.Route.RabbitMQ) | RabbitMQ (official client 7.x) |
+| `redb.Route.Redis` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Redis?label=)](https://www.nuget.org/packages/redb.Route.Redis) | Redis (StackExchange) — Pub/Sub, Streams, KV, Lists |
+| `redb.Route.Sql` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sql?label=)](https://www.nuget.org/packages/redb.Route.Sql) | SQL databases (ADO.NET) — Poll, Execute, Procedures |
+| `redb.Route.Http` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Http?label=)](https://www.nuget.org/packages/redb.Route.Http) | HTTP/HTTPS — client and Kestrel server |
+| `redb.Route.Http.Hosting` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Http.Hosting?label=)](https://www.nuget.org/packages/redb.Route.Http.Hosting) | Shared Kestrel host (`SharedHttpServerManager`) reused by HTTP-based transports |
+| `redb.Route.As2` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.As2?label=)](https://www.nuget.org/packages/redb.Route.As2) | AS2 (RFC 4130) B2B/EDI — signed/encrypted S/MIME + MDN (sync/async/signed), interop-validated vs OpenAS2 |
+| `redb.Route.Grpc` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Grpc?label=)](https://www.nuget.org/packages/redb.Route.Grpc) | gRPC — client and Kestrel server |
+| `redb.Route.Soap` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Soap?label=)](https://www.nuget.org/packages/redb.Route.Soap) | SOAP 1.1/1.2 — WS-Security, MTOM attachments, WSDL-first services |
+| `redb.Route.File` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.File?label=)](https://www.nuget.org/packages/redb.Route.File) | File system — polling, atomic writes, locking |
+| `redb.Route.Sftp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sftp?label=)](https://www.nuget.org/packages/redb.Route.Sftp) | SFTP (SSH.NET) |
+| `redb.Route.MqttNet` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.MqttNet?label=)](https://www.nuget.org/packages/redb.Route.MqttNet) | MQTT 5.0 (MQTTnet) |
+| `redb.Route.Amqp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Amqp?label=)](https://www.nuget.org/packages/redb.Route.Amqp) | AMQP 1.0 (Artemis, Azure SB, Amazon MQ) |
+| `redb.Route.Mail` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Mail?label=)](https://www.nuget.org/packages/redb.Route.Mail) | Email — SMTP, IMAP, POP3 (MailKit) |
+| `redb.Route.Tcp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Tcp?label=)](https://www.nuget.org/packages/redb.Route.Tcp) | Raw TCP — text-line, length-prefixed, TLS |
+| `redb.Route.WebSocket` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.WebSocket?label=)](https://www.nuget.org/packages/redb.Route.WebSocket) | WebSocket — client and Kestrel server |
+| `redb.Route.Quartz` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Quartz?label=)](https://www.nuget.org/packages/redb.Route.Quartz) | Quartz.NET scheduling (Cron + Timer) |
+| `redb.Route.Core` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Core?label=)](https://www.nuget.org/packages/redb.Route.Core) | Bridge to [redb](https://github.com/redbase-app/redb) typed object storage — `IRedbService` access, idempotent repository |
+| `redb.Route.AzureServiceBus` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.AzureServiceBus?label=)](https://www.nuget.org/packages/redb.Route.AzureServiceBus) | Azure Service Bus — queues, topics, sessions |
+| `redb.Route.Elasticsearch` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Elasticsearch?label=)](https://www.nuget.org/packages/redb.Route.Elasticsearch) | Elasticsearch 8.x — search, CRUD, 9 operations |
+| `redb.Route.Firebase` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Firebase?label=)](https://www.nuget.org/packages/redb.Route.Firebase) | Firebase — Firestore, Cloud Storage, FCM |
+| `redb.Route.Ftp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Ftp?label=)](https://www.nuget.org/packages/redb.Route.Ftp) | FTP/FTPS (FluentFTP) |
+| `redb.Route.GenericFile` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.GenericFile?label=)](https://www.nuget.org/packages/redb.Route.GenericFile) | Base library for File, FTP, SFTP transports |
+| `redb.Route.IbmMq` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.IbmMq?label=)](https://www.nuget.org/packages/redb.Route.IbmMq) | IBM MQ — queues, topics, transactions, RPC |
+| `redb.Route.Ldap` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Ldap?label=)](https://www.nuget.org/packages/redb.Route.Ldap) | LDAP / Active Directory — search, CRUD, auth |
+| `redb.Route.S3` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.S3?label=)](https://www.nuget.org/packages/redb.Route.S3) | AWS S3 / MinIO — upload, download, multipart |
+| `redb.Route.Sqs` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sqs?label=)](https://www.nuget.org/packages/redb.Route.Sqs) | Amazon SQS + SNS — queue consume/produce, FIFO, SNS publish + SNS→SQS |
+| `redb.Route.Telegram` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Telegram?label=)](https://www.nuget.org/packages/redb.Route.Telegram) | Telegram Bot API — long-poll consumer + send/document/photo/edit/delete/answer producer, 429 handling, inline/reply keyboards, webhook unpack |
+| `redb.Route.SignalR` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.SignalR?label=)](https://www.nuget.org/packages/redb.Route.SignalR) | SignalR — Hub server and client/broadcast producer |
+| `redb.Route.Llm` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm?label=)](https://www.nuget.org/packages/redb.Route.Llm) | LLM connector — `llm:` URI, fluent DSL, agent loop, universal OpenAI-compatible provider (14 APIs), native Anthropic Messages API provider, `AddRedbLlmStorage()` (5 stores / 9 schemas) |
+| `redb.Route.Llm.Abstractions` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Abstractions?label=)](https://www.nuget.org/packages/redb.Route.Llm.Abstractions) | LLM tool-capability contracts — `ILlmToolDescriptor`, `LlmToolCapability`, `RouteToolBridge`, `[ExposeAsLlmTool]`, `.AsLlmTool()` DSL aspect |
+| `redb.Route.Llm.Tools` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Tools?label=)](https://www.nuget.org/packages/redb.Route.Llm.Tools) | Utility LLM tools — HttpFetch, JsonPath, XPath, MathEval, RegexExtract, Tavily web search |
+| `redb.Route.Llm.Mcp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Mcp?label=)](https://www.nuget.org/packages/redb.Route.Llm.Mcp) | MCP-client connector — `mcp:` URI, stdio + HTTP/SSE transports, auto-discovery via `tools/list`, cancellation forwarded as `notifications/cancelled`, auto-restart on transport failure |
+| `redb.Route.Exec` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Exec?label=)](https://www.nuget.org/packages/redb.Route.Exec) | Local-process execution — `exec://run` producer + scheduled consumer, allowlist, working-directory pin, timeout, output caps |
+| `redb.Route.Controllers` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Controllers?label=)](https://www.nuget.org/packages/redb.Route.Controllers) | Controller dispatch — attribute routing, DI, InOut |
+| `redb.Route.Validation.Adapters` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Validation.Adapters?label=)](https://www.nuget.org/packages/redb.Route.Validation.Adapters) | Validation adapters — FluentValidation + DataAnnotations |
+| `redb.Route.Cache` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Cache?label=)](https://www.nuget.org/packages/redb.Route.Cache) | Caching as an EIP — a `.Cache(key, ttl)` scope and the `cache:` component over `IMemoryCache` / `IDistributedCache` |
+| `redb.Route.JsonTransform` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.JsonTransform?label=)](https://www.nuget.org/packages/redb.Route.JsonTransform) | Declarative JSON-to-JSON transformation (JSONata) |
+| `redb.Route.Templates` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Templates?label=)](https://www.nuget.org/packages/redb.Route.Templates) | Payload templates (Scriban) — the PayloadFactory analog |
+| `redb.Route.Xml` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Xml?label=)](https://www.nuget.org/packages/redb.Route.Xml) | Declarative XML routes — `.route.xml` files load into the same fluent DSL |
+| `redb.Route.XPath2` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.XPath2?label=)](https://www.nuget.org/packages/redb.Route.XPath2) | XPath 2.0 expressions (regex, sequences, dates, `for`/`some`/`every`) on XPath2.Net |
+| `redb.Route.DataFormats.Avro` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Avro?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Avro) | Apache Avro data format (Chr.Avro) — binary marshal/unmarshal |
+| `redb.Route.DataFormats.Csv` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Csv?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Csv) | CSV data format (CsvHelper) — POCO collections, dictionaries, raw rows |
+| `redb.Route.DataFormats.Protobuf` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Protobuf?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Protobuf) | Protocol Buffers data format (Google.Protobuf), optional Confluent Schema Registry |
+| `redb.Route.DataFormats.Yaml` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.DataFormats.Yaml?label=)](https://www.nuget.org/packages/redb.Route.DataFormats.Yaml) | YAML data format (YamlDotNet) — POCOs and dynamic documents |
+| `redb.Route.TestKit` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.TestKit?label=)](https://www.nuget.org/packages/redb.Route.TestKit) | Test kit — AdviceWith, mock expectations, NotifyBuilder |
+| `redb.Route.Xml.CodeGen` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Xml.CodeGen?label=)](https://www.nuget.org/packages/redb.Route.Xml.CodeGen) | `redb-route-xml` .NET tool — fluent C#, Mermaid diagrams and the XSD from `.route.xml`; not part of the runtime |
+
+47 packages total: core engine + 29 transports (incl. `llm:` and `mcp:`) + 17 support libraries (Core, Controllers, GenericFile, Http.Hosting, Validation.Adapters, Llm.Abstractions, Llm.Tools, Cache, JsonTransform, Templates, Xml, XPath2, the four DataFormats, TestKit), plus the `redb-route-xml` .NET tool.
+
+---
+
+## Running Routes in Production — redb.Tsak
+
+Writing routes is one thing; running them in production is another. **redb.Tsak** is the runtime container for redb.Route — a .NET equivalent of [Apache Karaf](https://karaf.apache.org/) / [Camel K](https://camel.apache.org/camel-k/). It hosts route contexts, manages their lifecycle, distributes them across a cluster, schedules jobs, captures metrics and logs, and exposes the lot through a REST API, a CLI and a Blazor dashboard.
+
+```mermaid
+flowchart TB
+    subgraph Tsak["redb.Tsak runtime"]
+        Worker[Worker / IHostedService]
+        Modules[(ModuleAssemblyLoadContext\nhot-reload)]
+        Ctx[Context Manager\nstart / stop / restart]
+        Cluster[Cluster Coordinator\nleader election + rebalance]
+        Quartz[Quartz Scheduler\nAdoJobStore]
+        Metrics[Metrics + Watchdog\nring-buffer logs]
+        Sec[API Key Auth\nroles + audit]
+    end
+
+    subgraph Surfaces["Operator surfaces"]
+        REST[REST API\n13 controllers / 45+ endpoints]
+        CLI[tsak CLI\n11 command groups / 30+ commands]
+        UI[Blazor Dashboard\n11 pages]
+    end
+
+    subgraph Storage["Persistent state"]
+        Redb[(redb\nPostgres / MSSql)]
+    end
+
+    Modules --> Worker
+    Worker --> Ctx
+    Worker --> Cluster
+    Worker --> Q

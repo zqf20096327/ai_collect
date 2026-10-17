@@ -1,0 +1,651 @@
+﻿<img src="./assets/ATRI-bot.png" width = "400" height = "400" alt="ATRI-bot" align="right" />
+<div align="center">
+
+<p align="right">
+  <a href="./README.md">
+    <img src="https://img.shields.io/badge/lang-简体中文-red" alt="简体中文">
+  </a>
+  <a href="./README.en.md">
+    <img src="https://img.shields.io/badge/lang-English-blue" alt="English">
+  </a>
+</p>
+
+# ATRI-bot
+
+>_時よ止まれ、おまえは美しい_
+>
+> — *𝓐𝓣𝓡𝓘 -𝓜𝔂 𝓓𝓮𝓪𝓻 𝓜𝓸𝓶𝓮𝓷𝓽𝓼-*
+>
+项目Logo由[吖密](https://space.bilibili.com/1196260828)绘制  
+[![Python](https://img.shields.io/badge/Python-3.14-blue.svg)](https://www.python.org/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791.svg)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Container-Docker-2496ED.svg)](https://www.docker.com/)
+[![NapCat](https://img.shields.io/badge/Backend-NapCat-green.svg)](https://github.com/NapNeko/NapCatQQ)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Version](https://img.shields.io/badge/version-1.2.4-orange.svg)](./pyproject.toml)
+
+</div>
+
+---
+
+<details>
+<summary>📑 目录（点击展开）</summary>
+
+- [📖 前言](#-前言)
+- [✨ 项目核心功能](#-项目核心功能)
+  - [🧠 深度 LLM 聊天集成](#-深度-llm-聊天集成)
+  - [💻 类 Unix 命令系统](#-类-unix-命令系统)
+  - [🖥️ Web 管理面板](#-web-管理面板)
+  - [🛠️ 其他实用功能](#-其他实用功能)
+- [🚀 快速开始 (How to Run)](#-快速开始-how-to-run)
+  - [1. 前端连接 (NapCat)](#1-前端连接-napcat)
+  - [2. 数据库配置 (PostgreSQL)](#2-数据库配置-postgresql)
+  - [3. 模型与环境配置](#3-模型与环境配置)
+  - [4. 启动项目](#4-启动项目)
+  - [5. 使用 Docker 启动](#5-使用-docker-启动)
+- [📂 项目结构](#-项目结构)
+- [🏗️ 架构设计](#-架构设计)
+  - [整体消息流](#整体消息流)
+  - [🧠 LLM 聊天流程设计](#-llm-聊天流程设计)
+  - [💾 记忆系统设计](#-记忆系统设计)
+- [🤝 参与贡献](#-参与贡献)
+- [📄 开源协议](#-开源协议)
+
+</details>
+
+---
+
+## 📖 前言
+
+来自萌新到处学习(抄袭，不对是集百家之长✨)做出来私用的神秘项目
+主要是**按照自己的需求**编写一个专到狭窄的学习性质的项目(专注于提供一个深度定制化的群聊机器人体验),发出来是用来交流学习的
+你可以在里面了解到以下这些技术实践：
+
+- **完整的 LLM 聊天全链路**：从提示词构建、Function Calling、MCP 工具调用，到结构化 JSON 决策解析
+- **两级记忆系统**：短期滑动上下文 + LLM 压缩摘要，以及基于 pgvector 的长期向量记忆
+- **混合检索（Hybrid RAG）**：向量检索 + 全文检索（pgroonga）双路召回，RRF 融合 + 时间衰减评分
+- **依赖注入架构**：基于单例 `DIContainer` 的服务解耦与管理，全异步设计
+
+项目结构清晰，核心链路注释详细，适合想了解「如何从零搭建一个 LLM Bot」的同学参考
+
+- [ATRI-bot官网:亚托莉.top](https://亚托莉.top/)
+
+---
+
+## ✨ 项目核心功能
+
+一个基于 **NapCat** 对接的 QQ Bot，以群聊场景为核心深度定制
+
+### 🧠 深度 LLM 聊天集成
+
+完全自主实现的 LLM 聊天全链路，从输入处理到输出决策全部可控：
+
+- **全异步高并发**：回复流程完全异步，支持多供应商 Key 池轮询，多群并发场景下也能稳定运行。
+- **结构化决策输出**：模型以 JSON 格式返回结构化决策（`speak` 回复 / `update` 更新画像 / `silence` 静默），工具调用通过 Function Calling 循环执行，行为完全可控且易于扩展。
+- **工具扩展能力**：支持 Function Calling、**MCP (Model Context Protocol)** 协议工具集，以及 **Skills** 自定义提示词；内置 18 个工具（网页搜索、记忆读写、沙盒执行 Python/Shell、子代理、定时自触发、工具搜索发现等），并通过 `tool_search` 按需发现 deferred 工具（预设见 `config.tool_presets`）。
+- **两级记忆系统**：
+  - *短期*：每个群 / 用户维护独立的滑动上下文窗口，超限时由 LLM 自动压缩摘要、无损续接。
+  - *长期*：对话结束后提取关键事件，经 Embedding 向量化后存入 PostgreSQL（pgvector），检索时采用**向量 + 全文双路召回 + RRF 融合 + 时间衰减**评分，让 Bot 有个比较可靠的长期记忆。
+  > 注：长期记忆聚焦于对话中的事件与偏好，不适用于存储长文档，对于聊天场景下已足够实用。
+- **用户画像**：为每位用户维护称呼、关系、性格、偏好等画像文档，嵌入每次对话上下文，保证跨会话态度一致。
+- **高可用降级**：主模型 API 出现异常时，自动按配置顺序切换到备用供应商和模型，保证有问必达。
+- **公式图片化输出**：回复中的 LaTeX 公式（`$...$`、`$$...$$`、`\(...\)`、`\[...\]`）会自动渲染成图片发送，在群里讨论数学公式不再是一串源码。
+- **拟人化交互**：
+  - 自然发送表情包，支持分段回复模拟真实打字节奏。
+  - 达到条件时主动融入群聊话题，而不只是被动等待 @。
+  - 支持人设切换等基础功能。
+
+### 💻 类 Unix 命令系统
+
+在群里 `@bot` 后以 `/` 开头即可触发（例如 `@atri-bot /help --list`，需使用QQ的@而非直接输入名字）：
+
+- **参数解析**：支持 `-` / `--` 参数风格，内置参数类型校验。
+- **权限管理**：内置多级权限系统，支持拉黑或授予管理员权限，可在任意处理环节拒绝非法调用。
+- **自动帮助文档**：通过装饰器声明参数描述后，`--help` 文档自动生成，无需手写。
+
+### 🖥️ Web 管理面板
+
+Bot 启动时会以内置后台任务的形式拉起一个 Web 管理面板
+- **可视化管理**：配置文件在线编辑（模型供应商、MCP 工具等）、数据库状态查看、记忆检索与浏览、人设切换、日志查看等页面，并已适配手机端浏览器。
+- **Web 在线聊天**：内置聊天页，可以直接在浏览器里与 Bot 对话，支持多会话管理、Agent 流式输出、附件上传
+- **安全防护**：`access_token` 登录校验，连续认证失败会触发限制，防止密码被暴力破解。
+
+### 🛠️ 其他实用功能
+
+- **插件系统**：`atribot/plugins/` 下的插件启动时自动加载，支持消息/通知/请求事件订阅与管道中间件，可显式热重载。
+- **子 Agent 协作**：`sub_agent` 工具可将复杂多步任务委派给独立子代理（自带工具集 + LLM 循环）执行。
+- **定时自触发**：`schedule_self_trigger` 工具可让 Bot 在指定时间主动发起一次群聊思考。
+- **高性能关键词匹配**：关键词响应底层采用 **AC 自动机**，即使配置上万条规则也能保持毫秒级响应。
+- **群成员变动提醒**：成员加入或退出时自动通知。
+- **戳一戳互动**：被戳时不只会响应，还会「戳回去」。
+- **稳健架构基础**：数据库连接池 + 消息队列，从容应对并发压力。
+
+---
+
+## 🚀 快速开始 (How to Run)
+
+> **平台支持**：本项目官方支持 **Linux** 与 **Windows**。数据库依赖的两个 PostgreSQL
+> 服务端扩展（`pgvector` / `pgroonga`）在 Windows 上需要手工安装，因此**推荐优先用
+> Docker Compose 部署**（数据库与扩展开箱即用），其次 WSL2，最后才是原生 Windows。
+> 原生 Windows 的完整步骤、沙盒后端选择与故障排查见
+> [Windows 部署指南](atribot/docs/windows-deploy.md)。
+>
+> 若只想在原生 Windows 上跑 bot、数据库用容器，最短路径是：
+> `docker compose up -d db` → `uv sync` → `uv run main.py`。
+
+### 1. 前端连接 (NapCat)
+首先需要一个能够与 QQ 通信的前端，推荐使用 NapCat：
+- [NapCat 安装指南](https://napneko.github.io/guide/napcat)
+- [NapCat 项目地址](https://github.com/NapNeko/NapCatQQ)
+> *注：你也可以自己实现前端，只要能对接上即可。*
+
+### 2. 数据库配置 (PostgreSQL)
+项目当前仅支持 PostgreSQL 数据库。
+1.  **安装数据库**：建议安装较新的 PostgreSQL 版本。[官方安装文档](https://www.postgresql.org/download/)
+2.  **安装数据库插件**：
+    - 必须安装 `pgvector`（向量检索）[pgvector 项目地址](https://github.com/pgvector/pgvector)
+    - 必须安装 `pgroonga`（全文检索）[PGroonga 文档](https://pgroonga.github.io/)
+    > ⚠️ 这两个都是 **PostgreSQL 服务端扩展**，不是 pip 包。Windows 上 pgvector 需要
+    > MSVC/nmake 编译、pgroonga 有官方 zip 包（见
+    > [Windows 部署指南](atribot/docs/windows-deploy.md)）。
+    > 缺 `pgroonga` 时 bot 仍能启动（记忆检索降级为纯向量），但**建库脚本会在
+    > `CREATE EXTENSION pgroonga` 处中断**，导致后续表结构全部不创建。
+3.  **数据库初始化**：
+    项目提供了初始化 SQL 文件，推荐使用 `docker/db/info.sql`（含完整表结构与扩展配置）。
+    也可参考 `atribot/docs/PostgreSQL基础.sql`（开发版）。
+    进入数据库（Linux 示例）：
+    ```bash
+    sudo -u postgres psql
+    ```
+    然后按顺序执行 SQL 文件创建表结构。
+
+### 3. 模型与环境配置
+
+#### 🤖 嵌入模型 (Embedding)
+推荐优先使用本地的 `dengcao/Qwen3-Embedding-0.6B:F16`。当然你也可以接入其他 Embedding API（OpenAI 格式兼容），只是仓库里目前主要按 Ollama 的使用方式测试过。
+推荐使用 [Ollama](https://ollama.com/) 进行本地部署：
+```bash
+ollama run dengcao/Qwen3-Embedding-0.6B:F16
+```
+
+> **注意**：如果更换 Embedding 模型，之前构建的向量数据需要重新构建。
+
+#### 🗣️ 语音合成 (TTS) - 可选
+支持接入 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)。
+实现 Bot 主动发送语音或通过命令调用语音功能，可以设置语速、情感等常用参数；当然前提是你已经准备好了自己的语音模型。  
+使用前需要修改 `atribot/commands/audio/TTS.py` 中的参考音频路径，以及 GPT-SoVITS 接口端口地址。  
+```json
+{
+    "这里是对应的情感": {
+        "refer_wav_path": "这里是参考音频的完整路径",
+        "prompt_text": "参考音频的对应文本",
+        "prompt_language": "参考文本对应的语言"
+    },           
+    "平静": {
+        "refer_wav_path": "/home/atri/tts_reference/夏生さんが望むのでしたら.mp3",
+        "prompt_text": "夏生さんが望むのでしたら",
+        "prompt_language": "ja"
+    }
+}
+```
+
+#### 📦 沙盒环境 (sandbox) - 可选
+
+为 AI 模型配备了默认的**代码沙盒环境**，使其能够安全地执行用户请求或自主生成的代码片段。默认实现基于 **Docker** 🐳沙盒，也可在 `sand_box.type` 切换为本机直执行（`none` / `no_sandbox` / `local`）沙盒，支持运行 Python 等语言的代码，可用于代码解释、数据计算等场景。
+
+- **扩展性**：如需支持其他类型的沙盒（如 Web 沙盒、系统命令沙盒），可继承 `atribot/LLMchat/sandbox/sandbox_base.py` 中的基类并实现相应接口。
+- **文件操作**：AI 上下文中能够看到的文件可以放到 Python 环境中进行简单处理。
+
+如果要使用默认的 Docker 沙盒，需要本机安装 Docker，并先在项目根目录构建沙盒镜像：
+
+```bash
+docker build -t atri-sandbox:latest -f atribot/LLMchat/sandbox/Dockerfile .
+```
+
+沙盒为**可选**能力，初始化失败不会阻断 Bot 启动；随后在 `assets/config.json` 的 `sand_box` 中指定镜像名（默认 `atri-sandbox:latest`）即可。镜像内已预装 numpy/pandas/matplotlib/seaborn/opencv/scipy/sympy 等科学计算库与 ffmpeg、中文字体；工具描述会按沙盒后端/系统/Shell 自动适配，可用 `sand_box.tool_prompts` / `sand_box.tools` 覆盖描述或禁用单个工具。
+
+> 关于沙盒镜像的构建、逐段解读、自定义扩展与常见问题，详见 [沙盒 Dockerfile 教程](atribot/docs/沙盒Dockerfile教程.md)。
+
+#### ⚙️ 配置文件
+在启动前，请务必检查 `assets` 目录中的配置：
+1.  将 `config copy.json` 重命名为 `config.json` 并配置（记得查看 `如何配置配置文件.md 或 如何配置配置文件.py`）。其中 `model.connect` 指定主模型供应商与模型名，`model.chat_parameter` 控制采样参数（`temperature`/`top_p`/`max_tokens`/`stream`/`tool_choice`），`model.standby_model` 维护备用模型列表；`tool_presets` 配置各会话工具预设（支持 list 或 `{"default": [...], "deferred": [...]}`，deferred 工具由 `tool_search` 动态发现）。
+2.  **平台连接**：`config.platforms.<name>` 配置与 NapCat 的对接方式（`adapter` 固定为 `onebot`，`connection_type` 支持 `WebSocket_client` / `WebSocket_server` / `http`，`access_token` 需与 NapCat 一致，`url` 为地址）。
+3.  将 `supplier_config copy.json` 重命名为 `supplier_config.json` 并配置（模型供应商配置，支持任意 OpenAI 兼容的）。
+    ```bash
+    cp "assets/config copy.json" assets/config.json
+    cp "assets/supplier_config copy.json" assets/supplier_config.json
+    ```
+4.  **MCP 配置**：默认路径在 `atribot/LLMchat/MCP/mcp_server.json`，可通过 `"active": false` 控制特定 MCP 工具是否启用；远程服务默认使用 SSE，配置 `"transport": "streamable_http"` 可切换为 Streamable HTTP。
+5.  **Skills 文件夹**：默认路径在 `atribot/LLMchat/skills/agent_skills`。
+6.  根目录 `document/` 下可按项目结构放置音频、表情包等资源文件。
+7.  **表情包**：在 `document/img/emojis` 文件夹下新建**文件名代表内部表情的文件夹**，放入对应名称的图片（支持 .jpg, .jpeg, .png, .gif），LLM 即可在聊天中自然发送。
+8.  **Web 管理面板**：`config.web_panel` 控制管理面板（`enable` 默认开启、`port` 未配置时缺省 `5125`、`access_token` 为主令牌/登录口令，仓库默认已替换为随机强口令，部署前请改成自建随机值；主令牌也支持环境变量 `ATRI_PANEL_TOKEN`）。
+9.  **路径映射**：Bot 与协议端（NapCat）不在同一文件系统时（例如 Bot 跑在 WSL 而 NapCat 在 Windows），在 `file_path.path_mapping` 中配置「本地路径前缀 → 协议端路径前缀」映射（如 `"E:/": "/mnt/e/"`），发送 `file://` 路径时会自动转换；留空则不做转换。
+10. **TTS（可选）**：参考音频路径不再硬编码，在 `config.tts` 中配置 `api_url` 与 `emotions.<情感>.refer_wav_path`（建议写绝对路径）；不配置则回退内置情感并从 `document/audio/tts_reference/` 读取。
+11. **外部命令（可选）**：音视频转码依赖 **ffmpeg**（需自行安装并加入 `PATH`，缺失时转码降级且日志给出 warning）；Docker 沙盒依赖 Docker Desktop 正常运行。
+
+
+### 4. 启动项目
+项目依赖 **Python 3.14** 环境，推荐使用 `uv` 管理依赖。
+
+**使用 uv :**
+```bash
+# 进入项目根目录
+uv sync
+uv run main.py
+```
+
+**使用 pip:**
+Windows / Linux / macOS 请分别使用 `requirements-windows.txt`、`requirements-linux.txt`、`requirements-macos.txt`（三者仅差 `colorama` / `pywin32` / `tzdata` 等平台专属包）。
+```bash
+pip install -r requirements-windows.txt
+python main.py
+```
+
+> ⚠️ **重要**：请务必在项目根目录执行启动命令，否则可能出现路径解析错误。
+> ⚠️ **Python 版本**：必须是 3.14（`pyproject.toml` 的 `requires-python = ">=3.14"`）。
+> 用 3.13 会被 `uv sync` / `pip install .` 直接拒绝；不要用
+> `--ignore-requires-python` 绕过，否则运行时行为可能与 CI 不一致。
+
+### 5. 使用 Docker 启动
+仓库已经补齐了可直接运行的 `Docker Compose` 配置，默认会启动：
+- `atri-db`：带 `pgvector + pgroonga` 的 PostgreSQL
+- `atri-bot`：ATRI 主程序容器
+
+首次使用前，至少确认两件事：
+1. `assets/supplier_config.json` 中的模型接口可用。
+2. NapCat 能连接到 `ws://宿主机IP:8888/websocket?access_token=你的token`。
+
+**推荐先复制一份环境变量文件：**
+```bash
+cp .env.docker.example .env
+```
+> **注意**：请检查 `.env` 文件中的端口与 Token 设置，确保与 NapCat 配置一致。
+
+**环境变量说明**（`.env.docker.example`）：
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `ATRI_DB_SUPERUSER_PASSWORD` | PostgreSQL 超级用户密码 | `180710` |
+| `ATRI_DB_NAME` | 应用数据库名称（写入运行时配置 `database.database`） | `atri` |
+| `ATRI_DB_APP_USER` | 应用数据库用户 | `atri` |
+| `ATRI_DB_APP_PASSWORD` | 应用数据库密码 | `180710` |
+| `ATRI_DB_PORT_FORWARD` | 数据库的宿主机映射端口（仅绑定 127.0.0.1） | `5432` |
+| `ATRI_BOT_PORT` | Bot WebSocket 服务端口 | `8888` |
+| `ATRI_ACCESS_TOKEN` | NapCat 连接验证 Token | `ATRI114514` |
+| `ATRI_NAPCAT_URL` | NapCat WebSocket 地址（仅客户端模式使用） | `host.docker.internal:3001` |
+| `ATRI_PANEL_PORT` | Web 管理面板端口（容器内与宿主映射一致） | `5308` |
+| `ATRI_PANEL_TOKEN` | Web 管理面板登录口令（Docker 下必填；⚠️ 会被 `web_panel.access_token` 覆盖，见下） | 空 |
+| `ATRI_SANDBOX_IMAGE` | AI 沙盒镜像（需先手动构建，见第 4 节） | `atri-sandbox:latest` |
+| `ATRI_FILE_LOG` | `1`=同时写文件日志，`0`=只输出 stdout | `1` |
+| `TZ` | 容器时区 | `Asia/Shanghai` |
+
+然后直接启动：
+```bash
+docker compose up -d --build
+```
+
+如果你已经跑过旧版本数据库结构，升级后建议先清理旧数据卷再重建：
+```bash
+docker compose down -v
+docker compose up -d --build
+```
+
+查看日志：
+```bash
+docker compose logs -f app
+docker compose logs -f db
+```
+
+停止并删除容器：
+```bash
+docker compose down
+```
+
+如果需要连数据库看表：
+```bash
+docker compose exec db psql -U postgres -d postgres
+```
+
+**访问 Web 管理面板**：
+```
+http://localhost:5308/admin/
+```
+宿主侧端口映射默认只绑 `127.0.0.1`（远程访问请自行改端口映射并优先走反向代理）。
+
+登录口令取 `assets/config.json` 的 `web_panel.access_token`；若想让 `.env` 里的 `ATRI_PANEL_TOKEN` 生效，需要先把配置文件里的 `access_token` 删掉（它优先级更高）。面板不会回退使用平台 `access_token`；未配置口令时所有接口返回 503。登录页用口令换取会话令牌（**固定有效期**，默认 4 小时，可在 `web_panel.session_ttl_hours` 调整 1-24 小时），到期后 WebUI 自动退出登录；登出、修改口令都会立即让全部会话失效。连续输错口令 3 次会触发**全局锁定**（10 分钟起步、指数递增、封顶 24 小时；锁定期间口令正确也拒绝）。
+
+**⚠️ 路径映射（Docker 部署必配）**：Bot 给 NapCat 发本地媒体时用的是 `file://` **容器内**路径（如 `/app/document/...`），宿主机上的 NapCat 读不到。请在宿主机的 `assets/config.json` 中配置：
+```json
+"file_path": {
+    "path_mapping": {
+        "/app/document": "<宿主机 document 目录绝对路径>",
+        "/app/assets": "<宿主机 assets 目录绝对路径>"
+    }
+}
+```
+不配置的典型症状：TTS 语音、表情包、本地图片/文件发送失败（NapCat 报文件不存在）。
+
+**停止与优雅关闭**：Compose 给 app 容器设了 `stop_signal: SIGINT`（Python 的优雅关闭挂在 Ctrl+C 路径上，SIGTERM 会直接杀进程），并留了 30s 宽限：
+```bash
+docker compose stop app        # 优雅停止（面板、数据库连接池、沙盒容器都会清理）
+docker compose down            # 停止并删除容器
+docker compose down -v         # 连数据卷一起删除（清库重建）
+```
+
+说明：
+- 容器启动时会基于 `assets/config.json` 生成一份运行时配置，不会覆盖你原本的本地配置。
+- 默认把宿主机的 `assets/`、`document/`、`atribot/log/`、`temp/` 挂进容器；Bot 的文件日志写在 `atribot/log/`（设 `ATRI_FILE_LOG=0` 可改为只输出 stdout，交给 Docker 日志轮转）。
+- 内置 AI 沙盒只覆盖镜像名，沙盒镜像需要**先手动构建**（`docker build -t atri-sandbox:latest -f atribot/LLMchat/sandbox/Dockerfile .`）；不构建不会阻断启动，但 AI 的代码执行能力会缺失。Compose 已挂载 Docker Socket（`/var/run/docker.sock`），容器内可直接调用宿主 Docker 拉起沙盒。
+- 镜像内已装 `uv`（供 `uvx`）与 Node.js（供 `npx`），stdio 型 MCP 服务可直接启动；不需要 Node 时可用 `docker build --build-arg WITH_NODE=0` 减小体积。
+- ⚠️ **Windows 下的 docker.sock**：Compose 挂载的 `/var/run/docker.sock` 在 Docker Desktop for Windows 上不成立（Windows 用 named pipe）。影响范围仅限容器内拉起 AI 沙盒（Docker 后端）；可改用 `sand_box.type: "none"` 本机后端，详见 [Windows 部署指南](atribot/docs/windows-deploy.md)。
+- ⚠️ 安全提醒：默认口令（数据库 `180710`、平台 Token `ATRI114514`、面板口令 `ATRI`）都是公开弱口令，请务必修改；挂载 `/var/run/docker.sock` 等价于把宿主机 root 权限给了容器，请勿把面板/端口暴露到公网。
+
+---
+## 📂 项目结构
+
+```text
+ATRI-main/
+├─main.py                       # 项目入口
+├─pyproject.toml                # Python 项目依赖与构建配置
+├─docker-compose.yml            # Docker Compose 启动配置
+├─.env.docker.example           # Docker 环境变量示例
+├─README.md / README.en.md      # 中英文说明文档
+├─requirements-*.txt            # 各平台依赖导出文件
+├─tests/                        # 🧪 单元测试与集成测试
+├─assets/                       # ⚙️ 配置文件与示例
+├─atribot/                      # 核心代码
+│  ├─bot_framework.py           # Bot 初始化与服务装配入口
+│  ├─commands/                  # 💻 群聊命令实现
+│  │  ├─audio/                  # 音频与 TTS 相关命令
+│  │  ├─bromidic/               # 图片处理 / Token 查询等杂项功能命令
+│  │  ├─interior/               # 内部管理与状态查询命令
+│  │  └─test/                   # 实验性 / 测试命令
+│  ├─common_utils/              # 通用工具函数
+│  │  ├─cluster_utils.py        # 图聚类与连通分量分析
+│  │  ├─db_format.py            # 数据库格式化
+│  │  ├─http_client.py          # 异步 HTTP 客户端
+│  │  ├─json_utils.py           # JSON 处理与序列化
+│  │  ├─message_utils.py        # 消息处理工具
+│  │  ├─music.py                # 音乐分享工具
+│  │  ├─request_header.py       # HTTP 请求头配置
+│  │  ├─similarity.py           # 文本相似度计算
+│  │  ├─timer.py                # 计时与限频工具
+│  │  ├─validation.py           # 参数验证工具
+│  │  └─file/                   # 文件、图片、文本处理
+│  │     ├─file_utils.py        # 文件操作工具
+│  │     ├─image_utils.py       # 图片处理与压缩
+│  │     ├─media_utils.py       # 媒体文件处理
+│  │     └─text_utils.py        # 文本清洗与格式化
+│  ├─core/                      # 核心架构
+│  │  ├─atri_config.py          # 配置加载与管理
+│  │  ├─logger.py               # 日志系统
+│  │  ├─service_container.py    # 依赖注入容器 (DIContainer)
+│  │  ├─time_trigger.py         # 定时任务调度器
+│  │  ├─cache/                  # 上下文缓存与生命周期管理
+│  │  ├─command/                # 命令系统与权限管理
+│  │  ├─db/                     # 数据库连接与数据访问
+│  │  ├─event_bus/              # 事件总线（按 PostType 分发监听器）
+│  │  ├─pipeline/               # 中间件管道（含群白名单 WhitelistMiddleware）
+│  │  ├─platform/               # 多平台适配层（适配器 / 消息队列 / 发送客户端）
+│  │  ├─network_connections/    # 遗留 WebSocket 客户端基类
+│  │  └─type/                   # 核心类型定义（事件信封 / 消息段）
+│  ├─docs/                      # 开发文档与笔记
+│  ├─LLMchat/                   # 🧠 LLM 聊天与 Agent 能力
+│  │  ├─chat.py                 # 群聊/私聊对话处理入口
+│  │  ├─emoji_system.py         # 表情包管理与自然发送
+│  │  ├─initiative_chat.py      # 主动发起群聊话题
+│  │  ├─LLM_supervisor.py       # LLM 调度与工具循环
+│  │  ├─media_processor.py      # 多模态消息转文本
+│  │  ├─message_sender.py       # AI 输出格式化与发送
+│  │  ├─prepare_model_prompt.py # 提示词构建与组装
+│  │  ├─private_chat_trigger.py # 私聊触发白名单与消息聚合窗口
+│  │  ├─token_manage.py         # Token 用量统计与管理
+│  │  ├─agent/                  # 子 Agent 系统
+│  │  ├─character_setting/      # 人设预设（19 个角色）
+│  │  ├─discard_tools/          # 已废弃 / 旧版工具
+│  │  ├─MCP/                    # MCP 协议工具集成
+│  │  │  ├─mcp_tool_manager.py  # MCP 工具管理器
+│  │  │  ├─tool_calls.py        # 工具调用编排
+│  │  │  ├─tool_executor.py     # 工具执行引擎
+│  │  │  ├─tool_model.py        # 工具数据模型
+│  │  │  └─local_mcp_tools/     # 本地 MCP 工具集
+│  │  ├─memory/                 # 记忆系统
+│  │  │  ├─memory_system.py     # 记忆系统门面
+│  │  │  ├─memory_extractor.py  # LLM 记忆提取
+│  │  │  ├─memory_retriever.py  # 向量 + 全文混合检索
+│  │  │  ├─memory_consolidator.py # 记忆合并去重
+│  │  │  ├─user_info_system.py  # 用户画像系统
+│  │  │  └─prompts.py           # 记忆提示词模板
+│  │  ├─model_api/              # 模型供应商接口
+│  │  ├─RAG/                    # 检索增强生成（含 vector_store.py 向量存储 / MemoryCategory）
+│  │  ├─sandbox/                # 代码沙盒环境
+│  │  ├─skills/                 # Agent Skills 管理
+│  │  │  ├─skills_manager.py    # Skills 加载与管理
+│  │  │  ├─validator.py         # YAML 属性验证
+│  │  │  ├─parser.py            # Markdown 解析
+│  │  │  ├─models.py            # 数据模型
+│  │  │  └─agent_skills/        # Skills 提示词文件
+│  │  └─tools/                  # 函数调用工具集
+│  │     ├─web_search/          # 网页搜索
+│  │     ├─web_extract/         # 网页内容提取
+│  │     ├─sandbox_tools/       # 沙盒 4 工具
+│  │     ├─memory_search/       # 记忆检索
+│  │     ├─memory_storage/      # 记忆写入
+│  │     ├─send_image_message/  # 图片消息发送
+│  │     ├─send_speech_message/ # 语音消息发送
+│  │     ├─schedule_self_trigger # 定时自触发
+│  │     ├─sub_agent/           # 子代理
+│  │     ├─tool_search/         # 工具搜索与发现
+│  │     ├─load_skill_prompt/   # Skills 提示词加载
+│  │     └─...                  # 其余工具
+│  ├─plugins/                   # 🔌 插件系统
+│  │  ├─plugin.py               # Plugin 基类（事件 / 中间件装饰器）
+│  │  ├─manager.py / loader.py / runtime.py / registry.py # 插件管理、加载（热重载）与运行时挂载
+│  │  ├─emoji_like/             # 消息贴表情镜像
+│  │  ├─group_manager/          # 群管理 + 关键词回复 + 加群审批
+│  │  └─poke_reaction/          # 戳一戳反馈
+│  ├─log/                       # 运行时日志（每日轮转，保留 7 天）
+│  └─web_panel/                 # 🖥️ Web 管理面板
+│     ├─panel_router.py         # 面板路由挂载与静态资源
+│     ├─deps.py                 # 鉴权 / 配置等共享依赖
+│     ├─dev_server.py / API.md  # 开发服务器（mock 环境）与接口文档
+│     ├─routes/                 # 后端端点（chat / config / database / memory / personas / ...）
+│     ├─templates/              # 页面模板
+│     └─static/                 # 前端资源（JS / CSS）
+├─docker/                       # 🐳 Docker 相关资源
+│  ├─db/                        # 数据库初始化脚本与镜像文件
+│  └─python/                    # Python 容器环境相关资源
+├─document/                     # 🎨 运行时资源目录
+│  ├─audio/                     # 音频素材
+│  ├─file/                      # 通用文本 / 文件资源
+│  ├─img/                       # 图片资源
+│  │  ├─ATRI_qrcode/            # 二维码资源
+│  │  └─emojis/                 # 表情包目录
+│  ├─video/                     # 视频资源
+│  ├─work/                      # 本机沙盒（local 后端）工作区
+│  └─temp/                      # 临时运行文件
+```
+
+---
+
+## 🏗️ 架构设计
+
+### 整体消息流
+
+```
+NapCat (QQ客户端)
+      │  WebSocket / HTTP
+      ▼
+平台适配器 (OneBotAdapter，支持多平台)
+      │
+      ▼
+MessageQueue (消息队列)
+      │
+      ▼
+Pipeline (WhitelistMiddleware 群白名单过滤 + ChatManager 上下文注入)
+      │
+      ▼
+EventBus (按 PostType 分发)
+      │
+      ├──► 消息存储监听          (priority=101，入库 message 表)
+      ├──► AtCommandRule 路由    (@bot /cmd 命令 → CommandSystem)
+      ├──► 插件事件处理器        (Plugin.on_message / on_notice 等)
+      └──► 聊天路由              (priority=100：群聊 initiativeChat / 私聊 privateChatTrigger → LLM 决策)
+```
+
+群聊由 `GroupChat` 处理，私聊由 `PrivateChat` 处理；命令与聊天两条路由在 `bot_framework._register_at_routes()` 注册，白名单中间件与消息存储由 `_register_message_storage()` 接线（存储监听优先级 101，先于聊天路由 100 执行），插件处理器由 `PluginManager` 在启动时自动扫描并挂载。
+
+**支撑系统**：除了消息主干，项目还包含以下后台支撑模块——
+
+| 模块 | 说明 |
+|------|------|
+| `PlatformManager` | 多平台适配器管理器，持有 MessageQueue + Pipeline + EventBus |
+| `PluginManager` | 插件系统：自动扫描加载 `atribot/plugins/`，支持热重载 |
+| `TimeTriggerSupervisor` | 定时任务调度器，支持延迟任务、固定间隔和 Cron 表达式 |
+| `MediaProcessor` | 多模态消息处理器，将图片 / 音频 / 视频统一转为文本供 LLM 理解 |
+| `agent/` 子 Agent 系统 | 用于委派复杂多步任务，支持上下文隔离与工具链编排 |
+| `PermissionsManagement` | 四级权限校验（黑名单 → 普通用户 → 管理员 → Root） |
+| `MessageSender` | AI 输出专用格式化与发送（LaTeX/表情标签→图片 CQ、回复前缀，失败降级纯文本） |
+| `CommandLoader` | 命令模块加载器，支持 `/reload` 热重载（清 `sys.modules` 后重扫） |
+| `web_panel/` Web 管理面板 | 同进程后台任务（uvicorn 仅监听 `127.0.0.1`，路由前缀 `/admin/`）提供可视化管理与在线聊天，异常不影响 Bot 主服务 |
+
+---
+
+### 🧠 LLM 聊天流程设计
+
+LLM 聊天的核心链路在 `atribot/LLMchat/` 目录下，整体采用**全异步流水线**设计：
+
+```
+用户消息 (MessageEventEnvelope)
+      │
+      ▼
+chat.py → GroupChat.step()          ← 聊天主入口
+      │
+      ├─① prompt_structure()        构建提示词
+      │     ├─ 群聊历史 (近期消息窗口)
+      │     ├─ 用户画像 (UserSystem)
+      │     ├─ 最近记忆片段 (MemorySystem.query_user_recently_memory)
+      │     ├─ 表情包提示词 (EmojiCore)
+      │     └─ Skills 提示词 (SkillsManager)
+      │
+      ├─② LLMCoordinator.run()      调度模型请求
+      │     ├─ 主模型请求 (model_api)
+      │     └─ Function Calling 循环 (MCP/tools)
+      │
+      ├─③ 解析 JSON 响应            模型输出结构化决策
+      │     ├─ "speak"    → 回复消息 (MessageSender 格式化，分段发送 / 表情包)
+      │     ├─ "update"   → 更新用户画像
+      │     ├─ "silence"  → 不回复
+      │     └─ 工具调用    → 通过 Function Calling 循环执行 (MCP / 本地工具)
+      │
+      └─④ 事后处理
+            ├─ 上下文写回 (ChatManager)
+            └─ 上下文超长时触发 summarize_context() 压缩
+```
+
+**高可用降级机制**：当主模型 API 响应异常时，`chat.py` 中 `GroupChat`/`PrivateChat` 的请求封装（`_request_model_with_fallback_` / `_request_model_with_fallback_private_`）会按 `config.model.standby_model` 列表依次尝试备用供应商和模型（含视觉能力差异处理），保证即使主力 Key 失效也能正常回复。
+
+**结构化输出**：模型被要求返回 JSON 对象（`actions` 数组），每一项包含 `decision` 字段（`speak` / `update` / `silence`），使回复行为完全可控和可扩展。
+
+---
+
+### 💾 记忆系统设计
+
+记忆系统分为**短期上下文缓存**和**长期向量记忆**两层：
+
+#### 短期上下文 (ChatManager)
+- 每个群/用户维护一个滑动的消息窗口 `Context`，直接嵌入每次请求的 `messages` 列表。
+- 当上下文 token 数超限时，触发 `MemorySystem.summarize_context()` 对旧消息进行 LLM 压缩摘要，压缩后的文本以 `assistant` 角色消息插入上下文头部，简单的进行记忆压缩。
+
+#### 长期向量记忆 (MemorySystem + pgvector)
+
+```
+聊天结束后
+      │
+      ▼
+MemorySystem.extract_stored_group_message()
+      │
+      ├─ LLM 信息提取 (PURE_GROUP_FACT_RETRIEVAL_PROMPT)
+      │     └─ 输出结构化 JSON：per-user 事件 + 群话题
+      │
+      ├─ RAGManager.calculate_embedding()   文本 → 1024维向量
+      │
+      └─ MemoryVectorStore.batch_add_memories()  写入 PostgreSQL atri_memory 表
+```
+
+**记忆分类 (MemoryCategory)**：
+
+| 分类 | 含义 | 时间半衰期 |
+|------|------|-----------|
+| `preference` | 用户偏好 | 90 天 |
+| `fact` | 事实性记忆（默认） | 90 天 |
+| `experience` | 经历记忆 | 60 天 |
+| `emotion` | 情感记忆 | 30 天 |
+| `group_topic` | 群聊话题 | 7 天 |
+| `knowledge` | 通用知识 | ~10 年 |
+| `domain` | 领域专业知识 | ~10 年 |
+| `guideline` | 行为准则 | ~10 年 |
+
+**混合召回 (hybrid_recall)**：使用一条带 CTE 的 SQL 同时进行**向量检索**（pgvector 余弦距离）和**全文检索**（pgroonga），再通过 RRF（Reciprocal Rank Fusion）融合两路结果，最终叠加重要度、访问频次和时间衰减进行综合排序。
+
+```
+查询文本
+    │
+    ├─ pgvector 向量路     (余弦距离，取前 40 候选)
+    ├─ pgroonga 全文路     (全文评分，取前 40 候选)
+    │
+    └─ RRF 融合
+           + importance / 10.0     × 权重
+           + ln(1 + access_count)  × 权重
+           + EXP(-λ × age_days)    × 时间衰减 (λ 按 category 差异化)
+           │
+           └─► 返回 Top-N 记忆
+```
+
+**记忆自动更新与演进 (Memory Consolidator)**：
+系统不仅支持写入和提取，还拥有针对零散片段和冲突信息的持续维护能力：
+
+```
+定期维护 / 新记忆提取
+      │
+      ▼
+冲突检测与聚类 (Cluster Utils)
+      │
+      ├─ 相似度图构建 (基于 pgvector 检索获取高相似度边)
+      ├─ 连通分量聚类 (同类同用户的相近记忆归结为 Cluster)
+      │
+      └─ 顺序安全处理机制
+             ├─ LLM 内容合并 (解决冲突/信息动态拓展)
+             ├─ update_memory (继承最高权重并更新向量)
+             └─ batch_delete  (删除其余冗余碎片节点)
+```
+
+- **记忆动态更新**：不仅是单纯的追加记录，当新提取的记忆和旧记忆发生冲突或具备连续性时，系统会调用 LLM 对既有记忆进行内容更新和属性拓展，打破原有的只增不改限制。
+- **后台碎片整理**：内置定时记忆维护任务，利用连通图和簇（Cluster）聚类分析近期高频且相似的记忆，通过顺序安全的非并发机制交由 LLM 执行合并和去重操作，防止重复信息冗余堆叠；除定时任务外，门面亦提供 `cleanup_expired_memories()` / `consolidate_memories()` 手动维护入口。
+- **动态清理**：严格基于记忆类型和其特有的半衰期配置，定期自动触发过期清扫，自动遗忘失去时效性的高能群话题和日常零碎记忆。
+
+**用户画像 (UserSystem)**：为每个用户维护一份 JSON 画像文档（称呼、关系、性格、近期话题、偏好风格等），在每次对话的 prompt 中嵌入，确保 Bot 对同一用户的态度前后一致，画像由 LLM 在对话后自动更新。
+
+---
+
+## 🤝 参与贡献
+
+欢迎提交 Issue、PR，或者直接提出改进建议。
+无论是修 Bug、补文档、优化架构，还是扩展新能力，都非常欢迎。
+
+## 📄 开源协议
+
+本项目遵循 **MIT License** 协议。
+详情请参阅 [LICENSE](./LICENSE) 文件。
+
+---
+
+<div align="center">
+  
+_私は、高性能ですから!_  
+  
+<img src="https://files.astrbot.app/watashiwa-koseino-desukara.gif" width="100"/>
+
+❤️ ATRI-bot ❤️
+</div>

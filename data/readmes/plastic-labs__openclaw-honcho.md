@@ -1,0 +1,409 @@
+# Honcho Memory Plugin for OpenClaw
+
+[![Honcho Banner](./assets/honcho_claw.png)](https://honcho.dev)
+
+AI-native memory with dialectic reasoning for OpenClaw. Uses [Honcho's](https://honcho.dev) peer paradigm to build and maintain separate models of the user and the agent — enabling context-aware conversations that improve over time. No local infrastructure required.
+
+This plugin runs alongside OpenClaw's built-in memory (`memory-core`) rather than replacing it. memory-core keeps the memory slot and its file-based memory; Honcho adds its own `honcho_*` tools, prompt guidance and message capture beside it. During setup, existing memory files can optionally be uploaded to Honcho.
+
+## Install
+
+```bash
+openclaw plugins install @honcho-ai/openclaw-honcho
+openclaw plugins enable openclaw-honcho
+openclaw config set plugins.entries.openclaw-honcho.hooks.allowConversationAccess true
+openclaw honcho setup
+openclaw gateway restart
+```
+
+> **Important:** The `allowConversationAccess` is required to save new messages to Honcho. The plugin will log a warning at startup if this flag is missing.
+
+`openclaw honcho setup` prompts for your Honcho API key, writes the config, and optionally uploads any legacy memory files to Honcho.
+
+<details>
+<summary>Alternative: ClawHub Skill</summary>
+
+Use the `honcho-setup` skill to run migration interactively from within a chat session:
+
+```bash
+# 1. Install the skill
+npx clawhub install honcho-setup
+# 2. Restart OpenClaw to pick up the new skill
+# 3. Install the plugin
+openclaw plugins install @honcho-ai/openclaw-honcho
+# 4. Restart the gateway
+openclaw gateway restart
+# 5. Open an agent session and invoke the skill
+#    The skill will prompt for your Honcho API key and run setup interactively
+```
+</details>
+
+## Running alongside memory-core
+
+Honcho does not take `plugins.slots.memory`. `memory-core` (or whichever memory plugin you select) keeps the slot, and Honcho attaches beside it with its own tools, hooks and prompt section.
+
+Versions before 1.7.0 set the slot to `openclaw-honcho`. On its first startup after upgrading, Honcho clears only that legacy slot value through OpenClaw's config writer; the normal config reload then restores `memory-core` as the default. A locked or failed config write logs the recovery command instead:
+
+```bash
+openclaw config unset plugins.slots.memory
+openclaw gateway restart
+```
+
+## Migrating Legacy Memory
+
+If you have existing workspace memory files (`USER.md`, `MEMORY.md`, `IDENTITY.md`, `memory/`, `canvas/`, etc.), `openclaw honcho setup` will detect them and offer to migrate them.
+
+Migration is **non-destructive** — files are uploaded to Honcho. Originals are never deleted or moved.
+
+### Legacy files
+
+**User/owner files** (content describes the user):
+- `USER.md`, `MEMORY.md`
+- All files in `memory/` and `canvas/` directories (treated as user content)
+
+**Agent/self files** (content describes the agent):
+- `SOUL.md`, `IDENTITY.md`, `AGENTS.md`, `TOOLS.md`, `BOOTSTRAP.md`
+
+### Upload to Honcho
+
+Files are uploaded via `session.uploadFile()`. User/owner files go to the owner peer; agent/self files go to the agent peer (`agent-{agentId}`, e.g. `agent-main`).
+
+### Update workspace docs
+
+The plugin ships template files in `node_modules/@honcho-ai/openclaw-honcho/workspace_md/`. Copy or merge these templates into your workspace for `AGENTS.md`, `SOUL.md`, and `BOOTSTRAP.md`. These templates reference the Honcho tools (`honcho_context`, `honcho_search_conclusions`, `honcho_ask`, `honcho_search_messages`, `honcho_session`) instead of the old file-based memory system.
+
+## Configuration
+
+Run `openclaw honcho setup` to configure interactively, or set values directly in `~/.openclaw/openclaw.json` under `plugins.entries["openclaw-honcho"].config`.
+
+| Key                    | Type       | Default                    | Description                               |
+| ---------------------- | ---------- | -------------------------- | ----------------------------------------- |
+| `apiKey`               | `string`   | —                          | Honcho API key (required for managed; omit for self-hosted). |
+| `workspaceId`          | `string`   | `"openclaw"`               | Honcho workspace ID for memory isolation. |
+| `baseUrl`              | `string`   | `"https://api.honcho.dev"` | API endpoint (for self-hosted instances). |
+| `noisePatterns`        | `string[]` | built-in defaults          | Patterns to skip messages. User-provided patterns are merged with built-in defaults (unless `disableDefaultNoisePatterns` is set). |
+| `disableDefaultNoisePatterns` | `boolean` | `false`           | When `true`, built-in noise patterns are not applied — only `noisePatterns` entries are used. |
+| `crossSessionSearch`   | `boolean`  | `true`                     | Default scope for Honcho's legacy `memory_search` alias when `enableMemoryCompatibilityTools` is enabled. It does not change memory-core's canonical `memory_search` behavior. |
+| `ownerObserveOthers`   | `boolean`  | `false`                    | Whether the owner peer observes agent messages in Honcho's social model. |
+| `captureSystemRuns`    | `boolean`  | `false`                    | Save cron and heartbeat runs. Off by default: their prompts are machine-generated, not something a participant said. |
+| `enableMemoryCompatibilityTools` | `boolean` | `false`            | Register legacy Honcho-backed `memory_search` and `memory_get` aliases for older OpenClaw hosts. Leave disabled on modern OpenClaw: memory-core owns these canonical names, and enabling aliases creates a tool-name conflict. |
+| `recall` | `object` | see below | How far each recall path may reach. See [Recall Boundaries](#recall-boundaries). |
+
+### Self-Hosted / Local Honcho
+
+Run `openclaw honcho setup`, enter a blank API key, and set the Base URL to your instance (e.g., `http://localhost:8000`).
+
+For setting up a local Honcho server, see the [Honcho local development guide](https://github.com/plastic-labs/honcho?tab=readme-ov-file#local-development).
+
+### Noise Filtering
+
+The plugin automatically drops messages that match noise patterns before saving to Honcho. Built-in defaults filter:
+
+- `HEARTBEAT_OK` — assistant heartbeat acknowledgments
+- `A scheduled reminder has been triggered` — cron reminder boilerplate
+- `Execute your Session Startup sequence now` — session startup commands
+- `Queued messages from` — queued message wrapper headers
+
+Add custom patterns via `noisePatterns` in your config:
+
+```json
+{
+  "plugins": {
+    "entries": {
+      "openclaw-honcho": {
+        "config": {
+          "noisePatterns": ["my custom noise string"]
+        }
+      }
+    }
+  }
+}
+```
+
+Custom patterns are merged with the built-in defaults. Each pattern matches if the message **equals** it or **starts with** it. Patterns starting with `/` are treated as anchored regex (e.g., `/^HEARTBEAT/i`).
+
+### Owner Peer Observation
+
+Honcho's `observeOthers` controls whether a peer forms representations of other peers based on messages it witnessed in shared sessions. The agent peer always has `observeOthers: true` — it sees and reasons about the user's messages. The owner (user) peer defaults to `observeOthers: false` — modeled only from what the user said, not what the agent replied.
+
+Set `ownerObserveOthers: true` to let the owner peer also observe agent messages. This gives Honcho perspective-aware memory: the owner stores conclusions about the agent based only on what it witnessed, enabling the user's representation to reflect the full conversational context rather than just their own side of it.
+
+### Peer Mappings
+
+Map `sender_id` → Honcho peer ID in `~/.honcho/openclaw-peers.json` (override with `OPENCLAW_HONCHO_PEERS_FILE`). New senders are added automatically; edit `peers` to alias or merge identities, then **`openclaw gateway restart`** so the gateway reloads the file.
+
+```json
+{
+  "version": 1,
+  "defaultUnknownPolicy": "per-sender",
+  "peers": {
+    "U0EXAMPLE01": "user",
+    "telegram-1234567890": "user"
+  }
+}
+```
+
+- **`defaultUnknownPolicy`** controls how unknown `sender_id`s are seeded into `peers`:
+  - `per-sender` — default for fresh installs. Each new sender becomes its own peer; the seeded peer ID is the `sender_id` sanitized to `[A-Za-z0-9_-]` and truncated to Honcho's 100-char limit.
+  - `owner` — default for pre-existing files missing the field (preserves legacy behavior). All unknown senders merge into the owner peer.
+- **Auto-seeded, manually overridable.** The plugin only adds entries for senders not already in the map.
+- **Adding a mapping after messages exist splits history.** Messages already stored under the original peer stay there; new messages land under the new peer. Remap before the peer accumulates history.
+
+### Multi-Peer Participants
+
+In group chats (Discord, Slack, etc.), the plugin extracts the sender's platform ID from each inbound message and uses it directly as the Honcho peer ID. This gives every participant — humans and any other bots in the room — their own memory and representation in Honcho, rather than attributing all non-agent messages to a single generic peer.
+
+**How it works:**
+- The plugin reads the `sender_id` field from OpenClaw's "Conversation info (untrusted metadata):" block, which OpenClaw injects on every inbound message that has a known sender — including 1-on-1 DMs on platforms like Telegram, not just group chats.
+- Each distinct sender ID becomes its own Honcho peer (e.g., `U07KX7DG002` becomes the Honcho peer ID directly, sanitized to `[A-Za-z0-9_-]`). You can alias a sender to a friendlier peer ID by editing the [peers file](#peer-mappings).
+- The default `owner` peer is used as a fallback when a message has no sender metadata at all (e.g., synthetic/system messages, or channel integrations that don't emit a `Conversation info` block), and — on legacy installs whose peers file uses `defaultUnknownPolicy: "owner"` — for any unknown sender. On fresh installs (`per-sender` policy) and platforms like Telegram, even DMs are attributed to the sender's own peer, not `owner`.
+- Each OpenClaw agent gets its own Honcho peer (default `agent-{id}`, e.g., `agent-main`).
+- All tools (`honcho_context`, `honcho_ask`, etc.) automatically resolve the correct peer for the current session.
+
+Both message *attribution* (capture) and *context injection* (`before_prompt_build`) read `sender_id` directly from the current inbound message's metadata block, so the right participant peer is used from the very first turn — and on every turn in group chats, even when the speaker changes between turns. Sessions whose channel never emits sender metadata (no `Conversation info` block) stay attributed to `owner`.
+
+## How it works
+
+Once installed, the plugin works automatically:
+
+- **Message Observation** — After every AI turn, the conversation is persisted to Honcho. Both user and agent messages are observed, allowing Honcho to build and refine its models. Message capture starts when the plugin is active for a session, and preserves original timestamps for captured messages. Messages are also flushed before session compaction and `/new`/`/reset`, so no conversation data is lost.
+- **Tool-Based Context Access** — The AI can query Honcho mid-conversation using tools like `honcho_context`, `honcho_search_conclusions`, and `honcho_ask` to retrieve relevant context about the user. Context is injected during OpenClaw's `before_prompt_build` phase, ensuring accurate turn boundaries.
+- **Multi-Peer Model** — Honcho maintains separate representations for each participant. Whenever an inbound message carries a `sender_id` (group chats, and DMs on platforms like Telegram), that sender gets their own peer, using their platform ID directly as the Honcho peer ID (or aliased via the [peers file](#peer-mappings) if configured). Each OpenClaw agent gets its own Honcho peer (default `agent-{id}`). The default `owner` peer is used as a fallback when a channel emits no sender metadata, and — on legacy installs whose peers file uses `defaultUnknownPolicy: "owner"` — for any unknown sender. **Migration boundary:** historical turns already attributed to `owner` (or to any prior peer ID) are not retroactively re-attributed when the plugin upgrades or when `peers` / `defaultUnknownPolicy` change. Only new inbound `sender_id`s create per-sender peers, so pre-existing sessions may show mixed attribution across the rollout. This gives every participant isolated, personalized memory going forward.
+- **Clean Persistence** — Platform metadata (conversation info, sender headers, thread context, forwarded messages) is stripped before saving to Honcho, ensuring only meaningful content is persisted. Noise messages (heartbeat acks, cron boilerplate, startup commands) are dropped entirely via configurable pattern filters.
+
+Honcho handles all reasoning and synthesis in the cloud.
+
+## Multi-Agent Support
+
+OpenClaw uses a multi-agent architecture where a primary agent can spawn **subagents** to handle specialized tasks. The Honcho plugin is fully aware of this hierarchy:
+
+- **Automatic Subagent Detection** — When OpenClaw spawns a subagent, the plugin parses the trusted requester session key from the `subagent_spawned` hook to track the parent→child relationship. Each subagent session records its `parentPeerId` in metadata.
+- **Parent Observer Peer** — The spawning agent is added as a silent observer in the subagent's Honcho session (`observeMe: false, observeOthers: true`). This gives Honcho visibility into the full agent tree — the parent can see what its subagents are doing without its own messages being attributed to the subagent session.
+
+## Workspace Files
+
+The plugin manages markdown files in your workspace:
+
+| File           | Contents                                               |
+| -------------- | ------------------------------------------------------ |
+| `SOUL.md`      | Agent profile — OpenClaw's self-model and personality. |
+| `IDENTITY.md`  | Static agent identity. Uploaded to the agent peer in Honcho during setup; the local file is not modified. |
+| `AGENTS.md`    | Agent capabilities and tool descriptions.              |
+| `TOOLS.md`     | Tool definitions and usage instructions for the agent. |
+| `BOOTSTRAP.md` | Initial context and instructions for the agent.        |
+
+**Migration:** Legacy files (`USER.md`, `MEMORY.md`, `memory/` directory) are uploaded to Honcho during `openclaw honcho setup`. Originals are preserved in place.
+
+## AI Tools
+
+The plugin provides 5 tools — 3 data retrieval (cheap, no LLM) and 2 interactive (LLM-powered).
+
+| Tool                     | Type | Description                                                                                     |
+| ------------------------ | ---- | ----------------------------------------------------------------------------------------------- |
+| `honcho_context`         | Data | User knowledge across all sessions. `detail='card'` for key facts, `'full'` for broad representation. |
+| `honcho_search_conclusions` | Data | Semantic vector search over stored conclusions. Returns raw memories ranked by relevance.      |
+| `honcho_search_messages`  | Data | Find specific messages across all sessions. Filter by sender (user/agent/all), date, metadata.   |
+| `honcho_session`         | Data | Current session history and summary. Supports semantic search within the session.               |
+| `honcho_ask`             | Q&A  | Ask Honcho a question about the user. `depth='quick'` for facts, `'thorough'` for synthesis.   |
+
+## CLI Commands
+
+```bash
+openclaw honcho setup                           # Configure API key and migrate legacy files
+openclaw honcho status                          # Show current installation and setup state
+openclaw honcho ask <question>                  # Query Honcho about the user
+openclaw honcho search <query> [-k N] [-d D]    # Semantic search over memory (topK, maxDistance)
+```
+
+## Recall Boundaries
+
+A Honcho workspace is the memory universe: a peer's representation is synthesized
+across every session in it, and that synthesis is the point. Recall is therefore
+workspace-wide by default on every path.
+
+Narrowing is opt-in, per path, when you want recall focused on the conversation at
+hand rather than everything the peer has ever said:
+
+```jsonc
+{
+  "recall": {
+    "automatic": "workspace",  // context injected before every prompt
+    "ask": "workspace",        // honcho_ask
+    "scopeName": "client-a"    // Honcho scope used by either path set to "scope"
+  }
+}
+```
+
+| value | Conclusions | Peer card |
+|---|---|---|
+| `workspace` | Every session the peer has written to. The default. | Full card. |
+| `session` | The current Honcho session only. | **Dropped.** |
+| `scope` | The sessions belonging to `scopeName`, a [Honcho scope](https://docs.honcho.dev). Needs a workspace-level API key. A scope that exists but has no member sessions returns nothing rather than widening; a missing or blank `scopeName` falls back to `session` (see below). | The scope's own card. |
+
+`session` drops the peer card because a card has no session dimension — it is
+synthesized from everything the observer has seen, so Honcho cannot narrow it and
+withholds it rather than leak past the boundary.
+
+`ask: "session"` scopes conclusions but not the card: `peer.chat` fetches it
+unconditionally upstream. `automatic: "session"` is a true boundary; `ask: "session"`
+is a partial one.
+
+A path set to `scope` with a missing or blank `scopeName` falls back to `session`
+rather than silently widening.
+
+The explicitly invoked tools (`honcho_context`, `honcho_search_conclusions`,
+`honcho_search_messages`) are always workspace-wide. They cannot be bounded
+uniformly on the current SDK surface — `peer.card()` takes no scoping and
+`peer.search()` takes only filters — so rather than ship a setting that applies to
+some of their calls and quietly skips others, they are left alone.
+
+### Keeping tenants apart
+
+These settings tune relevance, not tenancy. If one agent serves several clients,
+accounts or teams whose memory must not mix, **give them separate workspaces** —
+`workspaceId` is per plugin entry — or put each tenant's sessions in their own
+Honcho scope and point `scopeName` at it. Narrowing recall inside a shared
+workspace limits what any one turn retrieves, but the memory is still derived and
+stored together.
+
+## Local File Search (QMD Integration)
+
+Modern OpenClaw exposes its canonical `memory_search` and `memory_get` tools
+when a memory backend is configured. Honcho therefore leaves its legacy aliases
+disabled by default, avoiding duplicate tool-name warnings while still allowing
+Honcho's named tools and local file search to be used together.
+
+Only older OpenClaw hosts that do not provide canonical memory tools should set
+`enableMemoryCompatibilityTools: true`. Do not enable it on a host that already
+offers `memory_search` and `memory_get`.
+
+### Setup
+
+1. **Install QMD** on your server ([QMD documentation](https://github.com/tobi/qmd))
+
+2. **Configure OpenClaw** to use QMD as the memory backend in `~/.openclaw/openclaw.json`:
+
+```json
+{
+  "memory": {
+    "backend": "qmd",
+    "qmd": {
+      "limits": {
+        "timeoutMs": 120000
+      }
+    }
+  }
+}
+```
+
+3. **Set up QMD collections** for your files:
+
+```bash
+qmd collection add ~/Documents/notes --name notes
+qmd update
+```
+
+4. **Restart OpenClaw**:
+
+```bash
+openclaw gateway restart
+```
+
+### Available Tools
+
+When QMD is configured, you get both Honcho and local file tools:
+
+| Tool            | Source | Description                                              |
+| --------------- | ------ | -------------------------------------------------------- |
+| `honcho_*`      | Honcho | Cross-session memory, user modeling, dialectic reasoning |
+| `memory_search` | QMD    | Search local markdown files                              |
+| `memory_get`    | QMD    | Retrieve file content                                    |
+
+### Troubleshooting
+
+#### QMD not found by OpenClaw
+
+OpenClaw runs as a systemd service with a different PATH. Create a symlink:
+
+```bash
+sudo ln -s ~/.bun/bin/qmd /usr/local/bin/qmd
+```
+
+#### Search times out
+
+QMD operations can take a while, especially first-time queries that download ~2GB of models. Increase the timeout in `~/.openclaw/openclaw.json`:
+
+```json
+{
+  "memory": {
+    "qmd": {
+      "limits": {
+        "timeoutMs": 120000
+      }
+    }
+  }
+}
+```
+
+The default timeout is 4000ms which depending on your hardware may be too short and cause errors. Setting it to 120000ms (2 minutes) gives QMD enough time. You can verify it's working in the logs:
+
+```
+19:09:02 tool start: memory_search
+19:09:14 tool end: memory_search   # 12 seconds — within the 120s limit
+```
+
+You can also pre-warm QMD to avoid first-run delays:
+
+```bash
+qmd query "test"
+```
+
+## Known Issues
+
+### Plugin loads but `honcho_*` tools are missing, or nothing lands in Honcho
+
+Run `openclaw plugins inspect openclaw-honcho --runtime` and check `status` and `activationReason`. The plugin needs `plugins.entries.openclaw-honcho.enabled` set to `true` and `hooks.allowConversationAccess` set to `true`; it does not need the memory slot. Fix with `openclaw plugins enable openclaw-honcho`, then `openclaw gateway restart`.
+
+### OpenClaw 2026.4.5: Hooks silently stop firing
+
+OpenClaw 2026.4.5 has a plugin loader bug where reentrant provider snapshot loads during initialization can cause hooks to register into a registry that is later discarded. The result is that `agent_end` (and potentially other hooks) never fire — the plugin appears loaded and no errors are logged, but no sessions are written to Honcho.
+
+**Affected versions:** OpenClaw 2026.4.5 only.
+
+**Symptoms:**
+- Plugin logs `Honcho memory plugin loaded` at startup
+- No errors in gateway logs
+- `honcho_search_messages` returns nothing after the upgrade date
+- Honcho queue shows 0 pending (deriver has nothing to process)
+- Manual Honcho API calls still work
+
+**Fix:** Update OpenClaw to **2026.4.6 or later**. The upstream fixes landed in the 4.6 changelog:
+
+> Plugins/provider hooks: stop recursive provider snapshot loads from overflowing the stack during plugin initialization. (#61922, #61938, #61946, #61951)
+
+```bash
+# Update OpenClaw
+npm install -g openclaw@latest
+# or
+brew upgrade openclaw
+
+# Restart the gateway
+openclaw gateway restart
+```
+
+**Verified working:** OpenClaw 2026.3.22 through 2026.4.4, and 2026.4.6+.
+
+## Development
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup, building from source, and contribution guidelines.
+
+## License
+
+[MIT License](./LICENSE)
+
+## Community
+
+- GitHub Issues: [Open an Issue](https://github.com/plastic-labs/honcho/issues)
+- Discord: [Join the Community](https://discord.gg/honcho)
+- X (Twitter): [Follow @honchodotdev](https://x.com/honchodotdev)
+- Blog: [Read about Honcho and Agents](https://blog.plasticlabs.ai)

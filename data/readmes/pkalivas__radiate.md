@@ -1,0 +1,124 @@
+<h1 align="center">Radiate</h1>
+<p align="center">
+  <img src="/docs/assets/logo/radiate.png" height="100" width="60" alt="Radiate Logo" />
+</p>
+
+
+<div align="center">
+  <img src="https://img.shields.io/github/check-runs/pkalivas/radiate/master" alt="master branch checks" />
+  <img src="https://img.shields.io/crates/v/radiate" alt="Crates.io" />
+  <img src="https://img.shields.io/pypi/v/radiate?color=blue" alt="pypi.org" />
+  <img src="https://img.shields.io/crates/l/radiate" alt="Crates.io License" />
+  <img src="https://img.shields.io/badge/evolution-genetics-default" alt="Static badge" />
+</div>
+
+___
+
+For more details check [radiate.rs](https://radiate.rs/) or cargo [docs](https://docs.rs/radiate/latest/radiate/).
+
+
+Radiate is a powerful library for implementing genetic algorithms and artificial evolution techniques. It provides a fast and flexible framework for creating, evolving, and optimizing solutions to complex problems using principles
+inspired by natural selection and genetics. The core is written in Rust and is available for Python.
+ 
+* Traditional genetic algorithm implementation.
+* Single & Multi-objective optimization support.
+* Neuroevolution (graph-based representation - [evolving neural networks](http://www.scholarpedia.org/article/Neuroevolution)) support. Opt-in [NEAT](https://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) implementation.
+* Genetic programming support ([tree-based representation](https://en.wikipedia.org/wiki/Gene_expression_programming#:~:text=In%20computer%20programming%2C%20gene%20expression,much%20like%20a%20living%20organism.)) 
+* Built-in support for parallelism.
+* Extensive selection, crossover, and mutation operators.
+* Opt-in speciation for maintaining diversity.
+* Novelty search support.
+* First-class metric tracking.
+* Dynamic Expression DSL for dynamic rates & custom metrics
+
+Radiate can evolve anything from a 15-character string match to an [LSTM](https://en.wikipedia.org/wiki/Long_short-term_memory)-topology search. The same Pipeline that evolves `Vec<char>` to spell _"Hello, Radiate!"_ evolves NEAT-style neural network graphs and symbolic-regression trees.
+
+Checkout the [change log](https://github.com/pkalivas/radiate/blob/master/CHANGELOG.md) for recent updates.
+
+--- 
+## Installation
+### Rust
+Add this to your `Cargo.toml`:
+```toml
+[dependencies]
+radiate = { version = "1.3.2", features = ["x"] }
+``` 
+### Python
+```bash
+pip install radiate # --or-- uv add radiate
+```
+
+---
+## Examples
+Lets see a simple 'Hello World' example of using `radiate` to evolve a simple string - `Hello, Radiate!`. See the [examples](https://github.com/pkalivas/radiate/tree/master/examples) directory for a much more comprehensive set of examples in both languages.
+
+```python
+import radiate as rd
+
+target = "Hello, Radiate!"
+
+engine = (
+    rd.Engine.char(len(target))
+    .fitness(
+        lambda member: sum(1 for i in range(len(target)) if member[i] == target[i])
+    )
+    .limit(rd.Limit.score(len(target)))
+)
+
+result = engine.run(log=True)
+
+print("Best solution:", "".join(result.value()))
+```
+
+Or in rust:
+
+```rust
+use radiate::prelude::*;
+
+let target = "Hello, Radiate!";
+
+let engine = GeneticEngine::builder()
+    .codec(CharCodec::vector(target.len()))
+    .fitness_fn(|geno: Vec<char>| {
+        geno.into_iter()
+            .zip(target.chars())
+            .filter(|(allele, targ)| allele == targ)
+            .count()
+    })
+    .build();
+
+engine
+    .iter()
+    .logging()
+    .until_score(target.len())
+    .last()
+    .unwrap();
+```
+
+---
+## Building & running from source
+```bash
+git clone https://github.com/pkalivas/radiate.git
+cd radiate
+just release 3.13
+```
+
+Radiate uses [Just](https://github.com/casey/just) as a build tool, you can install it from [here](https://github.com/casey/just#installation).
+The core build options are below, there are a few others that can be found through the `just help` command.
+
+* `just develop` faster build time for development with debug symbols and minimal optimizations.
+* `just release` slower build time for optimized runtime performance.
+
+Both the above have an optional argument `py` to build the python package for a specific python version (e.g. `just develop 3.12`, `just develop 3.13t` for free-threading interpreter).
+
+* `just test-rs` to run tests for rust
+* `just test-py` to run tests for python package
+* `just test` to run tests for both.
+* `just clean` to nuke the build artifacts
+
+Run examples with `just example` to run a small python script which shows & runs selected examples.
+
+## Contributing
+
+Contributions are welcome. Pull requests should target the `develop` branch.
+If you use AI tools, disclose it in your PR or issue. See the [AI usage policy](https://github.com/pkalivas/radiate/blob/master/AI_POLICY.md).

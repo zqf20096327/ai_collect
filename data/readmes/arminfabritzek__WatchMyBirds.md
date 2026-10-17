@@ -1,0 +1,330 @@
+<p align="center">
+  <img src="assets/WatchMyBirds.png" alt="WatchMyBirds Logo" width="180">
+</p>
+
+<h1 align="center">WatchMyBirds</h1>
+
+<p align="center">
+  <strong>AI-powered bird detection and classification from live camera streams</strong>
+</p>
+
+<p align="center">
+  <a href="#quickstart">Quickstart</a> •
+  <a href="#documentation">Documentation</a> •
+  <a href="#raspberry-pi-appliance">RPi Appliance</a> •
+  <a href="#contributing">Contributing</a>
+</p>
+
+
+---
+
+<p align="center">
+  <a href="https://github.com/arminfabritzek/WatchMyBirds/actions/workflows/tests.yml?query=branch%3Amain">
+    <img src="https://github.com/arminfabritzek/WatchMyBirds/actions/workflows/tests.yml/badge.svg?branch=main&amp;event=push" alt="Tests on main" />
+  </a>
+  <a href="https://github.com/arminfabritzek/WatchMyBirds/actions/workflows/build-release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/arminfabritzek/WatchMyBirds/build-release.yml?branch=main&amp;label=Release%20%2B%20Docker&amp;logo=docker" alt="Release and Docker build status on main" />
+  </a>
+  <a href="https://github.com/arminfabritzek/WatchMyBirds/releases/latest">
+    <img src="https://img.shields.io/github/v/release/arminfabritzek/WatchMyBirds?label=Latest%20Release" alt="Latest stable release version" />
+  </a>
+  <a href="https://github.com/arminfabritzek/WatchMyBirds/releases/latest">
+    <img src="https://img.shields.io/badge/Raspberry%20Pi-Download-blue?logo=raspberrypi&amp;logoColor=white" alt="Download the Raspberry Pi image from the latest release" />
+  </a>
+  <img src="https://img.shields.io/badge/python-3.12-blue?logo=python&amp;logoColor=white" alt="Python 3.12" />
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-Apache%202.0-green" alt="License: Apache 2.0" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/sponsors/arminfabritzek">
+    <img src="https://img.shields.io/badge/Sponsor-Me-ea4aaa?logo=github" alt="Sponsor WatchMyBirds on GitHub" />
+  </a>
+</p>
+
+---
+
+<p align="center">
+  <img src="assets/images/best_of_species.jpg" alt="Best of Species" width="80%">
+</p>
+
+---
+
+## Highlights
+
+- 🎯 **Real-time detection** — Multi-stage AI pipeline (detection + classification)
+- 📊 **Analytics dashboard** — Activity patterns, species statistics, temporal insights
+- 🍓 **Raspberry Pi ready** — Pre-built images with WiFi setup
+- 🐳 **Docker support** — One-command deployment on any server
+- 🔒 **Appliance hardening** — Systemd sandboxing, session auth, no root required
+
+---
+
+## Features
+
+- ⭐ **Favorites & cover images** — Mark your best shots as favorites; they become species cover images
+- 📹 **Live stream** — Low-latency WebRTC live view via go2rtc relay with multi-viewer support
+- 📖 **Species encyclopedia** — Wikipedia descriptions for every detected species
+- ✅ **Review queue** — Triage new detections — keep, reclassify, or trash in one swipe
+- 🗑️ **Trash & restore** — Soft-delete with easy restore — nothing lost by accident
+- 🎥 **ONVIF discovery & PTZ control** — Implements ONVIF-based IP camera discovery and PTZ control from the UI
+
+---
+
+<p align="center">
+  <img src="assets/images/preview_stream.jpg" alt="Live Stream" width="100%">
+</p>
+
+---
+
+## Requirements
+
+- Python 3.12+ or Docker 20.10+
+- Raspberry Pi 4 or 5 with 4 GB RAM minimum
+- USB webcam or IP camera (RTSP/HTTP)
+
+---
+
+## Quickstart
+
+### Docker (Recommended)
+
+```bash
+git clone https://github.com/arminfabritzek/WatchMyBirds.git
+cd WatchMyBirds
+cp docker-compose.example.yml docker-compose.yml
+docker-compose up -d
+```
+
+> **Streaming default:** The Docker stack starts **WatchMyBirds + go2rtc** together using host networking for WebRTC compatibility.
+
+**Before first start:**
+
+- Set `CAMERA_URL` — the app resolves relay/direct mode automatically.
+- Replace `EDIT_PASSWORD` with your own value.
+- Leave `TELEGRAM_ENABLED=False` unless you also set real Telegram credentials.
+
+**Good to know:**
+
+- `go2rtc.yaml` is synchronized in the mounted output folder (`/output/go2rtc.yaml` in app, `/config/go2rtc.yaml` in go2rtc).
+- Bridge networking is also supported — the app falls back to ffmpeg-based streaming if WebRTC is unavailable. See [`docker-compose.example.yml`](docker-compose.example.yml) for details.
+
+### Local Development
+
+```bash
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
+
+Recommended local/runtime target: **Python 3.12**. The Raspberry Pi pipeline now starts from a Trixie Lite golden image and bakes CPython 3.12 into that shared base once before downstream image builds create the app virtualenv.
+
+App available at: **http://localhost:8050**
+
+---
+
+## Screenshots
+
+| Species Summary | Analytics Dashboard |
+|-----------------|---------------------|
+| ![Species Summary](assets/images/preview_species_summary.jpg) | ![Analytics](assets/images/preview_analytics.jpg) |
+
+| Best of Species |
+|-----------------|
+| ![Best of Species](assets/images/watchmybirds_best_of.gif) |
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Architecture](docs/ARCHITECTURE.md) | System design and data flow |
+| [Invariants](docs/INVARIANTS.md) | Core rules that must never be violated |
+| [Security Policy](SECURITY.md) | Hardening measures and vulnerability reporting |
+| [RPi Setup](rpi/README.md) | Raspberry Pi appliance guide |
+| [Configuration](docs/CONFIGURATION.md) | All settings explained |
+| [Tested Cameras](docs/TESTED_CAMERAS.md) | Community-reported camera compatibility |
+
+---
+
+## Raspberry Pi Appliance
+
+WatchMyBirds runs as a standalone appliance on Raspberry Pi with pre-built OS images.
+
+### First Boot
+
+1. Flash the image to SD card (use [Raspberry Pi Imager](https://www.raspberrypi.com/software/))
+2. Boot the Pi — it creates an Access Point if no WiFi is configured:
+   - **SSID:** `WatchMyBirds-XXXX`
+   - **Password:** `watchmybirds`
+3. Connect to AP and open **http://192.168.4.1:8050/setup**
+4. Enter your WiFi credentials and choose an admin password for protected pages
+5. Device reboots into client mode
+6. Access at **http://watchmybirds.local:8050**
+
+> Public pages stay available without login. Settings, review, delete, and other protected actions use the admin password you set during first setup.
+
+See [rpi/README.md](rpi/README.md) for detailed setup instructions.
+
+### Performance
+
+Measured with a 2560 x 1920 RTSP stream. Times vary with resolution, scene complexity, and number of detected birds.
+
+| | Detection | Classification (per bird) | Full cycle (1 bird) |
+|---|---|---|---|
+| **Raspberry Pi 5** (8 GB) | ~450–500 ms | ~300–400 ms | ~1.5–2.0 s |
+| **Raspberry Pi 4** (4 GB) | ~3.8–5.3 s | ~5.0–7.0 s | ~10–11 s |
+
+> ℹ️ The **Raspberry Pi 5 (4 GB)** is untested but will most likely run with performance close to the 8 GB variant — inference is compute-bound, not RAM-bound at this workload.
+>
+> 💡 Classification time scales linearly with the number of birds in the frame. A scene with 10 birds on an RPi 5 takes ~3–5 s total — on an RPi 4 the same scene would take well over a minute.
+>
+> ⚠️ RPi 4 numbers are measured per-cycle on a 2560×1920 RTSP stream with the current YOLOX-S detector and the active classifier (observed single-cycle pipelines 9993–11224 ms with 1 bird; DET 3821–5240 ms, CLS 5035–6982 ms per bird). The RPi 4 still works for low-traffic feeders, but for responsive live use the RPi 5 is strongly recommended.
+
+---
+
+## Configuration
+
+Configuration is loaded from environment variables and `settings.yaml`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CAMERA_URL` | `""` | User-facing camera RTSP/HTTP URL |
+| `STREAM_SOURCE_MODE` | `auto` | Source policy: `auto`, `relay`, `direct` |
+| `OUTPUT_DIR` | `/output` | Storage for images and database |
+| `EDIT_PASSWORD` | `watchmybirds` | UI authentication password; Raspberry Pi appliances require you to replace this during first setup |
+| `DETECTION_INTERVAL_SECONDS` | `2.0` | Pause between detection cycles |
+
+Full reference: [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+
+---
+
+## Privacy
+
+WatchMyBirds runs entirely on your device. Nothing about your bird
+activity, images, or detections ever leaves it.
+
+The only optional outbound traffic is an **anonymous daily heartbeat**
+(off by default) that helps count active installations — eight fields,
+no IP, no location, EU-only storage, raw rows deleted within 24 hours.
+You can opt in, opt out, rotate your ID, or firewall-block the endpoint
+at any time.
+
+Full details, including what is sent, what is never sent, where the data
+lives, and how to control it: **[docs/PRIVACY.md](docs/PRIVACY.md)**
+(or visit `/privacy` in your running install).
+
+---
+
+## Development and Assurance
+
+WatchMyBirds is developed through maintainer-directed AI coding agents.
+The maintainer supplies the domain knowledge, product direction,
+architecture, constraints, and acceptance criteria; implementation is
+produced almost entirely by coding agents.
+
+This workflow uses defense in depth: safeguards built into the AI systems are
+combined with repository-level automated tests, linting, dependency audits,
+static security analysis, and a semantic pre-public scan. Leading AI labs
+continually evaluate and strengthen protections against misuse and harmful or
+deceptive model behaviour; current public work includes
+[OpenAI's model safeguards](https://developers.openai.com/api/docs/guides/latest-model#safeguards),
+[Anthropic's Responsible Scaling Policy and risk reports](https://www.anthropic.com/responsible-scaling-policy),
+and [Google DeepMind's Frontier Safety Framework](https://deepmind.google/blog/strengthening-our-frontier-safety-framework/).
+These complementary layers provide meaningful assurance by targeting different
+failure modes before release.
+
+No automated process can guarantee defect-free or secure software, and this
+project has not undergone an independent security audit. Follow
+[SECURITY.md](SECURITY.md) when deploying in a security-sensitive or directly
+internet-exposed environment.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Open an issue to discuss major changes
+2. Keep pull requests focused and well-scoped
+3. Follow existing code style
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for the detailed setup and workflow notes.
+
+---
+
+## Community & Research Use
+
+WatchMyBirds aims to support citizen science and ecological monitoring.
+
+Possible use cases include:
+- 🏡 Backyard bird monitoring
+- 🌿 Biodiversity observation
+- 🎓 Educational projects
+- 🔬 Ecological research setups
+- 📈 Long-term wildlife monitoring
+
+The system is designed to run locally on affordable hardware to make wildlife observation accessible to a wide community.
+
+
+## Third-Party Tools & Data Sources
+
+<p align="center">
+  <a href="https://www.wikipedia.org/">
+    <img src="https://images.weserv.nl/?url=upload.wikimedia.org/wikipedia/commons/thumb/8/80/Wikipedia-logo-v2.svg/120px-Wikipedia-logo-v2.svg.png&w=120&h=120&fit=cover&mask=circle" width="100" alt="Wikipedia">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://open-meteo.com/">
+    <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/86407831?s=200%26v=4&w=120&h=120&fit=cover&mask=circle" width="100" alt="Open-Meteo">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://www.inaturalist.org/">
+    <img src="https://images.weserv.nl/?url=static.inaturalist.org/wiki_page_attachments/3154-original.png&w=120&h=120&fit=cover&mask=circle" width="100" alt="iNaturalist">
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://labelstud.io/">
+    <img src="https://images.weserv.nl/?url=user-images.githubusercontent.com/12534576/192582529-cf628f58-abc5-479b-a0d4-8a3542a4b35e.png&w=120&h=120&fit=cover&mask=circle" width="100" alt="Label Studio">
+  </a>
+</p>
+
+**Data Sources**
+
+- **[Wikipedia](https://www.wikipedia.org/)** — Species descriptions and images. Text and media available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- **[Open-Meteo](https://open-meteo.com/)** — Weather data via the Open-Meteo API, available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **[iNaturalist](https://www.inaturalist.org/)** — Localized common-name enrichment for the extended bird species catalog. See [`docs/EXTENDED_SPECIES_CATALOG_POLICY.md`](docs/EXTENDED_SPECIES_CATALOG_POLICY.md) for taxonomy policy.
+
+**Software & Tools**
+
+- **[Label Studio](https://labelstud.io)** — Annotation tool by HumanSignal, Inc. Used through the Label Studio Academic Program (free access to Enterprise Cloud for non-commercial teaching and research).
+- **[go2rtc](https://github.com/AlexxIT/go2rtc)** — WebRTC/RTSP relay for low-latency camera streaming. Licensed under MIT.
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=arminfabritzek%2Fwatchmybirds&amp;type=date&amp;legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=arminfabritzek/watchmybirds&amp;type=date&amp;theme=dark&amp;legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=arminfabritzek/watchmybirds&amp;type=date&amp;legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=arminfabritzek/watchmybirds&amp;type=date&amp;legend=bottom-right" />
+ </picture>
+</a>
+
+---
+
+## Still Watching
+
+![A pigeon carries nesting material beside storm-tilted bird feeders. Text: “After the storm, we keep watch.”](assets/readme/after-the-storm-we-keep-watch.webp)
+
+---
+
+
+## License
+
+This project is licensed under the **Apache-2.0 License**. See [LICENSE](LICENSE) for details.
+
+> **Third-party components** — This application integrates third-party services, models, and data sources
+> that are governed by their own licenses and terms of use.
+> See [NOTICE](NOTICE) and the [Third-Party Tools & Data Sources](#third-party-tools--data-sources) section for details.

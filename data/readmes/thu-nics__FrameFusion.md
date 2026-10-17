@@ -1,0 +1,264 @@
+<div align="center">
+  <img src="example/image/logo.png" alt="FrameFusion Logo" width="100"/>
+
+  <h1>FrameFusion</h1>
+  <h3>Combining Similarity and Importance for Video Token Reduction on Large Visual Language Models</h3>
+
+  <p>
+    <a href="https://fuvty.github.io/thinking_yard_project_page/projects/framefusion/">🌐 <b>Project Page</b></a> •
+    <a href="https://arxiv.org/abs/2501.01986">📑 <b>arXiv</b></a>
+  </p>
+</div>
+
+FrameFusion reduces the number of tokens in Large Vision-Language Models (LVLMs) by combining similarity-based merging with importance-based pruning. It achieves a 70% vision token reduction, 3.4–4.4× LLM speedups, and 1.6–1.9× end-to-end speedups with minimal performance impact.
+
+https://github.com/user-attachments/assets/bb9d3b25-6f21-4863-b7c8-27b88356fdcf
+
+> This demo can be reproduced with `script/demo/llava_video_compare.py`.
+
+Feel free to star the repo or cite the paper if you find it interesting.
+
+```bibtex
+@inproceedings{fu2025framefusion,
+  title={FrameFusion: Combining Similarity and Importance for Video Token Reduction on Large Vision Language Models},
+  author={Fu, Tianyu and Liu, Tengxuan and Han, Qinghao and Dai, Guohao and Yan, Shengen and Yang, Huazhong and Ning, Xuefei and Wang, Yu},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={22654--22663},
+  year={2025}
+}
+```
+
+## News
+
+* [2025/08] Update webpage, check our interactive demos [here](https://fuvty.github.io/thinking_yard_project_page/projects/framefusion/)
+
+* [2025/06] Our paper is accepted by ICCV'25
+
+* [2025/05] Support Qwen2-VL and InternVL2.5
+
+* [2025/04] Support NVILA model family
+
+
+## Environment Setup
+
+### General
+Create a new environment:
+
+```bash
+conda create -n framefusion python=3.10
+conda activate framefusion
+```
+
+Install FrameFusion:
+
+```bash
+pip install -e .
+```
+
+### Working with Other Models
+
+**Important:** `NVILA` and `Llava-Video` have conflicting architectures. **FrameFusion** supports both, but please install only one to avoid conflicts.
+
+#### Llava-Video
+To install Llava-Video LVLM dependencies:
+
+1. Clone the [LLaVA-NeXT repository](https://github.com/LLaVA-VL/LLaVA-NeXT):
+   ```bash
+   git clone https://github.com/LLaVA-VL/LLaVA-NeXT.git
+   cd LLaVA-NeXT
+   ```
+2. Install via:
+   ```bash
+   pip install -e .[llava-video]
+   ```
+
+#### NVILA
+To install NVILA dependencies:
+
+1. Clone the [VILA repository](https://github.com/NVlabs/VILA):
+   ```bash
+   git clone https://github.com/NVlabs/VILA.git
+   cd VILA
+   ```
+2. Run environment setup script to install dependencies in current conda environment:
+   ```bash
+   ./environment_setup.sh
+   ```
+3. Install via:
+   ```bash
+   pip install -e .
+   ```
+
+#### Qwen2-VL
+After standard installation, please reinstall `transformers==4.51.3` to ensure version compatibility.
+
+```bash
+pip install -e .[qwen2-vl]
+```
+
+For all other models, continue using `transformers==4.45.2`.
+
+## How to
+
+### Run an example
+
+We provide an example with LLaVA-Video-7B model to inference on a video with or without FrameFusion in `script/playground/example_llava.py`.
+
+```bash
+python script/playground/example_llava.py
+```
+
+### Apply FrameFusion
+
+You can apply FrameFusion in your own code to any huggingface model that supports the interface with few lines of code. Here is an example:
+
+```python
+from llava.model.builder import load_pretrained_model
+from framefusion.interface import apply_framefusion
+
+# set attn_implementation to be sdpa
+tokenizer, model, image_processor, max_length = load_pretrained_model("lmms-lab/LLaVA-Video-7B-Qwen2", None, "llava_qwen", torch_dtype="bfloat16", attn_implementation='sdpa', device_map="auto")
+
+# apply FrameFusion
+apply_framefusion(model, cost=0.3, similarity_lower_bound=0.6, ratio_lower_bound=0.1)
+
+# use the model as usual
+```
+
+### Evaluate FrameFusion
+
+We use [lmms-eval](https://github.com/EvolvingLMMs-Lab/lmms-eval/tree/main) to evaluate FrameFusion. 
+To apply FrameFusion, clone the official lmms-eval repository, install it from source, and insert the following lines into `evaluator.py` after the standard model initialization of `lm` (around [line187](https://github.com/EvolvingLMMs-Lab/lmms-eval/blob/main/lmms_eval/evaluator.py#L187)):
+
+```
+from framefusion.interface import apply_framefusion
+model_to_compress = getattr(lm, "_model", lm.model)
+apply_framefusion(model_to_compress, cost=0.3, similarity_lower_bound=<S_th from our paper>, ratio_lower_bound=0.1)
+```
+
+Please refer to our paper for the recommended similarity_lower_bound (S_th) values for different models.
+
+#### Example
+
+As an example, you can evaluate FrameFusion on LLaVA-Video-7B-Qwen2 model using the following command.
+
+```bash
+python3 -m accelerate.commands.launch --num_processes=8 --main_process_port 28997 -m lmms_eval \
+--model llava_vid \
+--model_args pretrained=lmms-lab/LLaVA-Video-7B-Qwen2,device_map=auto,max_frames_num=64,overwrite=False,force_sample=True,torch_dtype="bfloat16",add_time_instruction=True,conv_template=qwen_1_5 \
+--tasks $BENCHMARK \
+--batch_size 1 \
+--log_samples \
+--log_samples_suffix llava_vid_7b \
+--output_path ./logs/
+```
+
+### Adapt to new models
+
+#### Understand Code Structure
+
+- `framefusion/`: The main package for FrameFusion.
+    - `models/`: The adapter for different models.
+    - `main.py`: The main implementation of FrameFusion.
+    - `interface.py`: The interface for applying FrameFusion.
+- `scripts/`: Scripts for running experiments.
+    - `evaluate/`: Scripts for evaluating the performance models.
+    - `playground/`: Scripts for running misc experiments.
+- `example/`: Example input videos
+
+#### Modify the code
+
+1. Add a new model adapter in `framefusion/models/`, it applies framefusion after the attention module. 
+
+    > Three model functions are required: `llm_forward`, `decoder_forward`, and `attention_forward`. The forward functions are easily modified from the corresponding `modeling_<MODEL>.py` functions in huggingface transformers. All modifications are marked with `###` comments. For LLM, see `framefusion/models/qwen2/modeling_qwen2.py` as an example.
+
+2. Register the model in `framefusion/interface.py`, it applies framefusion to the correct model class.
+
+3. Add a new example in `script/playground/`, it shows how to apply framefusion to the model.
+
+#### Happy to help
+
+If you have any questions on applying FrameFusion to a new model, please feel free to open an issue. We are happy to help you and expand the adapter for more models.
+
+## Supported Model List
+
+### MimiCPM-V
+
+* [openbmb/MiniCPM-V-2_6](https://huggingface.co/openbmb/MiniCPM-V-2_6)
+
+### Llava-Video
+
+* [lmms-lab/LLaVA-Video-7B-Qwen2](https://huggingface.co/lmms-lab/LLaVA-Video-7B-Qwen2)
+* [lmms-lab/LLaVA-Video-72B-Qwen2](https://huggingface.co/lmms-lab/LLaVA-Video-72B-Qwen2)
+
+### NVILA
+
+* [Efficient-Large-Model/NVILA-Lite-2B](https://huggingface.co/Efficient-Large-Model/NVILA-Lite-2B)
+* [Efficient-Large-Model/NVILA-8B-Video](https://huggingface.co/Efficient-Large-Model/NVILA-8B-Video)
+* [Efficient-Large-Model/NVILA-Lite-15B-Video](https://huggingface.co/Efficient-Large-Model/NVILA-Lite-15B-Video)
+
+### Qwen2-VL
+
+> Note: Please use `transformers==4.51.3` when running Qwen2-VL series models.
+
+* [Qwen/Qwen2-VL-2B-Instruct](https://huggingface.co/Qwen/Qwen2-VL-2B-Instruct)
+* [Qwen/Qwen2-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct)
+  
+### InternVL2_5
+
+* [OpenGVLab/InternVL2_5-8B](https://huggingface.co/OpenGVLab/InternVL2_5-8B)
+
+## Related Projects
+
+Explore more efficient LLM projects from us:
+
+<table style="border: none; border-collapse: collapse;" align="center">
+<tr>
+<td align="center" valign="top" width="20%" style="border: none; border-right: 1px solid rgba(128, 128, 128, 0.3); padding: 10px; min-width: 50px;">
+<div style="height: 5em; display: flex; align-items: center; justify-content: center;">
+<a href="https://github.com/thu-nics/R2R">
+<img src="https://raw.githubusercontent.com/thu-nics/R2R/main/resource/logo.png" style="max-height: 5em; max-width: 100%; height: auto; width: auto;" />
+</a>
+</div>
+<a href="https://github.com/thu-nics/R2R"><b>R2R</b></a>
+<br/><sub>Token-level routing for reasoning LLMs</sub>
+</td>
+<td align="center" valign="top" width="20%" style="border: none; border-right: 1px solid rgba(128, 128, 128, 0.3); padding: 10px; min-width: 50px;">
+<div style="height: 5em; display: flex; align-items: center; justify-content: center;">
+<a href="https://github.com/thu-nics/TokenRouter">
+<img src="https://raw.githubusercontent.com/thu-nics/TokenRouter/main/resource/logo.png" alt="TokenRouter Logo" style="max-height: 5em; max-width: 100%; height: auto; width: auto;" />
+</a>
+</div>
+<a href="https://github.com/thu-nics/TokenRouter"><b>TkR</b></a>
+<br/><sub>Efficient serving for token-level LLM routing</sub>
+</td>
+<td align="center" valign="top" width="20%" style="border: none; border-right: 1px solid rgba(128, 128, 128, 0.3); padding: 10px; min-width: 50px;">
+<div style="height: 5em; display: flex; align-items: center; justify-content: center;">
+<a href="https://github.com/thu-nics/TaH">
+<img src="https://raw.githubusercontent.com/thu-nics/TaH/main/resource/logo.png" style="max-height: 5em; max-width: 100%; height: auto; width: auto;" />
+</a>
+</div>
+<a href="https://github.com/thu-nics/TaH"><b>TaH</b></a>
+<br/><sub>Selective latent thinking for reasoning LLMs</sub>
+</td>
+<td align="center" valign="top" width="20%" style="border: none; border-right: 1px solid rgba(128, 128, 128, 0.3); padding: 10px; min-width: 50px;">
+<div style="height: 5em; display: flex; align-items: center; justify-content: center;">
+<a href="https://github.com/thu-nics/C2C">
+<img src="https://raw.githubusercontent.com/thu-nics/C2C/main/resource/logo.png" style="max-height: 5em; max-width: 100%; height: auto; width: auto;" />
+</a>
+</div>
+<a href="https://github.com/thu-nics/C2C"><b>C2C</b></a>
+<br/><sub>Communicate through KV-Cache between LLMs</sub>
+</td>
+<td align="center" valign="top" width="20%" style="border: none; padding: 10px; min-width: 50px;">
+<div style="height: 5em; display: flex; align-items: center; justify-content: center;">
+<a href="https://github.com/thu-nics/MoA">
+<img src="https://raw.githubusercontent.com/thu-nics/MoA/master/resource/logo.png" style="max-height: 5em; max-width: 100%; height: auto; width: auto;" />
+</a>
+</div>
+<a href="https://github.com/thu-nics/MoA"><b>MoA</b></a>
+<br/><sub>Mixture of sparse attention for LLMs</sub>
+</td>
+</tr>
+</table>
+

@@ -1,0 +1,37 @@
+<p align="center">
+  <img src="../docs/logo.svg" width="200" alt="tau logo">
+</p>
+
+# Tau coding agent
+
+Tau is a minimal Unix-first coding agent for people who want local control, simple process boundaries, and tooling that fits naturally into a command-line environment.
+
+## Radicle note
+
+Tau uses [Radicle][radicle] as a primary distributed code collaboration platform,
+and the GitHub repository is only a read-only mirror.
+
+Head to [Tau's Radicle site][project-radicle] for an up-to-date version and more information.
+
+[radicle]: https://radicle.xyz
+[project-radicle]: https://app.radicle.xyz/nodes/radicle.dpc.pw/rad:z3ToHcxKefTYxZEoCoDXmddUkK3a4
+
+## Contributing
+
+Use [GitHub Discussions][discussions] for questions, ideas, and general conversation.
+For chat, prefer the official [Tau Zulip chat][zulip]. The [Discord server][discord]
+and [`#support:dpc.pw` Matrix channel][matrix] are also available.
+You can also follow dpc on [Rostra][rostra].
+
+I do not accept pull requests. See [I don't want your PRs anymore][no-prs] for the rationale.
+
+[discussions]: https://github.com/dpc/tau/discussions
+[zulip]: https://tauofunix.zulipchat.com/
+[discord]: https://discord.gg/zens2jjA3U
+[matrix]: https://matrix.to/#/#support:dpc.pw
+[rostra]: https://rostra.me/profile/rse1okfyp4yj75i6riwbz86mpmbgna3f7qr66aj1njceqoigjabegy
+[no-prs]: https://dpc.pw/posts/i-dont-want-your-prs-anymore/
+
+---
+
+Continue to [the original Tau README.md](../README.md).

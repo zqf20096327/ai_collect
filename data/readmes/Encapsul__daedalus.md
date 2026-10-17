@@ -1,0 +1,269 @@
+# daedalus
+
+[![CI](https://img.shields.io/github/actions/workflow/status/Encapsul/daedalus/ci.yml?branch=main&label=build)](https://github.com/Encapsul/daedalus/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.7.1-green.svg)](https://github.com/Encapsul/daedalus/releases)
+[![Rust](https://img.shields.io/badge/rust-2021-orange.svg)](https://www.rust-lang.org/)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey.svg)]()
+[![Runtimes](https://img.shields.io/badge/runtimes-20-purple.svg)](#supported-runtimes)
+
+## What it is
+
+daedalus packages any web, server, or CLI app into a **single self-extracting
+binary** - interpreter, dependencies, and app in one file, no runtime to install
+on the target machine. Anything that runs on a Linux box can be shipped as one ELF.
+
+The flagship use case is **on-device AI**: package Ollama (or Llama.cpp) plus a
+local model plus your app into one `.de` file that runs fully offline - no cloud,
+no GPU, no runtime cost. See [AI and edge runtimes](docs/src/guides/ai-edge.md).
+
+Deployment features that plain archives don't give you: SHA-256-verified cold
+start, optional Ed25519 signing and trust anchors, sandboxed runs, and **SISR
+delta updates** - reconstruct and roll back layers over 960kbps links, so field
+deployments (clinics, farms, fleets) update without a full re-download.
+
+---
+
+**Note**: the produced `.de` file is a Linux ELF binary. It runs natively on Linux, and can be run on macOS/Windows via WSL or a Linux VM. Building on Windows/macOS works (the CLI is cross-platform), but the output requires a Linux runtime to execute.
+
+## Quick start
+
+```bash
+# Install - any one of these
+cargo install daedalux                                            # crates.io
+brew install encapsul/daedalus/daedalus                          # Homebrew tap
+pip install daedalux                                             # PyPI
+curl -fsSL https://raw.githubusercontent.com/Encapsul/daedalus/main/scripts/install.sh | bash   # install script (Linux/macOS)
+
+# Build a Python app with Gemma embedded
+cd your-app && daedalus build . -o myapp.daedalus
+
+# Run - Ollama auto-starts, Gemma model loads locally
+./myapp.daedalus
+```
+
+`cargo install daedalux` ships only the CLI; on first `daedalus build` it downloads
+the matching stub from the GitHub release (SHA-256 verified against `checksums.txt`)
+and caches it under `~/.cache/daedalus/stubs/`. The Homebrew tap and PyPI package
+ship the CLI, stub, and crypto tools together.
+
+## Supported runtimes
+
+20 runtimes, in detection-priority order. This table mirrors
+`Runtime` in [`daedalus-core/src/detect.rs`](daedalus-core/src/detect.rs) - keep the two
+in sync.
+
+| Runtime | Detection | Frameworks |
+|---------|-----------|------------|
+| Python | `requirements.txt`, `pyproject.toml`, `Pipfile` | Django, FastAPI, Flask, Streamlit |
+| Deno | `deno.json`, `deno.jsonc` | Fresh |
+| Node.js | `package.json` | Next.js, Express, NestJS, Fastify, Hono |
+| Electron | `package.json` with `electron` dep | Generic Electron app |
+| Flutter | `pubspec.yaml` with `flutter` SDK dep | Release bundle from `lib/main.dart` |
+| Dart | `pubspec.yaml` without the `flutter` SDK dep | AOT-compiled `bin/main.dart` |
+| Java | `pom.xml`, `build.gradle` | Spring Boot |
+| Ruby | `Gemfile`, `_config.yml` | Rails, Sinatra, Jekyll |
+| .NET/C# | `*.csproj` | ASP.NET |
+| Rust | `Cargo.toml` | Static binary |
+| Zig | `build.zig`, `build.zig.zon` | `zig build` -> static binary |
+| Go | `go.mod` | Static binary |
+| PHP | `composer.json` | Laravel, Symfony, WordPress |
+| Perl | `Makefile.PL`, `cpanfile` | Mojolicious |
+| Lua | `*.lua`, `lua` in package.json | OpenResty, Neovim plugins |
+| Hugo | `hugo.toml`, `config.toml` | Static sites |
+| Ollama | `Modelfile`, `models/*.gguf`, `ollama` in `package.json`, or `DAEDALUS_OLLAMA=1` | `ollama serve`, local model API |
+| Gemma | `Modelfile` with a Gemma `FROM` | `ollama run <model-id>`, fully offline |
+| Wasm | `*.wasm` | WASI (wasmtime) |
+| Binary | ELF/PE executable | Any native binary |
+
+## Binary format
+
+```
+[stub][payload][metadata][footer]
+```
+
+- **Stub**: statically-linked launcher (Linux ELF; musl, so it owns no dynamic
+  dependencies - the only host dependency is the Linux kernel). It reads its own
+  binary, verifies integrity, extracts the payload, and `execvp`s the entrypoint
+- **Payload**: zstd-compressed tar archive (or squashfs) of the application + runtime
+- **Metadata**: JSON with runtime info, entrypoint, layers, capabilities
+- **Footer**: magic `0xBEEF_CAFE`, format magic `DAE\x01`, format version, integrity SHA-256 hash
+
+Format versions: v2 (plain), v3 (signed), v4 (encrypted), v5 (squashfs).
+
+## CLI commands
+
+| Command | Description |
+|---------|-------------|
+| `build <dir>` | Package an app directory into a `.de` file |
+| `run <file>` | Execute a `.de` file |
+| `inspect <file>` | Read metadata from a `.de` file |
+| `scan [dir]` | Find `.de` files and display metadata |
+| `sign <file>` | Sign a `.de` with an Ed25519 private key |
+| `verify <file>` | Verify the signature against trusted keys |
+| `keygen` | Generate an Ed25519 keypair |
+| `trust <keyfile>` | Add a public key to trusted keys |
+| `doctor` | Check system prerequisites |
+| `clean` | Remove daedalus cache and build artifacts |
+| `selftest <file>` | Test a `.de` file in an ephemeral sandbox |
+| `upgrade` | Self-update the daedalus binary |
+| `migrate <input> <output>` | Migrate legacy v1 binary to SISR-enabled v2 |
+| `swap <binary> <layer> <file>` | Hot-swap a layer in a `.de` binary |
+| `publish <file>` | Publish a `.de` file to a registry |
+| `registry push|pull|list` | Push/pull/list layers in a content-addressable registry |
+| `env` | Show daedalus environment info |
+| `completion <shell>` | Generate shell completions |
+| `man [dir]` | Generate man pages |
+
+## Global flags
+
+| Flag | Description |
+|------|-------------|
+| `--verbose` / `-v` | Enable verbose output |
+| `--quiet` / `-q` | Suppress non-error output |
+| `--no-color` | Disable colored output |
+| `--plain` | Machine-readable output (no ANSI, no pager, no box drawing) |
+| `--no-input` | Disable all interactive prompts (for CI/scripts) |
+| `--json` | Output as JSON (where supported) |
+
+## Common options
+
+| Flag | Commands | Description |
+|------|----------|-------------|
+| `--target` | build | Cross-compile target. CI-verified (stub built + smoke-tested): `linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`, `win-x64`. `win-arm64` is accepted but not built by CI. Any Rust triple is parsed; the short forms are conveniences. |
+| `--sign --key <file>` | build | Sign the binary with Ed25519 |
+| `--encrypt <keyfile>` | build | Encrypt payload with AES-256-GCM |
+| `--enable-sisr --update-url <url>` | build | Enable delta updates |
+| `--dry-run` | build, scan | Preview without doing anything |
+| `--output` / `-o` | build, inspect, scan | Output file/directory |
+| `--strict` | doctor | Exit with error if any check fails |
+| `--force` | clean, sign, migrate | Skip confirmation prompts |
+| `--local <dir>` | registry | Use local directory instead of HTTP registry |
+
+## Build from source
+
+### Prerequisites
+
+- Rust toolchain (stable, 2021 edition): <https://rustup.rs>
+- C compiler (`gcc` or `clang`)
+- On Linux: `musl-tools` for static linking
+  ```bash
+  # Ubuntu/Debian
+  sudo apt install musl-tools gcc
+  rustup target add x86_64-unknown-linux-musl
+
+  # Fedora
+  sudo dnf install musl-gcc
+  rustup target add x86_64-unknown-linux-musl
+  ```
+
+### Build
+
+```bash
+git clone https://github.com/Encapsul/daedalus.git
+cd daedalus
+cargo build --release
+# Binary at target/release/daedalus
+```
+
+### Workspace
+
+| Crate | Purpose |
+|-------|---------|
+| `daedalux-core` | Shared library: format, compression, detection, signing, assembly (published crates.io as `daedalux-core`) |
+| `daedalus-stub` | Self-extracting launcher (Linux ELF only today; not published to crates.io) |
+| `daedalux` | CLI tool (cross-platform; published crates.io as `daedalux`, installs the `daedalus` binary) |
+
+## Configuration
+
+Place a `.daedalus.toml` in your app directory. CLI flags override config file values.
+
+```toml
+[package]
+version = "1.0.0"
+author = "Your Name"
+description = "My awesome app"
+
+[build]
+isolation = "sandbox"
+seccomp = true
+target = "x86_64"
+no_install = false
+env_file = ".env"
+```
+
+## Security
+
+- **Ed25519 signing**: binaries can be signed and verified against trusted keys
+  (keys enforce the Ed25519 bit; strict verification per ZIP-215)
+- **SHA-256 integrity**: footer hash verifies payload tampering at runtime, and every
+  download (stub, upgrade, brew/PyPI/install.sh) is verified against `checksums.txt`
+- **AES-256-GCM encryption**: optional payload encryption with external key (`--encrypt` / `--decrypt-key`)
+- **Namespace isolation**: user/mount namespaces + optional seccomp on Linux; App Sandbox on macOS; process isolation on Windows
+- **Ephemeral `selftest`**: run an untrusted `.de` in a throwaway sandbox first
+- **Delta updates (SISR)**: the stub verifies an embedded Ed25519 signature at cold start
+- **SBOM**: `daedalus inspect --sbom` lists exactly what a `.de` contains
+- **Signed SBOM attestations**: `daedalus attest app.de` writes an in-toto statement
+  whose Ed25519 signature covers *both* the SBOM and the SHA-256 of the whole file.
+  `daedalus attest app.de --verify` re-checks it offline against the local trust store
+
+### Attestation threat model
+
+What `daedalus attest` actually guarantees, and what it does not:
+
+- **Covers the SBOM.** The signature is computed over a canonical envelope of
+  `(file digest, SBOM)`, so changing a version string in the SBOM invalidates the
+  signature. An attacker cannot substitute a false inventory.
+- **Covers the whole file, stub included.** The digest is over every byte of the
+  `.de`, not just payload and metadata, so a substituted launcher is detected.
+  (`daedalus sign` signs `payload || metadata || footer` only; the attestation is
+  deliberately broader.)
+- **Strict verification.** `verify_strict` rejects small-order keys and non-canonical
+  signatures per ZIP-215.
+- **Offline.** Verification needs only a trusted public key. No CA, no network, no
+  transparency log, no clock.
+- **Not a timestamp or a transparency guarantee.** An attestation says who signed
+  *what bytes*; it does not prove the key was not compromised, nor that no other
+  valid signature exists for different bytes. There is no revocation list. If you
+  need key lifecycle, manage keys outside the tool.
+
+Tests that enforce the above: `signature_covers_sbom_so_tampering_breaks_verification`,
+`file_digest_covers_the_stub_region`, `strict_verification_rejects_small_order_key_zip215`
+in `daedalus-cli/src/commands/attest.rs`.
+
+Trust model: distributes through the same channels auditors already trust
+(crates.io, Homebrew, PyPI) rather than piping random binaries, and ships the
+verify/sign/trust story built in, not as an afterthought.
+
+## Development
+
+```bash
+# Format check
+cargo fmt --check
+
+# Lint (per-crate, see AGENTS.md)
+cargo clippy -p daedalux-core --all-targets -- -D warnings
+cargo clippy -p daedalus-stub --all-targets -- -D warnings
+cargo clippy -p daedalux --all-targets -- -D warnings
+
+# Tests
+cargo test --workspace
+```
+
+See [CODE_STYLE.md](CODE_STYLE.md) for Rust style guidelines and [AGENTS.md](AGENTS.md) for build constraints.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/my-feature`)
+3. Commit with signed commits (`git commit -S -m "feat: ..."`)
+4. Push and open a pull request
+
+## License
+
+MIT - see [LICENSE](LICENSE) for details.
+
+## Community
+
+- [GitHub Issues](https://github.com/Encapsul/daedalus/issues) - report bugs or request features
+- `daedalus feedback --browser` - open the feedback page quickly

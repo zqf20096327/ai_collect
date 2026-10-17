@@ -1,0 +1,125 @@
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://github.com/vanities/swiftbible">
+    <img src="icon_assets/Icon-Light-1024×1024.png" alt="icon" width="300">
+  </a>
+
+  <h3 align="center">swiftbible</h3>
+
+  <p align="center">
+    open source bible app with multiple translations
+    <br />
+  </p>
+</p>
+
+SwiftBible is an iOS application that provides users with multiple Bible translations, beautifully designed and developed using the SwiftUI framework. The app allows users to easily access and read the sacred texts, enabling them to deepen their understanding of the scriptures and strengthen their faith.
+
+## Supported Translations
+
+- **King James Version (KJV)** - The classic 1611 translation
+- **American Standard Version (ASV)** - A highly literal 1901 translation, respected for scholarly accuracy
+- **World English Bible (WEB)** - A modern public domain translation based on the ASV with contemporary English
+
+## Apple Intelligence Commentary
+
+![Streaming explanation powered by Apple Intelligence](github_assets/apple-intel-commentary.gif)
+
+## Screenshots (iOS)
+
+<img src="github_assets/bible.png" alt="screenshot" width="300"> <img src="github_assets/verse.png" alt="screenshot" width="300"> <img src="github_assets/select_verse.png" alt="screenshot" width="300"> <img src="github_assets/add_note.png" alt="screenshot" width="300"> <img src="github_assets/devo.png" alt="screenshot" width="300"> <img src="github_assets/settings.png" alt="screenshot" width="300">
+
+## Screenshots (Android)
+
+Built with Jetpack Compose.
+
+<img src="github_assets/android/01_bible_books.png" alt="Android - books list" width="220"> <img src="github_assets/android/02_chapter_reading.png" alt="Android - chapter reading" width="220"> <img src="github_assets/android/03_daily_devotional.png" alt="Android - daily devotional" width="220"> <img src="github_assets/android/04_search.png" alt="Android - search" width="220"> <img src="github_assets/android/05_more_overview.png" alt="Android - more menu" width="220"> <img src="github_assets/android/07_settings.png" alt="Android - settings" width="220">
+
+## Apple Watch
+
+Read today's devotional straight from your wrist.
+
+<img src="github_assets/watch-app.png" alt="Apple Watch app showing the daily devotional" width="260">
+
+## Home Screen Widget
+
+Glance at the latest devotional from your iPhone Home Screen or Lock Screen.
+
+<img src="github_assets/widget.png" alt="Home Screen widget showing today's devotional" width="420">
+
+## Download
+
+- **App Store (iOS):** <https://apps.apple.com/us/app/bible-kjv-swiftbible/id6670373108>
+- **Google Play (Android):** <https://play.google.com/store/apps/details?id=biz.am2.swiftbible>
+- **TestFlight beta:** <https://testflight.apple.com/join/MHYwBxpQ>
+
+## Features
+
+- Elegant and intuitive user interface designed with SwiftUI
+- Multiple Bible translations (KJV, ASV, WEB) with easy switching
+- Complete Old and New Testaments for all translations
+- Optional Apocrypha and Book of Enoch
+- Light and dark mode support to suit your reading preferences
+- Easy navigation between books, chapters, and verses
+- Daily devotionals, written by Hermes 405B
+- Adjustable font size and font selection for improved readability
+- Highlight and copy verses
+- Add notes to your favorite verses and quick access them
+- Share verses with friends and family via social media, email, or text messages
+- Search functionality to quickly find specific passages or keywords
+- Chapter and verse summaries
+- Shows Jesus's words in <font color="red">Red</font>
+- Long press a verse to fetch AI-powered explanations and context
+
+## Upcoming Features
+
+- Additional translations
+
+## Requirements
+
+- iOS 18.0 or later
+- Xcode 16 or later
+- Swift 5 or later
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/vanities/swiftbible.git
+   ```
+
+2. Open the project in Xcode:
+
+   ```bash
+   cd swiftbible
+   xed .
+   ```
+
+3. Build and run the app on the simulator or your iOS device.
+
+## Usage
+
+Upon launching the app, users will be greeted with a list of books from the Bible. Selecting a book will display its chapters, and selecting a chapter will show the corresponding verses. Users can navigate between books, chapters, and verses using the provided navigation controls.
+
+To search for a specific passage or keyword, tap the search icon and enter the desired text. The app will display a list of matching results, which can be tapped to view the relevant verses.
+
+Adjust the font size by tapping the settings icon and selecting the desired font size. The app will automatically update the text size throughout the application.
+
+Bookmark your favorite verses by tapping the bookmark icon next to the verse. To view your bookmarks, tap the bookmarks icon in the main menu.
+
+Share verses with others by tapping the share icon next to the verse, then selecting your preferred sharing method (social media, email, or text message).
+
+## Support
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/vanities)
+
+I pay the $100/year Apple developer fee to keep this app on the App Store, so if you find it useful, please consider helping out. :)
+
+## Contributing
+
+We welcome contributions to the SwiftBible project. If you would like to contribute, please fork the repository and submit a pull request with your changes.
+
+## License
+
+SwiftBible is released under the [GNU General Public License v3.0](LICENSE).

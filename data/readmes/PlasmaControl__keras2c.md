@@ -1,0 +1,119 @@
+#######
+keras2c
+#######
+
+|Python-Publish| |Python-Versions| |Codecov| 
+
+|License| |DOI|
+
+keras2c is a library for deploying keras neural networks in C99, using only standard libraries. It is designed to be as simple as possible for real-time applications.
+
+Please cite `this paper <https://doi.org/10.1016/j.engappai.2021.104182>`_ if you use this work in your research:
+
+.. code-block:: bibtex
+
+    R. Conlin, K. Erickson, J. Abbate, and E. Kolemen, “Keras2c: A library for converting Keras neural networks to real-time compatible C,” 
+    Engineering Applications of Artificial Intelligence, vol. 100, p. 104182, Apr. 2021, doi: 10.1016/j.engappai.2021.104182.
+
+Installation
+************
+
+**Recommended Installation**
+
+The modern way to install keras2c is via pip:
+
+.. code-block:: bash
+
+   pip install keras2c
+
+To use the original/stable version, use the Release v1.0.2 (https://github.com/PlasmaControl/keras2c/releases/tag/v1.0.2) with the command:
+
+.. code-block:: bash
+
+    git clone git@github.com:PlasmaControl/keras2c.git --branch v1.0.2
+
+For Windows, make sure that you have **gcc** installed. We recommend **CYGWIN** with make and gcc.
+
+Quickstart
+**********
+
+keras2c can be used from the command line:
+
+.. code-block:: bash
+
+    python -m keras2c [-h] [-m] [-t] model_path function_name
+
+    A library for converting the forward pass (inference) part of a keras model to
+        a C function
+
+    positional arguments:
+      model_path         File path to saved keras .h5 model file
+      function_name      What to name the resulting C function
+      
+    optional arguments:
+      -h, --help         show this help message and exit
+      -m, --malloc       Use dynamic memory for large arrays. Weights will be
+                         saved to .csv files that will be loaded at runtime
+      -t , --num_tests   Number of tests to generate. Default is 10
+
+
+It can also be used within a python environment:
+
+.. code-block:: python
+
+    from keras2c import k2c
+    k2c(model, function_name, malloc=False, num_tests=10, verbose=True)
+
+For more information, see `Installation <https://f0uriest.github.io/keras2c/installation.html>`_ and `Usage <https://f0uriest.github.io/keras2c/usage.html>`_
+
+
+Supported Layers
+****************
+- **Core Layers**: Dense, Activation, Dropout, Flatten, Input, Reshape, Permute, RepeatVector, ActivityRegularization, SpatialDropout1D, SpatialDropout2D, SpatialDropout3D
+- **Convolution Layers**: Conv1D, Conv2D, Conv3D, Cropping1D, Cropping2D, Cropping3D, UpSampling1D, UpSampling2D, UpSampling3D, ZeroPadding1D, ZeroPadding2D, ZeroPadding3D
+- **Pooling Layers**: MaxPooling1D, MaxPooling2D, AveragePooling1D, AveragePooling2D, GlobalMaxPooling1D, GlobalAveragePooling1D, GlobalMaxPooling2D, GlobalAveragePooling2D, GlobalMaxPooling3D, GlobalAveragePooling3D
+- **Recurrent Layers**: SimpleRNN, GRU, LSTM, SimpleRNNCell, GRUCell, LSTMCell
+- **Embedding Layers**: Embedding
+- **Merge Layers**: Add, Subtract, Multiply, Average, Maximum, Minimum, Concatenate, Dot
+- **Advanced Activation Layers**: LeakyReLU, PReLU, ELU, Softmax, ReLU
+- **Normalization Layers**: BatchNormalization
+- **Noise Layers**: GaussianNoise, GaussianDropout, AlphaDropout
+- **Layer Wrappers**: TimeDistributed, Bidirectional
+  
+ToDo
+****
+- **Core Layers**: Lambda, Masking
+- **Convolution Layers**: SeparableConv1D, SeparableConv2D, DepthwiseConv2D, Conv2DTranspose, Conv3DTranspose
+- **Pooling Layers**: MaxPooling3D, AveragePooling3D
+- **Locally Connected Layers**: LocallyConnected1D, LocallyConnected2D
+- **Recurrent Layers**: ConvLSTM2D, ConvLSTM2DCell
+- **Merge Layers**: Broadcasting merge between different sizes
+- **Misc**: models made from submodels
+
+Contribute
+**********
+
+- Documentation: `<https://f0uriest.github.io/keras2c/>`_
+- Issue Tracker: `<https://github.com/f0uriest/keras2c/issues>`_
+- Source Code: `<https://github.com/f0uriest/keras2c/>`_
+  
+License
+*******
+
+The project is licensed under the LGPLv3 license.
+
+.. |Codecov| image:: https://codecov.io/gh/f0uriest/keras2c/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/f0uriest/keras2c
+    :alt: Code Coverage
+.. |Python-Publish| image:: https://github.com/PlasmaControl/keras2c/actions/workflows/python-publish.yml/badge.svg
+    :target: https://github.com/PlasmaControl/keras2c/actions/workflows/python-publish.yml
+    :alt: Upload Python Package
+.. |Python-Versions| image:: https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue
+    :target: https://github.com/PlasmaControl/keras2c
+    :alt: Supported Python Versions
+.. |License| image:: https://img.shields.io/github/license/f0uriest/keras2c
+    :target: https://github.com/f0uriest/keras2c/blob/master/LICENSE
+    :alt: License: LGPLv3
+.. |DOI| image:: https://zenodo.org/badge/193152058.svg
+    :target: https://zenodo.org/badge/latestdoi/193152058
+    :alt: Please Cite Keras2c!

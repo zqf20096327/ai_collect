@@ -1,0 +1,168 @@
+<div align="center">
+
+<img src="assets/cover.png" alt="dsh-livechat 封面" width="720" />
+
+# dsh-livechat
+
+[![version](https://img.shields.io/badge/version-0.6.10-blue)](https://github.com/huashenglian/dsh-livechat)
+[![license](https://img.shields.io/badge/license-MIT-green)](#许可证)
+[![platform](https://img.shields.io/badge/platform-DeepSeek%20Harness-orange)](https://github.com/deepseek-ai)
+
+**给 [DeepSeek Harness](https://github.com/deepseek-ai)（`dsh`）Web 对话区叠加 B 站风格弹幕的插件。**
+
+围观 agent 工作：用户消息、回复完成、工具调用、任务完成时，预设弹幕（可选 LLM 生成）横向飘过对话区——就像看直播一样。
+
+`中文` · [English](./README.en.md)
+
+[安装](#安装) · [功能](#功能) · [模块文档](#模块文档) · [架构](#架构)
+
+</div>
+
+---
+
+## 安装
+
+插件是 **bundle**：自带 `cordis.patch.yml`，自我激活——一条命令，无需手动改 patch。
+
+```bash
+# 本地目录安装
+dsh plugin --profile web add ./dsh-livechat
+
+# npm 安装（预构建，免 allowBuilds 构建授权）
+dsh plugin --profile web add dsh-livechat
+
+# GitHub 安装
+dsh plugin --profile web add github:huashenglian/dsh-livechat
+
+# tarball 安装（pnpm pack / npm pack 打包后）
+dsh plugin --profile web add ./dsh-livechat-0.2.0.tgz
+```
+
+重启 `dsh web` 后打开 <http://127.0.0.1:3080>。弹幕覆盖层与浮动控制球会出现在对话区上方。
+
+> [!NOTE]
+> bundle 自带 `cordis.patch.yml` 自我激活（`insert id: livechat`）。**不要**在 profile 的 patch 里重复 insert——二次 insert 启动时会报 `duplicate loader entry id: livechat`。
+
+若还没有 `dsh` CLI，可直接启动 web 服务：
+
+```bash
+npx @deepseek-ai/dsh web
+```
+
+### 快速健康检查
+
+```bash
+curl http://127.0.0.1:3080/api/danmaku/health
+# {"ok":true,"name":"dsh-danmaku","version":"0.6.10"}
+```
+
+---
+
+## 它做什么
+
+当 agent 发送消息、回复完成、调用工具或完成任务时，一串弹幕飘过对话列——就像看直播。预设包覆盖通用 / 编程 / 闲聊氛围，可选 LLM 按节流生成即时、贴合上下文的吐槽。拖球提供快捷控制；设置卡可调一切。
+
+![弹幕实际演示](assets/danmaku-demo.png)
+
+*agent 工作时弹幕飘过对话区——多轨道、加权配色、右上浮动控制球。*
+
+---
+
+## 功能
+
+| 模块 | 覆盖内容 | 文档 |
+|---|---|---|
+| **覆盖层与渲染** | `shell.overlay` 挂载、DOM 渲染器、多轨道防碰撞、防遮挡渐隐、渲染后端链 | [overlay-and-rendering.zh-CN.md](docs/overlay-and-rendering.zh-CN.md) |
+| **预设包与 LLM** | 三套预设包、事件触发抽样、疲劳去重、预设功能总开关（关闭后仅剩 LLM）、可选 LLM 生成（smart/interval/toolcall 唤醒）、风格模板 | [presets-and-llm.zh-CN.md](docs/presets-and-llm.zh-CN.md) |
+| **交互** | 拖球、悬停暂停、点击详情（复制/屏蔽/删除）、手发弹幕、热度条、欢迎与任务完成效果 | [interaction.zh-CN.md](docs/interaction.zh-CN.md) |
+| **分会话弹幕库** | 分会话 `.jsonl` 弹幕池、历史回放（衰减+点赞加权）、归档/恢复、应用内池编辑器 | [session-pools.zh-CN.md](docs/session-pools.zh-CN.md) |
+| **礼物特效** | 三栏大模态（左礼物库 / 中素材库 / 右配置，分界线可拖动且尺寸长期记忆）、左列搜索 + 单分类下拉（bilibili / 自定义，父子同浮窗）、中栏工具条（房间号提取 + 导入▾ + 图标大小 + 新建文件夹 + 清空素材）、素材即加即用（无需绑定）、素材卡点击显示特效位置（点网格空白取消选中）、右栏基础含全局/当前素材动画大小、「+」/红色「×」、默认 3 张礼物卡（总开关默认关、隐私零房间号） | [gift-effects.zh-CN.md](docs/gift-effects.zh-CN.md) |
+| **配置与 API** | 设置卡 UI、全部配置字段（默认值+范围）、完整 HTTP API 参考 | [configuration.zh-CN.md](docs/configuration.zh-CN.md) |
+
+### 亮点
+
+- **三种布局**：滚动、顶部固定、底部固定——按权重生成
+- **防遮挡**：阅读时覆盖层变暗，热闹时亮起
+- **LLM 安全降级**：生成失败→静默降级预设，无报错弹窗（预设总开关关闭时不再降级，只剩 LLM）
+- **分会话记忆**：点赞/回放过的弹幕会重现；删除会话自动清理池
+- **Chromium 优先**：为 Edge / Chrome 调优；`translate3d`、页面 `hidden` 暂停、同屏上限
+- **暂停不消失**：悬停/详情锁定的弹幕会一直留在画面，直到恢复滚动并离开范围
+- **关弹幕即关插件**：关掉「启用弹幕」后任何弹幕、礼物特效、礼物提示都不再触发，正在播放的礼物动画立即删除；礼物特效另有自己的 `giftEnabled` 闸门
+- **配置不再重置**：每次保存同时写本地镜像（`$DSH_HOME/danmaku-config.json`）与 `settings.yaml` 里的精简 `danmaku:` 段；启动按「镜像 → settings → 默认」解析，重启不会丢配置
+- **会话显名称**：弹幕库编辑器用 dsh 的真实会话名标注每个弹幕池，不再是截断的 sessionId
+
+---
+
+## 最近迭代更新
+
+> 完整版本历史见 [`docs/version-history.md`](https://github.com/huashenglian/dsh-livechat)。以下是 0.6.x 的主要迭代：
+
+| 版本 | 主要变化 |
+|---|---|
+| 0.6.0 | 礼物模块 UX 重构：单入口大模态（素材仓库 / 特效位置 / 基础 / 测试），默认 3 张礼物卡 |
+| 0.6.1 | 权重编辑即时生效 + 刷新写失败上报 |
+| 0.6.2 | 悬浮球越界坐标夹取修复——持久化位置不再隐藏悬浮球 |
+| 0.6.5 | 礼物模态三栏重构：可拖动分界线 + 尺寸长期记忆、素材库改中栏工具条面板 |
+| 0.6.6 | 礼物模态 UI 打磨：卡片定高、触发行滑块弹性同排、导入合并为单卡 |
+| 0.6.7 | 素材卡选中高亮 + 总开关门控置灰、渲染后端默认 `auto` 客户端自适应、深色主题原生 `select` 弹层修复、动画大小 / 图标大小、显示区域应用后弹幕越入标题栏修复 |
+| 0.6.8 | 三后端窗口 resize 自适应、悬浮球按视口比例重定位、桌面端标题栏禁区 |
+| 0.6.9 | 设置「更多」菜单：重置所有配置 / **清除所有缓存（礼物素材还原为默认：内置素材 + 默认礼物卡）**，「更多」浮窗背景与设置窗口同色并跟随主题；礼物库**搜索在左 + 单个分类下拉在右**（父子两级同浮窗，bilibili / 自定义 + 金瓜子 / 银瓜子）+ **素材即加即用**（无需绑定，触发与位置都直接挂在素材上）、拖点自定义特效位置（左中 / 右中 / 自定义）、点网格空白取消选中；关闭「启用弹幕」= 关闭插件（任何弹幕 / 礼物特效 / 礼物提示都不再触发，正在播放的礼物动画立即删除），`giftEnabled` 仍是礼物模块自身的闸门；礼物提示弹幕豁免同屏软上限、特效真正上屏后才发；pop 菜单越界夹取、第二条 resize 路径合并 |
+| 0.6.10 | **所有功能开关改为滑动开关**（悬浮球快捷面板 / 设置卡 / 礼物模态，滑轨 + 滑块动效，禁用态置灰）；**弹幕库编辑器左侧每个会话卡片新增 × 删除按钮**——点击弹二次确认，确认后只删除该会话的活跃 + 归档弹幕缓存（其他会话不受影响，`DELETE /api/danmaku/pool/session`）；修复设置卡弹幕库分区「活跃 0」恒为 0 的问题（原用不存在的探针会话取统计，现读真实会话列表，活跃 / 归档均为真实条目数，关闭弹幕库编辑器后自动刷新）；**「弹幕 Live Chat」底栏「保存」成为所有子窗口的唯一落盘口**——预设包编辑器移除自己的保存按钮、只改草稿，撤销只有底栏「撤销」或直接关闭该窗口两条路；**删预设包先暂存、后落盘**（二次确认 → 只从草稿移除，点底栏保存才真正删除，被删包立即停止抽样）；「更多」菜单改名 **重置所有参数 / 全部初始化**（确认框写清各自范围）；**修复设置卡左侧导航点击卡顿**（分区高亮闪烁原本逐元素强制重排，点击要阻塞 2-4 秒才跳转，现只重排一次，点击后 36-73ms 内开始滚动） |
+
+更早的里程碑还包括表情库（导入 / 权重 / manifest）、显示区域编辑器、高级弹幕（反向滚动），以及可选 LLM 的 smart / interval / toolcall 唤醒模式。
+
+### 桌面端支持
+
+**v0.6.8 起正式支持 DeepSeek Harness 桌面端（Electron）：**
+
+- 桌面端悬浮球不会进入 Windows 标题栏条带（`--dsh-windows-titlebar-height` 禁区）；
+- 弹幕显示区域随窗口 resize 自适应；
+- 本轮其它 0.6.8 行为：resize 后**在屏弹幕保持原坐标飞完**（新弹幕按新尺寸诞生）；悬浮球**按视口比例**持久化重定位（钳制优先于比例，旧像素记录一次性迁移）。
+
+![桌面端效果](assets/desktop-danmaku.png)
+
+---
+
+## 架构
+
+```
+dsh-livechat/
+├─ package.json              # dsh.bundle + dsh.client 声明
+├─ cordis.patch.yml          # 自激活 bundle 层（insert id: livechat）
+├─ lib/
+│  ├─ index.js               # Host：settings 命名空间、session/event 触发环、HTTP 路由、可选 LLM
+│  ├─ client.js              # Client：shell.overlay 覆盖层 + 设置卡 + DOM 渲染器 + 拖球
+│  ├─ presets.js             # 共享：预设包、抽样、轨道碰撞纯函数
+│  └─ emoji-lib.js           # 表情库：文件夹、导入（git/zip）、权重、manifest
+├─ tests/presets.test.js     # 单元测试（node --test）
+├─ docs/                     # 模块文档（英文 *.md / 中文 *.zh-CN.md）
+└─ assets/                   # 演示截图与封面图
+```
+
+- **Host**（`lib/index.js`）：注册 `danmaku` settings 命名空间，观测 `session/event` 进入触发环形缓冲，提供 config/trigger/LLM/pool HTTP 路由，可选经配置的 LLM 生成弹幕。
+- **Client**（`lib/client.js`）：自包含 `window.__ModuleLoader__` 工厂——在 `shell.overlay` 挂载 `pointer-events:none` 覆盖层，DOM 渲染（`translate3d`），驱动拖球、设置卡（`settings.plugin.item`）、池编辑器。
+- **共享**（`lib/presets.js`）：预设包、加权抽样、布局/颜色选取、轨道碰撞检查——全为纯函数，有单元测试。
+
+渲染器接口对齐设计文档（`参考文档/danmaku-renderer-design.md`）。首版发布 **L5 DOM** 后端；架构预留平滑升级到 WebGL2 / Worker+WebGL2，业务层不变。
+
+### 测试
+
+```bash
+node --test tests/presets.test.js
+```
+
+---
+
+## 卸载
+
+```bash
+dsh plugin --profile web remove dsh-livechat
+```
+
+会移除依赖与 bundle 条目。若服务仍在运行时卸载，会一并清理弹幕库缓存（`~/.dsh/danmaku-pools/`）。也可在「库编辑器」右上角用红色「清空弹幕库」一键删除全部缓存。
+
+---
+
+## 许可证
+
+MIT

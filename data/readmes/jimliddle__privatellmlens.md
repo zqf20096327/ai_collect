@@ -1,0 +1,203 @@
+# PrivateLLMLens
+
+Current application release: **2.3.0**.
+
+PrivateLLMLens is a single-file browser interface for local Ollama, llama.cpp and optional in-browser WebGPU models. It works on desktop and Android/Termux without an application backend.
+
+Try the hosted version: **https://jimliddle.github.io/privatellmlens/**
+
+Alternatively, download `index.html`. Serve it from `localhost`, `127.0.0.1`, or HTTPS for PWA installation and consistent browser storage.
+
+## Highlights
+
+- Streaming Ollama and OpenAI-compatible llama.cpp chat
+- Multiple IndexedDB-backed conversation threads with editable system prompts
+- Encrypted persistent document workspaces for PDF, DOCX, PPTX, text, CSV, HTML, Python and JSON
+- Direct-context, hybrid BM25 + local semantic retrieval, and question-directed whole-document analysis
+- Multiple documents per thread, reusable without reattaching or re-extracting
+- Page, slide and line-level citations with an exact source-passage viewer
+- Ollama vision-model image attachments
+- Explicit 8K, 16K and 32K context profiles; 4K utility calls
+- Active local/cloud request and document-processing cancellation, with responses bound to their original thread
+- Encrypted persistent memories with separate use and learning controls
+- Schema-driven local tool registry for calculator, date/time, encrypted document search/read and JSON inspection; Web Research can combine these with Tavily
+- Optional Tavily search, Web Research, Perplexity, OpenAI image generation and explicit Gemini long-context processing
+- Optional native Adreno GPU acceleration through llama.cpp/OpenCL on supported Android devices
+- Optional in-browser Qwen3.5 0.8B and 2B WebGPU models
+- Markdown, syntax highlighting, one-tap response copying, regeneration, branching, search, conversation JSON export, encrypted workspace backups and PDF export
+- Responsive compact composer with Automatic, Compact and Desktop layout modes
+- Embedded PWA manifest and icon
+
+## Single-file design
+
+The interface, styles, application logic, PWA manifest and icon live in `index.html`. Local inference requests go directly from the browser to Ollama or llama.cpp. Optional cloud calls go directly to the selected provider only when enabled.
+
+Browser dependencies are loaded from CDNs: PDF.js, JSZip (DOCX/PPTX), Marked, DOMPurify, Highlight.js, Font Awesome, fonts, and the optional WebGPU/semantic-retrieval runtimes. PDF.js 6.4.299 is loaded lazily with a version-matched legacy worker, character maps and standard-font assets; JavaScript evaluation is disabled while text extraction and page citations remain available. DOMPurify 3.4.17 and Marked 18.1.1 are pinned. The first DOCX or PPTX use needs JSZip to have loaded; normal browser caching can reuse it afterward. The first hybrid document retrieval downloads the small q8 MiniLM embedding model and related tokenizer/config assets (approximately 25 MB in total); normal browser caching reuses those assets afterward.
+
+## Quick start with Ollama
+
+1. Start Ollama and install a model:
+
+   ```sh
+   ollama pull qwen3:4b
+   ollama serve
+   ```
+
+2. Open the hosted application or serve the downloaded file.
+3. Confirm the header reports **Ollama connected**.
+4. Select a model and start chatting.
+
+PrivateLLMLens discovers Ollama models through `/api/tags` and sends chat to `/api/chat`. It separately discovers a llama.cpp server through `/v1/models` on port 8080 and translates OpenAI-compatible streaming into the same internal format.
+
+## Document workspaces
+
+Ordinary document attachments are extracted once, encrypted with AES-256-GCM, stored in IndexedDB, and associated with the current thread. A SHA-256 content hash prevents duplicate storage. Branching a conversation copies and re-encrypts its document workspace for the new thread.
+
+Three strategies are available:
+
+- **Automatic** sends documents in full when they fit the selected context. Oversized targeted questions use hybrid local retrieval; oversized whole-document requests use question-directed map analysis.
+- **Exact / targeted** retrieves the most relevant source passages when the workspace is too large.
+- **Whole-document analysis** examines all document sections against the question before synthesis.
+
+### Hybrid local retrieval
+
+For oversized targeted questions, PrivateLLMLens combines two local retrieval signals:
+
+- **BM25 lexical ranking** handles exact words, identifiers, model names, code symbols and unusual technical terms well.
+- **Semantic ranking** uses `Xenova/all-MiniLM-L6-v2` locally in a dedicated WASM worker, so differently worded passages can still match the meaning of the question.
+
+Whole-document analysis processes every section, then combines all relevant findings through bounded reduction passes when they exceed the final context budget. Coverage is shown on the response; findings are not silently dropped to fit. Oversized individual text lines are split while retaining their source line number.
+
+The two rankings are combined using reciprocal-rank fusion, followed by a lightweight MMR-style diversification pass to avoid spending the context budget on several near-duplicate or adjacent chunks.
+
+Semantic indexing is lazy: attaching a document does not immediately run the embedding model. The first targeted retrieval builds embeddings for that document, quantises the normalised vectors to compact signed 8-bit values, and stores them inside the existing encrypted document payload. Later queries reuse the cached encrypted index. Conversation branches preserve the semantic index when the workspace is copied and re-encrypted.
+
+No document text or query is sent to an external embedding API. Embedding inference runs locally in the browser. If the worker, WebAssembly runtime, model load, or embedding inference is unavailable on a device, retrieval automatically falls back to local BM25 rather than blocking document Q&A.
+
+Context budgeting reserves room for the system prompt, memories, conversation and answer. Retrieved passages retain provenance. Citations open the exact decrypted page, slide or line range locally.
+
+Supported local workspace formats:
+
+- PDF, with page references
+- DOCX, including ordered paragraphs, headings, lists, tables, headers, footers, footnotes, endnotes and explicit page-break markers
+- PPTX, including slide text, tables, speaker notes and available image descriptions
+- Text, CSV, HTML, Python and JSON, with line references
+
+Legacy binary `.doc` and `.ppt` files are not parsed in-browser; convert them to DOCX, PPTX or PDF. DOCX extraction does not OCR image-only documents, and PPTX extraction does not visually interpret undescribed images, diagrams or chart graphics.
+
+Attachments are explicitly marked as untrusted data so their contents cannot override application instructions. Gemini Long Context remains a separate, explicit cloud option and never activates automatically.
+
+## Android Adreno GPU provider
+
+Reproducible Termux build instructions, portable scripts, model profiles and troubleshooting are in [`android-termux/`](android-termux/README.md).
+
+Tested Galaxy Z Fold 8 results:
+
+| Profile | Model | Context | Prompt | Generation |
+| --- | --- | ---: | ---: | ---: |
+| `qwen3-4b` | Qwen3 4B Q4_K_M | 32K | 287 tok/s | 19.8 tok/s |
+| `mistral-7b` | Mistral 7B Q4_K_M | 16K | 147 tok/s | 13.2 tok/s |
+| `deepseek-r1-8b` | DeepSeek-R1/Qwen3 8B Q4_K_M | 8K | 141 tok/s | 11.5 tok/s |
+| `gemma4-e4b` | Gemma 4 E4B Q4_0 | 8K | 203 tok/s | 17.7 tok/s |
+
+The Android launcher runs one heavyweight inference backend at a time to avoid mobile memory pressure. It also restricts both backends to one model/request slot and holds a Termux wake lock while running.
+
+```sh
+privatellmlens                    # use the remembered backend
+privatellmlens --gpu qwen3-4b    # switch to GPU and remember it
+privatellmlens --ollama          # switch to Ollama and remember it
+privatellmlens --gpu-list
+privatellmlens --stop
+```
+
+The default is Ollama. After switching once, plain `privatellmlens` continues using the remembered backend. Never run a large Ollama model and a large llama.cpp GPU model concurrently on the phone.
+
+## Ollama origins
+
+The browser origin must be allowed to access Ollama. A broad personal-machine configuration is:
+
+```sh
+OLLAMA_ORIGINS="*" ollama serve
+```
+
+This permits any website in the browser to attempt local Ollama requests. Prefer an origin-specific allowlist such as `http://127.0.0.1:8765` where practical, then restart Ollama.
+
+## Context profiles
+
+- **8K Performance:** lower KV-cache use and faster prompt handling
+- **16K Balanced:** default general-purpose Ollama context
+- **32K Maximum / deep documents:** deeper conversations and document work
+- **4K Utility:** automatically used for small classification, extraction and summarisation calls
+
+Conversation History controls stored message count; Model Context controls Ollama `num_ctx`. llama.cpp GPU contexts are fixed by the active server profile.
+
+## Memories
+
+**Use Memories** is enabled by default. It decrypts and ranks active facts without another inference call, injecting at most 10 memories and approximately 600 tokens. **Learn Memories** is experimental and off by default; it performs idle-time local extraction and is aborted by new foreground work.
+
+Memory records contain an encrypted fact, semantic key and confidence. Exact duplicates are ignored, newer conflicting facts supersede older ones, instruction-like content and likely secrets are rejected, and storage is capped at 200 records. The manager supports manual addition, editing and deletion.
+
+## Local tools and tool schemas
+
+**Local Tools** is an explicit per-prompt mode that lets the selected private model call browser-only functions without sending tool arguments off-device. The initial registry includes a safe arithmetic evaluator, browser date/time, encrypted workspace document listing, hybrid document search, exact document reading and simple JSON-path inspection. Document tools preserve the existing source markers/citations.
+
+Each tool is defined once with a name, description, JSON parameter schema, privacy classification (`local` or `external`) and executor. Ollama receives these schemas through native tool calling. OpenAI-compatible llama.cpp receives the same function schemas, while in-browser WebGPU models use a constrained JSON action protocol as a compatibility fallback. If native tool calling is unavailable for a local-server model, PrivateLLMLens falls back to the same JSON protocol.
+
+Web Research uses the same registry and additionally exposes Tavily as an **external** `web_search` tool, with a three-search limit. Tool results are treated as untrusted data and cannot override system/application instructions.
+
+## Search and cloud features
+
+- **Web Search:** one explicit Tavily search
+- **Auto-search:** a conservative hybrid router uses deterministic rules first, then a strict low-temperature JSON decision for ambiguous requests; uncertain decisions remain local
+- **Web Research:** an explicit structured search/answer loop with up to three distinct Tavily searches, URL deduplication, global citation numbering and guaranteed final synthesis
+- **Perplexity:** search-grounded cloud answers
+- **OpenAI:** image generation
+- **Gemini:** explicit cloud long-context file processing
+
+Tavily search queries leave the device even though answer generation can remain local. Local and cloud requests share cancellation, and changing threads discards stale replies.
+
+Provider keys are stored in the WebCrypto vault. Leave a key unset to keep its integration unavailable.
+
+## Local storage and privacy
+
+PrivateLLMLens uses IndexedDB version 6 for threads, messages, encrypted memories, the WebCrypto vault, and encrypted document workspaces. Non-sensitive preferences remain in `localStorage`.
+
+Provider keys, memories, document filenames, extracted document content and cached semantic document indexes use AES-256-GCM with fresh random IVs and authenticated record identity. The non-extractable vault key is stored in IndexedDB. This protects against casual storage inspection, not malicious JavaScript already executing in the application origin. CDN dependencies remain part of the trust boundary.
+
+Browser storage is origin-scoped. Changing hostname, port, protocol or file origin creates a different storage area. The **Export chat** button creates a plain JSON conversation export, compatible with existing conversation backups. It excludes API keys, memories and documents. **Workspace backup** creates a password-encrypted `.pllbackup` file containing conversations, extracted document workspaces, cached semantic indexes, source references and memories. API keys and network endpoints are excluded from both formats.
+
+Workspace backups use a fresh salt and IV, PBKDF2-SHA256 (310,000 iterations) and AES-256-GCM. Keep the backup password: the app cannot recover it. Use **Import** to restore either format; encrypted backups are authenticated and validated before one atomic import transaction. New IDs and encryption are generated for the destination browser, and document citations are remapped. Existing data is kept. Imported preferences are allowlisted and cannot silently redirect the Ollama endpoint or install provider credentials.
+
+## PWA installation
+
+Install from HTTPS, `http://localhost`, or `http://127.0.0.1`. Browsers do not permit installation from raw `file://` URLs. Use the header install button or the browser's **Add to Home screen** action.
+
+At narrow phone widths, Settings and layout remain visible, with installation, shortcuts and fullscreen in **More actions**. Browser zoom stays enabled, form controls have associated labels, and modal dialogs retain and restore keyboard focus.
+
+On touch devices, the compact composer exposes Tools and Model as stable bottom sheets and keeps response-copy controls visible. The header layout button switches directly between Compact and Desktop; **Settings → Appearance → Layout** also offers Automatic mode, which follows screen size and pointer capability.
+
+## Development
+
+There is no application build step. Edit `index.html`, reload, and test against a local provider. Model discovery uses capability metadata when available and excludes embedding-only models from chat. A saved model must still be available; known text-only models report a clear error for image input.
+
+Development-only regression tests run with Node.js 22 or newer:
+
+```sh
+npm ci
+npm test
+npx playwright install chromium
+npm run test:browser
+```
+
+`npm run test:all` runs both suites. PDF reference fixtures are downloaded from a pinned Mozilla tag and checksum-verified; baseline hashes compare content across all 17 pages while allowing equivalent Unicode and whitespace formatting. Browser tests use synthetic provider responses rather than paid APIs. GitHub Actions runs these checks on pull requests and `main`.
+
+For browser environments where a separate test browser cannot launch, run `node tests/server.cjs` and open `http://127.0.0.1:18767/native`. This local-only harness uses a separate test database and synthetic providers to exercise streaming, tools, PDF workers/source viewing, encrypted restore and cancellation. The production HTML does not include the harness. A basic main-script syntax check is:
+
+```sh
+awk '/<script>/{inside=1;next} /<\/script>/{inside=0} inside{print}' index.html > /tmp/privatellmlens.js
+node --check /tmp/privatellmlens.js
+```
+
+## License and contributions
+
+Issues, pull requests, suggestions and stars are welcome. Security-sensitive changes should account for the single-file deployment model and the page's access to local conversations, documents and unlocked provider credentials.

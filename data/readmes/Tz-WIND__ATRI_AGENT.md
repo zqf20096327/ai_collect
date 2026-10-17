@@ -1,0 +1,434 @@
+# ATRI
+
+**本地优先的 AI Agent 框架，顺带把 DAW 也做成 Agent 能直接操作的界面。**
+
+ATRI 首先是一个可本地运行的 **AI Agent Runtime**：多 Provider LLM、工具调用、Plan / Agent / DeepResearch 模式、会话持久化、子任务、MCP、Skills、知识库、Web 搜索，以及 WebChat / OneBot11 等接入。你可以把它当成 coding agent 用——读改文件、跑终端、管 workspace、接外部工具——也可以在 Dashboard 里完成日常对话与任务编排。
+
+在此之上，ATRI 又是一个 **Agent 原生音乐工作站**。它尝试的是一条和「输入提示词，生成一段完整音频」完全不同的 AI 音乐路线：让同一个 Agent 进入 DAW 工程内部，读取时间线、轨道、clip、和声标记、MIDI notes、controller events 与自动化数据，然后把自己的判断写回底层音乐结构。
+
+换句话说，音乐只是 Agent 能力的延伸，不是项目的全部。ATRI 不把 AI 音乐创作理解为一次性吐出一段不可编辑的波形；它把工程本身变成工具面：AI 可以写 bassline、画 CC 曲线、人性化 timing 和 velocity，也可以只完成一个很小但很费手的编辑动作。最终留下来的是 MIDI、automation、工程文件和插件链，创作者可以继续播放、检查、撤销、重写。
+
+这使 ATRI 更接近一种 **Agent-first, DAW-aware** 工作流：通用 Agent 能力在前，音乐工程是它能深度操作的一类本地状态；AI 嵌入工作流，而不是绕开创作者另起一套黑箱成品。
+
+**如果这个项目对你有帮助，或者你觉得这个思路值得探索，欢迎点亮 Star。**
+
+## 项目命题
+
+大多数 AI 音乐产品把模型放在工作流之外：你描述一首歌，模型生成音频，你再决定要不要接受它。这个过程很直接，但也很难继续编辑。你无法精确地要求「把第二小节的低音提前一点」「只把弦乐的 CC11 画成渐强」「把这个和弦保留但换一个更克制的 voicing」，因为模型输出的是最终声音，而不是工程内部的可控结构。
+
+ATRI 的设计反过来：
+
+- **以 DAW 工程为生成目标**：让 AI 写入 MIDI notes、controller events、tempo / meter、和声轨、自动化和插件状态。
+- **以 LLM 做音乐工程推理**：利用语言模型对结构、意图、乐理、上下文和用户反馈的理解能力，而不是直接生成波形。
+- **以可编辑数据承接结果**：每一次生成都落在可检查、可回滚、可继续手工编辑的工程数据里。
+- **以协作而非替代为边界**：AI 可以完成整段音乐草稿，也可以只辅助画一条 CC、修一段 velocity、给出编曲思路或检查钢琴可演奏性。
+
+这里的核心不是「让 AI 一次做完音乐」，而是让 AI 成为 DAW 里的执行者、助理和共同编辑者。
+
+## 技术亮点
+
+- **完整的本地 Agent Runtime**
+  多 Provider（OpenAI 兼容 / Anthropic）、工具调用、Plan / Agent / DeepResearch 模式、会话与 timeline 持久化、子任务 / todo、MCP、Skills、Knowledge、图片转录、Web 搜索，以及 WebChat / OneBot11 / DAW Agent 接入。音乐工具只是工具面的一部分，不是唯一用途。
+
+- **Agent 直接操作 DAW 底层数据**
+  `midi_write`、`midi_diff`、`midi_batch_edit`、`studio_piano_lane_write` 等工具让 Agent 不只是聊天，而是能真实写入工程结构。它可以追加 notes、替换片段、精确编辑单个事件、批量生成人性化曲线，也可以先写和声轨再按和声生成旋律与伴奏。
+
+- **Symbolic first，而不是 waveform first**
+  ATRI 优先生成可编辑的音乐符号和工程控制数据。MIDI、CC、pitch bend、aftertouch、tempo、meter、automation 都保留为结构化数据，方便用户继续调整，也方便下一轮 Agent 读取和理解。
+
+- **Dashboard / Agent / Audio Host 共享同一工程源**
+  Python Runtime 持有工程模型，Vue Dashboard 负责可视化编辑，Rust Audio Host 负责实时播放和插件渲染。三者围绕 `data/music_workstation/project.json` 协作，而不是各自维护一份互相漂移的状态。
+
+- **实时 Rust Audio Host**
+  `atri-host` 使用 CPAL 输出音频，支持 transport 同步、内置 Basic Synth、VST3 扫描与加载、插件 state、原生插件编辑器窗口和音频设备配置。AI 写入的 MIDI 可以直接在本地 Host 中播放。Windows 下原生插件编辑器窗口通过 WebView2 承载。
+
+- **面向音乐制作的 Agent 工具链**
+  除了常规文件、终端、搜索、MCP、Skills 等 coding-agent 能力，ATRI 还提供音乐专用工具：MIDI 查询、分页 inspect、精确 diff、批量 controller 编辑、音乐库播放控制、钢琴可演奏性检查、piano lane 写入等。
+
+- **VST3 Bridge：把 Agent 嵌进宿主 DAW**
+  `atri-bridge-vst3` 以 VST3 插件形式加载到 Studio One 等宿主中，向 Dashboard 上报 transport、拍号、循环区间、选区等 host context，并在插件内提供精简的 DAW Agent 对话面。支持 `atri_studio` 与 `host_project` 两种 workspace，后者可通过 DAWproject 快照与外部 DAW 工程同步。
+
+- **可选 Neo4j 知识图谱**
+  除向量检索外，Knowledge 还可把文档与聊天中的结构化事实写入 Neo4j，按 hybrid / relevance / latest 策略检索，并注入 Agent 上下文。支持 entity / fact 全文索引、并行 single / multi-hop 查询、持久化 multi-hop expansion cache、冲突策略与 source reference 证据映射，以及可配置的检索深度、timeout 与 ranking policy。也可在 Dashboard 中手动上传文件或粘贴文本，把内容直接喂给图谱抽取流水线；Settings 可查看图谱查询诊断（耗时、cache hit、degradation 等）。
+
+- **带证据账本的 DeepResearch**
+  DeepResearch 复用同一 Agent 循环，通过独立的 `rag_search`、`graphrag_search` 和联网工具主动取证；它按 turn 共享预算、deadline 与稳定引用，可按问题需要自主派发最多 3 个受限研究子 Agent，并在 Chat / DAW Agent 中持续显示阶段、证据和额度进度。
+
+- **向量后端与文档索引生命周期**
+  Knowledge 支持 `exact` 全量扫描与可选 `hnsw` ANN sidecar（需 `hnswlib`），并提供 embedding cache。文档索引支持 `sync` / `async` 两种模式：异步模式下先落盘文档，再由本地 reconciler 后台构建 vector / fulltext / graph 索引，Dashboard 可查看索引状态并触发重建。
+
+- **可扩展的本地工作台**
+  Dashboard 包含 Chat、Studio、Music、Workspace、Knowledge、MCP、Skills、Adapters、Settings。它既是 AI 对话入口，也是 DAW、音乐库、知识库和工具管理界面。Chat 支持流式渲染与增强 Markdown；Studio 提供 arrangement / automation 编辑、piano roll 与快捷键。
+
+## 设计哲学
+
+### 1. AI 应该进入工程，而不是停在工程外
+
+如果 AI 只能给建议，它就像站在屏幕外的顾问；如果 AI 能读取和写入工程，它才开始成为工作流的一部分。ATRI 的 Agent 可以看到工程状态、调用工具、修改文件、写 MIDI、同步 Host，并把结果反馈到可视化 Studio 中。
+
+### 2. 生成结果必须可编辑
+
+音乐制作不是一次性选择题。一个可继续编辑的 MIDI clip，比一段听起来不错但难以拆开的音频更适合真实工作流。ATRI 把 AI 输出放在 notes、events、automation、lane markers 这些可修改对象上，让用户可以继续接管。
+
+### 3. LLM 适合做结构化音乐工程
+
+LLM 不擅长直接发声，但擅长理解意图、约束、上下文、风格描述、乐理关系和操作步骤。ATRI 让 LLM 做它擅长的部分：规划、推理、写结构化数据、按反馈迭代，而声音由 DAW 工程和音频 Host 产生。
+
+### 4. AI 是协作者，不是最终裁判
+
+ATRI 可以生成完整段落，但它更重要的价值是嵌入细碎的制作过程：帮你画 CC1/CC11、微调 velocity、人性化鼓组、补一个 passing chord、解释为什么某个 voicing 浑浊、把一段旋律变奏成 call-and-response。它服务的是创作过程本身。
+
+### 5. 本地优先，状态透明
+
+工程、会话、运行事件、音乐库缓存和工具输出默认保存在本地 `data/`。这让 ATRI 更像一套可以被检查和改造的工作站，而不是只能通过远端黑箱交互的服务。
+
+## 核心能力
+
+- **Agent Runtime**：支持 OpenAI 兼容接口和 Anthropic Messages API、工具调用、会话持久化、Plan / Agent / DeepResearch 模式、子任务调度、MCP、Skills、Web 搜索和文件工作区；可配置 `agent_timeout_seconds`，避免 Chat / DAW Agent 长时间无响应挂起。
+- **AI DAW / Studio**：支持轨道、MIDI clip、audio clip 占位、piano roll、tempo / meter、controller lane、automation、mixer、插件 rack、transport 和工程持久化；Studio UI 覆盖 arrangement / automation 编辑与键盘快捷键，工程写入带跨进程锁以保证并发安全。
+- **Rust Audio Host**：基于 CPAL 的本地实时音频 Host，支持内置 Basic Synth、VST3 扫描 / 加载、VST2 扫描信息、插件 state、原生插件编辑器窗口和音频设备配置。
+- **音乐库与播放器**：扫描本地音乐目录，读取元数据、封面、歌词，支持搜索、队列、播放控制和全屏播放器。
+- **Knowledge**：本地知识库导入、切分、embedding、rerank、检索和 Chat 上下文注入；可选 `exact` / `hnsw` 向量后端、文档索引 sync / async 生命周期、embedding cache；可选 Neo4j 图谱抽取与检索，支持手动导入（多文件上传与进度）、全文索引、multi-hop cache、检索 / 抽取 timeout、冲突策略、source reference，以及 Dashboard 图谱查询诊断。
+- **工程导入 / 导出**：Studio 支持导出 WAV / FLAC / MP3 / MIDI / DAWproject，也可从 `.dawproject` 导入外部 DAW 工程；Host Project 工作区通过快照目录与宿主 DAW 协作。
+- **平台接入**：内置 WebChat、OneBot11 和 DAW Agent（VST3 Bridge）适配，可用于 Dashboard 对话、QQ / Napcat 反向 WebSocket，或宿主 DAW 内嵌 Agent。
+
+## Agent 模式与 DeepResearch
+
+Chat 和 DAW Agent 共用三种全局模式；切换只影响后续 turn，正在运行的 DeepResearch 会继续使用启动时冻结的策略。
+
+| 模式 | 行为 |
+| --- | --- |
+| `plan` | 只读分析与规划，不执行写入操作 |
+| `agent` | 完整 Agent 工具能力，适合实现、编辑和执行任务 |
+| `deepresearch` | 自主拆题、检索、交叉核验并生成带来源的只读研究报告 |
+
+可以从模式菜单选择 DeepResearch，也可以输入 `/research` 或 `/deepresearch`。`rag_search` 与 `graphrag_search` 在三种模式中都是独立、可直接调用的只读工具；GraphRAG 可以接收 RAG 引用作为 anchor，也可以完全独立检索。
+
+DeepResearch 不使用每轮自动 Knowledge / GraphRAG 注入，而是显式调用 RAG、GraphRAG、`web_search` 和 `web_fetch`。搜索摘要只算 discovery 线索；网页正文读取后才会升级为正式 Web 证据。报告引用格式为 `[R1]`（RAG chunk）、`[G1]`（图事实）和 `[W1]`（网页），最终回复会重建规范的 `## Sources` 清单，并标明冲突、未知项与限制。
+
+该模式默认禁止文件编辑、终端和其他写入工具。主 Agent 会自行判断是否存在至少两个独立研究分支，再决定是否派发受限子 Agent；所有分支共享同一预算、deadline 和证据账本。只有用户明确要求“保存/导出报告”时，才会开放报告导出，且只能写入 workspace 内 `deep_research.report_directory` 指定的目录（默认 `research/`），支持 `.md`、`.txt`、`.json`，默认不覆盖已有文件。
+
+## Agent 与音乐工程
+
+ATRI 的 Agent 可以通过工具直接操作本地工程：
+
+- `studio_piano_lane_write` / `studio_piano_lane_diff`：写入或编辑 piano roll 的拍号轨、和声轨等结构性标记。
+- `midi_query` / `midi_inspect`：查看工程、轨道、clip、note、controller/event 和 velocity 统计。
+- `midi_write`：向指定轨道生成或覆盖 MIDI notes。
+- `midi_diff`：按 add / delete / update 精确修改 notes 和 MIDI events。
+- `midi_batch_edit`：批量编辑 velocity、CC、expression、modulation、pitch bend、aftertouch 等曲线。
+- `piano_playability_check`：检查钢琴 MIDI 的跨度、密度、跳进、双手拆分、手位交叉 / 舒适度上下文和可演奏性风险。
+- `music_player`：搜索音乐、播放、暂停、切歌和调整音量。
+- `studio_dawproject_import`：把 workspace 内的 `.dawproject` 导入 Music Studio。
+- `studio_export_audio`：导出当前 Studio 工程为 WAV / FLAC / MP3 / MIDI / DAWproject。
+- 文件与代码工具：读取、写入、编辑、搜索、终端命令、任务调度和 Web 搜索。
+
+典型工作流不是「生成一首歌然后结束」，而是连续迭代：
+
+```text
+用户：给这个 8 小节段落写一个 C minor synthwave bassline。
+Agent：先读取当前工程和 tempo，写入 bass MIDI，并同步到 Studio。
+
+用户：第二遍更紧一点，velocity 做一点 humanize。
+Agent：用 midi_diff 调整节奏位置，用 midi_batch_edit 处理 velocity。
+
+用户：副歌前两小节画一个 CC11 渐强，和声标出来。
+Agent：写入 expression controller curve，并在 harmony lane 添加标记。
+```
+
+MIDI 工具默认使用工程时间线上的 absolute beat。只有显式传入 `local_start` 时，时间才表示 clip-local beat。
+
+## Dashboard 页面
+
+| 页面 | 用途 |
+| --- | --- |
+| Chat | Agent 对话、流式渲染、增强 Markdown、工具卡片、thinking / reasoning timeline、会话切换、文件上下文 |
+| Studio | DAW 工程编辑、MIDI / audio clip、arrangement / automation、piano roll 快捷键、插件和 Rust Host 控制 |
+| Music | 本地音乐库、搜索、播放队列、歌词、封面和播放器 |
+| Knowledge | 知识库、文档导入、索引状态 / 重建、切分、向量检索、可选 Neo4j 图谱、多文件手动导入与上下文注入 |
+| Workspace | Agent 文件工作区浏览和编辑 |
+| Adapters | WebChat / OneBot11 接入配置 |
+| MCP | MCP server 管理、校验和热加载 |
+| Skills | 本地 `SKILL.md` 查看、编辑、导入和下载 |
+| Settings | Provider、模型池、生成参数、音频、音乐目录、Knowledge（向量后端 / 索引 / 图谱诊断）和 Agent 行为 |
+
+除 Dashboard 导航页外，**ATRI Bridge** VST3 插件会打开独立的 `daw-agent` 对话面（`/daw-agent`），用于在宿主 DAW 内直接与 Agent 协作。
+
+## 快速开始
+
+命令示例以 PowerShell 为主。
+
+### 环境要求
+
+- Python 3.11+
+- uv
+- Node.js 18+
+- Rust stable + Cargo
+- Windows 构建 `atri-host` 时建议安装 Visual Studio Build Tools，勾选 C++ 桌面开发和 Windows SDK
+
+### 安装与构建
+
+```powershell
+git clone <repo-url>
+cd ATRI
+
+uv sync --group dev
+Copy-Item config.yaml.example config.yaml
+```
+
+编辑 `config.yaml`，至少配置可用的模型 Provider。可以直接填 `api_key`、`base_url`、`model`，也可以启动后在 Dashboard 的 `Settings -> Providers` 中维护。
+
+```powershell
+Push-Location frontend
+npm ci
+npm run build
+Pop-Location
+
+Push-Location atri-host
+cargo build -p atri-host
+Pop-Location
+
+uv run python main.py
+```
+
+启动后打开：
+
+```text
+http://localhost:6185
+```
+
+首次访问如果没有可用密码，会进入 Dashboard 账号初始化流程。
+
+## 常用配置
+
+主要配置文件是 `config.yaml`，可从 `config.yaml.example` 复制生成。
+
+| 配置项 | 说明 |
+| --- | --- |
+| `providers` / `active_models` | 聊天模型 Provider 与可用模型池 |
+| `agent_mode` | 全局模式：`plan`、`agent` 或 `deepresearch` |
+| `agent_timeout_seconds` | Chat / DAW Agent 等待回复的超时时间（秒） |
+| `deep_research` | 缺口轮数、研究工具调用、网页正文、并行子 Agent、总时限、综合预留和报告导出目录；热更新只影响新 turn |
+| `embedding_model` / `rerank_model` | Knowledge 检索使用的 embedding 和 rerank 模型 |
+| `knowledge.embedding_cache_max_size` | embedding 结果缓存上限；`0` 关闭缓存 |
+| `knowledge.vector_backend` | 向量后端：`exact`（全量扫描）或 `hnsw`（持久化 ANN sidecar，需 `hnswlib`） |
+| `knowledge.ann` | HNSW / ANN 参数：`enabled`、`index_dir`、`candidate_k`、`ef_search`、`m`、`ef_construction` |
+| `knowledge.indexing` | 文档索引生命周期：`mode`（`sync` / `async`）、reconciler 间隔、batch 与 stale timeout |
+| `knowledge.graph` | Neo4j 连接、事实抽取、图谱检索、ranking policy（`hybrid` / `relevance` / `latest`）、retrieval / extraction timeout，以及 multi-hop expansion cache 预热与 path budget |
+| `trusted_directories` | workspace 与音乐目录的受信任路径白名单，首次访问未受信目录时会要求确认 |
+| `image_transcription` | 图片输入转录模型，用于把截图、谱面、错误图等转成文本上下文 |
+| `novelai` | NovelAI 图片生成工具配置 |
+| `dashboard` | Web UI 开关、监听地址、端口和账号 |
+| `audio_host` | Rust Audio Host 路径、采样率、缓冲区、音频后端和位深 |
+| `vst3_plugin_paths` / `vst2_plugin_paths` | 额外插件扫描目录 |
+| `music_directories` | 本地音乐库扫描目录 |
+| `onebot11` | OneBot11 反向 WebSocket、白名单和群聊上下文 |
+| `mcp_servers` | MCP server 配置 |
+| `skills_root` / `skills` | 本地 Skills 根目录和启用配置 |
+
+## Audio Host 与 ASIO
+
+普通构建：
+
+```powershell
+Push-Location atri-host
+cargo build -p atri-host
+Pop-Location
+```
+
+启用 ASIO：
+
+```powershell
+Push-Location atri-host
+cargo build -p atri-host --features asio
+Pop-Location
+```
+
+ASIO 构建前需要：
+
+1. 安装 Visual Studio Build Tools，包含 C++ 桌面开发和 Windows SDK。
+2. 安装 LLVM / Clang，并确保 `libclang` 可被找到。
+3. 下载并解压 Steinberg ASIO SDK。
+4. 设置环境变量：
+
+```powershell
+setx CPAL_ASIO_DIR "你的ASIOSDK放置路径"
+setx LIBCLANG_PATH "C:\Program Files\LLVM\bin"
+```
+
+重新打开终端后再构建。缺少依赖时，`asio-sys` 会在编译阶段报错。
+
+`audio_host.audio_engine` 支持：
+
+- `default`：系统默认输出设备。
+- `<host>`：指定 CPAL host 的默认设备，例如 `wasapi`。
+- `<host>::<device name>`：指定具体设备，例如 `wasapi::Speakers (Realtek USB Audio)`。
+
+`audio_host.bit_depth` 支持 `f32`、`i16`、`i24`。其中 `i24` 会优先匹配 CPAL 暴露的 `I32` / `U32` 等设备格式，实际可用性取决于声卡驱动。
+
+## ATRI Bridge VST3
+
+Bridge 插件把 Agent 嵌进宿主 DAW，并与 Dashboard 共享同一 Runtime。
+
+### 构建与打包
+
+```powershell
+Push-Location atri-host
+.\scripts\package-atri-bridge-vst3.ps1 -Release
+Pop-Location
+```
+
+产物为 `atri-host/target/release/ATRI Bridge.vst3`（debug 构建在 `target/debug/`）。将 bundle 复制到系统或 `config.yaml` 中配置的 `vst3_plugin_paths` 后，在宿主 DAW 中扫描并加载即可。
+
+手动构建时也可分两步：
+
+```powershell
+Push-Location atri-host
+cargo build -p atri-bridge-vst3 --release
+cargo run -p atri-bridge-vst3 --bin package_bridge -- --release
+Pop-Location
+```
+
+### 工作区
+
+| Workspace | 说明 |
+| --- | --- |
+| `atri_studio` | 操作 `data/music_workstation/project.json` 中的 ATRI Music Studio 工程 |
+| `host_project` | 通过 DAWproject 快照与外部宿主工程同步，适合 Studio One 等支持 DAWproject 的 DAW |
+
+`host_project` 使用快照目录协作，而不是直接 headless 控制 DAW：
+
+1. ATRI 把导出请求写到 `data/music_workstation/host_sync_requests/`。
+2. DAW 宏或辅助脚本把 `.dawproject` 导出到 `data/music_workstation/host_sync_inbox/`。
+3. 发送消息前，Bridge 可自动导入最新快照再回复。
+
+Windows 下可参考 `tools/host_dawproject/` 中的 Studio One 辅助脚本。更完整的说明见该目录下的 README。
+
+## 架构概览
+
+```text
+Vue Dashboard                    ATRI Bridge.vst3 (宿主 DAW)
+  Chat / Studio / Music / ...      DawAgent 对话面 + host context
+        |                                    |
+        | REST + WebSocket                   | /api/daw-agent/*
+        v                                    v
+Quart Dashboard  <───────────────────────────┘
+  routes / auth / settings / music / knowledge / mcp / skills
+        |
+        v
+Python Runtime
+  Agent / tools / pipeline / WebChat / OneBot11 / DawAgent
+        |
+        | JSON IPC + process management
+        v
+Rust Audio Host
+  CPAL / MIDI / VST3 / DSP / plugin editors
+        |
+        v
+Audio devices
+```
+
+可选的 Neo4j 知识图谱与向量 Knowledge 并行：抽取与检索在 `core/knowledge/graph*` 中完成，通过 Settings 配置连接、timeout、ranking policy 与 multi-hop cache；向量侧可在 `exact` 与 `hnsw` 之间切换，文档索引可由 `knowledge.indexing` 控制 sync / async 生命周期。
+
+核心数据默认写入 `data/`：
+
+- `data/sessions/`：会话历史。
+- `data/runtime/`：运行时事件、timeline 和任务状态。
+- `data/tool_outputs/`：压缩溢出的工具输出。
+- `data/knowledge/`：知识库 SQLite、向量索引 sidecar（如 `vector_indexes/`）等本地 Knowledge 数据。
+- `data/music_workstation/project.json`：Studio / Agent / Host 共享的 DAW 工程。
+- `data/music_workstation/host_sync_requests/`、`host_sync_inbox/`：Host Project 的 DAWproject 导出请求与快照收件箱。
+- `data/music_cache/`：音乐库扫描缓存。
+
+## 开发命令
+
+Python：
+
+```powershell
+uv run ruff check .
+uv run mypy core/ dashboard/
+uv run pytest --tb=short -q
+```
+
+前端：
+
+```powershell
+Push-Location frontend
+npm run lint
+npm test
+npm run build
+npm run dev
+Pop-Location
+```
+
+Rust：
+
+```powershell
+Push-Location atri-host
+cargo fmt
+cargo test --workspace
+cargo build -p atri-host
+cargo build -p atri-bridge-vst3
+Pop-Location
+```
+
+Makefile 也提供了常用目标：
+
+```powershell
+make install
+make lint
+make typecheck
+make test
+make frontend-test
+make frontend-build
+make rust-test
+make ci
+```
+
+## 项目结构
+
+```text
+ATRI/
+├── main.py                    # Python 入口
+├── config.yaml.example        # 配置示例
+├── core/
+│   ├── agent/                 # Agent 主循环、LLM、上下文和模式
+│   ├── research/              # DeepResearch 策略、预算、证据账本、报告与跨线程服务
+│   ├── tools/                 # 文件、终端、MIDI、Studio、音乐、MCP、Skills 等工具
+│   ├── pipeline/              # 平台消息处理流水线
+│   ├── platform/              # WebChat / OneBot11 / DawAgent 适配
+│   ├── knowledge/             # 文档切分、embedding、rerank、向量后端、索引生命周期、图谱与检索
+│   ├── runtime/               # timeline、task store、todos
+│   ├── plugin/                # Python 插件系统
+│   ├── host.py                # Rust Audio Host 进程管理
+│   ├── music_project.py       # DAW 工程 JSON 模型
+│   └── music_export.py        # Studio 导出（MIDI、音频、DAWproject）
+├── dashboard/
+│   ├── server.py              # Quart Dashboard
+│   ├── music.py               # Music / Studio / Host / Bridge API
+│   └── routes/                # Auth、Chat、DawAgent、Settings、MCP、Skills、Knowledge 等
+├── frontend/
+│   └── src/
+│       ├── components/chat/   # Chat UI、DawAgentPage
+│       ├── components/music/  # Music、Player、Studio、Mixer
+│       ├── components/pages/  # Workspace、Knowledge、Adapters、MCP、Skills
+│       ├── components/settings/
+│       └── composables/       # API、Auth、Chat、Music、DawHost、WebSocket
+├── atri-host/
+│   ├── atri-core/             # 音频 buffer、MIDI、tempo / time 类型
+│   ├── atri-engine/           # Session、route、transport、synth、processor
+│   ├── atri-host-bin/         # CPAL driver、IPC commands、editor host
+│   ├── atri-vst3/             # VST scanner、factory、plugin wrapper
+│   ├── atri-bridge-vst3/      # 宿主 DAW 内嵌 Agent 的 VST3 Bridge
+│   └── scripts/               # Bridge 打包脚本等
+├── tools/host_dawproject/     # Host Project 快照导出辅助（如 Studio One）
+├── tests/                     # Python 测试
+├── plugins/                   # 用户插件目录
+├── skills/                    # Skills 根目录
+├── workspace/                 # Agent 文件工作区
+└── data/                      # 本地运行数据
+```
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE)

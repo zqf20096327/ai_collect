@@ -1,0 +1,172 @@
+<div align="center">
+
+# RxBrain: Embodied Cognition Foundation Model with Joint Language-Visual Reasoning and Imagination
+
+<p align="center">
+  <em>Tencent Robotics X&nbsp;&nbsp;×&nbsp;&nbsp;Futian Laboratory&nbsp;&nbsp;×&nbsp;&nbsp;Tencent Hy Team</em>
+</p>
+
+[![arXiv](https://img.shields.io/badge/arXiv-2607.14187-b31b1b.svg)](https://arxiv.org/abs/2607.14187)
+[![Model](https://img.shields.io/badge/🤗%20HuggingFace-Model-FFD21E)](https://huggingface.co/tencent/Hy-Embodied-RxBrain-1.0)
+[![Project Page](https://img.shields.io/badge/🌐%20Project-Page-2ea44f)](https://tairos.tencent.com/openSourceModels/hy-embodied-rxbrain-1.0)
+[![Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-FFD21E)](https://huggingface.co/spaces/hugging-apps/rxbrain-embodied-cognition)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
+
+<p align="center">
+  <img src="./assets/teaser.png" width="100%" alt="RxBrain — capability overview"/>
+</p>
+
+
+
+https://github.com/user-attachments/assets/e2359703-aa0a-4179-b34e-207b422bb50e
+
+
+
+</div>
+
+---
+
+## 📌 Introduction
+
+**RxBrain** (`Hy-Embodied-RxBrain-1.0`) is a **unified multimodal foundation model for embodied cognition** —
+one model that delivers three core capabilities:
+
+- 🤖 **Embodied Understanding & Reasoning** — question answering and chain-of-thought over images and multi-frame video.
+- 🔮 **World State Prediction** — imagine the near-future frames an action produces in the physical world.
+- 🧩 **Joint Subgoal Planning** — decompose a task into steps, emitting for each step *both* the next action (language) *and* the goal image it should reach (vision).
+
+
+---
+
+## 📰 News
+
+- **[2026-07]** 🚀 We release the **fine-tuning code** for VQA, Multi Frames Generation and Interleave Generation — see [`train/`](./train).
+- **[2026-07]** 🎉 We release **Hy-Embodied-RxBrain-1.0** — the technical report, inference code and model weights.
+
+---
+## 📋 TODO
+
+* [ ] Open-source **RxBrain-Bench**, a comprehensive benchmark for embodied cognition.
+* [x] Open-source the fine-tuning code for **Visual Question Answering (VQA)**, **Multi Frames Generation**, and **Interleave Generation** — see [`train/`](./train).
+* [x] Release the **technical report**, **inference code**, and **model weights**.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Environment
+
+```bash
+git clone https://github.com/Tencent-Hunyuan/Hy-Embodied-RxBrain-1.0.git
+cd Hy-Embodied-RxBrain-1.0
+pip install -r requirements.txt
+```
+
+Requirements: **Python 3.10+**, a **CUDA GPU** (for `flash-attn`).
+
+Repository layout:
+
+```
+model/        UnifiedMoT model definition (3 streams: text / vision / generation)
+vae_model/    FLUX VAE autoencoder loader
+inference/    inference entry points  — T2I, multi-frame, VQA, interleaved planning
+train/        fine-tuning pipeline    — see train/README.md
+demo_cases/   bundled scenes for the interleaved-planning demo
+```
+
+`model/` and `vae_model/` are shared by both `inference/` and `train/`, so a
+checkpoint you fine-tune runs with the inference scripts unchanged.
+
+
+### 2. Download weights
+
+| Model | Params | Download |
+|---|:---:|---|
+| **Hy-Embodied-RxBrain-1.0** | ~6.2 B | [🤗 tencent/Hy-Embodied-RxBrain-1.0](https://huggingface.co/tencent/Hy-Embodied-RxBrain-1.0) |
+| FLUX VAE (`ae.safetensors`) | 83.8 M | Obtain from the [FLUX](https://github.com/black-forest-labs/flux) distribution |
+
+### 3. Run inference
+
+<details open>
+<summary><b>① Text-to-Image (T2I)</b></summary>
+
+```bash
+python inference/text2image.py \
+    --ckpt ./ckpts/rxbrain --vae /path/to/ae.safetensors \
+    --prompt "a watercolor painting of a cat" \
+    --height 256 --width 256 --num_steps 25 --out out.png
+
+# with classifier-free guidance
+python inference/text2image.py \
+    --ckpt ./ckpts/rxbrain --vae /path/to/ae.safetensors \
+    --prompt "a watercolor painting of a cat" \
+    --cfg_scale 5.0 --num_steps 50 --out out.png
+```
+</details>
+
+
+<details open>
+<summary><b>② Multi-Frame World-Model Rollout</b> (4 future frames from an observation)</summary>
+
+```bash
+python inference/multiframe.py \
+    --ckpt ./ckpts/rxbrain --vae /path/to/ae.safetensors \
+    --frames /path/to/obs.jpg --task "imagine the next frames" \
+    --num_frames 4 --num_steps 50 --out_dir multiframe_out
+```
+</details>
+
+<details open>
+<summary><b>③ Visual Question Answering (VQA)</b> (image(s) + question → answer text)</summary>
+
+
+```bash
+python inference/vqa.py \
+    --ckpt ./ckpts/rxbrain \
+    --images demo_cases/bridgev2_move_toy/input/obs_1.jpg \
+    --question "What objects are on the stovetop, and where is the green toy?" \
+    --max_new_tokens 256
+```
+</details>
+
+<details open>
+<summary><b>④ Run an Interleaved Embodied Planning on demo cases</b></summary>
+
+Runs interleaved planning on a bundled scene. See [`demo_cases/README.md`](./demo_cases/README.md) for more details.
+
+```bash
+CASE=umi_fold_sock
+python inference/interleave.py \
+    --ckpt ./ckpts/rxbrain --vae /path/to/ae.safetensors \
+    --frames  demo_cases/$CASE/input/*.jpg \
+    --task    "$(cat demo_cases/$CASE/prompt.txt)" \
+    --max_frames 5 --num_steps 50 --out_dir out_$CASE
+```
+
+</details>
+
+### 4. Fine-tune
+
+Fine-tuning covers **VQA / understanding**, **multi frames generation** and
+**interleave generation** — See full instructions, data formats and config reference in 
+**[`train/README.md`](./train/README.md)**.
+
+---
+
+## 📄 License
+
+Released under **Apache License 2.0**. See [`LICENSE`](./LICENSE) for details.
+
+## 📝 Citation
+
+If you find RxBrain useful in your research, please consider citing our work:
+
+```bibtex
+@article{liang2026rxbrain,
+  title={RxBrain: Embodied Cognition Foundation Model with Joint Language-Visual Reasoning and Imagination},
+  author={Liang, Haotian and Chen, Mingkang and Huang, Yufei and Guo, Yuchun and Zhu, Xiaomeng and Shi, Xiangli and Wang, Kaixuan and Mao, Yunxuan and Zhou, Weijie and Chen, Ling and others},
+  journal={arXiv preprint arXiv:2607.14187},
+  year={2026}
+}
+```
+

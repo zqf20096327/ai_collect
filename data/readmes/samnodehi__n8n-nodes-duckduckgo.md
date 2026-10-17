@@ -1,0 +1,993 @@
+# DuckDuckGo Search Node for n8n
+
+[![npm version](https://img.shields.io/npm/v/n8n-nodes-duckduckgo-search.svg)](https://www.npmjs.com/package/n8n-nodes-duckduckgo-search)
+[![npm downloads](https://img.shields.io/npm/dw/n8n-nodes-duckduckgo-search.svg)](https://www.npmjs.com/package/n8n-nodes-duckduckgo-search)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub release](https://img.shields.io/github/v/release/samnodehi/n8n-nodes-duckduckgo)](https://github.com/samnodehi/n8n-nodes-duckduckgo/releases/latest)
+[![Build](https://github.com/samnodehi/n8n-nodes-duckduckgo/actions/workflows/ci.yml/badge.svg)](https://github.com/samnodehi/n8n-nodes-duckduckgo/actions)
+
+An n8n community node for DuckDuckGo search. Search the web, find images, discover news, and explore videos — no API key required, no outbound telemetry.
+
+> ### If a search comes back with a rate-limit error, that is the node working
+>
+> DuckDuckGo rate-limits by IP address and answers a client it considers automated
+> with a human-verification page — served as **HTTP 202**, which ordinary HTTP clients
+> read as success. Nodes that do not check for it parse that page, find nothing, and
+> hand back an empty array, so a block looks exactly like a query with no results.
+>
+> This node recognises that page and says so, then **backs off locally for about a
+> minute** instead of sending requests that would only extend the block. Datacenter and
+> shared IPs — n8n Cloud, most VPS hosts, CI — hit it soonest. An empty array from this
+> node means no results, and nothing else.
+>
+> Details, and how to stay under the limit: [Bot-detection challenge](#bot-detection-challenge-rate-limiting).
+
+## ✨ Features
+
+- **Four search types**: Web, Image, News, Video
+- **AI Agent compatible**: Works as a tool in n8n AI Agent workflows (`usableAsTool: true`)
+- **No API key required**: Completely free, no registration
+- **No outbound telemetry**: No analytics or telemetry data sent anywhere — search requests go only to DuckDuckGo
+- **Structured output**: Predictable, consistent field names per operation type
+- **Fallback resilience**: News and Video searches fall back to an alternative result path on primary failure, with results clearly labeled
+- **Specific error messages**: Named errors for VQD token failures, 403 blocks, and web page parser regressions
+- **Search operators**: Advanced query syntax for Web Search (`site:`, `filetype:`, `intitle:`, etc.)
+- **Region/locale support**: Configure DuckDuckGo locale codes per operation
+- **Safe search**: Configurable per operation
+- **Optional page content extraction**: Fetch and extract the main text of result pages (Web and News, opt-in), with optional page metadata
+- **Extract Page Content operation**: Give any URL → clean main text + metadata (a "read any page" tool for AI Agents)
+- **Instant Answer operation**: Direct answers, abstracts, and definitions from DuckDuckGo's free Instant Answer API
+- **Search Suggestions operation**: Query autocomplete from DuckDuckGo's suggestion endpoint — the surface least affected by rate limiting
+- **Ranking rules**: Boost, downrank or discard results by domain or URL, applied locally to results already fetched — no extra requests, no service
+
+---
+
+## 🤔 Why this node?
+
+- **No API key or paid search API required** — uses DuckDuckGo's public search endpoints directly
+- **Works as an n8n AI Agent tool** — attach it to any Agent node; no extra setup needed
+- **Four search types in one node** — Web, Image, News, and Video from a single, consistent interface
+- **Clean JSON output designed for automation** — predictable field names, no noise, easy to wire into downstream nodes
+- **A short result set says why** — if the node returns fewer results than you asked for because something stopped it, it warns on the canvas with how many it asked for, how many it got and why, rather than handing back a quietly short list. **News and Video fetch further pages** when you ask for more than the first page holds (for News, 26–30 results a page in tests), following DuckDuckGo's own next-page pointer, dropping results DuckDuckGo repeats across pages, and stopping at five pages to spare your IP's rate limit
+- **Fallback labels for News and Video** — when results come from the fallback path, `isFallback: true` tells you so
+
+---
+
+## 📦 Installation
+
+### Via n8n Interface (recommended)
+
+1. Go to **Settings** → **Community Nodes**
+2. Enter: `n8n-nodes-duckduckgo-search`
+3. Click **Install**
+4. Restart n8n if required
+
+### Via npm
+
+```bash
+npm install n8n-nodes-duckduckgo-search
+```
+
+---
+
+## 🚀 Quick Start
+
+1. **Add Node**: Drag the **DuckDuckGo Search** node into your workflow
+2. **Choose Operation**: Select Web, Image, News, or Video search
+3. **Enter Query**: Type your search terms
+4. **Set Limits**: Adjust `maxResults` and `safeSearch` as needed
+5. **Execute**: Run your workflow
+
+---
+
+## 🔍 Operations
+
+### Web Search
+
+Searches DuckDuckGo and returns organic web results.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | string | required | Search terms |
+| `maxResults` | number | 10 | How many results to ask for (1–100). An upper bound, not a promise — DuckDuckGo may simply have fewer |
+| `safeSearch` | options | Strict | `Strict`, `Moderate`, or `Off` |
+| `region` | string | wt-wt | Locale code (e.g. `de-de`, `fr-fr`) |
+| `useSearchOperators` | boolean | false | Enable advanced operator parsing |
+| `searchOperators` | string | — | Operator string appended to query |
+| `fetchPageContent` | boolean | false | Fetch each result's page and extract its main text (opt-in; see [Page Content Extraction](#-page-content-extraction)) |
+| `pageContentMaxResults` | number | 3 | How many top results to fetch content for (when enabled) |
+| `pageContentMaxLength` | number | 2000 | Truncate extracted text to N characters (0 = no limit) |
+| `pageContentTimeout` | number | 8000 | Time allowed for each page's whole download, in ms |
+
+**Example:**
+
+```json
+{
+  "operation": "search",
+  "query": "open source AI models 2025",
+  "webSearchOptions": {
+    "maxResults": 10,
+    "safeSearch": "moderate",
+    "region": "us-en"
+  }
+}
+```
+
+**Sample output:**
+
+```json
+[
+  {
+    "position": 1,
+    "title": "Top Open Source AI Models in 2025",
+    "description": "A comprehensive overview of the leading open source AI models...",
+    "url": "https://example.com/ai-models-2025",
+    "hostname": "example.com",
+    "sourceType": "web"
+  }
+]
+```
+
+> **Note:** Web Search output does not include `snippet` (removed; use `description` instead) or `favicon` (removed; was always empty).
+
+> **Result URLs have advertising click identifiers removed.** `utm_*`, `fbclid`, `gclid`, `msclkid`, `mc_cid` and the rest of that family are stripped from `url` on Web, News and Video results, so the same page compares equal between runs and an AI Agent does not paste a tracking string into whatever it writes. Nothing else is touched: the path, the fragment, the order of the remaining parameters and every unrecognised parameter are left exactly as DuckDuckGo returned them, and a URL with no tracking in it is passed through byte-for-byte. Image results are left alone entirely, because a query string on an asset URL is often a CDN signature. See [Result URL handling](#-result-url-handling).
+
+---
+
+### Image Search
+
+Searches DuckDuckGo images and returns image metadata.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `imageQuery` | string | required | Image search terms |
+| `maxResults` | number | 10 | How many results to ask for (1–100). An upper bound, not a promise — DuckDuckGo may simply have fewer |
+| `safeSearch` | options | Strict | `Strict`, `Moderate`, or `Off` |
+
+**Example:**
+
+```json
+{
+  "operation": "searchImages",
+  "imageQuery": "mountain landscape sunset",
+  "imageSearchOptions": {
+    "maxResults": 10,
+    "safeSearch": "moderate"
+  }
+}
+```
+
+**Sample output:**
+
+```json
+[
+  {
+    "title": "Mountain Sunset Over the Rockies",
+    "imageUrl": "https://example.com/images/mountain-sunset.jpg",
+    "thumbnailUrl": "https://tse1.mm.bing.net/th?id=...",
+    "url": "https://example.com/photography/mountain-sunset",
+    "width": 1920,
+    "height": 1080,
+    "source": "https://example.com/photography/mountain-sunset",
+    "sourceType": "image"
+  }
+]
+```
+
+> **Field note:** `imageUrl` is the direct image URL. `url` is the source page URL where the image was found. `thumbnailUrl` is the DuckDuckGo-hosted thumbnail.
+
+---
+
+### News Search
+
+Searches DuckDuckGo news results.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `newsQuery` | string | required | News search terms |
+| `maxResults` | number | 10 | How many results to ask for (1–100). An upper bound, not a promise — DuckDuckGo may simply have fewer. Fetched a page (26–30 results) at a time, at most five pages |
+| `safeSearch` | options | Strict | `Strict`, `Moderate`, or `Off` |
+| `region` | string | wt-wt | Locale code |
+| `timePeriod` | string | — | Time filter: `d` (day), `w` (week), `m` (month), `y` (year) |
+| `fetchPageContent` | boolean | false | Fetch each article's page and extract its main text (opt-in; see [Page Content Extraction](#-page-content-extraction)) |
+| `pageContentMaxResults` | number | 3 | How many top results to fetch content for (when enabled) |
+| `pageContentMaxLength` | number | 2000 | Truncate extracted text to N characters (0 = no limit) |
+| `pageContentTimeout` | number | 8000 | Time allowed for each page's whole download, in ms |
+
+**Example:**
+
+```json
+{
+  "operation": "searchNews",
+  "newsQuery": "renewable energy breakthrough",
+  "newsSearchOptions": {
+    "maxResults": 10,
+    "safeSearch": "moderate",
+    "region": "us-en",
+    "timePeriod": "w"
+  }
+}
+```
+
+**Sample output:**
+
+```json
+[
+  {
+    "title": "New Solar Panel Achieves Record Efficiency",
+    "description": "Researchers have announced a breakthrough in photovoltaic efficiency...",
+    "url": "https://news.example.com/solar-efficiency",
+    "imageUrl": "https://news.example.com/images/solar.jpg",
+    "date": "2025-05-15T09:00:00.000Z",
+    "relativeTime": "2 hours ago",
+    "syndicate": "Tech News Daily",
+    "isOld": false,
+    "isFallback": false,
+    "sourceType": "news"
+  }
+]
+```
+
+> **Field note:** `syndicate` is the news source/publisher name. When the fallback path is used, `syndicate` will be `"DuckDuckGo Fallback"` and `isFallback` will be `true`. See [Fallback Behavior](#-fallback-behavior).
+
+---
+
+### Video Search
+
+Searches DuckDuckGo video results.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `videoQuery` | string | required | Video search terms |
+| `maxResults` | number | 10 | How many results to ask for (1–100). An upper bound, not a promise — DuckDuckGo may simply have fewer. Fetched a page at a time (DuckDuckGo stepped by 60 in a live test), at most five pages |
+| `safeSearch` | options | Strict | `Strict`, `Moderate`, or `Off` |
+| `region` | string | wt-wt | Locale code |
+
+**Example:**
+
+```json
+{
+  "operation": "searchVideos",
+  "videoQuery": "machine learning tutorial beginners",
+  "videoSearchOptions": {
+    "maxResults": 10,
+    "safeSearch": "moderate"
+  }
+}
+```
+
+**Sample output:**
+
+```json
+[
+  {
+    "title": "Machine Learning Full Course for Beginners",
+    "description": "A complete introduction to machine learning concepts...",
+    "url": "https://www.youtube.com/watch?v=...",
+    "imageUrl": "https://i.ytimg.com/vi/.../hqdefault.jpg",
+    "duration": "2:14:30",
+    "published": "2024-11-10T00:00:00.000Z",
+    "publishedOn": "YouTube",
+    "publisher": "FreeCodeCamp",
+    "viewCount": "2100000",
+    "isFallback": false,
+    "sourceType": "video"
+  }
+]
+```
+
+> **Field note:** When the fallback path is used, `publisher` will be `"DuckDuckGo Fallback"` and `isFallback` will be `true`. See [Fallback Behavior](#-fallback-behavior).
+
+---
+
+### Extract Page Content
+
+Fetches **any URL** (not a search) and extracts its main readable text — useful when an AI Agent already has a URL and needs to read the page.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `url` | string | required | The page URL to fetch and extract |
+| `pageContentMaxLength` | number | 2000 | Truncate extracted text to N characters (0 = no limit) |
+| `pageContentTimeout` | number | 8000 | Time allowed for the whole download, in ms |
+| `includePageMetadata` | boolean | false | Also return title/author/published/excerpt/siteName when the page is an article |
+
+The node reads at most the first 2 MB of a page's HTML. A longer page is read up to there - where the article text normally starts - and the result has `pageContentTruncated: true`. If those 2 MB hold no readable text, `content` is empty and the `error` field says `No readable text in the first 2 MB of the page`.
+
+**Sample output:**
+
+```json
+{
+  "url": "https://example.com/article",
+  "content": "Extracted main text of the page…",
+  "sourceType": "pageContent",
+  "title": "Article Title",
+  "siteName": "Example"
+}
+```
+
+> ⚠️ This operation fetches a third-party URL directly (not DuckDuckGo). See [Privacy & Security](#-privacy--security).
+
+---
+
+### Instant Answer
+
+Returns DuckDuckGo's **Instant Answer** for a query — a direct answer, a Wikipedia-style abstract, a definition, and related topics — via the official **free, no-key** API.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `instantAnswerQuery` | string | required | The term or question (e.g. a person, place, or concept) |
+
+**Sample output:**
+
+```json
+{
+  "query": "DuckDuckGo",
+  "heading": "DuckDuckGo",
+  "abstract": "DuckDuckGo is an internet search engine that emphasizes protecting searchers' privacy…",
+  "abstractSource": "Wikipedia",
+  "abstractURL": "https://en.wikipedia.org/wiki/DuckDuckGo",
+  "relatedTopics": [
+    { "text": "…", "url": "https://duckduckgo.com/…" }
+  ],
+  "type": "A",
+  "sourceType": "instantAnswer"
+}
+```
+
+> **Note:** Instant Answers exist only for some queries (entities, definitions, calculations). For general queries the fields may be empty — use Web Search instead.
+
+---
+
+### Search Suggestions
+
+Returns DuckDuckGo's autocomplete suggestions for a partial query — what the search box would offer as you type. Useful for query expansion, keyword research, and giving an AI Agent alternative phrasings before it commits to a search.
+
+This uses DuckDuckGo's suggestion endpoint, which needs no VQD token and returns a very small payload. In endpoint testing it was **the surface least affected by rate limiting**, so it often still answers when Web Search is temporarily blocked.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `autocompleteQuery` | string | required | The partial search term |
+| `maxResults` | number | 10 | Maximum suggestions (1–50) |
+| `region` | options | wt-wt | Locale code (e.g. `de-de`) |
+| `splitIntoItems` | boolean | false | Return one n8n item per suggestion instead of one item holding the list |
+
+**Example:**
+
+```json
+{
+  "operation": "autocomplete",
+  "autocompleteQuery": "how to build",
+  "autocompleteOptions": {
+    "maxResults": 5,
+    "region": "us-en"
+  }
+}
+```
+
+**Sample output (default):**
+
+```json
+{
+  "query": "how to build",
+  "suggestions": [
+    "how to build a pc",
+    "how to build credit fast",
+    "how to build a website",
+    "how to build an ai agent"
+  ],
+  "count": 4,
+  "sourceType": "autocomplete"
+}
+```
+
+**Sample output (`splitIntoItems: true`)** — one item per suggestion, ready to fan out into a loop:
+
+```json
+[
+  { "query": "how to build", "suggestion": "how to build a pc", "position": 1, "sourceType": "autocomplete" },
+  { "query": "how to build", "suggestion": "how to build a website", "position": 2, "sourceType": "autocomplete" }
+]
+```
+
+---
+
+## ⚙️ Configuration Reference
+
+### Common Parameters (Web, Image, News and Video search)
+
+| Parameter | Type | Default | Values |
+|-----------|------|---------|--------|
+| `maxResults` | number | 10 | 1–100 |
+| `safeSearch` | options | Strict | `Strict`, `Moderate`, `Off` |
+| `region` | string | `wt-wt` | DuckDuckGo locale code (e.g. `de-de`, `fr-fr`) |
+
+### Operation-specific parameters
+
+| Operation | Extra parameters |
+|-----------|-----------------|
+| Web Search | `useSearchOperators`, `searchOperators`, `fetchPageContent` (+ `pageContentMaxResults`, `pageContentMaxLength`, `pageContentTimeout`) |
+| News Search | `timePeriod` (`d`, `w`, `m`, `y`), `fetchPageContent` (+ `pageContentMaxResults`, `pageContentMaxLength`, `pageContentTimeout`) |
+| Image Search | *(none beyond common)* |
+| Video Search | *(none beyond common)* |
+| Extract Page Content | `url`, `pageContentMaxLength`, `pageContentTimeout`, `includePageMetadata` |
+| Instant Answer | `instantAnswerQuery` |
+
+### Cache Settings
+
+Available on all operations via the **Cache Settings** collection:
+
+| Setting | Type | Default | Range | Description |
+|---------|------|---------|-------|-------------|
+| `enableCache` | boolean | `true` | — | Cache results in memory to avoid repeated requests for the same query |
+| `cacheTTL` | number | `300` | 60–86400 | Time-to-live in seconds before cached results expire |
+
+Cache is in-memory only and is not shared across n8n worker processes or restarts. It is scoped to the running n8n process.
+
+---
+
+
+## 📋 Output Field Reference
+
+### Web Search
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `position` | number | Result rank (1-based) |
+| `title` | string | Page title |
+| `description` | string | Page description / snippet |
+| `url` | string | Page URL |
+| `hostname` | string | Domain name |
+| `sourceType` | string | Always `"web"` |
+| `pageContent` | string | Extracted main text of the result page (only when **Fetch Page Content** is enabled; empty for results beyond the fetched top-N) |
+| `pageContentTruncated` | boolean | Present and `true` when `pageContent` was cut to `pageContentMaxLength`, or the page was longer than 2 MB and only its first 2 MB were read |
+| `pageContentError` | string | Present only when the page could not be fetched/parsed (e.g. `HTTP 403`, `Timed out after 8000ms`, `Page took too long to process (over 10 s)`, `Unsupported content encoding: compress`) |
+| `pageTitle` / `pageAuthor` / `pagePublished` / `pageExcerpt` / `pageSiteName` | string | Page metadata — present only when **Include Page Metadata** is enabled and the page is an article |
+
+### Image Search
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Image title |
+| `imageUrl` | string | Direct URL to the image file |
+| `thumbnailUrl` | string | DuckDuckGo thumbnail URL |
+| `url` | string | Source page where image was found |
+| `width` | number | Image width in pixels |
+| `height` | number | Image height in pixels |
+| `source` | string | Source page URL where the image was found |
+| `sourceType` | string | Always `"image"` |
+
+### News Search
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Article title |
+| `description` | string | Article excerpt |
+| `url` | string | Article URL |
+| `imageUrl` | string | Article thumbnail URL |
+| `date` | string | Publication date (ISO 8601) |
+| `relativeTime` | string | Human-readable relative time (e.g. "2 hours ago") |
+| `syndicate` | string | Publisher/source name; `"DuckDuckGo Fallback"` when fallback path was used |
+| `isOld` | boolean | Whether DuckDuckGo considers the article old |
+| `isFallback` | boolean | `true` if result came from fallback path |
+| `sourceType` | string | Always `"news"` |
+| `pageContent` | string | Extracted main text of the article page (only when **Fetch Page Content** is enabled; empty for results beyond the fetched top-N) |
+| `pageContentTruncated` | boolean | Present and `true` when `pageContent` was cut to `pageContentMaxLength`, or the page was longer than 2 MB and only its first 2 MB were read |
+| `pageContentError` | string | Present only when the page could not be fetched/parsed |
+| `pageTitle` / `pageAuthor` / `pagePublished` / `pageExcerpt` / `pageSiteName` | string | Page metadata — present only when **Include Page Metadata** is enabled and the page is an article |
+
+### Video Search
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Video title |
+| `description` | string | Video description |
+| `url` | string | Video page URL |
+| `imageUrl` | string | Video thumbnail URL |
+| `duration` | string | Video duration (e.g. `"15:30"`) |
+| `published` | string | Publication date (ISO 8601) |
+| `publishedOn` | string | Platform where published (e.g. `"YouTube"`) |
+| `publisher` | string | Channel/creator name; `"DuckDuckGo Fallback"` when fallback path was used |
+| `viewCount` | string | View count (as string) |
+| `isFallback` | boolean | `true` if result came from fallback path |
+| `sourceType` | string | Always `"video"` |
+
+---
+
+## 🎯 Ranking Rules
+
+Search engines rank for everybody. A workflow usually wants something narrower —
+only documentation sites, never the content farms that copy them, this vendor's
+own pages before the aggregators.
+
+**Ranking Rules** does that locally, on results the node has already fetched.
+Available on Web, News and Video Search under **Options → Ranking Rules**.
+
+| Field | Meaning |
+|---|---|
+| **Match** | `Domain` (the site, subdomains included) or `URL Contains` (any text in the URL) |
+| **Value** | `example.com` — which also matches `www.example.com` and `docs.example.com`. For URL Contains, a substring such as `/amp/`. |
+| **Effect** | **Boost** (move above the others), **Downrank** (move below), **Discard** (remove) |
+
+### How it behaves
+
+- **Rules are checked in order and the first match wins.** Put specific rules
+  above broad ones: a *Boost* on `docs.example.com` written above a *Discard* on
+  `example.com` keeps the documentation and drops the rest of the site. No fixed
+  precedence between effects could express that.
+- **Ordering is three buckets, not a score.** Boosted results keep their order
+  among themselves and move above everything else, downranked ones likewise
+  below, and anything unmatched stays exactly where DuckDuckGo put it. There is
+  no weight to tune.
+- **Rules run before Maximum Results**, which is the reason to do this here
+  rather than in a Filter node afterwards — there, discarding two of ten leaves
+  you with eight. How much that buys depends on the operation: **Web Search**
+  fetches everything the request returned and cuts afterwards, so a discard is
+  backfilled from further down and you still get the number you asked for.
+  **News and Video** fetch pages until they hold about as many results as you
+  asked for, so a discard can leave you short; raise **Maximum Results** to
+  compensate, bearing in mind that each extra page is one more request.
+- **`position` is renumbered** to match the order you actually receive, on the operations that carry one (Web Search).
+- **A result the rules cannot judge is kept.** A result with no URL, or one that
+  does not parse, is never discarded by a rule it had no chance to match.
+- Rules apply to fallback results too, since which site a result came from does
+  not depend on which path fetched it.
+
+Nothing here contacts anything. No rule causes a request, and none of this is
+sent anywhere — it is applied to the list already in memory.
+
+> Two things rules do **not** apply to: **Image Search**, which has no ranking
+> option, and **Return Raw Results**, which returns DuckDuckGo's response before
+> the node processes it — for News and Video, the pages collected with repeated
+> results removed.
+
+### Example
+
+Research that should prefer primary sources and never return aggregators:
+
+| Match | Value | Effect |
+|---|---|---|
+| Domain | `arxiv.org` | Boost |
+| Domain | `pinterest.com` | Discard |
+| Domain | `quora.com` | Discard |
+| URL Contains | `/amp/` | Downrank |
+
+---
+
+## 🔗 Result URL Handling
+
+Two things happen to a result URL before you see it.
+
+**DuckDuckGo's redirect is unwrapped.** Links come back as
+`duckduckgo.com/l/?uddg=<encoded>`; the node extracts and validates the real
+destination, so `url` is the page itself rather than a redirect through
+DuckDuckGo.
+
+**Advertising click identifiers are removed** from `url` on Web, News and Video
+results:
+
+| Removed | Kept |
+|---|---|
+| `utm_*` (the whole Urchin family) | The path, exactly as returned |
+| `fbclid`, `gclid`, `gbraid`, `wbraid`, `dclid` | The fragment — `…/guide#install` and `…/guide#config` are different results, and a single-page app puts its route there |
+| `msclkid`, `twclid`, `ttclid`, `igshid`, `yclid` | Every parameter not on the list, in its original order |
+| `mc_cid`, `mc_eid`, `_hsenc`, `_hsmi` | `ref`, `source`, `id` and anything else sites use for real |
+
+Why: deduplicating results across runs compares URLs, and the same article
+carrying a different `utm_campaign` each time compares as a different page. It
+also keeps tracking strings out of whatever an AI Agent writes downstream.
+
+The rule is deliberately narrow, and **every byte that survives is the byte
+DuckDuckGo returned**. Only the matching `name=value` segments are cut out of
+the query; the rest is not rebuilt. Rebuilding would re-encode what remains —
+`?q=a%20b` would come back as `?q=a+b`, and `~` as `%7E` — which is a different
+URL to a server that signs its query. A URL with nothing to strip is likewise
+returned unchanged, so a bare origin does not gain a trailing slash and a host
+does not get lowercased. A URL that does not parse, or is not `http(s)`, is
+passed through untouched rather than dropped.
+
+**Image results are not normalised at all.** Their URLs are asset URLs, where a
+query string is often a CDN signature or a resize instruction, and stripping
+anything risks breaking a working link for no gain.
+
+---
+
+## 🔄 Fallback Behavior
+
+**News Search** and **Video Search** request DuckDuckGo's `news.js` and `v.js` directly, the way DuckDuckGo's own results page does.
+
+If the primary path fails (e.g. DuckDuckGo returns a server error or no parseable results), the node automatically attempts an alternative HTML-based fallback search.
+
+When fallback results are returned:
+
+- `isFallback` is `true` on every result item
+- For News: `syndicate` is set to `"DuckDuckGo Fallback"`
+- For Video: `publisher` is set to `"DuckDuckGo Fallback"`
+
+When primary results are returned normally:
+
+- `isFallback` is `false` on every result item
+
+This allows downstream nodes and AI Agents to detect and handle fallback results differently if needed (e.g. flag lower confidence, re-rank, or discard).
+
+**Web Search** and **Image Search** do not use a two-tier fallback; they use a single direct HTML-based search path.
+
+---
+
+## ⚠️ Error Behavior
+
+The node surfaces specific, actionable error messages rather than generic failures. Where this section says the node throws, the Web, News, Image and Video searches catch that error themselves and return it as an item with `success: false` and the message in `error`, rather than failing the execution — see [Ready-made workflows](#ready-made-workflows) for branching on it.
+
+### Bot-detection challenge (rate limiting)
+
+DuckDuckGo answers a client it considers automated with a human-verification page instead of results. That page is served with **HTTP 202**, which ordinary HTTP clients treat as success — so earlier versions parsed it, found no result blocks, and returned an **empty array with no error at all**.
+
+The node now detects that page and throws:
+
+> `DuckDuckGo served a bot-detection challenge instead of results. This blocks the IP address your n8n instance sends requests from, typically for tens of minutes. Wait before retrying, and reduce how frequently this node runs — shared or cloud IP addresses are affected sooner.`
+
+**What triggers it:** roughly fifteen or more requests from the same IP within a few minutes. The block is tied to the **IP address** — not to your account, query or region — lasts tens of minutes, and is not cleared by retrying or by changing User-Agent. The node therefore marks this error **non-retryable**: an immediate retry only prolongs the block.
+
+**Automatic back-off.** Once a challenge is seen, the node refuses further DuckDuckGo requests locally for about a minute instead of sending them, and says how many seconds remain. Every request made during a block is wasted and prolongs it, so this protects the shared IP rather than your workflow's throughput — requests resume on their own.
+
+**If you hit it regularly:**
+
+- Space executions out, and put a **Wait** node between iterations of a loop
+- Reduce **Max Results** and avoid re-running the same workflow in tight cycles
+- On n8n Cloud or shared hosting you share an outbound IP with other tenants, so the threshold is reached sooner
+- Enable **Cache Settings** so repeated identical queries do not reach DuckDuckGo again
+- The **Search Suggestions** operation uses a different, much lighter endpoint and is the least affected by this limit
+
+### Image Search: VQD token missing
+
+If DuckDuckGo's image search page does not return a valid VQD token (a session token required to query image results), the node throws:
+
+> `DuckDuckGo image search token (VQD) could not be extracted. Image search may be temporarily unavailable. Please try again later.`
+
+No fake or placeholder image URLs are produced. The result item carries the error message.
+
+### Image Search: 403 Forbidden
+
+If the image results endpoint (`i.js`) returns HTTP 403, the node throws:
+
+> `DuckDuckGo image search returned 403 Forbidden. The search token (VQD) may have expired or the request was blocked. Please try again.`
+
+This typically indicates a VQD token expiry or a temporary block by DuckDuckGo.
+
+### Web Search: Parser failure
+
+If `directWebSearch` receives an HTTP 200 response with a large body but cannot parse any result blocks from it (indicating DuckDuckGo may have changed its HTML structure), the node returns an error item (`success: false`) with this message in `error`:
+
+> `DuckDuckGo web search response could not be parsed. The page structure may have changed. Please try again later.`
+
+This is distinct from a genuine no-results response, which returns an empty array without an error.
+
+### Extract Page Content: refused address
+
+**Extract Page Content** and **Fetch Page Content** retrieve a URL supplied by the caller — and when the node runs as an AI Agent tool, the agent chooses that URL. The node therefore refuses any address that is not publicly routable:
+
+> `Refused to fetch a private, loopback or link-local address`
+> `Refused to fetch a non-HTTP(S) URL (file)`
+
+Refused targets include `localhost` and `127.0.0.0/8`, cloud instance metadata (`169.254.169.254`), the private ranges (`10/8`, `172.16/12`, `192.168/16`), IPv6 loopback / link-local / unique-local addresses, and every non-`http(s)` scheme. **Redirects are re-checked at each hop**, so a public URL cannot redirect into a private one.
+
+This stops a prompt-injected agent from making your n8n host read internal services — including n8n's own API — and hand their contents back to the model. Fetching internal addresses is deliberately unsupported.
+
+### Empty results
+
+An empty result array (`[]`) is a valid response when DuckDuckGo genuinely finds no results for the query. This is not an error condition.
+
+Since v32.10.0 an empty array means only that. A bot-detection challenge is reported as the error above instead of being reported as "no results".
+
+---
+
+## 🤖 AI Agent Usage
+
+This node supports `usableAsTool: true`, making it available as a tool inside n8n AI Agent workflows.
+
+**Setup:**
+
+1. Create an **AI Agent** node in your workflow
+2. Add **DuckDuckGo Search** as a connected tool
+3. Configure the default operation and parameters
+4. The agent will invoke the tool autonomously when a search is needed
+
+**Notes for AI Agent use:**
+
+- Output fields are consistent and predictable, suitable for LLM processing
+- `isFallback: true` on news/video results signals lower-confidence data to downstream logic
+- Specific error messages (VQD missing, 403, parser failure) help agents self-diagnose and retry
+- Some older n8n versions may require the environment variable `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` to expose community nodes as agent tools
+
+---
+
+## 🔍 Search Operators
+
+Advanced query operators are supported for **Web Search** only. Enable `useSearchOperators` and the operator string is appended to the query before being sent to DuckDuckGo.
+
+| Operator | Example | Effect |
+|----------|---------|--------|
+| `site:` | `site:github.com` | Restrict to a specific site |
+| `filetype:` | `filetype:pdf` | Find specific file types |
+| `intitle:` | `intitle:"machine learning"` | Match in page titles |
+| `inurl:` | `inurl:tutorial` | Match in page URLs |
+| `"exact phrase"` | `"transformer architecture"` | Exact phrase match |
+| `-exclude` | `python -snake` | Exclude a term |
+| `OR` | `cat OR dog` | Either term |
+
+**Example:**
+
+```json
+{
+  "operation": "search",
+  "query": "machine learning",
+  "webSearchOptions": {
+    "useSearchOperators": true,
+    "searchOperators": "site:arxiv.org filetype:pdf"
+  }
+}
+```
+
+---
+
+## 🌍 Supported Regions
+
+Pass a DuckDuckGo locale code as the `region` parameter. The node does not apply a separate language filter — locale code controls both language and region together. Examples:
+
+| Region | Code |
+|--------|------|
+| United States (English) | `us-en` |
+| United Kingdom | `uk-en` |
+| Germany | `de-de` |
+| France | `fr-fr` |
+| Spain | `es-es` |
+| Italy | `it-it` |
+| Japan | `jp-jp` |
+| Brazil (Portuguese) | `br-pt` |
+| China | `cn-zh` |
+| Russia | `ru-ru` |
+| Netherlands | `nl-nl` |
+
+Many locale codes are supported. Use `wt-wt` for no regional bias. Region codes follow the DuckDuckGo `kl` parameter format.
+
+---
+
+## 🔀 Migration Notes
+
+If you are upgrading from an older version of this node, read the following.
+
+### Removed UI options (silently ignored)
+
+The following UI options were removed because they had no effect on execution or were never implemented. **If these fields exist in saved workflow JSON, they are silently ignored at runtime — no workflow changes are required.**
+
+| Removed option | Reason |
+|----------------|--------|
+| `useApiKey` / API credential | DuckDuckGo has no public Search API; the credential was never read |
+| `searchBackend` | Only the direct HTML backend is used; the selector had no dispatch logic |
+| `proxySettings` | Proxy configuration was exposed in the UI but never applied at runtime |
+| `reliabilitySettings` | The reliability manager was initialised but search calls were never wrapped with retry or circuit-breaker logic |
+| Separate `searchFilters` collection | The UI collection was exposed but never read or applied |
+| Web Search `timePeriod` | The date-filter parameter was not included in the web search request body |
+| Image filter options (`size`, `color`, `type`, `layout`) | The `i.js` filter parameter is undocumented; smoke testing showed unreliable/silent behavior |
+| Video filter options (`duration`, `resolution`, `publishedTime`) | Removed with the reliability and filter cleanup |
+| Top-level `locale` option | Redundant with each operation's `Region` option; the per-operation Region (or the `wt-wt` default) is used instead |
+
+### Output field changes
+
+| Old field | Status | Replacement |
+|-----------|--------|-------------|
+| `snippet` (Web Search) | **Removed** | Use `description` — same content |
+| `favicon` (Web Search) | **Removed** | Was always an empty string; no replacement needed |
+
+### New output fields
+
+| Field | Operations | Description |
+|-------|-----------|-------------|
+| `isFallback` | News, Video | `true` when results came from the fallback path |
+| `position` | Web | Result rank (1-based) |
+
+### Correct field names (if your workflow used old examples)
+
+The following field names were incorrect in previous documentation. Use the names in the right column:
+
+| Operation | Wrong name (old docs) | Correct name |
+|-----------|----------------------|-------------|
+| News | `publishedDate` | `date` |
+| News | `source` | `syndicate` |
+| Video | `thumbnail` | `imageUrl` |
+| Video | `publishedDate` | `published` |
+| Video | `views` | `viewCount` |
+| Video | `source` | `publisher` |
+| Image | `thumbnail` | `thumbnailUrl` |
+
+---
+
+## 🆘 Troubleshooting
+
+### Empty results
+
+- Try a broader or simpler query
+- Check region/language settings — some queries return fewer results in non-default locales
+- Verify safe search settings are not filtering valid results
+- DuckDuckGo may temporarily return no results for some queries; retry after a short delay
+- If every query comes back empty after a few successful runs, you are most likely rate-limited — see [bot-detection challenge](#search-returns-a-bot-detection-challenge-error)
+
+### Search returns a bot-detection challenge error
+
+Your n8n instance's outbound IP address has been temporarily blocked by DuckDuckGo — see [Bot-detection challenge](#bot-detection-challenge-rate-limiting) for what triggers it and how to reduce it. Wait before retrying; the block lasts tens of minutes and immediate retries prolong it. This is not a fault in the node or in your query.
+
+Before v32.10.0 this condition returned an empty result list with no error, which is the cause behind most historical "web search returns nothing" reports.
+
+### Image search fails with VQD error
+
+DuckDuckGo image search requires a session token (VQD) extracted from an initial page load. If this extraction fails, retry the request. This is a temporary DuckDuckGo availability issue.
+
+### Image search fails with 403
+
+The VQD token may have expired or DuckDuckGo has temporarily rate-limited requests from your IP. Wait a short period and retry.
+
+### Web search returns parser failure error
+
+DuckDuckGo may have changed its HTML page structure. This means the node's result extractor cannot parse the page. This is a known fragility of HTML-based scraping. Please open a GitHub issue if this persists.
+
+### News/video results marked `isFallback: true`
+
+The primary search path failed and the fallback HTML path was used. Results are real but may have less metadata (e.g. no relative time or thumbnail). If high-quality metadata is critical, retry or filter on `isFallback: false`.
+
+### Configuration errors
+
+- Verify the query field is not empty
+- Ensure `region` uses a valid locale code (e.g. `us-en`, not `en-US`)
+- `maxResults` must be between 1 and 100 (1 to 50 for Search Suggestions)
+
+---
+
+## 📄 Page Content Extraction
+
+By default, Web Search returns DuckDuckGo's short snippet (the `description` field). DuckDuckGo controls that snippet length, and the node already returns all of it.
+
+To get **more text**, enable **Fetch Page Content** (available on **Web Search** and **News Search**, off by default). The node then fetches the actual page behind each of the top results and extracts its main readable text into a `pageContent` field.
+
+| Option | Default | Purpose |
+|--------|---------|---------|
+| `fetchPageContent` | `false` | Master toggle |
+| `pageContentMaxResults` | `3` | Fetch content for the top N results only (controls speed) |
+| `pageContentMaxLength` | `2000` | Truncate each `pageContent` to N characters (`0` = no limit) |
+| `pageContentTimeout` | `8000` | Time allowed for each page's whole download - connecting, redirects and body - in milliseconds |
+| `includePageMetadata` | `false` | Also add `pageTitle` / `pageAuthor` / `pagePublished` / `pageExcerpt` / `pageSiteName` (when the page is an article) |
+
+**How it works:** extraction is three-tiered — (1) [Mozilla Readability](https://github.com/mozilla/readability) over a lightweight [linkedom](https://github.com/WebReflection/linkedom) DOM pulls the main article text and drops nav/boilerplate; (2) when Readability finds no article, a DOM heuristic removes boilerplate and high link-density blocks (menus not wrapped in `<nav>`); (3) if DOM parsing fails, a dependency-free regex heuristic is the last resort. The result feeds clean text to downstream nodes or AI agents.
+
+Extraction runs in a worker thread, one page at a time, with a 10-second limit per page that is separate from `pageContentTimeout`. Some HTML is slow to parse on purpose or by accident - Readability takes seconds to minutes on a few kilobytes of deeply nested elements, and the regex fallback is quadratic on an unclosed `<script>` flood - so a page that runs over gets `Page took too long to process (over 10 s)` instead of freezing n8n. The worker's heap is capped at 512 MB; a page that runs out of it gets `Page needs too much memory to process`. Other failures inside the worker read `Page could not be processed: …`. If the worker script cannot be loaded at all, extraction runs on the main thread, without the limit, as it did before.
+
+**Important caveats:**
+
+- ⚠️ **Privacy:** when enabled, the node makes HTTP requests to the **third-party result sites** — not only to DuckDuckGo. It is off by default precisely to preserve the DuckDuckGo-only guarantee.
+- **Speed:** each fetched result is one extra HTTP request. Keep `pageContentMaxResults` small (default 3) for fast workflows.
+- **Resilience:** a page that times out, blocks bots, takes too long to parse, or returns non-HTML does not fail the search — that result gets an empty `pageContent` and a `pageContentError` instead.
+- **JavaScript-rendered sites:** pages that render content client-side return little text from a raw fetch. Extracting those needs a headless browser, which is out of scope for this node.
+- **Quality:** Readability handles most article pages cleanly; sites it cannot parse fall back to a DOM/heuristic path that may keep a little navigation text. Page metadata (especially `pageAuthor`) is also extracted heuristically and may occasionally be imprecise. For the highest-quality extraction or summarisation, pipe `pageContent` into a downstream LLM node in your workflow.
+
+**Example:**
+
+```json
+{
+  "operation": "search",
+  "query": "transformer architecture explained",
+  "webSearchOptions": {
+    "maxResults": 10,
+    "fetchPageContent": true,
+    "pageContentMaxResults": 3,
+    "pageContentMaxLength": 3000
+  }
+}
+```
+
+---
+
+## 🔒 Privacy & Security
+
+- **No API key required**: This node makes direct requests to DuckDuckGo's public search endpoints. No account or API key is needed.
+- **No analytics or telemetry**: This node contains no telemetry or analytics code. No query data, result data, or execution metadata is sent to any analytics or telemetry service. Search requests go to DuckDuckGo only.
+- **No credentials registered**: The n8n credential registry for this package is empty. n8n will not prompt for any DuckDuckGo credentials.
+- **Direct requests only (by default)**: Search requests go directly to DuckDuckGo (`duckduckgo.com`, `html.duckduckgo.com`, `i.js`). No third-party search API, proxy, or intermediary is involved. The one exception is the opt-in Fetch Page Content feature below.
+- **Optional page-content fetch (off by default)**: If you enable **Fetch Page Content** (Web or News Search), the node additionally requests each fetched result's page from its own third-party server to extract text. This is the only path that contacts non-DuckDuckGo hosts, and it is disabled unless you turn it on. See [Page Content Extraction](#-page-content-extraction).
+- **Outbound fetches are restricted**: the page-fetching features refuse non-`http(s)` schemes and any private, loopback or link-local address (including cloud instance metadata), and re-check every redirect hop. This holds even when an AI Agent chooses the URL.
+- **No disk storage**: The node does not write queries or results to disk. Optional in-memory caching may temporarily keep results for the configured cache TTL (default 5 minutes) within the running n8n process.
+
+---
+
+## 🔌 Backend Architecture
+
+| Operation | Primary path | Fallback path |
+|-----------|-------------|---------------|
+| Web Search | `directWebSearch` (html.duckduckgo.com POST) | None |
+| Image Search | `directImageSearch` (duckduckgo.com + i.js) | None |
+| News Search | `searchNews` (duckduckgo.com + news.js, paged) | HTML-based fallback |
+| Video Search | `searchVideos` (duckduckgo.com + v.js, paged) | HTML-based fallback |
+| Search Suggestions | `getAutocomplete` (duckduckgo.com/ac/) | None |
+
+There is no user-configurable backend selector. Each operation type uses the most reliable path available. Every path — primary and fallback — talks only to DuckDuckGo; no third-party search API is used.
+
+### Image search sends one request instead of two
+
+Image search needs a short-lived token (a **VQD**) that DuckDuckGo only hands out
+in a search page, so a naive implementation fetches that page purely to read the
+token and then makes the request that actually returns results.
+
+The token is reusable, so the node keeps it for **up to an hour**, per query and
+per client, and skips the page fetch while it holds one. Since the rate limit
+that gets an IP blocked counts requests rather than searches, halving them is
+the cheapest protection available.
+
+A token DuckDuckGo has since stopped accepting is not an error you see: the node
+fetches a fresh one and retries once. It does not retry when the refusal turns
+out to be a bot-detection block rather than a stale token — that is reported and
+starts the back-off, because retrying it would send more requests to an IP that
+has just been told to stop. It is also taken out of storage as it is
+used and only put back after the request it served succeeded, so a failed run
+cannot leave a bad token behind for the next one. Nothing about this is
+configurable and nothing is written to disk — the token lives in memory for the
+life of the n8n process.
+
+---
+
+## 💡 Use Cases
+
+- **Content research**: Find web pages, images, news, and videos on any topic
+- **AI Agent workflows**: Give your AI agent autonomous search capability
+- **News monitoring**: Track current events with time-filtered news search
+- **Data enrichment**: Add search results to your workflow data
+- **Competitive intelligence**: Research competitors, products, or industries
+- **Automated content curation**: Build workflows that discover and process fresh content
+
+### Ready-made workflows
+
+Copy the JSON and paste it straight onto an n8n canvas (**Ctrl/Cmd+V**), or use **Import from File**. Each one carries sticky notes explaining what it does and how to adapt it.
+
+| Workflow | What it shows |
+|---|---|
+| [Build a research brief, with no API key](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/01-research-assistant.json) | Web Search with **Fetch Page Content** + metadata, filtered down to the sources that actually extracted, written out as a Markdown brief. No credential of any kind |
+| [Expand one keyword into multiple searches](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/02-query-expansion.json) | **Search Suggestions** with `splitIntoItems`, looped into one Web Search per suggestion, with a **Wait** node so you stay under the rate limit |
+| [Monitor news on a schedule](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/03-news-monitor.json) | Scheduled **News Search** with `timePeriod: d`, branching on whether DuckDuckGo reported an `error` so a rate-limited run is handled rather than silently skipped |
+| [Write a daily AI news story to Telegram](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/04-ai-news-writer.json) | Scheduled News sweep → error branch → an **AI Agent** that picks one story and researches it with this node **as a tool** → Telegram. Needs OpenRouter and Telegram credentials; the search side needs none |
+| [Write a cited research report](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/05-cited-research-report.json) | A form question → the model plans 3-5 sub-questions → one **Web Search** with **Fetch Page Content** per sub-question, paced by a **Wait** → the model quotes its sources, code keeps only quotes that are really in the page → a report in which every claim cites its source, or a page saying why there is none. Needs a credential for the AI model (OpenRouter by default); the search side needs none. **Published in n8n's template library:** [n8n.io/workflows/20413](https://n8n.io/workflows/20413) |
+| [Find outdated statistics in an article](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/06-outdated-statistics.json) | **Extract Page Content** reads a published article → the model lists dated figures, code keeps only sentences that state the value and its year → one **Web Search** per figure → code keeps a later-dated figure only if its quote is on the page with the value and a later year → a review table with both sentences side by side. Needs a credential for the AI model (OpenRouter by default); the search side needs none. **Published in n8n's template library:** [n8n.io/workflows/20511](https://n8n.io/workflows/20511) |
+| [Find alternatives to a software product](https://github.com/samnodehi/n8n-nodes-duckduckgo/blob/main/docs/examples/07-software-alternatives.json) | A form takes a product name → one **Web Search** with **Fetch Page Content** reads the top result pages → code keeps pages that list alternatives, leaves out the product's own site and uses one page per site → the model lists the tools each page offers, with a sentence from it → code keeps a name only if that sentence is copied from the page, then counts the separate sites per tool, without a site's vote for its own tool → a table with the sources and the quotes. Needs a credential for the AI model (OpenRouter by default); the search side needs none. **Published in n8n's template library:** [n8n.io/workflows/20738](https://n8n.io/workflows/20738) |
+
+Each one sets **On Error → Continue** on its main search node. A failed search does not stop the run: Web, News, Image and Video searches — a rate limit included — come back as an item with `success: false` and an `error` field instead of an empty list, whatever **Error Handling** is set to. Search Suggestions, Extract Page Content and input errors such as an empty query follow **Error Handling**, which is **Continue on Error** by default. Branch on `error`, as the news monitor and the research report do; **On Error → Continue** covers the remaining case, Error Handling set to Break on Error.
+
+> **On `retryOnFail`:** Web, News, Image and Video searches catch their own failures and emit an item carrying an `error` field rather than failing the execution, so n8n's retry setting never fires for them. Branch on `error` — as the news monitor example does — instead of relying on retries.
+
+---
+
+## 🤝 Contributing
+
+This is an open-source project. Contributions are welcome:
+
+- **Bug reports**: Open a GitHub issue with reproduction steps
+- **Feature requests**: Describe the use case clearly
+- **Pull requests**: Submit against the main branch
+
+---
+
+## 📄 License
+
+MIT License — see the [LICENSE](LICENSE.md) file for details.
+
+---
+
+*Install the node and start searching with DuckDuckGo in your n8n workflows today.*

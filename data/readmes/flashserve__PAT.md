@@ -1,0 +1,191 @@
+<div align="center">
+
+# PAT: Prefix-Aware Attention for LLM Decoding
+
+[![Static Badge](https://img.shields.io/badge/ASPLOS-2026-red?logo=gitbook)](https://dl.acm.org/doi/10.1145/3779212.3790200)
+[![Static Badge](https://img.shields.io/badge/DeepWiki-Docs-6B46C1?logo=book&logoColor=white&labelColor=555555)](https://deepwiki.com/flashserve/PAT)
+[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/flashserve/PAT.git)
+![Static Badge](https://img.shields.io/badge/License-MIT-blue.svg)
+
+<a href="https://dl.acm.org/doi/10.1145/3779212.3790200"><img src="https://sysartifacts.github.io/images/acm_available_1.1.png" alt="Artifacts Available" height="50"></a>
+<a href="https://dl.acm.org/doi/10.1145/3779212.3790200"><img src="https://sysartifacts.github.io/images/acm_functional_1.1.png" alt="Artifacts Evaluated - Functional" height="50"></a>
+<a href="https://dl.acm.org/doi/10.1145/3779212.3790200"><img src="https://sysartifacts.github.io/images/acm_reproduced_1.1.png" alt="Results Reproduced" height="50"></a>
+
+</div>
+
+This repository provides **PAT** (Prefix-Aware Attention), a high-performance CUTLASS-based implementation designed to optimize the decoding attention phase in transformer models.
+
+> [**PAT: Accelerating LLM Decoding via Prefix-Aware Attention with Resource Efficient Multi-Tile Kernel**](https://arxiv.org/abs/2511.22333)  
+> Jinjun Yi†, Zhixin Zhao†, Yitao Hu*, Ke Yan, Weiwei Sun, Hao Wang, Laiping Zhao, Yuhao Zhang, Wenxin Li, Keqiu Li. \
+> *ACM International Conference on Architectural Support for Programming Languages and Operating Systems (**ASPLOS**), 2026*
+
+
+**Features**: PAT identifies complex shared prefix patterns within batched sequences and schedules shared prefixes into separate CTA computations. This approach significantly reduces KV cache reads, which is the primary bottleneck in attention computation during LLM decoding.
+
+**Usage**: PAT serves as a plugin for LLM serving systems. To enble PAT in vLLM, only an environment variable `VLLM_ATTENTION_BACKEND="PREFIX_ATTN"` is required. Please refer to [Install PAT from Source](#alternative-install-pat-from-source) for detailed instructions on installing PAT for NVIDIA A100 and H100 GPUs.
+
+
+# 🔖 Artifact Evaluation Instructions
+
+Below are the instructions to reproduce the experimental results presented in our paper "**PAT: Accelerating LLM Decoding via Prefix-Aware Attention with Resource Efficient Multi-Tile Kernel**". The repository is organized as follows:
+- `benchmark/`: Contains scripts for kernel performance experiments and end-to-end serving performance experiments.
+- `csrc/`: Contains the core implementation of the PAT.
+- `plot/`: Contains scripts for generating plots from experimental results.
+- `plugin/`: Contains vLLM plugins to integrate PAT with vLLM.
+- `prefix_attn/`: Contains the main Python package for PAT.
+- `test/`: Contains unit tests for PAT.
+
+## Required Hardware and Software
+
+To run these experiments, you will need:
+- An x86-64 Linux host with at least 64GB RAM.
+- 200GB of free disk space.
+- An NVIDIA A100 GPU with 80GB of memory.
+- NVIDIA driver >= 550 and CUDA >= 12.4.
+
+We have tested the experiments on Google Cloud `a2-ultragpu-1g` instance (200GB disk) with the `Deep Learning VM with CUDA 12.4 M129` system image. We recommend using a similar setup to ensure convenience and consistent performance.
+
+> Hint: You can use multiple GPUs (e.g., `a2-ultragpu-8g` instance) to speed up the end-to-end performance experiments. The scripts will automatically detect the available GPUs and distribute the experiments across them.
+
+## Installation
+
+### Step 1: Install Docker if Needed
+
+If Docker has not been installed, run the following commands:
+```shell
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+dockerd &
+```
+
+### Step 2: Prepare the Code and Docker Image
+```shell
+git clone https://github.com/flashserve/PAT.git
+docker pull flashserve/pat:ae  # (~50 GB, including model weights)
+```
+
+### Step 3: Start the Docker Container
+```shell
+docker run -it --gpus all -v ${PWD}/PAT:/workspace/PAT -w /workspace \
+    --shm-size=64g flashserve/pat:ae /bin/bash
+```
+
+### Step 4: Basic Test
+```shell
+cd /workspace/PAT/test
+python test.py
+```
+
+If the tests pass successfully, you should see the output: `[INFO] successfully pass the test!`
+
+## Run Experiments
+
+### Step 1: Kernel Performance Experiments
+
+This script evaluates the attention kernel execution latency under synthetic workloads for different methods, as shown in **Section 8.3** and **Figure 10** of the paper.
+
+```shell
+cd /workspace/PAT/benchmark
+# This experiment takes about 1.5 hours to complete
+bash ./run_kernel_bench.sh
+```
+
+The results will be saved in `kernel_perf.json`.
+
+### Step 2: End-to-End Performance Experiments
+
+This script evaluates end-to-end inference latency across different methods under real-world workloads, corresponding to **Section 8.4** and **Figure 11** in the paper. Note that completing all experiments requires over 60 GPU-hours, so we provide two scripts: (1) `run_e2e_bench_part.sh`: runs a subset of experiments (QPS=7&9, all workloads, all baselines) for quick verification of results; (2) `run_e2e_bench_full.sh`: runs all experiments to reproduce the results in the paper.
+
+> Hint: You can use multiple GPUs (e.g., an `a2-ultragpu-8g` instance) to speed up both the partial and full experiments. The scripts will automatically detect the available GPUs and distribute the experiments across them.
+
+```shell
+cd /workspace/PAT/benchmark
+# Quick verification (takes 8-10 GPU-hours to complete)
+bash ./run_e2e_bench_part.sh
+# Full experiments (takes over 60 GPU-hours to complete)
+# bash ./run_e2e_bench_full.sh
+```
+The results will be saved in `e2e_perf.jsonl`.
+
+## Parsing Results and Plotting
+
+### Step 1: Plot Kernel Performance Results
+
+```shell
+cd /workspace/PAT/plot
+python eval_kernel_perf.py --log-file ../benchmark/kernel_perf.json
+```
+
+This will generate a plot `fig/kernel_performance_overall.pdf`, showing the kernel performance comparison among different methods, corresponding to **Figure 10** in the paper as follows.
+
+![kernel performance](plot/fig/sample_kernel.png)
+
+### Step 2: Parsing End-to-End Serving Results
+
+```shell
+cd /workspace/PAT/plot
+python eval_e2e_from_jsonl.py --log-file ../benchmark/e2e_perf.jsonl
+```
+
+This will generate a plot `fig/eval_e2e_overall_p99.pdf`, which visualizes the end-to-end serving performance at **QPS=7&9** for the four workloads (2 models × 2 traces) included in the partial evaluation. The plot contains a limited number of data points and is intended for quick verification of the relative performance between PAT and the baselines. To reproduce the full results shown in **Figure 11** of the paper, please run `run_e2e_bench_full.sh` in [# Step 2: End-to-End Performance Experiments](#step-2-end-to-end-performance-experiments).
+
+
+
+![kernel performance](plot/fig/sample_e2e.png)
+
+
+
+## 🛠️ Alternative: Install PAT from Source
+
+Alternatively, PAT can be installed directly from source without using Docker. This setup supports both NVIDIA A100 and H100 GPUs, and we have validated PAT on both. Depending on hardware and network conditions, the full installation typically takes about 1–3 hours.
+
+1. Requirements: A100 / H100 GPU, CUDA>=12.4
+
+2. Clone PAT, vLLM, and CUTLASS repositories
+```shell
+mkdir ~/workspace && cd ~/workspace
+git clone https://github.com/flashserve/PAT.git
+git clone https://github.com/NVIDIA/cutlass.git
+git clone https://github.com/vllm-project/vllm.git
+```
+
+3. Build vLLM with PAT plugin (1-2 hours)
+```shell
+cd ~/workspace/vllm
+git checkout v0.9.0
+# Add PAT plugin to vLLM
+rsync -av --progress ../PAT/plugin/vllm/ ./vllm/
+TORCH_CUDA_ARCH_LIST="8.0" pip install .
+```
+
+4. Install FlashInfer and other dependencies
+```shell
+pip install flashinfer-python==0.2.5 transformers==4.53.0 numpy==1.24.0
+```
+
+5. Build PAT from source (~10 minutes)
+```shell
+# PyTorch (2.7.0) is required if vLLM is not installed
+cd ~/workspace/PAT
+# Replace <abs_path_to_cutlass> with the absolute path to CUTLASS repo
+CUTLASS_ROOT=<abs_path_to_cutlass> pip install . --no-build-isolation
+```
+
+6. Launch vLLM with PAT
+```shell
+VLLM_ATTENTION_BACKEND="PREFIX_ATTN" VLLM_USE_V1=0 \
+vllm serve Qwen/Qwen3-8B --enable-prefix-caching --enforce-eager
+```
+
+# 📚 Citation
+
+If you use this codebase, or otherwise found our work valuable, please cite:
+```
+@inproceedings{yi2026pat,
+  title={PAT: Accelerating LLM Decoding via Prefix-Aware Attention with Resource Efficient Multi-Tile Kernel},
+  author={Yi, Jinjun and Zhao, Zhixin and Hu, Yitao and Yan, Ke and Sun, Weiwei and Wang, Hao and Zhao, Laiping and Zhang, Yuhao and Li, Wenxin and Li, Keqiu},
+  booktitle={Proceedings of the 31st ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+  year={2026}
+}
+```
+

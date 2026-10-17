@@ -1,0 +1,236 @@
+# Cerebros AutoML
+
+![assets/0-cerebros-logo.png](assets/0-cerebros-logo.png)
+
+The Cerebros package is an ultra-precise Neural Architecture Search (NAS) / AutoML that is intended to much more closely mimic biological neurons than conventional Multi Layer Perceptron based neural network architecture search strategies.
+
+## Cerebros Community Edition and Cerebros Enterprise
+
+The Cerebros community edition provides an open-source minimum viable single parameter set NAS and also provides an example manifest for an exhaustive Neural Architecture Search to run on Kubeflow/Katib. This is licensed for free use provided that the use is consistent with the ethical use provisions in the license described at the bottom of this page. You can easily reproduce this with the Jupyter notebook in the directory `/kubeflow-pipeline`, using the Kale Jupyter notebook extension. For a robust managed neural architecture search experience hosted on Google Cloud Platform and supported by our SLA, we recommend Cerebros Enterprise, our commercial version. Soon you will be able to sign up and immediately start using it at `https://www.cerebros.one`. In the meantime, we can set up your own Cerebros managed neural architecture search pipeline for you with a one business day turnaround. We offer consulting, demos, full service machine learning service and can provision you with your own full neural architecture search pipeline complete with automated Bayesian hyperparameter search. Contact David Thrower:`david@cerebros.one` or call us at (US country code 1) `(239) 645-3585`. Additionally, we can complete machine learning tasks for your organization. Give us a call.
+
+
+
+## In summary what is it and what is different:
+
+A biological brain looks like this:
+
+![assets/brain.png](assets/brain.png)
+
+Multi layer perceptrons look like this:
+
+![assets/mpl.png](assets/mlp.png)
+
+If the goal of MLPs was to mimic how a biological neuron works, why do we still build neural networks that are structurally similar to the first prototypes from 1989? At the time, it was the closest we could get, but both hardware and software have changed since.
+
+In a biological brain, neurons connect in a multi-dimensional lattice of vertical and lateral connections, which may repeat. Why don't we try to mimic this? In recent years, we got a step closer to this by using single skip connections, but why not simply randomize the connectivity to numerous levels in the network's structure altogether and add lateral connections that overlap like a biological brain? (We presume God knew what He was doing, so why re-invent the wheel.)
+
+That is what we did here. We built a neural architecture search that connects Dense layers in this manner.
+
+What if we made a multi-layer perceptron that looks like this: (Green triangles are Keras Input layers. Blue Squares are Keras Concatenate layers. The Pink stretched ovals are Keras Dense layers. The one stretched red oval is the network's Output layer. It is presumed that there is a batch normalisation layer between each Concatenate layer and the Dense layer it feeds into.)
+
+![assets/Brain-lookalike1.png](assets/Brain-lookalike1.png)
+
+... or what if we made one like this:
+
+![assets/Brain-lookalike2.png](assets/Brain-lookalike2.png)
+
+and like this
+
+![assets/Neuron-lookalike6.png](assets/Neuron-lookalike6.png)
+
+What if we made a single-layer perceptron that looks like this:
+
+![assets/Neuron-lookalike1.png](assets/Neuron-lookalike1.png)
+
+The deeper technical details can be found here:
+
+![documentation/cerebros-technical-details.md](documentation/cerebros-technical-details.md)
+
+## Use example: Try it for yourself:
+
+shell:
+
+Clone the repo
+`git clone https://github.com/david-thrower/cerebros-core-algorithm-alpha.git`
+
+cd into it
+`cd cerebros-core-algorithm-alpha`
+
+install all required packages
+```
+pip3 install -r requirements.txt
+```
+Run the Ames housing data example:
+```
+python3 regression-example-ames-no-preproc.py
+```
+
+## Example output from this task:
+
+```
+... # lots of summaries of training trials
+...
+
+metric_to_rank_by is: 'val_root_mean_squared_error'
+Type of metric_to_rank_by is: <class 'str'>
+Best result this trial was: 24866.931640625
+Type of best result: <class 'float'>
+Best model name: 2025_08_19 20_31_cerebros_auto_ml_test_meta_0/models/tr_0000000000000001_subtrial_0000000000000000.keras
+...
+
+```
+---
+### Summary of Results
+  - Ames housing data set, not pre-processed or scaled, non-numerical columns dropped:
+  - House sell price predictions, val_rmse $24,866.93.
+  - The mean sale price in the data was $180,796.06.
+  - Val set RMSE was 13.7% of the mean sale price.
+  - In other words, on average, the model’s predictions were within about 14% of the actual sale price.
+  - There was no pre-trained base model used. The data in [ames.csv](https://github.com/david-thrower/cerebros-core-algorithm-alpha/blob/main/ames.csv) which was selected for training is the only data any of the model's weights have ever seen.
+
+
+For further details, see ![documentation/examples/use-example-detailed.md](documentation/examples/use-example-detailed.md)
+
+### Practical O(n) timing with increasing sequence length
+
+Recent updates replaced the text embedding base model with an interleaved Rotary Positional Embedding (iRoPE) in the text-classification proof of concept. This change allows the model to handle longer sequences without the quadratic slow-down common to many transformer architectures.
+
+Benchmarks show that training time grows in proportion to sequence length, while validation accuracy stays stable:
+
+| seq_len | val_binary_accuracy | min/model | total_min | timing_relative_to_1024 | commit |
+|---:|:---:|---:|---:|---:|:--|
+| 3072 | 0.955 | 65.942 | 329.715 | 2.817 | [`4bc217b`](https://github.com/david-thrower/cerebros-core-algorithm-alpha/commit/4bc217b36d1baf8b9a81fe53000e9e13e6e87801) |
+| 1536 | 0.960 | 37.270 | 186.360 | 1.591 | [`286ba81`](https://github.com/david-thrower/cerebros-core-algorithm-alpha/commit/286ba81a1e51493d748ded727bd602a4398248a8) |
+| 1024 | 0.952 | 23.420 | 117.080 | 1.000 | [`9893bfc`](https://github.com/david-thrower/cerebros-core-algorithm-alpha/commit/9893bfc55d4f7b753eff79e0c5c70e4992c61085) |
+
+
+The `timing_relative_to_1024` column is calculated as `min/model(seq_len) / min/model(1024)`.  
+For examale, 1024 to 3072 tokens is roughly x3 in sequence length and x2.82 in time, which is close to linear scaling once fixed overhead is considered.
+
+This outcome follows earlier work on more scalable tokenisation, RoPE/iRoPE integration, and related performance fixes.
+
+## Train an LLM Using Cerebros: Cerebros NotGPT
+
+The script `train_a_generative_llm.py` demonstrates how to train a custom, generative Large Language Model (LLM) using the Cerebros AutoML engine. The resulting model, which we call "Cerebros NotGPT", is trained from scratch with a neural architecture discovered by Cerebros, not based on a pre-existing LLM like GPT 4 or Llama. It is sub-quadratic in both inference and training modes. 
+
+### The training process is designed to be efficient and is broken into two distinct stages:
+
+Stage I-a (Neural Architecture Search): Cerebros rapidly searches for an optimal, biologically-inspired neural network architecture using a very small dataset.
+Stage I-b (Full Training): The best architecture found in Stage I-a is then trained on a larger dataset.
+
+This script is easily scalable to run on a larger data set (we have tested it much larger sets on our own machine), but in this vanilla demo run in the Github Actions Workflows runner (4CPU / 16GB RAM), this is training on a total of 30 samples. Run as - is, it is a vanilla demo. 
+
+## Key Concepts
+
+1. Cerebros Architecture Search for LLMs
+  - Unlike standard transformer blocks, Cerebros builds a multi-dimensional lattice of Dense layers. The search algorithm determines:
+  - The number of "Levels" (rows) of layers.
+  - The number of "Units" (Dense layers) per level.
+  - The number of neurons per unit: n where the layer is tf.keras.layers.Dense(n).
+  - The complex web of vertical and lateral connections between units, mimicking the connectivity of a biological brain. This allows the model to discover intricate feature pathways that are often missed by purely sequential architectures and emulates the neuroscience concept of modularity.
+2. Data Preparation / Preprocessing and Sample Expansion
+
+The prepare_data function from cerebrosllmutils.llm_utils implements a sliding window to create next-token prediction tasks. For a given text sequence, it creates multiple training samples:
+
+```
+Sample 1: Input: [token_1], Label: [token_2]
+Sample 2: Input: [token_1, token_2], Label: [token_3]
+```
+
+...and so on. (padded to max_sequence_length with the tokenizer’s padding token)
+
+This process, called "sample expansion", turns a small amount of raw text into a large number of training examples. For Stage I-a: this is applied to the entire small data set used in - memory. Stage I-b, a SampleExpansionGenerator, a streaming tf.data.Dataset is used to perform this expansion in batches, so RAM is not a bottleneck when training with larger datasets (Keep in mind, the sample expansion preprocessing turns a few MB of text into GB of tensors, so we do this preprocessing in batches). The number preprocessed at once is controlled by the parameter: PHASE_I_B_SAMPLE_EXPANSION_BATCH_SIZE
+
+3. Efficient Positional Embeddings (iRoPE)
+
+- The script uses an InterleavedRoPE (Interleaved Rotary Positional Embedding) layer.  This is a custom implementation of Rotary Positional Embeddings that captures more granular and longer sequential information about the input sequence by applying rotations to the embedded sequence.
+- Cerebros NAS Feed Forward Block: This is an alternative to an attention layer that allows the model's training time to scale linearly (O(n)) with sequence length, avoiding the quadratic bottleneck (O(n^2)) of standard attention mechanisms.
+
+### Running the Training Script
+
+- Prerequisites: Ensure you have installed all required packages from requirements.txt, cicd-requirements.txt: `pip install -r requirements.txt` then `pip install -r cicd-requirements.txt`
+- Execute: Run the script from your terminal: `python3 train_a_generative_llm.py`
+- The script will print progress for both Stage I-a and Stage I-b, including the best perplexity score found during the architecture search and the final validation perplexity after full training. It will also generate text samples at the end of each stage for qualitative evaluation.
+
+### Configuration and Hyperparameters
+
+The script is configured via constants defined at the top. Here are the most important groups:
+1. Data and Tokenization
+  - PHASE_I_A_SAMPLES_TO_CREATE: Number of text samples for the NAS stage.
+  - PHASE_I_B_SAMPLES_TO_CREATE: Number of text samples for the full training stage.
+  - MAX_SEQ_LENGTH: The maximum sequence length for the model. Has a linear impact on RAM/CPU usage.
+  - tokenizer_checkpoint: The Hugging Face tokenizer to use (e.g., "HuggingFaceTB/SmolLM3-3B").
+2. Stage I-a: Neural Architecture Search
+  - moities_to_try: The number of different architectural permutations (e.g., different numbers of levels/units) to try. Increasing this improves accuracy at a linear computational cost.
+  - tries_per_moity: For each permutation, the number of different topologies to try (random connectivity patterns) to try. Increasing this has a quadratic computational cost.
+  - predecessor_level_connection_affinity_factor_first/main: Controls the density of connections between layers. Higher values mean denser connections.
+  - P_lateral_connection, num_lateral_connection_tries_per_unit: The probability of creating a lateral connection between units on the same level.
+  - epochs, batch_size: Standard training parameters for the NAS stage.
+3. Stage I-b: Main Training
+  - INITIAL_LR_STAGE_I_B: The initial learning rate for the main training phase.
+  - WARMUP_STEPS: The number of steps before the cosine learning rate scheduler starts.
+  - phase_i_b_epochs: The total number of epochs for full training.
+  - FIRST_DECAY_STEPS_STAGE_I_B: The number of steps that the cosine decay spans.
+  - phase_i_b_weight_decay: The weight decay for the AdamW optimizer.
+  - PHASE_I_B_SAMPLE_EXPANSION_BATCH_SIZE: Controls how many raw text samples are processed at once during streaming data preparation. Increase this for larger datasets if you have sufficient RAM.
+
+### Understanding the Output
+
+- Stage I-a Logs: You will see Keras training logs for each model architecture that is tried. The final output will report the best validation perplexity achieved, e.g., Cerebros best perplexity achieved in Phase I-a is 12.34.
+- Stage I-b Logs: You will see the standard Keras model.fit progress bar, including loss, categorical accuracy, and the custom perplexity_phase_i_b metric for both training and validation sets.
+- Text Generation Samples: After each stage, the script runs test_text to generate text completions for a set of prompts. This allows you to subjectively evaluate the model's coherence and style. The output will show the prompt, the generation parameters used, and the model's response.
+
+## Saved Artifacts: Upon completion, the script saves:
+- final_phase_ib_model_tr_*.keras: The trained Keras model, ready for inference.
+- tokenizer-tr_*: A directory containing the fine-tuned tokenizer configuration.
+- A serialization test is run automatically to ensure the model can be reloaded successfully.
+
+### Scaling Up for Production
+
+- This script (with the configurations we have set) is a vanilla demonstration and used for CICD purpoises. For production-grade models, you will need to scale up:
+  - Data: Drastically increase PHASE_I_B_SAMPLES_TO_CREATE with a large, high-quality text corpus.
+  - Model Complexity: Increase the NAS search space parameters to allow for larger, more powerful models:
+  - minimum_levels / maximum_levels: Increase to allow for deeper networks.
+  - minimum_units_per_level / maximum_units_per_level: Increase to add more parallel pathways.
+  - minimum_neurons_per_unit / maximum_neurons_per_unit: Increase to add more capacity per layer.
+- Training Parameters:
+  - Increase batch_size to fit your GPU memory.
+  - Increase epochs for phase_i_b_epochs to allow for more convergence.
+  - Increase PHASE_I_B_SAMPLE_EXPANSION_BATCH_SIZE to speed up data preprocessing.
+
+
+# Documentation
+
+![documentation/api-docs/summary-and-navigation.md](documentation/api-docs/summary-and-navigation.md)
+
+## Open source license:
+
+[license.md](license.md)
+
+**Licnse terms may be amended at any time as deemed necessry at Cerebros sole discretion.**
+
+## Acknowledgements:
+
+1. My Jennifer and my step-kids who have chosen to stay around and have rode out quite a storm because of my career in science.
+2. My son Aidyn, daughter Jenna, and my collaborators Max Morganbesser and Andres Espinosa.
+3. Mingxing Tan, Quoc V. Le for EfficientNet (recommeded image embedding base model).
+4. My colleagues who I work with every day.
+5. Tensorflow, Keras, Kubeflow, Kale, Optuna, Keras Tuner, and Ray open source communities and contributors.
+6. Google Cloud Platform, Arikto, Canonical, and Paperspace and their support staff for the commercial compute and ML OPS platforms used.
+7. Microk8s, minikube,and the core Kubernetes communities and associated projects.
+8. Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding", 2018. Base embedding usee for text classification tests.
+9. Andrew Howard1, Mark Sandler1, Grace Chu1, Liang-Chieh Chen1, Bo Chen1, Mingxing Tan2, Weijun Wang1, Yukun Zhu1, Ruoming Pang2, Vijay Vasudevan2, Quoc V. Le2, Hartwig Ada MobileNet image embedding used for CICD tests.
+
+## Legal disclaimers:
+
+1. Cerebros is an independent initiative. Nothing published herein, nor any predictions made by models developed by the Cerebros algorithm should be construed as an opinion of any Cerebros maintainer or contributor or community member nor any of such community member's, clients, or employer, whether private companies, academic institutions, or government agencies.
+2. Although Cerebros may produce astoundingly accurate models from a relatively minuscule amount of data as the example above depicts, past performance does not constitute a promise of similar results on your data set or even that such results would bear relevance in your business use case. Numerous variables will determine the outcome of your experiments and models used in production developed therefrom, including but not limited to:
+    1. The characteristics, distribution, and scale of your data
+    2. Sampling methods used
+    3. How data was trained - test split (hint, if samples with identical data is a possibility, random selection is usually not the best way, hashing each sample then modulus division by a constant, and placing samples where the result of this is <= train set proportion, is better. This will force all occurrences of a given set of identical samples on the same side of the train, test split),
+    4. Hyperparameter selection and tuning algorithm chosen
+    5. Feature selection practices and features available in your use case
+    6. Model drift, changes in the patterns in data, trends over time, climate change, social changes over time, evolution, etc.
+3. Users are responsible for validating one's own models and the suitability for their use case. Cerebros does not make predictions. Cerebros parses neural networks (models) that your data will train, and these models will make predictions based on your data whether or not it is correct, sampled in a sensible way, or otherwise unbiased and useful. Cerebros does a partial validation, solely by metrics such as 'val_root_mean_squared_error'. This is a preliminary metric of how the model is performing, assuming numerous logical and ethical assumptions that only humans with subject matter expertise can validate (think spurious associations and correlations), in addition to statistical parameters such as valid sampling of the training data and that the distribution of the data is not skewed.
+4. The mechanism by which Cerebros works, gives it an ability to deduce and extrapolate intermediate variables which are not in your training data. This is in theory how it is able to make such accurate predictions in data sets which seem to not have enough features to make such accurate predictions. With this said, care should be taken to avoid including proxy variables that can be used to extract variables which are unethical to consider in decision making in your use case. An example would be an insurance company including a variable closely correlated with race and or disability status, such as residential postal code in a model development task which will be used to build models that determine insurance premium pricing. This is unethical, and using Cerebros or any derivative work to facilitate such is prohibited and will be litigated without notice or opportunity to voluntarily settle, if discovered by Cerebros maintainers.    
+5. Furthermore, an association however strong it may be does not imply causality, nor implies that it is ethical to apply the knowledge of such association in your business case. You are encouraged to use as conservative of judgment as possible in such, and if necessary consulting with the right subject matter experts to assist in making these determinations. Failure to do so is a violation of the license agreement.   

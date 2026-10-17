@@ -1,0 +1,260 @@
+# lecode
+
+**A minimalist terminal AI coding agent.** No IDE, no Electron, no noise —
+just your terminal, an OpenAI-compatible model, and a sharp set of tools.
+
+[![ci](https://github.com/KalvadTech/lecode/actions/workflows/ci.yml/badge.svg)](https://github.com/KalvadTech/lecode/actions/workflows/ci.yml)
+[![license](https://img.shields.io/github/license/KalvadTech/lecode)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.15%2B-7c3aed)](#install)
+
+![lecode — a cyberpunk viking in glowing purple armor, a neon longship and wireframe mountains behind](docs/assets/lecode-hero.jpg)
+
+*by Kalvad — now with 100% more purple*
+
+```text
+╭────────────────────────── lecode — fix-auth ───────────────────────────╮
+│  ✓ session      fix-auth — new session                                 │
+│  ✓ config       ~/.config/lecode/config.toml + .lecode/config.toml     │
+│  ✓ provider     openrouter · https://openrouter.ai/api/v1              │
+│                 model deepseek/deepseek-v4-flash · key from env        │
+│  ✓ models       327 fetched live from the provider                     │
+│  ✓ prompt       minimal                                                │
+│  ✓ context      AGENTS.md · docs/AGENTS.md                             │
+│  – skills       none                                                   │
+│  ✓ agents       primaries: build, plan · custom: researcher            │
+│  ✓ memory       long-term 2.4 KB injected                              │
+│  ✓ tools        19 tools                                               │
+│  ✓ permissions  mode yolo · custom rules                               │
+│  – hooks        none configured                                        │
+│  – pierre       off                                                    │
+│  ✓ lsp          enabled                                                │
+│  – mcp          no servers                                             │
+╰─────────────────── ~/github.com/you/your-project ─────────────────────╯
+```
+
+Every interactive start shows you exactly what was loaded — config files,
+provider, prompt, project context, skills, agents, memory, permissions,
+hooks, LSP, MCP — before the chat opens. Nothing hidden, nothing cached
+behind your back.
+
+## Why lecode
+
+- **Tiny harness, big ecosystem.** The default system prompt is under 300
+  tokens; project context comes from your `AGENTS.md` files, skills, and
+  memory — not from a bloated prompt.
+- **OpenRouter, or anything OpenRouter-compatible.** OpenRouter is the
+  first-class preset (live catalog, pricing, caching); other gateways —
+  Ollama, LM Studio, llama.cpp, corporate proxies — plug in with one
+  `--base-url` flag or a `[custom_providers]` entry. Keyless local endpoints
+  supported. The model catalog is fetched live from the provider at startup
+  (when the fetch fails the catalog is simply empty — models lose their
+  pricing/modality annotations; nothing cached on disk). `/models` renders
+  the catalog as a table: prices shaded green to red (red is the priciest),
+  context sizes light violet to logo purple, both relative to the rows shown.
+- **Real permissions, not vibes.** Two modes (`yolo` by default, `readonly`
+  via `--safe` when you want a look-but-don't-touch agent), glob + regex
+  rules, last-match-wins, unbypassable denies, doom-loop detection, and
+  lifecycle hooks that can narrow — never widen — any decision.
+- **Money is a metric.** Live token + cost totals in the statusline, and a
+  `tokens in/out · cost` summary every time a chat ends.
+- **Inspectable by design.** Sessions are append-only JSONL you can grep;
+  sessions are always named; every session is resumable, undoable,
+  rewindable, exportable.
+
+## How lecode compares
+
+- **IDE-integrated agents** — lecode stays in the terminal: no Electron, no
+  extension host, and your scrollback stays intact.
+- **Other terminal agents** — the defaults differ: a <300-token system
+  prompt instead of a manifest, append-only JSONL sessions you can grep,
+  two hard permission modes with unbypassable denies, and live cost in the
+  statusline. Provider-agnostic by design — any OpenAI-compatible endpoint,
+  including keyless local models; `--setup` imports pi/opencode configs.
+- **What you give up** — no editor integration, a smaller ecosystem,
+  macOS/Linux first (Windows is best-effort), and no PyPI package.
+
+## Install
+
+```sh
+uv tool install --force git+https://github.com/KalvadTech/lecode
+```
+
+lecode is distributed from this repository only — it is not on PyPI.
+
+Requires Python 3.15+ and three external binaries on `PATH` (verified at
+startup; no auto-download, no fallback):
+
+| binary | powers | install |
+|--------|--------|---------|
+| `fd`   | `find_files` | `brew install fd` · `apt install fd-find` · `cargo install fd-find` |
+| `rg`   | `grep` | `brew install ripgrep` · `apt install ripgrep` · `cargo install ripgrep` |
+| `rtk`  | bash output compaction | see <https://github.com/rtk-ai/rtk> |
+
+Targets macOS and Linux; Windows is best-effort.
+
+## Quickstart
+
+```sh
+lecode --setup                       # import from pi/opencode or answer 4 questions
+export OPENROUTER_API_KEY=sk-or-...  # or keep the key in config.toml
+cd your-project
+lecode                               # name the session, then ask for something
+```
+
+```text
+dir: lecode · commit: 974015a · branch: main · diff: ±1 +4 -4
+model: deepseek/deepseek-v4-flash · cost: $0.0062 · ctx: ▓▓░░░ 36.0k/200.0k 18%
+session: fix-auth · agent: build · in: 4.1k · out: 0.9k · ⠼
+```
+
+One fixed statusline, every element labelled: directory · commit · branch ·
+diff / model · cost · context meter / session · agent · tokens · state
+(a reasoning-level override shows on the model line when `/thinking` is set).
+No configuration needed.
+
+Useful things to type:
+
+```text
+/help                     all slash commands, grouped
+/welcome                  key bindings cheat-sheet
+/tutor permissions        explain one feature
+/tasks                    background tasks, live
+/doctor                   health-check the install
+!make test                run a shell command, see the output
+!!pytest -x               run it AND feed the output to the model
+@src/auth.py              attach a file (images/PDF/audio too)
+.plan refactor this       run with a persona
+Tab                       cycle agents: build ⇄ plan
+Alt-Enter                 steer the agent mid-turn
+```
+
+## Headless and scriptable
+
+```sh
+lecode -p "write a haiku about this repo"     # one prompt, then exit
+lecode -p "review this repo" --max-cost 1 --timeout 120
+git diff | lecode -p "review this diff"       # a bare -p reads stdin
+lecode --loop plan.md --loop-cmd "make test"  # iterate until the plan is done
+lecode --chain "redesign the parser"          # brainstorm→plan→code→review
+lecode -p "review this repo" --output-format json
+```
+
+The final answer goes to stdout; a `tokens in/out · cost` summary goes to
+stderr, so scripts can pipe the answer cleanly. Failures map to distinct exit
+codes — auth, budget, rate limit, context overflow, timeout, and more — so CI
+can react precisely. Full contract: [docs/cli.md](docs/cli.md).
+
+## A tour of the power features
+
+- **Permissions** — two modes (`yolo` allows everything, `readonly` allows
+  read-class tools only; default `yolo`), per-tool glob/regex rules, session
+  allow-always grants, per-agent overlays. `/permissions`, `/mode`, `/toggle`.
+- **Sessions** — always named, append-only JSONL, scoped to the folder they
+  were created in (resume never crosses directories), `/new` `/resume`
+  `/undo` `/redo` `/rewind` `/retry` `/compact` `/handoff` `/rename`,
+  searchable picker with delete, HTML export (`/export`), secret-gist
+  sharing (`/share`), re-import (`/import`). Approaching the context window,
+  the runner compacts automatically (summary + recent tail; `[compaction]`
+  tunes the trigger, buffer and overflow policy).
+- **Custom agents** — markdown files in `~/.config/lecode/agents/` or
+  `.lecode/agents/` with their own model, temperature, prompt and permission
+  overlay. Tab cycles primaries; `@agent` or the `task` tool runs subagents.
+- **Skills** — `SKILL.md` packs in `.agents/skills/` (project) or
+  `~/.agents/skills/` (global), discoverable by the model, optionally
+  registered as slash commands.
+- **Memory** — persistent per-project markdown: long-term `MEMORY.md`
+  (auto-injected, 32 KB cap), daily logs, scratchpad, named notes.
+  `/memory` to inspect; the agent has `memory_*` tools.
+- **Hooks** — shell commands on 15 lifecycle events (`PreToolUse`,
+  `PostToolUse`, `UserPromptSubmit`, `Stop`, …) that return verdicts; they can
+  only narrow permissions. `--hooks-test` dry-runs the pipeline.
+- **Pierre mode** — when enabled, a second model reviews every finished
+  task: it compares your request with the agent's result and tells you
+  plainly whether it delivered. `/pierre on|off|model`.
+- **Structured questions** — the `ask_user` tool lets the agent ask 1-4
+  multiple-choice questions mid-turn instead of guessing; you pick with the
+  arrow-key picker (`↑`/`↓` to move, `enter` to select/confirm, `space` to
+  toggle a multi-select, `esc` to dismiss). The picker's last row,
+  "Type your own answer…", switches to a free-text answer that you type and
+  submit with `enter`. Headless, loop, chain, and subagent runs get a
+  "use your best judgment" result instead of a prompt.
+- **Notifications** — sound (afplay/paplay/aplay, terminal bell fallback) and
+  desktop notifications (osascript / notify-send) on turn finish, error, and
+  approval-needed. `/notifications on|off`; channels and per-event toggles in
+  `[notifications]`.
+- **MCP** — stdio, streamable-HTTP, and SSE servers, with optional OAuth 2.1
+  (`auth = "oauth"`, browser flow, tokens under `<config_dir>/mcp-auth/`;
+  `/mcp auth` to authorize, `/mcp login|logout` to manage).
+  `/mcp enable|disable <name>` toggles a server's tools in-session, so rarely
+  used servers stop spending context on every request.
+- **LSP** — diagnostics from real language servers appended to `write`/`edit`
+  results; fail-open, never blocks.
+- **Worktrees** — `--worktree <name>` or `/worktree` for isolated branches,
+  `/wt-merge` / `/wt-exit` with conflict detection.
+- **Multimodal** — `/add image.png` or `@file.pdf`; capability-checked
+  against the model.
+- **Background tasks** — `bash` and `task` accept `run_in_background` and
+  return a task id immediately; the agent inspects them with the `tasks_list`
+  / `tasks_output` / `tasks_wait` / `tasks_stop` tools, you watch them with
+  `/tasks`, and completions land in the feed and in the next turn. Remaining
+  tasks are stopped (SIGTERM, then SIGKILL) when the session exits.
+- **Prompts and personas** — the default system prompt is minimal (<300
+  tokens); `style = "rich"` opts into a detailed prompt. 16 named personas
+  (`.review …`, `.plan …`) overlay one turn, `/prompt` switches style,
+  `/editsys` opens the system prompt in `$EDITOR`.
+- **Reasoning levels** — `/thinking` sets the reasoning effort; collapsible
+  thinking blocks in the feed; the statusline shows the active override.
+- **Pickers and polish** — `/` opens a slash-command dropdown, `@` and `.`
+  open fuzzy file/agent/persona pickers — all in themed panels; Tab path
+  completion; queued prompts while the agent runs, Alt-Enter to steer
+  mid-turn; OSC 8 hyperlinks; `/copy` (OSC 52 / pbcopy / xclip).
+- **Status signals** — start/stop/git-conflict events over a Unix socket, for
+  external status bars and scripts.
+- **Herdr** — inside a Herdr pane, lecode reports its idle, working, and
+  blocked state automatically; elsewhere it is a no-op.
+- **Doctor** — `/doctor` health-checks the install: external binaries, config,
+  provider connectivity, MCP servers, memory, hooks, telemetry.
+- **Telemetry (opt-in)** — Sentry/GlitchTip error reports and OpenTelemetry
+  metrics (turns, tokens, cost, tool calls) via `[telemetry]`; needs the
+  `telemetry` extra, fail-open by design.
+
+## Configuration
+
+Global config: `~/.config/lecode/config.toml` (override the directory with
+`LECODE_CONFIG_DIR`); a project-local `.lecode/config.toml` deep-merges over
+it. TOML is the only accepted format. The setup wizard writes the
+file with `0600` permissions because it can hold an API key — prefer the
+`OPENROUTER_API_KEY` / `OPENAI_API_KEY` env vars to keep secrets out of it.
+
+Full reference: [docs/configuration.md](docs/configuration.md).
+
+## Docs
+
+- [docs/configuration.md](docs/configuration.md) — every config section and default
+- [docs/cli.md](docs/cli.md) — headless/loop/chain exit codes, retries, `--max-cost`, `--timeout`, JSON output
+- [docs/hooks.md](docs/hooks.md) — hook events, envelope, verdict protocol
+- [docs/memory.md](docs/memory.md) — the memory store
+- [docs/agents-and-skills.md](docs/agents-and-skills.md) — custom agents and skills
+- [docs/mcp.md](docs/mcp.md) — MCP servers
+- [docs/build-plan.md](docs/build-plan.md) — historical product definition (not the current spec)
+
+## Development
+
+```sh
+uv sync
+uv run python -m pytest        # 1200+ tests
+uv run ruff check && uv run ruff format --check
+prek install                   # git hooks: ruff on commit, pytest on push
+```
+
+## Releasing
+
+Releases are manual and follow semver, driven by conventional commits:
+`fix:` → patch, `feat:` → minor, `feat!:` (or any `!`) → major.
+`pyproject.toml` carries a static version and `CHANGELOG.md` is updated with
+each tagged GitHub Release. Nothing is published to PyPI.
+
+## License
+
+[MIT](LICENSE) — if lecode earns a place in your terminal, a ⭐ helps others
+find it.

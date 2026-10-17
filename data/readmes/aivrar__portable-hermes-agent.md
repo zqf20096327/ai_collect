@@ -1,0 +1,226 @@
+# Portable Hermes Agent
+
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/Language-English-blue?style=for-the-badge" alt="English"></a>
+  <a href="README.zh-TW.md"><img src="https://img.shields.io/badge/語言-繁體中文-purple?style=for-the-badge" alt="繁體中文"></a>
+  <a href="README.zh-CN.md"><img src="https://img.shields.io/badge/语言-简体中文-red?style=for-the-badge" alt="简体中文"></a>
+  <a href="README.es.md"><img src="https://img.shields.io/badge/Idioma-Español-yellow?style=for-the-badge" alt="Español"></a>
+  <a href="README.ur-pk.md"><img src="https://img.shields.io/badge/زبان-اردو-green?style=for-the-badge" alt="اردو"></a>
+</p>
+
+**Portable AI agent desktop for Windows** — 100 tools, GUI, local models via LM Studio, TTS, Music, ComfyUI, workflows, tool maker. No install. No Docker. No admin rights.
+
+Built on [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) (MIT License) with extensive customization for non-technical users.
+
+---
+
+## Features
+
+### Desktop GUI
+- Dark-themed Tkinter interface with chat, sidebar, and session management
+- Multi-language support — English, Traditional Chinese (繁體中文), Simplified Chinese (简体中文), and Spanish (Español) with runtime switching
+- Image attachment with thumbnails (vision model support)
+- Guided mode — works even without an AI model connected
+- API key setup wizard with individual service configuration
+- Permissions panel with granular control over file, network, and system access
+
+### 100 Tools Across 20+ Toolsets
+
+| Toolset | Tools | What It Does |
+|---------|-------|-------------|
+| **LM Studio** | 10 | Load/unload models, search HuggingFace, tokenize, embed, direct chat, API key management, model list retrieval |
+| **Music** | 7 | Generate music, manage models, GPU workers, output library |
+| **TTS** | 7 | Text-to-speech, 10 voice models, voice cloning, job management |
+| **ComfyUI** | 7 | Image generation, instance management, model/node browsing |
+| **Workflows** | 6 | Create, run, schedule, and manage multi-step automation pipelines |
+| **Tool Maker** | 3 | Dynamically create API wrapper or Python handler tools at runtime |
+| **Serper** | 1 | Google-quality search via Serper.dev API |
+| **Guide** | 1 | Searchable built-in user manual |
+| **GPU** | 1 | NVIDIA GPU status (memory, temp, utilization) |
+| **Model Switcher** | 1 | Switch between cloud and local AI models |
+| **Hermes Update** | 2 | Update upstream Hermes while preserving portable tools, extensions, and runtime data |
+
+Plus all built-in hermes-agent tools: web search, file operations, browser automation, code execution, delegation, memory, skills, messaging, Home Assistant, and more.
+
+The LM Studio panel saves its endpoint and API key in the active `HERMES_HOME`
+directory (`.lmstudio_config`), outside the application source. Both update paths
+preserve this user data; release archives exclude it. Clear the key field and
+click **Save** to remove a saved key. The saved key is also used for GUI chat.
+Keep this file private. SDK model-loading with authentication requires a version
+of the LM Studio Python SDK that supports `api_token`; REST model discovery and
+chat remain available when the optional SDK cannot connect.
+
+### Extension Modules
+
+Three portable AI generation servers from [aivrar](https://github.com/aivrar):
+
+| Extension | Port | Models | GPU |
+|-----------|------|--------|-----|
+| **[TTS Server](https://github.com/aivrar/portable-tts-server)** | 8200 | Kokoro, XTTS, Dia, Bark, Fish, + 5 more | 4 GB+ |
+| **[Music Server](https://github.com/aivrar/portable-music-server)** | 9150 | MusicGen, Stable Audio, ACE-Step, Riffusion | 4 GB+ |
+| **[ComfyUI](https://github.com/aivrar/comfyui-portable-installer)** | 5000 | SD 1.5, SDXL, Flux, 100+ registry models | 6 GB+ |
+
+Each extension auto-installs on first use. No system dependencies.
+
+### Workflow Engine
+Chain tool calls into automated pipelines with data flow, conditions, loops, parallel execution, error handling, and cron scheduling.
+
+### Dynamic Tool Maker
+Create new tools at runtime — wrap any REST API or write custom Python handlers. Tools persist across sessions and reload automatically.
+
+### Guided Mode
+No API key? No problem. The chat works offline using a built-in 1,054-line user guide. New users get step-by-step guidance to set up their first AI model.
+
+---
+
+## Quick Start
+
+### 1. Download
+Download the latest `portable-hermes-agent-v*.zip` from [Releases](https://github.com/aivrar/portable-hermes-agent/releases/latest), then extract it to a normal folder.
+
+Recommended:
+```text
+C:\Users\YourName\Portable-Hermes-Agent
+```
+
+Avoid protected folders such as `C:\Program Files`.
+
+### 2. Start
+Double-click:
+```batch
+START.bat
+```
+
+On first launch, `START.bat` runs the portable setup automatically. It downloads embedded Python, dependencies, LM Studio SDK, and Node.js tools into this folder only. No admin rights are needed.
+
+Manual setup:
+```batch
+install.bat
+```
+
+PowerShell users can run:
+
+```powershell
+.\scripts\install.ps1
+```
+
+### 3. Launch Again
+```batch
+START.bat           :: easiest GUI launch
+UPDATE.bat          :: safest one-click update
+hermes_gui.bat      :: GUI mode
+hermes.bat          :: CLI mode
+```
+
+### Updating
+
+Portable Hermes has **two independent update channels**. Updating one does not automatically update the other.
+
+| Update channel | What it updates | How to run it |
+|---|---|---|
+| **Portable Hermes distribution** | The Windows launchers, integrations, portable tools, and the Hermes version tested with this repository | Close Hermes, then double-click `UPDATE.bat` |
+| **Upstream Hermes Agent** | Newer core agent code from `NousResearch/hermes-agent` | Start Hermes and ask it to check or run its upstream updater |
+
+For the normal, safest maintenance path, close other Hermes windows and gateways, then double-click:
+
+```batch
+UPDATE.bat
+```
+
+Or run:
+
+```batch
+hermes.bat update --backup --yes
+```
+
+This updates from `aivrar/portable-hermes-agent`, makes a backup when requested, and preserves runtime folders such as `.hermes/`, `.hermes/custom_tools/`, `.hermes/extensions/`, `extensions/`, and `python_embedded/`. The portable Node.js runtime is stored under `HERMES_HOME/node/`, so it also survives both update types without modifying a system Node installation.
+
+If you also want newer upstream Hermes code, start Hermes after the Portable update and ask:
+
+> Check whether upstream Hermes Agent has updates. Do not install anything yet.
+
+Then, if you want the available update, ask:
+
+> Update upstream Hermes Agent while preserving Portable Hermes. When finished, tell me whether I should restart.
+
+Restart Hermes after a successful upstream update so the running process loads the new Python modules. A Git checkout can report an exact ahead/behind count; a release ZIP has no Git history, so it reports ZIP-overlay mode instead and can still install the latest upstream code.
+
+Most users do not need daily updates. Run the Portable updater when a release, fix, or security notice is published (or every week or two), and check upstream weekly if you want newer Hermes features. Checking daily is optional.
+
+See **[Keeping Portable Hermes Updated](https://github.com/aivrar/portable-hermes-agent/wiki/Keeping-Portable-Hermes-Updated)** for the complete workflow, backups, release-ZIP behavior, and troubleshooting.
+
+### 4. Connect an AI Model
+
+**Cloud (2 minutes, free):**
+1. File > API Key Setup > OpenRouter
+2. Sign up at openrouter.ai (free, no credit card)
+3. Paste your API key
+4. Start chatting
+
+**Local (needs NVIDIA GPU):**
+1. Download [LM Studio](https://lmstudio.ai)
+2. Download a model, start the server
+3. Tools > LM Studio in the GUI
+4. Load model, click "Use for Chat"
+
+---
+
+## Requirements
+
+- Windows 10/11
+- Internet connection (for cloud AI) or NVIDIA GPU 8GB+ (for local AI)
+- No admin rights, no system Python, no Docker
+
+---
+
+## Documentation
+
+A searchable user guide is built into the agent — ask it anything or use the `search_guide` tool. The [PDF manual](https://github.com/aivrar/portable-hermes-agent/releases/latest) is included in every release.
+
+Key topics: getting started, API setup, the interface, permissions, LM Studio local models, extensions (TTS/Music/ComfyUI), all 100 tools, custom tool creation, workflows, and a glossary of AI terms.
+
+---
+
+## Architecture
+
+```
+User
+ |
+ v
+GUI (Tkinter) / CLI
+ |
+ v
+Agent Bridge (threading, sessions)
+ |
+ v
+AIAgent (run_agent.py)
+ |
+ +-- Tool Registry (100 tools)
+ |    +-- LM Studio tools (SDK + HTTP)
+ |    +-- Extension tools (Music, TTS, ComfyUI)
+ |    +-- Workflow engine
+ |    +-- Tool maker (dynamic creation)
+ |    +-- Serper, GPU, Guide, etc.
+ |    +-- Custom tools (user-created)
+ |
+ +-- LLM Provider
+      +-- OpenRouter (cloud)
+      +-- LM Studio (local, GPU)
+      +-- Any OpenAI-compatible endpoint
+```
+
+---
+
+## Credits
+
+- **Base framework**: [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) (MIT License)
+- **Extension modules**: [aivrar](https://github.com/aivrar) — portable-tts-server, portable-music-server, comfyui-portable-installer
+- **Custom tools, GUI, and integrations**: Built with [Claude Code](https://claude.ai/claude-code)
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+Original framework copyright (c) 2025 Nous Research.

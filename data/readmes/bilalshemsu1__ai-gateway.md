@@ -1,0 +1,117 @@
+# AI Gateway
+
+Open-source AI orchestration service. One API, multiple AI providers.
+
+## Features
+
+- Multiple AI providers (Gemini, Groq, Mistral, OpenRouter, Zydit, Zai, Agnes, Nvidia, Cloudflare Workers AI)
+- Automatic failover when a provider fails
+- Rate limiting (15 requests/minute per IP)
+- Token authentication
+- Load balancing across providers
+- OpenAI-compatible API format
+
+## Quick Start
+
+```bash
+# Clone
+git clone https://github.com/bilalshemsu1/ai-gateway.git
+cd ai-gateway
+
+# Install
+npm install
+
+# Setup environment
+cp .env.example .env
+# Edit .env with your API keys and auth token
+
+# Run
+npm start
+```
+
+## Environment Variables
+
+Create `.env` file:
+
+```
+# Auth (required)
+API_SECRET=your-secret-token
+
+# AI Providers (at least one required)
+GEMINI_API_KEY=your_key
+GROQ_API_KEY=your_key
+MISTRAL_API_KEY=your_key
+OPENROUTER_API_KEY=your_key
+ZYDIT_API_KEY=your_key
+ZAI_API_KEY=your_key
+AGNES_API_KEY=your_key
+NVIDIA_API_KEY=your_key
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+CLOUDFLARE_API_TOKEN=your_workers_ai_token
+```
+
+Cloudflare Workers AI uses `@cf/zai-org/glm-4.7-flash` by default. You can call it directly by setting that model ID in the chat request; use `"auto"` to include it in normal provider failover.
+
+Get free API keys:
+- Gemini: https://ai.google.dev
+- Groq: https://console.groq.com
+- Mistral: https://console.mistral.ai
+- OpenRouter: https://openrouter.ai
+- Zydit: https://zydit.in
+- Zai: https://z.ai
+- Agnes: https://apihub.agnes-ai.com
+- Nvidia: https://build.nvidia.com
+- Cloudflare Workers AI: https://dash.cloudflare.com/
+
+## API
+
+The full API reference, request bodies, responses, errors, and examples are in [docs/API.md](docs/API.md).
+
+Quick start:
+
+```bash
+curl -X POST http://localhost:3001/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-api-secret" \
+  -d '{
+    "model": "auto",
+    "messages": [
+      {"role": "user", "content": "Hello"}
+    ]
+  }'
+```
+
+## How It Works
+
+```
+User Request
+    ↓
+Auth Check (Authorization: Bearer <token>)
+    ↓
+Rate Limit Check
+    ↓
+Provider Selection (least busy)
+    ↓
+Try Provider → Success? Return answer
+            → Fail? Try next provider
+    ↓
+All providers failed? Return error
+```
+
+## Supported Providers
+
+| Provider | Free Tier | Speed |
+|----------|-----------|-------|
+| Groq | 14,400 req/day | Very Fast |
+| Gemini | 60 req/min | Fast |
+| Mistral | Yes | Fast |
+| OpenRouter | Varies | Medium |
+| Zydit | Yes | Fast |
+| Zai | Yes | Fast |
+| Agnes | Yes | Fast |
+| Nvidia | Yes | Fast |
+| Cloudflare Workers AI | 10,000 neurons/day on the free plan | Fast |
+
+## License
+
+ISC

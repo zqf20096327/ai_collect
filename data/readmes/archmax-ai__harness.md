@@ -1,0 +1,259 @@
+# archmax harness
+
+**A thin, governed layer over [LangChain Deep
+Agents](https://docs.langchain.com/oss/javascript/deepagents/overview). Every session runs
+under a declarative workflow state machine you author in one YAML file.**
+
+## Why archmax harness
+
+Reliable automation with AI agents should follow the process, and the people who own that
+process should be able to author it. Today that is out of reach for most domain experts.
+Current automation tools fall short in three ways.
+
+- **The agent is a step, not the process.** The agent sits inside a fixed graph, so its
+  flexibility ends at the edge of one node. The process stays as rigid as the diagram someone
+  drew.
+- **The process and its implementation drift apart.** Every business process is restated as a
+  technical graph. That makes two artifacts with two owners, and keeping them in step never
+  stops costing effort.
+- **Complex data still ends up in code.** Nested payloads, loops and arithmetic land in a code
+  node. The person who owns the process cannot read it, let alone change it.
+
+The archmax harness turns this around. The agent runs the whole process, and one `workflow.yaml` both
+describes it and enforces it. Data work happens in a sandbox the same rules govern.
+
+**Full documentation: <https://harness.archmax.ai/>**
+
+## Install
+
+```bash
+npm install @archmax-ai/harness
+```
+
+Node 22 or later. The model is configured through the environment, against any OpenAI-compatible
+endpoint. The archmax harness reads those keys from a `.env` in the workspace root:
+
+```bash
+ARCHMAX_API_BASE_URL=https://api.example.com/v1
+ARCHMAX_API_KEY=...
+ARCHMAX_MODEL=...
+```
+
+`ARCHMAX_MODEL` is the default. A workflow names the id its states run on with `settings.model`,
+and a single state overrides that with its own `model:`. Either way it is an id, resolved over
+the same endpoint and credentials. So a mechanical state can run on a small model while the state
+whose output a person reads runs on a capable one.
+
+See [configuration](https://harness.archmax.ai/reference/configuration/) for
+every variable.
+
+To have a coding agent (Claude Code, Cursor, Codex, …) author workflows for you, install the
+authoring skill:
+
+```bash
+npx skills add archmax-ai/harness
+```
+
+## Quickstart
+
+### A workspace
+
+```
+my-workspace/
+├── AGENTS.md                      # persona
+├── workflows/order-lookup/
+│   ├── workflow.yaml              # the enforced state machine, and its grading rubrics
+│   ├── WORKFLOW.md                # optional prose addendum
+│   ├── hooks/check-requester.js   # lifecycle hook scripts
+│   └── tests/*.test.yaml          # cases for `archmax test`
+├── skills/<slug>/                 # skill bundles: SKILL.md, assets/, scripts/
+└── sessions/                      # default session store (gitignored)
+```
+
+```yaml
+# workflows/order-lookup/workflow.yaml (excerpt)
+title: Order lookup
+instructions: Only ever disclose the requester's own company's orders.
+tools:  { forbid_always: [archmax_reset] }  # denied in every state; deny beats allow
+skills: { allow_always: [order-data] }    # enabled in every state; a state's own
+                                          # `skills.allow` adds, `skills.forbid` subtracts
+mounts: { allow_always: [reference] }     # which STATES reach a host-governed mount;
+                                          # a grant may say `access: read` or `read_write`,
+                                          # and only `read_write` lets this workflow write it
+
+states:
+  identify-case:
+    triggers:
+      manual:
+    instructions: Classify the request and archmax_advance to the matching path.
+    before: { script: hooks/check-requester.js }
+    transitions:                    # a description is REQUIRED on every edge: the
+                                    # agent is shown this state's edges and nothing
+                                    # else of the graph, so it is all it routes on
+      - to: orders-question
+        description: The user is asking about orders, status, shipping, or tracking.
+  orders-question:                  # no transitions: terminal
+    instructions: Answer from skills/order-data/assets/orders.json.
+                                    # no skills block: the workflow's grant reaches
+                                    # here, and enabling a bundle is the whole grant
+    # The standard this state's exit is graded against, declared where it applies.
+    # On the authoring plane, so the agent being graded can neither read it nor
+    # call it.
+    after:
+      - rubric:
+          max_iterations: 2         # how many times a `correct` may send the agent back
+          instructions: Judge the tone of the reply. Return ok, correct or veto with a reason.
+```
+
+A trigger may also declare the contract a caller relies on: what a firing must supply and what the
+session guarantees when it completes. A delegating workflow, a host's MCP tool and a start form all
+read the same declaration, and the runtime holds it at the boundary:
+
+```yaml
+states:
+  intake:
+    triggers:
+      manual:
+        description: Refund one order and report what was refunded.   # for callers, not the agent
+        requires:
+          - order_id                                                   # a bare name is untyped
+          - { name: due, type: date, description: The day the refund is due. }
+        returns:
+          - { name: total, type: number, description: Refunded amount in EUR. }
+```
+
+A start whose `due` is not a real `YYYY-MM-DD` day is refused before any model call, and a session
+that finishes with `total` not a number is rejected. One that finishes with `total` unset is
+rejected too, unless it runs as a sub-workflow: then its caller gets the returns it did set, plus a
+`note` naming the rest. `signatureJsonSchema` on
+`@archmax-ai/harness/spec` turns the same signature into a JSON Schema. See
+[triggers](https://harness.archmax.ai/guides/triggers/#typing-a-signature).
+
+An entry typed `file` takes a path from the workspace root. A host hands one in with
+`send(sessionId, { message, files: { invoice: { name, content } } })`, or the CLI with
+`--file invoice=./invoice.pdf`, and the file lands in the session's `scratchpad/attachments/`. A
+sub-workflow is its own session with its own files, so a `file` argument is copied into the child,
+and a `file` return is copied back under a name that never overwrites the caller's files. See
+[passing files](https://harness.archmax.ai/guides/sub-workflows/#passing-files). The child's
+session id is `<parent>~<n>`, `n` the dispatch's number in its caller, and a host tool called in
+the child is handed that id as `ToolContext.sessionId`, so a host that stores session files itself
+keys them under the child's `<sessionId>/`, not its caller's.
+
+`examples/customer-support/` in this repository is a complete reference workspace.
+
+### The CLI
+
+```bash
+npx archmax run order-lookup "Which orders are delayed for Acme?" --root ./my-workspace
+npx archmax run reconcile "Reconcile this" --file invoice=./invoice.pdf  # hand the session a file
+npx archmax test order-lookup --root ./my-workspace       # run the workflow's cases
+npx archmax validate order-lookup --root ./my-workspace   # static checks, no model calls
+npx archmax sessions --root ./my-workspace                # list durable sessions
+npx archmax decide <session> --to approved                # resume a session parked at a human state
+npx archmax reply <session> "Any update?"                 # answer a parked session; it stays parked
+npx archmax deliver <session> --trigger email_reply       # resume a session parked with archmax_wait
+```
+
+Results go to stdout and the state flow to stderr. Exit 0 means done or parked, 1 a failure
+(including a session the agent ended with `archmax_raise`), 2 a usage error. See the
+[CLI reference](https://harness.archmax.ai/reference/cli/).
+
+### The library
+
+```ts
+import { createAgent } from "@archmax-ai/harness";
+
+const agent = await createAgent({
+  workflow: "order-lookup",
+  workspace: { rootDir: "./my-workspace" },
+});
+
+// A turn, a decision, a reply or a delivery: one call, one Outcome.
+const outcome = await agent.workflow!.send("session-42", {
+  message: "Which orders are delayed for Acme?",
+});
+console.log(outcome.kind, outcome.state, outcome.reply); // "parked" "refund-review" "..."
+
+if (outcome.kind === "parked" && outcome.parkedChannel === "decision") {
+  await agent.workflow!.decide("session-42", { target: "approved", comment: "Within policy." });
+}
+```
+
+A session is a success unless the agent says otherwise. When the work cannot be completed, the
+agent calls `archmax_raise({ code, reason })`, which is offered in every state and only for
+failure. The session then ends `failed`, with no further model call and no `on_error` route, and
+`outcome.kind === "failed"` carries `outcome.exit: { success: false, code, reason }`, so a host
+branches on the agent's own code. A completed turn carries `exit: { success: true }`; a rejection
+by governance carries `outcome.rejected` instead. See
+[how a session ended](https://harness.archmax.ai/guides/sessions/#how-a-session-ended).
+
+Omit `workflow` for a plain Deep Agent with the same parameters, or pass `workflow: false` to
+declare an agent ungoverned. `onEvent` receives the typed event stream and
+`workspace.sessionStore` puts sessions elsewhere. `workspace.mounts` composes what the agent can
+see, and marking a mount `governed: true` hands the spec's `mounts` block the decision of which
+states reach it. Marking one `searchable: false` keeps root-wide searches away from a backend
+that must refuse them.
+
+Five subpaths keep production imports small:
+
+- `@archmax-ai/harness/sandbox`: hook authoring types
+- `@archmax-ai/harness/testing`: the case engine
+- `@archmax-ai/harness/cli`: the state-flow renderer
+- `@archmax-ai/harness/spec`: the `workflow.yaml` schema, the pure validator and the grammars
+- `@archmax-ai/harness/messages`: transcript readers
+
+The last two are browser-safe, with no runtime behind them. See the
+[public API reference](https://harness.archmax.ai/reference/public-api/).
+
+### Authoring with a coding agent
+
+The authoring skill teaches a coding agent the schema, the hook contract, governance, human
+states, cases and the CLI. Install it with the [skills CLI](https://skills.sh):
+
+```bash
+npx skills add archmax-ai/harness
+```
+
+That installs the latest version from GitHub. To pin the skill to the SDK version your project
+depends on, install the copy shipped inside the package instead, after `npm install`:
+
+```bash
+npx skills add ./node_modules/@archmax-ai/harness
+```
+
+For skills middleware in your own agent, the `BUNDLED_AUTHORING_SKILL_DIR` export resolves to
+the packaged copy. The source is `skills/archmax-harness/`.
+
+## Documentation
+
+- [Quickstart](https://harness.archmax.ai/getting-started/quickstart/) and
+  [installation](https://harness.archmax.ai/getting-started/installation/)
+- Guides: [the workflow machine](https://harness.archmax.ai/guides/workflow-machine/),
+  [sessions](https://harness.archmax.ai/guides/sessions/),
+  [triggers](https://harness.archmax.ai/guides/triggers/),
+  [skills](https://harness.archmax.ai/guides/skills/),
+  [sub-workflows](https://harness.archmax.ai/guides/sub-workflows/),
+  [testing](https://harness.archmax.ai/guides/testing/),
+  [token efficiency](https://harness.archmax.ai/guides/token-efficiency/)
+- Reference: [machine spec](https://harness.archmax.ai/reference/machine-spec/),
+  [CLI](https://harness.archmax.ai/reference/cli/),
+  [public API](https://harness.archmax.ai/reference/public-api/),
+  [glossary](https://harness.archmax.ai/reference/glossary/),
+  [changelog](https://harness.archmax.ai/reference/changelog/)
+
+## Development
+
+```bash
+npm run dev -- run order-lookup "..." --root examples/customer-support
+npm run typecheck && npm test
+npm run docs:dev
+```
+
+Substantive changes flow through [OpenSpec](https://github.com/Fission-AI/OpenSpec) under
+`openspec/`. Documentation, `README.md` and the authoring skill ship in the same change as the
+behaviour they describe. See [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[development setup](https://harness.archmax.ai/contributing/development/).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

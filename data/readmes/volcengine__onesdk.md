@@ -1,0 +1,106 @@
+English | [中文README](README.zh_CN.md)
+
+<h1 align="center">OneSDK: A Unified AI Access SDK for the Client-side</h1>
+
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Features](#features)
+  - [Overall Architecture](#overall-architecture)
+  - [Feature List](#feature-list)
+- [Quick Start](#quick-start)
+  - [Prerequisites](#prerequisites)
+  - [Installation, Compilation, and Execution](#installation-compilation-and-execution)
+- [Contribution](#contribution)
+- [Code of Conduct](#code-of-conduct)
+- [Security and privacy](#security-and-privacy)
+- [License](#license)
+
+## Introduction
+
+OneSDK is an integrated development kit for AI applications on the client-side. It provides large language model (LLM) capabilities including voice conversations, text chats, and agents. It also offers device management, supporting interaction with IoT platforms via the MQTT protocol. The SDK is based on libwebsockets to implement protocols like HTTP, WebSocket, and MQTT. It runs on embedded platforms such as Espressif ESP32, FreeRTOS, and uc-OS2, as well as general-purpose platforms like Linux, macOS, and Windows.
+
+## Features
+
+### Overall Architecture
+![alt text](images/functions.png)
+
+### Feature List
+- **Device Intelligence**
+  - **Text Chat**: Supports large model text chat (both streaming and non-streaming).
+  - **Image Generation**: Supports large model image recognition and text-to-image generation.
+  - **Voice Chat Agent**: Supports various voice chat agents, integrated with Realtime (WebSocket) API.
+- **Device Operations**
+  - **OTA Upgrade Support**
+    - Full package upgrade
+    - Differential package upgrade
+  - **Device Management**
+    - **Token Quota**: Check current quota usage from the cloud console.
+  - **SSH**: Supports SSH connections from the console.
+  - **Logging**: Supports uploading device operation logs.
+- **Device Security**
+  - Supports device-side identity authentication with "one key per device" and "one key per product type".
+  - Supports device certificates.
+
+## Quick Start
+
+### Prerequisites
+
+**CMake Version Requirement:**
+- **Minimum**: CMake 3.10
+- **Recommended**: CMake 3.26.x
+- **Incompatible**: CMake 4.x (may cause cJSON compatibility issues)
+
+For detailed CMake installation instructions, see [CMake Version Requirements](docs/cmake_version_requirements.md).
+
+
+Supported Platforms:
+- Espressif ESP32
+- RTOS (FreeRTOS/uc-OS2)
+- Linux (amd64/arm64)
+- macOS (Apple Silicon/Intel)
+- Windows (x64/x86)
+
+### Installation, Compilation, and Execution
+
+#### Linux/macOS
+Refer to the [Development Guide](docs/develop.md) for instructions on building, compiling, and running.
+
+#### Windows
+Refer to the [Windows Development Guide](docs/develop_windows.md) for detailed Windows-specific setup and build instructions.
+
+**Quick Windows Build:**
+```cmd
+# Clone the repository
+git clone --recursive https://github.com/volcengine/onesdk.git
+cd onesdk
+
+# Build using Visual Studio (recommended)
+build.bat
+# or 
+build.ps1
+
+# Or build using MinGW-w64
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" ..
+mingw32-make
+```
+
+## Contribution
+
+Please check [Contributing](CONTRIBUTING.md) for more details.
+
+## Code of Conduct
+
+Please check [Code of Conduct](CODE_OF_CONDUCT.md) for more details.
+
+## Security and privacy
+
+This project takes security seriously.
+For vulnerability reporting and supported versions, see [SECURITY.md](SECURITY.md)
+
+## License
+
+This project is licensed under the [Apache-2.0 License](LICENSE.txt).

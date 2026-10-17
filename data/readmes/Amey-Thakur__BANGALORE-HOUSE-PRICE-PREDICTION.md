@@ -1,0 +1,316 @@
+<div align="center">
+
+  # Bangalore House Price Prediction
+  
+  [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+  ![Status](https://img.shields.io/badge/Status-Completed-2EA043)
+  [![Technology](https://img.shields.io/badge/Technology-Python%20%7C%20Machine%20Learning-8250DF)](https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION)
+  [![Developed by Amey Thakur & Mega Satish](https://img.shields.io/badge/Developed%20by-Amey%20Thakur%20%26%20Mega%20Satish-0969DA.svg)](https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION)
+
+  A machine learning study demonstrating the application of **Multivariate Regression** algorithms to estimate real estate prices with high precision based on structural parameters.
+  
+  **[Source Code](https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION/tree/main/Source%20Code)** &nbsp;·&nbsp; **[Kaggle Notebook](https://www.kaggle.com/code/ameythakur20/bangalore-house-price-prediction-model)** &nbsp;·&nbsp; **[Video Demo](https://youtu.be/HaiXYHBPHVg)** &nbsp;·&nbsp; **[Live Demo](https://huggingface.co/spaces/ameythakur/Bangalore-House-Price-Prediction)**
+
+  <br>
+  
+  <a href="https://youtu.be/HaiXYHBPHVg">
+    <img src="https://img.youtube.com/vi/HaiXYHBPHVg/maxresdefault.jpg" alt="Video Demo" width="70%">
+  </a>
+
+</div>
+
+---
+
+<div align="center">
+
+  [Authors](#authors) &nbsp;·&nbsp; [Overview](#overview) &nbsp;·&nbsp; [Features](#features) &nbsp;·&nbsp; [Structure](#project-structure) &nbsp;·&nbsp; [Results](#results) &nbsp;·&nbsp; [Quick Start](#quick-start) &nbsp;·&nbsp; [Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [License](#license) &nbsp;·&nbsp; [About](#about-this-repository) &nbsp;·&nbsp; [Acknowledgments](#acknowledgments)
+
+</div>
+
+---
+
+<!-- AUTHORS -->
+<div align="center">
+
+  <a name="authors"></a>
+  ## Authors
+
+| <a href="https://github.com/Amey-Thakur"><img src="https://github.com/Amey-Thakur.png" width="150" height="150" alt="Amey Thakur"></a><br>[**Amey Thakur**](https://github.com/Amey-Thakur)<br><br>[![ORCID](https://img.shields.io/badge/ORCID-0000--0001--5644--1575-A6CE39.svg)](https://orcid.org/0000-0001-5644-1575) | <a href="https://github.com/msatmod"><img src="Mega/Mega.png" width="150" height="150" alt="Mega Satish"></a><br>[**Mega Satish**](https://github.com/msatmod)<br><br>[![ORCID](https://img.shields.io/badge/ORCID-0000--0002--1844--9557-A6CE39.svg)](https://orcid.org/0000-0002-1844-9557) |
+| :---: | :---: |
+
+</div>
+
+
+> [!IMPORTANT]
+> ### 🤝🏻 Special Acknowledgement
+> *Special thanks to **[Mega Satish](https://github.com/msatmod)** for her meaningful contributions, guidance, and support that helped shape this work.*
+
+---
+
+<!-- OVERVIEW -->
+<a name="overview"></a>
+## Overview
+
+**Bangalore House Price Prediction** is a machine learning study conducted as part of the **Summer Internship** at **IIT ROPAR - Diginique Techlabs**. The project focuses on the development of a robust regression model capable of predicting property prices in Bangalore with high accuracy.
+
+By leveraging **Scikit-learn**, the system models the real estate landscape where an algorithm learns the relationship between independent variables (Location, Sqft, BHK) and the dependent variable (Price). The model is served via a **Flask** web server for real-time estimation.
+
+### Computational Objectives
+The analysis is governed by strict **exploratory and modeling principles** ensuring algorithmic validity:
+*   **Dimensionality Reduction**: Handling high-cardinality categorical data (Location) to improve model performance.
+*   **Outlier Detection**: Statistical removal of anomalies to ensure robust training boundaries.
+*   **Model Selection**: Comparative analysis of Lasso, Ridge, and Linear Regression to minimize Root Mean Squared Error (RMSE).
+
+> [!NOTE]
+> ### Research Impact & Certification
+> This project was published as a research paper in the **International Research Journal of Engineering and Technology (IRJET)** (Volume 8, Issue 9) and is also available as a preprint on **viXra**. The project received an official **Publication Certificate** for its research contribution to machine learning education.
+>
+> *   [Preprint @viXra](https://vixra.org/abs/2110.0026)
+> *   [Published Paper @IRJET](https://www.irjet.net/archives/V8/i9/IRJET-V8I934.pdf)
+> *   [Publication Certificate](https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION/blob/main/Research%20Paper/IRJET%20-%20Bangalore%20House%20Price%20Prediction.jpg)
+
+### Resources
+
+| # | Resource | Description | Date |
+| :---: | :--- | :--- | :--- |
+| 1 | [**Source Code**](https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION/tree/main/Source%20Code) | Complete production repository and weights | — |
+| 2 | [**Kaggle Notebook**](https://www.kaggle.com/code/ameythakur20/bangalore-house-price-prediction-model) | Interactive Jupyter notebook for model training | — |
+| 3 | [**Dataset**](https://www.kaggle.com/datasets/ameythakur20/bangalore-house-prices/) | Curated Bangalore real estate market dataset | — |
+| 4 | [**Technical Specification**](docs/SPECIFICATION.md) | System architecture and specifications | — |
+| 5 | [**Technical Report**](BHPP/AMEY%20THAKUR%20-%20BANGALORE%20HOUSE%20PRICE%20PREDICTION.pdf) | Comprehensive archival project documentation | September 2021 |
+| 6 | [**Publication Certificate**](Research%20Paper/IRJET%20-%20Bangalore%20House%20Price%20Prediction.jpg) | Recognition for research excellence | September 2021 |
+
+> [!TIP]
+> ### Model Retraining & Market Adaptation
+> To maintain prediction accuracy amidst fluctuating real estate markets, it is recommended to periodically retrain the model with updated property datasets. The provided `model_training.py` pipeline supports incremental updates, ensuring the regression coefficients reflect current economic trends and property valuations.
+
+---
+
+<!-- FEATURES -->
+<a name="features"></a>
+## Features
+
+| Component | Technical Description |
+|-----------|-----------------------|
+| **Data Cleaning** | Automated pipeline for handling missing values and removing logical inconsistencies. |
+| **Feature Engineering** | Transformation of categorical features using One-Hot Encoding and reduction of rare labels. |
+| **Regression Logic** | Implementation of **Linear/Lasso/Ridge** algorithms for price approximation. |
+| **Model Persistence** | Serialization of the trained model using **Pickle** for deployment. |
+| **Web Interface** | User-friendly UI built with **HTML/CSS/JS** and served via **Flask**. |
+
+> [!NOTE]
+> ### Empirical Context
+> The real estate dataset consists of diverse property attributes. The inherent variance in property valuations justifies the selection of a robust regression approach over simple linear models, adhering to the requirement for accurate price estimation in a dynamic market.
+
+### Tech Stack
+-   **Runtime**: Python 3.x
+-   **Machine Learning**: Scikit-learn
+-   **Data Manipulation**: Pandas, NumPy
+-   **Visualization**: Matplotlib
+-   **Web Framework**: Flask
+
+---
+
+<!-- STRUCTURE -->
+<a name="project-structure"></a>
+## Project Structure
+
+```python
+BANGALORE-HOUSE-PRICE-PREDICTION/
+│
+├── BHPP/                                            # Internship Artifacts
+│   ├── AMEY THAKUR - BANGALORE HOUSE PRICE...pdf    # Final Project Report
+│   └── ...                                          # Internship Completion Documents
+│
+├── docs/                                            # Technical Documentation
+│   └── SPECIFICATION.md                             # Architecture & Design Specification
+│
+├── Mega/                                            # Archival Attribution Assets
+│   ├── Filly.jpg                                    # Companion (Filly)
+│   ├── Mega.png                                     # Author Profile Image (Mega Satish)
+│   └── ...                                          # Additional Attribution Files
+│
+├── Research Paper/                                  # Research Paper & Resources
+│   ├── Draft/                                       # Draft Versions
+│   ├── Figures/                                     # Figures & Illustrations
+│   ├── IRJET - Bangalore House Price...jpg          # Publication Certificate
+│   └── IRJET-V8I9 - Bangalore House Price...pdf     # Research Paper (IRJET)
+│
+├── Screenshots/                                     # Application Screenshots
+│   ├── 01-Home.png                                  # Home Page
+│   ├── 02-Input.png                                 # Input Interface
+│   └── 03-Result.png                                # Prediction Result
+│
+├── Source Code/                                     # Core Implementation
+│   ├── templates/                                   # HTML Templates
+│   │   ├── index.html                               # Home Page
+│   │   └── predict.html                             # Result Page
+│   │
+│   ├── app.py                                       # Flask Application
+│   ├── bangalore-house-price-prediction...ipynb     # Jupyter Notebook
+│   ├── bangalore_home_prices_model.pickle           # Trained Model
+│   ├── columns.json                                 # Feature Columns
+│   ├── model_training.py                            # Training Script
+│   ├── requirements.txt                             # Dependencies
+│   └── test_model.py                                # Test Script
+│
+├── .gitattributes                                   # Git configuration
+├── .gitignore                                       # Repository Filters
+├── CITATION.cff                                     # Project Citation Metadata
+├── codemeta.json                                    # Machine-Readable Project Metadata
+├── LICENSE                                          # MIT License
+├── README.md                                        # Project Documentation
+└── SECURITY.md                                      # Security Policy
+```
+
+---
+
+<!-- RESULTS -->
+<a name="results"></a>
+## Results
+
+<div align="center">
+  <b>1. User Interface: Home Page</b>
+  <br>
+  <i>Clean and intuitive web interface for property parameters.</i>
+  <br><br>
+  <img src="Screenshots/01-Home.png" alt="Home Page" width="70%">
+  <br><br>
+
+  <b>2. Prediction Input: Feature Selection</b>
+  <br>
+  <i>User selection of Location, SQFT, BHK, and Bathrooms.</i>
+  <br><br>
+  <img src="Screenshots/02-Input.png" alt="Prediction Input" width="70%">
+  <br><br>
+
+  <b>3. Estimation Result: Price Prediction</b>
+  <br>
+  <i>Real-time price estimation based on the trained regression model.</i>
+  <br><br>
+  <img src="Screenshots/03-Result.png" alt="Price Result" width="70%">
+  <br><br>
+</div>
+
+---
+
+<!-- QUICK START -->
+<a name="quick-start"></a>
+## Quick Start
+
+### 1. Prerequisites
+-   **Python 3.7+**: Required for runtime execution. [Download Python](https://www.python.org/downloads/)
+-   **Jupyter Environment**: For interactive model training.
+
+> [!WARNING]
+> **Data Integrity**
+>
+> The prediction kernel depends on specific feature ordering. Ensure that the input vector passed to the model matches the feature columns generated during training (One-Hot Encoded locations).
+
+### 2. Installation
+Establish the local environment by cloning the repository and installing the computational stack:
+
+```bash
+# Clone the repository
+git clone https://github.com/Amey-Thakur/BANGALORE-HOUSE-PRICE-PREDICTION.git
+cd BANGALORE-HOUSE-PRICE-PREDICTION
+
+# Navigate to Source Code directory
+cd "Source Code"
+
+# Install dependencies
+pip install pandas numpy matplotlib scikit-learn flask
+```
+
+### 3. Execution
+Launch the web server to start the prediction application:
+```bash
+python app.py
+```
+**Access**: `http://127.0.0.1:5000/`
+  
+> [!TIP]
+> ### Real Estate Analytics Simulation | Multivariate Regression Model
+> 
+> Experience the interactive **Bangalore House Price Prediction** simulation directly in your browser through the working **Hugging Face Space**. This platform features a **Multivariate Regression** model that estimates property prices based on structural parameters, providing a visual demonstration of real estate economics and predictive modeling accuracy.
+>
+> [**Launch Model on Hugging Face**](https://huggingface.co/spaces/ameythakur/Bangalore-House-Price-Prediction)
+
+---
+
+
+<!-- USAGE GUIDELINES -->
+<a name="usage-guidelines"></a>
+## Usage Guidelines
+
+This repository is openly shared to support learning and knowledge exchange across the machine learning and real estate analytics community.
+
+**For Students**  
+Use this project as reference material for understanding **multivariate regression pipelines**, **dimensionality reduction (one-hot encoding)**, and **outlier detection techniques**. The source code is available for study to facilitate self-paced learning and exploration of **model selection (Lasso/Ridge/Linear)**.
+
+**For Educators**  
+This project may serve as a practical lab example or supplementary teaching resource for **Data Science**, **Predictive Analytics**, and **Machine Learning Fundamentals** courses. Attribution is appreciated when utilizing content.
+
+**For Researchers**  
+The documentation and architectural approach may provide insights into **real estate economics**, **geospatial feature engineering**, and **industrial internship artifacts**.
+
+---
+
+<!-- LICENSE -->
+<a name="license"></a>
+## License
+
+This academic submission, developed for the **Summer Internship** at **IIT ROPAR - Diginique Techlabs**, is made available under the **MIT License**. See the [LICENSE](LICENSE) file for complete terms.
+
+> [!NOTE]
+> **Summary**: You are free to share and adapt this content for any purpose, even commercially, as long as you provide appropriate attribution to the original authors.
+
+**Copyright © 2021 Amey Thakur & Mega Satish**
+
+---
+
+<!-- ABOUT -->
+<a name="about-this-repository"></a>
+## About This Repository
+
+**Created & Maintained by**: [Amey Thakur](https://github.com/Amey-Thakur) & [Mega Satish](https://github.com/msatmod)  
+**Role**: Summer Interns  
+**Program**: Summer Internship  
+**Organization**: [IIT ROPAR - Diginique Techlabs](http://www.diginique.com/)
+
+This project features **Bangalore House Price Prediction**, a machine learning study conducted as part of an industrial internship. It explores the practical application of regression analysis in real estate economics.
+
+**Connect:** [GitHub](https://github.com/Amey-Thakur) &nbsp;·&nbsp; [LinkedIn](https://www.linkedin.com/in/amey-thakur) &nbsp;·&nbsp; [ORCID](https://orcid.org/0000-0001-5644-1575)
+
+### Acknowledgments
+
+Grateful acknowledgment to [**Mega Satish**](https://github.com/msatmod) for her exceptional collaboration and partnership during the execution of this machine learning internship task. Her analytical precision, deep understanding of statistical modeling, and constant support were instrumental in refining the predictive algorithms used in this study. Working alongside her was a transformative experience; her thoughtful approach to problem-solving and steady encouragement turned complex regression challenges into meaningful learning moments. This work reflects the growth and insights gained from our side-by-side journey. Thank you, Mega, for everything you shared and taught along the way.
+
+Special thanks to the **mentors at IIT ROPAR - Diginique Techlabs** for providing this platform for rapid skill development and industrial exposure.
+
+---
+
+<div align="center">
+
+  [↑ Back to Top](#bangalore-house-price-prediction)
+
+  [Authors](#authors) &nbsp;·&nbsp; [Overview](#overview) &nbsp;·&nbsp; [Features](#features) &nbsp;·&nbsp; [Structure](#project-structure) &nbsp;·&nbsp; [Results](#results) &nbsp;·&nbsp; [Quick Start](#quick-start) &nbsp;·&nbsp; [Usage Guidelines](#usage-guidelines) &nbsp;·&nbsp; [License](#license) &nbsp;·&nbsp; [About](#about-this-repository) &nbsp;·&nbsp; [Acknowledgments](#acknowledgments)
+
+  <br>
+
+  📈 **[BANGALORE-HOUSE-PRICE-PREDICTION](https://huggingface.co/spaces/ameythakur/Bangalore-House-Price-Prediction)**
+
+  ---
+
+  ### Presented as part of the Summer Internship @ IIT ROPAR - Diginique Techlabs
+
+  ---
+
+  ### 🎓 [Computer Engineering Repository](https://github.com/Amey-Thakur/COMPUTER-ENGINEERING)
+
+  **Computer Engineering (B.E.) - University of Mumbai**
+
+  *Semester-wise curriculum, laboratories, projects, and academic notes.*
+
+</div>
+

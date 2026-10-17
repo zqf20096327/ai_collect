@@ -1,0 +1,1107 @@
+<p align="center">
+  <img src="assets/iris-agent-logo.svg" alt="Iris Agent logo" width="180">
+</p>
+
+<h1 align="center">Iris Agent</h1>
+
+<p align="center">
+  <a href="https://4onstudios.com/">Built by 4onStudios</a>
+  ·
+  <a href="https://github.com/4onstudios/iris-agent/issues">Issues</a>
+  ·
+  <a href="https://github.com/4onstudios/iris-agent/pulls">Contribute</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/4onstudios/iris-agent/actions/workflows/ci.yml"><img src="https://github.com/4onstudios/iris-agent/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://www.npmjs.com/package/@4onstudios/iris-agent"><img src="https://img.shields.io/npm/v/%404onstudios%2Firis-agent" alt="npm version"></a>
+  <a href="https://github.com/4onstudios/iris-agent/blob/main/LICENSE"><img src="https://img.shields.io/github/license/4onstudios/iris-agent" alt="MIT License"></a>
+</p>
+
+Iris Agent is the standalone coding-agent service used by [AIRIS](https://github.com/4onstudios/iris).
+
+It provides streaming chat, workspace tools, LSP routes, MCP integration, command approvals, and run lifecycle APIs. It can run as:
+
+- **HTTP Service** - RESTful API under `/api/agent`
+- **CLI** - Interactive chat in the terminal
+- **ACP Server** - Agent Client Protocol via stdio for seamless IDE integration
+
+Iris Agent requires Node.js `>=26.4.0`. `IrisClient` is a
+Node.js API for IDE desktop or backend processes; it is not intended to run in
+a browser renderer.
+
+### MCP OAuth across processes
+
+Browser OAuth sessions are held in the HTTP service's memory. Before starting
+an ACP subprocess, the host resolves the server credentials and forwards the
+authorization header with the MCP configuration. A subprocess accepts that
+explicit header even if a reconnect marker exists; without credentials, the
+marker still requires signing in again after the HTTP service restarts.
+OAuth tokens are not persisted by the service.
+
+## Quick Start
+
+This project can be installed and run with either npm or Yarn. Configure your provider API key (such as `OPENROUTER_API_KEY` or `OPENAI_API_KEY`). By default, Iris Agent routes through OpenRouter (`openrouter/openai/gpt-5.3-codex`) when `OPENROUTER_API_KEY` is provided or configured.
+
+```sh
+# npm
+npm install
+OPENROUTER_API_KEY=... npm start
+
+# yarn
+yarn install
+yarn start
+```
+
+### HTTP Service
+
+```sh
+npm install
+OPENROUTER_API_KEY=... npm start
+```
+
+The service listens on port `8080` by default. Set `PORT` to change it. `GET /health` reports service readiness.
+
+### Using Iris Agent in an IDE
+
+To run the standalone agent service for an IDE integration:
+
+```bash
+git clone https://github.com/4onstudios/iris-agent.git
+cd iris-agent
+npm install
+npm start
+```
+
+The service listens on port `8080` by default and exposes its API under
+`/api/agent`. Set `PORT` to use another port and configure
+`AGENT_ALLOWED_ORIGINS` with the IDE's origin when browser CORS is required:
+
+```bash
+PORT=8080 AGENT_ALLOWED_ORIGINS=http://localhost:3000 npm start
+```
+
+The HTTP API is mounted below `/api/agent`. The main endpoints are:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `POST /api/agent/chat` | Send a message and optional workspace, model, history, tools, skills, MCP, and approval settings. |
+| `GET /api/agent/runs/:runId` | Read the current run lifecycle snapshot. |
+| `GET /api/agent/runs/:runId/events` | Read persisted run events. Supports `afterSequence` and `limit` (1-500). |
+| `POST /api/agent/runs/:runId/cancel` | Request cancellation of a run. |
+| `POST /api/agent/command-confirmation` | Approve or skip a pending command execution. |
+| `GET /api/agent/skills` | List discovered skills. |
+| `GET /api/agent/tools` | List native and MCP tools with their input schemas. |
+| `GET /api/agent/slash-commands` | List enabled slash commands. |
+| `POST /api/agent/mcp/inspect` | Inspect the tools exposed by one MCP server. |
+| `POST /api/agent/mcp/call` | Invoke an MCP tool. |
+
+The service also exposes file, chat-session, semantic-search, and LSP routes under
+`/api/agent`. Those routes are intended for the AIRIS desktop client and are
+implemented in [`api/`](./api/); use `GET /api/agent/tools` and
+`GET /api/agent/skills` for runtime discovery.
+
+Example chat request:
+
+```sh
+curl -X POST http://localhost:8080/api/agent/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"Explain this project","workspaceRoot":"/path/to/project"}'
+```
+
+Run lifecycle states and event payloads are returned by the run endpoints. Store
+the returned `runId` from a chat response if the client needs polling,
+progress-event retrieval, or cancellation.
+
+Persisted `tool_call` and `tool_result` events carry the redacted action
+details needed to render a replayable tool timeline: `name` (and the deprecated
+compatibility alias `toolName`), `args`, `toolCallId`, and `status`. Completed
+actions also include `result` when its JSON representation is at most 16 KiB.
+Larger or non-JSON-representable results are replaced with a bounded summary:
+`{ truncated: true, reason?: string, originalByteLength?: number, preview?: string }`.
+For oversized object results, scalar metadata such as `success`, `status`,
+`error`, `exitCode`, paths, and search counts may also be retained with long
+strings shortened. Legacy stored action events are normalized when read so both
+tool-name labels remain available. This lets clients show, for example, the
+path and line range read or the search query, matched files, and result counts
+without relying on the live stream.
+
+### CLI Mode
+
+```sh
+# Interactive chat with default model (openrouter/openai/gpt-5.3-codex)
+OPENROUTER_API_KEY=... npm run cli -- --workspace /path/to/project --chat
+
+# Interactive chat with a specific model
+OPENROUTER_API_KEY=... npm run cli -- --workspace /path/to/project --chat --modelId openrouter/anthropic/claude-3.7-sonnet
+
+# Interactive chat with MCP servers from a JSON config file
+OPENROUTER_API_KEY=... npm run cli -- --workspace /path/to/project --chat --mcp-config ./mcp-servers.json
+```
+
+This starts an interactive streaming chat session in your terminal with access to the workspace and tools.
+OpenTUI is selected automatically on supported interactive terminals. With
+Node.js >=26.4.0, enable FFI to use it with the same npm launcher:
+
+```sh
+# With OPENROUTER_API_KEY already configured in your terminal
+NODE_OPTIONS="--experimental-ffi" npm run cli -- --workspace . --chat
+
+# Require OpenTUI rather than allowing a fallback to plain chat
+NODE_OPTIONS="--experimental-ffi" npm run cli -- --workspace . --chat --chat-ui opentui
+```
+
+Keep `NODE_OPTIONS="--experimental-ffi"` scoped to the Node.js OpenTUI launch
+command rather than exporting it globally. It is not needed for Bun, plain chat,
+the HTTP service or ACP, and older Node.js versions may reject the flag.
+
+The MCP config file can contain a server array or an object with `mcpServers`
+as either an array or a map keyed by server name. Keyed entries inherit their
+key as the server `id` and `name` unless those fields are explicitly set.
+For example, create `mcp-servers.json`:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/project"]
+    }
+  }
+}
+```
+
+Use `--mcp-config <path>` with `--chat`; relative paths are resolved from the
+current directory. Local server processes inherit the CLI environment, so set
+required credentials in the shell before launching. Keep config files containing
+secrets out of source control.
+
+#### Classic terminal chat (readline)
+
+To use the old terminal chat instead of OpenTUI, explicitly select `plain`:
+
+```sh
+# Installed CLI (including Homebrew)
+iris-agent --chat --chat-ui plain
+
+# Source checkout
+npm run cli -- --workspace /path/to/project --chat --chat-ui plain
+
+# Compiled CLI
+node dist/cli.js --chat --chat-ui plain
+```
+
+This uses Node.js's readline interface with the classic prompt and streamed
+responses. It retains the same agent, model, workspace tools, and conversation
+memory, but does not load the OpenTUI library or require experimental FFI.
+Use this option whenever you prefer the old chat interface, even on terminals
+that support OpenTUI.
+
+Node.js and npm must be on your `PATH`. For a Homebrew Node installation on
+Apple Silicon macOS, use `export PATH="/opt/homebrew/bin:$PATH"` if needed.
+
+#### OpenTUI terminal chat
+
+Interactive chat uses `@opentui/core` directly, without a React renderer. On a
+supported runtime, `--chat` opens a scrollable transcript with streaming
+Markdown, tool activity and a multiline message editor. The existing memory
+thread, prompt budgeting and workspace tools are reused.
+
+OpenTUI 0.5.14 requires **Bun >=1.3.0** or **Node.js >=26.4.0 with
+`--experimental-ffi`**. The HTTP service, SDK, ACP server and plain chat also
+require Node.js >=26.4.0. The OpenTUI stack is optional, so it can be omitted
+when building or installing without using the native UI.
+Keep optional dependencies enabled to use OpenTUI, including its native library
+for the host platform. Build release packages with Node.js >=26.4.0 and the
+optional dependencies installed so the compiled OpenTUI interface is included.
+Source builds without those dependencies explicitly skip the native UI while
+still compiling the SDK, service, ACP and plain chat.
+
+```sh
+# Source checkout, using Bun
+OPENROUTER_API_KEY=... npm run cli:tui -- --workspace /path/to/project
+
+# Source checkout, using Node.js >=26.4.0
+OPENROUTER_API_KEY=... node --experimental-ffi --import tsx cli.ts --chat --workspace /path/to/project
+
+# Compiled CLI, using Bun
+OPENROUTER_API_KEY=... bun dist/cli.js --chat --workspace /path/to/project
+
+# Compiled CLI, using Node.js >=26.4.0
+OPENROUTER_API_KEY=... node --experimental-ffi dist/cli.js --chat --workspace /path/to/project
+
+# Explicitly request OpenTUI, or use the plain interface
+bun dist/cli.js --chat --chat-ui opentui
+iris-agent --chat --chat-ui plain
+```
+
+`--chat-ui auto` is the default: it prefers OpenTUI on supported interactive
+terminals and selects plain chat for redirected input or output, CI, dumb
+terminals or unsupported runtimes. If native UI initialization
+fails, auto restores the terminal and falls back to plain chat. Explicit
+`--chat-ui opentui` reports the initialization error instead.
+
+| Key | Action |
+| --- | --- |
+| Enter | Send a message |
+| Shift+Enter, Option/Alt+Enter, Ctrl+J or `\` then Enter | Insert a newline |
+| Esc | Cancel the current request |
+| Ctrl+C | Cancel a running request, or quit while idle |
+| Ctrl+D | Quit while idle with an empty editor |
+| Page Up / Page Down or mouse wheel | Scroll the transcript |
+| Ctrl+L | Toggle captured agent logs |
+| `exit` or `quit` | End the session |
+
+Shift+Enter requires a terminal that reports modified Enter keys (for example
+kitty, Ghostty, WezTerm, or iTerm2 with CSI u reporting enabled). macOS
+Terminal and the VS Code integrated terminal send Shift+Enter as plain Enter, so
+use Ctrl+J, Option+Enter (with "Use Option as Meta key" enabled), or end the line
+with `\` and press Enter. To make Shift+Enter insert a newline in VS Code, add
+this to `keybindings.json`:
+
+```json
+{
+  "key": "shift+enter",
+  "command": "workbench.action.terminal.sendSequence",
+  "args": { "text": "\u001b\r" },
+  "when": "terminalFocus"
+}
+```
+
+The editor remains available for drafting during a response; sending is disabled
+until that response finishes or cancellation settles. Cancellation passes an
+abort signal to the agent and cancels the active stream; a tool that does not
+honor cancellation may still complete its work. Tool results requiring approval
+are labeled accordingly; this UI preserves the existing CLI execution policy.
+
+Validate the native editor and rendering without provider credentials:
+
+```sh
+npm run test:cli-opentui
+```
+
+Validate compilation and plain chat without the optional UI dependencies:
+
+```sh
+npm run test:cli-optional
+# On Node.js >=26.4.0 with Yarn 1 available, also verify Yarn installation
+npm run test:cli-optional -- --check-yarn-install
+```
+
+### ACP Server
+
+```sh
+OPENROUTER_API_KEY=... npm run cli -- --workspace /path/to/project --acp
+```
+
+This starts an ACP (Agent Client Protocol) server over stdio, allowing IDE
+integrations and other ACP clients to communicate with the agent. Models can be configured at startup or dynamically per-session / per-prompt. Standard
+output is reserved for newline-delimited JSON-RPC messages; logs are written to
+standard error. Each ACP process is bound to the workspace supplied at startup.
+To switch workspaces, close the process and respawn `iris-agent` with the new
+`--workspace` path.
+
+When the current directory is the target workspace, `--workspace` is optional:
+
+```sh
+OPENROUTER_API_KEY=... npx @4onstudios/iris-agent@latest --acp
+```
+
+If the selected model's credentials are missing, Iris Agent stops before opening
+the ACP connection and prints the required environment variable, a terminal
+command, and a ready-to-paste VS Code ACP Client configuration. Configure API
+keys in `acp.agents.<name>.env`; do not put them in the argument list:
+
+```json
+{
+  "acp.agents": {
+    "Iris Agent": {
+      "command": "npx",
+      "args": ["@4onstudios/iris-agent@latest", "--acp"],
+      "env": {
+        "OPENROUTER_API_KEY": "your-openrouter-api-key"
+      }
+    }
+  }
+}
+```
+
+Use `--modelId` to select a direct provider: `openai/gpt-4o` with
+`OPENAI_API_KEY`, `anthropic/claude-sonnet-4-5` with `ANTHROPIC_API_KEY`,
+`google/gemini-2.5-pro` with `GOOGLE_GENERATIVE_AI_API_KEY`, or
+`huggingface/...` with `HF_TOKEN`. Local `ollama/<model>` sessions do not need
+a cloud API key.
+
+Iris Agent advertises ACP session loading and listing, so
+[VS Code ACP Client](https://github.com/formulahendry/vscode-acp) can display
+and restore persisted conversations for the current workspace. It also returns
+the per-session model configuration option required by the extension's composer
+controls.
+
+## CLI Usage
+
+```sh
+iris-agent [--workspace <path>] [--acp | --chat] [--modelId <model>]
+```
+
+### Homebrew
+
+On macOS or Linux, install the CLI through the Iris Agent Homebrew tap:
+
+```sh
+brew tap 4onstudios/iris-agent
+brew install iris-agent
+```
+
+Then start an interactive session or an ACP server:
+
+```sh
+# Automatic interface selection (prefers OpenTUI in supported terminals)
+iris-agent --chat
+
+# Old terminal chat (readline, no OpenTUI or experimental FFI)
+iris-agent --chat --chat-ui plain
+
+# Require OpenTUI instead of falling back to plain chat
+iris-agent --chat --chat-ui opentui
+
+# ACP server for IDE integration
+OPENROUTER_API_KEY=... iris-agent --acp
+```
+
+Homebrew `0.4.0_4` and newer include OpenTUI and enable Node's experimental FFI
+automatically for chat mode. No `NODE_OPTIONS` setting is needed. Use
+`iris-agent --chat --chat-ui opentui` to require the TUI, or
+`iris-agent --chat --chat-ui plain` for the readline interface.
+ACP, help, and explicit plain chat do not enable FFI.
+
+The Homebrew formula installs the current Node.js release (Iris Agent requires
+Node.js >=26.4.0) and keeps Iris Agent and its
+dependencies under Homebrew's managed prefix. Upgrade it with:
+
+```sh
+brew update
+brew upgrade iris-agent
+```
+
+On macOS, the formula verifies native addon and dynamic-library signatures after
+installation and repairs invalid signatures with local ad-hoc signing. If an
+older installation exits with `zsh: killed`, upgrade to `0.4.0_3` or newer.
+
+The tap is updated automatically by GitHub Actions when a newer version is
+published to npm. The updater runs daily and can also be started manually from
+the repository's **Actions** tab. It requires a repository secret named
+`HOMEBREW_TAP_TOKEN` with permission to push to
+`4onstudios/homebrew-iris-agent`.
+
+**Options:**
+
+- `--workspace` (`-w`) - Path to the workspace/project root; defaults to the current working directory
+- `--acp` (`-a`) - Start ACP protocol server (stdio-based)
+- `--chat` (`-c`) - Start interactive chat mode
+- `--chat-ui` - Select `auto` (default, prefers OpenTUI), `opentui` (require the TUI), or `plain` (old readline terminal chat, no FFI)
+- `--modelId` - Model identifier used for chat/ACP sessions (default: `openrouter/openai/gpt-5.3-codex` or `MODEL_ID` / `OPENROUTER_MODEL` env vars)
+
+Running the CLI without `--chat` or `--acp` prints help.
+
+**Examples:**
+
+```sh
+# Interactive chat
+npm run cli -- --workspace . --chat
+
+# Interactive chat with custom model
+npm run cli -- --workspace . --chat --modelId openrouter/anthropic/claude-3.7-sonnet
+
+# ACP server for IDE integration
+npm run cli -- --workspace . --acp
+
+# ACP server from the current workspace
+npx @4onstudios/iris-agent@latest --acp
+
+# ACP server with custom default model
+npm run cli -- --workspace . --acp --modelId openrouter/openai/gpt-4o
+
+# HTTP service (default)
+npm start
+```
+
+## Browser Client
+
+Configure the precise browser origins permitted to call this service:
+
+```sh
+AGENT_ALLOWED_ORIGINS=https://airis.4onstudios.com npm start
+```
+
+Multiple origins may be supplied as a comma-separated list. Requests without an `Origin` header (such as a local CLI or reverse proxy) are accepted; browser origins are denied unless explicitly configured.
+
+## Providers
+
+Configure the API key for the model provider selected by the client:
+
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `GOOGLE_GENERATIVE_AI_API_KEY`
+- `OPENROUTER_API_KEY`
+- `OLLAMA_API_KEY`
+
+Provider-specific configuration:
+
+| Variable | Description |
+| --- | --- |
+| `OLLAMA_BASE_URL` | Ollama-compatible server URL. |
+| `OPENROUTER_BASE_URL` | OpenRouter-compatible API URL. |
+| `OPENROUTER_SITE_URL` / `OPENROUTER_SITE_NAME` | Override Iris Agent's OpenRouter attribution URL and display name. Defaults to the Iris Agent GitHub repository and `Iris Agent`. Requests include `HTTP-Referer`, `X-OpenRouter-Title`, and the `cli-agent,ide-extension` categories. |
+| `ANTHROPIC_BETA` / `ANTHROPIC_BETAS` | Optional Anthropic beta headers. |
+| `HF_TOKEN` | Hugging Face authentication where required by a configured provider. |
+
+### Runtime configuration
+
+| Variable | Description |
+| --- | --- |
+| `PORT` | HTTP listening port; defaults to `8080`. |
+| `AGENT_ALLOWED_ORIGINS` | Comma-separated browser origins allowed by CORS. Requests without an `Origin` header are allowed. |
+| `DATABASE_URL` | Database connection URL used by the configured agent storage. |
+| `IRIS_AGENT_RUNS_DB_PATH` | SQLite path for persisted run lifecycle data. |
+| `IRIS_BACKEND_SERVICE` | Selects the backend service integration. |
+| `IRIS_AGENT_PREFERRED_AGENT_ID` | Preferred external agent identifier. |
+| `IRIS_AGENT_EXTERNAL_AGENT_MANIFEST_PATH` | Path to an external-agent manifest. |
+| `IRIS_AGENT_GIT_SAFETY_MODE` | Git safety policy; defaults to `suggest`. |
+| `IRIS_AGENT_AUTO_LINT` / `IRIS_AGENT_AUTO_TEST` | Enable automatic lint/test validation. |
+| `IRIS_AGENT_LINT_CMD` / `IRIS_AGENT_TEST_CMD` | Override validation commands. |
+| `IRIS_AGENT_AUTO_FIX_VALIDATION` | Enable automatic validation fixes. |
+| `IRIS_AGENT_INPUT_TOKEN_LIMIT` / `IRIS_AGENT_MAX_OUTPUT_TOKENS` | Token-budget controls. The input limit overrides discovered model limits; configure it carefully to avoid provider context errors. |
+| `IRIS_AGENT_PROMPT_TOKEN_BUDGET_RATIO` | Prompt budget ratio. |
+| `IRIS_AGENT_MODEL_RETRY_ATTEMPTS` | Model request retry count. |
+| `IRIS_AGENT_REFLECTION_MAX` / `IRIS_AGENT_REFLECTION_MAX_STEPS` | Reflection-loop limits. |
+| `IRIS_AGENT_REFLECTION_RETRY_ATTEMPTS` | Reflection retry count. |
+| `IRIS_AGENT_REFLECTION_NO_PROGRESS_REPEATS` | Maximum repeated no-progress reflection cycles. |
+| `IRIS_ENABLE_SLASH_COMMANDS` | Enable slash-command handling. |
+| `IRIS_DEBUG_TOKEN_USAGE_SOURCE` | Enable token-usage diagnostics. |
+| `IRIS_AGENT_STREAM_RETRY_ENABLED` | Enable stream retries. Related retry delay and limit variables are supported by the runtime. |
+| `IRIS_VERBOSE_SKILL_DISCOVERY` | Enable verbose skill-discovery logging. |
+| `BROWSER_NO_SANDBOX` | Set to `true` only when browser automation must run without a sandbox. |
+
+OpenRouter model context and output limits are looked up by model ID and cached for one hour. When metadata cannot be fetched, the agent logs a warning and uses a conservative 16,000-token input allowance; other unknown models use the same fallback. Small-context models retain fewer previous ACP turns. These budgets are estimates rather than a guarantee that a request will fit: provider tokenization, tool schemas, images, and provider-specific routing can change the actual request size.
+
+HTTP chat history may contain only prior turns or already include the current user message; the current message is included once before budgeting. Oversized ordinary requests retain their beginning, while final-answer synthesis continuations retain their tail to preserve the newest tool evidence.
+
+Browser-backed web search uses `puppeteer`, which downloads a compatible
+Chrome for local and packaged installations. Set `BROWSER_NO_SANDBOX=true`
+only when browser automation must run without a sandbox.
+
+Environment values can be supplied in a local `.env` file for the HTTP server
+because it loads `dotenv/config`. Do not commit `.env` files or API keys.
+
+### Desktop authentication
+
+Desktop-only routes require both `TAURI_BUNDLED=1` and `IRIS_DESKTOP_TOKEN`.
+Clients send the token in the `X-Desktop-Token` header. These protected routes
+include key management, file operations, remote chat-session synchronization,
+and MCP inspection/calls. Do not expose the desktop token to browsers.
+
+### Persistence
+
+Run lifecycle data is stored in SQLite. Set `IRIS_AGENT_RUNS_DB_PATH` to choose
+the database location; otherwise it is stored at `~/.iris/agent-runs.sqlite`.
+Chat sessions are stored as JSON files under `~/.iris/chat-sessions/` and are
+managed through the desktop synchronization routes.
+
+### MCP and approvals
+
+MCP servers are supplied in chat requests (`mcpServers` field) or MCP route
+payloads. Use `POST /api/agent/mcp/inspect` to discover tools before calling
+`POST /api/agent/mcp/call`. Both routes require desktop authentication (see
+[Desktop authentication](#desktop-authentication)). MCP tool names are
+generated as `mcp_<server name>_<tool name>` and must start with `mcp_`.
+
+#### Server configuration
+
+Each server config has an `id`, `name`, `enabled` flag, and either a local
+`command` or a remote `url` (exactly one connection mode is required). If
+both are supplied, `url` takes precedence and `command` is dropped during
+sanitization to avoid an ambiguous configuration. If `url` is present but
+malformed or unsupported (not `http`/`https`), the whole config is rejected
+rather than silently falling back to `command` - a saved remote server must
+never be resurrected as a local process launch.
+
+| Field | Type | Applies to | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | both | Stable identifier for the server (auto-generated if omitted). |
+| `name` | `string` | both | Display name; also used to build tool keys (`mcp_<name>_<tool>`). If omitted for a remote server, defaults to the URL's hostname (not the full URL) to avoid leaking embedded credentials. |
+| `enabled` | `boolean` | both | Servers with `enabled: false` are skipped. |
+| `command` | `string` | local | Executable to spawn (e.g. `npx`, `uvx`, or an absolute path). |
+| `args` | `string[]` | local | Arguments passed to `command`. |
+| `env` | `object` | local | Extra environment variables merged into the spawned process's env. |
+| `url` | `string` | remote | HTTP(S) endpoint for a remote MCP server. |
+| `transport` | `"streamable-http" \| "sse"` | remote | HTTP transport; defaults to `streamable-http`. Use `sse` only for legacy SSE servers. |
+| `headers` | `object` | remote | Extra HTTP headers (e.g. `Authorization`) sent with every request. |
+
+Local stdio servers use `command`, `args`, and optional `env` fields:
+
+```json
+{
+  "id": "github-local",
+  "name": "GitHub",
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-github"],
+  "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "..." },
+  "enabled": true
+}
+```
+
+Remote MCP servers use an HTTP(S) `url` and may provide request headers for
+authentication. The default transport is MCP Streamable HTTP. Set `transport`
+to `sse` for servers that require the legacy SSE protocol:
+
+```json
+{
+  "id": "remote-tools",
+  "name": "Remote tools",
+  "url": "https://example.com/mcp",
+  "headers": { "Authorization": "Bearer ..." },
+  "enabled": true
+}
+```
+
+Only use remote URLs and credentials from trusted configuration. Remote MCP
+servers can execute actions and return untrusted content on the agent's behalf.
+Prefer the `headers` field for auth tokens over embedding them in the URL's
+query string or userinfo — Iris redacts query strings, userinfo, and
+fragments from URLs shown in model-facing tool descriptions, generated docs,
+warning logs, and the `/mcp/inspect` response; the raw `url` (including any
+embedded credentials) is only ever used for the actual transport connection.
+
+#### Discovering tools: `POST /api/agent/mcp/inspect`
+
+Connects to a single server, lists its tools, and closes the connection.
+Useful for validating a server config before enabling it for chat.
+
+Request body:
+
+```json
+{ "server": { "id": "remote-tools", "name": "Remote tools", "url": "https://example.com/mcp", "headers": {}, "enabled": true } }
+```
+
+Response body:
+
+```json
+{
+  "success": true,
+  "server": { "id": "remote-tools", "name": "Remote tools", "command": "", "url": "https://example.com/mcp" },
+  "tools": [{ "name": "search", "description": "Search the knowledge base" }],
+  "toolCount": 1
+}
+```
+
+`server.url` in the response is redacted (userinfo, query string, and
+fragment stripped) even though the real, unredacted `url` was used to
+connect - the same redaction applied everywhere else a remote URL is
+surfaced (see above).
+
+On failure (e.g. connection or auth error), the response is
+`{ "success": false, "error": "..." }` with a `500` status.
+
+#### Invoking a tool: `POST /api/agent/mcp/call`
+
+Request body:
+
+```json
+{
+  "toolName": "mcp_Remote_tools_search",
+  "args": { "query": "..." },
+  "workspaceRoot": "/path/to/workspace",
+  "mcpServers": [{ "id": "remote-tools", "name": "Remote tools", "url": "https://example.com/mcp", "headers": {}, "enabled": true }]
+}
+```
+
+`toolName` must match the `mcp_<server name>_<tool name>` format and the
+server that owns the tool must be present in `mcpServers`. The response
+mirrors the MCP SDK's `callTool` result (`success`, `server`, `tool`,
+`isError`, `content`, `structuredContent`, and `error` when applicable).
+
+Commands that require approval pause until the client submits
+`POST /api/agent/command-confirmation` with a `confirmationId` and boolean
+`approved` value.
+
+## ACP Protocol
+
+The stdio server implements the standard ACP v1 lifecycle:
+
+- `initialize`
+- `session/new` - supports initial `modelId` specification in `_meta` or parameters
+- `session/load` - load existing session history with optional model override
+- `session/set_config_option` - dynamically change session options such as model (`configId: "model"`)
+- `session/prompt` - execute prompts with optional per-turn `modelId` override in `_meta`
+- `session/cancel` - abort active turn
+- `session/close` - clean up session resources
+- `session/update` notifications for assistant text, reasoning, and tool status
+
+The server supports dynamic model resolution and caching across ACP requests.
+
+### Specifying Models in ACP Mode
+
+Clients can specify and change models at multiple levels:
+
+1. **Server Default**: Pass `--modelId <model>` to `iris-agent --acp` or set the `MODEL_ID` / `OPENROUTER_MODEL` environment variable.
+2. **Session Creation / Load**: Pass `modelId` in `_meta.iris.modelId` or `_meta.modelId` during `session/new` or `session/load`.
+3. **Dynamic Switch**: Call `session/set_config_option` with `configId: "model"` and `value: "<modelId>"` to change the active model for subsequent prompts.
+4. **Per-Prompt Override**: Include `_meta.iris.modelId` or `_meta.modelId` in the `session/prompt` payload to run a single prompt turn with a specific model.
+
+### Embedding the agent directly
+
+Backend consumers can configure the factory without patching installed files:
+
+```ts
+import { createCodingAgent } from "@4onstudios/iris-agent/api/core/agent/index";
+
+const agent = await createCodingAgent("openai/gpt-4o", null, {
+  instructions: "You are a helpful assistant.",
+  disableWorkspaceTools: true,
+  disableSkills: true,
+  allowedToolNames: ["webSearch", "fetchWebpage"],
+  enableMemory: false,
+});
+```
+
+These optional `AgentFactoryOptions` preserve existing behavior when omitted:
+
+- `instructions` replaces the default coding instructions (including an explicit
+  empty string).
+- `disableWorkspaceTools` skips automatic filesystem Workspace initialization,
+  Workspace tool registration, MCP documentation writes, and LSP connection.
+  It does **not** remove Iris's explicit file, terminal, or LSP tools; use
+  `allowedToolNames` to restrict those.
+- `disableSkills` disables bundled skill discovery and registration. Use it
+  when the embedded agent should not expose skill capabilities.
+- `allowedToolNames` filters Iris runtime, MCP, and Workspace tools by their
+  exact registered names. An empty array exposes none of those tools; omitted,
+  all existing tools remain available. Skill tools are controlled separately
+  by `disableSkills`. `listMcpServerTools` returns server-local names; convert
+  them with `toMcpToolKey(server.name, tool.name)` before adding them to the
+  allowlist. Both helpers are exported from
+  `@4onstudios/iris-agent/api/core/agent/tools/mcpTools`. For example, `search`
+  on the `docs` server is registered as `mcp_docs_search`, not `search`.
+
+```ts
+import {
+  listMcpServerTools,
+  toMcpToolKey,
+} from "@4onstudios/iris-agent/api/core/agent/tools/mcpTools";
+
+// Use the same server configuration and workspace path for discovery and creation.
+const tools = await listMcpServerTools(server, workspacePath);
+const allowedToolNames = tools.map((tool) => toMcpToolKey(server.name, tool.name));
+const agent = await createCodingAgent(modelId, workspacePath, {
+  mcpServers: [server],
+  allowedToolNames,
+});
+```
+
+### IrisClient SDK
+
+Install the published package in the Node.js process that owns your IDE's
+agent integration:
+
+```sh
+npm install @4onstudios/iris-agent
+```
+
+The spawned agent uses the provider credentials from its environment. For
+example:
+
+```sh
+OPENROUTER_API_KEY=... npm run your-ide-backend
+```
+
+When using a local checkout instead of the published package, build it before
+starting the compiled CLI:
+
+```sh
+npm install
+npm run build
+```
+
+When installing from a Git branch or commit, npm runs this package's
+`prepare` script to build `dist/` during installation, so root exports such as
+`IrisClient` are available without manually committing generated artifacts.
+
+The ACP subprocess writes protocol messages to stdout and diagnostic logs to
+stderr. Never merge logs into stdout or pipe stdout through a text logger;
+doing so corrupts the ACP stream.
+
+IDE extensions written for Node.js can use the exported `IrisClient` instead of
+managing ACP messages or the agent subprocess directly:
+
+```ts
+import { IrisClient } from "@4onstudios/iris-agent";
+
+const { client } = await IrisClient.spawn({
+  cwd: workspaceRoot,
+  onSessionUpdate(notification) {
+    renderAgentUpdate(notification.update);
+  },
+});
+
+try {
+  // Open session with an optional specific model
+  await client.openSession(workspaceRoot, {
+    modelId: "openrouter/anthropic/claude-3.7-sonnet",
+  });
+
+  // Prompt the agent
+  const result = await client.prompt("Explain the selected code");
+  console.log(result.stopReason);
+
+  // Switch model dynamically mid-session
+  await client.setModel("openrouter/openai/gpt-4o");
+
+  // Or override model for a single prompt
+  await client.prompt("Refactor this function", {
+    modelId: "openrouter/google/gemini-2.0-flash",
+  });
+} finally {
+  await client.close();
+}
+```
+
+`IrisClient.spawn()` starts `iris-agent --workspace <cwd> --acp`, initializes the
+ACP connection, and owns process cleanup. The `cwd` must be the workspace path
+the agent is allowed to access. The package's `iris-agent` executable must be
+available on `PATH`; use `command` and `args` when your IDE starts a local
+checkout or a custom launcher:
+
+```ts
+const { client } = await IrisClient.spawn({
+  command: "node",
+  args: ["/path/to/iris-agent/dist/cli.js", "--workspace", workspaceRoot, "--acp"],
+  cwd: workspaceRoot,
+  env: { OPENAI_API_KEY: process.env.OPENAI_API_KEY },
+});
+```
+
+One `IrisClient` owns one active ACP session. Call `openSession()` before
+`prompt()`, use `cancel()` to stop the active turn, and call `closeSession()`
+to end a session in the current workspace. An ACP process is bound to its
+startup workspace: to switch workspaces, call `close()` and use `spawn()` to
+create a new client for the new workspace. `close()` also terminates a process
+created by `spawn()` and is safe to call repeatedly.
+
+`IrisClient.connect()` accepts an existing ACP stream or in-process ACP agent
+when the IDE manages the process or transport itself. Use this for IDEs that
+already have a process supervisor or ACP transport. `spawn()` rejects if the
+agent executable cannot start or initialization fails, so handle startup errors
+before enabling agent commands in the UI.
+
+The `onSessionUpdate` callback receives standard ACP session notifications:
+
+| Update | Typical UI behavior |
+| --- | --- |
+| `agent_message_chunk` | Append assistant text. |
+| `agent_thought_chunk` | Show or hide reasoning according to IDE policy. |
+| `tool_call` | Show a tool as running. |
+| `tool_call_update` | Update tool status and output. |
+
+Do not expose provider API keys or raw ACP stdio streams to a browser renderer.
+Keep the client in the trusted desktop/backend process and forward only the
+events and commands your IDE UI needs.
+
+### Direct ACP JSON-RPC Client
+
+Use `IrisClient` unless your integration must own the ACP process and
+JSON-RPC transport. The following Node.js example starts the published CLI
+with `npx`, performs the ACP v1 handshake, streams updates, and closes the
+session and child process reliably:
+
+```ts
+import { spawn } from "node:child_process";
+import readline from "node:readline";
+
+type JsonRpcResponse = {
+  id?: number;
+  result?: unknown;
+  error?: { code: number; message: string };
+  method?: string;
+  params?: {
+    update?: {
+      sessionUpdate?: string;
+      content?: { text?: string };
+      title?: string;
+    };
+  };
+};
+
+async function connectToIrisAcp() {
+  const workspaceRoot = process.cwd();
+  const agentProcess = spawn(
+    "npx",
+    ["--yes", "@4onstudios/iris-agent", "--workspace", workspaceRoot, "--acp"],
+    {
+      cwd: workspaceRoot,
+      stdio: ["pipe", "pipe", "inherit"],
+      env: process.env,
+    },
+  );
+
+  let nextMessageId = 1;
+  const pendingRequests = new Map<
+    number,
+    { resolve: (result: unknown) => void; reject: (error: Error) => void }
+  >();
+
+  const rejectPendingRequests = (error: Error) => {
+    for (const { reject } of pendingRequests.values()) reject(error);
+    pendingRequests.clear();
+  };
+
+  agentProcess.once("error", rejectPendingRequests);
+  agentProcess.once("exit", (code, signal) => {
+    rejectPendingRequests(
+      new Error(`Iris ACP process exited (${signal ?? `code ${code ?? "unknown"}`})`),
+    );
+  });
+
+  const sendRequest = (method: string, params?: unknown): Promise<unknown> => {
+    const id = nextMessageId++;
+    agentProcess.stdin.write(
+      `${JSON.stringify({ jsonrpc: "2.0", id, method, params })}\n`,
+    );
+    return new Promise((resolve, reject) => {
+      pendingRequests.set(id, { resolve, reject });
+    });
+  };
+
+  const lines = readline.createInterface({ input: agentProcess.stdout });
+  lines.on("line", (line) => {
+    if (!line.trim()) return;
+
+    const message = JSON.parse(line) as JsonRpcResponse;
+    if (typeof message.id === "number" && pendingRequests.has(message.id)) {
+      const request = pendingRequests.get(message.id)!;
+      pendingRequests.delete(message.id);
+      if (message.error) {
+        request.reject(new Error(message.error.message));
+      } else {
+        request.resolve(message.result);
+      }
+      return;
+    }
+
+    const update = message.params?.update;
+    if (message.method === "session/update") {
+      if (update?.sessionUpdate === "agent_message_chunk") {
+        process.stdout.write(update.content?.text ?? "");
+      } else if (update?.sessionUpdate === "tool_call") {
+        console.log(`\n[Executing tool: ${update.title ?? "unknown"}]`);
+      }
+    }
+  });
+
+  try {
+    await sendRequest("initialize", {
+      protocolVersion: 1,
+      clientInfo: { name: "my-custom-service", version: "1.0.0" },
+      clientCapabilities: {},
+    });
+
+    const session = (await sendRequest("session/new", {
+      cwd: workspaceRoot,
+      mcpServers: [],
+    })) as { sessionId: string };
+
+    await sendRequest("session/prompt", {
+      sessionId: session.sessionId,
+      prompt: [
+        {
+          type: "text",
+          text: "List all files in the root folder and summarize the project.",
+        },
+      ],
+    });
+
+    await sendRequest("session/close", { sessionId: session.sessionId });
+  } finally {
+    lines.close();
+    if (!agentProcess.killed) agentProcess.kill();
+  }
+}
+
+connectToIrisAcp().catch(console.error);
+```
+
+Set `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, or the API key for the selected
+provider in the environment before starting the client. Keep those credentials
+in the trusted Node.js process; do not pass them to a browser renderer.
+
+The CLI does not load MCP definitions from `AIRIS_MCP_SERVERS`. In the current
+ACP server, custom MCP servers are not yet applied from `session/new` either,
+so leave `mcpServers` empty as shown. To use custom MCP tools today, configure
+them through the authenticated HTTP agent API rather than this ACP example.
+
+#### Troubleshooting
+
+- `ENOENT` when calling `spawn()` means the configured `command` is not on
+  `PATH`. Set `command` and `args` to the compiled CLI, or install the package
+  globally for the IDE process.
+- An initialization failure usually means the subprocess exited early, the
+  provider key is missing, or stdout contains non-ACP output. Inspect stderr
+  and verify the provider environment passed through `env`.
+- A prompt requires an open session. Call `openSession()` once per workspace.
+  To switch workspaces, call `close()` to terminate the current ACP process,
+  then use `spawn()` to create a client bound to the new workspace.
+- `IrisClient` requires a Node.js desktop/backend process. Browser-only IDE
+  clients should call their backend over HTTPS/WebSocket/IPC instead of
+  spawning the agent in the renderer.
+
+### Custom IDE Backend
+
+For a custom IDE, keep `IrisClient` in the desktop or backend process and
+forward agent updates to the UI over WebSocket, IPC, or the IDE's event bus:
+
+```ts
+import { IrisClient } from "@4onstudios/iris-agent";
+
+export class IrisAgentController {
+  private client?: IrisClient;
+
+  async start(workspaceRoot: string, onUpdate: (update: unknown) => void) {
+    const spawned = await IrisClient.spawn({
+      cwd: workspaceRoot,
+      clientName: "my-custom-ide",
+      clientVersion: "1.0.0",
+      onSessionUpdate(notification) {
+        onUpdate(notification.update);
+      },
+    });
+
+    this.client = spawned.client;
+    await this.client.openSession(workspaceRoot);
+  }
+
+  async prompt(prompt: string) {
+    if (!this.client) throw new Error("Iris agent is not running");
+    return this.client.prompt(prompt);
+  }
+
+  async cancel() {
+    await this.client?.cancel();
+  }
+
+  async stop() {
+    await this.client?.close();
+    this.client = undefined;
+  }
+}
+```
+
+Example backend routes can forward updates to the custom IDE client:
+
+```ts
+const iris = new IrisAgentController();
+
+await iris.start(workspaceRoot, (update) => {
+  websocket.broadcast({ type: "agent-update", update });
+});
+
+app.post("/api/agent/prompt", async (request, response) => {
+  response.json(await iris.prompt(request.body.prompt));
+});
+
+app.post("/api/agent/cancel", async (_request, response) => {
+  await iris.cancel();
+  response.sendStatus(204);
+});
+
+app.post("/api/agent/stop", async (_request, response) => {
+  await iris.stop();
+  response.sendStatus(204);
+});
+```
+
+Handle forwarded updates in the IDE UI using `sessionUpdate`:
+
+```ts
+function handleAgentUpdate(update: any) {
+  switch (update.sessionUpdate) {
+    case "agent_message_chunk":
+      appendAssistantText(update.content.text);
+      break;
+    case "agent_thought_chunk":
+      appendReasoning(update.content.text);
+      break;
+    case "tool_call":
+      showToolStarted(update.title, update.toolCallId);
+      break;
+    case "tool_call_update":
+      updateToolStatus(update.toolCallId, update.status);
+      break;
+  }
+}
+```
+
+The integration flow is:
+
+```text
+Custom IDE UI -> IDE backend -> IrisClient.spawn()
+             -> iris-agent --acp -> ACP session/update events
+             -> IDE backend -> WebSocket/IPC -> Custom IDE UI
+```
+
+## Development
+
+```sh
+npm run typecheck
+npm run build
+npm test
+```
+
+Release validation and publishing are scripted:
+
+```sh
+npm run release
+NPM_CONFIG_OTP=<code> npm run release:publish
+```
+
+`npm run release` requires a clean worktree, runs type checking, tests, build,
+and `npm pack --dry-run`. `npm run release:publish` performs the same checks
+before publishing with public npm access. Use Node.js `>=26.4.0`, matching the
+package engine requirement.
+
+The repository also provides Make targets:
+
+```sh
+make test  # npm test with Jest's serial/forced-exit flags
+make run   # npm start
+make dev   # npm run dev
+```
+
+For production, run the compiled output from a process supervisor, restrict
+`AGENT_ALLOWED_ORIGINS`, keep provider credentials in a secret store, protect
+the HTTP service behind TLS/authentication, and use a writable persistent
+location for the run database.
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup,
+validation, and pull request guidance. Use the repository's issue templates for
+bug reports and feature requests. See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+for community expectations and [SECURITY.md](./SECURITY.md) for private
+vulnerability reporting.
+
+The project logo is available at
+[`assets/iris-agent-logo.svg`](./assets/iris-agent-logo.svg) for repository and
+community references. Keep the logo unchanged when using it as the project
+mark.
+
+## Package
+
+The published package is available on [npm](https://www.npmjs.com/package/@4onstudios/iris-agent).
+
+Yarn users can install the published package with:
+
+```sh
+yarn global add @4onstudios/iris-agent
+```
+
+This project is released under the [MIT License](LICENSE).

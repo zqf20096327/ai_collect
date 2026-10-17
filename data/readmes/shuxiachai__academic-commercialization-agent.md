@@ -1,0 +1,296 @@
+# Academic Commercialization Assessment Agent
+
+Turn a paper or research topic into a **source-linked commercialization assessment draft**, with an auditable scorecard and risk notes for research triage.
+
+[Open the application](https://academic-commercialization-agent.up.railway.app) · [Read a public report](examples/solid-state-batteries-ev.md) · [Run locally](#quick-start) · [中文](README.zh-CN.md)
+
+**Demo access:** an operator-issued access code **or** BYOK (a supported LLM API key
+plus a Serper search key). New analyses and PDF extraction incur provider usage.
+The public report below can be read without keys or a new analysis.
+
+![Real historical result screen: CRISPR assessment with score dimensions, source counts and cited risk notes](assets/screenshot-results.png)
+
+*Real UI archived on 2026-08-11 at [a343a95](https://github.com/shuxiachai/academic-commercialization-agent/commit/a343a95590ad83f0edec4002e3489355fc96a512), not a current-release capture.*
+
+**Public sample:** [Solid-state batteries for electric vehicles](examples/solid-state-batteries-ev.md)
+— [frozen 2026-07-19 version, 9673a83](https://github.com/shuxiachai/academic-commercialization-agent/blob/9673a8346c15f11b989ce8fd2d85be484d1c27b3/examples/solid-state-batteries-ev.md).
+The screenshot and sample are different historical runs; neither represents
+current model accuracy or an up-to-date market assessment.
+
+[Start here: documentation and repository map](docs/README.md) · [Case study](docs/portfolio-case-study.md)
+
+Built with Python, CrewAI, FastAPI and a build-free JavaScript client. The
+production system deliberately limits autonomy: retrieval is deterministic,
+and six LLM stages reason over validated evidence. **Supplementary Tool Calling
+is experimental and remains disconnected from production.**
+
+<a id="english"></a>
+
+## What you can do
+
+Market scorecards disclose [unverified estimate comparability](docs/results-2026-09-11-market-score-delivery-disclosure.md).
+This makes the historical cap's limitation visible; it does not fix or validate
+the underlying market-scoring policy.
+New validated results also show [pre/post cap scores and the actual deduction](docs/results-2026-09-12-numeric-token-and-cap-provenance.md);
+historical missing receipts cannot be reconstructed.
+The [20-source inspection](docs/results-2026-09-12-market-source-followup.md) still
+establishes no fully comparable real pair; the scoring policy is not yet validated.
+
+- Submit a research topic or attach a paper PDF; choose report language and
+  scoring profile.
+- Optionally provide Decision Context: the system distinguishes exploratory
+  orientation from an actor-specific decision and identifies whether a
+  threshold is owner-approved.
+- Follow progress, inspect citations and reliability warnings, export Markdown
+  or PDF, and share a run link.
+- In Sources, locate a saved source by exact ID or literal keyword and expand
+  its saved text without a model call. Saved text is not paper full text or
+  verified claim support; see the [operating guide](docs/operating-guide.md#web-cli-and-http-api).
+- Recover an interrupted run as an immutable child using its longest validated
+  checkpoint prefix and fresh credentials.
+- Use an operator-issued access code or supported bring-your-own-key (BYOK)
+  credentials on a gated deployment.
+
+A report supports research triage; it is **not** technical, legal, regulatory,
+investment or freedom-to-operate due diligence. Valid citation IDs do not
+establish that a source entails a claim.
+
+## Architecture
+
+```text
+Topic / PDF + optional Decision Context
+                   │
+Deterministic retrieval → validation → frozen source registry
+                   │
+         ┌─────────┼─────────┐
+     Academic    Patent    Market
+         └─────────┼─────────┘
+                 Writer
+                   │
+                 Reviewer
+                   │
+                  Scorer → deterministic weighted total
+                   │
+        Shared run artifacts + terminal truth
+                   │
+       FastAPI / browser / CLI / recovery
+```
+
+The three evidence specialists run in parallel. Writer, Reviewer and Scorer
+follow in sequence. A stage is not a promise of exactly one model request.
+See the [code map and contribution rules](AGENTS.md) before changing orchestration.
+
+| Boundary | Implemented behaviour |
+|---|---|
+| Evidence | Source-native clients plus web search; URL/DOI checks, provenance tiers, deduplication and registered source IDs |
+| Output | Pydantic contracts, guardrails, deterministic scoring and bounded Reviewer corrections |
+| Quality | Non-blocking precision-first claim/citation screens; unavailable checks are distinct from passes |
+| Runtime | Subprocess isolation, content-addressed checkpoints, immutable recovery children and write-once terminal records |
+| Cost | Shared run/PDF admission, persistent daily operator-funded quota and complete/lower-bound/unavailable usage states |
+| Observability | Optional redacted OpenTelemetry/OpenInference traces to Phoenix or another OTLP collector |
+| Delivery | FastAPI, vanilla HTML/CSS/ES modules, Docker and Railway; one application replica |
+
+### Measured results
+
+The frozen baseline contains **10 topics × 3 live repetitions**:
+
+| Check | Observed |
+|---|---|
+| End-to-end completion | **30/30** |
+| TRL calibration | **26/30** |
+| Weighted formula correctness | **30/30** |
+| Complete report structure | **30/30** |
+| Unsupported numeric lines | **0 across 30 reports** |
+
+These are different checks, not a combined accuracy score. Expected TRL ranges
+were adjusted after early observations, so this is not independent held-out
+validation. The uncited-numeric proxy does not measure all hallucinations.
+Seven of ten topics met their TRL range in all three runs.
+
+Other completed evidence includes:
+
+- **90-cell topology ablation:** the four-node arm used 54.89% fewer median
+  tokens and 47.03% lower median cost than the six-node arm. Six nodes were
+  not established as universally necessary.
+- **Five-reviewer utility study:** 20 eligible judgments; the registered success
+  rule failed despite a 6:4 full-workflow preference in each round.
+- **Two target-user pilot:** both retained `DEFER` and answered `MAYBE` to reuse;
+  neither checked external sources. This does not establish product adoption.
+- **Recovery:** 30/30 offline fault-injection children completed; one production
+  child reused four committed nodes. This is not an exactly-once or general
+  cost-saving guarantee.
+- **Runtime RTI02:** one normal Qwen completion passed 12/12 primary terminal
+  checks, with a disclosed minor observer-cadence deviation. Timeout/fallback
+  lanes and general report quality were not validated by that run.
+
+Protocols, source artifacts and limitations are linked in the
+[current evidence ledger](docs/evidence-status.md).
+
+## Tool Calling: current status
+
+Three capabilities have different release boundaries:
+
+- **Saved-source location:** an opt-in production page/API makes at most one
+  bounded Qwen selection from saved IDs/titles, then returns exact saved text.
+  It generates no research answer and performs no new search. Owner-code
+  authorization, explicit transfer consent, paid admission, durable receipts
+  and operation-level accounting apply. See the
+  [operating contract](docs/operating-guide.md#optional-saved-source-locator).
+- **Supplementary retrieval:** production remains zero-call shadow mode. The
+  latest unseen evaluation failed its admission gates; source-location progress
+  does not enable this separate capability.
+- **Generated evidence follow-up answers:** experimental, not a production
+  answering feature. Tool execution or valid JSON does not prove claim support.
+
+On 2026-09-26, one bounded production-browser acceptance selected the prepared
+source, delivered exact saved text and recovered the same receipt/accounting
+after execution was closed and the service redeployed. The operation reported
+1,199 tokens and a USD 0.000764436 frozen-rate estimate, not an invoice.
+This is one prepared delivery observation, not unseen accuracy or superiority
+over free Sources keyword search. **Paid execution was closed again with zero
+feature budgets; it is not permanently enabled.** The
+[qualified acceptance record](docs/results-2026-09-26-production-source-locator-acceptance.md)
+separates the original POST body-observer limitation from the verified DOM and
+GET response, retaining the earlier origin-rejected attempt as a failure.
+
+Historical hypotheses, failures and closed batches remain in the
+[evidence ledger](docs/evidence-status.md#tool-calling-experiments) and
+[experiment archive](docs/experiment-index.md). They are not combined into a
+general accuracy score or reopened by this acceptance.
+
+## Quick start
+
+Use Python 3.11 or 3.12 for the CI-tested environment and
+[uv](https://docs.astral.sh/uv/). Dependency installation needs network access;
+the default test suite does not call providers.
+
+```bash
+git clone https://github.com/shuxiachai/academic-commercialization-agent.git
+cd academic-commercialization-agent
+uv sync
+```
+
+Copy [.env.example](.env.example) to `.env`. For Qwen, set these values and
+replace the placeholders locally; do not commit or share keys:
+
+```dotenv
+LLM_PROVIDER=qwen
+DASHSCOPE_API_KEY=your-key
+QWEN_MODEL=qwen3.5-plus
+QWEN_API_BASE=https://dashscope.aliyuncs.com/compatible-mode/v1
+TAVILY_API_KEY=your-search-key
+```
+
+Choose the endpoint matching your operator account/region. This project's
+browser BYOK default uses the China-region endpoint. With multiple LLM keys
+present, set `LLM_PROVIDER` explicitly; otherwise auto-selection is
+DeepSeek → Qwen → Anthropic → OpenAI. Tavily takes precedence over Serper
+when both search keys are present. Remove unused placeholder keys.
+
+```bash
+uv run uvicorn api.main:app --reload
+# Browser: http://localhost:8000
+# Alternative CLI (starts real provider work):
+uv run academic_agent --topic "solid-state batteries for electric vehicles"
+```
+
+Real analysis incurs provider usage. Duration is provider-bound: observed Qwen
+completions include 306 and 885 seconds, not a promised three-minute SLA.
+See the [operating guide](docs/operating-guide.md) for HTTP endpoints, output
+files, Docker, access codes, BYOK, tracing and recovery.
+
+## Security and deployment
+
+Run URLs carry **128 bits of randomness** and act as read capabilities:
+anyone with the full URL can read that run until retention removes it.
+Code-owned mutation additionally requires its owner/admin code; ownerless
+BYOK runs have no second server-side identity. Do not publish private run URLs.
+
+Before public deployment, configure access control, paid-operation limits,
+retention and persistent storage. PDF extraction is a paid operation too.
+Use **one application replica / one Uvicorn worker**: in-memory ownership and
+file-backed quotas are not a distributed queue. See
+[deployment controls](docs/operating-guide.md#deploying-publicly) and
+[checkpoint recovery](docs/checkpoint-recovery.md).
+
+## Tests and benchmark
+
+The pre-consolidation baseline at `0fdaa76` passed **2071 tests and 678
+subtests**. CI covers Linux/Windows × Python 3.11/3.12, latest Ruff, narrow
+Pylint, an 85% coverage floor, zero-provider Chromium smoke, and Docker.
+These do not constitute a paid-provider production SLO.
+
+```bash
+uv run pytest -q
+uv run --with ruff ruff check .
+# Scheduling preview only; no provider requests:
+uv run python benchmark.py --dry-run
+```
+
+### Benchmark
+
+New measurements use immutable versioned batches; historical outputs are not
+overwritten. Reuse requires an explicit matching batch and intact artifacts.
+Reported costs cover Crew nodes, not helper/PDF/search charges. See the
+[execution and accounting contract](docs/operating-guide.md#benchmark).
+
+| # | Topic | Expected TRL | Industry |
+|---|-------|-------------|---------|
+| 01 | CAR-T cell therapy for blood cancers | 7–9 | Biomed |
+| 02 | mRNA vaccines for cancer immunotherapy | 6–8 | Biomed |
+| 03 | solid-state batteries for electric vehicles | 5–7 | Energy |
+| 04 | perovskite solar cells for utility-scale power generation | 6–8 | Clean Energy |
+| 05 | CRISPR gene editing for genetic diseases | 7–9 | Biomed |
+| 06 | carbon capture and storage for industrial emissions | 6–8 | Climate |
+| 07 | cultivated meat for food industry | 6–8 | Food |
+| 08 | quantum computing for drug discovery | 2–4 | Computing |
+| 09 | graphene-based flexible electronics | 3–5 | Materials |
+| 10 | room temperature ambient pressure superconductors | 1–2 | Materials |
+
+The [benchmark guide](docs/operating-guide.md#benchmark) explains repetitions,
+frozen evidence and paid-run precautions. Do not change scoring rules to
+improve these historical numbers.
+
+## Documentation and limitations
+
+First-party paid requests support [durable receipts](docs/operating-guide.md#paid-request-receipts):
+after a lost reply or refresh, read-only lookup can recover run/PDF/recovery-child
+acceptance for up to 24 hours without another paid submission. Unknown outcomes
+remain explicit; this is not provider-level exactly-once or multi-replica scheduling.
+
+- [中文项目说明](README.zh-CN.md)
+- [Documentation map](docs/README.md) — reading paths, repository layout and
+  the boundary between current guides, historical experiments and local/private material.
+- [Evidence ledger](docs/evidence-status.md) — measurements and what they cannot prove.
+- [Operating guide](docs/operating-guide.md) — setup, API, deployment and scoring.
+- [Contributing](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) — tested constraints
+  and rejected approaches.
+- [Experiment archive](docs/experiment-index.md) — unchanged protocols, results
+  and errata; older numbers are historical snapshots.
+
+Open limitations include qualitative source entailment, independently measured
+decision utility, multilingual/short/non-technical benchmark coverage, legacy
+metadata read-state clarity, and single-replica scale. More agents, a vector
+database or Kubernetes would not by themselves resolve these gaps.
+
+## Screenshots
+
+<details>
+<summary>Historical home and running views — a343a95, archived 2026-08-11</summary>
+
+These are real interface captures from [a343a95](https://github.com/shuxiachai/academic-commercialization-agent/commit/a343a95590ad83f0edec4002e3489355fc96a512).
+Current controls and wording may differ; the result screen is shown above.
+
+![Home screen](assets/screenshot-home.png)
+![Analysis in progress](assets/screenshot-running.png)
+
+</details>
+
+## Author and more projects
+
+Created by [shuxiachai](https://github.com/shuxiachai).
+Explore [more projects on the author's GitHub profile](https://github.com/shuxiachai).
+
+<a id="chinese"></a>
+
+For Chinese documentation, open [README.zh-CN.md](README.zh-CN.md).

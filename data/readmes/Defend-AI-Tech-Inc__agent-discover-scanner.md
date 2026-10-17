@@ -1,0 +1,961 @@
+# AgentDiscover Scanner
+
+**Open-Source AI Agent Discovery for the Enterprise**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PyPI](https://img.shields.io/pypi/v/agentdiscover.svg)](https://pypi.org/project/agentdiscover/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+*Part of the [DefendAI](https://defendai.ai) platform for autonomous AI governance*
+
+> **Formerly known as `agent-discover-scanner`** — the PyPI package has been renamed to `agentdiscover`.
+> `pip install agent-discover-scanner` continues to work and will install `agentdiscover` automatically.
+> The legacy entry points `agent-discover-scanner` and `agent-discover` remain as aliases.
+
+---
+
+## The finding that matters
+
+```
+$ agentdiscover scan-all ./your-repo --duration 10
+
+🔍 Scanning for autonomous AI agents...
+
+📂 Analyzing source code at ./your-repo
+🌐 Monitoring live network connections...
+   Observing runtime behavior (10s)...
+🔗 Correlating findings...
+✓ Correlation complete
+
+🤖 Autonomous Agent Inventory
+
+┏━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Classification ┃ Count ┃ Description                                                    ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ CONFIRMED      │ 2     │ Active — detected in code and observed at runtime              │
+│ UNKNOWN        │ 3     │ Code found — not yet observed at runtime                       │
+│ SHADOW AI      │ 3     │ Known app using AI — review for governance                     │
+│ ZOMBIE         │ 0     │ Inactive — code exists but no recent runtime activity          │
+│ GHOST          │ 1     │ ⚠ Critical — runtime activity with no source code (ungoverned) │
+└────────────────┴───────┴────────────────────────────────────────────────────────────────┘
+```
+
+A GHOST agent is an AI system making real API calls — consuming tokens, potentially accessing sensitive data — with no corresponding source code, deployment record, or owner. No static analysis tool finds this. No SIEM alerts on it. AgentDiscover Scanner finds it in under 60 seconds by watching the runtime and cross-referencing it against your codebase simultaneously.
+
+**Your engineering team thinks they know what AI is running. The GHOST classification is what they don't know.**
+
+---
+
+## What makes this different
+
+Most security tools tell you what's in your code. AgentDiscover Scanner tells you what's **actually running** — and crucially, what's running that has **no business being there**.
+
+```
+👻 GHOST AGENT DETECTED
+   Workload:    trading-bot (Deployment/default)
+   Connected:   api.openai.com — LIVE
+   SaaS:        openai — confirmed active connection
+   Source code: None found in scanned repositories
+   Owner:       Unknown — no deployment record, no code review
+
+👻 GHOST AGENT DETECTED
+   Workload:    shadow-agent (Pod/kube-system)
+   Connected:   api.anthropic.com — LIVE
+   SaaS:        anthropic — confirmed  |  gcp — active socket
+   Blast radius: HIGH (cloud provider access confirmed)
+   Source code: None found in scanned repositories
+   Owner:       Unknown — no deployment record, no code review
+```
+
+Every detected agent also carries a **SaaS blast radius** — a live-observed map of which services it's actively connected to, derived from network traffic, not just configuration files:
+
+```
+crewai-agent (CONFIRMED)
+  saas_connections:
+    anthropic: confirmed  ← active_connection observed
+    github:    medium     ← open socket
+  risk_flags: [cloud_credentials_present]
+  blast_radius: 70/100
+```
+
+`confirmed` means the connection was **live-observed** during the scan — not inferred from a config file.
+
+---
+
+## Agent classifications
+
+| Classification    | What it means                              | Risk         |
+| ----------------- | ------------------------------------------ | ------------ |
+| 👻 **GHOST**      | Runtime AI activity — no source code found | **Critical** |
+| ✅ **CONFIRMED**   | Detected in code AND observed running      | High         |
+| ⚠️ **UNKNOWN**    | Found in code, not yet observed at runtime | Medium       |
+| 🖥️ **SHADOW AI** | Known app using AI without governance      | Medium       |
+| ☠️ **ZOMBIE**     | Was active, no longer observed             | Low          |
+
+---
+
+## What counts as an "agent"
+
+DefendAI classifies **AI-capable components**, not just top-level orchestrators. Any component that invokes a model, holds a memory buffer, binds a tool, or queries a vector store is an independently governable unit — it can exfiltrate data, consume budget, or behave unexpectedly on its own.
+
+This matters because the gap between "we have one AI agent" (what the team believes) and the actual component count is routinely 5–15×.
+
+**Example — a single LangGraph application with 3 workers:**
+
+| # | Component | Why it's tracked |
+|---|---|---|
+| 1 | `StateGraph` | Graph entrypoint; controls execution flow |
+| 2–4 | Worker agent nodes ×3 | Each is an independent LangChain agent |
+| 5–7 | LLM bindings ×3 (one per worker) | Direct model invocations; each has its own token budget |
+| 8 | Supervisor node | Routes tasks between workers; has its own LLM call |
+| 9 | LLM binding for supervisor | Additional model invocation with separate prompt |
+| 10 | Tool node | Executes tool calls on behalf of workers |
+| 11 | Vector store retriever | RAG component; queries an external embedding store |
+| 12 | Memory checkpointer | Persists conversation state across turns |
+| 13 | Prompt templates | Carry system-level instructions that can be injected or drifted |
+| 14 | Output parser | Transforms model output; can silently drop or alter content |
+| 15 | Human-in-the-loop interrupt | Pause point that can be bypassed in non-interactive runs |
+
+One application. One developer who says "it's just an AI assistant." Fifteen components that each independently touch a model, a store, or a tool — any of which could be ungoverned, GHOST-classified, or carrying a stale permission scope.
+
+**Why component-level visibility matters:**
+
+- A worker's LLM binding can be swapped (model drift) without changing the agent node that wraps it.
+- A retriever can be pointed at a new vector store index without redeploying the application.
+- A prompt template lives in a config file, not code — static analysis misses it; only runtime observation catches the change.
+- GHOST detection fires at the component level: if worker 2's LLM binding starts calling a different endpoint, the graph-level agent still looks CONFIRMED while that specific binding is GHOST.
+
+agentdiscover reports each component as a separate inventory item so your governance controls can target the right granularity.
+
+---
+
+## Quick start
+
+```bash
+# macOS (recommended)
+brew install python@3.12 osquery pipx
+pipx install agentdiscover
+pipx ensurepath && source ~/.zshrc   # add ~/.local/bin to PATH
+
+# Linux (Debian/Ubuntu)
+sudo apt-get install -y python3 osquery
+pip3 install agentdiscover
+
+# Linux (RHEL/Fedora)
+sudo dnf install -y python3 osquery
+pip3 install agentdiscover
+
+# Windows (PowerShell — elevated)
+winget install Python.Python.3.12
+winget install osquery.osquery
+pip install agentdiscover
+```
+
+> **macOS:** never use `sudo` with the installer — Homebrew refuses root and osquery silently fails.
+> Use `pipx` to avoid Python environment conflicts. If `agentdiscover` is not found after install, run `pipx ensurepath` and restart your terminal.
+
+Then run your first scan:
+
+```bash
+agentdiscover scan-all ~/projects --duration 30
+```
+
+To verify all layers are working before your first real scan:
+
+```bash
+agentdiscover --version
+osquery --version
+which agentdiscover   # macOS: should show ~/.local/bin/agentdiscover
+
+# Or use --dry-run to get a complete layer readiness report:
+agentdiscover scan-all ~/projects --dry-run
+```
+
+To upload results to the DefendAI platform:
+
+```bash
+agentdiscover scan-all ~/projects \
+  --platform \
+  --api-key YOUR_API_KEY
+```
+
+---
+
+## What you'll see on your first scan
+
+Running `scan-all` on a real developer machine (macOS, ~30s observation window):
+
+```
+$ agentdiscover scan-all ~/projects --duration 30
+
+🔍 Scanning for autonomous AI agents...
+
+📂 Analyzing source code at /Users/alice/projects
+🌐 Monitoring live network connections...
+   Observing runtime behavior (30s)...
+💻 Scanning endpoints...
+
+[DETECT] Anthropic connection from Cursor Helper (PID: 61436) → api.anthropic.com:443
+[DETECT] OpenAI connection from Microsoft Edge Helper (PID: 4172) → api.openai.com:443
+
+🔗 Correlating findings...
+✓ Correlation complete
+
+⚠ Unverified MCP server: filesystem (Community/Unknown) — not from a verified publisher
+
+🤖 Autonomous Agent Inventory
+
+┏━━━━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Classification ┃ Count ┃ Description                                                    ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ CONFIRMED      │ 1     │ Active — detected in code and observed at runtime              │
+│ UNKNOWN        │ 2     │ Code found — not yet observed at runtime                       │
+│ SHADOW AI      │ 4     │ Known app using AI — review for governance                     │
+│ ZOMBIE         │ 0     │ Inactive — code exists but no recent runtime activity          │
+│ GHOST          │ 0     │ ⚠ Critical — runtime activity with no source code (ungoverned) │
+└────────────────┴───────┴────────────────────────────────────────────────────────────────┘
+
+Risk Breakdown:
+  ● Critical: 0
+  ● High: 1
+  ● Medium: 2
+  ● Low: 4
+
+✅ Scan complete — results saved to defendai-results
+```
+
+All output files land in `./defendai-results/`:
+
+| File | Contents |
+|---|---|
+| `layer1_code.sarif` | Code findings in SARIF format (GitHub Security tab ready) |
+| `layer2_network.json` | Live network connections observed during scan |
+| `layer3_k8s.jsonl` | Kubernetes workload events (if cluster available) |
+| `layer4_endpoint.json` | Installed packages, desktop apps, browser AI usage |
+| `layer5_cloud_audit.json` | AWS CloudTrail Bedrock invocations (when `--cloud-audit` set) |
+| `layer5_sse_proxy.json` | SSE proxy web-transaction findings (when `--zscaler` / `--prisma-access` set) |
+| `agent_inventory.json` | Final correlated agent inventory |
+
+For an executive-ready audit bundle (AIBOM + markdown reports):
+
+```bash
+agentdiscover audit ~/projects --output ./audit-report
+# Writes: audit-report/aibom.json, ghost-agents.md, mcp-report.md, summary.md
+```
+
+---
+
+## Common issues
+
+**`agentdiscover: command not found` after pipx install**
+
+```bash
+pipx ensurepath
+source ~/.zshrc   # or ~/.bashrc on Linux
+```
+
+If still missing: `which agentdiscover` should show `~/.local/bin/agentdiscover`. If `~/.local/bin` is not in `$PATH`, add it manually.
+
+**Layer 2 network monitoring fails on Linux**
+
+Layer 2 requires elevated privileges on Linux. Either run with `sudo` (avoid on macOS) or skip the layer:
+
+```bash
+sudo agentdiscover scan-all ~/projects --duration 30
+# or skip Layer 2:
+agentdiscover scan-all ~/projects --skip-layers 2
+```
+
+**osquery not installed — Layer 4 skipped**
+
+Layer 4 is optional. If osquery is not installed, the scan continues with Layers 1–3. To install:
+
+```bash
+# macOS
+brew install osquery
+# Linux
+sudo apt-get install osquery   # or see https://osquery.io/downloads
+```
+
+**Large repo warning — scan is slow**
+
+If you see `⚠ Large scan path detected: N Python files`, point the scanner at a specific project directory rather than your entire home folder:
+
+```bash
+agentdiscover scan-all ~/projects/my-agent-project --duration 30
+```
+
+**Layer 3 Kubernetes not available**
+
+If no cluster is reachable, Layer 3 logs a warning and continues. GHOST detection still works via Layer 2 network correlation. To skip Layer 3 explicitly:
+
+```bash
+agentdiscover scan-all ~/projects --skip-layers 3
+```
+
+**Check what layers are ready before scanning**
+
+```bash
+agentdiscover scan-all ~/projects --dry-run
+```
+
+---
+
+## How it works
+
+![GHOST detection mechanism](./docs/ghost-detection.svg)
+
+AgentDiscover Scanner runs **five detection layers** simultaneously and correlates them into a single agent inventory. Each layer sees something the others can't.
+
+| Layer | Name | Technology | Requirements |
+|---|---|---|---|
+| 1 | Source code | Python AST + esprima (JS/TS) | None |
+| 2 | Live network | psutil connection observation | Linux: root/sudo |
+| 3 | Kubernetes runtime | Tetragon/eBPF events; K8s API fallback | Linux (eBPF); kubectl (K8s API) |
+| 4 | Endpoint discovery | osquery — packages, apps, browser history | osquery (optional) |
+| 5 | Cloud Audit | AWS CloudTrail, Azure Monitor (stub), GCP Audit Logs (stub) | AWS credentials (boto3) |
+| 5 | SSE Proxy | Zscaler ZIA web logs, Prisma Access / Cortex Data Lake | Credentials for Zscaler or Prisma |
+
+![AgentDiscover detection pipeline](./docs/architecture.svg)
+
+### Layer 1 — Source code analysis
+
+Static analysis of Python and JavaScript/TypeScript. Detects LangChain, LangGraph, CrewAI, AutoGen, direct OpenAI/Anthropic/Gemini API usage, and any HTTP client targeting LLM endpoints. Handles import aliasing and indirect usage patterns. Generates SARIF output for CI/CD integration.
+
+### Layer 2 — Live network monitoring
+
+Passive observation of outbound connections to AI providers — OpenAI, Anthropic, Google Gemini, Mistral, Cohere, Azure OpenAI, AWS Bedrock, Grok/xAI, Groq, DeepSeek, Together AI, and vector stores. No packet capture. Identifies which process is making each connection, enabling per-agent SaaS attribution.
+
+Real scan output:
+```
+[DETECT] OpenAI connection from Microsoft Edge Helper (PID: 4172) → api.openai.com:443
+[DETECT] Anthropic connection from Cursor Helper (PID: 61436) → api.anthropic.com:443
+[DETECT] OpenAI connection from OneDrive (PID: 96089) → api.openai.com:443
+```
+
+**Forward-DNS correlation — reliable Bedrock detection without a CIDR list.**
+AWS Bedrock Runtime endpoints rotate across hundreds of generic EC2 IPs (e.g. `ec2-52-94-238-10.compute-1.amazonaws.com`). Reverse-DNS alone cannot recover the service name. At startup, Layer 2 proactively resolves all known LLM hostnames — including all regional Bedrock runtime and agent-runtime variants — and caches the resulting `IP → hostname` mappings with a short TTL. When psutil reports a connection to `52.94.238.10`, the forward-DNS cache immediately recovers `bedrock-runtime.us-east-1.amazonaws.com` and classifies the connection correctly, even as the IP rotates.
+
+**Port filter — eliminates false positives from shared IP space.**
+External LLM APIs use HTTPS exclusively. Connections to provider-adjacent IPs on non-HTTPS ports (e.g. port 993 IMAP on a Google IP) are dropped before classification. Private IPs (Ollama, local inference servers, internal proxies) are exempt from this filter.
+
+**Process introspection — framework detection at runtime.**
+When Layer 2 observes a live connection, it resolves the process cmdline to its Python entry script and runs the same L1 detection rules (DAI001–DAI007) against that file in-process. If a framework is identified (LangChain, CrewAI, AutoGen, etc.), the agent is immediately promoted to **CONFIRMED** — no prior static code scan and no CloudTrail required. Each finding carries a `framework_confidence` of `"high"` (signal in the entry script directly) or `"medium"` (signal in a sibling project file), and the resolved `entry_script` path for identity reconciliation with any parallel L1 scan.
+
+### Layer 5 — Cloud Audit (v2.7.0+)
+
+**Why Layer 2 misses AWS Bedrock.** AWS Bedrock Runtime endpoints rotate across hundreds of generic EC2 IPs with no published CIDR ranges and no stable reverse-DNS pattern. Passive socket monitoring (psutil) can observe the TCP connection but cannot reliably identify it as Bedrock without a complete, continuously-updated IP allowlist — which does not exist publicly. On VPC endpoints, traffic stays inside the AWS network and never appears on the host's socket table at all.
+
+**Layer 5 — Cloud Audit is the enterprise-grade alternative.** It queries cloud provider audit logs directly, giving you every AI API call with the caller identity, source IP, model ID, and the HTTP User-Agent the SDK set at call time — honest framework attribution (`langchain-aws`, `boto3`, `amazon-bedrock-agent`) that static code analysis can miss.
+
+**Provider support matrix:**
+
+| Provider | Service | Status | CLI flag |
+|---|---|---|---|
+| AWS | Bedrock (CloudTrail) | **GA** | `--cloud-audit` |
+| Azure | Azure OpenAI (Monitor) | Preview stub | `--azure-monitor` |
+| GCP | Vertex AI (Cloud Audit Logs) | Preview stub | `--gcp-audit` |
+
+**Required IAM permission (AWS):**
+
+```json
+{
+  "Effect": "Allow",
+  "Action": ["cloudtrail:LookupEvents"],
+  "Resource": "*"
+}
+```
+
+For CloudTrail Lake (near-real-time, ~60s delay instead of 5-15 min):
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "cloudtrail:StartQuery",
+    "cloudtrail:GetQueryResults"
+  ],
+  "Resource": "*"
+}
+```
+
+**CLI usage:**
+
+```bash
+# Enable Cloud Audit detection (1-hour lookback, us-east-1)
+agentdiscover scan-all ~/projects --cloud-audit
+
+# Specify region and longer lookback window
+agentdiscover scan-all ~/projects \
+  --cloud-audit \
+  --cloud-audit-region eu-west-1 \
+  --cloud-audit-hours 4
+
+# CloudTrail Lake — near-real-time (~60s delay)
+agentdiscover scan-all ~/projects \
+  --cloud-audit \
+  --cloud-audit-lake-arn arn:aws:cloudtrail:us-east-1:123456789012:eventdatastore/YOUR-ARN \
+  --cloud-audit-region us-east-1
+
+# Works with audit mode too
+agentdiscover audit ~/projects \
+  --cloud-audit \
+  --cloud-audit-region us-east-1
+```
+
+When Layer 5 findings are merged with Layer 2 network findings, the correlator can promote an agent from UNKNOWN to CONFIRMED even on VPC endpoints where psutil sees nothing. Layer 5 findings are written to `layer5_cloud_audit.json` in the output directory.
+
+> **Credential configuration.** The scanner uses standard boto3 credential resolution: `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` environment variables, `~/.aws/credentials`, or an EC2/ECS/EKS instance role. If no credentials are found, a clear warning is printed and the scan continues without Cloud Audit.
+
+### Layer 5 — SSE Proxy (v2.8.0+)
+
+**Why this matters for enterprise networks.** In environments with Secure Service Edge (SSE) proxies such as Zscaler ZIA or Palo Alto Prisma Access, all HTTPS traffic — including LLM API calls — is intercepted and TLS-inspected by the proxy. Layer 2 (psutil) sees the local IP of the proxy rather than `api.openai.com`, so it cannot identify LLM traffic. Layer 5 SSE Proxy solves this by querying the proxy's own web transaction logs, which contain the real destination hostname, the source user identity, and an allow/block disposition for every request.
+
+**What SSE proxy logs give you that psutil cannot:**
+
+- **Real destination hostname** — even when traffic flows through a zero-trust proxy
+- **User identity** — the `user@corp.com` principal from the proxy's identity provider integration, not just a PID
+- **Complete visibility across all machines** — a single query covers your entire organisation, not just the machine the scanner runs on
+- **Block/allow audit trail** — know which LLM calls your policy blocked, not just which ones succeeded
+
+**SSE proxy provider support matrix (v2.8.0):**
+
+| Provider | Product | Status | CLI flag |
+|---|---|---|---|
+| Zscaler | ZIA (web transaction logs) | **GA** | `--zscaler` |
+| Palo Alto Networks | Prisma Access / Cortex Data Lake | **GA** | `--prisma-access` |
+| Netskope | Security Cloud | Preview stub | *(coming soon)* |
+
+**Zscaler ZIA setup:**
+
+Set four environment variables before running:
+
+```bash
+export ZSCALER_API_KEY="your-api-key"      # from ZIA admin portal → Administration → API Key Management
+export ZSCALER_USERNAME="admin@corp.com"   # auditor or read-only admin role
+export ZSCALER_PASSWORD="your-password"
+export ZSCALER_TENANT="acme"               # tenant prefix: acme → https://acme.zsapi.net
+```
+
+The scanner uses Zscaler's HMAC-obfuscated session authentication — the same algorithm used by the official Zscaler Python SDK. Required role: **Auditor** (read-only access to web transaction logs).
+
+```bash
+agentdiscover scan-all ~/projects --zscaler --cloud-audit-hours 4
+
+# Override credentials at runtime (useful in CI):
+agentdiscover scan-all ~/projects \
+  --zscaler \
+  --zscaler-tenant acme \
+  --zscaler-api-key "$ZSCALER_API_KEY" \
+  --cloud-audit-hours 2
+```
+
+**Prisma Access / Cortex Data Lake setup:**
+
+```bash
+export PRISMA_CLIENT_ID="your-client-id"        # OAuth2 client ID from Prisma Access hub
+export PRISMA_CLIENT_SECRET="your-secret"
+export PRISMA_TENANT_ID="123456789"             # Tenant Service Group (TSG) ID
+export PRISMA_REGION="us"                       # us | eu | uk | sg | ca | jp | au
+```
+
+```bash
+agentdiscover scan-all ~/projects --prisma-access --cloud-audit-hours 4
+
+# Specify region explicitly:
+agentdiscover scan-all ~/projects \
+  --prisma-access \
+  --prisma-region eu \
+  --prisma-tenant-id "$PRISMA_TENANT_ID" \
+  --cloud-audit-hours 2
+```
+
+**Combining SSE Proxy with Cloud Audit:**
+
+Both sub-systems of Layer 5 run in parallel with each other and with Layers 1–4. You can enable all of them in a single command:
+
+```bash
+agentdiscover scan-all ~/projects \
+  --cloud-audit \
+  --cloud-audit-region us-east-1 \
+  --zscaler \
+  --prisma-access \
+  --cloud-audit-hours 4
+```
+
+SSE proxy findings are written to `layer5_sse_proxy.json`. The correlator treats them identically to Cloud Audit findings: a code finding (Layer 1) matching an SSE proxy event → **CONFIRMED**; an SSE proxy event with no code match → **GHOST** (with `caller_identity` set to the proxy's `user@corp.com` principal — distinct from `process_name`, which is reserved for OS-level process identity from Layer 2/4).
+
+### Layer 3 — Kubernetes runtime
+
+Kernel-level visibility into pod behavior via Tetragon. Identifies which workloads are actively making AI calls — including workloads with no corresponding source code. Works with any CNI. Falls back to Kubernetes API discovery if Tetragon is unavailable.
+
+When Layer 1 (code) and Layer 3 (K8s runtime) both detect the same agent, it becomes **CONFIRMED**:
+
+```
+Detection Coverage:
+┏━━━━━━━━━━━━━━━┳━━━━━━━━┓
+┃ Layers        ┃ Agents ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━┩
+│ layer1,layer3 │ 2      │  ← CONFIRMED: seen in code AND running in K8s
+│ layer1        │ 3      │  ← UNKNOWN: code found, not yet observed at runtime
+└───────────────┴────────┘
+```
+
+### Layer 3 limitations
+
+Layer 3 (eBPF via Tetragon) is **Linux-only**. On macOS and Windows developer machines, Layer 3 is skipped automatically — the scan continues with Layers 1, 2, and 4. The K8s API monitor path works on all platforms and requires only `kubectl` with cluster read access.
+
+### Layer 4 — Endpoint discovery
+
+Scans developer machines, CI/CD runners, and workstations via osquery. Finds installed AI packages, desktop AI applications (ChatGPT Desktop, Claude Desktop, Cursor, GitHub Copilot), active connections, browser-based AI usage, and VSCode extensions.
+
+### Cross-layer correlation
+
+After all layers run, the correlator builds a unified agent identity. An agent seen in code (Layer 1), confirmed running in K8s (Layer 3), and observed making network calls (Layer 2) is a single correlated identity — not three separate findings.
+
+**CONFIRMED paths** (any of the following is sufficient):
+- Layer 1 (code) + Layer 2 (live network connection)
+- Layer 1 (code) + Layer 3 (K8s / eBPF runtime event)
+- Layer 1 (code) + Layer 4 (osquery endpoint) + Layer 2 (network)
+- Layer 1 (code) + Layer 5 (CloudTrail Bedrock invocation or SSE proxy event)
+- **Layer 2 alone** — when process introspection identifies a framework from the running process entry script, a live connection is sufficient for CONFIRMED without a prior static scan
+
+Agents present at runtime with **no Layer 1 match** and no framework identified by process introspection become GHOST agents.
+
+The `entry_script` field carries the resolved Python entry-script path from Layer 2 process introspection. When both a static Layer 1 finding and a Layer 2 runtime finding exist for the same file, the platform merges them into a single agent record rather than treating them as two separate orphans.
+
+### SaaS blast radius detection (v2.3.0+)
+
+After correlation, each agent receives a `saas_connections` profile built from all four layers:
+
+```json
+{
+  "detected":  ["anthropic", "gcp", "github"],
+  "confirmed": ["anthropic"],
+  "evidence": {
+    "anthropic": ["active_connection", "open_socket"],
+    "gcp":       ["open_socket"],
+    "github":    ["vscode_extension_detected"]
+  },
+  "confidence": {
+    "anthropic": "confirmed",
+    "gcp":       "medium",
+    "github":    "medium"
+  },
+  "has_cloud_provider": true,
+  "has_llm_provider":   true
+}
+```
+
+---
+
+## High-risk agent detection (v2.4.0+)
+
+The scanner detects autonomous agent platforms that carry systemic security risk by design — not misconfigurations, but architecture.
+
+**OpenClaw** (formerly Clawdbot/Moltbot) is the primary target. It has full filesystem access, terminal execution, email and messaging integration, and runs as a persistent background daemon. CVE-2026-25253 CVSS 8.8. Gartner: "insecure by default." Microsoft: "treat as untrusted code execution."
+
+Detection uses corroborated signals — never a single port number:
+
+```
+🚨 HIGH-RISK AGENT CONFIRMED: OpenClaw
+   Autonomous agent with system-level access — filesystem,
+   terminal, email, and messaging integration.
+   Capabilities: filesystem, terminal, email, browser, messaging
+```
+
+---
+
+## MCP server detection (v2.4.0+)
+
+MCP (Model Context Protocol) is the integration layer between AI agents and enterprise SaaS. Supported by Claude, ChatGPT, Gemini, Copilot, Cursor, and VS Code.
+
+The scanner detects MCP servers across all AI clients and classifies each by publisher verification:
+
+```
+⚠ Local MCP script detected — unknown code with tool access
+⚠ Unverified MCP server: filesystem (Community/Unknown) — not from a verified publisher
+⚠ Unverified MCP server: mcpfw (Unknown) — not from a verified publisher
+
+✓ Verified: @salesforce/mcp-server (Salesforce official)
+```
+
+Supported clients: Claude Desktop, Cursor, Windsurf, VS Code, Gemini CLI, OpenAI Codex, Continue.dev, Zed, and project-level MCP configs.
+
+**Non-developer detection:** Financial analysts connecting ChatGPT Teams to Salesforce via UI leave no local config file. The scanner detects this via Layer 2 network traffic — the only tool that catches this pattern.
+
+Risk prioritization in reporting (guidance):
+- Unverified MCP server → HIGH
+- MCP filesystem access → HIGH
+- MCP + production environment → CRITICAL
+- OpenClaw + GHOST → CRITICAL
+
+---
+
+## Daemon mode
+
+Run continuously as a background service, updating the agent inventory every 30 seconds:
+
+```bash
+agentdiscover scan-all ~/projects \
+  --daemon \
+  --output ~/defendai-results \
+  --platform \
+  --platform-interval 5    # upload to platform every ~2.5 minutes
+```
+
+> **Note:** `--daemon` runs until you press Ctrl+C. Use `--output ~/defendai-results` (or any user-writable path) — avoid `/var/log/` which requires root.
+> If running as root, `~/projects` resolves to root's home directory, not yours. Always run without `sudo`.
+
+With `--platform`, the daemon syncs to the DefendAI platform every N correlation cycles (default: every 5 cycles ≈ 2.5 minutes) and always uploads a final snapshot on shutdown.
+
+**Linux — install as a systemd service:**
+
+```bash
+sudo bash deployment/systemd/install-service.sh ~/projects
+systemctl status defendai-scanner
+```
+
+---
+
+## Scanning an additional source repository
+
+The `--src-repo` flag adds a second codebase to every Layer 1 scan. Findings are merged into `layer1_code.sarif` alongside the primary scan, so the correlator sees code from both locations in the same run — useful when the runtime you're monitoring is served by a separate repo (microservices, shared ML libraries, a vendor repo you don't own locally).
+
+```bash
+# One-shot: include a remote team's repo in the scan
+agentdiscover scan-all ~/projects \
+  --src-repo https://github.com/acme/ml-services \
+  --duration 30
+
+# Local path — no clone step
+agentdiscover scan-all ~/projects \
+  --src-repo ~/shared/ml-services
+```
+
+In one-shot mode the remote repo is shallow-cloned, scanned, and deleted before the correlator runs.
+
+In daemon mode, pass `--src-repo-ttl` to control how frequently the additional repo is re-fetched:
+
+```bash
+agentdiscover scan-all ~/projects \
+  --daemon \
+  --src-repo https://github.com/acme/ml-services \
+  --src-repo-ttl 7200    # re-clone at most once every 2 hours
+```
+
+Auth failures (HTTP 401/403, SSH key rejection) back off exponentially up to 5 minutes and retry automatically — the primary scan continues uninterrupted.
+
+---
+
+## Customizing known applications
+
+By default, the scanner classifies common desktop applications (browsers, Office 365, Cursor, Slack, Claude Desktop, etc.) as **Shadow AI** rather than GHOST when they make AI API calls.
+
+Browser-based AI usage (claude.ai, chatgpt.com, copilot.microsoft.com) is detected via Layer 4 browser history — these are classified as Shadow AI automatically. Note that Layer 4 reads the browser's committed history database, not the current active session, so a tab open right now may not appear until the browser flushes its history.
+
+To add your own internal tools:
+
+```bash
+mkdir -p ~/.defendai
+echo "my-internal-ai-tool" >> ~/.defendai/known_apps.txt
+echo "company-llm-client" >> ~/.defendai/known_apps.txt
+```
+
+See `docs/known-apps-example.txt` for the full format.
+
+When connected to the DefendAI platform (`--platform` flag), the tenant-managed list is downloaded automatically on startup and merged with your local overrides.
+
+---
+
+## DefendAI platform integration
+
+The scanner is the **discovery layer**. The platform is where discovered agents become governed agents.
+
+```bash
+agentdiscover scan-all ~/projects \
+  --platform \
+  --api-key YOUR_KEY \
+  --duration 30
+```
+
+When connected to the platform, each scan triggers the **correlation engine** which builds a living identity map across every machine, every environment, and every scan:
+
+- **Agent identity resolution** — the same CrewAI agent on a laptop, in staging K8s, and in prod K8s is recognized as one agent at different lifecycle stages
+- **Behavioral drift detection** — agent added `has_code_execution=true` since last week? That's a signal. Platform tracks it.
+- **Cross-machine intelligence** — agent seen on 3 machines and crossed from dev into prod? Automatic risk escalation.
+- **SaaS blast radius** — platform aggregates confirmed SaaS connections across all scans and computes blast radius score.
+
+**What the scanner sends (v2.9.0+):**
+
+The upload payload includes full Layer 2 and Layer 5 telemetry, not just Layer 1 code findings:
+
+| Field | Source | Contents |
+|---|---|---|
+| `agents[]` | All layers | Per-agent metadata including classification, risk, SaaS connections |
+| `agents[].detected_hosts` | Layer 2 ForwardDNSCache | DNS-correlated LLM/provider hostnames (e.g. `bedrock-runtime.us-east-1.amazonaws.com`) recovered before psutil classification — reliable even as provider IPs rotate |
+| `agents[].evidence` | Correlator | Ordered confirmation-source tags: `layer1_code_scan`, `layer2_network`, `layer2_process_introspection`, `layer2_dns_host`, `layer3_k8s_runtime`, `layer4_endpoint`, `layer5_cloudtrail`, `layer5_sse_proxy` |
+| `agents[].entry_script` | Layer 2 process introspection | Absolute path to the Python entry script resolved from the OS process cmdline — used to reconcile L1 `code_file` identity with the L2 runtime finding so the same agent is not reported as two orphans |
+| `agents[].framework_confidence` | Layer 2 process introspection | `"high"` = framework signal found in the entry script directly · `"medium"` = found in a sibling project file · `null` = not detected |
+| `agents[].metadata.bedrock_invocations` | Layer 5 CloudTrail | Number of Bedrock API calls attributed to this agent |
+| `agents[].metadata.models_called` | Layer 5 CloudTrail | Model IDs invoked (e.g. `anthropic.claude-3-5-sonnet-20241022-v2:0`) |
+| `agents[].metadata.iam_users` | Layer 5 CloudTrail | IAM principals observed making calls |
+| `agents[].metadata.last_invocation` | Layer 5 CloudTrail | Timestamp of most recent Bedrock call |
+| `agents[].metadata.caller_identity` | Layer 5 CloudTrail / SSE proxy | IAM ARN or `user@corp.com` proxy principal |
+| `agents[].metadata.saas_connections.credential_files_found` | Layer 5 | `["IAM:alice@corp.com", ...]` — live-observed IAM identities |
+| `cloud_audit` | Layer 5 CloudTrail | Aggregated summary: total invocations, providers, models, IAM users, event type counts |
+| `network` | Layer 2 psutil | Aggregated summary: total connections, services, per-process connection counts |
+| `cloud_audit_findings[]` | Layer 5 CloudTrail | Raw CloudTrail events |
+| `sse_proxy_findings[]` | Layer 5 SSE proxy | Raw Zscaler / Prisma Access events |
+| `network_interceptors[]` | SSE proxy config | Active proxy configurations |
+| `scan_meta` | Scanner | `layers_active`, `layers_skipped` (integer arrays), `git_remote`, `scan_duration_seconds` |
+| `git_remote` | Git | Remote origin URL of the scanned repository |
+
+After upload the scanner prints a summary of what was synced:
+
+```
+✓ Platform sync complete
+  Agents uploaded:     5
+  Layer 5 events sent: 47
+  IAM users detected:  3
+  Models identified:   2
+  Network connections: 12
+  Dashboard: https://discover.defendai.ai/dashboard/agent_inventory
+```
+
+After a few scans, the DefendAI platform report shows:
+
+```
+Agent Inventory Report — acme-corp
+─────────────────────────────────────────────────────────────────────
+ shadow-agent    GHOST     CRITICAL   anthropic, github   blast: 85   machines: 3
+                           ↑ GHOST seen in production — immediate action required
+
+ crewai-agent    SHADOW    MEDIUM     openai              blast: 25   machines: 1
+                           ↑ Unreviewed — no governance record
+
+ langchain-agent KNOWN     LOW        openai              blast: 15   machines: 1
+                           ↑ Approved — monitoring active
+─────────────────────────────────────────────────────────────────────
+ 3 agents total · 1 critical · 1 unreviewed · 1 governed
+```
+
+---
+
+## CI/CD integration
+
+### GitHub Action (recommended)
+
+The repo ships a reusable composite action. Add it to any workflow with one step — no `pip install` required:
+
+```yaml
+# .github/workflows/agent-scan.yml
+name: AI Agent Scan
+
+on: [push, pull_request]
+
+permissions:
+  security-events: write   # required to upload SARIF to GitHub Security tab
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: Defend-AI-Tech-Inc/agent-discover-scanner@v2.8.1
+        with:
+          path: '.'               # directory to scan (default: .)
+          upload-sarif: 'true'    # post findings to GitHub Security tab (default: true)
+```
+
+Findings appear in **Security → Code scanning alerts** as soon as the workflow runs.
+
+**Inputs**
+
+| Input | Default | Description |
+|---|---|---|
+| `path` | `.` | Directory to scan |
+| `output` | `agent-scan-results.sarif` | SARIF output file path |
+| `upload-sarif` | `true` | Upload to GitHub Security tab |
+| `python-version` | `3.12` | Python version to use |
+
+**Output**
+
+| Output | Description |
+|---|---|
+| `sarif-file` | Path to the generated SARIF file |
+
+> **Note:** `permissions: security-events: write` is required at the job or workflow level for `upload-sarif: 'true'` to work. If your repo is private and you don't have GitHub Advanced Security, set `upload-sarif: 'false'` and consume the SARIF artifact directly.
+
+### Manual install in CI
+
+```yaml
+- name: Scan for AI agents
+  run: |
+    pip install agentdiscover
+    agentdiscover scan . --format sarif --output results.sarif
+
+- name: Upload SARIF to GitHub Security tab
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: results.sarif
+```
+
+For a full-stack scan (all layers, structured output):
+
+```yaml
+- name: Full agent scan
+  run: |
+    agentdiscover scan-all . \
+      --duration 30 \
+      --output ./defendai-results \
+      --skip-layers 3    # no K8s cluster in CI
+```
+
+---
+
+## Commands
+
+```bash
+# Full scan (recommended) — all layers + correlation
+agentdiscover scan-all PATH [OPTIONS]
+  --duration/-d SECONDS      Network and K8s monitor observation window [default: 60]
+  --output/-o PATH           Output directory for scan results [default: defendai-results]
+  --format/-f TEXT           Output format: text|json [default: text]
+                               (SARIF output is written to disk by Layer 1 as layer1_code.sarif)
+  --layer3-file PATH         Use existing Tetragon JSONL output (skip live Layer 3)
+  --skip-layers TEXT         Comma-separated layers to skip, e.g. '3' or '2,3'
+  --verbose/-v               Include Layer 3 raw event output
+  --daemon                   Run continuously, re-scanning every 30 seconds
+  --platform                 Upload results to DefendAI platform after scan
+  --api-key TEXT             DefendAI platform API key
+  --tenant-token TEXT        DefendAI platform tenant token
+  --wawsdb-url TEXT          DefendAI platform base URL [default: https://wauzeway.defendai.ai]
+  --platform-interval INT    Upload every N correlation cycles in daemon mode [default: 5]
+  --max-log-size INT         Rotate output files at this size in MB [default: 50]
+  --max-log-backups INT      Rotated backup files to keep [default: 5]
+  --src-repo TEXT            Additional source repo to scan through Layer 1 (local path or URL)
+  --src-repo-ttl INT         Daemon: minimum seconds between re-scans of --src-repo [default: 3600]
+  --dry-run                  Check layer availability without running a scan
+
+  # Layer 5 — Cloud Audit (v2.7.0+)
+  --cloud-audit              Enable AWS CloudTrail Bedrock detection
+  --cloud-audit-region TEXT  AWS region [default: us-east-1]
+  --cloud-audit-hours INT    Lookback window in hours [default: 1 when --cloud-audit set]
+  --cloud-audit-lake-arn TEXT  CloudTrail Lake event data store ARN (near-real-time, ~60s delay)
+  --azure-monitor            [Preview] Enable Azure Monitor detection
+  --gcp-audit                [Preview] Enable GCP Cloud Audit Log detection
+
+  # Layer 5 — SSE Proxy (v2.8.0+)
+  --zscaler                  Enable Zscaler ZIA web-proxy log detection
+  --zscaler-tenant TEXT      Zscaler tenant prefix (overrides ZSCALER_TENANT)
+  --zscaler-api-key TEXT     Zscaler API key (overrides ZSCALER_API_KEY)
+  --prisma-access            Enable Prisma Access / Cortex Data Lake detection
+  --prisma-tenant-id TEXT    Prisma tenant / TSG ID (overrides PRISMA_TENANT_ID)
+  --prisma-client-id TEXT    Prisma OAuth2 client ID (overrides PRISMA_CLIENT_ID)
+  --prisma-region TEXT       CDL region: us/eu/uk/sg/ca/jp/au (overrides PRISMA_REGION)
+
+# Individual layers
+agentdiscover scan PATH              # Layer 1: source code only
+agentdiscover deps PATH              # Dependency scanning
+agentdiscover monitor                # Layer 2: network monitor only
+agentdiscover monitor-k8s            # Layer 3: Kubernetes runtime only
+agentdiscover endpoint               # Layer 4: endpoint scan only
+agentdiscover correlate              # Correlate existing scan outputs
+
+# Audit mode (v2.5.0+) — full report: aibom.json, ghost-agents.md, mcp-report.md
+# Accepts all --cloud-audit-* and --zscaler / --prisma-access flags above.
+agentdiscover audit PATH [OPTIONS]
+  --duration/-d SECONDS      Observation window [default: 60]
+  --output/-o PATH           Report output directory [default: defendai-audit]
+  --layer3-file PATH         Use existing Tetragon JSONL (skip live Layer 3)
+  --platform                 Upload to DefendAI platform
+  --api-key TEXT             DefendAI platform API key
+
+# Legacy aliases — all three still work
+agent-discover-scanner [COMMAND] [OPTIONS]
+agent-discover [COMMAND] [OPTIONS]
+```
+
+---
+
+## Detected frameworks and providers
+
+**AI frameworks:** LangChain, LangGraph, CrewAI, AutoGen, direct HTTP LLM clients
+
+**LLM providers:** OpenAI, Anthropic, Google Gemini / Google AI, Mistral, Cohere, Azure OpenAI, AWS Bedrock, Grok / xAI, Groq, DeepSeek, Together AI
+
+**Vector stores:** Pinecone, Weaviate, Qdrant, Chroma
+
+**SaaS blast radius detection (v2.3.0+):** Salesforce, Slack, GitHub, GitLab, Jira, HubSpot, Notion, Airtable, Stripe, Twilio, Snowflake, Databricks, AWS, GCP, Azure, PostgreSQL, Redis, MongoDB
+
+---
+
+## Try the demo
+
+```bash
+git clone https://github.com/Defend-AI-Tech-Inc/agent-discover-scanner
+cd agent-discover-scanner/demo
+./setup.sh    # deploys LangChain, CrewAI, and a shadow agent to local Kubernetes
+agentdiscover scan-all ./sample-repo --duration 60
+```
+
+Expected output: 2 CONFIRMED agents (crewai-agent, langchain-agent), 1 GHOST agent (shadow-agent — runtime activity, no source code).
+
+---
+
+## Requirements
+
+| Capability         | Requirement                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| Code scanning      | Python 3.10+, all dependencies included                                                            |
+| Network monitoring | Linux: root/sudo required · macOS: no sudo (use pipx) · Windows: elevated PowerShell              |
+| Kubernetes runtime | kubectl + read access (K8s API path) · Helm 3+ + root/sudo for Tetragon/eBPF (Linux only)         |
+| Endpoint discovery | osquery (optional — graceful degradation if not installed)                                         |
+| Layer 3 (eBPF)     | Linux only — unavailable on macOS and Windows. K8s API path works on all platforms.               |
+| Cloud Audit (Layer 5) | AWS credentials — boto3 credential chain (`AWS_ACCESS_KEY_ID`, `~/.aws/credentials`, or instance role). If credentials are absent, the scan continues without Cloud Audit. |
+| SSE Proxy (Layer 5) | Zscaler ZIA: `ZSCALER_API_KEY`, `ZSCALER_USERNAME`, `ZSCALER_PASSWORD`, `ZSCALER_TENANT` · Prisma Access: `PRISMA_CLIENT_ID`, `PRISMA_CLIENT_SECRET`, `PRISMA_TENANT_ID`. Disabled by default; enable with `--zscaler` or `--prisma-access`. |
+| Platform upload    | DefendAI API key ([defendai.ai](https://defendai.ai))                                              |
+
+Full Kubernetes setup: `install.sh` handles Helm, runtime monitoring setup, and permissions automatically.
+
+---
+
+## DefendAI platform
+
+agentscanner is the **discovery layer** of the DefendAI platform.
+
+| Component                 | Status         | Description                                                           |
+| ------------------------- | -------------- | --------------------------------------------------------------------- |
+| **agentscanner**          | ✅ Open Source (v2.9.0) | Discover and classify AI agents across your environment  |
+| **defendai-sensor**       | 🧪 Beta        | MITM proxy for real-time AI traffic inspection and policy enforcement |
+| **Correlation Engine**    | ✅ Available    | Cross-machine identity resolution and behavioral drift detection      |
+| **Policy Engine**         | 🚧 Coming Soon | Define and enforce agent behavior rules                               |
+| **DefendAI Platform**     | 💼 Enterprise  | Full lifecycle governance for autonomous AI                           |
+
+[defendai.ai](https://defendai.ai) · [playground.defendai.ai](https://playground.defendai.ai) · [support@defendai.ai](mailto:support@defendai.ai)
+
+---
+
+## Contributing
+
+```bash
+git clone https://github.com/Defend-AI-Tech-Inc/agent-discover-scanner.git
+cd agent-discover-scanner
+uv sync
+uv run pytest tests/ -v
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Issues and PRs welcome.
+
+---
+
+## License
+
+MIT — free to use, deploy, and modify.
+
+---
+
+*Built by [DefendAI](https://defendai.ai) · Securing the future of autonomous AI*

@@ -1,0 +1,206 @@
+<div align="center">
+
+# Remote Installer
+
+**Install signed iOS and Android builds on real devices over the internet**
+
+Perfect for AI Agents and vibe coding remotely.
+
+No TestFlight or Google Play Beta. No hosted storage. No waiting for processing.
+
+`Remote Desktop → Link / QR code → Phone Install`
+
+</div>
+
+```bash
+remote-installer share ./MyAwesome.ipa
+```
+
+Remote Installer validates the build, opens a temporary HTTPS link, and prints a QR code. Scan it with the phone camera or open the page in the phone's browser to install.
+
+> iOS: Works with development and ad hoc builds. The target iPhone must already be included in the provisioning profile.
+>
+> Android: Works with a signed standalone APK. Android App Bundles (`.aab`) and `.apks` sets are not directly installable and are intentionally rejected. Split-only APKs are rejected when `apkanalyzer` is available.
+
+## Features
+
+- Support for `.ipa`, signed device `.app`, and signed standalone `.apk` builds
+- Optional expiry and successful-download limits that continue to work across interrupted and resumed range requests
+- Immediate install feedback and live package transfer progress on the install page
+- Automatic provider discovery: starts every installed provider (Tailscale Serve, Tailscale Funnel, and Cloudflare Quick Tunnel)
+- Automatic cleanup when sharing ends
+
+Remote Installer distributes an existing build. It does **not** sign, re-sign, register devices, convert App Bundles or split APKs, or make Simulator and App Store builds installable.
+
+## Quick start
+
+### 0. Prerequisites
+
+Remote Installer requires a tunnel provider to share builds over the internet.
+
+It currently supports the following providers:
+
+- [Cloudflare Quick Tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/do-more-with-tunnels/trycloudflare/)
+- [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve)
+- [Tailscale Funnel](https://tailscale.com/docs/features/tailscale-funnel)
+
+See each provider's documentation for installation and setup instructions.
+
+**Which provider should I choose?**
+
+We recommend Cloudflare Quick Tunnels for most users. They are free and fast, require no Cloudflare account, and are easy to set up.
+
+If Quick Tunnels do not work or are too slow, or if you are already familiar with Tailscale, try Tailscale Serve for private access within your tailnet or Tailscale Funnel for public access over the internet.
+
+### 1. Install Remote Installer
+
+Homebrew:
+
+```bash
+brew install icodesign/tap/remote-installer
+```
+
+npm:
+
+```
+npm install --global @icodesign/remote-installer
+```
+
+For a one-off run without installing a command globally using npm:
+
+```bash
+npx --yes @icodesign/remote-installer share /path/to/MyApp.ipa
+```
+
+The Homebrew and npm distributions currently support macOS arm64 (Apple silicon) and macOS x86_64 (Intel). Other host operating systems are not yet included in the release artifacts. (PRs are welcomed.)
+
+### 2. Share a build
+
+Share .ipa/.app/.apk:
+
+```bash
+remote-installer share /path/to/MyApp.app
+```
+
+### 3. Install on the phone
+
+1. Keep the command running.
+2. Open the link in the phone browser or scan the QR code with the camera.
+3. Tap **Install**.
+
+On iOS, confirm **Install** in the system prompt. The page shows when the package transfer starts, its percentage and size, and whether it was interrupted. If no download starts, it offers retry guidance. Use Safari if the installation prompt does not appear.
+
+Progress measures bytes sent by the sharing computer for this page's download attempt. A tunnel may buffer data, so the displayed percentage can run ahead of the phone. **Package transfer complete does not mean installation succeeded.** Check the iPhone's Home Screen for the final installation result. Android users open the APK from their browser's downloads. The native install/download link also works with JavaScript disabled.
+
+Resumed transfers include bytes sent before an interruption. Retransmitting the same bytes keeps the transfer active without increasing the percentage twice. If an iOS page's progress session expires while the share is still available, its native install link can still start an installation; reload the page to track a new attempt.
+
+<img src="./assets/download.webp" width="200" height="417"/>
+
+## For AI agents
+
+This repository includes a skill for coding agents:
+
+```bash
+npx skills add icodesign/remote-installer
+```
+
+Example agent request:
+
+> Create a new build with latest changes for my iPhone, and give me the install URL with remote-installer.
+
+Or you can simply ask your agent to do everything for you:
+
+> Install skills from https://github.com/icodesign/remote-installer and create a new build ......
+
+## Common recipes
+
+### One person, one hour
+
+```bash
+remote-installer share MyApp.ipa --max-downloads 1 --expire-after 1h
+```
+
+The command exits when either limit is reached, after allowing an active download to finish. After the successful-download limit is reached, it keeps transfer status available for five seconds before closing the tunnel. New download attempts are already blocked during that interval. If the share closes while the page is open, the page directs you to check your device instead of assuming installation failed.
+
+### Keep sharing after an agent command exits
+
+On macOS, `--background` registers the native worker with `launchd`, waits for
+the origin and tunnel to become ready, and then returns the install URL. This
+keeps the share alive when an AI agent finishes its command or turn. A bounded
+expiry is required:
+
+```bash
+npx --yes @icodesign/remote-installer share MyApp.ipa \
+  --background --expire-after 30m --json
+```
+
+The `npx` launcher only starts the operation. The native worker is the process
+owned by `launchd`, so it does not depend on Node.js or the invoking terminal
+after startup. Use the printed share ID to inspect or stop it:
+
+```bash
+remote-installer status <share-id>
+remote-installer logs <share-id>
+remote-installer stop <share-id>
+```
+
+Do not substitute `&`, `nohup`, or an agent tool's temporary command session
+when the link must survive that session. Those mechanisms do not establish the
+same lifecycle ownership.
+
+### Useful options
+
+| Option                        | Purpose                                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `--expire-after 30m`          | Stop sharing after a duration                                                                                 |
+| `--timeout 300`               | Stop sharing after a number of seconds                                                                        |
+| `--max-downloads 3`           | Stop after a number of successful downloads                                                                   |
+| `--background`                | Keep a bounded share alive through a launchd-managed native worker                                             |
+| `--json`                      | Print machine-readable background session details; requires `--background`                                   |
+| `--no-qr`                     | Do not print the terminal QR code                                                                             |
+| `--provider auto` (default)   | Detect and start every installed provider                                                                     |
+| `--provider tailscale-serve`  | Keep the link private to your tailnet                                                                         |
+| `--provider tailscale-funnel` | Create a public Tailscale link                                                                                |
+| `--https-port PORT`           | Require an exact Tailscale HTTPS port; when omitted, select an available port; `--funnel-port` is a compatibility alias |
+
+Use either `--expire-after` or `--timeout`, not both. Run `remote-installer share --help` for every option.
+
+With the default `--provider auto`, Remote Installer checks for the Tailscale and cloudflared CLIs, starts every provider it can use, and prints a warning for each unavailable or unready provider. Tailscale Serve and Funnel use different HTTPS ports automatically so both can run in the same share. Tailscale configuration writes are serialized while Cloudflare starts independently. If you select one provider explicitly, only that provider is started. The terminal labels every result as `Public internet` or `Tailnet only` so the access boundary is visible next to the URL.
+
+Remote Installer does not overwrite existing Tailscale Serve or Funnel routes. When `--https-port` is omitted, concurrent shares reserve different available ports on the node. An explicitly requested occupied port returns an error instead of replacing its route. Stopping a share closes only the foreground sessions owned by that process; it never runs a global `serve reset`.
+
+Tailscale Serve requires the phone to be on the same tailnet (or otherwise allowed by its access policy). Tailscale Funnel creates a public link and does not require Tailscale on the phone. The older `--provider tailscale` spelling is kept as an alias for `tailscale-funnel`; use the explicit provider name in new commands.
+
+Tailscale's tailnet-wide **MagicDNS** setting is different from each device's **Use Tailscale DNS** (`--accept-dns`) preference. Startup checks both settings: Funnel requires MagicDNS, while disabling DNS on the sharing computer alone does not prevent a correctly configured phone from using Serve. Serve warns when this computer's Tailscale DNS is off; enable it on devices opening the link, or provide equivalent DNS that resolves the hostname to the serving node. Funnel recipients use public DNS and do not need Tailscale DNS. These checks do not change your DNS settings or verify the phone's settings. Use a Tailscale CLI that supports `tailscale dns status --json`. If DNS inspection fails, startup stops with an actionable error instead of assuming the settings are correct.
+
+## Important security notes
+
+- **The full public URL is a capability.** Remote Installer generates an opaque artifact UUID and exposes no directory listing, so a recipient normally needs the complete URL. This is useful risk reduction, not authentication: anyone who obtains or is forwarded a Cloudflare or Funnel URL can install the build.
+- The normal workflow distributes an already signed build. Device `.app` signatures, architecture, and provisioning are verified before exposure; IPA archives are checked for signing evidence and a valid device profile. Android signatures are verified when `apksigner` is available. A signature protects build identity and integrity, but does not make a leaked build non-sensitive.
+- Only the selected staged artifact and its install resources are served; the source repository and surrounding filesystem are not exposed.
+- Use `--expire-after` and `--max-downloads` when sharing with someone else.
+- The build remains on your Mac rather than being uploaded for storage.
+- Cloudflare Quick Tunnel and Tailscale Funnel links are public. Tailscale Serve keeps access within your tailnet.
+- With Cloudflare, TLS terminates at Cloudflare while the build is transferred.
+- Stopping the command closes the tunnel and deletes Remote Installer's temporary copy.
+
+## Troubleshooting
+
+| Problem                                   | What to check                                                                                                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **“Unable to Install”**                   | The iPhone UDID is in the embedded profile, the profile is valid, and the app was rebuilt after registering the device.                              |
+| **Install button does nothing**           | Open the install page in Safari. Some third-party iOS browsers do not hand the install link to the system.                                           |
+| **`cloudflared CLI was not found`**       | Run `brew install cloudflared`, or pass `--cloudflared-bin /path/to/cloudflared`.                                                                    |
+| **`Tailscale CLI was not found`**         | Run `brew install --cask tailscale`, or pass `--tailscale-bin /path/to/tailscale`.                                                                   |
+| **Serve link does not open**              | Confirm the phone is connected to the tailnet, its access policy allows the host, and Tailscale DNS resolves the hostname to that host's tailnet IP. |
+| **`app is not an iphoneos device build`** | Use `Build/Products/Debug-iphoneos/`, not `Debug-iphonesimulator/`.                                                                                  |
+| **Provisioning profile expired**          | Refresh signing in Xcode and rebuild.                                                                                                                |
+| **Warning: `apkanalyzer was not found`**  | Sharing continues without manifest metadata or split-APK validation. Install Android SDK Command-Line Tools for full checks.                         |
+| **Warning: `apksigner was not found`**    | Sharing continues without signature verification. Install Android SDK Build Tools for full checks.                                                   |
+| **APK signature verification fails**      | Produce a signed debug or release APK; Remote Installer does not sign it.                                                                            |
+| **Android asks to allow this source**     | Allow APK installation for the browser that opened the link, then open the download again.                                                           |
+| **Android update is rejected**            | The APK must use the same signing certificate as the installed app and an acceptable version code.                                                   |
+
+Most installation failures are signing or provisioning problems. Remote Installer can validate and distribute a build, but it cannot make an incorrectly signed build installable.
+
+For full APK validation, install the Android SDK `apkanalyzer` and `apksigner` tools. They are discovered from `PATH`, `ANDROID_SDK_ROOT`, `ANDROID_HOME`, and standard SDK locations. Use `--apkanalyzer-bin` and `--apksigner-bin` when the SDK is installed elsewhere. If either tool cannot be discovered, sharing still starts after structural checks and prints a warning describing the skipped validation.

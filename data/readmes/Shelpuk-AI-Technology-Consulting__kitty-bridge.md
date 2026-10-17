@@ -1,0 +1,1079 @@
+<p align="center">
+  <a href="https://pypi.org/project/kitty-bridge/">
+    <img src="https://img.shields.io/pypi/v/kitty-bridge.svg" alt="PyPI version">
+  </a>
+  <a href="https://pypi.org/project/kitty-bridge/">
+    <img src="https://img.shields.io/pypi/pyversions/kitty-bridge.svg" alt="Python version">
+  </a>
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/github/actions/workflow/status/Shelpuk-AI-Technology-Consulting/kitty-bridge/publish.yml" alt="Publish to PyPI">
+  <a href="https://pepy.tech/projects/kitty-bridge" target="_blank" rel="noopener noreferrer">
+    <img src="https://static.pepy.tech/badge/kitty-bridge" alt="Total PyPI downloads">
+  </a>
+</p>
+
+Use your favorite coding agent with any LLM provider.
+
+> **Claude Code with MiniMax. Codex with GLM. Gemini CLI with OpenRouter. One command.**
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/Shelpuk-AI-Technology-Consulting/kitty-bridge/main/assets/logo.png" alt="Kitty Bridge" width="800">
+</p>
+
+## Why Kitty Bridge?
+
+Frontier models are expensive. Claude Opus 4.7 costs $25 per 1M output tokens. GPT-5.5 runs $30–45 per 1M output tokens.
+A single long coding session can burn through dollars in minutes. And if you hit your subscription rate limits mid-task,
+you're stuck waiting.
+
+Meanwhile, there are coding plans from providers like Z.AI, Novita, Fireworks, MiniMax, and others that deliver capable
+coding models at a **fraction of the cost** — often 90% cheaper than the flagship models.
+
+Kitty Bridge gives you three ways to save:
+
+✅ **Switch to a cheaper provider** — Use Claude Code with MiniMax, Codex with GLM, or Gemini CLI with OpenRouter. One
+command, instant savings.
+
+✅ **Use your existing subscriptions** — Already paying for ChatGPT Plus or Pro? Use it through Kitty instead of buying
+API credits separately.
+
+✅ **Mix models with balanced profiles** — Combine a powerful model like GPT-5.5 with a smaller, cheaper one in a single
+session. Kitty randomly distributes requests across both, giving you the reasoning power of a frontier model at roughly
+**20–25% of the cost**.
+
+```
+Agent (Claude Code / Codex / Gemini / Kilo) → Kitty Bridge → any LLM provider
+```
+
+Kitty sits between your coding agent and the upstream provider, translating each agent's native protocol in real time.
+Your agent keeps its workflow — you choose the model and the price.
+
+Kitty is also intentionally minimal:
+
+✅ **Local** — Kitty runs on your machine. It does not send your prompts, code, or files to any third-party service
+beyond the backend LLM provider you explicitly configure.
+
+✅ **Just a bridge** — Kitty only proxies and translates traffic between the coding agent and the backend model API. It
+does not get filesystem access, shell access, or any other extra capabilities.
+
+✅ **No AI inside Kitty** — Kitty does not use an LLM, embeddings, or any other AI system internally. It is a
+deterministic local bridge with advanced routing, balancing, and compatibility features.
+
+In short: Kitty is a **minimal, local, and safe bridge** with advanced functionality.
+
+If you like what we're building, please ⭐ **star this repo** – it's a huge motivation for us to keep going!
+
+## Before You Start
+
+You need **two things** to use Kitty:
+
+1. **A coding agent** installed on your
+   machine — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Codex CLI](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli),
+   or [Kilo Code](https://github.com/Kilo-Org/kilocode)
+2. **An account with an LLM provider** — either an API key (pay per token) or a subscription/coding plan
+
+**API key vs. subscription?** Some providers offer regular API access where you pay per token. Others offer subscription
+plans (e.g. your ChatGPT Plus subscription) that include usage quota. Kitty supports both — the setup wizard will guide
+you based on which provider you pick.
+
+## Quick Start
+
+**1. Install**
+
+```bash
+pip install kitty-bridge
+```
+
+Requires Python 3.10+.
+
+**Supported platforms.** Linux, Windows and macOS. Every change is tested on all three before it
+can be merged or released: Linux on Python 3.10–3.13, Windows and macOS on Python 3.12. What that
+covers is the full unit and contract suite plus type checking on each platform — not an
+end-to-end run against a live provider, which is exercised on Linux only.
+
+**2. Set up a profile**
+
+```bash
+kitty setup
+```
+
+An interactive wizard walks you through picking a provider, a model, and entering your API key. Takes 30 seconds.
+
+> **New to this?** The easiest way to start is with your existing **ChatGPT Plus or Pro subscription** — select "OpenAI
+> ChatGPT Plan" during setup. No API key needed; Kitty authenticates through your browser. Alternatively, sign up
+> at [OpenRouter](https://openrouter.ai) for a free API key that works with many models.
+
+**3. Launch your agent**
+
+```bash
+kitty claude      # Claude Code → your provider
+kitty codex       # Codex CLI → your provider
+kitty gemini      # Gemini CLI → your provider
+kitty kilo        # Kilo Code → your provider
+```
+
+That's it. Your coding agent now talks to the LLM you chose — not the one it was built for.
+
+### Example: Use GLM with Claude Code
+
+```bash
+$ pip install kitty-bridge
+$ kitty setup
+  ? Provider: openai
+  ? Model: openai/gpt-5.4-pro
+  ? API key: ********
+
+$ kitty claude
+  ✓ Bridge running on port <random_port>
+  ✓ Claude Code launched
+  > Hello! How can I help you today?
+```
+
+### Example: Use Gemma 4 31B with Claude Code
+
+```bash
+$ pip install kitty-bridge
+$ kitty setup
+  ? Provider: Google AI Studio
+  ? Model: gemma-4-31b-it
+  ? API key: ********
+
+$ kitty claude
+  ✓ Bridge running on port <random_port>
+  ✓ Claude Code launched
+  > Hello! How can I help you today?
+```
+
+### Example: Use your ChatGPT subscription with Claude Code
+
+```bash
+$ pip install kitty-bridge
+$ kitty setup
+  ? Provider: openai_subscription
+  ? Model: gpt-5.4
+
+  Opening browser for OpenAI authentication...
+
+$ kitty claude
+  ✓ Bridge running on port <random_port>
+  ✓ Claude Code launched
+  > Hello! How can I help you today?
+```
+
+No API key required — kitty authenticates with your ChatGPT Plus or Pro account through a browser-based OAuth flow. Each
+profile gets its own independent session.
+
+### ChatGPT subscription on a remote or headless machine
+
+The browser login above assumes the browser and the terminal are on the **same machine**. If you run Kitty on a remote
+server (SSH into a CLI-only Ubuntu VM, a container, a dev box) while your browser is on your laptop, the login would
+redirect your laptop's browser to `localhost:1455` — a port that only exists on the server — and the flow would time out.
+
+Kitty handles this automatically. On an SSH session (or on a machine with no display) it switches to a
+**device-code login**, the same flow the OpenAI Codex CLI uses on headless machines:
+
+```bash
+$ kitty auth openai
+
+Sign in to ChatGPT for Kitty:
+
+1. Open this link in a browser on any machine and sign in to your account
+   https://auth.openai.com/codex/device
+
+2. Enter this one-time code (expires in 15 minutes)
+   ABCD-EFGH
+
+Personal ChatGPT Plus/Pro accounts are enabled by default. On Business/Team/Enterprise
+workspaces an admin must enable device-code authentication first
+(chatgpt.com/admin/permissions).
+
+Continue only if you started this login in Kitty. If a website or another
+person gave you this code, cancel.
+
+Sign in at: https://auth.openai.com/codex/device
+One-time code (expires in 15 minutes): ABCD-EFGH
+```
+
+Open the URL on your laptop, enter the code, and Kitty on the server picks the authorization up on its own — no port
+forwarding needed. The last two lines are a plain-text copy of the link and code, for terminals that mangle colours or
+for copy-pasting.
+
+**Notes:**
+
+- The command still requires an interactive terminal — Kitty needs a TTY to print the prompt and read your input. The
+  flow itself runs against `auth.openai.com` from the VM, regardless of where you open the browser.
+
+- Personal ChatGPT Plus/Pro accounts have device-code login enabled by default. On **Business/Team/Enterprise**
+  workspaces an admin must first enable it (ChatGPT admin settings → permissions → device code authentication).
+- Prefer the old browser login anyway (e.g. you already run `ssh -L 1455:localhost:1455 user@server`)? Force it with
+  `kitty auth openai --no-device-auth`. The SSH tunnel must forward **port 1455 specifically** — that exact port is
+  what OpenAI's redirect uses, so it has to be free on the server.
+- Force the device-code login on a desktop with `kitty auth openai --device-auth`.
+
+#### Using GPT-6 Astra with your subscription
+
+[GPT-6 Astra](https://openai.com/index/gpt-6-astra-next-generation-work/) is available on ChatGPT subscriptions
+through the same backend Kitty already uses. After signing in, pick the Astra model when the wizard asks:
+
+```bash
+$ kitty auth openai
+  ... (device-code or browser login as above) ...
+  ? Model name (default: gpt-5.3-codex): gpt-6-astra
+  ? Profile name (default: openai-sub): astra
+
+$ kitty claude
+```
+
+OpenAI rotates the model list on the subscription backend independently of Kitty releases. If `gpt-6-astra` is
+rejected, try the codex-suffixed `gpt-6-astra-codex`, or check which Astra model your ChatGPT plan offers (the model
+picker in the ChatGPT UI or `codex` on a machine where it is installed shows the exact id). `Astra Pro` is on Pro-tier
+subscriptions as `gpt-6-astra-pro`.
+
+### Example: Use MiMo V2 Pro with Claude Code
+
+```bash
+$ pip install kitty-bridge
+$ kitty setup
+  ? Provider: Xiaomi MiMo
+  ? Model: mimo-v2-pro
+  ? API key: ********
+
+$ kitty claude
+  ✓ Bridge running on port <random_port>
+  ✓ Claude Code launched
+  > Hello! How can I help you today?
+```
+
+## Balanced Profiles
+
+A **balanced profile** combines multiple providers into one. Each request is sent to a randomly chosen healthy provider.
+If one provider goes down, the others pick up the slack automatically. Members can also be marked as
+[backup](#backup-members), so they only take traffic once the others are exhausted.
+
+**Why use it:**
+
+- **Cost savings** — spread requests across cheaper providers
+- **Rate limit resilience** — never hit a single provider's limit
+- **Fault tolerance** — if one provider is down, the others keep working
+
+**How to create one:**
+
+```bash
+kitty profile
+# → "Create balancing profile" → select 2+ member profiles
+```
+
+**Example:** Combine MiniMax, Novita, and Z.AI into one balanced profile called `my-pool`, then use it with any agent:
+
+```bash
+kitty my-pool claude
+kitty my-pool codex
+```
+
+When you run this, each request goes to a random healthy member. If MiniMax returns an error, kitty silently retries on
+Novita or Z.AI — your agent never sees the failure.
+
+### Backup members
+
+Sometimes you don't want a member to carry its share of the traffic — you want it held in reserve. Mark a profile as a
+**backup** and it is only used when every non-backup member of the pool is unavailable.
+
+The typical setup is a set of subscription coding plans plus one pay-per-token API key:
+
+```bash
+kitty profile
+# → "Edit profile" → pick your API-key profile → "Backup" → yes
+```
+
+Now all three plans share the traffic normally. When a plan hits its usage limit — or fails for any other reason —
+kitty puts it in a cooldown. Once *every* plan is in cooldown, requests move to the API key instead of failing. As soon
+as a plan's cooldown expires it is picked up again on the next request, so you drift back onto your subscriptions
+automatically without restarting anything.
+
+Anything that makes a member unavailable counts: rate limits, exhausted quotas, expired credentials, upstream 5xx, and
+connection failures.
+
+**Held while recovery is near.** When *every* member of the pool is in cooldown at the moment a request arrives, kitty
+does not fail it outright: if at least one member will recover within the next 5 minutes, kitty holds the request, waits
+out the cooldown, and serves it then — your agent sees the answer a minute or two later instead of an error it might
+treat as fatal. If nothing will recover inside that window, kitty answers immediately with the same 503 and
+`Retry-After` as before. A client that disconnects during the hold ends it; a hung-up agent never causes background
+upstream calls.
+
+A dropped connection is given the benefit of the doubt first. For up to 30 seconds kitty retries the *same* member
+instead of cooling it down, so a brief network interruption between kitty and a provider costs a short pause rather
+than five minutes of that plan. Only a connection that keeps failing past that window counts as a failure. The same
+applies in the other direction: if your agent disconnects mid-answer — you close the terminal, hit Ctrl+C, or your
+network blips — that is charged to the agent, never to the provider, so the next request still finds every plan
+healthy.
+
+One caveat: a member that cannot handle streaming is skipped for streaming requests regardless of tier, so a streaming
+request can reach a backup member while a non-streaming primary is still healthy. This only affects providers without
+streaming support, and matches how balanced profiles already behaved.
+
+You are asked about this when creating a profile (the default is no), and you can change it any time via
+`kitty profile → Edit profile → Backup`. The profile table shows a **Backup** column so you can see the split at a
+glance. The flag only matters inside a balanced profile — launching a backup profile directly works exactly as normal.
+
+If every member of a pool is marked backup, the pool behaves like an ordinary balanced profile.
+
+## Static Egress
+
+By default each machine running kitty talks to the LLM provider from its own IP, so ten workers look like ten
+different clients. A **static egress gateway** puts them all behind one address: point every kitty install at the same
+HTTP proxy, and every provider sees a single, stable source IP.
+
+```
+VM 1  kitty claude ─┐
+VM 2  kitty claude ─┼──► egress gateway ──► 185.123.45.67 ──► LLM provider
+VM 3  kitty codex  ─┘
+```
+
+You do not need a cloud NAT gateway. Any authenticated HTTP proxy with a dedicated static IPv4 works, including the
+$1–3/month dedicated datacenter proxies sold by providers like IPRoyal, Proxy-Cheap and Proxy-Seller. Avoid *rotating*
+or *residential* proxies — you want exactly one address that never changes.
+
+**Set it up:**
+
+```bash
+kitty egress
+# → "Configure gateway" → address, username, password → test
+```
+
+The setup ends by fetching your public IP through the proxy and showing it, so you can confirm the address providers
+will actually see before relying on it:
+
+```
+$ kitty egress test
+┌──────────────┬────────────────────────────────┐
+│ Proxy        │ http://proxy.iproyal.com:12323 │
+│ Username     │ myuser                         │
+│ Password     │ ****                           │
+│ Connectivity │ OK                             │
+│ Public IP    │ 185.123.45.67                  │
+│ Latency      │ 41 ms                          │
+└──────────────┴────────────────────────────────┘
+```
+
+Repeat on each machine, and they all share that IP. `kitty doctor` reports the gateway too.
+
+**For scripted or containerised installs** there are two non-interactive overrides, taking precedence over the stored
+gateway:
+
+```bash
+export KITTY_EGRESS_PROXY="http://user:pass@proxy.iproyal.com:12323"
+kitty claude
+
+# or per invocation
+kitty claude --egress-proxy http://user:pass@proxy.iproyal.com:12323
+```
+
+**Things worth knowing:**
+
+- **Your prompts and API keys stay private from the proxy.** kitty uses HTTP `CONNECT`, so TLS runs end-to-end between
+  kitty and the provider. The gateway only moves encrypted bytes — it never sees your API key or your conversations.
+- **Local endpoints are never tunnelled.** Loopback and private addresses — a local Ollama on `localhost:11434`, a
+  custom provider on your LAN, cloud instance metadata — connect directly, because a rented proxy cannot reach your own
+  network. That traffic never leaves the machine, so it is not a leak.
+- **It fails closed.** If a profile uses a transport that cannot honour the proxy, kitty refuses to start and tells you
+  which profile, rather than quietly connecting from the machine's own IP. AWS Bedrock in SSO mode is the current
+  example: botocore resolves those credentials outside the proxied client.
+- **Your password is not stored in a config file.** It goes to the same credential store as your API keys, referenced
+  by an opaque id, and is masked wherever kitty prints the gateway.
+- **Use a CONNECT proxy, not a TLS-terminating one.** A proxy that intercepts TLS breaks the OpenAI subscription
+  provider, which relies on a browser TLS fingerprint. Ordinary datacenter proxies are fine.
+
+To stop using a gateway, run `kitty egress` → "Remove gateway".
+
+## Bridge Mode
+
+Bridge mode starts a standalone OpenAI-compatible API server on your machine. Use it when you want to connect tools that
+speak the OpenAI API — IDEs, custom scripts, anything that accepts a base URL.
+
+```bash
+kitty bridge          # use default profile
+kitty my-profile bridge   # use a specific profile
+```
+
+Point your tool at `http://localhost:<port>` and it just works.
+
+**Available endpoints:**
+
+| Endpoint                                               | Protocol           | Used by          |
+|--------------------------------------------------------|--------------------|------------------|
+| `POST /v1/chat/completions`                            | Chat Completions   | General purpose  |
+| `POST /v1/messages`                                    | Anthropic Messages | Claude Code      |
+| `POST /v1/responses`                                   | OpenAI Responses   | Codex            |
+| `POST /v1beta/models/{model:.*}:generateContent`       | Gemini             | Gemini CLI       |
+| `POST /v1beta/models/{model:.*}:streamGenerateContent` | Gemini             | Gemini CLI       |
+| `GET /v1/models`                                       | OpenAI Models      | Tool integration |
+| `GET /healthz`                                         | Health check       | Monitoring       |
+| `GET /stats`                                           | Session record     | Attribution      |
+
+**Background bridges:** `kitty bridge start`, `stop`, `restart`, and `status` manage a bridge running in the background,
+tracked in `bridge_state.json`.
+
+**Who can call a background bridge.** Authentication is on only when a keys file is in play: `bridge.yaml` names one
+(`keys_file:`), or the default `~/.config/kitty/bridge_keys.txt` exists. Otherwise the bridge accepts unauthenticated
+clients — the same as the foreground bridge and `kitty claude`; it listens on `127.0.0.1` unless configured otherwise.
+A `keys_file:` that names a missing file stops the start with an error naming the path, and `kitty bridge config` shows
+which case applies.
+The policy is evaluated when the bridge starts — create or remove a keys file, then run `kitty bridge restart` to
+apply it. Note the combination of a non-loopback `host` and no keys file: any host that can reach the machine can
+then use the bridge and its upstream API key; set `keys_file:` to prevent that.
+
+If `status` reports **"Running under another user account"**, a bridge is serving at the recorded address but was started
+by a different user (via `sudo`, a service account, or another session). kitty will not stop or restart it, and will not
+start a second one beside it — signalling a process it does not own is unsafe, because the operating system may have
+recycled that process ID onto something unrelated. Stop it from the account that started it, or from an
+administrator shell. If you are sure that process is not a kitty bridge, delete `bridge_state.json` — kitty prints
+its full path in the message.
+
+## Knowing which model actually served you
+
+kitty replaces the model name your agent asks for with the one its profile configures — that is the point of the
+product. The agent's own cost and error records therefore name the *alias*, not the model that ran. Three surfaces tell
+you the truth.
+
+**Per response.** Every proxied response carries:
+
+| Header            | Value                                                       |
+|-------------------|-------------------------------------------------------------|
+| `X-Kitty-Backend` | Profile name of the backend that served it                   |
+| `X-Kitty-Model`   | The real model sent upstream (absent if no override is set)   |
+| `X-Kitty-Tier`    | `primary` or `backup` (reserve-tier members)                 |
+
+These name the backend selected when the response headers were sent. A stream never switches backend once content
+has reached the client, so on `/v1/messages`, whose headers go out with the first content, they name the backend that
+produced the response. The other endpoints send headers before the first upstream attempt, so a request that failed
+over before any content can name a backend that produced nothing. `/stats` is authoritative for the session.
+
+**Live.** `GET /stats` returns JSON for the running bridge: per-backend request counts, the real models served with
+their token totals, how many times a request switched backend (`failovers`), and whether the pool was ever exhausted
+(`all_backends_unhealthy`). Like `/healthz`, it is readable without credentials unless a keys file is configured — and
+`kitty claude` deliberately runs without one.
+
+`malformed_tool_use` counts responses where an upstream returned `200 OK` with a `tool_use` whose `input` contradicts
+the schema the client declared for that tool — the shape a client-side validator then rejects. It is reported per
+backend and as a session total, so a pool member returning well-formed-looking garbage is visible without re-running
+under `--debug`. It is a diagnostic only: it never marks a backend unhealthy or triggers failover. Run with `--debug`
+and `grep 'tool_use audit:'` for the offending payloads.
+
+`thinking_stripped` counts the thinking blocks the bridge had to strip and retry because the upstream rejected their
+signatures — which, since the signed history is carried through, means the conversation history was edited (by
+compaction or truncation) and the model lost reasoning that was still valid. It is reported per backend and as a
+session total, next to `malformed_tool_use`, and is likewise a diagnostic only: it never marks a backend unhealthy.
+A compaction-heavy session whose reasoning keeps degrading shows up here.
+
+`recovery_holds` counts the arrival recovery holds: each time the bridge held a request because *every* member of the
+pool was cooling down but at least one would recover within 5 minutes (each held wait counts once, so a request held
+twice counts twice). A rising count says providers are throttling the pool; a high count with no failed requests says
+the hold is doing its job — agents are riding out short outages instead of failing.
+
+**After the run.** `--session-summary PATH` (or `KITTY_SESSION_SUMMARY`) writes the same document to a file when the
+bridge shuts down — a small artifact CI can upload, instead of a multi-megabyte debug log:
+
+```bash
+kitty --session-summary "$RUNNER_TEMP/kitty-session.json" claude -p "review this diff"
+```
+
+The summary is written on **graceful shutdown**. If the bridge is killed (job cancelled, step timeout, `SIGKILL`) there
+is no file, so poll `/stats` before teardown if you need a record from those runs.
+
+Two things the numbers do not mean: `attempts` counts backend *selections*, so it reads lower than the upstream POST
+count in the debug log (retries against the same backend are not re-selections); and in single-profile mode `failovers`
+is always `0` because there is nowhere to fail over to — check `mode` first.
+
+## Supported Agents
+
+| Agent                                                         | Command        | What it is               |
+|---------------------------------------------------------------|----------------|--------------------------|
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | `kitty claude` | Anthropic's coding agent |
+| [Codex CLI](https://github.com/openai/codex)                  | `kitty codex`  | OpenAI's coding agent    |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli)     | `kitty gemini` | Google's coding agent    |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode)             | `kitty kilo`   | Open-source coding agent |
+
+## Supported Providers
+
+**Regular API Key** — sign up, get an API key, pay per token:
+
+| Provider         | Type ID           | Notes                                                                                    |
+|------------------|-------------------|------------------------------------------------------------------------------------------|
+| Anthropic        | `anthropic`       | Direct API only (pay per token). Subscription plans (Claude Pro/Team) are not supported. |
+| AWS Bedrock      | `bedrock`         | Uses boto3 SigV4 auth                                                                    |
+| MS Azure         | `azure`           | Requires base URL (the resource root) + deployment name as the model                     |
+| BytePlus         | `byteplus`        |                                                                                          |
+| Google AI Studio | `google_aistudio` | Gemini models via OpenAI-compatible endpoint                                             |
+| Google Vertex AI | `vertex`          | Requires project and location                                                            |
+| MiniMax          | `minimax`         |                                                                                          |
+| OpenAI           | `openai`          | Direct API (pay per token). For your ChatGPT subscription, use the plan below.           |
+| OpenRouter       | `openrouter`      | Multi-provider router                                                                    |
+| Z.AI             | `zai_regular`     | General-purpose endpoint                                                                 |
+
+**Coding Plans / Subscriptions** — use your existing subscription or coding plan, no API key needed:
+
+| Provider            | Type ID               | Notes                                             |
+|---------------------|-----------------------|---------------------------------------------------|
+| Fireworks FirePass  | `fireworks`           |                                                   |
+| Kimi Code           | `kimi`                |                                                   |
+| Novita AI           | `novita`              |                                                   |
+| Ollama Cloud        | `ollama_cloud`        | Hosted models via ollama.com API                  |
+| OpenAI ChatGPT Plan | `openai_subscription` | Uses your ChatGPT Plus/Pro subscription via OAuth |
+| OpenCode Go         | `opencode_go`         | Picks the right endpoint from the model name. Serves all three routes — `/v1/messages`, `/v1/chat/completions`, and `/v1/responses` (the four `/v1/responses` models: `grok-4.6`, `gpt-5.6-luna`, `muse-spark-1.3-contributor`, `muse-spark-1.2-contributor`). |
+| Xiaomi MiMo         | `mimo`                |                                                   |
+| Z.AI Coding Plan    | `zai_coding`          | Coding-optimized endpoint                         |
+
+**Local LLMs:**
+
+| Provider | Type ID  | Notes                |
+|----------|----------|----------------------|
+| Ollama   | `ollama` | Local LLM deployment |
+
+**Generic:**
+
+| Provider                        | Type ID            | Notes                                                          |
+|---------------------------------|--------------------|----------------------------------------------------------------|
+| **Custom OpenAI-Compatible**    | `custom_openai`    | Any service with a `/v1/chat/completions` endpoint — see below |
+| **Custom Anthropic-Compatible** | `custom_anthropic` | Any service with an `/v1/messages` endpoint — see below        |
+
+### Custom OpenAI-Compatible Provider
+
+Use the `custom_openai` provider to connect to **any** service that exposes an OpenAI-compatible Chat Completions API.
+This works with DeepSeek, Together AI, Groq, vLLM, LM Studio, and any other service that accepts
+`POST /v1/chat/completions` with Bearer auth and SSE streaming.
+
+**The base URL ends at the API root** — Kitty appends `/chat/completions` itself. Give it
+`https://api.mistral.ai/v1`, not `https://api.mistral.ai/v1/chat/completions`.
+
+Pasting the full endpoint works anyway: Kitty drops the duplicate path instead of failing. That
+holds for an endpoint carrying a query string too, and the query is kept and sent with every
+request — so **Azure OpenAI** works through this provider with the endpoint Microsoft's own
+documentation shows, pasted verbatim:
+
+```
+https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=2024-02-01
+```
+
+```bash
+$ kitty setup
+  ? Provider: Custom OpenAI-Compatible
+  ? API base URL: https://api.deepseek.com/v1
+  ? Model: deepseek-chat
+  ? API key: ********
+
+$ kitty claude
+  ✓ Bridge running on port <random_port>
+  ✓ Claude Code launched
+```
+
+**Common endpoints:**
+
+| Service      | Base URL                                |
+|--------------|-----------------------------------------|
+| DeepSeek     | `https://api.deepseek.com/v1`           |
+| Together AI  | `https://api.together.xyz/v1`           |
+| Groq         | `https://api.groq.com/openai/v1`        |
+| Fireworks    | `https://api.fireworks.ai/inference/v1` |
+| Mistral      | `https://api.mistral.ai/v1`             |
+| vLLM (local) | `http://localhost:8000/v1`              |
+| LM Studio    | `http://localhost:1234/v1`              |
+
+Both HTTPS and HTTP (local) endpoints are supported.
+
+### Custom Anthropic-Compatible Provider
+
+Use the `custom_anthropic` provider to connect to **any** service that exposes an Anthropic-compatible Messages API.
+This works with self-hosted front-ends for Anthropic-format models and any other service that accepts
+`POST /v1/messages` with `x-api-key` auth and SSE streaming.
+
+**The base URL ends at the API root** — Kitty appends `/v1/messages` itself. Give it
+`https://api.anthropic.com`, not `https://api.anthropic.com/v1/messages`.
+
+Pasting the full endpoint works anyway: Kitty drops the duplicate `/v1/messages` instead of failing.
+That holds for an endpoint carrying a query string too, and the query is kept and sent with every request.
+
+## Commands
+
+| Command                                      | Description                                               |
+|----------------------------------------------|-----------------------------------------------------------|
+| `kitty setup`                                | Create your first profile (interactive wizard)            |
+| `kitty profile`                              | Manage profiles (create, edit, delete, set default, list) |
+| `kitty auth openai`                          | Re-authenticate the ChatGPT subscription                  |
+| `kitty auth openai --device-auth`            | ... forcing device-code login (headless machines)         |
+| `kitty auth openai --no-device-auth`         | ... forcing browser login (e.g. behind an SSH tunnel)     |
+| `kitty doctor`                               | Diagnose installation and configuration issues            |
+| `kitty cleanup`                              | Restore agent config files after a crash                  |
+| `kitty bridge`                               | Start a standalone API server                             |
+| `kitty claude`                               | Launch Claude Code with default profile                   |
+| `kitty codex`                                | Launch Codex with default profile                         |
+| `kitty gemini`                               | Launch Gemini CLI with default profile                    |
+| `kitty kilo`                                 | Launch Kilo Code with default profile                     |
+| `kitty <profile> <agent>`                    | Launch an agent with a specific profile                   |
+| `kitty <profile> bridge`                     | Start bridge with a specific profile                      |
+| `kitty --no-validate <profile> <agent>`      | Skip API key validation                                   |
+| `kitty --debug <profile> <agent>`            | Enable debug logging to `~/.cache/kitty/bridge.log`       |
+| `kitty --debug-file /path <profile> <agent>` | Write debug logs to a custom path                         |
+| `kitty --logging <profile> <agent>`          | Enable token usage logging to `~/.cache/kitty/usage.log`  |
+| `kitty --log-file /path <profile> <agent>`   | Write usage logs to a custom path (implies `--logging`)   |
+| `kitty --version`                            | Print version                                             |
+| `kitty --help`                               | Print help                                                |
+
+### Updating
+
+```bash
+pip install --upgrade kitty-bridge
+```
+
+## Technical Details
+
+### How it works
+
+Kitty sits between your coding agent and the upstream LLM provider. The high-level flow is the same as shown above:
+
+```
+Agent (Claude Code / Codex / Gemini / Kilo) → kitty bridge → upstream provider
+```
+
+When you run `kitty claude`:
+
+1. kitty reads your profile (provider, model, API key)
+2. Starts a local HTTP bridge on a random port
+3. Configures the agent to send requests to the bridge instead of its default endpoint
+4. The bridge translates each request to the provider's format and forwards it
+5. Responses are translated back to the agent's native format
+6. When the agent exits, kitty restores the agent's config files
+
+### Profiles
+
+A **profile** binds a provider, model, and API key together. Stored in `~/.config/kitty/profiles.json`.
+
+```bash
+kitty setup        # create a profile interactively
+kitty profile      # manage existing profiles
+kitty my-profile claude  # use a specific profile
+```
+
+Profile names must be 1-32 characters, lowercase letters, numbers, dashes, or underscores. Reserved words like `setup`,
+`claude`, `codex`, `gemini`, `kilo`, `profile`, `bridge` cannot be used as profile names.
+
+**Things to know about profile management:**
+
+- Deleting a regular profile automatically removes it from all balancing profiles. If a balancing profile drops below 2
+  members, it is deleted entirely.
+- Deleting the default profile automatically promotes the first remaining profile as the new default.
+- Editing a profile's API key creates a new credential entry. Other profiles sharing the old key are not affected.
+- The **backup** flag lives on the profile, not on the membership — a profile that belongs to two balanced profiles is a
+  reserve member in both. See [Backup members](#backup-members).
+
+### Pre-flight validation
+
+Before launching, kitty checks that your profile configuration is valid and that your credentials can be resolved. If
+something is wrong, you get a clear error immediately — not a cryptic failure inside the agent.
+
+```bash
+kitty --no-validate my-profile claude  # skip validation (e.g. air-gapped/offline environments)
+```
+
+### Logging
+
+kitty has two independent logging streams, each with its own flag and optional custom path.
+
+**Token usage logs** — records prompt/completion token counts per request:
+
+```bash
+# Default location: ~/.cache/kitty/usage.log
+kitty --logging claude
+
+# Custom location
+kitty --log-file /tmp/my-usage.log claude
+```
+
+**Debug logs** — verbose tracing of requests, responses, and protocol translation; budget-resolution lines for the compaction budget (catalog override, default fallback when no model knows the model):
+
+```bash
+# Default location: ~/.cache/kitty/bridge.log
+kitty --debug claude
+
+# Custom location
+kitty --debug-file /tmp/my-debug.log claude
+```
+
+Both flags work in launch mode and bridge mode:
+
+```bash
+kitty --debug --log-file /tmp/usage.log my-profile bridge
+kitty --debug-file /tmp/debug.log --logging my-profile codex
+```
+
+| Flag        | What it logs                                                       | Default path                | Custom path flag    |
+|-------------|--------------------------------------------------------------------|-----------------------------|---------------------|
+| `--logging` | Token usage                                                        | `~/.cache/kitty/usage.log`  | `--log-file PATH`   |
+| `--debug`   | Request/response tracing and the compaction-budget resolution lines (logger `kitty.providers.model_context`) | `~/.cache/kitty/bridge.log` | `--debug-file PATH` |
+
+### Cleanup
+
+kitty restores agent config files after the agent exits. Three automatic cleanup layers, plus manual recovery:
+
+1. **Normal exit** — `finally` block
+2. **Crash** — `atexit` handler
+3. **`SIGTERM`** — forwarded to the agent; the same `finally` block runs when the agent dies from it
+4. **`SIGKILL` / kernel OOM** — manual recovery via `kitty cleanup`
+
+If your agent shows connection errors after a crash, run `kitty cleanup` to restore its configuration files.
+
+### Troubleshooting
+
+Run `kitty doctor` to check your installation. It verifies that:
+
+- Agent binaries are installed and discoverable
+- A default profile exists
+- All profile credentials can be resolved
+
+For deeper issues, use the logging flags:
+
+```bash
+kitty --debug my-profile claude          # trace requests/responses to ~/.cache/kitty/bridge.log
+kitty --logging my-profile claude        # log token usage to ~/.cache/kitty/usage.log
+kitty --debug --log-file /tmp/usage.log my-profile claude  # both, with custom paths
+```
+
+### Project structure
+
+```
+src/kitty/
+├── bridge/          # HTTP bridge + protocol translation
+├── cli/             # Command-line interface
+├── credentials/     # API key storage
+├── launchers/       # Agent-specific adapters
+├── profiles/        # Profile management
+├── providers/       # Upstream provider adapters
+├── tui/             # Terminal UI components
+└── types.py         # Shared types
+```
+
+## FAQ
+
+### "API Error: Unable to connect to API (ConnectionRefused)"
+
+The agent is trying to connect to a bridge that isn't running. Usually caused by a stale config from a previous crashed
+session:
+
+```bash
+kitty cleanup
+```
+
+### "API Error: 401" or "token expired or incorrect"
+
+Your API key has expired or been revoked. Run setup again:
+
+```bash
+kitty setup
+```
+
+### "Prompt exceeds max length" (Z.AI error 1261)
+
+The conversation has grown beyond the model's context window. Use `/clear` in the agent to reset.
+
+### "Kitty Bridge could not reduce this conversation to something the model can accept"
+
+Compaction ran and found nothing left to send, so the bridge refused the request instead of forwarding it. Nothing was
+sent to the provider.
+
+Almost always this means the conversation contains a tool result whose matching tool call was lost — usually after an
+empty or truncated response from the provider left a half-recorded turn behind. The conversation cannot be repaired, so
+a larger context window does not help:
+
+```
+/clear
+```
+
+If it recurs immediately on a fresh conversation, the system prompt and tool definitions are likely too large for the
+model you have configured — trim `CLAUDE.md` or the number of MCP servers, or switch to a model with a larger context
+window.
+
+The response is a normal `400` in your agent's own error format, carrying `"reason": "compaction_failed"` so it is
+distinguishable in logs from the ordinary "request too large" rejection.
+
+### "Kitty Bridge received an empty reply from the upstream provider on every attempt"
+
+Applies to providers kitty talks to in Anthropic's own format: `anthropic`, `custom_anthropic`, `zai_coding`,
+`minimax_token`, and `opencode_go` for the models it serves on Anthropic's format; to every provider kitty
+converts to Chat Completions; and to the custom-transport backends on every route — Bedrock, Ollama
+Cloud, and the Codex/OpenAI subscription, whose native transport kitty drives itself — whether your agent
+speaks Chat Completions, Responses (`/v1/responses`, Codex CLI), or Gemini (`/v1beta/...:streamGenerateContent`,
+Gemini CLI). On the Anthropic-format side
+kitty holds back the start of each streamed reply until it carries text or a tool call, so a reply with nothing in
+it — or only thinking, up to 10 MiB of it — can be retried before your agent sees it; on the translated side —
+Chat Completions, Responses, and Gemini clients over a Messages-wire upstream — a streamed reply that carries no
+text, tool call, reasoning, refusal, legacy function call, or multimodal content parts takes the same ladder —
+whether or not it ends with a completion marker — with the same release rule on the first content-bearing delta. On
+the custom-transport side the branch synthesises the provider's translated Chat Completions reply and judges it
+through the same predicate, so a synthesised reply that carries no text, tool call, or reasoning takes the same
+ladder — a completion the branch's translation projects only `content` and `tool_calls` and whose parsers surface no
+reasoning cannot release the hold; on `/v1/responses` and `/v1/gemini` the judged content is additionally converted
+into the route's own event format before it ships, so the agent sees the route's native events either way. Both
+streaming and non-streaming routes treat a reasoning-only reply as a
+successful turn when the reasoning reaches the client: the streamed hold releases on the first `reasoning_content`
+delta on the plain-POST side, and the non-streaming detector counts `message.reasoning_content` as content. A
+reasoning-only Chat Completions reply succeeds on the first attempt on the plain-POST route; over a custom-transport
+backend the reasoning is not projected by the translation and the reply synthesises as empty, taking the same
+ladder. A reply whose only payload is the model's refusal succeeds on the first attempt wherever the refusal
+reaches the client — on the plain-POST route and on the translated routes, whose translators carry it as text. The
+exhaustion terminal itself is route-wide: a plain-POST Chat Completions-wire provider (OpenAI, OpenRouter, DeepSeek,
+or any other Chat Completions backend) whose every attempt comes back content-less lands on the same
+`type: "empty_response"` D4 event, and the same terminal fires for the three custom-transport backends when every
+attempt on any route's custom-transport segment comes back content-less. Both flavours use the empty ladder — the terminal is
+what the ladder serves. This error means every attempt kitty made came back empty. Nothing reached the agent, so
+simply resend; if it persists, the provider or model is misbehaving.
+
+The response is a `502` carrying `"reason": "empty_response"` for clients that expect JSON
+(`/v1/messages` non-stream and streamed; `/v1/responses` non-stream to Codex CLI;
+`/v1beta/...:generateContent` non-stream to Gemini CLI; `/v1/chat/completions`
+non-stream to Kilo, OpenCode, and any Chat Completions client) — each carrying the
+route's own discriminator fields alongside the universal `"reason": "empty_response"`
+marker (`code` on `/v1/responses`, `code: 502` mirroring the streaming integer on
+`/v1beta/...:generateContent`, `type: "empty_response"` on `/v1/chat/completions`).
+For streaming clients that expect SSE
+(`/v1/responses` to Codex CLI; `/v1beta/...:streamGenerateContent` to Gemini CLI;
+`/v1/chat/completions` to Kilo, OpenCode, and any Chat Completions client) the
+exhaustion is delivered inside the open stream as an SSE error event carrying the
+route-specific D4 discriminator — `code: "empty_response"` on the Responses wire,
+`reason: "empty_response"` inside the nested `error` object on the Gemini wire
+(where the integer `code: 502` matches the messages branch's exhaustion status,
+mirroring its timeout/exception `code: 504`/`code: 500` precedent),
+`type: "empty_response"` inside the nested `error` object on the Chat Completions wire —
+followed by the stream's normal lifecycle closer (`response.completed(incomplete)` on the Responses wire,
+`write_eof` on the Gemini wire, `[DONE]` on the Chat Completions wire). The HTTP status stays
+`200 text/event-stream` throughout; the discriminator inside the payload marks the
+stream as an exhausted-empty one, distinguishable from any other terminal event.
+
+One visible cost of the hold, on the Anthropic-format side: on reasoning models the
+agent shows its spinner, not live thinking, until the first text or tool call arrives.
+
+### "Kitty Bridge received an empty response from the upstream provider after content had already been sent"
+
+Applies to streamed requests on the routes kitty converts to Chat Completions — `/v1/messages`, `/v1/responses`, and `/v1beta/models/...:streamGenerateContent` (Gemini). The provider's reply opened with an "empty" verdict and produced its words only after it, so part of the answer had already reached your agent. Kitty ends the turn there instead of asking the provider again — a second attempt would append a second answer to text you have already seen. Simply resend the turn; if it keeps happening, the provider is misbehaving.
+
+There is no `"reason":` marker to grep for, and the wire uses the generic `code: "upstream_error"` (Responses) or `code: 502` (Gemini) rather than a dedicated discriminator: the reply arrives as an ordinary `200` SSE stream that ends in one terminal outcome in the route's own convention — on `/v1/messages` a single `error` event, on `/v1/responses` an `error` event (with the message above) followed by `response.completed` with `status: "incomplete"`, on Gemini a `data: {"error": {"code": 502, "message": <the message above>}}` event and EOF (streamGenerateContent has no typed completion event).
+
+### A 502 whose error carries `"reason": "upstream_error"`
+
+Same providers. The provider answered kitty's request with its own error event before producing any content —
+an `overloaded_error`, say. Kitty retries the attempt on the same ladder as an empty reply (and fails over on a
+balancing profile), so you see this only when every attempt came back with the provider's error. Nothing reached
+the agent; the error shown is the provider's own, with kitty's `"reason": "upstream_error"` added so logs can tell
+it apart — or, if the provider's error payload was too malformed to deliver, kitty's own message saying so, with
+the same `"reason": "upstream_error"`. Either way an errored ladder is never reported as an empty one. Simply
+resend; if it persists, the provider is failing outright — switch backend or wait it out.
+
+### A cap-hit error carrying `"cross_class_exhaustion"`
+
+Balanced profiles only, all four streaming routes (`/v1/messages`,
+`/v1/responses`, `/v1beta/.../streamGenerateContent`,
+`/v1/chat/completions`). Every backend in the pool failed and the
+bridge could not find a usable one — including backends it tried but
+could not drive because the two halves of the pool speak different
+protocols. The terminal event is route-specific:
+
+- `/v1/messages` returns a bare JSON `502` with the message body.
+- The three other routes keep their SSE response stream open and emit
+  the route's D4-family error event in-stream — the client sees a
+  `200` with an `error` event whose `code` (Responses) / `reason`
+  (Gemini) / `type` (Chat Completions) field reads
+  `"cross_class_exhaustion"`, plus the standard message wording
+  *"Upstream backends exhausted (the bridge could not land on a usable
+  backend on this request)"*. The status line on the wire stays `200`
+  because those routes prepare their SSE response eagerly at handler
+  entry and cannot rewrite the status after the fact.
+
+Nothing reached the agent; simply resend. If it persists, the pool
+is failing outright — check the backends' own health or add a backend
+of the protocol that is not represented.
+
+### "Kitty Bridge received a reply from the upstream provider that stopped (max_tokens) before producing any content"
+
+On `/v1/messages`, streaming or not, for every upstream kitty serves — native Anthropic-format providers and
+Chat Completions-translated providers alike. (The translated route reads the upstream's own `finish_reason`,
+so the `400` there is triggered by a `length` finish — or by an upstream that literally sends
+`model_context_window_exceeded` as its finish reason.) The model
+used its whole output budget — typically all of it on thinking — or filled its context window
+(`model_context_window_exceeded`) before writing anything. A retry cannot fix that, so kitty fails the request at once
+with a `400` carrying `"reason": "max_tokens_before_content"` (or `"model_context_window_exceeded_before_content"`).
+Raise the output token limit, lower the thinking effort, or `/clear` a very long conversation.
+
+### Mouse wheel scrolls through previous prompts instead of the conversation (Claude Code)
+
+The wheel steps backwards through your prompt history while the transcript stays put. This is Claude Code's renderer
+setting, not the bridge. Kitty prints its startup banner and then hands the terminal straight to the agent: it sets no
+terminal modes — no mouse tracking, no alternate screen — and writes nothing to your terminal while the agent runs.
+
+Claude Code's classic renderer keeps the conversation in your terminal's own scrollback and does not request mouse
+events. Many terminals then translate the wheel into Up/Down arrow keys, which the prompt box reads as history
+navigation. The fullscreen renderer requests mouse events and scrolls the conversation itself. Reported from PowerShell
+on Windows over SSH to a Linux host.
+
+Switch renderer from inside the session:
+
+```
+/tui fullscreen
+```
+
+Claude Code saves the choice and relaunches with your conversation intact, so it applies to later sessions too. Run
+`/tui default` to switch back, or `/tui` with no argument to print which renderer is active. In fullscreen, `PgUp` /
+`PgDn` scroll and `Ctrl+End` jumps back to the latest message.
+
+One trade-off: fullscreen captures the mouse, so your terminal's own copy-on-select stops working. Hold `Shift` while
+dragging (`Option` in iTerm2, `Fn` in Terminal.app) when you want a native selection.
+
+### Can my Claude Code session survive an SSH disconnect?
+
+Yes, with Claude Code's own tmux flag:
+
+```bash
+kitty claude -w mike --tmux=classic
+```
+
+Kitty sees `--tmux` and starts a tmux session running *itself*, so kitty, its bridge and Claude Code
+all keep running when the SSH connection drops. Without this, only Claude Code would survive, talking
+to a bridge that died with your terminal. Reconnect with the command kitty prints before it starts:
+
+```bash
+tmux attach -t <repo>_worktree-mike
+```
+
+Running the same command again reattaches too. Notes:
+
+- It needs tmux 3.2 or newer and a worktree flag (`-w`/`--worktree`), as Claude Code's `--tmux` does.
+- Already inside tmux, kitty just removes `--tmux` and runs in the current pane.
+- If a session with that name exists but kitty did not start it, kitty stops and tells you how to
+  attach to it or remove it.
+- If kitty fails inside the session, the pane stays open with the error until you press Enter.
+- The command's exit code is tmux's, not kitty's: a launch that fails inside the session still
+  exits 0 once the pane closes. Scripts should not branch on it; read the pane instead.
+- Kitty runs as it always did, with no tmux session and no protection, when there is no terminal
+  (a script or CI job), on Windows, or outside a git repository: `--tmux` reaches Claude Code
+  unchanged.
+- On macOS with iTerm2, `--tmux` under kitty gives a plain tmux session rather than iTerm2's
+  native panes.
+
+### Can I use kitty with Cursor, Windsurf, or other IDEs?
+
+Yes, but with caveats. Cursor uses a proprietary protocol that Kitty cannot integrate with automatically. However, you
+can start Kitty in bridge mode and point your IDE's "OpenAI base URL" setting at the bridge endpoint:
+
+```bash
+kitty bridge
+# Then configure your IDE to use http://localhost:<port>/v1/chat/completions
+```
+
+This is a manual, best-effort configuration. Some IDE-specific features may not work.
+
+### Can I use my Anthropic (Claude Pro/Team) subscription with Kitty?
+
+No. Anthropic's Terms of Service prohibit accessing their subscription APIs from third-party software. You **can** use
+Kitty with Anthropic's API directly — sign up at [console.anthropic.com](https://console.anthropic.com), create an API
+key, and use the `anthropic` provider. You will be billed per token, not through your subscription.
+
+### What is the difference between "OpenAI" and "OpenAI ChatGPT Plan"?
+
+- **OpenAI** — standard developer API. You create an API key at [platform.openai.com](https://platform.openai.com) and
+  pay per token.
+- **OpenAI ChatGPT Plan** — uses your existing ChatGPT Plus or Pro subscription through a browser-based OAuth login. No
+  API key needed; you use your subscription's included quota.
+
+### What is a "coding plan"?
+
+Some providers offer subscription plans specifically designed for coding agents. Instead of a traditional API key with
+per-token billing, these plans typically authenticate via OAuth or a dedicated session and include usage quotas.
+Examples include Z.AI Coding Plan, Fireworks FirePass, Novita AI, and Kimi Code.
+
+### Can I run a local model?
+
+Yes. Install [Ollama](https://ollama.ai), pull a model, then create a profile with provider `ollama`:
+
+```bash
+kitty setup
+# Provider: ollama
+# Base URL: http://localhost:11434/v1
+# Model: llama3
+```
+
+### What is the difference between Ollama and Ollama Cloud?
+
+- **Ollama** — connects to a local or remote Ollama instance using its OpenAI-compatible endpoint. No API key needed
+  for local deployments.
+- **Ollama Cloud** — connects to [ollama.com](https://ollama.com) cloud models using an API key. No local GPU required.
+  Some models require a paid subscription.
+
+### Does Kitty record my prompts or send data anywhere?
+
+No. Kitty runs entirely on your machine. All prompts and responses pass directly between your coding agent and the
+upstream provider. Kitty does not send data to third parties, store conversations, or collect telemetry.
+
+### Something is broken. How do I debug it?
+
+1. Run `kitty doctor` to check your installation and credentials
+2. Run `kitty cleanup` if you see connection errors after a crash
+3. Use `kitty --debug <profile> <agent>` to trace all requests and responses to `~/.cache/kitty/bridge.log`
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+ruff check .
+mypy src/kitty
+```
+
+The suite also needs `openssl` on your `PATH` — a few tests generate a throwaway TLS certificate
+with it. A missing `openssl` fails those tests rather than skipping them, deliberately: a test that
+removes itself when a resource is absent lets CI report success without having run it. That is a
+different treatment from the deselected categories described below, and the difference is the
+granularity: a resource needed by a whole *layer* is excluded by selection, while a resource needed
+by a handful of tests inside a layer CI gates on has to be present.
+
+### Running a subset of the tests
+
+Every test carries exactly one layer marker, so you can ask for the part you need:
+
+```bash
+pytest -m l1          # component and property tests -- the fast majority
+pytest -m l2          # contract tests: two artifacts that must agree
+pytest -m "l1 or l2"  # what CI gates every pull request on
+pytest -m ""          # everything, including the categories excluded below
+```
+
+A bare `pytest` runs everything except the categories that need a resource your machine may not
+have -- a pinned agent binary, live provider credentials, a load rig. Those are excluded by
+selection, not skipped, so the run tells you they were deselected rather than pretending to have
+considered them. To run them, name them:
+
+```bash
+pytest -m agent_live  # launches real agent CLIs against live credentials
+```
+
+The marker is assigned automatically from the file's path; a test only declares its own layer
+where that default is wrong. `.system_design/TEST_SUITE.md` §8 has the full matrix.
+
+### Exempting a known-failing assertion
+
+A guard sometimes covers a class of check broader than the one defect it happens to expose, so it
+would land red on a single assertion. `tests/exemptions.py` exempts **that one assertion** and
+nothing else:
+
+```python
+from exemptions import ratchet
+
+with ratchet("tr-1c-header-subset"):
+    assert bridge_headers <= native_headers
+```
+
+Every other assertion in the test, and all of its setup, still gates. A broken fixture inside the
+block still fails. And when the assertion starts passing, the run **fails** and tells you to
+delete the row -- so an exemption cannot outlive the defect it describes. Each row names the
+assertion, the condition it is expected to fail under, and its Jira key; the registry is one file
+and is meant to trend towards empty. `.system_design/TEST_SUITE.md` §8.3 has the reasoning.
+
+## License
+
+MIT

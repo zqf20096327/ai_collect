@@ -1,0 +1,340 @@
+# plainsolid
+
+A minimal parametric CAD tool in the spirit of SolidWorks, built as a
+bidirectional GUI over a code model.
+
+- The source of truth is a human-readable Python file. The GUI edits it in
+  place; edits to the file update the 3D view. It diffs cleanly in git.
+- Geometry is [build123d](https://github.com/gumyr/build123d) on OCCT.
+- The engine is a local server with an API. The browser UI, the command line
+  and the MCP server for agents are all clients of that engine.
+
+It covers parts with constrained sketches and the usual features (extrude,
+cut, revolve, fillet, chamfer, shell, patterns, mirror, reference planes),
+assemblies of part files and vendor STEP files with mates and a pose solver,
+drawings with views, sections, dimensions and notes, and the review of a
+manufacturer's STEP proposal with sections, measurements and a compare
+overlay against another file or the last commit.
+
+![A 518-component sensor node with solar panel, enclosure, connectors and mounting hardware in the STEP viewer](docs/images/node-assembly.png)
+
+A manufacturer's STEP assembly of a sensor node: 518 components with their original hierarchy, opened as a document like any other.
+
+![A fully constrained motor-mount sketch with a bearing bore, four equal bolt holes, two slots, construction geometry and editable dimensions](docs/images/motor-mount-sketch.png)
+
+A fully constrained [motor-mount sketch](docs/examples/motor_mount.py), with
+editable dimensions, equal holes and slots, and construction geometry.
+
+![A parametric bearing housing with a recessed seat, eight counterbored mounting holes and patterned relief slots, alongside its feature tree, parameters and Python source](docs/images/bearing-housing.png)
+
+A parametric bearing housing, from sketch to patterned features. Open the
+[included model](docs/examples/bearing_housing.py) with
+`uv run plainsolid serve docs/examples --open bearing_housing.py`.
+
+## Getting started
+
+```sh
+brew install uv            # or see https://docs.astral.sh/uv/
+uv sync                    # Python 3.13 environment with build123d and friends
+uv run plainsolid serve    # the app on http://127.0.0.1:8321
+```
+
+Your documents live in `cad/` at the root of the checkout: gitignored, created
+on the first run, and the only place the app reads and writes. Press "new" for
+a part, or copy a STEP file into `cad/` and open it as a viewer, or a DXF file
+to open as a sketch or as a drawing sheet. To look at the
+examples instead, `uv run plainsolid serve zoo --open bracket.py`; any other
+folder works the same way with `plainsolid serve DIR`. Keep in mind that `cad/`
+is yours: git ignores it, and `git clean -x` would delete it.
+
+The browser client is bundled into the Python package, so `plainsolid serve`
+alone runs the whole app. To work on the client, see [web/README.md](web/README.md).
+`uv tool install --editable .` puts `plainsolid` on your PATH, to run it from
+any directory.
+
+Everything the app does is also a command:
+
+```sh
+uv run plainsolid new cad/mount.py                  # a fresh part file, ready for a sketch
+uv run plainsolid query zoo/node.py bom             # the assembly's bill of materials; also mass, interference
+uv run plainsolid render zoo/bracket.py -o bracket.png --view iso
+uv run plainsolid export zoo/node.py -o node.step   # the posed assembly with instance names and colours
+uv run plainsolid edit zoo/bracket.py '{"op":"set_parameter","name":"thickness","value":5}' --dry-run
+```
+
+## A model file
+
+```python
+from plainsolid import *
+
+meta(name="bracket", material="al6061", revision="A")
+
+thickness = 4.0
+hole_d = param(5.0, "clearance hole for M5")
+
+profile = sketch("profile", on=XZ)
+profile.line("bottom", (-30, 0), (30, 0))      # drawn loosely, pinned by constraints
+profile.line("right", (30, 0), (30, 4))
+profile.coincident("c1", "bottom.end", "right.start")
+profile.horizontal("h1", "bottom")
+profile.vertical("v1", "right")
+profile.length("w", "bottom", 60)
+profile.length("t", "right", thickness)
+# ... four more lines close the L
+body = extrude("body", profile, 40)
+
+top = sketch("top", on=body.faces.where(normal="+Z").nearest((0, -20, 4)))   # a sketch on a face
+lid = plane("lid", XY, offset=50)                                             # a reference plane
+
+holes = sketch("holes", on=XY)
+holes.project("back_edge", body.edges.where(parallel_to="+X").nearest((0, 0, 0)))
+holes.circle("hole1", hole_d, at=(-10, -20))
+holes.distance("y1", "hole1.center", "back_edge", 20)
+cut("hole_cut", holes, through=True)
+
+inner = fillet("inner", body.edges.from_sketch("inner_bottom").from_sketch("inner_wall"), 3)
+outer = chamfer("outer", body.edges.from_sketch("bottom").from_sketch("outer_wall"), 2)
+holes2 = linear_pattern("holes2", hole_cut, 2, spacing=20, direction=X)
+```
+
+Every feature, entity and constraint has a name. Faces and edges carry the
+name of the sketch entity they came from and labels such as `top`, so
+references read `body.faces.top` or `body.edges.top.from_sketch("bottom")`
+instead of indices. The GUI writes those on a click whenever they are unique;
+geometric selectors (`nearest`, `where`, `largest`) cover the rest.
+
+Sketches take lines, arcs, circles, rectangles, slots and polygons,
+constraints and dimensions, plus three derived entities: `project` converts
+body edges, vertices or a face outline into geometry that follows the body,
+`offset` puts curves at a distance from other curves, and `import_dxf` reads
+the curves of a DXF file as one rigid piece (placed by relations like any
+other entity, following the file when it changes, and turned into plain
+lines, arcs and circles by "convert to lines"). Part features:
+`extrude` (depth, `upto=` a face, `through=True`, draft, symmetric,
+`op="cut"`), `cut`, `revolve`, `fillet`, `chamfer`, `shell`,
+`linear_pattern`, `circular_pattern`, `mirror`, `plane`, `import_step`; every
+feature accepts `suppressed=True`. The GUI edits these statements in place
+with libcst, so comments and formatting survive, and after every sketch edit
+the solved coordinates are written back into the numeric literals
+(expressions are left alone).
+
+## An assembly
+
+```python
+from plainsolid import *
+
+meta(kind="assembly", name="node")
+
+box = instance("box", "enclosure.py")
+lid = instance("lid", "lid.py", color="#d8d8d0")
+gland1 = instance("gland1", "vendor/gland_m12.step", material="nylon")
+
+fixed("anchor", box)
+coincident("lid_down", lid.faces.of("plate").bottom.largest(), box.faces.of("body").top)
+coincident("lid_x", lid.planes.YZ, box.planes.YZ)
+coincident("lid_y", lid.planes.XZ, box.planes.XZ)
+concentric("gland1_axis", gland1.faces.where(kind="cylinder").largest(), box.faces.of("gland_cut").from_sketch("gland1"))
+coincident("gland1_seat", gland1.faces.where(normal="-Z").nearest((0, 0, 0)), box.faces.of("body").from_sketch("box.top"))
+```
+
+An `instance` is a part file, evaluated in its own coordinates, or a vendor
+STEP file taken as one rigid solid. Mates (`fixed`, `coincident`,
+`concentric`, `distance`, `parallel`, `angle`) take references on the
+instances in the part's own coordinates, plus the part's standard planes and
+axes (`box.planes.XZ`, `gland1.axes.Z`). Two body faces mate face to face;
+planes align; `flip=True` reverses. The solver moves each free instance as
+little as it can, reports the degrees of freedom left and names redundant or
+conflicting mates. After every edit the solved poses are written into the
+instance statements (`at=`, `rotate=`), so the file always holds what is
+shown. `query bom` lists one row per part file with count, material and mass;
+`query interference` finds overlapping instances; `export` writes a STEP file
+with the instance names and colours.
+
+## A drawing
+
+```python
+from plainsolid import *
+
+meta(kind="drawing", name="bracket_dwg", of="bracket.py", sheet="A4", revision="A")
+
+front = view("front", direction=FRONT, at=(65, 140))
+top = view("top", direction=TOP, at=(65, 62))
+iso = view("iso", direction=ISO, at=(240, 140), scale=0.75, hidden=False)
+section = view("section", section=YZ, offset=-10, at=(150, 66))
+
+dimension("width", front.edges.of("body").bottom.from_sketch("outer_wall"), front.edges.of("body").bottom.from_sketch("right"), at=(0, -38))
+dimension("hole", top.faces.of("hole_cut").from_sketch("hole1"), at=(-24, 16), text="2× Ø5")
+dimension("fillet", front.faces.of("inner"), at=(-10, -8), kind="radius")
+note("finish", "Break all edges 0.5 mm", at=(12, 28))
+```
+
+A drawing shows a part, an assembly or a STEP file on a sheet (A4, A3 or
+letter, mm from the bottom-left corner), or a DXF file as it is:
+`view("old", dxf="bracket_rev_b.dxf", at=(148, 117))` draws the file's
+curves, text, dimensions and fills, and a drawing of DXF files alone needs no
+`of=`; notes can label it, dimensions measure model views only. A `view` projects it with hidden
+lines from a standard direction, or cuts it along a plane and hatches the
+cut. Dimensions reference the model through the view they sit in, with the
+same selectors as everywhere else. The title block takes the model's name,
+material, revision and author. In the browser the sheet is an SVG: drag
+views, dimensions and notes to place them, pick edges for a new dimension,
+and export to PDF, DXF or SVG. From the command line: `plainsolid new
+bracket_dwg.py --kind drawing --of bracket.py`, then `plainsolid export
+bracket_dwg.py -o bracket.pdf`.
+
+## Opening a DXF file
+
+A DXF file opens one of two ways, and the dialog asks which every time: as a
+**part**, a sketch of the file's curves (`plate.py` next to `plate.dxf`: a
+sketch on XY holding the import, fixed where the file puts it, and nothing
+else; it opens for editing, and extrude, cut or revolve it from there), or as
+a **drawing**, a sheet showing the
+file as it is (`plate_dwg.py`, on the smallest sheet and the largest standard
+scale that hold it). Units come from the file; ends closer than 5 µm are
+joined, and the gaps that keep an outline from closing are reported with
+where they are. Drop the file on the window, open it from "open ▾", or
+`plainsolid open plate.dxf`; a file from outside the project is copied in
+first, like a STEP file.
+
+## Reviewing a STEP file from the contract manufacturer
+
+Drop the file on the app's window: one dialog asks for the folder and the
+name, the file is copied into the project (the original stays where it was)
+and opens as a viewer to section, measure, pin and snapshot. From the file
+manager, `uv run plainsolid install-launcher` adds "Open in plainsolid" to the
+Finder's right-click Quick Actions (should that submenu show only
+"Customize…", pick it and tick "Open in plainsolid"), or registers plainsolid
+for STEP and DXF files on a Linux desktop; it starts the server when none is running.
+From a terminal:
+
+```sh
+uv run plainsolid open ~/Downloads/node_v3.step        # the running app, or a new server; the import dialog in the browser
+uv run plainsolid status                                # the server, its project and its open documents
+uv run plainsolid stop                                  # also "quit server" in the app's file menu
+uv run plainsolid tree cad/proposals/node_v3.step       # writes node_v3.py next to it, prints the instance tree
+uv run plainsolid render cad/proposals/node_v3.py -o cut.png --plane XY --offset 12
+uv run plainsolid measure cad/proposals/node_v3.py face:12 face:40 --plane XY --offset 12
+uv run plainsolid compare cad/proposals/node_v3.py cad/proposals/node_v2.py -o changes.png   # what v3 adds (green) and removes (red)
+```
+
+A server that `open` started stops by itself half an hour after the last tab
+closes. Opening a `.step` file creates a small wrapper model file next to it, so the
+review is a text document like everything else. Instance names, hierarchy and
+colours come through; view state (camera, section, pins, named views) lives
+in a `<name>.views.json` sidecar. A STEP file holding one solid opens as a
+part, ready to sketch on and cut. Right-click a sub-assembly in the tree,
+before or after making the file editable, to open it in a tab of its own: it
+gets a wrapper named after the node (`node_v3.glands.py`) and shows in its
+own coordinates.
+
+To modify a proposal, press "make editable" in the tree header: the import
+turns into one instance per body, each pointing into the same STEP file
+(`"node_v3.step#node.glands.gland_1"`) at the pose the file gave it. Select
+a body and press "edit part": it gets a part file wrapping its node, every
+instance of the same product follows, and the part opens in a tab. The STEP
+file itself is never rewritten.
+
+Real vendor and manufacturer files are not committed. Put them in `corpus/`
+at the repository root, optionally with a `corpus/manifest.json`, and
+`uv run pytest -m corpus` imports, sections and measures every one of them.
+
+## Driving it from an agent
+
+Every command prints JSON, every edit is a JSON operation, and geometry is
+named by the same selectors the file uses:
+
+```sh
+uv run plainsolid docs                                   # the agent guide: the model file, selectors, edit operations, a worked session
+uv run plainsolid edit parts/mount.py '{"op": "add_feature", "kind": "fillet", "name": "r1", "args": {"edges": {"expr": "body.edges.top"}, "radius": 2}}'
+uv run plainsolid render parts/mount.py -o check.png --highlight body.edges.top --highlight r1   # what a selector picks, in orange
+uv run plainsolid measure parts/mount.py body.faces.top body.faces.bottom
+uv run plainsolid compare parts/mount.py --rev HEAD      # what the working copy adds to and removes from the last commit
+uv run plainsolid mcp parts                              # the same as MCP tools on stdio
+```
+
+To give Claude Code the tools: `claude mcp add plainsolid -- uv run plainsolid mcp /path/to/project`.
+The MCP server works in-process on the project directory, so a `plainsolid serve`
+watching the same directory shows every edit the agent makes, and the agent
+sees every edit made in the browser.
+
+## Suggestions: a hint instead of a dialog
+
+![Selecting the front face of a robot head and typing "cut a mouth: a 26 by 5 slot, 12 mm below the centre, 3 deep"; the proposed cut previews in blue with its diff, and enter accepts it; then the same for an antenna on the top face](docs/images/bolt-highlight.gif)
+
+Bolt, a robot head built from eight hints and one circle drawn by hand (an excerpt, at real speed, with
+GPT-6 Luna).
+
+Press `/` in the app, type what should change ("3mm fillet", "M6 holes", "same on the other
+three bosses") and a language model proposes one edit for what you have selected. It is
+checked by evaluating it before you see it, drawn as a preview, and waits: enter writes it (one
+undo step), `e` writes it and opens it in the code pane, esc drops it. Notes under the proposal
+say when it deletes something you did not mention, leaves the geometry as it was, or ignores a
+number from the hint.
+
+To set it up:
+
+1. Write `~/.config/plainsolid/suggest.toml` with one or more profiles, as in the example below.
+2. Put each profile's key in the environment variable it names, e.g.
+   `export OPENROUTER_API_KEY=sk-or-...` in your shell profile.
+3. Start the app from a shell that has those variables: `uv run plainsolid serve`.
+4. Press `/`. The picker lists the profiles; one whose key variable is missing is greyed out
+   with the reason.
+
+Any OpenAI-compatible endpoint works: a local llama.cpp or vLLM server, OpenRouter, OpenAI.
+Write the models you want as profiles in `~/.config/plainsolid/suggest.toml` (or the file
+`PLAINSOLID_SUGGEST_CONFIG` names); the hint box offers them in a picker and remembers your
+choice, and the proposal says which model made it. Keys never go in the file or through the
+browser: each profile names the environment variable holding its key, which must be set where
+`plainsolid serve` runs (a profile whose variable is missing shows as not ready, with the reason).
+Without the file, `/` opens a box that says where it goes, with this example:
+
+```toml
+default = "local"
+
+[profiles.local]              # llama.cpp or vLLM on your network
+base_url = "http://my-server:8000/v1"
+model = "qwen3.6-35b-a3b-q8"
+api = "llamacpp"              # llamacpp, openai or openrouter: how reasoning is switched on
+key_env = "LOCAL_MODEL_KEY"   # the variable holding the key, never the key
+reasoning = "low"             # off, low, medium or high
+reasoning_budget = 1000       # reasoning tokens per call
+
+[profiles.flash]              # OpenRouter
+base_url = "https://openrouter.ai/api/v1"
+model = "qwen/qwen3.8-flash"
+api = "openrouter"
+key_env = "OPENROUTER_API_KEY"
+reasoning = "low"
+reasoning_budget = 1000
+```
+
+The file is read on every request, so edits apply at once. One model's settings at the top
+level, without `[profiles]`, work too.
+
+The same from the command line: `uv run plainsolid suggest parts/mount.py "2mm fillet"
+--select 'body.edges.top' [--profile flash]` prints the proposal, its diff and the notes;
+`--apply` writes it. Hints, proposals and what became of them are kept in
+`.plainsolid-cache/suggest-journal.jsonl` of the project.
+
+## Development
+
+| Where | What |
+|---|---|
+| `src/plainsolid/` | the engine, the edit layer, the workspace and server, the CLI and MCP server, the agent guide |
+| `web/` | the browser client; `npm run build` bundles it into the package |
+| `zoo/` | reference documents that double as test fixtures |
+| `tests/`, `scripts/` | the Python suites, `bench.py` and the performance baseline, the edit type generator |
+| `docs/` | [design.md](docs/design.md) (decisions, architecture, API), [testing.md](docs/testing.md) |
+
+```sh
+uv run pytest                                   # everything but the local corpus
+uv run pytest -m "unit or golden or roundtrip or solver"   # the fast layers
+uv run ruff check src tests scripts
+cd web && npm test && npm run build             # client state tests, type check, bundle
+uv run python scripts/bench.py                  # timings and memory against tests/perf_baseline.json
+```
+
+CI runs the Python suite, the client tests and build, and the browser suite
+in Chromium against a served copy of the zoo.
+
+License: Apache 2.0, see [LICENSE](LICENSE).

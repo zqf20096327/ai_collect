@@ -1,0 +1,831 @@
+# IaC Spec Kit - a cloud-agnostic infrastructure as code specification toolkit
+
+> AI-assisted workflows for translating business requirements into infrastructure code
+
+## Table of Contents
+
+- [What is Specification-Driven Development?](#what-is-specification-driven-development)
+- [About this project](#about-this-project)
+  - [Infrastructure-specific features](#infrastructure-specific-features)
+  - [Multi-Cloud Infrastructure Support](#multi-cloud-infrastructure-support)
+- [Get Started](#get-started)
+  - [1. Install IaC Specify CLI](#1-install-iac-specify-cli)
+  - [2. Create the spec](#2-create-the-spec)
+  - [3. Create the spec](#3-create-the-spec)
+  - [4. Create a technical implementation plan](#4-create-a-technical-implementation-plan)
+  - [5. Break down into tasks](#5-break-down-into-tasks)
+  - [6. Execute implementation](#6-execute-implementation)
+- [Cloud Provider Examples](#cloud-provider-examples)
+- [Tips for Best Results](#tips-for-best-results)
+  - [Use frontier AI models](#use-frontier-ai-models)
+  - [Configure MCP servers in advance](#configure-mcp-servers-in-advance)
+  - [Add search capabilities](#add-search-capabilities)
+  - [Start fresh between commands](#start-fresh-between-commands)
+  - [Configure custom modes](#configure-custom-modes)
+- [Supported AI Agents](#supported-ai-agents)
+- [IaC Specify CLI Reference](#iac-specify-cli-reference)
+  - [Commands](#commands)
+  - [`iac-specify init` Arguments & Options](#iac-specify-init-arguments--options)
+  - [Examples](#examples)
+  - [Available Slash Commands](#available-slash-commands)
+- [Infrastructure Architecture Section](#infrastructure-architecture-section)
+- [Environment Variables](#environment-variables)
+- [Core Philosophy](#core-philosophy)
+- [Development Phases](#development-phases)
+- [Experimental Goals](#experimental-goals)
+- [Prerequisites](#prerequisites)
+- [Learn More](#learn-more)
+- [Detailed Process](#detailed-process)
+- [Contributing](#contributing)
+- [Future Ideas](#future-ideas)
+- [Support](#support)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+## What is Specification-Driven Development?
+
+Specification-Driven Development (SDD) is an emerging methodology where detailed specifications are created before code. The specification becomes your single source of truth, guiding AI agents to generate implementation plans and production-ready code. This approach clarifies intent upfront, reduces misalignment, and enables iterative refinement through living documents that evolve with your project.
+
+**Learn more:** [Red Hat on SDD](https://developers.redhat.com/articles/2025/10/22/how-spec-driven-development-improves-ai-coding-quality) •  [Martin Fowler on SDD](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) • [ThoughtWorks Radar](https://www.thoughtworks.com/radar/techniques/spec-driven-development)
+
+**Potential benefits for infrastructure:**
+
+- Supports starting with high-level requirements that AI agents can use to generate detailed specifications
+- Encourages separating requirements (what you need) from implementation details (specific cloud services)
+- Provides templates and commands to help AI agents translate specs into IaC configurations
+- Enables specification updates that can inform changes to plans and code
+- Facilitates team alignment through explicit, reviewable specifications
+
+
+
+## About this project
+
+[![CI](https://github.com/IBM/iac-spec-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/IBM/iac-spec-kit/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/IBM/iac-spec-kit?color=blue)](https://github.com/IBM/iac-spec-kit/releases)
+[![License](https://img.shields.io/github/license/IBM/iac-spec-kit)](https://github.com/IBM/iac-spec-kit/blob/main/LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/downloads/)
+[![Last Commit](https://img.shields.io/github/last-commit/IBM/iac-spec-kit)](https://github.com/IBM/iac-spec-kit/commits/main)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](https://github.com/IBM/iac-spec-kit/pulls)
+
+**IaC Spec Kit** is a specialized implementation of the [GitHub Spec Kit](https://github.com/github/spec-kit) toolkit, adapted for Infrastructure as Code workflows with Terraform and cloud providers. As SDD is an emerging trend, this project explores how specification-driven approaches can improve infrastructure development—an experimental field where we're discovering what's possible with AI-assisted infrastructure provisioning.
+
+### Visual Walkthrough
+
+See the complete workflow in action (2 minutes):
+
+<a href="https://www.youtube.com/watch?v=al1Yx0BG7Wo">
+  <img src="./media/iac-spec-kit-thumbnail.png" alt="IaC Spec Kit Walkthrough" width="600">
+</a>
+
+This visual guide shows the end-to-end process of using IaC Spec Kit to generate infrastructure specifications, plans, and Terraform code for a WordPress deployment on IBM Cloud.
+
+### Infrastructure-specific features
+
+- **Infrastructure command namespace**: All commands use `.iac` prefix (`/iac.principles`, `/iac.specify`, `/iac.plan`, `/iac.tasks`, `/iac.implement`)
+- **IaC-centric templates**: Templates designed for cloud resources, networking, security, and compliance. The toolkit is slightly geared towards Terraform, but you can use any IaC tool.
+- **Multi-cloud support**: Works with any cloud provider - AWS, Azure, GCP, IBM Cloud, Oracle Cloud, and more
+- **Infrastructure principles**: Governance frameworks for cloud infrastructure, security standards, and cost management
+
+### Multi-Cloud Infrastructure Support
+
+IaC Spec Kit is designed to work with any cloud provider. The toolkit encourages AI agents to separate generic infrastructure requirements (what you need) from cloud-specific implementation (how to build it):
+
+- **Principles and Specifications** use generic infrastructure terms - IaC Spec Kit encourages describing requirements using terms like "managed database", "object storage", "encryption key management" rather than cloud-specific service names
+- **Plans and Implementation** are cloud-specific - IaC Spec Kit helps AI agents translate generic requirements into specific services like AWS RDS, Azure Database, Cloud SQL, or IBM Databases for MySQL
+
+This separation is intended to:
+- Help you focus on *what* you need rather than *how* to build it, with templates that guide AI agents through cloud-specific implementation details
+- Make specifications more accessible to team members less familiar with a specific cloud provider
+- Support switching cloud providers by re-running `/iac.plan` with a different cloud
+- Enable deploying the same specification to multiple clouds
+- Facilitate comparing cloud provider options before committing
+
+## Contributing and future ideas
+
+IaC Spec Kit is an experimental project exploring how Specification-Driven Development can improve infrastructure as code workflows. Contributions help refine templates, expand compatibility, and discover what works best with AI-assisted infrastructure provisioning. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to participate, and [IDEAS.md](IDEAS.md) for potential areas to explore.
+
+---
+
+## Get Started
+
+### 1. Install IaC Specify CLI
+
+**Prerequisites:** This CLI tool requires [uv](https://docs.astral.sh/uv/) - a fast Python package installer. If you don't have it yet, install it with:
+
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Choose your preferred installation method:
+
+#### Option 1: Persistent Installation (Recommended)
+
+Install once and use everywhere:
+
+```bash
+uv tool install iac-specify-cli --from git+https://github.com/ibm/iac-spec-kit.git
+```
+
+Then use the tool directly:
+
+```bash
+iac-specify init <PROJECT_NAME>
+iac-specify check
+```
+
+To upgrade iac-specify, use the built-in self-upgrade command:
+
+```bash
+iac-specify self upgrade
+```
+
+Or upgrade manually with uv:
+
+```bash
+uv tool install iac-specify-cli --force --from git+https://github.com/ibm/iac-spec-kit.git
+```
+
+#### Option 2: One-time Usage
+
+Run directly without installing:
+
+```bash
+uvx --from git+https://github.com/ibm/iac-spec-kit.git iac-specify init <PROJECT_NAME>
+```
+
+**Benefits of persistent installation:**
+
+- Tool stays installed and available in PATH
+- No need to create shell aliases
+- Better tool management with `uv tool list`, `uv tool upgrade`, `uv tool uninstall`
+- Cleaner shell configuration
+
+### 2. Create the spec
+
+Launch your AI assistant in the project directory. The `/iac.*` commands are available in the assistant.
+
+Use the **`/iac.specify`** command to describe what you want to build. Focus on the **what** and **why**. IaC Spec Kit guides AI agents to avoid tech stack details at this stage.
+
+```
+/iac.specify I need to deploy WordPress for my small business website. Should handle a few thousand visitors per day, needs to be secure with automated backups. Budget is around $500/month. Use the official WordPress Docker image.
+```
+
+### 3. Create a technical implementation plan
+
+Use the **`/iac.plan`** command to create an architecture plan. This outputs a single `plan.md` file with inline research.
+
+```
+/iac.plan Deploy in us-south. Use Code Engine for containers, Databases for MySQL, Cloud Object Storage for media.
+```
+
+**Optional enrichment**: For quality-critical or complex projects, run **`/iac.enrichplan`** to generate deep research (Well-Architected Framework analysis, curated modules), detailed architecture, module specifications, and a provisioning quickstart guide.
+
+```
+/iac.enrichplan
+```
+
+### 4. Break down into tasks
+
+Use **`/iac.tasks`** to create an actionable task list from your implementation plan.
+
+```
+/iac.tasks
+```
+
+### 5. Execute implementation
+
+Use **`/iac.implement`** to execute all tasks and build your feature according to the plan.
+
+```
+/iac.implement
+```
+
+---
+
+**Optional: Add project principles** - For multi-capability projects or team collaboration, use **`/iac.principles`** before `/iac.specify` to establish a set of principles that apply across multiple capabilities. This creates a `principles.md` file that is referenced by all other commands.
+
+```
+/iac.principles This is a production environment. Security and compliance are critical. Use Terraform with curated modules.
+```
+
+```
+/iac.principles This is a development environment. Keep it simple, focus on basic security, and keep costs low. Use Terraform.
+```
+
+For the original Spec-Driven Development methodology, see the [GitHub Spec Kit documentation](https://github.com/github/spec-kit).
+
+---
+
+## Generated Example
+
+**See what IaC Spec Kit generates:** [wordpress-ibm-cloud](https://github.com/vburckhardt/wordpress-ibm-cloud) - A complete WordPress deployment on IBM Cloud created using the workflow below, showing the generated specifications, plans, tasks, and Terraform code.
+
+## Cloud Provider Examples
+
+**Get started with your cloud provider:**
+
+| Cloud Provider | Example Workflows |
+|----------------|-------------------|
+| **IBM Cloud** | [Simple VPC](./examples/01-simple-vpc/cloud-workflows/ibm-cloud.md) • [Static Website](./examples/02-static-website/cloud-workflows/ibm-cloud.md) • [WordPress](./examples/03-wordpress/cloud-workflows/ibm-cloud.md) • [Landing Zone](./examples/04-landing-zone/cloud-workflows/ibm-cloud.md) • [Three-Tier Web App](./examples/05-three-tier-webapp/cloud-workflows/ibm-cloud.md) • [Data Pipeline](./examples/06-data-pipeline/cloud-workflows/ibm-cloud.md) • [Microservices](./examples/07-microservices/cloud-workflows/ibm-cloud.md) |
+| **AWS** | [Simple VPC](./examples/01-simple-vpc/cloud-workflows/aws.md) • [Static Website](./examples/02-static-website/cloud-workflows/aws.md) • [WordPress](./examples/03-wordpress/cloud-workflows/aws.md) • [Landing Zone](./examples/04-landing-zone/cloud-workflows/aws.md) • [Three-Tier Web App](./examples/05-three-tier-webapp/cloud-workflows/aws.md) • [Data Pipeline](./examples/06-data-pipeline/cloud-workflows/aws.md) • [Microservices](./examples/07-microservices/cloud-workflows/aws.md) |
+| **Azure** | [Simple VPC](./examples/01-simple-vpc/cloud-workflows/azure.md) • [Static Website](./examples/02-static-website/cloud-workflows/azure.md) • [WordPress](./examples/03-wordpress/cloud-workflows/azure.md) • [Landing Zone](./examples/04-landing-zone/cloud-workflows/azure.md) • [Three-Tier Web App](./examples/05-three-tier-webapp/cloud-workflows/azure.md) • [Data Pipeline](./examples/06-data-pipeline/cloud-workflows/azure.md) • [Microservices](./examples/07-microservices/cloud-workflows/azure.md) |
+| **GCP** | [Simple VPC](./examples/01-simple-vpc/cloud-workflows/gcp.md) • [Static Website](./examples/02-static-website/cloud-workflows/gcp.md) • [WordPress](./examples/03-wordpress/cloud-workflows/gcp.md) • [Landing Zone](./examples/04-landing-zone/cloud-workflows/gcp.md) • [Three-Tier Web App](./examples/05-three-tier-webapp/cloud-workflows/gcp.md) • [Data Pipeline](./examples/06-data-pipeline/cloud-workflows/gcp.md) • [Microservices](./examples/07-microservices/cloud-workflows/gcp.md) |
+
+**Explore examples:** See [examples/](./examples/) for complete workflows showing how the same requirements deploy to different cloud providers.
+
+**Learn more:** Read [Writing Tech-Agnostic Infrastructure Specifications](./docs/writing-tech-agnostic-specs.md) to understand how to write specifications using generic infrastructure terms instead of cloud-specific service names.
+
+---
+
+## Tips for Best Results
+
+### Use frontier AI models
+
+The latest frontier models from leading AI providers typically offer improved reasoning capabilities and better understanding of infrastructure patterns. When configuring your AI assistant, consider selecting the most advanced model available for your use case.
+
+### Configure MCP servers in advance
+
+For optimal results, configure your AI tool with appropriate Model Context Protocol (MCP) servers before starting your project. MCP servers provide your AI assistant with direct access to cloud provider APIs, Terraform registries, and other infrastructure tools, which can help improve accuracy and reduce hallucinations by providing real-time, verified information.
+
+**Recommended MCP servers by cloud provider:**
+
+| Cloud Provider | MCP Server | Description |
+|----------------|------------|-------------|
+| **IBM Cloud** | [TIM (Terraform IBM Modules)](https://github.com/terraform-ibm-modules/tim-mcp) | Focused on IBM Cloud module discovery and intelligent IaC generation |
+| **AWS** | [AWS Terraform MCP Server](https://awslabs.github.io/mcp/servers/terraform-mcp-server) | Prioritizes AWSCC provider with security scanning and best-practice automation |
+| **Azure** | [Azure Terraform MCP Server](https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/tools/azure-terraform-best-practices) | Best-practices guidance with built-in validation for Azure resources |
+| **Azure** | [HashiCorp Terraform MCP Server](https://developer.hashicorp.com/terraform/mcp-server) | Multi-cloud support with Terraform Registry integration |
+| **Google Cloud** | [GCP Tools MCP Server](https://lobehub.com/mcp/gcp-tools-mcp) | Automates Google Cloud Platform infrastructure setup via gcloud and Terraform |
+| **Google Cloud** | [HashiCorp Terraform MCP Server](https://developer.hashicorp.com/terraform/mcp-server) | Multi-cloud support with Terraform Registry integration |
+| **Multi-Cloud** | [HashiCorp Terraform MCP Server](https://developer.hashicorp.com/terraform/mcp-server) | Open-source, supports major providers via registry introspection and policy checks |
+
+### Add search capabilities
+
+For AI tools that do not currently support web search (no built-in research agent), we strongly recommend adding a search MCP server such as [Brave Search MCP](https://github.com/brave/brave-search-mcp-server) or Perplexity MCP. This can be particularly helpful during the `/iac.plan` phase when the AI needs to research current cloud services, Terraform provider versions, and best practices.
+
+Without search capabilities, AI tools tend to rely on inherent knowledge from their training data, which can lead to hallucinations or outdated information. Search-enabled agents can verify current service offerings, pricing, and technical specifications in real-time.
+
+### Start fresh between commands
+
+You can start a new chat with an empty context between slash commands to save tokens and reduce costs. The IaC Spec Kit approach of storing outputs as markdown files (principles.md, spec.md, plan.md, tasks.md) acts as persistent memory that subsequent chats can pull from. The AI assistant reads these files as needed, so you don't need to maintain long conversation histories.
+
+This is particularly useful for:
+- Long-running projects where context windows become expensive
+- Switching between different aspects of your infrastructure
+- Collaborating with team members who can start fresh with the same context files
+
+### Configure custom modes
+
+If your AI agent supports custom modes or configurations, create one that enables all necessary tools for infrastructure work. At minimum, ensure your mode allows:
+- **File read/write operations** - Essential for creating and updating specification files
+- **MCP server calls** - Required for cloud provider and Terraform integrations
+- **Command execution** - Needed for running Terraform validation commands
+
+For example, in agents like Claude Code or IBM Bob, you can create a custom "Infrastructure" mode that pre-enables these capabilities, streamlining your workflow and reducing the need to grant permissions repeatedly.
+
+## Supported AI Agents
+
+| Agent                                                     | Support | Notes                                             |
+|-----------------------------------------------------------|---------|---------------------------------------------------|
+| [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ⚠️ | Amazon Q Developer CLI [does not support](https://github.com/aws/amazon-q-developer-cli/issues/3064) custom arguments for slash commands. |
+| [Amp](https://ampcode.com/) | ✅ | |
+| [Antigravity](https://antigravity.dev/) | ✅ | IDE-based agent |
+| [Auggie CLI](https://docs.augmentcode.com/cli/overview)   | ✅ |                                                   |
+| [Claude Code](https://www.anthropic.com/claude-code)      | ✅ |                                                   |
+| [Cline](https://github.com/cline/cline) | ✅ | IDE-based agent |
+| [CodeBuddy CLI](https://www.codebuddy.ai/cli)             | ✅ |                                                   |
+| [Codex CLI](https://github.com/openai/codex)              | ✅ |                                                   |
+| [Cursor](https://cursor.sh/)                              | ✅ |                                                   |
+| [Devin for Terminal](https://cli.devin.ai/docs) | ✅ | Cognition AI Devin |
+| [Firebender](https://firebender.dev) | ✅ | Android Studio / IntelliJ IDE-based agent |
+| [Forge](https://forge.cli) | ✅ | |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | ✅ |                                                   |
+| [GitHub Copilot](https://code.visualstudio.com/)          | ✅ |                                                   |
+| [Goose](https://goose-docs.ai) | ✅ | Block/Square Goose agent |
+| [Hermes](https://hermes.cli) | ✅ | |
+| [IBM Bob](https://www.ibm.com/products/bob) | ✅ | IDE-based agent with slash command support |
+| [iFlow](https://iflow.ide) | ✅ | IDE-based agent |
+| [Junie](https://junie.jetbrains.com/) | ✅ | JetBrains Junie |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode)         | ✅ |                                                   |
+| [Kimi Code](https://code.kimi.com/) | ✅ | Moonshot AI Kimi Code |
+| [Kiro CLI](https://kiro.dev/docs/cli/) | ✅ | AWS Kiro CLI |
+| [Lingma](https://lingma.alibaba.com/) | ✅ | Alibaba Lingma IDE-based agent |
+| [Mistral Vibe](https://github.com/mistralai/mistral-vibe) | ✅ | |
+| [OMP](https://omp.cli) | ✅ | |
+| [opencode](https://opencode.ai/)                          | ✅ |                                                   |
+| [Pi Coding Agent](https://www.earendil.works/pi) | ✅ | |
+| [Qoder CLI](https://qoder.com/cli) | ✅ | |
+| [Qwen Code](https://github.com/QwenLM/qwen-code)          | ✅ |                                                   |
+| [Roo Code](https://roocode.com/)                          | ✅ |                                                   |
+| [RovoDev ACLI](https://www.atlassian.com/software/rovo-dev) | ✅ | Atlassian Rovo Dev |
+| [SHAI](https://github.com/ovh/shai) | ✅ | OVHcloud CLI agent |
+| [Tabnine CLI](https://docs.tabnine.com/main/getting-started/tabnine-cli) | ✅ | |
+| [Trae](https://trae.ai/) | ✅ | IDE-based agent |
+| [Windsurf](https://windsurf.com/)                         | ✅ |                                                   |
+| [ZCode](https://zcode.z.ai/) | ✅ | Z.AI ZCode |
+| [Zed](https://zed.dev/) | ✅ | IDE-based agent |
+| Generic (bring your own agent) | ✅ | Use with `--ai-commands-dir` to specify custom commands directory |
+
+## IaC Specify CLI Reference
+
+The `iac-specify` command supports the following options:
+
+### Commands
+
+| Command     | Description                                                    |
+|-------------|----------------------------------------------------------------|
+| `init`      | Initialize a new IaC Specify project from the latest template      |
+| `check`     | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`, `auggie`, `codebuddy`, `qodercli`, `shai`, `amp`, `q`, `bob`, `devin`, `forge`, `goose`, `hermes`, `junie`, `kimi`, `kiro-cli`, `omp`, `pi`, `rovodev`, `tabnine`, `vibe`, `zcode`) |
+| `version`   | Display the installed version of IaC Specify CLI                   |
+| `extension` | Manage extensions (subcommands: `list`, `add`, `remove`, `search`, `info`, `update`, `enable`, `disable`) |
+| `self`      | Manage the CLI itself (subcommands: `check` — check for updates, `upgrade` — upgrade in-place) |
+
+### `iac-specify init` Arguments & Options
+
+| Argument/Option        | Type     | Description                                                                  |
+|------------------------|----------|------------------------------------------------------------------------------|
+| `<project-name>`       | Argument | Name for your new project directory (optional if using `--here`, or use `.` for current directory) |
+| `--ai`                 | Option   | AI assistant to use: `agy`, `amp`, `auggie`, `bob`, `cline`, `claude`, `codebuddy`, `codex`, `copilot`, `cursor-agent`, `devin`, `firebender`, `forge`, `gemini`, `generic`, `goose`, `hermes`, `iflow`, `junie`, `kimi`, `kiro-cli`, `kilocode`, `lingma`, `omp`, `opencode`, `pi`, `q`, `qodercli`, `qwen`, `roo`, `rovodev`, `shai`, `tabnine`, `trae`, `vibe`, `windsurf`, `zcode`, `zed` |
+| `--script`             | Option   | Script variant to use: `sh` (bash/zsh) or `ps` (PowerShell)                 |
+| `--ignore-agent-tools` | Flag     | Skip checks for AI agent tools like Claude Code                             |
+| `--no-git`             | Flag     | Skip git repository initialization                                          |
+| `--here`               | Flag     | Initialize project in the current directory instead of creating a new one   |
+| `--force`              | Flag     | Force merge/overwrite when initializing in current directory (skip confirmation) |
+| `--skip-tls`           | Flag     | Skip SSL/TLS verification (not recommended)                                 |
+| `--debug`              | Flag     | Enable detailed debug output for troubleshooting                            |
+| `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)  |
+| `--ai-commands-dir`    | Option   | Custom commands directory for generic or non-standard agent layouts         |
+| `--ai-skills`          | Flag     | Download and install AI skills/extensions during initialization             |
+
+### Examples
+
+```bash
+# Basic project initialization
+iac-specify init my-infrastructure
+
+# Initialize with specific AI assistant (example: IBM Bob)
+iac-specify init my-infrastructure --ai bob
+
+# Initialize with PowerShell scripts (Windows/cross-platform)
+iac-specify init my-infrastructure --ai copilot --script ps
+
+# Initialize in current directory
+iac-specify init . --ai bob
+# or use the --here flag
+iac-specify init --here --ai bob
+
+# Force merge into current (non-empty) directory without confirmation
+iac-specify init . --force --ai bob
+# or
+iac-specify init --here --force --ai bob
+
+# Skip git initialization
+iac-specify init my-infrastructure --ai bob --no-git
+
+# Enable debug output for troubleshooting
+iac-specify init my-infrastructure --ai bob --debug
+
+# Use GitHub token for API requests (helpful for corporate environments)
+iac-specify init my-infrastructure --ai bob --github-token ghp_your_token_here
+
+# Check system requirements
+iac-specify check
+
+# Display installed version
+iac-specify version
+
+# List installed extensions
+iac-specify extension list
+
+# Initialize with a generic/custom agent
+iac-specify init my-infrastructure --ai generic --ai-commands-dir .myagent/commands
+
+# Initialize with AI skills download
+iac-specify init my-infrastructure --ai claude --ai-skills
+```
+
+### Available Slash Commands
+
+After running `iac-specify init`, your AI coding agent will have access to these slash commands for structured development:
+
+#### Core Workflow Commands
+
+| Command | Description |
+|---------|-------------|
+| `/iac.specify` | Define what you want to build (requirements) |
+| `/iac.plan` | Create architecture plan with technology decisions (outputs `plan.md` with inline research) |
+| `/iac.tasks` | Generate actionable task lists for implementation |
+| `/iac.implement` | Execute all tasks to build the feature according to the plan |
+
+#### Optional Enhancement Commands
+
+| Command | Description | When to Use |
+|---------|-------------|-------------|
+| `/iac.principles` | Create project governing principles | Before `/iac.specify` - for multi-capability projects or team collaboration |
+| `/iac.enrichplan` | Deep research, architecture details, module specs, quickstart guide | After `/iac.plan` - for quality-critical or complex projects |
+| `/iac.clarify` | Clarify underspecified areas | Before `/iac.plan` - reduces rework downstream |
+| `/iac.analyze` | Cross-artifact consistency analysis | After `/iac.tasks`, before `/iac.implement` |
+| `/iac.checklist` | Generate custom quality checklists | Anytime - validates requirements completeness |
+| `/iac.converge` | Assess Terraform codebase against spec/plan/tasks, append remaining work as new tasks | After `/iac.implement` - closes the gap between spec intent and current code |
+
+
+
+## Infrastructure Architecture Section
+
+When using `/iac.plan` for infrastructure projects, your `plan.md` will include an **Infrastructure Architecture** section with:
+
+- **Cloud Provider Selection**: Which provider and why (AWS, Azure, GCP, etc.)
+- **Compute Resources**: VMs, containers, serverless, load balancers
+- **Data Storage**: Databases, object storage, caching layers
+- **Networking**: VPCs, subnets, security groups, routing
+- **Security**: IAM roles, encryption, secrets management
+- **Environment Configuration**: Development, staging, production settings
+- **State Management**: Terraform backend configuration, workspace strategy
+
+**For quality-critical or complex projects**, use `/iac.enrichplan` after planning to generate:
+- **research.md**: Deep research including Well-Architected Framework analysis and curated module recommendations
+- **architecture.md**: Detailed component specifications
+- **modules.md**: Custom module specifications (if using modules)
+- **quickstart.md**: Step-by-step provisioning guide (documentation-first approach improves implementation quality)
+
+#### Quick Example
+
+```
+# 1. Create infrastructure specification (using generic infrastructure terms)
+/iac.specify I need to deploy WordPress for my small business website. Should handle a few thousand visitors per day, needs to be secure with automated backups. Budget is around $500/month.
+
+# 2. Create technical plan (specify cloud provider and services)
+/iac.plan Deploy in us-south. Use Code Engine for containers, Databases for MySQL, Cloud Object Storage for media.
+
+# 3. Optional: Enrich plan for production (generates research.md, architecture.md, modules.md, quickstart.md)
+/iac.enrichplan
+
+# 4. Generate tasks (includes terraform validation checkpoints)
+/iac.tasks
+
+# 5. Implement (AI generates Terraform .tf files)
+/iac.implement
+```
+
+**Note**: For multi-capability projects, add `/iac.principles` before step 1 to establish governance rules.
+
+**Important**: IaC Spec Kit is designed to generate infrastructure as code (terraform, pulumi, ansible, kube manifest). Actual provisioning (`terraform apply`, `kubectl apply`) is a manual step you control and that is outside the scope of IaC Spec Kit.
+
+### Environment Variables
+
+| Variable            | Description                                                                                    |
+|---------------------|------------------------------------------------------------------------------------------------|
+| `SPECIFY_FEATURE`   | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-vpc-infrastructure`) to work on a specific feature when not using Git branches.<br/>Must be set in the context of the agent you're working with prior to using `/iac.plan` or follow-up commands. |
+| `SPECIFY_INIT_DIR`  | Override the project root for monorepo layouts. Set to the path of the member project that contains `.specify/` (e.g., `services/my-service`). Used by all bash and PowerShell scripts so they operate on the correct sub-project without changing your working directory. |
+
+## Core Philosophy
+
+Specification-Driven Development emphasizes intent-driven development, rich specification creation, and multi-step refinement. **For the complete philosophy, see the [GitHub Spec Kit documentation](https://github.com/github/spec-kit).**
+
+IaC Spec Kit applies these principles to infrastructure provisioning with additional focus on:
+
+- **Cloud resource specifications**: Infrastructure requirements using generic terms (avoid cloud-specific service names)
+- **Terraform module design**: Reusable, composable infrastructure components
+- **Security and compliance**: Built-in governance and policy validation
+- **Multi-cloud patterns**: Portable infrastructure specifications across cloud providers
+
+## Development Phases
+
+| Phase | Focus | Key Activities |
+|-------|-------|----------------|
+| **0-to-1 Development** ("Greenfield") | Generate from scratch | <ul><li>Start with high-level requirements</li><li>Generate specifications</li><li>Plan implementation steps</li><li>Build production-ready infrastructure</li></ul> |
+| **Creative Exploration** | Parallel implementations | <ul><li>Explore diverse solutions</li><li>Support multiple cloud providers & architectures</li><li>Experiment with infrastructure patterns</li></ul> |
+| **Iterative Enhancement** ("Brownfield") | Brownfield modernization | <ul><li>Add infrastructure iteratively</li><li>Modernize legacy infrastructure</li><li>Adapt processes</li></ul> |
+| **Infrastructure-as-Code** | Infrastructure provisioning | <ul><li>Specify cloud resources using cloud-agnostic terms</li><li>Document Infrastructure Architecture</li><li>Generate Terraform configurations</li><li>Validate with terraform validate/fmt/tflint</li></ul> |
+
+## Experimental Goals
+
+As SDD is an emerging trend, this implementation explores several areas in the context of Infrastructure as Code:
+
+### Technology independence
+
+- Create infrastructure using diverse cloud providers
+- Validate the hypothesis that Spec-Driven Development is a process not tied to specific cloud platforms, IaC tools, or frameworks
+- Support multi-cloud and hybrid cloud scenarios
+
+### Enterprise constraints
+
+- Demonstrate mission-critical infrastructure development
+- Incorporate organizational constraints (cloud providers, compliance requirements, engineering practices)
+- Support enterprise security standards and compliance requirements
+
+### Infrastructure-centric development
+
+- Build infrastructure for different workload types and requirements
+- Support various development approaches (from manual provisioning to fully automated IaC)
+
+### Creative & iterative processes
+
+- Provide robust iterative infrastructure development workflows
+- Extend processes to handle upgrades and modernization tasks
+
+## Prerequisites
+
+- **Linux/macOS/Windows**
+- [Supported](#-supported-ai-agents) AI coding agent.
+- [uv](https://docs.astral.sh/uv/) for package management
+- [Python 3.11+](https://www.python.org/downloads/)
+- [Git](https://git-scm.com/downloads)
+
+If you encounter issues with an agent, please open an issue so we can refine the integration.
+
+## Learn More
+
+- **[GitHub Spec Kit](https://github.com/github/spec-kit)** - Original Spec-Driven Development methodology and documentation
+- **[Detailed Walkthrough](#-detailed-process)** - Step-by-step implementation guide for infrastructure projects
+
+---
+
+## Detailed Process
+
+<details>
+<summary>Click to expand the detailed step-by-step walkthrough</summary>
+
+You can use the Specify CLI to bootstrap your project, which will bring in the required artifacts in your environment. Run:
+
+```bash
+iac-specify init <project_name>
+```
+
+Or initialize in the current directory:
+
+```bash
+iac-specify init .
+# or use the --here flag
+iac-specify init --here
+# Skip confirmation when the directory already has files
+iac-specify init . --force
+# or
+iac-specify init --here --force
+```
+
+You will be prompted to select the AI agent you are using. You can also proactively specify it directly in the terminal:
+
+```bash
+iac-specify init <project_name> --ai bob
+iac-specify init <project_name> --ai claude
+iac-specify init <project_name> --ai copilot
+
+# Or in current directory:
+iac-specify init . --ai bob
+iac-specify init . --ai codex
+
+# or use --here flag
+iac-specify init --here --ai bob
+iac-specify init --here --ai codex
+
+# Force merge into a non-empty current directory
+iac-specify init . --force --ai bob
+
+# or
+iac-specify init --here --force --ai bob
+```
+
+The CLI will check if you have Bob, Claude Code, Gemini CLI, Cursor CLI, Qwen CLI, opencode, Codex CLI, or Amazon Q Developer CLI installed. If you do not, or you prefer to get the templates without checking for the right tools, use `--ignore-agent-tools` with your command:
+
+```bash
+iac-specify init <project_name> --ai claude --ignore-agent-tools
+```
+
+### **STEP 1:** Create project specifications
+
+Go to the project folder and run your AI agent. In our example, we're using `bob`.
+
+You will know that things are configured correctly if you see the `/iac.specify`, `/iac.plan`, `/iac.tasks`, and `/iac.implement` commands available (plus optional commands like `/iac.principles`, `/iac.enrichplan`, `/iac.clarify`).
+
+**Optional: Establish principles first** - For enterprise or multi-capability projects, you may want to run `/iac.principles` before `/iac.specify` to establish governance rules. See the "Optional: Add project principles" section above for details.
+
+Use the `/iac.specify` command to describe the infrastructure you want to develop.
+
+>[!IMPORTANT]
+>Be as explicit as possible about *what* you are trying to build and *why*. For best results, **do not focus on describing the details of cloud services at this point**. IaC Spec Kit guides AI agents to use generic infrastructure terms instead.
+
+An example prompt:
+
+```text
+/iac.specify I need an enterprise landing zone for our organization. Requirements: separate account groups for production, staging, development, and shared services. Centralized networking with hub-and-spoke topology. All logs aggregated to security account. Policy-based guardrails to enforce compliance. Cost tracking by environment. We need to comply with SOC 2 and Financial Services Cloud requirements.
+```
+
+After this prompt is entered, you should see your AI agent kick off the planning and spec drafting process. IaC Spec Kit's commands and templates guide the agent through this process, and the agent will also trigger some of the built-in scripts to set up the repository.
+
+Once this step is completed, you should have a new branch created (e.g., `001-landing-zone`), as well as a new specification in the `specs/001-landing-zone` directory.
+
+The produced specification should contain a set of infrastructure requirements and functional requirements, as defined in the template.
+
+At this stage, your project folder contents should resemble the following:
+
+```text
+└── .specify
+    ├── memory
+    │  └── principles.md
+    ├── scripts
+    │  ├── check-prerequisites.sh
+    │  ├── common.sh
+    │  ├── create-new-feature.sh
+    │  ├── setup-plan.sh
+    │  └── update-agent-context.sh
+    ├── specs
+    │  └── 001-landing-zone
+    │      └── spec.md
+    └── templates
+        ├── plan-template.md
+        ├── spec-template.md
+        └── tasks-template.md
+```
+
+### **STEP 2:** Functional specification clarification (optional but recommended)
+
+With the baseline specification created, you can go ahead and clarify any of the requirements that were not captured properly within the first shot attempt.
+
+You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream.
+
+Preferred order:
+
+1. Use `/iac.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
+2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
+
+If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
+
+Example free-form refinement prompt (after `/iac.clarify` if still needed):
+
+```text
+For the database services, we need PostgreSQL 14+ with point-in-time recovery enabled. Backup retention should be 30 days for production and 7 days for non-production environments. The database should be deployed in a private subnet with no direct internet access.
+```
+
+You should also ask your AI agent to validate the **Review & Acceptance Checklist**, checking off the things that are validated/pass the requirements, and leave the ones that are not unchecked. The following prompt can be used:
+
+```text
+Read the review and acceptance checklist, and check off each item in the checklist if the infrastructure spec meets the criteria. Leave it empty if it does not.
+```
+
+It's important to use the interaction with your AI agent as an opportunity to clarify and ask questions around the specification - **do not treat its first attempt as final**.
+
+### **STEP 3:** Generate a plan
+
+You can now be specific about the tech stack and other technical requirements. You can use the `/iac.plan` command that is built into the project template with a prompt like this:
+
+```text
+/iac.plan We'll use IBM Cloud Enterprise account groups. Transit Gateway for networking. Security and Compliance Center for compliance. Activity Tracker and Log Analysis for centralized logging.
+```
+
+The output of this step will be a `plan.md` file with inline research. Your directory tree will resemble this:
+
+```text
+.
+├── memory
+│  └── principles.md
+├── scripts
+│  ├── check-prerequisites.sh
+│  ├── common.sh
+│  ├── create-new-feature.sh
+│  ├── setup-plan.sh
+│  └── update-agent-context.sh
+├── specs
+│  └── 001-landing-zone
+│      ├── plan.md
+│      └── spec.md
+└── templates
+    ├── plan-template.md
+    ├── spec-template.md
+    └── tasks-template.md
+```
+
+**Optional: Enrich your plan** - For quality-critical or complex projects, run `/iac.enrichplan` to generate comprehensive documentation:
+
+```text
+/iac.enrichplan
+```
+
+This generates additional files: `research.md`, `architecture.md`, `modules.md`, and `quickstart.md`. Your directory tree will then include:
+
+```text
+├── specs
+│  └── 001-landing-zone
+│      ├── architecture.md
+│      ├── modules.md
+│      ├── plan.md
+│      ├── quickstart.md
+│      ├── research.md
+│      └── spec.md
+```
+
+If you ran `/iac.enrichplan`, check the `research.md` document to ensure that the right tech stack is used, based on your instructions. You can ask your AI agent to refine it if any of the components stand out, or even have it check the locally-installed version of Terraform or cloud provider CLI tools.
+
+Additionally, you might want to ask your AI agent to research details about the chosen tech stack if it's something that is rapidly changing (e.g., Kubernetes versions, Terraform provider versions), with a prompt like this:
+
+```text
+I want you to go through the implementation plan and implementation details, looking for areas that could benefit from additional research as IBM Cloud services and Terraform providers are rapidly changing. For those areas that you identify that require further research, I want you to update the research document with additional details about the specific versions that we are going to be using in this infrastructure and spawn parallel research tasks to clarify any details using research from the web.
+```
+
+During this process, you might find that your AI agent gets stuck researching the wrong thing - you can help nudge it in the right direction with a prompt like this:
+
+```text
+I think we need to break this down into a series of steps. First, identify a list of tasks that you would need to do during implementation that you're not sure of or would benefit from further research. Write down a list of those tasks. And then for each one of these tasks, I want you to spin up a separate research task so that the net result is we are researching all of those very specific tasks in parallel. What I saw you doing was it looks like you were researching IBM Cloud services in general and I don't think that's gonna do much for us in this case. That's way too untargeted research. The research needs to help you solve a specific targeted question.
+```
+
+>[!NOTE]
+>Your AI agent might be over-eager and add components that you did not ask for. Ask it to clarify the rationale and the source of the change.
+
+### **STEP 4:** Validate the plan
+
+With the plan in place, you should have your AI agent run through it to make sure that there are no missing pieces. You can use a prompt like this:
+
+```text
+Now I want you to go and audit the implementation plan and the implementation detail files. Read through it with an eye on determining whether or not there is a sequence of tasks that you need to be doing that are obvious from reading this. Because I don't know if there's enough here. For example, when I look at the core implementation, it would be useful to reference the appropriate places in the implementation details where it can find the information as it walks through each step in the core implementation or in the refinement.
+```
+
+This helps refine the implementation plan and helps you avoid potential blind spots that your AI agent missed in its planning cycle. Once the initial refinement pass is complete, ask your AI agent to go through the checklist once more before you can get to the implementation.
+
+You can also ask your AI agent (if you have the [GitHub CLI](https://docs.github.com/en/github-cli/github-cli) installed) to go ahead and create a pull request from your current branch to `main` with a detailed description, to make sure that the effort is properly tracked.
+
+>[!NOTE]
+>Before you have the agent implement it, it's also worth prompting your AI agent to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask your AI agent to resolve them. Ensure that your AI agent follows the [principles](memory/principles.md) as the foundational piece that it must adhere to when establishing the plan.
+
+### **STEP 5:** Generate task breakdown with /iac.tasks
+
+With the implementation plan validated, you can now break down the plan into specific, actionable tasks that can be executed in the correct order. Use the `/iac.tasks` command to have IaC Spec Kit guide AI agents in generating a detailed task breakdown from your implementation plan:
+
+```text
+/iac.tasks
+```
+
+This step creates a `tasks.md` file in your feature specification directory that contains:
+
+- **Task breakdown organized by infrastructure component** - Each component becomes a separate implementation phase with its own set of tasks
+- **Dependency management** - Tasks are ordered to respect dependencies between components (e.g., networking before compute, compute before databases)
+- **Parallel execution markers** - Tasks that can run in parallel are marked with `[P]` to optimize development workflow
+- **File path specifications** - Each task includes the exact file paths where Terraform configuration should be created
+- **Validation checkpoints** - Each component phase includes checkpoints to validate (for example with `terraform validate`, `terraform fmt`, and `tflint`)
+- **Checkpoint validation** - Each infrastructure component phase includes checkpoints to validate independent functionality
+
+The generated tasks.md provides a clear roadmap for the `/iac.implement` command. IaC Spec Kit helps AI agents ensure systematic implementation that maintains infrastructure quality and allows for incremental delivery of infrastructure components.
+
+### **STEP 6:** Implementation
+
+Once ready, use the `/iac.implement` command to execute your implementation plan:
+
+```text
+/iac.implement
+```
+
+The `/iac.implement` command helps AI agents:
+
+- Validate that all prerequisites are in place (principles, spec, plan, and tasks)
+- Parse the task breakdown from `tasks.md`
+- Execute tasks in the correct order, respecting dependencies and parallel execution markers
+- Generate IaC configuration, such as Terraform configuration files (.tf)
+- Provide progress updates and handle errors appropriately
+
+>[!IMPORTANT]
+>The AI agent will execute local CLI commands (such as `terraform`, `ibmcloud`, `aws`, etc.) - make sure you have the required tools installed on your machine.
+
+Once the implementation is complete, review the generated Terraform code and run validation commands:
+
+```bash
+terraform init
+terraform validate
+terraform fmt -check
+tflint
+```
+
+Resolve any validation errors by providing feedback to your AI agent. Remember that `terraform apply` is a manual step you control - review the plan carefully before applying changes to your infrastructure.
+
+</details>
+
+---
+
+## Contributing
+
+IaC Spec Kit is an experimental project exploring how Specification-Driven Development improves infrastructure as code workflows with AI assistance. Contributions are welcome in any area—template refinement, documentation, examples, validation improvements, cloud provider support, AI agent compatibility, or entirely new ideas.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on development setup, testing workflow, and PR submission.
+
+### Future ideas
+
+Potential areas for exploration include template refinement, validation improvements, AI agent compatibility, automation tooling, extensibility mechanisms, and patterns for other infrastructure domains. See [IDEAS.md](IDEAS.md) for the complete list. All ideas are open for anyone to pick up and explore.
+
+## Support
+
+For support, please open a [GitHub issue](https://github.com/ibm/iac-spec-kit/issues/new). Bug reports, feature requests, and questions about using Spec-Driven Development for Infrastructure as Code are welcome.
+
+## Acknowledgements
+
+This project is built upon the [GitHub Spec Kit](https://github.com/github/spec-kit) toolkit created by:
+- [John Lam](https://github.com/jflam)
+- [Den Delimarsky](https://github.com/localden)
+- The GitHub Spec Kit community
+
+We are grateful for their foundational work in creating tools and patterns for Specification-Driven Development. This implementation adapts their toolkit specifically for Infrastructure as Code workflows.
+
+## License
+
+This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) file for the full terms.

@@ -1,0 +1,81 @@
+# AI Analyst by E2B
+This is an AI-powered code and data analysis tool built with Next.js and the [E2B SDK](https://e2b.dev/docs?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=ai-analyst).
+
+![Preview](preview.png)
+
+→ Try on [ai-analyst.e2b.dev](https://ai-analyst.e2b.dev/)
+
+## Features
+- 🔸 Analyze data with Meta's Llama 3.1
+- 🔸 Upload CSV files
+- 🔸 Create interactive charts
+
+**Powered by:**
+- 🔸 ✶ [E2B Sandbox](https://github.com/e2b-dev/code-interpreter)
+- 🔸 Vercel's AI SDK
+- 🔸 Next.js
+- 🔸 echarts library for interactive charts
+
+**Supported LLM Providers:**
+- 🔸 TogetherAI
+- 🔸 Fireworks
+
+**Supported chart types:**
+- 🔸 All the supported charts are descriebd [here](https://e2b.dev/docs/code-interpreting/create-charts-visualizations/interactive-charts?utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=ai-analyst#supported-intertactive-charts).
+
+**Make sure to give us a star!**
+
+<img width="165" alt="Screenshot 2024-04-20 at 22 13 32" src="https://github.com/mishushakov/llm-scraper/assets/10400064/11e2a79f-a835-48c4-9f85-5c104ca7bb49">
+
+
+## Get started
+
+Visit the [online version](https://ai-analyst.e2b.dev/) or run locally on your own.
+
+### 1. Clone repository
+```
+git clone https://github.com/e2b-dev/ai-analyst.git
+```
+
+### 2. Install dependencies
+```
+cd fragments && npm i
+```
+
+### 3. Get API keys
+Copy `.example.env` to `.env.local` and fill in variables for E2B and one LLM provider.
+
+E2B: `E2B_API_KEY`
+
+- Get your [E2B API key here](https://e2b.dev/dashboard?tab=keys&utm_source=github&utm_medium=referral&utm_campaign=readme&utm_content=ai-analyst).
+
+LLM Providers:
+
+- Anthropic: `ANTHROPIC_API_KEY`
+- OpenAI: `OPENAI_API_KEY`
+- Fireworks: `FIREWORKS_API_KEY`
+- Together AI: `TOGETHER_API_KEY`
+- Ollama: `OLLAMA_BASE_URL`
+
+### Provider configuration
+
+Provider endpoints are configured on the server in `lib/model.ts`. Chat requests
+must use a model/provider pair from `lib/models.json`; client-supplied endpoints
+and unknown request fields are rejected.
+
+For cloud providers, omitting the API key selects the server's provider key.
+Supplying a non-empty key selects BYOK; an invalid or rejected caller key never
+falls back to the server key. Blank and non-string keys are rejected before any
+provider request.
+
+Saved browser settings containing a retired custom endpoint are migrated by
+removing both the endpoint and its API key. Chat stays paused across reloads
+until the user enters a new key for the selected provider or explicitly chooses
+the app's default credentials.
+
+Ollama supports the allowlisted `llama3.1` model when `OLLAMA_BASE_URL` is set to
+an HTTPS endpoint, for example `https://ollama.example.com/api`. Install that
+model on your Ollama server. A local HTTP Ollama server needs a TLS reverse proxy.
+Ollama is hidden from the picker when its endpoint is missing or invalid.
+All provider requests reject redirects to keep requests on the configured HTTPS
+origin. Additional Ollama model IDs must be added to `lib/models.json`.

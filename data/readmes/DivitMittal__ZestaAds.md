@@ -1,0 +1,86 @@
+= Zesta Ads
+:imagesdir: ./assets
+image::https://github.com/DivitMittal/ZestaAds/actions/workflows/flake-check.yml/badge.svg[nix-flake-check]
+image::https://github.com/DivitMittal/ZestaAds/actions/workflows/flake-lock-update.yml/badge.svg[flake-lock-update]
+
+== Introduction
+
+Zesta Ads is a revolutionary ad network designed to address the fundamental problems of modern digital advertising. Our mission is to create a sustainable and effective advertising ecosystem that respects user experience while delivering value to advertisers and publishers.
+
+The current advertising landscape is plagued with issues such as:
+
+*   **Intrusive Ads:** Ads that disrupt the user's flow and create a negative experience.
+*   **Privacy Concerns:** Opaque data collection practices that erode user trust.
+*   **Poor UI Integration:** Ads that feel out of place and degrade the quality of the user interface.
+
+Zesta Ads tackles these challenges by leveraging cutting-edge AI to deliver ads that are not only effective but also interactive, appealing, and seamlessly integrated into the user experience.
+
+== Core Concepts
+
+*   **Generative AI:** We use generative AI to create ads that are more engaging and interactive than traditional ad formats.
+*   **Personalization:** Our platform uses fine-tuned Large Language Models (LLMs) to deliver personalized ad content that is relevant to the user.
+*   **UI-Respecting Ads:** Our ads are designed to respect the user interface and integrate seamlessly with the surrounding content.
+*   **Text and Image-based Ads:** We support both text and image-based ad formats, providing flexibility for advertisers.
+
+== Architecture
+
+The Zesta Ads platform is built on a modern, scalable architecture. The following diagram illustrates the core components of our system.
+
+[graphviz, format=svg]
+....
+digraph ZestaAds {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+
+    subgraph "Problems" {
+        node [shape=plaintext];
+        Intrusive_Ads [label="Intrusive Ads"];
+        Data_Collection [label="Privacy Concerns"];
+        UI_Integration [label="Poor UI Integration"];
+    }
+
+    subgraph "Zesta Ads Platform" {
+        subgraph "Product" {
+            Gen_AI [label="Generative AI\n(Interactive & Appealling)"];
+            Personalization [label="Personalization\n(Fine-tuned LLM)"];
+            Ad_Formats [label="Ad Formats\n(Text & Image)"];
+        }
+
+        subgraph "Backend" {
+            Bidding_System [label="Bidding System"];
+            Developer_API [label="Developer API"];
+        }
+
+        Gen_AI -> Personalization;
+        Personalization -> Ad_Formats;
+        Bidding_System -> Developer_API;
+    }
+
+    subgraph "Stakeholders" {
+        node [shape=ellipse];
+        Advertisers;
+        Publishers;
+        Consumers;
+    }
+
+    Advertisers -> Bidding_System;
+    Publishers -> Developer_API;
+    Ad_Formats -> Consumers;
+}
+....
+
+== Stakeholders
+
+Zesta Ads serves three key stakeholders:
+
+*   **Advertisers:** Businesses and individuals who want to promote their products or services.
+*   **Publishers:** Website and application owners who want to monetize their content.
+*   **Consumers:** Users who interact with the ads.
+
+== Campaign Metrics
+
+We provide a comprehensive set of metrics to help advertisers and publishers track the performance of their campaigns. These include:
+
+*   **CPM (Cost Per Mille):** Cost per thousand impressions.
+*   **CPC (Cost Per Click):** Cost per click.
+*   **CPA (Cost Per Acquisition):** Cost per acquisition.

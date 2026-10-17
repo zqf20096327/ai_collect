@@ -1,0 +1,551 @@
+<div align="center">
+
+# Claude, Inc.
+
+### Bring a project. Put the company to work.
+
+**Peer CEO, CTO, and CAIO executives · 9 departments · 64 skill manuals.**
+
+[![compliance](https://github.com/alebgl77/claude-inc/actions/workflows/validate.yml/badge.svg)](https://github.com/alebgl77/claude-inc/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Contribute](https://img.shields.io/badge/contributions-welcome-orange)](CONTRIBUTING.md)
+
+</div>
+
+[![Claude, Inc. company overview](studio/company-team.png)](https://alebgl77.github.io/claude-inc/)
+
+Claude, Inc. organizes a virtual company around your project. The CEO turns your
+brief into workstreams, delegates to useful departments, collects files and
+review evidence, and resumes from a local project workspace next session. Your
+project can be a product, a business operation, a research effort, or something
+that spans several departments. You do not have to choose a template first.
+
+The 64 employees are **skill manuals**, not 64 processes running in the
+background. Claude Code supplies the active assistant session, native agent
+tools, configured model, and permissions. The company supplies its roles,
+operating instructions, and a local task-and-decision record.
+
+[Explore the company](https://alebgl77.github.io/claude-inc/) ·
+[Project workspace guide](docs/project-workspace.md) ·
+[Growth playbook](docs/growth-playbook.md) ·
+[Growth toolkit](docs/growth-toolkit.md) ·
+[CAIO operating model](docs/caio-operating-model.md) ·
+[Architecture and alternatives](docs/architecture.md) ·
+[Visual asset guide](docs/visual-assets.md) ·
+[Roadmap](ROADMAP.md)
+
+## Hire everyone in 60 seconds
+
+**Claude Code plugin**: install in Claude Code, then open your project folder:
+
+```text
+/plugin marketplace add alebgl77/claude-inc
+/plugin install claude-inc@claude-inc
+/claude-inc:company Build the first version of my appointment-booking business for tutors
+```
+
+The CEO clarifies material unknowns and uses the packaged helper to initialize
+or resume project state when available. It selects the departments your project
+needs; all nine remain available for new projects.
+Plugin commands use the `claude-inc:` namespace. Directly installed commands
+use `/company` instead.
+
+**CLI and local files**: install the company, including the `company` command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/alebgl77/claude-inc/main/install.sh | bash
+```
+
+Or inspect a clone and run its installer:
+
+```bash
+git clone https://github.com/alebgl77/claude-inc
+cd claude-inc
+./install.sh
+```
+
+On Windows, run `./install.ps1` from the clone. The installer compiles
+`company.exe` locally with the Windows .NET Framework compiler; it requires
+Bash, such as Git for Windows. No launcher binary is downloaded. Python 3.9+
+is required for project and mission commands; direct Python entry points also
+work without Bash. See the
+[Windows instructions](docs/project-workspace.md#windows-without-bash).
+
+Use `--brief-file founder-brief.txt` for literal text on Windows PowerShell 5.1:
+that shell can alter embedded quotes before a native command receives them.
+PowerShell 7 preserves the tested literal arguments. The native launcher
+replaces an unchanged, manifest-owned `company.cmd` transactionally; modified
+or unowned launchers stop installation for inspection.
+
+Use `./install.sh --project` or `./install.ps1 -Project` to install into the
+current project's `.claude/` directory. `--no-bin` / `-NoBin` installs only the
+Claude Code files. `-NoBin` neither compiles nor migrates the Windows launcher;
+it does not repair an existing `company.cmd`. Installers retain their collision checks and managed-file
+transactions; they stop before replacing unmanaged or modified content.
+A project install includes `.claude/commands/company.md`; invoke `/company`
+explicitly when you want CEO coordination.
+
+## Start your project, then resume the company
+
+From the folder where the actual work belongs:
+
+```bash
+company project init --name "Tutor desk" \
+  --brief "Build a booking product for independent tutors, from offer to working prototype." \
+  --departments developers,designers,marketing \
+  --goal "A tutor can create a booking link and a student can request a lesson" \
+  --constraint "Use supplied facts; leave publication and purchases to me"
+
+company project start
+```
+
+`init` creates `.claude/company/project.json` with your brief, goals, constraints,
+and routing preferences. It does not fabricate tasks or alter your onboarding
+profile. `start` launches a real Claude Code session in that project with the
+packaged company plugin and resume instructions. It uses Claude Code's normal
+permissions and configured model; it does not start a daemon or enforce a spend
+budget. Claude Code must already be available and configured.
+
+The CEO sets business priorities; the peer CTO sets technical direction across
+architecture, agent infrastructure, security, skills, and code. Their handoff is
+finding → business impact → options/tradeoffs → recommendation → decision needed,
+with technical acceptance criteria ready for the delivery team.
+The peer CAIO owns process effectiveness, shared context, handoffs, and adoption
+across teams. Consult it for a material operating problem; each VP keeps delivery
+ownership and the CTO retains technical and security acceptance.
+
+The CEO records task contracts, starts work after its dependencies are accepted,
+and delegates with the host's available agent tools. Departments produce actual
+files. Submission records the files' SHA-256 hashes and moves a task to review;
+an acceptance records a different department, CEO, or (in schema 2) CTO as
+reviewer and requires those files to be unchanged. **Hashes establish file
+identity, not correctness; reviewer labels are declarations, not authentication.**
+Review the evidence.
+
+```bash
+company project status
+company project status --format json
+company project start                  # resume from the same folder
+company project prompt                 # inspect or copy the resume instructions
+```
+
+The [workspace guide](docs/project-workspace.md) covers task commands, blocked
+work, review, privacy, and using a different assistant. The structured project
+record remains the task source of truth. A Board Memo or Markdown ledger is a
+report derived from it.
+
+Existing schema-1 and schema-2 projects with the historical eight-department
+roster remain readable and resumable through their normal lifecycle. Their saved
+roster and frozen policies stay intact; no implicit migration adds Growth tasks.
+Use a new nine-department workspace when Growth must own tasks. Never edit the
+project JSON to change the roster. CAIO advice does not add a task-owner or
+reviewer enum; the CTO remains a supported reviewer where the schema allows it.
+
+## Optional harnesses and bounded review loops
+
+For project work that needs explicit review gates, choose a stage and effort:
+
+```bash
+company project harness profiles
+company project status --format json  # read the current revision
+company project harness generate --stage build --effort balanced --expected-revision 1
+company project loop next --format json
+company project loop prompt
+```
+
+Replace `1` with the current revision. Enabling a harness is an explicit choice:
+schema-1 projects remain unchanged until activation. The CEO selects useful
+skills and project-specific criteria; the local compiler checks that plan and
+adds the task contract and two business checks. Light, balanced, and deep allow
+2, 3, and 5 lifetime submissions per task. These limits count submitted attempts,
+not model calls, time, or spending. A recorded extension can raise a cap to 10.
+
+Review uses the current `loop next` template, a different reviewer label, actual
+submitted evidence files, and passing results for every gate. The helper checks
+the recorded contract and artifact hashes; it does not run tests or judge the
+quality of the work. Existing accepted work stays historical. See the
+[complete harness and review example](docs/harness-loops.md).
+
+## The org chart
+
+```mermaid
+graph TD
+    subgraph EXEC["Peer executives"]
+        CEO["CEO / business direction"]
+        CTO["CTO / technical direction"]
+        CAIO["CAIO / AI process effectiveness"]
+        CEO <--> CTO
+        CEO <--> CAIO
+        CTO <--> CAIO
+    end
+    CEO --> DEV["Developers / 6 skills"]
+    CEO --> DES["Designers / 6 skills"]
+    CEO --> MKT["Marketing / 6 skills"]
+    CEO --> SOC["Social Media / 6 skills"]
+    CEO --> FIN["Finance / 6 skills"]
+    CEO --> SMB["Small Business / 6 skills"]
+    CEO --> LEG["Legal / 6 skills"]
+    CEO --> SAL["Sales / 6 skills"]
+    CEO --> GRO["Growth / 6 skills"]
+    CEO -.-> COS["chief-of-staff"]
+    FIN -.-> TOK["token-accountant"]
+    CTO -.-> TECH["cto-advisor / skill-vetting / appsec-review / agent-evaluation"]
+    CAIO -.-> AI["ai-workflow-architect / agent-reliability / ai-data-steward / ai-adoption-lead"]
+```
+
+The CEO owns business coordination and serializes project updates to prevent
+competing writes; that implementation rule does not subordinate the CTO or CAIO.
+The CTO owns technical fitness; the CAIO owns cross-team AI operating effectiveness. Department agents
+apply the relevant employee manuals. Independent assignments can run in
+parallel when the host supports it; the company does not assume subagents can
+spawn nested subagents. A host without delegation can use explicit department
+passes, with that limitation made visible.
+
+## Optional team preferences
+
+Onboarding chooses preferred departments and skills; it does not remove the
+rest of the company or create project tasks:
+
+```text
+/claude-inc:onboard          # plugin, project profile
+/claude-inc:onboard --global # plugin, global profile
+company onboard             # CLI onboarding
+company team                # inspect active routing preferences
+```
+
+Installer users can opt in with `--onboard` or `-Onboard`. With `--no-bin` or
+`-NoBin`, onboarding is deferred to the plugin. Project profiles take precedence
+over global profiles. `company brief` and `/company` obtain only normalized
+scope, departments, and skills from the profile validator, never its free-form
+body or research status. An invalid project profile blocks global fallback.
+Stored preferences do not authorize network access.
+Both commands never read profile files directly.
+The plugin form of the CEO command is `/claude-inc:company`; its onboarding and
+standup commands are `/claude-inc:onboard` and `/claude-inc:standup`.
+
+Profiles remain separate from `.claude/company/project.json`; project commands
+leave `company-team.md` untouched. Saving profiles uses the existing strict
+schema, 32,768-byte limit, safe temporary write, and atomic replacement. Replacing
+an existing profile still requires the existing explicit replacement option.
+
+## Optional mission recipes
+
+[Mission Studio](https://alebgl77.github.io/claude-inc/missions.html) provides six
+starting recipes: `launch`, `validate`, `release`, `proposal`, `content`, and `b2b-growth`.
+They are convenient examples inside the broader company, not its boundary.
+Open `studio/missions.html` locally or use the terminal:
+
+```bash
+company missions
+company mission launch --brief "Launch my invoicing app for freelancers" --format prompt
+```
+
+Recipes compile a self-contained prompt with selected manuals, staged handoffs,
+and evidence checks. They do not initialize your project or execute its tasks.
+The browser's cards and preset links omit your edited brief. Manual byte counts
+compare source files; they are not token, cost, or runtime estimates. Read the
+[Mission Studio guide](docs/mission-studio.md).
+
+## Work with one department
+
+For a focused request, use a department directly:
+
+```bash
+company dev "my tests fail after the last refactor"
+company legal "review the NDA in nda.md"
+company marketing "draft ad variants using the supplied product facts"
+company growth "Qualify B2B accounts from supplied signals and prepare a Sales handoff" --print
+```
+
+Skills can also be invoked directly. The CEO is useful when work needs
+coordination, dependencies, decisions, or continuity across sessions.
+
+For a focused technical decision, use `company cto "review our integration plan" --print`.
+It includes the peer CTO charter and only its four staff manuals. CTO decisions
+and CEO business arbitration should unblock teams without unnecessary status ceremony.
+
+For an operating problem across teams, use
+`company caio "Repair the evidence handoff from Growth to Sales" --print`.
+It composes the CAIO charter and its four manuals; apply the specialists the task
+actually needs. `company growth` composes the Growth charter and six manuals.
+Both commands prepare scoped work through the available host, not a connected CRM.
+
+Growth starts with B2B account signals, qualification, experiments, and a usable
+Sales handoff. Marketing owns research, positioning, copy, and creative; Sales
+owns outreach and deals. The same Growth skills cover SaaS activation, services
+offers, and ecommerce retention when those are the founder's outcomes. See the
+[Growth playbook](docs/growth-playbook.md) and the
+[CAIO handoff example](docs/caio-operating-model.md#worked-b2b-example-signal-to-growth-to-sales-to-feedback).
+
+The [Growth toolkit](docs/growth-toolkit.md) documents optional tool choices.
+Its Scrapling helper extracts from saved local HTML offline and requires an
+optional Scrapling dependency with Python 3.10+; core project and mission commands
+remain Python 3.9+. Firecrawl, PostHog, GrowthBook, and Langfuse are evaluated
+options, not installed or connected services. No tool bundle is installed implicitly.
+
+## Meet the company
+
+<details open>
+<summary><b>👨‍💻 Developers</b> - VP of Engineering</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `superpowers` | Skill Forge | 14-skill power pack |
+| `context7` | Docs Fetcher | Live library docs |
+| `mcp-builder` | Tool Wright | Wire up MCP servers |
+| `skill-creator` | Skill Smith | Build your own skills |
+| `webapp-testing` | QA Engineer | Browser-test your app |
+| `claude-mem` | Memory Keeper | Persistent memory |
+
+</details>
+
+<details>
+<summary><b>🎨 Designers</b> - VP of Design</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `ui-ux-pro-max` | Design Lead | Full UI/UX system |
+| `taste` | Taste Maker | Design-taste critic |
+| `frontend-design` | Front of House | Build front-end UIs |
+| `transitions` | Motion Artist | CSS motion library |
+| `web-artifacts` | Prototyper | Live web prototypes |
+| `brand-guidelines` | Brand Keeper | Build a brand kit |
+
+</details>
+
+<details>
+<summary><b>📣 Marketing</b> - CMO</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `copywriting` | Word Smith | High-converting copy |
+| `ai-seo` | Search Whisperer | Rank in AI search |
+| `cro` | Conversion Lead | Lift conversion rates |
+| `ad-creative` | Ad Maker | Ad headlines & visuals |
+| `customer-research` | Voice of Customer | Synthesise user voice |
+| `lead-magnets` | Bait Master | Build lead magnets |
+
+</details>
+
+<details>
+<summary><b>📱 Social Media</b> - Head of Social</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `post-writer` | Ghostwriter | Write LinkedIn posts |
+| `profile-optimizer` | Profile Doctor | Optimise your profile |
+| `reels-scripting` | Reel Writer | Script your Reels |
+| `hook-generator` | Hook Smith | Scroll-stopping hooks |
+| `voice-builder` | Voice Coach | Clone your voice |
+| `youtube-thumbnail` | Cover Tester | Test thumbnail covers |
+
+</details>
+
+<details>
+<summary><b>💰 Finance</b> - CFO</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `financial-statements` | Statement Builder | Build the statements |
+| `journal-entry` | Journal Keeper | Post journal entries |
+| `reconciliation` | Reconciler | Reconcile the books |
+| `variance-analysis` | Variance Analyst | Explain the variances |
+| `audit-support` | Auditor | Prep for audit |
+| `close-management` | The Closer | Run the close |
+
+</details>
+
+<details>
+<summary><b>🏪 Small Business</b> - COO</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `cash-flow-snapshot` | Cash Watcher | Snapshot your cash |
+| `invoice-chase` | Debt Chaser | Chase late invoices |
+| `plan-payroll` | Payroll Planner | Plan payroll |
+| `margin-analyzer` | Margin Analyst | Analyse margins |
+| `tax-prep` | Tax Prepper | Prep your taxes |
+| `run-campaign` | Campaign Runner | Run a campaign |
+
+</details>
+
+<details>
+<summary><b>⚖️ Legal</b> - General Counsel</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `review-contract` | Contract Reviewer | Review any contract |
+| `triage-nda` | NDA Triage | Fast NDA review |
+| `compliance-check` | Compliance Officer | Check compliance |
+| `legal-risk-assessment` | Risk Assessor | Flag legal risk |
+| `vendor-check` | Vendor Vetter | Vet a vendor |
+| `signature-request` | Signature Wrangler | Route for signature |
+
+</details>
+
+<details>
+<summary><b>🤝 Sales</b> - VP of Sales <i>(Series A hire)</i></summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `account-research` | Prospector | Actionable prospect intel |
+| `draft-outreach` | Cold Emailer | Outreach that earns replies |
+| `call-prep` | Deal Prepper | Walk into calls sharp |
+| `proposal-builder` | Rainmaker | Proposals that close |
+| `objection-handler` | Persuader | Turn pushback into progress |
+| `pipeline-review` | Pipeline Doctor | Pipeline truth, weekly plan |
+
+</details>
+
+<details>
+<summary><b>📈 Growth</b> - VP of Growth</summary>
+
+| Employee | Role | Superpower |
+|---|---|---|
+| `growth-strategy` | Growth Strategist | Prioritized growth hypotheses and a measurable operating plan |
+| `account-intelligence` | Account Intelligence Analyst | Sourced account signals and qualification evidence |
+| `growth-engineering` | Growth Engineer | Bounded data and experiment tooling with explicit contracts |
+| `growth-experiments` | Experiment Designer | Test plans, decision thresholds, and honest result interpretation |
+| `lifecycle-growth` | Lifecycle Strategist | Activation, retention, and expansion workflows |
+| `revenue-operations` | Revenue Operations Lead | Funnel definitions, handoffs, and reconciled operating measures |
+
+</details>
+
+<details>
+<summary><b>🏛️ Executive staff</b> - attached to the C-suite <i>(Series A hires)</i></summary>
+
+| Employee | Reports to | Superpower |
+|---|---|---|
+| `chief-of-staff` | CEO | Project context, task contracts, decision log, weekly review |
+| `token-accountant` | CFO | Reports from observed or supplied usage records |
+| `cto-advisor` | CTO | Technical constraints, architecture decisions, skill selection |
+| `skill-vetting` | CTO | Source/license/hash review, static risk, separate signature verification |
+| `appsec-review` | CTO | Defensive threat models, diffs, dependency and secrets hygiene |
+| `agent-evaluation` | CTO | Paired skill trials, measured results, uncertainty and costs |
+| `ai-workflow-architect` | CAIO | Cross-team stages, dependencies, and acceptance contracts |
+| `agent-reliability` | CAIO | Failure diagnosis, rework, and operating evidence |
+| `ai-data-steward` | CAIO | Minimal shared context, provenance, and freshness |
+| `ai-adoption-lead` | CAIO | Bounded pilots, usable runbooks, and adoption decisions |
+
+</details>
+
+## How it works
+
+The company combines native host roles with a small local state helper:
+
+| On the org chart | In this repo | Mechanism |
+|---|---|---|
+| **CEO** | `commands/company.md`; `/claude-inc:company` in the plugin, `/company` in direct installs | Business direction, priorities, arbitration, and serialized state updates |
+| **CTO** | `agents/cto.md`; `company cto` | Peer executive: technical direction, architecture, infrastructure, security, skills, and code |
+| **CAIO** | `agents/caio.md`; `company caio` | Peer executive: AI process effectiveness, handoffs, context quality, and adoption |
+| **9 departments** | Nine department charters in `agents/` | Native host agents; independent assignments may run in parallel |
+| **54 department manuals** | `skills/*/SKILL.md` | Six per department; VPs apply the relevant capabilities per task |
+| **10 staff skills** | Two coordination/usage manuals, four CTO manuals, and four CAIO manuals | Skill packaging; this grouping does not define executive authority |
+| **Project workspace** | `.claude/company/project.json` | Validated tasks, dependencies, artifact hashes, reviews, and decisions |
+| **Optional harness** | Local schema-2 task policies and loop guidance | Required review gates, lifetime submission caps, and explicit extensions |
+
+```
+you → project brief → CEO → department assignments → files + review → project state + Board Memo
+```
+
+[![The full organization map: peer CEO, CTO, and CAIO, nine departments, and 64 skill manuals](assets/org-chart.svg)](assets/org-chart.svg)
+
+The roles and manuals available to your project. [Open the full organization map](assets/org-chart.svg).
+
+Every employee follows the same contract: **When to use → Workflow → Output format → Quality bar → Example.** That's what makes all 64 manageable and PRs reviewable.
+
+And the company audits itself: `python3 scripts/validate.py` (run in CI on every push) checks every job description, cross-references the CLI roster against the departments, and fails the build if an employee is hired twice, orphaned, or missing from the docs.
+
+## Works with any CLI
+
+The `company` CLI composes self-contained prompts: a department charter plus its six manuals, or a peer CTO/CAIO charter plus its four manuals. If `claude` is installed it runs it; otherwise pipe it anywhere:
+
+```bash
+company roster                                   # meet the team
+company team                                     # show active routing preferences
+company onboard --print                          # inspect the onboarding prompt
+company brief "launch my product"                # CEO mode
+company finance "reconcile bank.csv vs ledger.csv"
+company design "critique screenshot.png" --print | gemini   # any engine
+CLAUDE_INC_ENGINE=codex company dev "add tests"              # or set an engine
+```
+
+The role manuals travel as plain text. `company project start` specifically
+uses native Claude Code so its agents, skills, and plugin context are available.
+For another assistant, inspect `company project prompt` and provide the named
+local files and tools it needs; delegation, permissions, and persistence depend
+on that host. A copied prompt does not turn every assistant into a compatible
+execution adapter.
+
+### Skill-gap research
+
+Onboarding can flag missing capabilities. It researches candidates only after
+separate, explicit consent and returns suggestions only. Each candidate is
+checked for source quality, current maintenance, compatibility, documentation,
+license, security, third-party adoption and available performance evidence.
+Stars include a collection date and never decide the ranking alone. Remote
+content is inspected read-only, treated as untrusted and never saved locally.
+Candidates fail if they are abandoned, opaque, unauditable, insecure,
+incompatible or poorly documented. During this onboarding research, no third-party content is downloaded,
+copied, installed or executed.
+
+### CTO skill verification and cybersecurity
+
+The four CTO manuals are first-party procedures. `skill-vetting` also includes
+an unchanged, commit-pinned [NVIDIA Skill Inspector reference](skills/skill-vetting/references/nvidia-skill-inspector.md)
+with its Apache-2.0 license and [provenance](skills/skill-vetting/references/PROVENANCE.md).
+It is reference material inside one skill, not an additional registered employee.
+The local wrapper's evidence format, permissions, and trust boundaries take precedence.
+
+NVIDIA SkillSpector and SkillEvaluator, Cisco's scanner, and linked Trail of Bits
+plugins remain optional external tools. They are not installed automatically;
+Trail of Bits skill text is not bundled. Missing tools are `NOT RUN`. Source
+review, runtime usefulness, and signature provenance are different checks;
+none gives this company or a candidate NVIDIA certification. Source snapshots
+were checked on 2026-09-08 and do not update themselves. The project's Python
+runtime remains 3.9+; the optional SkillSpector 2.11.1 snapshot requires Python
+3.12 through 3.14. See the [vetting manual](skills/skill-vetting/SKILL.md).
+
+## Where the company goes next
+
+The [proposed roadmap](ROADMAP.md) asks what it would take for one changed
+business decision to reach every affected department, with useful results the
+founder can inspect. Four horizons set the order:
+
+- **Next:** [prove a real company delivery](ROADMAP.md#a-the-first-real-company-delivery) through repeated local pilots and human review.
+- **After that:** [connect decisions across teams](ROADMAP.md#b-one-decision-every-affected-team), preserving accepted history while proposing affected rework.
+- **Then:** [let teams earn their place](ROADMAP.md#c-teams-that-earn-their-place) through measured staffing and skill trials.
+- **Exploration:** [fork the company](ROADMAP.md#d-fork-the-company-compare-the-options) to compare isolated business scenarios before choosing a direction.
+
+These are future proposals with evidence gates, not shipped capabilities or
+release dates. The founder keeps the final mandate; CEO, CTO, and CAIO bring the
+business, technical, and operating tradeoffs together.
+
+## FAQ
+
+**Do I need a company for every request?** No. Use a skill or department for a focused change. Use the CEO and project workspace when ownership, dependencies, reviews, and continuity help.
+
+**Does `/company` use model tokens?** Yes, when the host executes work. Activating a department can create another model context. Manual-size comparisons do not predict the total usage, and Claude, Inc. does not enforce a budget.
+
+**Finance/Legal outputs?** Decision support requiring appropriate professional review. The department manuals require limitations to be stated; instructions cannot guarantee an assistant follows them.
+
+**Can I hire more employees?** Yes: [we're hiring](CONTRIBUTING.md). One PR = one new employee.
+
+## Credits
+
+- Org chart concept: **[Build Your Whole Team with Claude](https://charliehills.substack.com)** by Charlie Hills; this repo is the runnable formalisation of that map.
+- Some employees are self-contained homages to great ecosystem projects: [obra/superpowers](https://github.com/obra/superpowers), [Context7](https://github.com/upstash/context7), claude-mem.
+- Built with [Claude Code](https://docs.claude.com/en/docs/claude-code) subagents, skills and plugins.
+
+## License
+
+[MIT](LICENSE) for first-party content. The vendored NVIDIA reference retains
+its [Apache-2.0 license](skills/skill-vetting/references/LICENSE.nvidia).
+
+---
+
+<div align="center">
+
+**If your new workforce ships something, [⭐ star the company](https://github.com/alebgl77/claude-inc) - it's cheaper than payroll.**
+
+</div>

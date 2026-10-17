@@ -1,0 +1,308 @@
+# google-search-console-cli
+
+Google Search Console CLI & Skills for AI agents (and humans). Analyze search performance by query, page, country, and device, inspect URL index status, manage sitemaps, and more.
+
+**Works with:** OpenClaw, Claude Code, Cursor, Codex, and any agent that can run shell commands.
+
+## Installation
+
+Tell your AI agent (e.g. OpenClaw):
+
+> Install this CLI and skills from https://github.com/Bin-Huang/google-search-console-cli
+
+Or install manually:
+
+```bash
+npm install -g google-search-console-cli
+
+# Add skills for AI agents (Claude Code, Cursor, Codex, etc.)
+npx skills add Bin-Huang/google-search-console-cli
+```
+
+Or run directly: `npx google-search-console-cli --help`
+
+For development:
+
+```bash
+pnpm install
+pnpm build
+```
+
+## How it works
+
+Built on Google's official APIs. Handles service account authentication and request signing. Every command outputs structured JSON to stdout, ready for agents to parse without extra processing.
+
+Core APIs covered:
+
+- **[Search Console API v1](https://developers.google.com/webmaster-tools/v1/api_reference_index)** -- URL inspection (`inspect`)
+- **[Webmasters API v3](https://developers.google.com/webmaster-tools/v1/api_reference_index)** -- search analytics, sites, and sitemaps (`query`, `sites`, `sitemaps`)
+
+Under the hood it uses the official Node.js client library [`googleapis`](https://www.npmjs.com/package/googleapis). All API responses are passed through as JSON.
+
+## Setup
+
+### Step 1: Enable the Search Console API
+
+Go to the [Google Cloud Console API Library](https://console.cloud.google.com/apis/library/searchconsole.googleapis.com) and enable the **Google Search Console API** for your project. If you don't have a project yet, create one first.
+
+### Step 2: Create a Service Account
+
+1. Go to [IAM & Admin > Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts) in the same project.
+2. Click **Create Service Account**, give it a name (e.g. `search-console-reader`), and click **Done**.
+3. Click on the newly created Service Account, go to the **Keys** tab.
+4. Click **Add Key > Create new key > JSON**, and download the key file.
+
+### Step 3: Place the credentials file
+
+Choose one of these options:
+
+```bash
+# Option A: Default path (recommended)
+mkdir -p ~/.config/google-search-console-cli
+cp ~/Downloads/your-key-file.json ~/.config/google-search-console-cli/credentials.json
+
+# Option B: Environment variable
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your-key-file.json"
+
+# Option C: Pass per command
+google-search-console-cli sites --credentials /path/to/your-key-file.json
+```
+
+Credentials are resolved in this order:
+1. `--credentials <path>` flag
+2. `GOOGLE_APPLICATION_CREDENTIALS` env var
+3. `~/.config/google-search-console-cli/credentials.json` (auto-detected)
+4. gcloud Application Default Credentials
+
+### Step 4: Grant access in Search Console
+
+The Service Account needs permission to access your sites in Search Console. This must be done **per site**.
+
+1. Open [Google Search Console](https://search.google.com/search-console).
+2. Select a site you want to grant access to.
+3. Go to **Settings** (bottom-left) > **Users and permissions**.
+4. Click **Add user**.
+5. Enter the Service Account email (find it in your key file's `client_email` field, e.g. `my-sa@my-project.iam.gserviceaccount.com`).
+6. Choose a permission level:
+   - **Restricted** (read-only): can use `sites`, `site`, `query`, `sitemaps`, `sitemap`, `inspect`, `inspect-batch`
+   - **Full**: can also use `site-add`, `site-remove`, `sitemap-submit`, `sitemap-delete`
+7. Click **Add**.
+
+Repeat for each site you want to access. There is no global "add to all sites" option in Search Console.
+
+**Troubleshooting "Email not found":**
+- Paste the `client_email` value (it ends in `.iam.gserviceaccount.com`), not `client_id` or an OAuth client ID.
+- Make sure the Service Account is enabled in the Cloud Console.
+- A newly created Service Account can take a few minutes before Search Console accepts it. Wait, then try again.
+- Choose **Full** or **Restricted**. Do not choose **Owner**.
+- If it still fails, use your own Google account instead (see below).
+
+### Alternative: gcloud ADC (for local development)
+
+If you prefer not to use a Service Account, you can authenticate with your own Google account:
+
+```bash
+gcloud auth application-default login \
+  --scopes="https://www.googleapis.com/auth/webmasters.readonly,https://www.googleapis.com/auth/cloud-platform"
+
+# Bill API usage to the project where you enabled the Search Console API (Step 1)
+gcloud auth application-default set-quota-project YOUR_PROJECT_ID
+```
+
+gcloud requires the `cloud-platform` scope. For write commands (`site-add`, `sitemap-submit`, etc.), use `https://www.googleapis.com/auth/webmasters` instead of `webmasters.readonly`. The CLI uses these credentials only when no key file is found (see the resolution order in Step 3), so unset `GOOGLE_APPLICATION_CREDENTIALS` and remove or rename `~/.config/google-search-console-cli/credentials.json` if it exists.
+
+If Google shows "This app is blocked" during login, gcloud's default OAuth client is not allowed to request the Search Console scope. Create your own OAuth client (Desktop app) in the Cloud Console, download its JSON, and add `--client-id-file=/path/to/client_secret.json` to the login command.
+
+This uses your personal Google account's Search Console access. Good for local development, not recommended for automation.
+
+## Usage
+
+All commands output pretty-printed JSON by default. Use `--format compact` for compact single-line JSON.
+
+Site URLs follow the Search Console format:
+- **URL-prefix property**: `https://www.example.com/` (must include trailing slash)
+- **Domain property**: `sc-domain:example.com`
+
+### query
+
+Query search analytics data with filters and dimensions.
+
+```bash
+# Basic query: top queries for the last 30 days
+google-search-console-cli query https://www.example.com/ \
+  --start-date 2025-01-01 \
+  --end-date 2025-01-31 \
+  --dimensions query
+
+# Top pages by country
+google-search-console-cli query sc-domain:example.com \
+  --start-date 2025-01-01 \
+  --end-date 2025-01-31 \
+  --dimensions page,country \
+  --row-limit 100
+
+# With dimension filters
+google-search-console-cli query https://www.example.com/ \
+  --start-date 2025-01-01 \
+  --end-date 2025-01-31 \
+  --dimensions query \
+  --dimension-filter '[{"groupType":"and","filters":[{"dimension":"country","operator":"equals","expression":"USA"}]}]'
+
+# Image search results
+google-search-console-cli query https://www.example.com/ \
+  --start-date 2025-01-01 \
+  --end-date 2025-01-31 \
+  --dimensions query \
+  --type image
+
+# Include fresh (unfinalized) data
+google-search-console-cli query https://www.example.com/ \
+  --start-date 2025-01-01 \
+  --end-date 2025-01-31 \
+  --dimensions date \
+  --data-state all
+```
+
+Available dimensions: `date`, `query`, `page`, `country`, `device`, `searchAppearance`, `hour`
+
+Available types: `web` (default), `image`, `video`, `news`, `discover`, `googleNews`
+
+Additional options:
+
+- `--row-limit <n>` -- Max rows, 1-25000 (default 1000)
+- `--start-row <n>` -- Starting row offset (default 0)
+- `--data-state <state>` -- Data freshness: `all`, `final`, `hourly_all`
+- `--aggregation-type <type>` -- Aggregation type: `auto`, `byPage`, `byProperty`, `byNewsShowcasePanel`
+- `--all` -- Fetch all rows with auto-pagination (mutually exclusive with `--start-row`)
+
+### sites
+
+List all sites in your Search Console account.
+
+```bash
+google-search-console-cli sites
+```
+
+### site
+
+Get information about a specific site.
+
+```bash
+google-search-console-cli site https://www.example.com/
+google-search-console-cli site sc-domain:example.com
+```
+
+### site-add
+
+Add a site to Search Console. Requires **Full** permission.
+
+```bash
+google-search-console-cli site-add https://www.example.com/
+```
+
+### site-remove
+
+Remove a site from Search Console. Requires **Full** permission.
+
+```bash
+google-search-console-cli site-remove https://www.example.com/
+```
+
+### sitemaps
+
+List sitemaps for a site.
+
+```bash
+google-search-console-cli sitemaps https://www.example.com/
+
+# Only list sitemaps under a specific sitemap index
+google-search-console-cli sitemaps https://www.example.com/ \
+  --sitemap-index https://www.example.com/sitemap-index.xml
+```
+
+### sitemap
+
+Get information about a specific sitemap.
+
+```bash
+google-search-console-cli sitemap https://www.example.com/ https://www.example.com/sitemap.xml
+```
+
+### sitemap-submit
+
+Submit a sitemap for a site. Requires **Full** permission.
+
+```bash
+google-search-console-cli sitemap-submit https://www.example.com/ https://www.example.com/sitemap.xml
+```
+
+### sitemap-delete
+
+Delete a sitemap from a site. Requires **Full** permission.
+
+```bash
+google-search-console-cli sitemap-delete https://www.example.com/ https://www.example.com/sitemap.xml
+```
+
+### inspect
+
+Inspect a URL's index status in Google.
+
+```bash
+google-search-console-cli inspect https://www.example.com/ https://www.example.com/my-page
+
+# With a specific language for messages
+google-search-console-cli inspect https://www.example.com/ https://www.example.com/my-page --language zh-CN
+```
+
+### inspect-batch
+
+Batch inspect multiple URLs' index status in a single command.
+
+```bash
+# From a file (one URL per line)
+google-search-console-cli inspect-batch https://www.example.com/ --file urls.txt
+
+# From stdin
+cat urls.txt | google-search-console-cli inspect-batch https://www.example.com/
+
+# With compact format (NDJSON, streams results as they complete)
+cat urls.txt | google-search-console-cli inspect-batch https://www.example.com/ --format compact
+```
+
+Options:
+- `--file <path>` -- File with URLs (one per line); reads stdin if omitted
+- `--language <code>` -- Language code for messages (default: `en-US`)
+
+Progress is written to stderr. With `--format compact`, each result is streamed as NDJSON (one JSON object per line) as it completes. With the default format, all results are collected and output as a JSON array. Per-URL errors are captured in the output (with `error` and, when available, `code`) without stopping the batch. If any URL could not be inspected (an API or request error, not a `FAIL` verdict), the command still prints all results, then writes a summary error to stderr and exits with code 1.
+
+## Error output
+
+Errors are written to stderr as JSON with an `error` field. For Google API errors, `code` and `details` are included when available:
+
+```json
+{"error": "Permission denied", "code": 403}
+```
+
+## Related
+
+- [google-analytics-cli](https://github.com/Bin-Huang/google-analytics-cli) -- Google Analytics CLI & Skills for AI agents (and humans)
+- [youtube-analytics-cli](https://github.com/Bin-Huang/youtube-analytics-cli) -- YouTube Analytics CLI & Skills for AI agents (and humans)
+- [x-analytics-cli](https://github.com/Bin-Huang/x-analytics-cli) -- X Analytics CLI & Skills for AI agents (and humans)
+- [camoufox-cli](https://github.com/Bin-Huang/camoufox-cli) -- Anti-detect browser CLI & Skills for AI agents
+- [google-ads-open-cli](https://github.com/Bin-Huang/google-ads-open-cli) -- Google Ads CLI & Skills for AI agents (and humans)
+- [meta-ads-open-cli](https://github.com/Bin-Huang/meta-ads-open-cli) -- Meta Ads CLI & Skills for AI agents (and humans)
+- [microsoft-ads-cli](https://github.com/Bin-Huang/microsoft-ads-cli) -- Microsoft Ads CLI & Skills for AI agents (and humans)
+- [amazon-ads-open-cli](https://github.com/Bin-Huang/amazon-ads-open-cli) -- Amazon Ads CLI & Skills for AI agents (and humans)
+- [tiktok-ads-cli](https://github.com/Bin-Huang/tiktok-ads-cli) -- TikTok Ads CLI & Skills for AI agents (and humans)
+- [linkedin-ads-cli](https://github.com/Bin-Huang/linkedin-ads-cli) -- LinkedIn Ads CLI & Skills for AI agents (and humans)
+- [x-ads-cli](https://github.com/Bin-Huang/x-ads-cli) -- X Ads CLI & Skills for AI agents (and humans)
+- [snapchat-ads-cli](https://github.com/Bin-Huang/snapchat-ads-cli) -- Snapchat Ads CLI & Skills for AI agents (and humans)
+- [pinterest-ads-cli](https://github.com/Bin-Huang/pinterest-ads-cli) -- Pinterest Ads CLI & Skills for AI agents (and humans)
+- [reddit-ads-cli](https://github.com/Bin-Huang/reddit-ads-cli) -- Reddit Ads CLI & Skills for AI agents (and humans)
+- [spotify-ads-cli](https://github.com/Bin-Huang/spotify-ads-cli) -- Spotify Ads CLI & Skills for AI agents (and humans)
+- [apple-ads-cli](https://github.com/Bin-Huang/apple-ads-cli) -- Apple Ads CLI & Skills for AI agents (and humans)
+
+## License
+
+Apache-2.0

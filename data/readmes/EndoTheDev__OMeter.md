@@ -1,0 +1,315 @@
+# OMeter
+
+<p align="left">
+  <img src="https://img.shields.io/badge/python-3.14+-blue.svg?style=flat-square" alt="Python 3.14+">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg?style=flat-square" alt="MIT License">
+</p>
+
+Benchmark and compare Ollama models across local and cloud endpoints with rich, sortable tables.
+
+## Features
+
+- 🌐 **Live dashboard** — auto-published benchmark trends at [EndoTheDev.github.io/OMeter](https://EndoTheDev.github.io/OMeter/) with filtering, sorting, and charts
+- 📋 **List models** from local and cloud Ollama endpoints
+- 📊 **Rich tables** with sorting by name, size, context length, modification date, TTFT, or TPS
+- 🔃 **Reverse sort** with `--reverse`
+- ⏱️ **Benchmark** time-to-first-token (TTFT) and tokens-per-second (TPS)
+- 🔍 **Model filtering** by exact name or family match (e.g. `llama3` matches `llama3:latest`)
+- 📤 **Export results** to JSON or CSV (stdout or file)
+- 🧪 **Multi-prompt averaging** — 3 prompts per model for robust stats (or use `--prompts` for custom prompts)
+- 🧬 **Embedding model support** — automatically uses `/api/embed` for local embedding models
+- 🎨 **Beautiful CLI** powered by `rich` + `InquirerPy`
+- 📜 **Benchmark history** — runs are auto-saved to a local SQLite database and merged into the public dashboard history; view past results with `--history`
+- 📈 **Performance trends** — arrows (↑↓→) automatically appear inline next to TTFT/TPS values when historical data is available
+
+## Preview
+
+<details name="screenshots" open>
+<summary><strong>Cloud model listing</strong> — <code>ometer --cloud</code></summary>
+<img src="assets/cloud.png" alt="Cloud models">
+</details>
+
+<details name="screenshots">
+<summary><strong>Local model listing</strong> — <code>ometer --local</code></summary>
+<img src="assets/local.png" alt="Local models">
+</details>
+
+<details name="screenshots">
+<summary><strong>Benchmark with per-run breakdown</strong> — <code>ometer --local --ttft --tps --verbose --runs 2 --parallel 1</code></summary>
+<img src="assets/local-ttft-tps-verbose-runs-parallel.png" alt="Benchmark with breakdown">
+</details>
+
+## Installation
+
+### Install as a uv tool (recommended)
+
+From the project directory:
+
+```bash
+uv tool install .
+```
+
+Or install directly from GitHub:
+
+```bash
+uv tool install git+https://github.com/EndoTheDev/OMeter.git
+```
+
+This installs `ometer` and `ometer` globally, so you can run them from anywhere.
+
+**Update:**
+
+```bash
+uv tool install --upgrade ometer
+```
+
+**Uninstall:**
+
+```bash
+uv tool uninstall ometer
+```
+
+### Install into a project
+
+```bash
+uv add ometer
+```
+
+Or via pip:
+
+```bash
+pip install ometer
+```
+
+## Usage
+
+Show the version:
+
+```bash
+ometer --version
+```
+
+List models with an **interactive menu**:
+
+```bash
+ometer
+```
+
+List **local** models only:
+
+```bash
+ometer --local
+```
+
+List **cloud** models only:
+
+```bash
+ometer --cloud
+```
+
+List **both** local and cloud models:
+
+```bash
+ometer --local --cloud
+```
+
+Benchmark **time-to-first-token** and **tokens-per-second**:
+
+```bash
+ometer --cloud --ttft --tps
+```
+
+Benchmark models in **parallel** for faster results (default is 1 — max 10):
+
+```bash
+ometer --cloud --ttft --tps --parallel 4
+```
+
+Show **per-run breakdown** in the table:
+
+```bash
+ometer --cloud --ttft --tps --verbose
+```
+
+Run with **fewer benchmark prompts** for faster results (default is 3 — max 3):
+
+```bash
+ometer --cloud --ttft --tps --verbose --runs 1
+ometer --cloud --ttft --tps --verbose --runs 2
+```
+
+Use **custom benchmark prompts** instead of the built-in defaults (overrides `--runs`):
+
+```bash
+ometer --local --ttft --tps --prompts "why is the ocean salty?"
+ometer --local --ttft --tps --prompts prompts.txt
+```
+
+Pass a filename to read one prompt per line (skips blank lines, strips whitespace).
+
+Filter to **specific models** (exact name or family match, accepts multiple names):
+
+```bash
+ometer --model llama3 --ttft --tps
+ometer --local --model llama3.2:3b llama3.3:8b --ttft --tps
+```
+
+Sort results by **model size** (largest first) or **name** (A–Z):
+
+```bash
+ometer --cloud --sort size
+ometer --cloud --sort name
+```
+
+Sort by **context length** (largest first) or **modification date** (newest first):
+
+```bash
+ometer --cloud --sort ctx
+ometer --local --sort modified
+```
+
+Sort by **benchmark metrics** — TTFT (lowest/best first) and TPS (highest/best first):
+
+```bash
+ometer --cloud --ttft --tps --sort ttft
+ometer --cloud --ttft --tps --sort tps
+```
+
+**Reverse** any sort order (worst first, Z–A, oldest first):
+
+```bash
+ometer --cloud --sort name --reverse
+ometer --cloud --ttft --tps --sort tps --reverse
+```
+
+Export results as **JSON** (to stdout or a file):
+
+```bash
+ometer --cloud --ttft --tps --json
+ometer --cloud --ttft --tps --json results.json
+```
+
+Export results as **CSV** (to stdout or a file):
+
+```bash
+ometer --local --ttft --tps --csv
+ometer --local --ttft --tps --csv results.csv
+```
+
+View **benchmark history** (latest run per model):
+
+```bash
+ometer --history
+```
+
+Show all historical runs with full details:
+
+```bash
+ometer --history --verbose
+```
+
+Filter history to specific models:
+
+```bash
+ometer --history --model llama3
+```
+
+Export history as **JSON** or **CSV**:
+
+```bash
+ometer --history --json
+ometer --history --csv history.csv
+```
+
+Performance trend arrows (↑ improved, ↓ degraded, → stable within 5%) appear inline next to TTFT and TPS values automatically. No flag needed.
+
+See all options:
+
+```bash
+ometer --help
+```
+
+## Web Dashboard
+
+Benchmark data is automatically merged into the live dashboard after each
+scheduled GitHub Actions run:
+
+**[EndoTheDev.github.io/OMeter](https://EndoTheDev.github.io/OMeter/)**
+
+The dashboard supports filtering by capability, context window, parameter
+size, and model name, plus sorting and time-series charts once multiple runs
+have been collected.
+
+## Environment Variables
+
+OMeter looks for a `.env` file in this order, using the **first one found**:
+
+1. **`./.env`** — current working directory (project-specific)
+2. **`~/.env`** — home directory (global fallback)
+3. **`~/.config/ometer/.env`** — dedicated config directory (recommended for global installs)
+
+Create the config directory and file:
+
+```bash
+mkdir -p ~/.config/ometer
+cat > ~/.config/ometer/.env << 'EOF'
+OLLAMA_CLOUD_BASE_URL=https://ollama.com
+OLLAMA_CLOUD_API_KEY=your_api_key_here
+OLLAMA_LOCAL_BASE_URL=http://localhost:11434
+
+# Number of benchmark prompts per model (1–3, default 3). Ignored when --prompts is used.
+OMETER_RUNS=3
+
+# Number of models benchmarked in parallel (default 1, max 10)
+OMETER_PARALLEL=1
+EOF
+```
+
+The cloud API key is **only needed for benchmarking cloud models**.
+
+Benchmark results are **auto-saved** to a local SQLite database. The database path can be overridden:
+
+```bash
+export OMETER_HISTORY_DB=/custom/path/history.db
+```
+
+By default it lives at `~/.local/share/ometer/ometer_history.db`.
+
+OMeter has six modules that handle distinct concerns:
+
+```txt
+User ──► cli.py ──► config.py ──► api.py ──► display.py
+           │             │            │            │
+      arg parsing    .env load    HTTP calls    rich tables
+      mode resolve   validate     benchmark     color thresholds
+      interactive     clamp       stream        live updates
+      export             │            │            │
+         │               │            │        history.py
+         │               │            │            │
+     export.py           │            │       SQLite DB
+         │                              │
+    JSON/CSV output                auto-save + trend
+```
+
+- **cli.py** — Entry point, argument parsing, interactive model selection, export dispatch
+- **config.py** — Hierarchical `.env` loading, settings validation and clamping
+- **api.py** — HTTP communication with Ollama, TTFT/TPS measurement
+- **display.py** — Rich terminal UI, live table updates, percentile-based color coding
+- **export.py** — JSON/CSV export formatting and file output
+- **history.py** — SQLite-backed benchmark persistence, trend computation, history queries
+
+For detailed documentation, see the [docs](docs/) directory:
+
+- [Architecture](docs/architecture.md) — Module decomposition, request lifecycle, data entities
+- [Benchmarking Pipeline](docs/benchmarking.md) — TTFT/TPS methodology, concurrency, color thresholds
+- [Configuration](docs/configuration.md) — Environment variables, CLI flags, loading order
+- [API Reference](docs/api-reference.md) — Ollama endpoints, function reference, BenchmarkResult
+- [Development](docs/development.md) — Dev setup, running tests, project structure, conventions
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+Made for you with vibes by [Endo](https://github.com/EndoTheDev)🎵 & [Kimi](https://ollama.com/library/kimi-k2.7-code) & [Hermes](https://github.com/nousresearch/hermes-agent) & [Ollama](https://github.com/ollama/ollama)

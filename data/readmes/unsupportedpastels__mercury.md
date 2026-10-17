@@ -1,0 +1,256 @@
+# Mercury — a Hermes companion
+
+
+**Mercury** is an independent, open-source, 100% free companion app for [Hermes Agent](https://github.com/NousResearch/hermes-agent) — **Hermes Cloud** or your own **self-hosted** server. Live streaming, hands-free voice, artifacts, approvals, and full session control from anywhere.
+
+🌐 **Website:** [hermes-agent-mobile.com](https://hermes-agent-mobile.com/) · 📥 [Download the latest Android APK](https://github.com/unsupportedpastels/mercury/releases/latest) · 🍎 [Build for iOS from source](#ios) · 🔒 [Privacy](https://hermes-agent-mobile.com/privacy.html)
+
+Mercury ships the same product on **Android** and **iOS** over one shared Kotlin Multiplatform core. Both apps use native UI (Jetpack Compose / SwiftUI) and native secure storage; protocol decoding, transcript reduction, attachment policy, and Relay framing live in `shared/mercury-core` and are tested once.
+
+> **Unofficial client.** Mercury is not affiliated with or endorsed by Nous Research. It is built entirely on the official Hermes interfaces — no server changes, forks, or plugins required. Free and open source under the MIT license.
+
+## What Mercury does
+
+- Connects to an unchanged, officially compatible Hermes Agent backend supplied by `hermes dashboard` or headless `hermes serve`.
+- Browses projects and sessions, creates local drafts, and starts a remote runtime only when you send the first prompt.
+- Streams replies token-by-token over a direct WebSocket, with tool activity, code blocks, and reasoning rendered inline as they happen.
+- Notifies you the instant a turn completes or the agent needs a decision — with the reply inline and an _Open session_ tap that drops you right back in. On Android that is a notification backed by a foreground service while a Mercury-started turn runs; on iOS it is a local notification generated on-device with no push service, so it is best-effort: it fires while Mercury is running or during a background-refresh window. Kick off a long run, lock the phone, and get on with your day.
+- Responds to tool approvals, clarify questions, and secret prompts from the phone; parked requests return correctly after a reconnect.
+- Opens artifacts and browses host files the agent produced, with images and documents rendered natively.
+- Shares images, PDFs, and text from any other app straight into a session — the Android share target or the iOS **Add to Mercury** share extension — staged in the composer for review, never auto-sent.
+- Supports native Nous OAuth with system-browser PKCE and cookie-backed username/password basic auth, with origin-scoped encrypted credentials, refresh, and reconnect/reconciliation.
+- Pairs Android or iOS to an approved Mercury Relay host by QR code for end-to-end encrypted Noise XK chat when a direct server origin is not reachable.
+- Adapts cleanly across compact phones, Fold cover screens, unfolded layouts, split screen, freeform windows, and DeX on Android.
+- Follows the system light or dark appearance on both platforms, from one shared palette: Material 3 color roles on Android and the matching adaptive tokens in SwiftUI, with a pure-black dark canvas for OLED screens.
+- Preserves a Mercury-started live turn when you navigate away; it does not take over or close another client's runtime.
+- Speaks and listens through your server's audited voice stack: app-owned dictation into the composer with a stop control, per-message read-aloud, streaming speech that overlaps generation, and a hands-free voice conversation with spoken stop phrases and barge-in. Voice controls appear only when the connected server exposes the official `/api/audio/…` routes, audio is never persisted on the device, and the microphone permission is requested only when you first use voice.
+
+## Inline screenshots and images
+
+For host-local images, ask the agent to return a standalone directive using the
+verified file's actual absolute path:
+
+```text
+MEDIA:/absolute/path/screenshot.png
+```
+
+Both native clients also render explicit local Markdown images such as
+`![Screenshot](/absolute/path/screenshot.png)`. Bare paths and ordinary file links
+are not inline image requests. Code examples and escaped image syntax do not
+trigger image downloads. Local image requests use the same authenticated loader
+and host file-access rules as `MEDIA:`; this does not expose files publicly.
+
+Direct image responses are bounded to 10 MiB. Relay image reads require the host's
+advertised image-read capability and are bounded to 2 MiB. PNG, JPEG, GIF, WebP,
+and BMP are portable choices; iOS direct mode also retains HEIC and TIFF support.
+The file must exist on the connected host and be readable under its file policy.
+
+The optional [Mercury Relay host plugin](https://github.com/unsupportedpastels/mercury-relay-plugin)
+can supply media-delivery guidance to new sessions on compatible Hermes hosts.
+This is profile-wide guidance, not a guarantee of model compliance, and it does
+not retrofit existing frozen session prompts. Direct mode and native rendering
+remain usable without the plugin. Installing the mobile app alone does not
+rewrite the host's system prompt.
+
+## Real screens, real agent
+
+Real captures from a live session on device — no mockups, no staged data.
+
+<p align="center">
+  <img src="docs/assets/readme/mercury-chat-session.png" alt="A live Mercury agent session: session title, a terminal tool card, a collapsible Thinking block, streamed markdown, an inline-rendered image artifact, and the mic/voice composer below." width="300" />
+  &nbsp;&nbsp;
+  <img src="docs/assets/readme/mercury-notification.png" alt="The Android notification shade showing Mercury's 'Hermes finished' notification with the assistant's reply text and an Open session action." width="300" />
+</p>
+
+<p align="center">
+  <em>Left: a live session streaming tool activity, reasoning, and artifacts. Right: the turn-complete notification — even when the app is closed, Mercury taps you on the shoulder.</em>
+</p>
+
+## Designed for foldables and tablets
+
+Mercury uses the available window and posture — not a device name or orientation — to move from a focused compact layout to a wider multi-pane workspace. Unfold the phone or open it on a tablet and the layout earns the space: project navigation on the left, sessions in the middle, and the live agent workspace on the right. It preserves the selected session and active work across resize and fold/unfold transitions.
+
+<p align="center">
+  <img src="docs/assets/readme/mercury-foldable-wide.png" alt="Mercury running on an unfolded Samsung Fold in a three-pane layout with project navigation, a session list, and a live agent workspace." width="820" />
+</p>
+
+<p align="center">
+  <em>A live Mercury session in expanded mode on an unfolded Samsung Fold — project rail, session list, and live workspace at once.</em>
+</p>
+
+## Connect to your Hermes host
+
+Mercury is a client, not an agent host. Install and configure Hermes Agent on a machine you control (or deploy an always-on **Hermes Cloud** instance from the [Nous Portal](https://portal.nousresearch.com/cloud)), then keep a compatible Hermes backend running before connecting from your phone. The host remains authoritative for your agent, tools, files, sessions, and data.
+
+The optional **Relay** tab can instead scan the one-time QR code produced by a Mercury Relay-enabled host. Compare and approve the short fingerprint on the host before connecting. The router receives opaque routing metadata and encrypted records only; QR capabilities and device keys never enter logs or the direct-server credential store.
+
+**New Project** on Android and iOS lets you browse the connected host's existing folders, create a new folder inside the selected directory, and register that folder as a project. Direct mode uses the official Hermes files API. Relay requires the host plugin's versioned folder capability; older hosts show upgrade guidance and allow an existing absolute folder path to be entered manually. Host permissions and managed-root restrictions still apply, and folder paths remain encrypted across Relay.
+
+For a self-hosted server, Mercury detects the authentication providers advertised by the backend and shows the matching sign-in option:
+
+- **Nous OAuth** — system-browser PKCE through Nous Portal. This is the recommended choice for any host reachable beyond your trusted network.
+- **Username & password (basic auth)** — cookie-backed sign-in for a host on a trusted LAN, VPN, or Tailscale network.
+
+- **Hermes Cloud** — sign in once to Nous Portal and pick from the agents on your account; no URL to paste. Mercury discovers your deployed [Hermes Cloud](https://portal.nousresearch.com/cloud) agents automatically and connects to the one you choose. Multi-org accounts get an org picker.
+- **Server URL** — enter the HTTP/HTTPS origin of a Hermes host you run yourself. Use this for self-hosting (below) or to connect to a known instance by hand.
+
+The rest of this section covers self-hosting.
+
+### Self-hosted authentication: OAuth or basic username/password
+
+Mercury supports both authentication modes when the Hermes backend advertises them. Choose **Nous OAuth** for a public or otherwise internet-reachable host. Choose **basic username/password** for a trusted LAN, VPN, or Tailscale connection.
+
+#### Nous OAuth
+
+1. Check the agent's Nous login on the host: `hermes auth status`. If not logged in, run `hermes portal` first.
+2. Register the dashboard's OAuth client: `hermes dashboard register`. This provisions a Nous Portal client and writes `HERMES_DASHBOARD_OAUTH_CLIENT_ID` to `~/.hermes/.env`.
+3. Restart the dashboard so it picks up the registered client.
+4. Verify from the host:
+
+   ```bash
+   curl -fsS http://localhost:9119/api/status
+   ```
+
+   The JSON must show `"auth_required": true`, list `nous` in `auth_providers`, and list `native_pkce` in `auth_flows`. If `nous` is missing, repeat step 2 before continuing.
+
+#### Basic username/password
+
+Configure the bundled basic provider in `~/.hermes/.env` (keep the file mode `0600`):
+
+```dotenv
+HERMES_DASHBOARD_BASIC_AUTH_USERNAME=admin
+HERMES_DASHBOARD_BASIC_AUTH_PASSWORD=<long-unique-password>
+HERMES_DASHBOARD_BASIC_AUTH_SECRET=<stable-random-signing-secret>
+```
+
+Use `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD_HASH` instead of the plaintext password when you prefer a scrypt hash at rest. Restart the dashboard after changing the credentials. The backend should advertise `"basic"` in `auth_providers`, and `GET /api/auth/providers` should report `supports_password: true`; Mercury will then show **Sign in with username and password**.
+
+Basic auth is intended for a trusted LAN, VPN, or Tailscale network. If you intentionally expose a basic-auth backend to the open internet, stop and reconsider OAuth first; if you continue, use a long, unique, randomly generated password, HTTPS, and a strong network boundary. Never reuse the password elsewhere.
+
+### Recommended public access: HTTPS through Cloudflare Tunnel
+
+For a remote phone connection, keep Hermes bound to loopback and publish only a public HTTPS hostname through a named [Cloudflare Tunnel](https://developers.cloudflare.com/tunnel/). Do not expose port 9119 directly to the internet.
+
+1. Configure authentication per [Self-hosted authentication](#self-hosted-authentication-oauth-or-basic-usernamepassword) above. OAuth is recommended for public access; basic auth is supported for a trusted network. Follow the current [Hermes remote-backend documentation](https://hermes-agent.nousresearch.com/docs/user-guide/desktop#connecting-to-a-remote-backend).
+2. Start the recommended Dashboard backend on the host and keep it supervised by your service manager:
+
+   ```bash
+   hermes dashboard --host 127.0.0.1 --port 9119 --no-open
+   ```
+
+   This supplies the backend Mercury needs and also keeps the web dashboard available when you want it. Omit `--no-open` when starting it interactively and you want Hermes to open the dashboard in a local browser.
+
+3. In Cloudflare, create a **named Tunnel** on that host and add a published application:
+   - **Public hostname:** a hostname you control, such as `hermes.example.com`
+   - **Service:** `http://localhost:9119`
+
+   A locally managed tunnel uses the same mapping:
+
+   ```yaml
+   ingress:
+     - hostname: hermes.example.com
+       service: http://localhost:9119
+     - service: http_status:404
+   ```
+
+4. In Mercury, enter only `https://hermes.example.com` as the server origin, then complete the sign-in flow the server advertises. Do not include a path, API endpoint, WebSocket URL, username/password, token, authorization code, or WebSocket ticket.
+
+Cloudflare terminates public TLS while the tunnel carries traffic back to the loopback-only Hermes server. See Cloudflare's [published-application routing](https://developers.cloudflare.com/tunnel/routing/) and [configuration-file](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/) guides for current setup details.
+
+`hermes serve` is the headless alternative for hosts that only need native/remote clients and do not need the web dashboard. It and `hermes dashboard` default to the same port, so run one or the other — not both on port 9119. The separate `hermes gateway` service runs messaging platforms such as Telegram or Discord; it does not replace the backend required by Mercury.
+
+### Private access through Tailscale
+
+If the phone and Hermes host belong to the same Tailnet, [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve) is a private alternative to publishing a public hostname. Keep Hermes authentication enabled, expose it with Tailscale Serve, and enter the exact HTTPS `.ts.net` address reported by `tailscale serve status` in Mercury. Install and sign in to Tailscale on the phone before connecting.
+
+Tailscale is appropriate for private Tailnet-only access; basic auth is a good fit there. Use the Cloudflare plus OAuth path when the host must be reachable outside the Tailnet. Do not use plain HTTP or expose port 9119 directly to the internet.
+
+### Already running the dashboard for the desktop app?
+
+If you've already run `hermes dashboard` with Nous OAuth or basic auth for the Hermes desktop app, you're set — just make sure it's bound to an address your phone can reach (not `127.0.0.1`) and go straight to Mercury's Connect screen. Verify the surface Mercury needs with `GET /api/status`: it should report `auth_required: true`; OAuth should list `nous` in `auth_providers` and `native_pkce` in `auth_flows`, while basic auth should list `basic` in `auth_providers` and report `supports_password: true` from `GET /api/auth/providers`.
+
+### Keeping it available and troubleshooting
+
+The Hermes backend is long-running: if it stops, Mercury cannot connect. Run the recommended `hermes dashboard --no-open`, or headless `hermes serve`, under a service manager or other process supervisor. The messaging gateway, if you use Telegram, Discord, Slack, or another channel, is a separate long-running process. See the official [dashboard reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands#hermes-dashboard), [`hermes serve` CLI reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands#hermes-serve), and [messaging guide](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/) for current commands.
+
+1. On the host, confirm the backend is running with `hermes dashboard --status` or `hermes serve --status`, matching the command you started.
+2. Confirm the public host responds before opening Mercury: `curl -fsS https://hermes.example.com/api/status`.
+3. If it fails, inspect the named tunnel's connector state, public-hostname/DNS mapping, and TLS certificate in Cloudflare; then confirm the tunnel still targets `http://localhost:9119`.
+4. For Tailscale, confirm the phone is connected to the same Tailnet and use the exact HTTPS address from `tailscale serve status`.
+5. If the URL works but sign-in does not, verify the configured authentication provider and callback registration using the official Hermes guide. Do not paste credentials, cookies, tokens, or tickets into an issue.
+
+These are connection examples, not a server provisioner: Mercury does not create or modify your Hermes host, OAuth setup, Cloudflare tunnel, or Tailscale configuration.
+
+## Install
+
+### Android
+
+1. Download the [latest signed APK](https://github.com/unsupportedpastels/mercury/releases/latest) (Android 10+ / API 29).
+2. Tap the file and allow installs from your browser when Android asks.
+3. On first launch, enter your server origin and complete the authentication flow the server advertises — Nous OAuth or username/password basic auth.
+
+Releases are built and signed in CI. Verify the signature with `apksigner verify --verbose` before installing if you like. A Play Store listing is in progress; until then the signed APK on GitHub Releases is the official build. The sideload APK and a future Play install are signed differently and won't upgrade over each other.
+
+### iOS
+
+There is no App Store or TestFlight build yet. Mercury for iOS (iOS 17+) is built from source on a Mac with Xcode and installed on your own device or simulator; see [Build from source](#build-from-source) and [`ios/README.md`](ios/README.md). The first-launch flow is the same: server origin (or Hermes Cloud sign-in, or a Relay QR code), then the sign-in the server advertises.
+
+## Security & privacy
+
+Mercury connects only to the server origin you configure or the optional Relay origin contained in a QR code you explicitly scan. It does not include a hosted Hermes service, telemetry SDK, analytics SDK, ad network, or hard-coded remote endpoint.
+
+- Credentials, connection state, and cached transcripts are scoped to the normalized server origin and stored with Android Keystore-backed encryption on Android and in the iOS Keychain (device-only, per-origin items) on iOS. Cookies are encrypted per origin on Android; on iOS, basic-auth session cookies stay in the system cookie store, scoped by cookie domain.
+- Relay pairings and device keys live in their own encrypted store on each platform, fully apart from direct-server credentials.
+- WebSocket tickets are fresh, single-use, and held in memory only.
+- Production connections must use HTTPS. Plain HTTP is accepted only for loopback or private-network servers selected explicitly in the app.
+- Your prompts, attachments, and transcript data are processed by the Hermes server you choose. Optional Relay routing is end-to-end encrypted and cannot read that content. No telemetry or analytics.
+
+See [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md) for details.
+
+## Status
+
+Mercury is pre-release software. Android ships as a signed APK on GitHub Releases and is being prepared for Google Play; iOS is built from source and has no App Store or TestFlight distribution yet. See the [release checklist](docs/release-readiness.md) for how each platform is versioned and cut.
+
+## Build from source
+
+The repo is one Gradle build: `app/` (Android), `shared/mercury-core` (the Kotlin Multiplatform core, compiled into the Android app and linked into the iOS app as the static `MercuryCore` framework), and `ios/` (the Xcode project, generated with XcodeGen). The Android `applicationId` stays `com.unsupportedpastels.hermesandroid` for Play continuity with the original listing, while the iOS bundle identifier is `com.unsupportedpastels.mercury`.
+
+### Android
+
+- JDK 17
+- Android SDK platform corresponding to the project's configured `compileSdk`
+- An Android device or emulator for runtime verification
+
+Create an untracked `local.properties` with your SDK path, then run:
+
+```bash
+./gradlew testDebugUnitTest lintDebug assembleDebug validateDebugScreenshotTest
+./gradlew :shared:mercury-core:check
+```
+
+The debug APK is written to `app/build/outputs/apk/debug/`.
+
+### iOS
+
+- A Mac with Xcode (iOS 17 SDK or newer)
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
+- JDK 17 on `PATH` (or `JAVA_HOME` set) — `brew install openjdk@17`; the Xcode pre-build phase runs `./gradlew` to link the `MercuryCore` framework
+
+```bash
+cd ios
+xcodegen generate
+xcodebuild -project Mercury.xcodeproj -scheme Mercury \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build test
+```
+
+The generated `Mercury.xcodeproj` is never committed. Open it in Xcode to run on a device with your own signing team.
+
+For local setup and runtime checks, see [docs/setup.md](docs/setup.md) and [docs/testing.md](docs/testing.md).
+
+## Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) before opening an issue or pull request. Mercury must stay a client of released, official Hermes interfaces — no private backend route, plugin, dashboard extension, gateway worker, or server fork is a requirement for the app; Mercury Relay is the one scoped, optional exception described in AGENTS.md. Stack: Kotlin Multiplatform core with `kotlinx.serialization` and `cryptography-kotlin`; Kotlin, Jetpack Compose, Material 3, and Navigation 3 on Android; Swift and SwiftUI on iOS — all built against the official `hermes serve` interfaces.
+
+## License
+
+Mercury is released under the [MIT License](LICENSE). Third-party components retain their own licenses.

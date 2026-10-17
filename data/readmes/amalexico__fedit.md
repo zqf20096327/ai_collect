@@ -1,0 +1,961 @@
+# fedit — Fast File Editor for the Terminal
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/fedit)
+[![Open Collective](https://img.shields.io/opencollective/all/fedit?label=Open%20Collective&logo=opencollective)](https://opencollective.com/fedit)
+
+A zero-dependency CLI tool for **surgical file edits** from the command line.
+No interactive editors. No sed/awk gymnastics. Just simple, predictable operations
+with built-in verification.
+
+Built for sysadmins, DevOps engineers, and anyone who scripts config changes.
+
+![fedit demo](demo.gif)
+
+```
+go install github.com/amalexico/fedit@latest
+```
+
+---
+
+## Why fedit?
+
+- **One binary, zero dependencies** — pure Go, runs everywhere
+- **21 language mappers** — see the structure of any file before editing
+- **-v flag** — verify every mutation before moving on
+- **Line-aware** — no regex surprises, no "which match did it hit?"
+- **Stream engine** — process multi-GB files line-by-line with atomic integrity
+- **Field extraction** — pull CSV/TSV column N without awk
+- **Many files at once** — a comma list or glob in -file, plus cross-file copy, move and replace with -dest (since v1.9.0)
+- **Safe** — no in-place unless you say so, never touches files you did not name
+
+---
+
+## Install
+
+**Go install (recommended):**
+```bash
+go install github.com/amalexico/fedit@latest
+```
+
+Or download the binary from [GitHub Releases](https://github.com/amalexico/fedit/releases) and put it in your PATH.
+
+**Verify:**
+```bash
+fedit -file /etc/hostname -op show
+```
+
+---
+
+## Quick Start
+
+```bash
+# See what is in a file
+fedit -file config.yaml -op show
+
+# See just lines 10-25
+fedit -file config.yaml -op show -line 10 -end 25
+
+# Find every line containing "timeout"
+fedit -file config.yaml -op find -match "timeout"
+
+# See the structure of a Go file
+fedit -file main.go -op map -lang go
+
+# Replace line 42 with new content
+fedit -file config.yaml -op replace -line 42 -end 42 -text "timeout: 60s" -v
+
+# Insert a line after every occurrence of "server {"
+fedit -file nginx.conf -op insertafter -match "server {" -text "    include security.conf;" -v
+
+# Move a function block before another (content-matched, atomic)
+fedit -file main.go -op move -match "func OldHelper(" -end 45 -beforematch "func NewHelper(" -v
+
+# Copy a config block and paste it 3 times at a new location
+fedit -file values.yaml -op copy -line 50 -end 65 -after 200 -times 3 -v
+
+# Extract column 2 from a TSV file (v1.4+)
+fedit -file data.tsv -op fields -col 2
+
+# Write content with literal backslashes — no \n escape expansion (v1.6.0)
+fedit -file config.txt -op writeraw -text "path=C:\\Users\\admin"
+
+# Hex-encode tricky text to sidestep shell quoting (v1.6.0)
+# fwencode produces the hex; fedit decodes it before writing
+fedit -file config.txt -op write -texthex 706174683d2f746d70
+
+# Overwrite a file cleanly then insert new content (v1.6.0)
+fedit -file config.txt -op insert -line 0 -cleanfirst -text "# regenerated"
+
+# Get bare line numbers for scripting (v1.6.0)
+fedit -file main.go -op find -match "TODO" -x 2>$null
+
+# Regex replace on a multi-GB log without loading it into memory (v1.4+)
+fedit -file huge.log -op replaceall -match 'ERROR' -text 'WARN' -stream
+```
+
+---
+
+## All Operations
+
+### show — Display file contents
+
+```bash
+# Entire file
+fedit -file app.conf -op show
+
+# Lines 50-75 only
+fedit -file app.conf -op show -line 50 -end 75
+# Last 10 lines
+fedit -file app.conf -op show -line -10:
+
+# Lines 50 to 5th from end
+fedit -file app.conf -op show -line 50 -end -5
+
+# Lines 100-103 (relative range)
+fedit -file app.conf -op show -line 100:+3
+
+# Show from one anchor to another (no line numbers needed)
+fedit -file config.go -op show -match "func Start" -endmatch "func End"
+```
+
+---
+
+### find — Search for lines matching a substring
+
+```bash
+# Find all lines containing "ERROR"
+fedit -file /var/log/app.log -op find -match "ERROR"
+
+# Output includes context lines and occurrence numbers
+# Use -nth to target a specific match in other operations
+```
+
+**Pro tip:** Run find first to get line numbers, then use replace or delete with exact lines.
+
+---
+
+### insert — Insert content after a line number
+
+```bash
+# Insert a comment after line 1
+fedit -file script.sh -op insert -line 1 -text "# Added by deploy script" -v
+
+# Insert multiple lines from a file
+fedit -file config.yaml -op insert -line 10 -textfile extra-config.yaml -v
+```
+
+---
+
+### insertafter — Insert after a matching line (RECOMMENDED)
+
+```bash
+# Add a firewall rule after the matching comment
+fedit -file iptables.rules -op insertafter -match "# Custom rules" -text "-A INPUT -p tcp --dport 8080 -j ACCEPT" -v
+
+# Target the 2nd occurrence
+fedit -file nginx.conf -op insertafter -match "server {" -nth 2 -text "    listen 8443 ssl;" -v
+
+# Target the last occurrence
+fedit -file docker-compose.yml -op insertafter -match "volumes:" -nth -1 -text "      - /data:/data" -v
+```
+
+---
+
+### insertbefore — Insert before a matching line (RECOMMENDED)
+
+```bash
+# Add a header before the first route definition
+fedit -file routes.rb -op insertbefore -match "get '/'" -text "  # === Public Routes ===" -v
+
+# Insert a dependency before the closing bracket
+fedit -file package.json -op insertbefore -match "}" -nth -1 -textfile new-deps.txt -v
+```
+
+---
+
+### replace — Replace a line range with new content
+
+```bash
+# Replace a single line
+fedit -file config.ini -op replace -line 15 -end 15 -text "max_connections = 200" -v
+
+# Replace lines 30-35 with content from a patch file
+fedit -file server.conf -op replace -line 30 -end 35 -textfile patched-block.txt -v
+# Replace a section by content anchors (no line numbers needed)
+fedit -file CHANGELOG.md -op replace -match "## v1.6" -endmatch "## v1.5" -textfile new-section.txt -v
+```
+
+---
+
+### replaceall — Global find-and-replace
+
+```bash
+# Change all occurrences of old domain to new
+fedit -file nginx.conf -op replaceall -match "old.example.com" -text "new.example.com" -v
+
+# Update a version string everywhere
+fedit -file Makefile -op replaceall -match "1.1.0" -text "1.2.0" -v
+```
+
+---
+
+
+### fields -- Extract a column from delimited files (v1.4.0)
+
+```bash
+# Extract column 2 from a tab-separated file (default delimiter: tab)
+fedit -file data.tsv -op fields -col 2
+
+# Extract the third field from a CSV
+fedit -file report.csv -op fields -col 3 -delim ","
+
+# Extract usernames from /etc/passwd (colon-delimited)
+fedit -file /etc/passwd -op fields -col 1 -delim ":"
+```
+
+Output goes to stdout for piping. Lines shorter than `-col` are skipped silently.
+Always streaming -- no memory limit regardless of file size.
+
+### -stream -- Large-file streaming mode (v1.4.0)
+
+Add `-stream` to `replaceall` or `find` to process files line-by-line without
+loading them into memory. 10 MB per-line buffer handles JSON blobs and minified files.
+Atomic integrity: writes to a temp file then renames -- original is untouched on interruption.
+
+```bash
+# Replace a pattern in a multi-GB log file
+fedit -file server.log -op replaceall -match "10.0.0.1" -text "10.0.0.2" -stream
+
+# Regex replace in a huge file with capture groups
+fedit -file big.csv -op replaceall -match-regex 'id_(\d+)' -text 'ID_$1' -stream
+
+# Streaming find -- grep-style output to stdout
+fedit -file huge.log -op find -match "FATAL" -stream
+```
+
+Supported with `-stream`: `replaceall` (literal and regex), `find`.
+Not supported: `move`, `copy`, `map` (these require full file structure in memory).
+
+### writeraw — Write without escape expansion
+
+```bash
+# Write a Windows path without double-escaping backslashes
+fedit -file config.ini -op writeraw -text "basedir=C:\\Program Files\\App"
+
+# Write content from a file as-is
+fedit -file output.txt -op writeraw -textfile template.txt
+```
+
+Unlike `write`, `writeraw` treats `\n` as two characters (backslash + n), not a newline.
+
+---
+
+### writelines — Write lines interactively from stdin
+
+```bash
+fedit -file notes.txt -op writelines
+# Type lines at the > prompt, Ctrl+Z (Windows) or Ctrl+D (Unix) to finish
+```
+
+---
+
+### -texthex — Hex-encoded input (v1.6.0)
+
+Encode text to hex first (e.g. with `fwencode`), then pass the hex string as `-text`.
+Eliminates all shell-quoting issues with special characters.
+
+```bash
+# Decode hex string and write — no quoting gymnastics needed
+fedit -file deploy.sh -op write -texthex 23212f62696e2f62617368
+```
+
+---
+
+### -matchhex / -endmatchhex — Hex-encoded anchors (v1.8.1)
+
+Same idea as `-texthex`, but for the search anchors. PowerShell mangles a double quote
+inside `-match` before fedit sees it, so `case "replace":` silently becomes `case replace:`
+and matches nothing. Pass the anchor as hex instead; fedit decodes it into `-match`
+(or `-endmatch`) once, so every op that takes an anchor works unchanged.
+
+```bash
+# Find a line containing double quotes (hex of: case "replace":)
+fedit -file main.go -op find -matchhex 6361736520227265706c616365223a
+```
+
+Invalid hex exits 1 with `matchhex: invalid hex string: ...` (or `endmatchhex: ...`).
+
+---
+
+### Multiple files -- comma list or glob (show/find/map since v1.8.1, mutation and MCP since v1.9.0, -sourcefile and -sourceblock with a list since v1.11.0)
+
+`-file` accepts a comma-separated list, a glob, or both. A real file with that exact name wins over glob expansion.
+
+Read-only ops (show, find, map) print a `==> path <==` header per file:
+
+```bash
+# Find TODO in every Go file in the current folder
+fedit -file '*.go' -op find -match 'TODO'
+
+# Map two files at once
+fedit -file main.go,mcp.go -op map -lang go
+```
+
+- find skips files with no hits (grep-style) and exits 1 only if nothing matched in any file.
+- map skips unrecognized extensions with a SKIP line.
+- A summary line reports how many files had results.
+
+Mutating ops (replaceall, insertafter, insertbefore, delete, replace, write) run on each file on its own:
+
+```bash
+# Replace in every matching file
+fedit -file '*.conf' -op replaceall -match 'old.example.com' -text 'new.example.com'
+
+# Insert after the first match in each file
+fedit -file a.yaml,b.yaml -op insertafter -match 'servers:' -text '  - new'
+
+# Delete from a start line through an end line in each file (-endmatch is inclusive)
+fedit -file '*.md' -op delete -match '<!-- start -->' -endmatch '<!-- end -->'
+```
+
+- A problem in one file (no match, unreadable, read-only, write failed) is reported as SKIP and never stops the batch. A skipped file is never modified.
+- The report lists OK or SKIP per file, then `N/M file(s) succeeded`. Exit code 0 if at least one file succeeded, 1 if none did.
+- Only -match (plus -endmatch for delete and replace), -nth and -text/-textfile/-texthex are accepted, plus -sourcefile/-sourceblock/-lang on insertafter and insertbefore (since v1.11.0). -match-regex works with replaceall, and write needs no -match and writes the same content to every file. -block, -line, -cleanfirst, -stream and -files are rejected, and so are move and copy, all before any file is read.
+- MCP: fedit_replaceall, fedit_insertafter, fedit_insertbefore, fedit_delete and fedit_replace take a comma list or glob in file, with the same rules and a per-file report; block, line, stream and files are rejected. fedit_write always treats file as one path. fedit_show, fedit_find and fedit_map also take a list.
+
+### Cross-file copy, move and replace -- -dest (v1.9.0, MCP since v1.10.0)
+
+`-dest` copies or moves a block from `-file` into one or more other files. It takes a comma-separated list of existing files (no globs). The source is chosen the usual way: `-line`/`-end`, `-match`/`-endmatch`, or `-block` with `-lang`. The destination anchor is resolved separately inside each destination file, using one of `-after`, `-before`, `-aftermatch`, `-beforematch`, `-afterblock` or `-beforeblock` (the block anchors need `-lang`).
+
+```bash
+# Copy a function into two other files, right after a named block in each
+fedit -file a.go -op copy -block Helper -lang go -dest b.go,c.go -afterblock Init
+
+# Move a config section into two files, before a marker line in each
+fedit -file base.conf -op move -match '[cache]' -endmatch '[/cache]' -dest x.conf,y.conf -beforematch '[logging]'
+
+# Paste 2 copies in each destination
+fedit -file src.txt -op copy -line 5:+3 -dest a.txt,b.txt -aftermatch ANCHOR -times 2
+```
+
+- Each destination is handled on its own. A problem in one (missing file, anchor not found, read-only, write failed) is reported as SKIP and that file is never modified. The batch never aborts.
+- move writes all the destinations first. The source text is removed only if at least one destination write succeeded. If every destination fails, the source is left intact, so text is never lost.
+- The report lists OK or SKIP per destination, then `N/M file(s) succeeded`. Exit code 0 if at least one destination succeeded, 1 if none did.
+- A destination that is the source file itself is a SKIP, and a file listed twice is used once.
+- copy and move take -dest with an anchor flag, and replace takes -dest with -destblock (below). It is rejected with any other op, and with -match-regex, -cleanfirst, -stream or -files, before any file is read. It does not combine with a multi -file list: -file must be the single source file.
+- Cross-file transfer moves text, not dependencies. A Go function that calls fmt.Println lands textually perfect in a file with no fmt import, and that file will not compile until you add the import. Since v1.11.0, copy, move and replace with -dest add an advisory note when a Go destination lacks a standard library import that the transferred lines use (advisory only: results and exit codes are unchanged).
+- MCP: fedit_copy, fedit_move and fedit_replace take a dest parameter (a comma list of files) with the same anchors, and destblock for replace; same rules and a per-destination report; file must be a single path. fedit_insertafter and fedit_insertbefore take sourcefile and sourceblock (with lang); there file may also be a comma list or glob.
+
+**Replace a block in other files -- `replace -dest` with `-destblock`**
+
+`replace -dest` overwrites a named block in each destination with the source block or range from `-file`. `-destblock` names the block to overwrite and is required. The source is chosen as for copy and move, and `-lang` lets block names resolve.
+
+```bash
+# Overwrite Helper in two files with the Helper from a.go
+fedit -file a.go -op replace -block Helper -lang go -dest b.go,c.go -destblock Helper -v
+```
+
+- A destination that does not have that block is a SKIP, never an insert. Each destination is handled on its own, like copy and move.
+- -destblock is only accepted with replace -dest.
+
+**Insert a block from another file -- `-sourcefile` and `-sourceblock`**
+
+`insertafter` and `insertbefore` can take their content from a named block in another file. `-file` stays the file being edited and the anchor is chosen as usual.
+
+```bash
+# Insert Helper from a.go into b.go, after the line matching '// helpers'
+fedit -file b.go -op insertafter -match '// helpers' -sourcefile a.go -sourceblock Helper -lang go -v
+```
+
+- -sourcefile and -sourceblock must be used together and need -lang. They cannot be combined with -text, -textfile or -texthex.
+- -file may be a comma list or glob (since v1.11.0). The block is read once from -sourcefile and inserted into every file at that file's own -match, with a per-file report. A file without the match is a SKIP and is never modified. This is not a -dest fan-out: each target is edited at its own -match.
+- Since v1.11.0, when the source and the destination are both Go files and the inserted block uses a standard library package the destination does not import, a hint is printed (stderr on the CLI, the OK message on MCP; advisory only: the insert is still done and the exit code is unchanged). With a file list the hint is added to that file's report line.
+- The MCP tools take sourcefile and sourceblock as parameters on fedit_insertafter and fedit_insertbefore (with lang).
+
+---
+
+### guided -- Natural-order entry point (CLI, since v1.11.0)
+
+`fedit guided` takes the source, the verb and the destination in plain order and turns them into the explicit `-op` command, which it prints to stderr before running it. It is a CLI shortcut only: there is no MCP tool for it, and the engine and the explicit flags are unchanged.
+
+```
+fedit guided SRCFILE SRCBLOCK copy|move DESTFILE [before TARGET | after TARGET | at-end] [silent]
+fedit guided SRCFILE SRCBLOCK replace DESTFILE [TARGET]
+fedit guided SRCFILE SRCBLOCK insertbefore|insertafter DESTFILE TARGET
+fedit guided "new text" insertbefore|insertafter FILE TARGET
+
+fedit guided a.go Helper copy b.go before Init
+fedit guided a.go Helper move "b.go,c.go" after Init
+fedit guided a.go "line 12-18" copy b.go at-end
+fedit guided a.go Helper replace b.go
+```
+
+- The source is a named block (the language comes from the file extension) or `"line N-M"`.
+- Several destinations: quote them as one comma list (`"b.go,c.go"`), because PowerShell would otherwise split them.
+- Each destination is handled on its own. A missing file is created, and a missing anchor (or no position at all) appends at the end, with a note. A move runs its copies first and the move last, so the source is erased only after a write succeeded.
+- Block names are matched by substring, as everywhere else. If a name matches several blocks, a single exact match wins (a note says so); otherwise you get a numbered choice in a terminal, or the list of candidates and exit code 2 when there is no terminal. The chosen block is then addressed by line numbers.
+- `replace` overwrites TARGET (default: the same name as the source) in each destination and skips a destination that does not have it.
+- `silent` runs the plan with `-quiet`; the engine report for `-dest` still prints.
+
+### -cleanfirst — Truncate before writing (v1.6.0)
+
+```bash
+# Clear the file then insert fresh content at line 0
+fedit -file output.txt -op insert -line 0 -cleanfirst -text "# regenerated"
+```
+
+---
+
+### -x — Machine-readable output (v1.6.0)
+
+```bash
+# Get bare line numbers from find (stdout only, no context noise)
+fedit -file main.go -op find -match "TODO" -x 2>$null
+
+# Extract CSV column with no stats footer
+fedit -file data.csv -op fields -col 2 -delim "," -x
+```
+
+---
+
+#### v1.5.0: HCL/Terraform block mapper (`-lang hcl`)
+
+Move, copy, and refactor Terraform blocks by name — no line numbers needed.
+Accepts `-lang hcl`, `-lang tf`, or `-lang terraform` (all equivalent).
+
+Supported block types: `resource`, `data`, `module`, `provider`, `variable`,
+`output`, `locals`, `terraform`, `moved`, `import`, `check`.
+
+```bash
+# Move a resource block before another
+fedit -file main.tf -op move -block 'resource "aws_instance" "web"' \
+      -beforeblock 'resource "aws_s3_bucket" "data"' -lang hcl -v
+
+# Copy a variable definition (scaffold new variable from existing)
+fedit -file variables.tf -op copy -block 'variable "instance_type"' \
+      -after 20 -lang hcl -v
+
+# Reorder provider blocks
+fedit -file providers.tf -op move -block 'provider "google"' \
+      -beforeblock 'provider "aws"' -lang hcl -v
+```
+
+Nested blocks (e.g. `ingress {}` inside a `resource`) are correctly ignored —
+only top-level blocks are matched.
+
+#### v1.5.0: Nix block mapper (`-lang nix`)
+
+Move and copy top-level attribute bindings in Nix expression files.
+Handles attribute sets (`name = { }`), lists (`name = [ ]`), and
+dotted attributes (`programs.git = { }`).
+
+```bash
+# Reorder home-manager program configs
+fedit -file home.nix -op move -block "programs.git" \
+      -beforeblock "programs.ssh" -lang nix -v
+
+# Copy a service config as a scaffold
+fedit -file configuration.nix -op copy -block "services.nginx" \
+      -after 50 -lang nix -v
+```
+
+
+### move — Move a line range to a new position
+
+```bash
+# Move lines 100-120 to after line 200 (explicit range)
+fedit -file server.go -op move -line 100 -end 120 -after 200 -v
+
+# Move a function block to before another function (content-matched)
+fedit -file routes.go -op move -match "func OldHelper(" -end 45 -beforematch "func NewHelper(" -v
+
+# Swap two nginx server blocks
+fedit -file nginx.conf -op move -match "server {" -endmatch "# end server 1" -aftermatch "# end server 2" -v
+
+# Cut once, scaffold 3 copies at destination
+fedit -file main.go -op move -line 5 -end 12 -after 100 -times 3 -v
+```
+
+**Rules:**
+- Destination may not overlap the source range — fedit reports a precise error with line numbers.
+- `-times N`: cut once, paste N times. Net delta = blockSize × (N−1). Default times=1 = zero delta.
+- To move the block into other files instead, use `-dest` (see Cross-file copy, move and replace above).
+
+---
+
+### copy — Copy a line range to a new position
+
+```bash
+# Copy a config block to after a section header
+fedit -file values.yaml -op copy -line 50 -end 65 -aftermatch "# staging" -v
+
+# Duplicate a test fixture 10 times for parameterised tests
+fedit -file fixtures_test.go -op copy -match "func TestCase(" -end 30 -after 200 -times 10 -v
+
+# Reorder Python classes (copy source before target; overlap is allowed)
+fedit -file processor.py -op copy -match "class ModuleProcessor_15" -endmatch "class ModuleProcessor_16" -beforematch "class ModuleProcessor_13" -v
+```
+
+**Rules:**
+- Snapshot semantics: source range is read once before any writes. All N copies are identical clones of the original, even when destination overlaps source.
+- To copy the block into other files instead, use `-dest` (see Cross-file copy, move and replace above).
+- Net delta = blockSize × times.
+
+---
+
+### delete — Remove lines
+
+```bash
+# Delete a single line
+fedit -file hosts -op delete -line 12 -end 12 -v
+
+# Delete a block (lines 40-55)
+fedit -file config.yaml -op delete -line 40 -end 55 -v
+```
+
+---
+
+### write — Create or overwrite a file
+
+```bash
+# Create a new file
+fedit -file /tmp/note.txt -op write -text "Deployment started" -v
+
+# Write multi-line content from another file
+fedit -file /etc/motd -op write -textfile new-motd.txt -v
+```
+
+---
+
+### map — Structural overview of a file
+
+```bash
+# Map a Go file — see all functions, types, imports
+fedit -file main.go -op map -lang go
+
+# Map a Dockerfile — see stages and instructions
+fedit -file Dockerfile -op map -lang dockerfile
+
+# Map a Makefile — see variables, targets, duplicates
+fedit -file Makefile -op map -lang makefile
+```
+
+---
+
+## Supported Map Languages (21)
+
+| Language | Key Structures Detected |
+|------------|------------------------|
+| go | package, imports, types, interfaces, functions |
+| python | imports, classes, functions, decorators |
+| javascript | imports, exports, classes, functions, arrows |
+| typescript | (same as javascript) |
+| css | imports, custom properties, selectors, @media, @keyframes; duplicate selectors are counted per container block, so the same selector in different @media or @keyframes blocks is not a duplicate (since v1.11.0) |
+| rust | use, mod, struct, enum, trait, impl, fn, macro_rules! |
+| java | package, imports, classes, interfaces, enums, methods |
+| csharp | using, namespace, classes, interfaces, records, properties |
+| html | doctype, head/body, headings, scripts, links, forms, ids |
+| sql | CREATE, ALTER, DROP, INSERT, SELECT, indexes, triggers |
+| yaml | document separators, top-level keys |
+| toml | tables, array tables, top-level keys |
+| markdown | headings (fenced code is skipped, so shell comments are not listed as headings), code blocks, links; duplicate headings (same text, level and parent, case-insensitive) are flagged (since v1.11.0) |
+| ruby | requires, modules, classes, methods, attributes |
+| php | namespace, use, classes, interfaces, traits, functions |
+| dockerfile | FROM stages, all instructions; duplicate stage names (case-insensitive) and CMD, ENTRYPOINT or HEALTHCHECK repeated in one stage are flagged (since v1.11.0) |
+| makefile | includes, variables, .PHONY, targets |
+| json       | root type, top-level keys, nesting depth, duplicate keys within one object, malformed-file error |
+| csv        | rows, columns, header list, ragged rows, duplicate header columns, empty fields |
+| hcl        | top-level blocks by kind (terraform, provider, variable, locals, data, resource, module, output, moved, import, check), duplicate blocks; terraform and tf are aliases (since v1.11.0) |
+| nix        | top-level attribute blocks and simple attributes, duplicate attribute paths; unindented lines only (since v1.11.0) |
+
+Most mappers detect **duplicates** (functions, tables, keys, header columns, blocks, attributes, selectors, headings, Dockerfile stages) and flag them with warnings.
+
+---
+
+## Flags Reference
+
+| Flag | Description |
+|------------|------------------------------------------|
+| -file PATH | Target file (required); comma list or glob for show/find/map and replaceall/insertafter/insertbefore/delete/replace/write |
+| -dest PATH,PATH | Cross-file copy, move and replace: comma list of destination files, each needs one anchor flag (-after, -before, -aftermatch, -beforematch, -afterblock, -beforeblock), or -destblock for replace (v1.9.0, MCP since v1.10.0) |
+| -op OP | Operation to perform (required) |
+| -line N | Starting line number (1-based); N:+M=range, -N=from end, -N:=last N lines, :=EOF |
+| -end N | Ending line (for ranges); -N counts from end of file |
+| -text "s" | Inline text content |
+| -textfile F | Read content from a file |
+| -match "s" | Substring to search for |
+| -nth N | Which occurrence (default 1, -1 = last) |
+| -lang LANG | Language for map and for -block operations |
+| -v | Verify: show affected lines after edit |
+| -endmatch "s" | Content-anchor end of range (show/replace/delete/move/copy) |
+| -quiet | Suppress stdout on success; exit code signals result |
+| -texthex HEX | Hex-encoded UTF-8 content, bypasses shell quoting (v1.6.0) |
+| -matchhex HEX, -endmatchhex HEX | Hex-encoded -match and -endmatch anchors, for anchors that contain double quotes (v1.8.1) |
+| -match-regex P | replaceall: regex with capture groups ($1 $2) |
+| -files GLOB | replaceall across every file matching a glob (other ops take a comma list or glob in -file) |
+| -stream | Large-file mode for replaceall and find (v1.4.0) |
+| -cleanfirst | Truncate the file before insert or write (v1.6.0) |
+| -raw | show: bare content, no line numbers or footer, for piping to fwencode (v1.7.0) |
+| -x | find: bare line numbers; fields: no stats footer (v1.6.0) |
+| -col N, -delim CHAR | fields: column number (1-based) and field delimiter (default tab) (v1.4.0) |
+| -extract SPEC, -get REGEX, -wdelim CHAR | find: sub-line extraction (word and character slices), regex pre-filter and word delimiter (v1.7.0; over MCP an invalid get regex is an error, since v1.11.0) |
+| -block NAME | Target a named function, class or resource instead of line numbers (needs -lang); block ends skip strings, multi-line strings and comments, see "How block ends are found" below (since v1.11.0) |
+| -after N, -before N | move/copy destination: after or before line N (0 = beginning of file) |
+| -aftermatch TEXT, -beforematch TEXT | move/copy destination: after or before the first line that contains TEXT |
+| -afterblock NAME, -beforeblock NAME | move/copy destination: after or before a named block (needs -lang); with insertafter and insertbefore they are rejected with an error that points to -block (since v1.11.0) |
+| -times N | move/copy: paste N times (move cuts once) |
+| -destblock NAME | replace -dest only: the block to overwrite in each destination (required); a destination without it is skipped (v1.9.0, MCP since v1.10.0) |
+| -sourcefile F, -sourceblock NAME | insertafter/insertbefore: take the content from a named block of another file (needs -lang; not with -text, -textfile or -texthex). -file may be a list, and a Go import hint can appear (both since v1.11.0); the flags themselves date from v1.9.0, MCP since v1.10.0 |
+
+---
+
+### How block ends are found (since v1.11.0)
+
+With `-block NAME` (and `-sourceblock`, `-destblock`, `-beforeblock`, `-afterblock`) the range of a block comes from a scanner for the language. Python and Ruby blocks do not use brace counting and are not affected. Go, JS and TS, Rust, Java, C#, PHP, HCL and Nix count braces (and brackets in Nix), and the count ignores:
+
+- Strings, including multi-line ones: backtick strings (Go raw strings, JS template literals), C# verbatim (`@"..."`) and raw (`"""`) strings, Java text blocks, Rust raw strings (`r"..."`, `r#"..."#`), HCL heredocs (`<<EOT`, `<<-EOT`) and Nix indented strings (two single quotes).
+- Rust char literals, lifetimes and loop labels.
+- Comments: `//` and `/* */` (nested in Rust), and `#` in HCL and Nix. Nix has no `//` comment, because `//` is its update operator.
+
+Known gaps: PHP heredoc and nowdoc strings, a Java text block that contains an escaped `"""`, a JS regular expression with an unescaped `/*`, and a block comment that opens outside any block. For a block like that, check the range with `show` first and fall back to `-line`.
+
+## Real-World Examples
+
+### Patch an Nginx config in a deploy script
+
+```bash
+#!/bin/bash
+# Update upstream server and reload
+
+fedit -file /etc/nginx/conf.d/app.conf \
+  -op replaceall \
+  -match "server 10.0.1.50:8080" \
+  -text "server 10.0.1.51:8080" -v
+
+nginx -t && systemctl reload nginx
+```
+
+### Add a cron job to crontab
+
+```bash
+fedit -file /etc/crontab \
+  -op insertafter \
+  -match "# Custom jobs" \
+  -text "0 2 * * * root /opt/backup.sh" -v
+```
+
+### Bulk update version in multiple files
+
+```bash
+for f in Makefile config.yaml package.json; do
+  fedit -file "$f" -op replaceall -match "1.1.0" -text "1.2.0" -v
+done
+```
+
+### Inspect a Dockerfile before editing
+
+```bash
+fedit -file Dockerfile -op map -lang dockerfile
+# See the structure, then surgically edit:
+fedit -file Dockerfile -op insertafter -match "FROM alpine" -text "RUN apk add --no-cache curl" -v
+```
+
+### Remove a block from a config
+
+```bash
+# First, find the lines
+fedit -file app.conf -op find -match "deprecated-feature"
+# Output says lines 44-49, so:
+fedit -file app.conf -op delete -line 44 -end 49 -v
+```
+
+### PowerShell workflow (Windows sysadmins)
+
+```powershell
+# Set an alias
+$f = "C:\tools\fedit.exe"
+
+# Find all TODO comments in Go code
+& $f -file main.go -op find -match "TODO"
+
+# Replace a config value
+& $f -file config.toml -op replaceall -match 'debug = true' -text 'debug = false' -v
+
+# Map a file to understand its structure
+& $f -file main.go -op map -lang go
+```
+
+---
+
+## Tips
+
+- **Always use -v** on mutations — it costs nothing and saves you from blind edits
+- **Use find before replace** — get the exact line numbers first
+- **Prefer insertafter/insertbefore over insert** — matching is more resilient than hardcoded line numbers
+- **Use -nth -1** to target the last occurrence of a match
+- **Use -textfile** for multi-line inserts — avoids shell quoting headaches
+- **map before editing unfamiliar files** — see the structure first
+
+---
+
+
+## LLM Benchmark
+
+How well do current LLMs use fedit vs. rewriting whole files?
+
+We tested **Claude (Sonnet 4.6)**, **ChatGPT (GPT-4o)**, and **Gemini (2.5 Pro)** on
+7 realistic editing tasks across files of 565-1206 lines. Each model was tested
+twice per task: once asked to **output the whole file** ("raw"), once asked to
+**output fedit commands only** ("fedit").
+
+### Results
+
+Legend: `PASS+` = optimal one-line solution | `PASS` = correct | `PASS*` = correct content, formatting artifact | `PARTIAL` = correct intent, off-by-one or fragile | `FAIL` = wrong output
+
+| Test | File | Task | Claude raw | Claude fedit | GPT raw | GPT fedit | Gemini raw | Gemini fedit |
+|------|------|------|:---:|:---:|:---:|:---:|:---:|:---:|
+| T1 | processor_600.go (575 L)   | Insert method after specific struct method | PASS  | PARTIAL | FAIL  | PARTIAL | PASS  | FAIL  |
+| T2 | config_800.yaml (1059 L)   | Replace 24-line deployment block           | PASS  | PASS    | FAIL  | FAIL    | PASS  | FAIL  |
+| T3 | styles_500.css (565 L)     | Find & delete CSS rule block               | PASS  | PASS    | PASS* | FAIL    | PASS* | FAIL  |
+| T4 | system_1000.go (980 L)     | Global rename (36 occurrences)             | PASS  | PASS+   | FAIL  | PASS+   | PASS* | PASS+ |
+| T5 | analytics_700.py (682 L)   | 3-step chain (insert + delete + replace)   | PASS  | PARTIAL | FAIL  | FAIL    | PASS  | FAIL  |
+| T6 | dashboard_900.html (891 L) | Insert before 3rd matching button (`-nth`) | PASS  | PARTIAL | FAIL  | PASS+   | PASS  | FAIL  |
+| T7 | engine_1200.go (1196 L)    | Map + targeted insert after method         | PASS  | PASS    | FAIL  | FAIL    | PASS  | FAIL  |
+
+### Top-line numbers
+
+| Model       | Raw mode      | Fedit mode                       |
+|-------------|---------------|----------------------------------|
+| Claude      | **7/7 PASS**  | 4 PASS, 3 PARTIAL                |
+| ChatGPT     | 1/7 PASS*     | 2 PASS+, 1 PARTIAL, 4 FAIL       |
+| Gemini      | 7/7 PASS*     | 1 PASS+, 6 FAIL                  |
+
+### Key findings
+
+**1. ChatGPT cannot output large files reliably.**
+6 of 7 raw tests truncated. The most striking failure was T6, where it inserted
+the literal placeholder line `[... TRUNCATED FOR BREVITY ...]` into otherwise
+valid HTML — a uniquely dangerous failure mode where output looks structurally
+complete but contains placeholder strings. T7 truncated 1206 lines down to 166.
+
+**2. LLMs hallucinate line numbers — and it gets worse with chain length.**
+Gemini's line-number errors grew across the suite: off by 36-56 lines on T2
+(single replace), 45 lines on T3, then **73 lines** on T5 (3-step chain).
+ChatGPT showed similar drift on T5. Claude was the only model that produced
+runnable line-numbered commands consistently.
+
+**3. Content-matching ops are immune to the hallucination class.**
+Gemini failed every fedit test that required line numbers (T1, T2, T3, T5, T6,
+T7), but PASSED T4 — which used `replaceall` with a content match. Same model,
+same task complexity, dramatically different reliability. The bottleneck is
+counting, not understanding.
+
+**4. `insertafter` on a function declaration matches the OPENING line.**
+Models repeatedly tried `insertafter -match "func MyFunc()"` to insert content
+AFTER the function ended. This is correct fedit behavior (it inserts after the
+matched line) but inserts the new code INSIDE the function body. Workaround:
+`insertbefore` the NEXT structural element. Confirmed in T1 and T7.
+
+**5. Even Claude flubs line-number direction.**
+T6: Claude used `insert -line 30` to add a banner before the 3rd button at line
+30. But `insert -line N` adds content AFTER line N. The correct command was
+`insertbefore -match "View Details" -nth 3`. Even the strongest model gets
+direction wrong about 1 in 6 single-step ops when reaching for line numbers.
+
+**6. `-match` is single-line only — and that's a feature.**
+ChatGPT (T3 fedit) tried to pass a multi-line CSS block as `-match` with literal
+`\n` escapes. fedit doesn't interpret escapes in `-match` and matches only
+single lines. This kept the operation safe (zero matches → no edit) rather than
+allowing a fragile multi-line pattern that could easily mismatch.
+
+**7. Markdown rendering is a hidden adversary.**
+ChatGPT and Gemini outputs lost `__name__` → `name`, `__init__` → `**init**`,
+and stripped CSS/Python indentation when rendered in chat UIs. The underlying
+files (when downloaded directly) were correct. This affects copy-paste workflows
+but not API integrations. **For best results, use the model's "copy code"
+button or download links — never select-and-copy from rendered output.**
+
+**8. Three different models converged on the same one-liner for T4.**
+Claude, ChatGPT, and Gemini all independently produced
+`fedit -op replaceall -match "FetchUser" -text "GetAccount"`.
+When the right tool is obvious, models reach for it. fedit's design surface
+makes the right tool obvious for content-driven edits.
+
+### Recommendations for LLM-driven workflows
+
+Based on these results, prefer **content-matching operations over line-number
+operations** when generating fedit commands from an LLM:
+
+- Use `insertbefore -match "next anchor"` instead of `insert -line N`
+- Use `replaceall -match "old" -text "new"` instead of `replace -line N -end M`
+- Use `find -match` and `show` to confirm line numbers before any line-numbered op
+- Reserve line-numbered ops for cases where an MCP-connected LLM has just run
+  `fedit_find` or `fedit_show` and has verified the line in context
+- Use `-block` / `-lang` to target named functions and structs without any line numbers
+
+For best results, give the LLM an MCP connection to fedit (see
+[MCP Server Mode](#mcp-server-mode)) so it can `fedit_find` and `fedit_show`
+before mutating. This eliminates the line-number hallucination class entirely
+and was the path Claude consistently took when it had recon available.
+
+### Methodology
+
+- Each test run in a fresh chat with the original file uploaded
+- Prompts identical across models; only "raw" vs "fedit" framing differed
+- Output saved verbatim, then diffed against ground truth via `Compare-Object`
+- Ground truth verified by running fedit commands locally and re-reading output
+- All 7 raw outputs that PASSED Compare-Object empty (byte-identical to ground
+  truth): Claude T2, T3, T4, T5, T6, T7 + Gemini T5, T6, T7
+- `PASS*` indicates byte-difference from indentation-stripping in chat UI render,
+  with content structurally correct (verified by re-running fedit ops on the
+  saved file)
+
+### Test corpus
+
+7 synthetic files (565-1206 lines) covering Go, YAML, CSS, Python, and HTML.
+Full results, ground truth files, test prompts and the 7-file corpus:
+[amalexhandler.com/fedit#benchmark](https://amalexhandler.com/fedit#benchmark).
+ 
+## MCP Server Mode
+
+fedit includes a built-in [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server, so AI coding assistants can use fedit as a tool for precise file edits.
+
+```bash
+fedit mcp
+```
+
+This starts a JSON-RPC 2.0 server on stdin/stdout. The server exposes all 14 editing operations as MCP tools:
+
+| Tool | Description |
+|------|-------------|
+| `fedit_show` | Display file contents (full or line range); comma list or glob in file |
+| `fedit_insert` | Insert content after a line number |
+| `fedit_delete` | Delete one or more lines; comma list or glob in `file` with `match` |
+| `fedit_replace` | Replace a line range or named block; comma list or glob in `file` with `match`; `dest` + `destblock` overwrite a named block in other files |
+| `fedit_replaceall` | Global find-and-replace; `match_regex` for regex and `textfile` for replacement text (both since v1.11.0); comma list or glob in `file` |
+| `fedit_write` | Create or overwrite a file |
+| `fedit_writeraw` | Create or overwrite a file with no escape expansion (backslashes literal) |
+| `fedit_map` | Structural overview (21 languages; `lang` is detected from the extension when omitted); comma list or glob in file |
+| `fedit_find` | Find lines matching a substring; comma list or glob in file |
+| `fedit_insertafter` | Insert after a matching line or named block; `sourcefile` + `sourceblock` + `lang` insert a block from another file (Go import hint since v1.11.0); comma list or glob in `file` |
+| `fedit_insertbefore` | Insert before a matching line or named block; `sourcefile` + `sourceblock` + `lang` insert a block from another file (Go import hint since v1.11.0); comma list or glob in `file` |
+| `fedit_move` | Move a line range to a new position; destination-overlap rejected; `dest` moves the block into other files |
+| `fedit_copy` | Copy a line range; snapshot semantics, overlap allowed, -times N; `dest` copies it into other files |
+| `fedit_fields` | Extract column N from CSV/TSV/delimited file (`-col N -delim CHAR`); always streaming |
+
+### Configuring with Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "fedit": {
+      "command": "fedit",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+> For a full setup guide (Windows paths, troubleshooting, Cursor/Cline/Windsurf snippets): [CLAUDE_DESKTOP.md](CLAUDE_DESKTOP.md)
+
+### Configuring with Cursor
+
+Add to `.cursor/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "fedit": {
+      "command": "fedit",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+### Why MCP?
+
+Without fedit, LLMs rewrite entire files — burning tokens and introducing drift. With fedit as an MCP tool, the model calls `fedit_map` to see structure, `fedit_find` to locate targets, and `fedit_replace` or `fedit_insertafter` to make surgical edits. Every mutation returns stats (line delta, elapsed time) so the model can verify its work.
+
+---
+
+
+## FAQ
+
+### Do I need fedit if my team has a solid PR review process?
+
+Probably not for human-driven edits where you review every diff. fedit shines in two specific cases:
+
+1. **Whole-file rewrites in long configs.** When an LLM regenerates a 600-line `values.yaml` to change one key, the diff is technically reviewable but practically nobody scrolls to line 412 to confirm nothing else moved. fedit makes the diff exactly N lines for an N-line change.
+
+2. **Agent loops without a human in the middle.** If you run agents semi-autonomously (issue → branch → PR opened, you review at the end), giving the agent surgical tools (`fedit_replace`, `fedit_insertafter`) instead of "rewrite the whole file" measurably reduces review surface area.
+
+If your workflow already catches these, the CLI is overkill. The MCP server may still be useful as an agent primitive.
+
+### Does fedit support streaming for all operations?
+
+Currently `replaceall` and `find` support `-stream` mode. `move` and `copy` require the full file in memory because they need to read both source and destination ranges. `map` requires structure analysis. `fields` is always streaming.
+
+### What is the maximum file size fedit can handle?
+
+In default (in-memory) mode: limited by available RAM, typically fine up to a few hundred MB. With `-stream`: unlimited -- fedit processes one line at a time with a 10 MB per-line buffer.
+
+### Does fedit support Terraform / HCL?
+
+Yes, as of v1.5.0. Use `-lang hcl` (or `-lang tf`/`terraform`) with `-block`, `-beforeblock`, `-afterblock` to move and copy Terraform blocks by name. All 11 top-level block types are supported. The `map` op supports HCL/Terraform and Nix since v1.11.0: `fedit -op map` on a .tf, .hcl or .nix file (or with `-lang hcl`, `terraform`, `tf` or `nix`) lists the top-level blocks (HCL) or attributes (Nix) and flags duplicates, and `fedit_map` does the same over MCP.
+
+### Does fedit preserve comments and formatting?
+
+Yes, by design. fedit does not parse-and-reformat — it operates on raw text bytes at line granularity.
+
+If you `replace -line 47 -end 49`, lines 1–46 and 50–EOF are untouched byte-for-byte: comments, trailing whitespace, mixed indentation, BOM markers, all preserved exactly. This is the main reason fedit is line-addressable instead of AST-based: AST round-trips lose too much (trailing commas, comment positioning, key ordering, blank-line spacing).
+
+This matters most for nginx configs (inline comments documenting *why* a directive exists), Ansible playbooks (YAML anchors and merge keys), and any file where a human formatting choice carries semantic weight.
+
+### Is the MCP server Claude-specific or Cursor-specific?
+
+Neither — it targets the open MCP spec. Plain JSON-RPC 2.0 over stdin/stdout against the public Model Context Protocol schema. No vendor-specific bits.
+
+Tested with Claude Desktop; should work with any compliant MCP client (Cursor, Continue, Cline, custom integrations). Tool definitions and JSON Schema live in `mcp.go` if you want to inspect the surface area before wiring it up.
+
+### What if the target string appears multiple times in the file?
+
+Use the `-nth N` flag:
+
+- `-nth 1` (default) — first match
+- `-nth 2` — second match
+- `-nth -1` — last match
+- Any positive integer picks that occurrence
+
+Example targeting the third `http.Redirect` call:
+
+```bash
+fedit -file router.go -op insertbefore -match "http.Redirect" -nth 3 -textfile patch.txt -v
+```
+
+If you are not sure how many matches exist, run `find` first — it lists every match with context so you can disambiguate before mutating:
+
+```bash
+fedit -file router.go -op find -match "http.Redirect"
+```
+
+### Does chaining commands cause line-number drift?
+
+No. Each fedit invocation reads the file fresh, so line numbers always reflect the current state on disk. You can chain operations safely with `;` (PowerShell) or `&&` (bash):
+
+```bash
+fedit -op replaceall -file f.conf -match "old.com" -text "new.com" -v ; fedit -op replace -file f.conf -line 42 -end 42 -text "fixed" -v
+```
+
+The tradeoff is one disk read per operation, which is negligible for editing workflows.
+
+If you want drift-immunity by design, prefer content-based targeting (`insertafter` / `insertbefore` / `replaceall` with `-match`) over line numbers — those resolve the target on each invocation regardless of what previous ops did.
+
+## License
+
+MIT — see [LICENSE](LICENSE)
+
+---
+
+Built by [Amalex](https://amalexhandler.com) — makers of Amalex Handler, the universal file transporter.

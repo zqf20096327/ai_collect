@@ -1,0 +1,353 @@
+# claude-code-delegate-local
+
+> 🇬🇧 English · [🇪🇸 Español](README.es.md)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io/)
+
+**MCP server that delegates Claude Code subagents to alternative backends** — local models (LM Studio, llama.cpp, Ollama, vLLM, LiteLLM), DeepSeek, MiniMax M3, GLM Coding Plan (Z.ai), AWS Bedrock, or any OpenAI/Anthropic-compatible endpoint — without losing your Claude Code orchestrator session.
+
+Built for users who want to keep their main Claude Code session on Anthropic (Max plan or API) for orchestration, while offloading specific subagents to cheaper, faster, or HIPAA-safe local backends.
+
+---
+
+## Table of contents
+
+- [What it solves](#what-it-solves)
+- [Features](#features)
+- [Quick install](#quick-install)
+- [Configuration](#configuration)
+- [Concurrency pools and failover](#concurrency-pools-and-failover)
+- [Tools exposed](#tools-exposed)
+- [3-tier agent lookup](#3-tier-agent-lookup)
+- [Dual-format backend routing](#dual-format-backend-routing)
+- [Thinking-mode support](#thinking-mode-support)
+- [Example: LiteLLM proxy](#example-litellm-proxy)
+- [Tested with](#tested-with)
+- [Best practices](#best-practices)
+- [Further reading](#further-reading)
+- [Caveats](#caveats)
+- [License](#license)
+
+---
+
+## What it solves
+
+You're working with Claude Code on a project and you want to:
+
+- Send a specific subagent (e.g., `security-engineer`) to a **local model** to save tokens from your Max plan, or because you're handling sensitive data that can't leave your machine.
+- Route another subagent to **DeepSeek** because it's 10× cheaper and faster for large tasks.
+- Keep your main Claude Code session **exactly as it is** — no swapping commands, no separate CLI, no losing the Max plan.
+
+That's what `delegate-local` does. It's an MCP server you install once that exposes tools the orchestrator can invoke to route specific subagents to whatever backend you've configured.
+
+## Features
+
+- ✅ **Your Anthropic Max plan stays intact.** No need to launch a separate CLI like `ccr code` or swap commands.
+- ✅ **3-tier agent lookup.** Same command works in any project — finds `.claude/agents/<name>.md` in the project first, then `.claude/skills/<name>/SKILL.md`, then global `~/.claude/agents/<name>.md`.
+- ✅ **Dual-format backend.** Auto-routes to `/v1/messages` (Anthropic format) or `/v1/chat/completions` (OpenAI format) based on model prefix. Works with DeepSeek's `reasoning_content` thinking mode out of the box.
+- ✅ **Full tool calling.** Delegated agents get `read_file`, `write_file`, and `run_bash` with the same loop semantics as Claude Code's native subagents.
+
+## Quick install
+
+Requires [uv](https://github.com/astral-sh/uv) and Claude Code.
+
+```bash
+git clone https://github.com/fegone/claude-code-delegate-local.git
+cd claude-code-delegate-local
+uv sync
+
+# Register as Claude Code MCP (user scope = global across projects)
+claude mcp add delegate-local \
+  --scope user \
+  --env DELEGATE_LOCAL_URL=http://localhost:4000/v1/messages \
+  --env DELEGATE_LOCAL_KEY=your-backend-api-key \
+  --env DELEGATE_LOCAL_MODEL=local-qwen-3-6-35b \
+  -- uv run --directory $(pwd) python server.py
+```
+
+Restart Claude Code. The MCP exposes 4 tools (see below).
+
+## Configuration
+
+All env vars are optional; defaults assume a LiteLLM proxy on `localhost:4000`.
+
+| Env var | Default | Description |
+|---|---|---|
+| `DELEGATE_LOCAL_URL` | `http://localhost:4000/v1/messages` | Anthropic-format endpoint. For OpenAI-format models, the server auto-converts the URL to `/v1/chat/completions`. |
+| `DELEGATE_LOCAL_KEY` | `""` | Bearer token / API key. Sent as both `x-api-key` and `Authorization: Bearer`. |
+| `DELEGATE_LOCAL_MODEL` | `local-qwen-3-6-35b` | Default model alias if the caller doesn't specify one. |
+| `DELEGATE_LOCAL_CODING_MODEL` | *(= `DELEGATE_LOCAL_MODEL`)* | Opt-in: coding agents (`coder`, `webdev`, `backend`, `devops`, `frontend`, `fullstack`, `security`) auto-route to this alias when the caller doesn't pass a model. Defaults to `DELEGATE_LOCAL_MODEL` (no rewrite). Set it to a coder-tuned alias to split coding onto a different model. **Must be an alias your backend actually serves** — otherwise coding agents fail with "model not found". |
+| `DELEGATE_LOCAL_AGENTS_DIR` | `~/.claude/agents` | Where to look for global agent definitions. |
+
+See [docs/CONFIGURATION.md](docs/CONFIGURATION.md) for full details and example setups with LiteLLM, llama.cpp, Ollama, DeepSeek direct, and AWS Bedrock.
+
+## Concurrency pools and failover
+
+Each **model** gets a pool of six concurrent dispatches, shared across every open Claude Code
+session — not per session, and not per provider. The pools are real files under
+`~/.cache/claude-delegate-local/slots/<bucket>/`, each requiring an exclusive `flock`; the
+kernel releases the lock if a process dies, so a crashed session leaves no phantom slots.
+
+The bucket is chosen by **longest matching prefix**, so specific entries win over family ones:
+
+| Bucket | Slots | Covers |
+|---|---|---|
+| `deepseek-v4-flash` | 6 | `-flash`, `-flash-max` |
+| `qwen-3-8-max` | 6 | `-max`, `-max-think` |
+| `glm-coding-plan` | 6 | plain, `-think`, `-max` |
+| `ornith` | 6 | `ornith*` |
+| `local-` | 2 | everything else local |
+
+Variants of one model share a pool on purpose: they sit behind the same flat plan.
+
+Override any of them with `DELEGATE_CONCURRENCY_<BUCKET>` (e.g.
+`DELEGATE_CONCURRENCY_GLM_CODING_PLAN=4`).
+
+### Failover
+
+When a pool is full, the dispatch walks a chain of equivalent models rather than failing:
+
+```
+glm-coding-plan-think → qwen-3-8-max → deepseek-v4-flash
+deepseek-v4-flash     → glm-coding-plan-think → qwen-3-8-max
+```
+
+Flash goes straight to Pro because Flash already bills per token — hopping to Pro does not
+turn a flat plan into an invoice. For the same reason DeepSeek sits **last** in the other
+chains: GLM and Qwen bill $0 against their plans, so a busy afternoon should not quietly
+become a bill.
+
+Fallbacks wait only `DELEGATE_FAILOVER_GRACE` (default 10s) for their own slot — the point is
+to find room now, not to queue four times over. A result that failed over carries
+`failed_over_from` and `model_used`.
+
+> ⚠️ **The chain preserves the NAME of a thinking tier, not measured equivalence.** GLM's
+> `-max` does not reason more than `-think`; Qwen 3.8's `reasoning_effort` does not scale;
+> DeepSeek's `medium`/`high`/`max` are indistinguishable. The mapping is the best available,
+> not a claim that the models reason alike.
+
+### Local models and Codex never fail over
+
+`local-`, `ornith`, `codex` and `gpt-` are pinned to themselves, in both directions.
+
+Local models run on hardware that may see regulated data; a silent hop to a cloud provider
+would move that data off-premise and **nobody would notice**, because the failure mode of an
+automatic fallback is that it does not announce itself. Codex bills against a ChatGPT
+subscription, where failing over means nothing and failing over *to* it burns plan quota.
+
+The guard filters the chain itself, not just the origin, so editing `FAILOVER_CHAINS` later
+cannot route a local model outward.
+
+## Tools exposed
+
+| Tool | Purpose |
+|---|---|
+| `delegate_to_local_agent(agent_name, task, workdir, max_turns, model)` | Run a `.md`-defined agent on the default backend with full tool calling. `max_turns` defaults to **auto (v0.6.0)**: 15 for local backends (`local-*`, MoE-A3B), 25 for cloud (MiniMax M3, DeepSeek, Sonnet/Opus). Pass an explicit value to override. Hard cap 40. |
+| `delegate_batch(tasks)` | **NEW v0.5.0** — Dispatch up to 4 agent tasks in parallel via `asyncio.gather`. Each task is a dict `{agent_name, task, workdir?, max_turns?, model?, max_tokens?}`. Returns per-task results in input order. Reuses same agent_name across tasks for KV-cache prefix benefit (~30-50% prompt savings on local llama.cpp). |
+| `delegate_to_provider(provider_url, api_key, model, agent_name, task, ...)` | Run an agent on any arbitrary endpoint (DeepSeek, OpenRouter, etc.) |
+| `delegate_to_codex(task, workdir, model, sandbox, timeout_s)` | **NEW** — Delegate to the OpenAI **Codex CLI** as an autonomous agent, authenticated by the user's **ChatGPT subscription** (Plus/Pro) — OpenAI's official path, no API key, no proxy. Codex does its own file edits + shell in its sandbox; the tool shells out to `codex exec` and returns the final message. Default model `gpt-6.1-sol` (needs codex-cli ≥ 0.159; older CLIs get a clear upgrade error, no auto-upgrade). Plan-allowed: `gpt-6.1-sol`, `gpt-6-astra` (frontier), `gpt-6-sol`, `gpt-6-luna` (fast/cheap), the older `gpt-5.6-sol`/`terra`/`luna` + `gpt-5.5`/`5.4`/`5.4-mini`. Short aliases: `sol` → 6.1-sol, `astra`, `luna` → 6-luna, `6-sol`, `6.1-sol`, `terra` → 6-sol (terra retired 2026-09-30), `5.6-*`, `5.5`. (`gpt-5.6`/`-codex` 400 on a subscription.) ⚠️ Cloud model — never for PHI. ⚠️ Plus plan = ~15-80 msgs / 5h window. Env: `DELEGATE_CODEX_BIN`, `DELEGATE_CODEX_MODEL`. |
+| `submit_codex(tasks)` | Launch one or many Codex runs **without waiting**; returns job ids at once. Each task: `{task, workdir, model, effort, sandbox, timeout_s}` (same rules/aliases as `delegate_to_codex`). Atomic: every task is validated before any starts. At most `DELEGATE_CODEX_MAX_CONCURRENT` (default **8**) run at once **across all sessions**, and at most `DELEGATE_CODEX_MAX_PER_PROJECT` (default **6**, must be > 0 and <= the global cap) per project (project = canonical `git rev-parse --git-common-dir`, so every linked worktree of a repo shares one cap). One job per checkout/worktree root at a time (two subdirs of one checkout conflict). Slots are flock files in `~/.codex-jobs/` (override `DELEGATE_CODEX_STATE_DIR`); if that storage fails the server **fails closed** and runs nothing. The rest wait in a FIFO queue (`DELEGATE_CODEX_MAX_QUEUE`, default 32), counted against the slots that are really free. Launches are staggered by `DELEGATE_CODEX_STAGGER_S` (default 2.5 s) across all servers. Each run gets its own SQLite home (`-c sqlite_home=`) while the single login stays in `CODEX_HOME`, and `forced_login_method="chatgpt"`. Per-job `timeout_s` counts from start and is enforced by a watchdog. Jobs die with the server; after a SIGKILL the next server start kills verified orphans (`killed_on_restart`). Weekly quota from `~/.codex/sessions`: above 85 % (`DELEGATE_CODEX_QUOTA_WARN`) a `warning` is added, it never blocks by default; it refuses only when `DELEGATE_CODEX_QUOTA_REFUSE_PCT` is set and exceeded, unless `allow_over_quota=true`. `$HOME` and `/` are refused as workdir. |
+| `poll_codex(ids)` | Per job: `status`, `elapsed_s`, and `final_response` cut to ~300 words / 4000 chars; also reports jobs of **other live servers** (read-only, from their state files). See "Operating Codex jobs" below for every status and field. `done` only means the CLI exited 0 — it is not verification. |
+| `cancel_codex(id)` | Dequeue a queued job or kill the process group of a running one; always ends `cancelled` with its locks released. No-op on finished jobs. |
+| `list_local_agents()` | List agents found in `DELEGATE_LOCAL_AGENTS_DIR` with their frontmatter metadata |
+| `local_backend_status()` | Health check + list of models available on the configured backend |
+
+### Operating Codex jobs
+
+**Rule: one worktree per job.** Create `git worktree add ../wt-<card> -b <card>` for every card and
+pass that path as `workdir`. Two jobs in one checkout are serialized on purpose (they would overwrite
+each other and fight over `index.lock`); worktrees of the same repo are separate checkouts but share
+the per-project cap. Integrate branches one at a time.
+
+**Ramp plan.** Defaults are 8 global / 6 per project. Raise by env, one step at a time, only after a
+clean block of work at the current step (few `throttle` retries, no `auth_failed`, memory fine):
+`DELEGATE_CODEX_MAX_CONCURRENT=12` (with `MAX_PER_PROJECT=8`), then 16, then 20 (`MAX_PER_PROJECT=10`).
+Every server must run the same caps and the same `DELEGATE_CODEX_STATE_DIR`.
+
+**Statuses.** `queued` (see `queue_reason`: `global_cap`, `adaptive_cap`, `workspace_busy`,
+`waiting_for_slot`, `throttle_cooldown`, `auth_failed`) · `running` · `done` (CLI exit 0) · `failed`
+(`failure_kind`: `quota`, `throttle` after 3 retries, `infra`, `other`) · `timeout` · `cancelled` ·
+`auth_failed` (login invalid: run `codex login`; admission resumes by itself once `auth.json`
+changes) · `lost` / `killed_on_restart` (owner server died). Extra fields: `queued_s`, `retry_count`,
+`retry_in_s`, `last_activity_age_s`, `exit_code`, `session_id`, `owner` `{pid, sid, alive}`; the
+poll response also carries `account` (`ok` / `cooldown` / `auth_failed` and the effective caps).
+
+**429 handling.** codex-cli 0.159.2 does not retry direct HTTP 429s (`retry_429: false`), so the server
+does: a throttle sets an account-wide cooldown shared by all servers (`shared.json` in the state dir),
+honors a `Retry-After`-style hint if the output has one, else backs off 5/10/20/40/60 s with jitter,
+and retries the job up to 3 times (the prompt is replayed from the start; `session_id` is recorded for
+manual inspection). Three throttles in 5 minutes halve the effective caps for 10 minutes. Quota
+exhaustion and auth failures are never retried.
+
+**`done` is not "verified".** Codex exiting 0 says nothing about whether the change is correct. Run
+the project's own tests in the job's worktree (or a separate runner) yourself and merge only what
+passes; sandbox-restricted or skipped tests count as unverified.
+
+### Gemini por Antigravity CLI (`delegate_to_gemini`, `submit_gemini`, `poll_gemini`, `cancel_gemini`)
+
+Mismas ideas que Codex, con el plan Google AI Pro en vez de una API key. Cada tarea ejecuta
+`agy -p ... --output-format json --dangerously-skip-permissions` con el stdin cerrado (sin `-p`,
+`agy` abre una TUI y se cuelga).
+
+- Instalar: `brew install --cask antigravity-cli`, y correr `agy` una vez para iniciar sesion.
+  Otra ruta: `DELEGATE_AGY_BIN`. Sin el binario el servidor arranca igual y las herramientas
+  devuelven "agy binary no encontrado".
+- `effort` = `low` (por defecto), `medium` o `high`, que eligen `gemini-3.8-flash-<effort>`.
+  Cualquier otro valor se rechaza; los modelos `claude-*` y `gpt-oss` que lista `agy models` no se exponen.
+- `delegate_to_gemini(task, workdir, effort, timeout_s)` bloquea y devuelve `status`, `response`,
+  `conversation_id`, `usage`, `duration_s` y `exit_code`. `submit_gemini(tasks)` lanza varias sin
+  esperar, `poll_gemini(ids)` consulta y `cancel_gemini(id)` saca de la cola o mata el grupo de procesos.
+- Topes: `DELEGATE_GEMINI_MAX_CONCURRENT` (4) y `DELEGATE_GEMINI_MAX_QUEUE` (32), un job por workdir.
+  El estado vive en memoria del servidor: no hay estado compartido entre sesiones como en Codex.
+- **Puerta**: como `danger-full-access` de Codex, las herramientas se niegan a correr salvo con `DELEGATE_GEMINI_ALLOW_DANGER=1`, porque `agy -p` no puede pedir permisos y corre con `--dangerously-skip-permissions`.
+- **Aislamiento (siempre)**: `agy` corre dentro de `sandbox-exec` con un perfil generado por corrida, mas su propio `--sandbox`. La lectura esta denegada **en todo el sistema de archivos** y solo se devuelve: el workdir, `~/.gemini`, `~/Library/Keychains` (solo lectura; la sesion de Google de `agy` vive en el llavero) y rutas de sistema: `/usr`, `/bin`, `/sbin`, `/System`, `/Library/Developer`, `/opt/homebrew`, `/private/etc`, `/private/var/db/timezone`, `/private/var/folders` y `/dev` (cada una medida con el `agy` real, `python3`, `git` y `curl`). `/Volumes` (copias de Time Machine, discos externos), `/Users`, `/Applications`, `/private/tmp` y `/private/var/root` no se pueden leer, ni siquiera listar. Solo se permite `stat()` (no contenido) en el resto del sistema y en `~/Library`, porque `security` no encuentra el llavero sin eso. Escritura solo en el workdir, los temporales y las rutas de estado de `agy` (`~/.gemini/antigravity-cli/{annotations,brain,cache,conversations,implicit,log,crashes,presence}` y unos pocos archivos); `~/.gemini/config` (`mcp_config.json`), `settings.json`, `builtin` y `bin` quedan de solo lectura. Sin `exec` de `/usr/bin/open`, `osascript` ni de nada en `/Applications`: si la sesion no se lee dentro de la jaula el job termina con "agy session not readable in the jail" y nunca abre un login. Si `sandbox-exec` no funciona, no corre nada. Mas permisos solo se agregan midiendo con el `agy` real (`EXTRA_READ_PATHS`).
+- Limites conocidos: `agy` obtiene su token ejecutando `/usr/bin/security`, asi que ese exec NO se puede negar (medido); los elementos del llavero creados con `security add-generic-password` sin `-T` siguen siendo legibles desde la jaula (confian en ese binario). La red de salida queda abierta (agy debe hablar con Google), asi que un archivo del workdir con instrucciones hostiles puede intentar exfiltrar lo que el workdir contiene. `~/.gemini` guarda las conversaciones completas.
+- **Nunca PHI ni datos de pacientes, ni en la tarea ni en ningun archivo bajo `workdir`**: `agy` lee esos archivos y los sube a Google. El plan de consumidor no tiene BAA.
+
+### Operating dsh jobs (`submit_dsh` / `poll_dsh` / `cancel_dsh`)
+
+Same model as the Codex jobs, for DeepSeek Harness runs inside the sandboxed, Herdr-visible launcher
+(`dsh-herdr.sh --cwd --model --task-file --out-dir`, override with `DELEGATE_DSH_LAUNCHER`). Each job
+reads `<out-dir>/result.json` (`status`, `rc`, `diff_stat`, `summary`, `tokens`, `wall_s`); the change
+itself stays in the run dir (`out_dir` in the poll) to be reviewed and applied by hand.
+
+- `submit_dsh(tasks)`: each task is `{task, model (required), workdir='.', timeout_s=2400}`. Atomic: one invalid
+  task and nothing starts. `poll_dsh(ids)` returns `queued | running | done | failed | cancelled | timeout | lost | unknown`,
+  `final_response` trimmed to ~300 words, `owner`. `lost` = the owning server died with the job queued or running.
+- Own state and caps, separate from Codex: `DELEGATE_DSH_STATE_DIR` (default `~/.dsh-jobs`),
+  `DELEGATE_DSH_MAX_CONCURRENT=2`, `DELEGATE_DSH_MAX_PER_PROJECT=2` (local models share one Mac Studio),
+  `DELEGATE_DSH_MAX_QUEUE=16`, `DELEGATE_DSH_STAGGER_S=5`. One job per checkout; use one worktree per job.
+- Model allowlist: `DELEGATE_DSH_MODELS_FILE` (default `~/.config/neola-lab/dsh-models.json`, example in
+  `examples/dsh-models.json`, same shape as the launcher's `models.json`). Unknown or disabled models are refused;
+  with no file, everything is refused.
+- Any `mimo*` / `xiaomi*` alias is refused for automated dispatch (Xiaomi Token Plan terms forbid automation).
+- Privacy: cloud models take code only, never PHI or real personal data.
+
+### Note on `delegate_batch` and sub-agents
+
+Claude Code sub-agents launched via the native `Agent`/`Task` tool **do not inherit the parent session's MCP servers**. This means `delegate_batch` (and any other MCP tool) is only callable from the **main orchestrator session**. Sub-agents that need parallel local-backend dispatch should use `httpx.AsyncClient` + `asyncio.gather` directly against the LiteLLM endpoint instead. This is a Claude Code architecture constraint, not a `delegate-local` limitation.
+
+## 3-tier agent lookup
+
+When you call `delegate_to_local_agent("webdev", ...)` with a `workdir`, the server looks for the agent definition in this order:
+
+1. `<workdir>/.claude/agents/webdev.md` — **project agent** (highest priority)
+2. `<workdir>/.claude/skills/webdev/SKILL.md` — **project skill** (alternative location)
+3. `~/.claude/agents/webdev.md` — **global agent** (fallback)
+
+This means the same delegate call works in any project, using whichever scope owns the agent. The response includes `agent_source` so the orchestrator knows which one was loaded.
+
+## Dual-format backend routing
+
+Models with these prefixes are routed to OpenAI-format `/v1/chat/completions`:
+
+- `deepseek-*`
+- `openai-*`
+- `gpt-*`
+- `qwen-*` (external Qwen APIs — note that `local-qwen-*` aliases route via Anthropic `/v1/messages`)
+
+All other models go to Anthropic-format `/v1/messages`. Inside the server everything is normalized to Anthropic-style content blocks (text / tool_use / thinking) so the agent loop stays uniform.
+
+> **GLM Coding Plan (Z.ai):** the `glm-coding-plan` alias has **no** `openai/gpt/deepseek/qwen` prefix, so it routes via Anthropic `/v1/messages` — which is what Z.ai's Anthropic-compatible endpoint (`https://api.z.ai/api/anthropic`) expects. Flat-rate subscription with automatic server-side prompt caching. In LiteLLM use the plain model code `anthropic/glm-5.2` — the `[1m]` (1M-context) suffix errors against this endpoint there; it only works when Claude Code points directly at Z.ai (see [`examples/claude-glm.sh`](examples/claude-glm.sh)). Setup: [docs/CONFIGURATION.md](docs/CONFIGURATION.md#activating-the-glm-coding-plan-zai).
+
+## Thinking-mode support
+
+For models that emit `reasoning_content` (DeepSeek V4, OpenAI o1-style), the server preserves it as a `{"type": "thinking", "thinking": "..."}` content block between turns. This is required by LiteLLM and most providers — if you drop `reasoning_content` from the assistant message in multi-turn, the next request fails with `400 Bad Request`.
+
+`max_tokens` defaults to **65536** (parameter of the tool — caller can override). High default is intentional so thinking-mode models have budget for both reasoning and content output, and so large monolithic outputs (e.g., complete HTML files with embedded JS) don't get truncated. Lower it explicitly only if your backend has a stricter cap.
+
+## Example: LiteLLM proxy
+
+A minimal `litellm/config.yaml` to use with this MCP:
+
+```yaml
+model_list:
+  - model_name: local-qwen-3-6-35b
+    litellm_params:
+      model: openai/Qwen3-6-35B
+      api_base: http://localhost:8000/v1   # your llama.cpp / vLLM server
+      api_key: sk-no-key-required
+
+  - model_name: deepseek-v4-flash
+    litellm_params:
+      model: deepseek/deepseek-chat
+      api_key: os.environ/DEEPSEEK_API_KEY
+
+  - model_name: bedrock-sonnet-4-6
+    litellm_params:
+      model: bedrock/anthropic.claude-sonnet-4-6-20260101-v1:0
+      aws_region_name: us-east-1
+```
+
+Then run `litellm --config config.yaml --port 4000` and point this MCP at it.
+
+## Tested with
+
+| Backend | Model | Single-turn | Multi-turn |
+|---|---|:-:|:-:|
+| LiteLLM + llama.cpp | `local-qwen-3-6-35b` (Qwen3.6 35B-A3B) | ✅ | ✅ |
+| LiteLLM + DeepSeek API | `deepseek-v4-flash` | ✅ | ✅ |
+| LiteLLM + Z.ai | `glm-coding-plan` | ✅ | ✅ |
+| LiteLLM + AWS Bedrock | `bedrock-sonnet-4-6`, `bedrock-llama4-*` | ✅ | ✅ |
+
+> **Picking a DeepSeek tier:** `deepseek-v4-flash` is the default for coding and agentic work; it already reasons at high effort by default (which is why it has no `-think` variant). `deepseek-v4-pro` was removed from the supported set on 2026-10-15.
+>
+> ⚠️ Both tiers can spend their whole token budget reasoning and return nothing. The server auto-raises the default budget for them; see [max_tokens troubleshooting](docs/TROUBLESHOOTING.md#stop_reason-max_tokens-and-final_response-).
+
+Validation tasks: SQL injection review (security-engineer agent), HTML calculator (creative agent, 500-800 LOC monolithic), Pac-Man game (884 LOC monolithic single-shot).
+
+## Best practices
+
+⚠️ **If you dispatch multi-file sprints to local backends, read this first.** Naive single-dispatch of 6+ files at once causes `ReadTimeout` at high turn counts as context saturates the slot. Splitting the work and reusing the same agent name across parallel workers can cut wall-clock time by ~60% and tokens by ~78%.
+
+- 🎯 [docs/BEST-PRACTICES.md](docs/BEST-PRACTICES.md) — empirical thresholds for when to split work, KV-cache prefix reuse for parallel dispatches, scope-bounded prompts, estimated savings table
+
+## Further reading
+
+- 📐 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how it works internally, diagrams, design decisions
+- ⚙️ [docs/CONFIGURATION.md](docs/CONFIGURATION.md) — full env var reference, LiteLLM setup from scratch, **how to add new providers**
+- 💡 [docs/EXAMPLES.md](docs/EXAMPLES.md) — 7 end-to-end use cases with copy-pasteable code
+- 🔧 [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — common errors, **lessons learned**, and a dedicated section for AI agents helping with setup
+- 📋 [examples/litellm.example.yaml](examples/litellm.example.yaml) — ready-to-use LiteLLM config with 9 providers (local + cloud)
+- 🤝 [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute
+- 📝 [CHANGELOG.md](CHANGELOG.md) — version history
+
+## Caveats
+
+- **`run_bash` runs shell commands inside `workdir` without sandboxing.** Trust the agents you delegate. If you delegate to an unvetted public agent, the tool can read/write anywhere the calling user has access. There is no Docker isolation by default.
+- **Caps (v0.6.0)**: `read_file` supports `offset`/`limit` (line ranges) and returns up to ~50KB per call with line numbers and a `[lines N-M of TOTAL]` header — paginate large files instead of re-reading. `run_bash` truncates stdout to 12KB and stderr to 4KB, timeout 120s.
+- **`max_turns` hard cap is 40.** Long-running orchestrations should be designed as multiple delegate calls rather than one huge loop.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Conmutador de gateway (T09)
+
+`DELEGATE_GATEWAY` decide por dónde sale el tráfico del delegate. **Un solo env var para
+cambiar y otro para volver: hoy el default es `litellm` y nada cambia.**
+
+| Env var | Default | Descripción |
+| --- | --- | --- |
+| `DELEGATE_GATEWAY` | `litellm` | `litellm` (usa `DELEGATE_LOCAL_URL`, comportamiento actual) o `bifrost` (`DELEGATE_BIFROST_URL`). Un valor desconocido es **error de arranque**. Volver = quitar el env var. |
+| `DELEGATE_BIFROST_URL` | — | Solo con `bifrost`: base URL de Bifrost. La ruta sale siempre `/litellm/...` (design §4.2), p. ej. `http://127.0.0.1:4010/litellm/v1/messages`. |
+| `DELEGATE_BIFROST_LOCAL_URL` | vacío | Base opcional para `local-*` y `ornith*`, p. ej. `http://100.123.88.91:4011`; vacía usa `DELEGATE_BIFROST_URL`. |
+| `DELEGATE_BIFROST_API` | `litellm` | Con `bifrost`: `litellm` conserva las rutas `/litellm/...`; `openai` usa `/v1/chat/completions` para todos los modelos. |
+| API OpenAI de Bifrost | — | Normaliza la base de cada carril y convierte mensajes y herramientas a OpenAI, con o sin streaming; conserva las virtual keys y las cabeceras de enrutado. |
+| Validación de API | — | Cualquier otro valor causa error de arranque solo con `bifrost`; las URLs explícitas de `delegate_to_provider` conservan su comportamiento. |
+| Carriles Bifrost | — | El carril local usa `DELEGATE_BIFROST_VK_LOCAL`; el de código conserva `DELEGATE_BIFROST_URL` y `DELEGATE_BIFROST_VK_CODE`, también en formato OpenAI. |
+| Validación Bifrost | — | Con `bifrost`, ambas URLs deben ser http(s), con host y sin credenciales en la URL; una URL inválida causa error de arranque. El guard SSRF de `delegate_to_provider` no se aplica a estos gateways del entorno. |
+| `DELEGATE_BIFROST_VK_LOCAL` | — | Virtual key del carril **local** con bifrost: alias `local-*` y `ornith*`. |
+| `DELEGATE_BIFROST_VK_CODE` | — | Virtual key del carril de **código** con bifrost: todo lo demás (deepseek, glm, qwen, mimo…). |
+
+Además (T09):
+
+- **`response_model` real**: los dos lectores SSE capturan el `model` del `message_start`
+  / primer chunk y, con bifrost, las cabeceras `x-bifrost-routing-info-*`. Si el que
+  contestó no es el alias pedido, el resultado del tool lleva la nota visible
+  `fallback_note` = `answered_by: deepseek-flash (requested glm-5-3-flash)` (hallazgo 4).
+- **`DELEGATE_RESEND_REASONING`** (hallazgo 15): `auto` (default) = reenviar el
+  `reasoning_content` del assistant previo **solo** a `deepseek-*` (que lo exige); `1` =
+  a todos; `0` = a nadie. A los providers que lo rechazan nunca se le manda.

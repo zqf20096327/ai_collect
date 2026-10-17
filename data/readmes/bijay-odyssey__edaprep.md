@@ -1,0 +1,289 @@
+# edaprep
+
+[![CI](https://github.com/bijay-odyssey/edaprep/actions/workflows/ci.yml/badge.svg)](https://github.com/bijay-odyssey/edaprep/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://pypi.org/project/edaprep/)
+[![PyPI](https://img.shields.io/pypi/v/edaprep)](https://pypi.org/project/edaprep/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+Transparent, leakage-safe EDA and ML preprocessing, with an explainable planner.
+
+`edaprep` looks at a dataset, works out which preprocessing operations actually apply
+to it, tells you what it intends to do and why, and then does it — fitting every
+statistic on the training data alone.
+
+```python
+import edaprep
+
+pipe = edaprep.AutoPipeline(target="churn", model_family="tree", random_state=42)
+pipe.fit(train_df)
+pipe.explain()
+
+X_train = pipe.transform(train_df)
+X_test  = pipe.transform(test_df)
+```
+
+```
+income:
+  + outliers_report - skew 3.22 is moderate (>= 1.0); IQR fence widened to k=3.0 for the asymmetry
+  + impute_median - 2.0% missing; median rather than mean because it is unaffected by
+                    the skew (3.22) and by outliers
+  + transform_log1p - skew 3.22 is moderate and the column is non-negative (min 2576.27),
+                      so log1p applies and is invertible
+  + scale_robust - skew 3.22; robust scaling (median and IQR) rather than standard,
+                   whose standard deviation is dominated by the tail
+
+city:
+  + group_rare_categories - 163 levels; those appearing in fewer than 5 rows (1.0%) are
+                            grouped, since they cannot support a reliable estimate
+  + encode_target - 163 levels exceeds the 50-level one-hot ceiling; target encoding is
+                    used with 5-fold cross-fitting so no row is encoded using its own target
+
+customer_id:
+  x dropped - identifier: 100.0% of values are distinct, so it cannot generalise beyond
+              the rows it was fitted on
+```
+
+---
+
+## Why it exists
+
+Tabular ML notebooks converge on nearly the same workflow regardless of domain — and
+they go wrong in the same places. [`docs/design-rationale.md`](docs/design-rationale.md)
+catalogues that workflow and names the failure modes; each one shaped a design decision
+here:
+
+- **The dtype-based column split** (`select_dtypes(include=['int64','float64'])`) is the
+  most-typed line in tabular data science and the largest single source of error: it
+  sends a zip code and a temperature down the same path, and drops a numeric column
+  stored as text entirely. `edaprep` infers a *semantic* type and reports its confidence.
+- **The IQR and z-score fences** get rewritten in project after project, with the
+  multiplier drifting between 1.5 and 3.0 for no recorded reason. Both are now single
+  parameterised, named, reported operations — and the index-alignment bug that silently
+  flags the wrong rows when a column has any `NaN` is fixed once, here.
+- **Leakage is easy to introduce and hard to notice.** Fitting a `StandardScaler` on the
+  full frame, writing the result to CSV, then splitting afterwards looks fine and
+  poisons every downstream experiment. `edaprep` makes it structurally impossible rather
+  than merely discouraged.
+- **Sophisticated pipelines end up routing, not sequencing** — branching on skewness for
+  numerics and on the consuming model for categoricals, usually buried in a
+  `make_preprocessor` closure. That became the planner, and `model_family`.
+
+## Installation
+
+```bash
+pip install edaprep                    # core: numpy, pandas, scipy
+pip install "edaprep[visualization]"   # + matplotlib
+pip install "edaprep[advanced]"        # + scikit-learn
+pip install "edaprep[all]"
+```
+
+Python 3.9–3.13, tested on Linux, macOS and Windows.
+
+Would rather try it than install it? There is a [runnable notebook on Kaggle](https://www.kaggle.com/code/bijaybeezoe/every-preprocessing-decision-with-its-reason) that needs no setup — it measures two preprocessing leaks on Telco Churn, one worth `+0.000001` and one scoring a perfect `1.00000` AUC on pure noise, then shows what this library does about them.
+
+---
+
+## What it does
+
+### Understand a dataset
+
+```python
+profile = edaprep.profile(df, target="churn")
+print(profile.summary())
+```
+
+```
+Dataset
+  600 rows x 18 columns
+  300.3 KB in memory
+  628 missing cells (5.81%)
+  target: churn (classification, 2 classes, minority/majority ratio 0.232)
+
+Semantic types
+  numeric           5
+  binary            4
+  categorical       3
+  ...
+
+Data-quality findings
+  [x] 1 column(s) are almost perfectly associated with the target (>= 0.98). This
+      usually means the column encodes the answer: 'leaky'.
+  [!] 2 column(s) contain placeholder strings that most likely mean 'missing' but are
+      not recognised as NaN: 'workclass', 'occupation'.
+  [!] 1 group(s) of identical columns: income=income_copy
+  [i] 1 column pair(s) go missing together, which usually means a shared cause:
+      income~income_copy (1.00)
+```
+
+### Explore it
+
+```python
+report = edaprep.EDA(df, target="churn").analyze("standard")
+print(report.summary())
+report.numerical        # a DataFrame
+report.to_html("eda.html")
+```
+
+Three levels that differ in work done, not just in what is shown: `quick` skips every
+O(n log n) and O(p²) computation, `standard` adds moments, outliers, correlation and
+target relationships, `deep` adds VIF and significance tests with a
+Benjamini-Hochberg adjustment.
+
+### Prepare it
+
+```python
+pipe = edaprep.AutoPipeline(target="churn", model_family="linear", random_state=42)
+X_train = pipe.fit_transform(train_df)
+X_test  = pipe.transform(test_df)
+
+pipe.plan_             # the decisions, serialisable and editable
+pipe.report_           # what actually happened, with counts
+pipe.transformations_  # one row per decision, as a DataFrame
+pipe.statistics_       # every learned parameter
+```
+
+Or say exactly what should happen:
+
+```python
+pipe = (
+    edaprep.Pipeline(target="churn")
+    .flag_missing()
+    .handle_outliers(strategy="clip")
+    .handle_missing()
+    .encode_categorical()
+    .scale_numeric()
+)
+```
+
+### Override anything
+
+```python
+config = edaprep.Config(random_state=42)
+config.column("age").imputation = "mean"
+config.column("income").outlier_strategy = "clip"
+config.column("city").encoding = "frequency"
+config.column("zip").semantic_type = "categorical"
+config.thresholds.skew_heavy = 4.0
+
+pipe = edaprep.AutoPipeline(target="churn", config=config)
+```
+
+Overrides are tagged in the plan, so `explain()` marks them as yours rather than
+presenting them as the planner's reasoning.
+
+---
+
+## Design guarantees
+
+**No leakage, structurally.** Learned state lives only in attributes written inside
+`fit`; `transform` is a pure function of that state. The property is asserted directly:
+a test transforms a frame whole and then row by row and requires identical output, which
+fails immediately if anything recomputes a statistic at transform time.
+
+**Nothing silent.** Dropped columns, imputed values, grouped categories, clipped rows
+and unseen categories are all counted and reported. `edaprep` never calls
+`warnings.filterwarnings`.
+
+**Everything explainable.** Every automatic decision carries an English rationale naming
+the measurement behind it. The plan is inert, serialisable data — printable, diffable,
+storable next to a model artefact, and re-executable.
+
+**Reproducible.** `random_state` seeds every stochastic step. The report records the
+library version, the configuration, the seed, whether profiling sampled, and every
+learned parameter.
+
+**Conservative.** Outliers are reported, not deleted, by default. Duplicate rows are
+reported, not removed — repeated observations are legitimate in transactional data.
+Class imbalance is measured and reported; resampling is a modelling decision that
+belongs after the split, so `edaprep` does not do it.
+
+---
+
+## Performance
+
+Measured, not asserted. See [`docs/performance.md`](docs/performance.md).
+
+| operation | edaprep | baseline |
+|---|---|---|
+| `Scaler` (standard) | 6.9 ms | sklearn `StandardScaler` 26.7 ms |
+| `MissingValueHandler` (median) | 5.2 ms | sklearn `SimpleImputer` 17.0 ms |
+| `OutlierHandler` (IQR clip) | 25.2 ms | the usual IQR block 41.4 ms |
+| `numeric_block_stats` (20k × 300) | 578 ms | equivalent pandas loop 1056 ms |
+| `AutoPipeline.transform` | 240 ms / 35.6 MiB | `ColumnTransformer` 104 ms / 67.2 MiB |
+
+100,000 rows unless stated. The most instructive result is one that went the other way:
+a hand-written NumPy kernel in this library turned out to be **2.1× slower** than the
+pandas code it replaced, so it was deleted. That story is in `docs/performance.md` §1.
+
+No native code. Nothing here is un-vectorisable, and the one place a hand-written kernel
+looked promising was slower than pandas.
+
+---
+
+## Documentation
+
+| | |
+|---|---|
+| [Design rationale](docs/design-rationale.md) | the workflow tabular notebooks converge on, where it reliably goes wrong, and how each design decision follows |
+| [Architecture](docs/architecture.md) | package design, the planner, execution model |
+| [User guide](docs/guide.md) | installation to production, with the train/test workflow |
+| [Performance](docs/performance.md) | benchmarks, method, and what optimisation actually changed |
+| [Extending](docs/extending.md) | custom transformers, rules and backends |
+| [Example](examples/end_to_end.py) | raw dataset to ML-ready, end to end |
+| [Runnable notebook](https://www.kaggle.com/code/bijaybeezoe/every-preprocessing-decision-with-its-reason) | Kaggle, no install: the `select_dtypes` failure and two leaks, measured on Telco Churn |
+
+---
+
+## Scope
+
+**In:** dataset inspection, EDA, data quality, cleaning, missing values, duplicates,
+outliers, dtype inference, categorical encoding, numeric transformation, scaling,
+feature selection, datetime expansion, leakage-safe train/test preparation, pipelines,
+reporting.
+
+**Out, deliberately:** model training, resampling, hyperparameter search, NLP,
+forecasting, deep learning, distributed execution. Extension points exist for each
+(`docs/extending.md`), and none is implemented in v1.
+
+## Contributing
+
+Contributions are welcome, and [`CONTRIBUTING.md`](CONTRIBUTING.md) is written to make
+the first one straightforward: it explains the architecture in a page, lists the rules
+CI actually enforces, and points at issues scoped so that each one names the file to
+change and the test to write.
+
+Issues labelled [`good first issue`](https://github.com/bijay-odyssey/edaprep/labels/good%20first%20issue)
+are a deliberate starting set. **Comment on one to claim it before you start** — two
+people once fixed the same issue eight hours apart, and one of them had to be turned
+away.
+
+```bash
+pip install -e ".[dev]"
+pytest                       # 367 tests, ~15s
+ruff check src/ tests/ benchmarks/ examples/
+python benchmarks/bench.py
+```
+
+## Contributors
+
+This library argues that a decision is worth little without the reasoning behind it,
+so it would be odd to credit only the diffs. Measurement, review and design that
+changed what shipped are listed here alongside the commits.
+
+| | |
+|---|---|
+| [@qiaobochi040726-source](https://github.com/qiaobochi040726-source) | Removed `Config.n_jobs`, a setting the library accepted and never read ([#11](https://github.com/bijay-odyssey/edaprep/pull/11)) |
+| [@zbs-ops](https://github.com/zbs-ops) | Benchmarked parallelising the per-column profiling loop, which is what decided [#9](https://github.com/bijay-odyssey/edaprep/issues/9) — no commit, and the reason the parameter went |
+| [@Jeferson681](https://github.com/Jeferson681) | Made the missing-indicator and high-missing rules see gaps introduced at the cast step ([#16](https://github.com/bijay-odyssey/edaprep/pull/16)) |
+| [@luziyi123448-gif](https://github.com/luziyi123448-gif) | Independent fix for the same issue whose design was the better one; that design shipped in [#18](https://github.com/bijay-odyssey/edaprep/issues/18) ([#17](https://github.com/bijay-odyssey/edaprep/pull/17)) |
+| [@LeonxLJX](https://github.com/LeonxLJX) | Formatted the tree and made `ruff format` a real CI gate rather than an advisory one ([#25](https://github.com/bijay-odyssey/edaprep/pull/25)) |
+| [@TrueFurina](https://github.com/TrueFurina) | First to run the Codecov upload path, which is how we learned it fails silently from a fork with no token — CI green, nothing reported; coverage moved to the job summary instead ([#21](https://github.com/bijay-odyssey/edaprep/pull/21)) |
+
+[GitHub's contributors graph](https://github.com/bijay-odyssey/edaprep/graphs/contributors)
+counts commits on `main`, so it cannot show a benchmark that settled an argument or a
+review that caught a bug. This table can. If you contributed something that changed the
+library and you are not on it, that is an oversight worth an issue — please open one.
+
+## Licence
+
+MIT.

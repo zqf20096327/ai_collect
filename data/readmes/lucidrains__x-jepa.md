@@ -1,0 +1,297 @@
+<img src="./jepa.png" width="400px"></img>
+
+## x-jepa (wip)
+
+Explorations into some of the approaches advocated by Yann LeCun, and just a more wholistic architecture (JEPA) in general
+
+## Citations
+
+```bibtex
+@inproceedings{LeCun2022APT,
+    title   = {A Path Towards Autonomous Machine Intelligence},
+    author  = {Yann LeCun and Courant},
+    year    = {2022},
+    url     = {https://api.semanticscholar.org/CorpusID:251881108}
+}
+```
+
+```bibtex
+@misc{maes2026leworldmodelstableendtoendjointembedding,
+    title   = {LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels},
+    author  = {Lucas Maes and Quentin Le Lidec and Damien Scieur and Yann LeCun and Randall Balestriero},
+    year    = {2026},
+    eprint  = {2603.19312},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2603.19312},
+}
+```
+
+```bibtex
+@misc{gao2026fastleworldmodel,
+    title   = {Fast LeWorldModel},
+    author  = {Yuntian Gao and Xiangyu Xu},
+    year    = {2026},
+    eprint  = {2606.26217},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2606.26217},
+}
+```
+
+```bibtex
+@misc{teoh2026nextlatentpredictiontransformerslearn,
+    title   = {Next-Latent Prediction Transformers Learn Compact World Models},
+    author  = {Jayden Teoh and Manan Tomar and Kwangjun Ahn and Edward S. Hu and Tim Pearce and Pratyusha Sharma and Akshay Krishnamurthy and Riashat Islam and Alex Lamb and John Langford},
+    year    = {2026},
+    eprint  = {2511.05963},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2511.05963},
+}
+```
+
+```bibtex
+@inproceedings{saravanos2026learningtooptimize,
+    title   = {Learning-to-Optimize via Deep Unfolded Flows},
+    author  = {Augustinos D Saravanos and Oswin So and H M Sabbir Ahmad and Chuchu Fan},
+    booktitle = {Forty-third International Conference on Machine Learning},
+    year    = {2026},
+    url     = {https://openreview.net/forum?id=ZOtOq7hxJP}
+}
+```
+
+```bibtex
+@misc{farebrother2026compositionalplanningjumpyworld,
+    title   = {Compositional Planning with Jumpy World Models},
+    author  = {Jesse Farebrother and Matteo Pirotta and Andrea Tirinzoni and Marc G. Bellemare and Alessandro Lazaric and Ahmed Touati},
+    year    = {2026},
+    eprint  = {2602.19634},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2602.19634},
+}
+```
+
+```bibtex
+@misc{giridhar2026beyondimitationselfimprovingrobot,
+    title   = {Beyond Imitation: Self-Improving Robot Policies via Off-Policy Q-Planning},
+    author  = {Varun Giridhar and Anant Khandelwal and Jeremy A. Collins and Ignat Georgiev and Animesh Garg},
+    year    = {2026},
+    eprint  = {2608.21204},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.RO},
+    url     = {https://arxiv.org/abs/2608.21204},
+}
+```
+
+```bibtex
+@misc{balestriero2025lejepaprovablescalableselfsupervised,
+    title   = {LeJEPA: Provable and Scalable Self-Supervised Learning Without the Heuristics},
+    author  = {Randall Balestriero and Yann LeCun},
+    year    = {2025},
+    eprint  = {2511.08544},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2511.08544},
+}
+```
+
+```bibtex
+@misc{wu2026visreg,
+    title   = {VISReg: Variance-Invariance-Sketching Regularization for JEPA training},
+    author  = {Haiyu Wu and Randall Balestriero and Morgan Levine},
+    year    = {2026},
+    eprint  = {2606.02572},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2606.02572},
+}
+```
+
+```bibtex
+@misc{kimiteam2026attentionresiduals,
+    title   = {Attention Residuals},
+    author  = {Kimi Team and Guangyu Chen and Yu Zhang and Jianlin Su and Weixin Xu and Siyuan Pan and Yaoyu Wang and Yucheng Wang and Guanduo Chen and Bohong Yin and Yutian Chen and Junjie Yan and Ming Wei and Y. Zhang and Fanqing Meng and Chao Hong and Xiaotong Xie and Shaowei Liu and Enzhe Lu and Yunpeng Tai and Yanru Chen and Xin Men and Haiqing Guo and Y. Charles and Haoyu Lu and Lin Sui and Jinguo Zhu and Zaida Zhou and Weiran He and Weixiao Huang and Xinran Xu and Yuzhi Wang and Guokun Lai and Yulun Du and Yuxin Wu and Zhilin Yang and Xinyu Zhou},
+    year    = {2026},
+    eprint  = {2603.15031},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.CL},
+    url     = {https://arxiv.org/abs/2603.15031},
+}
+```
+
+```bibtex
+@inproceedings{Feng2024WereRA,
+    title   = {Were RNNs All We Needed?},
+    author  = {Leo Feng and Frederick Tung and Mohamed Osama Ahmed and Yoshua Bengio and Hossein Hajimirsadegh},
+    year    = {2024},
+    url     = {https://api.semanticscholar.org/CorpusID:273025630}
+}
+```
+
+```bibtex
+@misc{liu2024singlegoalneedskills,
+    title   = {A Single Goal is All You Need: Skills and Exploration Emerge from Contrastive RL without Rewards, Demonstrations, or Subgoals},
+    author  = {Grace Liu and Michael Tang and Benjamin Eysenbach},
+    year    = {2024},
+    eprint  = {2408.05804},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2408.05804},
+}
+```
+
+```bibtex
+@misc{gopalakrishnan2025decouplingwhatwherepolar,
+    title   = {Decoupling the "What" and "Where" With Polar Coordinate Positional Embeddings},
+    author  = {Anand Gopalakrishnan and Robert Csordás and Jürgen Schmidhuber and Michael C. Mozer},
+    year    = {2025},
+    eprint  = {2509.10534},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2509.10534},
+}
+```
+
+```bibtex
+@misc{wang2026temporalstraighteninglatentplanning,
+    title   = {Temporal Straightening for Latent Planning},
+    author  = {Ying Wang and Oumayma Bounou and Gaoyue Zhou and Randall Balestriero and Tim G. J. Rudner and Yann LeCun and Mengye Ren},
+    year    = {2026},
+    eprint  = {2603.12231},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2603.12231},
+}
+```
+
+```bibtex
+@misc{kuhn2026levljepaendtoendvisionlanguagepretraining,
+    title   = {LeVLJEPA: End-to-End Vision-Language Pretraining Without Negatives},
+    author  = {Lukas Kuhn and Giuseppe Serra and Randall Balestriero and Florian Buettner},
+    year    = {2026},
+    eprint  = {2607.00784},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.CV},
+    url     = {https://arxiv.org/abs/2607.00784},
+}
+```
+
+```bibtex
+@misc{ma2024transformerworldmodelsbetter,
+    title   = {Do Transformer World Models Give Better Policy Gradients?},
+    author  = {Michel Ma and Tianwei Ni and Clement Gehring and Pierluca D'Oro and Pierre-Luc Bacon},
+    year    = {2024},
+    eprint  = {2402.05290},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2402.05290},
+}
+```
+
+```bibtex
+@misc{lobel2023flippingcoinsestimatepseudocounts,
+    title   = {Flipping Coins to Estimate Pseudocounts for Exploration in Reinforcement Learning},
+    author  = {Sam Lobel and Akhil Bagaria and George Konidaris},
+    year    = {2023},
+    eprint  = {2306.03186},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2306.03186},
+}
+```
+
+```bibtex
+@misc{tandon2025endtoendtesttimetraininglong,
+    title   = {End-to-End Test-Time Training for Long Context},
+    author  = {Arnuv Tandon and Karan Dalal and Xinhao Li and Daniel Koceja and Marcel Rød and Sam Buchanan and Xiaolong Wang and Jure Leskovec and Sanmi Koyejo and Tatsunori Hashimoto and Carlos Guestrin and Jed McCaleb and Yejin Choi and Yu Sun},
+    year    = {2025},
+    eprint  = {2512.23675},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2512.23675},
+}
+```
+
+```bibtex
+@misc{liu2023metricresidualnetworkssample,
+    title   = {Metric Residual Networks for Sample Efficient Goal-Conditioned Reinforcement Learning},
+    author  = {Bo Liu and Yihao Feng and Qiang Liu and Peter Stone},
+    year    = {2023},
+    eprint  = {2208.08133},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2208.08133},
+}
+```
+
+```bibtex
+@article{kaddour2026target,
+    title   = {Target Policy Optimization},
+    author  = {Kaddour, Jean},
+    journal = {arXiv preprint arXiv:2604.06159},
+    year    = {2026}
+}
+```
+
+```bibtex
+@article{Eysenbach2018DiversityIA,
+    title   = {Diversity is All You Need: Learning Skills without a Reward Function},
+    author  = {Benjamin Eysenbach and Abhishek Gupta and Julian Ibarz and Sergey Levine},
+    journal = {ArXiv},
+    year    = {2018},
+    volume  = {abs/1802.06070},
+    url     = {https://arxiv.org/abs/1802.06070}
+}
+```
+
+```bibtex
+@misc{jiang2022generalintelligencerequiresrethinking,
+    title   = {General Intelligence Requires Rethinking Exploration},
+    author  = {Minqi Jiang and Tim Rocktäschel and Edward Grefenstette},
+    year    = {2022},
+    eprint  = {2211.07819},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.AI},
+    url     = {https://arxiv.org/abs/2211.07819},
+}
+```
+
+```bibtex
+@misc{greenberg2022efficientriskaversereinforcementlearning,
+    title   = {Efficient Risk-Averse Reinforcement Learning},
+    author  = {Ido Greenberg and Yinlam Chow and Mohammad Ghavamzadeh and Shie Mannor},
+    year    = {2022},
+    eprint  = {2205.05138},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2205.05138},
+}
+```
+
+```bibtex
+@article{zhao2025knowledge,
+    author  = {Zhao, Rui and Fan, Yuze and Li, Yun and Zhang, Dong and Gao, Fei and Gao, Zhenhai and Yang, Zhengcai},
+    title   = {Knowledge Distillation-Enhanced Behavior Transformer for Decision-Making of Autonomous Driving},
+    journal = {Sensors},
+    year    = {2025},
+    volume  = {25},
+    number  = {1},
+    pages   = {191},
+    doi     = {10.3390/s25010191},
+    url     = {https://www.mdpi.com/1424-8220/25/1/191}
+}
+```
+
+```bibtex
+@misc{cui2026jepaanythinglearningpredictivemodels,
+    title   = {JEPA-Anything: Learning Predictive Models across Different Worlds},
+    author  = {Taoyong Cui and Zhongyao Wang and Xinyue Xu and Weiyang Liu and Zhaochen Yu and Yuying Zhang and Qiang Gao and Mengyue Yang},
+    year    = {2026},
+    eprint  = {2609.20800},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2609.20800}
+}
+```

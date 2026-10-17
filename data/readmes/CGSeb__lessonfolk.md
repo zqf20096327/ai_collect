@@ -1,0 +1,100 @@
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo-dark.svg">
+    <img src="assets/brand/logo.svg" alt="LessonFolk" width="320">
+  </picture>
+</h1>
+
+<p align="center"><strong>Learn AI from zero to advanced, with an AI as your tutor.</strong></p>
+
+<p align="center"><a href="https://lessonfolk.com"><strong>lessonfolk.com</strong></a></p>
+
+[![M8ven Score](https://m8ven.ai/badge/mcp/cgseb-lessonfolk-9h289l)](https://m8ven.ai/mcp/cgseb-lessonfolk-9h289l?variant=verified) <a href="https://www.claudemarket.ai/plugins/cgseb-lessonfolk/lessonfolk-tutor"><img src="https://www.claudemarket.ai/badge-claudemarket.svg" alt="Listed on Claude Market" width="190" height="44" /></a>
+
+
+https://github.com/user-attachments/assets/bc8eccbd-1f95-4d20-92f5-15d528b05d47
+
+LessonFolk is a collection of open-source AI courses designed to be taught *by* an AI. Connect
+your AI chat ([Claude Code](https://claude.com/claude-code), [Codex](https://openai.com/codex),
+Claude Desktop, Cursor…) to LessonFolk, say "let's start", and it guides you through lessons in a
+conversation: explaining, asking questions, adapting to your level, and saving your progress.
+
+## How it works
+
+LessonFolk is a website and an [MCP](https://modelcontextprotocol.io) server (Model Context
+Protocol, a standard way for AI apps to use tools). Your AI chat connects to it: it gets the
+courses and the tutor's instructions, and saves your progress there. The website shows your
+courses, your path and your progress.
+
+The tutor asks about your level and interests, recommends a path of courses, and teaches one
+short lesson at a time. Courses are grouped by theme: *Understanding AI*, *Using AI tools*,
+*Building with AI* and *AI and society*. The full list, in the recommended order, is
+[`courses/en/index.yaml`](courses/en/index.yaml), or ask your tutor *"what can I learn?"*.
+
+**Coming soon: Projects.** Real projects to practise what the courses teach: a subject, a few
+milestones to reach, and your tutor as a coach who gives hints instead of the solution. Some
+will close a course, others will stand alone.
+
+## Quick start
+
+Pick one of two ways:
+
+**Hosted** ([lessonfolk.com](https://lessonfolk.com)): sign in with GitHub or Google, open its
+**Connect** page and add LessonFolk to your AI chat (in Claude Code, a
+[plugin](docs/using-lessonfolk.md#connect-your-ai-chat) does it for you). Your progress is saved
+with your account.
+
+**Self-hosted**: private, on your computer, no data sent to us. With
+[Docker](https://docs.docker.com/get-docker/) running:
+
+```bash
+git clone https://github.com/CGSeb/lessonfolk.git
+cd lessonfolk
+docker compose up -d --build
+```
+
+Open http://127.0.0.1:4321 to see the dashboard. Then start your AI chat **in this folder**:
+
+- **Claude Code:** run `claude` and approve the `lessonfolk` MCP server when asked.
+- **Codex:** run `codex mcp add lessonfolk --url http://localhost:4321/mcp` once, then `codex`.
+- **Other apps:** follow the dashboard's **Connect** page.
+
+Then say:
+
+> Let's start learning AI.
+
+The [learner guide](docs/using-lessonfolk.md) has the details.
+
+## Contribute
+
+LessonFolk grows with its courses, and **writing one needs no code**. Open your AI agent in this
+folder and say *"create a course about…"*: it interviews you, proposes an outline, writes the
+lessons with you and checks them. You are credited as the author on the dashboard.
+
+- **Spotted a mistake in a lesson, or have a course idea?**
+  [Open an issue](https://github.com/CGSeb/lessonfolk/issues/new/choose).
+- **Want to write or translate a course, or work on the code?** Start with
+  [Contributing](CONTRIBUTING.md).
+- **A question?** Ask in [Discussions](https://github.com/CGSeb/lessonfolk/discussions).
+
+## Documentation
+
+- [Using LessonFolk](docs/using-lessonfolk.md): the learner guide (first session, what to say,
+  the dashboard, Docker, troubleshooting)
+- [Contributing](CONTRIBUTING.md): writing courses, development setup, workflow
+- [Developing LessonFolk](docs/development.md): repository map, scripts, database changes
+- [Settings](docs/configuration.md): every environment variable
+- [Course format](docs/course-format.md): how courses and lessons are written
+- [Testing](docs/testing.md): automated tests and manual checks
+- [Sign-in for developers](docs/auth-dev.md): GitHub and Google sign-in
+- [Privacy and personal data](docs/privacy.md): what is stored, export and deletion
+- [Brand](docs/brand.md): logo, colours and type
+- [All docs](docs/README.md)
+
+## License
+
+LessonFolk is developed by CG Seb.
+
+- **Code** (dashboard, tooling, tutor instructions): [MIT](LICENSE)
+- **Course content** (`courses/`): [CC BY 4.0](courses/LICENSE). You may share and adapt the
+  courses, including commercially, as long as you give appropriate credit.

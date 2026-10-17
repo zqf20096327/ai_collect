@@ -1,0 +1,251 @@
+# llama.node
+
+[![CI](https://github.com/mybigday/llama.node/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mybigday/llama.node/actions/workflows/ci.yml)
+[![NPM Version](https://img.shields.io/npm/v/%40fugood%2Fllama.node)](https://www.npmjs.com/package/@fugood/llama.node)
+![NPM Downloads](https://img.shields.io/npm/dw/%40fugood%2Fllama.node)
+
+An another Node binding of [llama.cpp](https://github.com/ggerganov/llama.cpp) to make same API with [llama.rn](https://github.com/mybigday/llama.rn) as much as possible.
+
+- [llama.cpp](https://github.com/ggerganov/llama.cpp): Inference of [LLaMA](https://arxiv.org/abs/2302.13971) model in pure C/C++
+- [llama.rn](https://github.com/mybigday/llama.rn): React Native binding of llama.cpp
+
+## Platform Support
+
+- macOS
+  - arm64: CPU and Metal GPU acceleration
+  - x86_64: CPU only
+- Windows (x86_64 and arm64)
+  - CPU
+  - GPU acceleration via Vulkan
+  - GPU acceleration via CUDA (x86_64)
+- Linux (x86_64 and arm64)
+  - CPU
+  - GPU acceleration via Vulkan
+  - GPU acceleration via CUDA
+- Web
+  - WebAssembly CPU
+  - GPU acceleration via WebGPU
+
+## Installation
+
+```sh
+npm install @fugood/llama.node
+```
+
+## Usage
+
+```js
+import { loadModel } from '@fugood/llama.node'
+
+// Initial a Llama context with the model (may take a while)
+const context = await loadModel({
+  model: 'path/to/gguf/model',
+  n_ctx: 2048,
+  n_gpu_layers: 99, // > 0: enable GPU
+  // lib_variant: 'vulkan', // Change backend
+})
+
+// Do completion
+const { text } = await context.completion(
+  {
+    prompt: 'This is a conversation between user and llama, a friendly chatbot. respond in simple markdown.\n\nUser: Hello!\nLlama:',
+    n_predict: 100,
+    stop: ['</s>', 'Llama:', 'User:'],
+    // n_threads: 4,
+  },
+  (data) => {
+    // This is a partial completion callback
+    const { token } = data
+  },
+)
+console.log('Result:', text)
+```
+
+## Typed Decisions
+
+A typed decision model ([decision models in llama.cpp](https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp),
+e.g. `ggml-org/Julia-1-GGUF`, `ggml-org/Laya-GGUF`, `ggml-org/Kev-0.8B-GGUF`)
+answers `choice` / `score` / `noul` questions about a state with calibrated
+probabilities, one forward pass per answer and no generated tokens. The request
+and the response follow the TypeSafe `/v1/systemone` API that llama-server serves.
+
+```js
+const context = await loadModel({ model: 'path/to/Julia-1-Q8_0.gguf' })
+console.log(context.getModelInfo().decision)
+// { type: 'laya', nOptionsMax: 255, imageInput: false, textGeneration: false }
+
+const { answers, usage } = await context.decide({
+  state: { utterance: 'a medium fries please', cart: [] },
+  questions: {
+    is_ordering: { type: 'noul', instructions: 'The customer is ordering' },
+    product: {
+      type: 'choice',
+      instructions: 'Which product?',
+      criteria: { 'fries-m': 'Fries M', none: null },
+    },
+    mood: {
+      type: 'score',
+      instructions: 'How impatient?',
+      criteria: ['calm', 'neutral', 'impatient'],
+    },
+  },
+})
+answers.product.choice // 'fries-m' | 'none', typed from the request
+answers.product.probabilities // { 'fries-m': 0.99, none: 0.01 }
+answers.mood.score // expected level index, 0..2
+answers.is_ordering.noul // probability of true
+```
+
+- `decide()` runs on the context's own sequence and drops the cached prompt of
+  `completion()`. With parallel mode enabled, use
+  `context.parallel.decide(request)` instead, which returns
+  `{ requestId, promise, stop }`.
+- Images go in `images` (file paths or data URLs), or as `image_url` parts of a
+  chat-message state, after `initMultimodal()`, for a model whose
+  `decision.imageInput` is true.
+- Models that only answer decisions (`decision.textGeneration: false`, such as
+  laya, kev and clef) refuse `completion()`.
+- A `system_one` model with a classification head (`decision.readout: 'rank_head'`)
+  needs `pooling_type: 'rank'` and `embedding: true` when it is loaded.
+
+See [`examples/decision.mjs`](examples/decision.mjs).
+
+## Text-to-Speech (TTS) — Experimental
+
+TTS is backed by [codec.cpp](https://github.com/mybigday/codec.cpp) (vendored
+by the llama.rn submodule under `src/llama.rn/vendor/codec.cpp`) and supports OuteTTS v0.x/v1.0, Soprano 1.1,
+NeuTTS Nano/Air, CSM 1B, Qwen3-TTS 0.6B, MOSS-TTSD, MOSS-TTS-Realtime,
+Chatterbox T3 (incl. multilingual), and BlueMagpie-TTS. The API mirrors
+llama.rn and may change without a major version bump.
+
+```js
+import { loadModel } from '@fugood/llama.node'
+
+const context = await loadModel({
+  model: 'path/to/tts-backbone.gguf',
+  n_gpu_layers: 99,
+  ctx_shift: false,
+})
+context.initVocoder({ path: 'path/to/codec.gguf', n_batch: 4096 })
+
+const caps = context.getTTSCapabilities() // { family, requiresPhonemes, ... }
+const { prompt, grammar, embedding } = await context.getFormattedAudioCompletion({
+  prompt: 'Hello from llama.node!',
+  // speaker: 'default' | SpeakerPayload | LlamaSpeaker (voice clone)
+  // phonemizer: (text, language) => ipaText, // required for NeuTTS
+})
+
+const result = await context.completion({
+  prompt,
+  grammar,
+  embedding,
+  temperature: 0.7,
+  top_p: 0.9,
+  n_predict: 4096,
+  stop: ['<|im_end|>', '<|SPEECH_GENERATION_END|>'],
+})
+
+const sampleRate = context.getAudioSampleRate()
+const audio = result.embeddings?.length // continuous-latent flow (BlueMagpie)
+  ? await context.decodeAudioEmbeddings(result.embeddings, result.embedding_dim)
+  : await context.decodeAudioTokens(result.audio_tokens) // token flow
+
+// Voice cloning (models with speaker encoders, e.g. Chatterbox / Qwen3-TTS):
+// const speaker = context.createSpeaker({ refAudio: pcmFloat32, refAudioSampleRate: 24000, refText: '...' })
+// ...pass `speaker` to getFormattedAudioCompletion / completion, then speaker.release()
+
+context.releaseVocoder()
+```
+
+Runnable examples for every supported model family live in
+[`examples/tts/`](examples/tts/) — download model pairs with
+`node examples/tts/download-models.mjs <model-key>|all`.
+
+## WebAssembly
+
+Browser builds are published as the optional `@fugood/node-llama-wasm` package.
+Import `@fugood/llama.node` in browser bundles; the package browser entry
+re-exports the WASM runtime while preserving the same high-level `loadModel()` /
+context wrapper shape where browser constraints allow:
+
+```js
+import { loadModel } from '@fugood/llama.node'
+
+const context = await loadModel({
+  model: 'https://example.com/model.gguf',
+  n_ctx: 2048,
+})
+
+const tokens = await context.tokenize('Hello from the browser')
+const state = await context.saveSession()
+await context.loadSession(new Blob([state]))
+```
+
+Build the package with Emscripten:
+
+```sh
+npm run build-wasm
+npm run build-wasm-docker
+npm run build-wasm -- --webgpu
+npm run serve-wasm-test
+```
+
+CPU and WebGPU builds use separate directories under `build-wasm/`, so switching
+variants does not invalidate the other build. Fresh builds use Ninja when it is
+available, `JOBS=8` can cap parallelism, and installing `ccache` enables compiler
+launcher caching automatically. Emscripten's system-library cache is kept in
+`build-wasm/emcache` unless `EM_CACHE` is already set. The Docker helper selects
+`emscripten/emsdk:4.0.14-arm64` on arm64 hosts such as Apple Silicon Macs, and
+uses `emscripten/emsdk:4.0.13` on amd64 hosts. Override with `EMSCRIPTEN_IMAGE`
+or `EMSCRIPTEN_PLATFORM` if you need a specific container image.
+
+`loadModel()` runs the WASM runtime in a dedicated Web Worker by default so
+model loading, tokenization, completion, state, embeddings, rerank, decisions,
+multimodal staging, and benchmarks do not block the browser UI thread. On isolated pages
+with `SharedArrayBuffer`, the CPU path selects the pthread build and defaults
+`n_threads` to `min(4, navigator.hardwareConcurrency)`. Pass
+`wasm: { threads: false }` to force the single-thread artifact, or
+`wasm: { maxThreads: 8 }` / `n_threads` to tune CPU thread count. Pass
+`wasm: { worker: false }` only when you intentionally need direct access to the
+Emscripten module on the current thread.
+
+Model strings are fetched as URLs by default. `saveSession()` returns an
+`ArrayBuffer`, and `loadSession()` accepts a URL, `Blob`, `ArrayBuffer`, or typed
+array. URL downloads are saved in browser Cache Storage by default so repeated
+model/session/media URL loads can reuse the previous bytes; pass
+`wasm: { cacheDownloads: false }` to force a fresh fetch, `wasm.cacheName` to use
+a separate cache, or call `clearWasmDownloadCache()` to clear the default cache.
+The `loadModel()` progress callback still receives the numeric percentage first,
+and also receives an optional detail object with `source: 'network' | 'cache' |
+'memory' | 'buffer'` so UI code can distinguish real downloads from cache hits.
+Browser `ArrayBuffer` limits still apply, so split GGUF files at or above the 2
+GB limit into smaller shards before loading. WebGPU is opt-in via `n_gpu_layers`
+and requires both `navigator.gpu` and WebAssembly JSPI.
+
+The browser package includes a serial `context.parallel` queue for API
+compatibility. It preserves the parallel API shape for web callers, but it runs
+one request at a time until the native slot-manager path is ported to WASM.
+
+## Lib Variants
+
+- [x] `default`: General usage, not support GPU except macOS (Metal)
+- [x] `vulkan`: Support GPU Vulkan (Windows/Linux), but some scenario might unstable
+- [x] `cuda`: Support GPU CUDA (Windows/Linux), but only for limited capability
+  > Linux: (x86_64: 8.9, arm64: 8.7)
+  > Windows: x86_64 - 12.0
+- [x] `wasm`: Browser package with WebAssembly CPU and optional WebGPU
+
+## License
+
+MIT
+
+---
+
+<p align="center">
+  <a href="https://bricks.tools">
+    <img width="90px" src="https://avatars.githubusercontent.com/u/17320237?s=200&v=4">
+  </a>
+  <p align="center">
+    Built and maintained by <a href="https://bricks.tools">BRICKS</a>.
+  </p>
+</p>

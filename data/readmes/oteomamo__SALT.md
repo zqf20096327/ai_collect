@@ -1,0 +1,351 @@
+<div align="center">
+
+# SALT
+
+<p align="center">
+  <img src="salt/assets/flow.webp" width="100%">
+</p>
+
+## Salience-Aware Lexical Trie for Long-Context Compression
+
+[![][emnlp-shield]][emnlp-link]
+[![][version-shield]][release-link]
+[![][docs-shield]][docs-link]
+[![][license-shield]][license-link]
+[![][arxiv-shield]][arxiv-link]
+
+</div>
+
+> [!NOTE]
+> **What is next**
+>
+> - **Self-deciding memory** - the switch layer's rules, its signals and
+>   an experimental model policy are in place, and the next step is a
+>   policy that earns a default from measured sessions.
+
+SALT shrinks a long document down to a fixed size before it is sent to a language
+model, keeping the sentences that carry the most information. It works with any
+model, produces a shorter plain-text prompt, and cuts the compute, memory, and
+wait time that long inputs cost.
+
+When a prompt is too long, existing compressors give each sentence a single
+relevance score and keep the top-scoring ones until the budget runs out. Under a
+tight budget this lets the document's main topic swallow the whole budget, so
+smaller but still important points get dropped - a failure called *theme
+collapse* (in multi-hop questions, for example, it can keep passages about the
+main entity yet lose the one sentence that links it to a second).
+
+SALT first maps the document's recurring themes by organizing each sentence's
+keywords into a trie, a small keyword tree ordered by how often those keywords
+recur, then spreads the budget across those theme branches before choosing
+sentences, so minor themes keep their share instead of being crowded out.
+Because the theme map is built once, it can be reused across the turns of a
+conversation without re-reading the document.
+
+> The legacy selector described in the paper now defaults to the coverage/CELF
+> selector described below.
+
+## 📑 Table of contents
+
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Quick start](#-quick-start)
+- [Chatbot mode](#-chatbot-mode)
+- [Results](#-results)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [Reference](#-reference)
+- [License](#-license)
+
+## 🧩 Architecture
+
+**How saltChat remembers a conversation.**
+
+<p align="center">
+  <img src="salt/assets/saltchat.webp" width="100%" alt="saltChat building one conversation memory across seven sources, selecting sentences per turn, and feeding three models">
+</p>
+
+
+
+Two phases. **Indexing** reads the document once and builds a keyword trie - a
+reusable map of its recurring themes. **Selection** then picks a sentence subset
+under a token budget, returned in original document order, query-biased or not.
+
+```text
+ INDEXING  ── once per document, reused across turns and budgets
+   document → split + junk filter
+           → per-sentence keywords   (BGE-small [CLS] attention + knee cutoff)
+           → theme salience          (SF = #sentences keeping a word, top quantile)
+           → keyword trie            (each sentence's themes, SF-ordered, form a
+                                      root-to-leaf path, leaves hold sentence ids)
+
+ SELECTION ── per budget, with or without a query
+   maximize theme coverage with CELF lazy-greedy: a pick's value shrinks as its
+   theme branches fill, so budget spreads across themes instead of collapsing
+   onto the dominant one. A query re-weights the trie (lexical + BGE-semantic)
+   without rebuilding it. → compressed prompt, original order, ≤ budget
+```
+
+
+The whole system as a blueprint - this map is kept current as SALT grows,
+so it is the fastest way to find where a change belongs:
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                   SALT                                   │
+│                                                                          │
+│ ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐   │
+│ │      Indexing      │  │    Keyword Trie    │  │     Selection      │   │
+│ │                    │  │                    │  │                    │   │
+│ │ BGE-small encoder  │  │ SF-ordered paths   │  │ coverage (CELF)    │   │
+│ │ attention keywords │  │ theme branches     │  │ branch discounting │   │
+│ │ knee cutoff        │  │ §file: doc branches│  │ multi-anchor query │   │
+│ │ junk filter        │  │ rebuilt cheaply    │  │ ≤20% · 4k tokens   │   │
+│ │                    │  │ branch scores      │  │ scoped search      │   │
+│ └────────────────────┘  └────────────────────┘  └────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐   │
+│ │    Session Trie    │  │  Prompt Assembly   │  │    Chat Runner     │   │
+│ │                    │  │                    │  │                    │   │
+│ │ per-conversation   │  │ stable prefix first│  │ HF streaming       │   │
+│ │ lives in DRAM      │  │ append-only tail   │  │ vLLM + APC (opt-in)│   │
+│ │ grows every turn   │  │ memory + question  │  │ vllm-serve client  │   │
+│ │ cross-turn coverage│  │ instructions.md    │  │ model registry     │   │
+│ │ + half-life decay  │  │                    │  │ GPU-pinned models  │   │
+│ │ + near-dup gate    │  │                    │  │                    │   │
+│ │ + background ingest│  │                    │  │                    │   │
+│ │ + tail-aware select│  │                    │  │                    │   │
+│ └────────────────────┘  └────────────────────┘  └────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │              Document ingest (salt@ files, salt --doc)             │   │
+│ │ pypdf extract · furniture scrub · paragraphs rejoined across floats│   │
+│ │ tables + pseudocode grouped under captions · footnotes isolated    │   │
+│ │ headings, panel labels and equations kept · reference list dropped │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │            Trie shape - the root binds the conversation            │   │
+│ │                               ● root - the conversation bind       │   │
+│ │         ┌─────────────────────┼─────────────────────┐              │   │
+│ │  §file:paper.pdf       §file:notes.txt        conversation         │   │
+│ │         │                     │              ┌──────┴──────┐       │   │
+│ │   keyword paths         keyword paths     theme A       theme B    │   │
+│ │         │                     │              │             │       │   │
+│ │     sentences             sentences      sentences     sentences   │   │
+│ │                                                                    │   │
+│ │ each turn: branch scores set the scope, the files the question is  │   │
+│ │ about with the conversation always in, a date on the line holds    │   │
+│ │ the other days out, then ≤ budget across what is left (CELF)       │   │
+│ │ the untrie - the verbatim tail - sits OUTSIDE the trie, as the     │   │
+│ │ prompt's stable recent-history window                              │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │                  Prompt layout (KV-cache shaped)                   │   │
+│ │ [system: instructions · file inventory · attach@ full documents]   │   │
+│ │ → [tail: recent exchanges - append-only, block-wise compaction]    │   │
+│ │ → [newest user message: SALT memory (≤20% of scope) + question]    │   │
+│ │ stable prefix = reusable KV ──── fresh suffix = per-turn prefill   │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │                    kvtrace - per-turn KV ledger                    │   │
+│ │ read (reused) / write (fresh) / output · events.jsonl + tokens.npy │   │
+│ │ usage keys: input (write) · input_cached_tokens (read) · output    │   │
+│ │ apc fields: engine-measured prefix-cache reuse (vllm + vllm-serve) │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │              Agents - saltChat asking other models                 │   │
+│ │ roster: worker + orchestrator endpoints, each its own server       │   │
+│ │ personas: roles as files, riding a worker or the chat model itself │   │
+│ │ /offload one task · @NAME one turn · /agent plan, hand out, write  │   │
+│ │ every piece gets the trie selected for IT, committing nothing      │   │
+│ │ switch agent: rules over the session's own numbers set the switches│   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+│ ┌────────────────────────────────────────────────────────────────────┐   │
+│ │                            Entry points                            │   │
+│ │ salt (one-shot: --data / --doc) · saltChat · saltServe · eval.py   │   │
+│ │ salt-mcp - SALT memory over MCP, for an editor or an agent runtime │   │
+│ │ salt@ trie attach · attach@ full text · /doc /model /budget /stats │   │
+│ └────────────────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+Where each stage lives, module by module, is mapped in
+[salt/README.md](salt/README.md) and on the
+[Architecture](https://oteomamo.github.io/SALT/latest/architecture/) page.
+
+## 📦 Installation
+
+Requires Python 3.10 and a CUDA GPU with an NVIDIA driver 570 or newer,
+since the pinned torch is built for CUDA 12.8 (CPU works for compression,
+just slower).
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/oteomamo/SALT.git
+cd SALT
+```
+
+**2. Create the environment**
+
+With conda:
+
+```bash
+conda env create -f environment.yml
+conda activate salt
+```
+
+Or with venv:
+
+```bash
+python3.10 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**3. Install SALT in editable mode**
+
+```bash
+pip install -e .
+```
+
+This also installs the four console commands: `salt` (one-shot compression,
+see [Usage](https://oteomamo.github.io/SALT/latest/usage/)), `saltChat` (interactive chat, see
+[Chatbot mode](#-chatbot-mode)), `saltServe` (persistent serving, see
+[Serving](https://oteomamo.github.io/SALT/latest/serving/)) and `salt-mcp` (the MCP server, see
+[MCP server](https://oteomamo.github.io/SALT/latest/mcp/)).
+
+**4. Authenticate with Hugging Face** - the eval model
+(`meta-llama/Llama-3.1-8B-Instruct`) is gated:
+
+```bash
+hf auth login
+```
+
+Or skip the CLI and export the token directly: `export HF_TOKEN=hf_...`.
+
+**5. (Optional) vLLM backend.** `eval.py` defaults to vLLM,
+`saltChat --backend vllm` uses it for prefix caching, and `saltServe`
+launches a persistent model server with it. Install it into the `salt`
+env through the package's extra, which pins vLLM 0.19.1 to the
+transformers release it was tested with:
+
+```bash
+pip install -e ".[vllm]"
+```
+
+The extra also installs a small server package at a version that keeps
+the routes healthy next to newer fastapi releases. Skip this and run `eval.py --backend hf` for a portable run
+that needs no vLLM. `saltChat` already defaults to its HF backend.
+`saltServe` can also run a vLLM installed in a separate environment
+through `--vllm-bin`.
+
+> `bash scripts/setup_env.sh` does steps 2–3 in one shot (add `WITH_VLLM=1` to
+> include vLLM).
+
+## 🚀 Quick start
+
+Fetch the LongBench data, then compress every task present and evaluate the
+outputs in one command:
+
+```bash
+python salt/datasets/download_longbench.py
+bash scripts/run_datasets.sh
+```
+
+Smoke test (5 samples per task, compression only):
+
+```bash
+MAX_SAMPLES=5 RUN_EVAL=0 bash scripts/run_datasets.sh
+```
+
+The download step only needs to run once, because the data lands under
+`salt/datasets/longbench/data` and stays there.
+
+The script routes each dataset to the right mode automatically, then scores
+the results. Every command, flag, and knob is documented on the
+[Usage](https://oteomamo.github.io/SALT/latest/usage/) and
+[Datasets](https://oteomamo.github.io/SALT/latest/datasets/) pages.
+
+## 🤖 Chatbot mode
+
+`saltChat` is an interactive chat REPL where SALT is the conversation memory:
+one persistent trie per conversation grows with every exchange (and any
+attached documents), and each turn it compresses the accumulated history into
+a query-biased context block under the token budget.
+
+```bash
+saltChat --model qwen05 --conversation-id demo1 --doc report.txt
+```
+
+Each turn searches only the attached files the question is about and,
+when the question names a day, a month or a span, only the exchanges
+filed inside it, so the memory block comes from where the answer is. A
+persistent server started with `saltServe` keeps the model loaded and
+its cache warm between chats, so a resumed conversation picks up without
+re-reading its documents. The
+[Chatbot mode guide](https://oteomamo.github.io/SALT/latest/chatbot/) covers
+the concepts, the [Serving](https://oteomamo.github.io/SALT/latest/serving/)
+page covers the server, and the
+[Options](https://oteomamo.github.io/SALT/latest/options/) page lists every
+flag in one line each, including the off-by-default switches that make
+long sessions better.
+
+Helper models can take a turn apart and answer the pieces before the
+reply is written. The
+[Agents](https://oteomamo.github.io/SALT/latest/agents/) page covers the
+roster, the round, and the flags that turn it on.
+
+## 🔬 Results
+
+The full per-dataset table is on the
+[Results](https://oteomamo.github.io/SALT/latest/results/) page.
+
+## 🔭 Roadmap
+
+Next:
+
+- **Self-deciding memory** - the switch layer's rules, its signals and an
+  experimental model policy are in place, and the next step is a policy
+  that earns a default from measured sessions.
+
+## 🤝 Contributing
+
+PRs welcome - see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 📝 Reference
+
+SALT is a Main Conference paper at EMNLP 2026. If you find this project
+useful for your research, please consider citing it:
+
+```bibtex
+@article{mamo2026salt,
+  title={SALT: Salience-Aware Lexical Trie for Long-Context Compression},
+  author={Mamo, Oteo and Yi, Hyunjin and Choudhury, Joydhriti and Gao, Shangqian and Yu, Weikuan},
+  journal={arXiv preprint arXiv:2607.17486},
+  year={2026}
+}
+```
+
+The abstract, and how the paper relates to what `main` ships today, are
+on the [Paper page](https://oteomamo.github.io/SALT/latest/paper/).
+
+## 📄 License
+
+SALT is released under the [MIT License](LICENSE).
+
+[docs-shield]: https://img.shields.io/badge/docs-oteomamo.github.io%2FSALT-blue
+[docs-link]: https://oteomamo.github.io/SALT/
+[emnlp-shield]: https://img.shields.io/badge/EMNLP-2026-b85c45
+[emnlp-link]: https://openreview.net/forum?id=UTJqOhkSqi
+[arxiv-shield]: https://img.shields.io/badge/arXiv-2607.17486-b31b1b.svg
+[arxiv-link]: https://arxiv.org/abs/2607.17486
+[version-shield]: https://img.shields.io/github/v/tag/oteomamo/SALT?label=version&sort=semver
+[release-link]: https://github.com/oteomamo/SALT/tags
+[license-shield]: https://img.shields.io/badge/license-MIT-green
+[license-link]: LICENSE

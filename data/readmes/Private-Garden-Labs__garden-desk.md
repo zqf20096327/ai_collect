@@ -1,0 +1,45 @@
+# Garden Desk
+
+**Private work should stay private.**
+
+Garden Desk is a free desktop agent for work with local files. Choose a folder or attach files, describe the result you need, and review what it makes. It runs on your computer with no account, telemetry, or cloud service.
+
+About the name: the cloud is a noisy city with no privacy. Garden Desk is your own desk in a private backyard, where nobody tracks you.
+
+<img width="1467" height="967" alt="Screenshot 2026-09-28 at 13 13 41" src="https://github.com/user-attachments/assets/2817bdfc-3567-41da-b8dc-3848c9b5d78c" />
+
+
+## How it works
+
+```text
+Desktop (Tauri and React)
+  └─ Garden Desk Core (TypeScript and Node.js)
+       ├─ Supervised local model (Ternary Bonsai 2 27B)
+       └─ No-network microVM (virtual machine with no network device)
+            /source: selected folder, read-only
+            /workspace: private working files
+```
+
+Core controls folder access, approvals, audit, and recovery. The model proposes work; Core runs file tools and code in the microVM. The selected folder stays read-only. You choose where to save results.
+
+## Get Garden Desk
+
+Download signed builds for [Apple silicon macOS or Windows 11 x64](https://gardendesk.ai/releases/). Both need 16 GB of memory. Windows also needs an NVIDIA or AMD GPU with 12 GB of VRAM, and Pro or Enterprise with Hyper-V enabled. First launch needs no download. To build from source, use the [development workflow](docs/DEVELOPMENT_WORKFLOW.md#local-source-setup).
+
+## Benchmark
+
+In a development comparison on 2026-09-23, local Bonsai 2 27B, Qwen3.8 27B, and Qwen3.8 Max each passed 18 of 18 tasks. See the [tasks, times, and tool errors](https://github.com/Private-Garden-Labs/garden-desk/issues/168). This result applies to that suite.
+
+## Learn more
+
+Read the [architecture and security model](docs/ARCHITECTURE.md), [product principles](docs/PRODUCT.md), and [license](LICENSE). See the [website and demo](https://gardendesk.ai/).
+
+## Supporters
+
+Every feature stays free for everyone.
+
+**Company sponsors:** none yet.
+
+**Sponsors:** none yet.
+
+See the [supporters page](https://gardendesk.ai/supporters/) or [support the work](https://github.com/sponsors/Private-Garden-Labs).

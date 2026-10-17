@@ -1,0 +1,139 @@
+# AI Prompts ✨
+
+A Swift iOS app for managing, browsing, and sharing AI prompts. Inspired by [f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts), this app offers a curated collection of prompts for ChatGPT, Grok, and other LLM tools. Now featuring prompt categories, context engineering tips, and a built-in prompt analyzer for enhanced prompt engineering.
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/1.png" width="250" />
+  <img src="screenshots/2.png" width="250" />
+  <img src="screenshots/3.png" width="250" />
+</p>
+
+## ✨ Features
+
+- 📚 **Curated Prompts**: Browse a collection of high-quality AI prompts, including a special "Vibe Prompts" section for app-specific or mood-based prompts.
+- ✨ **AI-Powered Prompt Generation (Offline)**: Instantly generate new, unique prompts using an on-device Markov chain model trained on the existing prompt corpus. Works for both Prompts and Vibe Prompts, with no internet required.
+- ❤️ **Favorites**: Mark prompts as favorites for quick access.
+- 🕘 **Recently Used & Most Used**: Prompts you copy, quick launch or run show up in a **Recently Used** shelf at the top of the Prompts tab, and the **Most Used** sort puts your go-to prompts first. Long-press a card to remove it, or tap **Clear**.
+- 👆 **Swipe Actions**: Swipe right on any prompt to favorite it, or left to copy or delete it. **Copy** is also the first item in every long-press menu.
+- 💾 **Backup & Restore**: In **Settings › Backup**, export your prompts, favorites, categories and on-device chats to a JSON file, and restore it on any device. Restoring merges by title and never deletes anything.
+- 🆕 **Fresh Prompts Without an Update**: New prompts published to [`content/feed.json`](content/feed.json) reach every install on next launch, marked **NEW** with a "new prompts added" banner. Deleted prompts never come back.
+- 📱 **Widgets**: *Prompt of the Day* (Home Screen and Lock Screen) and *Favorite Prompts*. Tap to open the prompt.
+- 🗣️ **Siri & Shortcuts**: Copy, open, or get a random prompt with App Shortcuts, Siri, and Spotlight. On iOS 26 with Apple Intelligence, the **Run Prompt with Apple Intelligence** action runs a prompt (optionally with your own input) on device and returns the answer, which is also saved to Chats.
+- 🔦 **Spotlight**: Every prompt is indexed in Spotlight (iOS 18+). Tapping a result opens it in the app.
+- 🎛️ **Control Center**: A **Random Prompt** control (iOS 18+) for Control Center, the Lock Screen and the Action button.
+- 🎨 **Image Playground**: Turn image prompts, or any on-device answer, into a picture (iOS 18.1+, Apple Intelligence devices).
+- 🖼️ **Share as Image**: Share any prompt or answer as a branded card that links to the App Store.
+- 🌏 **Traditional Chinese**: Full zh-Hant localization of the app, widgets, and Siri phrases.
+- 🧩 **Fill-in-the-Blank Templates**: Prompts with variables (`{{topic}}`, `${Name: default}`, or a trailing `My first request is "..."`) get a **Customize & Use** sheet. Fill in the blanks, preview the result live, then copy it or launch it straight into ChatGPT, Claude, Gemini, Grok, or Perplexity.
+- 🍎 **Run on Device with Apple Intelligence**: On iOS 26 devices with Apple Intelligence, run any prompt right in the app with Apple's on-device Foundation Models: free, private and offline. Replies stream in, you can ask follow-ups, and conversations are saved under **Favorites › Chats**. If the model declines a prompt, the app offers Quick Launch instead. Other devices keep the existing Copy and Quick Launch flow.
+- 🔎 **Ask in Plain Language**: In the Search tab, describe what you need (like "help me prepare for a job interview") and Apple Intelligence picks the best prompts from the library. It can only choose prompts that exist.
+- 💡 **Blank Ideas**: In **Customize & Use**, tap **Suggest Ideas** for three tappable values for every blank.
+- 🏷️ **Auto Title & Category**: When adding a prompt, Apple Intelligence suggests its title, category and developer flag, or the app name and tech stack for a vibe prompt.
+- 🌐 **On-Device Translation**: If a prompt isn't in your language, translate it in place with Apple's Translation framework (iOS 18+) and copy the translation.
+- 🔍 **Prompt Details**: View detailed information for each prompt, including contributor and tech stack.
+- 🖥️ **Modern SwiftUI Interface**: Clean, tab-based navigation for Prompts, Vibe Prompts, Favorites, and More.
+- 🫧 **Liquid Glass Design**: On iOS 26 the app uses Liquid Glass throughout: a floating tab bar that shrinks while you scroll, a dedicated Search tab that searches prompts and vibe prompts together, and glass buttons, chips, quick launch pills, and cards. iOS 17.4–25 keep the original look.
+- 🧩 **Modular Architecture**: Includes a reusable `MoreApps` module for app recommendations, with localization support.
+- 💾 **Local Data Management**: Uses GRDB for efficient, local data storage and management.
+- 🗂️ **Prompt Categories**: Organize and browse prompts by category for easier discovery and filtering. Quickly find prompts relevant to your needs.
+- 🧠 **Context Engineering Tips**: Access best practices and actionable tips for effective context engineering directly in the app, helping you craft better prompts for LLMs.
+- 🛠️ **Prompt Engineering Analyzer**: Analyze your prompts with built-in tools to improve their effectiveness, clarity, and results.
+- 🌙 **Dark Mode**: Supports system-wide dark mode, with user preference override.
+- 📢 **Ad Integration**: Integrates Google Mobile Ads with ATT permission handling.
+- 🛒 **App Store Links**: The More tab features other recommended apps with direct App Store links.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Xcode 26 or later (the iOS 26 SDK is needed for the Liquid Glass APIs)
+- Swift 5.9+
+- iOS 17.4+ (Liquid Glass on iOS 26+)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/banghuazhao/ai-prompts.git
+   cd ai-prompts
+   ```
+2. Open `AIPrompts.xcodeproj` in Xcode.
+3. Run the project on your simulator or device.
+
+### 🗂️ Project Structure
+
+- `AIPrompts/App/` – App entry point and main views (tab navigation)
+- `AIPrompts/Components/` – SwiftUI components (Favorites, Prompts, VibePrompt, More, etc.)
+- `AIPrompts/Model/` – Data models (`Prompt`, `VibePrompt`)
+- `AIPrompts/Service/` – Data management, CSV loading, and app services
+- `AIPrompts/Modules/MoreApps/` – Modular feature for app recommendations (with localization)
+- `AIPrompts/Doc/` – CSV files for prompt data
+- `AIPromptsWidgets/` – WidgetKit extension (Prompt of the Day, Favorite Prompts)
+- `Shared/` – Code compiled into both the app and the widget extension
+- `content/feed.json` – Remote prompt feed fetched by the app (see below)
+- `AIPrompts/Assets.xcassets/` – App icons and assets
+
+## 📝 Data Model Example
+
+```swift
+struct VibePrompt: Identifiable, Hashable {
+    let id: Int
+    var app: String
+    var prompt: String
+    var contributor: String
+    var techstack: String
+    var isFavorite: Bool
+    // ...
+}
+```
+
+## 🆕 Publishing New Prompts
+
+The app downloads `content/feed.json` from the `main` branch (at most every 6 hours) and inserts any prompt whose title it has not seen before. To ship new prompts, add entries and push:
+
+```json
+{
+  "title": "Weekly Plan Coach",
+  "prompt": "Act as a productivity coach. My goals for this week are: {{goals}}. ...",
+  "forDevs": false,
+  "category": "💼 Productivity",
+  "addedAt": "2026-09-25"
+}
+```
+
+- `title` is the identity: reusing an existing title (bundled or remote) is ignored, so pick a new one.
+- `category` matches a category by name, with or without its emoji.
+- Prompts show as **NEW** for 14 days after `addedAt`.
+- `vibePrompts` entries take `app`, `prompt`, `contributor`, `techstack` and `addedAt`.
+- To try a local copy in a Debug build, serve the folder (`python3 -m http.server 8000` in `content/`) and set the scheme environment variable `CONTENT_FEED_URL=http://localhost:8000/feed.json`.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open issues or pull requests for new prompts, features, or bug fixes. To add new prompts, simply update the CSV files in `AIPrompts/Doc/`.
+
+## 📄 License
+
+[MIT](LICENSE)
+
+## 👤 Author
+
+- [banghuazhao](https://github.com/banghuazhao)
+
+## 💡 Inspiration
+
+This project is inspired by [f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts), a curated collection of useful prompts for ChatGPT and other LLM tools. 
+
+## ✨ AI-Powered Prompt Generation
+
+The app features an **offline AI prompt generator** for both Prompts and Vibe Prompts:
+
+- Tap the ✨ (sparkles) button in the Prompts or Vibe Prompts list.
+- The app uses a Markov chain model (built from the local CSV corpus) to generate a new, unique prompt.
+- For Prompts: The "Act/Role" field is filled with a random act from the corpus, suffixed with "(AI Generated)", and the prompt text is generated.
+- For Vibe Prompts: The "App Name" field is filled with a random app name from the corpus, suffixed with "(AI Generated)", and the prompt text is generated.
+- The add prompt sheet opens, prefilled with the generated content, so you can review, edit, and save it to your collection.
+- All generation is done **fully offline** and instantly, with no network or external AI service required.
+
+This feature lets you expand your prompt collection with creative, AI-inspired ideas—anytime, anywhere! 

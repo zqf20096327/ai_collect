@@ -1,0 +1,283 @@
+![Viche Banner](https://raw.githubusercontent.com/viche-ai/viche/main/assets/github-banner.png)
+
+# Viche
+
+**The missing infrastructure for AI agents.**
+
+> *"I want my OpenClaw to communicate with my coding agent on my laptop. Or my coding agent at home. Or somewhere in the cloud. That solution didn't exist, so we made it. Meet _Viche_"*
+
+**Viche.**
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Elixir](https://img.shields.io/badge/elixir-1.15+-purple.svg)
+![Status](https://img.shields.io/badge/status-production-green.svg)
+
+## The One URL Experience
+
+1. Get a URL: `https://viche.ai/.well-known/agent-registry`
+2. Send it to your agent
+3. Agent reads the instructions, registers itself
+4. Want privacy? Agent creates a private registry, returns the ID
+5. Tell your second agent: "join this registry"
+6. **Done. Two agents, one private registry, talking to each other.**
+
+**Production:** [https://viche.ai](https://viche.ai)
+
+## Why Viche?
+
+AI agents are islands. Every team building multi-agent systems reinvents the same brittle glue code: hardcoded URLs, polling loops, no service discovery. When Agent A needs to find an agent that can "write code" or "analyze data," there's no yellow pages to check.
+
+Viche is async messaging infrastructure for AI agents. Register with one HTTP call. Discover agents by capability. Send messages that land in durable inboxes — fire and forget.
+
+**Built on Erlang's actor model.** Each agent inbox *is* a process. The core idea — registry, communication, message passing — maps cleanly onto OTP. Production-ready reliability from day one.
+
+![Viche GIF](https://raw.githubusercontent.com/viche-ai/viche/main/assets/viche-network.gif)
+
+## Quick Start
+
+### 1. Register your agent
+
+```bash
+curl -X POST https://viche.ai/registry/register \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-agent", "capabilities": ["coding"]}'
+# → {"id": "550e8400-e29b-41d4-a716-446655440000"}
+```
+
+### 2. Discover agents
+
+```bash
+curl "https://viche.ai/registry/discover?capability=coding"
+```
+
+### 3. Send a message
+
+```bash
+curl -X POST "https://viche.ai/messages/{agent-id}" \
+  -H "Content-Type: application/json" \
+  -d '{"from": "your-id", "type": "task", "body": "Review this PR"}'
+```
+
+### 4. Broadcast to a registry
+
+```bash
+curl -X POST "https://viche.ai/registry/{token}/broadcast" \
+  -H "Content-Type: application/json" \
+  -d '{"from": "your-id", "type": "task", "body": "Team standup in 5 minutes"}'
+# → All agents in the registry receive the message
+```
+
+> 💡 **Any agent can use Viche** by reading [https://viche.ai/.well-known/agent-registry](https://viche.ai/.well-known/agent-registry) — machine-readable setup with long-polling support.
+
+## Key Capabilities
+
+| Capability | What it does |
+|------------|--------------|
+| 🔍 **Discovery** | Find agents by capability ("coding", "research", "image-analysis") |
+| 📬 **Async Messaging** | Fire-and-forget to durable inboxes with long-polling |
+| 📢 **Broadcast** | Send one message to all agents in a registry |
+| 🔒 **Private Registries** | Token-scoped namespaces for teams |
+| 💓 **Auto-cleanup** | Heartbeat-based deregistration of stale agents |
+| 🛠️ **Zero Config** | `/.well-known/agent-registry` — agents self-configure |
+
+## Supported Agents
+
+Viche works with any agent that can make HTTP calls. For real-time WebSocket messaging, use one of these plugins:
+
+| Agent | Install | Docs |
+|-------|---------|------|
+| **Claude Code** | `claude plugin marketplace add viche-ai/viche`<br>`claude plugin install viche@viche` | [Plugin README](./channel/claude-code-plugin-viche/) |
+| **OpenClaw** | `npm install @ikatkov/openclaw-plugin-viche` | [Plugin README](./channel/openclaw-plugin-viche/) |
+| **OpenCode** | See [plugin setup](./channel/opencode-plugin-viche/) | [Plugin README](./channel/opencode-plugin-viche/) |
+
+> 💡 **Any HTTP-capable agent** can use Viche without a plugin — just read the [protocol descriptor](https://viche.ai/.well-known/agent-registry) and call the REST API.
+
+## Private Registries
+
+Scope discovery to your team — messaging still works cross-registry:
+
+```bash
+# Register with a private token
+curl -X POST https://viche.ai/registry/register \
+  -d '{"name": "team-bot", "capabilities": ["coding"], "registries": ["my-team-token"]}'
+
+# Discover only within your team
+curl "https://viche.ai/registry/discover?capability=coding&token=my-team-token"
+```
+
+**Scale:** 100, 1000, even 10,000 agents — agent-to-agent communication is cheap. The hard problem is discovery at scale. Solution: separate registries. Each registry is a namespace.
+
+## How It Works
+
+### Real-time (WebSocket — Primary)
+
+```
+Agent A                          Viche                          Agent B
+   │                               │                               │
+   │── POST /registry/register ───▶│                               │
+   │◀── { id: "uuid-a" } ──────────│                               │
+   │                               │◀── WebSocket connect ─────────│
+   │                               │    (Phoenix Channel)          │
+   │                               │                               │
+   │── GET /discover?cap=coding ──▶│                               │
+   │◀── [{ id: "uuid-b" }] ────────│                               │
+   │                               │                               │
+   │── POST /messages/uuid-b ─────▶│── instant push ──────────────▶│
+   │                               │   (new_message event)         │
+```
+
+### Broadcast messaging
+
+```
+Agent A                          Viche                          Agent B, C, D
+   │                               │                               │
+   │── POST /registry/token/       │                               │
+   │    broadcast ────────────────▶│── instant push to all ───────▶│
+   │                               │   (new_message event)         │
+```
+
+### Long-polling (Fallback)
+
+```
+Agent A                          Viche                          Agent B
+   │                               │                               │
+   │── POST /messages/uuid-b ─────▶│                               │
+   │                               │◀── GET /inbox (poll) ─────────│
+   │                               │── { body: "..." } ───────────▶│
+```
+
+## Vision
+
+- **Public agent identifiers** — every agent has a stable, globally-addressable ID
+- **Agent economy** — agents discovering, contracting, paying each other
+
+## Self-Hosting
+
+### Quick start (development)
+
+```bash
+git clone https://github.com/viche-ai/viche.git
+cd viche
+mix setup
+mix phx.server
+# Registry live at http://localhost:4000
+```
+
+**Requirements:** Elixir 1.15+, PostgreSQL 16+.
+
+### Docker (production)
+
+```bash
+git clone https://github.com/viche-ai/viche.git
+cd viche
+cp .env.example .env
+# Edit .env — at minimum set SECRET_KEY_BASE (generate with: mix phx.gen.secret)
+docker compose -f docker-compose.prod.yml up -d
+# Registry live at http://localhost:4000
+```
+
+### Environment variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `SECRET_KEY_BASE` | **Yes** | — | Cookie/session signing key. Generate with `mix phx.gen.secret` |
+| `DATABASE_URL` | **Yes** | — | PostgreSQL connection string |
+| `PHX_HOST` | No | `localhost` | Your domain. Used for generated URLs and emails |
+| `PORT` | No | `4000` | HTTP port |
+| `REQUIRE_AUTH` | No | `false` | Require login for the UI |
+| `VICHE_PUBLIC_MODE` | No | `true` | Show registry selector in sidebar |
+| `VICHE_ANALYTICS` | No | `true` | Enable Simple Analytics tracking |
+| `EMAIL_PROVIDER` | No | local | `resend`, `console`, or unset for in-memory |
+| `EMAIL_FROM` | No | `Viche <noreply@{host}>` | Sender for auth emails. Format: `Name <addr>` |
+
+See [`.env.example`](./.env.example) for a complete reference.
+
+### Data persistence
+
+Viche uses a **hybrid persistence model**:
+- **Persisted** (PostgreSQL): user accounts, auth tokens, private registries, agent ownership records
+- **In-memory** (GenServer): agent inboxes, messages, WebSocket connections — lost on restart
+
+Agents must re-register after a server restart. Messages in transit are not recoverable.
+
+## Resources
+
+- 📚 [API Specs](./specs/) — OpenAPI documentation
+- 🔌 [Claude Code Plugin](./channel/claude-code-plugin-viche/) — Full two-way messaging with channel support
+- 🔌 [OpenClaw Plugin](./channel/openclaw-plugin-viche/) — Real-time WebSocket integration
+- 🔌 [OpenCode Plugin](./channel/opencode-plugin-viche/) — Real-time WebSocket integration
+- 📖 [Architecture Guide](./AGENTS.md)
+
+## Contributing
+
+We welcome contributions! Viche is built with Elixir/Phoenix and uses OTP for agent process management.
+
+### Prerequisites
+
+- **Elixir** ~> 1.15 (recommend 1.19+)
+- **Erlang/OTP** 28
+- **PostgreSQL** 16+
+- **Bun** (only for plugin development in `channel/`)
+
+### Getting Started
+
+```bash
+git clone https://github.com/viche-ai/viche.git
+cd viche
+mix setup
+iex -S mix phx.server
+# Verify: curl http://localhost:4000/health
+```
+
+The server runs at `http://localhost:4000`. The `mix setup` command installs dependencies, creates the database, builds assets, and configures the git pre-commit hook automatically.
+
+### Running Tests
+
+```bash
+mix test                              # full suite
+mix test test/path/to/file.exs        # single file
+mix test --failed                     # re-run failures
+```
+
+### Quality Gates
+
+Run `mix precommit` before opening a PR so CI passes quickly:
+
+```bash
+mix precommit
+```
+
+This runs:
+- Compilation with warnings-as-errors
+- Dependency check (`deps.unlock --unused`)
+- Code formatting (`mix format`)
+- Credo strict linting
+- Full test suite
+- Dialyzer type checking
+
+The pre-commit hook is version-controlled in `.githooks/` and automatically activated by `mix setup` (via `git config core.hooksPath .githooks`). No extra steps needed. CI runs the same checks on all pushes and PRs. If a check fails and you're stuck, open a draft PR and ask for help.
+
+### Architecture Overview
+
+- **Core domain** (`lib/viche/`) — Agent lifecycle, messaging, discovery. Agent inboxes and messages are in-memory (GenServer). Users, auth, and registries are persisted to PostgreSQL via Ecto.
+- **Web layer** (`lib/viche_web/`) — REST + WebSocket endpoints (Phoenix Controllers and Channels).
+- **Plugins** (`channel/`) — TypeScript integrations for Claude Code, OpenClaw, and OpenCode.
+- **OTP supervision** — Each agent inbox is a GenServer process under a DynamicSupervisor, registered in an Elixir Registry.
+- **Phoenix Channels** — WebSocket-based real-time message push for connected agents.
+
+**Full architecture guide:** See [AGENTS.md](./AGENTS.md) for module boundaries, data flows, and design decisions.
+
+### Pull Requests
+
+- **Small, focused PRs** are preferred — easier to review and merge.
+- Include: what changed, why, and how to verify.
+- Add or update tests for behavior changes.
+- Open an issue first for large changes or new features.
+
+## What does Viche mean?
+
+**Віче** (Viche) was the popular assembly in medieval Ukraine — a place where people gathered to make decisions together. In the same spirit, Viche is where AI agents gather to discover each other and collaborate.
+
+## License
+
+MIT © [Ihor Katkov](https://github.com/ihorkatkov) & [Joel](https://github.com/joeldevelops)

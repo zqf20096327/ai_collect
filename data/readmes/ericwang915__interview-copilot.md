@@ -1,0 +1,177 @@
+# Real Time Interview Copilot
+
+[![CI](https://github.com/ericwang915/interview-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/ericwang915/interview-copilot/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-lightgrey)
+![Node](https://img.shields.io/badge/node-%E2%89%A518-brightgreen)
+[![Providers](https://img.shields.io/badge/LLM-DeepSeek%20%7C%20Gemini%20%7C%20OpenAI%20%7C%20Ollama-c15a37)](#features)
+
+**Hear the interviewer's question and draft your answer — live, and entirely on your machine.** Built for interview practice, mock interviews, and self-review.
+
+> Real-time interview assistant — live dual-channel transcription (Deepgram) + LLM answers (DeepSeek / Gemini / OpenAI / Ollama), grounded in your own documents.
+
+A single-window Electron desktop app. It listens to a conversation, separates **you (microphone)** from the **interviewer (system audio)**, and on a hotkey detects the interviewer's current question and drafts a concise, first-person answer — using the last ~15 turns of dialogue plus any documents you upload as context.
+
+![Real Time Interview Copilot demo — speak, transcribe, press Ctrl+A, get an answer](assets/demo.gif)
+
+<details>
+<summary>Static screenshot</summary>
+
+![Real Time Interview Copilot — live transcript on the left, detected question and generated answer on the right](assets/screenshot.png)
+
+</details>
+
+> 中文说明见下方 [中文](#中文)。
+
+---
+
+## ⚠️ Disclaimer — read this first
+
+This tool is built for **interview preparation, practice, self-review, mock interviews, and accessibility assistance**.
+
+Using real-time answer generation during a **live** interview without the other party's knowledge may violate the policies of the company you're interviewing with, employment agreements, academic-integrity rules, or local law, and many people consider it dishonest. **You are solely responsible for how you use this software and for complying with all applicable rules and laws.** The authors provide it "as is" with no warranty (see [LICENSE](LICENSE)) and do not endorse deceptive use.
+
+## 🔐 Privacy — what leaves your machine
+
+This app sends data to third-party APIs **only for the providers you configure**:
+
+- **Audio** (microphone + captured system audio) is streamed to **Deepgram** for transcription.
+- **Transcripts, your question, and uploaded document text** are sent to your chosen **answer provider** (DeepSeek / Gemini / OpenAI) to generate answers.
+- API keys are stored **locally only**, in `app.getPath('userData')/settings.json` (e.g. `~/Library/Application Support/interview-copilot/settings.json` on macOS). They are never committed to the repo or sent anywhere except the provider's own API.
+
+Want **zero cloud**? Use **Ollama** as the answer provider (runs locally). A fully local STT option (Whisper) is on the [roadmap](#roadmap).
+
+---
+
+## Features
+
+- 🎙️ **Dual-channel transcription** — mic = candidate, system loopback = interviewer, transcribed separately and color-coded.
+- ⌨️ **One-key answering** — press `Ctrl+A` (configurable): detects the interviewer's *current* question from the latest turns and streams an answer.
+- ⚡ **Auto-answer (optional)** — flip the toggle and it answers on its own as soon as the interviewer finishes a question, no keypress needed.
+- 🧠 **Context-aware** — answers are grounded in the last ~15 turns of dialogue + your uploaded résumé / JD / notes (a persistent Knowledge Base you can add to, update, and clear).
+- 🎯 **JD customization** — paste or upload a job description in Settings; it's persisted and tailors every answer to the target role.
+- 🔌 **Switchable providers** — DeepSeek, Gemini, OpenAI, or local Ollama, with automatic retry + model fallback.
+- ✍️ **Concise, outline-style** answers (default ≤ 500 chars), shown alongside the detected question so you can edit and regenerate.
+- 🖥️ **Single, clean UI** — live transcript on the left; question / answer / knowledge base on the right.
+
+## Requirements
+
+- **macOS 13+**, **Windows**, or **Linux** — runs on all three; system-audio capture is most seamless on macOS (see [Platform support](#platform-support)).
+- **Node.js ≥ 18** (Node 20 LTS recommended; see `.nvmrc`).
+- API keys: [Deepgram](https://console.deepgram.com/) (STT, required) and at least one answer provider — [DeepSeek](https://platform.deepseek.com/) / [Gemini](https://aistudio.google.com/apikey) / [OpenAI](https://platform.openai.com/api-keys), or a local [Ollama](https://ollama.com/) install.
+
+## Quick start
+
+```bash
+git clone https://github.com/ericwang915/interview-copilot
+cd interview-copilot
+make run            # installs deps if needed, then launches the app
+```
+
+No `make`? Use `npm install && npm start`. Run `make help` to see all targets (`dev`, `test`, `lint`, `package`, …).
+
+On first launch, open **Settings** (gear icon) and enter your Deepgram key + one answer provider's key. Then:
+
+1. **Upload** a résumé / job description / notes (optional but recommended) into the Knowledge Base.
+2. Click **Start Listening** and grant microphone (and, for interviewer audio, Screen Recording) permission.
+3. When the interviewer asks something, press **`Ctrl+A`** (or click **Generate Answer**).
+
+## Build a standalone app
+
+```bash
+# Build for THIS Mac's architecture (x64 or arm64), sign, and open — recommended
+make app
+
+# One .app that runs natively on both Intel and Apple Silicon
+make universal
+
+# Installers (electron-builder): dmg / nsis / AppImage
+npm run dist          # current platform
+npm run dist:mac      # mac — builds both x64 and arm64 dmgs
+```
+
+Prebuilt [Releases](https://github.com/ericwang915/interview-copilot/releases) ship **both** an Apple-Silicon (`-arm64.dmg`) and an Intel (`.dmg`) build — download the one matching your Mac.
+
+The built app lives in `dist/`. For everyday use, launch the **packaged app** (double-click), not `npm start` from a terminal — on macOS the Screen-Recording permission attaches to the launching process, so a terminal-launched dev build can't reliably capture system audio.
+
+## Installing a prebuilt release (macOS)
+
+Prebuilt installers from the [Releases](https://github.com/ericwang915/interview-copilot/releases) page are **not notarized** (this is a free, open-source project without a paid Apple Developer certificate). So the first time you open it, Gatekeeper will warn that the developer can't be verified. To open it anyway:
+
+- **Right-click the app → Open**, then click **Open** in the dialog (only needed once), **or**
+- run `xattr -dr com.apple.quarantine "/Applications/Real Time Interview Copilot.app"` in Terminal.
+
+After that it launches normally. (Building from source — `npm run package` — produces a locally-signed app with no such prompt.)
+
+## Platform support
+
+| Platform | Run it | Mic (candidate) | System audio (interviewer) |
+|---|---|---|---|
+| macOS 13+ | `make run` (builds & opens the app) or a `.dmg` | ✅ | ✅ Screen-Capture loopback — grant Screen Recording |
+| Windows | `…Setup.exe`, or `npm install && npm start` / `make run` | ✅ | ✅ `getDisplayMedia` loopback (tick "share system audio") |
+| Linux | `.AppImage`, or `npm install && npm start` / `make run` | ✅ | ⚠️ no `getDisplayMedia` loopback — pick a PulseAudio/PipeWire **Monitor** source under **Interviewer audio** |
+
+`make run` adapts to the OS: on macOS it builds & opens the signed app (so the Screen-Recording permission attaches to the app); on Windows/Linux it launches via `npm start`. npm scripts are cross-platform (via `cross-env`).
+
+**No-permission / fallback (any OS):** install a virtual audio device ([BlackHole](https://github.com/ExistentialAudio/BlackHole) on macOS, [VB-Cable](https://vb-audio.com/Cable/) on Windows) or use a system **Monitor** source, route the meeting app's output to it, and pick it under **Interviewer audio**.
+
+## Architecture
+
+```
+src/
+  main/                 Electron main process (Node)
+    main.js             window, global hotkey, IPC, generation orchestration
+    preload.js          contextBridge — safe renderer API
+    settings.js         persisted settings (userData/settings.json)
+    config.js           provider registry (models, base URLs, fallbacks)
+    prompt.js           prompt builders (answer + question extraction) — pure, tested
+    llm.js              provider-agnostic retry + fallback
+    gemini.js           Gemini REST (SSE)
+    openaiCompat.js     OpenAI-compatible client (DeepSeek / OpenAI / Ollama)
+    store.js            knowledge base (context stuffing)
+    documents.js        txt/md/pdf/docx parsing + chunking
+  renderer/             UI (no Node access)
+    index.html / styles.css / app.js
+    deepgram.js         Deepgram live WebSocket client
+    pcm-worklet.js      Float32 → 16-bit PCM AudioWorklet
+test/                   node:test unit tests
+```
+
+Key design notes:
+- **Deepgram** runs in the renderer via a browser WebSocket using subprotocol token auth (`['token', key]`) — no SDK/bundler. See [SECURITY.md](SECURITY.md) for the trade-off.
+- **Answer providers** run in the main process via REST/SSE — no third-party AI SDKs.
+- Question detection uses only the latest turns; the answer is grounded in the broader recent history.
+
+## Roadmap
+
+- [ ] Local STT (Whisper) for a fully offline pipeline
+- [ ] Windows/Linux system-audio capture
+- [ ] Optional vector RAG for large knowledge bases
+- [x] Auto-trigger on detected question end
+- [ ] Answer history & export, i18n UI
+
+## Contributing
+
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Security issues: see [SECURITY.md](SECURITY.md). Sharing it? There's ready-to-post copy in [LAUNCH.md](LAUNCH.md).
+
+If Real Time Interview Copilot is useful to you, please **⭐ star the repo** — it genuinely helps others find it.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ericwang915/interview-copilot&type=Date)](https://star-history.com/#ericwang915/interview-copilot&Date)
+
+## License
+
+[MIT](LICENSE)
+
+---
+
+## 中文
+
+基于 **Deepgram**（实时转写）+ **DeepSeek / Gemini / OpenAI / Ollama**（答案生成）的桌面应用：双声道识别（麦克风=面试者、系统声音=面试官），按 `Ctrl+A` 自动识别面试官当前的问题，并结合最近约 15 轮对话 + 你上传的资料，生成简洁的第一人称大纲式答案（默认 ≤500 字）。
+
+**⚠️ 免责声明**：本工具用于**面试练习、复盘、模拟面试与无障碍辅助**。在**真实面试**中未经对方知情使用实时答题，可能违反对方公司政策、协议、学术诚信规则或当地法律，且通常被视为不诚信行为。**如何使用、是否合规由你自行负责**，作者不为此背书，软件按「现状」提供、不附带任何担保。
+
+**🔐 隐私**：音频会发送到 Deepgram 转写；转写文本、问题与资料会发送到你选择的答案 Provider；API Key 仅保存在本机 `userData/settings.json`，不入库、不上传。想完全本地：把 Provider 选成 **Ollama**。
+
+运行：`npm install && npm start`，首次在「设置」里填 Deepgram Key + 任一答案 Provider Key。打包：`npm run dist`。日常使用请用打包后的 App（双击），不要从终端 `npm start`（否则 macOS 屏幕录制权限会算到终端头上）。

@@ -1,0 +1,228 @@
+<p align="center">
+<img src="https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/logo.jpg" width="400">
+</p>
+
+
+
+
+## Update Log:  
+
+* [2026.02] R2GenCSR is accepted by IEEE Journal of Biomedical and Health Informatics (JBHI) 
+
+* [2025.10.27] EMRRG is accepted by BICS 2025 [[https://bics-ai.org/](https://bics-ai.org/)]
+
+* [2025.08.20] AM-MRG is accepted by IEEE Transactions on Medical Imaging (TMI)!
+
+* [2025.08.06] [[R2GenKG](https://arxiv.org/abs/2508.03426)] is released on arXiv:2508.03426. 
+
+* [2025.02.27] [[**CXPMRG-Bench**](https://arxiv.org/abs/2410.00379)] is accepted by CVPR 2025!
+
+* [2025.01.08] **Activating Associative Disease-Aware Vision Token Memory for LLM-Based X-ray Report Generation**, arXiv:2501.03458 is released on
+  [[arXiv](https://arxiv.org/abs/2501.03458)] 
+  
+* [2024.10.23] **Pre-training on High Definition X-ray Images: An Experimental Study** is accepted by [**Visual Intelligence (VI)**](https://link.springer.com/journal/44267) Journal. 
+
+* [2024.10.01] **A Pre-trained Large Model MambaXray-VL and the benchmark for the CheXpert Plus dataset** is released [arXiv:2410.00379]
+
+* [2024.08.20] **R2GenCSR: Retrieving Context Samples for Large Language Model based X-ray Medical Report Generation** is released [arXiv:2408.09743]
+
+* [2024.04.28] **Pre-training on High Definition X-ray Images: An Experimental Study**, Xiao Wang, Yuehang Li, Wentao Wu, Jiandong Jin, Yao Rong, Bo Jiang, Chuanfu Li, Jin Tang
+arXiv pre-print, arXiv 2024, is released on **arXiv** [[Paper](https://arxiv.org/abs/2404.17926)]
+
+
+## Surveys/Reviews 
+* **Automated Radiology Report Generation: A Review of Recent Advances**, Phillip Sloan, Philip Clatworthy, Edwin Simpson, Majid Mirmehdi
+  [[Paper](https://arxiv.org/abs/2405.10842)]
+
+
+## Projects Maintained in This GitHub:  
+
+
+### :dart: Pre-training, Reasoning, Benchmarking: X-ray Report Generation on CheXpert Plus Dataset
+Xiao Wang, Yuxiang Zhang, Dan Xu, Yuehang Li, Shiao Wang, Bo Jiang, Yaowei Wang, Yonghong Tian, Jin Tang 
+Journal extension of CXP-Bench CVPR 2025, [[Paper](https://arxiv.org/abs/2510.16776)] 
+
+X-ray image-based Radiology Report Generation (RRG) constitutes a critical research direction within medical artificial
+intelligence, with great potential to alleviate clinicians’ diagnostic workload and shorten patient waiting periods. Despite substantial
+advances over recent years, the field faces evident bottlenecks stemming from insufficient standardized benchmarks and inadequate
+domain adaptation of generic large models. Notably, the newly released CheXpert Plus dataset is provided without accompanying baseline
+implementations and evaluation results, which impedes standardized training, quantitative evaluation and fair comparison among follow-up
+algorithms. To mitigate this limitation, we establish a comprehensive benchmark encompassing prevailing X-ray report generation models
+and Large Language Models on CheXpert Plus. This benchmark delivers a reliable comparative foundation for upcoming methods and
+enables researchers to rapidly identify state-of-the-art approaches within this domain. Beyond benchmark construction, we rethink X-ray
+RRG under the paradigm of large models and propose a novel framework termed MambaXray-PRB. Our framework improves report
+generation performance and enhances model interpretability via multi-stage large-model pre-training and multi-modal Chain-of-Thought
+reasoning. The pipeline consists of three successive phases: self-supervised auto-regressive modeling, X-ray–report contrastive learning,
+and post-training optimization for reasoning and report generation. Extensive experiments on IU X-ray, MIMIC-CXR, and CheXpert Plus
+datasets validate the effectiveness of MambaXray-PRB for radiology report generation. 
+
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/c31b3ba1-d9b0-4795-ada9-119696f96d82" />
+
+
+### :dart: EMRRG: Efficient Fine-Tuning Pre-trained X-ray Mamba Networks for Radiology Report Generation
+Mingzheng Zhang, Jinfeng Gao, Dan Xu, Jiangrui Yu, Yuhan Qiao, Lan Chen, Jin Tang, Xiao Wang
+arXiv:2510.16776, [[Paper](https://arxiv.org/abs/2510.16776)] 
+
+X-ray image-based medical report generation (MRG) is a pivotal area in artificial intelligence that can significantly reduce diagnostic burdens for clinicians and patient wait times. Existing MRG models predominantly rely on Large Language Models (LLMs) to improve report generation, with limited exploration of pre-trained vision foundation models or advanced fine-tuning techniques. Mainstream frameworks either avoid fine-tuning or utilize simplistic methods like LoRA, often neglecting the potential of enhancing cross-attention mechanisms. Additionally, while Transformer-based models dominate vision-language tasks, non-Transformer architectures, such as the Mamba network, remain underexplored for medical report generation, presenting a promising avenue for future research. In this paper, we propose EMRRG, a novel X-ray report generation framework that fine-tunes pre-trained Mamba networks using parameter-efficient methods. Specifically, X-ray images are divided into patches, tokenized, and processed by an SSM-based vision backbone for feature extraction, with Partial LoRA yielding optimal performance. An LLM with a hybrid decoder generates the medical report, enabling end-to-end training and achieving strong results on benchmark datasets. Extensive experiments on three widely used benchmark datasets fully validated the effectiveness of our proposed strategies for the X-ray MRG. The source code of this paper will be released on [URL](https://github.com/Event-AHU/Medical_Image_Analysis)
+
+![overview](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/EMRRG/framework.jpg)
+
+
+
+### :dart: [R2GenKG: Hierarchical Multi-modal Knowledge Graph for LLM-based Radiology Report Generation]()
+Futian Wang, Yuhan Qiao, Xiao Wang*, Fuling Wang, Yuxiang Zhang, Dengdi Sun, 
+arXiv:2508.03426, [[Paper](https://arxiv.org/abs/2508.03426)] 
+
+X-ray medical report generation is one of the important applications of artificial intelligence in healthcare. With the support of large foundation models, the quality of medical report generation has significantly improved. However, challenges such as hallucination and weak disease diagnostic capability still persist. In this paper, we first construct a large-scale multi-modal medical knowledge graph (termed M3KG) based on the ground truth medical report using the GPT-4o. It contains 2477 entities, 3 kinds of relations, 37424 triples, and 6943 disease-aware vision tokens for the CheXpert Plus dataset. Then, we sample it to obtain multi-granularity semantic graphs and use an R-GCN encoder for feature extraction. For the input X-ray image, we adopt the Swin-Transformer to extract the vision features and interact with the knowledge using cross-attention. The vision tokens are fed into a Q-former and retrieved the disease-aware vision tokens using another cross-attention. Finally, we adopt the large language model to map the semantic knowledge graph, input X-ray image, and disease-aware vision tokens into language descriptions. Extensive experiments on multiple datasets fully validated the effectiveness of our proposed knowledge graph and X-ray report generation framework. The source code of this paper will be released. 
+
+![overview](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/R2GenKG/figures/R2GenKG_framework.jpg)
+
+
+
+### :dart: [Activating Associative Disease-Aware Vision Token Memory for LLM-Based X-ray Report Generation]()   
+Xiao Wang, Fuling Wang, Haowen Wang, Bo Jiang, Chuanfu Li, Yaowei Wang, Yonghong Tian, Jin Tang, 
+arXiv Pre-print arXiv:2501.03458, 2025 
+[[Paper](https://arxiv.org/abs/2501.03458)]
+
+X-ray image based medical report generation achieves significant progress in recent years with the help of the large language model, however, these models have not fully exploited the effective information in visual image regions, resulting in reports that are linguistically sound but insufficient in describing key diseases. In this paper, we propose a novel associative memory-enhanced X-ray report generation model that effectively mimics the process of professional doctors writing medical reports. It considers both the mining of global and local visual information and associates historical report information to better complete the writing of the current report. Specifically, given an X-ray image, we first utilize a classification model along with its activation maps to accomplish the mining of visual regions highly associated with diseases and the learning of disease query tokens. Then, we employ a visual Hopfield network to establish memory associations for disease-related tokens, and a report Hopfield network to retrieve report memory information. This process facilitates the generation of high-quality reports based on a large language model and achieves state-of-the-art performance on multiple benchmark datasets, including the IU X-ray, MIMIC-CXR, and Chexpert Plus.
+
+![CXPMRG_Bench](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/AM_MRG/figures/framework_FulingWang.jpg)
+
+
+
+
+### :dart: [A Pre-trained Large Model MambaXray-VL and the benchmark for the CheXpert Plus dataset]()  
+* **CXPMRG-Bench: Pre-training and Benchmarking for X-ray Medical Report Generation on CheXpert Plus Dataset**, 
+Xiao Wang, Fuling Wang, Yuehang Li, Qingchuan Ma, Shiao Wang, Bo Jiang, Chuanfu Li, Jin Tang, 
+arXiv Pre-print arXiv:2410.00379, 2024
+[[Paper](https://arxiv.org/abs/2410.00379)]
+
+X-ray image-based medical report generation (MRG) is a pivotal area in artificial intelligence which can significantly reduce diagnostic burdens and patient wait times. Despite significant progress, we believe that the task has reached a bottleneck due to the limited benchmark datasets and the existing large models' insufficient capability enhancements in this specialized domain. Specifically, the recently released CheXpert Plus dataset lacks comparative evaluation algorithms and their results, providing only the dataset itself. This situation makes the training, evaluation, and comparison of subsequent algorithms challenging. Thus, we conduct a comprehensive benchmarking of existing mainstream X-ray report generation models and large language models (LLMs), on the CheXpert Plus dataset. We believe that the proposed benchmark can provide a solid comparative basis for subsequent algorithms and serve as a guide for researchers to quickly grasp the state-of-the-art models in this field. More importantly, we propose a large model for the X-ray image report generation using a multi-stage pre-training strategy, including self-supervised autoregressive generation and Xray-report contrastive learning, and supervised fine-tuning. Extensive experimental results indicate that the autoregressive pre-training based on Mamba effectively encodes X-ray images, and the image-text contrastive pre-training further aligns the feature spaces, achieving better experimental results. 
+
+![CXPMRG_Bench](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/CXPMRG_Bench_MambaXray_VL/CXPMRG_Bench.png)
+![CXPMRG_Bench](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/CXPMRG_Bench_MambaXray_VL/MambaXray_VL.jpg)
+
+
+
+### :dart: [Context Sample Retrieval for LLM based X-ray Report Generation]()  
+* **R2GenCSR: Retrieving Context Samples for Large Language Model based X-ray Medical Report Generation**, 
+Xiao Wang, Yuehang Li, Fuling Wang, Shiao Wang, Chuanfu Li, Bo Jiang, 
+arXiv Pre-print arXiv:2408.09743, 2024 
+[[Paper](https://arxiv.org/abs/2408.09743)]
+
+Inspired by the tremendous success of Large Language Models (LLMs), existing X-ray medical report generation methods attempt to leverage large models to achieve better performance. They usually adopt a Transformer to extract the visual features of a given X-ray image, and then, feed them into the LLM for text generation. How to extract more effective information for the LLMs to help them improve final results is an urgent problem that needs to be solved. Additionally, the use of visual Transformer models also brings high computational complexity. To address these issues, this paper proposes a novel context-guided efficient X-ray medical report generation framework. Specifically, we introduce the Mamba as the vision backbone with linear complexity, and the performance obtained is comparable to that of the strong Transformer model. More importantly, we perform context retrieval from the training set for samples within each mini-batch during the training phase, utilizing both positively and negatively related samples to enhance feature representation and discriminative learning. Subsequently, we feed the vision tokens, context information, and prompt statements to invoke the LLM for generating high-quality medical reports. Extensive experiments on three X-ray report generation datasets (i.e., IU-Xray, MIMIC-CXR, CheXpert Plus) fully validated the effectiveness of our proposed model. 
+
+![R2GenCSR](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/R2GenCSR/framework.jpg)
+
+
+
+### :dart: [Pre-training MAE Model on HD X-ray Images]() 
+* **Pre-training on High Definition X-ray Images: An Experimental Study**, 
+Xiao Wang, Yuehang Li, Wentao Wu, Jiandong Jin, Yao Rong, Bo Jiang, Chuanfu Li, Jin Tang
+arXiv pre-print, arXiv, 2024 
+[[Paper](https://arxiv.org/abs/2404.17926)]
+
+Existing X-ray based pre-trained vision models are usually conducted on a relatively small-scale dataset (less than 500k samples) with limited resolution (e.g., 224 × 224). However, the key to the success of self-supervised pre-training large models lies in massive training data, and maintaining high resolution in the field of X-ray images is the guarantee of effective solutions to difficult miscellaneous diseases. In this paper, we address these issues by proposing the first high-definition (1280 × 1280) X-ray based pre-trained foundation vision model on our newly collected large-scale dataset which contains more than 1 million X-ray images. Our model follows the masked auto-encoder framework which takes the tokens after mask processing (with a high rate) is used as input, and the masked image patches are reconstructed by the Transformer encoder-decoder network. More importantly, we introduce a novel context-aware masking strategy that utilizes the chest contour as a boundary for adaptive masking operations. We validate the effectiveness of our model on two downstream tasks, including X-ray report generation and disease recognition. Extensive experiments demonstrate that our pre-trained medical foundation vision model achieves comparable or even new state-of-the-art performance on downstream benchmark datasets.
+
+![HDXrayPretrain](https://github.com/Event-AHU/Medical_Image_Analysis/blob/main/HD_Xray_Pretrain_MAE/framework.jpg)
+
+
+
+
+
+
+
+## Paper Lists: 
+* [pretraining_paper_list.md](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/pretrain_paper_list.md)
+* [Report_Error_checking.md](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/Report_Error_checking.md)
+* [medical_report_generation.md](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/medical_report_generation.md) 
+* [xray-classification.md](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/xray-classification.md)
+* [medical image-text understanding tasks](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/medical_image-text_understanding_tasks.md)
+* [medical_image_segmentation](https://github.com/Event-AHU/Medical_Image_Pretraining/blob/main/medical_image_segmentation.md)
+
+
+## Suggested Code: 
+* Wang, Zhanyu, et al. "**R2gengpt: Radiology report generation with frozen llms**." Meta-Radiology 1.3 (2023): 100033.
+  [[Github](https://github.com/wang-zhanyu/R2GenGPT)]
+  [[Paper](https://www.sciencedirect.com/science/article/pii/S2950162823000334)]
+  
+* **R2Gen**: [[Paper (EMNLP-2020)](https://arxiv.org/pdf/2010.16056.pdf)] [[Code](https://github.com/zhjohnchan/R2Gen)]
+  
+
+## :newspaper: Citation 
+If you find this work helps your research, please star this GitHub and cite the following papers: 
+```bibtex
+@misc{zhang2025EMRRG,
+      title={EMRRG: Efficient Fine-Tuning Pre-trained X-ray Mamba Networks for Radiology Report Generation}, 
+      author={Mingzheng Zhang and Jinfeng Gao and Dan Xu and Jiangrui Yu and Yuhan Qiao and Lan Chen and Jin Tang and Xiao Wang},
+      year={2025},
+      eprint={2510.16776},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2510.16776}, 
+}
+
+@misc{wang2025r2genKG,
+      title={R2GenKG: Hierarchical Multi-modal Knowledge Graph for LLM-based Radiology Report Generation}, 
+      author={Futian Wang and Yuhan Qiao and Xiao Wang and Fuling Wang and Yuxiang Zhang and Dengdi Sun},
+      year={2025},
+      eprint={2508.03426},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2508.03426}, 
+}
+
+@misc{wang2025AMMRG,
+      title={Activating Associative Disease-Aware Vision Token Memory for LLM-Based X-ray Report Generation}, 
+      author={Xiao Wang and Fuling Wang and Haowen Wang and Bo Jiang and Chuanfu Li and Yaowei Wang and Yonghong Tian and Jin Tang},
+      year={2025},
+      eprint={2501.03458},
+      archivePrefix={arXiv},
+      primaryClass={eess.IV},
+      url={https://arxiv.org/abs/2501.03458}, 
+}
+
+@InProceedings{Wang_2025_CVPR,
+    author    = {Wang, Xiao and Wang, Fuling and Li, Yuehang and Ma, Qingchuan and Wang, Shiao and Jiang, Bo and Tang, Jin},
+    title     = {CXPMRG-Bench: Pre-training and Benchmarking for X-ray Medical Report Generation on CheXpert Plus Dataset},
+    booktitle = {Proceedings of the Computer Vision and Pattern Recognition Conference (CVPR)},
+    month     = {June},
+    year      = {2025},
+    pages     = {5123-5133}
+}
+
+@misc{wang2024R2GenCSR,
+      title={R2GenCSR: Retrieving Context Samples for Large Language Model based X-ray Medical Report Generation}, 
+      author={Xiao Wang and Yuehang Li and Fuling Wang and Shiao Wang and Chuanfu Li and Bo Jiang},
+      year={2024},
+      eprint={2408.09743},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2408.09743}, 
+}
+
+@misc{wang2024pretraininghighdefinitionxray,
+      title={Pre-training on High Definition X-ray Images: An Experimental Study}, 
+      author={Xiao Wang and Yuehang Li and Wentao Wu and Jiandong Jin and Yao Rong and Bo Jiang and Chuanfu Li and Jin Tang},
+      year={2024},
+      eprint={2404.17926},
+      archivePrefix={arXiv},
+      primaryClass={eess.IV},
+      url={https://arxiv.org/abs/2404.17926}, 
+}
+
+```
+
+If you have any questions about these works, please feel free to leave an issue. 
+
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=Event-AHU/Medical_Image_Analysis&type=Date)](https://star-history.com/#Event-AHU/Medical_Image_Analysis&Date)
+
+
+
+
+
+
+
+  

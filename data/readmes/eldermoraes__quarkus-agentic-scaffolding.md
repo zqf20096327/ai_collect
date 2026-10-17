@@ -1,0 +1,743 @@
+# Quarkus + LangChain4j + AI Stack
+# Version: 0.23.4
+
+## What this repository is
+
+A small, opinionated, distribution-ready artifact for building AI and agent applications on the
+Java stack of **Quarkus + LangChain4j**. It pairs drop-in always-on coding conventions
+(`CLAUDE.md` for Claude, `AGENTS.md` for Codex, Bob, and Gemini) with three skills that set up the
+prerequisites, scaffold new projects and components, and audit existing projects — all from
+working templates. The conventions and templates reflect real-world Quarkus + LangChain4j
+practice and a baseline of modern Java, so the guidance captures how these systems are actually
+built rather than generic boilerplate.
+
+## Quick install — any skills-capable agent
+
+[![Skills](https://www.skills.sh/b/eldermoraes/quarkus-agentic-scaffolding)](https://www.skills.sh/eldermoraes/quarkus-agentic-scaffolding)
+
+The fastest install on any agent that supports the [Agent Skills](https://agentskills.io) format —
+Claude Code, Codex, Gemini CLI, GitHub Copilot, Cursor, Windsurf, opencode, Amp, IBM Bob, and
+dozens more:
+
+```
+npx skills add eldermoraes/quarkus-agentic-scaffolding
+```
+
+The [skills.sh](https://www.skills.sh/) CLI detects your agents and installs all three skills
+(`setup-agentic-scaffolding`, `scaffold-project`, `audit-project`) into each of them — IBM Bob
+included, as a first-class agent. Two things it does **not** set up, which
+`/setup-agentic-scaffolding` (below) handles for you: the always-on conventions file (`CLAUDE.md`
+for Claude, `AGENTS.md` for everything else) that lands in your project root, and the required MCP
+tooling (Quarkus Agents MCP + context7).
+
+## The flow
+
+Three skills, run in order the first time and revisited as needed:
+
+- **`/setup-agentic-scaffolding`** — user-invoked; run once per machine, then re-visit per
+  project. Verifies the toolchain (JDK 25 / GraalVM, JBang, a container runtime), registers the
+  Quarkus Agents MCP + context7 for your agent, and drops the conventions file into your project.
+- **`/scaffold-project`** — creates a new Quarkus + LangChain4j project end-to-end, and also
+  auto-triggers when you ask to add a component (an AI service, tool, agent/workflow, RAG
+  pipeline, MCP client or server, or guardrail) to an existing project.
+- **`/audit-project`** — user-invoked; points at an *existing* project and reports how it
+  conforms to (or is ready to adopt) the conventions, fixing findings only after you confirm.
+
+**Two invocation forms.** How you installed the skills decides the slash-command name in Claude
+Code: a **skills-CLI install** (the Quick install above) gives bare names —
+`/setup-agentic-scaffolding`, `/scaffold-project`, `/audit-project`; a **plugin install** (the
+per-agent sections below) namespaces them by the plugin id — `/quarkus-agentic-scaffolding:setup-agentic-scaffolding`,
+`/quarkus-agentic-scaffolding:scaffold-project`, `/quarkus-agentic-scaffolding:audit-project`. Both refer to the same
+skills; use whichever your install produced.
+
+## Context7 authentication and launch environment
+
+The Context7 API key is optional and raises rate limits. The stdio server reads
+`CONTEXT7_API_KEY` from the environment of the agent that launches it. For a terminal-launched
+agent, export the key in that terminal (preferably obtained from a secret manager) **before**
+starting the agent. A GUI/IDE started from the desktop may not inherit shell-profile exports.
+For those clients, use a supported secure environment/secret mechanism, or launch the client
+from the configured terminal if it supports that route. Fully restart an existing client after
+changing its launch environment.
+
+Keep the key out of registration arguments and plaintext configuration. An `${ENV_VAR}`
+reference is valid only when that client supports expansion; some clients store it literally.
+If no secure delivery route is available, use the optional-key server without authentication
+and expect its lower limits. A successful MCP connection, or a presence check in an unrelated
+terminal/login shell, does not prove the server inherited the key. Never print the key to verify it.
+
+## How to use with Claude
+
+**Install the skills (plugin).** Add this repository as a plugin marketplace and install it:
+
+```
+/plugin marketplace add eldermoraes/quarkus-agentic-scaffolding
+/plugin install quarkus-agentic-scaffolding@eldermoraes
+```
+
+All three skills and the `scaffold-project` `templates/` are installed and auto-discovered. (Or
+use the [Quick install](#quick-install--any-skills-capable-agent) above, which works for Claude
+Code too.)
+
+**Set up the prerequisites.** Run `/setup-agentic-scaffolding` (or
+`/quarkus-agentic-scaffolding:setup-agentic-scaffolding` on a plugin install) — it verifies the toolchain,
+registers the **Quarkus Agents MCP** and **context7** MCP servers, and drops `CLAUDE.md` into your
+project root. `CLAUDE.md` §1 makes those two MCP servers non-negotiable for this stack, and the
+setup skill is what puts them in place.
+
+*Manual fallback,* if you would rather wire it by hand: register the Quarkus Agents MCP with the
+pinned command
+`claude mcp add -s user quarkus-agent -- jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.11:runner`;
+add context7 with `claude mcp add -s user context7 -- npx -y @upstash/context7-mcp@4.1.1` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); optionally install superpowers with
+`/plugin marketplace add obra/superpowers-marketplace` then
+`/plugin install superpowers@superpowers-marketplace`; and copy [`CLAUDE.md`](CLAUDE.md) into your
+project root yourself (Claude only auto-loads it from a project root or `~/.claude/`, so no plugin
+can ship it for you).
+
+Quarkus also ships the server as a Claude plugin — `/plugin marketplace add
+quarkusio/quarkus-agent-mcp` then `/plugin install quarkus-agent@quarkus-tools`. Two things to know
+before you pick that route over the command above. It launches `jbang quarkus-agent-mcp@quarkusio`,
+and that alias resolves `io.quarkus:quarkus-agent-mcp:RELEASE:runner`, so what runs is whatever was
+newest when the server started — two machines set up a week apart run different code. And it passes
+no `--java`: the alias *does* declare `java-version: 21+`, but JBang 0.125.x ignores that for a GAV
+script-ref, so the server runs on JBang's default JDK 17 and dies with `UnsupportedClassVersionError`
+unless whatever launched it happens to export a JDK 21+ `JAVA_HOME`. Use one route or the other, not
+both — the plugin's server and a `claude mcp add` entry are both named `quarkus-agent`, so uninstall
+the plugin (`/plugin uninstall quarkus-agent@quarkus-tools`) before registering by hand.
+
+**Try it.** Open your project and use a trigger phrase such as *"scaffold a new Quarkus +
+LangChain4j project"*, *"create a new AI service"*, or *"set up a new RAG pipeline"* —
+`scaffold-project` produces the layout and starter files, and `CLAUDE.md` governs the conventions
+of the code that follows. To review an existing project, run `/audit-project`.
+
+## How to use with Codex
+
+**Install the skills (plugin).** Add this repository as a Codex plugin marketplace, then install
+the plugin from the plugins list:
+
+```
+codex plugin marketplace add eldermoraes/quarkus-agentic-scaffolding
+```
+
+Open Codex, run `/plugins`, select the `eldermoraes` marketplace, and install `quarkus-agentic-scaffolding`.
+All three skills and the `scaffold-project` `templates/` are auto-discovered. (Codex also
+auto-discovers skills placed under `.agents/skills/`, and the [Quick install](#quick-install--any-skills-capable-agent)
+works for Codex too.)
+
+**Set up the prerequisites.** Run `/setup-agentic-scaffolding` — it verifies the toolchain,
+registers the **Quarkus Agents MCP** and **context7** MCP servers for Codex, and drops `AGENTS.md`
+into your project root. `AGENTS.md` §1 makes those two MCP servers non-negotiable for this stack.
+
+*Manual fallback:* add the Quarkus Agents MCP with `codex mcp add quarkus-agent -- jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.11:runner`;
+add context7 with `codex mcp add context7 -- npx -y @upstash/context7-mcp@4.1.1` (see [authentication and launch environment](#context7-authentication-and-launch-environment)); install/enable the Superpowers plugin if you use it; and copy
+[`AGENTS.md`](AGENTS.md) into your project root (Codex reads project instructions from the project
+tree).
+
+**Try it.** Use a trigger phrase such as *"scaffold a new Quarkus + LangChain4j project"* or
+*"create a new AI service"*; `scaffold-project` produces the layout and starter files and
+`AGENTS.md` governs the conventions. Run `/audit-project` to review an existing project.
+
+## How to use with Bob
+
+IBM Bob reads the same `AGENTS.md` that Codex does, so the conventions are shared. Bob is a
+first-class agent in the skills CLI, so the [Quick install](#quick-install--any-skills-capable-agent)
+(`npx skills add eldermoraes/quarkus-agentic-scaffolding`) installs all three skills into
+`.bob/skills/` for you — that is the recommended path.
+
+**Set up the prerequisites.** Run `/setup-agentic-scaffolding` — it verifies the toolchain,
+registers the **Quarkus Agents MCP** and **context7** MCP servers for Bob, and drops `AGENTS.md`
+into your project root. If you already added `AGENTS.md` for Codex, the same file serves Bob — there
+is no separate `BOB.md`.
+
+*Manual fallback:* before registering either server, read the
+[Bob MCP registration guide](skills/setup-agentic-scaffolding/references/bob-mcp.md).
+It is the shared procedure for configuration paths, legacy migration, scope selection, the required
+`--` separator, updating existing entries, and verification with or without the CLI.
+
+For GUI launch environments, ensure JBang is resolvable by Bob; if needed use its absolute path
+from `command -v jbang`. Keep `--java 21+` in the arguments. Context7's optional key follows the
+[authentication and launch environment](#context7-authentication-and-launch-environment) guidance.
+
+If the skills CLI is
+unavailable, the repository's fallback helper installs all three
+skills into `.bob/skills/` for you:
+
+```
+# Pick one — the three forms are alternatives, not a sequence; uncomment the one you want
+# ./scripts/install-bob-skill.sh                   # into <cwd>/.bob/skills/
+# ./scripts/install-bob-skill.sh /path/to/project  # into that project's .bob/skills/
+# ./scripts/install-bob-skill.sh --global          # into ~/.bob/skills/
+```
+
+Bob asks for approval before activating a skill — once per conversation, not once ever; the setting
+is a single global toggle rather than a per-skill grant. Two things to know while you are here: a
+skill's `description` front-matter field is load-bearing (Bob ignores a skill without one), and
+skills are only available in Bob's **Advanced** mode.
+
+**Try it.** Use a trigger phrase such as *"scaffold a new Quarkus + LangChain4j project"*;
+`scaffold-project` produces the layout and starter files and `AGENTS.md` governs the conventions.
+Run `/audit-project` to review an existing project.
+
+<a id="how-to-use-with-gemini"></a>
+
+**Gemini CLI.** Use the [Quick install](#quick-install--any-skills-capable-agent): skills go into
+`.agents/skills/` (project) or `~/.gemini/skills/` (global, with `-g`); verify with
+`gemini skills list`, then run `/setup-agentic-scaffolding`. For this route, add `AGENTS.md` to
+[`context.fileName`](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md)
+in the project's `.gemini/settings.json` (for example, `"context": {"fileName": ["GEMINI.md", "AGENTS.md"]}`),
+preserving existing settings and context filenames: Gemini defaults to `GEMINI.md`, so copying
+`AGENTS.md` alone does not activate the conventions. Alternatively, the optional gallery
+extension installs with `gemini extensions install https://github.com/eldermoraes/quarkus-agentic-scaffolding`
+(the source may also be a local path). It delivers all three skills, both pinned MCP servers, and
+conventions through `contextFileName: AGENTS.md`; use one route to avoid duplicate skills.
+Restart the session and verify the conventions with `/memory show`, then try *"scaffold a new
+Quarkus + LangChain4j project"*. See [Uninstall](#uninstall) for removal and MCP scope/precedence.
+
+## What's in `CLAUDE.md` / `AGENTS.md` and why
+
+`CLAUDE.md` (Claude) and `AGENTS.md` (Codex, Bob, and Gemini) are intentionally short and always-on. They
+carry the same project conventions, expressed for the instruction surface each agent reads. Each
+section earns its place:
+
+- **§1 Required tooling (mandatory).** Makes `context7` and the **Quarkus Agents MCP** required,
+  not optional: every Quarkus task goes through the Quarkus Agents MCP and every library lookup
+  through `context7`. If a required tool is missing, work stops rather than falling back to stale
+  model memory. `superpowers` skills are listed there as optional: used when installed, never
+  blocking.
+- **§2 Java conventions.** Sets Java 25 as the *minimum*, makes **virtual threads** the default
+  carrier for blocking work, prefers **Scoped Values** over `ThreadLocal`, gives a pragmatic
+  stance on structured concurrency, and favors **records / sealed types / pattern matching**.
+  These are the modern-Java habits that make AI code simpler and more debuggable.
+- **§3 Quarkus conventions.** Platform BOMs over pinned versions (no `<version>` on anything the
+  BOMs manage, embedding models included), CDI-first wiring, Quarkus REST +
+  OpenAPI, WebSockets Next for streaming, the `-parameters` flag, a dual JVM/native build,
+  zero-code AI observability via Micrometer + OpenTelemetry, and turning off Dev Services when a
+  real model endpoint is configured.
+- **§4 LangChain4j conventions.** Declarative `@RegisterAiService` over manual wiring, declarative
+  **agentic** composition for multi-agent workflows, typed structured output, named/right-sized
+  models, a streaming pattern that keeps reactive types at the edge, declarative fault tolerance
+  on AI-service methods, and **Easy RAG first**.
+- **§5 Testing.** Every project keeps a `@QuarkusTest` wiring smoke test that needs no live
+  model; beyond it, REST-assured, native ITs and evaluation-based quality tests.
+- **§6 Scope and overrides.** States that per-project deviations are allowed when documented
+  inline — the conventions guide, they do not imprison.
+
+## What the skills do and how they compose with the conventions
+
+The three skills split along the **invocation axis**, and all defer to the always-on convention
+file for the active agent rather than restating the rules — a single source of truth per agent:
+scaffolding and setup in the skills, rules in `CLAUDE.md` or `AGENTS.md`.
+
+- **`setup-agentic-scaffolding`** (user-invoked) prepares the environment the other two skills
+  depend on: it checks the toolchain, registers the Quarkus Agents MCP + context7 for the agent
+  you are running, and writes the conventions file (seeded from byte-for-byte copies inside the
+  skill folder) into your project. It is the one skill that legitimately runs *before* the MCP
+  exists — that is its job.
+- **`scaffold-project`** (model-invoked umbrella) handles the *"create something new"* moments. It
+  is deliberately a single skill covering **both** ends of creation: bootstrapping a new project
+  end-to-end (delegating skeleton, BOMs, and the native profile to the Quarkus Agents MCP, then
+  applying the repo's package layout, `application.properties` baseline, non-extension deps, and
+  starter templates), **and** adding components to an existing project — an AI service, tool,
+  agent/workflow, RAG pipeline, MCP client or server, or guardrail. Keeping creation and
+  components together (owner decision) minimizes the number of skills you face; it stays
+  model-invoked so component requests auto-trigger. It refuses to start in a project without the
+  managed conventions block and points you to `/setup-agentic-scaffolding`, since it relies on
+  the conventions instead of restating them.
+- **`audit-project`** (user-invoked) is read-only by default: it audits an existing project
+  against §2–§5, the package layout, and the dependency/properties baseline, and reports
+  prioritized findings with evidence and a suggested fix each — applying fixes only after you
+  confirm, by handing off to `scaffold-project`'s component sections. Platform upgrades (an EOL
+  Quarkus line, an unsupported Java release, pre-BOM LangChain4j) have no such handoff: they stay
+  your own step.
+
+The split between skill and conventions is deliberate and non-overlapping:
+
+- **The skills are procedural** — they tell the agent (Claude, Codex, or Bob) *how to set up,
+  lay things out, and get them running*, and point at the Quarkus Agents MCP to actually create
+  and run the project.
+- **`CLAUDE.md` / `AGENTS.md` are declarative** — they state the conventions the resulting code
+  must follow (`CLAUDE.md` for Claude, `AGENTS.md` for Codex, Bob, and Gemini).
+
+For Codex distribution, `.agents/plugins/marketplace.json` points to `plugins/quarkus-agentic-scaffolding/`.
+That directory is only a lightweight wrapper with symlinks back to `.codex-plugin/` and `skills/`,
+so the Claude and Codex packages share the same skill content. Bob has a marketplace, but it
+distributes modes and MCP servers rather than skills (and is IBM-internal), so there is no
+marketplace channel for skills: Bob's are installed by the skills CLI (or
+`scripts/install-bob-skill.sh`) into `.bob/skills/`.
+
+The [agentic compensation decision](docs/AGENTIC-COMPENSATION.md) records why compensation
+remains outside the default conventions and what runtime evidence would justify adopting it.
+
+## Advanced — personal use (optional global install)
+
+A power user who works *exclusively* in this stack can apply the conventions globally instead of
+copying the file into each project:
+
+- **Claude** — move the contents of `CLAUDE.md` into the global `~/.claude/CLAUDE.md`.
+- **Codex** — move the contents of `AGENTS.md` into `~/.codex/AGENTS.md`.
+- **Bob** — move the contents of `AGENTS.md` into `~/.bob/AGENTS.md`, Bob's documented global
+  context file. (Bob also loads global *rules* from `~/.bob/rules/`, so
+  `~/.bob/rules/quarkus-langchain4j.md` works too if you would rather keep them separate from your
+  general context.) Install the skills globally with `./scripts/install-bob-skill.sh --global`
+  (into `~/.bob/skills/`), and add the shared MCP servers with the scope-aware registration procedure
+  from [How to use with Bob](#how-to-use-with-bob) — not by hand in the **MCP** tab, which is how a
+  registration ends up without the `--java 21+` pin.
+
+**Trade-off (stated explicitly):** the global files apply to **all** work on your machine or
+agent profile. If you also work in other stacks (other languages, frameworks, or non-AI Java
+projects), these Quarkus/LangChain4j-specific rules will bleed into unrelated work. For anyone who
+mixes stacks, the per-project drop-in is recommended over the global install.
+
+**Precedence.** A project-root convention file is read *in addition to* a global one, and project
+guidance can override broader global rules. To undo a global install, see
+[Uninstall](#uninstall) — the same managed-block procedure applies to `~/.claude/CLAUDE.md`,
+`~/.codex/AGENTS.md`, and `~/.bob/AGENTS.md` or `~/.bob/rules/<your-file>.md`.
+
+## Uninstall
+
+Removes **this artifact only**. Everything it helped you set up is shared with the rest of your
+work and stays: **JDK 25 / GraalVM**, **JBang**, your container runtime, the **Quarkus Agents MCP**
+and **context7** MCP servers, `superpowers`, and every project `/scaffold-project` generated. No
+step below touches them — that is deliberate. If you also want the two MCP servers gone, remove
+them with your agent's own MCP commands; nothing here does it for you.
+
+| Removed | Where it lives |
+|---|---|
+| The three skills, per agent | `.claude/skills/`, `.agents/skills/`, `.bob/skills/`, … project and global |
+| Plugin + marketplace (Claude) | `quarkus-agentic-scaffolding@eldermoraes` |
+| Plugin + marketplace (Codex) | `quarkus-agentic-scaffolding@eldermoraes` |
+| Extension (Gemini CLI) | `quarkus-agentic-scaffolding` |
+| The managed conventions block | `CLAUDE.md` / `AGENTS.md` in your project root |
+| The global conventions, if you did the [Advanced](#advanced--personal-use-optional-global-install) install | `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.bob/AGENTS.md` or `~/.bob/rules/<your-file>.md` |
+
+The MCP config files `/setup-agentic-scaffolding` may have written are **kept**: `.cursor/mcp.json`,
+`opencode.json`, and Bob's `.bob/mcp.json` (project) or `~/.bob/settings/mcp.json` (global).
+Deleting them would remove exactly what this boundary protects — and for the two Bob files that is
+not even the whole story: `bob mcp add` merges into whatever is already there, so a global
+`~/.bob/settings/mcp.json` typically holds servers that have nothing to do with this artifact
+(possibly with credentials in them). If you do want our two servers gone, remove them **by entry**,
+never by file: `bob mcp remove -s global quarkus-agent` and `bob mcp remove -s global context7`
+(`-s workspace` for a project file), then `bob mcp list` to confirm what remains.
+
+### 1. The skills
+
+Use the path you installed with — or all of them, if you are not sure. Every command here is
+safe to run when nothing is installed.
+
+**Skills CLI** (the [Quick install](#quick-install--any-skills-capable-agent)) — name the three
+skills:
+
+```
+npx skills remove setup-agentic-scaffolding scaffold-project audit-project -y
+npx skills remove -g setup-agentic-scaffolding scaffold-project audit-project -y
+npx skills list
+npx skills list -g
+```
+
+The first line covers the current project, the second your global install. Removal deletes real
+files, not just symlinks. Omitting `-a/--agents` is intentional: the CLI then cleans the skills out
+of *every* agent it knows about, including ghost symlinks left by an agent it no longer detects.
+
+> **Do not use `--all` here.** It removes **every** skill from your agents, including skills that
+> have nothing to do with this repository — and, contrary to its own `--help`, it does not imply
+> `-y`. Name the three skills.
+
+**Claude Code** — uninstall the plugin, then drop the marketplace:
+
+```
+/plugin uninstall quarkus-agentic-scaffolding@eldermoraes
+/plugin marketplace remove eldermoraes
+/reload-plugins
+```
+
+> Removing a marketplace in Claude Code **uninstalls every plugin installed from it** and deletes
+> its cached clone. That is harmless here — this marketplace ships one plugin — but if you added
+> other plugins from `eldermoraes`, they go with it.
+
+Verify with `claude plugin list`. Your MCP servers live in `~/.claude.json` under `mcpServers`,
+which is untouched by any of this.
+
+**Codex** — remove the plugin **first**, then the marketplace:
+
+```
+codex plugin remove quarkus-agentic-scaffolding@eldermoraes
+codex plugin marketplace remove eldermoraes
+codex plugin list
+```
+
+> Codex behaves the opposite way from Claude: removing the marketplace does **not** uninstall
+> anything. It drops `[marketplaces.eldermoraes]` from `~/.codex/config.toml` and deletes the
+> Codex-managed marketplace directory, which leaves any other plugin from that marketplace
+> **orphaned** — its cache and config survive, its source does not. Remove the plugins first.
+
+`codex plugin remove` has no `rm` or `uninstall` alias, and marketplace removal is CLI-only (there
+is no `/plugins` equivalent). Your MCP servers stay in `[mcp_servers.*]` in `config.toml`.
+
+**Bob** — Bob has no command for this: a skill is a directory it scans for, so removing the
+directory is the whole uninstall.
+
+```
+# Pick one — the three forms are alternatives, not a sequence; uncomment the one you want
+# ./scripts/uninstall-bob-skill.sh                   # from <cwd>/.bob/skills/
+# ./scripts/uninstall-bob-skill.sh /path/to/project  # from that project's .bob/skills/
+# ./scripts/uninstall-bob-skill.sh --global          # from ~/.bob/skills/
+ls .bob/skills/                                      # verify; and: ls ~/.bob/skills/
+```
+
+Nothing named `setup-agentic-scaffolding`, `scaffold-project`, or `audit-project` should be left in
+that listing — a directory Bob does not see is a skill Bob does not load. `ls` answering `No such
+file or directory` is a pass too: it means this project never had a local `.bob/skills/`, which is
+exactly what you should see if you only ever installed with `--global`.
+
+It removes only the three skills it installed, and only after reading each `SKILL.md`'s front-matter
+`name`: a directory that declares a different name — or declares none, or has no `SKILL.md` at all —
+is skipped with a warning rather than deleted. What the check cannot do is tell two identical
+declarations apart, so a skill of your own that *also* declares `name: audit-project` is
+indistinguishable from ours and **will** be removed. Move it aside before you run this. A symlinked
+skill is unlinked, not recursed into. Your MCP registration (`.bob/mcp.json` in a project,
+`~/.bob/settings/mcp.json` globally), `.bob/rules/`, and every other skill in `.bob/skills/` are
+left alone. Re-running it is a clean no-op. Skills load once per conversation, so
+**start a new conversation** in Bob afterwards.
+
+**Gemini CLI** — uninstalling the extension (installed in
+[the Gemini CLI note](#how-to-use-with-gemini)) takes the two MCP servers it declares with it,
+so add them back for the current project:
+
+```
+gemini extensions uninstall quarkus-agentic-scaffolding
+gemini mcp add -s project quarkus-agent jbang --java 21+ io.quarkus:quarkus-agent-mcp:1.2.11:runner
+gemini mcp add -s project context7 npx -y @upstash/context7-mcp@4.1.1
+gemini extensions list
+gemini mcp list
+```
+
+Order matters — uninstall first, then re-add. A `settings.json` registration takes precedence over
+an extension-declared server of the same name, so re-adding *before* uninstalling would silently
+shadow the extension's pinned versions. `-s project` makes the CLI's default explicit and keeps registrations in the current project.
+Use `-s user` instead for registrations shared by all projects. In `gemini mcp list`, an entry labelled `(from quarkus-agentic-scaffolding)` is still
+coming from the extension; after a successful uninstall and re-add, both servers appear without
+that label. Restart the session.
+
+### 2. The conventions file
+
+The file in your project root is **yours**. `/setup-agentic-scaffolding` only owns the region
+between its two markers:
+
+```text
+<!-- BEGIN quarkus-agentic-scaffolding conventions … -->
+…
+<!-- END quarkus-agentic-scaffolding conventions -->
+```
+
+Removing that region is the uninstall. Deleting the file is optional, and only safe when nothing
+else is in it. Run these from your project root, on `CLAUDE.md` (Claude) or `AGENTS.md` (Codex,
+Bob, Gemini, Cursor, opencode). For the [Advanced](#advanced--personal-use-optional-global-install)
+install, substitute the global path — `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, or
+`~/.bob/AGENTS.md` (or `~/.bob/rules/<your-file>.md`, if you used a rules file instead).
+
+**Run these one fence at a time, and do not paste the section as a whole.** Each of the five steps
+below is conditional on what the step before it printed, so a single paste would run the removal
+without you having read the precheck, and then hand the original file straight back.
+
+Steps 1 and 2 are the safe pair — a copy and a report, neither of which changes `CLAUDE.md`:
+
+```bash
+# 1. Back up, without clobbering an existing .bak
+cp CLAUDE.md "CLAUDE.md.backup-$(date +%Y%m%d-%H%M%S)"
+
+# 2. Precheck — proceed ONLY on OK-SAFE-TO-REMOVE
+awk '/^<!-- BEGIN quarkus-agentic-scaffolding conventions/{b++;bl=NR}
+     /^<!-- END quarkus-agentic-scaffolding conventions -->/{e++;el=NR}
+     END{printf "BEGIN=%d END=%d beginLine=%d endLine=%d -> %s\n", b,e,bl,el,
+         (b==1 && e==1 && bl<el) ? "OK-SAFE-TO-REMOVE" : "REFUSE - remove the block by hand"}' CLAUDE.md
+```
+
+Read that line before going on. Run step 3 **only** if it printed `OK-SAFE-TO-REMOVE`; on `REFUSE`,
+stop here and edit the file by hand.
+
+```bash
+# 3. Remove — changes nothing unless a complete, in-order pair exists
+perl -i -0777 -pe 's/^<!-- BEGIN quarkus-agentic-scaffolding conventions.*?^<!-- END quarkus-agentic-scaffolding conventions -->[ \t]*\r?\n?//msg' CLAUDE.md
+```
+
+Now compare what is left against the backup:
+
+```bash
+# 4. Inspect what the removal changed
+diff "$(ls -t CLAUDE.md.backup-* | head -1)" CLAUDE.md
+```
+
+Deleting the file itself is optional, and the line below does it only if no content is left. Run it
+**only** once the diff has shown you that nothing of yours was inside the deleted region and that
+nothing but whitespace remains:
+
+```bash
+# 4b. Drop the file itself only if nothing but whitespace is left
+grep -q '[^[:space:]]' CLAUDE.md || rm CLAUDE.md
+```
+
+**Read the diff before you trust it.** A large deletion is the expected result, so its size tells
+you nothing about whether it went right. What you are checking for is *your own writing* in the
+deleted lines. If you see any, step 5 is the recovery — it puts the original file back verbatim,
+managed block included, and you then remove the block by hand:
+
+```bash
+# 5. Restore, if the diff shows anything you wrote
+cp "$(ls -t CLAUDE.md.backup-* | head -1)" CLAUDE.md
+```
+
+**Keep the backup** until you have restarted your agent and confirmed it still behaves. There is
+deliberately no `rm` step for it.
+
+**On `REFUSE`, do not run step 3** — edit the file by hand instead. `REFUSE` means the markers are
+missing, duplicated, out of order, or on the same line, and no automated edit can tell a real block
+from a passage where you wrote *about* the markers. Step 3 is built to change nothing in that case,
+but the point of the precheck is that you never find out the hard way. The reverse does not hold:
+`OK-SAFE-TO-REMOVE` says a marker pair exists *in order*, not that the pair is genuine — a marker
+quoted at column 0, say inside a fenced code block where you documented your own agent setup, counts
+as real to both commands, and step 3 then takes everything between it and its partner. That is why
+step 1's backup is not optional and why the diff has to be read.
+
+Two more things worth knowing:
+
+- **If `CLAUDE.md` is a symlink,** in-place editing replaces it with a regular file and breaks the
+  link. Edit the target instead.
+- **`CLAUDE.md` is often not in git.** Do not count on `git checkout` to undo this — that is what
+  the backup in step 1 is for.
+
+Step 4 uses `grep -q '[^[:space:]]'` rather than a size test on purpose: a file containing only the
+block reduces to exactly 0 bytes, but a block with a blank line on each side leaves a 2-byte
+whitespace-only file. Interior blank lines double up after removal; that is cosmetic, and yours to
+tidy.
+
+### 3. Verify
+
+```bash
+npx skills list          # and: npx skills list -g
+claude plugin list
+codex plugin list
+gemini extensions list
+gemini mcp list
+grep -rIn 'quarkus-agentic-scaffolding' . --exclude-dir=.git
+```
+
+None of the first five should mention `quarkus-agentic-scaffolding`, and `gemini mcp list` should
+show `quarkus-agent` and `context7` **without** a `(from …)` label. The `grep` should return
+nothing but your own backups. Restart your agent — most of them read skills, plugins, and
+instruction files once at startup.
+
+## What's inside
+
+```
+.
+├── README.md                 # This file
+├── CLAUDE.md                 # Always-on project conventions (drop into your project root)
+├── AGENTS.md                 # Codex/Bob equivalent of the always-on project conventions
+├── CONTRIBUTING.md           # How to propose changes
+├── CHANGELOG.md              # Release history
+├── LICENSE                   # Apache-2.0
+├── .gitignore
+├── .claude-plugin/           # Claude installable-plugin + marketplace manifests
+│   ├── plugin.json
+│   └── marketplace.json
+├── .codex-plugin/            # Codex plugin manifest
+│   └── plugin.json
+├── gemini-extension.json     # Gemini CLI extension manifest (declares the MCP servers)
+├── .agents/
+│   └── plugins/
+│       └── marketplace.json  # Codex repo-local marketplace manifest
+├── plugins/
+│   └── quarkus-agentic-scaffolding/  # Codex marketplace wrapper; symlinks to .codex-plugin + skills
+├── scripts/
+│   ├── install-bob-skill.sh    # Fallback: copy the skills into a project's (or global) .bob/skills/
+│   └── uninstall-bob-skill.sh  # The mirror: remove them again (see Uninstall)
+├── docs/
+│   └── VALIDATING-TEMPLATES.md   # How to verify the templates still build
+└── skills/
+    ├── setup-agentic-scaffolding/   # User-invoked: prerequisites (toolchain, MCP, conventions)
+    │   ├── SKILL.md
+    │   └── templates/
+    │       ├── conventions-CLAUDE.md    # Byte-for-byte seed copy of root CLAUDE.md
+    │       └── conventions-AGENTS.md    # Byte-for-byte seed copy of root AGENTS.md
+    ├── scaffold-project/            # Create projects + add components (model-invoked umbrella)
+    │   ├── SKILL.md
+    │   └── templates/
+    │       ├── pom.xml.template
+    │       ├── application.properties.template
+    │       ├── AiService.java.template
+    │       ├── AiServiceTest.java.template
+    │       ├── RestResource.java.template
+    │       ├── Agent.java.template
+    │       ├── McpClient.java.template
+    │       ├── McpServer.java.template
+    │       ├── Tools.java.template
+    │       ├── Guardrails.java.template
+    │       └── RagSetup.java.template
+    └── audit-project/               # User-invoked: audit an existing project vs the conventions
+        └── SKILL.md
+```
+
+## Skill effectiveness eval
+
+Does installing `scaffold-project` change what a coding agent builds? Measured on 2026-10-05 with
+`claude-sonnet-5-5` in Claude Code 2.1.289: five fixed tasks, each run three times **without** and
+three times **with** the skill, 30 headless runs, all scored mechanically. The number is published
+as measured; the [protocol](evals/effectiveness/README.md) was committed before collection. Three
+rounds were collected: round 1 with no `CLAUDE.md` in either arm, round 2 with this repository's
+`CLAUDE.md` in the working directory of both arms (see [Round 2](#round-2-claudemd-in-both-arms)),
+and round 3 the same way after the skill was trimmed (see
+[Round 3](#round-3-trimmed-skill-and-two-new-conventions)).
+
+### Round 1: no `CLAUDE.md`
+
+| Task | Arm | Compiles (attempt 1) | Agent-decided convention checks | Mean failed build commands |
+| --- | --- | --- | --- | --- |
+| Ticket classifier | baseline / skill | 3/3 / 3/3 | 43.6% / 76.9% | 2.3 / 1.0 |
+| Parallel reviewer agents | baseline / skill | 3/3 / 3/3 | 23.1% / 92.3% | 5.0 / 1.3 |
+| Easy RAG Q&A | baseline / skill | 3/3 / 3/3 | 46.2% / 92.3% | 5.7 / 0.7 |
+| Tools exposed over MCP | baseline / skill | 3/3 / 3/3 | 53.8% / 92.3% | 6.3 / 0.3 |
+| Tool-calling assistant | baseline / skill | 3/3 / 3/3 | 46.2% / 76.9% | 3.3 / 2.0 |
+| **All 30 runs** | baseline / skill | **15/15 / 15/15** | **42.6% / 86.2% (+43.6 pp)** | **4.5 / 1.1** |
+
+- **Compilation: no difference.** Every run in both arms passed `mvn -B -ntp -DskipTests
+  test-compile` at the first independent attempt, so the "build attempts to green (max 2)" metric
+  is 1 everywhere and the repair turn was never used. Sonnet already builds a compiling Quarkus +
+  LangChain4j project without help on these tasks.
+- **Conventions: the skill's effect is here.** 13 equal-weight checks per run that the agent
+  decides (declarative AI service, `@InputGuardrails`, delimited external text, `@QuarkusTest`,
+  `%dev` logging, Dev Services off, plus four task-specific checks such as `@ParallelAgent`
+  instead of a hand-rolled executor). Generator-supplied checks (BOMs, Java 25, `-parameters`,
+  native profile) are reported separately: 89.3% baseline, 100% skill.
+- **Cost of the skill:** more agent turns (27.9 vs 19.9) and wall time (2.1 vs 1.1 minutes per run),
+  and roughly 1.9x the token use (USD 5.79 vs 3.12 API-equivalent for 15 runs; the runs used a
+  subscription, not API billing). The agent itself ran fewer failing builds (1.1 vs 4.5 per run).
+
+Round 1 notes: some conventions were missed by both arms (no run named a model, no classifier or
+tools run added `@Timeout`/`@Fallback`). Both arms had the Quarkus Agents MCP and context7, but the
+baseline used the Quarkus MCP in 2 of 15 runs and neither arm queried context7. One scorer fix was
+made after collection: the RAG sample-document check now resolves a `${ENV:default}` path, which
+changed one skill run from 12/13 to 13/13. Raw records, transcripts and generated sources are in
+[`evals/effectiveness/results/2026-10-05`](evals/effectiveness/results/2026-10-05/SUMMARY.md).
+
+### Round 2: `CLAUDE.md` in both arms
+
+A real install adds `CLAUDE.md` through `/setup-agentic-scaffolding`, and the convention checks are
+derived from it, so round 1 left open how much of the gain the conventions file alone delivers.
+Round 2 repeats the same 30 runs (same tasks, model, MCP pins, permissions and scorer) with
+`run.py --with-claude-md`: the repository's `CLAUDE.md` from the committed revision is copied into
+every run directory in **both** arms and loaded with `--setting-sources project` (the run
+directory has no `.claude/` folder, so no project settings come with it). `CLAUDE.md` does not
+reference `AGENTS.md`, so only `CLAUDE.md` was copied. A probe before collection confirmed that
+`--setting-sources ''` hides a `CLAUDE.md` in the working directory and `project` loads it.
+
+| Round / arm | Compiles (attempt 1) | Agent-decided convention checks | Generator checks | Mean failed build commands | Mean turns | Mean minutes | Runs using the Quarkus MCP | API-equivalent USD (15 runs) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1, baseline (no `CLAUDE.md`) | 15/15 | 42.6% | 89.3% | 4.5 | 19.9 | 1.1 | 2/15 | 3.12 |
+| 1, skill (no `CLAUDE.md`) | 15/15 | 86.2% | 100% | 1.1 | 27.9 | 2.1 | 15/15 | 5.79 |
+| 2, baseline + `CLAUDE.md` | 15/15 | 89.2% | 96.0% | 1.7 | 22.9 | 3.5 | 15/15 | 5.03 |
+| 2, skill + `CLAUDE.md` | 15/15 | **93.3%** | 100% | 0.8 | 27.3 | 2.1 | 15/15 | 6.37 |
+
+- **`CLAUDE.md` alone delivers most of the conformance.** Without the skill, adding the conventions
+  file takes agent-decided checks from 42.6% to 89.2% (+46.6 pp), slightly above what the skill
+  alone reached in round 1 (86.2%). It also makes the baseline follow the "Quarkus MCP first" rule
+  (15/15 runs, 2/15 before) and cuts its failing builds from 4.5 to 1.7 per run.
+- **The skill adds a small margin on top: +4.1 pp** (89.2% to 93.3%), about half a check per run.
+  It comes from two checks: `@InputGuardrails` (11/15 to 15/15) and a `@QuarkusTest` smoke test
+  (9/15 to 15/15); the skill arm missed one more named model (6/15 baseline, 5/15 skill). In the
+  generator band the skill removes version pins on extensions (12/15 to 15/15). With n = 3 per
+  cell and no significance test, +4.1 pp is a direction, not a measured effect size.
+- **Cost and time.** With `CLAUDE.md` in place, the skill arm took more turns (27.3 vs 22.9) and
+  about 1.27x the token use, but less wall time (2.1 vs 3.5 minutes per run) and fewer failing
+  builds (0.8 vs 1.7). Both arms called the Quarkus MCP about as often (3.7 vs 3.5 calls per run),
+  so the cause of the baseline's longer time was not isolated; wall time also varies with machine
+  load, which was not controlled.
+- **Compilation: still no difference.** Every run in both arms compiled at the first independent
+  attempt; the repair turn was never used.
+
+Raw records, transcripts and generated sources are in
+[`evals/effectiveness/results/2026-10-05-round-2`](evals/effectiveness/results/2026-10-05-round-2/SUMMARY.md).
+
+### Round 3: trimmed skill and two new conventions
+
+Round 3 repeats round 2 (`--with-claude-md`, same tasks, model, MCP pins, permissions and scorer)
+on the revision of #89, which trimmed `scaffold-project` to what the conventions do not say (#88,
+option 1) and added two conventions: every project keeps a `@QuarkusTest` smoke test, and no
+dependency the platform BOMs manage carries a version. The revision also includes #87 (every
+`@RegisterAiService` names its model; synchronous REST and I/O `@Tool` methods carry
+`@RunOnVirtualThread`), merged after round 2, so the round 2 to round 3 change mixes both PRs.
+
+| Round / arm | Compiles (attempt 1) | Agent-decided convention checks | Generator checks | Mean failed build commands | Mean turns | Mean minutes | API-equivalent USD (15 runs) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1, baseline (no `CLAUDE.md`) | 15/15 | 42.6% | 89.3% | 4.5 | 19.9 | 1.1 | 3.12 |
+| 1, skill (no `CLAUDE.md`) | 15/15 | 86.2% | 100% | 1.1 | 27.9 | 2.1 | 5.79 |
+| 2, baseline + `CLAUDE.md` | 15/15 | 89.2% | 96.0% | 1.7 | 22.9 | 3.5 | 5.03 |
+| 2, skill + `CLAUDE.md` | 15/15 | 93.3% | 100% | 0.8 | 27.3 | 2.1 | 6.37 |
+| 3, baseline + `CLAUDE.md` | 15/15 | **98.5%** | 100% | 1.6 | 23.9 | 3.5 | 5.36 |
+| 3, trimmed skill + `CLAUDE.md` | 15/15 | **98.5%** | 100% | 1.8 | 30.3 | 3.0 | 6.87 |
+
+- **The conventions now carry the margin the skill used to own.** Without the skill, agent-decided
+  checks rose from 89.2% to 98.5%: `@QuarkusTest` smoke test 9/15 to 15/15, named model 6/15 to
+  15/15, virtual threads 1/3 to 3/3, `@InputGuardrails` 11/15 to 13/15, and in the generator band
+  no version pins 12/15 to 15/15. The three remaining baseline misses are two RAG runs with no
+  input guardrail and one parallel run with executor glue.
+- **The trimmed skill kept its conformance and lost its lead.** The skill arm also reached 98.5%
+  (93.3% in round 2), with `@InputGuardrails`, the smoke test and no pins all at 15/15. With both
+  arms equal, the skill adds no measured conformance on top of `CLAUDE.md`; it still leads on
+  `@InputGuardrails` (15/15 vs 13/15) and trails on `@Timeout`/`@Fallback` (4/6 vs 6/6, both misses
+  in the classifier task, where the prompt does not ask for fault tolerance).
+- **Time and builds: the round-2 advantage did not hold.** The skill arm took 3.0 minutes per run
+  (2.1 in round 2) against 3.5 for the baseline, more turns (30.3 vs 23.9) and slightly more
+  failing build commands (1.8 vs 1.6; 0.8 in round 2), at about 1.28x the token cost. Whether the
+  trim, the conventions changes or run-to-run variance moved these numbers is not isolated; wall
+  time also depends on machine load, which was not controlled.
+- **Compilation: still no difference.** Every run compiled at the first independent attempt.
+
+The baseline queried context7 in round 3 (7 calls in total); the skill arm did not. Raw records,
+transcripts and generated sources are in
+[`evals/effectiveness/results/2026-10-05-round-3`](evals/effectiveness/results/2026-10-05-round-3/SUMMARY.md).
+The collection ran from the head of #89 (`30a80a0`), whose tree is identical to its squash merge
+on `main` (`36aa81f`).
+
+**Limitations (all rounds).** n = 3 per cell, one model, one agent, five tasks, no significance
+test. The checks are regex presence predicates derived from [`CLAUDE.md`](CLAUDE.md), not proof of
+semantic correctness, and both the skill and `CLAUDE.md` were written against the same conventions,
+so each is evaluated on the standard it teaches (the rubric is this project's own). Neither arm
+queried context7 in rounds 1 and 2. A fixed prompt preamble removes the confirmation questions the
+skill asks in interactive use. Isolation from the globally installed skill came from
+`--setting-sources` (`''` in round 1, `project` in rounds 2 and 3) plus `--strict-mcp-config`, and
+was asserted per run (0 runs excluded in any round). The rounds ran hours apart on the same
+machine, not interleaved.
+
+Reproduce (Claude Code logged in, JDK 25, Maven, JBang, Node, Python 3):
+
+```sh
+python3 evals/effectiveness/run.py --dry-run /tmp/qas-eval   # prints the exact command of every run
+python3 evals/effectiveness/run.py /tmp/qas-eval             # 30 runs, at most 3 in parallel
+python3 evals/effectiveness/summarize.py /tmp/qas-eval
+python3 evals/effectiveness/run.py --with-claude-md /tmp/qas-eval-2   # rounds 2 and 3: CLAUDE.md in both arms
+```
+
+An earlier [12-run Codex pilot](evals/skill-pilot/results/2026-09-09/REPORT.md) was inconclusive
+because its documentation prerequisites failed; it is kept as published.
+
+The [Anthropic community submission kit](docs/ANTHROPIC-SUBMISSION.md) is prepared and validated;
+submission remains pending authentication. No community or official-directory listing is claimed.
+
+## Versioning and changelog
+
+This artifact uses semantic versioning. `README.md`, `CLAUDE.md`, `AGENTS.md`, the three
+`skills/*/SKILL.md` files (`setup-agentic-scaffolding`, `scaffold-project`, `audit-project`),
+`.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, and `gemini-extension.json` each carry
+a matching version header, enforced in CI by `ci/check-version-consistency.sh` using the inventory
+in `ci/versioning.py`. Maintainers update them with `ci/bump-version.sh <major.minor.patch>`. See
+[`CHANGELOG.md`](CHANGELOG.md) for release history.
+
+## License
+
+Licensed under the **Apache License 2.0**. See [`LICENSE`](LICENSE) for the full text.
+
+## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to propose changes to the conventions, the skills,
+and the templates — including how to keep new patterns evidence-backed, and how to confirm the
+templates still build (see [`docs/VALIDATING-TEMPLATES.md`](docs/VALIDATING-TEMPLATES.md)).

@@ -1,0 +1,371 @@
+<!---
+Copyright 2022 The HuggingFace Team. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<a href="https://github.com/huggingface/optimum-habana#gh-light-mode-only">
+  <img src="https://github.com/huggingface/optimum-habana/blob/main/readme_logo_light.png"/>
+</a>
+
+<a href="https://github.com/huggingface/optimum-habana#gh-dark-mode-only">
+  <img src="https://github.com/huggingface/optimum-habana/blob/main/readme_logo_dark.png"/>
+</a>
+
+
+# Optimum for Intel® Gaudi® Accelerators
+
+> **END OF SUPPORT.** As of 2026-10-31, `optimum-habana` is no longer officially supported.
+> The repository and all PyPI releases remain available, but no new features are planned,
+> bug fixes are not guaranteed, security vulnerabilities (including CVEs) may not be
+> investigated or fixed, and issues and pull requests may not be reviewed.
+> The final release is `v1.21.2` (Intel Gaudi Software 1.24, Transformers 4.55.x).
+> There is no officially recommended replacement. You may fork this project under the
+> Apache 2.0 license.
+
+Optimum for Intel Gaudi - a.k.a. `optimum-habana` - is the interface between the Transformers and Diffusers libraries and
+[Intel Gaudi AI Accelerators (HPU)](https://docs.habana.ai/en/latest/index.html). It provides a set of tools enabling easy
+model loading, training and inference on single- and multi-HPU settings for different downstream tasks. The list of officially
+validated models and tasks is available [here](https://github.com/huggingface/optimum-habana#validated-models). Users can
+try other of the thousands of Hugging Face models on Intel Gaudi accelerators and tasks with only few changes.
+
+
+## What are Intel Gaudi AI Accelerators (HPUs)?
+
+HPUs offer fast model training and inference as well as a great price-performance ratio.
+Check out [this blog post about BLOOM inference](https://huggingface.co/blog/habana-gaudi-2-bloom) and
+[this post benchmarking Intel Gaudi 2 and NVIDIA A100 GPUs for BridgeTower training](https://huggingface.co/blog/bridgetower)
+for concrete examples.
+
+
+## Gaudi Setup
+
+Please refer to the Intel Gaudi AI Accelerator official [installation guide](https://docs.habana.ai/en/latest/Installation_Guide/index.html).
+
+> [!NOTE]
+> Tests should be run in a Docker container based on Intel Gaudi's official images. Instructions to
+> obtain the latest containers from the Intel Gaudi Vault are available
+> [here](https://docs.habana.ai/en/latest/Installation_Guide/Additional_Installation/Docker_Installation.html#use-intel-gaudi-containers).
+> The current Optimum for Intel Gaudi has been validated with Intel Gaudi v1.24 stack.
+
+
+## Install the library and get example scripts
+
+### Option 1: Use the latest stable release
+
+To install the latest stable release of this package
+```bash
+pip install --upgrade-strategy eager optimum[habana]
+```
+
+The `--upgrade-strategy eager` option is needed to ensure `optimum-habana` is upgraded to the latest stable release.
+
+To use the example associated with the latest stable release, run:
+```bash
+git clone https://github.com/huggingface/optimum-habana
+cd optimum-habana && git checkout v1.21.2
+```
+with `v1.21.2` being the latest Optimum for Intel Gaudi release version.
+
+### Option 2: Use the latest main branch under development
+
+Optimum for Intel Gaudi is a fast-moving project, and you may want to install it from source and get the latest scripts :
+
+```bash
+pip install git+https://github.com/huggingface/optimum-habana.git
+git clone https://github.com/huggingface/optimum-habana
+```
+
+### Option 3: Use the `transformers_future` branch to have the latest changes from Transformers
+
+The `transformers_future` branch is regularly updated with the latest changes from the main branches of Optimum for Intel Gaudi
+and Transformers. This enables you to try out new Transformers features that have not been merged into the main branch yet.
+
+> [!WARNING]
+> The `transformers_future` branch may have some regressions or bugs and may be less stable than the main branch.
+
+```bash
+pip install git+https://github.com/huggingface/optimum-habana.git@transformers_future
+git clone -b transformers_future https://github.com/huggingface/optimum-habana
+```
+
+## Install Dependencies
+
+To use DeepSpeed on HPUs, you also need to run the following command:
+```bash
+pip install git+https://github.com/HabanaAI/DeepSpeed.git@1.23.0
+```
+
+To install the requirements for every example:
+```bash
+cd <example-folder>
+pip install -r requirements.txt
+```
+
+## How to use it?
+
+Optimum for Intel Gaudi was designed with one goal in mind: **to make training and inference straightforward for Transformers
+and Diffusers users, while fully leveraging the power of Intel Gaudi AI Accelerators**.
+
+### Transformers Interface
+
+There are two main classes one needs to know:
+
+- [GaudiTrainer](https://huggingface.co/docs/optimum/habana/package_reference/trainer): the trainer class that takes care of
+  compiling and distributing the model to run on HPUs, and performing training and evaluation.
+
+- [GaudiConfig](https://huggingface.co/docs/optimum/habana/package_reference/gaudi_config): the class that enables to configure
+  Gaudi Mixed Precision and to decide whether optimized operators and optimizers should be used or not.
+
+The [GaudiTrainer](https://huggingface.co/docs/optimum/habana/package_reference/trainer) is very similar to the
+[Transformers Trainer](https://huggingface.co/docs/transformers/main_classes/trainer), and adapting a script using the Trainer to
+make it work with Intel Gaudi accelerators will mostly consist in simply swapping the `Trainer` class for the `GaudiTrainer` one.
+
+That's how most of the [example scripts](/examples) were adapted from their
+[original counterparts](https://github.com/huggingface/transformers/tree/main/examples/pytorch).
+
+Here is an example:
+```diff
+- from transformers import Trainer, TrainingArguments
++ from optimum.habana import GaudiConfig, GaudiTrainer, GaudiTrainingArguments
+
+- training_args = TrainingArguments(
++ training_args = GaudiTrainingArguments(
+  # training arguments...
++ use_habana=True,
++ use_lazy_mode=True,  # whether to use lazy or eager mode
++ gaudi_config_name=path_to_gaudi_config,
+)
+
+# A lot of code here
+
+# Initialize our Trainer
+- trainer = Trainer(
++ trainer = GaudiTrainer(
+    model=model,
+    args=training_args,  # Original training arguments.
+    train_dataset=train_dataset if training_args.do_train else None,
+    eval_dataset=eval_dataset if training_args.do_eval else None,
+    compute_metrics=compute_metrics,
+    tokenizer=tokenizer,
+    data_collator=data_collator,
+)
+```
+
+where `gaudi_config_name` is the name of a model from the [Hub](https://huggingface.co/Habana) (Intel Gaudi configurations
+are stored in model repositories) or a path to a local Intel Gaudi configuration file (you can see
+[here](https://huggingface.co/docs/optimum/habana/package_reference/gaudi_config) how to write your own).
+
+
+### Diffusers Interface
+
+You can generate images from prompts using Stable Diffusion on Intel Gaudi using the
+[`GaudiStableDiffusionPipeline`](https://huggingface.co/docs/optimum/habana/package_reference/stable_diffusion_pipeline) class and the
+[`GaudiDDIMScheduler`](https://huggingface.co/docs/optimum/habana/package_reference/stable_diffusion_pipeline#optimum.habana.diffusers.GaudiDDIMScheduler)
+class which have been both optimized for HPUs. Here is how to use them and the differences with the Diffusers library:
+
+```diff
+- from diffusers import DDIMScheduler, StableDiffusionPipeline
++ from optimum.habana.diffusers import GaudiDDIMScheduler, GaudiStableDiffusionPipeline
+
+
+model_name = "CompVis/stable-diffusion-v1-4"
+
+- scheduler = DDIMScheduler.from_pretrained(model_name, subfolder="scheduler")
++ scheduler = GaudiDDIMScheduler.from_pretrained(model_name, subfolder="scheduler")
+
+- pipeline = StableDiffusionPipeline.from_pretrained(
++ pipeline = GaudiStableDiffusionPipeline.from_pretrained(
+    model_name,
+    scheduler=scheduler,
++   use_habana=True,
++   use_hpu_graphs=True,
++   gaudi_config="Habana/stable-diffusion",
+)
+
+outputs = pipeline(
+    ["An image of a squirrel in Picasso style"],
+    num_images_per_prompt=16,
++   batch_size=4,
+)
+```
+
+
+## Important Note on Pytorch 2.5 Performance Degradation
+
+With the upgrade to PyTorch 2.5, users may experience some performance degradation due to changes in the handling of FP16/BF16 inputs.
+The note from PyTorch 2.5 states:
+
+"A naive SDPA math backend, when using FP16/BF16 inputs, can accumulate significant numerical errors due to the usage of low-precision
+intermediate buffers. To mitigate this issue, the default behavior now involves upcasting FP16/BF16 inputs to FP32. Computations are performed
+in FP32/TF32, and the final FP32 results are then downcasted back to FP16/BF16. This will improve numerical accuracy of the final output for
+the math backend with FP16/BF16 inputs, but increases memory usages and may cause the performance regressions in the math backend as computations
+shift from FP16/BF16 BMM to FP32/TF32 BMM/Matmul."
+
+For scenarios where reduced-precision reductions are preferred for speed, they can be enabled with the following setting:
+```python
+torch.backends.cuda.allow_fp16_bf16_reduction_math_sdp(True)
+```
+Additionally, the next release of Optimum Habana will include a Gaudi-specific safe_softmax implementation that will also improve performance.
+
+More info:
+- https://pytorch.org/docs/stable/notes/numerical_accuracy.html
+
+
+### Documentation
+
+Check out [the documentation of Optimum for Intel Gaudi](https://huggingface.co/docs/optimum/habana/index) for more advanced usage.
+
+
+## Validated Models
+
+The following model architectures, tasks and device distributions have been validated for Optimum for Intel Gaudi:
+
+> [!NOTE]
+> In the tables below, :heavy_check_mark: means single-card, multi-card and DeepSpeed have all been validated.
+
+### Transformers:
+
+| Architecture                                          | Training                      | Inference                                       | Tasks |
+|:------------------------------------------------------|:-----------------------------:|:-----------------------------------------------:|:------|
+| BERT                                                  | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[text classification](/examples/text-classification)</li><li>[question answering](/examples/question-answering)</li><li>[language modeling](/examples/language-modeling)</li><li>[text feature extraction](/examples/text-feature-extraction)</li></ul>          |
+| RoBERTa                                               | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[question answering](/examples/question-answering)</li><li>[language modeling](/examples/language-modeling)</li></ul>                                                                       |
+| ALBERT                                                | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[question answering](/examples/question-answering)</li><li>[language modeling](/examples/language-modeling)</li></ul>                                                                       |
+| DistilBERT                                            | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[question answering](/examples/question-answering)</li><li>[language modeling](/examples/language-modeling)</li></ul>                                                                       |
+| GPT2                                                  | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul>                                                                             |
+| BLOOM(Z)                                              |                               | <ul><li>DeepSpeed</li></ul>                     | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| StarCoder / StarCoder2                                | :heavy_check_mark:            | <ul><li>Single-card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| GPT-J                                                 | <ul><li>DeepSpeed</li></ul>   | <ul><li>Single card</li><li>DeepSpeed</li></ul> | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| GPT-Neo                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| GPT-NeoX                                              | <ul><li>DeepSpeed</li></ul>   | <ul><li>DeepSpeed</li></ul>                     | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| OPT                                                   |                               | <ul><li>DeepSpeed</li></ul>                     | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Llama 2 / CodeLlama / Llama 3 / Llama Guard / Granite | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li><li>[question answering](/examples/question-answering)</li><li>[text classification](/examples/text-classification) (Llama Guard)</li></ul> |
+| StableLM                                              |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Falcon                                                | <ul><li>LoRA</li></ul>        | :heavy_check_mark:                              | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| CodeGen                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| MPT                                                   |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Mistral                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Phi                                                   | :heavy_check_mark:            | <ul><li>Single card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| Mixtral                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Persimmon                                             |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Qwen2 / Qwen3                                         | <ul><li>Single card</li></ul> | <ul><li>Single card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| Qwen2-MoE                                             |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Gemma                                                 | :heavy_check_mark:            | <ul><li>Single card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| Gemma2                                                |                               | :heavy_check_mark:                              | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Gemma3                                                |                               | :heavy_check_mark:                              | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| XGLM                                                  |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Cohere                                                |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| T5 / Flan T5                                          | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[summarization](/examples/summarization)</li><li>[translation](/examples/translation)</li><li>[question answering](/examples/question-answering#fine-tuning-t5-on-squad20)</li></ul> |
+| BART                                                  |                               | <ul><li>Single card</li></ul>                   | <ul><li>[summarization](/examples/summarization)</li><li>[translation](/examples/translation)</li><li>[question answering](/examples/question-answering#fine-tuning-t5-on-squad20)</li></ul> |
+| ViT                                                   | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[image classification](/examples/image-classification)</li></ul> |
+| Swin                                                  | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[image classification](/examples/image-classification)</li></ul> |
+| Wav2Vec2                                              | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[audio classification](/examples/audio-classification)</li><li>[speech recognition](/examples/speech-recognition)</li></ul> |
+| Whisper                                               | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[speech recognition](/examples/speech-recognition)</li></ul> |
+| SpeechT5                                              |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text to speech](/examples/text-to-speech)</li></ul> |
+| CLIP                                                  | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[contrastive image-text training](/examples/contrastive-image-text)</li></ul> |
+| BridgeTower                                           | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[contrastive image-text training](/examples/contrastive-image-text)</li></ul> |
+| ESMFold                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[protein folding](/examples/protein-folding)</li></ul> |
+| Blip                                                  |                               | <ul><li>Single card</li></ul>                   | <ul><li>[visual question answering](/examples/visual-question-answering)</li><li>[image to text](/examples/image-to-text)</li></ul> |
+| OWLViT                                                |                               | <ul><li>Single card</li></ul>                   | <ul><li>[zero shot object detection](/examples/zero-shot-object-detection)</li></ul> |
+| ClipSeg                                               |                               | <ul><li>Single card</li></ul>                   | <ul><li>[object segmentation](/examples/object-segementation)</li></ul> |
+| Llava / Llava-next / Llava-onevision                  |                               | <ul><li>Single card</li></ul>                   | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| idefics2                                              | <ul><li>LoRA</li></ul>        | <ul><li>Single card</li></ul>                   | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| Paligemma                                             |                               | <ul><li>Single card</li></ul>                   | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| Segment Anything Model                                |                               | <ul><li>Single card</li></ul>                   | <ul><li>[object segmentation](/examples/object-segementation)</li></ul> |
+| VideoMAE                                              |                               | <ul><li>Single card</li></ul>                   | <ul><li>[Video classification](/examples/video-classification)</li></ul> |
+| TableTransformer                                      |                               | <ul><li>Single card</li></ul>                   | <ul><li>[table object detection](/examples/table-detection) </li></ul> |
+| DETR                                                  |                               | <ul><li>Single card</li></ul>                   | <ul><li>[object detection](/examples/object-detection)</li></ul> |
+| Mllama                                                | <ul><li>LoRA</li></ul>        | :heavy_check_mark:                              | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| MiniCPM3                                              |                               | <ul><li>Single card</li></ul>                   | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| Baichuan2                                             | <ul><li>DeepSpeed</li></ul>.  | <ul><li>Single card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| DeepSeek-V2                                           | :heavy_check_mark:            | :heavy_check_mark:                              | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| DeepSeek-V3 / Moonlight                               |                               | :heavy_check_mark:                              | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| ChatGLM                                               | <ul><li>DeepSpeed</li></ul>   | <ul><li>Single card</li></ul>                   | <ul><li>[language modeling](/examples/language-modeling)</li><li>[text generation](/examples/text-generation)</li></ul> |
+| Qwen2-VL                                              |                               |  <ul><li>Single card</li></ul>                  | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| Qwen2.5-VL                                            |                               |  <ul><li>Single card</li></ul>                  | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| VideoLLaVA                                            |                               | <ul><li>Single card</li></ul>                   | <ul><li>[Video comprehension](/examples/video-comprehension)</li></ul> |
+| GLM-4V                                                |                               |  <ul><li>Single card</li></ul>                  | <ul><li>[image to text](/examples/image-to-text)</li></ul> |
+| Arctic                                                |                               |  <ul><li>DeepSpeed</li></ul>                    | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+| GPT-OSS                                               |                               |  <ul><li>DeepSpeed</li></ul>                    | <ul><li>[text generation](/examples/text-generation)</li></ul> |
+
+</div>
+
+
+### Diffusers:
+
+| Architecture               | Training               | Inference                     | Tasks                                                                                                                                                                                          |
+|:---------------------------|:----------------------:|:-----------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Stable Diffusion           | :heavy_check_mark:     | :heavy_check_mark:            | <ul><li>[text-to-image generation](/examples/stable-diffusion#text-to-image-generation)</li><li>[image-to-image generation](/examples/stable-diffusion#image-to-image-generation)</li></ul>    |
+| Stable Diffusion XL        | :heavy_check_mark:     | :heavy_check_mark:            | <ul><li>[text-to-image generation](/examples/stable-diffusion#stable-diffusion-xl-sdxl)</li><li>[image-to-image generation](/examples/stable-diffusion#stable-diffusion-xl-refiner)</li></ul>  |
+| Stable Diffusion Depth2img |                        | <ul><li>Single card</li></ul> | <ul><li>[depth-to-image generation](/examples/stable-diffusion)</li></ul>                                                                                                                      |
+| Stable Diffusion 3         | :heavy_check_mark:     | :heavy_check_mark:            | <ul><li>[text-to-image generation](/examples/stable-diffusion#stable-diffusion-3-and-35-sd3)</li></ul>                                                                                         |
+| LDM3D                      |                        | <ul><li>Single card</li></ul> | <ul><li>[text-to-image generation](/examples/stable-diffusion#text-to-image-generation)</li></ul>                                                                                              |
+| FLUX.1                     | <ul><li>LoRA</li></ul> | <ul><li>Single card</li></ul> | <ul><li>[text-to-image generation](/examples/stable-diffusion#flux1)</li><li>[image-to-image generation](/examples/stable-diffusion#flux1-image-to-image)</li></ul>                            |
+| Qwen Image                 |                        | <ul><li>Single card</li></ul> | <ul><li>[text-to-image generation](/examples/stable-diffusion#qwen-image)</li></ul>                                                                                                            |
+| Text to Video              |                        | <ul><li>Single card</li></ul> | <ul><li>[text-to-video generation](/examples/stable-diffusion#text-to-video-generation)</li></ul>                                                                                              |
+| Image to Video             |                        | <ul><li>Single card</li></ul> | <ul><li>[image-to-video generation](/examples/stable-diffusion#image-to-video-generation)</li></ul>                                                                                            |
+| i2vgen-xl                  |                        | <ul><li>Single card</li></ul> | <ul><li>[image-to-video generation](/examples/stable-diffusion#I2vgen-xl)</li></ul>                                                                                                            |
+| Wan                        |                        | :heavy_check_mark:            | <ul><li>[text-to-video generation](/examples/stable-diffusion#text-to-video-with-wan-22)</li><li>[image-to-video generation](/examples/stable-diffusion#image-to-video-with-wan-22)</li></ul>  |
+
+
+### PyTorch Image Models/TIMM:
+
+| Architecture  | Training | Inference                     | Tasks                                                                    |
+|:--------------|:--------:|:-----------------------------:|:-------------------------------------------------------------------------|
+| FastViT       |          | <ul><li>Single card</li></ul> | <ul><li>[image classification](/examples/image-classification)</li></ul> |
+
+### TRL:
+
+| Architecture     | Training           | Inference | Tasks                                                          |
+|:-----------------|:------------------:|----------:|:---------------------------------------------------------------|
+| Llama 2          | :heavy_check_mark: |           | <ul><li>[DPO Pipeline](/examples/trl#dpo-pipeline)</li></ul>   |
+| Llama 2          | :heavy_check_mark: |           | <ul><li>[PPO Pipeline](/examples/trl#ppo-pipeline)</li></ul>   |
+| Stable Diffusion | :heavy_check_mark: |           | <ul><li>[DDPO Pipeline](/examples/trl#ddpo-pipeline)</li></ul> |
+
+Other models and tasks supported by the Transformers and Diffusers libraries may also work. You can refer to this [section](https://github.com/huggingface/optimum-habana#how-to-use-it)
+for using them with Optimum for Intel Gaudi. In addition, [this page](/examples) explains how to modify any
+[example](https://github.com/huggingface/transformers/tree/main/examples/pytorch) from the Transformers library to make it work with Optimum for Intel Gaudi.
+
+If you find any issues while using those, please open an issue or a pull request.
+
+After training your model, feel free to submit it to the Intel [leaderboard](https://huggingface.co/spaces/Intel/powered_by_intel_llm_leaderboard) which is designed
+to evaluate, score, and rank open-source LLMs that have been pre-trained or fine-tuned on Intel Hardwares. Models submitted to the leaderboard will be evaluated on
+the Intel Developer Cloud. The evaluation platform consists of Gaudi Accelerators and Xeon CPUs running benchmarks from the Eleuther AI Language Model Evaluation Harness.
+
+The list of validated models through continuous integration tests is posted [here](/tests/Habana_Validated_Models.md)
+
+## Development
+
+Check the [contributor guide](https://github.com/huggingface/optimum/blob/main/CONTRIBUTING.md) for instructions.
+
+## Known Issues
+
+### bitsandbytes compatibility issues with PyTorch >= 2.10
+
+Users running `PyTorch>=2.10` with bitsandbytes may encounter issues depending on the bitsandbytes version in use. This is an upstream problem tracked at https://github.com/bitsandbytes-foundation/bitsandbytes/issues/1904 and is not specific to Intel Gaudi and Optimum-Habana.
+
+#### bitsandbytes >= 0.50: degraded performance with `torch.compile`
+
+When running quantized workloads with `bitsandbytes>=0.50` and `torch.compile` on `PyTorch>=2.10`, performance may regress.
+
+- **Workarounds**:
+  - Run without `torch.compile`.
+  - Pin `bitsandbytes==0.49.2` and reduce batch size (see caveat below).
+
+#### bitsandbytes < 0.50: increased memory usage due to graph breaks
+
+When running quantized workloads with `bitsandbytes<0.50` (e.g. `bitsandbytes==0.49.2`) on `PyTorch>=2.10`, graph breaks may occur and cause increased memory consumption.
+
+- **Workarounds**:
+  - Run without `torch.compile`.
+  - Reduce batch size.

@@ -1,0 +1,197 @@
+# 算力码表 suanli-dashboard
+
+> macOS 悬浮仪表盘：同时监控 **OpenAI Codex** 与 **Claude Code** 的订阅额度余额、Token 消耗与趋势。支持 Touch Bar 常驻显示、最近会话直达、多设备 iCloud 同步。
+
+![macOS](https://img.shields.io/badge/macOS-14%2B%20only-blue) ![Swift](https://img.shields.io/badge/Swift-6-orange) ![License](https://img.shields.io/badge/license-MIT-green) ![i18n](https://img.shields.io/badge/languages-10-purple)
+
+<p align="center">
+  <img src="docs/screenshots/hero-rings.png" width="440" alt="悬浮双环样式 · Floating rings widget">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/touchbar-live.png" width="940" alt="Touch Bar 常驻余额面板 · Always-on Touch Bar panel">
+  <br><sub>Touch Bar 常驻：双工具余额 + 最近 AI 会话直达 · Always-on balance & recent-session shortcuts</sub>
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="docs/screenshots/style-bars.png" width="380" alt="长条样式"><br><sub>长条样式 · Bars</sub></td>
+    <td align="center"><img src="docs/screenshots/style-badge.png" width="400" alt="徽章样式"><br><sub>徽章样式 · Badge</sub></td>
+  </tr>
+</table>
+
+<table align="center">
+  <tr>
+    <td align="center" valign="top"><img src="docs/screenshots/panel-full.png" width="330" alt="展开面板全景"><br><sub>展开面板：余额 · 看板 · 多设备趋势 · Full panel</sub></td>
+    <td align="center" valign="top"><img src="docs/screenshots/settings-full.png" width="330" alt="设置面板"><br><sub>设置：样式 · 语言 · 主题 · Touch Bar · Settings</sub></td>
+  </tr>
+</table>
+
+<details>
+<summary>📷 Touch Bar 真机实拍 · Touch Bar on real hardware</summary>
+<p align="center"><img src="docs/screenshots/touchbar-photo.jpg" width="720" alt="Touch Bar 实拍"></p>
+</details>
+
+**English**: A macOS-only floating dashboard for monitoring your **OpenAI Codex** and **Claude Code** subscription quotas (5-hour & 7-day rolling windows), token usage and multi-device trends — with an always-on Touch Bar panel and recent-session shortcuts. UI follows your system language (10 languages) with an in-app language picker. **Requires macOS 14+.** Windows/Linux are not supported (the app is built on AppKit/SwiftUI, Keychain, iCloud Drive and Touch Bar APIs) — PRs welcome, see [Platform support](#平台支持--platform-support). Download from [Releases](../../releases), unzip, run `安装并启用自动启动.command`, and see the English notes in [First launch](#三首次启动必读) for Gatekeeper/Keychain steps.
+
+---
+
+## ⚠️ 开始前请确认（必读）
+
+这个工具**只能在 Mac 上运行**，并且有明确的前提条件。下载前先对照检查：
+
+| 条件 | 要求 | 说明 |
+|---|---|---|
+| 操作系统 | **macOS 14 (Sonoma) 及以上** | 更早的系统无法运行 |
+| 机型 | Apple Silicon (M 系列) | Release 提供的安装包为 arm64；Intel Mac 请从源码构建 |
+| 监控 Codex | 本机安装并登录过 Codex（桌面版或 CLI） | 没装则在设置里关掉 Codex 即可 |
+| 监控 Claude | 本机用 **Claude Code CLI** 登录过一次 | 详见下方「Claude 余额显示前提」，只用网页版/桌面版是读不到余额的 |
+| 监控 GLM / DeepSeek / Kimi / SiliconFlow / OpenRouter | 该平台的 **API Key** | 在设置里「添加平台」后填入；Key 只存本机 `~/Library/Application Support/CodexBalanceDashboard/provider-keys.json`（权限 0600），不进钥匙串、不上传 |
+| 网络 | 能正常访问 OpenAI / Anthropic 服务 | 余额接口请求发往官方服务器，网络不通时显示「暂无数据」 |
+| Touch Bar 功能 | 带 Touch Bar 的 MacBook Pro | 没有 Touch Bar 的机器该选项自动置灰，其他功能不受影响 |
+| 多设备同步 | 各设备登录同一 iCloud 账号，开启 iCloud Drive | 只用一台 Mac 可完全忽略 |
+
+**至少启用一个平台**。首次启动会自动探测本机装了 Codex 还是 Claude Code，只显示对应的码表；其他平台在设置里按需添加。
+
+## 一、这是什么
+
+重度使用 Codex / Claude Code 的人都遇到过：干着干着突然「额度用完了」。算力码表把两个工具的 **5 小时滚动窗口**和 **7 天窗口**余额变成一个始终可见的小仪表，让你随时知道还剩多少、什么时候刷新。
+
+- **多平台监控（v1.2 起）**：在设置里的「添加平台」下拉菜单里选，选几个显示几个——Codex、Claude Code 读本机登录状态；**智谱 GLM Coding Plan** 填 API Key 读订阅窗口；**DeepSeek、Kimi (Moonshot)、SiliconFlow、OpenRouter** 填自己的 API Key 读账户余额。顺序可调、随时增减，浮窗 / Touch Bar / 面板全部跟随
+- **两种额度形态一套版式**：订阅制（5 时 / 7 天窗口，显示剩余百分比）与预付费（显示余额金额，环的比例按「满额基准」折算——默认取历史最高余额，也可手填）
+- **5 种悬浮样式**：双环 / 长条 / 长条·全 / 徽章 / 徽章·全，标准与迷你两档，自动避让不挡内容
+- **Touch Bar 常驻**（带 Touch Bar 机型）：4 种面板样式、大数字模式、距刷新进度线（倒计时/正计时两种方向）、最近 AI 会话一键直达、合盖外接屏时浮窗自动接管（另有"尽力保持 Touch Bar 常亮"选项，但息屏由系统底层控制，新系统多半仍会息屏，属尽力而为）
+- **Token 消耗看板**：今日/近 7 天/本月、用途分布、项目 Top 3、多设备趋势对比
+- **10 种界面语言**：跟随系统自动切换，设置里也可手动选
+- **隐私原则**：只读本机日志与凭据、不上传任何数据、拿不到数据就显示「暂无数据」，绝不编数字
+
+> v1.2 更新说明（含截图与动图）：[docs/whats-new-v1.2.html](docs/whats-new-v1.2.html)
+
+## 一点五、接入其他平台（GLM / SuperGrok / DeepSeek / Kimi / SiliconFlow / OpenRouter）
+
+1. 展开面板 → 右上角「设置」→「监控平台」→ **添加平台** 下拉菜单里选一个；
+2. 在该平台那一行填入你的 **API Key**，回车或点「保存」；Key 从哪拿：点行尾的 ❓ 直接跳到平台控制台；
+3. 一分钟内浮窗会多出一个环 / 一条 / 一个数字，显示的是**账户余额金额**（¥ 或 $）。
+
+| 平台 | 读的是什么 | 接口 |
+|---|---|---|
+| DeepSeek | 账户总余额（含赠送 + 充值） | `GET api.deepseek.com/user/balance` |
+| Kimi (Moonshot) | 可用余额（含代金券 + 现金） | `GET api.moonshot.cn/v1/users/me/balance` |
+| SiliconFlow | 总余额（含赠送 + 充值） | `GET api.siliconflow.cn/v1/user/info` |
+| OpenRouter | Key 剩余额度（有上限时）或已消耗 | `GET openrouter.ai/api/v1/auth/key` |
+| SuperGrok | 每周用量池：周·总 + Imagine / 应用构建器等分项的已用百分比（和 grok.com 设置→用量 同源） | `POST grok.com/grok_api_v2.GrokBuildBilling/GetGrokCreditsConfig`（grpc-web，登录 Cookie） |
+| 智谱 GLM Coding Plan | 5 小时 / 每周 / MCP 三个窗口的剩余百分比（和 Claude 一样是订阅制，不是余额） | `GET open.bigmodel.cn/api/monitor/usage/quota/limit` |
+
+**环的比例怎么来的**：这些平台按量计费，没有"用了百分之多少"的概念，只有一个金额。码表用「满额基准」把金额折成比例画环——默认取**历史最高余额**（充完值第一次刷新就记住了），也可以在那一行的「满额基准」框里手填（比如你习惯充 100 就填 100）。没有基准时环不画弧、只显示金额，**不会编一个百分比出来**。
+
+**为什么不支持 OpenAI API / Gemini / 通义 / 智谱**：这几家没有公开的余额或用量查询接口（OpenAI 的 billing 接口已下线且只认浏览器会话），拿不到真数据就不做，避免显示假数字。有官方接口了随时可加——每个平台就是 `Providers.swift` 里的一个小解析器。
+
+**关于 Key 的存放**：明文 JSON、文件权限 0600、只在本机、不进钥匙串。这是刻意的：本项目曾因钥匙串授权弹框折腾过多次，最终把钥匙串代码整个删掉了；Key 是钱，但它只会被本机这个进程读取并发往对应平台官方域名。
+
+## 二、安装（3 步）
+
+1. 从 [Releases](../../releases) 下载最新的 `算力码表-安装包-vX.X.X.zip` 并解压；
+2. 双击解压出来的 **`安装并启用自动启动.command`**；
+   - 若提示「无法打开，因为它来自身份不明的开发者」：**右键点击文件 → 打开 → 再点打开**（只需一次）；
+3. 脚本会把 App 装到 `~/Applications/算力码表.app` 并配置自动启动（检测到 Codex 或 Claude Code 运行时自动唤起码表）。
+
+不想要自动启动的话，也可以直接把解压出来的 `算力码表.app` 拖到「应用程序」手动使用。
+
+## 三、首次启动必读
+
+**1. Gatekeeper 安全拦截（一定会遇到）**
+
+本 App 未做 Apple 公证（个人开源项目，不交年费）。首次打开如被拦截：
+
+- 打开「**系统设置 → 隐私与安全性**」，页面下方会出现「已阻止使用算力码表」→ 点「**仍要打开**」；
+- 或右键点击 App → 打开 → 打开。
+
+**2. 钥匙串授权弹框（开了 Claude 监控会遇到）**
+
+码表需要读取 Claude Code 存在钥匙串里的凭据来查询余额。弹出「算力码表想访问钥匙串中的 Claude Code-credentials」时，点「**始终允许**」（点一次以后不再弹）。这是只读操作，凭据绝不会被写日志或上传。
+
+**3. Claude 余额显示前提（最常见的「为什么是灰的」）**
+
+Claude 环显示「暂无数据」灰色，99% 是因为**本机没有 Claude Code CLI 的登录凭据**。网页版 claude.ai 和桌面 App 的登录是独立的，码表读不到。解决：
+
+```bash
+# 终端里运行（哪怕你平时只用桌面版，登录这一次即可）
+claude
+# 进入后输入 /login，按提示在浏览器完成授权，然后 /exit 退出
+```
+
+登录成功后码表 1 分钟内自动亮起，之后 token 过期会自动续期，**不需要再碰终端**。
+
+**4. Codex 余额来源**
+
+自动读取本机 Codex（桌面版或 CLI）的状态，无需任何配置。如果显示「没有余额事件」，在 Codex 里输入一次 `/status` 即可。
+
+## 四、多设备同步（可选）
+
+在每台 Mac 上安装并打开码表即可——前提是它们登录**同一个 iCloud 账号**且开了 iCloud Drive。每台设备把自己的 token 消耗聚合成小 JSON 写进 iCloud（只有日期和数字，无任何内容），趋势图里自动出现所有设备的折线和总量。设备数量不限。
+
+> 某台设备超过 48 小时没打开码表，趋势图会在它的卡片上标注「数据至 X」提醒你数据不是最新的。
+
+## 五、常见问题
+
+**Q: 打不开，提示已损坏？**
+A: `xattr -dr com.apple.quarantine ~/Applications/算力码表.app` 后再开（安装脚本已自动做过，手动拖装的可能遇到）。
+
+**Q: Claude 环之前亮着，某天变灰了？**
+A: 多数是续期链断了（长时间没开机等）。重新 `claude` → `/login` 一次即可，见上文第三节。
+
+**Q: 两台电脑的余额百分比不一样？**
+A: 余额是账号级的，同一账号在哪台机器看都一样；不一样说明两台登录的是不同账号。Token 消耗折线按设备分开是正常设计。
+
+**Q: Touch Bar 上没显示？**
+A: 只有带 Touch Bar 的 MacBook Pro 支持；在 设置 → 运行 里打开「Touch Bar 常驻余额」。
+
+**Q: 卸载怎么卸？**
+A: 删除 `~/Applications/算力码表.app`、`~/Library/LaunchAgents/dev.codex.balance-dashboard.watch-codex.plist`、`~/Library/Application Support/CodexBalanceDashboard/`，再在 iCloud Drive 删掉「算力码表」文件夹（如果不再需要同步数据）。
+
+## 平台支持 / Platform support
+
+| 平台 | 状态 |
+|---|---|
+| macOS 14+ (Apple Silicon) | ✅ 官方支持，Release 直接下载 |
+| macOS 14+ (Intel) | 🟡 源码构建可用（`./script/create_transfer_package.sh`） |
+| Windows / Linux | ❌ 暂不支持 |
+
+**为什么不支持 Windows/Linux**：界面（AppKit/SwiftUI）、凭据读取（Keychain）、多设备同步（iCloud Drive）、Touch Bar 全部是 macOS 专属技术。
+
+**想移植？欢迎 PR！** 数据层是跨平台的：两个工具在 Win/Linux 上同样把日志写在 `~/.codex` 和 `~/.claude`（结构一致），余额接口是标准 HTTP，多设备同步协议就是本仓库的聚合 JSON（`schemaVersion 2`）。用 Tauri/Electron 重写界面层即可，欢迎在 Issues 里认领。
+
+*Why macOS-only: the UI (AppKit/SwiftUI), credential access (Keychain), device sync (iCloud Drive) and Touch Bar are all Apple-specific. The data layer is portable — both tools write the same log structure to `~/.codex` / `~/.claude` on every OS, the quota APIs are plain HTTP, and the sync protocol is just JSON. A Tauri/Electron port is very feasible — PRs welcome!*
+
+## 源码构建
+
+```bash
+git clone https://github.com/waytosea-oss/suanli-dashboard.git
+cd suanli-dashboard
+./script/create_transfer_package.sh   # 产物在 dist/，含安装脚本
+```
+
+需要 Xcode Command Line Tools（Swift 6）。跑测试：把 `TestRunner` product 构建后执行。
+
+## 数据来源与隐私
+
+| 数据 | 来源 | 说明 |
+|---|---|---|
+| Codex 余额 | Codex app-server 本地 RPC / 会话日志 | 与官方 `/status` 一致 |
+| Claude 余额 | 本机已有的 Claude Code OAuth 凭据 + 官方 usage 接口 | accessToken 过期自动用 refreshToken 续期 |
+| Token 消耗 | 两个工具的本地会话日志（jsonl） | 逐条解析、按消息去重 |
+| 多设备数据 | iCloud Drive 聚合 JSON | 只含日期与数字 |
+
+- **只读**两个工具的日志与凭据，绝不修改、绝不发起登录
+- 凭据绝不写入日志、诊断报告或 iCloud
+- 不上传任何数据到第三方；找不到可靠来源就显示「暂无数据」，**永远不编数字**
+
+## 作者
+
+**Tilo Liang**（[@waytosea-oss](https://github.com/waytosea-oss)）
+
+一个被额度反复背刺之后决定把仪表盘做出来的人。如果这个工具帮到了你，给个 ⭐️ 就是最好的支持。
+
+## 许可证
+
+[MIT](LICENSE) © 2026 Tilo Liang

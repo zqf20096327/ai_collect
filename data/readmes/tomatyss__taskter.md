@@ -1,0 +1,519 @@
+# Taskter
+
+[![Test](https://github.com/tomatyss/taskter/actions/workflows/test.yml/badge.svg)](https://github.com/tomatyss/taskter/actions/workflows/test.yml)
+[![Crates.io](https://img.shields.io/crates/v/taskter)](https://crates.io/crates/taskter)
+[![Documentation](https://img.shields.io/badge/docs-gh--pages-informational)](https://tomatyss.github.io/taskter/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Taskter is a terminal Kanban board CLI tool built with Rust.
+
+> **Warning**
+> This project is currently in a *pre-alpha* state and is actively maintained. Expect breaking changes and incomplete features.
+
+## Features
+
+- Kanban board with tasks (ToDo, InProgress, Done)
+- Project description
+- Operation logs
+- OKRs (Objectives and Key Results)
+- Agent scheduler with cron expressions (see [scheduling.md](docs/src/scheduling.md) for details)
+- Parallel task execution when running the scheduler
+- Minimal MCP server over stdio to expose Taskter tools to MCP clients
+
+## Quick Start
+
+This section provides a quick overview of how to get started with Taskter.
+
+### 1. Initialize the board
+
+First, navigate to your project's directory and initialize the Taskter board:
+
+```bash
+taskter init
+```
+
+This will create a `.taskter` directory to store all your tasks, agents, and project data.
+See the [Data Files](https://tomatyss.github.io/taskter/data_files.html) chapter for a detailed description of these files.
+
+### 2. Create an agent
+
+Next, create an agent to help you with your tasks. For this example, we'll create a simple agent that can run bash commands:
+
+```bash
+taskter agent add --prompt "You are a helpful assistant that can run bash commands." --tools "run_bash" --model "gemini-2.5-pro" --provider gemini
+```
+
+You can list all available agents using:
+
+```bash
+taskter agent list
+```
+
+### 3. Create a task
+
+Now, let's create a task for your agent to complete:
+
+```bash
+taskter task add -t "List files in the current directory" -d "Use the ls -la command to list all files and folders in the current directory."
+```
+
+You can see all your tasks by running:
+
+```bash
+taskter task list
+```
+
+### 4. Assign the task to an agent
+
+Assign the newly created task to your agent:
+
+```bash
+taskter task assign --task-id 1 --agent-id 1
+```
+
+If you need to remove the agent before execution:
+
+```bash
+taskter task unassign --task-id 1
+```
+
+### 5. Execute the task
+
+Finally, execute the task:
+
+```bash
+taskter task execute --task-id 1
+```
+
+The agent will now run the task. If it's successful, the task will be marked as "Done". You can view the board at any time using the interactive UI:
+
+```bash
+taskter board
+```
+
+![TUI example](tui_example.png)
+
+## Configuration
+
+Taskter merges configuration from four layers so you can balance sensible
+defaults with environment specific overrides:
+
+1. Code defaults – works out of the box.
+2. `config.toml` – stored in the OS-specific config directory (e.g.
+   `~/.config/taskter/config.toml`).
+3. Environment variables – namespaced as `TASKTER__SECTION__KEY`, also loaded
+   from a local `.env` file when present.
+4. CLI flags – switches such as `--data-dir`, `--openai-api-key`, etc. on a
+   per-run basis.
+
+See [docs/src/configuration.md](docs/src/configuration.md) for the full schema
+and examples.
+
+
+## Build and Installation
+
+Taskter can be installed from prebuilt packages or built from source.
+
+### Homebrew
+
+```
+brew tap tomatyss/taskter
+brew install taskter
+```
+
+### Linux packages
+
+Prebuilt `.deb` archives are generated with `cargo deb` and published on the
+GitHub release page.  You can install them with:
+
+```
+sudo dpkg -i taskter_0.1.0_amd64.deb
+```
+
+For Alpine Linux an `APKBUILD` script is provided under `packaging/apk/`.  Run
+`abuild -r` inside that directory to create an `apk` package.
+
+### Build from source
+
+To build Taskter from source, you need to have Rust and Cargo installed.
+
+1. Clone the repository:
+   ```bash
+   git clone <repository_url>
+   cd taskter
+   ```
+
+2. Build the project:
+   ```bash
+   cargo build --release
+   ```
+
+The executable will be located at `target/release/taskter`. To make it available system-wide, you can copy it to a directory that is in your system's `PATH`.
+
+For example, on macOS or Linux, you can move it to `/usr/local/bin`:
+```bash
+sudo cp target/release/taskter /usr/local/bin/taskter
+```
+After this, you can run `taskter` from any directory.
+
+Alternatively, you can install the latest published version from [crates.io](https://crates.io/crates/taskter):
+```bash
+cargo install taskter
+```
+You can also install directly from the repository for a development build:
+```bash
+cargo install --path .
+```
+Both methods place the `taskter` executable in your Cargo bin directory (usually `~/.cargo/bin/`), which should be in your `PATH`.
+
+## Docker
+
+You can build and run Taskter without installing Rust locally by using Docker.
+The included `Dockerfile` uses the official `rust:1.88.0` image to build the
+application.
+
+Build the container image:
+
+```bash
+docker build -t taskter .
+```
+
+Start the application with Docker Compose. If you use the Gemini integration,
+pass your API key as an environment variable:
+
+```bash
+GEMINI_API_KEY=<your_key> docker compose run --rm taskter --help
+```
+
+
+## Usage
+
+### Initialize the board
+
+To start using Taskter, you need to initialize a board in your project's directory:
+
+```bash
+taskter init
+```
+
+This will create a `.taskter` directory with the necessary files.
+See the [Data Files](https://tomatyss.github.io/taskter/data_files.html) chapter for details.
+
+### Interactive Board
+
+Taskter also provides an interactive terminal UI to manage the Kanban board.
+
+```bash
+taskter board
+```
+
+In the interactive board, you can use the following keys:
+- `q`: Quit
+- `←` / `→` or `Tab`: Navigate between columns
+- `↑` / `↓`: Navigate between tasks
+- `h` / `l`: Move a task to the previous/next column
+- `a`: Assign an agent to the selected task
+- `r`: Unassign the selected task's agent
+- `c`: Add a comment to the selected task
+- `n`: Create a new task
+- `u`: Edit the selected task
+- `d`: Delete the selected task
+- `L`: View project logs
+- `A`: List available agents
+- `O`: Show OKRs
+- `?`: Show available commands
+- In popups (logs, OKRs, etc.), use `↑` / `↓` to scroll
+
+### Manage tasks
+
+- **Add a new task:**
+  ```bash
+  taskter task add -t "My new task" -d "A description for my task"
+  ```
+-  In the interactive board (`taskter board`), press `n` to add a task interactively. Enter the title, press `Enter`, then provide the description and press `Enter` again.
+
+- **Edit a task:** Press `u` while the task is selected in the board to update its title and description.
+
+- **Delete a task:** Press `d` while the task is selected in the board.
+
+- **List all tasks:**
+  ```bash
+  taskter task list
+  ```
+
+- **Mark a task as done:**
+  ```bash
+  taskter task complete --id <task_id>
+  ```
+- **Add a comment to a task:**
+  ```bash
+  taskter task comment --task-id <task_id> --comment "Your note"
+  ```
+
+### Project information
+
+- **Show project description:**
+  ```bash
+  taskter show description
+  ```
+
+- **Show project OKRs:**
+  ```bash
+  taskter okrs list
+  ```
+
+- **Show operation logs:**
+  ```bash
+  taskter logs list
+  ```
+
+### Manage OKRs
+
+- **Add a new OKR:**
+  ```bash
+  taskter okrs add -o "My objective" -k "Key result 1" "Key result 2"
+  ```
+
+### Manage logs
+
+- **Add a log entry:**
+  ```bash
+  taskter logs add "This is a log message"
+  ```
+
+### Agents
+
+Taskter now supports LLM-based agents that can be assigned to tasks. These agents can execute tasks using the configured model provider and the tool registry described below.
+
+- **Add a new agent:**
+  ```bash
+  taskter agent add --prompt "You are a helpful assistant." --tools "email" "run_bash" --model "gemini-pro" --provider gemini
+  ```
+  The `--tools` option accepts either paths to JSON files describing a tool or
+  the name of a built-in tool. Built-ins live under the `tools/` directory of
+  the repository. For example `email` resolves to `tools/send_email.json` (an alias for `send_email`).
+
+- **Assign an agent to a task:**
+  ```bash
+  taskter task assign --task-id 1 --agent-id 1
+  ```
+- **Unassign an agent from a task:**
+  ```bash
+  taskter task unassign --task-id 1
+  ```
+
+- **Execute a task with an agent:**
+  ```bash
+  taskter task execute --task-id 1
+  ```
+- **List available agents:**
+  ```bash
+  taskter agent list
+  ```
+- **List available tools:**
+  ```bash
+  taskter tools list
+  ```
+- **Delete an agent:**
+  ```bash
+  taskter agent remove --id 1
+  ```
+
+### MCP server
+
+Expose Taskter's built-in tools to MCP clients (IDEs, agent hosts, etc.) over stdio:
+
+```bash
+taskter mcp serve
+```
+
+The server speaks MCP JSON-RPC with `Content-Length` framing and currently implements `initialize`, `ping`, `tools/list`, `tools/call`, and `shutdown`. Line-delimited requests are accepted for compatibility; responses stay `Content-Length` framed unless `TASKTER_MCP_LINE_DELIMITED_RESPONSE=1`. See [docs/src/mcp.md](docs/src/mcp.md) for details and client integration tips.
+
+When a task is executed, the agent will attempt to perform the task. If successful, the task is marked as "Done". If it fails, the task is moved back to "To Do", unassigned, and a comment from the agent is added.
+
+In the interactive board (`taskter board`), tasks assigned to an agent will be marked with a `*`. You can view the assigned agent ID and any comments by selecting the task and pressing `Enter`.
+
+#### Agent Execution Flow
+
+1. Taskter builds a conversation history from the agent prompt and the selected task, then asks the configured provider for the next action.
+2. Providers return either a natural-language response or a tool call. Tool calls are executed locally through `tools::execute_tool`, and the result is appended back to the conversation before the next model request.
+3. Runs are logged to `.taskter/logs.log`. Raw provider payloads are mirrored to `.taskter/api_responses.log` to aid troubleshooting.
+4. If the provider requires an API key and none is supplied, Taskter falls back to an offline simulation: agents that include the `send_email` tool succeed with a stubbed response, while others return a failure comment. This behaviour keeps tests deterministic but is not intended for production runs.
+
+#### Built-in Tool Catalog
+
+| Tool name | Purpose | Required arguments | Notes |
+| --- | --- | --- | --- |
+| `run_bash` | Execute a shell command inside the project directory | `command` (string) | Returns trimmed stdout or fails with stderr |
+| `run_python` | Execute inline Python and return stdout | `code` (string) | Uses the system Python interpreter |
+| `project_files` | Read, create, update, or search text files | `action`; create/read/update: `path`; update: `content`; search: `query` | Uses paths verbatim (no sandbox); alias `file_ops` |
+| `get_description` | Retrieve the project description from `.taskter/description.md` | _none_ | Read-only helper for planning agents |
+| `send_email` / `email` | Send email via SMTP | `to`, `subject`, `body` | Requires `.taskter/email_config.json`; alias `email` is provided |
+| `taskter_task` | Proxy to `taskter task …` CLI | `args` (array of strings) | Supports add/list/assign/execute/etc. |
+| `taskter_agent` | Proxy to `taskter agent …` CLI | `args` (array of strings) | Manage agent roster programmatically |
+| `taskter_okrs` | Proxy to `taskter okrs …` CLI | `args` (array of strings) | Create or list OKRs |
+| `taskter_tools` | Proxy to `taskter tools list` | `args` (array of strings) | Typically called with `["list"]` |
+| `web_search` | Fetch a summary from DuckDuckGo | `query` (string) | Respects `SEARCH_API_ENDPOINT`; requires outbound network access |
+
+See [docs/src/agent_system.md](docs/src/agent_system.md) for a deeper dive into extending the agent loop and adding custom tools.
+
+#### Model Providers (Gemini + OpenAI + Ollama)
+
+Taskter uses a model‑agnostic provider layer so new LLM backends can be added without changing the agent loop.
+
+- Gemini (default): selected when `agent.model` starts with `gemini`.
+  - Env var: `GEMINI_API_KEY`
+  - API: Gemini `generateContent`
+- OpenAI: selected when `agent.model` starts with `gpt-4`, `gpt-5`, `gpt-4o`, `gpt-4.1`, `o1`, `o3`, `o4`, or `omni`.
+  - Env var: `OPENAI_API_KEY`
+  - APIs:
+    - Chat Completions for models such as `gpt-4o` and `gpt-4o-mini`
+    - Responses API for `gpt-4.1`, `gpt-5`, `o-series`, and Omni models (function_call/function_call_output)
+  - Optional overrides:
+    - `OPENAI_BASE_URL` to point at a self-hosted proxy (defaults to `https://api.openai.com`)
+    - `OPENAI_CHAT_ENDPOINT` / `OPENAI_RESPONSES_ENDPOINT` for full URL overrides
+    - `OPENAI_REQUEST_STYLE=chat|responses` to force a specific API surface
+    - `OPENAI_RESPONSE_FORMAT` with either a JSON snippet (`{"type":"json_object"}`) or shorthand (`json_object`)
+- Ollama: selected when `agent.model` starts with `ollama:`, `ollama/`, or `ollama-`.
+  - Env var: `OLLAMA_BASE_URL` (defaults to `http://localhost:11434`)
+  - Uses the local `/api/chat` endpoint with tool-calling compatibility
+
+Examples:
+
+```bash
+# Gemini
+export GEMINI_API_KEY=your_key
+taskter agent add --prompt "Be helpful" --tools run_bash --model gemini-2.5-pro --provider gemini
+
+# OpenAI Chat (gpt-4.1)
+export OPENAI_API_KEY=your_key
+taskter agent add --prompt "Be helpful" --tools run_bash --model gpt-4.1 --provider openai
+
+# OpenAI Responses (gpt-5)
+export OPENAI_API_KEY=your_key
+taskter agent add --prompt "Be helpful" --tools run_bash --model gpt-5 --provider openai
+
+# Ollama (local llama3)
+export OLLAMA_BASE_URL=http://localhost:11434   # optional
+taskter agent add --prompt "Be helpful" --tools run_bash --model ollama:llama3 --provider ollama
+```
+
+Notes:
+- Agents using OpenAI tool‑calling support multi‑turn loops. Taskter selects Chat Completions or Responses automatically, and you can override the choice with `OPENAI_REQUEST_STYLE` if required.
+- Specify an agent's backend explicitly with `--provider`. New agents accept only `gemini`, `openai`, or `ollama`; to revert an existing agent back to auto-detection, run `taskter agent update --provider none …` so the stored value is cleared.
+- Ollama agents run completely offline; no API key is required.
+- Debugging: Taskter writes raw provider requests and responses to `.taskter/api_responses.log`.
+
+See the book’s “Model Providers” chapter for details (`docs/src/providers.md`).
+
+### Email configuration
+
+Agent email tools read credentials from `.taskter/email_config.json`. Place this
+file inside the board directory (next to `board.json` and `agents.json`). All
+agents share the same configuration. See the
+[Data Files](https://tomatyss.github.io/taskter/data_files.html) chapter for an
+overview of every file created during initialization. The currently recognised
+keys are:
+
+```json
+{
+  "smtp_server": "smtp.example.com",
+  "smtp_port": 587,
+  "username": "user@example.com",
+  "password": "secret",
+  "imap_server": "imap.example.com",  // optional
+  "imap_port": 993                   // optional
+}
+```
+
+Only the SMTP fields are used by the built-in `send_email` tool today. There are
+no default values, so you must supply valid server details. If the file is
+missing the tool returns `Email configuration not found`. When the application
+runs without a `GEMINI_API_KEY` the email tool is skipped entirely, which keeps
+tests working even without credentials.
+
+
+### Gemini API key
+
+Agent execution uses the Gemini API. Provide the `GEMINI_API_KEY` environment
+variable when you want agents to call the real service. If the variable is
+absent or empty, Taskter falls back to an offline mode where only built-in
+tools are executed.
+
+```bash
+export GEMINI_API_KEY=your_key_here
+```
+
+See the book's **Configuration** chapter for a detailed explanation of this
+variable and the email configuration file.
+
+### Example project
+
+If you want to see Taskter in action without manually creating data, run the
+provided helper script:
+
+```bash
+./scripts/setup_example_project.sh
+```
+
+The script removes any existing `.taskter` directory, creates a new board with a
+few example tasks, sets a project description, defines OKRs and adds an agent
+using the built-in email tool. Once it finishes you can inspect the board with
+`taskter task list` or launch the TUI via `taskter board`.
+
+### Minimal agent roster
+
+When starting a new autonomous project you can automatically create a baseline
+set of agents:
+
+```bash
+./scripts/setup_agent_roster.sh
+```
+
+The script expects an initialised `.taskter` directory and adds agents for OKR
+management, task planning, recruitment, dispatching, execution, review,
+progress monitoring and archiving. All of them use the `gemini-2.5-pro` model.
+
+
+## Development
+
+Taskter ships a `justfile` with common maintenance workflows. Run `just` with
+no arguments to see the available recipes, then invoke the ones you need:
+
+```bash
+just                # list commands
+just precommit      # fmt + clippy + tests
+just lint           # clippy with pedantic warnings
+just test           # cargo test (pass extra args as needed)
+just test-ignored   # run the ignored suites
+```
+
+To automatically format the project and apply Clippy suggestions, you can run:
+
+```bash
+just fix-lints
+```
+
+If you want Git to run it automatically, create a pre-commit hook:
+
+```bash
+ln -s ../../scripts/precommit.sh .git/hooks/pre-commit
+```
+
+All recipes map directly to scripts or cargo commands. You can still call the
+shell scripts (`./scripts/precommit.sh`, `./scripts/fix_lints.sh`, etc.) if you
+prefer invoking them explicitly.
+
+## Documentation
+
+Rendered documentation is available on GitHub Pages: <https://tomatyss.github.io/taskter/>.
+
+To contribute to the book, edit the Markdown files under `docs/src/` and open a pull request. The `Deploy Docs` workflow will rebuild the book and publish it automatically when changes land on `main`.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.

@@ -1,0 +1,618 @@
+# openclaw-model-bridge
+
+> **Agent Runtime Control Plane** — Connect any LLM to [OpenClaw](https://github.com/openclaw/openclaw) with one command. Zero dependencies, **13 providers** (含豆包 2.1 双平台 + DeepSeek-V4-Pro 量化/满血双端点 + GLM-5.3 coding + Kimi K3), multimodal support, reasoning capability.
+> 将任意大模型（Qwen / OpenAI / Gemini / Claude / Kimi / MiniMax / GLM / Doubao Seed 2.1 / **DeepSeek-V4-Pro**）一键接入 OpenClaw — 零第三方依赖、支持多模态、10 分钟跑通。
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-6740%20passed-brightgreen.svg)]()
+[![Providers](https://img.shields.io/badge/providers-13%20supported-orange.svg)]()
+[![Governance](https://img.shields.io/badge/invariants-91%2F91%20%2B%2023%20MR-blueviolet.svg)]()
+[![Security](https://img.shields.io/badge/security-95%2F100-green.svg)]()
+[![Jobs](https://img.shields.io/badge/cron%20jobs-40%20active-blue.svg)]()
+[![Fail-Fast](https://img.shields.io/badge/LLM%20cron%20fail--fast-17%2F21%20aligned-brightgreen.svg)]()
+[![Notifications](https://img.shields.io/badge/notifications-WhatsApp%20%2B%20Discord-informational.svg)]()
+
+> **Current version:** `v37.9.372` / `0.37.9.186` (2026-10-12) — see [`CLAUDE.md`](CLAUDE.md) for full changelog.
+> **Latest milestone:** 📄 **ArXiv paper #2 published** — [**arXiv:2610.05981**](https://arxiv.org/abs/2610.05981) (2026-10-06, cs.SE): *Mechanizing the User's Eye* — pre-registered shadow→on deployment of a sabotage-validated fail-plausible observer, the observer's own incident log (O1–O10), and a quiet-window negative result reported as undefined precision rather than success. Follow-up to paper #1 [**arXiv:2606.14589**](https://arxiv.org/abs/2606.14589) (2026-06-15, cs.SE): the *fail-plausible* concept + a 5-class taxonomy of silent failures from 22 production incident postmortems (IEEE Software in review; ISSRE rejected 2026-08-14, conference track closed — journal-first strategy V37.9.307). **Constitutional priority now: LLM-Observer (机械化人眼)** — an automated user-perspective observer that catches *fail-plausible* silent failures **before the user does** (the paper's headline open problem: ~70% of silent failures were caught by looking at the product, while tests/governance caught ≈0%). Stages 0-6 built: design doc → 22-incident labelled ground-truth → 2-layer detector (deterministic S1-S5 pre-filter + LLM-judge) → sabotage self-validation harness → community-runnable [fail-plausible bench](docs/fail_plausible_bench.md). Guiding principle: **日落法 (Sunset Law) — reduce complexity before adding features** (原则 #34 + MR-22/MR-23).
+
+## Product Layers: What's Core vs. What's the Author's PA Instance
+
+> **For external readers** (V37.9.144, in response to external review #2): this repo contains both a **reusable control-plane framework** and the author's **personal assistant built on top of it** — a living, in-production worked example. Three layers, so you know what to take and what to read as evidence. This split is *narrative, not a code move* (Sunset Law: no churn for cosmetics).
+
+| Layer | What it is | Key files | Third-party deps | Take it as |
+|-------|-----------|-----------|------------------|------------|
+| **1 · Core Runtime** | Provider abstraction + tool-governance proxy + SLO / fallback / circuit breaker | `adapter.py` · `providers.py` (+ `providers.d/` plugins) · `tool_proxy.py` · `proxy_filters.py` · `config_loader.py` · `slo_*.py` | **None — Python stdlib only** | The reusable framework |
+| **2 · Governance-Ontology** | Declarative tool ontology + governance engine (invariants / meta-rules — counts in badges above) + convergence framework + three-gate (shadow) | `ontology/` — on PyPI as [`openclaw-ontology-engine`](https://pypi.org/project/openclaw-ontology-engine/) | **PyYAML ≥ 5.4** | A `pip install`-able engine; bring your own YAML |
+| **3 · Personal-PA-Example** | The author's WhatsApp/Discord assistant: 41 active cron jobs (47 registered), KB memory plane, SOUL.md persona, paper/news radars | `jobs/` · `kb_*.{sh,py}` · `SOUL.md` · `notify.sh` · `jobs_registry.yaml` | Optional extras (`requirements-rag/-mm.txt`) | A worked example — the live system **is** effectively `examples/personal_pa` |
+
+Layer 3 is not product clutter — it is the **production evidence** for layers 1–2: every SLO number, blood-lesson case study, and governance check in this README comes from it running 24/7 since March 2026. But you need none of it to use layers 1–2.
+
+**Three entry points:**
+- **10-minute minimal core**: [`examples/minimal_runtime/`](examples/minimal_runtime/) — 1 provider + tool governance + 1 policy + SLO stats + a golden trace, stdlib only
+- **Governance engine as a consumer**: [`examples/minimal_consumer/`](examples/minimal_consumer/) — WeatherBot demo with its own YAML, zero coupling to this repo's PA
+- **Out-of-repo dogfood**: [`examples/external_dogfood/`](examples/external_dogfood/) — builds the wheel, installs it into an isolated venv (no monorepo on path), and runs a fresh LibraryBot project against `import ontology_engine` — proving the published engine is consumable by a third party
+
+## V37.9.x Series Highlights (2026-05 → 08)
+
+| Theme | Versions | What it means |
+|-------|----------|---------------|
+| **ArXiv paper published + submitted to IEEE Software / ISSRE** ⭐ (status 2026-09: IEEE Software in-review; ISSRE rejected 08-14 → journal-first policy, V37.9.307) | V37.9.139 → **V37.9.191** | *When Errors Become Narratives: A Longitudinal Taxonomy of Silent Failures in a Production LLM Agent Runtime* — [arXiv:2606.14589](https://arxiv.org/abs/2606.14589) (2026-06-15, cs.SE). The **fail-plausible** concept (LLM narrates internal errors into fluent, credible false output — the silent failure tests can't see) + 5-class taxonomy from 22 incident postmortems + Defense Framework. IEEE Software in review (SW-2026-06-0312); ISSRE rejected (2026-08-14, concept endorsed by R3) → conference track closed, journal-first (V37.9.307). Stage 2→3 话语权: from system builder to cite-able methodology author. |
+| **LLM-Observer (机械化人眼) — constitutional research #1** ⭐ (status 2026-10: `OBSERVER_FP_MODE=on` in production since 07-25; paper #2 published [arXiv:2610.05981](https://arxiv.org/abs/2610.05981) 2026-10-06) | V37.9.192 → **V37.9.200** | Attacking the paper's headline open problem: ~70% of silent failures found by *looking at the product*, tests/governance ≈0%. Building an automated **user-perspective observer** to catch *fail-plausible* failures before the user. Stages 0-6: design doc → 22-incident labelled ground-truth (`docs/llm_observer_ground_truth.yaml`) → 2-layer detector `llm_observer.py` (deterministic S1-S5 pre-filter reusing source_credibility/hallucination_guards + LLM-judge with anti-hallucination grounding) → sabotage self-validation (`llm_observer_selfcheck.py`, defense 100% / FP 0% / honest held-out FN) → community-runnable [`docs/fail_plausible_bench.md`](docs/fail_plausible_bench.md). Wired into daily_observer (V37.9.198); **flipped to `on` in production 2026-07-25** (V37.9.276, pre-registered §9.1 rules); paper #2 draft (V37.9.297) → v1.1 (V37.9.367) → **published as [arXiv:2610.05981](https://arxiv.org/abs/2610.05981) on 2026-10-06**. |
+| **11 providers — DeepSeek-V4-Pro + Doubao Seed 2.1 Pro** (11 at the time; 13 today after GLM-5.3 coding V37.9.254 + Kimi K3 V37.9.345) | V37.9.201 → **V37.9.216** | Provider plugin framework's 3rd/4th real consumers: DeepSeek-V4-Pro w4a8 quantized (`deepseek_provider.py`) + full 满血版 (`deepseek_full_provider.py`, ai-tokenhub) + **Doubao Seed 2.1 Pro flagship** (`doubao_seed_21_provider.py`, V37.9.216). Secrets via env (bare-IP / ARK keys never committed, public-repo safety). Progressive verification: declared → per-feature E2E → feature_verified (DeepSeek full has R1 reasoning channel → Qwen3 migration candidate; Doubao 2.1 starts declared, Mac Mini E2E pending). Capability router re-routes reasoning tasks accordingly. |
+| **Data-driven root-fix arc (zero blind-patching)** | V37.9.130 → **V37.9.214** | kb_harvest hierarchical Reduce (fixes大对话日 timeout, zero data loss) · deep_dive OA full-text resolution (DOI/S2/HF → arxiv/OA PDF, roots 77% abstract-level gap) · daily_observer self-critique F1 degrade-reason aggregation + F2 dream head-sampling false-positive fix · governance audit intermittent-fail root cause (INV-REVIEW-001 load timeout + B1 alert-blindness + B2 bash-3.2 errtrace landmine, 日落法 root-fix ending 3× whack-a-mole). Every fix: understand-before-fix (原则 #28), grounded reproduction, honest gating. |
+| **MOVESPEED EPERM 60-day blood case CLOSED** ⭐ | V37.9.4 → **V37.9.81** | After 60 days + 6 falsified hypotheses, V37.9.80 (5/18) identified the true root cause via `log show --predicate` — **macOS TCC Sandbox denies cron-derived processes accessing external volumes**. Fix = add `/usr/sbin/cron` to FDA. V37.9.81 (5/19) 24h data regression铁证 (12h window = 0 incidents / FDA 后 ~19h = 0 / kernel sandbox deny 0条) + INV-MOVESPEED-TCC-001 hard governance guard (auto-detect 24h ≤ 2 every day) + capture.sh stderr distinction fix (V37.9.30 取证盲区根因修复, 4-layer defense). |
+| **Phase 4 Layer 5: Convergence Framework** | V37.9.19 → V37.9.97 | Declared-state ↔ runtime drift detection lifted from "靠记忆" to "机器化". 5 specs running, 3 升级 `machine_sync` (jobs/kb/services, Plan B 渐进 dry-run). MR-17 立案 (`declared-state-must-converge-via-machine-not-memory`). |
+| **Phase 4 P3: Three-stage gates shadow wiring** | V37.9.15 | `pre_check → runtime_gate → post_verify` 3 gates wired into request pipeline (shadow mode), policy engine 从"可查询"升级为"在请求路径上被调用产 `[gate:*]` log"。FAIL-OPEN 契约 + 与 `ONTOLOGY_MODE` 解耦. |
+| **Cross-job fail-fast migration** | V37.9.36 → V37.9.62 | 17 scripts upgraded to **6-field deep prompt** (📌 / 🔑 / 💡 / 🎯 / ⭐ / 🎚️ project alignment, dynamic length by rating) + per-item retry (5/10/20s × 3 + V37.9.36 三层检测) + LLM_DEGRADED fallback (replaced placeholder anti-pattern) + multi-window split (>8000 chars) + rule_check 验证层 (V37.9.47 + V37.9.51 batch + V37.9.62 batch). ALIGNED_SCRIPTS 4 → **17/21** (81% coverage, remaining 4 by-design excluded). |
+| **kb_deep_dive daily deep-dive job** | V37.9.16 → V37.9.21 | New 22:30 HKT cron: picker selects ⭐≥4 candidate from today's notes → fetches PDF/HTML full text → 5-field LLM analysis → multi-window WhatsApp + Discord push. **Tier-aware fallback** (V37.9.17): TIER 1/2 papers prioritized over TIER 3 X tweets. |
+| **kb_dream Multi-theme + 14-day ban-list** | V37.9.68 → V37.9.68-hotfix | Dream redesigned for "用户视角变开拓视野" — DEEP + WIDE (5 cross-domain) + RADAR (5 准期 signals) + 总览 = **4 independent WhatsApp windows** (replaces V37.4 single window). 14-day theme normalize + ban-list (prevents Qwen-BIM 连续几周重复). 80 unit tests + V37.9.66 category B 设计假设错配 hotfix (split_dream_into_chunks helper). |
+| **WhatsApp client folding architecture discovery** | V37.9.35 | 5-layer empirical investigation revealed WA client auto-folds at ~4000 chars (not protocol limit). Budget upgraded 1400→4000 across `kb_review` / `kb_evening` / `kb_deep_dive` (信息密度 2.86×). |
+| **Opportunity Radar 三件套全量集成** | V37.9.45 → V37.9.56 | Strategic "early signal radar" 三件套 — #1 cross-source weak signal aggregation (DBSCAN + sentence-transformer) × #2 project alignment scoring (rule_check 验证 LLM ⭐) × #3 trend acceleration detection (4-week keyword acceleration). V37.9.49 #1+#3 集成 kb_dream Phase 1.5 + kb_evening prompt. V37.9.56 #2 完整集成 top_alignment_picker (Top 5 高对齐推送). See [`docs/opportunity_radar_design.md`](docs/opportunity_radar_design.md). |
+| **Capability-Based Dynamic Router** | V37.9.76 → V37.9.77 | Declarative capability framework PoC — jobs_registry adds `required_capabilities` + `prefer` + `cost_tier` fields, `providers.find_best_provider()` 30-line pure function, router_decide.py shadow mode + V37.9.77 ROUTER_ENFORCE=on opt-in feature flag (Plan B 渐进路径). 70 single tests + 反向 sabotage 真有效. V3 路标 declarative framework 核心交付. |
+| **health_check v2.0 "系统证据周报"** | V37.9.78 → V37.9.78-hotfix | Re-positioned from v1.1 单薄数字到 v2.0 evidence-based weekly report — 9 段 emoji marker (🖥服务 + 🤖模型 + 📊SLO + 🛡安全 + 🏛治理 + 🛟MOVESPEED + 🐦X监控 + 📚KB + 💾SSD) + MR-8 single-source-of-truth (4 外部工具) + safe_call helper 三层 FAIL-OPEN. INV-HEALTHCHECK-001 17 checks. V37.9.78-hotfix: macOS BSD timeout 兼容性 (无 timeout → command -v gtimeout → bash -c fallback). |
+| **SLO 三项修复 (数据驱动诊断 9 轮无盲改)** | V37.9.79 → V37.9.79-hotfix | V37.9.78 周报暴露 3 矛盾数据 (p95=37s + 成功=100% + 工具=0% + overall=VIOLATIONS). 9 轮诊断锁定: (1) slo_dashboard verdict 三档 PASS/FAIL/N/A (tool_calls=0 不算 FAIL) (2) latency 阈值 30000→50000ms 承认真实 baseline (3) slo_snapshot 每小时 :05 cron 注册 (V36 历史 debt). 16 新单测 + MR-10 understand-before-fix 第 N 次正向兑现. |
+
+## Architecture / 系统架构
+
+![Architecture Diagram](docs/architecture.svg)
+
+<details>
+<summary>Text version / 文本版本</summary>
+
+```
+① Core data path
+   User (WhatsApp + Discord)
+     → Gateway :18789  [launchd · media storage · session mgmt]
+     → Tool Proxy :5002 [24→12 tool governance · custom tools (search_kb / data_clean / expert_escalate)
+                         · image base64 inject · SLO metrics · incident snapshots]
+     → Adapter :5001    [12-provider routing · capability-aware multimodal (text + vision)
+                         · circuit breaker + fallback]
+     → LLM: Doubao Seed 2.1 Pro primary (PROVIDER env) → DeepSeek-V4-Pro GA / Doubao 2.1 via ai-tokenhub / Qwen3-235B fallback (13 providers, all OpenAI-compatible; GLM-5.3 coding on-demand via ?provider=glm5_coding)
+
+② Memory plane    KB notes/sources → local embedding (384-dim, 0 API call) → RAG (kb_rag.py)
+                  media files → Gemini Embedding 2 → semantic search (mm_search.py)
+③ Scheduled jobs  41 active / 47 registered — 5-source paper radar (ArXiv/HF/S2/DBLP/ACL) · HN ·
+                  KB digest / dream / deep-dive · freight · health & SLO watchdogs
+                  → notify.sh (default Discord, 6 topic channels; dual-channel when WhatsApp restored)
+④ Control plane   config.yaml (70+ thresholds, 9 sections) · SLO (5 metrics) · preflight full-body checks
+                  · auto_deploy (Git→runtime, drift detection) · incident snapshots · GitHub Actions CI
+⑤ Ontology plane  engine ↔ tool/domain/policy/governance YAML · governance v3.56
+                  (91 invariants / 839 checks / 23 meta-rules / 14 MRD scanners) · Phase 4
+                  (policy wiring + three-gate shadow) · ONTOLOGY_MODE=on · pip openclaw-ontology-engine
+⑥ Shared state    ~/.kb/status.json — user ↔ PA ↔ Claude Code ↔ cron, real-time three-party sync
+```
+
+</details>
+
+| Component | Port | Files | Role |
+|-----------|------|-------|------|
+| OpenClaw Gateway | 18789 | npm global | WhatsApp + Discord channel integration, media storage, tool execution, session management |
+| Tool Proxy | 5002 | `tool_proxy.py` + `proxy_filters.py` | Tool filtering (24→12), **custom tools** (data_clean + search_kb hybrid search + expert_escalate), **image base64 injection**, SSE conversion, truncation, token monitoring, **SLO metrics collection**, **incident snapshots** |
+| Adapter | 5001 | `adapter.py` + `providers.py` | **13-provider** forwarding, auth, **capability-aware multimodal routing**, fallback degradation |
+| Config Center | — | `config.yaml` + `config_loader.py` | Centralized thresholds (70+ params, 9 sections: SLO/proxy/tokens/alerts/routing/truncation/watchdog/incidents/jobs) |
+| SLO Benchmark | — | `slo_benchmark.py` | SLO compliance — 5 metrics, real production data reports (p95=459ms, 5/5 PASS) |
+| Notifications | — | `notify.sh` | Unified push w/ retry + failure queue — **default Discord** (6 topic channels); WhatsApp rejoins as dual-channel when its 408 rate-limit era ends (V37.9.179) |
+| Local Embedding | — | `local_embed.py` | sentence-transformers (384-dim, 50+ languages), zero API calls |
+| Remote LLM | — | 13 providers | Qwen3-235B / GPT-4o / Gemini 2.5 / Claude Sonnet / Kimi K2.5 / MiniMax M2.7 / GLM-5 / **Doubao Seed 2.1 Pro** (Volcengine Ark, primary) + **同模型经 ai-tokenhub** (`doubao_21_tokenhub` 槽位 = 跨平台冗余, V37.9.341→345 改名) / **DeepSeek-V4-Pro** (w4a8 + 满血版 ai-tokenhub, V37.9.201/204/216) / **GLM-5.3 coding** (ai-tokenhub, on-demand, V37.9.254→290→339) / **Kimi K3** (ai-tokenhub, feature_verified — V37.9.346/347 E2E text/tool_calling/streaming/reasoning/json_mode) |
+
+## Supported Providers (13)
+
+| Provider | Default Model | Role today | Tier |
+|----------|--------------|-----------|------|
+| **Doubao Seed 2.1 Pro** (Volcengine Ark, plugin) | doubao-seed-2-1-pro-260628 | **Primary** (PROVIDER env, V37.9.222 flip) | production_observed |
+| **DeepSeek-V4-Pro 满血** (ai-tokenhub, plugin) | deepseek-v4-pro-ga-260813 | Fallback #1 (R1 reasoning) | feature_verified（V37.9.340 E2E text+reasoning） |
+| **Doubao Seed 2.1 Pro** (ai-tokenhub, plugin, `doubao_21_tokenhub` 槽位 — V37.9.341 定模型 / V37.9.345 由 `doubao` 改名) | doubao-seed-2-1-pro-260628 | Fallback #2（与 primary 同模型，跨平台冗余） | feature_verified（V37.9.342/343 E2E text+tool_calling+reasoning 3/6） |
+| **DeepSeek-V4-Pro 量化** (self-host, plugin) | DeepSeek-V4-Pro-w4a8-mtp | Fallback #3 | feature_verified |
+| **Qwen** (Remote GPU) | Qwen3-235B + Qwen2.5-VL-72B | Fallback #4 兜底（前主力 V27→V37.9.222；唯一非-Ark vision fallback） | production_observed |
+| **GLM-5.3 coding** (ai-tokenhub, plugin, V37.9.339 换版本) | glm-5-3-260814 | On-demand coding (`?provider=glm5_coding` / chat 前缀 `glm `) | feature_verified（V37.9.340 E2E text+reasoning） |
+| **OpenAI** | GPT-4o | available | declared |
+| **Google Gemini** | Gemini 2.5 Flash | ~~retired from fallback~~ (HK geo-block, V37.9.129; embedding API 仍用于 mm_index) | smoke_tested |
+| **Anthropic Claude** | Claude Sonnet 4.6 | available | declared |
+| **Kimi** (Moonshot AI) | Kimi K2.5 (1T MoE) | available | declared |
+| **MiniMax** | MiniMax M2.7 | available | declared |
+| **GLM** (Zhipu AI) | GLM-5 (744B MoE) | available | declared |
+
+> 机器权威源 = `python3 providers.py` 直出三张表（[docs/compatibility_matrix.md](docs/compatibility_matrix.md)，`gen_compat_matrix.py --check` 防漂移）。
+
+All providers use **OpenAI-compatible API** format. Adding a new provider: see [docs/compatibility_matrix.md](docs/compatibility_matrix.md).
+
+```bash
+# Switch provider at runtime
+export PROVIDER=kimi && export MOONSHOT_API_KEY=... && bash restart.sh
+```
+
+## Quick Start (10 minutes)
+
+**Three steps. Zero third-party dependencies. Any LLM provider.**
+
+```bash
+# Step 1: Clone
+git clone https://github.com/bisdom-cell/openclaw-model-bridge.git
+cd openclaw-model-bridge
+
+# Step 2: Set any ONE API key — quickstart auto-detects your provider
+export OPENAI_API_KEY="sk-..."           # OpenAI (GPT-4o)
+export GEMINI_API_KEY="..."              # Google Gemini
+export ANTHROPIC_API_KEY="sk-ant-..."    # Anthropic Claude
+export MOONSHOT_API_KEY="..."            # Kimi (Moonshot AI)
+export MINIMAX_API_KEY="..."             # MiniMax
+export GLM_API_KEY="..."                 # GLM (Zhipu AI)
+export REMOTE_API_KEY="..."              # Custom Qwen endpoint
+
+# Step 3: One command — auto-detects provider, runs 4 phases
+bash quickstart.sh
+```
+
+**What happens:**
+
+```
+Phase 1: Prerequisites     → Python, files, syntax, provider auto-detection
+Phase 2: Start Services    → Adapter(:5001) + Proxy(:5002), ~3 seconds
+Phase 3: Health Check      → unit tests + registry validation
+Phase 4: Golden Test Trace → Real request through full stack, saved to docs/golden_trace.json
+```
+
+**Expected output:**
+
+```
+✅ Provider: openai (via $OPENAI_API_KEY)
+✅ all tests passed
+✅ Golden test: "Four" in 521ms (37 prompt + 2 completion tokens)
+   Trace saved to docs/golden_trace.json
+```
+
+<details>
+<summary>Step-by-step alternative / 分步执行</summary>
+
+```bash
+bash quickstart.sh --check   # Prerequisites only
+bash restart.sh              # Start services
+bash quickstart.sh --demo    # Demo request only
+```
+</details>
+
+<details>
+<summary>After Quick Start: optional capabilities</summary>
+
+```bash
+# SLO Benchmark — real production metrics report
+python3 slo_benchmark.py          # Markdown report (5/5 PASS, p95=459ms)
+python3 slo_benchmark.py --json   # JSON format for CI
+python3 slo_benchmark.py --save   # Save to docs/slo_benchmark_report.md
+
+# Provider compatibility matrix
+python3 providers.py              # Markdown table (13 providers)
+python3 providers.py --json       # JSON format
+
+# GameDay fault injection drill
+bash gameday.sh --all             # 5 scenarios: GPU timeout, circuit breaker, etc.
+
+# KB RAG semantic search (requires pip install)
+pip3 install -r requirements-rag.txt
+python3 kb_embed.py && python3 kb_rag.py "AI papers"
+
+# Multimodal memory search (requires pip install + Gemini key)
+pip3 install -r requirements-mm.txt
+python3 mm_index.py && python3 mm_search.py "cat photos"
+```
+</details>
+
+### Dependency Boundary / Why (Almost) Zero Dependencies?
+
+Dependencies follow the three product layers exactly (V37.9.144 — clarified after an external reviewer's environment failed 7 test cases for lack of PyYAML):
+
+| Layer | Third-party dependency |
+|-------|------------------------|
+| **Core Runtime** (`tool_proxy.py`, `adapter.py`, `proxy_filters.py`, `providers.py`) | **None.** Python stdlib only — `http.server`, `json`, `urllib`. No pip, no venv, no Docker. |
+| **Governance-Ontology** (`ontology/`) | **PyYAML ≥ 5.4** — the only third-party dep. `pip install openclaw-ontology-engine` pulls it automatically. Test suites touching this layer skip gracefully (with an install hint) when PyYAML is absent. |
+| **Optional capabilities** | KB RAG → `requirements-rag.txt` · multimodal memory → `requirements-mm.txt` · freight scraper → playwright. Each degrades gracefully when missing. |
+
+This is a deliberate architecture decision: **every dependency you remove is one fewer reason someone can't run your system.**
+
+## Project Structure
+
+### Core Services
+
+| File | Description |
+|------|-------------|
+| `tool_proxy.py` | HTTP layer — request/response routing, **custom tool execution** (data_clean + search_kb), **media injection**, followup LLM calls, logging, health cascade |
+| `proxy_filters.py` | Policy layer — tool filtering, **custom tool injection** (data_clean + search_kb), **image base64 injection** (`<media:image>` → `image_url`), param fixing, truncation, SSE conversion |
+| `adapter.py` | API adapter — **13-provider** forwarding, auth, **capability-aware multimodal routing**, fallback degradation |
+| `providers.py` | **V34** Provider Compatibility Layer — BaseProvider abstraction, 13 concrete providers (7 built-in + Doubao 2.1 ×2 platforms + DeepSeek×2 + GLM-5.3 coding + Kimi K3 plugins), ProviderRegistry, capability declaration, CLI matrix |
+| `slo_benchmark.py` | **V35** SLO Benchmark report generator — reads proxy_stats.json → Markdown/JSON report (latency p50/p95/p99, success rate, degradation) |
+| `quickstart.sh` | **V35** One-click Quick Start — 4 phases (prerequisites → services → health → golden test), provider auto-detection |
+| `notify.sh` | **V33** Unified notification — default Discord (retry ×3 + failure queue), WhatsApp dual-channel opt-in via `NOTIFY_CHANNELS`, 6 topic channels |
+
+### Knowledge Base & Local AI
+
+| File | Description |
+|------|-------------|
+| `local_embed.py` | **V29.3** Local embedding engine — sentence-transformers (multilingual-MiniLM, 384-dim, 50+ languages), zero API calls |
+| `kb_embed.py` | **V29.3** KB text vector indexer — notes+sources → chunking (400 chars, 80 overlap) → local embedding → `~/.kb/text_index/` |
+| `kb_rag.py` | **V29.3** RAG semantic search — `--context` (LLM injection), `--json` (scripting), `--top N`, `--source` (filter by origin), `--recent N` (time-based) |
+| `mm_index.py` | **V29.1** Multimodal memory indexer — Gemini Embedding 2 for images/audio/video/PDF |
+| `mm_search.py` | **V29.1** Multimodal semantic search — text query → cosine similarity → matched media |
+| `kb_search.sh` | **V29** KB full-text search — keyword/tag/date/source filtering, `--summary` stats |
+| `kb_inject.sh` | **V29** Daily KB digest generator — `~/.kb/daily_digest.md` for LLM context |
+| `kb_review.sh` | **V29** Weekly KB deep review — LLM cross-note analysis + WhatsApp push |
+| `kb_write.sh` | KB write utility — directory lock + atomic write |
+| `kb_dedup.py` | **V29.2** KB deduplication — exact/fuzzy note dedup + source line dedup |
+| `kb_trend.py` | **V29.5** Weekly AI trend report — this week vs last week keywords + LLM analysis + prediction backtest |
+| `status_update.py` | **V29.5** Three-party shared status — atomic read/write of `~/.kb/status.json` (Claude Code + PA + cron) |
+| `data_clean.py` | **V30.3** Data cleaning CLI — 7 operations (dedup/trim/fix_dates/etc), 5 formats (CSV/TSV/JSON/JSONL/Excel), version chain + audit log |
+| `kb_dream.sh` | **V36.1** Agent Dream v2 — MapReduce full KB exploration (14 sources + 300 notes, Map→cache→Reduce) |
+| `kb_harvest_chat.py` | **V37** Conversation distiller — MapReduce chat extraction from proxy captures, zero data loss |
+| `kb_evening_collect.py` | **V37.6** Evening digest collector — reuses `kb_review_collect` primitives via import |
+| `kb_review_collect.py` | **V37.5** Review data collector — registry-driven source discovery + H2 drill-down + LLM call with fail-fast |
+| `SOUL.md` | **V30.4→V37.4.3** PA constitutional system prompt — identity (Wei), three-party constitution, behavior directives, Rule 9 critical thinking, Rule 10 alert non-follow-up |
+
+### Monitoring, SLO & Quality
+
+| File | Description |
+|------|-------------|
+| `config.yaml` | **V32** Centralized thresholds — 70+ params across 9 sections (SLO/proxy/tokens/alerts/routing/truncation/watchdog/incidents/jobs) |
+| `config_loader.py` | **V32** Config loader — `from config_loader import MAX_REQUEST_BYTES` for backward compatibility |
+| `slo_checker.py` | **V32** SLO compliance checker — evaluates 5 SLO metrics from proxy_stats, outputs alerts for violations |
+| `incident_snapshot.py` | **V32** Fault snapshot — auto-collects proxy/adapter/gateway logs + stats + service status → `~/.kb/incidents/` |
+| `conv_quality.py` | Daily conversation quality report — response time, success rate, tool distribution, token usage |
+| `token_report.py` | Daily token usage report — consumption, hourly distribution, context pressure, multi-day trends |
+| `job_watchdog.sh` | Meta-monitor — checks all job status + log scanning → notify alerts (default Discord) on timeout/failure |
+| `wa_keepalive.sh` | WhatsApp session keepalive — Gateway HTTP probe every 30 min |
+
+### Operations
+
+| File | Description |
+|------|-------------|
+| `restart.sh` | **V37.9.13** One-command restart all services — Adapter + Proxy via `launchctl kickstart -k` (single-manager, eliminates manual nohup + launchd KeepAlive double-ownership crash-loop, V37.9.12.1 blood lesson) with 5×2s health verification loop; `nohup` fallback when plist missing |
+| `auto_deploy.sh` | Auto-deployment — git pull + file sync (118 FILE_MAP entries) + drift detection + smart restart + post-deploy preflight |
+| `preflight_check.sh` | Pre-flight check — **19 automated checks** (tests, registry, syntax, deploy consistency, env vars, connectivity, security scan, data flow, crontab, **E2E journey test**, **SLO compliance**) |
+| `health_check.sh` | Weekly health report + JSON output |
+| `openclaw_backup.sh` | **V29.1** Daily Gateway state backup to external SSD (7-day retention) |
+| `upgrade_openclaw.sh` | Gateway upgrade SOP (must run via SSH, never via WhatsApp) |
+| `gameday.sh` | **V33** GameDay fault injection — 5 scenarios (GPU timeout, circuit breaker, snapshot, SLO, watchdog) |
+| `smoke_test.sh` | End-to-end smoke test (unit tests + registry + doc drift + connectivity) |
+
+### Scheduled Jobs (47 registered, 41 active — schedules below mirror `jobs_registry.yaml`)
+
+All jobs registered in `jobs_registry.yaml`. Validate: `python3 check_registry.py`
+
+| File | Schedule | Description |
+|------|----------|-------------|
+| `jobs/arxiv_monitor/run_arxiv.sh` | Daily 08:00 / 20:00 | ArXiv AI paper monitoring + KB + notify (default Discord) |
+| `jobs/hf_papers/run_hf_papers.sh` | Daily 10:00 | **V30.5** HuggingFace Daily Papers + KB + dual-channel push |
+| `jobs/semantic_scholar/run_semantic_scholar.sh` | Daily 11:00 | **V30.5** Semantic Scholar papers (citation-ranked) + KB + dual-channel |
+| `jobs/dblp/run_dblp.sh` | Daily 12:00 | **V30.5** DBLP CS papers (multi-keyword, free API) + KB + dual-channel |
+| `jobs/acl_anthology/run_acl_anthology.sh` | Wed 09:30 | **V30.5** ACL Anthology NLP top-venue papers + KB + dual-channel |
+| `jobs/finance_news/run_finance_news.sh` | Daily 07:30 | **V37.8.2** Global finance/policy news — 14 RSS + 10 X accounts + LLM analysis + zombie detection |
+| `jobs/chaspark/run_chaspark.sh` | Daily 11:00 | **V37.8.14** 茶思屋科技(Chaspark) — HTML API deep analysis + KB + dual-channel |
+| `jobs/ai_leaders_x/run_ai_leaders_x.sh` | Daily 09:00 | **V34→V37.9.103** AI Leaders X — degraded (X Syndication 429 + frozen snapshots, ~0 output); superseded by blogs + bsky below |
+| `jobs/ai_leaders_blogs/run_ai_leaders_blogs.sh` | Daily 13:30 | **V37.9.108** AI leaders long-form via blog/Substack RSS (11 curated contrarian-leaning feeds) |
+| `jobs/ai_leaders_bsky/run_ai_leaders_bsky.sh` | Daily 17:00 | **V37.9.111** AI leaders real-time posts via Bluesky getAuthorFeed (9 handles) |
+| `jobs/ontology_sources/run_ontology_sources.sh` | 10:00/20:00 | **V37.1** Ontology academic RSS (W3C/JWS/DKE/KBS) + LLM summary |
+| `run_hn_fixed.sh` | 08:45 / 14:45 / 20:45 | HackerNews hot posts scraper |
+| `jobs/freight_watcher/run_freight.sh` | Daily 14:00 | Freight intelligence — scraping + LLM analysis |
+| `jobs/openclaw_official/run.sh` | disabled (`openclaw_run`, enabled=false) | OpenClaw releases watcher + LLM summary |
+| `jobs/openclaw_official/run_discussions.sh` | disabled (V37.9.50-hotfix3, low push quality) | GitHub Issues monitor (REST API + ETag) |
+| `jobs/github_trending/run_github_trending.sh` | Daily 14:00 | **V31** GitHub Trending ML/AI repos |
+| `jobs/rss_blogs/run_rss_blogs.sh` | Daily 18:00 | **V31** RSS blog subscriptions (科学空间 etc.) |
+| `kb_inject.sh` | Daily 07:00 | KB daily digest for LLM context |
+| `kb_embed.py` | Daily 03:30 | KB text vector indexing (local embedding, V37.9.293 ghost-chunk pruning) |
+| `kb_evening.sh` | Daily 22:00 | Evening KB cleanup + LLM digest |
+| `kb_dedup.py` | on-demand (called from `kb_evening.sh`, not a registry job) | KB deduplication |
+| `kb_review.sh` | Fri 21:00 | Weekly KB deep review (registry-driven, LLM analysis) |
+| `kb_dream.sh` | Daily 00:00/03:00 | **V36.1** Agent Dream v2 — MapReduce KB exploration (Map 00:00 + Reduce 03:00) |
+| `kb_harvest_chat.py` | Daily 06:00 | **V37** Conversation distiller — MapReduce chat extraction, zero data loss |
+| `mm_index_cron.sh` | Every 2h | Multimodal memory indexing (Gemini) |
+| `daily_ops_report.sh` (`conv_quality.py` + `token_report.py`) | Daily 08:15 | Ops daily report — conversation quality + token usage |
+| `health_check.sh` | Mon 09:00 | Weekly health report |
+| `openclaw_backup.sh` | Daily 03:00 | Gateway state backup |
+| `auto_deploy.sh` | Every 2 min | Git → runtime auto-sync + drift detection |
+| `job_watchdog.sh` | 08:30 / 12:30 / 16:30 / 20:30 | Job health monitoring (last_run status + log freshness + log error scan, 24h window) |
+| `wa_keepalive.sh` | Every 30 min | WhatsApp session probe + escalation to Discord |
+| `kb_trend.py` | Sat 09:00 | Weekly AI trend report (keyword trends + LLM analysis) |
+| `kb_status_refresh.sh` | Hourly | Status.json health refresh (three-party sync) |
+| `governance_audit_cron.sh` | Daily 07:00 | **V37.1→V37.9.121** Governance audit — full invariant + meta-rule + MRD-scanner + check suite |
+| `preference_learner.py` | Daily 07:30 | User preference auto-learning |
+| `cron_canary.sh` | Every 10 min | Cron heartbeat canary |
+| `kb_integrity.py` | (on-demand) | KB file integrity checker (SHA256) |
+
+### Configuration & Testing
+
+| File | Description |
+|------|-------------|
+| `jobs_registry.yaml` | Unified job registry — 47 jobs (41 active, 6 disabled), system cron |
+| `check_registry.py` | Registry validator — ID uniqueness, paths, fields |
+| `gen_jobs_doc.py` | Auto-generate job docs from registry + drift detection |
+| `test_providers.py` | Unit tests for providers |
+| `test_tool_proxy.py` | Unit tests for proxy_filters |
+| `test_check_registry.py` | Unit tests for check_registry |
+| `test_data_clean.py` | Unit tests for data_clean |
+| `test_adapter.py` | Unit tests for adapter |
+| `test_kb_business.py` | Unit tests for KB business logic |
+| `test_cron_health.py` | Unit tests for cron health |
+| `test_status_update.py` | Unit tests for status_update |
+| `test_audit_log.py` | Unit tests for audit_log |
+| `test_config_slo.py` | **V32** Unit tests for config_loader + slo_checker + incident_snapshot + ProxyStats SLO |
+| `full_regression.sh` | Full regression runner — all tests must pass before push (auto-updates `status.json` test_count) |
+| `.githooks/pre-commit` | **V32** Pre-commit hook — API key/phone leak + syntax checks |
+| `.github/workflows/ci.yml` | **V32** GitHub Actions CI — 9 test suites + config validation + security scan |
+| `CLAUDE.md` | Project context for AI-assisted development |
+
+### Ontology Sub-Project (V36.2 → V37.9.15 Phase 4 P3 shadow)
+
+> **Phase 4 P3 wiring active (shadow mode)**: 3-gate pipeline (`pre_check / runtime_gate / post_verify`) wired into `tool_proxy.py` request path (V37.9.15). `evaluate_policy(policy_id, context)` handles static + 6 contextual/temporal policies (V37.9.13). 2 policies wired through `proxy_filters` (V37.9.12 + V37.9.13).
+>
+> **Honest status (V37.9.144, per external review #2): the three gates are today an *observability* asset, not an *enforcement* asset.** Every request produces `[gate:*]` verdict logs, but a `flag` verdict never blocks or rewrites a request. Enforcement that *is* live today sits elsewhere: `filter_tools` hard-truncates to 12 tools and `filter_system_alerts` strips alert contamination — both in `proxy_filters`, policy-informed since V37.9.12/13. Gate rollout phases (aligned with roadmap P3.1 / P3.2 / P4):
+>
+> | Phase | Scope | Status |
+> |-------|-------|--------|
+> | **A — shadow log** | all 6 observed policies produce `[gate:*]` verdicts, zero intervention | ✅ live since V37.9.15 |
+> | **B — low-risk enforce** | `max-request-body-size`, `max-tools-per-agent` (deterministic static limits; failure mode = clean reject, no LLM semantics involved) | planned (needs ≥1 week shadow-flag data review) |
+> | **C — medium-risk enforce** | `alert-context-isolation` post_verify (LLM-output-dependent; false positives possible) | planned, after B stabilizes |
+> | **D — high-risk** | anything that drops/rewrites user-visible content | stays **human-approval only** — not auto-enforced by design |
+> **Phase 4 Layer 5 Convergence Framework (V37.9.19+)**: 5 specs running (`jobs_to_crontab` / `providers_to_adapter` / `openclaw_config_to_runtime` / `kb_sources_to_index` / `services_to_launchd`). `jobs_to_crontab` + `kb_sources_to_index` + `services_to_launchd` 已升级 `machine_sync` (3 specs, Plan B 渐进 dry-run, V37.9.23/24/97, named-dispatch).
+> Roadmap: V37.9.45+ Opportunity Radar 三件套 (跨 source 弱信号聚合 / 项目对齐度 / 趋势加速度) → Phase 5 (`pip install ontology-engine`).
+
+| File | Description |
+|------|-------------|
+| `ontology/engine.py` | **V36.2→V37.9.13** Tool Ontology Engine + Domain/Policy APIs — `classify_tool_call()` semantic classification + **V37.9.12 `load_domain_ontology()` / `find_by_domain()` / `evaluate_policy()`** three pure functions + **V37.9.13 six context evaluators** (`_eval_quiet_hours` / `_eval_has_alert` / `_eval_has_image` / `_eval_need_fallback` / `_eval_task_match` / `_eval_data_clean_keywords`) + `_CONTEXT_EVALUATORS` dispatch table |
+| `ontology/three_gate.py` | **V37.9.15** Phase 4 P3 three-stage gate — `pre_check` / `runtime_gate` / `post_verify` pure functions + `GateFinding` namedtuple + `ONTOLOGY_GATES_MODE` env (off/shadow/on, default shadow) + decoupled from `ONTOLOGY_MODE` + FAIL-OPEN contract (engine exception → verdict=pass+reason=engine_unavailable) |
+| `ontology/convergence.py` | **V37.9.19** Phase 4 Layer 5 Convergence Framework — `verify_convergence(spec_id)` declared-state↔runtime drift detection + named-dispatch tables (extractor / observer / parser / apply_function) + `ConvergenceResult` namedtuple + 4 drift_actions (alert_only / alert_only_permanent / machine_sync / block_until_human) + V37.9.23/24 `_apply_machine_sync` + dry-run safety net |
+| `ontology/convergence_ontology.yaml` | **V37.9.25→V37.9.97** Phase 4 Layer 5 spec — 5 specs (jobs_to_crontab machine_sync / providers_to_adapter alert_only_permanent / openclaw_config_to_runtime alert_only_permanent / kb_sources_to_index machine_sync / services_to_launchd machine_sync) — 3 machine_sync |
+| `ontology/tool_ontology.yaml` | **V36.2** Declarative tool rules — 81 rules (filters, injections, truncation, SSE, media) |
+| `ontology/domain_ontology.yaml` | **V37.9.9→V37.9.12** Layer 1 — six-domain conceptual model (Actor / Tool / Resource / Task / Provider / Memory) + inter-domain relations, queryable via `find_by_domain()` |
+| `ontology/policy_ontology.yaml` | **V37.9.15** Layer 2 — 10 declarative policies: 3 static + 2 temporal + 5 contextual + ordering constraints + V37.9.15 P3 gate wiring observability declared |
+| `ontology/governance_checker.py` | **V36.3→V37.9.121** Governance execution engine — runs the full invariant / check / meta-rule / MRD-scanner suite (5 check types) + integrated `verify_convergence` calls (Phase 4 Layer 5 audit consumption) |
+| `ontology/governance_ontology.yaml` | **V37.9.121** Governance Ontology v3.56 — invariants (incl. **INV-OBSERVER-001 + INV-SOURCE-CREDIBILITY-001 V37.9.121 daily_observer + source_credibility contracts (日落法 MR-22 合并 sampling 候选)**, INV-MOVESPEED-TCC-001 V37.9.80-V37.9.81 TCC sandbox 真因+24h≤2 hard guard, INV-HEALTHCHECK-001 V37.9.78 9段证据周报, INV-GATE-001 three-gate observability, INV-CONVERGENCE-CRON/PROVIDERS/OPENCLAW/KB/INTEGRATION/SERVICES-001 5 convergence specs, INV-LLMCRON-AUDIT-001 cross-job fail-fast audit, INV-DREAM-MULTITHEME-001 V37.9.68 14天ban-list), meta rules (incl. MR-17 declared-state-must-converge-via-machine-not-memory, MR-19 monitor-must-self-alarm-on-silent-abort, MR-22 sunset-over-accretion 日落法北极星, MR-23 audit-observes-never-mutates) |
+| `ontology/llm_cron_audit.py` | **V37.9.38→V37.9.62** Cross-job fail-fast scanner — 21 candidate scripts / **17 aligned** (V37.9.36-37 rss_blogs / V37.5 kb_review / V37.8.10 kb_evening / V37.9.16 kb_deep_dive / V37.9.39 S2 / V37.9.40 DBLP+AI Leaders X / V37.9.41 HN / V37.9.43 arxiv / V37.9.44 github_trending / V37.9.45 hf_papers / V37.9.50 semantic_scholar / V37.9.51 batch 6 / V37.9.62 batch 6 含 acl/karpathy/openclaw_official×2/ontology_sources/chaspark) / 4 by design 排除 (finance_news/freight/kb_dream/kb_inject) |
+| `ontology/diff.py` | **V36.2** Consistency checker — engine vs proxy_filters (81/81 = 100%) |
+| `ontology/CONSTITUTION.md` | **V36.2** Ontology Constitution — 6 articles + Supreme Article (project isolation) |
+| `ontology/tests/` | Engine + governance tests — `test_engine_phase4.py` (V37.9.13), `test_governance_*`, `test_dream_cache_stability`, `test_audit_perf_dimensions` |
+| `ontology/docs/cases/` | **V37.3 起累积** 28 blood lesson case studies (MR-4 silent failure × ~28 appearances, including HEARTBEAT.md self-silencing → MR-15, Dream Map budget chain, kb_evening fallback quota chain, MOVESPEED 60-day silent backup, V37.9.68 Qwen-BIM 涌现行为防御, V37.9.92 observer path silent failure) |
+| `ontology/docs/architecture/` | Industrial AI paradigm, target architecture (Phase 3-5 roadmap) |
+
+### Documentation
+
+| File | Description |
+|------|-------------|
+| `docs/compatibility_matrix.md` | **V35** Provider compatibility matrix — 13 providers, verification status, degradation paths |
+| `docs/slo_benchmark_report.md` | **V35** SLO Benchmark production report — 5/5 PASS, p95=459ms |
+| `docs/golden_trace.json` | **V35** Golden Test Trace — real request/response through full stack (521ms, reproducible) |
+| `docs/strategic_review_20260403.md` | **V34** Strategic review — Stage2 positioning, V1-V3 roadmap, methodology |
+| `docs/GUIDE.md` | Complete bilingual (CN/EN) integration guide with 27 lessons learned |
+| `docs/config.md` | Full system configuration + historical changelog |
+| `docs/openclaw_architecture.md` | OpenClaw upstream architecture reference (Gateway upgraded to v2026.4.27, V37.9.138) |
+| `docs/INDEX.md` | **V37.8.13** Documentation navigation tree — what to read when |
+| `ROLLBACK.md` | (archived V37.8) Rollback guide — pre-V27 recovery procedure |
+
+## Methodology: Control Plane First
+
+> "The stronger capabilities get, the harder the system is to control — governance must lead, not follow."
+
+**Four-Plane Architecture**:
+- **Control Plane** (90%): Provider Compatibility Layer, SLO 5-metric monitoring, centralized thresholds, 19-check preflight, incident snapshots, circuit breaker + audit logging (fsync + atomic snapshot), 91-invariant governance, single-manager process ownership (V37.9.13)
+- **Capability Plane** (85%): 13-provider routing + capability-based fallback chain, multimodal (text+vision), tool governance (≤12, policy-driven via V37.9.12), data cleaning, search_kb hybrid retrieval
+- **Memory Plane** (75%): KB RAG (local sentence-transformers), trend analysis, preference learning, multimodal memory, Memory Plane v2 (dedup + confidence + conflict resolution), Agent Dream v2 MapReduce
+- **Ontology Plane** (Phase 4 P2 active): 4 YAML ontologies (tool/domain/policy/governance), Tool Ontology Engine (81 rules, ONTOLOGY_MODE=on), **Governance Ontology v3.56** (91 invariants + 23 meta rules + 14 MRD scanners + 839 checks), 2 policies wired via `evaluate_policy()`, 28 blood lesson cases (see [`ontology/docs/failure_modes_catalog.md`](ontology/docs/failure_modes_catalog.md) for taxonomy)
+
+### Ontology: What's Declaratively Defined (Phase 4 P2)
+
+> The project's most strategic asset. Evolving from "declarative knowledge" toward "run-time adjudication" — the end goal is a reusable `pip install ontology-engine` package so any Agent Runtime project inherits governance by writing its own YAML.
+
+**Already replaced hardcoding** (Ontology is now the source of truth; Python hardcoded values are fallback-only):
+
+| Hardcoded before | Ontology source of truth | Version |
+|-----------------|-------------------------|---------|
+| `ALLOWED_TOOLS = {"web_search", ...}` 16 tools | `tool_ontology.yaml` via `engine.ALLOWED_TOOLS` | V37.8.14 |
+| Tool param `CLEAN_SCHEMAS` + aliases | `ontology.CLEAN_SCHEMAS` / `resolve_alias()` | V37.8.14 |
+| `MAX_TOOLS = 12` constant | `evaluate_policy("max-tools-per-agent").limit` | V37.9.12 |
+| `MAX_TOOL_CALLS_PER_TASK = 2` | `evaluate_policy("max-tool-calls-per-task").limit` | V37.9.13 |
+| Security score thresholds (90, per-dimension) | `governance_ontology.yaml::security_config` | V37.9.3 |
+| `applicable` for temporal/contextual policies | `_CONTEXT_EVALUATORS` dispatch table (6 policies) | V37.9.13 |
+
+**Meaning**: Changing a threshold requires editing one YAML line, zero Python changes — Phase 4 terminal state partially achieved.
+
+**Roadmap**:
+
+| Phase | Status | Scope |
+|-------|--------|-------|
+| Phase 0 — Meta-rule auto-discovery | ✅ V36.2 | MRD scanners find un-covered areas automatically |
+| Phase 1 — Equivalence proof + 3-mode feature flag | ✅ V36.2 | `ONTOLOGY_MODE=off/shadow/on` |
+| Phase 2 — Shadow observation | ✅ V36.3 | Ontology runs alongside, logs drift |
+| Phase 3 — `ONTOLOGY_MODE=on` | ✅ V37.8.14 | Declarative engine replaces hardcoded logic |
+| Phase 4 P1 — 3 engine APIs + 1st policy switch | ✅ V37.9.12 | `load_domain_ontology` / `find_by_domain` / `evaluate_policy` |
+| **Phase 4 P2** — Context evaluator + 2nd policy switch | **✅ V37.9.13** | **6 matchers (hour_of_day / has_alert / has_image / task_match) + `max-tool-calls-per-task` wired** |
+| Phase 4 P3 — 3-gate shadow wiring | ✅ live since V37.9.15 | `pre-check → runtime-gate → post-verify` across the proxy request pipeline (shadow mode; enforcement 待需求驱动) |
+| Phase 5 — Engine packaging | ✅ shipped (V37.9.137) | **pip install openclaw-ontology-engine** — PyPI 已发布 + 仓库外 wheel dogfood CI (V37.9.148) |
+
+### SLO Benchmark Results (real production data)
+
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Latency p95 | < 30s | **459ms** | PASS |
+| Tool success rate | > 95% | **100%** | PASS |
+| Degradation rate | < 5% | **0%** | PASS |
+| Timeout rate | < 3% | **0%** | PASS |
+| Auto-recovery rate | > 90% | **100%** | PASS |
+
+```bash
+python3 slo_benchmark.py --save   # Regenerate from live data → docs/slo_benchmark_report.md
+```
+
+### Fallback & Circuit Breaker
+
+```
+Primary (e.g. Doubao Seed 2.1 Pro, 5min timeout)
+    ↓ failure / timeout / circuit break (5 consecutive failures)
+Fallback (e.g. DeepSeek-V4-Pro, 300s timeout)
+    ↓ also failed
+502 Error (both error messages returned)
+    ↓ 300s later: half-open, attempt recovery
+```
+
+### Notification Channels
+
+All job outputs push through `notify.sh` (retry ×3 + failure queue). **Current default = Discord only** (V37.9.179: WhatsApp disabled during its 408 rate-limit era; set `NOTIFY_CHANNELS="whatsapp,discord"` to restore dual-channel):
+
+```bash
+source notify.sh
+notify "New papers found"              # default Discord (dual-channel when WhatsApp restored)
+notify "ArXiv digest" --topic papers   # → Discord #papers channel
+notify "Deploy alert" --topic alerts   # → Discord #alerts channel
+```
+
+| Discord Channel | Content |
+|----------------|---------|
+| #papers | ArXiv, HF Papers, Semantic Scholar, DBLP, ACL |
+| #freight | Freight intelligence reports |
+| #alerts | Deploy alerts, watchdog, preflight failures |
+| #daily | KB digest, health reports, reviews |
+| #tech | HN, GitHub Trending, RSS blogs, OpenClaw releases |
+
+## Key Rules
+
+1. **Tools <= 12** — more causes model confusion
+2. **Tool calls per task <= 2** — timeout risk increases exponentially
+3. **Request body <= 200KB** — buffer from the 280KB hard limit
+4. **`--thinking` values** — `off, minimal, low, medium, high, adaptive` (never use `none`)
+5. **Model ID in openclaw.json** — must include `qwen-local/` prefix
+6. **API keys via env vars only** — never hardcode in source files
+
+## Local AI Capabilities (V29.3)
+
+### KB RAG Semantic Search (Zero API Calls)
+
+```bash
+# Build index (first time, or --reindex to rebuild)
+python3 kb_embed.py                        # 4339 chunks in ~8s on Mac Mini
+
+# Search
+python3 kb_rag.py "Qwen3 模型"             # Top-5 results
+python3 kb_rag.py --context "AI论文"        # LLM-injectable format
+python3 kb_rag.py --json "shipping"         # JSON for scripting
+python3 kb_rag.py --top 10 "RAG pipeline"  # Custom top-K
+python3 kb_rag.py --source arxiv "LLM"     # Filter by source (arxiv/hf/dblp/acl/hn/notes)
+python3 kb_rag.py --recent 24              # What's new in last 24 hours
+
+# Stats
+python3 kb_embed.py --stats
+```
+
+**Model**: `paraphrase-multilingual-MiniLM-L12-v2` (384-dim, 50+ languages)
+**Performance on Mac Mini M-series**: single ~10ms, batch 100 ~500ms, full index 137 files in 8.1s
+
+### Multimodal Memory Search (Gemini API)
+
+```bash
+python3 mm_index.py                    # Index media files
+python3 mm_search.py "猫的照片"         # Semantic search
+python3 mm_search.py --stats           # Index stats
+```
+
+## Auto-Deployment
+
+```
+Claude Code → claude/branch → PR → main → auto_deploy (2 min) → Mac Mini
+                                                ↓
+                               git pull → test → file sync (81 files) → smart restart
+                                                ↓
+                               preflight_check.sh --full (19 checks)
+```
+
+The `auto_deploy.sh` script maps ~118 repo files to runtime locations (FILE_MAP) and only restarts services when core files change. Hourly drift detection via md5 checksums with notify alerts (default Discord). Status.json exempt from drift (legitimate divergence between Claude Code snapshots and cron-refreshed runtime).
+
+## Testing
+
+```bash
+# Full regression (206 suites / 6740 tests / 0 fail; must ALL pass before push)
+bash full_regression.sh
+
+# Individual test suites (run full_regression.sh for totals)
+python3 test_providers.py               # provider/registry tests
+python3 test_tool_proxy.py              # proxy_filters tests
+python3 test_data_clean.py              # data cleaning tests
+python3 test_cron_health.py             # cron health tests
+python3 test_kb_business.py             # KB business logic tests
+python3 test_adapter.py                 # adapter tests
+python3 test_status_update.py           # status update tests
+python3 test_config_slo.py             # config/SLO/incident tests
+python3 test_audit_log.py               # audit log tests
+python3 test_check_registry.py          # registry tests
+python3 test_slo_benchmark.py           # SLO benchmark tests
+
+# SLO benchmark report (real production data)
+python3 slo_benchmark.py                # Markdown: 5/5 PASS, p95=459ms
+python3 slo_benchmark.py --save         # Save to docs/
+
+# Provider compatibility matrix
+python3 providers.py                    # 13-provider matrix
+python3 providers.py --json             # JSON for CI
+
+# GameDay fault injection (5 scenarios)
+bash gameday.sh --all
+
+# Pre-flight check (19 automated checks, on Mac Mini)
+bash preflight_check.sh --full
+
+# Security score (7-dimension, 100 points)
+python3 security_score.py
+```
+
+## Security
+
+Run before every `git push`:
+
+```bash
+grep -r "sk-[A-Za-z0-9]\{15,\}" . --include="*.py" --include="*.sh" --include="*.md" | grep -v ".git"
+grep -r "BSA[A-Za-z0-9]\{15,\}" . --include="*.py" --include="*.sh" --include="*.md" | grep -v ".git"
+# All output must be empty
+```
+
+## Evidence Chain
+
+| Evidence | File | How to reproduce |
+|----------|------|------------------|
+| **Golden Test Trace** | `docs/golden_trace.json` | `bash quickstart.sh --demo` |
+| **SLO Benchmark** | `docs/slo_benchmark_report.md` | `python3 slo_benchmark.py --save` |
+| **Compatibility Matrix** | `docs/compatibility_matrix.md` | `python3 providers.py` |
+| **Unit Test Regression** | all test suites | `bash full_regression.sh` |
+| **Adversarial Chaos Audit** | `ontology/tests/adversarial_chaos_audit.py` — Category A 10/10 known blood lessons + Category B blind spots (per-signal catch since V37.9.302) | `python3 ontology/tests/adversarial_chaos_audit.py --category a` |
+| **GameDay Drill** | `gameday.sh` | `bash gameday.sh --all` |
+| **Security Score** | `security_score.py` | `python3 security_score.py` |
+| **Reliability Bench** | `docs/reliability_bench_report.md` | `python3 reliability_bench.py --save` |
+| **Fail-Plausible Detection Bench** | `docs/fail_plausible_bench.md` (community-runnable; defense 100% / FP 0% / honest held-out FN) | `python3 llm_observer_selfcheck.py --manifest` |
+| **Resilience Report** | `docs/resilience_report.md` | 7 fault injection experiments |
+| **Security Boundaries** | `docs/security_boundaries.md` | 8-section security analysis |
+| **Governance Audit** | `ontology/governance_checker.py` | `python3 ontology/governance_checker.py` |
+| **Convergence Framework** | `ontology/convergence.py` | `python3 ontology/convergence.py --all` (Phase 4 Layer 5: 5 specs, 3 machine_sync, MR-17) |
+| **LLM Cron Fail-Fast Audit** | `ontology/llm_cron_audit.py` | `python3 ontology/llm_cron_audit.py --report` (17/21 aligned with V37.9.36+ fail-fast pattern) |
+| **Tool Ontology** | `ontology/` | `python3 ontology/diff.py` (81/81 consistency) |
+| **Policy Engine (Phase 4 P3 shadow)** | `ontology/policy_ontology.yaml` + `ontology/three_gate.py` | `python3 ontology/engine.py --policies` (10 declared, 2 wired via proxy_filters, 6 context evaluators, 3 gates wired into request pipeline shadow mode) |
+| **Blood Lesson Cases** | `ontology/docs/cases/` | case studies documenting MR-4 silent failure patterns (~28 演出, incl. MOVESPEED 60-day silent backup, kb_evening fallback quota chain, Dream self-referential hallucination, V37.9.68 Qwen-BIM 涌现行为, V37.9.92 observer path silent failure) |
+| **Opportunity Radar Design** | `docs/opportunity_radar_design.md` | V37.9.45+ strategic design (699 lines, 13 sections) — cross-source weak signal × project alignment × trend acceleration |
+| **Audit Coverage Retrospective** | `ontology/docs/audit_coverage_retrospective.md` | Stage 2 Route A — 15 blood lessons × Q1/Q2/Q3 = 0% prevention / 87% regression / 80% blind spot categories (V37.9.1) |
+
+## Articles
+
+| Article | Language | Platform | Type |
+|---------|----------|----------|------|
+| [Why Agent Systems Need a Control Plane](docs/articles/why_control_plane.md) | English | [dev.to](https://dev.to/wei_wu_735361972b82c5b9f7/why-agent-systems-need-a-control-plane-48id) | Architecture |
+| [为什么 Agent 系统首先需要一个控制平面](docs/articles/why_control_plane_zh.md) | 中文 | [知乎](https://zhuanlan.zhihu.com/p/2024261226943770996) | Architecture |
+| [Why an Agent Runtime Needs a Control Plane, Not Another Wrapper](docs/articles/why_runtime_not_wrapper.md) | English | — | Position — wrapper vs control plane; validated by two independent code reviews + extractability dogfood (V37.9.149) |
+| [为什么 Agent Runtime 需要的是控制平面，而不是又一个 wrapper](docs/articles/why_runtime_not_wrapper_zh.md) | 中文 | [知乎](https://zhuanlan.zhihu.com/p/2049813538894623858) | Position — 《控制平面》续篇；可抽离性论证 (V37.9.149) |
+| [Audit is Regression, Not Prevention](docs/articles/audit_is_regression_not_prevention.md) | English | — | Position — 6 actionable principles from Route A/B empirical evidence (V37.9.1) |
+| [Seven Failure Scenarios](docs/articles/seven_failure_scenarios.md) | English | — | Evidence — 7 fault injection experiments |
+| [Provider Compatibility Review](docs/articles/zhihu_provider_compatibility.md) | 中文 | 知乎 | Architecture |
+| [When Errors Become Narratives: A Longitudinal Taxonomy of Silent Failures in a Production LLM Agent Runtime](docs/paper/silent_failures_taxonomy/draft.md) | English | [**arXiv:2606.14589**](https://arxiv.org/abs/2606.14589) | **Academic paper** (published 2026-06-15, cs.SE) — fail-plausible concept + 5-class taxonomy from 22 incident postmortems; LaTeX source in [`docs/paper/silent_failures_taxonomy/latex/`](docs/paper/silent_failures_taxonomy/latex/) |
+| [当错误变成叙事（中文科普版）](docs/articles/when_errors_become_narratives_zh.md) | 中文 | [知乎](https://zhuanlan.zhihu.com/p/2049816723541463125) | Popular-science companion to arXiv:2606.14589 — fail-plausible + 五类静默故障 (V37.9.155) |
+| [Mechanizing the User's Eye: Pre-Registered Deployment of a Sabotage-Validated Fail-Plausible Observer in a Production LLM Agent Runtime](docs/paper/mechanizing_the_eye/draft.md) | English | [**arXiv:2610.05981**](https://arxiv.org/abs/2610.05981) | **Academic paper #2** (published 2026-10-06, cs.SE; submitted 2026-10-05) — pre-registered shadow→on deployment of a fail-plausible observer + observer's own incident log O1–O10; LaTeX source in [`docs/paper/mechanizing_the_eye/latex/`](docs/paper/mechanizing_the_eye/latex/) |
+| [机械化人眼（中文科普版）](docs/articles/mechanizing_the_eye_zh.md) | 中文 | [知乎](https://zhuanlan.zhihu.com/p/2090772315231539352) | Popular-science companion to paper #2 — 两层观察者 + 预注册部署 + 观察者自身事故账本 O1–O10 |
+
+## Full Guide
+
+See [docs/GUIDE.md](docs/GUIDE.md) for the complete bilingual walkthrough including 27 hard-won production lessons.
+
+## License
+
+MIT

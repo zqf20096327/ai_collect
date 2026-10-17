@@ -1,0 +1,201 @@
+<div align="center">
+
+# Research Idea Explorer
+
+### 给 `Codex CLI` 和 `Claude Code` 用的研究想题 skill / command。
+
+*A research ideation skill for Codex CLI and command for Claude Code.*
+
+![Status](https://img.shields.io/badge/Status-Release%20Ready-0F766E)
+![Install](https://img.shields.io/badge/Install-pipx%20or%20pip-1F2937)
+![Interface](https://img.shields.io/badge/Interface-Codex%20CLI%20%2B%20Claude%20Code-2563EB)
+![Storage](https://img.shields.io/badge/Memory-JSON%20Graph-F59E0B)
+
+[中文说明](docs/README.zh.md) | [English Docs](docs/README.en.md) | [快速上手](docs/quickstart.zh.md) | [Quick Start](docs/quickstart.en.md) | [功能总览 / Feature Guide](docs/feature-guide.zh-en.md) | [开发说明 / Dev Notes](docs/dev.md) | [更新历史 / Changelog](CHANGELOG.md)
+
+</div>
+
+---
+
+## 这是什么
+
+你是否也被 AI 给出的 idea 困扰过：
+
+- 一次给很多，但真正能做的很少
+- 看起来新，一查文献就发现早有人做过
+- 每一轮都像重新抽卡，上一轮的判断完全留不下来
+
+`Research Idea Explorer` 是给 `Codex CLI` 和 `Claude Code` 用的研究想题 skill / command。它把“先看文献、再发散、再筛选、再继续推进”做成了一条稳定工作流：
+
+1. 先检索公开文献或读取本地文献库
+2. 先做 literature map，识别文献簇和相邻 neighborhood
+3. 再从多种 research moves 发散，并收束成结构化 research cards
+4. 用 memory graph 记住 accept / reject 历史和用户偏好，避免每轮从零开始
+5. 只有在用户要求深挖或沿 accepted 方向继续时，才升级成第二轮 mutation
+
+它的优势很直接：
+
+- 文献先行，先看真实邻近工作再发散
+- 输出是可以判断的 research cards，直接给出标题、摘要、设计和意义
+- 能记住 accept / reject 历史，也能记住对话里提过的偏好
+- 默认按 topic scope 延续，相关主题能继续推进，不相关主题不会互相污染
+- 需要深挖时再做第二轮 mutation，不会默认越跑越散
+
+接入方式很简单：
+
+`用户 -> Codex CLI / Claude Code -> skill / command -> research-idea-explorer`
+
+## 安装
+
+推荐给最终用户的安装方式是 `pipx`：
+
+```bash
+pipx install git+https://github.com/jameslemon2002/research-idea-explorer.git
+```
+
+如果你没有 `pipx`，也可以用：
+
+```bash
+python3 -m pip install --user git+https://github.com/jameslemon2002/research-idea-explorer.git
+```
+
+要求：
+
+- `Python 3.9+`
+- 不需要 `Node.js`
+- 不需要 `npm`
+
+安装后会得到两个命令：
+
+- `research-idea-explorer`
+- `rie`
+
+## 接入 Codex 和 Claude Code
+
+给 `Codex` 安装 skill：
+
+```bash
+research-idea-explorer install codex-skill
+```
+
+然后重启 Codex，之后就可以直接在提示里调用：
+
+```text
+用 $research-idea-explorer 围绕 “urban heat adaptation” 生成一轮研究方向。
+先检索相关文献，再给我一轮强一点的 frontier。
+```
+
+给 `Claude Code` 安装项目命令：
+
+```bash
+research-idea-explorer install claude-command --project /path/to/your-project
+```
+
+然后在目标项目里直接运行：
+
+```text
+/research-idea-explorer
+```
+
+如果你要一次装好两边：
+
+```bash
+research-idea-explorer install all --project /path/to/your-project
+```
+
+## 快速开始
+
+生成第一轮 ideas：
+
+```bash
+research-idea-explorer ideas --query "urban heat planning"
+```
+
+显式打开双轮深挖：
+
+```bash
+research-idea-explorer ideas --query "urban heat planning" --rounds 2
+```
+
+指定文献源：
+
+```bash
+research-idea-explorer ideas --query "large language model reasoning" --providers arxiv,openalex,crossref
+```
+
+使用本地文献库：
+
+```bash
+research-idea-explorer ideas --query "urban heat planning" --providers local --local-library-path ./data/library.json
+```
+
+查看 memory 概览：
+
+```bash
+research-idea-explorer graph --memory ./data/memory/cli-memory.json
+```
+
+写回用户反馈：
+
+```bash
+research-idea-explorer feedback --memory ./data/memory/cli-memory.json --idea-id <idea-id> --decision accepted --note "strong direction"
+```
+
+把对话里的偏好记进下一轮：
+
+```bash
+research-idea-explorer ideas --query "urban heat planning" --preference-note "不要 survey，更偏 causal identification，要 policy relevance" --remember-preferences topic
+```
+
+查看已经记住的偏好：
+
+```bash
+research-idea-explorer graph --memory ./data/memory/cli-memory.json --view preferences
+```
+
+默认情况下，同一个 memory 文件里的历史会按 topic scope 隔离。相近题目会延续，不相关题目不会互相污染。如果你明确想共享全局 history，再使用：
+
+```bash
+research-idea-explorer ideas --query "your topic here" --memory-scope global
+```
+
+## 核心能力
+
+- literature-first 检索主线
+- hybrid / lexical / embedding / graph 四种检索策略
+- 结构化 research cards：
+  `Title / Abstract / Design / Distinctiveness / Significance`
+- persistent JSON memory graph
+- accept / reject feedback loop
+- 对话偏好记忆与下一轮 continuation
+- Codex skill 与 Claude Code command 安装器
+
+## 支持的文献源
+
+- `OpenAlex`
+- `Crossref`
+- `arXiv`
+- `Semantic Scholar`
+- `NBER`
+- `Europe PMC`
+- `bioRxiv / medRxiv`
+- `SSRN`
+- `ScienceDirect`
+- `Springer Nature`
+- `web metadata`
+- `Zotero`
+- `local JSON / CSL-JSON / BibTeX`
+
+## 文档
+
+- [中文说明](docs/README.zh.md)
+- [English Docs](docs/README.en.md)
+- [中文快速上手](docs/quickstart.zh.md)
+- [English Quick Start](docs/quickstart.en.md)
+- [功能总览 / Feature Guide](docs/feature-guide.zh-en.md)
+- [开发说明 / Dev Notes](docs/dev.md)
+
+## 开发者
+
+README 主路径面向最终用户。  
+如果你是在仓库里开发、调试或跑测试，请看 [docs/dev.md](docs/dev.md)。

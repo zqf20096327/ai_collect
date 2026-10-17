@@ -1,0 +1,316 @@
+<div align="center">
+
+[🇬🇧 English](README.md) | [☀️🦁 فارسی](README-fa.md)
+
+# 🚀 Router Models
+
+**Add custom AI models to VS Code Copilot Chat — OpenRouter, Ollama, LM
+Studio, Groq, OpenAI, or any OpenAI-compatible provider.**
+
+Bring your own API keys (BYOK) — paste several and they rotate
+automatically, tag free models, even use local models on your machine.
+It's free and open source.
+
+[![Release](https://img.shields.io/github/v/release/web-elite/router-models?label=Release&logo=github)](https://github.com/web-elite/router-models/releases/latest)
+[![VS Code](https://img.shields.io/badge/VS_Code-%3E%3D_1.104-blue?logo=visualstudiocode)](https://code.visualstudio.com/updates/v1_104)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/web-elite/router-models?style=social&label=%E2%AD%90%20Star%20us%21)](https://github.com/web-elite/router-models/stargazers)
+
+[⬇️ Download](https://github.com/web-elite/router-models/releases/latest) ·
+[🐞 Report a Problem](https://github.com/web-elite/router-models/issues)
+
+</div>
+
+<p align="center">
+  <img src="screenshot/main.png" alt="Router Models — VS Code Copilot Chat with custom AI models" width="800">
+</p>
+
+>  
+> ## ⭐ Please give this project a star!
+>
+> **Router Models is 100% free.** If it's useful to you, the best way to say
+> thanks is a ⭐ **Star** on GitHub — it takes one second and helps other
+> people find the project.
+>
+> ### 👉 [Github](https://github.com/web-elite/router-models)  — hit the ★ button!
+>  
+
+## 🤔 What does it do?
+
+VS Code Copilot Chat normally only offers Microsoft's own models.
+**Router Models** lets you add your own AI providers and use **their**
+models in the same chat — right from the regular model picker.
+
+**Why you'll love it:**
+
+- 🔑 **Use several API keys together** — got multiple (free) keys? Paste them
+  all in. When one hits its limit, the next one takes over automatically.
+  No more "rate limit" interruptions.
+- ❄️ **No manual waiting** — if a key needs a break, the extension handles
+  the timing and switches to another key for you.
+- 🏠 **Works with local AI too** — use models running on your own computer
+  (Ollama, LM Studio) — no key needed at all.
+- 📊 **See what's happening** — a small indicator in the status bar shows
+  your keys' status at a glance.
+- 🔐 **Your keys stay safe** — they're stored in VS Code's secure storage,
+  never in plain text files.
+- 🧠 **Works with thinking models** and tool-using agents out of the box.
+
+---
+
+## 📦 How to Install
+
+### Option 1 — From the VS Code Marketplace *(easiest)*
+
+1. Open VS Code
+2. Click the **Extensions** icon on the left sidebar (or press `Ctrl+Shift+X`)
+3. Search for **Router Models**
+4. Click **Install**
+
+Or open this link in your browser and click Install:
+**<https://marketplace.visualstudio.com/items?itemName=alireza-yaghouti.router-models>**
+
+### Option 2 — Download the file from GitHub
+
+1. Go to the
+   **[Releases page](https://github.com/web-elite/router-models/releases/latest)**
+   and download the file ending in **`.vsix`**
+2. Open VS Code → click the **Extensions** icon (`Ctrl+Shift+X`)
+3. Click the **⋯ menu** (top of the Extensions panel) → **Install from VSIX…**
+4. Choose the file you downloaded — done!
+
+> [!TIP]
+> With Option 2, VS Code won't update the extension automatically. To get
+> notified about new versions, click **Watch → Custom → Releases** on the
+> GitHub page.
+
+---
+
+## 🚀 How to Use
+
+1. Press `Ctrl+Shift+P` and type **Router Models: Add Provider**
+2. Fill in the simple form:
+   - **Name** — anything you like, e.g. `My OpenAI`
+   - **Base URL** — the provider's address (see the table below)
+   - **API keys** — one or more, each on a new line
+     *(skip this for local Ollama / LM Studio)*
+3. Open Copilot Chat, click the **model picker** at the top — your new
+   models are there under **Router Models**. Pick one and chat! 🎉
+
+You can also manage everything from the **Router Models panel** in the
+left activity bar — add, edit or remove providers with simple buttons.
+
+### 🌐 Ready-to-copy Base URLs
+
+| Provider | Base URL |
+| --- | --- |
+| OpenAI | `https://api.openai.com/v1` |
+| OpenRouter | `https://openrouter.ai/api/v1` |
+| Groq | `https://api.groq.com/openai/v1` |
+| Together AI | `https://api.together.xyz/v1` |
+| Ollama *(on your PC)* | `http://localhost:11434/v1` |
+| LM Studio *(on your PC)* | `http://localhost:1234/v1` |
+
+Any other service that works with the "OpenAI format" will work too.
+
+---
+
+## 🏷️ Mark models as free
+
+Every model in the **Router Models** panel has a small **+ free** button.
+Click it to tag the model as free:
+
+- the sidebar shows a green **✓ free** badge next to the model,
+- in the Copilot model picker the model is listed as `Model name (free)`,
+  so typing **free** in the picker's search box lists all your free models
+  across every provider,
+- models whose id or name already contains "free" (like OpenRouter's
+  `:free` models) get the label automatically,
+- the flag is kept when you refresh the provider's model list.
+
+To remove the label, click the button again. The **+ Model** form and the
+`Router Models: Add Model Manually` command ask about the free tag too.
+
+---
+
+## 🎁 Detect free models automatically
+
+Instead of tagging models one by one, Router Models can tag them for
+you. It downloads a **curated list of free models** maintained by the
+extension author, matches every provider you added **by the base URL's
+domain** (so `https://openrouter.ai/api/v1` in the list matches a
+provider you added as `https://openrouter.ai/v1`), and tags all the
+listed models as free automatically.
+
+The list is a service shipped with the extension — there is nothing to
+host and no URL to configure. It is **off by default**; nothing is
+downloaded until you turn it on.
+
+**1. Turn it on.** Click **Enable** in the sidebar footer, press the 🎁
+button in the sidebar header, or run the **Router Models: Detect Free
+Models** command. You can also flip the `routerModels.freeModelsEnabled`
+setting.
+
+**2. That's it.** The extension then:
+
+- shows a footer line with the model count, provider count, how long ago
+  the list was updated, and an **Update** link to download the latest
+  list on demand,
+- **re-downloads the list automatically** every
+  `routerModels.freeModelsRefreshHours` hours (24 by default — you can
+  change it),
+- refreshes on startup too when the cached copy is older than the
+  configured interval, so a machine that was off for days still catches
+  up.
+
+A model that gets dropped from the list stops being free again, and your
+own manual **+ free** tags keep working alongside it.
+
+For the curious, the list is a plain JSON file that maps a provider's
+domain to its free model ids (glob patterns supported, so
+`meta-llama/*` marks every model under that prefix as free):
+
+```json
+{
+  "version": 1,
+  "updated": "2025-01-30T12:00:00Z",
+  "providers": [
+    {
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "freeModels": [
+        "deepseek/deepseek-chat-v3:free",
+        "qwen/qwen-2.5-72b-instruct:free",
+        "meta-llama/*"
+      ]
+    },
+    {
+      "baseUrl": "https://api.deepseek.com",
+      "freeModels": ["deepseek-chat", "deepseek-reasoner"]
+    }
+  ]
+}
+```
+
+---
+
+## 📥 Import from a backup file (9router, omnirouter or any fork of 9router)
+
+1. Run **`Router Models: Import Providers from JSON`** — or click the ⇩
+   button in the sidebar.
+2. Pick your `.json` backup file.
+3. That's it! All providers and API keys in the file are added
+   automatically — keys you already have are skipped, so nothing gets
+   duplicated. The model list fills in by itself.
+
+---
+
+## 📤 Export your setup (backup & move to another PC)
+
+1. Run **`Router Models: Export Providers to JSON`** — or click the ⤒
+   button in the sidebar header.
+2. Choose whether to include the **API keys** — *with keys* means the
+   file restores your full setup anywhere (keep it private!), *without
+   keys* is safe to share.
+3. Save the file. Import it on any other machine with
+   **`Router Models: Import Providers from JSON`** — you can then
+   **merge** with the existing setup or **replace** it completely
+   (full restore). Endpoints, icons, cooldowns, manual models,
+   "free" tags and the include/exclude patterns all come along.
+
+---
+
+## ☁️ Keep work & home in sync automatically
+
+Router Models works with **VS Code Settings Sync** (your GitHub or
+Microsoft account):
+
+- Provider configs, model lists, manual models and "free" tags are
+  synced between your machines automatically.
+- API keys are **not** synced by default — they live in each
+  machine's secure storage. To sync them too, enable
+  **`routerModels.syncApiKeys`** in the settings on every machine
+  (keys then travel inside the encrypted Settings Sync backup).
+- Make sure Settings Sync itself is turned on (gear icon →
+  *Backing up and Syncing…* → sign in with GitHub/Microsoft).
+- After a sync, open the Router Models sidebar (or run
+  **`Router Models: Reload from Settings Sync`**) to pick up the
+  changes immediately.
+
+---
+
+## ❓ Common Questions
+
+<details>
+<summary><b>Where are my API keys stored?</b></summary>
+<br>
+
+In VS Code's built-in secure storage — the same place VS Code keeps its own
+secrets. They never appear in your settings or project files.
+</details>
+
+<details>
+<summary><b>I don't see my models in the chat picker</b></summary>
+<br>
+
+Click the status bar item (bottom left, starting with "Router") and choose
+**Refresh**, or run `Router Models: Refresh Models` from the command
+palette. Also make sure your VS Code is up to date (1.104 or newer).
+</details>
+
+<details>
+<summary><b>Do local providers like Ollama need a key?</b></summary>
+<br>
+
+No — just leave the key field empty.
+</details>
+
+<details>
+<summary><b>One of my keys stopped working</b></summary>
+<br>
+
+The extension marks broken keys automatically and stops using them. Open
+the status bar menu to see each key's status, or edit the provider to
+replace a key. You can also clear cooldowns with one click.
+</details>
+
+---
+
+## 🤝 Contribute
+
+Found a bug or have an idea?
+[Open an issue](https://github.com/web-elite/router-models/issues) —
+all kinds of contributions are welcome!
+
+---
+
+## ⭐ Support the Project
+
+> [!TIP]
+> **If Router Models saves you time or money, please give it a ⭐ Star!**
+>
+> Stars keep the project alive and help other developers discover it.
+>
+> **👉 [github.com/web-elite/router-models](https://github.com/web-elite/router-models)**
+
+Other ways to help:
+
+- 🐞 [Report bugs](https://github.com/web-elite/router-models/issues)
+- 💡 Suggest ideas for new features
+- 📣 Tell your friends and colleagues about it
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © Web Elite
+
+---
+
+<div align="center">
+
+**Made with ❤️ by [Web Elite](https://github.com/web-elite)**
+
+If this extension is useful to you, please consider giving it a ⭐ Star on
+GitHub — [it really helps!](https://github.com/web-elite/router-models/stargazers)
+
+</div>

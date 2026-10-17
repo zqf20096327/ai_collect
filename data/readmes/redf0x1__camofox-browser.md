@@ -1,0 +1,1068 @@
+# CamoFox Browser Server
+
+> Anti-detection browser server for AI agents — TypeScript REST API wrapping the [Camoufox](https://github.com/daijro/camoufox) stealth browser engine
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](tsconfig.json)
+[![Node](https://img.shields.io/badge/Node-20%2B-green)](package.json)
+[![npm](https://img.shields.io/npm/v/camofox-browser)](https://www.npmjs.com/package/camofox-browser)
+
+## Table of Contents
+
+- [Why CamoFox?](#why-camofox)
+- [Features](#features)
+- [Preview Status](#preview-status)
+- [Quick Start](#quick-start)
+- [Windows x64 Portable](#windows-x64-portable)
+- [CLI](#cli)
+- [Console Capture](#console-capture)
+- [Playwright Tracing](#playwright-tracing)
+- [Security](#security)
+- [Usage with AI Agents](#usage-with-ai-agents)
+- [Architecture](#architecture)
+- [API Reference](#api-reference)
+- [Structured Extract](#structured-extract)
+- [Search Macros](#search-macros)
+- [Geo Presets](#geo-presets)
+- [Environment Variables](#environment-variables)
+- [Deployment](#deployment)
+- [Used With](#used-with)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [Credits](#credits)
+- [License](#license)
+
+## Why CamoFox?
+
+**The Problem**: Standard browser automation (Puppeteer, Playwright, Selenium) is easily detected by modern anti-bot systems. JavaScript-level patches are fragile and get bypassed quickly.
+
+**The Solution**: CamoFox Browser Server wraps [Camoufox](https://github.com/daijro/camoufox), a Firefox fork with **C++ engine-level fingerprint spoofing**. No JavaScript injection — anti-detection happens at the browser engine level.
+
+| Feature | Puppeteer/Playwright | CamoFox Browser Server |
+|---------|---------------------|------------------------|
+| Anti-detection | JavaScript patches (fragile) | C++ engine-level (robust) |
+| Fingerprint spoofing | Limited | Full (engine-level) |
+| Token efficiency | Raw HTML / screenshots | Accessibility snapshots (smaller + structured) |
+| Integration | Direct SDK | REST API for any language / AI agent |
+| AI agent support | Varies | MCP + OpenClaw compatible |
+
+## Features
+
+- **C++ Anti-Detection** — fingerprint spoofing at the Camoufox engine level (not JS injection)
+- **REST API** — language-agnostic HTTP endpoints for browser automation and AI agent integration
+- **Multi-Session** — concurrent isolated browser contexts per `userId` (defaults: max 50 sessions, max 10 tabs/session)
+- **Persistent Browser Profiles** — Each user gets a dedicated Firefox profile. Cookies, localStorage, IndexedDB, and all browser storage persist across sessions automatically.
+- **Geo Presets** — 8 built-in region presets (locale/timezone/geolocation) + custom presets file
+- **Session-Level Proxy/Geo Overrides** — per-session proxy configuration via named profiles or raw credentials, with hybrid geo modes (`explicit-wins` or `proxy-locked`)
+- **14 Search Macros** — Google, YouTube, Amazon, Reddit (search + subreddit JSON), Wikipedia, Twitter, Yelp, Spotify, Netflix, LinkedIn, Instagram, TikTok, Twitch
+- **Element Refs** — accessibility snapshots annotated with stable `eN` element references for precise interaction
+- **Cookie Persistence** — import Netscape/Playwright-style cookies into a session (bearer auth required only when `CAMOFOX_API_KEY` is set)
+- **OpenClaw Plugin** — OpenClaw-compatible endpoints (`/start`, `/tabs/open`, `/act`, etc.)
+- **TypeScript** — strict mode, typed request shapes, modular Express routes
+- **YouTube Transcript Extraction** — yt-dlp + browser fallback (service-level; no public API route currently exposed)
+- **Snapshot Pagination** — offset-based windowing for large page snapshots
+- **Image Listing Route** — image-only extraction over the shared resource extractor with selector, extension, lazy-load, and blob-resolution controls
+- **Structured Extract** — deterministic schema-driven JSON extraction across core API, CLI, and OpenClaw without arbitrary JavaScript
+- **Browser Health Monitoring** — health probe with recovery/degraded state tracking
+- 🖥️ **CLI Mode** — 50+ commands for terminal-based browser automation
+- 🔐 **Auth Vault** — AES-256-GCM encrypted credential storage (LLM-safe)
+- 📜 **Pipeline Scripting** — Execute command scripts from files
+- 🔍 **Console Capture** — capture and filter browser console messages and uncaught errors
+- 📼 **Playwright Tracing** — record and export Playwright traces for debugging
+- 🗂️ **Trace Artifact Management** — list, download, and delete managed trace ZIPs per user session
+
+## Preview Status
+
+CamoFox Browser Server is in **Preview** (Phase 1). Preview releases are functional for browser automation and agent integration, but carry specific compatibility commitments and explicit non-goals.
+
+### What Preview Means
+- The REST API and CLI are usable for agent workflows today; [CamoFox MCP](https://github.com/redf0x1/camofox-mcp) is available as an external companion integration
+- New features may be added between minor versions
+- Backward-compatible aliases are maintained for renamed or moved endpoints (see [Compatibility Policy](#compatibility-policy))
+- Local state (profiles, registries, sessions) uses versioned formats with fail-closed integrity checks
+
+### What Preview Does NOT Guarantee
+- **Frozen API surface** — endpoint behavior, request shapes, or response formats may change between minor versions
+- **Automatic local-state migration** — browser profiles, download registries, and session files use versioned sidecar formats; incompatible upgrades require manual reset (see [Local State Recovery](#local-state-recovery))
+- **Downgrade safety** — rolling back to an older version may require clearing local state
+- **Fixed GA timeline** — promotion to GA requires meeting evidence-based exit criteria, not a calendar date
+
+### Compatibility Policy
+During Preview, CamoFox follows an **additive-only deprecation model**:
+- **Legacy aliases** (e.g., `listItemId` accepted alongside `sessionKey`, OpenClaw `/act` routing to core endpoints) continue to work alongside their replacements
+- **Deprecated fields** are accepted silently; no removal until GA or a documented migration window with advance notice in CHANGELOG
+- **No existing endpoint** is removed in a minor version — removals happen only in major versions with prior CHANGELOG notice
+
+### Local State Recovery
+Browser profiles, download registries, and CLI session files use versioned sidecar formats. When upgrading CamoFox:
+- **Compatible versions**: State loads normally
+- **Incompatible or corrupt state**: The server refuses to load incompatible profiles and download registries; the CLI rejects incompatible saved-session files. Both log an actionable error with the specific recovery path.
+- **Recovery**: Delete the affected profile directory, session file, or download registry as indicated in the error message. Clean state is recreated on next use.
+
+Supported sidecars include limited forward-migration paths (e.g., fingerprint v0 → v1); when no migration path exists for a given version, the server refuses to load the file and logs an actionable recovery message. There is no silent repair or downgrade path — this fail-closed default prevents data corruption at the cost of manual intervention on unsupported version jumps.
+
+## Quick Start
+
+### From Source
+
+```bash
+git clone https://github.com/redf0x1/camofox-browser.git
+cd camofox-browser
+npm install
+npm run build
+npm start
+```
+
+### Using npm (CLI)
+
+```bash
+npm install -g camofox-browser
+
+# Start the server
+camofox-browser
+
+# Or use the CLI for browser automation
+camofox open https://example.com
+camofox snapshot
+camofox click e5
+```
+
+> See [CLI](#cli) for the complete command reference.
+
+## Windows x64 Portable
+
+Windows x64 is supported as a headless-first portable distribution. Release ZIPs are named `camofox-browser-<version>-windows-x64.zip` and contain the Node.js runtime, application runtime, and the pinned Camoufox Windows x64 engine, so a global Node.js installation is not required.
+
+Extract the ZIP to a writable directory and run the bundled launchers from PowerShell or Command Prompt:
+
+```powershell
+.\camofox.cmd --version
+.\camofox.cmd server start --background
+.\camofox.cmd server status
+.\camofox.cmd server stop
+```
+
+Portable runtime state stays under `data\home` inside the extracted directory. This includes camofox-browser's `.camofox` profiles/logs and the bundled Camoufox cache, so the portable distribution does not use the normal Windows user profile for its application state.
+
+The portable ZIP intentionally excludes Camoufox's upstream bundled `fonts/` directory because the exact upstream source explicitly does not permit redistribution of those copyrighted Windows/macOS fonts. On Windows, CamoFox uses fonts installed on the host system instead.
+
+The supported Windows x64 display contract is `headless=true`. `headless=false` and `headless="virtual"` are rejected with a clear error before any Linux-only display process is attempted. Xvfb/VNC virtual display mode remains Linux-only, and native headed Windows mode is not part of the verified support contract.
+
+The release workflow verifies the ZIP after extracting it into a path containing spaces, starts the CLI using bundled Node.js with global Node removed from `PATH`, checks `/health`, runs a local create → navigate → snapshot → close browser flow, and confirms server shutdown and portable-state placement.
+
+### Using Docker
+
+> Docker image: `ghcr.io/redf0x1/camofox-browser`
+
+```bash
+docker build -t camofox-browser .
+docker run -d \
+  --name camofox-browser \
+  -p 9377:9377 \
+  -p 6080:6080 \
+  -e CAMOFOX_HOST=0.0.0.0 \
+  -e CAMOFOX_AUTH_MODE=auto \
+  -e CAMOFOX_API_KEY=change-me \
+  -v ~/.camofox:/home/node/.camofox \
+  camofox-browser
+```
+
+To persist browser profiles (cookies, localStorage, IndexedDB, etc.) across container restarts, keep the volume mount shown above.
+
+### Using Docker Compose
+
+```yaml
+services:
+  camofox-browser:
+    build: .
+    ports:
+      - "9377:9377"
+    environment:
+      CAMOFOX_HOST: "0.0.0.0"
+      CAMOFOX_PORT: "9377"
+      # auto requires CAMOFOX_API_KEY when CAMOFOX_HOST is non-loopback
+      CAMOFOX_AUTH_MODE: "auto"
+      CAMOFOX_API_KEY: "change-me"
+      # CAMOFOX_ADMIN_KEY: "change-me"
+      # Optional: proxy routing (also enables Camoufox geoip mode)
+      # PROXY_HOST: ""
+      # PROXY_PORT: ""
+      # PROXY_USERNAME: ""
+      # PROXY_PASSWORD: ""
+```
+
+### Verify
+
+```bash
+curl http://localhost:9377/health
+# {"ok":true,"engine":"camoufox","browserConnected":true}
+```
+
+## CLI
+
+CamoFox Browser includes a powerful CLI for browser automation directly from the terminal. The CLI auto-starts the server when needed.
+
+### Installation
+
+```bash
+# Global install (recommended)
+npm install -g camofox-browser
+
+# Or use npx (no install needed)
+npx camofox-browser open https://example.com
+```
+
+### Quick Start
+
+```bash
+camofox open https://example.com       # Open a page in anti-detection browser
+camofox snapshot                       # Get accessibility tree with element refs
+camofox click e5                       # Click element [e5]
+camofox type e3 "hello world"         # Type into element [e3]
+camofox screenshot --output page.png   # Save screenshot
+camofox close                          # Close the tab
+```
+
+### Core Commands
+
+```bash
+# Browser lifecycle
+camofox open <url>                     # Open URL in new tab
+camofox close [tabId]                  # Close tab
+camofox navigate <url>                 # Navigate current tab to URL
+
+# Inspection
+camofox snapshot                       # Get accessibility tree with [eN] refs
+camofox screenshot [--output file]     # Take screenshot (saves to file)
+camofox annotate                       # Screenshot + element ref overlay
+camofox get-url                        # Get current page URL
+camofox get-text                       # Get page text content
+camofox get-links                      # Get all links on page
+camofox get-tabs                       # List open tabs
+camofox extract-structured @schema.json # Extract deterministic JSON from a schema
+
+# Interaction
+camofox click <ref>                    # Click element by ref
+camofox type <ref> <text>              # Type text into element
+camofox fill '[e1]="user" [e2]="pw"'  # Fill multiple fields at once
+camofox scroll <direction>             # Scroll up/down/left/right
+camofox select <ref> <value>           # Select dropdown option
+camofox hover <ref>                    # Hover over element
+camofox press <key>                    # Press keyboard key
+
+# Navigation
+camofox go-back                        # Browser back
+camofox go-forward                     # Browser forward
+camofox search "query" --engine google # Search (8 engines supported)
+camofox eval "document.title"          # Execute JavaScript
+camofox wait <selector> [--timeout ms] # Wait for element
+```
+
+> **Text input:** CamoFox has no character limit for typed or filled text. Short text stays humanized for anti-detection, while long text automatically switches to bulk DOM insertion so large inputs do not truncate.
+
+### Session Management
+
+```bash
+camofox session save <name>            # Save current browser state
+camofox session load <name>            # Restore browser state
+camofox session list                   # List saved sessions
+camofox session delete <name>          # Delete saved session
+```
+
+### Cookie Management
+
+```bash
+camofox cookie export <file>           # Export cookies to JSON file
+camofox cookie import <file>           # Import cookies from JSON file
+```
+
+### Auth Vault
+
+Securely store credentials locally with AES-256-GCM encryption. Credentials are **never** output to stdout — safe for LLM agent automation.
+
+```bash
+camofox auth save <profile> [--url URL]  # Save credentials (prompts for master password)
+camofox auth load <profile>              # Show profile info (username only)
+camofox auth list                        # List saved profiles (no secrets shown)
+camofox auth delete <profile>            # Delete a profile
+camofox auth change-password <profile>   # Change master password
+
+# Inject credentials into a browser tab (LLM-safe)
+camofox snapshot                         # Get element refs first
+camofox auth load gmail --inject --username-ref e5 --password-ref e12
+```
+
+> **Security:** Master passwords use Argon2id KDF (with PBKDF2 fallback). Vault files are stored with 0600 permissions. The `--inject` flag sends credentials directly to the browser — the LLM agent never sees the password.
+
+### Pipeline Scripting
+
+Execute multiple commands from a file for automation workflows:
+
+```bash
+# Create a script
+cat > login-flow.txt << 'EOF'
+# Login automation script
+open https://example.com/login
+snapshot
+type e3 "username"
+type e5 "password"
+click e7
+wait .dashboard --timeout 5000
+screenshot --output result.png
+close
+EOF
+
+# Run it
+camofox run login-flow.txt
+
+# Continue on errors
+camofox run login-flow.txt --continue-on-error
+
+# Read from stdin
+echo "get-url" | camofox run -
+```
+
+### Server Management
+
+```bash
+camofox server start                   # Start server daemon
+camofox server start --background      # Start in background
+camofox server stop                    # Stop server daemon
+camofox server status                  # Check server status
+```
+
+### Diagnostics
+
+```bash
+camofox health                         # System health report
+camofox version                        # CLI + server version
+camofox info                           # Configuration info
+```
+
+### Console Capture
+
+```bash
+camofox console [tabId]                  # View console messages
+camofox console [tabId] --type error     # Filter by type (log/warning/error/info/debug)
+camofox console [tabId] --clear          # View then clear messages
+camofox errors [tabId]                   # View uncaught JavaScript errors
+camofox errors [tabId] --clear           # View then clear errors
+```
+
+### Playwright Tracing
+
+```bash
+camofox trace start [tabId]              # Start recording trace
+camofox trace stop [tabId] [-o file.zip] # Stop and save trace ZIP
+camofox trace chunk-start [tabId]        # Start new trace chunk
+camofox trace chunk-stop [tabId] [-o f]  # Stop chunk and save ZIP
+camofox trace status [tabId]             # Check active trace status
+```
+
+View traces at [trace.playwright.dev](https://trace.playwright.dev)
+
+### Global Options
+
+| Flag | Env Var | Description | Default |
+|------|---------|-------------|---------|
+| `--user <id>` | `CAMOFOX_USER` | User/profile ID | `cli-default` |
+| `--port <port>` | `PORT` | Server port | `9377` |
+| `--format <fmt>` | — | Output: `json`, `text`, `plain` | `text` |
+| `-V, --version` | — | Show version | — |
+| `-h, --help` | — | Show help | — |
+
+### Output Formats
+
+```bash
+camofox get-url --format json          # {"url":"https://example.com"}
+camofox get-url --format text          # URL: https://example.com
+camofox get-url --format plain         # https://example.com
+```
+
+> **Tip:** Use `--format json` for programmatic parsing and LLM agent integration.
+
+## Security
+
+### Anti-Detection
+CamoFox uses [Camoufox](https://github.com/daijro/camoufox), a Firefox fork with **C++ level fingerprint spoofing**. Unlike Chromium-based tools, CamoFox passes bot detection on Google, Cloudflare, and other anti-bot services.
+
+### Auth Vault
+- **AES-256-GCM** encryption with **Argon2id** key derivation (PBKDF2 fallback)
+- Credentials **never** appear in stdout (safe for LLM agent pipelines)
+- Vault files stored with `0600` permissions
+- Master password required for all vault operations
+
+### LLM Agent Safety
+- The `--inject` flag sends credentials directly to the browser — the LLM agent orchestrating the CLI never sees raw passwords
+- Output formats are designed for safe parsing without credential exposure
+- Pipeline scripts can reference auth profiles without embedding secrets
+
+## Usage with AI Agents
+
+CamoFox works seamlessly with AI coding agents and LLM-powered automation:
+
+### AI Coding Assistants (Recommended)
+
+Add CamoFox skills to your AI coding assistant for full browser automation context:
+
+```bash
+npx skills add redf0x1/camofox-browser
+```
+
+This works with **Claude Code**, **Codex**, **Cursor**, **Gemini CLI**, **GitHub Copilot**, **Goose**, **OpenCode**, **Windsurf**, and [40+ other agents](https://github.com/vercel-labs/skills#supported-agents).
+
+**Available skills:**
+
+| Skill | Focus | Best For |
+|-------|-------|----------|
+| `camofox-browser` | Full coverage (CLI + API + OpenClaw) | Complete reference |
+| `camofox-cli` | CLI-only (50+ commands) | Terminal-first workflows |
+| `dogfood` | QA testing workflow | Systematic web app testing |
+| `gemini-image` | Gemini image generation | AI image automation |
+| `reddit` | Reddit automation | Reddit posting/commenting |
+
+The installer will prompt you to choose which skills and which agents to configure.
+
+#### Claude Code
+
+```bash
+npx skills add redf0x1/camofox-browser
+# Installs to .claude/skills/camofox-browser/SKILL.md
+```
+
+#### Cursor / GitHub Copilot / Codex
+
+```bash
+npx skills add redf0x1/camofox-browser
+# Installs to .agents/skills/ directory
+```
+
+> **Tip:** Skills are symlinked from the repo, so they stay up to date. Do not manually copy `SKILL.md` files.
+
+### MCP Integration (Recommended)
+Use [CamoFox MCP](https://github.com/redf0x1/camofox-mcp) for direct integration with Claude, Cursor, Windsurf, and other MCP-compatible agents. See [Used With](#used-with).
+
+### CLI Integration
+AI agents can use the CLI with `--format json` for structured output:
+
+```bash
+camofox open https://example.com       # Open page
+camofox snapshot --format json         # Get structured element tree
+camofox click e5                       # Interact with elements
+camofox auth load gmail --inject --username-ref e5 --password-ref e12  # Safe credential injection
+```
+
+### Pipeline Automation
+Create reusable automation scripts that AI agents can execute:
+
+```bash
+camofox run automation-flow.txt        # Execute multi-step workflow
+```
+
+## Architecture
+
+```text
+AI Agent (MCP / OpenClaw / REST Client)
+    │
+    ▼ HTTP REST API (port 9377)
+┌──────────────────────────────────────────┐
+│          CamoFox Browser Server          │
+│          (Express + TypeScript)          │
+├──────────────────────────────────────────┤
+│ Routes                 Services          │
+│  ├── Core API           ├── Browser      │
+│  └── OpenClaw compat    ├── Session      │
+│                         └── Tab ops      │
+├──────────────────────────────────────────┤
+│        Camoufox Engine (anti-detect)     │
+│   Firefox fork + engine-level spoofing   │
+└──────────────────────────────────────────┘
+```
+
+### Persistent Profiles (v1.3.0)
+
+- Each `userId` runs in its own persistent Firefox process/context (backed by `launchPersistentContext(userDataDir)`)
+- Profile data is stored under `~/.camofox/profiles/` (override via `CAMOFOX_PROFILES_DIR`). Linux/macOS keep the readable default-user directory name; new Windows profiles use a deterministic hashed directory name so case-insensitive or trailing-dot/space-equivalent user IDs cannot share a Firefox profile. Existing Windows directories from the previous layout are read in place only when their exact on-disk name is unambiguous and no hashed directory also exists; conflicting layouts fail closed with both recovery paths in the error.
+- Idle user contexts are closed via LRU eviction (profile data remains on disk)
+
+## API Reference
+
+Base URL: `http://localhost:9377`
+
+> **Security defaults:** `CAMOFOX_HOST` now defaults to `127.0.0.1`, and `CAMOFOX_AUTH_MODE=auto` keeps local loopback usage open while requiring `CAMOFOX_API_KEY` when you bind beyond loopback (for example `0.0.0.0` in Docker or PaaS). Set `CAMOFOX_AUTH_MODE=required` to require API-key auth everywhere. Set `CAMOFOX_AUTH_MODE=disabled` only for trusted private agent networks whose clients cannot send bearer tokens; this disables API-key auth for protected endpoints and keeps private-network navigation blocked. On non-loopback binds, navigation targets on loopback/private/link-local/metadata hosts are blocked by default unless you explicitly set `CAMOFOX_ALLOW_PRIVATE_NETWORK=true`. If you also configure `PROXY_HOST`/`PROXY_PORT`, exposed deployments must opt into `CAMOFOX_ALLOW_PRIVATE_NETWORK=true` until proxy-side private-target validation exists.
+
+### API Documentation
+
+The Camofox Browser API includes OpenAPI 3.1.0 docs for a representative subset of the shipped route surface:
+
+- **Interactive API Explorer**: [http://localhost:9377/api/docs](http://localhost:9377/api/docs) — Swagger UI with live request testing
+- **OpenAPI Specification**: [http://localhost:9377/openapi.json](http://localhost:9377/openapi.json) — Machine-readable OpenAPI 3.1.0 spec
+
+The OpenAPI spec covers a representative subset of core and OpenClaw endpoints, including request schemas, response shapes, authentication requirements, and validation rules.
+
+### Core Endpoints
+
+Note: For any endpoint that targets an existing tab (`/tabs/:tabId/...`), the server resolves `tabId` **within a `userId` scope**. If you omit `userId` from the request body, the server returns `400 { "error": "userId is required" }`. If `userId` is present but the tab belongs to a different user, the server returns `404 Tab not found` — except `DELETE /tabs/:tabId`, which is idempotent and returns `200 { "ok": true }` when no matching tab is found under the given `userId` scope (the tab is already gone from the caller's perspective). For endpoints that accept `userId` as a query parameter (e.g. `GET /tabs/:tabId/snapshot`), omitting it may also result in a `400` or `404` depending on the route.
+
+| Method | Endpoint | Description | Required | Auth |
+|--------|----------|-------------|----------|------|
+| POST | `/sessions/:userId/cookies` | Import cookies into a user session (Playwright cookie objects) | Path: `userId`; Body: `{ "cookies": Cookie[] }` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/health` | Health check (also pre-launches the browser) | None | None |
+| GET | `/presets` | List available geo presets (built-in + custom) | None | None |
+| POST | `/tabs` | Create a new tab (supports `preset` + per-field overrides) | Body: `userId` + (`sessionKey` or `listItemId`) | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs?userId=...` | List all tabs for a user (OpenClaw-compatible response shape) | Query: `userId` | None |
+| POST | `/tabs/:tabId/navigate` | Navigate to a URL, or expand a search `macro` + `query` | Body: `userId` + (`url` or `macro`) | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/snapshot?userId=...` | Accessibility snapshot annotated with `eN` element refs | Query: `userId` | None |
+| POST | `/tabs/:tabId/wait` | Wait for page readiness (DOM + optional network idle) | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/click` | Click by `ref` (e.g. `e12`) or CSS `selector` | Body: `userId` + (`ref` or `selector`) | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/type` | Type into an element by `ref` or CSS `selector` | Body: `userId` + (`ref` or `selector`) + `text` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/press` | Press a key (e.g. `Enter`, `Escape`) | Body: `userId` + `key` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/scroll` | Scroll up/down/left/right by pixels | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/scroll-element` | Scroll specific element into view | Body: userId, ref/selector | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/back` | Go back | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/forward` | Go forward | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/refresh` | Refresh | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/links?userId=...&limit=50&offset=0` | Extract links (paginated) | Query: `userId` | None |
+| GET | `/tabs/:tabId/images?userId=...` | List extracted images | Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/screenshot?userId=...&fullPage=true` | Screenshot (PNG bytes) | Query: `userId` | None |
+| GET | `/tabs/:tabId/stats?userId=...` | Tab stats + visited URLs | Query: `userId` | None |
+| DELETE | `/tabs/:tabId` | Close a tab (expects JSON body: `{ "userId": "..." }`) | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| DELETE | `/tabs/group/:listItemId` | Close a tab group (expects JSON body: `{ "userId": "..." }`) | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| DELETE | `/sessions/:userId` | Close all sessions for a user | Path: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/sessions/:userId/toggle-display` | Toggle display mode (headless/headed/virtual) | Path: `userId`; Body: `{ "headless": true\|false\|"virtual" }` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/cookies` | Export tab cookies | Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/downloads` | List tab downloads | Query: `userId` | None |
+| GET | `/users/:userId/downloads` | List user downloads | Path: `userId` | None |
+| GET | `/downloads/:downloadId` | Download metadata | Query: `userId` | None |
+| GET | `/downloads/:downloadId/content` | Stream download content | Query: `userId` | None |
+| DELETE | `/downloads/:downloadId` | Delete tracked download | Body or Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/extract-resources` | Extract downloadable resources | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/batch-download` | Batch download resources | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/resolve-blobs` | Resolve blob URLs to base64 | Body: `userId` + `urls[]` | None |
+| POST | `/tabs/:tabId/trace/start` | Start trace recording | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/trace/stop` | Stop and save trace ZIP | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/trace/chunk/start` | Start trace chunk | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/trace/chunk/stop` | Stop chunk and save ZIP | Body: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/trace/status` | Check trace status | Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/sessions/:userId/traces` | List managed trace ZIPs for a user | Path: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/sessions/:userId/traces/:filename` | Download a managed trace ZIP | Path: `userId`, `filename` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| DELETE | `/sessions/:userId/traces/:filename` | Delete a managed trace ZIP | Path: `userId`, `filename` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/console` | Get console messages | Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/tabs/:tabId/errors` | Get uncaught JS errors | Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/console/clear` | Clear console + errors | Body or Query: `userId` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/tabs/:tabId/extract-structured` | Extract deterministic JSON from a structured schema | Body: `userId` + `schema` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+
+### Toggle Display Mode
+```bash
+POST /sessions/:userId/toggle-display
+{"headless": "virtual"}
+```
+**Auth:** Conditional — requires `Authorization: Bearer $CAMOFOX_API_KEY` when `CAMOFOX_AUTH_MODE=required` or when `auto` mode has an API key configured. No auth is required in `CAMOFOX_AUTH_MODE=disabled`.
+Switch browser between headless and headed mode. When encountering CAPTCHAs or issues requiring visual interaction, switch to headed mode to show the browser window.
+
+**Platform note:** The Windows x64 contract is headless-only. Requests with `headless: false` or `headless: "virtual"` return HTTP 400 on Windows. The Xvfb/VNC behavior described below is Linux-only.
+
+Returns:
+```json
+{"ok": true, "headless": "virtual", "vncUrl": "http://localhost:6080/vnc.html?autoconnect=true&resize=scale&token=...", "message": "Browser visible via VNC", "userId": "agent1"}
+```
+
+**Note:** This restarts the browser context. All tabs are invalidated but cookies/auth state persist via the persistent profile.
+
+### Browser Viewer (noVNC)
+On Linux, when the display mode is set to `"virtual"` or a headed request requires a virtual display, the server can start a VNC viewer accessible via web browser.
+
+```bash
+# 1. Switch to virtual mode
+POST /sessions/:userId/toggle-display
+{"headless": "virtual"}
+# Response includes vncUrl — open in browser to see Firefox
+
+# 2. Solve CAPTCHA or interact with the browser
+
+# 3. Switch back to headless
+POST /sessions/:userId/toggle-display
+{"headless": true}
+# VNC automatically stops
+```
+
+The VNC session auto-terminates after 2 minutes (configurable via `CAMOFOX_VNC_TIMEOUT_MS`).
+
+### Evaluate JavaScript
+Execute a JavaScript expression in the page context and return the JSON-serializable result.
+
+Auth: required when `CAMOFOX_AUTH_MODE=required` or when `auto` mode has an API key configured; no auth is required in `CAMOFOX_AUTH_MODE=disabled`.
+
+Note: async expressions must be wrapped in an async IIFE (for example, `(async () => { ... })()`). Top-level `await` is not supported.
+
+```bash
+POST /tabs/:tabId/evaluate
+{"userId": "agent1", "expression": "document.title"}
+```
+Returns: `{"ok": true, "result": "Page Title", "resultType": "string", "truncated": false}`
+
+### Evaluate JavaScript (Extended)
+Execute a long-running JavaScript expression (up to 300s timeout). Conditionally API-key protected. Rate limited.
+
+Auth: required when `CAMOFOX_AUTH_MODE=required` or when `auto` mode has an API key configured; no auth is required in `CAMOFOX_AUTH_MODE=disabled`.
+
+Note: async expressions must be wrapped in an async IIFE (for example, `(async () => { ... })()`). Top-level `await` is not supported.
+
+```bash
+POST /tabs/:tabId/evaluate-extended
+{"userId": "agent1", "expression": "(async () => { const response = await fetch('/api/data'); return await response.json(); })()", "timeout": 60000}
+```
+Returns: `{"ok": true, "result": {...}, "resultType": "object", "truncated": false}`
+
+### OpenClaw Endpoints
+
+OpenClaw-compatible aliases (used by the OpenClaw plugin).
+
+| Method | Endpoint | Description | Required | Auth |
+|--------|----------|-------------|----------|------|
+| GET | `/` | Status (alias of `/health`) | None | None |
+| POST | `/tabs/open` | Open tab (OpenClaw request/response shape) | Body: `userId` + `url` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| POST | `/start` | Start browser engine | None | None |
+| POST | `/stop` | Stop browser engine | None | `x-admin-key: $CAMOFOX_ADMIN_KEY` |
+| POST | `/navigate` | Navigate (OpenClaw request shape: `targetId` in body) | Body: `userId` + `targetId` + `url` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+| GET | `/snapshot?userId=...&targetId=...` | Snapshot (OpenClaw response shape) | Query: `userId` + `targetId` | None |
+| POST | `/act` | Combined actions (`click`, `type`, `press`, `scroll`, `scrollIntoView`, `hover`, `wait`, `close`, `extractStructured`) | Body: `userId` + `targetId` + `kind` | Conditional: `Authorization: Bearer $CAMOFOX_API_KEY` |
+
+### Structured Extract
+
+Structured extract returns deterministic JSON from a DOM schema without arbitrary JavaScript. Use it when you want stable data contracts instead of ad-hoc `evaluate()` calls.
+
+Core API:
+
+```bash
+curl -X POST "$CAMOFOX_URL/tabs/$TAB_ID/extract-structured" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "userId": "agent1",
+    "schema": {
+      "kind": "object",
+      "fields": {
+        "title": { "kind": "text", "selector": "h1", "required": true, "trim": true },
+        "products": {
+          "kind": "list",
+          "selector": ".product",
+          "item": {
+            "kind": "object",
+            "fields": {
+              "name": { "kind": "text", "selector": ".name", "required": true, "trim": true },
+              "href": { "kind": "url", "selector": "a.product-link", "attr": "href", "required": true }
+            }
+          }
+        }
+      }
+    }
+  }'
+```
+
+CLI:
+
+```bash
+camofox extract-structured @schema.json <tabId> --user <userId> --format json
+```
+
+OpenClaw:
+
+```bash
+curl -X POST "$CAMOFOX_URL/act" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "kind": "extractStructured",
+    "targetId": "tab-123",
+    "userId": "agent1",
+    "schema": {
+      "kind": "object",
+      "fields": {
+        "title": { "kind": "text", "selector": "h1", "required": true }
+      }
+    }
+  }'
+```
+
+Notes:
+
+- invalid schemas fail with HTTP 400
+- required runtime misses fail the whole request with HTTP 422 and `fieldPath`
+- optional scalar/object/list nodes normalize to `null` / `null` / `[]`
+- selectors must be CSS; no XPath, arbitrary JavaScript, or AI extraction
+- raw resource extraction and structured extraction stay separate on purpose
+
+## Search Macros
+
+Use macros via `POST /tabs/:tabId/navigate` with `{ "macro": "@google_search", "query": "..." }`.
+
+| Macro | Engine |
+|-------|--------|
+| `@google_search` | Google |
+| `@youtube_search` | YouTube |
+| `@amazon_search` | Amazon |
+| `@reddit_search` | Reddit (JSON) |
+| `@reddit_subreddit` | Reddit subreddit (JSON) |
+| `@wikipedia_search` | Wikipedia |
+| `@twitter_search` | Twitter/X |
+| `@yelp_search` | Yelp |
+| `@spotify_search` | Spotify |
+| `@netflix_search` | Netflix |
+| `@linkedin_search` | LinkedIn |
+| `@instagram_search` | Instagram tags |
+| `@tiktok_search` | TikTok |
+| `@twitch_search` | Twitch |
+
+## Geo Presets
+
+Built-in presets (also exposed via `GET /presets`):
+
+| Preset | Locale | Timezone | Location |
+|--------|--------|----------|----------|
+| `us-east` | `en-US` | `America/New_York` | New York (40.7128, -74.0060) |
+| `us-west` | `en-US` | `America/Los_Angeles` | Los Angeles (34.0522, -118.2437) |
+| `japan` | `ja-JP` | `Asia/Tokyo` | Tokyo (35.6895, 139.6917) |
+| `uk` | `en-GB` | `Europe/London` | London (51.5074, -0.1278) |
+| `germany` | `de-DE` | `Europe/Berlin` | Berlin (52.5200, 13.4050) |
+| `vietnam` | `vi-VN` | `Asia/Ho_Chi_Minh` | Ho Chi Minh City (10.8231, 106.6297) |
+| `singapore` | `en-SG` | `Asia/Singapore` | Singapore (1.3521, 103.8198) |
+| `australia` | `en-AU` | `Australia/Sydney` | Sydney (-33.8688, 151.2093) |
+
+Create a tab with a preset:
+
+```bash
+curl -X POST http://localhost:9377/tabs \
+  -H 'Content-Type: application/json' \
+  -d '{"userId":"agent1","sessionKey":"task1","preset":"japan","url":"https://example.com"}'
+```
+
+Custom presets: set `CAMOFOX_PRESETS_FILE=/path/to/presets.json` (JSON object; keys become preset names).
+
+## Session-Level Proxy and Geo Overrides
+
+CamoFox supports session-level proxy and geolocation configuration with a hybrid model that combines server defaults with per-session overrides.
+
+### Proxy Configuration Model
+
+**Server-level baseline** (via environment variables):
+- `PROXY_HOST`, `PROXY_PORT`, `PROXY_USERNAME`, `PROXY_PASSWORD` — applied as the default for all sessions
+- Enables Camoufox geoip mode when configured
+
+**Session-level overrides** (via `POST /tabs` or CLI):
+- `proxyProfile` — select a named proxy profile from `CAMOFOX_PROXY_PROFILES_FILE`
+- `proxy` — provide raw proxy fields (`host`, `port`, `username`, `password`) directly
+- Session-level proxy overrides the server baseline for that specific `userId + sessionKey` combination
+
+**Session identity rules**:
+- The same `userId` may run different `sessionKey` profiles in parallel with different proxy/geo configurations
+- The same `userId + sessionKey` combination maintains a stable proxy/geo identity — requests with conflicting proxy/geo fields are rejected
+- Session reuse and cleanup scope proxy/geo identity by `userId + sessionKey`, not just `userId`
+
+### Geo Mode Behavior
+
+CamoFox offers two geo modes that control how explicit geo fields (locale, timezone, geolocation) interact with proxy-derived geo:
+
+**`geoMode=explicit-wins`** (default):
+- Explicit geo fields (locale, timezone, geolocation) remain authoritative
+- Proxy-derived geo suggestions are ignored
+- Use this mode when you want precise geo control regardless of proxy location
+
+**`geoMode=proxy-locked`**:
+- Explicit geo fields that conflict with proxy-derived geo are rejected
+- Proxy-derived geo is authoritative
+- Use this mode to ensure geo consistency with proxy exit location
+
+### CLI Examples
+
+Session-level proxy with named profile:
+```bash
+camofox open https://example.com --proxy-profile tokyo-exit --user agent1
+```
+
+Session-level proxy with raw fields:
+```bash
+camofox open https://example.com \
+  --proxy-host proxy.example.com \
+  --proxy-port 8080 \
+  --proxy-username user \
+  --proxy-password pass \
+  --user agent1
+```
+
+Combine proxy with geo mode:
+```bash
+camofox open https://example.com \
+  --proxy-profile london-exit \
+  --geo uk \
+  --geo-mode proxy-locked \
+  --user agent1
+```
+
+### API Examples
+
+Using a named proxy profile with explicit geo:
+```bash
+curl -X POST http://localhost:9377/tabs \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "userId": "agent1",
+    "sessionKey": "task1",
+    "url": "https://example.com",
+    "proxyProfile": "tokyo-exit",
+    "preset": "japan",
+    "geoMode": "explicit-wins"
+  }'
+```
+
+Using raw proxy fields with proxy-locked geo:
+```bash
+curl -X POST http://localhost:9377/tabs \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "userId": "agent1",
+    "sessionKey": "task2",
+    "url": "https://example.com",
+    "proxy": {
+      "host": "proxy.example.com",
+      "port": 8080,
+      "username": "user",
+      "password": "pass"
+    },
+    "geoMode": "proxy-locked"
+  }'
+```
+
+### Named Proxy Profiles
+
+Define proxy profiles in a JSON file and point `CAMOFOX_PROXY_PROFILES_FILE` to it:
+
+```json
+{
+  "tokyo-exit": {
+    "server": "http://tokyo.proxy.example.com:8080",
+    "username": "user",
+    "password": "pass"
+  },
+  "london-exit": {
+    "server": "http://london.proxy.example.com:8080"
+  }
+}
+```
+
+Then use profiles by name in API requests or CLI commands.
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CAMOFOX_PORT` | `9377` | Server port |
+| `PORT` | (optional) | Alternative port env var (common in PaaS) |
+| `NODE_ENV` | `development` | Node environment |
+| `CAMOFOX_HOST` | `127.0.0.1` | Server bind host. Set `0.0.0.0` for Docker/PaaS/network exposure. Non-loopback binds require `CAMOFOX_API_KEY` unless `CAMOFOX_AUTH_MODE=disabled`. |
+| `CAMOFOX_ADMIN_KEY` | (empty) | Required for `POST /stop` (sent via `x-admin-key`) |
+| `CAMOFOX_AUTH_MODE` | `auto` | API-key policy: `auto` allows loopback without auth and requires `CAMOFOX_API_KEY` for non-loopback binds; `required` requires `CAMOFOX_API_KEY` for every bind; `disabled` disables API-key auth for protected endpoints and is only for trusted private agent networks. |
+| `CAMOFOX_API_KEY` | (empty) | Guards protected endpoints (tab creation, navigation, interaction, session management, downloads, image extraction, tracing, console) via `Authorization: Bearer` header when set. Required in `CAMOFOX_AUTH_MODE=required`, and required by `auto` whenever `CAMOFOX_HOST` exposes the server beyond loopback. Must be unset when `CAMOFOX_AUTH_MODE=disabled`. |
+| `CAMOFOX_ALLOW_PRIVATE_NETWORK` | `true` on loopback binds, `false` otherwise | Allows navigation to loopback/private/link-local/metadata targets. Leave unset for the safe default; enable only for trusted deployments that intentionally need internal-network reachability. |
+| `CAMOFOX_HEADLESS` | `true` | Display mode: `true` (headless), `false` (headed), `virtual` (Xvfb). Windows x64 supports `true` only; Xvfb/VNC is Linux-only. |
+| `CAMOFOX_VNC_RESOLUTION` | `1920x1080x24` | Virtual Xvfb display resolution (`WIDTHxHEIGHTxDEPTH`) |
+| `CAMOFOX_VNC_TIMEOUT_MS` | `120000` | Max VNC session duration in ms before auto-stop |
+| `CAMOFOX_EVAL_EXTENDED_RATE_LIMIT_MAX` | `20` | Max evaluate-extended requests per user per window |
+| `CAMOFOX_EVAL_EXTENDED_RATE_LIMIT_WINDOW_MS` | `60000` | Rate limit window duration in ms |
+| `CAMOFOX_COOKIES_DIR` | `~/.camofox/cookies` | Directory used by the OpenClaw plugin cookie tool |
+| `CAMOFOX_PROFILES_DIR` | `~/.camofox/profiles` | Profile storage directory (persistent per-user Firefox profiles) |
+| `CAMOFOX_DOWNLOADS_DIR` | `~/.camofox/downloads` | Download artifact directory |
+| `CAMOFOX_DOWNLOAD_TTL_MS` | `86400000` | Download metadata retention TTL |
+| `CAMOFOX_MAX_DOWNLOAD_SIZE_MB` | `100` | Max single download size |
+| `CAMOFOX_MAX_BATCH_CONCURRENCY` | `5` | Batch download concurrency cap |
+| `CAMOFOX_MAX_BLOB_SIZE_MB` | `5` | Max blob payload size |
+| `CAMOFOX_MAX_DOWNLOADS_PER_USER` | `500` | Per-user download record cap |
+| `CAMOFOX_CONSOLE_BUFFER_SIZE` | `1000` | Per-tab console/error message buffer size (minimum `100`) |
+| `HANDLER_TIMEOUT_MS` | `30000` | Handler timeout fallback |
+| `MAX_CONCURRENT_PER_USER` | `3` | Concurrent operations per user |
+| `CAMOFOX_VNC_BASE_PORT` | `6080` | noVNC/websockify base port |
+| `CAMOFOX_VNC_HOST` | `localhost` | noVNC host in returned URL |
+| `CAMOFOX_CLI_USER` | `cli-default` | Default CLI user id |
+| `CAMOFOX_SERVER_PID_FILE` | (unset) | Optional daemon PID file path used by the CLI server manager |
+| `CAMOFOX_IDLE_TIMEOUT_MS` | `1800000` | Stage 1 idle cleanup threshold (ms) |
+| `CAMOFOX_IDLE_EXIT_TIMEOUT_MS` | `1800000` | Stage 2 daemon exit quiet window (ms, defaults to match Stage 1) |
+| `CAMOFOX_PRESETS_FILE` | (unset) | Optional JSON file defining/overriding geo presets |
+| `CAMOFOX_PROXY_PROFILES_FILE` | (unset) | Optional JSON file defining named proxy profiles for session-level overrides |
+| `CAMOFOX_SESSION_TIMEOUT` | `1800000` | Session idle timeout in ms (min `60000`) |
+| `CAMOFOX_MAX_SESSIONS` | `50` | Maximum concurrent sessions |
+| `CAMOFOX_MAX_TABS` | `10` | Maximum tabs per session |
+| `PROXY_HOST` | (empty) | Proxy host (server-level default; enables proxy routing) |
+| `PROXY_PORT` | (empty) | Proxy port (server-level default) |
+| `PROXY_USERNAME` | (empty) | Proxy username (server-level default) |
+| `PROXY_PASSWORD` | (empty) | Proxy password (server-level default) |
+| `CAMOFOX_MAX_SNAPSHOT_CHARS` | `80000` | Max characters in snapshot before truncation |
+| `CAMOFOX_MAX_SNAPSHOT_NODES` | `2000` | Max accessibility snapshot nodes before truncation |
+| `CAMOFOX_SNAPSHOT_TAIL_CHARS` | `5000` | Characters preserved at end of truncated snapshot |
+| `CAMOFOX_BUILDREFS_TIMEOUT_MS` | `12000` | Timeout for building element refs |
+| `CAMOFOX_TAB_LOCK_TIMEOUT_MS` | `30000` | Timeout for acquiring tab lock |
+| `CAMOFOX_TRACES_DIR` | `~/.camofox/traces` | Managed Playwright trace artifact directory |
+| `CAMOFOX_TRACE_MAX_DURATION_MS` | `300000` | Maximum trace recording duration before automatic stop |
+| `CAMOFOX_HEALTH_PROBE_INTERVAL_MS` | `60000` | Health probe check interval |
+| `CAMOFOX_FAILURE_THRESHOLD` | `3` | Consecutive failures before health degradation |
+| `CAMOFOX_YT_DLP_TIMEOUT_MS` | `30000` | Timeout for yt-dlp subtitle extraction |
+| `CAMOFOX_YT_BROWSER_TIMEOUT_MS` | `25000` | Timeout for browser transcript fallback |
+| `CAMOFOX_OS` | (unset) | Optional server-wide Camoufox OS override (`windows`, `macos`, `linux`, or comma-separated list for randomization) |
+| `CAMOFOX_ALLOW_WEBGL` | (unset) | Optional server-wide WebGL override; malformed values fail startup |
+| `CAMOFOX_SCREEN_WIDTH` | (unset) | Optional screen width override; applied only with `CAMOFOX_SCREEN_HEIGHT` |
+| `CAMOFOX_SCREEN_HEIGHT` | (unset) | Optional screen height override; applied only with `CAMOFOX_SCREEN_WIDTH` |
+| `CAMOFOX_HUMANIZE` | (unset) | Optional server-wide humanization override |
+
+> `CAMOFOX_OS` and `CAMOFOX_SCREEN_*` are **generation-time** controls: they affect only newly generated fingerprints and have no effect while an existing `fingerprint.json` sidecar is in use. Reset the profile or delete `fingerprint.json` to force regeneration under the new defaults. `CAMOFOX_ALLOW_WEBGL` and `CAMOFOX_HUMANIZE` are **launch-time** overrides and apply on every browser launch regardless of whether a sidecar is reused.
+
+### Idle Lifecycle Policy
+
+CamoFox implements a two-stage idle lifecycle for graceful cleanup and daemon exit:
+
+**Stage 1 — Idle Cleanup**
+- After `CAMOFOX_IDLE_TIMEOUT_MS` of idle time (default: 30 minutes), the server runs cleanup to close idle sessions and tabs
+- Cleanup is delayed if browser contexts are launching or sessions are being created
+- New interactive activity (tab creation, navigation, interaction) cancels any pending cleanup
+
+**Stage 2 — Daemon Exit**
+- After Stage 1 cleanup completes, the server waits for `CAMOFOX_IDLE_EXIT_TIMEOUT_MS` (default: matches Stage 1 timeout)
+- If no new activity occurs during this quiet window, the daemon process exits gracefully
+- Any new request activity cancels the pending exit timer
+
+**Activity detection**:
+- Live tabs, launching browser contexts, or staged session creation count as active work and prevent cleanup
+- Empty sessions (sessions with no tabs) do not block cleanup but do disarm pending daemon exit
+- New interactive activity resets both cleanup and exit timers
+
+This two-stage model ensures cleanup runs before daemon exit, preventing resource leaks while allowing the server to shut down cleanly when fully idle.
+
+## Deployment
+
+### Docker (Recommended)
+
+```bash
+docker build -t camofox-browser .
+docker run -p 9377:9377 -p 6080:6080 \
+  -v ~/.camofox:/home/node/.camofox \
+  -e CAMOFOX_HOST=0.0.0.0 \
+  -e CAMOFOX_PORT=9377 \
+  -e CAMOFOX_AUTH_MODE=auto \
+  -e CAMOFOX_API_KEY=change-me \
+  camofox-browser
+```
+
+For private Docker networks used by agents such as Hermes, OpenClaw, or GoClaw that cannot send a bearer token, keep the service off published host ports and disable API-key auth explicitly:
+
+```bash
+docker network create camofox-agents
+docker run -d \
+  --name camofox-browser \
+  --network camofox-agents \
+  -e CAMOFOX_HOST=0.0.0.0 \
+  -e CAMOFOX_AUTH_MODE=disabled \
+  -v ~/.camofox:/home/node/.camofox \
+  camofox-browser
+```
+
+Then configure the agent with `CAMOFOX_URL=http://camofox-browser:9377` from another container on the same Docker network. Do not combine `CAMOFOX_AUTH_MODE=disabled` with public port publishing or `CAMOFOX_ALLOW_PRIVATE_NETWORK=true`.
+
+### Fly.io
+
+This repo includes a starter `fly.toml` for one-command deploys.
+
+```bash
+fly launch
+fly deploy
+```
+
+### Railway
+
+- Create a new project → deploy from this GitHub repo
+- Set `CAMOFOX_HOST=0.0.0.0`
+- Set `CAMOFOX_API_KEY` to a strong secret
+- Set `CAMOFOX_PORT=9377` (Railway will also provide `PORT`, which is supported)
+- Ensure the service exposes port `9377`
+
+### Render
+
+- Create a new Web Service → deploy from this GitHub repo
+- Use Docker (recommended) and expose port `9377`
+- Set `CAMOFOX_HOST=0.0.0.0`
+- Set `CAMOFOX_API_KEY` to a strong secret
+- Set `CAMOFOX_PORT=9377` (or rely on Render `PORT`)
+
+### System Requirements
+
+- Node.js 20+
+- 2GB+ RAM (browser + contexts require significant memory)
+- Linux recommended for production; macOS is fine for development
+
+## Used With
+
+| Project | Description |
+|---------|-------------|
+| [CamoFox MCP](https://github.com/redf0x1/camofox-mcp) | MCP (Model Context Protocol) server for Claude, Cursor, VS Code |
+| [OpenClaw](https://openclaw.ai) | Open-source AI agent framework (compat endpoints included) |
+| [Camoufox](https://github.com/daijro/camoufox) | Anti-detection Firefox browser engine |
+
+## Project Structure
+
+```text
+src/
+├── cli/
+│   ├── commands/       # Command modules (core, navigation, interaction, etc.)
+│   │   ├── console.ts   # Console capture commands
+│   │   └── trace.ts     # Playwright tracing commands
+│   ├── vault/          # Auth vault (encryption, storage)
+│   ├── server/         # Server lifecycle management
+│   ├── transport/      # HTTP transport layer
+│   ├── output/         # Output formatting
+│   └── utils/          # Shared utilities
+├── server.ts           # Express app entry point
+├── types.ts            # Shared TypeScript interfaces
+├── routes/
+│   ├── core.ts         # Core REST API (~42 endpoints)
+│   └── openclaw.ts     # OpenClaw compatibility (~7 endpoints)
+├── services/
+│   ├── browser.ts      # Browser lifecycle + persistent context pool
+│   ├── batch-downloader.ts # Batch download orchestrator
+│   ├── context-pool.ts # Browser context pool with LRU eviction
+│   ├── download.ts     # Download tracking service
+│   ├── health.ts       # Browser health tracking
+│   ├── resource-extractor.ts # Page resource extraction
+│   ├── session.ts      # Session management + limits
+│   ├── tab.ts          # Tab operations (snapshot/click/type/etc.)
+│   ├── tracing.ts      # Playwright tracing service
+│   ├── vnc.ts          # VNC/virtual display lifecycle
+│   └── youtube.ts      # YouTube transcript extraction
+├── middleware/
+│   ├── auth.ts         # API/admin auth helpers
+│   ├── errors.ts       # Error handling
+│   ├── logging.ts      # Structured logging
+│   └── rate-limit.ts   # In-memory rate limiter
+└── utils/
+  ├── config.ts       # Environment config parsing
+  ├── cookies.ts      # Cookie utilities
+  ├── download-helpers.ts # Download helper functions
+  ├── launcher.ts     # Browser launcher utilities
+  ├── macros.ts       # Search macro expansion
+  ├── presets.ts      # Geo preset definitions/loader
+  └── snapshot.ts     # Snapshot truncation/windowing
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Credits
+
+This project is based on [camofox-browser](https://github.com/jo-inc/camofox-browser) by [Jo Inc](https://github.com/jo-inc) (YC W24) and the [Camoufox](https://github.com/daijro/camoufox) anti-detection browser engine by [daijro](https://github.com/daijro).
+
+- [Camoufox](https://camoufox.com) - Firefox-based browser with C++ anti-detection
+- [Donate to Camoufox's original creator daijro](https://camoufox.com/about/)
+- [OpenClaw](https://openclaw.ai) - Open-source AI agent framework
+
+## License
+
+[MIT](LICENSE)
+
+## Crypto Scam Warning
+
+Sketchy people are doing sketchy things with crypto tokens named "Camofox" now that this project is getting attention. **Camofox is not a crypto project and will never be one.** Any token, coin, or NFT using the Camofox name has nothing to do with us.

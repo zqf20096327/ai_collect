@@ -1,0 +1,492 @@
+<p align="center">
+  <img src="assets/logo/gobii-fish.png" alt="Gobii fish mascot" width="190" />
+</p>
+
+<h1 align="center">Gobii</h1>
+
+<p align="center">
+  <strong>AI employees for teams with real work to do.</strong><br/>
+  This repository contains the open-source Gobii Platform for self-hosting and development.
+</p>
+
+<p align="center">
+  <strong>Looking for the hosted product?</strong>
+  Start at <a href="https://gobii.ai/">Gobii AI employees</a>.
+</p>
+
+<p align="center">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg" />
+  <img alt="Docker Compose" src="https://img.shields.io/badge/docker-compose-blue?logo=docker" />
+  <img alt="Status" src="https://img.shields.io/badge/status-early%20access-orange" />
+</p>
+
+<p align="center">
+  <a href="https://gobii.ai/">Official Website</a>
+  ·
+  <a href="https://docs.gobii.ai/">Docs</a>
+  ·
+  <a href="https://discord.gg/yyDB8GwxtE">Discord</a>
+  ·
+  <a href="https://gobii.ai/pricing">Gobii Cloud</a>
+</p>
+
+Gobii is an AI employee platform for running durable autonomous agents in production.
+The hosted Gobii product is available at [gobii.ai](https://gobii.ai/); this repository contains the open-source platform for self-hosted deployments and development.
+Each agent can run continuously, wake from schedules and events, use real browsers, call external systems, and coordinate with other agents.
+Each agent can also be contacted like an AI employee: assign it an identity, email or text it, and it keeps working 24/7.
+
+If you are optimizing for local-first personal assistant UX on a single device, there are excellent projects for that.
+Gobii is optimized for a different problem: reliable, secure, always-on agent operations for teams and businesses.
+
+<div style="width: 100%; text-align: center">
+  <video
+    src="https://github.com/user-attachments/assets/b18068c6-695c-4a21-ac08-c298218b7882"
+    width="900"
+    controls
+    muted
+    loop
+    playsinline
+    poster="https://github.com/user-attachments/assets/ab12cd34-ef56-7890-gh12-ijkl3456mnop"
+    style="border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15);max-width:100%;height:auto;"
+  >
+  </video>
+  <br/>
+  <em>Gobii agent demo in action</em>
+</div>
+
+## Quick Install
+
+Most users looking for Gobii Cloud should start at [gobii.ai](https://gobii.ai/).
+Use this install path when you want to self-host or develop against the open-source Gobii Platform.
+
+1. **Prerequisites**: Docker Desktop (or compatible engine) with at least 12 GB RAM allocated.
+2. **Run the hosted installer**.
+
+```bash
+curl -fsSL https://gobii.ai/install.sh | bash
+```
+
+Supported installer inputs:
+
+- `GOBII_INSTALL_DIR`: target repo checkout directory. Defaults to `~/gobii-platform`.
+- `GOBII_REF`: Git ref override. Defaults to the latest tagged release.
+
+Stable installer endpoint: [https://gobii.ai/install.sh](https://gobii.ai/install.sh)
+
+Alternatively, use the manual path:
+
+```bash
+git clone https://github.com/gobii-ai/gobii-platform.git
+cd gobii-platform
+docker compose up --build
+```
+
+For Docker-based products, the standard pattern is to validate Docker and Compose rather than install Docker for you. This installer is a thin wrapper around the existing `compose.yaml` bootstrap flow.
+
+3. **Open Gobii** at [http://localhost:8000](http://localhost:8000) and complete setup.
+
+- Create your admin account.
+- Choose model providers (OpenAI, OpenRouter, Anthropic, Fireworks, or custom endpoint).
+- Add API keys and preferred model configuration.
+
+4. **Create your first always-on agent**.
+
+## Table of Contents
+
+- [Quick Install](#quick-install)
+- [Why Teams Choose Gobii](#why-teams-choose-gobii)
+- [Gobii vs OpenClaw (Production Lens)](#gobii-vs-openclaw-production-lens)
+- [AI Employee Interaction Model](#ai-employee-interaction-model)
+- [How Gobii Works](#how-gobii-works)
+- [Always-On Runtime: Schedule + Event Triggers](#always-on-runtime-schedule--event-triggers)
+- [Production Browser Runtime](#production-browser-runtime)
+- [Identity, Channels, and Agent-to-Agent](#identity-channels-and-agent-to-agent)
+- [Security Posture](#security-posture)
+- [API Quick Start](#api-quick-start)
+- [Gobii Remote MCP](#gobii-remote-mcp)
+- [Deployment Paths](#deployment-paths)
+- [Operational Profiles](#operational-profiles)
+- [Production Use Cases](#production-use-cases)
+- [FAQ](#faq)
+- [API Workflow](#api-workflow)
+- [Docs and Deep Dives](#docs-and-deep-dives)
+- [Contributing](#contributing)
+- [License and Trademarks](#license-and-trademarks)
+
+## Why Teams Choose Gobii
+
+- **Always-on by default**: per-agent schedule state plus durable event processing.
+- **Identity-bearing agents**: each agent can have its own email address and SMS phone number, so teams can contact it directly.
+- **Native agent-to-agent messaging**: linked agents can coordinate directly.
+- **Webhook-native integration model**: inbound webhooks wake agents; outbound webhooks are first-class agent actions.
+- **Based on browser-use**: keeps `/api/v1/tasks/browser-use/` compatibility while adding platform-level runtime controls.
+- **SQLite-native operational memory**: structured state substrate for long-running tool workflows.
+- **Real browser operations**: headed execution, persistent profile handling, and proxy-aware routing.
+- **Security-first controls**: encrypted-at-rest secrets, proxy-governed egress, and Kubernetes sandbox compute support.
+
+## Gobii vs OpenClaw (Production Lens)
+
+OpenClaw is excellent software, especially for local-first personal assistant workflows and broad channel coverage.
+Gobii is optimized for a different target: cloud-native, secure, always-on agent operations for teams.
+
+| Dimension | Gobii | OpenClaw |
+| --- | --- | --- |
+| Primary deployment model | Cloud-native autonomous agent runtime (self-hosted or managed) | Local-first gateway and personal assistant runtime |
+| Always-on behavior | Per-agent schedule + durable event queue continuity | Heartbeat and cron/wakeup session patterns |
+| Webhook model | Inbound triggers plus outbound agent webhook actions in one lifecycle | Strong gateway ingress hooks and wake/agent webhook routes |
+| Channel strategy | Fewer core channels with deeper lifecycle integration | Wider channel surface with intentionally thinner per-channel depth |
+| Agent identity | Endpoint-addressable agent identities (email/SMS/web) | Workspace/session identity model |
+| Human interaction model | Contact each agent directly through its own endpoint like an AI employee | Primarily session/workspace-oriented assistant interactions |
+| Agent coordination | Native agent-to-agent messaging | Orchestrator/subagent flows |
+| Memory substrate | SQLite-native operational state | Markdown-first memory with optional vector acceleration |
+| Browser runtime | Headed execution, persistent profiles, proxy-aware routing, distributed-worker friendly | Headed execution, persistent local profiles, strong local operator UX |
+| Security defaults | Encrypted-at-rest secrets, proxy-governed egress, sandbox compute, Kubernetes/gVisor support | Local-first by design, sandboxing available but deployment-dependent |
+| Best fit | Production team automation with governed runtime controls | Personal/local assistant workflows and channel breadth |
+
+If your priority is secure, governed, always-on production execution in cloud or hybrid environments, Gobii is purpose-built for that.
+
+## AI Employee Interaction Model
+
+Gobii agents are designed to behave like AI employees, not disposable one-off tasks.
+You can email or text them directly, they wake from those events, execute work, and reply with context-aware follow-through.
+
+```mermaid
+sequenceDiagram
+    participant U as You / Team
+    participant E as Agent Email/SMS Endpoint
+    participant Q as Per-Agent Event Queue
+    participant A as Always-On Gobii Agent
+    participant T as Browser/Tools/APIs
+
+    U->>E: Send message to the agent
+    E->>Q: Inbound event is queued
+    Q->>A: Wake agent with full context
+    A->>T: Execute tasks and gather outputs
+    T-->>A: Results, files, and state updates
+    A-->>U: Reply with outcome and next steps
+    A->>Q: Stay active for follow-up events
+```
+
+## How Gobii Works
+
+```mermaid
+flowchart LR
+    A[External Triggers\nSMS · Email · Webhook · API] --> B[Per-Agent Durable Queue]
+    C[Schedule / Cron] --> B
+    B --> D[Persistent Agent Runtime]
+    D --> E[Tools Layer]
+    E --> E1[Browser Automation\nheaded + profile-aware]
+    E --> E2[SQLite State\nstructured memory tables]
+    E --> E3[Outbound Integrations\nwebhooks + HTTP]
+    E --> E4[Agent-to-Agent\npeer messaging]
+    D --> F[Comms Replies\nSMS · Email · Web]
+    D --> G[Files + Reports + Artifacts]
+```
+
+### Gobii Focus vs Typical Personal Assistant Stacks
+
+| Area | Gobii focus |
+| --- | --- |
+| Runtime model | Long-lived schedule + event lifecycle |
+| Primary operator | Teams and organizations |
+| Agent identity | Addressable communication endpoints |
+| Orchestration | Always-on processing + native A2A |
+| Browser workload shape | Production tasks with persisted state |
+| Security posture | Controlled egress, encrypted secrets, sandbox compute |
+
+## Always-On Runtime: Schedule + Event Triggers
+
+Gobii agents are built to stay active over time, not just respond in isolated turns.
+
+```mermaid
+sequenceDiagram
+    participant S as Scheduler
+    participant Q as Agent Event Queue
+    participant R as Agent Runtime
+    participant T as Tools
+    participant C as Channels / Integrations
+
+    S->>Q: enqueue cron trigger
+    C->>Q: enqueue inbound event\n(email/sms/webhook/api)
+    Q->>R: process next event for agent
+    R->>T: execute required actions
+    T-->>R: outputs + state updates
+    R->>C: outbound reply / webhook / follow-up
+    R->>Q: continue or sleep
+```
+
+This gives you continuity for real workflows: queued work, retries, deferred actions, and predictable wake/sleep behavior.
+
+## Production Browser Runtime
+
+Gobii is based on browser-use and adds production runtime behavior around it.
+
+- **Headed browser support** for realistic web workflows.
+- **Persistent browser profile handling** for long-running agents.
+- **Proxy-aware browser and HTTP task routing** for controlled egress paths.
+- **Task-level API compatibility** via `/api/v1/tasks/browser-use/`.
+
+## Identity, Channels, and Agent-to-Agent
+
+Gobii treats agents as operational entities, not just prompt sessions.
+When channels are enabled, each agent can be assigned identity endpoints and contacted directly like an AI employee.
+
+- Agents can own communication endpoints (email, SMS, web).
+- Managed deployments support first-party agent identities like `first.last@my.gobii.ai`.
+- Inbound email/SMS/web events can wake agents and route into the same runtime lifecycle.
+- Agents can directly message linked peer agents for native coordination.
+
+```mermaid
+flowchart LR
+    U[Team member] --> E[Agent email or SMS endpoint]
+    E --> A[Assigned always-on Gobii agent]
+    A <--> P[Peer Gobii agent]
+    A --> R[Reply back to human channel]
+```
+
+## Security Posture
+
+Gobii's architecture is built for production guardrails.
+
+- **Encrypted secrets** integrated into agent tooling.
+- **Proxy-governed outbound access** with health-aware selection and dedicated proxy inventory support.
+- **Sandboxed compute support** for isolated tool execution.
+- **Kubernetes backend support** with gVisor runtime-class integration in sandbox compute paths.
+
+For sandbox compute design references:
+
+- [Sandbox compute spec](docs/design/sandbox_pods_compute_spec.md)
+- [Sandbox compute ops notes](docs/design/sandbox-compute-ops.md)
+
+The sandbox compute server now lives in this monorepo under [sandbox_server/](sandbox_server/), with its own Dockerfile, tests, and image workflows.
+
+## API Quick Start
+
+```bash
+curl --no-buffer \
+  -H "X-Api-Key: $GOBII_API_KEY" \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:8000/api/v1/tasks/browser-use/ \
+  -d '{
+        "prompt": "Visit https://news.ycombinator.com and return the top headline",
+        "wait": 60,
+        "output_schema": {
+          "type": "object",
+          "properties": {
+            "headline": {"type": "string"}
+          },
+          "required": ["headline"],
+          "additionalProperties": false
+        }
+      }'
+```
+
+## Gobii Remote MCP
+
+Gobii Cloud is also a hosted [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. Connect an MCP client to Gobii to create, manage, message, coordinate, and inspect persistent agents without running a local bridge process.
+
+- **Streamable HTTP endpoint:** `https://gobii.ai/api/v1/mcp/`
+- **Authentication:** `Authorization: Bearer <key>` or `X-Api-Key: <key>` on every request
+- **Current surface:** 16 tools plus authenticated file resources
+- **Full reference:** [Remote MCP documentation](https://docs.gobii.ai/developers/mcp-server)
+- **Registry metadata:** [`server.json`](server.json)
+
+Remote MCP means an external client calls Gobii. It is the reverse of [connecting an MCP server to a Gobii](https://docs.gobii.ai/advanced-usage/mcp-servers), where a Gobii calls tools exposed by another service.
+
+### Create an API key
+
+Create a personal or organization API key in [Gobii API Keys](https://gobii.ai/app/api-keys), then make it available to your client through an environment variable or secret manager:
+
+```bash
+export GOBII_API_KEY="your-gobii-api-key"
+```
+
+Do not commit the key or paste it into chat. Personal keys expose agents accessible to that user; organization keys expose organization-owned agents.
+
+### Connect from Codex
+
+```bash
+codex mcp add gobii \
+  --url https://gobii.ai/api/v1/mcp/ \
+  --bearer-token-env-var GOBII_API_KEY
+```
+
+### Connect from Claude Code
+
+Add this project-scoped `.mcp.json`; Claude Code expands `${GOBII_API_KEY}` from its environment:
+
+```json
+{
+  "mcpServers": {
+    "gobii": {
+      "type": "http",
+      "url": "https://gobii.ai/api/v1/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GOBII_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+### Connect from Cursor
+
+Add this to `.cursor/mcp.json` for the project or `~/.cursor/mcp.json` globally. Start Cursor from an environment that contains `GOBII_API_KEY` so `${env:GOBII_API_KEY}` can be resolved.
+
+```json
+{
+  "mcpServers": {
+    "gobii": {
+      "type": "http",
+      "url": "https://gobii.ai/api/v1/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${env:GOBII_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+### Connect from VS Code
+
+Add this to `.vscode/mcp.json`. VS Code prompts once and stores the key securely instead of writing it into the file.
+
+```json
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "gobii-api-key",
+      "description": "Gobii API key",
+      "password": true
+    }
+  ],
+  "servers": {
+    "gobii": {
+      "type": "http",
+      "url": "https://gobii.ai/api/v1/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${input:gobii-api-key}"
+      }
+    }
+  }
+}
+```
+
+Other clients need the same three values: the `streamable-http` transport, the endpoint above, and either supported authentication header. Environment-variable interpolation syntax is client-specific.
+
+### What clients can do
+
+| Access level | Examples |
+| --- | --- |
+| Read | List and inspect agents, timelines, links, debug traces, files, and MCP resources; wait for timeline events. |
+| Write | Create or update agents, send messages, link agents, and upload files. |
+| Destructive | Archive an agent. Archival is a soft delete, but clients should still request confirmation. |
+
+Keep MCP tool approvals enabled until you have reviewed the requested tool and arguments. A useful first session is:
+
+- “List the Gobii agents I can access and summarize what each one does.”
+- “Show me the latest timeline activity for the research agent.”
+- “Send this research brief to the research agent, then wait for its next response.”
+- “Create an unscheduled agent for weekly competitor research; show me the proposed configuration before creating it.”
+- “Upload this report to the agent, list its files, and read the returned resource.”
+
+For a self-hosted deployment, replace the production endpoint with `http://localhost:8000/api/v1/mcp/` and use an API key created in that deployment.
+
+## Deployment Paths
+
+| Self-host (this repo) | Gobii Cloud (managed) |
+| --- | --- |
+| MIT-licensed core on your own infrastructure | Managed Gobii deployment and operations |
+| Full runtime/networking/integration control | Governed releases and managed scaling |
+| Best for source-level customization | Best for faster production rollout |
+
+## Operational Profiles
+
+Gobii keeps the default boot path simple, then lets you add worker roles as needed.
+
+| Profile | Command | What it adds |
+| --- | --- | --- |
+| Core | `docker compose up --build` | App server + default worker + interactive worker + Redis + Postgres + migrations/bootstrap |
+| Scheduler | `docker compose --profile beat up` | Celery beat + schedule sync for cron/event timing |
+| Email listeners | `docker compose --profile email up` | IMAP idlers for inbound email automation |
+| Observability | `docker compose --profile obs up` | Flower + OTEL collector services |
+
+The default worker consumes `celery` and `celery.single_instance`. The interactive worker consumes `agent_interactive` and is required for low-latency console/web chat replies; keep at least one interactive worker running anywhere web chat is enabled.
+
+## Production Use Cases
+
+- **Revenue ops agents**: monitor inboxes and web systems continuously, update records, and send structured summaries.
+- **Recruiting ops agents**: source candidates, enrich profiles, and coordinate outbound messaging from persistent workflows.
+- **Support and success agents**: triage inbound channels, execute browser-backed actions, and escalate with full state continuity.
+- **Back-office automation**: run long-lived, trigger-driven workflows that need durable memory and secure credentials handling.
+
+## FAQ
+
+### Is Gobii just a UI around browser-use?
+
+No. Gobii is based on browser-use, but adds persistent agent runtime behavior: schedule/event lifecycle, comms channels, webhooks, memory, orchestration, and operational controls.
+
+### Is Gobii built for personal assistant usage?
+
+Gobii can power individual workflows, but the architecture is tuned for team and business operations where agents stay active and integrate into production systems.
+
+### Does Gobii support headed browsers?
+
+Yes. Gobii supports headed browser workflows and persistent profile handling for realistic web task execution.
+
+### Can each agent be contacted directly like an employee?
+
+Yes. With channels configured, each agent can be assigned its own endpoint identity (email and/or SMS), so your team can interact with it directly and asynchronously.
+
+### What does “always-on” mean here?
+
+Agents can wake from schedules and external events (email/SMS/webhooks/API), process durable queued work, and continue across turns instead of resetting every interaction.
+
+### What is the security model?
+
+Gobii integrates encrypted-at-rest secrets, proxy-aware outbound controls, and sandbox compute support with Kubernetes/gVisor backend options for stronger isolation.
+
+## API Workflow
+
+Use [DEVELOPMENT.md](DEVELOPMENT.md) for the complete local setup and iteration flow.
+
+Typical loop:
+
+```bash
+# backing services
+docker compose -f docker-compose.dev.yaml up
+
+# app server
+uv run uvicorn config.asgi:application --reload --host 0.0.0.0 --port 8000
+
+# workers (macOS-safe config)
+uv run celery -A config worker -l info -Q celery,celery.single_instance --pool=threads --concurrency=4
+uv run celery -A config worker -l info -Q agent_interactive --pool=threads --concurrency=1 --prefetch-multiplier=1
+```
+
+## Docs and Deep Dives
+
+- Getting started: [Introduction](https://docs.gobii.ai/getting-started/introduction)
+- API foundations: [API Basics](https://docs.gobii.ai/developers/developer-basics)
+- Agent API: [Agents](https://docs.gobii.ai/developers/developer-agents)
+- Browser task execution: [Tasks](https://docs.gobii.ai/developers/developer-tasks)
+- Structured outputs: [Structured Data](https://docs.gobii.ai/developers/structured-data)
+- Event ingress and automation: [Webhooks](https://docs.gobii.ai/developers/webhooks)
+- REST reference: [API Reference](https://docs.gobii.ai/api-reference)
+- Self-hosting: [Self-Hosted Deployment Overview](https://docs.gobii.ai/self-hosted/overview)
+- Concepts: [Agents](https://docs.gobii.ai/core-concepts/agents), [Dedicated IPs](https://docs.gobii.ai/core-concepts/dedicated-ips)
+- Advanced integrations: [MCP Servers](https://docs.gobii.ai/advanced-usage/mcp-servers)
+- Local sandbox design docs: [docs/design](docs/design)
+
+## Contributing
+
+- Open issues and PRs are welcome.
+- Follow existing project style and test conventions.
+- Join the community on [Discord](https://discord.gg/yyDB8GwxtE).
+
+## License and Trademarks
+
+- Source code is licensed under [MIT](LICENSE).
+- Gobii name and logo are trademarks of Gobii, Inc. See [NOTICE](NOTICE).
+- Proprietary mode and non-MIT components require a commercial agreement with Gobii, Inc.

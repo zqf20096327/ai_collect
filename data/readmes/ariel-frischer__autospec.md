@@ -1,0 +1,497 @@
+<div align="center">
+
+<pre>
+▄▀█ █ █ ▀█▀ █▀█ █▀ █▀█ █▀▀ █▀▀
+█▀█ █▄█  █  █▄█ ▄█ █▀▀ ██▄ █▄▄
+</pre>
+
+**Spec-Driven Development Automation**
+
+[![GitHub CI](https://github.com/ariel-frischer/autospec/actions/workflows/ci.yml/badge.svg)](https://github.com/ariel-frischer/autospec/actions/workflows/ci.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/ariel-frischer/autospec)](https://github.com/ariel-frischer/autospec/releases/latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ariel-frischer/autospec)](https://goreportcard.com/report/github.com/ariel-frischer/autospec)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Build features systematically with AI-powered specification workflows.
+
+</div>
+
+**Stop AI slop.** Autospec brings structure to AI coding: spec → plan → tasks → implement - all in one command.
+
+Built with a **multi-agent architecture** and inspired by [GitHub SpecKit](https://github.com/github/spec-kit), Autospec reimagines the specification workflow with **YAML-first artifacts** for programmatic access and validation. These principles ensure reliable, performant, and maintainable software that developers 
+can trust for their critical development workflows.
+
+Supported agents: [Claude Code](https://claude.ai/code), [Codex CLI](https://developers.openai.com/codex/cli/reference), [OpenCode](https://opencode.ai), and [Jcode](https://github.com/1jehuang/jcode).
+
+## 📦 Installation
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ariel-frischer/autospec/main/install.sh | sh
+```
+
+https://github.com/user-attachments/assets/85b6be0f-1ec6-4121-b5ef-91ca3fd20f11
+
+## 🎯 Key Features
+
+- **Automated Workflow Orchestration** — Runs stages in dependency order with automatic retry on failure
+- **YAML-First Artifacts** — Machine-readable `spec.yaml`, `plan.yaml`, `tasks.yaml` for programmatic access
+- **Smart Validation** — Validates artifacts exist and meet completeness criteria before proceeding
+- **Cross-Platform** — Native binaries for Linux and macOS (Intel/Apple Silicon). Windows users: use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+- **Flexible Stage Selection** — Mix and match stages with intuitive flags (`-spti`, `-a`, etc.)
+- **Shell Completion** — Tab completion for bash, zsh, and fish
+- **OS Notifications** — Native desktop notifications with custom sound support
+- **History Tracking** — View and filter command execution history with status, duration, and exit codes
+- **Auto-Commit** — Automatic git commit creation with .gitignore management and conventional commit messages
+- **Multi-Agent** — Claude Code, Codex CLI, OpenCode, and Jcode, plus custom agent commands
+- **Per-Stage Models & Profiles** — Pick a model per stage (`models.<stage>`) and switch whole config sets with `--profile`
+- **Clean Interruption** — Ctrl+C, timeouts, and cancellation stop the agent and all its subprocesses
+
+## ✨ What Makes Autospec Different?
+
+Originally inspired by [GitHub SpecKit](https://github.com/github/spec-kit), Autospec is a standalone Go CLI focused on YAML-native artifacts, programmatic validation, and context-efficient implementation execution.
+
+| Feature | GitHub SpecKit | Autospec |
+|---------|---------------|----------|
+| Output Format | Markdown | **YAML** (machine-readable) |
+| Workflow UX | Repetitive, non-composable command flow | **One-command end-to-end runs** (`autospec run -a`, `autospec prep`) |
+| Validation | Checklist/agent-driven review | **Programmatic validation** with retry logic |
+| Token Efficiency | Long implementation chats can accumulate large context | **Fresh bounded sessions per phase/task** (80%+ cost savings) |
+| Status Visibility | No built-in core status command | **Built-in phase/task progress** via `autospec st` |
+| Phase Orchestration | Agent-driven `/speckit.*` commands | **CLI-orchestrated** stages with dependency handling |
+| Workflow Engine | Prompt files + shell/PowerShell helpers | **Typed Go orchestration** in a single binary |
+
+## 🚀 Quick Start
+
+> **New to autospec?** See the [Quickstart Guide](docs/public/quickstart.md) or run the [interactive demo](scripts/quickstart-demo.sh).
+
+### Prerequisites
+
+- [Claude Code](https://claude.ai/code), [Codex CLI](https://developers.openai.com/codex/cli/reference), [OpenCode](https://opencode.ai), or [Jcode](https://github.com/1jehuang/jcode)
+- Git
+
+### Initialize Your Project
+
+1. Navigate to your git repo/project directory, then check dependencies:
+   ```bash
+   autospec doctor
+   ```
+
+2. Initialize Autospec (config, commands, and scripts):
+   ```bash
+   autospec init                    # Interactive agent selection
+   autospec init ~/projects/myapp   # Initialize at specific path
+   autospec init --ai codex         # Configure Codex
+   autospec init --ai opencode      # Configure specific agent
+   autospec init --ai jcode         # Configure Jcode
+   autospec init --ai claude,codex,opencode  # Configure multiple agents
+   autospec init --project          # Project-level permissions (default: global)
+   ```
+   > Permissions write to global config by default where supported. Codex project metadata is written to `.codex/config.toml` only with `--project`.
+
+3. Create project constitution (once per project, triggers the configured agent):
+   ```bash
+   autospec constitution
+   ```
+
+## 🎮 Usage
+
+### Core Flow Commands
+
+```
+specify → plan → tasks → implement
+```
+
+The core workflow runs four stages in sequence, each creating a YAML artifact:
+
+| Stage | Command | Creates | Description |
+|-------|---------|---------|-------------|
+| **specify** | `autospec specify "desc"` | `specs/001-feature/spec.yaml` | Feature specification with requirements |
+| **plan** | `autospec plan` | `specs/001-feature/plan.yaml` | Implementation design and architecture |
+| **tasks** | `autospec tasks` | `specs/001-feature/tasks.yaml` | Actionable task breakdown with dependencies |
+| **implement** | `autospec implement` | — | Executes tasks, updates status in tasks.yaml |
+
+> **Branch creation:** `specify` automatically creates and checks out a new feature branch (e.g., `spec/001-user-auth`) before generating the spec.
+
+### Recommended Workflow
+
+1. Generate the specification
+2. Review and edit `specs/001-user-auth/spec.yaml` as needed
+3. Continue with plan → tasks → implement
+
+```bash
+autospec run -s "Add user authentication with OAuth"
+autospec run -pti
+```
+
+> This iterative approach lets you review and refine the spec before committing to implementation.
+
+### Flexible Stage Selection with `run`
+
+```bash
+# All core stages: specify → plan → tasks → implement
+autospec run -a "Add user authentication with OAuth"
+
+# Specify + plan
+autospec run -sp "Add caching layer"
+
+# Tasks + implement
+autospec run -ti --spec 007-feature
+
+# Specify + clarify
+autospec run -sr "Add payments"
+
+# All core + checklist
+autospec run -a -l
+
+# Tasks + checklist + analyze + implement
+autospec run -tlzi
+
+# All core with skip confirmations (-y)
+autospec run -a -y "Feature description"
+
+# Use a specific agent (claude, codex, opencode, or jcode)
+autospec run -a --agent opencode "Add REST API endpoints"
+autospec run -a --agent claude "Add unit tests"
+autospec run -a --agent codex "Add CLI smoke tests"
+autospec run -a --agent jcode "Refactor config loading"
+
+# Override the model for one run, or load a named config profile
+autospec run -a --model gpt-6-sol -e high "Add billing exports"
+autospec run -a --profile cheap "Add a feature"
+```
+
+### Shortcut Commands
+
+```bash
+# All core stages: specify → plan → tasks → implement
+autospec all "Add feature description"
+
+# Planning only: specify → plan → tasks (no implementation)
+autospec prep "Add feature description"
+
+# Implementation only
+autospec implement
+autospec implement 003-feature "Focus on tests"
+
+# Show artifacts and task progress
+autospec status
+autospec st
+autospec st -v
+```
+
+### Implementation Execution Modes
+
+Control how implementation runs with different levels of context isolation:
+
+```bash
+# Phase mode (default): 1 session per phase - balanced cost/context
+autospec implement
+autospec implement --from-phase 3   # Resume from phase 3 onwards
+autospec implement --phase 3        # Run only phase 3
+
+# Task mode: 1 session per task - complex tasks, max isolation
+autospec implement --tasks
+autospec implement --from-task T005 # Resume from task T005 onwards
+autospec implement --task T003      # Run only task T003
+
+# Single mode: 1 session for all - small specs, simple tasks
+autospec implement --single-session
+```
+
+> Set the default mode via config: `implement_method: phases | tasks | single-session`
+
+> `--tasks`, `--phases`, and `--single-session` are mutually exclusive. Task-level execution respects dependency order and validates each task completes before proceeding.
+
+> **Why isolate sessions?** Context accumulation causes LLM performance degradation and higher API costs (each turn bills the entire context). Phase/task isolation can reduce costs by **80%+** on large specs. See [FAQ](docs/public/faq.md#why-use---phases-or---tasks-instead-of-running-everything-in-one-session) for details.
+
+### Optional Stage Commands
+
+```bash
+# Create/update project principles
+autospec constitution "Emphasize security"
+
+# Refine spec with Q&A (interactive mode)
+autospec clarify "Focus on edge cases"
+
+# Generate validation checklist
+autospec checklist "Include a11y checks"
+
+# Cross-artifact consistency analysis (interactive mode)
+autospec analyze "Verify API contracts"
+```
+
+### Stage Flags Reference (`run` command)
+
+| Flag | Stage | Description |
+|------|-------|-------------|
+| `-s` | specify | Generate feature specification |
+| `-p` | plan | Generate implementation plan |
+| `-t` | tasks | Generate task breakdown |
+| `-i` | implement | Execute implementation |
+| `-a` | all | All core stages (`-spti`) |
+| `-n` | constitution | Create/update project constitution |
+| `-r` | clarify | Refine spec with Q&A (interactive mode) |
+| `-l` | checklist | Generate validation checklist |
+| `-z` | analyze | Cross-artifact consistency check (interactive mode) |
+
+> Stages always execute in canonical order regardless of flag order:
+> `constitution → specify → clarify → plan → tasks → checklist → analyze → implement`
+
+### Task Management
+
+Claude automatically updates task status during implementation. Manual updates:
+
+```bash
+autospec update-task T001 InProgress
+autospec update-task T001 Completed
+autospec update-task T001 Blocked
+```
+
+### History Tracking
+
+View command execution history with filtering and status tracking. See [docs/public/reference.md](docs/public/reference.md#autospec-history) for details.
+
+```bash
+autospec history              # View all history
+autospec history -n 10        # Last 10 entries
+autospec history --status failed
+```
+
+## 📁 Output Structure
+
+Autospec generates structured YAML artifacts:
+
+```
+specs/
+└── 001-user-auth/
+    ├── spec.yaml      # Feature specification
+    ├── plan.yaml      # Implementation plan
+    └── tasks.yaml     # Actionable task breakdown
+```
+
+### Example `tasks.yaml`
+
+```yaml
+feature: user-authentication
+tasks:
+  - id: T001
+    title: Create user model
+    status: Completed
+    dependencies: []
+  - id: T002
+    title: Add login endpoint
+    status: InProgress
+    dependencies: [T001]
+  - id: T003
+    title: Write authentication tests
+    status: Pending
+    dependencies: [T002]
+```
+
+## ⚙️ Configuration
+
+### Config Files (YAML format)
+
+- **User config**: `~/.config/autospec/config.yml` (XDG compliant)
+- **Project config**: `.autospec/config.yml`
+
+Priority: Environment vars > Project config > User config > Defaults
+
+Named profiles (`~/.config/autospec/profiles/<name>.yml` or `.autospec/profiles/<name>.yml`) layer on top for one command with `--profile <name>`. Manage them with `autospec config profiles` and `autospec config create <name>`.
+
+### All Settings
+
+```yaml
+# .autospec/config.yml
+
+# Agent configuration
+agent_preset: ""                      # Empty falls back to claude; built-in: claude | codex | opencode | jcode
+model: ""                             # Default workflow model (empty = agent default)
+# models:                             # Optional per-stage overrides (constitution, specify, clarify,
+#   plan: provider/plan-model         #   plan, tasks, checklist, analyze, implement)
+reasoning_effort: ""                  # Codex (and Jcode SDK) reasoning effort; per-stage via reasoning_efforts.<stage>
+skip_permissions: true                # Autonomous mode for supported agents
+custom_agent_cmd: ""                  # Custom command template with {{PROMPT}} placeholder
+# custom_agent:                       # Structured agent config (alternative to custom_agent_cmd)
+#   command: claude
+#   args:
+#     - -p
+#     - --dangerously-skip-permissions
+#     - --verbose
+#     - --output-format
+#     - stream-json
+#     - "{{PROMPT}}"
+
+# Workflow settings
+max_retries: 0                        # Max retry attempts per stage (0-10)
+specs_dir: ./specs                    # Directory for feature specs
+state_dir: ~/.autospec/state          # Directory for state files
+skip_preflight: false                 # Skip preflight checks
+timeout: 2400                         # Timeout in seconds (40 min default, 0 = no timeout)
+skip_confirmations: false             # Skip confirmation prompts
+implement_method: phases              # Default: phases | tasks | single-session
+auto_commit: false                    # Auto-create git commit after workflow (default: false)
+enable_risk_assessment: false         # Enable risk section in plan.yaml (opt-in)
+
+# Output formatting (Claude agent only)
+cclean:
+  style: default                      # Output style: default | minimal | detailed
+  verbose: false                      # Show verbose output
+  linenumbers: false                  # Show line numbers in output
+
+# Codex automated output formatting
+codex_output:
+  mode: compact                       # compact | full
+  max_lines_per_message: 40           # Max displayed lines per compact block
+  color: true                         # Colorize compact Codex output
+
+# Notifications (all platforms)
+notifications:
+  enabled: false                      # Enable notifications (opt-in)
+  type: both                          # sound | visual | both
+  sound_file: ""                      # Custom sound file (empty = system default)
+  on_command_complete: true           # Notify when command finishes
+  on_stage_complete: false            # Notify on each stage
+  on_error: true                      # Notify on failures
+  on_long_running: false              # Notify after threshold
+  long_running_threshold: 2m          # Duration threshold
+```
+
+### Custom Agent Configuration
+
+For full control over agent invocation, use `custom_agent`:
+
+```yaml
+custom_agent:
+  command: claude
+  args:
+    - -p
+    - --model
+    - claude-sonnet-5
+    - "{{PROMPT}}"
+```
+
+Or as a single command string:
+
+```yaml
+custom_agent_cmd: "claude -p --model claude-sonnet-5 {{PROMPT}}"
+```
+
+See [Agent Configuration](docs/public/agents.md) for complete details including OpenCode setup and environment variables.
+
+### Jcode Go SDK
+
+Autospec's opt-in native jcode SDK runner (`jcode.runner: sdk`) works with the published [`github.com/ariel-frischer/jcode-go`](https://pkg.go.dev/github.com/ariel-frischer/jcode-go) module. This is Ariel Frischer's unofficial community SDK for upstream Jcode; the official CLI runner remains the default.
+
+### Commands
+
+```bash
+autospec init
+autospec init --project
+autospec config show
+autospec config show --json
+autospec config sync              # Add new options, remove deprecated ones
+autospec config migrate
+autospec config migrate --dry-run
+```
+
+## 🐚 Shell Completion
+
+The easiest way to set up shell completions (auto-detects your shell):
+
+```bash
+autospec completion install
+```
+
+Or install for a specific shell:
+
+```bash
+autospec completion install bash
+autospec completion install zsh
+autospec completion install fish
+```
+
+See [docs/public/SHELL-COMPLETION.md](docs/public/SHELL-COMPLETION.md) for detailed setup and manual instructions.
+
+## 🔧 Exit Codes
+
+Uses standardized exit codes (0-5) for CI/CD integration. See [docs/public/reference.md](docs/public/reference.md#exit-codes) for full details.
+
+```bash
+autospec run -a "feature" && echo "Success" || echo "Failed: $?"
+```
+
+## 🔍 Troubleshooting
+
+```bash
+autospec doctor
+autospec --debug run -a "feature"
+autospec config show
+```
+
+See [docs/public/troubleshooting.md](docs/public/troubleshooting.md) for common issues and solutions.
+
+## 📝 Slash Commands for Interactive Sessions
+
+`autospec init` installs agent-native prompts for interactive sessions. Claude Code receives project skills such as `.claude/skills/autospec.specify/SKILL.md`, preserving `/autospec.specify` invocation. Codex and OpenCode share `.agents/skills/autospec-*` skills for interactive `$autospec-specify` / `$autospec-clarify` usage. Codex and OpenCode CLI workflow runs receive rendered prompt text directly through `codex exec` and `opencode run`; OpenCode init no longer generates `.opencode/command` files.
+
+```bash
+# Claude Code skill aliases
+/autospec.specify       # Generate spec.yaml interactively
+/autospec.plan          # Generate plan.yaml
+/autospec.tasks         # Generate tasks.yaml
+/autospec.implement     # Execute implementation
+
+# Codex/OpenCode shared skill names
+$autospec-specify "Add user auth"
+$autospec-plan
+$autospec-tasks
+$autospec-implement
+```
+
+Use these when you prefer chat-based iteration over autospec's automated (`-p`) mode.
+
+## 📚 Documentation
+
+**Full documentation:** [ariel-frischer.github.io/autospec](https://ariel-frischer.github.io/autospec/)
+
+| Document | Description |
+|----------|-------------|
+| [Quickstart Guide](docs/public/quickstart.md) | Complete your first workflow in 10 minutes |
+| [CLI Reference](docs/public/reference.md) | Full command reference with all flags and options |
+| [Agent Configuration](docs/public/agents.md) | Claude, Codex, OpenCode, Jcode, and custom agent configuration; models and profiles |
+| [Worktree Management](docs/public/worktree.md) | Run multiple features in parallel with git worktrees |
+| [Claude Settings](docs/public/claude-settings.md) | Sandboxing, permissions, and Claude Code configuration |
+| [Codex Settings](docs/public/codex-settings.md) | Codex CLI auth, sandboxing, and yolo mode |
+| [Troubleshooting](docs/public/troubleshooting.md) | Common issues and solutions |
+| [FAQ](docs/public/faq.md) | Frequently asked questions |
+
+## 📥 Build from Source
+
+Requires Go 1.25+
+
+```bash
+git clone https://github.com/ariel-frischer/autospec.git
+cd autospec
+make install
+```
+
+## 🗺️ Roadmap
+
+Unscheduled ideas, including candidate agent presets (Cursor CLI, Copilot CLI, Amp, Qwen Code, omp), live in [docs/internal/roadmap.md](docs/internal/roadmap.md). Agent presets are demand-driven: [open an issue](https://github.com/ariel-frischer/autospec/issues) if you want one. Until then, any agent with a headless mode works via [custom agent configuration](docs/public/agents.md).
+
+## 🤝 Contributing
+
+Contributions welcome! See [CONTRIBUTORS.md](CONTRIBUTORS.md) for development guidelines.
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+**Documentation:** `autospec --help`
+
+**Issues:** [github.com/ariel-frischer/autospec/issues](https://github.com/ariel-frischer/autospec/issues)
+
+⭐ **[Star us on GitHub](https://github.com/ariel-frischer/autospec) if you find Autospec useful!**

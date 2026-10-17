@@ -1,0 +1,249 @@
+# Opik Claude Code Plugin
+
+Log Claude Code sessions to [Opik](https://github.com/comet-ml/opik) for LLM observability, plus skills and agents for building observable AI applications.
+
+[Opik](https://github.com/comet-ml/opik) is the open-source LLM observability and evaluation platform, built by [Comet](https://www.comet.com).
+
+## Features
+
+- **Session Tracing**: Automatically log Claude Code sessions as Opik traces
+- **Span Tracking**: Each tool call becomes a span within the trace
+- **Subagent Support**: Nested agent calls are tracked with parent-child relationships
+- **Skills**: Built-in knowledge for LLM observability, tracing, and evaluation
+- **Agents**: Code review agent for agent architecture best practices
+
+## How Tracing Works
+We trigger tracing for everything done in Claude Code, but don't slow you down.
+
+<img src="assets/readme_diagram.svg" alt="How Tracing Works" width="600">
+
+Each conversation turn becomes an Opik trace. Tool calls, thoughts, and responses become spans. Subagent invocations are nested under their parent Task span.
+
+## Installation
+
+From within Claude Code:
+
+```
+/plugin marketplace add comet-ml/opik-claude-code-plugin
+```
+
+Then install the plugin:
+
+```
+/plugin install opik
+```
+
+### Local Install (for contributors)
+
+If you've cloned the repo locally, add it as a marketplace and install from there:
+
+```
+/plugin marketplace add /path/to/opik-claude-code-plugin
+/plugin install opik
+```
+
+**Important:** Restart any running Claude Code sessions after installation. Hooks only load when a session starts.
+
+## Configuration
+
+Run the Opik CLI to configure your connection:
+
+```bash
+pip install opik
+opik configure
+```
+
+This creates `~/.opik.config` with your API URL, key, and workspace.
+
+### Optional Environment Variables
+
+```bash
+export OPIK_CC_PROJECT="my-project"         # Project name (default: claude-code)
+export OPIK_CC_WORKSPACE="my-workspace"     # Workspace override (default: OPIK_WORKSPACE / ~/.opik.config)
+export OPIK_CC_TRUNCATE_FIELDS="false"      # Don't truncate large fields
+```
+
+All plugin env vars use the `OPIK_CC_` prefix to avoid conflicts with standard Opik SDK variables.
+
+`OPIK_CC_WORKSPACE` and `OPIK_CC_PROJECT` let you send Claude Code traces to a different
+workspace/project than the rest of your Opik setup, without touching the global
+`OPIK_WORKSPACE` / `project_name` in `~/.opik.config` used by the Opik SDK. Both can also be
+set in `~/.opik.config` via the plugin-scoped `cc_workspace` and `cc_project` keys:
+
+```ini
+[opik]
+workspace = my-sdk-workspace      # used by the Opik SDK
+project_name = my-sdk-project     # used by the Opik SDK
+cc_workspace = my-cc-workspace        # used only by the Claude Code plugin
+cc_project_name = my-cc-project       # used only by the Claude Code plugin
+```
+
+> Note: for backward compatibility, if `cc_project_name` is not set the plugin still falls back
+> to the shared `project_name` key.
+
+### External Trace Linking
+
+Link Claude Code sessions to existing Opik traces (useful for embedding Claude Code in larger workflows):
+
+```bash
+export OPIK_CC_PARENT_TRACE_ID="your-trace-id"  # Attach to existing trace
+export OPIK_CC_ROOT_SPAN_ID="your-span-id"      # Set parent span for all Claude Code spans
+```
+
+## MCP Server Setup
+
+The [Opik MCP server](https://github.com/comet-ml/opik-mcp) provides Claude with tools to interact with your Opik data - query traces, analyze experiments, and access evaluation results directly in conversation.
+
+### For Opik Cloud
+
+Add to your `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "opik": {
+      "command": "npx",
+      "args": ["-y", "opik-mcp", "--apiKey", "YOUR_OPIK_API_KEY"]
+    }
+  }
+}
+```
+
+Replace `YOUR_OPIK_API_KEY` with your API key from [comet.com](https://www.comet.com).
+
+### For Self-Hosted Opik
+
+```json
+{
+  "mcpServers": {
+    "opik": {
+      "command": "npx",
+      "args": ["-y", "opik-mcp", "--apiBaseUrl", "http://localhost:5173/api"]
+    }
+  }
+}
+```
+
+Adjust the `apiBaseUrl` to match your Opik instance.
+
+### Pre-configured Templates
+
+Copy-ready configurations are available in `mcp-configs/mcp-servers.json`.
+
+## Commands
+
+### `/opik:trace-claude-code` - Claude Code Session Tracing
+
+Enable/disable automatic tracing of your Claude Code sessions to Opik.
+
+```
+/opik:trace-claude-code start                 # Enable tracing for this project
+/opik:trace-claude-code start --debug         # Enable tracing + debug logging
+/opik:trace-claude-code stop                  # Disable tracing for this project
+/opik:trace-claude-code status                # Check project + global + effective state
+
+/opik:trace-claude-code start --global        # Enable tracing for all projects
+/opik:trace-claude-code stop --global         # Disable tracing globally
+```
+
+Tracing state is stored in `.claude/.opik-tracing-enabled` (project) or `~/.claude/.opik-tracing-enabled` (global). Resolution order (first match wins):
+
+1. Project file containing `off`/`disabled` → **disabled** (opt a single project out of a global enable)
+2. Project file present → **enabled** (`debug` content also enables debug logging)
+3. Global file present → **enabled** (same content rules)
+4. Neither → **disabled**
+
+So the project setting always takes precedence over the global one. Running `stop` in a project while global tracing is on writes the `off` opt-out for that project rather than removing the global enable.
+
+**Note:** Changes take effect immediately for new conversation turns (no restart needed).
+
+### `/opik:instrument` - Add Observability to Your Code
+
+Automatically detect frameworks in your code and add the correct Opik integration.
+
+```
+/opik:instrument my_agent.py        # Add tracing to a specific file
+/opik:instrument                    # Analyze current context and add tracing
+```
+
+Supports automatic detection and integration for:
+- **Python:** OpenAI, Anthropic, LangChain, LlamaIndex, CrewAI, Bedrock, Groq, LiteLLM
+- **TypeScript:** OpenAI, LangChain, Vercel AI SDK
+- **Custom code:** Adds `@opik.track` decorators or `Opik` client usage
+
+The command ensures tracing starts at your entry point (critical for replay capability) and uses the correct span types.
+
+## Skills
+
+### Opik skills (vendored from `comet-ml/opik-mcp`)
+
+The plugin ships the Opik skill pack — the same skills published as [`opik-skills`](https://github.com/comet-ml/opik-skills). Claude loads them by task:
+
+| Skill | Use for |
+| --- | --- |
+| `opik` | SDK reference — span types, integrations, threads, the prompt library |
+| `opik-instrument` | "add opik tracing", "instrument my code" — and verify a real trace lands |
+| `opik-diagnose` | "what is broken in production", "which traces need attention" |
+| `opik-explain` | "why did this trace fail", "debug this trace" |
+| `opik-test` | "turn this trace into a test", "make sure this doesn't happen again" |
+| `opik-compare` | "did my fix work", "which cases regressed" |
+| `opik-evaluate` | "evaluate my agent", "build an eval", "write an LLM judge" |
+| `opik-online-eval` | "score production traces", "take this judge live" |
+| `opik-optimize` | "optimize this prompt", "run the prompt optimizer" |
+| `opik-verify` | "is this safe to ship", "go/no-go on this change" |
+
+They are vendored at a pinned `opik-mcp` commit (see `skills/SHARED.md`); edit them upstream, not here.
+
+## Agents
+
+### `agent-reviewer`
+
+Reviews agent code for:
+- Idempotence and retry safety
+- Security vulnerabilities
+- Architecture patterns
+- State management
+- Observability hooks
+
+## Directory Structure
+
+```
+opik-claude-code-plugin/
+├── .claude-plugin/
+│   ├── plugin.json         # Plugin manifest
+│   └── marketplace.json    # Marketplace definition
+├── hooks/
+│   └── hooks.json          # Hook configuration
+├── scripts/
+│   └── opik-logger         # Platform selector script
+├── bin/
+│   └── opik-logger-*       # Compiled binaries (darwin/linux, amd64/arm64)
+├── src/
+│   └── *.go                # Go source code
+├── skills/                 # Opik skill pack, vendored from comet-ml/opik-mcp (see skills/SHARED.md)
+│   ├── opik/
+│   ├── opik-instrument/ … opik-optimize/
+├── agents/
+│   └── agent-reviewer.md   # Agent review agent
+├── commands/
+│   ├── trace-claude-code.md  # /opik:trace-claude-code command
+│   └── instrument.md         # /opik:instrument command
+└── mcp-configs/
+    └── mcp-servers.json    # MCP server configurations
+```
+
+## Building from Source
+
+```bash
+make build        # Build for all platforms
+make build-local  # Build for current platform only
+```
+
+## Opik for Claude Code
+
+This repo is part of a set of tools for observing Claude Code and other coding agents with [Opik](https://github.com/comet-ml/opik):
+
+- [opik-claude-code-plugin](https://github.com/comet-ml/opik-claude-code-plugin): log Claude Code sessions as Opik traces, with skills and agents included **(this repo)**
+- [ccsync](https://github.com/comet-ml/ccsync): export Claude Code conversation history to Opik
+- [cost-intelligence-proxy](https://github.com/comet-ml/cost-intelligence-proxy): meter Claude Code token spend and cost per call
+- [opik-skills](https://github.com/comet-ml/opik-skills): agent skills for instrumenting your code with Opik

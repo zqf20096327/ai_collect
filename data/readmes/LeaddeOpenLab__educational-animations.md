@@ -1,0 +1,718 @@
+# Educational Animations for Computer Science, AI & Math — Leadde
+
+[![400+ educational videos · 17 disciplines · Continuously updated](assets/site/library-banner.svg)](https://LeaddeOpenLab.github.io/educational-animations/)
+
+## 400+ Videos · 17 Disciplines · Continuously Updated
+
+A growing library of educational animations and reusable prompts by **Leadde**. Explore **46 courses** across computer science, AI, mathematics, natural sciences, and more — with new videos and topics added regularly.
+
+**[Explore the collection →](https://LeaddeOpenLab.github.io/educational-animations/)** · Watch videos, browse by subject, and copy prompts for your next explanation.
+
+[Computer Science](https://LeaddeOpenLab.github.io/educational-animations/#subject=Computer+Science) · [Artificial Intelligence](https://LeaddeOpenLab.github.io/educational-animations/#subject=Artificial+Intelligence) · [Mathematics](https://LeaddeOpenLab.github.io/educational-animations/#subject=Mathematics) · [All disciplines](https://LeaddeOpenLab.github.io/educational-animations/#collection)
+
+## Start learning
+
+Explore pointers, backpropagation and RAG through short previews, then follow a full learning path.
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C01-A014"><img src="assets/previews/c01-a014-v1.gif" width="100%" alt="Animated preview: Pointer Dereferencing"></a><br>
+<a href="catalog/learning-paths/pointers-and-memory-explained-visually.md"><strong>Pointers and Memory Explained Visually</strong></a><br>
+<sub>See how a pointer leads to a memory address, then follow what happens when code reads or writes through it.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C01-A014">▶ Watch Pointer Dereferencing</a><br>
+<a href="catalog/learning-paths/pointers-and-memory-explained-visually.md">Explore the 7-video guide →</a>
+</td>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C03-A009"><img src="assets/previews/c03-a009-v1.gif" width="100%" alt="Animated preview: Backpropagation"></a><br>
+<a href="catalog/learning-paths/neural-network-training-explained-visually.md"><strong>Neural Network Training Explained Visually</strong></a><br>
+<sub>Trace the backward flow of gradients, then connect it to loss, parameter updates and validation.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C03-A009">▶ Watch Backpropagation</a><br>
+<a href="catalog/learning-paths/neural-network-training-explained-visually.md">Explore the 8-video guide →</a>
+</td>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=recvw24T2zGQI9"><img src="assets/previews/recvw24t2zgqi9-v1.gif" width="100%" alt="Animated preview: Retrieval-Augmented Generation Pipeline"></a><br>
+<a href="catalog/learning-paths/llms-and-rag-explained-visually.md"><strong>LLMs and RAG Explained Visually</strong></a><br>
+<sub>Follow a question from document retrieval to model context and a grounded answer.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=recvw24T2zGQI9">▶ Watch Retrieval-Augmented Generation Pipeline</a><br>
+<a href="catalog/learning-paths/llms-and-rag-explained-visually.md">Explore the 8-video guide →</a>
+</td>
+</tr>
+</table>
+
+GIF excerpts from existing videos. Open a preview to watch the full animation, or follow its guide in learning order.
+
+Use this library to study and revise concepts, find visual examples for classroom explanations, and explore animation prompts for your own projects. Video downloads are available on course pages.
+
+⭐ **Star this library to save it for your next lesson or study session.**
+
+## Featured videos
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C02-A001"><img src="assets/previews/c02-a001-v1.gif" width="100%" alt="Animated preview: Divide and conquer recursion"></a><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C02-A001"><strong>Divide and conquer recursion</strong></a><br>
+<sub>Read a divide-and-conquer recurrence as a recursion tree.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C02-A001">▶ Watch full video</a> · <a href="docs/verification/featured-inspection.md">Inspection scope</a>
+</td>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C29-A001"><img src="assets/previews/c29-a001-v1.gif" width="100%" alt="Animated preview: States, Actions, and Rewards"></a><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C29-A001"><strong>States, Actions, and Rewards</strong></a><br>
+<sub>Distinguish state, action and reward in an interaction loop.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C29-A001">▶ Watch full video</a> · <a href="docs/verification/featured-inspection.md">Inspection scope</a>
+</td>
+<td width="33%" valign="top">
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C05-A014"><img src="assets/previews/c05-a014-v1.gif" width="100%" alt="Animated preview: Rank-Nullity Theorem"></a><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C05-A014"><strong>Rank-Nullity Theorem</strong></a><br>
+<sub>Account for all input dimensions using rank and nullity.</sub><br>
+<a href="https://LeaddeOpenLab.github.io/educational-animations/#item=C05-A014">▶ Watch full video</a> · <a href="docs/verification/featured-inspection.md">Inspection scope</a>
+</td>
+</tr>
+</table>
+
+Looping GIF excerpts from the actual videos. Click a card to watch the full video and access its Prompt.
+
+## Watch, download, reuse
+
+- **Watch:** [Browse the concept index](catalog/INDEX.md) and play native videos on course pages.
+- **Download:** [Course packages](https://github.com/LeaddeOpenLab/educational-animations/releases/tag/course-video-downloads). Each package includes a version index and reuse notes when available.
+- **Reuse:** Open the expandable Prompt on a course page. Check its alignment and source availability before adapting it.
+
+## Browse the library
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a href="#computer-science"><img src="assets/subject-cards/computer-science.png" width="100%" alt="Computer Science"></a><br>
+<a href="#computer-science"><strong>Computer Science</strong></a><br>
+<sub>10 courses · 115 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#artificial-intelligence"><img src="assets/subject-cards/artificial-intelligence.png" width="100%" alt="Artificial Intelligence"></a><br>
+<a href="#artificial-intelligence"><strong>Artificial Intelligence</strong></a><br>
+<sub>7 courses · 107 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#mathematics"><img src="assets/subject-cards/mathematics.png" width="100%" alt="Mathematics"></a><br>
+<a href="#mathematics"><strong>Mathematics</strong></a><br>
+<sub>7 courses · 68 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a href="#mathematics-statistics"><img src="assets/subject-cards/mathematics-statistics.png" width="100%" alt="Mathematics &amp; Statistics"></a><br>
+<a href="#mathematics-statistics"><strong>Mathematics &amp; Statistics</strong></a><br>
+<sub>1 courses · 12 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#physics"><img src="assets/subject-cards/physics.png" width="100%" alt="Physics"></a><br>
+<a href="#physics"><strong>Physics</strong></a><br>
+<sub>2 courses · 13 videos · 12 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#chemistry"><img src="assets/subject-cards/chemistry.png" width="100%" alt="Chemistry"></a><br>
+<a href="#chemistry"><strong>Chemistry</strong></a><br>
+<sub>1 courses · 14 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a href="#life-sciences"><img src="assets/subject-cards/life-sciences.png" width="100%" alt="Life Sciences"></a><br>
+<a href="#life-sciences"><strong>Life Sciences</strong></a><br>
+<sub>1 courses · 0 videos · 12 awaiting production · No finished videos yet</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#neuroscience"><img src="assets/subject-cards/neuroscience.png" width="100%" alt="Neuroscience"></a><br>
+<a href="#neuroscience"><strong>Neuroscience</strong></a><br>
+<sub>1 courses · 0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#psychology"><img src="assets/subject-cards/psychology.png" width="100%" alt="Psychology"></a><br>
+<a href="#psychology"><strong>Psychology</strong></a><br>
+<sub>1 courses · 0 videos · 13 awaiting production · No finished videos yet</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a href="#economics"><img src="assets/subject-cards/economics.png" width="100%" alt="Economics"></a><br>
+<a href="#economics"><strong>Economics</strong></a><br>
+<sub>3 courses · 31 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#finance"><img src="assets/subject-cards/finance.png" width="100%" alt="Finance"></a><br>
+<a href="#finance"><strong>Finance</strong></a><br>
+<sub>1 courses · 12 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#political-science"><img src="assets/subject-cards/political-science.png" width="100%" alt="Political Science"></a><br>
+<a href="#political-science"><strong>Political Science</strong></a><br>
+<sub>1 courses · 0 videos · 14 awaiting production · No finished videos yet</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a href="#philosophy"><img src="assets/subject-cards/philosophy.png" width="100%" alt="Philosophy"></a><br>
+<a href="#philosophy"><strong>Philosophy</strong></a><br>
+<sub>1 courses · 0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#literature"><img src="assets/subject-cards/literature.png" width="100%" alt="Literature"></a><br>
+<a href="#literature"><strong>Literature</strong></a><br>
+<sub>1 courses · 0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#astronomy"><img src="assets/subject-cards/astronomy.png" width="100%" alt="Astronomy"></a><br>
+<a href="#astronomy"><strong>Astronomy</strong></a><br>
+<sub>1 courses · 12 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a href="#embedded-systems"><img src="assets/subject-cards/embedded-systems.png" width="100%" alt="Embedded Systems"></a><br>
+<a href="#embedded-systems"><strong>Embedded Systems</strong></a><br>
+<sub>3 courses · 24 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a href="#digital-electronics"><img src="assets/subject-cards/digital-electronics.png" width="100%" alt="Digital Electronics"></a><br>
+<a href="#digital-electronics"><strong>Digital Electronics</strong></a><br>
+<sub>4 courses · 39 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+</tr>
+</table>
+
+<a id="computer-science"></a>
+### Computer Science
+
+115 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-computer-science"></a>
+<a href="catalog/computer-science/cs50x.md"><strong>Introduction to Computer Science</strong></a><br>
+<sub>16 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="introduction-to-algorithms"></a>
+<a href="catalog/computer-science/6-006.md"><img src="assets/covers/featured/C02-A001.jpg" width="100%" alt="Introduction to Algorithms"></a><br>
+<a href="catalog/computer-science/6-006.md"><strong>Introduction to Algorithms</strong></a><br>
+<sub>14 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="computer-organization-and-architecture"></a>
+<a href="catalog/computer-science/cs-coa.md"><strong>Computer Organization and Architecture</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="operating-systems"></a>
+<a href="catalog/computer-science/cs-os.md"><strong>Operating Systems</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="computer-networks"></a>
+<a href="catalog/computer-science/cs-net.md"><strong>Computer Networks</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="database-systems"></a>
+<a href="catalog/computer-science/cs-db.md"><strong>Database Systems</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="compiler-design"></a>
+<a href="catalog/computer-science/cs-comp.md"><strong>Compiler Design</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="cloud-native-and-kubernetes"></a>
+<a href="catalog/computer-science/cloud-native-kubernetes.md"><img src="assets/covers/computer-science/cloud-native-kubernetes/container-image-layers-and-build-cache.jpg" width="100%" alt="Cloud Native and Kubernetes"></a><br>
+<a href="catalog/computer-science/cloud-native-kubernetes.md"><strong>Cloud Native and Kubernetes</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="cybersecurity-and-identity-authentication"></a>
+<a href="catalog/computer-science/cybersecurity-and-identity-authentication.md"><img src="assets/covers/computer-science/cybersecurity-and-identity-authentication/authentication-and-authorization-boundary.jpg" width="100%" alt="Cybersecurity and Identity Authentication"></a><br>
+<a href="catalog/computer-science/cybersecurity-and-identity-authentication.md"><strong>Cybersecurity and Identity Authentication</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="typescript-full-stack-development"></a>
+<a href="catalog/computer-science/typescript-full-stack-development.md"><img src="assets/covers/computer-science/typescript-full-stack-development/typescript-type-inference-across-functions.jpg" width="100%" alt="TypeScript Full-Stack Development"></a><br>
+<a href="catalog/computer-science/typescript-full-stack-development.md"><strong>TypeScript Full-Stack Development</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="artificial-intelligence"></a>
+### Artificial Intelligence
+
+107 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-machine-learning"></a>
+<a href="catalog/artificial-intelligence/6-036.md"><strong>Introduction to Machine Learning</strong></a><br>
+<sub>20 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="deep-learning"></a>
+<a href="catalog/artificial-intelligence/ai-dl.md"><strong>Deep Learning</strong></a><br>
+<sub>25 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="natural-language-processing"></a>
+<a href="catalog/artificial-intelligence/ai-nlp.md"><strong>Natural Language Processing</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="computer-vision"></a>
+<a href="catalog/artificial-intelligence/ai-cv.md"><strong>Computer Vision</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="reinforcement-learning"></a>
+<a href="catalog/artificial-intelligence/ai-rl.md"><img src="assets/covers/featured/C29-A001.jpg" width="100%" alt="Reinforcement Learning"></a><br>
+<a href="catalog/artificial-intelligence/ai-rl.md"><strong>Reinforcement Learning</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="generative-artificial-intelligence"></a>
+<a href="catalog/artificial-intelligence/ai-gen.md"><strong>Generative Artificial Intelligence</strong></a><br>
+<sub>23 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="ai-agent-systems"></a>
+<a href="catalog/artificial-intelligence/ai-agent-systems.md"><img src="assets/covers/artificial-intelligence/ai-agent-systems/agent-observe-plan-act-loop.jpg" width="100%" alt="AI Agent Systems"></a><br>
+<a href="catalog/artificial-intelligence/ai-agent-systems.md"><strong>AI Agent Systems</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="mathematics"></a>
+### Mathematics
+
+68 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="single-variable-calculus"></a>
+<a href="catalog/mathematics/18-01.md"><strong>Single-Variable Calculus</strong></a><br>
+<sub>12 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="linear-algebra"></a>
+<a href="catalog/mathematics/18-06.md"><strong>Linear Algebra</strong></a><br>
+<sub>16 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="multivariable-calculus"></a>
+<a href="catalog/mathematics/math-mvc.md"><strong>Multivariable Calculus</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="ordinary-differential-equations"></a>
+<a href="catalog/mathematics/math-ode.md"><strong>Ordinary Differential Equations</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="discrete-mathematics"></a>
+<a href="catalog/mathematics/math-dm.md"><strong>Discrete Mathematics</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="abstract-algebra"></a>
+<a href="catalog/mathematics/math-aa.md"><strong>Abstract Algebra</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="optimization-theory"></a>
+<a href="catalog/mathematics/math-opt.md"><strong>Optimization Theory</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="mathematics-statistics"></a>
+### Mathematics & Statistics
+
+12 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="applied-probability"></a>
+<a href="catalog/mathematics-statistics/6-041.md"><img src="assets/covers/mathematics-statistics/applied-probability/conditional-probability.jpg" width="100%" alt="Applied Probability"></a><br>
+<a href="catalog/mathematics-statistics/6-041.md"><strong>Applied Probability</strong></a><br>
+<sub>12 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="physics"></a>
+### Physics
+
+13 videos · 12 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="classical-mechanics"></a>
+<a href="catalog/physics/8-01.md"><img src="assets/covers/physics/classical-mechanics/cm01-location-time-graph.jpg" width="100%" alt="Classical Mechanics"></a><br>
+<a href="catalog/physics/8-01.md"><strong>Classical Mechanics</strong></a><br>
+<sub>13 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="electromagnetism"></a>
+<a href="catalog/physics/8-02.md"><strong>Electromagnetism</strong></a><br>
+<sub>0 videos · 12 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="chemistry"></a>
+### Chemistry
+
+14 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="organic-chemistry-i"></a>
+<a href="catalog/chemistry/5-12.md"><img src="assets/covers/chemistry/organic-chemistry-i/resonance-structure.jpg" width="100%" alt="Organic Chemistry I"></a><br>
+<a href="catalog/chemistry/5-12.md"><strong>Organic Chemistry I</strong></a><br>
+<sub>14 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="life-sciences"></a>
+### Life Sciences
+
+0 videos · 12 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-biology"></a>
+<a href="catalog/life-sciences/7-013.md"><strong>Introduction to Biology</strong></a><br>
+<sub>0 videos · 12 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="neuroscience"></a>
+### Neuroscience
+
+0 videos · 10 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-neuroscience"></a>
+<a href="catalog/neuroscience/9-01.md"><strong>Introduction to Neuroscience</strong></a><br>
+<sub>0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="psychology"></a>
+### Psychology
+
+0 videos · 13 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-psychology"></a>
+<a href="catalog/psychology/9-00.md"><strong>Introduction to Psychology</strong></a><br>
+<sub>0 videos · 13 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="economics"></a>
+### Economics
+
+31 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="principles-of-microeconomics"></a>
+<a href="catalog/economics/14-01.md"><img src="assets/covers/economics/principles-of-microeconomics/mi01-supply-and-demand-balance.jpg" width="100%" alt="Principles of Microeconomics"></a><br>
+<a href="catalog/economics/14-01.md"><strong>Principles of Microeconomics</strong></a><br>
+<sub>11 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="principles-of-macroeconomics"></a>
+<a href="catalog/economics/14-02.md"><img src="assets/covers/economics/principles-of-macroeconomics/ma01-gdp-accounting.jpg" width="100%" alt="Principles of Macroeconomics"></a><br>
+<a href="catalog/economics/14-02.md"><strong>Principles of Macroeconomics</strong></a><br>
+<sub>8 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="game-theory"></a>
+<a href="catalog/economics/econ-159.md"><img src="assets/covers/economics/game-theory/gt01-dominant-strategy.jpg" width="100%" alt="Game Theory"></a><br>
+<a href="catalog/economics/econ-159.md"><strong>Game Theory</strong></a><br>
+<sub>12 videos · 0 awaiting production</sub>
+</td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="finance"></a>
+### Finance
+
+12 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="financial-markets"></a>
+<a href="catalog/finance/econ-252.md"><img src="assets/covers/finance/financial-markets/fm01-risk-return-relationship.jpg" width="100%" alt="Financial Markets"></a><br>
+<a href="catalog/finance/econ-252.md"><strong>Financial Markets</strong></a><br>
+<sub>12 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="political-science"></a>
+### Political Science
+
+0 videos · 14 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="introduction-to-political-philosophy"></a>
+<a href="catalog/political-science/plsc-114.md"><strong>Introduction to Political Philosophy</strong></a><br>
+<sub>0 videos · 14 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="philosophy"></a>
+### Philosophy
+
+0 videos · 10 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="philosophy-of-death"></a>
+<a href="catalog/philosophy/phil-176.md"><strong>Philosophy of Death</strong></a><br>
+<sub>0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="literature"></a>
+### Literature
+
+0 videos · 10 awaiting production · **No finished videos yet**
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="american-modernist-literature"></a>
+<a href="catalog/literature/amst-246.md"><strong>American Modernist Literature</strong></a><br>
+<sub>0 videos · 10 awaiting production · No finished videos yet</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="astronomy"></a>
+### Astronomy
+
+12 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="frontiers-and-controversies-in-astrophysics"></a>
+<a href="catalog/astronomy/astr-160.md"><img src="assets/covers/astronomy/frontiers-and-controversies-in-astrophysics/exoplanet-transit-method.jpg" width="100%" alt="Frontiers and Controversies in Astrophysics"></a><br>
+<a href="catalog/astronomy/astr-160.md"><strong>Frontiers and Controversies in Astrophysics</strong></a><br>
+<sub>12 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="embedded-systems"></a>
+### Embedded Systems
+
+24 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="microcontroller-fundamentals"></a>
+<a href="catalog/embedded-systems/es-mcu.md"><img src="assets/video-covers/embedded-systems/microcontroller-fundamentals/interrupt-entry-and-return.jpg" width="100%" alt="Microcontroller Fundamentals"></a><br>
+<a href="catalog/embedded-systems/es-mcu.md"><strong>Microcontroller Fundamentals</strong></a><br>
+<sub>4 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="real-time-operating-systems"></a>
+<a href="catalog/embedded-systems/es-rtos.md"><img src="assets/video-covers/embedded-systems/real-time-operating-systems/task-state-transitions.jpg" width="100%" alt="Real-Time Operating Systems"></a><br>
+<a href="catalog/embedded-systems/es-rtos.md"><strong>Real-Time Operating Systems</strong></a><br>
+<sub>5 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="zephyr-real-time-operating-system"></a>
+<a href="catalog/embedded-systems/es-zephyr.md"><img src="assets/covers/embedded-systems/zephyr-real-time-operating-system/z01-zephyr-thread-lifecycle-and-scheduling.jpg" width="100%" alt="Zephyr Real-Time Operating System"></a><br>
+<a href="catalog/embedded-systems/es-zephyr.md"><strong>Zephyr Real-Time Operating System</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+<a id="digital-electronics"></a>
+### Digital Electronics
+
+39 videos · 0 awaiting production
+
+<table>
+<tr>
+<td width="33%" valign="top">
+<a id="digital-logic-design"></a>
+<a href="catalog/digital-electronics/de-dld.md"><img src="assets/video-covers/digital-electronics/digital-logic-design/combinational-propagation-delay.jpg" width="100%" alt="Digital Logic Design"></a><br>
+<a href="catalog/digital-electronics/de-dld.md"><strong>Digital Logic Design</strong></a><br>
+<sub>5 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="fpga-fundamentals"></a>
+<a href="catalog/digital-electronics/de-fpga.md"><img src="assets/video-covers/digital-electronics/fpga-fundamentals/setup-and-hold-time.jpg" width="100%" alt="FPGA Fundamentals"></a><br>
+<a href="catalog/digital-electronics/de-fpga.md"><strong>FPGA Fundamentals</strong></a><br>
+<sub>4 videos · 0 awaiting production</sub>
+</td>
+<td width="33%" valign="top">
+<a id="edge-ai-and-embedded-machine-learning"></a>
+<a href="catalog/digital-electronics/edge-ai-embedded-machine-learning.md"><img src="assets/covers/digital-electronics/edge-ai-embedded-machine-learning/edge-inference-pipeline-from-sensor-to-result.jpg" width="100%" alt="Edge AI and Embedded Machine Learning"></a><br>
+<a href="catalog/digital-electronics/edge-ai-embedded-machine-learning.md"><strong>Edge AI and Embedded Machine Learning</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top">
+<a id="risc-v-processor-architecture"></a>
+<a href="catalog/digital-electronics/risc-v-processor-architecture.md"><img src="assets/covers/digital-electronics/risc-v-processor-architecture/risc-v-instruction-encoding-fields.jpg" width="100%" alt="RISC-V Processor Architecture"></a><br>
+<a href="catalog/digital-electronics/risc-v-processor-architecture.md"><strong>RISC-V Processor Architecture</strong></a><br>
+<sub>15 videos · 0 awaiting production</sub>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+[Back to subject cards](#browse-the-library)
+
+
+## Repository layout
+
+`catalog/` course pages and full index · `assets/` videos, previews, Prompts and source kits · `data/` final records · `docs/` reuse and verification · `scripts/` production, publishing and tests.
+
+## Recent changes
+
+- 2026-09-30T08:01:25+00:00 — Rebuilt the seven other requested terminology corrections; clarified the null-plane slice, corrected left-null cross-section and projection axis scales, removed projection formula overlap, and separated the SN1 proton label.
+- 2026-09-30T07:42:10+00:00 — C05-A002 v2: repaired 16-second formula overlap, rebuilt video and cover, replaced stale Manim/15-second Prompt with actual Remotion/30-second instructions; new native attachment uploaded.
+- 2026-09-30T07:42:10+00:00 — Corrected eight catalog terms without changing IDs or slugs; separated generation/review/publication; measured all 299 available MP4 files.
+
+## Use and contribute
+
+See [reuse instructions](docs/REUSE.md), [rights requiring confirmation](docs/RIGHTS.md), and [contribution instructions](.github/CONTRIBUTING.md). Report a concept error with its stable ID, video version and timestamp, or suggest a topic in [Issues](https://github.com/LeaddeOpenLab/educational-animations/issues/new/choose).
+
+[Leadde animation tools](https://leadde.ai/animation) explains available creation tools. Prompts are copied manually; there is no automatic prompt transfer.
+
+The static website can be served locally with `python3 -m http.server 8000`. No public site deployment is claimed.

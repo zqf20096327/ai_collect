@@ -1,0 +1,217 @@
+<div>
+<a href="/marketplace-client-intro?mpc_install=7370342" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client">
+<img style="width:80px;" typeof="foaf:Image" class="img-responsive" src="https://marketplace.eclipse.org/modules/custom/eclipsefdn/eclipsefdn_marketplace/images/btn-install.svg" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" />
+</a>
+&nbsp;&nbsp;
+<img typeof="foaf:Image" class="img-responsive" src="https://github.com/sterlp/eclipse-peon-ai/actions/workflows/maven.yml/badge.svg" />
+</div>
+
+# Eclipse Peon AI
+
+A lightweight, context-aware LLM assistant that integrates directly into your Eclipse workbench to support developers in their daily workflow.
+
+![Example](./homepage/src/assets/example.png)
+
+## Autonomus mode is back
+
+Jon and team are in the house. Single threaded for now - for best local performance.
+
+[Produkt PO Jon](https://peon-ai-4e.sterl.org/setup/peon-po)
+
+## Features
+
+- **Chat Interface** - Interactive AI chat with syntax-highlighted code blocks and markdown rendering
+- **Voice Chat**: Talk to your AI peon and tell him what todo - no more typing
+- **File Operations** - Read, write, search, and modify files directly from the chat
+- **Context Awareness** - Understands your current workspace and selected files
+- **Local LLM Support** - Works with Ollama for privacy-focused local inference
+- **Multi-Provider** - Supports Ollama, OpenAI (and compatible), Google Gemini, Mistral AI, Anthropic Claude, and GitHub Copilot
+
+## Known Issues
+
+- LM Studio Qwen 3.5 9B may never call tools: https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1592
+
+## Installation
+
+### Eclipse marketplace
+
+- [Peon AI on eclipse marketplace](https://marketplace.eclipse.org/content/peon-ai)
+
+### Empfohlene Plugins
+
+- https://marketplace.eclipse.org/content/previewer für MD und mermaid
+
+### Update Site
+
+1. Go to **Help > Install New Software**
+2. Add the update site: [https://sterlp.github.io/eclipse-peon-ai/](https://sterlp.github.io/eclipse-peon-ai/)
+3. Select "Eclipse Peon AI" and follow the installation wizard
+4. Restart Eclipse
+5. Open the view: **Window > Show View > Other...** > search "Peon AI"
+
+![Install](./homepage/src/assets/install.png)
+
+#### LM Studio
+
+![LM Studio](./homepage/src/assets/lm-studio-setup.png)
+
+#### Gemini
+![google gemnini](./homepage/src/assets/google-gemini.png)
+
+### Or find a free LLM
+
+- https://models.dev/
+
+## Configuration
+
+Configure via **Window > Preferences > Peon AI**:
+
+| Provider | Model | Base URL | API Key |
+|----------|-------|----------|---------|
+| `OLLAMA` | `llama3.2`, `codellama`, `qwen2.5-coder` | `http://localhost:11434` | — |
+| `LM Studio` | `qwen/qwen3.5-9b` | `http://localhost:1234/v1` | — |
+| `OPEN_AI` | `gpt-4o`, `gpt-4o-mini` | `https://api.openai.com/v1` | required |
+| `GOOGLE_GEMINI` | `gemini-2.0-flash`, `gemini-2.5-pro-preview-03-25` | *(leave empty)* | required |
+| `MISTRAL` | `mistral-large-latest`, `devstral-latest` | *(leave empty)* — `https://api.mistral.ai` for voice | required |
+| `ANTHROPIC` | `claude-sonnet-4-6`, `claude-opus-4-8` | *(leave empty)* | required |
+| `GITHUB_MODELS` | Various (use model picker) | `https://models.inference.ai.azure.com` | GitHub PAT |
+| `GITHUB_COPILOT` | Claude Sonnet/Opus, GPT-5, etc. | *(leave empty)* | OAuth login |
+
+> **OpenAI-compatible APIs** (LM Studio, OpenRouter, vLLM, GitHub Models, …): use appropriate provider or `OPEN_AI` with custom base URL.
+> 
+> **GitHub Copilot Subscription:** Click "Login with GitHub Copilot..." in preferences to authenticate and access Claude Sonnet/Opus, GPT-5, and other Copilot models.
+
+## Usage
+
+Example workflows:
+- Select a file and ask "What does this code do?"
+- Ask "Write unit tests for the selected class"
+- Paste error messages and ask "What's causing this?"
+
+## Tools
+
+- [x] **Edit File** - Targeted find-and-replace edits without rewriting the whole file
+- [x] **Read/Write/Create/Delete File** - Full file operations in workspace and on disk
+- [x] **Search Files** - Find files by name across the workspace
+- [x] **Grep** - Full-text content search across all open projects
+- [x] **Build Project** - Trigger Eclipse builds and report errors/warnings
+- [x] **Run Tests** - Execute JUnit 5 tests and report failures with stack traces
+- [x] **Shell Command** - Run OS commands (git, mvn, npm, etc.)
+- [x] **Web Fetch** - Fetch URLs and convert to markdown for reading docs
+- [x] **List Projects** - Discover open projects with their type (java, maven, gradle)
+- [ ] **Git Tool** - Dedicated git operations (status, diff, commit, log) with structured output
+- [x] **Code Navigation** - Find types (supports `*`, `?` wildcards and camelCase e.g. `NPE`), find references, find implementations via Eclipse JDT
+- [ ] **Refactor** - Rename symbols, extract methods, and move classes using Eclipse refactoring
+- [x] `v1.1.x` **Agent Mode** Preview of the agent mode
+- [x] `v1.2.x` **MCP** Support MCP servers using langchain4j MCP integration
+- [x] `v1.3.x` **Github Copilot** Support
+- [x] `v1.4.x` **MCP stdio** support added using langchain4j
+- [x] `v1.7.5` **Peon Memory** added workspace memory to the LLM with keywords "remember this", "always do", "never do"
+- [x] `v2.0.0` **Custom Agents** https://peon-ai-4e.sterl.org/setup/custom-agents
+
+## .peon Config Directory (`~/.peon`)
+
+Customize Peon AI with agents, commands, and skills — change the base directory via
+**Window > Preferences > Peon AI**:
+
+```text
+~/.peon/
+├── agents/               # Custom agents (each a folder with AGENT.md)
+│   ├── agent-order.txt   # Controls agent presentation order in UI
+│   ├── planner/          →  AGENT.md    (name, model, tools, handover: …)
+│   └── reviewer/         →  AGENT.md
+├── commands/             # Slash-commands (/review, /plan, …)
+│   ├── review.md
+│   └── plan.md
+└── skills/               # Reusable skill definitions (sub-folder per skill)
+    ├── spring-boot-patterns/   →  SKILL.md
+    └── eclipse-rcp-tips/       →  SKILL.md
+```
+
+- **Agents** — full system prompt + tool allowlist, shown in the agent dropdown. See [Custom Agents](https://peon-ai-4e.sterl.org/setup/custom-agents).
+- **Commands** — quick one-shot standing orders triggered with `/`. See [Commands](https://peon-ai-4e.sterl.org/setup/commands).
+- **Skills** — reusable cross-project instruction sets, loaded on-demand by the LLM. Follows the [agentskills.io](https://agentskills.io/specification) spec. Browse ready-made skills at [ai-skill-codex](https://github.com/sterlp/ai-skill-codex).
+
+> Quickstart by cloning https://github.com/sterlp/ai-skill-codex
+
+## Requirements
+
+- Java 21
+- Eclipse 2025-12 or newer
+
+## Exclude gh-pages from pull
+
+`git config --add remote.origin.fetch '^refs/heads/gh-pages`
+
+## Building from Source
+
+```bash
+mvn clean verify
+```
+
+For development, launch with: `-clean -clearPersistedState`
+
+## Documentation
+
+Detailed documentation is available at [peon-ai-4e.sterl.org](https://peon-ai-4e.sterl.org):
+
+- [Installation Guide](https://peon-ai-4e.sterl.org/setup/installation)
+- [Configuration](https://peon-ai-4e.sterl.org/setup/configuration)
+- [AGENTS.md & Skills](https://peon-ai-4e.sterl.org/setup/agents-and-skills)
+- [Building](https://peon-ai-4e.sterl.org/development/building)
+- [Architecture](https://peon-ai-4e.sterl.org/development/architecture)
+
+
+## Dependencies
+
+- [LangChain4j](https://github.com/langchain4j/langchain4j) - Java LLM framework
+- [markdown-it](https://github.com/markdown-it/markdown-it) - Markdown parsing
+- [Highlight.js](https://highlightjs.org) - Syntax highlighting
+- [Diff2Html](https://diff2html.xyz) - Diff visualization
+- [flexmark](https://github.com/vsch/flexmark-java)
+
+## Links
+
+### MCP
+
+- https://github.com/nickclyde/duckduckgo-mcp-server
+- https://marianfoo.github.io/arc-1/
+- https://github.com/marianfoo/sap-ai-mcp-servers
+
+## Usefull commands
+
+### Update version
+
+`mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=1.1.0-SNAPSHOT`
+
+## Links
+- https://utilitytools.net/text/symbols-copy-paste
+
+🪄 📦 🔧
+✅ ❌ 🧩 or 🛠 🎯 or ⚡ 🗜 🐞
+🔍 = Search
+🧑‍💻 = Entwickler
+📜 = Script / Source File
+⚙️ = Konfiguration / Setup
+📝 = Quelltext-Datei
+🛠 = LLM Tools
+🧩 = SKILL
+🗜 = Compact
+🐞 = Bug
+
+## Eclipse RCP Resources
+
+- https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.pde.doc.user%2Fguide%2Ftools%2Fviews%2Fimage_browser_view.htm
+- https://help.eclipse.org/latest/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/api/overview-summary.html
+- [Eclipse Wiki e4 Tutorials](https://wiki.eclipse.org/Eclipse4/Tutorials)
+
+- [Vogella Eclipse RCP Tutorial](https://www.vogella.com/tutorials/EclipseRCP/article.html)
+
+- https://www.vogella.com/tutorials/Eclipse4Services/article.html
+- https://www.vogella.com/tutorials/Eclipse4CSS/article.html
+- https://www.vogella.com/tutorials/Eclipse4EventSystem/article.html
+
+very old stuff
+https://eclipsesource.com/blogs/2012/05/10/eclipse-4-final-sprint-part-1-the-e4-application-model/
+https://eclipsesource.com/blogs/2012/06/12/eclipse-4-e4-tutorial-part-2/
+https://eclipsesource.com/blogs/2012/06/26/eclipse-4-e4-tutorial-part-3-extending-the-application-model/

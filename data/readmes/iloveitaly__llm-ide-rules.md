@@ -1,0 +1,189 @@
+[![Release Notes](https://img.shields.io/github/release/iloveitaly/llm-ide-rules)](https://github.com/iloveitaly/llm-ide-rules/releases)
+[![Downloads](https://static.pepy.tech/badge/llm-ide-rules/month)](https://pepy.tech/project/llm-ide-rules)
+![GitHub CI Status](https://github.com/iloveitaly/llm-ide-rules/actions/workflows/build_and_publish_release_please.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+# Copilot, Cursor, Claude, etc LLM Instructions
+
+This project makes it easy to download prompts and implode/explode them so they can be used by various providers. It's completely vibe coded, but it works.
+
+I don't want to be tied to a specific IDE and it's a pain to have to edit instructions for various languages across a ton of different files.
+
+Additionally, it becomes challenging to copy these prompts into various projects and contribute them back to a single location.
+
+Some of the glob assumptions in this repo are specific to how I've chosen to organize python and typescript [in the python starter template](https://github.com/iloveitaly/python-starter-template) and what tooling (fastapi, etc) that I've chosen to use.
+
+## IDE Format Comparison
+
+Different AI coding assistants use different formats for instructions and commands:
+
+| IDE | type | folder | Notes |
+|-----|------|--------|-------|
+| **Cursor** | instructions | `.cursor/rules/*.mdc` | Multiple plain markdown files |
+| **Cursor** | commands | `.cursor/commands/*.md` | Plain markdown, no frontmatter |
+| **Claude Code** | instructions | `.claude/rules/**/*.md` | Markdown rules, optional `paths:` frontmatter |
+| **Claude Code** | commands | `.claude/commands/*.md` | Plain markdown, no frontmatter |
+| **GitHub Copilot** | instructions | `.github/copilot-instructions.md` | Single markdown file |
+| **GitHub Copilot** | instructions | `.github/instructions/*.instructions.md` | Multiple instruction files |
+| **GitHub Copilot** | prompts | `.github/prompts/*.prompt.md` | YAML frontmatter with `mode: 'agent'` |
+| **OpenCode** | instructions | `AGENTS.md` | Single markdown file at root |
+| **OpenCode** | commands | `.opencode/commands/*.md` | Plain markdown, no frontmatter |
+| **Codex** | instructions | `AGENTS.md` | Root and nested markdown files |
+| **Codex** | commands | `.agents/skills/*/SKILL.md` | YAML frontmatter with `name` and `description` |
+
+## Installation
+
+```sh
+uvx llm-ide-rules@latest --help
+```
+
+## Local CLI development
+
+Run `just install_editable` to install this checkout globally in editable mode. Source changes are reflected without reinstalling.
+
+This requires `uv`, `just`, `zsh`, and `jq`. If mise is available, the recipe also updates every installed `pipx:llm_ide_rules` environment so mise can use the local checkout. Re-run after mise upgrades, which replace those editable installations.
+
+## Usage
+
+### CLI Commands
+
+The `llm-ide-rules` CLI provides commands to manage LLM IDE prompts and rules:
+
+```sh
+# Convert instruction file to separate rule files.
+# Defaults to already-exploded agents on disk, then the current runtime
+# (e.g. Cursor Cloud, Claude Code cloud), then all supported agents.
+uvx llm-ide-rules explode [agents...]
+uvx llm-ide-rules explode cursor claude
+uvx llm-ide-rules explode $(llm-ide-rules exploded /path/to/repo)
+uvx llm-ide-rules explode cursor --input path.md
+
+# Bundle rule files back into a single instruction file
+uvx llm-ide-rules implode cursor [output_file]     # Bundle Cursor rules
+uvx llm-ide-rules implode github [output_file]     # Bundle GitHub/Copilot instructions
+uvx llm-ide-rules implode claude [output_file]     # Bundle Claude Code rules + commands
+uvx llm-ide-rules implode opencode [output_file]   # Bundle OpenCode commands
+uvx llm-ide-rules implode codex [output_file]      # Bundle Codex skills + AGENTS.md
+
+# Download instructions.md/commands.md, then explode for the given agents.
+# Defaults to already-exploded agents on disk, then the current runtime, then all.
+uvx llm-ide-rules download [agents...]
+uvx llm-ide-rules download cursor github
+uvx llm-ide-rules download cursor,github
+uvx llm-ide-rules download --repo other/repo
+uvx llm-ide-rules download --inline               # Explode without saving instructions.md or commands.md
+
+# Delete exploded agent files
+uvx llm-ide-rules delete [agents...]              # Delete everything by default
+uvx llm-ide-rules delete cursor claude
+uvx llm-ide-rules delete cursor,claude
+uvx llm-ide-rules delete --yes                    # Skip confirmation prompt
+```
+
+### Authentication
+
+To avoid GitHub API rate limits or to access private repositories, you can set the `GITHUB_TOKEN` environment variable. The `download` command will automatically use this token for authentication.
+
+```sh
+export GITHUB_TOKEN=your_token_here
+uvx llm-ide-rules download
+```
+
+### Customizing Instructions
+
+If you have repository-specific instructions that you want to maintain locally while still being able to `download` upstream updates, you can use the `<!-- END CLONED INSTRUCTIONS -->` marker.
+
+1. Add the marker at the end of your local `instructions.md`.
+2. Add your custom instructions below it.
+
+When you run `llm_ide_rules download` again, the tool will:
+- Extract everything after the marker in your local file.
+- Download the latest upstream `instructions.md`.
+- Append your local custom instructions back to the end.
+
+```markdown
+# Upstream Instructions
+...
+
+<!-- END CLONED INSTRUCTIONS -->
+
+# My Custom Local Rules
+- Use tabs for indentation in this project.
+```
+
+### Examples
+
+```sh
+# Explode instructions.md using disk/runtime detection (or all agents)
+uvx llm-ide-rules explode
+
+# Explode for a specific agent only
+uvx llm-ide-rules explode opencode
+uvx llm-ide-rules explode codex
+
+# Explode for multiple agents
+uvx llm-ide-rules explode cursor claude
+
+# Explode the same agents already in use in another checkout
+uvx llm-ide-rules explode $(llm-ide-rules exploded /path/to/repo)
+
+# Explode a non-default instruction file
+uvx llm-ide-rules explode cursor --input bundled-instructions.md
+
+# Bundle Cursor rules back into a single file
+uvx llm-ide-rules implode cursor bundled-instructions.md
+
+# Bundle GitHub instructions with verbose logging
+uvx llm-ide-rules implode github --verbose instructions.md
+
+# Bundle OpenCode commands into commands.md
+uvx llm-ide-rules implode opencode
+
+# Bundle Codex skills into commands.md and AGENTS.md into instructions.md
+uvx llm-ide-rules implode codex
+
+# Download everything from default repository
+uvx llm-ide-rules download
+
+# Download only specific instruction types
+uvx llm-ide-rules download cursor github
+uvx llm-ide-rules download cursor,github
+
+# Download from a different repository
+uvx llm-ide-rules download --repo other-user/other-repo --target ./my-project
+
+# Download and explode directly without saving instructions.md or commands.md
+uvx llm-ide-rules download --inline
+
+# Delete all downloaded files (with confirmation)
+uvx llm-ide-rules delete
+
+# Delete specific instruction types
+uvx llm-ide-rules delete cursor claude --target ./my-project
+
+# Delete without confirmation prompt
+uvx llm-ide-rules delete --yes
+```
+
+## Extracting Changes
+
+The idea of this repo is you'll copy prompts into your various projects. Then, if you improve a prompt in a project, you can pull that change into this upstream repo.
+
+Here's how to do it:
+
+```shell
+git diff .github/instructions | pbcopy
+pbpaste | gpatch -p1
+```
+
+`gpatch` is an updated version of patch on macOS that seems to work much better for me.
+
+## Related Links
+
+* https://cursor.directory/rules
+* https://github.com/PatrickJS/awesome-cursorrules
+* https://www.cursorprompts.org
+
+---
+
+*This project was created from [iloveitaly/python-package-template](https://github.com/iloveitaly/python-package-template)*

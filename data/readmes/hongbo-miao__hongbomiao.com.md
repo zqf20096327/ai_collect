@@ -1,0 +1,1618 @@
+<div align="center">
+  <p>
+    <a href="https://www.hongbomiao.com"><img width="100" src="https://github.com/user-attachments/assets/e8aea682-a3ee-4004-9e4f-991770af3f88" alt="Butterfly" /></a>
+  </p>
+  <h2>Personal R&D Lab</h2>
+  <p>Making magic happen</p>
+  <br />
+  <p>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com/actions"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/hongbo-miao/hongbomiao.com/build.yml?branch=main" /></a>
+    <a href="https://depfu.com/github/hongbo-miao/hongbomiao.com"><img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/hongbo-miao%2Fhongbomiao.com" /></a>
+    <a href="https://stats.uptimerobot.com/RoOoGTvyWN"><img alt="Uptime Robot status" src="https://img.shields.io/uptimerobot/status/m783305207-c7842815153e530df85633fe" /></a>
+    <a href="https://www.http3check.net/?host=hongbomiao.com"><img alt="HTTP/3" src="https://img.shields.io/badge/http%2F3-supported-brightgreen" /></a>
+    <a href="https://hstspreload.org/?domain=www.hongbomiao.com"><img alt="Chromium HSTS preload" src="https://img.shields.io/hsts/preload/www.hongbomiao.com" /></a>
+    <a href="https://github.com/commitizen/cz-cli"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" /></a>
+  </p>
+  <p>
+    <a href="https://hitsofcode.com/github/hongbo-miao/hongbomiao.com/view?branch=main"><img alt="Code hits" src="https://hitsofcode.com/github/hongbo-miao/hongbomiao.com?branch=main&label=code%20hits" /></a>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com"><img alt="Code lines" src="https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/hongbo-miao/ecff3e2b8226a5c1406b0c2e2622e968/raw/code_line_count.json" /></a>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com"><img alt="Code size" src="https://img.shields.io/github/languages/code-size/hongbo-miao/hongbomiao.com" /></a>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com/graphs/contributors"><img alt="Commit activity" src="https://img.shields.io/github/commit-activity/y/hongbo-miao/hongbomiao.com"></a>
+  </p>
+  <p>
+    <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=www.hongbomiao.com"><img alt="Mozilla HTTP observatory grade" src="https://img.shields.io/mozilla-observatory/grade/www.hongbomiao.com" /></a>
+    <a href="https://app.codacy.com/gh/hongbo-miao/hongbomiao.com/dashboard"><img alt="Codacy grade" src="https://img.shields.io/codacy/grade/dc922acc14014b4abc978afd0810e56b" /></a>
+    <a href="https://codecov.io/gh/hongbo-miao/hongbomiao.com"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/hongbo-miao/hongbomiao.com" /></a>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com/releases"><img alt="Release" src="https://img.shields.io/github/v/release/hongbo-miao/hongbomiao.com" /></a>
+  </p>
+  <p>
+    <a href="https://github.com/prettier/prettier"><img alt="Code style" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" /></a>
+    <a href="https://github.com/astral-sh/ruff"><img alt="Code style" src="https://img.shields.io/badge/code%20style-ruff-261230.svg" /></a>
+    <a href="https://github.com/hongbo-miao/hongbomiao.com/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/hongbo-miao/hongbomiao.com" /></a>
+  </p>
+  <p>
+    <a href="https://twitter.com/hongbo_miao"><img alt="X follow" src="https://img.shields.io/twitter/follow/hongbo_miao?label=Follow&style=social" /></a>
+    <a href="https://github.com/hongbo-miao"><img alt="GitHub follow" src="https://img.shields.io/github/followers/hongbo-miao?label=Follow&style=social" /></a>
+  </p>
+  <p>
+    <a href="https://deepwiki.com/hongbo-miao/hongbomiao.com"><img alt="DeepWiki" src="https://deepwiki.com/badge.svg" /></a>
+  </p>
+</div>
+
+---
+
+# 👩‍🚀 Introduction
+
+<a href="https://ossinsight.io/analyze/hongbo-miao/hongbomiao.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=172822195&image_size=auto&color_scheme=dark">
+    <img align="right" width="50%" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=172822195&image_size=auto&color_scheme=light" alt="OSS Insight repository performance statistics">
+  </picture>
+</a>
+
+A personal research and development (R&D) lab that facilitates the sharing of knowledge.
+
+<br><br><br>
+
+# 🚀 Architecture
+
+The diagram illustrates the repository's architecture, which is considered overly complex. It is essential to thoroughly understand the tradeoffs associated with it before onboarding any technology into your project.
+
+> [!NOTE]
+> The diagram here may take a moment to load. Please wait patiently.
+
+![Architecture](https://github.com/user-attachments/assets/9d557c5a-cf45-4392-b2d5-ac76f98baecf)
+
+# 🧱 Tech Stack
+
+## Web
+
+- **React** - Web framework
+- **Vite** - JavaScript build tool and development server
+- **Zustand** - State management
+- **TanStack Query** - Hooks for fetching, caching and updating asynchronous data
+- **TanStack Router** - Router
+- **shadcn/ui** - UI component library
+- **Tailwind CSS** - Utility-first CSS framework
+- **Radix Primitives** - Low-level, unstyled, accessible UI primitives
+- **@shiguredo/rnnoise-wasm** - WebAssembly build of RNNoise for real-time browser audio noise suppression
+- **Vitest** - Unit testing, snapshot testing
+- **React Testing Library** - React component testing
+- **Storybook** - Visual testing
+  - **[Chromatic](https://www.chromatic.com/builds?appId=5d626a63a601530020759b10)** - Storybook reviewing
+- **Playwright** - End-to-end testing
+- **Lighthouse CI** - Performance, accessibility, search engine optimization (SEO), progressive web app (PWA) analysis
+- **Sentry** - Error tracking
+- **Report URI** - Security reporting
+- **Google Tag Manager** - Tag management
+- **Google Analytics** - Web analytics
+- **FullStory** - Experience analytics, session replay, heatmaps
+- **Namecheap** - Domain
+- **Cloudflare** - DNS, DDoS protection, CDN
+- **[HTTP/3 Check](https://www.http3check.net/?host=www.hongbomiao.com)** - HTTP/3 checking
+- **[hstspreload.org](https://hstspreload.org/?domain=hongbomiao.com)** - HSTS checking
+- **[Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory/analyze?host=www.hongbomiao.com)** - Security monitoring
+- **[UptimeRobot](https://stats.uptimerobot.com/RoOoGTvyWN)** - Uptime monitoring
+
+## Mobile
+
+### Mobile - iOS
+
+- **Tuist** - Xcode project generation and management tool
+- **SwiftUI** - UI framework
+- **MLX Swift LM** - Large language model (LLM) and vision language model (VLM) fine-tuning and inference framework using MLX optimized for GPU (Metal)
+- **kokoro-ios** - Text-to-speech (TTS) framework using MLX optimized for GPU (Metal)
+- **FluidAudio** - Real-time automatic speech recognition (ASR), speaker diarization, voice activity detector (VAD), and text-to-speech (TTS) framework using Core ML optimized exclusively for NPU (Apple Neural Engine (ANE))
+- **WhisperKit** - Automatic speech recognition (ASR) framework using Core ML optimized for both NPU (Apple Neural Engine (ANE)) and GPU (Metal)
+- **Core ML Stable Diffusion** - Text-to-image (T2I) framework using Core ML optimized for both NPU (Apple Neural Engine (ANE)) and GPU (Metal)
+- **swift-transformers** - Transformers-like API with tokenization and Hugging Face Hub integration
+- **Core ML Tools** - Core ML model conversion, editing, and validation for iOS/macOS
+- **XCTest** - Unit testing, performance testing
+- **Slather** - Code coverage report generation
+- **Mint** - Package management
+
+### Mobile - Android
+
+- **AndroidX** - Android Jetpack
+- **JUnit** - Unit testing, instrumented testing
+
+### Mobile - React Native
+
+- **Expo** - Platform for making universal native apps
+- **React Native** - Mobile application framework
+- **UI Kitten** - UI library
+- **React Native Testing Library** - React Native component testing
+
+## Desktop
+
+### Desktop - Qt
+
+- **Qt Quick** - Cross-platform application development framework
+- **QML** - Qt modeling language
+
+## API Server
+
+### API Server - Rust
+
+- **axum** - Web framework
+  - **Axum Test** - End-to-end testing
+- **Rig** - Large language model (LLM) application framework
+- **WTransport** - WebTransport
+- **Tokio** - Asynchronous runtime
+  - **tokio-stream** - Stream utilities and adapters
+- **tower** - Service trait and middleware library
+  - **tower-http** - HTTP middleware and utilities (compression, CORS, timeout, trace)
+  - **tower-governor** - Rate limiting
+- **Serde** - Serialization and deserialization framework
+- **futures-rs** - Foundational traits and utilities for asynchronous programming (Future, Stream, Sink)
+- **OnceCell** - Lazy initialization of static values and global state
+- **async-graphql** - GraphQL (query, mutation, subscription, depth limit, complexity limit)
+- **SQLx** - Asynchronous SQL toolkit
+- **Rayon** - Data parallelism
+- **PyO3** - Rust bindings to the Python interpreter
+- **ort** - ONNX Runtime
+- **opencv-rust** - OpenCV bindings
+- **flate2** - DEFLATE, Gzip, and Zlib compression and decompression library
+- **ndarray** - N-dimensional array library
+- **nalgebra** - Linear algebra library
+- **async-openai** - OpenAI API library
+- **Hound** - WAV file encoding and decoding
+- **flacenc-rs** - FLAC encoding
+- **FFmpeg Sidecar** - Iterator-based FFmpeg wrapper
+- **Anyhow** - Error handling
+- **Tracing** - Tracing
+  - **tracing-subscriber** - Utilities for implementing and composing tracing subscribers
+- **dotenvy** - Environment variables loading
+- **utoipa** - OpenAPI document generation
+  - **utoipa-swagger-ui** - Swagger UI integration
+
+### API Server - Go
+
+- **Gin** - Web framework
+- **gRPC** - Remote procedure call (RPC) framework
+- **graphql-go** - GraphQL
+- **jwt-go** - JSON Web Token (JWT)
+- **gin-contrib/cors** - Cross-Origin Resource Sharing (CORS)
+- **opa** - Open Policy Agent
+- **pgx** - PostgreSQL driver
+- **dgo** - Dgraph client
+- **valkey-go** - Valkey client
+- **AWS SDK for Go** - Amazon Web Services (AWS) SDK
+- **Resty** - HTTP client
+- **Squirrel** - SQL query builder
+- **apm-agent-go** - Application performance monitoring (APM) agent
+- **OpenTelemetry Go** - OpenTelemetry
+- **Prometheus Go** - Prometheus
+- **Testify** - Unit testing
+- **GoDotEnv** - Environment variables loading
+- **jsonparser** - JSON parser
+- **zerolog** - Logging
+
+### API Server - Python
+
+- **FastAPI** - Web framework
+- **PydanticAI** - Large language model (LLM) agent framework
+- **openai** - OpenAI API library
+- **Mem0** - Memory layer
+- **Sentence Transformers** - Sentence embedding
+- **LanceDB** - Embedded vector database
+- **pydantic** - Data validation
+- **HTTPX** - HTTP client
+- **asyncpg** - PostgreSQL client library
+- **pytest** - Unit testing
+- **Uvicorn** - Asynchronous server gateway interface (ASGI) server
+- **Poe the Poet** - Task runner
+- **uv** - Python package management
+
+### API Server - Node.js
+
+- **SWC** - JavaScript compiler
+- **Express** - Web framework
+- **GraphQL.js**, **graphql-http** - GraphQL
+  - **graphql-ws**, **graphql-subscriptions** - GraphQL subscription
+  - **graphql-upload** - GraphQL upload
+  - **graphql-shield** - GraphQL permissions
+  - **graphql-depth-limit** - GraphQL depth limit
+  - **graphql-query-complexity** - GraphQL complexity limit
+- **DataLoader** - Batching and caching
+- **Knex.js** - SQL query builder
+- **node-postgres** - PostgreSQL client library
+- **ioredis** - Redis client
+- **rate-limiter-flexible** - Rate limiting
+- **expressjs/cors** - Cross-Origin Resource Sharing (CORS)
+- **jsonwebtoken**, **express-jwt** - JSON Web Token (JWT)
+- **bcrypt** - Password hashing
+- **Helmet** - HTTP header `Content-Security-Policy`, `Referrer-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options`, `X-DNS-Prefetch-Control`, `X-Download-Options`, `X-Frame-Options`, `X-Permitted-Cross-Domain-Policies`, `X-XSS-Protection`
+- **Report To** - HTTP header `Report-To`
+- **Network Error Logging** - HTTP header `NEL`
+- **express-request-id** - HTTP header `X-Request-ID`
+- **response-time** - HTTP header `X-Response-Time`
+- **connect-timeout** - Request timeout
+- **request-ip** - IP address retrieving
+- **Terminus** - Health check and graceful shutdown
+- **pino** - Logging
+- **dotenv-flow** - Environment variables loading
+- **Jest** - Unit testing
+- **Stryker** - Mutation testing
+- **SuperTest** - HTTP testing
+- **autocannon** - HTTP benchmarking
+- **Clinic.js** - Performance profiling
+- **Node.js** - JavaScript runtime
+- **npm** - JavaScript package management
+
+## Load Testing
+
+- **Grafana k6** - Load testing
+- **Locust** - Load testing
+
+## Cloud Native
+
+- **Sealed Secrets** - Kubernetes secret encrypting
+- **CoreDNS** - DNS server
+- **ExternalDNS** - Kubernetes services and Ingresses with external DNS providers synchronizing
+- **cert-manager** - Kubernetes X.509 certificate management
+- **Harbor** - Container image registry
+- **Velero** - Kubernetes backup and disaster recovery
+- **CSI for S3** - Container Storage Interface (CSI) driver for S3 and S3-compatible storage
+- **Hasura** - GraphQL Engine
+  - **hasura-metric-adapter** - Hasura GraphQL Engine metric adapter
+- **Cilium** - eBPF-based networking, observability, security
+  - **Hubble** - Network and security observability platform
+- **Linkerd** - Service mesh
+- **Caddy** - Web server, reverse proxy, load balancer
+- **Traefik** - Web server, reverse proxy, load balancer
+- **nginx** - Web server, reverse proxy, load balancer
+- **Metrics Server** - Kubernetes metrics
+- **Telegraf** - Plugin-driven server agent
+- **Docker** - Container
+- **Tilt** - Local Kubernetes development and live-reload tool
+- **Kustomize** - Template-free customization of Kubernetes manifests
+- **Multipass** - Virtual machine management
+- **Cloudflare Tunnel** - Tunneling
+- **Vertical Pod Autoscaler** - Kubernetes vertical pod autoscaler
+- **Karpenter** - Kubernetes node autoscaler
+- **KEDA** - Kubernetes event-driven autoscaler
+- **NVIDIA GPU Operator** - Kubernetes operator for GPU driver and device plugin management
+- **RKE2** - Lightweight Kubernetes
+- **K3s** - Lightweight Kubernetes
+- **containerd** - Container runtime
+- **Kubernetes** - Container-orchestration system
+
+## Monitoring
+
+- **Grafana** - Observability and data visualization
+  - **Grafana Alloy** - OpenTelemetry collector
+  - **Grafana Beyla** - eBPF-based auto-instrumentation tool
+  - **Grafana Loki** - Log aggregation system
+  - **Grafana Mimir** - Prometheus metrics storage
+  - **Grafana Tempo** - Distributed tracing backend
+  - **Grafana Pyroscope** - Continuous profiling platform
+  - **Grafana k6** - Load testing
+- **Vector** - Log collector
+- **Fluent Bit** - Log collector
+- **Prometheus** - Time-series database
+  - **Thanos** - Long-term storage for Prometheus
+  - **Grafana Mimir** - Long-term storage for Prometheus
+  - **Prometheus NATS Exporter** - NATS metrics exporter
+  - **Prometheus Postgres Exporter** - PostgreSQL metrics exporter
+  - **Prometheus Prefect Exporter** - Prefect metrics exporter
+- **OpenTelemetry** - Observability framework
+- **Jaeger** - Distributed tracing system
+- **Pixie** - Kubernetes application observability tool
+- **Netdata** - Distributed monitoring platform
+- **Gatus** - Health dashboard
+- **Elastic APM** - Application performance monitoring
+- **Kibana** - Elasticsearch visualization
+
+## Data
+
+### Data Ingestion
+
+- **Apache SeaTunnel** - Distributed batch & streaming data sync framework
+- **Airbyte** - Data integration and extract-load-transform (ELT) platform
+
+### Data Orchestration
+
+- **Prefect** - Python-native workflow orchestration platform
+- **DBOS** - Database-backed durable execution framework
+- **Temporal** - Durable execution platform for stateful workflows
+- **Apache Airflow** - DAG-based workflow orchestration platform
+
+### Data Processing
+
+- **CocoIndex** - AI-native data transformation framework
+- **Pathway** - Real-time data processing framework
+- **Apache Spark** - Data processing framework
+  - **Spark Connect** - Decoupled client-server architecture for remote Spark connectivity
+  - **Spark ML** - Spark machine learning
+  - **pyspark** - Spark API library
+  - **Delight** - Spark UI and history server
+- **Apache Sedona** - Spatial data processing framework
+- **Apache Flink** - Data processing framework
+  - **flink-streaming-java** - Flink
+  - **flink-connector-twitter** - Flink Twitter connector
+  - **flink-connector-jdbc** - Flink JDBC Connector
+  - **flink-connector-redis** - Flink Redis connector
+  - **flink-model-openai** - Flink OpenAI model provider
+  - **Flink CDC** - Distributed real-time and batch change data capture (CDC) data integration tool
+- **Apache Fluss** - Streaming storage for real-time analytics
+- **NATS** - Edge and cloud native messaging system
+  - **nats-py** - NATS Python client
+  - **async-nats** - NATS Rust client
+- **Apache Pulsar** - Distributed event streaming and messaging platform
+  - Management tool
+    - **Dekaf** - Pulsar management
+- **Apache Kafka** - Distributed event streaming platform
+  - Client
+    - **librdkafka** - Kafka C/C++ client
+      - **libserdes** - AVRO serialization and deserialization
+    - **confluent-kafka** - Kafka Python client
+    - **rust-rdkafka** - Kafka Rust client
+  - Schema registry
+    - **Confluent Schema Registry** - Schema Registry
+    - **Apicurio Registry** - Schema Registry
+  - Replication
+    - **MirrorMaker** - Data replicating
+  - Connector
+    - **Debezium** - Distributed change-data-capture (CDC) platform
+    - **debezium-connector-postgres** - PostgreSQL CDC source connector
+    - **confluentinc-kafka-connect-jdbc** - JDBC source and sink connector
+    - **confluentinc-kafka-connect-s3** - Amazon S3 Sink Connector
+    - **snowflake-kafka-connector** - Snowflake Sink Connector
+    - **kafka-connect-elasticsearch** - Elasticsearch sink connector
+    - **http-connector-for-apache-kafka** - HTTP sink connector
+    - **kafka-connect-avro-converter** - Confluent Avro converter
+    - **apicurio-registry-distro-connect-converter** - Apicurio Avro converter
+  - Operator
+    - **Strimzi Kafka Operator** - Kubernetes operator for deploying and managing Kafka clusters
+  - Management tool
+    - **Redpanda Console** - Kafka management
+    - **AKHQ** - Kafka management
+    - **UI for Apache Kafka** - Kafka management
+    - **topicctl** - Kafka topic management
+
+### Data Transformation
+
+- **dbt** - Data transformation
+
+### Data Format
+
+- **Apache Parquet** - On-disk columnar format
+- **Apache Arrow** - In-memory columnar format
+- **Vortex** - Arrow-compatible columnar format
+- **Lance** - Columnar file format for machine learning
+- **Protocol Buffers (Protobuf)** - Data serialization format
+- **BLF** - Binary log format
+- **GeoJSON** - Geospatial data interchange format
+- **HDF5** - Hierarchical data format
+- **MF4** - Measurement data format (MDF)
+- **TRC** - PEAK-System trace capture
+
+### Database, Data Warehouse, Data Lakehouse
+
+- **SQLite** - Embedded relational SQL database
+  - **Turso** - Edge-hosted distributed database
+- **DuckDB** - Embedded analytical SQL database
+- **PostgreSQL** - Object-relational database
+  - **Patroni** - PostgreSQL high-availability (HA) template
+  - **Postgres Operator** - PostgreSQL cluster provisioning
+  - **pgAdmin** - PostgreSQL management tool
+  - Extension
+    - **pg_graphql** - GraphQL
+- **MySQL** - Relational database
+  - **MariaDB** - Fork of MySQL
+- **Hydra** - Column-oriented SQL database
+- **ClickHouse** - Column-oriented SQL database
+- **YugabyteDB** - Distributed SQL database
+- **TimescaleDB** - Time-series SQL database
+- **Prometheus** - Time-series database
+- **InfluxDB** - Distributed time-series database
+- **VictoriaMetrics** - Distributed time-series database
+- **Loki** - Log aggregation system
+- **RocksDB** - Embedded key-value store
+- **Valkey** - Distributed in-memory key-value store
+- **FoundationDB** - Distributed transactional key-value store
+- **Apache Cassandra** - Distributed wide-column NoSQL database
+- **Faiss** - Vector search and similarity library
+- **LanceDB** - Embedded vector database
+- **Qdrant** - Distributed vector database
+- **Chroma** - Embedded and distributed vector database
+- **Dgraph** - Distributed graph database
+- **Elasticsearch** - Distributed document-oriented search engine
+- **RustFS** - Distributed, high-performance object storage system
+- **Apache ZooKeeper** - Distributed coordination system
+- **Apache Hadoop** - Software utility collection
+  - **Apache Hadoop HDFS (Distributed File System)** - Distributed file system
+  - **Apache Hadoop YARN (Yet Another Resource Negotiator)** - Resource management and job scheduling framework
+  - **Apache Hadoop MapReduce** - Data processing framework
+- **Apache Hive** - Distributed data warehousing and SQL-like query language system built on top of Apache Hadoop
+- **Trino** - Distributed SQL query engine
+- **Apache Paimon** - Streaming data lakehouse
+- **Apache Iceberg** - Data lakehouse
+- **Delta Lake** - Data lakehouse
+- **Apache Doris** - High-performance analytical database
+- **StarRocks** - High-performance analytical database
+- **Snowflake** - Data warehouse
+- **Odoo** - Enterprise resource planning (ERP) and customer relationship management (CRM)
+- **golang-migrate/migrate** - Database migrations
+
+### Data Catalog
+
+- **AWS Glue Data Catalog** - Serverless, centralized metadata repository
+- **Nessie** - Apache Iceberg transactional data catalog
+- **Lakekeeper** - Apache Iceberg REST catalog
+- **Apache Polaris** - Apache Iceberg REST catalog
+- **Nimtable** - Apache Iceberg observability and control plane (table inspection, compaction, and optimization)
+
+### Data Visualization
+
+- **Plotly** - Interactive scientific, engineering, and business data visualization
+- **Grafana** - Monitoring, observability, and real-time data visualization
+- **Metabase** - Business intelligence (BI) data visualization
+- **Apache Superset** - Business intelligence (BI) data visualization
+- **Tableau** - Business intelligence (BI) data visualization
+- **IADS** - Flight test data visualization
+- **Rerun** - Multimodal data visualization for computer vision and robotics
+
+### Data Analytics
+
+- **NumPy** - Array computation library
+  - **Numba** - NumPy-aware Just-in-time (JIT) compiler
+  - **CuPy** - GPU-accelerated array computation library
+- **pandas** - Data analysis library
+  - **GeoPandas** - Spatial data library
+  - **AWS SDK for pandas** - pandas integration with AWS services
+  - **cuDF** - GPU-powered DataFrame library
+  - **Polars** - High-performance DataFrame library
+  - **Modin** - Distributed DataFrame library
+  - **Daft** - Distributed DataFrame library
+- **Narwhals** - Compatibility layer between DataFrame libraries
+- **NetworkX** - Network analysis library
+- **marimo** - Reactive Python notebook
+- **JupyterLab** - Web-based interactive computing platform
+  - **nb-clean** - Jupyter notebook cleaning
+- **Databricks** - Data analytics platform
+- **Palantir** - Data analytics platform
+
+### Data Quality
+
+- Data drift
+  - Covariate shift
+  - Concept drift
+  - Univariate drift
+    - Jensen-Shannon distance - categorical and continuous
+    - Hellinger - categorical and continuous
+    - Wasserstein - continuous
+    - Kolmogorov-Smirnov - continuous
+    - L-infinity - categorical
+    - Chi2 - categorical
+  - Multivariate drift
+- Performance estimation
+  - Direct loss estimation (DLE) - Regression
+    - Mean absolute error (MAE)
+    - Mean absolute percentage error (MAPE)
+    - Mean squared error (MSE)
+    - Root mean squared error (RMSE)
+    - Mean squared logarithmic error (MSLE)
+    - Root mean squared logarithmic error (RMSLE)
+  - Confidence-based performance estimation (CBPE)- Classification
+    - Confusion matrix
+    - ROC AUC
+    - Accuracy
+    - Precision
+    - Recall
+    - F1 score
+- Regression analysis
+  - Linear regression
+  - Polynomial regression
+  - Lasso regression (L1 regularization)
+  - Ridge regression (L2 regularization)
+  - Elastic net (L1 + L2 regularization)
+  - Logistic regression
+  - Bayesian regression
+  - Stepwise regression
+  - Robust regression
+  - Ecological regression
+  - Quantile regression
+- Ensemble learning
+  - Bagging
+  - Boosting
+    - Adaptive boosting
+      - AdaBoost
+    - Gradient boosting
+      - XGBoost
+      - LightGBM
+      - CatBoost
+  - Stacking
+
+### Data Application
+
+- **PyGWalker** - Data exploration
+- **Gradio** - Machine learning application building
+- **Streamlit** - Data application building
+- **Dash** - Data application and dashboard building
+
+### Data Transport
+
+- **Arrow Flight** - High-performance data transport framework
+- **ZeroMQ** - High-performance asynchronous messaging library
+  - **NetMQ** - C# implementation of ZeroMQ
+  - **zmq.rs** - Rust implementation of ZeroMQ
+- **RTI Connext DDS** - Data distribution service (DDS) middleware framework
+- **Dust DDS** - Data distribution service (DDS) middleware framework
+
+### Evolutionary Algorithm (EA)
+
+- **Genetic Algorithm (GA)** - Optimization algorithm inspired by natural selection, using mutation, crossover, and selection
+
+## Machine Learning (ML)
+
+- **scikit-learn** - Machine learning library
+  - **cuML** - GPU-accelerated machine learning library
+- **PyTorch** - Machine learning
+  - **torchvision** - PyTorch computer vision models and utilities
+  - **TorchAudio** - PyTorch audio and signal processing
+  - **PyTorch Geometric** - PyTorch geometric deep learning extension
+  - **TorchServe** - PyTorch models serving
+- **Flax** - Neural network for JAX
+  - **Optax** - Gradient processing and optimization for JAX
+- **Lightning** - Deep Learning framework
+- **NeuralForecast** - Neural forecasting
+- **AutoGluon** - Automated machine learning (AutoML) library
+- **OGB** - Open graph benchmark
+- **Optuna** - Hyperparameter optimization framework
+- **hydra-zen** - Pythonic configuration management built on Hydra
+- **DVC** - Data version control
+- **Feast** - Feature store
+- **Metaflow** - Machine learning orchestration
+- **Kubeflow** - Machine learning orchestration, experiment tracking, model registry, model serving
+- **TensorBoard** - Experiment tracking and visualization
+- **MLflow** - Experiment tracking, model registry, model deployment
+- **Weights & Biases** - Experiment tracking, model registry
+- **NVIDIA Data Loading Library (DALI)** - GPU-accelerated data loading and preprocessing pipeline
+- **NVIDIA Triton Inference Server** - Inference server
+- **NVIDIA Modulus** - Physics-informed machine learning framework
+
+### Large Language Model (LLM)
+
+- Data Annotation
+  - **Label Studio** - Data annotation
+- Data Crawling
+  - **Crawl4AI** - Web data scraping, crawling
+  - **Firecrawl** - Web data scraping, crawling, extraction
+- Data Extraction
+  - Document Data Extraction
+    - **MinerU** - Document data extraction
+    - **olmOCR** - Document data extraction
+    - **Docling** - Document data extraction
+    - **pypdf** - PDF manipulation
+  - Named Entity Recognition (NER)
+    - **BERT** - General-purpose language model (fine-tuned for named entity recognition)
+    - **GLiNER** - Named entity recognition
+- Tokenization
+  - **Byte-Pair Encoding (BPE)** - Subword tokenization
+- Embedding
+  - **Model2Vec** - Fast static text embeddings distilled from Sentence Transformers
+- Model Architecture
+  - Transformer
+    - **Dense Transformer** - Standard transformer where all parameters (attention + FFN layers) are active for every token using full self-attention across the sequence
+    - **Mixture of Experts (MoE)** - Sparse transformer that routes each token to top-k expert sub-networks, activating only a fraction of total parameters to scale model capacity efficiently
+  - State Space Model (SSM)
+    - **Mamba 2** - State space model architecture for efficient sequence modeling with linear-time complexity
+- Large Language Model (LLM) Pre-Training
+  - Training Paradigm
+    - Causal Language Model (CLM)
+      - **Qwen3** - Decoder-only transformer model for autoregressive text generation
+      - **MiniMax M2.1** - Decoder-only sparse Mixture-of-Experts (MoE) model for autoregressive text generation
+    - Masked Language Model (MLM)
+      - **ModernBERT** - BERT-style encoder with Rotary Positional Embedding (RoPE), Flash Attention, GeGLU activations, and a context length of 8,192 tokens.
+      - **NeoBERT** - BERT-style encoder with Rotary Positional Embedding (RoPE), RMSNorm, SwiGLU activations, and a context length of 4,096 tokens.
+  - Training Optimization
+    - **Automatic Mixed Precision** - Mixed precision FP16/FP32 training
+    - **Accelerate** - Hugging Face library for distributed training across CPU, multi-GPU, and TPU with mixed precision (FP16/BFloat16/FP8) and DeepSpeed, Fully Sharded Data Parallel (FSDP), Megatron-LM integration
+    - **DeepSpeed** - Deep learning optimization library for easy, efficient, and effective distributed training and inference
+      - **Zero Redundancy Optimizer (ZeRO)** - Memory optimization through partitioning optimizer states, gradients, and parameters
+      - **ZeRO-Infinity** - CPU/Non-Volatile Memory Express (NVMe) offloading for training models beyond GPU memory limits
+      - **3D Parallelism** - Combined data, pipeline, and tensor parallelism strategy
+      - **Ulysses Sequence Parallelism** - Sequence splitting for efficient long-context processing
+      - **DeepSpeed-MoE** - Optimized training and inference for Mixture of Experts (MoE) models
+- Large Language Model (LLM) Post-Training
+  - Fine-Tuning
+    - **Supervised Fine-Tuning (SFT)** - Training technique that updates all model parameters using labeled instruction-response pairs
+    - **Direct Preference Optimization (DPO)** - Alignment technique that directly optimizes language models on human preference data without requiring a separate reward model
+    - **Proximal Policy Optimization (PPO)** - Reinforcement learning algorithm that uses a clipped surrogate objective to enable stable policy updates while preventing destructively large parameter changes
+    - **Group Relative Policy Optimization (GRPO)** - Reinforcement learning algorithm that estimates baselines from group scores instead of critic models, reducing memory usage while maintaining training effectiveness
+    - **Low-Rank Adaptation (LoRA)** - Parameter-efficient fine-tuning method that trains low-rank decomposition matrices instead of full model weights
+    - **Quantized Low-Rank Adaptation (QLoRA)** - Memory-efficient fine-tuning method that combines 4-bit quantization with Low-Rank Adaptation (LoRA) to enable training large models on limited GPU memory
+    - **PEFT** - Hugging Face library implementing parameter-efficient fine-tuning methods including Low-Rank Adaptation (LoRA), prefix tuning, and adapters
+    - **TRL** - Hugging Face library for training large language models with reinforcement learning including Supervised Fine-Tuning (SFT), Proximal Policy Optimization (PPO), and Direct Preference Optimization (DPO)
+    - **Unsloth** - Efficient large language model (LLM) fine-tuning on single GPU via custom Triton kernels
+    - **torchtune** - PyTorch-native, modular distributed large language model (LLM) fine-tuning
+    - **Axolotl** - YAML-driven distributed large language model (LLM) fine-tuning
+    - **LLaMA-Factory** - Distributed large language model (LLM) fine-tuning with optional web interface
+    - **SWIFT** - Distributed large language model (LLM) fine-tuning with support for multiple algorithms and optimization techniques
+    - **Tinker** - Managed distributed training API with low-level control
+  - Quantization
+    - **torchao** - PyTorch-native quantization and sparsification
+- Large Language Model (LLM) Inference
+  - **Ollama** - Local large language model (LLM) inference
+  - **LM Studio** - Local large language model (LLM) inference
+  - **Transformers** - Model-definition framework for machine learning models
+    - **Optimum** - Hardware-acceleration toolkit for optimizing model training and inference across specific backends (e.g., ONNX Runtime, Intel, AMD, AWS Trainium)
+  - **llama.cpp** - High-performance large language model (LLM) inference in C/C++
+  - **MLX LM** - Large language model (LLM) inference for Apple silicon
+  - **vLLM** - High-throughput large language model (LLM) inference
+    - **vLLM Production Stack** - Kubernetes-native reference system for cluster-wide vLLM deployment, request routing, and observability
+    - **LMCache** - Distributed key-value (KV) cache layer that enables cache sharing and offloading across instances to reduce Time to First Token (TTFT)
+  - **SGLang** - High-throughput large language model (LLM) and vision language model (VLM) inference
+  - **KV Caching** - Memory optimization technique caching key/value pairs from self-attention to accelerate auto-regressive decoding
+  - **Speculative Decoding** - Acceleration technique using draft models
+- Large Language Model (LLM) Evaluation
+  - **DeepEval** - Large language model (LLM) evaluation framework
+- Large Language Model (LLM) Gateway
+  - **LiteLLM** - Large language model (LLM) gateway
+- Large Language Model (LLM) Application
+  - **Rig** - Large language model (LLM) application framework
+  - **PydanticAI** - Large language model (LLM) agent framework
+  - **LangGraph** - Large language model (LLM) workflow library
+  - **LlamaIndex** - Large language model (LLM) data framework
+- AI Chat Interface
+  - **Open WebUI** - AI chat interface
+    - **Open WebUI Pipelines** - OpenAI API plugin framework
+- Vector Database
+  - **Faiss** - Vector search and similarity library
+  - **LanceDB** - Embedded vector database
+  - **Qdrant** - Distributed vector database
+  - **Chroma** - Distributed vector database
+- Agent Communication Protocol
+  - **Model Context Protocol (MCP)**
+  - **Agent Communication Protocol (ACP)**
+  - **Agent2Agent Protocol (A2A)**
+
+### Small Language Model (SLM)
+
+- Small Language Model (SLM)
+  - **Gemma 3 270M** - Small language model (SLM)
+
+### Vision Language Model (VLM)
+
+- Vision Language Model (VLM)
+  - **Qwen3-VL** - Vision language model (VLM)
+
+### Convolutional Neural Network (CNN)
+
+- **Convolutional Neural Network (CNN)** - A deep learning architecture that uses learnable convolutional filters to automatically detect spatial hierarchies and local patterns in data, primarily used for image recognition, computer vision, and spatial data processing
+
+### Graph Neural Network (GNN)
+
+- **Graph Neural Network (GNN)** - A neural network architecture designed to process graph-structured data by iteratively aggregating information from neighboring nodes, enabling learning on non-Euclidean domains like social networks, molecules, and knowledge graphs
+
+### Liquid Neural Network (LNN)
+
+- **Liquid Neural Network (LNN)** - A continuous-time recurrent neural architecture with adaptive, dynamic behavior inspired by biological neurons, optimized for robust time-series modeling, control, and robotics
+
+### Multimodal Model
+
+- Embedding
+  - **OpenCLIP** - Multimodal embedding model for images and text
+  - **ImageBind** - Multimodal embedding model for images, text, audio, video, depth, thermal, and inertial measurement units (IMUs)
+- Multimodal Model
+  - **Qwen3-Omni** - Omni multimodal model with text, audio, image, video understanding and real-time speech generation
+  - Vision-Language-Action (VLA) Model
+    - **OpenVLA** - Vision-language-action model for robotic manipulation that processes visual observations and language instructions to generate robot actions, fine-tuned from prism-dinosiglip-224px (DINOv2 ViT-L/14 and ViT-SO400M-14-SigLIP vision backbones, LLaMA 2 language model)
+    - **openpi** - Flow-based and autoregressive vision-language-action models (π₀, π₀-FAST, π₀.₅) pre-trained on 10k+ hours of robot data for robotic manipulation across various platforms including ALOHA, DROID, and custom robots
+    - **Alpamayo 1** - Reasoning-based vision-language-action (VLA) model
+
+### World Foundation Model (WFM)
+
+- **NVIDIA Cosmos** - Platform for physical AI featuring generative world foundation models (WFMs), guardrails, and accelerated data processing pipelines
+
+### Generative Model
+
+- **Flow Matching** - Continuous-time generative modeling technique that learns a vector field to transport a simple distribution to a complex data distribution
+- **torchdiffeq** - PyTorch differentiable ordinary differential equation (ODE) solvers
+- **Neural Ordinary Differential Equation (Neural ODE)** - Neural network architecture that models continuous-time dynamics by parameterizing the derivative of hidden states as a neural network, solved using ordinary differential equation (ODE) solvers
+- **Variational Autoencoder (VAE)** - Latent-variable generative modeling technique that learns to map data to a probabilistic distribution and reconstruct it via an encoder-decoder architecture
+- **Diffusion Model** - Continuous-time generative modeling technique that learns to reverse a multi-step noising process to reconstruct data from Gaussian noise
+- **Stable Diffusion** - Latent diffusion model (LDM) architecture designed for high-resolution text-to-image (T2I) generation by performing the diffusion process in a compressed latent space
+- **Diffusers** - Diffusion models for image, video, and audio generation
+- **ComfyUI** - Node-based interface for diffusion model workflows
+
+### Reinforcement Learning (RL)
+
+- **Gymnasium** - Reinforcement learning environment toolkit
+- **Q-Learning** - Model-free reinforcement learning algorithm for learning optimal actions
+- **Actor-Critic Algorithm** - Policy gradient method combining actor (policy) and critic (value) networks
+
+### Computer Vision
+
+- **OpenCV** - Computer vision library
+- **supervision** - Computer vision library
+- **Ultralytics YOLOv12** - Object detection model
+- **Open3D** - 3D data processing
+- **PyVista** - 3D plotting and mesh analysis
+- **Visualization Toolkit (VTK)** - Image processing, 3D graphics, volume rendering and visualization
+- **GStreamer** - Pipeline-based multimedia framework
+- **AnyUp** - Universal feature upsampling
+- Vision Transformer (ViT)
+  - **DINOv3** - Self-supervised vision transformer (ViT) model
+
+### Media
+
+- Live Coding
+  - **Strudel** - JavaScript port of Tidal Cycles for live coding dynamic music patterns
+- Noise Suppression / Noise Cancellation
+  - **RNNoise** - Lightweight recurrent neural network (RNN)-based real-time noise suppression system
+- Voice Activity Detection (VAD)
+  - **WebRTC VAD** - Lightweight Gaussian Mixture Model (GMM)-based voice activity detector optimized for ultra-low-latency real-time communication
+  - **RNNoise VAD** - Recurrent Neural Network (RNN)-based noise suppression system with implicit voice activity detection
+  - **Silero VAD** - Pre-trained LSTM-based deep neural network voice activity detector providing high accuracy and robustness across noisy conditions
+  - **TEN VAD** - Lightweight streaming neural VAD optimized for high precision and extremely low latency in real-time conversational systems
+- Speaker Diarization
+  - **Diart** - Real-time speaker diarization
+  - **Streaming Sortformer Diarizer 4spk** - Real-time speaker diarization model for up to 4 speakers using a streaming Transformer-based architecture
+- Audio Signal Analysis
+  - **Librosa** - Audio signal analysis
+- Speech Quality Assessment
+  - **Signal-to-Noise Ratio (SNR)** - Reference-free metric comparing speech-frame power against the noise-floor power found in the natural pauses in speech
+  - **TorchAudio-Squim** - TorchAudio Speech Quality and Intelligibility Measures (SQUIM) models for reference-free estimation of speech quality metrics
+    - **Wideband Perceptual Estimation of Speech Quality (PESQ)** - Reference-free perceptual speech quality metric approximating the mean opinion score (MOS)
+    - **Short-Time Objective Intelligibility (STOI)** - Reference-free metric estimating how intelligible the speech is
+    - **Scale-Invariant Signal-to-Distortion Ratio (SI-SDR)** - Reference-free metric estimating how much of the signal is clean speech versus distortion
+- Automatic Speech Recognition (ASR)
+  - Automatic Speech Recognition (ASR) Models
+    - **Whisper** - Transformer-based automatic speech recognition (ASR) model
+    - **Zipformer** - Multi-scale U-Net-like Transformer-based automatic speech recognition (ASR) model
+    - **Qwen3-ASR** - Large language model (LLM)-based automatic speech recognition (ASR) model
+    - **Parakeet TDT** - Fast Conformer-based Token-and-Duration Transducer (TDT) automatic speech recognition (ASR) model
+    - **Cohere Transcribe** - Conformer encoder + Transformer decoder automatic speech recognition (ASR) model
+  - Automatic Speech Recognition (ASR) Inference
+    - **Faster Whisper** - Fast Whisper inference using CTranslate2
+    - **WhisperX** - Whisper-based transcription with word-level timestamps and speaker diarization
+    - **Speaches** - OpenAI-compatible inference server for streaming transcription, translation, and speech generation
+    - **WhisperKit** - On-device Whisper for Apple
+    - **whisper.cpp** - High-performance Whisper inference in C/C++
+    - **NVIDIA NeMo** - Conversational AI toolkit for building, training, and fine-tuning speech AI models (automatic speech recognition (ASR), text-to-speech (TTS)) and large language models (LLMs)
+    - **sherpa-onnx** - Real-time, on-device voice activity detector (VAD), speaker diarization, speech recognition (ASR), and text-to-speech (TTS) using ONNX models
+  - Automatic Speech Recognition (ASR) Evaluation
+    - **JiWER** - Automatic speech recognition evaluation, including word error rate (WER), match error rate (MER), word information lost (WIL), word information preserved (WIP), and character error rate (CER)
+- Inverse Text Normalization (ITN)
+  - **text-processing-rs** - Inverse text normalization (ITN) and text normalization (TN) library
+- Media Streaming Server
+  - **Icecast** - Media server primarily optimized for internet radio and live audio broadcasting (MP3, AAC, FLAC, Opus)
+  - **MediaMTX** - Zero-dependency, protocol-agnostic media server and proxy used for publishing, routing, recording, and playing back streams across multiple protocols (RTSP, RTMP, HLS, WebRTC, SRT)
+  - **LiveKit** - WebRTC Selective Forwarding Unit (SFU) infrastructure designed for highly scalable, sub-second latency audio, video, and data applications (e.g., video calls, voice agents, and live conferencing)
+
+## Computing
+
+### Compiler Infrastructure
+
+- **LLVM** - Compiler infrastructure
+
+### Parallel Computing
+
+- **CUDA** - Parallel computing language
+- **Taichi** - Parallel computing language
+- **Triton** - Parallel computing language
+
+### High-Performance Computing (HPC)
+
+- **Julia** - High-performance dynamic programming language
+- **JAX** - High-performance numerical computing
+- **AWS ParallelCluster** - High performance computing (HPC) cluster management
+  - **NICE DCV** - Remote display
+- **AWS Batch** - Batch computing
+- **Open MPI** - High-performance computing (HPC) library
+- **Slurm** - Workload management
+- **Volcano** - Kubernetes batch scheduling system
+
+### Cloud Computing
+
+- **Amazon EC2** - Cloud computing
+- **Ray** - Distributed computing framework
+- **SkyPilot** - Sky computing
+
+### Scientific Computing
+
+- **SunPy** - Solar physics data analysis
+
+### Quantum Computing
+
+- **Qiskit** - Quantum computing
+
+## Cloud
+
+### Cloud Platform
+
+- **Nebius**
+  - **Object Storage** - Object storage
+  - **Managed Service for Kubernetes** - Kubernetes
+- **Amazon Web Services**
+  - **Amazon Athena** - Serverless query service
+  - **Amazon Bedrock** - Generative AI model service
+  - **Amazon CloudTrail** - Data governance, data compliance, data auditing
+  - **Amazon DynamoDB** - NoSQL database
+  - **Amazon EBS** - Block storage
+  - **Amazon EC2** - Cloud computing
+  - **Amazon ECR** - Container registry
+  - **Amazon EKS** - Kubernetes
+  - **Amazon EMR** - Big data platform
+  - **Amazon EventBridge** - Serverless event bus
+  - **Amazon MSK** - Kafka
+  - **Amazon RDS** - Relational database service
+  - **Amazon Route 53** - Domain Name System (DNS) web service
+  - **Amazon S3** - Object storage
+    - **Mountpoint for Amazon S3** - High-performance file client for mounting Amazon S3 as a local file system
+  - **Amazon Redshift** - Data warehouse
+  - **Amazon SageMaker AI** - Machine learning platform
+  - **Amazon SQS** - Queue
+  - **Amazon VPC** - Virtual private cloud
+  - **AWS Batch** - Batch computing
+  - **AWS Certificate Manager** - SSL/TLS certificate management
+  - **AWS CloudFormation** - Infrastructure as code (IaC)
+  - **AWS CodeCommit** - Version control
+  - **AWS Glue** - Serverless data integration
+    - **AWS Glue Crawler** - Data source discovery
+    - **AWS Glue Data Catalog** - Central metadata repository
+    - **AWS Glue DataBrew** - Data cleaning
+  - **AWS IAM** - Identity and access management
+  - **AWS IoT Core** - Internet of Things (IoT)
+  - **AWS KMS** - Key management service
+  - **AWS Lake Formation** - Data lake governance
+  - **AWS ParallelCluster** - High performance computing (HPC) cluster management
+    - **NICE DCV** - Remote display
+  - **AWS Secrets Manager** - Password management
+- **Google Cloud**
+  - **BigQuery** - Data warehouse
+    - **BigQuery ML** - BigQuery machine learning
+  - **Dataprep** - Data cleaning
+  - **Looker Studio** - Data visualization
+  - **Vertex AI** - Machine learning platform
+
+### Cloud Cost
+
+- **Komiser** - Cloud cost monitoring
+
+### Infrastructure
+
+- **OpenTofu** - Infrastructure as code (IaC)
+- **Pulumi** - Infrastructure as code (IaC)
+- **Atlantis** - OpenTofu and Terraform pull request automation
+- **Ansible** - Configuration management and automation
+- **Vagrant** - Development environments building and distributing
+- **Packer** - Machine image building
+
+## Ops
+
+- **Argo CD** - Declarative GitOps CD for Kubernetes
+  - **Argo CD Image Updater** - Automatic container image updating
+- **Rancher** - Kubernetes container management platform
+- **KRR** - Kubernetes resource recommendation based on Prometheus metrics
+  - **Simple KRR Dashboard** - KRR dashboard
+- **Goldilocks** - Kubernetes resource recommendation based on Vertical Pod Autoscaler (VPA)
+- **Polaris** - Kubernetes best practices validation
+- **Sloop** - Kubernetes history visualization
+- **OpenCost** - Kubernetes cost monitoring
+- **Kubecost** - Kubernetes cost monitoring
+- **Diun** - Container image update notifier
+- **Discord** - ChatOps
+- **Opsgenie** - Incident management platform
+- **Actions Runner Controller (ARC)** - Kubernetes operator for self-hosted GitHub Actions runners
+- **[GitHub Actions](https://github.com/hongbo-miao/hongbomiao.com/actions)** - Continuous integration
+
+## Authentication, Authorization, Security
+
+- **Defguard** - Zero-trust virtual private network (VPN) with WireGuard-based multi-factor authentication (MFA) and single sign-on (SSO)
+- **ZITADEL** - Identity and access management (IAM) platform for authentication, SSO, MFA, passkeys, and authorization, with OAuth 2.0, OIDC, SAML, and SCIM support
+- **Ory Hydra** - OAuth 2.0 and OpenID Connect server
+- **Open Policy Agent (OPA)** - Policy-based control
+- **OPAL** - Open-policy administration layer
+- **Apache Ranger** - Centralized data governance and access control
+- **Falco** - Cloud-native runtime security and threat detection
+  - **Falcosidekick** - Falco alert forwarding and integration hub
+- **Prowler** - Cloud security assessments
+- **CodeQL** - Variant analysis
+- **Gitleaks** - Git secret scanning
+- **GitGuardian** - Git secret scanning
+- **SOPS** - Secrets encryption and management
+
+## System Tool
+
+- **Ouch!** - Compressing and decompressing program
+- **s5cmd** - S3 and cloud object storage command-line tool
+- **Rclone** - Cloud storage sync program
+- **restic** - Encrypted backup program
+- **Vim** - Terminal-based text editor
+- **Zellij** - Terminal multiplexer
+- **Just** - Command runner for managing project-specific tasks
+- **xxHash** - Hash algorithm
+- **Valgrind** - Memory debugging and profiling
+
+## Reverse Engineering
+
+- **hexedit** - File viewing and editing in hexadecimal and ASCII
+- **xxd** - File viewing and editing in hexadecimal and ASCII
+- **strings** - Strings of printable characters viewing
+- **objdump** - Disassembler
+- **IDA** - Disassembler
+
+## Ethereum
+
+- **Solidity** - Contract-oriented programming language
+- **solc-js** - JavaScript bindings for the Solidity compiler
+
+## Digital Design
+
+- **Verilog** - Hardware description language
+- **VHDL** - Hardware description language
+
+## Embedded System
+
+- **pySerial** - Serial communication library
+- **cantools** - Controller Area Network (CAN) bus tools
+- **python-can** - Controller Area Network (CAN) bus library
+- **Yocto Project** - Linux distribution creating
+- **Mender** - Over-the-air (OTA) software update and fleet management platform
+- **ROS** - Robot operating system
+- **FreeRTOS** - Real-time operating system
+- **ASTERIOS** - Real-time, safety-critical applications development
+- **OpenSCAD** - 3D CAD Modeller
+- **Arduino Uno** - Microcontroller board
+- **BeagleBone Black** - Microcontroller board
+- **Raspberry Pi 4 Model B** - Single-board computer (SBC)
+- **Jetson Nano** - Single-board computer (SBC)
+- **Jetson TX2** - Single-board computer (SBC)
+- **RISC-V** - Open standard instruction set architecture (ISA)
+- **Embassy** - Asynchronous Rust framework for bare-metal embedded systems
+
+## Simulation
+
+- **Renode** - Multi-node embedded systems simulation and virtual development framework
+- **Surrogate Modeling Toolbox (SMT)** - Surrogate modeling
+- **AnyLogic** - Simulation modeling tool
+- **LabVIEW** - Graphical programming environment
+- **VeriStand** - Real-time testing and simulation
+- **OpenFOAM** - Computational fluid dynamics (CFD)
+- **SimScale** - Computational fluid dynamics (CFD), finite element analysis (FEA), thermal simulation
+- **BlueSky** - Air traffic simulator
+- **AeroSandbox** - Aircraft design and optimization
+- **MATLAB** - Programming and numeric computing platform
+  - Runtime
+    - **RunMat** - High-performance MATLAB-compatible runtime with JIT compilation and GPU acceleration
+  - Toolbox
+    - **5G Toolbox** - 5G communications systems simulation, analysis, and testing
+      - **6G Exploration Library** - 6G communications systems simulation, analysis, and testing
+    - **Aerospace Toolbox** - Aerospace vehicle motion analysis and visualization
+    - **Automated Driving Toolbox** - ADAS and autonomous driving systems design, simulation, and testing
+    - **Bioinformatics Toolbox** - Genomic and proteomic data analysis and visualization
+    - **Computer Vision Toolbox** - Computer vision, 3D vision, and video processing systems design and testing
+    - **Database Toolbox** - Relational and NoSQL databases interacting
+    - **Lidar Toolbox** - Lidar processing systems design, analysis, and testing
+    - **Navigation Toolbox** - Autonomous navigation algorithms design, simulation, and deployment
+    - **Satellite Communications Toolbox** - Satellite communications systems simulation
+    - **Signal Processing Toolbox** - Signal processing and analysis
+    - **Simulink** - Simulation and model-based designing
+      - **Simscape** - Multidomain physical systems simulation
+- **CoppeliaSim** - Robotics simulator with a distributed control architecture for fast prototyping, algorithm development, and factory automation
+- **Genesis** - Generative world and universal physics platform for general-purpose robotics and embodied AI learning
+- **NVIDIA Omniverse** - Collection of libraries and microservices for developing physical AI applications such as industrial digital twins
+  - **NVIDIA Isaac Sim** - Application to simulate, test, and validate physical AI-based robots and multi-robotic fleets
+
+## Autonomy
+
+- **nuscenes-devkit** - nuScenes autonomous driving dataset toolkit
+
+## Aerospace
+
+- **fr24sdk** - Flightradar24 SDK
+- **AeroSandbox** - Aircraft design and optimization
+- **OpenAeroStruct** - Aerostructural optimization
+- **OpenMDAO** - Multidisciplinary analysis and optimization
+- **OpenFOAM** - Computational fluid dynamics (CFD)
+- **SimScale** - Computational fluid dynamics (CFD), finite element analysis (FEA), thermal simulation
+- **ParaView** - Post-processing visualization
+- **PX4** - Flight control software
+- **CubeSat** - Miniaturized satellite
+- **QGroundControl** - Ground control station (GCS) for unmanned aerial vehicles (UAVs)
+- **X-Plane** - Flight simulator
+
+## Code
+
+- **ansible-lint** - Ansible linter
+- **dotnet format** - C# formatter
+- **CSharpier** - C# formatter
+- **ClangFormat** - C/C++ formatter
+- **cpplint** - C/C++ linter
+- **CMakeLint** - CMake linter
+- **commitlint** - Commit message linter
+- **Stylelint** - CSS linter
+- **DCLint** - Docker Compose linter
+- **hadolint** - Dockerfile linter
+- **dotenv-linter** - dotenv linter
+- **editorconfig-checker** - EditorConfig linter
+- **gofmt** - Go formatter
+- **golangci-lint** - Go linter
+- **@html-eslint** - HTML linter
+- **ESLint** - JavaScript linter
+- **Prettier** - JSON formatter
+- **@eslint/json** - JSON linter
+- **Just** - justfile formatter
+- **Ktlint** - Kotlin formatter and linter
+- **detekt** - Kotlin static type checker
+- **Kubeconform** - Kubernetes manifest linter
+- **markdownlint-cli2** - Markdown linter
+- **MISS_HIT** - MATLAB formatter
+- **textlint** - Natural language linter
+- **tofu** - OpenTofu formatter
+- **Buf** - Protocol Buffers linter
+- **action-semantic-pull-request** - Pull request title linter
+- **Ruff** - Python formatter and linter
+- **Mypy** - Python static type checker
+- **qmllint** - QML linter
+- **opa** - Rego formatter
+- **RuboCop** - Ruby formatter and linter
+- **rustfmt** - Rust formatter
+- **Clippy** - Rust linter
+- **Scalafmt** - Scala formatter
+- **Scalafix** - Scala linter
+- **ShellCheck** - Shell linter
+- **Solhint** - Solidity linter
+- **sqruff** - SQL formatter and linter
+- **swift-format** - Swift formatter and linter
+- **Taplo** - TOML formatter
+- **tsc** - TypeScript static type checker
+- **Verible** - Verilog formatter and linter
+- **VHDL Style Guide (VSG)** - VHDL formatter
+- **@prettier/plugin-xml** - XML formatter
+- **yamllint** - YAML linter
+- **GitHub** - Version control
+- **[SonarCloud](https://sonarcloud.io/project/overview?id=hongbo-miao_hongbomiao.com)**, **[Codacy](https://app.codacy.com/gh/hongbo-miao/hongbomiao.com/dashboard)** - Code reviews and analytics
+- **[Codecov](https://codecov.io/gh/hongbo-miao/hongbomiao.com)** - Code coverage reports
+- **[Depfu](https://depfu.com/github/hongbo-miao/hongbomiao.com?project_id=29781)** - Dependency monitoring
+- **[FOSSA](https://app.fossa.io/projects/git%2Bgithub.com%2Fhongbo-miao%2Fhongbomiao.com)** - License compliance
+
+## Design
+
+- **Fusion 360** - Industrial design
+- **Blender** - 3D graphic design
+- **Figma** - UX design
+
+## Bots
+
+- **Renovate** - Dependency updating
+- **CodeRabbit** - Code reviewing
+- **Mergify** - Automatically merging
+- **Stale** - Stale issues and pull requests closing
+- **semantic-release** - Version management and package publishing
+
+## Testing
+
+- **Unit testing**
+- **Snapshot testing**
+- **Visual testing**
+- **Instrumented testing**
+- **Smoke testing**
+- **Sanity testing**
+- **Compatibility testing**
+- **Integration testing**
+- **End-to-end testing**
+- **Contract testing**
+- **Mutation testing**
+- **Penetration testing**
+- **Ethical testing**
+- **Performance testing**
+- **Permutation testing**
+- **Holdout testing**
+- **Bias testing**
+- **Duck testing**
+- **Bus testing**
+- **Load testing**
+- **Durability testing**
+- **Fault injection testing**
+- **Parallel testing**
+- **Acceptance testing**
+- **Model-in-the-loop (MIL) testing**
+- **Hardware-in-the-loop (HIL) testing**
+- **Environmental testing**
+  - **Vibration testing**
+  - **Shock testing**
+    - **Drop testing**
+  - **Temperature testing**
+  - **Humidity testing**
+  - **Altitude testing**
+  - **Icing testing**
+  - **Rain testing**
+  - **Fungus testing**
+  - **Salt fog testing**
+  - **Lightning testing**
+- **Structural testing**
+- **Battery drop testing**
+- **Battery vibration testing**
+- **Dyno testing**
+- **Flammability testing**
+- **Wind tunnel testing**
+- **Ground testing**
+- **Flight testing**
+
+## Languages
+
+- **C**
+  - **Embedded C**
+  - **PsyC**
+- **C++**
+  - **CUDA C++**
+- **C#**
+- **CSS**
+- **Cap'n Proto Schema Language**
+- **Cypher**
+- **Docker**
+- **Flux**
+- **Go**
+- **GraphQL**
+- **HCL**
+- **HTML**
+- **Java**
+  - **Kotlin**
+  - **Scala**
+- **JavaScript**
+  - **TypeScript**
+- **Julia**
+- **Just**
+- **LabVIEW**
+- **LLVM Intermediate Representation (IR)**
+- **Lua**
+- **Markdown**
+- **MATLAB**
+- **OpenSCAD**
+- **P4**
+- **PowerShell**
+- **Protocol Buffers Schema Language**
+- **Python**
+  - **Taichi**
+  - **Triton**
+- **QML**
+- **Rego**
+- **Ruby**
+- **Rust**
+- **Shell**
+- **Solidity**
+- **SQL**
+  - **ANSI SQL**
+  - **LogQL**
+  - **PL/pgSQL**
+  - **PromQL**
+  - **SedonaSQL**
+  - **Snowflake SQL**
+  - **Spark SQL**
+  - **TraceQL**
+- **Swift**
+- **Verilog**
+- **VHDL**
+- **XML**
+- **YAML**
+
+## Network
+
+### Network Programmability
+
+- **P4** - Programming Protocol-independent Packet Processors
+
+### Network Analysis
+
+- **TShark** - Network protocol analyzer
+
+### Network Security
+
+- **strongSwan** - Internet Protocol Security (IPsec) virtual private network (VPN) daemon with Internet Key Exchange version 2 (IKEv2)
+
+### Communication Standard
+
+- **Open Systems Interconnection (OSI) model**
+  - Layer 1: Physical layer
+    - Serial protocols
+      - **Inter-Integrated Circuit (I²C)**
+      - **Serial Peripheral Interface (SPI)**
+      - **Controller Area Network (CAN)**
+  - Layer 2: Data link layer
+    - Ethernet
+    - Wi-Fi
+  - Layer 3: Network layer
+    - **The Internet Protocol (IP)**
+      - **IPv4**
+      - **IPv6**
+    - Time protocols
+      - **Network Time Protocol (NTP)**
+      - **Precision Time Protocol (PTP)**
+      - **IRIG-B Time Protocol**
+  - Layer 4: Transport layer
+    - **User Datagram Protocol (UDP)**
+    - **Transmission Control Protocol (TCP)**
+    - **QUIC**
+  - Layer 5: Session layer
+    - **WebSocket**
+    - **Web Real-Time Communication (WebRTC)**
+    - **WebTransport**
+  - Layer 6: Presentation layer
+    - **Remote Procedure Call (RPC)**
+      - RPC frameworks
+        - **Apache Avro**
+        - **Apache Thrift**
+        - **gRPC Remote Procedure Calls (gRPC)**
+      - Binary data serialization formats
+        - **Avro**
+        - **Thrift**
+        - **Protocol Buffers (Protobuf)**
+        - **FlatBuffers**
+        - **Cap'n Proto**
+          - **pycapnp** - Python bindings for Cap'n Proto C++ runtime library
+          - **capnp-stub-gen** - Cap'n Proto Python type stub generator
+          - **capnp** - Cap'n Proto Rust runtime library
+          - **capnpc** - Cap'n Proto schema compiler for Rust
+  - Layer 7: Application layer
+    - **Hypertext Transfer Protocol (HTTP)**
+      - **Hypertext Transfer Protocol Secure (HTTPS)**
+      - **HTTP/0.9** - TCP/IP
+      - **HTTP/1.0** - TCP/IP
+      - **HTTP/1.1** - TCP/IP
+      - **HTTP/2** - TCP/IP
+      - **HTTP/3** - QUIC + UDP
+    - File transfer protocols
+      - **File Transfer Protocol (FTP)**
+        - **Secure File Transfer Protocol (SFTP)**
+      - **Server Message Block (SMB)**
+      - **Web Distributed Authoring and Versioning (WebDAV)**
+    - Email protocols
+      - **Post Office Protocol (POP)**
+      - **Simple Mail Transfer Protocol (SMTP)**
+      - **Internet Message Access Protocol (IMAP)**
+    - **MQTT**
+
+## Wireless
+
+### Software-Defined Radio (SDR)
+
+- **SoapySDR** - Vendor-neutral software-defined radio (SDR) hardware abstraction library
+- **SDR++** - Cross-platform software-defined radio (SDR) receiver software
+- **RTLSDR-Airband** - Multichannel AM/narrowband-FM voice demodulator and audio streamer
+- **GNU Radio** - Signal processing runtime and software development toolkit for software-defined radio (SDR)
+- **Liquid-DSP** - Digital signal processing (DSP) library for software-defined radio (SDR)
+- **redsea** - Radio data system (RDS) decoder for FM broadcast
+- **Airspy R2** - High-performance software-defined radio (SDR) receiver
+- **LimeSDR Mini 2.0** - LMS7002M-based full-duplex software-defined radio (SDR) transceiver
+- **RTL-SDR Blog V4** - RTL2832U-based software-defined radio (SDR) receiver
+
+### Wireless Network Standard
+
+- **1G**
+- **2G**
+- **3G**
+- **3.9G** - Long-Term Evolution (LTE)
+- **4G** - Long-Term Evolution (LTE) Advanced
+- **4.5G** - Long-Term Evolution (LTE) Advanced Pro
+- **5G** - 5G New Radio (NR)
+- **5.5G** - 5G Advanced
+- **6G**
+
+## Guideline
+
+- **Avionics Systems**
+  - **DO-178C** - Software considerations in airborne systems and equipment certification
+  - **DO-254** - Design assurance guidance for airborne electronic hardware
+  - **ARP4754A** - Guidelines for development of civil aircraft and systems
+  - **DO-160G** - Environmental conditions and test procedures for airborne equipment
+  - **DO-331** - Model-based development and verification supplement to DO-178C and DO-278A
+  - **DO-330** - Software tool qualification considerations
+- **Drone Systems**
+  - **Pixhawk standards** - Hardware specifications and guidelines for drone systems development
+- **Automotive Systems**
+  - **ISO 26262** - Road vehicles — functional safety
+  - **AUTOSAR** - Automotive open system architecture
+- **Industrial Robot Systems**
+  - **ISO 10218** - Robots and robotic devices — safety requirements for industrial robots
+  - **ANSI/RIA R15.06-2012** - Industrial robots and robot systems — safety requirements
+
+# 🏞 Highlight
+
+## Autonomy
+
+### Camera-Radar-Lidar Fusion
+
+![Camera-radar-lidar fusion screenshot](https://github.com/user-attachments/assets/ccd95c56-4f02-49e4-aeff-5ef42a0999aa)
+
+### MATLAB Automated Driving Toolbox - ADAS and Autonomous Driving Systems Design, Simulation, and Testing
+
+![MATLAB automated driving toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/687b55f2-145e-4197-a213-ac2c51f113d4)
+
+### MATLAB Lidar Toolbox - Lidar Processing Systems Design, Analysis, and Testing
+
+![MATLAB lidar toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/32796b6c-330d-4da3-9fcb-c3cfd78ca50f)
+
+## Aerospace
+
+### X-Plane - Flight Simulator
+
+![X-Plane screenshot](https://github.com/user-attachments/assets/3ee9d6fb-1d44-4039-a6bc-ffa13b7980e4)
+
+### OpenFOAM - Computational Fluid Dynamics (CFD)
+
+OpenFOAM simulation results viewed by ParaView.
+
+![OpenFOAM screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/02ebf178-b8fd-48bc-a12b-c1739f435858)
+
+### SimScale - Computational Fluid Dynamics (CFD), Finite Element Analysis (FEA), Thermal Simulation
+
+![SimScale screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/953ec6ed-201e-4e59-bb43-f77c385d4054)
+
+### AeroSandbox - Aircraft Design and Optimization
+
+![AeroSandbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/b64356f4-fc8a-4fa8-9b8a-b752f5570b32)
+
+#### MATLAB Aerospace Toolbox - Aerospace Vehicle Motion Analysis and Visualization
+
+![MATLAB aerospace toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/7f84f5d5-4a85-4bcd-97e3-7c5f853f03c0)
+
+#### MATLAB Satellite Communications Toolbox - Satellite Communications Systems Simulation
+
+![MATLAB satellite communications toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/693e5605-de66-4dd4-9ab5-47e713f6dbc1)
+
+### AnyLogic - Simulation Modeling Tool
+
+The following presents a model of a radar-based air defense system. Bombers are dispatched to destroy ground facilities, while the buildings are safeguarded by the air defense system, comprising two radars equipped with guided surface-to-air missiles.
+
+![AnyLogic screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/dc2c8c2e-8acc-4df5-8a1a-fdf1da7c6f43)
+
+### PX4 - Flight Control Software
+
+![PX4 screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/715acd1d-a5e3-428c-a3b4-97be2700c4f5)
+
+### OpenSCAD - 3D CAD Modeller
+
+The toroidal propeller allows a small multirotor aircraft to operate more quietly than the ones that use traditional propellers.
+
+![OpenSCAD screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/00b3e679-66a7-4d9c-8d68-c31c124e0a54)
+
+## Robotics
+
+### CoppeliaSim - Robot Simulation
+
+![CoppeliaSim screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/e167e2b9-6428-40c2-a1d9-377eb630a991)
+
+### ROS - Robot Operating System
+
+![ROS screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/4e4ab425-53a1-428d-abb9-408eb48553da)
+
+![ROS screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/6728d19c-9f04-4ec9-a603-46fd8ee0e2b0)
+
+## Simulation
+
+### LabVIEW - Graphical Programming Environment
+
+![LabVIEW screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/acf44d58-a3f4-433b-9045-f4d913b05dfd)
+
+### VeriStand - Real-Time Testing and Simulation
+
+![VeriStand screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/dc7d0c92-7d55-4251-9d39-c53eaac699e2)
+
+### MATLAB
+
+#### MATLAB 5G Toolbox - 5G Communications Systems Simulation, Analysis, and Testing
+
+![MATLAB 5G toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/acd927ee-3296-4139-9ea6-1ddcb2cb0e96)
+
+#### MATLAB Bioinformatics Toolbox - Genomic and Proteomic Data Analysis and Visualization
+
+![MATLAB bioinformatics toolbox screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/cee09bb5-4633-4e81-82c7-d2dbcf99e49b)
+
+#### MATLAB Simscape - Multidomain Physical Systems Simulation
+
+![MATLAB Simscape screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/53574809-fe05-46c3-b2fa-633b5516b2e0)
+
+## Embedded System
+
+### ASTERIOS - Real-Time, Safety-Critical Applications Development
+
+![ASTERIOS screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/716ac0aa-7087-4507-8a63-619bc7c01e64)
+
+### RTI Connext - Real-Time, Distributed Systems Framework
+
+![RTI Connext screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/3022ac89-a5d6-4bf6-a5cc-f6ad14d74f61)
+
+### VHDL - Hardware Description Language
+
+The VHDL waveforms are displayed in GTKWave.
+
+![VHDL screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/8bafe459-24f5-4751-bae5-5a2b97688f2f)
+
+### Poky - Reference Linux Distribution of the Yocto Project
+
+![Poky screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/fcb5650c-a33b-4564-ba9e-bca0a666b1a2)
+
+## Wireless
+
+### SDR++ - Software-Defined Radio (SDR) Receiver Software
+
+![SDR++ screenshot](https://github.com/user-attachments/assets/d4cc0078-4aa5-4393-9842-a8ce688fca4b)
+
+## Database, Data Warehouse, Data Lakehouse
+
+### Dgraph - Distributed Graph Database
+
+![Dgraph screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/b0e4642d-ad8b-4ce1-a87d-c766f0292ae8)
+
+### Redis with RedisGraph Module
+
+![Redis screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/c366b78c-90e2-441a-943b-4be59e0bea6c)
+
+## Data Cleaning
+
+### Dataprep - Data Cleaning
+
+![Dataprep screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/0fea3642-3c55-4f6a-94f3-e62faa41be2a)
+
+## Data Orchestration
+
+### Prefect - Orchestration Platform
+
+![Prefect screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/7880b5a4-9b0b-40c8-ad35-a3e5e26da0aa)
+
+### Airflow - Orchestration Platform
+
+![Airflow screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/449d08dc-08fe-4646-bf7e-8d1f6eb246ee)
+
+## Data Processing
+
+### Flink - Data Processing
+
+![Flink screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/df4d0cd7-86da-4682-b097-88ca7ee1b7a7)
+
+## Machine Learning
+
+### ComfyUI - Node-Based Interface for Diffusion Model Workflows
+
+![ComfyUI screenshot](https://github.com/user-attachments/assets/1c3e5b19-e261-48c9-94bf-6e8daedfece4)
+
+### DeepEval - LLM Evaluation Framework
+
+![DeepEval screenshot](https://github.com/user-attachments/assets/308dfd7b-4d0a-4228-ad9f-596cb4089911)
+
+### Qdrant - Distributed Vector Database
+
+![Qdrant screenshot](https://github.com/user-attachments/assets/9cf6fda0-65e3-45fe-90ac-6937a06bfabe)
+
+### Vertex AI - AutoML
+
+![Vertex AI screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/96afa9b3-5393-487d-9eca-8251110f5ddf)
+![Vertex AI screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/902f0d1d-50e8-4e13-91ed-3fa6445c6d81)
+![Vertex AI screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/91edf48a-994b-4de2-bcd5-aeb38059dfd7)
+
+### Kubeflow - Machine Learning Platform
+
+![Kubeflow screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/0de50151-9d5d-4239-82de-93bf2eed1169)
+
+### Weights & Biases - Machine Learning Experiment Tracking
+
+[Distributed hyperparameter optimization result](https://wandb.ai/hongbo-miao/graph-neural-network/sweeps/p0fgtvcf) by Weights & Biases.
+
+[![Weights & Biases screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/0fb8e396-94e0-47ad-80e2-517dfa191eed)](https://wandb.ai/hongbo-miao/graph-neural-network/sweeps/p0fgtvcf)
+
+## Computer Vision
+
+### PyVista
+
+![PyVista screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/705509be-4272-4d56-8080-9d91123c56ba)
+
+### Open3D
+
+![Open3D screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/f4c6dca1-b0c1-4370-9c78-bef12bc70218)
+
+## Computing
+
+### Ray - Distributed Computing
+
+![Ray screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/a7d77743-2a96-4fb0-b075-d2ec48ab655a)
+
+## Cloud Native
+
+### Pixie - Kubernetes Application Observing
+
+![Pixie screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/d3ea9059-45f3-4ee3-8664-bcf167e9eea6)
+
+### Linkerd - Service Mesh
+
+![Linkerd screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/a0f0dae6-6df4-4813-8035-cc21dcc04059)
+
+### Hasura - GraphQL Engine
+
+![Hasura GraphQL Engine screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/7b31aa59-1185-48f6-bb16-ea802bca7ba1)
+
+### Traefik - Reverse Proxy and Load Balancer
+
+![Traefik screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/963117c7-7aee-4994-8f12-d4fb70b0e66d)
+
+### Netdata - Distributed Monitoring Platform
+
+![Netdata screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/f1e51bd2-474b-4711-a669-9148baed2013)
+
+### Elastic APM - Application Performance Management
+
+![Elastic APM screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/68037cc6-2368-437c-8f2d-f49e3935be4d)
+
+### Jaeger - Distributed Tracing
+
+![Jaeger screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/b384c102-d392-4116-aa16-d08fcfb9ab58)
+
+### Grafana - Data Visualization
+
+#### Data Source: Prometheus - Time-Series Database
+
+![Grafana - Prometheus screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/9182c9ae-1a94-47c0-9a0d-a80f14395d8d)
+
+#### Data Source: Loki - Log Aggregation System
+
+![Grafana - Loki screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/36ee4b6b-7d89-4ad7-8fc9-cc8d8b1802bc)
+
+### Kibana - Elasticsearch Visualization
+
+![Kibana screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/160f8d1b-6f2b-4e18-af35-c6081612eeff)
+
+### Tableau - Data Visualization
+
+![Tableau screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/c2f7b368-9b2c-4d69-a422-31779269097d)
+
+## Testing
+
+### Locust - Load Testing
+
+![Locust screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/bbec7be9-b7b8-418c-9c18-badba9a3e6e0)
+
+## Ops
+
+### Argo CD - GitOps
+
+![Argo CD screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/b01c712f-488c-4298-91f7-604728bbaeea)
+
+### Discord - ChatOps
+
+![Discord screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/8824ac14-4d8b-4a64-9099-0fd7ecf461d3)
+
+### Rancher - Kubernetes Container Management
+
+![Rancher screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/559175fc-c7a0-40f1-9052-5534548e2e7c)
+
+### Kubecost - Kubernetes Cost Monitoring
+
+![Kubecost screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/a9c0398a-cb97-4d60-ad48-dce7d2bdcf52)
+
+### Polaris - Kubernetes Best Practices Validation
+
+![Polaris screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/1eb685ce-d79d-49af-a308-0e84c4076172)
+
+### Goldilocks - Kubernetes Resource Requests Recommendation
+
+![Goldilocks screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/68d82f43-a4f0-41c5-8e94-87864bed4795)
+
+## Web
+
+### HTTP/3
+
+The website [supports HTTP/3](https://www.http3check.net/?host=hongbomiao.com).
+
+[![HTTP/3 screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/fc3018df-74e9-4a0a-b8dc-b298eee69708)](https://www.http3check.net/?host=hongbomiao.com)
+
+### AVIF
+
+Images on the website are using AVIF format.
+
+WebP is almost half the size of JPEG, and AVIF is under half the size of WebP.
+
+### Security
+
+Below is the [Mozilla HTTP observatory report](https://developer.mozilla.org/en-US/observatory/analyze?host=www.hongbomiao.com) for the website.
+
+[![Mozilla HTTP Observatory Report screenshot](https://github.com/user-attachments/assets/9a68f1b0-0e0c-4e83-be46-10272902aad1)](https://developer.mozilla.org/en-US/observatory/analyze?host=www.hongbomiao.com)
+
+### Profiling
+
+Profiling result by Clinic.js and autocannon.
+
+![Profiling screenshot](https://github.com/hongbo-miao/hongbomiao.com/assets/3375461/7e498a57-2c86-4762-8f5b-70af2054d2a7)

@@ -1,0 +1,124 @@
+# AI/LLM on Kubernetes 基础设施知识库
+
+[简体中文](README.md) | [English](README.en.md)
+
+Hi~你好👋, 这里是 runzhliu 的工作笔记，我是一名在 AI/LLM/大数据/Kubernetes 领域工作了十年的工程师，同时我也是一个记录狂人🤔，特别爱记笔记，这个站点是我基于这几年在 AI/LLM Infras 的工作经历总结的一些笔记，同时也经过一些大模型的润色发布的，希望和大家一起交流和学习，一起在大模型时代做一点🤏小事，无论是内容本身还是工作，欢迎大家找我交流😄👏!(runzhliu@163.com)
+
+面向平台工程师、SRE、训练和模型服务团队的 AI/LLM on Kubernetes 工程文档。
+
+内容覆盖 GPU 与异构加速器、调度队列、RDMA、数据与模型分发、分布式训练、LLM 推理、RAG、Agent Sandbox、GPU Notebook、可观测性、安全、成本和生产运维。文档重点说明组件边界、选型条件、关键指标、故障路径和上线检查，而不只是罗列工具名称。
+
+线上站点：[简体中文](https://aik8s.run/) · [English](https://aik8s.run/en/)
+
+## 关注微信公众号
+
+更多 AI/LLM on Kubernetes 实战、部署记录与性能分析会同步到微信公众号 **AI-K8S技术工程**。使用微信扫描二维码，或在“微信搜一搜”中搜索 `AI-K8S技术工程`：
+
+<p align="center">
+  <img src="docs/assets/wechat-official-account-promo.png" alt="扫描二维码或通过微信搜一搜关注公众号 AI-K8S技术工程" width="900">
+</p>
+
+## 技术栈
+
+- Markdown 保存文档内容；
+- Zensical 构建静态站点；
+- `zensical.toml` 管理导航、主题和站点配置；
+- GitHub Actions 在 `main` 分支更新后完成构建与部署。
+
+## 本地预览
+
+项目默认使用 Docker，因此不需要在本机安装 Python 依赖：
+
+```bash
+make dev
+```
+
+打开 <http://localhost:8000>，此开发命令只预览中文源文件并自动刷新。完整双语预览使用 `make build` 后运行 `python3 -m http.server 8000 --directory site`，英文入口为 <http://localhost:8000/en/>。
+
+也可以使用 Python 虚拟环境：
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/zensical serve
+```
+
+## 验证构建
+
+```bash
+make build
+```
+
+此命令先核对中英文覆盖与同步状态，再独立构建中文和英文版本。构建结果保存在 `site/` 和 `site/en/`，该目录不会提交到 Git。英文使用独立导航、搜索、订阅和页面语言元数据，语言菜单直接切到对应文章。
+
+生产构建还会生成 RSS/Atom、带更新时间的 Sitemap、页面分享、社交元数据和
+TechArticle/BreadcrumbList 结构化数据，并注入站点统计脚本：
+
+```bash
+make build-production
+```
+
+文章标题下显示创建与更新日期，按北京时间展示。创建日期取文件首次进入 Git
+历史的时间（追踪文件重命名），更新日期沿用页面元数据的口径，取最近一次文件提交
+与 `last_reviewed` 中较晚的时间。日期在生产构建的 `build_distribution.py` 步骤生成，
+不会因单纯重新构建站点而变化；本地查看日期效果可执行 `make build-production`。
+
+## 订阅、分享与评论
+
+- RSS：<https://aik8s.run/rss.xml> · [English RSS](https://aik8s.run/en/rss.xml)
+- Atom：<https://aik8s.run/atom.xml> · [English Atom](https://aik8s.run/en/atom.xml)
+- 通用 Feed 地址：<https://aik8s.run/feed.xml> · [English Feed](https://aik8s.run/en/feed.xml)
+- 订阅仅包含文章，配图目录、README 说明和栏目首页不作为文章推送；配图仍在正文中正常展示。
+- 每篇文章支持系统分享、复制链接，以及微博、X、LinkedIn、Telegram 和 WhatsApp 分享；移动端可通过系统分享面板转发到微信等已安装应用。
+- 评论使用 [Giscus](https://github.com/giscus/giscus)，内容保存在本仓库的 GitHub Discussions，不需要单独部署服务或数据库。
+
+首次启用评论时，需要为 `runzhliu/aik8s` 安装 [Giscus GitHub App](https://github.com/apps/giscus/installations/new)，安装范围选择 **Only select repositories** 并只勾选 `aik8s`。仓库必须保持 Discussions 已启用。
+
+## 添加内容
+
+公开文档默认提供完整中英文版本：中文源文件在 `docs/`，英文在 `translations/en/`，两者保持相同相对路径。新增、更新或移动中文页面时，同步维护英文页、`translations/navigation.en.json` 与 `translations/manifest.json`，不能仅提供英文摘要或中文回退页。详细流程见 [双语维护说明](translations/README.md)。
+
+目录名和文件名会形成公开 URL，建议只使用小写英文字母、数字和连字符；中文展示名称放在一级标题或 `zensical.toml` 的 `nav` 配置中。原有中文 URL 保持不变，英文 URL 添加 `/en/` 前缀。
+
+测试与压测计划仅保存在本地 `.local/test-plans/`，不提交 GitHub，也不放入站点目录。公开内容保留已完成的实测结果、已验证的修复过程和可复现材料；已有报告中夹带的待执行方案也应先移到本地。部分历史实测报告沿用含 `plan` 的 URL，仅为保持既有链接可用。
+
+每个栏目建议添加一个 `index.md`：
+
+```text
+docs/
+└── kubernetes/
+    ├── index.md
+    ├── basic-concepts.md
+    └── cluster-deployment.md
+```
+
+新增或移动页面后，还需要在 `zensical.toml` 中更新站点导航。提交前建议执行：
+
+```bash
+python3 scripts/bilingual.py
+make build
+git diff --check
+```
+
+仓库说明同样维护 [英文 README](README.en.md)，修改时同步两个版本；审核后运行 `python3 scripts/record_translation.py --readme` 更新同步记录。
+
+## 项目结构
+
+```text
+.
+├── docs/                  # Markdown 文档与静态资源
+│   ├── ai-k8s/            # AI/LLM on Kubernetes 核心专题
+│   └── k3s-upgrade/       # 实际案例
+├── deploy/                # 服务器部署配置与说明
+├── scripts/               # 构建辅助脚本
+├── translations/          # 英文文档、导航与双语同步记录
+├── zensical.toml          # 站点导航和主题配置
+├── requirements.txt       # 本地 Python 构建依赖
+└── Makefile               # 本地预览和构建入口
+```
+
+## 生产部署
+
+向 `main` 分支推送后，GitHub Actions 会严格构建站点并发布部署制品。服务器拉取制品，安装到新版本目录，再原子切换 `/srv/aik8s/current`。构建或部署失败时不会切换当前线上版本。
+
+完整的首次配置步骤见 [部署说明](deploy/README.md)。

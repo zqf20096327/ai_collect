@@ -1,0 +1,204 @@
+# LimCode
+
+<p align="center">
+  <a href="https://discord.gg/FJxTrsZRPQ">
+    <img src="https://img.shields.io/badge/Join%20in-Discord-5865F2?logo=discord&logoColor=white" alt="Join in Discord">
+  </a>
+</p>
+
+<p align="center">
+  <img src="resources/icon.png" alt="LimCode Logo" width="128">
+</p>
+
+<p align="center">
+  <strong>一个强大的 VS Code AI 编程助手</strong>
+</p>
+
+<p align="center">
+  支持多渠道 AI 模型 | 智能工具调用 | SubAgent Monitor | MCP
+</p>
+
+## 🔄 近期更新重点
+
+- `search_in_files` 工具说明强化正则触发清单：`foo|bar`、`ssh.*root`、`38\\.12`、`\\d+`、字符类、分组和锚点都必须显式设置 `isRegex=true`。
+- 非正则零命中时新增 `suspected_regex` 诊断，提示模型 query 看起来像正则但当前按字面量搜索，并给出 `isRegex=true` 重试建议。
+- 保留 `isRegex=false` 的严格字面量语义，不自动把 Markdown 表格、TypeScript union 或 Shell 管道里的 `|` 当正则 OR。
+- 完整发布记录见 [CHANGELOG.md](./CHANGELOG.md)。
+
+## ✨ 特性
+
+### 🤖 多渠道支持
+- **Gemini** - 原生支持 Google Gemini API，包括 Function Calling
+- **OpenAI** - 兼容 OpenAI 格式的 API（ChatGPT、Azure OpenAI 等）
+- **Anthropic** - 支持 Claude 系列模型
+- **自定义格式** - XML 工具调用格式，适用于更多模型
+
+### 🛠️ 智能工具系统
+内置丰富的工具，让 AI 能够直接操作您的代码：
+
+| 类别 | 工具 | 说明 |
+|------|------|------|
+| 📁 文件 | `read_file` | 读取文件内容（支持多模态） |
+| | `write_file` | 写入文件内容 |
+| | `apply_diff` | 应用差异修改 |
+| | `list_files` | 列出目录文件 |
+| | `delete_file` | 删除文件 |
+| | `create_directory` | 创建目录 |
+| 🔍 搜索 | `find_files` | 按名称搜索文件 |
+| | `search_in_files` | 在文件内容中搜索 |
+| 🖥️ 终端 | `execute_command` | 执行终端命令 |
+| 🎨 媒体 | `generate_image` | AI 图像生成 |
+| | `remove_background` | 移除图片背景 |
+| | `crop_image` | 裁剪图片 |
+| | `resize_image` | 调整图片尺寸 |
+| | `rotate_image` | 旋转图片 |
+
+### 🔌 MCP 协议支持
+- 支持 Model Context Protocol (MCP)
+- 可连接外部 MCP 服务器扩展工具能力
+- 支持 Stdio 和 HTTP 两种连接方式
+
+### 📝 智能上下文
+- **工作区文件树** - 自动发送项目结构
+- **打开的标签页** - 感知当前正在编辑的文件
+- **固定文件** - 重要文件始终包含在上下文中
+- **自定义提示词模板** - 使用 `{{$VARIABLE}}` 变量自定义系统提示词
+
+### 💾 会话管理
+- **对话历史** - 自动保存所有对话
+- **存档点** - 自动创建代码备份，支持一键恢复
+- **上下文总结** - 自动压缩长对话，节省 Token
+
+## 📦 安装
+
+### 从插件商店下载
+1.搜索`LimCode`进行安装
+
+### 从 VSIX 安装
+1. 下载最新的 `limcode-x.x.x.vsix` 文件
+2. 在 VS Code 中打开命令面板 (`Ctrl+Shift+P`)
+3. 搜索 "从 VSIX 安装..."
+4. 选择下载的文件
+
+### 从源码构建
+```bash
+# 克隆仓库
+git clone https://github.com/Lianues/Lim-Code.git
+cd Lim-Code
+
+# 安装依赖
+npm install
+cd frontend && npm install
+
+# 构建前后端
+npm run build
+
+# 打包
+npx @vscode/vsce package
+```
+
+## 🧪 本地开发流程（仅本地）
+
+为了提升前端调试效率，项目支持 **仅在本地开发模式** 下使用 Vite Dev Server（HMR）。
+
+### 1) 启动方式（推荐）
+
+直接在 VS Code 里运行调试配置：
+
+- `Run Extension (Local Vite Dev)`
+
+该配置会自动：
+
+1. 启动后端 TypeScript `watch`
+2. 启动前端 Vite 开发服务器（固定端口 `5173`）
+3. 通过环境变量 `LIMCODE_WEBVIEW_DEV_SERVER_URL` 让 Webview 从本地 Vite 加载前端资源
+
+### 2) 手动启动（可选）
+
+```bash
+# 终端 A：后端 watch
+npm run watch
+
+# 终端 B：前端 vite dev server
+npm run dev:frontend
+```
+
+然后使用常规 `Run Extension` 或自定义带环境变量的调试配置启动扩展。
+
+> 说明：
+> - Vite Dev Server 仅在 `ExtensionMode.Development` 下生效。
+> - 生产/打包模式仍然使用 `frontend/dist`，不会依赖本地 Vite 服务。
+
+## 🚀 快速开始
+
+1. 点击侧边栏的 LimCode 图标打开面板
+2. 进入设置，配置 AI 渠道：
+   - 选择渠道类型（Gemini/OpenAI/Anthropic）
+   - 填入 API URL 和 API Key
+   - 添加可用模型
+3. 开始对话！
+
+## ⚙️ 配置说明
+
+### Settings Sync（配置同步）
+- LimCode 的大部分“设置类配置”（工具选项 / 提示词 / UI 偏好 / Token 计数 / 图像工具配置等）已迁移到 VS Code Settings（`limcode.*`），在开启 VS Code Settings Sync 时会自动同步到其他设备。
+- `limcode.proxy` 与 `limcode.storagePath` 为 **machine scope**：按机器保存，不参与同步（避免不同机器代理端口、存储路径冲突）。
+- 从旧版本升级时，会在首次启动自动从 `globalStorage/settings/settings.json` 迁移，并备份旧文件为 `settings.json.bak`。
+
+### 渠道配置
+每个渠道可以独立配置：
+- **API URL** - API 端点地址
+- **API Key** - 认证密钥
+- **模型列表** - 可用模型
+- **代理设置** - HTTP 代理支持
+- **超时时间** - 请求超时设置
+- **重试次数** - 失败自动重试
+
+### 工具配置
+- **启用/禁用** - 控制每个工具的可用性
+- **自动执行** - 信任的工具可自动执行
+- **多模态支持** - 启用图片/文档读取能力
+
+### 高级配置
+- **系统提示词模板** - 自定义 AI 角色和行为
+- **上下文感知** - 控制发送的上下文信息
+- **存档点** - 配置自动备份策略
+
+## 🏗️ 架构
+
+LimCode 采用模块化架构：
+
+```
+limcode/
+├── backend/           # 后端模块
+│   ├── core/          # 核心服务
+│   ├── modules/       # 功能模块
+│   │   ├── channel/   # AI 渠道管理
+│   │   ├── config/    # 配置管理
+│   │   ├── conversation/ # 对话管理
+│   │   ├── mcp/       # MCP 协议
+│   │   ├── prompt/    # 提示词管理
+│   │   └── settings/  # 设置管理
+│   └── tools/         # 工具系统
+├── frontend/          # Vue 前端
+│   ├── components/    # UI 组件
+│   ├── composables/   # 组合式函数
+│   └── stores/        # 状态管理
+└── webview/           # Webview 集成
+```
+
+当前说明：README 不再承担每次发布的版本号同步职责；正式版本与发布说明以 `package.json` 和 [CHANGELOG.md](./CHANGELOG.md) 为准。发布材料只描述实际落地的工具稳定性改进，不声明未经量化基线验证的具体性能收益数字。
+
+## 📄 许可证
+
+本项目采用 [MIT 许可证](LICENSE)。
+
+## 🤝 贡献
+
+欢迎贡献代码！
+
+---
+
+<p align="center">
+  Made with ❤️ by LimCode Team
+</p>

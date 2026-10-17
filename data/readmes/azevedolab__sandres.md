@@ -1,0 +1,65 @@
+<H1>SAnDReS: Statistical Analysis of Docking Results and Scoring Functions</H1>
+SAnDReS 2.0 (<a href="https://doi.org/10.1002/jcc.27449" title="de Azevedo WF Jr, Quiroga R, Villarreal MA, da Silveira NJF, Bitencourt-Ferreira G, da Silva AD, Veit-Acosta M, Oliveira PR, Tutone M, Biziukova N, Poroikov V, Tarasova O, Baud S. SAnDReS 2.0: Development of machine-learning models to explore the scoring function space. J Comput Chem. 2024 Oct 15;45(27):2333-2346. doi: 10.1002/jcc.27449. Epub 2024 Jun 20. PMID: 38900052.">de Azevedo Jr et al., 2024</a>) brings together the most advanced tools for protein-ligand docking simulation and machine-learning modeling. We have the AutoDock Vina 1.2 (<a href="https://pubmed.ncbi.nlm.nih.gov/34278794/" title = "Eberhardt J, Santos-Martins D, Tillack AF, Forli S. AutoDock Vina 1.2.0: New Docking Methods, Expanded Force Field, and Python Bindings. J Chem Inf Model. 2021 Aug 23;61(8):3891-3898. doi: 10.1021/acs.jcim.1c00203. Epub 2021 Jul 19. PMID: 34278794; PMCID: PMC10683950.">Eberhardt et al., 2021</a>) as a docking engine. Also, SAnDReS 2.0.0 uses machine-learning methods available in the <a href="" title = "Scikit-Learn">Scikit-Learn</a> library (<a href="https://www.google.com/url?q=https%3A%2F%2Fdoi.org%2F10.48550%2FarXiv.1201.0490" title = "Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion B, Grisel O, Blondel M, Prettenhofer P, Weiss R, Dubourg V, Verplas J, Passos A, Cournapeau D, Brucher M, Perrot M, Duchesnay E. Scikitlearn: Machine Learning in Python. J Mach Learn Res., 2011; 12:2825–2830. DOI: 10.48550/arXiv.1201.0490">Pedregosa et al., 2011</a>). It has 54 regression methods which allow us to explore the Scoring Function Space (SFS) (<a href="https://pubmed.ncbi.nlm.nih.gov/24124403/" title = "Ross GA, Morris GM, Biggin PC. One Size Does Not Fit All: The Limits of Structure-Based Models in Drug Discovery. J Chem Theory Comput. 2013 Sep 10;9(9):4266-4274. doi: 10.1021/ct4004228. Epub 2013 Aug 5. PMID: 24124403; PMCID: PMC3793897.">Ross et al., 2013</a>). This exploration of the SFS permits us to have an adequate machine-learning (ML) model for a targeted protein system. SAnDReS predicts binding affinity for a specific protein system with superior performance compared against classical scoring functions. In summary, SAnDReS 2.0.0 makes it possible for you to design a scoring function adequate to the protein system of your interest. 
+<P>You need <a href="https://www.python.org/" title = "Python">Python 3</a> installed on your computer to run SAnDReS 2.0.0. In addition, you need <a href="https://pandas.pydata.org/" title = "Pandas">Pandas</a>, <a href="https://matplotlib.org/" title = "Matplotlib">Matplotlib</a>, <a href = "https://numpy.org/" title = "NumPy">NumPy</a>, <a href="https://scikit-learn.org/stable/" title = "Scikit-Learn">Scikit-Learn</a> (<a href="https://www.google.com/url?q=https%3A%2F%2Fdoi.org%2F10.48550%2FarXiv.1201.0490" title = "Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion B, Grisel O, Blondel M, Prettenhofer P, Weiss R, Dubourg V, Verplas J, Passos A, Cournapeau D, Brucher M, Perrot M, Duchesnay E. Scikitlearn: Machine Learning in Python. J Mach Learn Res., 2011; 12:2825–2830. DOI: 10.48550/arXiv.1201.0490">Pedregosa et al., 2011</a>), and <a href = "https://scipy.org/" title = "Scipy">SciPy</a>. It is also necessary to have <a href="https://ccsb.scripps.edu/adfr/downloads/" title="ADFRsuite 1.0 Linux 64 installer app">ADFRsuite version 1.0</a> (<a href = "https://pubmed.ncbi.nlm.nih.gov/26629955/" title = "Ravindranath PA, Forli S, Goodsell DS, Olson AJ, Sanner MF. AutoDockFR: Advances in Protein-Ligand Docking with Explicitly Specified Binding Site Flexibility. PLoS Comput Biol. 2015; 11(12): e1004586. doi: 10.1371/journal.pcbi.1004586. PMID: 26629955; PMCID: PMC4667975.">Ravindranath et al., 2015</a>). You can make the installation of Python packages faster by installing <a href="https://www.anaconda.com/download" title = "Anaconda">Anaconda</a>.</P>
+<br> </br>
+<H2>How to Cite SAnDReS 2.0</H2>
+<a href = "https://pubmed.ncbi.nlm.nih.gov/38900052/" title = "de Azevedo WF Jr, Quiroga R, Villarreal MA, da Silveira NJF, Bitencourt-Ferreira G, da Silva AD, Veit-Acosta M, Oliveira PR, Tutone M, Biziukova N, Poroikov V, Tarasova O, Baud S. SAnDReS 2.0: Development of machine-learning models to explore the scoring function space. J Comput Chem. 2024; 45(27): 2333–2346">
+<img src="https://drive.usercontent.google.com/download?id=15c74Ezhm8CEciT8ZTK1tpVR6v3cZzsXT&export=view&authuser=0" width=200 align=left title="de Azevedo WF Jr, Quiroga R, Villarreal MA, da Silveira NJF, Bitencourt-Ferreira G, da Silva AD, Veit-Acosta M, Oliveira PR, Tutone M, Biziukova N, Poroikov V, Tarasova O, Baud S. SAnDReS 2.0: Development of machine-learning models to explore the scoring function space. J Comput Chem. 2024; 45(27): 2333–2346"></a>
+<P>
+de Azevedo WF Jr, Quiroga R, Villarreal MA, da Silveira NJF, Bitencourt-Ferreira G, da Silva AD, Veit-Acosta M, Oliveira PR, Tutone M, Biziukova N, Poroikov V, Tarasova O, Baud S. SAnDReS 2.0: Development of machine-learning models to explore the scoring function space. J Comput Chem. 2024; 45(27): 2333–2346. <a href = "https://pubmed.ncbi.nlm.nih.gov/38900052/" title = "de Azevedo WF Jr, Quiroga R, Villarreal MA, da Silveira NJF, Bitencourt-Ferreira G, da Silva AD, Veit-Acosta M, Oliveira PR, Tutone M, Biziukova N, Poroikov V, Tarasova O, Baud S. SAnDReS 2.0: Development of machine-learning models to explore the scoring function space. J Comput Chem. 2024; 45(27): 2333–2346.">PubMed</a>
+</P>
+<br> </br>
+<br> </br>
+<br> </br>
+<br> </br>
+<br> </br>
+<H2>Additional Reference for SAnDReS 2.0</H2>
+<a href = "https://doi.org/10.1007/978-1-0716-4949-7" title = "de Azevedo WF Jr, editor. Docking screens for drug discovery. 2nd ed. New York, NY: Springer; 2026.">
+<img src="https://drive.usercontent.google.com/download?id=1qWkaR3YMBMcfofbC9uYrq-gSfsR1BTjx&export=view&authuser=0" width=200 align=left title="de Azevedo WF Jr, editor. Docking screens for drug discovery. 2nd ed. New York, NY: Springer; 2026.">
+</a>
+<p>
+de Azevedo WF Jr, editor. Docking screens for drug discovery. 2nd ed. New York, NY: Springer; 2026. <a href = "https://doi.org/10.1007/978-1-0716-4949-7" title = "de Azevedo WF Jr, editor. Docking screens for drug discovery. 2nd ed. New York, NY: Springer; 2026.">DOI: 10.1007/978-1-0716-4949-7</a>
+</p>
+<a href="https://www.amazon.com/Docking-Screens-Discovery-Methods-Molecular-ebook/dp/B0FVTT27Z9">
+<img src="https://drive.usercontent.google.com/download?id=1ktGUzRY-SOoRjdvc6xKzzBNXzB6ibJfc&export=view&authuser=0" width=100 align=left title="de Azevedo WF Jr, editor. Docking screens for drug discovery. 2nd ed. New York, NY: Springer; 2026.">
+</a>
+<br> </br>
+<br> </br>
+<br> </br>
+<br> </br>
+<br> </br>
+<H2>Installing SAnDReS (Linux)</H2>
+<P>You should type all commands shown here in a Linux terminal. The easiest way to open a Linux terminal is to use the Ctrl+Alt+T key combination.</P>
+<P><B>Step 1.</B> Download <a href="https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh" title="Anaconda Installer for Linux (Anaconda3-2021.11-Linux-x86_64.sh)">Anaconda Installer for Linux (Anaconda3-2021.11-Linux-x86_64.sh)</a>.</P>
+<P><B>Do not install newer versions of Anaconda, you may have dependency version issues.</B></P> 
+<P>Go to the directory where you have the installer file and type the following commands:
+<pre><I>    chmod u+x Anaconda3-2021.11-Linux-x86_64.sh
+    ./Anaconda3-2021.11-Linux-x86_64.sh</I></pre>
+<P>Follow the instructions of the installer.
+</P>
+<P><B>Step 2.</B> Download ADFRsuite version 1.0 (<a href="https://ccsb.scripps.edu/adfr/downloads/" title="ADFRsuite 1.0 Linux 64 installer app">ADFRsuite 1.0 Linux 64 installer app</a>).</P>
+<P>Type the following commands:
+<pre><I>    cd ~
+    cp Downloads/ADFRsuite_Linux-x86_64_1.0_install .
+    chmod a+x ADFRsuite_Linux-x86_64_1.0_install
+    ./ADFRsuite_Linux-x86_64_1.0_install</I></pre>
+<P>Follow the instructions of the installer. You need to add the path of ADFRsuite to your .bashrc (e.g.,PATH="/home/walter/ADFRsuite-1.0/bin:$PATH"). You need to change to your user.</P>
+<P><B>Step 3.</B> To run SAnDReS 2.0 properly, you need <a href="https://scikit-learn.org/stable/" title="Scikit-Learn. Machine Learning in Python">Scikit-Learn</a> 1.5.2. To be sure you have version 1.5.2, open a terminal and type the following commands:
+<pre><I>    python3 -m pip uninstall scikit-learn
+    python3 -m pip install scikit-learn==1.5.2</I></pre>
+<P><B>Step 4.</B> Download SAnDReS 2.0.0 <a href="https://github.com/azevedolab/sandres/raw/master/sandres2.zip" title="SAnDReS 2.0.0">here</a>. Copy the sandres2 zipped directory (sandres2.zip) to wherever you want it and unzip the zipped directory. 
+<P>Type the following command:</P>
+<pre><I>    unzip sandres2.zip</I></pre>
+<P>cd to sandres2 directory then, type:</P>
+<pre><I>python3 sandres2.py</I></pre>
+<P>Now you have the GUI window for SAnDReS 2.0.0. That´s it, good SAnDReS session!</P>
+<br> </br>
+<h2><a href = "https://github.com/azevedolab/About-Me" title = "About Prof. Walter Filgueira de Azevedo, Jr."> About Me </a> </h2> 
+<a href="https://scholar.google.com/citations?user=HWwJXJUAAAAJ" title = "Link to Google Scholar">
+<img src="https://drive.usercontent.google.com/download?id=1rL_DWbMj6timTlYlhn9Hwm1acq8AU4QV&export=view&authuser=0" height=24 alt="Link to Google Scholar"></a>  
+<a href="https://www.scopus.com/authid/detail.uri?authorId=7006435557" title = "Link to Scopus">
+<img src="https://drive.usercontent.google.com/download?id=1URGO8UDkZV_4wX_4c0_gUvhEjfnUyqCQ&export=view&authuser=0" height=24 alt="Link to Scopus"></a>
+<a href="https://heyzine.com/flip-book/693998babe.html" title = "Link to Curriculum Vitae (Flipbook)">
+<img src="https://drive.usercontent.google.com/download?id=17kToUZlwbJ4PgorpUY7EGQA1lFnR_2Gh&export=view&authuser=0" height=24 alt="Link to Curriculum Vitae (Flipbook)"></a> 
+
+<br> </br>

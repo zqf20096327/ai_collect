@@ -1,0 +1,324 @@
+# Dendro Inspector
+
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/Dendro-Inspector/Dendro-Inspector/main/docs/assets/dendro-inspector-banner.png"
+    alt="Dendro Inspector logo: a magnifying glass framing tree rings and a leafy tree"
+    width="900"
+  />
+</p>
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue.svg)](pyproject.toml)
+[![CI](https://github.com/Dendro-Inspector/Dendro-Inspector/actions/workflows/ci.yml/badge.svg)](https://github.com/Dendro-Inspector/Dendro-Inspector/actions/workflows/ci.yml)
+
+An eval-driven, evidence-based, multimodal agent for identifying trees, logs, bark, leaves,
+fruit, cones and wood from photographs.
+
+The core idea is an executable graph, not a single prompt:
+
+**photographs &rarr; typed observations &rarr; card-validated candidates &rarr; adversarial
+review &rarr; bounded decision**
+
+Models may propose each artifact. Deterministic code decides what is admissible, when a run
+must retry or escalate, and how specific and confident the final answer may be.
+
+**What it is:** a reference implementation for evidence handling, adversarial review,
+calibrated uncertainty, evaluation and CI in a multimodal agent.
+
+**What it is not:** a tree identification app, a dataset, or a source of botanical truth.
+Dendrology is the *reference domain*; the engineering subject is evidence handling, review,
+calibrated uncertainty, evaluation and CI. The 25-taxon knowledge pack shipped here is
+demonstration content that no dendrologist has reviewed.
+
+**It is not a replacement for professional identification.** Do not use it to decide
+whether a tree is safe, whether timber is what a seller claims, or whether a plant is
+edible.
+
+## The graph is the central idea
+
+Dendro Inspector is a typed state machine. Model nodes propose bounded artifacts;
+deterministic nodes validate provenance, enforce evidence ceilings, route retries and own
+the final decision. Insufficient evidence exits with a next-photo plan; correctable review
+loops back; disputed or high-risk cases reach an independently bound arbiter.
+
+```mermaid
+flowchart TD
+    INPUT[Input: images plus optional context]
+    INPUT_GUARD[Input guard]
+    PLANNER[Planner]
+    EVIDENCE_EXTRACTOR[Evidence extractor]
+    EVIDENCE_QUALITY{Evidence quality gate}
+    PHOTO_PLANNER[Additional photo planner]
+    CANDIDATE_GENERATOR[Candidate generator]
+    ATTACHMENT_AUTHORITY_GATE[Attachment authority gate]
+    BOTANICAL_REVIEWER[Botanical reviewer]
+    CONFUSION_REVIEWER[Confusion reviewer]
+    CONFIDENCE_REVIEWER[Confidence reviewer]
+    REVIEW_SYNTHESIZER[Review synthesizer]
+    INTERNAL_GATE{Internal review passes?}
+    CORRECTION_WORKER[Correction worker]
+    ABSTAIN[Lower resolution or abstain]
+    ESCALATION_GATE{Arbiter required?}
+    ARBITER[Independent arbiter review]
+    ARBITER_SYNTHESIZER[Arbiter synthesis]
+    FINAL_DECISION[Final decision engine]
+    RESPONSE_COMPOSER[Response composer]
+    TONE_LAYER[Presentation layer]
+    OUTPUT[Final structured and human-readable output]
+
+    INPUT --> INPUT_GUARD
+    INPUT_GUARD --> PLANNER
+    PLANNER --> EVIDENCE_EXTRACTOR
+    EVIDENCE_EXTRACTOR --> EVIDENCE_QUALITY
+    EVIDENCE_QUALITY -->|insufficient| PHOTO_PLANNER
+    PHOTO_PLANNER --> RESPONSE_COMPOSER
+    EVIDENCE_QUALITY -->|usable| CANDIDATE_GENERATOR
+    CANDIDATE_GENERATOR --> ATTACHMENT_AUTHORITY_GATE
+    ATTACHMENT_AUTHORITY_GATE --> BOTANICAL_REVIEWER
+    ATTACHMENT_AUTHORITY_GATE --> CONFUSION_REVIEWER
+    ATTACHMENT_AUTHORITY_GATE --> CONFIDENCE_REVIEWER
+    BOTANICAL_REVIEWER --> REVIEW_SYNTHESIZER
+    CONFUSION_REVIEWER --> REVIEW_SYNTHESIZER
+    CONFIDENCE_REVIEWER --> REVIEW_SYNTHESIZER
+    REVIEW_SYNTHESIZER --> INTERNAL_GATE
+    INTERNAL_GATE -->|correctable failure| CORRECTION_WORKER
+    CORRECTION_WORKER --> EVIDENCE_EXTRACTOR
+    INTERNAL_GATE -->|unresolvable| ABSTAIN
+    INTERNAL_GATE -->|pass| ESCALATION_GATE
+    ESCALATION_GATE -->|no| FINAL_DECISION
+    ESCALATION_GATE -->|yes| ARBITER
+    ARBITER --> ARBITER_SYNTHESIZER
+    ARBITER_SYNTHESIZER --> FINAL_DECISION
+    ABSTAIN --> ESCALATION_GATE
+    FINAL_DECISION --> RESPONSE_COMPOSER
+    RESPONSE_COMPOSER --> TONE_LAYER
+    TONE_LAYER --> OUTPUT
+```
+
+`dendro graph` renders this from the same declaration the executor walks, so the picture
+cannot drift from the code. Details in [docs/agent-graph.md](docs/agent-graph.md).
+
+The presentation layer runs only after the factual result is fixed. It may change wording;
+it cannot change the taxon, resolution, confidence or requested follow-up photograph.
+
+## What the graph may return
+
+A run returns one of five statuses for each subject in the frame:
+
+| Outcome | Meaning |
+| --- | --- |
+| `identified` | The evidence supports the claim at the stated level, with high confidence |
+| `probable` | Best supported hypothesis, honestly hedged |
+| `insufficient_evidence` | Nothing defensible, plus the photograph that would fix it |
+| `conflicting_evidence` | Visible evidence contradicts the leading candidate's own card |
+| `unsupported_user_claim` | What you said it is does not match what the image shows |
+
+Resolution is one of `family`, `genus`, `species_group`, `species`, `unknown`. **It is never
+forced to species.** For bark, genus is the ceiling and low confidence is the cap. The selected
+taxon id and display name always identify a taxon at that final resolution; when a card has no
+declared identity broad enough for the bound, the result is `unknown`.
+
+If you supplied your own version, it gets its own ruling: `accepted`, `possible`, `doubtful`
+or `rejected`. Rejection is deliberately hard to reach — it needs contrary evidence above
+bark level and no field context from you.
+
+## Why the boundaries matter
+
+Most photo-identification agents fail the same way: they return a confident species name
+from a photograph that could not possibly support one. The graph encodes five
+non-negotiable boundaries against that failure.
+
+1. **Observations and inferences are different types.** "Bark flakes lift at thin irregular
+   edges" and "this is compatible with Pinus" cannot be stored in the same field. An
+   inference must name the observation ids it rests on, and those ids must exist.
+2. **Evidence authority is projected before it is used.** Only same-subject image evidence
+   can positively support identification. Fruit beats foliage beats bark, but partial or
+   low-reliability evidence is capped, and contextual, obscured or unattached evidence cannot
+   raise a claim. Inferences inherit the weakest trust of every source observation.
+3. **Candidates must earn admission against their own card.** Unknown taxa, cross-subject
+   citations and evidence that does not exactly match the proposed taxon's declared features
+   are removed. If every candidate fails, the result is an explicit abstention rather than a
+   best-effort guess.
+4. **Resolution and identity move together.** A species proposal broadened to genus or family
+   returns that declared broader id and display name, never the original species name under a
+   broader resolution label. Missing broader identity means `unknown`.
+5. **The personality layer cannot touch the verdict.** The factual answer is composed first;
+   the presentation register is applied afterwards, and a contract check fails the run if the
+   taxon, resolution, confidence — or the tone layer's own permission to be sharp — moved.
+
+The last one has teeth: sharpness is a conjunction of conditions computed from the evidence
+(a rejected user version, high confidence, foliage-or-better, no restraint findings, no close
+alternatives, no field context from the user). Being corrected outranks all of them. Angry,
+but not stupid.
+
+Review follows the same boundary. Deterministic findings are adjudicated before model findings,
+so a model cannot preempt a check by restating its category. A rerank changes the answer only
+when its exact `rerank_candidates` finding is accepted together with a validated same-subject
+ranking; recommendations floating elsewhere in a review are inert.
+
+## Quickstart — no API key required
+
+```bash
+git clone <your-fork-url> && cd dendro-inspector
+python -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
+pip install -e ".[dev,images]"                    # 'images' bounds the bytes each call sends
+
+dendro graph                                       # print the executable agent graph
+dendro inspect --fake primary-pass --image examples/log.jpg --location "Kyiv Oblast, Ukraine"
+dendro eval --suite public                         # run the twenty-four public conformance cases
+pytest                                             # full test suite, offline
+```
+
+Answers are in Ukrainian by default, as the domain prompt specifies. Add `--lang en` for
+English. You can state your own version and it will be ruled on rather than ignored:
+
+```bash
+dendro inspect --image examples/trunk.jpg --claim "дуб" --field-context
+```
+
+`--field-context` says you know things the photograph cannot show — foliage out of frame,
+the fruit, where the tree was felled. It blocks the system from contradicting you sharply,
+because in that situation you have evidence it does not.
+
+To challenge a previous result, resubmit the photograph and relevant context with
+`--challenge`. API callers set `CaseInput.user_challenges_previous_result=True`. This
+requests independent review when there is a claim to review and restrains the tone; it
+does not retrieve earlier conversation or assume the earlier answer was wrong. Challenge
+intent is no longer guessed from `--text`, in any language.
+
+### Register
+
+The presentation register is a deployment choice, kept separate from the dendrology policy:
+
+```bash
+DENDRO_TONE_PROFILE=standard   # default — dry, direct, workplace-safe
+DENDRO_TONE_PROFILE=direct     # the author's original register
+```
+
+Profiles live in `prompts/personality/` and carry vocabulary only. Switching profile changes
+how an answer sounds and can never change what it says — a contract test proves the
+decisions are byte-identical across both.
+
+`--fake <scenario>` replays a recorded scenario from `evals/fixtures/` instead of calling a
+model. Every test, every evaluation case and the whole CI pipeline run this way: no
+credentials, no network, no cost, no flake. The image path does not need to exist in fake
+mode — the fixture supplies the evidence, and the missing file is recorded as a limitation.
+
+To use real models, copy `.env.example` to `.env` and set the provider and key:
+
+```bash
+DENDRO_PRIMARY_PROVIDER=anthropic   # plan, extract, generate candidates
+DENDRO_REVIEWER_PROVIDER=openrouter # three concurrent first-pass reviews
+DENDRO_ARBITER_PROVIDER=openai      # independently challenge escalated results
+```
+
+`.env` is read at startup; anything already exported in the environment wins over it.
+
+Any role can use `openai`, `anthropic`, `gemini`, `nvidia`, `openrouter` or `ollama`.
+Every selected model must accept images. Hosted adapters read their own credential variable;
+OpenAI and Anthropic use optional SDK extras, Gemini and the OpenAI-compatible
+NVIDIA/OpenRouter adapters use direct HTTPS, and Ollama needs no key. Provider-specific
+schema translation never relaxes the Pydantic contract used to validate the response. See
+[docs/model-roles.md](docs/model-roles.md).
+
+## The domain prompt
+
+The dendrology system prompt at `prompts/domain/system-prompt.md` is an **opaque,
+user-managed artifact**. This project loads it, hashes it, and passes it to models unchanged
+— it never translates, shortens, reformats or "improves" it. A contract test asserts the
+bytes reaching the composed prompt equal the bytes on disk, whitespace and line endings
+included.
+
+It is also the **primary knowledge source** for everything else here. The evidence hierarchy,
+taxon cards, tone gating and public conformance cases are derived from it. When it changes,
+those derivations should be revisited — but the file itself is edited only by its owner.
+
+```bash
+dendro prompt-info      # prompt/manifest hashes, policy revision and compatibility status
+```
+
+The runtime validates `prompts/versions.yaml` before constructing any provider. That manifest
+pins policy revision `0.9.0`, the canonical domain prompt path and hash, the node-prompt root
+and revision, and the exact node-prompt file set and hashes. Composition uses the cached
+validated bytes, so a prompt changed after validation cannot silently enter a request.
+
+Replacing the prompt therefore changes its hash, and the manifest has to be re-sealed before
+the next run — including when you replace it at its own default path:
+
+```bash
+dendro prompt-seal            # dry run: every hash it would change, old -> new
+dendro prompt-seal --write    # rewrite the configured manifest, then revalidate
+```
+
+Re-sealing attests bytes, not semantic compatibility: it records what is on disk and never
+rewrites `schema_version` or `policy_revision`. Whether a changed prompt still means what the
+deterministic policy expects is a review, not a hash. The same command re-seals node prompts
+under `prompts/nodes/`, whose hashes are pinned by the same manifest.
+
+Point somewhere else only with a matching deployment manifest:
+
+```bash
+export DENDRO_DOMAIN_PROMPT_PATH=/path/to/your/prompt.md
+export DENDRO_PROMPT_MANIFEST_PATH=/path/to/your/versions.yaml
+```
+
+The external manifest is an explicit compatibility attestation, not a mechanical proof that
+two natural-language prompts mean the same thing. A missing file, path mismatch, hash mismatch
+or incompatible policy revision is a loud `PromptPolicyError`, never a silent default. Prompt
+and manifest hashes appear in every execution trace, tying an answer to the exact admitted
+bundle.
+
+## Documentation
+
+| Document | Covers |
+| --- | --- |
+| [docs/architecture.md](docs/architecture.md) | Contracts, layering, why taxon cards are data |
+| [docs/agent-graph.md](docs/agent-graph.md) | Node responsibilities, routing, retry and stop conditions |
+| [docs/model-roles.md](docs/model-roles.md) | Primary vs arbiter, escalation policy |
+| [docs/agent-as-provider.md](docs/agent-as-provider.md) | Live multimodal adapter testing through the local bridge |
+| [docs/evaluation.md](docs/evaluation.md) | Public conformance cases, metrics, how to add one |
+| [docs/review-pipeline.md](docs/review-pipeline.md) | Finding admissibility and reason codes |
+| [docs/regional-packs.md](docs/regional-packs.md) | Regional priors and how they are constrained |
+| [docs/dataset-policy.md](docs/dataset-policy.md) | Placeholder content, images, licensing, PII |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting and prompt-injection handling |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, gates, PR expectations |
+| [AGENTS.md](AGENTS.md) | Rules for humans and coding agents working in this repo |
+
+## Status
+
+v0.9.0 — a public, provider-complete vertical slice, not a production system. The graph runs
+end to end through OpenAI, Anthropic, Gemini, NVIDIA, OpenRouter and Ollama adapters; live
+calls can be exercised without an SDK client through the agent-as-provider bridge.
+Image-aware caching, bounded image transport, bounded reviewer context, reviewer-call
+attribution, evidence vocabulary diagnostics and prompt-policy compatibility are enforced in
+code. This release narrows what a model's own labels can decide: a candidate's support
+strength is adjudicated against its card, the escalation gate decides on the verdict the
+graph would return, a contradiction needs identification authority before it can reject the
+user's version, abstention is visible and costs a resolution level, a hedged claim is ruled
+on as the user wrote it, and every verdict's derivation is recorded in the trace. The public
+suite defines twenty-four deterministic conformance cases, all passing with zero
+overconfidence against the frozen `public-v0.9.0` baseline. One existing case now calls the
+arbiter because its provisional verdict is high; its taxon, resolution, confidence and status
+are unchanged. The knowledge pack is 26 taxa of demonstration content that no dendrologist
+has reviewed — every card says so in its `provenance` block.
+
+What the numbers do and do not prove:
+
+| Claim | Supported? |
+| --- | --- |
+| Specification conformance against the domain prompt | yes |
+| Architectural behaviour under the declared contracts | yes |
+| Regression protection against silent drift | yes |
+| Calibration policy — no claim outruns its evidence tier | yes |
+| **Identification accuracy on real photographs** | **no — not measured** |
+
+Provider adapters are integration boundaries rather than hardened clients, and nothing here
+has been validated against real photographs at scale.
+
+Intentionally deferred items are listed in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+[Apache-2.0](LICENSE). See [NOTICE](NOTICE) for attribution and for the status of the
+domain prompt and knowledge cards.

@@ -1,0 +1,266 @@
+# SpikingJelly
+
+[中文](./README_cn.md) | English
+
+[![PyPI](https://img.shields.io/pypi/v/spikingjelly)](https://pypi.org/project/spikingjelly)
+[![Python](https://img.shields.io/pypi/pyversions/spikingjelly)](https://pypi.org/project/spikingjelly)
+[![Docs](https://readthedocs.org/projects/spikingjelly/badge/?version=latest)](https://spikingjelly.readthedocs.io/zh_CN/latest)
+[![GitHub contributors](https://img.shields.io/github/contributors/fangwei123456/spikingjelly)](https://github.com/fangwei123456/spikingjelly/graphs/contributors)
+![repo size](https://img.shields.io/github/repo-size/fangwei123456/spikingjelly)
+![Visitors](https://api.visitorbadge.io/api/visitors?path=fangwei123456%2Fspikingjelly%20&countColor=%23263759&style=flat)
+
+![SpikingJelly demo](./docs/source/_static/logo/demo.png)
+
+## Contents
+
+- [Why SpikingJelly](#why-spikingjelly)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Core Capabilities](#core-capabilities)
+  - [Operator Execution](#operator-execution)
+  - [Large-Scale SNN Systems](#large-scale-snn-systems)
+  - [Datasets](#datasets)
+  - [Interchange and Deployment](#interchange-and-deployment)
+- [Project Status and Version Notes](#project-status-and-version-notes)
+- [License](#license)
+- [Acknowledgement](#acknowledgement)
+- [Contributing](#contributing)
+- [Citation](#citation)
+
+## Why SpikingJelly
+
+SpikingJelly is a PyTorch-native framework for spiking neural networks (SNNs), with support for large-scale SNN training and inference.
+
+- Beginner-friendly API
+- ANN2SNN conversion
+- Event-based datasets
+- Automatic operator execution: Torch, Triton and optional native CUDA
+- Memory-efficient training, distributed execution, precision control
+- Hardware deployment and framework exchange
+
+## Installation
+
+Use uv in an activated virtual environment: Python `>=3.11`, Torch `>=2.6`.
+First install [PyTorch](https://pytorch.org/get-started/locally/).
+
+| Install | Command |
+| --- | --- |
+| PyPI release | `uv pip install spikingjelly` |
+| PyPI pre-release | `uv pip install --pre spikingjelly` |
+| Optional Triton (if missing) | `uv pip install "spikingjelly[triton]"` |
+| Latest development source | `uv pip install git+https://github.com/fangwei123456/spikingjelly.git` |
+
+Native CUDA (requires a toolchain; available after the corresponding V2 PyPI release):
+
+```bash
+SJ_BUILD_NATIVE_CUDA=1 uv pip install \
+  --no-build-isolation --no-binary spikingjelly \
+  --reinstall-package spikingjelly --no-cache "spikingjelly>=2.0.0"
+```
+
+See the [installation guide](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/install.html)
+for prerequisites, decision diagrams, other extras and troubleshooting.
+Unreleased changes require the development source.
+
+## Quick Start
+
+Define an SNN in the same way that you would define any PyTorch model:
+
+```python
+from torch import nn
+from spikingjelly.activation_based import layer, neuron, surrogate
+
+net = nn.Sequential(
+    layer.Flatten(),
+    layer.Linear(28 * 28, 10, bias=False),
+    neuron.LIFNode(tau=2.0, surrogate_function=surrogate.ATan())
+)
+```
+
+Next steps:
+
+- [Learn about spiking neurons](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/neuron.html)
+- [Train on event-based datasets](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/classify_dvsg.html)
+- [Convert ANN to SNN](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/ann2snn.html)
+
+## Core Capabilities
+
+| Area | What SpikingJelly provides |
+| --- | --- |
+| SNN modeling | Activation-based SNN components: spiking neurons, surrogate gradients, stateful and stateless modules. Predefined SNN models. |
+| Training workflows | PyTorch-native training flows, online-learning utilities, and ANN2SNN conversion |
+| Performance | automatic Torch/Triton/native CUDA execution, FlexSN for customized neuron kernels, and mixed-precision training utilities (e.g., `fp8`) |
+| Scaling | Memory-efficient training, and distributed training |
+| Datasets | Neuromorphic datasets, and data preprocessing pipelines |
+| Analysis | FLOPs / SynOps / memory-access profiling, and inference energy estimation |
+| Interchange and deployment | NIR, Lava, and Lynxi-oriented exchange interfaces for neuromorphic workflows |
+
+### Operator Execution
+
+Neuron execution is selected automatically from tensor device and execution path:
+CPU uses Torch; CUDA eager prefers compatible native CUDA, while Inductor
+expansion prefers Triton. CUDA Graph retains its pre-capture choice. No public
+neuron backend argument and no CuPy dependency are required. Low-precision
+state profiles can use Torch reference execution.
+
+Pure Python wheels include Torch reference and optional Triton execution.
+Optional native neuron, fused IF/LIF-Linear and packed/sparse projection builds
+are described under [Installation](#installation). Missing extensions use Torch reference
+for projections; fused no-intermediate-spike performance requires the extension.
+Use ordinary Linear/Conv plus `memopt` instead of retired `SpikeLinear/SpikeConv`.
+
+### Large-Scale SNN Systems
+
+For large-scale SNN systems, SpikingJelly provides:
+
+- Memory-efficient training with spike compression (`memopt`)
+- Experimental distributed execution for multi-GPU workloads
+- Precision policy tools for large-scale training and inference
+- Spiking transformer components
+
+### Datasets
+
+SpikingJelly includes the following event-based and neuromorphic datasets: 
+
+- [ASL-DVS](https://openaccess.thecvf.com/content_ICCV_2019/html/Bi_Graph-Based_Object_Classification_for_Neuromorphic_Vision_Sensing_ICCV_2019_paper.html)
+- [Bullying10K](https://proceedings.neurips.cc/paper_files/paper/2023/file/05ffe69463062b7f9fb506c8351ffdd7-Paper-Datasets_and_Benchmarks.pdf)
+- [CIFAR10-DVS](https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00309/full)
+- [DVS-Lip](https://openaccess.thecvf.com/content/CVPR2022/html/Tan_Multi-Grained_Spatio-Temporal_Features_Perceived_Network_for_Event-Based_Lip-Reading_CVPR_2022_paper.html)
+- [DVS128 Gesture](https://openaccess.thecvf.com/content_cvpr_2017/html/Amir_A_Low_Power_CVPR_2017_paper.html)
+- [ES-ImageNet](https://www.frontiersin.org/articles/10.3389/fnins.2021.726582/full)
+- [HARDVS](https://arxiv.org/abs/2211.09648)
+- [N-Caltech101](https://www.frontiersin.org/articles/10.3389/fnins.2015.00437/full)
+- [N-MNIST](https://www.frontiersin.org/articles/10.3389/fnins.2015.00437/full)
+- [Nav Gesture](https://www.frontiersin.org/articles/10.3389/fnins.2020.00275/full)
+- [SHD](https://doi.org/10.1109/TNNLS.2020.3044364)
+- [SSC](https://doi.org/10.1109/TNNLS.2020.3044364)
+- [Speech Commands](https://arxiv.org/abs/1804.03209)
+
+Each dataset supports raw event access and frame representations. See the [neuromorphic datasets tutorial](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/neuromorphic_datasets.html) for the full workflow.
+
+### Interchange and Deployment
+
+Export SpikingJelly models to neuromorphic hardware or other frameworks:
+
+- [NIR exchange](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/nir_exchange.html)
+- [Lava exchange](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/en/lava_exchange.html)
+- [Lynxi deployment](https://spikingjelly.readthedocs.io/zh_CN/latest/tutorials/cn/inference_on_lynxi.html)
+
+## Project Status and Version Notes
+
+**Development / release policy:**
+
+Starting from SpikingJelly V2, release versions follow PEP 440 compatible,
+SemVer-style `MAJOR.MINOR.PATCH` semantics. `MAJOR` marks compatibility
+generations, `MINOR` adds backward-compatible functionality, and `PATCH` fixes
+bugs. Python package pre-release spelling is used for V2 development releases,
+for example `2.0.0.dev0`, `2.0.0a1`, `2.0.0b1`, and `2.0.0rc1`.
+
+See [CHANGELOG.md](./CHANGELOG.md) for the V2 release changelog.
+
+<details>
+<summary>Compatibility, migration, and older docs</summary>
+
+- Before V2, SpikingJelly used a legacy `0.0.0.0.X` scheme: odd `X` tracked development versions on GitHub / OpenI, and even `X` tracked stable releases published to PyPI.
+- If your project must stay on pre-V2 releases, pin dependencies with an upper bound such as `spikingjelly<2`.
+- From `0.0.0.0.14`, modules including `clock_driven` and `event_driven` were renamed. See [Migrate From Old Versions](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.14/activation_based_en/migrate_from_legacy.html).
+- The default documentation points to the latest development version.
+- If you rely on an older release, check [bugs.md](./bugs.md) and switch to the matching documentation version.
+
+Historical documentation:
+
+- [zero](https://spikingjelly.readthedocs.io/zh_CN/zero/)
+- [0.0.0.0.4](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.4/#index-en)
+- [0.0.0.0.6](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.6/#index-en)
+- [0.0.0.0.8](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.8/#index-en)
+- [0.0.0.0.10](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.10/#index-en)
+- [0.0.0.0.12](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.12/#index-en)
+- [0.0.0.0.14](https://spikingjelly.readthedocs.io/zh_CN/0.0.0.0.14/#index-en)
+- [latest](https://spikingjelly.readthedocs.io/zh_CN/latest/#index-en)
+
+</details>
+
+## License
+
+SpikingJelly's project license is [Apache-2.0](./LICENSE). Third-party
+attributions and license terms are collected in [LICENSES/NOTICE](./LICENSES/NOTICE).
+See the [license guide](./LICENSES/README.md) for scope and historical licenses.
+
+## Acknowledgement
+
+### Maintainers
+
+Current maintainers (since July 2024):
+
+- [Yifan Huang](https://github.com/AllenYolk)
+- [Peng Xue](https://github.com/PengXue0812)
+
+Previous core maintainers (before July 2024):
+
+- [Wei Fang](https://github.com/fangwei123456)
+- [Yanqi Chen](https://github.com/Yanqi-Chen)
+- [Jianhao Ding](https://github.com/DingJianhao)
+- [Ding Chen](https://github.com/lucifer2859)
+- [Liwei Huang](https://github.com/Grasshlw)
+
+### Contributors
+
+The full contributor list is on the [contributors page](https://github.com/fangwei123456/spikingjelly/graphs/contributors).
+
+<a href="https://github.com/fangwei123456/spikingjelly/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=fangwei123456/spikingjelly" alt="contributors" />
+</a>
+
+### Institutes
+
+The main institutions behind SpikingJelly are [Multimedia Learning Group, Institute of Digital Media (NELVT), Peking University](https://pkuml.org/) and [Peng Cheng Laboratory](http://www.szpclab.com/).
+
+<p align="center">
+  <img src="./docs/source/_static/logo/pku.png" alt="PKU" width="160" />
+  <img src="./docs/source/_static/logo/pcl.png" alt="PCL" width="160" />
+</p>
+
+### Community and related links
+
+- [Documentation](https://spikingjelly.readthedocs.io/)
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Issues and development discussion](https://github.com/fangwei123456/spikingjelly/issues)
+- [OpenI mirror](https://openi.pcl.ac.cn/OpenI/spikingjelly)
+- [Community Jupyter tutorials in Chinese](https://github.com/fangwei123456/spikingjelly/tree/8932ac0668fe19b3efd0afedb3ca454cd8c126d3/community_tutorials/jupyter/chinese)
+
+<a href="https://star-history.com/#fangwei123456/spikingjelly&amp;Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=fangwei123456/spikingjelly&amp;type=Date&amp;theme=dark" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=fangwei123456/spikingjelly&amp;type=Date" />
+  </picture>
+</a>
+
+## Contributing
+
+We welcome issues, pull requests, documentation improvements, and translations.
+
+- Read the [Contributing Guide](./CONTRIBUTING.md).
+- Check [issues](https://github.com/fangwei123456/spikingjelly/issues) for ongoing work.
+- API docs are not fully bilingual yet; translation contributions are especially welcome.
+
+## Citation
+
+Publications using SpikingJelly are listed on the [documentation page](https://spikingjelly.readthedocs.io/zh_CN/latest/publications.html). The source of truth in this repository is [publications.json](./publications.json).
+
+If you use SpikingJelly in your work, please cite:
+
+```bibtex
+@article{
+doi:10.1126/sciadv.adi1480,
+author = {Wei Fang and Yanqi Chen and Jianhao Ding and Zhaofei Yu and Timothee Masquelier and Ding Chen and Liwei Huang and Huihui Zhou and Guoqi Li and Yonghong Tian},
+title = {SpikingJelly: An open-source machine learning infrastructure platform for spike-based intelligence},
+journal = {Science Advances},
+volume = {9},
+number = {40},
+pages = {eadi1480},
+year = {2023},
+doi = {10.1126/sciadv.adi1480},
+url = {https://www.science.org/doi/abs/10.1126/sciadv.adi1480},
+eprint = {https://www.science.org/doi/pdf/10.1126/sciadv.adi1480}
+}
+```

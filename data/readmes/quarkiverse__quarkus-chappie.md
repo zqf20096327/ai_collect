@@ -1,0 +1,91 @@
+# Quarkus Chappie
+
+[![Version](https://img.shields.io/maven-central/v/io.quarkiverse.chappie/quarkus-chappie?logo=apache-maven&style=flat-square)](https://central.sonatype.com/artifact/io.quarkiverse.chappie/quarkus-chappie-parent)
+
+## Welcome to the Chappie Extension
+
+This extension adds some AI to you quarkus dev experience. To use this in your project, simply add the
+extension to you project, example in maven:
+
+```
+<dependency>
+    <groupId>io.quarkiverse.chappie</groupId>
+    <artifactId>quarkus-chappie</artifactId>
+    <version>1.7.0</version> <!-- Or latest -->
+</dependency>
+```
+| Chappie version | Quarkus version |
+| --------------- | --------------- |
+| 1.2.x           | 3.26.1+         |
+| 1.3.x           | 3.26.1+         |
+| 1.4.x           | 3.28.3+         |
+| 1.5.x           | 3.29.0+         |
+| 1.6.x           | 3.31.0+         |
+| 1.7.x           | 3.36.1+         |
+| 2.x             | 4.0.0.Beta1+    |
+
+
+Chappie is a Dev Mode only extension, so this does not add anything to your production application.
+
+To use chappie, you need to configure it with either an OpenAI Compatible Service or have Ollama running locally. You can configure it in Dev UI.
+
+Starting with 1.7.x (Quarkus 3.36.1+), documentation search data is loaded automatically from Maven Central at startup — no pre-built Docker image required. For older Quarkus versions, the extension falls back to the pre-built `chappie-ingestion-quarkus` image.
+
+2.x targets Quarkus 4 and requires JDK 21. If you are still on Quarkus 3, stay on 1.7.x, which is maintained from the `1.x` branch.
+
+# Building this extension and sample
+
+You can also build this extension locally and run the provided samples (in the sample module)
+
+For this you would need:
+
+- java
+- maven
+- podman/docker
+
+clone this repo to your local environment:
+
+```
+git clone git@github.com:quarkiverse/quarkus-chappie.git
+```
+
+Then in the root of the project, run a maven build:
+
+```
+cd quarkus-chappie
+mvn clean install
+```
+
+One done you can run the sample application:
+
+```
+cd sample
+mvn quarkus:dev
+```
+
+Configure the provider in Dev UI, and then navigate to localhost:8080 and simulate some exceptions to get to the exception screen.
+
+# Doing work on the Chappie server.
+
+You can make changes to the Chappie server and test this with this extension.
+
+1) Clone https://github.com/chappie-bot/chappie-server
+2) Build the chappie server with `mvn clean install -Dquarkus.profile=chappie`
+3) Change this chappie-extension to use chappie server version 999-SNAPSHOT 
+   In https://github.com/quarkiverse/quarkus-chappie/blob/main/runtime-dev/pom.xml, change `chappie-server.version` to `999-SNAPSHOT` 
+4) Everytime you make a change in the server, you need to rebuild the extension to pull in the new version.
+
+# Windows Users: RAG Requirement
+
+If you're running on Windows and want **RAG (Retrieval-Augmented Generation)** capabilities, you need to install the **Microsoft Visual C++ Redistributable** for the ONNX Runtime (used by the BGE embedding model).
+
+**Download:** https://aka.ms/vs/17/release/vc_redist.x64.exe
+
+**Without this redistributable:**
+- The server will start successfully
+- RAG will be automatically disabled (you'll see a clear message in the logs)
+- AI assistance will still work (just without documentation lookup)
+
+**With the redistributable installed:**
+- Full RAG capabilities enabled
+- Documentation-aware AI assistance

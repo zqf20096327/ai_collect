@@ -1,0 +1,130 @@
+# meta-kb
+
+A self-improving knowledge base about LLM agent infrastructure.
+
+[![License: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE) [![License: CC BY-SA 4.0](https://img.shields.io/badge/wiki-CC--BY--SA--4.0-lightgrey)](LICENSE) [![Runtime: Bun](https://img.shields.io/badge/runtime-Bun-f9f1e1)](https://bun.sh) [![Sources](https://img.shields.io/badge/sources-126-orange)](#stats) [![Wiki Articles](https://img.shields.io/badge/wiki_articles-149-green)](#stats)
+
+![meta-kb](wiki/images/og-image.png)
+
+## Browse the wiki
+
+**Start here:** [The Landscape of LLM Agent Infrastructure](wiki/field-map.md)
+
+|                                                                           |                                                               |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [The State of LLM Knowledge Substrate](wiki/knowledge-substrate.md)      | [The State of Agent Memory](wiki/agent-memory.md)             |
+| [The State of Context Engineering](wiki/context-engineering.md)           | [The State of Agent Architecture](wiki/agent-architecture.md) |
+| [The State of Multi-Agent Systems](wiki/multi-agent-systems.md)           | [The State of Self-Improving Systems](wiki/self-improving.md) |
+
+<table>
+<tr>
+<th width="50%" align="center">Knowledge Graph</th>
+<th width="50%" align="center">Compilation Pipeline</th>
+</tr>
+<tr>
+<td align="center"><a href="https://chappyasel.com/meta-kb-graph.html"><img src="wiki/images/graph-preview.png" alt="Knowledge Graph" width="100%"></a></td>
+<td align="center"><a href="wiki/field-map.md"><img src="wiki/images/pipeline-preview.png" alt="Compilation Pipeline" width="100%"></a></td>
+</tr>
+</table>
+
+## How it works
+
+Inspired by [Andrej Karpathy's tweet](https://x.com/karpathy/status/2039805659525644595) about using LLMs to compile and maintain markdown wikis from raw sources. This repo applies that pattern to the topic of LLM knowledge systems itself, then adds a self-improvement loop. The repo IS the demo.
+
+- **Self-improving** — the compiler extracts atomic claims, verifies each against its cited source, and auto-fixes source attribution errors. The Karpathy loop (eval → analyze failures → update prompts → recompile) improved accuracy from 63.9% → 78.6% → 80.0% across three iterations.
+- **Incremental** — `bun run compile --incremental` detects source changes via content hashing, recompiles only affected buckets and entities. `--status` shows pending changes without compiling.
+- **Deep research** — the pipeline clones repos, reads 15-25 source files, fetches docs, and synthesizes architecture-level analysis.
+- **Dual compilation** — both a deterministic script pipeline and an agent-native skill graph produce the same output.
+- **Neutral** — all projects (including the author's own) receive the same depth and the same criticism.
+
+![Compilation demo](wiki/images/compile-demo.gif)
+
+**How it was built:** [METHODOLOGY.md](docs/METHODOLOGY.md) | [System Design](docs/DESIGN.md)
+
+## Fork this for your own topic
+
+This is a general-purpose knowledge compiler. To build your own wiki on any topic:
+
+1. **Fork this repo** and clear `raw/` and `wiki/`
+2. **Edit one file** — [`config/domain.ts`](config/domain.ts) defines your topic, audience, taxonomy buckets, and scoring calibration
+3. **Add sources** — `bun run ingest <url>` scores automatically, or add `.md` files manually
+4. **Compile** — `bun run compile` generates the full wiki
+
+Both compilation paths read from `config/domain.ts`, so they adapt automatically to your topic.
+
+Example topics: ML papers survey, security research tracker, startup playbook, programming language ecosystem map, open-source alternatives directory.
+
+## Contributing
+
+The easiest contribution is a new source — PR a `.md` file into `raw/` or open an issue with a URL. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## Setup
+
+```bash
+bun install
+cp .env.example .env  # add your ANTHROPIC_API_KEY
+```
+
+Environment variables:
+
+- `ANTHROPIC_API_KEY` — for compilation and scoring
+- `APIFY_API_TOKEN` — for Twitter scraping (ingestion only)
+- `GITHUB_TOKEN` — for GitHub API (ingestion only)
+- `XQUIK_API_KEY` — for X article extraction (optional, ingestion only)
+
+## Adding sources
+
+```bash
+bun run ingest <url1> [url2] ...       # ingest sources (auto-detects platform)
+bun run research <url1> [url2] ...     # deep-research specific repos or papers
+bun run research --all                 # deep-research all unresearched sources
+```
+
+The ingestion script detects platform (GitHub, arXiv, X/Twitter, general articles), supports awesome-list detection and X article extraction via Xquik. Each source gets taxonomy tags (via Haiku), a 4-dimension relevance score (via Sonnet), and a key insight extraction automatically. To re-score all sources (e.g., after changing `config/domain.ts`), run `bun run rescore`.
+
+Deep research goes further — cloning repos, reading 15-25 key source files, fetching documentation, then synthesizing structured analysis (architecture, design tradeoffs, failure modes, benchmarks) into `raw/deep/`. See the [deep-research skill](.claude/skills/deep-research/SKILL.md) for the full methodology.
+
+## Two ways to compile
+
+### Path A: Skill graph (agent-native)
+
+Ask any AI coding agent: **"Compile the wiki from raw sources."**
+
+The [compile-wiki skill](.claude/skills/compile-wiki/SKILL.md) orchestrates a 6-phase pipeline using subagents — each phase has its own skill with focused context. Synthesis articles and reference cards compile in parallel via subagents. Works with Claude Code, Codex, Cursor, or any agent that can read `.claude/skills/`.
+
+For incremental updates after ingesting new sources, use the [incremental-compile skill](.claude/skills/incremental-compile/SKILL.md) — it detects what changed and only regenerates affected articles.
+
+### Path B: Script pipeline (deterministic)
+
+```bash
+bun run compile       # raw/ → build/ → wiki/
+bun run lint          # verify structural integrity
+bun run diagrams      # generate D2 + D3 visualizations
+```
+
+Both paths produce the same output structure. Run both for a comparison diff between agent-native and deterministic compilation.
+
+<!-- stats:start (auto-updated by bun run compile) -->
+## Stats
+
+- **Sources:** 142 curated (31 tweets, 71 repos, 16 papers, 24 articles) + 57 deep research files
+- **Taxonomy:** 6 buckets (knowledge substrate, agent memory, context engineering, agent architecture, multi-agent systems, self-improving systems)
+- **Wiki:** 155 articles (6 synthesis, 87 project cards, 61 concept explainers, field map, indexes)
+- **Deep research:** 157K words of source-code-level analysis
+- **Self-eval:** 268 atomic claims extracted, sampled and verified against sources each compilation
+- **Compilation:** Script pipeline (`bun run compile`) or agent skill graph (`.claude/skills/compile-wiki/`)
+<!-- stats:end -->
+
+## Roadmap
+
+- [x] **Incremental recompilation** — `bun run compile --incremental` skips unchanged sources, regenerates only dirty buckets/entities
+- [ ] **Source acquisition** — fill coverage gaps in thin buckets, add historical retrospectives and production case studies
+- [x] **Cross-article synthesis** — sequential compilation with evidence registry to eliminate cross-article repetition
+- [ ] **Claims-first migration** — invert pipeline to raw → claims → articles for better attribution accuracy and reliable incremental recompilation
+- [ ] **Temporal claim decay** — auto-expire time-sensitive claims (star counts, benchmarks) and flag articles for refresh
+
+See [DESIGN.md](docs/DESIGN.md) for the full architectural vision and evaluation findings.
+
+## License
+
+Code: MIT. Wiki content: CC-BY-SA 4.0. See [LICENSE](LICENSE).

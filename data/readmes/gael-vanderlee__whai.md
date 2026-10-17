@@ -1,0 +1,574 @@
+# Whai - A Terminal tool to stay in the flow
+[![PyPI version](https://badge.fury.io/py/whai.svg)](https://badge.fury.io/py/whai)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://pepy.tech/badge/whai)](https://pepy.tech/project/whai)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)]()
+[![GitHub stars](https://img.shields.io/github/stars/gael-vanderlee/whai.svg?style=social&label=Star)](https://github.com/gael-vanderlee/whai)
+
+Whai is a simple way to call an LLM from terminal. It is not an agent that wipes your hard drive while you are in the kitchen.
+
+I built this to lend me a hand when I get stuck or confused when ssh'd into my NAS. The goal is to keep you in your flow and save you from an alt tab to a browser and copy pasting context to get help.
+
+https://github.com/user-attachments/assets/cbe834f0-2437-405b-9c95-88f02f6f69d9
+
+## Table of Contents
+
+- [What is it](#what-is-it)
+- [Core Features](#core-features)
+- [Quick Examples](#quick-examples)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Supported Providers](#supported-providers)
+- [MCP (Model Context Protocol) Support](#mcp-model-context-protocol-support)
+- [Key Features](#key-features)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [Acknowledgments](#acknowledgments)
+
+## What is it
+
+`whai` is a lightweight AI terminal assistant that integrates directly into your native shell and workflow.
+The philosophy of `whai` is to supplement your normal terminal usage without taking control. 
+You don't have to start a chat loop, alt-tab or copy paste.
+When you get stuck, need a command, or encounter an error, just call `whai` for help on demand.
+
+### Core Features
+
+* **Analyze Previous Errors:** If a command fails, you can call `whai` (no arguments needed!) or ask `whai why did that fail?`.
+    It reads the failed command and its error output from your terminal history to provide a diagnosis and solution. *Note: Command output is available when running inside tmux or a `whai shell` session. Otherwise, the model will only see your commands but not their outputs.*
+* **Persistent Roles (Memory):** `whai` uses simple, file-based "Roles" to provide persistent memory. You define your context *once*, what machine you are on, what tools are available, your personal preferences, and how you like to work, and `whai` retains this context for all future interactions.
+* **Session Context:** When running inside `tmux` or a `whai shell` session, `whai` reads your command history and outputs to understand both what you ran and what happened.
+* **Help On Demand:** Get help as you're using your shell:
+
+    `> whai check my docker containers logs for errors`
+
+    `> whai "Is this resource usage normal?"`
+
+* **Requires Approval:** Every `whai` command requires your explicit `[a]pprove` / `[r]eject` confirmation.
+* **MCP Tool Integration:** Connect local [MCP](https://modelcontextprotocol.io/) servers to extend `whai` with additional tools like file operations, database queries, or API integrations, all with the same approval workflow.
+* **Model-Agnostic:** Use models from OpenAI, Gemini, Mistral, Anthropic, local Ollama models, and more.
+* **Insert-Command Mode (Optional):** Turn natural language at your prompt into a single shell command with a keybinding that replaces your current line without auto-executing anything.
+
+## Quick Examples
+
+### Example 1: Running a command
+
+```zsh
+$ whai give me the biggest folder here
+Info: Model: gpt-5-mini | Role: default
+I'll list all top-level directories (including hidden ones), 
+compute their disk usage, sort them, and show the largest 
+few with human-readable sizes.
+
+I'll run this command:
+find . -maxdepth 1 -mindepth 1 -type d -print0 | \
+  xargs -0 du -sk 2>/dev/null | \
+  sort -n | tail -n 5 | \
+  awk '{print $1 "\t" $2}' | \
+  numfmt --to=iec-i --suffix=B --field=1,1
+
+Breakdown of what each part does:
+- find . -maxdepth 1 -mindepth 1 -type d: Find directories at 
+  current level only (excludes . and ..)
+- -print0: Use null separator to safely handle spaces in 
+  directory names
+- xargs -0 du -sk: Pass each directory to du to get disk usage 
+  in kilobytes, 2>/dev/null suppresses errors
+- sort -n: Sort numerically by size
+- tail -n 5: Show the 5 largest entries
+- awk '{print $1 "\t" $2}': Format output as size (tab) path
+- numfmt --to=iec-i --suffix=B --field=1,1: Convert sizes to 
+  human-readable format (KiB, MiB, etc.)
+
+╭─────────────────────── Proposed command ────────────────────────╮
+│ find . -maxdepth 1 -mindepth 1 -type d -print0 |                │
+│   xargs -0 du -sk 2>/dev/null |                                 │
+│   sort -n | tail -n 5 |                                         │
+│   awk '{print $1 "\t" $2}' |                                    │
+│   numfmt --to=iec-i --suffix=B --field=1,1                      │
+╰─────────────────────────────────────────────────────────────────╯
+[a]pprove / [r]eject / [m]odify: a
+
+╭─────────────────── Output ────────────────────╮
+│ 440B ./tests                                  │
+│ 1.4KiB ./.git                                 │
+│ 87KiB ./.venv_tmp                             │
+│ 108KiB ./.venv                                │
+│ 123KiB ./.venv-linux                          │
+╰───────────────────────────────────────────────╯
+
+Result (interpretation)
+- The largest top-level directory here is ./.venv-linux 
+  with ~123KiB.
+
+Next steps (options)
+- Show the top N largest items anywhere under the current 
+  tree (files+dirs):
+  - du -ah . 2>/dev/null | sort -rh | head -n 30
+- Show only directories, recursively, largest first:
+  - du -h --max-depth=3 2>/dev/null | sort -hr | head -n 30
+```
+
+### Example 2: Troubleshooting terminal output
+
+```zsh
+$ uv pip install requirements.txt
+Using Python 3.11.9 environment at: .venv-linux
+  × No solution found when resolving dependencies:
+  ╰─▶ Because requirements-txt was not found in the package registry...
+
+$ whai what is the problem
+Info: Model: gpt-5-mini | Role: default
+What's happening
+- You ran: uv pip install requirements.txt
+- pip treated "requirements.txt" as the name of a package to 
+  download from the package index, not as a file of requirements.
+- The resolver tried to find a package called (normalized) 
+  "requirements-txt" on PyPI and failed, so it reports the 
+  dependencies are unsatisfiable.
+
+How to fix it
+- Use the -r (or --requirement) flag so pip reads the file 
+  instead of treating it as a package name.
+
+Commands you can run
+1) Check the requirements file exists:
+ls -l requirements.txt
+
+2) Install from the file (match how you invoked pip):
+uv pip install -r requirements.txt
+
+Do you want me to:
+- run the ls to confirm the file exists, or
+- run the install command for you now?
+```
+
+### Example 3: Calling whai without arguments
+
+```zsh
+$ git push origin main
+To https://github.com/user/repo.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/user/repo.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+
+$ whai
+Info: Model: gpt-5-mini | Role: default
+What's happening
+- You tried to push your local branch "main" to the remote, 
+  but git rejected it.
+- Your local branch is behind the remote branch—someone else 
+  pushed changes to the remote that you don't have locally.
+- Git won't let you push because it would overwrite those 
+  remote changes.
+
+How to fix it
+- Pull the remote changes first, then push. This integrates 
+  the remote commits with your local ones.
+
+Commands you can run
+1) See what commits are on the remote but not locally:
+git fetch
+git log HEAD..origin/main
+
+2) Pull and merge the remote changes:
+git pull origin main
+
+3) After resolving any merge conflicts (if they occur), push again:
+git push origin main
+
+Do you want me to run git pull for you now?
+```
+
+### Example 4: Asking questions
+
+```zsh
+$ whai "Quick how do I exit Vim??"
+Info: Model: gpt-5-mini | Role: default
+I'll show the quick ways to exit Vim and what each one does.
+
+1) Get to Normal mode
+- Press Esc (or Ctrl-[) until you stop inserting text. If Esc doesn't respond, try Ctrl-C.
+
+2) Common exit commands (type them in Normal mode, then press Enter)
+- :q
+  - Quit (works only if no changes since last save).
+- :q!
+  - Quit and discard any unsaved changes.
+- :wq
+  - Write (save) and quit.
+- :x
+  - Write (only if changed) and quit (similar to :wq).
+
+3) Shortcuts
+- ZZ (Shift+Z twice) — save and quit (same as :wq if there are changes).
+- ZQ — quit without saving (same as :q!).
+```
+
+## Installation
+
+### Option 1: uv (Recommended)
+You can install uv [here](https://docs.astral.sh/uv/getting-started/installation/)
+
+Then:
+```zsh
+uv tool install whai
+```
+*Or even without installing it!*
+```zsh
+uvx whai "your command"
+```
+
+### Option 2: pipx
+
+```zsh
+pipx install whai
+```
+
+### Option 3: pip
+
+```zsh
+pip install whai
+```
+
+### Option 4: From source
+
+```zsh
+git clone https://github.com/gael-vanderlee/whai.git
+cd whai
+pip install -e .
+```
+
+## Quick Start
+
+### 1. Configure your API key
+
+On first run, `whai` launches an interactive configuration wizard:
+
+```zsh
+whai --interactive-config
+```
+
+Or edit `~/.config/whai/config.toml` directly:
+
+```zsh
+[llm]
+default_provider = "openai"
+
+[llm.openai]
+api_key = "sk-proj-your-key-here"
+default_model = "gpt-5-mini"
+```
+
+Make sure to use a model that is capable of calling tools. Most frontier models have this functionality. For local models, you can look at the LMStudio models tagged for tool use [here](https://lmstudio.ai/models?filter=tools).
+Get API keys from:
+- [OpenAI Platform](https://platform.openai.com/api-keys)
+- [Anthropic Console](https://console.anthropic.com/)
+- [Azure Portal](https://portal.azure.com/) (for Azure OpenAI)
+- [Google AI Studio](https://aistudio.google.com/app/api-keys) (for Gemini) 
+
+<details>
+<summary><strong>Using Local Models with LM Studio</strong></summary>
+
+To use a local model with LM Studio:
+
+1. Enable the server in LM Studio:
+   - Open LM Studio
+   - Go to the Developer menu
+   - Enable the server toggle
+
+2. Configure whai:
+   ```zsh
+   whai --interactive-config
+   ```
+   - Select `lm_studio` as the provider
+   - Leave the API key blank (not required for local models)
+   - Enter the API base URL: `http://localhost:1234/v1`
+   - Enter the model name without prefix (e.g., `llama-3-8b-instruct`)
+   
+   Note: Model names are stored without provider prefixes in the config file. Prefixes are automatically added at runtime when needed.
+
+</details>
+
+<details>
+<summary><strong>Using OpenAI-Compatible Local Endpoints</strong></summary>
+
+Use `openai_api` for llama.cpp, llama-swap, vLLM, Tabby, and any other server that exposes an OpenAI-compatible `/v1` API.
+
+1. Start your local server and confirm its OpenAI API base URL.
+2. Configure whai:
+   ```zsh
+   whai --interactive-config
+   ```
+   - Select `openai_api` as the provider
+   - Leave the API key blank if the server does not require one
+   - Enter the API base URL for your server
+   - Enter the model name without provider prefix (for example: `llama3`, `qwen2.5`, or your server’s exposed model id)
+
+   Note: whai stores model names without provider prefixes and automatically adds the LiteLLM routing prefix at runtime.
+
+</details>
+
+### 2. Start using whai
+
+> Getting Help: For a complete list of command-line options and flags, run `whai --help`.
+
+```zsh
+whai "your question"
+```
+
+That's it! `whai` will:
+- Read your terminal context (commands + output if in tmux or `whai shell`, commands only otherwise)
+- Send your question to the configured LLM
+- Suggest commands with `[a]pprove` / `[r]eject` / `[m]odify` prompts
+- Execute approved commands and continue the conversation
+
+> Tip: Quotes are not necessary, but do use them if you use special characters like `'` or `?`
+> ```bash
+> whai show me the biggest file here
+> whai "what's the biggest file?"
+> ```
+
+## Supported Providers
+
+`whai` supports the following LLM providers:
+
+- **OpenAI** - GPT models (e.g., `gpt-5-mini`, `gpt-4`, `gpt-4-turbo`)
+- **Anthropic** - Claude models (e.g., `claude-3-5-sonnet-20241022`, `claude-3-opus`)
+- **Google Gemini** - Gemini models (e.g., `gemini-2.5-flash`, `gemini-2.5-pro`)
+- **Mistral AI** - Mistral models (e.g., `mistral-small-latest`, `mistral-medium-latest`, `mistral-large-latest`)
+- **Azure OpenAI** - Azure-hosted OpenAI models
+- **Ollama** - Running Ollama instance
+- **LM Studio** - Local models via LM Studio
+- **OpenAI-compatible local endpoints** - llama.cpp, llama-swap, vLLM, Tabby, and similar servers
+
+Each provider must be configured in your `~/.config/whai/config.toml` file. You can configure multiple providers and switch between them using roles or the `--provider` flag.
+
+> **Note:** `whai` uses [LiteLLM](https://github.com/BerriAI/litellm) for multi-provider support. Additional providers from [LiteLLM's supported providers list](https://docs.litellm.ai/docs/providers) can be added upon request.
+
+## Key Features
+
+### Roles
+
+Roles allow you to customize `whai`'s behavior and responses, and let you save information you don't have to repeat yourself in every conversation.
+- Your system information (OS, available tools, paths)
+- Your preferences (shell style, preferred commands, workflows)
+- Environment constraints (what you can/can't do, security policies)
+- Project-specific context (tools in use, conventions, setup)
+
+Let's create a toy role that tells `whai` to respond only in emoji:
+
+```zsh
+$ whai role create emoji # "Answer using only emojis"
+$ whai can you tell me the plot of the first Shrek movie --role emoji
+Info: Model: gpt-5-mini | Role: emoji
+👑👸💤🐉🏰
+👹🏞️🕳️➡️🏰🐴😂
+⚔️🐉🔥💨👸
+👹❤️👸💚
+🌅💋✨💚💚
+🎉🎶🧅
+```
+
+
+```zsh
+# Create a new role
+whai role create my-workflow
+
+# Use it
+whai "help me with this task" -r my-workflow
+
+# List all roles
+whai role list
+```
+
+For a complete list of role management commands, run `whai role --help`.
+Roles are stored in `~/.config/whai/roles/` as Markdown files with YAML frontmatter, like so:
+```yaml
+---
+provider: openai
+model: gpt-5-mini
+# Optional parameters you can add:
+# temperature: 0.3                # Only used when supported by the selected model
+---
+You are a helpful terminal assistant.
+Describe context, behaviors, tone, and constraints here.
+
+```
+
+#### Available Providers:
+
+You can specify any provider in the `provider` field. See the [Supported Providers](#supported-providers) section for the list of available providers.
+
+The provider must be configured in your `~/.config/whai/config.toml` file before it can be used. If no `provider` is specified in the role, `whai` uses the default provider from your configuration.
+
+The default role is defined in the config.
+
+### Context Awareness
+
+`whai` automatically captures context from:
+- tmux scrollback (recommended): Full commands + output context
+- Recorded shell sessions: Full commands + output when using `whai shell`
+- Shell history (fallback): Recent commands only when not in tmux
+
+### MCP (Model Context Protocol) Support
+
+`whai` supports connecting to local MCP servers to extend functionality with additional tools. MCP servers can provide tools for file operations, database queries, API integrations, and more.
+
+#### Setting Up MCP Servers
+
+1. Create `~/.config/whai/mcp.json` with your MCP server configuration:
+
+```json
+{
+  "mcpServers": {
+    "server-name": {
+      "command": "command-to-run",
+      "args": ["arg1", "arg2"],
+      "env": {"KEY": "value"},
+      "name": "Display Name (optional)",
+      "requires_approval": true
+    }
+  }
+}
+```
+
+2. Example configuration for the time server:
+
+```json
+{
+  "mcpServers": {
+    "time-server": {
+      "command": "uvx",
+      "args": ["mcp-server-time"],
+      "env": {},
+      "name": "Time Server",
+      "requires_approval": false
+    }
+  }
+}
+```
+
+**Configuration fields:**
+- `command` (required): Command to run the MCP server
+- `args` (optional): Arguments to pass to the command
+- `env` (optional): Environment variables for the server
+- `name` (optional): Display name shown in tool approval prompts
+- `requires_approval` (optional, default: `true`): Whether to prompt for approval before executing tools from this server
+
+MCP support is opt-in: if `mcp.json` doesn't exist, MCP is disabled. Tools from MCP servers are automatically discovered and made available to the LLM alongside the built-in `execute_shell` tool.
+
+To disable MCP for a single run, use the `--no-mcp` flag:
+```
+whai "my question" --no-mcp
+```
+
+To disable MCP persistently, change in `config.toml`:
+```toml
+[mcp]
+enabled = false
+```
+
+
+### Targeting another pane (tmux)
+
+In a tmux session with multiple panes, you can run `whai` in one pane and have it use context from, and run approved commands in, another pane (e.g. one pane SSH'd to a server). Use `--target` or `-T` with the pane number (see pane numbers with `Ctrl+b q`):
+
+```zsh
+whai -T 1 "check disk space"
+```
+
+Set `WHAI_TARGET=1` in your environment to use a default target pane so you can omit the flag.
+
+### Recorded Shell Sessions
+
+For output context without tmux, use `whai shell` to launch an interactive shell with session recording:
+
+```zsh
+whai shell
+```
+ 
+This command:
+- Opens your normal shell (bash, zsh, fish, or PowerShell) with identical behavior
+- Records all commands and outputs to a session log
+- Provides commands + outputs to whai without requiring tmux
+
+The recorded session behaves exactly like your normal shell. The only difference is that `whai` can now access full command outputs for better assistance.
+
+To exit: Type `exit` in the shell to return to your previous terminal.
+
+Options:
+```zsh
+# Launch with a specific shell
+whai shell --shell zsh
+
+# Specify a custom log path
+whai shell --log ~/my-session.log
+```
+
+Session logs are stored temporarily during the session and are deleted when you exit the shell.
+When you run `whai` from within a recorded shell session, it automatically uses the in-session log.
+
+### 3. Insert-command keybinding
+
+`whai` can also be used as a “turn this line into a command” helper.
+
+- **Interactive keybinding (bash/zsh)**:
+  - In the interactive config wizard (`whai --interactive-config`) offers to add a `Ctrl+G` (can be changed in the snipped) keybinding snippet to your shell config file (e.g. `~/.bashrc` or `~/.zshrc`).
+
+After enabling it:
+- Type a natural-language request on the command line, e.g. `list largest folders here`.
+- Press `Ctrl+G`.
+- Your line is replaced with a real shell command proposed by `whai --command-only`.
+- You can edit the command and press Enter when you are ready to run it.
+
+
+### Safety First
+
+- Every command requires explicit approval
+- Modify commands before execution
+- Commands run in isolated subprocess (won't affect your main shell)
+- Press `Ctrl+C` to interrupt anytime
+
+## FAQ
+
+### How is this different from [insert app here] ?
+
+`whai` is integrated into your terminal with context awareness. It sees your command history and can execute commands.
+Most terminal assistants either require you to explicitely start a chat loop which takes you out of your usual workflow, don't allow for roles, or don't allow to mix natural language conversation and shell execution.
+You don't need AI to cd into a directory, you keep full agency over simple actions.
+The goal was really to replace alt-tabbing to google with a CLI command.
+
+### Does it send my terminal history to the LLM?
+
+Only when you run `whai`.
+It captures recent history (50 last commands), tmux scrollback (commands + output), or recorded shell session content (commands + output while the session is active) and includes it in the request.
+If you use a remote API model, it will see your recent terminal history.
+You can disable this with the `--no-context` flag.
+
+### Can I use it with local models?
+
+Yes! Configure Ollama or LMStudio for local models. See the configuration section above.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute to `whai`, please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run the test suite (`uv run pytest`)
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+Every Pull Request triggers the `Pull Request CI` workflow, which runs the full `nox` test matrix across Python 3.10–3.14 plus `ruff` linting. Keep your local `uv run pytest` runs green to avoid CI surprises.
+
+For detailed development setup and guidelines, see [DEV.md](whai/doc/DEV.md).
+
+## Acknowledgments
+
+Built with [LiteLLM](https://github.com/BerriAI/litellm) for multi-provider support, [Typer](https://typer.tiangolo.com/) for the CLI, and [Rich](https://github.com/Textualize/rich) for pretty terminal output.

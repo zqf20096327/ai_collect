@@ -1,0 +1,941 @@
+# Arbigent(Arbiter-Agent): An AI Agent Testing Framework for Modern Applications
+<img width="2668" height="1132" alt="arbigent-banner-optimized" src="https://github.com/user-attachments/assets/546c36ed-45fe-4ac2-a918-c7b0e7261f41" />
+
+
+**Zero to AI agent testing in minutes. Arbigent's intuitive UI and powerful code interface make it accessible to everyone, while its scenario breakdown feature ensures scalability for even the most complex tasks.**
+
+> [!WARNING]
+> There seems to be a spam account posing as Arbigent, but the account is not related to me. The creator's accounts are [`https://x.com/_takahirom_`](https://x.com/_takahirom_) and [`https://x.com/new_runnable`](https://x.com/new_runnable) .
+
+## Screenshot
+
+<img width="650" alt="arbigent-screenshot" src="https://github.com/user-attachments/assets/77ebfcb1-3a44-4eaf-9775-3dff2597f9d1" />
+
+## Demo movie
+
+https://github.com/user-attachments/assets/ec582760-5d6a-4ee3-8067-87cb2b673c8d
+
+## Motivation
+
+### Make AI Agent Testing Practical for Modern Applications
+
+Traditional UI testing often relies on brittle methods that are easily disrupted by even minor UI changes. A/B tests, updated tutorials, unexpected dialogs, dynamic advertising, or ever-changing user-generated content can cause tests to fail.  
+AI agents emerged as a solution, but testing with AI agents also presents challenges. AI agents often don't work as intended; for example, the agents might open other apps or click on the wrong button due to the complexity of the task.  
+To address these challenges, I created Arbigent, an AI agent testing framework that can break down complex tasks into smaller, dependent scenarios. By decomposing tasks, Arbigent enables more predictable and scalable testing of AI agents in modern applications.
+
+### Customizable for Various AI Providers, OSes, Form Factors, etc.
+
+I believe many AI Agent testing frameworks will emerge in the future. However, widespread adoption might be delayed due to limitations in customization. For instance:
+
+*   **Limited AI Provider Support:** Frameworks might be locked to specific AI providers, excluding those used internally by companies.
+*   **Slow OS Adoption:** Support for different operating systems (like iOS and Android) could lag.
+*   **Delayed Form Factor Support:** Expanding to form factors beyond phones, such as Android TV, might take considerable time.
+
+To address these issues, I aimed to create a framework that empowers users with extensive customization capabilities. Inspired by [OkHttp's interceptor](https://square.github.io/okhttp/features/interceptors/) pattern, Arbigent provides interfaces for flexible customization, allowing users to adapt the framework to their specific needs, such as those listed above.
+
+### Easy Integration into Development Workflows
+
+Furthermore, I wanted to make Arbigent accessible to QA engineers by offering a user-friendly UI. This allows for scenario creation within the UI and seamless test execution via the code interface.
+
+##  Key Feature Breakdown
+
+**I. Core Functionality & Design**
+
+*   **Complex Task Management:**
+    *   **Scenario Dependencies:** Breaks down complex goals into smaller, manageable scenarios that depend on each other (e.g., login -> search).
+    *   **Orchestration:** Acts as a mediator, managing the execution flow of AI agents across multiple, interconnected scenarios.
+*   **Hybrid Development Workflow:**
+    *   **UI-Driven Scenario Creation:**  Allows non-programmers (e.g., QA engineers) to visually design test scenarios through a user-friendly interface.
+    *   **Code-Based Execution:** Enables software engineers to execute the saved scenarios programmatically (YAML files), allowing for integration with existing testing infrastructure.
+
+**II. Cross-Platform & Device Support**
+
+*   **Multi-Platform Compatibility:**
+    *   **Mobile & TV:** Supports testing on iOS, Android, Web, and TV interfaces.
+    *   **D-Pad Navigation:**  Handles TV interfaces that rely on D-pad navigation.
+
+**III. AI Optimization & Efficiency**
+
+*   **Enhanced AI Understanding:**
+    *   **UI Tree Optimization:** Simplifies and filters the UI tree to improve AI comprehension and performance.
+    *   **Accessibility-Independent:** Provides annotated screenshots to assist AI in understanding UIs that lack accessibility information.
+*   **Cost Savings:**
+    *   **Open Source:** Free to use, modify, and distribute, eliminating licensing costs.
+  *   **Efficient Model Usage:** Defaults to `gpt-4.1` for improved capabilities; also supports cost-effective models like `gpt-4o-mini`.
+
+**IV. Robustness & Reliability**
+
+*   **Double Check with AI-Powered Image Assertion:** Integrates [Roborazzi's feature](https://takahirom.github.io/roborazzi/ai-powered-image-assertion.html#behavior-of-ai-powered-image-assertion) to verify AI decisions using image-based prompts and allows the AI to re-evaluate if needed.
+*   **Stuck Screen Detection:** Identifies and recovers from situations where the AI agent gets stuck on the same screen, prompting it to reconsider its actions.
+
+**V. Advanced Features & Customization**
+
+*   **Flexible Code Interface:**
+    *   **Custom Hooks:** Offers a code interface for adding custom initialization and cleanup methods, providing greater control over scenario execution.
+*   **Maestro YAML Integration:**
+    *   **Pre-defined Test Flows:** Execute existing Maestro YAML test flows as initialization methods within Arbigent scenarios.
+    *   **Reusable Test Components:** Leverage your existing Maestro test automation scripts to set up complex application states before AI agent testing.
+    *   **Example Use Cases:**
+        * Run login flows using Maestro YAML before AI agent testing
+        * Set up specific application states (e.g., user onboarding completion)
+        * Execute complex setup sequences that require precise timing
+        * Integrate existing Maestro test assets into AI agent testing workflows
+* **Model Context Protocol (MCP) Support:**
+    * Introduced initial support for MCP, enabling Arbigent to leverage external tools and services defined via MCP servers. This significantly extends testing capabilities beyond direct UI interaction.
+    * You can configure MCP servers using a JSON string in the Project Settings.
+    * **Example MCP Use Cases:**
+        * Install and launch applications
+        * Check server logs (e.g., user behavior) using external tools
+        * Retrieve debug logs
+        * Interact with various other custom tools and services
+    * **MCP Server Control:**
+        * **Project-level defaults:** Use the `enabled` field in MCP JSON to disable servers by default:
+          ```json
+          {
+            "mcpServers": {
+              "filesystem": { "command": "npx", "args": ["..."] },
+              "github": { "command": "npx", "args": ["..."], "enabled": false }
+            }
+          }
+          ```
+        * **Scenario-level overrides:** Override project defaults per scenario using `mcpOptions`:
+          ```yaml
+          scenarios:
+          - id: "my-scenario"
+            goal: "Test with specific MCP servers"
+            mcpOptions:
+              mcpServerOptions:
+                - name: "github"
+                  enabled: true   # Override: enable for this scenario
+                - name: "filesystem"
+                  enabled: false  # Override: disable for this scenario
+          ```
+        * Servers without overrides use project defaults. If no `enabled` field exists, the server is enabled by default.
+* **AI Hints - App-Provided Context:**
+    * Apps can provide domain-specific hints to help the AI understand the current screen better.
+    * Embed hints in the accessibility label using the `[[aihint:...]]` format:
+      ```kotlin
+      // Android (contentDescription)
+      view.contentDescription = "Play button [[aihint:Video player, buffering]]"
+      ```
+      ```swift
+      // iOS (accessibilityLabel)
+      button.accessibilityLabel = "Play button [[aihint:Video player, buffering]]"
+      ```
+      ```html
+      <!-- Web (aria-label) -->
+      <button aria-label="Play button [[aihint:Video player, buffering]]">Play</button>
+      ```
+    * The `[[...]]` format allows hints to coexist with accessibility labels and supports structured data like JSON.
+    * **Note:** Since this uses accessibility labels, it affects screen readers (TalkBack, VoiceOver, etc.). Enable hints only during testing to avoid accessibility issues in production.
+
+**VI. Community & Open Source**
+
+*   **Open Source Nature:**
+    *   **Free & Open:** Freely available for use, modification, and distribution.
+    *   **Community Driven:** Welcomes contributions from the community to enhance and expand the framework.
+
+## Arbigent's Strengths and Weaknesses Based on [SMURF](https://testing.googleblog.com/2024/10/smurf-beyond-test-pyramid.html)
+
+I categorized automated testing frameworks into five levels using the [SMURF](https://testing.googleblog.com/2024/10/smurf-beyond-test-pyramid.html) framework. Here's how Arbigent stacks up:
+
+*   **Speed (1/5):** Arbigent's speed is currently limited by the underlying AI technology and the need to interact with the application's UI in real-time. This makes it slower than traditional unit or integration tests.  
+    * We have introduced some mechanisms to address this:
+       *  Tests can be parallelized using the **`--shard` option** to speed up execution.  
+       *  **AI result caching** can be utilized when the UI tree and goal are identical, which is configurable in the project settings.  
+*   **Maintainability (4/5):** Arbigent excels in maintainability. The underlying AI model can adapt to minor UI changes, minimizing the need to rewrite tests for every small update, thus reducing maintenance effort. You can write tests in natural language (e.g., "Complete the tutorial"), making them resilient to UI changes. The task decomposition feature also reduces duplication, further enhancing maintainability. Maintenance can be done by non-engineers, thanks to the natural language interface.
+*   **Utilization (1/5):** Arbigent requires both device resources (emulators or physical devices) and AI resources, which can be costly. (AI cost can be around $0.005 per step and $0.02 per task when using GPT-4o.)
+    *   **Replay with fallback** (`settings.cacheStrategy.replayWithFallback`) removes the per-step AI cost for a scenario that already passed: it replays the actions recorded on the last successful run, leaving only the image assertions to pay for. It deliberately reproduces the recorded pacing rather than running flat out, because without the AI's own latency between steps the app is driven faster than it was when the run passed and screens are read before they settle — so this buys cost, not wall-clock time. If a recorded target element is gone, a tap at raw coordinates was recorded on a screen of another size, or an assertion fails, only that task is re-run by the AI and the rest of the scenario goes back to replaying, so one task that drifted does not cost the whole run.
+*   **Reliability (3/5):** Arbigent has several features to improve reliability. It automatically waits during loading screens, handles unexpected dialogs, and even attempts self-correction. However, external factors like emulator flakiness can still impact reliability.
+    *   Recently I found Arbigent has retry feature and can execute the scenario from the beginning. But, **even without retry, Arbigent works fine without failures thanks to the flexibility of AI.**
+*   **Fidelity (5/5):** Arbigent provides high fidelity by testing on real or emulated devices with the actual application. It can even assess aspects that were previously difficult to test, such as verifying video playback by checking for visual changes on the screen.
+
+I believe that many of its current limitations, such as speed, maintainability, utilization, and reliability, will be addressed as AI technology continues to evolve. The need for extensive prompt engineering will likely diminish as AI models become more capable.
+
+## How to Use
+
+### Installation
+
+Install the Arbigent UI binary from the [Release page](https://github.com/takahirom/arbigent/releases).
+<img width="632" alt="image" src="https://github.com/user-attachments/assets/499da604-4a43-4eb8-b27f-325a83caa013" />
+
+### Installation for macOS Users
+
+If you encounter security warnings when opening the app:
+Refer to [Apple's guide on opening apps from unidentified developers](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac).
+
+<img src="https://github.com/user-attachments/assets/44372fa0-1f58-4eea-9fff-a7cc672a0f86" width="300" />
+
+This `Open Anyway` button is available for about an hour after you try to open the app.
+<img 
+  src="https://github.com/user-attachments/assets/b8249cd6-3a40-4863-827c-78e63fdbfd87" 
+  width="400" 
+/>
+
+### Device Connection and AI API Key Entry
+
+1. Connect your device to your PC.
+2. In the Arbigent UI, select your connected device from the list of available devices. This will establish a connection.
+3. Enter your AI provider's API key in the designated field within the Arbigent UI.
+
+<img src="https://github.com/user-attachments/assets/77a002f5-8ab3-4cb1-94f6-6c15a223900c" width="450" alt="Device Connection and AI API Key Entry" />
+
+### Scenario Creation
+
+Use the intuitive UI to define scenarios. Simply specify the desired goal for the AI agent.
+
+
+### Generate scenarios
+
+You can also generate scenarios from existing test cases. 
+<img width="632" alt="image" src="https://github.com/user-attachments/assets/cbe078b0-8f2b-44a3-8980-1c5aff022a52" />
+
+
+### Maestro YAML Integration
+
+Arbigent allows you to integrate existing Maestro YAML test flows as initialization methods:
+
+1. **Add to Initialization Methods**: Select "Maestro YAML" as an initialization method type in your scenario configuration
+
+<img width="507" alt="Image" src="https://github.com/user-attachments/assets/5b7a5b33-6d8d-4cbd-88a0-f4f922e5ae6d" />
+
+2. **Add Maestro YAML**: Write a Maestro YAML file that defines the steps to be executed before the AI agent starts its task
+
+<img width="632" alt="Image" src="https://github.com/user-attachments/assets/b348afa3-219e-4f3b-8275-ce0c45f882ee" />
+
+3. **Choose Scenario**: Select from your predefined Maestro YAML scenarios to run before AI agent execution
+
+<img width="632" alt="Image" src="https://github.com/user-attachments/assets/929170bb-9376-4fe4-8485-36a007ef07f6" />
+
+This enables you to:
+- Set up complex application states using deterministic Maestro flows
+- Reuse existing Maestro test automation assets
+- Combine precise setup sequences with AI-driven testing
+
+### Reusable Scenarios
+
+Arbigent lets you define AI scenario parts once at the project level and call them from any scenario with parameters — modeled after GitHub Actions reusable workflows (`uses` / `with` / `inputs`):
+
+```yaml
+scenarios:
+# A scenario can be a call to a reusable scenario instead of having a goal.
+- id: "premium-content-with-paid-user"
+  steps:
+  - uses: "login"
+    with: { user: "paid" }
+  - uses: "play-premium-content"
+
+# Ordinary and reusable nodes mix freely along a dependency chain.
+- id: "become-paid-user"
+  dependency: "launch-app"
+  uses: "login"
+  with: { user: "paid" }
+
+reusableScenarios:
+- id: "login"
+  inputs:
+    user:
+      required: true
+  goal: "Log in with the {{inputs.user}} account"
+- id: "play-premium-content"
+  goal: "Open and play any premium content"
+  maxStep: 15
+```
+
+Key points:
+- A scenario (or reusable scenario) is either a **leaf** (has `goal` plus the full option set: `initializationMethods`, `mcpOptions`, `maxStep`, image assertions, …) or a **call** (`uses` + `with`, or a `steps` list of calls). `uses` is sugar for a single-entry `steps`.
+- Reusable scenarios declare their parameters via `inputs` (`required` / `default`) and reference them as `{{inputs.name}}` in the goal — bare `{{name}}` still resolves project variables. `{{inputs.*}}` also works in initialization methods — `LaunchApp`'s `packageName` and its string `launchArguments`, `CleanupData`'s `packageName`, `OpenLink`'s `link`, and the Maestro YAML a `MaestroYaml` method runs — and combined with `type: Execution` this gives deterministic, parameterized steps with zero AI calls.
+- Composites can call other composites; unknown references, cycles, undeclared `with` keys and missing required inputs are all rejected when the project loads.
+- In the GUI, choose the "Reusable steps" scenario type to build calls, manage the library in the Reusable Scenarios dialog, and use "Make this reusable" to extract an existing scenario into the library without breaking scenarios that depend on it.
+
+### Project Variables
+
+`{{name}}` placeholders in goals and in initialization methods — `LaunchApp`'s `packageName` and its string `launchArguments`, `CleanupData`'s `packageName` and `OpenLink`'s `link` — are project variables. Declare defaults once under `settings.variables` and override them per run with `--variables` (or `variables:` under `run:` in `.arbigent/settings.yml`). A typical use is pointing the same scenarios at a debug build with a different application id:
+
+```yaml
+settings:
+  variables:
+    appId: "com.example.app"
+scenarios:
+- id: "launch-app"
+  goal: "Confirm the home screen is shown"
+  initializationMethods:
+  - type: "CleanupData"
+    packageName: "{{appId}}"
+  - type: "LaunchApp"
+    packageName: "{{appId}}"
+```
+
+```bash
+arbigent run --project-file=project.yaml                                        # com.example.app
+arbigent run --project-file=project.yaml --variables=appId=com.example.app.debug  # debug build
+```
+
+A `{{name}}` that no variable defines is an error: before a scenario runs, Arbigent lists every unresolved placeholder in its goals and initialization methods and fails the scenario without touching the device, so a typo costs one message instead of a confusing run. Write `\{{name}}` when you mean the text itself. Only names the resolver can substitute count as placeholders, so text like `{{user:id}}` stays literal. Building or loading a project never fails for this — only running the scenario that has the unresolved placeholder does. Maestro YAML (including its `appId:` header) and deep-link hosts are not rewritten, so a debug build must handle the same links or you point `link` at a variable too.
+
+Replay traces (`replayWithFallback`) do not store a variable's value: wherever a value such as a test account or a password appears in a recorded step, the trace keeps the `{{name}}` placeholder and fills it in again from the run's variables when it replays. A trace recorded under a variable the run no longer defines is not replayed and is re-recorded. Only values that enter through a variable are protected; text the AI types from the goal's own words is recorded as typed, and the arguments of an MCP tool call are stored as given.
+
+See [arbigent-reusable-scenarios-specification.md](arbigent-reusable-scenarios-specification.md) for the full specification.
+
+### Android Studio Journeys XML Import
+
+Arbigent can run [Android Studio Journeys](https://developer.android.com/studio/gemini/journeys) test files (`*.journey.xml` / `*_journey.xml`) directly, so existing journey files work without converting them to project YAML:
+
+```bash
+# Run a single journey file
+arbigent run --project-file app/src/journeysTest/weather.journey.xml
+
+# Run all journey files under a directory (one scenario per file)
+arbigent run --project-file app/src/journeysTest/
+```
+
+Each journey is imported as one scenario: the `<description>` and ordered `<action>` steps become the scenario goal, and the scenario id is derived from the file name (e.g. `weather.journey.xml` → `weather`), which you can use with `--scenario-ids`.
+
+Notes:
+- The AI follows the actions as an ordered hint within a single goal rather than executing them as strict discrete steps
+- Journey scenarios have no tags, so `--tags` cannot be used with journey sources
+- Export from Arbigent back to journey XML is not supported
+
+### Test Execution
+
+Run tests either directly through the UI or programmatically via the code interface or CLI.
+
+### CLI
+
+You can install the CLI via Homebrew and run a saved YAML file.
+
+<img width="600" alt="image" src="https://github.com/user-attachments/assets/f20fdac8-ae46-4dc7-aa2b-6fc0b5bd4a9d" />
+
+```bash
+brew tap takahirom/homebrew-repo
+brew install takahirom/repo/arbigent
+```
+
+#### Wrapper
+
+If you would rather pin a version in your repository than ask everyone to install the
+CLI, generate a wrapper. It works like `gradlew`: the script downloads the pinned
+arbigent release on first use, verifies its SHA-256 checksum and runs it. Without
+`--version` it pins the release of the CLI that runs it; pass `--version <version>` to
+pin another one.
+
+```bash
+arbigent wrapper
+```
+
+If nobody on the team has arbigent installed yet, you can skip that step: download the
+script and let it pin a release itself.
+
+```bash
+curl -fsSLo arbigentw https://raw.githubusercontent.com/takahirom/arbigent/main/arbigent-cli/src/main/resources/arbigentw
+chmod +x arbigentw
+ARBIGENT_VERSION=<version> ./arbigentw --help
+```
+
+`<version>` is any release listed on the
+[releases page](https://github.com/takahirom/arbigent/releases).
+
+The first run with `ARBIGENT_VERSION` set writes the properties file from the checksum
+published beside the release, then behaves like any other run. Later runs read the pinned
+version from the committed file and ignore the variable.
+
+Either way you commit two files side by side:
+
+- `arbigentw`, a POSIX shell script.
+- `arbigentw.properties`, holding the version, the distribution URL and its SHA-256
+  checksum.
+
+The wrapper reads `arbigentw.properties` from its own directory, leaves the current
+directory alone and keeps everything it downloads in the user cache, so the two files can
+live at the repository root or in a subdirectory and be invoked from anywhere. Project
+settings such as `.arbigent/settings.local.yml` are still read from the current directory.
+Anyone with Java 17 or later can then run arbigent without installing anything:
+
+```bash
+./arbigentw run --scenario-ids="open-model-page"
+```
+
+To move to another release, run the wrapper's own `wrapper` command; it rewrites both
+files with the new URL and checksum. Pass `--dir` whenever the wrapper's directory is not
+the current directory. The script itself comes from the release that is running, so run
+the command once more after the pin changed if the new release ships a newer script.
+
+```bash
+./arbigentw wrapper --version <version>
+./tools/arbigentw wrapper --version <version> --dir tools
+```
+
+`distributionVersion` in the properties file is metadata: the URL and the checksum decide
+what runs. An update bot such as Renovate can bump it with a regex manager like the one
+below, which changes only that line. Until someone runs the command above to update the URL
+and the checksum too, the wrapper refuses every command except `wrapper` while the version
+disagrees with the release archive named in the URL.
+
+```json5
+{
+  customManagers: [{
+    customType: "regex",
+    managerFilePatterns: ["/(^|/)arbigentw\\.properties$/"],
+    matchStrings: ["distributionVersion=(?<currentValue>\\S+)"],
+    depNameTemplate: "takahirom/arbigent",
+    datasourceTemplate: "github-releases",
+  }],
+}
+```
+
+`ARBIGENT_RELEASE_BASE_URL` points the pinning step at a mirror. The checksum that the
+pinning step reads is what decides which bytes may be installed, so it is fetched over
+HTTPS only and a redirect that leaves HTTPS is refused; the pinning step therefore needs
+`curl`. Pass `--sha256 <digest>` to `arbigent wrapper` to supply the digest yourself.
+
+The distribution is cached in `~/.arbigent/wrapper/dists`, so only the first run downloads
+it. Set `ARBIGENT_USER_HOME` to cache it somewhere else. The wrapper refuses to run a
+distribution whose checksum does not match the one recorded in the properties file.
+
+```
+Usage: arbigent [<options>] <command> [<args>]...
+
+Options:
+  -h, --help  Show this message and exit
+
+Commands:
+  run
+  scenarios
+  tags
+  graph
+  guide      Print guides for AI agents working with arbigent projects
+  wrapper    Generate the arbigentw wrapper script that downloads and runs a pinned arbigent release
+
+Guides for AI agents (print one with `arbigent guide <topic>`):
+setup: How to set up a repository: settings files, AI API keys, gitignore
+writing-yaml: How to write the project YAML: scenarios, reusable scenarios,
+variables, assertions
+inspecting-project: How to discover what is in a project: list scenarios and
+tags, settings resolution
+running-scenarios: How to select and run scenarios and where results are
+written
+debugging-failures: How to investigate a failed run: results, logs,
+screenshots, common causes
+```
+
+#### Configuration with Settings Files
+
+Arbigent supports configuration via settings files in the `.arbigent` directory, which simplifies CLI usage by eliminating the need to specify common parameters repeatedly. Create a `.arbigent` directory in your project root and place your configuration files inside.
+
+Arbigent supports multiple configuration files with automatic priority ordering - local configuration files have higher priority than global ones, allowing you to maintain separate settings for different environments while providing appropriate fallbacks.
+
+**Prioritized Configuration Support:**
+
+Arbigent supports both global and command-specific configurations with prioritization:
+
+1. **High Priority**: Command-specific settings (e.g., `run.ai-type`)
+2. **Low Priority**: Global settings (e.g., `ai-type`) - used as fallback
+
+**Example hybrid configuration:**
+```yaml
+# Global settings (shared across all commands)
+project-file: tests/arbigent-project.yml
+working-directory: /path/to/your/project
+log-level: info
+
+# Default AI configuration (fallback)
+ai-type: openai
+openai-api-key: sk-xxxxxxxxxxxxxxxxxx
+openai-model-name: gpt-4.1
+
+# Run command specific settings (overrides global settings)
+run:
+  ai-type: azureopenai  # Overrides global ai-type
+  azure-openai-endpoint: https://xxxxxxxxx.openai.azure.com/openai/deployments/xxxxx/
+  azure-openai-api-version: 2025-xx-xx
+  azure-openai-model-name: gpt-4o
+  azure-openai-api-key: xxxxxxxxxxxxxxxxxx
+  os: android
+```
+
+**Simple flat configuration (still supported):**
+```yaml
+ai-type: azureopenai
+azure-openai-endpoint: https://xxxxxxxxx.openai.azure.com/openai/deployments/xxxxx/
+azure-openai-api-version: 2025-xx-xx
+azure-openai-model-name: gpt-4o
+azure-openai-api-key: xxxxxxxxxxxxxxxxxx
+project-file: tests/arbigent-project.yml
+os: android
+log-level: info
+working-directory: /path/to/your/project
+```
+
+When using a settings file, you can run tests with the simplified command:
+
+```bash
+arbigent run
+```
+
+Options already configured in `.arbigent/settings.local.yml` are annotated in the help output, e.g. `Log level (currently: 'debug' from global settings)`, indicating which settings are already configured (sensitive values such as API keys are masked).
+
+#### arbigent run command
+
+```
+Usage: arbigent run [<options>]
+
+Options for OpenAI API AI:
+  --openai-endpoint=<text>    Endpoint URL (default: https://api.openai.com/v1/)
+  --openai-model-name=<text>  Model name (default: gpt-4.1)  
+  --openai-api-key, --openai-key=<text> API key
+
+Options for Gemini API AI:
+  --gemini-endpoint=<text>    Endpoint URL (default: https://generativelanguage.googleapis.com/v1beta/openai/)
+  --gemini-model-name=<text>  Model name (default: gemini-1.5-flash)
+  --gemini-api-key=<text>     API key
+
+Options for Azure OpenAI:
+  --azure-openai-endpoint=<text>         Endpoint URL
+  --azure-openai-api-version=<text>      API version
+  --azure-openai-model-name=<text>       Deployment name (default: gpt-4.1)  
+  --azure-openai-api-key, --azure-openai-key=<text> API key
+
+Options for Anthropic API AI:
+  --anthropic-endpoint=<text>    Endpoint URL (default: https://api.anthropic.com/v1/)
+  --anthropic-model-name=<text> Model name (default: claude-sonnet-4-5)
+  --anthropic-api-key, --anthropic-key=<text> API key
+
+Options:
+  --ai-type=(openai|gemini|azureopenai|anthropic)  Type of AI to use
+  --ai-api-logging                       Enable AI API debug logging
+  --os=(android|ios|web)                 Target operating system
+  --device-id=<text>                     Device to run on: an adb serial (android) or a simulator/iPhone UDID (ios)
+  --ios-xctest-apple-team-id=<text>      Apple team id for signing the XCTest runner on a physical iPhone
+  --ios-real-device-port=<text>          Host/device port for the XCTest runner (default 22087)
+  --project-file=<text>                  Path to the project YAML file
+  --log-level=(debug|info|warn|error)    Log level
+  --log-file=<text>                      Log file path
+  --working-directory=<text>             Working directory for the project
+  --path=<text>                          Path to a file
+  --variables=<value>                    Variables to replace {{placeholders}} in goals and LaunchApp/CleanupData/OpenLink initialization methods; override settings.variables (e.g., key1=value1,key2=value2)
+  --scenario-ids=<text>                  Scenario IDs to execute (comma-separated)
+  --tags=<text>                          Tags to filter scenarios (comma-separated)
+  --dry-run                              Dry run mode
+  --shard=<value>                        Shard specification (e.g., 1/5)
+  -h, --help                             Show this message and exit
+```
+
+#### Choosing a device
+
+When exactly one usable device is connected, Arbigent uses it. When several are, pick one explicitly with `--device-id`:
+
+```bash
+arbigent run --device-id=emulator-5554                 # adb serial
+arbigent run --os=ios --device-id=00008110-XXXXXXXXXXXXXXXX  # simulator or iPhone UDID
+```
+
+A device that adb reports as `unauthorized` or `offline` — one whose USB-debugging prompt has not been accepted, or an emulator that is still booting — is listed but never selected, so it neither hides a working device nor counts as an ambiguity.
+
+The value is matched exactly; Arbigent never falls back to another device when the requested one is missing. It can also come from `ARBIGENT_DEVICE_ID` or the `device-id` settings key, and the resolution order is the usual one: flag > environment variable > settings file. Every run logs which device it picked and where the id came from.
+
+When device discovery itself fails (say `xcrun devicectl` is unavailable while you have `--ios-xctest-apple-team-id` set), Arbigent reports the failure instead of auto-selecting whatever else it happened to find, so a run never quietly moves from the iPhone you configured to a booted simulator. Passing `--device-id` still selects any device that was discovered.
+
+#### iOS real devices
+
+Arbigent can drive a physical iPhone (not just a simulator) over Apple's CoreDevice/XCTest stack. Discovery, runner signing, and port forwarding are handled for you; a single connected iPhone with `--os=ios` just works.
+
+**Prerequisites**
+
+- **Xcode** installed, plus the iOS platform matching your device's iOS version. If a build fails with `iOS X.Y is not installed`, install it with `xcodebuild -downloadPlatform iOS`.
+- **`iproxy`** from [libimobiledevice](https://libimobiledevice.org) on your `PATH` (`brew install libimobiledevice`). Arbigent starts and manages it to bridge the XCTest runner port from the device to the host.
+- The device must be **paired, trusted, and unlocked**. Keep it unlocked for the whole run — a locked screen is the most common cause of timeouts.
+- **A code-signing identity.** Any Apple Development identity works, including a **free Apple ID** account. Free accounts issue 7-day provisioning profiles, so you must rebuild/re-sign roughly weekly; a paid Apple Developer account avoids this. Arbigent auto-detects the team when you have exactly one identity; pass `--ios-xctest-apple-team-id` when you have several.
+
+**Quickstart**
+
+With one iPhone connected, paired, and unlocked:
+
+```bash
+arbigent run --os=ios
+```
+
+For multiple connected devices, or when auto-detection can't pick a single signing team, pass the relevant options (placeholder values shown — use your own):
+
+```bash
+arbigent run --os=ios \
+  --ios-xctest-apple-team-id=ABCDE12345 \
+  --device-id=00008110-XXXXXXXXXXXXXXXX
+```
+
+These options can also live in `.arbigent/settings.local.yml` like any other option (globally or under `run:`), so you don't repeat them:
+
+```yaml
+run:
+  os: ios
+  ios-xctest-apple-team-id: ABCDE12345
+  device-id: 00008110-XXXXXXXXXXXXXXXX
+  ios-real-device-port: "22087"
+```
+
+The team id and the device id are treated as sensitive: both are masked in `--help` output, and neither the team id nor a physical iPhone's hardware UDID is ever printed in full by Arbigent's own logs and errors (a UDID is shown as a short prefix). adb serials and simulator UDIDs are not secret and are printed in full so they can be pasted into `--device-id`.
+
+**Troubleshooting**
+
+- **Timeouts / no response:** the device screen is locked. Wake and unlock it, and keep it unlocked during the run.
+- **`Timed out while enabling automation mode`:** transient; retry with the device awake and unlocked.
+- **A macOS keychain prompt on the first build** (codesign wanting to sign): allow it (choose "Always Allow" to avoid repeat prompts) so the runner can be signed.
+- **`iOS X.Y is not installed`:** install the matching platform with `xcodebuild -downloadPlatform iOS`.
+
+#### Other commands
+
+**List scenarios:**
+```bash
+arbigent scenarios
+```
+
+**Manage tags:**
+```bash
+arbigent tags
+```
+
+**Print the scenario graph as Mermaid** (dependency edges plus reusable calls expanded per call site — paste into GitHub Markdown or [mermaid.live](https://mermaid.live) to view; the same graph is available in the UI via the "Scenario graph" button):
+```bash
+arbigent graph
+```
+
+**Keep the project file in dependency order** (depth-first: each scenario after the scenario it depends on, together with everything that depends on it, before the next sibling; roots and siblings in their declared order). `sort` also writes a *position comment* above every scenario so that anyone reading one scenario in the flat YAML — including a coding agent — can see its ancestors and its direct dependents without searching the file. Only the scenario blocks are reordered and only these comments are rewritten; quoting, other comments and unknown keys are left as they are. The UI writes the same comments on save; set `settings.positionComments: false` in the project file to turn them off.
+```bash
+arbigent sort            # rewrite the project file
+arbigent sort --diff     # CI check: print what would change, exit 1 if anything
+```
+```yaml
+scenarios:
+# The "# tree:" lines below are generated from `dependency` by `arbigent sort` (and on UI save); do not edit them, rerun `arbigent sort`.
+# tree: launch-app | children: open-search, open-settings
+- id: "launch-app"
+  goal: "Launch the app"
+# tree: launch-app > open-search | children: type-keyword
+- id: "open-search"
+  goal: "Open search"
+  dependency: "launch-app"
+```
+
+**Run a one-shot task without a project file:**
+
+`arbigent run task` executes a single ad-hoc goal on the connected device, using the same AI and OS options as `arbigent run`:
+
+```bash
+arbigent run task "Open the Settings app and turn on dark theme" --max-step=15
+```
+
+**Read built-in guides:**
+
+The CLI ships with built-in guides covering how to set up a repository (settings files and API keys), write project YAML, inspect a project, run scenarios, and debug failed runs. The topics are also listed at the end of `arbigent --help`, so AI agents operating the CLI can discover them on their own.
+
+```bash
+# List available guide topics
+arbigent guide
+
+# Print a guide
+arbigent guide writing-yaml
+```
+
+
+### Using Arbigent from AI Coding Agents
+
+The CLI is designed so that AI coding agents (Claude Code, Codex, etc.) can operate Arbigent end to end: inspecting a project, editing scenario YAML, running scenarios, and reading the results. The CLI documents itself, so an agent only needs to be pointed at the `arbigent` command:
+
+- `arbigent --help` ends with the list of built-in guide topics, and `arbigent guide <topic>` prints an agent-oriented guide (`setup`, `writing-yaml`, `inspecting-project`, `running-scenarios`, `debugging-failures`).
+- `arbigent scenarios`, `arbigent tags`, and `arbigent graph` let an agent inspect a project without an AI API key or a device, and `arbigent run --dry-run` previews which scenarios would run without needing a device.
+- `arbigent sort` keeps the YAML in dependency order and refreshes the `# tree: ...` position comment above each scenario, so an agent editing one scenario sees where it sits in the dependency tree; `arbigent sort --diff` in CI catches files that drift after a hand edit.
+- `arbigent run` writes machine-readable results to `arbigent-result/result.yml` alongside the HTML report and screenshots, so an agent can check the outcome and debug failures.
+
+For example, you can instruct your agent:
+
+> Run `arbigent guide writing-yaml` and follow it to add a scenario that verifies the login flow, then run it with `arbigent run --scenario-ids="login-flow"`.
+
+### Shard Option to Enable Parallel Tests
+
+You can run tests separately with the `--shard` option. This allows you to split your test suite and run tests in parallel, reducing overall test execution time.
+
+**Example:**
+
+```bash
+arbigent run --shard=1/4
+```
+
+This command will run the first quarter of your test suite.
+
+#### Running Specific Scenarios
+
+You can run specific scenarios by their IDs:
+
+```bash
+arbigent run --scenario-ids="scenario-1,scenario-2"
+```
+
+Or filter scenarios by tags:
+
+```bash
+arbigent run --tags="smoke,regression"
+```
+
+**Integrating with GitHub Actions:**
+
+Here's an example of how to integrate the `--shard` option with GitHub Actions to run parallel tests on multiple Android emulators:
+
+```yaml
+  cli-e2e-android:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
+    steps:
+...
+      - name: CLI E2E test
+        uses: reactivecircus/android-emulator-runner@v2
+...
+          script: |
+            arbigent run --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --os=android --project-file=sample-test/src/main/resources/projects/e2e-test-android.yaml --ai-type=gemini --gemini-model-name=gemini-2.0-flash-exp
+...
+
+      - uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        if: ${{ always() }}
+        with:
+          name: cli-report-android-${{ matrix.shardIndex }}-${{ matrix.shardTotal }}
+          path: |
+            arbigent-result/*
+          retention-days: 90
+```
+
+### Minimal GitHub Actions CI sample
+
+You can use the CLI in GitHub Actions like in this sample. There are only two files: `.github/workflows/arbigent-test.yaml` and `arbigent-project.yaml`. This example demonstrates GitHub Actions and an `arbigent-project.yaml` file created by the Arbigent UI.
+
+https://github.com/takahirom/arbigent-sample
+
+## Supported AI Providers
+
+| AI Provider | Supported |
+|-------------|-----------|
+| OpenAI      | Yes       |
+| Gemini      | Yes       |
+| Anthropic (Claude) | Yes |
+| OpenAI-based APIs like Ollama | Yes |
+
+You can add AI providers by implementing the `ArbigentAi` interface.
+
+Anthropic is called directly through its own Messages API (not emulated through the OpenAI format), via the `AnthropicAi` class in the `arbigent-ai-anthropic` module. It supports a custom base URL for Anthropic-compatible proxies/gateways, but note that `assertImage`/`generateScenarios` structured output on Anthropic is implemented natively (forced tool-use) rather than via Roborazzi's OpenAI-based assertion model, since Roborazzi does not currently ship an Anthropic assertion model.
+
+## Supported OSes / Form Factors
+
+| OS          | Supported | Test Status in the Arbigent repository            |
+|-------------|-----------|---------------------------------------------------|
+| Android     | Yes       | End-to-End including Android emulator and real AI |
+| iOS         | Yes       | End-to-End including iOS simulator and real AI    |
+| Web(Chrome) | Yes       | Currently, Testing not yet conducted              |
+
+You can add OSes by implementing the `ArbigentDevice` interface. Thanks to the excellent [Maestro](https://github.com/mobile-dev-inc/maestro) library, we are able to support multiple OSes.
+
+| Form Factor    | Supported |
+|----------------|-----------|
+| Phone / Tablet | Yes       |
+| TV(D-Pad)      | Yes       |
+
+# Learn More
+
+## Basic Structure
+
+### Execution Flow
+
+The execution flow involves the UI, Arbigent, ArbigentDevice, and ArbigentAi. The UI sends a project creation request to Arbigent, which fetches the UI tree from ArbigentDevice. ArbigentAi then decides on an action based on the goal and UI tree. The action is performed by ArbigentDevice, and the results are returned to the UI for display.
+
+```mermaid
+sequenceDiagram
+  participant UI(or Tests)
+  participant ArbigentAgent
+  participant ArbigentDevice
+  participant ArbigentAi
+  UI(or Tests)->>ArbigentAgent: Execute
+  loop
+    ArbigentAgent->>ArbigentDevice: Fetch UI tree
+    ArbigentDevice->>ArbigentAgent: Return UI tree
+    ArbigentAgent->>ArbigentAi: Decide Action by goal and UI tree and histories
+    ArbigentAi->>ArbigentAgent: Return Action
+    ArbigentAgent->>ArbigentDevice: Perform actions
+    ArbigentDevice->>ArbigentAgent: Return results
+  end
+  ArbigentAgent->>UI(or Tests): Display results
+```
+
+###  Class Diagram
+
+The class diagram illustrates the relationships between ArbigentProject, ArbigentScenario, ArbigentTask, ArbigentAgent, ArbigentScenarioExecutor, ArbigentAi, ArbigentDevice, and ArbigentInterceptor.
+
+```mermaid
+classDiagram
+  direction TB
+  class ArbigentProject {
+    +List~ArbigentScenario~ scenarios
+    +execute()
+  }
+  class ArbigentAgentTask {
+    +String goal
+  }
+  class ArbigentAgent {
+    +ArbigentAi ai
+    +ArbigentDevice device
+    +List~ArbigentInterceptor~ interceptors
+    +execute(arbigentAgentTask)
+  }
+  class ArbigentScenarioExecutor {
+    +execute(arbigentScenario)
+  }
+  class ArbigentScenario {
+    +List~ArbigentAgentTask~ agentTasks
+  }
+  ArbigentProject o--"*" ArbigentScenarioExecutor
+ArbigentScenarioExecutor o--"*" ArbigentAgent
+ArbigentScenario o--"*" ArbigentAgentTask
+ArbigentProject o--"*" ArbigentScenario
+```
+
+### Saved project file
+
+> [!WARNING]
+> The yaml format is still under development and may change in the future.
+
+The project file is saved in YAML format and contains scenarios with goals, initialization methods, and cleanup data. Dependencies between scenarios are also defined.
+You can write a project file in YAML format by hand or create it using the Arbigent UI.
+
+For a complete field-by-field reference of every project YAML key (type, default, and description), see [arbigent-yaml-reference.md](arbigent-yaml-reference.md). For the CLI flags and how they map to `.arbigent/settings*.yml` / `.yaml` keys and environment variables, see [arbigent-cli-reference.md](arbigent-cli-reference.md).
+
+The id is auto-generated UUID by Arbigent UI but you can change it to any string.
+
+#### Available Initialization Methods
+
+- **Back**: Press the back button
+- **Wait**: Wait for a specified duration
+- **LaunchApp**: Launch an application
+- **CleanupData**: Clear application data
+- **OpenLink**: Open a URL/link
+- **MaestroYaml**: Execute a predefined Maestro YAML scenario
+
+```yaml
+scenarios:
+  - id: "7788d7f4-7276-4cb3-8e98-7d3ad1d1cd47"
+    goal: "Open the Now in Android app from the app list. The goal is to view the list\
+    \ of topics.  Do not interact with the app beyond this."
+    initializationMethods:
+      - type: "CleanupData"
+        packageName: "com.google.samples.apps.nowinandroid"
+      - type: "LaunchApp"
+        packageName: "com.google.samples.apps.nowinandroid"
+      - type: "MaestroYaml"
+        scenarioId: "login-flow-maestro"
+  - id: "f0ef0129-c764-443f-897d-fc4408e5952b"
+    goal: "In the Now in Android app, select an tech topic and complete the form in\
+    \ the \"For you\" tab. The goal is reached when articles are displayed.  Do not\
+    \ click on any articles. If the browser opens, return to the app."
+    dependency: "7788d7f4-7276-4cb3-8e98-7d3ad1d1cd47"
+    imageAssertions:
+      - assertionPrompt: "Articles are visible on the screen"
+  - id: "73c785f7-0f45-4709-97b5-601b6803eb0d"
+    goal: "Save an article using the Bookmark button."
+    dependency: "f0ef0129-c764-443f-897d-fc4408e5952b"
+  - id: "797514d2-fb04-4b92-9c07-09d46cd8f931"
+    goal: "Check if a saved article appears in the Saved tab."
+    dependency: "73c785f7-0f45-4709-97b5-601b6803eb0d"
+    imageAssertions:
+      - assertionPrompt: "The screen is showing Saved tab"
+      - assertionPrompt: "There is an article in the screen"
+
+# Maestro YAML scenarios for initialization
+fixedScenarios:
+  - id: "login-flow-maestro"
+    title: "Login Flow"
+    description: "Performs user login using predefined credentials"
+    yamlText: |
+      appId: com.google.samples.apps.nowinandroid
+      ---
+      - tapOn: "Sign In"
+      - inputText: "test@example.com"
+      - tapOn: "Password"
+      - inputText: "password123"
+      - tapOn: "Login"
+      - assertVisible: "Welcome"
+```
+
+## Code Interface
+
+> [!WARNING]
+> The code interface is still under development and may change in the future.
+
+Arbigent provides a code interface for executing tests programmatically. Here's an example of how to run a test:
+
+
+### Dependency
+
+Stay tuned for the release of Arbigent on Maven Central.
+
+### Running saved project yaml file
+
+You can load a project yaml file and execute it using the following code:
+
+```kotlin
+class ArbigentTest {
+  private val scenarioFile = File(this::class.java.getResource("/projects/nowinandroidsample.yaml").toURI())
+
+  @Test
+  fun tests() = runTest(
+    timeout = 10.minutes
+  ) {
+    val arbigentProject = ArbigentProject(
+      file = scenarioFile,
+      aiFactory = {
+        OpenAIAi(
+          apiKey = System.getenv("OPENAI_API_KEY")
+        )
+      },
+      deviceFactory = {
+        AvailableDevice.Android(
+          dadb = Dadb.discover()!!
+        ).connectToDevice()
+      }
+    )
+    arbigentProject.execute()
+  }
+}
+```
+
+### Run a scenario directly
+
+```kotlin
+val agentConfig = AgentConfig {
+  deviceFactory { FakeDevice() }
+  ai(FakeAi())
+}
+val arbigentScenarioExecutor = ArbigentScenarioExecutor {
+}
+val arbigentScenario = ArbigentScenario(
+  id = "id2",
+  agentTasks = listOf(
+    ArbigentAgentTask("id1", "Login in the app and see the home tab.", agentConfig),
+    ArbigentAgentTask("id2", "Search an episode and open detail", agentConfig)
+  ),
+  maxStepCount = 10,
+)
+arbigentScenarioExecutor.execute(
+  arbigentScenario
+)
+```
+
+### Run a goal directly
+
+```kotlin
+val agentConfig = AgentConfig {
+  deviceFactory { FakeDevice() }
+  ai(FakeAi())
+}
+
+val task = ArbigentAgentTask("id1", "Login in the app and see the home tab.", agentConfig)
+ArbigentAgent(agentConfig)
+  .execute(task)
+```

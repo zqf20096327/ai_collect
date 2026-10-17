@@ -1,0 +1,254 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/TimeCopilot/foundationforecast/main/docs/assets/logos/foundationforecast-dark.png#gh-dark-mode-only" alt="FoundationForecast" width="900">
+  <img src="https://raw.githubusercontent.com/TimeCopilot/foundationforecast/main/docs/assets/logos/foundationforecast-light.png#gh-light-mode-only" alt="FoundationForecast" width="900">
+</div>
+<div align="center">
+  <em>The API for the time series foundation era · Forecast · Cross-validation · Anomaly detection</em>
+</div>
+<div align="center">
+  <a href="https://github.com/TimeCopilot/foundationforecast/actions/workflows/ci.yaml"><img src="https://github.com/TimeCopilot/foundationforecast/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://codecov.io/gh/TimeCopilot/foundationforecast"><img src="https://codecov.io/gh/TimeCopilot/foundationforecast/graph/badge.svg?branch=main" alt="coverage"></a>
+  <a href="https://pypi.python.org/pypi/foundationforecast"><img src="https://img.shields.io/pypi/v/foundationforecast.svg" alt="PyPI"></a>
+  <a href="https://github.com/TimeCopilot/foundationforecast"><img src="https://img.shields.io/pypi/pyversions/foundationforecast.svg" alt="versions"></a>
+  <a href="https://github.com/TimeCopilot/foundationforecast/blob/main/LICENSE"><img src="https://img.shields.io/github/license/TimeCopilot/foundationforecast" alt="license"></a>
+  <a href="https://discord.gg/7GEdHR6Pfg"><img src="https://img.shields.io/discord/1387291858513821776?label=discord" alt="Join Discord"></a>
+</div>
+
+---
+
+## Why?
+
+Forecasting and time series have entered their foundation era. But, just like in the LLM space, different models bring different inductive biases and perform differently across domains, datasets, and even horizons.
+
+The world already uses different LLMs for different use cases. We're seeing the same thing in forecasting: there is no single model that dominates everywhere. Results change with the data distribution and forecasting horizon, as we've seen in [Impermanent](https://github.com/TimeCopilot/impermanent) and other benchmarks such as [GIFT-Eval](https://huggingface.co/spaces/Salesforce/GIFT-Eval) and [FEV](https://arxiv.org/abs/2509.26468).
+
+At the same time, every lab also ships its own API, dependencies, data conventions, and learning curve. That fragmentation makes foundation models hard to compare fairly, and even harder to use together in production, especially when you need exogenous variables (covariates): holidays, prices, weather, or other features known over the forecast horizon, each with its own input format.
+
+**FoundationForecast** removes that friction: one `FoundationForecast` class, one data format, and the same methods: `forecast`, `cross_validation`, and `detect_anomalies`, across time series foundation models—including known-future covariates on supported checkpoints. ✨
+
+Developed with 💙 by the [TimeCopilot](https://timecopilot.dev/) crew.
+
+---
+
+## Quick example
+
+```python
+import pandas as pd
+from foundationforecast import FoundationForecast
+from foundationforecast.models import Chronos, Toto
+
+df = pd.read_csv(
+    "https://timecopilot.s3.amazonaws.com/public/data/entsoe_4markets_8w.csv",
+    parse_dates=["ds"],
+)
+
+ff = FoundationForecast(
+    models=[
+        Chronos(repo_id="amazon/chronos-bolt-tiny", alias="Chronos"),
+        Toto(context_length=512, alias="Toto"),
+    ]
+)
+
+fcst_df = ff.forecast(df, h=24, level=[90])
+cv_df = ff.cross_validation(df, h=24, level=[90])
+anomalies_df = ff.detect_anomalies(df, level=99)
+
+ff.plot(df=df, forecasts_df=fcst_df)
+```
+
+<p align="center">
+  <img src="https://timecopilot.s3.amazonaws.com/public/data/images/entsoe_4markets_quick_example.png" alt="Example ff.plot output: four ENTSO-E markets with Chronos and Toto forecasts" width="900">
+</p>
+
+Your DataFrame needs three columns: `unique_id`, `ds`, and `y`. For best results, ensure `ds` is a proper datetime dtype (e.g., pass `parse_dates=["ds"]` when reading) or an ISO-8601 string so sorting is correct; cross-validation/anomaly detection will also convert `ds` to datetime internally where needed. If you omit `freq`, it is inferred from regular timestamps in `ds` (pass `freq=` when intervals are irregular).
+
+---
+
+## Highlights
+
+- 📈 **Exogenous variables (covariates).** Pass known-future features with **`X_df`** on `forecast()` (and exog columns in `df` for `cross_validation()`). Native support on Chronos-2, TimesFM-3, TimeGPT, T0, and TiRex-2; see [Exogenous variables](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/exogenous-variables.md) and the [example notebook](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/examples/exogenous-variables.ipynb).
+- 💸 **Full GIFT-Eval replication for $37.** 16 models, 97 dataset configurations each, in about 34 GPU-hours, every model with an official submission within 2% of its leaderboard MASE/CRPS. TimesFM 3 is the most accurate, for under $8. Read the [writeup](https://github.com/TimeCopilot/foundationforecast/blob/main/experiments/gift-eval/README.md).
+- 🎯 **Benchmark replication in CI.** Wrappers are regression-tested against official leaderboard submissions: [`experiments/gift-eval`](https://github.com/TimeCopilot/foundationforecast/tree/main/experiments/gift-eval) (GIFT-Eval MASE/CRPS on Modal GPU) and [`experiments/fev-bench`](https://github.com/TimeCopilot/foundationforecast/tree/main/experiments/fev-bench) (fev-bench `test_error` on known-dynamic tasks). [CI](https://github.com/TimeCopilot/foundationforecast/actions/workflows/ci.yaml) re-runs these checks on every change.
+- 🚀 **GPU-native**. Automatically runs on GPU when available, without model-specific device configuration.
+
+---
+
+## Supported models
+
+Every model supports **forecast**, **cross-validation**, and **anomaly detection** through the same API. **Intervals** means prediction intervals via `level` or quantile forecasts. **Exogenous** marks [native known-future exog](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/exogenous-variables.md) (`X_df` on `forecast()`, exog columns in `df` for `cross_validation()`) for that wrapper when using a supported checkpoint; see ¶. **Finetuning** marks models that can adapt to your data at inference time. **License** is the [weight/checkpoint license](https://huggingface.co/models) on the default Hugging Face repo (or provider terms for hosted APIs). See the note below for production use.
+
+Pass any Hugging Face `repo_id` (or local checkpoint path) supported by the underlying model class.
+
+| Provider | Model | Forecast | CV | Anomalies | Intervals | Exogenous | Finetuning | License |
+| :-: | --- | :-: | :-: | :-: | :-: | :-: | :-: | --- |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/amazon.png" width="28" alt="Amazon"> | [Chronos](https://arxiv.org/abs/2403.07815) | ✓ | ✓ | ✓ | ✓ | ✓¶ | ✓ | Apache-2.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/ibm.png" width="28" alt="IBM"> | [FlowState](https://arxiv.org/abs/2508.05287) | ✓ | ✓ | ✓ | ✓ | | | Apache-2.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/salesforce.png" width="28" alt="Salesforce"> | [Moirai](https://arxiv.org/abs/2402.02592) | ✓ | ✓ | ✓ | ✓ | | | CC-BY-NC-4.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/ibm.png" width="28" alt="IBM"> | [PatchTST-FM](https://arxiv.org/abs/2602.06909) | ✓ | ✓ | ✓ | ✓ | | | CC-BY-NC-SA-4.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/thuml.png" width="28" alt="THUML"> | [Sundial](https://arxiv.org/abs/2502.00816) | ✓ | ✓ | ✓ | ✓ | | | Apache-2.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/tfc.png" width="28" alt="The Forecasting Company"> | [T0](https://huggingface.co/theforecastingcompany/t0-alpha) | ✓ | ✓ | ✓ | ✓ | ✓ | | Apache-2.0† |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/priorlabs.png" width="28" alt="Prior Labs"> | [TabPFN](https://arxiv.org/abs/2501.02945) | ✓ | ✓ | ✓ | ✓ | | | TabPFN NC‡ |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/tafsut.png" width="28" alt="Tafsut"> | [Tafsut](https://github.com/Tafsut-FM/tafsut) | ✓ | ✓ | ✓ | ✓ | | | MIT |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/nx-ai.png" width="28" alt="NX-AI"> | [TiRex](https://arxiv.org/abs/2505.23719) | ✓ | ✓ | ✓ | ✓ | ✓¶ | | Community / Apache-2.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/nixtla.png" width="28" alt="Nixtla"> | [TimeGPT](https://arxiv.org/abs/2310.03589) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | Nixtla API§ |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/google.png" width="28" alt="Google"> | [TimesFM](https://arxiv.org/abs/2310.10688) | ✓ | ✓ | ✓ | ✓ | ✓¶ | | Apache-2.0 |
+| <img src="https://timecopilot.s3.amazonaws.com/public/data/images/logos/datadog.png" width="28" alt="Datadog"> | [Toto](https://arxiv.org/abs/2505.14766) | ✓ | ✓ | ✓ | ✓ | | | Apache-2.0 |
+
+Licenses verified against Hugging Face model cards. Check the model card for your `repo_id` when in doubt.
+
+¶ **Exogenous (native):** **Chronos** with `repo_id` containing `chronos-2` (e.g. `amazon/chronos-2`); **TimesFM** with **`google/timesfm-3.0-pytorch`**; **TimeGPT**; **T0** (`theforecastingcompany/t0-alpha`, `t0-beta`, `t0-gamma`); **TiRex-2** (`NX-AI/TiRex-2` and other `TiRex-2-*` checkpoints, not TiRex 1.0). Other hub models and other checkpoints in those families do not accept `X_df` under default `exog_strategy`. Set `exog_strategy=False` to ignore horizon exog in mixed `FoundationForecast` runs. See [Exogenous variables](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/exogenous-variables.md#native-exog-by-checkpoint).
+
+<details><summary><strong>What this means for production</strong></summary>
+
+- **Apache-2.0**, **MIT**: generally fine for commercial production (retain notices; T0† is also gated on Hugging Face: accept terms and set `HF_TOKEN`).
+- **CC-BY-NC-4.0** (Moirai), **CC-BY-NC-SA-4.0** (PatchTST-FM r1 checkpoints): **non-commercial** only; not for revenue-generating production without a separate agreement from the rights holder.
+- **Apache-2.0 / OpenMDW 1.0** (Granite PatchTST-FM r2): commercial-friendly; choose either license per the [model card](https://huggingface.co/ibm-granite/granite-timeseries-patchtst-fm-r2).
+- **TimesFM 3.0**: weights for `google/timesfm-3.0-pytorch` are [non-commercial](https://huggingface.co/google/timesfm-3.0-pytorch/blob/main/LICENSE); TimesFM 1.0–2.5 checkpoints remain Apache-2.0.
+- **TabPFN NC**‡: TabPFN-2.6+ and TabPFN-3 weights are non-commercial; production requires a [Prior Labs commercial license or API](https://docs.priorlabs.ai/models). First LOCAL use requires accepting terms at [ux.priorlabs.ai](https://ux.priorlabs.ai) (`TABPFN_TOKEN`). TabPFN-3 is LOCAL-only today.
+- **Community / Apache-2.0** (TiRex): TiRex 1.0 uses the [NXAI Community License](https://huggingface.co/NX-AI/TiRex/blob/main/LICENSE) (commercial limits for large enterprises); TiRex 2.0 is Apache-2.0.
+- **Nixtla API**§: hosted service via `NIXTLA_API_KEY`; production under [Nixtla terms/pricing](https://www.nixtla.io/docs), not open weights.
+
+**FoundationForecast** itself is [Apache-2.0](LICENSE) regardless of which model you plug in.
+
+</details>
+
+Some models require specific Python versions (e.g. FlowState 3.11-3.13, TabPFN &lt; 3.13). See the [Model Hub](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/model-hub.md) for details and default checkpoints.
+
+<details><summary><strong>Example checkpoints &amp; API model IDs</strong></summary>
+
+- **Chronos:** `amazon/chronos-t5-{tiny,mini,small,base,large}`, `amazon/chronos-bolt-{tiny,mini,small,base}`, `amazon/chronos-2`
+- **FlowState:** `ibm-research/flowstate`, `ibm-granite/granite-timeseries-flowstate-r1`
+- **Moirai:** `Salesforce/moirai-{1.0,1.1,2.0}-R-{small,base,large}`, `Salesforce/moirai-moe-1.0-R-*`
+- **PatchTST-FM:** `ibm-research/patchtst-fm-r1`, `ibm-granite/granite-timeseries-patchtst-fm-r1`, `ibm-granite/granite-timeseries-patchtst-fm-r2` (r2 requires `granite-tsfm>=0.3.9`)
+- **Sundial:** `thuml/sundial-base-128m`
+- **T0:** `theforecastingcompany/t0-alpha`, `theforecastingcompany/t0-beta`, `theforecastingcompany/t0-gamma` (requires `tfc-t0[torch]>=0.6.0`)
+- **TabPFN:** default `tabpfn-v2-regressor-2noar4o2.ckpt`; TabPFN-3 via `model_path="tabpfn-v3-regressor-v3_20260506_timeseries.ckpt"` (LOCAL, `TABPFN_TOKEN`); or CLIENT mode with a Prior Labs API token
+- **Tafsut:** `Tafsut-FM/tafsut-univariate-base`
+- **TiRex:** `NX-AI/TiRex`, `NX-AI/TiRex-2`
+- **TimeGPT:** pass `model=` to `TimeGPT()`, e.g. `timegpt-1`, [`timegpt-1-long-horizon`](https://www.nixtla.io/docs/forecasting/model-version/longhorizon_model), `timegpt-2-mini`, `timegpt-2`, `timegpt-2-pro`
+- **TimesFM:** `google/timesfm-{1.0-200m,2.0-500m,2.5-200m,3.0}-pytorch` (3.0 weights are [non-commercial](https://huggingface.co/google/timesfm-3.0-pytorch/blob/main/LICENSE))
+- **Toto:** `Datadog/Toto-Open-Base-1.0`, `Datadog/Toto-2.0-{4m,22m,313m,1B,2.5B}`
+
+</details>
+
+---
+
+## News
+
+Recent additions and checkpoints (newest first). See the [changelog](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.14.md) for full release notes.
+
+| When | What | Checkpoint / detail |
+|------|------|---------------------|
+| Oct 2026 | [**T0 gamma**](https://huggingface.co/theforecastingcompany/t0-gamma) | `theforecastingcompany/t0-gamma` — requires `tfc-t0[torch]>=0.6.0`; GIFT-Eval and fev-bench CI ([v0.1.14](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.14.md)) |
+| Oct 2026 | **GIFT-Eval replication for $37** | 16 models on the full benchmark, each official submission matched within 2% MASE/CRPS; new Experiments docs section ([v0.1.13](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.13.md)) |
+| Oct 2026 | **Known-future exog (`X_df`)** | Native covariates on Chronos-2, TimesFM-3, TimeGPT, T0-beta, TiRex-2; fev-bench CI ([v0.1.11](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.11.md)) |
+| Sep 2026 | **Quantile column naming** | Stable `-q-*` suffixes from `100×q` (≤3 dp `quantiles`, integer `level` only) ([v0.1.10](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.10.md)) |
+| Sep 2026 | **Quantile interpolation** | Arbitrary `level` / `quantiles` on fixed-knot models with edge clamping; removed `level=0` sentinel ([v0.1.9](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.9.md)) |
+| Sep 2026 | [**Granite PatchTST-FM r2**](https://huggingface.co/ibm-granite/granite-timeseries-patchtst-fm-r2) | `ibm-granite/granite-timeseries-patchtst-fm-r2` — Apache-2.0 / OpenMDW; requires `granite-tsfm>=0.3.9` ([v0.1.8](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.8.md)) |
+| Sep 2026 | [**T0 beta**](https://huggingface.co/theforecastingcompany/t0-beta) | `theforecastingcompany/t0-beta` — requires `tfc-t0>=0.5.0` ([v0.1.8](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.8.md)) |
+| Sep 2026 | **TiRex-2 zeroshot (GIFT-Eval CI)** | `NX-AI/TiRex-2-gifteval-zs` added to gift-eval replication ([v0.1.8](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.8.md)) |
+| Sep 2026 | **Shared panel processing** | Faster multi-model forecasts via reused panel path across forecasters ([v0.1.8](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.8.md)) |
+| Sep 2026 | [**TabPFN-3**](https://arxiv.org/abs/2501.02945) (LOCAL) | `model_path="tabpfn-v3-regressor-v3_20260506_timeseries.ckpt"` ([v0.1.7](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.7.md)) |
+
+---
+
+## Installation
+
+**Recommended:** [uv](https://docs.astral.sh/uv/) installs fast, locks dependencies reproducibly, and matches how this repo is developed and tested (especially useful with heavy ML stacks like torch and transformers).
+
+```bash
+uv add foundationforecast
+```
+
+Or with pip:
+
+```bash
+pip install foundationforecast
+```
+
+Requires Python 3.10+. Some models have additional version requirements; see the [Model Hub](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/model-hub.md).
+
+Optional plotting support:
+
+```bash
+uv add "foundationforecast[plot]"
+# or: pip install "foundationforecast[plot]"
+```
+
+---
+
+## Exogenous variables quick example
+
+```python
+import pandas as pd
+from foundationforecast import FoundationForecast
+from foundationforecast.models import Chronos, TimesFM
+
+DATA = "https://timecopilot.s3.amazonaws.com/public/data/electricity_price"
+df = pd.read_parquet(f"{DATA}/train.parquet")
+X_df = pd.read_parquet(f"{DATA}/futr_exog.parquet")
+
+ff = FoundationForecast(
+    models=[
+        Chronos(repo_id="amazon/chronos-2", alias="Chronos-2"),
+        TimesFM(repo_id="google/timesfm-3.0-pytorch", alias="TimesFM-3"),
+    ]
+)
+
+fcst_df = ff.forecast(df=df, h=24, X_df=X_df, level=[90])
+ff.plot(df=df, forecasts_df=fcst_df)
+```
+
+<p align="center">
+  <img src="https://timecopilot.s3.amazonaws.com/public/data/images/electricity_price_quick_example.png" alt="Example ff.plot with X_df: EPF markets, Chronos-2 and TimesFM-3 forecasts" width="900">
+</p>
+
+---
+
+## Relationship to TimeCopilot
+
+| | **FoundationForecast** | **TimeCopilot** |
+|---|---|---|
+| Foundation models (Chronos, Moirai, …) | ✓ | ✓ |
+| Unified forecast / CV / anomaly API | ✓ | ✓ |
+| Statistical & ML baselines | | ✓ |
+| LLM agent & natural-language queries | | ✓ |
+| Ensembles & distributed inference | | ✓ |
+
+Use **FoundationForecast** when you only need foundation models. Use **[TimeCopilot](https://github.com/TimeCopilot/timecopilot)** for the full forecasting agent.
+
+---
+
+## Citation
+
+To reference the software package:
+
+```
+@software{foundationforecast,
+  title = {FoundationForecast: The API for time series foundation models},
+  author = {Garza, Azul and Rosillo, Renée},
+  year = {2026},
+  url = {https://github.com/TimeCopilot/foundationforecast},
+  license = {Apache-2.0},
+}
+```
+
+---
+
+## Community
+
+Questions, bugs, and contributions:
+
+- [Discord](https://discord.gg/7GEdHR6Pfg)
+- [Issues](https://github.com/TimeCopilot/foundationforecast/issues)
+- [Contributing](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/contributing.md)
+
+Developed across Salamanca · Mexico City · San Francisco.
+
+---
+
+## License
+
+**FoundationForecast** is licensed under [Apache License 2.0](LICENSE). You may use, modify, and deploy the library in production, including commercial applications.
+
+Model weights and hosted APIs have separate licenses. See the **License** column and production note in [Supported models](#supported-models) above.

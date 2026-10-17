@@ -1,0 +1,177 @@
+<header>
+<p align="center">
+	<img src="https://yu-group.github.io/veridical-flow/vflow_logo.png" width="40%" alt="vflow logo"> 
+</p>
+
+  
+<p align="center"> A library for making stability analysis simple. Easily evaluate the effect of judgment calls to your data-science pipeline (e.g. choice of imputation strategy)!
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/license-mit-blue.svg" alt="mit license">
+  <img src="https://img.shields.io/badge/python-3.10+-blue" alt="python3.10+">
+  <a href="https://github.com/Yu-Group/veridical-flow/actions/workflows/python-package.yml"><img src="https://github.com/Yu-Group/veridical-flow/actions/workflows/python-package.yml/badge.svg" alt="tests"></a>
+  <a href="https://app.codecov.io/gh/Yu-Group/veridical-flow/commits?page=1"><img src="https://codecov.io/gh/Yu-Group/veridical-flow/branch/master/graph/badge.svg?token=YUAKU54XS4" alt="tests"></a>
+  <a href="https://joss.theoj.org/papers/10.21105/joss.03895"><img src="https://joss.theoj.org/papers/10.21105/joss.03895/status.svg" alt="joss"></a>
+  <a href="https://pypi.org/project/vflow/"><img src="https://img.shields.io/pypi/v/vflow.svg?logo=pypi&label=PyPI&logoColor=gold" alt="PyPI - version"></a>
+</p> 
+</header>
+
+# Why use `vflow`?
+
+Using `vflow`s simple wrappers facilitates many best practices for data science,
+as laid out in the predictability, computability, and stability (PCS) framework
+for [veridical data science](https://www.pnas.org/content/117/8/3920). The goal
+of `vflow` is to easily enable data science pipelines that follow PCS by
+providing intuitive low-code syntax, efficient and flexible computational
+backends via [`Ray`](https://docs.ray.io/en/latest/ray-core/walkthrough.html),
+and well-documented, reproducible experimentation via
+[`MLflow`](https://mlflow.org/docs/latest/index.html).
+
+| Computation | Reproducibility | Prediction | Stability |
+| ----------- | --------------- | ---------- | --------- |
+| Automatic parallelization and caching throughout the pipeline | Automatic experiment tracking and saving | Filter the pipeline by training and validation performance | Replace a single function (e.g. preprocessing) with a set of functions and easily assess the stability of downstream results |
+
+Here we show a simple example of an entire data-science pipeline with several
+perturbations (e.g. different data subsamples, models, and metrics) written
+simply using `vflow`.
+
+```python
+import sklearn
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, balanced_accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+from vflow import Vset, build_vset, init_args
+
+# initialize data
+X, y = make_classification()
+X_train, X_test, y_train, y_test = init_args(
+    train_test_split(X, y),
+    names=["X_train", "X_test", "y_train", "y_test"],  # optionally name the args
+)
+
+# subsample data: 3 bootstrap samples, reproducible thanks to the seed
+subsampling_set = build_vset(
+    "subsampling", sklearn.utils.resample, reps=3, seed=0, output_matching=True
+)
+X_trains, y_trains = subsampling_set(X_train, y_train)
+
+# fit models
+models = [LogisticRegression(), DecisionTreeClassifier()]
+modeling_set = Vset(name="modeling", vfuncs=models, vfunc_keys=["LR", "DT"])
+modeling_set.fit(X_trains, y_trains)
+preds_test = modeling_set.predict(X_test)
+
+# get metrics
+binary_metrics_set = Vset(
+    name="binary_metrics",
+    vfuncs=[accuracy_score, balanced_accuracy_score],
+    vfunc_keys=["Acc", "Bal_Acc"],
+)
+binary_metrics = binary_metrics_set.evaluate(preds_test, y_test)
+```
+
+Once we've written this pipeline, one call reports how stable the metrics
+(e.g. "Accuracy") are to our choice of subsampling or model:
+
+```python
+from vflow import stability_report
+
+report = stability_report(binary_metrics, compare="modeling")
+print(report)  # or report.save("stability.html"), or show it in a notebook
+```
+
+which starts, for one run of the random data above, with:
+
+```
+- `binary_metrics` = Acc: 6 results, mean 0.86 (from 0.8 to 0.92).
+- `binary_metrics` = Acc: most of the variation comes from `modeling` (76% of the variance).
+- `binary_metrics` = Acc: `DT` is best in 3 of 3 perturbations (100%); next is `LR` (0%).
+...
+```
+
+The report gives each metric separately: a summary, the share of the
+variance explained by each Vset, how often each model is best across the
+other perturbations, and the results by each Vset's choices. Its tables are
+DataFrames (`report.variance`, `report.ranking`, ...) for further analysis.
+
+# Documentation
+
+See the [docs](https://yu-group.github.io/veridical-flow/) for reference on the API
+
+> **Notebook examples**
+>
+> Note that some of these require more dependencies than just those required for
+> `vflow`. To install all, run `pip install vflow[nb]`.
+>
+> [Synthetic classification](https://yu-group.github.io/veridical-flow/notebooks/00_synthetic_classification.html)
+>
+> [Enhancer genomics](https://yu-group.github.io/veridical-flow/notebooks/01_enhancer.html)
+>
+> [fMRI voxel prediction](https://yu-group.github.io/veridical-flow/notebooks/02_fmri.html)
+> 
+> [Fashion mnist classification](https://yu-group.github.io/veridical-flow/notebooks/03_computer_vision_dnn.html)
+>
+> [Feature importance stability](https://yu-group.github.io/veridical-flow/notebooks/04_feat_importance_stability.html)
+> 
+> [Clinical decision rule vetting](https://github.com/Yu-Group/rule-vetting)
+
+## veridical-flow for agents
+
+*Full guide: [vflow for agents](https://yu-group.github.io/veridical-flow/agents.html).*
+
+`agents/` is a Claude Code plugin that brings PCS to analyses done by AI
+agents. Its `veridical-flow` skill takes a yes/no question about a dataset
+("does BMI affect diabetes progression?") and has independent analyst agents
+answer it many times: on the real data, on copies with every column shuffled
+(where the true answer is "no"), and under perturbations that should not
+change the answer (unrelated extra columns, anonymized or misleading column
+names, a question that leans toward one answer). It then reports whether the
+"yes" stands apart from the answers on shuffled data and holds across the
+perturbations. Every run is a saved folder that can be opened and rerun.
+
+```bash
+claude --plugin-dir agents
+> Use veridical-flow to check whether bmi affects target in diabetes.csv
+```
+
+The skill bundles three standard-library scripts: `prepare.py` writes the
+blinded analyst workspaces, `progress.py` shows a progress bar with elapsed
+time and an ETA while analysts work, and `summarize.py` scores the answers.
+Each workspace is a full agent analysis, so start small; the skill asks before
+launching more than about 20 analyst runs and reports progress after every
+batch.
+
+## Installation
+
+### Stable version
+
+```bash
+pip install vflow
+```
+
+### Development version (unstable)
+
+```bash
+pip install vflow@git+https://github.com/Yu-Group/veridical-flow
+```
+
+# References
+
+- interface: easily build on [scikit-learn](https://scikit-learn.org/stable/index.html) and [dvc](https://dvc.org/) (data version control)
+- computation: integration with [ray](https://www.ray.io/) and caching with [joblib](https://joblib.readthedocs.io/en/latest/)
+- tracking: [mlflow](https://mlflow.org/)
+- pull requests very welcome! (see [contributing.md](https://github.com/Yu-Group/veridical-flow/blob/master/docs/contributing.md))
+
+```r
+@software{duncan2020vflow,
+   author = {Duncan, James and Kapoor, Rush and Agarwal, Abhineet and Singh, Chandan and Yu, Bin},
+   doi = {10.21105/joss.03895},
+   month = {1},
+   title = {{VeridicalFlow: a Python package for building trustworthy data science pipelines with PCS}},
+   url = {https://doi.org/10.21105/joss.03895},
+   year = {2022}
+}
+```

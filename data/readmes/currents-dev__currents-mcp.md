@@ -1,0 +1,204 @@
+# Currents MCP Server
+
+![Unit Tests](https://github.com/currents-dev/currents-mcp/actions/workflows/test.yml/badge.svg)
+
+Give your AI coding agents full visibility into your CI test results. The Currents MCP Server connects tools like Cursor and Claude directly to your [Currents](https://currents.dev) dashboard, so agents can diagnose flaky tests, pinpoint failures, and act on real execution data -- without leaving your editor.
+
+- Query runs, spec files, and individual test results from CI
+- Surface error trends and performance metrics across your test suite
+- Manage quarantine rules, webhooks, and project settings programmatically
+- Let agents fix what's broken using actual test output, not guesswork
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=currents&config=eyJjb21tYW5kIjoibnB4IC15IEBjdXJyZW50cy9tY3AiLCJlbnYiOnsiQ1VSUkVOVFNfQVBJX0tFWSI6InlvdXItYXBpLWtleSJ9fQ%3D%3D)
+
+## Tools
+
+| Tool                                    | Description                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `currents-list-actions`                 | List all actions for a project with optional filtering.                                                                                                                                                                                                                                                                                                                                                                     |
+| `currents-create-action`                | Create a new action for a project.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `currents-get-action`                   | Get a single action by ID.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `currents-update-action`                | Update an existing action.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `currents-delete-action`                | Delete (archive) an action.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `currents-enable-action`                | Enable a disabled action.                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `currents-disable-action`               | Disable an active action.                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `currents-list-affected-tests`          | List tests affected by actions (quarantine, skip, tag) for a project within a date range.                                                                                                                                                                                                                                                                                                                                   |
+| `currents-get-affected-test-executions` | Keyed on a test: lists the executions of one test that an action applied to, within a date range, with the run, branch and commit of each.                                                                                                                                                                                                                                                                                  |
+| `currents-get-action-executions`        | Keyed on an action: lists the test executions one rule was applied to, across every test it touched, within a date range.                                                                                                                                                                                                                                                                                                   |
+| `currents-get-projects`                 | Retrieves projects available in the Currents platform.                                                                                                                                                                                                                                                                                                                                                                      |
+| `currents-get-project`                  | Get a single project by ID.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `currents-get-project-insights`         | Get aggregated run and test metrics for a project within a date range.                                                                                                                                                                                                                                                                                                                                                      |
+| `currents-list-pull-requests`           | List pull-request cards for a project (runs grouped by meta.pr.id).                                                                                                                                                                                                                                                                                                                                                         |
+| `currents-list-project-terms`           | List cursor-paginated project terms for one type (tag, branch, authorName, etc.).                                                                                                                                                                                                                                                                                                                                           |
+| `currents-create-jira-issue`            | Create a Jira issue from a run test using the organization Jira integration.                                                                                                                                                                                                                                                                                                                                                |
+| `currents-link-jira-issue`              | Link an existing Jira issue to a run test using the organization Jira integration.                                                                                                                                                                                                                                                                                                                                          |
+| `currents-list-jira-projects`           | List Jira projects available for the organization integration.                                                                                                                                                                                                                                                                                                                                                              |
+| `currents-list-jira-issue-types`        | List Jira issue types and custom fields for a Jira project.                                                                                                                                                                                                                                                                                                                                                                 |
+| `currents-get-runs`                     | Retrieves a list of runs for a specific project with optional filtering.                                                                                                                                                                                                                                                                                                                                                    |
+| `currents-get-run-details`              | Retrieves a run: its status, commit, branch, groups and spec files, each with its instanceId, and how many files the run has by level, type and source (`attachmentCounts`).                                                                                                                                                                                                                                                |
+| `currents-find-run`                     | Find a run by query parameters.                                                                                                                                                                                                                                                                                                                                                                                             |
+| `currents-cancel-run`                   | Cancel a run in progress.                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `currents-reset-run`                    | Reset failed spec files in a run to allow re-execution.                                                                                                                                                                                                                                                                                                                                                                     |
+| `currents-delete-run`                   | Delete a run and all associated data.                                                                                                                                                                                                                                                                                                                                                                                       |
+| `currents-cancel-run-github-ci`         | Cancel a run by GitHub Actions workflow run ID and attempt number.                                                                                                                                                                                                                                                                                                                                                          |
+| `currents-get-spec-instance`            | Retrieves the raw result of one spec file execution by instanceId: each test's state and attempts, and the artifact URLs.                                                                                                                                                                                                                                                                                                   |
+| `currents-get-spec-files-performance`   | Retrieves spec files performance metrics for a specific project within a date range.                                                                                                                                                                                                                                                                                                                                        |
+| `currents-get-tests-performance`        | Retrieves aggregated test metrics for a specific project within a date range.                                                                                                                                                                                                                                                                                                                                               |
+| `currents-get-tests-signatures`         | Generates a unique test signature based on project, spec file path, and test title.                                                                                                                                                                                                                                                                                                                                         |
+| `currents-get-test-results`             | Retrieves historical test execution results for a specific test signature.                                                                                                                                                                                                                                                                                                                                                  |
+| `currents-get-context`                  | Call this first to find out why tests failed in CI, or to fix them: returns the errors, steps and files of the failed tests of a run, a spec file (instance) or one test — the same content as Fix in the Currents dashboard.                                                                                                                                                                                               |
+| `currents-get-errors-explorer`          | Get aggregated error metrics for a project within a date range.                                                                                                                                                                                                                                                                                                                                                             |
+| `currents-get-test-evidence`            | Collect evidence artifacts (screenshots, videos, traces, attachments) produced by tests in a CI run, with signed download URLs grouped per test.                                                                                                                                                                                                                                                                            |
+| `currents-create-evidence-links`        | Create a shareable link to a test attempt's evidence, served from its Playwright trace, and the URLs onto it: a markdown digest of what the attempt did and what failed, a filmstrip, an animated screencast, DOM snapshots, network requests and attachments.                                                                                                                                                              |
+| `currents-create-session`               | Record a browser session you drove as a Currents session, so its evidence can be read and shared.                                                                                                                                                                                                                                                                                                                           |
+| `currents-add-attachments`              | Add attachments to a session from currents-create-session (send sessionId), or to a CI run (send runId): logs for a spec file, a test, or the run itself.                                                                                                                                                                                                                                                                   |
+| `currents-list-webhooks`                | List all webhooks for a project.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `currents-create-share-link`            | Create a public link to test results that anyone can open without signing in, until it expires. purpose "fix" is the failure context, for an agent that will fix the tests — the same content as currents-get-context, with flaky tests included and marked flaky. purpose "report" lists every test with its attempts and files, for a person; for a session it is the session page: status, error, attachments and trace. |
+| `currents-create-webhook`               | Create a new webhook for a project.                                                                                                                                                                                                                                                                                                                                                                                         |
+| `currents-get-webhook`                  | Get a single webhook by ID.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `currents-update-webhook`               | Update an existing webhook.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `currents-delete-webhook`               | Delete a webhook.                                                                                                                                                                                                                                                                                                                                                                                                           |
+
+## Skills
+
+Agent skills that teach AI agents multi-step Currents workflows.
+
+| Skill                                           | Description                                                                                                                                                                                                                           |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`browser-evidence`](skills/browser-evidence)   | Experimental: prove a change works in a browser you drove yourself, when there is no test to run.                                                                                                                                     |
+| [`collect-evidence`](skills/collect-evidence)   | Show that work you implemented actually works, or demo it, from tests that ran in CI via Currents — a trace link whose digest, filmstrip and accessibility snapshots read inside a comment, plus screenshots, attachments and videos. |
+| [`fix-failing-tests`](skills/fix-failing-tests) | Fix tests that failed in CI, using the results Currents recorded — errors, steps, traces, screenshots and console output.                                                                                                             |
+
+The server publishes every skill as an MCP resource, so a connected agent can
+list and read them without a local copy:
+
+```text
+skill://currents/collect-evidence/SKILL.md
+skill://currents/collect-evidence/references/instrumentation.md
+```
+
+Agents that load skills only from disk still need a copy — put the skill
+directory in the agent's skills location (e.g. `.claude/skills/` for Claude
+Code).
+
+## Setup
+
+### API Key
+
+Get a Currents API key by following the [instructions here](https://docs.currents.dev/resources/api/api-keys).
+
+### Usage with Cursor
+
+1. Go to Cursor Settings > MCP > Enable
+2. Add the following to your `mcp.json`.
+
+```json
+{
+  "mcpServers": {
+    "currents": {
+      "command": "npx",
+      "args": ["-y", "@currents/mcp"],
+      "env": {
+        "CURRENTS_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Claude
+
+Run this command to add Currents MCP to Claude Code
+
+```bash
+claude mcp add --transport stdio currents --env CURRENTS_API_KEY=<KEY> -- npx -y @currents/mcp
+```
+
+Add the following to enable Currents MCP on Claude Desktop (edit `claude_desktop_config.json` file):
+
+```json
+{
+  "mcpServers": {
+    "currents": {
+      "command": "npx",
+      "args": ["-y", "@currents/mcp"],
+      "env": {
+        "CURRENTS_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### VS Code and GitHub Copilot
+
+[Install in VS Code](https://vscode.dev/redirect/mcp/install?name=currents&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.currents.dev%2Fmcp%22%7D) adds the hosted server. VS Code opens a Currents sign-in page the first time it connects; there is no API key to enter.
+
+To install the plugin, which adds the [skills](#skills) as well as the server:
+
+- VS Code: open `vscode://chat-plugin/install?source=currents-dev/currents-mcp`
+- Copilot CLI:
+
+  ```bash
+  copilot plugin marketplace add currents-dev/currents-mcp
+  copilot plugin install currents@currents
+  ```
+
+To add only the server to Copilot CLI:
+
+```bash
+copilot mcp add --transport http currents https://mcp.currents.dev/mcp
+```
+
+### Remote (hosted) MCP endpoint
+
+In addition to the local stdio transport above, the same server can run as a hosted
+Streamable HTTP endpoint (e.g. `https://mcp.currents.dev/mcp`) for use with remote
+connectors such as the Claude web/mobile apps.
+
+The hosted server performs **no authentication of its own**. Each request must carry
+your Currents API key as a Bearer token, which is passed through to the Currents API:
+
+```
+Authorization: Bearer <your-currents-api-key>
+```
+
+Example client config (remote connector):
+
+```json
+{
+  "mcpServers": {
+    "currents": {
+      "url": "https://mcp.currents.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer your-api-key"
+      }
+    }
+  }
+}
+```
+
+Running the HTTP server yourself:
+
+```bash
+# from the mcp-server package
+npm run build && PORT=3000 npm run start:http
+# or via Docker (serves /mcp, exposes the configured PORT)
+docker build -t currents-mcp . && docker run -p 3000:3000 currents-mcp
+```
+
+The Node server speaks plain HTTP; TLS and the public domain terminate at the
+reverse proxy / load balancer in front of the container. A `GET /healthz` endpoint
+is provided for liveness checks.
+
+### ⚠️ Notice
+
+By connecting AI tools (e.g., via MCP) to Currents, you are granting them access to your API key, test results and CI metadata. It is your responsibility to vet any AI agents or services you use, and to ensure they handle your data securely.
+
+## References
+
+- [Currents](https://currents.dev)
+- [Currents Documentation](https://docs.currents.dev)
+- [Contribution Guide](https://github.com/currents-dev/currents-mcp/blob/main/CONTRIBUTE.md)
+- [Releasing and Publishing](https://github.com/currents-dev/currents-mcp/blob/main/RELEASE.md)
+- [License](https://github.com/currents-dev/currents-mcp/blob/main/LICENSE.md)

@@ -1,0 +1,286 @@
+# nodejs-whisper
+
+Node.js bindings for OpenAI's Whisper model.
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+## Features
+
+-   Automatically convert the audio to WAV format with a 16000 Hz frequency to support the whisper model.
+-   Output transcripts to (.txt .srt .vtt .json .wts .lrc)
+-   Optimized for CPU (Including Apple Silicon ARM)
+-   Timestamp precision to single word
+-   Split on word rather than on token (Optional)
+-   Translate from source language to english (Optional)
+-   Convert audio format to wav to support whisper model
+
+## Installation
+
+1. Install make tools
+
+```bash
+sudo apt update
+sudo apt install build-essential
+```
+
+2. Install nodejs-whisper with npm
+
+```bash
+  npm i nodejs-whisper
+```
+
+3. Download whisper model
+
+```bash
+  npx nodejs-whisper download
+```
+
+-   NOTE: user may need to install make tool
+
+### Windows Installation
+
+1. Install MinGW-w64 or MSYS2 (which includes make tools)
+   - Option 1: Install MSYS2 from https://www.msys2.org/
+   - Option 2: Install MinGW-w64 from https://www.mingw-w64.org/
+
+2. Install nodejs-whisper with npm
+```bash
+npm i nodejs-whisper
+```
+
+3. Download whisper model
+```bash
+npx nodejs-whisper download
+```
+
+- Note: Make sure mingw32-make or make is available in your system PATH.
+
+## Usage/Examples
+
+See `example/index.ts` (can be run with `$ npm run test:example`)
+
+```javascript
+import path from 'path'
+import { nodewhisper } from 'nodejs-whisper'
+
+// Need to provide exact path to your audio file.
+const filePath = path.resolve(__dirname, 'YourAudioFileName')
+
+await nodewhisper(filePath, {
+	modelName: 'base.en', //Downloaded models name
+	modelRootPath: '/path/to/whisper/models', // (optional) directory containing the selected ggml model file
+	autoDownloadModelName: 'base.en', // (optional) auto download a model if model is not present
+	autoDownloadVadModelName: 'silero-v6.2.0', // (optional) download and enable a Silero VAD model
+	removeWavFileAfterTranscription: false, // (optional) remove wav file once transcribed
+	withCuda: false, // (optional) use cuda for faster processing
+	logger: console, // (optional) Logging instance, defaults to console
+	whisperOptions: {
+		outputInCsv: false, // get output result in csv file
+		outputInJson: false, // get output result in json file
+		outputInJsonFull: false, // get output result in json file including more information
+		outputInLrc: false, // get output result in lrc file
+		outputInSrt: true, // get output result in srt file
+		outputInText: false, // get output result in txt file
+		outputInVtt: false, // get output result in vtt file
+		outputInWords: false, // get output result in wts file for karaoke
+		translateToEnglish: false, // translate from source language to english
+		wordTimestamps: false, // word-level timestamps
+		timestamps_length: 20, // amount of dialogue per timestamp pair
+		splitOnWord: true, // split on word rather than on token
+		noGpu: false, // disable GPU inference
+		vadThreshold: 0.5, // speech detection probability threshold
+		vadMinSpeechDurationMs: 250, // discard shorter speech segments
+		vadMinSilenceDurationMs: 100, // silence required to split segments
+		vadMaxSpeechDurationS: 30, // split speech segments longer than this
+		vadSpeechPadMs: 30, // padding around detected speech
+		vadSamplesOverlap: 0.1, // overlap between speech segments in seconds
+	},
+})
+
+// Model list
+const MODELS_LIST = [
+	'tiny',
+	'tiny.en',
+	'tiny-q5_1',
+	'tiny.en-q5_1',
+	'tiny-q8_0',
+	'base',
+	'base.en',
+	'base-q5_1',
+	'base.en-q5_1',
+	'base-q8_0',
+	'small',
+	'small.en',
+	'small.en-tdrz',
+	'small-q5_1',
+	'small.en-q5_1',
+	'small-q8_0',
+	'medium',
+	'medium.en',
+	'medium-q5_0',
+	'medium.en-q5_0',
+	'medium-q8_0',
+	'large-v1',
+	'large-v2',
+	'large-v2-q5_0',
+	'large-v2-q8_0',
+	'large-v3',
+	'large-v3-q5_0',
+	'large-v3-turbo',
+	'large-v3-turbo-q5_0',
+	'large-v3-turbo-q8_0',
+	'large', // backward-compatible alias for large-v3
+]
+```
+
+The configured logger receives transcript output through `logger.log`, whisper.cpp initialization and progress
+details through `logger.debug`, and command failures through `logger.error`. Child-process output is not written
+directly to the parent process.
+
+Custom CMake flags can be passed with `NODEJS_WHISPER_CMAKE_ARGS`.
+
+```bash
+NODEJS_WHISPER_CMAKE_ARGS="-DGGML_NATIVE=OFF" npm test
+```
+
+When `modelRootPath` is used with `autoDownloadModelName`, downloaded models are saved in that directory.
+
+Docker model cache example:
+
+```yaml
+volumes:
+    - ./.docker-data/whisper-models:/data/whisper-models
+```
+
+```javascript
+await nodewhisper(filePath, {
+    modelName: 'tiny.en',
+    autoDownloadModelName: 'tiny.en',
+    modelRootPath: '/data/whisper-models',
+    whisperOptions: {
+        outputInSrt: true,
+    },
+})
+```
+
+The downloaded model will be stored at `/data/whisper-models/ggml-tiny.en.bin`, while the package's internal downloader scripts remain available.
+
+### Voice activity detection
+
+VAD detects speech before transcription, which can reduce work on long recordings with silence. The recommended
+Silero model is less than 1 MB and can be downloaded automatically:
+
+```javascript
+await nodewhisper(filePath, {
+	modelName: 'tiny.en',
+	autoDownloadModelName: 'tiny.en',
+	autoDownloadVadModelName: 'silero-v6.2.0',
+	whisperOptions: {
+		vadThreshold: 0.5,
+		vadMinSilenceDurationMs: 100,
+	},
+})
+```
+
+Providing `autoDownloadVadModelName` enables VAD automatically. To use an existing or custom VAD model instead,
+set `whisperOptions.vad` to `true` and provide its path through `whisperOptions.vadModelPath`.
+
+## Types
+
+```
+ interface IOptions {
+	modelName: string
+	modelRootPath?: string
+	removeWavFileAfterTranscription?: boolean
+	withCuda?: boolean
+	autoDownloadModelName?: string
+	autoDownloadVadModelName?: 'silero-v5.1.2' | 'silero-v6.2.0'
+	whisperOptions?: WhisperOptions
+	logger?: Console
+}
+
+ interface WhisperOptions {
+	outputInCsv?: boolean
+	outputInJson?: boolean
+	outputInJsonFull?: boolean
+	outputInLrc?: boolean
+	outputInSrt?: boolean
+	outputInText?: boolean
+	outputInVtt?: boolean
+	outputInWords?: boolean
+	translateToEnglish?: boolean
+	timestamps_length?: number
+	wordTimestamps?: boolean
+	splitOnWord?: boolean
+	noGpu?: boolean
+	vad?: boolean
+	vadModelPath?: string
+	vadThreshold?: number
+	vadMinSpeechDurationMs?: number
+	vadMinSilenceDurationMs?: number
+	vadMaxSpeechDurationS?: number
+	vadSpeechPadMs?: number
+	vadSamplesOverlap?: number
+}
+
+```
+
+## Run locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/ChetanXpro/nodejs-whisper
+```
+
+Go to the project directory
+
+```bash
+  cd nodejs-whisper
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run dev
+```
+
+Build project
+
+```bash
+npm run build
+```
+
+Run the fast unit suite
+
+```bash
+npm test
+```
+
+Run the end-to-end transcription test
+
+```bash
+npm run test:integration
+```
+
+The integration test downloads and builds `tiny.en` when needed, downloads the Silero VAD model, transcribes the
+bundled audio sample with VAD enabled, verifies the returned transcript and VTT file, and checks that whisper.cpp
+output is routed through the configured logger.
+
+## Made with
+
+-   [Whisper OpenAI (using whisper.cpp)](https://github.com/ggml-org/whisper.cpp)
+
+## Feedback
+
+If you have any feedback, please reach out to us at chetanbaliyan10@gmail.com
+
+## Authors
+
+-   [@chetanXpro](https://www.github.com/chetanXpro)

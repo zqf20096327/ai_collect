@@ -1,0 +1,352 @@
+# 🧠 AI System Design Guide
+### The Complete Interview & Production Reference
+
+<p align="center">
+  <a href="https://www.aidaddy.tech"><img src="https://img.shields.io/badge/Read%20it%20online%20%E2%86%92-7C3AED?style=for-the-badge&logo=bookstack&logoColor=white" alt="Read the guide online at aidaddy.tech"></a>
+  <a href="https://enginebogie.com/u/ombharatiya"><img src="https://img.shields.io/badge/Book%20a%20mock%20interview%20%E2%86%92-0E7C66?style=for-the-badge&logo=googlecalendar&logoColor=white" alt="Book a 1:1 mock interview on EngineBogie"></a>
+  <a href="https://topmate.io/ombharatiya"><img src="https://img.shields.io/badge/Mentorship%20on%20Topmate-1F2937?style=for-the-badge&logoColor=white" alt="Book mentorship on Topmate"></a>
+</p>
+<p align="center">
+  <sub>🌐 Instant search at <b><a href="https://www.aidaddy.tech">aidaddy.tech</a></b>. 🎯 1:1 mock interviews and mentorship with Om. ⭐ Star the repo to support the work.</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20GitHub-ombharatiya-181717?style=for-the-badge&logo=github" alt="Follow on GitHub"></a>
+  <a href="https://x.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20Twitter-@ombharatiya-1DA1F2?style=for-the-badge&logo=x" alt="Follow on Twitter"></a>
+  <a href="https://linkedin.com/in/ombharatiya"><img src="https://img.shields.io/badge/Connect%20on%20LinkedIn-ombharatiya-0A66C2?style=for-the-badge&logo=linkedin" alt="Connect on LinkedIn"></a>
+</p>
+
+<p align="center">
+  <b>If this guide helps you, follow <a href="https://github.com/ombharatiya">@ombharatiya</a> on GitHub, <a href="https://x.com/ombharatiya">X</a>, and <a href="https://linkedin.com/in/ombharatiya">LinkedIn</a> to get notified when new chapters, model refreshes, and interview prompts ship.</b>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/commits/main"><img src="https://img.shields.io/github/last-commit/ombharatiya/ai-system-design-guide?label=updated&color=blue" alt="Last commit"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
+  <a href="#-contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/stargazers"><img src="https://img.shields.io/github/stars/ombharatiya/ai-system-design-guide?style=social" alt="Stars"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/graphs/contributors"><img src="https://img.shields.io/github/contributors/ombharatiya/ai-system-design-guide?color=blueviolet" alt="Contributors"></a>
+  <a href="https://github.com/ombharatiya/ai-system-design-guide/issues"><img src="https://img.shields.io/github/issues/ombharatiya/ai-system-design-guide?color=orange" alt="Open issues"></a>
+</p>
+
+> **The living reference for production AI systems.** Continuously updated. Interview-ready depth.
+
+A practical, continuously updated guide to AI system design, RAG architectures, LLM engineering, agentic AI, MCP and A2A protocols, and AI engineering interview preparation. Covers production patterns, model selection, evaluation, and real-world case studies from staff-level interviews.
+
+**New here?** Jump to the [147-question Interview Bank](00-interview-prep/01-question-bank.md), the [RAG Fundamentals chapter](06-retrieval-systems/01-rag-fundamentals.md), or pick the [right LLM for production](02-model-landscape/01-model-taxonomy.md).
+
+---
+
+## 📚 Quick Navigation
+
+| I want to... | Start here |
+|--------------|------------|
+| **Prepare for interviews** | [Question Bank](00-interview-prep/01-question-bank.md) → [Answer Frameworks](00-interview-prep/02-answer-frameworks.md) |
+| **Practice with a real interviewer** | [Book a 1:1 mock interview or mentorship](https://enginebogie.com/u/ombharatiya) (also on [Topmate](https://topmate.io/ombharatiya)) |
+| **Learn AI systems fast** | [LLM Internals](01-foundations/01-llm-internals.md) → [RAG Fundamentals](06-retrieval-systems/01-rag-fundamentals.md) |
+| **Build production RAG** | [Chunking](06-retrieval-systems/02-chunking-strategies.md) → [Vector DBs](06-retrieval-systems/04-vector-databases.md) → [Reranking](06-retrieval-systems/06-reranking-strategies.md) → [Production RAG](06-retrieval-systems/14-production-rag-at-scale.md) |
+| **Advanced retrieval** | [Contextual Retrieval](06-retrieval-systems/10-contextual-retrieval.md) → [ColBERT](06-retrieval-systems/11-late-interaction-colbert.md) → [Multi-modal RAG](06-retrieval-systems/12-multimodal-rag.md) |
+| **Design multi-tenant AI** | [Access Control](12-security-and-access/02-access-control.md) → [Case Study](16-case-studies/08-multi-tenant-saas.md) |
+| **Build agents** | [Agent Fundamentals](07-agentic-systems/01-agent-fundamentals.md) → [MCP & A2A](07-agentic-systems/03-tool-use-and-mcp.md) → [LangGraph](09-frameworks-and-tools/02-langgraph-orchestration.md) |
+| **Run self-driving agent loops** | [Loop Engineering](07-agentic-systems/12-loop-engineering.md) (the four loop levels, termination, budgets, verification, loopmaxxing) |
+| **Tool-use & computer agents** | [Landscape](17-tool-use-and-computer-agents/01-tool-use-landscape.md) → [OpenClaw](17-tool-use-and-computer-agents/03-openclaw-deep-dive.md) → [Safety](17-tool-use-and-computer-agents/07-safety-and-governance.md) |
+| **Autonomous coding agents** | [Claude Code](09-frameworks-and-tools/09-claude-code.md) → [OpenCoder Landscape](09-frameworks-and-tools/10-opencoderguide.md) |
+| **Survive framework version churn** | [Navigating Framework Churn](09-frameworks-and-tools/12-navigating-framework-churn.md) (stale tutorials, version pinning, what to actually learn) |
+| **Pick the right model (2026)** | [Model Taxonomy](02-model-landscape/01-model-taxonomy.md) → [Pricing](02-model-landscape/03-pricing-and-costs.md) |
+| **Evaluate AI in production** | [AI Evals Guide (Phoenix/Langfuse)](ai_evals_comprehensive_study_guide.md) → [AI Evals Guide (LangWatch/Langfuse)](ai_evals_complete_guide_langwatch_langfuse.md) |
+| **Read benchmarks the right way** | [Benchmarks & Leaderboards](14-evaluation-and-observability/03-benchmarks-and-leaderboards.md) (saturation, contamination, harness variance) |
+| **Track frontier research (2026)** | [Research Radar](RESEARCH-RADAR.md) (trending papers and what to learn next) |
+| **Build a voice agent** | [Real-Time Voice Agents](18-voice-and-audio-agents/01-realtime-voice-agents.md) (pipeline vs speech-to-speech vs duplex front end, latency, cost per minute) → [Voice AI Questions](00-interview-prep/01-question-bank.md#voice-ai-questions) |
+| **Route across models / add a gateway** | [AI Gateways and Model Routing](11-infrastructure-and-mlops/03-ai-gateways-and-model-routing.md) (fallback, rate limits, LiteLLM) |
+| **Control AI cost** | [FinOps and Token Economics](11-infrastructure-and-mlops/04-finops-and-token-economics.md) (caching, batch, attribution, unit economics) |
+| **Meet AI regulations** | [AI Governance and Compliance](13-reliability-and-safety/04-ai-governance-and-compliance.md) (EU AI Act, NIST RMF, what to implement) |
+| **Generate images, video, audio** | [Multimodal Generation](19-multimodal-generation/01-multimodal-generation.md) (pipelines, provenance, evaluation) |
+| **Train a reasoning model** | [RLVR and GRPO](03-training-and-adaptation/08-rlvr-and-reasoning-models.md) (how o-series and R1 are trained) |
+| **Run models locally** | [On-Device and Edge Deployment](04-inference-optimization/09-on-device-and-edge-deployment.md) (Ollama vs vLLM, quantization, hardware) |
+| **Make agents crash-proof** | [Durable Execution](07-agentic-systems/11-durable-execution.md) (replay, exactly-once, Temporal) |
+| **Engineer the data layer** | [Data Engineering for AI](06-retrieval-systems/15-data-engineering-for-ai.md) (ingestion, dedup, PII, decontamination) |
+| **Find the best courses to learn AI** | [Recommended Courses & Learning Paths](COURSES.md) |
+| **Transition from my current role to AI** | [Role Transition Guide](TRANSITION_GUIDE.md) |
+| **Understand the 2026 AI job market** | [Job Market Trends](00-interview-prep/06-job-market-trends-2026.md) |
+| **Get a quick answer to a common question** | [FAQ](00-interview-prep/07-faq.md) (RAG, agents, models, eval, inference, memory, security) |
+| **Look up a term** | [Glossary](GLOSSARY.md) (every term defined) |
+
+### Pick a path
+
+```mermaid
+flowchart TD
+    A[New visitor] --> B{Your goal}
+    B -->|Interview prep| C[Question Bank]
+    B -->|Build RAG| D[RAG Fundamentals]
+    B -->|Build agents| E[Agent Fundamentals]
+    B -->|Pick a model| F[Model Taxonomy]
+    B -->|Evaluate AI| G[AI Evals Guide]
+    C --> H[Answer Frameworks]
+    D --> I[Chunking + Vector DBs]
+    E --> J[MCP and Tool Use]
+    F --> K[Pricing 2026]
+    G --> L[Phoenix or LangWatch]
+```
+
+---
+
+## 🎯 Why This Guide
+
+**Traditional books are outdated before they ship.** This is a living document: when new models release, when patterns evolve, this updates.
+
+| This Guide | Printed Books |
+|------------|---------------|
+| October 2026 models (Claude Opus 5.5, Sonnet 5.5, Fable 5.1, GPT-6 Astra/Sol/Luna, GPT-6.1 Sol, Gemini 3.8 Flash, Grok 4.7, Muse Spark 1.3, DeepSeek V4.1-Flash, MiMo-V2.6, GLM-5.3, Kimi K3, Qwen3.8) | Stuck on GPT-4 |
+| MCP spec 2026-07-28, A2A v1.0.1, OpenClaw, Computer Use, full-duplex voice agents, Agentic RAG, ColBERT, latent reasoning, MoE serving | Does not exist |
+| Real pricing with October 2026 verification dates | Already wrong |
+| Staff-level interview Q&A (147 questions through September 2026, including Voice AI) + Job Market Trends | Generic questions |
+
+**Quick model picker (October 2026):**
+
+- **Agentic coding and hard production work:** Claude Opus 5.5 ($4/$20 per 1M), the model Anthropic now tells customers to start with and the top scorer on the Artificial Analysis Intelligence Index v4.3.2.
+- **Production default:** the mid tier has converged on $2/$10 with Claude Sonnet 5.5, GPT-6 Sol, and GPT-6.1 Sol. Route agent fleets, chat, and general workloads here.
+- **Capability ceiling:** Claude Fable 5.1 or GPT-6 Astra ($10/$50), only when your evals show Opus 5.5 at high effort falling short.
+- **Volume:** GPT-6 Luna ($0.10/$0.50); Gemini 3.8 Flash at a half-price $0.75/$3.75 through December 31, then $1.50/$7.50, so budget at list; DeepSeek V4.1-Flash for batch work you can schedule off-peak, when it costs half its $0.30/$1.20 peak price.
+- **Open weights:** Xiaomi MiMo-V2.6-Pro (MIT) leads, with GLM-5.3 and Kimi K3 close behind. Read the license first: GLM-5.3 adds a security review only for MaaS operators above US$10B in annual revenue, but Kimi K3 requires a separate agreement for any MaaS operator above US$20M in revenue over 12 months (with affiliates).
+- **Before you switch:** OpenAI bills the whole request at long-context rates above 272K input tokens, the newest Claude models return a 400 on forced `tool_choice`, and Opus 5.5 defaults to `medium` effort where Opus 5 used `high`. Gemini 4 Argon was announced September 30 but is not in the Gemini API yet.
+
+Full breakdown in [Model Taxonomy](02-model-landscape/01-model-taxonomy.md) and the [Model Selection Guide](02-model-landscape/04-model-selection-guide.md).
+
+---
+
+## 🎯 What This Guide Is (and Is Not)
+
+**This guide IS:**
+- A staff-level reference for designing production AI systems (RAG, agents, MCP, eval pipelines, multi-tenant isolation).
+- An interview-prep companion with 147 real questions (including a Voice AI set), answer frameworks with a worked mock transcript, and ten whiteboard exercises through September 2026.
+- A living document tracking new model releases, protocol changes, and emerging patterns as they ship.
+- Opinionated about tradeoffs: latency vs cost, accuracy vs faithfulness, single-agent vs multi-agent.
+- Free, MIT-licensed, and open to PRs from practitioners.
+
+**This guide is NOT:**
+- A tutorial on Python, PyTorch, or basic ML fundamentals (start with a course; see [COURSES.md](COURSES.md)).
+- A vendor-neutral hedge; it names specific models, prices, and frameworks because real systems require real choices.
+- A replacement for hands-on building; read it alongside a project, not instead of one.
+- A research paper digest; it cites papers when they change practice, not for completeness.
+
+---
+
+## 📖 Guide Structure
+
+```
+├── 00-interview-prep/           # Questions (147), frameworks, exercises, job-market trends (October 2026)
+├── 01-foundations/              # Transformers, attention, embeddings
+├── 02-model-landscape/          # Claude Opus 5.5, Sonnet 5.5, Fable 5.1, GPT-6, Gemini 3.8, Grok 4.7, DeepSeek V4.1, open weights, pricing
+├── 03-training-and-adaptation/  # Fine-tuning, LoRA, DPO, distillation, RLVR/GRPO
+├── 04-inference-optimization/   # KV cache, PagedAttention, vLLM, diffusion LLMs, on-device
+├── 05-prompting-and-context/    # Prompt engineering, CoT, Extended Thinking, DSPy, prompt injection
+├── 06-retrieval-systems/        # RAG, chunking, GraphRAG, Agentic RAG, ColBERT, Contextual Retrieval, data engineering
+├── 07-agentic-systems/          # MCP (spec 2026-07-28), A2A v1.0.1, multi-agent, computer-use, durable execution, loop engineering
+├── 08-memory-and-state/         # L1-L3 memory tiers, Mem0, caching
+├── 09-frameworks-and-tools/     # LangGraph, DSPy, LlamaIndex, Claude Code, OpenCoder, framework churn
+├── 10-document-processing/      # Vision-LLM OCR, multimodal parsing
+├── 11-infrastructure-and-mlops/ # GPU clusters, LLMOps, AI gateways, FinOps and cost
+├── 12-security-and-access/      # RBAC, ABAC, multi-tenant isolation
+├── 13-reliability-and-safety/   # Guardrails, red-teaming, AI governance and compliance
+├── 14-evaluation-and-observability/ # RAGAS, LangSmith, benchmarks & leaderboards, drift detection
+├── 15-ai-design-patterns/       # Pattern catalog, anti-patterns
+├── 16-case-studies/             # Real-world architectures with diagrams
+├── 17-tool-use-and-computer-agents/ # OpenClaw, Computer Use, tool agents, safety
+├── 18-voice-and-audio-agents/   # Voice agents: pipeline, speech-to-speech, duplex front ends, turn-taking, cost per minute
+├── 19-multimodal-generation/    # Image/video/audio generation: pipelines, provenance, evaluation
+├── GLOSSARY.md                  # Every term defined
+│
+├── ai_evals_comprehensive_study_guide.md      # 🔬 Deep-dive: AI Evals (Phoenix + Langfuse)
+├── ai_evals_complete_guide_langwatch_langfuse.md  # 🔬 Deep-dive: AI Evals (LangWatch + Langfuse)
+├── COURSES.md                   # 🎓 Recommended courses & learning paths
+├── TRANSITION_GUIDE.md          # 🔄 Transition from Backend/QA/PM/EM to AI roles
+└── RESEARCH-RADAR.md            # 🛰️ Frontier research radar: trending papers and what to learn next
+```
+
+### Chapters by AI System Lifecycle Stage
+
+```mermaid
+mindmap
+  root((AI System Design Guide))
+    Foundations
+      LLM Internals
+      Model Landscape
+      Training and Adaptation
+    Build
+      Prompting and Context
+      Retrieval Systems
+      Agentic Systems
+      Tool Use and Computer Agents
+      Voice and Audio Agents
+      Multimodal Generation
+    Operate
+      Inference Optimization
+      Memory and State
+      Frameworks and Tools
+      Infrastructure and MLOps
+    Govern
+      Security and Access
+      Reliability and Safety
+      Evaluation and Observability
+    Apply
+      Design Patterns
+      Case Studies
+      Interview Prep
+```
+
+---
+
+## 🔥 Featured Case Studies
+
+Real interview problems with complete solutions and diagrams:
+
+| Case Study | Problem | Key Patterns |
+|------------|---------|--------------|
+| [Real-Time Search](16-case-studies/06-real-time-search.md) | 5-minute data freshness at scale | Streaming + Hybrid Search |
+| [Coding Agent](16-case-studies/07-autonomous-coding-agent.md) | Autonomous multi-file changes | Sandboxing + Self-Correction |
+| [Multi-Tenant SaaS](16-case-studies/08-multi-tenant-saas.md) | Coca-Cola and Pepsi on same infra | Defense-in-Depth Isolation |
+| [Customer Support](16-case-studies/09-customer-support-automation.md) | 60% auto-resolution rate | Tiered Routing + Escalation |
+| [Document Intelligence](16-case-studies/10-document-intelligence.md) | 50K contracts/month extraction | Vision-LLM + Parallel Extractors |
+| [Recommendation Engine](16-case-studies/11-recommendation-engine.md) | Personalized explanations at 50M users | ML Ranking + LLM Explanations |
+| [Compliance Automation](16-case-studies/12-compliance-automation.md) | FDA regulation pre-screening | Claim Extraction + Precedent DB |
+| [Voice Healthcare](16-case-studies/13-voice-ai-healthcare.md) | Real-time clinical note generation | ASR Under a BAA + Grounded Notes + Nurse Review |
+| [Fraud Detection](16-case-studies/14-fraud-detection.md) | 100ms decision with explainability | ML + Rules Hybrid |
+| [Knowledge Management](16-case-studies/15-knowledge-management.md) | 2M docs with access control | Permission-Aware RAG |
+| [Computer-Use Agent](16-case-studies/16-computer-use-agent-production.md) | Expense-report automation across 3 legacy UIs | Firecracker VMs + Action Gate + IPI Defense |
+| [Multi-Tenant Fine-Tuning](16-case-studies/17-multi-tenant-fine-tuning-platform.md) | 280 tenants on shared base + per-tenant LoRA | LoRA Hot-Swap + Eval-as-PRD per Tenant |
+| [Eval-Gated CI/CD](16-case-studies/18-eval-gated-cicd.md) | Block PRs that regress AI quality | Golden Sets + LLM Judges + Statistical Correction |
+| [Customer Distillation](16-case-studies/19-customer-distillation-pipeline.md) | Cut a $50K/mo frontier bill to about $9K/mo with under-3-month payback | Trace-Based Distillation + Canary Rollout |
+| [MCP Knowledge Agent](16-case-studies/20-mcp-knowledge-agent.md) | Cross-system answers from Snowflake/Confluence/Jira/Slack | MCP + OAuth Resource Server + Capability Gating |
+
+---
+
+## 🔬 Bonus Deep-Dive Guides
+
+Two companion guides (3,000+ lines each) cover AI evaluation end to end for engineers, PMs, and QAs:
+
+| Guide | Platforms Covered | What's Inside |
+|-------|------------------|---------------|
+| [AI Evals: Comprehensive Study Guide](ai_evals_comprehensive_study_guide.md) | Arize Phoenix + Langfuse | LLM-as-a-Judge, RAG eval, multi-turn eval, production safety, statistical correction with `judgy`, 30-day learning path |
+| [AI Evals: LangWatch + Langfuse Guide](ai_evals_complete_guide_langwatch_langfuse.md) | LangWatch + Langfuse | Same syllabus with LangWatch's 30+ ready-made evaluators, side-by-side platform comparisons, platform choice guidance |
+
+**Topics covered across both guides:**
+- Tracing and observability setup (Phoenix, LangWatch, Langfuse)
+- Error analysis: open coding → axial coding → failure mode taxonomy
+- Building LLM judges with Train/Dev/Test split and ground truth calibration
+- Code-based evaluators (regex, JSON schema, format validators)
+- RAG-specific evals: faithfulness, context recall, answer relevance
+- Multi-step pipeline evaluation and multi-turn conversation eval
+- Production guardrails, safety monitoring, real-time drift detection
+- Statistical correction with `judgy` library
+- Human annotation best practices and inter-rater reliability
+- Cost/latency optimization for eval pipelines at scale
+
+---
+
+## 🎓 For Interview Prep
+
+AI engineering and system design interviews ask questions like:
+
+> "Design a multi-tenant RAG system where competitors cannot see each other's data."
+
+> "Your agent takes 15 steps for a 3-step task. How do you debug it?"
+
+This guide gives you **concrete patterns**, **real tradeoffs**, and **production failure modes**: the depth interviewers expect at senior levels.
+
+➡️ Start with [Interview Prep](00-interview-prep/)
+
+**Want a practice run before the real loop?** Reading strong answers builds knowledge, but the loop tests something else: explaining a design out loud, under a clock, while someone pushes back on your tradeoffs. Om runs 1:1 mock AI system design interviews, answer and resume reviews, and longer-term mentorship for people moving into senior AI roles. Book on [EngineBogie](https://enginebogie.com/u/ombharatiya) or [Topmate](https://topmate.io/ombharatiya).
+
+<p align="center">
+  <a href="https://enginebogie.com/u/ombharatiya"><img src="https://img.shields.io/badge/Book%20a%20mock%20interview%20%E2%86%92-0E7C66?style=for-the-badge&logo=googlecalendar&logoColor=white" alt="Book a mock interview on EngineBogie"></a>
+  <a href="https://topmate.io/ombharatiya"><img src="https://img.shields.io/badge/Mentorship%20on%20Topmate-1F2937?style=for-the-badge&logoColor=white" alt="Book mentorship on Topmate"></a>
+</p>
+
+---
+
+## ❓ Frequently Asked Questions
+
+### What is AI system design?
+AI system design is the discipline of architecting production-grade systems built around LLMs, retrieval, agents, and evaluation. It covers model selection, RAG pipelines, agent orchestration, memory, observability, and safety. See [LLM Internals](01-foundations/01-llm-internals.md) and [AI Design Patterns](15-ai-design-patterns/) to get oriented.
+
+### How do I prepare for an AI engineering interview?
+Start with the [Question Bank](00-interview-prep/01-question-bank.md) (147 questions through September 2026), then practice with [Answer Frameworks](00-interview-prep/02-answer-frameworks.md) and [Whiteboard Exercises](00-interview-prep/04-whiteboard-exercises.md). Most senior interviews test RAG design, agent debugging, multi-tenant isolation, and cost/latency tradeoffs, all covered in the [Case Studies](16-case-studies/). Before a real loop, do at least one timed mock with someone who will interrupt and push back; you can book one with Om on [EngineBogie](https://enginebogie.com/u/ombharatiya) or [Topmate](https://topmate.io/ombharatiya).
+
+### What is RAG (Retrieval-Augmented Generation)?
+RAG is a pattern where an LLM retrieves relevant context from an external knowledge source (vector DB, search index, graph) before generating an answer, reducing hallucinations and grounding responses in your data. The full pipeline is covered in [RAG Fundamentals](06-retrieval-systems/01-rag-fundamentals.md) and scaled in [Production RAG at Scale](06-retrieval-systems/14-production-rag-at-scale.md).
+
+### What are AI agents and how are they different from chatbots?
+AI agents are LLM-driven systems that plan, call tools, and act over multiple steps to accomplish goals, whereas chatbots typically respond in a single turn. Agents introduce loops, memory, error recovery, and tool-use via protocols like MCP. Start with [Agent Fundamentals](07-agentic-systems/01-agent-fundamentals.md).
+
+### What is MCP (Model Context Protocol) and how does it compare to A2A?
+MCP is an open protocol that lets LLM applications discover and call external tools and data sources in a standard way. A2A (Agent2Agent) is the complementary protocol for handing work to an agent you do not control: the remote agent publishes an Agent Card at `/.well-known/agent-card.json`, the client sends it a message, and the remote agent decides whether to open a long-running task. They solve different layers: MCP is the tool boundary, A2A is the agent boundary, and most systems need MCP long before they need A2A. Both now sit under the Linux Foundation's Agentic AI Foundation (A2A joined in August 2026). Cite versions precisely in interviews: MCP's spec ships as dated revisions, the current one (2026-07-28) made the protocol core stateless, and there is no "MCP 2.0"; A2A's latest spec release is v1.0.1. See [Tool Use and MCP](07-agentic-systems/03-tool-use-and-mcp.md).
+
+### Which LLM should I use in production: Claude, GPT, Gemini, or open-source?
+It depends on latency budget, context length, cost per task (tokens per task times price, not price per token), tool-use quality, and data residency. A sensible October 2026 starting point: Claude Opus 5.5 ($4/$20 per 1M) for agentic coding and hard work, the $2/$10 tier (Claude Sonnet 5.5, GPT-6 Sol, GPT-6.1 Sol) for most production traffic, GPT-6 Luna or Gemini 3.8 Flash for volume, and Claude Fable 5.1 or GPT-6 Astra ($10/$50) only when your evals show the cheaper tiers falling short. The [Model Taxonomy](02-model-landscape/01-model-taxonomy.md) and [Pricing](02-model-landscape/03-pricing-and-costs.md) chapters compare these plus Grok 4.7, Muse Spark 1.3, DeepSeek V4.1-Flash, and open-weight models such as MiMo-V2.6, GLM-5.3, and Kimi K3, and the [Model Selection Guide](02-model-landscape/04-model-selection-guide.md) turns them into a decision tree. Run your own evals before switching: vendor scores do not carry across harnesses or effort settings.
+
+### How do I evaluate an LLM or RAG system in production?
+Combine offline evals (LLM-as-a-judge with ground-truth calibration), online metrics (faithfulness, context recall, answer relevance), and continuous tracing. The companion deep-dives [AI Evals: Phoenix + Langfuse](ai_evals_comprehensive_study_guide.md) and [AI Evals: LangWatch + Langfuse](ai_evals_complete_guide_langwatch_langfuse.md) walk through this end-to-end.
+
+### How do I build a multi-tenant RAG system safely?
+Use defense-in-depth: per-tenant indexes or namespaces, query-time access checks, and prompt-layer guards. The [Access Control](12-security-and-access/02-access-control.md) chapter and [Multi-Tenant SaaS Case Study](16-case-studies/08-multi-tenant-saas.md) cover the patterns that hold up in interviews and production.
+
+### What is agentic RAG?
+Agentic RAG combines retrieval with an agent loop that can decide what to search, when to re-query, and when to escalate, instead of running a single fixed retrieve-then-generate pass. See [Agentic RAG](06-retrieval-systems/08-agentic-rag.md) for the architectures and tradeoffs.
+
+### Is this guide free? Can I contribute?
+Yes, MIT-licensed and free. PRs are welcome; see [Contributing Guide](CONTRIBUTING.md). If you have production failure modes, new model benchmarks, or interview questions to add, open a PR.
+
+### How often is this guide updated?
+Continuously. New model releases, protocol changes (MCP, A2A), and emerging patterns are added as they ship. The October 2026 refresh brought models, prices, protocols, and framework versions up to their state on October 1, 2026. Recent additions include a twelve-question [Voice AI section](00-interview-prep/01-question-bank.md#voice-ai-questions), seven September 2026 questions, a tenth whiteboard exercise, a reworked [Real-Time Voice Agents](18-voice-and-audio-agents/01-realtime-voice-agents.md) chapter, and the [October 2026 Job Market Trends](00-interview-prep/06-job-market-trends-2026.md).
+
+### Can I use this guide if I am transitioning from backend, QA, PM, or EM into AI?
+Yes. The [Role Transition Guide](TRANSITION_GUIDE.md) maps existing skills to AI engineering, MLE, and AI architect tracks, with reading paths per role. Pair it with [COURSES.md](COURSES.md) for curated learning resources.
+
+---
+
+## 🔄 Living Book
+
+This guide tracks:
+- New model releases and real-world performance
+- Emerging patterns (MCP, Agentic RAG, Flow Engineering)
+- Updated pricing and rate limits
+- Deprecations and best practice changes
+
+**⭐ Star and Watch** the repo to get notified when updates are pushed.
+
+---
+
+## 🤝 Contributing
+
+Found outdated info? Have production experience to share? PRs welcome.
+See [Contributing Guide](CONTRIBUTING.md).
+
+---
+
+## 👋 Stay Connected
+
+If this guide helps you, the easiest way to support it is to follow along where new chapters and refreshes get announced first:
+
+- **Website:** [aidaddy.tech](https://www.aidaddy.tech) - read the full guide with search, clean navigation, and a mobile-friendly layout.
+- **GitHub:** [@ombharatiya](https://github.com/ombharatiya) - follow for the repo, star the project, and watch for new releases.
+- **X / Twitter:** [@ombharatiya](https://x.com/ombharatiya) - short takes on model releases, MCP, agents, and interviews.
+- **LinkedIn:** [ombharatiya](https://linkedin.com/in/ombharatiya) - deeper writeups and interview prep tips for senior AI roles.
+- **Mock interviews and mentorship:** [EngineBogie](https://enginebogie.com/u/ombharatiya) or [Topmate](https://topmate.io/ombharatiya) - book a 1:1 mock AI system design loop, a review of your answers, or ongoing mentorship for a move into AI roles.
+
+<p align="center">
+  <a href="https://github.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20GitHub-ombharatiya-181717?style=for-the-badge&logo=github" alt="Follow on GitHub"></a>
+  <a href="https://x.com/ombharatiya"><img src="https://img.shields.io/badge/Follow%20on%20Twitter-@ombharatiya-1DA1F2?style=for-the-badge&logo=x" alt="Follow on Twitter"></a>
+  <a href="https://linkedin.com/in/ombharatiya"><img src="https://img.shields.io/badge/Connect%20on%20LinkedIn-ombharatiya-0A66C2?style=for-the-badge&logo=linkedin" alt="Connect on LinkedIn"></a>
+</p>
+
+---
+
+## 📄 License
+
+MIT License. See [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+  <b>Built and maintained by <a href="https://github.com/ombharatiya">Om Bharatiya</a> · <a href="https://github.com/ombharatiya">GitHub</a> · <a href="https://x.com/ombharatiya">Twitter</a> · <a href="https://linkedin.com/in/ombharatiya">LinkedIn</a></b>
+</p>

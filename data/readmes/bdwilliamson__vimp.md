@@ -1,0 +1,152 @@
+# R/`vimp`: inference on algorithm-agnostic variable importance <img src="man/figures/logo.png" align="right" width="120px"/>
+
+ <!-- badges: start -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/vimp)](https://cran.r-project.org/package=vimp)
+[![R-CMD-check](https://github.com/bdwilliamson/vimp/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bdwilliamson/vimp/actions/workflows/R-CMD-check.yaml)
+[![Coverage status](https://codecov.io/gh/bdwilliamson/vimp/branch/master/graph/badge.svg)](https://codecov.io/github/bdwilliamson/vimp?branch=master)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/vimp)](https://CRAN.R-project.org/package=vimp)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- badges: end -->
+
+**Software authors:** [Brian Williamson](https://bdwilliamson.github.io/), [Jean Feng](https://jeanfeng.com/), and [Charlie Wolock](https://cwolock.github.io/)
+
+**Methodology authors:** [Brian Williamson](https://bdwilliamson.github.io/), [Peter Gilbert](https://www.fredhutch.org/en/faculty-lab-directory/gilbert-peter.html), [Noah Simon](http://faculty.washington.edu/nrsimon/), [Marco Carone](http://faculty.washington.edu/mcarone/about.html), [Jean Feng](http://www.jeanfeng.com/)
+
+**Python package:** https://github.com/bdwilliamson/vimpy
+
+## Introduction
+
+In predictive modeling applications, it is often of interest to determine the relative contribution of subsets of features in explaining an outcome; this is often called variable importance. It is useful to consider variable importance as a function of the unknown, underlying data-generating mechanism rather than the specific predictive algorithm used to fit the data. This package provides functions that, given fitted values from predictive algorithms, compute algorithm-agnostic estimates of population variable importance, along with asymptotically valid confidence intervals for the true importance and hypothesis tests of the null hypothesis of zero importance.
+
+Specifically, the types of variable importance supported by `vimp` include: difference in population classification accuracy, difference in population area under the receiver operating characteristic curve, difference in population deviance, difference in population R-squared.
+
+More detail may be found in our papers on [R-squared-based variable importance](https://doi.org/10.1111/biom.13392),  [general variable importance](https://doi.org/10.1080/01621459.2021.2003200), and [general Shapley-based variable importance](http://proceedings.mlr.press/v119/williamson20a.html).
+
+This method works on low-dimensional and high-dimensional data.
+
+## Issues
+
+If you encounter any bugs or have any specific feature requests, please [file an issue](https://github.com/bdwilliamson/vimp/issues).
+
+## R installation
+
+You may install a stable release of `vimp` from [CRAN](https://cran.r-project.org/web/packages/vimp/index.html) via `install.packages("vimp")`. You may also install a stable release of `vimp` from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/) by running the following code (replace `v2.1.0` with the tag for the specific release you wish to install):
+
+```r
+## install.packages("devtools") # only run this line if necessary
+devtools::install_github(repo = "bdwilliamson/vimp@v2.1.0")
+```
+
+You may install a development release of `vimp` from GitHub via [`devtools`](https://www.rstudio.com/products/rpackages/devtools/) by running the following code:
+
+```r
+## install.packages("devtools") # only run this line if necessary
+devtools::install_github(repo = "bdwilliamson/vimp")
+```
+
+## Example
+
+This example shows how to use `vimp` in a simple setting with simulated data, using `SuperLearner` to estimate the conditional mean functions and specifying the importance measure of interest as the R-squared-based measure. For more examples and detailed explanation, please see the [vignette](https://bdwilliamson.github.io/vimp/introduction-to-vimp.html).
+
+```r
+# load required functions and libraries
+library("SuperLearner")
+library("vimp")
+library("xgboost")
+library("glmnet")
+
+# -------------------------------------------------------------
+# problem setup
+# -------------------------------------------------------------
+# set up the data
+n <- 100
+p <- 2
+s <- 1 # desire importance for X_1
+x <- as.data.frame(replicate(p, runif(n, -1, 1)))
+y <- (x[,1])^2*(x[,1]+7/5) + (25/9)*(x[,2])^2 + rnorm(n, 0, 1)
+
+# -------------------------------------------------------------
+# get variable importance!
+# -------------------------------------------------------------
+# set up the learner library, consisting of the mean, boosted trees,
+# elastic net, and random forest
+learner.lib <- c("SL.mean", "SL.xgboost", "SL.glmnet", "SL.randomForest")
+# get the variable importance estimate, SE, and CI
+# I'm using only 2 cross-validation folds to make things run quickly; in practice, you should use more
+set.seed(20231213)
+vimp <- vimp_rsquared(Y = y, X = x, indx = 1, V = 2)
+```
+
+## Citation
+
+After using the `vimp` package, please cite the following (for R-squared-based variable importance):
+
+```
+    @article{williamson2020,
+      author={Williamson, BD and Gilbert, PB and Carone, M and Simon, R},
+      title={Nonparametric variable importance assessment using machine learning techniques},
+      journal={Biometrics},
+      year={2020},
+      doi={10.1111/biom.13392}
+    }
+```
+
+or the following (for general variable importance parameters):
+
+```
+  @article{williamson2021,
+    author={Williamson, BD and Gilbert, PB and Simon, NR and Carone, M},
+    title={A general framework for inference on algorithm-agnostic variable importance},
+    journal={Journal of the American Statistical Association},
+    year={2021},
+    doi={10.1080/01621459.2021.2003200}
+  }
+```
+
+or the following (for Shapley-based variable importance):
+
+```
+  @inproceedings{williamson2020,
+    title={Efficient nonparametric statistical inference on population feature importance using {S}hapley values},
+    author={Williamson, BD and Feng, J},
+    year={2020},
+    booktitle={Proceedings of the 37th International Conference on Machine Learning},
+    volume={119},
+    pages={10282--10291},
+    series = {Proceedings of Machine Learning Research},
+    URL = {http://proceedings.mlr.press/v119/williamson20a.html}
+}
+```
+
+## License
+
+The contents of this repository are distributed under the MIT license. See below for details:
+
+```
+MIT License
+
+Copyright (c) [2018-present] [Brian D. Williamson]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Logo
+
+The logo was created using [hexSticker](https://github.com/GuangchuangYu/hexSticker) and [lisa](https://github.com/tyluRp/lisa). Many thanks to the maintainers of these packages and the [Color Lisa](http://colorlisa.com/) team.

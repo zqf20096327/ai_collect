@@ -1,0 +1,103 @@
+# Ollama + Open Code Setup
+
+Configuration and documentation for running Open Code CLI with local Ollama models on Apple Silicon (M-series) Macs.
+
+## Quick Start
+
+1. **Install prerequisites:** [Ollama](https://ollama.ai) and [Open Code CLI](https://opencode.ai)
+
+2. **Pull the recommended model and build the 32k variant:**
+   ```bash
+   ollama pull ministral-3:8b
+   ollama create ministral-3:8b-32k -f modelfiles/ministral-3-8b-32k.Modelfile
+   ```
+
+3. **Wire the config into your project** (symlink or copy — both work, see [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md)):
+   ```bash
+   # Symlink (auto-updates when this repo updates)
+   ln -s ~/code/ollama-opencode-setup/opencode.json ~/code/your-project/opencode.json
+
+   # Or copy (self-contained, good for CI or sharing)
+   cp ~/code/ollama-opencode-setup/opencode.json ~/code/your-project/opencode.json
+   ```
+
+4. **Run Open Code:**
+   ```bash
+   cd ~/code/your-project && opencode
+   ```
+
+---
+
+## What's Included
+
+| Path | Description |
+|------|-------------|
+| `opencode.json` | Open Code configuration — all tested Ollama models |
+| `modelfiles/` | Reproducible Modelfiles for context-baked model variants |
+| `examples/` | Code review, refactoring, multi-file analysis, batch processing prompts |
+| `scripts/tool-call-test.sh` | Verify a model's tool-calling capability |
+| `test-opencode.md` | Test suite for validating the Open Code setup |
+| `CHANGELOG.md` | Version history and model test results |
+| `docs/` | Full documentation — see [Documentation](#documentation) below |
+
+---
+
+## Available Models
+
+> **⚠️ Tool calling requires a model trained for it — fitting in RAM is not enough.** Models marked ✅ below can create and edit files; models marked ❌ are read-only (they plan and analyze but output bash instead of invoking the write tool). Verify any model yourself with [`scripts/tool-call-test.sh`](scripts/tool-call-test.sh); full details in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
+
+**Ollama models** — tested on M1 16GB (2026-05-31):
+
+| Model | Size | Context | Tool Use | Notes |
+|-------|------|---------|----------|-------|
+| `ministral-3:8b-32k` ⭐ | 11 GB | 32k | ✅ | **Recommended** — 100% GPU on M1 16GB, fastest tool-caller (~4s), no think-mode overhead |
+| `ministral-3:8b-16k` | 6.5 GB | 16k | ✅ | Memory-constrained fallback |
+| `ministral-3:8b` | 6.0 GB | ~4k default | ✅ | Base model, small default context in Open Code |
+| `qwen3:8b-16k` | 5.2 GB | 16k | ✅ | Multi-file analysis, verbose think mode (~26s) |
+| `qwen3:8b` | 5.2 GB | 8k | ✅ | General file ops, verbose think mode |
+| `qwen3:4b` | 2.5 GB | 8k | ✅ | Quick edits, smallest footprint |
+| `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on Mac Mini M4 (2026-06-28, ~18s) |
+| `deepseek-coder-v2:16b` | 8.9 GB | 128k | ❌ | FIM/completion model, no tool calling |
+| `qwen3.5:9b` / `qwen3.5:4b` | 6.6 / ~2.5 GB | 32k | ❌ | Read-only — outputs bash instead of the write tool |
+| `phi4:latest` | ~5 GB | 16k | ❌ | Read-only — no tool support |
+| `gemma4:e4b` | ~5.5 GB | 32k | ❌ | Read-only — no tool support |
+| `mistral-nemo:12b-instruct-2407-q4_K_M` | 7.5 GB | 8k | ❌ | Best quality for read-only review |
+| `granite3.1-moe` | 2.0 GB | 8k | ❌ | Fastest read-only analysis |
+
+**Mac Mini M4 Pro 24GB** — large models via Ollama (no separate MLX server needed):
+
+| Model | Size | Context | Tool Use | Notes |
+|-------|------|---------|----------|-------|
+| `mistral-small3.2:24b-32k` ⭐ | 19 GB | 32k | ✅ | **Recommended for M4 24GB (no GPU tuning)** — dense 24B, 100% GPU at 32k, tool use confirmed (tested 2026-06-30). Build from `modelfiles/`. **64k OOMs to CPU on 24GB — use 32k.** Keep tool-schema paths neutral (it refuses "absolute path" prompts) |
+| `mistral-small3.2:24b-16k` | 16 GB | 16k | ✅ | Lighter 16k variant of the recommended model — 100% GPU, smaller KV cache than 32k (tested 2026-07-01). Prefer 32k by default; reach for 16k for a lighter footprint on work scoped to ~3-5 files |
+| `qwen3-coder:30b-32k` | 21 GB | 32k | ✅* | Coding-optimized MoE, fastest (~34.5 tok/s warm) — but spills ~19% to CPU at the default ceiling; 98% GPU only with raised `iogpu.wired_limit_mb` (21504), tested 2026-06-30. Base `qwen3-coder:30b` runs at 4k in Open Code — build the 32k variant from `modelfiles/` |
+| `qwen3.6:27b-mlx` | 19 GB | 256k | ✅* | Dense 27B — OOM at the default GPU limit; loads after raising `iogpu.wired_limit_mb` to 21504 (~9.3 tok/s warm, tested 2026-06-28). Slower than the MoE — see [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md#raising-the-memory-ceiling-for-dense-mlx-models) |
+| `qwen3.5:27b-mlx` | 20 GB | 256k | ✅ | Ollama built-in MLX engine, tool use confirmed (9.9 tok/s, tested 2026-06-28) |
+| `qwen3.5:latest` | 6.6 GB | 32k | ✅ | Tool use confirmed on M4 24GB (~18s, tested 2026-06-28) |
+
+---
+
+## Documentation
+
+| Doc | Contents |
+|-----|----------|
+| [docs/PROJECT-SETUP.md](docs/PROJECT-SETUP.md) | Symlink vs copy, new/existing project setup, committing the config |
+| [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | Available models, provider setup, `opencode.json` |
+| [docs/CUSTOM-MODELS.md](docs/CUSTOM-MODELS.md) | Creating context-baked variants via Modelfiles |
+| [docs/CONTEXT-WINDOWS.md](docs/CONTEXT-WINDOWS.md) | RAM-based defaults, why we bake `num_ctx` |
+| [docs/MODEL-SELECTION.md](docs/MODEL-SELECTION.md) | Model recommendations by hardware and task |
+| [docs/MLX-RUNTIME.md](docs/MLX-RUNTIME.md) | GPU memory tuning for dense MLX models on M4 24GB+ |
+| [docs/AGENTS-USAGE.md](docs/AGENTS-USAGE.md) | Agent modes (build/plan), tool-use patterns, benchmarks |
+| [docs/OPENCODE-COMMANDS.md](docs/OPENCODE-COMMANDS.md) | All slash commands, bash integration, custom command creation |
+| [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Tool-call failures, think mode, Ollama service checks |
+| [modelfiles/README.md](modelfiles/README.md) | Why custom Modelfiles exist, GPU test results, adding new variants |
+
+---
+
+## Contributing
+
+Contributions welcome — new model configs, Modelfiles, example workflows, or doc improvements. Open an issue or PR.
+
+## License
+
+MIT

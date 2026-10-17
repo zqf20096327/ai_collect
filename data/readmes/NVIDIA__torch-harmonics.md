@@ -1,0 +1,485 @@
+<!--
+SPDX-FileCopyrightText: Copyright (c) 2022 The torch-harmonics Authors. All rights reserved.
+
+SPDX-License-Identifier: BSD-3-Clause
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<!-- <div align="center">
+    <img src="https://raw.githubusercontent.com/NVIDIA/torch-harmonics/main/images/logo/logo.png"  width="568">
+    <br>
+    <a href="https://github.com/NVIDIA/torch-harmonics/actions/workflows/tests.yml"><img src="https://github.com/NVIDIA/torch-harmonics/actions/workflows/tests.yml/badge.svg"></a>
+    <a href="https://pypi.org/project/torch_harmonics/"><img src="https://img.shields.io/pypi/v/torch_harmonics"></a>
+</div> -->
+
+<!--
+[![pypi](https://img.shields.io/pypi/v/torch_harmonics)](https://pypi.org/project/torch_harmonics/)
+-->
+
+<!-- # spherical harmonic transforms -->
+
+# torch-harmonics
+
+[**Overview**](#overview) | [**Installation**](#installation) | [**More information**](#more-about-torch-harmonics) | [**Getting started**](#getting-started) | [**Contributors**](#contributors) | [**Cite us**](#cite-us) | [**References**](#references)
+
+[![tests](https://github.com/NVIDIA/torch-harmonics/actions/workflows/tests.yml/badge.svg)](https://github.com/NVIDIA/torch-harmonics/actions/workflows/tests.yml)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/NVIDIA/torch-harmonics/coverage-data/badge.json&cacheSeconds=3600)](https://github.com/NVIDIA/torch-harmonics/tree/coverage-data)
+[![pypi](https://img.shields.io/pypi/v/torch_harmonics)](https://pypi.org/project/torch_harmonics/)
+[![conda-forge](https://img.shields.io/conda/vn/conda-forge/torch-harmonics)](https://anaconda.org/conda-forge/torch-harmonics)
+[![downloads](https://static.pepy.tech/badge/torch-harmonics/month)](https://pepy.tech/projects/torch-harmonics)
+[![docs](https://img.shields.io/badge/docs-latest-blue)](https://nvidia.github.io/torch-harmonics/)
+[![license](https://img.shields.io/github/license/NVIDIA/torch-harmonics)](LICENSE.txt)
+[![arXiv](https://img.shields.io/badge/arXiv-2609.39737-b31b1b.svg)](https://arxiv.org/abs/2609.39737)
+
+## Overview
+
+torch-harmonics implements differentiable signal processing on the sphere. This includes differentiable implementations of the spherical harmonic transforms, vector spherical harmonic transforms and discrete-continuous convolutions on the sphere. The package was originally implemented to enable Spherical Fourier Neural Operators (SFNO) [1]. A description of the library as a whole is given in [7].
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/NVIDIA/torch-harmonics/main/images/overview.png" width="760">
+</div>
+
+The SHT algorithm uses quadrature rules to compute the projection onto the associated Legendre polynomials and FFTs for the projection onto the harmonic basis. This algorithm tends to outperform others with better asymptotic scaling for most practical purposes [2].
+
+torch-harmonics uses PyTorch primitives to implement these operations, making it fully differentiable. Moreover, the quadrature can be distributed onto multiple ranks making it spatially distributed.
+
+torch-harmonics has been used to implement a variety of differentiable PDE solvers which generated the animations below. Moreover, it has enabled the development of Spherical Fourier Neural Operators  [1].
+
+<div align="center">
+<table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td><img src="https://media.githubusercontent.com/media/NVIDIA/torch-harmonics/main/images/sfno.gif"  width="240"></td>
+        <td><img src="https://media.githubusercontent.com/media/NVIDIA/torch-harmonics/main/images/zonal_jet.gif"  width="240"></td>
+        <td><img src="https://media.githubusercontent.com/media/NVIDIA/torch-harmonics/main/images/allen-cahn.gif"  width="240"></td>
+    </tr>
+<!--     <tr>
+        <td style="text-align:center; border-style : hidden!important;">Shallow Water Eqns.</td>
+        <td style="text-align:center; border-style : hidden!important;">Ginzburg-Landau Eqn.</td>
+        <td style="text-align:center; border-style : hidden!important;">Allen-Cahn Eqn.</td>
+    </tr>  -->
+</table>
+</div>
+
+
+## Installation
+
+### Prebuilt wheels
+
+Prebuilt Linux wheels with compiled CUDA extensions are available on [pypi.nvidia.com](https://pypi.nvidia.com). Pick the package matching your CUDA toolkit version:
+
+| CUDA | Package | Supported PyTorch | Install command |
+|------|---------|-------------------|-----------------|
+| 12.6 | `torch-harmonics-cu126` | 2.9.1 | `pip install torch-harmonics-cu126 --extra-index-url https://pypi.nvidia.com` |
+| 12.8 | `torch-harmonics-cu128` | 2.9.1 | `pip install torch-harmonics-cu128 --extra-index-url https://pypi.nvidia.com` |
+| 12.9 | `torch-harmonics-cu129` | 2.9.1 | `pip install torch-harmonics-cu129 --extra-index-url https://pypi.nvidia.com` |
+| 13.0 | `torch-harmonics-cu130` | 2.9.1 | `pip install torch-harmonics-cu130 --extra-index-url https://pypi.nvidia.com` |
+| 13.2 | `torch-harmonics-cu132` | 2.12.0 | `pip install torch-harmonics-cu132 --extra-index-url https://pypi.nvidia.com` |
+
+If you don't need a specific CUDA version, use the rolling alias for the latest CUDA build:
+
+```bash
+pip install torch-harmonics-cuda-latest --extra-index-url https://pypi.nvidia.com
+```
+
+For a CPU-only build, install the `torch-harmonics` package from [PyPI](#pypi).
+
+> **Tip:** Run `nvidia-smi` to check your driver's CUDA version.
+
+**Older PyTorch or CUDA** (PyTorch before 2.9, CUDA before 12.6) have no prebuilt wheels. Use the [Docker container](#building-from-source), which brings a matching PyTorch and CUDA, or build torch-harmonics from source against your installed PyTorch, adding `--no-deps` so that pip does not replace it with a newer one (`pip install --no-build-isolation --no-deps .`). These combinations are not tested.
+
+### PyPI
+
+The vanilla `torch-harmonics` package on [PyPI](https://pypi.org/project/torch_harmonics/) ships a CPU-only prebuilt wheel. This version is built for the newest PyTorch release. For GPU support, use the NVIDIA PyPI packages above.
+
+```bash
+pip install torch-harmonics
+```
+
+### Building from source
+
+If your OS, PyTorch or CUDA toolkit version is not covered by the available wheels, we recomment building torch-harmonics from the GitHub repository. Use `--no-build-isolation` so that custom CPU and CUDA kernels compile against your existing torch installation:
+
+```bash
+git clone git@github.com:NVIDIA/torch-harmonics.git
+cd torch-harmonics
+pip install --no-build-isolation -e .
+```
+
+If CUDA devices are not detected automatically (e.g. inside a container), set the `TORCH_HARMONICS_BUILD_CUDA_EXTENSION` flag. Set `TORCH_CUDA_ARCH_LIST` to only the architectures you need to reduce compilation time:
+
+```bash
+export TORCH_HARMONICS_BUILD_CUDA_EXTENSION=1
+export TORCH_CUDA_ARCH_LIST="8.0 8.6 9.0a 10.0a+PTX"
+pip install --no-build-isolation -e .
+```
+
+> **Tip:** Use the `a` suffix (e.g. `9.0a`, `10.0a`) instead of plain `9.0` or `10.0` to enable architecture-specific tensor core instructions (e.g. `wgmma` on Hopper). Some layers such as DISCO benefit significantly from this. The trade-off is that the resulting binary is only compatible with the exact GPU generation it was compiled for.
+
+:warning: Custom CUDA extensions require architectures >= 7.0.
+
+Alternatively, build a Docker container:
+
+```bash
+git clone git@github.com:NVIDIA/torch-harmonics.git
+cd torch-harmonics
+docker build . -t torch_harmonics
+docker run --gpus all -it --rm --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 torch_harmonics
+```
+
+## More about torch-harmonics
+
+### Spherical harmonics
+
+The [spherical harmonics](https://en.wikipedia.org/wiki/Spherical_harmonics) are special functions defined on the two-dimensional sphere $S^2$ (embedded in three dimensions). They form an orthonormal basis of the space of square-integrable functions defined on the sphere $L^2(S^2)$ and are comparable to the harmonic functions defined on a circle/torus. The spherical harmonics are defined as
+
+$$
+Y_l^m(\theta, \lambda) = \sqrt{\frac{(2l + 1)}{4 \pi} \frac{(l - m)!}{(l + m)!}} P_l^m(\cos \theta)  \exp(im\lambda),
+$$
+
+where $\theta$ and $\lambda$ are colatitude and longitude respectively, and $P_l^m$ the normalized, [associated Legendre polynomials](https://en.wikipedia.org/wiki/Associated_Legendre_polynomials).
+
+<div align="center">
+<img src="https://media.githubusercontent.com/media/NVIDIA/torch-harmonics/main/images/spherical_harmonics.gif" width="432">
+<br>
+Spherical harmonics up to degree 5
+</div>
+
+### Spherical harmonic transform
+
+The spherical harmonic transform (SHT)
+
+$$
+f_l^m = \int_{S^2}  \overline{Y_{l}^{m}}(\theta, \lambda) f(\theta, \lambda) \mathrm{d} \mu(\theta, \lambda)
+$$
+
+realizes the projection of a signal $f(\theta, \lambda)$ on $S^2$ onto the spherical harmonics basis. The SHT generalizes the Fourier transform on the sphere. Conversely, a truncated series expansion of a function $f$ can be written in terms of spherical harmonics as
+
+$$
+f (\theta, \lambda) = \sum_{m=-M}^{M} \exp(im\lambda) \sum_{l=|m|}^{M} \hat f_l^m  P_l^m (\cos \theta),
+$$
+
+where $\hat{f}_l^m$, are the expansion coefficients associated to the mode $m$, $n$.
+
+The implementation of the SHT follows the algorithm as presented in [2]. A direct spherical harmonic transform can be accomplished by a Fourier transform
+
+$$
+\hat f^m(\theta) = \frac{1}{2 \pi} \int_{0}^{2\pi} f(\theta, \lambda) \exp(-im\lambda) \mathrm{d} \lambda
+$$
+
+in longitude and a Legendre transform
+
+$$
+\hat f_l^m = \frac{1}{2} \int^{\pi}_0 \hat f^{m} (\theta) P_l^m (\cos \theta) \sin \theta \mathrm{d} \theta
+$$
+
+in latitude.
+
+### Discrete Legendre transform
+
+The second integral, which computed the projection onto the Legendre polynomials is realized with quadrature. On the Gaussian grid, we use Gaussian quadrature in the $\cos \theta$ domain. The integral
+
+$$
+\hat f_l^m = \frac{1}{2} \int_{-1}^1 \hat{f}^m(\arccos x) P_l^m (x) \mathrm{d} x
+$$
+
+is obtained with the substitution $x = \cos \theta$ and then approximated by the sum
+
+$$
+\hat f_l^m = \sum_{j=1}^{N_\theta}  \hat{f}^m(\arccos x_j) P_l^m(x_j) w_j.
+$$
+
+Here, $x_j \in [-1,1]$ are the quadrature nodes with the respective quadrature weights $w_j$.
+
+### Discrete-continuous convolutions on the sphere
+
+torch-harmonics now provides local discrete-continuous (DISCO) convolutions as outlined in [5] on the sphere. These are use in local neural operators [2] to generalize convolutions to structured and unstructured meshes on the sphere.
+
+### Spherical (neighborhood) attention
+
+torch-harmonics introduces spherical attention mechanisms which correctly generalize the attention mechanism to the sphere. The use of quadrature rules makes the resulting operations approximately equivariant and equivariant in the continuous limit. Moreover, neighborhood attention is correctly generalized onto the sphere by using the geodesic distance to determine the size of the neighborhood.
+
+## Getting started
+
+The main functionality of `torch_harmonics` is provided in the form of `torch.nn.Modules` for composability. A minimum example is given by:
+
+```python
+import torch
+import torch_harmonics as th
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+nlat = 512
+nlon = 2*nlat
+batch_size = 32
+signal = torch.randn(batch_size, nlat, nlon, device=device)
+
+# transform data on an equiangular grid
+grid = th.EquiangularGrid(nlat=nlat, nlon=nlon)
+sht = th.RealSHT(grid).to(device)
+
+coeffs = sht(signal)
+```
+
+### Grids
+
+Every layer takes a grid descriptor rather than a resolution and a grid name.
+The descriptor holds both, along with everything that follows from where the
+nodes sit: the quadrature weights, the node spacing localized operators take
+their default cutoff from, and the degree an SHT can be truncated to without
+losing orthogonality. Each grid type has its own class, e.g.
+`th.EquiangularGrid(nlat=..., nlon=...)` or `th.HealpixGrid(nside=...)`.
+Alternatively, `th.as_grid` builds a grid from its name, e.g.
+`th.as_grid("equiangular", nlat=..., nlon=...)`, which is convenient when the
+grid type comes from a configuration file.
+
+The supported grids differ in where they place their nodes, which the figure
+below shows at coarse resolution, both on the sphere and in longitude-latitude
+coordinates:
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/NVIDIA/torch-harmonics/main/images/grids.png" width="100%">
+</div>
+
+- **Equiangular**: rings equally spaced in latitude, including both poles, with Clenshaw-Curtis quadrature. This is the familiar latitude-longitude grid used for most reanalysis and climate data.
+- **Legendre-Gauss**: rings at the roots of the Legendre polynomial in $\cos\theta$, excluding the poles. Gaussian quadrature is exact up to the highest polynomial degree for a given number of rings, so this grid supports the highest SHT bandlimit per ring.
+- **Lobatto**: Gauss-Lobatto nodes, i.e. Legendre-Gauss-like rings that include both poles.
+- **Trapezoidal**: rings equally spaced in $\cos\theta$ with the trapezoidal rule, which places them densely near the equator and sparsely near the poles. Its quadrature converges only algebraically, so it is suited for quadrature and localized operators but not for an SHT at a high bandlimit.
+- **HEALPix** [8]: `12 * nside**2` pixels of equal area on `4 * nside - 1` rings of constant latitude. The rings have different lengths, so a field is stored as a flat tensor of shape `(..., npix)` in RING order. HEALPix supports attention, DISCO convolutions and quadrature but not the SHT yet.
+
+| grid type          | class                                      | field shape    | accepted by                                              |
+| ------------------ | ------------------------------------------ | -------------- | -------------------------------------------------------- |
+| `"equiangular"`    | `th.EquiangularGrid(nlat=..., nlon=...)`   | `(nlat, nlon)` | every layer                                              |
+| `"legendre-gauss"` | `th.LegendreGaussGrid(nlat=..., nlon=...)` | `(nlat, nlon)` | every layer                                              |
+| `"lobatto"`        | `th.LobattoGrid(nlat=..., nlon=...)`       | `(nlat, nlon)` | every layer                                              |
+| `"trapezoidal"`    | `th.TrapezoidalGrid(nlat=..., nlon=...)`   | `(nlat, nlon)` | every layer                                              |
+| `"healpix"`        | `th.HealpixGrid(nside=...)`                | `(npix,)`      | `AttentionS2`, `NeighborhoodAttentionS2`, `DiscreteContinuousConvS2`, `DiscreteContinuousConvTransposeS2`, `QuadratureS2` |
+
+Layers that map between two grids take `grid_in` and `grid_out`, which need not
+be of the same type -- attention can decode from HEALPix onto a latitude-longitude
+grid, for instance:
+
+```python
+hp = th.HealpixGrid(nside=16)                          # 3072 equal-area pixels
+ll = th.EquiangularGrid(nlat=33, nlon=64)
+
+attn = th.NeighborhoodAttentionS2(grid_in=hp, grid_out=hp, in_channels=32, num_heads=4)
+decode = th.AttentionS2(grid_in=hp, grid_out=ll, in_channels=32, num_heads=4)
+
+x = torch.randn(2, 32, hp.npoints)                     # a HEALPix field is flat: (..., npix)
+h = attn(x)                                            # self-attention: (2, 32, 3072)
+
+q = torch.randn(2, 32, 33, 64)                         # queries live on the output grid,
+y = decode(q, key=h, value=h)                          # keys and values on the input grid
+```
+
+Volumetric fields on balls, shells or the space outside a sphere use a radial grid
+together with any of the grids above. `th.SphericalProductGrid(angular, radial)` samples
+the same angular grid at every radius, and a field on it is laid out
+`(..., nr, *angular.shape)`. Every layer accepts a product grid and acts on each shell
+alike, treating the radius as a batch axis. `th.QuadratureVolume` integrates over the
+volume:
+
+```python
+shells = th.LegendreGaussRadialGrid(nr=8, r_inner=1.0, r_outer=2.0)
+grid = th.SphericalProductGrid(th.EquiangularGrid(nlat=33, nlon=64), shells)   # grid.shape == (8, 33, 64)
+
+conv = th.DiscreteContinuousConvS2(grid_in=grid, grid_out=grid, in_channels=4, out_channels=8, kernel_shape=3)
+x = torch.randn(2, 4, *grid.shape)                     # (batch, channels, nr, nlat, nlon)
+y = conv(x)                                            # every shell convolved alike: (2, 8, 8, 33, 64)
+
+volume = th.QuadratureVolume(grid)(torch.ones(grid.shape))   # 4/3 pi (2^3 - 1^3)
+```
+
+The distributed layers take the *global* grid and derive each rank's shard from
+it. Passing a resolution where a descriptor belongs raises a `TypeError` naming
+the replacement, and a layer that does not support a grid yet refuses it at
+construction. See [Grids](https://nvidia.github.io/torch-harmonics/api/utilities.html#grids)
+for the full descriptor API, and the [grid descriptors notebook](./notebooks/grid_descriptors.ipynb) for a walkthrough.
+
+### Distributed and further reading
+
+To enable scalable model-parallelism, `torch-harmonics` implements a distributed variant of the SHT located in `torch_harmonics.distributed`.
+
+Detailed usage of torch-harmonics, alongside helpful analysis provided in a series of notebooks:
+
+1. [Getting started](./notebooks/getting_started.ipynb)
+2. [Quadrature](./notebooks/quadrature.ipynb)
+3. [Visualizing the spherical harmonics](./notebooks/plot_spherical_harmonics.ipynb)
+4. [Spectral fitting vs. SHT](./notebooks/gradient_analysis.ipynb)
+5. [Conditioning of the Gramian](./notebooks/conditioning_sht.ipynb)
+6. [Solving the Helmholtz equation](./notebooks/helmholtz.ipynb)
+7. [Solving the shallow water equations](./notebooks/shallow_water_equations.ipynb)
+8. [Training Spherical Fourier Neural Operators (SFNO)](./notebooks/train_spherical_neural_operator.ipynb)
+9. [Resampling signals on the sphere](./notebooks/resample_sphere.ipynb)
+10. [Grid descriptors](./notebooks/grid_descriptors.ipynb)
+11. [Computing partial derivatives with the SHT](./notebooks/partial_derivatives.ipynb)
+
+## Benchmarks
+
+The `benchmarks/` directory contains a performance benchmark suite covering SHT, DISCO
+convolution, and spherical attention across resolutions, dtypes, and channel counts.
+
+```bash
+# run full suite on current GPU
+python benchmarks/run.py
+
+# filter by name or tag
+python benchmarks/run.py --name disco
+python benchmarks/run.py --tags attention neighborhood
+
+# save a baseline, then compare after a change
+python benchmarks/run.py --save-csv before.csv
+python benchmarks/run.py --reference-csv before.csv
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md#running-benchmarks) for the full workflow expected
+in performance-related PRs.
+
+## Examples and reproducibility
+
+The `examples` folder contains training scripts for three distinct tasks:
+
+* [solution of the shallow water equations on the rotating sphere](./examples/shallow_water_equations/train.py)
+* [depth estimation on the sphere](./examples/depth/train.py)
+* [semantic segmentation on the sphere](./examples/segmentation/train.py)
+
+Results from the papers can generally be reproduced by running `python train.py`. In the case of some older results the number of epochs and learning-rate may need to be adjusted by passing the corresponding command line argument.
+
+## Remarks on automatic mixed precision (AMP) support
+
+Note that torch-harmonics uses Fourier transforms from `torch.fft` which in turn uses kernels from the optimized `cuFFT` library. This library supports fourier transforms of `float32` and `float64` (i.e. `single` and `double` precision) tensors for all input sizes. For `float16` (i.e. `half` precision) and `bfloat16` inputs however, the dimensions which are transformed are restricted to powers of two. Since data is converted to one of these reduced precision floating point formats when `torch.autocast` is used, torch-harmonics will issue an error when the input shapes are not powers of two. For these cases, we recommend disabling autocast for the harmonics transform specifically:
+
+```python
+import torch
+import torch_harmonics as th
+
+sht = th.RealSHT(th.EquiangularGrid(nlat=512, nlon=1024)).cuda()
+
+with torch.autocast(device_type="cuda", enabled = True):
+   # do some AMP converted math here
+   x = some_math(x)
+   # convert tensor to float32
+   x = x.to(torch.float32)
+   # now disable autocast specifically for the transform,
+   # making sure that the tensors are not converted
+   # back to reduced precision internally
+   with torch.autocast(device_type="cuda", enabled = False):
+      xt = sht(x)
+
+   # continue operating on the transformed tensor
+   xt = some_more_math(xt)
+```
+
+Depending on the problem, it might be beneficial to upcast data to `float64` instead of `float32` precision for numerical stability.
+
+## Contributors
+
+[Boris Bonev](https://bonevbs.github.io) (bbonev@nvidia.com), [Thorsten Kurth](https://github.com/azrael417) (tkurth@nvidia.com), [Max Rietmann](https://github.com/rietmann-nv), [Mauro Bisson](https://scholar.google.com/citations?hl=en&user=f0JE-0gAAAAJ), [Andrea Paris](https://github.com/apaaris), [Alberto Carpentieri](https://github.com/albertocarpentieri), [Massimiliano Fatica](https://scholar.google.com/citations?user=Deaq4uUAAAAJ&hl=en), [Nikola Kovachki](https://kovachki.github.io), [Jean Kossaifi](http://jeankossaifi.com), [Christian Hundt](https://github.com/gravitino)
+
+## Cite us
+
+If you use `torch-harmonics` in your work, please cite the paper describing the library [7]:
+
+```bibtex
+@misc{kurth2026library,
+      title={A library for differentiable signal processing and machine learning on the sphere},
+      author={Thorsten Kurth and Max Rietmann and Mauro Bisson and Andrea Paris and Alberto Carpentieri and Jean Kossaifi and Anima Anandkumar and Christian Hundt and Boris Bonev},
+      year={2026},
+      eprint={2609.39737},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2609.39737}
+}
+```
+
+If you use the spherical neural operators or spherical attention, please also cite the papers introducing them: Spherical Fourier Neural Operators [1], localized neural operators with discrete-continuous convolutions [2], and attention on the sphere [6]:
+
+```bibtex
+@misc{bonev2023spherical,
+      title={Spherical Fourier Neural Operators: Learning Stable Dynamics on the Sphere},
+      author={Boris Bonev and Thorsten Kurth and Christian Hundt and Jaideep Pathak and Maximilian Baust and Karthik Kashinath and Anima Anandkumar},
+      year={2023},
+      eprint={2306.03838},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{liuschiaffini2024neural,
+      title={Neural Operators with Localized Integral and Differential Kernels},
+      author={Miguel Liu-Schiaffini and Julius Berner and Boris Bonev and Thorsten Kurth and Kamyar Azizzadenesheli and Anima Anandkumar},
+      year={2024},
+      eprint={2402.16845},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+
+@misc{bonev2025attention,
+      title={Attention on the Sphere},
+      author={Boris Bonev and Max Rietmann and Andrea Paris and Alberto Carpentieri and Thorsten Kurth},
+      year={2025},
+      eprint={2505.11157},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
+## References
+
+<a id="1">[1]</a>
+Bonev B., Kurth T., Hundt C., Pathak, J., Baust M., Kashinath K., Anandkumar A.;
+Spherical Fourier Neural Operators: Learning Stable Dynamics on the Sphere;
+International Conference on Machine Learning, 2023. [arxiv link](https://arxiv.org/abs/2306.03838)
+
+<a id="2">[2]</a>
+Liu-Schiaffini M., Berner J., Bonev B., Kurth T., Azizzadenesheli K., Anandkumar A.;
+Neural Operators with Localized Integral and Differential Kernels;
+International Conference on Machine Learning, 2024. [arxiv link](https://arxiv.org/abs/2402.16845)
+
+<a id="3">[3]</a>
+Schaeffer N.;
+Efficient spherical harmonic transforms aimed at pseudospectral numerical simulations;
+G3: Geochemistry, Geophysics, Geosystems, 2013.
+
+<a id="4">[4]</a>
+Wang B., Wang L., Xie Z.;
+Accurate calculation of spherical and vector spherical harmonic expansions via spectral element grids;
+Adv Comput Math, 2018.
+
+<a id="5">[5]</a>
+Ocampo, Price, McEwen, Scalable and equivariant spherical CNNs by discrete-continuous (DISCO) convolutions, ICLR (2023), arXiv:2209.13603
+
+<a id="6">[6]</a>
+Bonev B., Rietmann M., Paris A., Carpentieri A., Kurth T.; Attention on the Sphere; [arxiv link](https://arxiv.org/abs/2505.11157)
+
+<a id="7">[7]</a>
+Kurth T., Rietmann M., Bisson M., Paris A., Carpentieri A., Kossaifi J., Anandkumar A., Hundt C., Bonev B.;
+A library for differentiable signal processing and machine learning on the sphere;
+arXiv preprint, 2026. [arxiv link](https://arxiv.org/abs/2609.39737)
+
+<a id="8">[8]</a>
+Gorski K. M., Hivon E., Banday A. J., Wandelt B. D., Hansen F. K., Reinecke M., Bartelmann M.;
+HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere;
+The Astrophysical Journal, 622:759-771, 2005.

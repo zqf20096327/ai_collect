@@ -1,0 +1,421 @@
+# opencode-models-discovery
+
+[![npm version](https://img.shields.io/npm/v/opencode-models-discovery.svg?color=blue)](https://www.npmjs.com/package/opencode-models-discovery)
+[![npm downloads](https://img.shields.io/npm/dt/opencode-models-discovery.svg)](https://www.npmjs.com/package/opencode-models-discovery)
+[![release](https://github.com/yuhp/opencode-models-discovery/actions/workflows/release.yml/badge.svg)](https://github.com/yuhp/opencode-models-discovery/actions/workflows/release.yml)
+[![license](https://img.shields.io/github/license/yuhp/opencode-models-discovery)](https://github.com/yuhp/opencode-models-discovery/blob/main/LICENSE)
+[![OpenCode v1](https://img.shields.io/badge/OpenCode%20v1-%3E%3D1.18.29-blueviolet)](https://opencode.ai)
+[![OpenCode v2](https://img.shields.io/badge/OpenCode%20v2-%3E%3D2.0.26-blueviolet)](https://opencode.ai)
+
+> A universal OpenCode plugin for dynamic model discovery across any OpenAI-compatible provider.
+
+Originally inspired by [opencode-lmstudio](https://github.com/agustif/opencode-lmstudio), this project has been refactored into a general-purpose model discovery plugin with provider-level discovery controls, model filtering, metadata enrichment, and `/connect`-backed credential support.
+
+## Features
+
+- Works with any OpenAI-compatible provider
+- Discovers models dynamically from provider model endpoints
+- Injects discovered models into OpenCode provider config automatically
+- Supports provider-level enablement, endpoint overrides, and model filters
+- Supports regex-based model id filtering and raw provider field equality filtering
+- Can enrich model limits and reasoning metadata from provider-specific endpoints
+- Supports OpenCode v1 and v2 `/connect` credentials for custom providers without requiring API keys in configuration
+- Optionally caches discovered provider models in plugin-owned XDG data files on OpenCode v1 or host-provided storage on OpenCode v2
+
+**OpenCode v2 is the primary stable integration.** The package also contains a separate OpenCode v1 legacy adapter. V2 uses a different configuration schema and provides native `/connect` credentials, host-provided storage caching, real-time event updates, TUI operations, RPC handlers, and agent tools.
+
+## OpenCode v2 configuration (stable)
+
+OpenCode v2 uses **`plugins`** (an array of package names) and **`providers`** (a map). Configure discovery under `providers.<id>.settings.modelsDiscovery`; it runs only when `enabled` is explicitly `true`. OpenCode v1 instead uses `plugin`, `provider`, and `options` (see [OpenCode v1 quick start](#opencode-v1-quick-start)).
+
+Add the plugin package to your OpenCode v2 `opencode.json`. OpenCode resolves
+and loads the package automatically:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugins": [
+    "opencode-models-discovery@2.0.0"
+  ],
+  "providers": {
+    "gateway-custom": {
+      "name": "Gateway Custom",
+      "package": "@opencode-ai/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://gateway.example.com/v1",
+        "apiKey": "${GATEWAY_API_KEY}",
+        "modelsDiscovery": {
+          "enabled": true,
+          "modelInfoFormat": "models.dev",
+          "smartModelName": true,
+          "cache": {
+            "enabled": true,
+            "ttlSeconds": 86400
+          },
+          "models": {
+            "includeBy": [{ "field": "id", "match": "^(gpt|gemini)" }],
+            "excludeBy": [{ "field": "id", "match": "image" }]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Set `GATEWAY_API_KEY` in the environment used to start OpenCode; the `${GATEWAY_API_KEY}` placeholder is resolved by the OpenCode v2 host. Alternatively, omit `apiKey` from `opencode.json` and configure credentials interactively with OpenCode's native `/connect` command. If your endpoint needs no credential, omit `apiKey`. Use the same provider package shown above for OpenAI-compatible discovery. The provider needs a `baseURL`; the plugin fetches its models from `/v1/models` by default (relative to the URL's **origin**). For providers that expose `/models` instead, set `"endpoint": "/models"` inside `modelsDiscovery`.
+
+### Credentials
+
+OpenCode v2 providers can use API keys managed through the native `/connect`
+workflow. To use this flow, omit `settings.apiKey` from the provider
+configuration, run `/connect`, select the provider, and enter its API key.
+
+The plugin resolves the credential through the host Integration API and uses it
+in memory for model discovery and runtime requests. Resolved keys are not
+written to `opencode.json`, discovery cache records, diagnostics, or logs.
+Credential changes and revocation are picked up through OpenCode v2 Integration
+events without requiring a restart.
+
+See [Connect and Auth Documentation](docs/connect-and-auth.md) for credential
+resolution, lifecycle handling, and security details.
+
+`modelInfoFormat` and `smartModelName` are optional: without them, discovered names remain the model IDs and no external metadata is fetched. Supported metadata formats are `aiproxy`, `models.dev`, `bifrost`, `litellm`, `vllm`, `lmstudio`, `llama-swap`, and `omniroute`. `models.dev` fetches `https://models.dev/models.json` by default; `modelInfoEndpoint` can override the catalog URL. The `aiproxy` format composes that catalog with inline metadata from AIProxy's model list. `filterNonChat` defaults to `true`; it can filter non-chat models when the selected metadata source supplies that information. `timeoutMs` defaults to 5000 ms. Models returned by discovery are added alongside explicitly configured models.
+
+For a local build, run `npm run compile` and replace the package value above with `"file:///absolute/path/to/opencode-models-discovery/dist"`. OpenCode v2 expects a **directory**, not a path to `index.js` or `server.js`. After rebuilding plugin code, run `opencode service restart` so the background service loads the new bundle. Discovery runs when the plugin initializes. The native TUI commands are `/models-discovery-refresh` and `/models-discovery-console`; the console combines Provider → model → model details browsing with cache inspection and clearing. Use `/models-discovery-console status --provider <provider-id>` to filter the browser. The OpenCode v2 agent tools `models_discovery_refresh` and `models_discovery_status` remain available for automation. Pass `rawCache: true` to `models_discovery_status` to include cached raw models and enrichment results.
+
+OpenCode v2 does not use the OpenCode v1 `modelsDiscovery.cache` disk-cache format, auth.json/`OPENCODE_AUTH_CONTENT` fallback, or `/models-discovery:config` and `/models-discovery:migrate` commands. When enabled, V2 caching stores raw discovery responses and enrichment results through the host-provided `ctx.storage` API. V2 cache is disabled by default and uses a 24-hour TTL when `ttlSeconds` is omitted. Per-model V2 overrides are stored separately under `overrides:<providerID>:<modelID>` and can be edited from the model console. See [OpenCode v2 design notes](docs/v2_prd.md) for the OpenCode v2 implementation details.
+
+## Support levels
+
+| Host generation | Support level | Configuration | Storage and credentials |
+|---|---|---|---|
+| OpenCode v2 | Stable / primary | `plugins` and `providers` | Host `ctx.storage` and `ctx.integration` |
+| OpenCode v1 | Legacy compatibility | `plugin` and `provider` | V1 XDG cache and auth-store fallback |
+
+OpenCode v1 remains supported for compatibility, security fixes, and severe regressions. New discovery, TUI, RPC, cache, and override features target OpenCode v2 first.
+
+## OpenCode v1 quick start
+
+For OpenCode v1 (1.18.29+), add the plugin to your `opencode.json`:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-models-discovery@latest"
+  ],
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:1234/v1",
+        "modelsDiscovery": {
+          "enabled": true
+        }
+      }
+    }
+  }
+}
+```
+
+On startup, the plugin will query the provider's models endpoint and merge discovered models into the active OpenCode config.
+
+### Slow Providers
+
+Discovery requests time out after `3000` milliseconds by default. For a slow local server or gateway, set a larger timeout for that provider:
+
+```json
+{
+  "modelsDiscovery": {
+    "timeoutMs": 15000
+  }
+}
+```
+
+The setting applies to that provider's models endpoint and provider-specific metadata endpoint. OpenCode normally waits up to `5000` milliseconds for discovery during startup; when a provider configures a larger `timeoutMs`, the plugin raises that wait budget to the largest configured provider timeout so its discovered models can be injected before startup continues.
+
+See the [configuration guide](docs/configuration.md#provider-level-configuration) for the full provider configuration.
+
+## OpenCode v1 configuration boundary
+
+Version `1.0.0` uses provider-level discovery configuration only. Put discovery settings under `provider.<id>.options.modelsDiscovery`.
+
+Plugin-level global discovery options are still detected for migration help, but they are no longer applied at runtime:
+
+Deprecated plugin-level options:
+
+- `discovery.enabled`
+- `providers.include`
+- `providers.exclude`
+- `models.includeRegex`
+- `models.excludeRegex`
+- `smartModelName`
+
+Configuration should live on each provider instead:
+
+```json
+{
+  "provider": {
+    "lmstudio": {
+      "options": {
+        "modelsDiscovery": {
+          "enabled": true,
+          "models": {
+            "includeBy": [
+              { "field": "id", "match": "^llama" }
+            ],
+            "excludeBy": [
+              { "field": "available", "equals": false },
+              { "field": "id", "match": "embedding" }
+            ]
+          },
+          "smartModelName": true,
+          "modelInfoFormat": "models.dev"
+        }
+      }
+    }
+  }
+}
+```
+
+Only add the fields you need. For example, do not add filters unless you actually want filtering.
+
+- Discovery remains enabled by default for providers unless disabled.
+- Set `provider.<id>.options.modelsDiscovery.enabled = false` to disable discovery for one provider.
+- Set `OPENCODE_MODELS_DISCOVERY_DEFAULT_ENABLED=false` to make providers without explicit `modelsDiscovery.enabled` default to disabled.
+- Explicit provider-level `modelsDiscovery.enabled` always wins over the environment default.
+
+When legacy global config is detected, the plugin logs a warning, shows a migration toast, and injects `/models-discovery:migrate` into OpenCode commands.
+
+Prefer `models.includeBy` and `models.excludeBy` for model filtering. They filter top-level raw fields returned by a provider's `/v1/models` response. Each field rule uses either `equals` for strict equality or `match` for regex matching against string field values. Use `{ "field": "id", "match": "..." }` for id/name regex filtering. `includeBy` and `excludeBy` are cumulative, and `excludeBy` wins over `includeBy`. `models.includeRegex` and `models.excludeRegex` are retained as legacy id-only shortcuts; when `includeRegex` is configured, `excludeRegex` is not applied. Provider-specific fields such as `available` are not part of the generic OpenAI-compatible contract, so configure these filters only when your provider returns those fields.
+
+## OpenCode v1 helper commands
+
+The plugin injects helper commands into OpenCode's runtime command list.
+
+### `/models-discovery:config`
+
+Opens an assistant-guided configuration flow using OpenCode's `customize-opencode` skill. Use this when setting up the plugin, adding provider-level discovery config, enabling metadata enrichment, disabling discovery for a provider, or managing a persisted discovery cache and its model overrides.
+
+This command is available whenever the plugin is loaded.
+
+## OpenCode v1 persisted model discovery cache
+
+Caching is opt-in per provider. When enabled, the plugin stores the last successful filtered and metadata-enriched discovered model configuration under its own XDG data directory and reuses it until its TTL expires. A fresh cache avoids model-endpoint requests, credential resolution, and enrichment requests. Expired cached models are never used if a refresh fails.
+
+```json
+{
+  "provider": {
+    "local-vllm": {
+      "options": {
+        "baseURL": "http://127.0.0.1:8000/v1",
+        "modelsDiscovery": {
+          "enabled": true,
+          "cache": {
+            "enabled": true,
+            "ttlSeconds": 86400
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The cache lives at `${XDG_DATA_HOME}/opencode-models-discovery/providers/provider-<encoded-provider-id>.json`, using `xdg-basedir`'s data-directory fallback when `XDG_DATA_HOME` is unset. It contains only models that passed discovery filters and enrichment eligibility checks, including their resulting OpenCode capability metadata. These files never contain credentials, auth headers, or OpenCode/Mimocode auth data. Saved per-model overrides are managed through `/models-discovery:config`; they are applied only to models present in the latest valid cached model set. Matching explicit `provider.<id>.models` configuration is recursively merged last, while explicit models not returned by discovery remain standalone. Explicit config is never written to the cache. See [model assembly and customization](docs/configuration.md#model-assembly-and-customization) and [persisted model discovery cache](docs/persisted-model-discovery.md) for details.
+
+### `/models-discovery:migrate`
+
+Opens an assistant-guided migration flow using OpenCode's `customize-opencode` skill. It looks for OpenCode config files that declare this plugin and moves legacy plugin-level discovery options into `provider.<id>.options.modelsDiscovery` where safe.
+
+This command is injected only when legacy global discovery config is detected.
+
+The migration assistant is instructed to inspect project config, user global config, and `OPENCODE_CONFIG` when present. It should not edit managed or organization-controlled config unless you explicitly ask it to.
+
+## Model metadata enrichment examples
+
+Discovery adds model ids to your OpenCode provider config. Some providers only expose minimal `/models` responses, so the plugin can optionally enrich discovered models with OpenCode-compatible capability metadata such as context limits, output limits, reasoning, tool calling, attachments, structured output, temperature support, and modalities.
+
+Metadata enrichment is explicit. The plugin does not contact external metadata sources unless configured.
+
+For models.dev enrichment:
+
+```json
+{
+  "modelsDiscovery": {
+    "enabled": true,
+    "modelInfoFormat": "models.dev",
+    "modelInfoEndpoint": "https://your-mirror.example/models.json"
+  }
+}
+```
+
+`modelInfoEndpoint` is optional for `models.dev`; it must be a complete URL and defaults to `https://models.dev/models.json`. Use it to configure an accessible mirror or proxy. For LiteLLM and LM Studio, it accepts either an origin-relative path or a complete URL.
+
+For AIProxy's inline model-list metadata, use `modelInfoFormat: "aiproxy"`:
+
+```json
+{
+  "providers": {
+    "aiproxy": {
+      "package": "aisdk:@ai-sdk/openai-compatible",
+      "settings": {
+        "baseURL": "https://aiproxy.example/api",
+        "apiKey": "{env:AIPROXY_API_KEY}",
+        "modelsDiscovery": {
+          "enabled": true,
+          "endpoint": "/api/models",
+          "modelInfoFormat": "aiproxy"
+        }
+      }
+    }
+  }
+}
+```
+
+This format does not make an additional request to AIProxy. It enriches each discovered entry from its inline `limits` and `pricing` fields, and composes those values over models.dev metadata. `modelInfoEndpoint`, if set, overrides the models.dev URL for this format; it does not change the AIProxy model-list endpoint.
+
+AIProxy `limits.max_input_tokens` and `limits.max_output_tokens` map to OpenCode's input and output limits only when a valid context limit is already available. The plugin does not infer total context by adding input and output limits. Pricing fields `input_per_1m_usd`, `output_per_1m_usd`, and `cache_read_per_1m_usd` are already USD per million tokens and map directly; explicit zero prices are preserved. The duration-specific `cache_write_5m_per_1m_usd` field is currently ignored until its semantics can be represented without ambiguity.
+
+For reasoning variants, AIProxy can include an explicit per-model capability list:
+
+```json
+{
+  "capabilities": {
+    "reasoning": true,
+    "effort_tiers": ["low", "medium", "high", "xhigh", "max"]
+  }
+}
+```
+
+The plugin maps the supported OpenAI efforts `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max` to OpenCode variants. It does not infer `xhigh` or `max` from model names. If `effort_tiers` is absent, the AIProxy enricher adds no variants (OpenCode V2's existing low/medium/high fallback can still apply when the model is otherwise marked as reasoning); if it is present, only listed, recognized tiers are exposed. **AIProxy's currently tested `/api/models` response does not include `capabilities.effort_tiers`, so automatic `xhigh`/`max` discovery requires AIProxy to add that field.**
+
+For LiteLLM-compatible model info endpoints, `/v1/model/info` is used by default:
+
+```json
+{
+  "modelsDiscovery": {
+    "enabled": true,
+    "modelInfoFormat": "litellm"
+  }
+}
+```
+
+For Bifrost AI Gateway's inline `/v1/models` metadata, without another metadata request:
+
+```json
+{
+  "modelsDiscovery": {
+    "enabled": true,
+    "modelInfoFormat": "bifrost"
+  }
+}
+```
+
+For LM Studio 0.4.0+'s native v1 REST inventory endpoint:
+
+```json
+{
+  "modelsDiscovery": {
+    "enabled": true,
+    "modelInfoFormat": "lmstudio"
+  }
+}
+```
+
+For llama-swap's inline `/v1/models` metadata, without another metadata request:
+
+```json
+{
+  "modelsDiscovery": {
+    "enabled": true,
+    "modelInfoFormat": "llama-swap"
+  }
+}
+```
+
+If metadata cannot be fetched or matched safely, discovery still succeeds and the plugin leaves unknown capability fields unset rather than guessing defaults. See [model metadata enrichment](docs/configuration.md#model-metadata-enrichment) for format-specific behavior and configuration.
+
+## Upgrade note
+
+For OpenCode v1, after upgrading the plugin, refresh the OpenCode plugin cache and restart OpenCode before testing the new version. This avoids stale cached plugin packages being used after an npm upgrade.
+
+For the upgrade checklist and Desktop-specific loading notes, see the [upgrade guide](docs/upgrading.md).
+
+For OpenCode v1, after changing `opencode.json`, restart OpenCode. OpenCode loads config at startup, so command and provider changes are not guaranteed to take effect in an already-running session. For OpenCode v2, restart its background service after changing the plugin bundle; the V2 plugin also listens for `config.updated` to refresh discovery.
+
+## OpenCode v1 `/connect` support
+
+For custom OpenAI-compatible providers, you still define the provider in `opencode.json` so OpenCode and this plugin know the provider id, npm package, and `baseURL`.
+
+If the API credential is managed through OpenCode `/connect`, you do not need to duplicate the same key in `provider.<name>.options.apiKey`.
+
+Discovery auth precedence is:
+
+1. `provider.<name>.options.apiKey`
+2. OpenCode resolved provider key, when available during plugin startup
+3. OpenCode `/connect` auth store for same-id `type: "api"` credentials
+
+Details and examples: [`docs/connect-and-auth.md`](docs/connect-and-auth.md)
+
+## Mimocode compatibility (OpenCode v1 adapter)
+
+This plugin is also compatible with Mimocode as an OpenCode-compatible host.
+
+When startup-time discovery needs to recover `/connect`-managed API credentials from the local auth store, the plugin selects the host data directory from runtime environment markers:
+
+- `OPENCODE=1` or no host marker: `~/.local/share/opencode/auth.json`
+- `MIMOCODE=1`: `~/.local/share/mimocode/auth.json`
+
+This keeps the same provider configuration model while allowing the plugin to work in both OpenCode and Mimocode environments.
+
+## Documentation
+
+- Configuration guide: [`docs/configuration.md`](docs/configuration.md)
+- OpenCode v1 to v2 configuration migration: [`docs/migrate-v1-to-v2.md`](docs/migrate-v1-to-v2.md)
+- Persisted model discovery cache: [`docs/persisted-model-discovery.md`](docs/persisted-model-discovery.md)
+- `/connect` credentials and auth-backed discovery: [`docs/connect-and-auth.md`](docs/connect-and-auth.md)
+- Community provider examples: [`docs/config_example/`](docs/config_example/)
+- Provider compatibility and detection rules: [`docs/providers.md`](docs/providers.md)
+- Upgrade notes: [`docs/upgrading.md`](docs/upgrading.md)
+- OpenCode v2 configuration: [section above](#opencode-v2-configuration-stable)
+
+Provider users are welcome to contribute community-maintained configuration examples under [`docs/config_example/`](docs/config_example/). Please target the `community/config-examples` branch and keep example PRs scoped to a new example file plus its README link.
+
+## Requirements
+
+- OpenCode with plugin support
+- At least one OpenAI-compatible provider running locally or remotely
+- Provider API accessible through either a `/v1`-style base URL or an explicitly configured discovery endpoint
+
+## Logging
+
+When available, the plugin writes logs through OpenCode's structured server log API via `client.app.log(...)` using the service name `opencode-models-discovery`.
+
+If structured logging is unavailable in the runtime, the plugin falls back to prefixed `console.*` output. Key log categories are emitted through metadata such as `plugin`, `config`, `discovery`, `event`, and `filtering` to make local debugging easier with `opencode --print-logs`.
+
+## Star History
+
+<a href="https://sh.yuhp.dev/star-history/opencode-models-discovery">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://sh.yuhp.dev/star-history/opencode-models-discovery?theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://sh.yuhp.dev/star-history/opencode-models-discovery?theme=light" />
+    <img alt="Star History Chart" src="https://sh.yuhp.dev/star-history/opencode-models-discovery?theme=light" />
+  </picture>
+</a>
+
+## Contributing
+
+Contributions are welcome. Please feel free to submit a Pull Request.
+
+## License
+
+MIT
+
+## Disclaimer
+
+This project is not built by the OpenCode team and is not affiliated with OpenCode in any way.
+
+This project is not affiliated with, endorsed by, or sponsored by [models.dev](https://models.dev/). Optional models.dev metadata enrichment uses the public models.dev index only when explicitly configured by the user.

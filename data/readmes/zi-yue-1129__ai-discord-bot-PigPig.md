@@ -1,0 +1,291 @@
+# PigPig: Advanced Multi-modal LLM Discord Bot
+
+English | [繁體中文](README_zh-TW.md)
+
+<p align="center">
+  <a href="https://discord.gg/BvP64mqKzR">
+    <img src="https://img.shields.io/discord/1212823415204085770?color=7289DA&label=Support&logo=discord&style=for-the-badge" alt="Discord">
+  </a>
+</p>
+
+## Introduction
+
+PigPig is a powerful, multi-modal Discord bot powered by Large Language Models (LLMs). It's designed to interact with users through natural language, combining advanced AI capabilities with practical, fun features to enrich any Discord community.
+
+[**Invite PigPig to your server!**](https://discord.com/oauth2/authorize?client_id=1208661941539704852&permissions=4292493394706417&integration_type=0&scope=bot+applications.commands)
+
+## 📄 Legal Documents
+To ensure user rights and service transparency, please refer to the following documents:
+
+* **Terms of Service**: [TERMS_OF_SERVICE.md](docs/TERMS_OF_SERVICE.md)
+* **Privacy Policy**: [PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md)
+* **Support Email**: james911129@gmail.com
+* **Support Server**: [https://discord.gg/BvP64mqKzR](https://discord.gg/BvP64mqKzR)
+
+## 🌟 Key Features
+
+*   🧠 **AI-Powered Conversations**: Utilizes advanced LLMs for natural language understanding and generation.
+*   🖼️ **Multi-modal Capabilities**: Supports visual question answering (VQA) and AI image generation.
+*   🎵 **Music Playback**: Plays music from YouTube with queue and playlist management.
+*   🧠 **Intelligent Channel Memory**: Permanently stores and intelligently retrieves conversation history with semantic search to provide enhanced context for responses.
+*   🔄 **Auto-Update System**: Automatically checks for and applies GitHub updates with secure backups and rollback functionality.
+*   🍽️ **Practical Tools**: Set reminders, get restaurant recommendations, perform calculations, and more.
+
+## 📸 Feature Showcase
+
+![alt text](readmeimg/image-4.png)
+![alt text](readmeimg/image.png)
+![alt text](readmeimg/image-1.png)
+![alt text](readmeimg/image-2.png)
+![alt text](readmeimg/image-3.png)
+
+## 🚀 Getting Started
+
+### System Requirements
+
+*   **Essential Dependencies:**
+    *   [Python 3.11+](https://www.python.org/downloads/)
+    *   [FFmpeg](https://ffmpeg.org/) (For music playback)
+    
+    **FFmpeg Installation:**
+    *   **Ubuntu/Debian:** `sudo apt update && sudo apt install ffmpeg`
+    *   **CentOS/RHEL:** `sudo yum install epel-release && sudo yum install ffmpeg`
+    *   **macOS:** `brew install ffmpeg`
+    *   **Windows:** Download from [FFmpeg Windows builds](https://www.gyan.dev/ffmpeg/builds/)
+    
+    *   Python packages listed in [`requirements.txt`](./requirements.txt)
+
+### Installation Steps
+
+```bash
+# Clone the repository
+git clone https://github.com/starpig1129/discord-LLM-bot-PigPig.git
+
+# Navigate to the project directory
+cd discord-LLM-bot-PigPig
+
+# Install required Python packages
+pip install -r requirements.txt
+```
+
+## ⚙️ Configuration
+
+Follow these steps to configure your bot instance.
+
+### Step 1: Configure `.env` file
+
+Rename the `.env Example` file to `.env` and fill in the required values.
+
+```env
+# .env
+
+# --- Discord Bot Credentials ---
+TOKEN=XXXXXXXXXXXXXXXXXXXXXXXX.XXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXX
+CLIENT_ID=123456789012345678
+CLIENT_SECRET_ID=XXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXX
+
+# --- Dashboard Secret ---
+# Generate with: python3 -c "import secrets; print(secrets.token_urlsafe(64))"
+DASHBOARD_SECRET_KEY=<generate-a-random-64-char-secret>
+
+# --- Bot Configuration ---
+BOT_OWNER_ID=123456789012345678
+BUG_REPORT_CHANNEL_ID=123456789012345678
+
+# --- AI Model Configuration ---
+MODEL_NAME=openbmb/MiniCPM-o-2_6
+ANTHROPIC_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+OPENAI_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+GEMINI_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# --- Vector Database API Keys ---
+VECTOR_STORE_API_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# --- Bot Configuration File Path ---
+CONFIG_ROOT="/path/to/your/config"
+```
+
+| Variable              | Description                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `TOKEN`               | **(Required)** Your Discord bot token from the [Discord Developer Portal](https://discord.com/developers/applications). |
+| `CLIENT_ID`           | **(Required)** Your bot's client ID from the Developer Portal.                                             |
+| `CLIENT_SECRET_ID`    | **(Required)** Your bot's client secret, used for Discord OAuth2 login on the dashboard.                   |
+| `DASHBOARD_SECRET_KEY` | **(Required)** A random secret for signing dashboard JWT tokens. Generate with `python3 -c "import secrets; print(secrets.token_urlsafe(64))"`. |
+| `BOT_OWNER_ID`        | **(Required)** Your Discord User ID. Grants owner-level privileges and is required for the auto-update system. |
+| `BUG_REPORT_CHANNEL_ID` | *(Optional)* A Discord channel ID where error messages and bug reports will be sent.                       |
+| `MODEL_NAME`          | The default local multi-modal model to use.                                                                |
+| `ANTHROPIC_API_KEY`   | *(Optional)* Your API key for Anthropic's Claude models, available on [Anthropic official website](https://www.anthropic.com/).                                                   |
+| `OPENAI_API_KEY`      | *(Optional)* Your API key for OpenAI's GPT models, available on [OpenAI official website](https://platform.openai.com/).                                                         |
+| `GEMINI_API_KEY`      | *(Optional)* Your API key for Google's Gemini models, available on [Google AI Studio](https://aistudio.google.com/).                                                      |
+| `VECTOR_STORE_API_KEY` | *(Optional)* Your API key for vector databases (like Qdrant), only needed if using cloud database.         |
+| `CONFIG_ROOT`         | *(Optional)* Root directory path for custom configuration files and data. Defaults to `./base_configs` folder in current directory. |
+
+### Step 2: Configure `configs` folder
+
+The bot's default files are in the [./base_configs](./base_configs) folder. You can edit these JSON files to customize the bot's behavior as needed. It is recommended to copy them and set the 'CONFIG_ROOT' parameter in '.env'.
+
+### Step 3: Configure Long-term Memory System
+If you do not want to enable the long-term memory system, set `enabled` to `false` in `base_configs/memory.yaml`.
+To tune cache behavior, adjust `procedural_cache_ttl` (seconds) in `base_configs/memory.yaml`; larger values reduce DB reads, smaller values refresh user data more aggressively.
+If you use a cloud vector database (like Qdrant), set the `VECTOR_STORE_API_KEY` in the `.env` file.
+And ensure that the vector database URL and other parameters are correctly set in `base_configs/memory.yaml`.
+For local installation or cloud setup methods, refer to [Qdrant official documentation](https://qdrant.tech/documentation/).
+
+### Step 4: Start the Bot
+
+Once configured, you can start the bot with the following command:
+
+```bash
+python main.py
+```
+
+## 📦 Features / Cogs Overview
+
+The bot's functionality is divided into modules called "Cogs". Here are the key features available:
+
+---
+
+### 🧠 Memory System
+*   **Description:** Manages long-term conversation memory, enabling the bot to recall past interactions. It uses semantic search to find the most relevant context.
+*   **Key Commands:** `/memory_search`, `/memory_stats`, `/memory_config`
+*   **[Full Documentation](./docs/cogs/memory/index.md)**
+
+---
+
+### 🎵 Music
+*   **Description:** Provides full music playback from YouTube, supporting song requests, queue management, playlists, and various playback modes.
+*   **Key Commands:** `/play`, `/mode`, `/shuffle`
+*   **[Full Documentation](./docs/cogs/music_lib/index.md)**
+
+---
+
+### 📖 Story Manager
+*   **Description:** Facilitates interactive, collaborative storytelling using a multi-agent AI architecture to create dynamic narratives guided by user actions.
+*   **Key Commands:** `/story`
+*   **[Full Documentation](./docs/cogs/story_manager.md)**
+
+---
+
+### 🍽️ Eat (Restaurant Recommendations)
+*   **Description:** An intelligent engine that recommends restaurants by learning a server's food preferences through user ratings and feedback.
+*   **Key Commands:** `/internet_search search_type: eat`
+*   **[Full Documentation](./docs/cogs/eat/index.md)**
+
+---
+
+### 🖼️ Image Generation
+*   **Description:** Generates and edits images from text prompts using advanced AI models, supporting both creation and instruction-based modification.
+*   **Key Commands:** `/generate_image`
+*   **[Full Documentation](./docs/cogs/gen_img.md)**
+
+---
+
+### 🌐 Internet Search
+*   **Description:** A versatile tool to search the web, find images, look up YouTube videos, or fetch content from a URL.
+*   **Key Commands:** `/internet_search`
+*   **[Full Documentation](./docs/cogs/internet_search.md)**
+
+---
+
+### ⚙️ System Prompt Manager
+*   **Description:** Allows deep customization of the bot's personality and behavior on a per-server or per-channel basis using a three-tiered inheritance model.
+*   **Key Commands:** `/system_prompt`
+*   **[Full Documentation](./docs/cogs/system_prompt_manager.md)**
+
+---
+
+### ⏰ Reminder
+*   **Description:** Allows users to set reminders for themselves or others using natural language for timing (e.g., "in 10 minutes" or a specific date).
+*   **Key Commands:** `/remind`
+*   **[Full Documentation](./docs/cogs/remind.md)**
+
+---
+
+### 📅 Schedule Manager
+*   **Description:** Manages server schedules using YAML files, allowing users to upload, query, and update schedules through natural language.
+*   **Key Commands:** `/upload_schedule`, `/query_schedule`, `/update_schedule`
+*   **[Full Documentation](./docs/cogs/schedule.md)**
+
+---
+
+### 🔄 Update Manager
+*   **Description:** Provides a command interface to check for, initiate, and monitor the bot's automatic update process from GitHub.
+*   **Key Commands:** `/update_check`, `/update_now`
+*   **[Full Documentation](./docs/cogs/update_manager.md)**
+
+---
+
+### 🛂 Channel Manager
+*   **Description:** Provides administrators with tools to control where the bot can interact, using server-wide policies and per-channel overrides.
+*   **Key Commands:** `/set_server_mode`, `/set_channel_mode`, `/auto_response`
+*   **[Full Documentation](./docs/cogs/channel_manager.md)**
+
+---
+
+### 👤 User Data
+*   **Description:** A system for storing and managing user-specific data, which can be updated manually or merged intelligently by the AI.
+*   **Key Commands:** `/userdata`
+*   **[Full Documentation](./docs/cogs/userdata.md)**
+
+---
+
+### 🌍 Language Manager
+*   **Description:** Manages multi-language support, allowing servers to set their preferred language for bot responses and commands.
+*   **Key Commands:** `/set_language`, `/current_language`
+*   **[Full Documentation](./docs/cogs/language_manager.md)**
+
+---
+
+### 🧠 Model Management
+*   **Description:** A developer tool for the bot owner to dynamically load and unload the local AI model to manage GPU resources.
+*   **Key Commands:** `/model_management`
+*   **[Full Documentation](./docs/cogs/model_management.md)**
+
+---
+
+### 🧮 Math Calculator
+*   **Description:** A secure tool for evaluating a wide range of mathematical expressions using the `sympy` library.
+*   **Key Commands:** This is an internal tool, not a direct slash command.
+*   **[Full Documentation](./docs/cogs/math.md)**
+
+---
+
+### 📝 Summarizer
+*   **Description:** Uses AI to summarize channel conversations with message source attribution and customizable limits.
+*   **Key Commands:** `/summarize`
+*   **[Full Documentation](./docs/cogs/summarizer.md)**
+
+---
+
+### 🔍 GIF Tools
+*   **Description:** Search and manage GIF content for Discord servers with intelligent matching capabilities.
+*   **Key Commands:** `/search_gif`
+*   **[Full Documentation](./docs/cogs/gif_tools.md)**
+
+---
+
+### 🤖 Bot Info
+*   **Description:** Displays detailed information about the bot including uptime, version, and system status.
+*   **Key Commands:** `/botinfo`
+*   **[Documentation](./docs/cogs/) (general documentation section)**
+
+---
+
+## 📚 For Developers: Technical Documentation
+
+The codebase is extensively documented. Below are links to the main documentation sections for developers:
+
+| Module Category | Description | Documentation Link |
+|---|---|---|
+| **Core GPT Engine** | Handles LLM integration, response generation, and tools. | [`llm/`](./docs/llm/index.md) |
+| **Addons** | Manages system-level features like auto-updates. | [`addons/`](./docs/addons/update/index.md) |
+| **Cogs (Features)** | Core bot features and commands. | [`cogs/`](./docs/cogs/) |
+| ↳ Eat System | Intelligent food recommendation module. | [`cogs/eat/`](./docs/cogs/eat/index.md) |
+| ↳ Memory System | Manages long-term conversation memory. | [`cogs/memory/`](./docs/cogs/memory/index.md) |
+| ↳ Music System | Handles music playback and queues. | [`cogs/music_lib/`](./docs/cogs/music_lib/index.md) |
+| ↳ Story System | Interactive story generation module. | [`cogs/story/`](./docs/cogs/story_manager.md) |
+| ↳ System Prompt | Manages server and channel system prompts. | [`cogs/system_prompt/`](./docs/cogs/system_prompt_manager.md) |
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.

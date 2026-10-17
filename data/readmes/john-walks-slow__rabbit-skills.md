@@ -1,0 +1,165 @@
+# rabbit-skills
+
+轻量、松弛、有效的 Coding Agent 配置套件。适合中等规模的 AI 原生项目开发。
+
+> 控制的目标不是剥夺系统的自由度，而是界定安全的可行域，让系统在可行域内释放最大化的调节能力。
+> -- Ashby's Law of Requisite Variety
+
+> 浏览官网：<https://john-walks-slow.github.io/rabbit-skills/>
+
+## 原则
+
+- 简单清晰，相对松弛的约束。不为模型捆手捆脚，随模型能力变强也不过时。
+- 三条通用工作流。[调研规划](.apm/skills/workflow-research-plan/SKILL.md); [根因排障](.apm/skills/workflow-troubleshoot/SKILL.md); [迭代交付](.apm/skills/workflow-implement-review/SKILL.md)。
+- 不绑定特定开发范式，零迁移成本（SDD 等可在项目级按需引入）。
+- 基于子代理的检视、复核、调研、端到端测试，显著减少幻觉，提高交付质量。
+- 日常实用 Skill：`commit-own-changes` 无 worktree 情况下的安全并行提交、`worktree-dev` 在 worktree 中工作并保证端口隔离、`code-deep-dive` 为 vibecoding 项目编写深度代码导读、`cross-check` 审视既有结论等。
+- 化繁为简的文档规范，留存记录的同时避免历史文档-代码双向同步问题。
+- 基于 [APM (Agent Package Manager)](https://microsoft.github.io/apm/) 规范，兼容 19 个主流 Agent 工具（Copilot / Claude Code / Cursor / Codex / Gemini CLI / Windsurf / Kiro / Antigravity / OpenCode / Grok / Hermes / IntelliJ / VS Code 等）。
+
+## 安装
+
+### A. 预构件安装
+
+[![Release](https://img.shields.io/github/v/release/john-walks-slow/rabbit-skills?label=release)](https://github.com/john-walks-slow/rabbit-skills/releases/latest)
+
+下载最新 release，将内容解压到对应工具配置目录即可。
+
+### B. 通过 APM 安装
+
+确保已安装 [APM CLI](https://microsoft.github.io/apm/getting-started/installation/)。
+
+全局安装到所有支持用户级目录的工具（13 个 runtime）：
+
+```bash
+apm install -g john-walks-slow/rabbit-skills
+```
+
+> `agents`、`copilot-app`、`copilot-cowork`、`grok-cloud`、`intellij`、`openclaw` 没有用户级配置目录（部分还需 APM 的实验性开关），无法全局安装（APM 会报 `Unknown target`）。这些工具请在项目内安装并用 `-t` 指定：
+>
+> ```bash
+> apm install -t intellij john-walks-slow/rabbit-skills
+> ```
+
+如果你的工具原生不支持 Instructions / Rules（apm 提示：`Run 'apm compile -g' to update root context files for …`），需额外将 Instructions 编译为全局指令：
+
+```bash
+apm compile -g
+```
+
+> 注：compile 不会覆盖你原先手写的指令（AGENTS.md 等）。如果希望覆盖，请在备份后删除原有指令文件，再次执行 compile -g。
+
+## 使用
+
+### 计划与实施
+
+计划需求：
+
+```
+/workflow-research-plan 调研 Agent 记忆的 sota 方案，给我的 Agent 加上记忆功能。
+```
+
+分析问题：
+
+```
+/workflow-troubleshoot 聚焦输入框时界面跳动。`
+```
+
+确认计划后：
+
+```
+/workflow-implement-review go
+```
+
+### 修饰器（实验性）
+
+- `/full-auto` —— 启用自动继续模式。所有用户对齐阶段改为询问 auto_human 子代理。可与 /goal 搭配使用，用于用户不在线、希望后台长跑场景。
+- `/max-effort` —— 启用最大交付质量。要求在对用户精力消耗最少的情况下，以最高质量交付。
+- `/max-efficiency` —— 启用最大交付效率。跳过可选步骤以最高效率交付。
+
+### 任务管理（实验性）
+
+如果你有许多略显杂乱的任务，可以使用任务管理工作流  `/workflow-manage-tasks`。
+Agent 会为你整理待办事项、跟踪进度、分配任务给子代理，并在子代理阶段性工作完成需要评估时与你沟通。
+
+如果你希望 Agent 全自主推动项目开发，可以使用项目领导工作流 `/workflow-leader`。
+
+> 仅推荐拥有后台运行 Subagent 以及 延续 Subagent 会话能力的 AI 工具使用。
+
+## 内容物
+
+### Instructions（系统指令）
+
+| 文件               | 说明     |
+| ------------------ | -------- |
+| `00_output_style`  | 输出风格 |
+| `01_coding_style`  | 编码规范 |
+| `03_documentation` | 文档规范 |
+| `09_custom`        | 约定与通例（协作 / Shell / Git / 子代理 / 测试范围 / 安全） |
+
+### Agents（代理和子代理）
+
+| 名称              | 类型     | 说明                                                                         |
+| ----------------- | -------- | ---------------------------------------------------------------------------- |
+| `deep-researcher` | subagent | 网络调研                                                                     |
+| `reviewer`        | subagent | 代码检视                                                                     |
+| `e2e-tester`      | subagent | 端到端测试                                                                   |
+| `expert`          | subagent | 通用困难任务                                                                 |
+| `auto-human`      | subagent | 自动决策（用于 full-auto 模式）                                              |
+
+### Skills & Commands（技能与命令）
+
+| 技能                             | 激活方式  | 说明                                                                          |
+| -------------------------------- | --------- | ----------------------------------------------------------------------------- |
+| `workflow-research-plan`         | 用户或 AI | 调研设计工作流：Research → Plan → Align                                       |
+| `workflow-troubleshoot`          | 用户或 AI | 问题定位工作流：Reproduce → Root Cause → Diagnose                             |
+| `workflow-implement-review`      | 用户或 AI | 实施交付工作流：Implement → Test → Review → Documentation → Validate          |
+| `workflow-manage-tasks`          | 仅用户    | （实验性）任务分派工作流：理解梳理 → 分派子代理 → 跟踪推进                     |
+| `workflow-leader`                | 仅用户    | （实验性）项目领导工作流：给出愿景 → 构思 idea → 分派子代理 → 持续推进         |
+| `spawn-deep-researcher`          | 用户或 AI | 启动网络调研子代理                                                            |
+| `spawn-reviewer`                 | 用户或 AI | 启动代码检视子代理                                                            |
+| `spawn-e2e-tester`               | 用户或 AI | 启动端到端测试子代理                                                          |
+| `commit-own-changes`             | 用户或 AI | 多 agent 并发时只提交自己改动的文件/行，不带走别人的修改                      |
+| `worktree-dev`                   | 用户或 AI | Git Worktree 隔离开发；worktree 内端口动态申请                               |
+| `code-deep-dive`                | 仅用户    | 为项目编写中文深度学习长文，碎片时间补齐代码知识                              |
+| `grilling`                       | 用户或 AI | 向用户盘问设计方案                                                            |
+| `similar-idea`                   | 仅用户    | 找相似项目/既有产品，了解市场现状，防止重复造轮子                             |
+| `cross-check`                    | 用户或 AI | 使用独立子代理复核关键结论                                                    |
+| `tidy`                           | 仅用户    | 清理当前会话中的无效修改                                                      |
+| `handoff`                        | 仅用户    | 总结当前会话用于交接                                                          |
+| `try`                            | 用户或 AI | 修改前先备份便于回滚                                                          |
+| `bad-smell`                      | 用户或 AI | 识别代码坏味道，小范围随手优化，大范围记录后回到原任务                        |
+| `unstuck`                        | 用户或 AI | 连续修改未达预期时强制退一步重新分析                                          |
+| `full-auto`                      | 仅用户    | 自动工作模式。所有用户对齐阶段改为询问 auto_human 子代理                      |
+| `max-effort`                     | 仅用户    | 最大交付质量：最少消耗用户精力，极致质量 + 端到端测试交付                      |
+| `max-efficiency`                 | 仅用户    | 启用最大交付效率。跳过可选步骤以最高效率交付。                                |
+| `update-project-instruction`     | 用户或 AI | 创建/更新项目根 AGENTS.md（目标/地图/开发与测试）                             |
+| `update-module-instruction`      | 用户或 AI | 创建/更新子模块 AGENTS.md（职责/地图/核心设计/Pitfalls）                      |
+| `update-references`              | 用户或 AI | 创建/更新通用规范文档（测试规范/设计规范 etc.）                               |
+| `update-validation-requirements` | 用户或 AI | 创建/更新用户验证表，记录核心场景和必须实机验证的场景                         |
+
+## 自定义
+
+按需配置各个代理使用的模型，建议为 reviewer，expert 选择高级模型。
+
+本项目默认没有对 spec 格式和测试规范做强约束。如果需要更强约束，请在项目级指令中添加。
+
+本项目的提示词请根据实际需要任意增改。
+
+## FAQ
+
+### 计划和实施是否应该在分开的会话中进行？
+
+个人不建议。计划阶段产生的上下文对于实施阶段同样有用，如果仅通过文档传递计划可能在交接过程产生失真。相反，一个不会产生失真的严格计划已经无限接近于完整的实施了。计划与实施上下文隔离的收益并不大却增加了额外的复杂度和交接的脆弱性。
+
+因此，一般建议在同一会话中进行计划和实施。只有在计划阶段产生的上下文已经过于庞杂的情况下，才推荐在新会话中依靠计划文档继续实施。
+
+### DeepSeek Harness 是否能使用？
+
+DSH 默认不支持子代理 profile，导致依赖特定子代理的技能可能无法正常使用。
+为 DSH 安装 @aiwayds/dsh-subagent-registry 插件后可支持 Claude 风格的子代理配置。
+然后，下载 claude 版本的构建产物，将 agents 放入 ~/.dsh 目录即可。
+
+## 友链
+
+[linux.do](linux.do)

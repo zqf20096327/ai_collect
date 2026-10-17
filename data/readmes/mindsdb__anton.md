@@ -1,0 +1,366 @@
+<div align = center>
+ 
+# Anton - a self-improving agent
+
+[![Stars](https://img.shields.io/github/stars/mindsdb/anton?logo=github)](https://github.com/mindsdb/anton/stargazers)
+[![License](https://img.shields.io/github/license/mindsdb/anton)](LICENSE)
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://mindshub.ai/discord)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mindsdb/anton)
+
+[MindsHub Cowork](https://mindshub.ai/?utm_source=github&utm_medium=repo-readme&utm_campaign=anton-readme) ·
+[Docs](https://docs.mindshub.ai/?utm_source=github&utm_medium=repo-readme&utm_campaign=anton-readme) ·
+[Discord](https://mindshub.ai/discord)
+
+<img width="760" height="466" alt="anton-promo" src="https://github.com/user-attachments/assets/27cf65eb-1819-4a7e-b410-a17c5478838b" />
+
+---
+
+</div>
+
+Anton is the open-source agentic harness that powers **[MindsHub Cowork](https://mindshub.ai/?utm_source=github&utm_medium=repo-readme&utm_campaign=anton-readme)** — a self-improving AI agent you can hand any task to. Built and maintained by the MindsHub team, Anton runs as the **default agent** inside Cowork, and just as well **standalone** in your terminal — anywhere, with any model.
+
+Hand it real work: create and send reports, clear your inbox, manage your calendar and CRM, book flights, and more. You describe the outcome — Anton figures out the steps.
+
+## Get started
+
+Anton is the default agent in **MindsHub Cowork**, the unified workspace with data connectors, a model router, and artifacts. Get the full experience, or run Anton on its own from the terminal.
+
+### MindsHub Cowork app
+
+- **Web** — nothing to install: open **[console.mindshub.ai](https://console.mindshub.ai/?utm_source=github&utm_medium=repo-readme&utm_campaign=anton-readme)**.
+- **macOS** — [download the desktop app](https://downloads.mindshub.ai/mindshub-cowork/mac/mindshub-cowork-latest.pkg) (`.pkg`).
+- **Windows** — [download the desktop app](https://downloads.mindshub.ai/mindshub-cowork/windows/mindshub-cowork-latest.exe) (`.exe`).
+
+### Anton CLI (standalone)
+
+Run Anton directly in your terminal:
+
+- **macOS/Linux**
+```bash
+curl -sSf https://raw.githubusercontent.com/mindsdb/anton/main/install.sh | sh && export PATH="$HOME/.local/bin:$PATH"
+```
+
+- **Windows** (PowerShell)
+```powershell
+irm https://raw.githubusercontent.com/mindsdb/anton/main/install.ps1 | iex
+```
+
+That's it — now run it by typing:
+
+```
+anton
+```
+
+## What can Anton do?
+
+### 🔧 Ask for anything that requires action
+
+- **Send emails** — connect accounts, draft messages, or even send them on your behalf.
+- **Manage calendars** — summarize your day, create meetings, block time, and more, all just by asking.
+- **Automated reporting** — pull from multiple databases, crunch numbers, deliver a report on a schedule.
+- **Workflow automation** — monitor a source, react to changes, take action.
+- **Research & synthesis** — scrape the web, summarize findings, build a reference document.
+- **Data pipeline prototyping** — connect sources, transform data, load into a destination.
+- **System administration** — audit configurations, generate reports, fix issues.
+
+The pattern is always the same: you describe the outcome, Anton figures out the steps. From one-off tasks to scheduled workflows — Anton handles it. Here are a few examples:
+
+### 📊 Data analysis & reports
+```
+I hold 50 AAPL, 200 NVDA, and 10 AMZN. Get today's prices, calculate my
+total portfolio value, show me the 30-day performance of each stock, and
+any other information that might be useful. Give me a complete dashboard.
+```
+
+What happens next is the interesting part. At first, Anton doesn't have any particular skill related to this question. However, it figures it out live: scrapes live prices, writes code on the fly, crunches the numbers, and builds you a full dashboard — all in one conversation, with no setup.
+
+![ezgif-24b9e7c74652f0dc](https://github.com/user-attachments/assets/c92f87c1-ff30-4272-92ba-49a8585d5954)
+
+### 📬 Email cleanup
+```
+Dear Anton, please help me clear unwanted emails...
+```
+
+Anton scans your inbox, classifies emails by signal vs. noise, identifies unsubscribable marketing, cold outreach, and internal tool notifications — then surfaces a breakdown and handles the cleanup. One user ran it on ~1,000 emails and found ~35% were unsubscribable. Anton surfaced everything AND handled the cleanup.
+
+### 💬 Build its own integrations
+```
+Set up a WhatsApp integration so I can message you from my phone.
+```
+
+Anton doesn't wait for someone to build a connector. It writes the integration code itself, sets it up, and gets it running — so you can chat with it from WhatsApp, Telegram, or whatever channel you need.
+
+---
+
+## Key features
+- **Credential vault** — prevents secrets from being exposed to LLMs.
+- **Isolated code execution** — protected, reproducible "show your work" environment.
+- **Multi-layer memory & continuous learning** — session, semantic, and long-term knowledge. Anton remembers what it learned and gets better at your specific workflows over time.
+- **Web search & fetch** — the agent can query the live web and retrieve URL contents. Routed natively through your LLM provider when possible (no extra setup), with a transparent fallback for third-party endpoints. See below.
+
+---
+
+## Web search & fetch
+
+Anton exposes two web tools to the agent — `web_search` and `web_fetch` — both on by default. How they execute depends on your LLM provider:
+
+| Provider | `web_search` | `web_fetch` | Setup |
+| --- | --- | --- | --- |
+| Anthropic BYOK | Anthropic native server tool | Anthropic native server tool | None — billed on your Anthropic key |
+| OpenAI BYOK | OpenAI Responses API native | covered by `web_search` | None — billed on your OpenAI key |
+| MindsHub Model Router | passthrough | passthrough | None — billed on your MindsHub API key |
+| Generic OpenAI-compatible (Together, Groq, Ollama, vLLM, …) | Exa.ai or Brave (you choose at setup) | stdlib HTTP GET (no key) | Run `anton setup-search` once |
+
+For the first three rows there's nothing to configure — the LLM provider executes the tools server-side and the results are folded directly into its response. For the fourth row, after `anton setup` finishes configuring a custom OpenAI-compatible endpoint Anton will offer to set up Exa or Brave; you can also (re)run that step at any time with `anton setup-search`. The chosen search-provider key is persisted to `~/.anton/.env` so it carries across sessions and workspaces, exactly like your LLM key.
+
+To opt out, set `ANTON_WEB_SEARCH_ENABLED=false` and/or `ANTON_WEB_FETCH_ENABLED=false`.
+
+Caveats: provider rate limits apply; `web_fetch` has a 30-second timeout and strips HTML to plain text (works best on article-style pages); paywalled and JS-heavy SPAs may return little useful content; treat fetched page bodies as untrusted input.
+
+---
+
+#### Connect your data and apps
+Anton can connect to and interact with files, databases, applications, APIs, and more.
+
+```powershell
+/connect
+
+(anton) What type of datasource (postgres, posthog, gmail, ..):
+
+```
+
+Tell Anton to connect and ask questions about your data. It will find credentials in the vault, fetch the schema, and retrieve what it needs.
+
+```terminal
+YOU> Connect to my Gmail and find emails from potential customers that haven't been handled.
+
+ANTON>
+⎿ Connecting and fetching emails...
+   ~3s
+```
+
+---
+
+## What's inside
+
+A big part of what makes Anton work is that it doesn't need a huge collection of separate tools for web, DB, files, etc. Most of the work is done through one core harness: the execution scratchpad, which can dynamically become whatever Anton needs for the task.
+
+For the full architecture of Anton, and the developer guide, see **[anton/README.md](anton/README.md)**.
+
+---
+
+## Workspace layout
+When you run `anton` in a directory:
+
+- `.anton/` — workspace folder containing scratchpad state, episodic memory, and local secrets.
+- `.anton/anton.md` — optional project context (Anton reads this at conversation start).
+- `.anton/.env` — workspace configuration variables file (local file).
+- `.anton/episodes/*` — episodic memories, one file per session.
+- `.anton/memory/rules.md` — behavioral rules: always/never/when rules (e.g., never hardcode credentials, how to build HTML).
+- `.anton/memory/lessons.md` — factual knowledge: things I've learned (stock API quirks, dashboard patterns, data fetching notes).
+- `.anton/memory/topics/*` — topic-specific lessons: deeper notes organized by subject (dashboard-visualization, stock-data-api, etc.).
+
+Override the working folder:
+```bash
+anton --folder /path/to/workspace
+```
+
+---
+
+### Windows scratchpad firewall
+The Windows installer can add a firewall rule so the scratchpad can reach the internet. If you skipped it, run in an elevated PowerShell:
+
+```powershell
+netsh advfirewall firewall add rule name="Anton Scratchpad" dir=out action=allow program="$env:USERPROFILE\.anton\scratchpad-venv\Scripts\python.exe"
+```
+
+---
+
+## How Anton differs from coding agents
+Anton is a *doing* agent: code is a means, not the end. Where coding agents focus on producing code for a codebase, Anton focuses on delivering the outcome — a cleaned inbox, a live dashboard, a working integration, an automated workflow — and will write whatever code is necessary to achieve that goal.
+
+---
+
+## 💬 Help & community
+
+- **Chat with us** — join the [Discord community](https://mindshub.ai/discord).
+- **Report a bug or request a feature** — open a [GitHub issue](https://github.com/mindsdb/anton/issues) with reproduction steps.
+- **Read the docs** — guides and setup at [docs.mindshub.ai](https://docs.mindshub.ai/?utm_source=github&utm_medium=repo-readme&utm_campaign=anton-readme).
+
+## 🤝 Contributing
+
+Anton is open source (MIT) and contributions are welcome — new capabilities, integrations, docs, and bug reports. Non-hotfix PRs target the `dev` branch (see [Dev guidelines](#dev-guidelines)). Say hi in the **#contributors** space on [Discord](https://mindshub.ai/discord).
+
+**Security:** Found a vulnerability? Please don't open a public issue — report it privately via our [security policy](https://github.com/mindsdb/anton/security).
+
+---
+
+## Is "Anton" a Mind?
+Yes. At MindsHub we build AI systems that collaborate with people to accomplish tasks, inspired by the *Culture* series of books — so yes, Anton is a Mind :)
+
+## Why the name "Anton"?
+We really enjoyed the show *Silicon Valley*. Gilfoyle's AI — Son of Anton — was an autonomous system that wrote code, made its own decisions, and occasionally went rogue. We thought it was a great name for an AI that can learn on its own, so we kept Anton and dropped the "Son of".
+
+---
+
+## Analytics
+Anton collects anonymous usage events (e.g. session started, first query) to help us understand how the product is used. No personal data or query content is sent.
+
+To disable analytics, set the environment variable:
+
+```bash
+export ANTON_ANALYTICS_ENABLED=false
+```
+
+Or add it to your workspace config (`.anton/.env`):
+
+```
+ANTON_ANALYTICS_ENABLED=false
+```
+
+---
+
+## Trace headers
+When the planning provider is openai-compatible Anton can attach `Langfuse-Session-Id`, `Langfuse-Tags`, and `Langfuse-Metadata` headers so the router can attribute traces. To enable the same headers against any other openai-compatible endpoint (e.g. a self-hosted Langfuse proxy in front of ollama or vLLM), set:
+
+```bash
+export ANTON_LANGFUSE_HEADERS=1
+```
+
+Or add it to your workspace config (`.anton/.env`):
+
+```
+ANTON_LANGFUSE_HEADERS=1
+```
+
+---
+
+## Model-call deadline
+A model call that sends nothing for 10 minutes is stopped, and the turn ends with "The model sent no output for 10 minutes, so the call was stopped." Every piece of text, thinking or tool-call arguments anton reads from the model restarts the 10 minutes, so a slow model that keeps writing is never cut. A non-streamed call gets the 10 minutes for the whole call, including the SDK's own retries. After one call in a turn runs out, every later model call in that turn fails at once. The one exception is the completion check after an answer: when it runs out, the turn ends on the answer that already streamed, marked unverified.
+
+To change the deadline, set `ANTON_MODEL_CALL_IDLE_TIMEOUT_S` in seconds. It must be a finite number. A value of 0 or less turns it off: a model call that never answers then keeps the turn alive, and a host's idle limits no longer end it, until the SDK, the gateway or a Stop does. Above 600, also raise the OpenAI and Anthropic SDKs' default 600-second read timeout. On an endpoint that sends no keepalives, a streamed call that goes quiet after its response starts ends at 600 seconds with a read-timeout error instead of the deadline. anton sets no timeout of its own on those clients.
+
+```bash
+export ANTON_MODEL_CALL_IDLE_TIMEOUT_S=600
+```
+
+While a model call is silent, hosts can show that the turn is still working. `ChatSession.model_calls` is `None` before the first turn. Its `snapshot()` returns the oldest call waiting on the model, or `None` when nothing is waiting, a question is open, or the turn has ended. The cloud turn entrypoint uses it: when a call is waiting and nothing else has gone out for 20 seconds, it writes a progress line with phase `model_wait`, such as "Waiting for the model (2m 40s)". A hung tool or cell reports no wait, so it still goes quiet and the host's idle limits still end it.
+
+---
+
+## Dev guidelines
+
+We use three long-lived branches: `dev` → `staging` → `main`.
+
+```
+feature/*  ──▶  dev  ──▶  staging  ──(soak ~1 day)──▶  main
+                                                        ▲
+                            hotfix/*  ──────────────────┘  (and back-merged to dev)
+```
+
+### Branch policy
+
+- Anything you're working on that you feel is ready for production gets merged into `dev`. That's the integration line.
+- **All non-hotfix PRs target `dev`.** Don't open feature PRs against `staging` or `main`.
+- `staging` is for soak — never merge feature branches into it directly. It only receives the scheduled `dev → staging` promotion.
+- `main` is the release line. The only things that land on `main` are the scheduled `staging → main` promotion and hotfixes.
+
+### Hotfixes
+
+- Production-only fixes target `main` directly.
+- Every hotfix that lands on `main` **must** also be merged back into `dev` so the branches don't drift. If `staging` is mid-soak when the hotfix ships, bring it into `staging` too — otherwise the next promotion will overwrite it.
+
+### Promotion cadence
+
+Twice a week, on a fixed schedule:
+
+1. Bump the version in `dev`, then merge `dev → staging`. Leave it for ~1 day for soak tests.
+2. The day after the soak, merge `staging → main`. The release workflow tags and publishes from `main` automatically (see [Releasing](#releasing)).
+
+Net rhythm: two `dev → staging` promotions and two `staging → main` promotions per week, each promotion offset by a soak day.
+
+### Stub model endpoint
+
+`tests/e2e/stub_server.py` is an OpenAI-compatible endpoint that answers from a script. You can hold a call silent, stream tool arguments slowly, or cut a reply at its budget. The e2e tests use it, and you can run it on its own to try Cowork or the CLI against a slow model:
+
+```bash
+uv run --group dev python -m tests.e2e.stub_server --port 8765 --streamed 'hold:360:done' --keepalive-s 15
+```
+
+That holds every streamed call for 6 minutes, sending `: keepalive` every 15 seconds, then answers "done". Non-streamed calls answer at once. Point a client at `http://127.0.0.1:8765/v1` with any API key and the model `stub-model`.
+
+Repeat `--streamed` to give a sequence of steps; the last one repeats. The steps are `text:<s>`, `hold:<secs>[:<s>]`, `slow_args:<secs>[:<tool>[:<json>]]`, `silent_args:<secs>[:<tool>[:<json>]]`, `length_cut` and `trickle:<secs>:<every>`. The module docstring says what each one sends. To change the script while the stub runs, post `{"streamed": [...], "keepalive_s": 15}` to `/_stub/script`. `GET /_stub/requests` lists each request's path, stream flag, token budget and `tool_choice`.
+
+---
+
+## Versioning
+
+Anton versions follow a calendar-derived scheme:
+
+```
+<MAJOR>.<YY>.<MONTH>.<DAY>.<PATCH>
+```
+
+| Field | Meaning | When it bumps |
+| --- | --- | --- |
+| `MAJOR` | Milestone or breaking-change signal | Only when we hit an announced milestone (e.g. a launch, a major rewrite, a public "X.0" event) **or** ship a breaking change. Intentional and announced — never bumped automatically. |
+| `YY` | Last two digits of the calendar year | Auto-bumps on the first release of each January. |
+| `MONTH` | Month of the release (1–12) | Each release. No zero-padding. |
+| `DAY` | Day of the release (1–31) | Each release. No zero-padding. |
+| `PATCH` | Hotfix counter for the specific dated release | `0` for scheduled releases. `1`, `2`, … for hotfixes patching that release. |
+
+**Rules**
+
+- The package version is **derived from the release git tag**, not written by hand. `pyproject.toml` sets `[tool.hatch.version] source = "vcs"`, so hatch-vcs reads the version off the tag at build time; [`anton/__init__.py`](anton/__init__.py) re-exports it at runtime via `importlib.metadata`. There is no `__version__` literal to edit.
+- The tag is minted automatically on release — you never push it or bump a version file. The release workflows fill `YY`/`MONTH`/`DAY` from the ship date and derive `PATCH`; the version *is* the actual ship date.
+- Hotfix back-merges to `dev`/`staging` carry the fix only — there's no version file for them to touch.
+
+**Worked example**
+
+```
+2026-04-30   2.26.4.30.0     ← cutover release
+2026-07-15   3.26.7.15.0     ← announced milestone or breaking change → MAJOR bumps
+2026-12-20   3.26.12.20.0
+2027-01-05   3.27.1.5.0      ← YY auto-bumps; MAJOR stays
+hotfix       3.26.7.15.1     ← patches the 3.26.7.15.0 release
+```
+
+**Cutover note.** Anton was on `2.0.4` under the old SemVer scheme. The first CalVer release is `2.26.4.30.0` — keeping `MAJOR=2` (no announced milestone or break warrants a bump) and letting `YY=26` carry the year. PEP 440 sees `2.0.4 < 2.26.4.30.0` so nothing rolls backward.
+
+---
+
+## Releasing
+
+Anton uses an automated release flow with two publish streams — **stable** from `main` and **release candidates** from `staging`. The package version is derived from the git tag by hatch-vcs (see [Versioning](#versioning)), so there is nothing to bump by hand.
+
+### How to ship a new version
+
+1. Merge the scheduled `staging → main` promotion (reviewed as usual). No version file to touch — the tag carries the version.
+2. That's it. On merge, [`.github/workflows/release.yml`](.github/workflows/release.yml) automatically:
+   - Computes today's CalVer version and creates the matching git tag (e.g. `v2.26.7.24.1`).
+   - Builds the wheel (hatch-vcs derives the version from that tag) and publishes it to PyPI.
+   - Publishes a GitHub release with auto-generated notes.
+   - Triggers [`tests_e2e_release.yml`](.github/workflows/tests_e2e_release.yml) to run live e2e tests against the released version.
+
+The version computation, tag push, and release creation are shared with the other
+service repos through the `calver-release.yml` reusable workflow in
+[mindsdb/github-actions](https://github.com/mindsdb/github-actions); this repo's
+workflow supplies the major component and consumes the resulting `tag`/`version` outputs.
+
+### Staging release candidates
+
+Every push to `staging` publishes a **release candidate** through [`.github/workflows/publish-staging.yml`](.github/workflows/publish-staging.yml): it cuts a PEP 440 pre-release tag (`v2.YY.M.DD.SEQrcN`), publishes a GitHub pre-release, and uploads the wheel to PyPI — so cowork-server staging installs an immutable, versioned Anton instead of a mutable branch or hand-pinned commit (ENG-1159). These never reach production: resolvers ignore pre-releases unless a specifier names one, and PyPI's `info.version` (read by the prod desktop updater) excludes them.
+
+### What you should NOT do
+
+- **Don't create GitHub releases manually.** The `v*` tag namespace is locked via a repo ruleset — only the release workflow can create them. Manual attempts will be rejected by GitHub.
+- **Don't push `v*` tags directly.** Same protection applies.
+- **Don't hand-edit a version.** There's no version file to bump — the tag is the source of truth, and both publishers derive the wheel version from it.
+
+### Editing CI / workflows
+
+Anything under [`.github/`](.github/) is owned by `@mindsdb/devops` via [CODEOWNERS](.github/CODEOWNERS). PRs touching workflows, actions, or release configuration require their review before merge.
+
+### Hotfixes / out-of-band releases
+
+If you genuinely need to release outside the normal flow (e.g. an admin hotfix), coordinate with `@mindsdb/devops` to bypass the tag ruleset. The e2e workflow's version-match guard will still verify the release tag matches `anton.__version__` and fail loudly on mismatch.

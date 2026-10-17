@@ -1,0 +1,225 @@
+[English](README.md) | [한국어](README.ko.md)
+
+![SpecGuard banner](assets/spec_guard_banner.png)
+
+# SpecGuard
+
+**SpecGuard blocks weak specs before AI coding agents turn them into defective code.**
+
+SpecGuard is a Validation-First Workflow (VFW) for AI-assisted development.
+It turns specs into reviewed, testable, implementation-ready packages before AI coding begins.
+
+It is not a prompt-to-code generator. SpecGuard helps you prepare an approved spec package before an external Codex, Claude Code, or another coding agent writes application code.
+
+## Language Support
+
+This README remains the primary package README for distribution. A Korean entry point is available at [README.ko.md](README.ko.md), and both README entry points link back to the same setup, workflow, plugin, benchmark, and policy documents.
+
+The documentation entry points do not imply full CLI localization or full Korean production support. Human readiness artifacts can resolve automatically to Korean or English from the active conversation and authored package, with English as the safe fallback. Korean benchmark claims stay limited to the recorded deterministic low-mode evidence described in [Language Support](docs/language-support.md) and [Spec-Driven Benchmark](docs/spec-driven-benchmark.md).
+
+## Demo Video
+
+![SpecGuard demo walkthrough](assets/specguard-demo-v0.4.0.gif)
+
+[Watch the full-resolution MP4 demo](assets/specguard-demo-v0.4.0.mp4)
+
+The demo follows this flow:
+
+1. Install SpecGuard with `pip install spec-guard`.
+2. Copy the example spec with `specguard example copy your-feature-name --force`.
+3. Insert a vulnerable spec. In v0.3.0, the packaged example intentionally includes a vulnerable spec by default so users can see a blocking SpecGuard Review.
+4. Review the SpecGuard findings.
+5. Fix the weak areas directly, or ask an AI assistant to strengthen the spec by giving it the SpecGuard Review findings.
+6. Run SpecGuard Review again and confirm it reaches READY or READY_WITH_WARNINGS before implementation handoff.
+
+Step 2 is for testing the example package. In real development, write your own product spec under `specs/<your-feature-name>/` or a nested module's `specs/<your-feature-name>/` instead of relying on the example package.
+
+After your real spec passes, give `implementation-output.md` to your AI coding agent to start spec-based implementation.
+
+## Workflow At A Glance
+
+```text
+Discovery -> Spec Package -> Technical Design -> SpecGuard Review
+-> Test -> Contract -> Implementation Handoff
+-> External AI Implementation -> Pull Request -> SpecGuard PR Review
+```
+
+SpecGuard owns the validation path through Implementation Handoff. The user or an external coding agent owns implementation after the handoff, then SpecGuard PR Review can compare the pull request back to the approved spec package.
+
+## Core Reviews
+
+SpecGuard has two review checkpoints:
+
+- `SpecGuard Review` runs before implementation. Default low mode uses a fast heuristic review, blocks Critical findings, and reports Major or Minor findings as warnings.
+- `SpecGuard PR Review` runs after implementation. It compares the approved spec package and implementation handoff against a pull request diff, then posts an advisory review comment.
+
+For review levels, LLM detail review, cache behavior, and experimental Spec Revision, see [Core Reviews](docs/core-reviews.md).
+
+## Codex App Plugin
+
+SpecGuard includes a Codex plugin scaffold under `plugins/specguard/`. The plugin does not replace the CLI; it helps Codex run the existing `specguard` command, read structured review artifacts, and summarize the next action.
+
+To use it from the Codex app:
+
+Supported versions: Python 3.11, 3.12, or 3.13, and a Codex CLI version that supports `codex plugin marketplace`. This setup has been verified with Codex CLI 0.130.0.
+
+1. Install the SpecGuard CLI in the environment where Codex will run:
+
+   ```bash
+   pip install spec-guard
+   specguard --help
+   ```
+
+2. Add the repo-scoped SpecGuard marketplace:
+
+   ```bash
+   codex plugin marketplace add KoreaNirsa/spec-guard --ref main
+   ```
+
+3. Restart or refresh Codex if the plugin directory does not update immediately.
+4. In the Codex plugin directory, select the `SpecGuard Plugins` source and install `SpecGuard`.
+
+<img width="752" height="166" alt="image" src="https://github.com/user-attachments/assets/306ae9ea-bb2f-4996-b24f-c48acc130ef1" />
+
+
+5. Prepare your target project folder. If you do not have a project yet, create one first:
+
+   ```bash
+   mkdir your-codex-project-folder
+   cd your-codex-project-folder
+   ```
+
+6. Prepare a spec package. To test SpecGuard with the sample package, run:
+
+   ```bash
+   specguard example copy specs/your-feature-name --force
+   ```
+
+7. Open `your-codex-project-folder` in Codex, then ask:
+
+   ```text
+   Run SpecGuard on specs/your-feature-name.
+   ```
+
+The default plugin path remains the heuristic CLI gate: `specguard run <package> --no-llm --no-follow-up`. Installing the plugin does not install the SpecGuard CLI. This is a custom repo marketplace, not the official OpenAI Plugin Directory.
+
+For setup details, validation scenarios, and plugin boundaries, see [Codex Plugin Guide](docs/codex-plugin.md).
+
+## Setup To User Flow
+
+This is the shortest path from installation to a reviewed implementation PR:
+
+```bash
+pip install spec-guard
+specguard auth setup --mode codex --model gpt-5.4
+specguard init your-feature-name
+
+# Optional: test with the packaged example spec before writing your own.
+specguard example copy your-feature-name --force
+
+specguard run specs/your-feature-name
+```
+
+For a one-off smoke without installing the CLI into your environment, the pinned Windows-validated `uvx` form is:
+
+```bash
+uvx --from spec-guard==0.4.2 specguard --help
+```
+
+Keep the version pinned. The regular `pip install spec-guard` path remains recommended for repeated project workflows, and macOS/Linux `uvx` validation is still tracked separately.
+
+Write or replace the draft spec under `specs/your-feature-name/`. If you want to test with the packaged sample first, copy the example spec with `specguard example copy your-feature-name --force`, then run SpecGuard.
+
+## Spec Package Resolution
+
+SpecGuard resolves packages from directories shaped as `**/specs/<feature>/spec.md`. The root `specs/<feature>/` layout remains supported, and nested module layouts such as `services/api/specs/<feature>/` are supported for repositories with subprojects.
+
+When a command receives an explicit package path that contains `spec.md`, SpecGuard uses that package. When it receives a repository tree or `specs` root, it searches for candidate packages. Exactly one candidate is used deterministically. Multiple candidates are reported and require rerunning with one explicit package path so SpecGuard does not choose the wrong package.
+
+Discovery skips hidden directories and common dependency, build, and generated directories: `.git`, `.venv`, `node_modules`, `vendor`, `build`, `dist`, `target`, `out`, `coverage`, `htmlcov`, `generated`, `__generated__`, and `__pycache__`.
+
+To preview package discovery before review, run:
+
+```bash
+specguard discover .
+```
+
+The preview is read-only and returns stable JSON with `status`, `reason`, `candidate_count`, `selection_required`, `review_allowed`, `candidates[].index`, `candidates[].path`, `candidates[].spec_path`, and `candidates[].review_command`. When multiple candidates exist, show them in order and choose one explicit package path before running review; the default plugin behavior is not repo-wide bulk review. It does not run SpecGuard Review or write readiness artifacts.
+
+SpecGuard guards spec validation. When the spec is safe enough, `specguard run` exits with PASS and reports READY or READY_WITH_WARNINGS. At that point, give `implementation-output.md` to an external AI coding agent to start spec-based implementation.
+
+After implementation, SpecGuard PR Review can compare GitHub PR code against the approved spec requirements and leave a comment when the PR appears to drift from the spec. To install it, run:
+
+```bash
+specguard actions install-pr-review
+```
+
+Then configure the GitHub Actions secret and repository variable:
+
+```text
+Secret name: SPECGUARD_OPENAI_API_KEY
+SPECGUARD_PR_REVIEW_MODEL=gpt-5.4-nano
+```
+
+For Codex setup, example packages, LLM review options, follow-up menus, implementation handoff, and PR review setup, see [Setup To User Flow](docs/setup-to-user-flow.md).
+
+## Benchmark Summary
+
+The recorded v0.4.3 gate-only benchmark evaluates 110 English spec packages across practical domains such as auth, billing, document sharing, webhooks, payments, inventory, support, admin roles, privacy, API keys, SSO, cache, returns, ledger, promotions, and background jobs. It includes 110 corresponding Korean gate-only cases and reports English and Korean metrics separately. The current fixture source and checked-in benchmark artifact now cover the same 220 selected cases.
+
+The benchmark asks one practical question: how much of the implementation handoff can SpecGuard guard before an AI coding agent starts writing code?
+
+| Gate-Only Guard Signal | English 110 | Korean 110 |
+| --- | ---: | ---: |
+| Weak specs blocked before implementation | 67/67 | 67/67 |
+| Weak-spec block rate | 100.0% | 100.0% |
+| Ready specs incorrectly blocked | 1/43 | 0/43 |
+| False positive rate | 2.3% | 0.0% |
+| Weak specs missed | 0/67 | 0/67 |
+| False negative rate | 0.0% | 0.0% |
+
+In the original #136 code-generation baseline, raw weak specs exposed contract defects in 11 of 12 cases. With the calibrated local gate, SpecGuard now blocks all 11 observed exposure paths before implementation handoff, increasing prevented exposure from 27.3% to 100.0%.
+
+This means SpecGuard is acting as a strong pre-implementation guard layer: it stops all evaluated weak inputs before code generation in this artifact, while leaving 42 of 43 English ready-reference specs and all 43 Korean ready-reference specs implementation-allowed in the recorded gate-only runs.
+
+The refreshed v0.4.3 gate-only run has one known English false positive, `ready_payment_retry_reconciliation_contract`, and no known Korean false positives or English/Korean false negatives in the recorded 220 evaluated cases. Korean support is currently a deterministic low-mode claim for explicit unsafe wording, not a full Korean production-support claim or a full CLI localization claim. Full methodology, suite breakdown, case-level results, version metadata, and limitations are available in the [Spec-Driven Benchmark](docs/spec-driven-benchmark.md).
+
+## Core Value
+
+AI coding works best when the implementation input is explicit. SpecGuard focuses on the parts that often fail before code is written:
+
+- unclear requirements
+- hidden assumptions
+- missing authorization or ownership rules
+- weak acceptance criteria
+- undefined errors, retries, timeouts, and state transitions
+- contracts that do not match the intended behavior
+
+The user owns the spec. SpecGuard drafts, challenges, and validates the implementation basis around it.
+
+## Documentation
+
+- [Korean README](README.ko.md): Korean practical overview for setup, workflow, plugin usage, benchmark limits, and documentation links.
+- [v0.4.2 Release Notes](docs/release-notes-v0.4.2.md): package bump, plugin workflow updates, nested spec discovery, test layout, and known limits.
+- [Setup To User Flow](docs/setup-to-user-flow.md): installation, Codex setup, example packages, validation loops, implementation handoff, and PR review setup.
+- [Core Reviews](docs/core-reviews.md): SpecGuard Review, SpecGuard PR Review, LLM detail review, cache behavior, and experimental Spec Revision.
+- [Language Support](docs/language-support.md): Korean default documentation support, English support, doc status, and Korean benchmark claim boundaries.
+- [Codex Plugin Guide](docs/codex-plugin.md): local Codex app plugin setup, MVP workflow, validation scenarios, and plugin boundaries.
+- [Plugin Examples And Contributor Fixtures](docs/plugin-examples.md): packaged example scope and contributor-only plugin scenario fixtures.
+- [Codex Plugin Hardening Roadmap](docs/codex-plugin-hardening-roadmap.md): v0.4.x plugin backlog, priorities, missing contracts, and non-goals.
+- [CLI-Driven Grill Me Loop Design](docs/cli-grill-me-loop.md): planned CLI finding, Codex question, user decision, spec patch, and rerun workflow.
+- [Plugin Result Contract](docs/plugin-result-contract.md): stable `readiness-review.json` fields and file-based states for Codex plugin consumers.
+- [Readiness Rules](docs/readiness-rules.md): review levels, READY thresholds, contract requirements, and Strict E2E verification rules.
+- [Readiness Calibration Triage](docs/readiness-calibration-triage.md): false-positive, false-negative, evidence-quality, fixture-gap, and Korean counterpart triage protocol.
+- [CI And PR Gates](docs/ci-and-pr-gates.md): readiness gate installation, required-check guidance, and PR review separation.
+- [CLI Reference](docs/cli-reference.md): common commands, `run` options, and CI-friendly examples.
+- [Development](docs/development.md): local source setup, tests, and packaged-example smoke testing.
+- [Workflow Guide](docs/workflow.md)
+- [Discovery Guide](docs/deep-discovery.md)
+- [Spec-Driven Benchmark](docs/spec-driven-benchmark.md)
+- [Readiness Coverage Audit](docs/readiness-coverage-audit.md)
+- [Contributing](CONTRIBUTING.md)
+
+## License
+
+Apache License 2.0

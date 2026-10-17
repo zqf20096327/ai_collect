@@ -1,0 +1,185 @@
+# 📘 **Introduction / Overview**
+
+StreamStorm is a lightweight desktop application built specifically to automate mass messaging (aka spamming) in YouTube live stream chats. With support for multiple browser instances and persistent Google login, StreamStorm can blast messages into live chats across multiple streams — on repeat, on schedule, or at full throttle.
+
+There’s no coding, no fancy setup — just plug in your message, set your intervals, and let the chaos unfold. Whether you're trying to flood, disrupt, or annoy, StreamStorm gives you the power to do it all with a click.
+
+#### 🔒 No terms respected. No ethics included. Use it if you dare.
+
+#### 🧨 Designed for abuse. Not for the faint-hearted.
+
+# 🛠️ Core Functionality & Features
+
+StreamStorm's core functionality revolves around its ability to automate the sending of messages in YouTube live chats. Key features include:
+
+* **Real-time Dashboard**:
+  * Live monitoring for active storm sessions with storm status, active/dead instances, messages sent, and duration tracking.
+  * Real-time message rate (per minute) display.
+  * Live log feed with color-coded log levels.
+  * Socket.IO-based real-time updates replacing polling mechanisms.
+  * Channel Status Modal to view and manage individual channel statuses with ability to kill specific instances.
+  * View Config Modal to display storm configuration details.
+  * System metrics charts for CPU and RAM usage visualization using Recharts library.
+* **AI Integration**:
+  * AI-powered message generation — Generate YouTube comments using AI with customizable prompts.
+  * AI-powered channel name generation — Create channel names via AI assistance.
+  * Multi-provider support — OpenAI, Anthropic (Claude), Google (Gemini), and custom providers.
+  * PydanticAI implementation — Structured AI outputs with async generation and type safety.
+  * Settings management — Configure and save API keys, models, and default providers locally.
+* **MCP (Model Context Protocol) Server**: Full MCP server integration with FastMCP framework, accessible at `localhost:1919/mcp`:
+  * Storm operation tools for start, stop, pause, resume, and kill instances.
+  * Configuration tools to get settings, profiles, system metrics, and storm context.
+  * Monitoring resources for channels, logs, and system data.
+  * HTTP transport for external LLM clients to control StreamStorm operations.
+  * Sample prompts for AI assistants:
+    * `Start storming on https://www.youtube.com/watch?v=VIDEO_ID with 5 channels with slow mode 3 seconds`
+    * `Start storming with 5 channels and also subscribe and wait for 30 seconds`
+    * `Pause the storm` / `Resume the storm` / `Stop the storm`
+    * `Change slow mode to 2 sec`
+    * `Add 2 more channels to the storm`
+* **Settings & Configuration**: Unified Settings Modal with tabbed interface:
+  * API Keys management for AI providers.
+  * Theme selection (Light/Dark modes).
+  * Host configuration.
+  * General settings.
+  * Pydantic-based configuration — Type-safe settings with environment variable support.
+  * Settings API endpoints — RESTful API for managing all configurations.
+* **Enhanced User Interface**:
+  * Responsive navigation — Mobile-friendly header with drawer navigation.
+  * Improved light theme — New color palette using indigo accents.
+  * Instructions link — Easy access to documentation from navbar.
+  * Enhanced modals — Logs modal, channels status modal, and manage profiles modal.
+* **Cookie-Based Login**: Default login method — More efficient and reliable than browser profiles.
+  * **Login with Google** (Recommended):
+    * Opens browser window for Google authentication.
+    * Automatically saves cookies after successful login.
+    * Cookies used for authentication when starting storms.
+  * **Login with Cookie Files**:
+    * Upload multiple cookie files (JSON or Netscape format).
+    * Only `youtube.com` cookies are parsed and saved.
+    * Validates cookies before creating the base profile.
+* **Multi-Account Management**: Seamlessly operate multiple YouTube channels using separate, isolated browser profiles.
+* **Custom Channel Creation**: Effortlessly create multiple YouTube accounts directly from the app.
+* **Custom Message Scheduling**: Control message timing with flexible intervals, supporting both rapid-fire and delayed delivery.
+* **One-Click Profile System**:
+  * Automatically generate and configure browser profiles per channel.
+  * Prevents data collisions and detection by isolating each session.
+  * Easily clean up all temporary profiles post-storm.
+* **Browser Automation Engine**: Simulates real human interaction with YouTube's live chat UI via robust browser automation.
+* **Customizable Storm Parameters**:
+  * Target specific YouTube video URLs.
+  * Define a list of messages to send.
+  * Set "slow mode" delays between messages.
+  * Enable/disable account subscriptions and background loading without UI.
+* **Flexible Channel Selection**:
+  * **Basic**: Run a fixed number of channels.
+  * **Intermediate**: Choose a channel range (e.g., 5–15).
+  * **Advanced**: Manually pick specific channels to storm.
+* **In-App System Monitoring**:
+  * Real-time RAM tracking to ensure system stability.
+  * Dynamically calculates how many channels can be run based on available resources.
+* **Streamlined Control Panel**: A centralized dashboard to configure storm settings and monitor performance.
+* **Modern Desktop UI**: Built with React and Material-UI, featuring both light and dark themes for optimal comfort.
+* **Advanced Tuning Options**: Fine-tune performance parameters to match your use case or system limits — no coding required.
+
+# Instructions to use The Application
+###### [INSTRUCTIONS](https://streamstorm.darkglance.in/instructions)
+
+
+# 👨‍💻 **Development Setup**
+
+* If you wish to run the project from the source code, follow these steps.
+
+**Prerequisites:**
+* Node.js v20.17.0 or higher, [install from here](https://nodejs.org/en/download)
+* UV (Python dependency manager), [install from here](https://docs.astral.sh/uv/getting-started/installation/) 
+
+**First clone the repository:**
+
+```bash
+git clone https://github.com/Ashif4354/StreamStorm.git
+cd StreamStorm
+```
+
+**Booting the Engine (Backend)**
+
+The backend is a FastAPI server that handles all the browser automation logic.
+
+```bash
+cd src/Engine
+uv sync
+uv run main.py
+```
+
+or, if you have `make` installed, you can use:
+
+```bash
+# To run in production mode
+make run
+----------------------------
+# To run in development mode
+make ui
+# Then in a new terminal, in same directory, run
+make run-dev
+```
+
+* No need to install Python or a virtual environment, uv will handle everything for you.
+* The backend will run on `http://0.0.0.0:1919` by default. You can change this by setting `STREAMSTORM_HOST` and `STREAMSTORM_PORT` environment variable configuration.
+* The MCP Server can be accessed at `http://localhost:1919/mcp` by default.
+
+**Booting the UI (Frontend)**
+
+The frontend is a React application built with Vite.
+
+```bash
+cd src/UI
+npm install
+npm start
+```
+
+or, if you have `make` installed, you can use:
+
+```bash
+make ui
+```
+
+* The frontend will run on `http://localhost:5173` by default. You can now open this URL in your browser and interact with the application.
+* By default, the Engine will load the UI from `https://streamstorm-ui.darkglance.in/` in a separate window, but you can change this in the `main.py` file if needed. 
+Just replace `https://streamstorm-ui.darkglance.in/` with `http://localhost:5173/` to load the local UI instead.
+
+**Running the Landing Page**
+
+The landing page is a Next.js application built with Vite.
+
+```bash
+cd src/LandingPage
+npm install
+npm run dev
+```
+
+or, if you have `make` installed, you can use:
+
+```bash
+make site
+```
+
+* The landing page will run on `http://localhost:3000` by default. You can now open this URL in your browser and interact with the application.
+
+
+# 🧠 **Troubleshooting & FAQ**
+
+*   **Error: "Engine is Busy"**
+    *   This means the backend is already performing a resource-intensive task (like creating profiles or running a storm). Wait for the current task to complete.
+
+*   **Error: "No storm is running. Start a storm first."**
+    *   You are trying to use a storm control feature (like Pause, Resume, etc.) when no storm is active. Click "Start Storm" first.
+
+*   **Issue: Browser window closes immediately after starting.**
+    *   This might happen if the ChromeDriver is out of sync with your Chrome browser. The application attempts to manage this automatically, but a manual Chrome browser update might be needed.
+
+# 📜 License
+
+StreamStorm is licensed under the Personal Use License. See the [LICENSE](./LICENSE) file for more information.
+
+# 🏆 Credits
+###### [Credits](./CREDITS.md)

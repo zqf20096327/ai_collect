@@ -1,0 +1,155 @@
+# Awesome Agent Cases
+
+A bilingual, continuously updated knowledge base of AI agent cases, daily news, open-source projects, papers, and reusable resources for builders, researchers, and practitioners.
+
+<p align="center">
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/stargazers"><img src="https://img.shields.io/github/stars/parkerluxu/Awesome-agent-cases?style=flat-square&logo=github&label=Stars" alt="GitHub stars" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/network/members"><img src="https://img.shields.io/github/forks/parkerluxu/Awesome-agent-cases?style=flat-square&logo=github&label=Forks" alt="GitHub forks" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/commits/main"><img src="https://img.shields.io/github/last-commit/parkerluxu/Awesome-agent-cases?style=flat-square&logo=git&label=Updated" alt="Last commit" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/parkerluxu/Awesome-agent-cases?style=flat-square&label=Commits%20per%20month" alt="Monthly commit activity" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases"><img src="https://img.shields.io/github/repo-size/parkerluxu/Awesome-agent-cases?style=flat-square&label=Repository" alt="Repository size" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-0f766e?style=flat-square" alt="MIT License" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Focus-AI%20Agents-0f766e?style=flat-square" alt="Focus: AI Agents" />
+  <img src="https://img.shields.io/badge/Content-News%20%7C%20Cases%20%7C%20Projects%20%7C%20Papers-2563eb?style=flat-square" alt="Content: News, cases, projects, and papers" />
+  <img src="https://img.shields.io/badge/Languages-EN%20%7C%20ZH--CN-7c3aed?style=flat-square" alt="Languages: English and Chinese" />
+  <img src="https://img.shields.io/badge/Format-Markdown-111827?style=flat-square&logo=markdown" alt="Markdown" />
+</p>
+
+[English](README.md) | [中文](docs/README.zh-CN.md)
+
+<p align="center">
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/discussions"><img src="https://img.shields.io/badge/Discussions-Join%20the%20community-58a6ff?style=flat-square&logo=github-discussions" alt="GitHub Discussions" /></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=flat-square" alt="Contributions Welcome" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/graphs/contributors"><img src="https://img.shields.io/github/contributors/parkerluxu/Awesome-agent-cases?style=flat-square&logo=github" alt="Contributors" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/issues"><img src="https://img.shields.io/github/issues/parkerluxu/Awesome-agent-cases?style=flat-square&logo=github" alt="Open Issues" /></a>
+  <a href="https://github.com/parkerluxu/Awesome-agent-cases/pulls"><img src="https://img.shields.io/github/issues-pr/parkerluxu/Awesome-agent-cases?style=flat-square&logo=github" alt="Open PRs" /></a>
+</p>
+
+## Explore the Online Knowledge Base
+
+> **Want to go beyond the repository?** [Agent Case Share](https://agentcaseshare.cn/) is the searchable, continuously updated home for AI Agent cases, daily news, open-source projects, papers, and reusable assets.
+>
+> [Explore cases](https://agentcaseshare.cn/tasks) · [Browse the latest AI news](https://agentcaseshare.cn/news) · [Share your own Agent case](https://agentcaseshare.cn/publish)
+>
+> **在线浏览与分享：** 前往 [Agent Case Share](https://agentcaseshare.cn/) 检索 AI Agent 案例、每日资讯、开源项目、论文及可复用资产；也欢迎发布你的真实实践与工作流。
+
+## Start Here
+
+| Looking for | Start with |
+|---|---|
+| Reproducible Agent cases | [Published case directory](cases/README.md) |
+| Today's developments | [Latest daily brief](daily_news/2026/08/2026-08-05-ai-news-digest.md) |
+| A specific domain | [Topic index](indexes/by-topic.md) |
+| Cases, projects, tutorials, or papers | [Content-type index](indexes/by-content-type.md) |
+| A time-based reading path | [Date index](indexes/by-date.md) |
+| The full daily-news archive | [Daily news archive](daily_news/README.md) |
+
+## Reproducible Agent Cases
+
+<!-- CASES_SHOWCASE_START -->
+
+Published cases are synchronized as concise Markdown summaries for discovery, citation, and reuse.
+
+| Case | What it covers | Difficulty |
+|---|---|---|
+| [AI Agent 零基础通用入门课程教案](cases/case-hzo3s639.md) | 一套面向零基础学习者的通用入门课程，通过讲解、演示与低风险练习，逐步掌握 AI Agent 的基本原理、任务描述、工具使用、权限边界、结果验证和人机协作方法，并延伸到网页、文档、数据与自动化等真实场景。 | 入门 |
+| [Agent Case Share 使用指南：检索、复用、内容管理与发布](cases/case-qjdht8bd.md) | 面向 Agent Case Share 使用者的持续维护型指南，覆盖案例、文章、项目、标签与分类的检索，可复用资产的查看与引用，个人内容和资产管理，以及手动与 AI 发布、常见工作流和问题排查。 | 入门 |
+| [AI 零售、电商与增长开源项目案例](cases/case-qbk2aose.md) | 围绕AI 零售、电商与增长的开源项目、落地路径与风险边界的长期案例导航。 | 入门 |
+| [AI 内容、视频与传媒开源项目案例](cases/case-e6lfg5bw.md) | 围绕AI 内容、视频与传媒的开源项目、落地路径与风险边界的长期案例导航。 | 入门 |
+| [AI 3D、CAD 与工程设计开源项目案例](cases/case-9dac7016.md) | 围绕AI 3D、CAD 与工程设计的开源项目、落地路径与风险边界的长期案例导航。 | 入门 |
+| [AI 数据分析与经营决策开源项目案例](cases/case-gousp8ic.md) | 围绕AI 数据分析与经营决策的开源项目、落地路径与风险边界的长期案例导航。 | 入门 |
+
+[Browse all 41 cases](cases/README.md) · [Search on Agent Case Share](https://agentcaseshare.cn/tasks?utm_source=github&utm_medium=repository&utm_campaign=readme)
+
+<!-- CASES_SHOWCASE_END -->
+
+## Latest Daily Briefs
+
+<!-- DAILY_BRIEFS_START -->
+| Date | Brief |
+|---|---|
+| 2026-10-14 | [AI News Digest](daily_news/2026/10/2026-10-14-ai-news-digest.md) |
+| 2026-10-13 | [AI News Digest](daily_news/2026/10/2026-10-13-ai-news-digest.md) |
+| 2026-10-12 | [AI News Digest](daily_news/2026/10/2026-10-12-ai-news-digest.md) |
+| 2026-10-11 | [AI News Digest](daily_news/2026/10/2026-10-11-ai-news-digest.md) |
+| 2026-10-10 | [AI News Digest](daily_news/2026/10/2026-10-10-ai-news-digest.md) |
+| 2026-10-09 | [AI News Digest](daily_news/2026/10/2026-10-09-ai-news-digest.md) |
+| 2026-10-08 | [AI News Digest](daily_news/2026/10/2026-10-08-ai-news-digest.md) |
+| 2026-10-02 | [AI News Digest](daily_news/2026/10/2026-10-02-ai-news-digest.md) |
+| 2026-10-01 | [AI News Digest](daily_news/2026/10/2026-10-01-ai-news-digest.md) |
+| 2026-09-30 | [AI News Digest](daily_news/2026/09/2026-09-30-ai-news-digest.md) |
+| 2026-09-29 | [AI News Digest](daily_news/2026/09/2026-09-29-ai-news-digest.md) |
+| 2026-09-28 | [AI News Digest](daily_news/2026/09/2026-09-28-ai-news-digest.md) |
+| 2026-09-27 | [AI News Digest](daily_news/2026/09/2026-09-27-ai-news-digest.md) |
+| 2026-09-26 | [AI News Digest](daily_news/2026/09/2026-09-26-ai-news-digest.md) |
+| 2026-09-25 | [AI News Digest](daily_news/2026/09/2026-09-25-ai-news-digest.md) |
+| 2026-09-24 | [AI News Digest](daily_news/2026/09/2026-09-24-ai-news-digest.md) |
+| 2026-09-23 | [AI News Digest](daily_news/2026/09/2026-09-23-ai-news-digest.md) |
+| 2026-09-22 | [AI News Digest](daily_news/2026/09/2026-09-22-ai-news-digest.md) |
+| 2026-09-21 | [AI News Digest](daily_news/2026/09/2026-09-21-ai-news-digest.md) |
+| 2026-09-20 | [AI News Digest](daily_news/2026/09/2026-09-20-ai-news-digest.md) |
+| 2026-09-19 | [AI News Digest](daily_news/2026/09/2026-09-19-ai-news-digest.md) |
+| 2026-09-18 | [AI News Digest](daily_news/2026/09/2026-09-18-ai-news-digest.md) |
+| 2026-09-17 | [AI News Digest](daily_news/2026/09/2026-09-17-ai-news-digest.md) |
+| 2026-09-16 | [AI News Digest](daily_news/2026/09/2026-09-16-ai-news-digest.md) |
+| 2026-09-15 | [AI News Digest](daily_news/2026/09/2026-09-15-ai-news-digest.md) |
+| 2026-09-14 | [AI News Digest](daily_news/2026/09/2026-09-14-ai-news-digest.md) |
+<!-- DAILY_BRIEFS_END -->
+
+Older issues are available in the [daily-news archive](daily_news/README.md).
+
+## Collections
+
+Long-lived research is organized by the task domain it serves. A collection can contain cases, tutorials, projects, and papers, so those resource types are indexed separately rather than split into competing folders.
+
+| Collection | Scope |
+|---|---|
+| [Engineering](collections/engineering/README.md) | Web, desktop, and game development |
+| [Industry](collections/industry/README.md) | Cross-industry adoption, office automation, and scientific research |
+| [Hardware](collections/hardware/README.md) | Electronic systems, embedded systems, and chip design |
+| [Creative](collections/creative/README.md) | Audio, video, visual, and music generation |
+| [Ecosystem](collections/ecosystem/README.md) | Frameworks, notable projects, and the cross-cutting resource map |
+
+## How This Repository Is Organized
+
+- `cases/` contains concise Markdown mirrors of published Agent Case Share cases and is generated from the public API.
+- `daily_news/YYYY/MM/` contains dated news digests. Associated media stays in `daily_news/assets/` next to the archive rather than being duplicated in each month.
+- `collections/<domain>/` contains maintained, topic-focused reading guides.
+- `scripts/` contains repeatable content synchronization and validation utilities.
+- `indexes/` provides alternative routes through the same content by topic, content type, and time.
+- `docs/` contains repository guidance and localized entrypoints.
+
+See the [content guide](docs/content-guide.md) before adding or restructuring content.
+
+## Community & Contributing
+
+This is a community-driven project — we welcome contributions of all kinds! Whether you're adding a case, fixing a broken link, or starting a new collection, your input makes this resource better for everyone.
+
+| Resource | Link |
+|---|---|
+| 📖 Contributing Guide | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| 💬 Discussions | [GitHub Discussions](https://github.com/parkerluxu/Awesome-agent-cases/discussions) |
+| 🐛 Report an Issue | [GitHub Issues](https://github.com/parkerluxu/Awesome-agent-cases/issues) |
+| 📜 Code of Conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
+| 🌐 Online Knowledge Base | [Agent Case Share](https://agentcaseshare.cn/) |
+
+Useful contributions include a high-signal case, a practical paper, an open-source project, a correction, or a focused topic collection. Include the title, source link, resource type, relevant topic, and a concise explanation of why it matters.
+
+### Our Contributors
+
+<a href="https://github.com/parkerluxu/Awesome-agent-cases/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=parkerluxu/Awesome-agent-cases&max=24" alt="Contributors" />
+</a>
+
+## Star History
+
+<a href="https://github.com/parkerluxu/Awesome-agent-cases/stargazers">
+  <img src="https://starchart.cc/parkerluxu/Awesome-agent-cases.svg" alt="Star History Chart" />
+</a>
+
+## License
+
+Unless otherwise stated, repository curation and original notes are released under the MIT License. Original articles, papers, and linked projects remain under their respective owners' licenses.

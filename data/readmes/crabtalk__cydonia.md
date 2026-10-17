@@ -1,0 +1,80 @@
+# Cydonia
+
+[![Crates.io](https://img.shields.io/crates/v/cydonia?logo=rust&logoColor=white)](https://crates.io/crates/cydonia) [![License](https://img.shields.io/crates/l/cydonia)](LICENSE) [![Discord](https://img.shields.io/discord/1481168707391852659?logo=discord&logoColor=white&label=discord&color=5865F2)](https://discord.gg/yGZDYnwbx6)
+
+https://github.com/user-attachments/assets/4f13ea59-98ca-491a-9fd9-0bd6ccc2e90d
+
+A desktop workspace for the coding agents you run. Open a directory as a
+project, put any agent that speaks [ACP](https://agentclientprotocol.com) to work
+in it, and keep what comes out as durable artifacts on disk — articles, boards
+and tables, not a chat log.
+
+```sh
+cargo install cydonia
+cydonia
+```
+
+> [!NOTE]
+> A fresh install includes articles, sessions and boards. Tables are opt-in. One
+> agent in one project is solid; several of them working that project is what is
+> being built.
+
+## Features
+
+Configure features in **Settings › Features** or in
+`~/.config/cydonia/settings.toml`:
+
+```toml
+[features]
+sessions = true    # agent conversations
+boards = true      # cards in columns
+tables = false     # structured records
+```
+
+`sessions` gates agents as much as it gates the pane — a session is the only
+thing that starts one, and an agent is a package this machine downloads and
+runs. Turning a feature off hides it; nothing on disk is deleted.
+
+## Agents
+
+Install one from the ACP registry in **Settings › Agents**, or write it into
+`~/.config/cydonia/settings.toml` yourself:
+
+```toml
+[[agents]]
+name = "my-agent"
+command = "path/to/agent"
+args = ["--acp"]
+# env = { KEY = "VALUE" }
+```
+
+## Entry references
+
+Articles, boards, tables, and saved chats share a sequence within each project:
+`#1`, `#2`, and so on. References appear after titles in pane headers, survive
+renames and restarts, and are never reassigned after deletion through the app.
+
+External MCP agents and in-app ACP agents can use `project_entries` to list them
+and `project_read_entry` to read one. Article and board tools also accept `#12`
+in their existing entry arguments. Table reads preview up to 200 rows.
+
+## Where things live
+
+```
+~/.config/cydonia/   settings.toml, mcp.toml, the agent catalogue cache
+~/.local/share/      installed agents
+<project>/.cydonia/  that project's articles, boards, sessions and store
+```
+
+A project's own store carries a `.gitignore` — none of what cydonia writes
+there is the project's source.
+
+## Development
+
+[fixtures](https://github.com/crabtalk/fixtures) is a demo project to open the
+app against; `cargo run --example covers -- ../fixtures` gives its articles their
+pictures.
+
+## License
+
+[MIT](LICENSE)

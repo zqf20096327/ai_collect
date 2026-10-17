@@ -1,0 +1,290 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner-light.png">
+  <img src=".github/assets/banner-light.png" alt="Rifteo skills" width="330">
+</picture>
+
+<br>
+
+# Rifteo Skills
+
+(Your agent improvises. Skills don't.) 
+Install proven pentest methodologies into Claude Code, Gemini CLI, Codex, and 50+ other agents in one command.
+
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![npm](https://img.shields.io/npm/v/%40rifteo%2Fskills)](https://www.npmjs.com/package/@rifteo/skills)
+[![Skills](https://img.shields.io/badge/skills-28-brightgreen)](https://github.com/rifteo/skills)
+[![Agents](https://img.shields.io/badge/agents-53-blue)](https://github.com/rifteo/skills)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](SKILL_GUIDE.md)
+
+</div>
+
+
+## The problem with AI agents and security work
+
+Ask an agent to hunt for IDOR bugs. It will improvise. It misses verb inconsistency checks, skips GraphQL object exposure, and never tests parameter pollution. You re-prompt five times, spend 3x the tokens, and still get an incomplete result.
+
+The agent is not dumb. It lacks a methodology.
+
+
+## What a skill is
+
+A skill is a battle-tested methodology file your agent reads before starting a task. It covers every test case, every bypass technique, every output format a practitioner would use. The agent stops improvising and starts executing.
+
+| | Without skill | With skill |
+|---|---|---|
+| Output quality | Inconsistent | Structured and complete |
+| Turns to finish | 3 to 5 | 1 |
+| Methodology coverage | Partial | Full |
+| Report format | Whatever the agent guesses | Triage-ready, platform-specific |
+
+28 skills. 53 agents. One command to install.
+
+---
+
+## Benchmarks
+
+19 skills. Real engagements. Same prompt. Same model. Measured.
+
+| | Without skill | With skill |
+|---|---|---|
+| Tokens consumed | baseline | **52% less** |
+| Time to complete | baseline | **50% faster** |
+| IDOR findings on same target | 5 | **11 (+120%)** |
+| XSS findings on same target | 7 of 10 in 8 min | **9 of 10 in 2 min** |
+| SSRF false positives | Reported as findings | **Zero** |
+| Turns to finish (jwt-cracker) | 3 | **1** |
+| Skills that cut turns to 1 | — | **8 of 19** |
+
+The agent does not get smarter. It gets a methodology. That is what changes the numbers.
+
+Each skill's full benchmark is in its `BENCHMARK.md`.
+
+---
+
+## Quickstart
+
+```bash
+npm install -g @rifteo/skills
+rifteo-skills add bugbounty-reporter
+```
+
+No account. No configuration. The CLI detects your installed agents automatically and puts the skill in the right place.
+
+---
+
+## Install
+
+```bash
+npm install -g @rifteo/skills
+```
+
+---
+
+## CLI
+
+```bash
+# Install a skill into all detected agents
+rifteo-skills add bugbounty-reporter
+
+# Install into a specific agent
+rifteo-skills add bugbounty-reporter --agent claude-code
+
+# Install globally across all projects
+rifteo-skills add bugbounty-reporter --global
+
+# Check which installed skills have a newer version available
+rifteo-skills outdated
+
+# Update all installed skills to their latest version
+rifteo-skills update
+
+# Browse all available skills
+rifteo-skills available
+
+# See what is installed
+rifteo-skills list
+
+# See which agents were detected on this machine
+rifteo-skills agents
+
+# Remove a skill
+rifteo-skills remove bugbounty-reporter
+```
+
+Not sure which skill to use? Install `find-skills` first:
+
+```bash
+npx rifteo-skills add find-skills
+```
+
+It reads your task and loads the right skill automatically.
+
+---
+
+## Skills
+
+### Web Application
+
+| Skill | What it does |
+|---|---|
+| `xss-hunter` | Full XSS methodology: reflected, stored, DOM, filter bypass, CSP evasion, mXSS |
+| `xxe-phantom` | XXE injection: file read, blind OOB, SSRF chaining, SVG and XLSX vectors |
+| `ssti-hunter` | Server-side template injection with engine fingerprinting and RCE exploitation |
+| `js-analyzer` | JavaScript analysis for secrets, endpoints, sinks, and prototype pollution |
+| `hpp-hunter` | HTTP parameter pollution detection and exploitation |
+| `clickjacking-hunter` | Clickjacking detection and PoC generation |
+| `redirect-forge` | Open redirect discovery and OAuth code theft chaining |
+
+### API Security
+
+| Skill | What it does |
+|---|---|
+| `jwt-cracker` | JWT attacks: alg:none, weak secret brute-force, RS256 to HS256, kid injection |
+| `idor-hunter` | Systematic IDOR and BOLA detection with multi-account testing and bypass techniques |
+
+### Infrastructure
+
+| Skill | What it does |
+|---|---|
+| `ssrf-hunter` | SSRF detection and exploitation including internal recon, cloud metadata, and filter bypass |
+| `nuclei-template-writer` | Writes production-ready Nuclei templates from vulnerability descriptions |
+| `check-exploit` | Checks if a CVE has a public exploit and assesses exploitability |
+
+### Reconnaissance
+
+| Skill | What it does |
+|---|---|
+| `attack-surface` | Maps the full attack surface before testing begins |
+| `scope-grill` | Validates and clarifies engagement scope |
+| `vuln-diagnose` | Diagnoses ambiguous or incomplete vulnerability reports |
+
+### Reporting
+
+| Skill | What it does |
+|---|---|
+| `finding-writer` | Converts raw notes into a structured, report-ready finding |
+| `pentest-report` | Assembles a full pentest report from individual findings |
+| `bugbounty-reporter` | Converts raw findings into triage-ready reports. Pre-submission gate included. |
+| `cvss-scorer` | Computes exact CVSS v3.1 base score and vector from a vulnerability description |
+| `risk-assessor` | Business risk assessment from technical findings |
+| `remediation-planner` | Generates specific, prioritized remediation plans |
+
+### Compliance
+
+| Skill | What it does |
+|---|---|
+| `compliance-gap-analyzer` | Identifies compliance gaps against security frameworks |
+| `control-lookup` | Maps controls across ISO 27001, SOC2, NIST, and PCI-DSS |
+
+### Workflow
+
+| Skill | What it does |
+|---|---|
+| `find-skills` | Discovers and loads the right skill for any security task |
+| `engagement-handoff` | Structures engagement handoff notes between team members |
+| `ctf-writeup` | Formats CTF challenge writeups |
+| `caveman` | Ultra-compressed comms mode for fast-paced testing sessions |
+| `skill-benchmark` | Benchmarks skill performance with and without the agent |
+
+### Integrations
+
+| Skill | Tool | What it does |
+|---|---|---|
+| `hexstrike-forge` | HexStrike | Full pentest engagement: 5-phase workflow, parallel tool execution, triage gates, false positive filtering, and report-ready findings from a single prompt. Requires HexStrike MCP active. |
+
+---
+
+## Slash Commands for Claude Code
+
+Install a skill for Claude Code and you get five slash commands that work in every session, no skill loaded required:
+
+| Command | What it does |
+|---|---|
+| `/rifteo:triage` | 7-question pre-submission gate. Outputs GO, KILL, or DOWNGRADE with evidence. |
+| `/rifteo:chain` | Given a confirmed finding, checks the signal table for companion bugs to escalate severity |
+| `/rifteo:report` | Writes a submission-ready bug bounty report: title, steps, PoC, impact, remediation |
+| `/rifteo:hunt` | Launches a structured 7-phase engagement workflow on a target |
+| `/rifteo:intel` | Pulls CVEs, GitHub advisories, and HackerOne hacktivity for any named technology |
+| `/rifteo:setup` | Audits your current Rifteo install: shows which skills and commands are installed, checks context-mcp config, and gives exact setup steps for anything missing |
+
+```bash
+rifteo-skills add bugbounty-reporter --agent claude-code
+# Install Rifteo slash commands for Claude Code? [Y/n/never]
+```
+
+---
+
+## How to activate a skill
+
+After installing, tell your agent to use the skill:
+
+- **Claude Code**: type `/skills` and select from the list
+- **Cursor / Windsurf**: type `/skill-name` in chat
+- **Gemini CLI**: type `@skill-name` to invoke
+- **Other agents**: skills are loaded automatically from the skills directory on session start
+
+Then describe your task in plain language:
+
+```
+I found that /api/orders/{id} returns order data without checking 
+if the authenticated user owns that order. Any integer ID works.
+```
+
+The agent produces a complete, triage-ready report. First try.
+
+---
+
+## Supported Agents
+
+| Agent | Flag |
+|---|---|
+| Claude Code | `claude-code` |
+| Gemini CLI | `gemini-cli` |
+| Codex | `codex` |
+| Cursor | `cursor` |
+| GitHub Copilot | `github-copilot` |
+| Windsurf | `windsurf` |
+| Cline | `cline` |
+| Continue | `continue` |
+| Aider Desk | `aider-desk` |
+| Roo Code | `roo` |
+| OpenHands | `openhands` |
+| Goose | `goose` |
+| Devin | `devin` |
+| Augment | `augment` |
+| Amp | `amp` |
+| + 39 more | run `rifteo-skills agents` to see all |
+
+---
+
+## Contributing
+
+Skills are built by practitioners, for practitioners. If you have a methodology that works, the community needs it.
+
+Read the **[Skill Structure Guide](SKILL_GUIDE.md)** for the full format.
+
+The short version:
+1. Create a folder named after your skill
+2. Add `SKILL.md` with YAML frontmatter and methodology
+3. Open a pull request
+
+Once merged, `find-skills` picks it up automatically and your skill is live for the entire community.
+
+---
+
+## Contexts
+
+Skills pair with [Rifteo Contexts](https://github.com/rifteo/contexts), engagement-specific knowledge bases for web app pentest, cloud audit, mobile pentest, and more. Load a context at the start of an engagement and the agent knows the full scope, methodology, and relevant skills before you ask the first question.
+
+---
+
+## Part of Rifteo
+
+These skills work standalone with any agent and integrate natively with [Rifteo](https://github.com/rifteo), the pentest management platform built for security teams and consultancies.
+
+---
+
+MIT License 

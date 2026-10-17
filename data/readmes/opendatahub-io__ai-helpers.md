@@ -1,0 +1,367 @@
+# AI Helpers
+
+This repository is a collaborative place hosting collections of AI plugins to automate and assist with various tasks.
+
+> [!NOTE]
+> Right now the focus is to support Claude Code, Codex CLI, OpenCode.ai, Gemini Gems, and Cursor AI.
+> Other tools are welcome here, please submit Pull Requests.
+
+> [!NOTE]
+> This project was inspired by the [OpenShift AI helpers](https://github.com/openshift-eng/ai-helpers).
+
+## Got an Idea?
+
+Have an idea for a new plugin, command, or assistant but not sure how to implement it? We'd love to hear about it!
+Simply file a GitHub issue with your idea in the title and we'll work together to make it happen.
+
+> [!TIP]
+> [Share your idea](https://github.com/opendatahub-io/ai-helpers/issues/new?assignees=&labels=enhancement%2Chelp+wanted%2Cidea&template=07_idea_request.md&title=%5BIdea%5D+)
+
+No implementation details needed - just describe what you'd like to automate or what workflow you think could be
+improved. The community can help figure out the best way to build it.
+
+Want to work on an issue? Comment `/assign` on it to assign yourself.
+
+## Tools Development
+
+This repository is made for collaboration. We highly welcome contributions.
+
+For skills, browse the `plugins/<plugin>/skills/` directories for examples.
+For agents, see `plugins/<plugin>/agents/`.
+Using AI code assistant itself to develop the tools is highly encouraged.
+
+### Adding New Tools
+
+When contributing new tools:
+
+1. **Skills**: Add to the appropriate `plugins/<plugin>/skills/` directory following the agentskills.io format
+2. **Agents**: Add to the appropriate `plugins/<plugin>/agents/` directory with appropriate documentation
+3. **Gemini Gems**: Add to the `gems/` directory
+
+Once you have added the tool, you'd have to run have to run `make update` in order to generate the website data.
+Then you should git commit your change and after than running `make lint` would run local tests to validate the syntax.
+
+### Testing a plugin locally (example with Claude Code)
+
+1. Open `claude`
+2. Run `/plugin marketplace add ./`
+3. Run `/plugin` then install the local plugin
+4. Test plugin and remove local marketplace after done testing which will remove plugin
+5. You can now reinstall from the git marketplace
+
+## Plugin Structure
+
+Tools are organized into per-domain plugins under `plugins/`. Each `plugins/<plugin>/`
+directory is an independently installable plugin (and doubles as the tool's
+category on the website):
+
+```text
+plugins/odh-jira/
+  .claude-plugin/plugin.json   # plugin name + description
+  skills/<skill>/SKILL.md      # one directory per skill
+  agents/<agent>.md            # optional agents
+```
+
+To add a tool, drop it into the relevant plugin's `skills/` (or `agents/`) directory, or
+create a new `plugins/<plugin>/` directory with its own `.claude-plugin/plugin.json`. Then
+run `make update` to regenerate the marketplace, settings, and website data. The build
+system infers tool types from the filesystem and prevents duplicate tool names across
+plugins.
+
+> The deprecated `odh-ai-helpers` umbrella plugin re-exports every skill under the legacy
+> `odh-ai-helpers:*` names for backwards compatibility and is excluded from these checks.
+
+
+## Using with Claude Code
+
+Claude Code Marketplace extends Claude's functionality with custom commands, agents, and skills for specific workflows and
+tasks.
+They enable you to automate repetitive development activities, integrate with tools, and create specialized AI
+assistants tailored to your needs.
+
+For comprehensive information about plugin architecture and development, see
+the [official Claude Code plugins documentation](https://docs.claude.com/en/docs/claude-code/plugins-reference).
+
+### Install the tools from the Marketplace
+
+1. **Add the marketplace:**
+   ```bash
+   /plugin marketplace add opendatahub-io/ai-helpers
+   ```
+
+
+2. **Install the plugins you need:**
+   ```bash
+   /plugin install odh-jira
+   /plugin install odh-python-packaging
+   ```
+
+> [!NOTE]
+> The `odh-ai-helpers` umbrella installs everything under the legacy `odh-ai-helpers:*`
+> names but is **deprecated** — prefer the individual `odh-*` plugins.
+
+> [!TIP]
+> To browse and install multiple plugins interactively, use `/plugin` after adding the marketplace.
+> This will show you all available plugins and allow you to install them selectively.
+> For a complete list of all available tools, visit our [website](https://opendatahub-io.github.io/ai-helpers/).
+
+3. **Use the commands:**
+   ```bash
+   /hello-world:echo Hello from OpenDataHub!
+   ```
+
+### Running Claude Code in a Container
+
+For IDE users, we have supplied a devcontainer.json file. For setup and prerequisites, see [Dev Container README](.devcontainer/README.md).
+
+For setup with the standard CLI see the following. 
+
+A container image is available with Claude Code and all plugins pre-installed:
+`ghcr.io/opendatahub-io/ai-helpers:latest`
+
+You can also build it yourself by running:
+
+```bash
+podman build -f images/claude/Containerfile -t ai-helpers .
+```
+
+To use Claude Code with Google Cloud's Vertex AI, you need to pass through your gcloud credentials and set the required
+environment variables:
+
+```bash
+podman run -it --rm \
+  --pull newer \
+  --userns=keep-id \
+  -e CLAUDE_CODE_USE_VERTEX=1 \
+  -e CLOUD_ML_REGION=your-ml-region \
+  -e ANTHROPIC_VERTEX_PROJECT_ID=your-project-id \
+  -e DISABLE_AUTOUPDATER=1 \
+  -v ~/.config/gcloud:/home/claude/.config/gcloud:ro,z \
+  -v ~/.claude:/home/claude/.claude:z \
+  -v ~/.claude.json:/home/claude/.claude.json:z \
+  -v $(pwd):$(pwd):z \
+  -w $(pwd) \
+  ghcr.io/opendatahub-io/ai-helpers:latest
+```
+
+You can execute Claude Code commands directly without entering an interactive session using the `-p` or `--print` flag.
+
+**Environment Variables:**
+
+- `CLAUDE_CODE_USE_VERTEX=1` - Enable Vertex AI integration
+- `CLOUD_ML_REGION` - Your GCP region (e.g., `us-east5`)
+- `ANTHROPIC_VERTEX_PROJECT_ID` - Your GCP project ID
+
+**Rootless Podman:**
+
+- `--userns=keep-id` - Preserves host user ID mapping, required for the claude user to access mounted volumes
+
+**Volume Mounts:**
+
+- `-v ~/.claude:/home/claude/.claude:z` - Mounts your local Claude sessions and project data
+- `-v ~/.claude.json:/home/claude/.claude.json:z` - Mounts your user configuration (onboarding state, preferences)
+- `-v $(pwd):$(pwd):z` - Mounts the project at the same absolute path as on the host to reuse Claude's session data
+- `-w $(pwd)` - Sets the working directory to match the host path
+
+**CLI Authentication (GitHub and GitLab):**
+
+The container includes `gh` (GitHub CLI) and `glab` (GitLab CLI). To authenticate them inside the container, pass your
+host credentials via environment variables or volume mounts:
+
+- `-e GH_TOKEN=$(gh auth token)` - Pass your GitHub token from the host keyring
+- `-v ~/.config/glab-cli:/home/claude/.config/glab-cli:ro,z` - Mount your GitLab CLI config (contains auth token)
+
+Add this to your `~/.bashrc` for easy launching of the container:
+
+```bash
+claude-container() {
+  podman run -it --rm \
+    --pull newer \
+    --userns=keep-id \
+    -e CLAUDE_CODE_USE_VERTEX=1 \
+    -e CLOUD_ML_REGION="${CLOUD_ML_REGION}" \
+    -e ANTHROPIC_VERTEX_PROJECT_ID="${ANTHROPIC_VERTEX_PROJECT_ID}" \
+    -e DISABLE_AUTOUPDATER=1 \
+    -v ~/.config/gcloud:/home/claude/.config/gcloud:ro,z \
+    -v ~/.claude:/home/claude/.claude:z \
+    -v ~/.claude.json:/home/claude/.claude.json:z \
+    -v "$(pwd):$(pwd):z" \
+    -w "$(pwd)" \
+    ghcr.io/opendatahub-io/ai-helpers:latest "$@"
+}
+```
+
+### CI Streaming Mode
+
+When running Claude Code non-interactively in CI pipelines, set `CLAUDE_CI_STREAM=1` to get
+human-readable streaming output instead of raw JSON. The container automatically adds the
+required flags and pipes output through a built-in parser that renders thinking blocks, tool
+use, token stats, and errors as readable log lines.
+
+```bash
+podman run --rm \
+  --userns=keep-id:uid=1000,gid=1000 \
+  -e CLAUDE_CODE_USE_VERTEX=1 \
+  -e CLOUD_ML_REGION=your-ml-region \
+  -e ANTHROPIC_VERTEX_PROJECT_ID=your-project-id \
+  -e DISABLE_AUTOUPDATER=1 \
+  -e CLAUDE_CI_STREAM=1 \
+  -e CLAUDE_CI_LOG_FILE=/workspace/.claude-output.txt \
+  -v ~/.config/gcloud:/home/claude/.config/gcloud:ro,z \
+  -v $(pwd):/workspace:z \
+  -w /workspace \
+  ghcr.io/opendatahub-io/ai-helpers:latest \
+  --permission-mode bypassPermissions \
+  -p "Fix the bug described in ISSUE-123"
+```
+
+**CI Streaming Environment Variables:**
+
+| Variable | Default | Description |
+|---|---|---|
+| `CLAUDE_CI_STREAM` | _(unset)_ | Set to `1` to enable streaming mode |
+| `CLAUDE_CI_LOG_FILE` | _(unset)_ | Path (inside the container) to write a plain-text log without ANSI codes |
+| `CLAUDE_CI_WRAP` | `0` | Word-wrap output at N columns (0 = no wrapping) |
+| `NO_COLOR` | _(unset)_ | Set to `1` to disable ANSI color codes in output |
+
+Without `CLAUDE_CI_STREAM`, the container behaves identically to running `claude` directly.
+
+### Running Cursor Agent CLI in a Container
+
+A container image is also available with the Cursor Agent CLI and all development tools pre-installed:
+`ghcr.io/opendatahub-io/ai-helpers-cursor:latest`
+
+You can also build it yourself by running:
+
+```bash
+podman build -f images/cursor/Containerfile -t ai-helpers-cursor .
+```
+
+Or using make:
+
+```bash
+make build-cursor
+```
+
+To use the Cursor Agent CLI, you need to pass your `CURSOR_API_KEY`:
+
+```bash
+podman run -it --rm \
+  --pull newer \
+  --userns=keep-id \
+  -e CURSOR_API_KEY=your-api-key \
+  -v $(pwd):$(pwd):z \
+  -w $(pwd) \
+  ghcr.io/opendatahub-io/ai-helpers-cursor:latest
+```
+
+**Environment Variables:**
+
+- `CURSOR_API_KEY` - Your Cursor API key (required for authentication)
+
+Add this to your `~/.bashrc` for easy launching of the container:
+
+```bash
+cursor-container() {
+  podman run -it --rm \
+    --pull newer \
+    --userns=keep-id \
+    -e CURSOR_API_KEY="${CURSOR_API_KEY}" \
+    -v "$(pwd):$(pwd):z" \
+    -w "$(pwd)" \
+    ghcr.io/opendatahub-io/ai-helpers-cursor:latest "$@"
+}
+```
+
+## Using with Codex CLI
+
+[Codex CLI](https://learn.chatgpt.com/docs/codex/cli) can install the `odh-*` plugins directly
+from this marketplace. No clone or skill symlinks are needed.
+
+```bash
+codex plugin marketplace add opendatahub-io/ai-helpers
+codex plugin add odh-jira@odh-ai-helpers
+codex plugin add odh-python-packaging@odh-ai-helpers
+```
+
+Replace the example plugin names with the categories you need. Use
+`codex plugin list --marketplace odh-ai-helpers` to see what is installed. The
+`odh-ai-helpers` umbrella plugin is deprecated; install individual `odh-*` plugins instead.
+
+If you access GitHub through SSH, use
+`codex plugin marketplace add git@github.com:opendatahub-io/ai-helpers.git` for the first
+command. To refresh a Git-backed marketplace, run
+`codex plugin marketplace upgrade odh-ai-helpers`.
+
+Some skills use Claude-specific variables or tools and may need adjustments in Codex. See
+[Codex skills and plugins](https://learn.chatgpt.com/docs/skills-and-plugins) for usage details.
+
+## Using with OpenCode.ai
+
+[OpenCode.ai](https://opencode.ai) is an open-source AI coding assistant that supports custom skills and commands. Our helpers can be integrated as OpenCode skills and commands to enhance your development workflow.
+
+**Note**: OpenCode.ai agents are not currently compatible due to format differences. Only skills are supported at this time.
+
+### Setup
+
+1. **Clone the helpers repository:**
+   ```bash
+   git clone https://github.com/opendatahub-io/ai-helpers.git
+   cd ai-helpers
+   ```
+
+2. **Install globally:**
+   ```bash
+   mkdir -p ~/.config/opencode/skills
+   ln -sf $(pwd)/plugins/*/skills/* ~/.config/opencode/skills/
+   ```
+
+These helpers are available when loading the odh-ai-helpers plugin from the marketplace as instructed above.
+
+## Gemini Gems
+
+The `gems/` directory contains a curated collection of Gemini Gems - specialized AI assistants for various
+development tasks. These can be accessed directly through Google's Gemini platform.
+
+For detailed information about using and contributing Gemini Gems, see [gems/README.md](gems/README.md).
+
+## Validating Tools
+
+Run all linters at once with:
+
+```bash
+make lint
+```
+
+This runs the following checks in order:
+
+1. **[skillsaw](https://github.com/stbenjam/skillsaw)** — lints skills and plugins against the agentskills.io spec with content intelligence
+2. **[ruff](https://docs.astral.sh/ruff/) check** — Python syntax and style errors
+3. **ruff format --check** — Python formatting consistency
+4. **[shellcheck](https://www.shellcheck.net/)** — shell script analysis for all `*.sh` files
+5. **Staleness check** — runs `make update` and fails if it produces uncommitted changes
+
+You can auto-fix some skillsaw issues with `make skillsaw-fix`.
+
+## Ethical Guidelines
+
+This project follows strict ethical guidelines for AI tool development, particularly regarding the use of real people's names and personas.
+
+For detailed ethical guidelines and best practices, see [ETHICS.md](ETHICS.md).
+
+## Pre-commit Hooks (Optional)
+
+For additional validation, the repository includes `.pre-commit-config.yaml` with Red Hat security and AI-readiness
+hooks:
+
+```bash
+pre-commit install
+pre-commit install --hook-type pre-push
+pre-commit run --all-files  # Test all files
+```
+
+This automatically scans all tools and regenerates the complete documentation and website data.
+
+## License
+
+See [LICENSE](LICENSE) for details.

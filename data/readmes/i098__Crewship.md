@@ -1,0 +1,95 @@
+<h1 align="center">🚢 Crewship</h1>
+
+<div align="center">
+
+**This makes it super easy to start using agents in the cloud, enjoy!**
+
+[![CI](https://img.shields.io/github/actions/workflow/status/i098/Crewship/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI)](https://github.com/i098/Crewship/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/i098/Crewship?style=for-the-badge&logo=github&label=&color=2563eb)](https://github.com/i098/Crewship/releases/latest)
+[![License: FSL-1.1-Apache-2.0](https://img.shields.io/badge/FSL--1.1--Apache--2.0-0d9488?style=for-the-badge)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/i098/Crewship?style=for-the-badge&logo=github&color=d97706)](https://github.com/i098/Crewship/stargazers)
+[![Sponsor](https://img.shields.io/badge/Sponsor-db61a2?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/i098)
+
+[Docs](#more-docs) · [Install](#quick-start) · [Changelog](CHANGELOG.md) · [Discussions](https://github.com/i098/Crewship/discussions)
+
+<img src="docs/images/crewship.png" alt="Herdr with a sidebar of workspaces and omp agents working on demo repositories in parallel">
+
+*A finished host: Herdr lists the workspaces and agents on the left, and omp agents work side by side.*
+
+</div>
+
+## Features
+
+- **[Firstmate orchestration](docs/architecture.md#agent-fleet-and-supervision):** one supervisor agent runs many coding agents.
+- **[Web pages from anywhere](docs/gateway.md):** one password opens agent pages and previews (opt-in).
+- **[Custom Herdr sidebar](docs/herdr.md):** every workspace and agent, with state and load, at a glance.
+- **[In-memory message board](docs/board.md):** agents on one host talk over topics, not disk (opt-in).
+- **[Guards](docs/fleet-guards.md):** block `pkill`, gate quality, and clean up stray containers and dev servers.
+- **[Browser ladder](docs/fleet-guards.md#browser-ladder):** a light browser first, full Chrome or noVNC when needed (opt-in).
+- **[Chat clients](docs/chat.md):** Discord, Slack, and [iMessage](docs/imessage.md) from the terminal (opt-in).
+- **[Credentials](docs/secrets.md):** one `super.env` file, fetched by each new host via a private Worker.
+- **[Mac control](docs/security.md#ssh-to-a-mac):** JARVIS-style, agents run `ssh mac` to control apps on your Mac (opt-in).
+
+The other features, each with its docs link, are listed in [docs/features.md](docs/features.md).
+
+## Quick start
+
+1. **Machine:** Ubuntu 24.04 or 26.04 server from any VPS (e.g. Hetzner) or a spare box, 4 vCPU / 16 GB and up; see [Capacity](docs/capacity.md).
+
+2. **Paste:** this into your coding agent or `omp` on the machine. It installs Crewship and sets it up with you:
+
+   ```text
+   Set up Crewship on this machine by following https://github.com/i098/Crewship/blob/main/SETUP.md
+   ```
+
+3. **Update:** run `bunx crewship update` (`npx crewship update` and `pnpm dlx crewship update` work too), or the same install command again
+
+Prefer to do it by hand? `bunx crewship` installs the core (omp agents and Firstmate) and, in a terminal, shows one checklist of the opt-in features, including the public skills. Skip it with `--with docker,chat` (`--with none` for the core only). The installer commands are in [SETUP.md](SETUP.md); the [wiki](https://github.com/i098/Crewship/wiki) has the rest.
+
+## How it works
+
+For how a host gets set up, see the [setup flow](SETUP.md#setup-flow). This is what runs on a finished host, and how its parts connect is in [Architecture](docs/architecture.md):
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/how-it-works-dark.svg">
+  <img alt="You reach Firstmate from a phone or laptop with a terminal over SSH or iMessage. On your server, Firstmate hands work to second mates, who lead workers; each worker runs in its own isolated copy. An optional iMessage bridge (Photon, or a BlueBubbles relay on your Mac) and the Discord and Slack terminal chat clients run on the server. Workers use model providers and GitHub. Optional guards, the optional crew board and the secrets file are shared on the server; the secrets file can optionally come from an external Cloudflare Worker. A block of third-party services lists what the server installs or calls: bun, no-mistakes, Lavish, Sentrux and Google Workspace, and optionally Tailscale. The agents can optionally control your Mac over SSH." src="docs/how-it-works-light.svg">
+</picture>
+
+## Repository layout
+
+- [`blueprint/`](blueprint/): what provisions a host: the Ansible playbook, seeds, skills, and guards.
+- [`apps/`](apps/): services Crewship runs: crew board, iMessage bridge, and secrets Worker.
+- [`tools/`](tools/): stand-alone helpers: the `crewship` launcher, `herdr-patch`, and `dia-debug`.
+- [`scripts/`](scripts/): the `ship.sh` CLI code, the release artifact build, and secrets helpers.
+- [`site/`](site/): the crewship.si landing page.
+- [`docs/`](docs/): the guides.
+- [`tests/`](tests/): the test suite.
+- [`changelog.d/`](changelog.d/): changelog fragments, one per pull request.
+
+`install.sh`, `ship.sh`, and `onboard.sh` stay at the top, because the install URL and the release tarball depend on them.
+
+## More docs
+
+- [Architecture](docs/architecture.md)
+- [Contributing](CONTRIBUTING.md)
+- [Support](.github/SUPPORT.md)
+- [Report a bug](../../issues/new?template=bug_report.yml)
+- [Request a feature](../../issues/new?template=feature_request.yml)
+- [Pull request template](.github/PULL_REQUEST_TEMPLATE.md)
+- [Security](.github/SECURITY.md)
+- [Code of conduct](.github/CODE_OF_CONDUCT.md)
+- [Default config](docs/default-config.md)
+
+## Built with
+
+Built on Herdr, Firstmate, omp, Ansible and more: see [CREDITS.md](CREDITS.md).
+
+## Star history
+
+<a href="https://star-history.com/#i098/Crewship&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=i098/Crewship&type=Date&theme=dark&v=20261015">
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=i098/Crewship&type=Date&v=20261015">
+    <img alt="Star history chart for i098/Crewship" src="https://api.star-history.com/svg?repos=i098/Crewship&type=Date&v=20261015">
+  </picture>
+</a>

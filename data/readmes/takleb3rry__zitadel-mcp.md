@@ -1,0 +1,183 @@
+# Zitadel MCP Server
+
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for [Zitadel](https://zitadel.com/) identity management. Manage users, projects, applications, roles, and service accounts through natural language from AI tools like Claude Code.
+
+> *"Provision jane@example.com as an Admin."*
+> — One tool call: creates the user, assigns the `admin` project role (v2 authorization), and grants `ORG_USER_MANAGER` so she can manage other users — no Super Admin required.
+
+## Tools (37)
+
+| Category | Tool | Description |
+|----------|------|-------------|
+| **Users** | `zitadel_list_users` | List/search users |
+| | `zitadel_get_user` | Get user details |
+| | `zitadel_create_user` | Create user (sends invite email; optional client-supplied `userId`) |
+| | `zitadel_deactivate_user` | Deactivate user |
+| | `zitadel_reactivate_user` | Reactivate user |
+| | `zitadel_lock_user` | Lock user |
+| | `zitadel_unlock_user` | Unlock user |
+| | `zitadel_delete_user` | Permanently delete user |
+| **Projects** | `zitadel_list_projects` | List projects |
+| | `zitadel_get_project` | Get project details |
+| | `zitadel_create_project` | Create project |
+| **Applications** | `zitadel_list_apps` | List apps in a project |
+| | `zitadel_get_app` | Get app details + Client ID |
+| | `zitadel_create_oidc_app` | Create OIDC application (incl. `grantTypes` / `responseTypes` / `accessTokenType`) |
+| | `zitadel_update_app` | Update app (redirect URIs, `accessTokenType`, etc.) |
+| **Roles** | `zitadel_list_project_roles` | List roles in a project |
+| | `zitadel_create_project_role` | Create a role (standardized: `admin`/`standard`) |
+| | `zitadel_list_user_grants` | List user's role grants |
+| | `zitadel_create_user_grant` | Assign project roles (v2 authorization; flags off-vocabulary drift) |
+| | `zitadel_remove_user_grant` | Remove role grant |
+| **Org Managers** | `zitadel_list_org_manager_roles` | List supported manager roles (ORG_OWNER, ORG_USER_MANAGER, …) |
+| | `zitadel_list_org_managers` | List who holds manager grants (filter by role) |
+| | `zitadel_grant_org_manager` | Grant manager role(s) (default `ORG_USER_MANAGER`); idempotent |
+| | `zitadel_revoke_org_manager` | Revoke manager role(s); guards the last `ORG_OWNER` |
+| **Provisioning** | `zitadel_provision_user` | Atomic + idempotent: create user + assign `admin`/`standard` + (for Admins) `ORG_USER_MANAGER` |
+| | `zitadel_offboard_user` | Remove role + revoke manager + deactivate; guards last-Admin & self-demotion |
+| **Service Accounts** | `zitadel_create_service_user` | Create machine user |
+| | `zitadel_create_service_user_key` | Generate key pair |
+| | `zitadel_list_service_user_keys` | List keys (metadata only) |
+| **Organizations** | `zitadel_get_org` | Get current org details |
+| **Login Policy** | `zitadel_get_login_policy` | Get the org login policy (self-registration on/off, custom vs. inherited) |
+| | `zitadel_set_self_registration` | Enable/disable self-registration (`allowRegister`) for the org — idempotent. **Opt-in:** requires `ZITADEL_ENABLE_LOGIN_POLICY_WRITE=true` |
+| **Login Texts** *(Login V2)* | `zitadel_get_hosted_login_translation` | Read the new hosted-login (Login V2) text overrides for a locale — merged effective file, or `onlyOverrides` for this level's stored keys |
+| | `zitadel_set_hosted_login_translation` | Override Login V2 texts for a locale (Settings v2 API) — pass flat dot-path keys mirroring `apps/login/locales/<locale>.json`; merges onto shipped defaults, idempotent |
+| **Utility** | `zitadel_get_auth_config` | Get .env.local template for an app |
+| **Portal** | `portal_register_app` | Register app in portal DB |
+| | `portal_setup_full_app` | One-click: Zitadel + portal setup |
+
+Portal tools (`portal_*`) are only available when `PORTAL_DATABASE_URL` is configured.
+
+`zitadel_set_self_registration` is only available when `ZITADEL_ENABLE_LOGIN_POLICY_WRITE=true`. It is off by default because enabling self-registration opens the organization to public signup for every application whose login resolves to that org, and — unlike every other write tool here — the change leaves behind no user, grant, or app record that would make it noticeable. The read-only `zitadel_get_login_policy` is always available.
+
+### Two-role model & no-super-admin (Renewal Initiatives SSO)
+
+The provisioning tools implement a standardized RBAC model for the core apps:
+
+- **Two project (business) roles only:** `admin` and `standard` — these land in the OIDC token and gate what a user can do in the apps. The provisioning tools refuse any other key to prevent drift.
+- **No Super Admin:** every Admin also receives an org-level `ORG_USER_MANAGER` grant (a *manager* role — administers Zitadel itself, not in the token), so any Admin can create/manage any user, including other Admins. Keep ≥2 `ORG_OWNER` break-glass accounts for org configuration.
+- **Role assignment prefers the v2 `AuthorizationService`** (`POST /v2/authorizations`) and **automatically falls back to v1 user-grants** if that endpoint is unavailable on the instance (some Zitadel Cloud versions return 404). Org-manager grants use the Management v1 org-member API.
+
+### Login texts: Login V2 vs. the legacy Custom Login Texts
+
+Zitadel has **two** login UIs with **two unrelated** text mechanisms — mixing them up is a common dead-end:
+
+- **Login V2** (the current default — instance feature `loginV2.required`, or per-app `loginVersion.loginV2`) is the TypeScript/hosted login. Its strings live in the login app's i18n bundles (`apps/login/locales/<lang>.json` in `zitadel/zitadel`). Override individual keys with **`zitadel_set_hosted_login_translation`** (Settings v2 API); overrides merge onto the shipped defaults key-by-key, so upstream fixes to untouched keys still flow through.
+- **Login V1** (legacy Angular login) reads the Management API *Custom Login Texts* (`/management/v1/text/login/{lang}`). **Login V2 ignores those entirely** ([zitadel #8608](https://github.com/zitadel/zitadel/issues/8608)), so this server deliberately does not wrap them.
+
+Practical example — the confusing wrong-password message *"Sitzung für Benutzer konnte nicht erstellt werden"* is the Login V2 key `password.errors.couldNotCreateSessionForUser` (fallback when the password-check error carries no attempt counter). Fix it with:
+
+```jsonc
+zitadel_set_hosted_login_translation({
+  locale: "de",
+  translations: {
+    "password.errors.couldNotCreateSessionForUser": "Benutzername oder Passwort falsch. Bitte versuchen Sie es erneut.",
+    "loginname.errors.couldNotCreateSession": "Benutzername oder Passwort falsch. Bitte versuchen Sie es erneut."
+  }
+})
+```
+
+## Prerequisites
+
+1. A Zitadel instance (Cloud or self-hosted)
+2. A service account with **Org Owner** or **IAM Admin** role
+3. A JSON key for the service account
+
+### Creating a Service Account
+
+1. In the Zitadel Console, go to **Users** > **Service Users** > **New**
+2. Give it a name (e.g., `mcp-admin`) and select **Bearer** token type
+3. Go to the service user's **Keys** tab > **New** > **JSON**
+4. Save the downloaded key file — you'll need the `userId`, `keyId`, and base64-encoded `key`
+5. Grant the service account the **Org Owner** role under **Organization** > **Authorizations**
+
+## Setup
+
+```bash
+git clone https://github.com/takleb3rry/zitadel-mcp.git
+cd zitadel-mcp
+npm install
+npm run build
+```
+
+## Configuration
+
+Add the server to your MCP client config. The JSON block below works for both options:
+
+- **Global** (all projects): `~/.claude.json` under the `"mcpServers"` key
+- **Per-project**: `.mcp.json` in the project root
+
+```json
+{
+  "mcpServers": {
+    "zitadel": {
+      "command": "node",
+      "args": ["/path/to/zitadel-mcp/build/index.js"],
+      "env": {
+        "ZITADEL_ISSUER": "https://your-instance.zitadel.cloud",
+        "ZITADEL_SERVICE_ACCOUNT_USER_ID": "...",
+        "ZITADEL_SERVICE_ACCOUNT_KEY_ID": "...",
+        "ZITADEL_SERVICE_ACCOUNT_PRIVATE_KEY": "...",
+        "ZITADEL_ORG_ID": "...",
+        "ZITADEL_PROJECT_ID": "..."
+      }
+    }
+  }
+}
+```
+
+Restart Claude Code after adding the config. The Zitadel tools will appear automatically.
+
+To keep secrets out of the MCP client config, omit the `env` block and put the variables in a gitignored `.env` file instead. The server reads the file named by `DOTENV_CONFIG_PATH` if set, then the `.env` in the repo root. Variables already present in the process environment (e.g. from an `env` block) take precedence over both. `DOTENV_CONFIG_PATH` is what makes a globally installed binary work without machine-specific paths:
+
+```json
+{
+  "mcpServers": {
+    "zitadel": {
+      "command": "zitadel-mcp",
+      "env": { "DOTENV_CONFIG_PATH": "/home/me/.config/zitadel-mcp/.env" }
+    }
+  }
+}
+```
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ZITADEL_ISSUER` | Yes | Zitadel instance URL |
+| `ZITADEL_SERVICE_ACCOUNT_USER_ID` | Yes | Service account user ID |
+| `ZITADEL_SERVICE_ACCOUNT_KEY_ID` | Yes | Key ID from the JSON key file |
+| `ZITADEL_SERVICE_ACCOUNT_PRIVATE_KEY` | Yes | Base64-encoded RSA private key (the `key` field from the downloaded JSON) |
+| `ZITADEL_ORG_ID` | Yes | Organization ID |
+| `ZITADEL_PROJECT_ID` | No | Default project ID for role operations |
+| `PORTAL_DATABASE_URL` | No | Postgres connection string (enables portal tools) |
+| `ZITADEL_ENABLE_LOGIN_POLICY_WRITE` | No | Set `true` to expose `zitadel_set_self_registration` (default: off) |
+| `LOG_LEVEL` | No | `DEBUG`, `INFO`, `WARN`, `ERROR` (default: `INFO`) |
+| `DOTENV_CONFIG_PATH` | No | Path of a `.env` file to load the variables above from (read before the repo-root `.env`) |
+
+## Security
+
+**This server has admin-level access to your Zitadel instance.** Understand what that means before using it:
+
+- The service account needs org-level management rights. Empirically (Zitadel Cloud, verified 2026-06): `ORG_USER_MANAGER` is enough to **create users and assign existing project roles**, but **`ORG_OWNER` is required** to create project roles, manage org-manager grants (the no-super-admin pattern), and manage applications. For the full provisioning workload, give the service account `ORG_OWNER`; human Admins can stay at `ORG_USER_MANAGER`. Keep the key in a gitignored `.env` (not a shared dotfile) and use `ZITADEL_READ_ONLY=true` for non-mutating sessions.
+- When you create an OIDC app (`zitadel_create_oidc_app`) as a confidential client, the **client secret is NOT returned** in the tool response (so it never enters the AI conversation). Retrieve it from the Zitadel Console: Project → Apps → Configuration → Regenerate Client Secret.
+- When you generate a service account key (`zitadel_create_service_user_key`), the private key is **written to `~/.zitadel-mcp/keys/` (file mode 600)** instead of being returned in the tool response — only the file path appears in the conversation.
+- All tool arguments containing PII (email, name, URLs) are **redacted from debug logs**. IDs and tool names are still logged.
+- All Zitadel IDs are validated against an alphanumeric format before being used in API paths.
+
+> **Note for new users:** always audit the source yourself (or with your own tooling) before installing any MCP server that gets admin access to your infrastructure — and re-audit every update before applying it. Do not take this README's word for it.
+
+## Development
+
+```bash
+npm run dev    # Run with tsx (hot reload)
+npm run build  # Compile TypeScript
+npm start      # Run compiled version
+npm test       # Run tests
+```
+
+## License
+
+MIT

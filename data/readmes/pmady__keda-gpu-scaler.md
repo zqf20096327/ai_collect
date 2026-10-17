@@ -1,0 +1,548 @@
+# KEDA GPU Scaler
+
+**Scale Kubernetes GPU workloads from real hardware metrics. No DCGM. No PromQL. Optional Prometheus metrics built in.**
+
+[![CI](https://github.com/pmady/keda-gpu-scaler/actions/workflows/ci.yaml/badge.svg)](https://github.com/pmady/keda-gpu-scaler/actions/workflows/ci.yaml)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22866676.svg)](https://doi.org/10.5281/zenodo.22866676)
+
+A [KEDA External Scaler](https://keda.sh/docs/latest/concepts/external-scalers/) that reads NVIDIA GPU metrics directly from NVML C-bindings and autoscales your vLLM, Triton, and custom inference deployments including scale-to-zero.
+
+## Why This Exists
+
+Kubernetes HPA watches CPU and memory. It can't see GPU utilization. Your vLLM pod shows 8% CPU while the GPU is at 100%.
+
+The usual fix is dcgm-exporter → Prometheus → KEDA, but that's 5 components and 15-30s of latency.
+
+This project reads GPU metrics directly from NVML and serves them to KEDA over gRPC. 2 components, no scrape delay: metric age is whatever `pollingInterval` you set on the ScaledObject.
+
+### Why Not a Native KEDA Scaler?
+
+Putting GPU support inside KEDA core doesn't work:
+
+1. **CGO Constraint**: NVIDIA's Go bindings ([`go-nvml`](https://github.com/NVIDIA/go-nvml)) require `CGO_ENABLED=1`. KEDA builds with `CGO_ENABLED=0`.
+2. **Node-Level Hardware Access**: The KEDA operator runs as a central pod. NVML requires local GPU device access via `libnvidia-ml.so`, which only a **DaemonSet on GPU nodes** can provide.
+3. **Independent Release Cycle**: Ship GPU scaling improvements without waiting for KEDA release cycles.
+
+This design is documented in [KEDA issue #7538](https://github.com/kedacore/keda/issues/7538).
+
+---
+
+## Architecture
+
+### High Level Overview
+
+<p align="center">
+  <img src="docs/images/architecture.png" alt="keda-gpu-scaler architecture overview" width="100%"/>
+</p>
+
+### Detailed Data Flow
+
+<p align="center">
+  <img src="docs/images/architecture.svg" alt="keda-gpu-scaler data flow" width="100%"/>
+</p>
+
+1. A DaemonSet runs on nodes labeled `nvidia.com/gpu.present: "true"`.
+2. Each pod reads Streaming Multiprocessor (SM) utilization and frame buffer memory through the `go-nvml` C bindings.
+3. The pod serves `externalscaler.ExternalScalerServer` (`IsActive`, `StreamIsActive`, `GetMetricSpec`, `GetMetrics`) over gRPC to the central KEDA operator.
+4. Deployments scale up and down, including to zero, on the GPU thresholds set in their ScaledObject.
+
+> **⚠️ Supported Topology**: Each DaemonSet pod reports metrics for its local node only. Multi-node cluster-wide aggregation is not yet implemented. For multi-GPU-node clusters, deploy one ScaledObject per node or use node selectors. See [#142](https://github.com/pmady/keda-gpu-scaler/issues/142) for the roadmap.
+
+---
+
+## GPU Metrics
+
+| Metric | Description | Unit |
+|--------|-------------|------|
+| `gpu_utilization` | GPU compute (SM) utilization | % (0-100) |
+| `memory_utilization` | GPU memory controller utilization | % (0-100) |
+| `memory_used_mib` | GPU VRAM used | MiB |
+| `memory_used_percent` | GPU VRAM used as percentage of total | % (0-100) |
+| `temperature` | GPU die temperature | Celsius |
+| `power_draw` | GPU power consumption | Watts |
+| `pcie_tx_kbps` | PCIe transmit throughput (CPU→GPU) | KB/s |
+| `pcie_rx_kbps` | PCIe receive throughput (GPU→CPU) | KB/s |
+| `nvlink_tx_mbps` | NVLink transmit throughput (GPU→GPU) | MB/s |
+| `nvlink_rx_mbps` | NVLink receive throughput (GPU→GPU) | MB/s |
+| `vllm_queue_depth` | Pending requests waiting in the vLLM engine (requires `vllmEndpoint`) | count |
+| `vllm_kv_cache_usage` | vLLM GPU KV cache usage (requires `vllmEndpoint`) | % (0-100) |
+| `triton_queue_wait_ms` | Average Triton inference queue wait time (requires `tritonEndpoint`) | ms |
+| `triton_request_rate` | Triton inference request rate (requires `tritonEndpoint`) | requests/sec |
+
+The `vllm_*` metrics come from the vLLM engine's own `/metrics` endpoint
+rather than NVML, see [docs/configuration.md](docs/configuration.md#vllm-engine-metrics).
+The `triton_*` metrics likewise come from Triton's own `/metrics` endpoint
+and are derived from its cumulative counters, see
+[docs/configuration.md](docs/configuration.md#triton-engine-metrics).
+
+---
+
+## Pre-built Scaling Profiles
+
+Instead of configuring raw metric thresholds, use a profile optimized for your workload:
+
+| Profile | Primary Metric | Target | Activation | Use Case |
+|---------|---------------|--------|------------|----------|
+| `vllm-inference` | Memory % | 80 | 5 | vLLM / LLM serving with scale-to-zero |
+| `vllm-queue-depth` | Pending requests | 5 | 1 | vLLM: scale on queue depth via the engine API for faster reaction time |
+| `triton-inference` | GPU Util | 75 | 10 | NVIDIA Triton Inference Server |
+| `triton-queue-wait` | Queue wait (ms) | 50 | 5 | Triton: scale on average inference queue wait time via the engine API |
+| `triton-request-rate` | Requests/sec | 50 | 1 | Triton: scale on inference request rate via the engine API |
+| `training` | GPU Util | 90 | 0 | Training jobs (no scale-to-zero) |
+| `batch` | Memory % | 70 | 1 | Batch inference with aggressive scale-down |
+| `ollama` | Memory % | 70 | 3 | Ollama LLM serving with scale-to-zero |
+| `tgi-inference` | Memory % | 75 | 5 | HuggingFace TGI serving with scale-to-zero |
+| `distributed-training` | NVLink TX | 50000 | 5000 | Data-parallel training on NVLink systems |
+
+---
+
+## Prerequisites
+
+- A Kubernetes cluster (e.g., **OKE**, GKE, EKS, AKS) with **NVIDIA GPU worker nodes**
+- [KEDA v2.10+](https://keda.sh/docs/latest/deploy/) installed in the cluster
+- NVIDIA GPU drivers and [Device Plugin](https://github.com/NVIDIA/k8s-device-plugin) installed
+
+---
+
+## Quick Start
+
+### 1. Deploy the Scaler
+
+Deploy the DaemonSet and gRPC service into your cluster. (Ensure KEDA is already installed.)
+
+```bash
+kubectl apply -f deploy/manifests.yaml
+```
+
+This deploys a DaemonSet that runs on every GPU node in your cluster, plus a ClusterIP Service for KEDA to discover it.
+
+Or use Helm.
+
+**From the published OCI chart** (recommended; replace `<X.Y.Z>` with the
+[latest release](https://github.com/pmady/keda-gpu-scaler/releases)):
+
+```bash
+helm install keda-gpu-scaler \
+  oci://ghcr.io/pmady/charts/keda-gpu-scaler --version <X.Y.Z> \
+  --namespace keda --create-namespace
+```
+
+**From a local checkout:**
+
+```bash
+helm install keda-gpu-scaler deploy/helm/keda-gpu-scaler \
+  --namespace keda
+```
+
+The chart targets nodes labelled `nvidia.com/gpu.present=true` with the
+`nvidia` RuntimeClass, both provided by the NVIDIA GPU Operator. Without the
+operator, label the nodes yourself and set `runtimeClassName=""` with
+`nvmlHostMounts.enabled=true`; see the
+[getting started guide](docs/getting-started.md). See the
+[chart README](deploy/helm/keda-gpu-scaler/README.md) for all configurable
+values.
+
+### 2. Attach to your AI Workload
+
+Create a ScaledObject pointing to the external scaler service:
+
+```yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vllm-inference-scaler
+  namespace: ai-workloads
+spec:
+  scaleTargetRef:
+    name: vllm-deepseek-deployment
+  minReplicaCount: 1
+  maxReplicaCount: 50
+  triggers:
+    - type: external
+      metadata:
+        scalerAddress: "keda-gpu-scaler.keda.svc.cluster.local:6000"
+        targetGpuUtilization: "80"
+```
+
+Or use a pre-built profile:
+
+```yaml
+triggers:
+  - type: external
+    metadata:
+      scalerAddress: "keda-gpu-scaler.keda.svc.cluster.local:6000"
+      profile: "vllm-inference"
+```
+
+### 3. Custom Configuration
+
+Override any profile default or use raw GPU metrics directly:
+
+```yaml
+triggers:
+  - type: external
+    metadata:
+      scalerAddress: "keda-gpu-scaler.keda.svc.cluster.local:6000"
+      metricType: "gpu_utilization"
+      targetValue: "85"
+      activationThreshold: "10"
+      gpuIndex: "0"              # specific GPU index, or omit for all
+      aggregation: "max"         # max, min, avg, sum, p95, p99 across GPUs
+      cooldownSeconds: "120"    # suppress repeat scale-downs; 0 disables
+```
+
+See `deploy/examples/` for ready-to-use ScaledObject manifests.
+
+---
+
+## Configuration Reference
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `profile` | Pre-built scaling profile name | (none) |
+| `metricType` | GPU metric to scale on | `gpu_utilization` |
+| `targetValue` | Target metric value for scaling | `80` |
+| `targetGpuUtilization` | Shorthand for GPU utilization target | (none) |
+| `targetMemoryUtilization` | Shorthand for VRAM utilization target | (none) |
+| `activationThreshold` | Value below which scale-to-zero activates | `0` |
+| `gpuIndex` | Specific GPU index to monitor. Must be `-1` (all GPUs) or `>= 0`; other negative values are rejected | `-1` (all GPUs) |
+| `aggregation` | Multi-GPU aggregation: `max`, `min`, `avg`, `sum`, `p95`, `p99` | `max` |
+| `pollIntervalSeconds` | Metric polling interval | `10` |
+| `cooldownSeconds` | Suppress repeat scale-downs for this many seconds after a scale-down. Scale-up is never delayed. `0` disables | `60` |
+
+---
+
+## Prometheus Metrics (Optional)
+
+The scaler exposes an optional Prometheus-compatible `/metrics` endpoint for monitoring the scaler itself and GPU fleet health. **This is independent of the KEDA scaling path.** Scaling works identically with or without it.
+
+### Enable/Disable
+
+```bash
+# Enabled by default on port 9090
+--metrics-port=9090
+
+# Disable entirely (zero overhead)
+--metrics-port=0
+```
+
+Helm:
+```yaml
+metrics:
+  enabled: true   # set to false to disable
+  port: 9090
+```
+
+### Exposed Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `keda_gpu_scaler_gpu_utilization_percent` | Gauge | GPU compute utilization (per GPU) |
+| `keda_gpu_scaler_gpu_memory_used_bytes` | Gauge | GPU memory in use (per GPU) |
+| `keda_gpu_scaler_gpu_memory_total_bytes` | Gauge | Total GPU memory (per GPU) |
+| `keda_gpu_scaler_gpu_temperature_celsius` | Gauge | GPU temperature (per GPU) |
+| `keda_gpu_scaler_gpu_power_draw_watts` | Gauge | GPU power draw (per GPU) |
+| `keda_gpu_scaler_collections_total` | Counter | Total NVML collection calls |
+| `keda_gpu_scaler_collection_errors_total` | Counter | Failed NVML collection calls |
+| `keda_gpu_scaler_collection_duration_seconds` | Histogram | NVML collection latency |
+| `keda_gpu_scaler_scaler_requests_total` | Counter | gRPC requests by method |
+| `keda_gpu_scaler_scaler_request_errors_total` | Counter | gRPC errors by method |
+
+All per-GPU metrics are labeled with `gpu_index`, `gpu_uuid`, and `gpu_name`.
+
+## Kubernetes Probes
+
+The scaler supports two probe mechanisms; the Helm chart defaults to gRPC.
+
+### gRPC health check (recommended)
+
+The gRPC server implements the [gRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) (`google.golang.org/grpc/health`, `grpc_health_v1`) on the server-wide (`""`) service. A background checker polls NVML (`DeviceCount()`) every `--health-check-interval` (default `30s`) and reports:
+
+- `SERVING` while NVML responds normally.
+- `NOT_SERVING` if the NVML call fails.
+
+```bash
+--health-check-interval=30s
+```
+
+Kubernetes 1.24+ can probe this natively:
+
+```yaml
+livenessProbe:
+  grpc:
+    port: 6000
+readinessProbe:
+  grpc:
+    port: 6000
+```
+
+Helm sets this up automatically (`probes.type: grpc`, the default).
+
+### HTTP probes (legacy / pre-1.24 clusters)
+
+A dedicated HTTP probe port also exposes:
+
+- `/healthz` returns `200` while the process is alive.
+- `/readyz` returns `200` after NVML initializes and the first metrics collection succeeds.
+
+```bash
+--probe-port=8081
+```
+
+Helm:
+```yaml
+probes:
+  enabled: true
+  type: http
+  port: 8081
+```
+
+---
+
+## Build it Yourself
+
+This project requires `CGO_ENABLED=1` to compile the NVIDIA C-bindings.
+
+> [!NOTE]
+> The compiled binaries (`keda-gpu-scaler` and `gpu-metrics`) dynamically link NVIDIA's NVML library and load `libnvidia-ml.so` at runtime. They will **fail to start on any machine that does not have the NVIDIA driver installed** (which provides `libnvidia-ml.so`), for example a laptop or CI runner with no NVIDIA GPU. You can still build, lint, and run the test suite without a GPU, since the tests use a mock collector (see [Can I run this without a GPU?](docs/FAQ.md#can-i-run-this-without-a-gpu-for-development)).
+
+```bash
+# Build KEDA scaler binary (requires CGO for NVML)
+make build
+
+# Build standalone GPU metrics CLI (no KEDA/gRPC needed)
+make build-metrics
+
+# Build all binaries
+make build-all
+
+# Run unit tests
+make test
+
+# Run linter
+make lint
+
+# Generate protobuf Go code
+make proto
+
+# Build and push a release image
+make docker-release VERSION=v0.1.0
+
+# Deploy to cluster
+make deploy
+```
+
+### Checking the Version
+
+Both binaries accept a `--version` flag (and a bare `version` argument) that
+prints the version, Go version, and build date, then exits. Unlike normal
+operation, this does **not** require a GPU or the NVIDIA driver:
+
+```bash
+keda-gpu-scaler --version    # keda-gpu-scaler v0.5.0 (go1.26.4, built 2026-06-25)
+gpu-metrics --version        # gpu-metrics v0.5.0 (go1.26.4, built 2026-06-25)
+```
+
+`make build` stamps the version from `git describe` at link time; builds without
+ldflags (e.g. `go run`) report `dev`.
+
+### Standalone GPU Metrics CLI
+
+Collect GPU metrics without Kubernetes. It works on bare metal, SLURM jobs, Flux jobs, Kubernetes pods, and Singularity containers. The same binary and the same JSON schema work everywhere.
+
+> [!IMPORTANT]
+> `gpu-metrics` requires `libnvidia-ml.so` (installed with the NVIDIA driver) on the host. On a machine without an NVIDIA driver it exits immediately with `nvml init failed`.
+
+```bash
+gpu-metrics                       # one-shot table output (env auto-detected)
+gpu-metrics --format json         # JSON for scripting
+gpu-metrics --format csv          # CSV for analysis
+gpu-metrics --interval 5s         # continuous collection
+gpu-metrics --device 0 --quiet    # single GPU, no logs
+gpu-metrics --env slurm           # force environment (auto|k8s|slurm|flux|standalone)
+gpu-metrics --version             # print version and exit (no GPU/NVML required)
+```
+
+The `--env` flag auto-detects the orchestrator by default. Detection priority: **SLURM → Flux → Kubernetes → standalone**.
+
+Every environment emits the same unified JSON schema with an `environment` block so you can compare GPU performance across on-prem and cloud with identical tooling:
+
+```json
+{
+  "environment": { "orchestrator": "slurm", "node": "compute-01", "job_id": "123", "task_rank": 0 },
+  "driver_version": "535.104.05",
+  "collected_at": "2026-06-17T10:00:00Z",
+  "devices": [...]
+}
+```
+
+**SLURM**: auto-detected when `SLURM_JOB_ID` is set; collects only the GPUs assigned to your job step:
+
+```bash
+srun --gres=gpu:2 gpu-metrics --format json
+```
+
+**Flux**: auto-detected when `FLUX_JOB_ID` is set; collects only the GPUs in `CUDA_VISIBLE_DEVICES`:
+
+```bash
+flux run -N1 -g2 gpu-metrics --format json
+```
+
+Or let Flux start and stop collection automatically for the lifetime of a job via the [`gpu-monitor` shell plugin drop-in](deploy/flux/gpu-monitor.lua): `flux run -o gpu-monitor -N2 -g1 ./train.sh`.
+
+See **[HPC & Cross-Environment Metrics](docs/hpc.md)** for full usage, and **[Cross-Environment Comparison Guide](docs/cross-env-comparison.md)** for comparing on-prem vs cloud GPU runs.
+
+Or build the Docker image directly:
+
+```bash
+docker build -t your-registry/keda-gpu-scaler:v0.1.0 .
+docker push your-registry/keda-gpu-scaler:v0.1.0
+```
+
+---
+
+## End-to-End GPU Tests
+
+`make test` runs the unit suite against a mock collector (no GPU needed). The
+**end-to-end** suite is different: it provisions a **real** GPU cluster on AWS
+EKS, Azure AKS, or Google GKE with [Terratest](https://terratest.gruntwork.io/),
+installs the NVIDIA GPU operator + KEDA + this scaler, asserts the demo app
+scales up under GPU load and back down when idle, then tears everything down.
+The stacks live in [`infra/terraform/`](infra/terraform/) and the Go suite in
+[`tests/terratest/`](tests/terratest/).
+
+> **⚠️ These tests provision real, billed GPU hardware** (~$0.55–1.20/hr per
+> cloud). They are **manual-only** and each per-cloud job is gated behind a
+> GitHub Environment so a reviewer must approve the spend before it runs.
+
+### Running from GitHub Actions
+
+Go to the repo's **Actions** tab and pick the workflow, then **Run workflow**:
+
+| Workflow | What it does | Inputs |
+|----------|--------------|--------|
+| **E2E Cloud Tests (Apply and Destroy)** | Provisions the cluster, asserts scale up/down, then destroys it. | `clouds`: `aws` \| `azure` \| `gcp` \| `all` · `confirm_cost`: type `apply` to confirm billing |
+| **E2E Plan (Manual)** | Credential-light `terraform plan` + Infracost estimate. No cluster, no billing. | `clouds`: which stack to plan |
+| **E2E Destroy (Manual)** | Safety net to tear down a cluster a failed run left behind. | `cloud` + exact `cluster_name` + type `destroy` |
+
+**Choosing clouds:** the `clouds` input on the apply workflow fans out to one
+job per cloud. Pick a single cloud to validate one provider, or `all` to run
+AWS, Azure, and GCP in parallel (each still needs its own reviewer approval and
+GPU quota).
+
+### Reading the results
+
+- **Green check** on the run = the full contract passed: the scaler DaemonSet
+  came up, the `ScaledObject` went `Ready`, the demo app scaled **1 → N** under
+  load and **N → 1** when idle.
+- Every run uploads an **`e2e-diagnostics-<cloud>-<run_id>`** artifact (via
+  `if: always()`) containing the `go test` log; on failure it also includes a
+  cluster dump (nodes, scaler pods/logs, ScaledObject, events).
+- The cluster auto-destroys, so to poke a live one, run the suite locally.
+
+### Running locally
+
+Requires the cloud CLI authenticated, a remote state backend (see each stack's
+`bootstrap/`), and GPU quota in your target region:
+
+```bash
+cd tests/terratest
+E2E_AWS_STATE_BUCKET=<bucket> \
+  go test -tags e2e_aws -v -timeout 90m -run TestAWSGPUScalerE2E ./...
+```
+
+Full prerequisites (OIDC/WIF federation, required secrets/variables, GPU quota
+per cloud) are documented in **[`tests/terratest/README.md`](tests/terratest/README.md)**.
+
+---
+
+## How It Compares
+
+| | keda-gpu-scaler | dcgm-exporter + Prometheus | Custom Metrics API |
+|---|---|---|---|
+| **Components** | 1 DaemonSet (+ optional /metrics) | dcgm-exporter + Prometheus + adapter | Custom metrics server |
+| **Metric latency** | Sub-second (direct NVML) | 15-30s (scrape interval) | Depends on implementation |
+| **Scale-to-zero** | Yes (KEDA native) | Yes (with KEDA Prometheus scaler) | Manual |
+| **Configuration** | 3-line ScaledObject | PromQL query per metric | Custom code |
+| **GPU metrics** | 10 hardware metrics | 50+ DCGM metrics | Whatever you build |
+| **Dependencies** | KEDA, NVIDIA drivers | KEDA, Prometheus, dcgm-exporter | Varies |
+| **Failure domain** | Node-local | Centralized Prometheus | Varies |
+
+---
+
+## Documentation
+
+- [Full documentation](https://keda-gpu-scaler.readthedocs.io), hosted on Read the Docs
+- [Design Document](docs/DESIGN.md): architecture decisions, gRPC interface, scaling profiles, testing strategy
+- [Migration Guide](docs/MIGRATION.md): replace dcgm-exporter + Prometheus with keda-gpu-scaler
+- [HPC & Cross-Environment Metrics](docs/hpc.md): SLURM, Flux, Kubernetes, and standalone GPU metrics
+- [Cross-Environment Comparison](docs/cross-env-comparison.md): compare GPU performance across on-prem and cloud
+- [Troubleshooting](TROUBLESHOOTING.md): common deployment, NVML, gRPC, metric, and MIG issues
+- [FAQ](docs/FAQ.md): common questions about GPU scaling, MIG, multi-GPU, scale-to-zero
+- [Changelog](CHANGELOG.md): release history
+
+---
+
+## Related
+
+- [VKTR: Why Kubernetes Can't See Your GPUs — and What We Built to Fix It](https://www.vktr.com/ai-technology/why-kubernetes-cant-see-your-gpus-and-what-we-built-to-fix-it/)
+- [Techstrong.ai: Your AI Agent Can't See Your GPUs — Here's How to Fix That](https://techstrong.ai/features/your-ai-agent-cant-see-your-gpus-heres-how-to-fix-that/)
+- [CNCF Blog: GPU Autoscaling on Kubernetes with KEDA](https://www.cncf.io/blog/2026/05/27/gpu-autoscaling-on-kubernetes-with-keda-building-an-external-scaler/)
+- [KEDA issue #7538](https://github.com/kedacore/keda/issues/7538), original discussion
+- [CNCF TOC initiative #2188](https://github.com/cncf/toc/issues/2188), whitepaper proposal
+
+---
+
+## Adopters
+
+Using keda-gpu-scaler? Add your organization to [ADOPTERS.md](ADOPTERS.md).
+
+---
+
+## Roadmap
+
+- AMD ROCm support
+- MIG per-instance metrics
+- ~~vLLM queue depth scaling~~, available via the `vllm_queue_depth` metric type / `vllm-queue-depth` profile; see [docs/configuration.md](docs/configuration.md#vllm-engine-metrics)
+
+---
+
+## Contributors
+
+Thanks to everyone who helps build keda-gpu-scaler.
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for detailed contributions.
+
+## Contributing
+
+Contributions welcome: GPU autoscaling use cases, vendor support (AMD ROCm, Intel), or docs improvements. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=pmady%2Fkeda-gpu-scaler&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=pmady/keda-gpu-scaler&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=pmady/keda-gpu-scaler&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=pmady/keda-gpu-scaler&type=date&legend=top-left" />
+ </picture>
+</a>
+
+## Citing
+
+If you use keda-gpu-scaler in your research or writing, please cite it via its DOI. Full citation metadata is in [CITATION.cff](CITATION.cff).
+
+```bibtex
+@software{madduri_keda_gpu_scaler,
+  author    = {Madduri, Pavan},
+  title     = {keda-gpu-scaler: GPU-aware autoscaling for Kubernetes from real hardware metrics},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22866676},
+  url       = {https://doi.org/10.5281/zenodo.22866676}
+}
+```
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE) for details.

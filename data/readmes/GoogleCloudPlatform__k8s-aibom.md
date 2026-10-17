@@ -1,0 +1,412 @@
+# k8s-aibom
+
+A Kubernetes controller that generates [CycloneDX 1.6 ML-BOM][cyclonedx-ml] documents for AI workloads at runtime — inference services, agent stacks, RAG pipelines, training jobs, evaluation harnesses — with auditor-traceable evidence for every attribute.
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![CycloneDX 1.6 ML-BOM](https://img.shields.io/badge/CycloneDX-1.6%20ML--BOM-success.svg)](https://cyclonedx.org/capabilities/mlbom/)
+[![Static Analysis](https://github.com/GoogleCloudPlatform/k8s-aibom/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/GoogleCloudPlatform/k8s-aibom/actions/workflows/static-analysis.yml)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/k8s-aibom)](https://artifacthub.io/packages/helm/k8s-aibom/k8s-aibom)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/GoogleCloudPlatform/k8s-aibom/badge)](https://scorecard.dev/viewer/?uri=github.com/GoogleCloudPlatform/k8s-aibom)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14779/badge)](https://www.bestpractices.dev/projects/14779)
+
+**New to the project?** The [overview deck](https://googlecloudplatform.github.io/k8s-aibom/deck/) covers what it does, the confidence model, signature verification, and measured cost in 10 slides ([PDF](https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.5.0/k8s-aibom-v1.5.0-deck.pdf) on the release).
+
+> **Status:** released — see the [latest release](https://github.com/GoogleCloudPlatform/k8s-aibom/releases/latest). Production-suitable for non-critical observation use cases. APIs stable through v1.x (see [VERSIONING.md](VERSIONING.md)); changes tracked in the [CHANGELOG](CHANGELOG.md). Feedback welcome.
+
+---
+
+## The problem
+
+Organizations running AI workloads on Kubernetes — inference services, agent applications, RAG systems, training jobs — face a growing requirement to produce auditable inventories of *what is actually running in production*. Build-time AI bill-of-materials tools describe what was intended to be deployed. Runtime tools describe what is in fact serving inference, calling external APIs, holding embeddings, or training on which datasets.
+
+This distinction matters in any environment subject to AI governance: [EU AI Act][eu-ai-act] Article 12 logging requirements and Article 50 transparency obligations; [NIST AI RMF][nist-ai-rmf] Govern/Map/Measure/Manage controls that require knowing what AI systems are deployed and how; [ISO/IEC 42001][iso-42001] inventory and lifecycle clauses. Each of these requires evidence about deployed systems, not just intentions.
+
+k8s-aibom produces that evidence as a side effect of normal cluster operation. Install the controller, opt in a namespace, and CycloneDX 1.6 ML-BOM documents are produced for each AI workload, with explicit confidence flags and evidence locators on every attribute.
+
+## What it observes
+
+k8s-aibom recognizes workload kinds across the AI lifecycle and applies category-specific scrapers to extract relevant attributes.
+
+**Inference services.** Deployments, StatefulSets, DaemonSets, KServe `InferenceService`, NVIDIA Dynamo `DynamoGraphDeployment` (and standalone `DynamoComponentDeployment`), NVIDIA NIM Operator `NIMService`, `LeaderWorkerSet` and llm-d's `DisaggregatedSet` resources serving model inference. One workload, one AIBOM: workloads an operator materializes under one of these (a Dynamo graph's component Deployments, an LWS's StatefulSets, a DisaggregatedSet's LeaderWorkerSets, a CronJob's Jobs) are rolled up into the owner's document rather than reported twice. The controller detects the serving runtime (vLLM, Hugging Face TGI, NVIDIA Triton, Ollama, Ray Serve, llm-d, SGLang, LMDeploy, HuggingFace TEI), the container image and resolved digest, and the claimed model identity from container args, environment variables, mounted volume sources, or workload annotations.
+
+**Agent stacks.** Workloads running agent frameworks (LangChain / LangGraph, AutoGen, CrewAI, Langflow, Flowise, Chainlit). The controller extracts the framework version, the external LLM API dependencies declared via environment variables (OpenAI, Anthropic, Google, Cohere), and telemetry signatures that indicate observability integration (LangSmith, LangChain tracing).
+
+**Vector databases and RAG infrastructure.** Workloads running Milvus, Qdrant, Weaviate, Chroma, or pgvector. The controller extracts the vector store identity, configured collections where determinable, and the workload's relationship to RAG-related dependencies.
+
+**Training and fine-tuning jobs.** Kubernetes Jobs and CronJobs running PyTorch, KubeRay, JAX, or Hugging Face Accelerate workloads. The controller extracts mounted training datasets via volume specifications, telemetry integrations (Weights & Biases, Hugging Face Hub), and runtime/framework version information.
+
+**Evaluation harnesses.** Workloads running `lm-evaluation-harness`, Ragas, or Trulens. The controller extracts evaluation framework identity and configured benchmark suites where determinable.
+
+## How it works
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ Kubernetes cluster                                                 │
+│                                                                    │
+│  ┌─────────────────────┐         ┌──────────────────────────────┐  │
+│  │ k8s-aibom-system    │         │ Opted-in namespaces          │  │
+│  │                     │ watches │                              │  │
+│  │  Controller         ├────────►│  Inference / Agents / RAG /  │  │
+│  │  (Deployment)       │         │  Training / Evaluation       │  │
+│  │                     │         │                              │  │
+│  └──────────┬──────────┘         └──────────────────────────────┘  │
+│             │                                                      │
+│             │ produces                                             │
+│             ▼                                                      │
+│  ┌─────────────────────┐                                           │
+│  │ AIBOM CR            │ (one per workload, namespace-scoped)      │
+│  │  status.bomDocument │                                           │
+│  └─────────────────────┘                                           │
+│                                                                    │
+└─────────────┬──────────────────────────────────────────────────────┘
+              │
+              │ optional external sinks
+              ▼
+   ┌──────────────────────┬──────────────────────┐
+   │ GCS bucket           │ Webhook endpoint     │
+   │ (full BOM JSON)      │ (POST per BOM)       │
+   └──────────────────────┴──────────────────────┘
+```
+
+The controller runs as a single Deployment in its own namespace. It requires no DaemonSet, no privileged container, no kernel access, no node-level agent. It observes via the standard Kubernetes API.
+
+For each tracked workload, the controller scrapes the workload spec and current pod status, applies category-specific detection heuristics, builds a CycloneDX 1.6 ML-BOM, and writes the BOM to all configured sinks. Identical inputs produce byte-identical BOMs (modulo timestamps), so output is suitable for content-addressable storage and diff-based change tracking.
+
+## The confidence model
+
+Every attribute in a k8s-aibom BOM carries a confidence flag and an evidence locator. This is the difference between a useful BOM and a misleading one.
+
+- **`declared`** — the customer wrote this into their workload spec. A `--model` container arg is declared. An `HF_MODEL_ID` set on the container is declared. A model name in a `model.k8saibom.dev/name` annotation is declared.
+- **`verified`** — a declared claim the controller cryptographically verified (since v1.5.0). A model identity whose workload-referenced [Sigstore][sigstore] / OMS signature verifies against the operator's trust roots — transparency-log inclusion checked, signer identity matching an operator-configured constraint and recorded as evidence — is verified. A claim can never upgrade itself; the binding rules are in [Design 002](docs/design/002-sigstore-rekor-verifier.md).
+- **`inferred`** — the controller derived this from a heuristic. The runtime name `vllm` derived from matching the image against `^vllm/.*` is inferred. The agent framework identified from a `langchain` import pattern in container args is inferred.
+- **`unresolved`** — the controller could not determine the value with confidence. The image digest of a pod that has not pulled yet is unresolved.
+
+For compliance reviewers, this distinction is the entire point: a BOM that says "this workload runs vLLM and serves Phi-3-mini" is dramatically more useful when the reviewer can tell at a glance which parts of that claim are the customer's own declaration versus the controller's pattern-matching inference.
+
+Verification is configured via the `spec.verification` block of `AIBOMControllerConfig`: a trust root (Sigstore public-good via TUF, a self-hosted TUF mirror, or a static trusted-root file for air-gapped clusters) plus the signer-identity constraints that gate the `verified` tier. Under a trust root with no identity constraint, a valid signature is recorded as a fact (`signature-valid-unconstrained`) but never upgrades confidence.
+
+## Compliance framework mapping
+
+k8s-aibom outputs are designed to serve as evidence for the following framework requirements:
+
+- **EU AI Act Article 12** — Logging requirements for high-risk AI systems. The AIBOM CR's per-workload status and the write-once BOM archive in external sinks provide the per-system inventory and logging artifacts the article requires.
+- **EU AI Act Article 50** — Transparency obligations. The model identity, runtime, and provenance attributes in each BOM support the disclosure obligations applicable to deployers of general-purpose AI systems.
+- **NIST AI RMF (Govern, Map, Measure, Manage)** — Several measures across the framework require maintaining an inventory of AI systems and tracking changes. k8s-aibom produces and maintains that inventory automatically.
+- **ISO/IEC 42001** — AI Management System inventory and lifecycle clauses. The BOM's confidence model and evidence locators provide the auditable lineage the standard's certification path requires.
+
+k8s-aibom does not certify compliance with any framework; it produces evidence that organizations can use as inputs to their compliance processes.
+
+## Quickstart
+
+> **Prerequisites:** A Kubernetes cluster (1.27+) and `kubectl` configured to talk to it. Helm 3 for the chart path.
+
+Releases publish a signed multi-arch image (linux/amd64, linux/arm64) with build provenance and a CycloneDX SBOM — see [Releases](https://github.com/GoogleCloudPlatform/k8s-aibom/releases) for the latest version.
+
+### Install with Helm (recommended)
+
+```bash
+helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
+  --version 1.5.1 \
+  --namespace k8s-aibom-system \
+  --create-namespace
+```
+
+The published chart pins the controller image **by digest** — you install exactly the attested artifact.
+
+The chart carries the CRDs in its `crds/` directory, which Helm installs once and never upgrades. If you will upgrade with Helm (or Helmfile), install the companion **`k8s-aibom-crds`** chart first, so CRD changes become an ordinary release upgrade (see [Upgrades](#upgrades)):
+
+```bash
+helm install k8s-aibom-crds oci://ghcr.io/googlecloudplatform/charts/k8s-aibom-crds \
+  --version 1.5.1 --namespace k8s-aibom-system --create-namespace
+helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
+  --version 1.5.1 --namespace k8s-aibom-system
+```
+
+Both charts ship at the same version from the same release and are attested the same way. The main chart's `crds/` directory stays, so a single-chart install keeps working; Helm skips CRDs that already exist.
+
+### Install with kubectl
+
+```bash
+kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.5.1/install.yaml
+```
+
+Always install from a release asset; the `install.yaml` at the repo root is a development artifact.
+
+### Read BOMs with the kubectl plugin
+
+`kubectl-aibom` turns the decode/verify walkthrough below into single commands:
+
+```bash
+kubectl krew install aibom   # or: go install github.com/GoogleCloudPlatform/k8s-aibom/cmd/kubectl-aibom@latest
+
+kubectl aibom summary -n prod-jobs        # table: workload, category, runtime, models, confidence, Ready
+kubectl aibom find --runtime litellm -A   # where is X running? filters: --runtime --model --image --digest --signed
+kubectl aibom view <aibom-name> -n prod-jobs        # decoded, pretty-printed BOM (--raw for canonical bytes)
+kubectl aibom verify <aibom-name> -n prod-jobs      # recompute sha256 vs the published digest; non-zero exit on mismatch
+```
+
+`find` is the incident command — "where is this runtime / model / image / digest serving right now?" — with filters that AND together; zero matches prints `0 matches` and exits 0 so scripts can tell "none found" from "plugin broke". Zero matches is never proof of absence: namespaces that are not opted in, images not on the detection allowlist, and unresolved digests are invisible by design, and rows whose document lives in an external sink are shown (not excluded) under image/digest filters, with a warning. `summary` includes per-model signature state, and `verify` prints signature facts (since v1.5.0, Design 002). The plugin is distributed via [krew](https://krew.sigs.k8s.io/) as `aibom`, with attested binaries on each release.
+
+### Verify the supply chain (optional)
+
+Every release image carries Sigstore build-provenance and SBOM attestations:
+
+```bash
+gh attestation verify oci://ghcr.io/googlecloudplatform/k8s-aibom@<digest> \
+  --owner GoogleCloudPlatform
+```
+
+The image digest is printed in the release notes. Admission policies can verify the Sigstore bundle format (e.g. Kyverno `type: SigstoreBundle`, or Sigstore Policy Controller with `signatureFormat: bundle`).
+
+### Other install paths
+
+- **NVIDIA AI Cluster Runtime (AICR)** — k8s-aibom is a qualified AICR component (adopted via [ADR-019](https://github.com/NVIDIA/aicr/blob/main/docs/design/019-k8s-aibom-runtime-inventory.md)). Since AICR v0.20.0 the stock `h100-gke-cos-inference` recipe selects it by default (decline at generation time with `aicr recipe --runtime-inventory disabled`); on any other recipe, add a `componentRef` in a custom overlay — see AICR's component catalog for values and health-contract details.
+- **Terraform** — GitOps-style deployment: see the [Terraform Automation Guide](terraform/README.md).
+- **Amazon EKS, Azure AKS, OpenShift, on-prem** — identical install; cloud-specific notes in [Installing on EKS, AKS, and other conformant clusters](docs/install-eks-aks.md).
+- **Air-gapped, forks, or development** — see [Building from Source](docs/building-from-source.md).
+
+### Opt in a namespace
+
+The controller is installed cluster-wide but inactive until you opt in at least one namespace:
+
+```bash
+kubectl label namespace my-ai-namespace aibom.k8saibom.dev/enabled=true
+```
+
+### See the BOMs
+
+```bash
+kubectl get aibom -A
+```
+
+You will see one `AIBOM` resource per tracked workload. To see the BOM itself:
+
+```bash
+kubectl describe aibom -n my-ai-namespace deployment-my-workload
+```
+
+The full CycloneDX BOM is inline in `status.bomDocument` for BOMs under 256 KB, or referenced via URL for larger BOMs.
+
+If the BOM is inline, it is stored as base64-encoded data. You can decode and view the raw JSON by running:
+
+```bash
+kubectl get aibom deployment-my-workload -n my-ai-namespace -o jsonpath='{.status.bomDocument.inline.data}' | base64 --decode
+```
+
+### Upgrades
+
+`helm upgrade` of the main chart handles everything **except the CRDs**: Helm installs `crds/`-directory CRDs on first install but never upgrades them (standard Helm behavior — automatic CRD changes could destroy user data). Two ways to keep the CRDs current:
+
+- **With the `k8s-aibom-crds` chart (recommended):** upgrade it first, then the main chart, both to the new version. CRDs become an ordinary Helm release, upgraded like any other. An install that predates the CRDs chart adopts its existing CRDs once; see the [chart README](charts/k8s-aibom-crds/README.md#adopting-on-an-existing-install).
+
+  ```bash
+  helm upgrade k8s-aibom-crds oci://ghcr.io/googlecloudplatform/charts/k8s-aibom-crds --version <new> -n k8s-aibom-system
+  helm upgrade k8s-aibom      oci://ghcr.io/googlecloudplatform/charts/k8s-aibom      --version <new> -n k8s-aibom-system
+  ```
+
+- **Manually:** apply the release's CRDs before upgrading:
+
+  ```bash
+  kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/<version>/install.yaml --server-side --field-manager=k8s-aibom-crds
+  ```
+
+  (or apply the `crds/` directory from the matching chart).
+
+Within 1.x, CRD changes are additive only. **One exception to "degrades gracefully": upgrading to the `v1beta1` graduation release requires the CRD apply** — the graduated controller's informers need the CRDs to serve `v1beta1`, and readiness stays failing (loudly, by design) until they do. Full procedure and the storage-migration details: [docs/migration-v1beta1.md](docs/migration-v1beta1.md).
+
+If `config.verification` is set and the installed CRDs predate it, the chart refuses the upgrade before applying anything and prints the CRD-apply command to run first. That check reads the installed `AIBOMControllerConfig` CRD, so an upgrade with `config.verification` set needs a Helm identity that can `get` it. CRDs that Helm installed are owned by Helm's field manager, so applying them server-side under another manager needs `--force-conflicts`.
+
+### Uninstall
+
+```bash
+helm uninstall k8s-aibom -n k8s-aibom-system
+```
+
+This removes the controller, its RBAC, and the `AIBOMControllerConfig`. Two things persist **by design**:
+
+- **The CRDs** — Helm never removes `crds/`-directory CRDs on uninstall; deleting them would destroy data.
+- **AIBOM resources** — they are owner-referenced to their *workloads*, not the controller, so inventory records outlive the collector. Each AIBOM is garbage-collected when its workload is deleted, and a reinstalled controller re-adopts existing AIBOMs and resumes reconciling them.
+
+To purge everything including inventory data: `kubectl delete crd aiboms.aibom.k8saibom.dev aibomcontrollerconfigs.aibom.k8saibom.dev`.
+
+## Configuring external sinks
+
+By default, BOMs are stored only in the AIBOM CR's status — no data leaves the cluster. To configure external sinks, edit the `AIBOMControllerConfig` named `default`:
+
+> [!IMPORTANT]
+> Sinks that read credential Secrets (webhook auth, GCS service-account keys) require installing the chart with `--set rbac.sinkSecretAccess=true`. It is **off by default**: with no sinks configured, the controller holds no Secret permissions at all.
+
+```yaml
+apiVersion: aibom.k8saibom.dev/v1alpha1
+kind: AIBOMControllerConfig
+metadata:
+  name: default
+spec:
+  sinks:
+    - name: audit-archive
+      type: GCS
+      gcs:
+        bucket: my-aibom-archive
+        pathTemplate: "aibom/{namespace}/{kind}-{name}/{timestamp}.json"
+        workloadIdentity: k8s-aibom-controller@my-project.iam.gserviceaccount.com
+    - name: graph-ingest
+      type: Webhook
+      webhook:
+        endpoint: https://guac.internal.example.com/ingest
+        auth:
+          bearerToken:
+            secretRef:
+              name: graph-ingest-creds
+              key: token
+```
+
+Configuration changes take effect on the next reconcile, without restarting the controller. Invalid configuration is rejected; the previous good configuration remains in effect, and the failure is surfaced as a condition on the `AIBOMControllerConfig` CR. This is the *last-known-good* property: an operator mistake in the configuration does not break the pipeline.
+
+**Workload-kind allowlist:** `spec.discovery.workloadKinds` lists the kinds the controller inventories, as `Group/Kind` strings (`apps/Deployment`, `nvidia.com/DynamoGraphDeployment`, `leaderworkerset.x-k8s.io/LeaderWorkerSet`, `disaggregatedset.x-k8s.io/DisaggregatedSet`, ...). Absent or empty means every known kind. An entry that is not a known kind is a configuration error (last-known-good retained, the entry named in the condition), never a silent no-op. A kind not in the list gets no documents and its existing ones are deleted; for the third-party kinds the controller also stops watching it. A kind that is switched off stops absorbing the workloads it owns, which are reported on their own again. Changes apply without a restart.
+
+## Security model
+
+The controller is the *only* identity in the system that writes BOMs to external sinks. This is enforced structurally:
+
+- The controller runs as a single ServiceAccount with minimum permissions: `roles/storage.objectCreator` on the target GCS bucket (no `objectViewer`, no `objectAdmin`, no bucket-level admin). On non-GCP environments, equivalent minimum permissions via Workload Identity Federation.
+- Webhook sink credentials are loaded from Kubernetes Secrets in the controller's namespace. The controller does not read Secrets from other namespaces, and holds Secret read permission only when `rbac.sinkSecretAccess` is enabled at install time (off by default). Customer workload pods cannot read these Secrets.
+- The GCS sink uses `DoesNotExist` preconditions on every write, making BOM objects immutable once written. A second write to the same path fails by design — the audit trail cannot be silently overwritten.
+
+This bounds the blast radius of a compromised AI workload: it cannot tamper with audit BOMs. The single-principal write pattern also produces a clean signature in cloud audit logs.
+
+**Configuration failure and readiness:** an invalid `AIBOMControllerConfig` never takes the controller down — it keeps operating on the last-known-good configuration, signalling via `Ready=False`/`Degraded=True` conditions and Events (and Prometheus metrics when `metrics.enabled=true` — see the chart values). Distributions that require pod-level signal instead can enable strict mode (`readiness.strictConfig=true`), which fails the readiness probe while the active configuration is invalid.
+
+**Third-party CRD outages:** KServe, Dynamo, NIMService, LeaderWorkerSet and DisaggregatedSet are watched on their own caches under a supervisor, so a CRD that is present but cannot be served — for example a Dynamo conversion webhook whose operator is down — degrades only that kind: `Degraded=True` with reason `ThirdPartyWatchUnhealthy` on `AIBOMControllerConfig` naming the kind and the API error, a `WatchUnhealthy` Event, and `aibom_watch_healthy{kind}=0`. Existing AIBOMs for the kind are kept, every other kind keeps working, readiness is unchanged, and recovery is automatic. Details: [docs/external-crd-versions.md](docs/external-crd-versions.md).
+
+**Data visibility:** the controller's informers watch workloads cluster-wide, so workload/pod specs (including args and inline env values) pass through its in-memory cache before the namespace opt-in check — the opt-in label governs what is *reported*, never what is *cached*. `spec.discovery.workloadKinds` narrows the *watch* for the third-party kinds (a KServe, Dynamo, NIMService or LeaderWorkerSet kind not listed has no informer) but, in this release, only the *reporting* for the apps/v1 and batch kinds: those controllers run on the manager's shared cache and their informers cannot be removed at runtime. Moving them under the watch supervisor so the list narrows their read surface too is the v1.7 follow-up. Secret values are never emitted in BOMs or logs. Treat `AIBOM` resources as sensitive operational metadata: intended readers are platform/security/compliance teams. Full disclosure and retention details: [docs/security-model.md §7](docs/security-model.md).
+
+**Output sanitization guarantee:** no credential material appears in emitted documents. The extraction paths are conservative by construction (env values only from the model-identity allowlist with `valueFrom` secrets skipped; args read only for allowlisted model flags; API-key detection records env-var *names*, never values; evidence locators are spec paths). On top of that, every string leaving the cluster passes a redaction filter at the BOM-build boundary: URI userinfo, known credential query parameters (pre-signed URL signatures, SAS tokens), and well-known secret token shapes are replaced before emission, and any component whose fields were redacted carries an `aibom.redaction.applied` property naming the redaction class — redaction is recorded, never silent. Determinism is preserved: identical inputs still produce byte-identical documents.
+
+See [docs/security-model.md](docs/security-model.md) for the full threat model and design justification.
+
+## Engineering discipline
+
+The project is built around a few load-bearing conventions documented in [CONTRIBUTING.md](CONTRIBUTING.md):
+
+- **300+ tests** across unit, envtest, and real-cluster smoke layers, with substring-asserted error messages, fallback-path-first ordering, and the customer-protection properties (last-known-good config retention) tested at all three layers.
+- **Conservative-detection principle** — the controller prefers false negatives (an honest "unresolved") to false positives (a fabricated "declared"). Detection patterns are added only when there is clear signal, not speculatively.
+- **Cloud-neutrality constraint** — the project runs on any conformant Kubernetes cluster. Google-specific dependencies are limited to the optional GCS sink; all other code paths work identically on EKS, AKS, on-prem, or local clusters.
+- **Real-cluster smoke verification** — every release is verified end-to-end on a real GKE cluster against the documented properties before tagging, not solely via envtest.
+
+## Performance footprint
+
+Every figure below is labeled with version, environment, and sampling
+method; figures of mixed provenance are not aggregated. Full records:
+[issue #8](https://github.com/GoogleCloudPlatform/k8s-aibom/issues/8)
+and NVIDIA/AICR's independent adoption record
+([NVIDIA/aicr#2310](https://github.com/NVIDIA/aicr/issues/2310)).
+
+Live GKE, v1.2.0 and v1.3.0 (2026-08-22; 1,001 tracked workloads via
+replica-zero Deployment fixtures; qualified image digests; sampled two
+ways — metrics-server at 30s cadence over a 15-minute steady window,
+and a raw kubelet CPU-counter delta over a stated 10-minute window):
+
+- Steady state at 1,001 workloads: 1–2m CPU (counter-delta means
+  0.8–1.0m) / 61Mi mean, 68Mi max — statistically identical across
+  both versions and both samplers, and consistent with NVIDIA's
+  independent v1.3.0 measurement on their own GKE cluster (1–2m /
+  67–69Mi steady, NVIDIA/aicr#2310)
+- With signature verification enabled (v1.5.0, staticBundle trust
+  root, signed workload present): statistically unchanged — 1.17m CPU
+  (kubelet counter delta over a stated 10.5-minute window) / ~63Mi
+  working set at 1,001 tracked workloads; verification results are
+  cached per (reference, trust-root epoch), so steady-state cost of
+  the verified tier approaches zero
+- At 1 tracked workload: ~1m CPU / ~23Mi
+- Convergence: all 1,001 AIBOMs present and Ready within seconds of
+  the 1,000-Deployment apply completing (NVIDIA measured all present
+  by t+10s from empty)
+- Deletion: 1,000 AIBOMs garbage-collected in under 2 minutes, memory
+  returning toward baseline
+- API-server impact (NVIDIA's measurement, Prometheus-attributed): ~2
+  requests per inventoried workload on a cold start; 4 long-running
+  watches (v1.3.0)
+- Steady state at 1,002 workloads (v1.5.1, live GKE, attributed
+  client-side over a 15-minute window): **under one API request per
+  minute** — watch reconnects only, zero writes, zero reconciles,
+  1.07 mCPU average. Upgrade 23 s, rollback 17–19 s, all AIBOMs and
+  hashes preserved across a full version round trip; see
+  [docs/evidence](docs/evidence/v1.5.1-gke-upgrade-rollback-apiserver.md)
+- 256 KB inline threshold; BOMs exceeding it are offloaded to an
+  external sink and referenced by URL in the CR status (boundary
+  observed live in NVIDIA/aicr#2310)
+
+Historical figures from the v1.1.0-era qualification on Kind (16m CPU
+steady and a ~370m convergence burst at 1,000 workloads) are retained
+only as the burst upper bound: the burst remains plausible and
+unrefuted (sub-15-second bursts are unresolvable by metrics-server
+sampling), while the Kind steady-state figures did not reproduce on
+GKE under either sampler and are superseded above.
+
+Chart defaults keep a conservative envelope (requests 50m/128Mi,
+limits 1 CPU/256Mi): requests sit well above observed steady state,
+and the 1-CPU limit bounds the convergence burst. Beyond 1,000
+workloads, monitor memory and adjust resources as needed.
+
+## Compatibility
+
+See [docs/compatibility.md](docs/compatibility.md) for the tested matrix and support policy. Summary:
+
+**Kubernetes versions.** Stable APIs only, no known version ceiling; tested floor 1.27, with a weekly CI matrix tracking current releases (independently verified on 1.35/1.36 during NVIDIA/AICR's qualification). Older versions back to 1.23 should work but are not actively tested.
+
+**Cloud platforms.** Runs on Google Kubernetes Engine (Standard and Autopilot), Amazon Elastic Kubernetes Service, Azure Kubernetes Service, on-premises clusters (kubeadm, kops, Rancher, OpenShift), and local development clusters (kind, minikube, k3s). The GCS sink requires Google Cloud authentication; the webhook sink works against any HTTPS endpoint; the CRD status sink works on any conformant cluster.
+
+**Service meshes.** Compatible with Istio, Linkerd, and Cilium without mesh-specific code.
+
+## Roadmap
+
+Releases ship on a monthly train ([VERSIONING.md](VERSIONING.md)); delivered work is in the [CHANGELOG](CHANGELOG.md). Latest: **v1.5.0**, the trust release — Sigstore/OMS signature verification (the `verified` tier), the output sanitization guarantee, and the `kubectl aibom` plugin. Next: **v1.6** extends workload coverage (operator-managed CRD kinds, CronJob completeness, a configurable workload-kind allowlist).
+
+Full detail in [docs/roadmap.md](docs/roadmap.md).
+
+## Relationship to other projects
+
+k8s-aibom complements, rather than replaces, the broader AI supply-chain transparency ecosystem.
+
+- **[OWASP CycloneDX][cyclonedx]** defines the BOM schema. k8s-aibom emits CycloneDX 1.6 ML-BOM documents that validate against the official schema and use the project's ML-BOM extensions for model identity and runtime metadata.
+- **[OWASP AIBOM Project][owasp-aibom]** is standardizing AIBOM concepts at the framework level. k8s-aibom is a Kubernetes-runtime implementation of those concepts.
+- **[OpenSSF GUAC][guac]** aggregates and graphs supply-chain metadata. The webhook sink can be pointed at a GUAC blob-storage collector today; a native GUAC sink sits in the demand-gated backlog ([roadmap](docs/roadmap.md)).
+- **[Sigstore][sigstore]** provides the signing and verification infrastructure behind the `verified` confidence tier (shipped in v1.5.0).
+- **Build-time AIBOM tools** (AIBoMGen, OWASP AIBOM Generator, vendor tools) describe what was built. k8s-aibom describes what is running. Both are needed for full supply-chain visibility.
+
+## Contributing
+
+The fastest way in is a detection pattern — see [Contributing a detection pattern](docs/contributing-a-pattern.md) and the open [`good-first-pattern`](https://github.com/GoogleCloudPlatform/k8s-aibom/issues?q=is%3Aissue+is%3Aopen+label%3Agood-first-pattern) issues. Pattern PRs are reviewed within 48 hours.
+
+Issues, pull requests, and feedback welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for development workflow, testing discipline, and the conventions the project is built around.
+
+Areas where contributions are particularly valuable:
+
+- **Additional runtime, agent framework, and infrastructure patterns.** If you run a workload kind not currently detected, a PR adding the detection pattern with a regression test is the fastest path to coverage.
+- **Customer-realistic edge cases.** Production workloads have shapes that synthetic tests do not cover. Issues describing "the controller does not detect X in our setup, here is the workload spec" are extremely useful.
+- **Schema and confidence-model feedback.** The BOM property naming conventions and confidence flag definitions are open to refinement. See [docs/schema-divergences.md](docs/schema-divergences.md) for current conventions.
+
+## Governance
+
+k8s-aibom is published by Google under the Apache 2.0 license. The project welcomes contributions from any individual or organization under the standard Google Contributor License Agreement (CLA).
+
+Kubernetes and K8s are registered trademarks of The Linux Foundation in the United States and other countries.
+
+## Disclaimer
+
+This is not an officially supported Google product. This project is not eligible for the [Google Open Source Software Vulnerability Rewards Program](https://bughunters.google.com/open-source-security).
+
+## License
+
+Apache 2.0. See [LICENSE](LICENSE).
+
+---
+
+[cyclonedx]: https://cyclonedx.org
+[cyclonedx-ml]: https://cyclonedx.org/capabilities/mlbom/
+[owasp-aibom]: https://owaspaibom.org
+[guac]: https://guac.sh
+[sigstore]: https://sigstore.dev
+[eu-ai-act]: https://artificialintelligenceact.eu/
+[nist-ai-rmf]: https://www.nist.gov/itl/ai-risk-management-framework
+[iso-42001]: https://www.iso.org/standard/81230.html

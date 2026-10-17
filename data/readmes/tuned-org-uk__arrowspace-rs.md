@@ -1,0 +1,145 @@
+# arrowspace
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.09002/status.svg)](https://doi.org/10.21105/joss.09002)[Zenodo](https://zenodo.org/records/21679021)
+
+**Spectral vector search and analysis using dipersion models**
+
+`arrowspace` is a database for vectors supported by a graph representation and a key-value store. The main use-cases targeted are: **AI search capabilities as advanced vector similarity, graph characterisation analysis and search, indexing of high-dimensional vectors**. Design principles described in [this article](https://www.tuned.org.uk/posts/010_game_changer_unifying_vectors_and_features_graphs).
+
+A complete DevLog for this package is available [here](https://www.tuned.org.uk/blog).
+
+`ArrowSpace` is the data structure that encapsulates the use of `λτ` (lambda-tau) indexing; a novel scoring method that mixes Rayleigh and Laplacian scoring (see [`RESEARCH.md`](./RESEARCH.md)) for building vector-search-friendly lookup tables with built-in spectral-awareness. This allows better managing of datasets where spectral characteristics are most relevant. It pairs dense, row‑major arrays with per‑row spectral scores (`λτ`) derived from a Rayleigh-Laplacian score built over items, enabling lambda‑aware similarity, range queries, and composable operations like superposition and element‑wise multiplication over rows. It has been designed to work on datasets where spectral characteristics can be leveraged to find matches that are usually ranked lower by commonly used distance metrics.
+
+Run `cargo run --example 01_compare_cosine` for an example about how it compares with cosine similarity.
+
+The Python bindings are [available in this repo](https://github.com/tuned-org-uk/pyarrowspace).
+
+## Usage
+```rust
+use arrowspace::builder::ArrowSpaceBuilder;
+
+// Simple example that works immediately
+let vectors = vec![
+    vec![1.0, 2.0, 3.0],
+    vec![2.0, 3.0, 1.0],
+    vec![3.0, 1.0, 2.0],
+];
+
+let (aspace, _) = ArrowSpaceBuilder::new()
+    .build(vectors);
+```
+
+### Optional filter-bank coordinates
+
+`with_filter_bank` adds a short Rayleigh band-energy vector per item. This API
+is behind the default-off `filter_banks` feature, and scalar λτ search behaviour
+is unchanged.
+
+```rust
+use arrowspace::builder::ArrowSpaceBuilder;
+use arrowspace::filter_bank::{BandEdges, FilterBankConfig};
+
+let (aspace, graph) = ArrowSpaceBuilder::new()
+    .with_filter_bank(FilterBankConfig::new(3, BandEdges::Uniform))
+    .build(vectors);
+
+let item_bands = aspace.band_energies_for_item(0);
+let query = aspace.try_prepare_query_item_with_bands(&[1.0, 2.0, 3.0], &graph)?;
+```
+
+### Requirements
+
+- Rust 1.90+ (edition 2024)
+
+## Installation
+
+### As a Library Dependency
+Add to your `Cargo.toml`:
+```toml
+[dependencies]
+arrowspace = "^0.22.0"
+```
+
+### From Source
+```bash
+git clone https://github.com/Mec-iS/arrowspace-rs
+cd arrowspace-rs
+cargo build --release
+```
+
+### Running Examples
+```bash
+cargo run --example 01_compare_cosine
+cargo run --example 02_proteins_lookup
+cargo run --features filter_banks --example 04_filter_bank
+```
+
+### Running Tests
+```bash
+export RUST_TEST_NOCAPTURE=1
+cargo test --all-features
+```
+
+### Run Bench
+```
+$ cargo bench
+```
+
+### Minimal usage
+
+Construct an `ArrowSpace` from rows and compute a synthetic index `λτ` used in similarities search (spectral search):
+
+- Build λτ‑graph from data (preferred path):
+    - Use `ArrowSpaceBuilder::new().build(items)` to get an `ArrowSpace` and its Laplacian+Tau mode; the builder will compute per‑row synthetic indices immediately.
+    - Use `ArrowSpaceBuilder::new().with_lambda_graph(...).build(items)` to get an `ArrowSpace` and its Laplacian+Tau mode by specifying the parameters for the graph where the Laplacian is computed.
+    - Use `ArrowSpaceBuilder::new().with_lambdas(...).with_synthesis(...).build(items)` to get an `ArrowSpace` and its Laplacian+Tau indices by specifying which lambdas values to use.
+- Search the space:
+```rust
+use arrowSpace::builder::ArrowSpaceBuilder;
+use arrowSpace::core::ArrowItem;
+
+// define the search parameters: alpha=1.0 is equivalent to cosine similarity
+let alpha = 0.7;
+let beta = 0.3;
+
+// Build ArrowSpace from item vectors
+let items = vec![
+    vec![1.0, 2.0, 3.0],  // Item 1
+    vec![2.0, 3.0, 1.0],  // Item 2
+    vec![3.0, 1.0, 2.0],  // Item 3
+];
+
+let (aspace, graph) = ArrowSpaceBuilder::new()
+    // setting the right eps is critical to avoid zeroed lambdas
+    // check `tests` and `examples` for extensive examples
+    .with_lambda_graph(0.5, 3, 2.0, sigma: 0.25)
+    .build(items);
+
+// prepare query vector (fallible: returns ArrowSpaceError on NaN,
+// wrong dimensions or degenerate lambda)
+let lambda = aspace
+    .try_prepare_query_item(&[1.5, 2.5, 2.0], &graph)
+    .expect("valid query");
+let query = ArrowItem::new(vec![1.5, 2.5, 2.0], lambda);
+// search the space (fallible twin of the deprecated search_lambda_aware)
+let results = aspace
+    .try_search_lambda_aware(&query, 1, alpha)
+    .expect("prepared query");
+println!("{:?}", results);
+
+```
+
+## Main Features (spectral graph construction and search)
+
+- Data structure for vector search:
+    - Lambda+Tau graph from data (default): builds a Laplacian over items from the row matrix, then computes per‑row synthetic λτ using laplacian + TauMode (see paper) with Median policy by default; override via `with_synthesis(alpha, mode)` to change α or τ policy.
+    - Direct lambda ε‑graph (lower‑level): constructs a Laplacian from a vector of λ values with ε thresholding and k‑capping, union‑symmetrized CSR; use when supplying external λ instead of synthetic.
+    - (optional) Hypergraph overlays: build Laplacians from hyperedges (clique expansion, normalized variant) and overlay “boosts” to strengthen pairs; for prebuilt/hypergraph paths, synthetic λ is opt‑in via with_synthesis.
+    - (optional) Ensembles: parameterized variants (k adjust, radius/ε expand, hypergraph transforms) for graph experimentation while reusing the same data matrix; synthetic λ is computed per chosen base when enabled.
+- Examples:
+    - End‑to‑end examples: protein‑like lookup with λ‑band range query using a ZSET‑style index; showcases for hypergraph, λ‑graph, and synthetic laplacian + TauMode flows.
+    - Extensive tests spanning `ArrowSpace` algebra, Rayleigh properties, lambda scale‑invariance, superposition bounds, λ‑graph symmetry and k‑capping semantics, hypergraph correctness, diffusion/random‑walk simulations, fractal integrations, and synthetic λ via Median/Mean/Percentile τ policies.
+
+## Key concepts
+
+See [paper](./paper.md)

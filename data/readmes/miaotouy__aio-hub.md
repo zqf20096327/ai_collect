@@ -1,0 +1,350 @@
+<div align="center">
+  <img src="docs/public/assets/产品概念图-1.jpg" alt="AIO Hub Banner" width="100%">
+</div>
+
+<br/>
+
+<table align="center" border="0">
+  <tr>
+    <td align="center" width="160">
+      <img src="src/assets/aio-icon-color.png" alt="AIO Hub Logo" width="120" height="120">
+    </td>
+    <td align="left">
+      <h1>AIO Hub</h1>
+      <p><strong>本地优先的 AI 能力枢纽 | 人类工作台与 Agent 运行时</strong></p>
+      <p>一个基于 Tauri + Vue 3 + TypeScript 构建的跨平台工作站。人可以直接操作工具；Agent 只能在明确授权、可观察、可审批和可取消的边界内复用合适的能力。</p>
+    </td>
+  </tr>
+</table>
+
+<div align="center">
+
+[![License](https://img.shields.io/badge/license-Apache%202.0%20%2F%20Proprietary-blue.svg)](#-许可证)
+[![Tauri](https://img.shields.io/badge/Tauri-2.10-blue.svg)](https://tauri.app/)
+[![Vue](https://img.shields.io/badge/Vue-3.5-green.svg)](https://vuejs.org/)
+[![Vite](https://img.shields.io/badge/Vite-8.0-purple.svg)](https://vite.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
+
+[![Stars](https://img.shields.io/github/stars/miaotouy/aio-hub?style=social)](https://github.com/miaotouy/aio-hub/stargazers)
+[![Forks](https://img.shields.io/github/forks/miaotouy/aio-hub?style=social)](https://github.com/miaotouy/aio-hub/network/members)
+[![Issues](https://img.shields.io/github/issues/miaotouy/aio-hub)](https://github.com/miaotouy/aio-hub/issues)
+[![官网](https://img.shields.io/badge/官网-aiohub--app.com-success.svg)](https://aiohub-app.com/)
+[![文档站](https://img.shields.io/badge/文档站-docs-brightgreen.svg)](https://docs.aiohub-app.com)
+
+[![爱发电赞助](https://img.shields.io/badge/爱发电-赞助作者-ff69b4.svg)](https://afdian.com/a/miaotouy)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/miaotouy/aio-hub)
+[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/miaotouy/aio-hub)
+
+[产品定位](#-产品定位) •
+[LLM 工作空间](#-旗舰功能-llm-智能对话工作空间) •
+[人类工作台](#-人类工作台与共享能力) •
+[Agent 与 VCP](#-agent-运行时与-vcp-协作) •
+[下载安装](#-下载安装) •
+[开发指南](#-开发指南)
+
+</div>
+
+## 🧭 产品定位
+
+AIO Hub 从桌面工具枢纽发展为同时服务于**人类用户、Agent、插件和外部执行体**的本地工作站。Chat 是旗舰工作区；工具页、内部服务、Agent 方法和外部协议各自保留适合的入口。
+
+- **人类工作台**：正则预设、Git、网页蒸馏、窗口自动化、OCR、媒体创作、资产管理和弹幕播放器等工具，拥有独立的界面、状态、任务和结果回流链路。
+- **Agent 运行时**：模型只看到经过显式注册和筛选的可调用方法；调用经过参数校验、审批策略、任务管理和结果回注，不等于所有 UI 工具都会自动暴露给 Agent。
+- **共享能力层**：文件、资产、Token 计算、OCR、会话、Recall 和媒体任务等本地能力可以被多个工作台复用，人在界面中操作，Agent 在合适的边界内调用。
+- **外部协作层**：通过 VCP 连接器，AIO Hub 既可以作为节点被远端 VCP 服务驱动，也可以把远端工具桥接到本地注册表供自身工作流使用。
+
+复杂能力可以发展为带状态、任务和结果管理的工作台，轻量工具则保持直接可用。
+
+## 🌟 旗舰功能: LLM 智能对话工作空间
+
+AIO Hub 的聊天功能是一个专为复杂任务和深度探索而设计的、高度模块化的**对话式 AI 智能体工作站**。
+
+### 🛠️ 深度上下文工程 (Unified Context Pipeline)
+
+完全掌控发送给模型的每一个 Token，拒绝“黑盒”Prompt。
+
+- **统一上下文管道**: 基于AIO自身的流水线架构，将会话树转换为 LLM 请求。内置多阶段核心处理器（会话加载、正则清洗、注入组装、RAG 检索、转写提取、异步工具信息、世界书、Token 限制、格式化、资源解析 等），支持**可视化排序**、**插件化扩展**。
+- **上下文分析器 (Context Analyzer)**: 开发者级调试工具。实时查看最终发送给 LLM 的原始 Prompt、Token 消耗分布、宏解析结果及请求体结构。
+- **上下文压缩 (Context Compression)**: 智能摘要技术。当对话超过阈值时自动触发非破坏性压缩，生成"压缩节点"替代冗余历史，大幅降低长对话的 Token 成本。
+- **宏系统 (Macro System)**: 提供 **74** 个动态宏（如 `{{time}}`, `{{os}}`, `{{last_message}}`），支持复杂的日期时间格式、掷骰子、系统环境获取及局部/全局变量系统。三阶段执行管道（预处理、替换、后处理）实现环境感知与状态管理。
+- **正则处理管道 (Regex Pipeline)**: 双向处理架构，支持发送前的文本清洗（如隐藏思维链）与渲染前的格式转换（如自定义标签渲染），兼容 **SillyTavern** 正则脚本。具备 Global/Agent/User 三层配置合并能力。
+
+### ⚡ 交互增强与生态兼容 (Interactive AI & Compatibility)
+
+- **快捷动作系统 (Quick Actions)**: 位于输入栏的指令增强系统，支持自定义脚本与宏，并支持导入 SillyTavern 快捷动作，显著提升输入效率。新增行级文本后处理功能，可对生成结果逐行添加前缀/后缀或进行正则替换。
+- **交互式 AI 按钮**: 支持 LLM 输出受控的可交互按钮（通过自定义标签），点击即可执行发送、填充或复制等安全操作，实现 AI 对 UI 的反向控制。
+- **Agent Skill 集成**: 基于 [Agent Skills 规范](https://agentskills.io/) 的渐进式披露策略，Skill 作为工具系统的一部分无缝融入对话流。初始仅注入技能摘要，LLM 按需激活后才获得完整指令与资源访问权，兼顾上下文效率与能力扩展。
+- **世界书兼容 (Worldbook)**: 深度兼容 SillyTavern 格式的世界书，支持基于关键词触发的动态上下文注入，便于挂载超大规模设定集。
+- **分段式智能体编辑器**: 模块化管理智能体人设、能力插件、模型参数及资产附件，支持 **PNG 角色卡 (V2/V3)** 导入导出。
+- **智能体资产系统**: 支持智能体携带专属的私有媒体资产（表情包、BGM、场景图），通过 `agent-asset://` 协议引用，配合 `{{assets}}` 宏让 LLM 主动在回复中使用这些资产。
+
+### 🌳 深度对话管理 (Dual-View Management)
+
+- **非线性对话图谱**: 由 `Vue Flow` + `D3.js` 驱动，将对话历史呈现为可交互的树状网络，支持分支"嫁接"、物理模拟布局及无限画布导航。支持从当前消息直接创建分支。
+- **极致性能线性视图**: 基于浏览器原生 `content-visibility` 延迟渲染技术，轻松处理包含数千条消息的超长会话，滚动如丝般顺滑。
+- **动态智能体切换**: 对话与智能体解耦，在同一会话中可随时切换不同领域的 AI 专家。
+- **撤销/重做系统**: 会话级别的撤销/重做功能，采用快照与增量相结合的混合存储策略，支持编辑、删除、分支切换等操作的回滚。
+
+### 🌐 开放生态与多模态
+
+- **广泛适配**: 原生支持 OpenAI, Anthropic, Gemini, xAI (Grok), SiliconFlow, DeepSeek, Vertex AI 等，兼容 Ollama 等本地模型。
+- **智能附件转写**: 自动识别图片 OCR、音频转文字、视频描述及 **PDF 分批视觉转写**。模型原生支持时直传，否则自动降级转写。
+- **双向翻译系统**: 支持输入与输出的实时翻译，具备 XML 标签保护与双语并排对比模式。
+
+---
+
+## 🧰 人类工作台与共享能力
+
+许多能力首先是为人设计的完整桌面工作流，而不是只能由模型触发的一次工具调用。它们保留可视化操作、预览、编辑、任务状态和结果管理；其中适合自动化的部分，才会通过注册表以受控方式共享给 Agent。
+
+### 面向人类的完整工作流
+
+- **网页蒸馏室**: 覆盖快速、智能和交互式蒸馏，提供 API 嗅探、站点配方和 Cookie 身份管理；同时可将 `quickFetch`、`smartExtract` 等能力提供给 Agent。
+- **窗口自动化语言**: 将点击、输入、取色、截图与 OCR 编排为可保存、可复用的流程，支持子流程、变量作用域和条件跳转，适合本机重复操作。
+- **实时字幕 OCR**: 支持屏幕实时监控和本地下载视频离线识别，提供帧去重、字幕合并、原始视频时间轴、SRT 导出及 Chat 回流；OCR 平台也被转写和自动化工具复用。
+- **跨播放器弹幕运行时**: 内置播放器支持弹幕和多种字幕格式；在 Windows 上还可通过透明覆盖层跟随第三方播放器同步显示。
+- **Git 与正则工作台**: 多仓库状态、Diff、暂存、提交和 AI 提交草稿集中管理；正则规则可组成可导入、可排序、可堆叠的预设流程。
+- **对话分享稿工作台**: 从消息选区开始，在独立编排和实时预览中生成分享稿，并保留每次生成的结果历史。
+
+### 跨工作台的本地事实源
+
+- **媒体与中央资产库**: 图像、音频、视频等生成任务拥有独立会话、分支与全局任务队列；结果进入带 SHA-256 去重、来源追踪与跨工具复用的资产库。
+- **Recall 思绪集**: 以 SQLite 为事实源，通过检索管线和严格占位符将即时召回接入上下文；它是对世界书之外的上下文召回工作流补充。
+- **统一 Token 与 LLM 观测**: 多 Tokenizer、多模态预算服务被聊天、翻译和检查器等工具复用；请求检查器可同时观察应用内请求和经本地代理进入的外部请求，并脱敏展示关键字段。
+
+## 🤖 Agent 运行时与 VCP 协作
+
+### 人与 Agent 共享，但不混为一谈
+
+工具注册表同时承载工具页、内部服务和 Agent 方法。只有显式标记为 `agentCallable` 的方法才会进入模型可发现目录；调用还会经过参数规范化、审批策略、异步任务管理和结果回注。这样，人可以直接接管高复杂度工作台，Agent 则在明确授权的子集内协作。
+
+- **Agent Skills**: 兼容 [Agent Skills](https://agentskills.io/) 的渐进式披露模型，按“摘要 → 完整指令 → 按需资源”加载能力；脚本执行有路径锁定、工作目录限制、多运行时探测和超时控制。
+- **扩展运行时**: JavaScript、Native 和 Sidecar 插件可分别扩展 UI、内部服务或受控的 Agent 方法，而非只增加聊天插件。
+
+### VCP 双向互操作
+
+VCP 连接同时覆盖节点注册和远端工具桥接。AIO Hub 可作为 VCP 分布式节点，将经过白名单和审批治理的本地能力注册到远端；也能拉取远端插件清单，动态桥接为本地工具供自身 Agent 使用。连接器还提供 RAG 检索、元思考链、Agent 消息、插件步骤和日志的运行时监控，以及任务进度、取消和审批回传。
+
+## 🍷 SillyTavern 生态与角色工作流
+
+AIO Hub 支持导入并继续编辑 SillyTavern V2/V3 JSON/PNG 角色卡、上下文预设、正则、Quick Reply 和嵌入式世界书。独立世界书管理器会在真实请求中执行关键词/正则触发、扫描深度、递归、概率、冷却与位置注入等运行时子集；角色配置还可携带工具策略、知识、私有资产和样式。
+
+---
+
+## ✨ 桌面工作环境
+
+### 🖼️ 自由窗口管理
+
+打破传统布局限制。
+
+- **组件级分离**: 不仅是工具，连聊天输入框、对话区域都可以被**拖拽**成为独立的浮动窗口。
+- **状态同步**: 所有分离窗口共享同一个状态源，在一个窗口操作，所有窗口实时更新。
+- **记忆功能**: 自动记住所有窗口的位置和大小。
+
+### 🎨 高级主题与视觉配置
+
+- **三层主题系统**: 支持明暗/跟随系统、五色主题色阶和独立外观层；主题设置会持久化，并在主窗口和分离窗口启动时恢复。
+- **动态壁纸与取色**: 支持内置或自定义图片轮播、透明度、填充方式和 16 种混合模式；可从壁纸提取背景色与主题色，并用 OKLCH 调整保证可读性。
+- **窗口质感**: 支持分层透明度、模糊、边框和代码块外观配置，以及 Windows Mica/Acrylic、macOS Vibrancy 等原生窗口效果。
+- **CSS 样式覆盖**: 内置 CSS 编辑器和预设管理，可实时预览并应用全局自定义样式。
+- **灵活布局**: 侧边栏支持三种模式（固定侧边栏/抽屉/下拉菜单），适配不同屏幕尺寸。
+
+### 🧩 强大的插件系统
+
+- **JavaScript 插件**: 轻量级 UI 扩展，即写即用。支持 `activate`/`deactivate` 生命周期钩子，可动态注册 LLM 聊天管道处理器。
+- **Native 插件 (Rust)**: 高性能后端扩展，通过 DLL 动态加载。
+- **Sidecar 插件**: 支持任意语言编写的独立进程插件。
+
+### 📦 插件精选
+
+| 插件                                                                             | 类型       | 描述                                                            |
+| :------------------------------------------------------------------------------- | :--------- | :-------------------------------------------------------------- |
+| [Paddle OCR](https://github.com/miaotouy/aiohub-paddle-ocr)                      | Sidecar    | 基于 PaddleOCR 的本地离线 OCR 引擎，支持 PP-OCRv5/v6 多语言模型 |
+| [文件哈希计算器](https://github.com/miaotouy/aiohub-plugin-example-file-hasher)  | Sidecar    | 计算文件 SHA-256 哈希值的示例 Sidecar 插件                      |
+| [Hello World Vue](https://github.com/miaotouy/aiohub-plugin-example-hello-world) | JavaScript | 使用 Vue SFC 开发的入门示例插件，享受 Vite HMR                  |
+| [原生示例](https://github.com/miaotouy/aiohub-plugin-example-native)             | Native     | 展示 Rust 原生插件能力的示例，含系统信息获取                    |
+| [文本处理器](https://github.com/miaotouy/aiohub-plugin-example-text-processor)   | JavaScript | 文本处理示例插件，演示前缀/后缀、大小写转换等配置化功能         |
+
+> 💡 更多插件开发详情请参阅 [`plugins/README.md`](plugins/README.md) 和 [插件开发指南](docs/guide/plugins/index.md)。
+
+---
+
+## 🚀 效率与创作工具链
+
+### 🎬 多媒体创作中心 (Media Workstation)
+
+- **媒体生成器 (Media Generator)**: 全功能生成工作站，支持图像/音频/视频任务流，具备独立的分支管理与任务队列。内置快速生成模式（无需创建会话即可使用）、参考图上传（自动适配视觉模型）及 16:9 / 9:16 等常用比例预设。
+- **音视频转写中心 (Transcription)**: 基于多模型驱动的转写引擎，支持超长 PDF 分批视觉解析、视频内容描述及音频语音转文字。
+- **FFmpeg 高性能助手**: 基于 Rust 后端的高性能媒体处理工具，支持视频压缩、格式转换及批量处理。
+
+### 📊 开发者生产力
+
+- **Git 仓库分析器**: 基于 Rust `git2-rs` 的高性能分析工具，秒开大型仓库。通过流式加载技术实现增量渲染，提供贡献者热力图、启发式分支推断与提交频率分析。支持积木式格式化器，确保 Agent 输出与手动导出的报告格式一致。
+- **智能 OCR**: 融合 VLM (GPT-4o)、Windows Native 与 Tesseract.js 的多引擎识别方案，支持独创的长图智能切片算法。
+- **正则表达式应用器**: 双引擎处理架构，前端毫秒级预览，后端 Rust 引擎处理大规模文件修改。
+- **Token 计算器**: 精确计算多厂商模型 Token，支持多 Tokenizer 动态加载及图片 Token 可视化分析。
+
+### 📦 系统与资产管理
+
+- **资产管理器**: 应用级资源中心，基于 SHA-256 自动去重，集中管理所有工具产生的图片、文档及转写内容。
+- **目录清理工具**: 高性能 Rust 驱动，支持灵活的过滤规则与安全清理机制。
+- **符号链接搬迁**: 文件“搬家”利器，支持符号链接与硬链接模式。
+- **数据筛选工具**: 针对 JSON/YAML 列表数据进行条件筛选，支持简单匹配与自定义脚本，高效剔除无关配置。
+
+### 🎨 正则表达式应用器 (Regex Applier)
+
+_双引擎正则处理工具_
+
+- **实时预览**: 前端 JS 引擎提供毫秒级的输入反馈。
+- **批量处理**: 后端 Rust 引擎处理大规模文件修改，性能强劲。
+- **规则链**: 将多个正则替换组合成一条处理流水线 (Pipeline)。
+
+### 🛠️ 开发者与 AI 协作增强
+
+- **工具调用核心 (Tool Calling)**: 基于 **VCP 协议** 的工具调用基础设施。为 LLM 提供“感知工具 → 生成请求 → 解析执行 → 回注结果”的完整闭环，支持自动/手动审批模式、并行执行及最大迭代限制。内置调试测试界面，支持工具发现、协议解析验证与方法执行沙盒。
+- **Agent Skill 系统 (Skill Manager)**: AIO 的 **Agent Skills 运行时基础设施**。遵循 [Agent Skills 规范](https://agentskills.io/)，允许通过简单的目录结构扩展 LLM 的能力。
+  - **渐进式披露 (Progressive Disclosure)**: 智能控制 Prompt 长度。初始仅注入技能摘要，LLM 按需激活后才注入完整指令与资源索引，有效避免长上下文下的模型幻觉。
+  - **安全脚本执行**: 基于 Rust 后端的高性能沙箱环境，支持 Bun、Node.js、Python 等多种运行时。具备严格的路径锁定、超时控制与权限隔离，确保本地执行安全。
+  - **动态资源发现**: LLM 可主动探索技能目录、读取参考文档并执行内部脚本，实现从“对话”到“行动”的闭环。
+- **VCP 连接器 (VCP Connector)**: 面向 [**VCP (Variable & Command Protocol)**](https://github.com/lioensky/VCPToolBox) 的双向协作入口：监控 RAG、元思考链、Agent 消息与插件步骤；将 AIO Hub 注册为可审批的分布式节点；并把远端插件动态桥接为本地工具。
+- **ST 世界书编辑器**: 专为 SillyTavern 格式设计的独立编辑器，支持大规模设定集的快速构建与维护。
+- **服务注册表浏览器**: 可视化查看应用内所有已注册的工具服务及其元数据，方便开发者调试与集成。
+
+### 📝 富文本渲染引擎 (Rich Text Renderer)
+
+_专为 LLM 流式输出打造的高性能渲染方案_
+
+- **流式响应式 AST**: 专为 LLM 打造的模块化 AST 系统。结合 Vue 响应式原理，通过指令式 Patch 算法实现精准的节点级增量更新，将流式解析与 Vue 组件渲染深度融合。
+- **零闪烁增量渲染**: 具备自研增量 Diff 算法，配合 Web Worker 多线程词法分析，解决流式输出导致的视觉闪烁与大规模文本下的主线程阻塞。
+- **流式平滑化**: 内置缓冲区平滑 Token 发射节奏，避免网络抖动导致的视觉卡顿。
+- **深度混合排版**: 完美支持 Markdown 与任意深度 HTML 标签的混合嵌套渲染，将 HTML 视为一等公民。
+- **丰富的交互组件**:
+  - **代码块**: 支持双引擎语法高亮，具备延迟加载与流式增量追加能力。支持 HTML 无边框预览模式。
+  - **多媒体**: 原生支持视频与音频标签的流式渲染，集成全功能播放器（倍速、画中画、音量联动等）。
+  - **思维链与会话变量**: 原生支持 `<think>` 等思考标签与 `<svar>` 变量变更徽章，实时展示 LLM 推理过程。
+  - **VCP 协议**: 深度适配 [**VCP 协议**](https://github.com/lioensky/VCPToolBox)，支持工具请求/结果、角色分割、日记容器等结构化可视化。
+  - **可交互按钮**: 支持 LLM 输出交互式按钮，可执行发送、填充、复制等安全操作，实现 AI 对 UI 的有限反向控制。
+  - **图表与公式**: 内置 Mermaid 图表（支持缩放/独立弹窗）与 KaTeX 数学公式渲染。
+  - **嵌入式 SPA 预览**: 支持 `html` 代码块作为功能完备的单向沙箱环境（基于沙箱 iframe 与可配置 CSP 策略），可直接渲染和运行包含 JavaScript 的复杂单页应用，并在消息内直接交互。支持部分 CDN 资源本地化加载、自适应高度与日志捕获、无边框模式下无缝融入文档流，并提供弹窗完整交互模式与性能冻结策略。
+- **不规范 HTML 防御**: 自动检测并围栏包裹模型输出的不规范 HTML 页面。
+- **MD 样式编辑器**: 针对每种 Markdown 元素提供独立的实时预览面板，支持字体/颜色/边距等 CSS 属性的精细调整，以及全局样式与 Agent/User 个性化样式的分层合并。
+- **稳定性保障**: 全套组件卸载清理机制防止内存泄漏；渲染安全护栏在极端场景下自动降级确保主线程不阻塞。
+
+### 🛠️ 更多实用工具
+
+- **API 测试器**: 灵活、高效的 HTTP API 测试环境，预设驱动（URL 模板、变量、请求头/体），支持 SSE 流式响应处理。
+- **LLM 请求检查器**: 本地中间人代理服务器，用于拦截、分析发往远程 LLM API 的请求。
+- **JSON 格式化**: 可控展开层级的 JSON/YAML 格式化与校验工具。
+- **Token 计算器**: 精确计算多厂商模型 Token，支持图片 Token 分析与可视化。
+- **颜色提取器**: 智能图片颜色分析工具，支持屏幕取色与历史记录。
+- **文本差异对比**: 深度集成 Monaco Diff Editor，支持文件拖拽分配与补丁导出。
+- **目录树生成**: 高性能 Rust 后端驱动，原生支持 `.gitignore`。
+- **代码格式化器**: 基于 Prettier 引擎的多语言格式化方案。
+- **媒体信息读取**: 专为 AI 绘图设计的元数据提取器，支持 A1111/ComfyUI/ST 角色卡等。
+
+---
+
+## 💻 下载安装
+
+### 推荐：下载发行版
+
+无需配置环境，开箱即用。
+
+[![下载正式版本](https://img.shields.io/github/v/release/miaotouy/aio-hub?style=for-the-badge&logo=github&label=下载正式版本)](https://github.com/miaotouy/aio-hub/releases/latest)
+[![下载预览版](https://img.shields.io/github/v/release/miaotouy/aio-hub?include_prereleases&style=for-the-badge&logo=github&label=下载预览版&color=yellow)](https://github.com/miaotouy/aio-hub/releases)
+
+> 🚀 **提示**：正式版更新较慢，推荐下载 **预览版** (Pre-release) 以体验最新的功能特性与 Bug 修复！
+
+| 平台        | 格式        | 说明                                |
+| :---------- | :---------- | :---------------------------------- |
+| **Windows** | `.exe`      | NSIS 安装包                         |
+| **macOS**   | `.dmg`      | 支持 Apple Silicon (M系列) 和 Intel |
+| **Linux**   | `.AppImage` | 通用格式，需赋予执行权限            |
+|             | `.flatpak`  | 推荐，沙盒化运行，支持跨发行版      |
+
+### 开发者：源码构建
+
+**环境要求**: Node.js 20+, Rust 1.70+, Bun (推荐)
+
+```bash
+# 安装依赖
+bun install
+
+# 启动开发环境（支持端口、数据目录和多实例隔离）
+bun run dev
+
+# 构建生产版本
+bun run tauri:build
+```
+
+## 📚 文档与支持
+
+- **🌐 官方网站**: [aiohub-app.com](https://aiohub-app.com/) — AIO Hub 项目主页，了解产品特性与最新动态。
+- **📖 用户文档站**: [docs.aiohub-app.com](https://docs.aiohub-app.com) — 全新 VitePress 文档站点，涵盖快速入门、各工具模块详细配置指南，支持全文搜索。
+- **插件开发**: [插件开发指南](docs/guide/plugins/index.md)
+- **常见问题**: [DeepWiki (AI 自动维护)](https://deepwiki.com/miaotouy/aio-hub)
+
+### 📘 架构文档
+
+> 🤖 **对 AI / 爬虫 agents 的指引**：如需深入了解当前已具备架构文档的工具模块、核心定位与技术亮点，请阅读以下 raw 原始文件，无页面渲染干扰。
+>
+> **[工具架构总集篇](https://raw.githubusercontent.com/miaotouy/aio-hub/main/docs/architecture/tools-architecture-overview.md)** `https://raw.githubusercontent.com/miaotouy/aio-hub/main/docs/architecture/tools-architecture-overview.md`
+> **[设置架构总集篇](https://raw.githubusercontent.com/miaotouy/aio-hub/main/docs/architecture/settings-architecture-overview.md)** `https://raw.githubusercontent.com/miaotouy/aio-hub/main/docs/architecture/settings-architecture-overview.md`
+
+- [**工具架构总集篇**](docs/architecture/tools-architecture-overview.md)
+- [**设置架构总集篇**](docs/architecture/settings-architecture-overview.md)
+- [**项目架构总览**](docs/architecture/overview.md)
+- [**服务与插件系统**](docs/architecture/services-architecture.md)
+- [**LLM API 适配层**](docs/architecture/llm-apis-architecture.md)
+- [**窗口同步架构**](docs/architecture/window-sync-architecture.md)
+- [**主题系统**](docs/architecture/theme-system-architecture.md)
+- [**Composables 概览**](docs/architecture/composables-overview.md)
+
+### 📖 开发指南
+
+- [**添加新工具**](docs/guide/adding-new-tool.md)
+- [**状态管理指南**](docs/guide/state-management-guide.md)
+- [**图标系统**](src/components/icons/README.md)
+- [**通用组件**](src/components/common/README.md)
+- [**贡献指南**](docs/guide/contribution-guide.md)
+
+如果你喜欢这个项目，欢迎：
+
+- 在 GitHub 上点个 Star
+- 提交 Issue 反馈 Bug
+- 提交 Pull Request 贡献代码
+- 在爱发电赞助我
+
+## 许可证
+
+本项目采用双重授权协议，请根据使用的模块遵循相应的条款：
+
+### 🖥️ 桌面端 (Desktop)
+
+遵循 **[Apache License 2.0](LICENSE)** 开源协议。
+这意味着你可以自由地：商业使用、修改源代码、分发副本、私人使用。唯一要求是保留原始版权声明和免责声明。
+
+### 📱 移动端 (Mobile)
+
+遵循 **[Proprietary License](mobile/LICENSE)** (私有许可证)。
+**仅供个人学习与研究使用**。严禁任何形式的商用、未经授权的二次分发或套壳行为。
+
+<div align="center">
+
+<sub>Copyright © 2025-2026 miaotouy. All rights reserved.</sub>
+
+</div>
+
+---
+
+## 🎀 赞助者
+
+#### 个人赞助
+
+- 水云
+
+## 🔗 合作伙伴与相关项目
+
+- [**VCPToolBox**](https://github.com/lioensky/VCPToolBox) - **VCP (Variable & Command Protocol)** 核心协议与工具箱。AIO Hub 深度适配 VCP 协议，支持作为其分布式网络节点，并提供可视化的实时监控与工具调用联动。
+
+- [linux.do 社区](https://linux.do)

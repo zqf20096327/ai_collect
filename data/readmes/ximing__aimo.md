@@ -1,0 +1,307 @@
+# AIMO
+
+[![CI](https://github.com/ximing/aimo/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ximing/aimo/actions/workflows/ci.yml)
+[![Docker Build and Publish](https://github.com/ximing/aimo/actions/workflows/docker-build.yml/badge.svg?branch=master)](https://github.com/ximing/aimo/actions/workflows/docker-build.yml)
+[![Electron Build and Publish](https://github.com/ximing/aimo/actions/workflows/build-electron.yml/badge.svg?branch=master)](https://github.com/ximing/aimo/actions/workflows/build-electron.yml)
+![Node.js](https://img.shields.io/badge/Node.js-20+-green)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7+-blue)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![License](https://img.shields.io/badge/License-BSL%201.1-blue)
+
+[English](./README_EN.md) | 简体中文 | [官网](https://aimo.plus)
+
+AI First 卡片笔记。随手记下想法，检索、关联和复习交给 AI；数据留在自己的机器上，也可以给 Agent 当私有记忆用。
+
+
+![AIMO Screenshot](./apps/web/src/assets/landing/00.png)
+
+## 定位
+
+一张卡片一个想法。AI 是一等能力，不是后加的按钮。
+
+|              | AIMO                              | 文档型知识库     | 纯记录工具     |
+| :----------- | :-------------------------------- | :--------------- | :------------- |
+| 怎么记       | 卡片流，随手写下                  | 长文档、自己组织 | 短记录         |
+| AI           | 一等能力：检索、关联、复习、记忆  | 插件或后加       | 少或没有       |
+| 数据         | 自己的服务器 / 电脑               | 本地或自托管     | 多为云端       |
+| 上手         | Docker 三行，或桌面端 / Android   | 自己搭工作流     | 注册即用       |
+
+## ✨ 核心功能
+
+### 🤖 AI 智能能力
+
+- **智能摘要** - AI 自动生成笔记摘要，快速提炼关键信息
+- **语义搜索** - 基于 OpenAI Embedding 的向量搜索，理解含义而非匹配关键词
+- **智能关联** - 自动发现笔记间的关联关系，构建可视化知识图谱
+- **每日推荐** - 智能推荐「历史上的今天」记录的笔记，重温过往灵感
+- **间隔重复** - 内置复习，把笔记变成会回来找你的知识，而不只是存档
+
+### 📝 笔记管理
+
+- **颜色分类** - 10+ 种彩色标签，直观区分笔记类型
+- **分类管理** - 多级分类体系，灵活组织知识结构
+- **版本历史** - 笔记修改历史追踪，随时回溯
+- **关系图谱** - 可视化展示笔记间的引用和关联关系
+
+### 🔍 发现与搜索
+
+- **全文搜索** - 快速检索笔记标题和内容
+- **标签过滤** - 按标签快速筛选笔记
+- **日历热力图** - 可视化展示笔记活跃度，点击日期快速筛选
+- **智能排序** - 支持时间、相关度等多种排序方式
+
+### 💻 多端支持
+
+- **Web 应用** - 响应式设计，支持桌面和移动端浏览器
+- **桌面客户端** - Electron 应用，支持 macOS、Windows、Linux
+- **移动应用** - Android APK 支持，iOS 待上架
+- **浏览器扩展** - 快速收藏网页内容（开发中）
+
+### 🎨 个性化
+
+- **深色/亮色主题** - 一键切换，呵护双眼
+- **PWA 支持** - 可安装为桌面应用，离线使用
+- **快捷键** - Ctrl+K 快速搜索，提升操作效率
+
+## 📸 界面预览
+
+|                   随手记下                    |                   语义搜索                    |                   知识图谱                    |
+| :-------------------------------------------: | :-------------------------------------------: | :-------------------------------------------: |
+| ![编辑](./apps/web/src/assets/landing/00.png) | ![搜索](./apps/web/src/assets/landing/01.png) | ![图谱](./apps/web/src/assets/landing/02.png) |
+
+|                   多媒体支持                    |                     AI 探索                     |                   主题切换                    |
+| :---------------------------------------------: | :---------------------------------------------: | :-------------------------------------------: |
+| ![多媒体](./apps/web/src/assets/landing/03.png) | ![AI探索](./apps/web/src/assets/landing/04.png) | ![主题](./apps/web/src/assets/landing/05.png) |
+
+## 🐳 Docker 部署（推荐）
+
+只需安装 Docker，无需预装 MySQL 或其他任何依赖。`docker-compose.yml` 会自动编排完整服务：MySQL 数据库、AIMO 应用，应用启动时自动建表和初始化。
+
+### 快速启动
+
+```bash
+# 1. 下载部署文件（无需克隆整个仓库）
+mkdir aimo && cd aimo
+curl -O https://raw.githubusercontent.com/ximing/aimo/master/docker-compose.yml
+curl -o .env https://raw.githubusercontent.com/ximing/aimo/master/.env.docker.example
+
+# 2. 编辑 .env，填入两项必需配置：
+#    JWT_SECRET       —— JWT 密钥，随机生成一个（openssl rand -base64 32）
+#    OPENAI_API_KEY   —— OpenAI API Key（用于语义搜索等 AI 功能）
+#    MySQL 无需配置，compose 已内置并自动连接
+
+# 3. 启动
+docker compose up -d
+```
+
+启动完成后访问 <http://localhost:3000>，注册第一个账号即可开始使用。
+
+> 💡 首次启动需要拉取镜像并初始化 MySQL，大约需要 1~2 分钟。查看启动进度：`docker compose logs -f app`
+>
+> ⚠️ 建议注册完自己的账号后，在 `.env` 中设置 `ALLOW_REGISTRATION=false` 并执行 `docker compose up -d` 重启，避免他人注册。
+
+### 数据持久化
+
+所有数据都持久化在**宿主机的 `./data` 目录**下，而不是容器内部。删除容器、重新拉取镜像、升级版本都不会丢失数据：
+
+```
+aimo/
+├── docker-compose.yml
+├── .env              # 配置文件（含 JWT_SECRET，请妥善保管）
+└── data/
+    ├── mysql/        # MySQL 关系型数据（用户、笔记、分类、标签等）
+    ├── lancedb/      # LanceDB 向量数据（语义搜索索引）
+    └── attachments/  # 附件文件（图片、文档等）
+```
+
+**备份数据** —— 停止服务后，把 `data/` 目录连同 `.env` 一起拷走即可：
+
+```bash
+docker compose down
+cp -r data ~/backup/aimo-data-$(date +%Y%m%d)
+cp .env ~/backup/aimo-data-$(date +%Y%m%d).env
+```
+
+**迁移到其他机器** —— 在新机器上重复"快速启动"步骤，然后用备份的 `data/` 目录和 `.env` 覆盖同名文件，重新 `docker compose up -d`。
+
+**自定义数据目录** —— 如果想把数据放在其他位置（如 NAS 的共享卷），编辑 `docker-compose.yml`，将三个 volumes 中的 `./data` 前缀替换为目标绝对路径即可，例如 `- /volume1/aimo/mysql:/var/lib/mysql`。
+
+### 升级版本
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+新版本容器启动时会自动执行数据库结构迁移（MySQL 表结构和 LanceDB 向量数据均自动升级），无需手动操作。建议升级前先按上述方法备份 `data/` 目录。
+
+### 使用已有的外部 MySQL（可选）
+
+如果你已有 MySQL 8.0+ 实例，可以不用 compose 里的 MySQL 容器，直接运行单个应用容器：
+
+```bash
+docker run -d \
+  --name aimo \
+  -p 3000:3000 \
+  --env-file .env \
+  -v $(pwd)/data/lancedb:/app/lancedb_data \
+  -v $(pwd)/data/attachments:/app/attachments \
+  ghcr.io/ximing/aimo:stable
+```
+
+此时请在 `.env` 中将 `MYSQL_HOST` 指向你的数据库地址。
+
+## 🛠️ 本地开发
+
+### 环境要求
+
+- **Node.js** >= 20.0
+- **pnpm** >= 10.0
+- **MySQL** >= 8.0 或 MariaDB >= 10.6
+- **OpenAI API Key** - 用于 AI 功能
+
+### 启动步骤
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/ximing/aimo.git
+cd aimo
+
+# 2. 安装依赖
+pnpm install
+
+# 3. 配置 MySQL 数据库
+# 创建数据库
+mysql -u root -p
+CREATE DATABASE aimo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+
+# 或使用 Docker 启动 MySQL
+docker compose up -d mysql
+
+# 4. 配置环境变量
+cp .env.example .env
+# 编辑 .env，填入 MySQL 连接信息、JWT_SECRET 和 OPENAI_API_KEY
+
+# 5. 启动开发服务器
+pnpm dev
+
+# 应用将在 http://localhost:3000 启动
+```
+
+### 常用命令
+
+```bash
+pnpm dev:web       # 仅启动前端
+pnpm dev:server    # 仅启动后端
+pnpm dev:client    # 启动 Electron 桌面端
+pnpm build         # 构建所有应用
+pnpm lint          # 代码检查
+pnpm format        # 代码格式化
+```
+
+## 📥 下载客户端
+
+|  平台   |                          下载链接                          |   系统要求    |
+| :-----: | :--------------------------------------------------------: | :-----------: |
+|  macOS  |   [下载](https://github.com/ximing/aimo/releases/latest)   |   macOS 12+   |
+| Windows |   [下载](https://github.com/ximing/aimo/releases/latest)   |  Windows 10+  |
+|  Linux  |   [下载](https://github.com/ximing/aimo/releases/latest)   | Ubuntu 20.04+ |
+| Android | [下载](https://github.com/ximing/aimo-app/releases/latest) | Android 8.0+  |
+|   iOS   |                           待上架                           |       -       |
+
+## ⚙️ 环境变量配置
+
+### 必需配置
+
+```env
+# JWT 密钥（至少 32 个字符，随机生成：openssl rand -base64 32）
+JWT_SECRET=<随机字符串，至少32字符>
+
+# OpenAI API 密钥
+OPENAI_API_KEY=sk-xxx...
+
+# MySQL 数据库连接
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=your-mysql-password
+MYSQL_DATABASE=aimo
+```
+
+### 数据库配置
+
+AIMO 使用混合数据库架构：
+
+- **MySQL** (via Drizzle ORM) - 存储所有关系型数据（用户、笔记、分类、标签等）
+- **LanceDB** - 存储向量嵌入用于语义搜索
+
+```env
+# MySQL 配置（必需）
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=your-mysql-password
+MYSQL_DATABASE=aimo
+MYSQL_CONNECTION_LIMIT=10
+
+# LanceDB 配置（向量存储）
+LANCEDB_STORAGE_TYPE=local
+LANCEDB_PATH=./lancedb_data
+```
+
+### 附件存储
+
+```env
+# 存储类型: local 或 s3
+ATTACHMENT_STORAGE_TYPE=local
+ATTACHMENT_LOCAL_PATH=./attachments
+ATTACHMENT_MAX_FILE_SIZE=52428800  # 50MB
+```
+
+更多配置请参考 [.env.example](./.env.example)
+
+## 📁 项目结构
+
+```
+aimo/
+├── apps/
+│   ├── web/              # React 前端应用
+│   ├── server/           # Express 后端服务
+│   ├── client/           # Electron 桌面端
+│   └── extension/        # 浏览器扩展
+├── packages/
+│   └── dto/              # 共享类型定义
+├── docker-compose.yml    # Docker 部署配置
+└── package.json          # 根配置文件
+```
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
+
+## 📄 许可证
+
+本项目采用 [Business Source License 1.1 (BSL 1.1)](./LICENSE)。源码公开，不是 OSI 定义的「开源」。
+
+- ✅ **允许**: 个人使用、学习、自托管、企业内部使用
+- ❌ **禁止**: 拿去卖成竞品 SaaS，或作为商业产品对外提供
+- ⏳ **变更**: 按 BSL 规则，发布满四年后转为 MIT
+- 💼 **商业许可**: 如需商业使用，请联系 [morningxm@hotmail.com](mailto:morningxm@hotmail.com)
+
+## 📞 联系我们
+
+- 📧 邮箱: morningxm@hotmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/ximing/aimo/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/ximing/aimo/discussions)
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/ximing">ximing</a>
+</p>

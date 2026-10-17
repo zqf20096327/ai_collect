@@ -1,0 +1,968 @@
+# llm_dart
+
+[![pub package](https://img.shields.io/pub/v/llm_dart.svg)](https://pub.dev/packages/llm_dart)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Dart](https://img.shields.io/badge/Dart-3.5.0+-blue.svg)](https://dart.dev)
+[![CI](https://github.com/Latias94/llm_dart/actions/workflows/ci.yml/badge.svg)](https://github.com/Latias94/llm_dart/actions/workflows/ci.yml)
+
+Modular Dart library for LLM providers with a stable model-first API,
+provider-owned typed options, and a Flutter-friendly chat session layer.
+
+## Start Here
+
+Most applications use two layers:
+
+- `llm_dart` for provider-neutral messages, result helpers, chat runtime, and
+  transport contracts
+- one provider package for concrete models, such as `llm_dart_openai`,
+  `llm_dart_anthropic`, `llm_dart_google`, `llm_dart_ollama`, or
+  `llm_dart_elevenlabs`
+
+For an OpenAI-family app, start with:
+
+```yaml
+dependencies:
+  llm_dart: ^0.11.0-alpha.1
+  llm_dart_openai: ^0.11.0-alpha.1
+```
+
+Provider package cheat sheet:
+
+| Need | Add package | Factory | Example model |
+| --- | --- | --- | --- |
+| OpenAI | `llm_dart_openai` | `openai.openai(...)` | `gpt-4.1-mini` |
+| DeepSeek | `llm_dart_openai` | `openai.deepSeek(...)` | `deepseek-chat` |
+| OpenRouter | `llm_dart_openai` | `openai.openRouter(...)` | `openai/gpt-4o-mini` |
+| Groq | `llm_dart_openai` | `openai.groq(...)` | `llama-3.3-70b-versatile` |
+| xAI | `llm_dart_openai` | `openai.xai(...)` | `grok-3` |
+| Anthropic | `llm_dart_anthropic` | `anthropic.anthropic(...)` | `claude-sonnet-4-5` |
+| Google | `llm_dart_google` | `google.google(...)` | `gemini-2.5-flash` |
+| Ollama | `llm_dart_ollama` | `ollama.ollama(...)` | `llama3.2` |
+| ElevenLabs | `llm_dart_elevenlabs` | `elevenlabs.elevenLabs(...)` | `eleven_multilingual_v2` |
+
+Then make your first request:
+
+```dart
+import 'dart:io';
+
+import 'package:llm_dart/llm_dart.dart' as llm;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final apiKey = Platform.environment['OPENAI_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) {
+    throw StateError('Set OPENAI_API_KEY before running this example.');
+  }
+
+  final model = openai.openai(apiKey: apiKey).chatModel('gpt-4.1-mini');
+
+  final result = await llm.generateTextCall(
+    model: model,
+    messages: [
+      llm.SystemModelMessage.text('You answer in one short paragraph.'),
+      llm.UserModelMessage.text('What is llm_dart for?'),
+    ],
+  );
+
+  print(result.text);
+}
+```
+
+Switch providers by changing only the provider factory and model id:
+
+```dart
+final openAI = openai.openai(apiKey: openAIKey).chatModel('gpt-4.1-mini');
+final deepSeek = openai.deepSeek(apiKey: deepSeekKey).chatModel('deepseek-chat');
+final openRouter = openai
+    .openRouter(apiKey: openRouterKey)
+    .chatModel('openai/gpt-4o-mini');
+```
+
+Common next steps:
+
+The snippets below assume the imports from the first example plus a concrete
+`model` and API-key strings.
+
+```dart
+// Streaming text.
+final stream = llm.streamTextCall(
+  model: model,
+  messages: [llm.UserModelMessage.text('Write a three-line launch plan.')],
+);
+
+await for (final event in stream) {
+  if (event is llm.TextDeltaEvent) {
+    stdout.write(event.delta);
+  }
+}
+
+// Structured output.
+final titleResult = await llm.generateObject<String>(
+  model: model,
+  messages: [llm.UserModelMessage.text('Return JSON with a short title.')],
+  schema: llm.JsonSchema.object(
+    properties: const {
+      'title': {'type': 'string'},
+    },
+    required: const ['title'],
+  ),
+  decode: (json) => json['title']! as String,
+);
+print(titleResult.output);
+
+// Embeddings.
+final embeddingModel = openai
+    .openai(apiKey: apiKey)
+    .embeddingModel('text-embedding-3-small');
+final embedding = await llm.embed(
+  model: embeddingModel,
+  value: 'Dart is productive for client and server apps.',
+);
+print(embedding.embedding.length);
+```
+
+For provider-specific features, keep the shared call shape and pass typed
+provider options only at the request boundary:
+
+```dart
+final searched = await llm.generateTextCall(
+  model: model,
+  messages: [
+    llm.UserModelMessage.text('Search the web and summarize recent Dart news.'),
+  ],
+  callOptions: const llm.CallOptions(
+    providerOptions: openai.OpenAIGenerateTextOptions(
+      builtInTools: [openai.OpenAIWebSearchTool()],
+    ),
+  ),
+);
+
+print(searched.text);
+```
+
+Runnable examples in this repository:
+
+| Task | File |
+| --- | --- |
+| First text request across OpenAI, Anthropic, and Google | [quick_start.dart](example/01_getting_started/quick_start.dart) |
+| Basic chat history and response metadata | [chat_basics.dart](example/02_core_features/chat_basics.dart) |
+| Streaming text and reasoning deltas | [streaming_chat.dart](example/02_core_features/streaming_chat.dart) |
+| Structured JSON output | [structured_output.dart](example/02_core_features/structured_output.dart) |
+| Tool calling | [tool_calling.dart](example/02_core_features/tool_calling.dart) |
+| Web search | [web_search.dart](example/02_core_features/web_search.dart) |
+| Embeddings | [embeddings_stable.dart](example/02_core_features/embeddings_stable.dart) |
+| Flutter chat controller | [flutter_integration.dart](packages/llm_dart_flutter/example/flutter_integration.dart) |
+
+## Status
+
+The repository is currently on the `0.11.0-alpha.x` preview line.
+
+Breaking changes are still allowed before `1.0.0`, but the model-first surface
+below is the intended direction for new code.
+
+The primary entry path for new code is the app-facing provider-neutral root
+runtime plus direct provider packages:
+
+- `package:llm_dart/llm_dart.dart`, `package:llm_dart/ai.dart`, or
+  `package:llm_dart/core.dart` for app-facing helpers, `ModelMessage`, chat,
+  and transport
+- `package:llm_dart/provider_authoring.dart` for custom provider
+  implementations or advanced provider-contract tests
+- `package:llm_dart_openai/llm_dart_openai.dart` for `openai(...)`, `deepSeek(...)`, `groq(...)`, `openRouter(...)`, and `xai(...)`
+- `package:llm_dart_anthropic/llm_dart_anthropic.dart` for `anthropic(...)`
+- `package:llm_dart_google/llm_dart_google.dart` for `google(...)`
+- `package:llm_dart_ollama/llm_dart_ollama.dart` for `ollama(...)`
+- `package:llm_dart_elevenlabs/llm_dart_elevenlabs.dart` for `elevenLabs(...)`
+
+The root package intentionally no longer re-exports concrete providers. This keeps the root Module deep and provider-neutral while provider packages remain explicit Adapters.
+
+The historical `llm_dart_core` package and builder-era root compatibility
+surfaces have been removed from the active package graph. Treat older imports
+such as `package:llm_dart_core/...`, `package:llm_dart/legacy.dart`,
+`package:llm_dart/providers/...`, and root `builder` / `models` subpaths as
+migration warnings, not supported targets for new code.
+
+Within this workspace, the modern shared-capability paths for Ollama and
+ElevenLabs now live in dedicated provider packages:
+
+- `package:llm_dart_ollama/llm_dart_ollama.dart` for
+  `ollama(...).chatModel(...)`, `ollama(...).embeddingModel(...)`, and
+  `ollama(...).catalog().listModels()`
+- `package:llm_dart_elevenlabs/llm_dart_elevenlabs.dart` for
+  `elevenLabs(...).speechModel(...)`,
+  `elevenLabs(...).transcriptionModel(...)`, and
+  `elevenLabs(...).voices().listVoices()`
+
+For modern app code, prefer `package:llm_dart/llm_dart.dart` when you need
+shared helpers and contracts. Import concrete providers from their packages
+directly, and import provider-authoring contracts only at custom provider
+boundaries.
+
+Recommended entry flow for new code:
+
+- import `package:llm_dart/llm_dart.dart` or `package:llm_dart/ai.dart` for app-facing runtime helpers
+- import one or more direct provider packages for concrete model construction
+- create concrete models through provider package factories such as `openai.openai(...).chatModel(...)`, `anthropic.anthropic(...).chatModel(...)`, `google.google(...).embeddingModel(...)`, `ollama.ollama(...)`, or `elevenlabs.elevenLabs(...)`
+- add provider-owned option types, metadata inspection, or lifecycle APIs only at explicit application boundaries
+
+Ollama and ElevenLabs capability profiles are also available through their
+dedicated packages. For app and Flutter gating, treat the current ElevenLabs
+descriptors and the shared Ollama baseline as descriptive library-owned
+signals, but treat family-shaped Ollama hints such as image input or reasoning
+output as potentially `inferred` rather than as hard guarantees.
+
+## Packages
+
+- `llm_dart`
+  - provider-neutral root package for app-facing runtime helpers, chat, and
+    transport; it does not depend on concrete providers
+- `llm_dart_provider`
+  - provider-facing prompt, content, tool, model, response, and stream
+    contracts
+- `llm_dart_ai`
+  - framework-neutral app runtime helpers, shared chat UI projection, runners,
+    result accumulation, provider-authoring compatibility exports, and
+    structured output utilities
+- `llm_dart_provider_utils`
+  - provider-authoring call kit for shared transport execution, streaming,
+    cancellation, and error projection policy
+- `llm_dart_transport`
+  - HTTP, SSE, and shared logging primitives
+- `llm_dart_chat`
+  - pure Dart chat sessions, transports, snapshots, and persistence helpers
+- `llm_dart_openai`
+  - OpenAI-family providers
+- `llm_dart_anthropic`
+  - Anthropic provider
+- `llm_dart_google`
+  - Google provider
+- `llm_dart_ollama`
+  - Ollama chat, embeddings, catalog, options, and capability descriptors
+- `llm_dart_elevenlabs`
+  - ElevenLabs speech, transcription, voices, options, and capability descriptors
+- `llm_dart_flutter`
+  - thin Flutter adapter above `llm_dart_chat`
+
+For the `0.11.0-alpha.x` preview line, the focused workspace packages are also
+available as alpha packages. The root `llm_dart` package remains the default
+entrypoint, while the split packages are available for narrower adoption when
+you want those dependencies directly. They are normal consumable Dart packages,
+not implementation-only internals. For example, an OpenAI-only app can depend
+on `llm_dart_openai` directly without adding the root `llm_dart` package.
+
+## Installation
+
+The root package is provider-neutral, so add at least one provider package
+alongside it. For the common OpenAI-family path:
+
+```yaml
+dependencies:
+  llm_dart: ^0.11.0-alpha.1
+  llm_dart_openai: ^0.11.0-alpha.1
+```
+
+For a focused dependency set, depend on the package boundary you actually use:
+
+```yaml
+dependencies:
+  llm_dart_ai: ^0.11.0-alpha.1
+  llm_dart_openai: ^0.11.0-alpha.1
+```
+
+`llm_dart_ai` is needed only when you want the shared helper calls such as
+`generateTextCall(...)`; provider packages such as `llm_dart_openai` can also
+be imported directly on their own.
+
+Then run:
+
+```bash
+dart pub get
+```
+
+If you are developing inside this monorepo, make sure your workspace bootstrap
+flow generates local `pubspec_overrides.yaml` files for workspace package
+linking before you run package resolution or analysis.
+
+The supported bootstrap command is:
+
+```bash
+dart tool/bootstrap_workspace_pubspec_overrides.dart
+```
+
+Those generated `pubspec_overrides.yaml` files are intentionally ignored by git.
+
+For release validation across the root package plus the publishable workspace
+packages, run:
+
+```bash
+dart --suppress-analytics run tool/release_readiness.dart
+```
+
+This gate requires both Dart and Flutter on PATH because `llm_dart_flutter`
+is validated, and its publish dry-run uses the Flutter CLI.
+
+The publish dry-run step fails on warnings. Before the first split-package
+publish, local path override hints are expected because staged packages must
+resolve unpublished workspace dependencies from this checkout.
+
+## Focused Entry Points
+
+- `package:llm_dart/llm_dart.dart`
+  - provider-neutral root entrypoint for app-facing model contracts, AI helpers, chat, and transport
+- `package:llm_dart/ai.dart`
+  - explicit equivalent provider-neutral app shell
+- `package:llm_dart/core.dart`
+  - narrow app-facing runtime facade over `package:llm_dart_ai/app.dart`
+- `package:llm_dart/provider_authoring.dart`
+  - explicit root facade for custom provider implementations and provider prompt/request/stream contracts
+- `package:llm_dart_ai/app.dart`
+  - framework-neutral app runtime helpers that accept `ModelMessage` through `messages:`
+- `package:llm_dart_ai/provider_authoring.dart`
+  - AI runtime compatibility plus provider contracts for provider authors and low-level tests
+- `package:llm_dart_provider/provider_authoring.dart`
+  - provider-only contracts for provider implementations that should not depend on the AI runtime package
+- `package:llm_dart_provider_utils/provider_call_kit.dart`
+  - direct provider-utils entrypoint for request, response, stream, cancellation, and error policy
+- `package:llm_dart/chat.dart`
+  - focused pure Dart chat runtime entrypoint over `llm_dart_chat`
+- `package:llm_dart_openai/llm_dart_openai.dart`
+  - direct OpenAI-family provider package for OpenAI, xAI, DeepSeek, Groq, OpenRouter, Phind, provider-owned options, native tools, and custom parts
+- `package:llm_dart_google/llm_dart_google.dart`
+  - direct Google provider package
+- `package:llm_dart_anthropic/llm_dart_anthropic.dart`
+  - direct Anthropic provider package
+- `package:llm_dart_ollama/llm_dart_ollama.dart`
+  - direct Ollama provider package
+- `package:llm_dart_elevenlabs/llm_dart_elevenlabs.dart`
+  - direct ElevenLabs provider package
+- `package:llm_dart/transport.dart`
+  - transport abstractions and shared logging primitives re-exported from `llm_dart_transport`
+- `package:llm_dart_transport/dio.dart`
+  - explicit raw Dio entrypoint for transport-specific compatibility integration
+- `package:llm_dart_flutter/llm_dart_flutter.dart`
+  - Flutter-specific adapters such as `ChatController`
+
+## Quick Start
+
+Use the default modern root entrypoint plus the shared app message model.
+Most applications should stay on this layer until they have a concrete need for
+provider-owned options or remote lifecycle APIs.
+
+Current text-call layering:
+
+- `generateTextCall(...)` / `streamTextCall(...)`
+  - recommended app-facing text/result helpers, with optional structured output
+- `generateText(...)` / `streamText(...)`
+  - primary runtime helpers that return raw final results or raw full-stream
+    events
+- `runTextGeneration(...)` / `streamTextRun(...)`
+  - advanced runtime helpers for direct step/run observation and telemetry
+
+Structured object helpers follow the same pattern:
+
+- `generateObject(...)` / `streamObject(...)`
+  - object-first wrappers over the shared structured-output runtime
+- `generateOutput(...)` / `streamOutput(...)`
+  - lower-level custom structured-output helpers for advanced schemas
+
+Other shared capability helpers:
+
+- `embed(...)` / `embedMany(...)`
+- `generateImage(...)`
+- `generateSpeech(...)`
+- `transcribe(...)`
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.openai(
+    apiKey: 'your-openai-key',
+  ).chatModel('gpt-4.1-mini');
+
+  final result = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.SystemModelMessage.text('You are concise.'),
+      core.UserModelMessage.text('Explain Dart in one sentence.'),
+    ],
+  );
+
+  print(result.text);
+}
+```
+
+Example file:
+[quick_start.dart](example/01_getting_started/quick_start.dart)
+
+## Dynamic Model Selection
+
+Use `ProviderRegistry` when the provider is chosen at runtime but you still want
+a typed model contract. Register provider facades, then resolve
+`provider:modelId` references against the model facet you need.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_anthropic/llm_dart_anthropic.dart' as anthropic;
+import 'package:llm_dart_ollama/llm_dart_ollama.dart' as ollama;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+final registry = core.ProviderRegistry(
+  providers: {
+    'openai': openai.openai(apiKey: 'your-openai-key'),
+    'anthropic': anthropic.anthropic(apiKey: 'your-anthropic-key'),
+    'ollama': ollama.ollama(),
+  },
+);
+
+final model = registry.languageModel('openai:gpt-4.1-mini');
+```
+
+Use direct provider facades for the simplest path, and use the registry only
+when the choice really is dynamic. `ModelRegistry` remains available only for
+low-level adapters that already own independent per-kind model factories.
+`ProviderRegistry` reads each provider's `ProviderSpecification`, so custom
+provider facades must declare their provider id, supported facets, and input
+shapes instead of relying only on marker interfaces.
+
+## Provider-Owned Helper Boundaries
+
+Some useful product features are intentionally not shared abstractions. Use the
+focused provider helper when the semantics are provider-native:
+
+| Product need | Modern path | Why it stays provider-owned |
+| --- | --- | --- |
+| OpenAI hosted files | `openai(...).files()` | Purpose values, hosted storage, and download semantics are OpenAI-specific |
+| Anthropic beta files | `anthropic(...).files()` | File lifecycle, beta headers, and IDs are Anthropic-specific |
+| OpenAI moderation | `openai(...).moderation()` | Category taxonomy and score meanings must map into app-owned policy |
+| OpenAI image editing | `openai(...).imageModel(...).edit(...)` | File inputs, masks, fidelity, and output options are OpenAI-specific |
+| Google image editing/variation | `google(...).imageModel(...).edit(...)` / `createVariation(...)` | Gemini edit inputs and variation prompts are Google-specific |
+| Ollama installed models | `ollama(...).catalog().listModels()` | Local runtime tags are not a shared remote model registry |
+| ElevenLabs voices | `elevenLabs(...).voices().listVoices()` | Voice IDs, preview URLs, labels, and tiers are provider-owned |
+
+The rule is simple: keep the shared helper for the common model operation, and
+use a provider-owned helper for lifecycle, policy, catalog, or edit workflows
+whose request and result semantics differ materially by provider.
+
+## Structured Output
+
+Shared structured generation now lives above the main text-call layer through
+`OutputSpec`, `generateTextCall(...)`, `streamTextCall(...)`, `generateObject(...)`,
+and `streamObject(...)`.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.openai(
+    apiKey: 'your-openai-key',
+  ).chatModel('gpt-4.1-mini');
+
+  final result = await core.generateObject<String>(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('Return a JSON object with a short title.'),
+    ],
+    schema: core.JsonSchema.object(
+      properties: const {
+        'title': {'type': 'string'},
+      },
+      required: const ['title'],
+    ),
+    decode: (json) => json['title']! as String,
+  );
+
+  print(result.output);
+}
+```
+
+If you want partial structured output while streaming, use
+`streamObject(...)` and read `result`, `output`, or `text` from the returned
+stream wrapper.
+
+## Embeddings
+
+Shared embeddings now follow the same function-based helper direction:
+application code uses `embed(...)` / `embedMany(...)`, while providers expose
+typed capability models such as `openai(...).embeddingModel(...)`.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.openai(
+    apiKey: 'your-openai-key',
+  ).embeddingModel('text-embedding-3-small');
+
+  final result = await core.embed(
+    model: model,
+    value: 'Dart is optimized for client apps.',
+  );
+
+  print(result.embedding.length);
+}
+```
+
+Example file:
+[embeddings_stable.dart](example/02_core_features/embeddings_stable.dart)
+
+## Streaming
+
+The shared streaming boundary is `TextStreamEvent`.
+
+```dart
+import 'dart:io';
+
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.deepSeek(
+    apiKey: 'your-deepseek-key',
+  ).chatModel('deepseek-reasoner');
+
+  final stream = core.streamTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('Solve 15 * 27 and show your reasoning.'),
+    ],
+  );
+
+  await for (final event in stream) {
+    switch (event) {
+      case core.ReasoningDeltaEvent(:final delta):
+        stderr.write(delta);
+      case core.TextDeltaEvent(:final delta):
+        stdout.write(delta);
+      case core.FinishEvent(:final finishReason, :final usage):
+        stdout.writeln('\n[$finishReason, tokens=${usage?.totalTokens}]');
+      case core.ErrorEvent(:final error):
+        stderr.writeln(error);
+      default:
+        break;
+    }
+  }
+
+  stderr.writeln('finalText=${await stream.text}');
+}
+```
+
+Example file:
+[streaming_chat.dart](example/02_core_features/streaming_chat.dart)
+
+## Tool Calling
+
+Tool definitions live in `llm_dart_provider`, and `package:llm_dart/core.dart`
+re-exports them while providers map them into provider-owned request codecs.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.openai(
+    apiKey: 'your-openai-key',
+  ).chatModel('gpt-4.1-mini');
+
+  final tools = [
+    core.FunctionToolDefinition(
+      name: 'weather',
+      description: 'Get the weather for a city.',
+      inputSchema: core.ToolJsonSchema.object(
+        properties: {
+          'city': {'type': 'string'},
+        },
+        required: ['city'],
+      ),
+    ),
+  ];
+
+  final firstTurn = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('What is the weather in Hong Kong?'),
+    ],
+    tools: tools,
+    toolChoice: const core.RequiredToolChoice(),
+  );
+
+  final toolCall =
+      firstTurn.content.whereType<core.ToolCallContentPart>().single.toolCall;
+
+  final secondTurn = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('What is the weather in Hong Kong?'),
+      core.AssistantModelMessage(
+        parts: [core.ToolCallModelPart(
+          toolCallId: toolCall.toolCallId,
+          toolName: toolCall.toolName,
+          input: toolCall.input,
+        )],
+      ),
+      core.ToolModelMessage.result(
+        toolCallId: toolCall.toolCallId,
+        toolName: toolCall.toolName,
+        toolOutput: core.JsonToolOutput({
+          'temperature': 28,
+          'condition': 'humid',
+        }),
+      ),
+    ],
+  );
+
+  print(secondTurn.text);
+}
+```
+
+Example file:
+[tool_calling.dart](example/02_core_features/tool_calling.dart)
+
+`ToolModelMessage.result(...)` prefers an explicit `toolOutput:` value. The
+older `output:` / `isError:` shorthand still works for compatibility, but new
+code should usually pick `TextToolOutput`, `JsonToolOutput`,
+`ExecutionDeniedToolOutput`, or `ContentToolOutput` directly.
+
+Use `ContentToolOutput` when a tool result needs multiple structured pieces,
+such as text, JSON, files, or custom provider-native payloads.
+
+For approval-gated tools, denied approval reasons are preserved in shared
+prompt history, chat UI state, snapshots, and stream JSON. Provider request
+replay still follows each provider's native protocol, so only fields supported
+by that provider's wire format are sent back to the model.
+
+## Reasoning
+
+Reasoning is part of the common result and stream model, but replay fidelity remains provider-owned.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_anthropic/llm_dart_anthropic.dart' as anthropic;
+
+Future<void> main() async {
+  final model = anthropic.anthropic(
+    apiKey: 'your-anthropic-key',
+  ).chatModel('claude-sonnet-4-5');
+
+  final result = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('Solve 15% of 240 step by step.'),
+    ],
+  );
+
+  print('Reasoning: ${result.reasoningText}');
+  print('Answer: ${result.text}');
+}
+```
+
+Example file:
+[reasoning_models.dart](example/03_advanced_features/reasoning_models.dart)
+
+## Pure Dart Chat Runtime
+
+For chat runtimes outside Flutter, prefer the focused root entrypoint:
+
+```dart
+import 'package:llm_dart/chat.dart';
+```
+
+This entrypoint re-exports `DefaultChatSession`, `DirectChatTransport`,
+`HttpChatTransport`, `ChatRequestOptions`, and `ChatMessageMapper` without
+pulling Flutter adapters or concrete provider factories into the root package
+surface.
+
+`ChatMessageMapper` now lives in `package:llm_dart_ai/app.dart` as part of the
+shared UI/runtime layer, and remains available from
+`package:llm_dart/core.dart`, `package:llm_dart/chat.dart`, and
+`package:llm_dart_flutter/llm_dart_flutter.dart` through re-exports.
+
+Runnable pure Dart runtime example:
+[chat_runtime.dart](packages/llm_dart_chat/example/chat_runtime.dart)
+
+Package guide:
+[packages/llm_dart_chat/README.md](packages/llm_dart_chat/README.md)
+
+## Flutter Chat Session
+
+The reusable chat runtime lives in `llm_dart_chat`, and the Flutter package
+adds Flutter-specific adapters such as `ChatController` and controller-aware
+persistence helpers. The root `package:llm_dart/chat.dart` entrypoint stays
+pure Dart and does not re-export Flutter-only types.
+
+```dart
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+import 'package:llm_dart_flutter/llm_dart_flutter.dart';
+
+Future<void> main() async {
+  final controller = ChatController(
+    session: DefaultChatSession(
+      transport: DirectChatTransport(
+        model: openai.openai(
+          apiKey: 'your-openai-key',
+        ).chatModel('gpt-4.1-mini'),
+      ),
+    ),
+  );
+
+  controller.addListener(() {
+    final state = controller.state;
+    print('status=${state.status}');
+    if (state.messages.isNotEmpty) {
+      final mapped = const ChatMessageMapper().map(state.messages.last);
+      print('messages=${state.messages.length}');
+      print('latestText=${mapped.text}');
+    }
+  });
+
+  await controller.sendMessage(ChatInput.text('Write a short haiku about Flutter.'));
+}
+```
+
+Example file:
+[flutter_integration.dart](packages/llm_dart_flutter/example/flutter_integration.dart)
+
+Package guide:
+[packages/llm_dart_flutter/README.md](packages/llm_dart_flutter/README.md)
+
+For snapshot persistence, keep storage application-owned and use
+`ChatPersistenceAdapter` as the thin codec bridge:
+
+```dart
+final adapter = ChatPersistenceAdapter(store: myStore);
+
+await adapter.saveController(controller);
+
+final restoredController = await adapter.restoreController(
+  'chat-1',
+  createController: (snapshot) => ChatController(
+    session: DefaultChatSession.fromSnapshot(
+      transport: transport,
+      snapshot: snapshot,
+    ),
+  ),
+);
+```
+
+For widget-friendly rendering, `ChatMessageMapper` projects a `ChatUiMessage`
+into common text, reasoning, tool, source, file, warning, and error summaries
+without inventing another transport or provider layer.
+
+Use `ChatMessageMapper` as the stable rendering baseline. When the UI also
+needs provider-owned inspection, compose it with the focused provider
+entrypoints or app-owned metadata inspection instead of widening the shared
+chat layer.
+
+The default recommendation is now:
+
+- import `ChatMessageMapper` from `package:llm_dart_ai/app.dart` or
+  any entrypoint that re-exports it
+- keep provider-specific UI metadata inspection in app code by reading
+  `ProviderMetadata` namespaces from mapped messages or parts
+- use provider custom-part helpers on provider prompt/content parts or stream
+  events before UI projection
+
+Focused provider custom-part helpers:
+
+- `package:llm_dart_openai/llm_dart_openai.dart`
+  - `OpenAICustomPart` and `OpenAICustomPartSummary` for provider-owned custom content parts and stream events
+- `package:llm_dart_google/llm_dart_google.dart`
+  - `GoogleCustomPart` and `GoogleCustomPartSummary` for provider-owned custom prompt/content parts and stream events
+
+```dart
+import 'package:llm_dart_flutter/llm_dart_flutter.dart';
+
+void renderOpenAI(ChatUiMessage message) {
+  final shared = const ChatMessageMapper().map(message);
+
+  print(shared.text);
+  print(shared.responseProviderMetadata?.namespace('openai'));
+}
+
+void renderGoogle(ChatUiMessage message) {
+  final shared = const ChatMessageMapper().map(message);
+
+  print(shared.text);
+  print(shared.responseProviderMetadata?.namespace('google'));
+}
+```
+
+## Request And Transport Controls
+
+`CallOptions` is the request-scoped equivalent of Vercel AI SDK
+`RequestOptions`: use it for timeout, extra HTTP headers, cancellation,
+`maxRetries`, and typed `providerOptions`.
+Runner telemetry stays callback-shaped: `runTextGeneration(...)` and
+`streamTextRun(...)` expose step, chunk, finish, and error callbacks that can be
+bridged into your logger or tracing system.
+
+For tool-loop policy, use `stopWhen` with `isStepCount(...)`,
+`isLoopFinished()`, `hasToolCall(...)`, or a custom
+`GenerateTextStopCondition`. Keep `maxSteps` as a hard runaway-loop guard.
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+
+final result = await core.generateTextCall(
+  model: model,
+  messages: [core.UserModelMessage.text('Keep this request short.')],
+  callOptions: const core.CallOptions(
+    timeout: Duration(seconds: 20),
+    maxRetries: 1,
+    headers: {'x-client-trace-id': 'trace-1'},
+  ),
+);
+```
+
+For custom fetch-style behavior, keep the provider API unchanged and inject a
+transport:
+
+```dart
+import 'package:llm_dart/transport.dart' as transport;
+
+final wrappedTransport = transport.MiddlewareTransportClient(
+  inner: transport.DioTransportClient(dio: myDio),
+  middlewares: [
+    transport.TransportMiddleware(
+      onRequest: (request) => request.copyWith(
+        headers: {...request.headers, 'x-app': 'demo'},
+      ),
+    ),
+  ],
+);
+```
+
+## Provider-Specific Options
+
+The unified request shape stays small. Provider-specific features are passed through typed provider options.
+
+Import provider-owned option types and provider factories from focused
+direct provider packages such as `package:llm_dart_openai/llm_dart_openai.dart`, `package:llm_dart_google/llm_dart_google.dart`, or `package:llm_dart_anthropic/llm_dart_anthropic.dart`. OpenAI-family providers still share the same internal transport adapter, but application imports stay provider-shaped.
+
+OpenAI Responses example:
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+Future<void> main() async {
+  final model = openai.openai(
+    apiKey: 'your-openai-key',
+  ).chatModel('gpt-5-mini');
+
+  final result = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('Search for recent Dart SDK news.'),
+    ],
+    callOptions: const core.CallOptions(
+      providerOptions: openai.OpenAIGenerateTextOptions(
+        builtInTools: [openai.OpenAIWebSearchTool()],
+      ),
+    ),
+  );
+
+  print(result.text);
+}
+```
+
+xAI live search example:
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as xai;
+
+Future<void> main() async {
+  final model = xai.xai(
+    apiKey: 'your-xai-key',
+  ).chatModel('grok-3');
+
+  final result = await core.generateTextCall(
+    model: model,
+    messages: [
+      core.UserModelMessage.text('Find the latest Grok announcements.'),
+    ],
+    callOptions: const core.CallOptions(
+      providerOptions: xai.XAIGenerateTextOptions(
+        search: xai.XAILiveSearchOptions.autoWeb(),
+      ),
+    ),
+  );
+
+  print(result.text);
+}
+```
+
+## Design Rules
+
+- Keep the shared API focused on common model semantics.
+- Prefer `generateTextCall(...)` / `streamTextCall(...)` for app-facing text
+  generation. Use `generateText(...)` / `streamText(...)` when you want raw
+  runtime result or event shapes, and use runner helpers only when you need
+  direct step/run observation.
+- Keep provider-native request features in typed provider options or custom
+  parts; reserve provider metadata for outputs and replay observations.
+- Keep UI/session concerns above `TextStreamEvent`.
+- Prefer approved model IDs, app-owned history, and local attachment state as
+  the default product path before introducing provider-managed assistants,
+  remote files, or catalog discovery.
+- Treat `LLMBuilder()`, `createProvider(...)`, and old root provider/model
+  subpaths as removed APIs.
+- Use focused root entrypoints or direct provider packages for provider-native
+  helpers such as Ollama local catalogs and ElevenLabs voice catalogs.
+
+## Current Reference Docs
+
+- Alpha release hardening:
+  [docs/workstreams/2026-05-alpha-release-hardening/README.md](docs/workstreams/2026-05-alpha-release-hardening/README.md)
+- Second-wave refactor plan:
+  [docs/workstreams/2026-05-fearless-refactor-wave-2/README.md](docs/workstreams/2026-05-fearless-refactor-wave-2/README.md)
+- Post-closure roadmap:
+  [docs/workstreams/2026-04-post-closure-priorities/README.md](docs/workstreams/2026-04-post-closure-priorities/README.md)
+- Ollama provider package guide:
+  [packages/llm_dart_ollama/README.md](packages/llm_dart_ollama/README.md)
+- ElevenLabs provider package guide:
+  [packages/llm_dart_elevenlabs/README.md](packages/llm_dart_elevenlabs/README.md)
+- Migration guide:
+  [docs/migration/0.11-sdk-aligned.md](docs/migration/0.11-sdk-aligned.md)
+- SDK-aligned boundary design:
+  [docs/workstreams/2026-05-sdk-aligned-fearless-refactor/01-boundaries-and-migration.md](docs/workstreams/2026-05-sdk-aligned-fearless-refactor/01-boundaries-and-migration.md)
+- Architecture workstream index:
+  [docs/workstreams/2026-03-architecture-refactor/README.md](docs/workstreams/2026-03-architecture-refactor/README.md)
+- Provider UI extension contract:
+  [docs/workstreams/2026-04-post-closure-priorities/01-provider-ui-extension-contract.md](docs/workstreams/2026-04-post-closure-priorities/01-provider-ui-extension-contract.md)
+- Provider package split guidance:
+  [195-provider-package-split-guidance.md](docs/workstreams/2026-03-architecture-refactor/195-provider-package-split-guidance.md)
+- Prompt normalization contract:
+  [37-prompt-normalization-contract.md](docs/workstreams/2026-03-architecture-refactor/37-prompt-normalization-contract.md)
+- Stream coverage matrix:
+  [36-provider-stream-coverage-matrix.md](docs/workstreams/2026-03-architecture-refactor/36-provider-stream-coverage-matrix.md)
+
+## Removed Root Legacy Surface
+
+The root builder-era compatibility surface has been removed. Do not import
+`package:llm_dart/legacy.dart`, `package:llm_dart/builder/...`,
+`package:llm_dart/models/...`, `package:llm_dart/providers/...`, or legacy
+`package:llm_dart/core/...` subpaths.
+
+Use direct provider packages instead:
+
+```dart
+import 'package:llm_dart/core.dart' as core;
+import 'package:llm_dart_openai/llm_dart_openai.dart' as openai;
+
+final model = openai.openai(apiKey: openAIKey).chatModel('gpt-4.1-mini');
+final result = await core.generateTextCall(
+  model: model,
+  messages: [
+    core.UserModelMessage.text('Explain Dart in one sentence.'),
+  ],
+);
+```
+
+Provider-native features remain available through focused packages, typed
+provider options, and provider-owned lifecycle clients such as
+`openai(...).assistants()` and `openai(...).responsesLifecycle()`.

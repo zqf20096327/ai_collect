@@ -1,0 +1,229 @@
+# Inventory, Sales and Management System
+
+A single-tenant operations system for a small food business: inventory, recipe
+costing, production, sales, wastage, purchasing, stock counts, staff workflow
+and a financial dashboard — plus an invoice scanner that reads a photographed
+supplier invoice with an LLM and files it as a bill in an accounting system.
+
+Built and run as one production deployment. This repository is a **sanitised
+public snapshot**: real names, hosts, credentials, business data and the
+operational runbooks have been removed or replaced with placeholders, and the
+commit history is squashed to a single commit. It is published as a portfolio
+piece, not as a product you can sign up for.
+
+---
+
+## Why it exists
+
+The owner of a small kitchen could not answer three questions from their books:
+how much stock was on the shelf, how much was being thrown away, and whether a
+dish sold for more than it cost to make. Everything was on paper or in one
+person's head. This system answers those three questions, and the rest of it
+exists to keep those answers true.
+
+That constraint shaped most of the design decisions below.
+
+---
+
+## What it does
+
+| Area | Detail |
+|---|---|
+| **Inventory** | Every item with unit cost, quantity and derived monetary value. Flags an item when it has run out; a new unit of measure can be added from any unit picker. A delivery is keyed the way it is bought — by the pack — and converted to the unit recipes count, so a carton price can never land on a kilo. |
+| **Recipes** | Ingredient lists with computed plate cost; a recipe can produce a finished-dish stock item. |
+| **Production** | Tap a dish, say how many were made and what each ingredient actually took, with the recipe's amount beside every box. Raw stock out, finished dishes in; removing a batch puts the stock back. |
+| **Sales** | A whole service on one sheet — every dish with a quantity box, one save. The typed quantities survive a reload, and Save cannot fire twice. Stock is deducted automatically: the finished dish where one exists, otherwise the raw ingredients. Off-menu staff orders and receipt photos go through a pop-up. |
+| **Wastage** | Log what was thrown away and what it cost. |
+| **Purchases** | Supplier orders and ad-hoc market buys, both repricing inventory. The log is one collapsible row per supplier, searchable, with one upload of a statement or payment slip marking all of that supplier's pending purchases paid. Each purchase opens its own page, with the receipt beside the lines. |
+| **Supplier bills** | Every bill on the books, paid and unpaid, grouped by month and then by supplier, filtered to unpaid / paid / all, with a PDF of the same. Balances are read from the accounting system, not stored here. |
+| **Stock-take** | A movement sheet: current stock, in, out, balance. |
+| **Tally** | A physical count that reconciles live stock to what a human actually saw on the shelf. |
+| **Invoice scan** | Photograph a supplier invoice → an LLM extracts the lines → a human checks them → it posts as a purchase bill in the accounting system, and as a purchase that moves stock. It learns each supplier's wording for next time and flags invoices scanned twice. Delivery orders go through the same flow, and what is still owed to each supplier is read back from the accounting system. |
+| **R&D trials** | Costing sheets for dishes under development, with an approval workflow. |
+| **Staff meals** | What the kitchen cooked for its own team, as costing sheets picked from inventory — deducted from stock and reported per month. |
+| **Prep checklist** | Per-section daily tasks with photo evidence, and a history of past days. |
+| **Staff** | Roles, leave requests, anonymous peer feedback, daily reports, audit log. |
+| **Dashboard** | Inventory value, sales, gross margin, wastage rate, petty cash. |
+| **Alerts** | Every error the live site logs, and every support ticket, opens an assigned GitHub issue — one per error, not one per occurrence. The server also checks its own login page every ten minutes and reports in; going quiet is how an outage is noticed, since nothing outside the firewall can ask. |
+
+---
+
+## Stack
+
+Laravel 13 · PHP 8.5 · MariaDB · **server-rendered Blade** · Tailwind · Vite ·
+DomPDF · Docker · nginx
+
+**There is no frontend framework.** 27 controllers `return view(...)` and 33
+pages render through one Blade layout. Interactivity is plain inline
+`<script>`. React + Inertia covered exactly one screen early on and was removed:
+it cost 7 npm packages, shipped a 317 KB bundle on *every* page load, and threw
+a `TypeError` on every non-login page because it mounted unconditionally against
+an element that only existed on one of them. The JS bundle is now 0 KB.
+
+---
+
+## Design decisions worth reading
+
+These are the parts I would talk about in an interview.
+
+**Authorization is one gate list, and a test proves the UI matches it.**
+Every permission is a Laravel Gate; every controller method calls
+`Gate::authorize()` as its first line. The sidebar is generated by filtering
+that same gate list. This was not always true — three roles once had
+hand-written navigation, and the owner's had silently drifted *nine links*
+behind their actual permissions, so features they were allowed to use were
+simply invisible. `SidebarMatchesGatesTest` now asserts both directions for
+every role: authorised implies linked, denied implies not linked.
+
+**The admin grant is a `Gate::before()`, not twenty-five `||` clauses.**
+"Admin reaches every feature except the dashboard" has to keep being true when
+the next module is added. A hand-maintained allow-list drifts the first time
+someone forgets; a `before` hook with a small exception list cannot.
+
+**Escalation is blocked separately from the blanket grant.** An admin may reset
+a junior's password — so if they could also *promote* that junior to owner, the
+dashboard exclusion would be three clicks from meaningless. Those guards are
+explicit checks in the controller, deliberately not gates.
+
+**Money is decimal, never float.** `round(2.65 * 11.70, 2)` gives 31.00 where
+the DECIMAL column says 31.01. `monetary_value` is derived on every save with
+bcmath and never assigned by callers, which is what keeps the item rows, the
+page total and the dashboard tallying with each other.
+
+**Stock is deducted once, and never un-deducted.** Editing a sale is for typos;
+it does not reverse the deduction, because a second deduction on every
+correction would make one typo cost real stock twice. Corrections happen through
+a Tally instead. The same rule holds across sales, wastage, production and R&D.
+
+**Two paths must never both run.** A recipe with a finished-dish item deducts
+the finished dish on sale; one without deducts raw ingredients. The switch is
+nullable on purpose so the pipeline is opt-in per recipe and recipes migrate one
+at a time — the double-deduction this design exists to prevent.
+
+**The LLM is allowed to be wrong.** Invoice extraction only *reads* and stores
+what it read. A separate action posts only what a human confirmed on a review
+screen, and never touches the extraction. The raw model output is kept verbatim
+even after correction, so the two can be compared. Nothing reaches the books
+without someone pressing Send, and posting twice is refused outright.
+
+**External writes retry only what a retry could fix.** A 4xx means the request
+is wrong and an identical second attempt cannot mend it; a 5xx might have
+committed, so retrying it could create a duplicate bill. Reads do not retry at
+all, because an empty picker is better than a hung page.
+
+**A deleted user does not delete the kitchen's records.** Audit rows snapshot
+the user's name at write time, and operational tables use `nullOnDelete`, so
+history survives an account being removed and simply loses the name. Only that
+person's own data cascades.
+
+**Training accounts run on a physically separate database.** Demo users are
+swapped onto a second connection by middleware after auth, while session, cache
+and queue stay pinned to the live connection — so a demo request can never write
+its session into the sandbox. The clone deliberately skips credentials, personal
+records and attachment rows.
+
+**Localisation exists because one chef needed it.** A second language is
+supported per user, remembered in a cookie so the *sign-in* page — the first
+screen that chef sees every day — is already in the right language before there
+is a user to ask. The locale allowlist is the actual protection, since a locale
+resolves to files on disk.
+
+---
+
+## Testing
+
+450 feature and unit tests. The ones that matter are not the CRUD tests — they
+are the invariants: the gate/sidebar agreement, the per-role access matrices
+(the *deny* half especially), the arithmetic on stock balances and plate costs,
+the conversion from a pack price to a per-piece one, the guard against billing
+the same invoice twice, and a check that rendered inline `<script>` blocks
+actually parse, because a stray backtick in a template literal kills the rest
+of a script on a page that still returns 200.
+
+A few assert on rendered PDFs. Those count pages rather than read words — the
+PDF library compresses its content streams, so the text cannot be recovered
+from the bytes, and the figures are checked against the view the PDF is
+rendered from instead.
+
+```bash
+pnpm run build   # the suite renders real views, so Vite must have built once
+php artisan test
+```
+
+**Larastan** (PHPStan for Laravel) runs at level 5 and is clean; **Pint** holds
+the code to one style, configured to keep the aligned columns the codebase
+already used. Larastan earned its place on its first run: it flagged a float
+reaching `bcadd()`, and a sale that emptied a shelf exactly — 0.90 kg less
+0.3 kg × 3 — left `1.1E-16`, which PHP writes in exponent form and bcmath
+refuses outright. Logging that sale returned an error page. Every value bound
+for a bc function now goes through one `Money::decimal()`.
+
+```bash
+php vendor/bin/phpstan analyse
+php vendor/bin/pint --test
+```
+
+---
+
+## Try it offline on Windows
+
+Download [`portable/ISMS.exe`](https://github.com/elosainta/inventory-sales-management-system/raw/main/portable/ISMS.exe) (50 MB) and double-click it: one
+file, no installs, no internet. It runs the whole system on the PC with eight
+weeks of sample data and a one-click demo account for every role. Details and
+how it is built: [portable/README.md](portable/README.md).
+
+## Running it locally
+
+```bash
+cp .env.example .env
+composer install
+pnpm install
+php artisan key:generate
+php artisan migrate --seed
+pnpm run dev
+php artisan serve
+```
+
+Seeded accounts are in `database/seeders/` — all placeholder names and
+throwaway passwords.
+
+Docker:
+
+```bash
+docker compose up -d --build
+docker compose exec app php artisan migrate --seed
+```
+
+### Optional integrations
+
+The invoice scanner needs two credentials, and the feature stays gated and
+inert without them:
+
+```
+ANTHROPIC_API_KEY=
+BUKKU_API_TOKEN=
+BUKKU_DEFAULT_ACCOUNT_ID=
+```
+
+---
+
+## What is not in this repository
+
+Removed before publishing, deliberately:
+
+- Real staff names, emails and account data
+- The production host, domain, deploy target and firewall configuration
+- Backup and offsite-sync scripts, and the operational runbooks
+- Real supplier names, purchase records, recipes and plate costs
+- Every credential — no `.env` is included
+- The original commit history, which contains all of the above
+
+`docs/vault/` is an Obsidian vault documenting architecture, code paths,
+formulas, the data model and security. Its infrastructure section was removed
+for the same reason.
+
+---
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).

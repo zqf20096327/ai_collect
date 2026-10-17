@@ -1,0 +1,155 @@
+<div align="center">
+
+# Advanced RVC Inference
+
+**A state-of-the-art web UI crafted to streamline rapid and effortless RVC inference — featuring a model downloader, voice splitter, batch inference, training pipeline, real-time conversion, and a full CLI.**
+
+[![Open in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ArkanDash/Advanced-RVC-Inference/blob/master/Advanced-RVC.ipynb)
+[![Discord](https://img.shields.io/badge/Chat-Discord-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/hvmsukmBHE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+
+</div>
+
+
+> [!NOTE]
+> If you want to use old version switch to v1 branch.
+
+---
+
+## Supported Vocoders
+
+| Vocoder | Description | Pitch Required |
+|---------|-------------|----------------|
+| **Default** (HiFi-GAN NSF) | HiFi-GAN with Neural Sine Filter. **Recommended for best compatibility.** | Yes |
+| **BigVGAN** | Snake activations with Anti-Aliasing. State-of-the-art audio quality. | Yes |
+| **MRF-HiFi-GAN** | HiFi-GAN with Multi-Receptive Field fusion. Richer feature extraction. | Yes |
+| **RefineGAN** | U-Net based vocoder with parallel residual blocks. High-fidelity spectral detail. | Yes |
+
+---
+
+## Supported Optimizers
+
+| Optimizer | Category | Rating | Best For |
+|-----------|----------|--------|----------|
+| **AdamW** | PyTorch Built-in | ⭐⭐⭐⭐⭐ | General-purpose, most reliable (default) |
+| **RAdam** | PyTorch Built-in | ⭐⭐⭐⭐ | Warmup-free training, short training runs |
+| **AnyPrecisionAdamW** | Mixed-Precision | ⭐⭐⭐⭐ | Bfloat16 training, long runs with Kahan summation |
+| **AdaBelief** | Belief-Based | ⭐⭐⭐ | Better conditioned adaptive learning rates |
+| **AdaBeliefV2** | Belief-Based | ⭐⭐⭐ | Stable deep training with AMSGrad + InverseSqrt scheduler |
+| **Ranger2020** 🆕 | Advanced | ⭐⭐⭐⭐⭐ | RAdam + Lookahead + Gradient Centralization |
+| **Prodigy** 🆕 | D-Adaptation | ⭐⭐⭐⭐⭐ | Automatic LR tuning (lr=1.0 works!) |
+
+🆕 *Newly added from Codename RVC Fork v4*
+
+---
+
+## Getting Started
+
+### 1. Install
+
+```bash
+git clone https://github.com/ArkanDash/Advanced-RVC-Inference.git
+cd Advanced-RVC-Inference
+pip install -r requirements.txt
+```
+
+Or install from PyPI:
+
+```bash
+pip install git+https://github.com/ArkanDash/Advanced-RVC-Inference.git
+```
+
+<details>
+<summary>GPU Support (CUDA)</summary>
+
+```bash
+pip install git+https://github.com/ArkanDash/Advanced-RVC-Inference.git
+pip install onnxruntime-gpu
+```
+</details>
+
+<details>
+<summary>ZLUDA (AMD GPU)</summary>
+
+ZLUDA allows CUDA applications to run on AMD GPUs. Just install PyTorch with ZLUDA support — Advanced RVC will auto-detect and configure itself.
+
+```bash
+# Follow the ZLUDA installation guide for your AMD GPU
+# Then install Advanced RVC normally — ZLUDA is auto-detected
+pip install git+https://github.com/ArkanDash/Advanced-RVC-Inference.git
+```
+</details>
+
+### 2. Run
+
+```bash
+# Launch the web UI
+rvc-gui
+
+# Or via Python module
+python -m arvc.app.gui
+
+# With a public share link
+python -m arvc.app.gui --share
+```
+
+The interface will be available at `http://localhost:7860`.
+
+### 3. CLI Usage
+
+```bash
+# Voice conversion
+rvc-cli infer -m model.pth -i input.wav -o output.wav
+
+# Audio separation
+rvc-cli uvr -i song.mp3
+
+# Show all commands
+rvc-cli --help
+```
+
+### 4. Google Colab
+
+| Notebook | Description |
+|----------|-------------|
+| [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ArkanDash/Advanced-RVC-Inference/blob/master/Advanced-RVC.ipynb) | Full Web UI |
+| [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ArkanDash/Advanced-RVC-Inference/blob/master/colab-noui.ipynb) | CLI only — lightweight headless mode |
+
+---
+
+
+## Terms of Use
+
+The use of the converted voice for the following purposes is **strictly prohibited**:
+
+- Criticizing or attacking individuals
+- Advocating for or opposing specific political positions, religions, or ideologies
+- Publicly displaying strongly stimulating expressions without proper zoning
+- Selling of voice models and generated voice clips
+- Impersonation of the original owner of the voice with malicious intentions
+- Fraudulent purposes that lead to identity theft or fraudulent phone calls
+
+
+---
+
+## Credits
+
+This project builds upon the work of many open-source projects and contributors.
+
+
+
+* [RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
+* [Vietnamese-RVC](https://github.com/PhamHuynhAnh16/Vietnamese-RVC) 
+* [PolTrain](https://github.com/Politrees/PolTrain) 
+* [Applio](https://github.com/IAHispano/Applio) 
+* [Codename RVC Fork 4](https://github.com/codename0og/codename-RVC-Fork-4) (Private)
+* [python-audio-separator](https://github.com/nomadkaraoke/python-audio-separator) 
+* [whisper](https://github.com/openai/whisper) 
+* [BigVGAN](https://github.com/NVIDIA/BigVGAN) 
+* [ZLUDA](https://github.com/vlsid/ZLUDA) 
+* [bitsandbytes](https://github.com/TimDettmers/bitsandbytes) 
+---
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.

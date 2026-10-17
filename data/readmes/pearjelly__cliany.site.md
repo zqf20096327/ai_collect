@@ -1,0 +1,618 @@
+# cliany-site
+
+Experimental in v0.16.357: [Jev intent-based element discovery](docs/jev-intent-finder.md)
+uses typed choices and confidence gates to locate controls without acting on them.
+Explicit remote-data consent and a TypeSafe API key are required; live model performance is unverified.
+
+[![PyPI version](https://img.shields.io/pypi/v/cliany-site)](https://pypi.org/project/cliany-site/)
+[![Python](https://img.shields.io/pypi/pyversions/cliany-site)](https://pypi.org/project/cliany-site/)
+[![CI](https://github.com/pearjelly/cliany.site/actions/workflows/ci.yml/badge.svg)](https://github.com/pearjelly/cliany.site/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/pearjelly/cliany.site)](LICENSE)
+
+> 🌐 Languages: [English](README.md) | [简体中文](README.zh.md)
+
+> Turn repeated browser workflows into reusable CLI commands.
+
+cliany-site observes a browser workflow through Chrome CDP, uses an LLM to turn it into a site-specific command, and replays that command as structured JSON. Start with a quick readiness check, then review a maintained case or automate a workflow of your own.
+
+**Start here:** [10-minute success path](docs/quickstart-10min.md) · [Browser-generated Python docs candidate](docs/quickstart-10min.md#可选试用浏览器生成的-python-文档候选命令) · [Release history](CHANGELOG.md)
+
+## Start here
+
+```bash
+pip install cliany-site
+cliany-site doctor
+cliany-site cases
+cliany-site demo --case-id apache-jira-issues --json
+```
+
+`doctor` gives you a human-readable next step. `cliany-site cases --status active` lists maintained public cases; `demo` installs a pinned no-login adapter only if absent, verifies it strictly, then runs a read-only query and requires at least one result row. Jira, Confluence, and Jenkins are supported; login-required and candidate cases are not. Follow the [10-minute success path](docs/quickstart-10min.md) for prerequisites, or configure Chrome/CDP and an LLM when you are ready to generate a command for your own site.
+
+From v0.16.390, named browser input observes document initialization and refreshes semantic refs before typing once, without waiting for slow images. Delayed named fields and list/table/status regions share their existing ten-second preparation budgets; missing regions still fail rather than becoming empty success. This is not an entire workflow deadline or an action retry. The [evidence](docs/user-evidence/2026-10-17-semantic-workflow-readiness.md) preserves earlier failures and a separate three-generation/nine-replay source check; 100-row prefixes are not complete collection, and the independent trial stays fixed at published 0.16.387.
+
+### Tell us what happened
+
+- [Report a bug](https://github.com/pearjelly/cliany.site/issues/new?template=bug_report.yml) if installation, exploration, or replay did not behave as expected.
+- [Request a feature or automation](https://github.com/pearjelly/cliany.site/issues/new?template=feature_request.yml) if a capability or workflow would make the tool more useful.
+- [Propose a public read-only workflow](https://github.com/pearjelly/cliany.site/issues/new?template=case_proposal.yml) if you have a safe scenario others can try.
+
+## Features
+
+### Core Capabilities
+
+- **Zero-Intrusion Exploration** — Chrome CDP captures page AXTree without script injection.
+- **LLM-Driven Code Generation** — Claude / GPT-4o understands page semantics and generates Python CLI commands automatically.
+- **LLM Call Retry Mechanism** — Automatic retries during network fluctuations to improve exploration success rates.
+- **Retryable LLM Outage Signal** — `explore --json` reports gateway, rate-limit, provider connection, or service outages as `E_LLM_UNAVAILABLE` with sanitized retry details instead of raw upstream HTML.
+- **Unified JSON Envelope** — All commands support `--json`, outputting a machine-readable `{ok, data, error, meta}` envelope (v1).
+- **Persistent Sessions** — Saves cookies applicable to the selected host for reuse across commands. LocalStorage restoration is not yet supported; cross-domain SSO may require signing in again.
+- **Dynamic Adapter Loading** — Automatically registers CLI subcommands by domain, allowing for easy expansion.
+- **Automatic Browser Management** — Manages Chrome debugging instances or experimental Obscura binaries automatically.
+- **Data Extraction with Quality Signals** — Extracts structured page data, saves Markdown reports, and keeps empty/partial results visible through `data.quality`; generated data commands require actual extracted results unless they explicitly model a legitimate zero-match result.
+
+### Developer Experience
+
+- **Incremental Adapter Merging** — Intelligently merges when exploring the same site repeatedly, preserving existing commands.
+- **Atomic Command System** — Automatically extracts reusable atomic operations shared across adapters.
+- **Real-Time Progress Feedback** — Displays Rich progress bars and NDJSON streaming events during explore/execute.
+- **Smart Healing** — AXTree snapshot comparison and selector hot-fixes without re-exploring.
+- **CSS Selector Candidate Pre-computation** — Pre-generates multiple selector candidates to improve element matching resilience.
+- **Breakpoint Resumption** — Records breakpoints after adapter command failures; resume via `cliany-site <domain> <command> --resume`.
+- **Conversational Exploration** — `--interactive` for step-by-step confirmation, `--extend <domain>` for incremental expansion, and automatic exploration recording (`~/.cliany-site/recordings/`).
+
+### Enterprise Features
+
+- **Headless & Remote Browsers** — Supports `--headless` and `--cdp-url ws://host:port` for running in servers or Docker.
+- **Obscura Lifecycle Management** — Dedicated `obscura` command group for binary installation, rollback, and health checks.
+- **YAML Workflow Orchestration** — Declarative multi-step workflows with data passing, conditional logic, and retry strategies.
+- **Data-Driven Batch Execution** — CSV/JSON batch parameters with ordered browser execution and summary reports.
+- **Encrypted Session Storage** — Fernet symmetric encryption with system Keychain integration for key management.
+- **Sandbox Execution Mode** — `--sandbox` preflights generated adapter actions before atom execution; SDK and HTTP callers can opt in to the same local boundary.
+- **Generated Code Security Audit** — AST static analysis detects dangerous patterns like eval/exec/os.system.
+
+### Ecosystem Integration
+
+- **Python SDK** — `from cliany_site import explore, execute` for programmatic calls.
+- **HTTP API** — `cliany-site serve --port 8080` starts a REST API service.
+- **Adapter Marketplace** — Pack, install, uninstall, and rollback adapters to share automation capabilities within teams.
+- **TUI Management Interface** — A Textual-based terminal UI for visual adapter management.
+- **iframe/Shadow DOM** — Recursive AXTree collection with cross-origin iframe and Shadow DOM penetration.
+
+### New in v0.11.0
+
+- **Obscura Experimental Provider** — Integration of the Obscura lightweight browser backend. Enable via `CLIANY_BROWSER_PROVIDER=obscura`.
+- **Obscura Command Group** — New `cliany-site obscura` commands: `install/use/status/clean/rollback/upgrade/doctor`.
+- **Multi-Platform Support** — Pre-built binaries for `darwin-arm64`, `darwin-x86_64`, `linux-x86_64`, and `windows-x86_64`.
+- **Capability Snapshot & Feature Gates** — Abstraction layer for browser providers with explicit capability routing.
+- **Note**: `explore` is currently gated/unsupported under Obscura. Chrome remains the default provider for exploration.
+
+### New in v0.10.0 (BREAKING)
+
+> ⚠️ **BREAKING**: metadata schema v3 hardcut. v2 adapters must be migrated.  
+> Run `cliany-site migrate --json` to upgrade all legacy adapters.
+
+- **DOM Pruning & Compound Controls** — 4-layer AXTree pruning (depth/count/role/compress) + automatic extraction of `<select>` / `<input type=date>` / `<input type=file>` option metadata. Reduces prompt tokens by 30-50%.
+- **Lazy Adapter Registry** — `discover()` reads only `metadata.json`; `get(domain, cmd)` loads on demand. CLI startup 2-5x faster.
+- **Repair Cache** — Heal results cached in `~/.cliany-site/adapters/{domain}/repair-cache.json` (LRU 100/domain). Repeated failures skip LLM calls.
+- **Network + Console Capture** — Explore phase auto-captures Network requests (stops at 1MB) and Console logs (500-entry ring), stored in StepRecord.
+- **Capability Routing** — Sniffs API endpoints during explore; replay routes browser/API automatically. Override with `--force-browser`.
+- **`migrate` command** — `cliany-site migrate [--json] [--dry-run]` scans and upgrades all legacy adapters to schema v3 with `.bak` backups.
+- **Diagnostic Mode** — `cliany-site --diagnose --json <domain> <cmd>` triggers LLM diagnosis on failure, outputs `root_cause` + `suggested_fix`. Built into generated adapter templates via `diagnose_if_enabled()`.
+
+### New in v0.9.x
+
+- **Metadata Schema v2 Hardcut** — Mandatory schema_version=2; legacy adapters are rejected with a prompt to regenerate via `cliany-site explore <url> "<workflow>"`.
+- **Smart Healing (`--heal`)** — AXTree snapshot diff + selector hot-fixes without re-exploring; supports healing caps and sidecar recording.
+- **Static Verification (`verify`)** — Checks adapter schema, signatures, and dependency integrity without opening a browser; `cliany-site verify <domain> --json`.
+- **Self-Describing Endpoints (`--explain`)** — `cliany-site --json --explain` outputs a machine-readable Agent contract for easier automation integration.
+- **AGENT.md Auto-Rewrite** — AGENT.md includes sentinels and hashes; automatically updates with new features to keep the agent contract current.
+- **Atomic Command System** — Generated commands call reusable atom commands instead of inlining CDP operations, shared across adapters.
+- **Unified Envelope (`ok()`)** — All built-in commands use the unified `{ok, data, error, meta}` output format.
+- **Extended Doctor Health Check** — Covers registry / legacy adapter detection / agent-md consistency validation.
+- **Breakpoint Resumption (`--resume`)** — Records breakpoints after adapter command failures, supporting recovery from the point of failure.
+
+## Quick Start (v0.11.0+)
+
+For a guided first run, see [10-minute success path](docs/quickstart-10min.md). It guides you from installation through `doctor` to maintained cases, then points successful users toward the `Real Demo Case Proposal` path for contributing new public read-only cases.
+
+For upcoming work, see the user-facing [public roadmap](docs/public-roadmap.md) and the maintainer [Q3 roadmap](docs/roadmap-2026-q3.md).
+
+### Installation
+
+```bash
+# Install via PyPI
+pip install cliany-site
+
+# Or install from source
+git clone https://github.com/pearjelly/cliany.site.git
+cd cliany.site
+pip install -e .
+```
+
+### Basic Workflow
+
+```bash
+# Check environment
+cliany-site doctor --json
+
+# Live provider preflight before explore
+cliany-site doctor --llm-live --require-capability generate_adapters --json
+
+# Discover maintained real demo cases
+cliany-site cases --json
+cliany-site cases --status candidate --promotion-plan
+cliany-site cases --json --status candidate --promotion-plan
+cliany-site cases --case-id pypi-project-search --json
+cliany-site cases --case-id pypi-project-search --issue-template
+cliany-site cases --case-id pypi-project-search --evidence-bundle
+cliany-site cases --case-id pypi-project-search --evidence-bundle --json
+
+# Explore web workflow (requires LLM)
+cliany-site explore "https://github.com" "Search and view results" --json
+
+# List generated commands
+cliany-site list --json
+
+# Execute generated commands (zero LLM)
+cliany-site github.com search --query "cliany-site" --json
+
+# Static verification
+cliany-site verify github.com --json
+
+# Query Agent contract
+cliany-site --json --explain
+```
+
+`--require-capability` 在门禁失败时会把完整 `checks` / `summary` 保留在 `error.details`，并返回首个硬阻塞项的稳定错误码，例如缺少 Chrome/CDP 时为 `E_CDP_UNAVAILABLE`、没有 LLM key 时为 `E_LLM_DISABLED`；普通 `doctor --json` 在硬检查失败时也使用同一套稳定错误码。自动化可以修复正确依赖后重试，不必解析通用 `E_UNKNOWN`。普通 `doctor --llm-live` 输出也会把 `E_LLM_DISABLED` 解释为“先配置 key”，把 `E_LLM_UNAVAILABLE` 留给上游重试，避免把两条修复路径混淆。
+
+### Configuration
+
+```bash
+# LLM Provider (choose one)
+export CLIANY_LLM_PROVIDER=anthropic
+export CLIANY_ANTHROPIC_API_KEY="sk-ant-..."
+
+# Or OpenAI
+export CLIANY_LLM_PROVIDER=openai
+export CLIANY_OPENAI_API_KEY="sk-..."
+
+# Experimental: Obscura Browser Provider
+# export CLIANY_BROWSER_PROVIDER=obscura
+```
+
+Set `CLIANY_RUNTIME_HOME` before starting the CLI to keep a trial's adapters, sessions, caches and recordings in a separate directory. `demo` uses that same directory in its install, verify and query subprocesses. The default remains `~/.cliany-site`; Chrome's OS home and system credentials are unchanged. See the [isolated runtime example](docs/quickstart-10min.md#可选隔离运行数据).
+
+From v0.16.386, `demo` also retains child startup, timeout and malformed-output reasons under `error.details.upstream_error.details.reason`, alongside the existing `error.details.stage`. These new local diagnostics omit raw output, arguments and exception bodies; valid upstream errors retain their existing forwarding contract. Python children use UTF-8 without changing your shell settings. Use the [independent first-use trial](docs/first-use-trial.md) to report the original failure separately from assisted retries. Preparation and maintainer checks do not count as independent users.
+
+From v0.16.387, every `demo` row must have the case's declared nonblank text fields: Jira key/summary, Confluence id/title, or Jenkins name/url. Missing, whitespace-only or non-text values fail with `E_EMPTY_RESULT`, `stage=oracle` and 1-based `error.details.field_invalid_rows`, without copying the offending values. Successful responses and optional fields are unchanged. This is a local presence/type check, not proof of factual correctness or URL safety; independently compare the result with the normal public page.
+
+From v0.16.388, the existing ten-second list-readiness budget also covers the awaited browser probe; late stable responses cannot become successes. Legacy atom/replay failures distinguish `settle_probe_failed`, `settle_probe_invalid` and `settle_probe_timeout` without exception bodies or probe values. This is a cooperative readiness budget, not an entire command deadline or a retry; the 100-row cap, semantic target checks and generated files are unchanged. The independent trial remains pinned to published 0.16.387, with original failures separate from later attempts.
+
+A captured null-body probe failure is also fixed: a missing document scope stays loading within the same budget. If the body never appears, extraction still fails instead of reporting an empty success.
+
+From v0.16.389, failed remote `market install` reports `error.details.stage=download` and a fixed `reason`, with a numeric `status_code` for a valid HTTP error. Missing assets, access rejection and certificate trust problems have different repair hints; a download failure no longer asks you to fix the archive format. Diagnostics omit URL login credentials, query/fragment, raw exceptions and response bodies. `demo` keeps this upstream detail and stops before verification/query. Hashes, TLS verification, no-overwrite and existing timeout/retry policies are unchanged; no automatic retry is added. Older failures without a captured cause cannot be reclassified. The independent trial remains at 0.16.387.
+
+Also supports `.env` file configuration. Search order: `~/.config/cliany-site/.env` → the selected runtime directory's `.env` (default `~/.cliany-site/.env`) → project directory `.env` → environment variables.
+
+If `explore --json` returns `E_LLM_UNAVAILABLE`, the LLM provider returned a retryable upstream outage such as `502 Bad Gateway`, rate limiting, provider connection failure, or service unavailable. The JSON envelope includes `details.retryable`, `details.status_code`, and `details.phase`; retry later or switch `CLIANY_LLM_PROVIDER` / `CLIANY_OPENAI_BASE_URL`. This does not mean the generated adapter or AXTree selector map is broken.
+
+OpenAI-compatible clients use a 120-second network-operation timeout with SDK-internal retries disabled. Exploration keeps the existing outer retry loop and emits attempt/backoff events on stderr in JSON mode; doctor performs one explicit preflight attempt. This is not a 120-second end-to-end deadline: response chunks, retries and workflow stages can extend elapsed time, and retries may incur additional model cost. See the [integration evidence and limits](docs/user-evidence/2026-10-08-request-budget-integration.md).
+
+From v0.16.378, [command-envelope timing](docs/command-envelope-timing.md) defines the optional `meta.duration_measured` flag. Only an explicit `true` identifies a measured invocation span; older or manually assembled metadata without the flag is unavailable for timing decisions. SDK/HTTP envelopes retain their separate legacy shape. This is timing correctness, not faster workflows.
+
+From v0.16.379, a new `explore` preserves the observed starting URL and model when only auxiliary extract/snapshot files exist. It generates a new adapter instead of incorrectly merging into an empty one. Existing adapters are not rewritten. The [returned-value and first-generation review](docs/user-evidence/2026-10-09-returned-value-and-first-generation-review.md) separates this fix from capped results, provider latency and independent-user acceptance.
+
+From v0.16.380, newly generated extracts retain observed semantic targets and resolve the current page before reading. A renamed result region can be found without treating a missing region as valid zero matches. New semantic adapters require a supporting runtime; existing adapters are not automatically migrated. Native list/table support, unresolved identities and the 100-row cap remain explicit limits. See [semantic extract targets](docs/semantic-extract-targets.md).
+
+From v0.16.385, exploration rejects currently ambiguous interactive plans before execution or recording. Extract-only turns with current read-only AX candidates also require an observed, uniquely resolvable target. Both checks share one correction within the original step budget, without recording rejected actions or changing command indices. Corrections can add model cost; mixed navigation/extract turns retain their existing live validation, and future layout changes or old adapters are not automatically repaired. See [the failure investigation and real workflow checks](docs/user-evidence/2026-10-12-semantic-plan-review.md).
+
+From v0.16.381, observed HTTP failures take precedence over gateway-body keywords, so rejected model requests do not repeat. CLI/live doctor preserve authentication failures, and retry warnings and optional attempt-error events use fixed summaries without upstream response text. See [failure and retry diagnostics](docs/llm-retry-diagnostics.md); this does not establish faster successful requests or provider availability.
+
+### Server and Docker Browser Setup
+
+`--headless` and `--cdp-url` are root CLI options, so they must appear before the command they configure, including `explore` and `serve`.
+
+```bash
+# Let cliany-site launch Chrome in headless mode
+cliany-site --headless explore "https://github.com" "Search repositories" --json
+
+# Or reuse an already-running remote CDP browser
+cliany-site --cdp-url "ws://chrome:9222" explore "https://github.com" "Search repositories" --json
+```
+
+Choose the path that matches how Chrome is managed. With `--cdp-url`, cliany-site connects to that existing browser; `--headless` applies when cliany-site launches Chrome itself.
+
+On one macOS maintainer host, launching Chrome with an empty temporary OS `HOME` allowed CDP discovery but stalled even local HTTP navigation. Keep the normal OS `HOME` and select an empty cliany runtime directory with `CLIANY_RUNTIME_HOME` (available since v0.16.376); isolate the browser profile separately and connect only its dedicated loopback `--cdp-url` when managing Chrome yourself. The runtime setting does not isolate an existing CDP browser, XDG model configuration or system credentials. See the [bounded CDP controls](docs/user-evidence/2026-10-04-synthetic-home-cdp-controls.md); the exact Chrome cause and independent first-user acceptance remain open.
+
+### Experimental: Obscura Browser Provider
+
+Obscura is a lightweight browser provider currently in **experimental** status. Chrome remains the default provider for exploration.
+
+> **Note**: Obscura does **not** support `explore` (AXTree/Accessibility) yet. Use it for executing existing adapters or lightweight navigation tasks.
+
+#### Setup and Usage
+```bash
+# 1. Install Obscura binary (version >= 0.1.0)
+cliany-site obscura install 0.1.0 --json
+
+# 2. Enable Obscura as provider
+export CLIANY_BROWSER_PROVIDER=obscura
+
+# 3. Check status
+cliany-site obscura status --json
+
+# 4. Revert to Chrome
+unset CLIANY_BROWSER_PROVIDER
+```
+
+For more details, see the [Obscura Experimental Guide](docs/walkthroughs/obscura-experimental-guide.md).
+
+### Verify Environment
+
+```bash
+cliany-site doctor --json
+cliany-site doctor --llm-live --require-capability generate_adapters --json
+```
+
+By default, `doctor` checks local configuration, CDP, directories, and keys without calling the LLM provider. `data.summary.ready_for_explore` and `data.summary.capabilities.generate_adapters.local_ready` remain local configuration signals; `local_blockers` explains only those local prerequisites, while `live_blockers` separately reports an omitted or failed provider preflight. Automation must require `data.summary.ready_for_live_explore=true` (or the equivalent capability field) before a real `explore`. A retryable provider failure can therefore leave `local_ready=true` while overall `ready=false` and `live_blockers=["llm_live"]`. The capability's `next_step` gives the exact strict retry command. Before a longer `explore`, use `--llm-live --require-capability generate_adapters` for a strict provider gate; a missing key returns nonzero with `E_LLM_DISABLED`, an upstream outage returns `E_LLM_UNAVAILABLE`, and both preserve the full checks in `error.details`. Ordinary `doctor --json` also returns a stable code such as `E_CDP_UNAVAILABLE` when a hard check fails, instead of collapsing the diagnostic into `E_UNKNOWN`. Human output names the missing-key configuration fix separately from an upstream retry.
+
+## Usage Examples
+
+### Basic Flow
+
+```bash
+# 1. Explore workflow
+cliany-site explore "https://github.com" "Search repository and view README" --json
+
+# 2. List generated commands
+cliany-site list --json
+
+# 3. Execute generated command
+cliany-site github.com search --query "browser-use" --json
+```
+
+### Structured Extraction Quality
+
+```bash
+# Extract visible card data from the current browser page
+cliany-site browser extract \
+  --selector ".result-card" \
+  --mode list \
+  --fields-json '{"title": ".title", "url": "a@href"}' \
+  --json
+
+# Fail fast if all rows are empty or required fields are blank
+cliany-site browser extract \
+  --selector ".result-card" \
+  --mode list \
+  --fields-json '{"title": ".title", "url": "a@href"}' \
+  --strict-quality \
+  --json
+```
+
+Without `--mode`, `browser extract` reads the current page body or the element selected by `--selector`. `--format text` returns visible text, `--format markdown` converts the selected HTML, and `--format json` parses the selected element's text as JSON. A missing selector returns `E_SELECTOR_NOT_FOUND`; invalid JSON returns `E_PARSE_FAILED`.
+
+Structured extraction responses include `data.quality`. Generated `list-`, `search-`, `read-`, and `extract-` adapter commands, plus any command containing an `extract` action, enforce that summary. Their `expects_nonempty` contract defaults to `true`: zero data, missing required fields, and partial rows return `E_EMPTY_RESULT`. A command may declare `expects_nonempty=false` only when zero matches are a valid outcome; it then returns `ok=true` for that outcome while retaining `data.quality` as the machine-readable row-count and data-quality signal. For failed structured object rows, `data.quality.field_blank_rows` identifies the affected 1-based row numbers for each missing or blank field, so a field mapping or page-content problem can be located without guessing. Re-running `explore` for a command applies this rule to its newly generated code, but existing installed adapters are not silently rewritten. Missing required fields and partial results, including partially missing required fields, remain failures even when zero matches are permitted, so automation can distinguish "command ran", "no matching data was expected", and "data needs review".
+
+### Conversational Exploration (v0.8)
+
+```bash
+# Interactive exploration (confirm each step)
+cliany-site explore "https://github.com" "搜索仓库" --interactive
+
+# Incrementally extend an existing adapter
+cliany-site explore "https://github.com" "查看 Issues 列表" --extend github.com
+
+# Replay exploration recording
+cliany-site replay github.com --step
+```
+
+### Python SDK
+
+```python
+import asyncio
+
+from cliany_site.sdk import ClanySite
+
+
+async def main():
+    async with ClanySite() as cs:
+        result = await cs.verify("github.com")
+
+    if not result["success"]:
+        error = result["error"] or {}
+        raise RuntimeError(f"{error.get('code')}: {error.get('message')}")
+
+    print(result["data"]["results"][0])
+
+
+asyncio.run(main())
+```
+
+SDK methods return the standard `{success, data, error}` envelope. `doctor()` now exposes the same structured `checks` and `summary` contract as the CLI, including stable hard-blocker error codes and `error.details` diagnostics. It does not call a provider by default; use `doctor(llm_live=True, require_capability="generate_adapters")` only when an automation explicitly needs the live preflight before `explore`. `llm_live` must be an actual Python boolean: strings, numbers, and `None` return `E_INVALID_PARAM` before CDP or provider checks, so a truthy string cannot accidentally start a live preflight. `explore(url, workflow_description)` requires a non-blank text workflow and `navigate(url)` accepts only whitespace-free HTTP(S) URLs with a host; invalid input returns an error envelope before creating an explorer or browser session. Direct SDK control values are equally strict: `explore(force=...)`, `execute(..., params=..., dry_run=..., sandbox=...)`, and `list_adapters(detail=...)` reject malformed values with `E_INVALID_PARAM` before adapter lookup or browser work. `save_session(domain)` also accepts only a host with an optional valid port, rejecting credentials, paths, whitespace, and invalid ports before it opens Chrome. The synchronous `execute()` helper also accepts `sandbox=True` and forwards the same local preflight. `verify(domain)` performs the same strict static checks as `cliany-site verify <domain> --strict`: metadata, generated module safety, manifest integrity, and whether `commands.py` actually exports a loadable Click group. It does not open Chrome or contact an LLM. An adapter directory, `metadata.json`, `commands.py`, manifest, or manifest-declared file that is a symbolic link is rejected as `security_issue` before its contents are read or a module is imported. Direct root CLI adapter dispatch now also applies the generated-module source scan before importing `commands.py`: banned patterns and non-UTF-8 modules return `E_VERIFY_STATIC` with `security_issue`. When a manifest is present, it also checks every declared file hash before import; a mismatch returns `E_VERIFY_STATIC` with `manifest_error`. It returns `ADAPTER_NOT_FOUND` for an absent adapter and `E_VERIFY_STATIC` with `data.results`-compatible diagnostics when verification fails. Run the strict live-provider preflight before calling `explore`; configured credentials alone are not evidence that adapter generation is available.
+
+From v0.16.382, first SDK/HTTP generation distinguishes core adapter files from extraction-only directories, retaining the observed starting path and model provenance. Typed model failures return safe `E_LLM_AUTH_FAILED` or `E_LLM_UNAVAILABLE` envelopes with retryability/status details; HTTP uses 503 for the upstream dependency, not a caller-login challenge. Read `retryable` before retrying. Existing generated files and legacy response shapes are not rewritten. See [the scoped failure contract](docs/llm-retry-diagnostics.md#sdk-and-http-from-v016382).
+
+From v0.16.383, SDK/HTTP reject undeclared generated-command parameter names before browser work with `E_INVALID_PARAM` (HTTP JSON 400), including dry-run. Use the recorded raw argument names: a typo must not silently select the recorded default. Error details list `unknown_params` and `allowed_params`, not values. Legacy `command_defs` and value conversion are unchanged. See [the input-integrity review](docs/user-evidence/2026-10-10-sdk-parameter-integrity.md).
+
+From v0.16.384, typed CDP/connection/timeout failures while acquiring a browser for SDK `execute`, `login`, `save_session`, `navigate` or `get_page_info` return `CDP_UNAVAILABLE` with `phase=browser_connect` and a doctor repair hint. Existing HTTP execute/login routes return JSON 503. This boundary does not reflect exception text or private endpoints; it adds no retry, automatic reconnection or new HTTP routes. Cancellation, unexpected errors and later action failures retain their existing behavior. See [the browser-failure review](docs/user-evidence/2026-10-12-sdk-browser-errors.md).
+
+The synchronous `save_session(domain, cdp_url=..., headless=...)` helper has the same host validation and browser configuration path as `await ClanySite(...).save_session(domain)`; it does not bypass Chrome or session safeguards.
+
+## Try Real Demos
+
+The following adapters are available as downloadable assets on [GitHub Release v0.14.1](https://github.com/pearjelly/cliany.site/releases/tag/v0.14.1).
+The maintained case index lives in [cases/README.md](cases/README.md) and [cases/manifest.json](cases/manifest.json).
+The install commands below use the published HTTPS asset and its release SHA-256. Add `--dry-run --json` first when you want to verify a package without installing it.
+For the doctor-guided active demo path, execute `data.summary.demo_adapter_quickstart.recommended_commands`, not the compatibility `commands` list: it uses `verify --strict`, so a static validation failure, including a missing or unloadable `commands.py`, exits nonzero and prevents the following read-only command from running in a sequential script. An occupied install target starts at that gate and never triggers an automatic overwrite. The compatibility `verify_command` remains available for diagnostic, exit-zero reporting.
+For a human first run, `cliany-site doctor` now prints that same three-command path when the active demo target is absent: fixed-SHA published install, `verify --strict`, then the read-only command. It only prints guidance; it never installs, executes, or overwrites an adapter for the user.
+Use `cliany-site cases --json` to inspect active demos, candidate workflows, offline validation commands, and candidate promotion next actions from the CLI; `promotion_evidence_summary.primary_next_task` points automation at the first candidate task to advance, while `promotion_evidence_summary.primary_next_task_acceptance_criteria` states the proof required for that task. Add `--promotion-plan` to print the candidate promotion queue across all matched candidates; combine it with `--json` to read `promotion_plan.primary_next_item`, `promotion_plan.primary_runbook`, `promotion_plan.primary_issue_template_command`, per-candidate primary tasks, the expected release asset name in `expected_adapter_package`, per-candidate `issue_template_json_command`, and the incomplete `task_queue`. Use `cliany-site cases --case-id pypi-project-search --json` to open one case with validation and promotion details, including `promotion_command_plan_summary`; omit `--json` for a copy-friendly human handoff with Promotion Tasks. The candidate human handoff also renders `preflight_required`, `preflight_blocker`, and `runbook_first`, so contributors see the live LLM gate before starting a real `explore`. Add `--issue-template` to print a GitHub issue body for a candidate promotion task, including Acceptance Criteria, `expected_adapter_package`, a `Primary Runbook`, LLM preflight `Command SHA-256`, `Promotion Command Plan Summary`, `Promotion Command Plan` `command_sha256` sub-lines plus `source` / `missing` metadata, standard LLM/doctor blocker comments, `Doctor Preflight Evidence Fields`, and a `Doctor Preflight Evidence Template` with paste-ready placeholders for `cliany-site doctor --llm-live --require-capability generate_adapters --json` output; combine it with `--json` to also read `issue_template_primary_task`, `issue_template_promotion_command_plan_summary`, the same acceptance, runbook, preflight fields, structured `doctor_preflight_evidence_template`, plus `doctor_preflight_evidence_template_field_count` / `doctor_preflight_evidence_template_sha256` without parsing Markdown. Add `--evidence-bundle` to print a structured local evidence checklist; combine it with `--json` for a machine-readable evidence bundle, including `promotion_command_plan_summary` and a `promotion_command_plan` that starts with `llm_live_preflight` before adapter package, metadata validation, and online smoke commands, per-step `promotion_command_plan[*].command_sha256` drift checks, `primary_next_task_runbook` and `primary_next_task_runbook_first_command` for the current ordered checklist, `llm_live_preflight_required`, `llm_live_preflight_command_sha256`, `doctor_preflight_evidence_fields`, `doctor_preflight_evidence_template`, `doctor_preflight_state_fields`, `doctor_preflight_state_statuses`, and the template/state count/hash aliases on the adapter package task, `expected_adapter_package` for the package artifact, plus `acceptance_criteria` for the proof each evidence task must attach. Use `python scripts/plan_next_iteration.py --issues-dir /tmp/cliany-candidate-issues` to generate reviewable candidate issue artifacts; planner JSON exposes `candidate_promotions[*].issue_template_command`, `candidate_promotions[*].issue_template_json_command`, `candidate_promotions[*].promotion_command_plan_summary`, `candidate_promotions[*].doctor_preflight_evidence_template`, `candidate_promotions[*].doctor_preflight_state_statuses`, and template/state hash aliases, while `issue-metadata.json` and the artifacts README show the same Issue Template / Issue Template JSON handoff and `promotion_command_plan_summary` alongside `Primary Evidence Status`, `Primary Acceptance Criteria`, `primary_next_task_acceptance_criteria`, compact `case_promotion_evidence_primary_runbook_steps` / hash fields, `case_promotion_evidence_primary_runbook_first_command`, `case_promotion_evidence_primary_llm_live_preflight_required`, `case_promotion_evidence_primary_llm_live_preflight_command_sha256`, `case_promotion_evidence_primary_llm_live_preflight_blocker_comment`, `case_promotion_evidence_primary_doctor_preflight_blocker_comment`, `case_promotion_evidence_primary_doctor_preflight_evidence_template_sha256`, `case_promotion_doctor_preflight_evidence_template_sha256`, `doctor_preflight_evidence_fields`, `doctor_preflight_state_fields`, `doctor_preflight_state_statuses`, `required_labels`, `required_label_count`, `required_labels_sha256`, and `case_promotion_llm_live_preflight_evidence_fields` count/hash aliases before maintainers create issues or compare artifact drift.
+Candidate human output labels an eventual adapter command as not runnable until its package has been published and installed and `verify --strict` has passed; it is never an active demo quick command.
+When planner artifacts include `--doctor-json`, their public issue body uses the same distinction: attached doctor preflight evidence is shown separately from pending adapter package evidence, and a blocked provider produces a recovery-and-rerun handoff without making candidate `explore` runnable.
+`--promotion-plan --json` also mirrors doctor template drift metadata onto `promotion_plan.primary_doctor_preflight_evidence_template_field_count`, `promotion_plan.primary_doctor_preflight_evidence_template_sha256`, `promotion_plan.primary_llm_live_preflight_command_sha256`, each candidate's `primary_doctor_preflight_evidence_template_sha256`, and each incomplete `task_queue[*].doctor_preflight_evidence_template_sha256` / `task_queue[*].llm_live_preflight_command_sha256`, so queue-only bots can compare the current doctor evidence contract without opening a full evidence bundle.
+`scripts/validate_cases.py --json` now carries the same drift signal on `promotion_evidence_summary.primary_next_task.doctor_preflight_evidence_template_sha256` plus the `doctor_preflight_state_fields` / `doctor_preflight_state_statuses` contract; `scripts/validate_cases.py --report` renders `primary_doctor_preflight_evidence_template_field_count` and `primary_doctor_preflight_evidence_template_sha256` in the Candidate Promotion Evidence Summary table; plain `scripts/validate_cases.py --strict` also prints `promotion_evidence_primary_doctor_preflight_evidence_template_field_count`, `promotion_evidence_primary_doctor_preflight_evidence_template_sha256`, and `promotion_evidence_primary_llm_live_preflight_command_sha256` for stdout-only validation logs. Evidence bundles also expose `doctor_preflight_evidence_selectors`, mapping semantic fields such as `checks[llm_live].details.error_code` to actual doctor JSON selectors such as `data.checks[name="llm_live"].details.error_code`; `doctor_preflight_state_statuses` mirrors the extractor states `ready`, `blocked`, and `missing_fields`.
+The `doctor_preflight_state_fields` contract lists `preflight_state.status`, `preflight_state.ready_for_adapter_package`, `preflight_state.primary_reason`, `preflight_state.reason_codes`, and `preflight_state.next_action`; `doctor_preflight_state_statuses` is limited to `ready`, `blocked`, and `missing_fields`, so README-only maintainers can tell whether to continue to `explore` or attach blocker evidence first.
+Candidate promotion treats `summary.capabilities.run_browser_workflows.ready=false`, `summary.llm_live_preflight.ready=false`, `generate_adapters.ready=false`, or any `llm_live` warning/error such as `E_LLM_UNAVAILABLE` provider connection failures as blocker evidence; keep `adapter_package` pending or blocked instead of fabricating adapter package proof.
+When the live gate blocks promotion, save the doctor result with `cliany-site doctor --llm-live --require-capability generate_adapters --json > /tmp/cliany-doctor-preflight.json`, then run `cliany-site cases --case-id pypi-project-search --evidence-bundle --doctor-json /tmp/cliany-doctor-preflight.json --json` or `cliany-site cases --case-id pypi-project-search --issue-template --doctor-json /tmp/cliany-doctor-preflight.json`; the output includes `doctor_preflight_evidence_values`, `doctor_preflight_evidence_ok`, `doctor_preflight_evidence_missing_count`, `doctor_preflight_evidence_null_count`, `doctor_preflight_evidence_null_fields`, and `doctor_preflight_state` on the bundle and primary `adapter_package` task. A nullable field is present in doctor JSON with value `null`; a missing field has no matching selector, so automation can handle connection-level failures without conflating them with schema drift.
+
+To keep already-open candidate issues aligned with the current strict handoff, run `python scripts/audit_candidate_issues.py --repo pearjelly/cliany.site --json`. It is read-only by default and reports `current`, `stale`, `missing`, `duplicate`, and unexpected labeled issue states with body hashes. When a saved live-preflight result is available, add `--doctor-json /tmp/cliany-doctor-preflight.json` so the audit compares bodies against that exact gate state and includes its source path, value hash, and runnable state in local JSON output. Public issue bodies retain the value hash and extracted gate evidence, but omit the local source path. When that evidence is attached, the primary task labels package evidence separately and tells contributors to wait for provider recovery before rerunning the strict preflight; it never turns a blocked preflight into package or explore evidence. The human-readable report also prints an unexpected issue's actual title and URL so the blocker can be located without parsing JSON. Only use `--apply --confirm-rewrite` after reviewing stale bodies and resolving missing, duplicate, or unexpected issues; it will not create, close, or promote issues.
+
+If a stale public candidate issue already contains a Doctor Preflight Evidence snapshot, `audit_candidate_issues.py --apply --confirm-rewrite` refuses to replace it without the current `--doctor-json`; the JSON report returns `doctor_json_required_before_rewrite` and lists the protected issue numbers. This prevents a no-evidence placeholder template from erasing a real blocker snapshot.
+
+If the GitHub API or network is unavailable while auditing, the JSON result returns retryable `E_GITHUB_UNAVAILABLE` with a retry action. Treat that as “remote issue state not read”, not as `missing`; do not run `--apply` until a later read succeeds.
+
+The doctor evidence contract includes `summary.capabilities.generate_adapters.local_ready` and `summary.capabilities.generate_adapters.local_blockers`. These fields show whether local prerequisites remain healthy when the live provider is blocked; they do not replace `summary.llm_live_preflight.ready=true` as the gate for candidate `explore`.
+
+When the audit reports a `missing` candidate issue, read its `issue_template_command` (for example `cliany-site cases --case-id pypi-project-search --issue-template --json`) and review the generated body before creating anything. The audit only supplies the handoff; it never creates a public issue.
+
+If the GitHub GraphQL request ends with an `EOF`, the audit reports retryable `E_GITHUB_UNAVAILABLE` rather than synthesizing issue state. Wait for the remote API and rerun; do not apply changes while the issue list was not read.
+
+### SuiteCRM Demo (Enterprise CRM)
+```bash
+# 1. Install adapter
+cliany-site market install https://github.com/pearjelly/cliany.site/releases/download/v0.14.1/demo.suiteondemand.com-0.14.1.cliany-adapter.tar.gz --sha256 1671dd92d3828cecb1f04f41eefceb7bdc727d0dee1f35d4f14ca360432ced31
+
+# 2. Strictly verify the installed adapter before login or replay
+cliany-site verify demo.suiteondemand.com --strict --json
+
+# 3. Login (opens browser — use demo account from https://demo.suiteondemand.com/)
+cliany-site login https://demo.suiteondemand.com/
+
+# 4. Query accounts (no browser needed after login)
+cliany-site demo.suiteondemand.com list-accounts --limit 5 --json
+```
+
+### ASF Jira (Issue Tracker)
+
+The published PyPI v0.16.368 CLI repeated the fixed-hash first-run path in a fresh HOME, returning five read-only Spark issues; a second run reused the verified adapter. See the [dated audit](docs/user-evidence/2026-10-02-jira-pypi-demo-audit.md). Third-party availability and issue totals can change.
+
+```bash
+cliany-site market install https://github.com/pearjelly/cliany.site/releases/download/v0.14.1/issues.apache.org-0.14.1.cliany-adapter.tar.gz --sha256 ad5867d361f372914c536fb59c8f26837af96ed407859cf69dc8464922f05319
+cliany-site verify issues.apache.org --strict --json
+cliany-site issues.apache.org list-issues --project SPARK --limit 5 --json
+```
+
+### ASF Confluence (Wiki)
+
+The historical v0.14.1 adapter used an exact-title filter and returned zero rows.
+The maintained read-only v0.16.365 package searches by keyword. Its public asset
+passed a separate pinned-hash install, strict verification, and read-only replay
+audit, so this case is now active. Existing installs
+are never replaced automatically; review a `--dry-run --json` first, then use
+an explicit `--force` only if you intend to replace your adapter. See the
+[evidence](docs/user-evidence/2026-10-01-confluence-public-package-audit.md).
+
+```bash
+cliany-site market install https://github.com/pearjelly/cliany.site/releases/download/v0.16.365/cwiki.apache.org-0.16.365.cliany-adapter.tar.gz --sha256 85ab3e918f32070fd69ae2947e69530b936a9d6655588d5153612d2686cac84f
+cliany-site verify cwiki.apache.org --strict --json
+cliany-site cwiki.apache.org search-pages --space SPARK --query "release" --json
+```
+
+### ASF Jenkins (Build Status)
+
+The historical v0.14.1 archive lacks required schema v3 metadata. The maintained
+v0.16.367 read-only replacement passed an independent public-asset and PyPI CLI
+audit: pinned-hash install, strict verification, and five rows out of 106 top-level
+entries. This case is now active. Existing adapters are not overwritten
+automatically. See the [public audit](docs/user-evidence/2026-10-02-jenkins-public-package-audit.md).
+
+```bash
+cliany-site market install https://github.com/pearjelly/cliany.site/releases/download/v0.16.367/builds.apache.org-0.16.367.cliany-adapter.tar.gz --sha256 10ac9f4dc1ce2b4cc364d9fe9517e1ecabd50743885f404040abf8fc248ef18b
+cliany-site verify builds.apache.org --strict --json
+cliany-site builds.apache.org list-jobs --limit 5 --json
+```
+
+> **Disclaimer**: These demo sites are operated by third parties and may be temporarily unavailable. cliany-site only provides the CLI shim; we do not control the demo data or uptime.
+
+
+### HTTP API
+
+#### Sandbox preflight
+
+Newly generated adapter commands honor root `--sandbox` before any atom command starts. SDK callers can use `execute(domain, command, sandbox=True)`, while `POST /execute` accepts a boolean `sandbox` field. The parameter-resolved action list is checked locally before Chrome starts. Cross-domain navigation, dangerous URL schemes, JavaScript execution, and downloads return `E_SANDBOX_VIOLATION` / `422`; this local result does not prove Chrome, LLM, or third-party workflow readiness.
+
+```bash
+# Start a local API server with the default Chrome connection
+cliany-site serve --port 8080
+
+# Let cliany-site launch Chrome in headless mode
+cliany-site --headless serve --port 8080
+
+# Or reuse an already-running remote CDP browser
+cliany-site --cdp-url "ws://chrome:9222" serve --port 8080
+
+# Call API
+curl -i http://localhost:8080/health
+# {"status":"ok","service":"cliany-site","version":"<installed-version>"}
+curl -i http://localhost:8080/doctor
+# Optional live provider preflight for automation before explore
+curl -i "http://localhost:8080/doctor?llm_live=true&require_capability=generate_adapters"
+curl -i http://localhost:8080/adapters
+# Include adapter metadata when it is needed by an integration
+curl -i "http://localhost:8080/adapters?detail=true"
+curl -i "http://localhost:8080/verify?domain=github.com"
+curl -X POST http://localhost:8080/explore \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://github.com", "workflow": "搜索仓库"}'
+```
+
+`GET /health` confirms that the HTTP service is reachable and returns its service name plus installed package version. It is a liveness probe, not proof that CDP or an LLM provider is ready; `GET /doctor` returns the same structured checks, summary, stable hard-blocker codes, and repair guidance as the CLI. It does not contact the provider unless `llm_live=true` is explicit; `require_capability=generate_adapters` requires that flag. `GET /adapters?detail=true` includes adapter metadata. The `llm_live`, `detail`, `require_capability`, and `domain` query keys may each appear at most once. `llm_live` and `detail` accept only `true`/`false`, `1`/`0`, or `yes`/`no`; invalid booleans or repeated keys return `400` instead of silently changing the selected response shape, capability, or adapter domain. Unavailable Chrome, LLM, or a required capability returns `503`. Choose exactly one browser path: `--headless` starts Chrome for this process, while `--cdp-url` connects to an existing remote Chrome. Do not place either option after `serve`.
+
+`GET /verify` requires exactly one safe `domain` query parameter and runs the strict static adapter checks without connecting to Chrome or an LLM. A repeated `domain` returns `BAD_REQUEST` / `400`; invalid directory names return `E_INVALID_PARAM` / `400`; missing adapters return `404`; and an installed adapter with unsafe, missing, unreadable, unloadable, or symbolic-link core files returns `E_VERIFY_STATIC` / `422` with the `cliany-site verify <domain> --strict --json` repair path. Before browser startup, `POST /execute` applies the same local static contract: it rejects a symbolic-link adapter directory, metadata, command module, or manifest before reading or importing it, and a present manifest must have ordinary declared files with matching hashes. This does not prove Chrome, LLM, or third-party workflow readiness. Mutating endpoints accept JSON objects only and reject unknown fields with `BAD_REQUEST` / `400`: `POST /explore` accepts `url`, `workflow`, legacy `workflow_description`, and `force`; `POST /execute` accepts `domain`, `command`, `params`, `dry_run`, and `sandbox`; `POST /login` accepts `url`. `params` must be an object, `force` / `dry_run` / `sandbox` must be booleans, and required `url`, `workflow`, `domain`, and `command` fields must be non-empty strings. For `POST /explore` and `POST /login`, `url` must also be an `http` or `https` URL with a host and no whitespace; unsupported schemes, missing hosts, and malformed URLs return `BAD_REQUEST` / `400` before the SDK or browser runs. Direct `ClanySite.explore()` and `ClanySite.login()` use that same URL contract and return `INVALID_URL` before constructing an explorer or browser session. Arrays, objects, and blank strings return `BAD_REQUEST` / `400` before reaching the HTTP API SDK boundary, so malformed JSON cannot become an unexpected server error. Other responses preserve the SDK envelope: `503` for unavailable Chrome or LLM dependencies, and `500` for an unexpected server failure.
+
+### YAML Workflow Orchestration
+
+```yaml
+# workflow.yaml
+name: GitHub Search Process
+steps:
+  - name: Search Repository
+    adapter: github.com
+    command: search
+    params:
+      query: "cliany-site"
+  - name: View Details
+    adapter: github.com
+    command: view
+    params:
+      repo: "$prev.data.results[0].name"
+```
+
+```bash
+cliany-site workflow run workflow.yaml --json
+cliany-site workflow validate workflow.yaml --json
+```
+
+On current master (unreleased), references support zero-based array indexes such as
+`$prev.data.results[0].name` and `$steps.search.data.results[0].name`. Conditions use
+one comparison (`==`, `!=`, `>`, `<`, `>=`, `<=`) against a scalar value. Invalid
+condition syntax fails validation before execution; missing condition fields and
+invalid numeric comparisons stop the workflow. Explicit `null` values remain
+comparable. Missing ordinary parameter references still resolve to an empty string.
+Failed workflow and batch commands on current master exit nonzero; JSON output is
+one error response, with step/item results under `error.details`.
+Workflow and batch child commands also inherit root `--cdp-url`, `--headless`,
+`--sandbox`, `--force-browser`, and `--diagnose` options.
+Child commands must return one JSON result object on stdout when called with
+`--json`; stderr diagnostics are kept separate. Empty or invalid JSON fails the
+step even when the child exits with status zero.
+
+### Batch Execution
+
+```bash
+# Batch execution from CSV
+cliany-site workflow batch github.com search data.csv --json
+```
+
+As of v0.16.357, the built-in browser executor runs batch items
+sequentially, even when `--concurrency` is greater than one. It shares browser
+state and CLI output capture; independent processes sharing the same browser
+are not isolated. Custom `run_batch` executors retain the concurrent path and
+must provide their own isolation.
+
+### Adapter Marketplace
+
+See [Adapter lifecycle and package format](docs/adapter-lifecycle.md) for the runtime layout, `.cliany-adapter.tar.gz` package contract, compatibility rules, and rollback workflow.
+
+```bash
+# Pack adapter
+cliany-site market publish github.com --version 1.0.0 --json
+
+# Preflight the local adapter package (no runtime writes)
+cliany-site market install ~/.cliany-site/packages/github.com-1.0.0.cliany-adapter.tar.gz --dry-run --json
+
+# Preflight or install a publisher-provided remote package with a pinned digest
+cliany-site market install https://publisher.example/releases/github.com-1.0.0.cliany-adapter.tar.gz --sha256 <64-hex-sha256> --dry-run --json
+
+# A successful dry run only validates the package. Remove --dry-run to install before verify <domain>.
+
+# Install adapter after reviewing dry_run, package_sha256, version, installed_version, files, would_replace, would_create_backup, and requires_force
+# If requires_force is true, use would_replace to confirm presence and compare version with installed_version when available; the dry run stayed read-only, so use --force only when you intend to replace the installed adapter.
+cliany-site market install ~/.cliany-site/packages/github.com-1.0.0.cliany-adapter.tar.gz
+
+# Rollback
+cliany-site market rollback github.com
+```
+
+The successful publish JSON returns `data.package_sha256`, a lowercase 64-character hexadecimal SHA-256 of the completed archive. Hand that value to the installer and use it in the remote package's `--sha256 <64-hex-sha256>` argument.
+
+## Command Reference
+
+| Command | Arguments | Description |
+|------|------|------|
+| `doctor` | `[--json]` | Check environment (CDP, LLM Key, directory structure). |
+| `login <url>` | `[--json]` | Open URL to wait for login and save session. |
+| `explore <url> <workflow>` | `[--json] [--interactive] [--extend <domain>] [--record]` | Explore workflow and generate adapter. |
+| `list` | `[--json]` | List generated adapters. |
+| `cases` | `[--case-id <id>] [--status <status>] [--detail] [--issue-template] [--evidence-bundle] [--promotion-plan] [--json]` | List maintained real demo cases and candidate workflows. |
+| `verify <domain>` | `[--json]` | Statically verify adapter schema, signatures, and dependency integrity. |
+| `migrate` | `[--json] [--dry-run]` | Migrate all legacy adapters to schema v3. |
+| `replay <domain>` | `[--session <id>] [--step]` | Replay exploration recording with screenshots and actions. |
+| `check <domain>` | `[--json] [--fix]` | Check adapter health status. |
+| `obscura <subcommand>` | `install/use/status/clean/rollback/upgrade/doctor` | Manage experimental Obscura browser provider. |
+| `tui` | | Start TUI management interface. |
+| `serve` | `[--host] [--port]` | Start HTTP API service. |
+| `market publish <domain>` | `[--version] [--json]` | Pack and export adapter. |
+| `market install <source>` | `[--sha256] [--force] [--dry-run] [--json]` | Install a local package or an HTTPS package with a pinned SHA-256. |
+| `market uninstall <domain>` | `[--json]` | Uninstall adapter. |
+| `market rollback <domain>` | `[--index] [--json]` | Rollback to a backup version. |
+| `workflow run <file>` | `[--json] [--dry-run]` | Execute YAML workflow. |
+| `workflow validate <file>` | `[--json]` | Validate workflow file. |
+| `workflow batch <adapter> <cmd> <data>` | `[--concurrency] [--json]` | Batch execution. |
+| `report list` | `[--domain] [--json]` | List execution reports. |
+| `report show <id>` | `[--json]` | View report details. |
+| `<domain> <command>` | `[--json] [args...]` | Execute a command from an adapter. |
+
+**Global Options:** `--json` `--verbose` `--debug` `--cdp-url <ws://host:port>` `--headless` `--sandbox` `--explain` `--force-browser` `--diagnose`
+
+## Architecture Overview
+
+```
+cliany-site/src/cliany_site/
+├── cli.py              # Main entry point, SafeGroup global exception capture
+├── config.py           # Unified configuration center (env + .env)
+├── errors.py           # Exception hierarchy + error codes
+├── response.py         # JSON envelope {ok, data, error, meta} (v1)
+├── logging_config.py   # Structured logging (JSON format + masking)
+├── sdk.py              # Python SDK (sync + async)
+├── server.py           # HTTP API service (aiohttp)
+├── security.py         # Session encryption (Fernet + Keychain)
+├── sandbox.py          # Sandbox policy execution
+├── audit.py            # Code security audit (AST analysis)
+├── marketplace.py      # Adapter marketplace (pack/install/rollback)
+├── browser/            # CDP connection + AXTree + Chrome start + iframe
+├── explorer/           # LLM workflow exploration + atom extraction + verification
+├── codegen/            # Code generation (template/param inference/deduplication/merge)
+├── workflow/           # YAML orchestration + batch execution
+├── commands/           # Built-in CLI commands
+└── tui/                # Textual terminal UI
+```
+
+## Security Features
+
+- **Session Encryption**: Fernet symmetric encryption with keys stored in system Keychain (macOS Keychain / Linux Secret Service); falls back to file keys if Keychain is unavailable.
+- **Sandbox Mode**: For newly generated adapters, root `--sandbox` preflights the initial URL and recorded actions before atom execution. SDK `execute(..., sandbox=True)` and HTTP `POST /execute` with `"sandbox": true` use the same boundary; violations return `E_SANDBOX_VIOLATION` before Chrome starts.
+- **Code Audit**: Automatic AST scanning of codegen output to detect dangerous calls like `eval` / `exec`.
+
+## Roadmap
+
+The current iteration plan is tracked in [docs/roadmap-2026-q3.md](docs/roadmap-2026-q3.md). Release and commit cadence is defined in [docs/release-cadence.md](docs/release-cadence.md): one to three verified versions per day, with commits on at least three days each week. Maintainers can use the [weekly maintainer loop](docs/weekly-maintainer-loop.md), plus the available `next_actions`, `primary_next_action`, `weekly_commit_cadence_ok`, `release_count_today`, `max_daily_releases`, `daily_release_limit_ok`, `daily_release_cap_blocked`, and `daily_release_resume_date` fields from `scripts/release_readiness.py --json`, `scripts/check_release_cadence.py --json`, or `scripts/check_release_publication.py --json`, to choose the next small verified release slice and confirm whether the latest local tag is publicly visible. `daily_release_capacity_remaining` is emitted only by the cadence report from `scripts/check_release_cadence.py --json`; `daily_release_limit_ok` keeps its current-count meaning, while `daily_release_capacity_remaining=0` means automation must pause new tags for the day even when the current count is not over the cap. Weekly commit-day shortfalls stay visible as cadence next actions, while the daily release gate is driven by the release count cap and other tag/version/changelog/worktree checks; when `daily_release_cap_blocked=true`, `scripts/release_readiness.py --json` also exposes `daily_release_resume_command` and `daily_release_resume_command_sha256` beside the next eligible tag date. After the tag workflow completes, `scripts/check_release_publication.py --remote --distribution --json` also verifies that GitHub Release and PyPI expose the target version; short-lived remote Git or JSON transport failures receive a bounded retry, while persistent failures and HTTP responses remain blocking evidence. When PyPI project latest cache lags, `distribution.pypi_latest_version`, `distribution.pypi_release_version`, and backward-compatible `distribution.pypi_version` show whether the version-specific PyPI release is already public. Automation can compare `next_actions_sha256`, `publication_blockers_sha256`, `publication_next_actions_sha256`, `publication_publish_commands_sha256`, `target_tag_commands_sha256`, `daily_release_resume_command_sha256`, and `distribution.next_actions_sha256` to detect release-action drift without parsing Markdown reports.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR workflow.
+First-time contributors can start from the [contributor starter map](docs/contributor-starter.md) or the curated [Good First Issues](docs/good-first-issues.md) list; both paths avoid real LLM keys by default and include local validation commands.
+
+## Limitations
+
+- Requires Chrome/Chromium (auto-start or manual `--remote-debugging-port=9222`).
+- Requires a valid LLM API Key (Anthropic or OpenAI).
+- Generated commands depend on page DOM structure; major redesigns may require re-exploration (minor changes handled by fuzzy matching and self-healing).
+- Sessions are not shared across browser profiles.
+- Recursive collection for cross-origin iframes is enabled by default (configurable via `CLIANY_CROSS_ORIGIN_IFRAMES`).
+
+## Changelog
+
+See full changelog: [CHANGELOG.md](CHANGELOG.md)
+
+For v0.14.4 quality-gate details, see the [release draft](docs/releases/v0.14.4-draft.md).

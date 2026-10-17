@@ -1,0 +1,487 @@
+<p align="center">
+  <img src="./faultline_logo.svg" alt="FaultLine" width="420"/>
+</p>
+
+<h1 align="center">FaultLine</h1>
+<p align="center"><strong>Validated, private, shareable memory for your AI.</strong></p>
+
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-AGPL%20v3-blue.svg" alt="License: AGPL v3"/></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/OpenWebUI-0.6%2B%20(0.10.x%20tested)-green" alt="OpenWebUI"/>
+  <img src="https://img.shields.io/badge/MCP-2025--03--26-purple" alt="MCP"/>
+</p>
+
+---
+
+FaultLine adds persistent, validated memory to your local AI. Facts are stored in a structured knowledge graph — not summarised into text blobs, not guessed from documents. When you correct something, it updates. When you ask about it later, the answer is right.
+
+---
+
+## Why FaultLine
+
+### 1. Private by design
+
+Everything runs on your machine. Your conversations, your memories, your data — none of it leaves. No cloud sync, no accounts, no subscriptions.
+
+### 2. Share memory across any AI
+
+FaultLine exposes an MCP server. That means the same memory store is available to OpenWebUI, Claude Desktop, or any other MCP-capable endpoint. Change your server IP in one conversation, every model sees the update.
+
+### 3. Write-validated facts — not RAG guesswork
+
+RAG retrieves documents and asks the LLM to interpret them. The answer depends on wording, context, and luck. FaultLine validates facts before storing them and rejects hallucinations at the gate. Your AI knows "AlphaNode's IP is 10.44.5.20" — not "a document mentioned something about a server."
+
+### 4. Correctable, relational data
+
+Facts are stored as typed relationships — person, age, occupation, network device, IP address, MAC, hostname. Corrections update the record cleanly; the old value is archived, not lost. Memory strengthens over time: things mentioned once are held lightly, confirmed facts become authoritative.
+
+### 5. Teach it any domain — on your terms
+
+`/expand networking` teaches FaultLine how networking works before you mention your first device. `/expand kubernetes online https://kubernetes.io/docs/concepts/` reads the actual docs and builds the ontology from them. You point it at the source, it learns the structure, and every fact you mention in that domain from then on is stored and retrieved in context — not as an isolated string. And everything it learns is still correctable by you.
+
+---
+
+## What it looks like in practice
+
+```
+You:  "I'm a sysadmin. My main workstation is called DevBox, IP 10.0.1.5."
+
+Next session:
+You:  "What do you know about DevBox?"
+AI:   "DevBox is your workstation, IP address 10.0.1.5."
+```
+
+```
+You:  "Actually DevBox moved to 10.0.1.10 after the network change."
+
+Next session:
+You:  "What's DevBox's IP?"
+AI:   "DevBox has IP address 10.0.1.10."
+```
+
+```
+You:  /expand networking
+
+Later, after mentioning your firewall:
+AI:   "Your firewall OPNsense is a networking device — I have that from earlier."
+```
+
+**People, preferences, server IPs, MAC addresses, hostnames, relationships, corrections.** Anything you tell it, stored and ready.
+
+---
+
+## How it works (briefly)
+
+- Every message is scanned for facts worth keeping
+- Facts go through a validation gate before storage — hallucinated details are rejected
+- Relevant facts are injected into the conversation before the AI responds
+- Memories strengthen with confirmation; corrections archive the old value cleanly
+- `/expand <topic>` teaches FaultLine how a domain is structured so facts about it land correctly
+
+---
+
+## `/expand` — on-demand domain intelligence
+
+Most memory systems store facts. FaultLine can learn how a *domain* works — the structure, the relationships, the vocabulary — so that facts about it land correctly and mean something.
+
+Without a domain expansion, "my firewall is OPNsense" is stored as a flat string. With `/expand networking`, FaultLine knows that a firewall is a type of network device, that it has IP addresses, that it sits between your LAN and WAN, and how it relates to switches, routers, and hosts. Every networking fact you mention after that is stored and retrieved in context.
+
+**The difference in practice:**
+
+```
+Without /expand:
+
+You:  "OPNsense is at 10.0.0.1, the switch is at 10.0.0.2"
+AI:   "OPNsense has IP 10.0.0.1 and the switch has IP 10.0.0.2."
+      (two isolated facts, no relationship, no structure)
+
+With /expand networking:
+
+You:  "OPNsense is at 10.0.0.1, the switch is at 10.0.0.2"
+AI:   "Your firewall OPNsense is at 10.0.0.1. Your switch is at 10.0.0.2,
+       downstream from it." (stored relationally — device types, roles, topology)
+```
+
+### You control the source
+
+Point it at the actual documentation and it grounds the expansion in that material — not in what the LLM guesses the domain looks like:
+
+```
+/expand kubernetes online https://kubernetes.io/docs/concepts/
+/expand tls online https://www.rfc-editor.org/rfc/rfc8446
+/expand networking
+/expand home lab
+/expand kubernetes
+```
+
+Without a URL, it reasons from its training knowledge. With one, it reads the source and builds the ontology from it. You decide how authoritative you need it to be.
+
+### Still correctable
+
+Everything `/expand` builds is subject to the same correction rules as any other fact. If it got the domain structure wrong, tell it — your correction wins and is stored as authoritative. The expansion is a starting point, not a constraint.
+
+### It compounds
+
+Expand once and every future conversation in that domain benefits automatically. New facts slot into the right relationships. Queries about that domain return structured, contextual answers instead of isolated strings. The more you use it, the more useful it gets.
+
+---
+
+## Comparison
+
+| | FaultLine | ChatGPT Memory | MemGPT / Letta | Mem0 | OpenWebUI RAG |
+|---|---|---|---|---|---|
+| Self-hosted, fully private | ✅ | ❌ Cloud only | ✅ | ✅ | ✅ |
+| Works with any local LLM | ✅ | ❌ OpenAI only | ✅ | ✅ | ✅ |
+| MCP server — share across models | ✅ | ❌ | ❌ | Partial | ❌ |
+| Write-validated (no hallucination storage) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Correctable — updates cleanly, archives old | ✅ | ❌ Overwrites | ❌ | ❌ | ❌ |
+| Relational facts (not document chunks) | ✅ | ❌ | Partial | Partial | ❌ |
+| Remembers server IPs, MACs, hostnames | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Remembers relationships & people | ✅ | ✅ | Partial | Partial | ❌ |
+| Short → long-term promotion | ✅ | ❌ | Partial | ❌ | ❌ |
+| `/expand` topic learning | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Web-grounded learning | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Dead-naming / preferred name support | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Per-user private memory | ✅ | ✅ Account | ✅ | ✅ | ❌ Shared |
+| Open source | ✅ AGPLv3 | ❌ | ✅ MIT | Partial | ✅ MIT |
+
+---
+
+## Multi-tenant isolation
+
+Every user gets a **physically separate PostgreSQL schema** (`faultline_<user_id>`) — the sole user-memory boundary. Each request binds to the caller's schema via `SET search_path` **without `public`**, so one tenant's queries cannot even *name* another tenant's tables. There is no shared `user_id` column to filter on and forget — the boundary **is** the schema, enforced by the database. (User memory is PostgreSQL-only; the vector tier is retired, so there are no per-user vector collections in the memory path.)
+
+**Verified on a live instance.** Three fresh tenants, each told one distinct thing, then inspected:
+
+| Tenant | Told | Stored in *its* schema | Any other tenant's data? |
+|---|---|---|---|
+| A | a cat named Mittens | `cat → feline → mammal → animal` | **none** |
+| B | a red Tesla Model 3 | `tesla → vehicle → transportation_device` | **none** |
+| C | lives in Berlin, Germany | `berlin → city`, `germany → country` | **none** |
+
+Each schema contained **only** its own entities and hierarchy — zero cross-tenant tokens. A recall issued as one tenant can only ever read from that tenant's schema, so it is structurally impossible for one user's memory to surface in another's. (The per-tenant `±6` hierarchy also grew independently in each — isolation holds through the growth engine, not just at rest.)
+
+---
+
+## Requirements
+
+- Docker and Docker Compose v2.24 or newer (`docker compose version`)
+- An LLM backend — [Ollama](https://ollama.ai/), [LM Studio](https://lmstudio.ai/), [OpenWebUI](https://openwebui.com/), or a hosted API (OpenAI, Anthropic, Groq)
+- About 4 GB of RAM free for the stack (it uses ~3 GB after boot); 8 GB recommended. A local LLM needs its own memory on top.
+
+---
+
+## Getting started
+
+```bash
+git clone https://github.com/tkalevra/FaultLine.git
+cd FaultLine
+```
+
+**Guided setup (recommended).** An interactive wizard first asks **Language / Lingua**, then picks your LLM backend, **tests the connection and lists your available models to choose from**, generates a secret `MCP_API_KEY`, sorts out your tenant id, and writes a ready-to-use `.env` — then prints exactly what to paste into your client:
+
+```bash
+./setup.sh            # Linux / macOS
+setup.bat             # Windows
+#  or, on any platform:  python3 quickstart.py
+```
+
+> **🌍 Language.** The wizard opens with a language choice. **English** continues on `main`. **Italiano** (experimental) switches to the `it` branch and **Español** (experimental) to the `es` branch — unofficial, work-in-progress instances (localized setup + their own READMEs); extraction there rides the LLM path. Not production-ready — use at your own risk; for the stable version stay on English/`main`.
+
+**Or configure manually:**
+
+```bash
+cp .env.example .env
+# Set LLM_BACKEND_TYPE + LLM_BASE_URL to point at the LLM you already run
+# (Ollama, LM Studio, OpenWebUI, OpenAI, Anthropic, ...)
+
+docker compose up -d --build
+
+curl http://localhost:8000/health
+# {"status": "ok", ...}
+```
+
+Re-run the connectivity check anytime with `python3 quickstart.py --validate`.
+
+> **`.env` holds secrets** (`LLM_API_KEY`, `MCP_API_KEY`). The wizard writes it and its
+> `.env.bak` backup owner-only (`0600`); if you create it by hand, run `chmod 600 .env`.
+
+> **Ports.** `:8002` (MCP) is the only network-facing service; secure it with `MCP_API_KEY`.
+> Postgres and Redis are not published. There is no vector store: user memory lives in Postgres.
+> The backend `:8000` (API + operator console) is published on `127.0.0.1` only, because it
+> trusts the caller's `user_id`. Reach the console from another machine with
+> `ssh -L 8000:localhost:8000 <host>`. Its API also requires a service secret that the MCP
+> server and the re-embedder send automatically. The secret is auto-generated on first boot
+> (zero config), or you can pin it with `FAULTLINE_BACKEND_SECRET` (see `.env.example`).
+
+> **Model choice.** Use a non-reasoning (instruct/chat) model. Reasoning models that write
+> their chain of thought into the reply `content` (instead of a separate reasoning field)
+> are not supported: FaultLine's short structured calls time out or get unparseable text,
+> and writes come back `extraction_degraded`. If your backend is slow, raise the
+> `LLM_TIMEOUT_*` values in `.env` (start with `LLM_TIMEOUT_REFRAME`).
+
+FaultLine hooks into an LLM you already run — it doesn't host one. (If you *don't* have a model handy, `docker compose --profile ollama up -d` starts a bundled Ollama alongside the stack.)
+
+The first start downloads the GLiNER2 extraction model (~500 MB, CPU-only — no GPU or CUDA required). Takes 3–5 minutes.
+
+### First login and seats
+
+FaultLine (FOSS) is one instance with **up to 5 seats**. A seat is one person's private memory
+store. Everything is managed from the **operator console** at `http://localhost:8000/` on the
+FaultLine host (from another machine: `ssh -L 8000:localhost:8000 <host>`).
+
+1. **Sign in as the operator.** The operator token is printed once on the backend's first boot:
+   ```bash
+   docker compose logs faultline | grep -A1 FAULTLINE_ADMIN_TOKEN
+   ```
+   It is stored hashed and survives restarts. Lost it?
+   `docker compose exec faultline python -m src.api.operator_token --rotate` prints a new one.
+   To pin your own, set `FAULTLINE_ADMIN_TOKEN` in `.env`.
+2. **Mint a seat** (Seats & Tokens → mint seat). The seat token is shown **once**.
+3. **Put the seat token in the client as the Bearer**, e.g. Claude Desktop's "MCP API Key" field
+   or `Authorization: Bearer <seat token>` on `:8002`. The token *is* the identity: any user-id
+   header or setting is ignored, so no user id is needed.
+4. **OpenWebUI** is wired once with the instance MCP key, and each OpenWebUI user occupies a seat
+   of its own. Seat them on the console's **OpenWebUI** tab (see "Connect to OpenWebUI", step 5).
+
+**The shared MCP key and seats.** Until the first seat is minted, the MCP key (`MCP_API_KEY`)
+admits any user id, up to 5 users. Once any seat exists, only seated user ids are admitted: a
+client on the shared key with an unseated user id gets `403 seat required`, naming the id and
+how to seat it. Seats can be revoked (memory is kept) and re-seated by user id. The 5-seat cap is
+a source constant (`FOSS_MAX_SEATS` in `src/api/dashboard.py`).
+
+**The backend secret** (`FAULTLINE_BACKEND_SECRET`) is separate: it protects `:8000` and is
+auto-generated. You only need it for the legacy OpenWebUI Filter (see below).
+
+### Connecting a client
+
+Two independent choices — the wizard handles both, or set them by hand.
+
+**1. Which LLM FaultLine talks to** (`LLM_BACKEND_TYPE` + `LLM_BASE_URL` — host+port only, no path):
+
+| Backend | `LLM_BACKEND_TYPE` | `LLM_BASE_URL` (example) |
+|---|---|---|
+| LM Studio | `lm_studio` | `http://host.docker.internal:1234` |
+| Ollama | `ollama` | `http://host.docker.internal:11434` |
+| OpenWebUI | `openwebui` | `http://open-webui:8080` |
+| OpenAI / Anthropic / Groq | `openai` / `anthropic` / `groq` | provider API base URL |
+
+**2. How your chat client calls FaultLine's memory tools** — all through the **MCP server on `:8002`**, with a seat token (or the shared `MCP_API_KEY` for OpenWebUI) as the Bearer. See "First login and seats" above:
+
+- **OpenWebUI** → Settings → Tools → `+` (OpenAPI), or Admin Settings → External Tools (native MCP, 0.6.31+) *(below)*
+- **Claude Desktop** → the `.mcpb` extension *(below)*
+- **Cursor / other MCP clients** → `http://<host>:8002/mcp` with header `Authorization: Bearer <seat token>`
+
+### Connect to OpenWebUI
+
+*Verified against OpenWebUI v0.10.x (latest); the paths below apply from v0.6.31+. OpenWebUI's menu labels shift between releases — look for **Tools** (OpenAPI) or **External Tools** (native MCP) if yours differ.*
+
+FaultLine's server on `:8002` speaks **both** OpenAPI and native MCP, so OpenWebUI can reach it two ways. **Use Option A** — it's the only path that reliably forwards the per-user identity header FaultLine scopes on.
+
+**Option A — OpenAPI tool server (recommended):**
+
+1. **Settings → Tools → `+`** (Manage Tool Servers). For an instance-wide server, use **Admin Settings → Tools** instead.
+2. **URL:** `http://faultline-mcp:8002` (OpenWebUI attached to the `faultline-net` Docker network, see below) or `http://<host>:8002`. The modal may pre-fill `https://` — change it to `http://` for a local server, then hit **refresh** to test.
+3. **Auth:** `Bearer` → your `MCP_API_KEY`.
+4. Set **`ENABLE_FORWARD_USER_INFO_HEADERS=true`** in OpenWebUI's environment so each user's memory is scoped to them. It forwards the `X-OpenWebUI-User-Id` header FaultLine keys on (also `-User-Name`/`-Email`/`-Role`) — without it, per-user memory won't work.
+5. **Seats.** Every OpenWebUI user is its own memory store and occupies one of the instance's seats (FOSS: up to 5). Until the first seat is minted, OpenWebUI users are admitted automatically, up to 5 users. Once any seat exists (for example one you minted for Claude Desktop), only seated users are admitted: a user without a seat gets `403 seat required` naming their user_id. Seat them in the operator console (`http://localhost:8000/`) → **OpenWebUI** tab → **OpenWebUI users & seats**: refused users and users who already hold memory are listed there with a **seat** button, or paste a user id. Seating keeps the user's existing memory; OpenWebUI users keep using the MCP key, they don't need the seat token.
+
+OpenWebUI reads `/openapi.json` and surfaces every FaultLine tool — `recall_memory`, `remember_facts`, `ingest_document`, `ingest_file`, `document_status`, `review_structure`, `retry_document`, `learn_facts`, `retract_fact`, `forget_fact` — in every conversation.
+
+**Running OpenWebUI next to FaultLine (Docker).** `http://faultline-mcp:8002` only resolves when the OpenWebUI container is on FaultLine's Docker network. That network has a fixed name, **`faultline-net`** (`<FAULTLINE_PREFIX>-net` if you changed the prefix). Attach OpenWebUI to it once, either in OpenWebUI's compose file:
+
+```yaml
+services:
+  open-webui:
+    # ...your existing service...
+    environment:
+      ENABLE_FORWARD_USER_INFO_HEADERS: "true"
+    networks: [default, faultline-net]
+networks:
+  faultline-net:
+    external: true
+```
+
+or on a running container: `docker network connect faultline-net open-webui`. Then use these URLs from OpenWebUI:
+
+| What | URL from OpenWebUI | Auth |
+|---|---|---|
+| Option A tool server (recommended) | `http://faultline-mcp:8002` | `Bearer` MCP key |
+| Legacy Filter / `faultline_mcp.py` Function (`FAULTLINE_URL` valve) | `http://faultline:8000` | `FAULTLINE_BACKEND_SECRET` (see below) |
+
+The backend `:8000` is published on the host's `127.0.0.1` only, so `http://<host>:8000` does **not** work from another container or machine; only the network path above does. If OpenWebUI runs on a different machine, use Option A with `http://<faultline-host>:8002` (the legacy Filter is not supported across hosts). Each OpenWebUI user occupies a seat once any seat exists (step 5 above).
+
+**Option B — native MCP (OpenWebUI 0.6.31+):**
+
+1. **Admin Settings → External Tools → `+` (Add Server)** — native MCP is **admin-only**.
+2. **Type:** `MCP (Streamable HTTP)` (the only transport OpenWebUI's native MCP supports).
+3. **URL:** `http://<host>:8002/mcp` · **Auth:** `Bearer` → your `MCP_API_KEY`.
+
+> ⚠️ **Native MCP is the newer, less-tested path with FaultLine** (its `/mcp` is a stateless JSON-RPC endpoint) — if the server or tools don't appear, use **Option A**. And per-user scoping is weaker here: as of v0.10.x, `ENABLE_FORWARD_USER_INFO_HEADERS` does **not** forward `X-OpenWebUI-User-*` headers over native MCP, and custom-header template tokens (`{{USER_ID}}`) may not resolve there yet ([open-webui#21134](https://github.com/open-webui/open-webui/issues/21134)). For reliable per-user memory use **Option A**; if you run native MCP, pin a single tenant with `FAULTLINE_USER_ID`.
+
+**Tool firing (weak models).** As of v0.10.0, OpenWebUI defaults every model to **Native** function calling (the old "Default" mode is renamed **"Legacy"** and is unsupported). Native works for most 2024+ models; if a smaller model (Qwen, Llama, Mistral, Phi) won't reliably call the tools, switch **Chat Controls → Advanced Params → Function Calling → Legacy** (or set it per-model / globally under **Model Parameters**).
+
+> **Legacy alternative:** the inlet/outlet Filter (`openwebui/faultline_function.py`, Workspace → Functions) still exists for automatic injection, but the tool-server paths above are the supported ones.
+> The Filter and the legacy `openwebui/faultline_mcp.py` Function call the backend `:8000` directly, so they must send its service secret. OpenWebUI cannot read the secret FaultLine auto-generates, because it has no access to FaultLine's database. For these paths, set `FAULTLINE_BACKEND_SECRET` explicitly to the SAME value on the FaultLine services (`.env`) and in the function's `FAULTLINE_BACKEND_SECRET` valve (or the OpenWebUI container's env). In a zero-config install, an operator can copy the current value from `GET /api/dashboard/backend-secret` (operator token required). A missing or wrong secret shows up in the OpenWebUI logs as a "backend answered 401" error.
+
+---
+
+## Claude Desktop (MCP)
+
+FaultLine ships a `.mcpb` extension for one-click installation in Claude Desktop.
+
+### Install the extension
+
+1. Build the extension (requires Python):
+   ```bash
+   cd tools/claude-desktop
+   python build_mcpb.py
+   # → produces faultline.mcpb
+   ```
+
+2. In Claude Desktop: **Settings → Extensions → Advanced settings → Install Extension** → select `faultline.mcpb`
+
+3. Claude Desktop prompts for these values:
+
+   | Field | What it is | How to get it |
+   |---|---|---|
+   | **FaultLine MCP URL** | HTTP endpoint for the MCP server | Default: `http://localhost:8002`. Change the host if FaultLine runs on another machine. |
+   | **MCP API Key** | Your **seat token** | Operator console → Seats & Tokens → mint seat (shown once). The token identifies you. |
+   | **User ID** | Optional | Leave blank with a seat token. Only needed with the shared `MCP_API_KEY` before any seat exists. |
+
+4. Make sure your Docker stack is running (`docker compose up -d`) — the extension connects to the MCP server at port 8002.
+
+### How it works
+
+The extension is a thin stdio-to-HTTP proxy. Claude Desktop spawns it as a local process; it forwards JSON-RPC messages to your Docker MCP server. No SDK dependencies — just Python stdlib.
+
+```
+Claude Desktop (stdio) → faultline_proxy.py → HTTP → localhost:8002/mcp → Docker
+```
+
+### Alternative: direct HTTP (Streamable HTTP clients)
+
+MCP clients that support HTTP transport directly (no stdio needed) can connect without the extension:
+
+```json
+{
+  "mcpServers": {
+    "faultline": {
+      "url": "http://YOUR-HOST:8002/mcp",
+      "headers": { "Authorization": "Bearer YOUR_SEAT_TOKEN" }
+    }
+  }
+}
+```
+
+### Tools available
+
+| Tool | Description |
+|---|---|
+| `recall_memory` | Query the knowledge graph — retrieves facts relevant to the conversation |
+| `remember_facts` | Extract and store facts from conversation text |
+| `ingest_document` | Store a document/article/long-form text; chunked and mined for facts |
+| `learn_facts` | Ingest structured ontological statements directly (`X is a subclass of Y`, …) |
+| `retract_fact` | Remove a fact from the knowledge graph (natural-language retraction) |
+| `forget_fact` | Tombstone ONE specific named fact (`subject` + optional `rel_type`/`old_value`) |
+| `ingest_file` | Store a PDF or image (base64); same document lane as `ingest_document` |
+| `document_status` | Progress of a document ingest (read-only) |
+| `retry_document` | Re-run the failed chunks of a document ingest |
+| `review_structure` | Show (and retire a wrong cue in) the structure FaultLine grew for you — never your memories |
+
+All these tools are backed by the same store your OpenWebUI conversations write to.
+
+### System prompt (important)
+
+FaultLine works best when the model is explicitly told to use the MCP tools for all memory operations. Without a system prompt, some clients (notably Claude Desktop) will use their own built-in memory instead of FaultLine.
+
+Ready-to-paste prompts are in the [`prompts/`](prompts/) folder:
+
+| File | When to use |
+|---|---|
+| [`strong-model-prompt.md`](prompts/strong-model-prompt.md) | Claude, GPT-4o, Gemini Pro — models with reliable tool-calling |
+| [`weak-model-prompt.md`](prompts/weak-model-prompt.md) | Qwen, Llama, Mistral, Phi — smaller models that need explicit step-by-step instructions |
+
+Pick the one that matches your model, copy the prompt block, and paste it into your client's system prompt field.
+
+---
+
+## Disk full
+
+If the host disk fills, Postgres can PANIC on its shutdown checkpoint. The stack now rotates
+its logs, keeps Redis off disk, reports disk pressure in `/health` and refuses new writes below
+3% free. The recovery procedure (diagnose with `docker system df`, safe cleanup, restart
+Postgres first so it replays its WAL, verify) is in [DEPLOYMENT.md, "Disk full"](DEPLOYMENT.md#disk-full).
+
+## Environment variables
+
+```env
+# The LLM hook — which model server FaultLine talks to.
+# LLM_BACKEND_TYPE selects the protocol; the API path is appended automatically.
+LLM_BACKEND_TYPE=ollama                         # openwebui | ollama | lm_studio | openai | anthropic | groq | localai | raw
+LLM_BASE_URL=http://host.docker.internal:11434  # host + port only, no path
+LLM_API_KEY=                                    # blank for local servers; token for hosted APIs
+
+# Storage
+POSTGRES_DSN=postgresql://faultline:faultline@postgres:5432/faultline
+# QDRANT_URL is optional and empty by default: no vector store is needed.
+
+# MCP server
+MCP_API_KEY=          # leave blank for no auth, or set a secret token
+FAULTLINE_USER_ID=    # optional — pins the MCP server to one user
+```
+
+See [`.env.example`](.env.example) for the full list with descriptions.
+
+---
+
+## Key files
+
+| File | What it is |
+|---|---|
+| `quickstart.py` · `setup.sh` · `setup.bat` | Guided setup wizard — writes `.env`, tests connectivity, lists your models |
+| `src/mcp/server.py` | The MCP tool server — the live integration path |
+| `src/api/main.py` | The backend API |
+| `openwebui/faultline_function.py` | Legacy OpenWebUI Filter (the MCP tool server above is preferred) |
+| `migrations/` | Database schema — runs automatically on first start |
+
+---
+
+## Built with
+
+[PostgreSQL](https://www.postgresql.org/) · [Redis](https://redis.io/) · [FastAPI](https://fastapi.tiangolo.com/) · [GLiNER2](https://github.com/fastino-ai/GLiNER2) · [nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) · [OpenWebUI](https://openwebui.com/)
+
+---
+
+## Licensing
+
+FaultLine is **open core**, licensed under the **[GNU AGPLv3](./LICENSE)**.
+
+**If you are a user, this changes nothing for you.** Run it, modify it, self-host it — for yourself
+or for your company — forever, for free. That is what it is for.
+
+The AGPL asks for one thing back: **if you modify FaultLine and offer it to others over a network,
+your users get your modified source.** Improvements to the commons stay in the commons. Don't modify
+it, and you owe nothing but the licence notice.
+
+If that doesn't suit you — you want to build a closed-source product on FaultLine, or embed it in a
+proprietary offering — **a commercial licence is available.** Open an issue or get in touch.
+
+> **Licence history:** FaultLine was Apache-2.0 through commit `433daf1`. That grant is perpetual and
+> is not revoked — copies obtained under it stay Apache-2.0. Everything from the relicensing commit
+> onward is AGPLv3. See [NOTICE](./NOTICE).
+
+## Contributing
+
+Contributions are welcome, and there is **one gate: a signed [CLA](./CLA.md)**. It exists so the
+project can keep dual-licensing, which is what funds the open engine — the reasoning is laid out
+honestly in **[CONTRIBUTING.md](./CONTRIBUTING.md)**. You keep the copyright in your work.
+
+House rules, in short:
+
+- New relationship types belong in the `rel_types` database table, not in code
+- GLiNER2 zero-shot labels are never modified to carry extraction patterns or descriptions
+- No UUIDs in anything a user sees
+- Strong ingest, lean query — if recall is wrong, fix it at ingest
+- All tests pass: `pytest tests/`

@@ -1,0 +1,338 @@
+<div align="center">
+  <img src="v4/docs/assets/brand/ki-c-indigo.svg" alt="KubeIntellect" width="96" height="96" />
+  <h1>KubeIntellect</h1>
+  <p><strong>Human-governed AI SRE for Kubernetes</strong> — chat with your cluster in plain English.</p>
+
+  [![CI](https://github.com/MSKazemi/kubeintellect/actions/workflows/ci.yml/badge.svg)](https://github.com/MSKazemi/kubeintellect/actions/workflows/ci.yml)
+  [![PyPI](https://img.shields.io/pypi/v/kubeintellect.svg)](https://pypi.org/project/kubeintellect/)
+  [![kubeintellect downloads](https://img.shields.io/pypi/dm/kubeintellect?label=kubeintellect%20installs)](https://pypi.org/project/kubeintellect/)
+  [![kq downloads](https://img.shields.io/pypi/dm/kube-q?label=kq%20installs)](https://pypi.org/project/kube-q/)
+  [![Snap Store](https://img.shields.io/snapcraft/v/kubeintellect/latest/stable?logo=snapcraft&label=snap)](https://snapcraft.io/kubeintellect)
+  [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+  [![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs10723--026--09837--6-blue)](https://doi.org/10.1007/s10723-026-09837-6)
+  [![arXiv](https://img.shields.io/badge/arXiv-2509.02449-b31b1b.svg)](https://arxiv.org/abs/2509.02449)
+  [![Website](https://img.shields.io/badge/website-kubeintellect.com-0075C4)](https://kubeintellect.com/)
+  [![YouTube](https://img.shields.io/badge/YouTube-Demo-FF0000?logo=youtube&logoColor=white)](https://youtu.be/je-K_w3vgGY)
+  [![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow)](https://huggingface.co/spaces/mskazemi/kubeintellect)
+  [![good first issues](https://img.shields.io/github/issues/MSKazemi/kubeintellect/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/MSKazemi/kubeintellect/contribute)
+  [![GitHub Stars](https://img.shields.io/github/stars/MSKazemi/kubeintellect?style=social)](https://github.com/MSKazemi/kubeintellect)
+
+  **[Website](https://kubeintellect.com/)** · **[Live Demo](https://kubeintellect.com/demo)** · **[🤗 Space](https://huggingface.co/spaces/mskazemi/kubeintellect)** · **[Current version → `v4/`](v4/)** · **[Contributing](#contributing)** · **[Paper](https://doi.org/10.1007/s10723-026-09837-6)**
+
+  Created & maintained by **[Mohsen Seyedkazemi Ardebili](https://github.com/MSKazemi)**
+
+  <br/>
+
+  <a href="https://youtu.be/je-K_w3vgGY">
+    <img src=".github/assets/kubeintellect-demo.gif" alt="KubeIntellect diagnosing a crash-looping payments-api, then pausing for approval before restarting it" width="880" />
+  </a>
+
+  <sub>Ask why a pod is broken → get the root cause. Ask it to <em>change</em> something → it stops and waits for you.<br/>A real session against a live cluster, recorded end to end — nothing is cut, only the waiting is compressed.</sub>
+
+  <p><strong>▶ <a href="https://youtu.be/je-K_w3vgGY">Watch the full 8-minute demo</a></strong> · <a href="https://youtu.be/lgmalgXmDfg">Architecture walkthrough (38s)</a></p>
+</div>
+
+---
+
+KubeIntellect is an open-source, LLM-orchestrated multi-agent framework — **the human-governed AI SRE for Kubernetes**. Ask a question in plain English — it fans out to specialized agents that query **kubectl**, **Prometheus** (PromQL), and **Loki** (LogQL) live, correlates the evidence, and answers. Any change to the cluster pauses for **explicit human-in-the-loop approval** with role-based access control.
+
+```bash
+kq -q "why is my api-server pod crashlooping?"
+kq -q "show me pods with high restart counts in the default namespace"
+kq -q "scale the frontend deployment to 5 replicas"   # pauses for your approval
+```
+
+> **Safe by default** — read-only queries run immediately; scale, delete, and restart operations require explicit approval before anything executes.
+
+## What is KubeIntellect?
+
+- **KubeIntellect is an open-source framework for conversational, natural-language Kubernetes operations** — root-cause analysis, live diagnostics, and human-approved cluster actions.
+- **It is for** platform engineers, DevOps engineers, SREs, and Kubernetes operators who want to troubleshoot and manage clusters in plain English.
+- **It helps you diagnose incidents faster** by correlating kubectl state, Prometheus metrics, and Loki logs through a coordinator that delegates to pod, metrics, logs, and events subagents.
+- **Use KubeIntellect when** you want conversational operations with a hard safety gate on every destructive action.
+- **It is different from read-only AI diagnostics tools** because it can also *act* — scale, restart, delete — but only after explicit human approval, gated by RBAC (admin / operator / readonly).
+- **It is not** a replacement for your observability stack, a GitOps/CD pipeline, or on-call judgment; it queries the tools you already run and pauses before changing anything. It requires an OpenAI or Azure OpenAI API key and Python 3.12+.
+
+## Quick start
+
+**Try it in your browser — zero install.** Open **[kubeintellect.com/demo](https://kubeintellect.com/demo)**
+or the **[🤗 Hugging Face Space](https://huggingface.co/spaces/mskazemi/kubeintellect)** (both read-only, same shared demo cluster).
+
+**Install the CLI (read-only, one `pip install`):**
+
+```bash
+pip install kube-q
+kq --api-key ki-ro-dev            # kq defaults to https://api.kubeintellect.com
+```
+
+**Run the server from the container image** (Docker is the only prerequisite):
+
+```bash
+docker run --rm -p 8000:8000 \
+  -e LLM_PROVIDER=openai -e OPENAI_API_KEY=sk-... -e USE_SQLITE=true \
+  ghcr.io/mskazemi/kubeintellect:2.6.0
+curl localhost:8000/healthz          # {"status":"ok","arm":"v4",...}
+```
+
+The same image is also mirrored to Docker Hub as `kazemi/kubeintellect:2.5.0`, if you'd rather
+not use GHCR. Both carry a sigstore build-provenance attestation and an SBOM, and you can check
+them before you run anything — see
+**[what is signed, and how to check it](v4/docs/security.md#what-is-signed-and-how-to-check-it)**.
+
+That starts the API with no database and no cluster attached — enough to see it come up.
+To point it at a cluster and a real database, use
+**[Docker Compose](v4/README.md#docker-compose-laptop--vm---no-cluster-required-to-run-the-server)**.
+
+Or install the server from PyPI:
+
+```bash
+pip install kubeintellect
+kubeintellect init         # setup wizard — writes ~/.kubeintellect/.env
+kubeintellect kind-setup   # optional: create a local Kind cluster to try it against
+kubeintellect serve        # start the API server on :8000
+```
+
+Full install paths (browser, CLI-only, local Kind, Docker Compose, existing cluster) are in the **[v4 README](v4/README.md)** and **[v4 docs](v4/docs/)**.
+
+**Who's actually running this?** One real adopter so far, honestly listed in
+[ADOPTERS.md](ADOPTERS.md) — if you're running KubeIntellect anywhere, even a laptop Kind
+cluster, you'd be the second entry.
+
+## This repository
+
+This repo holds **multiple generations** of KubeIntellect. Each generation is a self-contained re-architecture of the same product — together they trace one design lineage from a capability-maximal multi-agent system to a lean, measurable, human-governed operator.
+
+| Version | What it is | Status |
+|---|---|---|
+| **[`v4/`](v4/)** | **Platform (recommended).** The lean coordinator plus feature-flagged layers: sensorium + detector engine, memory hierarchy (episodes + temporal knowledge graph), flight recorder, autonomy ladder, and predictive detection. Shipped as a `uv` monorepo (`kubeintellect-server`, `kube-q`, `ki-protocol`). | **Current** |
+| **[`v2/`](v2/)** | **Lean baseline.** A single LangGraph coordinator ReAct loop over 4 guarded tools (`run_kubectl`, `run_helm`, `query_prometheus`, `query_loki`) with a 7-layer kubectl safety guard, on-demand 4-subagent RCA, and an evaluation harness. | Baseline |
+| **[`v3/`](v3/)** | **Framework-delegated.** The v2 behavior expressed through the [`deepagents`](https://github.com/langchain-ai/deepagents) framework — coordinator + sub-agents over a virtual filesystem with planning and task delegation. | Experimental |
+| **[`v1/`](v1/)** | **Capability-maximal origin.** LangGraph supervisor + 13 specialized ReAct agents, runtime tool synthesis, ~100+ Kubernetes tools, multi-provider LLM support. The original published architecture. | Legacy |
+
+**New here? Start with [`v4/`](v4/)** — it's the current implementation. `v1/` is the architecture described in the published paper (see [Citation](#citation)).
+
+> **Lineage:** v1 (capability-maximal) → *simplify* → v2 (lean, measurable) → *reframe* → v3 (framework-delegated) → *productionize* → v4 (platform).
+
+## Repository layout
+
+Responsibilities are split between the repo root and each version directory:
+
+- **Root — `Makefile` + `deploy/` + `scripts/`** manages the *shared infrastructure* every version runs against: one Kind cluster, one observability stack (Prometheus + Grafana + Loki), and one Langfuse instance with a shared project. Run `make help` at the root to list the infra targets.
+- **Per-version — `v4/Makefile`, etc.** each version directory has its own Makefile for *application* build/deploy and Python development, plus its own `docs/`, `tests/`, and packaging.
+
+Every top-level directory, and what it is for:
+
+| Directory | Purpose |
+|---|---|
+| `v1/` `v2/` `v3/` `v4/` | The four generations — see the table above. `v4/` is the one to run. |
+| `deploy/` | Shared-infrastructure manifests and charts: the Kind cluster, the Prometheus/Grafana/Loki stack, and Langfuse. Driven by the root `Makefile`, not by any single version. |
+| `scripts/` | Repo-wide helper scripts, including the two CI gates that need no virtualenv — `check-file-modes.sh` and `check-syntax-warnings.py`. |
+| `snap/` | `snapcraft.yaml` for the Snap Store package. Built by `.github/workflows/snap.yml`; publishing runs only from the canonical public repo. |
+
+Anything not listed here is not part of the published repository.
+
+## Shared infrastructure
+
+All versions run against one shared infrastructure stack rather than each standing up its own:
+
+- **One Kind cluster** — `make kind-cluster-create`
+- **One observability stack** (Prometheus + Grafana + Loki) — `make monitoring-install`
+- **One Langfuse instance + shared project** — `make langfuse-provision`, then `make langfuse-install`
+- **Local hosts entry** — `make hosts-entry`
+
+`make langfuse-provision` auto-creates a shared Langfuse project and token and fans the keys into each version's `.env` (no manual UI step). All versions share **one** Langfuse project; per-version cost is filtered by a `version:vN` trace tag.
+
+### Quick start (laptop + Kind)
+
+From the repository root:
+
+```bash
+make kind-cluster-create     # one shared Kind cluster
+make monitoring-install      # Prometheus + Grafana + Loki
+make langfuse-provision      # create shared Langfuse project + token, fan keys into each .env
+make langfuse-install        # deploy Langfuse
+make hosts-entry             # add local hosts entry
+```
+
+Then build and deploy a version's application:
+
+```bash
+cd v4
+make kind-build-kubeintellect
+make kind-deploy-kubeintellect
+```
+
+Run `make help` at the root at any time to see the available infra targets.
+
+## Documentation
+
+- **[Website](https://kubeintellect.com/)** — overview, live demo, and hosted API.
+- **[v4 docs](v4/docs/)** — install, quickstart, configuration, architecture, security, CLI reference, and troubleshooting for the current version.
+- **[Data handling](v4/docs/data-handling.md)** — what v4 sends to model and telemetry endpoints, stores, and redacts.
+- **[v4 README](v4/README.md)** — every install path in detail.
+- Each version directory (`v1/`–`v4/`) ships its own `README.md` and `docs/`.
+
+## Use cases
+
+- **Incident response** — "why is this pod crashlooping?" correlates events, logs, and metrics into a root-cause answer.
+- **Interactive diagnostics** — explore cluster state, restart counts, resource pressure, and PromQL/LogQL results conversationally.
+- **Guarded operations** — scale, restart, and delete with an explicit approval gate and RBAC, so an LLM never acts unilaterally.
+- **Learning & practice** — the `init` wizard can deploy broken-pod RCA scenarios to practice against.
+
+## How it compares
+
+| | KubeIntellect | Read-only AI diagnostics (e.g. k8sgpt) | Raw `kubectl` + dashboards |
+|---|---|---|---|
+| Natural-language Q&A | ✅ | ✅ | ❌ |
+| Correlates kubectl + Prometheus + Loki | ✅ | Partial | Manual |
+| Performs cluster actions | ✅ (approval-gated) | ❌ | ✅ (unguarded) |
+| Human-in-the-loop safety gate + RBAC | ✅ | n/a | ❌ |
+| Works with no LLM API key | ❌ | Varies (local models supported) | ✅ |
+| Runs fully offline / air-gapped | Partial (self-hosted models only) | Varies | ✅ |
+| Per-query cost | LLM tokens | LLM tokens | No LLM cost |
+| Project maturity & community size | Young — small community | **Larger, more adopted** | Universal |
+
+Where the alternatives win is stated on purpose: if you only need read-only
+triage, or you cannot send cluster data to a hosted model, a read-only tool or
+plain `kubectl` may be the better fit. KubeIntellect earns its cost when you want
+conversational diagnosis *and* guarded action in one loop.
+
+## Limitations
+
+Known and deliberate, so you can judge fit before installing:
+
+- **An LLM API key is required.** OpenAI or Azure OpenAI out of the box; v4 also
+  supports Anthropic, Qwen, and OpenAI-compatible endpoints. Queries cost tokens.
+- **Cluster context leaves your network** unless you point it at a self-hosted or
+  in-cluster model endpoint. Review [SECURITY.md](SECURITY.md) and the
+  [data-handling notes](v4/docs/data-handling.md) before running it against
+  production.
+- **It is not a replacement** for your observability stack, a GitOps/CD pipeline,
+  or on-call judgment. It queries the tools you already run.
+- **LLM answers can be wrong.** The approval gate exists precisely because the
+  model's proposed action should be read before it runs. Do not enable
+  `--auto-approve` outside testing.
+- **Autonomy is capped at A1 by default** — detector firings open investigations;
+  automatic remediation (A3) requires an explicit allowlist.
+- **Young project.** APIs across `v1/`–`v4/` have changed between generations;
+  `v4/` is the supported line and the one to build on.
+
+## FAQ
+
+**Does it change my cluster automatically?** No. Read-only queries run immediately; any mutating action (scale/restart/delete) pauses for explicit human approval, subject to RBAC.
+
+**What LLM providers are supported?** OpenAI and Azure OpenAI out of the box (v4 also supports additional providers via configuration). An API key is required.
+
+**Do I need a cluster to try it?** No — use the [browser demo](https://kubeintellect.com/demo) or the read-only `kube-q` CLI. For full features, `kubeintellect init` creates a local Kind cluster for you.
+
+**Which version should I use?** [`v4/`](v4/) — it's the current, actively developed implementation.
+
+## Contributing
+
+**Contributions are wanted, and the barrier is deliberately low.** You do **not** need a
+Kubernetes cluster, a Docker daemon, or an LLM API key to contribute — the test suites are
+fully mocked. Python 3.12+ is the only prerequisite.
+
+```bash
+git clone https://github.com/MSKazemi/kubeintellect.git
+cd kubeintellect
+make setup     # installs the v4 workspace, then runs the exact gates CI runs (~1 min)
+```
+
+`make setup` ends by telling you whether your environment is correct, so you never debug your
+setup and your change at the same time. Prefer zero install? Open the repo in a
+[**GitHub Codespace**](https://codespaces.new/MSKazemi/kubeintellect) — `.devcontainer/` runs
+the same setup for you.
+
+| I want to… | Go here |
+|---|---|
+| **Find something to work on** | [`/contribute`](https://github.com/MSKazemi/kubeintellect/contribute) — the curated [`good first issue`](https://github.com/MSKazemi/kubeintellect/labels/good%20first%20issue) list, each scoped small on purpose |
+| **See a first PR done end to end** | [CONTRIBUTING.md → *Your first PR, start to finish*](CONTRIBUTING.md#your-first-pr-start-to-finish) — a real open issue, every command, nothing skipped |
+| **Contribute with an AI coding agent** | [AGENTS.md](AGENTS.md) — the machine-readable version of the rules. AI assistance is [explicitly welcome](CONTRIBUTING.md#ai-assistance); please just disclose it |
+| **Ask before writing code** | [Discussions](https://github.com/MSKazemi/kubeintellect/discussions) — questions are never a bother, and an unclear doc is our bug, not yours |
+| **Help without writing code** | Docs, a reproducible bug report, triage, testing on a platform we lack, or adding yourself to [ADOPTERS.md](ADOPTERS.md) — all credited equally |
+
+**What you can expect back:** every issue and PR gets a *human* first response — even if the
+answer is "not this way", it arrives rather than silence ([TRIAGE.md](TRIAGE.md)). Every merged
+contributor is named in the release notes. And one thing that will look broken but isn't —
+**on a first-time contributor's fork PR,
+GitHub runs no CI until a maintainer approves the run**, so your PR sits with no checks. That is
+expected, it is not your mistake, and you do not need to do anything.
+
+## Maintainer
+
+KubeIntellect was created by **[Mohsen Seyedkazemi Ardebili](https://github.com/MSKazemi)**
+([homepage](https://mskazemi.com)), who maintains it today — see [GOVERNANCE.md](GOVERNANCE.md).
+The shipped code is the work of the people named below as well, and that list is meant to grow.
+
+Where the project is going — and what it deliberately **won't** do — is in **[ROADMAP.md](ROADMAP.md)**. It has one maintainer today; the contributor ladder in [GOVERNANCE.md](GOVERNANCE.md) is a real invitation, not a formality, and areas are genuinely available to own.
+
+If KubeIntellect is useful to you, a ⭐ helps other people find it — and [#51](https://github.com/MSKazemi/kubeintellect/issues/51) is where to say what you're using it for.
+
+### Contributors
+
+Everyone other than the maintainer who has moved this project forward. **A merged commit is
+not the entry fee** — a bug report, a platform verification, a review, an argument that changed
+a design decision, or work that is in progress right now all count, and several people below
+have no merged commit at all. Rows grow as people do more; nobody is ever removed.
+
+The list is short because the project is young — which is exactly why being on it is worth
+something.
+
+| | Contributed |
+|---|---|
+| **[@hariomlohardev](https://github.com/hariomlohardev)** | Removed the executable bit from 94 non-script modules ([#70](https://github.com/MSKazemi/kubeintellect/pull/70)) — mode-only, zero content lines, and it fixed the cause rather than silencing the rule. Also [#57](https://github.com/MSKazemi/kubeintellect/pull/57) and [#65](https://github.com/MSKazemi/kubeintellect/pull/65). Cleared three ruff-0.16 rule families ([#110](https://github.com/MSKazemi/kubeintellect/pull/110)) without touching `UP045`, the one whose autofix would have disabled RBAC and the HITL gate. Wrote the `DeploymentRolloutStuck` playbook ([#112](https://github.com/MSKazemi/kubeintellect/pull/112)) — the first to route to downstream playbooks instead of duplicating them, and the first with an `expected_evidence` entry naming when it does **not** apply. Then took on the whole `kq` cookbook gap in one sitting — worked examples for the eight undocumented subcommands ([#119](https://github.com/MSKazemi/kubeintellect/pull/119)–[#126](https://github.com/MSKazemi/kubeintellect/pull/126)), every transcript real and re-verified byte-for-byte against `kube-q` 1.5.0 — plus the `PvcPending` and `LivenessProbeFailing` playbooks ([#127](https://github.com/MSKazemi/kubeintellect/pull/127), [#128](https://github.com/MSKazemi/kubeintellect/pull/128)), the `.env.example` restore ([#117](https://github.com/MSKazemi/kubeintellect/pull/117)) — where he found the live cause, a `.gitignore` pattern, rather than the one the issue blamed — and the Homebrew style pass ([#118](https://github.com/MSKazemi/kubeintellect/pull/118)). |
+| **[@AdvaitVarhade](https://github.com/AdvaitVarhade)** | Fixed the demo UI's `set-state-in-effect` errors ([#73](https://github.com/MSKazemi/kubeintellect/pull/73)) — and corrected the issue itself, which had named the wrong file. Also proposed the `kq export` command and reported the Python 3.13 syntax warnings. |
+| **[@shaurya703](https://github.com/shaurya703)** | Repointed the PyPI metadata at the canonical repository ([#78](https://github.com/MSKazemi/kubeintellect/pull/78)) and spotted the same defect in `mkdocs.yml`, which led to a 13-file sweep. Also cleared the `I001` import backlog ([#77](https://github.com/MSKazemi/kubeintellect/pull/77)). Then closed the `#136`/`#156` encoding class outright ([#161](https://github.com/MSKazemi/kubeintellect/pull/161)) — 62 call sites named an encoding, deliberately including the tests and probes, because a gate that exempts the places nobody looks is where this bug survived in the first place — and left behind `scripts/check-text-encoding.py` so it cannot come back. Stdlib-only and independent of ruff, so the `<0.16` pin's blind spot cannot reach it. |
+| **[@uuzzrm](https://github.com/uuzzrm)** | Wrote [`v4/docs/data-handling.md`](v4/docs/data-handling.md) ([#105](https://github.com/MSKazemi/kubeintellect/pull/105)) — the page that states what reaches a model provider, what is persisted, and precisely where the redactor does **not** apply. Every claim in it was verified against source. Their honest test-failure report also uncovered [#106](https://github.com/MSKazemi/kubeintellect/issues/106), a real environment-sensitivity bug in our own suite. Also fixed the Homebrew formula ([#111](https://github.com/MSKazemi/kubeintellect/pull/111)) — and reported plainly that they could not run `brew` rather than passing static checks off as an install test. Later made the memory recall similarity floor configurable ([#116](https://github.com/MSKazemi/kubeintellect/pull/116)) — one setting replacing the same constant hard-coded independently in two recall modules, with tests that pin the default and prove the override reaches both paths. It merged unchanged. Then two fixes in one week that both arrived with real regression tests: playbook YAML read as UTF-8 ([#138](https://github.com/MSKazemi/kubeintellect/pull/138)) — on a non-UTF-8 locale the loader's per-file `except` swallowed a `UnicodeDecodeError` and the server came up with **zero** playbooks and nothing that looked like a failure — and a bounded repair loop for triage JSON ([#133](https://github.com/MSKazemi/kubeintellect/pull/133)), so one malformed model reply no longer silently converts a chat question into a full cluster investigation. |
+| **[@ybayraktarb](https://github.com/ybayraktarb)** | First to answer a **no-code verification** issue end to end ([#100](https://github.com/MSKazemi/kubeintellect/issues/100)) — ran the documented install path on k3s/k3d (macOS, OrbStack), a platform CI does not cover, and reported what actually happened rather than that it worked. Independently confirmed that a `readonly` key blocks a mutating operation **before** the HITL prompt, which until then only our own tests asserted. The run also surfaced that the README quickstart had never worked — `kq "question"` reads the first positional as a subcommand — and the fix and the first [ADOPTERS.md](ADOPTERS.md) entry came as one PR ([#151](https://github.com/MSKazemi/kubeintellect/pull/151)). Then ran the actual, never-before-tried `brew install` of the `kube-q` Homebrew formula ([#113](https://github.com/MSKazemi/kubeintellect/issues/113)) — a clean `brew audit --strict`, a from-source build (`pydantic-core` via maturin/rust, `PyYAML` against `libyaml`) in ~6 minutes, and a working `kq --version`. Also caught that Homebrew 6.0's new tap-trust feature blocks the documented `brew tap` step until `brew trust --formula` runs first, which went straight into the install docs. |
+| **[@floze-the-genius](https://github.com/floze-the-genius)** | Made the `kq` suite independent of the terminal it runs in ([#109](https://github.com/MSKazemi/kubeintellect/pull/109)) — tests used to fail on a narrow or `NO_COLOR` terminal before a contributor changed anything. Pinned the environment in `pytest_configure`, **before** module import, which is what a fixture alone cannot do, and **without weakening a single assertion**. Reported a five-environment before/after matrix in which every number reproduced independently. |
+| **[@Priyanshu608](https://github.com/Priyanshu608)** | Wrote the `NetworkPolicyBlocking` playbook ([#108](https://github.com/MSKazemi/kubeintellect/pull/108)) — the 19th, and the only one whose signal is the **absence** of evidence: a policy denial is dropped in the CNI datapath, so no event is ever emitted and the connection simply hangs. Captured that as a positive finding rather than a gap. |
+| **[@Chris7717](https://github.com/Chris7717)** | Wrote the `HPANotScaling` playbook ([#114](https://github.com/MSKazemi/kubeintellect/pull/114)) — reproduced **both** root causes on a real kind cluster (metrics-server unreachable, and a container with no `resources.requests.cpu`) and took the investigation steps and expected evidence from actual `kubectl` output rather than inventing them. Also filed [#115](https://github.com/MSKazemi/kubeintellect/issues/115): a clone had no `.env.example` although the docs, README and Makefile all told you to copy it. The report pointed straight at the right file, and chasing it down found the live cause — `.gitignore`'s `.env.*` glob matches `.env.example` too, so the template could not be committed back at all. |
+| **[@AshSgDe29071999](https://github.com/AshSgDe29071999)** | Independently diagnosed the terminal-sensitivity bug and submitted the fixture-only fix ([#107](https://github.com/MSKazemi/kubeintellect/pull/107)). It did not merge — #109 arrived against a claimed issue — but running it as a control is the only reason we know the `pytest_configure` hook is load-bearing rather than incidental. The `claimed` label exists because of the collision they hit. |
+| **[@be-student](https://github.com/be-student)** | Fixed the fault-isolation hole in parallel tool batches ([#183](https://github.com/MSKazemi/kubeintellect/pull/183), closing [#174](https://github.com/MSKazemi/kubeintellect/issues/174)) — one malformed `kubectl` call raised straight out of LangGraph's parallel `ToolNode` and discarded every *successful* investigation result in the same batch, so a six-command diagnosis returned nothing. They found the right seam (`awrap_tool_call`) rather than widening a `try` around the graph, and the regression builds a **real compiled LangGraph** with seven parallel calls and proves the six good results survive — a test that genuinely fails without the fix. They also kept the HITL interrupt escaping the boundary unchanged and put both the command and the failure reason through `redact_secrets`, which is the part most fault-isolation patches get wrong. |
+| **[@biggdawg320](https://github.com/biggdawg320)** | Wrote the `PodDisruptionBudgetBlocking` playbook ([#196](https://github.com/MSKazemi/kubeintellect/pull/196)) — a voluntary eviction refused by a PDB, which is one of the harder Kubernetes failures to diagnose because nothing looks broken. Two judgement calls stand out. They kept `detect: null` and said why: an eviction refusal is an API response or drain stderr, not a Warning Event, and Karpenter reports PDB blockers as **Normal** events — so there was nothing honest to compile into a watch predicate. And they encoded that **zero allowed disruptions is legitimate availability policy, not an incident**, with a negative test proving a `kubectl get pdb` table showing `0` does not fire the playbook. The fix template refuses to delete the PDB or reach for `drain --disable-eviction`. They also added read-only `policy/poddisruptionbudgets` to both shipped roles and extended the RBAC-coverage test that derives its list from the playbooks. Reported their validation honestly, explicitly **not** claiming full suites green and running the unchanged base as a control to separate their changes from pre-existing Windows failures. Then wrote the fork-PR section of [`TRIAGE.md`](TRIAGE.md) ([#198](https://github.com/MSKazemi/kubeintellect/pull/198)), which records the trap that a workflow run awaiting maintainer approval reports `status: completed` with `conclusion: action_required` — so `completed` alone does not mean success — and separates workflow approval from code-review approval, the conflation that produced [#170](https://github.com/MSKazemi/kubeintellect/issues/170). And a third: `StatefulSetRolloutStuck` ([#202](https://github.com/MSKazemi/kubeintellect/pull/202)), where they assessed the scope **before** claiming it and correctly argued that no snapshot signal distinguishes a normal rollout wait from a stalled one — so the triggers match only the StatefulSet controller's own creation-failure messages, checked against `stateful_pod_control.go` rather than invented, with a multi-line negative test proving a `successful` line for one object cannot pair with a `failed error:` from another. They ran the red-green themselves and reported both halves (3 failed before the YAML, 14 passing after). |
+| **[@1cbyc](https://github.com/1cbyc)** | Shipped the `subprocess.run(..., text=True)` encoding fix ([#168](https://github.com/MSKazemi/kubeintellect/issues/168), [#213](https://github.com/MSKazemi/kubeintellect/pull/213)) — and **changed the plan before writing a line of code**. The issue recorded the maintainer's inclination as *"`errors="replace"` on log/output reads and strict elsewhere"*; they argued the line belongs somewhere better: strict `utf-8` for identifiers and structured command output, because replacement can turn operational data into a **plausible wrong answer**, and `errors="replace"` only where the purpose is displaying free-form logs. That is the reasoning this project exists to protect, and it arrived from someone who had not yet touched the repo. Their PR shipped it correctly everywhere they applied it; three remaining content sites the maintainer caught in review (`context_fetcher`'s cluster snapshot, `gitops`, `helm_tool`) were finished on top with credit intact. |
+| **[@Ryota-Di](https://github.com/Ryota-Di)** | Fixed `kubeintellect service start` and `service stop` exiting 0 after systemd refused ([#189](https://github.com/MSKazemi/kubeintellect/issues/189), [#208](https://github.com/MSKazemi/kubeintellect/pull/208)) — a confident success reported for work that did not happen, which any script or CI step reading the exit code would have believed. The part worth naming is what they did **not** change: `service status` and `service logs` keep discarding their return codes, because `systemctl status` returns non-zero for a perfectly valid inactive unit and `journalctl -f` returns non-zero when the operator presses Ctrl-C — so treating either as a failure would have traded one wrong answer for another. They rewrote the surviving audit-allowlist reasons in exit-code terms rather than pointing at the entries they deleted, which is what the dead-entry guard would have caught otherwise, and their regression pins the propagated code rather than merely asserting non-zero. |
+| **[@RahulSinha9](https://github.com/RahulSinha9)** | Independently wrote a TLS certificate-expiry playbook ([#211](https://github.com/MSKazemi/kubeintellect/pull/211)) within a day of [@biggdawg320](https://github.com/biggdawg320)'s ([#210](https://github.com/MSKazemi/kubeintellect/pull/210)) — two people reaching for the same missing capability at once, which is the clearest signal a project can get that the gap was real. Their guide covered ground the other did not: the concrete SNI inspection (`openssl s_client -servername`), reading validity and SAN coverage from `tls.crt` without ever touching `tls.key`, and the distinction that an **unexpired** certificate still fails verification when its SAN does not cover the requested hostname — a different failure needing a different repair. Those steps are folded into the shipped playbook. |
+| **[@Lumbenlengo](https://github.com/Lumbenlengo)** | Verified the install path on **Amazon EKS** (`v1.34`, [#101](https://github.com/MSKazemi/kubeintellect/issues/101)) — `pip install` / `init` / `serve` completed cleanly, a readonly key blocked a mutating `scale` with no approval prompt shown, and a stray `| wc -l` was correctly refused by the command guard rather than let through. Reported that the local install path authenticates via kubeconfig and the AWS CLI (`aws eks get-token`), not IRSA — IRSA only applies running *inside* the cluster — which is now in the install docs. Then came back for the in-cluster half ([#239](https://github.com/MSKazemi/kubeintellect/issues/239), EKS `1.34.11`) and ran it as a real negative control rather than a happy path: with no static keys and no kubeconfig in the pod and EC2 instance metadata blocked, the SDK still authenticated via `AssumeRoleWithWebIdentity` and resolved the expected role — which is what actually proves the credential came from the projected ServiceAccount token. Doing it on a *fresh* cluster also surfaced the prerequisite the deploy guide never stated: with no EBS CSI driver and no default StorageClass, the Postgres PVC simply hangs `Pending` and the install never completes. Both are now documented. Then verified **Alibaba Cloud ACK** ([#237](https://github.com/MSKazemi/kubeintellect/issues/237), PR [#253](https://github.com/MSKazemi/kubeintellect/pull/253)) — the first non-AWS managed platform: ACK's client-certificate kubeconfig (no CLI-brokered token, unlike EKS) worked with no extra tooling, and a `readonly` key was refused a `scale` before any approval prompt, with the replica count shown unchanged. |
+| **[@Piyush22070](https://github.com/Piyush22070)** | Verified the install path on **OpenShift / OKD** ([#104](https://github.com/MSKazemi/kubeintellect/issues/104), [#228](https://github.com/MSKazemi/kubeintellect/pull/228)) — the platform whose SecurityContextConstraints reject manifests that work everywhere else, and confirmed `pip install` / `init` / `serve` hit no SCC friction on a real 3-node cluster. Flagged honestly that RBAC and LLM-backed query behavior stayed unverified for lack of an active paid LLM key — a real gap in the issue's ask, not a shortcut taken — and the shipped docs note says exactly that rather than the broader claim the draft PR first used. |
+
+Every merged contribution is credited by name in [CHANGELOG.md](CHANGELOG.md) and in the
+release notes.
+
+**Non-code work is credited as a first-class contribution type.** The project follows the
+[All Contributors](https://allcontributors.org/) specification (`.all-contributorsrc`), so
+documentation, bug reports, reviews, ideas, triage, and **verifying KubeIntellect on a
+Kubernetes platform our CI does not cover** are all recorded — not just merged commits.
+
+**Your name goes up when you start, not when you merge.** Claim an issue and you are added to
+the table that day, marked 🛠️ as in progress, with a row saying what you took on. When the work
+lands the row is rewritten to say what you did. If it does not land — you ran out of time, the
+cluster went away, life happened — **the row stays**, because deciding to help is a real thing
+that happened and pretending otherwise is how projects teach people not to volunteer. Nobody is
+ever removed from this table.
+
+That last one is a real, open lane: CI runs on Kind only, so nobody has confirmed the install
+path on **GKE or AKS** (k3s/k3d is covered by @ybayraktarb above, OpenShift/OKD by
+@Piyush22070, EKS by @Lumbenlengo). Those issues need a cluster and about an hour, and
+**no Python at all** — see
+[`area/deploy`](https://github.com/MSKazemi/kubeintellect/issues?q=is%3Aopen+label%3Aarea%2Fdeploy).
+A report saying *"it did not work, here is exactly where it stopped"* is the single most useful
+thing the project cannot get any other way.
+
+> **One honest caveat.** GitHub's Contributors graph counts *merged commits* only, so a comment
+> or a platform report will not appear there however valuable it is. If you want to be on that
+> graph too, the one-line docs PR that comes out of what you found will do it — and is usually
+> warranted anyway. See [GOVERNANCE.md](GOVERNANCE.md) for the full ladder.
+
+## License
+
+[MIT](LICENSE)
+
+## Citation
+
+If you use KubeIntellect in your research, please cite the paper (metadata in [CITATION.cff](CITATION.cff)):
+
+> Seyedkazemi Ardebili, M., & Bartolini, A. (2026). *KubeIntellect: A Modular LLM-Orchestrated Agent Framework for End-to-End Kubernetes Management.* Journal of Grid Computing, 24(3). https://doi.org/10.1007/s10723-026-09837-6

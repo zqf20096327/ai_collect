@@ -1,0 +1,112 @@
+
+<p align="center">
+  <img height="420" alt="dataPipelineOverview_v3_README" src="https://github.com/user-attachments/assets/e36ddf75-02c9-423a-9505-013e839e183a" />
+</p>
+
+
+**EBA eliminates the steepest barrier to building machine 
+learning applications for Bitcoin: 
+the lack of structured, ML-native data.** 
+EBA interfaces with the Bitcoin network and 
+creates a graph of the full history of transactions recorded on-chain. 
+On this graph, the nodes are Bitcoin _scripts_ (aka _addresses_), 
+and the edges between them represent transactions recorded on-chain via the UTxO model.
+Simply put, 
+the graph represents a transaction between _addresses_ `x` and `y` as 
+a time-stamped, directed edge between their corresponding nodes. 
+Consequently, the flow of how funds are earned and spent can be traced 
+by traversing these paths.
+
+
+<p align="center">
+    |
+    <a href="https://eba.b1aab.ai/docs/gs/welcome">Read More</a> 
+    |
+    <a href="https://eba.b1aab.ai/docs/publications">NeurIPS 2025 Spotlight</a> 
+    |
+</p>
+
+
+
+> [!IMPORTANT]
+> [See the graph in action!](https://demo.b1aab.ai) 🚀
+> 
+> Trace the real-world transaction topology of the mysterious _Individual X_ in [our live interactive demo](https://demo.b1aab.ai);
+> a sneak peek into the upcoming **EBA v2**! 
+>
+>  Or [watch the presentation](https://www.youtube.com/watch?v=327Q97uo4pw) [(slides)](https://docs.google.com/presentation/d/1BWJutm-5GMxFCUB59og05l6nmS2xhJ7yJ6xZMG7ufro/edit?usp=sharing)
+
+
+
+This graph is built natively for machine learning, 
+particularly Graph Neural Networks (GNNs). 
+It enables models to aggregate information from neighbors 
+through message passing and learn the deep topology of 
+fund flows across the cryptocurrency ecosystem.
+
+<p align="center">
+    |
+    <a href="https://github.com/B1AAB/GraphStudio/blob/main/g101/g101.ipynb">101 Quick Start Jupyter Notebook</a> 
+    |
+    <a href="https://github.com/B1AAB/GraphStudio">Explore Example Applications</a> 
+    |
+</p>
+
+
+
+The Bitcoin Graph that EBA creates encompasses 
+the complete trading details of over `8.72` billion BTC,
+and it consists of over `2.4` billion nodes and 
+`39.72` billion time-stamped edges spanning more than a decade.
+We share the complete ETL pipeline and all the data it generates.
+
+
+<p align="center">
+    |
+    <a href="https://eba.b1aab.ai">Documentation</a> 
+    |
+    <a href="https://eba.b1aab.ai/docs/gs/quickstart">Quick Start</a> 
+    |
+    <a href="https://eba.b1aab.ai/releases/tags/data-releases">Data Releases</a> 
+    |
+</p>
+
+
+To simplify working with the pipeline and its resources, 
+we have split them into separate repositories. 
+The following resource map will help you navigate to the resources that suit your application. 
+
+
+```mermaid
+graph LR
+    bitcoin{{Bitcoin Core}} --> eba(EBA);
+    eba --> tsv[\Graph in TSV\];
+    eba --> neo4j[\Graph in Neo4j\];
+    neo4j --> neo4jDump[\Neo4j dump\];
+
+    subgraph gStudio[Graph Studio]
+        direction TB
+
+        apps>Applications];
+
+        offchain[/Off-chain Resources/];
+
+        %%offchain --> apps;
+    end
+
+    eba --> coms[\Sampled Communities\];
+    coms --> apps;    
+
+    %% --- Link Definitions ---
+    click eba "https://eba.b1aab.ai" "EBA"
+    click offchain "https://github.com/B1AAB/GraphStudio/blob/main/off_chain_resources/" "Off-chain Resources"
+    click apps "https://github.com/B1AAB/GraphStudio/blob/main/quickstart/" "Off-chain Resources"
+    click neo4j "https://eba.b1aab.ai/releases/data-release/v1" "Graph in Neo4j"
+    click neo4jDump "https://eba.b1aab.ai/releases/data-release/v1" "Neo4j Dump"
+    click coms "https://www.kaggle.com/datasets/aab/bitcoin-graph-sampled-communities" "Sampled Communities"
+    click tsv "https://eba.b1aab.ai/releases/data-release/v1" "Graph in TSV"
+
+    %% --- Styling ---
+    %%style eba fill:#ff9e00,stroke:#ff9e00,color:#000
+    style eba fill:#5a189a,stroke:#5a189a,color:#fff
+```

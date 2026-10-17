@@ -1,0 +1,95 @@
+# Ayna
+
+A native agentic AI client for macOS, iOS, and watchOS, built with SwiftUI.
+
+## Screenshots
+
+![Compare responses from multiple AI models side by side](docs/images/ayna-multi-model.jpg)
+
+| Multi-provider models | Built-in and MCP tools |
+| :---: | :---: |
+| ![Configure OpenAI, Anthropic, and Apple Intelligence models](docs/images/ayna-models.jpg) | ![Manage web search, agentic tools, and MCP servers](docs/images/ayna-tools.jpg) |
+| Agent permissions | Memory |
+| ![Control permissions for filesystem and command tools](docs/images/ayna-agentic-tools.jpg) | ![Manage remembered facts and conversation context](docs/images/ayna-memory.jpg) |
+
+## Features
+
+- 💬 **Fast & Native**: Streaming chat interface tailored for Apple platforms.
+- ☁️ **Multi-Provider**: Native support for OpenAI, [Anthropic](https://www.anthropic.com), and Azure OpenAI. Also works with any OpenAI-compatible endpoint (Gemini, Ollama, etc.).
+- 🔀 **Multi-Model Chat**: Compare responses from multiple models simultaneously.
+- 🍎 **Apple Intelligence**: Uses the on-device Apple Intelligence API when available (macOS/iOS).
+- 🏠 **Local Models**: Connect to local servers like Ollama via custom endpoint.
+- 🛠️ **MCP Support**: Use Model Context Protocol (MCP) tools.
+- 🎨 **Image Generation**: Create images using models like `gpt-image-1`.
+- 🧠 **Memory**: Remember facts across conversations with natural language commands.
+- 🗂️ **Organization**: Searchable conversations with auto-generated titles.
+- 🔒 **Secure**: API keys stored in Keychain; conversations encrypted on disk.
+- 📝 **Export**: Save chats as Markdown or PDF.
+- ⌚ **watchOS Companion**: Quick chat access from your Apple Watch.
+
+## Getting Started
+
+### Installation
+
+1. Grab the latest `.dmg` from the [Releases page](https://github.com/sozercan/ayna/releases).
+2. Open the disk image and drag **Ayna.app** into your **Applications** folder.
+3. App is quarantined because it's not notarized. To remove the quarantine, run this command in Terminal:
+  ```bash
+  xattr -dr com.apple.quarantine /Applications/Ayna.app
+  ```
+4. Launch **Ayna** from Applications.
+
+### Homebrew
+
+You can also install Ayna via Homebrew:
+
+```bash
+brew tap sozercan/ayna
+brew install --cask ayna
+```
+
+### Requirements
+
+- macOS 26.0 (Tahoe) or newer, iOS 26.0 or newer, or watchOS 26.0 or newer.
+- An API key for OpenAI, Anthropic, or Azure OpenAI (optional if using local models).
+
+## User Guide
+
+### Connect to AI Providers
+1. Open **Settings** (`Cmd+,`) → **Models**.
+2. Select your provider and add a model:
+   - **OpenAI**: Use the default endpoint or a custom OpenAI API-compatible endpoint.
+   - **Anthropic**: Use the default endpoint or a custom Anthropic API-compatible endpoint.
+   - **Azure**: Use `https://<resource>.openai.azure.com` (Azure OpenAI) or `https://<resource>.services.ai.azure.com` (Microsoft Foundry) with your deployment name as the model.
+   - **Apple Intelligence**: For on-device inference.
+3. Start chatting!
+
+### Multi-Model Chat
+1. Start a **New Chat** (`Cmd+N`).
+2. In the model selector, choose **multiple models** (e.g., GPT-4o and Claude 3.5 Sonnet).
+3. Send your prompt.
+4. Ayna will stream responses from all selected models in parallel, allowing you to compare their outputs side-by-side.
+
+### Enable Tools (MCP)
+1. Go to **Settings** → **Tools**.
+2. Add an MCP server to give the AI more capabilities.
+
+### Keyboard Shortcuts
+- `Cmd+N`: New conversation
+- `Cmd+,`: Open Settings
+- `Enter`: Send message
+- `Shift+Enter`: New line
+
+## Privacy
+
+- **No Telemetry**: We don't track your usage.
+- **Local Storage**: Conversations are encrypted and stored only on your device.
+- **Secure Keys**: API keys are stored securely in the system Keychain.
+
+## Contributing
+
+Developers, please see [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions, architecture details, and testing guidelines.
+
+## Support
+
+Found a bug? Open an [issue](https://github.com/sozercan/ayna/issues).

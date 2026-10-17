@@ -1,0 +1,163 @@
+# skills
+Repositório com minhas skills para Claude, Claude Code, Antigravity, Gemini Spark, Gemini App, Manus, Perplexity, Opencode, Agno, ADK, OpenClaw, Windsurf, Qwen Code e demais sistemas agênticos.
+
+[![Made with Python](https://img.shields.io/badge/Python->=3.10-blue?logo=python&logoColor=white)](https://python.org "Go to Python homepage")
+![license - Apache 2.0](https://img.shields.io/badge/license-Apache2.0-green)
+[![site - prazocerto.me](https://img.shields.io/badge/site-prazocerto.me-230023)](https://prazocerto.me/contato "Solicite um orçamento")
+[![linkedin - @marioluciofjr](https://img.shields.io/badge/linkedin-marioluciofjr-blue)](https://linkedin.com/in/marioluciofjr "Solicite conexão no meu LinkedIn")
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/marioluciofjr/skills)
+
+## Índice
+
+* [Introdução](#introdução)
+* [Estrutura do projeto](#estrutura-do-projeto)
+* [Como adicionar uma skill deste repositório no Claude](#como-adicionar-uma-skill-deste-repositório-no-claude)
+* [Como adicionar uma skill deste repositório no Gemini App](#como-adicionar-uma-skill-deste-repositório-no-gemini-app)
+* [Como adicionar uma skill deste repositório no Antigravity](#como-adicionar-uma-skill-deste-repositório-no-antigravity)
+* [Tecnologias utilizadas](#tecnologias-utilizadas)
+* [Links úteis](#links-úteis)
+* [Contribuições](#contribuições)
+* [Licença](#licença)
+* [Contato](#contato)
+
+## Introdução
+Este repositório reúne variadas skills para serem utilizadas em sistemas agênticos. Para saber mais detalhes sobre o conceito de skills e sua estrutura, basta verificar a seção de [Links úteis](#links-úteis).
+
+## Estrutura do projeto
+Cada pasta é uma skill diferente. Para baixar os arquivos .ZIP de maneira separada, só acessar os links abaixo:
+* [prompt-personagem](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/prompt-personagem)
+* [alt-text](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/alt-text)
+* [prompt-estruturado](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/prompt-estruturado)
+* [analise-semiotica](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/analise-semiotica)
+* [prompt-skills](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/prompt-skills)
+* [calculadora-cdi](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/calculadora-cdi)
+* [bbb-estatisticas](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/bbb-estatisticas)
+* [diagrama-mermaid](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/diagrama-mermaid)
+* [analise-swot](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/analise-swot)
+* [discurso-tadeu](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/discurso-tadeu)
+* [gerador-soul](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/gerador-soul)
+* [gerador-de-agentes](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/gerador-de-agentes)
+* [trends-keywords](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/trends-keywords)
+* [contexto-sotaque](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/contexto-sotaque)
+* [resume-papers](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/resume-papers)
+* [mei-irpf](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/mei-irpf)
+* [design-thinking-mjv](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/design-thinking-mjv)
+* [metodo-3w1h](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/metodo-3w1h)
+* [resumo-star](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/resumo-star)
+* [empatias](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/empatias)
+* [paralelismo-negativo](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/paralelismo-negativo)
+* [aos-fatos](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/aos-fatos)
+* [lorem-picsum](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/lorem-picsum)
+* [padrao-pts](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/padrao-pts)
+* [remote-mcp](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/remote-mcp)
+* [spotify-audio-url](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/spotify-audio-url)
+* [eeat-audit](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/eeat-audit)
+* [craque-neto](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/craque-neto)
+* [redacao-enem](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/redacao-enem)
+* [motion-apresentacao](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/motion-apresentacao)
+* [image-to-gif](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/image-to-gif)
+* [codigos-nfse](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/codigos-nfse)
+* [flip-horizontal](https://downgit.github.io/#/home?url=https://github.com/marioluciofjr/skills/tree/main/flip-horizontal)
+
+## Como adicionar uma skill deste repositório no Claude
+
+O passo a passo: 
+
+1. Em [Estrutura do projeto](#estrutura-do-projeto), clique no link da skill que deseja baixar a pasta .ZIP
+2. Entre no [Claude](https://claude.ai/new)
+3. Acesse o ícone 'Personalizar' ![Image](https://github.com/user-attachments/assets/0939a2d2-28f0-49f7-b527-00c0f7fc5fc4)
+4. Clique em 'Habilidades' ![Image](https://github.com/user-attachments/assets/f5a31a26-34f8-43cd-b19d-5c8443d810ac)
+5. Clique no menu suspenso 'Adicionar' ![Image](https://github.com/user-attachments/assets/3d9b6977-7229-45f9-8f7d-443a19c173bf)
+6. Escolha a opção 'Fazer upload de uma habilidade'
+7. Faça o upload da pasta .ZIP que acabou de baixar deste repositório
+
+Se tiver dúvidas, só acessar os [Links úteis](#links-úteis)
+
+## Como adicionar uma skill deste repositório no Gemini App
+
+O passo a passo: 
+
+1. Em [Estrutura do projeto](#estrutura-do-projeto), clique no link da skill que deseja baixar a pasta .ZIP
+2. Entre no [Gemini](https://gemini.google.com/app)
+3. Acesse 'Configurações', que fica no rodapé da barra lateral
+4. Clique em 'Habilidades' ![Image](https://github.com/user-attachments/assets/f5a31a26-34f8-43cd-b19d-5c8443d810ac)
+5. Escolha a opção 'Enviar uma habilidade'
+6. Faça o upload da pasta .ZIP que acabou de baixar deste repositório
+
+Se tiver dúvidas, só acessar os [Links úteis](#links-úteis)
+
+## Como adicionar uma skill deste repositório no Antigravity
+<img width="348" height="170" alt="Image" src="https://github.com/user-attachments/assets/145da45d-dc81-47e6-8a38-d2ad5a0519d0" /><br><br>
+
+Delegue essa tarefa para o Antigravity instalar a skill. Basta só colocar este prompt abaixo no Agent do Antigravity e dar ENTER:
+
+```text
+## contexto
+DIRETÓRIO PRINCIPAL = .gemini\antigravity
+COMANDO = npx skills add https://github.com/marioluciofjr/skills --skill NOME DA SKILL --agent antigravity --yes
+
+## tarefa
+Pense passo a passo para executar a tarefa:
+1 - Busque no computador o DIRETÓRIO PRINCIPAL definido no contexto.
+2 - Use o COMANDO definido no contexto e dê enter.
+3 - Verifique se a instalação deu certo, pois deve aparecer `◇  Installation complete`.
+4 - Verifique se no DIRETÓRIO PRINCIPAL já tem uma pasta chamada skills. Se tiver, pule para a próxima etapa. Se não tiver, crie para ficar assim .gemini\antigravity\skills
+5 - Mova as skills deste diretório .gemini\antigravity\.agents\skills\ para este diretório .gemini\antigravity\skills
+6 - Exclua as pastas .gemini\antigravity\.agents e .gemini\antigravity\.agent
+7 - Finalize a tarefa
+```
+
+Se tiver dúvidas, só acessar os [Links úteis](#links-úteis)
+
+## Tecnologias utilizadas
+
+<table>
+  <tr>
+  <td><img height="60" width="80" src="https://camo.githubusercontent.com/a5c02c148c39e94df1be062d9ba35c3e2154aede22f8e95476492059ed5b3a1b/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f64657669636f6e732f64657669636f6e406c61746573742f69636f6e732f707974686f6e2f707974686f6e2d6f726967696e616c2d776f72646d61726b2e737667" /></td>
+  <td><img height="60" width="80" src="https://camo.githubusercontent.com/0d1832aec3509ce9c986e93f33c112c2da495e818f579e1dc1f03da116e5d9c4/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f64657669636f6e732f64657669636f6e406c61746573742f69636f6e732f79616d6c2f79616d6c2d6f726967696e616c2e737667" /></td>
+  <td><img height="60" width="80" src="https://camo.githubusercontent.com/ecba9820693ce92df70da152652c07adedcc44b5ee7dbc02ff863c6b546ec469/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f64657669636f6e732f64657669636f6e406c61746573742f69636f6e732f6d61726b646f776e2f6d61726b646f776e2d6f726967696e616c2e737667" /></td>
+  <td><img height="60" width="80" src="https://github.com/lobehub/lobe-icons/raw/master/packages/static-svg/icons/antigravity-color.svg" /></td>
+</tr>
+</table>
+
+* Python
+* Yaml
+* Markdown
+* Antigravity
+
+## Links úteis
+
+* [Como criar Skills personalizadas](https://support.claude.com/pt/articles/12512198-como-criar-skills-personalizadas) - Documentação prática da Anthropic sobre Skills.
+* [Skills - Anthropic](https://github.com/anthropics/skills/tree/main) - Repositório oficial da Anthropic sobre Skills.
+* [What are skills?](https://agentskills.io/what-are-skills) - Explicação detalhada sobre agent skills.
+* [Agent Skills](https://antigravity.google/docs/skills) - Documentação do Google Antigravity sobre Agent Skills.
+* [Usando Skills no Claude](https://support.claude.com/pt/articles/12512180-usando-skills-no-claude) - Documentação da Anthropic sobre como usar skills no Claude.
+* [Como instalar o VSCode](https://code.visualstudio.com/download)- Link direto para download.
+* [Como baixar o Antigravity](https://antigravity.google/download) - Página oficial de download da IDE do Google DeepMind.
+* [Documentação oficial do pacote uv](https://docs.astral.sh/uv/) - Você saberá todos os detalhes sobre o `uv` e como ele é importante no Python.
+* [venv — Criação de ambientes virtuais](https://docs.python.org/pt-br/3/library/venv.html) - Explicação completa de como funcionam os venvs.
+* [Conjunto de ícones de modelos de IA/LLM](https://lobehub.com/pt-BR/icons) - site muito bom para conseguir ícones do ecossistema de IA.
+* [Devicon](https://devicon.dev/) - site bem completo também com ícones gerais sobre tecnologia.
+* [DownGit](https://downgit.github.io/#/home) - Gera downloads automáticos de pastas zip a partir de arquivos específicos em repositórios do GitHub.
+* [Skills.sh](https://skills.sh) - Biblioteca completa da Vercel com várias skills disponíveis gratuitamente.
+* [Mermaid](https://github.com/mermaid-js/mermaid) - Repositório oficial da linguagem Mermaid.
+* [Criar e gerenciar habilidades para os apps do Gemini](https://support.google.com/gemini/answer/17094296?hl=pt-BR&co=GENIE.Platform%3DAndroid&sjid=17502553937028618307-SA)
+
+
+## Contribuições
+
+Contribuições são bem-vindas! Se você tem ideias para melhorar este projeto, sinta-se à vontade para fazer um fork do repositório.
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](https://github.com/marioluciofjr/skills/blob/main/LICENSE) para detalhes.
+
+## Contato
+    
+Mário Lúcio - Prazo Certo®
+<div>  	
+  <a href="https://www.linkedin.com/in/marioluciofjr" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white"></a> 
+  <a href = "mailto:marioluciofjr@gmail.com" target="_blank"><img src="https://img.shields.io/badge/-Gmail-%23333?style=for-the-badge&logo=gmail&logoColor=white"></a>
+  <a href="https://prazocerto.me/contato" target="_blank"><img src="https://img.shields.io/badge/prazocerto.me/contato-230023?style=for-the-badge&logo=wordpress&logoColor=white"></a>
+</div> 
+

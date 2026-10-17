@@ -1,0 +1,194 @@
+# DataMate All-in-One Data Work Platform
+
+<div align="center">
+
+[![Backend CI](https://github.com/ModelEngine-Group/DataMate/actions/workflows/docker-image-backend.yml/badge.svg)](https://github.com/ModelEngine-Group/DataMate/actions/workflows/docker-image-backend.yml)
+[![Frontend CI](https://github.com/ModelEngine-Group/DataMate/actions/workflows/docker-image-frontend.yml/badge.svg)](https://github.com/ModelEngine-Group/DataMate/actions/workflows/docker-image-frontend.yml)
+![GitHub Stars](https://img.shields.io/github/stars/ModelEngine-Group/DataMate)
+![GitHub Forks](https://img.shields.io/github/forks/ModelEngine-Group/DataMate)
+![GitHub Issues](https://img.shields.io/github/issues/ModelEngine-Group/DataMate)
+![GitHub License](https://img.shields.io/github/license/ModelEngine-Group/datamate-docs)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ModelEngine-Group/DataMate)
+
+**DataMate is an enterprise-level data processing platform for model fine-tuning and RAG retrieval, supporting core
+functions such as data collection, data management, operator marketplace, data cleaning, data synthesis, data
+annotation, data evaluation, and knowledge generation.**
+
+[简体中文](./README-zh.md) | [English](./README.md)
+
+If you like this project, please give it a Star⭐️!
+
+</div>
+
+## 🌟 Core Features
+
+- **Core Modules**: Data Collection, Data Management, Operator Marketplace, Data Cleaning, Data Synthesis, Data
+  Annotation, Data Evaluation, Knowledge Generation.
+- **Visual Orchestration**: Drag-and-drop data processing workflow design.
+- **Operator Ecosystem**: Rich built-in operators and support for custom operators.
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Git (for pulling source code)
+- Make (for building and installing)
+- Docker (for building images and deploying services)
+- Docker-Compose (for service deployment - Docker method)
+- Kubernetes (for service deployment - k8s method)
+- Helm (for service deployment - k8s method)
+- **K8s deployment additionally requires**: [Sealed Secrets Controller](https://github.com/bitnami-labs/sealed-secrets) (for encrypted secret management)
+
+### Secret Management (K8s deployment only)
+
+DataMate K8s deployment uses **Bitnami Sealed Secrets** to manage sensitive configuration such as database passwords and JWT secrets. All secrets are stored in encrypted form in Git (`deployment/kubernetes/sealed-secrets/`) and automatically decrypted by the Sealed Secrets Controller in the cluster at deploy time.
+
+**Online environment - install Sealed Secrets Controller:**
+
+```bash
+# Install via Helm (recommended)
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm install sealed-secrets sealed-secrets/sealed-secrets -n kube-system
+
+# Verify installation
+kubectl get pods -n kube-system | grep sealed-secrets
+```
+
+**Air-gapped / offline environment:**
+
+1. Download the Sealed Secrets image on an internet-connected machine:
+   ```bash
+   # Download controller image (~60MB)
+   docker pull bitnami/sealed-secrets-controller:latest
+   docker save bitnami/sealed-secrets-controller:latest -o sealed-secrets-controller.tar
+   
+   # Download kubeseal CLI (for updating secrets)
+   # macOS:
+   brew install kubeseal
+   # Linux:
+   wget https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/kubeseal-linux-amd64
+   ```
+
+2. Transfer the image to your offline registry, then install via Helm with the custom image reference.
+
+**Updating secrets:**
+
+```bash
+# When passwords change, re-encrypt with kubeseal
+echo -n "new-password" | kubeseal --raw --name datamate-conf --namespace datamate --scope namespace-wide
+```
+
+> Note: Docker deployments do not require Sealed Secrets — secrets are managed via the `.env` file (excluded from Git via `.gitignore`).
+
+### Docker Quick deploy
+```shell
+wget -qO docker-compose.yml https://raw.githubusercontent.com/ModelEngine-Group/DataMate/refs/heads/main/deployment/docker/datamate/docker-compose.yml \
+ && REGISTRY=ghcr.io/modelengine-group/ docker compose up -d
+```
+
+### Clone the Code
+
+```bash
+git clone git@github.com:ModelEngine-Group/DataMate.git
+cd DataMate
+```
+
+### Deploy the basic services
+
+```bash
+make install
+```
+
+This project supports deployment via two methods: docker-compose and helm. After executing the command, please enter the corresponding number for the deployment method. The command echo is as follows:
+```shell
+Choose a deployment method:
+1. Docker/Docker-Compose
+2. Kubernetes/Helm
+Enter choice:
+```
+
+If the machine you are using does not have make installed, please run the following command to deploy it:
+```bash
+REGISTRY=ghcr.io/modelengine-group/ docker compose -f deployment/docker/datamate/docker-compose.yml --profile milvus up -d
+```
+
+Once the container is running, access http://localhost:30000 in a browser to view the front-end interface.
+
+To list all available Make targets, flags and help text, run:
+
+```bash
+make help
+```
+
+If you are in an offline environment, you can run the following command to download all dependent images:
+```bash
+make download
+```
+
+### Deploy Label Studio as an annotation tool
+```bash
+make install-label-studio
+```
+
+### Build and deploy Mineru Enhanced PDF Processing
+```bash
+make build-mineru
+make install-mineru
+```
+
+### Deploy the DeerFlow service
+```bash
+make install-deer-flow
+```
+
+### Local Development and Deployment
+After modifying the local code, please execute the following commands to build the image and deploy using the local image.
+```bash
+make build
+make install dev=true
+```
+
+### Uninstall
+```bash
+make uninstall
+```
+
+When running make uninstall, the installer will prompt once whether to delete volumes; that single choice is applied to all components. The uninstall order is: milvus -> label-studio -> datamate, which ensures the datamate network is removed cleanly after services that use it have stopped.
+
+## 📚 Documentation
+
+### Core Documentation
+- **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Local development environment setup and workflow
+- **[AGENTS.md](./AGENTS.md)** - AI assistant guidelines and code style
+
+### Backend Documentation
+- **[backend/README.md](./backend/README.md)** - Backend architecture, services, and technology stack
+- **[backend/api-gateway/README.md](./backend/api-gateway/README.md)** - API Gateway configuration and routing
+- **[backend/services/main-application/README.md](./backend/services/main-application/README.md)** - Main application modules
+- **[backend/shared/README.md](./backend/shared/README.md)** - Shared libraries (domain-common, security-common)
+
+### Runtime Documentation
+- **[runtime/README.md](./runtime/README.md)** - Runtime architecture and components
+- **[runtime/datamate-python/README.md](./runtime/datamate-python/README.md)** - FastAPI backend service
+- **[runtime/python-executor/README.md](./runtime/python-executor/README.md)** - Ray executor framework
+- **[runtime/ops/README.md](./runtime/ops/README.md)** - Operator ecosystem
+- **[runtime/datax/README.md](./runtime/datax/README.md)** - DataX data framework
+- **[runtime/deer-flow/README.md](./runtime/deer-flow/README.md)** - DeerFlow LLM service
+
+### Frontend Documentation
+- **[frontend/README.md](./frontend/README.md)** - React frontend application
+
+## 🤝 Contribution Guidelines
+
+Thank you for your interest in this project! We warmly welcome contributions from the community. Whether it's submitting
+bug reports, suggesting new features, or directly participating in code development, all forms of help make a project
+better.
+
+• 📮 [GitHub Issues](../../issues): Submit bugs or feature suggestions.
+
+• 🔧 [GitHub Pull Requests](../../pulls): Contribute code improvements.
+
+## 📄 License
+
+DataMate is open source under the [MIT](LICENSE) license. You are free to use, modify, and distribute the code of this
+project in compliance with the license terms.

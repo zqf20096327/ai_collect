@@ -1,0 +1,231 @@
+# rag-params-finder
+
+![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic-2.6+-E92063?logo=pydantic&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=nodedotjs&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
+![Postgres](https://img.shields.io/badge/Postgres_pgvector-4169E1?logo=postgresql&logoColor=white)
+![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?logo=elasticsearch&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-hosted_Postgres-3ECF8E?logo=supabase&logoColor=white)
+![Voyage AI](https://img.shields.io/badge/Voyage_AI-FF6B6B)
+![sentence-transformers](https://img.shields.io/badge/sentence--transformers-FF9D00?logo=huggingface&logoColor=white)
+![SIE](https://img.shields.io/badge/SIE-Superlinked_Inference_Engine-blue)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)
+
+[![CI](https://github.com/neomatrix369/rag-params-finder/actions/workflows/ci.yml/badge.svg)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/ci.yml)
+[![Nightly](https://github.com/neomatrix369/rag-params-finder/actions/workflows/nightly.yml/badge.svg)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/nightly.yml)
+[![Supply chain](https://github.com/neomatrix369/rag-params-finder/actions/workflows/supply-chain.yml/badge.svg)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/supply-chain.yml)
+[![Mutation](https://github.com/neomatrix369/rag-params-finder/actions/workflows/mutation.yml/badge.svg)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/mutation.yml)
+[![Complexity](https://github.com/neomatrix369/rag-params-finder/actions/workflows/complexity-report.yml/badge.svg)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/complexity-report.yml)
+<!-- coverage: add CODECOV_TOKEN to GitHub Secrets, then uncomment: -->
+<!-- [![Coverage](https://codecov.io/gh/neomatrix369/rag-params-finder/branch/main/graph/badge.svg)](https://codecov.io/gh/neomatrix369/rag-params-finder) -->
+[![Code Review Graph](https://img.shields.io/github/actions/workflow/status/neomatrix369/rag-params-finder/code-review-graph.yml?branch=main&label=Code+Review+Graph&logo=githubactions&logoColor=white)](https://github.com/neomatrix369/rag-params-finder/actions/workflows/code-review-graph.yml)
+[![security status](https://www.meterian.com/badge/gh/neomatrix369/rag-params-finder/security)](https://www.meterian.com/report/gh/neomatrix369/rag-params-finder)
+[![stability status](https://www.meterian.com/badge/gh/neomatrix369/rag-params-finder/stability)](https://www.meterian.com/report/gh/neomatrix369/rag-params-finder)
+[![licensing status](https://www.meterian.com/badge/gh/neomatrix369/rag-params-finder/licensing)](https://www.meterian.com/report/gh/neomatrix369/rag-params-finder)
+[![Release](https://img.shields.io/github/v/release/neomatrix369/rag-params-finder?label=Release&logo=github)](https://github.com/neomatrix369/rag-params-finder/releases)
+[![License: MIT](https://img.shields.io/github/license/neomatrix369/rag-params-finder)](https://github.com/neomatrix369/rag-params-finder/blob/main/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/neomatrix369/rag-params-finder)](https://github.com/neomatrix369/rag-params-finder/commits/main)
+[![Stars](https://img.shields.io/github/stars/neomatrix369/rag-params-finder?style=social)](https://github.com/neomatrix369/rag-params-finder)
+
+> Find your optimal RAG configuration — **before** you build your RAG application.
+
+**RAG parameter sweep experimentation tool** — systematically evaluate embedding models, chunking strategies, and retrieval methods across four vector stores: **MongoDB Atlas**, **Postgres/pgvector**, **Elasticsearch**, and **Redis**. Run state defaults to **SQLite** (ADR-008); each vector store is independent. Supports **Voyage AI** (hosted), **local sentence-transformers** (no API key), and **SIE** open-source embeddings (remote gateway preferred; optional self-hosted Docker).
+
+Most RAG projects start with a guess: pick an embedding model, pick a chunking method, a retrieval method (or a re-ranker), realise it's wrong, refactor. That loop is
+slow and expensive.
+
+`rag-params-finder` inverts it.
+
+Give it your data and your questions. It runs every combination — embedding
+model × chunking method × retrieval method — stores the retrieval scores and
+shows you exactly which configuration performs best.
+**Before you write a single line of your RAG application.**
+
+**Jump to:** [Quickstart](QUICKSTART.md) | [Who is this for?](#who-is-this-for) | [Screenshots](#-screenshots) | [Key Features](#-key-features) | [Documentation](docs/README.md) | [SIE ecosystem demos](https://neomatrix369.github.io/pages/projects.html#sie) | [Contributing](#-contributing)
+
+## Why this matters
+
+| What you avoid | What you get instead |
+|---|---|
+| No LLM calls | Embedding only — 10–100× cheaper |
+| No eval framework setup | One YAML config, one CLI command |
+| No deployed RAG app needed | Just your data, your questions, your credentials |
+| No guessing | Actual retrieval scores across every config, side by side |
+| No throwaway experiments | Results persist — compare runs across sessions |
+
+## What it sweeps
+
+- **Embedding models**: 13 Voyage models (voyage-4 series, domain, context, voyage-3 legacy) · local `all-MiniLM-L6-v2` · SIE open-source (BGE-M3, Stella-v5, SPLADE-v3) · DoubleWord `Qwen/Qwen3-Embedding-8B` (async batch) — see `server/core/model_registry.py`
+- **Chunking methods**: Fixed · Recursive · Token · Sentence · Semantic
+- **Retrieval methods**: Dense · Sparse · Hybrid
+- **Questions**: Persona-organised — user provided or generated as part of golden master generation process
+
+One YAML. N experiments. Evidence-based decision. Ship the right config first.
+
+## Who is this for?
+
+> Pick the row that matches you — each links to a **first step**, not the whole README.
+
+| Persona | Start here | What you will do |
+|---------|------------|------------------|
+| **New user — cloud accounts** | [MongoDB Setup](docs/user-guide/mongodb-setup.md) | Atlas + optional Voyage, then [QUICKSTART](QUICKSTART.md) |
+| **New user — Postgres (local or Supabase-hosted)** | [Postgres Setup](docs/user-guide/postgres-setup.md) | `./start-services.sh --postgres-local` + `configs/supabase/example-unified-retrievers.yaml` |
+| **New user — Elasticsearch (vector-only)** | [Elasticsearch Setup](docs/user-guide/elasticsearch-setup.md) | `./start-services.sh --elasticsearch-local` + `configs/elasticsearch/example-local.yaml` |
+| **New user — Redis (vector-only)** | [Redis Setup](docs/user-guide/redis-setup.md) | `./start-services.sh --redis-local` + `configs/redis/example-local.yaml` |
+| **New user — DoubleWord (batch embeddings)** | [DoubleWord Setup](docs/user-guide/doubleword-setup.md) | `DOUBLEWORD_API_KEY` in `.env` + `configs/mongodb/example-doubleword.yaml` (async batch API) |
+| **New user — first sweep** | [QUICKSTART](QUICKSTART.md) | Install, run server + CLI, open dashboard |
+| **Operator — config & CLI** | [Configuration Reference](docs/user-guide/configuration.md) | YAML sweeps, env vars, `rag-params-finder` commands |
+| **Operator — dashboard** | [Dashboard Guide](docs/user-guide/dashboard-guide.md) | Live phases, Search Explorer, experiment controls |
+| **Operator — fixing errors** | [Troubleshooting](docs/user-guide/troubleshooting.md) | Indexes, Voyage limits, Docker, Postgres, storage quota |
+| **Contributor — system design** | [Architecture](docs/contributor-guide/architecture.md) | Modules, data flow, ADRs |
+| **Contributor — dev setup** | [Development Guide](docs/contributor-guide/development.md) | Quality gates, slices, Docker, hooks |
+| **Agent / slice worker** | [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md) | [PROGRESS](docs/plan/slices/PROGRESS.md) → [invariants](docs/plan/invariants.md) → [theme index](docs/plan/slices/README.md) → `0N-<theme>/SLICE-*.md` |
+
+**All docs by topic:** [docs/README.md](docs/README.md)
+
+---
+
+## 📸 Screenshots
+
+### Experiments list
+
+| Screen | Description |
+|:---:|:---|
+| ![Experiments list](docs/images/01-experiments-list.png) | Result-led experiment cards with lifecycle state, sweep outcome, and an explicit next action |
+
+### Atlas Local + local embedding models (`configs/mongodb/example-local.yaml`)
+
+Runs entirely offline — no cloud account, no API key. Uses `all-MiniLM-L6-v2` (384-dim) sentence-transformers via `./start-services.sh --mongodb-local`.
+
+| Screen | Description |
+|:---:|:---|
+| ![Experiment detail — local](docs/images/example-mongodb-local/02-experiment-detail.png) | **Experiment detail** — lifecycle summary, next step, configuration, and run results |
+| ![Search Explorer — local](docs/images/example-mongodb-local/03-search-explorer.png) | **Search Explorer** — best-parameters card, ranked configs with score bars |
+
+### Atlas Local + SIE embedding models (`configs/mongodb/example-sie.yaml`)
+
+Uses [SIE](docs/user-guide/sie-setup.md) open-source embeddings — BGE-M3 and Stella-v5 (1024-dim dense) via remote gateway or self-hosted Docker.
+
+| Screen | Description |
+|:---:|:---|
+| ![Experiment detail — SIE](docs/images/example-mongodb-sie/02-experiment-detail.png) | **Experiment detail** — SIE lifecycle summary with BGE-M3 / Stella-v5 run results |
+| ![Search Explorer — SIE](docs/images/example-mongodb-sie/03-search-explorer.png) | **Search Explorer** — SIE sweep ranked configs |
+
+---
+
+## 🚀 Quick Start
+
+See **[QUICKSTART.md](QUICKSTART.md)** for install, `.env`, server, dashboard, and first sweep commands (including optional Docker).
+
+---
+
+## 🗺️ Choose Your Path
+
+| I want to… | Start here |
+|---|---|
+| Run entirely offline (no Atlas cloud account) | [MongoDB Setup → Path B](docs/user-guide/mongodb-setup.md#path-b--atlas-local-docker) · `./start-services.sh --mongodb-local` |
+| Run on Postgres/pgvector instead of Atlas | [Postgres Setup](docs/user-guide/postgres-setup.md) · `./start-services.sh --postgres-local` |
+| Use DoubleWord for cost-effective batch embeddings | [DoubleWord Setup](docs/user-guide/doubleword-setup.md) · `DOUBLEWORD_API_KEY` + `configs/mongodb/example-doubleword.yaml` |
+| Set up MongoDB Atlas or Voyage AI accounts | [MongoDB Setup](docs/user-guide/mongodb-setup.md) |
+| Run my first experiment | [Getting Started](docs/user-guide/getting-started.md) |
+| Understand all config options | [Configuration Reference](docs/user-guide/configuration.md) |
+| Learn all CLI commands | [CLI Reference](docs/user-guide/cli-reference.md) |
+| Understand the dashboard | [Dashboard Guide](docs/user-guide/dashboard-guide.md) |
+| Fix an error | [Troubleshooting](docs/user-guide/troubleshooting.md) |
+| Understand the system design | [Architecture](docs/contributor-guide/architecture.md) |
+| Add a new model, chunker, or endpoint | [Extending the System](docs/contributor-guide/extending.md) |
+| Set up a development environment | [Development Guide](docs/contributor-guide/development.md) |
+| Why these design choices? | [ADR-001](docs/adr/ADR-001-two-process-architecture.md) · [ADR-002](docs/adr/ADR-002-voyage-and-local-providers.md) · [ADR-003](docs/adr/ADR-003-mongodb-atlas-vector-store.md) · [ADR-004](docs/adr/ADR-004-postgresql-pgvector-vector-store.md) · [ADR-005](docs/adr/ADR-005-doubleword-embedding-provider.md) (Proposed) · [ADR-006](docs/adr/ADR-006-elasticsearch-vector-store.md) · [ADR-007](docs/adr/ADR-007-redis.md) · [ADR-008](docs/adr/ADR-008-sqlite-central-run-state-store.md) · [ADR-009](docs/adr/ADR-009-embedding-cache-backend-port.md) (Accepted) |
+
+---
+
+## ⚡ Key Features
+
+### 🎯 **NEW in v0.11.0**: Weighted Averaging & Tiebreaker Explanations
+- **Weighted averaging** (query-level fairness): Each query contributes equally, preventing queries with many results from dominating the average — configurable via `TIEBREAKER_METRIC` env var ([docs](docs/user-guide/configuration.md#%EF%B8%8F-environment-variables-env))
+- **Tiebreaker explanation UI**: When multiple configs achieve 100% max score, the dashboard shows amber alerts, explanation panels, visual badges (⭐ "Best by tiebreaker", 🔀 "Tied"), and contextual annotations explaining WHY each config is ranked
+- **Detailed Results ↔ Hyperparameters mapping**: Chunk size/overlap badges, query text display, and explanatory headers help users map individual results back to aggregated configs
+- **Collapsible sweep dimensions panel**: Shows unique values for all swept parameters + Cartesian product calculation ([dashboard guide](docs/user-guide/dashboard-guide.md#-search-explorer))
+
+### Core Features
+- **5 chunking methods**: Fixed, Recursive, Token, Sentence, Semantic
+- **3 retrieval methods**: Dense (vector search), Sparse (BM25), Hybrid (Reciprocal Rank Fusion)
+- **Voyage AI models**: all registered embeddings in `model_registry.py` (voyage-4/3/domain/context) + rerankers `rerank-2.5-lite`, `rerank-2.5`, and legacy rerank APIs
+- **Local models** (no API key): `all-MiniLM-L6-v2` + `cross-encoder/ms-marco-MiniLM-L-6-v2`
+- **SIE models** (open-source): BGE-M3, Stella-v5 (1024-dim dense), SPLADE-v3 (sparse) via remote gateway or self-hosted Docker
+- **DoubleWord models** (cost-effective): `Qwen/Qwen3-Embedding-8B` (1024-dim, ~$0.003 per 1M tokens) via async batch API with automatic polling
+- **Multi-format data loading**: PDF, TXT, Markdown, CSV — files or directories
+- **Cartesian sweep**: one YAML config → N models × M methods × P sizes × Q overlaps runs
+- **Live phase tracking**: QUEUED → PARSING → CHUNKING → EMBEDDING → STORING → QUERYING → RERANKING → COMPLETE
+- **Experiment management**: Pause/resume long sweeps, cancel running experiments, delete with cascade cleanup, boot orphan reconciliation
+- **Search index preflight**: Validates required indexes before sweeps start and rejects with HTTP 422 — Atlas Search indexes plus cluster quota on MongoDB, `vector` extension plus HNSW/GIN catalog objects on Postgres
+- **Index CLI**: `indexes list` reports Atlas quota usage or the Postgres catalog depending on the active backend; `indexes reset` is Atlas-only (M0 quota troubleshooting)
+- **Result-led dashboard**: Experiment cards lead with lifecycle and sweep outcome; detail connects identity and configuration to run results and the next valid action
+- **Vector DB stats**: The experiments list shows server-wide store runtime plus vector-database capacity (optional Atlas quota bar with tier, provider, and region). Each experiment’s detail page shows that sweep’s stored footprint (chunks, models, chunking, per-run counts)
+- **Progress feedback**: Byte-level network loading, circular progress with elapsed time and ETA, background polling with "Syncing..." badges
+- **Scoped logging**: Server and dashboard use `[rag-params-finder] [Scope] operation — details` format; set `LOG_LEVEL=DEBUG` for verbose server output
+- **Pagination**: All list views paginated (10 items per page for experiments/runs, 5 for configs); collapsible experiment rows
+
+---
+
+## 🧱 Built With
+
+**Backend**: FastAPI · Python 3.12 · Pydantic · PyMongo · LangChain text splitters · pypdf · Typer · Rich · sentence-transformers · NLTK · tiktoken
+
+**Frontend**: React 19 · TypeScript 5.8 · Vite 6 · Tailwind CSS
+
+**AI/ML**: Voyage AI · sentence-transformers · SIE (Superlinked Inference Engine) · MongoDB Atlas Vector Search · Postgres/pgvector (incl. Supabase-hosted)
+
+**Dev tools**: uv · ruff · mypy · pytest · GitHub Actions
+
+---
+
+## 📦 Releases & Versioning
+
+This project follows [Semantic Versioning](https://semver.org/):
+- **MAJOR** (x.0.0) — Breaking changes
+- **MINOR** (0.x.0) — New features, completed slices (backward compatible)
+- **PATCH** (0.0.x) — Bug fixes, polish, enhancements
+
+**Current version:** v0.12.0 ([CHANGELOG.md](CHANGELOG.md))
+
+**Release history:** [GitHub Releases](https://github.com/neomatrix369/rag-params-finder/releases) from v0.0.1 through v0.12.0 (dual-backend Postgres, module theme separation, coverage floors, and more)
+
+**For contributors:** See [Release Process](docs/contributor-guide/release-process.md) — cut `release/vX.Y.Z` + PR; never push a version bump directly to `main`.
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome — please open an issue first to discuss the change.
+
+**Running experiments does not require any extra tooling** — the [user guide](docs/user-guide/getting-started.md) path (Atlas **or** Postgres/Supabase, CLI, optional dashboard) is enough.
+
+**Contributors** use the [Development Guide](docs/contributor-guide/development.md) for setup (`bash scripts/ci/install-git-hooks.sh` — checks on commit and push), quality gates (`./scripts/ci/quality-gates.sh`), the slice workflow, and [release cadence](docs/contributor-guide/release-process.md#when-to-release) (release when a slice or feature is user-visible; see [CHANGELOG](CHANGELOG.md) `Unreleased` during development).
+
+Optional **AI-assisted development** (Cursor / Claude Code with the `code-review-graph` knowledge graph) is documented in the development guide — it helps navigate this repo faster; it is not part of the RAG sweep runtime.
+
+See [How Codex and GPT-5.6 Were Used](docs/codex-and-gpt5-development.md) for the development history and model usage summary.
+
+Priority areas: test suite with mock MongoDB fixtures, Search Explorer dashboard enhancements, SSE live updates.
+
+**Agent entry points:** [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md)
+
+---
+
+## 📄 License
+
+MIT — see [LICENSE](LICENSE)
+
+---
+
+## 🙏 Credits
+
+Inspired by [pre-rag-explorer-dashboard](https://github.com/neomatrix369/pre-rag-explorer-dashboard).

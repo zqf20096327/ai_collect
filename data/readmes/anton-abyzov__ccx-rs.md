@@ -1,0 +1,153 @@
+# CCX-RS — Community Code Extended
+
+[![Release](https://img.shields.io/github/v/release/anton-abyzov/ccx-rs?style=flat-square)](https://github.com/anton-abyzov/ccx-rs/releases)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue?style=flat-square)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-280%20passing-brightgreen?style=flat-square)]()
+
+**A custom AI coding assistant in a 4.7MB binary.** Free, open-source, multi-model. 19 tools, parallel execution, session persistence -- works with Claude, DeepSeek, Nemotron, or any of 200+ models via OpenRouter. No subscription required. Part of the [CCX (Community Code Extended)](https://github.com/anton-abyzov/ccx) project.
+
+> **CCX** = **C**ommunity **C**ode E**x**tended -- the open-source, multi-model AI coding assistant. Built by the community, for the community.
+>
+> **Disclaimer**: CCX is an independent, community-driven project. It is not affiliated with, endorsed by, or sponsored by Anthropic, PBC. "Claude" is a trademark of Anthropic. CCX uses the Anthropic API as one of several supported providers.
+
+![CCX-RS Terminal UI](assets/screenshot.png)
+
+## Install
+
+### macOS / Linux (one-liner)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/anton-abyzov/ccx-rs/main/install.sh | sh
+```
+
+> **No curl?** Use wget: `wget -qO- https://raw.githubusercontent.com/anton-abyzov/ccx-rs/main/install.sh | sh`
+> Or install curl first: `apt install curl` (Linux) / `brew install curl` (macOS)
+
+The installer reuses your current writable `ccx` location when possible. If it has to install into a user bin directory, it writes a managed PATH block into your shell profile and prints the one-line command for the current shell too.
+
+### Windows (PowerShell)
+
+```powershell
+irm https://raw.githubusercontent.com/anton-abyzov/ccx-rs/main/install.ps1 | iex
+```
+
+The PowerShell installer prepends the install directory in both the current session and your persisted user `Path`, so a freshly updated `ccx.exe` wins over older copies.
+
+<details>
+<summary>Other install methods</summary>
+
+#### Cargo (from source -- all platforms)
+```bash
+cargo install --git https://github.com/anton-abyzov/ccx-rs ccx-cli
+```
+
+> **Don't have Rust?** Install it first: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh` (macOS/Linux) or visit [rustup.rs](https://rustup.rs) (Windows)
+
+#### Manual download
+Download from [GitHub Releases](https://github.com/anton-abyzov/ccx-rs/releases) and add to your PATH.
+
+#### Build from source
+```bash
+git clone https://github.com/anton-abyzov/ccx-rs.git
+cd ccx-rs && cargo build --release
+# macOS/Linux: sudo cp target/release/ccx /usr/local/bin/
+# Windows: copy target\release\ccx.exe %USERPROFILE%\.ccx\bin\
+```
+
+### Upgrading
+
+```bash
+ccx update
+```
+
+You do not need to uninstall first. If `which -a ccx` shows multiple copies, CCX will now try to update the active writable one in place. When it has to fall back to a user bin directory, it updates your shell profile so the newer binary wins in new shells.
+
+</details>
+
+## Run
+
+### Free (no subscription, no payment)
+```bash
+export OPENROUTER_API_KEY="your-free-key-from-openrouter.ai"
+ccx chat --provider openrouter --model "nvidia/nemotron-3-super-120b-a12b:free"
+```
+Get a free key: [openrouter.ai/keys](https://openrouter.ai/keys)
+
+### With reasoning (shows thinking process)
+```bash
+ccx chat --provider openrouter --model "deepseek/deepseek-r1"
+```
+
+### With Claude Max/Pro (auto-detects subscription)
+```bash
+ccx chat   # reads token from macOS Keychain -- no API key needed
+```
+
+## Features
+
+- **19 tools** -- Bash, FileRead/Write/Edit, Glob, Grep, WebFetch, Agent (spawns sub-agents), TeamCreate, SendMessage, TaskCreate, and more
+- **Full TUI** -- welcome panel, styled `>` prompt, inline tool display
+- **Multi-model** -- Claude (API/subscription), OpenRouter (200+ models), Ollama (local)
+- **Tab autocomplete** -- slash commands + 50+ discovered skills
+- **MCP support** -- connect external tool servers via `.mcp.json`
+- **Session persistence** -- `/resume`, `/continue`, `--resume`, `--continue`
+- **Parallel tool execution** -- all tools in a turn run concurrently
+- **Thinking display** -- see DeepSeek R1's reasoning in real-time
+- **OAuth login** -- `/login` opens browser, no API key copy-paste
+- **Prompt caching** -- saves tokens on multi-turn conversations
+
+## Demo
+
+```
+$ ccx chat --provider openrouter --model "nvidia/nemotron-3-super-120b-a12b:free"
+
+> Create a Python script that downloads the top 10 HN stories
+
+* Bash(pip install requests)
+  done
+* Write(hn_top10.py)
+  Created hn_top10.py (32 lines)
+* Bash(python hn_top10.py)
+  1. Show HN: CCX - Open source AI coding assistant
+  2. Ask HN: Best free AI models for coding?
+  ...
+```
+
+## Slash Commands
+
+| Command | Description |
+|---------|-------------|
+| `/help` | Show all commands + discovered skills |
+| `/tools` | List all 19 tools |
+| `/login` | Authenticate via browser (OAuth) |
+| `/cost` | Show token usage and cost |
+| `/resume` | Resume a previous session |
+| `/compact` | Compress conversation context |
+| `/doctor` | Check health (API, tools, MCP) |
+
+Plus 50+ discovered skills via Tab completion.
+
+## Architecture
+
+14-crate workspace:
+
+| Crate | Purpose |
+|-------|---------|
+| `ccx-cli` | CLI entry point |
+| `ccx-core` | Core agent loop |
+| `ccx-api` | Multi-provider API client with streaming |
+| `ccx-auth` | API key + OAuth management |
+| `ccx-tools` | Tool interface + 11 implementations |
+| `ccx-permission` | Permission DSL and rules |
+| `ccx-compact` | Context compression |
+| `ccx-memory` | Memory persistence |
+| `ccx-skill` | Skill loading and execution |
+| `ccx-prompt` | System prompt builder |
+| `ccx-config` | Settings and CLAUDE.md |
+| `ccx-mcp` | MCP client |
+| `ccx-tui` | Ratatui-based terminal UI |
+| `ccx-sandbox` | OS-native sandboxing |
+
+## License
+
+MIT + Apache-2.0

@@ -1,0 +1,280 @@
+# Larkway
+
+> Turn your Claude Code or Codex subscription into a Feishu (Lark) agent your whole team can @-mention.
+
+🌐 [larkway.dev](https://larkway.dev) · [中文版](README.zh.md)
+
+---
+
+You @ the bot in a Feishu thread. It runs on your machine — reading your real codebase, executing commands, opening MRs — and posts the result back. Connect a workspace that already works with Claude Code or Codex, or create a managed one. Larkway connects Feishu triggers to that local runtime.
+
+**Current release: v0.3.76**
+
+---
+
+## 💬 Join the community (Feishu)
+
+See Larkway in action and talk through how to set it up for your team — scan to join the **Larkway 交流群** (QR never expires):
+
+<img src="https://raw.githubusercontent.com/chuckwu0/larkway/main/assets/larkway-feishu-qr.jpg" width="260" alt="Larkway Feishu group QR" />
+
+---
+
+## Why
+
+The engineers on your team know how a feature is actually implemented. Everyone else has to ask them. That friction compounds: a data analyst wondering whether a metric counts deleted records, a PM asking which API endpoint powers a chart, a QA engineer trying to reproduce a bug without context.
+
+A generic AI assistant cannot answer these questions reliably — it has no access to your code. A bot that runs Claude Code or Codex against your real repository can.
+
+Larkway makes that bot trivially installable and persistent: one `larkway start` on an always-on machine, one `@mention` in any Feishu thread, and your team has a self-serve answer to "how is this actually implemented."
+
+---
+
+## How it works
+
+```
+Feishu thread
+  │  @bot "how does the retention metric handle deleted users?"
+  │
+  ▼  WebSocket long-connection (outbound only, no public endpoint needed)
+larkway bridge
+  │  spawns subprocess  ──►  claude --resume <session_id> -p "<prompt>"
+  │                          (or: codex ...)
+  │
+  ▼  stream-json (NDJSON)
+lark.card                ◄──  agent reads repo, runs bash, edits files,
+  │  throttled PATCH           opens MR, starts dev preview
+  │
+  ▼
+Feishu thread
+     "retention.ts line 47: deleted_at IS NULL filter is applied before
+      the aggregation window. Deleted users are excluded."
+```
+
+**What Larkway does** (and only this):
+
+- Feishu long-connection subscriber (inbound events)
+- Subprocess lifecycle: spawn, stream-json parse, session-ID persistence
+- Feishu card: throttled real-time PATCH as the agent streams output
+- Session KV: `thread_id → session_id` so follow-up messages resume context
+- Idle GC: worktree housekeeping
+
+**What Larkway does NOT do** — the agent decides everything else:
+
+- No GitHub/GitLab API calls (the agent runs `gh`/`glab` itself)
+- No worktree creation (the agent runs `git worktree add`)
+- No dev server management (the agent starts it)
+- No orchestration logic — the agent reads your `AGENTS.md` / `CLAUDE.md` / skills and plans its own steps
+
+This boundary is intentional. Workflow changes go into your repository's agent guides, not into Larkway.
+
+---
+
+## Quick start
+
+> Install globally with npm:
+>
+> ```bash
+> npm i -g larkway
+> ```
+
+```bash
+# 1. Check your environment
+larkway doctor          # lists missing dependencies; --fix auto-installs some
+
+# 2. Register a Feishu app and configure your first bot
+larkway init            # CLI wizard: scan QR code → name the bot → pick a backend
+
+# 3. Start the bridge
+larkway start           # long-running; runs in background, logs to ~/.larkway/logs/
+
+# 4. Add the bot to a Feishu group
+#    Group settings → Bots → Add bot → pick yours → @-mention it
+```
+
+---
+
+## Backends
+
+| Backend | CLI | Auth | Billing |
+|---|---|---|---|
+| **Claude Code** | `claude` | Local subscription login (`~/.claude/.credentials.json`) | Your existing Claude subscription — no per-token charges |
+| **Codex** | `codex` | `codex login` | Your existing Codex subscription — no per-token charges |
+| **pi** | `pi` ([pi coding agent](https://github.com/earendil-works/pi)) | Provider API key in `~/.pi/agent/models.json` (or the provider's env var) | Bring your own model — any provider pi supports, including custom OpenAI-compatible endpoints |
+
+Larkway never injects `ANTHROPIC_API_KEY` or any other API key. The subprocess inherits your local login state. If you switch to API-key mode, that is a deliberate opt-in in `src/claude/runner.ts`.
+
+The **pi backend** is the escape hatch when a subscription's token budget runs out: set `backend: pi` and `model: <provider>/<model>` in the bot yaml, and pi runs the same workspace (`AGENTS.md`, `.agents/skills/`, cloned repos) against the model you configured in pi. Larkway passes the bridge's environment through unchanged — it still adds no key of its own, but it does not strip provider keys either, because for pi they *are* the login. `effort` maps to pi's `--thinking` level (the model's entry in `models.json` needs `reasoning: true`, otherwise pi supports only `off`). Verify a bot's provider with `pi auth check --model <provider>/<model>`; `larkway doctor` runs that check for each model configured on a pi bot. pi starts cold every turn by default; `warmProcess: true` in the bot yaml keeps one `pi --mode rpc` process per active topic instead (opt-in — see [native runtime alignment](docs/native-runtime.md) for its limits, memory use, and how it differs from the cold path).
+
+---
+
+## Security model — read this before inviting the bot anywhere
+
+Larkway runs a real coding agent **on your machine, with your permissions**. Be
+explicit about what that means:
+
+**Who can trigger it.** By default a bot ships with `chats: []` — *open mode*:
+it responds to an @-mention in **any** group it has been added to. Anyone who
+can add the bot to a group (or is in a group with it) can make it act. To
+narrow this, list allowed group ids in the bot's yaml (`chats: [oc_…]`); the
+bot then ignores every other chat.
+
+**What a triggered agent can do.** The agent subprocess is not sandboxed by
+Larkway. With the default permission mode (`bypassPermissions` — required for
+unattended headless operation, where an interactive permission prompt would
+silently hang the turn), a Claude-backend agent can read/write files, run
+commands, and use the network as your OS user. The Codex backend's equivalent
+default is full access. You can tighten this globally via `permissions.mode`
+in `~/.larkway/config.json` (`acceptEdits` / `ask`), at the cost of turns
+stalling on operations the mode blocks. **Note the mode words are Claude
+semantics; on Codex anything other than `ask` currently maps to full access,
+and on pi every mode is full access — pi ships no permission system at all,
+so `ask` cannot be honoured there. Larkway also runs pi with `--approve`
+(project trust), so `.pi/extensions` and `.pi/settings.json` found in the
+workspace or its parent directories are loaded too — an agent that can write
+its own cwd can therefore install code that runs in its next turn, which is
+no wider than the shell access it already has, but worth knowing. With the pi
+warm pool on, pi runs in RPC mode, where MCP servers are also offered
+sampling/elicitation (Larkway answers every such request with a cancel) — see
+[native runtime alignment](docs/native-runtime.md).**
+
+**Prompt injection is real.** Everything in the triggering message — and
+thread history / attachments the agent chooses to read — becomes agent input.
+A malicious group member can try to steer the agent ("ignore your instructions
+and run …"). L2 memory and your repo's `CLAUDE.md`/`AGENTS.md` are guidance,
+not enforcement.
+
+**Practical posture.**
+- Treat "which groups is this bot in" as the primary security boundary; use
+  `chats:` allowlists for any bot with write access.
+- Run write-capable bots against repos where an unwanted commit/MR is
+  reviewable and revertable; keep production credentials out of the host's
+  environment.
+- Secrets in `~/.larkway/.env` are shared across all bots on the bridge and
+  visible to any agent that can read your home directory — don't mix a
+  low-trust open bot and high-value credentials on the same host.
+- By default each bot uses its own lark-cli config directory
+  (`~/.larkway/<botId>/lark-cli/`) with its application profile. The host's
+  personal lark-cli login is not inherited through that config. Explicit
+  `lark_cli_isolated: false` retains the old shared-config behavior. This is
+  identity configuration isolation, not an OS sandbox; full-access agents
+  can still read files permitted to the host user.
+
+---
+
+## Defining a bot (three layers)
+
+| Layer | What it is | Where it lives |
+|---|---|---|
+| **Runtime connection** | App credentials, backend, workspace path, allowed groups, repo pointers | `~/.larkway/bots/<id>.yaml` |
+| **Identity and responsibilities** | Short role definition for a managed workspace | `~/.larkway/bots/<id>.memory.md`, projected into workspace `AGENTS.md` |
+| **Native instructions and skills** | Project workflows and knowledge | **Your workspace / repo**: `AGENTS.md`, `CLAUDE.md`, `.agents/skills/`, `.claude/skills/` |
+
+Secrets live only in `~/.larkway/.env` (mode 0600). Config and memory contain no secrets.
+
+To connect an existing workspace, open the Web UI's advanced **existing workspace**
+field and enter its absolute path, or configure:
+
+```yaml
+runtime: agent_workspace
+workspace: /absolute/path/to/existing-workspace
+```
+
+The directory must already exist. Larkway uses its native instructions, skills,
+and runtime configuration without generating files inside it. Edit its
+`AGENTS.md` / `CLAUDE.md` directly; the dashboard role editor is disabled for
+this mode. Omit `workspace` to use a Larkway-managed directory. Changing the
+workspace path starts a fresh runtime session on the next message.
+
+Repository entries are default pointers, not an access allowlist. Disabling
+repo pointers does not revoke host file access or Git credentials. The
+turn-taking setting is a collaboration reminder, not a hard tool-call budget.
+Shared organization knowledge is optional: set `sharedKnowledge: true` only
+for agents that should participate in the same knowledge repository. See
+[native runtime behavior](docs/native-runtime.md) for defaults and compatibility.
+
+
+---
+
+## Features
+
+- **Multiple bots on one bridge** — a read-only Q&A bot and a write-capable engineering bot can share the same process, each with its own L1/L2/L3 definition
+- **Web UI** — `larkway ui` opens a local management dashboard (127.0.0.1 + token); create bots, edit memory, watch live logs
+- **Session continuity** — every Feishu thread maps to a persistent `session_id`; the agent remembers what it did in prior turns
+- **Agent Workspace** — create a managed workspace or connect an existing one, with separate session artifacts per Feishu topic. Topics share the workspace; agents must create separate worktrees when concurrent edits need Git isolation.
+- **Codex runtime pre-checks** — `larkway doctor` validates Codex state directory writability before start
+- **OS-service daemon** — `larkway start` registers the bridge with launchd (macOS) / systemd (Linux): survives reboots and auto-restarts on crash; `larkway stop` stops it and disables autostart
+- **Topic ↔ Feishu task handle** — turn a topic into a Feishu task and the agent claims it, then keeps its lifecycle (done/failed/reopened, stalled, handed off, overdue) in sync automatically — see below
+
+---
+
+## Task handle: topic ↔ Feishu task (optional)
+
+Turn a Feishu topic into a task and the agent will claim it, then keep its whole
+lifecycle in sync on its own — completion, failure/reopen, stall wake-ups,
+handoff-break detection between collaborating bots, and overdue nudges — no
+extra prompting needed.
+
+```bash
+# 1. In the Feishu Task Center, create a tasklist yourself (any name).
+# 2. Adopt it — adds your bot(s) as editors, ownership stays yours:
+larkway tasklist-init --adopt "<tasklist name>" --team <bot1,bot2,…>
+# 3. Right-click "转任务" (convert to task) on any topic message in a group
+#    the bot is in — it auto-claims within about a minute, no further chat needed.
+```
+
+You can also just tell Claude Code / Codex: "set up Agent Team for me" — running
+`larkway tasklist-init` with no arguments already does the right thing for
+every bot configured on this machine.
+
+`larkway doctor` reports each bot's task-handle status (configured/scope
+health) as part of its regular checks. Full design, configuration knobs, and
+platform-fact writeups: [docs/task-handle.md](docs/task-handle.md).
+
+---
+
+## Requirements
+
+- **macOS, Linux, or Windows** — native Windows support is in beta (service registration via Task Scheduler; the full test suite runs on Windows CI); [WSL](https://learn.microsoft.com/windows/wsl/install) remains a fully-supported alternative if you prefer a Linux environment
+- **Node.js 20+ LTS**
+- **A Claude Code or Codex subscription** with local CLI installed and logged in
+- **`lark-cli`** — Feishu long-connection client and message utilities: `npm i -g @larksuite/cli`, then `lark-cli auth login` (the agent uses it to read thread history and attachments; `larkway doctor` checks it's present)
+- **`git` + `gh`** — for bots that open PRs (GitHub is the default forge; use `glab` instead for GitLab repos; both optional for read-only bots)
+- **An always-on host machine** — the bridge must stay running to receive Feishu events; a laptop that sleeps will miss messages; a small server or desktop works well
+
+---
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `larkway` | Open web UI (recommended for first-time setup) |
+| `larkway init` | CLI wizard: register Feishu app + configure first bot |
+| `larkway doctor [--fix]` | Environment check; auto-fix where possible |
+| `larkway start \| stop \| status \| logs` | Bridge lifecycle (`logs --follow` for streaming) |
+| `larkway bot add \| list \| edit` | Manage bots |
+| `larkway memory edit <id>` | Edit L2 identity memory |
+| `larkway perms <id>` | Adjust L1 permissions |
+| `larkway ui` | Start local web management UI |
+| `larkway update --package larkway@<version>` | Upgrade from an explicit package spec and restart bridge (`--latest` opts into npm latest) |
+
+---
+
+## Documentation
+
+| Topic | File |
+|---|---|
+| Architecture diagram + module I/O | [docs/architecture.md](docs/architecture.md) |
+| Agent capability model (L0–L3) | [docs/agent-capability-model.md](docs/agent-capability-model.md) |
+| Agent workspace runtime (v0.3) | [docs/agent-workspace.md](docs/agent-workspace.md) |
+| Version history and semver mapping | [docs/versioning.md](docs/versioning.md) |
+| Bridge ↔ Agent prompt contract | [docs/prompt-contract.md](docs/prompt-contract.md) |
+| Org knowledge base (memory/harvest/maintenance) | [docs/knowledge-base.md](docs/knowledge-base.md) |
+| Topic ↔ Feishu task handle (design + config) | [docs/task-handle.md](docs/task-handle.md) |
+| Bot config + memory templates | [bots-examples/](bots-examples/) |
+
+---
+
+## License
+
+MIT

@@ -1,0 +1,234 @@
+# Awesome AI Games
+
+This is a list of AI-made games you can play in the browser — remakes of familiar titles as well as original games.
+
+Possible launch dates (`~YYYY-MM-DD`) are estimates from the earliest public tweet found that announces or shares the playable game. Source tweets may be later high-engagement discovery posts.
+
+## 📑 Table of Contents
+
+- [🦄 Remakes / inspired-by](#remakes)
+  - [🏎️ Racing](#racing)
+  - [🔫 First-person shooters](#first-person-shooters)
+  - [🎮 Others](#others)
+- [🥳 Originals](#originals)
+  - [🏎️ Racing](#originals-racing)
+  - [🔫 First-person shooters](#originals-first-person-shooters)
+  - [✈️ Flight / Sim](#originals-flight-sim)
+  - [🎮 Others](#originals-others)
+
+<a name="remakes" id="remakes"></a>
+## 🦄 Remakes / inspired-by
+
+<a name="racing" id="racing"></a>
+### 🏎️ Racing
+
+#### [Hop.Earth](https://hop.earth/)
+
+<img src="images/hop-earth.webp" width="512" alt="Hop.Earth gameplay">
+
+Inspired by Need for Speed × Google Maps. Three.js/WebGL; OSM roads + terrain; parachute drop; call a car; multiplayer races. Possible launch: ~2026-08-03. Source: [Tweet](https://x.com/DVLPLONDON/status/2084139787447857637)
+
+#### [APEX / Coast Run](https://apex-coast-run.mindblown.ai)
+
+<img src="images/apex-coast-run.webp" width="512" alt="APEX / Coast Run gameplay">
+
+Inspired by Need for Speed. Coastal arcade racer; mobile/desktop perf modes. Possible launch: ~2026-09-07. Source: [Tweet](https://x.com/mindblown_ai/status/2097053892152594854)
+
+#### [Storm Race](https://storm-race.vercel.app)
+
+<img src="images/storm-race.webp" width="512" alt="Storm Race gameplay">
+
+Inspired by Bakusou Kyoudai Let's & Go!! (mini 4WD / childhood racing). Browser 3D racing; selectable/customizable vehicles; tracks; racing HUD; GPT-6 Astra + Three.js. Possible launch: ~2026-09-06. Source: [Tweet](https://x.com/threejs/status/2096864793873547713)
+
+#### [Rocket Arena](https://rl-opus5.vercel.app/)
+
+<img src="images/rocket-arena.webp" width="512" alt="Rocket Arena gameplay">
+
+Inspired by Rocket League. Three.js + Rapier physics; bots; gamepad; Cloudflare Worker multiplayer. Possible launch: ~2026-07-24. Source: [Tweet](https://x.com/LLMJunky/status/2080740121398120655)
+
+#### [Kart Royale](https://racing.ryancampbell.com/)
+
+<img src="images/kart-royale.webp" width="512" alt="Kart Royale gameplay">
+
+Inspired by Mario Kart. Browser kart racer; Opus 5-built; controls/camera/mobile/perf. Possible launch: ~2026-07-28. Source: [Tweet](https://x.com/mattshumer_/status/2082509137024274544)
+
+<a name="first-person-shooters" id="first-person-shooters"></a>
+### 🔫 First-person shooters
+
+#### [Claude of Duty: Vibe Slops II](https://vibeslops.luckeysystems.com/)
+
+<img src="images/vibe-slops-ii.webp" width="512" alt="Claude of Duty: Vibe Slops II gameplay">
+
+Inspired by Call of Duty: Black Ops II. Three.js FPS; BO2 map export; gunplay; multiplayer-style flow. Possible launch: ~2026-09-02. Source: [Tweet](https://x.com/threejs/status/2096829728170897425)
+
+#### [Modern Claudefare](https://www.modernclaudefare.com/)
+
+<img src="images/modern-claudefare.webp" width="512" alt="Modern Claudefare gameplay">
+
+Inspired by Call of Duty / Modern Warfare multiplayer (Rust, Nuketown, Highrise, Terminal). Three.js; bots + up to 4-player MP with voice; TDM/FFA; procedural weapons; controller support; desktop-oriented. Possible launch: ~2026-08-03. Source: [Tweet](https://x.com/0xRishi/status/2084322235788226653)
+
+#### [Claude of Duty](https://ericspencer.us/Claude-of-Duty/)
+
+<img src="images/claude-of-duty.webp" width="512" alt="Claude of Duty gameplay">
+
+Inspired by modern Call of Duty FPS. Distinct from Vibe Slops II. Three.js + WebGL2; procedural art/audio; ADS/lean/AI; [open source](https://github.com/mshumer/Claude-of-Duty). Possible launch: ~2026-07-25. Source: [Tweet](https://x.com/mattshumer_/status/2081054356405731740)
+
+#### [Astral War](https://astralwar.io/)
+
+<img src="images/astral-war.webp" width="512" alt="Astral War gameplay">
+
+Inspired by Call of Duty: World at War. GPT-6 Astra Ultra browser FPS; multiplayer lobbies; bots; perks; controller; voice chat. Possible launch: ~2026-09-04. Source: [Tweet](https://x.com/0xRishi/status/2096079660605997264)
+
+#### [Three.js Descent](https://mrdoob.github.io/three-descent/)
+
+<img src="images/threejs-descent.webp" width="512" alt="Three.js Descent gameplay">
+
+Inspired by Descent. Three.js 6DOF FPS port; shareware Episode 1; [open source](https://github.com/mrdoob/three-descent). Possible launch: ~2026-02-05. Source: [Tweet](https://x.com/mrdoob/status/2019639702438179153)
+
+#### [Three.js Quake](https://mrdoob.github.io/three-quake/)
+
+<img src="images/threejs-quake.webp" width="512" alt="Three.js Quake gameplay">
+
+Inspired by Quake. Distinct from Three.js Descent. Three.js FPS port; shareware Episode 1; [open source](https://github.com/mrdoob/three-quake). Possible launch: ~2026-01-24. Source: [Tweet](https://x.com/mrdoob/status/2015076521531355583)
+
+#### [CSJS](https://csjs.live)
+
+<img src="images/csjs.webp" width="512" alt="CSJS gameplay">
+
+Inspired by Counter-Strike. Counter-Strike 1.6 in the browser via Xash3D and WebAssembly; live multiplayer servers (Dust2, Inferno, Office, Surf, Zombie Mod); no account needed. Possible launch: ~2026-10-07. Source: [Tweet](https://x.com/aisearchio/status/2109765770876264757)
+
+<a name="others" id="others"></a>
+### 🎮 Others
+
+#### [Vesperfall](https://vesperfall.mengto.chatgpt.site)
+
+<img src="images/vesperfall.webp" width="512" alt="Vesperfall gameplay">
+
+Inspired by Diablo-style isometric action RPGs. Three.js; camera; VFX; audio; monsters; combat; open-source assets/skills. Possible launch: ~2026-07-25. Source: [Tweet](https://x.com/MengTo/status/2080915786206789733)
+
+#### [The Long Silence](https://longsilence.anshu.dev/)
+
+<img src="images/the-long-silence.webp" width="512" alt="The Long Silence gameplay">
+
+Inspired by Outer Wilds / Starfield-style space exploration. Three.js/WebGL2; zero external assets; ship walk + flight + landings; MIT open source. Possible launch: ~2026-07-27. Source: [Tweet](https://x.com/anshuc/status/2081801966158811506)
+
+#### [Starfall](https://e01.ai/starfall/)
+
+<img src="images/starfall.webp" width="512" alt="Starfall gameplay">
+
+Inspired by Homeworld-style space RTS. Universe-scale Three.js browser RTS. Possible launch: ~2026-07-27. Source: [Tweet](https://x.com/mikeluan123/status/2081716631986983093)
+
+#### [Super Smash Royale](https://smashroyale.io)
+
+<img src="images/super-smash-royale.webp" width="512" alt="Super Smash Royale gameplay">
+
+Inspired by Super Smash Bros. Melee/Brawl-style fighter BR. Browser battle royale; 45 characters; solo + multiplayer; controller support; GPT-6 Astra + Three.js. Possible launch: ~2026-09-11. Source: [Tweet](https://x.com/0xRishi/status/2098439358537990194)
+
+<a name="originals" id="originals"></a>
+## 🥳 Originals
+
+<a name="originals-racing" id="originals-racing"></a>
+### 🏎️ Racing
+
+#### [Cycle](https://cycle.ui8.dev)
+
+<img src="images/cycle.webp" width="512" alt="Cycle gameplay">
+
+Original stylized 3D bicycle riding game. Urban bike riding; Three.js; Forge + GPT-6 Astra. Possible launch: ~2026-09-07. Source: [Tweet](https://x.com/threejs/status/2096980160545182093)
+
+#### [NFTURBO](https://nfturbo.polaris.city/)
+
+<img src="images/nfturbo.webp" width="512" alt="NFTURBO gameplay">
+
+Original 3D arcade kart racer. Codex + Claude; free browser play. Possible launch: ~2026-07-18. Source: [Tweet](https://x.com/brvchss/status/2078421321856245846)
+
+#### [VibeSail](https://vibesail.com)
+
+<img src="images/vibesail.webp" width="512" alt="VibeSail gameplay">
+
+Original browser sailing game. Daily races and a leaderboard; rudder and sail controls; sail anywhere on Earth using Google 3D map tiles (vibesail.com/world). Possible launch: ~2025-02-27. Source: [Tweet](https://x.com/NicolaManzini/status/2030835457316000158)
+
+<a name="originals-first-person-shooters" id="originals-first-person-shooters"></a>
+### 🔫 First-person shooters
+
+#### [Doodle District](https://doodleshooter.vercel.app/) (aka Doodle Shooter)
+
+<img src="images/doodle-district.webp" width="512" alt="Doodle District gameplay">
+
+Original browser shooter. Three.js doodle/sketch-style shooter; playable in-browser. Possible launch: ~2026-09-04. Source: [Tweet](https://x.com/threejs/status/2096941028297109808)
+
+#### [Voxpolia](https://endstreet.itch.io/voxpolia)
+
+<img src="images/voxpolia.webp" width="512" alt="Voxpolia gameplay">
+
+Original voxel/low-poly FPS city shooter. First-person gunplay; urban exploration; destruction; free browser demo on itch.io. Possible launch: ~2026-08-28. Source: [Tweet](https://x.com/threejs/status/2093486880339939677)
+
+#### [Operation Ironhold](https://starknightt.github.io/operation-ironhold/)
+
+<img src="images/operation-ironhold.webp" width="512" alt="Operation Ironhold gameplay">
+
+Original Claude Opus FPS. Four weapons; ADS/recoil/reload; AI enemies; cover/flanking; mantle/double-jump. Possible launch: ~2026-07-25. Source: [Tweet](https://x.com/prasenx/status/2081022068561469715)
+
+<a name="originals-flight-sim" id="originals-flight-sim"></a>
+### ✈️ Flight / Sim
+
+#### [Alder Valley Rail Atelier](https://alder-valley-rail-atelier.nickfromlater.chatgpt.site)
+
+<img src="images/alder-valley-rail-atelier.webp" width="512" alt="Alder Valley Rail Atelier gameplay">
+
+Original model-railroad sim. Interactive layout; Astra + Three.js; no external assets. Possible launch: ~2026-09-08. Source: [Tweet](https://x.com/nickfromlater/status/2097355845524726084)
+
+#### [Flight Simulator 2025](https://fly.pieter.com/)
+
+<img src="images/flight-simulator-2025.webp" width="512" alt="Flight Simulator 2025 gameplay">
+
+Original multiplayer flight simulator. Free-to-play MMO; fly and dogfight online; Three.js. Possible launch: ~2025-02-22. Source: [Tweet](https://x.com/levelsio/status/1894125123197964542)
+
+#### [Tiny Skies](https://tinyskies.vercel.app/)
+
+<img src="images/tiny-skies.webp" width="512" alt="Tiny Skies gameplay">
+
+Original cozy exploration game. Biplane, magic carpet, or boat around a tiny world; Vibe Jam 2026 Most Polished. Possible launch: ~2026-04-09. Source: [Tweet](https://x.com/DannyLimanseta/status/2051306060020072632)
+
+#### [Firewood Splitting Simulator](https://screen.toys/firewood/)
+
+<img src="images/firewood-splitting-simulator.webp" width="512" alt="Firewood Splitting Simulator gameplay">
+
+Original firewood-splitting simulator. 3D-scanned stump, axe, and logs; recorded splitting sounds; Three.js. Possible launch: ~2026-06-09. Source: [Tweet](https://x.com/shapiro500/status/2064335363619819629)
+
+<a name="originals-others" id="originals-others"></a>
+### 🎮 Others
+
+#### [Waldo](https://waldo.brutefloat.com)
+
+<img src="images/waldo.webp" width="512" alt="Waldo gameplay">
+
+Original first-person find-Waldo in a moving crowd. Browser playable; Claude-made. Possible launch: ~2026-08-29. Source: [Tweet](https://x.com/notesbyfloat/status/2093903701605831040)
+
+#### [King's Gambit](https://medieval-3d-chess.rork.app/)
+
+<img src="images/kings-gambit.webp" width="512" alt="King's Gambit gameplay">
+
+Original 3D chess with battle presentation. Fully playable in browser. Possible launch: ~2026-08-02. Source: [Tweet](https://x.com/alexcooldev/status/2083921916935700661)
+
+#### [Pocket Skatepark](https://studio.sandbox.game/play/0ab9fde7-b8e3-419a-8bf7-7b9c971d6232)
+
+<img src="images/pocket-skatepark.webp" width="512" alt="Pocket Skatepark gameplay">
+
+Original cel-shaded city skatepark. Tricks/combos; Score Attack; Color Mode / Free Skate; leaderboard; quests/NPCs; Three.js / Sandbox Studio. Possible launch: ~2026-07-28. Source: [Tweet](https://x.com/threejs/status/2084636900791329090)
+
+#### [Claybound](https://claybound-56949.web.app/)
+
+<img src="images/claybound.webp" width="512" alt="Claybound gameplay">
+
+Original clay-styled 3D platformer. Levels, coins, and hazards; Three.js. Possible launch: ~2026-09-26. Source: [Tweet](https://x.com/threejs/status/2103709424271687813)
+
+## Related Lists
+
+* [Awesome AI-Built Games](https://github.com/lappemic/awesome-ai-built-games) - Games built mostly with AI, grouped by genre with the AI tools & frameworks behind each.
+
+<a name="contributing" id="contributing"></a>
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before adding or changing entries.
+

@@ -1,0 +1,442 @@
+# RubricLLM
+
+Lightweight LLM evaluation framework for Ruby, inspired by [DeepEval](https://github.com/confident-ai/deepeval), powered by [RubyLLM](https://github.com/crmne/ruby_llm).
+
+[![Gem Version](https://badge.fury.io/rb/rubric_llm.svg)](https://badge.fury.io/rb/rubric_llm)
+[![CI](https://github.com/dpaluy/rubric_llm/actions/workflows/ci.yml/badge.svg)](https://github.com/dpaluy/rubric_llm/actions/workflows/ci.yml)
+[![Wiki](https://img.shields.io/badge/docs-wiki-blue)](https://github.com/dpaluy/rubric_llm/wiki)
+
+Provider-agnostic evaluation with pluggable metrics, statistical A/B comparison, and test framework integration: no Rails, no ActiveRecord, no UI. Works anywhere Ruby runs.
+
+RubricLLM 0.9.0 requires RubyLLM `~> 2.1`, `>= 2.1.1` (>= 2.1.1, < 3.0) and Ruby 3.4 or later. Applications that use RubyLLM 1.x should stay on RubricLLM `0.5.x`.
+
+## Installation
+
+Update both gem constraints together:
+
+```ruby
+gem "rubric_llm", "~> 0.9.0"
+gem "ruby_llm", "~> 2.1", ">= 2.1.1"
+```
+
+Then resolve both gems together:
+
+```bash
+bundle update rubric_llm ruby_llm
+```
+
+If the application still has a RubyLLM 1.x constraint, update both constraints before running Bundler. RubyLLM 2.1.1 or later is required: it fixes a fresh-install Faraday dependency resolution problem in 2.1.0.
+
+RubyLLM 2.1's `RubyLLM::Judge` and `RubyLLM::Evaluation` are separate upstream APIs. RubricLLM keeps its own judge, metrics, and reports; this upgrade does not switch evaluation engines.
+
+Or install directly:
+
+```bash
+gem install rubric_llm --version 0.9.0
+```
+
+## Quick Start
+
+```ruby
+require "rubric_llm"
+
+RubricLLM.configure do |c|
+  c.judge_model = "gpt-5.5"
+  c.judge_provider = :openai
+end
+
+result = RubricLLM.evaluate(
+  question: "What is Ruby's core design philosophy?",
+  answer: "Ruby was designed by Yukihiro Matsumoto to optimize for developer happiness and productivity, prioritizing the programmer's joy over machine efficiency.",
+  context: [
+    "Yukihiro Matsumoto, Ruby's creator, has stated that Ruby is designed to make programmers happy. " \
+    "He optimized the language for human readability and developer productivity rather than raw machine performance."
+  ],
+  ground_truth: "Ruby is designed to maximize developer happiness and productivity."
+)
+
+result.correctness       # => 0.99
+result.pass?             # => true
+```
+
+For runnable LLM-as-Judge examples, including RAG scoring, batch pass/fail output, model comparison, custom metrics, and live
+Minitest assertions, see [examples/README.md](examples/README.md).
+
+## Configuration
+
+### Global
+
+```ruby
+RubricLLM.configure do |c|
+  c.judge_model = "gpt-5.5"           # any model RubyLLM supports
+  c.judge_provider = :openai          # :openai, :anthropic, :gemini, etc.
+  c.temperature = 0.0                 # deterministic scoring (default)
+  c.max_tokens = 4096                 # max tokens for judge response
+end
+```
+
+`max_tokens` remains RubricLLM's public setting, and `RUBRIC_MAX_TOKENS` remains its environment variable. RubyLLM 2 maps this shared limit to the selected provider and protocol.
+
+When `temperature` is omitted, RubricLLM reads `RUBRIC_TEMPERATURE` and uses `0.0` when the variable is not set. Before 0.6.0.rc1, an explicit `temperature: nil` selected that environment value or `0.0`; it now means that RubricLLM omits temperature from the provider request, so the provider chooses its default:
+
+```ruby
+RubricLLM::Config.new                  # RUBRIC_TEMPERATURE, otherwise 0.0
+RubricLLM::Config.new(temperature: nil) # omit temperature from the request
+```
+
+RubyLLM 2 uses the OpenAI Responses protocol by default when the selected model supports it. For an OpenAI-compatible gateway that only accepts Chat Completions, configure RubyLLM before evaluating:
+
+```ruby
+RubyLLM.configure do |config|
+  config.openai_protocol = :chat_completions
+end
+```
+
+Structured output support depends on the selected provider and model. RubricLLM sends its schema when RubyLLM reports structured output support. Otherwise it requests JSON text and validates the response object and score locally. Check the target provider's support before relying on a schema or a specific protocol. See RubyLLM's [upgrade guide](https://rubyllm.com/upgrading/), [request control guide](https://rubyllm.com/chat-request-control/), and [structured output support](https://rubyllm.com/structured-output/).
+
+### Judge Thinking Effort
+
+Set `thinking_effort` when using a reasoning model to control the trade-off between judge quality, latency, and cost:
+
+```ruby
+RubricLLM.configure do |c|
+  c.judge_model = "gpt-6-astra"
+  c.judge_provider = :openai
+  c.temperature = nil
+  c.thinking_effort = :high
+end
+
+# Or configure an individual evaluation:
+config = RubricLLM::Config.new(judge_model: "gpt-6-astra", temperature: nil, thinking_effort: "high")
+```
+
+RubricLLM passes the value to RubyLLM's [`with_thinking(effort: ...)`](https://rubyllm.com/thinking/). Strings and symbols are accepted. Supported values depend on the model and provider; RubricLLM does not translate values or silently ignore unsupported settings. Request errors are reported as judge errors.
+
+The default is `nil`: RubricLLM does not call `with_thinking`, so existing RubyLLM and provider behavior is unchanged. This does **not** disable reasoning. An omitted setting reads `RUBRIC_THINKING_EFFORT`; an explicit `thinking_effort: nil` ignores that environment variable. Use `:none` only when the selected model supports it.
+
+Higher effort does not guarantee better scores. Compare results on your evaluation dataset. For providers that count reasoning tokens toward the output limit, increase `max_tokens` if the default 4,096 tokens leaves too little room for the JSON response.
+
+### Environment Variables
+
+All config fields can be set via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RUBRIC_JUDGE_MODEL` | `gpt-4o` | Judge LLM model name |
+| `RUBRIC_JUDGE_PROVIDER` | `openai` | RubyLLM provider |
+| `RUBRIC_TEMPERATURE` | `0.0` | Judge temperature |
+| `RUBRIC_THINKING_EFFORT` | unset | Model-specific reasoning effort, such as `high` |
+| `RUBRIC_MAX_TOKENS` | `4096` | Max response tokens |
+| `RUBRIC_MAX_RETRIES` | `2` | Max retries on transient failures |
+| `RUBRIC_RETRY_BASE_DELAY` | `1.0` | Base delay (seconds) for exponential backoff |
+| `RUBRIC_CONCURRENCY` | `1` | Thread pool size for batch evaluation |
+
+```ruby
+# Reads all RUBRIC_* env vars automatically
+config = RubricLLM::Config.from_env
+```
+
+### Per-Evaluation Override
+
+```ruby
+custom = RubricLLM::Config.new(judge_model: "claude-opus-4-5", judge_provider: :anthropic)
+
+result = RubricLLM.evaluate(question: "...", answer: "...", config: custom)
+report = RubricLLM.evaluate_batch(dataset, config: custom)
+```
+
+### Rails Setup
+
+```ruby
+# config/initializers/rubric_llm.rb
+RubricLLM.configure do |c|
+  c.judge_model = "gpt-5.5"
+  c.judge_provider = :openai
+end
+```
+
+RubricLLM has no Rails models or database migrations. If the application also uses RubyLLM's Rails persistence, follow RubyLLM's [upgrade guide](https://rubyllm.com/upgrading/) and run its migrations separately.
+
+### Retries
+
+RubyLLM transport retries and RubricLLM judge retries remain separate. With RubyLLM's default `config.max_retries = 3` and RubricLLM's default `max_retries: 2`, one retryable metric failure can produce up to `(3 + 1) * (2 + 1) = 12` HTTP attempts. Set `RUBRIC_MAX_RETRIES` and `RUBRIC_RETRY_BASE_DELAY` for RubricLLM's layer, and set RubyLLM's `config.max_retries` and related transport settings for its layer. RubricLLM does not combine or redesign these retry layers. RubyLLM 2.1 reuses transport connections for matching settings, including across RubricLLM's outer retries; this does not change the HTTP attempt budgets or share judge conversation history.
+
+RubyLLM classifies OpenAI's HTTP 429 `insufficient_quota` response as a rate-limit error, so an exhausted account uses both retry budgets and their delays before the error is returned.
+
+## Metrics
+
+### LLM-as-Judge Metrics
+
+These metrics use a judge LLM to evaluate quality. Each returns a 0.0–1.0 score. Faithfulness counts supported answer claims, context precision counts relevant non-empty chunks, and context recall counts covered reference facts. These three scores are calculated from the judge's item-level decisions, not its suggested score. An empty or malformed item list (including an answer with no factual claims) is an evaluation error, not a quality score. Correctness, relevance, and factual accuracy use judge scores with metric-specific scoring criteria. The judge still decides what counts as a claim, fact, or relevant chunk, so scores are not deterministic across models.
+
+| Metric | Question it answers | Requires |
+|--------|-------------------|----------|
+| **Correctness** | Does the answer match the known correct answer? | `ground_truth` |
+| **Relevance** | Does the answer address what was asked? | `question` |
+| **Context Precision** | Are the retrieved context chunks actually relevant? | `question`, `context` |
+| **Factual Accuracy** | Does the candidate contradict the reference (not omit it)? | `ground_truth` |
+| **Context Recall** | Do the contexts cover the information in the ground truth? | `context`, `ground_truth` |
+| **Faithfulness** | Is every claim in the answer supported by the context? | `context` |
+
+```ruby
+# Only context (gets faithfulness, relevance, context_precision)
+result = RubricLLM.evaluate(
+  question: "How does photosynthesis work?",
+  answer: "Plants convert sunlight into energy.",
+  context: ["Photosynthesis is the process by which plants convert light energy into chemical energy."]
+)
+
+# With ground truth (gets all metrics)
+result = RubricLLM.evaluate(
+  question: "How does photosynthesis work?",
+  answer: "Plants convert sunlight into energy.",
+  context: ["Photosynthesis is the process by which plants convert light energy into chemical energy."],
+  ground_truth: "Plants use photosynthesis to convert sunlight, water, and CO2 into glucose and oxygen."
+)
+```
+
+### Custom Metrics
+
+```ruby
+class ToneMetric < RubricLLM::Metrics::Base
+  SYSTEM_PROMPT = "Rate professional tone from 0.0 to 1.0. Respond with JSON: {\"score\": 0.0, \"tone\": \"description\"}"
+
+  def call(answer:, **)
+    result = judge_eval(system_prompt: SYSTEM_PROMPT, user_prompt: "Answer: #{answer}")
+    return { score: nil, details: result } unless result.is_a?(Hash) && result["score"]
+
+    { score: Float(result["score"]), details: { tone: result["tone"] } }
+  end
+end
+
+result = RubricLLM.evaluate(
+  question: "q", answer: "a",
+  metrics: [RubricLLM::Metrics::Faithfulness, ToneMetric]
+)
+result.scores[:tone_metric]  # => 0.85
+```
+
+### Retrieval Metrics
+
+Pure math, no LLM calls, no API key needed.
+
+```ruby
+result = RubricLLM.evaluate_retrieval(
+  retrieved: ["doc_a", "doc_b", "doc_c", "doc_d"],
+  relevant: ["doc_a", "doc_c"]
+)
+
+result.precision_at_k(3)  # => 0.67
+result.recall_at_k(3)     # => 1.0
+result.mrr                # => 1.0
+result.ndcg               # => 0.92
+result.hit_rate           # => 1.0
+```
+
+## Batch Evaluation
+
+Evaluate a dataset and get aggregate statistics:
+
+```ruby
+dataset = [
+  { question: "What is Ruby?", answer: "A programming language.",
+    context: ["Ruby is a dynamic language."], ground_truth: "Ruby is a programming language." },
+  { question: "What is Rails?", answer: "A web framework.",
+    context: ["Rails is a web framework for Ruby."], ground_truth: "Rails is a Ruby web framework." },
+  # ...
+]
+
+report = RubricLLM.evaluate_batch(dataset)
+
+# Speed up with concurrent evaluation (thread pool)
+report = RubricLLM.evaluate_batch(dataset, concurrency: 4)
+
+puts report.summary
+# RubricLLM Evaluation Report
+# ========================================
+# Samples: 20
+# Duration: 45.2s
+#   faithfulness          mean=0.920  std=0.050  min=0.850  max=0.980  n=20
+
+report.worst(3)                    # 3 lowest-scoring results
+report.failures(threshold: 0.8)   # results below 0.8
+report.export_csv("results.csv")      # export to CSV
+report.export_json("results.json")    # export to JSON
+report.to_json                        # returns JSON string
+```
+
+## A/B Model Comparison
+
+Compare two models with statistical significance testing:
+
+```ruby
+config_a = RubricLLM::Config.new(judge_model: "gpt-5.5")
+config_b = RubricLLM::Config.new(judge_model: "claude-sonnet-4-6")
+
+report_a = RubricLLM.evaluate_batch(dataset, config: config_a)
+report_b = RubricLLM.evaluate_batch(dataset, config: config_b)
+
+comparison = RubricLLM.compare(report_a, report_b)
+
+puts comparison.summary
+# A/B Comparison
+# ================================================================================
+# Metric                      A        B    Delta    p-value      p-adj  Sig
+# --------------------------------------------------------------------------------
+# faithfulness            0.880    0.920   +0.040     0.0023     0.0068   **
+# relevance               0.850    0.860   +0.010     0.3081     0.3081
+# correctness             0.910    0.940   +0.030     0.0240     0.0480    *
+#
+# p-adj: Holm-Bonferroni adjusted across 3 metrics. Significance uses p-adj.
+
+comparison.significant_improvements   # => [:faithfulness, :correctness]
+comparison.significant_regressions    # => []
+```
+
+Significance markers: `*` (p < 0.05), `**` (p < 0.01), `***` (p < 0.001)
+
+### Pairing
+
+A paired t-test needs the same sample on both sides. The comparison pairs results by `sample[:question]`, not by position, so a reordered dataset still gives a valid test. Questions present in only one report are dropped with a warning. If a question repeats an uneven number of times across the two reports, the extra occurrences are dropped with a warning.
+
+`evaluate_batch` requires a `:question` on every sample, so reports it produces always pair by identity. Hand-built reports whose results carry no `sample[:question]` fall back to position pairing and warn.
+
+### Multiple comparisons
+
+Every metric gets its own t-test. Six tests at alpha 0.05 give a family-wise false-positive rate near 26%, so each raw `p_value` is corrected with the Holm-Bonferroni step-down method and reported as `p_value_adjusted`. The significance markers and both `significant_*` methods read the adjusted value. The raw value stays in the result for reference.
+
+For the statistical reasoning behind paired t-tests and how to read these p-values, see [Understanding A/B Comparison](https://github.com/dpaluy/rubric_llm/wiki/Understanding-A-B-Comparison) on the wiki.
+
+## Test Integration
+
+### Minitest
+
+```ruby
+require "rubric_llm/minitest"
+
+class AdvisorTest < Minitest::Test
+  include RubricLLM::Assertions
+
+  def test_answer_is_faithful
+    answer = my_llm.ask("What is Ruby?", context: docs)
+    assert_faithful answer, docs, threshold: 0.8
+  end
+
+  def test_answer_is_correct
+    answer = my_llm.ask("What is 2+2?")
+    assert_correct answer, "4", threshold: 0.9
+  end
+
+  def test_no_hallucination
+    answer = my_llm.ask("Summarize this", context: docs)
+    refute_hallucination answer, docs
+  end
+
+  def test_answer_is_relevant
+    answer = my_llm.ask("How do I deploy Rails?")
+    assert_relevant "How do I deploy Rails?", answer, threshold: 0.7
+  end
+end
+```
+
+### RSpec
+
+```ruby
+require "rubric_llm/rspec"
+
+RSpec.describe "My LLM" do
+  include RubricLLM::RSpecMatchers
+
+  let(:answer) { my_llm.ask(question, context: docs) }
+
+  it { expect(answer).to be_faithful_to(docs).with_threshold(0.8) }
+  it { expect(answer).to be_relevant_to(question) }
+  it { expect(answer).to be_correct_for(expected_answer) }
+  it { expect(answer).not_to hallucinate_from(docs) }
+end
+```
+
+## Error Handling
+
+```ruby
+begin
+  result = RubricLLM.evaluate(question: "q", answer: "a", context: ["c"])
+rescue RubricLLM::JudgeError => e
+  # LLM call failed (network, auth, rate limit)
+  puts "Judge error: #{e.message}"
+rescue RubricLLM::ConfigurationError => e
+  # Invalid configuration
+  puts "Config error: #{e.message}"
+rescue RubricLLM::Error => e
+  # Catch-all for any RubricLLM error
+  puts "Error: #{e.message}"
+end
+```
+
+Individual metric failures are handled gracefully: a failed metric returns `nil` for the score and includes the error in details:
+
+```ruby
+result = RubricLLM.evaluate(question: "q", answer: "a")
+result.scores[:faithfulness]           # => nil (if judge failed)
+result.details[:faithfulness][:error]  # => "Judge call failed: ..."
+result.overall                         # => mean of non-nil scores only
+```
+
+## Development
+
+```bash
+bundle install
+bundle exec rake test test_contract
+bundle exec rubocop
+```
+
+## Limitations
+
+RubricLLM uses LLM-as-Judge: an LLM scores another LLM's output. This is the industry-standard approach (used by Ragas, DeepEval, ARES), but it means the judge shares the same class of failure modes as the system being evaluated. If the judge hallucinates that an answer is faithful, you get a false positive.
+
+Mitigations built into the framework:
+
+- **Cross-model judging.** Configure a different model as judge than the one being evaluated. Don't let gpt-5.5 grade gpt-5.5.
+- **Retrieval metrics are pure math.** `precision_at_k`, `recall_at_k`, `mrr`, `ndcg` (no LLM involved, no judge bias). See [Why Retrieval Metrics Are Pure Math](https://github.com/dpaluy/rubric_llm/wiki/Why-Retrieval-Metrics-Are-Pure-Math).
+- **Custom non-LLM metrics.** Subclass `Metrics::Base` with regex checks, embedding similarity, or any deterministic logic.
+- **Statistical comparison.** A/B testing with paired t-tests surfaces systematic judge bias across runs.
+
+For high-stakes evaluation, pair LLM-as-Judge metrics with retrieval metrics and periodic human review.
+
+## Why RubricLLM?
+
+Ruby has two LLM evaluation options today. Neither fits most use cases:
+
+| | [eval-ruby](https://github.com/johannesdwicahyo/eval-ruby) | [leva](https://github.com/kieranklaassen/leva) | RubricLLM |
+|---|---|---|---|
+| **What it is** | Generic RAG metrics | Rails engine with UI | Lightweight eval framework |
+| **LLM access** | Raw HTTP (OpenAI/Anthropic only) | You implement it | RubyLLM (any provider) |
+| **Rails required?** | No | Yes (engine + 6 migrations) | No |
+| **ActiveRecord?** | No | Yes | No |
+| **A/B comparison** | Basic | No | Paired t-test with Holm-corrected p-values |
+| **Test assertions** | Minitest + RSpec | No | Minitest + RSpec |
+| **Pluggable metrics** | No (fixed set) | Yes | Yes |
+| **Retrieval metrics** | Yes | No | Yes |
+
+## Further Reading
+
+Deep dives live in the [project wiki](https://github.com/dpaluy/rubric_llm/wiki):
+
+- [Understanding A/B Comparison](https://github.com/dpaluy/rubric_llm/wiki/Understanding-A-B-Comparison): what paired t-tests and p-values mean for model comparison
+- [Why Retrieval Metrics Are Pure Math](https://github.com/dpaluy/rubric_llm/wiki/Why-Retrieval-Metrics-Are-Pure-Math): why `precision_at_k`, `recall_at_k`, `mrr`, `ndcg`, and `hit_rate` are deterministic and bias-free
+
+## Requirements
+
+- Ruby >= 3.4
+- [ruby_llm](https://github.com/crmne/ruby_llm) >= 2.1.1, < 3.0 for the current development version
+- An API key for your chosen LLM provider (set via RubyLLM configuration)
+
+## Contributing
+
+Bug reports and pull requests are welcome on [GitHub](https://github.com/dpaluy/rubric_llm).
+
+## License
+
+[MIT](LICENSE.txt)
+
+Supported by [Majestic Labs](https://majesticlabs.dev/).

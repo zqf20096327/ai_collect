@@ -1,0 +1,406 @@
+<!-- faf: faf-cli | TypeScript | cli | CLI for the .faf and .fafm IANA-registered formats — AI context + memory that versions with your code -->
+<!-- faf: doc=readme | canonical=project.faf | score=100 | family=FAF -->
+
+<div align="center">
+
+<h1>
+<img src="https://www.faf.one/orange-smiley.svg" alt="FAF" width="72" /><br>
+faf-cli<br>
+<sub><sub>CONTEXT, versioned.</sub></sub>
+</h1>
+
+### The context every AI coding agent reads — authored from your repo, never guessed.
+
+**One `.faf` file → `AGENTS.md` · `CLAUDE.md` · `GEMINI.md` · `.cursorrules`,<br>
+detected from your real stack, scored, and versioned with your code. No drift. No re-explaining.**
+
+<!-- ① PRIME — the crown receipts -->
+[![Anthropic MCP #2759](https://img.shields.io/badge/Anthropic_MCP-merged_%232759-blueviolet)](https://github.com/modelcontextprotocol/servers/pull/2759)
+[![IANA vnd.faf+yaml](https://img.shields.io/badge/IANA-vnd.faf%2Byaml-008B8B)](https://www.iana.org/assignments/media-types/application/vnd.faf+yaml)
+[![IANA vnd.fafm+yaml](https://img.shields.io/badge/IANA-vnd.fafm%2Byaml-008B8B)](https://www.iana.org/assignments/media-types/application/vnd.fafm+yaml)
+[![IANA vnd.fafa+yaml](https://img.shields.io/badge/IANA-vnd.fafa%2Byaml-008B8B)](https://www.iana.org/assignments/media-types/application/vnd.fafa+yaml)
+[![Mentioned in Awesome Claude Code](https://awesome.re/mentioned-badge.svg)](https://github.com/hesreallyhim/awesome-claude-code)
+[![downloads](https://img.shields.io/npm/dt/faf-cli?color=008B8B&label=downloads)](https://www.npmjs.com/package/faf-cli)
+[![npm](https://img.shields.io/npm/v/faf-cli?color=00CCFF)](https://www.npmjs.com/package/faf-cli)
+[![Business card · Get yours →](https://wolfe-jam.github.io/agent-business-card/badge.svg)](https://wolfe-jam.github.io/agent-business-card/?repo=Wolfe-Jam/faf-cli)
+
+<br>
+
+[![FAF downloads](https://img.shields.io/endpoint?url=https://faf.one/api/downloads.json)](https://faf.one/downloads) · across npm, PyPI and crates.io · **IANA-registered · Anthropic-merged (#2759)**
+
+⭐ Bookmarks it for you, helps other devs find it too.
+
+<!-- ② papers · funnel · testing — one line -->
+[![DOI: Context paper](https://img.shields.io/badge/DOI-Context%20paper-FF6B35)](https://doi.org/10.5281/zenodo.18251362)
+[![DOI: Memory paper](https://img.shields.io/badge/DOI-Memory%20paper-FF6B35)](https://doi.org/10.5281/zenodo.20348942)
+[![project.faf → faf](https://img.shields.io/badge/project.faf-inside-008B8B)](https://github.com/Wolfe-Jam/faf)
+[![TAF](./badge.svg)](https://github.com/Wolfe-Jam/faf-taf-git)
+[![CI](https://github.com/Wolfe-Jam/faf-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/faf-cli/actions/workflows/ci.yml)
+
+FAF defines. AGENTS.md instructs. AI codes.
+
+<!-- trophy — bottom of hero -->
+[![FAF Trophy 100%](https://img.shields.io/badge/FAF-%E2%9C%AA%20100%25-000000?labelColor=FF6B35)](https://faf.one)
+
+</div>
+
+```
+project/
+├── package.json     ← npm reads this
+├── project.faf      ← AI reads this
+├── README.md        ← humans read this
+└── src/
+```
+
+> **Every building requires a foundation. FAF is AI's foundational layer.**
+>
+> You have a `package.json`. AI needs you to add a `project.faf`. Done.
+
+**Git-Native.** `project.faf` versions with your code — every clone, every fork, every checkout gets full AI context.<br>
+No setup, no drift, no re-explaining.
+
+---
+
+## Install
+
+```bash
+bunx faf auto                 # Bun — zero install, fastest path
+npx faf auto                  # npm — works everywhere
+pnpm dlx faf auto             # pnpm — zero install
+brew install wolfe-jam/faf/faf-cli && faf auto   # Homebrew (auto-taps)
+```
+
+> `faf` with no arguments shows your project's score; `faf auto` detects and fills.
+
+---
+
+## Quick Start
+
+```bash
+# ANY GitHub repo — one shallow clone, no install, 2 seconds
+bunx faf-cli git https://github.com/facebook/react
+
+# Your own project
+bunx faf-cli init              # Create .faf
+bunx faf-cli auto              # Fill every tech slot from the repo, then score
+bunx faf-cli go                # Interactive interview to gold code
+```
+
+---
+
+## Nelly Never Forgets
+
+Run `faf` with no arguments:
+
+![faf](./nelly.png)
+
+> **faf-cli dogfoods itself** — [project.faf](./project.faf) is source DNA; [CLAUDE.md](./CLAUDE.md) and [GEMINI.md](./GEMINI.md) are authored from it via `faf`. [AGENTS.md](./AGENTS.md) is the **BETTER** ops briefing (hand-kept for agents; `faf export --agents` still authors AGENTS.md for other repos).
+
+---
+
+## Commands
+
+| Command | What it does |
+|---------|--------------|
+| `faf init` | Create `project.faf` from your local project |
+| `faf git <url>` | Instant `.faf` from any GitHub repo (a shallow clone) |
+| `faf auto` | Detect stack, fill every slot it can, score |
+| `faf go` | Guided interview to fill the human-only slots |
+| `faf score` | Check AI-readiness (0–100%) |
+| `faf export` | Author `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursorrules` |
+| `faf sync` | `.faf` → `CLAUDE.md` (pull: Trophy-gated backfill) |
+| `faf memory` | `.fafm` soul ops — convert Claude memory, etch, recall, ls, show |
+| `faf diff` / `log` | Semantic context diff + score timeline across git history |
+| `faf hooks --install` | Pre-commit guard against context regression |
+| `faf compile` / `decompile` | `.faf` → `.fafb` **v2** sealed brick; `decompile` shows sections as JSON |
+| `faf check` | Validate a `.faf` file |
+| `faf show` | Render `project.faf` to a browsable HTML page |
+| `faf formats` | List supported stacks and formats |
+
+Run `faf --help` for the full command set and options.
+
+### Memory (`.fafm`) — new in 7.2.0
+
+Portable agent memory in the IANA-registered [`.fafm`](https://www.iana.org/assignments/media-types/application/vnd.fafm+yaml) format. Same INTEROP as [claude-fafm-sdk 1.0](https://pypi.org/project/claude-fafm-sdk/).
+
+```bash
+# Claude Code memory dir → soul.fafm
+faf memory convert ~/.claude/projects/.../memory -o soul.fafm
+
+faf memory ls                    # ranked facts
+faf memory recall "your query"   # deterministic filter + rank
+faf memory etch "a durable fact" --id my-fact
+faf memory show
+```
+
+### What's New in v8.3.0 — The Business Card Edition
+
+**Business cards say what the repo is: a package can be a CLI or a library, from npm, PyPI or crates.io, and only an MCP server gets MCP cards.**
+
+```bash
+npx faf-cli@latest card init --package pypi:my-lib --kind library
+```
+
+- **`--kind mcp|cli|library`** says what `--package` is. `mcp` stays the default.
+- **`npm:`, `pypi:` and `crates:`** name the registry. A bare name is still npm.
+- **`--homepage <url>`** sets the business card's homepage.
+- **`faf cards` writes MCP cards only for an MCP server.** A CLI or a library gets its plain cards and a one-line reason.
+- **`faf init` offers the business card** when the repo has none: `next: 'faf card init'`. It writes nothing for it.
+
+### The Ladder Edition (8.2)
+
+**One ladder for every card: agent.fafa builds the plain cards, and project.faf adds FAF's context.**
+
+| You have | `faf cards` gives you |
+|---|---|
+| `agent.fafa` (BETTER) | the plain cards its endpoints allow: A2A card, MCP Server Card, registry entry, AI Catalog and ARD rows |
+| + `project.faf` (BEST) | the same cards, with FAF's context in each |
+
+- **A card's identity comes from the `.fafa`.** An existing `server.json` keeps the name it was published under; renaming it takes `--force`.
+- **The pack projector writes the same cards as `faf cards`** (`projectPack`, `buildPack`).
+- **The full test suite runs on Windows** before every merge, alongside Ubuntu and macOS.
+
+### The Always33+ Edition (8.1)
+
+**From nothing to listed in one command: `faf card init` asks seven questions and writes your agent.fafa, your AI Catalog entry and your ARD entry.**
+
+The same always-33 engine, plus cards.
+
+```bash
+npx faf-cli@latest card init     # seven questions → agent.fafa → A2A card, AI Catalog, ARD
+```
+
+| You have | `faf cards` gives you | Rung |
+|---|---|---|
+| `agent.fafa` | A2A card, MCP Server Card, registry, AI Catalog, ARD (as its endpoints allow) | BETTER |
+| + `project.faf` | the same cards, with FAF context | BEST |
+
+- **Scripts ask nothing:** every answer is a flag (`--name`, `--domain`, `--url` or `--package`, `--skill`, `--example`, `--set-version`).
+- **Help says what each command touches,** with a "What touches what" footer and [docs.faf.one/side-effects](https://docs.faf.one/side-effects).
+
+### The Always33 Edition (8.0)
+
+**One engine, one number: faf-cli v8 scores with the always-33 kernel — the same score faf-kernel, faf-rust-sdk and rust-faf-mcp give.**
+
+- **The always-33 engine.** Every `.faf` is scored against all 33 Mk4 slots by one Rust kernel (`faf-scoring-kernel` 3.0.0, WASM). Verified identical to the reference always-33 scorer on the `project.faf` of all 80 FAF repos.
+- **Your 21 slots, and the 12 enterprise slots in view.** faf-cli fills the 21 base slots. The 12 enterprise slots — infra, app, ops — are marked `slotignored` unless your app-type uses them, and `faf score` shows all 33.
+- **Upgrading from 7.x:** a `.faf` without the 12 enterprise markers now scores against 33, so its number can drop (21 filled = 64%). **Run `faf auto`** — it writes the markers and your score returns.
+
+```text
+✪ TROPHY 100% 21/21 slots — project.faf
+  ● project.name
+  …
+  ● stack.cicd
+  — stack.monorepo_tool: slotignored
+  …
+  — monorepo.remote_cache: slotignored
+```
+
+**Recent sprint**
+
+- ✪ [8.3.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.3.1) `faf cards` gives MCP cards to a project.faf alone only when its type is mcp
+- ✪ [8.3.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.3.0) The Business Card Edition — CLI, library or MCP server, from npm, PyPI or crates.io
+- ✪ [8.2.2](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.2.2) Markdown never writes project.faf — `sync` is one way, `recover` is gone
+- ✪ [8.2.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.2.1) Cards stay honest — `updatedAt` moves only on a change; whole http(s) URLs
+- ✪ [8.2.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.2.0) The Ladder Edition — one ladder for every card
+- ✪ [8.1.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.1.1) SvelteKit 3 read in full — kit, adapter, Vite 8
+- ✪ [8.1.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.1.0) The Always33+ Edition — from nothing to listed in one command
+- ✪ [8.0.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.0.1) pnpm installs work — faf-scoring-kernel from npm
+- ✪ [8.0.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v8.0.0) The Always33 Edition — one engine, one number
+- 🧱 [7.16.2](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.16.2) `faf compile` emits FAFb wire v2 — same bytes as the faf-fafb golden
+- 🧭 [7.16.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.16.1) `faf` back in step with `faf-cli`
+- 🧭 [7.16.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.16.0) The Discoverable Edition
+- 🎴 [7.15.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.15.0) The Pack Edition
+- 🛂 [7.14.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.14.0) The Passport Edition
+- 🛡️ [7.13.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.13.1) security: detection reads stay inside the project
+- 🤝 [7.13.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.13.0) The Co-Author Edition
+- 🧩 [7.12.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.12.0) The Open Renderers Edition
+- 🖥️ [7.11.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.11.0) The VS Code Edition
+- 📚 [7.10.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.10.0) The Full-Facts Edition
+- 🌱 [7.9.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.9.0) The Git-Flow Edition
+- 🎬 [7.8.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.8.0) The Projector Edition
+- 🐦 [7.7.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.7.0) The Swift Edition
+- 💎 [7.6.0](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.6.0) The Ruby Edition
+- ☕ [7.5.1](https://github.com/Wolfe-Jam/faf-cli/releases/tag/v7.5.1) The JVM Edition
+
+---
+
+## Custom instructions
+
+Your own rules for the AI — *"use full words in identifiers," "use bun, not npm"* — go in `project.faf` under `ai_instructions.warnings`. They land at the top of every `AGENTS.md` faf writes, verbatim and non-destructive.
+
+**→ [How to add custom rules](https://docs.faf.one/custom-rules)** · [docs.faf.one](https://docs.faf.one)
+
+---
+
+## Scoring
+
+**✪ Trophy 100% — all or nothing.** From v6.6.0 onward, faf-cli recommends only Trophy. 100% on the FCL is what makes the layers above (MD instructions, Agents, AI tooling) work — sub-Trophy leaves gaps that AI guesses on. Sub-Trophy tiers (including Bronze 85) remain on the ladder as honest interim states — they are not deleted; we just no longer *aim* for 85 as the goal.
+
+| Tier | Score | Status |
+|------|-------|--------|
+| ✪ **Trophy** | 100% | AI never has to guess — target |
+| ★ **Gold** | 99%+ | 1 slot from Trophy |
+| ◆ **Silver** | 95%+ | Close — keep going |
+| ◇ **Bronze** | 85%+ | On the ladder (was the old recommend-min; not the target) |
+| ● **Green** | 70%+ | Interim — keep going |
+| ● **Yellow** | 55%+ | AI flipping coins |
+| ○ **Red** | <55% | AI working blind |
+| ♡ **White** | 0% | No context at all |
+
+**Always-33.** The score is filled ÷ active across all 33 Mk4 slots. Your app-type decides which slots are active; the rest are `slotignored` and stay visible. Same file, same engine, same number — see [docs/SCORING.md](./docs/SCORING.md).
+
+**One score, three glyphs:** ✪ work (CLI · docs · receipts) · 🏆 social (X · blogs) · Trophy Mark PNG (brand). Source of truth: `src/core/tiers.ts`.
+
+---
+
+## Sync
+
+```
+sync:      .faf  ──── 8ms ───→  CLAUDE.md   (pull: Trophy-gated backfill)
+tri-sync:  .faf  ──── 8ms ───→  CLAUDE.md + Claude Code's MEMORY.md   (Pro: faf's block only; Claude's notes kept)
+```
+
+---
+
+## Docs
+
+The full manual lives at **[docs.faf.one](https://docs.faf.one)** — facts for devs, faf-cli first. One-page overview: **[faf-cli.vercel.app](https://faf-cli.vercel.app)**.
+
+- [Getting started](https://docs.faf.one/getting-started) — install · run · use
+- [Cards](https://docs.faf.one/cards) — one `.fafa` → A2A · Server Card · registry · AI Catalog · ARD
+- [Custom rules](https://docs.faf.one/custom-rules) — pin instructions your AI must follow
+
+For a specific agent: [Grok, xAI & Cursor 👀](docs/faf-cli-for-agents.md) · [Claude Code 👀](docs/faf-cli-for-claude.md) · [Bun 👀](docs/faf-cli-for-bun.md)
+
+---
+
+## Recent editions
+
+Pivotal releases — full history in [CHANGELOG.md](./CHANGELOG.md):
+
+- **v8.0 — Always33** — one engine, one number: the same score everywhere.
+- **v7.1 — AGENTS.md** — `faf export --agents` authors a complete, non-destructive `AGENTS.md`.
+- **v7.0 — GIT** — context goes git-native: `faf diff` / `log` / `hooks`.
+- **v6.16 — Know Your Stack** — every emitted file labels your stack identically.
+- **v6.15 — Copilot** — `faf export --copilot` writes the file GitHub Copilot reads.
+- **v6.14 — Loop** — `faf loop` drives any repo to ✪ 100% or the honest human wall.
+- **v6.7 — HTML** — `faf show` renders a `.faf` to a browsable page. *(FAF defines. AGENTS.md instructs. AI codes. HTML shows.)*
+- **v6.6 — Trophy** — 100% or nothing.
+- **v6.0 — Bun** — ground-up rewrite; single portable binary, four platforms.
+
+---
+
+## Compiled Binaries
+
+Bun's single-file compiler produces standalone binaries — no runtime needed.
+
+```bash
+bun run compile                # Current platform
+bun run compile:all            # darwin-arm64, darwin-x64, linux-x64, windows-x64
+```
+
+Ship `faf` as a single binary for CI/CD, Docker, or air-gapped environments.
+
+---
+
+## Architecture
+
+```
+src/
+├── cli.ts              ← Entry point (Commander registrations)
+├── commands/           ← one file per faf subcommand
+├── core/               ← Types, slots (Mk4), tiers, scorer, schema
+├── detect/             ← Framework detection, stack scanner
+├── interop/            ← YAML I/O, CLAUDE.md, AGENTS.md, GEMINI.md
+├── ui/                 ← Colors (#00D4D4), display
+└── wasm/               ← faf-scoring-kernel wrapper (Rust → WASM)
+```
+
+**Toolchain:** Bun (test, build, compile) · TypeScript (strict) · WASM (scoring kernel)
+
+---
+
+## Testing
+
+> **Robust. Reliable. Next-level WJTTC tested.** — The Foundation Edition.
+
+```bash
+bun test                       # extensive WJTTC + e2e suite
+```
+
+- **WJTTC Build Resilience** — regression classes locked.
+- **WJTTC Kernel Stress** — WASM kernel boundary tests.
+- **e2e lifecycle** — commands in sequence.
+
+Test reports in `reports/`.
+
+---
+
+## Support
+
+- **[GitHub Discussions](https://github.com/Wolfe-Jam/faf-cli/discussions)** — Questions, ideas, community
+- **Email:** team@faf.one
+
+If `faf-cli` has been useful, consider starring the repo — it helps others find it.
+
+---
+
+## Citation
+
+If you use `faf-cli` or the `.faf` / `.fafm` / `.fafa` formats in research or production, please cite the format papers:
+
+> Wolfe, J. (2025). *Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding*. Zenodo. https://doi.org/10.5281/zenodo.18251362
+
+> Wolfe, J. (2026). *Permanent Memory and Instant Recall: The .fafm Standard for Multi-Profile AI Agent Memory*. Zenodo. https://doi.org/10.5281/zenodo.20348942
+
+> Wolfe, J. (2026). *Why Agents Need a Passport: .fafa — Portable Identity for the Agentic Era*. Zenodo. https://doi.org/10.5281/zenodo.21951641
+
+### BibTeX
+
+```bibtex
+@article{wolfe2025faf,
+  title     = {Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding},
+  author    = {Wolfe, James},
+  year      = {2025},
+  month     = {nov},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.18251362},
+  url       = {https://doi.org/10.5281/zenodo.18251362}
+}
+
+@article{wolfe2026fafm,
+  title     = {Permanent Memory and Instant Recall: The .fafm Standard for Multi-Profile AI Agent Memory},
+  author    = {Wolfe, James},
+  year      = {2026},
+  month     = {may},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.20348942},
+  url       = {https://doi.org/10.5281/zenodo.20348942}
+}
+
+@article{wolfe2026fafa,
+  title     = {Why Agents Need a Passport: .fafa — Portable Identity for the Agentic Era},
+  author    = {Wolfe, James},
+  year      = {2026},
+  month     = {aug},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.21951641},
+  url       = {https://doi.org/10.5281/zenodo.21951641}
+}
+```
+
+## License
+
+MIT — Free and open source
+
+**IANA-registered:** [`application/vnd.faf+yaml`](https://www.iana.org/assignments/media-types/application/vnd.faf+yaml) (Context Layer) · [`application/vnd.fafm+yaml`](https://www.iana.org/assignments/media-types/application/vnd.fafm+yaml) (Memory Layer) · [`application/vnd.fafa+yaml`](https://www.iana.org/assignments/media-types/application/vnd.fafa+yaml) (Agent Layer)
+
+*format | driven 🏎️⚡️ [wolfejam.dev](https://wolfejam.dev) · [faf.one/cli](https://faf.one/cli)*
+
+<div align="center">
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Homebrew](https://img.shields.io/badge/Homebrew-faf--cli-orange)](https://github.com/Wolfe-Jam/homebrew-faf)
+
+</div>

@@ -1,0 +1,338 @@
+<p align="center">
+  <img src="https://www.atlascloud.ai/logo.svg" alt="Atlas Cloud" width="80" />
+</p>
+
+<h1 align="center">Atlas Cloud MCP Server</h1>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/atlascloud-mcp"><img src="https://img.shields.io/npm/v/atlascloud-mcp.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/atlascloud-mcp"><img src="https://img.shields.io/npm/dm/atlascloud-mcp.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="npm downloads" /></a>
+  <a href="https://github.com/AtlasCloudAI/mcp-server"><img src="https://img.shields.io/github/license/AtlasCloudAI/mcp-server?style=flat&colorA=18181B&colorB=28CF8D" alt="license" /></a>
+  <a href="https://github.com/AtlasCloudAI/mcp-server"><img src="https://img.shields.io/github/stars/AtlasCloudAI/mcp-server?style=flat&colorA=18181B&colorB=28CF8D" alt="github stars" /></a>
+  <a href="https://github.com/AtlasCloudAI/mcp-server/pulls"><img src="https://img.shields.io/badge/PRs-welcome-28CF8D.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="PRs Welcome" /></a>
+</p>
+
+<p align="center">
+  English | <a href="./docs/README.zh-CN.md">中文</a> | <a href="./docs/README.ja.md">日本語</a> | <a href="./docs/README.ko.md">한국어</a> | <a href="./docs/README.es.md">Español</a> | <a href="./docs/README.fr.md">Français</a>
+</p>
+
+<p align="center">
+  Use <a href="https://www.atlascloud.ai?utm_source=github&utm_campaign=mcp-server">Atlas Cloud</a>'s 300+ image / video / LLM models in Claude Code, Codex, Gemini CLI, Cursor, Cline and more. Generate images, videos & chat via standard MCP tools.
+</p>
+
+<p align="center">
+  <a href="https://www.atlascloud.ai/console/api-keys?utm_source=github&utm_campaign=mcp-server"><b>→ Get your free Atlas Cloud API key</b></a> · 300+ models · OpenAI-compatible
+</p>
+
+---
+
+## Supported Models
+
+<!-- ATLAS-MODELS:START lang=en campaign=mcp-server -->
+<!-- ⚠️ Auto-generated from the live model catalog by AtlasCloudAI/.github/scripts/update-models-readme.mjs — do not edit by hand. -->
+- 🎬 **Video** (223) — Seedance 2.5 · MiniMax H3 Max · MiniMax H3 Fast · Gemini Omni 1.1 Flash · MiniMax H3 · Wan-3.0-Prime
+- 🎨 **Image** (138) — GPT Image 2.5 Sunburst · GPT Image 2.5 Flare · Seedream v4.7 · MAI-Image-2.6-Flash
+- 🧊 **3D** (14) — Seed3D 2.0 · Tripo H3.1 · Hunyuan 3D Rapid · Hunyuan 3D Pro
+- 💬 **LLM** (73) — Gemini 4 Argon · DeepSeek V4.1 Flash · GLM 5.3 Flash · DeepSeek V4 Pro 0813
+- 🔊 **Audio (TTS · Music · ASR)** (13) — Seed Audio 1.0 · MiniMax Speech 2.6 Turbo · MiniMax Speech 2.6 HD · xAI TTS v1
+
+- 📚 **Explore more** — [all 493 live models »](https://www.atlascloud.ai/models?utm_source=github&utm_campaign=mcp-server)
+<!-- ATLAS-MODELS:END -->
+
+> 🎬 **Newest video models** — Seedance 2.5 · Kling 4.0 · Wan 3.0 · Kling Video O3.
+
+
+## Contents
+
+- [What You Can Do](#what-you-can-do)
+- [Quick Start](#quick-start)
+- [Available Tools](#available-tools)
+- [Usage Examples](#usage-examples)
+- [Development](#development)
+- [More Atlas Cloud Tools](#more-atlas-cloud-tools)
+- [License](#license)
+
+## What You Can Do
+
+Ask your AI assistant in plain language — it discovers the right model, builds the parameters, and submits the job:
+
+- 🎨 **"Make a hero image for this blog post"** — text-to-image across Nano Banana Pro, GPT Image 2, Flux 2, Seedream, Imagen…
+- 🎬 **"Turn this product photo into a 5-second ad"** — image-to-video with Seedance 2.5, Kling 3, Kling Video O3, Veo 3.1…
+- 🧊 **"Make a 3D model from this photo"** — image-to-3D / text-to-3D with Hunyuan 3D (GLB/OBJ/USDZ output)
+- 🔊 **"Read this script aloud"** — text-to-speech with Seed Audio, ElevenLabs, xAI TTS
+- 🎵 **"Write a theme song for my app"** — music generation with Suno, MiniMax Music
+- 📝 **"Transcribe this meeting recording"** — speech-to-text with Seed ASR, xAI STT
+- 🎞️ **"Storyboard this script into 6 shots"** — chain LLM → image → video inside one conversation
+- ✏️ **"Edit this image — add a hat"** — upload a local file, then run an image-editing model
+- 💸 **"How much credit is left, and what did I spend this month?"** — check balance, usage, and cost breakdowns
+- 💬 **"What is in this screenshot?"** — LLM chat with Claude, GPT, DeepSeek, Qwen, Gemini, GLM…, including image/video input on models that accept it
+- 🕓 **"What did I generate yesterday?"** — browse generation history and pull back the output URLs
+
+Under the hood: model discovery, dynamic per-model parameter schemas (validated before every request so invalid params fail fast without spending credits, plus a `dry_run` flag on every generation tool that shows the exact request body without submitting it), media upload, one-step quick-generate, generation history, account balance & usage, and documentation search — all exposed as standard MCP tools (see [Available Tools](#available-tools)).
+
+LLM calls are protocol-aware: each model is called through the contract it actually declares — OpenAI chat completions, OpenAI Responses, Anthropic Messages, or native Gemini `generateContent` — so Gemini-native models work without any special handling on your side.
+
+## Quick Start
+
+### Hosted server — no API key, nothing to install
+
+Point your client at our hosted MCP server and sign in once in the browser. Nothing to install, no key to create or paste, and generation is billed to the Atlas Cloud account you sign in with.
+
+**Endpoint:** `https://mcp.atlascloud.ai/mcp`
+
+**Claude Code**
+
+```bash
+claude mcp add --transport http --scope user atlas-cloud https://mcp.atlascloud.ai/mcp
+```
+
+Drop `--scope user` to add it to the current project only. Adding the server does not sign you in — run `/mcp` inside Claude Code afterwards and follow the browser prompt.
+
+Or add it to `.mcp.json` directly:
+
+```json
+{
+  "mcpServers": {
+    "atlas-cloud": {
+      "type": "http",
+      "url": "https://mcp.atlascloud.ai/mcp"
+    }
+  }
+}
+```
+
+`type` is required here — without it Claude Code reads the entry as a stdio server and skips it.
+
+**ChatGPT & Codex**
+
+Install the plugin, which bundles this server together with our skills:
+
+```bash
+codex plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
+codex plugin add atlas-cloud@atlas-cloud
+codex mcp login atlas-cloud
+```
+
+In the ChatGPT desktop app: **Settings → Plugins → Add → Add plugin marketplace**, source `AtlasCloudAI/atlas-cloud-plugin`, then open **Atlas Cloud** and install it.
+
+**VS Code**
+
+In `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "atlas-cloud": {
+      "type": "http",
+      "url": "https://mcp.atlascloud.ai/mcp"
+    }
+  }
+}
+```
+
+**Other MCP clients**
+
+Most take the endpoint under an `mcpServers` key. The exact field names differ between clients — some want the transport spelled out, others infer it from the URL — so check your client's own MCP documentation.
+
+Authentication is OAuth 2.1: the client registers itself, opens your browser once, and stays authorized after that. There is no API key anywhere in this path.
+
+---
+
+Prefer to run the server on your own machine, with your own API key? The rest of this section covers that.
+
+### Prerequisites
+
+- Node.js >= 18
+- Atlas Cloud API Key — [Get one free at atlascloud.ai](https://www.atlascloud.ai/console/api-keys?utm_source=github&utm_campaign=mcp-server)
+
+See [`.env.example`](./.env.example) for the environment variable to set.
+
+### CLI agents (one-line install)
+
+The fastest path — these AI coding agents add the server with a single command:
+
+```bash
+# Claude Code
+claude mcp add atlascloud -- npx -y atlascloud-mcp
+
+# OpenAI Codex CLI
+codex mcp add atlascloud -- npx -y atlascloud-mcp
+
+# Gemini CLI
+gemini mcp add atlascloud -- npx -y atlascloud-mcp
+
+# Goose CLI
+goose mcp add atlascloud -- npx -y atlascloud-mcp
+```
+
+> Set the `ATLASCLOUD_API_KEY` environment variable in your shell first.
+
+### IDEs, editors & extensions (JSON config)
+
+Add this to your client's MCP configuration — works with every MCP-compatible client:
+
+```json
+{
+  "mcpServers": {
+    "atlascloud": {
+      "command": "npx",
+      "args": ["-y", "atlascloud-mcp"],
+      "env": {
+        "ATLASCLOUD_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+| Client | Where to add it |
+|--------|-----------------|
+| [Cursor](https://cursor.com) | Settings → MCP → Add Server |
+| [Cline](https://github.com/cline/cline) | MCP Marketplace → Add Server |
+| [Continue](https://continue.dev) | `config.yaml` → MCP |
+| [Windsurf](https://codeium.com/windsurf) | Settings → MCP → Add Server |
+| [VS Code (Copilot)](https://code.visualstudio.com) | `.vscode/mcp.json` or Settings → MCP |
+| [Trae](https://trae.ai) | Settings → MCP → Add Server |
+| [JetBrains IDEs](https://www.jetbrains.com) | Settings → Tools → AI Assistant → MCP |
+| [ChatGPT Desktop](https://openai.com/chatgpt/desktop) | Settings → MCP |
+| [Amazon Q Developer](https://aws.amazon.com/q/developer/) | MCP Configuration |
+| [Roo Code](https://github.com/RooCodeInc/Roo-Code) | Settings → MCP → Add Server |
+
+### Prefer Skills?
+
+If you'd rather use Skills than MCP, we also ship an [Atlas Cloud Skills](https://github.com/AtlasCloudAI/atlas-cloud-skills) package for Claude Code and other skill-compatible agents.
+
+## Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `atlas_search_docs` | Search Atlas Cloud documentation and models by keyword |
+| `atlas_list_models` | List available models, filtered by type (Text/Image/Video/Audio), sub-kind (3d/tts/stt/music/lyrics) or keyword |
+| `atlas_get_model_info` | Get detailed model info including API schema, parameters, and usage examples |
+| `atlas_generate_image` | Generate images and 3D models (image-to-3D / text-to-3D) with any supported Image model |
+| `atlas_generate_video` | Generate videos with any supported video model |
+| `atlas_generate_audio` | Generate audio — speech (TTS) and music/songs (Suno, MiniMax Music) — with any supported audio model |
+| `atlas_transcribe_audio` | Transcribe speech to text (ASR) — meetings, interviews, voice notes |
+| `atlas_quick_generate` | One-step image/video/audio generation — auto-finds model by keyword, builds params, and submits |
+| `atlas_upload_media` | Upload a local image, audio, video or document and get a URL to pass to any model |
+| `atlas_chat` | Chat with LLM models — endpoint and request format are picked automatically per model (OpenAI chat/responses, Anthropic messages, native Gemini); supports image/video/audio input |
+| `atlas_get_prediction` | Check status and result of a generation task — media URLs, transcripts, lyrics, cover art and cost |
+| `atlas_list_predictions` | Browse past generation tasks — recover a lost prediction ID or review earlier results |
+| `atlas_get_balance` | Get the account balance and credit summary for your API key |
+| `atlas_get_model_usage` | Get daily model usage (requests, tokens, image/video counts) over a date range |
+| `atlas_get_model_costs` | Get daily model cost (spend) buckets over a date range |
+
+## Usage Examples
+
+### Search for models
+
+> "Search Atlas Cloud for video generation models"
+
+Your AI assistant will use `atlas_search_docs` or `atlas_list_models` to find relevant models.
+
+### Generate an image
+
+> "Generate an image of a cat in space using Seedream"
+
+The assistant will:
+1. Use `atlas_list_models` to find Seedream image models
+2. Use `atlas_get_model_info` to get the model's parameters
+3. Use `atlas_generate_image` with the correct parameters
+
+### Generate a video
+
+> "Create a video of a rocket launch using Kling v3"
+
+The assistant will:
+1. Find the Kling video model
+2. Get its schema to understand required parameters
+3. Use `atlas_generate_video` with appropriate parameters
+
+### Upload a local image for editing or video generation
+
+> "Edit this image /Users/me/photos/cat.jpg to add a hat"
+
+The assistant will:
+1. Use `atlas_upload_media` to upload the local file and get a URL
+2. Find an image-editing model
+3. Use `atlas_generate_image` with the uploaded URL
+
+> **Note**: Uploaded files are for temporary use with Atlas Cloud generation tasks only. Files may be cleaned up periodically. Do not use this as permanent file hosting — abuse may result in API key suspension.
+
+### Generate speech (TTS)
+
+> "Read this sentence aloud with Seed Audio: Welcome to Atlas Cloud"
+
+The assistant will:
+1. Use `atlas_list_models` with `type="Audio"` to find the TTS model
+2. Use `atlas_generate_audio` with the text to synthesize
+3. Use `atlas_get_prediction` to retrieve the generated audio URL
+
+### Generate music
+
+> "Make a 30-second upbeat synthwave track for my product demo with Suno"
+
+Music models (Suno Chirp, MiniMax Music) are Audio-type models, so the assistant uses `atlas_generate_audio` with a song description (and optionally lyrics), then retrieves the audio URL via `atlas_get_prediction`.
+
+### Transcribe audio (speech-to-text)
+
+> "Transcribe this interview recording: https://example.com/interview.mp3"
+
+The assistant uses `atlas_transcribe_audio` with a speech-to-text model (e.g., `bytedance/seed-asr-2.0`) and the `audio_url`, then retrieves the transcript via `atlas_get_prediction`. For local files, it first calls `atlas_upload_media` to get a URL.
+
+### Generate a 3D model
+
+> "Turn this product photo into a 3D model with Hunyuan 3D"
+
+3D models are Image-type models, so the assistant uses `atlas_generate_image` with the `image` parameter and retrieves a GLB/OBJ/USDZ file via `atlas_get_prediction`.
+
+### Chat with an LLM
+
+> "Ask Qwen to explain quantum computing"
+
+The assistant will use `atlas_chat` with the Qwen model. For a model that accepts images or video, attach them to the message and they are converted to that model's protocol automatically.
+
+### Check a call before paying for it
+
+> "Show me exactly what you'd send to Kling for this, don't run it yet"
+
+Every generation tool takes `dry_run: true` — it resolves the model, builds the request, validates it against the model's schema, prints the exact JSON body, and stops. Nothing is submitted and nothing is billed. Useful when a media URL could land on more than one input field, or when a keyword could match several models.
+
+### Find an earlier generation
+
+> "What did I generate yesterday? Give me the video link again"
+
+The assistant uses `atlas_list_predictions` to list recent tasks and `atlas_get_prediction` for the full result. This is also how to recover a task whose prediction ID was lost — the job keeps running (and is billed) even if the submitting call timed out.
+
+### Check balance and usage
+
+> "How much Atlas Cloud credit do I have left, and what did I spend this month?"
+
+The assistant will use `atlas_get_balance` for the current balance and `atlas_get_model_costs` for the spend breakdown.
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build
+npm run build
+
+# Run in development mode
+npm run dev
+```
+
+## More Atlas Cloud Tools
+
+- 🧰 **Want to use it from the terminal?** → [atlascloud-cli](https://github.com/AtlasCloudAI/cli)
+- 🤖 **Want to use it in Claude Code / Cursor?** → [Atlas Cloud MCP Server](https://github.com/AtlasCloudAI/mcp-server)
+- 🎬 **Want it as a Claude Code / Codex / Gemini CLI Skill?** → [atlas-cloud-skills](https://github.com/AtlasCloudAI/atlas-cloud-skills)
+- 🎨 **ComfyUI nodes** → [atlascloud_comfyui](https://github.com/AtlasCloudAI/atlascloud_comfyui)
+- 🔁 **n8n nodes** → [n8n-nodes-atlascloud](https://github.com/AtlasCloudAI/n8n-nodes-atlascloud)
+- 💬 **Join our Discord** → [discord.gg/MWmMr4q9es](https://discord.gg/MWmMr4q9es)
+- 🌐 **Website** → [atlascloud.ai](https://www.atlascloud.ai?utm_source=github&utm_campaign=mcp-server)
+
+## License
+
+MIT

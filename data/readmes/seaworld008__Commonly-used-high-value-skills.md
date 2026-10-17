@@ -1,0 +1,801 @@
+# Commonly Used High-Value Skills
+
+![Repository Banner](./.github/assets/repo-banner.svg)
+
+[![简体中文](https://img.shields.io/badge/README-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-1677ff)](./README.md)
+[![English](https://img.shields.io/badge/README-English-111111)](./README.en.md)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-00b894)](./openclaw-skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-294-7c3aed)](./skills/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+面向全球 AI 开发者与 Agent 工作流构建者的高价值 Skills 仓库，覆盖开发工程、DevOps、产品设计、运营、办公自动化、金融投资、AI 平台与安全治理等高频任务场景。当前共 **16 个分类 / 294 个技能**。
+
+## 为什么值得收藏
+
+- 一次收齐高频可复用 Skills，减少到处找 prompt、脚本和工作流的时间。
+- 同时兼容 `Codex`、`Claude Code`、`Hermes Agent`、`OpenClaw` 等多种 AI 工具使用方式。
+- 按场景分类组织，既适合日常检索，也适合二次扩展和团队沉淀。
+- 很多技能不只是文档，还带 `scripts/`、`references/`、`assets/`，可以直接复用。
+- 仓库已经具备发现新 Skill、同步上游更新、候选优选、质量校验和生成视图的自动化链路，适合持续运营而不是一次性收集。
+- 现在支持用策略文件对白名单来源、黑名单来源、优先来源和基础门槛做统一治理，优选结果更稳定、更可控。
+- 已提供 `scripts/sync_codex_skills.py`，可以把仓库中的最新技能一键同步到 `Codex`、`Claude Code` 等本机技能目录，减少手工拷贝和版本漂移。
+- 除了功能覆盖，仓库也重视安全与可信度：既有来源追踪、候选筛选与安装前风险识别能力，也内置 `skill-vetter`、`skill-security-auditor`、`input-guard`、`link-checker` 等安全审查类技能。
+- 现在还内置了许可证审计与月度死链巡检：`repo-validation` 会阻止缺失 license 元数据的外源技能进入主分支，`dead-links` 工作流会按月生成外链巡检报告。
+- `Hermes Agent` 也被作为一等支持对象维护：可直接使用 `skills/` 分类目录，并且仓库已包含 `hermes-agent`、`native-mcp` 与薄路由 `hermes-open-gsd-workflow`。
+
+## 适合谁
+
+- AI 开发者、Agent 工作流构建者和自动化工具使用者
+- 想把常见任务沉淀为 Skills 的个人或团队
+- 正在使用 `Codex`、`Claude Code`、`Hermes Agent`、`OpenClaw` 等工具的工程师
+- 想搭建一个自己的高价值技能库、提示库、Agent 工作流库的人
+
+## 快速开始
+
+### 我应该用哪个目录
+
+| 使用场景 | 应使用的目录 |
+|----------|---------------|
+| 直接让 `Codex` / `Claude Code` / `Hermes Agent` / `Cursor` 等工具浏览仓库源码 | `skills/` |
+| 安装到 `Codex` 本机技能目录 | 将 `skills/` 同步到 `~/.codex/skills` |
+| 安装到 `Claude Code` 本机技能目录 | 将 `skills/` 同步到 `~/.claude/skills` 或项目内 `.claude/skills` |
+| `OpenClaw` | `openclaw-skills/` |
+
+### 方式一：npx 一键安装（推荐给命令行用户）
+
+不想手动 clone 和复制目录时，可以直接用 GitHub 源运行安装器：
+
+```bash
+npx github:seaworld008/Commonly-used-high-value-skills install
+```
+
+默认会把技能安装到当前项目的 `.agents/skills`，适合多种支持 Agent Skills 约定的工具读取。你也可以一次安装到多个客户端目录：
+
+```bash
+# 安装到 Codex 和 Claude Code 的用户级 skills 目录
+npx github:seaworld008/Commonly-used-high-value-skills install --target codex,claude
+
+# 安装到项目 .agents、Codex、Claude Code、Claude 项目级和 OpenClaw 默认目录
+npx github:seaworld008/Commonly-used-high-value-skills install --all
+
+# 安装到自定义目录，适配其他 AI Agent 客户端
+npx github:seaworld008/Commonly-used-high-value-skills install --target custom --dir ./vendor/agent-skills
+
+# 只安装指定分类，减少默认上下文和维护面
+npx github:seaworld008/Commonly-used-high-value-skills install --target codex --category developer-engineering,security-and-reliability
+
+# 只安装明确需要的技能；可与 --category 组合取交集
+npx github:seaworld008/Commonly-used-high-value-skills install --target codex --skill docx,xlsx,pdf,pptx
+
+# 浏览可选技能和分类
+npx github:seaworld008/Commonly-used-high-value-skills list-skills
+```
+
+可用目标：
+
+| 目标 | 安装目录 |
+|------|----------|
+| `agents-project` | `./.agents/skills` |
+| `codex` | `~/.codex/skills` |
+| `claude` | `~/.claude/skills` |
+| `claude-project` | `./.claude/skills` |
+| `openclaw` | `~/.openclaw/skills`，本地仓库优先使用 `openclaw-skills/`，npx 包会从 `skills/` 平铺安装 |
+| `custom` | 通过 `--dir` 指定 |
+
+如果你已经在使用 `skills.sh` 生态，也可以尝试标准安装入口：
+
+```bash
+npx skills add seaworld008/Commonly-used-high-value-skills --all -a codex -a claude-code --copy
+```
+
+本仓库自带的 `high-value-skills` 安装器更适合需要明确选择 Codex / Claude / OpenClaw / 自定义目录的场景。
+
+### 方式二：直接发给 AI 工具的安装提示词
+
+如果你希望让 AI 工具直接帮你安装，优先发这段短提示词：
+
+```
+你现在是我的本地安装助手，请把这个仓库 https://github.com/seaworld008/Commonly-used-high-value-skills 里的 Skills 安装到当前 AI 工具中。
+```
+
+如果 AI 工具没有自动识别出来，再补一句即可：
+
+```text
+当前工具是 `<Codex / Claude Code / Hermes Agent / Cursor / OpenClaw>`，本地仓库路径是 `<你的本地仓库路径>`。
+```
+
+之所以可以这样简化，是因为仓库里已经包含给 AI 工具读取的安装规则与目录约定文档，通常不需要你手动把安装逻辑全部写进提示词里。
+
+### 方式三：手动安装步骤
+
+1. 克隆本仓库到本地并进入目录：
+
+```bash
+git clone https://github.com/seaworld008/Commonly-used-high-value-skills.git
+cd Commonly-used-high-value-skills
+```
+
+2. 如果你使用 `Codex`，同步到本机 Codex skills 目录：
+
+```bash
+python3 scripts/sync_codex_skills.py --source-root ./skills --codex-root ~/.codex/skills
+```
+
+Windows PowerShell 示例：
+
+```powershell
+python scripts/sync_codex_skills.py --source-root ".\skills" --codex-root "$env:USERPROFILE\.codex\skills"
+```
+
+3. 如果你使用 `Claude Code`，同步到个人或项目级 skills 目录：
+
+```bash
+# 个人级，所有项目可用
+python3 scripts/sync_codex_skills.py --source-root ./skills --codex-root ~/.claude/skills
+
+# 项目级，只在当前项目可用
+python3 scripts/sync_codex_skills.py --source-root ./skills --codex-root ./.claude/skills
+```
+
+Windows PowerShell 示例：
+
+```powershell
+python scripts/sync_codex_skills.py --source-root ".\skills" --codex-root "$env:USERPROFILE\.claude\skills"
+```
+
+这里的 `--codex-root` 是同步脚本沿用的参数名，实际含义是“目标技能目录”，也可以指向 `Claude Code` 的 skills 目录。
+
+4. 如果你使用 `Hermes Agent`、`Cursor` 或其他能浏览源码目录的 AI coding assistant，优先把工具指向仓库内的 `skills/`；如果目标工具要求一层扁平技能目录，可以复用上面的同步命令，把 `--codex-root` 改成该工具自己的 skills 目录。
+
+5. 如果你使用 `OpenClaw`，先生成扁平导出目录：
+
+```bash
+python3 scripts/export_openclaw_skills.py
+```
+
+然后把 `openclaw-skills/` 配置到 OpenClaw 的技能加载目录，不要把 OpenClaw 指向仓库根目录或 `skills/`。
+
+6. 任选几个技能目录检查是否能正常读取，例如：
+   - `skills/developer-engineering/codebase-onboarding`
+   - `skills/security-and-reliability/skill-vetter`
+   - `openclaw-skills/codebase-onboarding`
+
+如果你希望按客户端直接看安装示例，可继续阅读：
+
+- [按客户端安装示例](./docs/client-install-guides.md)
+- [nlpm-audit 使用指南](./docs/nlpm-audit-usage.md)：说明安装到 `Codex` / `Claude Code` / `OpenClaw` 后如何自动触发、显式调用、生成 Markdown 审计报告和配置持续升级。
+
+### 常见维护命令
+
+上游复核与客户端安装是独立步骤。翻译、扩写或上游消失都不能抹去原始许可证与来源；组合技能的依赖锁和 monitor-only 契约未完成复核时，维护 PR 应保持草稿，不得合并。
+
+如果你修改了仓库里的源码技能，推荐统一刷新生成视图：
+
+```bash
+python3 scripts/refresh_repo_views.py
+```
+
+如果你想在本地额外检查外源技能的许可证元数据与外链健康度，可以运行：
+
+```bash
+python3 scripts/audit_licenses.py
+python3 scripts/check_dead_links.py --output docs/sources/reports/dead-links.json
+```
+
+首页 banner 的技能数量、分类数量和重点分类来自 `docs/catalog.json`，会在运行下面命令时自动同步刷新：
+
+```bash
+python3 scripts/build_catalog_json.py
+```
+
+如果你在本地 Codex skills 目录里看到 `invalid SKILL.md`、`missing YAML frontmatter`、`metadata` 类型错误等警告，可以运行：
+
+```bash
+python3 scripts/normalize_codex_skills.py ~/.codex/skills
+```
+
+Windows 示例：
+
+```powershell
+python scripts/normalize_codex_skills.py "C:\Users\admin\.codex\skills"
+```
+
+如果你想把仓库里的最新技能重新同步到本地 Codex 目录，可以运行：
+
+```bash
+python3 scripts/sync_codex_skills.py --source-root ./skills --codex-root ~/.codex/skills
+```
+
+## 分类快速跳转
+
+| 分类 | 说明 | 文档跳转 | 目录 |
+|------|------|----------|------|
+| 开发工程 | 开发、测试、性能、代码审查、数据库与架构 | [跳转](#cat-developer-engineering) | [目录](./skills/developer-engineering/) |
+| AI 工作流 | Agent 技能使用、规划、实现、评审、验证与发布闭环 | [跳转](#cat-ai-workflow) | [目录](./skills/ai-workflow/) |
+| AI 平台与 Agent 开发 | ChatGPT Apps、Hermes、MCP、Figma、OpenAI Docs 与自主 Agent | [跳转](#cat-ai-agent-platform) | [目录](./skills/ai-agent-platform/) |
+| 工程工作流自动化 | 浏览器自动化、GitHub、Notebook、Playwright、graphify/GSD | [跳转](#cat-workflow-automation) | [目录](./skills/engineering-workflow-automation/) |
+| DevOps / SRE | 发布、监控、故障响应、CI/CD、环境管理 | [跳转](#cat-devops-sre) | [目录](./skills/devops-sre/) |
+| 金融投资 | 金融数据、估值、风控、回测、投研写作 | [跳转](#cat-finance-investing) | [目录](./skills/finance-investing/) |
+| 增长运营 | 小红书、社媒、内容、归因、竞品分析 | [跳转](#cat-growth-operations) | [目录](./skills/growth-operations-xiaohongshu/) |
+| 办公与文档 | Word、Excel、PPT、PDF、会议纪要 | [跳转](#cat-office-white-collar) | [目录](./skills/office-white-collar/) |
+| 项目管理与知识库集成 | Notion、Linear、Obsidian、飞书/Lark、规格到实施 | [跳转](#cat-knowledge-pm) | [目录](./skills/knowledge-and-pm-integrations/) |
+| 通用运营 | 品牌、事实核查、内沟通、主题与天气 | [跳转](#cat-operations-general) | [目录](./skills/operations-general/) |
+| 产品与设计 | 产品分析、设计系统、UX 研究、SaaS 脚手架 | [跳转](#cat-product-design) | [目录](./skills/product-design/) |
+| 安全治理与稳定性 | Sentry、安全最佳实践、威胁建模、漏洞扫描 | [跳转](#cat-security-reliability) | [目录](./skills/security-and-reliability/) |
+| 多模态内容 | 图像、语音、视频、截图、摘要、转写 | [跳转](#cat-multimodal-media) | [目录](./skills/multimodal-media/) |
+| 部署平台 | Cloudflare、Netlify、Render、Vercel | [跳转](#cat-deployment-platforms) | [目录](./skills/deployment-platforms/) |
+| 记忆与安全 | 长期记忆、输入防护、RAG、Runbook | [跳转](#cat-memory-safety) | [目录](./skills/openclaw-memory-and-safety/) |
+| 任务理解与拆解 | 联网检索、复盘学习与任务理解补充能力 | [跳转](#cat-task-understanding) | [目录](./skills/task-understanding-decomposition/) |
+
+## 从哪里开始最容易上手
+
+如果你是第一次来到这个仓库，推荐从下面几类开始：
+
+- 开发工程：`developer-engineering`
+- AI 工作流：`ai-workflow`
+- AI 平台与 Agent 开发：`ai-agent-platform`
+- 工程工作流自动化：`engineering-workflow-automation`
+- 金融投资：`finance-investing`
+- 项目管理与知识库集成：`knowledge-and-pm-integrations`
+- 多模态内容：`multimodal-media`
+- 安全治理与稳定性：`security-and-reliability`
+
+你也可以优先看这些代表性技能：
+
+- `codebase-onboarding`：用于快速理解代码库结构、技术栈、关键模块和上手路径。
+- `context-engineering`：用于设计上下文组织、提示结构和长任务信息管理方式。
+- `agent-workflow-designer`：用于设计多步骤 Agent 工作流、角色分工和执行闭环。
+- `gh-fix-ci`：用于定位 GitHub Actions 失败原因并修复 CI 流水线问题。
+- `financial-data-collector`：用于收集股票、财报、市场和宏观金融数据。
+- `notion-spec-to-implementation`：用于把 Notion 规格说明转化为可执行实现任务。
+- `transcribe`：用于把音频或视频转写为文本，并整理说话人和时间信息。
+
+## GPT-6 Astra 指令优化
+
+技能采用简洁触发、按需资料和按风险验证的执行方式。全量审计说明、官方来源及模型评测边界见 [Astra 适配指南](docs/astra-skill-guidance.md)，日常维护使用 [统一工作流](docs/maintenance-workflow.md)。仓库内容更新与本地模型配置、技能安装分别管理。Codex／Claude 的共享格式、宿主差异和验证边界见[双端兼容说明](docs/cross-agent-compatibility.md)。
+
+## Hermes、Graphify 与 Open GSD 使用说明
+
+仓库收录官方 Hermes artifact set 和保留完整官方参考资料的 Graphify 策展入口，并把 Open GSD Core / Pi 作为受管 bundle；本地组合层只保留一个不复制版本、安装命令或状态机的入口：
+
+- 能力选择与故障归属：[`hermes-open-gsd-workflow`](./skills/ai-agent-platform/hermes-open-gsd-workflow/)
+
+实际版本、完整性摘要、安装器和 inventory 以 [`docs/sources/`](./docs/sources/) 的 canonical provenance / bundle metadata 为准。旧 Hermes + Graphify + GSD 组合技能及其迁移兼容层已直接删除；portfolio denylist 只负责阻止这些旧名称被重新引入。
+
+## Hermes Agent 支持
+
+这个仓库不只是“包含几个 Hermes 相关技能”，而是把 `Hermes Agent` 作为正式支持的消费端之一来维护：
+
+- 源码浏览时统一使用 `skills/`；本机安装到 `Codex` / `Claude Code` 时同步到各自 skills 目录
+- 已内置 [`hermes-agent`](./skills/ai-agent-platform/hermes-agent/) 技能，覆盖 CLI、gateway、profiles、memory、skills、MCP 与贡献开发说明
+- 已内置 [`native-mcp`](./skills/ai-agent-platform/native-mcp/) 技能，方便 Hermes 连接外部 MCP server
+- 已内置 [`hermes-open-gsd-workflow`](./skills/ai-agent-platform/hermes-open-gsd-workflow/) 薄路由，按请求选择 Hermes、Graphify、Open GSD Core 或显式可选的 GSD Pi
+
+如果你是 Hermes 用户，推荐从这些入口开始：
+
+- [`skills/ai-agent-platform/hermes-agent`](./skills/ai-agent-platform/hermes-agent/)
+- [`skills/ai-agent-platform/native-mcp`](./skills/ai-agent-platform/native-mcp/)
+- [`skills/ai-agent-platform/README.md`](./skills/ai-agent-platform/README.md)
+- [按客户端安装示例](./docs/client-install-guides.md)
+
+## 如何参与共建
+
+如果你希望把这个仓库一起做成更强的公共 Skills 基础设施：
+
+- 阅读 [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 按 `skills/<分类>/<skill-name>/SKILL.md` 结构新增技能
+- 修改后运行 `python3 scripts/refresh_repo_views.py`
+- 提交 PR 时附上验证命令和适用场景
+
+## 精选分类
+
+- `developer-engineering`：开发、测试、性能、代码审查、数据库与架构
+- `ai-workflow`：Agent 技能使用、规划、实现、评审、验证与发布闭环
+- `ai-agent-platform`：ChatGPT Apps、Hermes、MCP、Figma、OpenAI Docs 与自主 Agent
+- `engineering-workflow-automation`：浏览器自动化、GitHub、Notebook、Playwright、graphify/GSD
+- `finance-investing`：金融数据、估值、风控、回测、投研写作
+- `knowledge-and-pm-integrations`：Notion、Linear、Obsidian、飞书/Lark、规格到实施
+- `multimodal-media`：图像、语音、视频、截图、摘要、转写
+- `security-and-reliability`：Sentry、安全最佳实践、威胁建模、漏洞扫描
+
+## 仓库定位
+
+如果你想找的是：
+
+- 可复用的 AI Skills 模板
+- 面向真实工作的 Agent 工作流
+- 多客户端兼容的 Skills 组织方式
+- 一个可以持续扩展成“明星仓库”的 Skills 基础设施
+
+这个仓库就是为这类目标准备的。
+
+## 如果这个仓库对你有帮助
+
+- 欢迎点一个 Star，让更多 AI 开发者更容易发现它
+- 欢迎提 PR，把你自己的高价值技能沉淀进来
+- 欢迎分享给使用 `Codex`、`Claude Code`、`Hermes Agent`、`OpenClaw` 的朋友或团队
+
+## 仓库目标
+
+- 沉淀高复用、可组合的技能模块（Skills）。
+- 通过统一目录和文档结构，降低检索和使用成本。
+- 让常见任务可以快速匹配到可执行的方法与模板。
+
+## 多客户端兼容安装
+
+这个仓库现在提供两套消费入口，用来兼容不同 AI 客户端的技能发现方式：
+
+| 客户端 | 应使用的目录 | 原因 |
+|--------|---------------|------|
+| `Codex` / `Claude Code` 本机技能目录 | `~/.codex/skills` / `~/.claude/skills` / `.claude/skills` | 通过同步命令安装为一层技能目录，便于客户端发现 |
+| `Hermes Agent` / `Cursor` / 其他按源码浏览的 coding assistants | `skills/` | 保留分类结构，便于检索、维护与编辑 |
+| `OpenClaw` | `openclaw-skills/` | OpenClaw 需要扁平的一层技能目录，不能直接识别 `skills/<分类>/<skill>` |
+
+### 给 AI 机器人看的规则
+
+仓库根目录的 [AGENTS.md](./AGENTS.md) 明确约束如下：
+
+- `OpenClaw` 安装时必须使用 `openclaw-skills/`
+- `Codex`、`Claude Code` 本机安装时应同步到各自 skills 目录；源码浏览型工具可直接使用 `skills/`
+- 不要把 `OpenClaw` 指向仓库根目录或 `skills/`
+- `openclaw-skills/` 不手改，统一通过脚本生成
+
+### OpenClaw 推荐接入方式
+
+1. 克隆本仓库。
+2. 生成或刷新 OpenClaw 兼容目录：
+
+```bash
+python3 scripts/export_openclaw_skills.py
+```
+
+3. 在 OpenClaw 配置里把克隆仓库的 `openclaw-skills/` 加到 `skills.load.extraDirs`。
+4. 用下面命令确认是否已识别：
+
+```bash
+openclaw skills list
+openclaw skills check
+```
+
+## 目录结构
+
+```text
+skills/
+  developer-engineering/                # 开发工程
+  ai-workflow/                          # AI 工作流（Agent Skills / 上下文工程 / 计划执行）
+  ai-agent-platform/                    # AI 平台与 Agent 开发
+  engineering-workflow-automation/      # 工程工作流自动化（GitHub/CI/测试）
+  devops-sre/                           # DevOps / SRE
+  finance-investing/                    # 金融投资与投研分析
+  growth-operations-xiaohongshu/        # 增长运营（小红书/社媒）
+  office-white-collar/                  # 办公与文档生产力
+  knowledge-and-pm-integrations/        # 项目管理与知识库集成（Linear/Notion/Obsidian/飞书）
+  operations-general/                   # 通用运营
+  product-design/                       # 产品与设计
+  security-and-reliability/             # 安全治理与稳定性
+  multimodal-media/                     # 多模态内容（图像/语音/视频/转写）
+  deployment-platforms/                 # 部署平台（Vercel/Netlify/Render/Cloudflare）
+  openclaw-memory-and-safety/           # 记忆与安全
+  task-understanding-decomposition/     # 任务理解与拆解
+openclaw-skills/                        # 为 OpenClaw 生成的扁平兼容导出目录
+```
+
+## 使用方式
+
+1. 按分类进入目标目录（如 `skills/developer-engineering/`）。
+2. 打开对应技能的 `SKILL.md` 查看触发条件、操作流程和脚本说明。
+3. 若技能下含 `scripts/`、`references/`、`assets/`，优先复用现成内容。
+
+## 技能总览（按分类，16 类 / 294 技能）
+
+<a id="cat-developer-engineering"></a>
+### 1. 开发工程（developer-engineering，52）
+
+- `agent-designer`：设计智能体的职责、工具、记忆、协作架构和评测方法。
+- `api-design-reviewer`：用于评审 API 设计的一致性、可用性、版本策略、错误语义、安全性和开发者体验。
+- `api-test-suite-builder`：根据接口契约生成认证、输入校验、错误和边界测试。
+- `aws-solution-architect`：用于 AWS 云架构设计、服务选型、成本优化与 Well-Architected Framework 评估。
+- `builder`：生产级业务逻辑、接口集成和类型安全实现。
+- `cli-demo-generator`：把命令行操作制作成终端录屏和动态演示 GIF。
+- `codebase-inspection`：用于用 pygount 检查代码行数、语言构成、仓库规模和代码/注释比例。
+- `codebase-onboarding`：生成代码库架构、环境搭建和常见开发任务的入门指南。
+- `database-designer`：设计和优化数据库结构、查询及迁移方案。
+- `database-schema-designer`：设计数据表、约束、索引、迁移和行级权限策略。
+- `dependency-auditor`：梳理依赖清单，核实漏洞与许可证证据，规划可验证的升级。
+- `docker-expert`：用于 Docker 容器化最佳实践、多阶段构建优化与 Docker Compose 编排。
+- `frontend-design`：用于创建高质量、非模板化的前端页面、组件、仪表盘、海报和 Web UI。
+- `gateway`：接口设计、规范生成、版本策略和破坏性变更检查。
+- `git-worktree-manager`：管理并行开发的 Git worktree、环境和端口分配。
+- `github-contributor`：寻找开源贡献机会并准备可审查的 GitHub PR。
+- `golang-benchmark`：使用 Go benchmark、pprof、benchstat 及 CI 回归分析性能。
+- `golang-performance`：用性能基线和 pprof 分析优化 Go 热点、内存分配、GC、缓存及网络 I/O。
+- `graphify`：将代码、文档和多媒体资料映射为持久知识图谱，支持社区发现、路径查询、解释和影响分析。
+- `graphql-expert`：用于 GraphQL API 设计、Schema/Resolver 评审、查询优化和安全最佳实践。
+- `i18n-expert`：实现和审查界面国际化、翻译键、语言文件与格式一致性。
+- `improve-codebase-architecture`：结合变更热点、接口深度与测试证据识别高价值架构重构。
+- `kubernetes-specialist`：用于 Kubernetes 集群管理、Pod 调试、Helm Chart 设计、清单评审和部署优化。
+- `mcp-builder`：开发连接外部服务的 MCP 工具服务器。
+- `migration-architect`：规划可回滚、低停机的数据和系统迁移。
+- `monorepo-navigator`：分析多包仓库的依赖、构建、缓存和变更影响。
+- `neon-postgres`：用于 Neon Postgres 数据库连接、分支、迁移和运行维护。
+- `neon-postgres-egress-optimizer`：诊断并降低 Neon / Postgres 数据出口流量与相关成本。
+- `nextjs-app-router`：用于 Next.js App Router 项目开发、路由设计和服务端渲染实践。
+- `performance-profiler`：分析 CPU、内存、I/O 和查询瓶颈并验证优化效果。
+- `pr-review-expert`：审查 PR 的正确性、安全、兼容性和测试覆盖变化。
+- `prisma-client-api`：用于 Prisma Client 查询、关联写入、事务、分页与原生 SQL 审查。
+- `prisma-upgrade-v7`：用于 Prisma ORM 6 到 7 的 SQL 项目迁移、驱动适配器、客户端导入与配置升级。
+- `promptfoo-evaluation`：配置和运行 Promptfoo 提示词、模型及输出质量评测。
+- `python-performance`：用于 Python 性能分析、内存优化、热点路径调优和并发模式评审。
+- `qa-expert`：制定测试策略、风险用例、执行计划和缺陷跟踪流程。
+- `react-native-engineering`：用于构建、审查、调试、测试、升级和发布 React Native 与 Expo 应用，覆盖新架构、原生模块、性能、EAS 和双平台验证。
+- `repomix-safe-mixer`：打包代码前扫描凭据、输出脱敏报告，并在发现风险时阻止打包。
+- `rust-engineer`：用于 Rust 代码开发、所有权和生命周期调试、异步模式选择和系统性能优化。
+- `schema`：数据库模式设计、迁移规划、索引策略和关系建模。
+- `skill-tester`：验证技能触发、执行步骤和输出结果是否符合预期。
+- `supabase`：开发和排查 Supabase 数据库、认证、存储及应用集成。
+- `supabase-postgres-best-practices`：用于编写或评审 Supabase/Postgres 的查询、Schema、索引、RLS、连接配置与迁移。
+- `systematic-debugging`：通过复现、假设检验和证据定位故障根因。
+- `tailwind-design-system`：用于 Tailwind CSS 设计系统、主题 token、组件样式和响应式布局规范。
+- `tech-debt-tracker`：识别和量化技术债，确定修复优先级并跟踪治理进度。
+- `terraform-engineer`：用于 Terraform IaC 设计、模块评审、状态管理、Provider 升级和基础设施部署优化。
+- `typescript-best-practices`：用于 TypeScript 类型安全设计、高级类型、API 边界、strict 迁移和反模式规避。
+- `vercel-react-best-practices`：用于 Vercel/React 项目的架构、性能和部署最佳实践。
+- `vercel-react-view-transitions`：用于在 React/Vercel 项目中实现和优化 View Transitions。
+- `web-artifacts-builder`：用于构建复杂多组件 HTML/React 网页 artifacts，尤其适合需要状态、路由或 shadcn/ui 的场景。
+- `webapp-testing`：用于使用 Playwright 测试本地 Web 应用、验证前端行为、截图和查看浏览器日志。
+
+<a id="cat-ai-workflow"></a>
+### 2. AI 工作流（ai-workflow，47）
+
+- `agent-workflow-designer`：设计多智能体协作流程、任务交接、状态管理和故障恢复。
+- `andrej-karpathy-skills`：用于应用 Andrej Karpathy 风格的 AI 学习、构建和研究实践。
+- `api-and-interface-design`：设计稳定的 API、模块接口和类型契约。
+- `brainstorming`：用于在实现前澄清创意型产品或工程需求，探索目标、约束、方案与取舍。
+- `browser-testing-with-devtools`：用于通过浏览器 DevTools 测试、调试和验证前端行为。
+- `ci-cd-and-automation`：建立和优化持续集成、质量检查与部署自动化。
+- `code-review-and-quality`：审查代码正确性、可维护性、安全性和验证证据。
+- `code-simplification`：在保持行为一致的前提下简化代码和消除重复。
+- `context-engineering`：用于设计上下文工程策略、提示输入结构和长任务信息流。
+- `debugging-and-error-recovery`：复现故障、定位根因并验证修复与恢复结果。
+- `deep-research`：用于执行深度研究、资料收集、来源核验和综合分析。
+- `deprecation-and-migration`：规划旧系统、接口和功能的弃用及迁移。
+- `dispatching-parallel-agents`：用于拆分任务并调度多个 Agent 并行协作。
+- `documentation-and-adrs`：记录架构决策、接口变化和工程交接信息。
+- `doubt-driven-development`：用新上下文的对抗性审查质疑关键决策，适用于高风险或正确性优先的开发任务。
+- `executing-plans`：用于按既定实现计划逐步执行任务，并在关键节点进行审查和完成验证。
+- `find-skills`：用于搜索、比较并安装适合当前任务的技能，帮助 Agent 正确路由能力。
+- `finishing-a-development-branch`：完成开发分支的验证、PR、合并和工作区收尾。
+- `frontend-ui-engineering`：实现可访问、响应式的前端界面和交互状态。
+- `git-workflow-and-versioning`：管理 Git 分支、提交、冲突、版本和变更记录。
+- `idea-refine`：澄清初步想法，比较方案并检验关键假设。
+- `incremental-implementation`：将功能拆成可验证的小步改动并逐步完成实现。
+- `interview-me`：通过逐问访谈澄清真实需求、目标用户与成功标准，避免在含糊请求上过早实施。
+- `nexus`：多智能体任务分解、链路编排、执行协调和结果整合。
+- `nlpm-audit`：审计 SKILL.md、AGENTS.md、CLAUDE.md、插件清单、hooks、commands 和提示词，检查安装一致性、质量评分、安全风险与版本漂移。
+- `observability-and-instrumentation`：为生产代码设计日志、指标、追踪和告警，使行为可观测、问题可诊断。
+- `performance-optimization`：基于测量优化前后端与数据库性能，并用 CI 预算和真实用户监测防止回退。
+- `planning-and-task-breakdown`：将需求拆成有依赖与验收标准的任务，并保护已有未完成计划。
+- `prompt-optimizer`：优化提示词的任务范围、约束和验收条件。
+- `rally`：多会话并行执行编排，协调多个智能体共同完成任务。
+- `receiving-code-review`：核实代码审查意见并处理有证据支持的问题。
+- `requesting-code-review`：用于在完成任务、实现重要功能或合并前请求代码审查并验证需求满足情况。
+- `security-and-hardening`：加固身份认证、输入处理、数据存储和外部集成。
+- `sherpa`：把复杂任务拆成短步骤，控制漂移并推进交付。
+- `shipping-and-launch`：准备生产发布、分批上线、监控和回滚方案。
+- `skill-creator`：创建和改进技能内容、触发描述及行为评测。
+- `skill-reviewer`：审查技能的触发边界、执行指导、引用和验证质量。
+- `source-driven-development`：依据官方文档和当前仓库证据实现功能。
+- `spec-driven-development`：把需求转成明确的功能边界、契约和验收标准。
+- `subagent-driven-development`：协调独立子任务的实现、审查和结果集成。
+- `test-driven-development`：通过聚焦的回归测试验证业务逻辑和缺陷修复。
+- `using-agent-skills`：用于选择、加载和正确使用 Agent Skills 完成任务。
+- `using-git-worktrees`：用于使用 Git worktree 隔离并行开发和审查工作。
+- `using-superpowers`：用于使用 Superpowers 工作流提升计划、执行和验证质量。
+- `verification-before-completion`：在宣告完成前核对当前代码的验证证据与适用范围。
+- `writing-plans`：编写包含任务依赖、修改范围和验收方法的实现计划。
+- `writing-skills`：编写可复用的技能指导并验证实际触发和执行行为。
+
+<a id="cat-ai-agent-platform"></a>
+### 3. AI 平台与 Agent 开发（ai-agent-platform，14）
+
+- `agent-hub`：用于管理 Agent 能力中心、技能发现、路由和协作工作流。
+- `arena`：用于构建和运行 Agent 竞技场、评测对战和能力比较流程。
+- `chatgpt-apps`：用于设计、构建和调试 ChatGPT Apps 与相关集成能力。
+- `develop-web-game`：用于开发网页游戏原型、玩法循环、交互逻辑和前端实现。
+- `figma`：用于处理 Figma 设计读取、解析、交付和实现协作。
+- `figma-implement-design`：用于将 Figma 设计转化为可实现的前端界面和组件。
+- `hermes-agent`：用于配置、扩展、调试和贡献 Hermes Agent，包括多 Agent、CLI 和网关工作流。
+- `hermes-open-gsd-workflow`：在 Hermes Agent、Graphify、Open GSD Core 与可选 GSD Pi 之间做薄路由，不复制上游安装器和状态机。
+- `mcporter`：用于通过 mcporter CLI 列出、配置、鉴权和调用 MCP 服务器或工具。
+- `native-mcp`：用于构建和调试原生 MCP 集成、服务器和工具调用流程。
+- `openai-docs`：用于查阅和应用 OpenAI 官方文档、API 行为和集成指南。
+- `oracle`：人工智能应用设计、评估、检索增强和安全护栏规划。
+- `self-improving-agent`：用于构建具备记忆、反馈吸收和安全自我优化机制的持续改进型 Agent。
+- `sigil`：根据项目代码自动生成贴合仓库约定的技能。
+
+<a id="cat-workflow-automation"></a>
+### 4. 工程工作流自动化（engineering-workflow-automation，13）
+
+- `agent-browser`：在授权浏览器会话中利用官方 agent-browser CLI 快照和 CDP 完成自动化验收。
+- `billing-automation`：用于构建订阅计费、自动开票、续费生命周期和催收管理流程。
+- `gh-address-comments`：用于通过 gh CLI 处理当前分支的 GitHub PR Review 评论或 Issue 评论。
+- `gh-fix-ci`：读取 GitHub Actions 失败日志，修复 CI 并验证 PR 检查。
+- `github`：用于通过 GitHub CLI 自动化 Issue、PR、Review、CI 检查、标签和发布协作。
+- `guardian`：提交、分支、合并请求策略和变更粒度把关。
+- `harvest`：采集合并请求信息并生成工作报告和发布材料。
+- `jupyter-notebook`：创建和维护用于分析、实验及教学的 Jupyter 笔记本。
+- `latch`：配置和维护生命周期钩子、质量门禁和自动化守卫。
+- `playwright`：用于使用 Playwright 编写、运行和调试端到端测试。
+- `playwright-pro`：用于高级 Playwright 测试、诊断、稳定性和浏览器自动化。
+- `web-scraper`：用于网页抓取、结构化数据提取、爬取策略、选择器设计和增量更新。
+- `yeet`：按用户要求暂存、提交、推送改动并创建 GitHub PR。
+
+<a id="cat-devops-sre"></a>
+### 5. DevOps / SRE（devops-sre，14）
+
+- `azure-diagnostics`：使用授权范围内的指标、日志和脚本定位 Azure AKS、虚拟机及应用故障。
+- `azure-kubernetes`：用于 Azure Kubernetes 集群管理、部署、排障和运维。
+- `beacon`：可观测性、服务目标、告警、容量和可靠性设计。
+- `cc-devops-skills`：提供基础设施、持续交付、容器和运行维护的实践指导。
+- `cloudflare-troubleshooting`：依据实际配置排查 Cloudflare DNS、TLS 和重定向问题。
+- `env-secrets-manager`：管理环境变量、密钥存储、泄露检测和凭据轮换。
+- `gear`：依赖、构建、容器、监控和开发环境运维优化。
+- `github-ops`：用于 GitHub 运维、仓库管理、PR/Issue 流程和自动化协作。
+- `golang-observability`：为 Go 服务设计 slog、OpenTelemetry、Prometheus、持续剖析及可靠性告警。
+- `incident-commander`：用于事故响应中的分诊、角色分配、沟通协调、缓解跟踪和复盘。
+- `observability-designer`：设计日志、指标、链路追踪、告警和服务运行目标。
+- `release-manager`：组织版本、变更记录、发布制品和发布后验证。
+- `senior-architect`：分析系统架构、依赖、扩展性和关键技术取舍。
+- `triage`：事故首响、影响范围识别、恢复步骤和复盘整理。
+
+<a id="cat-finance-investing"></a>
+### 6. 金融投资（finance-investing，16）
+
+- `comps-valuation-analyst`：依据可比公司和统一财务口径开展相对估值分析。
+- `earnings-call-analyzer`：用于摘要财报电话会、提取管理层语气变化、业绩指引措辞和投资者更新。
+- `event-driven-tracker`：跟踪影响投资标的的公司事件、催化因素和风险。
+- `factor-backtester`：设计和回测投资因子，检查偏差、成本和稳健性。
+- `financial-analyst`：分析财务报表、经营表现、估值和情景假设。
+- `financial-data-collector`：用于收集股票、财报、宏观和市场数据并生成分析输入。
+- `helm`：商业战略场景模拟、市场分析、指标预测和路线图规划。
+- `investment-memo-writer`：编写有来源依据、投资逻辑和风险分析的投资备忘录。
+- `ledger`：云成本、预算告警、资源规格和人工智能工作负载成本优化。
+- `levy`：依据目标税年和官方规则分析日本税务及申报问题。
+- `macro-regime-monitor`：监测宏观经济状态、市场指标和投资环境变化。
+- `options-strategy-evaluator`：评估期权策略的收益结构、希腊字母和情景风险。
+- `portfolio-risk-manager`：用于投资组合风险分析、仓位约束和风险报告生成。
+- `saas-metrics-coach`：分析 SaaS 收入、留存、获客成本和单位经济性。
+- `sec-filing-reviewer`：阅读和比较 SEC 申报文件中的财务信息与风险变化。
+- `stock-screener-builder`：建立有明确指标、数据来源和筛选规则的股票筛选器。
+
+<a id="cat-growth-operations"></a>
+### 7. 增长运营（growth-operations-xiaohongshu，15）
+
+- `algorithmic-art`：用代码、随机种子和交互参数创作原创生成艺术。
+- `app-store-optimization`：优化应用商店关键词、页面素材和转化实验。
+- `campaign-analytics`：分析营销活动的渠道表现、转化、归因和投入产出。
+- `compete`：竞品研究、差异化定位、矩阵对比和竞争战卡。
+- `competitors-analysis`：Analyze competitor repositories with evidence-based approa。
+- `content-creator`：按受众、品牌语气和搜索意图创作营销内容。
+- `growth`：搜索、社交、转化和人工智能引用优化的一体化增长。
+- `linkedin-growth`：构建领英线索导入、筛选、分配、邀请与待处理请求维护流水线。
+- `marketing-demand-acquisition`：规划付费投放、自然渠道和获客转化流程。
+- `marketing-strategy-pmm`：制定产品定位、市场进入、竞争分析和销售支持策略。
+- `pulse`：关键指标、埋点、漏斗、留存和仪表盘规格设计。
+- `social-media-analyzer`：分析社交媒体互动、受众、活动收益和跨平台表现。
+- `tweetclaw-source-research`：通过 TweetClaw 收集和核实 X 平台研究资料。
+- `twitter-reader`：用于通过 URL 抓取 Twitter/X 帖子内容、作者、时间、图片和线程回复。
+- `x-twitter-scraper`：用于规划和执行 Xquik 的 X/Twitter 数据读取、导出、监控及经确认的账户操作。
+
+<a id="cat-office-white-collar"></a>
+### 8. 办公与文档（office-white-collar，13）
+
+- `answer-me-with-html`：仅在明确要求时生成离线静态 HTML 技术报告，不执行不可信 HTML、shell 或网络请求。
+- `docx`：用于创建、编辑和检查 Word `.docx` 文档。
+- `guizang-ppt-skill`：生成横向翻页网页 PPT（单 HTML 文件），含 WebGL 背景、章节幕封、数据大字报、图片网格等模板。
+- `markdown-tools`：把文档转换为保留结构、表格和图片的 Markdown。
+- `meeting-minutes-taker`：从会议转录中整理准确的决策、行动项和责任人。
+- `mermaid-tools`：提取 Markdown 中的 Mermaid 图并渲染为图片。
+- `morph`：文档格式转换、分发版生成和可复用转换脚本。
+- `pdf`：读取、生成、编辑、合并、拆分和识别 PDF 文档。
+- `pptx`：用于创建、编辑和美化 PowerPoint 演示文稿。
+- `prism`：依据资料和受众设计 NotebookLM 音视频及演示提示词。
+- `stage`：演示文稿生成、叙事节奏设计和会议演讲优化。
+- `transcript-fixer`：修正语音识别错误、同音词和中英文混合术语。
+- `xlsx`：创建和编辑电子表格、公式、图表及数据格式。
+
+<a id="cat-knowledge-pm"></a>
+### 9. 项目管理与知识库集成（knowledge-and-pm-integrations，34）
+
+- `arxiv`：用于按关键词、作者、分类或编号检索 arXiv 论文。
+- `grove`：仓库结构、文档布局、测试脚本组织和迁移规划。
+- `lark-approval`：用于查询、处理和发起飞书原生审批，区分审批待办与普通飞书任务。
+- `lark-attendance`：用于查询飞书考勤记录、核对打卡缺失、整理异常考勤并生成可追溯说明。
+- `lark-base`：用于操作飞书 Base 数据表、记录、字段和自动化数据流程。
+- `lark-calendar`：用于查询、创建和管理飞书日历事件与日程安排。
+- `lark-contact`：用于按姓名或邮箱解析飞书 open_id，并反查成员姓名、部门、邮箱和个人状态。
+- `lark-doc`：用于读取、编辑和生成飞书云文档内容。
+- `lark-drive`：用于搜索、读取和管理飞书云空间文件与权限。
+- `lark-event`：用于订阅、消费和处理飞书实时事件流，支持消息、任务、会议纪要和画板更新。
+- `lark-im`：用于发送、读取和处理飞书即时消息与群聊交互。
+- `lark-mail`：用于飞书邮件起草、查询、回复、转发及经授权的发送与邮箱管理。
+- `lark-markdown`：飞书 Markdown：查看、创建、上传、编辑和比较 Markdown 文件。
+- `lark-meeting`：统一处理飞书会议、妙记、智能纪要、逐字稿和经授权的会中互动。
+- `lark-okr`：飞书 OKR：管理目标与关键结果。
+- `lark-openapi-explorer`：飞书/Lark 原生 OpenAPI 探索：从官方文档库中挖掘未经 CLI 封装的原生 OpenAPI 接口。
+- `lark-shared`：配置飞书 CLI 的认证、权限和各业务技能共用能力。
+- `lark-sheets`：用于读取、编辑和分析飞书电子表格数据。
+- `lark-skill-maker`：用于把飞书 API 操作封装为可复用技能、流程模板和多步自动化。
+- `lark-slides`：飞书幻灯片：创建和编辑幻灯片。
+- `lark-task`：用于创建、查询和更新飞书任务及待办事项。
+- `lark-whiteboard`：用于查询、导出和编辑飞书云文档中的画板内容和节点结构。
+- `lark-wiki`：飞书知识库：管理知识空间、空间成员和文档节点。
+- `lark-workflow-meeting-summary`：用于汇总指定时间范围内的飞书会议纪要，并生成结构化会议报告或周报。
+- `lark-workflow-standup-report`：日程待办摘要：编排 calendar +agenda 和 task +get-my-tasks，生成指定日期的日程与。
+- `linear`：用于管理 Linear issue、项目、状态流转和工程协作。
+- `llm-wiki`：用于构建、查询和维护 Karpathy 风格的互联 Markdown LLM 知识库。
+- `lore`：跨智能体知识沉淀、模式提炼和最佳实践传播。
+- `notion-knowledge-capture`：用于把对话、决策和笔记沉淀到 Notion。
+- `notion-meeting-intelligence`：用于基于 Notion 上下文准备会议材料。
+- `notion-research-documentation`：用于整合 Notion 信息并生成研究文档。
+- `notion-spec-to-implementation`：用于将 Notion 规格文档转化为可执行实现计划。
+- `obsidian`：用于读取、搜索、创建和编辑 Obsidian 知识库笔记，并维护 Markdown 结构和链接关系。
+- `tome`：把仓库变更转化为学习文档、术语说明和设计记录。
+
+<a id="cat-operations-general"></a>
+### 10. 通用运营（operations-general，11）
+
+- `brand-guidelines`：用于在文档、页面或视觉产物中应用 Anthropic 风格的品牌色、字体和视觉规范。
+- `crest`：技术个人品牌、主页资料、文章和公开形象策略。
+- `dawn`：提出一个适合一至三天完成的个人项目创意。
+- `docs-cleaner`：用于合并冗余文档、减少文档膨胀，并在保留有效内容的前提下整理知识库。
+- `fact-checker`：核实事实与时效性，并按请求修正文档及补充来源。
+- `hearth`：终端、编辑器和本地开发环境配置生成与审计。
+- `i-have-adhd`：为 ADHD 读者塑造可执行、行动优先的输出：先给下一步、编号步骤、跨轮次重述状态、抑制跑题、给出具体时间估计并展示进展。
+- `interview-system-designer`：设计招聘面试、能力矩阵、题库和评分标准。
+- `linkedin`：通过 Linked API 搜索领英资料、管理连接、消息与内容发布。
+- `slack-gif-creator`：创建适合 Slack 展示的轻量动态 GIF。
+- `theme-factory`：用于为幻灯片、文档、报告和网页应用预设主题或生成新的颜色字体系统。
+
+<a id="cat-product-design"></a>
+### 11. 产品与设计（product-design，13）
+
+- `agile-product-owner`：管理产品待办、用户故事、验收条件和迭代计划。
+- `canvas-design`：创作海报、静态视觉设计和 PNG、PDF 艺术作品。
+- `competitive-teardown`：依据产品、定价和用户反馈分析竞争格局与改进机会。
+- `landing-page-generator`：生成具备清晰文案、行动入口和可访问性的落地页。
+- `product-manager-toolkit`：开展需求优先级排序、用户研究和产品需求文档编写。
+- `product-strategist`：制定产品愿景、目标、市场分析和团队发展策略。
+- `researcher`：设计用户访谈、可用性研究并分析定性证据。
+- `saas-scaffolder`：用于依据已验证产品需求搭建可演进的 SaaS 垂直切片，并覆盖鉴权、租户、计费、监控和验收。
+- `trace`：会话回放分析、行为模式提取和体验问题叙事。
+- `ui-design-system`：创建和维护设计变量、组件规范及开发交接资料。
+- `ui-ux-pro-max`：设计和审查网页、移动端及业务系统的界面体验。
+- `ux-researcher-designer`：通过用户画像、旅程图和可用性研究验证设计。
+- `voice`：用户反馈收集、满意度调研、评论分析和洞察提炼。
+
+<a id="cat-security-reliability"></a>
+### 12. 安全治理与稳定性（security-and-reliability，23）
+
+- `breach`：红队场景、攻击路径、威胁建模和对抗演练设计。
+- `cloak`：隐私工程、敏感信息流、同意管理和数据治理。
+- `codeql-security-scanner`：用于通过 CodeQL 执行语义代码扫描、安全查询、自定义规则、SARIF 报告和 GitHub Code Scan。
+- `comply`：核对法规与合规框架要求，整理控制证据和整改计划。
+- `firebase-security-rules-auditor`：审计 Firestore 与 Cloud Storage 安全规则，检查授权、字段校验、权限提升、资源滥用和模拟器测试覆盖。
+- `gha-security-review`：审查 GitHub Actions 触发器、注入、凭据和供应链风险。
+- `grype-syft-sbom-scanner`：用于基于 SBOM 扫描容器、文件系统和软件包漏洞。
+- `information-security-manager-iso27001`：建立和审计 ISO 27001 信息安全管理体系及风险控制。
+- `link-checker`：用于检测 URL 可达性、失效链接、跳转链路、可疑域名和文档链接健康度。
+- `osv-scanner`：用于通过 OSV 数据库检查开源依赖、锁文件和 SBOM 漏洞。
+- `security-audit`：对代码库进行安全审计，聚焦可利用且有真实影响的漏洞，并生成可验证的发现、报告和结构化输出。
+- `security-auditor`：审查应用、接口、基础设施和依赖中的实际安全风险。
+- `security-best-practices`：用于按语言或框架检查安全最佳实践，生成安全审查报告和 secure-by-default 建议。
+- `security-ownership-map`：用于分析代码责任分布、敏感模块归属和人员风险。
+- `security-pen-testing`：在授权范围内执行漏洞扫描、渗透测试和修复验证。
+- `security-review`：依据代码证据审查注入、认证、授权和加密漏洞。
+- `security-threat-model`：用于基于代码库或架构梳理资产、信任边界、攻击者能力、滥用路径和缓解措施。
+- `semgrep-appsec-scanner`：用于 Semgrep SAST、规则编写、供应链和密钥扫描流程。
+- `sentry`：用于查看线上异常、错误事件和服务健康信息。
+- `skill-security-auditor`：安装前审查技能指令、脚本、权限和数据外传风险。
+- `skill-vetter`：用于安装外部技能前审计指令、脚本、权限、依赖和来源风险。
+- `trivy-vulnerability-scanner`：用于通过 Trivy 扫描仓库、容器镜像、文件系统、rootfs、SBOM、Kubernetes、IaC、密钥、许可。
+- `vuls-linux-cve-scanner`：用于通过 Vuls 对 Linux、FreeBSD、容器、WordPress、库和网络设备执行 Agentless。
+
+<a id="cat-multimodal-media"></a>
+### 13. 多模态内容（multimodal-media，10）
+
+- `clay`：生成和优化面向目标引擎的三维模型及纹理资产。
+- `gpt-image2`：让 Codex 通过本地配置的 gpt-image-2 兼容画图服务生成图片，支持提示词、参考图、比例、清晰度和本地保存。
+- `imagegen`：用于生成、编辑和迭代图像内容与视觉素材。
+- `live-panel`：将系统架构和数据流 JSON 配置渲染为动态面板 HTML 或 MP4。
+- `screenshot`：用于截图、屏幕捕获、视觉核查和界面证据收集。
+- `sketch`：图像生成代码、提示优化、批量生成和成本估算。
+- `sora`：用于构思、生成和评审 Sora 视频或视频提示词。
+- `speech`：将文本转换为旁白、配音和批量语音文件。
+- `tone`：生成和处理游戏音效、音乐及语音资产。
+- `transcribe`：用于将音频或视频中的语音转写为文本，并可结合说话人分离和已知说话人提示。
+
+<a id="cat-deployment-platforms"></a>
+### 14. 部署平台（deployment-platforms，7）
+
+- `cloudflare-deploy`：用于将应用部署到 Cloudflare 并处理相关发布流程。
+- `netlify-deploy`：用于将网站或应用部署到 Netlify 并获取预览或生产链接。
+- `pipe`：持续集成工作流、触发策略、安全加固和复用设计。
+- `render-deploy`：用于将服务或应用部署到 Render 并处理运行配置。
+- `scaffold`：云基础设施、环境配置和本地开发部署脚手架。
+- `shard`：多租户架构、租户隔离、路由和规模化设计。
+- `vercel-deploy`：用于将应用或网站部署到 Vercel，创建预览部署或生产发布链接。
+
+<a id="cat-memory-safety"></a>
+### 15. 记忆与安全（openclaw-memory-and-safety，7）
+
+- `cast`：用户画像生成、角色注册、生命周期和跨智能体同步。
+- `honcho`：用于管理 Agent 记忆、运行状态、协作上下文和安全边界。
+- `input-guard`：用于输入安全检查、提示注入防护和高风险请求拦截。
+- `omen`：预演失败模式，识别计划风险并给出优先级。
+- `rag-architect`：用于以评测为先设计和诊断生产级 RAG，包括权限、混合检索、重排、引用和监控。
+- `runbook-generator`：用于基于仓库和平台证据编写安全、可演练、可验证的生产运维 Runbook。
+- `warden`：按价值、用户自主性和体验韧性评估产品质量。
+
+<a id="cat-task-understanding"></a>
+### 16. 任务理解与拆解（task-understanding-decomposition，5）
+
+- `grill-me`：对方案、设计和关键决策进行追问，检验假设、取舍与遗漏的需求。
+- `lens`：代码库理解、功能发现、数据流追踪和上下文调查。
+- `reflect-learn`：分析用户纠正和任务结果，提出可复用的改进建议。
+- `ripple`：变更前影响分析，评估依赖链和一致性风险。
+- `scout`：缺陷调查、复现步骤、根因分析和影响评估。
+
+## 下一轮建议补充方向
+
+以下方向适合作为下一批扩充候选；本轮已完成每类 3 个精选技能的补充，因此不再列已经落地的旧候选。
+
+- 从 `VoltAgent/awesome-claude-skills` 中筛选行业类、数据类、科学研究类技能。
+- 从 `kodustech/awesome-agent-skills` 中筛选命令开发、仓库治理和跨客户端兼容技能。
+- 从官方平台文档中沉淀更细的部署、安全、办公自动化和多模态技能。
+- 对功能重叠的技能增加使用频次、质量评分和最近同步时间后再做替换。
+
+本轮详细筛选和替换判断见：[技能精选与升级报告](./docs/sources/reports/skill-curation-2026-04-25.md)。
+
+## 快速检索命令
+
+```bash
+# 列出所有技能定义文件
+rg --files skills | rg "SKILL.md$"
+
+# 按关键词查找技能
+rg -n "prompt|security|pdf|deploy" skills/**/SKILL.md
+```
+
+## 维护建议
+
+本次维护的接入、保留与拒绝理由见 [2026-08-31 精选维护决策](./docs/maintenance-2026-08-31.md)。
+
+- 新增技能时保持 `skills/<分类>/<skill-name>/SKILL.md` 结构。
+- OpenClaw 兼容目录通过 `python3 scripts/export_openclaw_skills.py` 生成，不直接手工维护 `openclaw-skills/`。
+- 若将候选技能正式落地，请同步更新正式分类列表、来源映射和总数统计。
+- 每个技能应提供清晰触发条件、步骤、边界和验证方式。
+- 优先复用 `scripts/` 与 `references/`，减少重复实现。
+- 版本新鲜度校验建议采用“离线快照 + 本地比对”，避免逐个技能联网探测触发风控：
+
+```bash
+# 1) 快速生成 snapshot 模板（最小示例）
+python3 scripts/skill_snapshot_template.py generate --output /tmp/clawhub_skills_snapshot.json
+
+# 2) 用本仓库当前技能一键生成 snapshot（推荐）
+python3 scripts/skill_snapshot_template.py generate --output /tmp/clawhub_skills_snapshot.json --from-local
+
+# 3) 校验 snapshot 结构是否合法
+python3 scripts/skill_snapshot_template.py validate --snapshot /tmp/clawhub_skills_snapshot.json
+
+# 4) 再做离线新鲜度比对
+python3 scripts/audit_skill_freshness.py --snapshot /tmp/clawhub_skills_snapshot.json
+```
+
+## 许可证
+
+本仓库整体采用 [MIT License](./LICENSE)。其中外部导入的技能会保留各自上游许可证信息；新增外源技能必须通过 `scripts/audit_licenses.py` 校验。若高质量候选没有明确许可证，自动精选流程会生成原创 `in-house` MIT 重写版本并合入，但不会复制未知授权的上游正文。
+
+---
+
+本仓库维护中文与英文两份 README，面向全球开发者协作。文档更新应保持目录结构、技能数量、安装说明和自动化校验结果一致。

@@ -1,0 +1,223 @@
+# awesome-dLLM-resources
+Frequently updated list of dLLM (Diffusion Large Language Models) papers, models, and other resources. 
+
+Maintained By Suhas Pai and Xiaojun Ren. For an overview of this field, see our <i><a href="https://iclr-blogposts.github.io/2026/blog/2026/dllm/" target="_blank">ICLR 2026 blog post</a></i>.
+
+Make a PR if you want to include your paper on this list or if you've found a cool paper that you think should be included in this list :)
+
+![Papers by Category Radar](graphics/papers_by_category_radar.png)
+
+## Libraries
+- **dlmserve: First OSS Serving Engine for Diffusion Language Models** - *May 25, 2026* <i><a href="https://github.com/iOptimizeThings/dlmserve" target="_blank">GitHub</a></i>
+- **DiRL: An Efficient Training Framework for Diffusion Language Models** - *November 18, 2025* <i><a href="https://github.com/OpenMOSS/DiRL" target="_blank">GitHub</a></i>
+- **dLLM: Simple Diffusion Language Modeling** - *October 11, 2025* <i><a href="https://github.com/ZHZisZZ/dllm" target ="_blank">GitHub</a></i>
+
+## Models
+- **DiffusionGemma** — *July 31, 2026* <i><a href="https://arxiv.org/abs/2608.00146" target ="_blank">arXiv</a></i>
+- **Continuous Latent Diffusion Language Model** — *May 7, 2026* <i><a href="https://arxiv.org/abs/2605.06548" target ="_blank">arXiv</a></i>
+- **W1-4B-dLLM: Whaletech Diffusion LLM** — *April 13, 2026* <i><a href="https://huggingface.co/WhaletechAI/W1-4B-dLLM-Base" target="_blank">Hugging Face</a></i> <i><a href="https://vibe.whaletech.ai/" target="_blank">Demo</a></i>
+- **LLaDA2.0: Scaling Up Diffusion Language Models to 100B** — *December 10, 2025* <i><a href="https://www.arxiv.org/abs/2512.15745" target ="_blank">arXiv</a></i>
+- **Causal Diffusion Language Models** - *December 4, 2025* <i><a href ="https://www.guidelabs.ai/post/block-causal-diffusion-language-model/" target ="_blank">Blog Post</a></i>
+- **Soft-Masked Diffusion Language Models** — *October 20, 2025* <i><a href="https://arxiv.org/abs/2510.17206" target ="_blank">arXiv</a></i>
+- **UltraLLaDA: Scaling the Context Length to 128K for Diffusion Large Language Models** — *October 12, 2025* <i><a href="https://arxiv.org/abs/2510.10481" target="_blank">arXiv</a></i>
+- **RND1: Simple, Scalable AR-to-Diffusion Conversion** — *October 9, 2025* <i><a href="https://www.radicalnumerics.ai/blog/rnd1" target="_blank">Blog Post</a></i>
+- **SDAR: A Synergistic Diffusion-AutoRegression Paradigm for Scalable Sequence Generation** - *October 7, 2025* <i><a href="https://arxiv.org/abs/2510.06303" target="_blank">arXiv</a></i>
+- **Syntax-Guided Diffusion Language Models with User-Integrated Personalization** — *October 2, 2025* <i><a href="https://arxiv.org/abs/2510.01028" target="_blank">arXiv</a></i>
+- **CoDA: Coding LM via Diffusion Adaptation** — *September 27, 2025* <i><a href="https://arxiv.org/abs/2510.03270" target="_blank">arXiv</a></i>
+- **LLaDA-MoE: A Sparse MoE Diffusion Language Model** — *September 25, 2025* <i><a href="https://arxiv.org/abs/2509.24389" target="_blank">arXiv</a></i>
+- **Dream 7B: Diffusion Large Language Models** - *August 21, 2025* <i><a href="https://arxiv.org/abs/2508.15487" target="_blank">arXiv</a></i>
+- **DiffuCoder: Understanding and Improving Masked Diffusion Models for Code Generation** — *June 25, 2025* <i><a href="https://arxiv.org/abs/2506.20639" target ="_blank">arXiv</a></i>
+- **Mercury: Ultra-Fast Language Models Based on Diffusion** — *June 17, 2025* <i><a href="https://arxiv.org/abs/2506.17298" target ="_blank">arXiv</a></i>
+- **LLaDA 1.5: Variance-Reduced Preference Optimization for Large Language Diffusion Models** — *May 25, 2025* <i><a href="https://arxiv.org/abs/2505.19223" target="_blank">arXiv</a></i>
+- **Large Language Diffusion Models** — *February 14, 2025* <i><a href="https://arxiv.org/abs/2502.09992" target="_blank">arXiv</a></i>
+
+## Scaling Laws
+- **Continuous Diffusion Scales Competitively with Discrete Diffusion for Language** — *May 18, 2026* <i><a href="https://arxiv.org/abs/2605.18530" target="_blank">arXiv</a></i>
+- **Diffusion Language Models Are Super Data Learners** — *October 1, 2025* <i><a href="https://jinjieni.github.io/dlms-are-super-data-learners/resources/pdf/Diffusion_Language_Models_are_Super_Data_Learners.pdf" target="_blank">GitHub</a></i>
+- **Diffusion Beats Autoregressive in Data-Constrained Settings** — *July 21, 2025* <i><a href="https://arxiv.org/abs/2507.15857" target="_blank">arXiv</a></i>
+
+## Architecture & Learning Objectives
+- **DSL-LLaDA: Scaling Continuous Denoising to 8B Masked Diffusion LMs** - *May 31, 2026* <i><a href="https://arxiv.org/abs/2606.01024" target="_blank">arXiv</a></i>
+- **WaveFilter: Enhancing the Long-Context Capability of Diffusion LLMs via Wavelet-Guided KV Cache Filtering** - *May 30, 2026* <i><a href="https://arxiv.org/abs/2606.00724" target="_blank">arXiv</a></i>
+- **Triplet-Block Diffusion RWKV** - *May 25, 2026* <i><a href="https://arxiv.org/abs/2605.25969" target="_blank">arXiv</a></i>
+- **DLLM-JEPA: Joint Embedding Predictive Architectures for Masked Diffusion Language Models** - *May 24, 2026* <i><a href="https://arxiv.org/abs/2606.00091" target="_blank">arXiv</a></i>
+- **DiLaDiff: Distilled Latent-Augmented Diffusion for Language Modeling** - *May 22, 2026* <i><a href="https://arxiv.org/abs/2605.23605" target="_blank">arXiv</a></i>
+- **Drifting Objectives for Refining Discrete Diffusion Language Models** - *May 19, 2026* <i><a href="https://arxiv.org/abs/2605.19470" target="_blank">arXiv</a></i>
+- **Dynamic Chunking for Diffusion Language Models** - *May 15, 2026* <i><a href="https://arxiv.org/abs/2605.15676" target="_blank">arXiv</a></i>
+- **Where Should Diffusion Enter a Language Model? Geometry-Guided Hidden-State Replacement** - *May 14, 2026* <i><a href="https://arxiv.org/abs/2605.14368" target="_blank">arXiv</a></i>
+- **BitLM: Unlocking Multi-Token Language Generation with Bitwise Continuous Diffusion** - *May 12, 2026* <i><a href="https://arxiv.org/abs/2605.11577" target="_blank">arXiv</a></i>
+- **ELF: Embedded Language Flows** - *May 11, 2026* <i><a href="https://arxiv.org/abs/2605.10938" target="_blank">arXiv</a></i>
+- **How to Train Your Latent Diffusion Language Model Jointly With the Latent Space** - *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.07933" target="_blank">arXiv</a></i>
+- **TextLDM: Language Modeling with Continuous Latent Diffusion** - *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.07748" target="_blank">arXiv</a></i>
+- **Token Time Continuous Diffusion for Language Modeling** - *May 7, 2026* <i><a href="https://arxiv.org/abs/2607.14106" target="_blank">arXiv</a></i>
+- **Towards Closing the Autoregressive Gap in Language Modeling via Entropy-Gated Continuous Bitstream Diffusion** - *May 7, 2026* <i><a href="https://arxiv.org/abs/2605.07013" target="_blank">arXiv</a></i>
+- **From AR to Diffusion: Efficiently Adapting Large Language Models with Strictly Causal and Elastic Horizons** - *April 11, 2026* <i><a href="https://arxiv.org/abs/2605.27387" target="_blank">arXiv</a></i>
+- **Beyond Hard Masks: Progressive Token Evolution for Diffusion Language Models** — *January 16, 2026* <i><a href="https://arxiv.org/abs/2601.07351" target="_blank">arXiv</a>, <a href="https://github.com/aim-uofa/EvoTokenDLM" target="_blank">Code</a></i>
+- **CANDI: Hybrid Discrete-Continuous Diffusion Models** - *October 26, 2025* <i><a href="https://arxiv.org/abs/2510.22510" target="_blank">arXiv</a></i>
+- **Any-Order GPT as Masked Diffusion Model: Decoupling Formulation and Architecture** — *June 24, 2025* <i><a href="https://arxiv.org/abs/2506.19935" target="_blank">arXiv</a></i>
+
+## Finetuning/RL
+- **Mask-Aware Policy Gradients for Diffusion Language Models** — *July 16, 2026* <i><a href="https://arxiv.org/abs/2607.15200" target="_blank">arXiv</a></i>
+- **Read the Trace, Steer the Path: Trajectory-Aware Reinforcement Learning for Diffusion Language Models** — *June 3, 2026* <i><a href="https://arxiv.org/abs/2606.04396" target="_blank">arXiv</a></i>
+- **Knowledge Editing in Masked Diffusion Language Models** — *June 2, 2026* <i><a href="https://arxiv.org/abs/2606.03924" target="_blank">arXiv</a></i>
+- **Revise, Don't Freeze: Sampler-Matched Training for Self-Correcting Masked Diffusion Language Models** — *May 31, 2026* <i><a href="https://arxiv.org/abs/2606.01026" target="_blank">arXiv</a></i>
+- **Learnability-Informed Fine-Tuning of Diffusion Language Models** — *May 21, 2026* <i><a href="https://arxiv.org/abs/2605.22939" target="_blank">arXiv</a></i>
+- **Beyond Mode-Seeking RL: Trajectory-Balance Post-Training for Diffusion Language Models** — *May 13, 2026* <i><a href="https://arxiv.org/abs/2605.13935" target="_blank">arXiv</a></i>
+- **Self-Distilled Trajectory-Aware Boltzmann Modeling: Bridging the Training-Inference Discrepancy in Diffusion Language Models** — *May 12, 2026* <i><a href="https://arxiv.org/abs/2605.11854" target="_blank">arXiv</a></i>
+- **Relative Score Policy Optimization for Diffusion Language Models** — *May 11, 2026* <i><a href="https://arxiv.org/abs/2605.10218" target="_blank">arXiv</a></i>
+- **DACA-GRPO: Denoising-Aware Credit Assignment for Reinforcement Learning in Diffusion Language Models** — *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.16342" target="_blank">arXiv</a></i>
+- **Guidance Is Not a Hyperparameter: Learning Dynamic Control in Diffusion Language Models** — *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.07701" target="_blank">arXiv</a></i>
+- **FlowLM: Few-Step Language Modeling via Diffusion-to-Flow Adaptation** — *April 6, 2026* <i><a href="https://arxiv.org/abs/2605.20199" target="_blank">arXiv</a></i>
+- **Principled RL for Diffusion LLMs Emerges from a Sequence-Level Perspective** — *December 3, 2025* <i><a href="https://arxiv.org/abs/2512.03759" target="_blank">arXiv</a></i>
+- **Diffusion LLM with Native Variable Generation Lengths: Let [EOS] Lead the Way** — *October 28, 2025* <i><a href="https://arxiv.org/abs/2510.24605" target="_blank">arXiv</a></i>
+- **Principled and Tractable RL for Reasoning with Diffusion Language Models** — *October 5, 2025* <i><a href="https://arxiv.org/abs/2510.04019" target="_ blank">arXiv</a></i>
+- **Fine-Tuning Masked Diffusion for Provable Self-Correction** — *October 1, 2025* <i><a href="https://arxiv.org/abs/2510.01384" target="_ blank">arXiv</a></i>
+- **WeFT: Weighted Entropy-Driven Fine-Tuning for dLLMs** — *September 25, 2025* <i><a href="https://arxiv.org/abs/2509.20863" target="_ blank">arXiv</a></i>
+- **Inpainting-Guided Policy Optimization for Diffusion Large Language Models** — *September 12, 2025* <i><a href="https://arxiv.org/abs/2509.10396" target="_ blank">arXiv</a></i>
+- **Revolutionizing Reinforcement Learning Framework for Diffusion Large Language Models** — *September 8, 2025* <i><a href="https://arxiv.org/abs/2509.06949" target="_blank">arXiv</a></i>
+
+## Distillation
+- **SelFusion: Self-distillation for Diffusion Language Models** — *August 24, 2026* <i><a href="https://arxiv.org/abs/2608.22898" target="_blank">arXiv</a></i>
+- **Learning from the Self-future: On-policy Self-distillation for dLLMs** — *June 16, 2026* <i><a href="https://arxiv.org/abs/2606.18195" target="_blank">arXiv</a>, <a href="https://github.com/xingzhejun/d-opsd-code" target="_blank">Code</a></i>
+- **Infinite Mask Diffusion for Few-Step Distillation** — *May 11, 2026* <i><a href="https://arxiv.org/abs/2605.10518" target="_blank">arXiv</a></i>
+- **TAD: Temporal-Aware Trajectory Self-Distillation for Fast and Accurate Diffusion LLM** — *May 10, 2026* <i><a href="https://arxiv.org/abs/2605.09536" target="_blank">arXiv</a></i>
+
+
+## Reasoning
+- **TiDAR: Think in Diffusion, Talk in Autoregression** — *November 12, 2025* <i><a href="https://arxiv.org/html/2511.08923v1" target="_blank">arXiv</a></i>
+- **Enhancing Reasoning for Diffusion LLMs via Distribution Matching Policy Optimization** — *October 9, 2025* <i><a href="https://arxiv.org/abs/2510.08233" target="_blank">arXiv</a></i>
+- **Improving Reasoning for Diffusion Language Models via Group Diffusion Policy Optimization** — *October 9, 2025* <i><a href="https://arxiv.org/abs/2510.08554" target="_blank">arXiv</a></i>
+- **DiFFPO: Training Diffusion LLMs to Reason Fast and Furious via Reinforcement Learning** — *October 2, 2025* <i><a href="https://arxiv.org/abs/2510.02212" target="_blank">arXiv</a></i>
+- **RFG: Test-Time Scaling for Diffusion Large Language Model Reasoning with Reward-Free Guidance** — *September 29, 2025* <i><a href="https://arxiv.org/abs/2509.25604" target="_blank">arXiv</a></i>
+- **Thinking Inside the Mask: In-Place Prompting in Diffusion LLMs** — *August 14, 2025* <i><a href="https://arxiv.org/abs/2508.10736" target="_blank">arXiv</a></i>
+- **d1: Scaling Reasoning in Diffusion Large Language Models via Reinforcement Learning** — *June 3, 2025* <i><a href="https://arxiv.org/abs/2504.12216" target="_blank">arXiv</a></i>
+
+## Decoding Strategies
+- **Dependency-Aware Revocable Decoding for Efficient Diffusion Large Language Model Inference** — *August 27, 2026* <i><a href="https://arxiv.org/abs/2608.26574" target="_ blank">arXiv</a></i>
+- **Information-Guided Frontier Decoding: Contextual Utility-Driven Commitment in dMLLMs** — *August 27, 2026* <i><a href="https://arxiv.org/abs/2608.26641" target="_ blank">arXiv</a></i>
+- **Survival-Guided Length Control for Efficient Diffusion Language Models** — *August 26, 2026* <i><a href="https://arxiv.org/abs/2608.26374" target="_ blank">arXiv</a></i>
+- **Context-Aware Cluster Decoding: Semantic Anchor-Driven Coherence in dMLLMs** — *August 23, 2026* <i><a href="https://arxiv.org/abs/2608.22367" target="_ blank">arXiv</a></i>
+- **Length-Adaptive Decoding for Masked Diffusion Machine Translation** — *August 23, 2026* <i><a href="https://arxiv.org/abs/2608.22274" target="_ blank">arXiv</a></i>
+- **NAVIRA: Decoupled Stochastic Remasking for Masked Diffusion Language Models** — *June 4, 2026* <i><a href="https://arxiv.org/abs/2606.06031" target="_ blank">arXiv</a></i>
+- **SemBlock: Semantic Boundary Dynamic Blocks for Diffusion LLMs** — *June 3, 2026* <i><a href="https://arxiv.org/abs/2606.04964" target="_ blank">arXiv</a></i>
+- **Dynamic Infilling Anchors for Format-Constrained Generation in Diffusion Large Language Models** — *June 3, 2026* <i><a href="https://arxiv.org/abs/2606.04535" target="_ blank">arXiv</a></i>
+- **Supportive Token Revealing for Fast Diffusion Language Model Decoding** — *June 2, 2026* <i><a href="https://arxiv.org/abs/2606.04236" target="_ blank">arXiv</a></i>
+- **DLM-SWAI: Steering Diffusion Language Models Before They Unmask** — *May 28, 2026* <i><a href="https://arxiv.org/abs/2605.29626" target="_ blank">arXiv</a></i>
+- **When Confidence Misleads: Suffix Anchoring and Anchor-Proximity Confidence Modulation for Diffusion Language Models** — *May 27, 2026* <i><a href="https://arxiv.org/abs/2605.28181" target="_ blank">arXiv</a></i>
+- **The Path Matters: Learning a Token-Commitment Policy for Diffusion Language Models** — *May 23, 2026* <i><a href="https://arxiv.org/abs/2605.24697" target="_ blank">arXiv</a></i>
+- **Constrained Code Generation with Discrete Diffusion** — *May 16, 2026* <i><a href="https://arxiv.org/abs/2605.16829" target="_ blank">arXiv</a></i>
+- **Roll Out and Roll Back: Diffusion LLMs are Their Own Efficiency Teachers** — *May 16, 2026* <i><a href="https://arxiv.org/abs/2605.16941" target="_ blank">arXiv</a></i>
+- **Adaptive Steering and Remasking for Safe Generation in Diffusion Language Models** — *May 13, 2026* <i><a href="https://arxiv.org/abs/2605.13043" target="_ blank">arXiv</a></i>
+- **Edit-Based Refinement for Parallel Masked Diffusion Language Models** — *May 10, 2026* <i><a href="https://arxiv.org/abs/2605.09603" target="_ blank">arXiv</a></i>
+- **Steering Without Breaking: Mechanistically Informed Interventions for Discrete Diffusion Language Models** — *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.10971" target="_ blank">arXiv</a></i>
+- **When to Commit? Towards Variable-Size Self-Contained Blocks for Discrete Diffusion Language Models** — *April 27, 2026* <i><a href="https://arxiv.org/abs/2604.23994" target="_ blank">arXiv</a></i>
+- **Remask, Don't Replace: Token-to-Mask Refinement in Masked Diffusion Language Models** — *April 20, 2026* <i><a href="https://arxiv.org/abs/2604.18738" target="_ blank">arXiv</a></i>
+- **Stability-Weighted Decoding for Diffusion Language Models** — *April 18, 2026* <i><a href="https://arxiv.org/abs/2604.17068" target="_ blank">arXiv</a></i>
+- **Targeted Remasking: Replacing Token Editing with Token-to-Mask Refinement in Discrete Diffusion Language Models** — *April 6, 2026* <i><a href="https://arxiv.org/abs/2605.26436" target="_ blank">arXiv</a></i>
+- **LogicDiff: Logic-Guided Denoising Improves Reasoning in Masked Diffusion Language Models** — *March 24, 2026* <i><a href="https://arxiv.org/pdf/2603.26771" target="_ blank">arXiv</a></i>
+- **GeoBlock: Inferring Block Granularity from Dependency Geometry in Diffusion Language Models** — *March 4, 2026* <i><a href="https://arxiv.org/pdf/2603.26675" target="_ blank">arXiv</a></i>
+- **Efficient Self-Evaluation for Diffusion Language Models via Sequence Regeneration** — *March 3, 2026* <i><a href="https://arxiv.org/abs/2603.02760" target="_blank">arXiv</a></i>
+- **One Token Is Enough: Improving Diffusion Language Models with a Sink Token** — *January 27, 2026* <i><a href="https://arxiv.org/abs/2601.19657v2" target="_ blank">arXiv</a></i>
+- **Deferred Commitment Decoding for Diffusion Language Models with Confidence-Aware Sliding Windows** — *January 5, 2026* <i><a href="https://arxiv.org/abs/2601.02076" target="_ blank">arXiv</a></i>
+- **Activation Steering for Masked Diffusion Language Models** — *December 30, 2025* <i><a href="https://arxiv.org/abs/2512.24143" target="_ blank">arXiv</a></i>
+- **ReFusion: A Diffusion Large Language Model with Parallel Autoregressive Decoding** — *December 15, 2025* <i><a href="https://arxiv.org/abs/2512.13586" target="_ blank">arXiv</a></i>
+- **Beyond Static Cutoffs: One-Shot Dynamic Thresholding for Diffusion Language Models** — *November 3, 2025* <i><a href="https://arxiv.org/abs/2511.02077" target="_ blank">arXiv</a></i>
+- **CreditDecoding: Accelerating Parallel Decoding in Diffusion Large Language Models with Trace Credits** — *October 7, 2025* <i><a href="https://arxiv.org/abs/2510.06133" target="_ blank">arXiv</a></i>
+- **AdaBlock-dLLM: Semantic-Aware Diffusion LLM Inference via Adaptive Block Size** — *September 30, 2025* <i><a href="https://arxiv.org/abs/2509.26432" target="_ blank">arXiv</a></i>
+- **Don't Settle Too Early: Self-Reflective Remasking for Diffusion Language Models** — *September 28, 2025* <i><a href="https://arxiv.org/abs/2509.23653" target="_ blank">arXiv</a></i>
+- **Time Is a Feature: Exploiting Temporal Dynamics in Diffusion Language Models** — *August 12, 2025* <i><a href="https://arxiv.org/abs/2508.09138" target="_ blank">arXiv</a></i>
+- **Beyond Fixed: Training-Free Variable-Length Denoising for Diffusion Large Language Models** — *August 1, 2025* <i><a href="https://arxiv.org/abs/2508.00819" target="_ blank">arXiv</a></i>
+- **Unveiling the Potential of Diffusion Large Language Model in Controllable Generation** — *July 6, 2025* <i><a href="https://arxiv.org/abs/2507.04504" target="_ blank">arXiv</a></i>
+- **Remasking Discrete Diffusion Models with Inference-Time Scaling** — *March 1, 2025* <i><a href="https://arxiv.org/abs/2503.00307" target="_ blank">arXiv</a></i>
+
+## Speculative Decoding
+- **SimSD: Simple Speculative Decoding in Diffusion Language Models** — *June 1, 2026* <i><a href="https://arxiv.org/abs/2606.02544" target="_blank">arXiv</a></i>
+- **DFlare: Scaling Up Draft Capacity for Block Diffusion Speculative Decoding** — *June 1, 2026* <i><a href="https://arxiv.org/abs/2606.02091" target="_blank">arXiv</a></i>
+- **Cost-Aware Diffusion Draft Trees for Speculative Decoding** — *June 1, 2026* <i><a href="https://arxiv.org/abs/2606.01813" target="_blank">arXiv</a></i>
+- **PSD: Pushing the Pareto Frontier of Diffusion LLMs via Parallel Speculative Decoding** — *May 15, 2026* <i><a href="https://arxiv.org/abs/2605.15609" target="_blank">arXiv</a></i>
+- **Factorization-Error-Free Discrete Diffusion Language Model via Speculative Decoding** — *May 14, 2026* <i><a href="https://arxiv.org/abs/2605.14305" target="_ blank">arXiv</a></i>
+- **Self-Speculative Decoding for Diffusion Large Language Models** — *October 5, 2025* <i><a href="https://arxiv.org/abs/2510.04147" target="_ blank">arXiv</a></i>
+- **Spiffy: Multiplying Diffusion LLM Acceleration via Lossless Speculative Decoding** — *September 22, 2025* <i><a href="https://arxiv.org/abs/2509.18085" target="_blank">arXiv</a></i>
+
+## Inference Optimization
+- **Accelerating Diffusion Language Models via Structured Suffix Modeling** — *August 24, 2026* <i><a href="https://arxiv.org/abs/2608.23167" target="_blank">arXiv</a></i>
+- **SAID: Accelerating Diffusion-Based Language Models via Scaffold-Aware Iterative Decoding** — *June 3, 2026* <i><a href="https://arxiv.org/abs/2606.04974" target="_blank">arXiv</a></i>
+- **Fast-dLLM++: Fréchet Profile Decoding for Faster Diffusion LLM Inference** — *June 1, 2026* <i><a href="https://arxiv.org/abs/2606.02955" target="_blank">arXiv</a>, <a href="https://github.com/Ringo-Star/FastdLLM_plusplus" target="_blank">Code</a>, <a href="https://ringo-star.github.io/projectpage_frechet/" target="_blank">Project Page</a></i>
+- **EPIC: Efficient and Parallel Inference under CFG Constraints for Diffusion Language Models** — *May 30, 2026* <i><a href="https://arxiv.org/abs/2606.00722" target="_blank">arXiv</a></i>
+- **Efficient Diffusion LLMs via Temporal-Spatial Parallel Decoding and Confidence Extrapolation** — *May 29, 2026* <i><a href="https://arxiv.org/abs/2605.30753" target="_blank">arXiv</a></i>
+- **PulseCol: Periodically Refreshed Column-Sparse Attention for Accelerating Diffusion Language Models** — *May 20, 2026* <i><a href="https://arxiv.org/abs/2605.20813" target="_blank">arXiv</a></i>
+- **TIDE: Efficient and Lossless MoE Diffusion LLM Inference with I/O-aware Expert Offload** — *May 19, 2026* <i><a href="https://arxiv.org/abs/2605.20179" target="_blank">arXiv</a></i>
+- **Polestar: Drift-Aware Cache Calibration and Token Commitment for Efficient Inference of Diffusion LLMs** — *May 7, 2026* <i><a href="https://arxiv.org/abs/2607.14107" target="_blank">arXiv</a></i>
+- **R2-dLLM: Accelerating Diffusion Large Language Models via Spatio-Temporal Redundancy Reduction** — *April 21, 2026* <i><a href="https://arxiv.org/abs/2604.18995" target="_blank">arXiv</a></i>
+- **Streaming-dLLM: Accelerating Diffusion LLMs via Suffix Pruning and Dynamic Decoding** — *January 25, 2026* <i><a href="http://arxiv.org/abs/2601.17917v2" target="_blank">arXiv</a></i>
+- **CD4LM: Consistency Distillation and aDaptive Decoding for Diffusion Language Models** — *January 5, 2026* <i><a href="https://arxiv.org/abs/2601.02236" target="_blank">arXiv</a></i>
+- **WeDLM: Reconciling Diffusion Language Models with Standard Causal Attention for Fast Inference** — *December 28, 2025* <i><a href="https://arxiv.org/abs/2512.22737" target="_blank">arXiv</a></i>
+- **Mask Tokens as Prophet: Fine-Grained Cache Eviction for Efficient dLLM Inference** — *October 10, 2025* <i><a href="https://arxiv.org/abs/2510.09309" target="_blank">arXiv</a></i>
+- **dInfer: An Efficient Inference Framework for Diffusion Language Models** — *October 9, 2025* <i><a href="https://arxiv.org/abs/2510.08666" target="_blank">arXiv</a></i>
+- **Accelerating Diffusion LLM Inference via Local Determinism Propagation** — *October 8, 2025* <i><a href="https://arxiv.org/abs/2510.07081" target="_blank">arXiv</a></i>
+- **Free Draft-and-Verification: Toward Lossless Parallel Decoding for Diffusion Large Language Models** — *September 30, 2025* <i><a href="https://arxiv.org/abs/2510.00294" target="_blank">arXiv</a></i>
+- **Fast-dLLM v2: Efficient Block-Diffusion LLM** — *September 30, 2025* <i><a href="https://arxiv.org/abs/2509.26328" target="_blank">arXiv</a></i>
+- **Learning to Parallel: Accelerating Diffusion Large Language Models via Learnable Parallel Decoding** — *September 29, 2025 (ICLR 2026)* <i><a href="https://arxiv.org/abs/2509.25188" target="_blank">arXiv</a></i>
+- **Ultra-Fast Language Generation via Discrete Diffusion Divergence Instruct** — *September 29, 2025* <i><a href="https://arxiv.org/abs/2509.25035" target="_blank">arXiv</a></i>
+- **d²Cache: Accelerating Diffusion-Based LLMs via Dual Adaptive Caching** — *September 27, 2025* <i><a href="https://arxiv.org/abs/2509.23094" target="_blank">arXiv</a></i>
+- **Sparse-dLLM: Accelerating Diffusion LLMs with Dynamic Cache Eviction** — *August 4, 2025* <i><a href="https://arxiv.org/abs/2508.02558" target="_blank">arXiv</a></i>
+- **Accelerating Diffusion Large Language Models with SlowFast Sampling: The Three Golden Principles** — *June 12, 2025* <i><a href="https://arxiv.org/abs/2506.10848" target="_blank">arXiv</a></i>
+- **Fast-dLLM: Training-Free Acceleration of Diffusion LLM by Enabling KV Cache and Parallel Decoding** — *May 28, 2025* <i><a href="https://arxiv.org/abs/2505.22618" target="_blank">arXiv</a></i>
+- **Accelerating Diffusion LLMs via Adaptive Parallel Decoding** — *May 31, 2025* <i><a href="https://arxiv.org/abs/2506.00413" target="_blank">arXiv</a></i>
+- **dLLM-Cache: Accelerating Diffusion Large Language Models with Adaptive Caching** — *May 17, 2025* <i><a href="https://arxiv.org/abs/2506.06295" target="_blank">arXiv</a></i>
+
+## Quantization
+- **On the Quantization Robustness of Diffusion Language Models in Coding Benchmarks** — *April 22, 2026* <i><a href="https://arxiv.org/abs/2604.20079" target="_blank">arXiv</a></i>
+- **Quant-dLLM: Post-Training Extreme Low-Bit Quantization for Diffusion Large Language Models** — *September 27, 2025* <i><a href="https://arxiv.org/abs/2510.03274" target="_blank">arXiv</a></i>
+- **Quantization Meets dLLMs: A Systematic Study of Post-Training Quantization for Diffusion LLMs** — *August 20, 2025* <i><a href="https://arxiv.org/abs/2508.14896" target="_blank">arXiv</a></i>
+- **Dllmquant: Quantizing Diffusion-Based Large Language Models** — *August 14, 2025* <i><a href="https://arxiv.org/abs/2508.14090" target="_blank">arXiv</a></i>
+
+## Retrieval
+- **Self-Augmenting Retrieval for Diffusion Language Models** — *June 4, 2026* <i><a href="https://arxiv.org/abs/2606.06474" target="_blank">arXiv</a></i>
+- **DiffRetriever: Parallel Representative Tokens for Retrieval with Diffusion Language Models** — *May 8, 2026* <i><a href="https://arxiv.org/abs/2605.07210" target="_blank">arXiv</a></i>
+
+## Security & Privacy
+- **SAC-Copula: Quality-Preserving Watermarking for Diffusion Language Models via Smooth Correlated Gumbel Fields** — *August 21, 2026* <i><a href="https://arxiv.org/abs/2608.20839" target="_blank">arXiv</a></i>
+- **Global Sketch-Based Watermarking for Diffusion Language Models** — *June 3, 2026* <i><a href="https://arxiv.org/abs/2606.04486" target="_blank">arXiv</a></i>
+- **Extracting Training Data from Diffusion Language Models via Infilling** — *May 22, 2026* <i><a href="https://arxiv.org/abs/2605.24173" target="_blank">arXiv</a></i>
+- **Machine Unlearning for Masked Diffusion Language Models** — *May 18, 2026* <i><a href="https://arxiv.org/abs/2605.18253" target="_blank">arXiv</a></i>
+- **Chainwash: Multi-Step Rewriting Attacks on Diffusion Language Model Watermarks** — *May 6, 2026* <i><a href="https://arxiv.org/abs/2605.05503" target="_blank">arXiv</a></i>
+- **TrustLDM: Benchmarking Trustworthiness in Language Diffusion Models** — *April 15, 2026* <i><a href="https://arxiv.org/abs/2606.00023" target="_blank">arXiv</a></i>
+- **GCG Attack On A Diffusion LLM** — *December 30, 2025* <i><a href="https://arxiv.org/abs/2601.14266v1" target="_blank">arXiv</a></i>
+- **DiffuGuard: How Intrinsic Safety Is Lost and Found in Diffusion Large Language Models** — *September 29, 2025* <i><a href="https://arxiv.org/abs/2509.24296" target="_blank">arXiv</a></i>
+- **Where to Start Alignment? Diffusion Large Language Model May Demand a Distinct Position** — *August 17, 2025* <i><a href="https://arxiv.org/abs/2508.12398" target="_blank">arXiv</a></i>
+- **Jailbreaking Large Language Diffusion Models: Revealing Hidden Safety Flaws in Diffusion-Based Text Generation** — *July 25, 2025* <i><a href="https://arxiv.org/abs/2507.19227" target="_blank">arXiv</a></i>
+- **The Devil Behind the Mask: An Emergent Safety Vulnerability of Diffusion LLMs** — *July 15, 2025* <i><a href="https://arxiv.org/abs/2507.11097" target="_blank">arXiv</a></i>
+
+## Theory
+- **Language Generation as Optimal Control: Closed-Loop Diffusion in Latent Control Space** — *May 14, 2026* <i><a href="https://arxiv.org/abs/2605.14531" target="_blank">arXiv</a></i>
+- **Optimal inference schedules for masked diffusion models** — *November 9, 2025* <i><a href="https://arxiv.org/pdf/2511.04647" target="_blank">arXiv</a></i>
+- **On Powerful Ways to Generate: Autoregression, Diffusion, and Beyond** — *October 7, 2025* <i><a href="https://arxiv.org/abs/2510.06190" target="_blank">arXiv</a></i>
+- **Why mask diffusion does not work** — *September 25, 2025* <i><a href="https://arxiv.org/abs/2510.03289v1" target="_blank">arXiv</a></i>
+
+## Applications
+- **DiG-Plan: Mitigating Early Commitment for Tool-Graph Planning via Diffusion Guidance** — *June 4, 2026* <i><a href="https://arxiv.org/abs/2606.05728" target="_blank">arXiv</a></i>
+- **DiffuSent: Towards a Unified Diffusion Framework for Aspect-Based Sentiment Analysis** — *May 31, 2026* <i><a href="https://arxiv.org/abs/2606.01323" target="_blank">arXiv</a></i>
+- **DiffScore: Text Evaluation Beyond Autoregressive Likelihood** — *May 12, 2026* <i><a href="https://arxiv.org/abs/2605.11601" target="_blank">arXiv</a></i>
+- **BiMol-Diff: A Unified Diffusion Framework for Molecular Generation and Captioning** — *April 27, 2026* <i><a href="https://arxiv.org/abs/2604.24089" target="_blank">arXiv</a></i>
+- **Harnessing LLM for Noise-Robust Cognitive Diagnosis in Web-Based Intelligent Education Systems** — *October 5, 2025* <i><a href="https://arxiv.org/abs/2510.04093" target="_blank">arXiv</a></i>
+- **Discovering Mathematical Equations with Diffusion Language Model** — *September 16, 2025* <i><a href="https://arxiv.org/abs/2509.13136" target="_blank">arXiv</a></i>
+
+## Analysis/Position Papers
+- **What Gets Unmasked First? Trajectory Analysis of Diffusion Models for Graph-to-Text Generation** — *May 29, 2026* <i><a href="https://arxiv.org/abs/2605.31564" target="_blank">arXiv</a></i>
+- **The Confidence Shortcut: A Reasoning Failure Mode of Masked Diffusion Models** — *May 27, 2026* <i><a href="https://arxiv.org/abs/2605.29123" target="_blank">arXiv</a></i>
+- **Prompt Compression in Diffusion Large Language Models: Evaluating LLMLingua-2 on LLaDA** — *May 18, 2026* <i><a href="https://arxiv.org/abs/2605.17932" target="_blank">arXiv</a></i>
+- **Uncertainty Quantification for Large Language Diffusion Models** — *May 14, 2026* <i><a href="https://arxiv.org/abs/2605.14570" target="_blank">arXiv</a></i>
+- **Understanding and Accelerating the Training of Masked Diffusion Language Models** — *May 13, 2026* <i><a href="https://arxiv.org/abs/2605.13026" target="_blank">arXiv</a></i>
+- **Differences in Text Generated by Diffusion and Autoregressive Language Models** — *April 4, 2026* <i><a href="https://arxiv.org/abs/2605.12522" target="_blank">arXiv</a></i>
+- **Efficient Self-Evaluation for Diffusion Language Models via Sequence Regeneration** — *March 3, 2026* (ACL 2026) <i><a href="https://arxiv.org/abs/2603.02760" target="_blank">arXiv</a></i>
+- **On the Role of Discreteness in Diffusion LLMs** — *December 27, 2025* <i><a href="https://arxiv.org/abs/2512.22630" target="_blank">arXiv</a></i>
+- **Understanding the Limitations of Diffusion LLMs through a Probabilistic Perspective** - *November 25, 2025* <i><a href="https://www.notion.so/Understanding-the-Limitations-of-Diffusion-LLMs-through-a-Probabilistic-Perspective-2ae0ba07baa88053b838d5bf0b0aad41#2af0ba07baa880c29fc4c8c198244cc8" target="_blank">Notion</a></i>
+
+## Surveys
+- **Accelerating Masked Diffusion Large Language Models: A Survey of Efficient Inference Techniques** — *July 14, 2026* <i><a href="https://arxiv.org/abs/2607.12829" target="_blank">arXiv</a></i>
+- **dLLM - Rethinking Generation Beyond Autoregressive Models** — *April 27, 2026* <i><a href="https://iclr-blogposts.github.io/2026/blog/2026/dllm/" target="_blank">ICLR Blog</a></i>
+- **Beyond Autoregression: An Empirical Study of Diffusion Large Language Models for Code Generation** — *September 14, 2025* <i><a href="https://arxiv.org/abs/2509.11252" target="_blank">arXiv</a></i>
+- **Diffusion-Based Large Language Models Survey** — *August 26, 2025* <i><a href="https://www.techrxiv.org/users/952417/articles/1321784-diffusion-based-large-language-models-survey" target="_blank">TechRxiv</a></i>
+- **A Survey on Diffusion Language Models** — *August 14, 2025* <i><a href="https://arxiv.org/abs/2508.10875" target="_blank">arXiv</a></i>
+- **Discrete Diffusion in Large Language and Multimodal Models: A Survey** — *June 16, 2025* <i><a href="https://arxiv.org/abs/2506.13759" target="_blank">arXiv</a></i>

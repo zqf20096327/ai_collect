@@ -1,0 +1,1428 @@
+# Traccia — The Open-Source Agent Control Plane
+
+**AI agents can act. Traccia controls what they're allowed to do.**
+
+Traccia is a production-ready Python SDK for **observing, evaluating, and enforcing policies on AI agents and LLM applications at runtime.**
+
+Built on OpenTelemetry, Traccia provides distributed tracing, token and cost tracking, evaluation, governance evidence, and runtime policy enforcement across AI agents, agentic workflows, and multi-agent systems.
+
+Framework-agnostic and built for **OpenAI Agents, LangGraph, CrewAI, and LLM applications in production.**
+
+[Traccia](https://pypi.org/project/traccia/) is available on PyPI.
+
+## Features
+
+### Runtime Control
+
+- **Runtime Policies**: `@govern` can deny or reshape LLM or tool calls at runtime using policies such as Spend Cap, Model Boundary, and Loop Cap
+- **Guardrail Detection**: Passive detection of AI safety controls, provider-native safeguards, and custom guardrails
+- **Security Controls**: No secrets in logs and configurable data truncation
+
+### Observability & Tracing
+
+- **Automatic Instrumentation**: Auto-patch OpenAI, Anthropic, Gemini (google-genai), requests, and HTTP libraries
+- **Framework Integrations**: Support for LangChain, CrewAI, and OpenAI Agents SDK
+- **LLM-Aware Tracing**: Track tokens, costs, prompts, completions, and latency automatically
+- **OpenTelemetry Metrics**: Emit OTEL-compliant metrics for accurate token and cost tracking independent of sampling
+- **Decorator-Based Tracing**: Trace any function with the `@observe` decorator
+- **Multiple Exporters**: OTLP-compatible export to Grafana Tempo, Jaeger, Zipkin, SigNoz, Console, or File
+- **Production-Ready Architecture**: Rate limiting, error handling, configuration validation, and reliable flushing
+- **High Performance**: Efficient batching, async support, and low-overhead instrumentation
+
+### Evaluation & Development
+
+- **Offline Evaluation**: `evaluate()` runs a task and scorers over a dataset and saves an experiment you can open, compare, and attach on promote
+- **Prompt Management**: `load_prompt` / `prefetch_prompts` with cache, stale-while-revalidate, fallback, and `traccia.prompt.*` span identity
+- **Zero-Configuration Setup**: Simple `init()` call with automatic configuration discovery
+- **Type-Safe Configuration**: Full Pydantic validation and configuration management
+
+### Governance & Compliance
+
+- **AI Governance and Compliance**: EU AI Act and HIPAA-oriented evidence, transparency records, integrity verification, and PII/PHI redaction helpers
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install traccia
+```
+
+### Basic Usage
+
+```python
+from traccia import init, observe
+
+# Initialize (auto-loads from traccia.toml if present)
+init()
+
+# Trace any function
+@observe()
+def my_function(x, y):
+    return x + y
+
+# That's it! Traces are automatically created and exported
+result = my_function(2, 3)
+```
+
+### With LLM Calls
+
+```python
+from traccia import init, observe
+from openai import OpenAI
+
+init()  # Auto-patches OpenAI
+
+client = OpenAI()
+
+@observe(as_type="llm")
+def generate_text(prompt: str) -> str:
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content
+
+# Automatically tracks: model, tokens, cost, prompt, completion, latency
+text = generate_text("Write a haiku about Python")
+```
+
+### Gemini (google-genai)
+
+```python
+from traccia import init
+from google import genai
+
+init()  # Auto-patches google-genai
+
+client = genai.Client()
+response = client.interactions.create(
+    model="models/gemini-flash-latest",
+    input="Write a haiku about Python",
+)
+```
+
+
+### Load a versioned prompt
+
+Fetch prompts from your Traccia prompt registry by name and deploy label. Compiling fills `{{variables}}` and stamps the active span with prompt identity.
+
+```python
+from traccia import init, observe, load_prompt, prefetch_prompts
+
+init(api_key="...", prompt_cache_ttl_s=60)
+prefetch_prompts(["support-reply"])  # optional warm-up
+
+@observe(as_type="llm")
+def reply(question: str) -> str:
+    prompt = load_prompt(
+        "support-reply",
+        label="production",
+        fallback={
+            "type": "chat",
+            "messages": [{"role": "system", "content": "You are a helpful assistant."}],
+        },
+    )
+    messages = prompt.compile(question=question)
+    # pass messages to your LLM client
+    return messages[-1]["content"]
+```
+
+Requires the [Traccia platform](https://app.traccia.ai): create a workspace API key under **Settings → API Keys**. Tracing and prompt fetch use the same key and default to `https://api.traccia.ai`. Pass an explicit `fallback` so agents can still run if a fetch fails. See [Prompts in the SDK](https://traccia.ai/docs/sdk/prompts).
+
+### Run an experiment
+
+`evaluate()` runs a task and scorers over a dataset. By default the run is saved as an experiment you can open in the app under **Evaluate → Experiments**, compare against other runs, and attach when you promote a prompt. Use the same workspace API key as tracing and `load_prompt`.
+
+```python
+from traccia import init, evaluate, load_prompt
+
+init(api_key="...")
+
+prompt = load_prompt("support-reply", label="production")
+
+def task(inp):
+    messages = prompt.compile(**inp)
+    return call_model(messages)
+
+result = evaluate(
+    "support-reply-v3",
+    data="support-golden",     # platform dataset name or UUID
+    task=task,
+    scorers=["exact_match"],   # builtins, platform names/ids, or callables
+    prompt="support-reply",    # labels the experiment cell with this prompt
+)
+print(result.summary())
+print(result.url)
+```
+
+- **Persist is on by default.** Set `persist=False` for a local-only loop (no experiment URL).
+- **Inline rows** work as `[{"input": {...}, "expected": "..."}]`. With persist on, Traccia still saves a full experiment (helper datasets named `sdk-eval/...` are hidden on **Evaluate → Datasets** unless you turn on **Show SDK-Created**).
+- **Builtins** run in-process: `exact_match`, `contains`, `json_valid`. Mix in platform scorers (LLM-as-judge, Jev Decision, code) by name or UUID. Pass `provider_keys=` for judges (`typesafe` for Jev). A Jev score keeps each question on the experiment.
+- **One throwing row does not abort the run.** That cell records `error`; other items still score. Configuration and API failures raise `EvaluateError`.
+- If the first task argument is named `row`, `item`, `example`, or `case`, Python passes the full row. Any other name (including `input`) receives only the input dict.
+
+See [Evaluate in the SDK](https://traccia.ai/docs/sdk/evaluate) and the walkthrough [Run Experiments From Code](https://traccia.ai/docs/guides/sdk-evaluate).
+
+### LangChain
+
+Create a callback handler and pass it to `config={"callbacks": [traccia_handler]}`. Install the optional extra: `pip install traccia[langchain]`.
+
+```python
+from traccia import init
+from traccia.integrations.langchain import CallbackHandler  # or TracciaCallbackHandler
+from langchain_openai import ChatOpenAI
+
+init()
+
+# Create Traccia handler (no args)
+traccia_handler = CallbackHandler()
+
+# Use with any LangChain runnable
+llm = ChatOpenAI(model="gpt-4o-mini")
+result = llm.invoke(
+    "Tell me a joke",
+    config={"callbacks": [traccia_handler]}
+)
+```
+
+Spans for LLM/chat model runs are created automatically with the same attributes as direct OpenAI instrumentation (model, prompt, usage, cost).
+
+**Note:** `pip install traccia[langchain]` installs traccia plus `langchain-core`; you need this extra to use the callback handler. If you already have `langchain-core` (e.g. from `langchain` or `langchain-openai`), base `pip install traccia` may be enough at runtime, but `traccia[langchain]` is the supported way to get a compatible dependency.
+
+### OpenAI Agents SDK
+
+Traccia **automatically** detects and instruments the OpenAI Agents SDK when installed. No extra code needed:
+
+```python
+from traccia import init
+from agents import Agent, Runner
+
+init()  # Automatically enables Agents SDK tracing
+
+agent = Agent(
+    name="Assistant",
+    instructions="You are a helpful assistant"
+)
+result = Runner.run_sync(agent, "Write a haiku about recursion")
+```
+
+**Configuration**: Auto-enabled by default when `openai-agents` is installed. To disable:
+
+```python
+init(openai_agents=False)  # Explicit parameter
+# OR set environment variable: TRACCIA_OPENAI_AGENTS=false
+# OR in traccia.toml under [instrumentation]: openai_agents = false
+```
+
+**Compatibility**: If you have `openai-agents` installed but don't use it (e.g., using LangChain or pure OpenAI instead), the integration is registered but never invoked—no overhead or extra spans.
+
+### CrewAI
+
+Traccia **automatically** instruments [CrewAI](https://docs.crewai.com/) when it is installed in your environment.
+
+```python
+from traccia import init
+from crewai import Agent, Task, Crew, Process
+
+init()  # Auto-enables CrewAI tracing when CrewAI is installed
+
+researcher = Agent(role="Research Analyst", goal="Research a topic", llm="gpt-4o-mini")
+task = Task(description="Research Shawn Michaels", agent=researcher)
+
+crew = Crew(agents=[researcher], tasks=[task], process=Process.sequential, verbose=True)
+result = crew.kickoff()
+```
+
+Traccia will create spans for the crew (`crewai.crew.kickoff`), each task (`crewai.task.*`), agents (`crewai.agent.*`), and underlying LLM calls, which nest under the existing OpenAI spans.
+
+**Configuration**: Auto-enabled by default when `crewai` is installed. To disable:
+
+```python
+init(crewai=False)  # Explicit parameter
+# OR set environment variable: TRACCIA_CREWAI=false
+# OR in traccia.toml under [instrumentation]: crewai = false
+```
+
+---
+
+## 🛡️ Guardrail Detection
+
+Traccia includes a passive guardrail detection engine that runs as a span processor — no runtime enforcement, no changes required to existing agent code. It inspects every span as it ends, classifies guardrail signals into structured findings, and writes results back onto spans so they appear in any configured exporter.
+
+### How it works
+
+Detection is automatic once `traccia.init()` is called. The processor runs three tiers against every span's attributes:
+
+| Tier | Source | Confidence | How |
+|------|--------|------------|-----|
+| A — Explicit | `explicit` | `high` | `@observe(as_type="guardrail")` or `guardrail_span()` |
+| B — Provider-native | `provider_native` | `high`/`medium` | LLM finish reason, stop reason, safety ratings |
+| C — Heuristic | `heuristic` | always `low` | Denial keywords in tool error messages |
+
+At the end of each trace (when the root span ends), the processor evaluates which guardrail categories should exist given the agent's observed capabilities (LLM calls, tool use, user-provided text) and reports which are missing.
+
+### Annotating guardrails explicitly (Tier A)
+
+**Option 1: `guardrail_span` context manager** — recommended for inline checks
+
+```python
+from traccia.guardrails import guardrail_span
+
+with guardrail_span("pii_check", category="pii", enforcement_mode="warn") as span:
+    result = run_pii_check(user_input)
+    span.set_attribute("guardrail.triggered", result.found_pii)
+```
+
+**Option 2: `@observe(as_type="guardrail")` decorator** — for function-level guardrails
+
+If your guardrail function returns a `bool`, `guardrail.triggered` is set automatically:
+
+```python
+from traccia import observe
+
+@observe(
+    as_type="guardrail",
+    attributes={
+        "guardrail.name": "prompt_injection_check",
+        "guardrail.category": "prompt_injection",
+        "guardrail.enforcement_mode": "block",
+    }
+)
+def check_injection(text: str) -> bool:
+    return any(kw in text.lower() for kw in INJECTION_KEYWORDS)
+    # True → triggered (blocked), False → not triggered
+```
+
+For non-bool returns, set `guardrail.triggered` manually on the current span.
+
+### Suppressing false positive missing-guardrail warnings
+
+Batch pipelines or internal-only agents often get flagged for `prompt_injection` / `input_validation` because they make LLM calls with `llm.prompt`. Suppress specific categories for a run:
+
+```python
+from traccia.guardrails import guardrail_span
+
+# Convenience: suppress_missing on guardrail_span
+with guardrail_span("root", category="unknown", suppress_missing=["prompt_injection", "input_validation"]):
+    run_batch_pipeline()
+
+# Or directly on any span
+from traccia.guardrails import ATTR_GUARDRAIL_SUPPRESS_MISSING
+span.set_attribute(ATTR_GUARDRAIL_SUPPRESS_MISSING, ["prompt_injection"])
+```
+
+### What appears in traces
+
+**Per span** (when a guardrail signal is found):
+- `guardrail.finding.count` — number of findings on this span
+- `guardrail.findings` — JSON array of `GuardrailFinding` objects
+
+**On the root span** (aggregated summary of the entire run):
+- `guardrail.summary` — full `GuardrailSummary` JSON
+- `guardrail.summary.coverage_confidence` — `"high"`, `"medium"`, or `"low"`
+- `guardrail.summary.missing_count` — number of expected-but-missing guardrail categories
+- `guardrail.summary.detected_categories` — list of detected category strings
+
+### Provider-native detection (Tier B, automatic)
+
+These signals are detected automatically from LLM span attributes — no annotation required:
+
+| Provider | Signal | Attribute |
+|----------|--------|-----------|
+| OpenAI | `finish_reason = "content_filter"` | `llm.finish_reason` |
+| Azure OpenAI | `finish_reason = "content_filtered"` | `llm.finish_reason` |
+| Google GenAI | `finish_reason = "SAFETY"` | `llm.finish_reason` |
+| Anthropic | `stop_reason = "content_filter"` | `llm.stop_reason` |
+| Anthropic | Policy violation error message | `error.message` + `llm.vendor=anthropic` |
+| Google/LangChain | `"blocked": true` or `"probability": "HIGH"` in safety ratings | `llm.safety_ratings` |
+
+### Disabling Tier C (heuristic) detection
+
+Tier A/B stay on. Turn off tool-error keyword heuristics if you do not want Tier C at all:
+
+```python
+init(guardrail_heuristics=False)
+```
+
+Or `TRACCIA_GUARDRAIL_HEURISTICS=false`, or in `traccia.toml`: `[instrumentation]` → `guardrail_heuristics = false`.
+
+### Hard limits — what cannot be captured
+
+- Guardrails running outside the traced process (API gateways, proxies, external validators) are invisible unless they write span attributes.
+- A guardrail that exists but never fires cannot be distinguished from a missing guardrail. Only explicit annotation proves presence.
+- Prompt injection detection requires an explicit span — the model's output alone cannot reliably indicate whether a check ran.
+- Capability inference (`handles_user_text`) is inferred from `llm.prompt` being present; batch pipelines and user-facing agents look the same. Use suppression to opt out.
+
+---
+
+## 📖 Configuration
+
+### Configuration Precedence
+
+Traccia merges configuration from multiple sources with the following priority (highest to lowest):
+
+1. **Explicit parameters** — `init(endpoint="...", agent_id="...")` or `start_tracing(...)`
+2. **Environment variables** — `TRACCIA_ENDPOINT`, `TRACCIA_AGENT_ID`, etc.
+3. **Config file** — `traccia.toml` (current directory) or `~/.traccia/config.toml`
+4. **Defaults** — Built-in SDK defaults
+
+**Example**: If you set `TRACCIA_ENDPOINT` in your environment *and* pass `endpoint=...` to `init()`, the explicit parameter wins.
+
+---
+
+### Configuration File
+
+Create a `traccia.toml` file in your project root:
+
+```bash
+traccia config init
+```
+
+This creates a template config file:
+
+```toml
+[tracing]
+# API key — required for the Traccia platform, not needed for local OTLP backends
+api_key = ""
+
+# Endpoint URL for OTLP trace ingestion (default: Traccia platform)
+# For local OTLP backends use e.g. endpoint = "http://localhost:4318/v1/traces"
+endpoint = "https://api.traccia.ai/v2/traces"
+
+sample_rate = 1.0           # 0.0 to 1.0
+auto_start_trace = true     # Auto-start root trace on init
+auto_trace_name = "root"    # Name for auto-started trace
+use_otlp = true             # Use OTLP exporter
+# service_name = "my-app"   # Optional service name
+# service_role has no env var — pass via init(service_role="orchestrator")
+
+[exporters]
+# Only enable ONE exporter at a time
+enable_console = false        # Print traces to console
+enable_file = false           # Write traces to file
+file_exporter_path = "traces.jsonl"
+reset_trace_file = false      # Reset file on initialization
+
+[instrumentation]
+enable_patching = true          # Auto-patch libraries (OpenAI, Anthropic, requests)
+enable_token_counting = true    # Count tokens for LLM calls
+enable_costs = true             # Calculate costs
+openai_agents = true            # Auto-enable OpenAI Agents SDK integration
+crewai = true                   # Auto-enable CrewAI integration
+guardrail_heuristics = true     # Tier C heuristic guardrail detection (tool error keywords)
+auto_instrument_tools = false   # Auto-instrument tool calls (experimental)
+max_tool_spans = 100            # Max tool spans to create
+max_span_depth = 10             # Max nested span depth
+
+[rate_limiting]
+# Optional: limit spans per second
+# max_spans_per_second = 100.0
+max_queue_size = 5000           # Max buffered spans
+max_block_ms = 100              # Max ms to block before dropping
+max_export_batch_size = 512     # Spans per export batch
+schedule_delay_millis = 5000    # Delay between batches
+
+[metrics]
+enable_metrics = true           # Enable OpenTelemetry metrics
+# metrics_endpoint = ""         # Defaults to {traces_base}/v2/metrics
+metrics_sample_rate = 1.0       # Metrics sampling rate (1.0 = 100%)
+
+[runtime]
+# Optional runtime metadata (agent identity: prefer init(agent_id=..., agent_name=..., env=...) or TRACCIA_* env)
+# session_id = ""
+# user_id = ""
+# tenant_id = ""
+# project_id = ""
+# agent_id = ""   # Single-agent: set in code or TRACCIA_AGENT_ID
+# agent_name = ""
+# env = ""        # e.g. production, staging, dev
+
+[logging]
+debug = false                   # Enable debug logging
+enable_span_logging = false     # Enable span-level logging
+
+[advanced]
+# attr_truncation_limit = 1000  # Max attribute value length
+```
+
+### Default endpoint
+
+If you do not set `endpoint` (in config, environment, or when calling `init()` / `start_tracing()`), the SDK uses the **Traccia platform** by default (`https://api.traccia.ai/v2/traces`). You can override it to send traces to your own OTLP-compatible backend.
+
+The default is defined in `traccia.config`: `DEFAULT_OTLP_TRACE_ENDPOINT`. The alias `DEFAULT_ENDPOINT` is kept for backward compatibility (same value).
+
+### OTLP Backend Compatibility
+
+Traccia is fully OTLP-compatible and works with:
+- **Grafana Tempo** - `http://tempo:4318/v1/traces`
+- **Jaeger** - `http://jaeger:4318/v1/traces`
+- **Zipkin** - Configure via OTLP endpoint
+- **SigNoz** - Self-hosted observability platform
+- **Traccia Platform** - `https://api.traccia.ai/v2/traces` (requires API key)
+
+### Environment Variables
+
+All config parameters can be set via environment variables with the `TRACCIA_` prefix:
+
+**Tracing**: `TRACCIA_API_KEY`, `TRACCIA_ENDPOINT`, `TRACCIA_SAMPLE_RATE`, `TRACCIA_AUTO_START_TRACE`, `TRACCIA_AUTO_TRACE_NAME`, `TRACCIA_USE_OTLP`, `TRACCIA_SERVICE_NAME`
+
+**Exporters**: `TRACCIA_ENABLE_CONSOLE`, `TRACCIA_ENABLE_FILE`, `TRACCIA_FILE_PATH`, `TRACCIA_RESET_TRACE_FILE`
+
+**Instrumentation**: `TRACCIA_ENABLE_PATCHING`, `TRACCIA_ENABLE_TOKEN_COUNTING`, `TRACCIA_ENABLE_COSTS`, `TRACCIA_AUTO_INSTRUMENT_TOOLS`, `TRACCIA_MAX_TOOL_SPANS`, `TRACCIA_MAX_SPAN_DEPTH`, `TRACCIA_OPENAI_AGENTS`, `TRACCIA_CREWAI`, `TRACCIA_GUARDRAIL_HEURISTICS`
+
+**Rate Limiting**: `TRACCIA_MAX_SPANS_PER_SECOND`, `TRACCIA_MAX_QUEUE_SIZE`, `TRACCIA_MAX_BLOCK_MS`, `TRACCIA_MAX_EXPORT_BATCH_SIZE`, `TRACCIA_SCHEDULE_DELAY_MILLIS`
+
+**Runtime**: `TRACCIA_SESSION_ID`, `TRACCIA_USER_ID`, `TRACCIA_TENANT_ID`, `TRACCIA_PROJECT_ID`, `TRACCIA_AGENT_ID`, `TRACCIA_AGENT_NAME`, `TRACCIA_ENV`
+
+Legacy alias: `TRACCIA_PROJECT` (maps to `project_id`)
+
+**Logging**: `TRACCIA_DEBUG`, `TRACCIA_ENABLE_SPAN_LOGGING`
+
+**Advanced**: `TRACCIA_ATTR_TRUNCATION_LIMIT`
+
+### Programmatic Configuration
+
+```python
+from traccia import init
+
+# Override config programmatically (including agent identity for single-agent services)
+init(
+    endpoint="http://tempo:4318/v1/traces",
+    sample_rate=0.5,
+    enable_costs=True,
+    max_spans_per_second=100.0,
+    agent_id="my-agent",
+    agent_name="My Agent",
+    env="production",
+)
+```
+
+### Multi-Agent Orchestrator Services
+
+For services that orchestrate many logical agents in one process, set a service role and scope per-run identity:
+
+```python
+from traccia import init, runtime_config
+
+init(
+    service_name="my-multi-agent-api",
+    service_role="orchestrator",
+    auto_start_trace=False,
+)
+
+with runtime_config.run_identity(agent_id="billing-agent", agent_name="Billing Agent", env="production"):
+    # run one logical agent task
+    ...
+```
+
+This prevents the host service from being registered as a synthetic agent in the Traccia platform.
+
+### Safe Parallel Runs in One Process
+
+If one **process** runs many agents concurrently (for example, an API server or orchestrator), use this pattern:
+
+- Call `init()` **once per process** (for example at startup), not per request.
+- Wrap each logical "run" in `runtime_config.run_identity(...)` to set agent id/name/env for that run.
+- Do **not** call `stop_tracing()` per request; use `force_flush()` to flush spans/metrics after a run without shutting down the provider.
+
+```python
+from traccia import init, span, force_flush, runtime_config
+
+init(service_name="multi-agent-service", auto_start_trace=False)
+
+def run_agent(agent_id: str, env: str, payload: dict):
+    # Scope identity to this run only
+    with runtime_config.run_identity(agent_id=agent_id, agent_name=agent_id, env=env):
+        with span("agent.run") as root:
+            root.set_attribute("agent.id", agent_id)
+            root.set_attribute("agent.run.mode", "api")
+            # ... your agent logic here ...
+
+    # Flush without tearing down the global provider
+    force_flush(5.0)
+```
+
+---
+
+## 🎯 Usage Guide
+
+### The `@observe` Decorator
+
+The `@observe` decorator is the primary way to instrument your code:
+
+```python
+from traccia import observe
+
+# Basic usage
+@observe()
+def process_data(data):
+    return transform(data)
+
+# Custom span name
+@observe(name="data_pipeline")
+def process_data(data):
+    return transform(data)
+
+# Add custom attributes
+@observe(attributes={"version": "2.0", "env": "prod"})
+def process_data(data):
+    return transform(data)
+
+# Specify span type
+@observe(as_type="llm")  # "span", "llm", "tool"
+def call_llm():
+    pass
+
+# Skip capturing specific arguments
+@observe(skip_args=["password", "secret"])
+def authenticate(username, password):
+    pass
+
+# Skip capturing result (for large returns)
+@observe(skip_result=True)
+def fetch_large_dataset():
+    return huge_data
+```
+
+**Available Parameters**:
+- `name` (str, optional): Custom span name (defaults to function name)
+- `attributes` (dict, optional): Initial span attributes
+- `as_type` (str): Span type - `"span"`, `"llm"`, `"tool"`, or `"guardrail"`
+- `skip_args` (list, optional): List of argument names to skip capturing
+- `skip_result` (bool): Skip capturing the return value
+
+### Async Functions
+
+`@observe` works seamlessly with async functions:
+
+```python
+@observe()
+async def async_task(x):
+    await asyncio.sleep(1)
+    return x * 2
+
+result = await async_task(5)
+```
+
+### Manual Span Creation
+
+For more control, create spans manually:
+
+```python
+from traccia import get_tracer, span
+
+# Using convenience function
+with span("operation_name") as s:
+    s.set_attribute("key", "value")
+    s.add_event("checkpoint_reached")
+    do_work()
+
+# Using tracer directly
+tracer = get_tracer("my_service")
+with tracer.start_as_current_span("operation") as s:
+    s.set_attribute("user_id", 123)
+    do_work()
+```
+
+### Error Handling
+
+Traccia automatically captures and records errors:
+
+```python
+@observe()
+def failing_function():
+    raise ValueError("Something went wrong")
+
+# Span will contain:
+# - error.type: "ValueError"
+# - error.message: "Something went wrong"
+# - error.stack_trace: (truncated stack trace)
+# - span status: ERROR
+```
+
+### Nested Spans
+
+Spans are automatically nested based on call hierarchy:
+
+```python
+@observe()
+def parent_operation():
+    child_operation()
+    return "done"
+
+@observe()
+def child_operation():
+    grandchild_operation()
+
+@observe()
+def grandchild_operation():
+    pass
+
+# Creates nested span hierarchy:
+# parent_operation
+#   └── child_operation
+#       └── grandchild_operation
+```
+
+---
+
+## 🛠️ CLI Tools
+
+Traccia includes a powerful CLI for configuration and diagnostics:
+
+### `traccia config init`
+
+Create a new `traccia.toml` configuration file:
+
+```bash
+traccia config init
+traccia config init --force  # Overwrite existing
+```
+
+### `traccia doctor`
+
+Validate configuration and diagnose issues:
+
+```bash
+traccia doctor
+
+# Output:
+# 🩺 Running Traccia configuration diagnostics...
+# 
+# ✅ Found config file: ./traccia.toml
+# ✅ Configuration is valid
+# 
+# 📊 Configuration summary:
+#    • API Key: ❌ Not set (optional)
+#    • Endpoint: https://api.traccia.ai/v2/traces
+#    • Sample Rate: 1.0
+#    • OTLP Exporter: ✅ Enabled
+```
+
+### `traccia check`
+
+Test connectivity to your exporter endpoint:
+
+```bash
+traccia check
+traccia check --endpoint http://tempo:4318/v1/traces
+```
+
+### `traccia pricing`
+
+Manage the local LLM pricing snapshot used for cost estimation:
+
+```bash
+# Show current pricing source, age, and model count
+traccia pricing status
+
+# Download the latest pricing — tries the Traccia platform first,
+# automatically falls back to the upstream pricing source if the platform
+# is unreachable (e.g. no Traccia account, network error)
+traccia pricing refresh
+
+# Force-fetch directly from the upstream pricing source (skips the platform)
+traccia pricing refresh --source upstream
+
+# Remove local cache — reverts to the bundled snapshot shipped with the SDK
+traccia pricing clear
+```
+
+---
+
+## Pricing
+
+### How cost estimation works
+
+Traccia computes estimated LLM costs locally at span-end time using a pricing
+table that resolves in the following order (highest precedence first):
+
+| Priority | Source | Set via |
+|---|---|---|
+| 1 | **Programmatic override** | `start_tracing(pricing_override={...})` |
+| 2 | **Env var override** | `TRACCIA_PRICING_OVERRIDE_JSON='{"model": {"prompt": x, "completion": y}}'` |
+| 3 | **Local cache** | `traccia pricing refresh` (stored in `~/.cache/traccia/pricing.json`) |
+| 4 | **Bundled snapshot** | Ships inside the SDK wheel (generated from LiteLLM at release time) |
+
+
+### Keeping prices fresh
+
+The bundled snapshot is generated at SDK release time from an upstream pricing
+database (2500+ models). It is refreshed automatically on every SDK release via
+the CI/CD pipeline — so `pip install --upgrade traccia` always brings a
+reasonably current snapshot.
+
+Between releases, you can pull the latest pricing without upgrading the SDK:
+
+```bash
+traccia pricing refresh    # platform → upstream fallback
+```
+
+The SDK warns you when the active snapshot is outdated:
+
+- **>7 days old:** `logger.info` — reminder to refresh
+- **>30 days old:** `logger.warning` — includes the exact command
+
+Every span also carries these attributes so the platform can always see how
+fresh the SDK's pricing was at emit time:
+
+| Attribute | Description |
+|---|---|
+| `llm.pricing.generated_at` | ISO timestamp of the pricing snapshot |
+| `llm.pricing.age_days` | Integer age in days at emit time |
+| `llm.pricing.source` | One of `bundled \| local_cache \| env \| override` |
+
+### Platform-side authoritative pricing
+
+If you use the Traccia platform, it maintains its own pricing sync (every 6 hours
+by default). Costs shown in the platform UI are recomputed using the platform's
+authoritative snapshot, which is always fresher than the SDK's bundled table:
+
+```
+org override > platform snapshot > bundled fallback
+```
+
+When the platform recomputes a cost, it writes `platform_cost_usd` alongside the
+original `llm.cost.usd` on each span — the SDK-reported value is **never
+overwritten**. In the span detail panel you will see both values clearly labeled:
+
+- **"Traccia recomputed cost"** — what the platform computed, with a tooltip
+  showing whether it came from an automatic pricing update or an org override.
+- **"SDK-side pricing context (at emit time)"** — the `llm.pricing.*` attributes,
+  collapsed by default, showing what prices the SDK saw when the span was emitted.
+
+Use `traccia pricing refresh` to sync the platform's snapshot into your SDK's local
+cache — then `llm.cost.usd` and `platform_cost_usd` will converge.
+
+#### When SDK and platform costs diverge
+
+You may occasionally see a muted "SDK reported $X.XX" line on the costs page.
+This happens when the two sources used different rates, for three legitimate reasons:
+
+| Reason | How to resolve |
+|---|---|
+| SDK's local cache or bundled snapshot is slightly older than the platform's current snapshot | Temporary — platform catches up within 6 hours, or click "Sync now" in Settings → Pricing. Running `traccia pricing refresh` also syncs the SDK. |
+| SDK-level override set via `pricing_override=...` or `TRACCIA_PRICING_OVERRIDE_JSON` | Intentional — the SDK override applies only to `llm.cost.usd` for that process. The platform uses its own snapshot + org overrides for `platform_cost_usd`. |
+| Org override set in Settings → Pricing on the platform | Intentional — org overrides apply to `platform_cost_usd` for all agents in the org. They do not change what SDK processes report. |
+
+The platform **never uses the SDK's local cache** as input to its own recomputation.
+Each agent process may have a different cached version, and the platform needs one
+consistent source for cross-agent reporting. SDK pricing affects what gets emitted
+in spans; platform pricing determines what gets shown in aggregate dashboards.
+
+### Override JSON schema
+
+All pricing overrides — whether set programmatically, via environment variable, or
+via the Traccia platform settings — use the same JSON shape:
+
+```json
+{
+  "<model-name>": {
+    "prompt": 0.005,
+    "completion": 0.015,
+    "cache_write": 0.001,
+    "cached_prompt": 0.0005
+  }
+}
+```
+
+All rates are **USD per 1,000 tokens**. `cache_write` and `cached_prompt` are
+optional (for models with prompt-caching pricing, e.g. Claude 3.5).
+
+### Overriding pricing
+
+Overrides always win over any other source:
+
+```python
+# Programmatic (per-process) — both span attributes and cost metrics will use this
+traccia.start_tracing(
+    pricing_override={
+        "gpt-4o": {"prompt": 0.005, "completion": 0.015},
+        "my-fine-tuned-model": {"prompt": 0.01, "completion": 0.02},
+    }
+)
+```
+
+```bash
+# Environment variable (persistent across restarts)
+export TRACCIA_PRICING_OVERRIDE_JSON='{"gpt-4o": {"prompt": 0.005, "completion": 0.015}}'
+```
+
+> **Deprecation notice:** `AGENT_DASHBOARD_PRICING_JSON` is accepted as a
+> back-compat alias for `TRACCIA_PRICING_OVERRIDE_JSON` but will be removed in
+> a future minor version. Rename the variable in your environment.
+
+**Platform overrides (org-level):** Org admins can set pricing overrides in
+**Settings → Pricing** on the Traccia platform. These apply to the
+platform-recomputed cost (`platform_cost_usd`) for all agents in the org. They
+do not change `llm.cost.usd` on existing spans retroactively unless you
+explicitly enable the "Also recompute past traces" option in the save dialog.
+
+---
+
+## 🎨 Advanced Features
+
+### Rate Limiting
+
+Protect your infrastructure with built-in rate limiting:
+
+```toml
+[rate_limiting]
+max_spans_per_second = 100.0  # Limit to 100 spans/sec
+max_queue_size = 5000         # Max buffered spans
+max_block_ms = 100             # Block up to 100ms before dropping
+```
+
+**Behavior**:
+1. Try to acquire capacity immediately
+2. If unavailable, block for up to `max_block_ms`
+3. If still unavailable, drop span and log warning
+
+When spans are dropped due to rate limiting, warnings are logged to help you monitor and adjust limits.
+
+### Sampling
+
+Control trace volume with sampling:
+
+```python
+# Sample 10% of traces
+init(sample_rate=0.1)
+
+# Sampling is applied at trace creation time
+# Traces are either fully included or fully excluded
+```
+
+### Token Counting & Cost Calculation
+
+Automatic for supported LLM providers (OpenAI, Anthropic):
+
+```python
+@observe(as_type="llm")
+def call_openai(prompt):
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return response.choices[0].message.content
+
+# Span automatically includes:
+# - llm.token.prompt_tokens
+# - llm.token.completion_tokens
+# - llm.token.total_tokens
+# - llm.cost.total (in USD)
+```
+
+### Metrics
+
+Traccia emits OTEL-compliant metrics for accurate cost and token tracking, independent of trace sampling.
+
+#### Why Metrics?
+
+With trace sampling (e.g., `sample_rate=0.1`), only 10% of traces are exported. Cost calculated from traces will be **10x underestimated**. Metrics solve this by recording data for **every** LLM call, regardless of sampling.
+
+#### Default Metrics
+
+Traccia automatically emits these metrics:
+
+| Metric | Type | Unit | Description |
+|--------|------|------|-------------|
+| `gen_ai.client.token.usage` | Histogram | `{token}` | Input/output tokens per call |
+| `gen_ai.client.operation.duration` | Histogram | `s` | LLM operation duration |
+| `gen_ai.client.operation.cost` | Histogram | `usd` | Cost per call (USD) |
+| `gen_ai.client.completions.exceptions` | Counter | `1` | Exception count |
+| `gen_ai.agent.runs` | Counter | `1` | Agent runs (CrewAI, OpenAI Agents) |
+| `gen_ai.agent.turns` | Counter | `1` | Agent turns |
+| `gen_ai.agent.execution_time` | Histogram | `s` | Agent execution time |
+
+**Attributes**: `gen_ai.system` (openai, anthropic), `gen_ai.request.model`, `gen_ai.agent.id`, `gen_ai.agent.name`
+
+#### Configuration
+
+```python
+from traccia import init
+
+init(
+    enable_metrics=True,  # Default: True
+    metrics_endpoint="https://your-backend.com/v2/metrics",  
+    metrics_sample_rate=1.0,  # Default: 1.0 (100%)
+)
+```
+
+Or via `traccia.toml`:
+
+```toml
+[metrics]
+enable_metrics = true
+metrics_endpoint = "https://your-backend.com/v2/metrics"
+metrics_sample_rate = 1.0
+```
+
+Or via environment variables:
+
+```bash
+export TRACCIA_ENABLE_METRICS=true
+export TRACCIA_METRICS_ENDPOINT=https://your-backend.com/v2/metrics
+export TRACCIA_METRICS_SAMPLE_RATE=1.0
+```
+
+#### Custom Metrics
+
+Record your own metrics:
+
+```python
+from traccia.metrics import record_counter, record_histogram
+
+# Record a counter
+record_counter("my_custom_events", 1, {"event_type": "user_action"})
+
+# Record a histogram
+record_histogram("my_custom_latency", 0.123, {"service": "api"}, unit="s")
+```
+
+#### Agent Metrics vs. Plain LLM Calls
+
+Agent-level metrics (such as `gen_ai.agent.runs` and `gen_ai.agent.execution_time`) are only emitted when Traccia can
+see a real **agent lifecycle** (for example, CrewAI crews or OpenAI Agents SDK runs). For plain OpenAI/Anthropic calls
+and most simple LangChain usages, you will still get full LLM metrics (`gen_ai.client.*`), but no agent metrics unless
+you build an explicit agent abstraction on top.
+
+---
+
+## 🔧 Troubleshooting
+
+### Enable Debug Logging
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Or via config
+init(debug=True)
+
+# Or via env var
+# TRACCIA_DEBUG=1 python your_script.py
+```
+
+### Common Issues
+
+#### **Traces not appearing**
+
+1. Check connectivity: `traccia check`
+2. Validate config: `traccia doctor`
+3. Enable debug logging
+4. Verify endpoint is correct and accessible
+
+#### **High memory usage**
+
+- Reduce `max_queue_size` in rate limiting config
+- Lower `sample_rate` to reduce volume
+- Enable rate limiting with `max_spans_per_second`
+
+#### **Spans being dropped**
+
+- Check rate limiter logs for warnings
+- Increase `max_spans_per_second` if set
+- Increase `max_queue_size` if spans are queued
+- Check `traccia doctor` output
+
+---
+
+## 📚 API Reference
+
+### Core Functions
+
+#### `init(**kwargs) -> TracerProvider`
+
+Initialize the Traccia SDK. All parameters are optional; configuration is merged from `traccia.toml` → env vars → explicit parameters (highest wins).
+
+**Parameters**:
+
+*Tracing*
+- `endpoint` (str): OTLP endpoint URL (default: `https://api.traccia.ai/v2/traces`)
+- `api_key` (str): API key for the Traccia platform
+- `sample_rate` (float): Sampling rate 0.0–1.0 (default: 1.0)
+- `auto_start_trace` (bool): Auto-start a root trace on init (default: True)
+- `auto_trace_name` (str): Name for the auto-started trace (default: `"root"`)
+- `use_otlp` (bool): Use OTLP exporter (default: True)
+- `service_name` (str): Service name (auto-detected if not set)
+- `service_role` (str): `"orchestrator"` to prevent this service being registered as an agent
+- `config_file` (str): Path to a custom `traccia.toml`
+
+*Exporters*
+- `enable_console_exporter` (bool): Print spans to stdout (default: False)
+- `enable_file_exporter` (bool): Write spans to file (default: False)
+- `file_exporter_path` (str): Path for file exporter (default: `"traces.jsonl"`)
+- `reset_trace_file` (bool): Clear file on init (default: False)
+
+*Instrumentation*
+- `enable_patching` (bool): Auto-patch OpenAI, Anthropic, requests (default: True)
+- `enable_token_counting` (bool): Count tokens (default: True)
+- `enable_costs` (bool): Calculate costs (default: True)
+- `pricing_override` (dict): Per-model pricing override — always wins over all other sources. See [Pricing](#pricing) section below.
+- `openai_agents` (bool): Auto-enable OpenAI Agents SDK integration (default: True)
+- `crewai` (bool): Auto-enable CrewAI integration (default: True)
+- `guardrail_heuristics` (bool): Enable Tier C heuristic guardrail detection (default: True)
+- `auto_instrument_tools` (bool): Experimental tool auto-instrumentation (default: False)
+- `max_tool_spans` (int): Max tool spans per trace (default: 100)
+- `max_span_depth` (int): Max nested span depth (default: 10)
+
+*Agent identity (single-agent services)*
+- `agent_id` (str): Logical agent identifier
+- `agent_name` (str): Human-readable agent name
+- `env` (str): Deployment environment, e.g. `"production"`, `"staging"`
+
+*Runtime metadata*
+- `session_id` (str): Session identifier
+- `user_id` (str): User identifier
+- `tenant_id` (str): Tenant / org identifier
+- `project_id` (str): Project identifier
+
+*Metrics*
+- `enable_metrics` (bool): Emit OTEL metrics (default: True)
+- `metrics_endpoint` (str): Metrics endpoint (derived from tracing endpoint if not set)
+- `metrics_sample_rate` (float): Metrics sampling rate (default: 1.0)
+
+*Rate limiting*
+- `max_spans_per_second` (float): Rate limit spans/sec (default: None = unlimited)
+- `max_block_ms` (int): Max ms to block before dropping a span (default: 100)
+- `max_queue_size` (int): Max buffered spans (default: 5000)
+- `max_export_batch_size` (int): Spans per export batch (default: 512)
+- `schedule_delay_millis` (int): Batch export interval ms (default: 5000)
+
+*Misc*
+- `debug` (bool): Enable debug logging (default: False)
+- `attr_truncation_limit` (int): Max attribute value length (default: None)
+
+**Returns**: TracerProvider instance
+
+#### `load_prompt` / `prefetch_prompts`
+
+Fetch a versioned prompt from Traccia (cache + SWR + optional fallback). See [Prompts in the SDK](https://traccia.ai/docs/sdk/prompts).
+
+```python
+from traccia import load_prompt, prefetch_prompts
+
+prefetch_prompts(["support-reply"])
+prompt = load_prompt("support-reply", label="production", fallback={...})
+messages = prompt.compile(question=q)
+```
+
+#### `evaluate(name, *, data, task, scorers=None, prompt=None, max_concurrency=10, persist=True, provider_keys=None, progress=True, ...) -> EvaluateResult`
+
+Run a task and scorers over a platform dataset or inline rows. Persists an experiment by default. See [Evaluate in the SDK](https://traccia.ai/docs/sdk/evaluate).
+
+```python
+from traccia import evaluate
+
+result = evaluate(
+    "support-reply-v3",
+    data="support-golden",
+    task=task,
+    scorers=["exact_match", "contains"],
+    prompt="support-reply",
+    persist=True,
+)
+print(result.summary())
+print(result.url)
+```
+
+**Parameters**:
+- `name` (str): Experiment name (required)
+- `data`: Dataset name/UUID, or a list of `{input, expected, metadata}` dicts (`expected_output` is an alias of `expected`)
+- `task`: Callable mapping each row to an output. First arg named `row` / `item` / `example` / `case` receives the full row; otherwise the input dict
+- `scorers`: Builtin ids (`exact_match`, `contains`, `json_valid`), platform names/ids, and/or callables `(input=, output=, expected=, metadata=)`
+- `prompt` (str, optional): Prompt name. Attaches version ids when persisting and labels the cell (otherwise `Task`)
+- `max_concurrency` (int): Parallel item workers (default 10)
+- `persist` (bool): Create an experiment (default True). Inline + persist creates `sdk-eval/<name>/<id>`
+- `provider_keys` (dict, optional): BYO keys for platform LLM-as-judge (`openai`, `anthropic`, `gemini`, `groq`) and `typesafe` for Jev Decision. A Jev score keeps each question, so the experiment shows one chip per question.
+- `progress` (bool): Print `N/M` to stderr (default True)
+
+**Returns**: `EvaluateResult` with `rows`, `aggregates`, `summary()`, `url`, `experiment_id`, `dataset_id`, `errors`, `persist_error`. Empty data, bad config, and dataset/scorer API failures raise `EvaluateError`.
+
+#### `stop_tracing(flush_timeout: float = 1.0) -> None`
+
+Stop tracing and flush pending spans.
+
+**Parameters**:
+- `flush_timeout` (float): Max seconds to wait for flush
+
+#### `get_tracer(name: str = "default") -> Tracer`
+
+Get a tracer instance.
+
+**Parameters**:
+- `name` (str): Tracer name (typically module/service name)
+
+**Returns**: Tracer instance
+
+#### `span(name: str, attributes: dict = None) -> Span`
+
+Create a span context manager.
+
+**Parameters**:
+- `name` (str): Span name
+- `attributes` (dict, optional): Initial attributes
+
+**Returns**: Span context manager
+
+### Decorator
+
+#### `@observe(name=None, *, attributes=None, tags=None, as_type="span", skip_args=None, skip_result=False)`
+
+Decorate a function to create spans automatically.
+
+**Parameters**:
+- `name` (str, optional): Span name (default: function name)
+- `attributes` (dict, optional): Initial attributes
+- `tags` (list[str], optional): User-defined identifiers for the observed method
+- `as_type` (str): Span type (`"span"`, `"llm"`, `"tool"`, `"guardrail"`)
+- `skip_args` (list, optional): Arguments to skip capturing
+- `skip_result` (bool): Skip capturing return value
+
+### Configuration
+
+#### `load_config(config_file=None, overrides=None) -> TracciaConfig`
+
+Load and validate configuration.
+
+**Parameters**:
+- `config_file` (str, optional): Path to config file
+- `overrides` (dict, optional): Override values
+
+**Returns**: Validated TracciaConfig instance
+
+**Raises**: `ConfigError` if invalid
+
+#### `validate_config(config_file=None, overrides=None) -> tuple[bool, str, TracciaConfig | None]`
+
+Validate configuration without loading.
+
+**Returns**: Tuple of (is_valid, message, config_or_none)
+
+---
+
+## 🏗️ Architecture
+
+### Data Flow
+
+```
+Application Code (@observe)
+        ↓
+   Span Creation
+        ↓
+   Processors (token counting, cost, enrichment)
+        ↓
+   Rate Limiter (optional)
+        ↓
+   Batch Processor (buffering)
+        ↓
+   Exporter (OTLP/Console/File)
+        ↓
+   Backend (Grafana Tempo / Jaeger / Zipkin / etc.)
+```
+
+### Instrumentation vs Integrations
+
+- **`traccia.instrumentation.*`**: Infrastructure and vendor instrumentation.
+  - HTTP client/server helpers (including FastAPI middleware).
+  - Vendor SDK hooks and monkey patching (e.g., OpenAI, Anthropic, Gemini, `requests`).
+  - Decorators and utilities used for auto-instrumenting arbitrary functions.
+
+- **`traccia.integrations.*`**: AI/agent framework integrations.
+  - Adapters that plug into higher-level frameworks via their official extension points (e.g., LangChain callbacks).
+  - Work at the level of chains, tools, agents, and workflows rather than raw HTTP or SDK calls.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Whether it's bug fixes, new features, documentation improvements, or examples - we appreciate your help.
+
+### How to Contribute
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and add tests
+4. **Run tests**: `pytest traccia/tests/`
+5. **Lint your code**: `ruff check traccia/`
+6. **Commit**: `git commit -m "Add amazing feature"`
+7. **Push**: `git push origin feature/amazing-feature`
+8. **Open a Pull Request**
+
+### Development Setup
+
+```bash
+# Clone the repository (Python SDK)
+git clone https://github.com/traccia-ai/traccia-py.git
+cd traccia-py
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in editable mode with dev dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest traccia/tests/ -v
+
+# Run with coverage
+pytest traccia/tests/ --cov=traccia --cov-report=html
+```
+
+### Code Style
+
+- Follow PEP 8
+- Use type hints where appropriate
+- Add docstrings for public APIs
+- Write tests for new features
+- Keep PRs focused and atomic
+
+### Areas We'd Love Help With
+
+- **Integrations**: Add support for more LLM providers (Cohere, AI21, local models)
+- **Backends**: Test and document setup with different OTLP backends
+- **Examples**: Real-world examples of agent instrumentation
+- **Documentation**: Tutorials, guides, video walkthroughs
+- **Performance**: Optimize hot paths, reduce overhead
+- **Testing**: Improve test coverage, add integration tests
+
+---
+
+## Governance
+
+Traccia adds **GovernanceEvent** attributes on spans automatically (event type, integrity hash, timestamp source). No EU-specific setup is required for default tracing. **Human review** (approve/reject, audit trail) is done in the **Governance Hub** on the platform — not in the SDK.
+
+### `@observe` vs `@govern`
+
+| Decorator | Purpose | Requires Traccia platform |
+|-----------|---------|---------------------------|
+| `@observe` | Observability only — creates trace spans | No (works with any OTLP backend) |
+| `@govern` | Observability **plus** runtime policy enforcement | **Yes** |
+
+`@govern` does two things:
+
+1. Checks agent status before the function body (can warn or stop the **next** run for after-ingest policies).
+2. Turns on a per-call check for **this** LLM or tool call (Spend Cap, Model Boundary, Loop Cap). You do not call `check_policy()` yourself when using an instrumented LLM client and `@observe(as_type="tool")`.
+
+Tracing-only or self-hosted users should use `@observe`.
+
+```python
+from openai import OpenAI
+from traccia import init, observe, govern, AgentBlockedError
+
+init(api_key="...", endpoint="https://api.traccia.ai/v2/traces", agent_id="my-agent")
+client = OpenAI()
+
+@observe(name="lookup_order", as_type="tool")
+def lookup_order(order_id: str) -> dict:
+    return {"order_id": order_id, "status": "shipped"}
+
+@govern(fail_open=False, name="run_agent")
+def run_agent(prompt: str) -> str:
+    lookup_order("ORD-1")
+    resp = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.choices[0].message.content or ""
+
+try:
+    run_agent("hello")
+except AgentBlockedError as exc:
+    print(exc.reasons, exc.decision_id, exc.remaining_budget_usd)
+```
+
+Identity comes from `init(agent_id=...)` (or `TRACCIA_AGENT_ID`). Pass `agent_id` on `@govern` only to override in a multi-agent process. `fail_open=True` (default) lets the agent continue if Traccia is unreachable. On Block deny, `@govern` raises `AgentBlockedError`. Observe and Warn still let the call proceed and record a match. Refund Guard and Purchase Guard can hold a middle amount: `@govern` raises `ApprovalPending`, which is not `AgentBlockedError`. Catch it, do not run the tool, and do not retry the check. `pending_tool_result()` is a normal tool result when a framework retries raised errors.
+
+For a custom tool that is **not** wrapped with `@observe(as_type="tool")`, call `check_policy(action={"type": "tool_call", "name": "refund"}, context={"input": {"amount": amount}})` yourself.
+
+Policies in the app: [Policies](https://traccia.ai/docs/platform/policies). SDK guide: [Governance in the SDK](https://traccia.ai/docs/sdk/governance).
+
+**Advanced (optional):** override endpoints or cache TTL in `traccia.toml`:
+
+```toml
+[governance]
+status_check_endpoint = "https://custom.example/agents/{agent_id}/status"
+post_block_endpoint = "https://custom.example/agents/{agent_id}/blocks"
+status_cache_ttl_seconds = 120
+```
+
+Or pass `status_check_endpoint`, `post_block_endpoint`, or `status_cache_ttl_seconds` to `init()`.
+
+### Human review (platform only)
+
+Queue and decide reviews in **Governance Hub → Reviews** using a **trace ID**. The SDK does not create review queue rows. Use the dashboard when a person must sign off before you rely on an automated output.
+
+### Art. 50 transparency — `disclosure()`
+
+When your product **shows** the user they are interacting with AI (banner, label, chat notice) or synthetic content, call `disclosure()` on the active span so exported traces carry audit evidence (`governance.transparency.disclosed`, `governance.event_type=transparency`). It does **not** render UI.
+
+```python
+from traccia.governance import disclosure
+
+disclosure(channel="ui", disclosed_to_user=True)  # after user saw your AI notice
+```
+
+### EU risk tier on spans
+
+`init(compliance={"frameworks": ["eu_ai_act"], "risk_tier": "high"})` stamps `eu_ai_act.risk_tier` on every span from that process. Static SDK config — not read from the dashboard registry. Link registry + agent in the UI for exports; set `risk_tier` in `init()` if you need it on every span.
+
+### PII / PHI redaction
+
+Best-effort regex masking (email, phone, SSN-like, MRN/NPI/DOB heuristics). **Not** a guarantee that all PHI is removed — not ML/medical NER.
+
+```python
+from opentelemetry import trace
+from traccia import init, observe
+from traccia.processors.redaction_processor import redact_string, apply_redaction_to_span
+
+# Automatic: redact sensitive attribute keys on every span before export
+init(redact_pii=True)  # or TRACCIA_REDACT_PII=1
+# When compliance includes hipaa, redact_pii defaults on unless explicitly set False
+init(compliance={"frameworks": ["hipaa"]}, redact_pii=True)
+
+@observe()
+def agent_step(user_message: str) -> str:
+    span = trace.get_current_span()
+    span.set_attribute("gen_ai.prompt", redact_string(user_message))  # manual
+    out = run_llm(user_message)
+    apply_redaction_to_span(span)  # or rely on init(redact_pii=True)
+    return out
+```
+
+- **Platform**: [Governance Hub](https://traccia.ai/docs/platform/governance) — registry, reviews, incidents, evidence exports.
+- **EU AI Act guide**: [docs/compliance/eu-ai-act](https://traccia.ai/docs/compliance/eu-ai-act) (opt-in module; decision support only).
+- **HIPAA guide**: [docs/compliance/hipaa](https://traccia.ai/docs/compliance/hipaa) (opt-in module; soft PHI warnings; no signed BAA yet — contact support@traccia.ai).
+- **Trust Center**: [trust-center](https://traccia.ai/trust-center) (HIPAA shared responsibility).
+
+---
+
+## 📄 License
+
+Apache License 2.0 - see [LICENSE](LICENSE) for full terms and conditions.
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- [OpenTelemetry](https://opentelemetry.io/) - Vendor-neutral observability framework
+- [Pydantic](https://pydantic.dev/) - Data validation
+- [tiktoken](https://github.com/openai/tiktoken) - Token counting
+
+Inspired by observability tools in the ecosystem and designed to work seamlessly with the OTLP standard.
+
+---
+
+## 📞 Support & Community
+
+- **Issues**: [GitHub Issues](https://github.com/traccia-ai/traccia-py/issues) - Report bugs or request features
+- **Discussions**: [GitHub Discussions](https://github.com/traccia-ai/traccia-py/discussions) - Ask questions, share ideas
+
+---
+
+**Made with ❤️ for the AI agent community**

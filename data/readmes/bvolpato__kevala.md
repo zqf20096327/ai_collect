@@ -1,0 +1,512 @@
+<h1 align="center">kevala</h1>
+
+<p align="center"><b>Ask questions about text with Laya, Kev, H2O-Lightning, Clef-flash, SemIf, and Gemma 4 running on the user's own hardware.</b></p>
+
+<p align="center">
+  <a href="https://bvolpato.github.io/kevala/#/tetris"><img src="docs/tetris.gif" alt="Model-guided Tetris running in the browser: game rules shortlist promising landings, a decision model scores them, and the piece follows the chosen path" width="760"></a>
+</p>
+
+<p align="center">
+  <a href="https://bvolpato.github.io/kevala/">Live site</a> ·
+  <a href="https://bvolpato.github.io/kevala/#/playground">Playground</a> ·
+  <a href="https://bvolpato.github.io/kevala/#/tetris">Tetris</a> ·
+  <a href="https://www.npmjs.com/package/kevala">npm</a> ·
+  <a href="examples/">Examples</a> ·
+  <a href="docs/architecture.md">How it works</a>
+</p>
+
+kevala runs [Laya](https://huggingface.co/convaiinnovations/laya),
+[Kev](https://github.com/jaredpalmer/kev) v1.0, [H2O-Lightning-4B](https://huggingface.co/h2oai/h2o-lightning-4b),
+[Cloudflare Clef-flash](https://huggingface.co/Cloudflare/clef-flash), frozen Qwen3.5 models, and
+[Gemma 4](docs/gemma4.md) with [SemIf option scoring](docs/models.md#how-semif-scoring-works)
+inside the browser.
+You give it text or JSON and typed questions (`noul` for yes/no, `choice`, `score`), and it scores
+the options without generating an answer token by token. There is no model server, no API key,
+and no data leaving the tab.
+Gemma 4 E2B also accepts images when you load its compatible vision companion on WebGPU.
+
+The engine is Rust with zero dependencies, compiled to WebAssembly, plus WebGPU kernels written for
+these models. The browser runtime is a few plain ES modules. Existing Laya, SemIf, and Gemma packs
+download from [Hugging Face](https://huggingface.co/bvolpato/kevala-packs) and are cached in the
+browser. Kev v1.0 and the new H2O and Clef entries default to BF16 conversion; Q8 is an explicit
+smaller-pack option. Kev-0.8B can convert in the browser. Larger models need a native converted
+pack, and the new packs are not published yet.
+
+## Quick start
+
+From a CDN, in any page:
+
+```html
+<script type="module">
+  import { Kevala } from "https://cdn.jsdelivr.net/npm/kevala@latest/js/src/index.js";
+
+  const kevala = await Kevala.load({ model: "laya", onProgress: console.log });
+  const r = await kevala.decide("We were billed twice. Refund the duplicate today or we cancel.", {
+    team: { type: "choice", instructions: "Which team should handle this?",
+            criteria: { billing: "invoices, payments, refunds", technical: "bugs, outages", other: "anything else" } },
+    churn: { type: "noul", instructions: "Does the customer threaten to leave?" },
+  });
+  console.log(r.answers.team.choice, r.answers.churn.noul); // "billing" 0.87
+</script>
+```
+
+The current npm release contains Laya and Kev-0.8B. To load the other families
+before the next release, import the runtime that the website serves:
+
+```js
+import { Kevala } from "https://bvolpato.github.io/kevala/js/src/index.js";
+```
+
+Or install from the npm registry with pnpm, with any bundler (Vite, webpack, esbuild) or none:
+
+```sh
+pnpm add kevala
+```
+
+```js
+import { Kevala } from "kevala";
+```
+
+Building with a coding agent? The site has [a prompt to paste into it](https://bvolpato.github.io/kevala/#/home/agent),
+and [`skills/kevala/SKILL.md`](skills/kevala/SKILL.md) is the same guide as an agent skill.
+
+The first visit downloads a published pack or the pinned source checkpoint, depending on the model.
+Browser storage
+avoids that download on later visits; loading still includes reading the weights, allocating memory,
+and warming up the backend. Time depends on the model and hardware. It works from any origin and
+needs no special headers. For Laya or Kev-0.8B, pass `from: "checkpoint"` to convert the original
+weights in the browser. To serve weights yourself, pass the URL of a `.kevala` file. See
+[Packs](docs/packs.md) for both, and for how the packs are made and published.
+
+## Models
+
+| Family | Model name | Decision readout | Output pack size |
+|---|---|---|---:|
+| Laya | `laya` | Marker scorer and act head | 479 MB Q8 |
+| Kev v1.0 | `kev-0.8b` | Trained pointer head | 1.51 GB BF16; 857 MB Q8 |
+| Kev v1.0 | `kev-4b` | Trained pointer head | 8.43 GB BF16; 4.76 GB Q8 |
+| Kev v1.0 | `kev-9b` | Trained pointer head | 15.90 GB BF16; 8.96 GB Q8 |
+| H2O-Lightning | `h2o-lightning-4b` | Calibrated option-label scores | 8.43 GB BF16; 4.75 GB Q8 |
+| Cloudflare | `clef-flash` | Joint decision head | About 18.41 GB BF16; 10.59 GB Q8 |
+| SemIf | `semif-qwen3.5-0.8b` | Native option-label logits | 855 MB |
+| SemIf | `semif-qwen3.5-2b` | Native option-label logits | 2.13 GB |
+| SemIf | `semif-qwen3.5-4b` | Native option-label logits | 4.75 GB |
+| Gemma 4 | `gemma-4-e2b` | Native option-label logits | 5.22 GB |
+| Gemma 4 | `gemma-4-e4b` | Native option-label logits | 8.41 GB |
+
+Clef sizes are estimates; the other BF16/Q8 output sizes come from exact local conversions or published pack manifests.
+The local conversions also write SHA-256 manifests; the new packs are not published yet. The refreshed Kev, H2O, and Clef
+packs default to BF16. Pass `precision: "q8"` to opt into quantization and a smaller download;
+probabilities can change. H2O and Clef are text-only in this runtime, even though their upstream
+materials include image capabilities.
+
+Laya uses a ModernBERT-large encoder. Kev v1.0 uses Qwen3.5 base models with its merged LoRA adapter
+and trained pointer head. Its response uses four decimal places and a revised confidence calculation.
+H2O-Lightning uses its own decision prompt, label readout, and calibration.
+Clef-flash uses a separate joint decision head. SemIf applies direct option scoring to frozen Qwen3.5 instruction
+models. Gemma 4 uses Google's frozen E2B and E4B instruction weights with the same direct option
+readout; these are dense text-only packs with Gemma's per-layer embeddings, not MoE models. See
+[the model guide](docs/models.md) and [Gemma 4 notes](docs/gemma4.md) for their differences and
+backend limits.
+
+Published Laya, SemIf, and Gemma 4 packs load directly. Kev-0.8B converts its pinned checkpoint
+in the browser; Kev-4B/9B, H2O-Lightning, and Clef-flash need native conversion until their packs are
+published. You can load a converted pack by URL through the runtime API. In the 4B website preview,
+Kev-4B and H2O-Lightning expose a required URL field when no matching local pack is available;
+Kev-9B and Clef-flash are outside the picker cap.
+
+The website preview picker is limited to 4B and smaller: Laya, Kev-0.8B/4B, H2O-Lightning-4B,
+and SemIf 0.8B/2B/4B, with Gemma 4 E2B as an explicit exception for the image demo.
+Kev-9B, Clef-flash, and Gemma 4 E4B remain in the runtime catalog but are not
+shown in this picker while the preview cap is active. Use the JS API with a published pack by name
+or a converted pack URL for those models. Selecting a family starts at its smallest size; changing
+sizes waits for **Load** before downloading.
+
+When running the development server, the picker automatically discovers validated packs in `tmp/`
+and shows only the model and precision variants that exist. Add `?pack=local` to make loading
+local-only; an unavailable local variant stays disabled.
+
+Sizes use decimal MB/GB and describe the pack, not total runtime memory. Each local conversion
+writes a SHA-256 manifest alongside its pack.
+The Gemma packs are exactly
+5,217,421,952 bytes (E2B) and 8,407,043,136 bytes (E4B). Load these as pre-converted
+packs published on Hugging Face at a pinned revision. Browser checkpoint conversion is available
+only for Laya and Kev-0.8B. Gemma 4 requires WebGPU in the browser or the
+native 64-bit CPU CLI for text decisions; its maximum input is 4096 tokens.
+E2B image decisions require the separate vision companion and WebGPU.
+
+Families are pluggable: see [Adding a model family](docs/adding-a-model.md).
+
+## Decision accuracy and latency
+
+<!-- decision-benchmark:start -->
+
+Snapshot (UTC): **2026-09-23 to 2026-09-24**, Apple M4 Max (40 GPU cores), 64 GiB unified memory, macOS 26.4.1, Chrome 151.0.7922.34 (hidden).
+Text-only choice requests; Q8 packs; batch size one; inference caching and GPU profiling disabled. Downloads, loading, tuning, and warmup are excluded.
+
+| Model | Kevala accuracy | SemIf authored accuracy | SemIf perturbation accuracy | Mean decide ms | p95 ms | Pass mean range ms |
+|---|---:|---:|---:|---:|---:|---:|
+| `laya` | 75.0% (243/324) | 62.3% (807/1296) | 69.4% (675/972) | 23.8 | 48.8 | 19.2-30.3 |
+| `kev-0.8b` | 89.8% (291/324) | 71.1% (921/1296) | 70.7% (687/972) | 30.4 | 62.2 | 25.8-32.7 |
+| `kev-4b` | 91.7% (297/324) | 89.4% (1158/1296) | 90.1% (876/972) | 183.7 | 324.1 | 144.6-258.9 |
+| `kev-9b` | 96.3% (312/324) | 91.9% (1191/1296) | 96.3% (936/972) | 360.9 | 669.9 | 344.1-372.6 |
+| `semif-qwen3.5-0.8b` | 60.2% (195/324) | 50.9% (660/1296) | 41.7% (405/972) | 56.1 | 83.2 | 53.6-58.3 |
+| `semif-qwen3.5-2b` | 85.2% (276/324) | 63.4% (822/1296) | 55.2% (537/972) | 106.6 | 148.0 | 104.1-109.9 |
+| `semif-qwen3.5-4b` | 100.0% (324/324) | 84.0% (1089/1296) | 74.7% (726/972) | 363.0 | 575.0 | 353.4-381.5 |
+| `gemma-4-e2b` | 94.4% (306/324) | 78.2% (1014/1296) | 71.3% (693/972) | 61.0 | 88.6 | 60.2-62.5 |
+| `gemma-4-e4b` | 100.0% (324/324) | 89.1% (1155/1296) | 90.1% (876/972) | 251.0 | 524.2 | 237.0-258.3 |
+
+Mean latency is the arithmetic mean of all 2592 awaited `decide()` calls per model across 3 full passes, including tokenization and GPU readback, not summed kernel time. Failures count against accuracy; coverage and source-group confidence intervals are in [the full report](benchmarks/results/decisions-m4-max-2026-09-23/report.md).
+Pass mean ranges show repeat variability, not confidence intervals. An interactive workstation can have substantial timing noise; this is not a dedicated-GPU performance limit.
+
+[Datasets and hashes](benchmarks/decisions/manifest.json): 36 Kevala cases, 144 SemIf authored variants, and 108 related perturbations, each in three option orders. There are only 72 independent source groups; rotations and perturbations are not independent examples. The suites stay separate instead of inflating one headline score. Labels have not been independently human adjudicated, and training overlap has not been audited; this is a synthetic regression benchmark, not general model accuracy.
+
+**Build caveat:** this build contains uncommitted changes; the served JS/WASM fingerprint is recorded with every result.
+
+Runtime build revision: c71b14a7a4a5455edf33fee289c2cfd339c6fe55. [Raw decisions and timings](benchmarks/results/decisions-m4-max-2026-09-23/).
+
+<!-- decision-benchmark:end -->
+
+The table is generated from validated raw outputs, not edited by hand. See
+[the benchmark protocol and reproduction commands](BENCHMARK.md).
+
+The table includes the local Gemma GELU repair. It predates Bruv and the additional
+[Qwen kernel safety fixes](docs/kernel-safety.md). Those changes are not measured here.
+
+## Speed
+
+For GPU measurements across the seven Laya, Kev, and SemIf models on Firefox/Linux, see
+[GPU matrix tuning](docs/semif-matmul.md). Gemma 4's E2B and E4B checks are in the
+[Gemma 4 notes](docs/gemma4.md). Performance depends on the model, request, and hardware.
+
+The [September 25 M4 Max kernel sweep](docs/m4-max-kernel-performance.md) compares
+all registered kernels, records rejected experiments, and validates the retained optimizations.
+The repeated 140-token Laya comparison reduces mean awaited latency from 24.78 to
+20.74 ms (16.3%). The report includes measured latencies for all 11 models registered at the time.
+
+On an Apple M4 Max, with WebGPU in Chrome:
+
+| | Laya | Kev-0.8B |
+|---|---:|---:|
+| short request (one question, 30 to 45 tokens) | **11 ms** | **11 ms** |
+| the same state asked again (cache hit) | | **10 ms** |
+
+Laya scores 32 states in one pass in 186 ms, and Kev answers a 533-token state in 116 ms. Without
+WebGPU, a short request takes about 0.4 s on one CPU core. The Playground's Profile tab (or
+`kevala.profile(true)`) shows the time of every GPU kernel for any request. [`bench.html`](https://bvolpato.github.io/kevala/bench.html) measures your own machine.
+
+Kev and SemIf reuse their state caches: all questions about a state share one pass over it, and the carries of recent
+states stay resident, so a repeated state only runs its question tokens and a state that extends a
+cached one (a growing conversation) only runs its new tokens. Laya is a bidirectional encoder, where a KV
+cache is impossible; it packs every question of a request into one pass instead.
+
+## Fidelity
+
+Decision accuracy, option-order stability, and browser latency for the supported packs:
+[BENCHMARK.md](BENCHMARK.md). The report includes Gemma base versus IT and Q8 versus BF16
+comparisons, with raw outputs and reproducible scoring.
+
+Reference checks for Laya, Kev, and SemIf: [GPU validation](docs/semif-matmul.md#correctness-and-feature-fallbacks).
+Gemma 4 checks: [Gemma 4 notes](docs/gemma4.md#verification). Conversion fidelity and seeded game
+results: [model validation](docs/model-benchmarks.md).
+
+The following fixtures are checked against upstream reference code
+(`tools/golden.py` runs the `laya` SDK, `tools/golden_kev.py` runs Kev's own code, and
+`tools/golden_gemma.py` runs the Gemma Transformers reference), natively and in
+the browser. These results do not establish parity or quality beyond the listed fixtures.
+
+| | token ids | argmax agreement | max probability difference |
+|---|---|---|---|
+| Laya, f32 weights | 41 / 41 exact | 41 / 41 | < 0.0001 |
+| Laya, int8 pack (CPU, WebAssembly, WebGPU) | 41 / 41 exact | 41 / 41 | 0.024 |
+| Kev-0.8B, pre-v1.0 Q8 pack (CPU, WebAssembly, WebGPU) | 8 / 8 requests exact | 13 / 13 | 0.0097 |
+| Gemma 4 E2B, int8 pack (WebGPU) | shared tokenizer | 12 / 12 | 0.01906186 |
+| Gemma 4 E4B, int8 pack (WebGPU) | shared tokenizer | 12 / 12 | 0.0120864 |
+| Gemma 4 E2B, int8 pack (native CPU) | 12 / 12 exact | 12 / 12 | 0.019120 |
+| Gemma 4 E4B, int8 pack (native CPU, selected cases) | 3 / 3 exact | 3 / 3 | 0.009941 |
+
+The Laya and Qwen tokenizers match the Hugging Face `tokenizers` library on the fixture corpora and
+on about ten million fuzzed strings. Gemma's pinned tokenizer IDs are recorded by its reference
+generator; see the [Gemma 4 notes](docs/gemma4.md#verification). Open
+[`parity.html`](https://bvolpato.github.io/kevala/parity.html) to rerun the Laya check in your own browser.
+
+## Demos and examples
+
+- [Playground](https://bvolpato.github.io/kevala/#/playground): any state, any questions, any model
+  and backend, with the response as highlighted JSON and the code to reproduce it.
+- [Tetris](https://bvolpato.github.io/kevala/#/tetris): game rules search turn, slide, and drop
+  paths, shortlist promising outcomes, and describe them in words. The selected model scores that
+  shortlist; the piece presses the keys toward the chosen landing. See the [seeded gameplay and
+  latency measurements](docs/tetris-policy.md).
+- [Prompt injection gate](https://bvolpato.github.io/kevala/#/guardrail): scores instruction overrides
+  and educational context, then recommends allow, block, or review with adjustable thresholds.
+- [Inbox](https://bvolpato.github.io/kevala/#/inbox): triage a mailbox, with rows filling in as each
+  batch of answers returns.
+- Reaction Recorder (`#/reaction`): scores visible people and facial expressions with an
+  image-capable loaded model. Camera access starts only after **Start camera**. It processes one
+  frame at a time without queuing older frames; Pause stops camera tracks. **Analysis detail**
+  switches between Fast, Balanced (default), and Detail without reloading the model. Its visible-cue scores
+  are uncalibrated and do not establish a person's inner mood. Frames are not recorded or uploaded.
+- [`examples/`](examples/): complete single-file pages you can copy into a site: a minimal page, a
+  comment form that blocks toxic posts, an LLM cascade that escalates only the unsure cases, a game
+  loop.
+- [`skills/kevala/SKILL.md`](skills/kevala/SKILL.md): teaches a coding agent to add kevala to a site.
+
+## API
+
+```js
+import { Kevala, MODELS, cacheInfo, clearCache } from "kevala";
+
+const kevala = await Kevala.load({
+  model: "laya",         // a MODELS name, a .kevala URL, or an ArrayBuffer/Blob
+  backend: "auto",       // "webgpu", "wasm", or "auto" (WebGPU, then CPU if GPU loading fails)
+  onPage: false,         // run on the page, not in a worker (automatic when only pages get WebGPU)
+  threads: "auto",       // measure CPU worker counts; 1..16 overrides, capped by the model
+  cpuKernel: "auto",     // measure CPU register tiles; "2x4" or "4x4" overrides
+  gpuKernel: "auto",     // measure GPU matrices; "generic" or "wide" overrides
+  retune: false,         // reuse the browser's CPU tuning profile; true measures again
+  submit: "await",       // GPU chunks: "await" favors responsiveness; "split" reduces queue waits
+  from: "pack",          // "checkpoint" conversion is available for Laya and Kev-0.8B
+  cache: true,           // keep the pack and CPU tuning profile in origin storage
+  onProgress: (p) => {}, // { phase: download | convert | cache | init | warmup, loaded, total }
+  signal,                // AbortSignal
+  plugins: [],           // URLs of extra architecture plugins
+});
+// Refreshed Kev, H2O-Lightning, and Clef-flash default to BF16. Pass precision: "q8" only to quantize.
+
+await kevala.decide(state, questions, { parts });  // score a request's questions
+await kevala.decideMany([{ state, questions }]);   // batch requests; GPU work may split to fit
+kevala.info;      // { arch, backend, gpu, gpuUnavailable, threads, cpuTiles, cpuTuning, gpuTuning, modalities, model, config, pack, loadMs }
+await kevala.profile(true); // later responses carry timing.gpu: milliseconds per GPU kernel
+kevala.dispose();
+```
+
+CPU tuning runs automatically and caches its result for the browser and model. See
+[CPU tuning and API overrides](docs/cpu-tuning.md) for the measurements, limits, and diagnostics.
+All model families also select GPU matrix kernels using the loaded model's shapes and GPU timestamps.
+See [GPU matrix tuning](docs/semif-matmul.md) for the Laya, Kev, and SemIf results, and
+[Gemma 4 notes](docs/gemma4.md) for the Gemma checks and backend details.
+
+Questions use the System One request shape (`type`, `instructions`, `criteria`), and each family
+answers in its own reference format: Laya like `laya` 0.3.5 (`action.act_probability`, 4 decimals),
+Kev v1.0 uses four decimals and a revised normalized confidence calculation; older Kev packs retain
+their original response format. Kev responses also include `raw_probabilities` at full precision. SemIf packs use
+the Kev response shape and return `probability_status` to identify uncalibrated conditional option
+scores. They support at most 16 options per question. For starting points,
+`import { presets } from "kevala"` has the `laya` SDK's question sets for triage, email,
+guardrails, moderation and routing.
+
+Requests may carry typed `parts` (`{ type: "text", text }`; `image` and `audio` only for a model
+whose `info.modalities` list them). Legacy `images` and `videos` fields are rejected; a part the
+model cannot read is an error, never silently dropped. The newly added H2O-Lightning and Clef-flash
+integrations are text-only here.
+
+### Images with Gemma 4 E2B
+
+Use the current repository runtime with the published Q8 decoder and BF16 vision companion.
+The companion is 337,302,144 bytes and preserves the source vision weights without added
+quantization. The Reaction Recorder picker offers image models and loads this companion by
+default. The API accepts its pinned URL explicitly:
+
+```js
+import { Kevala, MODELS } from "kevala";
+
+const kevala = await Kevala.load({
+  model: "gemma-4-e2b",
+  vision: MODELS["gemma-4-e2b"].vision.hosted,
+  imageTokens: 70,
+  backend: "webgpu",
+});
+if (!kevala.info.modalities.includes("image")) throw new Error("Image input is unavailable");
+
+const result = await kevala.decide("Classify the visible contents of this image.", {
+  person: { type: "noul", instructions: "Is a person visibly present?" },
+}, { parts: [{ type: "image", data: imageData }] }); // ImageData from your canvas
+console.log(result.answers.person.noul);
+```
+
+An image part's `data` accepts `ImageData`, `{ width, height, data }` containing RGBA bytes,
+a `Blob`, encoded image bytes (`ArrayBuffer` or a typed array), or an HTTP/HTTPS/blob/data URL.
+Use absolute image URLs; remote images must permit browser fetching. There are at most four images
+per request, 8192 pixels per side, 16 megapixels per image, and 32 MiB per encoded image.
+Encoded files must be opaque PNG, JPEG, or WebP so dimensions can be checked before
+decompression. Alpha-bearing encoded files require conversion to raw RGBA or ImageData:
+browser decoders can discard or round their RGB values. The raw path preserves RGB and
+the model's preprocessing ignores alpha.
+`imageTokens` sets the maximum soft tokens per image; actual counts depend on resized dimensions.
+The load-time default capacity is 70. A Gemma 4 decision can request any integer budget from
+1 to that capacity using `decide(state, questions, { parts, imageTokens: 40 })`, or `imageTokens`
+on each `decideMany` item. Omitting it preserves the loaded budget. Smaller budgets trade image
+detail for speed; budgets below Google's documented presets are experimental. The recorder's
+Balanced setting analyzes a 320 × 240 capture at 336 × 240 (35 actual image tokens), Fast at
+192 × 144 (12), and Detail at the previous 432 × 336 (63). Use Detail for small or distant faces.
+Compatible vision grids use fused F32 attention, with `visionAttention: "split"` at load time
+available for comparisons. The [camera resolution benchmark](https://bvolpato.github.io/kevala/dev/gemma4-camera-check.html?hosted=1)
+runs the actual model on your device and can export its timings; it loads weights only when started.
+Check the loaded
+`kevala.info.modalities`, which includes `"image"` only after a compatible companion loads.
+The returned scores are conditional option scores, not calibrated decision confidence.
+Image sessions keep original Q8 per-layer embedding tables in a temporary OPFS file, or system
+RAM when OPFS is unavailable, and upload only the rows needed for inference. OPFS sessions
+also store token embeddings on disk, reducing GPU weight storage by about 3.1 GB in total.
+Repeated prompts reuse a bounded GPU row cache. `info.memory`
+reports GPU, host, and OPFS weight bytes; scratch buffers and browser overhead need additional space.
+
+Server side, the same engine runs in Node.js, Deno or Bun without workers or a GPU:
+
+```js
+import { loadFile } from "kevala/node";
+const kevala = await loadFile("laya-q8.kevala");
+kevala.decide("I want my money back.", { refund: { type: "noul", instructions: "Does the customer ask for money back?" } });
+```
+
+## How it works
+
+```
+page ─► index.js ─► engine worker ─► coordinator (Rust → WebAssembly): tokenizer, template, readout
+                         ├─► WebGPU trunk and embedding row gathers: matmul (split-K), attention, DeltaNet, norms
+                         └─► WebAssembly shard workers: tensor-parallel layers, no SharedArrayBuffer needed
+```
+
+- **One Rust core, zero crates.** JSON, Unicode tables, byte-level BPE tokenizers, the request
+  templates, the model architectures and readouts, the `.kevala` pack format and the checkpoint converters (safetensors,
+  LoRA adapters, `torch.save` files) are all in `crates/kevala`, and the same code runs natively for the
+  CLI and tests.
+- **GPU kernels in the crate too.** WebGPU only runs WGSL, so the kernels are `.wgsl` sources in
+  `crates/kevala/src/wgsl`, specialized by Rust (f16 tiles, tile rows for the input length, subgroup
+  variants) and served by the WebAssembly binary. The JavaScript only builds pipelines and dispatches.
+- **`.kevala` packs** hold Q8 weights with a scale per 32 values or unquantized BF16/f32 matrices,
+  64-byte aligned, and can be split while they stream: the coordinator, the GPU and each CPU shard
+  receive only the bytes they keep.
+- **Pluggable families.** A pack's `config.arch` picks a family from a registry in Rust and an
+  architecture plugin in JavaScript. Each family owns its template, backbone and head, and declares its
+  modalities.
+
+Details: [docs/architecture.md](docs/architecture.md). Packs, and how to convert and publish them:
+[docs/packs.md](docs/packs.md).
+
+## Command line and building from source
+
+Use [pnpm](https://pnpm.io/installation) for development. `package.json` pins pnpm 12.5.1
+and Node.js 24.21.0 LTS. `pnpm install` downloads the project Node runtime, and pnpm scripts
+use it automatically. CI uses the same pins and requires the committed lockfile.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm check                                  # JavaScript syntax, including inline scripts in HTML pages
+pnpm test                                   # JavaScript regression tests
+pnpm lint:rust                              # rustfmt and Clippy
+pnpm test:rust                              # Rust tests
+pnpm build                                  # js/src/kevala-{relaxed,simd,base}.wasm
+pnpm check:wasm                             # each module exports every function the runtime calls
+pnpm pack --pack-destination dist/package   # prepack rebuilds modules, then creates a tarball
+pnpm check:package dist/package/kevala-*.tgz
+pnpm stage:site                             # stage the allowlisted Pages tree in dist/site
+cargo build --release -p kevala-cli            # target/release/kevala
+
+kevala convert <checkpoint-dir> -o model.kevala
+kevala convert <qwen3.5-dir> --adapter <adapter-dir> -o model.kevala
+# The config selects a supported architecture and validates its decision readout.
+kevala decide model.kevala --state "..." --questions '{"q": {"type": "noul", "instructions": "..."}}'
+kevala parity model.kevala reference.json    # use the reference for this checkpoint
+kevala bench model.kevala --tokens 128
+kevala wgsl matmul --f16 --rows 3                  # a GPU kernel, specialized
+
+pnpm serve                                 # static server at http://127.0.0.1:8080
+pnpm smoke model.kevala                    # one request through the Node entry point
+uv run tools/record_tetris.py              # record tmp/tetris.gif and tmp/tetris.mp4 (needs port 8123)
+```
+
+[CONTRIBUTING.md](CONTRIBUTING.md) describes the repository layout, the checks that CI runs, and
+the GPU and model checks that need a local machine. The Rust parity tests compare against reference
+tokenizers. `scripts/fetch-test-tokenizers.sh` downloads them, and without them those tests skip.
+
+The repository pins Rust 1.95.0 in [`rust-toolchain.toml`](rust-toolchain.toml), including the
+`wasm32-unknown-unknown` target, `rustfmt`, and Clippy. Python helpers generate reference fixtures and automate
+browser GPU benchmarks through `uv`.
+
+WebAssembly binaries are generated artifacts and are not tracked in Git. After cloning, run
+`pnpm build` before serving the site or using local Node imports. The modules are written beside the
+runtime in `js/src/` and ignored by Git. Rust source, `Cargo.lock`, and the pinned toolchain define the
+build; CI builds and validates all three flavors on every PR.
+
+`pnpm pack` rebuilds the modules through `prepack`, then includes them in the package. Registry and
+CDN users receive ready-to-use binaries and do not need Rust. Pages deploys the validated site artifact
+from CI, with its generated modules included. The repository's Pages source must be **GitHub Actions**.
+Keep build outputs in CI artifacts, deployed sites, and published packages; review source changes in Git.
+
+For reproducible GPU timing, model parity checks, and Firefox/Linux measurements, see
+[docs/gpu-benchmarks.md](docs/gpu-benchmarks.md). The benchmark distinguishes GPU kernel time
+from end-to-end browser latency.
+
+For CPU profiles, worker scaling, SIMD validation, and retained optimization results, see
+[docs/cpu-benchmarks.md](docs/cpu-benchmarks.md).
+
+## Limits
+
+- Published packs and supported browser conversions are cached after their first load. The BF16 output
+  packs are 1.51 GB to 15.90 GB for refreshed Kev, 8.43 GB for H2O-Lightning, and 18.41 GB for
+  Clef-flash. Q8 is an explicit smaller-pack option. Kev-4B/9B, H2O-Lightning, and Clef-flash need
+  native conversion until a pack is published; their listed sizes are output packs, not checkpoint
+  download sizes. You can convert once with the CLI and serve the pack from your own host.
+- Without WebGPU, a request takes about a second on a fast laptop core, more on phones. Laya splits
+  across CPU workers; Kev, SemIf, and Gemma 4 run in one instance on the CPU for now. Gemma 4's
+  browser CPU path is unavailable for these packs because of the WebAssembly allocation limit; use
+  the native 64-bit CLI for CPU inference.
+- Browser and Node WebAssembly cannot allocate a whole pack of 2 GiB or more. Large packs need
+  WebGPU or the native CLI. GPU loading streams transformer and embedding weights separately, while
+  the coordinator must fit under 2 GiB. Kev, H2O-Lightning, Clef-flash, and Gemma keep large
+  embedding or lexical tables on the GPU; the GPU gathers requested rows, and the coordinator
+  holds tokenizer and readout data.
+  GPU memory and individual buffer limits also apply. See [model limits](docs/models.md#memory-and-backends).
+- Browser backgrounding throttles CPU work: benchmarks from a hidden tab are several times slower.
+- WebGPU was verified on Apple Silicon in Chromium, with every optional feature and without any
+  (the default limits, as the weakest WebGPU device has). Every kernel also passes naga, the WGSL
+  compiler Firefox uses. The Linux kernel sweeps validate Firefox 152 on both NVIDIA and AMD. The
+  seven Laya, Kev, and SemIf models are covered by [GPU matrix tuning](docs/semif-matmul.md); Gemma
+  E2B and E4B are covered by the [Gemma 4 notes](docs/gemma4.md). See those reports for measured
+  features, numerical limits, and performance results.
+- GPU loading first requests the high-performance adapter, then retries with a low-power preference
+  if GPU initialization fails. The browser chooses the adapter and may return the same GPU twice.
+  `kevala.info.gpuPowerPreference` reports the successful preference. In `auto` mode, failures during
+  allocation, shader compilation or warmup fall back to the CPU; `backend: "webgpu"` reports an error
+  if both GPU attempts fail. `kevala.info.gpuUnavailable` preserves the failures when Auto uses the CPU.
+- Q8 weights and GPU arithmetic change option probabilities. The [GPU validation report](docs/semif-matmul.md#correctness-and-feature-fallbacks)
+  records the differences and matching reference decisions for Laya, Kev, and SemIf; the
+  [Gemma 4 notes](docs/gemma4.md#verification) record the corresponding Gemma checks. These
+  fixture checks do not establish general decision quality or confidence calibration. See the
+  [model guide](docs/models.md#interpreting-the-scores) and the upstream Laya, Kev, Qwen, and Gemma
+  model cards before choosing a threshold.
+- Image input currently uses Gemma 4 E2B with its separately loaded BF16 vision companion on
+  WebGPU. Video and audio inference are unavailable. Requests using legacy `images` or `videos`
+  fields are rejected; typed parts must match the loaded model's modalities.
+
+On Linux, Firefox's WebGPU backend uses [Vulkan](https://searchfox.org/firefox-main/source/gfx/wgpu_bindings/Cargo.toml),
+not CUDA. Check the WebGPU entries in `about:support` and the GPU's available memory when a load
+fails. `Buffer with '' label is invalid` can be a later symptom of a failed allocation; Kevala now
+captures allocation errors while uploading weights, initializing kernels, and running Gemma
+inference. The Reaction Recorder stops the camera and unloads the model on a GPU failure.
+Free GPU memory by
+closing other GPU-heavy applications, then retry. Browser storage caching saves the download but
+does not reduce the GPU memory needed to load the model. Firefox Linux support also depends on the
+browser channel and settings; see Mozilla's [WebGPU support notes](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Experimental_features#webgpu_api).
+
+## Credits and license
+
+- Laya is by Nandakishor M, Convai Innovations (Apache-2.0).
+- Kev is by Jared Palmer (Apache-2.0). The Qwen3.5 base and instruction models are by the Qwen team (Apache-2.0).
+- H2O-Lightning-4B is by H2O.ai and Clef-flash is by Cloudflare (Apache-2.0 each); both are text-only in this runtime.
+- Gemma 4 E2B and E4B are by Google DeepMind (Apache-2.0). The decoder packs contain their dense
+  text trunks; the E2B vision tower and projector are available as a separate BF16 companion.
+- [SemIf](https://github.com/TheoLeeCJ/SemIf/tree/1f2dea3e25379f9dfc98cb83c324f00ab5deda37),
+  by TheoLeeCJ (MIT), informed the direct option-token readout and scoring method used by the
+  SemIf and Gemma integrations. The SemIf Qwen packs retain SemIf's prompt contract and evidence
+  prefix reuse; Gemma uses Google's own instruction template. These are conversions of frozen
+  instruction models, not SemIf fine-tuned checkpoints. The adapted prompt and method retain their
+  [MIT notice](THIRD_PARTY_NOTICES).
+- The Laya parity fixtures reuse cases from [laya-web](https://github.com/nvkudva/laya-web), and the
+  question-writing advice follows [brain function collapse](https://brainfunctioncollapse.com/laya).
+
+kevala is licensed under [Apache-2.0](LICENSE). Converted packs are distributed separately on
+[Hugging Face](https://huggingface.co/bvolpato/kevala-packs), with pinned source revisions and the
+original model licenses. Model weights and generated WebAssembly binaries are not tracked in Git.

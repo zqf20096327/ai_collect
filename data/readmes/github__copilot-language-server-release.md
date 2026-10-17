@@ -1,0 +1,566 @@
+# @github/copilot-language-server
+
+The Copilot Language Server enables any editor or IDE to integrate with GitHub
+Copilot via [the language server protocol](https://microsoft.github.io/language-server-protocol/).
+
+**[GitHub Copilot](https://github.com/features/copilot)** is an AI pair programmer tool that helps you write code faster and smarter.
+
+**Sign up for [GitHub Copilot Free](https://github.com/settings/copilot)!**
+
+Please see [terms of use for GitHub Copilot](https://docs.github.com/en/site-policy/github-terms/github-terms-for-additional-products-and-features#github-copilot)
+
+## Getting Started
+
+To integrate with the Copilot Language Server, download the latest release from npm:
+
+```sh
+npm install @github/copilot-language-server
+```
+
+To run the language server, platform-specific binaries are available as separate
+packages included as optional dependencies. For example, [`@github/copilot-language-server-darwin-arm64`](https://www.npmjs.com/package/@github/copilot-language-server-darwin-arm64), for macOS on arm64:
+example, for macOS on arm64:
+
+```sh
+./node_modules/@github/copilot-language-server-darwin-arm64/copilot-language-server --version
+```
+
+If repackaging the language server, all platform-specific binaries are available
+in the releases: https://github.com/github/copilot-language-server-release/releases
+For example, to download a zip of all of the binaries together:
+
+```
+gh release download -R github/copilot-language-server-release -p 'copilot-language-server-native-*'
+```
+
+Or you can use [Node.js](https://nodejs.org/en/download/) version 20.8 or later:
+
+```sh
+npx @github/copilot-language-server --version
+```
+
+```sh
+node ./node_modules/@github/copilot-language-server/dist/language-server.js --version
+```
+
+If using the `language-server.js` distribution, it is necessary to retain the entire `dist` directory contents.
+
+Communication with the language server typically happens over stdio with `--stdio`. The `language-server.js`
+distribution additionally supports Node IPC with `--node-ipc`.
+
+## Agent Client Protocol (ACP) (Preview)
+
+The Copilot Language Server also supports the [Agent Client Protocol (ACP)](https://agentclientprotocol.com/),
+enabling integration with ACP-compatible editors like [JetBrains AI Assistant](https://www.jetbrains.com/help/ai-assistant/acp.html), [Zed](https://zed.dev/), and more.
+
+### Running in ACP Mode
+
+To start the language server in ACP mode:
+
+```sh
+npx -y @github/copilot-language-server --acp
+```
+
+Or if installed locally:
+
+```sh
+node ./node_modules/@github/copilot-language-server/dist/language-server.js --acp
+```
+
+Communication happens over stdin/stdout.
+
+### JetBrains AI Assistant
+
+To use Copilot as an ACP agent in JetBrains AI Assistant, add the following to your `~/.jetbrains/acp.json`:
+
+```json
+{
+  "agent_servers": {
+    "GitHub Copilot": {
+      "command": "npx",
+      "args": [
+        "@github/copilot-language-server@latest",
+        "--acp"
+      ]
+    }
+  }
+}
+```
+
+See the [ACP specification](https://agentclientprotocol.com/) for full protocol details.
+
+## Communication Protocol
+
+The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) (LSP) is used to communicate with
+the client. The base protocol is [JSON-RPC 2.0 with additional
+headers](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#baseProtocol).
+
+The Copilot Language Server attempts to follow the LSP spec as closely as possible, but many custom messages are
+employed to support the unique features of Copilot.
+
+## Initialization
+
+Per the LSP spec, the client is expected to send a
+[`initialize`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialize)
+request to the language server as a first message. Example parameters:
+
+```json
+{
+    "processId": 1234,
+    "workspaceFolders": [
+        {
+            "uri": "file:///home/user/project"
+        }
+    ],
+    "capabilities": {
+        "workspace": {"workspaceFolders": true}
+    },
+    "initializationOptions": {
+        "editorInfo": {
+            "name": "GNU ed",
+            "version": "1.19"
+        },
+        "editorPluginInfo": {
+            "name": "GitHub Copilot for ed",
+            "version": "1.0.0"
+        }
+    }
+}
+```
+
+After receiving the response to `initialize`, the second message the client must send is an
+[`initialized`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#initialized)
+notification.
+
+## Configuration Management
+
+After initialization, clients should send a
+[`workspace/didChangeConfiguration`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_didChangeConfiguration)
+notification to inform the language server about the initial configuration, and again each time the configuration
+changes. Example parameters:
+
+```json
+{
+     "settings": {
+        "http": {
+            "proxy": "http://localhost:8888",
+            "proxyStrictSSL": true,
+            "proxyKerberosServicePrincipal": "spn"
+        },
+        "telemetry": {
+            "telemetryLevel": "all"
+        },
+        "github-enterprise": {
+            "uri": "https://example.ghe.com"
+        }
+    }
+}
+```
+
+Pull based configuration on
+[`workspace/configuration`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_configuration)
+is also supported.
+
+## Workspace Folders Synchronization
+
+Workspace folders are optional but highly recommended as they greatly improve the quality of suggestions. See the LSP spec for
+[`workspace/didChangeWorkspaceFolders`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_didChangeWorkspaceFolders).
+
+## Text Document Synchronization
+
+Per the LSP spec for
+[text document synchronization](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_synchronization),
+support for `textDocument/didOpen`, `textDocument/didChange`, and `textDocument/didClose` is required, using incremental
+sync.
+
+## Text Document Focusing
+
+Additionally a custom `textDocument/didFocus` notification should be sent when the client focuses another document
+(e.g., changing tabs). Example parameters:
+
+```json
+{
+    "textDocument": {
+        "uri": "file:///path/to/file"
+    }
+}
+```
+
+If no document is focused, a request with no parameters (`{}`) may be sent.
+
+## Status Notification
+
+The status is sent to the client as a `didChangeStatus` notification. Typically this would be conveyed to the user in a
+status bar icon or other UI affordance.
+
+Notification includes the following fields:
+
+- `busy` - boolean indicating whether a task is in progress
+- `message` - a string describing the status (can be empty)
+- `kind` - status of the language server:
+   - `'Normal'` - When everything is working normally.
+   - `'Error'` - When not authorized and authenticated.
+   - `'Warning'` - When there is a temporary issue, such as a failed HTTP request.
+   - `'Inactive'` - When the current file is ignored due to file size or content exclusions.
+- `command` - an optional LSP `Command` object providing an actionable command for the client to offer the user (e.g., sign in, learn more about quota limits)
+
+## Authentication
+
+To sign in, call `signIn`. This will return a response like the following:
+
+```json
+{
+    "userCode": "ABCD-EFGH",
+    "command": {
+        "command": "github.copilot.finishDeviceFlow",
+        "arguments": [],
+        "title": "Sign in"
+    }
+}
+```
+
+Instruct the user to copy the `userCode` to their clipboard (and/or copy it programmatically). When the user is ready, invoke
+[`workspace/executeCommand`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_executeCommand)
+to execute the `command`. This will open a browser window that walks the user through the authentication process.
+Shortly (up to 10 seconds) after the user finishes signing in, you should see a status notification reflecting the new
+state.
+
+If available, the language server will use
+[`window/showDocument`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showDocument)
+to open the URL. Otherwise, it will attempt to open the URL natively (e.g., with `/usr/bin/open` on macOS).
+
+To sign out, call `signOut`.
+
+## Inline Completions
+
+The [`textDocument/inlineCompletion`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#textDocument_inlineCompletion)
+request from the draft version of the next LSP spec is used to retrieve inline ("ghost text") completions, with some
+non-standard additions (`textDocument.version` and `formattingOptions`) to the parameters:
+
+```json
+{
+    "textDocument": {
+        "uri": "file:///path/to/file",
+        "version": 0
+    },
+    "position": {"line": 1, "character": 2},
+    "context": {
+        "triggerKind": 2
+    },
+    "formattingOptions": {
+        "tabSize": 4,
+        "insertSpaces": true
+    }
+}
+```
+
+The result is an object containing an `items` array.
+
+```json
+{
+    "items": [
+        {
+            "insertText": "a helpful suggestion",
+            "range": {
+                "start": {"line": 1, "character": 0},
+                "end": {"line": 1, "character": 2}
+            },
+            "command": {
+                "command": "github.copilot.didAcceptCompletionItem",
+                "arguments": ["some id"]
+            }
+        }
+    ]
+}
+```
+
+Newlines in `insertText` should be normalized as is appropriate for the editor before inserting into the document.
+
+The `command` field, per the LSP spec, is called via
+[`workspace/executeCommand`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_executeCommand)
+*after* the user accepts the completion. Copilot uses this for acceptance telemetry.
+
+The LSP spec does not provide an event for showing the completion, so a custom `textDocument/didShowCompletion` is used.
+Call it with an `item` parameter containing the full completion item:
+
+```json
+{
+    "item": {
+        "insertText": "a helpful suggestion",
+        "range": {
+            "start": {"line": 1, "character": 0},
+            "end": {"line": 1, "character": 2}
+        },
+        "command": {
+            "command": "github.copilot.didAcceptCompletionItem",
+            "arguments": ["some id"]
+        }
+    }
+}
+```
+
+Similarly, for partial acceptance, send a `textDocument/didPartiallyAcceptCompletion` notification with the full
+item, plus the length (in UTF-16 codepoints) of the completion that was accepted:
+
+```json
+{
+    "item": {
+        "insertText": "a helpful suggestion",
+        "range": {
+            "start": {"line": 1, "character": 0},
+            "end": {"line": 1, "character": 2}
+        },
+        "command": {
+            "command": "github.copilot.didAcceptCompletionItem",
+            "arguments": ["some id"]
+        }
+    },
+    "acceptedLength": 9
+}
+```
+
+Note that the `acceptedLength` includes everything from the start of `insertText` to the end of the accepted text. It is
+*not* the length of the accepted text itself.
+
+## Next Edit Suggestions
+
+`textDocument/copilotInlineEdit` is a custom method used to retrieve "next edit"
+suggestions which are inline completions that may include deletions or
+modifications to existing text and may not be positioned at the cursor. These
+are similar to inline completions and the API shape is similar as well. But it
+is a separate method to allow opting into the feature and distinguishing between
+the two kinds of suggestions.
+
+The request parameters are similar to
+[`TextDocumentPositionParams`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#textDocumentPositionParams)
+but with a `textDocument.version` field required as in as
+[`VersionedTextDocumentIdentifier`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/#versionedTextDocumentIdentifier):
+
+```json
+{
+    "textDocument": {
+        "uri": "file:///path/to/file",
+        "version": 0
+    },
+    "position": {"line": 1, "character": 2}
+}
+```
+
+The result is an object containing an `edits` array:
+
+```json
+{
+    "edits": [
+        {
+            "text": "an edit suggestion",
+            "textDocument": {
+                "uri": "file:///path/to/file",
+                "version": 0
+            },
+            "range": {
+                "start": {"line": 1, "character": 0},
+                "end": {"line": 1, "character": 5}
+            },
+            "command": {
+                "title": "Accept inline edit",
+                "command": "github.copilot.didAcceptCompletionItem",
+                "arguments": ["some-id"]
+            }
+        }
+    ]
+}
+```
+
+The `command` field, per the LSP spec, is called via
+[`workspace/executeCommand`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_executeCommand)
+*after* the user accepts the edit. Copilot uses this for acceptance telemetry.
+
+The LSP spec does not provide an event for showing the edit, so a custom
+`textDocument/didShowInlineEdit` is used. Call it with an `item` parameter
+containing the item shown from the `edits` array (note only the first argument is required):
+
+```json
+{
+    "item": {
+        "command": {
+            "arguments": ["some-id"]
+        }
+    }
+}
+```
+
+Edits with known source attribution include optional `cacheTelemetryContext`.
+Keep this opaque string with cached copies. On each client-cache serve, create a
+fresh opportunity ID and track its lifecycle locally; do not reuse the source ID
+or wait for CLS. Keep the context until that occurrence ends, even after cache
+expiry, then send one `textDocument/reportCachedInlineEdit` notification:
+
+```json
+{
+    "opportunityId": "unique-id-for-this-cache-serve",
+    "context": "<unchanged cacheTelemetryContext from the source edit>",
+    "isShown": true,
+    "acceptance": "accepted"
+}
+```
+
+`acceptance` is `accepted`, `rejected`, or `notAccepted`; `disposalReason` is
+optional. Never-rendered results report `isShown: false` and `notAccepted`.
+Do not send ordinary provider feedback for these cache IDs.
+
+CLS validates the context and emits the existing `copilot-nes/provideInlineEdit`
+event with `isFromCache=1` and original request/model/ExP attribution. There is no
+source lookup, ACK, or telemetry-triggered model request. The context contains no
+source code, credentials or raw ExP filters/variables. Invalid contexts are
+logged/dropped; recent duplicates are suppressed. Delivery remains best effort,
+and no cache latency/token/ARC measurements are invented.
+
+Ordinary provider feedback is unchanged; discarded provider results use
+`github.copilot.didIgnoreNextEditSuggestionItem`. Missing/blank context retains
+legacy client behavior. The corrected reporting ships with the implementing
+CLS/plugin versions, without a separate rollout flag; original model experiment
+assignments are still preserved.
+
+## Unified Suggestions
+
+`textDocument/copilotSuggest` is a custom method that asks for inline completions and next edit suggestions in one
+request. The server calls the providers the trigger reason allows, picks the winner, and returns at most one
+suggestion, so the client does not have to choose between the two. `textDocument/inlineCompletion` and
+`textDocument/copilotInlineEdit` are unchanged and remain available.
+
+The parameters combine those of the two methods and add the `reason` for the request:
+
+```json
+{
+    "textDocument": {
+        "uri": "file:///path/to/file",
+        "version": 0
+    },
+    "position": {"line": 1, "character": 2},
+    "reason": "typing",
+    "include": {"completions": true, "edits": true},
+    "formattingOptions": {
+        "tabSize": 4,
+        "insertSpaces": true
+    }
+}
+```
+
+`reason` decides which providers are asked:
+
+| `reason` | Asks for |
+| --- | --- |
+| `typing` | Completions and next edits |
+| `manual` | Completions |
+| `cycling` | Completions, with alternatives to cycle through |
+| `caretMove` | Next edits |
+| `postAccept` | Next edits |
+
+An unknown `reason` is treated as `typing`. The optional `include` switches off a provider that the reason allows, for
+example to honor a user setting; it never switches one on. `context.selectedCompletionInfo` and `formattingOptions`
+mean the same as for `textDocument/inlineCompletion`, and `diagnostics`, if given, is passed to the next edit provider
+as with `textDocument/copilotInlineEdit`.
+
+A completion wins when it inserts new text; one that only repeats text already after the cursor is dropped. Otherwise
+the first next edit wins. The result is an object with an optional `suggestion`, absent when there is nothing to show:
+
+```json
+{
+    "suggestion": {
+        "id": "some-id",
+        "kind": "completion",
+        "presentation": "ghostText",
+        "target": {
+            "uri": "file:///path/to/file",
+            "version": 0
+        },
+        "items": [
+            {
+                "text": "a helpful suggestion",
+                "range": {
+                    "start": {"line": 1, "character": 0},
+                    "end": {"line": 1, "character": 2}
+                },
+                "command": {
+                    "title": "Completion Accepted",
+                    "command": "github.copilot.didAcceptCompletionItem",
+                    "arguments": ["some-id"]
+                }
+            }
+        ],
+        "provenance": {"viaProxy": true, "model": "some-model", "fromCache": false}
+    }
+}
+```
+
+- `kind` is what the suggestion is: `completion`, `edit`, or `jump`, an edit in another document named by `target`.
+  It decides how outcomes are reported.
+- `presentation` is how to draw it: `ghostText`, `diff`, or `jump`. Draw by `presentation` and report by `kind`; the
+  two can differ in future versions.
+- `items` holds more than one entry only for a completion, where the extras are alternatives to cycle through. Each
+  item carries its own `command`.
+- A `jump` may carry `targetLine`: the line in the target document to preview, as a word-level diff.
+- `provenance.model` and `provenance.fromCache` describe the first item, and are absent when its provider does not
+  report them. `fromCache` means the item was served without a model call.
+
+Skip a suggestion whose `kind` or `presentation` you do not recognize, since new values may be added.
+
+Report outcomes the way the method behind the `kind` does, passing the item that was shown or accepted. For a
+`completion`, send `textDocument/didShowCompletion` and `textDocument/didPartiallyAcceptCompletion` as described in
+[Inline Completions](#inline-completions). For an `edit` or a `jump`, send `textDocument/didShowInlineEdit` as described
+in [Next Edit Suggestions](#next-edit-suggestions). In every case, call the item's `command` via
+`workspace/executeCommand` after the user accepts it. Next edits returned this way carry no `cacheTelemetryContext`:
+the server caches them itself.
+
+## Panel Completions
+
+Panel completions are used for "Open Copilot" style completions. They are similar to inline completions, but are shown
+in a separate panel. They are retrieved using the custom `textDocument/copilotPanelCompletion` request, which has
+parameters closely modeled after `textDocument/inlineCompletion`:
+
+```json
+{
+    "textDocument": {
+        "uri": "file:///path/to/file",
+        "version": 0
+    },
+    "position": {"line": 1, "character": 2},
+    "partialResultToken": "some token"
+}
+```
+
+If provided, the `partialResultToken` is used to stream
+[partial results](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#partialResults)
+back to the client. Both the return type and the partial result type are the same as for inline completions: an object
+containing an `items` array. These items have the same `command` that must be invoked with `workspace/executeCommand`
+after accepting to trigger acceptance telemetry. Partial acceptance and shown events are not supported here.
+
+## Cancellation
+
+`textDocument/inlineCompletion` supports cancel-previous strategy for cancellation: If you send new completions
+request, the previous request is cancelled. `textDocument/copilotSuggest` requests that ask for completions share this
+strategy with `textDocument/inlineCompletion`, and a superseded one fails with the same `ServerCancelled` error.
+This also applies while the proxy waits for NES after its completion call has finished.
+
+Additionally the LSP `$/cancelRequest` method is supported to cancel any request. It is strongly encouraged to eagerly
+cancel completion requests as soon as possible.
+
+## Logs
+
+Logs are sent to the client as
+[`window/logMessage`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_logMessage)
+notifications.
+
+## Messages
+
+The client may be sent
+[`window/showMessageRequest`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#window_showMessage)
+requests. Support for these messages is essential as they are used for important notifications including account and
+billing.
+
+
+---
+
+## License
+
+Distributed under the MIT license. See LICENSE for details.

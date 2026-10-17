@@ -1,0 +1,89 @@
+> [!WARNING]
+> If **no more users** download my app, use my app or star my repo by November 2026, I am **ending this project**.
+
+<br><br>
+
+<div align="center">
+
+<img width="200" src="icon.png" alt="Ambient Calculator" align="center">
+
+# Ambient Calculator
+Best open source AI-powered, modern, dynamic and beautiful calculator for Android tablet, phone and foldables. 
+
+[![License](https://img.shields.io/github/license/techambient/Ambient-Calculator?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Android-10%2B-34A853?style=for-the-badge)]()
+[![Material 3](https://img.shields.io/badge/Material%203-Expressive-4285F4?style=for-the-badge)]()
+
+<div align="left">
+
+## 📖 Features
+
+* None permissions required for Minimal version, Camera required for OCR (Full version)
+* Offline AI powered math to result OCR
+* Offline Handwriting-to-math (Preview)
+* Lightweight, only 1.8MB (Minimal Edition)! 
+* AMOLED, Dark, Light, Material You and Google Material 3 theme
+* Scientific mode
+* History
+* Business Mode
+* Optimised for phone (single panel) and tablet (dual panel)
+* Quick settings tile + small calculator widget
+* Fast Speed
+* Zero Ads & Zero Tracking
+* 100% Offline
+
+## ⚠️ Requirements
+
+* Android 10.0+
+
+## 📷 Screenshots
+
+<img src="tl.jpeg" width="100%"/>
+<img src="tp.jpeg" width="60%"/>
+<img src="pp.jpeg" width="39%"/>
+<img src="pl.jpeg" width="100%"/>
+<img src="foldables.jpeg" width="100%"/>
+
+## 📸 Math-to-result OCR
+
+<img src="scanner.jpeg" width="30%"/>
+
+## 🆚 Ambient Calculator VS OpenCalc and yetCalc
+
+<a href="https://commoninja.site/644fb534-7d03-48e7-ba92-7c3d123b5958">
+  Click Here To See How Broken Is The UI
+</a>
+
+## 🎉 Special Thanks
+Special thanks to [mohamadsd078-eng](https://github.com/mohamadsd078-eng) for providing useful Business mode idea.
+
+
+## ☕ Support
+
+If you like this project, kindly star this repo as basic support to help keep it alive!
+
+## 💬 Join My Discord Server
+
+Join my discord server at <a href="https://discord.gg/ATnXUUnS">
+  Click Here To Join my Discord server
+</a>! 
+
+## 🔨 Contributing
+
+Pull requests are strongly recommended. For major changes, please open an issue first to discuss what you would like to change.
+
+## 🌎 Translations
+
+You can help translate Ambient Calculator by using this repo codes. 
+
+## 📜 License
+
+This project is licensed under [MIT License](/LICENSE)
+
+## ❔ Frequently Asked Questions
+
+1) Is Ambient Calculator beats OpenCalc or yetCalc in tablet UI? <br>
+   Answer: Yes, you can see the above section to see the broken UI.
+
+2) Is Ambient Calculator (Minimal Edition) also known as "World Lightest Open Source Calculator"?
+   <br> Answer: Yes, Ambient Calculator (~1.8MB) beats OpenCalc (~2.2MB) and Fossify Calculator (~3MB). 

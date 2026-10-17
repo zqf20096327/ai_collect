@@ -1,0 +1,167 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Zedda-Labs/Zedda/main/docs/logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Zedda-Labs/Zedda/main/docs/logo.png">
+  <img alt="Zedda" src="https://raw.githubusercontent.com/Zedda-Labs/Zedda/main/docs/logo.png" width="100%">
+</picture>
+
+<br>
+
+#
+
+**Zero-Effort Data Discovery & Analysis**
+
+C++17-powered EDA and data cleaning engine for Python.
+
+<p>
+  <a href="https://pypi.org/project/zedda"><img src="https://img.shields.io/pypi/v/zedda.svg?color=1D9E75" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/zedda"><img src="https://img.shields.io/pypi/pyversions/zedda.svg" alt="Python versions"></a>
+  <a href="https://pepy.tech/project/zedda"><img src="https://static.pepy.tech/badge/zedda" alt="Downloads"></a>
+  <a href="https://github.com/Zedda-Labs/Zedda/actions"><img src="https://github.com/Zedda-Labs/Zedda/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
+  <a href="https://github.com/Zedda-Labs/Zedda/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+</p>
+
+<p>
+  <a href="docs/GETTING_STARTED.md"><b>Guide</b></a> ·
+  <a href="docs/API.md"><b>API reference</b></a> ·
+  <a href="docs/ARCHITECTURE.md"><b>How it works</b></a> ·
+  <a href="CONTRIBUTING.md"><b>Contributing</b></a> ·
+  <a href="SECURITY.md"><b>Security</b></a>
+</p>
+
+</div>
+
+---
+
+## What is Zedda
+
+Zedda profiles, cleans, and validates datasets from a single Python call.
+Its core is written in C++17 and streams data in constant memory, so it
+scales from a 900-row CSV to a terabyte-scale Parquet file without
+changing how you use it.
+
+## Installation
+
+```bash
+pip install --upgrade pip                  # Ensure pip >= 22.3 for abi3 wheel recognition
+pip install zedda                          # CSV only — zero native deps
+pip install "zedda[parquet]"               # adds Parquet/Arrow/Feather support
+pip install "zedda[clean]"                 # adds fuzzy typo detection
+pip install "zedda[ai]"                    # adds AI Q&A (zd.ask with Groq/OpenAI)
+pip install "zedda[parquet,clean,ai]"      # everything together
+```
+
+**Platform support:**
+
+| Platform | Base install | `[parquet]` extra |
+|---|---|---|
+| Linux x86_64 (manylinux_2_28 / glibc >= 2.28 / musl) | ✅ prebuilt wheel | ✅ prebuilt pyarrow wheel |
+| Linux ARM64 (aarch64) | ✅ prebuilt wheel | ✅ prebuilt pyarrow wheel |
+| macOS Intel (x86_64) | ✅ prebuilt wheel | ✅ prebuilt pyarrow wheel |
+| macOS Apple Silicon (ARM64) | ✅ prebuilt wheel | ✅ prebuilt pyarrow wheel |
+| Windows x86_64 | ✅ prebuilt wheel | ✅ prebuilt pyarrow wheel |
+| Windows ARM64 | ✅ prebuilt wheel | ⚠️ pyarrow has no win_arm64 wheel — Parquet requires manual build |
+| Python 3.13 free-threaded (cp313t) | ⚠️ Not yet supported — use standard Python 3.13 | |
+
+> **conda users:** Zedda is not yet on conda-forge. Install via pip inside your conda environment:
+> ```bash
+> conda activate myenv
+> pip install zedda
+> ```
+
+### High-Performance Builds (x86-64-v3 / AVX2)
+Prebuilt wheels on PyPI support all 64-bit x86 CPUs with runtime AVX2/AVX-512 dispatch in the scanner. For full compiler auto-vectorization across the entire C++ engine on modern CPUs (Intel Haswell+, AMD Zen+):
+```bash
+CMAKE_ARGS="-DZEDDA_TARGET_X86_64_V3=ON -DZEDDA_ENABLE_LTO=ON" pip install --no-binary zedda zedda
+```
+
+## How to use
+
+```python
+import zedda as zd
+
+zd.profile("data.csv")  # full EDA report in terminal
+zd.scan("data.csv")  # silent scan for CI/CD pipelines
+zd.compare("train.csv", "test.csv")  # train/test drift detection
+zd.fix("data.csv", apply=True)  # generate or apply pandas fix code
+zd.ask("data.csv", "any nulls here?")  # plain-English dataset Q&A
+zd.ml_ready("data.csv")  # readiness score for ML training
+zd.warnings("data.csv")  # list all issues ranked by severity
+zd.clean("data.csv", output="clean.csv")  # safe, backed-up auto-clean
+zd.merge(["jan.csv", "feb.csv"], "out")  # safely combine multiple files
+zd.report("data.csv", output="rep.html")  # export full report to offline HTML
+```
+
+Every function also accepts a pandas `DataFrame` directly — a file path is
+never required.
+
+```python
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+zd.profile(df)
+```
+
+See the full list of available functions in the [API reference](docs/API.md),
+and how the underlying engine works in [How it works](docs/ARCHITECTURE.md).
+
+## Installation from source
+
+```bash
+git clone https://github.com/Zedda-Labs/Zedda.git --recursive
+cd Zedda
+# C++17 build tools (cmake, ninja) are required
+pip install cmake ninja
+pip install -e ".[dev]"
+pytest tests/
+```
+
+## Enterprise Data Quality FAQ
+
+<details>
+<summary><b>1. How does ZEDDA prevent false-positive cleaning recommendations?</b></summary>
+
+ZEDDA evaluates statistical distributions across single-pass scans before flagging issues:
+- **ID Columns**: Flagged only when cardinality is 100.0% unique across all rows.
+- **Zero-Variance Columns**: Flagged only when a single distinct value spans 100.0% of non-null cells.
+- **Outliers**: Identified using IQR bounds (`1.5 * IQR`) combined with skewness thresholds.
+- **Multicollinearity**: Evaluated via single-pass Pearson correlation matrices (`|r| >= 0.95`).
+</details>
+
+<details>
+<summary><b>2. Is auto-cleaning (`zd.clean()`) safe for production data ingestion?</b></summary>
+
+Yes. `zd.clean()` is fully deterministic, atomic, and safe:
+- **Automatic Backup**: Creates `{filename}.zedda-backup` prior to mutating any dataset.
+- **Audit Trail**: Outputs `{stem}.audit.json` containing exact before/after row counts, quality scores, applied transformations, and timing logs.
+- **Rollback Support**: Run `zd.clean.undo("filename.csv")` at any time to instantly restore the original dataset from backup.
+</details>
+
+<details>
+<summary><b>3. How does ZEDDA integrate into CI/CD pipelines and orchestrators?</b></summary>
+
+- **Programmatic Python**: Use `zd.scan("data.csv")` inside Airflow / Prefect tasks to access `.to_dict()` and `.to_json()` metadata objects.
+- **CLI Ingestion**: Run `zedda scan data.csv --json` inside GitHub Actions or GitLab CI to pipe structured JSON metadata directly into downstream data warehouse checks.
+- **Air-Gapped Compliance**: `zd.report()` generates completely self-contained HTML files (zero CDN links, zero tracking, zero external network calls) suitable for banking and healthcare environments.
+</details>
+
+## Contributing
+
+Issues and pull requests are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
+
+<div align="center">
+<br>
+<a href="https://pypi.org/project/zedda">PyPI</a> ·
+<a href="https://github.com/Zedda-Labs/Zedda">GitHub</a> ·
+<a href="https://github.com/Zedda-Labs/Zedda/issues">Issues</a> ·
+<a href="docs/GETTING_STARTED.md">Guide</a> ·
+<a href="docs/ARCHITECTURE.md">Architecture</a> ·
+<a href="docs/API.md">API Docs</a> ·
+<a href="CHANGELOG.md">Changelog</a> ·
+<a href="RELEASING.md">Releases</a>
+</div>

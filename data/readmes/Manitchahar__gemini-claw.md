@@ -1,0 +1,199 @@
+# Gemini Claw
+
+Telegram-native Gemini CLI personal AI operator with private allowlisted chats.
+
+Gemini Claw turns a Telegram bot into a private operator interface for the official `gemini` CLI. It keeps the transport small, typed, and private: only allowlisted Telegram users can talk to it, it only works in private chats, and the Gemini integration is isolated behind a replaceable adapter.
+
+## Why it is useful
+
+- Chat with Gemini CLI from Telegram without exposing a public web UI.
+- Keep local session continuity through Gemini CLI session IDs.
+- Use JSON or stream-JSON output parsing for automation-friendly responses.
+- Keep secrets and local session data out of git by default.
+- Upgrade toward tool-rich autonomy without making Telegram an unrestricted remote shell.
+
+## Setup
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Install and authenticate the Gemini CLI so `gemini` is available on `PATH`:
+
+   ```bash
+   npm install -g @google/gemini-cli
+   gemini
+   ```
+
+   Complete the CLI's auth flow when prompted. If you already have a Gemini CLI install elsewhere, set `GEMINI_CLI_COMMAND` to that absolute command path.
+
+3. Create a Telegram bot with BotFather, then copy `.env.example` to `.env` and fill in:
+
+   ```bash
+   TELEGRAM_BOT_TOKEN=...
+   TELEGRAM_ALLOWED_USER_IDS=123456789
+   GEMINI_CLI_COMMAND=gemini
+   GEMINI_OUTPUT_FORMAT=stream-json
+   GEMINI_APPROVAL_MODE=default
+   GEMINI_SANDBOX=false
+   GEMINI_DEBUG=false
+   GEMINI_TRUST_WORKSPACE=true
+   GEMINI_CWD=.
+   GEMINI_ALLOWED_TOOLS=
+   GEMINI_ALLOWED_MCP_SERVER_NAMES=
+   GEMINI_EXTENSIONS=
+   GEMINI_INCLUDE_DIRECTORIES=
+   GEMINI_SETTINGS=
+   GEMINI_MAX_WORKERS=3
+   GEMINI_MAX_CHAT_WORKERS=3
+   GEMINI_MAX_QUEUED_TASKS=50
+   GEMINI_MAX_CHAT_QUEUED_TASKS=10
+   GEMINI_TASK_HISTORY_LIMIT=20
+   GEMINI_WORKER_SESSION_MODE=isolated
+   OPERATOR_LOG_STYLE=pretty
+   OPERATOR_LOG_LEVEL=info
+   OPERATOR_LOG_CONTENT=false
+   OPERATOR_LOG_PREVIEW_CHARS=120
+   SESSION_STORE_PATH=.data/sessions.json
+   TASK_STORE_PATH=.data/tasks.json
+   ```
+
+   `TELEGRAM_ALLOWED_USER_IDS` is a comma-separated list. Messages from any other Telegram user are rejected before Gemini is invoked. This allowlist is mandatory, but it is not a complete safety boundary: a compromised Telegram account or a prompt-injection attack can still issue harmful instructions through an otherwise trusted chat.
+
+## Run locally
+
+```bash
+npm run dev
+```
+
+The bot uses long polling for local development.
+
+For privacy, the bot only responds in direct Telegram chats. Even allowlisted users are rejected in groups and supergroups so assistant output is not exposed to other chat members.
+
+## Terminal operator view
+
+The bot prints a live operator feed so the terminal shows what the Telegram assistant is doing: startup status, incoming chats, Gemini CLI subprocesses, tool/subagent observations, background task lifecycle, worker counts, cancellations, and completions.
+
+```text
++---------------- Gemini Claw online ----------------+
+| bot=@RockyOperator_bot  mode=YOLO    workers=0/3   |
+| model=gemini-default    sessions=isolated ext=2    |
++-----------------------------------------------------+
+09:21:05  chat request      chat=123 chars=42 preview="inspect the repo..."
+09:21:05  gemini start      chat=123 output=stream-json session=present
+09:21:07  tool start        chat=123 name=ReadFile
+09:21:12  chat reply        chat=123 chars=1800 duration_ms=7200
+09:22:10  task queued       id=t-0001 workers=0/3 preview="write README..."
+09:22:18  subagent          id=t-0001 name=research-agent
+09:22:31  task completed    id=t-0001 tools=3 chars=2500
+```
+
+Operator logging settings:
+
+```bash
+OPERATOR_LOG_STYLE=pretty        # pretty, plain, or json
+OPERATOR_LOG_LEVEL=info          # silent, info, or debug
+OPERATOR_LOG_CONTENT=false       # true prints full prompts/responses
+OPERATOR_LOG_PREVIEW_CHARS=120
+```
+
+The default is screen-recording safe: short previews and metadata only. Set `OPERATOR_LOG_CONTENT=true` only on machines and chats where full prompt/response text is safe to show.
+
+## Commands
+
+- `/start` - introduction
+- `/help` - usage notes
+- `/reset` - clears the local session mapping for the current chat
+- `/status` - current session and mode summary
+- `/tools` - configured Gemini tools and extensions
+- `/plan` - current operating plan
+- `/task <prompt>` - starts a concurrent background Gemini CLI worker
+- `/tasks` - lists running and recent tasks for this Telegram chat
+- `/task_status <id>` - shows task status, result preview, tools, and observed subagents
+- `/cancel <id>` - cancels a queued task or terminates a running Gemini CLI worker
+- `/stop_all` - cancels this chat's queued and running background tasks
+- `/pause` - pauses starting new background workers
+- `/resume` - resumes background workers
+- `/workers` - shows worker limits, running count, queued count, and active task IDs
+- `/sessions` - lists Gemini CLI sessions
+- `/delete_session <id-or-index>` - deletes a Gemini CLI session
+- `/mcp` - lists configured Gemini CLI MCP servers
+- `/extensions` - lists installed Gemini CLI extensions
+- `/skills` - lists discovered Gemini CLI skills
+- `/skill_link <local-path>` - links a local Gemini CLI skill
+- `/skill_install <git-url-or-local-path>` - installs a Gemini CLI skill
+- `/skill_enable <name>` - enables a Gemini CLI skill
+- `/skill_disable <name>` - disables a Gemini CLI skill
+- `/skill_uninstall <name>` - uninstalls a Gemini CLI skill
+- `/subagents` - explains SDK support and shows configured/observed subagent state
+
+Plain text chat remains sequential so the normal Gemini CLI session mapping stays safe. Use `/task` when you want multiple independent jobs to run at once.
+
+Images, audio, voice notes, videos, stickers, locations, contacts, polls, and document uploads are not model inputs yet. The bot detects those formats and replies with a clear unsupported-format message. For now, paste text or provide a local file path that Gemini CLI can read.
+
+## Background workers
+
+Each `/task` starts a task record and returns immediately with an ID such as `t-0001`. When capacity is available, the task manager starts a separate `gemini` subprocess for that worker. Task summaries are persisted to `TASK_STORE_PATH` for `/tasks` and `/task_status`; queued or running tasks from a previous process are marked interrupted on startup.
+
+Worker settings:
+
+```bash
+GEMINI_MAX_WORKERS=3
+GEMINI_MAX_CHAT_WORKERS=3
+GEMINI_MAX_QUEUED_TASKS=50
+GEMINI_MAX_CHAT_QUEUED_TASKS=10
+GEMINI_TASK_HISTORY_LIMIT=20
+GEMINI_WORKER_SESSION_MODE=isolated
+```
+
+`GEMINI_MAX_QUEUED_TASKS` and `GEMINI_MAX_CHAT_QUEUED_TASKS` bound the backlog so an allowlisted but compromised account cannot enqueue unlimited work.
+
+`GEMINI_WORKER_SESSION_MODE=isolated` is the safe default: background tasks do not share the normal chat's Gemini CLI resume session, so concurrent workers cannot corrupt one another's context. `GEMINI_WORKER_SESSION_MODE=chat` lets workers use the chat session mapping; in that mode, the bot forces same-chat workers to run one at a time to protect the shared Gemini session.
+
+Cancellation is best-effort. `/cancel <id>` can stop a queued task or send termination to the Gemini CLI child process, but it cannot undo external tool side effects that already happened before cancellation.
+
+## Gemini integration
+
+The app invokes:
+
+```bash
+gemini --prompt "<assistant prompt>" --output-format stream-json --yolo
+```
+
+The app always adds `--yolo` to Gemini CLI invocations. When a Gemini session ID is returned, later messages resume it with `--resume <session_id>`. `GEMINI_OUTPUT_FORMAT=stream-json` is the default so tool and content events can be parsed while the subprocess is still running; `json` remains available for final-response-only automation. The adapter is isolated behind `GeminiClient`; the CLI subprocess remains the default because it uses the published `@google/gemini-cli`, while `SdkGeminiClient` is intentionally kept only as a future adapter seam until a stable first-party SDK package is available.
+
+## Subagents and extensions
+
+Subagents and richer tools come from Gemini CLI extensions, not from Telegram-specific code. The first-party Gemini CLI SDK does not provide subagents by default; this app intentionally stays on the stable `gemini` subprocess protocol. Configure extensions with environment variables that map directly to Gemini CLI flags:
+
+```bash
+GEMINI_EXTENSIONS=my-extension,my-agent-pack
+GEMINI_ALLOWED_MCP_SERVER_NAMES=github,filesystem
+GEMINI_ALLOWED_TOOLS=ReadFile,Shell
+GEMINI_INCLUDE_DIRECTORIES=src,tests
+GEMINI_SETTINGS=/home/me/.gemini/settings.json
+GEMINI_APPROVAL_MODE=default
+GEMINI_SANDBOX=false
+GEMINI_DEBUG=false
+GEMINI_CWD=/home/me/projects/trusted-repo
+```
+
+Use `GEMINI_EXTENSIONS` for extension or subagent packages, `GEMINI_ALLOWED_MCP_SERVER_NAMES` for MCP servers exposed by Gemini CLI settings, `GEMINI_ALLOWED_TOOLS` to limit tools, `GEMINI_INCLUDE_DIRECTORIES` to constrain project context, `GEMINI_SETTINGS` to point at a Gemini CLI settings file, and `GEMINI_CWD` to run Gemini from a specific working directory. `GEMINI_APPROVAL_MODE` and `GEMINI_SANDBOX` are still passed through to Gemini CLI, but this assistant always runs with `--yolo`; keep the machine, repository, account, and extensions trusted. `GEMINI_DEBUG=true` enables extra diagnostics and may reveal operational details in logs.
+
+The bot reports subagents honestly:
+
+- `Subagent: observed <name>` means stream events exposed a subagent-like tool/agent name.
+- `Subagent: not observed` means the task did not emit subagent evidence.
+- `Subagent: unavailable` means no extension/subagent configuration is present.
+
+## Safety defaults
+
+- Telegram allowlist is mandatory.
+- YOLO mode is always on by design; there is no Telegram command or environment variable to disable it.
+- Concurrent worker mode is explicit through `/task`; normal chat is still serialized.
+- The assistant does not expose local shell or filesystem tools directly through Telegram code, but Gemini CLI may use its configured tools, MCP servers, extensions, and YOLO-style autonomy.
+- Use this bot only on trusted machines with trusted repositories and accounts. YOLO/tool-rich/multi-worker modes can read or change local resources, run tools, and amplify prompt-injection or account-compromise impact.
+- Treat Telegram allowlisting as necessary but not sufficient. If an allowlisted account is compromised, or if untrusted content persuades the model through prompt injection, the bot may act on attacker-controlled instructions.
+- The app stores only chat/user/session metadata in `.data/sessions.json` by default, not full message transcripts.

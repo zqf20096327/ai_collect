@@ -1,0 +1,171 @@
+# Hosomaki
+
+<img src="assets/hosomaki_logo.png" alt="Hosomaki"/>
+
+Hosomaki reads your system and helps you understand what's happening in plain language. No cloud. No telemetry. Your system, your data, your choice.
+
+It uses a local model via [Ollama](https://ollama.com) and never sends anything off your machine.
+
+📖 **[See full documentation here→](https://rivernova.github.io/hosomaki/guide/introduction)**
+
+---
+
+## Commands
+
+| Command             | What it does                                                                           |
+|---------------------|----------------------------------------------------------------------------------------|
+| `explain`           | Explain errors from a service, boot, log file, pipe, inline text, or a running process |
+| `status`            | Quick summary of current system health                                                 |
+| `doctor`            | Full diagnosis with concrete suggested actions                                         |
+| `audit`             | Surface changes since a baseline snapshot                                              |
+| `watch`             | Tail a service journal and explain errors in real time                                 |
+| `why`               | Given an exit code and service, reconstruct the full failure chain                     |
+| `ports`             | List listening ports and flag anything unexpected                                      |
+| `timers`            | Inspect all systemd timers and flag failures or overdue schedules                      |
+| `crons`             | Read all crontabs and explain what each job does                                       |
+| `mounts`            | Inspect active mounts, detect stale NFS, and flag disks approaching capacity           |
+| `updates`           | Explain pending package updates before applying them                                   |
+| `history`           | Review past diagnostic results                                                         |
+| `firewall`          | Explain active firewall rules                                                          |
+| `shell-integration` | Install a shell wrapper that explains failed commands automatically                    |
+
+Run `hosomaki <command> --help` for flags and usage details.
+
+---
+
+### Quick examples
+
+```bash
+# General health check
+hosomaki status
+hosomaki status --brief                          # one-sentence summary
+hosomaki doctor
+hosomaki doctor --brief                          # one-sentence summary
+
+# Explain logs. Adapts to whatever you throw at it
+hosomaki explain --service nginx
+hosomaki explain --service nginx --lines 100     # control how many lines to read
+hosomaki explain --service nginx --since "1 hour ago"
+hosomaki explain --service nginx --since "2024-01-15 14:00" --until "2024-01-15 15:00"
+hosomaki explain --boot                          # current boot
+hosomaki explain --boot -1                       # previous boot
+hosomaki explain --dmesg                         # kernel ring buffer
+hosomaki explain --file /var/log/syslog
+hosomaki explain --context nginx,postgresql      # correlate multiple services at once
+hosomaki explain --diff -1                       # compare current boot with the previous one
+hosomaki explain --diff -2:-1                    # compare any two boots
+hosomaki explain --pid 1234                      # what is this process doing right now
+journalctl -p err -n 50 | hosomaki explain       # pipe any log output
+hosomaki explain "kernel: OOM killer activated"  # inline message
+
+# Explain why a service exited
+hosomaki why 1 --service nginx
+hosomaki why 137 --service myapp --lines 100
+hosomaki why 1 --service nginx --since "10 min ago"
+
+# Surface what changed on the system
+hosomaki audit --init                            # take a baseline
+hosomaki audit                                   # diff against it
+hosomaki audit --dirs /etc,/usr/local/bin        # track additional directories
+hosomaki audit --baseline /tmp/my-baseline.json  # use a custom baseline path
+
+# Watch a service and explain errors as they arrive
+hosomaki watch nginx
+hosomaki watch nginx --lines 20                  # seed with number of lines. 0 skips seed
+hosomaki watch nginx --window 10s --max-lines 30 # tune batching behaviour
+
+# Review scheduled work
+hosomaki ports
+hosomaki timers
+hosomaki crons
+
+# Mount health, stale NFS, disk thresholds
+ hosomaki mounts        
+ 
+# Pending package updates
+hosomaki updates
+hosomaki updates --security-only                  # only security-related updates
+
+# Review past diagnostic results
+hosomaki history
+hosomaki history --command explain                # filter by source command
+hosomaki history --since 7d                       # only entries from the last week
+hosomaki history --clear                          # wipe the log  
+
+# firewall rules
+hosomaki firewall
+hosomaki firewall --cross-check                   # checks rules against currently listening ports  
+
+# Auto-explain failed commands
+hosomaki shell-integration --shell bash >> ~/.bashrc && source ~/.bashrc
+explain make build
+```
+
+---
+
+## Data Privacy & Security
+
+Hosomaki is designed around a simple principle: your data should remain yours. Before anything reaches the local model, a mandatory sanitisation layer strips IPs, hostnames, paths, UUIDs, emails, and credentials from collected data.
+
+See [Data Privacy](https://rivernova.github.io/hosomaki/guide/privacy), [Sanitisation](https://rivernova.github.io/hosomaki/guide/sanitisation), and [SECURITY.md](SECURITY.md) for the full data handling policy and threat model.
+
+---
+
+## Data Flow & Processing Pipeline
+
+<img src="assets/hosomaki_flowchart.svg" alt="Dataflow"/>
+
+Each command sanitises its input locally, sends it to the local model, then validates and repairs the response against a strict schema before rendering. See [Architecture](https://rivernova.github.io/hosomaki/guide/architecture) for the full pipeline breakdown.
+
+---
+
+## Coming soon
+
+See the [Roadmap](https://github.com/rivernova/hosomaki/wiki) for the full plan.
+
+---
+
+## Requirements
+
+- Linux (systemd-based distro recommended)
+- [Ollama](https://ollama.com) running locally with a model pulled
+- Go 1.23+ *(only to build from source. This is not needed for the `.deb`/`.rpm` packages)*
+
+---
+
+## Installation
+
+Hosomaki needs [Ollama](https://ollama.com) running locally with a model pulled, then installs from a release package (`.deb`/`.rpm`, no Go required) or from source.
+
+→ **[Installation guide](https://rivernova.github.io/hosomaki/guide/installation)** — Ollama setup (native and Docker/GPU), packages, building from source, and recommended models.
+
+---
+
+## Configuration
+
+Hosomaki is zero-configuration by default.
+
+→ **[Configuration guide](https://rivernova.github.io/hosomaki/guide/configuration)** — full schema and environment-variable overrides.
+
+---
+
+## Development
+
+```bash
+make build    # build binary to ./bin/hosomaki
+make test     # run tests
+make lint     # run linter (requires golangci-lint)
+make dev      # run without building (go run)
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
+---
+
+## Status
+
+`v0.5.0` is out. The full command set is available (`doctor`, `explain`, `why`, `ports`, `timers`, `crons`, `mounts`, `updates`, `firewall`, `history`, `audit`, `watch`). This is a pre-1.0.0 release: it's usable day-to-day, but flags and config aren't frozen yet and may still change before 1.0.0.
+
+## License
+
+[Mozilla Public License 2.0](LICENSE)

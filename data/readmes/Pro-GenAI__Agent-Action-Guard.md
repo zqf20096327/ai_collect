@@ -1,0 +1,201 @@
+<p align="center">
+<img src="https://raw.githubusercontent.com/Pro-GenAI/Agent-Action-Guard/main/assets/cover.jpg" alt="Agent Action Guard" height="250"/>
+</p>
+
+<h1 align="center">Agent Action Guard</h1>
+<p align="center"><em>Framework to block harmful AI agent actions before they cause harm — lightweight, real-time, easy-to-use.</em></p>
+
+[![PyPI](https://img.shields.io/pypi/v/agent-action-guard?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/agent-action-guard/)
+[![Website](https://img.shields.io/badge/Website-000000?style=for-the-badge&logo=github&logoColor=white)](https://action-guard.github.io/)
+[![Docs](https://img.shields.io/badge/Docs-2AE500?style=for-the-badge&logo=readthedocs&logoColor=111111)](https://action-guard.github.io/docs/)
+[![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@praneeth.v/the-agent-action-classifier-a-step-toward-safer-autonomous-ai-agents-1ec57a601449)
+[![npm](https://img.shields.io/npm/v/agent-action-guard?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/agent-action-guard)
+<!-- [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=si1qF_zRa1E) -->
+
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/agent-action-guard?period=total&units=NONE&left_color=BLACK&right_color=GREEN&left_text=Downloads)](https://pepy.tech/projects/agent-action-guard)
+[![AI](https://img.shields.io/badge/AI-C21B00?style=for-the-badge&logo=openaigym&logoColor=white)]()
+[![LLMs](https://img.shields.io/badge/LLMs-1A535C?style=for-the-badge&logo=openai&logoColor=white)]()
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=ffdd54)]()
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-darkgreen.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Pro-GenAI/Agent-Action-Guard/blob/main/LICENSE.md)
+
+<!-- [![Blog](https://img.shields.io/badge/Blog-FFFFFF?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/blog/prane-eth/agent-action-guard) -->
+<!-- [![Preprint](https://img.shields.io/badge/Paper-PDF-FFF7CC?style=for-the-badge&logo=files)](https://www.researchgate.net/publication/396525269_Agent_Action_Guard_Safe_AI_Agents_through_Action_Classifier) -->
+<!-- [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace_Dataset-FF6F00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/prane-eth/HarmActions) -->
+<!-- [![DOI](https://img.shields.io/badge/DOI-10.20944/preprints202510.1415.v1-yellow?style=for-the-badge)](https://www.preprints.org/manuscript/202510.1415) -->
+
+---
+
+## 🚀 Quick Start
+
+Python package support: **Python 3.10 through Python 3.14**.
+
+```bash
+pip install agent-action-guard
+# or
+uv add agent-action-guard
+```
+<!-- 
+If you use pepip:
+```bash
+pepip install agent-action-guard
+``` -->
+
+> For embedding backend options and configuration details—including zero-config ONNX embeddings, custom local ONNX models, OpenAI-compatible embedding APIs, environment variables, and backend precedence—read [USAGE.md](https://github.com/Pro-GenAI/Agent-Action-Guard/blob/main/USAGE.md). The installed packages also provide `agent-action-guard` for direct JSON, JSON arrays, JSONL batch classification, and `agent-action-guard serve` for a local HTTP classification API.
+
+Python framework integrations are included in the same package: `agent_action_guard.langchain`, `agent_action_guard.llamaindex`, `agent_action_guard.openai_agents`, `agent_action_guard.autogen`, and `agent_action_guard.crewai`. No separate integration package is required.
+
+Pre-tool-use harness hooks are also built in for Codex, Claude Code, Cursor, Kiro, OpenCode, Antigravity CLI (`agy`), GitHub Copilot CLI, OpenClaw, and Hermes Agent:
+
+```bash
+agent-action-guard hooks install --target codex
+# or: claude-code, cursor, kiro, opencode, agy, copilot, openclaw, hermes
+```
+
+OpenClaw and Hermes intentionally retain their project-plugin trust gates. After installing the OpenClaw hook, explicitly enable `agent-action-guard` with `openclaw plugins enable agent-action-guard`. For Hermes, start trusted repositories with `HERMES_ENABLE_PROJECT_PLUGINS=1` so the generated `.hermes/plugins/agent-action-guard/` plugin is loaded.
+
+Want to run the evaluation benchmark too?
+
+```bash
+pip install "agent-action-guard[harmactionseval]"
+# or
+uv add "agent-action-guard[harmactionseval]"
+
+agent-action-guard harmactionseval
+```
+
+HarmActionsEval caches each model's `k` value alongside its `results`. Re-running
+the same benchmark with a larger `--k` keeps successful cached results and only
+continues entries that are still `false`, starting at the first previously
+unevaluated attempt. Re-running with the same or a smaller `--k` does not repeat
+cached LLM calls. The `last_attempt` map records per-result attempt coverage for unresolved `false` entries so the same behavior stays correct when runs use `--offset`/`--limit` chunks.
+
+### JavaScript Runtime
+
+The repository also ships an npm package in [typescript/package.json](typescript/package.json) for screening agent actions in Node.js.
+
+```bash
+npm install agent-action-guard
+```
+
+If you use pnpm, the equivalent commands are:
+
+```bash
+pnpm install agent-action-guard
+```
+
+---
+
+## ❓ Why Action Guard?
+
+**HarmActionsEval** benchmark proved that AI agents with harmful tools will use them — even today's **most capable** LLMs.
+68% of the completed LLM evaluations executed actions at the first attempt for over 95% of the harmful prompts.
+
+| Model                     | SafeActions@1 |
+|---------------------------|-------:|
+| Gemini 3.8 Flash          | 79.43% |
+| Claude Opus 5             | 48.23% |
+| GPT 6.1 Sol               | 25.53% |
+| Qwen 3.5 397B A17B        | 23.40% |
+| Claude Sonnet 5           | 3.55%  |
+| GPT 6 Luna                | 3.55%  |
+| Grok 4.20 Non Reasoning   | 2.13%  |
+| Gemini 3.1 Flash Lite     | 0.71%  |
+| **All 19 model average**  | **11.91%** |
+
+> These models often still respond *"Sorry, I can't help with that"* after executing the harmful action anyway.
+
+Action Guard sits between the agent and its tools, blocking unsafe calls before they run — no human in the loop required.
+
+### Agent Action Guard vs. Laya and LLM
+
+[Laya](https://github.com/receptron/laya) is a general-purpose local model that can also be used as an action-safety classifier similar to Agent Action Guard. The comparison script evaluates Agent Action Guard, Laya, and an OpenAI LLM classifier on the same HarmActions rows. The two local systems are forced to CPU execution, and warm-up/model-loading time is excluded from the reported per-action latency.
+
+```bash
+cd python
+python scripts/compare_laya_harmactions.py
+```
+
+| Model | HarmActions | Accuracy | Precision | Recall | F1 | ms/action |
+|---|---:|---:|---:|---:|---:|---:|
+| **Agent Action Guard** | **97.87%** | **97.87%** | **100.00%** | **97.87%** | **98.92%** | **19.66** |
+| gpt-5.6-luna | 90.07% | 90.07% | 100.00% | 90.07% | 94.78% | 3381.72 |
+| Laya | 51.06% | 51.06% | 100.00% | 51.06% | 67.61% | 815.86 |
+
+<p align="center">
+  <img src="assets/benchmark_quality.svg" alt="Bar chart comparing Agent Action Guard, gpt-5.6-luna, and Laya accuracy and F1 score on HarmActions" width="900"/>
+</p>
+
+<p align="center">
+  <img src="assets/benchmark_latency.svg" alt="Bar chart comparing Agent Action Guard, gpt-5.6-luna, and Laya per-action latency" width="900"/>
+</p>
+
+The charts use the same values as the table above: higher is better for classification quality, while lower is better for latency.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/Pro-GenAI/Agent-Action-Guard/main/assets/iceberg.jpg" alt="Iceberg" height="400"/>
+</p>
+
+---
+
+## ⚙️ How It Works
+
+1. **Agent proposes a tool call**
+2. **Action Guard classifies it** using a lightweight neural network trained on the **HarmActions** dataset
+3. **Harmful calls are blocked**; safe calls proceed normally
+
+<img src="https://raw.githubusercontent.com/Pro-GenAI/Agent-Action-Guard/main/assets/Workflow.gif" alt="Workflow" height="380"/>
+
+<img src="https://raw.githubusercontent.com/Pro-GenAI/Agent-Action-Guard/main/assets/demo.gif" alt="Demo" height="200"/>
+
+---
+
+## 🆕 Contributions:
+
+- 📊 **HarmActions** — safety-labeled agent action dataset with manipulated prompts
+- 📏 **HarmActionsEval** — benchmark with the *SafeActions@k* metric
+- 🧠 **Action Guard** — real-time neural classifier optimized for agent loops
+	- 🏋️ Trained on HarmActions
+	- ✅ Classifies every tool call before execution
+	- 🚫 Blocks harmful and unethical actions automatically
+	- ⚡ Lightweight for real-time use
+
+---
+
+## 💬 Enjoyed it? Share your opinion.
+
+Share a quick note in [Discussions](https://github.com/Pro-GenAI/Agent-Action-Guard/discussions/15) — it directly shapes the project's direction and helps the AI safety community. 🙌 Waiting with excitement for feedback and discussions on how this helps you or the AI community.
+
+> ⭐ Star the repo if Action Guard is useful to you — it really does help!
+
+---
+
+## 📝 Citation
+
+```bibtex
+@article{202510.1415,
+  title   = {{Agent Action Guard: Classifying AI Agent Actions to Ensure Safety and Reliability}},
+  year    = 2025,
+  month   = {October},
+  publisher = {Preprints},
+  author  = {Praneeth Vadlapati},
+  doi     = {10.20944/preprints202510.1415.v2},
+  url     = {https://www.preprints.org/manuscript/202510.1415},
+  journal = {Preprints}
+}
+```
+
+## 📄 License
+
+Licensed under [CC BY 4.0](https://github.com/Pro-GenAI/Agent-Action-Guard/blob/main/LICENSE.md). If you prefer not to provide attribution, send a brief acknowledgment to praneeth.vad@gmail.com with the details of your usage and the potential impact on your project.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/Pro-GenAI/Agent-Action-Guard/main/assets/project_banner.gif" alt="Project banner" height="220"/>
+</p>
+
+---
+
+<p align="center">
+<img src="https://avatars.githubusercontent.com/u/173374239?s=400&u=f61b42a0b69e5c674a51658aff1b765e010a8e49&v=4" alt="Pro-GenAI" height="150"/>
+<br>
+<em>Projects for Next-Gen AI</em>
+</p>

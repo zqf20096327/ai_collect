@@ -1,0 +1,281 @@
+[![License](https://img.shields.io/github/license/christianjianelli/yaai)](https://github.com/christianjianelli/yaai/blob/main/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/christianjianelli/yaai)](https://github.com/christianjianelli/yaai/stargazers) [![GitHub top language](https://img.shields.io/github/languages/top/christianjianelli/yaai)](https://github.com/christianjianelli/yaai)
+
+# yaai - ABAP AI tools
+This repository provides a set of tools designed to facilitate Artificial Intelligence capabilities within ABAP environments.
+
+## Key Features
+- **Multi-Provider LLM API Support**: ABAP AI tools support seamless integration with multiple large language model APIs, giving you flexibility in choosing your provider and deployment model. The list of supported APIs will continue to grow as the project evolves. Currently supported APIs include:
+  - **[OpenAI](./docs/openai/README.md)**
+  - **[Anthropic](./docs/anthropic/README.md)**
+  - **[Google Gemini](./docs/google/README.md)**
+  - **[Mistral](./docs/mistral/README.md)**
+  - **[Ollama](./docs/ollama/README.md)**
+  - **[SAP AI Core](./docs/sap_ai_core/README.md)**
+  - **[Deepseek](./docs/deepseek/README.md)**
+  - **[Moonshot](./docs/moonshot/README.md)**
+  - APIs from other providers, such as Nvidia, that implement the OpenAI API standards also work with ABAP AI tools, possibly requiring minor adjustments.
+      
+      - **[Nvidia](./docs/openai_compatible/nvidia.md)**
+      
+- **Conversation Management**: Maintain and manage multi-turn conversations, with full access to conversation history for advanced chat scenarios.
+- **Tool/Function Calling**: Integrate ABAP business logic with LLMs using function/tool calling, allowing AI models to trigger ABAP methods.
+- **Retrieval-Augmented Generation (RAG)**: Enhance LLM outputs by incorporating enterprise data, enabling more accurate and relevant answers through retrieval-augmented generation workflows.
+- **AI Agents Development**: The primary focus of the ABAP AI tools is AI Agent development. All tooling is specifically designed to support ABAP developers in building, testing, and validating AI Agents.
+- **Vision Support**: As of version 1.2.3, image processing is available across all supported APIs. You can send images to LLM models with vision capabilities for analysis and processing. [See Examples.](./docs/images_and_files_support.md)
+- **Files Support**: As of version 1.2.3, file processing is available across all APIs that support file input. You can send files to these APIs for analysis and processing. [See Examples.](./docs/images_and_files_support.md)
+
+
+These features empower you to build intelligent, enterprise-ready ABAP applications that leverage the latest advancements in AI.
+
+## Companion Projects
+
+[**ABAP AI tools Cockpit**](https://github.com/christianjianelli/yaai_cockpit)
+Configuring AI agents in ABAP AI tools involves maintaining a bunch of database tables. To make this whole process easier, the ABAP AI tools Cockpit was built. It’s a frontend application designed to streamline the development of AI agents created with ABAP AI tools.
+
+<p>
+  <img src="./docs/images/screenshot-cockpit-home.jpg" alt="ABAP AI tools UI Chat" width="500px">
+</p>
+
+[**ABAP AI tools - Function Calling Library**](https://github.com/christianjianelli/yaai_fc)
+A comprehensive function calling library designed specifically for AI agents to interact with ABAP Dictionary (DDIC) objects and related development artifacts in SAP ABAP environments. This library bridges the gap between natural language instructions and ABAP development operations, allowing AI agents to create, modify, and manage ABAP Dictionary objects and other ABAP development artifacts like message classes and translations, on the user's behalf.
+
+[**ABAP AI tools - User Interface**](https://github.com/christianjianelli/yaai_ui)
+The ABAP AI tools UI repository provides interfaces to interact with LLMs directly from your SAP system.
+  
+<p>
+  <img src="docs/images/abap_ai_ui_chat.png" alt="ABAP AI tools UI Chat" width="500px">
+  <br><a href="https://github.com/christianjianelli/yaai_ui">ABAP AI tools Chat</a>
+  <br>
+  <br>
+  <img src="docs/images/yaai_ui_code_assist.png" alt="ABAP AI UI Code Assistant" width="500px">
+  <br><a href="https://github.com/christianjianelli/yaai_ui">ABAP AI tools Code Assistant</a>
+</p>
+
+## Installation
+You can install the ABAP AI tools into your SAP system using abapGit. 
+
+  **Disclaimer:** ABAP AI tools is released under the MIT License. It is provided "as is", without warranty of any kind, express or implied. This means you use these tools at your own risk, and the authors are not liable for any damages or issues arising from their use.
+
+## Prerequisites
+ - **ABAP 7.52+**: You need an SAP system running ABAP version 7.52 or higher.
+ - **abapGit**: Ensure that `abapGit` is installed and configured in your ABAP system. If not, you can find the latest version and installation instructions on the official abapGit website: https://docs.abapgit.org/
+ - **Developer Access**: You need appropriate developer authorizations in your ABAP system to import objects.
+
+## Installation Steps
+1 - **Open abapGit**: In your SAP GUI, execute transaction `ZABAPGIT` (or the equivalent transaction code you have set up for abapGit).
+
+2 - **Add Online Repository**:
+  - Click on the `+` button (Add Online Repo) or select "New Online" from the menu.
+
+3 - **Enter Repository URL**:
+  - In the "URL" field, paste the URL of this GitHub repository: `https://github.com/christianjianelli/yaai.git`
+  - For the **Package**, we recommend creating a new package called `YAAI`. Remember to assign it to a transport request if necessary.
+  - Click "OK" or press Enter.
+
+4 - **Clone Repository**:
+  - `abapGit` will display the repository details. Review the objects that will be imported.
+  - Click the "Clone" button (often represented by a green download icon).
+
+5 - **Activate Objects**:
+  - Once the cloning process is complete, `abapGit` will list the imported objects.
+  - Activate any inactive objects if prompted.
+
+6 - **Verify Installation**:
+  - After the installation, all the `ABAP AI tools` objects (interfaces, classes, etc.) will be available in your specified package. You can verify this by checking transaction `SE80` for the package you used.
+
+7 - **Basic Setup**:
+  - Open the class `ycl_aai_basic_setup` in Eclipse and run it (press F9). This will populate the `YAAI_API`, `YAAI_MODEL`, and `YAAI_TOOL` tables.
+
+You have now successfully installed the `ABAP AI tools!`
+
+## 🐞 Found a bug?
+
+If something doesn't work as expected, please don't give up on ABAP AI tools!
+
+If you encounter a bug, I'd really appreciate it if you could open a [GitHub Issue](https://github.com/christianjianelli/yaai/issues/new). Even if you're not sure whether it's actually a bug, I'd much rather hear about it than have you stop using the project.
+
+You don't need to investigate the cause first, just describe what you were trying to do and what happened instead.
+
+Your bug report helps improve ABAP AI tools for everyone.
+
+👉 **Report a bug:** https://github.com/christianjianelli/yaai/issues/new
+
+## ❓ Need Help?
+
+If you have a question, need help getting started, need help using ABAP AI tools, or aren't sure whether you've found a bug, feel free to start a GitHub [Discussion](https://github.com/christianjianelli/yaai/discussions). If you've confirmed it's a bug, please open a GitHub [Issue](https://github.com/christianjianelli/yaai/issues) instead.
+
+I'm happy to help, and your questions often inspire improvements to both the documentation and the project itself.
+
+- 🤔 **Need help or have a question?** Ask in [Discussions](https://github.com/christianjianelli/yaai/discussions).
+- 💡 **Want to suggest an improvement?** Share your idea in [Discussions](https://github.com/christianjianelli/yaai/discussions).
+
+## Quickstart
+
+### Running Your First ABAP AI tools Application
+
+This quickstart demonstrates how to create a simple LLM application. It shows you how to connect to the LLM and perform a basic chat interaction.
+
+**Requirements:** 
+*   You have a valid OpenAI API Key.
+*   Import OpenAI server certificates into SAP trust manager. The [abapGit documentation](https://docs.abapgit.org/user-guide/setup/ssl-setup.html) explains in detail how to do it.
+
+    **Note**: To run the application on SAP NetWeaver AS ABAP Developer Edition, we recommend using NGINX as a reverse proxy to expose a local HTTP endpoint—it’s much simpler than manually configuring SSL on the SAP system.
+
+**Steps:**
+1.  Create an ABAP AI tools Connection instance;
+2.  Set the Base URL;
+3.  Set the API Key;
+4.  Create an ABAP AI tools OpenAI instance;
+5.  Call the CHAT method.
+
+**Complete Example:**
+
+```abap
+REPORT yaai_r_simple_llm_app_openai LINE-SIZE 500.
+
+START-OF-SELECTION.
+
+  DATA(o_aai_conn) = NEW ycl_aai_conn( ).
+
+  " The hardcoded base URL in this example is intended for testing and development only. 
+  o_aai_conn->set_base_url( i_base_url = 'https://api.openai.com' ).
+ 
+  " The hardcoded API key in this example is intended for testing and development only.
+  " Hardcoding API keys directly into your ABAP code is highly discouraged.
+  o_aai_conn->set_api_key( i_api_key = 'REPLACE_THIS_TEXT_WITH_YOUR_OPENAI_API_KEY' ).
+
+  DATA(o_aai_openai) = NEW ycl_aai_openai( i_model = 'gpt-5' i_o_connection = o_aai_conn ).
+
+  o_aai_openai->chat(
+    EXPORTING
+      i_message    = 'Hi, there!'
+    IMPORTING
+      e_t_response = DATA(t_response)
+  ).
+
+  " Display the LLM response on the screen
+  LOOP AT t_response INTO DATA(l_response_line).
+    WRITE: / l_response_line.
+  ENDLOOP.
+``` 
+
+**Result:**
+
+The following screenshot shows the output you can expect after running the example ABAP AI tools report. The response from the LLM will be displayed line by line in the SAP GUI output window.
+
+![Output of the ABAP AI tools LLM quickstart application](docs/images/QuickstartReportRunOpenAI.png)
+
+
+### Running a simple ABAP AI tools Chat Application
+
+The ABAP AI tools Chat stores all conversation exchanges in memory. At any time, you can retrieve the full conversation history, allowing you to review previous messages or continue the dialogue seamlessly.
+
+#### Complete Example
+
+```abap
+REPORT yaai_r_simple_llm_chat_openai.
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME.
+
+PARAMETERS: p_model  TYPE string DEFAULT 'gpt-5' LOWER CASE VISIBLE LENGTH 20,
+            p_prompt TYPE string DEFAULT 'What is the capital of France?' LOWER CASE VISIBLE LENGTH 50.
+
+SELECTION-SCREEN: SKIP 1,
+
+BEGIN OF LINE,
+PUSHBUTTON 68(10) button USER-COMMAND cli1,
+END OF LINE.
+SELECTION-SCREEN END OF BLOCK b1.
+
+INITIALIZATION.
+
+  "Set text for the selection screen fields and button
+  %_p_model_%_app_%-text = 'Model'.
+  %_p_prompt_%_app_%-text = 'Prompt'.
+  button = 'Send'.
+
+  DATA(o_aai_conn) = NEW ycl_aai_conn( ).
+
+  o_aai_conn->set_base_url( i_base_url = 'https://api.openai.com' ).
+
+  " The hardcoded API key in this example is intended for testing and development only.
+  " Hardcoding API keys directly into your ABAP code is highly discouraged.
+  o_aai_conn->set_api_key( i_api_key = 'REPLACE_THIS_TEXT_WITH_YOUR_OPENAI_API_KEY' ).
+
+  DATA(o_aai_openai) = NEW ycl_aai_openai( i_model = p_model i_o_connection = o_aai_conn ).
+
+
+AT SELECTION-SCREEN.
+
+  o_aai_openai->chat(
+    EXPORTING
+      i_message = p_prompt
+  ).
+
+  DATA(json) = /ui2/cl_json=>serialize(
+    EXPORTING
+      data        = o_aai_openai->get_conversation( )
+      compress    = abap_true
+      pretty_name = abap_true
+
+  ).
+
+  IF json IS NOT INITIAL.
+
+    cl_demo_output=>display_json( json ).
+
+  ENDIF.
+``` 
+
+**Result:**
+
+The following screenshots show the output you can expect after running the example ABAP AI tools Chat report.
+
+![Output of the ABAP AI tools Chat quickstart application](docs/images/QuickstartReportRunOpenAIChat_1.png)
+
+![Output of the ABAP AI tools Chat quickstart application](docs/images/QuickstartReportRunOpenAIChat_2.png)
+
+![Output of the ABAP AI tools Chat quickstart application](docs/images/QuickstartReportRunOpenAIChat_3.png)
+
+![Output of the ABAP AI tools Chat quickstart application](docs/images/QuickstartReportRunOpenAIChat_4.png)
+
+### More Examples
+
+[**ABAP AI tools - Usage Examples**](https://github.com/christianjianelli/yaai_examples)
+This repository contains examples that demonstrate the basic usage of the ABAP AI tools with multiple providers, including Anthropic, Google, OpenAI, Ollama, Mistral, and Nvidia.
+
+## Next Steps
+
+  Now that you've run your first ABAP AI tools applications, consider exploring additional features. 😊
+
+  ### Choose Your API:
+
+  To get started with your preferred API, check out the dedicated guides:
+
+  - [OpenAI](docs/openai/README.md): Learn how to use ABAP AI tools with OpenAI models.
+  - [Anthropic](docs/anthropic/README.md): Learn how to use ABAP AI tools with Anthropic models.
+  - [Google Gemini](docs/google/README.md): Learn how to use ABAP AI tools with Google Gemini models.
+  - [Mistral](docs/mistral/README.md): Learn how to use ABAP AI tools with Mistral models.
+  - [Ollama](docs/ollama/README.md): Learn how to use ABAP AI tools with with local or self-hosted Ollama models.
+  - [DeepSeek](docs/deepseek/README.md): Learn how to use ABAP AI tools with DeepSeek models.
+  - [Moonshot AI](docs/moonshot/README.md): Learn how to use ABAP AI tools with Moonshot AI models.
+
+  ### Read the documentation
+
+  - [ABAP AI tools Documentation](docs/README.md)
+
+  ### Usage Examples
+
+  - [ABAP AI tools - Usage Examples](https://github.com/christianjianelli/yaai_examples)
+
+  ### Create AI Agents 
+
+  - [How to Create and Test AI Agents in the ABAP AI tools Cockpit](https://github.com/christianjianelli/yaai_cockpit/blob/main/docs/guides/create-and-test-ai-agents.md)
+
+## How to Obtain Support
+
+  Feel free to raise issues, ask questions, suggest improvements or report bugs.
+
+## Contributing
+
+  This project aims to bring AI capabilities into ABAP, and contributions from the community are highly welcome. Everyone is welcome to contribute. More details are found in [Contributing](CONTRIBUTING.md).

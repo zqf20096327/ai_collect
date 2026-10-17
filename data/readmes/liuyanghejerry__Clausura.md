@@ -1,0 +1,807 @@
+# Clausura
+
+CI-native agent CLI tool for deterministic pipeline gating.
+
+[![Build](https://img.shields.io/github/actions/workflow/status/liuyanghejerry/Clausura/main.yml?branch=main)](https://github.com/liuyanghejerry/Clausura/actions)
+[![Crates.io](https://img.shields.io/crates/v/clausura-cli)](https://crates.io/crates/clausura-cli)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## Overview
+
+Clausura is a platform-agnostic agent CLI tool built for CI/CD pipelines. It runs bounded LLM agent tasks against your codebase, extracts structured findings, evaluates them against deterministic gating rules, and exits with a clear pass/fail signal. No mid-process questions, no human in the loop.
+
+**Key philosophy: closed-loop execution with deterministic gating.** The LLM finds issues. The rule engine decides if they matter. Your pipeline gets a binary answer.
+
+## Clausura vs. generic agent harnesses
+
+General-purpose agent harnesses (DeepSeek Harness, Claude Code, Codex and similar) optimize for open-ended interactive work: flexible plugin stacks, long-lived sessions, sub-agent orchestration, and human-in-the-loop approvals. They deliberately leave verdicts, structured output and resource bounds to the caller — their "success" means "the agent stopped", not "the task is done".
+
+Clausura occupies the other side of the same problem and is deliberately *not* a general harness:
+
+| | Generic agent harness | Clausura |
+|---|---|---|
+| Success semantics | last turn ended cleanly | gating rules evaluated over structured findings |
+| Verdict | none (bare text output) | exit code 0/1/2/3 + SARIF v2.1.0 |
+| Run bounds | unbounded (waits for quiescence) | `max_iterations`, `timeout_secs`, `token_budget`, `max_total_tokens` |
+| Incomplete run | silent partial result | fail-closed by default (`on_incomplete: fail`) |
+| Extensibility | plugin framework (everything swappable) | skills + MCP tools + preflight checks; static single binary |
+| Deployment | runtime + plugins to install | one static binary, zero runtime dependencies |
+| Audit trail | session event log (append-only) | append-only run event log + findings ledger + context archives |
+
+If you are building an interactive coding agent, use a generic harness. If you need a *deterministic gate in CI* — an agent that must finish within bounds and produce a pass/fail answer a pipeline can trust — that is what Clausura is for.
+
+**Use cases**
+
+- **Code review gating** -- flag violations in pull requests before merge
+- **Cross-repo consistency checks** -- enforce conventions across multiple repositories
+- **Smart gating** -- fail the pipeline only when findings exceed configured thresholds
+- **i18n extraction and translation** -- scan source files and validate locale coverage
+- **Architecture compliance** -- verify code structure against project conventions
+
+## Installation
+
+### Shell script (Linux, macOS, WSL)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/liuyanghejerry/Clausura/main/install.sh | bash
+```
+
+The script detects your OS and architecture, downloads the latest release from GitHub, verifies the tarball against the release's `checksums.txt` (SHA256), and installs it to `/usr/local/bin` or `~/.local/bin`.
+
+### Cargo
+
+```bash
+cargo install clausura-cli
+```
+
+### Docker
+
+```bash
+docker pull ghcr.io/liuyanghejerry/clausura
+docker run --rm -v $(pwd):/workspace ghcr.io/liuyanghejerry/clausura run
+```
+
+### From source
+
+```bash
+git clone https://github.com/liuyanghejerry/Clausura.git
+cd clausura
+cargo build --release --package clausura-cli
+# binary at target/release/clausura
+```
+
+### Verify
+
+```bash
+clausura --version
+# clausura 1.0.0 (commit: abc1234, built: 2026-05-23)
+```
+
+## Supported LLM Providers
+
+Clausura supports three vendor categories out of the box:
+
+### 1. OpenAI-compatible
+
+Any LLM that exposes an OpenAI-compatible `/chat/completions` endpoint:
+
+| Shorthand | Base URL | Auth Header |
+|-----------|----------|-------------|
+| `openai` | `https://api.openai.com/v1` | `Authorization: Bearer` |
+| `deepseek` | `https://api.deepseek.com/v1` | `Authorization: Bearer` |
+| `groq` | `https://api.groq.com/openai/v1` | `Authorization: Bearer` |
+| `ollama` | `http://localhost:11434/v1` | `Authorization: Bearer` |
+| (custom) | User-defined | `Authorization: Bearer` |
+
+```yaml
+vendor: deepseek   # shorthand
+# or full config:
+vendor:
+  type: openai_compatible
+  base_url: "https://api.mistral.ai/v1"
+```
+
+### 2. Anthropic-compatible
+
+Claude models via Anthropic's native Messages API:
+
+| Shorthand | Base URL | Auth Header |
+|-----------|----------|-------------|
+| `anthropic` | `https://api.anthropic.com` | `x-api-key` |
+| `claude` | `https://api.anthropic.com` | `x-api-key` |
+
+```yaml
+vendor: anthropic
+model: claude-sonnet-4-20250514
+```
+
+Uses Anthropic's native Messages API (`/v1/messages`) with `x-api-key` auth and `anthropic-version: 2023-06-01`.
+
+### 3. Custom
+
+For enterprise-internal LLMs with non-standard authentication:
+
+```yaml
+vendor:
+  type: custom
+  base_url: "https://llm.internal.company.com/v1"
+  auth_header: "X-API-Key"
+  api_key_env: "INTERNAL_LLM_KEY"
+```
+
+Uses the OpenAI-compatible API format (`/chat/completions`) with configurable base URL and auth header. The `auth_header` defaults to `Authorization`; the `api_key_env` defaults to `CLAUSURA_API_KEY`.
+
+## Quick Start
+
+### 1. Create a configuration file
+
+Create `.clausura.yaml` (or `.clausura.yml`) in your project root:
+
+```yaml
+version: "1"
+task:
+  name: code-review
+  model: gpt-4o
+  vendor: openai
+  prompt_template: "Review the git diff and return findings as JSON."
+  token_budget: 16000
+  timeout_secs: 120
+  ambiguity_policy: fail_closed
+  gating:
+    - rule: no-critical
+      description: Block on any critical error
+      min_severity: error
+      max_findings: 0
+      action: fail
+    - rule: warn-on-warnings
+      description: Warn on excessive warnings
+      min_severity: warning
+      max_findings: 10
+      action: warn
+```
+
+### 2. Set your API key
+
+```bash
+export CLAUSURA_API_KEY=sk-...
+```
+
+The API key is never read from the YAML config file. It must come from this environment variable or the `--api-key` CLI flag.
+
+### 3. Run the task
+
+```bash
+clausura run
+```
+
+### 4. Validate config without running
+
+```bash
+clausura run --validate-config
+clausura run --dry-run  # show the execution plan
+clausura run --base origin/main  # committed PR changes; fetch the base/history first
+```
+
+### Exit codes
+
+| Code | Meaning       | Description                              |
+|------|---------------|------------------------------------------|
+| 0    | Pass          | All gating rules satisfied               |
+| 1    | Fail          | A rule with `action: fail` was violated  |
+| 2    | Error         | Runtime error (provider, timeout, etc.), or an incomplete agent run with `on_incomplete: fail` |
+| 3    | Config error  | Invalid configuration                    |
+
+## Using Skills
+
+Clausura 1.2.0+ can reuse community skill files (Markdown) as review prompts. Skills answer "what and how to review", while gating rules answer "how many findings is too many" — the two are cleanly separated.
+
+Skills use **progressive disclosure**: only a catalog (name + one-line description per skill) is inlined into the system prompt. The agent loads a skill's full body on demand via the `read_skill` tool, which saves token budget for the review itself instead of spending it on instructions up front.
+
+### Skill file format
+
+A skill is a Markdown file, optionally with YAML frontmatter:
+
+```markdown
+---
+name: security-review
+description: 检查 SQL 注入、XSS、硬编码密钥
+---
+
+# 安全代码审查
+
+## SQL 注入
+- 任何字符串拼接构造的 SQL 查询
+- rule_id: `sql-injection`
+- severity: `error`
+```
+
+The frontmatter is stripped from the body; `name` and `description` feed the catalog. Without frontmatter, the name falls back to the reference's basename and the description to the first body line.
+
+### Referencing skills
+
+```yaml
+task:
+  skill_prompts:
+    # Local file (relative to workspace or absolute)
+    - ./skills/security-review.md
+
+    # Named skill (looks in .clausura/skills/<name>/SKILL.md,
+    # then ~/.clausura/skills/<name>/SKILL.md)
+    - security-review
+    - team/vue-best-practices
+
+  # Optional: append your own extra instructions
+  prompt_template: |
+    另外检查：禁止 console.log
+
+  gating:
+    - rule: sql-injection
+      max_findings: 0
+      action: fail
+```
+
+### Installing community skills
+
+```bash
+# Project-level (only this repo)
+mkdir -p .clausura/skills/security-review
+cp ~/Downloads/security-review-SKILL.md .clausura/skills/security-review/SKILL.md
+
+# User-level (available to all your projects)
+mkdir -p ~/.clausura/skills/team/vue-check
+cp ~/Downloads/vue-check-SKILL.md ~/.clausura/skills/team/vue-check/SKILL.md
+```
+
+See [`examples/`](examples/) for ready-to-use skill files and a sample configuration.
+
+## Configuration Reference
+
+### YAML schema
+
+All fields for `.clausura.yaml`:
+
+```yaml
+version: "1"                         # Required. Schema version.
+task:
+  name: my-task                      # Required. Task name.
+
+  # LLM provider
+  model: gpt-4o                      # Required (or set CLAUSURA_MODEL).
+  vendor: openai                     # Shorthand (backward compatible).
+  # Or with full config:
+  vendor:
+    type: openai_compatible          # openai_compatible | anthropic_compatible | custom
+    base_url: "https://api.deepseek.com/v1"  # Optional. Override API endpoint.
+    auth_header: "X-API-Key"         # Optional. For custom auth (default: Authorization).
+    api_key_env: "MY_SECRET_KEY"     # Optional. Env var for API key (default: CLAUSURA_API_KEY).
+
+  # Prompt
+  prompt_template: "{{task_description}}"  # Default. The agent's system prompt.
+  skill_prompts: []                           # Optional. Reuse community skill files.
+                                               # Supports local paths, named references,
+                                               # and remote URLs.
+
+  # Limits
+  token_budget: 32000                # Default. Context-window budget: older messages are
+                                     # truncated (and archived) when the conversation
+                                     # approaches this size.
+  max_total_tokens: 200000           # Optional. Cap on cumulative billed tokens across all
+                                     # LLM calls in one run; the run stops (marked incomplete)
+                                     # when reached. Unset means no cap.
+  auto_compact: false                # Default. When true, dropped context is summarized with
+                                     # an LLM call and injected back instead of a bare hint.
+  max_compactions: 3                 # Default. Per-run cap on auto-compact calls. 0 disables.
+  findings_ledger: true              # Default. Persist interim findings to a disk ledger and
+                                     # merge them back before the final answer, so findings from
+                                     # truncated iterations are never lost.
+  timeout_secs: 300                  # Default. Max wall-clock time in seconds.
+  max_iterations: 10                 # Default. Max agent loop iterations.
+  shell_timeout_secs: 120            # Default. Per-command timeout for shell_exec.
+
+  # Optional tool allowlist
+  tool_allowlist:                    # Restrict shell commands to these argv prefixes.
+    - git status                     # "git status" allows that subcommand tree only.
+    - cargo test                     # A bare name (e.g. "git") allows all subcommands.
+  shell_env_passthrough: []          # Default. Extra env vars forwarded to shell_exec
+                                     # commands (exact names only; secret-looking names
+                                     # like *_KEY / *_TOKEN are refused).
+
+  # Safety
+  ambiguity_policy: fail_closed      # "fail_closed" or "proceed_with_caution".
+  on_incomplete: fail                # "fail" (exit 2, default) or "pass" (continue with
+                                     # partial results, marked incomplete in logs and SARIF).
+                                     # Applies when the agent loop ends without a clean stop
+                                     # (context truncated or iteration limit reached).
+
+  # Gating rules
+  gating:                            # Optional. Evaluated in order.
+    - rule: no-critical
+      description: "No critical errors"
+      min_severity: error
+      max_findings: 0
+      action: fail
+
+  # Findings verification (optional, System One decision model)
+  verify:
+    enabled: false                   # Default. Score every finding with a yes/no
+                                     # decision-model call before gating.
+    threshold: 0.5                   # Default. Findings with P(genuine) below this are
+                                     # excluded from gating. Fail-open on API errors.
+    model: jev-latest                # Default. Decision model id.
+    base_url: "https://api.typesafe.ai"  # Default. `/v1/systemone` is appended.
+    api_key_env: TYPESAFE_API_KEY    # Default. Env var holding the decision API key.
+    timeout_secs: 30                 # Default. Per-request timeout.
+    max_findings: 100                # Default. Cost guard; excess findings pass unverified.
+```
+
+**Gating rule fields:**
+
+| Field         | Type   | Description                                      |
+|---------------|--------|--------------------------------------------------|
+| `rule`        | string | Rule ID. Findings with matching `rule_id` count. |
+| `description` | string | Human-readable description.                      |
+| `min_severity`| string | Minimum severity: `hint`, `info`, `warning`, `error`. |
+| `max_findings`| number | Maximum allowed findings at or above this severity. |
+| `action`      | string | `fail` (exit 1), `warn` (log only), `ignore` (skip). |
+
+### Findings verification (System One decision model)
+
+When `task.verify.enabled` is true (or `CLAUSURA_VERIFY=1`), every finding is
+scored before gating by a System One decision model (e.g. TypeSafe Jev — a
+non-generative model that returns calibrated probabilities, not text). The
+decision model answers one yes/no question per finding: *"is this finding
+genuine and supported by its own evidence?"* Findings whose probability falls
+below `verify.threshold` are excluded from gating, SARIF, and the report's
+finding list; they are recorded under `verification.filtered_findings` in the
+run summary and report JSON for audit.
+
+Verification is fail-open: request errors, timeouts, and unparseable
+responses keep the finding (counted as `verification.failed`), and a missing
+`$TYPESAFE_API_KEY` skips verification entirely with a warning — a
+decision-API outage can never block CI. The review LLM still does all
+open-ended analysis; verification only audits its output. Set the key via
+`TYPESAFE_API_KEY` (get one at console.typesafe.ai).
+
+→ Full guide: [`docs/guide/findings-verification.md`](docs/guide/findings-verification.md)
+
+### Environment variables
+
+| Variable                | Overrides            |
+|-------------------------|----------------------|
+| `CLAUSURA_API_KEY`      | API key (required)   |
+| `CLAUSURA_MODEL`        | `task.model`         |
+| `CLAUSURA_VENDOR`       | `task.vendor`        |
+| `CLAUSURA_BASE_URL`    | Provider base URL (any OpenAI-compatible endpoint; overrides the vendor's default) |
+| `CLAUSURA_AMBIGUITY_POLICY` | `task.ambiguity_policy` |
+| `CLAUSURA_ON_INCOMPLETE` | `task.on_incomplete` |
+| `CLAUSURA_TOKEN_BUDGET` | `task.token_budget`  |
+| `CLAUSURA_MAX_TOTAL_TOKENS` | `task.max_total_tokens` |
+| `CLAUSURA_TIMEOUT`      | `task.timeout_secs`  |
+| `CLAUSURA_SHELL_TIMEOUT` | `task.shell_timeout_secs` |
+| `CLAUSURA_MAX_ITERATIONS` | `task.max_iterations` |
+| `CLAUSURA_VERIFY`   | `task.verify.enabled` |
+| `TYPESAFE_API_KEY`  | Decision-model key for findings verification (not a Clausura override) |
+
+Config loading priority: YAML file < CLI flags < environment variables. Empty model, vendor, and API-key overrides are ignored. When `vendor.api_key_env` is configured, its nonempty value takes precedence over `CLAUSURA_API_KEY`, then `--api-key`.
+
+### CLI flags
+
+```
+clausura run [OPTIONS]
+
+  -c, --config <PATH>       Config file path          [default: .clausura.yaml]
+      --model <MODEL>       Override LLM model
+      --vendor <VENDOR>     Override LLM vendor
+      --api-key <KEY>       API key
+      --token-budget <N>    Token budget override
+      --timeout <SECS>      Timeout override
+      --max-iterations <N>  Max agent loop iterations  [default: 10]
+      --shell-timeout <SECS>  Per-command shell_exec timeout  [default: 120]
+      --base <REF>             Review merge-base(REF, HEAD)..HEAD (also overrides sharding.base)
+      --workspace <PATH>    Workspace root            [default: cwd]
+      --output <PATH>       SARIF output path          [default: clausura-output.sarif]
+      --summary <PATH>      Machine-readable run summary JSON (status, reason, findings count, usage)
+      --resume              Resume from last checkpoint
+      --log-format <FMT>    Log format (json|pretty)   [default: json]
+      --dry-run             Validate config and print the execution plan
+      --validate-config     Validate config and exit
+```
+
+Checkpoint management:
+
+```
+clausura snapshot list [--thread <ID>] [--limit <N>]    List checkpoints (default: all threads, 10 max)
+clausura snapshot show [--thread <ID>]                  Show the latest checkpoint
+clausura snapshot show --id <UUID> [--thread <ID>]     Show a specific checkpoint
+clausura snapshot delete --thread <ID>                  Delete all checkpoints for a thread
+```
+
+Effect-oriented evaluation:
+
+```
+clausura eval --config eval.yaml                          Run all scenarios (needs CLAUSURA_API_KEY)
+clausura eval --baseline eval-results/eval-report.json    Diff against a previous run
+```
+
+See [`eval/`](eval/) and [`docs/guide/eval.md`](docs/guide/eval.md).
+
+## CI Integration
+
+Clausura auto-detects your CI environment using well-known environment variables. It gathers repo, PR number, commit SHA, and branch context for template rendering and SARIF output.
+
+### Detection order
+
+1. `GITHUB_ACTIONS` -> GitHub Actions
+2. `GITLAB_CI` -> GitLab CI
+3. `JENKINS_URL` -> Jenkins
+4. `CI=true` or `CI=1` -> Generic CI
+5. Otherwise -> Local
+
+### GitHub Actions
+
+Use a full PR workflow, including checkout of the PR head and history:
+
+```yaml
+# Copy to .github/workflows/clausura.yml in the repository to review.
+# Use an Action ref and binary release containing --base (after v1.7.0).
+name: Clausura Review
+on: [pull_request]
+permissions:
+  contents: read
+jobs:
+  review:
+    # Fork PRs and Dependabot do not receive the model secret in this workflow.
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Install configured MCP servers / language servers here, before review.
+      - name: Review committed PR changes
+        id: clausura
+        uses: liuyanghejerry/Clausura@v1
+        with:
+          config: .clausura.yaml
+          api_key: ${{ secrets.LLM_API_KEY }}
+          base: ${{ github.event.pull_request.base.sha }}
+```
+
+The updated Action / `--base` behavior requires a release after v1.7.0 containing
+these changes. Until then, build this branch; see the
+[CI guide](docs/guide/ci-integration.md) for the direct-binary path.
+
+The Action reviews `merge-base(base, HEAD)..HEAD`, uploads SARIF, summary JSON
+(when available), the execution log and exit code, then preserves the review's
+pass/fail result. Missing history fails before model calls. Install MCP and
+language servers **before** invoking the Action. Fork/Dependabot PRs are skipped
+in this secret-backed example; arrange separate trusted review for them.
+
+See the [complete workflow](examples/github-actions-review.yml) and
+[CI guide](docs/guide/ci-integration.md) for optional code-scanning upload, matrix
+artifact names, permissions, direct binary and Docker usage.
+
+### GitLab CI, Jenkins and generic CI
+
+CI detection supplies metadata; select the committed review range explicitly:
+
+```bash
+# Ensure the base ref and full history are available in the checkout.
+clausura run --base origin/main --summary clausura-summary.json
+```
+
+On GitLab MR pipelines use `--base "$CI_MERGE_REQUEST_DIFF_BASE_SHA"` with
+`GIT_DEPTH: "0"`; on Jenkins fetch the target branch before passing its ref.
+Upload existing SARIF/summary files even on failure. The
+[CI integration guide](docs/guide/ci-integration.md) contains platform examples.
+
+Without `--base`, non-sharded CLI runs retain working-tree diff behavior.
+For sharded runs, `--base` overrides the configured `sharding.base`.
+
+### Supported platforms
+
+Clausura supports Linux and macOS. **Windows is not supported** (a documented non-goal, not "not yet") — on Windows, run Clausura under WSL2 or use the Docker image instead.
+
+## MCP Integration
+
+Clausura can connect to external servers through the **Model Context Protocol (MCP)**, a standardized JSON-RPC-based protocol for LLM tool discovery and invocation.
+
+### Configuration
+
+Declare MCP servers in your `.clausura.yaml`:
+
+```yaml
+task:
+  mcp_servers:
+    - name: lsp
+      command: agent-lsp
+      args: []
+    - name: github
+      command: npx
+      args: ["-y", "@anthropic/mcp-server-github"]
+      env:
+        GITHUB_TOKEN: "${GITHUB_TOKEN}"
+```
+
+Clausura spawns each server at task start, performs the MCP initialize handshake, discovers available tools via `tools/list`, and registers them as `mcp__<server>__<tool>` in the agent's tool list.
+
+### Preflight checks
+
+Before the agent loop runs, you can configure "preflight" MCP tool calls whose output is parsed into deterministic `Finding` objects and passed directly through the gating rule engine — bypassing the LLM entirely. This is ideal for LSP diagnostics:
+
+```yaml
+task:
+  mcp_servers:
+    - name: lsp
+      command: agent-lsp
+
+  preflight:
+    - mcp_server: lsp
+      tool: get_diagnostics
+      args:
+        path: "."
+      rule_id_prefix: "lsp-"
+
+  gating:
+    - rule: lsp-error
+      min_severity: error
+      max_findings: 0
+      action: fail
+```
+
+Preflight findings are also summarized in the agent's context so the LLM-aware review can build on them.
+
+Preflight rule IDs are the configured prefix plus normalized severity (`lsp-error`, `lsp-warning`, `lsp-info`, or `lsp-hint`). Numeric LSP severities 1–4 are accepted. An unavailable server, failed tool call, or malformed diagnostic output fails the task with exit code 2 before the agent runs; only a valid empty array means no diagnostics. Preflight checks must run in a separate non-sharded task when using sharded audits.
+
+### LSP code intelligence
+
+For semantic code analysis beyond diagnostics, pair MCP with a skill guide:
+
+```yaml
+task:
+  skill_prompts:
+    - examples/skills/code-review-with-lsp/SKILL.md
+```
+
+The skill tells the agent to use LSP tools — `hover`, `definition`, `references`, `symbols` — for type information, navigation, and impact analysis.
+
+### CI environment setup
+
+MCP servers need to be installed in your CI environment. For LSP support with `agent-lsp`:
+
+```dockerfile
+# Docker example
+FROM rust:latest
+
+# Install Clausura
+RUN curl -fsSL https://raw.githubusercontent.com/liuyanghejerry/Clausura/main/install.sh | bash
+
+# Install agent-lsp (MCP → LSP bridge)
+RUN curl -fsSL https://raw.githubusercontent.com/blackwell-systems/agent-lsp/main/install.sh | sh
+
+# Install language servers per project language
+RUN rustup component add rust-analyzer
+RUN npm i -g typescript-language-server
+RUN pip install pyright
+```
+
+For GitHub Actions, add these dependency steps **between checkout and the
+Clausura Action** in the complete workflow above:
+
+```yaml
+- name: Install agent-lsp
+  run: curl -fsSL https://raw.githubusercontent.com/blackwell-systems/agent-lsp/main/install.sh | sh
+
+- name: Install language servers
+  run: |
+    rustup component add rust-analyzer
+    npm i -g typescript-language-server
+    pip install pyright
+
+- name: Run review with LSP
+  id: clausura
+  uses: liuyanghejerry/Clausura@v1
+  with:
+    config: examples/mcp-lsp-review.yaml
+    api_key: ${{ secrets.LLM_API_KEY }}
+    base: ${{ github.event.pull_request.base.sha }}
+```
+
+The Action installs Clausura and executes the review once; it is not an
+install-only step. MCP tools/preflight currently require the non-sharded path.
+
+## Architecture
+
+### Agent loop (reason -> act -> observe)
+
+Clausura runs a bounded agent loop of up to `max_iterations` iterations (default 10, configurable via YAML, `--max-iterations`, or `CLAUSURA_MAX_ITERATIONS`). Each iteration:
+
+1. Sends the conversation (system prompt + accumulated messages) to the LLM
+2. If the LLM calls a tool, executes it and feeds the result back
+3. If the LLM responds with structured findings and signals `stop`, the loop ends
+4. The loop also ends on token budget exhaustion, timeout, or content filter
+
+The system prompt is built from `prompt_template` plus available tool definitions. The LLM is instructed to respond in JSON with a `findings` array.
+
+### Context truncation, archiving, and auto-compact
+
+When the conversation exceeds the configured `token_budget`, Clausura automatically truncates older messages to stay within limits. Dropped messages are not silently discarded — they are archived to `.clausura/archives/context-dump-{task_id}-{seq}.log` inside the workspace as JSON lines. A hint message is injected into the conversation telling the LLM where to find the archived context, so it can retrieve earlier findings via the `read_file` tool if needed.
+
+With `auto_compact: true`, the dropped messages are instead **summarized with a single LLM call** and the summary is injected at the truncation boundary, so the agent keeps its memory of earlier findings, files examined, and decisions across truncation. The full transcript is still archived. Auto-compact never changes the run's pass/fail semantics:
+
+- Summary calls are billed and counted against `max_total_tokens`, but the call is **skipped** if it would not fit under the remaining quota.
+- If the summarization call fails or times out, Clausura silently falls back to the bare truncation hint.
+- Summaries are sized to the headroom the retained context leaves under the truncation threshold (capped at 10% of `token_budget`); oversized output is trimmed. A compacted context always stays within budget, so a successful compaction can never push the run into "incomplete".
+- `max_compactions` bounds the number of summary calls per run (default 3) to prevent compaction loops on very long tasks.
+
+### Reactive compaction
+
+Proactive truncation relies on a token-count heuristic, which underestimates code-heavy contexts. When a provider **rejects a request as over its context window** (HTTP 400 with a context-length error), Clausura compacts reactively: it truncates to 50% of the budget (archiving the dropped messages, with auto-compact if enabled) and **retries the same request once**. A second overflow after compaction marks the run incomplete instead of retrying forever.
+
+### Findings ledger (disk-backed memory)
+
+Compaction is lossy by design, so Clausura also keeps a **lossless, deterministic memory** on disk: whenever the agent emits findings in a response, they are appended to `{workspace}/.clausura/archives/findings-ledger-{task_id}.jsonl` (one JSON object per line). When the run finishes, the final findings are **merged with the ledger** — the final response wins on conflicts, and findings from iterations that were truncated out of context are appended back. No extra LLM calls are involved; the merge is plain deduplication keyed on `rule_id` + location + message. Disable with `findings_ledger: false` (env `CLAUSURA_FINDINGS_LEDGER=false`).
+
+A fresh run first moves any preceding ledger to `previous-findings-{task_id}-{uuid}.jsonl`, preserving it for audit without merging stale findings. `--resume` keeps the active ledger. Shard attempts also start with a fresh ledger. Archived ledgers from preceding runs are retained when the new run succeeds.
+
+On successful completion (exit code 0), archive files are automatically cleaned up. On failure (exit code 1-3), they are preserved for debugging and audit.
+
+### Incomplete runs fail closed, with a machine-readable reason
+
+If the agent loop ends without a clean stop — the context could not be truncated further, the model hit a length limit, the `max_total_tokens` cap was reached, `max_iterations` was exhausted, or the final answer never parsed as findings JSON — the extracted findings may be partial. By default (`on_incomplete: fail`) Clausura fails closed: the run exits with code 2 and a clear error message, so an incomplete review can never silently pass a `max_findings: 0` gate. With `on_incomplete: pass`, the previous behavior is kept (gating rules evaluate the partial findings), but a warning is logged and the SARIF output is annotated with `"properties": {"incomplete": true}` on the run.
+
+Every incomplete run carries a **reason code** (`context_limit`, `iteration_limit`, `token_cap`, `length`, `timeout`, `malformed_json`) in the error message, the SARIF `invocations[0].properties.incompleteReason`, and — with `--summary <path>` — a standalone machine-readable summary JSON. A final answer that stays unparseable after the schema-retry budget no longer discards the run: findings persisted to the ledger mid-run are merged back and the run is reported `incomplete_reason=malformed_json`; the raw answer is preserved in the run event log as `findings_parse_failed` events (error class + 2 KB preview).
+
+### Sharded audits for large PRs
+
+A PR with a multi-thousand-line diff cannot be reviewed by one agent run — the model spends its budget reading and produces no findings. Adding a `sharding:` section switches `clausura run` to the sharded path: per-file diffs (with context) are grouped into bounded shards, a deterministic pre-scan flags candidate hotspots (routes, SQL, string-built SQL, request bodies, `fs.*`, auth, logging, exec) in each shard's manifest, and each shard runs in its own small budget (e.g. 300k tokens / 12 iterations). A shard that still ends incomplete is bisected — by files, or by hunks for a single oversized file — and retried. Findings are deduplicated across shards and evaluated against the normal gating rules.
+
+Exit semantics keep security findings and audit infrastructure failures separate: gate violations exit 1; a shard that never completes exits 2 with `status: incomplete` / `reason: shard_incomplete` in the always-written summary JSON (`<output>.summary.json`, per-shard status table included). See [`docs/guide/sharding.md`](docs/guide/sharding.md) and [`examples/sharded-security-audit.yaml`](examples/sharded-security-audit.yaml).
+
+### Findings schema retries
+
+A Stop response whose findings JSON fails to parse no longer fails the run immediately. Clausura sends the parse error plus the expected schema back to the model as a corrective prompt and gives it up to **2 retries**. A persistently malformed final answer marks the run incomplete (`incomplete_reason=malformed_json`): ledger-persisted findings from earlier iterations are kept, the raw answer is recorded as `findings_parse_failed` events (error class `json_parse` / `schema` / `empty` plus a 2 KB preview) in the run event log, and the exit code follows `on_incomplete` (default: fail closed, exit 2).
+
+### Deterministic rule engine
+
+Findings from the agent are evaluated by the rule engine using pure counting:
+
+- Match findings to rules by `rule_id`
+- Filter by severity threshold
+- Count violations above `max_findings`
+- Apply action: `fail` exits 1, `warn` logs, `ignore` skips
+
+No LLM calls, no heuristics. Just deterministic logic your pipeline can trust.
+
+### LLM provider abstraction
+
+Three vendor categories: OpenAI-compatible (works with OpenAI, DeepSeek, Groq, Ollama, vLLM, Mistral), Anthropic-compatible (native Claude Messages API), and Custom (configurable enterprise endpoints). Factory function `create_provider()` dispatches on vendor type.
+
+Each LLM request has its own per-request timeout (default 120s), independent of the task's overall wall-clock `timeout_secs`. Failed requests are retried with exponential backoff (up to 3 retries by default) on HTTP 429, 5xx, and network errors — the `Retry-After` response header is honored when present. Other 4xx responses (e.g. 401, 400) fail immediately without retrying.
+
+### Tool sandboxing
+
+Five built-in tools plus on-demand skill loading:
+
+| Tool          | Description                                      | Restrictions                           |
+|---------------|--------------------------------------------------|----------------------------------------|
+| `read_file`   | Read a file relative to workspace root, with optional `offset`/`limit` for line-range reading | Blocks absolute paths, `..` traversal, symlink escapes |
+| `list_files`  | List directory contents, with recursive depth, glob filtering, and optional file sizes | Sandboxed to workspace; skips `.clausura/` |
+| `grep`        | Search text patterns across files with literal or regex mode, extension filtering, and binary-skip | Auto-excludes `.git`, `target`, `.clausura`, `node_modules` |
+| `git_diff`    | Run `git diff` with optional base ref, staged mode, a `path` filter for a single file's diff, and a `context` line count per hunk | Operates inside workspace only  |
+| `shell_exec`  | Execute an allowed command (argv form, no shell) | Restricted to `tool_allowlist` argv prefixes; dangerous flags denied; scrubbed env |
+| `read_skill`  | Load a configured review skill's full body by name (progressive disclosure) | Only serves skills resolved from `skill_prompts` at config load; no filesystem access |
+
+The `shell_exec` tool is locked by default (empty allowlist = no commands). Explicitly list allowed commands to enable it. It takes an `argv` array (e.g. `{"argv": ["git", "status"]}`) and executes `argv[0]` directly **without a shell** — shell metacharacters like `;`, `|`, `$()` or `>` are passed through as literal arguments and have no effect, so they cannot be used to bypass the allowlist. Commands run with `current_dir` set to the workspace root, but allowed commands can access paths outside the workspace via arguments.
+
+**Allowlist prefix rules.** Each `tool_allowlist` entry is an argv prefix split on whitespace: an invocation is allowed when its leading tokens equal a rule's tokens. `"git status"` allows `["git", "status"]` and `["git", "status", "--short"]`, but not `["git", "log"]`. A bare program name (e.g. `"git"`) is a length-1 prefix and allows all subcommands of that program (backward compatible). The rule's first token also matches by basename, so `["/usr/bin/git", "status"]` satisfies a `"git status"` rule.
+
+**Dangerous-flag denylist.** On top of the allowlist, known-risky flags are rejected regardless of position (scanning stops at the first `--`, whose following tokens are operands): `git -c`, `git --exec-path`, `git --git-dir`, `git --work-tree`, `tar --checkpoint-action`, `tar --to-command`. Both exact and attached forms are caught (`-c foo`, `-cfoo`, `--git-dir=/x`).
+
+**Environment scrubbing.** Commands run with a minimal, deny-by-default environment: a fixed `PATH` (`/usr/local/bin:/usr/bin:/bin`, plus `$HOME/.cargo/bin` if it exists), `HOME`/`TERM`/`LANG`/`TMPDIR`/`CI` forwarded when present, and safety overrides (`GIT_PAGER=cat`, `PAGER=cat`, `GIT_CONFIG_NOSYSTEM=1`, `GIT_TERMINAL_PROMPT=0`, `GIT_EDITOR=:`, `EDITOR=:`). Everything else — including `CLAUSURA_API_KEY`, `LD_PRELOAD`, `GIT_SSH_COMMAND`, `SSH_AUTH_SOCK`, `BASH_ENV` — is dropped. `shell_env_passthrough` can forward additional variables by exact name; `CLAUSURA_API_KEY` and names ending in `_KEY`, `_TOKEN`, `_SECRET` or `_PASSWORD` are refused with a warning.
+
+**Per-command timeout.** Each command is killed after `shell_timeout_secs` (default 120; override with `--shell-timeout` or `CLAUSURA_SHELL_TIMEOUT`) and the tool returns a `Command timed out after Ns and was killed` result.
+
+Tool outputs are truncated at 32 KB or 1000 lines (whichever comes first). When a spill store is attached (always, in `clausura run`), the *full* output is first written to `{workspace}/.clausura/archives/tool-output-{task_id}-{seq}.txt`, and the truncated result carries a locator hint — the agent can page through the rest with `read_file`'s `offset`/`limit` instead of losing it. Without truncation, a `[output truncated ...]` marker is still appended — narrow the query or use `read_file`'s `offset`/`limit` to page through large outputs.
+
+The agent loop also detects **repeat tool calls** (same tool, same arguments — argument order normalized): at 3/5/8 identical consecutive invocations it injects an escalating advisory reminder, so the model breaks out of loops before `max_iterations` expires.
+
+### Run event log (append-only)
+
+Every run writes an append-only JSON-lines event log at `{workspace}/.clausura/archives/run-{task_id}.events.jsonl`: the full LLM request/response at each step, every tool call and result, context-truncation events (with archive paths and compaction summaries), and checkpoints carrying the complete message state. Failed CI runs can be audited and partially replayed from this log alone; successful runs clean it up with the other archives.
+
+### Memory snapshots (SQLite checkpoints)
+
+On every run, the agent's message history is serialized (MessagePack) and saved to `~/.clausura/checkpoints.db`. You can resume a truncated or interrupted run with `--resume`. Snapshots include a thread ID, version number, and truncation flag. The same state is also recorded as a `checkpoint` event in the workspace's append-only run event log, so `--resume` **falls back to the event log** when the SQLite store is unavailable — e.g. in ephemeral CI containers without a persistent home/volume, where checkpoints previously did not survive between runs.
+
+Use `clausura snapshot list` and `clausura snapshot show` to inspect saved state (SQLite store only).
+
+### SARIF output
+
+Findings are written to `clausura-output.sarif` (or the path from `--output`) in SARIF v2.1.0 format. This integrates with GitHub Advanced Security, CodeQL, and other SARIF-compatible tools.
+
+## Development
+
+### Build
+
+```bash
+# Debug build
+cargo build
+
+# Release build (recommended for production)
+cargo build --release --package clausura-cli
+```
+
+### Run tests
+
+```bash
+cargo test --workspace
+```
+
+### Pre-commit hook
+
+A `cargo fmt` pre-commit hook is included. Enable it after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Commits with misformatted Rust code will be rejected. Run `cargo fmt --all` to auto-fix.
+
+### Project structure
+
+```
+clausura/
+  Cargo.toml                    # Workspace root
+  crates/
+    clausura-core/              # Core library
+      src/
+        lib.rs                  # Crate root (module re-exports)
+        agent.rs                # Agent loop (reason -> act -> observe)
+        build_info.rs           # Version and commit metadata
+        checkpoint.rs           # SQLite checkpoint store
+        ci.rs                   # CI environment detection
+        config.rs               # Layered config loader (YAML + CLI + env)
+        context.rs              # Token budget tracking, context truncation, and archiving
+        executor.rs             # Task lifecycle orchestrator
+        logging.rs              # Structured logging (JSON or pretty)
+        provider.rs             # LLM provider (OpenAI/Anthropic/Custom + factory)
+        risk.rs                 # Deterministic risk pre-scan for sharded audits
+        rules.rs                # Deterministic rule engine for gating
+        sarif.rs                # SARIF v2.1.0 output formatter
+        shard.rs                # Shard planning, bisection, and manifests
+        snapshot.rs             # Snapshot manager (save/restore)
+        tools.rs                # Tool sandbox (read_file, git_diff, shell_exec, list_files, grep)
+        types.rs                # Core type definitions
+    clausura-cli/               # CLI binary
+      src/
+        main.rs                 # CLI entry point (clap)
+        commands/
+          mod.rs                # Commands module
+          run.rs                # clausura run command
+          snapshot.rs           # clausura snapshot command
+  action.yml                    # GitHub Action definition
+  Dockerfile                    # Multi-stage Docker build (alpine, musl)
+  install.sh                    # Release install script
+```
+
+### Dependencies
+
+- **CLI**: clap (arg parsing), colored + atty (terminal output)
+- **Core**: tokio (async), serde/serde_json/serde_yaml (serialization), reqwest (HTTP), tiktoken-rs (token counting), rusqlite (checkpoints), rmp-serde (binary serialization), regex-lite (grep pattern matching)
+- **LLM**: OpenAI-compatible chat completions API (works with OpenAI, DeepSeek, Groq, Ollama, etc.)
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Links
+
+- [GitHub](https://github.com/liuyanghejerry/Clausura)
+- [Issues](https://github.com/liuyanghejerry/Clausura/issues)
+- [Releases](https://github.com/liuyanghejerry/Clausura/releases)
+- [Docker images](https://github.com/liuyanghejerry/Clausura/pkgs/container/clausura)

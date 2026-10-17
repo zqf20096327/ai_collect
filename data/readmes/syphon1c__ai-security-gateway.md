@@ -1,0 +1,610 @@
+# AI Security Gateway
+
+[![Release](https://img.shields.io/badge/Release-v2026.8.1-brightgreen?style=flat-square)](https://github.com/syphon1c/ai-security-gateway/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+
+> **🚀 First Full Release** - A security gateway and monitoring platform for LLM APIs, Model Context Protocol (MCP) servers and Agent-to-Agent (A2A) Registry. Free and self-hosted.
+
+## What is the AI Security Gateway?
+
+The **AI Security Gateway** is a unified security platform that provides **real-time monitoring**, **policy enforcement**, and **threat detection** and a number of **new security controls** for Large Language Model (LLM) APIs, Model Context Protocol (MCP) servers and Agent-to-Agent (A2A). It acts as an intelligent proxy layer between your applications and AI services and tooling, giving you complete visibility and security control over AI interactions and automations.
+
+Think of it as a **security gateway** for your AI infrastructure - monitoring every request, applying various security policies, tracking usage, and ensuring compliance with your organization's security requirements. It started as a personal project for my own testing and needs; it has grown a lot and is now ready for more users.
+
+Getting started document can be found at [AI Security Gateway Docs](https://docs.aisecgateway.com/) and there is a new [AI Security Gateway Website](https://aisecgateway.com/)
+
+## ✅ Release Notice
+
+**v2026.8.1** is the **first full (non-beta) release** of the AI Security Gateway, following seven public betas. This release focused on enterprise readiness: a whole-platform security review, authentication and session hardening, stability and race-condition fixes across the proxy data path, and a documentation overhaul.
+
+- **Report bugs** and provide feedback via [GitHub Issues](https://github.com/syphon1c/ai-security-gateway/issues)
+- **Review the [CHANGELOG.md](CHANGELOG.md)** for complete feature details
+- **Community feedback** is welcomed to help improve the software
+
+### Upgrading from a beta release?
+
+- Release packages **no longer include a pre-created `.env`**. Run `./install.sh` (or copy `env.example` to `.env` and set your keys). The gateway now **refuses to start** on missing, default, or template placeholder values for `JWT_SECRET` / `ENCRYPTION_KEY`
+- Existing sessions are invalidated on upgrade; users must sign in again
+- All new controls are **opt-in**; existing proxy configurations continue to behave as before
+
+## ✨ What's New in v2026.8.1
+
+Where the beta series focused on new capability, this release focuses on **enterprise readiness**, plus two protocol upgrades:
+
+- **🔌 MCP 2026-07-28 Protocol Support** - the gateway speaks both eras of the Model Context Protocol side by side: era-aware enforcement (never guessed), per-proxy conformance mode (enforce or observe), a compatibility bridge so modern clients can reach legacy servers (downgrades always alerted), event-by-event SSE-over-POST inspection, and new-surface protections: credential-phishing detection in elicitation results, tool schema safety analysis, protocol extension deny-lists, and minimum-version pinning
+- **🔁 Cross App Access (XAA) Conformance** - verified against `draft-ietf-oauth-identity-assertion-authz-grant-04` and the xaa.dev reference implementation; the exchange now mints signed `at+jwt` access tokens accepted end-to-end, with single-use grants, step-up authentication (RFC 9470), and discovery-based JWKS
+- **🔐 Authentication & Session Hardening** - server-side logout revocation, immediate session invalidation on role change or account disable, a session management UI, login rate limits with a timing-oracle fix, forced password rotation, and hard startup failure on missing/default/placeholder secrets
+- **🛡️ Whole-Platform Security Review** - fail-closed policy loading and permission checks, SSRF guards on every outbound fetch, guardrail and connector credentials encrypted at rest and masked in responses, and complete audit coverage of privileged actions
+- **🪪 Agent Identity Hardening** - `did:key` identities must be registered before they verify, full DPoP proof verification (RFC 9449), identity headers stripped before forwarding upstream, and per-proxy enforcement configurable in the UI
+- **🧪 Detection Quality** - an 85-case guardrails evaluation corpus plus custom test-case authoring with JSON import/export, canary cross-user leak detection, and migration to the A2A spec v1.0 SDK
+- **📦 Versioned, Verifiable Builds** - every binary reports its real version (`./unified-admin --version`), and release packages are verified end to end before publishing
+
+See the [CHANGELOG.md](CHANGELOG.md) for the complete list.
+
+
+## 🎯 Key Features
+
+### 🔌 MCP 2026-07-28 Protocol Support
+The gateway speaks both eras of the Model Context Protocol side by side: the modern **2026-07-28** specification and the legacy **2024-11-05** specification.
+- **Era-aware proxying**: enforcement follows the protocol era each request *declares*, never a guess; the upstream's era is learned through a real `server/discover` probe
+- **Conformance enforcement**: on modern requests, JSON-RPC batches are refused and the mirrored `MCP-Protocol-Version` / `Mcp-*` headers are validated against the body, with spec-correct protocol errors
+- **Enforce or observe**: a per-proxy conformance mode lets you watch violations before you start blocking them
+- **Compatibility bridge**: modern clients can reach legacy servers through a translation layer, and a bridged downgrade always raises an alert
+- **New-surface security**: credential-phishing prompts inside elicitation results raise alerts, tool schemas are analysed for unsafe shapes, protocol extensions can be deny-listed, and a minimum protocol version can be pinned per proxy
+- **Tasks stay governed**: tool permissions and rate limits follow MCP task handles, so a disabled tool cannot keep delivering results through an earlier task
+
+### 🛡️ Cryptographic Agent Identity (SPIFFE / DID / X.509)
+The gateway already records **which human** is behind a request (attribution); Agent Identity adds **attestation**, a verifiable cryptographic identity for the **agent workload itself**, proven on every request. So each action ties to *both* a person *and* a specific, verified agent (e.g. `spiffe://acme.org/checkout-bot`). The gateway is a **verifier first** (it validates identities issued by your SPIRE/IdP/DID infrastructure) and a CA never, except for an explicit, opt-in issuance mode.
+- **Three identity formats, one pipeline**: SPIFFE **JWT-SVIDs** (header-borne), SPIFFE **X.509-SVIDs** (mTLS, or a forwarded client-cert header behind a trusted front proxy), and **DIDs**, `did:key` (key embedded in the identifier, registration-gated before it verifies) and `did:web` (resolved from admin-approved hosts, SSRF-guarded)
+- **Opt-in per proxy**: `off` / `optional` (verify-and-attribute) / `required` (fail-closed `401`); plus a global default and per-proxy allowed-trust-domain lists, all configurable in the proxy settings UI
+- **Identity-based enforcement**: a **deny-biased** Agent dimension on the MCP tool-permission hierarchy (an agent rule can only *further restrict* the human decision, never escalate) and a per-proxy **autonomy floor** that rejects insufficiently-trusted agents
+- **Verifiable delegation chains**: an `X-Agent-Delegation-Chain` of signed on-behalf-of hops, verified end-to-end with a confused-deputy guard, an unverified chain is never trusted
+- **Proof-of-possession & step-up**: full DPoP proof verification (RFC 9449 - signature, thumbprint, request binding, freshness, single-use `jti`); a proxy can **require** proof-of-possession and answer bearer-only credentials with a `WWW-Authenticate: DPoP` step-up challenge
+- **Credentials stop at the gateway**: on a verifying proxy, identity and DPoP headers are stripped before forwarding upstream
+- **A2A impersonation detection**: bind an identity to a registered A2A agent and the card monitor flags any AgentCard not signed by the bound key (critical), complementing rug-pull field-diff detection
+- **Revocation that reaches live sessions**: revoking an identity blocks it on the next request **and** tears down its in-flight A2A streams and SSE proxy connections within seconds
+- **Opt-in gateway issuance**: when enabled, mint short-lived (DPoP-bindable) agent SVIDs, the signing key lives in memory only and rotates on restart, so the gateway never becomes a persistent CA
+- **Security-first**: verifier by default, write-only key material, SSRF-guarded fetches, admin-gated mutations, and full audit logging
+- **Dashboard tile**: active identities, verifications, and failures surfaced on the Security dashboard
+
+### 🔍 Shadow-AI Discovery & AI Asset Inventory
+A unified, governed **inventory of every AI asset the gateway can see**: LLM providers/models, MCP servers/tools, A2A agents, and skills, that automatically flags **shadow AI**: anything observed but never sanctioned. It's the inbound mirror of ARD: where ARD publishes what you *advertise*, the AI Inventory records what you actually *observe*, and turns that into a control point.
+- **Three observation planes**: *in-band* (projects assets from gateway-proxied traffic, token usage + request audits, with zero added request latency), *ingest* (catches AI that **bypasses** the gateway entirely via a push endpoint and SSRF-guarded pull connectors for CASB/DNS/OTel/Langfuse egress logs), and *active scanning* (planned)
+- **Governance lifecycle**: every asset carries a state, `sanctioned`, `observed`, `unsanctioned` (shadow), `quarantined`, or `denied`, with first-seen/last-seen tracking, risk scoring, and per-asset observation timelines
+- **Enforcement, not just reporting**: moving an asset to `quarantined` or `denied` **blocks it at the proxy** (MCP tools, LLM models, or entire providers) via an in-memory denylist refreshed on every state change; a blocked provider blocks all of its models
+- **Opt-in auto-quarantine**: newly-discovered shadow AI can be automatically quarantined and blocked on its very next request (off by default, observe-only posture)
+- **Provider fingerprint catalog**: built-in signatures for OpenAI, Anthropic, Google Gemini, AWS Bedrock, Azure OpenAI, Cohere, Mistral, and more, plus custom host/regex/path/model fingerprints so self-hosted and internal AI is classified correctly
+- **Shadow-AI alerts**: raises a security alert the first time an unsanctioned asset is discovered, with full attribution (user, host, source)
+- **Security-first**: observe-only by default, observations store fingerprints/hosts/model names only (never raw payloads), SSRF protection on all connector fetches, admin-only mutations, and full audit logging
+- **Dashboard tile**: total assets, shadow count, and blocked count surfaced on the Security dashboard
+
+### 🧭 Agentic Resource Discovery (ARD)
+Turn the gateway into a **discovery service for agentic resources** using the open [Agentic Resource Discovery](https://agenticresourcediscovery.org/) standard. ARD sits *before* invocation, it lets an AI client ask "what's available for this task?" and answers with matching A2A agents, MCP servers, and skills, which are then called through their own native protocols. It does not replace A2A, MCP, or Skills; it's the discovery layer in front of them.
+- **Publishes your catalog**: Serves a standards-compliant `/.well-known/ai-catalog.json` AI Catalog manifest describing your agentic resources
+- **Auto-projection**: Automatically projects your public A2A agents, public MCP proxies/tools, and approved skills into the catalog, no separate source of truth to maintain
+- **Registry search API**: Exposes `POST /search` (natural-language query with 0–100 relevance scoring), `POST /explore` (facet aggregation), and `GET /agents` (deterministic browsing) for any ARD-compliant client
+- **Federation**: Query trusted upstream registries with `referrals` (return pointers) or `auto` (merge results) modes, with SSRF protection, trust gating, and de-duplication
+- **Native MCP discovery**: AI assistants connect to a built-in MCP server (`/api/v1/mcp/ard`) exposing `ard_search` and `ard_explore` tools to discover capabilities on the fly, instead of hard-coding every tool into the context window
+- **A2A skill**: The gateway's AgentCard advertises a `resource-discovery` skill so A2A orchestrators can find this capability
+- **Security-first**: Opt-in publishing (disabled by default), access-restricted resources excluded, domain-anchored URN/identity binding, upstream trust verification, rate limiting, and full audit logging
+- **Standards-only**: Only spec-blessed media types (A2A agent cards, MCP server cards, AI skills, registries, catalogs), no proprietary extensions
+- **Dashboard tile**: Catalog and federation status surfaced in the Security dashboard
+
+### 🚦 Per-Tool & Per-User Rate Limiting
+Rate limiting is enforced at finer granularity, in addition to the existing proxy-level controls:
+- **Per-tool limits**: sliding-window rate limits applied per MCP tool, keyed by user · proxy · tool (`0` = unlimited)
+- **Per-user limits**: proxy-wide sliding-window limits keyed by user · proxy
+- **Hierarchy-aware**: per-tool limits resolve through the User override → Group → Global proxy-setting hierarchy alongside the enable/disable decision for each tool
+
+### 💰 Budget Limits & Cost Control
+Control spending and manage costs across teams and API keys:
+- **Monthly Budget Limits**: Set spending limits per user group/team in USD
+- **Configurable Warning Thresholds**: Alert when spending reaches a percentage of budget (e.g., 80%)
+- **Flexible Enforcement**: Choose to block requests at threshold or just warn (allows continued access with warnings)
+- **Automatic Monthly Reset**: Budgets automatically reset at the start of each calendar month
+- **Manual Reset**: Reset budgets manually via API or web interface when needed
+- **Real-Time Tracking**: Monitor current month spending, budget utilization, and remaining budget
+- **Dashboard Metrics**: View budget status across all teams in the AI Usage Metrics dashboard
+- **Request Blocking**: Automatic blocking when budget is exceeded (HTTP 402 Payment Required)
+
+### 🔄 Multi-Proxy Management
+Run and manage **multiple MCP and LLM proxy instances** simultaneously through an intuitive web interface:
+- Create, configure, start, stop, and restart proxies with a few clicks
+- Support for HTTP, WebSocket, and Server-Sent Events (SSE) transport protocols
+- Centralized dashboard showing real-time status of all proxy instances
+- Database-backed persistence for configurations, alerts, and audit logs
+- Per-proxy health monitoring and performance metrics
+
+### 🛡️ Custom Security Policies (Guardrails)
+Apply **granular security policies** to individual proxies or groups:
+- **250+ built-in default detection rules** across critical, high, medium, and low severity levels
+- JSON-based policy configuration for easy customization
+- Real-time threat detection and blocking (SQL injection, command injection, path traversal, Prompt Injection, Jailbreaking etc.)
+- **Data Redaction & Unmasking**: Redact sensitive data sent to LLMs with automatic unmasking of responses - mask PII, secrets, and sensitive content before sending to providers, then automatically restore original values in responses for seamless user experience
+- **APAC PII Localization**: Detection and masking for Asia-Pacific national identifiers - Taiwan National ID/ARC, Japan My Number, PRC Resident ID, South Korea RRN, Singapore NRIC/FIN, Hong Kong HKID, Australia TFN/Medicare, and India Aadhaar - with CJK context labels and full-width digit support. Numeric identifiers are **checksum-validated** (Luhn, Verhoeff, and per-country algorithms) so lookalike numbers such as order IDs and timestamps are not falsely masked
+- Policy templates: `llm-critical-security`, `llm-standard-security`, `mcp-advanced-security`, `mcp-encoding-detection-security.json`, `llm-compliance-gdpr.json`, `llm-compliance-apac.json` and more...
+- Per-proxy policy assignment - different security levels for different use cases
+- Custom policy creation for organization-specific requirements
+
+### 💬 System Prompt Injection Governance
+Inject **security controls and behavioral guidelines** directly into LLM requests:
+- **Automatic Injection**: System governance prompts are automatically injected into LLM requests based on proxy or user group assignments
+- **Priority-Based Selection**: Only the highest priority prompt is injected per request (user group prompts take precedence over proxy prompts)
+- **Template Variables**: Dynamic variable substitution (e.g., `{{.User}}`, `{{.Date}}`, `{{.Organization}}`)
+- **Per-Proxy Assignment**: Assign different prompts to different LLM proxies
+- **Per-User Group Assignment**: Assign prompts to specific user groups/API keys for fine-grained control
+- **Security & Compliance**: Enforce data protection policies, compliance requirements, and behavioral guidelines
+- **Audit Logging**: All prompt operations are logged for compliance and security auditing
+
+### 🔐 OAuth Proxy with Dynamic Client Registration
+Flexible OAuth 2.1 proxy with automatic client registration and dual operating modes:
+- **Dynamic Client Registration (DCR)**: RFC 7591 compliant - MCP/LLM clients automatically register and authenticate without manual configuration
+- **Dual Operating Modes**:
+  - **Upstream Mode**: Pass-through proxy forwarding tokens directly to OAuth providers 
+  - **Gateway Mode**: Full OAuth 2.1 Authorization Server managing tokens on behalf of clients
+- **Automatic Discovery**: RFC 8414 compliant well-known endpoints for zero-configuration client setup
+- **PKCE Enforcement**: Complete RFC 7636 support with dual PKCE flows in Gateway mode (Client↔Gateway, Gateway↔Provider)
+- **Supported Providers**: Google, GitHub, Azure AD, Okta, Auth0, GitLab, Keycloak, and custom OAuth 2.0/2.1 providers
+- **Hybrid Authentication**: OAuth tokens AND API keys work simultaneously on the same proxy
+- **User Attribution**: Full request attribution with user identity, email, timestamps, and risk scores
+- **Secure Token Management**: AES-256-GCM encrypted token storage with automatic refresh in Gateway mode
+- **Consent Screens**: Optional user consent for OAuth flows with scope visibility
+- **Audit Logging**: Complete OAuth transaction logging for compliance (SOC2, ISO 27001, HIPAA, GDPR)
+- **Zero Configuration Clients**: Cursor IDE, Claude Desktop, and other MCP clients work out-of-the-box
+
+### 🧩 AI Security Skills Hub
+The Skills Hub exposes a full **MCP (Model Context Protocol) server** that AI assistants like Claude Code, Cursor, and Agent Zero connect to directly. Assistants submit skill source code, check approval status, and report suspicious runtime behaviour, all through standard MCP tool calls.
+
+- **Content-addressable approval**: Approval is tied to the SHA-256 hash of the skill source code. Any code change automatically resets the skill to pending, even if it was previously approved
+- **ZIP upload analysis**: Administrators can upload `.zip` files containing skill source code directly from the web UI for per-file analysis with findings attributed to specific files and line numbers
+- **Runtime activity reporting**: AI assistants can report suspicious behaviour during execution (data exfiltration, credential access, privilege escalation, unexpected network activity, behaviour changes), which automatically creates security alerts
+- **System prompt template**: A ready-to-use prompt template that instructs AI assistants to check skills on startup, submit new skills for analysis, and default to strict mode if the gateway is unreachable
+- **Full admin dashboard**: Stats, risk distribution, submission history, registry management, and activity reports all in one view
+
+### 🔄 A2A Card Change Detection
+
+A security monitoring feature that continuously watches for **rug-pull attacks** against registered Agent-to-Agent (A2A) agents. A rug-pull attack occurs when a remote agent silently modifies its AgentCard after registration, potentially redirecting traffic, injecting malicious skills, or altering its capabilities without the administrator's knowledge.
+
+**Detected change types:**
+
+- **URL Changed** (Critical): Endpoint URL redirected, potential traffic hijacking
+- **Name Changed** (High): Agent identity was modified
+- **Protocol Version Changed** (High): A2A protocol version altered
+- **Skill Removed** (High): A previously available skill was silently dropped
+- **Description Changed** (Dynamic): Severity scales with similarity; a near-complete rewrite scores Critical, minor edits score Low
+- **Skill Added** (Medium): A new skill appeared that wasn't present at registration
+- **Capabilities Changed** (Medium): Streaming, push notification, or state flags toggled
+- **Version Changed** (Low/Medium): Version string updated; major version bumps score Medium
+- **Skill Description Changed** (Dynamic): Per-skill description changes scored by text similarity
+- **Skill Tags Changed** (Low): Skill metadata tags modified
+
+### 🔄 Cross App Access (XAA) - 🧪 Experimental
+Cross App Access support for enterprise identity providers, conformance-checked against `draft-ietf-oauth-identity-assertion-authz-grant-04` and the xaa.dev reference implementation:
+- **ID-JAG Token Exchange**: Validate and exchange Identity Assertion Authorization Grants (Okta ID-JAG) for cross-app authorization, with server-derived audiences and single-use grants
+- **Signed Access Tokens**: The exchange mints signed `at+jwt` access tokens (carrying `aud`, `proxy_id`, `token_use=xaa`) that resource servers can verify via published keys
+- **Step-Up Authentication (RFC 9470)**: Per-proxy step-up requirements for sensitive resources
+- **Client ID Mapping**: Configure mappings between IdP client IDs and resource authorization server client IDs, with rotatable client secrets
+- **Token Revocation**: Revoke ID-JAG tokens individually by JTI or in bulk by subject/IdP provider
+- **JWKS via Discovery**: IdP key sets are resolved through provider discovery (not a guessed path) and cached for efficient validation
+- **Per-Proxy Configuration**: Enable XAA on specific proxy instances through the web interface
+- **Statistics Dashboard**: Real-time monitoring of token usage, JWKS cache status, and client mapping counts
+- **Audit Integration**: Complete audit logging of XAA events (token exchange, validation, revocation) for compliance
+
+**⚠️ Experimental Feature**: The Identity Assertion Authorization Grant specification is still an IETF draft. This feature may change as the standard evolves. Use with caution in production environments.
+
+### 📊 Real-Time Monitoring & Analytics
+Comprehensive visibility into your AI infrastructure:
+- **Live Dashboard**: Real-time metrics, request rates, error rates, and security alerts
+- **Traffic Analysis**: Monitor all requests and responses passing through proxies
+- **MCP Tool Discovery & Control**: Automatic discovery with fail-closed security (tools disabled by default)
+- **LLM Token Usage Tracking**: Monitor token consumption, costs, and usage patterns per proxy
+- **Budget Limits & Cost Control**: Set monthly spending limits per team/API key with configurable warning thresholds and blocking
+- **WebSocket Integration**: Real-time updates pushed to the web interface without polling
+- **Alert Management**: Advanced filtering, pagination, and status workflow for security alerts
+- **Observability & Monitoring:** - Langfuse, Prometheus, Grafana, OpenTelemetry, and Jaeger integration
+- **Integrations & Notifications:** - SIEM, SOAR, and Slack notifications
+
+### 📈 Observability & Metrics Monitoring
+Enterprise-grade observability with industry-standard tools and Langfuse ready:
+- **Langfuse**: Send LLM traces to Langfuse for observability and analytics, easily configured from the Settings
+- **Prometheus Metrics**: Native Prometheus-compatible metrics endpoint (`/api/v1/metrics/prometheus`) with comprehensive system, request, database, and proxy metrics
+- **Grafana Integration**: Pre-built dashboard queries and panels for visualizing gateway performance, error rates, request durations, and system health
+- **OpenTelemetry Tracing**: Distributed tracing support via OTLP protocol for end-to-end request visibility across handlers, services, and repositories
+- **Jaeger Integration**: Full Jaeger support for trace visualization and debugging with automatic span creation and context propagation
+- **Comprehensive Metrics**: Request metrics (p50, p95, p99 percentiles), database query performance, connection pool utilization, policy evaluation statistics, WebSocket metrics, and system resource usage
+- **Production Ready**: Configurable sampling rates, trace context propagation, and integration with any OTLP-compatible backend (Datadog, New Relic, custom collectors)
+- **Zero Configuration**: Metrics enabled by default; tracing configurable via environment variables
+
+### 🛡️ MCP Vulnerability Scanner
+Advanced security scanning specifically for Model Context Protocol (MCP) servers:
+- **Runtime Security Analysis**: Real-time vulnerability scanning of active MCP server endpoints
+- **Tool Permission Auditing**: Monitor and validate MCP tool capabilities and access levels
+- **API Surface Assessment**: Comprehensive scanning of exposed MCP methods and resources
+- **Malicious Payload Detection**: Identify potential security risks in MCP tool responses
+- **Compliance Validation**: Ensure MCP servers meet security standards and best practices
+- **Integration with Policy Engine**: Automatic blocking of vulnerable MCP endpoints based on scan results
+
+### 🚨 MCP Tool Change & Rug Pull Detection
+Protect against malicious changes and supply chain attacks in MCP tools:
+- **Tool Behavior Monitoring**: Continuous analysis of MCP tool execution patterns and capabilities
+- **Change Detection**: Alert on unauthorized modifications to tool definitions, permissions, or behavior
+- **Rug Pull Prevention**: Detect when MCP tools are suddenly removed, disabled, or their functionality changes
+- **Supply Chain Security**: Monitor for malicious updates or compromised MCP server dependencies
+- **Baseline Establishment**: Create security baselines for tool behavior and alert on deviations
+- **Attribution Tracking**: Maintain audit trails of who made changes to MCP tool configurations
+- **Automated Response**: Automatically disable or quarantine suspicious tools based on detection rules
+
+### 🤖 Agent-to-Agent (A2A) Registry
+Centralized management for A2A-compatible agents with complete security and access control, now on the **A2A v1.0 specification**:
+- **Agent Registration**: Auto-discover agents via AgentCard URLs or manually register with JSON
+- **AgentCard Management**: Automatic fetching and updating of agent capabilities and metadata
+- **Access Control**: Fine-grained user group-based access with per-agent rate limiting
+- **Agent Invocation**: Send messages to agents with support for streaming responses (SSE)
+- **Task Management**: Track stateful operations with lifecycle states (submitted, working, completed, failed)
+- **Security Integration**: All invocations validated by policy engine with risk scoring and blocking
+- **Audit Logging**: Complete audit trails with user attribution, request/response payloads, and security events
+- **Real-Time Monitoring**: View invocation logs, task states, and agent usage analytics
+
+### 🕵️ Canary Token Detection
+Canary Token Injection is a security feature that helps detect when data from one user or session is accidentally exposed to another. Think of it as a tripwire - an early warning system that alerts you to potential data leakage in your AI systems.
+
+When proxying requests, the gateway silently injects unique, invisible tokens into each user's conversation. If a token surfaces where it shouldn't, you'll know immediately.
+
+**Detection types:**
+- **Cross-User Leakage**: A canary from User A appeared in a response to User B, indicating data bleed between users
+- **Cross-Session Leakage**: A canary from Session A appeared in the same user's Session B, indicating session isolation failure
+- **Provider Memorisation**: A canary resurfaced without being present in the current context, suggesting the LLM provider has memorised prior conversation data
+- **Stale Canary**: A canary older than 7 days reappeared, a strong indicator of long-term memorisation by the model provider
+
+### 🛡️ Guardrail Providers
+Connect the AI Security Gateway to **third-party guardrail services** for real-time content screening of LLM requests and responses. Multiple providers run concurrently using a fan-out/fan-in pattern, where total latency equals the slowest provider rather than the sum.
+
+**Supported providers:**
+- **Groq Safeguard** - High-speed safety classification with configurable safety policy prompts
+- **EnkryptAI** - Comprehensive guardrail API with policy-based detection across NSFW, toxicity, PII, injection attacks, and more
+- **DynamoAI DynamoGuard** - Multi-policy moderation with per-policy scoring for prompt injection, toxicity, PII, hate speech, and violence
+- **GuardrailsAI** - Self-hosted, open-source guardrail with 67+ validators from Guardrails Hub covering jailbreak detection, PII, toxicity, and content policy
+- **Fiddler AI Guardrails** - Sub-second safety classification across 11 dimensions with optional 24-type PII detection
+
+**Key features:**
+- **Per-Proxy & Per-Team Assignment**: Apply providers globally to a proxy or scope them to specific teams for layered screening
+- **Configurable Behaviour**: Set direction (request/response/both), action (block/monitor), failure mode (fail-open/fail-closed), timeout (500ms–60s), and priority
+- **Health Checks & Test Playground**: Verify provider connectivity and test content screening directly from the dashboard
+- **Audit Logging**: Every provider check is logged with verdict, categories, confidence score, latency, and tokens used
+- **Dashboard & Metrics**: Per-provider and per-proxy statistics with top violation category breakdowns
+
+### 🛡️ Guardrails Evaluation
+Guardrails Evaluation is automated penetration testing for your AI safety controls. It runs a comprehensive suite of security test cases against your endpoints or configured Guardrail Providers, and scores the results against the **OWASP LLM Top 10** and **NIST AI Risk Management Framework**.
+
+**Key features:**
+
+- **85 built-in test cases** across 12 categories, plus full custom test-case management: author single-turn and multi-turn tests with a guided editor, and import/export test suites as JSON
+- **Compliance scoring** mapped to OWASP LLM Top 10 and NIST AI RMF
+- **Test any endpoint**: works with any API that wraps an LLM, not just direct LLM providers. Import endpoints via curl command paste
+- **Multi-turn attack simulation**: tests that span multiple conversation turns to detect escalation vulnerabilities
+- **Per-category risk breakdown** with pass/fail rates and weighted risk scores
+
+## 🚀 Quick Start
+
+### Download Pre-Built Release (Recommended)
+
+Download the latest release for your operating system from the [GitHub Releases](https://github.com/syphon1c/ai-security-gateway/releases) page:
+
+**Available Platforms:**
+- **Linux** (amd64, arm64): `unified-admin-linux-<arch>.tar.gz`
+- **macOS** (amd64, arm64): `unified-admin-darwin-<arch>.tar.gz`
+- **Windows** (amd64): `unified-admin-windows-amd64.zip`
+
+### Easy Installation (3 Steps)
+
+**Linux/macOS:**
+
+```bash
+# 1. Download and extract
+curl -LO https://github.com/syphon1c/ai-security-gateway/releases/latest/download/unified-admin-linux-amd64.tar.gz
+tar -xzf unified-admin-linux-amd64.tar.gz
+cd unified-admin-linux-amd64
+
+# 2. Run the installation script (generates secure keys and creates .env)
+./install.sh
+
+# 3. Verify and start the gateway
+./verify.sh
+./start.sh
+```
+
+> **Note:** the gateway refuses to start until real keys are set - the package ships no pre-made `.env`, and the template's placeholder values are rejected. If you skip step 2, `./start.sh` will run `install.sh` for you automatically when no `.env` exists.
+
+> **macOS:** if the binary was downloaded with a browser and macOS reports it "cannot be opened because the developer cannot be verified", remove the quarantine attribute: `xattr -d com.apple.quarantine unified-admin`
+
+**Windows:**
+
+```powershell
+# 1. Extract unified-admin-windows-amd64.zip to a folder
+cd unified-admin-windows-amd64
+
+# 2. Copy environment template and edit
+Copy-Item env.example .env
+notepad .env  # Set JWT_SECRET and ENCRYPTION_KEY (see below)
+
+# 3. Start the gateway
+.\start.ps1
+```
+
+### Manual Installation (Alternative)
+
+If you prefer to configure manually:
+
+**Linux/macOS:**
+
+```bash
+# 1. Extract the release package
+tar -xzf unified-admin-linux-amd64.tar.gz
+cd unified-admin-linux-amd64
+
+# 2. Copy environment template
+cp env.example .env
+
+# 3. Generate secure keys and edit .env
+openssl rand -hex 32        # For JWT_SECRET
+openssl rand -base64 32 | cut -c1-32  # For ENCRYPTION_KEY
+nano .env  # Edit and set the keys
+
+# 4. Verify installation (optional)
+./verify.sh
+
+# 5. Start the gateway
+./start.sh
+# Or manually: ./unified-admin
+```
+
+**Windows:**
+
+```powershell
+# 1. Extract the release package
+cd unified-admin-windows-amd64
+
+# 2. Copy environment template
+Copy-Item env.example .env
+
+# 3. Generate secure keys (using Git Bash or WSL)
+# openssl rand -hex 32        # For JWT_SECRET
+# openssl rand -base64 32 | cut -c1-32  # For ENCRYPTION_KEY
+notepad .env  # Edit and set JWT_SECRET and ENCRYPTION_KEY
+
+# 4. Start the gateway
+.\start.ps1
+# Or manually: .\unified-admin.exe
+```
+
+### Helper Scripts
+
+The release package includes helpful scripts to make setup easier:
+
+- **`install.sh`** (Linux/macOS) - Interactive installation:
+  - Generates secure JWT_SECRET and ENCRYPTION_KEY automatically
+  - Creates and configures the .env file (required - the package ships no pre-made .env)
+  - Optionally installs as a system service
+  - Run: `./install.sh` (start.sh runs it automatically if .env is missing)
+
+- **`verify.sh`** (Linux/macOS) - Verify installation:
+  - Checks binary is executable
+  - Validates .env configuration (including detecting placeholder keys)
+  - Tests port availability
+  - Checks Docker setup
+  - Run: `./verify.sh`
+
+- **`start.sh`** (Linux/macOS) / **`start.ps1`** (Windows) - Start services:
+  - Starts backend API server
+  - Optionally starts Docker frontend
+  - Shows admin password on first run
+  - Redirects logs to keep terminal clean
+  - Run: `./start.sh` or `.\start.ps1`
+
+### What's Included in Release Packages
+
+Each release package includes everything you need:
+- ✅ **Pre-built API server binary** (`unified-admin` or `unified-admin.exe`) - no Docker required
+- ✅ **Helper scripts** - `install.sh`, `verify.sh`, `start.sh` (Unix) or `start.ps1` (Windows)
+- ✅ **Service files** - Systemd service (Linux) or Launchd plist (macOS) for production
+- ✅ **Pre-built frontend** - Production-optimized Vue.js app ready for Docker deployment
+- ✅ **Docker configuration** - `docker-compose.frontend.yml` and `Dockerfile.frontend`
+- ✅ **Default security policies** - 15 JSON policy files with 250+ detection rules
+- ✅ **Configuration templates** - `env.example` (copy to `.env` and set your keys)
+- ✅ **Documentation** - `QUICKSTART.md` and `INSTALL.md` guides
+
+**No compilation required** - download, configure, and run!
+
+
+### Required Configuration
+
+Before running the gateway, you **MUST** configure these critical environment variables. The gateway **refuses to start** with missing, default, or template placeholder values.
+
+**Easiest way:** Use the installation script which generates secure keys automatically:
+
+```bash
+./install.sh  # Linux/macOS
+```
+
+**Manual configuration:**
+
+1. **Copy environment template:**
+   ```bash
+   cp env.example .env  # Linux/macOS
+   # or
+   Copy-Item env.example .env  # Windows
+   ```
+
+2. **Generate Security Keys:**
+   ```bash
+   # Generate JWT secret (required for authentication)
+   openssl rand -hex 32
+   
+   # Generate encryption key (required for OAuth session encryption)
+   openssl rand -base64 32 | cut -c1-32
+   ```
+
+3. **Edit .env file** and set the generated keys:
+   ```bash
+   nano .env  # Linux/macOS
+   # or
+   notepad .env  # Windows
+   ```
+   
+   Required variables:
+   ```env
+   JWT_SECRET=your-generated-jwt-secret-here
+   ENCRYPTION_KEY=your-generated-encryption-key-here
+   ENVIRONMENT=production  # Change from 'development' for production
+   ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+   ```
+
+4. **Verify configuration:**
+   ```bash
+   ./verify.sh  # Linux/macOS - checks your setup
+   ```
+
+5. **Start the Gateway:**
+   ```bash
+   ./start.sh  # Linux/macOS - starts backend + optional frontend
+   # or
+   .\start.ps1  # Windows
+   # or manually:
+   ./unified-admin  # Linux/macOS
+   .\unified-admin.exe  # Windows
+   ```
+
+See `QUICKSTART.md` in the release package for detailed instructions.
+
+### First Time Setup
+
+1. **Start the gateway** using `./start.sh` (or `.\start.ps1` on Windows)
+   - The script will display the admin password on first run
+   - **Save this password immediately** - it's shown only once!
+
+2. **Access the web interface**:
+   - **Docker frontend**: http://localhost (if Docker frontend is running)
+   - **Native backend**: http://localhost:8080
+
+3. **Login** using:
+   - Username: `admin`
+   - Password: The temporary password shown during startup
+
+4. **Change your password** immediately after first login
+
+5. **Create Your First Proxy**:
+   - Navigate to "Infrastructure → Proxy Management"
+   - Click "Create Proxy" in the dashboard
+   - Choose proxy type (MCP or LLM)
+   - Configure target URL and port
+   - Configure the listening port
+   - Select security policies to apply
+   - Click "Create" and then "Start"
+
+6. **Monitor Traffic**: View real-time requests, alerts, and metrics in the dashboard
+
+That's it! You now have a fully functional AI Security Gateway running.
+
+**For detailed setup instructions, see `QUICKSTART.md` in the release package.**
+
+### Frontend Deployment Options (Production)
+
+For production deployments, you have two options for serving the frontend:
+
+**A. Docker-based Frontend (Recommended):**
+
+```bash
+# 1. Start API server binary (as shown above)
+./unified-admin &
+
+# 2. Serve frontend via Docker + Nginx
+# Frontend .env is already included in the release package
+# Edit frontend/.env if needed to configure VITE_API_BASE_URL
+docker-compose -f docker-compose.frontend.yml up -d
+# Frontend available at http://localhost:80
+```
+
+**B. Manual Nginx/Apache Deployment:**
+
+```bash
+# 1. Build frontend for production
+cd frontend
+npm install
+npm run build
+# Frontend built to frontend/dist/
+
+# 2. Deploy dist/ contents to your web server
+# - Copy frontend/dist/* to nginx/apache document root
+# - Configure reverse proxy for /api/* and /ws to backend:8080
+```
+
+**No Docker required for API server** - uses native Go binaries for optimal performance!
+
+
+## 📖 Documentation
+
+For detailed guides and advanced configuration, see the online documentation:
+
+[AI Security Gateway Docs](https://docs.aisecgateway.com/)
+
+## 🛠️ Basic Usage Examples
+
+### Using the Web Interface (Recommended)
+
+The easiest way to use the AI Security Gateway is through the web interface:
+
+1. **Start the gateway**: `./unified-admin`
+2. **Access the dashboard**: `http://localhost:8080`
+3. **Create a proxy**:
+   - Click "Add Proxy"
+   - Enter proxy name and target URL
+   - Select security policies
+   - Click "Create" and "Start"
+4. **Monitor traffic**: View real-time requests, alerts, and metrics
+
+
+## 🤝 Support & Contributing
+
+### 📚 Documentation
+Documents can be found at [AI Security Gateway Docs](https://docs.aisecgateway.com/)
+
+### 🐛 Bug Reports & Feature Requests  
+Community feedback is welcomed! Use [GitHub Issues](https://github.com/syphon1c/ai-security-gateway/issues) to:
+- Report bugs and unexpected behaviour (please include the output of `./unified-admin --version`)
+- Request new features or improvements  
+- Share usage experiences and suggestions
+- Contribute to documentation improvements
+
+### 🤝 Contributing
+Contributions will be welcomed once the full source code is released:
+- Bug fixes and improvements
+- New security detection rules and policies
+- Documentation enhancements
+- Test coverage improvements
+
+**Note**: When using AI assistance for contributions, always verify the code works as expected and include appropriate tests.
+
+### 📞 Support
+- **GitHub Issues**: Primary support channel for bug reports and questions
+- **Documentation**: Comprehensive guides available: [AI Security Gateway Docs](https://docs.aisecgateway.com/)
+- **Examples**: Sample configurations and usage patterns in [`/examples`](examples/)
+
+## 📝 Development Note
+
+This project has utilized AI assistance for portions of code implementation and documentation to enhance development efficiency while maintaining code quality and security standards through comprehensive testing and manual verification.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Special thanks to:
+- Contributors and early adopters providing valuable feedback through the beta series
+
+---
+
+**AI Security Gateway v2026.8.1** - Secure every AI interaction. Free and self-hosted.
+
+*Provided as-is under the MIT License.*

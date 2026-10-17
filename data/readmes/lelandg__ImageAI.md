@@ -1,0 +1,2210 @@
+# ImageAI — Advanced AI Image Generation
+
+### [ImageAI on GitHub](https://github.com/lelandg/ImageAI) Desktop + CLI for multi‑provider AI image and video generation with enterprise auth, prompt tools, and MIDI‑synced karaoke/video workflows.
+
+**Version 0.49.1**
+
+**See [LelandGreen.com](https://www.lelandgreen.com) for links to other code and free stuff**. _Under construction. Implementing social links soon._ 
+- **Chameleon Labs Discord - Support, AI Art & Community: [Chameleon Labs Discord](https://discord.gg/chameleonlabs)**
+ 
+#### Created primarily with _Antrhopic **Claude Code**_, with PyCharm IDE and AI assistance from Junie (early-on), Codex. Extra Google auth guidance from Gemini CLI.
+#### Enterprise-ready with multiple authentication methods and provider support  
+
+## Overview
+
+**ImageAI** is a powerful desktop application and CLI tool for AI image generation, video creation, and professional layout design. It supports multiple providers including Google's Gemini API (Gemini 2.5/3 Flash/Pro Image and Veo 3.1), OpenAI's GPT Image and DALL·E models, Stability AI's Stable Diffusion, and local Stable Diffusion models. Beyond image generation, ImageAI provides a complete workflow for creating AI-powered videos with MIDI synchronization, karaoke overlays, and a professional layout engine for photo books, comics, and publications. It features enterprise-grade authentication options, secure credential management, and works seamlessly across Windows, macOS, and Linux.
+
+## Table of Contents
+- [Project Review & Recommendations](Docs/ProjectReview.md)
+- [Requirements](#1-requirements)
+- [Authentication Setup](#2-authentication-setup)
+- [Installation](#3-installation)
+- [Running the Application](#4-running-the-application)
+- [Authentication Management](#5-authentication-management)
+- [CLI Reference](#6-cli-reference)
+- [GUI Features](#7-gui-features)
+  - [Image Tab](#image-tab-primary)
+  - [Templates Tab](#templates-tab)
+  - [Video Tab](#video-tab)
+  - [Layout/Books Tab (NEW!)](#layoutbooks-tab-new)
+  - [Sprite Tab](#sprite-tab)
+  - [Settings Tab](#settings-tab)
+  - [History Tab](#history-tab)
+  - [Help Tab](#help-tab)
+- [Image Management](#8-image-management)
+- [Examples and Templates](#9-examples-and-templates)
+- [Advanced Features](#10-advanced-features)
+- [Utility Scripts](#11-utility-scripts)
+- [Frequently Asked Questions](#12-frequently-asked-questions)
+- [Pricing and Cost Comparison](#13-pricing-and-cost-comparison)
+- [API Reference](#14-api-reference)
+- [Development](#15-development)
+- [Changelog](CHANGELOG.md)
+- [Screenshots Gallery](#17-screenshots-gallery)
+
+![screenshot_20251202.jpg](Screenshots/screenshot_20251202.jpg)
+
+## Key Features
+
+### 🎨 Multi-Provider Support
+- **Google Gemini** - Access to latest Gemini models for image generation
+  - **Gemini 3 Pro Image (Nano Banana Pro)** - High-fidelity 4K image generation with quality tiers:
+    - 1K (1024px), 2K (2048px), 4K (4096px) output quality
+    - Dynamic resolution limits based on selected tier
+    - Requires API key authentication (not gcloud)
+- **OpenAI GPT Image & DALL·E** - Full support across the OpenAI image family:
+  - **GPT Image 2** *(default, released 2026-04-21)* — reasoning-driven image generation with `quality` as the thinking dial (`auto`/`low`/`medium`/`high`), custom resolutions up to 3840×2160, multi-reference compositing (up to 10 images), mask inpainting, streaming partial-image previews, and Batch API (50% discount). Requires OpenAI **Organization Verification** and a positive prepaid credit balance (see OpenAI Authentication below).
+  - **GPT Image 1.5 / 1 / 1-mini** — legacy options; `gpt-image-1.5` is the recommended fallback for transparent-background (alpha PNG) output, since `gpt-image-2` does not support transparent backgrounds.
+  - **DALL·E 3 / DALL·E 2** — retained for compatibility, variations (DALL·E 2), and classic style/quality knobs.
+- **Stability AI** - Stable Diffusion XL, SD 2.1, and more via API
+- **Local Stable Diffusion** - Run models locally without API keys (GPU recommended)
+- Easy provider switching in both GUI and CLI
+- Support for custom Hugging Face models
+- Model browser and downloader for Local SD models
+- Popular model recommendations with descriptions
+
+### 🔐 Flexible Authentication
+- **API Key Authentication** - Simple setup for individual users
+- **Google Cloud Authentication** - Enterprise-ready with Application Default Credentials
+- **Hugging Face Authentication** - Built-in token management for model downloads
+- Secure credential storage in platform-specific directories
+
+### 🚀 AI Image Upscaling
+- **Real-ESRGAN** - State-of-the-art AI upscaling for enhanced image quality
+- **GPU Acceleration** - Automatic NVIDIA GPU detection for faster processing
+- **GUI Installation** - One-click installation directly from the application
+- **Multiple Methods** - Choose between AI upscaling, Lanczos, or cloud services
+- Smart upscaling when target resolution exceeds provider capabilities
+- Environment variable support for CI/CD integration
+- Per-provider API key management
+
+### 💻 Quad Interface
+- **Modern GUI** - User-friendly desktop interface built with Qt/PySide6
+- **Video Project** - Full-featured 🎬 Video tab for creating AI-powered videos with version control
+- **Layout/Books** - 📖 Professional layout engine for photo books, comics, and publications
+- **Powerful CLI** - Full-featured command-line interface for automation
+- Cross-platform support (Windows, macOS, Linux)
+- Responsive layout with resizable panels
+
+### 🎮 Discord Rich Presence
+- **Show your activity** in Discord status (like Steam games do)
+- **Privacy controls** - Choose what to share:
+  - Full: Provider, model, and activity
+  - Activity Only: Just "Generating an image"
+  - Minimal: Only show ImageAI is running
+- **Optional features**: Elapsed time, GitHub link button
+- Graceful handling when Discord isn't running
+
+### 🎯 Advanced Generation Controls
+
+- **Multiple Reference Images** - Professional multi-reference image support with two modes:
+    - **Flexible Mode** (Google Gemini):
+      - Unlimited reference images
+      - Style transformation and cartoonification
+      - Automatic compositing for 2+ images (creates character design sheet)
+      - Perfect for: "Convert these photos to cartoon characters"
+    - **Strict Mode** (Imagen 3 Customization):
+      - Up to 3 reference images with precise control
+      - Subject preservation with scene/composition changes
+      - Reference types: SUBJECT (person/animal/product), STYLE, CONTROL (canny/scribble/face_mesh)
+      - Subject-specific types with optional descriptions
+      - Perfect for: Maintaining character consistency across generations
+    - **Smart Features**:
+      - Multi-select file dialog (add multiple images at once)
+      - Flow layout (automatically wraps to fit window)
+      - Reference IDs ([1], [2], [3]) for prompt referencing
+      - Mode switching with automatic reference limit handling
+      - Thumbnail previews with individual controls per reference
+      - Per-reference type selectors and descriptions
+      - **Edit Mode** - When using a single reference image, enable checkbox to auto-prefix prompt with "Edit this image. Keep everything already in the image exactly the same."
+- **Enhanced Aspect Ratio Selector** - Interactive preview rectangles with custom input support:
+  - Visual preset buttons for common ratios (1:1, 3:4, 4:3, 16:9, 9:16, 21:9)
+  - **Custom aspect ratio input** - Enter any ratio like "16:10" or decimal "1.6"
+  - Clear mode indicator showing "Using Aspect Ratio" or "Using Resolution"
+  - Automatic resolution calculation based on provider capabilities
+- **Smart Resolution System** - Dual-mode resolution control:
+  - **Auto mode** - Resolution calculated from selected aspect ratio
+  - **Manual mode** - Direct resolution selection overrides aspect ratio
+  - Provider-optimized presets (DALL·E, Gemini, Stability AI)
+  - Visual feedback showing which mode is active (green for AR, blue for resolution)
+  - **Social Media Sizes Dialog** - Quick access to platform-specific image dimensions for Instagram, Twitter/X, Facebook, LinkedIn, YouTube, TikTok, and more
+- **Quality & Style Options** - Standard/HD quality, style presets for different looks
+- **Custom Styles** - Derive a reusable style from your own reference images (via vision-LLM analysis) and apply it across providers — image generation, video, and layout fill ([full guide](Docs/CustomStyles.md))
+- **Batch Generation** - Generate multiple variations at once
+- **Cost Estimation** - Real-time cost calculation for all providers
+- **Advanced Settings Panel** - Fine-tune generation parameters:
+  - Inference steps (1-50)
+  - Guidance scale (CFG 0-20)
+  - Scheduler selection
+  - Seed control for reproducibility
+  - Negative prompts
+  - Prompt rewriting/enhancement
+
+### 📊 Enhanced History and Tracking
+- **Detailed History Table** - View all generations with:
+  - Date and time stamps
+  - Provider and model used
+  - Resolution information
+  - Cost tracking
+  - Original prompts
+- **Session Persistence** - All UI settings saved between sessions
+- **Metadata Sidecars** - JSON files with complete generation details
+- **Disk History Scanning** - Automatically finds previous generations
+- **Quick History Access** - Click to reload prompts and settings
+
+### 🖼️ Smart Features
+- Auto-save generated images with metadata sidecars
+- Template system with placeholder substitution
+- Customizable output paths and filenames
+- Auto-copy filename to clipboard option
+- Smart filename generation from prompts
+
+### ⌨️ Keyboard Shortcuts & Accessibility
+- **Comprehensive keyboard navigation** - Full keyboard control for all features
+- **Button mnemonics** - Alt+key shortcuts for all buttons (e.g., Alt+G for Generate)
+- **Global shortcuts**:
+  - **Ctrl+Enter** - Generate image from anywhere in the Generate tab
+  - **Ctrl+S** - Save generated image
+  - **Ctrl+Shift+C** - Copy image to clipboard
+  - **F1** - Jump to Help tab
+- **Text field support** - Ctrl+Enter works even when typing in the prompt field
+- **Tooltips** - All buttons show their keyboard shortcuts
+- **Screen reader compatible** - Proper labels and navigation order
+- Image format detection and optimization
+- Preview scaling with aspect ratio preservation
+
+### 🤖 LLM Integration (NEW!)
+
+- **Global LLM Provider Selection** - Unified provider and model selection across tabs:
+    - Provider dropdown syncs between Image and Video tabs
+    - Model list updates automatically per provider
+    - Remembers selections between sessions
+    - Project-specific provider settings
+- **Multi-Provider Support** - OpenAI GPT-5, Claude, Gemini, Ollama, LM Studio
+  - **GPT-5 Model Support** - `gpt-5-chat-latest` (auto-updating to newest version)
+  - Correctly uses `max_completion_tokens` parameter for GPT-5 and GPT-4+ models
+  - **GPT-5 Specific Controls** (UI ready for future API support):
+    - Reasoning effort selector (low/medium/high) - prepared for when API supports it
+    - Verbosity control (low/medium/high) - prepared for when API supports it
+    - Auto-shows/hides based on selected model
+- **Prompt Enhancement** - One-click prompt improvement using selected LLM
+  - Automatic fallback when LLM returns empty response
+  - Configurable temperature and max tokens for fine-tuning
+  - Works across both Image and Video tabs with shared enhancement engine
+- **Ask Questions About Prompts** - Interactive Q&A dialog for prompt analysis
+  - Pre-defined questions for quick insights
+  - Custom question support with detailed answers
+  - User-adjustable temperature (0-2) and max tokens (100-4000)
+  - GPT-5 reasoning and verbosity controls when using GPT-5 models
+  - Session persistence - remembers last question, settings, and GPT-5 parameters
+  - History tracking of all Q&A interactions
+- **Automatic Model Syncing** - Provider and model selections sync between tabs
+- **Smart Model Detection** - Automatically populates available models per provider
+
+### 💻 Enhanced UI Features (NEW!)
+
+- **Reference Image Panel** - UI controls for starting with reference images:
+    - File selection dialog
+    - Reference image thumbnail
+    - Enable/disable checkbox
+    - Clear button
+    - Provider compatibility indicators
+- **Status Bar** - Real-time status messages and provider connection feedback
+- **Console Output Window** - Terminal-style log with color-coded messages:
+  - Timestamp for each operation
+  - Color coding: Green (success), Red (errors), Blue (progress), Yellow (responses)
+  - Visual separators between operations
+  - Resizable with splitter control
+- **Improved Startup** - Progress messages during initialization
+- **Lazy Video Tab Loading** - Faster startup by loading video features on-demand
+
+### 🎬 Video Project Features
+- **Complete Video Creation Pipeline** - Text to video with AI scene generation
+- **Version Control System** - Event sourcing with time-travel capabilities
+- **Dual Rendering Engines** - FFmpeg slideshow and Google Veo AI (coming soon)
+- **Multi-Provider LLM Integration** - Enhance prompts with GPT-5, Gemini, Claude, and more
+- **Visual Continuity System** - Maintain consistency across scenes with provider-specific techniques
+- **Smart Lyric Processing** - Automatic detection and visual scene creation from song lyrics
+- **Professional Effects** - Ken Burns, transitions, audio sync
+- **Project History** - Complete audit trail with restore points
+
+### 🎵 MIDI Synchronization & Karaoke (NEW!)
+- **MIDI-Based Timing** - Perfect beat/measure alignment for scene transitions
+- **Musical Structure Detection** - Identify verses, choruses, bridges from MIDI
+- **Karaoke Overlays** - Bouncing ball, highlighting, fade-in styles
+- **Lyric Export Formats** - Generate LRC, SRT, and ASS subtitle files
+- **Word-Level Synchronization** - Extract timing from MIDI lyric events
+- **Adjustable Snap Strength** - Control how tightly scenes align to beats
+- **Audio Track Support** - Link MP3, WAV, M4A files without copying
+- **Volume & Fade Controls** - Professional audio mixing options
+- **Suno Package Import** - Import multi-file Suno packages directly:
+  - Auto-detect Suno zip packages with stems and MIDI
+  - Select which stems to merge (Vocals, Drums, Bass, etc.)
+  - FFmpeg-based audio merging with stem selection
+  - Multi-track MIDI merging preserving track names
+  - Project-level storage in `suno_imports/` directory
+
+### 🎭 Character Animator Puppet Creation (NEW!)
+- **Single Image to Puppet** - Convert any character image into an animatable puppet
+- **Cloud AI Viseme Generation** - Use Google Gemini or OpenAI to create facial variations
+- **14 Mouth Visemes** - Generate all required lip-sync shapes for realistic speech animation
+- **Eye Blink States** - Create left/right blink layers for natural blinking animation
+- **Real-Time Cost Estimation** - See costs before generation ($0.50-$2.00 typical)
+- **Multi-Format Export** - PSD (Photoshop) and SVG formats supported
+- **Adobe-Compatible Naming** - Uses proper layer naming for auto-rigging in Character Animator
+- **Caching** - Avoid redundant API calls with local result caching
+
+### 🔤 Font Generator (NEW!)
+- **Alphabet to Font** - Create custom fonts from alphabet images
+- **Auto Segmentation** - Contour-based, grid-based, or row-column detection
+- **AI Glyph Identification** - Multi-provider AI (Claude, Gemini) identifies characters
+- **AI Glyph Generation** - Generate missing glyphs matching your font style
+- **Full Contour Detection** - Preserves tall/slanted characters like /\()
+- **Smart Punctuation** - Proper baseline and positioning for all punctuation
+- **Vector Tracing** - Convert bitmap characters to smooth vector outlines
+- **Configurable Smoothing** - None to Maximum smoothing levels
+- **Real-Time Preview** - Multi-line preview with all character categories
+- **Multiple Formats** - Export to TTF and/or OTF
+- **Settings Persistence** - All settings saved between sessions
+
+### 🔧 Developer Features
+- Modular architecture with provider abstraction
+- Worker threads for non-blocking generation
+- Comprehensive error handling and recovery
+- Progress tracking and status updates
+- Event-driven architecture with Qt signals
+- Extensible provider system for new services
+
+## 1. Requirements
+
+- Python 3.10+ (3.10 to 3.13 supported)
+- Internet connection
+- Google account (for Gemini) or OpenAI account (for DALL·E)
+- Dependencies (auto-installed via requirements.txt):
+  - `google-genai` - Google Gemini API client
+  - `google-cloud-aiplatform` - Google Cloud authentication support
+  - `openai` - OpenAI API client
+  - `PySide6` - GUI framework (optional for CLI-only usage)
+  - `pillow` - Image processing
+  - `protobuf` - Protocol buffer support
+  - `pretty-midi` - MIDI file analysis and timing extraction
+  - `mido` - Low-level MIDI manipulation for lyrics and events
+  - `moviepy` - Video processing and assembly
+  - `litellm` - Unified LLM provider interface (for video prompts)
+
+## 2. Authentication Setup
+
+### Google Gemini Authentication
+
+You have two options for authenticating with Google's Gemini API:
+
+#### Option A: API Key (Recommended for Individual Users)
+
+1. **Get your API key**:
+   - Visit [Google AI Studio](https://aistudio.google.com/apikey)
+   - Create a new API key or use an existing one
+   - Copy the key (keep it secure!)
+
+2. **Review documentation**:
+   - [Gemini API Overview](https://ai.google.dev/)
+   - [Pricing and Quotas](https://ai.google.dev/pricing)
+   - [Safety Policies](https://ai.google.dev/gemini-api/docs/safety)
+
+3. **Enable billing if required**:
+   - Some regions/models require billing
+   - Visit [Google AI Pricing](https://ai.google.dev/pricing)
+
+#### Option B: Google Cloud Account (Enterprise/Advanced Users)
+
+1. **Install Google Cloud CLI**:
+   - Download from [Google Cloud SDK](https://cloud.google.com/sdk/docs/install)
+   - Windows: Use the interactive installer
+   - macOS: `brew install google-cloud-sdk`
+   - Linux: Follow distribution-specific instructions
+
+2. **Set up Google Cloud project**:
+   - Create/select project at [Cloud Console](https://console.cloud.google.com/projectcreate)
+   - Note your Project ID
+
+3. **Authenticate**:
+   ```bash
+   # Login to Google account
+   gcloud auth application-default login
+   
+   # Set your project
+   gcloud config set project YOUR_PROJECT_ID
+   
+   # Verify authentication
+   gcloud auth list
+   ```
+
+4. **Enable required APIs**:
+   ```bash
+   gcloud services enable aiplatform.googleapis.com
+   gcloud services enable cloudresourcemanager.googleapis.com
+   ```
+   Or enable via [Cloud Console](https://console.cloud.google.com/apis/library)
+
+5. **Enable billing**:
+   - Visit [Cloud Billing](https://console.cloud.google.com/billing)
+   - New accounts may have free credits
+
+6. **Enable Gemini 3 Pro Image (Nano Banana Pro)** - *Optional, for 4K image generation*:
+
+   The `gemini-3-pro-image-preview` model (also known as "Nano Banana Pro") provides high-fidelity 4K image generation.
+
+   > **⚠️ Important**: Nano Banana Pro requires **API key authentication**. Google Cloud (gcloud/ADC) authentication is not supported for this model. Get an API key from [Google AI Studio](https://aistudio.google.com/apikey). If you select this model while using gcloud auth, ImageAI will prompt you to switch to API key mode.
+
+   To use it with Vertex AI (gcloud auth):
+
+   **Step 1: Ensure IAM Permissions**
+   ```bash
+   # Grant yourself the Vertex AI User role (required for API access)
+   gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+     --member="user:YOUR_EMAIL@gmail.com" \
+     --role="roles/aiplatform.user"
+
+   # Verify your roles
+   gcloud projects get-iam-policy YOUR_PROJECT_ID \
+     --flatten="bindings[].members" \
+     --filter="bindings.members:YOUR_EMAIL@gmail.com" \
+     --format="table(bindings.role)"
+   ```
+
+   **Step 2: Enable Required APIs**
+   ```bash
+   gcloud services enable aiplatform.googleapis.com
+   gcloud services enable generativelanguage.googleapis.com
+   ```
+
+   **Step 3: Try the Model in Vertex AI Studio First**
+   - Visit [Vertex AI Model Garden - Gemini 3 Pro Image](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/gemini-3-pro-image-preview)
+   - Click **"Try in Vertex AI Studio"** - this may "activate" the model for your project
+   - Generate a test image to confirm access works
+
+   **Step 4: Verify Project Configuration**
+   ```bash
+   # Check your active project
+   gcloud config get-value project
+
+   # Ensure it matches the project where you enabled APIs
+   gcloud config set project YOUR_PROJECT_ID
+   ```
+
+   **Troubleshooting 404 NOT_FOUND Errors:**
+   - The model is in **Preview** - some projects may not have automatic access
+   - Try different regions: The default is `us-central1`, but try `us-west1` or `europe-west4`
+   - Preview models may have ~30-40% failure rate during peak times - retry if needed
+   - Check [Vertex AI quotas](https://console.cloud.google.com/iam-admin/quotas) for any limits
+
+   **Alternative - Use API Key Instead:**
+   If Vertex AI access continues to fail, use API key authentication:
+   - Get a key from [Google AI Studio](https://aistudio.google.com/apikey)
+   - Enable billing for your API key
+   - In ImageAI Settings, switch to "API Key" mode instead of "Google Cloud Account"
+   - The model works via AI Studio without Vertex AI enablement
+
+### OpenAI Authentication
+
+1. **Get your API key**:
+   - Sign in at [OpenAI Platform](https://platform.openai.com/)
+   - Create an API key at the [API Keys page](https://platform.openai.com/api-keys)
+   - Project-scoped keys (`sk-proj-…`) are preferred; note which project the key belongs to — project-level limits apply independently of org-level limits.
+
+2. **Fund the account — required for image models**:
+   - Open the [Billing page](https://platform.openai.com/settings/organization/billing/overview) and make sure your **credit balance is positive**. A zero or negative balance returns `billing_hard_limit_reached` on every image call, even if your monthly budget shows headroom — "usage budget" ≠ "credit balance".
+   - Recommended: enable **Auto-recharge** on the Billing page so a threshold top-up keeps long runs from stalling.
+   - Add credits at [Billing → Add to credit balance](https://platform.openai.com/settings/organization/billing/overview).
+
+3. **Complete Organization Verification** *(required for `gpt-image-2`, `gpt-image-1.x`)*:
+   - [Settings → Organization → General](https://platform.openai.com/settings/organization/general) → **Verify Organization**. Takes a few minutes (photo ID).
+   - Without verification, image calls return a 403 or `billing_limit_user_error` even with credits in the account.
+
+4. **Confirm project limits**:
+   - [Settings → Project → Limits](https://platform.openai.com/settings/organization/limits): the **project** budget and **org** budget are separate. Newly created projects sometimes default to $0; raise it to match the org cap if you hit `billing_hard_limit_reached` but org usage is low.
+
+5. **Pick a tier**:
+   - Tier 1 allows `gpt-image-2` at 5 images/min; Tier 2 raises to 20 IPM. Tier 2 unlocks automatically after **$50 in paid API usage** and **7 days since first payment** (see the "Increasing your limits" section of the Limits page).
+
+6. **Review documentation**:
+   - [Rate Limits](https://platform.openai.com/docs/guides/rate-limits)
+   - [Usage Tiers](https://platform.openai.com/docs/guides/rate-limits#usage-tiers)
+   - [Pricing](https://openai.com/pricing)
+   - [gpt-image-2 model card](https://developers.openai.com/api/docs/models/gpt-image-2)
+
+#### Troubleshooting OpenAI image generation
+
+| Error                                                                | Meaning                                                                  | Fix                                                                                          |
+|----------------------------------------------------------------------|--------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| `billing_hard_limit_reached` / `billing_limit_user_error`            | Credit balance ≤ $0, or a user-set budget cap (org **or** project) hit. | Add credits at Billing; enable Auto-recharge; verify both org and project usage limits.      |
+| 403 with "organization must be verified"                             | Org Verification not completed.                                          | Settings → Organization → General → Verify Organization.                                     |
+| `model not found` for `gpt-image-2`                                  | Org not verified, OR project's model permissions exclude image models.   | Complete verification; check Project → Model permissions.                                    |
+| `Transparent background not supported on gpt-image-2`                | gpt-image-2 does not support `background=transparent`.                   | Switch to `gpt-image-1.5` (or `gpt-image-1`) for alpha-channel PNGs.                         |
+| Rate limit (429) on bursts                                           | Hit Tier 1's 5-IPM cap for gpt-image-2.                                  | Wait, or queue via **Batch API** (`--batch`) at 50% discount with a 24h SLA.                 |
+
+## 3. Installation
+
+### Quick Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/ImageAI.git
+cd ImageAI
+
+# Create virtual environment (recommended)
+python -m venv .venv
+
+# Activate virtual environment
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# Windows Command Prompt:
+.venv\Scripts\activate.bat
+# macOS/Linux:
+source .venv/bin/activate
+
+# Install core dependencies
+pip install -r requirements.txt
+
+# Optional: Install Local Stable Diffusion support
+# For CPU-only:
+pip install -r requirements-local-sd.txt
+
+# For GPU support (CUDA):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+pip install -r requirements-local-sd.txt
+```
+
+### Platform-Specific Notes
+
+- **Windows**: Ensure Python is added to PATH during installation
+- **macOS**: You may need to install Xcode Command Line Tools
+- **Linux**: You may need to install the venv module first:
+  ```bash
+  # Ubuntu/Debian:
+  sudo apt install python3.10-venv
+  # Or for Python 3.11:
+  sudo apt install python3.11-venv
+  # Or use your specific Python version:
+  sudo apt install python3-venv
+
+  # Fedora/RHEL:
+  sudo dnf install python3-pip python3-devel
+
+  # Arch Linux:
+  sudo pacman -S python-pip
+  ```
+
+## 4. Running the Application
+
+### GUI Mode (Default)
+
+```bash
+# Launch the graphical interface
+python main.py
+```
+
+### CLI Mode
+
+```bash
+# Show help
+python main.py -h
+
+# Quick examples
+python main.py -p "A majestic mountain landscape at sunset" -o mountain.png
+python main.py --provider openai -m dall-e-3 -p "Futuristic cityscape" -o city.png
+```
+
+### Authentication Examples
+
+#### Using API Keys
+
+```bash
+# Google Gemini with API key
+python main.py -s -k "YOUR_GOOGLE_API_KEY"  # Save key
+python main.py -p "Beautiful ocean sunset" -o ocean.png  # Generate
+
+# OpenAI with API key
+python main.py --provider openai -s -k "YOUR_OPENAI_API_KEY"  # Save key
+python main.py --provider openai -m dall-e-3 -p "Abstract art" -o art.png  # Generate
+
+# Using environment variables
+export GOOGLE_API_KEY="YOUR_KEY"  # Linux/macOS
+$env:GOOGLE_API_KEY = "YOUR_KEY"  # Windows PowerShell
+python main.py -p "Mountain landscape"  # Uses env variable
+```
+
+#### Using Google Cloud Authentication
+
+```bash
+# First-time setup
+gcloud auth application-default login
+gcloud config set project YOUR_PROJECT_ID
+
+# Generate images
+python main.py --auth-mode gcloud -p "Tropical paradise" -o paradise.png
+
+# Test authentication
+python main.py --auth-mode gcloud -t
+```
+
+#### Loading Keys from Files
+
+```bash
+# Save key from file
+python main.py -s -K /path/to/key.txt
+
+# Use key file directly (one-time)
+python main.py -K /path/to/key.txt -p "Desert oasis" -o oasis.png
+```
+
+## 5. Authentication Management
+
+### Key Storage Locations
+
+Configuration and keys are stored in platform-specific directories:
+
+- **Windows**: `%APPDATA%\ImageAI\config.json`
+- **macOS**: `~/Library/Application Support/ImageAI/config.json`
+- **Linux**: `~/.config/ImageAI/config.json`
+
+### Log File Locations
+
+Application logs are stored in platform-specific directories for easy debugging:
+
+- **Windows**: `%APPDATA%\ImageAI\logs\`
+  - Full path: `C:\Users\<username>\AppData\Roaming\ImageAI\logs`
+- **macOS**: `~/Library/Application Support/ImageAI/logs/`
+  - Full path: `/Users/<username>/Library/Application Support/ImageAI/logs`
+- **Linux**: `~/.config/ImageAI/logs/`
+  - Full path: `/home/<username>/.config/ImageAI/logs`
+
+**Log file format**: `imageai_YYYYMMDD_HHMMSS.log` (timestamp when app starts)
+
+**Additional features**:
+- **Automatic rotation**: Log files rotate at 10MB with 5 backups kept
+- **Current log copy**: On application exit, the most recent log is automatically copied to `./imageai_current.log` in your current directory for easy access
+- Use these log files when reporting issues or debugging problems
+
+**Quick access to most recent log**:
+```bash
+# Windows (PowerShell)
+ls "$env:APPDATA\ImageAI\logs" | sort LastWriteTime -Descending | select -First 1
+
+# macOS
+ls -lt ~/Library/Application\ Support/ImageAI/logs/imageai_*.log | head -1
+
+# Linux
+ls -lt ~/.config/ImageAI/logs/imageai_*.log | head -1
+```
+
+### Authentication Precedence
+
+For each provider, the authentication order is:
+1. Command-line key (`-k` or `-K` flags)
+2. Stored configuration
+3. Environment variables (`GOOGLE_API_KEY`, `OPENAI_API_KEY`)
+4. Google Cloud ADC (for Google provider with `--auth-mode gcloud`)
+
+### Security Best Practices
+
+- Never commit API keys to version control
+- Use environment variables for CI/CD
+- Rotate keys regularly
+- Use Google Cloud authentication for enterprise deployments
+- Store keys in secure password managers
+
+## 6. CLI Reference
+
+### Core Arguments
+
+```
+-h, --help              Show help message
+-p, --prompt TEXT       Prompt for image generation
+-o, --out PATH          Output path for generated image
+-m, --model TEXT        Model to use (provider-specific)
+-t, --test              Test authentication
+```
+
+### Authentication Arguments
+
+```
+-k, --api-key TEXT      API key string
+-K, --api-key-file PATH Path to file containing API key
+-s, --set-key           Save the provided key
+--auth-mode {api-key|gcloud}  Google auth mode (default: api-key)
+```
+
+### Provider Arguments
+
+```
+--provider {google|openai|stability|local_sd}  Provider to use (default: google)
+```
+
+### Model Defaults
+
+- **Google**: `gemini-2.5-flash-image-preview`
+- **OpenAI**: `dall-e-3`
+- **Stability AI**: `stable-diffusion-xl-1024-v1-0`
+- **Local SD**: `stabilityai/stable-diffusion-2-1`
+
+### Complete Examples
+
+```bash
+# Test authentication
+python main.py -t
+python main.py --provider openai -t
+python main.py --provider stability -t
+python main.py --provider local_sd -t  # Check if ML deps installed
+python main.py --auth-mode gcloud -t
+
+# Generate with different providers
+python main.py -p "Sunset over mountains" -o sunset.png
+python main.py --provider openai -m dall-e-2 -p "Abstract art" -o abstract.png
+python main.py --provider stability -p "Fantasy landscape" -o fantasy.png
+python main.py --provider local_sd -p "Cyberpunk city" -o cyber.png
+python main.py --auth-mode gcloud -p "Space station" -o space.png
+
+# Save and use API keys
+python main.py -s -k "YOUR_KEY"  # Save to config
+python main.py --provider stability -s -k "YOUR_STABILITY_KEY"
+python main.py -K ~/keys/api.txt -p "Ocean waves"  # Use from file
+```
+
+### Sprite workflow for agents and scripts
+
+The entire Sprite workflow is available through `--sprite`: project creation and
+copying, settings and frame edits, action cards, generation, processing, previews,
+and all seven export formats. `--sprite schema --json` lists the JSON request
+contracts; `--sprite-data` accepts a JSON file or `-` for stdin. Results use one
+JSON document on stdout with `--json`; progress and provider logs go to stderr.
+
+See the [Sprite CLI guide](Docs/Sprite-CLI-Guide.md) and the offline
+[command workbench](Docs/Sprite-CLI-Workbench.html), which builds copyable commands
+and downloadable requests for Windows, macOS, and Linux.
+
+The [Lumen sample](SampleData/SpriteCLI/README.md) was created and animated by
+Codex through the CLI as a live workflow test.
+
+### Generate video (CLI)
+
+Single-clip video generation with Gemini Omni or Veo:
+
+```bash
+# Text -> video (Veo is the default provider)
+python main.py --video -p "a fox running through snow" -o fox.mp4
+
+# Gemini Omni, portrait
+python main.py --video --video-provider omni --aspect 9:16 -p "neon city" -o city.mp4
+
+# Reference images (Veo up to 3, Omni 1)
+python main.py --video -p "she walks toward camera" -o walk.mp4 \
+    --ref-image style.png --ref-image character.png
+
+# Extend an existing clip (Veo only)
+python main.py --video --extend fox.mp4 -p "the fox leaps a log" -o fox2.mp4
+
+# Machine-readable result for agents (single JSON object on stdout)
+python main.py --video -p "a fox in snow" -o fox.mp4 --json
+```
+
+Both providers use the Google API key (`--api-key`/`--api-key-file`/`GOOGLE_API_KEY`);
+Veo also supports `--auth-mode gcloud` (`GOOGLE_CLOUD_PROJECT`). A `.json` sidecar is
+written next to the `.mp4`. Clip length is model-fixed (~8s).
+
+### Video Generation with MIDI Sync (NEW!)
+
+```bash
+# Basic video generation with slideshow
+python main.py video --in lyrics.txt --provider gemini --slideshow \
+  --audio /path/to/music.mp3 --out video.mp4
+
+# MIDI-synchronized video with beat alignment
+python main.py video --in lyrics.txt --midi /path/to/song.mid \
+  --audio /path/to/song.mp3 --sync-mode measure --snap-strength 0.9 \
+  --out synced_video.mp4
+
+# Video with karaoke overlay
+python main.py video --in lyrics.txt --midi song.mid --audio song.mp3 \
+  --karaoke --karaoke-style bouncing_ball \
+  --export-lrc --export-srt --export-ass \
+  --out karaoke_video.mp4
+
+# Using Veo AI for video generation (when available)
+python main.py video --in script.txt --veo-model veo-3.1-generate-001 \
+  --audio soundtrack.mp3 --out ai_video.mp4
+```
+
+### Layout (publication layout engine)
+
+```bash
+# Design a layout from a description (LLM → project JSON)
+python main.py --layout-design "4-panel comic about a cat heist" \
+    --content-kind comic --page-size Letter -o heist.iaiproj.json
+
+# Generate images for every prompted region (in-place)
+python main.py --layout-fill heist.iaiproj.json --provider google
+
+# Render to PDF or PNG
+python main.py --layout-export heist.iaiproj.json -o heist.pdf
+python main.py --layout-export heist.iaiproj.json -o heist.png
+```
+
+**Notes:**
+- `--layout-design` uses the text LLM (`--layout-llm-provider`/`--layout-llm-model`);
+  `--layout-fill` uses the image provider (`--provider`/`-m`).
+- `--layout-export` requires PySide6 (`pip install PySide6`); design and fill do not.
+- PNG export renders at the project's native pixel size; `--dpi` controls PDF
+  rendering and design geometry.
+- **content-kind choices**: children, comic, comic_strip, magazine, newspaper, scientific, custom.
+- `--layout-fill` passes each region's pixel dimensions to the image provider; OpenAI and Stability honor them, but Google/Gemini uses its own aspect-ratio sizing internally regardless of the requested pixel size.
+
+## 7. GUI Features
+
+### Main Interface
+
+#### Image Tab (Primary)
+- **Model Selection**: Dropdown with provider-specific models
+- **Prompt Input**: Multi-line text area with built-in search (Ctrl+F)
+- **AI Prompt Tools**:
+  - **Enhance Prompt**: Improve your prompt with AI assistance
+  - **Generate Prompts**: Create multiple prompt variations with history tracking
+  - **Ask AI Anything**: Interactive AI assistant for prompt help or general questions
+    - Works with or without a prompt
+    - Continuous conversation mode with context retention
+    - Editable prompt field with clear edit controls
+    - Conversation history saved across sessions
+  - **Reference Image Analysis**: Analyze images to generate detailed descriptions
+    - Upload any image for AI analysis
+    - Customizable analysis prompts
+    - Copy descriptions directly to main prompt
+- **Generate Button**: Start image generation with progress tracking
+- **Edit Mode Button**: Load any generated image from history for enhancement/modification
+  - Automatically loads original prompt and all metadata
+  - Preserves generation settings (provider, model, resolution, reference images)
+  - Streamlined workflow for iterative refinement
+- **Image Display**: High-quality preview with automatic scaling
+- **Generation Controls**:
+  - Aspect ratio selector with visual previews
+  - Resolution selector with provider-optimized presets
+  - Quality settings (Standard/HD)
+  - Batch size selector (1-4 images)
+  - Cost estimator showing real-time pricing
+- **Multiple Reference Images** - Two modes for different use cases:
+  - **Flexible Mode** (Google Gemini - Style Transfer):
+    - Click "+ Add Reference Image" to select one or multiple files at once
+    - Unlimited reference images (adds as many as you select)
+    - When 2+ images: Automatically composites into character design sheet
+    - Use case: "These people as high resolution cartoon characters"
+    - Use case: Style transformation, artistic interpretations
+    - Type/subject selectors hidden (mode focuses on style transfer)
+    - Visual help tooltip appears when using multiple images
+  - **Strict Mode** (Imagen 3 Customization - Subject Preservation):
+    - Maximum 3 reference images with precise control
+    - Each reference has:
+      - **Type selector**: SUBJECT, STYLE, or CONTROL
+      - **Subject Type** (for SUBJECT): Person, Animal, Product, Default
+      - **Control Type** (for CONTROL): Canny, Scribble, Face Mesh
+      - **Description field**: Optional text description per reference
+      - **Reference ID**: [1], [2], [3] for use in prompts
+    - Use case: Keep character appearance while changing scene
+    - Use case: Maintain product consistency in different contexts
+  - **Mode Switching**:
+    - Toggle between Flexible and Strict with radio buttons
+    - If switching Strict→Flexible with >3 refs: Shows selection dialog
+    - References automatically revalidated on mode change
+  - **UI Features**:
+    - Multi-select file dialog (Ctrl+Click or Shift+Click)
+    - Flow layout wraps thumbnails automatically
+    - Individual remove buttons (✕) per reference
+    - Visual thumbnails (120×120) with file names
+    - Reference count display: "Reference Images (2/3)" or "(5)"
+- **Advanced Settings** (collapsible panel):
+  - Inference steps slider (1-50)
+  - Guidance scale (CFG) control
+  - Scheduler selection
+  - Seed input for reproducibility
+  - Negative prompt field
+  - Prompt rewriting toggle
+- **Output Text**: Live generation status and file paths
+- **Examples Button**: Access curated prompts library
+
+#### Templates Tab
+- **Predefined Templates**: Ready-to-use prompts with customizable placeholders
+- **Quick Generation**: Jump-start your creativity with proven prompt patterns
+- **Placeholder System**: Customize templates with your own variables
+
+#### Video Tab
+The Video Project feature provides comprehensive tools for creating AI-powered videos from text, with advanced version control and multiple rendering options.
+
+**Project Management**:
+- **Workspace and History Tabs**: Dual-tab interface for active editing and version control
+- **Project Operations**: Create, open, save, and manage multiple video projects
+- **Auto-save**: Automatic project saving after generation operations
+- **Project Directory**: Organized storage in `~/.imageai/video_projects/`
+
+**Text Processing**:
+- **Multiple Input Formats**:
+  - Timestamped lyrics: `[00:30] First verse lyrics`
+  - Structured sections: `# Verse 1`, `# Chorus`, `# Bridge`
+  - Plain text with intelligent scene detection
+  - Custom scene markers for precise control
+- **Smart Scene Detection**: Automatic breaking of text into scenes based on:
+  - Timestamps in lyrics
+  - Section headers
+  - Paragraph breaks
+  - Semantic analysis
+
+**Storyboard & Scene Management**:
+- **Interactive Scene Table**: Edit titles, durations, and prompts directly
+- **Timing Controls**: Adjustable duration for each scene (0.5-30 seconds)
+- **Scene Reordering**: Drag-and-drop to rearrange scenes
+- **Batch Operations**: Apply settings to multiple scenes at once
+- **Preview**: Real-time preview of scene timings and transitions
+
+**AI-Powered Enhancement**:
+- **Multi-Provider LLM Support**:
+  - OpenAI GPT-5 and GPT-4o
+  - Anthropic Claude Opus 4.5, Claude 3.5 Sonnet, Haiku
+  - Google Gemini 2.0 Flash and Pro models
+  - Local Ollama models
+- **Prompt Styles**:
+  - Cinematic: Movie-like dramatic scenes
+  - Artistic: Painterly and stylized visuals
+  - Photorealistic: High-fidelity realistic images
+  - Animated: Cartoon and animation styles
+  - Documentary: Authentic, journalistic look
+  - Abstract: Experimental and artistic
+- **Batch Enhancement**: Process all scenes with consistent style
+
+**Image Generation**:
+- **Multi-Provider Support**: Generate with Google Gemini, OpenAI DALL-E, Stability AI
+- **Variant Generation**: Create 1-4 variations per scene
+- **Concurrent Processing**: Generate multiple scenes in parallel
+- **Smart Caching**: Hash-based caching to avoid regenerating identical prompts
+- **Thumbnail System**: Automatic thumbnail generation with composite previews
+- **Cost Tracking**: Real-time cost estimation and tracking per scene
+
+**Video Rendering Options**:
+
+1. **FFmpeg Slideshow Rendering**:
+   - **Ken Burns Effects**: Automatic pan and zoom animations
+   - **Transitions**: Smooth crossfade between scenes
+   - **Multiple Aspect Ratios**: 16:9, 4:3, 9:16 (vertical), 1:1 (square)
+   - **Resolution Options**: Up to 4K output
+   - **Frame Rate Control**: 24, 30, or 60 fps
+   - **Audio Integration**: Sync with audio tracks
+
+2. **Google Veo 3.1 AI Video** (NEW! - Version 0.23.1):
+   - **Continuous Video Generation**: Automatically grab end frame and use as start frame for next scene
+   - **Seamless Scene Transitions**: Maintain visual continuity across multi-scene videos
+   - **Optional End Frame Control**: Set custom end frames for precise scene endings
+   - **Start/End Frame Support**: Google released start/end frame control on October 15, 2025
+   - **True AI Video**: Generate motion video from text prompts
+   - **Model Selection**: Veo 3.0 and Veo 3.1 models with frame-to-frame continuity
+   - **Duration Control**: 4, 6, or 8 second clips per scene (auto-snapped to provider limits)
+   - **Advanced Features**: Camera movements, visual styles, physics-accurate motion
+   - **Duration Enforcement**: Automatic snapping to 8-second duration for Veo 3.0/3.1 compliance
+
+**Version Control and History**:
+- **Event Sourcing Architecture**: Complete history of all changes
+- **Time Travel**: Restore project to any point in history
+- **History Timeline**: Visual timeline with event markers
+- **Event Types Tracked**:
+  - Project creation and saves
+  - Scene additions and edits
+  - Prompt enhancements
+  - Image generations
+  - Video renders
+- **Filtering and Search**: Find specific events quickly
+- **Restore Points**: One-click restoration to previous states
+- **Diff Viewer**: See exact changes between versions
+
+**Audio & MIDI Support**:
+- **Audio Track Integration**: Link MP3/WAV/M4A/OGG files without copying
+- **MIDI Synchronization**: Load MIDI files for precise timing control
+  - Beat grid alignment for scene transitions
+  - Measure and section synchronization
+  - Tempo and time signature display
+  - Musical structure detection (verse, chorus, bridge)
+- **Karaoke Features**:
+  - Bouncing ball, highlighting, and fade-in styles
+  - Export to LRC, SRT, and ASS formats
+  - Word-level timing from MIDI lyrics
+  - Customizable font size and position
+- **Audio Controls**:
+  - Volume adjustment with real-time preview
+  - Fade in/out transitions
+  - Trim controls for start/end offsets
+- **Sync Options**: 
+  - None, Beat, Measure, or Section alignment
+  - Adjustable snap strength (0-100%)
+  - Extract lyrics from MIDI files
+
+**Advanced Settings**:
+- **Generation Settings**:
+  - Image provider and model selection
+  - Quality settings per provider
+  - Batch size and concurrency limits
+- **Render Settings**:
+  - Output format (MP4, AVI, MOV)
+  - Codec selection
+  - Bitrate control
+  - Metadata embedding
+- **Performance Options**:
+  - GPU acceleration toggle
+  - Memory usage limits
+  - Cache management
+
+**Video Project Workflow Examples**:
+
+These examples are based on actual production workflows used to create music videos with ImageAI.
+
+1. **MIDI-Synced Music Video with Scene Markers** (Real Example: "Do Math v2"):
+
+   **Day 1 - Project Setup (October 14):**
+   - Open Video tab → Click "New Project"
+   - Name project: "Do Math v2"
+   - Paste lyrics formatted with square brackets. (Like Suno and AISongGenerator use.)
+   - Optionally, edit to include manual scene markers:
+```
+=== NEW SCENE: bedroom ===
+[Verse 1]
+When the night feels endless and I'm wide awake
+
+=== NEW SCENE: abstract ===
+I shuffle numbers like cards
+I hum a rhythm, let the numbers dance
+And suddenly it's not so hard
+
+[Chorus]
+=== NEW SCENE: bedroom ===
+I'm doin' math, I do math, I do math
+I'm tap-tap-tappin' in my head
+(etc.)
+```
+   - In Audio/MIDI section, click "Browse..." next to MIDI file → Select `Do Math v2.mid`
+     - System auto-detects tempo (e.g., 120 BPM, 4/4 time, 125 seconds)
+   - Click "Browse..." next to Audio file → Select audio WAV file
+     - This is used in final step to produce your video
+   - Set MIDI Sync mode: "Beat" with snap strength 1.0
+   - Configure providers:
+     - LLM: Google Gemini 2.5 Pro
+     - Images: Google Gemini 2.5 Flash Image Preview
+   - Set prompt style: "Hi-res Cartoon"
+   - Set aspect ratio: 16:9 (1024×576)
+   - Scenes auto-detected (22 scenes) when you proceed to storyboard generation
+
+   **Day 2 - Character Reference Setup (October 16):**
+   - Generate character reference images in main Image tab
+   - Switch to Video tab → Click "Reference Library" button (bottom of workspace)
+   - In Reference Library panel, click "Generate Character Refs"
+     - Or click "Add Reference" to load existing images
+   - Add character images (Janelle, Dave) and environment reference (bedroom scene)
+   - References auto-apply to all scenes
+
+   **Day 13 - Video Generation (October 27):**
+   - In Workspace tab, select scene 0 in the scene table
+   - Click the 🎬 icon in the scene row to generate video
+   - Veo generates 8-second clip in ~86 seconds
+   - System extracts last frame automatically for continuity
+   - Video saved to: `project/clips/scene_0_20251027_152943.mp4`
+
+   **Result:** 22 scenes with perfect beat synchronization, character consistency, and smooth transitions
+
+2. **Structured Lyrics Without MIDI** (Simpler Workflow):
+   - Create new project
+   - Paste lyrics with section headers into the input text area:
+     ```
+     [Verse 1]
+     Your lyrics here...
+
+     [Chorus]
+     Your lyrics here...
+
+     [Bridge]
+     Your lyrics here...
+     ```
+   - Scenes are automatically detected from section headers when you generate the storyboard
+   - Select LLM provider (OpenAI GPT-5, Claude 3.5, or Gemini 2.5 Pro)
+   - Choose prompt style (Cinematic, Artistic, Photorealistic, etc.)
+   - Click "Enhance All Prompts" → LLM generates detailed scene descriptions
+   - Choose rendering method:
+     - FFmpeg Slideshow: Generate images first, then render with Ken Burns effects
+     - Google Veo: Generate motion video clips for each scene
+     - Gemini Omni: Fast conversational video generation via the Interactions
+       API (text-to-video, image-to-video, and conversational editing; 720p,
+       3–10s, with audio; 16:9 or 9:16). Uses your Google API key.
+   - Click "Render Video" to create final output
+
+3. **Professional AI Motion Video with Continuity** (Google Veo 3.0/3.1):
+   - Create project with storyboard/lyrics (text auto-parsed into scenes)
+   - Configure video provider: Select "Gemini Veo" in provider dropdown
+   - Enable continuity: Check "Auto-link previous end frame as reference" option
+   - Set up first scene:
+     - Write detailed prompt or click ✨ button for LLM enhancement
+     - Optional: Add reference images in the Reference Images column
+   - Click 🎬 icon to generate first video clip
+   - System automatically:
+     - Extracts last frame from generated clip
+     - Uses it as start frame for next scene (or reference image)
+     - Maintains visual continuity across scenes
+   - Generate remaining scenes sequentially
+   - Each 8-second clip links seamlessly to the next
+   - Final assembly: Use "Render Video" to combine clips with crossfade transitions
+
+4. **Quick Slideshow from Plain Text**:
+   - Create new project
+   - Paste plain text (no timestamps or markers) into input area
+   - Scenes are automatically created from paragraph breaks during storyboard generation
+   - Select "Quick" preset (short scenes, fast generation) if available
+   - Choose image provider (Google, OpenAI, Stability AI)
+   - Click "Enhance All Prompts" to generate scene descriptions
+   - Generate all scene images (system processes multiple scenes in parallel)
+   - Click "Render Video" and configure:
+     - Resolution: 1080p or 4K
+     - Ken Burns: Enabled for motion
+     - Transitions: Crossfade between scenes
+     - Audio: Optional background music
+   - Export as MP4 in minutes
+
+**Video Tab Troubleshooting**:
+
+| Issue | Solution |
+|-------|----------|
+| "Scene detection failed" | Ensure text has clear line breaks or timestamps |
+| "MIDI sync not working" | Verify MIDI file format (SMF 0 or 1) and load audio first |
+| "Veo model not available" | Ensure Google API key is set and Gemini 2.0 API is enabled |
+| "Duration mismatch" | System auto-snaps to 4, 6, or 8 seconds; manual adjustment limited |
+| "Video rendering slow" | Reduce resolution or disable Ken Burns effects |
+| "Memory errors during generation" | Reduce batch size or number of concurrent scene generations |
+| "Audio sync issues" | Adjust "snap strength" slider (0-100%) for timing flexibility |
+| "Karaoke export blank" | Ensure MIDI file contains lyric events and is properly formatted |
+| "Generated images don't match style" | Use consistent LLM provider and set strong style descriptors in prompts |
+
+#### Layout/Books Tab (NEW!)
+
+⚠️ <b>Layout tab Development is in Progress — It's not yet fully functional.</b>
+
+The Layout/Books tab provides a professional layout engine for creating photo books, comics, children's books, and magazine-style publications with AI-generated images.
+
+**Core Features**:
+- **Template-Driven Design**: Pre-built templates for common layouts
+  - Children's book: Single illustration per page with text
+  - Comic book: Multi-panel grid layouts (3-panel, 4-panel, etc.)
+  - Magazine: Two-column layouts with pull quotes
+  - Photo book: Grid layouts with captions
+- **Intelligent Placement**: Automatic positioning of text and images
+- **Professional Typography**:
+  - Advanced text rendering with word wrapping
+  - Hyphenation support (framework ready)
+  - Widow/orphan control
+  - Text justification with word spacing
+  - Multiple fonts and styles per page
+- **Image Processing**:
+  - Rounded corners with anti-aliasing
+  - Image filters (blur, grayscale, sepia, sharpen)
+  - Borders and strokes
+  - Multiple fit modes (cover, contain, fill)
+  - Brightness, contrast, saturation adjustments
+- **Smart Layout Algorithms**:
+  - Auto-fit text to available space
+  - Text overflow handling across pages
+  - Panel grid computation for comics
+  - Column flow for magazine layouts
+  - Safe area margins and bleed handling
+
+**Template System**:
+- **Variable Substitution**: Use `{{variable}}` syntax in templates
+- **Color Palettes**: Define theme colors with automatic variants
+- **Per-Page Overrides**: Customize variables on specific pages
+- **Theme Files**: Load color schemes from JSON
+
+**Workflow**:
+1. **Select Template**: Choose from built-in templates or create custom
+2. **Set Theme**: Configure colors, fonts, and spacing
+3. **Add Content**:
+   - Import AI-generated images from Generate tab
+   - Write or paste text content
+   - Use LLM to generate story text
+4. **Customize Layout**: Adjust positions, sizes, and styles
+5. **Export**: Generate high-resolution PDF or PNG (300 DPI default)
+
+**Use Cases**:
+- **Children's Books**: Illustrated stories with consistent page layouts
+- **Comic Books**: Sequential art with panel-based storytelling
+- **Photo Books**: Family albums with captions and decorative layouts
+- **Magazine Articles**: Multi-column text with pull quotes and images
+- **Marketing Materials**: Brochures, flyers, and promotional content
+
+**Advanced Features**:
+- **Font Management**:
+  - System font discovery (Windows, macOS, Linux)
+  - Custom font directory support
+  - Font fallback chains
+- **Export Options**:
+  - Configurable DPI (default 300 for print quality)
+  - PDF with embedded fonts
+  - PNG sequence for individual pages
+- **LLM Integration**: Generate story text with AI assistance
+- **Multi-Page Projects**: Create complete publications with consistent styling
+
+**Example Projects**:
+```
+Children's Book: "The Adventure"
+- Generate 10 scene images in Image tab with prompt: "Illustrated children's book scene showing [description]"
+- Switch to Layout tab
+- Select "Children's Book" template
+- Import generated images
+- Add text for each page
+- Customize colors to match story mood
+- Export as PDF for printing
+
+Comic Strip: "Monday Morning"
+- Generate 3 comic panels in Image tab
+- Switch to Layout tab
+- Select "Comic 3-Panel" template
+- Import panels in sequence
+- Add speech bubbles and captions
+- Export as high-res PNG
+```
+
+**Tips for Best Results**:
+- Generate images with consistent style and color palette
+- Use Layout tab's theme colors to match your generated images
+- Export at 300 DPI for print-quality results
+- Test with low-DPI preview before final high-res export
+
+#### Sprite Tab
+
+The Sprite tab turns one character image into a game-ready sprite sheet. The tab is labeled **🎮 Sprite** and loads on the first click. The workflow is: import a character, write action cards, render a clip or an image sequence per action, process the frames into cells, then export the sheet for a game engine.
+
+**Project Toolbar**:
+- **New…**: Create a project. ImageAI asks for a name and makes the project directory.
+- **Open…**: Open a `project.iasprite.json` file.
+- **Save** / **Save As…**: Write the project JSON. The tab also autosaves after every card edit and every finished job.
+- **Generation Settings…**: Open the video generation settings for this project (see below).
+- **Export…**: Open the export dialog. The button stays disabled while a processing job runs.
+- **Title label**: Shows the project name and its directory. It reads `No project — click New… or send a character image here` when no project is open.
+- **Sprite console**: The status console at the bottom logs every job, warning and error. The splitter positions are saved between sessions.
+
+**Character Panel** (top left):
+- **Drop area**: Drag a PNG, JPEG, WebP, BMP or GIF onto the panel. **Browse…** opens a file dialog instead.
+- **Analysis readout**: Reports the pixel size, whether the image has alpha, and the border color with `uniform` or `mixed`.
+- **Plate color**: The background color ImageAI asks the image model and the video model for. The default is `#00FF00`. The models often drift from the request, so keying samples the real background of each clip instead of trusting this value.
+- **Make chroma plate**: Asks Google Gemini to place the character on a flat chroma plate. The plate is the reference for every later render.
+- **Generate turnaround**: Asks Google Gemini for front, side, back and three-quarter views.
+- **Cancel**: Stops the running character job.
+- **Send to Sprite**: Right-click the result image in the Image tab, or a row in the History tab, and choose **Send to Sprite**. The tab creates a project when none is open.
+- The panel needs a Google API key. A missing key is reported before any job starts.
+
+**Action Cards Panel** (middle left):
+- **Brief**: One line that describes the character, for example `a small armored knight with a red cape`.
+- **Genre**: Picks the action checklist. `sidescroller` asks for idle, walk, run, jump, fall, attack, hurt and death. `top_down` and `fighting` use their own checklists.
+- **LLM provider**: Picks the chat provider that writes the cards. The choice is remembered.
+- **Generate cards** (Ctrl+Enter): Asks the LLM for the checklist and adds one card per action. **Cancel** stops the call.
+- **Card table**: Name, Prompt, Seconds, Loop, Frames, FPS and Status. Every cell except Status is editable. A name must be unique snake_case. Seconds accepts 1-15, Frames accepts 1-64, and FPS accepts 1-60. A rejected value reverts and the console names the reason.
+- **Row buttons**: **Render** queues the card. **Re-render** resets the status and queues it again. **Refine…** sends a conversational instruction to the model, and it works only for a rendered Omni clip. **Render (image)** opens the image route dialog.
+- **Add card**, **Remove selected**, **Render all**: Render all queues every draft and failed card.
+- **Hint line**: Shows the suggested clip length for the selected card, for example `walk: 8 frames @ 12 fps → suggested clip 2 s on omni`.
+
+**Generation Settings Dialog**:
+- **Configuration**: Named configurations with **Load**, **Save as…** and **Delete**. The `Default` configuration cannot be deleted.
+- **Provider**: `omni` or `veo`. **Model** accepts a provider model ID or `(provider default)`.
+- **Resolution**: `720p` or `1080p`. **Aspect ratio**: `16:9`, `9:16` or `1:1`.
+- **Clip duration**: 1-15 seconds. **Clip FPS**: 1-60. The presets are 8, 12, 24, 30 and 60.
+- **Loop conditioning**: Veo only. It conditions the first and last frame and forces an 8-second clip.
+- **Plate color**, **Attach turnaround views as references**, **Include audio** (Veo only).
+- **Estimated cost per action**: Reads `unknown` when no verified rate exists. ImageAI never shows a guessed price.
+
+**Render Queue Panel** (bottom left):
+- **Queue table**: Action, Status, Est. cost and Actual cost. The status tooltip carries the error text of a failed card.
+- **Sheet estimate**: The total for every card, plus a count of the actions without a verified rate.
+- **Start** (Ctrl+Enter), **Cancel**, **Retry selected**: Retry accepts failed cards only. A cancel keeps the provider operation ID for recovery.
+- Each rendered clip lands in `clips/<action_id>.mp4`. A refine writes `clips/<action_id>.r<N>.mp4`.
+- The queue finishes an action with the whole processing pipeline, including both profile stages. The completion line names the stages that produced frames, for example `Frames ready for 'walk' (stages: extract, key, cleanup, alpha, stabilize, hd, pixel)`. A disabled profile is visible by its absence from that list.
+
+**Frame Strip** (top right):
+- **Duplicate** (Ctrl+D), **Delete** (Delete), **Insert…**, **Overrides…**, **Export frame…**.
+- Delete removes frames from the list only. The PNG files stay on disk.
+- **Overrides…** sets a per-frame key color, tolerance and softness.
+- **Duration**: Sets the duration of the selected frames in milliseconds. Press Enter to apply.
+- Drag a thumbnail to reorder the animation. Right-click a thumbnail for the same tools plus **Retouch…**.
+- Every edit pushes an undo snapshot. Ctrl+Z undoes it and Ctrl+Y redoes it.
+
+**Preview Player** (middle right):
+- **Source**: `cells` shows the working frames. `hd` and `pixel` show the output of that profile stage.
+- **Tag**: Limits playback to one action, or plays all frames.
+- **Transport**: First, previous, play/pause, next and last. The loop mode button cycles forward, reverse and ping-pong.
+- **FPS readout**: Shows the effective rate and adds `(variable)` when the frame durations differ.
+- **Loop seam**: Shows the mean RGBA difference between the last frame and the first frame. `0` is a perfect loop.
+- **Pixel view**: The player draws through a pixel view with integer nearest-neighbor zoom, a pixel grid and a checkerboard behind the alpha. Drag a rectangle to select a region for a retouch. The processing panel's **Pick…** button turns the view into a color picker.
+
+**Processing Panel** (bottom right):
+- **Extraction**: Mode is `every N frames`, `target fps` or `exactly N frames`. Every N, Target fps and Exact N set the value for the chosen mode. Trim drops seconds from the start and the end. **Cull duplicate frames** removes near-identical frames above the threshold. The estimate line reports the frame count the current settings yield.
+- **Key / matte**: Method is `chroma key`, `ML matte` or `none (source has alpha)`. Key color accepts `#RRGGBB`. Leave it empty and ImageAI samples the clip's own border color, so a plate that came back muted, white or gray still keys; the log names the sampled color. A muted key gets a tighter tolerance automatically, so grays and whites in the character stay opaque. Uniform bars at the frame edges (a pillarboxed 1:1 clip inside black) are removed too. **Pick…** reads the color from a click in the preview. Tolerance and softness set the chroma range. Despill is `none`, `average`, `double` or `limit`. **Edge decontaminate** removes spill on the keyed edge. Choke, feather and despeckle clean the alpha edge in pixels. The ML row picks `mediapipe` or `rembg`, picks the rembg model, and reports which backends are installed. **Install…** opens the ML install dialog.
+- **Output profiles**: One editor per profile. See the next section.
+- **Stabilize**: Anchor is `bottom_center`, `center`, `top_left`, `top_center` or `bottom_left`. **De-jitter** registers every frame to the first frame by `phase` or `centroid`. It is off by default. Turn it on for footage with camera jitter only: on pose animation the alignment shifts the character. A shift never moves the character off the frame. Pad adds pixels around the content box.
+- **Force re-run**: Ignores the stage cache and runs every stage again.
+- **Preview key on clip**: Writes an ffmpeg chroma key preview of the clip and opens it.
+- **Run pipeline** (Ctrl+Enter): Runs the pipeline for the selected card. **Cancel** stops it.
+
+**Output Profiles**:
+
+Every project starts with two profiles, and both are enabled.
+
+| Profile | Cell size | Alpha | Palette | Dither |
+|---------|-----------|-------|---------|--------|
+| `hd` | 256×256 | The anti-aliased alpha of the keying stages | True color | none |
+| `pixel` | 64×64 | Binary alpha, threshold 128 | 32 colors, shared by every frame of an action | none |
+
+Each profile editor holds these controls:
+- **Enabled**: The pipeline skips a disabled profile, and the export cannot fill it.
+- **Cell size**: A preset from 8×8 to 1024×1024, or `Custom…` with your own width and height.
+- **Alpha**: **Binary alpha** makes every pixel either opaque or transparent at the threshold. Defringe trims edge pixels.
+- **Palette size**: The shared palette size. `0` keeps true color.
+- **Dither**: `none`, `bayer2`, `bayer4`, `bayer8` or `floyd`. Floyd-Steinberg dither changes the pattern between frames, so the animation can crawl.
+- **Palette lock** and **Rebuild palette**: A locked palette remaps new frames to the stored colors. Rebuild palette clears the lock and runs the pipeline again, so the palette is built from the current frames.
+- **Small sources**: **Upscale sources smaller than the cell** enlarges a small frame before the integer fit. It is off by default, so a small frame keeps its native size inside the cell.
+
+**The Pipeline, Stage by Stage**:
+
+1. **extract** — Cuts frames out of the clip with the extraction settings. An imported PNG sequence or sheet takes the place of this stage.
+2. **key** — Estimates the alpha and removes the spill, by chroma key or by ML matte. Per-frame overrides apply here.
+3. **cleanup** — Chokes, feathers and despeckles the alpha edge.
+4. **alpha** — Decontaminates the remaining spill on the keyed edge and writes the final RGBA.
+5. **stabilize** — Crops every frame to the same union content box plus the pad and anchors it, so every frame keeps a fixed position. De-jitter runs only when you turn it on. No resampling happens here. This stage also rebuilds the frame list, and it keeps your per-frame durations, pivots and overrides.
+6. **hd** — Scales the stabilized frames into the `hd` cell.
+7. **pixel** — Fits the stabilized frames into the `pixel` cell with one integer reduce factor, applies the binary alpha, and quantizes to the shared palette.
+
+Each stage reads the previous stage's PNGs and writes its own directory. ImageAI records a fingerprint of the upstream stage, the stage settings and the stage code version. A stage whose fingerprint still matches is skipped, so a second run only redoes the work a setting changed. **Force re-run** overrides the cache.
+
+**Files on Disk**:
+
+A project lives under the Images storage root, in `sprites/<slug>_<timestamp>/`:
+
+```
+<Images root>/sprites/knight_20260901_143012/
+├── project.iasprite.json        # the whole project: cards, settings, frames, cost ledger
+├── source/
+│   ├── character.png            # the normalized character image
+│   ├── plate.png                # the chroma plate
+│   └── turnaround/              # front.png, side.png, back.png, three_quarter.png
+├── clips/
+│   ├── <action_id>.mp4          # the rendered clip
+│   ├── <action_id>.r1.mp4       # a refined clip
+│   └── <action_id>_sheet.png    # the image-route sheet
+├── stages/<action_id>/
+│   ├── extract/  key/  cleanup/  alpha/  stabilize/
+│   ├── hd/                      # the hd cells
+│   └── pixel/                   # the pixel cells plus pixel.json
+└── exports/
+    ├── hd/                      # sheet PNG, JSON, GIF, PNG sequence
+    └── pixel/
+```
+
+The stage frames keep the same file name from `extract` to `pixel`, so you can compare one frame across the stages. `stages/<action_id>/pixel/pixel.json` records the reduce factor, the palette, the anchor and every warning the pixel stage raised.
+
+**Frame Retouch**:
+- Right-click a frame in the strip and choose **Retouch…**.
+- **Instruction**: What to change, for example `fix the left hand: five fingers, same glove`.
+- **Provider**: Google Gemini or OpenAI gpt-image. **Model** accepts a model ID or stays empty for the provider default.
+- **Region**: The rectangle you dragged in the pixel view, or the whole frame. **Clear region** drops it.
+- **Neighbors**: The previous and the next frame go to the model as references, so the retouch matches the animation.
+- **Retouch** (Ctrl+Enter) runs the call. The result is written as a new file, so the source frame is never overwritten. The frame list keeps an undo snapshot.
+- A retouch is refused while a processing job runs, because that job rewrites the frame list.
+
+**Render (image) — the Image Route**:
+
+The image route builds the frames from an image model instead of a video model. Use it when a video clip is too expensive or too soft.
+- **Mode**: `Sheet (one image, sliced)` asks for one contact sheet and cuts it into frames. `Edit chain (one edit per frame)` edits the character once per pose.
+- **Provider** and **Model**: Google Gemini or OpenAI gpt-image.
+- **Frames**: 2-24 frames.
+- **Render white + black plates and difference-matte**: Edit chain only. It doubles the provider calls and it buys a clean alpha from the difference of the two plates.
+- **Pose steps**: One pose per line. **Generate pose steps** asks the LLM to write them. Leave the field empty to let the render ask for them.
+- **Render** (Ctrl+Enter) runs the route and then runs the pipeline through the profile stages, so you can export straight from here.
+- A previous set of extracted frames is moved aside to `extract.prev-<timestamp>`, never deleted.
+- Every provider call is written to the cost ledger, including the calls a cancelled or failed render already paid for.
+
+**Export Dialog**:
+- **Profiles**: Pick `hd`, `pixel` or both. Each profile gets its own output directory.
+- **Engine preset**: Unity, Godot 4, Phaser 3, PixiJS, Unreal Engine 5 (Paper2D), libGDX, RPG Maker MZ, and a web preview. A preset sets the formats, the grid padding, the pivot and the file template, and it prints the import steps for that engine below the picker.
+- **Formats**: Sprite sheet PNG (with an Aseprite JSON sidecar), Aseprite JSON, TexturePacker JSON, PNG sequence per tag, animated GIF per tag, Godot 4 SpriteFrames (`.tres`), and a native Aseprite file.
+- **Output**: The directory, the frame file template (`{title}`, `{tag}`, `{frame}`, `{frame01}`), and the normalized pivot. The default pivot is `x 0.5, y 1.0`, which is the bottom center.
+- **Sheet grid**: Columns (`0` gives one row per tag), border, shape, inner and extrude padding in pixels, a power-of-two sheet option, and integer scales such as `1,2,4` for `@2x` and `@4x` copies.
+- **Purge intermediates after export**: Sends `clips/` and `stages/` to the recycle bin after a successful export. The dialog asks for a confirmation the first time, and the choice is sticky.
+- **Export log**: The console reports every file written. The options pane scrolls, so no row is ever clipped.
+- The export runs any profile stage that is missing or stale before it writes, and refuses to start while the render queue runs. When a stage cannot run, the export falls back to the stabilize frames and writes one warning per action in the console and the log, so a sheet never carries the wrong cell size in silence.
+
+**How a Frame Fills its Cell**:
+- ImageAI never distorts a frame. One scale factor applies to both axes.
+- The `hd` and `pixel` stages scale the stabilized frame into the cell and pad the rest with transparent pixels. Nothing is cropped away. The stabilize stage already trimmed the frame to the content box of the whole action, so the character fills the cell as far as its own proportions allow.
+- Bars beside a character mean the character's proportions differ from the cell's. Give the profile a cell with the proportions of your character to remove them. A 498×588 character fills a 216×256 `hd` cell exactly.
+- A clip whose keying removed nothing keeps every pixel of the plate. The key stage warns when that happens and names the color it sampled, so check the log before you export.
+- The `pixel` profile uses one integer reduce factor for every frame of an action. Square pixels and a steady animation are the reason. The PNG is exactly the cell size, and the content inside it is the largest integer reduction that fits.
+
+**Optional ML Backends**:
+- The **Install…** button in the Key / matte group installs `mediapipe` and `rembg` into the running Python environment.
+- `mediapipe` uses the Tasks API and downloads its verified selfie model (about 0.24 MB) on first use. Character Animator downloads pose and face models (about 33 MB combined) when first used. Models stay in the configured Models cache. Legacy MediaPipe installations are shown as unavailable until upgraded through **Install…**. `rembg` downloads its model (isnet-anime, 168 MB, MIT) on first use. See [MediaPipe Tasks migration](Docs/MediaPipe-Tasks.md).
+- `rembg` needs Python 3.11-3.13. The dialog drops it on any other version and says so.
+- Restart ImageAI after the install, so the new backends load.
+
+**Keyboard Shortcuts**:
+
+| Key | Where | Action |
+|-----|-------|--------|
+| Space | Preview player | Play / pause |
+| `,` / `.` | Preview player | Previous / next frame |
+| Home / End | Preview player | First / last frame |
+| L | Preview player | Cycle loop mode |
+| `+` / `=` / `-` | Preview player | Zoom in / zoom in / zoom out |
+| Ctrl+0 | Preview player | Zoom 100% |
+| G | Preview player | Toggle the pixel grid |
+| Delete | Frame strip | Delete the selected frames |
+| Ctrl+D | Frame strip | Duplicate the frame |
+| Ctrl+Z | Sprite tab | Undo |
+| Ctrl+Y or Ctrl+Shift+Z | Sprite tab | Redo |
+| Ctrl+Enter | Panel or dialog | Run the primary action |
+
+Each shortcut works while the focus is inside its own working area. A focused button or text field elsewhere in the tab keeps its own keys.
+
+#### Settings Tab
+- **Provider Selection**: Switch between Google, OpenAI, Stability AI, and Local SD
+  - **Dynamic Provider Refresh**: Provider lists automatically update after saving API keys (no restart required)
+- **Authentication Mode** (Google only):
+  - API Key mode with key input field
+  - Google Cloud Account mode with status display
+- **Helper Buttons**:
+  - Get API Key - Opens provider's key page
+  - Load from File - Import key from text file
+  - Check Status - Verify authentication
+  - Cloud Console - Open Google Cloud Console (Google only)
+- **Auto-save Options**: 
+  - Auto-save generated images toggle
+  - Copy filename to clipboard option
+  - Custom output directory selection
+- **Local SD Settings** (when selected):
+  - Model browser and downloader
+  - Hugging Face authentication
+  - Cache directory management
+  - GPU/CPU device selection
+- **Discord Integration**:
+  - Show your ImageAI activity in Discord status (like Steam games)
+  - Privacy levels: Full (provider/model), Activity Only, or Minimal
+  - Optional elapsed time, model name, and GitHub link button
+  - Requires Discord desktop app running
+
+#### Templates Tab
+- Predefined prompt templates with placeholders
+- Variable substitution system with live preview
+- Template categories:
+  - Art Style
+  - Photography
+  - Design
+  - Character
+  - Scene
+  - Product
+  - Marketing
+- Append or replace current prompt
+- Custom template creation and saving
+
+#### History Tab
+- **Detailed History Table** with columns:
+  - Thumbnail preview
+  - Date and time
+  - Provider used
+  - Model name
+  - Original prompt
+  - Resolution
+  - Cost (when applicable)
+  - Reference images indicator (📎 with count and tooltip)
+- **Quick Actions**:
+  - Double-click to reload prompt and settings (changed from single-click for better UX)
+  - Hover over thumbnail for instant image preview
+  - Open image file location
+  - View metadata sidecar
+- **Search and Filter**:
+  - Filter by provider
+  - Search by prompt text
+  - Sort by date, cost, or model
+
+#### Help Tab
+- Embedded README documentation with full content
+- **Interactive Search**:
+  - Search box with real-time results
+  - Navigate between matches with Previous/Next buttons
+  - Match counter showing current/total results
+  - Keyboard shortcuts (F3 for next, Shift+F3 for previous)
+- Navigation controls:
+  - Back/Forward buttons for history
+  - Home button to return to top
+  - Keyboard navigation (Alt+Left/Right, Backspace)
+- Quick reference guide
+- Keyboard shortcuts reference
+- Provider-specific tips
+- Troubleshooting guide
+
+### Menu System
+
+#### File Menu
+- New Generation (Ctrl+N)
+- Save Image As... (Ctrl+S)
+- Open Output Directory
+- Recent Files
+- Exit (Ctrl+Q)
+
+#### Edit Menu
+- Copy Prompt (Ctrl+C)
+- Paste Prompt (Ctrl+V)
+- Clear All (Ctrl+Shift+C)
+- Copy Image to Clipboard
+- Copy Filename
+
+#### View Menu
+- Show/Hide History Panel
+- Show/Hide Advanced Settings
+- Full Screen Mode (F11)
+- Reset Layout
+- Zoom In/Out
+
+#### Tools Menu
+
+##### Search Wikimedia Commons
+
+Access millions of freely licensed images from Wikimedia Commons for use as reference images or inspiration.
+
+**Features:**
+- **Advanced Search**: Search by keywords with real-time results
+- **Category Browsing**: Browse by media type (images, photos, drawings, etc.)
+- **License Filtering**: Filter by license type (Public Domain, CC BY, CC BY-SA, etc.)
+- **Batch Download**: Select and download multiple images at once
+- **Auto-Integration**: Downloaded images automatically added to reference images panel (Google provider)
+- **Organized Storage**: Images saved to `<output_dir>/wikimedia/` with metadata
+- **Image Preview**: Full-size preview with licensing information
+- **Attribution Info**: Complete licensing and author information for each image
+
+**Usage:**
+1. Open **Tools → Search Wikimedia Commons**
+2. Enter search terms (e.g., "mountain landscape", "vintage cars")
+3. Browse results with thumbnail previews
+4. Click image for full preview and licensing details
+5. Select images to download (single or multiple)
+6. Downloaded images appear in reference images panel
+7. Use in your prompts for style transfer or reference
+
+**Example Workflows:**
+- **Character Reference**: Search "portrait photography" → Download reference → Use in Flexible mode for style transformation
+- **Style Reference**: Search "oil painting landscape" → Download → Use as style reference in Strict mode
+- **Historical Reference**: Search "1920s architecture" → Download → Use for period-accurate generation
+
+##### Prompt Builder
+
+Build comprehensive, modular prompts with a professional template system. Perfect for character transformations, style transfers, and consistent prompt generation.
+
+**Features:**
+- **Dual Tab Interface**:
+  - **Builder Tab**: Create and preview prompts in real-time
+  - **History Tab**: Access previously saved prompts with full details
+- **Modular Prompt Components**: Optional fields for complete control
+  - Subject type (Headshot, Full body, Portrait, Character sheet, etc.)
+  - Transformation style (Caricature, Cartoon, Anime, Oil painting, etc.)
+  - Art style (from `styles.json` - Abstract, Cyberpunk, Baroque, etc.)
+  - Medium/Technique (from `mediums.json` - Oil painting, Digital art, etc.)
+  - Background options (Clean white, Solid black, Transparent, Studio, etc.)
+  - Pose/Orientation (Facing forward, Three-quarter view, Dynamic pose, etc.)
+  - Purpose/Context (Character design, Avatar, Game character, etc.)
+  - Technique details (Line work, Bold outlines, Photorealistic, etc.)
+  - Artist style (from `artists.json` - specific artist influences)
+  - Lighting (from `lighting.json` - Golden hour, Studio lighting, etc.)
+  - Mood (from `moods.json` - Dramatic, Peaceful, Energetic, etc.)
+  - Exclusions (Automatic "no" prefix for negative prompts)
+  - Additional notes (Free-form custom details)
+- **Smart Exclusion Processing**: Automatically adds "no" to exclusion items
+- **Live Preview**: Real-time preview of assembled prompt
+- **Keyboard Shortcuts**:
+  - **Ctrl+Enter**: Use current prompt (Builder tab)
+  - **Escape**: Close dialog
+- **History Management**:
+  - Auto-save to history when using prompts
+  - Manual save option for building without using
+  - Full prompt display in history list (no truncation)
+  - Timestamp for each entry (YYYY-MM-DD HH:MM)
+  - Double-click to load prompt into builder
+  - Delete individual entries
+  - Clear all history option
+- **Import/Export**:
+  - **Export**: Single button with smart dialog
+    - Export current prompt (JSON format with all settings)
+    - Export all history (N entries with metadata)
+    - Automatically detects what's available
+  - **Import**: Load prompts from JSON files
+    - Single prompt files
+    - Full history exports (import all or load most recent)
+- **Editable Combo Boxes**: All dropdowns allow custom entries
+- **Data-Driven**: Uses JSON files for customizable options
+- **Session Persistence**: Remembers window position and last tab
+
+**Data Files** (customizable):
+- `data/prompts/artists.json` - Artist names and styles
+- `data/prompts/styles.json` - Art styles
+- `data/prompts/mediums.json` - Art mediums and techniques
+- `data/prompts/lighting.json` - Lighting options
+- `data/prompts/moods.json` - Mood descriptors
+
+**Usage:**
+1. Open **Tools → Prompt Builder** (or use keyboard shortcut if configured)
+2. Fill in desired fields (all optional):
+   - Select subject type or enter custom
+   - Choose transformation style
+   - Pick art style, medium, etc.
+   - Add exclusions (text, watermark, etc.) - "no" automatically added
+   - Enter additional custom details
+3. Watch live preview update as you build
+4. Press **Ctrl+Enter** or click **Use Prompt** to apply
+5. Prompt is automatically saved to history
+6. Switch to **History Tab** to browse previous prompts
+
+**Example Prompts:**
+
+*Cartoon Character Transformation*:
+```
+Subject: Headshot of attached
+Transform As: as full color super-exaggerated caricature cartoon
+Background: on a clean white background
+Pose: facing forward
+Purpose: suitable as character design sheet
+Technique: use line work and cross-hatching
+Exclude: text
+
+Result: "Headshot of attached as full color super-exaggerated caricature cartoon,
+on a clean white background, facing forward, suitable as character design sheet,
+use line work and cross-hatching, no text"
+```
+
+*Artistic Portrait*:
+```
+Subject: Portrait of attached
+Art Style: Impressionist
+Medium: Oil Painting
+Artist Style: Claude Monet
+Lighting: Golden Hour
+Mood: Peaceful
+Exclude: modern elements, photographs
+
+Result: "Portrait of attached in Impressionist style, using Oil Painting, in the
+style of Claude Monet, with Golden Hour, Peaceful mood, no modern elements, no
+photographs"
+```
+
+*Anime Character Design*:
+```
+Subject: Full body of attached
+Transform As: as anime character
+Background: with gradient background
+Pose: dynamic pose
+Purpose: for character concept art
+Technique: with cel shading
+Mood: Energetic
+
+Result: "Full body of attached as anime character, with gradient background,
+dynamic pose, for character concept art, with cel shading, Energetic mood"
+```
+
+**Tips:**
+- Leave fields blank to omit from prompt
+- Use exclusions to prevent unwanted elements
+- Save multiple variations in history for A/B testing
+- Export your best prompts for sharing or backup
+- Import community prompt collections
+
+##### Character Animator Puppet Creator
+
+Create Adobe Character Animator-ready puppets from a single image using a guided wizard workflow. The tool uses cloud AI (Google Gemini or OpenAI) to generate facial variations for lip-sync and expression animation.
+
+**Wizard Steps:**
+
+1. **Dependency Check** - Verifies required components and offers one-click installation
+2. **Image Selection** - Choose source image with preview and requirements guidance
+3. **Body Part Detection** - AI-powered segmentation displays detected regions with bounding boxes
+4. **Viseme Generation** - Cloud AI creates mouth shapes and eye blinks with progress tracking
+5. **Export** - Save as PSD or SVG with Adobe-compatible layer naming
+
+**Cloud AI Provider Selection:**
+
+| Provider | Model | Cost/Image | Speed |
+|----------|-------|------------|-------|
+| Google Gemini | gemini-2.5-flash-image | $0.039 | Fast |
+| Google Gemini | gemini-3-pro-image-preview | $0.10 | Quality |
+| OpenAI | gpt-image-1 | $0.08 | Standard |
+| OpenAI | gpt-image-1.5 | $0.12 | Quality |
+
+The wizard shows real-time cost estimates before generation starts. Typical cost for 14 visemes + 2 blinks is $0.50-$2.00.
+
+**The 14 Visemes:**
+
+| Viseme | Phonemes | Description |
+|--------|----------|-------------|
+| Neutral | Rest | Resting/closed mouth |
+| Ah | A, AI, AU | Open mouth |
+| D | D, T, N, TH | Tongue behind teeth |
+| Ee | E, EE | Wide smile |
+| F | F, V | Lower lip under teeth |
+| L | L | Tongue up |
+| M | M, B, P | Closed lips |
+| Oh | O, OO | Rounded open |
+| R | R | Slightly rounded |
+| S | S, Z, SH, CH | Teeth together |
+| Uh | U, UH | Slightly open |
+| W-Oo | W, OO, Q | Pursed lips |
+| Smile | Expression | Camera-driven |
+| Surprised | Expression | Camera-driven |
+
+**Layer Structure Created:**
+```
++[CharacterName]
+├── Body
+│   ├── Torso
+│   ├── Left Arm
+│   └── Right Arm
+└── Head
+    ├── +Left Eyebrow, +Right Eyebrow
+    ├── Left Eye (Left Pupil Range, +Left Pupil)
+    ├── Right Eye (Right Pupil Range, +Right Pupil)
+    ├── Left Blink, Right Blink
+    └── Mouth (Neutral, Ah, D, Ee, F, L, M, Oh, R, S, Uh, W-Oo, Smile, Surprised)
+```
+
+**Generation Options:**
+- **14 Mouth Visemes** - Required for lip-sync (enabled by default)
+- **Eye Blink States** - 2 images for each eye (enabled by default)
+- **Eyebrow Variants** - 6 optional expression images
+- **Force Regenerate** - Bypass cache for fresh AI-generated results
+
+**Requirements:**
+- Front-facing character image with visible face
+- Valid API key for Google Gemini or OpenAI
+- 8-12GB disk space for AI models (first-time installation)
+- GPU recommended for local segmentation
+
+**Usage:**
+1. Open **Tools → Character Animator Puppet Creator**
+2. First-time: Click **Install AI Components** (downloads ~8-12GB)
+3. Select your source image (PNG, JPG, WebP, BMP)
+4. Review detected body parts and facial regions
+5. Choose AI provider and model, review cost estimate
+6. Click **Start Generation** and monitor progress
+7. Select export format (PSD or SVG) and save location
+8. Import into Adobe Character Animator for auto-rigging
+
+**Caching:**
+Generated visemes are cached locally using a hash of the source image and settings. Use the **Force Regenerate** checkbox to bypass cache and generate fresh results.
+
+**Tips:**
+- Use images at least 1024×1024 pixels for best quality
+- Front-facing poses with clear facial features work best
+- Gemini Flash is fastest and most cost-effective for testing
+- The console shows detailed progress and any API errors
+- Exported files can be refined in Photoshop/Illustrator before import
+
+##### Font Generator
+
+Create custom fonts from alphabet images with automatic character segmentation and vector tracing. The wizard guides you through uploading an alphabet image, detecting characters, and exporting to installable font files.
+
+**Wizard Steps:**
+
+1. **Image Upload** - Select alphabet image and expected character set
+2. **Segmentation** - Auto-detect characters with manual adjustment options
+3. **Character Mapping** - Verify and correct character labels
+4. **Font Settings** - Configure name, style, version, and smoothing
+5. **Preview & Export** - Real-time font preview and TTF/OTF export
+
+**Segmentation Methods:**
+
+| Method | Best For | Description |
+|--------|----------|-------------|
+| Contour-based | Irregular spacing | Detects character outlines automatically |
+| Grid-based | Uniform grids | Divides image into specified rows and columns |
+| Row-Column | Multi-row layouts | Detects rows first, then characters within each row |
+| Auto Detect | Unknown layouts | Tries methods and selects best result |
+
+**AI Features:**
+
+- **AI Glyph Identification** - Uses Claude or Gemini vision to identify ambiguous characters
+- **AI Glyph Generation** - Generate missing glyphs (punctuation, special chars) matching your font style
+- **Multi-Provider Support** - Anthropic Claude (recommended) or Google Gemini
+- **Position Hints** - AI considers vertical position (baseline, x-height, ascender) for accuracy
+
+**Character Set Options:**
+- Uppercase (A-Z) - 26 characters
+- Lowercase (a-z) - 26 characters
+- Uppercase + Lowercase - 52 characters
+- Uppercase + Digits - 36 characters
+- Full (A-Z, a-z, 0-9) - 62 characters
+- Custom - Enter your own character sequence
+
+**Smoothing Levels:**
+
+| Level | Effect | Best For |
+|-------|--------|----------|
+| None | Maximum detail | Already smooth source images |
+| Low | Slight cleanup | Clean source with minor noise |
+| Medium | Balanced | General purpose |
+| High | Heavy smoothing | Rough or hand-drawn sources |
+| Maximum | Aggressive | Very rough sources |
+
+**Font Metadata:**
+- **Font Family** - Display name (e.g., "MyCustomFont")
+- **Style** - Regular, Bold, Italic, or Light
+- **Version** - Semantic version (e.g., "1.0")
+- **Designer** - Your name (optional)
+- **Copyright** - Copyright notice (optional)
+
+**Export Formats:**
+- **TrueType (.ttf)** - Most compatible across systems
+- **OpenType (.otf)** - Advanced typography features
+
+**Requirements:**
+- Alphabet image with clear character spacing
+- fonttools Python package (`pip install fonttools`)
+
+**Image Preparation Tips:**
+- Use dark characters on light background (or enable Invert)
+- Maintain consistent character sizing
+- Leave clear spacing between characters
+- Higher resolution (300+ DPI) produces better fonts
+- Characters should not touch each other
+
+**Usage:**
+1. Open **Tools → Font Generator**
+2. Click **Browse** to select your alphabet image
+3. Choose the character set that matches your image
+4. Review segmentation - adjust method or settings if needed
+5. Verify character labels and correct any misidentifications
+6. Set font family name and style preferences
+7. Adjust smoothing based on your source image quality
+8. Preview sample text with generated font
+9. Click **Export Font** to save TTF and/or OTF files
+
+**Settings Persistence:**
+All wizard settings are saved and restored between sessions, including last image path, segmentation method, font metadata, and export preferences.
+
+**Tips:**
+- Use **Invert** for light text on dark background
+- Increase **Padding** if characters are merging
+- Start with **Low** smoothing to preserve detail
+- The preview uses your actual generated font
+- Exported fonts can be installed system-wide or used in applications
+
+#### Semantic Search & Tag System
+
+The Prompt Builder includes an intelligent search system powered by semantic metadata to help you discover artists, styles, moods, and other prompt elements naturally.
+
+**Smart Search Panel** (at top of Builder tab):
+- **Auto-filter**: Enabled by default - filters dropdown options as you type (300ms debounce)
+- **Manual Search**: Disable auto-filter to search on-demand (press Enter or click Search button)
+- **Clear Filters**: Restore all items after filtering
+- **Multi-category Search**: Searches across Artists, Styles, Mediums, Lighting, and Moods simultaneously
+
+**Search Features**:
+- **Semantic Matching**: Search by concepts, not just exact names
+  - "60s satire" finds Al Jaffee and MAD Magazine-related artists
+  - "cyberpunk" discovers related styles, moods, and lighting options
+  - "vintage comics" surfaces comic artists and relevant art styles
+- **Cultural Keywords**: Recognizes common search terms and pop culture references
+- **Tag-Based Discovery**: Items tagged with related concepts appear in results
+- **Fuzzy Matching**: Typo-tolerant search helps even with misspellings
+- **Popularity Scoring**: More popular/well-known items appear higher in results
+
+**How It Works**:
+1. Type a search term (e.g., "Mad Magazine", "cyberpunk", "1960s")
+2. With auto-filter enabled, results appear automatically after 300ms pause
+3. Dropdown menus filter to show only matching items
+4. Result counter shows matches per category: "Artists (3), Styles (5), Moods (2)"
+5. Select from filtered results or click "Clear" to restore all items
+
+**Example Searches**:
+- "MAD Magazine" → Finds Al Jaffee, Jack Davis, Mort Drucker, Comic Art style
+- "1960s" → Discovers period artists, vintage styles, retro moods
+- "cyberpunk" → Returns Cyberpunk style, neon lighting, futuristic moods
+- "watercolor" → Finds Watercolor Painting medium, related artists, soft moods
+- "dramatic" → Surfaces Dramatic mood, related lighting options, intense styles
+
+**Metadata System**:
+The search is powered by a comprehensive metadata file (`data/prompts/metadata.json`) containing semantic tags, cultural keywords, descriptions, relationships, and popularity scores for every item in the prompt builder.
+
+**Generating and Customizing Tags**:
+See the "Customizing Search Metadata" section below for information on how to regenerate metadata with your own preferences, add custom tags, or contribute improved metadata to the community.
+
+- Model Browser (Local SD)
+- Batch Generator
+- Template Editor
+- Settings Manager
+
+#### Help Menu
+- Documentation (F1)
+- Keyboard Shortcuts
+- Check for Updates
+- About ImageAI
+
+## 8. Image Management
+
+### Auto-Save System
+
+Generated images are automatically saved to:
+- **Windows**: `%APPDATA%\ImageAI\generated\`
+- **macOS**: `~/Library/Application Support/ImageAI/generated/`
+- **Linux**: `~/.config/ImageAI/generated/`
+
+### File Naming
+
+- Filenames derived from prompt (sanitized)
+- Timestamp added for uniqueness
+- Format: `prompt_words_YYYYMMDD_HHMMSS.png`
+
+### Metadata Sidecars
+
+Each image gets a `.json` sidecar file containing:
+```json
+{
+  "prompt": "User's prompt text",
+  "model": "Model used",
+  "provider": "Provider name",
+  "created_at": "ISO timestamp",
+  "app_version": "Version number",
+  "output_text": "Any text output",
+  "template": "Template data if used"
+}
+```
+
+### History Tracking
+
+- In-session history of generated images
+- Persistent history across sessions
+- Quick access to recent generations
+- Metadata search and filtering
+
+## 9. Examples and Templates
+
+### Example Prompts
+
+#### Artistic Styles
+```
+"Oil painting of a serene mountain lake at golden hour, impressionist style"
+"Cyberpunk street scene with neon lights and rain reflections, ultra-detailed"
+"Watercolor portrait of a wise owl in autumn forest, soft pastels"
+```
+
+#### Photorealistic
+```
+"Professional photograph of a modern minimalist living room, magazine quality"
+"Macro shot of dewdrops on a spider web at sunrise, shallow depth of field"
+"Aerial view of tropical islands with crystal clear water, drone photography"
+```
+
+#### Creative Concepts
+```
+"Steampunk airship floating above Victorian London, brass and copper details"
+"Bioluminescent underwater cave with glowing creatures, fantasy art"
+"Isometric cutaway of a cozy treehouse library with magical elements"
+```
+
+### Template System
+
+The template system allows you to create consistent, reusable prompts with variable placeholders.
+
+#### Using Templates
+
+1. **Select a Template**: Choose from the dropdown in the Templates tab
+2. **Fill Placeholders**: Enter values for each variable field (optional)
+3. **Preview**: See the assembled prompt update in real-time
+4. **Insert**: Click "Insert into Prompt" to use the template
+5. **Append Option**: Check "Append to existing" to add to current prompt
+
+#### Built-in Templates
+
+**Portrait Photography**:
+```
+"[style] portrait of [subject] with [expression], [lighting] lighting, [background] background"
+```
+
+**Landscape Scene**:
+```
+"[time_of_day] landscape of [location] with [features], [weather] weather, [style] style"
+```
+
+**Product Shot**:
+```
+"Product photography of [item] on [surface], [lighting] lighting, [angle] angle, commercial quality"
+```
+
+**Fantasy Art**:
+```
+"[character] [action] in [setting], [magic_effect], [art_style] fantasy art style"
+```
+
+**Architectural**:
+```
+"[building_type] in [architectural_style] style, [time_of_day], [weather], [perspective] view"
+```
+
+#### Template Variables
+
+- Variables are defined with square brackets: `[variable_name]`
+- Leaving a field empty removes it from the final prompt
+- Multiple instances of the same variable use the same value
+- Commas are automatically managed when variables are empty
+
+### Using Multiple Reference Images
+
+**Flexible Mode Examples**:
+
+```
+Scenario 1: Family Cartoon Conversion
+1. Select Flexible Mode
+2. Click "+ Add Reference Image" → Select 4 family photos
+3. Images automatically composite into character design sheet
+4. Enter prompt: "These people as Pixar-style animated characters"
+5. Generate → Creates cartoon versions with all family members
+
+Scenario 2: Style Transfer
+1. Select Flexible Mode
+2. Add single reference image (person's photo)
+3. Enter prompt: "This person as a watercolor painting"
+4. Generate → Applies artistic style to the photo
+```
+
+**Strict Mode Examples**:
+
+```
+Scenario 1: Product Consistency (E-commerce)
+1. Select Strict Mode
+2. Add reference image → Type: SUBJECT, Subject Type: PRODUCT
+3. Description: "Red ceramic coffee mug with handle"
+4. Enter prompt: "Show [1] on a wooden kitchen table with morning light"
+5. Generate → Shows same mug in new scene
+
+Scenario 2: Character in Multiple Scenes
+1. Select Strict Mode
+2. Add 3 character references:
+   - Front view → Type: SUBJECT, Subject Type: PERSON, Desc: "Sarah, main character"
+   - Side view → Type: SUBJECT, Subject Type: PERSON
+   - Full body → Type: SUBJECT, Subject Type: PERSON
+3. Enter prompt: "Show [1] walking through a forest at sunset"
+4. Generate → Character maintains appearance across generations
+
+Scenario 3: Control with Edge Detection
+1. Select Strict Mode
+2. Add reference → Type: CONTROL, Control Type: CANNY
+3. Enter prompt: "Follow the structural lines of [1], create modern architecture"
+4. Generate → Uses edge structure while changing content
+```
+
+**Edit Mode** (Single Reference Only):
+
+When you have exactly one reference image, you can enable **Edit Mode** to make precise edits while preserving everything else in the image:
+
+```
+Example: Changing one element while keeping everything else
+1. Add a single reference image (e.g., photo of a room)
+2. Check the "Edit Mode" checkbox (appears next to "+ Add Reference Image")
+3. Enter your edit instruction: "Replace the sofa with a modern blue sectional"
+4. Generate → The prompt is auto-prefixed with:
+   "Edit this image. Keep everything already in the image exactly the same."
+5. Result: Only the specified element changes, everything else stays identical
+
+Tips for Edit Mode:
+- Be specific about what to change: "Replace X with Y", "Change the color of X to Y"
+- Works best with clear, focused edit requests
+- The checkbox is only enabled when exactly 1 reference image is present
+- Automatically disabled when adding more images or removing the last image
+```
+
+**Tips for Best Results**:
+- **Flexible Mode**: Works best with consistent lighting across input images
+- **Strict Mode**: Use all 3 reference slots for best subject preservation
+- **Reference IDs**: Use [1], [2], [3] in prompts to explicitly reference images
+- **Compositing**: When using 2+ images in Flexible, use prompts like "these people" or "all subjects"
+- **Mode Selection**: Use Flexible for creative transformations, Strict for consistency
+
+### Tips for Better Results
+
+**Be Specific**: Instead of "a cat", try "a fluffy orange tabby cat sitting on a windowsill"
+
+**Include Style**: Add artistic style like "oil painting", "photorealistic", "cartoon style"
+
+**Describe Mood**: Include lighting and atmosphere like "golden hour", "dramatic lighting", "cozy"
+
+**Add Details**: More details generally produce better results
+
+**Composition Tips**:
+- Use camera angles: "aerial view", "close-up", "wide angle"
+- Specify perspective: "first-person view", "isometric", "side profile"
+- Include depth: "shallow depth of field", "bokeh background", "infinite focus"
+
+**Quality Modifiers**:
+- "highly detailed", "ultra-realistic", "4K", "HD"
+- "professional photography", "award-winning"
+- "trending on artstation", "masterpiece"
+
+## 10. Advanced Features
+
+### Keyboard Shortcuts
+
+**GUI Mode**:
+- **Ctrl+Enter**: Generate image
+- **Ctrl+F**: Find/search in prompt text
+- **F3**: Find next match
+- **Shift+F3**: Find previous match
+- **Escape**: Close find dialog
+- **Ctrl+S**: Save current image as...
+- **Ctrl+Q**: Quit application
+- **Ctrl+N**: Clear prompt
+- **Ctrl+A**: Select all text
+- **Ctrl+C/V/X**: Copy/Paste/Cut
+- **Tab**: Switch between tabs
+- **F1**: Show help
+- **F3**: Find next in help documentation
+- **Shift+F3**: Find previous in help documentation
+- **Ctrl+F**: Focus search box in help tab
+- **Alt+Left/Backspace**: Navigate back in help
+- **Alt+Right**: Navigate forward in help
+- **Ctrl+Home**: Go to top of help
+
+### Batch Generation
+
+Generate multiple images with variations:
+
+```bash
+# Generate 3 variations of the same prompt
+for i in {1..3}; do python main.py -p "Sunset landscape" -o "sunset_$i.png"; done
+
+# Generate from a list of prompts
+while read prompt; do
+  python main.py -p "$prompt" -o "${prompt// /_}.png"
+done < prompts.txt
+```
+
+### Using Environment Variables
+
+```bash
+# Set default provider
+export IMAGEAI_PROVIDER="openai"
+export OPENAI_API_KEY="your-key"
+
+# Set default model
+export IMAGEAI_MODEL="dall-e-3"
+
+# Set output directory
+export IMAGEAI_OUTPUT_DIR="/path/to/images"
+```
+
+### Custom Configuration
+
+Edit config file directly:
+- **Windows**: `%APPDATA%\ImageAI\config.json`
+- **macOS**: `~/Library/Application Support/ImageAI/config.json`
+- **Linux**: `~/.config/ImageAI/config.json`
+
+Example config:
+```json
+{
+  "provider": "google",
+  "google_api_key": "your-key",
+  "openai_api_key": "your-key",
+  "stability_api_key": "your-key",
+  "auto_save": true,
+  "output_format": "png",
+  "jpeg_quality": 95,
+  "default_model": {
+    "google": "gemini-2.5-flash-image-preview",
+    "openai": "dall-e-3",
+    "stability": "stable-diffusion-xl-1024-v1-0"
+  }
+}
+```
+
+### Customizing Prompt Data
+
+The Prompt Builder uses JSON data files that you can customize to add your own options:
+
+**Data Files Location**:
+- `data/prompts/artists.json` - Artist names and styles
+- `data/prompts/styles.json` - Art styles (Abstract, Anime, Cyberpunk, etc.)
+- `data/prompts/mediums.json` - Art mediums and techniques (Oil Painting, Digital Art, etc.)
+- `data/prompts/colors.json` - Color schemes
+- `data/prompts/lighting.json` - Lighting options
+- `data/prompts/moods.json` - Mood descriptors
+- `data/prompts/banners.json` - Banner/composition options
+
+**Editing Data Files**:
+
+All data files use simple JSON array format:
+```json
+[
+  "Option 1",
+  "Option 2",
+  "Option 3"
+]
+```
+
+**Adding Custom Options**:
+
+1. Open the appropriate JSON file in any text editor
+2. Add your new option to the array (maintain JSON format):
+```json
+[
+  "Existing Option",
+  "Your New Option",
+  "Another New Option"
+]
+```
+3. Save the file
+4. Restart ImageAI or reload the Prompt Builder
+
+**Examples**:
+
+Add a new artist to `artists.json`:
+```json
+[
+  "Pablo Picasso",
+  "Your Favorite Artist",
+  "Another Artist"
+]
+```
+
+Add a new style to `styles.json`:
+```json
+[
+  "Cyberpunk",
+  "My Custom Style",
+  "Retro Future"
+]
+```
+
+**Tips**:
+- Keep entries concise and descriptive
+- Test your custom options in the Prompt Builder
+- Backup files before editing
+- Maintain valid JSON format (commas between items, no trailing comma)
+
+### Customizing Search Metadata
+
+The Prompt Builder's semantic search is powered by metadata tags generated using AI. You can regenerate this metadata with your own preferences, add custom tags, or contribute improved metadata back to the community.
+
+#### Understanding the Metadata File
+
+The metadata file (`data/prompts/metadata.json`) contains structured information for each item:
+
+```json
+{
+  "artists": {
+    "Al Jaffee": {
+      "tags": ["mad_magazine", "caricature", "satire", "1960s", "comics"],
+      "related_styles": ["Comic Art", "Cartoon Art"],
+      "related_moods": ["Satirical", "Humorous"],
+      "cultural_keywords": ["MAD Magazine", "fold-in", "satirical cartoons"],
+      "description": "Legendary MAD Magazine cartoonist",
+      "era": "1960s-2010s",
+      "popularity": 8
+    }
+  }
+}

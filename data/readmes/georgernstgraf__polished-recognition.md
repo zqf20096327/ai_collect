@@ -1,0 +1,169 @@
+# Polished Recognition
+
+**A voice keyboard powered by your own AI.**
+
+Tap the mic, speak, and polished text appears — transcribed by the speech
+provider *you* choose, refined by the language model *you* choose, with a
+prompt *you* write. Bring your own API key (or run a local model) and take
+full control of your voice input.
+
+Polished Recognition installs as a **voice keyboard**: switch to it, and it
+starts listening immediately — no extra tap, no learning a new typing UI.
+
+> **Gboard will never use this.** Gboard's microphone is hardcoded to Google's
+> voice typing — it cannot be redirected to any third-party voice input,
+> including Polished Recognition. To use Polished, switch to a keyboard that
+> delegates its mic and select Polished Recognition as its voice input: the
+> **AOSP keyboard** (LineageOS and derivatives), **HeliBoard** (F-Droid only),
+> **Fossify Keyboard**, or **OpenBoard**.
+
+| <img src="docs/img/ime-recording.png" alt="Voice keyboard" width="400"> | <img src="docs/img/settings.png" alt="Settings" width="400"> |
+|:---:|:---:|
+| The voice keyboard — recording | Your pipeline, your prompts |
+| <img src="docs/img/settings-providers.png" alt="Providers" width="400"> | <img src="docs/img/demo.gif" alt="Demo: dictate with filler words, tap send, polished text appears" width="400"> |
+| Your providers, your models | Dictate, send, polished text appears |
+
+## How it works
+
+1. **Switch to the Polished keyboard** → recording starts instantly
+2. **Speak naturally** — pause/resume anytime mid-sentence; need to type something? Switch to your normal keyboard — the dictation waits and continues when you're back
+3. **Tap send** → audio goes to your STT provider (Whisper on GROQ, OpenAI, …)
+4. **The LLM polishes the text** using your custom prompt — fix filler words and punctuation, restructure, or translate to another language
+5. **Flawless text lands in the app you're typing in**
+
+Don't need the polish? **Raw mode** skips the LLM entirely and inserts the
+plain transcription — zero extra latency.
+
+## Why it's different
+
+- **BYO provider — or use a free one.** 19 presets (OpenAI, GROQ, OpenRouter, Cortecs, Google AI, DeepSeek, xAI, Mistral, local Ollama/LM Studio, …). GROQ's free tier gives you Whisper STT plus a strong LLM — a complete STT+polish pipeline at zero cost.
+- **Not a walled garden.** No account, no registration, no central server. Your audio goes only to the provider you configured — or nowhere at all, if you run Ollama locally.
+- **Custom prompts.** The system prompt is fully editable, with variables for source and target language. Make the LLM format markdown, translate to French, or just fix punctuation.
+- **Translation built in.** Pick a target language and dictation arrives translated. Languages are freely editable — long-press to add your own.
+- **Pause & resume.** Get interrupted mid-dictation? Pause, handle it, resume — the entire recording buffers, nothing is lost. You can even switch to your typing keyboard and back: the dictation survives the round trip.
+- **Works everywhere.** Any text field, any app — no integration needed. It also registers as the system voice-input service for keyboards that delegate their mic button (HeliBoard, Fossify/OpenBoard, the AOSP keyboard) — note that Gboard never delegates: its mic is hardcoded to Google's own voice typing.
+- **Searchable model pickers.** Type to filter hundreds of models by substring, with per-provider caching. No infinite dropdown scrolling.
+- **Clean output.** LLM "reasoning/thinking" blocks are stripped automatically — only the finished text gets inserted.
+
+## Installation
+
+See the **[Installation Guide](INSTALLATION.md)** for step-by-step setup:
+Play Store installation, configuring providers, enabling
+the voice keyboard, and device-specific notes.
+
+## Become an Alpha Tester
+
+Polished Recognition is in closed testing on Google Play — and I'm still
+looking for testers! Two steps, same Google account for both:
+
+1. Join the testers group: https://groups.google.com/g/polished-recognition-alpha
+2. Accept testing on the
+   [opt-in page](https://play.google.com/apps/testing/com.georgernstgraf.polishedrecognition)
+   → install from the
+   [Play Store](https://play.google.com/store/apps/details?id=com.georgernstgraf.polishedrecognition)
+
+Prefer F-Droid? [<img src="https://fdroid.org/badge/get-it-on.png"
+alt="Get it on F-Droid" height="60">](https://f-droid.org/packages/com.georgernstgraf.polishedrecognition)
+
+Stay opted in — Google's 14-day production-eligibility clock only runs while
+at least 12 testers stay continuously opted in. Details in the
+[Installation Guide](INSTALLATION.md).
+
+Don't be shy with feedback — report bugs and ideas as
+[GitHub Issues](https://github.com/georgernstgraf/polished-recognition/issues),
+or open a
+[Pull Request](https://github.com/georgernstgraf/polished-recognition/pulls)
+if you've fixed something. I happily accept contributions.
+
+## Providers
+
+Configured via presets or custom URLs — anything speaking the OpenAI API
+contract works:
+
+| Provider           | Type | Base URL                                            |
+|--------------------|------|-----------------------------------------------------|
+| GROQ Whisper       | STT  | `https://api.groq.com/openai/v1/`                   |
+| OpenAI Whisper     | STT  | `https://api.openai.com/v1/`                        |
+| OpenAI             | LLM  | `https://api.openai.com/v1/`                        |
+| OpenRouter         | LLM  | `https://openrouter.ai/api/v1/`                     |
+| Google AI Studio   | LLM  | `https://generativelanguage.googleapis.com/v1beta/openai/` |
+| GROQ               | LLM  | `https://api.groq.com/openai/v1/`                   |
+| Cortecs            | LLM  | `https://api.cortecs.ai/v1/`                        |
+| DeepSeek           | LLM  | `https://api.deepseek.com/v1/`                      |
+| xAI                | LLM  | `https://api.x.ai/v1/`                              |
+| Mistral            | LLM  | `https://api.mistral.ai/v1/`                        |
+| Together AI        | LLM  | `https://api.together.xyz/v1/`                      |
+| DeepInfra          | LLM  | `https://api.deepinfra.com/v1/`                     |
+| Fireworks          | LLM  | `https://api.fireworks.ai/inference/v1/`            |
+| Cerebras           | LLM  | `https://api.cerebras.ai/v1/`                       |
+| Perplexity         | LLM  | `https://api.perplexity.ai/`                        |
+| HuggingFace        | LLM  | `https://router.huggingface.co/v1/`                 |
+| NVIDIA             | LLM  | `https://integrate.api.nvidia.com/v1/`              |
+| Ollama (local)     | LLM  | `http://localhost:11434/v1/`                        |
+| LM Studio (local)  | LLM  | `http://localhost:1234/v1/`                         |
+
+Or add any custom provider by entering a base URL + API token. Models are
+fetched dynamically from each provider's `/v1/models` endpoint (with a
+fallback to free-text entry for providers that don't support it).
+
+## Features
+
+### Voice keyboard (IME)
+
+- **Instant recording** — switching to the keyboard starts the mic right away
+- **Two-line control surface** — keyboard-switch icon, settings gear, target language, Raw toggle on top; cancel / pause / send below
+- **One-tap keyboard switch** — the switch icon jumps straight back to the keyboard you came from; if no typing keyboard is available it opens the keyboard settings so you can enable one
+- **Dictation survives keyboard switches** — while you type on the other keyboard the recording is preserved (paused); switching back auto-resumes and appends to the same audio
+- **Live stage display** — shows exactly what's happening: *Recording*, *Transcribing (STT)*, *Polishing (LLM)*
+- **Recording pulse** — the send button breathes with your voice
+- **Works in any app** — any text field, any app, no integration needed
+
+### Your pipeline, your rules
+
+- **Polish only vs. Raw mode** — with no target language set, the LLM still
+  polishes your dictation (punctuation, structure, filler-word removal);
+  flip **Raw mode** to bypass the LLM completely and insert the raw
+  transcription
+- **Editable prompts** — System Prompt with `{{source_language_clause}}` /
+  `{{target_language_clause}}` variables, plus the translation clause with
+  `{{target_language}}`; reset individually or all at once
+- **Custom target languages** — the language dropdown accepts any language
+  name; long-press to edit or add, and your languages are remembered
+- **Token & model validation** — test tokens with a minimal chat request,
+  fetch model lists on demand, cached per provider
+- **Request & response logging** — rotating JSON logs of the STT and LLM
+  exchanges on-device, pullable via `adb` for debugging
+
+## Privacy
+
+No account, no analytics, no tracking, no proprietary SDKs. The only
+network traffic is your own API calls to the endpoints you configured.
+Everything sensitive — keys, prompts, logs — stays on your device. See the
+[Privacy Policy](PRIVACY-POLICY.md).
+
+## Troubleshooting
+
+- **Recording fails / no audio?** Check that `RECORD_AUDIO` is granted — the app requests it on first use.
+- **Model dropdown empty?** Enter a valid token and press **Validate & Fetch Models**; model lists are fetched from the provider (some providers only allow free-text model entry).
+- **Voice-input service greyed out?** Some keyboards/vendor builds restrict the system voice service — use the Polished keyboard directly instead.
+- **Gboard's mic doesn't launch it?** That's by design — Gboard hardcodes Google's voice typing and never uses external voice keyboards. Switch to the AOSP keyboard (LineageOS), HeliBoard (F-Droid), Fossify, or OpenBoard. See the [Installation Guide](INSTALLATION.md).
+- **More help?** See the **[Installation Guide](INSTALLATION.md)**.
+
+## For developers
+
+| Command                     | Result                               |
+|-----------------------------|--------------------------------------|
+| `./gradlew assembleRelease` | Build release APK (minified, release-key signed when a local keystore is present) |
+| `./gradlew installRelease`  | Build + install release APK via ADB  |
+| `./gradlew test`            | Run all unit tests                   |
+
+Stack: Kotlin, Retrofit + OkHttp, AudioRecord (16 kHz mono → in-memory
+WAV), plain XML settings UI on `Theme.DeviceDefault.DayNight`. Min SDK 30.
+No DI framework, no Room, no Compose — deliberately small and fast.
+
+Technical details (architecture, decisions, conventions, pitfalls) are
+maintained in [`docs/ai/`](docs/ai/) — start with `HANDOFF.md`.
+
+## License
+
+MIT

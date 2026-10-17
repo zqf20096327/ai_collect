@@ -1,0 +1,403 @@
+<p align="center">
+  <h1 align="center">@sandbaseai/cli</h1>
+  <p align="center">
+    <strong>Give your AI agent superpowers. One line. 2,000+ AI models and APIs — data APIs are free.</strong>
+  </p>
+  <p align="center">
+    English | <a href="./README.zh-CN.md">中文</a> | <a href="./README.ja.md">日本語</a> | <a href="./README.ko.md">한국어</a> | <a href="./README.es.md">Español</a> | <a href="./README.fr.md">Français</a> | <a href="./README.de.md">Deutsch</a> | <a href="./README.pt-BR.md">Português</a>
+  </p>
+  <p align="center">
+    <a href="https://github.com/sandbaseai/cli/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/sandbaseai/cli"></a>
+    <a href="https://github.com/sandbaseai/cli/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/sandbaseai/cli/actions/workflows/ci.yml/badge.svg"></a>
+    <a href="https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sandbaseai%2Fcli"><img alt="Official MCP Registry" src="https://img.shields.io/badge/MCP%20Registry-listed-5a67d8"></a>
+    <a href="https://tensorblock.co/mcp/servers/github-sandbaseai-cli-c4e113db"><img alt="Indexed on TensorBlock MCP Index" src="https://mcp-index.tensorblock.co/v1/servers/github-sandbaseai-cli-c4e113db/badge.svg"></a>
+    <a href="https://github.com/sandbaseai/cli/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/sandbaseai/cli"></a>
+    <a href="https://github.com/sandbaseai/cli/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/sandbaseai/cli?style=social"></a>
+  </p>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sandbaseai/cli/main/.github/assets/sandbase-cli-hero.webp" alt="SandBase CLI connects AI clients to 2,000+ AI models and APIs" width="100%">
+</p>
+
+---
+
+Your AI coding assistant is smart, but it's trapped in a box. It can't search the web, check social media, generate images, or access real-time data — unless you wire up each API yourself.
+
+**SandBase changes that.** One command connects your agent to 2,000+ AI models and APIs through the [Model Context Protocol](https://modelcontextprotocol.io). No API keys to manage. No configuration headaches.
+
+Building directly over HTTP instead of MCP? Start with the [SandBase API quickstart](https://www.sandbase.ai/docs/getting-started/)
+or compare the unified [LLM, image, and video API](https://blog.sandbase.ai/unified-ai-api-llm-image-video-2026/)
+with specialized model gateways.
+
+## Setup
+
+Paste this into your agent and let it do the rest:
+
+```
+set up https://www.sandbase.ai/SKILL.md
+```
+
+It reads the SandBase Skill, runs `connect` itself, and asks you to approve one browser sign-in. Prefer to drive it yourself:
+
+```sh
+npx -y @sandbaseai/cli@latest connect
+```
+
+Or install the official Homebrew formula on macOS or Linux:
+
+```sh
+brew install sandbaseai/tap/sandbaseai-cli
+sandbase connect
+```
+
+See the [Homebrew launch announcement and macOS/Linux CI evidence](https://github.com/sandbaseai/cli/discussions/55).
+
+Approve the browser authorization once; each supported client can then discover,
+inspect, and run available SandBase models and APIs through the local MCP bridge.
+Start a new session afterwards so the `sandbase_*` tools load.
+
+Every GitHub release publishes its own SHA-256 next to the tarball, so you can pin
+and verify an exact build instead of tracking `latest`:
+
+```sh
+V=$(npm view @sandbaseai/cli version)
+curl -fL -O "https://github.com/sandbaseai/cli/releases/download/v$V/sandbaseai-cli-$V.tgz"
+shasum -a 256 "sandbaseai-cli-$V.tgz"   # compare against the checksum on the release page
+npx -y "./sandbaseai-cli-$V.tgz" connect
+```
+
+Want to inspect compatibility before signing in or changing configuration? The
+client catalog is a read-only command — it writes nothing and needs no account:
+
+```sh
+npx -y @sandbaseai/cli@latest catalog --json
+```
+
+<p align="center">
+  <a href="https://static.sandbase.ai/blog/screenshots/sandbase-cli-mcp-bridge-25-ai-clients/catalog-audit-5eea5978a1ed.webp"><img src="https://static.sandbase.ai/blog/screenshots/sandbase-cli-mcp-bridge-25-ai-clients/catalog-audit-5eea5978a1ed.webp" alt="Read-only SandBase CLI catalog audit showing 25 client targets" width="49%"></a>
+  <a href="https://static.sandbase.ai/blog/screenshots/sandbase-cli-mcp-bridge-25-ai-clients/doctor-readback-3c86ac73e463.webp"><img src="https://static.sandbase.ai/blog/screenshots/sandbase-cli-mcp-bridge-25-ai-clients/doctor-readback-3c86ac73e463.webp" alt="SandBase CLI doctor failing closed for an empty isolated profile" width="49%"></a>
+</p>
+<p align="center"><sub>A no-write catalog audit and a bounded doctor check against an empty isolated profile.</sub></p>
+
+Homebrew users can run the same read-only check with `sandbase catalog --json`.
+
+## What It Costs
+
+| | Price |
+|---|---|
+| **Data APIs** — search, social, scraping, e-commerce, finance | **Free** |
+| Discovery, inspection, run status, balance, file upload | **Free** |
+| Models — LLM, image, video, audio | Paid per call or per million tokens |
+
+`sandbase inspect <tool>` always shows the current price before you run anything;
+`base_price: 0` means the call is free. Prices can change, so trust the live
+response over any example in this file.
+
+Visit the [official SandBase CLI project page](https://sandbaseai.github.io/cli/) for a compact overview.
+For a security-focused walkthrough of client detection, MCP tools, and rollback,
+read the [25-client SandBase CLI setup guide](https://blog.sandbase.ai/sandbase-cli-mcp-bridge-25-ai-clients/).
+AI agents and automated installers can use the concise
+[`llms-install.md`](./llms-install.md) instructions.
+
+## SandBase Open-Source Stack
+
+- **[SandBase Harness](https://github.com/sandbaseai/sandbase-harness)** — self-hosted agent runtime with persistent sessions, sandbox isolation, approvals, audit, and replay.
+- **[SandBase Agent Skills](https://github.com/sandbaseai/sandbase-skills)** — 88 installable Skills for research, social intelligence, marketing, and business workflows.
+- **[SandBase for Codex](https://github.com/sandbaseai/sandbase-codex-plugin)** — official Codex plugin packaging the SandBase MCP bridge and guided Agent Skill; its required HOL security scan passes on `main`.
+
+Discover the authenticated remote bridge in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sandbaseai%2Fcli),
+read its [Registry community showcase](https://github.com/modelcontextprotocol/registry/discussions/1584), or find it through
+[Chinese Independent Developer](https://github.com/1c7/chinese-independent-developer/blob/master/pages/README-Programmer-Edition.md#sandbase---github),
+[Awesome MCP](https://github.com/AlexMili/Awesome-MCP#ai-agents--memory),
+[Glama](https://glama.ai/mcp/connectors/io.github.sandbaseai/cli),
+[TensorBlock MCP Index](https://tensorblock.co/mcp/servers/github-sandbaseai-cli-c4e113db),
+[MCPRepository](https://mcprepository.com/sandbaseai/cli),
+[VaultPlane](https://www.vaultplane.com/server/sandbase-cli),
+[AIMCP](https://www.aimcp.info/en/g/522d366e-114b-4d90-9f1a-552b4b3a9c86),
+[MCP Server Hub](https://mcpserver.dev/s/sandbase-cli_r2sjd4x),
+[MCP Server Spot](https://www.mcpserverspot.com/servers/sandbase-cli), or the
+[Awesome AI API Proxy](https://github.com/howardpen9/awesome-ai-api-proxy#global-gateways--aggregators).
+External maintainers have merged SandBase into
+[Awesome Codex CLI](https://github.com/milisp/awesome-codex-cli/pull/110),
+[Awesome Agent Skills](https://github.com/junminhong/awesome-agent-skills/pull/39), and
+[Awesome MCP Server](https://github.com/AIAnytime/Awesome-MCP-Server/pull/70).
+The Hermes integration is independently listed in the
+[Hermes Atlas](https://github.com/ksimback/hermes-ecosystem) ecosystem catalog and as beta in
+[Awesome Hermes Agent](https://github.com/0xNyk/awesome-hermes-agent#integrations--bridges).
+Install its
+verified [`sandbase` Agent Skill from skills.sh](https://www.skills.sh/sandbaseai/cli/sandbase),
+the [`sandbaseai/cli/sandbase` listing on SkillsCat](https://skills.cat/skills/sandbaseai/cli/sandbase),
+the [`sandbaseai/cli/sandbase` listing on skills.re](https://skills.re/skills/sandbaseai/cli/sandbase),
+the [93/100 verified SandBase listing on vSkill](https://verified-skill.com/skills/sandbaseai/cli/sandbase),
+the [security-audited SandBase listing on Skillstore](https://skillstore.io/skills/sandbaseai-sandbase),
+or the versioned [`sandbaseai/sandbase` snapshot on Agent Skill Hub](https://agentskillhub.dev/u/sandbaseai/sk/sandbase).
+
+---
+
+## A Verifiable Agent Workflow
+
+After connecting, ask your agent to follow the same inspectable sequence for
+search, data APIs, language models, image generation, video generation, and
+other catalog capabilities:
+
+1. Use `sandbase_discover` to find candidates by task or capability.
+2. Use `sandbase_inspect` to read the current input schema, pricing, and
+   execution requirements.
+3. Confirm the selected endpoint and parameters before calling `sandbase_run`.
+   Data API calls are free; confirm the cost first when the tool is a model.
+4. For asynchronous work, use `sandbase_run_get` with the returned `run_id`
+   instead of creating a duplicate run.
+5. Use `sandbase_runs` to review recent run status and recorded cost.
+6. Use `sandbase_account` to check the current account balance.
+
+For example, start with a non-billable discovery request:
+
+> Find image models suitable for a square product illustration. Compare the
+> required inputs and current pricing for the best two candidates. Do not run
+> either model yet.
+
+Discovery and inspection never cost anything, so an agent can always survey the
+catalog before it spends.
+
+After reviewing the live response, explicitly approve the endpoint and inputs
+you want to run. Catalog entries, schemas, pricing, latency, and availability
+can change, so use the tool response from the current session rather than a
+static example.
+
+See the [complete Claude Code and Codex walkthrough](https://github.com/sandbaseai/cli/discussions/47)
+or the [Chinese workflow guide](https://github.com/sandbaseai/cli/discussions/48). For a live
+catalog example, read the [GitHub connector discover-and-inspect dogfooding note](https://github.com/sandbaseai/cli/discussions/57).
+
+---
+
+## What's Inside
+
+| Category | Tools | What You Can Do |
+|----------|-------|-----------------|
+| **Web Search** | Google, Exa, Tavily, Scholar | Research anything in real-time |
+| **Social Media** | Twitter/X, YouTube, Reddit, Instagram, TikTok, Xiaohongshu, Weibo, Bilibili | Monitor trends, pull posts, analyze content |
+| **Scraping** | Firecrawl, Exa Content | Extract data from any public webpage |
+| **AI Models** | GPT-4o, Claude, Gemini, DeepSeek, Qwen, Llama | Run any model without managing keys |
+| **Image Gen** | Flux, DALL-E, Ideogram, Recraft | Create logos, illustrations, mockups |
+| **Video Gen** | Kling, MiniMax, Runway, Luma | Generate short clips and animations |
+| **Audio** | ElevenLabs, Whisper | Text-to-speech, transcription |
+| **E-commerce** | Taobao, Amazon | Product research, price comparison |
+| **Finance** | Stock data, company info | Market research and analysis |
+
+---
+
+## Supported Clients (25 Targets)
+
+Works with every major AI coding tool:
+
+| Auto-configured | Manual setup |
+|-----------------|--------------|
+| Cursor, Cursor CLI | ChatGPT |
+| Claude Code | Claude Desktop |
+| Codex | |
+| Kiro IDE, Kiro CLI | |
+| Windsurf | |
+| Gemini CLI | |
+| Amp | |
+| Warp | |
+| OpenCode, Qwen Code, Kimi CLI | |
+| Hermes, OpenClaw | |
+
+Preview the complete compatibility catalog without signing in or changing any files:
+
+```sh
+npx -y @sandbaseai/cli@latest catalog --json
+```
+
+```sh
+# Connect all detected clients at once
+npx -y @sandbaseai/cli@latest connect
+
+# Or target one specific client
+npx -y @sandbaseai/cli@latest connect --client cursor
+```
+
+### OpenClaw quickstart
+
+Target OpenClaw directly, then ask the CLI to read back the managed MCP server
+and SandBase Skill before you rely on them:
+
+```sh
+npx -y @sandbaseai/cli@latest connect --client openclaw
+npx -y @sandbaseai/cli@latest doctor --client openclaw
+```
+
+After `doctor` reports the credential, MCP bridge, and Skill as configured,
+restart OpenClaw and make a natural-language request that needs SandBase. If
+OpenClaw already has a non-SandBase MCP server named `sandbase`, the installer
+leaves it untouched instead of overwriting it. To remove the managed MCP entry
+and local credential later:
+
+```sh
+npx -y @sandbaseai/cli@latest unregister --client openclaw
+```
+
+OpenClaw currently exposes no supported Skill removal command, so `unregister`
+reports that limitation and leaves the verified SandBase Skill installed.
+
+### Hermes quickstart
+
+SandBase can install both its managed Hermes Skill and local MCP entry in one
+authorization transaction:
+
+```sh
+npx -y @sandbaseai/cli@latest connect --client hermes
+npx -y @sandbaseai/cli@latest doctor --client hermes
+```
+
+`doctor` verifies the owned local credential, MCP entry, and Skill. Restart
+Hermes to confirm native discovery in a fresh client session, then use the
+SandBase Skill or MCP tools. A pre-existing, non-SandBase MCP entry named
+`sandbase` is left untouched. To remove only the managed Hermes configuration,
+Skill, and local credential while retaining the shared bridge for other clients:
+
+```sh
+npx -y @sandbaseai/cli@latest unregister --client hermes
+```
+
+The integration is independently listed by
+[Hermes Atlas](https://github.com/ksimback/hermes-ecosystem) and
+[Awesome Hermes Agent](https://github.com/0xNyk/awesome-hermes-agent#integrations--bridges).
+
+---
+
+## How It Works
+
+```
+┌─────────────────┐         ┌───────────────┐         ┌────────────────────┐
+│   Your Agent    │  MCP    │  Local Bridge │  HTTPS  │    SandBase API     │
+│  (Cursor, etc.) │────────▶│  (on-demand)  │────────▶│ 2,000+ models/APIs │
+│                 │◀────────│               │◀────────│                    │
+└─────────────────┘         └───────────────┘         └────────────────────┘
+```
+
+1. Run `connect` → CLI opens browser auth → you approve
+2. API key saved locally (file permissions `0600`)
+3. MCP bridge configured for your client
+4. Agent calls tools on-demand. No daemon. No background process.
+
+---
+
+## Commands
+
+### CLI Commands
+
+```sh
+sandbase connect [--client <name>]    # Authorize + configure
+sandbase setup                        # After upgrading: refresh the local bridge + Skill, test connectivity
+sandbase doctor [--client <name>]     # Local checks plus one real round trip to SandBase
+sandbase unregister [--client <name>] # Remove configuration
+sandbase catalog --json               # List all supported clients
+```
+
+### Agent Commands (shell transport, same capabilities as the MCP tools)
+
+Agents without MCP, or with a broken MCP session, use the same catalog from a shell. Credentials come from `connect` automatically (or `SANDBASE_API_KEY` / `sandbase keys add -k <key>`).
+
+```sh
+sandbase discover -q "twitter posts"                       # search; -t api|llm|multimodal|embedding|service
+sandbase inspect sandbase_twitter_web_search_timeline       # fields, price, ready-to-run command
+sandbase run sandbase_twitter_web_search_timeline -i '{"keyword":"AI agents"}'
+sandbase run <video_tool> -i '{"prompt":"..."}' -w -o result.json   # wait with backoff, save output to disk
+sandbase runs get -r <run_id> -w -o result.json            # resume a long run instead of re-running it
+sandbase upload ./photo.png                                # local image/audio/video -> public URL for tools that take a URL
+sandbase runs list | sandbase balance
+```
+
+`-j` prints JSON; errors are `{"error":{"code","message","hint"}}` with the next step in `hint`. Exit codes: `0` success or still running, `1` failure (including a failed run), `2` usage.
+
+Sync tools (LLMs, most data APIs) return their result directly; async tools (image, video, audio jobs) return a run id — wait with `-w`, or fetch later with `sandbase runs get -r <run_id>`. If `api.sandbase.ai` is unreachable, the bridge keeps the SandBase tools visible with an actionable error instead of dropping the server.
+
+### MCP Tools (available to your agent after connecting)
+
+| Tool | Purpose |
+|------|---------|
+| `sandbase_discover` | Search all 2,000+ available AI models and APIs — free |
+| `sandbase_inspect` | Get input schema, current price, and a ready-to-run template — free |
+| `sandbase_run` | Execute a model or API endpoint — free for data APIs, paid for models |
+| `sandbase_run_get` | Poll status/result of an async run (video gen, etc.) — free |
+| `sandbase_runs` | List your recent runs with their cost — free |
+| `sandbase_account` | Check account balance — free |
+| `sandbase_run_cancel` | Cancel an Agent Service run — free |
+
+**Recommended workflow:**
+
+```
+discover → inspect → run
+```
+
+```
+1. sandbase_discover(q: "twitter search")          → find current candidates
+2. sandbase_inspect(name: discovered_name)          → get schema and pricing
+3. sandbase_run(name: discovered_name, input: {...}) → run after confirmation
+```
+
+---
+
+## Security
+
+- **Zero secrets in URLs or CLI args** — OAuth device flow with PKCE
+- **Restricted file permissions** — Credentials stored with `0600`
+- **Ownership-aware updates** — Existing JSONC comments and user-managed MCP entries are preserved
+- **Exact rollback** — On failure or `unregister`, only configuration owned by SandBase is removed
+- **Revoke anytime** — One click in the [SandBase Dashboard](https://sandbase.ai/console/keys)
+
+---
+
+## Get Started
+
+```sh
+npx -y @sandbaseai/cli@latest connect
+```
+
+Then ask your agent to do something it couldn't before.
+
+**[Create a free account →](https://sandbase.ai)** — data APIs are free to call.
+
+If SandBase saves you setup time, [star the repository](https://github.com/sandbaseai/cli) — it helps more agent users discover the project.
+
+---
+
+## Links
+
+- [SandBase Platform](https://sandbase.ai)
+- [Documentation](https://www.sandbase.ai/docs/)
+- [CLI setup guide](https://www.sandbase.ai/docs/setup/cli)
+- CLI deep dive: [English](https://blog.sandbase.ai/sandbase-cli-mcp-bridge-25-ai-clients/) · [中文](https://blog.sandbase.ai/zh-CN/sandbase-cli-mcp-bridge-25-ai-clients/)
+- Six-tool practical workflow: [English](https://github.com/sandbaseai/cli/discussions/47) · [中文](https://github.com/sandbaseai/cli/discussions/48)
+- [npm Package](https://www.npmjs.com/package/@sandbaseai/cli)
+- [Official Codex Plugin](https://github.com/sandbaseai/sandbase-codex-plugin)
+- [Dashboard](https://sandbase.ai/console)
+
+## Community
+
+- [Ask a question or share what you built](https://github.com/sandbaseai/cli/discussions)
+- [Report a reproducible bug](https://github.com/sandbaseai/cli/issues/new?template=bug-report.yml)
+- [Propose an integration or improvement](https://github.com/sandbaseai/cli/issues/new?template=feature-request.yml)
+- [Contribute to SandBase CLI](./CONTRIBUTING.md)
+
+Community-curated listings:
+
+- [Official Registry community showcase](https://github.com/modelcontextprotocol/registry/discussions/1584)
+- [VaultPlane MCP directory](https://www.vaultplane.com/server/sandbase-cli)
+- [AIMCP directory](https://www.aimcp.info/en/g/522d366e-114b-4d90-9f1a-552b4b3a9c86)
+- [Awesome MCP](https://github.com/AlexMili/Awesome-MCP)
+- [Awesome AI API Proxy](https://github.com/howardpen9/awesome-ai-api-proxy)
+- [Awesome Gemini CLI](https://github.com/Piebald-AI/awesome-gemini-cli)
+- [Hermes Atlas](https://github.com/ksimback/hermes-ecosystem)
+- [Awesome Hermes Agent](https://github.com/0xNyk/awesome-hermes-agent)
+- [Awesome AI Tools](https://github.com/QAInsights/awesome-ai-tools)
+- [Awesome MCP Server](https://github.com/AIAnytime/Awesome-MCP-Server)
+- [Awesome Agent Cortex](https://github.com/0xNyk/awesome-agent-cortex)
+- [Awesome AI Agent Tools](https://github.com/michielhdoteth/awesome-ai-agent-tools)
+- [Awesome Codex CLI](https://github.com/milisp/awesome-codex-cli)
+
+## License
+
+Apache-2.0

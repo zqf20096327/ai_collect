@@ -1,0 +1,198 @@
+# 🦴 Bone_Age_Predict
+
+[![🤗 Live Demo](https://img.shields.io/badge/🤗_Live_Demo-Open_on_Hugging_Face-FFD21E?style=for-the-badge)](https://huggingface.co/spaces/Cypressking/Bone_Age_Predict)
+[![Open in Colab](https://img.shields.io/badge/Open_in_Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/Seazer-x/Bone_Age_Predict/blob/main/notebooks/Bone_Age_Predict_Demo.ipynb)
+
+[![CI](https://github.com/Seazer-x/Bone_Age_Predict/actions/workflows/python-app.yml/badge.svg)](https://github.com/Seazer-x/Bone_Age_Predict/actions/workflows/python-app.yml)
+[![Release](https://img.shields.io/github/v/release/Seazer-x/Bone_Age_Predict)](https://github.com/Seazer-x/Bone_Age_Predict/releases/tag/v1.0.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10-3776AB.svg)](https://www.python.org/)
+
+Open-source **YOLOv5 + RUS-CHN bone age estimation** from hand X-ray images, with a local Streamlit app and a hosted Gradio + ZeroGPU demo for research, teaching, and reproducible experimentation.
+
+**👉 [Try the live demo on Hugging Face](https://huggingface.co/spaces/Cypressking/Bone_Age_Predict)**
+
+[中文说明](README.zh-CN.md) · [v1.0.0](https://github.com/Seazer-x/Bone_Age_Predict/releases/tag/v1.0.0) · [Evaluation](evaluation/README.md) · [Model Card](docs/MODEL_CARD.md) · [Contributing](CONTRIBUTING.md)
+
+> [!IMPORTANT]
+> **Research and educational use only.** This project is not a medical device and has not been clinically validated for diagnosis or treatment decisions.
+
+![Bone Age Predict screenshot](https://github.com/user-attachments/assets/48e17396-5082-4feb-95c9-23fb7215d09b)
+
+## What it does
+
+- Detects hand-bone regions with a YOLOv5 detector.
+- Selects the 13 RUS-CHN scoring regions from the detected ROIs.
+- Uses 9 YOLOv5 classification models to estimate maturation stages.
+- Converts stage scores into a CHN total score and estimated bone age.
+- Provides a Streamlit UI with adjustable confidence and IoU thresholds.
+- Reports missing detections and counts to make failures easier to inspect.
+
+## Pipeline
+
+```text
+Hand X-ray
+  ↓
+YOLOv5 detector
+  ↓
+Candidate bone ROIs
+  ↓
+13 RUS-CHN scoring ROIs
+  ↓
+9 YOLOv5 classifiers
+  ↓
+Maturation stages
+  ↓
+RUS-CHN score
+  ↓
+Estimated bone age
+```
+
+Core inference logic: [`bone_age/bone_age.py`](bone_age/bone_age.py)
+
+## Quick start
+
+### 1. Clone
+
+```bash
+git clone https://github.com/Seazer-x/Bone_Age_Predict.git
+cd Bone_Age_Predict
+```
+
+### 2. Create a Python 3.10 environment
+
+Linux / macOS:
+
+```bash
+python3.10 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Windows PowerShell:
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 3. Run the demo
+
+```bash
+streamlit run Bone-pre.py
+```
+
+Upload a frontal single-hand X-ray image, select the scoring sex input used by the current RUS-CHN implementation, then run inference.
+
+## Hugging Face Space
+
+The hosted demo uses **Gradio + Hugging Face ZeroGPU**. Space-specific files live in [`hf-space/`](hf-space/), while the core inference code remains shared with this repository.
+
+The Space includes a one-click sample X-ray from this repository. Model weights remain sourced from the tagged `v1.0.0` GitHub release; the Space downloads missing files concurrently into a local cache, validates expected file sizes, retries transient HTTP failures, and reuses valid cached files.
+
+The deployment workflow at [`.github/workflows/deploy-huggingface-space.yml`](.github/workflows/deploy-huggingface-space.yml) creates or updates the ZeroGPU Space using the `HF_TOKEN` GitHub Actions secret.
+
+## Repository layout
+
+```text
+Bone_Age_Predict/
+├── Bone-pre.py
+├── bone_age/
+│   ├── bone_age.py
+│   ├── bone_age.pt
+│   └── */best.pt
+├── models/
+├── utils/
+├── tests/
+├── evaluation/
+├── notebooks/
+├── hf-space/
+├── docs/MODEL_CARD.md
+├── THIRD_PARTY_NOTICES.md
+└── LICENSE
+```
+
+## Reproducible evaluation
+
+The repository includes an evaluation runner for labeled hand X-ray datasets:
+
+```bash
+python evaluation/evaluate_dataset.py \
+  --manifest /path/to/manifest.csv \
+  --output-dir evaluation/results \
+  --device 0
+```
+
+It reports per-sample predictions plus MAE, RMSE, median absolute error, mean bias, ±0.5/±1.0 year hit rates, deterministic bootstrap 95% CI for MAE, and sex-stratified summaries.
+
+See [evaluation/README.md](evaluation/README.md) for the manifest format and reporting protocol.
+
+The repository still does **not** claim a clinical benchmark result because no independently documented evaluation dataset is bundled here. Do not interpret the demo output as a validated clinical measurement. See [Model Card](docs/MODEL_CARD.md) for intended use and limitations.
+
+## Data, models, and attribution
+
+The original project documentation referenced:
+
+- [Baidu AI Studio bone-age project](https://aistudio.baidu.com/projectdetail/1485230)
+- Ultralytics YOLOv5
+
+Files under `models/`, `utils/`, and `export.py` retain upstream YOLOv5 GPL-3.0 notices. Dataset, model-weight, and third-party terms may differ from the repository code license.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Responsible use
+
+- Do not use outputs as an independent clinical diagnosis or treatment decision.
+- De-identify X-rays before sharing screenshots, issues, PRs, or examples.
+- Do not upload patient names, IDs, dates of birth, accession numbers, or other sensitive health data to public GitHub discussions.
+- Prefer local deployment for sensitive data unless your organization has approved the target hosting environment.
+
+## Development
+
+Fast checks:
+
+```bash
+python -m compileall -q Bone-pre.py bone_age/bone_age.py models utils export.py evaluation tests
+python -m pytest -q
+```
+
+CI keeps the fast source and regression checks, and also installs the complete
+local and Space requirements in separate Python 3.10 jobs. Each job runs
+`pip check`, project imports, NumPy/Torch conversion, torchvision NMS, and
+image preprocessing. The local job additionally exercises Albumentations,
+TensorBoard, and the Streamlit image API; the Space job builds Gradio components.
+These checks use CPU and avoid downloading model weights. Hosted ZeroGPU startup
+is verified separately by the deployment workflow.
+
+To run the dependency smoke check after installing the corresponding requirements:
+
+```bash
+python -m pip check
+python tests/smoke_environment.py --target local
+# In a separate environment with hf-space/requirements.txt:
+python tests/smoke_environment.py --target space
+```
+
+## Contributing
+
+Bug fixes, compatibility improvements, documentation, reproducible evaluations, and tests are welcome.
+
+Please read:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+
+## Citation
+
+Citation metadata is available in [`CITATION.cff`](CITATION.cff).
+
+## License
+
+Repository code is distributed under **GNU General Public License v3.0 only (GPL-3.0-only)**. See [LICENSE](LICENSE).
+
+If this project is useful to your research or teaching, consider starring the repository and sharing reproducible improvements.

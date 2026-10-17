@@ -1,0 +1,23 @@
+# SyPB
+Counter-Strike 1.6 Bot, Based on YaPB2.7.2
+
+SyPB - Lastly Version: Beta 1.49 (Build: 1.49.50770.745)
+ - Counter-Strike 1.6 Bot
+
+SwNPC - Lastly Version: Beta 1.48 (Build: 1.48.50576.121)
+ - Counter-Strike 1.6 NPC System
+ - Use SyPB Waypoint, Need SyPB 
+
+SyPB AMXX API - Lastly Version: 1.48 (Build: 1.48.50576.49)
+ - SyPB AMXX API
+
+! Windows Only !
+
+Download or more pls visit: http://ccnhsk-dev.blogspot.hk/
+
+Support:
+<p>
+  <a href="https://www.paypal.com/ncp/payment/XRMJUNCBGPTTN">
+      <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="paypal">
+  </a>
+</p>

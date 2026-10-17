@@ -1,0 +1,260 @@
+# unity-api-mcp
+
+<!-- mcp-name: io.github.Codeturion/unity-api-mcp -->
+
+[![PyPI Version](https://img.shields.io/pypi/v/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/unity-api-mcp.svg)](https://pypi.org/project/unity-api-mcp/)
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-green)](https://registry.modelcontextprotocol.io/?q=unity-api-mcp)
+[![GitHub Stars](https://img.shields.io/github/stars/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Codeturion/unity-api-mcp)](https://github.com/Codeturion/unity-api-mcp)
+[![Weekly DB Build](https://github.com/Codeturion/unity-api-mcp/actions/workflows/detect-unity-release.yml/badge.svg)](https://github.com/Codeturion/unity-api-mcp/actions/workflows/detect-unity-release.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
+**MCP server that gives AI agents accurate Unity API documentation. Prevents hallucinated signatures, wrong namespaces, and deprecated API usage.**
+
+Supports **Unity 6** (one database per minor stream), **Unity 2023**, and **Unity 2022 LTS**. Works with Claude Code, Cursor, Windsurf, or any MCP-compatible AI tool. No Unity installation required. See the [supported versions](https://github.com/Codeturion/unity-api-mcp/releases/tag/db-v1). New Unity releases are detected and built automatically every week.
+
+## Quick Start
+
+Add to your MCP config (`.mcp.json`, `mcp.json`, or your tool's MCP settings), setting `UNITY_VERSION` to match your project:
+
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "uvx",
+      "args": ["unity-api-mcp"],
+      "env": {
+        "UNITY_VERSION": "6000.3"
+      }
+    }
+  }
+}
+```
+
+Valid values: a Unity 6 stream like `"6000.3"`, or `"6"`, `"2023"`, `"2022"`.
+
+On first run the server downloads the correct database (~20-30 MB) to `~/.unity-api-mcp/`.
+
+## How It Works
+
+1. **Version detection.** The server figures out which Unity version to serve:
+
+| Priority | Source | Example |
+|----------|--------|---------|
+| 1 | `UNITY_VERSION` env var | `"2022"`, `"6"`, `"6000.3"`, or `"6000.3.8f1"` |
+| 2 | `UNITY_PROJECT_PATH` | Reads `ProjectSettings/ProjectVersion.txt`, maps `2022.3.62f1` to `"2022"`, `6000.3.8f1` to `"6000.3"` |
+| 3 | Default | `"6"` |
+
+2. **Database download.** If the database for that version isn't cached locally, it downloads from GitHub. Unity 6 minor streams (`6000.0`, `6000.3`, `6000.5`, …) get their own per-stream database, falling back to the generic `6` database when a stream database isn't published. Cached databases are freshness-checked against the release on startup, so weekly rebuilds reach existing installs automatically.
+
+3. **Serve.** All tool calls query the version-specific SQLite database. Every query returns in <15ms.
+
+Each version has its own database with the correct signatures, deprecation warnings, and member lists for that release.
+
+## Tools
+
+| Tool | Purpose | Example |
+|------|---------|---------|
+| `search_unity_api` | Find APIs by keyword | "Tilemap SetTile", "async load scene" |
+| `get_method_signature` | Exact signatures with all overloads | `UnityEngine.Physics.Raycast` |
+| `get_namespace` | Resolve `using` directives | "SceneManager" -> `using UnityEngine.SceneManagement;` |
+| `get_class_reference` | Full class reference card | "InputAction" -> all methods/fields/properties |
+| `get_deprecation_warnings` | Check if an API is obsolete | "WWW" -> Use UnityWebRequest instead |
+
+## Coverage
+
+All UnityEngine and UnityEditor modules, plus packages parsed from C# source: Input System, Addressables, uGUI (incl. TextMeshPro on Unity 6), AI Navigation, and Netcode. ~42,500 records per Unity 6 database, ~500 deprecation warnings each.
+
+Full version list: [**db-v1 release page**](https://github.com/Codeturion/unity-api-mcp/releases/tag/db-v1). CI regenerates that table on every build. New Unity patches are detected and built automatically every Monday.
+
+Does **not** cover third-party assets (DOTween, VContainer, Newtonsoft.Json). For those, rely on project source.
+
+## Benchmarks
+
+Measured, not promised: 25 research questions across 3 testbeds, answered by 3 agent configs, every answer judged against ground truth verified in the source beforehand. The full harness lives in [`docs/benchmark/`](docs/benchmark/) and re-runs with one command.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/benchmark-accuracy-dark.png">
+  <img alt="Answer quality by agent config, judged against verified ground truth" src="https://raw.githubusercontent.com/Codeturion/unity-api-mcp/master/docs/images/benchmark-accuracy-light.png">
+</picture>
+
+| Config | Correct | Partial | Wrong | Hallucinated APIs |
+|---|---|---|---|---|
+| **MCP + targeted Read** | **24/25** | 1 | 0 | **0** |
+| Skilled (Grep+Read) | 20/25 | 3 | 2 | 1 |
+| Naive (full Reads) | 19/25 | 3 | 3 | 1 |
+
+The one reproduced hallucination is instructive. Asked to list the overloads of `SceneManager.LoadSceneAsync`, both non-MCP agents invented single-parameter `LoadSceneAsync(string)` and `LoadSceneAsync(int)` overloads that do not exist. Code written against them does not compile. The MCP agent returned the exact four real overloads.
+
+Why correctness and not token savings? Agentic tools are good at code search now. Claude Code has shipped a Grep tool from the start, and current models search first and then read a narrow line range, so raw token use was comparable across all configs in our runs. But exact overloads, namespaces, and deprecations are not in your project files at all. An agent without MCP can only infer them from usage examples, and when it infers wrong you pay with a broken build.
+
+<details>
+<summary>Methodology</summary>
+
+- 3 testbeds: a real Unity 6 game project (11 questions), pure Unity API lookups (8), and Unity Input System package source with 2,700 to 4,600 line files (6)
+- 3 configs, same model and turn limit: MCP tools + Grep/Read, Grep/Read only, Read only
+- Ground truth verified by reading the source before any runs; answers judged by a separate model session against that ground truth; token usage taken from API usage fields
+- Run it yourself: `python docs/benchmark/run.py --project <unity-project-path>` (results from July 2026; agent behavior moves, so re-run before quoting)
+
+</details>
+
+## CLAUDE.md Snippet
+
+Add this to your project's `CLAUDE.md` (or equivalent instructions file). **This step is important.** Without it, the AI has the tools but won't know when to reach for them.
+
+```markdown
+## Unity API Lookup (unity-api MCP)
+
+Use the `unity-api` MCP tools to verify Unity API usage instead of guessing. **Do not hallucinate signatures.**
+
+| When | Tool | Example |
+|------|------|---------|
+| Unsure about a method's parameters or return type | `get_method_signature` | `get_method_signature("UnityEngine.Tilemaps.Tilemap.SetTile")` |
+| Need the `using` directive for a type | `get_namespace` | `get_namespace("SceneManager")` |
+| Want to see all members on a class | `get_class_reference` | `get_class_reference("InputAction")` |
+| Searching for an API by keyword | `search_unity_api` | `search_unity_api("async load scene")` |
+| Checking if an API is deprecated | `get_deprecation_warnings` | `get_deprecation_warnings("FindObjectOfType")` |
+
+**Rules:**
+- Before writing a Unity API call you haven't used in this conversation, verify the signature with `get_method_signature`
+- Before adding a `using` directive, verify with `get_namespace` if unsure
+- Covers: all UnityEngine/UnityEditor modules, Input System, Addressables, uGUI/TextMeshPro, AI Navigation, Netcode
+- Does NOT cover: DOTween, VContainer, Newtonsoft.Json (third-party)
+```
+
+## Setup Details
+
+<details>
+<summary>Auto-detect version from project path</summary>
+
+Instead of setting `UNITY_VERSION`, you can point to your Unity project. The server reads `ProjectSettings/ProjectVersion.txt` automatically:
+
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "uvx",
+      "args": ["unity-api-mcp"],
+      "env": {
+        "UNITY_PROJECT_PATH": "/path/to/your/unity-project"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Alternative installation methods</summary>
+
+**Using pip install:**
+```bash
+pip install unity-api-mcp
+```
+```json
+{
+  "mcpServers": {
+    "unity-api": {
+      "command": "unity-api-mcp",
+      "args": [],
+      "env": {
+        "UNITY_VERSION": "6000.3"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Environment variables</summary>
+
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `UNITY_VERSION` | Unity version to serve | `6000.3`, `6000.3.8f1`, `6`, `2023`, `2022` |
+| `UNITY_PROJECT_PATH` | Auto-detect version from project | `F:/Unity Projects/my-project` |
+| `UNITY_INSTALL_PATH` | Override Unity install path (for `ingest` only) | `D:/Unity/6000.3.8f1` |
+
+</details>
+
+<details>
+<summary>Building databases locally</summary>
+
+If you want to build a database from your own Unity installation instead of downloading:
+
+```bash
+# Install with ingest dependencies
+pip install unity-api-mcp[ingest]
+
+# Windows
+python -m unity_api_mcp.ingest --unity-version 6000.3 --unity-install "D:/Unity/6000.3.8f1" --project "F:/Unity Projects/MyProject"
+
+# macOS
+python -m unity_api_mcp.ingest --unity-version 6000.3 --unity-install "/Applications/Unity/Hub/Editor/6000.3.20f1" --project "/path/to/UnityProject"
+
+# Legacy versions
+python -m unity_api_mcp.ingest --unity-version 2022 --unity-install "D:/Unity/2022.3.62f1"
+```
+
+Databases are written to `~/.unity-api-mcp/unity_docs_{version}.db` by default.
+
+</details>
+
+<details>
+<summary>AI-Assisted Setup</summary>
+
+If an AI agent is setting this up for you:
+
+> Add `unity-api-mcp` to my MCP config using `uvx` with `UNITY_VERSION` set to match my project, append the CLAUDE.md snippet from the README, and verify with `get_namespace("SceneManager")`.
+
+</details>
+
+<details>
+<summary>Project structure</summary>
+
+```
+unity-api-mcp/
+├── src/unity_api_mcp/
+│   ├── server.py          # MCP server (5 tools)
+│   ├── db.py              # SQLite + FTS5 database layer
+│   ├── version.py         # Version detection + DB download
+│   ├── xml_parser.py      # Parse Unity XML IntelliSense files
+│   ├── cs_doc_parser.py   # Parse C# doc comments from package source
+│   ├── unity_paths.py     # Locate Unity install + package dirs
+│   └── ingest.py          # CLI ingestion pipeline
+└── pyproject.toml
+```
+
+Databases are stored in `~/.unity-api-mcp/` (downloaded on first run).
+
+</details>
+
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| "Could not download Unity X database" | Check internet connection. Or build locally: `python -m unity_api_mcp.ingest --unity-version 2022` |
+| Wrong API version being served | Set `UNITY_VERSION` explicitly. Check stderr: `unity-api-mcp: serving Unity <version> API docs` |
+| Server won't start | Check `python --version` (needs 3.10+). Check path: `which unity-api-mcp` or `where unity-api-mcp` |
+| `ModuleNotFoundError: No module named 'mcp.server.fastmcp'` | Version 2.1.0 or older installed mcp 2.x. Restart your MCP client, or run `uvx unity-api-mcp@latest`. With pip, run `pip install -U unity-api-mcp`. |
+| Third-party packages return no results | DOTween, VContainer, Newtonsoft.Json are not indexed (third-party, not Unity packages) |
+
+---
+
+## See Also
+
+**[unreal-api-mcp](https://github.com/Codeturion/unreal-api-mcp)**: same concept for Unreal Engine (C++), with weekly auto-built databases per UE version.
+
+## Contact
+
+Need a custom MCP server for your engine or framework? I build MCP tools that cut token waste and prevent hallucinations for AI-assisted game development. If you want something similar for your team's stack, reach out.
+
+fuatcankoseoglu@gmail.com
+
+## License
+
+[MIT](LICENSE)

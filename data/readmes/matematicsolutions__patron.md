@@ -1,0 +1,329 @@
+# Patron
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](./LICENSE)
+[![Tests](https://img.shields.io/badge/tests-1471_backend_%2B_86_frontend-brightgreen)](./backend)
+[![Audit trail](https://img.shields.io/badge/audit_trail-hash--chained-orange)](https://matematicsolutions.com/en/patron/audit-trail)
+[![RODO](https://img.shields.io/badge/RODO-art._5%2F25%2F30%2F32-orange)](./governance/CONSTITUTION.md)
+[![Local-first](https://img.shields.io/badge/storage-local--first-success)](https://matematicsolutions.com/en/where-your-data-is)
+[![MCP](https://img.shields.io/badge/MCP-20_connectors-blue)](https://github.com/matematicsolutions)
+[![Node](https://img.shields.io/badge/Node-20%2B-brightgreen)](https://nodejs.org)
+
+> **A local-first, self-hosted AI workspace for a law firm.** A single-user desktop
+> application (Electron) that keeps case files on the machine it runs on: local SQLite by default ([ADR-0053](./governance/adr/0053-sqlite-single-user-zero-cloud.md)), 20 bundled connectors to Polish, EU and national law
+> (SAOS / NSA / ISAP / KRS / EUREKA / EUR-Lex / EU-Compliance), a hash-chained audit trail,
+> bring-your-own-model (a local Ollama model, or Gemini / Claude / OpenRouter with your own key). A server mode (Postgres + MinIO) remains available as an alternative.
+
+Patron is a fork of [Mike](https://github.com/willchen96/mike) (a document-centric
+legal assistant, **AGPL-3.0**). The Patron shell inherits AGPL-3.0 as a derivative
+work. It adds Polish localization, a Polish legal stack, and the compliance
+requirements a law firm needs. The full rules live in
+[governance/CONSTITUTION.md](./governance/CONSTITUTION.md).
+
+## What Patron does
+
+Everything below ran end-to-end on 2026-08-23 against a real model on synthetic contract fixtures
+(`npm run smoke:surfaces`, `smoke:desktop`, packaged app `e2e:smoke`); nothing here is a roadmap item.
+
+- **Chat over the case files** with a colour badge next to every citation from your own documents:
+  green (verbatim), yellow (paraphrase), red (the source does not support the claim). A local
+  paraphrase judge, never a cloud call, decides the colour.
+- **Case law, legislation and tax practice while answering** - 20 MCP connectors ship in the
+  installer: 7 for Polish and EU sources (SAOS, NSA, ISAP, KRS, EUREKA, EUR-Lex/CJEU) queried live,
+  plus 13 national ELI connectors (DE, FR, IT, ES, NL, SE, AT, FI, IE, LU, BR, GB, US) that follow
+  the European Legislation Identifier. On top of that an offline EU compliance corpus (GDPR, AI Act,
+  DORA, NIS2, eIDAS 2.0, CRA) that works without internet. Connector answers carry source, signature or
+  identifier, date and URL (measured on SAOS and EUREKA; the same MCS contract applies to the rest).
+- **A table from a batch of contracts** (Tabular Review): you define the columns as questions,
+  Patron fills one cell per document with the answer, a quote from the source page and a
+  confidence flag (green / yellow / red / grey).
+- **Editing documents as a lawyer does** - you ask for a change and review it as Word tracked
+  changes, then accept or reject. A file edited in Word comes back into Patron with its changes
+  intact.
+- **Drafting** - generate a new .docx from the chat, or run a whole pleading through a review,
+  devil's advocate and language pass before it leaves the firm.
+- **Workflows** - saved prompts and column sets you reuse across cases.
+- **Human-in-the-loop for agent writes** (on by default, ADR-0137; `PATRON_MUTATION_APPROVAL=false`
+  switches it off): edits, generated files, copies, comments and memory writes are staged as
+  approval cards; nothing is written until a human approves.
+- **An audit trail a third party can verify** - every model interaction hash-chained with a Merkle
+  root, built for record-keeping duties such as AI Act art. 12 where they apply; exportable as a ZIP that ships its own verifier (a browser page and a
+  Python script), so a court, the DPA or the client can check it without this repository (ADR-0142).
+- **Masking before a cloud model** - names, companies, PESEL/NIP/REGON are replaced with tokens before
+  any cloud model ([known gaps](#what-patron-is-not-for)), and an egress guard checks every outbound call against the case's classification.
+- **Bring your own model** - a local Ollama model, or Gemini, Claude or OpenRouter with your own key,
+  chosen in settings or per conversation. With a local model the conversation stays on the machine.
+  With a cloud model the request goes to that provider with names and identifiers masked; in the
+  desktop app, choosing a cloud model is the operator's consent, and each such call is recorded in
+  the audit trail (ADR-0101).
+- **9 installer editions** from one code line: PL, EN (EU-first), US, GB, BR, IT, DE, ES, FR - each
+  with its home jurisdiction connector on by default. Downloads: [matematicsolutions.com/pobierz](https://matematicsolutions.com/pobierz).
+
+## What Patron is not for
+
+Patron is built for one lawyer working on their own case files. A few jobs it does not do, and
+it is better to read them here than to find out in the middle of a case.
+
+- **A shared firm server, in the desktop app.** The installer runs for one user on one machine
+  ([ADR-0053](./governance/adr/0053-sqlite-single-user-zero-cloud.md)). Several lawyers working
+  on the same matters need server mode (Postgres + MinIO), a separate deployment.
+- **A replacement for reading the source.** The green, yellow and red citation badges are
+  advisory: a red badge warns, it does not block the answer
+  ([ADR-0146](./governance/adr/0146-grounding-cytatow-mcp.md)). Checking the quote against the
+  source stays with the lawyer.
+- **Guaranteed anonymisation.** Detectors mask names, companies and identifiers before a cloud model, but
+  some forms slip through - for example a bare surname in a later message, with no first name
+  or role next to it (finding A-02 in [the 2026-09 audit](./docs/AUDYT_2026-09.md)). For files
+  under professional secrecy we recommend a local model: then nothing leaves the machine.
+- **Legacy `.doc` without LibreOffice.** PDF and DOCX work on their own. Older binary `.doc`
+  files need LibreOffice, and without it Patron refuses them out loud instead of storing an
+  empty file.
+- **A compliance certificate.** The audit trail supports record-keeping duties such as AI Act
+  art. 12 where they apply. It does not make a deployment "AI Act compliant", and it does not
+  decide whether a deployment is high-risk.
+- **A screen to review what Patron remembered.** Memory and the knowledge graph work underneath;
+  there is no screen for them yet, so you check or correct them in the chat.
+- **Proof that nothing was cut from the end of the audit trail.** The hash chain catches an
+  altered entry and an entry removed from the middle. Entries deleted from the very end leave
+  a shorter chain that is still valid. To confirm the end, compare the last entry (`head` in
+  the verifier's report) with a copy kept outside the database, for example from an earlier
+  export.
+- **A signed installer.** The Windows installer is not code-signed, so SmartScreen warns on
+  first run.
+
+## Documentation
+
+Written for the lawyer who has just downloaded the installer, not for the person reading this file.
+Kept in one place and linked from here rather than copied, so the two cannot drift apart:
+
+- **[What Patron can do](https://matematicsolutions.com/en/patron/capabilities)** - every capability
+  with the problem it answers and a link to the architecture decision behind it.
+- **[Step-by-step manual](https://matematicsolutions.com/en/patron/instructions)** - installation,
+  connecting a model, your first matter, and the pitfalls that actually occur.
+- **[Audit trail verifier on Hugging Face](https://huggingface.co/spaces/matematicsolutions/patron-audit-verifier)** - the
+  verifier that ships with every export, runnable in the browser on a sample intact and tampered export.
+- **[Audit trail documentation](https://matematicsolutions.com/en/patron/audit-trail)** - how the
+  hash chain and the Merkle tree work, and what the trail does *not* prove.
+- [`docs/SAMOUCZEK_EN.md`](./docs/SAMOUCZEK_EN.md) - the same manual as markdown. Each installer
+  edition ships the tutorial for its own language; this repository holds all nine.
+
+## Contents
+
+- `frontend/` - Next.js application
+- `backend/` - Express API, MCP client, audit trail, tool dispatch
+- `backend/src/lib/input-security/` - a local, deterministic scan of incoming documents (prompt injection / hidden PDF actions / obfuscation) before they reach the model or RAG (ADR-0019/0020)
+- `backend/src/lib/mcp-security/` - a local, deterministic scan of MCP connector definitions (typosquatting / description drift / hidden instructions / tool poisoning) BEFORE they are loaded into the MCP contract (ADR-0025/0028)
+- `backend/schema.sql` - Postgres schema (server mode, Supabase-compatible); desktop mode uses local SQLite (ADR-0053)
+- `governance/` - **Patron AI Constitution** + Implementation Playbook + ADRs
+- `deploy/` - deployment runbook (`docker-compose`)
+- `scripts/bundle-mcp.cjs` - bundler that packs the 7 MCP servers into the backend image
+
+## MCP connectors for Polish and EU law (separate repos)
+
+| Connector | Domain | Returns |
+|---|---|---|
+| [`mcp-saos`](https://github.com/matematicsolutions/mcp-saos) | common courts, Sad Najwyzszy (Supreme Court), Trybunal Konstytucyjny (Constitutional Tribunal), KIO | search / get_judgment / search_by_case |
+| [`mcp-nsa`](https://github.com/matematicsolutions/mcp-nsa) | NSA (Supreme Administrative Court) + 16 WSA (regional administrative courts) case law (CBOSA) | search / get_judgment / search_by_case |
+| [`mcp-isap`](https://github.com/matematicsolutions/mcp-isap) | Polish legislation (Dziennik Ustaw / Journal of Laws + Monitor Polski, Sejm ELI) | search_acts / get_act / get_act_text |
+| [`mcp-krs`](https://github.com/matematicsolutions/mcp-krs) | Krajowy Rejestr Sadowy (National Court Register, Ministry of Justice) | get_entity / get_entity_full / get_board |
+| [`mcp-eureka`](https://github.com/matematicsolutions/mcp-eureka) | Polish tax rulings: KIS individual interpretations, WIS, WIA (EUREKA, Ministry of Finance) - the authorities' practice, not a source of law | search / get_interpretation / search_by_signature / list_categories |
+| [`mcp-eu-sparql`](https://github.com/matematicsolutions/mcp-eu-sparql) | EU law (EUR-Lex + CJEU, live SPARQL) | search_by_celex / search_by_date_range / search_cjeu |
+| [`mcp-eu-compliance`](https://github.com/matematicsolutions/mcp-eu-compliance) | offline EU compliance (GDPR, AI Act, DORA, NIS2, eIDAS 2.0, CRA) | eu_search / eu_article / eu_compare / eu_check_applicability / eu_evidence |
+
+## Beyond the installer
+
+The seven Polish and EU connectors above are part of a larger set of open MCP connectors, one repository per source, listed on the [organization page](https://github.com/matematicsolutions) with install commands in [Boutique](https://matematicsolutions.com/en/boutique/connectors). Language editions of PATRON pair the same AGPL shell with the connectors for their jurisdiction.
+
+## Production deployment
+
+Full runbook: **[deploy/README.md](./deploy/README.md)**.
+The short version:
+
+```bash
+# 1. Clone the 8 repos (patron + 7 mcp-*)
+git clone matematicsolutions/patron && cd patron
+for d in mcp-saos mcp-nsa mcp-isap mcp-krs mcp-eureka mcp-eu-sparql mcp-eu-compliance; do
+  (cd .. && git clone matematicsolutions/$d && cd $d && npm install && npm run build)
+done
+
+# 2. Bundle MCP into the backend image
+node scripts/bundle-mcp.cjs
+
+# 3. Configure secrets
+cp .env.docker.example .env.docker
+nano .env.docker
+
+# 4. Up
+docker compose --env-file .env.docker up -d
+```
+
+This requires a separately provisioned Supabase + MinIO (a separate stack). See the runbook.
+
+## Governance (before deployment)
+
+- [**Patron AI Constitution v1.8.0**](./governance/CONSTITUTION.md) -
+  9 principles, product boundaries, roles (Administrator / Operator / Inspector),
+  audit, and evolution. Mapped to AI Act art. 12, RODO art. 5/25/30/32,
+  and professional ethics. Art. 5 covers input-document control.
+- [**Implementation Playbook**](./governance/IMPLEMENTATION_PLAYBOOK.md) -
+  a 6-8 week step-by-step rollout with a RACI matrix.
+- [**ADRs**](./governance/adr/) - Architecture Decision Records (0001-0145),
+  including [0001 hash-chain](./governance/adr/0001-hash-chain-audit-trail.md),
+  [0002 dual-license](./governance/adr/0002-dual-license-agpl-shell-mit-connectors.md),
+  [0019 input-document scan](./governance/adr/0019-input-document-security-pipeline-pl.md),
+  [0020 wiring into ingest](./governance/adr/0020-wpiecie-input-security-w-ingest.md).
+
+The firm reads and signs the **Constitution v1.7.2** before deployment
+(the signature section is at the end of the file).
+
+## Open standard - MCS v0.1
+
+Patron is the **reference implementation** of the open citation standard
+[**MateMatic Connector Standard (MCS) v0.1**](./MCS-v0.1.md): the
+`structuredContent.citations` contract (source_id / url / exact_quote / locator / confidence)
+plus a 3-color credibility gradient (`verbatim` / `paraphrase` / `unverified` =
+existence / content / fragment) plus a conformance test (citation roundtrip). Any legal-source
+connector that satisfies MCS plugs into the citation-verification layer with no changes.
+
+## License
+
+The stack is **dual-licensed** (see [ADR-0002](./governance/adr/0002-dual-license-agpl-shell-mit-connectors.md)):
+
+- `patron` (this repo, the shell) - **AGPL-3.0-only** ([LICENSE](./LICENSE) + [NOTICE](./NOTICE))
+- `mcp-saos`, `mcp-nsa`, `mcp-isap`, `mcp-krs`, `mcp-eu-sparql`, `mcp-eu-compliance` - **MIT**
+
+A self-hosting firm can use, modify, and distribute Patron inside its
+organization with no extra obligations. A competitor that offers Patron
+as SaaS to third parties must open its modifications.
+
+Patron is a fork of [Mike](https://github.com/willchen96/mike) (AGPL-3.0,
+(c) 2025 Will Chen). Full attribution: [NOTICE](./NOTICE).
+
+---
+
+## Local development
+
+The rest of this README covers the local (development) setup.
+For a production deployment, use `deploy/README.md` (Docker).
+
+### Contents (legacy)
+
+- `frontend/` - Next.js application
+- `backend/` - Express API, Supabase access, document processing, and database schema
+- `backend/schema.sql` - Supabase schema for fresh databases
+- `backend/migrations/` - incremental database updates for existing deployments
+
+## Prerequisites
+
+- Node.js 20 or newer
+- npm
+- git
+- A Supabase project
+- A Cloudflare R2 bucket, MinIO bucket, or another S3-compatible bucket
+- At least one supported model provider API key: Anthropic, Google Gemini, or OpenAI
+- LibreOffice installed locally - required for legacy `.doc` uploads, optional for the DOCX-to-PDF preview rendition (which is generated in the background)
+
+## Database Setup
+
+For a new Supabase database, open the Supabase SQL editor and run:
+
+```sql
+-- copy and run the contents of:
+-- backend/schema.sql
+```
+
+The schema file is based on `supabase-migration.sql` and folds in the later files in `backend/migrations/`.
+
+For an existing database, do not run the full schema file over production data. Apply the incremental files in `backend/migrations/` instead.
+
+## Environment
+
+Create local env files:
+
+```bash
+touch backend/.env
+touch frontend/.env.local
+```
+
+Create `backend/.env`:
+
+```bash
+PORT=3001
+FRONTEND_URL=http://localhost:3000
+DOWNLOAD_SIGNING_SECRET=replace-with-a-random-32-byte-hex-string
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=your-supabase-service-role-key
+
+R2_ENDPOINT_URL=https://your-account-id.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your-r2-access-key
+R2_SECRET_ACCESS_KEY=your-r2-secret-key
+R2_BUCKET_NAME=patron
+
+GEMINI_API_KEY=your-gemini-key
+ANTHROPIC_API_KEY=your-anthropic-key
+OPENAI_API_KEY=your-openai-key
+RESEND_API_KEY=your-resend-key
+USER_API_KEYS_ENCRYPTION_SECRET=your-long-random-secret
+```
+
+Create `frontend/.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your-supabase-anon-key
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+```
+
+Supabase values come from the project dashboard. Use the project URL for `SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_URL`, the service role key for the backend `SUPABASE_SECRET_KEY`, and the anon/public key for `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`. If your Supabase project shows multiple key formats, use the legacy JWT-style anon and service role keys expected by the Supabase client libraries.
+
+Provider keys are only needed for the models and email features you plan to use. Model provider keys can be configured in `backend/.env` for the whole instance, or per user in **Account > Models & API Keys**. If a provider key is present in `backend/.env`, that provider is available by default and the matching browser API key field is read-only.
+
+## Install
+
+Install each app package:
+
+```bash
+npm install --prefix backend
+npm install --prefix frontend
+```
+
+## Run Locally
+
+Start the backend:
+
+```bash
+npm run dev --prefix backend
+```
+
+Start the main app:
+
+```bash
+npm run dev --prefix frontend
+```
+
+Open `http://localhost:3000`.
+
+## First Run
+
+1. Sign up in the app.
+2. If you did not set provider keys in `backend/.env`, open **Account > Models & API Keys** and add an Anthropic, Gemini, or OpenAI API key.
+3. Create or open a project and start chatting with documents.
+
+## Troubleshooting
+
+**Sign-up confirmation email never arrives.** Confirmation emails are sent by Supabase Auth, not by Mike. For local development, the simplest fix is to disable email confirmation in **Supabase > Authentication > Providers > Email**. For production, configure custom SMTP in Supabase; the built-in mailer is heavily rate-limited and may be restricted on newer projects.
+
+**The model picker shows a missing-key warning.** Add a key for that provider in **Account > Models & API Keys**, or configure the provider key in `backend/.env` and restart the backend.
+
+**DOC or DOCX conversion fails.** Install LibreOffice locally and restart the backend so document conversion commands are available on the process path.
+
+## Useful Checks
+
+```bash
+npm run build --prefix backend
+npm run build --prefix frontend
+npm run lint --prefix frontend
+```
+
+---
+
+Part of [MateMatic](https://github.com/matematicsolutions): [Repertorium](https://github.com/matematicsolutions/repertorium) · legal knowledge · **PATRON** · legal workspace · [Boutique](https://matematicsolutions.com/en/boutique) · connectors and skills

@@ -1,0 +1,126 @@
+# AI agents skills set
+
+A set of AI agent skills designed to solve research and development tasks.
+
+## Skills Overview
+
+### Research
+
+General-purpose research, paper study, and ideation skills. Each skill is independent and addresses a different research intent — from open-ended exploration and focused engineering experiments to structured ideation and in-depth synthesis.
+
+| Skill                                                    | Description                                                                                                                                                                |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**deeper-research**](research/deeper-research/README.md) | Conduct thorough, multi-source research using Tree of Thoughts methodology. Produces cited, multi-perspective syntheses with confidence ratings and evidentiary hierarchy. |
+| [**explore**](research/explore/README.md)                 | Explore → Plan → Implement — a thinking partner for exploring ideas and clarifying requirements, then producing a structured roadmap (What/How/Where/Acceptance criteria) for approval, then implementing it. |
+| [**fordec-research**](research/fordec-research/SKILL.md) | Conduct rapid engineering R&D through iterative FORDEC cycles, competing hypotheses, and minimum viable experiments, with user input at every stage and user-controlled completion. |
+| [**know-hower**](research/know-hower/README.md)           | Audit technical and domain know-how across a project, compare public analogues and direct publication, and produce an evidence-based report with a proposed `.aiignore` for manual review. |
+| [**scamper**](research/scamper/README.md)                 | Transform existing ideas into improved variants using the SCAMPER method (Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse).                       |
+| [**study-paper**](research/study-paper/README.md) | Study, skim, critically appraise, reproduce, compare, and teach research papers, explicitly separating what a paper claims from what it demonstrates. |
+| [**triz-solver**](research/triz-solver/README.md)         | Solve inventive engineering, product, process, or system-design problems using TRIZ methodology and contradiction resolution.                                              |
+| [**vibe-research**](research/vibe-research/README.md)     | Iterative research copilot for exploratory "vibe research" — progressively sharpens broad topics into high-value lines of inquiry.                                         |
+
+### Engineering Research
+
+Skills that automate the Iterative Engineering Research Methodology — from initial brief to final report. See [engineering/README.md](engineering/README.md) for the full workflow.
+
+| Skill                                                               | Description                                                                                                                  |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [**research-init**](engineering/research-init/SKILL.md)             | Bootstrap a new research project: create the directory structure, populate the brief, and register the project in the index. |
+| [**research-prior-art**](engineering/research-prior-art/SKILL.md)   | Search for and catalog existing work — papers, CVEs, tools, talks, blogs, standards — with relevance ratings.                |
+| [**research-hypothesis**](engineering/research-hypothesis/SKILL.md) | Create, update, and manage hypothesis cards and the hypothesis graph (Mermaid DAG + catalog).                                |
+| [**research-experiment**](engineering/research-experiment/SKILL.md) | Guide experiment design, execution tracking, and result recording for a research hypothesis.                                 |
+| [**research-decision**](engineering/research-decision/SKILL.md)     | Analyze hypothesis results and recommend continue, pivot, kill, or fork decisions.                                           |
+| [**research-synthesis**](engineering/research-synthesis/SKILL.md)   | Execute the synthesis phase: determine report mode, walk the hypothesis graph, and generate the final report.                |
+| [**research-status**](engineering/research-status/SKILL.md)         | Generate a comprehensive status overview of a research project.                                                              |
+
+### Agentic
+
+Skills for building and maintaining AI agent systems.
+
+| Skill                                                 | Description                                                                                                                                                          |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**prompts-review**](agentic/prompts-review/README.md) | Review all prompts in a codebase for optimality, balancing effectiveness and token efficiency. Covers explicit, string-literal, and dynamically constructed prompts. |
+
+### Security
+
+Skills for security analysis and policy generation.
+
+| Skill                                                                   | Description                                                                                                                                              |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**security-policy-generator**](security/security-policy-generator/README.md) | Analyze a project repository and generate a comprehensive SECURITY.md with threat model, security architecture, secure coding guidelines, and OWASP Top 10 for Agentic Applications (ASI01–ASI10) coverage. |
+| [**security-review**](security/security-review/README.md) | Security review of code changes and codebases — OWASP Top 10 for Web Applications 2021/2025, OWASP Agentic ASI01–ASI10, business-logic flaws, and data races/race conditions. Proves each finding with a realistic attack scenario, maps it to CWEs, prioritizes by CVSS v4.0, and runs ecosystem scanners (govulncheck, npm audit, cargo audit, pip-audit, …). |
+
+### Writing
+
+Skills for text transformation and post-editing of AI-generated content.
+
+| Skill                                       | Description                                                                                                                                                                |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**humanize-ru**](writing/humanize-ru/README.md) | Remove signs of machine generation from Russian-language AI text while preserving its original register and communicative purpose — scientific stays scientific, business stays business. |
+
+### Development
+
+Skills for task prioritization, code review, specification-driven development, and writing secure, idiomatic, production-ready Go applications.
+
+| Skill | Description |
+| ----- | ----------- |
+| [**vibe-brain**](development/vibe-brain/README.md) | Analyzes the project codebase, documentation, and memory to identify the single highest-priority task to work on right now. |
+| [**code-review**](development/code-review/README.md) | Comprehensive code review for evaluating code changes — identifies bugs, logic errors, security issues, structural problems, performance concerns, and unintended behavior changes. |
+
+#### Secure Go
+
+| Skill                                           | Description                                                                                                                                                                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**secure-go**](development/secure-go/README.md) | Write secure Go applications through everyday practices — idiomatic patterns, standard library defaults, OWASP Top 10 coverage, and a security-focused linter setup. Covers access control, data protection, input handling, secure design, configuration, dependencies, authentication, error handling, integrity, logging, external objects, and SSRF. |
+
+#### Specification-Driven Development
+
+Skills that implement a Specification-Driven Development workflow — from bootstrapping a spec system to keeping specs aligned with code. See [development/sdd/README.md](development/sdd/README.md) for the full workflow.
+
+| Skill                                                              | Description                                                                                                                     |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| [**vibespec-explore**](development/sdd/vibespec-explore/SKILL.md) | Spec-aware thinking partner: grounds exploration in the project's spec system, turns unclear requirements into an approved roadmap (What/How/Where/Spec footprint/Acceptance criteria), then implements it while keeping specs synchronized. |
+| [**vibespec-init**](development/sdd/vibespec-init/SKILL.md)       | Initialize a specification system for a project from scratch by analyzing the codebase and generating the initial set of specs. |
+| [**vibespec-create**](development/sdd/vibespec-create/SKILL.md)   | Create a new specification document following the project's spec system templates and conventions.                              |
+| [**vibespec-consult**](development/sdd/vibespec-consult/SKILL.md) | Proactively consult project specifications before making structural changes to avoid violating documented invariants.           |
+| [**vibespec-update**](development/sdd/vibespec-update/SKILL.md)   | Update existing specification documents after code changes that alter documented behavior, interfaces, or invariants.           |
+| [**vibespec-check**](development/sdd/vibespec-check/SKILL.md)     | Detect discrepancies between project specifications and actual code, interactively resolving each finding with the user.        |
+
+#### Idiomatic Go
+
+Skills for writing idiomatic, correct, and performant Go code. See [development/idiomatic-go/README.md](development/idiomatic-go/README.md) for how the skills are organized and when to use which.
+
+| Skill                                                                                        | Description                                                                                                  |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [**go-code-organization**](development/idiomatic-go/go-code-organization/SKILL.md)           | Well-organized Go code and projects — variable scoping, nested control flow, and project structure.          |
+| [**go-concurrency-foundations**](development/idiomatic-go/go-concurrency-foundations/SKILL.md) | Foundational concurrency concepts — concurrency vs parallelism, goroutine scheduling, and channel semantics. |
+| [**go-concurrency-practice**](development/idiomatic-go/go-concurrency-practice/SKILL.md)     | Practical Go concurrency rules — goroutines, channels, mutexes, and synchronization patterns.                |
+| [**go-control-structures**](development/idiomatic-go/go-control-structures/SKILL.md)         | Correct usage of range loops, break statements, and defer in loops.                                          |
+| [**go-data-types**](development/idiomatic-go/go-data-types/SKILL.md)                         | Common mistakes with basic data types, slices, and maps.                                                     |
+| [**go-error-management**](development/idiomatic-go/go-error-management/SKILL.md)             | Go error management — panic usage, error wrapping, and checking error types and values.                      |
+| [**go-functions-methods**](development/idiomatic-go/go-functions-methods/SKILL.md)           | Best practices for Go functions and methods — receivers, named results, nil receivers, and defer.            |
+| [**go-optimizations**](development/idiomatic-go/go-optimizations/SKILL.md)                   | Performance-sensitive Go code — CPU cache, escape analysis, allocation reduction, profiling, and GC tuning.  |
+| [**go-standard-library**](development/idiomatic-go/go-standard-library/SKILL.md)             | Common Go standard library mistakes — time.Duration, JSON handling, and HTTP pitfalls.                       |
+| [**go-strings**](development/idiomatic-go/go-strings/SKILL.md)                               | Correct and efficient Go string code — iteration, concatenation, and conversions.                            |
+| [**go-testing-mistakes**](development/idiomatic-go/go-testing-mistakes/SKILL.md)             | Common Go testing mistakes — test categorization, race detection, and test execution.                        |
+
+## Quick Start
+
+### Installation
+
+These skills can be installed using the Skills CLI from [skills.sh](https://skills.sh):
+
+```bash
+# Install all skills collection
+npx skills add v0lka/skills --all --full-depth
+# Install a specific skill
+npx skills add v0lka/skills --skill <skill-name> --full-depth
+```
+
+### Manual Usage
+
+To use a skill manually, reference the agent skills [documentation](https://agentskills.io) or load it via your AI agent interface.
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.

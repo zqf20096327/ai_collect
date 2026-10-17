@@ -1,0 +1,157 @@
+# Skiller — AI agent skills manager
+
+![Skiller — Your skills. One place.](docs/images/readme/banner-street-v1.webp)
+
+Skiller is a desktop **AI agent skills manager** for Claude Code, Codex, Cursor and other coding agents. Find, install, edit and sync `SKILL.md` packages from one place, with support for macOS, Windows and Linux.
+
+## Why Skiller
+
+Managing skills separately in every agent is repetitive and error-prone.  
+Skiller gives you one control center to:
+
+- **See everything at once** — agents, installed skills, and status in one dashboard
+- **Install once, use everywhere** — propagate skills across your agent stack with one click
+- **Clean house per-agent** — right-click an agent to copy every skill from another or wipe them all
+- **Project-scoped skills** — pin a skill to a specific repo without polluting your global setup
+- **Edit confidently** — update `SKILL.md` content with immediate local visibility
+- **Discover faster** — browse marketplace sources like [skills.sh](https://skills.sh) and [ClawHub](https://clawhub.ai)
+
+## Supported agents
+
+Skiller supports **49 agents** natively — drop a skill into one place and it propagates to all of them.
+
+<table>
+  <tr>
+    <td align="center" width="150"><a href="https://docs.anthropic.com/en/docs/claude-code/getting-started"><img src="docs/images/agents/claude-code.png" width="64" height="64" alt="Claude Code"><br><b>Claude Code</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started"><img src="docs/images/agents/codex.png" width="64" height="64" alt="Codex"><br><b>Codex</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://google-gemini.github.io/gemini-cli/docs/get-started/"><img src="docs/images/agents/gemini-cli.png" width="64" height="64" alt="Gemini CLI"><br><b>Gemini CLI</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-in-the-cli"><img src="docs/images/agents/copilot-cli.png" width="64" height="64" alt="GitHub Copilot CLI"><br><b>Copilot CLI</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://opencode.ai/docs/"><img src="docs/images/agents/opencode.png" width="64" height="64" alt="OpenCode"><br><b>OpenCode</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://docs.openclaw.ai/start/getting-started"><img src="docs/images/agents/openclaw.png" width="64" height="64" alt="OpenClaw"><br><b>OpenClaw</b></a><br><sub>CLI</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="150"><a href="https://www.codebuddy.ai/docs/cli/installation"><img src="docs/images/agents/codebuddy.png" width="64" height="64" alt="CodeBuddy"><br><b>CodeBuddy</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://docs.qoder.com/cli/quick-start"><img src="docs/images/agents/qoder.png" width="64" height="64" alt="Qoder"><br><b>Qoder</b></a><br><sub>CLI</sub></td>
+    <td align="center" width="150"><a href="https://cursor.com/docs/cli/overview"><img src="docs/images/agents/cursor.png" width="64" height="64" alt="Cursor"><br><b>Cursor</b></a><br><sub>IDE</sub></td>
+    <td align="center" width="150"><a href="https://formulae.brew.sh/cask/windsurf"><img src="docs/images/agents/windsurf.png" width="64" height="64" alt="Windsurf"><br><b>Windsurf</b></a><br><sub>IDE</sub></td>
+    <td align="center" width="150"><a href="https://formulae.brew.sh/cask/trae"><img src="docs/images/agents/trae.png" width="64" height="64" alt="Trae"><br><b>Trae</b></a><br><sub>IDE</sub></td>
+    <td align="center" width="150"><a href="https://formulae.brew.sh/cask/antigravity"><img src="docs/images/agents/antigravity.png" width="64" height="64" alt="Antigravity"><br><b>Antigravity</b></a><br><sub>IDE</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="150"><a href="https://kiro.dev/downloads/"><img src="docs/images/agents/kiro.png" width="64" height="64" alt="Kiro"><br><b>Kiro</b></a><br><sub>IDE</sub></td>
+    <td align="center" width="150"><a href="https://docs.cline.bot/getting-started/quick-start#cli"><img src="docs/images/agents/cline.png" width="64" height="64" alt="Cline"><br><b>Cline</b></a><br><sub>VS Code extension</sub></td>
+    <td align="center" width="150"><a href="https://www.warp.dev/"><img src="docs/images/agents/warp.png" width="64" height="64" alt="Warp"><br><b>Warp</b></a><br><sub>Terminal</sub></td>
+    <td align="center" width="150"><a href="https://factory.ai/"><img src="docs/images/agents/factory.png" width="64" height="64" alt="Factory"><br><b>Factory</b></a><br><sub>Cloud platform</sub></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+<details>
+<summary><b>+ 28 more agents</b> (click to expand)</summary>
+
+Adal · Amp · Antigravity CLI · Augment · Bob · Command Code · Continue · Cortex · Crush · DeepAgents · Dexto · Firebender · Goose · iFlow CLI · Junie · Kilo · Kimi CLI · Kode · Loaf · MCPJam · Mistral Vibe · Mux · Neovate · OpenHands · Pi · Pochi · PromptScript · Qwen Code · Replit · Roo · Trae (CN) · Zed · Zencoder
+
+Skiller auto-detects any of these the moment they're installed — no setup required.
+
+</details>
+
+### Skills CLI compatibility
+
+Project skills use the shared `.agents/skills/` convention wherever an agent supports it. The universal-agent snapshot is pinned in [`apps/desktop/agents/skills-sh-universal.json`](apps/desktop/agents/skills-sh-universal.json) to the upstream [Skills CLI](https://github.com/vercel-labs/skills) commit; maintainers refresh it deliberately with:
+
+```bash
+node apps/desktop/scripts/sync-skills-sh-universal-agents.mjs --refresh --ref <immutable-commit-sha>
+node apps/desktop/scripts/sync-skills-sh-universal-agents.mjs --check
+```
+
+Skiller also reads the Skills CLI v3 global `.skill-lock.json` (`$XDG_STATE_HOME/skills/.skill-lock.json` or `~/.agents/.skill-lock.json`) through its local API. It is strictly read-only, so Skills CLI remains the owner of update history and selected agents. Runtime agent context is exposed separately using `AI_AGENT` and `@vercel/detect-agent`; it never marks an agent as installed or changes install targets.
+
+## Repository layout
+
+- `apps/desktop` — the Electron application.
+- `apps/marketplace-proxy` — the optional Vercel gateway for skills.sh. It keeps OIDC credentials server-side and caches catalog, search, and file-preview responses.
+- `packages/marketplace-contracts` — the response contract shared by the gateway and its client boundary.
+
+`dotagents` remains an independent package: it owns portable agent-library behavior, not Marketplace discovery.
+
+## Product Tour
+
+### Core experience
+
+- **Dashboard** — system-wide visibility into your skill environment
+- **Skills Manager** — inspect, edit, sync, and remove skills (per-agent or everywhere)
+- **Projects** — group skills under specific repos so `.claude/skills/` etc. stays scoped
+- **Marketplace** — search and install community skills quickly
+- **Settings** — configure behavior, sources, and runtime preferences
+
+### Dashboard
+
+See detected agents and the skills available to each in one view.
+
+![Skiller Dashboard with detected coding agents](docs/images/readme/dashboard-street-v1.webp)
+
+### Agent Library
+
+Create a library for your collection or connect an existing one.
+
+![Skiller Agent Library setup](docs/images/readme/library-street-v1.webp)
+
+### Skills Manager
+
+Browse every installed skill, see which agents consume it, edit `SKILL.md` inline, and sync with one click.
+
+![Skiller skill details, agent targets and editable copies](docs/images/readme/customize-street-v1.webp)
+
+### Marketplace
+
+Search `skills.sh` and `ClawHub` in-app, preview a skill's target agents and repository, and install without touching the filesystem.
+
+![Skiller Marketplace with skills.sh and ClawHub](docs/images/readme/marketplace-street-v1.webp)
+
+### Settings
+
+Theme, accent color, window blur, language, close behavior, and cache controls — all in one place.
+
+![Skiller appearance, preferences and update settings](docs/images/readme/settings-street-v1.webp)
+
+## Installation
+
+Visit [**skiller.download**](https://skiller.download/) or grab the installer for your OS from the [**latest release**](https://github.com/beautyfree/skiller/releases/latest):
+
+| OS | File | Notes |
+| --- | --- | --- |
+| macOS (Apple Silicon) | `Skiller-<version>-macos-arm64.dmg` | Signed + notarized. Open the DMG and drag Skiller to Applications. |
+| macOS (Intel) | `Skiller-<version>-macos-x64.dmg` | Signed + notarized. Same flow as the Apple Silicon build. |
+| Windows (x64) | `Skiller-<version>-win-x64.exe` | NSIS installer. SmartScreen may show a one-time warning — click "More info" → "Run anyway". |
+| Linux (x64) | `Skiller-<version>-x86_64.AppImage`, `.deb`, or `.tar.xz` | AppImage: `chmod +x`, run — static squashfuse runtime, no `libfuse2` required (works on CachyOS/Manjaro/EndeavourOS out of the box). `.deb` for Ubuntu/Debian. `.tar.xz`: extract, `cd Skiller-*`, run `./install.sh` once (sets SUID on `chrome-sandbox`, registers a `.desktop` entry). Passing `--uninstall` to the same script removes the menu entry. |
+
+Every release is built and published by the CI matrix in `.github/workflows/release.yml` — tagging `vX.Y.Z` produces all three platforms automatically.
+
+> **If you had an older `stable-*-Skiller.*` build:** those were produced by a previous Electrobun-based packaging pipeline and can't auto-update to the current Electron-based builds. Grab the new installer above; your local data in `~/Library/Application Support/com.beautyfree.skiller/` (or the Windows/Linux equivalent) stays intact.
+
+## Auto-updates
+
+Once installed, Skiller keeps itself current:
+
+- Checks for new versions on launch, then every 6 hours in the background.
+- Downloads the full updated bundle on demand (click **Download update** in Settings → App Updates).
+- Shows status and a one-click **Restart & install** button once ready.
+- After the first launch of a new version, opens **What's new** with the release's dated changes. The same window and recent release history are always available from Settings → App Updates.
+
+Powered by [`electron-updater`](https://www.electron.build/auto-update) reading from this repo's GitHub Releases.
+
+Release notes are generated at build time from the Release Please-maintained [`CHANGELOG.md`](CHANGELOG.md); no separate in-app changelog needs manual editing.
+
+## For Developers
+
+All development, build, and debugging details are in **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)**.
+
+## Contributing
+
+Contributions are welcome.  
+Open an issue first if you want to discuss a feature or behavior change.
+
+## License
+
+[Sustainable Use License v1.0](./LICENSE)

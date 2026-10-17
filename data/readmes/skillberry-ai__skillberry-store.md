@@ -1,0 +1,410 @@
+# Skillberry-store service (a.k.a., SBS)
+
+<p>
+  <a href="https://skillberry-ai.github.io/skillberry-store/"><img src="https://img.shields.io/badge/site-live-0066CC" alt="site"></a>
+  <a href="https://skillberry-store-demo-adv.onrender.com"><img src="https://img.shields.io/badge/demo-live-3E8635" alt="live demo"></a>
+  <a href="https://github.com/skillberry-ai/skillberry-store/actions/workflows/push.yml"><img src="https://github.com/skillberry-ai/skillberry-store/actions/workflows/push.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/skillberry-ai/skillberry-store/stargazers"><img src="https://img.shields.io/github/stars/skillberry-ai/skillberry-store?style=flat&label=stars&color=0066CC" alt="GitHub stars"></a>
+  <img src="https://img.shields.io/badge/status-beta%20(0.x)-orange" alt="status">
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="python">
+  <img src="https://img.shields.io/badge/license-Apache--2.0-informational" alt="license">
+  <a href="docs/plugins-installation.md"><img src="https://img.shields.io/badge/plugins-16-0066CC" alt="plugins"></a>
+</p>
+
+This service implements a smart skills repository for agentic workflows. Manage, execute, and organize your skills, tools and snippets with powerful search and lifecycle management.
+
+![Skillberry Store demo](https://i.imgur.com/hpsGpnc.gif)
+
+▶ [Watch full highlights video](https://github.com/user-attachments/assets/eab2f9f1-1196-4858-b4ca-72d6c664d9f3)
+
+### Try it now
+
+|   |   |
+|---|---|
+| **[▶ Live demo](https://skillberry-store-demo-adv.onrender.com)** | A running instance — no install. Shared free instance, so the first load may take a few seconds to wake. |
+| **[📖 Introduction blog](https://itnext.io/skillberry-store-the-open-source-control-plane-for-agent-skills-99be3aab6229?postPublishedType=repub)** | Skillberry Store: the open-source control plane for agent skills. |
+| **[🌐 Website & docs](https://skillberry-ai.github.io/skillberry-store/)** | Feature tour, architecture, and CLI reference. |
+
+Install a skill from a running store straight into your agent — nothing to
+install first, `npx` fetches the CLI:
+
+```bash
+npx skills add http://localhost:8000/pub/<skill> -y -a claude-code
+```
+
+Works with Claude Code, Cursor, Codex and ~70 other agents. The store hands you
+the whole command — from the skill's page in the UI, or with
+`sbs get-skill <name> --fields name,_npx_install`. See
+[Install skills into your agent with npx](docs/cli.md#install-skills-into-your-agent-with-npx).
+
+## Features ✨
+
+- **Manage tools for agentic workloads**: Add (Persist), Remove, Update, and Delete tools.
+- **Tools Execution**: Invoke tools (with parameters) using Docker (sand-boxing).
+- **Tools Search and list**: Shortlist tools using semantic and classic search.
+- **Tools Life Cycle Management**: Provides tools life cycle management (state, visibility, etc.).
+- **Tools Persistence**: Support persistence of tools into filesystem, GitHub repos etc.
+- **Namespaces**: Organize and label skills, tools, and snippets using namespaces for better categorization and filtering.
+- **Observability**: Provide metrics and traces for operational and behavioural analysis of tools usage.
+- **OpenAPI frontend**: FastAPI endpoint to interact and manage tools (using tools-manifest artifacts)
+- **CLI Support**: Command-line interface for all API operations.
+- **MCP frontend**: Expose virtual [MCP](https://github.com/modelcontextprotocol) servers for any subset of the tools or all of them.
+- **NFS/WebDAV frontend**: Expose skills as mountable filesystems (vNFS) over WebDAV or NFSv3 — readable by any tool that can mount a network drive.
+- **`npx skills add` frontend**: Publish skills over the open `/.well-known/agent-skills` discovery convention, so any skill installs into Claude Code, Cursor, Codex and ~70 other agents with one copy-pasted command and no prior setup. Opt in per skill, or turn it on store-wide; see [the npx section of the CLI guide](docs/cli.md#install-skills-into-your-agent-with-npx).
+- **Support Multiple MCP backends**: Consume and route additional tools from multiple backend MCP servers.
+- **Agentic Framework Integration**: Connect to different agentic frameworks via the MCP frontend.
+- **MCP control API**: Exposes an MCP server API for each of the available REST operations ( e.g., add tools, semantic search etc.)
+- **Plugin Architecture**: Extensible plugin system for AI-powered content generation, evaluation, and optimization. See [Plugin Installation Guide](docs/plugins-installation.md).
+
+
+## Quickstart 🚀
+
+### Installation 📦
+
+Install skillberry-store without plugins (minimal installation):
+```bash
+pip install skillberry-store
+```
+
+Or install with plugins:
+```bash
+# All plugins
+pip install skillberry-store[plugins-all]
+
+# Creator plugin only (AI-powered content generation)
+pip install skillberry-store[plugin-creator]
+
+# Evaluator plugin only (AI-powered content evaluation)
+pip install skillberry-store[plugin-evaluator]
+
+# Dedupe plugin only (AI-powered duplicate skill detection)
+pip install skillberry-store[plugin-dedupe]
+
+# Skill Optimizer plugin only (optimize existing skills using Claude Code)
+pip install skillberry-store[plugin-skill-optimizer]
+
+# Multiple specific plugins
+pip install skillberry-store[plugin-creator,plugin-evaluator,plugin-skill-optimizer]
+```
+
+For detailed plugin installation options and configuration, see the [Plugin Installation Guide](docs/plugins-installation.md).
+
+### Run the Service with Docker or Podman 🐳
+
+
+```bash
+make docker-run
+```
+
+> Note: use `make help` for a complete list of options
+
+You can control where SBS stores its data by setting `SBS_BASE_DIR` (defaults to the system temp directory).
+
+### Interacting with the UI 👨‍💻
+
+The Skillberry Store includes a modern web UI, served by the backend itself on the
+same port as the API (there is no separate UI server or port):
+
+- **Web UI**: [http://localhost:8000/ui/](http://localhost:8000/ui/) - Modern React-based interface
+- **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs) - OpenAPI/Swagger interface
+
+The Web UI provides:
+- Visual management of Tools, Skills, Snippets, VMCP Servers, and vNFS Servers
+- Search and filtering capabilities
+- Tool execution with parameter input
+- Code viewing and editing
+- Real-time updates
+
+## Prerequisites 🛠️
+
+- Docker or Podman is installed on your machine.
+
+The default is `docker`. If you want to use `podman`, include this line
+```
+docker alias=`podman`
+```
+into one (or more) of the following configuration files, depending on which shell(s) you are using
+- `~/.zshrc`
+- `~/.bashrc`
+- `~/.bash_profile`
+- `~/.profile`
+
+Additional requisites for local deployment:
+- Your user has Docker permissions (i.e., is a member of the `docker` group).
+- The Docker logging driver is set to either `json-file` or `journald`.
+
+> Check the logging driver with the following command:
+> ```bash
+> docker info --format '{{.LoggingDriver}}'
+> ```
+> If the response is not `json-file` or `journald`, configure your Docker logging as documented [here](https://docs.docker.com/engine/logging/configure/#configure-the-default-logging-driver).
+
+## Running with podman on MacOS ⚒️
+
+- Alias `docker` to `podman`, as explained in [Prerequisites](#prerequisites-️)
+- Create and start a Podman machine:
+```bash
+podman machine init --now --cpus=4 --memory=4096 -v /tmp:/tmp podman-machine-default
+```   
+if you already have a default Podman machine with this name, then you need to first
+```bash
+podman machine stop
+podman machine rm podman-machine-default
+```
+Then rerun Podman machine initialization and
+```bash
+make docker-run
+```
+
+
+## Design Requirements
+
+See [DESIGN_REQUIREMENTS.md](DESIGN_REQUIREMENTS.md)
+
+## Local installation 📦
+
+We support Linux, macOS, and Windows.
+
+```bash
+git clone git@github.com:skillberry-ai/skillberry-store.git
+cd skillberry-store
+```
+
+On Linux, macOS, or WSL:
+```bash
+make install-requirements
+```
+
+On Windows (no WSL needed):
+```cmd
+pip install -e .
+```
+
+## Start the Service locally (alternative to docker) 🚀
+
+On Linux, macOS, or WSL:
+```bash
+make run
+```
+
+On Windows:
+```cmd
+sbs-srv
+```
+
+*Notes:*
+
+  * By default, SBS runs on host `0.0.0.0` and port `8000` publishing its metrics on port `8090`. To change, set the environment variables SBS_PORT/SBS_HOST/PROMETHEUS_METRICS_PORT
+  * To disable observability all together, set environment variable `OBSERVABILITY` with `False`
+  * The Web UI is served by the backend at `/ui` on the same port (so `http://localhost:8000/ui/` by default) — it is not a separate process and has no port of its own
+  * The UI bundle is built by `make ui-build`, which `make run` runs for you (requires Node.js 18+). Container images ship it prebuilt
+
+## Web UI Features 🎨
+
+The Skillberry Store includes a modern React-based web interface with:
+
+- **Tools Management**: Create, view, execute, and delete tools with file upload support
+- **Skills Management**: Organize tools and snippets into reusable skills
+- **Snippets Management**: Store and manage code snippets with syntax highlighting
+- **VMCP Servers**: Create and manage virtual MCP servers for tool subsets
+- **vNFS Servers**: Expose skills as mountable WebDAV or NFS filesystems
+- **Search & Filter**: Semantic search across all resources
+- **Real-time Updates**: Automatic refresh of data using TanStack Query
+- **Responsive Design**: Built with PatternFly (IBM's design system)
+
+### UI Technology Stack
+
+- React 18 + TypeScript
+- Vite (fast development server)
+- PatternFly (IBM design system)
+- TanStack Query (data fetching)
+- React Router (navigation)
+
+### UI Development
+
+For a hot-reloading dev server (Vite, on its own port, proxying API calls to the
+backend on 8000):
+
+```bash
+make ui-dev            # defaults to port 8002, override with VITE_UI_PORT
+```
+
+Other UI targets: `make ui-build` (production bundle, what the backend serves at
+`/ui`), `make ui-test` (vitest), `make ui-typecheck`.
+
+To drive npm directly instead:
+
+```bash
+cd src/skillberry_store/ui
+npm install
+npm run dev
+```
+
+The UI source code is located in `src/skillberry_store/ui/` and includes:
+- `src/pages/` - Page components for each section
+- `src/components/` - Reusable UI components
+- `src/services/` - API client layer
+- `src/types/` - TypeScript type definitions
+
+## Engage with the Service via OpenAPI 📜
+
+Open a browser against `http://127.0.0.1:8000/docs` .
+
+## Engage with the Service through a Python Client 🐍
+
+The service can be consumed via skillberry store service sdk. Refer to [skillberry-store-sdk](client/python/skillberry_store_sdk/README.md) for installation and usage.
+
+## Engage with the Service via CLI 💻
+
+`sbs` is a **single native executable** — no Python, no `pip`, nothing else to
+install — whose commands are generated from the store's own OpenAPI spec, so they
+always match the store you are pointed at.
+
+Every running store serves it, for all supported platforms, with no sign-in:
+
+```bash
+# Download straight from your store; the response carries the sha256 to check
+curl -fsSL "http://localhost:8000/cli/download?platform=linux-amd64" -o sbs && chmod +x sbs
+
+# A binary downloaded from a store already talks to it — no `connect` step
+sbs list-skills                # List all skills
+sbs get-tool convert           # Get a specific tool
+sbs create-vmcp-server         # Create a VMCP server
+sbs search-tools "calculator"  # Search for tools
+
+sbs --help                     # Show available commands
+sbs connect http://prod:8000   # Point at a different server
+sbs cli doctor                 # Show resolved URLs, paths and spec freshness
+```
+
+Platform ids are `<goos>-<goarch>`; add `&format=archive` for a tar.gz/zip, which
+is the better choice for a browser download. There is also a **Download CLI**
+button in the store's web UI, and `pip install skillberry-store-cli` for a
+platform wheel carrying the same binary.
+
+> **Changed:** `pip install skillberry-store-sdk` no longer provides `sbs` — it
+> used to, and it required a manual `restish` install. Use
+> `skillberry-store-cli`, or `skillberry-store-sdk[cli]` for both. The SDK
+> remains a pure Python library. See [docs/cli.md](docs/cli.md).
+
+Authentication happens on demand: any command prompts when the store requires it
+and caches the token, and `SBS_TOKEN` covers CI.
+
+Available command groups:
+
+| Group | Commands |
+|-------|----------|
+| **Tools** | `create-tool`, `list-tools`, `get-tool`, `get-tool-module`, `update-tool`, `delete-tool`, `execute-tool`, `search-tools`, `add-tool` |
+| **Skills** | `create-skill`, `list-skills`, `get-skill`, `update-skill`, `delete-skill`, `search-skills`, `detect-anthropic-skills`, `import-anthropic-skill`, `export-anthropic-skill` |
+| **Snippets** | `create-snippet`, `list-snippets`, `get-snippet`, `update-snippet`, `delete-snippet`, `search-snippets` |
+| **VMCP Servers** | `create-vmcp-server`, `list-vmcp-servers`, `get-vmcp-server`, `update-vmcp-server`, `delete-vmcp-server`, `start-vmcp-server`, `search-vmcp-servers` |
+| **vNFS Servers** | `create-vnfs-server`, `list-vnfs-servers`, `get-vnfs-server`, `update-vnfs-server`, `delete-vnfs-server`, `start-vnfs-server`, `search-vnfs-servers` |
+| **Admin** | `metrics`, `purge-all`, `health`, `health-ready` |
+
+For detailed CLI documentation, see [docs/cli.md](docs/cli.md). For what the two
+health probes mean and how to wire them into Render, Kubernetes or Docker, see
+[docs/health-probes.md](docs/health-probes.md).
+
+## Engage with the Service via MCP 📜
+
+Each control API function is available as an MCP tool to be used by agentic AI workflows.  
+To access use an MCP client against `http://127.0.0.1:8000/control_sse` .  
+
+### Virtual MCP Servers (VMCP)
+
+A VMCP server exposes a single skill's tools and snippets as a standalone MCP endpoint.
+Create one via the UI (`Virtual MCP Servers` → `Create VMCP Server`) or the REST API:
+
+```bash
+curl -X POST "http://localhost:8000/vmcp_servers/?name=my-skill&skill_uuid=<uuid>"
+```
+
+Connect an MCP client to `http://localhost:<assigned-port>/sse`.
+
+### Support Multiple MCP Backends
+
+Follow the steps outlined in [Connecting MCP as a backend](docs/mcp-backend.md).
+
+## Virtual NFS Servers (vNFS) 🗂️
+
+A vNFS server exposes a single skill as a **mountable read-only filesystem** over WebDAV or NFSv3.
+This lets any tool — including Claude Code — read skill files directly via `mount` or `rclone`,
+without going through the REST API.
+
+Create a vNFS server via the UI (`Virtual NFS Servers` → `Create vNFS Server`) or the REST API:
+
+```bash
+# WebDAV (default)
+curl -X POST "http://localhost:8000/vnfs_servers/?name=my-skill&skill_uuid=<uuid>&protocol=webdav"
+
+# NFSv3
+curl -X POST "http://localhost:8000/vnfs_servers/?name=my-skill&skill_uuid=<uuid>&protocol=nfs"
+```
+
+### Mounting — WebDAV
+
+The easiest option is `rclone` (no root required, works on Linux, macOS, WSL2):
+
+```bash
+# Install: brew install rclone  /  apt install rclone  /  dnf install rclone
+rclone mount :webdav: /mnt/skill \
+  --webdav-url=http://localhost:<port>/<skill-name> \
+  --read-only --daemon
+
+# Unmount
+fusermount3 -u /mnt/skill
+```
+
+Alternatively, with `davfs2`:
+
+```bash
+# Install: apt install davfs2  /  dnf install davfs2
+sudo mount -t davfs http://localhost:<port>/<skill-name> /mnt/skill
+
+# Unmount
+sudo umount /mnt/skill
+```
+
+### Mounting — NFSv3
+
+```bash
+# Install: apt install nfs-common  /  dnf install nfs-utils
+sudo mount -t nfs localhost:/ /mnt/skill \
+  -o port=<port>,mountport=<port>,nfsvers=3,proto=tcp,nolock,soft
+
+# Skill files are at /mnt/skill/<skill-name>/
+
+# Unmount
+sudo umount /mnt/skill
+```
+
+The UI `Virtual NFS Servers` detail page shows the exact commands pre-filled with the correct port and skill name.
+
+## Run SBS with GitHub backend
+
+Follow the steps outlined in [Github backend](docs/github_using_hooks.md).
+
+
+## Monitoring the Service 📈
+
+### To start a local Prometheus server execute:
+```bash
+echo -e "global:\n  scrape_interval: 5s\nscrape_configs:\n  - job_name: \"skillberry-store\"\n    static_configs:\n      - targets: [\"localhost:8090\"]\n    metric_relabel_configs:\n      - source_labels: [__name__]\n        regex: '.*_created'\n        action: drop" > /tmp/prometheus.yml
+docker run --rm --name prometheus --network="host" -p 9090:9090 -v /tmp/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus --config.file=/etc/prometheus/prometheus.yml
+```
+
+Metrics are available in Prometheus at http://localhost:9090.
+> Note: Application metrics are prefixed with `SBS_`.
+
+### To start a local Jaeger server execute:
+```bash
+docker run --rm --name jaeger --network="host" -p 4317:4317 -p 16686:16686 jaegertracing/all-in-one:latest
+```
+
+Traces are available in Jaeger at http://localhost:16686.
+
+
+## 📚 Additional documentation can be found at [docs](docs).
+
+* Customizing configurations details can be found [here](docs/config-env-vars.md)
+* Guthub support details can be found [here](docs/github_using_hooks.md)

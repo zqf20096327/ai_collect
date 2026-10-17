@@ -1,0 +1,54 @@
+# Arbius
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.19-blue)](https://soliditylang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-blue)](https://www.typescriptlang.org/)
+[![Coverage Status](https://coveralls.io/repos/github/semperai/arbius/badge.svg?branch=master)](https://coveralls.io/github/semperai/arbius?branch=master)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/semperai/arbius?utm_source=oss&utm_medium=github&utm_campaign=semperai%2Farbius&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
+Peer-to-peer decentralized machine learning - https://arbius.ai
+
+Read paper - https://arbius.ai/paper.pdf
+
+Arbius is a decentralized network for machine learning and a token with limited inflation. New coins are generated with GPU power by participating in the network. There is no central authority to create new coins. Holders vote on-chain for protocol upgrades. Models operate as DAOS with custom rules for distribution and rewards, providing a way for model creators to earn income. Arbius runs on the [Arbitrum One](https://arbitrum.io/) blockchain, and uses [IPFS](https://ipfs.tech/) for data storage.
+
+## Project Layout
+
+Arbius is a monorepo:
+
+- **/contract** smart contracts and cli interface
+
+- **/templates** model schema files used for mining and graphical interfaces
+
+- **/website** frontend interface you see on arbius.ai
+
+- **/explorer** frontend task explorer you see on explorer.arbius.ai
+
+- **/docs** frontend you see on docs.arbius.ai
+
+- **/paper** source for building pdf
+
+## Documentation
+
+View the full documentation at https://docs.arbius.ai/
+
+## License
+
+MIT
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=semperai/arbius&type=Date)](https://star-history.com/#semperai/arbius&Date)
+
+
+<!-- Security scan triggered at 2026-08-31 16:48:43 -->
+
+<!-- Security scan triggered at 2026-08-31 16:39:44 -->
+
+<!-- Security scan triggered at 2026-08-31 18:16:43 -->
+
+<!-- Security scan triggered at 2026-09-02 06:41:48 -->
+
+<!-- Security scan triggered at 2026-09-08 02:05:55 -->
+
+<!-- Security scan triggered at 2026-10-07 11:30:25 -->

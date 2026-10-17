@@ -1,0 +1,305 @@
+English · [简体中文](README.zh-CN.md)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/mark-paper.svg">
+  <img src="docs/media/mark-ink.svg" alt="" width="52" align="left">
+</picture>
+
+# Infercat
+
+**Let friends chat with your GPU.**
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-1F3BFF?style=flat-square)](LICENSE)
+[![CI](https://github.com/infercat/infercat/actions/workflows/ci.yml/badge.svg)](https://github.com/infercat/infercat/actions/workflows/ci.yml)
+
+---
+
+Share the model on your machine with friends. You run one binary in front of the inference server you already have — llama.cpp, llama-swap, vLLM, Ollama or LM Studio — and give each friend one invite code. They paste it into a web page and chat with your model: no account, no VPN, nothing to install. The connection is encrypted end to end; the relay in between sees ciphertext. You set limits per friend. Chat logs contain counts unless you opt into logging text; image jobs keep prompts and pictures under the friend’s key for up to 7 days.
+
+![Share a local model with a friend in a browser or terminal](docs/media/demo.gif)
+
+*Recorded from the real app: a friend's browser, through the relay, to a laptop running llama.cpp.*
+
+## How it works
+
+- **The host** runs `infercat serve`. It finds the inference server, opens a WireGuard tunnel to a relay, and serves a small gateway inside the tunnel: OpenAI-compatible, one key per friend.
+- **The friend** opens the web app and pastes the invite. The app carries the tunnel's client side as WebAssembly, so the browser connects to your host directly — through the relay, encrypted end to end.
+- **The tunnel** is [tailcat](https://github.com/tailscale/tailcat), Tailscale's open-source data plane without the control plane. There is no account on either side. The relay is a DERP server: public ones by default, or your own (`--derpmap-url`). Infercat is not affiliated with or endorsed by Tailscale Inc.
+
+**Try it first:** open https://infercat.ai/try and you are chatting with our demo host (Qwen3.8 27B), no install.
+
+## Quickstart (host)
+
+You need an inference server running (llama.cpp, llama-swap, vLLM, Ollama or LM Studio; any OpenAI-compatible `/v1/chat/completions` works). Your friends need a browser.
+
+### No engine yet?
+
+[Install Ollama](https://ollama.com/download), then:
+
+```sh
+ollama serve &      # skip if the Ollama app is already running
+ollama run gemma4
+```
+
+That downloads Gemma 4 (about 10 GB; needs 16 GB of memory; reads images) and opens a chat. Leave it running or type `/bye`; the engine stays up. `infercat serve` finds it.
+
+<details>
+<summary><b>Advanced engine configuration</b></summary>
+
+The same small model, tuned for context and parallel slots on llama.cpp, Ollama, LM Studio and vLLM.
+
+Pick one. This command downloads and starts a small model (Gemma 4 E2B, about 4 GB, runs on an 8 GB laptop, supports images):
+
+**llama.cpp**
+
+`brew install llama.cpp`
+
+```sh
+llama-server -hf unsloth/gemma-4-E2B-it-qat-GGUF:UD-Q4_K_XL -c 65536 -np 2 --host 127.0.0.1
+```
+
+**Ollama** — use `infercat serve --slots 2` below.
+
+`brew install ollama`
+
+```sh
+(OLLAMA_CONTEXT_LENGTH=32768 OLLAMA_NUM_PARALLEL=2 ollama serve & until ollama list >/dev/null 2>&1; do sleep 1; done; ollama run hf.co/unsloth/gemma-4-E2B-it-qat-GGUF:UD-Q4_K_XL "" && wait)
+```
+
+**LM Studio** — use `infercat serve --slots 2` below.
+
+[Install LM Studio](https://lmstudio.ai/download) and open it once.
+
+```sh
+~/.lmstudio/bin/lms get https://huggingface.co/unsloth/gemma-4-E2B-it-qat-GGUF/resolve/main/gemma-4-E2B-it-qat-UD-Q4_K_XL.gguf --yes && ~/.lmstudio/bin/lms load gemma-4-e2b-it-qat --context-length 32768 --parallel 2 --yes && ~/.lmstudio/bin/lms server start --port 1234
+```
+
+**vLLM** — not verified on macOS; needs a CUDA GPU
+
+[Install vLLM](https://docs.vllm.ai/en/latest/getting_started/installation/gpu/)
+
+```sh
+vllm serve google/gemma-4-E2B-it-qat-w4a16-ct --host 127.0.0.1 --max-model-len 32768 --max-num-seqs 2
+```
+
+</details>
+
+```sh
+curl -fsSL https://infercat.ai/install.sh | sh    # macOS or Linux
+brew install infercat/tap/infercat                # or with Homebrew
+```
+
+- [Raw-script fallback](https://raw.githubusercontent.com/infercat/infercat/main/hack/install.sh).
+- Docker: [run a persistent container host](docs/DOCKER.md).
+- Linux packages: [install a .deb or .rpm and run the user service](docs/LINUX.md).
+- [Releases](https://github.com/infercat/infercat/releases) for everything else; verify with `shasum -a 256 --ignore-missing -c infercat_<version>_checksums.txt`.
+
+If latest cannot be resolved (rate limit, no published release, or network), download the script and run `INFERCAT_VERSION=vX.Y.Z sh install.sh`.
+
+Then:
+
+```
+infercat serve --name "Max's laptop"     # finds llama.cpp, llama-swap, Ollama, LM Studio or vLLM
+infercat keys add alice                  # prints alice's invite once (and a QR code)
+```
+
+`serve` prints what it found, the tunnel address, the relay, and exactly what friends can reach. `keys add` prints the invite — a link if you serve with `--web-url`, otherwise a code to paste. Send it to alice however you like; it is shown once and stored only as a hash.
+
+If your engine is on another port or another machine:
+
+```
+infercat serve --upstream http://127.0.0.1:18080
+```
+
+Persistent `serve` settings are remembered in `config.json`. Per-run flags such as `--log-requests`, `--log-prompts`, `--agent`, `--ephemeral` and `--verbose` must be supplied each time. `--log-requests` prints one line per completed request on the terminal, without prompt content.
+
+### Keep it running
+
+Nobody wants to leave a terminal open. `infercat service` hands the host to the system's own supervisor — a per-user LaunchAgent on macOS, the packaged systemd user unit on Linux ([Linux packages](docs/LINUX.md)):
+
+```
+infercat service install     # starts at login from now on; --start-at-login=false to skip that
+infercat service start
+infercat service status      # installed, running, pid, since, binary, log
+```
+
+`stop`, `restart` and `uninstall` do what they say; `service login on|off` changes only whether the host starts at login, without touching a host that is running. The service runs as you, never as root, and runs the same `infercat serve` with the settings remembered in `config.json`. On macOS its output goes to `~/Library/Logs/Infercat/host.log`; on Linux use `journalctl --user -u infercat`. Never run a second `serve` against the same data directory — `service start` refuses while one is already there. Windows has no service yet.
+
+Add a microphone and spoken replies with the [voice hosting recipe](docs/VOICE.md).
+Make pictures with the [image generation hosting recipe](docs/IMAGES.md).
+Search the web in an opted-in chat with the [search hosting recipe](docs/SEARCH.md).
+
+Open the local **console** with `infercat console` to inspect usage, manage keys and change supported settings. `serve --console IP:PORT` chooses its loopback listener (default `127.0.0.1:9101`; `off` disables it). See the [console and admin API](docs/ARCHITECTURE.md#local-admin-api).
+
+For **remote administration**, use `infercat remote on|off|rotate|status` on the running host. Enabling or rotating returns the admin code once; the loopback console listener must be on. The admin code authorizes key, settings and stored-data administration separately from friend invites. See [remote console budgets](docs/LIMITS.md#remote-console).
+
+The **agent route** lets opted-in friends submit agent runs, inspect steps and captured outputs, answer approvals, and cancel work. Install it with `infercat agent install`, enable the runtime with `serve --agent` and a friend's access with `keys limits alice --agent=true`; each run uses its own confined workspace. Installation and supported-platform boundaries are in [Agent runtime](docs/AGENT-RUNTIME.md).
+
+<details>
+<summary><b>macOS says it cannot verify the developer</b></summary>
+
+The binaries are not signed yet. macOS blocks a downloaded, unsigned program the first time. Either run it from Terminal after removing the quarantine flag —
+
+```
+xattr -d com.apple.quarantine ./infercat
+```
+
+— or Control-click the file in Finder, choose **Open**, and confirm once. The Homebrew install does not have this problem.
+</details>
+
+<details>
+<summary><b>Common <code>serve</code> flags</b></summary>
+
+| `serve` flag | What it does |
+|---|---|
+| `--upstream URL` / `--upstream-key TOKEN` | your inference server (detected when absent; `--upstream auto` forgets a remembered one) |
+| `--name NAME` | the host name your friends see (default: this machine's hostname) |
+| `--web-url URL` | where friends open the web app; invites then print as a link |
+| `--slots N` | parallel requests the engine can serve (0 = ask the engine) |
+| `--models a,b` | pin text models for every key, intersected with each key’s allowlist; image/audio routes use only the key allowlist; `--models all` forgets the pin |
+| `--region NAME` / `--derpmap-url URL` | preferred relay region / a self-hosted relay map |
+| `--dev-listen ADDR` | also serve on loopback with permissive CORS, for web development |
+| `--log-prompts`, `--ephemeral`, `--verbose` | per-run: log message content; throwaway host identity; tunnel log on the terminal |
+| `--data-dir DIR` | where keys, usage, config and the host key live |
+
+Run `infercat serve -h` for the complete flag list and the data directory's files.
+</details>
+
+`infercat setup --profile apple-64g` reuses hash-matched cached models and downloads missing published engine/model pins into your data directory. It starts each owned member, checks its model identity (and one small prompt for the anchor), then stops it before saving compatible settings. Existing engines stay running. Use repeatable `--model-path anchor=/path/to/model.gguf` overrides (asset ids also work), or `--custom profile.json` for compatibility checks with no downloads or launches. A failed anchor, cancellation, or conflicting settings leave the previous host config intact. An optional member that fails its check is marked unavailable; chat can still be configured.
+
+Run `infercat serve` next: it starts the installed anchor and keeps it resident, starts on-demand members for admitted requests, and stops them after the profile’s idle interval. `infercat status` shows each member; embeddings use the profile’s separate embedding model. Engines already running at setup remain externally owned and are never stopped by the host. Setup prints and records the materialized command for managed members; rerun setup after an embedded profile changes. Members without a published engine build are reported as unavailable. Native speech uses the verified helpers-v0.1.0 release and a separately pinned sherpa runtime. ASR has no selected profile artifact yet; the 16 GB tier uses Q4 E4B with vision, memory verified in a 16 GB macOS VM (f16 configuration, September 2026); the shipped q8 command was verified on real Apple silicon (180a row F). Performance is unverified on real 16 GB hardware. The q8 anchor runs in VMs only via CPU fallback for flash attention (slow); not a supported configuration. NVIDIA is unmeasured. See the [profile schema](docs/ARCHITECTURE.md#loadout-profiles-and-setup) and [native Kokoro helper](packaging/helpers/README.md).
+
+The embedded profiles are:
+
+| Profile | Intended host |
+|---|---|
+| `apple-64g` | 64 GB Apple silicon host with a Metal model loadout. |
+| `apple-16g` | 16 GB Apple silicon host; memory checked in a macOS VM, real-hardware performance unverified. |
+| `nvidia-12g` | Linux NVIDIA host with 12 GB VRAM; unmeasured. |
+
+## Quickstart (friend)
+
+Open **[infercat.ai](https://infercat.ai)**, paste the invite, press Connect. That is the whole thing. Your host's `keys add` prints the invite as a link (and a QR code) that opens the app with the code already in the field, so usually you just tap it.
+
+Prefer to host the app yourself? It is a static bundle: `web-<version>.zip` in Releases, any static file server, `index.html` at the root:
+
+```
+unzip web-<version>.zip -d web && python3 -m http.server 8080 --directory web --bind 127.0.0.1
+```
+
+The header shows the path you are on (`relayed via nyc · 64 ms`), the model, and your usage against the host's limits. Conversations stay in your browser.
+
+## What friends can reach
+
+The [gateway route table](docs/ARCHITECTURE.md#gateway-http-api) lists the reachable endpoints: `/me`, model/chat/Responses/embedding APIs, configured audio and image APIs, and key-scoped runs, events and captured outputs. Remote console routes require a separate admin bearer and explicit enablement; a friend key does not authorize them. The gateway does not expose arbitrary host ports or filesystem paths.
+
+## Privacy
+
+- **Chat logs contain counts and timings** unless the host runs `serve --log-prompts`, which the web app discloses. Image jobs keep the friend’s image prompts and pictures under their key for 7 days, subject to retention/storage limits, independently of that flag. With `--log-prompts`, image prompts also enter `usage.jsonl`. Tool queries and results appear in prompt logs like any other message text.
+- The relay sees **ciphertext**: traffic is WireGuard-encrypted from the friend's browser to the host's machine. Browser traffic is always relayed for now (a browser cannot hole-punch); the direct path arrives with the tunnel library's WebRTC transport.
+- Invite secrets are shown once and stored **hashed**. A leaked invite is one `keys rotate` away from useless.
+
+## Limits per friend
+
+Every key has limits from the moment it exists — nothing is unlimited unless the host says so:
+
+```
+infercat keys add bob --rpm 6 --daily-tokens 50000          # tight, for a stranger
+infercat keys limits alice --rpm 60 --daily-tokens 1000000 --max-output-tokens 8192
+```
+
+Defaults from `keys add`:
+
+| Field / flag | Default |
+|---|---|
+| `rpm` / `--rpm` | 20 metered requests/minute |
+| `tpm` / `--tpm` | 20,000 tokens/minute |
+| `max_concurrent` / `--max-concurrent` | 1 request |
+| `max_output_tokens` / `--max-output-tokens` | 4,096 tokens |
+| `max_context` / `--max-context` | 0: use the engine's context |
+| `daily_tokens` / `--daily-tokens` | 200,000 tokens/day |
+| `daily_audio_seconds` / `--daily-audio-seconds` | 3,600 seconds/day |
+| `daily_speech_chars` / `--daily-speech-chars` | 200,000 characters/day |
+| `daily_images` / `--daily-images` | 20 images/day |
+| `max_queued_images` / `--max-queued-images` | 8 queued images |
+| `search_per_day` / `--search-per-day` | 50 searches/day |
+| `models` / `--models` | Empty list: all shared models |
+
+A friend over a limit gets `429` with `Retry-After`; a burst beyond the engine's slots queues briefly, then `503` — never a stalled engine. The web app shows each friend their own meters.
+
+Manage friends: `keys list` · `keys pause alice` (403 until `keys resume`) · `keys revoke alice` (permanent; asks first) · `keys rotate alice` (new invite, old one stops). Watch: `status` (live) and `usage` (history). Changes take effect on the running host at once.
+
+## FAQ
+
+**Does the host need an account?** No. `serve` generates a host identity in the data directory and that is the whole registration. **Does the friend?** No — an invite is the credential.
+
+**What touches your servers?** Only the relay, and only ciphertext: a DERP server forwards encrypted packets between the friend's browser and your host. By default that is a public relay from the tunnel library's map; `--derpmap-url` points at your own.
+
+**Can I use a different client than the web app?** The gateway is OpenAI-compatible, so anything that speaks `/v1/chat/completions` with a bearer token works from inside the tunnel. Or skip the browser: `infercat connect` turns an invite into a local `http://127.0.0.1:11435/v1` for any app (see the quickstart below).
+
+**Two friends, one invite?** It works, bounded by that key's limits and visible in `usage`. Mint one key per person; it costs nothing.
+
+**What if my machine sleeps?** Friends see "Max's laptop — not answering" with the reason, and the app retries by itself when the host is back.
+
+**Which models?** Whatever your engine serves; `--models` on a key restricts what that friend can pick.
+
+## Status: beta
+
+The core works and is measured (`docs/MEASURE.md`: ~160 tokens/s through the relay, first token in 110–160 ms in the browser). Known limitations, honestly: browser traffic is always relayed; the macOS binaries are unsigned (see above); one host, one engine; the default public relay is rate-limited and revocable, so anything beyond a demo wants a self-hosted one. Load limits by layer are being measured in `docs/MEASURE.md` and stated in plain words in `docs/LIMITS.md`.
+
+## Quickstart (friend with an app)
+
+No browser needed: the same binary turns an invite into a local OpenAI-compatible endpoint, so Open WebUI, Cursor, Claude Code, the OpenAI SDKs or plain `curl` use your friend's model as if it were local. Between two machines the path goes direct once they find each other; the relay is only the rendezvous.
+
+```
+bin/infercat connect ic2.…          # paste the invite
+```
+```
+host      Max's laptop  ·  gemma-4-E2B-it-Q4_K_M.gguf
+path      relayed via New York City · 27 ms       # re-checked every 30 s, printed when it changes
+local     http://127.0.0.1:11435
+          set your app's base URL to http://127.0.0.1:11435/v1, any API key
+```
+
+The invite's key is added to every request; the app's own API key is ignored. `/v1/*` and `/me` are forwarded, nothing else. Errors keep the host's status and code and say what to do in your words (paused, revoked, asleep, rate limited with `Retry-After`, busy); when the host stops answering, `connect` says so and reconnects on its own.
+
+For coding agents, run `infercat connect <invite> --configure opencode,dsh,codex` (or choose a subset).
+It registers the models from `/me` at the actual local port and prints how to select them:
+OpenCode uses the printed `OPENCODE_CONFIG=… opencode --model …` line; Harness uses
+`INFERCAT_API_KEY=unused dsh`, then its `/model` picker. Codex uses `codex --profile infercat`.
+Your default selection stays yours. Codex 0.154.0 reads the generated profile from
+`$CODEX_HOME/infercat.config.toml` (normally `~/.codex/infercat.config.toml`). It selects the
+first `/me` model and disables hosted web search for that profile because the gateway does
+not serve hosted tools. Your base `config.toml` is never changed; an existing unowned profile
+or legacy `[profiles.infercat]` configuration is refused. The profile contains no API key.
+If `OPENCODE_CONFIG` already names another file, configuration refuses without writing; unset
+it for the run, or merge the provider into your own file. OpenCode uses one custom path.
+The OpenCode extra file is merged with your configuration; Harness inserts a marked provider
+in `$DSH_HOME/settings.yaml` (normally `~/.dsh/settings.yaml`). Clean exit removes unchanged
+managed blocks; `infercat connect --unconfigure` also removes them without an invite or stopping
+a bridge. Edited blocks are preserved with an error. `infercat status` lists local registrations
+even without a running bridge. Original backups and ownership receipts live in the OS user
+config directory under `infercat/agents` (or `XDG_CONFIG_HOME` on Unix). YAML flow maps, aliases
+and custom Harness settings locations require manual configuration. Windows paths use the native user config directory and
+`DSH_HOME`; the printed launch lines use POSIX shell syntax. Windows: compiles, untested.
+
+```
+OPENAI_BASE_URL=http://127.0.0.1:11435/v1 OPENAI_API_KEY=x python3 -c '
+from openai import OpenAI; c = OpenAI()
+for e in c.chat.completions.create(model=c.models.list().data[0].id, messages=[{"role":"user","content":"hi"}], stream=True):
+    print(e.choices[0].delta.content or "", end="", flush=True)'
+```
+
+## Data directory
+
+See [Data directory](docs/DATA-DIRECTORY.md) for paths, files and backup guidance.
+
+## Building
+
+See [Contributing](CONTRIBUTING.md#building) for builds and release checks, and the [web README](web/README.md) for the browser app.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Built on [tailcat](https://github.com/tailscale/tailcat), Tailscale's open-source library (not affiliated; see above). tailcat is BSD-3; every dependency's licence is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Security reports: [SECURITY.md](SECURITY.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Made by [2185 Lab](https://2185lab.com). MIT.

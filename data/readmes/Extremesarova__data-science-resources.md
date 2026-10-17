@@ -1,0 +1,1172 @@
+<!-- omit in toc -->
+# Data Science Resources
+
+For interview preparation and learning
+
+Every Sunday one resource from this list gets a short write-up on Telegram:
+[@data_science_weekly](https://t.me/data_science_weekly).
+
+**Table of Contents**:
+
+- [Interview Preparation](#interview-preparation)
+- [Algorithms and Data Structures](#algorithms-and-data-structures)
+- [Programming](#programming-1)
+- [SQL](#sql-1)
+- [Machine Learning](#machine-learning-1)
+- [MLOps](#mlops)
+- [Deep Learning](#deep-learning-1)
+- [Generative AI](#generative-ai)
+- [NLP](#nlp-1)
+- [Computer Vision](#computer-vision)
+- [Graphs](#graphs)
+- [Reinforcement Learning](#reinforcement-learning)
+- [RecSys](#recsys)
+- [Time Series](#time-series)
+- [Big Data](#big-data)
+- [System Design](#system-design)
+- [Machine Learning System Design](#machine-learning-system-design)
+- [Math](#math)
+- [Lists of Materials](#lists-of-materials)
+- [Other](#other-7)
+- [Adjacent](#adjacent)
+
+## Interview Preparation
+
+<!-- omit in toc -->
+### Questions
+
+<!-- omit in toc -->
+#### Data Science
+
+- [OVER 100 Data Scientist Interview Questions and Answers by Terence Shin](https://towardsdatascience.com/over-100-data-scientist-interview-questions-and-answers-c5a66186769a)
+- [Data Science Interviews by Alexey Grigoriev](https://ds-interviews.org/)
+- [Data-Science-Interview-Questions by Youssef Hosni](https://github.com/youssefHosni/Data-Science-Interview-Questions)
+- [Data-Science-Interview-Preparation-Resources by Youssef Hosni](https://github.com/youssefHosni/Data-Science-Interview-Preperation-Resources)
+- [Data science interview questions with answers](https://github.com/iamtodor/data-science-interview-questions-and-answers)
+- [120 Data Science Interview Questions](https://github.com/kojino/120-Data-Science-Interview-Questions)
+- [Вопросы для интервью по специальности Data Science](https://interview-mds.ru/)
+- [Interview Questions from interviewquery.com](https://www.interviewquery.com/questions?searchQuery=&searchQuestionTag=&searchCompany=&ordering=Recommended&pageSize=20&page=0)
+- [Вопросы с собеседовании по машинному обучению](https://uproger.com/45-voprosov-dlya-sobesedovaniya-po-mashinnomu-obucheniyu-statya-v-razrabotke/)
+- [100 вопросов для подготовки к собесу Data Science](https://habr.com/ru/articles/783766/)
+- [The Data Science Interview Book](https://book.thedatascienceinterviewproject.com)
+- [Top 100 Data science interview questions](https://nitin-panwar.github.io/Top-100-Data-science-interview-questions/)
+- [100 вопросов c собесов в Data Science и ML](https://uproger.com/100-voprosov-c-sobesov-v-data-science-i-ml/)
+- [ML-Interview](https://github.com/Pe4enIks/ML-Interview)
+- [160+ Data Science Interview Questions](https://hackernoon.com/160-data-science-interview-questions-415s3y2a)
+
+<!-- omit in toc -->
+#### Machine Learning
+
+- [Machine Learning FAQ by Sebastian Raschka](https://sebastianraschka.com/faq/)
+- [Machine Learning FAQ by X](https://machinelearningfaq.com/)
+- [Minimum Viable Study Plan for Machine Learning Interviews](https://github.com/khangich/machine-learning-interview)
+- [A Guide for Machine Learning Technical Interviews (FAANG Companies)](https://github.com/alirezadir/machine-learning-interview-enlightener)
+- [Introduction to Machine Learning Interviews Book by Chip Huyen](https://huyenchip.com/ml-interviews-book/) + [Answers](https://github.com/zafstojano/ml-interview-questions-and-answers?trk=comments_comments-list_comment-text)
+- [Machine Learning Interviews by Susan Shu Chang](https://www.oreilly.com/library/view/machine-learning-interviews/9781098146535/)
+- [100 Machine Learning interview questions 2024](https://github.com/masmahbubalom/InterviewQuestions/tree/main/ML%20Interview%20Question)
+- [Crack the top 40 machine learning interview questions](https://www.educative.io/blog/top-machine-learning-interview-questions)
+
+<!-- omit in toc -->
+#### Deep Learning
+
+- [Вопросы тестов по курсу «Глубокое обучение» Александр Дьяконов](https://github.com/Dyakonov/BOOKs/blob/main/DLtest_Dyakonov.pdf)
+- [50 Deep Learning interview questions 2024](https://github.com/masmahbubalom/InterviewQuestions/tree/main/Deep%20Learning%20Interview%20Questions)
+- [50 Computer Vision interview questions 2024](https://github.com/masmahbubalom/InterviewQuestions/tree/main/Computer%20Vision%20Interview%20Questions)
+
+<!-- omit in toc -->
+#### SQL
+
+- [Вопросы с собеседования по анализу данных SQL в 2023 году](https://uproger.com/voprosy-dlya-sobesedovaniya-po-sql-2023/)
+- [Лучшие вопросы средней сложности по SQL на собеседовании аналитика данных](https://habr.com/ru/company/dcmiran/blog/500360)
+
+<!-- omit in toc -->
+#### NLP
+
+- [63 Must-Know LLMs Interview Questions](https://github.com/Devinterview-io/llms-interview-questions)
+- [100 вопросов про NLP](https://dynamic-epoch-4bb.notion.site/100-questions-about-NLP-549ccde0d81a4689b5635888b9d0d7e6)
+- [50 NLP (Natural Language Processing) interview questions 2024](https://github.com/masmahbubalom/InterviewQuestions/tree/main/NLP%20Interview%20Questions)
+- [LLM (ML) Job Interviews - Resources](https://mimansajaiswal.github.io/posts/llm-ml-job-interviews-resources/)
+
+<!-- omit in toc -->
+#### Programming
+
+- [Awesome interview questions repository](https://github.com/DopplerHQ/awesome-interview-questions?tab=readme-ov-file#python)
+- [Шпаргалка для технического собеседования](https://habr.com/ru/companies/vk/articles/350326/)
+- [Моя любимая задача для собеседований по программированию](https://habr.com/ru/companies/ruvds/articles/775570/)
+- [Top 100 Python ML Interview Questions](https://github.com/Devinterview-io/python-ml-interview-questions)
+
+<!-- omit in toc -->
+#### Behavioural interview
+
+<!-- omit in toc -->
+##### Courses
+
+- [Grokking the Behavioral Interview](https://www.educative.io/courses/grokking-the-behavioral-interview)
+- [Rock the Behavioral Interview](https://leetcode.com/explore/interview/card/leapai/)
+
+<!-- omit in toc -->
+##### Questions
+
+- [Популярные HR вопросы](https://docs.google.com/spreadsheets/u/0/d/18cKFaH11p9TjeKjcupt03Dz5873iKIQ65hvH0QFKpEg/htmlview?pli=1)
+- [Awesome Behavioral Interviews](https://github.com/ashishps1/awesome-behavioral-interviews)
+- [Amazon Behavioral Interview Questions Guide](https://www.careerflow.ai/blog/amazon-behavioral-interview-questions)
+- [41 Behavioural Interview Questions You Must Know (Best Answers Included)](https://www.themartec.com/insidelook/behavioral-interview-questions)
+- [The 50 Amazon Behavioral Interview Questions with Answers](https://futureofworking.com/amazon-behavioral-interview-questions/)
+- [Behavioural Questions Answered](https://github.com/wdan/behavior-questions-answers)
+
+<!-- omit in toc -->
+##### Mock Interviews and Pieces of Advice
+
+- Валерий Бабушкин:
+  - [Выпуск 1](https://www.youtube.com/watch?v=facQgiPlQeM): Технический директор karpov.courses Кирилл Черепанов
+  - [Выпуск 2](https://www.youtube.com/watch?v=64yoZSMEhoY): Артур Кузин, Kaggle Grandmaster, Head of Deep Learning в компании Eqvilent. В прошлом – Head of Computer Vision Platform в SberDevices
+  - [Выпуск 3](https://www.youtube.com/watch?v=gujnUx7fveY): Дарья — ведущий аналитик данных и продуктовый аналитик в X5 Group
+- [Episode 07: Intro to Behavioural Interviews](https://www.youtube.com/watch?v=PJKYqLP6MRE)
+- [Dan Croitor](https://www.youtube.com/c/DanCroitor)
+- [Tips for answering few tricky behavioural interview questions](https://leetcode.com/discuss/interview-experience/1532708/tips-for-answering-few-tricky-behavioural-interview-questions)
+- [How to Answer Top Interview Questions](https://www.youtube.com/playlist?app=desktop&list=PL30MQiePH_cM6vGE9B_o1_TMsXK71XVCz)
+- [Interview Warmup by Google](https://grow.google/certificates/interview-warmup/)
+
+<!-- omit in toc -->
+#### English
+
+- [Как пройти собеседование на английском языке | StarTalk](https://www.youtube.com/watch?v=0zhFfpVuDbQ&ab_channel=GlobalCareer)
+- [Лена Кочева и Таня Дурова - Как эффективно подготовиться к собеседованию на английском](https://youtu.be/qGKBvm4zm48)
+- [Как я устроился в Амазон и перестал переживать за свой английский](https://vc.ru/life/1024429-kak-ya-ustroilsya-v-amazon-i-perestal-perezhivat-za-svoy-angliyskiy)
+
+<!-- omit in toc -->
+### Home Assignments
+
+- [Тестовые задания](https://postypashki.ru/2024/07/29/машинное-обучение/)
+- [Сборник тестовых заданий для Product Analyst и Data Analyst](https://pavelbukhtik.notion.site/pavelbukhtik/Product-Analyst-Data-Analyst-a5f7bea5a0064960bbdb7a3ee1e46e97)
+- [Тестовые задания по DS](https://github.com/slgero/testovoe)
+- [Список тестовых заданий для прокачки](https://github.com/Hexlet/ru-test-assignments)
+
+<!-- omit in toc -->
+### Tips
+
+- [How I Got 15 More Data Science Interviews in One Month?](https://medium.com/geekculture/i-got-15-more-data-science-interviews-with-these-5-tips-87ed03fdcfc7)
+- [Как я проходил собеседования на Machine Learning Engineer](https://habr.com/ru/post/704128/)
+- [Google ML engineer interview: the only post you’ll need to read](https://igotanoffer.com/blogs/tech/google-machine-learning-engineer-interview)
+- [Amazon Data Scientist Interview Guide](https://faangpath.com/blog/amazon-data-scientist-interview/)
+- [The Trimodal Nature of Software Engineering Salaries in the Netherlands and Europe](https://blog.pragmaticengineer.com/software-engineering-salaries-in-the-netherlands-and-europe/)
+- [Гайд по подготовке CV+Portfolio+Self Presentation+Home task](https://hannalias.notion.site/hannalias/CV-Portfolio-Self-Presentation-Home-task-7c9879f5e2cb4ba9b097a92660c93193)
+- [Методика STAR для прохождения структурированных собеседований](https://hr-portal.ru/story/metodika-star-dlya-prohozhdeniya-strukturirovannyh-sobesedovaniy)
+- [Гостевое выступление Тати Габрусевой, Staff Machine Learning Engineer, NLP, LinkedIn 25.05.2022](https://youtu.be/Q3i90zkupmA)
+- [Полезные ссылки: Как проходить интервью в DS от Айры](https://docs.google.com/document/d/1N8qCJIUZe9xl_-wYkSmxatQABsttqqDB2rnftCjkP7s/edit)
+- [FAANG Interview. Бортовые заметки сообщества](https://faang-interview.github.io/)
+- [You should Review These Topics Before Data Science Technical Interview](https://medium.com/geekculture/you-should-review-these-topics-before-data-science-technical-interview-fed456b60aea)
+- [Crack the Amazon Data Scientist Interviews | Ex-FAANG Data Scientist by Dan Lee](https://medium.com/datainterview/crack-the-amazon-data-scientist-interviews-ex-faang-data-scientist-78189a5a689e)
+- [Дайджест уходящего года: релокейт в Европу и США, главное о карьере и сверхзанятости](https://habr.com/ru/amp/post/707854/)
+- [How I got in to Amazon, Microsoft, Google. All from studying these resources](https://levelup.gitconnected.com/how-i-got-in-to-amazon-microsoft-google-all-from-studying-these-resources-31724508ce0e)
+- [Articles, books and videos to help get well-paying tech jobs by TechPays](https://techpays.eu/resources)
+- [How I Cracked the Meta Machine Learning Engineering Interview](https://towardsdatascience.com/how-i-cracked-the-meta-machine-learning-engineering-interview-aa32f64b8e4b)
+- [What we look for in a resume by Chip Huyen](https://huyenchip.com/2023/01/24/what-we-look-for-in-a-candidate.html#one-page)
+- [Не принимай оффер в Data Science, пока…](https://habr.com/ru/company/alfa/blog/709416/)
+- [Стратегия поиска работы за границей: что писать, с кем говорить и к чему готовиться](https://www.forbes.ru/mneniya/484547-strategia-poiska-raboty-za-granicej-cto-pisat-s-kem-govorit-i-k-cemu-gotovit-sa)
+- [Data Science Interview Guide](https://docs.google.com/spreadsheets/d/1djhTq4vD72lzuLY2rCMOkkSuNG2rRf_C5PwNMjcIAMk/edit#gid=859146723)
+- [Tech Interview Handbook. Free curated interview preparation materials for busy people](https://www.techinterviewhandbook.org/)
+- [Разбор резюме Data Scientist в прямом эфире](https://www.youtube.com/live/Khh5D97nqpE?feature=share)
+- [А как собеседоваться в 2023?](https://vas3k.club/post/20213/)
+- [Amazon, Microsoft, Facebook, Tesla, Lyft — история поиска работы мечты, или «Вредные» советы для карьерного развития](https://habr.com/ru/articles/552294/)
+- [Как нанимать сотрудников класса А? Выжимка из книги "Who: The A Method For Hiring"](https://vc.ru/tribuna/272027-kak-nanimat-sotrudnikov-klassa-a-vyzhimka-iz-knigi-who-the-a-method-for-hiring)
+- [Your personal guide to Software Engineering technical interviews](https://github.com/kdn251/interviews)
+- [Что делать при отказе на собеседовании?](https://vc.ru/hr/998074-chto-delat-pri-otkaze-na-sobesedovanii)
+- [FAANG Interview Chronicles. My experience and recommendations](https://amarchenko.dev/blog/2024-01-17-interview-experience/)
+- [How to Crack Machine learning Interviews at FAANG!](https://medium.com/@reachpriyaa/how-to-crack-machine-learning-interviews-at-faang-78a2882a05c5)
+- [How to Find a Data Science Job in 2024 (with experience)](https://vtitko.com/2024/04/13/find-data-science-job/)
+- [Applied ML Scientist. Юра — Рыночек 0:10](https://vas3k.club/post/22053/) + [Applied ML Scientist. 2 тайм. Юра — Рыночек 2:16](https://vas3k.club/post/24878/) + [Домашнее задание vs. Онлайн-кодинг](https://vas3k.club/post/18668/)
+- [Как я готовился к собеседованию на позицию Senior ML Engineer by Zarin Gleb](https://zaringleb.medium.com/%D0%BA%D0%B0%D0%BA-%D1%8F-%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%B8%D0%BB%D1%81%D1%8F-%D0%BA-%D1%81%D0%BE%D0%B1%D0%B5%D1%81%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E-%D0%BD%D0%B0-%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D1%8E-senior-ml-engineer-f2f6d8effa50)
+- [How I landed 18 FAANG+ software engineer offers after not interviewing for 5 years](https://medium.com/@stevenzhang/how-i-landed-18-faang-software-engineer-offers-after-not-interviewing-for-5-years-fc0dfc957a5d)
+- [На что обращать внимание на алгоритмических секциях собеседований](https://habr.com/ru/company/avito/blog/662922/)
+- [Что нужно знать, чтобы найти работу, пройти собеседование и выбрать оффер](https://habr.com/ru/company/getmatch/blog/685200)
+- [Interview Query is the best adaptive learning platform for Data Scientists by Data Scientists](https://www.interviewquery.com/)
+- [Как не провалить интервью. Исследование из Стэнфорда о пользе самоуверенности](https://habr.com/ru/company/getmatch/blog/707954/)
+- [Собеседования в ML](https://telegra.ph/Sobesedovaniya-v-ML-08-03)
+- [Евгений Смирнов | Десять вопросов, которые нужно задать перед трудоустройством](https://www.youtube.com/watch?app=desktop&v=czT4sr1AooI)
+- [Стрим про карьеру, собеседования и бигтех](https://www.youtube.com/watch?app=desktop&v=6E2JWezLzs4)
+- [Guide to ML Engineer Job Hunting](https://www.yuan-meng.com/posts/mle_interviews/?trk=feed_main-feed-card_feed-article-content)
+- [ML/Research Engineer interviews 2025](https://asmekal.github.io/blog/posts/interviews-2025-ml-research-engineer-uk) <!--- comment -->
+
+<!-- omit in toc -->
+### Resources
+
+- [На этой странице вы узнаете про Data Science направление в Маркете, наш стек технологий, этапы собеседований и материалы, которые могут пригодиться](https://yandex.ru/promo/rec-comms/vkl/market/datascience)
+- [IT-собеседование в Тинькофф](https://github.com/Tinkoff/career/tree/main/interview)
+- [Материалы для подготовки по машинному обучению от Тинькофф](https://www.tinkoff.ru/career/it/interview/ml/)
+- [Что надо знать сотруднику Цельса?](https://telegra.ph/CHto-nado-znat-ML-inzheneru-v-Celse-02-10)
+- [Программа Академии Data Science от Тинькофф](https://fintech.tinkoff.ru/academy/master/#%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0)
+- [Max Dama's Quant Trading Interview Guide](http://isomorphisms.sdf.org/maxdama.pdf)
+- [Tech Interview Handbook](https://github.com/yangshun/tech-interview-handbook)
+
+<!-- omit in toc -->
+### Courses
+
+- [Хочу крутой оффер](https://stepik.org/course/121958/)
+
+<!-- omit in toc -->
+### Other
+
+- [Data Scientist total compensation and salaries in the Netherlands](https://techpays.com/europe/netherlands/data_scientist)
+- [Programmer Competency Matrix](https://sijinjoseph.netlify.app/programmer-competency-matrix/)
+- [Just know stuff (or, how to achieve success in a machine learning PhD)](https://kidger.site/thoughts/just-know-stuff/)
+- [A Guide to Data Roles](https://www.datacaptains.com/blog/guide-to-data-roles)
+- [Dropbox Engineering Career Framework](https://dropbox.github.io/dbx-career-framework/)
+- [Nurturing a non-linear career](https://leaddev.com/personal-development/nurturing-non-linear-career)
+- [Path to Senior Engineer Handbook](https://github.com/jordan-cutler/path-to-senior-engineer-handbook)
+- [Interview Principals](https://almond-rule-130.notion.site/Interviews-6182a38503224359b8f839022e2b8f9e)
+- [The difference between good and great engineers](https://www.intercom.com/blog/traits-of-exceptional-engineers/)
+- [Understanding and Cracking Data Science Interviews](https://www.youtube.com/live/bO7Vp-IvTcs?app=desktop)
+- [Собеседования от karpov.courses](https://www.youtube.com/playlist?list=PLBRXq5LaddfzDBjg6soIwJJA2klXXs6ni)
+- [Data-Science-Interview-Resources](https://github.com/rbhatia46/Data-Science-Interview-Resourcess)
+- [Собеседование Data Scientist в Т-Банк: теория + лайфкодинг](https://youtu.be/rV5i33liurY)
+
+## Algorithms and Data Structures
+
+<!-- omit in toc -->
+### Platforms
+
+- [LeetCode](https://leetcode.com/) `foundations` <!--- [Yandex Interview Kit](https://docs.google.com/spreadsheets/u/0/d/1vgoyVzOqueURT7jNXuoEec5dQnIdtUCEqVPX1x0Vx6A/htmlview#gid=0) -->
+  - [Leetcode Patterns](https://seanprashad.com/leetcode-patterns/) `foundations` <!--- comment -->
+List of questions with patterns + tips
+  - [LeetCode Explore](https://leetcode.com/explore/) `foundations`
+- [Codewars](https://www.codewars.com/)
+- [HackerRank](https://www.hackerrank.com/)
+- [CodeAbbey](https://www.codeabbey.com/index/task_list)
+- [CodeRun](https://coderun.yandex.ru) `lang:rus`
+Инструмент для подготовки к очному собеседованию в Яндексе. Задачи очень похожи на те, что будут на интервью.
+- [Other](https://en.wikipedia.org/wiki/Competitive_programming#Online_platforms)
+- [Coderbyte Challenge Library](https://coderbyte.com/challenges)
+- [CodinGame](https://www.codingame.com/start)
+
+<!-- omit in toc -->
+### Courses
+
+- [Algoprog](https://algoprog.ru/) `lang:rus`
+- Яндекс:
+  - [Основы алгоритмов | Академия Яндекса](https://academy.yandex.ru/handbook/algorithms)
+  - [Бесплатный курс «Подготовка к алгоритмическому собеседованию» от ЯП](https://practicum.yandex.ru/algorithms-interview/)
+  - [Курс «Алгоритмы и структуры данных» от ЯП](https://practicum.yandex.ru/algorithms/)
+  - [Курс «Алгоритмы и структуры данных поиска»](https://www.youtube.com/playlist?app=desktop&list=PLJOzdkh8T5koEPv-R5W0ovmL_T2BjB1HX)
+- Computer Science Center:
+  - [Алгоритмы: теория и практика. Методы](https://stepik.org/course/217/info)
+  - [Алгоритмы: теория и практика. Структуры данных](https://stepik.org/course/1547/info)
+- [Подготовься к алгоритмическому собеседованию за 30 недель](https://balun.courses/courses/algorithmic_interview#program)
+- [Introduction To Algorithms by MIT](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/video_galleries/lecture-videos/) `foundations` <!--- comment -->
+- [Algorithms](https://cs50.harvard.edu/x/2024/weeks/3/) + [Data Structures](https://cs50.harvard.edu/x/2024/weeks/5/) from [CS50's Introduction to Computer Science](https://cs50.harvard.edu/x/2024/)
+- [Algorithms, Part I (Princeton University, Coursera)](https://www.coursera.org/learn/algorithms-part1#syllabus)
+- [Grokking the Coding Interview (Educative)](https://www.educative.io/courses/grokking-the-coding-interview)
+
+<!-- omit in toc -->
+### Resources
+
+- Тренировки по алгоритмам от Яндекса:
+  - [Тренировки по алгоритмам от Яндекса 1](https://yandex.ru/yaintern/algorithm-training_1)
+  - [Тренировки по алгоритмам от Яндекса 2](https://yandex.ru/yaintern/algorithm-training_2)
+  - [Тренировки по алгоритмам от Яндекса 3](https://yandex.ru/yaintern/training/algorithm-training_3)
+  - [Тренировки по алгоритмам от Яндекса 4](https://yandex.ru/yaintern/training/algorithm-training_4)
+  - [Тренировки по алгоритмам от Яндекса 5](https://yandex.ru/yaintern/algorithm-training)
+  - [Интенсив по алгоритмам от Яндекса](https://www.youtube.com/playlist?list=PLQC2_0cDcSKAzLqqXUidKBJsy1Im44aOo)
+- [NeetCode. A better way to prepare for coding interviews.](https://neetcode.io/roadmap) <!--- comment -->
+- [The Algorithms. Open Source resource for learning Data Structures & Algorithms and their implementation in any Programming Language](https://github.com/TheAlgorithms) <!--- comment -->
+- [Алгоритмы и структуры данных простыми словами](https://codonaft.com/%D0%B0%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC%D1%8B-%D0%B8-%D1%81%D1%82%D1%80%D1%83%D0%BA%D1%82%D1%83%D1%80%D1%8B-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%8B%D0%BC%D0%B8-%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D0%BC%D0%B8/)
+- [Алгоритмика](https://ru.algorithmica.org/)
+- [Leetcode. Company-wise questions](https://github.com/MysteryVaibhav/leetcode_company_wise_questions)
+- [Unlocking Algorithm Efficiency: A Comprehensive Guide to Time and Space Complexity](https://deft1991.medium.com/unlocking-algorithm-efficiency-a-comprehensive-guide-to-time-and-space-complexity-42365215b1b7)
+- [Data Structures Reference](https://www.interviewcake.com/data-structures-reference)
+- [An Executable Data Structures Cheat Sheet for Interviews](https://algodaily.com/lessons/an-executable-data-structures-cheat-sheet)
+- [Coding Interview Guide](http://patrickhalina.com/posts/coding-interview-guide/)
+- [Algorithmic Thinking](https://labuladong.gitbook.io/algo-en/)
+- [Algorithm Notes](https://liuzhenglaichn.gitbook.io/algorithm/)
+- [Coding Interview University](https://github.com/jwasham/coding-interview-university/)
+- [Tech Interview Cheat Sheet](https://github.com/TSiege/Tech-Interview-Cheat-Sheet) <!--- comment -->
+- [Comprehensive Data Structure and Algorithm Study Guide](https://leetcode.com/discuss/general-discussion/494279/comprehensive-data-structure-and-algorithm-study-guide)
+- [Data Structures & Algorithms by Google](https://techdevguide.withgoogle.com/paths/data-structures-and-algorithms) <!--- comment -->
+- [Design and Analysis of Algorithms](https://eecs376.github.io/notes/algorithms.html)
+- [Algorithms for Competitive Programming](https://cp-algorithms.com/index.html)
+- [e-maxx.ru — Алгоритмы](https://e-maxx.ru/algo/)
+
+<!-- omit in toc -->
+### Articles
+
+- [Как проходят алгоритмические секции на собеседованиях в Яндекс](https://habr.com/ru/companies/yandex/articles/449890/)
+- [How to effectively use LeetCode to prepare for interviews](https://leetcode.com/discuss/career/449135/How-to-effectively-use-LeetCode-to-prepare-for-interviews)
+- [How To Answer Algorithm Interview Questions? The REACTO Method](https://medium.com/sounds-klever/how-to-answer-algorithm-interview-questions-the-reacto-method-389a0be47d2f)
+
+<!-- omit in toc -->
+### Books
+
+- [Grokking Algorithms. An illustrated guide for programmers and other curious people](https://www.manning.com/books/grokking-algorithms) <!--- comment -->
+- [Elements of Programming Interviews in Python: The Insiders' Guide](https://www.amazon.com/Elements-Programming-Interviews-Python-Insiders/dp/1537713949/) <!--- comment -->
+- [Cracking the Coding Interview: 189 Programming Questions and Solutions](https://www.amazon.com/Cracking-Coding-Interview-Programming-Questions/dp/0984782850)
+- [Problem Solving with Algorithms and Data Structures using Python by Brad Miller and David Ranum, Luther College](https://runestone.academy/ns/books/published/pythonds/index.html) <!--- comment -->
+- [Competitive Programmer's Handbook by Antti Laaksonen](https://cses.fi/book/book.pdf) <!--- comment -->
+- [Competitive Programming by Steven Halim](https://www.amazon.com/Competitive-Programming-4-Book-2/dp/B093K67NVN?crid=C4TR8FKXSWW1&keywords=competitive+programming+4&qid=1654975173&sprefix=competitive+programming+4,aps,131&sr=8-1&linkCode=sl1&tag=alexcancode0d-20&linkId=014a5744e277b65b2a6251d9884c031d&language=en_US&ref_=as_li_ss_tl)
+- [50 Algorithms Every Programmer Should Know: Tackle computer science challenges with classic to modern algorithms in machine learning, software design, data systems, and cryptography](https://www.amazon.com/Algorithms-Every-Programmer-Should-Know/dp/1803247762?link_from_packtlink=yes)
+- [Competitive Programmer's Handbook](https://github.com/pllk/cphb/blob/master/book.pdf)
+- [Программирование: теоремы и задачи — Александр Шень](https://www.mccme.ru/free-books/shen/shen-progbook.pdf)
+
+## Programming
+
+<!-- omit in toc -->
+### General
+
+- [Exercism](https://exercism.org)
+- [Public APIs](https://github.com/public-apis/public-apis)
+
+<!-- omit in toc -->
+### Clean Code
+
+- [Мартин Р. Чистый код: создание, анализ и рефакторинг](https://www.piter.com/product/chistyy-kod-sozdanie-analiz-i-refaktoring-biblioteka-programmista-45ccca) / [Robert C. Martin. Clean Code: A Handbook of Agile Software Craftsmanship](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882) <!--- comment -->
+- Стив Макконнелл. Совершенный код. Мастер-класс / [Steve McConnell. Code Complete: A Practical Handbook of Software Construction](https://www.amazon.com/Code-Complete-Practical-Handbook-Construction/dp/0735619670) <!--- comment -->
+- [Стайлгайд PySpark: как сделать код элегантным](https://habr.com/ru/companies/vk/articles/760416/)
+
+<!-- omit in toc -->
+### Python
+
+<!-- omit in toc -->
+#### Courses
+
+- [CS50’s Introduction to Programming with Python](https://cs50.harvard.edu/python/) `foundations` <!--- comment -->
+- [CS50’s Introduction to Artificial Intelligence with Python](https://cs50.harvard.edu/ai/2024/) `foundations` <!--- comment -->
+- [Основы Python](https://education.yandex.ru/handbook/python)
+- [Python: основы и применение](https://stepik.org/course/512/info)
+- [Программирование на Python](https://stepik.org/course/67/info)
+- Поколение Python:
+  - [Курс для начинающих](https://stepik.org/course/58852)
+  - [Курс для продвинутых](https://stepik.org/course/68343)
+  - [Курс для профессионалов](https://stepik.org/course/82541)
+- [Learn Python (Codecademy)](https://www.codecademy.com/learn/learn-python)
+- [Python для тех, у кого лапки](https://stepik.org/course/85388)
+- [Добрый, добрый Python](https://stepik.org/course/100707)
+- [Инди-курс программирования на Python: Начальный уровень](https://stepik.org/course/63085/syllabus)
+- [Основы Python (karpov.courses)](https://karpov.courses/pythonzero)
+- [Программирование на языке высокого уровня Python](https://dfedorov.spb.ru/python3/)
+
+<!-- omit in toc -->
+#### Theory
+
+- [Python Tutorial for Beginners (with mini-projects)](https://www.youtube.com/watch?v=qwAFL1597eM)
+- [What the f*ck Python! Exploring and understanding Python through surprising snippets](https://github.com/satwikkansal/wtfpython) <!--- comment -->
+- [Comprehensive Python Cheatsheet](https://github.com/gto76/python-cheatsheet)
+- [Python Koans. An interactive tutorial for learning the Python programming language by making tests pass](https://github.com/gregmalcolm/python_koans)
+- [Full Speed Python. Learning Python using a practical approach](https://github.com/joaoventura/full-speed-python?tab=readme-ov-file) <!--- comment -->
+- [The Hitchhiker’s Guide to Python!](https://docs.python-guide.org) <!--- comment -->
+- [A collection of design patterns and idioms in Python](https://github.com/faif/python-patterns) <!--- comment -->
+- [Python Cheatsheet](https://www.pythoncheatsheet.org/cheatsheet/basics)
+- [Write faster Python code, and ship your code faster](https://pythonspeed.com) <!--- comment -->
+- [PEP 257 – Docstring Conventions](https://peps.python.org/pep-0257/)
+- [Threading in Python: The Complete Guide](https://superfastpython.com/threading-in-python/)
+- [multiprocessing — Process-based parallelism](https://docs.python.org/3/library/multiprocessing.html)
+
+<!-- omit in toc -->
+#### Questions
+
+- [53 Python Interview Questions and Answers](https://towardsdatascience.com/53-python-interview-questions-and-answers-91fa311eec3f)
+- Python: вопросы на собеседовании:
+  - [Часть I. Junior](https://pythonist.ru/python-voprosy-sobesedovaniya-chast-i-junior/)
+  - [Часть II. Middle](https://pythonist.ru/python-voprosy-sobesedovaniya-chast-ii-middle/)
+  - [Часть III. Senior](https://pythonist.ru/python-voprosy-sobesedovaniya-chast-iii-senior/)
+
+<!-- omit in toc -->
+#### Other
+
+- [Efficient Python Tricks and Tools for Data Scientists](https://khuyentran1401.github.io/Efficient_Python_tricks_and_tools_for_data_scientists/README.html) <!--- comment -->
+- [Python Roadmap (roadmap.sh)](https://roadmap.sh/python)
+
+<!-- omit in toc -->
+#### Practice
+
+- [Задачи по Python и машинному обучению](https://t.me/python_tasks)
+- [Project Based Learning](https://github.com/practical-tutorials/project-based-learning#python)
+- [FastAPI Best Practices](https://github.com/zhanymkanov/fastapi-best-practices)
+- [Python Training by J.P.Morgan](https://github.com/jpmorganchase/python-training)
+- [101 Pandas Exercises for Data Analysis](https://machinelearningplus.com/python/101-pandas-exercises-python)
+- [Практика с библиотекой Pandas](https://stepik.org/course/111629/syllabus)
+
+<!-- omit in toc -->
+#### Packages
+
+- [Mlxtend](https://github.com/rasbt/mlxtend) (machine learning extensions) is a Python library of useful tools for the day-to-day data science tasks
+- [ML | Hydra](https://habr.com/ru/post/696820/)
+Framework for managing configuration files, tailored for ML projects
+- [Lazy Predict](https://pypi.org/project/lazypredict/)
+Lazy Predict helps build a lot of basic models without much code and helps understand which model works better without any parameter tuning.
+- [More Itertools](https://github.com/more-itertools/more-itertools)
+- [iterative-stratification](https://github.com/trent-b/iterative-stratification)
+- [prettygraph](https://github.com/yoheinakajima/prettygraph)
+- [Hypothesis Documentation](https://hypothesis.readthedocs.io/en/latest/)
+- [Playwright for Python — Documentation](https://playwright.dev/python/)
+- [Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/)
+- [Selenium Documentation](https://www.selenium.dev/documentation/)
+- [pytest Documentation](https://docs.pytest.org/en/7.2.x/getting-started.html)
+- [Документация Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc.ru/bs4ru.html)
+
+## SQL
+
+- [How to pass data engineering SQL interviews in big tech](https://blog.dataengineer.io/p/how-to-pass-data-engineering-sql?utm_source=post-email-title&publication_id=1644342&post_id=136917153&utm_campaign=surfalytics.com)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Ультимативная дорожная карта для изучения SQL и баз данных в 2023 году](https://habr.com/ru/articles/725414/)
+
+<!-- omit in toc -->
+### Courses
+
+- [Интерактивный тренажер по SQL](https://stepik.org/course/63054/info)
+- [Пакет SQL курсов](https://stepik.org/course/61247/info):
+- [Основы SQL](https://stepik.org/course/51562/info)
+- [Продвинутый SQL](https://stepik.org/course/55776/info)
+- [Проектирование баз данных](https://stepik.org/course/51675/info)
+- [PostgreSQL Tutorial for Beginners](https://www.youtube.com/watch?v=SpfIwlAYaKk)
+- [Оконные функции SQL](https://stepik.org/course/95367/promo)
+- [SQL Tutorial](https://mode.com/sql-tutorial/) <!--- comment -->
+- [The Ultimate SQL Guide](https://blog.count.co/the-ultimate-sql-guide/) <!--- comment -->
+- [CS50’s Introduction to Databases with SQL](https://cs50.harvard.edu/sql/) <!--- comment -->
+- [Databases: Relational Databases and SQL (Stanford Online)](http://online.stanford.edu/courses/soe-ydatabases0005-databases-relational-databases-and-sql)
+- [Excel to MySQL: Analytic Techniques for Business](https://www.coursera.org/specializations/excel-mysql?irclickid=1FeyGcwKsxyNWtwyK326wQipUkA2P8Ril3d2z00&irgwc=1&utm_medium=partners&utm_source=impact&utm_campaign=1310690&utm_content=b2c)
+- [Intro to SQL: Querying and managing data (Khan Academy)](https://www.khanacademy.org/computing/computer-programming/sql)
+- [Introduction to Structured Query Language (SQL)](https://www.coursera.org/learn/intro-sql?irclickid=1FeyGcwKsxyNWtwyK326wQipUkA2Pa1Tl3d2z00&irgwc=1&utm_medium=partners&utm_source=impact&utm_campaign=1310690&utm_content=b2c)
+- [Learn SQL (Codecademy)](https://www.codecademy.com/learn/learn-sql)
+- [Learn SQL Basics for Data Science](https://www.coursera.org/specializations/learn-sql-basics-data-science?irclickid=1FeyGcwKsxyNWtwyK326wQipUkA2PfSal3d2z00&irgwc=1&utm_medium=partners&utm_source=impact&utm_campaign=1310690&utm_content=b2c)
+- [SQL Analytics Training (Mode SQL Tutorial)](https://mode.com/sql-tutorial/sql-business-analytics-training)
+- [Введение в базы данных (Stepik)](https://stepik.org/course/551/promo)
+- [Симулятор SQL (karpov.courses)](https://karpov.courses/simulator-sql)
+- [Учебник по SQL (SQL Academy)](https://sql-academy.org/ru/guide)
+
+<!-- omit in toc -->
+### Practice
+
+- [Онлайн тренажер SQL Academy](https://sql-academy.org/) <!--- comment -->
+- [Ace the SQL Interview](https://datalemur.com/questions?category=SQL) <!--- comment -->
+- [Practice SQL](https://www.sql-practice.com/)
+- [SQLBolt. Learn SQL with simple, interactive exercises.](https://sqlbolt.com/) <!--- comment -->
+- [SQL Tutorial by w3schools](https://www.w3schools.com/sql/)
+- [PostgreSQL Exercises](https://pgexercises.com/)
+- [The Querynomicon. An Introduction to SQL for Wary Data Scientists](https://gvwilson.github.io/sql-tutorial/) <!--- comment -->
+- [SQL Challenges](https://platform.datavidhya.com/coding-problems)
+- [SQL Squid Game](https://datalemur.com/sql-game)
+- [DataLemur SQL Interview Questions](https://datalemur.com/sql-interview-questions)
+- [HackerRank: SQL Practice](https://www.hackerrank.com/domains/sql/)
+- [Practical SQL for Data Analysis](https://hakibenita.com/sql-for-data-analysis)
+- [SQL Murder Mystery](https://www.kaggle.com/datasets/johnp47/sql-murder-mystery-database)
+- [SQL-EX.RU](https://www.sql-ex.ru/?ysclid=l5hvbx8wqk77947684)
+- [8 Week SQL Challenge](https://8weeksqlchallenge.com/getting-started/)
+
+## Machine Learning
+
+<!-- omit in toc -->
+### Sites
+
+- [Machine Learning Mastery by Jason Brownlee](https://machinelearningmastery.com/)
+- [Машинное обучение для людей. Разбираемся простыми словами](https://vas3k.blog/blog/machine_learning/) <!--- comment -->
+- [Анализ малых данных](https://dyakonov.org/ag/)
+- [Kaggle Competitions](https://www.kaggle.com/competitions)
+  - [How to Win a Kaggle Competition](https://www.kaggle.com/code/thedrcat/how-to-win-a-kaggle-competition) <!--- comment -->
+- [The Illustrated Machine Learning](https://illustrated-machine-learning.github.io/) <!--- comment -->
+- [MLU-EXPLAIN](https://mlu-explain.github.io/) <!--- comment -->
+- [ML Code Challenges](https://www.deep-ml.com) <!--- comment -->
+- [Papers With Code](https://paperswithcode.com/)
+
+<!-- omit in toc -->
+### Courses
+
+- [Open Machine Learning Course](https://mlcourse.ai/book/index.html) by Yury Kashnitsky <!--- comment -->
+- [Машинное обучение](http://www.machinelearning.ru/wiki/index.php?title=%D0%9C%D0%BE) (курс лекций, К.В.Воронцов)
+- [Прикладные задачи анализа данных](https://github.com/Dyakonov/PZAD/tree/master) (курс лекций, А.Г.Дьяконов) [video](https://www.youtube.com/playlist?list=PLaRUeIuewv8CMFox0oEjlyePUhUmo-x0h)
+- [Алгоритмы Машинного обучения с нуля](https://stepik.org/course/68260/promo)
+- [Stanford CS229: Machine Learning](https://www.youtube.com/playlist?list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU) by Andrew Ng <!--- comment -->
+- [Kaggle Learn](https://www.kaggle.com/learn) <!--- comment -->
+- [Google Machine Learning Courses](https://developers.google.com/machine-learning) <!--- comment -->
+- [End to End Machine Learning by Brandon Rohrer](https://end-to-end-machine-learning.teachable.com/courses/) <!--- comment -->
+- [Машинное Обучение в Python: Большой Курс для Начинающих](https://stepik.org/course/129449/info)
+- [Обучение работе с ML‑сервисами от Yandex Cloud](https://yandex.cloud/ru/training/ml)
+- [Introduction to Machine Learning (I2ML)](https://slds-lmu.github.io/i2ml/) <!--- comment -->
+- [MACHINE LEARNING @ VU](https://mlvu.github.io) <!--- comment -->
+- [Practical Machine Learning](https://practical-ml-fmi.github.io/ML/)
+- [Machine Learning Engineer Learning Path](https://www.cloudskillsboost.google/paths/17)
+- [Machine Learning Course Notes](https://github.com/dair-ai/ml-course-notes)
+- [Data Science for Beginners (Microsoft)](https://microsoft.github.io/Data-Science-For-Beginners/#/)
+- [Data Science: Visualization (HarvardX)](http://pll.harvard.edu/course/data-science-visualization)
+- [High-Dimensional Data Analysis (HarvardX PH525.4x)](http://pll.harvard.edu/course/data-analysis-life-sciences-4-high-dimensional-data-analysis)
+- [Machine Learning Crash Course](https://developers.google.com/machine-learning/crash-course/)
+- [Machine Learning for Beginners (Microsoft)](https://microsoft.github.io/ML-For-Beginners/#/)
+- [Open ML Course: Классические модели ML (autumn 2024)](https://ods.ai/tracks/classic-models-autumn24)
+- [ml-course-hse by Evgeny Sokolov](https://github.com/esokolov/ml-course-hse)
+- [mlcourse.ai](https://github.com/Yorko/mlcourse.ai)
+- [qmlcourse: курс по квантовому машинному обучению](https://github.com/quantum-ods/qmlcourse)
+- [Введение в Data Science и машинное обучение](https://stepik.org/course/4852/promo)
+- [Машинное обучение (А.Г. Дьяконов, МГУ)](https://www.youtube.com/watch?v=q4BBLoiegW0&list=PLhe7c-LCgl4Ic-FRawaaEhUmDCQmGMtzx)
+- [Машинное обучение (К.В. Воронцов)](https://www.youtube.com/watch?v=SZkrxWhI5qM&list=PLJOzdkh8T5krxc4HsHbB8g8f0hu7973fK)
+
+<!-- omit in toc -->
+### Books
+
+- [Учебник по машинному обучению от ШАД](https://education.yandex.ru/handbook/ml/)
+- [An Introduction to Statistical Learning](https://www.statlearning.com/) by Gareth James, Daniela Witten, Trevor Hastie, Rob Tibshirani <!--- comment -->
+- [The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) by Trevor Hastie, Robert Tibshirani, Jerome Friedman <!--- comment -->
+- [Machine Learning Simplified: A gentle introduction to supervised learning](https://themlsbook.com/read) by Andrew Wolf <!--- comment -->
+- [The Kaggle Book](https://www.kaggle.com/discussions/general/320574) <!--- comment -->
+- [Feature Engineering and Selection: A Practical Approach for Predictive Models](http://www.feat.engineering/index.html) by Max Kuhn and Kjell Johnson <!--- comment -->
+- [Clean Machine Learning Code](https://leanpub.com/cleanmachinelearningcode) <!--- comment -->
+- [Interpreting Machine Learning Models With SHAP: A Guide With Python Examples And Theory On Shapley Values](https://www.amazon.com/dp/B0CHL7W1DL) <!--- comment -->
+- [Interpretable Machine Learning. A Guide for Making Black Box Models Explainable by Christoph Molnar](https://christophm.github.io/interpretable-ml-book/) <!--- comment -->
+- [Machine Learning Q and AI. Expand Your Machine Learning & AI Knowledge With 30 In-Depth Questions and Answers by Sebastian Raschka](https://leanpub.com/machine-learning-q-and-ai/) <!--- comment -->
+- [Reliable Machine Learning: Applying SRE Principles to ML in Production by Cathy Chen](https://www.amazon.com/Reliable-Machine-Learning-Principles-Production/dp/1098106229/ref=sr_1_9?crid=2LKWLWL9VVED7&keywords=SRE&qid=1677242699&sprefix=sre%2Caps%2C244&sr=8-9) <!--- comment -->
+- [Models Demystified. A Practical Guide from Linear Regression to Deep Learning](https://m-clark.github.io/book-of-models/)  <!--- comment -->
+- [Machine Learning from Scratch. Derivations in Concept and Code](https://dafriedman97.github.io/mlbook/content/introduction.html) <!--- comment -->
+- [Supervised Machine Learning for Science by Christoph Molnar & Timo Freiesleben](https://ml-science-book.com) <!--- comment -->
+- [Machine Learning Refined: Notes, Exercises, Presentations, and Sample Chapters](https://github.com/neonwatty/machine_learning_refined) <!--- comment -->
+- [Дьяконов А.Г. "Машинное обучение и анализ данных"](https://github.com/Dyakonov/MLDM_BOOK)
+- [Виктор Владимирович Китов. Машинное обучение](https://deepmachinelearning.ru/docs/Machine-learning/book-title)
+- [Thinking Clearly with Data: A Guide to Quantitative Reasoning and Analysis](https://www.amazon.com/Thinking-Clearly-Data-Quantitative-Reasoning/dp/0691214352)  <!--- comment -->
+- [Applied geospatial Data Science with Python: Leverage geospatial data analysis and modeling to find unique solutions to environmental problems](https://www.amazon.com/Applied-geospatial-Data-Science-Python-ebook/dp/B0BJ7GPXMG) <!--- comment -->
+- [Foundations of Machine Learning by Mohri, Rostamizadeh, Talwalkar](https://cs.nyu.edu/~mohri/mlbook/)
+- [Hands-On Machine Learning with Scikit-Learn, Keras and TensorFlow](https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1492032646)
+- [Learning Machine: An Interactive Book of Machine Learning](https://rentruewang.github.io/learning-machine/intro.html)
+- [Machine Learning Bookcamp](https://www.manning.com/books/machine-learning-bookcamp)
+- [Probabilistic Machine Learning: Advanced Topics (Kevin Murphy)](https://probml.github.io/pml-book/book2)
+- [Probabilistic Machine Learning: An Introduction (Kevin Murphy)](https://probml.github.io/pml-book/book1.html)
+
+<!-- omit in toc -->
+### Cheetsheets
+
+- [Supervised Learning](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-supervised-learning)
+- [Unsupervised Learning](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-unsupervised-learning)
+- [Tips and Tricks](https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learning-tips-and-tricks)
+- [Machine learning cheat sheet](https://github.com/soulmachine/machine-learning-cheat-sheet?tab=readme-ov-file)
+- [Machine Learning Glossary](https://ml-cheatsheet.readthedocs.io/en/latest/)
+- [Cheat Sheets for Machine Learning and Data Science](https://sites.google.com/view/datascience-cheat-sheets)
+- [Обзор методов кластеризации (scikit-learn.ru)](https://scikit-learn.ru/clustering)
+
+<!-- omit in toc -->
+### Articles
+
+- [Anthology of Modern Machine Learning](https://github.com/dmarx/anthology-of-modern-ml)
+- [Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure](https://onlinelibrary.wiley.com/doi/10.1111/ecog.02881)
+- [ML Papers of The Week by DAIR.AI](https://github.com/dair-ai/ML-Papers-of-the-Week)
+- [word2vec Parameter Learning Explained](https://arxiv.org/pdf/1411.2738.pdf)
+- [Ilya 30u30](https://arc.net/folder/D0472A20-9C20-4D3F-B145-D2865C0A9FEE)
+- [Introduction to Machine Learning by Laurent Younes](https://arxiv.org/pdf/2409.02668) <!--- comment -->
+- [A Comprehensive Benchmark of Machine and Deep Learning Across Diverse Tabular Datasets](https://arxiv.org/pdf/2408.14817)
+- [An Empirical Comparison of Supervised Learning Algorithms](https://www.cs.cornell.edu/~caruana/ctp/ct.papers/caruana.icml06.pdf)
+- [Better Generalization with Semantic IDs: A Case Study in Ranking for Recommendations](https://arxiv.org/abs/2306.08121)
+- [CatBoost, XGBoost и выразительная способность решающих деревьев](https://habr.com/ru/company/ods/blog/645887/)
+- [DeepFM: A Factorization-Machine based Neural Network for CTR Prediction](https://arxiv.org/pdf/1703.04247)
+- [Multi-gate Mixture-of-Experts (MMoE) — Google, KDD 2018](https://dl.acm.org/doi/10.1145/3219819.3220007)
+- [Multitask Learning (Caruana, 1997)](https://link.springer.com/article/10.1023/A:1007379606734)
+- [When to Choose CatBoost Over XGBoost or LightGBM](https://neptune.ai/blog/when-to-choose-catboost-over-xgboost-or-lightgbm)
+- [Метод опорных векторов (SVM): подходы, принцип работы и реализация с нуля на Python](https://habr.com/ru/articles/802185)
+- [Основы линейной регрессии](https://habr.com/ru/articles/514818)
+
+<!-- omit in toc -->
+### Applied ML
+
+- [geographic Data Science with Python](https://geographicdata.science/book/notebooks/12_feature_engineering.html) <!--- comment -->
+- [WTTE-RNN - Less hacky churn prediction](https://ragulpr.github.io/2016/12/22/WTTE-RNN-Hackless-churn-modeling/)
+- [Прикладной анализ данных в социальных науках](https://academy.yandex.ru/handbook/data-analysis?utm_source=vk&utm_medium=internal&utm_campaign=handbook_aon&utm_content=0606)
+- [Ансамбли в машинном обучении](https://alexanderdyakonov.wordpress.com/2019/04/19/%D0%B0%D0%BD%D1%81%D0%B0%D0%BC%D0%B1%D0%BB%D0%B8-%D0%B2-%D0%BC%D0%B0%D1%88%D0%B8%D0%BD%D0%BD%D0%BE%D0%BC-%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B8/)
+- [Machine Learning for Imbalanced Data](https://github.com/PacktPublishing/Machine-Learning-for-Imbalanced-Data)
+- [Валидация моделей машинного обучения](https://habr.com/ru/companies/glowbyte/articles/569970/)
+- [Do Machine Learning Models Memorize or Generalize?](https://pair.withgoogle.com/explorables/grokking/)
+- [Soccer Analytics Handbook](https://github.com/devinpleuler/analytics-handbook)
+- [lifetimes](https://lifetimes.readthedocs.io/en/latest/)
+- [retentioneering-tools](https://github.com/retentioneering/retentioneering-tools)
+
+<!-- omit in toc -->
+### Blogs
+
+- [Applying Machine Learning by Eugene Yan](https://applyingml.com/)
+- [Eugene Yan](https://eugeneyan.com/)
+- [Data Science Project Quick-Start](https://eugeneyan.com/writing/project-quick-start/)
+- [Writing is Learning: How I Learned an Easier Way to Write](https://eugeneyan.com/writing/reading-note-taking-writing/)
+- [Uncommon Uses of Python in Commonly Used Libraries](https://eugeneyan.com/writing/uncommon-python/)
+- [Andrey Lukyanenko](https://andlukyane.com/)
+- [A third life of a personal pet-project for handwritten digit recognition](https://andlukyane.com/blog/a-third-life-of-a-personal-project)
+- [A machine learning roadmap for beginners in 2026](https://andlukyane.com/blog/starting-a-career-in-machine-learning) <!--- comment -->
+- [Dan Bader](https://dbader.org/)
+- [Matthew Brett](https://matthew-brett.github.io/teaching/index.html)
+- [Introducing principal component analysis](https://matthew-brett.github.io/teaching/pca_introduction.html)
+- [Amit Chaudhary](https://amitness.com/)
+- [Andrej Karpathy](http://karpathy.github.io/)
+- [Jay Alammar](https://jalammar.github.io/)
+- [Lilian Weng](https://lilianweng.github.io/)
+- [Data science blogs](https://github.com/rushter/data-science-blogs)
+- [Keep the gradient flowing by Fabian Pedregosa](https://fa.bianp.net/)
+- [Irrational Exuberance by Will Larson](https://lethain.com/)
+
+<!-- omit in toc -->
+### Feature Engineering
+
+- [Лекция по курсу ММО - 24.03.2021, Отбор признаков (Feature selection)](https://www.youtube.com/watch?app=desktop&v=P7PhGneBFcI)
+- [Kaggle Tips for Feature Engineering and Selection | by Gilberto Titericz | Kaggle Days Meetup Madrid](https://www.youtube.com/watch?app=desktop&v=RtqtM1UJfZc)
+- [featurewiz is the best feature selection library for boosting your machine learning performance with minimal effort and maximum relevance using the famous MRMR algorithm](https://github.com/AutoViML/featurewiz)
+- [Feature Ranking and Selection](https://www.youtube.com/watch?app=desktop&v=u7TVqtW7jM0)
+- [Feature Engineering A-Z](https://feaz-book.com) <!--- comment -->
+- [Feature Selection in Machine Learning by Soledad Galli](https://leanpub.com/feature-selection-in-machine-learning?trk=feed_main-feed-card_comment-text) <!--- comment -->
+- [OptBinning](https://gnpalencia.org/optbinning/)
+- [feature-engine](https://feature-engine.trainindata.com/en/latest/index.html)
+
+<!-- omit in toc -->
+#### Tutorials
+
+- [CatBoost - An In-Depth Guide](https://coderzcolumn.com/tutorials/machine-learning/catboost-an-in-depth-guide-python)
+- [Введение в библиотеку Transformers и платформу Hugging Face](https://habr.com/ru/post/704592/)
+- [Build a Telegram chatbot with any AI model under the hood](https://medium.com/@galperovich/build-a-telegram-chatbot-with-any-ai-model-under-the-hood-62f9a8675d81)
+- [ML Primer by Boris Tseytlin](https://btseytlin.notion.site/ML-Primer-53c3d8666da1438c8eab4389321d44a2)
+- [Decision Trees. The unreasonable power of nested decision rules](https://mlu-explain.github.io/decision-tree/)
+- [Ensemble Methods and Decision Trees](https://aman.ai/primers/ai/ensemble-methods-and-decision-trees/)
+- [Awesome CatBoost](https://github.com/valeman/Awesome_CatBoost)
+- [Beware Default Random Forest Importances](https://explained.ai/rf-importance/index.html)
+- [Understanding Tree SHAP for Simple Models (SHAP docs)](https://shap.readthedocs.io/en/latest/example_notebooks/tabular_examples/tree_based_models/Understanding%20Tree%20SHAP%20for%20Simple%20Models.html)
+
+<!-- omit in toc -->
+### Blog posts
+
+- [Векторное представление товаров Prod2Vec: как мы улучшили матчинг и избавились от кучи эмбеддингов](https://habr.com/ru/company/ozontech/blog/648231/)
+- [Some characteristics of best-in-class ML portfolio projects](https://mlops.systems/computervision/skillbuilding/2022/04/04/ml-portfolio-best-practices.html)
+- [Как метод подмены задачи борется с несовершенством данных (и мира)](https://habr.com/ru/company/ru_mts/blog/648063/)
+- [Feature Selection — Exhaustive Overview by Danny Butvinik](https://medium.com/analytics-vidhya/feature-selection-extended-overview-b58f1d524c1c)
+- [A highly anticipated Time Series Cross-validator is finally here](https://towardsdatascience.com/a-highly-anticipated-time-series-cross-validator-is-finally-here-7dc99f672736)
+- [Интерпретация моделей и диагностика сдвига данных: LIME, SHAP и Shapley Flow](https://habr.com/ru/company/ods/blog/599573)
+- [Мое первое серебро на Kaggle или как стабилизировать ML модель и подпрыгнуть на 700 мест вверх](https://habr.com/ru/post/704440/)
+- [Soccer Analytics 2022 Review](https://www.janvanhaaren.be/2022/12/29/soccer-analytics-review-2022.html)
+- [Эй-Яй, крипта, MLOps и командный пет-проджект by yorko](https://habr.com/ru/company/ods/blog/673376/)
+- [Understanding UMAP](https://pair-code.github.io/understanding-umap/)
+- [A new perspective on Shapley values, part I: Intro to Shapley and SHAP](https://edden-gerber.github.io/shapley-part-1/)
+- [A new perspective on Shapley values, part II: The Naïve Shapley method](https://edden-gerber.github.io/shapley-part-2/)
+- [10 первых ошибок в карьере ML-инженера](https://habr.com/ru/post/718942/)
+- [Understanding the Bias-Variance Tradeoff by Seema Singh](https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229)
+- [The “Bias-Variance Trade-Off” Explained Practically (In Python)](https://towardsdatascience.com/the-bias-variance-trade-off-explained-practically-in-python-48cf29d9e900)
+- [Модельный риск: как увеличить эффективность работы ML моделей в большой компании](https://habr.com/ru/companies/X5Tech/articles/775424/)
+- [Эффективные ансамбли](https://deepschool-pro.notion.site/e0b2a0bad14e414782b9ab3dff0cd2b5)
+- [Reflecting on 18 years at Google](https://ln.hixie.ch/?start=1700627373&count=1)
+- [Как не перестать быть data driven из-за data driften, или Пару слов о дрейфе данных](https://habr.com/ru/companies/glowbyte/articles/681772/)
+- [В чём польза теоремы Байеса — или как управлять неопределённостью](https://practicum.yandex.ru/blog/teorema-bajesa-dlya-data-science/)
+- [AI by Hand with Prof. Tom Yeh for AI Professionals](https://dongou.tech/ai/dongou/ai-by-hand-✍%EF%B8%8F-with-prof-tom-yeh-for-ai-professionals/)
+- [CatBoost и LightGBM: особенности алгоритмов градиентного бустинга](https://habr.com/ru/companies/tochka/articles/751012/)
+- [Кластеризация в ML: от теории популярных алгоритмов до реализации с нуля на Python](https://habr.com/ru/articles/798331/)
+- [Оценка качества кластеризации: свойства, метрики, код](https://habr.com/ru/companies/yandex/articles/500742)
+
+<!-- omit in toc -->
+### Kaggle
+
+- [Best Kaggle Competitions for Beginners](https://www.kaggle.com/getting-started/78482)
+- [Roadmap for Beginners](https://www.kaggle.com/getting-started/73164)
+- [The Best Tutorial for Beginners](https://www.kaggle.com/getting-started/71679)
+- [Learning Materials on Kaggle](https://www.kaggle.com/getting-started/39193)
+- [Data Science for tabular data: Advanced Techniques](https://www.kaggle.com/code/vbmokin/data-science-for-tabular-data-advanced-techniques)  
+- [Feature Selection with Null Importances](https://www.kaggle.com/code/ogrellier/feature-selection-with-null-importances)
+- [The Most Comprehensive List of Kaggle Solutions and Ideas](https://farid.one/kaggle-solutions/)  <!--- comment -->
+- NLP:
+  - [Approaching (Almost) Any NLP Problem on Kaggle](https://www.kaggle.com/abhishek/approaching-almost-any-nlp-problem-on-kaggle/notebook)
+  - [Long Text Sentiment Classification BERT Windowing](https://www.kaggle.com/code/datajameson/long-text-sentiment-classification-bert-windowing)
+- EDA Pipelines:
+  - Titanic:
+    - [EDA To Prediction(DieTanic)](https://www.kaggle.com/ash316/eda-to-prediction-dietanic/notebook)
+    - [Titanic Top 4% with ensemble modeling](https://www.kaggle.com/yassineghouzam/titanic-top-4-with-ensemble-modeling)
+- Ensembling:
+  - [Introduction to Ensembling/Stacking in Python](https://www.kaggle.com/arthurtok/introduction-to-ensembling-stacking-in-python#Second-Level-Predictions-from-the-First-level-Output)
+- [Разбор kaggle-соревнования "American Express" в MISIS AI Lab](https://youtu.be/XevUMoVuztg)  
+- [Tinkoff Data Science Challenge — Станислав Семёнов о кодировании категориальных признаков](https://youtu.be/NVKDSNM702k?si=MYdVgoCqTOTbBGPW)
+
+<!-- omit in toc -->
+### Metrics
+
+- [Classification metrics (precision, recall, F1 and Matthews correlation coefficient)](https://twitter.com/rasbt/status/1457018296847437824?t=NHXMPdhYFg9xF-WzqGQZYg&s=09)
+- [Classification metrics (precision, recall, F1 and Matthews correlation coefficient) vs Balanced Accuracy](https://twitter.com/rasbt/status/1459577884100767753?t=hErn_d7Xvr_zq8eYokAx8w&s=09)
+- [An Introduction to ROC Analysis (Fawcett, 2006)](https://www.researchgate.net/publication/222511520_Introduction_to_ROC_analysis)
+- [Population Stability Index](https://www.listendata.com/2015/05/population-stability-index.html)
+- [The Meaning and Use of the Area Under a ROC Curve (Hanley & McNeil, 1982)](https://pubs.rsna.org/doi/epdf/10.1148/radiology.143.1.7063747)
+- [The Relationship Between Precision-Recall and ROC Curves (Davis & Goadrich, 2006)](https://www.researchgate.net/publication/215721831_The_Relationship_Between_Precision-Recall_and_ROC_Curves)
+- [Александр Дьяконов — конспект про метрики (ML metrics)](https://alexanderdyakonov.wordpress.com/wp-content/uploads/2018/10/book_08_metrics_12_blog1.pdf)
+
+<!-- omit in toc -->
+### Datasets
+
+- [24 Useful Open Datasets for Natural Language Processing](https://odsc.medium.com/24-useful-open-datasets-for-natural-language-processing-4eea7f0c8b94)
+- [Подборка источников геоданных](https://glamorous-ambert-bd8.notion.site/3ceb17df38be46e1a5d29a60ce8ccc4c)
+- [Awesome Public Datasets](https://github.com/awesomedata/awesome-public-datasets)
+
+<!-- omit in toc -->
+### Assignments
+
+- [Stanford CS224n: Natural Language Processing with Deep Learning](https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1214/index.html#schedule)
+  - Assignment 1: Introduction to word vectors
+  - Assignment 2: Derivatives and implementation of word2vec algorithm
+  - Assignment 3: Dependency parsing and neural network foundations
+  - Assignment 4: Neural Machine Translation with sequence-to-sequence, attention, and subwords
+  - Assignment 5: Self-supervised learning and fine-tuning with Transformers
+- [Stanford CS231n: Convolutional Neural Networks for Visual Recognition](http://cs231n.stanford.edu/schedule.html) & [Course notes](https://cs231n.github.io/) <!--- comment -->
+  - Assignment 1: Image Classification, kNN, SVM, Softmax, Fully-Connected Neural Network
+  - Assignment 2: Fully-Connected Nets, Batch Normalization, Dropout, Convolutional Nets
+  - Assignment 3: Image Captioning with Vanilla RNNs, LSTMs, Transformers, Network Visualization, Generative Adversarial Networks
+- [Stanford CS229: Machine Learning](https://cs229.stanford.edu/syllabus.html) & [Summer version](https://cs229.stanford.edu/syllabus-summer2019.html) & [Assignments from Fall 2018](https://cs229.stanford.edu/syllabus-autumn2018.html)
+- [Pen and Paper Exercises in Machine Learning](https://arxiv.org/abs/2206.13446)
+
+<!-- omit in toc -->
+### Other
+
+- [StatQuest with Josh Starmer](https://www.youtube.com/@statquest/videos) <!--- comment -->
+- A new perspective on Shapley values: <!--- comment -->
+  - [Part I: Intro to Shapley and SHAP](https://edden-gerber.github.io/shapley-part-1/) <!--- comment -->
+  - [Part II: The Naïve Shapley method](https://edden-gerber.github.io/shapley-part-2/) <!--- comment -->
+- [Model Evaluation, Model Selection, and Algorithm Selection in Machine Learning by Sebastian Raschka](https://arxiv.org/abs/1811.12808) <!--- comment -->
+- [How to avoid machine learning pitfalls: a guide for academic researchers by Michael A. Lones](https://arxiv.org/abs/2108.02497) <!--- comment -->
+- [Core Machine Learning Skills](https://neetcode.io/practice?subpage=practice&tab=coreSkills&topic=Machine%20Learning) <!--- comment -->
+- [Discover machine learning, data science & robotics competitions](https://mlcontests.com)
+- [AI and Data Scientist Roadmap](https://roadmap.sh/ai-data-scientist)
+- [Public: Learning Map to become a Data & AI Scientist at Careem](https://docs.google.com/spreadsheets/d/1C9BSXdwXDpmT-FbSvp2rCIgPTuM5ef0y9Y0KtjeCOF8/edit#gid=0)
+- [Компетенции DS-инженеров в Авито](https://github.com/avito-tech/playbook/blob/master/ds-skills.md)
+- [Лекции Науки о данных (МФТИ)](https://github.com/NazarovMichail/Lectures-notes-MIPT)
+- [Courses at Stanford relative to AI](https://burlachenkok.github.io/Courses-at-Stanford-relative-to-AI/)
+- [A Critical Field Guide for Working with Machine Learning Datasets](https://knowingmachines.org/critical-field-guide)
+- [AugLy](https://github.com/facebookresearch/AugLy)
+- [How HDBSCAN Works](https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html)
+- [Yellowbrick](https://github.com/DistrictDataLabs/yellowbrick)
+- [auto-sklearn](https://github.com/automl/auto-sklearn)
+
+## MLOps
+
+<!-- omit in toc -->
+### General
+
+- [FastAPI for Machine Learning: Live coding an ML web application with the creator of FastAPISebastián Ramírez](https://www.youtube.com/watch?v=_BZGtifh_gw&ab_channel=DeepLearningAI)
+- [Build your MLOps stack](https://mymlops.com/)
+- [MLOps и production подход к ML исследованиям](https://ods.ai/tracks/ml-in-production-spring-22)
+- [MLOps Guide](https://mlops-guide.github.io/) <!--- comment -->
+- [MLOps guide by Chip Hyyen](https://huyenchip.com/mlops/) <!--- comment -->
+- [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp) <!--- comment -->
+- MLOps и production подход к ML исследованиям 2.0: [Видео](https://www.youtube.com/playlist?app=desktop&list=PLUJY3Hn1BMCIiVRaQyKDA_molGS3-R1d_) + [Курс](https://ods.ai/tracks/ml-in-production-spring-23)
+- [THE ULTIMATE DOCKER COMPOSE CHEAT SHEET](https://devopscycle.com/blog/the-ultimate-docker-compose-cheat-sheet/)
+- [Practitioner's guide to MLOps by Google](https://services.google.com/fh/files/misc/practitioners_guide_to_mlops_whitepaper.pdf) <!--- comment -->
+- [Advanced курс по MLOps: Kubernetes, Kafka, CI/CD](https://pymagic.ru/hard-mlops)
+- [Awesome MLOps](https://github.com/visenger/awesome-mlops)
+- [Awesome MLOps (Tools)](https://github.com/kelvins/awesome-mlops)
+- [DTU MLOps Course](https://github.com/SkafteNicki/dtu_mlops)
+- [Evidently](https://github.com/evidentlyai/evidently)
+- [Introduction to Machine Learning Systems (Vijay Janapa Reddi)](https://mlsysbook.ai/vol1/)
+- [Lean Data Science (LeanDS) — вводный курс](https://ods.ai/tracks/leands-course)
+- [MLOps-Basics](https://github.com/graviraja/MLOps-Basics)
+- [Made With ML: MLOps Course](https://github.com/GokuMohandas/mlops-course)
+- [Open-Source ML Observability Course](https://www.youtube.com/playlist?list=PL9omX6impEuOpTezeRF-M04BW3VfnPBRF)
+- [Towards MLOps: Technical Capabilities of a Machine Learning Platform](https://medium.com/prosus-ai-tech-blog/towards-mlops-technical-capabilities-of-a-machine-learning-platform-61f504e3e281)
+- [Мини-курс по MLOps (Промышленный ML)](https://pymagic.ru/mlops)
+- [Управление вычислениями: средний уровень](https://stepik.org/course/1612/promo)
+
+<!-- omit in toc -->
+### Other
+
+- [Complete Docker Course - From BEGINNER to PRO!](https://www.youtube.com/watch?v=RqTEHSBrYFw) <!--- comment -->
+- [Docker Containers and Kubernetes Fundamentals](https://www.youtube.com/watch?v=kTp5xUtcalw)
+- [Изучение Docker для начинающих](https://www.youtube.com/playlist?list=PL0lO_mIqDDFX1c0JHogP5YuZdOVawoepS)
+
+## Deep Learning
+
+<!-- omit in toc -->
+### Books
+
+- [The Little Book of Deep Learning by François Fleuret](https://fleuret.org/francois/lbdl.html) <!--- comment -->
+- [Deep Learning with Python by François Chollet](https://www.manning.com/books/deep-learning-with-python-second-edition) <!--- comment -->
+- [Multimodal Deep Learning](https://slds-lmu.github.io/seminar_multimodal_dl/index.html) <!--- comment -->
+- [Dive into Deep Learning](https://d2l.ai/index.html) <!--- comment -->
+I prefer going through this book using [Amazon SageMaker](https://d2l.ai/chapter_appendix-tools-for-deep-learning/sagemaker.html) <!--- comment -->
+- [Understanding Deep Learning by Simon J.D. Prince](https://udlbook.github.io/udlbook/) <!--- comment -->
+- [Deep Learning by Ian Goodfellow, Yoshua Bengio and Aaron Courville](https://www.deeplearningbook.org) <!--- comment -->
+- [Deep Learning for Coders with Fastai and PyTorch: AI Applications Without a PhD by Jeremy Howard and Sylvain Gugger](https://course.fast.ai/Resources/book.html)
+- [Deep Learning. Foundations and Concepts by Chris Bishop and Hugh Bishop](https://www.bishopbook.com) <!--- comment -->
+- [Mastering PyTorch by Ashish Ranjan Jha](https://www.oreilly.com/library/view/mastering-pytorch/9781801074308/?_gl=1*10hryeg*_ga*MTc1MTUyNjI1OS4xNzI0MjMyMzk4*_ga_092EL089CH*MTcyNDIzMjM5OC4xLjEuMTcyNDIzMjQyMy4zNS4wLjA)
+- [The Tensor Cookbook by Thomas Dybdahl Ahle](https://tensorcookbook.com) <!--- comment -->
+- [Deep Learning and Computational Physics](https://arxiv.org/pdf/2301.00942v1) <!--- comment -->
+- [Виктор Владимирович Китов. Глубокое обучение](https://deepmachinelearning.ru/docs/Neural-networks/book-title)
+- [Grokking Deep Learning — code repository](https://github.com/iamtrask/Grokking-Deep-Learning/blob/master/README.md)
+
+<!-- omit in toc -->
+### Courses
+
+- [Deep Learning Specialization](https://www.coursera.org/specializations/deep-learning)
+- [MIT 6.S191 Introduction to Deep Learning](http://introtodeeplearning.com/) <!--- comment -->
+- [Full Stack Deep Learning - Course 2022](https://fullstackdeeplearning.com/course/2022/) <!--- comment -->
+- [11-785 Introduction to Deep Learning from Carnegie Mellon University](https://www.youtube.com/playlist?list=PLp-0K3kfddPxRmjgjm0P1WT6H-gTqE8j9)
+- [Neuromatch Academy: Deep Learning](https://deeplearning.neuromatch.io/tutorials/intro.html)
+- [Efficient Deep Learning Systems by Yandex School of Data Analysis](https://github.com/mryab/efficient-dl-systems)
+- [Short Courses by DeepLearning.AI](https://www.deeplearning.ai/short-courses/) <!--- comment -->
+- [TinyML and Efficient Deep Learning Computing](https://hanlab.mit.edu/courses/2023-fall-65940) <!--- comment -->
+- [Practical Deep Learning](https://course.fast.ai/) <!--- comment -->
+- [Practical Deep Learning for Coders part 2: Deep Learning Foundations to Stable Diffusion](https://course.fast.ai/Lessons/part2.html)
+- [PyTorch for Deep Learning & Machine Learning (video)](https://www.youtube.com/watch?v=V_xro1bcAuA) + [Learn PyTorch for Deep Learning: Zero to Mastery book (site)](https://www.learnpytorch.io/) <!--- comment -->
+- [Deep Learning Fundamentals by Sebastian Raschka and Lightning AI](https://lightning.ai/pages/courses/deep-learning-fundamentals/) <!--- comment -->
+- [Future of AI is Foundation Models & Self-Supervised Learning](https://www.futureofai.mit.edu/)
+- [Artificial Intelligence for Beginners](https://github.com/microsoft/AI-For-Beginners) <!--- comment -->
+- [11-785 Introduction to Deep Learning](https://deeplearning.cs.cmu.edu/S24/index.html) + [11785 Spring 2024 Lectures](https://www.youtube.com/playlist?list=PLp-0K3kfddPxUJzAW0KxNNjGiK_hISFas)
+- [Stanford CS 230 ― Deep Learning](https://stanford.edu/~shervine/teaching/cs-230/) <!--- comment -->
+- [Convolutional Neural Networks](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks)
+- [Recurrent Neural Networks](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-recurrent-neural-networks)
+- [Deep Learning Tips and Tricks](https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-deep-learning-tips-and-tricks)
+- [CS 330: Deep Multi-Task and Meta Learning](https://cs330.stanford.edu/)
+- [Deep Learning with Catalyst](https://github.com/catalyst-team/dl-course)
+- [Practical DL](https://github.com/yandexdataschool/Practical_DL)
+- [Deep Learning from the Foundations by fast.ai](https://course19.fast.ai/part2.html) <!--- comment -->
+- [PyTorch Tutorials - Complete Beginner Course](https://www.youtube.com/playlist?list=PLqnslRFeH2UrcDBWF5mfPGpqQDSta6VK4)
+- [Школа глубокого обучения](https://dls.samcs.ru/)
+- [Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html) by Andrej Karpathy <!--- comment -->
+- CUDA Mode: [Lectures](https://github.com/cuda-mode/lectures?tab=readme-ov-file) + [Video](https://www.youtube.com/@CUDAMODE?app=desktop)
+- [Deep Learning IP-Paris](https://m2dsupsdlclass.github.io/lectures-labs/)
+- [CS565600 Deep Learning. Fundamentals of machine learning, deep learning, and AI](https://nthu-datalab.github.io/ml/)
+- [Introduction to Deep Learning (I2DL) (IN2346)](https://niessner.github.io/I2DL/)
+- [CS 886: Recent Advances on Foundation Models](https://cs.uwaterloo.ca/~wenhuche/teaching/cs886/)
+- [DEEP LEARNING COURSE](https://fleuret.org/dlc/)
+- [CS236 Deep Generative Models](https://deepgenerativemodels.github.io)
+- [10-202: Introduction to Modern AI](https://modernaicourse.org)
+- [Deep Learning in Finance (Stepik)](https://stepik.org/177280)
+- [Hugging Face Audio Course](https://huggingface.co/learn/audio-course/chapter0/introduction)
+
+<!-- omit in toc -->
+### Tutorials
+
+- [Introduction to Deep Learning by Sebastian Raschka](https://sebastianraschka.com/blog/2021/dl-course.html#l19-self-attention-and-transformer-networks)
+- [Коллекция ручных задачек о нейросетях](https://fulyankin.github.io/deep_learning_masha_book/intro.html)
+- [A collection of various deep learning architectures, models, and tips for TensorFlow and PyTorch in Jupyter Notebooks by Sebastian Raschka](https://github.com/rasbt/deeplearning-models) <!--- comment -->
+- [Deep Learning Tuning Playbook by Google](https://github.com/google-research/tuning_playbook) <!--- comment -->
+- [A Step by Step Backpropagation Example](https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/)
+- [PyTorch Fundamentals by Microsoft](https://learn.microsoft.com/en-us/training/paths/pytorch-fundamentals/?wt.mc_id=aiml-26954-cxa)
+- [labml.ai Annotated PyTorch Paper Implementations](https://nn.labml.ai/) <!--- comment -->
+- [Grokking PyTorch](https://github.com/Kaixhin/grokking-pytorch)
+- [The Incredible PyTorch](https://github.com/ritchieng/the-incredible-pytorch) <!--- comment -->
+- [AI Fundamentals. Concepts, Definitions, Terms](https://aman.ai/primers/ai/?trk=feed_main-feed-card-text)
+- [A Guide to Production Level Deep Learning](https://github.com/alirezadir/Production-Level-Deep-Learning?tab=readme-ov-file)
+- [A Gentle Introduction to torch.autograd](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html)
+- [Introduction to deep learning](https://carpentries-incubator.github.io/deep-learning-intro/1-introduction.html)
+- [PyTorch internals](http://blog.ezyang.com/2019/05/pytorch-internals/) <!--- comment -->
+- [A Recipe for Training Neural Networks (Andrej Karpathy)](http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines)
+- [Machine Learning Collection (Aladdin Persson)](https://github.com/aladdinpersson/Machine-Learning-Collection)
+- [Neural Networks (MLU-Explain)](https://mlu-explain.github.io/neural-networks/)
+
+<!-- omit in toc -->
+### Blogs & Blog posts
+
+- [WHAT IS TORCH.NN REALLY? by Jeremy Howard, fast.ai](https://pytorch.org/tutorials/beginner/nn_tutorial.html)
+- [О «раздутом пузыре» нейросетей](https://habr.com/ru/post/718996/)
+- [Cтатьи от команды DeepSchool](https://deepschool-pro.notion.site/9a613d3c8d3644faa8e396bd083f2bc2?v=524b15c7ce9f49d094f94cd699c2c621)
+- [Полезные материалы про PyTorch](https://telegra.ph/PyTorch-i-okolo-nego-04-12)
+- [AstraBlog](https://astralord.github.io)
+- [Deep Neural Nets: 33 years ago and 33 years from now (Andrej Karpathy)](https://karpathy.github.io/2022/03/14/lecun1989/)
+- [How to Train Really Large Models on Many GPUs? (Lilian Weng)](https://lilianweng.github.io/posts/2021-09-25-train-large/)
+- [Jia-Bin Huang — YouTube Channel](https://youtube.com/@jbhuang0604/videos)
+
+<!-- omit in toc -->
+### Other
+
+- [Deep Learning Interviews: Hundreds of fully solved job interview questions from a wide range of key topics in AI](https://arxiv.org/abs/2201.00650)
+- [A Cookbook of Self-Supervised Learning](https://arxiv.org/pdf/2304.12210.pdf)
+- [Adam: A Method for Stochastic Optimization](https://arxiv.org/pdf/1412.6980.pdf)
+- [Backpropagation Applied to Handwritten Zip Code Recognition (LeCun et al., 1989)](http://yann.lecun.com/exdb/publis/pdf/lecun-89e.pdf)
+- [Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift](https://arxiv.org/pdf/1502.03167.pdf)
+- [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](https://jmlr.org/papers/v15/srivastava14a.html)
+- [Generative Adversarial Nets](https://arxiv.org/pdf/1406.2661v1.pdf)
+- [Highly Accurate Protein Structure Prediction with AlphaFold](https://www.nature.com/articles/s41586-021-03819-2)
+
+## Generative AI
+
+- [Generative AI for Beginners](https://github.com/microsoft/generative-ai-for-beginners?tab=readme-ov-file)
+- [A Comprehensive Survey of AI-Generated Content (AIGC)](https://arxiv.org/abs/2303.04226)
+- [Generative AI with Large Language Models (Coursera)](https://www.coursera.org/learn/generative-ai-with-llms)
+- [Hugging Face Diffusion Models Course](https://github.com/huggingface/diffusion-models-class)
+
+## NLP
+
+<!-- omit in toc -->
+### Books
+
+- [Natural Language Processing with Transformers](https://transformersbook.com) by Lewis Tunstall, Leandro von Werra adn Thomas Wolf
+- [Speech and Language Processing by Dan Jurafsky and James H. Martin](https://web.stanford.edu/~jurafsky/slp3/) <!--- comment -->
+- [Transformers for Natural Language Processing](https://www.amazon.com/Transformers-Natural-Language-Processing-architectures-ebook/dp/B09T34LVRM?ref_=ast_author_dp&dib=eyJ2IjoiMSJ9.wa38PcGXRxWshcH7rjbD4IcG9iwmHqu-ncXj6wO9_XMOVAx0cny9f6lqwV0McsOKUhvnNw-lAB6HtM35nxTl9z34_sglVNO4zrYs-3pvp9Y.-9Y0jF1BIRd4hjHermJekTA7kM2UDOJpGjgvguDKdpk&dib_tag=AUTHOR) by Denis Rothman
+
+<!-- omit in toc -->
+### Courses
+
+- [Нейронные сети и обработка текста](https://stepik.org/course/54098/info)
+- [Stanford CS224N: NLP with Deep Learning](https://web.stanford.edu/class/cs224n/) + [Videos](https://youtube.com/playlist?list=PLoROMvodv4rMFqRtEuo6SGjY4XbRIVRd4&si=24s4Yf3IL3fz0_Ty) + [Notes](https://vinija.ai/nlp/)
+- [NLP Course | For You by Lena Voita](https://lena-voita.github.io/nlp_course.html) + [YSDA Natural Language Processing course](https://github.com/yandexdataschool/nlp_course) <!--- comment -->
+- [Hugging Face course](https://huggingface.co/course/chapter0) <!--- comment -->
+- [Natural Language Processing course by Valentin Malykh](https://ods.ai/tracks/nlp-course)
+- [Stanford LSA 311: Computational Lexical Semantics by Dan Jurafsky](https://web.stanford.edu/~jurafsky/li15/) <!--- comment -->
+- [Stanford CS224U: Natural Language Understanding](https://web.stanford.edu/class/cs224u/index.html)
+- [Введение в обработку естественного языка](https://compscicenter.ru/courses/introduction-nlp/2019-autumn/)
+- [Stanford CS 224V Conversational Virtual Assistants with Deep Learning](https://web.stanford.edu/class/cs224v/schedule.html) <!--- comment -->
+- [CS11-711 Advanced Natural Language Processing (at Carnegie Mellon University's Language Technology Institute)](http://www.phontron.com/class/anlp2022/) + [Video](https://youtube.com/playlist?list=PL8PYTP1V4I8D0UkqW2fEhgLrnlDW9QK7z) + [Assignments](https://github.com/neubig/nlp-from-scratch-assignment-2022)
+- [Linguistics for Language Technology](https://bylinina.github.io/ling_course/)
+- [Advanced Topics in Multimodal Machine Learning (CMU 11-877)](https://cmu-multicomp-lab.github.io/adv-mmml-course/spring2022)
+- [Deep Learning for Natural Language Processing (DL4NLP, UvA)](https://probabll.github.io/teaching/dl4nlp/)
+- [DeepNLP Course (Dan Anastasyev)](https://github.com/DanAnastasyev/DeepNLP-Course)
+- [Machine Learning University: Accelerated Natural Language Processing (AWS)](https://github.com/aws-samples/aws-machine-learning-university-accelerated-nlp)
+- [Multilingual NLP (CMU 11-737)](http://demo.clab.cs.cmu.edu/11737fa20/)
+- [Stanford CS25: Transformers United](https://web.stanford.edu/class/cs25/index.html#schedule)
+
+<!-- omit in toc -->
+### General
+
+- [Recommendations for Getting Started with NLP by Elvis](https://elvissaravia.substack.com/p/my-recommendations-for-getting-started)
+- [Чат по NLP](https://t.me/natural_language_processing)
+- [awesome-nlp. A curated list of resources dedicated to Natural Language Processing](https://github.com/keon/awesome-nlp)
+- [NLP Cheatsheet: Master NLP](https://www.kaggle.com/code/rftexas/nlp-cheatsheet-master-nlp)
+- [Hugging Face Tasks](https://huggingface.co/tasks)
+
+<!-- omit in toc -->
+### Large Language Models (LLMs) / Transformers
+
+- [Stanford Webinar - GPT-3 & Beyond](https://youtu.be/-lnHHWRCDGk)
+- [Transformer Recipe by Elvis Saravia](https://github.com/dair-ai/Transformers-Recipe)
+- [Transformer, explained in detail by Igor Kotenkov](https://youtu.be/iOrNbK2T92M)
+- [The Practical Guides for Large Language Models](https://github.com/Mooler0410/LLMsPracticalGuide)
+- [State of GPT by Andrej Karpathy](https://build.microsoft.com/en-US/sessions/db3f4859-cd30-4445-a0cd-553c3304f8e2)
+- [LLM University by Cohere](https://docs.cohere.com/docs/llmu) <!--- comment -->
+- [CS324 - Large Language Models](https://stanford-cs324.github.io/winter2022/) <!--- comment -->
+- [Generative AI exists because of the transformer. This is how it writes](https://ig.ft.com/generative-ai/)
+- [Training & Fine-Tuning LLMs for Production](https://learn.activeloop.ai/courses/llms)
+- [LLMOps: Building Real-World Applications With Large Language Models](https://www.comet.com/production/site/llm-course/?utm_source=llm_course&utm_campaign=svpino)
+- [A Survey of Large Language Models](https://arxiv.org/abs/2303.18223)
+- [Transformers Tutorials](https://github.com/nielsrogge/transformers-tutorials)
+- [Ruformers/Руформеры](https://github.com/AlexeyMalafeev/ruformers)
+- [Схема энкодера архитектуры Трансформер](https://github.com/pa-shk/transformer-encoder)
+- [Large Language Model Course](https://github.com/mlabonne/llm-course) <!--- comment -->
+- [Insights from Finetuning LLMs with Low-Rank Adaptation by Sebastian Raschka](https://youtu.be/rgmJep4Sba4?si=xyRU4LUSkzUkCBFM)
+- [LLM Bootcamp - Spring 2023](https://fullstackdeeplearning.com/llm-bootcamp/spring-2023/)
+- [ChatGPT Course – Use The OpenAI API to Code 5 Projects](https://www.youtube.com/watch?v=uRQH2CFvedY)
+- [Self-Attention & Transformers (CS 224n: Natural Language Processing with Deep Learning)](https://web.stanford.edu/class/cs224n/readings/cs224n-self-attention-transformers-2023_draft.pdf)
+- [Build a Large Language Model (From Scratch) by Sebastian Raschka](https://github.com/rasbt/LLMs-from-scratch) <!--- comment -->
+- [Hands-on LLMs Course](https://github.com/iusztinpaul/hands-on-llms)
+- [LLaMA-Factory. Easy-to-use LLM fine-tuning framework (LLaMA, BLOOM, Mistral, Baichuan, Qwen, ChatGLM)](https://github.com/hiyouga/LLaMA-Factory)
+- [Open LLMs. A list of open LLMs available for commercial use](https://github.com/eugeneyan/open-llms)
+- [Overview of Large Language Models](https://aman.ai/primers/ai/LLM/?trk=feed_main-feed-card-text)
+- [Mastering RAG: How To Architect An Enterprise RAG System](https://www.rungalileo.io/blog/mastering-rag-how-to-architect-an-enterprise-rag-system)
+- [Исчерпывающий гайд по опенсорсным языковым моделям](https://skillbox.ru/media/code/ischerpyvayushchiy-gayd-po-opensorsnym-yazykovym-modelyam/#stk-8)
+- [Open-Source AI Cookbook](https://huggingface.co/learn/cookbook/index)
+- [Building LLM applications for production](https://huyenchip.com/2023/04/11/llm-engineering.html)
+- [LLM Visualization](https://bbycroft.net/llm)
+- [The Illustrated Transformer by Jay Alammar](https://jalammar.github.io/illustrated-transformer/)
+- [The Annotated Transformer](https://github.com/harvardnlp/annotated-transformer/blob/master/AnnotatedTransformer.ipynb) + [Neural networks by 3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+- [Elicit Machine Learning Reading List](https://github.com/elicit/machine-learning-list)
+- [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)
+- [llama3 implemented from scratch](https://github.com/naklecha/llama3-from-scratch)
+- [LLM Twin Course: Building Your Production-Ready AI Replica](https://github.com/decodingml/llm-twin-course)
+- [Educational resources on LLMs](https://parlance-labs.com/education/)
+- [A Visual Guide to Quantization. Demystifying the Compression of Large Language Models](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-quantization) <!--- comment -->
+- [Super Study Guide: Transformers & Large Language Models](https://www.reddit.com/r/MachineLearning/comments/1ew1hws/p_illustrated_book_to_learn_about_transformers/?rdt=56835)
+- [Advanced RAG Techniques: Elevating Your Retrieval-Augmented Generation Systems](https://github.com/NirDiamant/RAG_Techniques)
+- [CUDA-Free Inference for LLMs](https://pytorch.org/blog/cuda-free-inference-for-llms/?utm_content=306418723&utm_medium=social&utm_source=twitter&hss_channel=tw-776585502606721024)
+- [Изучаю LLM by Evgenii Nikitin](https://telegra.ph/Izuchayu-LLM-09-25)
+- [What is the Role of Small Models in the LLM Era: A Survey](https://arxiv.org/abs/2409.06857)
+- [Building LLMs from the Ground Up: A 3-hour Coding Workshop](https://magazine.sebastianraschka.com/p/building-llms-from-the-ground-up)
+- [AI Prompt Engineering: A Deep Dive](https://www.youtube.com/watch?app=desktop&v=T9aRN5JkmL8)
+- [LLM Resources Hub](https://llmresourceshub.vercel.app)
+- [🤗 AI Agents Course by Hugging Face](https://huggingface.co/learn/agents-course) <!--- comment -->
+- [LLM Engineering Essentials](https://academy.nebius.com/llm-engineering-essentials/) <!--- comment -->
+- [Hugging Face Reasoning Course](https://huggingface.co/reasoning-course?trk=feed-detail_main-feed-card-text)
+- [CS336: Language Modeling from Scratch](https://stanford-cs336.github.io/spring2025/) + [Video](https://www.youtube.com/playlist?app=desktop&list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_) <!--- comment -->
+- [A Comprehensive Overview of Large Language Models](https://arxiv.org/pdf/2307.06435)
+- [A Survey of Transformers](https://arxiv.org/abs/2106.04554)
+- [AI Alignment: A Comprehensive Survey](https://arxiv.org/abs/2310.19852)
+- [Are Emergent Abilities of Large Language Models a Mirage?](https://arxiv.org/abs/2304.15004)
+- [BERT (Google Research)](https://github.com/google-research/bert)
+- [BERT, ELMO и Ко в картинках](https://habr.com/ru/post/487358)
+- [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding](https://arxiv.org/pdf/1810.04805.pdf)
+- [Claude with the Anthropic API (Anthropic Academy)](https://anthropic.skilljar.com/claude-with-the-anthropic-api)
+- [Compressing Large-Scale Transformer-Based Models: A Case Study on BERT](https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00413/107387/Compressing-Large-Scale-Transformer-Based-Models-A)
+- [DeepSchool: Large Language Models (course)](https://deepschool.ru/llm)
+- [DeepTutor](https://github.com/HKUDS/DeepTutor)
+- [GPT-4 Technical Report](https://arxiv.org/abs/2303.08774)
+- [Generating Text from Language Models (ACL 2023 Tutorial)](https://rycolab.io/classes/acl-2023-tutorial)
+- [Learn About Transformers: A Recipe](https://elvissaravia.substack.com/p/learn-about-transformers-a-recipe)
+- [Llama 2: Open Foundation and Fine-Tuned Chat Models](https://arxiv.org/abs/2307.09288)
+- [Patterns for Building LLM-based Systems & Products (Eugene Yan)](https://eugeneyan.com/writing/llm-patterns/)
+- [Pretrained Language Model (Huawei Noah's Ark Lab)](https://github.com/huawei-noah/Pretrained-Language-Model)
+- [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314)
+- [Recent Advances in Language Model Fine-tuning (Sebastian Ruder)](https://ruder.io/recent-advances-lm-fine-tuning)
+- [RoBERTa: A Robustly Optimized BERT Pretraining Approach](https://arxiv.org/pdf/1907.11692.pdf)
+- [The Illustrated Retrieval Transformer (Jay Alammar)](http://jalammar.github.io/illustrated-retrieval-transformer/)
+- [Yao Fu's Blog](https://yaofu.notion.site/Yao-Fu-s-Blog-b536c3d6912149a395931f1e871370db)
+- [gpt-fast](https://github.com/pytorch-labs/gpt-fast)
+
+<!-- omit in toc -->
+### Embeddings
+
+- [Новый взгляд на оценку русскоязычных моделей: обновлённый бенчмарк ruMTEB и лидерборд](https://habr.com/ru/companies/X5Tech/articles/845398/)
+- [What are embeddings by Vicki Boykis](https://vickiboykis.com/what_are_embeddings/index.html) <!--- comment -->
+- [Learn to Love Working with Vector Embeddings by Pinecone](https://www.pinecone.io/learn/)
+- [The 1950-2024 Text Embeddings Evolution Poster](https://jina.ai/news/the-1950-2024-text-embeddings-evolution-poster/)
+- [Chroma](https://github.com/chroma-core/chroma)
+- [Milvus](https://github.com/milvus-io/milvus)
+- [Qdrant](https://github.com/qdrant/qdrant)
+- [ScaNN](https://github.com/google-research/google-research/tree/master/scann)
+- [Vector Databases: from Embeddings to Applications (DeepLearning.AI)](https://www.deeplearning.ai/short-courses/vector-databases-embeddings-applications/)
+- [hnswlib](https://github.com/nmslib/hnswlib)
+
+<!-- omit in toc -->
+### Reading papers with AI
+
+- [Explainpaper](https://www.explainpaper.com/)
+- [ChatPDGF](https://www.chatpdf.com/)
+- [Reimagine Research](https://www.researchrabbit.ai)
+- [Discover scientific knowledge and stay connected to the world of science](https://www.researchgate.net)
+- [Get scientific answers by asking millions of research papers](https://scienceos.ai)
+- [Otio](https://otio.ai/?ref=poonam&trk=feed_main-feed-card-text)
+
+<!-- omit in toc -->
+### Prompt Engineering
+
+- [Prompt Engineering Guide](https://www.promptingguide.ai/) + [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) <!--- comment -->
+- [Prompt injection with Gandalf](https://gandalf.lakera.ai/)
+- [Prompt Engineering](https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/)
+- [Prompt Engineering Guide](https://learnprompting.org/docs/intro) <!--- comment -->
+- [Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts) <!--- comment -->
+- [Advanced Prompt Engineering](https://towardsdatascience.com/advanced-prompt-engineering-f07f9e55fe01)
+- [Prompt engineering Guide by Open.ai](https://platform.openai.com/docs/guides/prompt-engineering) <!--- comment -->
+- [Prompt Of The Year: 2023](https://github.com/successfulstudy/promptoftheyear/tree/main)
+- [Anthropic's Prompt Engineering Interactive Tutorial](https://github.com/anthropics/courses/tree/master/prompt_engineering_interactive_tutorial)
+- [The Prompt Report: A Systematic Survey of Prompting Techniques](https://arxiv.org/abs/2406.06608) <!--- comment -->
+- [Prompt Engineering Guide by Antrophic](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [Claude 101](https://claude101.com) <!--- comment -->
+- [AI Coding Playbook](https://aicodingplaybook.ru)
+- [ChatGPT Prompt Engineering for Developers (DeepLearning.AI)](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/)
+- [Claude 101 (Anthropic Academy)](https://anthropic.skilljar.com/claude-101)
+- [Guidance (Microsoft)](https://github.com/microsoft/guidance/)
+- [OpenPrompt](https://github.com/thunlp/OpenPrompt)
+- [Prompt Engineering 101: Introduction and Resources (Xavier Amatriain)](https://amatriain.net/blog/PromptEngineering)
+- [Prompt Engineering vs. Blind Prompting (Mitchell Hashimoto)](https://mitchellh.com/writing/prompt-engineering-vs-blind-prompting)
+- [PromptSource](https://github.com/bigscience-workshop/promptsource)
+- [Vibe-coding: программирование с ИИ без глубоких знаний кода (Stepik)](https://stepik.org/course/214391/syllabus)
+
+<!-- omit in toc -->
+### Tutorials
+
+- [Train and Fine-Tune Sentence Transformers Models](https://huggingface.co/blog/how-to-train-sentence-transformers)
+- [Working With Text Data using Sklearn](https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html#extracting-features-from-text-files) + [Text feature extraction using Sklearn](https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction)
+- [minbpe. Minimal, clean code for the (byte-level) Byte Pair Encoding (BPE) algorithm commonly used in LLM tokenization](https://github.com/karpathy/minbpe)
+- [Text Classification Guide (Google Machine Learning Guides)](https://developers.google.com/machine-learning/guides/text-classification/step-2-5)
+- [nlp-tutorial](https://github.com/lyeoni/nlp-tutorial)
+
+<!-- omit in toc -->
+### Blog posts
+
+- [Мультиклассификация экстремально коротких текстов классическими методами машинного обучения](https://newtechaudit.ru/multiklassifikacziya-ekstremalno-korotkih-tekstov-klassicheskimi-metodami-mashinnogo-obucheniya/)
+- [Рейтинг русскоязычных энкодеров предложений](https://habr.com/ru/post/669674/)
+- [Как определять пользовательские намерения, о которых мы узнали 5 минут назад](https://habr.com/ru/company/tinkoff/blog/696756/)
+- [Самая большая BERT-подобная модель на русском, которая поместится на ваш компьютер](https://habr.com/ru/company/yandex/blog/688234/)
+- [ChatGPT как инструмент для поиска: решаем основную проблему](https://habr.com/ru/company/ods/blog/709222/)
+- [GPT in 60 Lines of NumPy](https://jaykmody.com/blog/gpt-from-scratch)
+- [What Is ChatGPT Doing … and Why Does It Work?](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/)
+- [From GPT-3 to ChatGPT: Training Language Models on Instructions and Human Feedback](https://youtu.be/2JxcIy7AgFQ)
+- [Кто такие LLM-агенты и что они умеют?](https://habr.com/ru/companies/ods/articles/776478/)
+- [Maxime Labonne's Blog](https://mlabonne.github.io/blog/)
+
+<!-- omit in toc -->
+### Articles
+
+- [Word2Vec](https://arxiv.org/pdf/1301.3781.pdf), Mikolov et al., Efficient Estimation of Word Representations in Vector Space
+- [FastText](https://arxiv.org/pdf/1607.04606.pdf), Bojanowski et al., Enriching Word Vectors with Subword Information
+- [Attention](https://arxiv.org/abs/1409.0473), Bahdanau et al., Neural Machine Translation by Jointly Learning to Align and Translate
+- [Transformers](https://arxiv.org/abs/1706.03762), Vaswani et al., Attention Is All You Need
+- [BERT](https://arxiv.org/abs/1810.0480), Devlin et al., BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding
+- [GPT-2](https://d4mucfpksywv.cloudfront.net/better-language-models/language_models_are_unsupervised_multitask_learners.pdf), Radford et al., Language Models are Unsupervised Multitask Learners
+- [GPT-3](https://arxiv.org/abs/2005.14165), Brown et al, Language Models are Few-Shot Learners
+- [LaBSE](https://arxiv.org/abs/2007.01852), Feng et al., Language-agnostic BERT Sentence Embedding
+- [CLIP](https://arxiv.org/abs/2103.00020), Radford et al., Learning Transferable Visual Models From Natural Language Supervision
+- [RoPE](https://arxiv.org/abs/2104.09864), Su et al., RoFormer: Enhanced Transformer with Rotary Position Embedding
+- [LoRA](https://arxiv.org/abs/2106.09685), Hu et al., LoRA: Low-Rank Adaptation of Large Language Models
+- [InstructGPT](https://arxiv.org/abs/2203.02155), Ouyang et al., Training language models to follow instructions with human feedback
+- [Scaling laws](https://arxiv.org/abs/2203.15556), Hoffmann et al., Training Compute-Optimal Large Language Models
+- [FlashAttention](https://arxiv.org/abs/2205.14135), Dao et al., FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness
+- [NLLB](https://arxiv.org/abs/2207.04672), NLLB team, No Language Left Behind: Scaling Human-Centered Machine Translation
+- [Q8](https://arxiv.org/abs/2208.07339), Dettmers et al., LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale
+- [Self-instruct](https://arxiv.org/abs/2212.10560), Wang et al., Self-Instruct: Aligning Language Models with Self-Generated Instructions
+- [Alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html), Taori et al., Alpaca: A Strong, Replicable Instruction-Following Model
+- [LLaMA](https://arxiv.org/abs/2302.13971), Touvron, et al., LLaMA: Open and Efficient Foundation Language Models
+- [100 Must-Read NLP Papers](https://github.com/mhagiwara/100-nlp-papers)
+- [Search: Query Matching via Lexical, Graph, and Embedding Methods (Eugene Yan)](https://eugeneyan.com/writing/search-query-matching)
+
+<!-- omit in toc -->
+### Packages
+
+- [Turbo-Alignment](https://github.com/turbo-llm/turbo-alignment)  
+Turbo-Alignment is a library designed to streamline the fine-tuning and alignment of large language models, leveraging advanced techniques to enhance efficiency and scalability
+- [LitGPT](https://github.com/Lightning-AI/litgpt)  
+Every LLM is implemented from scratch with no abstractions and full control, making them blazing fast, minimal, and performant at enterprise scale.
+- [MinT: Minimal Transformer Library and Tutorials](https://github.com/dpressel/mint)
+- [Проект Natasha. Набор качественных открытых инструментов для обработки естественного русского языка (NLP)](https://habr.com/ru/post/516098/)  
+- [russian Texts Statistics](https://github.com/SergeyShk/ruTS/blob/master/README.en.md)  
+- [TextDescriptives](https://github.com/HLasse/TextDescriptives) A Python library for calculating a large variety of metrics from text(s) using spaCy v.3 pipeline components and extensions.
+- [LangChain Documentation](https://langchain.readthedocs.io/en/latest/)
+- [Language Interpretability Tool (LIT)](https://github.com/PAIR-code/lit)
+- [LlamaIndex Documentation](https://gpt-index.readthedocs.io/en/latest/index.html)
+- [NL-Augmenter](https://github.com/GEM-benchmark/NL-Augmenter)
+- [ScrapeGraphAI](https://github.com/ScrapeGraphAI/Scrapegraph-ai/tree/main)
+- [TextBox 2.0](https://github.com/RUCAIBox/TextBox)
+- [nlpaug](https://github.com/makcedward/nlpaug)
+
+## Computer Vision
+
+- [Нейронные сети и компьютерное зрение](https://stepik.org/course/50352/info)
+- [CS231n: Deep Learning for Computer Vision](http://cs231n.stanford.edu/schedule.html) + [Videos](https://www.youtube.com/playlist?list=PLoROMvodv4rOmsNzYBMe0gJY2XS8AQg16) <!--- comment -->
+- [EECS 442: Computer Vision](https://web.eecs.umich.edu/~justincj/teaching/eecs442/WI2021/) + [Videos](https://m.bilibili.com/video/BV1BV411n7Km)
+- [Foundations of Computer Vision by Antonio Torralba, Phillip Isola and William T. Freeman](https://mitpress.mit.edu/9780262048972/foundations-of-computer-vision/)
+- [ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)](https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf)
+- [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://arxiv.org/pdf/2003.08934.pdf)
+- [Segment Anything](https://arxiv.org/abs/2304.02643)
+
+## Graphs
+
+- [CS224W: Machine Learning with Graphs](https://web.stanford.edu/class/cs224w/) + [Video](https://www.youtube.com/playlist?list=PLoROMvodv4rOP-ImU-O1rYRg2RFxomvFp) <!--- comment -->
+- [Graph Neural Networks for RecSys](https://aman.ai/recsys/gnn/)
+- [Graph Neural Networks](https://aman.ai/primers/ai/gnn/)
+- [A Gentle Introduction to Graph Neural Networks (Distill)](https://distill.pub/2021/gnn-intro/) <!--- comment -->
+- [An Introduction to Graph Theory by Darij Grinberg](https://arxiv.org/pdf/2308.04512)
+- [Graph Attention Networks](https://arxiv.org/pdf/1710.10903.pdf)
+- [Understanding Convolutions on Graphs (Distill)](https://distill.pub/2021/understanding-gnns/)
+- [Курс по графам знаний (KG Course 2021, ODS.ai)](https://ods.ai/tracks/kgcourse2021)
+
+## Reinforcement Learning
+
+- [Spinning Up in Deep RL](https://spinningup.openai.com/en/latest/index.html) <!--- comment -->
+- [🤗 Deep Reinforcement Learning Course](https://huggingface.co/learn/deep-rl-course/unit0/introduction) <!--- comment -->
+- [Practical RL](https://github.com/yandexdataschool/Practical_RL) <!--- comment -->
+- [A (Long) Peek into Reinforcement Learning](https://lilianweng.github.io/posts/2018-02-19-rl-overview)
+- [CMU 10-703: Deep Reinforcement Learning and Control](https://www.andrew.cmu.edu/course/10-703/)
+- [CS 294: Deep Reinforcement Learning (UC Berkeley)](http://rll.berkeley.edu/deeprlcoursesp17/#lecture-videos)
+- [Deep RL Bootcamp (UC Berkeley)](https://sites.google.com/view/deep-rl-bootcamp/home)
+- [DeepMind x UCL Reinforcement Learning Lecture Series](https://youtube.com/playlist?list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ)
+- [Hugging Face Deep RL Course](https://huggingface.co/deep-rl-course/unit0/introduction)
+- [Kevin Murphy — Reinforcement Learning: An Overview](https://arxiv.org/pdf/2412.05265)
+- [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/abs/1312.5602)
+- [Policy Gradient Algorithms](https://lilianweng.github.io/posts/2018-04-08-policy-gradient/)
+- [Proximal Policy Optimization Algorithms](https://arxiv.org/abs/1707.06347)
+- [Reinforcement Learning Virtual School (RLVS 2021)](https://rl-vs.github.io/rlvs2021/)
+- [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/RLbook2020.pdf)
+- [Spinning Up in Deep RL Workshop (OpenAI)](https://www.youtube.com/watch?v=fdY7dt3ijgY&t=1s)
+- [Stable-Baselines3 Documentation](https://stable-baselines3.readthedocs.io/en/master/)
+- [Stanford CS234: Reinforcement Learning](https://youtube.com/playlist?list=PLoROMvodv4rOSOPzutgyCTapiGlY2Nd8u)
+- [The Multi-Armed Bandit Problem and Its Solutions](https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/)
+
+## RecSys
+
+<!-- omit in toc -->
+### Courses
+
+- [Your first recsys by MTS](https://ods.ai/tracks/mts-recsys-df2020)
+- [Your Second RecSys by MTS](https://ods.ai/tracks/recsys-course2021)
+- [Рекомендательные системы](https://github.com/shashist/recsys-course)
+- [Deep RecSys Course by Kirill Khrylchenko](https://github.com/KhrylchenkoKirill/DeepRecSys)
+- [RecSys Fall 2023 (girafe-ai)](https://www.youtube.com/playlist?list=PLJR10EXrBaAssiryiUzD4dFCdIVwDGi02)
+
+<!-- omit in toc -->
+### Books
+
+- К. Фальк. [Рекомендательные системы на практике](https://dmkpress.com/catalog/computer/data/978-5-97060-774-9/) / [Practical Recommender Systems](https://www.manning.com/books/practical-recommender-systems) by Kim Falk <!--- comment -->
+- [Personalized Machine Learning](https://cseweb.ucsd.edu/~jmcauley/pml/) <!--- comment -->
+- [Learning to Rank for Information Retrieval and Natural Language Processing](https://www.iro.umontreal.ca/~nie/IFT6255/Books/Learning-to-rank.pdf)
+
+<!-- omit in toc -->
+### Other
+
+- [Авито. Рекомендации](https://youtu.be/zopTexr7gfY?si=7yGMorHG_PZpTUKv)
+- [Recommenders. Best Practices on Recommendation Systems](https://github.com/recommenders-team/recommenders) <!--- comment -->
+- [Рекомендательные системы](https://education.yandex.ru/knowledge/rekomendatelnye-sistemy.-mashinnoe-obuchenie)
+- [Рекомендательные системы: идеи, подходы, задачи](https://habr.com/ru/companies/jetinfosystems/articles/453792/

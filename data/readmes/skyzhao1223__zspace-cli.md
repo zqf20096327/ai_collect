@@ -1,0 +1,354 @@
+<div align="center">
+
+# zspace-cli
+
+**English** · [简体中文](https://github.com/skyzhao1223/zspace-cli/blob/main/docs/README.zh.md)
+
+[![PyPI - Version](https://img.shields.io/pypi/v/zspace-cli?cacheSeconds=3600)](https://pypi.org/project/zspace-cli/)
+[![PyPI - Python](https://img.shields.io/pypi/pyversions/zspace-cli?cacheSeconds=3600)](https://pypi.org/project/zspace-cli/)
+[![CI](https://github.com/skyzhao1223/zspace-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/skyzhao1223/zspace-cli/actions/workflows/ci.yml)
+[![skyzhao1223/zspace-cli MCP server](https://glama.ai/mcp/servers/skyzhao1223/zspace-cli/badges/score.svg)](https://glama.ai/mcp/servers/skyzhao1223/zspace-cli)
+
+</div>
+
+Manage your 极空间 (ZSpace) NAS from the terminal or AI agents — **no password, no SSH, no DDNS**.
+
+mcp-name: io.github.skyzhao1223/zspace-cli
+
+> Just keep the ZSpace desktop client logged in on macOS.
+>
+> 📖 How large-file sliced upload was born: [一次 1.4GB 备份引发的逆向 (zh, CSDN)](https://blog.csdn.net/boyzhaotian/article/details/166349848) · CLI guide: [极空间 NAS 命令行管理指南 (zh, CSDN)](https://blog.csdn.net/boyzhaotian/article/details/166349965)
+
+[**Beginner guide**](https://github.com/skyzhao1223/zspace-cli/blob/main/docs/beginner-guide.md) (no coding required) · [Skills](https://github.com/skyzhao1223/zspace-cli/blob/main/skills/README.md) — incl. **9 cross-NAS organizer skills** for AI agents · [中文文档](https://github.com/skyzhao1223/zspace-cli/blob/main/docs/README.zh.md)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/skyzhao1223/zspace-cli/main/docs/assets/demo.gif" alt="zspace-cli terminal demo" width="720">
+</p>
+
+---
+
+## Install
+
+```bash
+pip install zspace-cli        # base
+pip install "zspace-cli[mcp]" # optional MCP support
+zs check                      # ✓ reads the desktop client login state
+```
+
+**Prerequisite:** the ZSpace desktop client is running and logged in on macOS.
+
+---
+
+## Quick start
+
+```bash
+zs ls /sata11/my/data/影视
+zs find "权力的游戏"                  # full-text search
+zs tree /sata11/my/data -d 3
+zs up ./本地文件.mp4 /sata11/my/data/影视   # upload
+zs up ./本地文件.mp4 /sata11/my/data/影视 --verify  # upload + MD5 round-trip check
+zs down /sata11/my/data/影视/某文件.mkv ./下载 # download
+```
+
+```python
+from zspace_cli import ZSpaceClient
+
+with ZSpaceClient() as zs:
+    for f in zs.ls("/sata11/my/data"):
+        print(f"{'📁' if f.is_dir else '📄'} {f.name}")
+```
+
+---
+
+## CLI options
+
+| Command | Meaning |
+|---------|---------|
+| `zs check` | Verify the desktop client proxy is reachable |
+| `zs ls [path]` | List directory (`-a/--hidden`, `-l/--long`) |
+| `zs info <path>` | Detailed file/dir info |
+| `zs rename <path> <new>` | Rename a file or directory |
+| `zs mv <src> <dest>` | Move a file/directory |
+| `zs cp <src> <dest>` | Copy a file/directory |
+| `zs mkdir <parent> <name>` | Create a directory |
+| `zs rm <path>` | Delete into the personal recycle bin (`-f/--force` skips confirmation). Pool space is **not** freed until `zs recycle empty` |
+| `zs find <keyword> [path]` | Full-text search across the NAS |
+| `zs tree [path]` | Tree view (`-d/--depth N`, default 2) |
+| `zs usage` | Storage profile — physical usage per pool, per user, per category. The only view that includes Time Machine backups, other users' spaces, and Docker/RAID overhead (`--refresh`, `--wait N`) |
+| `zs du <path>...` | Directory size via server-side statistics. Refuses to pass off a partial number as final when the NAS won't converge on a large tree; `--walk` forces an exact client-side traversal |
+| `zs bigfiles [path]...` | Largest files, scanned server-side (`--min-size MiB`, `--top N`). Whole-library scan of 2.69M files took 2m41s versus 57 min for a client-side walk |
+| `zs disks` | Per-disk free space, temperature, health, fragmentation, power-on hours, plus empty bays |
+| `zs smart [sn]` | SMART report (`--all` for every disk) |
+| `zs recycle list` | Recycle bin contents with original locations (`--public` for the shared bin) |
+| `zs recycle restore <name>` | Restore items to their original location |
+| `zs recycle purge <name>` | Permanently delete only the named items (`-f/--force`) |
+| `zs recycle empty` | Purge the whole personal bin — irreversible, so it lists the contents first (`--public`, `-f`) |
+| `zs recycle config` | Retention policy; `-1` means never auto-purge (`--my-cycle N`, `--public-cycle N`) |
+| `zs up <local> <remote_dir>` | Upload (`-n/--name` to rename; `--verify` for post-upload MD5 round-trip verification; large files auto-switch to sliced upload) |
+| `zs down <path> [dir]` | Download |
+| `zs baidu check/ls/tasks/fails/retry` | Baidu NetDisk via the NAS `/znetdisk/*` module (read side; `retry` mutates task state) — [details](docs/integrations.md#baidu-netdisk-百度网盘-via-the-nas-znetdisk-module) |
+| `zs skill <dir>` | Copy Agent skills into a project (`--list`, `--only a,b`) |
+| `zs --config-dir <dir>` | Point at a non-default `vuex.json` location (or `ZS_CONFIG_DIR`) |
+
+`zs check`, `zs ls`, `zs info`, `zs find`, `zs tree`, `zs usage`, `zs du`,
+`zs bigfiles`, `zs disks`, `zs smart`, `zs recycle list/config` accept `--json`
+for machine-readable output. `zs mv`/`zs cp`/`zs rm`/`zs down` accept `* ?` glob
+patterns on the source path. `zs baidu check`/`ls`/`tasks`/`fails` also accept
+`--json`.
+
+> `ls` pages through large directories automatically (the NAS API returns at most 50 entries per call). `find` uses the NAS full-text index, so it searches across directories. Upload/download show a progress bar on a real terminal and stream the file (no full-file buffering). Pass `--verify` to `zs up` to download the uploaded file to a temporary directory and compare its MD5 with the local source; verification is opt-in because it doubles transfer. CJK paths work out of the box. Files above 64 MB are uploaded through the desktop client's sliced `/v2/file/upload` protocol (2 MB slices), because the local proxy rejects oversized single-request bodies with HTTP 413; a 413 on a smaller file falls back to slices automatically.
+
+---
+
+## Features
+
+| Operation | CLI | SDK | MCP |
+|-----------|-----|-----|-----|
+| List directory | `zs ls [path]` | `client.ls(path)` | `zspace_ls` |
+| File info | `zs info <path>` | `client.info(path)` | `zspace_info` |
+| Rename | `zs rename <path> <name>` | `client.rename(path, name)` | `zspace_rename` |
+| Create dir | `zs mkdir <parent> <name>` | `client.mkdir(parent, name)` | `zspace_mkdir` |
+| Move | `zs mv <src> <dest>` | `client.move(src, dest)` | `zspace_move` |
+| Copy | `zs cp <src> <dest>` | `client.copy(src, dest)` | `zspace_copy` |
+| Delete | `zs rm <path>` | `client.remove(path)` | `zspace_remove` |
+| Search | `zs find <keyword>` | `client.search(kw)` | `zspace_search` |
+| Tree view | `zs tree [path]` | `client.tree(path)` | `zspace_tree` |
+| Upload | `zs up <local> <dir>` | `client.upload(local, dir, verify=False)` | `zspace_upload` |
+| Download | `zs down <path> [dir]` | `client.download(path, dir)` | `zspace_download` |
+| Health check | `zs check` | `client.is_connected()` | `zspace_check` |
+| Storage pools | `zs check` | `client.pool_info()` | `zspace_pool_info` |
+| Disk diagnostics | — | `client.disk_stats()` | `zspace_disk_stats` |
+| Storage profile | `zs usage` | `client.usage_summary()` | `zspace_usage` |
+| Directory size | `zs du <path>` | `client.statistic(path)` / `client.walk_stat(path)` | `zspace_du` |
+| Largest files | `zs bigfiles [path]` | `client.find_large(paths)` | `zspace_bigfiles` |
+| Per-disk health | `zs disks` | `client.disks()` / `client.free_bays()` | `zspace_disks` |
+| SMART report | `zs smart [sn]` | `client.smart(sn)` | `zspace_smart` |
+| Recycle bin (read) | `zs recycle list/config` | `client.recycle_list()` / `client.recycle_config()` | `zspace_recycle_list` / `zspace_recycle_config` |
+| Recycle bin (write) | `zs recycle restore/purge/empty` | `client.recycle_restore()` / `recycle_purge()` / `recycle_empty()` | `zspace_recycle_restore` / `zspace_recycle_purge` / `zspace_recycle_empty` (confirm-gated) |
+| Baidu NetDisk (read side) | `zs baidu check/ls/tasks/fails/retry` | `client.baidu_*()` | — |
+
+---
+
+## Use with AI agents (Skills)
+
+```bash
+zs skill --list                           # see what's available
+zs skill ~/your-project/.cursor/skills/   # install all (Cursor)
+# zs skill ~/your-project/skills/         # Claude Code, etc.
+zs skill ~/your-project/skills/ --only nas-report,photo-organizer   # or pick a few
+```
+
+Then tell your agent things like "list the files in `/sata11/my/data`". The skills ship inside the wheel, so `zs skill` works on any machine that has `zspace-cli` installed.
+
+Besides `zspace-nas` (the zero-config base for ZSpace file ops), `zs skill` installs a family of **9 cross-NAS organizer skills**. Their scanners are pure-stdlib and run on any **mounted** path (SMB/NFS), so they work with ZSpace, Synology, QNAP, UGREEN, etc. All follow the same read-only pattern: **scan → the LLM drafts an old→new plan → you confirm → the agent executes** (deletes always quarantine first).
+
+| Skill | What it does |
+|-------|--------------|
+| **nas-report** | 🧭 Entry point: whole-disk storage profile + routes you to the right specialist skill |
+| **file-sorter** | 🧹 Any mixed pile: recognizes **255 extensions across 15 categories** (photos / video / audio / docs / ebooks / archives / installers / fonts / code / design sources / CAD drawings / disk images…), computes each `old → new` path, and knows **135 folder-name aliases** (simplified + traditional Chinese + English) so an already-sorted library is never re-sorted. Never breaks up project folders by default |
+| **photo-organizer** | Photos/videos: file by shoot date (`--exif` reads the real capture date via exiftool, or mdls on macOS), screenshots/WeChat images, burst de-dup |
+| **music-organizer** | Music: Artist/Album/Track structure, track numbers, covers, built-in ID3v2 parsing |
+| **work-organizer** | Work files: archive loose files, version chaos, copies, stale-file archiving |
+| **portfolio-organizer** | Portfolio: project structure, cover/README, separate finals from sources |
+| **download-cleaner** | Downloads: triage & clean (partials/torrents/installers/archives/unsorted media) |
+| **dedup-finder** | Content-level exact de-dup (3-stage fingerprint size→head→full sha1, zero false positives) |
+| **backup-auditor** | Backup health: version rotation, staleness, coverage check |
+
+Start with `nas-report` to see the big picture, then run whichever specialist it recommends. The most common combo is **`dedup-finder` + `file-sorter`**. De-duping first is *recommended* — you skip moving bytes you're about to delete, and you avoid same-name collisions — but the reverse order misses nothing: de-dup is content-level and independent of directory layout (verified: both orders find the identical duplicate groups). `file-sorter` reports `suspected copies: X MB (N% of the bytes to move)` so you can decide by the number instead of by a rule. See [skills/README.md](https://github.com/skyzhao1223/zspace-cli/blob/main/skills/README.md) for the full list. Media-library naming stays a separate project: [media-manager-skill](https://github.com/skyzhao1223/media-manager-skill).
+
+---
+
+## How it works
+
+ZSpace has no official CLI or public API. **zspace-cli** talks to the desktop client's local proxy, so it works behind NAT as long as the client is online:
+
+```
+Skill / zs / SDK / MCP  →  127.0.0.1:13579 (desktop client proxy)  →  NAS
+```
+
+> **Disclaimer** — This is an **unofficial, community-maintained** project, not affiliated with or endorsed by ZSpace (极空间). It relies on the desktop client's local proxy interface, which is **not officially documented**. It only reads the login state of **your own** account on **your own** machine — it does not bypass authentication, crack encryption, or touch anyone else's data. Use at your own risk; make sure your use complies with the ZSpace user agreement and your local laws.
+
+### Platform support
+
+Works on any OS where the ZSpace desktop client exposes its local proxy on
+`127.0.0.1:13579`. The login state (`vuex.json`) is auto-detected:
+
+| Platform | Default location |
+|----------|------------------|
+| macOS | `~/Library/Application Support/zspace/vuex.json` |
+| Windows | `%APPDATA%\zspace\vuex.json` (also tries `%LOCALAPPDATA%`, `%USERPROFILE%`) |
+| Linux | `~/.zspace/vuex.json`, `~/.config/zspace/vuex.json` (best-effort) |
+
+If the client stores it elsewhere, point the CLI/SDK at it explicitly:
+
+```bash
+zs --config-dir ~/path/to/zspace-config check
+ZS_CONFIG_DIR=~/path/to/zspace-config zs check   # or as an env var
+```
+
+> Windows/Linux config locations are best-effort guesses (not verified against
+> a real client). If auto-detection misses yours, please open an issue with the
+> actual path so it can be added.
+
+> **Windows on ARM** — some `[mcp]` dependencies (e.g. `cryptography`) don't ship
+> ARM64 wheels for every version, so `pip install "zspace-cli[mcp]"` may try to
+> build them from source (slow, or fails without Rust). Force prebuilt wheels:
+> `pip install --only-binary=:all: "zspace-cli[mcp]"`.
+
+### MCP configuration (optional)
+
+```json
+{
+  "mcpServers": {
+    "zspace": { "command": "zs-mcp", "args": [] }
+  }
+}
+```
+
+### Docker (headless)
+
+Multi-arch images (`linux/amd64`, `linux/arm64`) are published to GHCR on every
+release, so there is nothing to build:
+
+```bash
+docker pull ghcr.io/skyzhao1223/zspace-cli:latest   # or pin a release, e.g. :0.1.9
+docker run --rm --network host \
+  -e ZS_BASE_URL=http://127.0.0.1:13579 \
+  -e ZS_CONFIG_DIR=/config \
+  -v "$HOME/Library/Application Support/zspace:/config:ro" \
+  ghcr.io/skyzhao1223/zspace-cli zs check
+```
+
+The image's default command is `zs-mcp`, so an MCP client can run
+`ghcr.io/skyzhao1223/zspace-cli` directly to start the server; pass `zs …` to
+use the CLI instead. Tags are `latest` plus each release version.
+
+To run the CLI / MCP server in a container against the desktop client proxy on
+the **host** via compose — no desktop client needed inside the image:
+
+```bash
+export ZS_CONFIG_HOST_DIR="$HOME/Library/Application Support/zspace"   # macOS
+# export ZS_CONFIG_HOST_DIR="$APPDATA/zspace"                          # Windows
+# export ZS_CONFIG_HOST_DIR="$HOME/.zspace"                            # Linux
+docker compose build
+docker compose run --rm zspace-cli zs check
+docker compose run --rm zspace-cli zs ls /sata11/my/data
+```
+
+It mounts the host's ZSpace config read-only (`ZS_CONFIG_HOST_DIR`) and points
+`ZS_BASE_URL` at the host via `host.docker.internal`. On Linux hosts, either use
+`network_mode: host` or the included `extra_hosts` mapping. To build the image
+yourself instead of pulling it from GHCR:
+
+```bash
+docker build -t zspace-cli .
+docker run --rm --network host \
+  -e ZS_BASE_URL=http://127.0.0.1:13579 \
+  -e ZS_CONFIG_DIR=/config \
+  -v "$HOME/Library/Application Support/zspace:/config:ro" \
+  zspace-cli zs check
+```
+
+### Globbing
+
+`rm` / `mv` / `cp` / `down` accept glob patterns (`*`, `?`, `[...]`, `**`) that
+are expanded on the NAS:
+
+```bash
+zs rm "/sata11/my/data/影视/*.mkv" --force
+zs cp "/sata11/my/data/**/*.mp4" /sata11/my/data/movies
+zs down "/sata11/my/data/photos/*.jpg" ./photos
+```
+
+Or via the SDK: `client.glob("/sata11/my/data/**/*.mkv")`.
+
+---
+
+## API reference
+
+| Endpoint | Key Parameters |
+|----------|----------------|
+| `/v2/file/list` | `path`, `show_hidden`, `start`, `limit` |
+| `/v2/file/info` | `path` |
+| `/v2/file/modify` | `path`, `newname` |
+| `/v2/file/newdir` | `parent`, `name`, `rename=0` |
+| `/v2/file/move` / `copy` | `paths[]`, `to` |
+| `/v2/file/remove` | `paths[]` |
+| `/v2/file/create` | binary body, header `path` as UTF-8 bytes (small-file upload; proxy returns 413 above a size cap) |
+| `/v2/file/upload` | sliced upload: query `uuid`=`md5(mtime_ms+size+target_path)`, headers `seek`/`split=1`/`size`/`path` per 2 MB slice |
+| `/v2/file/download` | GET `path`, `remote_port=8050` |
+| `/file_search/file_search` | `keyword` |
+
+> Note: the interface parameter names are non-standard (`parent` / `to` instead of `path` / `dest`) — documented by the community from the desktop client's behavior.
+
+---
+
+## Repository layout
+
+```
+zspace-cli/
+├── src/zspace_cli/
+│   ├── cli.py         # Typer CLI (zs ...)
+│   ├── client.py      # ZSpaceClient SDK (retry / stream / progress)
+│   ├── auth.py        # vuex.json auto-detection + credential cache
+│   ├── mcp_server.py  # MCP tools (zs-mcp)
+│   └── skills/        # packaged skill copies shipped in the wheel (keep in sync!)
+├── skills/            # skill sources — the source of truth (edit here)
+├── scripts/mcp_smoke.py
+├── tests/             # pytest (CLI + SDK + MCP + auth)
+└── promo/             # launch/promo material (submodule)
+```
+
+---
+
+## Integrations
+
+Pair zspace-cli with [Jellyfin / Emby / MoviePilot / MCP clients / Docker](https://github.com/skyzhao1223/zspace-cli/blob/main/docs/integrations.md) and [media-manager-skill](https://github.com/skyzhao1223/media-manager-skill) for media library tooling.
+
+For cloud-drive → NAS pipelines, combine with [baidu-pan-skill](https://github.com/skyzhao1223/baidu-pan-skill): it downloads Baidu NetDisk (百度网盘) share links reliably (cookie extraction, transfer-save, resumable chunked downloads, structural verification), then `zs up` takes over for the sliced large-file upload to the NAS. Both ship as agent skills, so one prompt can drive the whole backup.
+
+---
+
+## Roadmap
+
+- [x] File upload/download
+- [x] Linux / Windows client auth (best-effort path detection + `ZS_CONFIG_DIR`)
+- [x] Docker headless option (`ZS_BASE_URL` + `docker-compose.yml`)
+- [x] Pre-built multi-arch images on GHCR (`ghcr.io/skyzhao1223/zspace-cli`, published per release)
+- [x] Batch glob helpers (`glob()` + `zs rm/mv/cp/down` patterns)
+- [x] Agent skill family: 9 cross-NAS organizers (incl. `file-sorter` for generic type-based archiving) + `nas-report` entry, selective install (`zs skill --list/--only`)
+- [x] Optional EXIF-based photo dating (`photo-organizer --exif`: exiftool → mdls → mtime fallback) — [#14](https://github.com/skyzhao1223/zspace-cli/issues/14)
+- [x] Per-skill config overrides (`skills/<name>/config.json`: whitelist dirs / extension rules) — [#15](https://github.com/skyzhao1223/zspace-cli/issues/15) · shipped for all 8 scanners (`nas-report` deliberately excluded). The key set differs per skill and `whitelist_dirs` has four distinct effects across five of them — see the family table in [`skills/README.md`](skills/README.md)
+- [x] Growth-trend reports (`nas-report diff` two snapshots: category/dir growth, rate & ETA) — [#16](https://github.com/skyzhao1223/zspace-cli/issues/16)
+
+---
+
+## Contributing
+
+PRs welcome — see
+[CONTRIBUTING.md](https://github.com/skyzhao1223/zspace-cli/blob/main/CONTRIBUTING.md) for dev setup, quality gates, and the
+skill-authoring guide (including the `skills/` ↔ `src/zspace_cli/skills/`
+dual-copy sync rule that CI enforces).
+
+- 🧭 **Not sure where to start?** Pick from
+  [CONTRIBUTION_IDEAS.md](https://github.com/skyzhao1223/zspace-cli/blob/main/docs/CONTRIBUTION_IDEAS.md)
+  (difficulty-tagged backlog, incl. reverse-engineered NAS API notes) or the
+  [`good first issue`](https://github.com/skyzhao1223/zspace-cli/labels/good%20first%20issue) label
+- 💬 Questions & showcases: [Discussions](https://github.com/skyzhao1223/zspace-cli/discussions)
+- 🔒 Security issues: private reporting via [SECURITY.md](https://github.com/skyzhao1223/zspace-cli/blob/main/SECURITY.md)
+- 🤝 This project follows the [Contributor Covenant](https://github.com/skyzhao1223/zspace-cli/blob/main/CODE_OF_CONDUCT.md)
+
+## Legal
+
+Unofficial community project, not affiliated with or endorsed by ZSpace/极空间.
+It automates **your own** logged-in desktop client on **your own** machine —
+no passwords handled, no service gates bypassed (membership-gated features are
+documented as gated, never worked around). API notes are interoperability
+documentation of observed client behavior and may break with client updates.
+Concerns or takedown requests: `skyzhao1223@users.noreply.github.com` —
+legitimate requests are answered promptly. Source archives ship with every
+GitHub Release; the maintainer keeps off-platform `git bundle` mirrors.
+
+## License
+
+MIT

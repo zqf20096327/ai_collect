@@ -1,0 +1,363 @@
+<div align="center">
+
+  # RustAPI
+
+  **High-performance APIs in Rust — define handlers, get OpenAPI, deploy to HTTPS in minutes.**
+
+  Native AI/LLM support · compile-time routes · `cargo rustapi` CLI
+
+  <br />
+
+  <a href="https://rustapi.cloud"><strong>Website</strong></a> ·
+  <a href="docs/GOLDEN_PATH.md"><strong>Golden Path</strong></a> ·
+  <a href="docs/cookbook/src/SUMMARY.md"><strong>Cookbook</strong></a> ·
+  <a href="docs/PRODUCTION_CHECKLIST.md"><strong>Production Checklist</strong></a> ·
+  <a href="docs/cookbook/src/recipes/rustapi_cloud.md"><strong>Deploy to Cloud</strong></a> ·
+  <a href="https://crates.io/crates/rustapi-rs"><strong>crates.io</strong></a>
+
+  <br /><br />
+
+  <img
+    src="https://raw.githubusercontent.com/Tuntii/RustAPI/refs/heads/main/assets/rustapi-corporate.gif"
+    width="920"
+    alt="RustAPI — define a handler, auto OpenAPI, deploy with cargo rustapi"
+  />
+
+  <p><sub><em>Write a 5-line handler → auto OpenAPI → <code>cargo rustapi deploy cloud</code> → live on <code>*.rustapi.cloud</code></em></sub></p>
+
+  <br />
+
+  [![Crates.io](https://img.shields.io/crates/v/rustapi-rs.svg)](https://crates.io/crates/rustapi-rs)
+  [![Docs](https://img.shields.io/badge/docs-cookbook-brightgreen)](docs/cookbook/src/SUMMARY.md)
+  [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
+  [![MSRV](https://img.shields.io/badge/MSRV-1.85-orange)](Cargo.toml)
+  [![Security Audit](https://github.com/Tuntii/RustAPI/actions/workflows/audit.yml/badge.svg)](https://github.com/Tuntii/RustAPI/actions/workflows/audit.yml)
+  [![Coverage](https://img.shields.io/badge/coverage-llvm--cov-blue)](https://github.com/Tuntii/RustAPI/actions/workflows/ci.yml)
+  [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Tuntii/RustAPI)
+
+</div>
+
+---
+
+## Golden Path (start here)
+
+**Handler → OpenAPI (`/docs`) → production probes → (optional) MCP / deploy.**
+
+```bash
+cargo run -p rustapi-rs --example golden_path
+# curl http://127.0.0.1:8080/api/v1/ping
+# open http://127.0.0.1:8080/docs
+```
+
+Full walkthrough: **[docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md)** · example: [`golden_path.rs`](crates/rustapi-rs/examples/golden_path.rs)
+
+Everything else (JWT, jobs, WS, full extras) branches off this path.
+
+---
+
+## Overview
+
+RustAPI is a Rust web framework built on **hyper 1.x** and **tokio**, designed for minimal boilerplate while retaining full control over performance. It uses a **facade architecture** (`rustapi-rs`) that shields user code from internal crate changes, keeping the public API stable as internals evolve.
+
+Key design goals:
+- **Ergonomic handler signatures** inspired by FastAPI and Axum
+- **Native TOON format** for token-efficient LLM responses
+- **Auto-discovery** of routes via procedural macros and link-time registration
+- **Three-tier request execution** (ultra fast / fast / full) to minimize overhead
+
+## What Sets RustAPI Apart
+
+### Three-Tier Request Execution
+
+Unlike other Rust frameworks that always run the full middleware chain, RustAPI dynamically selects the cheapest execution path per request:
+
+| Path | When | Overhead |
+|:-----|:-----|:---------|
+| **Ultra Fast** | No middleware, no interceptors | Zero Arc cloning, direct handler call |
+| **Fast** | Interceptors only, no middleware layers | Interceptor functions only |
+| **Full** | Middleware layers present | Complete `LayerStack` execution |
+
+This means a simple `GET /health` endpoint with no middleware runs at near-zero overhead, while other endpoints on the same server can use JWT, CORS, and rate limiting through the full path.
+
+### Facade Architecture with Contract Enforcement
+
+User code imports only from `rustapi-rs`. Internal crates (`rustapi-core`, `rustapi-macros`, etc.) can be refactored freely without breaking user code. The public API surface is tracked via committed `cargo public-api` snapshots, and CI enforces labeling rules (`breaking` / `feature`) on any PR that changes them.
+
+### Link-Time Auto-Discovery
+
+Routes annotated with `#[rustapi_rs::get("/...")]` are registered to a `linkme` distributed slice at link time — no manual route registration or inventory macros needed. `RustApi::auto()` collects them and builds a `BTreeMap`-ordered radix tree router via `matchit`.
+
+### TOON: Token-Oriented Object Notation
+
+A compact serialization format that reduces token counts by **50-58%** compared to JSON. `Toon<T>` is a drop-in replacement for `Json<T>`. `LlmResponse<T>` performs automatic content negotiation based on `Accept` headers and adds headers like `X-Token-Count-JSON`, `X-Token-Count-TOON`, and `X-Token-Savings` for observability.
+
+### Built-in Resilience Primitives
+
+RustAPI ships circuit breaker and retry middleware as first-class features, not third-party crate bolt-ons:
+
+- **Circuit Breaker** (`CircuitBreakerLayer`): Fault tolerance with open/half-open/closed states
+- **Retry** with exponential backoff
+- **Rate Limiting** (IP-based, per-route)
+- **Body Limit** with configurable max size (default 1 MB)
+- **Health Probes** via `.health_endpoints()` for `/health`, `/ready`, and `/live`
+
+### Environment-Aware Error Masking
+
+All error responses include a unique `error_id` (`err_{uuid}`) for log correlation. In production (`RUSTAPI_ENV=production`), 5xx error details are automatically masked to `"An internal error occurred"` while validation errors (4xx) pass through intact.
+
+### Request Replay & Time-Travel Debugging
+
+Record and replay HTTP request/response pairs for production debugging:
+
+```rust
+use rustapi_rs::extras::replay::{ReplayConfig, ReplayLayer};
+use rustapi_rs::prelude::*;
+
+RustApi::new()
+  .layer(
+    ReplayLayer::new(
+      ReplayConfig::new()
+        .enabled(true)
+        .admin_token("local-replay-token"),
+    ),
+  )
+  .run("0.0.0.0:8080")
+  .await?;
+```
+
+```sh
+cargo rustapi replay list -t local-replay-token
+cargo rustapi replay run <id> -t local-replay-token --target http://localhost:8080
+cargo rustapi replay diff <id> -t local-replay-token --target http://staging
+```
+
+- Middleware-based recording; no application code changes
+- Sensitive header redaction; disabled by default
+- In-memory (dev) or filesystem (production) storage with TTL
+- `ReplayClient` for programmatic test automation
+- Full incident workflow: [`docs/cookbook/src/recipes/replay.md`](docs/cookbook/src/recipes/replay.md)
+
+### Dual-Stack HTTP/1.1 + HTTP/3
+
+Run HTTP/1.1 (TCP) and HTTP/3 (QUIC/UDP) simultaneously on the same server. Enable with the `core-http3` feature flag.
+
+### Native MCP (Model Context Protocol)
+
+Every RustAPI endpoint is automatically an MCP tool. Zero glue code.
+
+- **In-Process**: ~28 µs per call (vs ~1.3 ms proxy) — **48x faster**
+- **CLI**: `cargo rustapi mcp generate --spec any-openapi.json` turns any API into agent tools
+- **Stdio**: Native Claude Desktop / Cursor integration
+
+```rust
+use rustapi_rs::prelude::*;
+use rustapi_rs::protocol::mcp::{McpConfig, McpServer, run_rustapi_and_mcp_with_shutdown};
+
+let mcp = McpServer::from_rustapi(&app, McpConfig::new().allowed_tags(["public"]));
+run_rustapi_and_mcp_with_shutdown(app, "0.0.0.0:8080", mcp, "0.0.0.0:9090", tokio::signal::ctrl_c()).await?;
+```
+
+### Native OpenAPI 3.1
+
+`#[derive(Schema)]` generates OpenAPI schemas at compile time. `RustApi::auto()` assembles the full spec with reference integrity validation. Swagger UI is served at `/docs` by default. No external code generators or YAML files needed.
+
+### Async Validation with Application State
+
+`AsyncValidatedJson<T>` can access application state (e.g., database connections) during validation. The extractor clones `ValidationContext` from request state, enabling rules like "username must be unique" at the validation layer.
+
+### Background Jobs
+
+The `extras-jobs` feature (formerly the `rustapi-jobs` crate) provides an async job queue with three backends (Memory, Redis, Postgres), retry with exponential backoff, dead letter queues, and scheduled execution — now part of `rustapi-extras`.
+
+### Side-by-Side gRPC + HTTP
+
+`rustapi-grpc` enables running Tonic-based gRPC services alongside RustAPI HTTP handlers in the same process via `run_rustapi_and_grpc`.
+
+### Additional Built-in Capabilities
+
+| Capability | Notes |
+|:-----------|:------|
+| WebSocket with permessage-deflate | Full compression negotiation via `protocol-ws` |
+| Server-Sent Events (SSE) | `SseEvent` with id, event type, retry fields |
+| Tera template rendering | `View<T>` response type via `protocol-view` |
+| JWT authentication | `AuthUser<T>` extractor + `JwtLayer` |
+| CORS | `CorsLayer` with builder pattern |
+| `simd-json` acceleration | 2-4x faster JSON parsing via `core-simd-json` feature |
+| In-memory `TestClient` | Executes the full middleware stack without network I/O |
+| `MockServer` | Expectation-based mock with explicit `verify()` |
+| `cargo rustapi new` | Interactive project scaffolding with feature selection |
+
+## Comparison
+
+| Feature | RustAPI | Actix-web | Axum | FastAPI (Python) |
+|:--------|:-------:|:---------:|:----:|:----------------:|
+| Performance | See benchmark source | Workload-dependent | Workload-dependent | Workload-dependent |
+| Ergonomics | High | Low | Medium | High |
+| AI/LLM native format (TOON) | Yes | No | No | No |
+| MCP / AI agent tools (native) | Yes (built-in + CLI + stdio) | No | No | No |
+| Request replay / time-travel debug | Built-in | No | No | 3rd-party |
+| Circuit breaker / retry | Built-in | 3rd-party | 3rd-party | 3rd-party |
+| Adaptive execution paths | 3-tier | No | No | N/A |
+| OpenAPI from code | Compile-time derive | 3rd-party | 3rd-party | Built-in |
+| HTTP/3 (QUIC) | Built-in | No | 3rd-party | No |
+| Background jobs | Built-in | 3rd-party | 3rd-party | 3rd-party |
+| API stability model | Facade + CI contract | Direct | Direct | Stable |
+
+Current benchmark methodology and canonical published performance claims live in [`docs/PERFORMANCE_BENCHMARKS.md`](docs/PERFORMANCE_BENCHMARKS.md). Historical point-in-time numbers in older release notes should not be treated as the current baseline unless they are linked from that document.
+
+## Quick Start
+
+Prefer the **[Golden Path](docs/GOLDEN_PATH.md)** for the recommended service shape (`production_defaults` + probes + OpenAPI). Minimal hello:
+
+**Recommended usage** (short macro paths via crate alias):
+
+```toml
+[dependencies]
+api = { package = "rustapi-rs", version = "0.2.2" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+```
+
+```rust
+use api::prelude::*;
+
+#[derive(Serialize, Schema)]
+struct Message { text: String }
+
+#[api::get("/hello/{name}")]
+async fn hello(Path(name): Path<String>) -> Json<Message> {
+    Json(Message { text: format!("Hello, {}!", name) })
+}
+
+#[tokio::main]
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    tracing_subscriber::fmt::init();
+    RustApi::auto()
+        .production_defaults("hello")
+        .run("127.0.0.1:8080")
+        .await
+}
+```
+
+`RustApi::auto()` collects macro-annotated handlers, serves Swagger UI at `/docs`, OpenAPI at `/docs/openapi.json`, and starts a multi-threaded tokio runtime. Spec path is **`/docs/openapi.json`** (not `/openapi.json`).
+
+Use **route macros** (`#[api::get]`) so OpenAPI includes your paths. Plain `.route(...)` alone does not register operations in the spec.
+
+### MCP in 3 lines
+
+```rust
+let mcp = McpServer::from_rustapi(&app, McpConfig::new().allowed_tags(["public"]));
+run_rustapi_and_mcp_with_shutdown(app, "0.0.0.0:8080", mcp, "0.0.0.0:9090", tokio::signal::ctrl_c()).await?;
+```
+
+Tag handlers with `#[api::tag("public")]` (or `"agent"`) so only intentional routes become tools. Example: `mcp_tools`.
+
+> **Tip:** Alias the crate as `api` for clean `#[api::get]` macros.
+
+`production_defaults(name)` enables request IDs, tracing spans, and `/live` `/ready` `/health` in one call. Details: [Production Baseline](docs/PRODUCTION_BASELINE.md).
+
+## Feature Flags
+
+Features are organized into three namespaces:
+
+| Namespace | Purpose | Examples |
+|:----------|:--------|:--------|
+| `core-*` | Core framework capabilities | `core-openapi`, `core-tracing`, `core-http3` |
+| `protocol-*` | Optional protocol support | `protocol-toon`, `protocol-ws`, `protocol-view`, `protocol-grpc` |
+| `extras-*` | Production middleware | `extras-jwt`, `extras-cors`, `extras-rate-limit`, `extras-replay` |
+
+Meta features: `core` (default), `protocol-all`, `extras-all`, `full`.
+
+## RustAPI Cloud
+
+Deploy to managed hosting from the CLI. The cloud **backend** lives in [RustAPI-Cloud](https://github.com/Tuntii/RustAPI-Cloud); this repo ships the framework and CLI client.
+
+```bash
+cargo install cargo-rustapi
+cargo rustapi login
+cargo rustapi deploy cloud
+cargo rustapi deploy status <deploy-id>
+```
+
+Default API: `https://api.rustapi.cloud`. Self-hosted operators can pass `--cloud-url` to point at their own backend.
+
+Full guide: [docs/cookbook/src/recipes/rustapi_cloud.md](docs/cookbook/src/recipes/rustapi_cloud.md)
+
+## Recent Changes
+
+See [CHANGELOG.md](CHANGELOG.md) for full history. Current release is **v0.2.2** (rustls advisory, yanked `chacha20`, Dependabot lockfile bumps). Highlights in **v0.2.0** (first semantic release):
+
+- **Semantic versioning:** drop commit-count `0.1.<n>`; conventional commits + [release-plz](https://release-plz.dev) drive minor/patch/major
+- **MCP hardening:** HTTP admin token enforcement, query-arg tools, `cargo rustapi new` + `protocol-mcp` / `ai-api` templates
+- **Golden path:** [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md), OpenAPI-aware `golden_path` example, production checklist in the header
+- **CRUD + uploads:** `cargo rustapi generate crud` (SQLx), `file_upload` example
+- **Maintenance:** sqlx 0.9, tera 2, thiserror 2, OpenTelemetry 0.32, security lockfile bumps (`RUSTSEC-2026-0204`)
+
+## Documentation
+
+| Resource | Link |
+|----------|------|
+| **Golden Path** | [docs/GOLDEN_PATH.md](docs/GOLDEN_PATH.md) |
+| Docs hub | [docs/README.md](docs/README.md) |
+| Cookbook | [docs/cookbook/src/SUMMARY.md](docs/cookbook/src/SUMMARY.md) |
+| Getting started | [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) |
+| RustAPI Cloud | [docs/cookbook/src/recipes/rustapi_cloud.md](docs/cookbook/src/recipes/rustapi_cloud.md) |
+| Production baseline | [docs/PRODUCTION_BASELINE.md](docs/PRODUCTION_BASELINE.md) |
+| Production checklist | [docs/PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md) |
+| Community & contributing | [docs/COMMUNITY.md](docs/COMMUNITY.md) |
+| API reference | [docs.rs/rustapi-rs](https://docs.rs/rustapi-rs) |
+
+**Examples:** [`golden_path`](crates/rustapi-rs/examples/golden_path.rs) first, then [`crates/rustapi-rs/examples/`](crates/rustapi-rs/examples/) and **[rustapi-rs-examples](https://github.com/Tuntii/rustapi-rs-examples)**.
+
+## Community & Contributing
+
+RustAPI is built in the open. Bug reports, docs fixes, recipes, and code contributions are welcome.
+
+- [Contributing guide](CONTRIBUTING.md) — setup, tests, PR workflow
+- [Community guide](docs/COMMUNITY.md) — channels, good-first issues, doc locations
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security policy](SECURITY.md)
+- [GitHub Discussions](https://github.com/Tuntii/RustAPI/discussions) — questions and ideas
+
+---
+
+## 💝 Sponsors
+
+RustAPI is built in the open by one developer, sustained by the community.
+If RustAPI saves you time or powers your project, consider [sponsoring the work](https://github.com/sponsors/Tuntii).
+
+### 🏆 Hall of Fame (Lifetime Sponsors)
+<!-- Permanent spot — thank you for betting early -->
+
+**Lifetime Sponsors** — Personal material & moral support ❤️
+
+<div align="center">
+  <a href="https://github.com/emirtom"><img src="https://github.com/emirtom.png?size=100" width="80" height="80" alt="emirtom"/></a>
+  <a href="https://github.com/erencanbas"><img src="https://github.com/erencanbas.png?size=100" width="80" height="80" alt="erencanbas"/></a>
+  <a href="https://github.com/arda-num"><img src="https://github.com/arda-num.png?size=100" width="80" height="80" alt="arda-num"/></a>
+</div>
+
+<p align="center">
+  <strong>emirtom</strong> &nbsp;•&nbsp; <strong>erencanbas</strong> &nbsp;•&nbsp; <strong>arda-num</strong>
+</p>
+
+### Patrons ($500+/mo)
+<!-- Logo + link here -->
+
+### Enterprise ($100+/mo)
+<!-- Logo + link here -->
+
+### Sponsors ($25+/mo)
+<!-- Name + link here -->
+
+### Supporters ($5+/mo)
+<!-- Name here -->
+
+> 💡 **Why sponsor?** RustAPI is independent. No VC. No corporate roadmap.
+> Your sponsorship directly funds feature development, docs, and keeping the lights on.
+
+---
+
+<div align="center">
+  <sub>Built by Tunti35.</sub>
+</div>

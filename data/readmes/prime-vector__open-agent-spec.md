@@ -1,0 +1,670 @@
+# Open Agent Spec (OA)
+
+Define AI agents as contracts, not scattered prompts.
+
+![PyPI version](https://img.shields.io/pypi/v/open-agent-spec)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
+Open Agent Spec lets you define an agent once in YAML, validate inputs and outputs against a schema, and either run it directly with `oa run` or generate a Python scaffold with `oa init`.
+
+## Why This Exists
+
+Most agent systems are hard to reason about:
+- outputs are not strictly typed
+- behaviour is buried in prompts
+- logic is split across Python, Markdown, and framework abstractions
+- swapping models often breaks things in subtle ways
+- token spend is invisible until the provider bill arrives, and can't be attributed back to a task
+
+OA's answer is a contract that covers both sides of the trade: **effectiveness** (typed inputs and outputs, validated on every run) and **cost efficiency** (normalised token usage and a best-effort dollar figure on every result, with declarative controls to right-size reasoning depth and pricing per task).
+
+## The Idea
+
+Open Agent Spec treats an agent like infrastructure.
+
+Think OpenAPI or Terraform, but for AI agents.
+
+You define:
+- input schema
+- output schema
+- prompts
+- model configuration
+
+Then OA enforces the boundary:
+
+`input -> LLM -> validated output`
+
+If the output does not match schema, the task fails fast with a validation error.
+
+For example, this shape mismatch can silently break downstream systems:
+
+```json
+{"msg":"hello"}
+```
+
+instead of:
+
+```json
+{"response":"hello"}
+```
+
+![Agents as Code — OA init spec, spec run, LLM execution, tasks executed](OAAAC.png)
+
+## Super Quick Start
+
+Install (Python 3.10+):
+
+```bash
+pipx install open-agent-spec
+```
+
+```bash
+oa init aac
+oa validate aac
+export OPENAI_API_KEY=your_key_here
+oa run --spec .agents/example.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+With OA you can:
+- define tasks, prompts, model config, and expected I/O in YAML
+- run a spec directly without generating code first
+- keep `.agents/*.yaml` in your repo and call them from CI
+- generate a Python project scaffold when you want to customize implementation
+
+### Optional OpenTelemetry execution evidence
+
+OA can emit standard OpenTelemetry traces that connect the declared spec to
+runtime observations. Install the optional exporter support and opt in per run:
+
+```bash
+pip install 'open-agent-spec[otel]'
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+oa run --spec examples/telemetry/agent.yaml \
+  --input examples/telemetry/input.json --telemetry
+```
+
+The trace uses standard GenAI attributes for model and tool observations, plus a
+small `oa.*` namespace for spec identity, declaration evidence, sandbox/schema/
+contract decisions, and conformance status. Telemetry is metadata-only by
+default. See [docs/TELEMETRY.md](docs/TELEMETRY.md) and the
+[minimal example](examples/telemetry/README.md).
+
+## First Run
+
+Shortest path from install to a working agent:
+
+**1. Create the agents-as-code layout** (`aac` = repo-native `.agents/` directory):
+
+```bash
+oa init aac
+```
+
+This creates:
+
+```text
+.agents/
+├── example.yaml   # minimal hello-world spec
+├── review.yaml    # code-review agent that accepts a diff file
+├── change.diff    # sample diff for immediate review-agent testing
+└── README.md      # quick usage notes
+```
+
+**2. Validate the generated specs:**
+
+```bash
+oa validate aac
+```
+
+**3. Set an API key** for the engine in your spec (OpenAI by default):
+
+```bash
+export OPENAI_API_KEY=your_key_here
+```
+
+**4. Run the example agent:**
+
+```bash
+oa run --spec .agents/example.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+`--quiet` prints the task output JSON only, good for piping to `jq` or scripting:
+
+```json
+{
+  "response": "Hello Alice!"
+}
+```
+
+Omit `--quiet` for the full execution envelope with Rich formatting.
+
+**5. Run the review agent with the bundled sample diff:**
+
+```bash
+oa run --spec .agents/review.yaml --task review --input .agents/change.diff --quiet
+```
+
+Or review your own change:
+
+```bash
+git diff > change.diff
+oa run --spec .agents/review.yaml --task review --input change.diff --quiet
+```
+
+## Write Your Own Spec
+
+Start from this shape:
+
+```yaml
+open_agent_spec: "1.6.0"
+
+agent:
+  name: hello-world-agent
+  role: chat
+
+intelligence:
+  type: llm
+  engine: openai
+  model: gpt-4o
+
+tasks:
+  greet:
+    description: Say hello to someone
+    input:
+      type: object
+      properties:
+        name:
+          type: string
+      required: [name]
+    output:
+      type: object
+      properties:
+        response:
+          type: string
+      required: [response]
+
+prompts:
+  system: >
+    You greet people by name.
+  user: "{{ name }}"
+```
+
+Validate first, then run:
+
+```bash
+oa validate agent.yaml
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+## Features
+
+### Token usage & cost on every run
+
+Every result envelope reports what the run consumed — normalised across providers, summed across every turn of a tool-calling loop, and priced against a built-in rate table when the model is known.
+
+```json
+"usage": {
+  "prompt_tokens": 41,
+  "completion_tokens": 12,
+  "total_tokens": 53,
+  "estimated_cost_usd": 0.000223
+}
+```
+
+`oa run` prints a compact `<total> tok · ~$<cost>` summary. The dollar figure is best-effort and never guessed — unknown models report tokens only.
+
+Override the rates when list price isn't your price:
+
+```yaml
+intelligence:
+  config:
+    pricing:                  # per-spec: enterprise-negotiated rates
+      input_per_1m: 2.00
+      output_per_1m: 8.00
+    # pricing: "none"         # or suppress the $ figure (subscription/local models)
+```
+
+Org-wide, set `OA_PRICING='{"gpt-4o": {"input": 2.0, "output": 8.0}}'` (or `"none"`). Invalid overrides fail closed with `PRICING_CONFIG_ERROR` — a silently wrong dollar figure is worse than none.
+
+---
+
+### Reasoning effort — right-size the thinking
+
+Declare how much reasoning a task deserves and OA maps it to each engine's native control (OpenAI `reasoning_effort`, Anthropic adaptive thinking, Codex CLI flags). Reasoning tokens are billed output tokens — this is a cost dial as much as a quality dial, and the usage block makes the effect of each tier visible per run.
+
+```yaml
+intelligence:
+  config:
+    reasoning_effort: low     # low | medium | high — requires a reasoning-capable model
+```
+
+---
+
+### Multi-task pipelines with `depends_on`
+
+Chain tasks declaratively. OA merges upstream outputs into downstream inputs automatically — no glue code required.
+
+```yaml
+tasks:
+  extract:
+    description: Pull key facts from raw text.
+    # ... input / output / prompts
+
+  summarise:
+    description: Summarise the extracted facts.
+    depends_on: [extract]   # extract's output is merged into summarise's input
+    # ... prompts
+```
+
+`depends_on` is a **data contract**, not execution control. The task graph has no branching, loops, or conditionals by design — the one loop OA owns is the bounded tool-call loop (see [Does OA Have Loops?](#does-oa-have-loops)). See [`examples/multi-task/`](examples/multi-task/).
+
+---
+
+### Tools — native, MCP, and custom
+
+Let the model call tools declared in the spec. Three backends, zero SDK dependencies.
+
+```yaml
+tools:
+  reader:
+    type: native
+    native: file.read          # built-in: file.read/write, http.get/post, env.read
+
+  search:
+    type: mcp
+    endpoint: http://localhost:3000   # any MCP server (JSON-RPC 2.0 over HTTP)
+
+  classifier:
+    type: custom
+    module: my_pkg.tools:ClassifierTool   # your own Python class
+
+tasks:
+  analyse:
+    tools: [reader, search, classifier]
+    # ...
+```
+
+See [`examples/file-reader/`](examples/file-reader/) and [`examples/mcp-search/`](examples/mcp-search/).
+
+---
+
+### Spec composition — delegate tasks to other specs
+
+A task can hand off its implementation to another spec entirely. Great for building shared specialist agents that many pipelines reuse.
+
+```yaml
+tasks:
+  sentiment_of_summary:
+    description: Delegate to the shared sentiment specialist.
+    spec: ./shared/sentiment.yaml   # local path or oa:// registry URL
+    task: analyse_sentiment
+    depends_on: [summarise]         # upstream outputs merged in automatically
+```
+
+See [`examples/spec-composition/`](examples/spec-composition/).
+
+---
+
+### Spec Registry — share specs via `oa://`
+
+Publish and consume specs from the hosted registry at `openagentspec.dev/registry/`. Reference them with the `oa://` shorthand — the runner resolves and fetches them automatically.
+
+```yaml
+tasks:
+  review:
+    spec: oa://prime-vector/code-reviewer   # resolves to latest hosted spec
+    task: review
+```
+
+Browse the registry at [openagentspec.dev/registry](https://www.openagentspec.dev/registry). Available specs: `summariser`, `classifier`, `sentiment`, `code-reviewer`, `keyword-extractor`, `memory-retriever`.
+
+---
+
+### History threading — stateless multi-turn chat
+
+Pass prior conversation turns as a `history` input field. OA injects them into the LLM message list between system and user turns. OA never stores history — your application manages the list.
+
+```yaml
+tasks:
+  chat:
+    input:
+      type: object
+      properties:
+        message: {type: string}
+        history:
+          type: array
+          description: Prior turns injected by the caller. OA never writes to this field.
+```
+
+```bash
+oa run --spec spec.yaml --task chat \
+  --input '{"message":"What did I just say?","history":[{"role":"user","content":"Hello"},{"role":"assistant","content":"Hi there!"}]}'
+```
+
+See [`examples/chat-agent/`](examples/chat-agent/).
+
+---
+
+### Memory retriever — LLM re-ranker for long-term memory
+
+Your application fetches candidate turns from an external store. The `memory-retriever` registry spec uses an LLM to select the most relevant ones and returns them as a `history` array ready to inject into any chat task.
+
+```yaml
+tasks:
+  recall:
+    spec: oa://prime-vector/memory-retriever
+    task: retrieve   # input: query + candidates → output: history + memory_count
+
+  respond:
+    depends_on: [recall]
+    spec: ./chat-agent/spec.yaml
+    task: chat
+```
+
+See [`examples/memory-chat/`](examples/memory-chat/).
+
+---
+
+### Immutable Inference Sandboxing (IIS)
+
+Declare hard execution constraints in the spec. The runner enforces them before any tool call reaches the I/O layer — no network connection opened, no file handle created, no exception to catch.
+
+```yaml
+sandbox:
+  tools:
+    allow: [file.read, http.get]     # SANDBOX_TOOL_VIOLATION if anything else is called
+  http:
+    allow_domains: [api.example.com] # SANDBOX_DOMAIN_VIOLATION for other hosts
+  file:
+    allow_paths: [./data/]           # SANDBOX_PATH_VIOLATION for paths outside this prefix
+
+tasks:
+  restricted:
+    sandbox:                         # per-task override tightens the root sandbox
+      tools:
+        allow: [file.read]
+```
+
+See [`examples/sandboxed-agent/`](examples/sandboxed-agent/).
+
+---
+
+### Behavioural contracts
+
+Declare what the model output must contain. The `behavioural-contracts` library enforces the contract after parsing, before the result is returned.
+
+Declared contracts fail closed with `CONTRACTS_UNAVAILABLE` before the affected task invokes a model when enforcement is unavailable.
+
+```yaml
+behavioural_contract:
+  version: "1.0"
+  response_contract:
+    output_format:
+      required_fields: [confidence]   # CONTRACT_VIOLATION if missing
+
+tasks:
+  classify:
+    behavioural_contract:
+      response_contract:
+        output_format:
+          required_fields: [label]    # effective required_fields: [confidence, label]
+```
+
+Install: `pip install 'open-agent-spec[contracts]'`
+
+---
+
+### Multiple engines
+
+Switch models by changing one line. All engines except Anthropic and Codex speak the OpenAI Chat Completions API over raw HTTP — no SDK required.
+
+```yaml
+intelligence:
+  type: llm
+  engine: openai       # openai | anthropic | grok | xai | cortex | local | codex | custom
+  model: gpt-4o-mini
+```
+
+The same `oa run` command works against any engine — drop the `intelligence:` block below into your spec, export the matching key, and run.
+
+#### OpenAI
+
+```yaml
+intelligence:
+  type: llm
+  engine: openai
+  model: gpt-4o-mini
+```
+
+```bash
+export OPENAI_API_KEY=sk-...
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+#### Anthropic (Claude)
+
+```yaml
+intelligence:
+  type: llm
+  engine: anthropic
+  model: claude-3-5-sonnet-20241022
+```
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+#### Grok / xAI
+
+```yaml
+intelligence:
+  type: llm
+  engine: grok          # or "xai" — same provider
+  model: grok-3-latest
+```
+
+```bash
+export XAI_API_KEY=xai-...
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+#### Local (Ollama, LM Studio, vLLM, llama.cpp)
+
+```yaml
+intelligence:
+  type: llm
+  engine: local
+  endpoint: http://localhost:11434/v1   # default: Ollama
+  model: llama3.2
+```
+
+```bash
+# No API key required.
+ollama serve && ollama pull llama3.2
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+#### Cortex (self-hosted, OpenAI-compatible)
+
+```yaml
+intelligence:
+  type: llm
+  engine: cortex
+  endpoint: https://cortex.mycompany.com/v1
+  model: my-cortex-model
+  config:
+    api_key_env: CORTEX_API_KEY
+```
+
+```bash
+export CORTEX_API_KEY=...
+oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet
+```
+
+#### Custom (your own Python class)
+
+```yaml
+intelligence:
+  type: llm
+  engine: custom
+  module: my_pkg.providers:MyProvider
+```
+
+Implement `invoke(system, user, config, history)` on `MyProvider`. See [`docs/REFERENCE.md`](docs/REFERENCE.md) for the protocol.
+
+---
+
+### npm / Node.js CLI
+
+Run OA specs from Node.js without Python.
+
+```bash
+npm install -g @prime-vector/open-agent-spec
+oa-run --spec agent.yaml --task greet --input '{"name":"Alice"}'
+```
+
+Supports OpenAI and Anthropic, `depends_on` chains, and history threading.
+
+---
+
+## How OA Relates to AGENTS.md and Skills
+
+AGENTS.md tells your copilot how to behave. **Open Agent Spec defines what
+your agents actually do** — typed, sandboxed, conformance-tested.
+
+The markdown agent patterns (AGENTS.md, SKILL.md) are prose guidance
+interpreted by a model at runtime: quick to write, but unvalidated,
+unenforceable, and untestable. OA operates one layer below them as the
+execution contract — input/output schemas, pinned models, runner-enforced
+sandboxing, and structured errors, certified identical across runtimes by a
+[conformance suite](spec/conformance/README.md).
+
+The two layers compose cleanly, following one rule:
+
+> **Markdown patterns may point at OA specs. OA specs never point at
+> markdown patterns.**
+
+- A **SKILL.md can wrap an OA spec** — the skill provides discovery, the spec
+  provides the guaranteed behaviour. See
+  [examples/skill-wrapper/](examples/skill-wrapper/).
+- An **AGENTS.md can direct coding agents to your specs** instead of letting
+  them improvise agent logic. This repo's own [AGENTS.md](AGENTS.md)
+  demonstrates the pattern.
+
+Full rationale: [docs/proposals/markdown-interop.md](docs/proposals/markdown-interop.md).
+
+---
+
+## Does OA Have Loops?
+
+Exactly one, and it is already normative: the tool-calling loop, bounded by a
+runner-enforced iteration cap with a structured error when it is exceeded.
+For every other loop shape the line is:
+
+> **OA iterates over data it can see before the first token. It never loops
+> on a condition it can only evaluate at runtime.**
+
+- A **bounded map** (run a task once per element of an input array) is
+  compatible and accepted in principle — to be designed as its own construct,
+  never a loosening of `depends_on`.
+- **Conditional / until-good loops** stay out of the spec. The supported
+  pattern: the orchestrator loops, each turn it runs an OA spec, and OA never
+  owns the loop — see [examples/multi-agent/](examples/multi-agent/).
+
+Full rationale: [docs/proposals/loops.md](docs/proposals/loops.md).
+
+---
+
+## Generate a Python Scaffold
+
+If you want editable generated code instead of running the YAML directly:
+
+```bash
+oa init --spec agent.yaml --output ./agent
+```
+
+Generated structure:
+
+```text
+agent/
+├── agent.py
+├── models.py
+├── prompts/
+├── requirements.txt
+├── .env.example
+└── README.md
+```
+
+## Core Idea
+
+Most agent projects end up hand-rolling the same pieces:
+- prompt templates
+- model configuration
+- task definitions
+- routing glue
+- runtime wrappers
+
+OA moves those concerns into a declarative spec so they can be reviewed, versioned, and reused.
+
+The intended model is:
+- spec defines the agent contract
+- `oa run` executes the spec directly
+- `oa init` generates a starting implementation when you need code
+- external systems can orchestrate multiple specs however they want
+
+OA deliberately does not prescribe:
+- orchestration
+- evaluation
+- governance
+- long-running runtime architecture
+
+## Common Commands
+
+| Command | Purpose |
+|--------|--------|
+| `oa init aac` | Create `.agents/` with starter specs |
+| `oa validate aac` | Validate all specs in `.agents/` |
+| `oa validate agent.yaml` | Validate one spec (`--spec agent.yaml` also works) |
+| `oa test agent.test.yaml` | Run YAML eval cases (model + assertions on task output); `--quiet` for CI JSON |
+| `oa run --spec agent.yaml --task greet --input '{"name":"Alice"}' --quiet` | Run one task directly from YAML |
+| `oa init --spec agent.yaml --output ./agent` | Generate a Python scaffold |
+| `oa update --spec agent.yaml --output ./agent` | Regenerate an existing scaffold |
+
+## Specification
+
+The formal specification defines what a conforming OA runtime must do, independent of any specific implementation.
+
+| Resource | Contents |
+|----------|----------|
+| [spec/open-agent-spec-1.6.md](spec/open-agent-spec-1.6.md) | Formal specification — normative MUST/SHOULD/MAY requirements for OA 1.6.1 |
+| [spec/schema/oas-schema-1.6.json](spec/schema/oas-schema-1.6.json) | Canonical JSON Schema for validating spec documents |
+| [spec/conformance/README.md](spec/conformance/README.md) | Conformance test structure and contribution guide |
+| [spec/conformance/PROTOCOL.md](spec/conformance/PROTOCOL.md) | Runtime-agnostic adapter protocol — certify any runtime, in any language |
+
+An independent implementor can build a conforming runtime from `spec/open-agent-spec-1.6.md` alone. The 1.6 spec defines the runtime around four pillars: typed contracts, a deterministic execution pipeline, first-class usage/cost observability, and declarative sandboxing.
+
+## More Detail
+
+| Resource | Contents |
+|----------|----------|
+| [openagentspec.dev](https://www.openagentspec.dev/) | Project website |
+| [docs/REFERENCE.md](https://github.com/prime-vector/open-agent-spec/blob/main/docs/REFERENCE.md) | Spec structure, engines, templates, `.agents/` usage |
+| [examples/multi-agent](https://github.com/prime-vector/open-agent-spec/tree/main/examples/multi-agent) | Multi-agent orchestration example — manager, workers, task board, dashboard |
+| [Repository](https://github.com/prime-vector/open-agent-spec) | Source, issues, workflows |
+
+## Notes
+
+- The CLI command is `oa` (not `oas`).
+- Python 3.10+ is required.
+- `oa run` requires the relevant provider API key for the engine in your spec.
+
+## About
+- OA Open Agent Spec was dreamed up by Andrew Whitehouse in late 2024, with a desire to give structure and standardisation to early agent systems
+- In early 2025 Prime Vector was formed taking over the public facing project
+
+## License
+
+MIT | see [LICENSE](LICENSE).
+
+[Open Agent Stack](https://www.openagentstack.ai)

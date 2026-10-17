@@ -1,0 +1,111 @@
+![Prompt Engineering Hub](data/prompt-engineering-hub-logo.png)
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub Release](https://img.shields.io/github/release/ConsciousML/prompt-engineering-hub.svg?style=flat)]()
+[![XML Validation](https://github.com/ConsciousML/prompt-engineering-hub/actions/workflows/ci.yaml/badge.svg)](https://github.com/ConsciousML/prompt-engineering-hub/actions/workflows/ci.yaml)
+[![PR's Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com) 
+# Prompt Engineering Hub
+
+A prompt hub to help you get the most out of your favorite LLM by generating (or using ready-made) optimized prompts!
+
+## What's Inside
+
+### The Prompt Generator
+An assistant that helps you create optimized prompts for any task, following the prompt engineering best practices of [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview), [OpenAI](https://platform.openai.com/docs/guides/) and [Google's Gemini](https://ai.google.dev/gemini-api/docs/prompting-strategies).
+
+### Ready-Made Prompts
+A [collection of prompts](#prompt-catalog) for a variety of tasks, including both **assistants** (for conversational use in LLM web interfaces) and **agents** (for autonomous use in tools like Claude Code). All created using our Prompt Generator.
+
+## When to Use
+Use this repository whether you want to:
+- Create your own custom AI assistants or agents
+- Use our pre-built prompts for conversational or autonomous tasks
+- Learn from prompt engineering examples
+- Contribute your own prompts to help the community!
+
+## Understanding Assistants vs Agents
+- **Assistants**: Conversational prompts designed for use in LLM web interfaces like Claude.ai, ChatGPT, or Gemini
+- **Agents**: Autonomous prompts designed for use in development tools like Claude Code as [sub-agents](https://code.claude.com/docs/en/sub-agents)
+
+## Requirements
+Any LLM chat interface (Claude, ChatGPT, Gemini, etc.) or APIs
+
+**Note**: While these prompts work across different LLMs, they were optimized using Claude and may need minor adjustments for other platforms.
+
+## Quick Start
+- **Assistants**: See our [assistant setup guide](docs/assistant-setup-guide.md) for instructions on using assistants in LLM web interfaces.
+- **Agents**: See our [agent setup guide](docs/agent-setup-guide.md) for instructions on using agents in Claude Code.
+
+## Advanced Prompt Generation Guide
+**Create your own assistants** using our [advanced prompt generation documentation](prompts/assistants/prompt_generator/README.md#advanced-prompt-generation-guide).
+
+This guide walks you through an iterative workflow to create optimized prompts for your specific tasks.
+
+## Prompt Catalog
+
+### Assistants
+| Assistant | Usage | Description | Status |
+|--------|-------|-------------|--------|
+| [**Prompt Generator**](prompts/assistants/prompt_generator/README.md) | Prompt Engineering | Generates optimized prompts using advanced techniques like chain-of-thought, prompt chaining, and XML formatting. Follows Anthropic's best practices. | ![Stable](https://img.shields.io/badge/status-stable-green) |
+| [**Example Generator**](prompts/assistants/example_generator/README.md) | Prompt Engineering | Creates XML examples that demonstrate assistant behavior to improve performance. | ![Stable](https://img.shields.io/badge/status-stable-green) |
+| [**Mermaid Diagram Designer**](prompts/assistants/diagram_designer/README.md) | Diagrams | Builds clear, well-structured diagrams using Mermaid syntax. It automatically selects the most appropriate diagram type for your needs and follows best practices for visual clarity. | ![Beta](https://img.shields.io/badge/status-beta-yellow) |
+| [**README Writer**](prompts/assistants/readme_writer/README.md) | Documentation | Generates comprehensive, well-structured README files through an iterative, section-by-section collaborative process. | ![Beta](https://img.shields.io/badge/status-beta-yellow) |
+
+### Agents
+| Agent | Usage | Description | Status |
+|--------|-------|-------------|--------|
+| [**Prompt Generator**](prompts/agents/prompt_generator/README.md) | Prompt Engineering | Autonomously generates, reviews, and improves prompts in a single pass. Designed for use as a Claude Code sub-agent. | ![Experimental](https://img.shields.io/badge/status-experimental-red) |
+| [**Mermaid to Canva**](prompts/agents/mermaid_to_canva/README.md) | Diagrams | Converts a Mermaid diagram into a Canva design built from your brand template, with your styled shapes and tool logos. Uses the Canva MCP. | ![Experimental](https://img.shields.io/badge/status-experimental-red) |
+
+For guidance on how to use a prompt, click on the respective link in the table.
+
+## Repository Structure
+```bash
+prompt-engineering-hub/
+├── prompts/                              # Ready-made prompts created with our generator
+│   ├── assistants/                       # Conversational assistants for LLM web interfaces
+│   │   ├── prompt_generator/             # The main prompt generation tool
+│   │   │   ├── system.xml
+│   │   │   ├── examples/
+│   │   │   │   └── example_1.xml
+│   │   │   │   └── ...
+│   │   │   └── user_facing_prompts/
+│   │   │       └── evaluate_insights.xml
+│   │   ├── example_generator/
+│   │   │   ├── system.xml
+│   │   │   ├── examples/
+│   │   │   └── user_facing_prompts/
+│   │   ├── diagram_designer/
+│   │   │   └── ...
+│   │   └── readme_writer/
+│   │       └── ...
+│   └── agents/                           # Autonomous agents for Claude Code
+│       ├── prompt_generator/
+│       │   └── README.md
+│       │   └── system.xml
+│       └── mermaid_to_canva/
+│           ├── README.md
+│           ├── system.xml
+│           └── .claude/skills/               # Workflow and Canva MCP skills
+└── docs/
+    ├── assistant-setup-guide.md
+    ├── agent-setup-guide.md
+    └── contribution.md
+```
+
+Here's a brief description of each file type:
+- `system.xml`: system prompts for assistants (copy into Project Instructions or paste at the start of a conversation) and agents (paste as the system prompt when registering in Claude Code or calling the API).
+- `user_facing_prompts/`: ready-to-use prompts for direct conversation. Copy and paste into any LLM chat.
+- `example_*.xml`: example files demonstrating the assistant's behavior.
+
+## Contributing
+We welcome contributions from the community! Help us grow this collection by sharing your prompts.
+
+See the [contributing documentation](docs/contribution.md) for detailed guidelines.
+
+Thank you for helping make AI assistants more useful for everyone!
+
+## License
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+Feel free to use, modify, and distribute these prompts in your own projects!

@@ -1,0 +1,114 @@
+# qry
+
+**[justestif.github.io/qry](https://justestif.github.io/qry/)**
+
+A terminal-native, agent-first web search CLI. Routes queries through swappable built-in adapters and always outputs JSON.
+
+```bash
+qry "what is the latest version of numpy"
+```
+
+```json
+[
+  {
+    "title": "NumPy 2.0 Release Notes",
+    "url": "https://numpy.org/doc/stable/release/2.0.0-notes.html",
+    "snippet": "NumPy 2.0.0 is the first major release since 2006..."
+  }
+]
+```
+
+## Install
+
+**Homebrew:**
+
+```bash
+brew install justEstif/tap/qry
+```
+
+**npm (alternative):**
+
+```bash
+npm install -g @justestif/qry
+```
+
+**mise:**
+
+```bash
+mise cache clear
+mise use -g go:github.com/justestif/qry@latest
+mise reshim
+```
+
+## Adapters
+
+Adapters are built-in packages that do the actual searching. They implement a common interface.
+
+| Adapter                         | Source                          | Key required |
+| ------------------------------- | ------------------------------- | ------------ |
+| `brave-api`                     | Brave Search API                | ✓            |
+| `brave-scrape`                  | Brave Search (scraping)         | ✗            |
+| `ddg-scrape`                    | DuckDuckGo Lite (scraping)      | ✗            |
+| `exa`                           | Exa AI (via MCP)                | ✗            |
+| `github`                        | GitHub Search API               | ✗ (optional) |
+| `searx`                         | SearXNG (self-hostable)         | ✗            |
+| `stackoverflow`                 | Stack Exchange API              | ✗ (optional) |
+| `wikipedia`                     | Wikipedia / MediaWiki API       | ✗            |
+
+## Configure
+
+Create `~/.config/qry/config.toml`:
+
+Use `${VAR}` syntax in adapter config values — qry expands them from the environment
+at runtime so secrets never live in the file:
+
+```toml
+[adapters.brave-api.config]
+  api_key = "${BRAVE_API_KEY}"
+```
+
+```toml
+[defaults]
+  num     = 10
+  timeout = "5s"
+
+[routing]
+  mode = "first"
+  pool = ["ddg-scrape", "brave-scrape"]
+```
+
+## Agent usage
+
+An **agent skill** is available for one-line install into any supported agent:
+
+```bash
+npx skills add justestif/qry -g -y
+```
+
+Browse skills at [skills.sh](https://skills.sh).
+
+---
+
+Run `qry --agent-info` (or `-A`) to get a JSON description of the tool and your current
+configuration — useful for agents to orient themselves before making search calls:
+
+```bash
+qry --agent-info
+```
+
+The output includes the tool description, available flags, routing mode explanations,
+and each configured adapter with its availability status. Adapter config
+maps show `${VAR}` template strings rather than resolved values, so secrets are never exposed.
+
+## Routing modes
+
+- **`first`** — tries adapters in order, returns on first success. Fast, good for most use cases.
+- **`merge`** — queries all adapters concurrently, deduplicates by URL, returns combined results.
+
+## More
+
+See [`docs/`](./docs) for full documentation:
+
+- [`docs/architecture.md`](./docs/architecture.md) — how qry works internally
+- [`docs/schema.md`](./docs/schema.md) — config and JSON schemas
+- [`docs/adapters.md`](./docs/adapters.md) — how to build your own adapter

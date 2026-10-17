@@ -1,0 +1,257 @@
+# DungeonGPT (JS): Character Creator & AI Game Master
+
+**🎮 Live App:** https://dungeongpt.xyz/
+
+This is a web application built with React that allows users to create detailed characters for role-playing games, manage them, and use them in an interactive game session powered by an AI dungeon master.
+
+This project is based upon the [Python version of the same name](https://github.com/EdwardAThomson/DungeonGPT).
+
+YouTube Videos 🎥:
+
+* [How To Play / Overview](https://youtu.be/CGskdUTQnMo)
+* [DungeonGPT goes live!](https://youtu.be/0Dvaz9yULuA)
+* [AI-powered quests: How can we solve non-determinism with LLM outputs?](https://youtu.be/Rzv3Rh3aOkM)
+
+
+![DungeonGPT - a lone figure roams through the forest](./public/through_the_forest.webp)
+
+## Features
+
+*   **Character Creation:** Detailed form to define character stats, class, background, alignment, and profile picture. (Heroes are currently Human-only while portrait art is limited; the race field is retained on the data model for legacy saves.)
+*   **Character Management:** View all created characters, edit existing characters.
+*   **Game Setup:** Configure settings for a new game session (description, rules, world seed).
+*   **Hero Selection:** Choose created characters to form a party for the game.
+*   **AI-Powered Game:** Engage in an interactive text-based adventure where the AI acts as the game master, responding to user actions and summarizing the story.
+*   **World Map:** Explore a procedurally generated world map with biomes, towns, and points of interest.
+*   **Encounter System:** Dynamic encounters with skill checks, rewards, and AI-narrated outcomes.
+*   **Boss Fights & Party Combat:** Multi-round boss fights with a Lead + Support formation, real enemy HP, and bosses that hit back; rolls stay deterministic (d20 in code), the AI only narrates.
+*   **Inventory & Progression:** Track party inventory, gold, HP, and XP progression.
+*   **Equipment:** Equip weapons, armour, and accessories that affect combat (attack, damage soak, all-round bonuses).
+*   **Shops & Economy:** Buy and sell at blacksmiths, markets, alchemists, and general stores so gold has a purpose.
+*   **Explorable Sites:** Enter caves, ruins, forests, hills, and mountains as procedurally generated sub-maps with encounters and loot.
+*   **Quests & Campaigns:** A deterministic campaign-milestone engine (every objective engine-refereed; the AI narrates outcomes, never judges them) plus a pool of discoverable side-quests.
+*   **Campaign Chaining:** Finish a campaign and continue the next chapter inside the same save: same world, same party (healed), with the new campaign's content spawned additively into the existing map.
+*   **Adventure Book:** A tabbed in-game hub (Campaign / Side Quests / Codex / Party / AI) including a discovered-only bestiary and item codex.
+*   **Towns:** Procedurally generated town maps with road-aware gates, lakefront/coastline water, a civic layout (town square, keep, varied buildings), a hub-and-spoke street network (windy lanes from every gate to the square), themed building palettes per biome (desert adobe, snow timber), and water settlements: riverside quays for river-adjacent towns, plus river-fork and canal-city archetypes for member/premium tiers.
+*   **Conversation Memory (RAG):** The AI recalls earlier story beats via on-device retrieval over embedded history.
+*   **Guest / Local-First Play:** Try the game without an account; heroes and saves live in the browser and sync to the cloud on sign-in.
+*   **Onboarding:** A guided tour and a 27-point-buy hero creator.
+*   **AI Models:** Runs on Cloudflare Workers AI with a curated 4-model lineup (GPT-OSS 120B/20B, Llama 4 Scout, Llama 3.1 8B Fast). Local development additionally supports OpenAI, Gemini, and Claude. Member+ accounts get a premium model pool via OpenRouter (server-side, with a daily allowance and automatic fallback to the free pool).
+*   **User Authentication:** Secure sign-in via Octonion hub (centralized auth across games).
+*   **Membership Tiers:** Account tiers (Free / Member / Premium / Elite) stored server-side; premium story templates are delivered from the server to entitled accounts, and the profile page shows the current tier. Members can redeem a code on the Profile page for time-boxed membership (with the active-until date shown) and pick their AI pool (Free / Premium) there too.
+*   **Persistent Sessions:** Characters and game sessions saved to a self-hosted PostgreSQL database, accessed through the CF Worker (via Cloudflare Hyperdrive) with row-level access enforcement.
+*   **Save/Load System:** Manual and auto-save with confirmation modals; saves are written locally first (IndexedDB) and synced to the cloud, with honest "on this device" status in the saved-games list when a cloud push is pending.
+
+## Technology Stack
+
+*   **Frontend:** React (Hooks, Context API) - Deployed on Cloudflare Pages
+*   **Routing:** React Router DOM
+*   **Styling:** Modular CSS (feature-based organization in `src/styles/`)
+*   **Backend:** Cloudflare Workers (TypeScript with Hono framework)
+*   **Database:** Self-hosted PostgreSQL, reached from the CF Worker via Cloudflare Hyperdrive (row-level access enforced in the Worker)
+*   **Authentication:** Octonion hub (centralized auth at octonion.io)
+*   **AI Providers:** Cloudflare Workers AI in production, plus an OpenRouter-backed premium pool for member+ tiers (rate-limited in the Worker). Local development also supports OpenAI, Gemini, and Claude (server-side only, no exposed keys).
+
+## Project Structure
+
+```
+src/
+├── components/      # Reusable UI components (modals, panels, maps)
+├── contexts/        # React Context providers (Auth, Settings)
+├── data/            # Static game data (encounters, races, classes)
+├── game/            # Game logic controllers (movement, encounters, saves)
+├── hooks/           # Custom React hooks (useGameMap, useGameSession, etc.)
+├── llm/             # LLM integration (model resolver, constants)
+├── pages/           # Page components (Game, HeroCreation, Login, etc.)
+├── services/        # API client services (auth, heroes, conversations, LLM)
+├── styles/          # Feature-based CSS files
+└── utils/           # Utility functions (map generation, health system, etc.)
+
+cf-worker/           # Cloudflare Workers backend (production)
+├── src/
+│   ├── index.ts     # Hono app entry point
+│   ├── routes/      # API routes (DB proxy, AI, images, embeddings)
+│   ├── middleware/  # Auth middleware (Octonion JWT validation)
+│   └── services/    # Workers AI service layer
+└── wrangler.toml    # Cloudflare Workers config
+```
+
+The character creator:
+
+![Character Creation](./public/assets/screenshots/character_creator.webp)
+
+Exploring a town, with the AI narrating in the adventure log:
+
+![Town View](./public/assets/screenshots/town_view.webp)
+
+The world map:
+
+![World Map](./public/assets/screenshots/world_map.webp)
+
+Choosing an adventure, a combat encounter, and the saved-games screen:
+
+![Adventure Creator](./public/assets/screenshots/adventure_creator.webp)
+
+![Encounter](./public/assets/screenshots/encounter_modal.webp)
+
+![Saved Games](./public/assets/screenshots/saved_games.webp)
+
+
+## Setup and Installation
+
+### Local Development
+
+This is a guide for deploying the app locally.
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/EdwardAThomson/DungeonGPT-JS.git
+    cd DungeonGPT-JS
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Set up Environment Variables:**
+
+    *   Copy `.env.example` to `.env` and configure:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    *   Edit `.env` and add your LLM API keys:
+
+    ```
+    OPENAI_API_KEY=your-openai-key
+    GEMINI_API_KEY=your-gemini-key
+    ANTHROPIC_API_KEY=your-claude-key
+    ```
+
+    *   The default settings in `.env.example` should work for local development (port 5000 for backend, port 3000 for frontend).
+    *   API keys are handled securely by the backend server — they are never exposed to the frontend.
+
+4.  **Run the backend server (Required for Database Persistence):**
+
+    *   The backend server (`src/server.js`) handles saving and loading characters to/from the SQLite database (`src/game.db`).
+    *   **This server must be running** in a separate terminal for character saving/loading features to work.
+    *   Open a terminal, navigate to the project root directory, and run:
+
+    ```bash
+    node src/server.js
+    ```
+    
+    *   Keep this terminal window open while using the application.
+
+5.  **Run the React development server:**
+
+    *   In a new terminal, from the project root:
+
+    ```bash
+    npm start
+    ```
+
+    *   This will open the application at `http://localhost:3000`
+
+6.  **Run the tests (optional):**
+
+    ```bash
+    npm test                 # Jest unit tests (watch mode)
+    npm run test:e2e         # Playwright end-to-end tests
+    ```
+
+7.  **Work on the Cloudflare Worker (optional):**
+
+    *   The production backend lives in `cf-worker/`. To run it locally or deploy:
+
+    ```bash
+    cd cf-worker && npx wrangler dev   # local worker on :8787
+    cd cf-worker && npm run deploy     # manual worker deploy (CI deploys on push to master)
+    ```
+
+### Production Deployment
+
+The app is deployed on:
+
+- **Frontend:** Cloudflare Pages (https://dungeongpt.xyz)
+- **Backend:** Cloudflare Workers
+- **Database:** Self-hosted PostgreSQL via Cloudflare Hyperdrive
+
+The frontend deploys automatically to Cloudflare Pages on push to `master`; the Worker is deployed by CI. For deploys, rollbacks and backups, see `docs/OPS_RUNBOOK.md`.
+
+## Usage
+
+1.  **Create a hero** from "Your Heroes" (Create Hero) with detailed stats, class, and background
+2.  **View and manage** your heroes under "Your Heroes"
+3.  **Start a new game** by going to "New Game", configuring settings, and selecting your party
+4.  **Explore the world** with a procedurally generated map featuring biomes, towns, and encounters
+5.  **Play the game** by interacting with the AI Dungeon Master through text commands
+6.  **Save your progress** - characters and game sessions are saved to the local SQLite database
+
+**Note:** The live production app at https://dungeongpt.xyz/ includes additional features like centralized authentication via Octonion hub and cloud persistence in PostgreSQL.
+
+## Recent Improvements
+
+*   ✅ **Production Deployment** — Live on Cloudflare Pages with Workers backend
+*   ✅ **PostgreSQL Persistence** — self-hosted database accessed via CF Worker (originally on Supabase)
+*   ✅ **Octonion Hub Auth** — Centralized authentication across games
+*   ✅ **Cloudflare Workers AI** — Server-side AI with no exposed API keys
+*   ✅ **Multi-User Support** — Each user's data isolated by CF Worker access control
+*   ✅ **Save/Load System** — Manual save with confirmation, auto-save, cloud persistence
+*   ✅ **Modular Architecture** — Controllers for movement, encounters, saves
+*   ✅ **Multi-Provider AI** — OpenAI, Gemini, Claude, Cloudflare Workers (cloud and CLI modes) [Local Dev Mode]
+*   ✅ **Environment-Aware Logging** — Production-safe logging system
+*   ✅ **Feature-Based CSS** — Modular styling for maintainability
+*   ✅ **Procedural World Map** — Biomes, towns, mountains with exploration
+*   ✅ **Dynamic Encounters** — Skill checks, rewards, AI narration
+*   ✅ **Equipment & Items** — Equip gear that affects combat; expanded item catalogue
+*   ✅ **Shops & Economy** — Buy/sell at town merchants
+*   ✅ **Explorable Sites** — Caves, ruins, forests, hills, mountains as sub-maps with loot
+*   ✅ **Side-Quests** — Discoverable quests with givers, turn-ins, and rewards
+*   ✅ **Campaign Milestones** — engine-refereed quest outcomes with AI narration (AI judgment retired 2026-07)
+*   ✅ **Conversation Memory (RAG)** — AI recalls earlier story via embedded history
+*   ✅ **Guest Mode** — Local-first play without an account, cloud sync on sign-in
+*   ✅ **Guided Onboarding** — Interactive tour + reworked hero creator
+*   ✅ **Town Discovery System** — Buildings discovered and remembered across sessions
+*   ✅ **How to Play Page** — Comprehensive guide for new players
+*   ✅ **E2E Testing** — Playwright tests for critical user flows
+
+## Potential Future Improvements
+
+*   💳 **Billing completion** — payment rails are live via the Octonion hub (redemption codes + hub-enforced tiers); the remaining piece is wiring in-game AI usage to debit hub credits
+*   📊 **Usage Tracking** — a read-only premium-AI usage meter is live on Profile; per-generation cost accounting is not yet built
+*   📈 **Monitoring** — Error tracking and performance metrics
+*   🎬 **Streaming AI Responses** — Real-time text generation for better UX
+*   🧪 **Expanded Testing** — Unit and integration tests for core game loops
+*   🛠️ **Crafting & Alchemy** — Turn gathered materials into gear and potions (planned)
+*   ⚔️ **Tactical Grid Combat** — Turn-based combat on a battlemap (full-party boss fights with Lead + Support roles already ship)
+*   🎭 **Persistent NPCs** — NPCs with lasting memory and relationships (town NPC interactions already ship)
+
+## License & Attribution
+
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](./LICENSE) file for details.
+
+### Character Portrait Artwork
+
+All character portrait images were generated using ChatGPT's AI image generation (DALL-E) and are owned by the project creator under OpenAI's Terms of Use. See [CREDITS.md](./CREDITS.md) for full attribution details.
+
+### Game Content
+
+All game content (character descriptions, encounter text, story elements) is original content created for this project. Race and class names use generic fantasy terms or original terminology to avoid trademark conflicts:
+
+- **Original race names:** Smallfolk, Demonkin, Dragonkin
+- **Generic race names:** Human, Dwarf, Elf, Gnome, Half-Elf, Half-Orc
+- **Generic class names:** Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard
+
+### Game Mechanics
+
+This project uses d20-based game mechanics (rolling a 20-sided die for skill checks and attacks), which are not copyrighted and are used across many role-playing games. This project does **not** use the Open Game License (OGL) and does not claim compatibility with any specific game system.
+
+### Third-Party Libraries
+
+This project uses various open-source libraries (React, Express, SQLite3, etc.) under their respective licenses. See [CREDITS.md](./CREDITS.md) for a complete list.
+
+For contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).

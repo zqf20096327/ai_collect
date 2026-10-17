@@ -1,0 +1,506 @@
+# Octoweb — the keyboard-first AI browser for macOS
+
+[![Latest release](https://img.shields.io/github/v/release/muvon/octoweb?sort=semver&color=blue)](https://github.com/muvon/octoweb/releases)
+[![Platform](https://img.shields.io/badge/platform-macOS-black.svg)](https://github.com/muvon/octoweb/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
+
+**The browser you reach for when you want to think. macOS only, by design.**
+
+Built on WebKit and Rust. No Electron. No Chrome. No mouse required.
+
+🏠 [Website](https://octoweb.xyz) · [Releases](https://github.com/muvon/octoweb/releases) · [Changelog](CHANGELOG.md)
+
+---
+
+## Contents
+
+- [Why Octoweb?](#why-octoweb)
+- [Features](#features)
+- [AI Assistant](#ai-assistant)
+- [MCP server (AI browser control)](#mcp-server-ai-browser-control)
+- [Keyboard shortcuts](#keyboard-shortcuts)
+- [Install](#install)
+- [Configuration](#configuration)
+- [What it is (and isn't)](#what-it-is-and-isnt)
+- [Tech stack](#tech-stack)
+
+---
+
+## Why Octoweb?
+
+Most browsers are built around the mouse. Octoweb is built around the keyboard — and around the idea that your browser should amplify your thinking, not interrupt it. Every action has a shortcut. The AI assistant lives in a sidebar, not a tab. And your AI tools can drive the browser directly via MCP. No config. Just open it and go.
+
+**Three things it does differently:**
+
+1. **Keyboard-first navigation** — Every action has a shortcut. Nothing requires a click. The command palette (`⌘⇧P`) fuzzy-searches tabs and history. Pin any page to a fast-access slot with `⌘⇧1`–`⌘⇧0` and jump back with `⌘1`–`⌘9` from anywhere.
+
+2. **AI assistant built in** — Not an extension, not a tab. A sidebar overlay powered by a local [octomind](https://github.com/muvon/octomind) agent via [ACP](https://github.com/muvon/agent-client-protocol). Ask questions about the current page, get code explanations, summarize content — all without leaving the browser.
+
+3. **MCP server inside the browser** — Your AI tools can actually *drive* the browser. Octoweb runs an MCP server on `localhost:3434/mcp` that exposes 38 tools for navigation, tab management, page interaction, content extraction, and mail. Point Claude Desktop or any MCP client at it and watch it browse.
+
+---
+
+## Features
+
+- **Command palette** (`⌘⇧P`) — Fuzzy search across tabs and history. Type a URL, search query, or page fragment.
+- **Page memory** (`/` in the palette) — Search the text of pages you have visited, not just titles. "Where did I see that pricing table" is one keystroke away; the agent gets the same search as an MCP tool. Private tabs are never indexed.
+- **Copy for sharing** (`⌘⇧C`) — Copies the URL, or the selection with the URL under it, as plain text. `⌥⌘C` copies markdown instead: a quote with its source link, or the whole page as clean markdown when nothing is selected. ⌥-click the address bar's copy button for a `[title](url)` link.
+- **Save for later** (`⌘⇧L`) — A reading queue that decays instead of a bookmark shelf: saved pages sit on top of the palette and the new-tab page, opening one removes it, and after `later_days` they drop out while their text stays searchable. The `digest-later` workflow turns whatever you never opened into three lines each.
+- **Ask about selection** (`⌘⇧K`) — Select text on any page and ask the sidebar to explain it, with the page as context. No selection asks about the page.
+- **Private tabs** (`⌘⇧↵` in the palette) — Open any result in an isolated tab with in-memory cookies and storage. Nothing is written to history, the session file, or the favicon cache; closing the tab discards everything.
+- **Fast-access slots** (`⌘1`–`⌘0`) — Pin up to 10 pages for instant access, one set per workspace. Footer bar shows all slots.
+- **Tab pinning** (`⌘⇧N`) — Pin the current tab to the fast-access bar with one keystroke.
+- **Workspaces** (`⌘⇧O`) — Isolated browser profiles: each workspace has its own tabs, history, AI sessions, and a dedicated WebKit data store, so cookies, localStorage, and cache never leak between them. Switch with `⌘1`–`⌘0` while the popover is open.
+- **Configurable keybindings** — Remap any shortcut in Settings (`⌘,`). Changes apply on the next keystroke, no restart.
+- **AI sidebar** (`⌘⇧A`) — Chat with a local AI agent about the current page. Streaming responses, code blocks with copy.
+- **Inline AI edit** (`⌘⇧E`) — Select text on any page, transform it with AI. Rewrite, summarize, translate.
+- **Proactive learning** — Background agent periodically analyzes your browsing and memorizes patterns. **Off by default** — it reads your tabs, history and page text, so you turn it on deliberately in Settings (`⌘,`).
+- **MCP server** — 38 tools for AI clients to control the browser. Navigate, click, type, screenshot, extract content, read and search mail.
+- **Mail** (`⌘⇧I`) — Gmail, iCloud, Outlook, Private Email, or any IMAP account in a pane beside the page: Important and Other, single-key triage, snooze, undo send, send later, search, attachment previews. Accounts are scoped per workspace.
+- **Notes** (`⌘⇧J`) — One markdown file per workspace. `⌥⌘J` captures the page as a task, or the selection as a quote.
+- **Terminal** (`` ⌘` ``) — A real shell under the page, with tabs and splits, per workspace; layout, directories, and output come back after a restart.
+- **Extensions** — Chrome Web Store extensions, or a `.crx`, `.zip`, `.xpi`, or unpacked folder, scoped per workspace (macOS 15.4+).
+- **Find-in-page** (`⌘F`) — Full-text search with highlighting.
+- **Page zoom** — `+`/`-` to zoom, `⌘0` to reset.
+- **Screenshots** — `⌘S` for viewport, `⌘⇧S` for full page. Copied to clipboard.
+- **PDF & DOCX viewer** — Open documents directly in the browser.
+- **Session restore** — Tabs and history persist across restarts.
+- **Favicon caching** — No network requests on startup. Icons stored as base64.
+- **Content blocking** — Built-in tracker and ad blocker via WKContentRuleList.
+- **Smart tab hibernation** — Background tabs under memory pressure are frozen.
+
+---
+
+## AI Assistant
+
+Press `⌘⇧A` to open the sidebar. It connects to a local AI agent running under [octomind](https://github.com/muvon/octomind) using the [Agent Client Protocol (ACP)](https://github.com/muvon/agent-client-protocol). Responses stream in as they arrive.
+
+### How it works
+
+```
+octoweb sidebar  ──ACP/JSON-RPC──▶  octomind acp octoweb:assistant
+                                         │
+                                    specialist agent config
+                                    from the tap registry
+                                         │
+                                    your chosen AI provider
+                                    (OpenAI, Anthropic, etc.)
+```
+
+octomind is a plug-and-play AI agent runtime. You install it once, point it at an API key, and get a fully configured specialist agent — model, system prompt, tools, and all — with zero manual setup. The `octoweb:assistant` tag fetches that agent's configuration from the [community tap registry](https://github.com/muvon/octomind-tap) automatically.
+
+### Setup
+
+**1. Install octomind:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/muvon/octomind/master/install.sh | bash
+```
+
+**2. Set an API key** (any supported provider):
+
+```bash
+export OPENROUTER_API_KEY="your_key"   # easiest — covers all providers
+# or: OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.
+```
+
+**3. Start octomind in ACP mode** (octoweb connects to this):
+
+```bash
+octomind acp octoweb:assistant
+```
+
+octomind fetches the `octoweb:assistant` agent manifest from the tap, installs any required tools, and starts listening for ACP connections. octoweb's sidebar connects automatically.
+
+**4. Open the sidebar in octoweb:** `⌘⇧A`
+
+### Changing the agent
+
+The agent tag in the sidebar header defaults to `octoweb:assistant`. You can type any tag your octomind instance knows about — `developer:rust`, `assistant`, your own custom agents — the new-session picker autocompletes as you type, and the sidebar reconnects to that agent immediately.
+
+Shipped tags include `octoweb:assistant` (sidebar chat), `octoweb:editor` (inline text transformation, used by `⌘⇧E`), `octoweb:learning` (background learning), and `octoweb:trend` (live social trend research) — see the [tap registry](https://github.com/muvon/octomind-tap).
+
+The `octoweb:assistant` agent uses a stable working directory per browser workspace.
+Default keeps `~/.local/share/octoweb`; other workspaces use
+`~/.local/share/octoweb-workspaces/octoweb-<workspace-id>`. Renaming a workspace
+keeps its directory and Octomind lesson scope. Each directory has the same local
+tools and links to Default's `.env` and `AGENTS.md` when present; existing
+workspace-specific files are kept. Existing lessons stay in Default's scope.
+Other agent roles continue using the shared directory.
+
+No data leaves your machine unless your agent sends it somewhere. The AI provider call is made by octomind, not by the browser.
+
+### Agent-rendered UI (A2UI)
+
+Agents can do more than reply with text: via the `render_ui` tool they can draw interactive surfaces — forms, buttons, live views — inline in the sidebar chat. Buttons can open URLs in a new tab or resolve back to the agent.
+
+Octoweb speaks [A2UI v1.0](https://a2ui.org/specification/v1.0-a2ui/) and renders the full basic catalog (Card, Row/Column/List, Text, Image, Icon, Video, AudioPlayer, Button, TextField, CheckBox, ChoicePicker, Slider, DateTimeInput, Tabs, Modal, Divider), including data-model binding, `${…}` string interpolation, list templates, validation checks, accessibility attributes, and agent-issued `callRendererFunction`. Envelopes are validated before they render, so a malformed surface comes back to the agent as a precise error instead of a blank card.
+
+### Proactive Learning
+
+Octoweb runs a background agent that periodically analyzes your browsing patterns and memorizes insights. It is **off by default** — it reads your open tabs, history and the active page's text, which is a thing to opt into rather than discover. Turn it on in Settings (`⌘,`).
+
+**How it works:**
+
+1. Every `learning_interval_min` (default: 30), the background agent wakes up
+2. It collects: open tabs, recent history, and the active page's text content
+3. The agent calls `remember` to check existing memories, then `memorize` for new insights
+4. Insights are stored locally in octomind's memory system
+
+**Configuration:**
+
+```toml
+proactive_learning    = false   # enable background learning (default: off)
+learning_interval_min = 30     # minutes between runs (floored to 5 on load)
+```
+
+The learning agent runs as a separate `octomind acp octoweb:learning` process. It's completely independent from the sidebar assistant — you can use one without the other.
+
+---
+
+## MCP server (AI browser control)
+
+octoweb runs an MCP server on `localhost:3434/mcp`. Any MCP-compatible AI client — Claude Desktop, octomind itself, your own scripts — can use it to control the browser directly.
+
+```
+Claude Desktop / octomind / any MCP client
+        │
+        │  HTTP JSON-RPC
+        ▼
+  localhost:3434/mcp  (inside octoweb)
+        │
+        ▼
+  WebKit WebView — navigate, click, type, read, run JS
+```
+
+**Available tools:**
+
+| Tool | What it does |
+|------|--------------|
+| `browser_navigate` | Navigate to a URL — always in the background (new tab, or in-place via `tab_id`); never steals focus. Reports the URL it actually landed on and how settled the page is. `javascript:`/`data:`/`blob:`/`file:` are refused |
+| `browser_go_back` | Go back in history |
+| `browser_go_forward` | Go forward in history |
+| `browser_reload` | Reload current page (`hard: true` bypasses the cache) |
+| `browser_wait` | Wait for load / SPA readiness / network idle / a CSS selector to appear |
+| `browser_get_tabs` | List all open tabs with IDs, titles, URLs |
+| `browser_get_current_tab` | Get the tab the user is viewing |
+| `browser_switch_tab` | Show a tab to the user (the only tool that changes focus) |
+| `browser_close_tab` | Close a tab by ID |
+| `browser_snapshot` | Map of interactive elements with `@N` refs — pierces iframes, shadow DOM, and listener-only clickables. `find` filters to matching controls, `limit` caps the map (default 200), and the header reports what was dropped and any cross-origin frames it could not see into |
+| `browser_get_page_info` | Get title, URL, meta description |
+| `browser_get_page_content` | Get page text content (innerText) — first 20 000 characters by default, with the total and a resume `offset` |
+| `browser_execute_js` | Run JavaScript in the page (Promises are awaited) |
+| `browser_click` | Click an element — auto-retries until present, stable, and unobstructed; reports what covers it |
+| `browser_type` | Set an input/textarea/contenteditable value (React-safe) |
+| `browser_fill_form` | Fill several fields — and optionally submit — in one call |
+| `browser_dismiss_overlay` | Dismiss cookie/consent overlays — prefers Reject/Decline, never auto-accepts |
+| `browser_hover` | Hover with full pointer + mouse event sequence |
+| `browser_scroll` | Scroll the window, or an element's scrollable container via `selector`. Scrolling the window returns the resulting position and whether it hit the bottom |
+| `browser_press_key` | Press a key; Enter on a form input submits like a real keypress |
+| `browser_select_option` | Select an option in a `<select>` by value or label |
+| `browser_screenshot` | Take a screenshot (`full_page: true` for entire page) |
+| `browser_console_messages` | Recent console output + JS errors of the page |
+| `browser_network_requests` | Recent fetch/XHR activity with statuses and timings |
+| `browser_handle_dialog` | Arm auto-answers for upcoming `alert`/`confirm`/`prompt` dialogs |
+| `browser_upload_file` | Arm the next file chooser with local file paths |
+| `browser_get_history` | Get browsing history entries |
+| `browser_get_later` | Pages saved for later and not yet opened |
+| `browser_search_history_content` | Full-text search over the text of visited pages — title, URL, visit time, matching snippet |
+| `browser_get_playing_tabs` | List tabs currently playing audio/video |
+| `mail_list_inbox` | The workspace's inbox: Important, Other, New senders |
+| `mail_search` | Search mail; understands `from:`, `to:`, `has:attachment`, `is:unread`, `before:`, `after:` |
+| `mail_read_thread` | Read a conversation, fenced as untrusted |
+| `mail_create_draft` | Put a draft in the composer for the user to review — never sends |
+| `mail_show` | Show a list of conversations in the mail pane |
+| `mail_set_summaries` | Attach one-line summaries to inbox rows |
+| `mail_add_tasks` | Add tasks linked to a conversation to the workspace notes |
+| `render_ui` | Draw an interactive A2UI surface (forms, approval cards, live views) in the AI sidebar and block until the user clicks |
+
+**Workspace routing:** one server serves every workspace. A request's `X-Octoweb-Workspace` token says which workspace it acts on; callers that send no token fall through to the first workspace. The sidebar's agent sessions carry their token automatically, so an agent driving tabs in a background workspace never disturbs the one you're looking at.
+
+Point Claude Desktop at `http://localhost:3434/mcp` and it can browse, read, fill forms, and navigate — all while you watch.
+
+**Safety.** The endpoint validates the `Origin` header, so a page you happen to be visiting cannot `fetch()` it and drive your logged-in browser; command-line clients, which send no `Origin`, are unaffected. Read tools carry `readOnlyHint` so a host can auto-approve them instead of prompting on every page read. Everything a page authored — `browser_get_page_content`, `browser_snapshot`, `browser_console_messages`, `browser_network_requests` — comes back inside an `<untrusted>` fence, because an agent that can click and type should know which bytes are the page's. Set `OCTOWEB_MCP_PORT` / `OCTOWEB_CONFIG_DIR` to run an isolated second instance (e.g. for the e2e suite: `python3 test_mcp.py --mcp-url http://127.0.0.1:3435/mcp`).
+
+### Using octomind as the MCP client
+
+Because octomind has a built-in `mcp` tool that can register external servers at runtime, you can give any running octomind agent live browser access in one step:
+
+```
+# inside an octomind session
+/mcp add octoweb http://localhost:3434/mcp
+```
+
+The agent can now navigate pages, extract content, and interact with the browser as part of its normal tool use — no restart, no config change.
+
+---
+
+## Keyboard shortcuts
+
+Every shortcut is configurable in Settings (`⌘,`) — remaps persist to `~/.config/octoweb/keybindings.json` and apply on the very next keystroke, no restart. The `⌘`+digit slot keys are positional and not remappable.
+
+### Global
+
+| Shortcut | Action |
+|---|---|
+| `⌘⇧P` | Open command palette |
+| `⌘W` | Close tab / session |
+| `⌘T` | New AI session |
+| `⌘R` | Reload current page |
+| `⌘⇧R` | Hard reload (bypass cache) |
+| `⌘[` | Back / previous terminal split |
+| `⌘]` | Forward / next terminal split |
+| `⌘N` | New tab |
+| `⌘⇧T` | Reopen last closed tab |
+| `⌘.` | Stop loading |
+| `⌘E` | Edit address |
+| `⌘S` | Screenshot (viewport) — copy to clipboard |
+| `⌘⇧S` | Screenshot (full page) — copy to clipboard |
+| `⌘F` | Toggle find-in-page bar |
+| `⌘⇧F` | Follow a link on the page by keyboard |
+| `⌘/` | Show keyboard shortcuts |
+| `⌘,` | Settings |
+| `⌘Q` | Quit |
+| `⌘⇧A` | Toggle AI sidebar |
+| `⌘⇧E` | AI edit selection |
+| `⌘⇧K` | Ask AI about the selection (or the page) |
+| `⌘⇧C` | Copy URL, or selection + URL, as plain text |
+| `⌥⌘C` | Copy as markdown: quote with source link, or the whole page |
+| `⌘⇧L` | Save the page for later / remove it |
+| `⌘⇧I` | Toggle inbox (mail) |
+| `⌥⌘I` | Toggle DevTools |
+| `⌘⇧J` | Toggle notes |
+| `⌥⌘J` | Capture page as task, or selection as quote, to notes |
+| `` ⌘` `` | Toggle terminal |
+| `⌘↵` | Fullscreen window |
+| `⌘⇧↵` | Fullscreen AI sidebar / terminal |
+| `⌘⇧N` | Pin/unpin tab |
+| `⌘⇧O` | Toggle workspace switcher |
+| `⌘⇧M` | Move current tab to another workspace |
+| `⌘=` | Zoom in |
+| `⌘-` | Zoom out |
+| `⌘0` | Reset zoom |
+| `⌘1` – `⌘9` | Open fast-access slot 1–9 |
+| `⌘⇧1` – `⌘⇧9`, `⌘⇧0` | Save current page to slot 1–10 |
+| `⌃N` | Next tab (MRU order) |
+| `⌃P` | Previous tab (MRU order) |
+| `⌃D` | Scroll half page down |
+| `⌃U` | Scroll half page up |
+| `⌃T` | Scroll to top of page |
+| `⌃B` | Scroll to bottom of page |
+
+### Fast-access slots
+
+Pin any page to a numbered slot and jump back to it instantly — one keystroke from anywhere. Slots are shown in a footer bar at the bottom of the window and on the new-tab page.
+
+- **`⌘⇧1`–`⌘⇧9` / `⌘⇧0`** — save the current page to slot 1–9 / 10
+- **`⌘1`–`⌘9`** — navigate to the saved URL in that slot
+
+Slots persist across restarts and are scoped per workspace — pinning in one workspace never touches another's. An empty slot does nothing.
+
+`⌘0` defaults to zoom reset and wins over slot 10 — rebind zoom reset in Settings if you want `⌘0` to open slot 10. `⌘⇧0` still saves to slot 10.
+
+### Workspaces (`⌘⇧O`)
+
+The switcher popover lists every workspace with its tab count; the one you are in is highlighted.
+
+| Shortcut | Action |
+|---|---|
+| `⌃N` / `⌃P` | Move selection down / up |
+| `↵` | Switch to the selected workspace |
+| `N` | New workspace |
+| `E` | Rename the selected workspace |
+| `D` | Delete the selected workspace (asks to confirm; the last one cannot be deleted) |
+| `⌘1` – `⌘9`, `⌘0` | Switch to workspace 1–10 |
+| `Esc` | Close |
+
+`⌘⇧M` opens the same popover to pick a destination for the current tab. Selecting one moves the tab there and reloads it — workspaces have separate cookie and storage stores, so nothing of the live page carries across. If it was the workspace's last tab, a fresh one takes its place.
+
+### Follow link (`⌘⇧F`)
+
+Reaching content *inside* a page without a mouse. Press `⌘⇧F` and every clickable thing in the viewport — links, buttons, form fields, ARIA controls — gets a short home-row label. Type the label to activate it.
+
+| Shortcut | Action |
+|---|---|
+| `a`–`l` | Type the label to activate that element |
+| `⇧` + last letter | Open that link in a new tab and switch to it |
+| `Backspace` | Undo the last letter |
+| `Esc` / `⌘⇧F` | Dismiss |
+
+Labels are one character for up to 9 targets and two beyond that. Only what is on screen is labelled — scroll and press again. Elements hidden behind a modal or cookie banner are skipped, since a click would not reach them either. Same-origin iframes are included; cross-origin ones cannot be reached.
+
+### Command palette (`⌘⇧P`)
+
+The main interface. Type a URL, a search query, or any fragment of a page title or URL you've visited — it fuzzy-matches across open tabs and history instantly, ranked by match quality and visit frequency.
+
+When a query is entered, three action rows appear at the bottom: **Search Google**, **Open URL**, and **Ask AI**. Select one and press Enter, or use the dedicated shortcuts below.
+
+| Shortcut | Action |
+|---|---|
+| `↑` / `↓` | Move selection |
+| `⌃N` / `⌃P` | Move selection (Emacs-style) |
+| `↵` | Confirm selection (open / switch / search) |
+| `⌘↵` | Force navigate: open as URL if it looks like one, otherwise search |
+| `⌘⇧↵` | Open selection in an isolated (incognito) tab — own cookies/storage, no history |
+| `/words` | Search the text of visited pages; results show a matching snippet |
+| `⌘W` on a Later item | Remove it from the queue |
+| `⌘W` | Close selected tab / remove selected history entry |
+| `⌘1` – `⌘9`, `⌘0` | Jump directly to result 1–10 (tabs and history only) |
+| `Esc` | Close palette |
+| `⌃A` / `Home` | Move cursor to start of input |
+| `⌃E` / `End` | Move cursor to end of input |
+| `⌃K` | Delete from cursor to end of line |
+| `⌃U` | Delete from cursor to start of line |
+| `⌘V` | Paste from clipboard |
+
+`⌘⇧↵` opens whatever is selected — an open tab, a history entry, a typed URL, or a search — in a **private tab**. It gets its own in-memory WebKit data store, so cookies, localStorage, and cache are separate from the workspace and vanish when the tab closes. Private tabs never write to history, the session file, the favicon cache, or the `⌘⇧T` reopen list, and popups they open stay private. They show a `Private` pill in the palette and are not restored on restart.
+
+Pages saved with `⌘⇧L` show first, with a `Later` pill, when the query is empty; opening one removes it from the queue. Start the query with `/` to search page text instead of titles and URLs: every word must match as a prefix, results are most recent first, and each shows the passage that matched. The index keeps the first few kilobytes of text of the last 2000 pages in `page_index.json`. Open tabs also show their WebContent memory in megabytes next to the pill, so the tab eating your RAM is one glance away.
+
+### AI sidebar (`⌘⇧A`)
+
+The sidebar overlays the page on the right — the page content underneath is not resized.
+
+| Shortcut | Action |
+|----------|--------|
+| `↵` | Send prompt |
+| `⇧↵` | Insert newline |
+| `Esc` | Stop the running turn |
+| `⌃D` / `⌃U` | Scroll the conversation down / up |
+| `⌃T` / `⌃B` | Jump to start / end of the conversation |
+| `↵` *(agent input)* | Apply agent tag |
+| `Esc` *(agent input)* | Show agent chip |
+
+**Prompt history:**
+
+- `Ctrl+P` / `Ctrl+N` — Navigate older/newer prompts (MRU order)
+- `Ctrl+R` — Reverse incremental search through history
+- `Ctrl+E` — Accept ghost text autocomplete
+- `Ctrl+U` — Clear input to cursor start
+
+History persists across sessions (`ai_prompt_history.json`).
+
+**Repeatable tasks.** The bundled tap ships browser workflows — watch a page for changes, compare open tabs, cancel a subscription, fill a form from memory, summarize a thread, digest what you saved for later. Type `/workflow ` and pick one from the dropdown, then give it its input. The assistant can launch them itself through the `tap` tool, so a recurring job is `/schedule add when=... every=... message="<workflow and input in plain words>"`: when the message fires, the assistant runs the workflow in the background and relays its result. Pending routines show as a ⏱ chip in the header (click it to list them). Routines fire only while Octoweb is running, since the assistant session is the scheduler.
+
+### Inline AI edit (`⌘⇧E`)
+
+Select text on any page and press `⌘⇧E` to open the inline edit modal. The AI can rewrite, summarize, translate, or transform the selected text.
+
+| Shortcut | Action |
+|----------|--------|
+| `↵` | Submit transformation |
+| `⇧↵` | Insert newline |
+| `Esc` | Close modal |
+
+Prompt history works the same as the sidebar (`Ctrl+P/N/R/E/U`).
+
+### Find-in-page (`⌘F`)
+
+Full-text search with highlighting. Uses CSS Custom Highlight API for fast, native rendering.
+
+| Shortcut | Action |
+|----------|--------|
+| `↵` | Next match |
+| `⇧↵` | Previous match |
+| `Esc` | Close find bar |
+
+### Page zoom
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘+` | Zoom in |
+| `⌘-` | Zoom out |
+| `⌘0` | Reset zoom |
+
+---
+
+## Install
+
+**Homebrew** (recommended):
+
+```bash
+brew install --cask muvon/tap/octoweb
+```
+
+**Direct download:** grab the archive for your Mac — Apple Silicon or Intel — from [GitHub Releases](https://github.com/muvon/octoweb/releases), unpack it, and drop `Octoweb.app` into `/Applications`.
+
+**Build from source** (requires Rust toolchain and Xcode Command Line Tools):
+
+```bash
+git clone https://github.com/muvon/octoweb
+cd octoweb
+
+# Dev build (ad-hoc signed, no cert needed)
+./build.sh --dev
+
+# Release build (requires Developer ID cert)
+./build.sh
+
+# Run
+open dist/Octoweb.app
+```
+
+Or install to Applications:
+```bash
+cp -r dist/Octoweb.app /Applications/
+```
+
+---
+
+## Configuration
+
+Config lives at `~/Library/Application Support/octoweb/config.toml`. Created on first launch with defaults.
+
+Open Settings with `⌘,` to configure visually, or edit the file directly:
+
+```toml
+home_page                = "https://www.google.com"
+search_engine            = "https://www.google.com/search?q={}"
+max_history              = 1000
+window_width             = 1280
+window_height            = 800
+ai_edit_auto_hide        = false      # auto-hide inline edit after submit
+max_prompt_history       = 50         # editor prompt history size
+max_ai_prompt_history    = 50         # sidebar prompt history size
+max_acp_session_messages = 500        # chat messages retained per AI session (FIFO)
+proactive_learning       = false      # enable background learning agent (default: off)
+learning_interval_min    = 30         # minutes between learning runs (floored to 5 on load)
+aggressive_hibernation   = false      # aggressive tab-hibernation curve for tight-RAM machines
+max_tabs                 = 500        # max open tabs (0 = no limit)
+later_days               = 14         # days a "save for later" page stays queued (0 = forever)
+```
+
+**Persistence:**
+
+- **Session** — Open tabs and active tab restored on next launch
+- **History** — Browsing history up to `max_history` entries
+- **Favicons** — Cached as base64 data-URIs, no network on startup
+- **Prompt history** — Separate histories for inline edit and sidebar
+
+---
+
+## What it is (and isn't)
+
+octoweb is an experiment. It's a real, usable browser — WebKit rendering, proper tab management, session restore, back/forward gestures, progress bar, error pages — but it's also a playground for the idea that a browser can be a first-class AI client, not just a container for AI extensions.
+
+It's macOS only. It will stay that way for now — the whole thing leans on macOS-native APIs (CGEventTap for global hotkeys, WKWebView via wry, AppKit for the dock icon and menus).
+
+It won't replace your main browser. It might become the browser you reach for when you want to think.
+
+---
+
+## Tech stack
+
+- **[wry](https://github.com/tauri-apps/wry)** — WebView (WKWebView on macOS)
+- **[tao](https://github.com/tauri-apps/tao)** — windowing + event loop
+- **[octomind](https://github.com/muvon/octomind)** — plug-and-play AI agent runtime powering the sidebar
+- **[agent-client-protocol](https://github.com/muvon/agent-client-protocol)** — ACP for browser ↔ agent communication
+- **[rmcp](https://github.com/modelcontextprotocol/rust-sdk)** — MCP server (AI browser control)
+- **CGEventTap** — system-wide keyboard shortcuts without rdev
+- Rust, release profile: LTO + `codegen-units=1` + stripped binary
+
+---
+
+## License
+
+[Apache 2.0](LICENSE)

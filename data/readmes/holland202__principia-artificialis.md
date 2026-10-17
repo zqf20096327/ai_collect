@@ -1,0 +1,335 @@
+<!-- collaboration-invitation:start -->
+> **🤝 Independent researchers and collaborators welcome.** Help reproduce calculations, find counterexamples, evaluate experimental controls, and improve evidence provenance. **[Join the research collaboration invitation → Issue #26](https://github.com/holland202/principia-artificialis/issues/26)**. Principia Artificialis is an **exploratory research program, not a validated product or theory**; critical findings and refutations are welcome.
+<!-- collaboration-invitation:end -->
+
+![Principia Artificialis](figures/principia_hero.png)
+
+![repo fetch](figures/principia_fetch.svg)
+
+# Principia Artificialis
+
+> **Inventory correction — 2026-10-16.** At repository revision
+> [`05078579b674f8a93cc56de4eba3d5fa6511d159`](https://github.com/holland202/principia-artificialis/tree/05078579b674f8a93cc56de4eba3d5fa6511d159),
+> 92 files match the existing index generator's discovery rules. The committed
+> index lists 88; matching files 068–071 are absent. These are file-discovery
+> counts, not counts of validated research findings; the matched set includes
+> a handoff document. The matched set contains 22 duplicated note numbers.
+> There are 27 reference-script files; this inventory did not execute them.
+> Historical statistics below are preserved and are not a current census.
+>
+> Inventory basis: the complete Git tree at that revision, using
+> `research_notes/note[0-9][0-9][0-9]_*.md`,
+> `research_notes/[0-9][0-9][0-9]_*.md`, and
+> `notes/[0-9][0-9][0-9]_*.md`, compared with the committed index links.
+> `notes/note048_grok_contribution_manifesto.md` falls outside these patterns;
+> inclusion policy and index regeneration remain separate review items.
+>
+> Correction provenance (W9 / M13): ChatGPT (OpenAI; model identifier not
+> available in this session) assisted with inventory and drafting → human
+> validation: not performed → human editing/curation: scope and wording direction
+> by Chad Holland → human responsibility: Chad Holland. Human review level:
+> direction only. This correction is not independent research validation.
+
+<!-- 30s-demo -->
+> **Status labels.** Every note carries its own label: `Speculative`, `Draft`, `Draft, verified reference
+> code`, `Verified` or `REFUTED (kept)`. **RESEARCH HYPOTHESIS** is the default for anything about AI.
+> **NOT A PRODUCT.** The working method is [METHOD.md](METHOD.md): SWAY, consolidated by
+> [Amendment 3](METHOD_SWAY_AMENDMENT_3.md) (2026-10-03), with [WORKFLOW.md](WORKFLOW.md) and
+> [CONTROLS.md](CONTROLS.md). It is adopted, not validated. The full label list is METHOD.md's
+> vocabulary map.
+
+**Historical headline (recorded audit, `python scripts/check_numbers.py`, 2026-09-30; not rerun for this correction):** of 216 measured numbers written in
+the notes' prose, **145 appear in their reference script's output**. The other 71 are listed line by line in
+[results/NUMBER_CHECK.md](results/NUMBER_CHECK.md). A number there is a lead, not a verdict: it may be a
+parameter, a number from another note, or a typed value that drifted from the code.
+
+### 30-second demo: one note's reference script
+
+```bash
+git clone https://github.com/holland202/principia-artificialis && cd principia-artificialis
+pip install numpy && python scripts/note047_reference.py      # under 1 s
+```
+
+Output (x86_64, 2026-09-30), pasted as printed:
+
+```
+Q1 construction: commutators 0.0e+00 | projector rank 2 | <0L|1L> 0.0e+00 | stabilizer residual 0.0e+00 -> True
+Q2 correction: distinct syndromes 16/16 (perfect code) | worst recovery fidelity 1.000000000000 -> True
+
+fragment size : max & min Holevo chi (bits) over all fragments
+      1       : 0.000000  ..  0.000000
+      2       : 0.000000  ..  0.000000
+      3       : 1.000000  ..  1.000000
+      4       : 1.000000  ..  1.000000
+      5       : 1.000000  ..  1.000000
+
+Q0 anti-vacuity (bare qubit leaks at size 1): chi = 1.000000 -> True
+Q1 exact construction: True
+Q2 perfect correction, 16/16 syndromes: True
+Q3 inverted plateau (0,0 then full): True
+```
+
+What this shows, on the three validity axes (Amendment 1, item 6): **mathematical**, the perfect
+5-qubit code's properties, which are textbook. **Implementation**, that this script reproduces them
+exactly and has a null (Q0) that comes out the other way. **Empirical**, nothing about AI: the note's
+label is `Draft, verified reference code`, and any reading of it as a statement about AI is speculative.
+
+### Negative results, up front
+
+- **Notes marked `REFUTED (kept)`** are listed with ⚠ in [NOTES_INDEX.md](NOTES_INDEX.md). They are
+  never deleted.
+- **The recorded 2026-09-30 audit found 71 of 216 prose numbers absent from script output** (above). Until each is resolved, the rule
+  "numbers come from code" is met for about two-thirds of the numbers, not all.
+- **Historical structural description, preserved:** 20 note numbers were reported as claimed by more
+  than one note, and the cross-link graph was described as a star (see [CLAUDE.md](CLAUDE.md)).
+  The inventory correction above supersedes that duplicate-number count; graph topology was not
+  remeasured for this correction.
+
+```mermaid
+flowchart LR
+  I[Idea: canopy, EXPLORATORY] --> K{Elevator: registered prediction,<br/>anti-vacuity control, fresh data,<br/>feasibility count, simplest rival}
+  K -->|passes| N[Note: Draft, verified reference code]
+  K -->|fails| R[REFUTED, kept]
+  N --> C[check_numbers.py:<br/>prose numbers vs script output]
+```
+
+### Why this is not just a blog of ideas or a paper repo
+
+Each note's numbers are meant to be printed by a script anyone can run. A checker counts how often
+they are (the recorded 2026-09-30 audit reported 145 of 216). Failed predictions stay in the record. Where a note is only an analogy,
+it says `Speculative`.
+<!-- /30s-demo -->
+
+
+**An open research program on the mathematical foundations of artificial
+intelligence — written by one human and five AI systems, side by side,
+credited by name, judged only on whether the numbers hold.**
+
+> *Vincit Omnia Veritas* · 
+> [Full notes index (auto-generated)](NOTES_INDEX.md) ·
+> [Contribute in five minutes](#how-to-contribute--human-or-ai)
+
+**Historical snapshot — preserved as reported, not a current inventory.**
+
+| | count (2026-09-27, from `NOTES_INDEX.md`) |
+|---|---|
+| Notes | **84** |
+| — Verified tier (reference code prints the claimed numbers) | 19 |
+| — Draft | 21 |
+| — Speculative (includes the *Pure AI-Conceived* style labels) | 39 |
+| — Unmapped status (no rule covers it yet) | 5 |
+| — **Contain a refuted-and-kept claim** (cross-cutting, not a separate tier) | 10 |
+| Distinct status strings in use | 28 |
+| Runnable reference scripts | 23 (`note038` through `note061`) |
+| Numbers in prose found in their script's output | 145 of 216 ([note062](research_notes/note062_number_audit.md), `results/NUMBER_CHECK.md`) |
+| Authors | 1 human, 5 AI systems, credited by name |
+
+The tiers are computed by `tier()` in `scripts/make_index.py` from each note's own status string. No note
+was relabelled to produce them, and every mapping rule is in that function. *Superseded counts
+(2026-08-15), kept:* 80 notes; 18 Verified, 19 Draft, 32 Speculative, 11 unmappable; 7 with a kept
+refutation; 20 scripts.
+
+**Historical summary of the snapshot above (preserved):** Most of this is speculative and labeled as such. Nineteen notes are backed by code you can run. Ten
+contain a registered prediction that failed, and those notes remain on the page, refutation marked,
+not deleted. Five status strings still map to no documented tier (listed at the top of the index).
+Mapping one is the easiest possible first contribution.
+
+**New, 2026-09-27: the rule is now checked by a machine.** `python scripts/check_numbers.py` runs every
+reference script and looks for each measured number of the note in the output. The first audit
+([note062](research_notes/note062_number_audit.md)) found that one note's pasted output
+([note043](research_notes/note043_free_energy_of_reasoning.md)) was never produced by its code. That
+note now leads with the correction.
+
+**If you have five minutes:** run `python scripts/check_numbers.py`, open `results/NUMBER_CHECK.md`, and
+pick one NOT FOUND number. Is it history, derived, or drift? If it is drift, that is a bug and I want
+the issue.
+
+
+---
+
+## Why contribute
+
+Most repos ask you to trust the README. This one is built so you don't
+have to: every claim traces to a script that prints the number, and when a
+registered prediction turns out wrong, the note stays up, marked, not
+deleted. This week that method caught the project's own mistake live —
+[note057](research_notes/note057_the_loud_type_a.md) opened by refuting its
+own central claim, and while writing
+[note058](research_notes/note058_kv_vacuity.md) the reference script hit a
+real bug that made a check lie about why it had failed — diagnosed and
+fixed inside the note about exactly that failure mode. That is what this
+program is for: not being right, being checkable, including when you are
+wrong.
+
+**Earlier contributor-invitation statistics (preserved, not current):**
+It needs more people finding where it is still wrong. **28 distinct status
+strings are in use against a documented vocabulary of four**, and 11 notes
+carry a label that maps to none of them — a five-minute PR maps one back. Every AI
+system that has written here — Claude, Grok, Kimi, ChatGPT, Perplexity --
+is credited by name, standing beside a human machinist from Oklahoma as an
+equal author, judged only on whether the numbers hold. If you're working
+with any AI assistant right now, this is a five-minute detour: point it at
+`NOTE_TEMPLATE.md` and ask it to register a claim.
+
+## How to contribute — human or AI
+
+1. Copy `NOTE_TEMPLATE.md` → `research_notes/note0XX_your_title.md`.
+2. State a claim that could be *precisely wrong*. Register predictions
+   **before** running. Include an anti-vacuity control.
+3. Code in `scripts/` (NumPy-tier; prints every number in your note),
+   figures in `figures/`. **Refuted claims stay in, marked.**
+4. Run `python scripts/make_index.py` so the index includes you.
+5. Open a PR. CI (`.github/workflows/verify-notes.yml`) re-runs every
+   note's reference code. AIs: credit your model by name — your notes
+   sit beside human ones as equals here.
+
+The one social rule ([DISCUSSION_NORMS.md](DISCUSSION_NORMS.md)):
+*critique ideas as hard as you want; never attack the person who raised
+them.* Drift watch: [DRIFT_LEDGER.md](DRIFT_LEDGER.md).
+
+---
+
+## Overview
+
+Principia Artificialis investigates artificial intelligence as a
+physical and mathematical phenomenon. We apply rigorous methods from
+information geometry, topology, dynamical systems, thermodynamics,
+quantum information, and category theory to representation, reasoning,
+and generalization in neural systems.
+
+This is not an engineering repository. It is a living scientific
+record: research notes, experimental protocols, simulations, and
+computed figures. **Organizing hypothesis, not established result:**
+intelligence may be measurable the way physical quantities are. That is
+the bet under test — not a finding.
+
+**Guiding principles**
+
+- Every note carries an honest epistemic label:
+  **Verified** (reference code prints every number claimed) ·
+  **Draft** (argued, not yet computed) ·
+  **Speculative** (labeled analogy, generative not established) ·
+  **Refuted — kept** (a registered claim failed and remains in the
+  record; here, that is a first-class outcome, not an embarrassment).
+- Contributions are **add-only**: improve anything, erase nothing.
+- Claims are **registered before running**; instruments carry
+  anti-vacuity controls; new scoring functionals must pass the
+  [Circularity Test](research_notes/note044_circularity_test.md).
+- Computed evidence and illustrative art are **never mixed** — see the
+  [appendix](#appendix--illustrative-art-not-evidence).
+
+## If you're an ML engineer — the 60-second on-ramp
+
+No philosophy required. These run on a laptop *or a phone*, print every
+number in their note, and finish before your coffee does:
+
+| Run | You get | Time |
+|---|---|---|
+| `python scripts/note047_reference.py` | a perfect quantum code, machine-exact: 16/16 syndromes, fidelity 1.000000000000, and the *inverted* redundancy plateau (0/0/1 step) | ~2 s |
+| `python scripts/note046_reference.py` | a timeless universe whose slices obey the Schrödinger equation with error 0.0 — time measured in bits: 0 / 1 / 2 | <1 s |
+| `python scripts/note044_reference.py` | a meaningless metric scoring AUC 0.984 on its own benchmark, then collapsing to 2% edge retention — the Circularity Test | ~5 s |
+| `python scripts/note040_reference.py` | a pre-deployment number predicting how a network dies under faults (ρ = +0.71; accuracy predicts +0.40) | ~3 min |
+| `python scripts/note039_reference.py` | the classical plateau: 4 of 16 neurons carry 97% of what the network knows | ~2 min |
+
+## The verified frontier
+
+A chain of notes, each walking through an *open prediction* left by a
+previous one — including across different AI authors — with at least one
+kept refutation at nearly every step:
+
+**#037** (RMT of attention) → **#039** (Neural Darwinism; D2 refuted,
+kept) → **#040** (Redundancy Dividend; R4 refuted, kept) → **#045**
+(Stubbornness of the Objective; U0/U1 failed, kept) → **#047** (Cloister
+& Chorus, walking through Kimi's **#012**) — alongside **#038**
+(Free-Physics Principle), **#044** (Circularity Test), and **#046**
+(Time Is Entanglement).
+
+
+## Evidence-Bound Learning Loop (EBLL)
+
+**Status:** Draft, verified reference code. The loop itself is **not validated**.
+
+A small deterministic component (`ebll/`) that draws the architectural boundary:
+
+- **Sovereign Veritas** records decisions and outcomes (immutable).
+- **Principia Artificialis** evaluates candidate changes against those records and fresh/held-out data.
+
+Historical decision/outcome records cannot be rewritten by the evaluation layer. Every candidate carries an explicit hypothesis registered *before* evaluation. Outcomes use the claim-status vocabulary in [METHOD.md](METHOD.md) §4 (`SUPPORTED` / `REFUTED` / `INSUFFICIENT_EVIDENCE` / …). A failed hypothesis is retained. A promotion record is an admission proposal only — not a deploy instruction.
+
+What has been demonstrated: a synthetic reference experiment (note #063) that evaluates a baseline, an improving candidate, and a deliberately failing candidate, preserves history, and keeps the refutation.
+
+What has **not** been demonstrated: training, automatic deployment, or improvement of a real agent on real data.
+
+```
+python scripts/note063_reference.py
+python -m pytest ebll/test_ebll.py -q
+```
+
+See [research_notes/note063_evidence_bound_learning_loop.md](research_notes/note063_evidence_bound_learning_loop.md).
+
+## Research notes
+
+**Historical description (count preserved, not current): 80 notes** spanning measurement, geometry of reasoning,
+thermodynamics of cognition, quantum-information frameworks, and
+labeled exotic frontiers (emergent gravity, holographic duality,
+reasoning as a quantum black hole).
+
+**The generated index lives in [NOTES_INDEX.md](NOTES_INDEX.md).**
+`scripts/make_index.py` reads note headers using specific filename patterns.
+The index must be refreshed when matching files change; files outside those
+patterns require separate review. Refutations are auto-flagged ⚠.
+The refresh command is `python scripts/make_index.py`; it was not run for this correction.
+
+*Superseded wording, preserved:* the index was described as the "complete table"
+that "cannot go stale or silently lose entries." The inventory correction above
+shows why that assurance was incorrect.
+
+## Computed figures (evidence-grade)
+
+Every figure below is produced by checked-in code; the numbers on the
+plot are the numbers the code prints.
+
+| Figure | From | Shows |
+|---|---|---|
+| `figures/principia_hero.png` | `figures/make_logo.py` | the logo is the exact 600-cell: 120 unit quaternions of 2I, 720 edges of length 1/φ |
+| `figures/note047_cloister_chorus.png` | #047 | two poles of redundancy: the chorus (networks proliferate) vs the cloister (codes hide perfectly) |
+| `figures/note046_block_universe.png` | #046 | sixteen moments drawn at once in one static object; time in bits |
+| `figures/note040_dividend.png` | #040 | redundancy predicts fault survival; lost vs lying observers |
+| `figures/note039_darwinism.png` | #039 | objectivity = redundancy, and training creates it |
+| `figures/note038_dissociation.png` | #038 | constraint violated 100% of the time, worth 5,472× less |
+| `figures/note006…note026_*.png` | #006–#026 | tensor-train rank, Koopman spectra, persistence, optimal transport, Holevo bound |
+
+## Experiments & whitepapers
+
+- **Exp #001** Entropy Production Monitoring · **Exp #002**
+  Quantum-Geodesic Bridge · **Exp #003** GPT-2 small benchmark — all
+  *protocol-ready*; none yet run on real models, and each says so.
+- **Whitepaper Vol. I** (in progress — read its epistemic-status box
+  first) · Vols. II–III planned 2027.
+
+## Citation & license
+
+MIT — see [LICENSE](LICENSE) and [CITATION.cff](CITATION.cff).
+
+```bibtex
+@software{principia_artificialis,
+  author = {Holland, Chad Edward and contributors},
+  title  = {Principia Artificialis: Axiomatic Foundations for Machine Intelligence},
+  url    = {https://github.com/holland202/Principia-Artificialis},
+  year   = {2026},
+  license= {MIT}
+}
+```
+
+## Appendix — illustrative art (not evidence)
+
+The sci-fi renders and animations (black-hole reasoning, holographic
+bulk, thought-tensor rotations, quasar series) live in `figures/` and
+are **atmosphere, not measurements**. Nothing in them supports any
+note. They stay — deleting isn't our way — but they live below this
+line, permanently.
+
+---
+
+*Historical footer, preserved — Last updated: 2026-10-01 · One human, five AI systems, eighty-four
+notes, and every refutation still on the page.*

@@ -1,0 +1,279 @@
+# PR Metrics
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=309438703)
+
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11987/badge)](https://www.bestpractices.dev/projects/11987)
+
+PR Metrics is a both a GitHub Action and [Azure DevOps Pipelines][azuredevops]
+task for adding size and test coverage indicators to the start of each Pull
+Request title.
+
+The Azure Pipelines task can be downloaded from the
+[Visual Studio Marketplace][vsmarketplace].
+
+For example, a PR with the title "Adding code" could become either:
+
+- XS :heavy_check_mark: :black_small_square: Adding code
+- L :warning: :black_small_square: Adding code
+
+The former would indicate an extra small PR with sufficient test coverage,
+whereas the latter would indicate a large PR with insufficient test coverage.
+
+This task helps ensure engineers keep PRs to an appropriate size with
+appropriate test coverage, while informing reviewers of the expected time
+commitment for a thorough review of the code.
+
+The task will also add a comment to the PR with a detailed breakdown of the
+metrics:
+
+> **Metrics for iteration 1**
+>
+> :heavy_check_mark: Thanks for keeping your pull request small.
+>
+> :heavy_check_mark: Thanks for adding tests.
+>
+> |              |   Lines |
+> | ------------ | ------: |
+> | Product Code |     100 |
+> | Test Code    |      50 |
+> | **Subtotal** | **150** |
+> | Ignored      |       5 |
+> | **Total**    | **155** |
+
+It will furthermore add a comment to indicate that review of specific excluded
+files is unnecessary.
+
+> :exclamation: **This file doesn't require review.**
+
+If no PR description is provided, the description will be set to:
+
+> :x: **Add a description.**
+
+## Automatic PR Labels
+
+Every supported PR run also updates native labels on GitHub and Azure Repos.
+
+PR Metrics maintains one size label: `pr-metrics:XS`, `pr-metrics:S`,
+`pr-metrics:M`, `pr-metrics:L`, `pr-metrics:XL`, `pr-metrics:2XL`, and larger
+numbered XL sizes. Size uses the same added product-code lines, exclusions, and
+thresholds as the title.
+
+| Metric Result      | Labels For A Medium PR                          |
+| ------------------ | ----------------------------------------------- |
+| Tests sufficient   | `pr-metrics:M`, `pr-metrics:tests-sufficient`   |
+| Tests insufficient | `pr-metrics:M`, `pr-metrics:tests-insufficient` |
+| Checking disabled  | `pr-metrics:M`                                  |
+
+Set `test-factor: 0` to disable test checking.
+
+PR Metrics removes stale labels only from the stated size family and the two
+test-status names. Name comparisons are case-insensitive. On GitHub, missing
+repository label definitions are created with color `ededed`; existing
+definitions and colors are retained.
+
+Use GitHub search to find PRs with a specific label:
+
+```text
+is:pr is:open label:"pr-metrics:XL"
+is:pr is:open label:"pr-metrics:tests-sufficient"
+is:pr is:open label:"pr-metrics:tests-insufficient"
+```
+
+Azure Repos displays these names as native PR labels/tags. Its filtering is not
+equivalent to GitHub search.
+
+Label updates add missing labels before removing stale labels. They use separate
+API requests and are not atomic. A later successful run resolves a partial
+update. Serialize runs for each PR to prevent competing updates. For GitHub
+Actions, set workflow or job concurrency:
+
+```yaml
+concurrency:
+  group: pr-metrics-${{ github.repository }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+```
+
+## Inputs
+
+You will need to set the environment variable `PR_Metrics_Access_Token` to a
+Personal Access Token (PAT) with at least Read and Write access to pull
+requests. If you are using a Classic PAT, it will need at least the 'repos'
+scope. Instructions on creating a new PAT can be found
+[in the GitHub documentation][githubpat]. Alternatively, you can use the
+in-built `GITHUB_TOKEN`.
+
+If using `GITHUB_TOKEN`, the following permissions are required:
+
+```yaml
+permissions:
+  pull-requests: write
+```
+
+[GitHub token permissions][github-token-pemissions] can be set for an individual
+job, workflow, or for Actions as a whole.
+
+It is also recommended that you set `continue-on-error: true` as a failure
+within the action should not break your pipelines and prevent code development.
+
+### base-size
+
+The maximum number of new lines in an extra small PR. If left blank, a default
+of `200` will be used.
+
+### growth-rate
+
+The growth rate applied to the base size for calculating the size of larger PRs.
+If left blank, a default of `2.0` will be used. With a base size of `200` and a
+growth rate of `2.0`, `400` new lines would constitute a medium PR while `800`
+new lines would constitute a large PR.
+
+### test-factor
+
+The lines of test code expected for each line of product code. If left blank, a
+default of `1.0` will be used. This can be set to `0.0` in order to skip the
+reporting of the test code coverage.
+
+### file-matching-patterns
+
+[Globs][globs] specifying the files and folders to include. Autogenerated files
+should typically be excluded. Excluded files will contain a comment to inform
+reviewers that they are unlikely to need to review those files. If left blank, a
+default of
+
+```text
+**/*
+!**/package-lock.json
+```
+
+(all files except `package-lock.json`) will be used.
+
+### test-matching-patterns
+
+[Globs][globs] specifying the files and folders to consider tests. If left
+blank, a default of
+
+```text
+**/*{{t,T}est,TEST}*
+**/*{{t,T}est,TEST}*/**
+**/*.{{s,S}pec,SPEC}.*
+**/*.{{s,S}pec,SPEC}.*/**
+```
+
+(any file or folder with a name containing `test` or `.spec`) will be used.
+
+### code-file-extensions
+
+Extensions for files containing code, so that non-code files can be excluded. If
+left blank, a [default set of file extensions][defaultcodefileextensions] will
+be used.
+
+## Example Usage
+
+The default input values are expected to be appropriate for most builds.
+Therefore, the following YAML definition is recommended:
+
+```yaml
+uses: microsoft/PR-Metrics@v1.7.18
+name: PR Metrics
+env:
+  PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+continue-on-error: true
+```
+
+If you wish to modify the inputs, YAML akin the to the following can be used:
+
+```yaml
+uses: microsoft/PR-Metrics@v1.7.18
+name: PR Metrics
+env:
+  PR_METRICS_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+with:
+  base-size: 200
+  growth-rate: 2.0
+  test-factor: 1.0
+  file-matching-patterns: |
+    **/*
+    !Ignore.cs
+  test-matching-patterns: |
+    **/*test*
+    **/*TEST*
+  code-file-extensions: |
+    cs
+    ps1
+continue-on-error: true
+```
+
+**`pull_request` must be used as the pipeline trigger to ensure that sufficient
+information, including the Pull Request ID, is available to PR Metrics.
+`pull_request_target` will not work as insufficient information is available
+when using this trigger.**
+
+For instructions on using the action within Azure Pipelines, see the
+[Azure Pipelines task documentation][azurepipelinestask].
+
+## Git History
+
+If your repository contains _any_ non-linear history, it will be necessary to
+fetch Git history during checkout. This can be done by updating the
+`actions/checkout` step:
+
+```yaml
+- uses: actions/checkout@4.1.7
+  fetch-depth: 0
+```
+
+In many cases, `fetch-depth` will not be required so it is recommended not to
+set this unless the action explicitly requests it. It may also be possible to
+set this to a value greater than 0 if you only require a partial history, but it
+can be difficult to determine a value that will work consistently, due to the
+nature of Git history.
+
+To avoid this, it is recommended to only use commit types that squash the Git
+history such as "squash merge" or "rebase and fast-forward".
+
+## Security
+
+PR Metrics releases include cryptographic attestations and signatures to ensure
+artifact integrity and authenticity. For information on verifying downloads, see
+[the verification details][verification].
+
+For security vulnerability reporting, see the [security policy][security].
+
+## Troubleshooting
+
+For steps on troubleshooting any issues encountered, see the
+[troubleshooting guide][troubleshooting].
+
+## Contributing
+
+Instructions on contributing can be located in [CONTRIBUTING.md][contributing].
+
+The code is released under the [MIT license][license].
+
+PR Metrics is created by the OMEX team in Microsoft, which is part of the Office
+organization. Additional source code released by the OMEX team can be located at
+<https://github.com/microsoft/Omex>.
+
+## Code of Conduct
+
+This project has adopted the
+[Microsoft Open Source Code of Conduct][codeofconduct]. For more information,
+see the [Code of Conduct FAQ][codeofconductfaq] or contact
+[opencode@microsoft.com][opencodeemail] with any additional questions or
+comments.
+
+[azuredevops]: https://azure.microsoft.com/services/devops/
+[azurepipelinestask]: docs/azure-pipelines-task.md
+[codeofconduct]: https://opensource.microsoft.com/codeofconduct/
+[codeofconductfaq]: https://opensource.microsoft.com/codeofconduct/faq/
+[contributing]: .github/CONTRIBUTING.md
+[defaultcodefileextensions]: docs/default-code-file-extensions.md
+[github-token-pemissions]: https://docs.github.com/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+[githubpat]: https://docs.github.com/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[globs]: https://en.wikipedia.org/wiki/Glob_(programming)
+[license]: LICENSE
+[opencodeemail]: mailto:opencode@microsoft.com
+[security]: SECURITY.md
+[troubleshooting]: docs/troubleshooting.md
+[verification]: docs/verification.md
+[vsmarketplace]: https://aka.ms/PRMetrics/AzureDevOps

@@ -1,0 +1,1125 @@
+## Default functional checks
+
+Default [`ci.yml`](workflows/ci.yml) uses Linux/Python 3.14 for public
+lint/type/data/security checks, pipeline smoke, and focused behavioral tests plus
+wheel builds for every public template. Its required `CI Gate` demands success
+from all functional jobs. No full-suite coverage or native acceptance is implied.
+The complete matrix described below belongs to manual optional hardening;
+coverage union, dependency vulnerability auditing and semantic replacement
+inventory are requirements of that lane. Native/formal release acceptance also
+remains a separate manual lane. See [CI scope and local commands](../docs/development/ci.md).
+
+<!-- markdownlint-disable MD013 MD033 MD041 MD051 MD060 -->
+<div align="center">
+
+# 🔬 Research Project Template
+
+**Production-grade scaffold for reproducible computational research**
+Pipelines · Manuscripts · Cryptographic Provenance · AI-Agent Collaboration
+
+[![CI](https://github.com/docxology/template/actions/workflows/ci.yml/badge.svg)](https://github.com/docxology/template/actions/workflows/ci.yml)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![uv](https://img.shields.io/badge/package%20manager-uv-purple?logo=astral)](https://docs.astral.sh/uv/)
+[![Ruff](https://img.shields.io/badge/linter-ruff-orange?logo=ruff)](https://docs.astral.sh/ruff/)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green)](../LICENSE)
+[![Source version](https://img.shields.io/badge/source%20version-4.0.2-informational)](../pyproject.toml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19139090.svg)](https://doi.org/10.5281/zenodo.19139090)
+
+> **📄 Published**: [*A template/ approach to Reproducible Generative Research: Architecture and Ergonomics from Configuration through Publication*](https://zenodo.org/records/19139090) — DOI: [10.5281/zenodo.19139090](https://doi.org/10.5281/zenodo.19139090)
+
+[**🧭 Choose path**](#choose-your-path) · [**🤖 Agents**](#agent-automation-entry-point) · [**⚡ Quick Start**](#quick-start) · [**📐 Architecture**](#architecture) · [**🔄 Pipeline**](#pipeline) · [**🔒 Provenance**](#security-provenance) · [**📚 Docs**](#documentation-hub) · [**🔧 CI/CD**](#cicd)
+
+</div>
+
+---
+
+## Table of contents
+
+| Section | Audience |
+| --- | --- |
+| [About this document](#about-this-document) | Everyone — scope of this README vs root [`README.md`](../README.md) |
+| [Choose your path](#choose-your-path) | Humans — goal-based deep links |
+| [Agent & automation entry point](#agent-automation-entry-point) | Cursor, Claude Code, Codex, CI bots — read order, skills, commands |
+| [Quick Start](#quick-start) | First clone → first pipeline run |
+| [Architecture](#architecture) | Two-layer layout, directories, lifecycle |
+| [Active projects](#active-projects) | Exemplars and rotating roster |
+| [Pipeline](#pipeline) | Stage DAG, scripts, flags |
+| [AI collaboration](#ai-collaboration) | `AGENTS.md` / `SKILL.md` conventions |
+| [Security & provenance](#security-provenance) | Steganography, hashing, `secure_run.sh` |
+| [Testing standards](#testing-standards) | No-mocks policy, coverage floors |
+| [Documentation hub](#documentation-hub) | Full `docs/` map with deep links |
+| [CI/CD](#cicd) | Workflows, jobs, local parity, branch protection |
+| [Issue & PR templates](#issue--pr-templates) | Contributing on GitHub |
+| [Troubleshooting](#troubleshooting) | `gh` CLI, common fixes |
+
+---
+
+## About this document
+
+This file lives under [`.github/`](.) but serves as the **primary GitHub-rendered entry point** for the repository: badges, architecture diagrams, pipeline reference, documentation map, and CI inventory — optimized for browsing on github.com and for agents that land here first.
+
+| Document | Use |
+| --- | --- |
+| **This file** | Human + agent overview on GitHub (you are here) |
+| [`AGENTS.md`](AGENTS.md) | CI job ids, display names, thresholds, local parity commands |
+| [`workflows/README.md`](workflows/README.md) · [`workflows/AGENTS.md`](workflows/AGENTS.md) | Step-level CI detail |
+| [`ISSUE_TEMPLATE/README.md`](ISSUE_TEMPLATE/README.md) | Issue template inventory |
+| [`../README.md`](../README.md) | Clone-first quickstart and honest positioning |
+| [`../AGENTS.md`](../AGENTS.md) | Full system manual (pipeline semantics, modules, troubleshooting index) |
+| [`../CLAUDE.md`](../CLAUDE.md) | Copy-paste command cheat sheet |
+| [`.cursorrules`](../.cursorrules) | Cursor agent constraints (architecture, CI scope) |
+
+**Ground truth (do not hard-code rotating names or counts):** [`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md) · [`docs/_generated/COUNTS.md`](../docs/_generated/COUNTS.md) · [`STATUS.md`](../STATUS.md) · [`docs/documentation-index.md`](../docs/documentation-index.md)
+
+**Skills manifest:** [`.cursor/skill_manifest.json`](../.cursor/skill_manifest.json) — regenerate after editing any `**/SKILL.md` with `uv run python -m infrastructure.skills write` (human index: [`docs/_generated/skills_index.md`](../docs/_generated/skills_index.md)).
+
+---
+
+## Choose your path
+
+Pick the entry that matches your goal — each link is stable for deep navigation from issues, PRs, and agent transcripts.
+
+| Goal | Start here | Then |
+| --- | --- | --- |
+| **Clone and run** | [Quick Start](#quick-start) | [`docs/RUN_GUIDE.md`](../docs/RUN_GUIDE.md) · [`docs/guides/getting-started.md`](../docs/guides/getting-started.md) |
+| **Add a research project** | [`docs/guides/new-project-setup.md`](../docs/guides/new-project-setup.md) | Start from the closest public exemplar; use the generated authoritative roster in [`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md) and the differentiation map in [`docs/_generated/exemplar_roster.md`](../docs/_generated/exemplar_roster.md) instead of copying an inline list. |
+| **Debug a failed pipeline stage** | [`docs/prompts/pipeline-debugging/SKILL.md`](../docs/prompts/pipeline-debugging/SKILL.md) | [`docs/operational/troubleshooting/`](../docs/operational/troubleshooting/) |
+| **Write or fix tests** | [`docs/rules/testing_standards.md`](../docs/rules/testing_standards.md) | [`docs/prompts/test-creation/SKILL.md`](../docs/prompts/test-creation/SKILL.md) |
+| **Manuscript / PDF / citations** | [`docs/guides/manuscript-semantics.md`](../docs/guides/manuscript-semantics.md) | [`docs/prompts/manuscript-cross-references/SKILL.md`](../docs/prompts/manuscript-cross-references/SKILL.md) |
+| **Published exemplars / tracked outputs** | [`docs/_generated/publication_records.md`](../docs/_generated/publication_records.md) | [`docs/guides/publishing-guide.md#public-exemplar-release`](../docs/guides/publishing-guide.md#public-exemplar-release) |
+| **Contribute / open a PR** | [CI/CD](#cicd) · [Issue & PR templates](#issue--pr-templates) | [`docs/development/contributing.md`](../docs/development/contributing.md) · [`docs/development/contribution-map.md`](../docs/development/contribution-map.md) |
+| **Mirror CI locally** | [Simulate CI locally](#simulate-ci-locally) | [`docs/maintenance/ci-local.md`](../docs/maintenance/ci-local.md) · [`scripts/shell/ci_local.sh`](../scripts/shell/ci_local.sh) |
+| **Cloud / headless deploy** | [`docs/CLOUD_DEPLOY.md`](../docs/CLOUD_DEPLOY.md) | [`infrastructure/docker/`](../infrastructure/docker/) |
+| **Repurpose architectures** | [`docs/repurposing-architectures.md`](../docs/repurposing-architectures.md) | [`architecture/two-layer-architecture.md`](../docs/architecture/two-layer-architecture.md) · [`architecture/capability-surfaces.md`](../docs/architecture/capability-surfaces.md) |
+| **Full system reference** | [`../AGENTS.md`](../AGENTS.md) | [`docs/documentation-index.md`](../docs/documentation-index.md) |
+
+---
+
+<a id="agent-automation-entry-point"></a>
+
+## Agent & automation entry point
+
+Structured routing for coding agents, review bots, and CI automation. **Read in this order** unless the user task is narrowly scoped.
+
+### 1 — Read order
+
+| Priority | File | When |
+| ---: | --- | --- |
+| 1 | [`.cursorrules`](../.cursorrules) | Cursor — architecture, thin orchestrator, no-mocks, CI scope |
+| 2 | [`CLAUDE.md`](../CLAUDE.md) | Exact shell commands, CI mirror, common patterns |
+| 3 | [`AGENTS.md`](../AGENTS.md) | Pipeline stages, validation, configuration, troubleshooting index |
+| 4 | **Directory `AGENTS.md`** | API surfaces for the tree you are editing (`infrastructure/`, `projects/<name>/`, `docs/`, …) |
+| 5 | [`.github/AGENTS.md`](AGENTS.md) | GitHub Actions job names, branch protection, local CI parity |
+
+### 2 — Workflow skill router
+
+Natural-language tasks map to one child skill under [`docs/prompts/`](../docs/prompts/). Hub: [`docs/prompts/SKILL.md`](../docs/prompts/SKILL.md).
+
+| Symptom or goal | Skill |
+| --- | --- |
+| Pipeline stage failed / stuck | [`pipeline-debugging`](../docs/prompts/pipeline-debugging/SKILL.md) |
+| Regenerate-from-clean / determinism | [`reproducibility-audit`](../docs/prompts/reproducibility-audit/SKILL.md) |
+| Triple-check manuscript claims | [`manuscript-claim-verification`](../docs/prompts/manuscript-claim-verification/SKILL.md) |
+| `[[FIG:]]` / registry / cross-refs | [`manuscript-cross-references`](../docs/prompts/manuscript-cross-references/SKILL.md) |
+| New manuscript + project from brief | [`manuscript-creation`](../docs/prompts/manuscript-creation/SKILL.md) |
+| Full repo health audit | [`comprehensive-assessment`](../docs/prompts/comprehensive-assessment/SKILL.md) |
+| Validation CLI / markdown / PDF gates | [`validation-quality`](../docs/prompts/validation-quality/SKILL.md) |
+| New module or algorithm | [`code-development`](../docs/prompts/code-development/SKILL.md) |
+| Real-first tests (mock frameworks prohibited) | [`test-creation`](../docs/prompts/test-creation/SKILL.md) |
+| End-to-end feature | [`feature-addition`](../docs/prompts/feature-addition/SKILL.md) |
+| New `infrastructure/*` package | [`infrastructure-module`](../docs/prompts/infrastructure-module/SKILL.md) |
+| Directory docs (`AGENTS.md` / `README.md`) | [`documentation-creation`](../docs/prompts/documentation-creation/SKILL.md) |
+
+**Ambiguous intent:** load the hub [`docs/prompts/SKILL.md`](../docs/prompts/SKILL.md) and pick **one** child — do not improvise without it.
+
+### 3 — Non-negotiable invariants
+
+- **Thin orchestrator:** business logic only in `infrastructure/` or `projects/{name}/src/` — never in `scripts/`.
+- **No mocks:** no `unittest.mock`, `MagicMock`, or `mocker.patch` — use real data, temp files, `pytest-httpserver`, subprocess.
+- **Coverage:** infrastructure ≥ 60%, project `src/` ≥ 90% per project ([`docs/_generated/COUNTS.md`](../docs/_generated/COUNTS.md)).
+- **Public repo confidentiality:** only the public allowlists exposed by the
+  public-scope modules may be tracked under `projects/`, `fonds/`, `rules/`, and
+  `tools/`; [`scripts/audit/check_tracked_all.py`](../scripts/audit/check_tracked_all.py)
+  enforces all four pools in CI and pre-push.
+- **Rotating paths:** never hard-code private or rotating project names — link [`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md).
+
+### 4 — Command cheat sheet (agents)
+
+```bash
+uv sync                                                          # install deps
+./run.sh --pipeline --project templates/template_code_project --mode core  # 8-stage core DAG
+uv run python scripts/pipeline/stage_01_test.py --project templates/template_code_project
+uv run python -m infrastructure.project.public_scope lint-paths | xargs uv run ruff check
+uv run python -m infrastructure.validation.cli markdown projects/templates/template_code_project/manuscript/
+uv run python -m infrastructure.skills check                     # manifest freshness
+pre-commit run --hook-stage pre-push --all-files                 # local CI subset
+```
+
+Full command matrix: [`CLAUDE.md`](../CLAUDE.md) · [`docs/reference/quick-start-cheatsheet.md`](../docs/reference/quick-start-cheatsheet.md)
+
+---
+
+## What Is This?
+
+The **Research Project Template** addresses the structural root of research irreproducibility: fragmentation between code, tests, manuscripts, and provenance. Instead of patching tools together, it enforces integrity at the architectural level.
+
+| You get | How |
+| --- | --- |
+| **Reproducible builds** | 17-stage DAG pipeline from env setup → tests → PDF → hashed artifact |
+| **Real test enforcement** | Zero-Mock policy · ≥90% project coverage · ≥60% infra coverage |
+| **Cryptographic provenance** | SHA-256/512 hashing + steganographic watermarking on every PDF |
+| **Horizontal scaling** | N independent projects share one infrastructure layer — no coupling |
+| **AI-agent-ready codebase** | `AGENTS.md` + `README.md` per directory; `SKILL.md` + [`.cursor/skill_manifest.json`](../.cursor/skill_manifest.json) for routing |
+| **Interactive orchestration** | `run.sh` TUI menu for humans · `--pipeline` flag for CI |
+
+---
+
+<a id="quick-start"></a>
+
+## ⚡ Quick Start
+
+```bash
+# 1. Create your research repo from this template
+gh repo create my-research --template docxology/template --private
+cd my-research
+
+# 2. Install dependencies
+uv sync
+
+# 3. Run the interactive pipeline menu
+./run.sh
+
+# 4. Or run non-interactively against the exemplar project
+./run.sh --pipeline --project templates/template_code_project
+
+# Outputs → output/templates/template_code_project/
+```
+
+> **Don't have `uv`?** → `curl -Ls https://astral.sh/uv/install.sh | sh`
+
+See the full walkthrough in [**docs/RUN_GUIDE.md**](../docs/RUN_GUIDE.md) and [**docs/guides/getting-started.md**](../docs/guides/getting-started.md).
+
+---
+
+<a id="architecture"></a>
+
+## 📐 Architecture
+
+The repository is organized into two strictly separated layers — shared infrastructure that never changes per-project, and self-contained project workspaces that know nothing about each other.
+
+```mermaid
+graph TD
+    Root["/ (Repository Root)"] --> Infra["infrastructure/ (Layer 1 — Shared)"]
+    Root --> Scripts["scripts/ (Pipeline Stage Scripts)"]
+    Root --> Projects["projects/ (Layer 2 — Project Workspaces)"]
+    Root --> Docs["docs/ (see documentation-index.md)"]
+    Root --> Output["output/ (Final Deliverables)"]
+
+    subgraph "Layer 1 · Python packages under infrastructure/ — live count in docs/_generated/COUNTS.md (+ config/docker templates) · docs/modules/"
+        Infra --> Core["core/ — logging, config, exceptions"]
+        Infra --> Rendering["rendering/ — Pandoc + XeLaTeX"]
+        Infra --> Stego["steganography/ — SHA-256 + watermarking"]
+        Infra --> Valid["validation/ — PDF + Markdown integrity"]
+        Infra --> LLM["llm/ — Ollama review + translation"]
+        Infra --> More["+ publishing, reporting, scientific, project, documentation…"]
+    end
+
+    subgraph "Layer 2 · Active Project Workspaces"
+        Projects --> AP["Public templates ← generated exemplar roster"]
+        Projects --> CP["Canonical starters ← docs/_generated/active_projects.md"]
+        Projects --> PP["Specialized exemplars ← docs/_generated/exemplar_roster.md"]
+        Projects --> Dots["Rotating projects ← Auto-discovered"]
+    end
+```
+
+Authoritative slugs: [`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md). Archived or local-only exemplars live under [`projects/archive/`](../projects/archive/) when present.
+
+### Directory Reference
+
+| Path | Persistence | Purpose |
+| --- | :---: | --- |
+| `infrastructure/` | Permanent | Top-level Python packages under `infrastructure/` (plus config/documentation-only directories); live count in [docs/_generated/COUNTS.md](../docs/_generated/COUNTS.md), documented areas in [docs/modules/modules-guide.md](../docs/modules/modules-guide.md), and package details in [infrastructure/AGENTS.md](../infrastructure/AGENTS.md) |
+| `projects/` | Permanent | **Active** projects — discovered and executed by pipeline ([`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md)) |
+| `projects/working/` | Transient | Staging area: scaffold here before promoting to `projects/` |
+| `projects/archive/` | Permanent | Completed/retired work — preserved, not executed |
+| `scripts/` | Permanent | 14 pipeline stage scripts (stage_00_setup.py … stage_13_docxplus.py) |
+| `output/` | Disposable | Final PDFs, dashboards, reports — cleaned on each run |
+| `docs/` | Permanent | Large documentation hub — inventory in [`docs/documentation-index.md`](../docs/documentation-index.md) (counts vary; do not rely on a single “N files” figure across READMEs) |
+| `tests/` | Permanent | Infrastructure-level test suite (≥ 60% coverage gate) |
+
+> **Key invariant:** All domain logic lives in `projects/{name}/src/`. Scripts are **thin orchestrators** — they import and call, never implement. See [docs/architecture/thin-orchestrator-summary.md](../docs/architecture/thin-orchestrator-summary.md).
+
+---
+
+<a id="active-projects"></a>
+
+## 📁 Active Projects
+
+> **Canonical run surface:** The public exemplars under
+> `projects/templates/` are discovered, tested, analyzed, and PDF-rendered
+> **only** through this repository's pipeline (`discover_projects()` +
+> [`./run.sh`](../run.sh) or [`scripts/runner/execute_pipeline.py`](../scripts/runner/execute_pipeline.py)).
+> Clone [docxology/template](https://github.com/docxology/template), run
+> `uv sync` at the repo root, then `./run.sh --project templates/<name>`.
+> Standalone GitHub repos in the publication table below are citation/release
+> mirrors produced **by** this monorepo — not separate primary run checkouts.
+
+### `template_code_project` — Code Exemplar
+
+> **`projects/templates/template_code_project/`** is the canonical example of a complete, working project. Use it as the reference when building your own.
+
+| Feature | Implementation |
+| --- | --- |
+| Gradient descent optimization | `projects/templates/template_code_project/src/optimizer.py` |
+| Scientific benchmarking | uses `infrastructure.scientific` |
+| Project test suite | `tests/` — real operations only, coverage gated at 90% |
+| 6 publication-quality figures | generated in `scripts/`, registered via `FigureManager` |
+| Full pipeline output | PDF rendered, validated, steganographically signed |
+| Complete documentation | `AGENTS.md` + `README.md` throughout |
+
+→ **Details**: [projects/templates/template_code_project/AGENTS.md](../projects/templates/template_code_project/AGENTS.md) · [projects/templates/template_code_project/README.md](../projects/templates/template_code_project/README.md)
+
+### Published exemplars — pipeline productivity, advanced provenance, and autopoiesis
+
+The repository ships public template projects under `projects/templates/`. Some
+canonical exemplars have independently published GitHub/Zenodo records; the
+generated matrix below distinguishes declarations from externally verified
+status. This monorepo remains the source of shared infrastructure and
+cross-template validation. Each exemplar demonstrates the pipeline locally;
+publication claims require a refreshed external receipt.
+
+The table below is auto-injected from public project config files plus optional GitHub/Zenodo API refreshes. Do not hand-edit it.
+
+<!-- BEGIN:PUBLICATION_RECORDS -->
+<!-- This block is generated by scripts/docgen/publication_records.py. Do not hand-edit. -->
+
+| Exemplar | Intended / published version | Standalone guide | GitHub | Latest release | Zenodo concept DOI | Latest published version DOI | Other locations |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [`templates/template_active_inference`](../projects/templates/template_active_inference/) | 0.4.0 pending; last published 0.3.2 | [guide](../projects/templates/template_active_inference/STANDALONE.md) | [docxology/template_active_inference](https://github.com/docxology/template_active_inference) | not checked | [10.5281/zenodo.20417021](https://doi.org/10.5281/zenodo.20417021) | [10.5281/zenodo.20931870](https://doi.org/10.5281/zenodo.20931870) | [github_pages](https://docxology.github.io/template_active_inference/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_active_inference)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmRRKmm7XCHTE78fs21dYwM7tKwv8HK2g4bynhtds75Rb9)<br>[netlify](https://6a4433498786d3e4e58ea021--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/hdxr2/)<br>[pypi](https://test.pypi.org/project/template-active-inference/0.3.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_active_inference) |
+| [`templates/template_advanced_literature_review`](../projects/templates/template_advanced_literature_review/) | 0.2.0 pending; unpublished draft | [guide](../projects/templates/template_advanced_literature_review/STANDALONE.md) | [docxology/template_advanced_literature_review](https://github.com/docxology/template_advanced_literature_review) | not checked | n/a | n/a | n/a |
+| [`templates/template_autopoiesis`](../projects/templates/template_autopoiesis/) | 2.0.0 pending; last published 1.0.1 | [guide](../projects/templates/template_autopoiesis/STANDALONE.md) | [docxology/template_autopoiesis](https://github.com/docxology/template_autopoiesis) | not checked | [10.5281/zenodo.21227869](https://doi.org/10.5281/zenodo.21227869) | [10.5281/zenodo.21229620](https://doi.org/10.5281/zenodo.21229620) | [ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmanoQUGKKFeYFtd5HRpB4ysE9jVxbzvaWpqgpWu5rRi8V)<br>[osf](https://osf.io/ksmzp/) |
+| [`templates/template_autoresearch_project`](../projects/templates/template_autoresearch_project/) | 0.4.0 pending; last published 0.3.2 | [guide](../projects/templates/template_autoresearch_project/STANDALONE.md) | [docxology/template_autoresearch_project](https://github.com/docxology/template_autoresearch_project) | not checked | [10.5281/zenodo.20417016](https://doi.org/10.5281/zenodo.20417016) | [10.5281/zenodo.20931907](https://doi.org/10.5281/zenodo.20931907) | [github_pages](https://docxology.github.io/template_autoresearch_project/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_autoresearch_project)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmZvS2v7ZpqS4T8ZufeW9sA4gNBteAdVfmLH4LcoAqrUhv)<br>[netlify](https://6a443f868786d30c7d8ea014--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/geykb/)<br>[pypi](https://test.pypi.org/project/template-autoresearch-project/0.3.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_autoresearch_project) |
+| [`templates/template_autoscientists`](../projects/templates/template_autoscientists/) | 2.0.0 pending; last published 1.0.2 | [guide](../projects/templates/template_autoscientists/STANDALONE.md) | [docxology/template_autoscientists](https://github.com/docxology/template_autoscientists) | not checked | [10.5281/zenodo.20533669](https://doi.org/10.5281/zenodo.20533669) | [10.5281/zenodo.20931927](https://doi.org/10.5281/zenodo.20931927) | [github_pages](https://docxology.github.io/template_autoscientists/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_autoscientists)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmX6F3ExeC87DxxH95YgJuHcJmjhXuf1x54BKF6V5bn5z4)<br>[netlify](https://6a44401a17ba160047501e98--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/6xcf5/)<br>[pypi](https://test.pypi.org/project/template-autoscientists/1.0.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_autoscientists) |
+| [`templates/template_code_project`](../projects/templates/template_code_project/) | 3.0.0 pending; last published 2.5.2 | [guide](../projects/templates/template_code_project/STANDALONE.md) | [docxology/template_code_project](https://github.com/docxology/template_code_project) | not checked | [10.5281/zenodo.20417136](https://doi.org/10.5281/zenodo.20417136) | [10.5281/zenodo.20931934](https://doi.org/10.5281/zenodo.20931934) | [github_pages](https://docxology.github.io/template_code_project/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_code_project)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmSVZF1MisqWeX1C7vFUhcwCkYvZXBuq5TS9MzLFNJJykS)<br>[netlify](https://6a4440a789b44ad53f3af09b--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/mcv8j/)<br>[pypi](https://test.pypi.org/project/template-code-project/2.5.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_code_project) |
+| [`templates/template_data_descriptor`](../projects/templates/template_data_descriptor/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_data_descriptor/STANDALONE.md) | [docxology/template_data_descriptor](https://github.com/docxology/template_data_descriptor) | not checked | [10.5281/zenodo.21298883](https://doi.org/10.5281/zenodo.21298883) | [10.5281/zenodo.21298884](https://doi.org/10.5281/zenodo.21298884) | n/a |
+| [`templates/template_eda_notebook`](../projects/templates/template_eda_notebook/) | 2.0.0 pending; last published 1.0.0 | [guide](../projects/templates/template_eda_notebook/STANDALONE.md) | [docxology/template_eda_notebook](https://github.com/docxology/template_eda_notebook) | not checked | [10.5281/zenodo.21086292](https://doi.org/10.5281/zenodo.21086292) | [10.5281/zenodo.21086293](https://doi.org/10.5281/zenodo.21086293) | [github_pages](https://docxology.github.io/template_eda_notebook/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_eda_notebook)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmSsHhWo2JC76gQSy6rQuN6uKTP1gH9vtj3kGKLgY5oU4E)<br>[netlify](https://6a444920f59418acc0357e9f--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/ycwsk/)<br>[pypi](https://test.pypi.org/project/template-eda-notebook/1.0.0/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_eda_notebook) |
+| [`templates/template_experiment_tree`](../projects/templates/template_experiment_tree/) | 0.2.0 pending; unpublished draft | [guide](../projects/templates/template_experiment_tree/STANDALONE.md) | [docxology/template_experiment_tree](https://github.com/docxology/template_experiment_tree) | not checked | n/a | n/a | n/a |
+| [`templates/template_formal`](../projects/templates/template_formal/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_formal/STANDALONE.md) | [docxology/template_formal](https://github.com/docxology/template_formal) | not checked | [10.5281/zenodo.21298885](https://doi.org/10.5281/zenodo.21298885) | [10.5281/zenodo.21298886](https://doi.org/10.5281/zenodo.21298886) | n/a |
+| [`templates/template_gold_refinement`](../projects/templates/template_gold_refinement/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_gold_refinement/STANDALONE.md) | [docxology/template_gold_refinement](https://github.com/docxology/template_gold_refinement) | not checked | [10.5281/zenodo.20931955](https://doi.org/10.5281/zenodo.20931955) | [10.5281/zenodo.20938523](https://doi.org/10.5281/zenodo.20938523) | [huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_gold_refinement)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmQBXK5qoGv5NSWC8mzcx22AgkHeqBJL8z8HrCgEy7nzio)<br>[osf](https://osf.io/u485p/)<br>[pypi](https://test.pypi.org/project/template-gold-refinement/0.1.0/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_gold_refinement) |
+| [`templates/template_literature_meta_analysis`](../projects/templates/template_literature_meta_analysis/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_literature_meta_analysis/STANDALONE.md) | [docxology/template_literature_meta_analysis](https://github.com/docxology/template_literature_meta_analysis) | not checked | [10.5281/zenodo.20931964](https://doi.org/10.5281/zenodo.20931964) | [10.5281/zenodo.20931965](https://doi.org/10.5281/zenodo.20931965) | [github_pages](https://docxology.github.io/template_literature_meta_analysis/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_literature_meta_analysis)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmbeNkcrBdccxaPihkcjRxLNagNeYLFaGA7xgi5aXEigM1)<br>[netlify](https://6a444119738f1fa89d68e5a2--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/3z5yp/)<br>[pypi](https://test.pypi.org/project/template-literature-meta-analysis/0.1.0/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_literature_meta_analysis) |
+| [`templates/template_madlib`](../projects/templates/template_madlib/) | 0.2.0 pending; last published 0.1.1 | [guide](../projects/templates/template_madlib/STANDALONE.md) | [docxology/template_madlib](https://github.com/docxology/template_madlib) | not checked | [10.5281/zenodo.20786638](https://doi.org/10.5281/zenodo.20786638) | [10.5281/zenodo.20932025](https://doi.org/10.5281/zenodo.20932025) | [github_pages](https://docxology.github.io/template_madlib/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_madlib)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmcrHEuVYorBXHuLXZRjHQQ7kgKnAJx1MvxNpbyZSrvxNQ)<br>[netlify](https://6a44418df7f6f9fa20037643--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/ndpue/)<br>[pypi](https://test.pypi.org/project/template-madlib/0.1.1/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_madlib) |
+| [`templates/template_methods_paper`](../projects/templates/template_methods_paper/) | 2.0.0 pending; last published 1.0.0 | [guide](../projects/templates/template_methods_paper/STANDALONE.md) | [docxology/template_methods_paper](https://github.com/docxology/template_methods_paper) | not checked | [10.5281/zenodo.21086548](https://doi.org/10.5281/zenodo.21086548) | [10.5281/zenodo.21086549](https://doi.org/10.5281/zenodo.21086549) | [github_pages](https://docxology.github.io/template_methods_paper/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_methods_paper)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/Qmc9puHs6KiEnCraVgWUXVxcyAZyT7nt9EMXXLBhy2bAou)<br>[netlify](https://6a444b88aa6e4e3c5d216e16--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/6d7nh/)<br>[pypi](https://test.pypi.org/project/template-methods-paper/1.0.0/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_methods_paper) |
+| [`templates/template_newspaper`](../projects/templates/template_newspaper/) | 2.0.0 pending; last published 1.0.2 | [guide](../projects/templates/template_newspaper/STANDALONE.md) | [docxology/template_newspaper](https://github.com/docxology/template_newspaper) | not checked | [10.5281/zenodo.20533675](https://doi.org/10.5281/zenodo.20533675) | [10.5281/zenodo.20932039](https://doi.org/10.5281/zenodo.20932039) | [github_pages](https://docxology.github.io/template_newspaper/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_newspaper)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmUsept2d9X3sz42whTgEGM9TjdxjzSqxnuyPCbu3pPwku)<br>[netlify](https://6a4441f8d6dc10153d77788d--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/tzwf8/)<br>[pypi](https://test.pypi.org/project/template-newspaper/1.0.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_newspaper) |
+| [`templates/template_pitch_deck`](../projects/templates/template_pitch_deck/) | 2.0.0 pending; last published 1.0.0 | [guide](../projects/templates/template_pitch_deck/STANDALONE.md) | [docxology/template-pitch-deck](https://github.com/docxology/template-pitch-deck) | not checked | [10.5281/zenodo.21281509](https://doi.org/10.5281/zenodo.21281509) | [10.5281/zenodo.21281510](https://doi.org/10.5281/zenodo.21281510) | n/a |
+| [`templates/template_pools_rules_tools`](../projects/templates/template_pools_rules_tools/) | 2.0.0 pending; last published 1.0.0 | [guide](../projects/templates/template_pools_rules_tools/STANDALONE.md) | [docxology/template_pools_rules_tools](https://github.com/docxology/template_pools_rules_tools) | not checked | [10.5281/zenodo.21298888](https://doi.org/10.5281/zenodo.21298888) | [10.5281/zenodo.21298889](https://doi.org/10.5281/zenodo.21298889) | n/a |
+| [`templates/template_prose_project`](../projects/templates/template_prose_project/) | 0.5.0 pending; last published 0.4.2 | [guide](../projects/templates/template_prose_project/STANDALONE.md) | [docxology/template_prose_project](https://github.com/docxology/template_prose_project) | not checked | [10.5281/zenodo.20417104](https://doi.org/10.5281/zenodo.20417104) | [10.5281/zenodo.20932047](https://doi.org/10.5281/zenodo.20932047) | [github_pages](https://docxology.github.io/template_prose_project/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_prose_project)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmXXUgas1amP7Pd9rRoTdJQiNUzBqKQ4r3Jf85aaGEnjz4)<br>[netlify](https://6a44425bbd23b314b04b0154--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/sh2r3/)<br>[pypi](https://test.pypi.org/project/template-prose-project/0.4.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_prose_project) |
+| [`templates/template_redacted_report`](../projects/templates/template_redacted_report/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_redacted_report/STANDALONE.md) | [docxology/template_redacted_report](https://github.com/docxology/template_redacted_report) | not checked | [10.5281/zenodo.21298890](https://doi.org/10.5281/zenodo.21298890) | [10.5281/zenodo.21298891](https://doi.org/10.5281/zenodo.21298891) | n/a |
+| [`templates/template_registered_report`](../projects/templates/template_registered_report/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_registered_report/STANDALONE.md) | [docxology/template_registered_report](https://github.com/docxology/template_registered_report) | not checked | [10.5281/zenodo.21298892](https://doi.org/10.5281/zenodo.21298892) | [10.5281/zenodo.21298893](https://doi.org/10.5281/zenodo.21298893) | n/a |
+| [`templates/template_search_project`](../projects/templates/template_search_project/) | 0.2.0 pending; last published 0.1 | [guide](../projects/templates/template_search_project/STANDALONE.md) | [docxology/template_search_project](https://github.com/docxology/template_search_project) | not checked | [10.5281/zenodo.21298894](https://doi.org/10.5281/zenodo.21298894) | [10.5281/zenodo.21298895](https://doi.org/10.5281/zenodo.21298895) | n/a |
+| [`templates/template_sia`](../projects/templates/template_sia/) | 0.2.0 pending; last published 0.1.2 | [guide](../projects/templates/template_sia/STANDALONE.md) | [docxology/template_sia](https://github.com/docxology/template_sia) | not checked | [10.5281/zenodo.20453879](https://doi.org/10.5281/zenodo.20453879) | [10.5281/zenodo.20932066](https://doi.org/10.5281/zenodo.20932066) | [github_pages](https://docxology.github.io/template_sia/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_sia)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmccbCX9YXJMd3fNfkZ3H59dnWRnB6xgeVCM8kmPGQtaBh)<br>[netlify](https://6a4442bb57aaff1e1b2992d1--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/85bxe/)<br>[pypi](https://test.pypi.org/project/template-sia/0.1.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_sia) |
+| [`templates/template_storybook`](../projects/templates/template_storybook/) | 0.2.0 pending; last published 0.1.0 | [guide](../projects/templates/template_storybook/STANDALONE.md) | [docxology/template_storybook](https://github.com/docxology/template_storybook) | not checked | [10.5281/zenodo.21176000](https://doi.org/10.5281/zenodo.21176000) | [10.5281/zenodo.21176001](https://doi.org/10.5281/zenodo.21176001) | [github](https://github.com/docxology/template_storybook/releases/tag/v0.1.0)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_storybook)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmPcB1mTMZQb541ZsmwDwc6rQgSTLR4BGYefdTLsj1s5Qy)<br>[netlify](https://6a47fd2233010f4eb138cdcd--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/xbajh/)<br>[pypi](https://test.pypi.org/project/template-storybook/0.1.0/)<br>[software_heritage](https://archive.softwareheritage.org/api/1/origin/save/git/url/https://github.com/docxology/template_storybook/) |
+| [`templates/template_template`](../projects/templates/template_template/) | 2.0.0 pending; last published 1.0.9 | [guide](../projects/templates/template_template/STANDALONE.md) | [docxology/template_template](https://github.com/docxology/template_template) | not checked | [10.5281/zenodo.20419007](https://doi.org/10.5281/zenodo.20419007) | [10.5281/zenodo.20976048](https://doi.org/10.5281/zenodo.20976048) | [github_pages](https://docxology.github.io/template_template/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_template)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmVr4UREM1NeaSfY1pNJdjFjrRrGMZLvnNqCY2cRaGadry)<br>[netlify](https://6a44431e738f1faeef68e5f6--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/byf23/)<br>[pypi](https://test.pypi.org/project/template-template-meta-project/1.0.9/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_template) |
+| [`templates/template_textbook`](../projects/templates/template_textbook/) | 0.2.0 pending; last published 0.1.2 | [guide](../projects/templates/template_textbook/STANDALONE.md) | [docxology/template_textbook](https://github.com/docxology/template_textbook) | not checked | [10.5281/zenodo.20533125](https://doi.org/10.5281/zenodo.20533125) | [10.5281/zenodo.20932112](https://doi.org/10.5281/zenodo.20932112) | [github_pages](https://docxology.github.io/template_textbook/)<br>[huggingface_hub](https://huggingface.co/datasets/ActiveInference/template_textbook)<br>[ipfs_pinata](https://gateway.pinata.cloud/ipfs/QmaTFtcxkdPJGC3HHWVCkQQC81SYTD8Ninu2BB9KxiHxEN)<br>[netlify](https://6a4443ae4a7a3eb5dba63532--tranquil-kleicha-0c9203.netlify.app)<br>[osf](https://osf.io/8kg5z/)<br>[pypi](https://test.pypi.org/project/template-textbook/0.1.2/)<br>[software_heritage](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/docxology/template_textbook) |
+
+Full generated matrix: [`docs/_generated/publication_records.md`](../docs/_generated/publication_records.md).
+
+<!-- END:PUBLICATION_RECORDS -->
+
+**Pipeline productivity.** Exemplar tests, analysis producers, and renderers run
+through this repository's declared DAG. The table separates intended versions,
+historical publications, and unpublished drafts. Current Platform 4 acceptance
+and new releases remain pending; a publication declaration does not establish
+fresh coverage, rendered-artifact custody, or an actual deposit.
+
+**Publication provenance.** The release workflow records the Zenodo DOI and PDF
+SHA256 in GitHub release metadata and links the Zenodo record back to GitHub.
+Actual transfers, retrieved hashes, DOI roles, and working URLs require their
+own refreshed receipts. Concept and version DOIs identify distinct publication
+records; draft exemplars do not receive invented identifiers.
+
+**Autopoietic — `template_template`.** The meta-template exemplar is a *self-referential* research project: its manuscript is generated by programmatically introspecting this repository's own `infrastructure/` (module inventory, pipeline DAG, public-exemplar roster) via [`src/template_template/introspection.py`](../projects/templates/template_template/src/template_template/) and injecting the live metrics into its prose. The pipeline documents itself, renders that documentation, and publishes it — a system that produces a description of its own production. Its introspection is scoped to `PUBLIC_PROJECT_NAMES` only (a confidentiality invariant enforced by a negative-control test), so the published artifact never embeds private/rotating project data.
+
+### Rotating projects
+
+Beyond the permanent public exemplars, other projects rotate between
+`projects/working/`, `projects/`, and `projects/archive/` as work
+progresses (meta-documentation, domain catalogues, Lean-toolchain projects,
+case studies). Their paths are deliberately **not** hard-coded here — per the
+repo-wide rule also stated in the root [`README.md`](../README.md) and
+[`../AGENTS.md`](../AGENTS.md), the single authoritative roster is
+[`docs/_generated/active_projects.md`](../docs/_generated/active_projects.md)
+(regenerated from `infrastructure.project.public_scope`), with measured facts in
+[`docs/_generated/COUNTS.md`](../docs/_generated/COUNTS.md).
+This keeps the docs-lint "zero ghost references" gate green without per-line
+`noqa` suppressions.
+
+### Archived exemplars
+
+Retired or sample projects are kept under [`projects/archive/`](../projects/archive/) when present, but that roster is checkout-specific and not executed by `./run.sh` until moved back into `projects/`.
+
+### Project Directory Layout
+
+```mermaid
+flowchart LR
+    P[projects/&lt;name&gt;]
+    P --> SRC[src/&lt;name&gt;<br/>All domain logic · algorithms · analysis]
+    P --> T[tests<br/>Real-first tests · stand-ins inventoried · ≥ 90% coverage]
+    P --> SC[scripts<br/>Thin orchestrators calling src]
+    P --> M[manuscript<br/>Markdown chapters · config.yaml]
+    P --> O[output<br/>Pipeline artifacts · generated]
+    P --> AG[AGENTS.md<br/>AI-agent context for this project]
+
+    classDef d fill:#0f172a,stroke:#0f172a,color:#fff
+    classDef f fill:#0f766e,stroke:#0f172a,color:#fff
+    class P,SRC,T,SC,M,O d
+    class AG f
+```
+
+### System Architecture Overview
+
+```mermaid
+graph TB
+    subgraph Entry["🚀 Entry Points"]
+        RUNSH[./run.sh<br/>Interactive menu<br/>Full pipeline control]
+        RUNALL[uv run python scripts/runner/execute_pipeline.py --mode core<br/>Programmatic<br/>Core pipeline]
+        INDIVIDUAL[Individual Scripts<br/>scripts/pipeline/stage_*.py<br/>Stage-specific execution]
+    end
+
+    subgraph Orchestration["⚙️ Orchestration Layer"]
+        SETUP[Environment Setup<br/>Dependencies & validation]
+        TESTING[Test Execution<br/>Coverage requirements]
+        ANALYSIS[Script Discovery<br/>Project analysis execution]
+        RENDERING[PDF Generation<br/>Manuscript compilation]
+        VALIDATION[Quality Assurance<br/>Content validation]
+        DELIVERY[Output Distribution<br/>Final deliverables]
+    end
+
+    subgraph Core["🧠 Core Systems (DAG Engine)"]
+        INFRASTRUCTURE[Infrastructure Modules<br/>Python packages — live count in docs/_generated/COUNTS.md<br/>Validation, rendering, LLM, methods]
+        BUSINESS_LOGIC[Business Logic<br/>Project algorithms<br/>≥ 90% coverage]
+        CONFIGURATION[Configuration System<br/>YAML + environment<br/>Runtime flexibility]
+    end
+
+    subgraph Data["📊 Data Flow"]
+        SOURCE_CODE[Source Code<br/>Python modules<br/>Algorithm implementation]
+        MANUSCRIPT_CONTENT[Manuscript Content<br/>Markdown sections<br/>Research writing]
+        GENERATED_OUTPUTS[Generated Outputs<br/>PDFs, figures, data<br/>Research deliverables]
+    end
+
+    subgraph Quality["✅ Quality Assurance"]
+        UNIT_TESTS[Unit Tests<br/>Function validation<br/>Real execution preferred]
+        INTEGRATION_TESTS[Integration Tests<br/>System validation<br/>End-to-end workflows]
+        VALIDATION_CHECKS[Content Validation<br/>Quality assurance<br/>Academic standards]
+    end
+
+    RUNSH --> Orchestration
+    RUNALL --> Orchestration
+    INDIVIDUAL --> Orchestration
+
+    Orchestration --> Core
+    Core --> Data
+    Data --> Quality
+
+    Quality -.->|Feedback| Orchestration
+
+    classDef entry fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef orchestration fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef data fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef quality fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class Entry entry
+    class Orchestration orchestration
+    class Core core
+    class Data data
+    class Quality quality
+```
+
+To add your own project, follow [docs/guides/new-project-setup.md](../docs/guides/new-project-setup.md).
+
+### Project Lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> InProgress: Create scaffold
+    InProgress --> Active: Add src/ + tests/ + manuscript/config.yaml
+    Active --> Archive: Complete / retire
+    Archive --> Active: Reactivate
+
+    InProgress : projects/working/ — not executed
+    Active : projects/ — auto-discovered, pipeline-executed
+    Archive : projects/archive/ — preserved, not executed
+```
+
+---
+
+<a id="pipeline"></a>
+
+## 🔄 Pipeline
+
+`run.sh` executes a **17-stage declarative DAG pipeline** configured via `pipeline.yaml`. `secure_run.sh` appends steganographic post-processing.
+
+```mermaid
+flowchart TD
+    subgraph Input["📥 Input Data"]
+        SOURCE_CODE["Source Code<br/>projects/{name}/src/*.py<br/>Algorithm implementations"]
+        ANALYSIS_SCRIPTS["Analysis Scripts<br/>projects/{name}/scripts/*.py<br/>Workflow orchestrators"]
+        MANUSCRIPT_FILES["Manuscript Files<br/>projects/{name}/manuscript/*.md<br/>Research content"]
+        CONFIG_FILES[Configuration<br/>config.yaml<br/>Runtime parameters]
+    end
+
+    subgraph Processing["⚙️ 17-Stage DAG Pipeline"]
+        STAGE0["Stage 0 — Clean<br/>(built-in / executor)"]
+        STAGE1["Stage 1 — Setup<br/>scripts/pipeline/stage_00_setup.py"]
+        STAGE2["Stage 2 — Infra smoke<br/>scripts/pipeline/stage_01_test.py --infra-scope pipeline-smoke"]
+        STAGE3["Stage 3 — Project tests<br/>scripts/pipeline/stage_01_test.py --project-only"]
+        STAGE4["Stage 4 — Analysis<br/>scripts/pipeline/stage_02_analysis.py"]
+        STAGE5["Stage 5 — Render PDF<br/>scripts/pipeline/stage_03_render.py"]
+        STAGE6["Stage 6 — Validate<br/>scripts/pipeline/stage_04_validate.py"]
+        STAGE7["Stage 7 — LLM reviews<br/>scripts/pipeline/stage_06_llm_review.py --reviews-only"]
+        STAGE8["Stage 8 — LLM translations<br/>scripts/pipeline/stage_06_llm_review.py --translations-only"]
+        STAGE9["Stage 9 — Copy outputs<br/>scripts/pipeline/stage_05_copy.py"]
+    end
+
+    subgraph Output["📤 Generated Outputs"]
+        PDF_DOCS["PDF Documents<br/>output/{name}/pdf/*.pdf<br/>Professional manuscripts"]
+        FIGURES["Figures<br/>output/{name}/figures/*.png<br/>Publication-quality plots"]
+        DATA_FILES["Data Files<br/>output/{name}/data/*.csv<br/>Analysis results"]
+        REPORTS["Reports<br/>output/{name}/reports/*.md<br/>Validation summaries"]
+    end
+
+    SOURCE_CODE --> STAGE3
+    ANALYSIS_SCRIPTS --> STAGE4
+    MANUSCRIPT_FILES --> STAGE5
+    CONFIG_FILES --> STAGE1
+
+    STAGE0 --> STAGE1
+    STAGE1 --> STAGE2
+    STAGE1 --> STAGE3
+    STAGE3 --> STAGE4
+    STAGE4 --> STAGE5
+    STAGE5 --> STAGE6
+    STAGE6 --> STAGE7
+    STAGE6 --> STAGE8
+    STAGE6 --> STAGE9
+
+    STAGE4 --> FIGURES
+    STAGE4 --> DATA_FILES
+    STAGE5 --> PDF_DOCS
+    STAGE6 --> REPORTS
+
+    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef output fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+
+    class Input input
+    class Processing process
+    class Output output
+```
+
+Stage indices are pipeline positions; they **do not** match the `stage_NN_*.py` implementation prefixes. The summary and table below are authoritative.
+
+<!-- BEGIN:STAGE_SUMMARY -->
+The default [`pipeline.yaml`](../infrastructure/core/pipeline/pipeline.yaml) declares **17 named stages** (indices 0–16). Default `--mode core` runs execute **8** stages; explicit `--mode live` executes **10** selected core and live stages. Opt-in tags (`archival`, `bundle`, `docxplus`, `ebook`, `metadata`, `provenance`, `science`) stay out of these selections unless a stage is invoked directly. YAML stage indices do not match `stage_NN_*.py` prefixes.
+<!-- END:STAGE_SUMMARY -->
+
+<!-- BEGIN:STAGE_TABLE -->
+<!-- This block is generated from [`infrastructure/core/pipeline/pipeline.yaml`](../infrastructure/core/pipeline/pipeline.yaml) by `scripts/docgen/stage_table.py`. Do not hand-edit. Stage indices are **0-based positions in the YAML** and intentionally do **not** match the `scripts/pipeline/stage_NN_*.py` numeric prefixes (for example, stage 11, "Copy Outputs", runs `scripts/pipeline/stage_05_copy.py`). -->
+
+| Stage | Script | Tags | Failure mode |
+| ----- | ------ | ---- | ------------ |
+| **0** Clean Output Directories | built-in `_run_clean_outputs` | `core`, `clean` | failure prevents completion |
+| **1** Environment Setup | `scripts/pipeline/stage_00_setup.py` | `core` | hard fail |
+| **2** Infrastructure Tests | `scripts/pipeline/stage_01_test.py --infra-only --verbose --infra-scope pipeline-smoke` | `core`, `tests` | required tests and coverage must pass |
+| **3** Project Tests | `scripts/pipeline/stage_01_test.py --project-only --verbose` | `core`, `tests` | required nonempty tests, project-local coverage, verifier evidence, and runner success must pass |
+| **4** Project Analysis | `scripts/pipeline/stage_02_analysis.py` | `core` | hard fail |
+| **5** Connector Search | `scripts/pipeline/stage_08_connector_search.py` | `science`, `live` | absent configuration requires a fresh policy-bound skip receipt |
+| **6** Provenance Record | `scripts/pipeline/stage_09_provenance_record.py --stage Connector Search` | `provenance` | absent configuration requires a fresh policy-bound skip receipt |
+| **7** PDF Rendering | `scripts/pipeline/stage_03_render.py` | `core` | hard fail |
+| **8** Output Validation | `scripts/pipeline/stage_04_validate.py` | `core` | enabled-format, enabled-PDF bookend, and artifact/provenance failures block; markdown, general output structure, and prose-quality checks remain advisory |
+| **9** LLM Manuscript Review | `scripts/pipeline/stage_06_llm_review.py --reviews-only` | `llm`, `live` | fresh policy-bound skip; unavailable required live acceptance is blocked |
+| **10** LLM Translations | `scripts/pipeline/stage_06_llm_review.py --translations-only` | `llm`, `live` | fresh policy-bound skip; unavailable required live acceptance is blocked |
+| **11** Copy Outputs | `scripts/pipeline/stage_05_copy.py` | `core` | failure prevents completion |
+| **12** Ebook Generation | `scripts/pipeline/stage_11_ebook.py` | `core`, `ebook` | failure prevents completion |
+| **13** docxplus Export | `scripts/pipeline/stage_13_docxplus.py` | `core`, `docxplus` | failure prevents completion |
+| **14** Metadata Package | `scripts/pipeline/stage_12_metadata.py` | `core`, `metadata` | failure prevents completion |
+| **15** Executable Bundle | `scripts/runner/bundle_executable.py` | `bundle` | failure prevents completion |
+| **16** Archival Publication | `scripts/runner/archive_publication.py` | `archival`, `live` | failure prevents completion |
+<!-- END:STAGE_TABLE -->
+
+Full stage details: [docs/core/workflow.md](../docs/core/workflow.md) · [docs/core/how-to-use.md](../docs/core/how-to-use.md).
+
+---
+
+## AI collaboration
+
+Every permanent directory carries **`README.md`** (human navigation) and **`AGENTS.md`** (machine-readable API tables, constraints, file inventories). `infrastructure/` subpackages add **`SKILL.md`** for agent routing.
+
+```mermaid
+flowchart TB
+    GH[".github/README.md<br/>GitHub entry · CI · doc map"]
+    CL["CLAUDE.md<br/>Commands · CI mirror"]
+    AG["AGENTS.md · per directory<br/>Local APIs · integration"]
+    SK["SKILL.md · infrastructure + docs/prompts<br/>Workflow routing"]
+    RD["README.md<br/>Quick-start"]
+
+    GH --> CL --> AG
+    AG --> SK --> RD
+
+    classDef root fill:#0f172a,stroke:#0f172a,color:#fff
+    classDef tech fill:#1e3a8a,stroke:#0f172a,color:#fff
+    classDef hum fill:#0f766e,stroke:#0f172a,color:#fff
+    class GH,CL root
+    class AG,SK tech
+    class RD hum
+```
+
+| Layer | Entry |
+| --- | --- |
+| Workflow skills (14 tasks) | [`docs/prompts/SKILL.md`](../docs/prompts/SKILL.md) · [Agent router](#agent-automation-entry-point) |
+| Infrastructure skills | [`infrastructure/SKILL.md`](../infrastructure/SKILL.md) · [`docs/_generated/skills_index.md`](../docs/_generated/skills_index.md) |
+| Editor manifest | [`.cursor/skill_manifest.json`](../.cursor/skill_manifest.json) — `uv run python -m infrastructure.skills write` |
+| Contributor norms | [`docs/rules/`](../docs/rules/) · [`.cursorrules`](../.cursorrules) |
+| PAI integration | [`docs/PAI.md`](../docs/PAI.md) |
+| Skill eval harness (synthetic) | [`docs/prompts/_skill-eval/AGENTS.md`](../docs/prompts/_skill-eval/AGENTS.md) |
+
+---
+
+<a id="security-provenance"></a>
+
+## 🔒 Security & Provenance
+
+Every rendered PDF is automatically processed by the steganographic pipeline via `secure_run.sh`:
+
+| Layer | Mechanism | Survives |
+| --- | --- | --- |
+| **PDF Metadata** | XMP + Info dictionary (author, DOI, ORCID, build timestamp) | All viewers |
+| **Hash manifest** | SHA-256 + SHA-512 in `*.hashes.json` | External verification |
+| **Alpha overlay** | Low-opacity text per page (build time + commit hash) | Standard PDF operations, printing |
+| **QR code** | Repository URL injected on final page | Redistribution |
+
+Full specification: [docs/security/threat-model.md](../docs/security/threat-model.md) · [docs/security/steganography.md](../docs/security/steganography.md) · [docs/security/hashing_and_manifests.md](../docs/security/hashing_and_manifests.md) · [docs/security/secure_execution.md](../docs/security/secure_execution.md).
+
+---
+
+<a id="testing-standards"></a>
+
+## 🧪 Testing Standards
+
+| Standard | Requirement |
+| --- | --- |
+| **Zero-Mock policy** | No `MagicMock`, `mocker.patch`, or `unittest.mock` anywhere |
+| **Real operations** | Tests use real filesystem, subprocess, and HTTP calls |
+| **Infrastructure coverage** | ≥ 60% (live % → [`docs/development/coverage-gaps.md`](../docs/development/coverage-gaps.md)) |
+| **Project coverage** | ≥ 90% for public exemplar `src/` trees; confirm live figures in [`docs/_generated/COUNTS.md`](../docs/_generated/COUNTS.md) |
+| **Optional service skipping** | `@pytest.mark.requires_ollama` for graceful degradation |
+
+```bash
+# Mirror CI locally
+uv run pytest tests/infra_tests/ --cov=infrastructure --cov-fail-under=60 -m "not requires_ollama"
+uv run pytest projects/templates/template_code_project/tests/ --cov-fail-under=90 -m "not requires_ollama"
+python scripts/audit/verify_no_mocks.py
+```
+
+See [docs/development/testing/](../docs/development/testing/) and [docs/guides/testing-and-reproducibility.md](../docs/guides/testing-and-reproducibility.md).
+
+---
+
+<a id="documentation-hub"></a>
+
+## 📚 Documentation Hub
+
+```mermaid
+graph TD
+    subgraph Core["📂 Core — Start Here"]
+        HOW[how-to-use.md]
+        WORK[workflow.md]
+        ARCH[architecture.md]
+    end
+
+    subgraph Build["🏗️ Architecture"]
+        TLA[two-layer-architecture.md]
+        THIN[thin-orchestrator-summary.md]
+        DECIDE[decision-tree.md]
+    end
+
+    subgraph Learn["📖 Guides"]
+        START[getting-started.md]
+        NEW[new-project-setup.md]
+        TEST[testing-and-reproducibility.md]
+        FIG[figures-and-analysis.md]
+    end
+
+    subgraph Enforce["📏 Rules"]
+        TSTD[testing_standards.md]
+        CODE[code_style.md]
+        DOC[documentation_standards.md]
+    end
+
+    subgraph Operate["🔧 Operational"]
+        BUILD[build/]
+        CONF[config/]
+        TROUBLE[troubleshooting/]
+    end
+
+    HOW -->|"Deep dive"| TLA
+    HOW -->|"First run"| START
+    WORK -->|"Stage details"| BUILD
+    ARCH -->|"Pattern"| THIN
+    START -->|"Add project"| NEW
+    NEW -->|"Write tests"| TEST
+    TEST -->|"Standards"| TSTD
+    FIG -->|"Style"| DOC
+
+    classDef core fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef build fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef learn fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef enforce fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef operate fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class Core core
+    class Build build
+    class Learn learn
+    class Enforce enforce
+    class Operate operate
+```
+
+The `docs/` directory spans many files across multiple subdirectories — see [**docs/documentation-index.md**](../docs/documentation-index.md) for the authoritative live inventory (counts drift; do not hard-code a subdir or file total here). Every subdirectory has its own `README.md` and `AGENTS.md`. Start at [**docs/README.md**](../docs/README.md).
+
+### 📂 Core (`docs/core/`)
+
+Essential start-here docs — read these first.
+
+| File | Purpose |
+| --- | --- |
+| [how-to-use.md](../docs/core/how-to-use.md) | Step-by-step usage guide for the full system |
+| [workflow.md](../docs/core/workflow.md) | Pipeline workflow: stages, flags, modes |
+| [architecture.md](../docs/core/architecture.md) | Two-Layer Architecture overview |
+
+### 🏗️ Architecture (`docs/architecture/`)
+
+Design decisions, patterns, and migration guides.
+
+| File | Purpose |
+| --- | --- |
+| [two-layer-architecture.md](../docs/architecture/two-layer-architecture.md) | Deep dive into the Layer 1 / Layer 2 separation |
+| [thin-orchestrator-summary.md](../docs/architecture/thin-orchestrator-summary.md) | The Thin Orchestrator pattern — why and how |
+| [testing-strategy.md](../docs/architecture/testing-strategy.md) | Testing architecture and Zero-Mock rationale |
+| [decision-tree.md](../docs/architecture/decision-tree.md) | Where does new code go? Decision guide |
+| [migration-from-flat.md](../docs/architecture/migration-from-flat.md) | Migrating a flat repo to the Two-Layer model |
+
+### 📖 Guides (`docs/guides/`)
+
+Progressive tutorials from first project to advanced automation.
+
+| File | Purpose |
+| --- | --- |
+| [getting-started.md](../docs/guides/getting-started.md) | First-time setup and first pipeline run |
+| [new-project-setup.md](../docs/guides/new-project-setup.md) | Full checklist for adding a new project |
+| [figures-and-analysis.md](../docs/guides/figures-and-analysis.md) | Generating, registering, and embedding figures |
+| [testing-and-reproducibility.md](../docs/guides/testing-and-reproducibility.md) | Writing real tests, coverage, markers |
+| [extending-and-automation.md](../docs/guides/extending-and-automation.md) | Customizing the pipeline, adding CI stages |
+
+### 📏 Rules (`docs/rules/`)
+
+Authoritative standards enforced across the codebase.
+
+| File | Purpose |
+| --- | --- |
+| [testing_standards.md](../docs/rules/testing_standards.md) | Zero-Mock policy, coverage thresholds, markers |
+| [code_style.md](../docs/rules/code_style.md) | Ruff config, formatting, naming conventions |
+| [documentation_standards.md](../docs/rules/documentation_standards.md) | AGENTS.md / README.md duality requirements |
+| [manuscript_style.md](../docs/rules/manuscript_style.md) | Chapter structure, figure captions, citations |
+| [api_design.md](../docs/rules/api_design.md) | Module API conventions, dataclass patterns |
+| [error_handling.md](../docs/rules/error_handling.md) | Exception hierarchy, pipeline flow control |
+| [security.md](../docs/rules/security.md) | Dependency pinning, secrets management |
+| [llm_standards.md](../docs/rules/llm_standards.md) | Ollama integration, prompt templates, markers |
+| [python_logging.md](../docs/rules/python_logging.md) | Structured logging via `get_logger` |
+| [type_hints_standards.md](../docs/rules/type_hints_standards.md) | mypy-compatible type annotation requirements |
+| [infrastructure_modules.md](../docs/rules/infrastructure_modules.md) | Module API contracts and extension patterns |
+| [git_workflow.md](../docs/rules/git_workflow.md) | Branch strategy, commit conventions, PRs |
+| [folder_structure.md](../docs/rules/folder_structure.md) | Directory layout invariants |
+
+### 🔧 Operational (`docs/operational/`)
+
+Build, config, logging, and troubleshooting.
+
+| Directory / File | Purpose |
+| --- | --- |
+| [build/](../docs/operational/build/) | Build system internals and stage details |
+| [config/](../docs/operational/config/) | `config.yaml` reference, environment variables |
+| [logging/](../docs/operational/logging/) | Logging configuration, log levels, rotation |
+| [troubleshooting/](../docs/operational/troubleshooting/) | Common errors, rendering issues, coverage gaps |
+| [error-handling-guide.md](../docs/operational/error-handling-guide.md) | Pipeline error handling patterns |
+| [reporting-guide.md](../docs/operational/reporting-guide.md) | Executive reports, coverage JSON, dashboards |
+
+### 📦 Modules (`docs/modules/`)
+
+Infrastructure subpackage documentation.
+
+| File | Purpose |
+| --- | --- |
+| [modules-guide.md](../docs/modules/modules-guide.md) | Overview of infrastructure subpackages |
+| [pdf-validation.md](../docs/modules/pdf-validation.md) | `infrastructure.validation` — PDF integrity checking |
+| [scientific-simulation-guide.md](../docs/modules/scientific-simulation-guide.md) | `infrastructure.scientific` — stability, benchmarking |
+| [guides/](../docs/modules/guides/) | Per-module usage guides |
+
+### 📝 Usage (`docs/usage/`)
+
+Manuscript authoring, style, and content guides.
+
+| File | Purpose |
+| --- | --- |
+| [markdown-template-guide.md](../docs/usage/markdown-template-guide.md) | Chapter structure, frontmatter, Pandoc quirks |
+| [style-guide.md](../docs/usage/style-guide.md) | Voice, tense, academic writing conventions |
+| [manuscript-numbering-system.md](../docs/usage/manuscript-numbering-system.md) | Section/figure/table numbering |
+| [visualization-guide.md](../docs/usage/visualization-guide.md) | Figure accessibility standards (16pt floor, colorblind palettes) |
+| [image-management.md](../docs/usage/image-management.md) | Figure registration, paths, captions |
+| [examples.md](../docs/usage/examples.md) | Worked example manuscript snippets |
+| [examples-showcase.md](../docs/usage/examples-showcase.md) | Gallery of generated figures from exemplar projects |
+
+### 📐 Best Practices (`docs/best-practices/`)
+
+Project hygiene, version control, and multi-project management.
+
+| File | Purpose |
+| --- | --- |
+| [best-practices.md](../docs/best-practices/best-practices.md) | Consolidated best practices across all concerns |
+| [multi-project-management.md](../docs/best-practices/multi-project-management.md) | Managing N projects, discovery rules, isolation |
+| [version-control.md](../docs/best-practices/version-control.md) | Git workflow, tagging, output tracking |
+| [migration-guide.md](../docs/best-practices/migration-guide.md) | Upgrading the template across major versions |
+| [backup-recovery.md](../docs/best-practices/backup-recovery.md) | Output preservation, disaster recovery |
+
+### 🛠️ Development (`docs/development/`)
+
+Contributing, testing internals, roadmap.
+
+| File | Purpose |
+| --- | --- |
+| [contributing.md](../docs/development/contributing.md) | How to contribute — branch, test, PR |
+| [testing/](../docs/development/testing/) | Test writing guide, coverage analysis, patterns |
+| [coverage-gaps.md](../docs/development/coverage-gaps.md) | Known low-coverage modules and improvement plans |
+| [roadmap.md](../docs/development/roadmap.md) | Feature roadmap and planned improvements |
+| [security.md](../docs/development/security.md) | Security disclosure policy |
+| [code-of-conduct.md](../docs/development/code-of-conduct.md) | Community standards |
+
+### Prompts / workflow skills (`docs/prompts/`)
+
+Discoverable agent skills — **hub + 14 workflow directories** — for template-compliant tasks. Invoke in natural language; indexed in [`.cursor/skill_manifest.json`](../.cursor/skill_manifest.json). **Agent router:** [Agent & automation entry point](#agent-automation-entry-point).
+
+Hub and index: [`docs/prompts/SKILL.md`](../docs/prompts/SKILL.md), [`docs/prompts/README.md`](../docs/prompts/README.md), [`docs/prompts/AGENTS.md`](../docs/prompts/AGENTS.md).
+
+| Skill directory | Purpose |
+| --- | --- |
+| [code-development/](../docs/prompts/code-development/SKILL.md) | New modules, algorithms, or utilities |
+| [comprehensive-assessment/](../docs/prompts/comprehensive-assessment/SKILL.md) | Wide audit: tests, docs, manuscript, pipeline |
+| [documentation-creation/](../docs/prompts/documentation-creation/SKILL.md) | AGENTS.md / README.md for a directory |
+| [feature-addition/](../docs/prompts/feature-addition/SKILL.md) | End-to-end feature work across layers |
+| [infrastructure-module/](../docs/prompts/infrastructure-module/SKILL.md) | New or extended `infrastructure/*` packages |
+| [literature-synthesis/](../docs/prompts/literature-synthesis/SKILL.md) | LLM blocks for per-paper and corpus synthesis |
+| [manuscript-claim-verification/](../docs/prompts/manuscript-claim-verification/SKILL.md) | Triple-check every manuscript claim |
+| [manuscript-creation/](../docs/prompts/manuscript-creation/SKILL.md) | New manuscript + project from a research brief |
+| [manuscript-cross-references/](../docs/prompts/manuscript-cross-references/SKILL.md) | Registry/token cross-ref audits |
+| [pipeline-debugging/](../docs/prompts/pipeline-debugging/SKILL.md) | DAG-stage triage when pipeline fails |
+| [refactoring/](../docs/prompts/refactoring/SKILL.md) | Clean-break refactors with migration |
+| [reproducibility-audit/](../docs/prompts/reproducibility-audit/SKILL.md) | Determinism + regenerate-from-clean |
+| [test-creation/](../docs/prompts/test-creation/SKILL.md) | Tests under the no-mocks policy |
+| [validation-quality/](../docs/prompts/validation-quality/SKILL.md) | Validation CLI, gates, output checks |
+
+Regenerate manifest after skill edits: `uv run python -m infrastructure.skills write`.
+
+### 📖 Reference (`docs/reference/`)
+
+API reference, glossary, cheatsheets, and FAQ.
+
+| File | Purpose |
+| --- | --- |
+| [api-reference.md](../docs/reference/api-reference.md) | Public API reference for infrastructure modules |
+| [api-project-modules.md](../docs/reference/api-project-modules.md) | Project-level module patterns and conventions |
+| [glossary.md](../docs/reference/glossary.md) | Definitions for all template-specific terms |
+| [faq.md](../docs/reference/faq.md) | Frequently asked questions |
+| [quick-start-cheatsheet.md](../docs/reference/quick-start-cheatsheet.md) | One-page command reference |
+| [common-workflows.md](../docs/reference/common-workflows.md) | Recipes for common research tasks |
+| [copypasta.md](../docs/reference/copypasta.md) | Copy-paste code snippets for common patterns |
+
+### 🔒 Security (`docs/security/`)
+
+Steganography, hashing, and secure execution.
+
+| File | Purpose |
+| --- | --- |
+| [threat-model.md](../docs/security/threat-model.md) | Repository-wide threat model: assets, attacker model, attack surfaces, threat register |
+| [steganography.md](../docs/security/steganography.md) | Watermarking layers, alpha overlay, QR injection |
+| [hashing_and_manifests.md](../docs/security/hashing_and_manifests.md) | SHA-256/512 hash manifests and tamper detection |
+| [secure_execution.md](../docs/security/secure_execution.md) | `secure_run.sh`, steganography config, output files |
+| [literature-fetch-security.md](../docs/security/literature-fetch-security.md) | Trust boundaries and hardening for literature fetching |
+| [ownership-and-promotion.md](../docs/security/ownership-and-promotion.md) | Sensitive ownership exceptions and private-project promotion attestation |
+
+### 🔍 Audit And Documentation Gates
+
+Live documentation review and filepath gates.
+
+| File | Purpose |
+| --- | --- |
+| [Live doc linter](../scripts/audit/lint_docs.py) | `uv run python scripts/audit/lint_docs.py` — mermaid + cross-link + consistency (replaces stale audit snapshots) |
+
+### 🚀 Top-Level Docs
+
+| File | Purpose |
+| --- | --- |
+| [docs/README.md](../docs/README.md) | Documentation hub index and navigation |
+| [docs/AGENTS.md](../docs/AGENTS.md) | Technical guide for the `docs/` tree |
+| [docs/documentation-index.md](../docs/documentation-index.md) | Full inventory of documentation files (authoritative count) |
+| [docs/RUN_GUIDE.md](../docs/RUN_GUIDE.md) | Complete run guide: modes, flags, troubleshooting |
+| [docs/CLOUD_DEPLOY.md](../docs/CLOUD_DEPLOY.md) | Cloud deployment guide (AWS, GCP, Azure, Docker) |
+| [docs/PAI.md](../docs/PAI.md) | Personal AI Infrastructure integration guide |
+
+### 🔧 Maintenance (`docs/maintenance/`)
+
+Long-horizon viability — toolchain migration, local CI, archival targets, regression testing.
+
+| File | Purpose |
+| --- | --- |
+| [docs/maintenance/README.md](../docs/maintenance/README.md) | Maintenance hub index |
+| [docs/maintenance/ci-local.md](../docs/maintenance/ci-local.md) | Reproduce GitHub Actions with `act` / [`scripts/shell/ci_local.sh`](../scripts/shell/ci_local.sh) |
+| [docs/maintenance/regression-testing.md](../docs/maintenance/regression-testing.md) | Pinned numerical outputs for claim binding |
+| [docs/maintenance/archival-targets.md](../docs/maintenance/archival-targets.md) | Stage 16 Zenodo / Software Heritage / IPFS |
+| [docs/maintenance/private-projects-repo.md](../docs/maintenance/private-projects-repo.md) | Private `active/` / `working/` / `published/` / `archive/` / `other/` lifecycle |
+| [docs/maintenance/stage-10-executable-bundle.md](../docs/maintenance/stage-10-executable-bundle.md) | Opt-in Stage 15 executable bundle stage |
+
+### 📋 Repo meta (root)
+
+| File | Purpose |
+| --- | --- |
+| [STATUS.md](../STATUS.md) | Per-subsystem manual E2E verification ledger |
+| [MAINTAINERS.md](../MAINTAINERS.md) | Ownership and contact |
+| [CHANGELOG.md](../CHANGELOG.md) | Template repository (Layer 1) release history |
+| [.pre-commit-config.yaml](../.pre-commit-config.yaml) | Local Ruff, mypy, Bandit, pre-push gates |
+
+---
+
+<a id="cicd"></a>
+
+## 🔧 CI/CD
+
+### Workflows
+
+| Workflow | Trigger | Purpose |
+| --- | --- | --- |
+| [`ci.yml`](workflows/ci.yml) | main push, pull request, or manual | Linux/Python 3.14 functional checks, public project wheel builds and focused behavioral tests, with required `CI Gate` |
+| [`hardening.yml`](workflows/hardening.yml) | manual only | **20 jobs** (2 conditional · manual-only lanes · 1 aggregation gate) — see the full table below |
+| [`stale.yml`](workflows/stale.yml) | Daily schedule | Close inactive issues/PRs (`actions/stale`) |
+| [`release.yml`](workflows/release.yml) | `v*.*.*` tag · manual dispatch | Exact-tag gates, root 4+ full required-acceptance handoff, installed-wheel matrix, rendered evidence, and release build |
+| [`platform-required-acceptance.yml`](workflows/platform-required-acceptance.yml) | manual only | Original Root/common/native observations and strict complete candidate handoff; implementation presence is not acceptance or publication proof |
+| [`dependabot-automerge.yml`](workflows/dependabot-automerge.yml) | `pull_request_target` (Dependabot only) | Auto-merge safe (minor/patch) Dependabot PRs after all required checks pass |
+
+### CI Jobs (`hardening.yml`) — complete inventory
+
+The repo-wide `permissions:` is `contents: read`; every job re-declares its own minimal scope. **Conditional jobs are gated by the `detect` job's outputs** — *not* by a job-level `hashFiles()` (that is invalid in a job-level `if:` and rejects the entire workflow at parse time).
+
+| # | Job (`id`) | `needs` | Runs when | Purpose |
+| - | --- | --- | --- | --- |
+| 1 | `detect` | — | always | Emits presence flags (`setup_hook`, `fep_lean`) for optional jobs |
+| 2 | `detect-projects` | — | always | Validates the versioned public capability manifest and emits its exact project/Python matrix |
+| 3 | `actionlint` | — | always | Validates GitHub Actions workflow syntax |
+| 4 | `lint` | — | always | Ruff, mypy, exports, generated-artifact, and four-pool confidentiality gates |
+| 5 | `health` | — | always | Blocking unified static-health report; behavioral/platform matrices remain separate |
+| 6 | `verify-no-mocks` | — | always | Enforces prohibited mock-framework syntax and zero semantic dependency replacements (runs in parallel with `lint`) |
+| 7 | `setup-hook-windows-smoke` | `verify-no-mocks`, `detect` | `needs.detect.outputs.setup_hook == 'true'` | Windows smoke test of `projects/**/scripts/setup_hook.py` |
+| 8 | `test-infra` | `verify-no-mocks`, `detect-projects` | always | Infra suite, matrix Ubuntu × Py 3.12/3.13/3.14 + macOS × Py 3.14 (16 blocking cells), unchanged marker/deadline policy and `UV_PYTHON`-bound runtime; four instrumented 3.14/Linux shards feed `coverage-infra` |
+| 9 | `test-regression` | `verify-no-mocks` | always | Claim-binding numerical regression tier |
+| 10 | `test-project` | `verify-no-mocks`, `detect-projects` | always | Capability-manifest project/Python matrix with `UV_PYTHON`-bound moving patches; each project enforces its own ≥90 floor |
+| 11 | `fep-lean` | `verify-no-mocks`, `detect` | `needs.detect.outputs.fep_lean == 'true'` | Lean-toolchain project build + tests (`--cov-fail-under=89` rotating exception) |
+| 12 | `validate` | — | always | Manuscript/output validation (`infrastructure.validation.cli`) |
+| 13 | `security` | — | always | Frozen dependency audit plus Bandit over the generated public source scope |
+| 14 | `docs-lint` | — | always | Mermaid render + relative-link resolution + doc-pair + consistency |
+| 15 | `performance` | `test-infra`, `test-project` | always | Benchmarks + coverage-history dashboard (informational) |
+| 16 | `public-matrix-receipt` | — | manual dispatch | Uploads the public-matrix coverage receipt artifact (fail-closed output-drift) |
+| 17 | `test-infra-slow` | `verify-no-mocks` | manual dispatch | Slow-marked infra suite lane (`pytest.mark.slow`) that the push/PR lanes deselect |
+| 18 | `test-integration` | `verify-no-mocks` | always | Registered `tests/integration/` suite (`run.sh` + pipeline CLI) on manual full-suite runs |
+| 19 | `coverage-infra` | `test-infra` | always | Complete Python 3.14/Linux branch-coverage union; missing/stale/overlapping/tampered selections refuse merge, ≥60% is required |
+| 20 | `ci-gate` | all upstream jobs (`if: always()`) | always | Aggregation gate — fails if any upstream job failed or was cancelled (skipped counts as intentional) |
+
+**Required status checks** for branch protection on `main` are documented in [`AGENTS.md`](AGENTS.md) (the conditional jobs `setup-hook-windows-smoke` / `fep-lean` must NOT be required — they are skipped, not failed, when their project is absent). Reproduce every gate locally with the commands in [`AGENTS.md`](AGENTS.md) → "Local CI parity" and the root [`CLAUDE.md`](../CLAUDE.md) Quick Reference.
+
+### CI Job Flow
+
+```mermaid
+flowchart TB
+    D[detect — presence flags]
+    DP[detect-projects — validated capability matrix]
+    AL[actionlint — standalone]
+    L[lint + type check]
+    H[health — blocking static report]
+    VNM[verify-no-mocks — parallel with lint]
+    SH[setup-hook windows — conditional]
+    TI[test-infra matrix · four complete module shards per environment]
+    IC[coverage-infra · complete union ≥60%]
+    TR[test-regression — claim-binding pins]
+    TP[test-project matrix]
+    FL[fep-lean — conditional]
+    VM[validate manuscripts]
+    SS[security scan]
+    DL[docs lint]
+    PC[performance — informational]
+    L --> H
+    L --> VM
+    L --> SS
+    L --> DL
+    VNM --> TI
+    VNM --> TR
+    VNM --> TP
+    VNM --> SH
+    VNM --> FL
+    D -. setup_hook .-> SH
+    D -. fep_lean .-> FL
+    DP --> TP
+    TI --> IC
+    TP --> PC
+```
+
+See [`workflows/AGENTS.md`](workflows/AGENTS.md) for step-level detail (`pip-audit` ignore file, `bandit.yaml`, `stage_01_test.py`).
+
+### Quality Gates
+
+| Gate | Tool | Threshold |
+| --- | --- | :---: |
+| Code style | Ruff | zero violations |
+| Formatting | Ruff | zero diffs |
+| Type safety | mypy strict gate | zero errors across the generated public source scope |
+| Mock-framework syntax | `verify_no_mocks.py` | zero prohibited imports/calls |
+| Exports audit | `infrastructure.skills check-all-exports` | zero violations |
+| Infra coverage | pytest-cov | **≥ 60%** |
+| Project coverage | pytest-cov | **≥ 90%** |
+| pip-audit | blocking | zero unignored vulns in the root and every canonical public-exemplar export |
+| Security | Bandit `-c bandit.yaml` MEDIUM+ | zero findings |
+| Docs lint | `scripts/audit/lint_docs.py` | Mermaid, links, consistency, and doc pairs clean |
+| Performance | import timer | **≤ 5 s** |
+
+### Simulate CI Locally
+
+**One command (act + fallback):** [`scripts/shell/ci_local.sh`](../scripts/shell/ci_local.sh) — see [`docs/maintenance/ci-local.md`](../docs/maintenance/ci-local.md).
+
+```bash
+# Lint + format check (mirror CI)
+uv run python -m infrastructure.project.public_scope lint-paths | xargs uv run ruff check
+uv run python -m infrastructure.project.public_scope lint-paths | xargs uv run ruff format --check
+uv run python -m infrastructure.project.public_scope source-paths | xargs uv run mypy
+
+# Tests (skip Ollama-requiring tests)
+uv run pytest tests/infra_tests/ --cov=infrastructure --cov-fail-under=60 -m "not requires_ollama"
+uv sync
+npm ci
+export PATH="$PWD/node_modules/.bin:$PATH"
+COVERAGE_FILE=.coverage.project uv run python scripts/pipeline/stage_01_test.py --project-only --all-projects --public-projects --non-strict --include-slow
+
+# Security (mirror CI)
+IGNORE_ARGS=()
+while IFS= read -r raw || [ -n "$raw" ]; do
+  [[ "$raw" =~ ^[[:space:]]*# ]] && continue
+  line="${raw%%#*}"; line="$(echo "$line" | xargs)"
+  [ -z "$line" ] || IGNORE_ARGS+=(--ignore-vuln "$line")
+done < .github/pip-audit-ignore.txt
+uv run pip-audit "${IGNORE_ARGS[@]}"
+uv run bandit -c bandit.yaml -r -ll infrastructure/ scripts/ projects/
+
+# Pre-push hook bundle (fast local gate)
+pre-commit run --hook-stage pre-push --all-files
+```
+
+### Branch Protection
+
+Verified against GitHub on 2026-10-03: `main` is protected and requires
+**`CI Gate`** from GitHub Actions (app ID `15368`), with administrator enforcement
+enabled, force pushes disabled, and `strict: false`. GitHub currently has no
+required PR-approval or CODEOWNERS-approval rule and reported no additional
+branch rulesets. Recheck these external settings before integration.
+
+`CI Gate` requires every fast functional job in [`workflows/ci.yml`](workflows/ci.yml)
+to succeed. The manual full matrix reports a distinct `Hardening Gate`. Verify its
+success for the exact candidate commit before updating `main`. Complete root 4+
+release acceptance remains a separate handoff. [`CODEOWNERS`](CODEOWNERS) routes
+reviews, while the repository's sensitive-area review obligations remain in
+[`sensitive-ownership.yaml`](sensitive-ownership.yaml); see
+[`AGENTS.md`](AGENTS.md#branch-protection) for the full operating boundary.
+
+| Secret | Required for |
+| --- | --- |
+| `CODECOV_TOKEN` | Coverage upload to Codecov (optional) |
+
+---
+
+<a id="issue--pr-templates"></a>
+
+## 📋 Issue & PR Templates
+
+### Issues → [New Issue](https://github.com/docxology/template/issues/new/choose)
+
+| Template | Labels | Best for |
+| --- | --- | --- |
+| [🐛 Bug Report](ISSUE_TEMPLATE/bug_report.md) | `bug` · `needs-triage` | Reproducible errors with log output and pipeline stage |
+| [✨ Feature Request](ISSUE_TEMPLATE/feature_request.md) | `enhancement` · `needs-triage` | New capabilities with priority and alternatives |
+| [📝 Documentation](ISSUE_TEMPLATE/documentation.md) | `documentation` · `needs-triage` | Incorrect, missing, or outdated docs with file paths |
+
+> 💬 **Questions?** Use [GitHub Discussions](https://github.com/docxology/template/discussions) — blank issues are disabled.
+
+### PR Checklist → [PULL_REQUEST_TEMPLATE.md](PULL_REQUEST_TEMPLATE.md)
+
+- ✅ Linked issue · type-of-change label · pipeline stage(s) affected
+- ✅ Test evidence — local run confirmation with pass rates
+- ✅ **Zero-Mock confirmation** — no `MagicMock` / `mocker.patch`
+- ✅ Thin Orchestrator compliance — no logic in scripts
+
+---
+
+## 📦 Dependency Management
+
+[`dependabot.yml`](dependabot.yml) — weekly automated PRs:
+
+| Ecosystem | Group | Max PRs |
+| --- | --- | :---: |
+| GitHub Actions | all minor/patch batched | 5 |
+| Python (uv) | `dev-tools` (pytest, mypy, ruff…) | 5 |
+| Python (uv) | `scientific-core` (numpy, scipy…) | 5 |
+
+Auto-merge for safe (minor/patch) Dependabot PRs is enabled by
+[`workflows/dependabot-automerge.yml`](workflows/dependabot-automerge.yml) —
+it triggers on `pull_request_target` for Dependabot PRs only, enables GitHub
+native auto-merge (`gh pr merge --auto --squash`), and never checks out or
+executes PR HEAD code. Major bumps are left for human review. Auto-merge must
+also be enabled in repository settings.
+
+Each JavaScript action declares its runtime in the pinned `action.yml`; consult that revision's documentation for self-hosted runner requirements.
+The pinned [checkout](https://raw.githubusercontent.com/actions/checkout/3d3c42e5aac5ba805825da76410c181273ba90b1/action.yml) and [release](https://raw.githubusercontent.com/softprops/action-gh-release/efb35369e0ad2afab669f228072c1b0d510eae64/action.yml) actions declare `runs.using: node24`.
+Separately, [`setup-docs-lint`](actions/setup-docs-lint/action.yml) selects Node `24.22.0` for documentation tools and the native Mermaid 11 profile; this toolchain selection is independent of the JavaScript action runtime.
+
+---
+
+<a id="troubleshooting"></a>
+
+## 🔍 Troubleshooting
+
+```bash
+# CI status
+gh run list --workflow=CI --limit=5
+gh run view <run-id> --log-failed
+gh run rerun <run-id> --failed
+
+# Fix lint locally
+uv run python -m infrastructure.project.public_scope lint-paths | xargs uv run ruff check --fix
+uv run python -m infrastructure.project.public_scope lint-paths | xargs uv run ruff format
+```
+
+Common issues: [docs/operational/troubleshooting/](../docs/operational/troubleshooting/) · [docs/reference/faq.md](../docs/reference/faq.md).
+
+---
+
+<div align="center">
+
+**[🤖 Agent entry](#agent-automation-entry-point)** · **[📖 AGENTS.md](../AGENTS.md)** · **[⌨️ CLAUDE.md](../CLAUDE.md)** · **[🚀 Run Guide](../docs/RUN_GUIDE.md)** · **[📐 Architecture](../docs/architecture/two-layer-architecture.md)** · **[📋 Rules](../docs/rules/)** · **[🔧 CI AGENTS.md](AGENTS.md)** · **[📊 STATUS](../STATUS.md)** · **[🐛 Issues](https://github.com/docxology/template/issues)** · **[💬 Discussions](https://github.com/docxology/template/discussions)**
+
+*Reproducibility as architecture, not afterthought.*
+
+</div>
+
+The infrastructure partition changes execution placement only. The required `coverage-infra` job consumes every 3.14/Linux shard, validates their complete disjoint case union and source/data identities, and enforces the unchanged 60% floor. The existing `ci-gate` complete-job policy includes this job; an unsuccessful or skipped merge prevents exhaustive hardening acceptance. Root 4 release evidence remains separately required.

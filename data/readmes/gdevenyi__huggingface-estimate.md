@@ -1,0 +1,110 @@
+<p align="center"><img src="logo.svg" width="128" height="128" alt="GGUF Memory Estimator logo"></p>
+
+<h1 align="center">GGUF Memory Estimator</h1>
+
+<p align="center">Estimate VRAM and RAM requirements for any GGUF model from HuggingFace — no download required.</p>
+
+<p align="center"><a href="http://gabriel.devenyi.ca/huggingface-estimate"><strong>Try it live &rarr;</strong></a></p>
+
+## Quick start
+
+### Browser
+
+```bash
+cd huggingface-estimate
+python3 -m http.server 8000
+```
+
+Open `http://localhost:8000`. Enter a HuggingFace path (e.g. `bartowski/Llama-3.1-8B-Instruct-GGUF`) and the tool finds the `.gguf` files, parses metadata via HTTP Range requests, and computes memory estimates.
+
+**Note:** Must be served via HTTP — `file://` blocks the CORS headers needed to fetch GGUF metadata from HuggingFace.
+
+### CLI
+
+```bash
+node run-calc.js bartowski/Llama-3.1-8B-Instruct-GGUF --ctx 8192 --kvTypeK Q8_0
+node run-calc.js unsloth/Qwen3-30B-A3B-GGUF --ctx 8192 --vram 24 --ram 64
+node run-calc.js --batch test/baseline.list
+```
+
+Options: `--ctx N`, `--batchSize N`, `--kvTypeK TYPE`, `--kvTypeV TYPE`, `--vram GB`, `--ram GB`, `--mmproj FILE`, `--mmprojDevice vram|ram`. Passing `--vram` / `--ram` adds a fit check to the JSON output. Batch file has one HF repo per line (`#` for comments). KV cache types include F16, F32, BF16, Q8_0, Q4_0, Q4_1, IQ4_NL, Q5_0, Q5_1 (standard), Q6_0, Q8_KV (ik_llama.cpp), TURBO2_0/3_0/4_0 (turboquant), PLANAR3_0/4_0, ISO3_0/4_0 (rotorquant), and TQ3_0 (tq3).
+
+Performance flags: `--gpu <name>` (e.g. `"RTX 4090"`, matches `gpu-data.json`), `--cpu <name>` (e.g. `"Ryzen 9 7950X"`, matches `hardware-presets.js`), `--gpu-flops`, `--gpu-bw`, `--cpu-flops`, `--ram-bw` (manual overrides), `--ngl <n|auto>` (GPU layer count; auto uses `--vram`), `--cpu-moe` (llama.cpp `-cmoe`: all MoE expert weights → CPU), `--n-cpu-moe N` (llama.cpp `-ncmoe`: expert weights of first N layers → CPU). Supplying any GPU spec enables a `performance` block in the JSON output with decode/prefill/TTFT and layer split (`gpu` / `hybrid` / `cpu`).
+
+## What it calculates
+
+| Component | Where | Details |
+|-----------|-------|---------|
+| **Model weights** | Dense: VRAM / MoE: VRAM by default, expert weights spillable to RAM via `--cpu-moe` / `--n-cpu-moe` | Sum of all tensor sizes from GGUF metadata, exact bytes-per-element per quantization type |
+| **KV cache** | VRAM | Separate K and V quantization. `layers × kv_heads × head_size × context × bytes_per_elem` per cache |
+| **Activations** | VRAM | `layers × batch × (hidden + ff_size) × 4` bytes (FP32). For MoE, uses `expert_used_count × expert_ff_size` |
+| **Multimodal projector (mmproj)** | VRAM default, RAM with `--no-mmproj-offload` | Weights + per-image output activation (`n_output_tokens × projection_dim × 4` bytes). `n_output_tokens` is arch-specific, mirroring `clip_n_output_tokens()` from llama.cpp |
+| **Tokens/sec throughput** | Supply a GPU preset (+ optional CPU for spill) | Per-layer speed-of-light: `t_layer = max(FLOPs/FLOPS, bytes/BW)` on whichever device hosts the layer. Decode TPS = `1 / Σ t_layer`. Prefill scales FLOPs by `ctx`; TTFT is its wall time. Dense VRAM spill becomes `n_gpu` / `n_cpu` layer partitioning, MoE uses active-expert streaming. **This is a theoretical upper bound** — real llama.cpp runs typically hit 40–70% of SOL. Upgrade lever is named via `bottleneck`: `compute` / `bandwidth` / `cpu-dram-spill` |
+
+## Hardware presets
+
+GPU and CPU presets are split into desktop, mobile, and server groups per vendor in the dropdown. Data center GPUs (A100, H100, B200, Instinct MI, etc.) appear under `"<Vendor> (server)"`. Laptop/mobile GPUs and CPUs (Arc M-suffix, Radeon RX M/S-suffix, Ryzen U/H/HS/HX) appear under `"<Vendor> (mobile)"`. Apple Silicon is shown under `"Apple (mobile)"`. Dual-form-factor CPUs (e.g. Ryzen AI 9 HX 475, used in both laptops and small desktops) appear in both desktop and mobile groups.
+
+## Multimodal projector (mmproj) support
+
+When a HuggingFace repo contains both a language-model GGUF and an `mmproj-*.gguf` companion (vision/audio encoder), the tool detects and lists mmproj files separately from the main-model dropdown. Pick "None" to ignore, or select one to fold its memory contribution into the VRAM or RAM total (toggle via the placement select). The CLI exposes the same via `--mmproj <filename>` and `--mmprojDevice vram|ram`. Detection is filename-based (`/mmproj/i` on basename). Activation output tokens are estimated per projector type (gemma3, qwen2vl_merger, resampler, etc.); audio projectors report weights only because their patch count depends on runtime audio length.
+
+## Dense vs MoE
+
+Mirrors llama.cpp semantics for layer placement (`llama_params_fit_impl` + `--cpu-moe` / `--n-cpu-moe`):
+
+- **Dense**: all weights + KV + activations in VRAM. With insufficient VRAM, last N layers fit on GPU back-to-front; the rest spill to CPU as whole layers.
+- **MoE default**: all expert weights in VRAM. With insufficient VRAM, the auto-fit (matching llama.cpp's `--fit on`) runs a two-pass algorithm:
+  1. Fill all layers as **hybrid** back-to-front (non-expert weights + KV in VRAM, expert weights in RAM, expert matmul on CPU).
+  2. Convert hybrid layers to full (experts back into VRAM) front-to-back until VRAM is exhausted.
+  Sparse routing means only `expert_used_count / expert_count` experts are read per token regardless of where they live.
+- **`--cpu-moe`**: forces ALL expert weights to RAM. Pass 2 above is skipped — every MoE layer stays hybrid.
+- **`--n-cpu-moe N`**: forces expert weights of layers 0..N-1 to RAM. Pass 2 still upgrades the other layers when VRAM allows.
+
+Per-token bandwidth/compute (the `performance` block) always uses `activeExpertWeightBytes` for the expert portion regardless of where experts live.
+
+## Example: Qwen3.5-35B-A3B (MoE, 256 experts, 8 active) on RTX 4090 / 24 GB
+
+| Mode | Layer split | Decode tok/s |
+|------|-------------|--------------|
+| Default (`--fit on`) | 12 GPU + 28 hybrid | ~44 |
+| `--cpu-moe` | 0 GPU + 40 hybrid | ~34 |
+| `--ngl 40` (force full) | 40 GPU (won't actually fit — 64 GiB needed) | ~144 |
+
+Default beats `--cpu-moe` because pass 2 promotes 12 layers to full GPU, while `--cpu-moe` forces every layer to keep experts on CPU.
+
+## Supported architectures
+
+89 architectures:
+
+llama, deepseek2 (MLA), minicpm3, plm, kimi-linear, gemma4, gpt-oss (ISWA), llama4 (ISWA), qwen3moe, qwen35moe, qwen2, qwen3, qwen35, qwen3next, qwen2vl, qwen3vl, gemma3, gemma2, olmo2, phi3, granite, granitehybrid, mistral3, mistral4, glm4, falcon-h1, deci, cohere2, smollm3, ernie4_5, grok, gemma-embedding, nemotron_h, lfm2, minimax-m2, seed_oss, apertus, dots1, flux, ltxv, lumina2, qwen_image, wan, acestep-lm, t5encoder, mimo2, hunyuan-dense, exaone4, plamo3, smallthinker, qwen2moe, modern-bert, bert, nomic-bert, nomic-bert-moe, neo-bert, jina-bert-v2, jina-bert-v3, eurobert, wavtokenizer-dec, dream, llada, llada-moe, rnd1, mamba, mamba2, rwkv6, rwkv6qwen2, rwkv7, arwkv7, jamba, plamo2, qwen3vlmoe, bailingmoe2, nemotron_h_moe, dbrx, grovemoe, ernie4_5_moe, hunyuan_moe, lfm2_moe, afmoe, deepseek, deepseek2-ocr, bailingmoe, exaone-moe, step35, glm4moe, glm-dsa, gemma3n
+
+## Quantization types
+
+106 types supported across 5 forks (34 standard + 60 ik_llama.cpp + 5 turboquant + 4 rotorquant + 3 tq3). 19 KV cache quantization types.
+
+**Standard (34):** F32, F16, BF16, Q4_0, Q4_1, Q5_0, Q5_1, Q8_0, Q8_1, Q2_K, Q3_K, Q4_K, Q5_K, Q6_K, Q8_K, IQ1_S, IQ2_S, IQ2_XS, IQ2_XXS, IQ3_S, IQ3_XXS, IQ4_NL, IQ4_XS, IQ1_M, TQ1_0, TQ2_0, MXFP4, NVFP4, Q1_0, I8, I16, I32, I64, F64
+
+**ik_llama.cpp extensions (60):** I2_S (MS BitNet ternary), Q6_0, Q8_KV, Q8_KV_R8, Q8_K_R16 (KV cache), Q8_K64, Q8_K16, Q8_K32, Q8_KR8, Q8_K128, Q8_K_R8, Q8_0_X4, Q8_1_X4, Q8_2_X4, Q4_0_4_4, Q4_0_4_8, Q4_0_8_8, IQ1_BN, IQ2_BN, IQ2_K, IQ3_K, IQ4_K, IQ5_K, IQ6_K, IQ4_KS, IQ2_KS, IQ4_KSS, IQ5_KS, IQ2_KT, IQ3_KT, IQ4_KT, IQ3_KS, IQ2_KL, IQ1_KT, Q4_0_R8, Q5_0_R4, Q8_0_R8, Q2_K_R4, Q3_K_R4, Q4_K_R4, Q5_K_R4, Q6_K_R4, IQ2_XXS_R4, IQ2_XS_R4, IQ3_XXS_R4, IQ1_S_R4, IQ4_NL_R4, IQ3_S_R4, IQ2_S_R4, IQ4_XS_R8, IQ1_M_R4, Q6_0_R4, IQ2_BN_R4, IQ2_K_R4, IQ3_K_R4, IQ4_K_R4, IQ5_K_R4, IQ4_KS_R4, IQ5_KS_R4, BF16_R16
+
+**turboquant (5):** TURBO2_0, TURBO3_0, TURBO4_0 (KV cache), TQ3_1S, TQ4_1S (weights)
+
+**rotorquant (4):** PLANAR3_0, PLANAR4_0, ISO3_0, ISO4_0 (KV cache; rotorquant is a superset of turboquant and also supports all turboquant types)
+
+**tq3 (3):** TQ3_0 (KV cache only, 3.5 bpw), TQ3_1S (weight, 4.0 bpw), TQ3_4S (weight, 4.0 bpw). IDs 44 and 46 collide with turboquant — fork-aware detection resolves the correct BPE at parse time.
+
+## Resources
+
+The following resources were used in building this tool:
+
+- https://github.com/ggml-org/llama.cpp
+- https://github.com/ikawrakow/ik_llama.cpp
+- https://github.com/johndpope/llama-cpp-turboquant
+- https://github.com/TheTom/llama-cpp-turboquant
+- https://github.com/turbo-tan/llama.cpp-tq3
+- CSVs from all pages here https://www.amd.com/en/products/specifications.html
+- https://www.kaggle.com/datasets/ellimaaac/gpus-specs-from-1986-to-2026
+
+## See also
+
+- [`AGENTS.md`](AGENTS.md) — Developer notes: adding architectures, BigInt gotchas, tensor matching patterns

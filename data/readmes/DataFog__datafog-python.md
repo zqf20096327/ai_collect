@@ -1,0 +1,289 @@
+﻿# DataFog Python
+
+DataFog is a Python library for detecting and redacting personally identifiable information (PII).
+
+It provides:
+
+- Fast structured PII detection via regex
+- An offline PII firewall for AI agents: a Claude Code hook and a LiteLLM
+  gateway guardrail (introduced in 4.6)
+- Optional NER support via spaCy and GLiNER
+- A simple agent-oriented API for LLM applications
+- Backward-compatible `DataFog` and `TextService` classes
+
+## Agent & Gateway Firewall
+
+DataFog includes two ready-made enforcement points that catch PII at the
+moment it would leave your machine — offline, in microseconds, with matched
+values never echoed into logs or transcripts:
+
+- **Claude Code hook** (`datafog-hook`): gates agent tool calls (shell
+  commands, web requests, file writes, MCP tools) and warns the model when
+  prompts or tool results carry PII. ~70–90ms per invocation including
+  process startup. Easiest install is the
+  [Claude Code plugin](https://github.com/DataFog/datafog-claude-plugin):
+
+  ```
+  /plugin marketplace add DataFog/datafog-claude-plugin
+  /plugin install datafog@datafog
+  ```
+
+  Manual hook setup and limitations: [examples/claude_code_hook/](examples/claude_code_hook/).
+
+- **LiteLLM guardrail** (`DataFogGuardrail`): redacts or blocks PII in
+  requests and responses at the gateway, for any LiteLLM-proxied provider.
+  In-process (~40µs per message scanned; a request clears the guardrail in
+  well under a millisecond), no sidecar service. Setup:
+  [examples/litellm_guardrail/](examples/litellm_guardrail/).
+
+Both default to the high-precision entity set (`EMAIL`, `PHONE`,
+`CREDIT_CARD`, `SSN`); noisier types are opt-in. Known-safe values can be
+exempted with an allowlist: `scan(text, allowlist=[...])` for exact values,
+`allowlist_patterns=[...]` for full-match regexes (e.g. `^\d{10}$` to stop
+unix timestamps matching as phone numbers) — available in both adapters and
+the API. Presidio-style entity names (`EMAIL_ADDRESS`, `PHONE_NUMBER`,
+`US_SSN`) are accepted as aliases for easy migration.
+
+Every performance number above is reproducible with one command —
+methodology, pinned payloads, and comparisons against Presidio and spaCy
+NER live in [benchmarks/](benchmarks/).
+
+## Installation
+
+```bash
+# Core install (regex engine)
+pip install datafog
+
+# Add spaCy support
+pip install datafog[nlp]
+
+# Add GLiNER + spaCy support
+pip install datafog[nlp-advanced]
+
+# Add local OCR support
+pip install datafog[ocr]
+
+# Add Spark/distributed support
+pip install datafog[distributed]
+
+# Everything
+pip install datafog[all]
+```
+
+The `nlp-advanced` extra includes SentencePiece and protobuf for GLiNER's
+multilingual tokenizer; installing the OCR extra is not required for GLiNER.
+
+Python 3.13 support is certified for the core SDK, CLI, `nlp`,
+`nlp-advanced`, and `ocr` install profiles. Donut OCR still requires a model
+that is available locally before runtime use. `distributed` and `all` remain
+optional, heavier profiles and are not part of the lightweight core path.
+
+Python 3.14 support is certified for the core SDK and CLI. Optional profiles
+remain dependent on upstream Python 3.14 package availability until they are
+covered by the corresponding CI install-profile checks.
+
+## Quick Start
+
+```python
+import datafog
+
+text = "Contact john@example.com or call (555) 123-4567"
+clean = datafog.sanitize(text, engine="regex")
+print(clean)
+# Contact [EMAIL_1] or call [PHONE_1]
+```
+
+## For LLM Applications
+
+```python
+import datafog
+
+# 1) Scan prompt text before sending to an LLM
+prompt = "My SSN is 123-45-6789"
+scan_result = datafog.scan_prompt(prompt, engine="regex")
+if scan_result.entities:
+    print(f"Detected {len(scan_result.entities)} PII entities")
+
+# 2) Redact model output before returning it
+output = "Email me at jane.doe@example.com"
+safe_result = datafog.filter_output(output, engine="regex")
+print(safe_result.redacted_text)
+# Email me at [EMAIL_1]
+
+# 3) One-liner redaction
+print(datafog.sanitize("Card: 4111-1111-1111-1111", engine="regex"))
+# Card: [CREDIT_CARD_1]
+```
+
+## German Structured PII
+
+German structured PII is country-specific and opt-in. Use explicit locale
+selection or entity-type filtering when you want German VAT IDs, German IBANs,
+tax IDs, postal codes, passports, or residence permits.
+
+```python
+import datafog
+
+text = "Steuer-ID 12345678901 liegt vor."
+
+print(datafog.scan(text, engine="regex").entities)
+# []
+
+print(datafog.scan(text, engine="regex", locales=["de"]).entities)
+# [Entity(type='DE_TAX_ID', text='12345678901', ...)]
+```
+
+### Guardrails
+
+```python
+import datafog
+
+# Reusable guardrail object
+guard = datafog.create_guardrail(engine="regex", on_detect="redact")
+
+@guard
+def call_llm() -> str:
+    return "Send to admin@example.com"
+
+print(call_llm())
+# Send to [EMAIL_1]
+```
+
+## Engines
+
+Use the engine that matches your accuracy and dependency constraints:
+
+- `regex`:
+  - Fastest and always available.
+  - Best for default structured entities: `EMAIL`, `PHONE`, `SSN`, `CREDIT_CARD`, `IP_ADDRESS`, `DATE`, `ZIP_CODE` (`DOB` and `ZIP` are accepted as input aliases).
+  - Use `locales=["de"]` for German structured IDs such as `DE_VAT_ID`, `DE_IBAN`, `DE_TAX_ID`, `DE_POSTAL_CODE`, and passport or residence permit numbers.
+- `spacy`:
+  - Requires `pip install datafog[nlp]`.
+  - Useful for unstructured entities like person and organization names.
+- `gliner`:
+  - Requires `pip install datafog[nlp-advanced]`.
+  - Stronger NER coverage than regex for unstructured text.
+- `smart`:
+  - Cascades regex with optional NER engines.
+  - If optional deps are missing, it degrades gracefully and warns.
+
+## Optional OCR And Spark Surfaces
+
+The 4.x line keeps the main package story centered on lightweight text PII
+screening. OCR and Spark remain supported optional surfaces for users who
+already rely on them, but they are not required for the core import, default
+scan/redact helpers, or guardrail helpers.
+
+- OCR:
+  - Install `datafog[ocr]` for local image OCR helpers.
+  - URL-based image downloading also needs `datafog[web,ocr]`.
+  - Tesseract usage requires the system `tesseract` binary.
+  - Python 3.13 is validated for the OCR install profile, Pillow,
+    pytesseract, and system Tesseract smoke checks.
+  - Donut OCR requires `datafog[nlp-advanced,ocr]` and a model already available
+    locally.
+- Spark:
+  - Install `datafog[distributed]` for `SparkService`.
+  - Spark PII UDF helpers also require `datafog[nlp]` and an installed spaCy
+    model.
+  - A Java runtime is required by PySpark.
+
+DataFog 4.9.0 deprecates OCR and Spark with visible use-time
+warnings; their APIs and extras will be removed in 5.0. They remain functional
+in 4.9. Users who need these features can stay on the final 4.x release. See
+the [4.9 migration guide](docs/migration-4.9.md) for the transition plan.
+
+## Backward-Compatible APIs
+
+The existing public API remains available.
+
+### `DataFog` class
+
+```python
+from datafog import DataFog
+
+result = DataFog().scan_text("Email john@example.com")
+print(result["EMAIL"])
+```
+
+### `TextService` class
+
+```python
+from datafog.services import TextService
+
+service = TextService(engine="regex")
+result = service.annotate_text_sync("Call (555) 123-4567")
+print(result["PHONE"])
+```
+
+## CLI
+
+```bash
+# Scan text
+datafog scan-text "john@example.com"
+
+# Redact text
+datafog redact-text "john@example.com"
+
+# Replace text with pseudonyms
+datafog replace-text "john@example.com"
+
+# Hash detected entities
+datafog hash-text "john@example.com"
+
+# Enable German regex identifiers
+datafog redact-text "Steuer-ID 12345678901" --locale de
+```
+
+## Telemetry
+
+DataFog telemetry is disabled by default.
+
+To opt in:
+
+```bash
+export DATAFOG_TELEMETRY=1
+```
+
+To force telemetry off:
+
+```bash
+export DATAFOG_NO_TELEMETRY=1
+# or
+export DO_NOT_TRACK=1
+```
+
+Telemetry does not include input text or detected PII values.
+
+## Development
+
+The [4.9 migration guide](docs/migration-4.9.md) explains opt-in Rust detection,
+the native `datafog.v5` preview, and the revised 5.0 retirement schedule for
+`detect`/`process`, OCR, and Spark. The Python detector remains the default.
+
+The experimental Rust adapter in 4.9.0 requires Core `>=0.4.0,<0.5` and capability
+contract 1. Upgrade with `python -m pip install --upgrade "datafog[rust]==4.9.0"`
+to evaluate it. Base-only users can install `datafog==4.9.0` without Core;
+installing the Rust extra does not change the default backend. See the
+[4.9.0 release notes](RELEASE_NOTES_4.9.0.md).
+Entity labels, locales, and activation settings come from the installed
+Core, allowing compatible releases to add detectors without a Python update.
+German detection is opt-in through locale or entity selection; UUID is opt-in
+through `entity_types=["UUID"]`. Core's structured-only `PERSON` is unavailable
+for explicit Rust text selection. The legacy overlap policy can suppress NPI in
+favor of PHONE; the migration guide explains native alternatives. Lock the Core
+version if detection output must remain reproducible.
+
+The [4.8.1 compatibility contract](docs/migration-4.8.1-contract.md) records
+published Python behavior for the Rust migration, with frozen fixtures and
+instructions for independently reproducing them from the release wheel.
+
+```bash
+git clone https://github.com/datafog/datafog-python
+cd datafog-python
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -e ".[all,dev]"
+pip install -r requirements-dev.txt
+pytest tests/
+```

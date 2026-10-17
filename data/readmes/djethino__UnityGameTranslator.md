@@ -1,0 +1,411 @@
+# Universal Unity Game Translator (Beta)
+
+> **Install in a few clicks with [UnityGameTranslator Manager](https://github.com/djethino/unitygametranslator-manager)** (Windows, Linux, SteamOS) — [download](https://github.com/djethino/unitygametranslator-manager/releases/latest)
+>
+> It finds the Unity games on your PC, tells you if each one is Mono or IL2CPP, installs the right
+> mod loader and the right build of this mod, and shows the community translations already
+> available for that game. No account needed. Uninstalling removes exactly what it installed,
+> nothing else. Prefer to do it by hand? See [Manual installation](#manual-installation).
+
+**Website:** [unitygametranslator.asymptomatikgames.com](https://unitygametranslator.asymptomatikgames.com) — [browse game translations](https://unitygametranslator.asymptomatikgames.com/games) · [user documentation](https://unitygametranslator.asymptomatikgames.com/docs)
+
+A mod that players install into any Unity game to play it in their language — the game doesn't need to support it, and the developer doesn't need to do anything. Use translations shared by the community, or translate live with your own AI: a free local server (Ollama, LM Studio — Vulkan covers NVIDIA, AMD and Intel GPUs) if your machine can run the game and the model together, or any OpenAI-compatible online provider (Groq, Gemini, OpenAI, OpenRouter…), Google Translate or DeepL with your own key. Fully offline with a local AI: no API key, no internet, no cost. Supports all writing systems and any language direction.
+
+<p align="center">
+  <img src="docs/screenshots/one-window.webp" alt="The mod's window in a game: the bar of sections on the left, Translation Tools open on its Tools tab" width="720">
+</p>
+
+> This README covers the technical side (installation details, configuration, self-hosting, building). For the user guide — setup wizard, editors, collaboration, troubleshooting — see the [documentation on the website](https://unitygametranslator.asymptomatikgames.com/docs).
+
+## Features
+
+### Translation Engine
+- **Runtime translation** — text is translated as you encounter it in-game
+- **Multiple backends** — community downloads only, free local AI, or online services with your own key (OpenAI-compatible providers, Google Translate, DeepL)
+- **Instant cache hits** — cached translations apply synchronously with zero latency
+- **Number normalization** — "Kill 5 enemies" and "Kill 10 enemies" share the same translation
+- **Auto language detection** — detects system language as default target
+- **Cross-platform** — Windows, macOS, Linux
+
+### Translation Backends
+
+| Backend | Description |
+|---------|-------------|
+| **AI (LLM)** | Any OpenAI-compatible server — local or cloud (Ollama, LM Studio, Groq, Gemini, OpenAI, OpenRouter, and any other compatible provider) |
+| **Google Translate** | Google Cloud Translation API |
+| **DeepL** | DeepL API (Free and Pro tiers) |
+| **None** | Only use cached/downloaded translations |
+
+### Editing Tools
+- **In-game text editor** — click any UI element, edit its texts in place (saved with the Human tag), or retranslate them with AI. Found in **Translation Tools → Tools → Start Text Editor**
+- **Browser live edit** — open your local translation file in a full web editor while playing: search & replace, filters, quality bar, keyboard review. Every save is hot-reloaded in-game, and new AI translations appear in the browser as you play. No account needed, nothing is published
+- **Private AI retranslation from the browser** — the website only *calls your mod*, which translates with your own locally-configured backend. No API key or LLM configuration ever reaches the website
+
+### Font System
+- Automatic font detection (TextMeshPro, Unity UI.Text, UI Toolkit)
+- Fallback fonts for any writing system — Latin, CJK, Arabic, Devanagari, Cyrillic, Thai, Hebrew, and more
+- **Each text keeps its own font behind the replacement** — a letter the replacement lacks is drawn by that text's original game font, so the untranslated text keeps the game's look
+- **Extract a game's font** — copy a font out of the game's files into `fonts/` (a font the game keeps only as a texture is traced back into a font file), edit it — for example to add the letters your language needs — and use it as a Custom font. Game fonts have their own licences: the copy is for your own use
+- Right-to-left scripts (Arabic, Hebrew, Persian…) — joined letters and right-to-left order in the game's texts, and in what is typed into input fields (UI Text and TextMesh Pro): caret, clicks, selection and arrow keys follow the screen
+- Per-font scaling and enable/disable
+- **Font overrides by pattern** — override size for specific UI elements (tables, titles, tooltips)
+  - Add overrides via inspector click, text search, or manual pattern
+  - Supports recursive patterns (`path:**/TablePanel/**`)
+  - Changes apply at runtime
+
+### UI Exclusions
+- Pattern-based exclusion system for text that shouldn't be translated (chat, player names, etc.)
+- Visual inspector to click and exclude elements
+- Find by text content search
+- Wildcard patterns (`**/ChatPanel/**`, `*/PlayerName`)
+
+### Image/Sprite Replacement
+- Replace text embedded in sprites/images with translated versions
+- Visual inspector to select and export original images
+- Import translated images as replacement
+- Sprite metadata (pivot, borders, PPU) preserved
+
+### Dynamic Variables
+- Extract player name, item stats, and other dynamic values from game objects
+- Placeholder substitution for better cache reuse
+- Variable scanner to discover candidates
+
+### Online Community Features
+- **Community translations** — download [game translations from the website](https://unitygametranslator.asymptomatikgames.com/games)
+- **Automatic game detection** — via Steam ID, product name, or folder
+- **Real-time sync** via SSE (Server-Sent Events) — get updates without restarting
+- **3-way merge** — intelligently merge remote updates with your local changes
+- **Device Flow login** — secure authentication without entering passwords in-game
+- **Upload & share** — share your translations with the community
+- **Mod update checker** — notifications when a new mod version is available; stable releases by default, opt-in for beta (pre-release) builds
+
+### Collaboration System (Main/Branch/Fork)
+
+| Term | Description |
+|------|-------------|
+| **Main** | The reference translation, owned by its creator and public on the website. |
+| **Branch** | Your improvements to someone else's Main, sent to the owner for review. One per user per UUID. |
+| **Fork** | Your own independent translation (new lineage): you become its Main owner, no longer linked to the original. |
+
+**Upload behavior:**
+
+| Situation | Result |
+|-----------|--------|
+| UUID doesn't exist on server | Creates **new Main** |
+| UUID exists, you're the owner | **Updates** your Main |
+| UUID exists, owned by someone else | Creates your **Branch** (the owner reviews and merges) |
+| "Create Independent" / Fork in the mod | New UUID → **new Main** owned by you |
+
+### Translation tags (H/V/A/S)
+
+| Tag | Name | Description |
+|-----|------|-------------|
+| **H** | Human | Written by a human |
+| **V** | Validated | Machine wording a human read and accepted |
+| **A** | AI | Machine wording nobody has read yet |
+| **S** | Skip | A human ruled that this line stays as it is — a fictional language, a proper name, text that must not change. Counts as settled, never as work left to do |
+| **M** | Mod | The mod's own interface. It lives in `modui-translate.json`, beside the translation and never inside it — see below |
+
+### The mod's own interface — `modui-translate.json`
+
+Turning on **Translate mod interface** translates the mod's own buttons and labels. Those lines are
+kept in **`modui-translate.json`**, next to `translations.json` in the same folder, and they are
+**never part of a game translation**: not counted, not merged, not uploaded and not downloaded.
+
+- The file carries the **language** it was written in. Change the game's target language and it is
+  set aside as `modui-translate.<language>.json`; come back to that language and it returns.
+- It also carries the **font** the interface needs (`_settings.ui_font`), so copying the file to
+  another game brings what makes it readable. A font chosen in Options wins over it.
+- Copying it from one game to another is the way to reuse the work — there is no sharing of mod
+  interface translations through the site.
+
+An older file that still holds `M` lines is cleaned up on the next launch: lines written on this
+machine move into the new file, lines that arrived with somebody else's translation are dropped.
+
+The mod shows a **review stage** rather than a mark — `(H + V + S) / (H + V + S + A)`, read as
+"machine translation / review started / well under way / fully reviewed". Every translation begins
+as machine output, which is a starting point and not a failing grade, so there is no scale ending
+at "excellent" to fall short of. A file with nothing translated has no stage at all.
+
+The full set of measures, and who sees each, is published at `/docs`.
+
+**Capture Keys Only mode** — play without translating, capture all text, then translate manually on the website for 100% human translations.
+
+### In-Game Overlay
+
+- **First-run wizard** — guided setup on first launch
+- **Settings hotkey** — Shift+F10 (configurable) opens the mod's window, on the section shown last
+- **One window** — This game, Translation Tools and Mod Options are sections of one window, picked on a bar at its left that folds to icons. Choices not applied are kept when you switch sections, and the window asks before closing with changes not applied. Prefer separate windows? Mod Options › General › Interface › Windows
+- **Free cursor hotkey** (unset by default, Options › Hotkeys) — takes the cursor in games that hide it, so the corner notifications can be clicked; press again to give it back
+- **Translation info** — H/V/A/S distribution, review stage, lines left to review, sync status
+- **Translation Tools** — tabs for Tools (editors), Exclusions, Fonts (Global + Overrides), Images, Variables
+- **Merge panel** — resolve conflicts with per-entry Keep Mine / Take Server choices
+- **Status overlay** — corner notifications for updates, sync, and AI queue
+
+<p align="center">
+  <img src="docs/screenshots/mod-options-translation.webp" alt="Mod Options, Translation tab: a local AI server, its model and the game context" width="640">
+</p>
+
+> **Note:** Only text displayed during gameplay is translated. Play through the game to build the translation cache.
+
+## Installation
+
+### Recommended: UnityGameTranslator Manager
+
+Download it from the
+[UnityGameTranslator Manager releases](https://github.com/djethino/unitygametranslator-manager/releases/latest):
+the `.zip` for Windows (run `UnityGameTranslatorManager.exe`), the `.AppImage` for Linux, SteamOS
+and Bazzite (allow it to run as a program, then open it). Pick your game in the list and press
+**Install**: the mod loader and the matching build of this mod are set up for you.
+It never replaces a mod loader that is already there, and it refuses games that ship an anti-cheat.
+
+On Linux it also does the part a mod loader needs there — see [Linux and SteamOS](#linux-and-steamos).
+On macOS, or if you want to control every file, follow the manual steps below.
+
+### Manual installation
+
+#### 1. Install a mod loader
+
+| Mod Loader | Unity Type | Download |
+|------------|------------|----------|
+| BepInEx 5 | Mono | [GitHub](https://github.com/BepInEx/BepInEx/releases) |
+| BepInEx 6 | Mono or IL2CPP | [Bleeding Edge](https://builds.bepinex.dev/projects/bepinex_be) |
+| MelonLoader | Mono or IL2CPP | [GitHub](https://github.com/LavaGang/MelonLoader/releases) |
+
+**How to identify your game type:**
+- `GameAssembly.dll` (Windows) or `GameAssembly.so` (Linux) in game folder → **IL2CPP**
+- `<Game>_Data/Managed/Assembly-CSharp.dll` → **Mono**
+
+> **Cross-platform:** The mod's DLLs are .NET assemblies that work on Windows, macOS, and Linux.
+
+#### 2. Install UnityGameTranslator
+
+Download the release matching your mod loader from [GitHub Releases](https://github.com/djethino/UnityGameTranslator/releases) and extract to:
+
+| Mod Loader | Extract DLLs to | User data (config, translations, fonts, images) |
+|------------|-----------------|--------------------------------------------------|
+| BepInEx | `<Game>/BepInEx/plugins/UnityGameTranslator/` | Same folder as the DLL |
+| MelonLoader | `<Game>/Mods/` (DLLs directly, **no subfolder**) | `<Game>/UserData/UnityGameTranslator/` |
+
+> **MelonLoader warning:** Do NOT place the DLLs inside `Mods/UnityGameTranslator/`. MelonLoader only scans the root `Mods/` folder and will not find mods inside subdirectories.
+
+### Linux and SteamOS
+
+A mod loader does not start by itself on Linux. UnityGameTranslator Manager sets this up for you;
+by hand, it is one Steam launch option (game → Properties → Launch options):
+
+| The game is | Mod loader | Launch option |
+|---|---|---|
+| a native Linux build | BepInEx | `./run_bepinex.sh %command%` (make `run_bepinex.sh` executable first) |
+| a native Linux build | MelonLoader | `LD_LIBRARY_PATH="<game folder>:$LD_LIBRARY_PATH" LD_PRELOAD="MelonLoader.Bootstrap.so:$LD_PRELOAD" %command%` |
+| a Windows build through Proton | BepInEx | `WINEDLLOVERRIDES="winhttp=n,b" %command%` |
+| a Windows build through Proton | MelonLoader | `WINEDLLOVERRIDES="version=n,b" %command%` |
+
+For a Windows build, install the Windows build of the mod loader. Outside Steam (Heroic, Lutris,
+Bottles), add `WINEDLLOVERRIDES` as an environment variable in the game's settings.
+
+**Steam Deck in Game Mode has no keyboard** to press the key that opens the mod (Shift+F10). Until
+the mod has a way of its own, bind a button to Shift + F10 in the game's controller settings in
+Steam — a back button works well, since games do not see them: set the button to Shift, then add
+F10 as an extra command with the gear icon. The on-screen keyboard (Steam + X) has no F keys.
+
+### First Launch
+
+The mod displays a setup wizard. If you filled in your settings in UnityGameTranslator Manager
+before installing, it writes them into the game and the wizard is skipped.
+1. **Online mode** — enable community features or stay offline
+2. **Settings hotkey** — pick a key to open settings (default: Shift+F10)
+3. **Translation search** — search for existing community translations
+4. **AI setup** — configure translation backend and model (optional)
+
+### Enable translation backend (optional)
+
+By default, the mod only uses cached/downloaded translations. To enable live translation:
+
+#### AI Translation (OpenAI-compatible API)
+
+The mod works with **any server that exposes the OpenAI-compatible API** (`/v1/chat/completions`). This includes local servers, cloud providers, and an ever-growing list of AI platforms.
+
+**Examples (non-exhaustive):**
+
+| Server | URL to enter | API key |
+|--------|-------------|---------|
+| [Ollama](https://ollama.ai/) (local) | `http://localhost:11434` | None |
+| [LM Studio](https://lmstudio.ai/) (local) | `http://localhost:1234` | None |
+| [Groq](https://groq.com/) | `https://api.groq.com/openai` | Required (free tier) |
+| [OpenRouter](https://openrouter.ai/) | `https://openrouter.ai/api` | Required (free tier) |
+| [OpenAI](https://platform.openai.com/) | `https://api.openai.com` | Required |
+| [Google Gemini](https://ai.google.dev/) | `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` | Required (free tier) |
+
+> **URL resolution:** The mod auto-appends `/v1/chat/completions` if the URL doesn't already end with `/completions`. If your provider has a non-standard URL, enter the full path up to `/chat/completions`.
+
+#### Commercial translation APIs
+
+| Provider | Description |
+|----------|-------------|
+| [Google Translate](https://cloud.google.com/translate) | Cloud Translation API |
+| [DeepL](https://www.deepl.com/pro-api) | Free and Pro tiers |
+
+**Setup:** Open the mod (Shift+F10) → Mod Options → Translation tab → select backend → enter URL/key → Test → Enable.
+
+> **Which local model?** A file cannot answer that: models age in weeks, and a name written here
+> would still be advertised long after it stopped being a sensible choice — the one that used to sit
+> in this line had been superseded by its own family, at figures that were never right.
+> The models we have measured, with what each one holds, how long it takes to load, and how much of
+> the mod's instructions it followed, are listed in
+> [the documentation](https://unitygametranslator.asymptomatikgames.com/docs#local-models).
+> [UnityGameTranslator Manager](https://github.com/djethino/unitygametranslator-manager) can also
+> put any model through those same instructions, on your machine and in your language.
+
+## Configuration
+
+Config file location:
+- BepInEx: `<Game>/BepInEx/plugins/UnityGameTranslator/config.json`
+- MelonLoader: `<Game>/UserData/UnityGameTranslator/config.json`
+
+Translation cache: `translations.json` in the same folder.
+
+### Key Options
+
+| Option | Description |
+|--------|-------------|
+| `translation_backend` | `"llm"`, `"google"`, `"deepl"`, or `"none"` |
+| `target_language` | `"auto"` (system language) or specific (e.g., `"French"`) |
+| `game_context` | Game description for better AI translations (e.g., `"Medieval fantasy RPG"`) |
+| `settings_hotkey` | Key to open the mod's window (default: `"Shift+F10"`) |
+| `window_layout` | `"one"` (one window with sections, default) or `"separate"` (one window per screen) |
+| `online_mode` | Enable community features (sync, upload) |
+| `sync.merge_strategy` | `"ask"`, `"merge"`, or `"replace"` |
+
+### External Resources (Fonts & Images)
+
+UnityGameTranslator can use custom fonts and replacement images to improve translation quality — especially useful for languages with characters not supported by the game's default font, or when translating text baked into images (logos, buttons, title screens).
+
+**Where to place external resources:**
+
+| Mod Loader | Fonts folder | Images folder |
+|------------|--------------|---------------|
+| BepInEx | `<Game>/BepInEx/plugins/UnityGameTranslator/fonts/` | `<Game>/BepInEx/plugins/UnityGameTranslator/images/` |
+| MelonLoader | `<Game>/UserData/UnityGameTranslator/fonts/` | `<Game>/UserData/UnityGameTranslator/images/` |
+
+**Custom fonts** — drop `.ttf` or `.otf` files into the `fonts/` folder, or use **Extract** on a game font in the Fonts tab (its **Open folder** button opens `fonts/`). The filename (without extension) becomes the font name shown in the Fonts tab of Translation Tools. Assign per UI element or globally.
+
+**Replacement images** — drop `.png` files (with transparency) into the `images/` folder. Use the in-game image capture feature to export existing sprites, edit them externally, then save the modified versions back.
+
+External resources are fully optional. The mod works perfectly without them.
+
+### Self-Hosting
+
+Deploy your own [website instance](https://github.com/djethino/UnityGameTranslator-website), then update `Directory.Build.props` before building:
+
+```xml
+<ApiBaseUrl>https://your-server.com/api/v1</ApiBaseUrl>
+<WebsiteBaseUrl>https://your-server.com</WebsiteBaseUrl>
+<SseBaseUrl>https://sse.your-server.com</SseBaseUrl>
+```
+
+Or override at runtime in `config.json`:
+```json
+{
+  "api_base_url": "https://your-server.com/api/v1",
+  "website_base_url": "https://your-server.com"
+}
+```
+
+> **Security:** Your API token is sent to the configured server. Only use trusted instances.
+
+## Building from Source
+
+### Prerequisites
+
+- .NET SDK 8.0 (the adapters target .NET Standard 2.0, .NET Framework 4.7.2 and .NET 6; the checks run on .NET 8)
+- The submodules: `git submodule update --init --recursive` (UniverseLib, and `common` with its catalogs)
+- An `extlibs/` folder holding the DLLs below. They belong to Unity, BepInEx and MelonLoader, cannot be redistributed, and are therefore not in this repository: take them from a Unity install or a game, and from each loader's release.
+
+### What goes in `extlibs/`
+
+| Folder | Files | Used for |
+|---|---|---|
+| `Unity/` | `UnityEngine.dll`, `UnityEngine.CoreModule.dll`, `UnityEngine.IMGUIModule.dll`, `UnityEngine.InputLegacyModule.dll`, `UnityEngine.PhysicsModule.dll`, `UnityEngine.TextRenderingModule.dll`, `UnityEngine.UIModule.dll`, `UnityEngine.UI.dll`, `UnityEngine.UI_publicized.dll`, `Unity.TextMeshPro.dll` | Compiling the Core. Any recent, consistent Unity version (tested with 2021.3). `UnityEngine.PhysicsModule.dll` must be a build that targets .NET Standard 2.0 — recent Unity versions ship one targeting 2.1, which the Core cannot reference |
+| `UniverseLib/` | `UniverseLib.Mono.dll` | Compiling the Core. Written there by the build from the `UniverseLib` submodule |
+| `BepInEx5/` | `BepInEx.dll`, `0Harmony.dll` | The BepInEx 5 adapter |
+| `BepInEx6-Mono/` | `BepInEx.Core.dll`, `BepInEx.Unity.Mono.dll`, `0Harmony.dll` | The BepInEx 6 Mono adapter |
+| `BepInEx6-IL2CPP/` | `BepInEx.Core.dll`, `BepInEx.Unity.IL2CPP.dll`, `Il2CppInterop.Runtime.dll`, `0Harmony.dll` | The BepInEx 6 IL2CPP adapter |
+| `MelonLoader-Mono/` | `MelonLoader.dll`, `0Harmony.dll` | The MelonLoader Mono adapter |
+| `MelonLoader-IL2CPP/` | `MelonLoader.dll`, `Il2CppInterop.Runtime.dll`, `0Harmony.dll` | The MelonLoader IL2CPP adapter |
+| `UnityFloor/2018.1.0f2/` | `UnityEngine.dll`, every `UnityEngine.*Module.dll`, `UnityEngine.UI.dll` — all from **Unity 2018.1.0f2** | The Unity API floor check (below). The modules come from Unity's Windows build support package for that version, `UnityEngine.UI.dll` from its editor, in `UnityExtensions/Unity/GUISystem/Standalone/` |
+
+### The Unity API floor
+
+The mod compiles against a recent Unity, but must run on games made with older ones: the oldest supported is **Unity 2018.1**, the first with a stable .NET 4 runtime (games on Unity's older .NET 3.5 runtime cannot run the mod). `check-unity-api-floor.ps1` compares every Unity type and member the Core uses, signatures included, with Unity 2018.1's, and fails the build when one is missing. Members that are absent on purpose — kept in a method of their own and guarded by its caller — are listed in `tests/UnityGameTranslator.UnityApiFloor/allowed.txt`, method by method, with the reason. `prepare-release.ps1` runs it after building.
+
+### Build
+
+```bash
+./prepare-release.ps1
+```
+
+Creates release zips in `releases/` for all 5 mod loader variants.
+
+### Project Structure
+
+```
+UnityGameTranslator/
+├── UnityGameTranslator.Core/           # Shared translation engine
+│   ├── TranslatorCore.cs               # Main logic, config, translation cache
+│   ├── TranslatorPatches.cs            # Harmony patches for text interception
+│   ├── TranslatorScanner.cs            # Scene scanning for UI components
+│   ├── FontManager.cs                  # Font detection, replacement, scaling, overrides
+│   ├── ImageReplacer.cs                # Sprite/image replacement for bitmap text
+│   ├── VariableManager.cs              # Dynamic variable extraction
+│   ├── ApiClient.cs                    # HTTP client for website API
+│   ├── SseClient.cs                    # SSE streaming for real-time sync
+│   ├── TranslationMerger.cs            # 3-way merge with tag awareness
+│   ├── GameDetector.cs                 # Game identification (Steam ID, product name)
+│   ├── GitHubUpdateChecker.cs          # Mod version update checker
+│   ├── TokenProtection.cs              # AES-256 token encryption
+│   └── UI/                             # UniverseLib uGUI overlay
+│       ├── Panels/                     # 12 screens (wizard, settings, merge, inspector...) and the section bar
+│       └── Components/                 # Reusable UI components
+├── UniverseLib/                        # Git submodule (yukieiji fork)
+├── UnityGameTranslator-BepInEx5/       # BepInEx 5 adapter (Mono)
+├── UnityGameTranslator-BepInEx6-Mono/  # BepInEx 6 adapter (Mono)
+├── UnityGameTranslator-BepInEx6-IL2CPP/# BepInEx 6 adapter (IL2CPP)
+├── UnityGameTranslator-MelonLoader-Mono/    # MelonLoader adapter (Mono)
+├── UnityGameTranslator-MelonLoader-IL2CPP/  # MelonLoader adapter (IL2CPP)
+└── Directory.Build.props               # Version + API URLs
+```
+
+## Related
+
+Five repositories, one product — [see it live][live].
+
+- [unitygametranslator-manager][manager] — the desktop tool that finds your games and sets this mod up
+- [UnityGameTranslator-website][website] — where translations are shared, reviewed and merged
+- [unitygametranslator-common][common] — the rules the mod and the Manager both answer to, written once
+- [unitygametranslator-catalogs][catalogs] — reference data: languages, AI models, mod loaders
+
+[manager]: https://github.com/djethino/unitygametranslator-manager
+[website]: https://github.com/djethino/UnityGameTranslator-website
+[common]: https://github.com/djethino/unitygametranslator-common
+[catalogs]: https://github.com/djethino/unitygametranslator-catalogs
+[live]: https://unitygametranslator.asymptomatikgames.com
+
+## Acknowledgments
+
+- **[UniverseLib](https://github.com/yukieiji/UniverseLib)** by sinai-dev & yukieiji — UI framework for Unity mods
+- **[BepInEx](https://github.com/BepInEx/BepInEx)** — Unity plugin framework
+- **[MelonLoader](https://github.com/LavaGang/MelonLoader)** by LavaGang — Universal Unity mod loader
+- **[Harmony](https://github.com/pardeike/Harmony)** by Andreas Pardeike — Runtime method patching
+- **[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)** by James Newton-King — JSON framework
+- **[AssetRipper/Tpk](https://github.com/AssetRipper/Tpk)** and the **[LZMA SDK](https://www.7-zip.org/sdk.html)** by Igor Pavlov — Unity's class layouts and the decompression a game's own fonts are read with
+
+See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for full license details.
+
+## License
+
+Dual-licensed:
+- **Open Source:** [AGPL-3.0](LICENSE)
+- **Commercial:** Contact us for proprietary use
+
+See [LICENSING.md](LICENSING.md) for details.

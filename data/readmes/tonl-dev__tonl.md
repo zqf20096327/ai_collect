@@ -1,0 +1,748 @@
+<div align="center">
+
+![TONL - Token-Optimized Notation Language](readme.png)
+
+</div>
+
+# TONL (Token-Optimized Notation Language)
+
+**TONL** is a production-ready data platform that combines compact serialization with powerful query, modification, indexing, and streaming capabilities. Designed for LLM token efficiency while providing a rich API for data access and manipulation.
+
+## 🎉 Latest Release: v2.5.2 - Documentation & Testing Excellence
+
+### 📚 **v2.5.2 (December 20, 2025)**
+- **216 new tests** - Total 698 tests across 162 suites with 100% pass rate
+- **Browser documentation** - Complete docs/BROWSER.md and docs/ERROR_HANDLING.md
+- **4 browser examples** - React 18 and Vue 3 interactive demos
+- **5 security fixes** - All npm vulnerabilities resolved
+- **Updated dependencies** - All packages at latest versions
+
+### 🔧 **v2.5.1 (December 11, 2025)**
+- 8 critical bug fixes including DoS prevention and async handling
+
+### 🛡️ **v2.5.0 (December 3, 2025)**
+- Enterprise security hardening and optimization module
+
+### 🧪 **Testing Excellence:**
+- **698 Comprehensive Tests** - All passing with 100% success rate
+- **96 Security Tests** - Covering all attack vectors
+- **Concurrency Tests** - Thread safety validation
+- **Browser Tests** - Cross-platform compatibility
+
+[![npm version](https://badge.fury.io/js/tonl.svg)](https://www.npmjs.com/package/tonl)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue.svg)](https://www.typescriptlang.org/)
+
+**🏠 Homepage**: [tonl.dev](https://tonl.dev)
+**📦 GitHub**: [github.com/tonl-dev/tonl](https://github.com/tonl-dev/tonl)
+**📖 Documentation**: [Complete Guides](docs/)
+
+## 📋 Table of Contents
+- [Why TONL?](#why-tonl)
+- [Quick Start](#-quick-start)
+- [Format Overview](#-format-overview)
+- [Feature Set](#-complete-feature-set)
+- [Performance](#-performance-comparison)
+- [Security](#-security--quality)
+- [Use Cases](#-use-cases)
+- [Browser Usage](#-browser-usage)
+- [API Reference](#-complete-api-reference)
+- [Development](#-development)
+- [Roadmap](#-roadmap)
+- [Documentation](#-documentation)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+---
+
+## Why TONL?
+
+🗜️ **Up to 60% Smaller** - Reduce JSON size and LLM token costs
+👁️ **Human-Readable** - Clear text format, not binary
+🚀 **Blazingly Fast** - 10-1600x faster than targets
+🔒 **Production Secure** - 100% security hardened (v2.0.3)
+🛠️ **TypeScript-First** - Full type safety & IntelliSense
+📦 **Zero Dependencies** - Pure TypeScript, no bloat
+🌐 **Browser Ready** - ~29.5 KB gzipped bundle (IIFE/UMD)
+✅ **Broadly Tested** - 2,300+ tests passing
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+npm install tonl
+```
+
+### Basic Usage
+
+```typescript
+import { TONLDocument, encodeTONL, decodeTONL } from 'tonl';
+
+// Create from JSON
+const doc = TONLDocument.fromJSON({
+  users: [
+    { id: 1, name: "Alice", role: "admin", age: 30 },
+    { id: 2, name: "Bob", role: "user", age: 25 }
+  ]
+});
+
+// Query with JSONPath-like syntax
+doc.get('users[0].name');                          // 'Alice'
+doc.query('users[*].name');                        // ['Alice', 'Bob']
+doc.query('users[?(@.role == "admin")]');          // [{ id: 1, ... }]
+doc.query('$..age');                               // All ages recursively
+
+// Aggregation (v2.4.0)
+doc.count('users[*]');                             // 2
+doc.sum('users[*]', 'age');                        // 55
+doc.avg('users[*]', 'age');                        // 27.5
+doc.groupBy('users[*]', 'role');                   // { admin: [...], user: [...] }
+doc.aggregate('users[*]').stats('age');            // { count, sum, avg, min, max, stdDev }
+
+// Fuzzy Matching (v2.4.0)
+import { fuzzySearch, soundsLike } from 'tonl/query';
+fuzzySearch('Jon', ['John', 'Jane', 'Bob']);       // [{ value: 'John', similarity: 0.75, index: 0 }]
+soundsLike('Smith', 'Smyth');                      // true
+
+// Temporal Queries (v2.4.0)
+import { parseTemporalLiteral, isDaysAgo } from 'tonl/query';
+parseTemporalLiteral('@now-7d');                   // 7 days ago
+isDaysAgo(someDate, 30);                           // within last 30 days?
+
+// Modify data
+doc.set('users[0].age', 31);
+doc.push('users', { id: 3, name: "Carol", role: "editor", age: 28 });
+
+// Navigate and iterate
+for (const [key, value] of doc.entries()) {
+  console.log(key, value);
+}
+
+doc.walk((path, value, depth) => {
+  console.log(`${path}: ${value}`);
+});
+
+// Export
+const tonl = doc.toTONL();
+const json = doc.toJSON();
+await doc.save('output.tonl');
+
+// Classic API (encode/decode)
+const data = { users: [{ id: 1, name: "Alice" }] };
+const tonlText = encodeTONL(data);
+const restored = decodeTONL(tonlText);
+
+// Advanced Optimization (v2.0.1+)
+import { AdaptiveOptimizer, BitPacker, DeltaEncoder } from 'tonl/optimization';
+
+// Automatic optimization
+const optimizer = new AdaptiveOptimizer();
+const result = optimizer.optimize(data);  // Auto-selects best strategies
+
+// Specific optimizers
+const packer = new BitPacker();
+const packed = packer.packBooleans([true, false, true]);
+
+const delta = new DeltaEncoder();
+const timestamps = [1704067200000, 1704067201000, 1704067202000];
+const compressed = delta.encode(timestamps, 'timestamp');
+```
+
+### CLI Usage
+
+#### 🎮 **Interactive CLI (NEW v2.3.1)**
+```bash
+# Interactive stats dashboard
+tonl stats data.json --interactive
+tonl stats data.json -i --theme neon
+
+# File comparison mode
+tonl stats data.json --compare --theme matrix
+
+# Interactive exploration
+tonl stats --interactive  # Launch without file for menu-driven exploration
+```
+
+#### 📊 **Standard Commands**
+```bash
+# Get started (shows help)
+tonl
+
+# Version info
+tonl --version
+
+# Encode JSON to TONL (perfect round-trip, quotes special keys)
+tonl encode data.json --out data.tonl --smart --stats
+
+# Encode with preprocessing (clean, readable keys)
+tonl encode data.json --preprocess --out data.tonl
+
+# Decode TONL to JSON
+tonl decode data.tonl --out data.json
+
+# Query data
+tonl query users.tonl "users[?(@.role == 'admin')]"
+tonl get data.json "user.profile.email"
+
+# Validate against schema
+tonl validate users.tonl --schema users.schema.tonl
+
+# Format and prettify
+tonl format data.tonl --pretty --out formatted.tonl
+
+# Compare token costs
+tonl stats data.json --tokenizer gpt-5
+```
+
+#### 🎨 **Interactive Themes (v2.3.1)**
+```bash
+# Available themes: default, neon, matrix, cyberpunk
+tonl stats data.json -i --theme neon        # Bright neon colors
+tonl stats data.json -i --theme matrix      # Green matrix style
+tonl stats data.json -i --theme cyberpunk   # Cyan/purple cyberpunk
+tonl stats data.json -i --theme default     # Clean terminal colors
+```
+
+#### ⚖️ **File Comparison (v2.3.1)**
+```bash
+# Compare JSON and TONL files side-by-side
+tonl stats data.json --compare
+tonl stats data.json --compare --theme neon
+
+# Interactive comparison mode
+tonl stats data.json -i --compare
+```
+
+---
+
+## 📊 Format Overview
+
+### Arrays of Objects (Tabular Format)
+
+**JSON** (245 bytes, 89 tokens):
+```json
+{
+  "users": [
+    { "id": 1, "name": "Alice", "role": "admin" },
+    { "id": 2, "name": "Bob, Jr.", "role": "user" },
+    { "id": 3, "name": "Carol", "role": "editor" }
+  ]
+}
+```
+
+**TONL** (158 bytes, 49 tokens - **45% reduction**):
+```tonl
+#version 1.0
+users[3]{id:u32,name:str,role:str}:
+  1, Alice, admin
+  2, "Bob, Jr.", user
+  3, Carol, editor
+```
+
+### Nested Objects
+
+**JSON**:
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "Alice",
+    "contact": {
+      "email": "alice@example.com",
+      "phone": "+123456789"
+    },
+    "roles": ["admin", "editor"]
+  }
+}
+```
+
+**TONL**:
+```tonl
+#version 1.0
+user{id:u32,name:str,contact:obj,roles:list}:
+  id: 1
+  name: Alice
+  contact{email:str,phone:str}:
+    email: alice@example.com
+    phone: +123456789
+  roles[2]: admin, editor
+```
+
+---
+
+## ✨ Complete Feature Set
+
+### 🔄 Core Serialization
+- **Compact Format** - 32-45% smaller than JSON (bytes + tokens)
+- **Human-Readable** - Clear text format with minimal syntax
+- **Round-Trip Safe** - Perfect bidirectional JSON conversion
+- **Smart Encoding** - Auto-selects optimal delimiters and formatting
+- **Type Hints** - Optional schema information for validation
+
+### 🔍 Query & Navigation API
+- **JSONPath Queries** - `users[?(@.age > 25)]`, `$..email`
+- **Filter Expressions** - `==`, `!=`, `>`, `<`, `&&`, `||`, `contains`, `matches`
+- **Wildcard Support** - `users[*].name`, `**.email`
+- **Tree Traversal** - `entries()`, `keys()`, `values()`, `walk()`
+- **LRU Cache** - >90% cache hit rate on repeated queries
+
+### ✏️ Modification API
+- **CRUD Operations** - `set()`, `get()`, `delete()`, `push()`, `pop()`
+- **Bulk Operations** - `merge()`, `update()`, `removeAll()`
+- **Change Tracking** - `diff()` with detailed change reports
+- **Snapshots** - Document versioning and comparison
+- **Atomic File Edits** - Safe saves with automatic backups
+
+### ⚡ Performance & Indexing
+- **Hash Index** - O(1) exact match lookups
+- **BTree Index** - O(log n) range queries
+- **Compound Index** - Multi-field indexing
+- **Stream Processing** - Handle multi-GB files with <100MB memory
+- **Pipeline Operations** - Chainable filter/map/reduce transformations
+
+### 🗜️ Advanced Optimization
+- **Dictionary Encoding** - Value compression via lookup tables (30-50% savings)
+- **Delta Encoding** - Sequential data compression (40-60% savings)
+- **Run-Length Encoding** - Repetitive value compression (50-80% savings)
+- **Bit Packing** - Boolean and small integer bit-level compression (87.5% savings)
+- **Numeric Quantization** - Precision reduction for floating-point numbers (20-40% savings)
+- **Schema Inheritance** - Reusable column schemas across data blocks (20-40% savings)
+- **Hierarchical Grouping** - Common field extraction for nested structures (15-30% savings)
+- **Tokenizer-Aware** - LLM tokenizer optimization for minimal token usage (5-15% savings)
+- **Column Reordering** - Entropy-based ordering for better compression
+- **Adaptive Optimizer** - Automatic strategy selection based on data patterns
+
+### ✅ Schema & Validation
+- **Schema Definition** - `.schema.tonl` files with TSL (TONL Schema Language)
+- **13 Constraints** - `required`, `min`, `max`, `pattern`, `unique`, `email`, etc.
+- **TypeScript Generation** - Auto-generate types from schemas
+- **Runtime Validation** - Validate data programmatically or via CLI
+- **Strict Mode** - Enforce schema compliance
+
+### 🛠️ Developer Tools
+- **🎮 Interactive CLI Dashboard** - Real-time file analysis with themes and progress visualization
+- **⚖️ File Comparison System** - Side-by-side JSON/TONL comparison with detailed metrics
+- **🎨 Visual Customization** - Multiple terminal themes (default, neon, matrix, cyberpunk)
+- **Interactive REPL** - Explore data interactively in terminal
+- **Modular CLI Suite** - `encode`, `decode`, `query`, `validate`, `format`, `stats` with Command Pattern architecture
+- **Browser Support** - ESM, UMD, IIFE builds (~29.5 KB gzipped)
+- **VS Code Extension** - Syntax highlighting for `.tonl` files
+- **TypeScript-First** - Full IntelliSense and type safety
+
+---
+
+## 📊 Performance Comparison
+
+| Metric | JSON | TONL | TONL Smart | Improvement |
+|--------|------|------|------------|-------------|
+| **Size (bytes)** | 245 | 167 | 158 | **36% smaller** |
+| **Tokens (GPT-5)** | 89 | 54 | 49 | **45% fewer** |
+| **Encoding Speed** | 1.0x | 15x | 12x | **12-15x faster** |
+| **Decoding Speed** | 1.0x | 10x | 10x | **10x faster** |
+| **Query Speed** | - | - | 1600x | **Target: <1ms** |
+
+*Benchmarks based on typical e-commerce product catalog data*
+
+---
+
+## 🔒 Security & Quality
+
+```
+✅ Tests:          2,300+ tests passing
+✅ Security:       All vulnerabilities fixed (100%)
+✅ Security Tests: 96 security tests passing
+✅ Code Quality:   TypeScript strict mode
+✅ Dependencies:   0 runtime dependencies
+✅ Bundle Size:    ~29.5 KB gzipped (browser)
+✅ Performance:    10-1600x faster than targets
+✅ Production:     Ready & Fully Secure
+```
+
+**Security:**
+- ✅ ReDoS, Path Traversal, Buffer Overflow protection
+- ✅ Prototype Pollution, Command Injection prevention
+- ✅ Integer Overflow, Type Coercion fixes
+- ✅ Comprehensive input validation and resource limits
+
+See [SECURITY.md](SECURITY.md) and [CHANGELOG.md](CHANGELOG.md) for details.
+
+---
+
+## 🎯 Use Cases
+
+### LLM Prompts
+Reduce token costs by 32-45% when including structured data in prompts:
+```typescript
+const prompt = `Analyze this user data:\n${doc.toTONL()}`;
+// 45% fewer tokens = lower API costs
+```
+
+### Configuration Files
+Human-readable configs that are compact yet clear:
+```tonl
+config{env:str,database:obj,features:list}:
+  env: production
+  database{host:str,port:u32,ssl:bool}:
+    host: db.example.com
+    port: 5432
+    ssl: true
+  features[3]: auth, analytics, caching
+```
+
+### API Responses
+Efficient data transmission with schema validation:
+```typescript
+app.get('/api/users', async (req, res) => {
+  const doc = await TONLDocument.load('users.tonl');
+  const filtered = doc.query('users[?(@.active == true)]');
+  res.type('text/tonl').send(encodeTONL(filtered));
+});
+```
+
+### Data Pipelines
+Stream processing for large datasets:
+```typescript
+import { createEncodeStream, createDecodeStream } from 'tonl/stream';
+
+createReadStream('huge.json')
+  .pipe(createDecodeStream())
+  .pipe(transformStream)
+  .pipe(createEncodeStream({ smart: true }))
+  .pipe(createWriteStream('output.tonl'));
+```
+
+### Log Aggregation
+Compact structured logs:
+```tonl
+logs[1000]{timestamp:i64,level:str,message:str,metadata:obj}:
+  1699564800, INFO, "User login", {user_id:123,ip:"192.168.1.1"}
+  1699564801, ERROR, "DB timeout", {query:"SELECT...",duration:5000}
+  ...
+```
+
+---
+
+## 🌐 Browser Usage
+
+### ESM (Modern Browsers)
+```html
+<script type="module">
+  import { encodeTONL, decodeTONL } from 'https://cdn.jsdelivr.net/npm/tonl@2.4.1/+esm';
+
+  const data = { users: [{ id: 1, name: "Alice" }] };
+  const tonl = encodeTONL(data);
+  console.log(tonl);
+</script>
+```
+
+### UMD (Universal)
+```html
+<script src="https://unpkg.com/tonl@2.4.1/dist/browser/tonl.umd.js"></script>
+<script>
+  const tonl = TONL.encodeTONL({ hello: "world" });
+  console.log(tonl);
+</script>
+```
+
+**Bundle Sizes:**
+- ESM: 29.3 KB gzipped
+- UMD: 29.5 KB gzipped
+- IIFE: 29.4 KB gzipped
+
+**Examples:**
+See [examples/browser/](examples/browser/) for interactive React and Vue examples.
+
+---
+
+## 📚 Complete API Reference
+
+### TONLDocument Class
+
+```typescript
+// Creation
+TONLDocument.fromJSON(data)
+TONLDocument.parse(text)                           // Parse TONL string
+TONLDocument.fromFile(filepath)                    // Async file load
+TONLDocument.fromFileSync(filepath)                // Sync file load
+
+// Query
+doc.get(path: string)                              // Single value
+doc.query(query: string)                           // Multiple values
+doc.exists(path: string)                           // Check existence
+
+// Modification
+doc.set(path: string, value: any)                  // Set value
+doc.delete(path: string)                           // Delete value
+doc.push(path: string, value: any)                 // Append to array
+doc.pop(path: string)                              // Remove last from array
+doc.merge(path: string, value: object)             // Deep merge objects
+
+// Navigation
+doc.entries()                                      // Iterator<[key, value]>
+doc.keys()                                         // Iterator<string>
+doc.values()                                       // Iterator<any>
+doc.walk(callback: WalkCallback)                   // Tree traversal
+doc.find(predicate: Predicate)                     // Find single value
+doc.findAll(predicate: Predicate)                  // Find all matching
+doc.some(predicate: Predicate)                     // Any match
+doc.every(predicate: Predicate)                    // All match
+
+// Indexing
+doc.createIndex(name: string, path: string, type?) // Create index
+doc.dropIndex(name: string)                        // Remove index
+doc.getIndex(name: string)                         // Get index
+
+// Export
+doc.toTONL(options?: EncodeOptions)                // Export as TONL
+doc.toJSON()                                       // Export as JSON
+doc.save(filepath: string, options?)               // Save to file
+doc.size()                                         // Size in bytes
+doc.stats()                                        // Statistics object
+```
+
+### Encode/Decode API
+
+```typescript
+// Encoding
+encodeTONL(data: any, options?: {
+  delimiter?: "," | "|" | "\t" | ";";
+  includeTypes?: boolean;
+  version?: string;
+  indent?: number;
+  singleLinePrimitiveLists?: boolean;
+}): string
+
+// Smart encoding (auto-optimized)
+encodeSmart(data: any, options?: EncodeOptions): string
+
+// Decoding
+decodeTONL(text: string, options?: {
+  delimiter?: "," | "|" | "\t" | ";";
+  strict?: boolean;
+}): any
+```
+
+### Schema API
+
+```typescript
+import { parseSchema, validateTONL } from 'tonl/schema';
+
+// Parse schema
+const schema = parseSchema(schemaText: string);
+
+// Validate data
+const result = validateTONL(data: any, schema: Schema);
+
+if (!result.valid) {
+  result.errors.forEach(err => {
+    console.error(`${err.field}: ${err.message}`);
+  });
+}
+```
+
+### Streaming API
+
+```typescript
+import { createEncodeStream, createDecodeStream, encodeIterator, decodeIterator } from 'tonl/stream';
+
+// Node.js streams
+createReadStream('input.json')
+  .pipe(createEncodeStream({ smart: true }))
+  .pipe(createWriteStream('output.tonl'));
+
+// Async iterators
+for await (const line of encodeIterator(dataStream)) {
+  console.log(line);
+}
+```
+
+---
+
+## ✅ Schema Validation
+
+Define schemas with the TONL Schema Language (TSL):
+
+```tonl
+@schema v1
+@strict true
+@description "User management schema"
+
+# Define custom types
+User: obj
+  id: u32 required
+  username: str required min:3 max:20 pattern:^[a-zA-Z0-9_]+$
+  email: str required pattern:email lowercase:true
+  age: u32? min:13 max:150
+  roles: list<str> required min:1 unique:true
+
+# Root schema
+users: list<User> required min:1
+totalCount: u32 required
+```
+
+**13 Built-in Constraints:**
+- `required` - Field must exist
+- `min` / `max` - Numeric range or string/array length
+- `length` - Exact length
+- `pattern` - Regex validation (or shortcuts: `email`, `url`, `uuid`)
+- `unique` - Array elements must be unique
+- `nonempty` - String/array cannot be empty
+- `positive` / `negative` - Number sign
+- `integer` - Must be integer
+- `multipleOf` - Divisibility check
+- `lowercase` / `uppercase` - String case enforcement
+
+See [docs/SCHEMA_SPECIFICATION.md](docs/SCHEMA_SPECIFICATION.md) for complete reference.
+
+---
+
+## 🛠️ Development
+
+### Build & Test
+
+```bash
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Run all tests (2,300+ tests)
+npm test
+
+# Watch mode
+npm run dev
+
+# Clean build artifacts
+npm run clean
+```
+
+### Benchmarking
+
+```bash
+# Byte size comparison
+npm run bench
+
+# Token estimation (GPT-5, Claude 3.5, Gemini 2.0, Llama 4)
+npm run bench-tokens
+
+# Comprehensive performance analysis
+npm run bench-comprehensive
+```
+
+### CLI Development
+
+```bash
+# Install CLI locally
+npm run link
+
+# Test commands
+tonl encode test.json
+tonl query data.tonl "users[*].name"
+tonl format data.tonl --pretty
+
+# Test interactive features (v2.3.1+)
+tonl stats data.json --interactive
+tonl stats data.json -i --theme neon
+tonl stats data.json --compare
+```
+
+---
+
+## 🗺️ Roadmap
+
+**✅ v2.5.1 - Complete (Latest)**
+- ✅ Critical bug fixes (Array expansion DoS, JSON.stringify vulnerability, async handling)
+- ✅ 482 tests with 100% pass rate
+- ✅ Enhanced stability and error handling
+
+**✅ v2.5.0 - Complete**
+- ✅ Aggregation Functions (count, sum, avg, groupBy, stats, median, percentile)
+- ✅ Fuzzy String Matching (Levenshtein, Jaro-Winkler, Soundex, Metaphone)
+- ✅ Temporal Queries (@now-7d, before, after, sameDay, daysAgo)
+- ✅ 763+ comprehensive tests with 100% success rate
+
+**✅ v2.2+ - Complete**
+- ✅ Revolutionary Interactive CLI Dashboard with real-time analysis
+- ✅ Complete Modular Architecture Transformation (735→75 lines)
+- ✅ File Comparison System with side-by-side analysis
+- ✅ Visual Themes (default, neon, matrix, cyberpunk)
+
+**✅ v2.0+ - Complete**
+- ✅ Advanced optimization module (60% additional compression)
+- ✅ Complete query, modification, indexing, streaming APIs
+- ✅ Schema validation & TypeScript generation
+- ✅ Browser support (~29.5 KB gzipped bundles)
+- ✅ Broad test suite & security hardening
+
+**🚀 Future**
+- Enhanced VS Code extension (IntelliSense, debugging)
+- Web playground with live conversion
+- Python, Go, Rust implementations
+- Binary TONL format for extreme compression
+
+See [ROADMAP.md](ROADMAP.md) for our comprehensive development vision.
+
+---
+
+## 📖 Documentation
+
+### For Users
+- **[Getting Started Guide](docs/GETTING_STARTED.md)** - Beginner-friendly tutorial with examples
+- **[API Reference](docs/API.md)** - Complete API documentation with examples
+- **[CLI Documentation](docs/CLI.md)** - Command-line tool guide
+- **[Browser API](docs/BROWSER.md)** - Browser usage with ESM, UMD, IIFE builds
+- **[Error Handling](docs/ERROR_HANDLING.md)** - Error classes and troubleshooting
+- **[Query API](docs/QUERY_API.md)** - JSONPath-like query syntax reference
+- **[Modification API](docs/MODIFICATION_API.md)** - CRUD operations guide
+- **[Navigation API](docs/NAVIGATION_API.md)** - Tree traversal methods
+- **[Use Cases](docs/USE_CASES.md)** - Real-world scenarios and solutions
+
+### For Implementers (Other Languages)
+- **[Implementation Reference](docs/IMPLEMENTATION_REFERENCE.md)** - Language-agnostic implementation guide
+- **[Transformation Examples](docs/TRANSFORMATION_EXAMPLES.md)** - 20+ JSON↔TONL conversion examples
+- **[Format Specification](docs/SPECIFICATION.md)** - Technical format specification
+- **[Schema Specification](docs/SCHEMA_SPECIFICATION.md)** - TSL (TONL Schema Language) spec
+
+**Implementing TONL in Python, Go, Rust, or another language?** Check out the [Implementation Reference](docs/IMPLEMENTATION_REFERENCE.md) for complete algorithms, pseudo-code, and test requirements!
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development setup
+- Code style guidelines
+- Testing requirements
+- Pull request process
+- Architecture overview
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## 🌟 Links
+
+- **Website**: [tonl.dev](https://tonl.dev)
+- **npm Package**: [npmjs.com/package/tonl](https://www.npmjs.com/package/tonl)
+- **GitHub**: [github.com/tonl-dev/tonl](https://github.com/tonl-dev/tonl)
+- **Issues**: [github.com/tonl-dev/tonl/issues](https://github.com/tonl-dev/tonl/issues)
+- **Discussions**: [github.com/tonl-dev/tonl/discussions](https://github.com/tonl-dev/tonl/discussions)
+- **VS Code Extension**: [Coming Soon]
+
+---
+
+<div align="center">
+
+**TONL**: Making structured data LLM-friendly without sacrificing readability. 🚀
+
+*Built with ❤️ by [Ersin Koc](https://github.com/ersinkoc)*
+
+</div>

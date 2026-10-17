@@ -1,0 +1,762 @@
+# AIsbom: The Supply Chain for Artificial Intelligence
+
+[![PyPI version](https://img.shields.io/pypi/v/aisbom-cli.svg)](https://pypi.org/project/aisbom-cli/)
+[![Downloads](https://img.shields.io/pypi/dm/aisbom-cli.svg)](https://pypistats.org/packages/aisbom-cli)
+[![GitHub Marketplace](https://img.shields.io/badge/GitHub-Marketplace-2088FF?logo=github)](https://github.com/marketplace/actions/aisbom-security-scanner)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![Compliance](https://img.shields.io/badge/standard-CycloneDX-green)
+
+**Detect malware and license risks hidden inside ML model files — statically, before you load them.**
+
+AIsbom disassembles Pickle bytecode, inspects Keras configs for code-executing `Lambda` layers, reads GGUF chat templates for Jinja sandbox escapes, walks ONNX graphs for custom operators and escaping external-data paths, and parses SafeTensors / GGUF binary headers — surfacing RCE-capable payloads and restrictive licenses that generic SBOM tools miss. Pure static analysis: **no model is ever loaded, and no payload is ever executed, rendered, or unmarshalled.**
+
+> 💡 Also available as a [**GitHub Action**](#use-as-a-github-action) that posts an idempotent PR comment on every commit. See it on the [Marketplace →](https://github.com/marketplace/actions/aisbom-security-scanner)
+
+![AIsbom CLI demo](assets/aisbom_cli_demo_v1.0.gif)
+
+---
+
+## Try it in one command
+
+Zero-install — [pipx](https://pipx.pypa.io/) fetches the latest release, runs it, then cleans up:
+
+```bash
+pipx run --spec aisbom-cli aisbom scan hf://google-bert/bert-base-uncased
+```
+
+That scans BERT directly **over HTTP**, without downloading 400 MB of weights to disk. You'll see a security + legal risk table in your terminal and a `sbom.json` file in your current directory. 
+
+**Want to see the same scan visualized?** [Open the live demo →](https://aisbom.io/?ref=cli-readme)
+
+For persistent install:
+
+```bash
+pipx install aisbom-cli           # or: pip install aisbom-cli
+aisbom scan hf://google-bert/bert-base-uncased
+```
+
+> The PyPI package name is `aisbom-cli`, but the command you run is `aisbom`. That's why `pipx run` needs `--spec aisbom-cli`.
+
+---
+
+## What it finds
+
+A typical scan against a project with mixed artifacts:
+
+```text
+                                    🧠 AI Model Artifacts Found
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Filename                     ┃ Framework   ┃ Security Risk                                  ┃ Legal Risk                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ bert_finetune.pt             │ PyTorch     │ CRITICAL (RCE Detected: posix.system)          │ UNKNOWN                      │
+│ classifier.h5                │ Keras       │ CRITICAL (Keras Lambda Code Execution — Lambda │ UNKNOWN                      │
+│                              │             │ layer(s): exfil_lambda; 1 embedded code        │                              │
+│                              │             │ object(s))                                     │                              │
+│ backdoored-chat.gguf         │ GGUF        │ CRITICAL (Chat Template Code Execution:        │ PASS                         │
+│                              │             │ __class__, __mro__, __subclasses__)            │                              │
+│ exfil.onnx                   │ ONNX        │ CRITICAL (ONNX External Data Escapes Model     │ UNKNOWN                      │
+│                              │             │ Directory: ../../../etc/passwd)                │                              │
+│ sklearn_pipeline.joblib      │ Joblib      │ CRITICAL (RCE Detected: posix.system)          │ UNKNOWN                      │
+│ features.npy                 │ NumPy       │ CRITICAL (RCE Detected: builtins.eval)         │ UNKNOWN                      │
+│ detector.onnx                │ ONNX        │ LOW                                            │ UNKNOWN                      │
+│ embeddings.npy               │ NumPy       │ LOW                                            │ UNKNOWN                      │
+│ llama-3-quant.gguf           │ GGUF        │ LOW                                            │ LEGAL RISK (cc-by-nc-sa-4.0) │
+│ safe_model.safetensors       │ SafeTensors │ LOW                                            │ PASS                         │
+│ restricted_model.safetensors │ SafeTensors │ LOW                                            │ LEGAL RISK (cc-by-nc-4.0)    │
+└──────────────────────────────┴─────────────┴────────────────────────────────────────────────┴──────────────────────────────┘
+```
+
+A compliant `sbom.json` (CycloneDX v1.7 / ECMA-424) including SHA256 hashes and license data is generated in your working directory. SPDX export is one flag away (`--format spdx`) — 2.3 by default, or 3.0 with the AI Profile via `--spdx-version 3.0`.
+
+For `hf://` scans, each model component also carries a CycloneDX ML-BOM `modelCard` block — task, architecture family, model architecture, and training datasets, read from the model's Hugging Face metadata. Local scans get whatever the file itself declares (a GGUF header's architecture, for example). The block is simply omitted when nothing is known.
+
+A local model file downloaded from Hugging Face can get the same block. When the file sits in the Hugging Face cache (`models--<org>--<name>/snapshots/<commit>/`) or next to a `config.json` whose `_name_or_path` is a repo id, AIsbom fetches that repo's file list and checks that the file's hash is in it. Only then does it add the repo's model card, with an `aisbom:hf:match` property saying which evidence was used. A file whose bytes are not in the repo (a fine-tune that still names its base model, say) gets no card, and so does a file that matches more than one repo. See [Hugging Face model-card lookups](#hugging-face-model-card-lookups-local-scans) for what is sent and how to turn it off.
+
+Need the older schema for a downstream tool? `--schema-version 1.6` (or `1.5`) still works, without the `modelCard` block. One thing changed for those versions too: each model component's `bom-ref` is now a stable `artifact-<n>-<filename>` instead of a value regenerated on every run, so the same file keeps the same identifier between scans.
+
+### Formats and what's checked in each
+
+| Format | Extensions | What AIsbom looks for |
+|---|---|---|
+| **PyTorch / Pickle** | `.pt` `.pth` `.bin` `.pkl` `.pickle` | Dangerous globals in the pickle opcodes, including indirect-execution gadgets. Concatenated streams are all scanned — a legacy `torch.save` file hides its object behind three header pickles — and non-standard containers (7z, rar, xz…) are flagged. If a file is so full of streams that the walk hits its work limit, the scan says so rather than reporting clean. |
+| **joblib** | `.joblib` | The pickle inside the container, whichever codec joblib chose (zlib, gzip, bz2, lzma/xz, and the legacy `ZF` format), plus uncompressed files. A payload placed *after* an array — where a real model puts its weights — is found. |
+| **dill** | `.dill` | Everything the pickle path finds, plus dill's own code-reconstruction globals: a dill'd function or lambda is a marshalled code object rebuilt on load, and is reported as CRITICAL. |
+| **NumPy** | `.npy` `.npz` | The pickle stream behind an `allow_pickle` object array. Each `.npz` member is opened, including ones whose checksum or header has been tampered with. |
+| **Keras** | `.keras` `.h5` `.hdf5` | `Lambda` layers and embedded marshalled code objects in the model config — an actively exploited RCE vector. |
+| **GGUF** | `.gguf` | License and architecture metadata, plus the embedded Jinja **chat template**, checked for sandbox-escape constructs. |
+| **ONNX** | `.onnx` | Producer/opset/IR metadata, custom operators, and external-data paths that point outside the model directory. |
+| **SafeTensors** | `.safetensors` | Header metadata, tensor inventory, and license. Safe by construction — no code path. |
+| **Dependencies** | `requirements.txt` | Pinned packages, emitted as SBOM components. |
+
+Don't like reading JSON? [Open the viewer →](https://aisbom.io/viewer?ref=cli-readme), drag your `sbom.json` in, and get an instant dashboard of risks, license issues, and compliance stats. *The viewer is client-side only — your data never leaves your browser.*
+
+---
+
+## Install
+
+| Method | Best for |
+|---|---|
+| `pipx run --spec aisbom-cli aisbom ...` | Trying it without committing |
+| `pipx install aisbom-cli` | Daily use; isolated venv |
+| `pip install aisbom-cli` | Python projects with their own venv |
+| [Standalone binary](https://github.com/Lab700xOrg/aisbom/releases/latest) | Air-gapped / offline / no-Python environments |
+
+### Standalone binaries
+
+Single-file executables for Linux x86_64, macOS Intel, and macOS Silicon. Download from the [Releases page](https://github.com/Lab700xOrg/aisbom/releases/latest). Zero dependencies. Runs on bare metal.
+
+📚 [How to Audit Air-Gapped / Offline Systems](docs/air-gapped-guide.md)
+
+#### macOS quarantine note
+
+macOS tags downloaded files with a "quarantine" attribute, and unsigned open-source binaries get blocked by Gatekeeper. Run once:
+
+```bash
+chmod +x aisbom-macos-*
+xattr -d com.apple.quarantine aisbom-macos-*
+./aisbom-macos-arm64 --help
+```
+
+---
+
+## Common workflows
+
+### Scan targets and exit codes
+
+`scan` accepts a directory, a single model file, a `hf://` repo, or an HTTPS URL. A directory is walked recursively; a single file is scanned on its own.
+
+| Exit | Meaning |
+|---|---|
+| `0` | Scan completed, no CRITICAL risk |
+| `1` | The scan could not be completed — target missing or unreadable, a file failed to parse, or a remote fetch failed |
+| `2` | A **CRITICAL** risk was found (suppress with `--no-fail-on-risk`) |
+
+`--no-fail-on-risk` governs risk findings only. An unusable target still exits `1`, so a typo'd path in CI fails loudly instead of passing as a clean scan.
+
+### Files that could not be read
+
+`LOW` is an assertion: AIsbom opened the artifact and found nothing dangerous. A file that no parser could read gets a different answer, reported in its own **Could not read** section and exiting `1`:
+
+```
+⚠️ Could not read:
+  - models/model.safetensors: this is a git-LFS pointer file, not the model
+    itself — run `git lfs pull` to fetch the real artifact, then re-scan
+  - models/head.pkl: declared a pickle by its extension, but nothing past the
+    protocol header could be disassembled — truncated or not a pickle at all
+```
+
+The cases are a git-LFS pointer stub (the usual one — a clone without `git lfs pull`), an empty file, a truncated stream, and a file in no recognised format. Such an artifact still appears in the SBOM, so an auditor can see it was present, but it carries **no framework label and no risk verdict** — a format label is only applied when that format's parser actually succeeded. In CycloneDX it is marked with `aisbom:unreadable` and `aisbom:unreadable_type` properties, and `aisbom score` refuses to grade a scan containing one.
+
+> **Upgrading:** before v1.7.0 these files were reported as `Risk: LOW` with a confident framework label and exited `0`, so a truncated download could pass a CI gate as a clean model. If your tree contains unreadable files, those scans now exit `1`. That is the behaviour the exit-code table above always documented; the files were never examined.
+
+### Scan a Hugging Face model
+
+```bash
+aisbom scan hf://google-bert/bert-base-uncased
+```
+
+We use HTTP Range requests to inspect just the headers — scans complete in seconds and use zero disk. Verify SafeTensors compliance before you `git clone`.
+
+### Authentication (private & gated Hugging Face models)
+
+To scan a **private or gated** Hugging Face model, set a Hugging Face access token in the environment. AIsbom reads `HF_TOKEN` first, then `HUGGING_FACE_HUB_TOKEN` (the same precedence as `huggingface_hub`):
+
+```bash
+export HF_TOKEN=hf_xxxxxxxxxxxxxxxxxxxx
+aisbom scan hf://your-org/private-model
+```
+
+The token is sent **only** to `huggingface.co` as a bearer credential on the model-metadata requests; it is dropped on the redirect to the presigned LFS CDN and is never attached to any other host. It is **never written to logs and never included in telemetry** — the only token-related field we emit is a `token_present` boolean (whether *a* token was set), never the value itself. See [Telemetry & Privacy](#telemetry--privacy).
+
+In CI, supply the token from a secret and make sure the runner can reach Hugging Face:
+
+```yaml
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - run: pip install aisbom-cli
+      - run: aisbom scan hf://your-org/private-model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+```
+
+> **Egress note:** hosted/firewalled CI runners must allow outbound HTTPS to `huggingface.co` **and** its LFS CDN (`cdn-lfs.huggingface.co` and the presigned object-storage hosts it redirects to). A blocked CDN hop surfaces as a network/timeout error, not an auth failure.
+
+If the **same scan keeps failing identically** (common in unattended cron/CI jobs pointed at a gated repo with no token), AIsbom notices: from the third consecutive identical failure it prints a loud stderr warning with the likely fix — set `HF_TOKEN` as above, or upgrade if a newer CLI has fixes for that failure mode. The counter lives in a small local state file; see [Telemetry & Privacy](#telemetry--privacy).
+
+### Share a scan with your team
+
+```bash
+aisbom scan ./my-project-folder --share
+```
+
+Generates a hosted, shareable link. The SBOM is uploaded to `aisbom.io` and remains viewable for 30 days. You'll be prompted to confirm before upload (use `--share-yes` to skip the prompt in CI). For exactly what the uploaded document contains, see [Telemetry & Privacy](#telemetry--privacy).
+
+### Detect drift between two scans
+
+```bash
+aisbom diff baseline_sbom.json new_sbom.json
+```
+
+Exits with **code 1** when:
+- A new **CRITICAL** risk is introduced
+- A component's risk level escalates (e.g., LOW → CRITICAL)
+- A verified file's hash changes (marked **INTEGRITY FAIL**)
+
+```text
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Component     ┃ Type     ┃ Change  ┃ Security Risk        ┃ Legal Risk         ┃ Details        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+│ drift-risk.pt │ Modified │ DRIFT   │ LOW → CRITICAL       │ -                  │                │
+│ drift-license │ Modified │ DRIFT   │ -                    │ UNKNOWN →          │ Lic: MIT →     │
+│               │          │         │                      │ LEGAL RISK         │ CC-BY-NC       │
+│ drift-hash.pt │ Modified │ DRIFT   │ INTEGRITY FAIL       │ -                  │ Hash: ...      │
+└───────────────┴──────────┴─────────┴──────────────────────┴────────────────────┴────────────────┘
+```
+
+### Strict mode (allowlist)
+
+For high-security environments, switch from blocklisting (looking for known-bad imports) to allowlisting (blocking everything unknown):
+
+```bash
+aisbom scan model.pkl --strict
+```
+
+Allowed modules: `torch` (and submodules), `numpy`, `collections`, `typing`, `datetime`, `re`, `pathlib`, `copy`, `functools`, `dataclasses`, `uuid`. Any unknown global import is flagged **CRITICAL**.
+
+### Migration readiness (`weights_only=True`)
+
+PyTorch 2.6+ defaults to `weights_only=True`, which breaks many legacy models:
+
+```bash
+aisbom scan model.pt --lint
+```
+
+The Migration Linter statically simulates the unpickling stack to predict runtime failures without executing code.
+
+```text
+🛡️  Migration Readiness (weights_only=True)
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ File           ┃ Issue                         ┃ Recommendation                         ┃
+┡━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ mock_broken.pt │ Custom Class Import Detected: │ Module 'aisbom' is not in PyTorch      │
+│                │ aisbom.mock.Layer             │ default allowlist. Use                 │
+│                │                               │ `torch.serialization.add_safe_globals` │
+└────────────────┴───────────────────────────────┴────────────────────────────────────────┘
+```
+
+### Markdown report (CI/CD)
+
+```bash
+aisbom scan . --format markdown --output report.md
+```
+
+Generates a GitHub-flavored Markdown report suitable for PR comments and CI artifacts.
+
+### SPDX export (enterprise compliance)
+
+SPDX 2.3 (the default):
+
+```bash
+aisbom scan . --format spdx --output sbom.spdx.json
+```
+
+SPDX 3.0 with the **AI Profile** — JSON-LD, increasingly required by
+procurement teams standardizing on the ISO-aligned model:
+
+```bash
+aisbom scan . --format spdx --spdx-version 3.0 --output sbom.spdx.json
+```
+
+The 3.0 document emits each scanned model as an `ai_AIPackage`, declared
+training datasets (from Hugging Face model-card metadata) as
+`dataset_DatasetPackage` elements linked by `trainedOn` relationships, and
+`requirements.txt` pins as `software_Package` elements. Output conforms to the
+released SPDX 3.0.1 schema.
+
+AI Profile fields AIsbom has no source of truth for — energy consumption,
+metrics, safety-risk assessment, hyperparameters — are **omitted rather than
+filled with placeholders**, so a consumer can tell "not asserted" from
+"asserted as unknown". `--spdx-version` defaults to `2.3`; existing output is
+unchanged.
+
+### VEX export (exploitability statements)
+
+An SBOM says what is in the model. A VEX document says which of those findings
+actually matter. FDA §524B has required VEX alongside the SBOM since March
+2026.
+
+```bash
+aisbom scan . --vex --output sbom.json
+```
+
+That writes `sbom.openvex.json` (OpenVEX 0.2.0) and `sbom.vex.cdx.json`
+(CycloneDX VEX) next to the SBOM. Use `--vex-format openvex` or
+`--vex-format cyclonedx` for just one. Every statement addresses the SBOM's
+own components by serial number and `bom-ref`, so the documents join without
+guesswork — which is why `--vex` requires the CycloneDX output format.
+
+Statuses follow the VEX vocabulary. The valuable ones are usually the
+negatives: a `.safetensors` model gets a `not_affected` statement for pickle
+deserialization RCE with justification `vulnerable_code_not_present`, which is
+the machine-readable form of "you can stop asking about this one". A scan that
+could not read a pickle stream to completion reports `under_investigation`
+rather than a clean result.
+
+**These identifiers are AIsbom finding classes, not CVE identifiers.** They
+name categories of content found *inside a model file* — a pickle stream
+importing `os.system`, a Keras Lambda layer, a Jinja chat template with a
+sandbox escape. None of those have a CVE, because the file itself is the
+payload rather than a published component with a patchable defect. The full
+registry is at [`docs/vex-finding-classes.md`](docs/vex-finding-classes.md)
+and each identifier resolves under `https://aisbom.io/vex/`.
+
+#### CVEs in `requirements.txt` pins
+
+The same documents also carry CVE-keyed statements for your Python
+dependencies. With `--vex`, each exact pin (`requests==2.19.0`) is looked up in
+[OSV](https://osv.dev), and every advisory covering that version becomes a
+statement keyed on its CVE — or on its GHSA/PYSEC id when it has no CVE, with
+the other ids listed as `aliases`.
+
+- **Exact pins only.** `torch>=2.0` doesn't say which version is installed, so
+  ranges are skipped and counted in the scan summary rather than guessed at.
+- **`affected` means both OSV and AIsbom agree.** OSV names the candidate
+  advisories; AIsbom re-checks the pinned version against each advisory's
+  published ranges. When the two disagree, or the ranges can't be evaluated,
+  the statement is `under_investigation`.
+- **No `not_affected` for dependencies.** AIsbom can't see whether your code
+  reaches the vulnerable function, and "no advisory found" isn't evidence the
+  vulnerable code is absent, so dependencies never get a negative statement.
+- **Cached for 24 hours** in `~/.aisbom/osv_cache.json`, so repeat CI scans of
+  the same pins make no requests.
+- **Never breaks a scan.** If OSV is unreachable, slow or returns something
+  unexpected, the run prints a warning and the VEX documents simply carry no
+  CVE statements. Exit codes and model findings are unchanged.
+
+A plain `aisbom scan` without `--vex` never contacts OSV. To skip only the OSV
+lookup, pass `--no-osv` or set `AISBOM_NO_OSV=1`; to make no network access at
+all, use [`--offline`](#offline-and-air-gapped-scans).
+
+#### Remediation evidence (`fixed`)
+
+`fixed` is the one status a single scan cannot honestly assert — it is a claim
+about change over time. Pass a previous SBOM and findings that were present
+then and are absent now are reported as `fixed`:
+
+```bash
+aisbom scan . --vex --vex-baseline last-release-sbom.json --output sbom.json
+```
+
+Baselines predating structured findings still work: the finding is recovered
+from the component description rather than reported as a spurious `fixed`.
+
+### Dependency licenses from PyPI
+
+Library components parsed from `requirements.txt` carry the license their
+package declares on PyPI. For each exact pin (`transformers==5.13.1`) the scan
+reads that release's metadata from `https://pypi.org/pypi/<name>/<version>/json`
+and writes the result into the component's standard `licenses[]` field, with an
+`aisbom:license:source` property of `pypi` so you can tell a registry
+declaration from something read out of the file itself.
+
+- **Exact pins only.** `torch>=2.0` doesn't say which release is installed, and
+  licenses occasionally change between releases, so ranges are skipped and
+  counted in the scan summary.
+- **Nothing is guessed.** The PEP 639 `License-Expression` is used when present,
+  then a valid SPDX identifier or expression in the `license` field, then a
+  classifier that names exactly one license. A license *text* pasted into the
+  field, or a classifier such as `BSD License` that doesn't say which BSD,
+  produces no license rather than a wrong one. Other short declarations
+  (`Proprietary`) are kept as a license name.
+- **A declaration, not a verdict.** The license never feeds the legal-risk
+  status shown for model files.
+- **SPDX 2.3** output carries SPDX-valid values as `licenseDeclared`;
+  `licenseConcluded` stays `NOASSERTION`.
+- **Cached** in `~/.aisbom/pypi_license_cache.json` — 30 days for a resolved
+  license, 24 hours for a package that declares none — so repeat CI scans of the
+  same pins make no requests.
+- **Never breaks a scan.** If PyPI is unreachable or rate-limits the lookup, the
+  affected dependencies carry no license, the run prints a warning, and exit
+  codes are unchanged.
+
+### Offline and air-gapped scans
+
+```bash
+aisbom scan ./models --offline
+```
+
+`--offline` (or `AISBOM_OFFLINE=1`) makes no network access of any kind: no
+PyPI license lookup, no OSV lookup, no Hugging Face model-card lookup, no
+telemetry and no update check. A remote target (`hf://`, `https://`) or
+`--share` is refused with exit `1` rather than fetched, since each needs the
+network. The SBOM is otherwise the same, minus the dependency licenses, CVE
+statements and model cards those lookups would have added.
+`aisbom score <target> --offline` works the same way. See the
+[air-gapped guide](docs/air-gapped-guide.md).
+
+### Completeness score (`aisbom score`)
+
+A scan can come back perfectly clean and still produce an SBOM that names no
+licenses, carries no checksums and describes none of the models. `aisbom score`
+grades the document you are about to hand an auditor:
+
+```bash
+aisbom score sbom.json
+```
+
+```
+╭─ AIBOM completeness ─╮
+│ C  63.6/100          │
+│ 7 component(s), 4 model(s), CycloneDX 1.7 │
+╰──────────────────────╯
+```
+
+Seven dimensions, weighted to 100 — 65 points of NTIA-style minimum elements,
+25 of AI-specific description, 10 of VEX:
+
+| Dimension | Weight | Earned by |
+|---|---|---|
+| Component identity | 20 | name, stable `bom-ref`, real version |
+| Checksums | 20 | SHA-256 on every model component |
+| Licenses | 15 | a declared license per component |
+| Model-card coverage | 15 | task / architecture per model |
+| Dataset provenance | 10 | named training datasets |
+| VEX presence | 10 | exploitability statements alongside the inventory |
+| Document provenance | 10 | `metadata.tools`, timestamp, serial number, spec version |
+
+Grades: **A** ≥85, **B** ≥70, **C** ≥55, **D** ≥40, **F** below 40.
+
+The output is a worklist, not a verdict. Gaps are grouped by dimension and
+ranked by how many points closing them is worth, so the cheapest large win
+comes first:
+
+```
+How to improve (53.6 → 100.0 possible)
+   +15.0  Model-card coverage — 4 of 4 model(s) declare no task or architecture
+          → aisbom scan hf://<org>/<model>
+   +10.7  Licenses — 5 of 7 component(s) declare no license
+   +10.0  Dataset provenance — 4 of 4 model(s) name no training data
+   +10.0  VEX presence — no exploitability statements
+          → aisbom scan . --vex --output sbom.json
+    +0.7  Component identity — 1 component(s) incompletely identified
+```
+
+`--verbose` lists every affected component under each entry; `--json` always
+carries the full per-component detail.
+
+Score a target directly and it is scanned first — the document graded is the
+one `aisbom scan` would have written:
+
+```bash
+aisbom score ./models
+aisbom score hf://google-bert/bert-base-uncased
+```
+
+VEX documents written by `scan --vex` are found automatically next to the SBOM;
+`--vex <path>` points elsewhere. A VEX document only counts if it actually
+describes *this* SBOM — both formats bind to the document's serial number — so
+files left behind by an earlier scan are not credited. Scoring a target whose
+scan hit a fetch or parse error exits `1` rather than grading the partial
+result, since a completeness score computed from only the artifacts that
+scanned would overstate the document.
+
+**As a CI gate:**
+
+```bash
+aisbom score sbom.json --fail-under 70
+```
+
+Exit `2` if the score is below the threshold, `1` on an unreadable or
+non-CycloneDX input, `0` otherwise. `--json` emits the full breakdown for
+programmatic use, and still honours `--fail-under`.
+
+A note on what is reachable: `hf://` scans stream byte ranges and never read a
+whole file, so they cannot produce checksums and top out at 80. That is
+reported as a gap with its cause named, not silently excused — scan a local
+copy to fill it in. Scoring is deliberately fixed-denominator: every document
+is graded against all seven dimensions, because a grade computed on a
+per-document denominator is not comparable with anyone else's.
+
+`aisbom score` grades CycloneDX. SPDX input is rejected rather than partially
+scored.
+
+---
+
+## Use as a GitHub Action
+
+Scan ML artifacts on every PR and post a single idempotent comment summarizing findings, with a link to the hosted viewer:
+
+```yaml
+# .github/workflows/aisbom.yml
+name: AIsbom Security Scan
+on:
+  pull_request:
+    paths: ['models/**', 'requirements.txt']
+
+permissions:
+  contents: read
+  pull-requests: write    # required for the PR comment
+
+jobs:
+  aisbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Lab700xOrg/aisbom@v1
+        with:
+          directory: models/
+```
+
+When CRITICAL or HIGH findings are detected, the Action posts a comment like this:
+
+![AIsbom Action — CRITICAL findings](assets/marketplace-critical.png)
+
+When the scan is clean, the comment collapses to a one-line ✅:
+
+![AIsbom Action — clean PR](assets/marketplace-clean.png)
+
+Re-runs update the same comment in place via a hidden `<!-- aisbom-action -->` marker — you'll never see stacked AIsbom comments on the same PR.
+
+### Hosted dashboard (optional)
+
+The PR comment shows you each scan; the hosted dashboard at [app.aisbom.io](https://app.aisbom.io) keeps the history. Set the optional `token` input and every scan's SBOM is posted to your inventory dashboard, where you can browse artifacts across repos and branches, track drift over time, and share an executive view with compliance stakeholders:
+
+```yaml
+      - uses: Lab700xOrg/aisbom@v1
+        with:
+          directory: models/
+          token: ${{ secrets.AISBOM_TOKEN }}
+```
+
+Get a per-repo token at <https://app.aisbom.io/connect> (sign in with GitHub). Leave `token` unset and nothing is sent to the dashboard.
+
+#### Data flow & privacy
+
+The model files themselves never leave the GitHub runner in any configuration — the scan, the SBOM and the PR comment are all produced on the runner. Three things can go over the wire, each with its own switch:
+
+**Dashboard upload — off by default, enabled by setting `token`.** The Action POSTs the generated CycloneDX SBOM JSON to `https://app.aisbom.io/v1/scan-result`, along with the branch/tag name (`GITHUB_REF_NAME`) so the dashboard can attribute results to the right ref.
+
+Setting `token` also makes the Action run the scan with `--vex`, and the two generated VEX documents (OpenVEX and CycloneDX VEX) are uploaded in the same request as `{"sbom": …, "vex": [...]}`. They are derived entirely from findings already described in the SBOM — per finding, whether each scanned artifact is actually affected — and add no new information about your files; they let the dashboard show whether a finding is *exploitable* rather than merely present. The CI log reports how many were sent (`vex-documents=N`). That is the entire payload: SBOM, VEX documents, ref, and the trigger/run identifiers.
+
+Without a `token` the scan runs exactly as before — no `--vex`, no VEX files written to your workspace, no request. Data is stored in the EU (Cloudflare R2/D1, EU jurisdiction). Every upload is announced in a loud log group in your CI output. Remove the `token` input to stop.
+
+**Share upload — off by default, enabled by `share: true`.** The same SBOM is POSTed to `aisbom.io/api/sbom-share`, which mints a **publicly-readable** viewer link retained for 30 days and adds it to the PR comment and the `share-url` output. The unguessable URL token is the only access control, and on a public repository the Action prints that URL into the workflow log, which is itself public. With `share` unset, no request reaches `aisbom.io` and `share-url` is empty.
+
+```yaml
+      - uses: Lab700xOrg/aisbom@v1
+        with:
+          directory: models/
+          share: true       # opt in to the public hosted viewer link
+```
+
+**Anonymous telemetry — on by default,** as described in [Telemetry & Privacy](#telemetry--privacy). `AISBOM_NO_TELEMETRY=1` disables telemetry only; it does not suppress either upload above.
+
+**Package registry lookups — on by default.** Exact `requirements.txt` pins (package name and version only) are looked up on `pypi.org` from the runner to fill in [dependency licenses](#dependency-licenses-from-pypi), and — when `token` is set, which turns on `--vex` — in the OSV database. A model file in the scanned directory that sits in the Hugging Face cache layout or next to a `config.json` naming its repo also triggers a [model-card lookup](#hugging-face-model-card-lookups-local-scans) on `huggingface.co` (repo id and commit only). No SBOM content is sent. Set `AISBOM_OFFLINE=1` in the step's `env:` to skip all of these; it also disables the CLI's telemetry, and it cannot be combined with `share: true`, which needs the network.
+
+For the two upload paths the payload is the SBOM — names, hashes, licenses, risk levels — plus, on the dashboard path only, the VEX documents derived from those same findings. All of it describes the *structure and findings* of your model files, never the weights or file contents. Telemetry carries none of that: no SBOM, no VEX, no file names, no hashes, no repo identifier.
+
+> **Changed in v1.4.0.** Sharing used to be unconditional: every Action run published its SBOM to a public 30-day link whether or not `token` was set, which contradicted the paragraph above. It is now opt-in and off by default. If you consume the `share-url` output or want the viewer link in your PR comments, set `share: true`.
+
+See [`action/README_ACTION.md`](action/README_ACTION.md) for the full inputs/outputs reference, permissions block, and troubleshooting.
+
+---
+
+## Try it on a real pickle bomb
+
+Don't trust the scanner? Scan a bomb yourself. AIsbom ships a built-in mock-malware generator so you can confirm the scanner catches a real RCE payload (and that it's not just lighting up false positives on safe files).
+
+```bash
+# 1. Generate the mock artifacts
+aisbom generate-test-artifacts
+
+# 2. Scan them
+aisbom scan .
+```
+
+You'll see `mock_malware.pt` flagged as **CRITICAL**, license issues flagged on the restricted models, and (with `--lint`) `mock_broken.pt` appear in the Migration Readiness table.
+
+---
+
+## Does AIsbom catch known scanner bypasses?
+
+Most of them — and the ones it doesn't are published rather than hidden. Run the scorecard and see for yourself:
+
+```bash
+pip install py7zr          # only to build the 7z case; the scanner never unpacks 7z
+aisbom bypass-scorecard
+```
+
+This rebuilds a corpus of publicly-documented pickle-evasion techniques — the nullifAI 7z and broken-stream tricks, Sonatype's four picklescan CVEs, JFrog's three zero-days, ShadowPickle, and the Checkmarx `bdb.Bdb.run` gadget — scans each one, and prints what was caught in blocklist mode and in `--strict`.
+
+The results are published verbatim in [docs/bypass-scorecard.md](docs/bypass-scorecard.md), including the cases we only **partially** catch — where the file is refused but the payload was never disassembled, so the reason you're given isn't the real one. Static analysis is not magic, and a scanner that only advertises its wins isn't worth trusting; the corpus is the regression gate that keeps a fixed case from silently coming back.
+
+There's a full write-up of the table, why each partial is a decision rather than an oversight, and the miss that until recently reported "No AI models found" on a directory carrying a reverse shell, at **[Does AIsbom catch it?](https://aisbom.io/blog/does-aisbom-catch-it)**.
+
+Two principles come out of that corpus and shape how the pickle path behaves:
+
+- **A file that can't be parsed cleanly is still scanned.** Truncating a stream, corrupting a ZIP's CRC-32, or making a member's local-header filename disagree with the central directory are all evasions *because* the loaders that matter don't check, while scanners bail out. AIsbom disassembles from the front of the stream regardless, and reads a member straight from its local header when the archive refuses to open it properly.
+- **What a file contains decides its verdict, not what it looks like.** A protocol-0 pickle is printable ASCII, so classifying by shape let a bare pickle calling `os.system` pass as a text config file. Candidates are disassembled first and classified afterwards.
+
+One documented limit: a model repacked in a **non-standard container** (7z, rar, xz, zstd…) is reported CRITICAL and the container format is named, but the payload inside is *not* unpacked and therefore not itemized. Unpacking 7z would put a compression stack and its native dependencies into every install and every standalone binary; the container choice is treated as the finding instead. The scorecard shows this case as ⚠️ partial rather than claiming a detection it hasn't made.
+
+The corpus is synthesized, never copied from live malware — every artifact carries a harmless `echo` where real malware would carry a payload, and the harness proves it never executes what it scans. See [tests/corpus/README.md](tests/corpus/README.md).
+
+---
+
+## Defense in Depth
+
+AIsbom advocates for a two-layer approach:
+
+1. **Layer 1 — Pre-execution.** `aisbom scan --lint` statically analyzes the file structure. Catches obvious malware and incompatible globals without ever loading the file.
+2. **Layer 2 — Runtime isolation.** If you *must* load a model with `REDUCE` opcodes or unsafe globals (common in legacy files), don't run it on bare metal. Use [Sandboxed Execution](docs/sandboxed-execution.md) (e.g., `uvx` + `amazing-sandbox`) to contain any potential RCE.
+
+> [!TIP]
+> **Why both?** Static analysis is fast but can be defeated by complex obfuscation. Runtime sandboxing is secure but slow. Together, they give you speed *and* safety.
+
+---
+
+## Why AIsbom?
+
+AI models aren't just text files — they're executable programs and IP assets.
+
+- **The security risk.** PyTorch (`.pt`) files are Zip archives containing Pickle bytecode. A malicious model executes arbitrary code (RCE) the moment it's loaded.
+- **The legal risk.** A developer might download a "non-commercial" model (e.g., CC-BY-NC) and ship it to production. The license is embedded in the binary header — standard SBOM tools miss it entirely.
+- **The regulatory risk.** What ships inside a model is increasingly something you have to document. The **EU AI Act** puts general-purpose AI models under **Article 53**, with technical documentation described in **Annex XI**. The **EU Cyber Resilience Act** phases in vulnerability reporting from 11 September 2026 and an SBOM requirement in December 2027. **FDA §524B** treats a missing SBOM as a refuse-to-accept criterion for cyber devices, and has required VEX alongside it since March 2026. AIsbom produces the artifacts those filings are assembled from — an AIBOM (ML-BOM) in CycloneDX or SPDX form, plus VEX statements — the evidence MLSecOps and product-security teams get asked for. It surfaces that evidence; it doesn't assess or certify compliance, and that assessment stays with you as the provider.
+- **The solution.** AIsbom looks *inside*. We decompile bytecode and parse binary metadata headers without loading the heavy weights into memory.
+
+---
+
+## How it works
+
+AIsbom uses a static analysis engine to disassemble Python Pickle opcodes. It looks for specific `GLOBAL` and `STACK_GLOBAL` instructions referencing dangerous modules:
+
+- `os` / `posix` / `nt` (system calls)
+- `subprocess` (shell execution)
+- `builtins.eval` / `exec` / `__import__` (dynamic code execution)
+- `socket` (network reverse shells)
+
+It also covers **indirect-execution gadgets** — the "benign-looking module, dangerous method" pairs that reach the same sinks without naming them:
+
+- `bdb` / `pdb` — a debugger's `run`, `runeval` and `runcall` compile and execute a supplied string
+- `asyncio` — subprocess transports and event-loop run methods
+- `pip.main`, `runpy`, `importlib`, `imp` — installing or importing as a way to execute
+- `pty`, `platform.popen`, `multiprocessing`, `ctypes` — process spawning and native library loading
+- `code` / `codeop` / `timeit` / `cProfile` — helpers that take code as a string
+- `operator.methodcaller` — reaches a sink without ever naming it as a global
+
+Two rules generalize the list, so the *next* gadget doesn't need to be enumerated first: a dangerous package governs its submodules (an unlisted `asyncio.*` module is still judged as `asyncio`), and an execution-shaped attribute name (`.run`, `.system`, `.popen`, `.import_module`) is flagged whatever module it arrives through — including on otherwise-trusted packages.
+
+Attribute names are matched **exactly, never as substrings**, so ordinary globals like `torch.storage._load_from_bytes` are untouched. Every entry above was checked against the globals a genuine checkpoint carries (`torch._utils._rebuild_tensor_v2`, `collections.OrderedDict`, `numpy.core.multiarray._reconstruct`, …) — a scanner that flags real models is one people switch off, which is a worse outcome than a missed case.
+
+### Beyond pickle
+
+Pickle is not the only way a model file gets code to run. Each of the other formats has its own vector, and each is read as inert data:
+
+**joblib, dill and NumPy object arrays** (`.joblib`, `.dill`, `.npy`, `.npz`) are pickle underneath — the everyday serialization of scikit-learn and scientific Python, carrying exactly the arbitrary-code-execution risk of a `.pt`, and opened by almost nothing that calls itself an SBOM tool. AIsbom reads them without importing joblib, dill or numpy: the compression is standard-library, the `.npy` header is parsed by hand, and nothing is ever unpickled.
+
+Two things about these formats are worth stating plainly:
+
+- **A raw array block does not end the scan.** joblib writes its pickle up to an array, dumps the raw buffer inline, then resumes pickling — which stops an opcode disassembly dead a few hundred bytes into the file. Since every real model has weights, "after the first array" is the natural place for a payload. The remaining bytes get a second pass that recovers globals directly, so a dangerous import behind an array block is still reported. That pass reads bytes rather than structure, so it recognises *known* sinks only: in strict mode it does not contribute unrecognized-import findings, and it cannot judge a dual-use constructor like `operator.methodcaller("system")`, because the argument that decides is a stack relationship it has no stack for.
+- **A declared dtype never decides whether to look.** The `.npy` header is attacker-supplied, so a pickle sitting behind a header claiming `'<f8'` would otherwise be a one-line evasion. The data section is disassembled whatever the header says. What the header *does* affect is the reported risk: an array of ordinary numbers with no pickle in it is LOW, not "pickle present".
+
+- **No limit ends in a clean verdict.** Four bounds apply here — the file-read budget, the `.npz` member count, the decompressor's output cap, and the disassembler's stream budget — and each one leaves bytes unexamined. Hitting any of them reports `MEDIUM (Pickle Scan Incomplete)` rather than passing the prefix off as the whole file. A limit that reports "clean" is not a safety measure; it is a hiding place with a length attached. A real finding still outranks the marker.
+
+joblib's `lz4` and `zstd` codecs have no standard-library decompressor. Following the same reasoning as 7z containers, those are **named but not opened** — `MEDIUM (Unscanned Container: lz4)` — rather than pulling a native dependency into every install and every standalone binary. That is an honest "we did not read these bytes", which is a different answer from a clean scan.
+
+**SafeTensors and GGUF** use binary formats with structured headers — AIsbom parses these directly to extract metadata (artifact names, license info, architecture details) without loading tensor weights.
+
+**Keras** (`.keras`, `.h5`, `.hdf5`) carries a different execution vector: a `Lambda` layer stores an arbitrary Python callable in the model config as a base64-encoded marshalled code object, and `load_model` runs it. AIsbom reads the config out of both containers — the `.keras` zip and the legacy HDF5 attribute — and flags `Lambda` layers and embedded code objects as CRITICAL. The payload is identified from its header bytes and **never unmarshalled**. A truncated or corrupted container is still scanned rather than skipped, so damaging a file is not a way to hide a payload.
+
+**GGUF chat templates.** A GGUF model can ship a Jinja template in its metadata (`tokenizer.chat_template`). Unlike a pickle payload it isn't run when the file is opened — it runs on *every inference request*, which is what makes a hostile one worth catching: it executes as a consequence of using the model normally. AIsbom reads the template as a string and flags sandbox-escape constructs — attribute-traversal chains (`__class__`, `__subclasses__`, `__globals__`), the `|attr()` filter used to bypass attribute restrictions, and references to code-execution or OS callables — as CRITICAL. Template inclusion tags are MEDIUM, since they need a target template to matter. Models shipping several named variants (`chat_template.default`, `.tool_use`) have each one scanned. **The template is never rendered, parsed by a template engine, or compiled** — handing a hostile template to Jinja to find out whether it's hostile would be the vulnerability. Only its SHA-256 goes into the SBOM, never the template body.
+
+**ONNX** (`.onnx`) is a protobuf message, walked directly — no ONNX runtime is imported and the graph is never executed. Alongside the metadata (producer, opset, IR version, graph name, operator inventory) it surfaces two signals:
+
+- **External-data references.** A tensor's bytes can live outside the model file, addressed by a relative path. A path that climbs out of the model directory — or names an absolute path or a URL — is **CRITICAL**: loaders resolve and open that path, so loading a model becomes a read of a file the author chose. Paths that stay inside the directory are MEDIUM, because the model isn't self-contained and those bytes aren't covered by its hash.
+- **Custom operators.** An operator outside the standard ONNX domains needs a matching custom op library registered at load time — a native-code dependency the consumer inherits. MEDIUM.
+
+Graphs nested inside `If`, `Loop` and `Scan` nodes are walked too, since those execute. The graph walk itself is near-constant regardless of model size — bulk tensor data is stepped over rather than read, so the structure of a multi-gigabyte model is inspected about as quickly as a small one's. Total scan time still grows with file size, because every artifact is SHA-256 hashed for the SBOM, and that reads the whole file.
+
+For weekly scan findings on the top 50 most-downloaded Hugging Face text-generation models, see [aisbom.io/advisories](https://aisbom.io/advisories?ref=cli-readme).
+
+---
+
+## Telemetry & Privacy
+
+AIsbom collects a small amount of anonymous usage telemetry — what model formats people scan, how often critical findings appear, whether scans run in CI — to help us prioritize what to build. We treat this with the same care we expect from any security tool. Read what we collect, then opt out if you'd rather not participate.
+
+### What's collected
+
+Per `aisbom scan`: `target_type` (the **bucket**: `local` / `huggingface` / `http` / `https` — never the actual path or URL), `model_format` (the file-type bucket), `risk_level_max`, `scan_duration_ms`, `file_count`, `parse_error_count` (all scan errors), `target_error_count` (how many of those were an unusable scan target — a missing path or an unsupported file), `strict_mode`. A `cli_scan_critical_found` event with a count is added when at least one CRITICAL is found.
+
+If you explicitly use `--share`: the generated `sbom.json` document is uploaded to our servers and retained for 30 days to generate the shareable viewer link. That document is the **full CycloneDX SBOM** — for each scanned model it carries the file name, SHA-256 hash, detected license, and structured `aisbom:*` properties describing the file's format and scan findings (such as dangerous pickle opcodes, tensor/header metadata, model architecture details, and the assessed risk and legal status) so the hosted viewer can render per-format detail. For `hf://` scans, and for local files matched to their Hugging Face repo, it additionally carries the `modelCard` block described above — task, architecture, training datasets and the repo's licence/revision, all of which are already public metadata published on the model's Hugging Face page. These describe the *structure and findings* of your model files, never their weights or data. Nothing leaves your machine unless you pass `--share` and confirm the prompt (or pass `--share-yes`). Note that `AISBOM_NO_TELEMETRY=1` does **not** suppress this upload — it withholds the `cli_share_created` event only; dropping `--share` is what stops the upload. If you use the GitHub Action rather than the CLI directly, the Action passes `--share --share-yes` on your behalf when you set its `share: true` input, and passes neither otherwise. A `cli_share_created` event is fired tracking whether `has_share_yes=true|false`.
+
+Per `aisbom diff`: a `cli_diff` event with `has_drift=true|false`.
+
+On a scan fetch failure or unhandled exception: a `cli_error` event records the exception class name only (e.g. `JSONDecodeError`), a low-cardinality `http_status` bucket (e.g. `401`, `timeout`), a `token_present` boolean (whether an `HF_TOKEN` / `HUGGING_FACE_HUB_TOKEN` was set), and a `consecutive_failures` bucket (`1`–`9` or `10+` — how many runs in a row hit the same failure shape) — never the token value, the message, the traceback, a URL, or any file content.
+
+When the scan target itself is unusable (a path that doesn't exist, a file no scanner supports, or something that isn't a regular file or directory): a `cli_error` event with the same fields, where `error_type` is one of a fixed set — `MissingTarget`, `UnsupportedFileType`, or `NotAFileOrDirectory` — and `http_status` is `none`. Never the path, the file name, or its extension.
+
+### Local state (no network)
+
+To detect failure loops (see [Authentication](#authentication-private--gated-hugging-face-models)), AIsbom keeps `~/.aisbom/loop_state.json`: the failure *shape* of the last failing scan (exception class name or unusable-target reason, HTTP status bucket or `none`, target-type bucket — never a URL, repo id, or path), a consecutive-run counter, and a timestamp. This file is purely local UX state and involves no network, so it is written **even when `AISBOM_NO_TELEMETRY` is set**; it is cleared automatically when a scan of the same target class succeeds, and deleting it is always safe.
+
+Each event carries an anonymous `user_id` — a SHA-256 of your machine's MAC address plus an app salt, truncated to 16 hex chars. Stored in `~/.aisbom/config.json`. Lets us see returning users without identifying anyone.
+
+### OSV lookups (`--vex` only)
+
+When you pass `--vex` and the scan finds exact `requirements.txt` pins, AIsbom sends each pinned **package name and version** to the public OSV API at `https://api.osv.dev`, and fetches the advisories it names. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. This is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--no-osv`, `AISBOM_NO_OSV=1` or `--offline` does. Responses are cached locally in `~/.aisbom/osv_cache.json` for 24 hours, and deleting that file is always safe.
+
+### PyPI license lookups (on by default)
+
+When a scan finds exact `requirements.txt` pins and writes CycloneDX or SPDX 2.3 output, AIsbom requests each pinned **package name and version** from the public PyPI JSON API at `https://pypi.org/pypi/<name>/<version>/json` to read its declared license. Nothing else is sent: no file paths, model names, hashes, findings, or identifiers. Like the OSV lookup this is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--offline` or `AISBOM_OFFLINE=1` does. Answers are cached locally in `~/.aisbom/pypi_license_cache.json`, and deleting that file is always safe.
+
+### Hugging Face model-card lookups (local scans)
+
+When a local scan writes CycloneDX 1.7 or SPDX 3.0 output (or `aisbom score` grades a directory) and a model file is in the Hugging Face cache layout, or sits next to a `config.json` whose `_name_or_path` looks like `org/name`, AIsbom asks `https://huggingface.co` for that repo's file list (`/api/models/<repo>/tree/<revision>`, one request per page) and, if the file's hash is in that list, its model card (`/api/models/<repo>` or `/revision/<commit>`). Each repo is asked once per scan however many of its files are present. What is sent is the **repo id** and, for cached files, the **commit** from the cache path. The hash comparison happens on your machine, so no file paths, file names, hashes or findings are sent. A `_name_or_path` that is a single name, looks like a path, or names a directory that exists next to the file is never sent. A tree with none of this evidence makes no request. If `HF_TOKEN` is set it is sent to `huggingface.co` as for `hf://` scans, so matches in private repos you can access work too. This is a request to a third-party service, not telemetry, so `AISBOM_NO_TELEMETRY` does not affect it; `--no-hf-lookup`, `AISBOM_NO_HF_LOOKUP=1` or `--offline` does. Nothing is cached.
+
+### What's never collected
+
+File paths, directory contents, model names, target URLs, file hashes from your SBOMs, exception messages, tracebacks, or anything that could identify you, your project, or your organization.
+
+### Opt out
+
+Set `AISBOM_NO_TELEMETRY=1`. This wins over every other setting — telemetry will not fire and `~/.aisbom/config.json` will not be written. (The [local, network-free `loop_state.json`](#local-state-no-network) is the one file still maintained, since it never leaves your machine.)
+
+```bash
+# Permanent
+export AISBOM_NO_TELEMETRY=1
+
+# Single invocation
+AISBOM_NO_TELEMETRY=1 aisbom scan ./my-project
+```
+
+`AISBOM_OFFLINE=1` (or `--offline` on `scan` and `score`) goes further: it disables telemetry and also every other network request — the update check and the PyPI, OSV and Hugging Face model-card lookups.
+
+### Where the data goes
+
+Events POST to `https://api.aisbom.io/v1/telemetry` (a Cloudflare Worker we operate), which sanitizes the payload and forwards to Google Analytics 4 on the dedicated `cli.aisbom.io` data stream. We don't share, sell, or use this data for ad targeting.
+
+### CI environments
+
+When `CI=true` or `GITHUB_ACTIONS=true`, the `cli_install_first_seen` event is suppressed (containers are ephemeral and would otherwise spam the metric). Other events still fire, tagged `is_ci=true`.
+
+### Status
+
+As of **0.9.1**, telemetry is **on by default**. `AISBOM_NO_TELEMETRY=1` is the single opt-out lever and is honored on every code path. The previous `AISBOM_TELEMETRY_V2=1` opt-in flag was retired once the rollout soak completed — setting it today is a harmless no-op.
+
+---
+
+## Links
+
+- [aisbom.io](https://aisbom.io/?ref=cli-readme) — landing page + live viewer demo
+- [Live SBOM viewer](https://aisbom.io/viewer?ref=cli-readme) — drag-and-drop dashboard
+- [Public advisories](https://aisbom.io/advisories?ref=cli-readme) — weekly scans of the top 50 HF models
+- [Changelog](https://aisbom.io/changelog?ref=cli-readme) — release history with RSS feed
+- [GitHub Marketplace](https://github.com/marketplace/actions/aisbom-security-scanner) — the Action listing
+
+---
+
+*Built with ❤️ in Austin.*

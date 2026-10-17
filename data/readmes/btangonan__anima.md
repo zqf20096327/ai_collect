@@ -1,0 +1,151 @@
+<h1 align="center">
+    <img src="graphics/02_gifs/00_git-ready/anima_wordmark_sprites4.gif" alt="Anima" width="900">
+</h1>
+
+<h2 align="center" style="padding-bottom: 20px;">
+  A 4MB native Claude Code client with extra Buddies.
+</h2>
+
+<div align="center" style="margin-top: 25px;">
+
+[![Tauri v2](https://img.shields.io/badge/Tauri-v2-d87756?logo=tauri&logoColor=white&style=for-the-badge&labelColor=000000)](https://tauri.app)
+[![macOS](https://img.shields.io/badge/macOS-13%2B-d87756?logo=apple&logoColor=white&style=for-the-badge&labelColor=000000)](https://www.apple.com/macos/)
+[![license](https://img.shields.io/badge/license-MIT-d87756?style=for-the-badge&labelColor=000000)](LICENSE)
+[![version](https://img.shields.io/badge/version-0.1.0--alpha-d87756?style=for-the-badge&labelColor=000000)](https://github.com/btangonan/anima/releases)
+
+</div>
+
+<div align="center">
+<a href="https://github.com/btangonan/anima/releases">📦 Releases</a> • <a href="https://github.com/btangonan/anima/discussions">💬 Discussions</a> • <a href="https://github.com/btangonan/anima/issues">🐛 Issues</a> • <a href="CONTRIBUTING.md">🤝 Contributing</a>
+</div>
+
+<br/>
+
+Anima turns your Claude buddy into an oracle. A cross-session code supervisor running the full Claude model, inside a native macOS app. It watches tool patterns across every active session, catches retry loops and read-heavy spirals before you've noticed them, and surfaces observations you can select and paste straight into the conversation.
+
+Claude Code ships with a basic buddy. An ASCII creature that hatches in your terminal, watches you work, and occasionally drops a line in a speech bubble. It's charming. It's also limited: the buddy can't see across sessions, can't remember what happened last time, its commentary comes from a small model working with a 5,000-character window, and the speech bubble text can't be copied or pasted back into your session.
+
+Each project folder also gets its own familiar. An ASCII companion that animates while Claude is working, so you can see at a glance which sessions are done and waiting on you. Every 1,000 tokens earns 1 @nim@. Spend it to re-roll for a new species, rarity, and personality.
+
+<p align="center">
+<img src="graphics/02_gifs/00_git-ready/anima-demo2.gif" alt="Anima demo">
+</p>
+
+## What Anima does that the terminal doesn't
+
+Anima spawns Claude Code as a subprocess, pipes stream-json, renders messages in its own UI, and manages sessions. It's not watching Claude from the outside. It is the interface.
+
+1. **Multi-session dashboard.** All your Claude Code sessions in one window. See at a glance which are working, which are done, and which are waiting on you.
+2. **Cross-session watcher.** A Rust daemon monitors tool patterns across all sessions. Catches retry loops and read-heavy spirals before you've noticed them.
+3. **Persistent companions.** Every project gets its own ASCII creature with species, rarity, and stats. Token usage earns nim currency for re-rolls. Same project always rolls the same buddy.
+4. **Oracle commentary.** Your companion's observations run through the full Claude model, not the small one /buddy uses. The text is selectable so you can paste it straight back into your session.
+5. **Session history.** Replay past conversations without digging through JSONL files.
+6. **Voice input.** Bluetooth mic and push-to-talk via WebSocket bridge.
+7. **Model and effort overrides.** Switch models and effort levels per session from the UI.
+
+## Features
+
+- **One project, one companion.** Every project gets a unique familiar generated from a weighted rarity pool. Two developers on the same codebase won't get the same creature.
+- **@nim@ token economy.** 1 @nim@ per 1000 tokens spent. Spend on re-rolls and new characters.
+- **Collectible familiar cards.** Each project gets a stat card: species, rarity, power ratings, session history.
+- **Cross-session watcher.** Rust daemon monitors all active Claude sessions simultaneously. Catches retry loops and read-heavy spirals in real time.
+- **Oracle commentary.** Companion fires contextual observations in a speech bubble. Selectable text you can paste straight into the session.
+- **Voice input.** Bluetooth mic + push-to-talk. Hands-free Claude via WebSocket bridge.
+- **Session history.** Full session browser. Replay any past conversation. JSONL-backed.
+- **Native performance.** Tauri v2 + Rust backend. Actual macOS app, 4MB binary.
+
+## How it looks
+
+<p align="center">
+<img src="graphics/02_gifs/00_git-ready/anima_a.gif" alt="Sessions and companions">
+</p>
+
+<p align="center">
+<img src="graphics/02_gifs/00_git-ready/anima_c-1.gif" alt="Watcher commentary">
+</p>
+
+**The watcher sees what you miss.** The daemon tracks tool patterns across all active sessions. When it catches you going in circles, the companion says something.
+
+<p align="center">
+<img src="graphics/02_gifs/00_git-ready/anima_d.gif" alt="Multi-session workflow">
+</p>
+
+Commentary runs as short background prompts via the Claude CLI, capped at 2 concurrent calls. All processing is local; nothing leaves your machine except the API calls you'd make anyway.
+
+## Requirements
+
+- macOS 13 Ventura or later, Apple Silicon
+- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated (`claude login`)
+- Node.js 20 LTS — pinned by `.nvmrc`; run `nvm use` after cloning. Node 22+ trips [vitest #8757](https://github.com/vitest-dev/vitest/issues/8757); on those versions run tests with `NODE_OPTIONS=--no-webstorage npm test`.
+- [Git LFS](https://git-lfs.com) — required at clone time; the bundled voice sidecar binaries are LFS-tracked
+- Rust toolchain (`rustup`) and Xcode Command Line Tools (`xcode-select --install`) — required for `npm run tauri dev` and `npm run tauri build`
+
+### Voice (optional)
+
+Live voice STT/TTS is optional and defaults off. Without it, the indicator stays gray and the rest of the app — sessions, companion, oracle, nim, history, slash menu — works fully. The bundled `anima-stt` sidecar is shipped via LFS but disabled by default (it's missing `mlx_whisper`); enable it with `ANIMA_SKIP_BUNDLED_STT=0` once that lands. To run live voice today, point an external WebSocket STT bridge at `ws://127.0.0.1:9876` before launching Anima.
+
+## Getting Started
+
+1. Install and authenticate Claude Code:
+   ```bash
+   npm install -g @anthropic-ai/claude-code
+   claude login
+   ```
+2. Build from source (see below — no signed `.dmg` is published yet):
+   ```bash
+   git clone https://github.com/btangonan/anima
+   cd anima
+   git lfs install && git lfs pull
+   nvm use && npm install
+   npm run tauri dev
+   ```
+3. Point it at a project directory and start a session.
+
+The companion generates on first session. @nim@ accrues automatically.
+
+### Troubleshooting
+
+**No sessions starting or blank companion?** Anima requires an authenticated Claude Code CLI. Run `claude login` in your terminal and reopen the app.
+
+### Build from source
+
+```bash
+git clone https://github.com/btangonan/anima
+cd anima
+git lfs install && git lfs pull   # required: bundled voice binaries are LFS-tracked
+nvm use                            # picks up .nvmrc (Node 20)
+npm install
+npm run tauri dev
+```
+
+Production build (currently unsigned; macOS Gatekeeper will warn on first launch):
+
+```bash
+npm run tauri build
+# Output: src-tauri/target/release/bundle/
+```
+
+Tests:
+
+```bash
+npm run test:all                   # vitest + cargo test
+cd src-tauri && cargo clippy       # lint
+```
+
+## How It Works
+
+Anima is a Tauri v2 desktop app. The frontend is vanilla JS, no framework, no bundler. The Rust backend handles file I/O, path security, companion sync, and the cross-session watcher. A WebSocket bridge handles voice input.
+
+The watcher (`daemon.rs`) is a Tokio async loop that polls Claude Code's session feed, tracks tool sequences across all active sessions, and emits companion commentary via Tauri events when patterns fire. The oracle (the voice behind the companion bubble) is a `claude -p` subprocess with personality context injected from your companion's species and stats.
+
+Full architecture notes: [`docs/architecture.md`](docs/architecture.md)
+
+## Contributing
+
+Issues and PRs welcome. See [`.github/ISSUE_TEMPLATE`](.github/ISSUE_TEMPLATE) for bug report and feature request templates.
+
+Alpha software. Solo project. Breaking changes happen.
+
+## License
+
+MIT © [Bradley Tangonan](https://github.com/btangonan)

@@ -1,0 +1,488 @@
+<div align="center">
+  <img src="logo.png" alt="TensorLib Logo" width="450"/>
+</div>
+
+<h1 align="center">TensorLib</h1>
+
+<p align="center">
+  <a href="https://github.com/nisbenz/tensorlib/actions/workflows/ci.yml"><img src="https://github.com/nisbenz/tensorlib/actions/workflows/ci.yml/badge.svg" alt="CI status"/></a>
+  <img src="https://img.shields.io/badge/C-C99-00599C?logo=c" alt="C99"/>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT license"/></a>
+</p>
+
+<p align="center">
+  <em>A from-scratch deep learning tensor library written entirely in C</em>
+</p>
+
+<p align="center">
+  N-dimensional tensors with autograd, Transformer building blocks, loss functions, optimizers, checkpointing, and SIMD-accelerated matmul.
+  <br/>
+  <strong>Zero external ML dependencies.</strong>
+</p>
+
+<p align="center">
+  Inspired by
+  <a href="https://github.com/pytorch/pytorch">PyTorch</a>,
+  <a href="https://github.com/ggerganov/llama.cpp/tree/master/ggml">ggml</a>, and
+  <a href="https://github.com/OpenMathLib/OpenBLAS">OpenBLAS</a>.
+</p>
+
+<p align="center">
+  <img src="inference.gif" alt="TensorLib Inference Demo"/>
+</p>
+
+---
+
+## Key Features
+
+- **Tensor Core** — N-dimensional `float32` arrays with NumPy-style broadcasting, zero-copy strided views, and reference-counted storage
+- **Autograd Engine** — Dynamic reverse-mode automatic differentiation over 24 differentiable operations with stale-graph detection
+- **Neural Network Modules** — Composable module hierarchy with Linear, Embedding, LayerNorm, Dropout, Multi-head Causal Self-Attention, MLP, and full GPT-style Decoder
+- **Loss Functions** — Cross-entropy (numerically stable), Softmax, LogSoftmax
+- **Optimizers** — SGD and AdamW (decoupled weight decay, bias correction, gradient clipping)
+- **Checkpointing** — Versioned, atomic (transaction-safe) binary save/load with optimizer and RNG state
+- **SIMD Matmul** — AVX2+FMA blocked micro-kernel with packed-RHS optimization (MR=4, NR=16)
+- **Deterministic RNG** — Splitmix64 PRNG with uniform and normal (Box-Muller) distributions
+- **CPU only, no Python, no CUDA, no third-party ML libraries**
+
+---
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Applications
+        A1["tiny_lm<br/>Byte-level LM"]
+        A2["mnist_mlp<br/>Digit Classifier"]
+        A3["autograd_example<br/>Computation Graph"]
+    end
+
+    subgraph NN["Neural Network Modules"]
+        N1["Linear, Embedding, LayerNorm"]
+        N2["Multi-Head Causal Attention"]
+        N3["Decoder Block (Pre-Norm)"]
+        N4["Full Decoder Stack"]
+        N5["Loss Functions"]
+        N6["Optimizers (SGD, AdamW)"]
+        N7["Checkpointing"]
+    end
+
+    subgraph AG["Autograd Engine"]
+        G1["24 Differentiable Ops"]
+        G2["Graph Construction"]
+        G3["Backward Pass"]
+        G4["Broadcast Gradient Reduction"]
+    end
+
+    subgraph TC["Tensor Core"]
+        T1["Allocation & Views"]
+        T2["Element-wise Ops"]
+        T3["Reductions"]
+        T4["Gather"]
+    end
+
+    subgraph SK["SIMD Kernels"]
+        S1["AVX2+FMA Matmul"]
+        S2["Packed RHS"]
+        S3["Batched Strided"]
+    end
+
+    A1 --> N4
+    A2 --> N1
+    A3 --> G1
+
+    N4 --> N3
+    N3 --> N2
+    N2 --> N1
+    N4 --> N5
+    N6 --> G3
+    N7 --> G2
+
+    N1 --> G1
+    N2 --> G1
+    N5 --> G1
+
+    G1 --> T2
+    G3 --> T2
+    G4 --> T3
+
+    T1 --> T2
+    T2 --> T4
+    T3 --> T4
+
+    T4 --> S1
+    S1 --> S2
+    S1 --> S3
+```
+
+## Documentation
+
+Comprehensive documentation is available for each component:
+
+| Document | Description |
+|----------|-------------|
+| [**Tensor Mechanics**](docs/tensor_mechanics.md) | Storage model, strided views, broadcasting, AVX2 matmul kernel, API reference |
+| [**Autograd Engine**](docs/autograd_engine.md) | Computation graph, 24 differentiable ops, backward pass algorithm, gradient reduction |
+| [**Neural Network Modules**](docs/neural_network_modules.md) | Module system, all layers, loss functions, optimizers, checkpointing |
+| [**Decoder Implementation**](docs/decoder_implementation.md) | GPT-style decoder stack, multi-head attention, causal masking, training guide |
+| [**Benchmark Guide**](docs/benchmarks.md) | Suites, timing methodology, CSV schema, comparisons, and reproducible reporting |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow and change
+guidelines.
+
+---
+
+## Component Deep-Dive
+
+### Tensor Core
+
+Fixed-precision (`float32`) n-dimensional arrays with:
+
+- **Strided layout** — element accessed via `offset + sum(coords[i] * strides[i])`
+- **Zero-copy views** — reshape, transpose, slice, squeeze, expand share storage
+- **Reference counting** — storage freed when last tensor is destroyed
+- **Version counter** — detects stale computation graphs in autograd
+- **Broadcasting** — right-aligned NumPy-style broadcasting for all element-wise ops
+
+```mermaid
+graph LR
+    subgraph Storage
+        S["float* data | refcount: 3 | version: 5"]
+    end
+
+    T1["tensor A | shape: [2,3]"] --> S
+    T2["tensor B (view) | shape: [3,2] | offset: 0"] --> S
+    T3["tensor C (slice) | shape: [1,3] | offset: 3"] --> S
+```
+
+See [tensor_mechanics.md](docs/tensor_mechanics.md) for the full tensor API, broadcasting rules, and AVX2 matmul kernel internals.
+
+### Autograd Engine
+
+Dynamic reverse-mode automatic differentiation — the graph is built eagerly during forward execution:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant AG as Autograd
+    participant Tensor
+
+    User->>AG: ag_matmul(a, b)
+    AG->>Tensor: Execute t_matmul forward
+    AG->>AG: Create ag_node with backward fn
+    AG->>Tensor: Create result ag_tensor (creator = node)
+    AG-->>User: Return ag_tensor
+
+    User->>AG: ag_backward(result)
+    AG->>AG: Reverse topological sort
+    loop For each node in reverse order
+        AG->>AG: Check storage versions (stale detection)
+        AG->>Tensor: Compute input gradients via backward fn
+        AG->>AG: Reduce gradients if broadcast
+        AG->>AG: Accumulate on leaf tensors
+    end
+```
+
+See [autograd_engine.md](docs/autograd_engine.md) for the full algorithm including broadcast-gradient reduction and transactional error handling.
+
+### Neural Network Modules
+
+C-style OOP module system with function-pointer dispatch:
+
+```mermaid
+classDiagram
+    class nn_module {
+        +const char* type_name
+        +char* name
+        +forward_fn forward
+        +destroy_fn destroy
+        +nn_module* parent
+        +nn_parameter** params
+        +nn_module** children
+        +bool training
+    }
+
+    class nn_linear {
+        +nn_module base
+        +ag_tensor* weight
+        +ag_tensor* bias
+    }
+
+    class nn_layer_norm {
+        +nn_module base
+        +ag_tensor* gamma
+        +ag_tensor* beta
+    }
+
+    class nn_multihead_attention {
+        +nn_module base
+        +ag_tensor* qkv_weight
+        +ag_tensor* out_weight
+        +int n_heads
+    }
+
+    class nn_decoder {
+        +nn_module base
+        +nn_embedding* token_embed
+        +nn_positional_embedding* pos_embed
+        +nn_decoder_block** blocks
+        +nn_layer_norm* final_norm
+        +nn_linear* lm_head
+    }
+
+    nn_module <|-- nn_linear
+    nn_module <|-- nn_layer_norm
+    nn_module <|-- nn_multihead_attention
+    nn_module <|-- nn_decoder
+    nn_decoder o-- nn_decoder_block
+    nn_decoder_block o-- nn_multihead_attention
+```
+
+See [neural_network_modules.md](docs/neural_network_modules.md) for all layers, loss functions, optimizers, and checkpointing.
+
+### Decoder Stack
+
+GPT-2-style causal transformer decoder:
+
+```mermaid
+flowchart TB
+    Input["Input Token IDs [batch, seq]"]
+
+    TE["Token Embedding: vocab -> d_model"]
+    PE["Positional Embedding: seq -> d_model"]
+    Add["+ Addition"]
+
+    B1["Decoder Block 1"]
+    B2["Decoder Block 2"]
+    B3["Decoder Block N"]
+
+    LN["Final LayerNorm"]
+    LH["LM Head (Linear): d_model -> vocab"]
+    Output["Output Logits [batch, seq, vocab]"]
+
+    Input --> TE
+    Input --> PE
+    TE --> Add
+    PE --> Add
+    Add --> B1
+    B1 --> B2
+    B2 --> B3
+    B3 --> LN
+    LN --> LH
+    LH --> Output
+```
+
+Each decoder block follows the pre-norm pattern (GPT-2):
+1. LayerNorm -> Multi-Head Causal Self-Attention -> Residual
+2. LayerNorm -> MLP (FFN) -> Residual
+
+See [decoder_implementation.md](docs/decoder_implementation.md) for multi-head attention internals, causal masking, and the TinyLM training guide.
+
+---
+
+## Quick Start
+
+### Build
+
+```sh
+# CMake (recommended)
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
+
+# Optional: install for use from another CMake project
+cmake --install build --prefix ./install
+
+# Portable serial build, useful when OpenMP is unavailable
+cmake -S . -B build-serial -DTENSORLIB_ENABLE_OPENMP=OFF
+
+# Makefile
+make          # build and run all tests
+make tiny-lm  # build TinyLM example
+make mnist    # build MNIST example
+```
+
+Installed projects can link the exported `TensorLib::tensorlib` target after
+calling `find_package(TensorLib CONFIG REQUIRED)`.
+
+```c
+#include <tensorlib/tensor.h>
+
+const int shape[] = {2, 3};
+tensor *value = t_alloc(2, shape);
+/* use value */
+t_free(value);
+```
+
+Tests and examples are enabled for top-level builds. Benchmarks are opt-in with
+`-DTENSORLIB_BUILD_BENCHMARKS=ON`; strict warnings and sanitizers are available
+through `TENSORLIB_WARNINGS_AS_ERRORS` and `TENSORLIB_ENABLE_SANITIZERS`.
+
+### Train a Language Model
+
+```sh
+./build/tiny_lm corpus.txt --steps 5000 --generate 200 --prompt "To be"
+```
+
+4-layer, 192-width, 6-head decoder transformer (~1.9M params) trained with AdamW on raw byte corpora. See [examples/tiny_lm/README.md](examples/tiny_lm/README.md).
+
+### Train an MNIST Classifier
+
+```sh
+./build/mnist_mlp
+```
+
+784 -> 128 ReLU -> 10 Softmax MLP trained with SGD and cross-entropy loss.
+
+---
+
+## Testing
+
+33 unit test executables cover every component, with an additional TinyLM CLI smoke test:
+
+```sh
+# Run all tests after building
+ctest --test-dir build --output-on-failure
+
+# Or via Makefile
+make test
+```
+
+| Category | Tests | Coverage |
+|----------|-------|----------|
+| Tensor | 6 | Core, alloc, view, ops, reductions, matmul |
+| Autograd | 9 | Core, ops, views, gather, reductions, matmul, backward, integration, public API |
+| NN Modules | 16 | RNG, parameters, modules, init, linear, embedding, positional, layer norm, dropout, attention, decoder block, decoder, loss, causal mask, checkpoint, MLP |
+| Optimizers | 2 | SGD, AdamW |
+
+---
+
+## Performance
+
+The benchmark suite covers tensor kernels, autograd, neural-network modules,
+end-to-end training steps, and OpenMP scaling. Run the quick profile with:
+
+```sh
+make benchmark-quick BUILD_DIR=build-bench
+```
+
+Optional OpenBLAS and PyTorch workload comparisons are available through
+`make benchmark-compare`. See the [benchmark guide](docs/benchmarks.md) for
+profiles, suite selection, thread controls, CSV fields, and fair-comparison
+requirements.
+
+### Matmul implementation
+
+The matmul kernel uses a tile-based blocked algorithm:
+
+```mermaid
+graph TB
+    subgraph Tiling["Matmul Tiling Strategy"]
+        direction TB
+        C["C [M x N] Output"]
+        A["A [M x K] LHS"]
+        B["B [K x N] RHS (packed)"]
+
+        subgraph Tiles["Tile Loop: MC=64, NC=64, KC=128"]
+            T1["Micro-kernel: MR=4, NR=16"]
+        end
+    end
+
+    A --> Tiles
+    B --> Tiles
+    Tiles --> C
+```
+
+**Kernel parameters:**
+- Micro-kernel: MR=4 rows x NR=16 columns (AVX2: 8 floats x 2 registers)
+- Tile sizes: MC=64, NC=64, KC=128
+- RHS packing: pre-pack B panels for cache-friendly access
+- SIMD: AVX2+FMA with `_mm256_fmadd_ps`
+
+See [tensor_mechanics.md](docs/tensor_mechanics.md) for kernel implementation details.
+
+## Project Structure
+
+```
+tensorlib/
+├── README.md                     # This file
+├── CONTRIBUTING.md               # Development and testing guide
+├── CMakeLists.txt                # CMake build
+├── Makefile                      # Convenience shortcuts for CMake
+│
+├── include/tensorlib/            # Public API headers
+│   ├── tensor.h                  #   Core tensor structs and operations
+│   ├── tensor_matmul.h           #   Matmul internals (AVX2 kernel)
+│   ├── autograd.h                #   Autograd engine API
+│   ├── autograd_internal.h       #   Internal autograd helpers
+│   └── nn.h                      #   Neural network module API
+│
+├── src/                          # Source implementation (32 .c files)
+│   ├── tensor/                   #   Tensor ops, views, reductions, matmul
+│   ├── autograd/                 #   Autograd forward/backward, graph traversal
+│   ├── nn/                       #   Module system, layers, decoder
+│   ├── losses/                   #   Cross-entropy, softmax
+│   ├── optim/                    #   SGD, AdamW, grad clipping
+│   ├── init/                     #   PRNG and weight initialization
+│   └── serialization/            #   Checkpoint save/load
+│
+├── tests/                        # Test suite (33 executables)
+│   ├── fixtures/test_common.h    #   Custom test framework
+│   └── unit/                     #   Tensor, autograd, nn, optim tests
+│
+├── examples/                     # Example programs
+│   ├── autograd_example.c        #   Computation graph demo
+│   ├── tiny_lm/                  #   Byte-level decoder LM (~1.9M params)
+│   └── mnist/                    #   MNIST MLP classifier
+│
+├── benchmarks/                   # Benchmark harness and suite implementations
+│   ├── bench_tensorlib.c         #   Native benchmark CLI
+│   ├── bench_kernels.c           #   Tensor-kernel workloads
+│   ├── bench_autograd.c          #   Autograd lifecycle workloads
+│   ├── bench_nn.c                #   Layer and model workloads
+│   ├── bench_scaling.c           #   OpenMP scaling workloads
+│   ├── bench_openblas.c          #   Optional matched matmul baseline
+│   └── bench_pytorch.py          #   Optional eager CPU reference
+├── scripts/run_benchmarks.py     # Benchmark runner and host metadata capture
+│
+└── docs/                         # Detailed documentation
+    ├── tensor_mechanics.md       #   Tensor layer reference
+    ├── autograd_engine.md        #   Autograd engine reference
+    ├── neural_network_modules.md #   NN modules reference
+    ├── decoder_implementation.md #   Decoder implementation reference
+    ├── benchmarks.md             #   Reproducible benchmark guide
+    └── performance.md            #   Performance interpretation notes
+```
+
+---
+
+## Build Requirements
+
+- **Compiler:** GCC or Clang with C99 support; OpenMP is optional with CMake
+- **Optimization:** Release builds are portable by default; pass
+  `-DTENSORLIB_NATIVE_OPTIMIZATIONS=ON` to tune for the current CPU
+- **Validated with:** GCC and Clang on Linux; GCC via MSYS2 UCRT64 on Windows
+
+---
+
+## Design Philosophy
+
+| Decision | Rationale |
+|----------|-----------|
+| **C99** | Minimal runtime, direct memory control, portable to embedded systems |
+| **No external ML deps** | Self-contained; every algorithm is implemented from scratch |
+| **Reference counting** | Deterministic lifetime, no GC pauses, suitable for real-time |
+| **Dynamic graph (define-by-run)** | Natural control flow, no tracing step — like PyTorch, unlike TF 1.x |
+| **Pre-norm transformer** | Training stability for deep networks (GPT-2 design) |
+| **Fused QKV projection** | Better cache locality in attention |
+| **Right-aligned broadcasting** | Matches NumPy/PyTorch semantics |
+| **Storage version counter** | Detects stale computation graphs between forward and backward |
+
+---
+
+## References & Inspirations
+
+- **[PyTorch](https://github.com/pytorch/pytorch)** — Autograd engine design, nn.Module pattern, storage/stride model
+- **[ggml](https://github.com/ggerganov/llama.cpp/tree/master/ggml)** — Tensor struct layout, stride-based operations, kernel dispatch
+- **[OpenBLAS](https://github.com/OpenMathLib/OpenBLAS)** — SGemm microkernel tiling strategy, packed-RHS optimization
+- **[nanoGPT](https://github.com/karpathy/nanoGPT)** — Decoder architecture, training loop design
+- **[NumPy](https://github.com/numpy/numpy)** — Broadcasting semantics, view model

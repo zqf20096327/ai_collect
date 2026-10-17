@@ -1,0 +1,478 @@
+# July Backtester
+
+> A professional-grade Python engine for stress-testing US equity strategies with Monte Carlo simulation and Walk-Forward Analysis.
+
+![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+[![Tests](https://github.com/zachisit/july-backtester/actions/workflows/tests.yml/badge.svg)](https://github.com/zachisit/july-backtester/actions/workflows/tests.yml)
+
+---
+
+Tests trading strategies against full historical US equity data, runs 1,000-path Monte Carlo simulation and Walk-Forward Analysis to separate genuine edges from curve-fitting, and produces a summary table with Sharpe, Calmar, Win Rate, MC Score, WFA Verdict, and SPY/QQQ outperformance. Detailed PDF tearsheets include equity curves, drawdown plots, R-Multiple histograms, and VIX regime heatmaps.
+
+**Intraday support**: Backtest on hourly (1H, 4H), 5-minute, 15-minute, or 30-minute bars with automatic metrics annualization (Sharpe, Sortino, HTB fees).
+
+Supports Polygon, Norgate, Yahoo Finance, local CSV, and local Parquet. Free to run against Yahoo Finance with no API key.
+
+Full reference: [docs/README_full.md](docs/README_full.md)
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/zachisit/july-backtester.git
+cd july-backtester
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate.bat
+pip install -r requirements.txt
+```
+
+For Polygon data, add your API key to `.env` (copy `.env.example` to get started):
+
+```env
+POLYGON_API_KEY=your_key_here
+```
+
+**For interns with private strategies**: After cloning, initialize the private strategies submodule:
+
+```bash
+git submodule update --init --recursive
+```
+
+See [PRIVATE_STRATEGIES.md](PRIVATE_STRATEGIES.md) for the full guide.
+
+---
+
+## Quick Start
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A[Clone Repository] --> B[Create & Activate Virtual Environment]
+    B --> C[pip install -r requirements.txt]
+    C --> D{Choose Data Provider}
+    D -->|Polygon.io| E[Add POLYGON_API_KEY to .env file]
+    D -->|Yahoo / Norgate / CSV / Parquet| F[No API Key Needed]
+    E --> G[Run Setup Wizard: python main.py --init]
+    F --> G
+    G --> H[config.py written - Ready to Backtest]
+```
+
+**First time?** Run the setup wizard:
+
+```bash
+python main.py --init
+```
+
+```mermaid
+graph TD
+    A[Run Setup Wizard: python main.py --init] --> B{Select Data Provider}
+    B -->|Polygon.io| C[Enter API Key]
+    B -->|Yahoo / Norgate / CSV / Parquet| D[No API Key Needed]
+    C --> E[Configure Account]
+    D --> E
+    E -->|Set Capital, Dates, & Slippage| F[Select Initial Portfolio]
+    F -->|Choose Nasdaq 100, S&P 500, etc.| G[Wizard Writes config.py]
+    G --> I[Setup Complete - Ready to Run]
+```
+
+**Or manually** — set these lines in `config.py` and run:
+
+```python
+"data_provider": "yahoo",
+"portfolios": {"My Symbols": ["SPY"]},
+"start_date": "2010-01-01",
+"initial_capital": 100000.0,
+```
+
+```bash
+python main.py
+```
+
+The engine runs every strategy in `custom_strategies/` against SPY, prints a results table, and writes output to `output/runs/<timestamp>/`.
+
+**Portfolio run** — test all strategies against the Nasdaq 100:
+
+```python
+"data_provider": "polygon",
+"portfolios": {
+    "Nasdaq 100": "nasdaq_100.json",
+},
+```
+
+**Point-in-time index universe** — survivorship-bias-free S&P 500 / Nasdaq 100 backtests. Resolves the full historical ticker union between `start_date` and `end_date` (including delisted/removed constituents), then gates entry/exit signals per-date on actual index membership:
+
+```python
+"portfolios": {
+    "Nasdaq 100 PIT": "pit:nq100",
+    "S&P 500 PIT": "pit:sp500",
+},
+```
+
+Requires the ticker-history YAML data from these two public repos:
+
+- Nasdaq 100 — https://github.com/shardul0701/NQ100-Survivorship-bias-data-2004-2026
+- S&P 500 — https://github.com/shardul0701/SP500-Survivorship-bias-data-2004-2026
+
+Clone each repo locally, then point this project at them via **one** of:
+
+1. Env vars (recommended — copy `.env.example` to `.env` and fill in): `NQ100_DATA_ROOT` / `SP500_DATA_ROOT`, each pointing at the repo root (not the `src/` subfolder — the loader appends that path itself).
+2. Config keys in `config.py`: `nq100_pit_path` / `sp500_pit_path`.
+3. Drop the YAML files directly under `tickers_to_scan/point_in_time/nq100/` or `tickers_to_scan/point_in_time/sp500/`.
+
+Validate before a long run: `python main.py --dry-run`
+
+See [examples/](examples/) for ready-to-use config files and annotated strategy examples.
+
+---
+
+## Writing Strategies
+
+Drop a `.py` file in `custom_strategies/` and decorate your function with `@register_strategy`. The engine discovers and runs it automatically — no other files need editing.
+
+### Signal convention
+
+Your function must populate `df['Signal']` before returning. The engine interprets the values as:
+
+| Signal | Meaning |
+|---|---|
+| `1` | Enter long / hold long |
+| `0` | No change — hold whatever position is currently open |
+| `-1` | Exit long **or** cover short (go flat) |
+| `-2` | Enter short |
+
+A common pattern is to use `1` and `-1` on every bar (always in a position), or `1`/`-1`/`0` where `0` means "stay out until the next signal." Use `-2` only when your strategy has explicit short logic; all existing built-in strategies are long-only and never emit `-2`.
+
+### Minimal example
+
+```python
+from helpers.registry import register_strategy
+
+@register_strategy(name="My Strategy", dependencies=[], params={})
+def my_strategy(df, **kwargs):
+    df["Signal"] = 0
+    df.loc[df["Close"] > df["Close"].rolling(20).mean(), "Signal"] = 1   # above 20MA → long
+    df.loc[df["Close"] <= df["Close"].rolling(20).mean(), "Signal"] = -1  # below 20MA → flat
+    return df
+```
+
+### Dependencies (SPY, VIX)
+
+Declare `dependencies=["spy"]` or `dependencies=["vix"]` to have the engine inject `spy_df` / `vix_df` into `**kwargs` automatically. See [`examples/strategies/`](examples/strategies/) for annotated examples including dependency usage, parameter definitions, and the forward-fill pattern for discrete entry/exit signals.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full plugin reference including parameters, timeframe utilities, and the PR checklist.
+
+---
+
+## Norgate Data
+
+If you have a Norgate license you can query Norgate live on every run, or point the
+Parquet provider at a directory you exported yourself.
+
+| Setting | What it does | Requires |
+|---|---|---|
+| `data_provider: "norgate"` | Calls the Norgate API live on every run | Norgate license + NDU running |
+| `data_provider: "parquet"` | Reads local `{SYMBOL}.parquet` files from a directory you supply | Nothing — no license, no API key |
+
+### Parquet provider
+
+The Parquet provider is source-agnostic: it reads one file per symbol, named
+`{SYMBOL}.parquet`, with columns `Open, High, Low, Close, Volume` and a
+`DatetimeIndex`. It does not care how those files were produced — a Norgate export,
+a Polygon pull, or anything else that writes that shape.
+
+```bash
+python main.py --provider parquet --parquet-dir /path/to/your/parquet/files
+```
+
+Or set it in `config.py`:
+
+```python
+"data_provider": "parquet",
+"parquet_data_dir": "/path/to/your/parquet/files",
+```
+
+> **This repository ships no market data and depends on no external dataset.**
+> Bring your own directory. Symbols with no matching file are simply skipped.
+
+### The Backtesting Lifecycle
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+graph TD
+    A[Edit config.py] -->|Set portfolios, dates, capital| B[Run: python main.py]
+    B --> C{Execution Engine}
+    C -->|Fetches/Loads Data| D[(Local Data Cache)]
+    C -->|Calculates Edge| E[Monte Carlo & Walk-Forward Analysis]
+    E --> F[Output Folder created: output/runs/RUN_ID/]
+    F -->|Terminal Output| G[Summary Table & Correlation Matrix]
+    F -->|Raw Trade Data| H[analyzer_csvs/ Portfolio / Strategy.csv]
+    F -->|LLM-readable JSON| K[llm_verdict.json]
+    H --> I[Run: python report.py --all output/runs/RUN_ID]
+    I --> J[PDF & Markdown Reports generated in detailed_reports/]
+```
+
+**PDF tearsheet layout** — `report.py` renders one of two layouts, selected with `--layout`:
+
+- **`v3`** (default) — dense 2-page institutional tearsheet (headline KPIs, full metrics, trailing returns, and six small-multiple charts).
+- **`classic`** — the full 14-page deep-dive (MAE/MFE, per-symbol breakdown, Monte Carlo fan, WFA split, appendices).
+
+`python report.py <csv>` produces the v3 layout; add `--layout classic` for the deep-dive. See [`docs/tearsheet_samples/`](docs/tearsheet_samples/) for side-by-side samples of both.
+
+---
+
+## LLM Verdict
+
+Every run writes `output/runs/<run_id>/llm_verdict.json` — a machine-readable file designed to let an LLM, script, or downstream tool evaluate strategy results without parsing terminal output.
+
+### What it contains
+
+Each strategy entry includes:
+
+| Field | Description |
+|---|---|
+| `beats_spy` | `true` / `false` boolean |
+| `verdict` | Plain-English string — e.g. `"BEATS SPY by +81684.50pp"` or `"LAGS SPY by -788.75pp"` |
+| `strategy_return_pct` | Total return as a float |
+| `benchmarks` | Per-benchmark breakdown: `bh_return_pct`, `beats`, `outperformance_pp` |
+| `sharpe_ratio`, `calmar_ratio`, `max_drawdown_pct`, `win_rate_pct` | Key risk metrics |
+| `mc_verdict`, `wfa_verdict` | Monte Carlo and Walk-Forward verdicts |
+| `equity_curve` | Monthly normalized equity curve (strategy + all benchmarks), starting at 100 |
+| `annual_returns` | Year-by-year strategy vs benchmark returns |
+| `curve_smoothness` | Equity curve quality analysis (see below) |
+
+### Curve smoothness
+
+The `curve_smoothness` block scores the equity curve on five criteria:
+
+| Criterion | Threshold |
+|---|---|
+| R² of log-equity vs linear trend | ≥ 0.90 |
+| Positive months | ≥ 60% |
+| Longest plateau (months without new high) | < 12 months |
+| Upthrust months (monthly return > mean + 3σ) | ≤ 2 |
+| Worst single-month drawdown | > −10% |
+
+**Verdict:** `SMOOTH` (0 failures) · `ACCEPTABLE` (1 failure) · `ROUGH` (2+ failures)
+
+The `smooth_notes` array explains every failure in plain English.
+
+### Terminal output
+
+The terminal prints a single summary line per run:
+```
+LLM verdict written to 'output/runs/2026-04-30_10-00-40/llm_verdict.json' (1/3 beat SPY)
+```
+
+The full structured data is in the JSON file — it is not printed to the terminal.
+
+---
+
+## Comparing Runs — Research Index
+
+Each run writes its own folder under `output/runs/`. That is fine for one backtest, but tuning a
+strategy produces a run per parameter change, and by the twentieth one the question *"which
+settings actually gave the best Calmar, and did that one pass walk-forward?"* means opening twenty
+folders by hand.
+
+`scripts/build_research_index.py` collapses that into a single sortable CSV:
+
+```bash
+python scripts/build_research_index.py
+```
+
+It walks every `output/runs/*/overall_portfolio_summary.csv`, joins each row to the matching
+strategy entry in that run's `llm_verdict.json`, attaches the source file and parameter count for
+the strategy, and writes **`output/research_index.csv`** — one row per strategy per portfolio per
+run.
+
+```
+Building strategy lookup... 38 strategies found.
+Loading LLM verdicts... 214 verdict keys loaded.
+Collecting CSV rows... 96 rows from 12 CSVs.
+
+Wrote 96 rows → output/research_index.csv
+  WFA Pass rows:       54 / 96
+  Rows with LLM data:  96
+```
+
+### What you get per row
+
+Everything from the run summary — `P&L (%)`, `vs. SPY (B&H)`, `Max DD`, `Calmar`, `Sharpe`,
+`Profit Factor`, `Win Rate`, `Trades`, `Expectancy (R)`, `SQN`, `OOS P&L (%)`, `WFA Verdict`,
+`Rolling WFA`, `MC Verdict`, `MC Score` — plus the run's own context (`run_id`, `data_provider`,
+`start_date`, `end_date`, `timeframe`) and four columns joined in from elsewhere:
+
+| Column | Source |
+|---|---|
+| `llm_beats_spy`, `llm_smooth_verdict`, `llm_longest_flat_months`, `llm_smoothness_r2` | that run's `llm_verdict.json` |
+| `code_file`, `param_count` | parsed from the `@register_strategy` block that defines the strategy |
+
+`code_file` and `param_count` are what make the index answer *"is my best result also my simplest
+one?"* — a strategy that only wins with eight tuned parameters is a different proposition from one
+that wins with two.
+
+### Narrowing the scan
+
+```bash
+python scripts/build_research_index.py --runs-only myrun other-run
+```
+
+Only run IDs starting with one of the given prefixes are scanned. Useful when `output/runs/` has
+grown large and you only care about one experiment.
+
+### Notes
+
+- Read-only. It never modifies a run folder, and writes only to the git-ignored `output/`.
+- Strategies whose source file cannot be found simply leave `code_file` and `param_count` blank —
+  the rest of the row is still written.
+- Sorting the CSV by `Calmar` or `vs. SPY (B&H)` in any spreadsheet is usually the fastest way to
+  see which experiment actually worked.
+
+---
+
+## CLI Flags
+
+Every setting in `config.py` can be overridden at runtime — no file editing required.
+
+### Built-in flags
+
+| Flag | Description |
+| --- | --- |
+| *(none)* | Full backtest run |
+| `--init` | Launch the first-time setup wizard |
+| `--dry-run` | Validate config and print run summary without fetching data |
+| `--name <label>` | Prefix the output folder with a custom label |
+| `--verbose` | Print Extended Metrics and Robustness tables |
+| `--help-config [category]` | Print a guided tour of all config options with live defaults |
+
+### Config override flags
+
+Pass any of these to override `config.py` for a single run:
+
+**Data**
+```
+--provider <str>          norgate | yahoo | polygon | csv | parquet
+--csv-dir <path>          CSV folder (--provider csv only)
+--parquet-dir <path>      Parquet folder (--provider parquet only)
+```
+
+**Period & Capital**
+```
+--start <YYYY-MM-DD>      Backtest start date
+--end   <YYYY-MM-DD>      Backtest end date
+--capital <float>         Starting equity in USD
+```
+
+**Portfolio & Symbols** *(mutually exclusive)*
+```
+--symbols AAPL MSFT …     Inline ticker list → runs as 'CLI' portfolio
+--portfolio nasdaq_100.json   JSON file or norgate:WatchlistName
+--min-bars <int>          Skip symbols with fewer bars
+```
+
+**Strategies**
+```
+--strategies "Name 1" "Name 2"   Exact strategy names to run
+--strategies all                 Run every registered strategy
+```
+
+**Execution & Costs**
+```
+--allocation <float>      Fraction of equity per position (e.g. 0.05)
+--execution open|close    Fill time
+--slippage <float>        Bid/ask slippage fraction
+--commission <float>      Commission per share in USD
+--risk-free-rate <float>  Annual risk-free rate for Sharpe
+--htb-rate <float>        Annual hard-to-borrow rate for shorts
+--max-pct-adv <float>     Max fraction of 20d ADV per order
+--volume-impact <float>   Sqrt market-impact coefficient (0 = off)
+```
+
+**Stop Loss** *(repeatable)*
+```
+--stop none               No stop
+--stop pct:0.05           5% percentage stop
+--stop atr:14:3.0         ATR stop (period=14, multiplier=3.0)
+--stop pct:0.05 atr:14:3.0   Run both variants in one pass
+```
+
+**Filtering**
+```
+--min-pandl <float>       Min P&L % to show (-9999 = show all)
+--max-dd <float>          Max drawdown to show (1.0 = show all)
+--min-mc-score <float>    Min MC score to show
+--min-vs-spy <float>      Min outperformance vs SPY
+```
+
+**Monte Carlo**
+```
+--mc-sims <int>           Number of MC simulations
+--min-trades-mc <int>     Min trades required to run MC
+--mc-sampling iid|block   Resampling method
+```
+
+**Walk-Forward Analysis**
+```
+--wfa-split <float>       In-sample fraction (0 = disable WFA)
+--wfa-folds <int>         Rolling WFA folds (0 = disable)
+```
+
+**Output & Misc**
+```
+--save-trades / --no-save-trades
+--save-filtered-only / --no-save-filtered-only
+--noise <float>           OHLC noise injection fraction (0 = off)
+--rolling-sharpe <int>    Rolling Sharpe window in bars (0 = off)
+--export-ml / --no-export-ml
+--upload-s3 / --no-upload-s3
+--workers <int>           Cap the simulation pool (each worker copies the price data; 1 = serial)
+```
+
+**Escape hatch — any config key not covered above**
+```
+--set KEY=VALUE           Auto-cast to int/float/bool/str. Repeatable.
+  e.g.  --set rolling_sharpe_window=252 --set htb_rate_annual=0.15
+```
+
+### Guided help
+
+```bash
+python main.py --help-config              # full reference with live defaults
+python main.py --help-config data         # DATA section only
+python main.py --help-config wfa          # WFA section only
+# categories: data, period, portfolio, strategies, costs, stop,
+#             filtering, mc, wfa, output
+```
+
+### Example commands
+
+```bash
+# Quick single-ticker run on Yahoo Finance
+python main.py --provider yahoo --symbols AAPL --start 2020-01-01 --capital 25000
+
+# Scan Nasdaq 100, only show strategies that beat SPY
+python main.py --portfolio nasdaq_100.json --min-vs-spy 0.0
+
+# Test three stop-loss variants in one pass
+python main.py --stop none pct:0.05 atr:14:3.0
+
+# Stress test with noise + block-bootstrap MC
+python main.py --noise 0.01 --mc-sampling block --mc-sims 2000
+
+# Override keys not covered by a named flag
+python main.py --set rolling_sharpe_window=252 --set htb_rate_annual=0.15
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, how to add a strategy plugin, and the PR checklist.
+
+---
+
+## License
+
+[MIT License](LICENSE)

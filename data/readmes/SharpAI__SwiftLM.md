@@ -1,0 +1,723 @@
+# ⚡️ SwiftLM
+
+A blazingly fast, native Swift inference server that serves [MLX](https://github.com/ml-explore/mlx) models with a strict **OpenAI-compatible API**. 
+
+No Python runtime, no Global Interpreter Lock (GIL), no unnecessary memory copies. Just bare-metal Apple Silicon performance compiled to a single binary.
+
+<p align="center">
+  <a href="https://youtu.be/E9vR5FREhMg"><img src="docs/mac_demo.gif" width="720" alt="SwiftLM Mac macOS demo" /></a>
+</p>
+<br>
+<p align="center">
+  <img src="docs/demo.gif" width="320" alt="SwiftBuddy iOS demo" />
+</p>
+
+---
+
+## 🏁 Getting Started
+
+### Fastest: Download Pre-built Binary
+
+Download the latest release tarball from the [Releases page](https://github.com/SharpAI/SwiftLM/releases).
+The archive is **self-contained** — `mlx.metallib` is bundled alongside the binary.
+
+```bash
+tar -xzf SwiftLM-<version>-macos-arm64.tar.gz
+./SwiftLM --model mlx-community/Qwen2.5-3B-Instruct-4bit --port 5413
+```
+
+### Build from Source
+
+The build script handles everything: submodules, cmake, Metal kernel compilation, and the Swift build.
+
+```bash
+git clone --recursive https://github.com/SharpAI/SwiftLM
+cd SwiftLM
+./build.sh
+```
+
+This will:
+1. Initialize git submodules
+2. Install `cmake` via Homebrew (if not already installed)
+3. Compile `mlx.metallib` from the Metal kernel sources
+4. Build the `SwiftLM` binary in release mode
+
+Then start the server (models download automatically if not cached):
+```bash
+.build/release/SwiftLM \
+  --model mlx-community/gemma-4-26b-a4b-it-4bit \
+  --port 5413
+```
+
+*(Add `--stream-experts` when running oversized MoE models to bypass macOS virtual memory swapping and stream expert layers directly from NVMe SSD.)*
+
+## 📊 Performance: Mac mini M6 (base, 32 GB)
+
+The first SwiftLM numbers from a **32 GB** Mac. Every other table in this README comes from 64 GB hardware. Running the same context lengths on this M6 exposed memory bugs that 64 GB machines had been hiding, and they are fixed in this release (see [What 32 GB exposed](#what-32-gb-exposed)).
+
+![Gemma-4-26B-A4B streaming at 55 tok/s on a base Mac mini M6 32 GB](docs/profiling/m6/media/m6_gemma4_26b_a4b_stream.gif)
+
+> *Hardware:* Mac mini (Mac18,5), Apple M6, 12-core GPU, 32 GB unified memory (170 GB/s), macOS 27.0. Metal working set 26.8 GB.
+> *Method:* [`scripts/profiling/m6_bench.py`](scripts/profiling/m6_bench.py). One warm-up, then the median of 3 runs (1 run at 32K and above), temperature 0. Every prompt starts with a unique nonce, so the prompt cache can't hit, and hides a code word that the answer must return. A memory guard aborts any case whose swap grows by more than 2 GB. Raw results: [`docs/profiling/m6/`](docs/profiling/m6/).
+> *Build:* numbers are from the official **release b782** binary unless marked † (earlier build, not re-run on b782).
+
+### What runs well on a 32 GB M6
+
+| Model (4-bit unless noted) | Weights | Mode | Decode, short prompt | Longest prompt that passed | Peak GPU |
+|---|---|---|---|---|---|
+| **`gemma-4-26b-a4b-it-4bit`** (MoE, ~4B active) | 15.3 GB | GPU | **53.9 tok/s** | 80.7K tokens † | 19.5 GB † |
+| **`Qwen3.6-35B-A3B-UD-MLX-4bit`** (MoE, ~3B active) | 21.6 GB | GPU | **48.4 tok/s** | 40.8K tokens ‡ | 22.1 GB |
+| `Qwen3.6-35B-A3B-UD-MLX-4bit` | 21.6 GB | `--stream-experts` | 14.1 tok/s | 40.8K tokens ‡ | 6.8 GB |
+| `Qwen3.8-27B-4bit` (dense) | 11.3 GB | GPU | 9.5 tok/s | 40.8K tokens † | 18.4 GB † |
+| `gemma-4-26b-a4b-it-8bit` | ~26 GB | GPU | swaps (+3.1 GB on the first prompt) † | — | — |
+| `gemma-4-26b-a4b-it-8bit` | ~26 GB | `--stream-experts` | 9.7 tok/s | 9.5K tokens (32K swapped †) | 7.1 GB |
+
+‡ Throughput only: at 40.8K the needle check isn't reliable in either mode (see the Qwen3.6 table).
+
+- **MoE models are the sweet spot at 32 GB.** Only the active experts are read for each token, so they decode 5–6× faster than a dense 27B. A 4-bit MoE with up to about 22 GB of weights runs entirely on the GPU.
+- **Qwen3.6-35B-A3B on a base M6 reaches 78%** of the M1 Ultra 64 GB decode speed below (48.4 vs 61.7 tok/s). The M1 Ultra runs used temperature 0.6 and `--repeat-penalty 1.1`; the M6 runs use temperature 0.
+- **Dense 27B decode is bandwidth-bound.** 9.5 tok/s × 11.3 GB is about 107 GB/s, roughly 63% of the M6's rated 170 GB/s.
+- **An 8-bit 26 GB model needs SSD streaming** and tops out at about 10K tokens of context.
+
+### Gemma-4-26B-A4B 4-bit — by prompt length
+
+| Prompt tokens | Prefill / decode (tok/s) | TTFT | Peak GPU · swap growth |
+|---|---|---|---|
+| ~530 | 781 / **53.9** | 0.7 s | 14.3 GB · 0 |
+| ~2.3K † | **963** / 50.2 | 2.5 s | 15.0 GB · 0 |
+| ~9.5K † | 959 / 45.1 | 10.1 s | 15.8 GB · 0 |
+| ~39.7K † | 757 / 31.0 | 53.3 s | 17.9 GB · 0 |
+| ~80.7K † | 622 / 24.3 | 131.3 s | 19.5 GB · 0 |
+
+Every needle check passed. `--mtp` with the bf16 assistant (`gemma-4-26B-A4B-it-assistant-bf16`) works but is slower on the M6 (earlier build): 45.2 / 35.6 / 30.4 tok/s decode at ~530 / 2.3K / 9.5K tokens, against 53.0 / 50.8 / 46.0 without it. A 4-bit MoE is compute-bound, so verifying the drafted tokens costs more than it saves (the same finding as the M5 Pro tables below). Rejected drafts are now rolled back exactly after the context passes Gemma's 1,024-token sliding window ([#184](https://github.com/SharpAI/SwiftLM/issues/184), [SharpAI/mlx-swift-lm#72](https://github.com/SharpAI/mlx-swift-lm/pull/72)). In a test on the M6, replacing every rejected draft with a different token left the output bit-identical. Output at temperature 0 can still differ from running without `--mtp`. The verify pass computes several tokens in one batch, so bf16 rounding differs from one-token decoding and can flip near-ties (`--mtp` also runs Gemma 4 through the text-only model code, while the plain model loads as a vision model). In our M5 Pro test prompts, every token `--mtp` picked was within 0.875 logits of the plain model's top choice with the bf16 assistant, and within 1.75 with the QAT 4-bit assistant.
+
+### Qwen3.6-35B-A3B 4-bit — GPU vs SSD streaming
+
+![Qwen3.6-35B-A3B with --stream-experts on release b782: 13.6 tok/s decode, 5.1 GB peak, no swap, on a base Mac mini M6 32 GB](docs/profiling/m6/media/m6_qwen36_35b_a3b_ssd_stream.gif)
+
+| Prompt tokens | GPU prefill / decode (tok/s) | GPU peak | `--stream-experts` prefill / decode (tok/s) | SSD peak |
+|---|---|---|---|---|
+| ~550 | 687 / 48.4 | 20.2 GB | 263 / 14.1 | 5.7 GB |
+| ~2.3K | 961 / 46.9 | 20.4 GB | 408 / 14.1 | 5.7 GB |
+| ~9.8K | 926 / 44.8 | 20.5 GB | 415 / 13.9 | 5.9 GB |
+| 40.8K ‡ | 676 / 36.8 | 22.1 GB | 347 / 13.0 | 6.8 GB |
+
+Release b782 ([raw data](docs/profiling/m6/qwen36_35b_a3b_4bit.md)). ‡ At 40.8K the needle check isn't reliable in either mode: every miss had an `OSPREY-NN` code word, and GPU and SSD fail alike on the same prompt, so that row is throughput only. Every run up to 9.8K passed.
+
+> ⚠️ **`--stream-experts` crashes on quantized MoE models in releases b769 and b773** (a `broadcast_shapes` fatal error on the first request, e.g. `(263,8,8,2048) and (263,8,1)` with top-k 8). Reproduced on M6 with Qwen3.6-35B-A3B and Gemma 4 26B-A4B. The mlx-swift-lm upstream sync in #167 broke the SSD path. Earlier versions of this table were measured before that sync and were never re-checked afterwards. Fixed in SharpAI/mlx-swift-lm#69 and #71; the table above was re-measured with those fixes.
+
+### Qwen3.8-27B-4bit (dense)
+
+| Prompt tokens | Prefill / decode (tok/s) | Peak GPU · swap growth |
+|---|---|---|
+| ~550 | 234 / 9.5 | 15.4 GB · 0 |
+| ~2.3K † | 242 / 9.1 | 16.1 GB · 0 |
+| ~9.8K | 264 / 9.2 | 16.1 GB · 0 |
+| ~40.8K † | 200 / 7.9 | 18.4 GB · 0 |
+
+> **Correction:** an earlier version of these tables had `--turbo-kv` columns. Those runs passed `--ctx-size`, which on this mlx-swift-lm pin gives the attention layers a `RotatingKVCache`, and `--turbo-kv` only applies to `KVCacheSimple`. They were really vanilla runs, so the columns were removed.
+
+### What 32 GB exposed
+
+| 8.5K-token prompt, Qwen3.8-27B-4bit | Before (old pin) | After (this release) |
+|---|---|---|
+| Prefill | 33.4 tok/s | **~264 tok/s** (≈8×; measured at 9.8K on b782) |
+| Peak memory | 38 GB process footprint | **≤19 GB** process (16.1–16.7 GB process, 16.1 GB GPU peak at 9.8K on b782) |
+| Swap growth | +15 GB | **0** |
+
+1. **The MLX buffer cache was unbounded on full-GPU loads.** It could grow to the whole 26.8 GB working set. It is now sized from the RAM left after weights and KV.
+2. **The KV-cache estimate counted every layer as full attention.** Gemma 4 (25 of 30 layers use a 1,024-token sliding window) was overestimated 10×, and Qwen3.5/3.8 (48 of 64 layers are linear attention) 4×. On 32 GB that pushed Gemma into CPU/GPU layer partitioning, which crashed with a Metal GPU timeout.
+3. **An auto-detected VLM that failed to load exited the server.** `Qwen3.6-35B-A3B-UD-MLX-4bit` ships a `preprocessor_config.json` without `image_mean`. SwiftLM now falls back to text-only unless you pass `--vision`.
+4. **Vision-capable models skipped chunked prefill.** On the older mlx-swift-lm pin, a text-only prompt on the VLM path ran through the model in a single pass. It's fixed by the mlx-swift-lm bump in #167. Every number in this section was measured on `main` after that bump. The `--stream-experts` rows (Qwen3.6 and Gemma 4 8-bit) were re-measured with SharpAI/mlx-swift-lm#69 and #71, because b769/b773 crash in that mode.
+
+> ℹ️ **`--turbo-kv` long-range recall is fixed** ([#175](https://github.com/SharpAI/SwiftLM/issues/175), SharpAI/mlx-swift-lm#65). Before the fix, once a prompt passed the 2,048-token compression threshold, attention only saw the recent hot window and positions restarted, so Qwen3.8-27B-4bit got exact lookups wrong. Attention now covers the compressed history too, which makes `--turbo-kv` slower than before (97 s vs 72 s on an 11.8K-token prompt on the M6). `--turbo-kv` still has no effect when `--ctx-size` is set (the attention layers use `RotatingKVCache`).
+>
+> ℹ️ QAT-quantized Gemma 4 MTP assistants (`…-qat-assistant-4bit`) now load and run (SharpAI/mlx-swift-lm#66).
+>
+> ℹ️ **`--gpu-layers N` with MoE models:** the Metal GPU timeout on the first request ([#176](https://github.com/SharpAI/SwiftLM/issues/176)) is fixed in #177. CPU-resident MoE layers still run on a single core and are very slow (Gemma 4 26B-A4B with `--gpu-layers 23`: ~0.4 tok/s prefill, ~3 s per decoded token on both M5 and M6), and SwiftLM now warns about this at startup. Treat `--gpu-layers` as a way to avoid running out of memory, not as a speed trade-off. On a 32 GB Mac try `--stream-experts` first (Qwen3.6-35B-A3B on b782: 14.1 tok/s decode, 5.7 GB GPU).
+
+Reproduce:
+
+```bash
+./build.sh
+.build/release/SwiftLM --model mlx-community/gemma-4-26b-a4b-it-4bit --port 5431 --ctx-size 48000 &
+python3 scripts/demo/stream_client.py short
+python3 scripts/profiling/m6_bench.py --model mlx-community/gemma-4-26b-a4b-it-4bit \
+  --config "Vanilla=" --contexts 512,2048,8192,32768,65536 --out docs/profiling/m6/gemma4_26b_a4b_4bit
+```
+
+More recordings: [Gemma, 41K-token prompt (4×)](docs/profiling/m6/media/m6_gemma4_26b_a4b_41k_prompt_4x.gif) · [Qwen3.8-27B streaming](docs/profiling/m6/media/m6_qwen38_27b_stream.gif) · [Qwen3.8-27B, 8.6K-token prompt (4×)](docs/profiling/m6/media/m6_qwen38_27b_8k_prompt_4x.gif)
+
+## 📊 Performance: MTP Speculative Decoding — Gemma 4-26B (MacBook Pro M5 Pro 64 GB)
+
+Benchmarked with `gemma-4-26b-a4b-it-4bit` running three configurations across 512 / 40K / 100K token contexts.
+
+### Generation Speed (tok/s) — higher is better
+
+| Configuration | 512 tokens | 40K tokens | 100K tokens | Avg TPS* |
+|---|---|---|---|---|
+| Baseline | 70.8 | 34.3 | 25.8 | 36.6 |
+| **MTP Speculative** | 71.5 (1.01×) | 38.4 (1.12×) | 29.1 (1.13×) | **40.3** |
+| **MTP + TurboQuant** ⭐ | **72.1 (1.02×)** | **65.2 (1.90×)** | **62.1 (2.41×)** | **66.2** |
+
+*\* Time-weighted average: `total_tokens / sum(60/TPS)` — correct wall-clock representation vs arithmetic mean.*
+
+
+### Time to First Token (seconds) — lower is better
+
+| Configuration | 512 tokens | 40K tokens | 100K tokens |
+|---|---|---|---|
+| Baseline | 0.64s | 22.85s | 63.11s |
+| **MTP Speculative** | 0.34s | 20.45s | 55.17s |
+| **MTP + TurboQuant** ⭐ | **0.33s** | **13.17s** | **33.95s** |
+
+### GPU Memory (allocated / peak physical RAM)
+
+| Configuration | 512 tokens | 40K tokens | 100K tokens |
+|---|---|---|---|
+| Baseline | 20.4 GB / 15.8 GB | 54.8 GB / 19.3 GB | 54.3 GB / 23.3 GB |
+| MTP Speculative | 20.4 GB / 16.0 GB | 54.6 GB / 20.8 GB | 54.3 GB / 23.1 GB |
+| **MTP + TurboQuant** ⭐ | **20.3 GB / 15.8 GB** | **23.9 GB / 17.3 GB** | **26.4 GB / 18.2 GB** |
+
+**Key takeaways:**
+- 🚀 **1.81× avg throughput** — MTP + TurboQuant delivers 66.2 tok/s time-weighted vs 36.6 tok/s baseline
+- 🏎️ **Nearly 2× faster TTFT at 100K context** — 33.95s vs 63.11s baseline (46% reduction)
+- 💾 **Massive memory savings at long context** — GPU allocation drops from 54.8 GB → 23.9 GB at 40K tokens (TurboQuant KV compression)
+- 🔬 **MTP alone is free** — 1.10× time-weighted TPS and lower TTFT with zero additional memory overhead
+
+> Run `python3 -u scripts/profiling/profile_runner.py --model gemma-4-26b-a4b-it-4bit --contexts "512,40000,100000"` to reproduce on your device.
+
+## 📊 Performance: Gemma 4-26B on Apple Silicon
+
+Benchmark results for `gemma-4-26b-a4b-it-4bit` (**26B MoE, ~4B active params/token**, 4-bit) on M5 Pro 64 GB.
+
+> ⚠️ This is a **Mixture-of-Experts (MoE)** model, not a dense model. Each token activates ~4B of the 26B parameters. "Vanilla" = all experts loaded into unified RAM (no SSD streaming).
+
+### Headline Numbers — `gemma-4-26b-a4b-it-4bit` (4-bit MoE)
+
+> Benchmarked on **M5 Pro 64 GB** · `gemma-4-26b-a4b-it-4bit` · `./run_benchmark.sh` Option 13
+> Values shown as `generation TPS · OS RAM used` (TTFT excluded from speed measurement)
+
+| Configuration | 512 ctx | 40K ctx | 100K ctx |
+|---|---|---|---|
+| **Vanilla (full-RAM MoE)** | 77.5 tok/s · 14.6 GB | 44.3 tok/s · 48.7 GB | 27.5 tok/s · 48.5 GB |
+| **Vanilla + MTP** | 72.7 tok/s · 16.6 GB | 44.9 tok/s · 49.4 GB | 37.5 tok/s · 49.3 GB |
+| **Vanilla + TurboQuant** | 77.3 tok/s · 14.7 GB | **70.1 tok/s · 18.2 GB** | **66.9 tok/s · 20.7 GB** |
+| **Vanilla + MTP + TurboQuant** | 73.5 tok/s · 16.6 GB | 53.8 tok/s · 19.7 GB | 32.8 tok/s · 22.0 GB |
+| **SSD Stream** | 10.8 tok/s · 22.2 GB | 10.4 tok/s · 24.2 GB | 9.0 tok/s · 27.6 GB |
+| **SSD + TurboQuant** | 11.4 tok/s · 22.0 GB | 2.5 tok/s · 22.5 GB | 1.6 tok/s · 22.3 GB |
+
+> GPU Peak physical RAM (from `ioreg`): Vanilla 100K peaks at **21.8 GB** in-use · TurboQuant 100K stays at **17.1 GB** in-use
+
+**Key takeaways (4-bit):**
+- 🚀 **TurboQuant is the headline win**: At 100K context, `Vanilla + TurboQuant` delivers **66.9 tok/s** vs **27.5 tok/s** Vanilla — a **2.43× speedup**.
+- 💾 **Massive memory savings**: OS RAM at 40K context drops from **48.7 GB → 18.2 GB** with TurboQuant (63% reduction).
+- ⚡ **MTP neutral on 4-bit MoE**: The 4-bit model is compute-bound (MoE expert dispatch). Batch verification scales linearly with token count, so MTP provides no net throughput gain over vanilla at 4-bit.
+- ⚠️ **TQ + MTP undercuts TQ alone**: Adding MTP to a TurboQuant server removes the bandwidth bottleneck (KV is now tiny) but not the FFN compute — MTP then adds overhead without proportional gains.
+- 🖥️ **SSD Stream for 24 GB Macs**: Enables long-context inference with only ~22–27 GB RAM across all context depths.
+
+### Headline Numbers — `gemma-4-26b-a4b-it-8bit` (8-bit, bandwidth-bound)
+
+> Benchmarked on **M5 Pro 64 GB** · `gemma-4-26b-a4b-it-8bit` · `./run_benchmark.sh` Option 13
+
+| Configuration | 512 ctx | 40K ctx | 100K ctx |
+|---|---|---|---|
+| **Vanilla** | 53.7 tok/s · 26.1 GB | 32.4 tok/s · 49.4 GB | 14.9 tok/s · 49.3 GB |
+| **Vanilla + MTP** ⭐ | 47.1 tok/s · 28.0 GB | **38.8 tok/s (+20%)** · 49.6 GB | **22.5 tok/s (+51%)** · 49.6 GB |
+| **Vanilla + TurboQuant** | 53.5 tok/s · 26.1 GB | **50.1 tok/s · 29.6 GB** | **48.3 tok/s · 32.0 GB** |
+| **Vanilla + MTP + TurboQuant** | 47.4 tok/s · 28.0 GB | 31.0 tok/s · 31.1 GB | 23.3 tok/s · 33.3 GB |
+
+**Key takeaways (8-bit):**
+- 🎯 **MTP works at 8-bit**: The 8-bit model is **bandwidth-bound** (2× heavier weights than 4-bit). The KV reads in the 3-token verification batch amortize across all 3 queries — so batch verification costs ~1.3× vanilla while producing 2+ tokens. Net: **+20% at 40K, +51% at 100K**.
+- 🚀 **TurboQuant still wins outright**: At 100K, TurboQuant alone gives **48.3 tok/s** vs MTP's **22.5 tok/s** — TQ eliminates memory pressure and achieves 3.24× speedup over vanilla.
+- ❌ **Don't combine TQ + MTP on 8-bit**: TurboQuant compresses the KV cache 4×, removing the bandwidth bottleneck and making MTP compute-bound again — TQ+MTP (31.0) is slower than TQ alone (50.1) at 40K.
+- 💡 **Precision-dependent guidance**: Use `--mtp` for 8-bit models at 40K+ contexts without TurboQuant. Use `--turbo-kv` (without MTP) when maximum throughput or memory efficiency is the priority.
+
+> Run `./run_benchmark.sh` → Option 13 to reproduce these metrics on your own device.
+
+### Qwen3.6-35B-A3B-UD-MLX-4bit (Full-RAM) — M1 Ultra 64 GB
+
+Benchmark results for full-RAM (no SSD streaming) MoE inference on M1 Ultra. The 3.4× vanilla improvement vs. earlier builds comes from the `needsMoeFlush` gate in `mlx-swift-lm` (see [SwiftLM #84](https://github.com/SharpAI/SwiftLM/issues/84)) — the per-layer GPU sync barrier required for SSD streaming was firing unconditionally on the full-RAM path and flushing MLX's kernel-batching pipeline.
+
+| Configuration | Short (~126 tok) | Medium (~400 tok) | Long (~800 tok) |
+|---|---|---|---|
+| **Vanilla full-GPU** | **61.7 tok/s** | **62.3 tok/s** | **62.1 tok/s** |
+
+> *Hardware:* Apple M1 Ultra, 64 GB unified memory, macOS 26.x. Model ~20 GB on disk, ~21.6 GB resident weight + ~2.1 GB KV at runtime.
+> *Flags:* `--repeat-penalty 1.1 --max-tokens 2000`, `temperature: 0.6`, single-stream `/v1/chat/completions`.
+> *Vanilla baseline before* `needsMoeFlush` *gate (for reference):* 19.2 / 18.1 / 18.3 tok/s — see #84.
+
+> ⚠️ **DFlash on this model is currently unsuitable for production.** DFlash uses pure greedy (`argMax`) decoding regardless of `temperature`, which on Qwen3.6-35B-A3B + the [`z-lab/Qwen3.6-35B-A3B-DFlash`](https://huggingface.co/z-lab/Qwen3.6-35B-A3B-DFlash) draft locks into low-entropy attractors (`"and and and..."`, `"**UMA** **UMA**..."`). Earlier 70 tok/s DFlash numbers were degenerate output that scored high acceptance because draft and target both committed to the same locked-in token. Repetition-penalty mitigation works on some prompts but tanks acceptance on others — the proper fix is stochastic posterior sampling with rejection-based accept ([Leviathan/Chen](https://arxiv.org/abs/2211.17192) formulation), which is a DFlash architecture change tracked at [z-lab/dflash#91](https://github.com/z-lab/dflash/issues/91).
+
+### DeepSeek-V4-Flash (126 GB, Q3-mixed-gs128-affine) — M5 Pro 64 GB
+
+Model: [`Thump604/DeepSeek-V4-Flash-MLX-Q3-mixed-gs128-affine`](https://huggingface.co/Thump604/DeepSeek-V4-Flash-MLX-Q3-mixed-gs128-affine)
+
+> Dense/Vanilla and TurboQuant (non-SSD) configurations are skipped automatically — the 126 GB model exceeds physical RAM.
+
+| Configuration | 512 ctx | 40K ctx |
+|---|---|---|
+| SSD Stream | 4.65 tok/s · 16.7 GB RAM | 0.32 tok/s · 12.5 GB RAM |
+| **SSD + TurboQuant** | **4.78 tok/s · 16.8 GB RAM** | **4.16 tok/s · 16.8 GB RAM** |
+| SSD + 16-Worker Prefetch | 4.43 tok/s · 16.6 GB RAM | 0.32 tok/s · 13.6 GB RAM |
+
+> Values shown as `generation speed · peak physical RAM used` (sampled every 0.5s during prefill + generation). The 126 GB model streams the rest from NVMe SSD.
+
+**Key takeaways:**
+- 🏆 **SSD + TurboQuant dominates at long context** — 4.16 tok/s at 40K vs 0.32 tok/s for plain SSD Stream (**13× faster**). TurboQuant compresses the KV cache so far fewer layers need to stream from SSD per token.
+- At 512-token context all configurations perform similarly (~4.4–4.8 tok/s); TurboQuant's advantage is KV-cache compression at long context.
+- Peak physical RAM stays ≤ 17 GB across all configurations — the 126 GB model streams the rest from NVMe SSD.
+
+---
+
+## 🚀 Features
+
+- 🍎 **100% Native Apple Silicon**: Powered natively by Metal and Swift. 
+- 🔌 **OpenAI-compatible**: Drop-in replacement for OpenAI SDKs (`/v1/chat/completions`, streaming, etc).
+- 🧠 **Smart Model Routing**: Loads HuggingFace format models directly, with native Safetensors parsing.
+- 👁️ **Vision-Language Models (VLM)**: Native multimodal vision processing natively on Metal via the `--vision` flag, supporting real-time base64 image parsing (e.g., Qwen2-VL, PaliGemma).
+- 🎧 **Audio-Language Models (ALM)**: High-performance audio ingestion via the `--audio` flag, decoding OpenAI-spec `input_audio` payloads with AVFoundation WAV extraction.
+- ⚡️ **TurboQuantization Integrated**: Custom low-level MLX Metal primitives that apply extremely fast quantization for KV caching out-of-the-box.
+- 💾 **SSD Expert Streaming (10x)**: High-performance NVMe streaming that loads Mixture of Experts (MoE) layers directly from SSD to GPU — engineered by [@ericjlake](https://github.com/ericjlake), achieving **10x speedup** (0.58 → 5.91 tok/s) on 122B+ models with only ~10 GB resident memory. Uses cross-projection batching, concurrent pread (QD=24), asyncEval pipeline, and runtime top-k expert selection.
+- 🔮 **Speculative Decoding**: Load a small draft model (e.g. 9B) alongside a large main model to generate candidate tokens and verify in bulk — accelerating in-RAM inference.
+- 🎛️ **Granular Memory Control**: Integrated Layer Partitioning (`--gpu-layers`) and Wisdom Auto-Calibration for squeezing massive models into RAM.
+
+---
+
+## 📡 Supported Models & Methodologies
+
+`SwiftLM` dynamically maps Apple MLX primitives to standard HuggingFace architectures, enabling native Metal inference across the latest frontier open-weights models.
+
+### 💬 Text (LLMs)
+
+| Family | Models | Notes |
+|---|---|---|
+| **Gemma 4** | `gemma-4-e2b`, `gemma-4-e4b` (dense) · `gemma-4-26b-a4b`, `gemma-4-31b` (MoE) | Interleaved local + global attention; KV sharing; native quantized KV cache (issue #71 fix) |
+| **Gemma 3 / 3n** | `gemma-3-*`, `gemma-3n-*` | Google Gemma 3 and nano variants |
+| **Gemma / Gemma 2** | `gemma-*`, `gemma-2-*` | Original Gemma family |
+| **Qwen 3.5** | `Qwen3.5-7B`, `Qwen3.5-27B`, `Qwen3.5-122B-A10B`, `Qwen3.5-397B-A22B` | Dense + MoE; SSD streaming at 10× for 122B/397B |
+| **Qwen 3** | `Qwen3-*` (dense + MoE) | Sliding window + hybrid attention |
+| **Qwen 2.5** | `Qwen2.5-7B`, `Qwen2.5-14B`, `Qwen2.5-72B` | Robust RoPE scaling |
+| **Qwen 2** | `Qwen2-*` | Linear RoPE variants |
+| **Phi 4 / PhiMoE** | `phi-4-mlx`, `Phi-3.5-MoE` | Microsoft Phi family incl. MoE |
+| **Phi 3 / Phi** | `Phi-3`, `Phi-3.5-mini` | 128k context via chunked prefill |
+| **Mistral / Mixtral** | `Mistral-7B`, `Mistral-4`, `Mixtral-*` | GQA + sliding window variants |
+| **Llama / Llama 3** | `Llama-3.1-*`, `Llama-3.2-*`, `Llama-3.3-*` | YaRN + dynamic NTK RoPE scaling |
+| **GLM 4** | `GLM-4-*` | THUDM GLM-4 dense + MoE-Lite variants |
+| **DeepSeek V3** | `DeepSeek-V3-*` | MLA attention architecture |
+| **Falcon H1** | `Falcon-H1-*` | Falcon hybrid SSM+attention |
+| **LFM 2** | `LFM2-*`, `LFM2-MoE-*` | Liquid AI dense + MoE |
+| **OLMo 2 / OLMo 3 / OLMoE** | `OLMo-2-*`, `OLMo-3-*` | AllenAI open language models |
+| **Granite / GraniteMoE** | `Granite-*`, `GraniteMoE-Hybrid-*` | IBM Granite hybrid Mamba+attention |
+| **SmolLM 3** | `SmolLM3-*` | HuggingFace compact LM |
+| **MiniCPM** | `MiniCPM-*` | Lightweight efficient LM |
+| **InternLM 2** | `InternLM2-*` | Shanghai AI Lab series |
+| **Cohere / Command-R** | `Command-R-*`, `c4ai-*` | Cohere retrieval-tuned models |
+| **Jamba** | `Jamba-v0.1` | AI21 hybrid Mamba+attention |
+| **Exaone 4** | `EXAONE-4.0-*` | LG AI Research |
+| **MiMo / MiMo V2** | `MiMo-7B-*` | Xiaomi reasoning model |
+| **Ernie 4.5** | `ERNIE-4.5-*` | Baidu ERNIE series |
+| **Baichuan M1** | `Baichuan-M1-*` | Baichuan multimodal base |
+| **Bailing MoE** | `Ling-*` | Bailing/Ling MoE family |
+| **NemotronH** | `Nemotron-H-*` | NVIDIA Nemotron hybrid |
+| **Starcoder 2** | `starcoder2-*` | Code generation |
+| **OpenELM** | `OpenELM-*` | Apple on-device efficient LM |
+| **Apertus / AfMoE** | `Apertus-*` | Sparse MoE research models |
+| **BitNet** | `bitnet-*` | 1-bit weight quantization |
+| **MiniMax** | `MiniMax-Text-*` | Lightning attention architecture |
+| **Olmo3** | `Olmo3-*` | AllenAI Olmo3 series |
+
+### 👁️ Vision (VLMs)
+*Run with `--vision` flag.*
+
+| Family | Models | Notes |
+|---|---|---|
+| **Gemma 4** | `gemma-4-*` (VLM mode) | Native image tower via MLXVLM |
+| **Gemma 3** | `gemma-3-*` (VLM mode) | PaLiGemma-style image projection |
+| **Qwen3-VL / Qwen3.5-VL** | `Qwen3-VL-*`, `Qwen3.5-VL-*` | Dynamic resolution with native RoPE |
+| **Qwen2-VL / Qwen2.5-VL** | `Qwen2-VL-2B/7B`, `Qwen2.5-VL-*` | Real-time positional bounding + Metal image scaling |
+| **LFM2-VL** | `LFM2-VL-1.6B` | Liquid AI multimodal |
+| **Pixtral** | `pixtral-12b` | Mistral vision model |
+| **PaliGemma** | `paligemma-*` | Google vision-language |
+| **Idefics 3** | `Idefics3-*` | HuggingFace multimodal |
+| **Mistral 3** | `Mistral-Small-3.1-*` | Mistral vision variant |
+| **FastVLM** | `FastVLM-*` | Apple on-device VLM |
+| **SmolVLM 2** | `SmolVLM2-*` | HuggingFace compact VLM |
+| **GLM OCR** | `glm-4v-*` | THUDM vision+OCR |
+| **QwenVL** | `Qwen-VL-*` | Original Qwen VL |
+
+### 🎧 Audio (ALMs)
+*Run with `--audio` flag. Only `gemma-4-e4b` variants include an audio tower.*
+
+| Family | Models | Notes |
+|---|---|---|
+| **Gemma 4 Omni** | `gemma-4-e4b-it-4bit`, `gemma-4-e4b-it-8bit` | Audio-in via vDSP STFT → Mel spectrogram (16kHz, 128 bins); text-out |
+
+
+
+---
+
+## 📱 SwiftBuddy — iOS App
+
+A native iPhone & iPad companion app that downloads MLX models directly from HuggingFace and runs inference on-device via MLX Swift.
+
+### Features
+- **Tab UI**: Chat · Models · Settings
+- **Live download progress** with speed indicator and circular progress ring
+- **Model catalog**: Qwen3, Phi-3.5, Mistral, Llama — with on-device RAM fit indicators
+- **HuggingFace search** — find any `mlx-community` model by name
+- **Context-aware empty states** — downloading ring, loading spinner, idle prompt
+- **iOS lifecycle hardened** — model unload only fires on true background (not notification banners); 30-second grace period on app-switch
+
+> 📱 **Running live on iPhone 13 Pro (6 GB)** — no Python, no server, no GIL. Pure on-device MLX inference via Metal GPU.
+
+### Build & Run (iOS)
+
+```bash
+cd SwiftBuddy
+python3 generate_xcodeproj.py       # Generates SwiftBuddy.xcodeproj
+open SwiftBuddy.xcodeproj
+```
+
+Then in Xcode:
+1. Select the **SwiftBuddy** target → **Signing & Capabilities**
+2. Set your **Team** (your Apple Developer account)
+3. Select your iPhone as the run destination
+4. ⌘R to build and run
+
+> **Note for contributors**: The `.xcodeproj` is git-ignored (it contains your personal Team ID). Run `generate_xcodeproj.py` after cloning to regenerate it locally. Your Team ID is never committed.
+
+---
+
+## ⚡️ TurboQuantization: KV Cache Compression
+
+`SwiftLM` implements a **hybrid V2+V3 TurboQuant architecture** for on-the-fly KV cache compression. At roughly ~3.6 bits per coordinate overall, the KV cache is compressed ~3.5× vs FP16 with near-zero accuracy loss.
+
+### By combining V2 Speed with V3 Quality:
+Recent reproductions of the TurboQuant algorithm (e.g., `turboquant-mlx`) revealed two distinct paths:
+1. **V2 (Hardware-Accelerated)**: Fast, but uses linear affine quantization which degrades quality at 3-bit.
+2. **V3 (Paper-Correct)**: Excellent quality using non-linear Lloyd-Max codebooks, but painfully slow due to software dequantization.
+
+**We built the "Holy Grail" hybrid:** We ported the V3 non-linear Lloyd-Max codebooks directly into the native C++ encoding path, and process the dequantization natively in fused Metal (`bggml-metal`) shaders. This achieves **V3 quality at V2 speeds**, completely detached from Python overhead.
+
+### The Algorithm:
+
+**K-Cache (3-bit PolarQuant + 1-bit QJL) = 4.25 bits/dim**
+1. Extract L2 norm and normalize: `x̂ = x / ‖x‖`
+2. Apply Fast Walsh-Hadamard Transform (WHT) rotation to distribute outliers evenly.
+3. Quantize each coordinate using **3-bit non-linear Lloyd-Max centroids**.
+4. Compute the residual error between the original vector and the quantized approximation.
+5. Project the residual via a random Johnson-Lindenstrauss (QJL) matrix and store the 1-bit signs.
+*(Why QJL? QJL acts as an additional regularizer that prevents centroid resolution loss from degrading the attention dot-product.)*
+
+**V-Cache (3-bit PolarQuant) = 3.125 bits/dim**
+Because the V-cache matrix is not used for inner-product attention scoring, the QJL error correction provides no benefit. We cleanly disable QJL for the V-cache, extracting an additional 25% memory savings without sacrificing quality.
+
+Reference implementations: [`turboquant-mlx`](https://github.com/sharpner/turboquant-mlx) | [`turboquant_plus`](https://github.com/TheTom/turboquant_plus) | Paper: [TurboQuant, Google 2504.19874](https://arxiv.org/abs/2504.19874)
+
+---
+
+## 💾 SSD Expert Streaming: 10x MoE Speedup
+
+SwiftLM implements a **rewritten SSD expert streaming pipeline** (engineered by [Eric Lake](https://github.com/ericjlake)) that achieves 10x generation speedup for massive Mixture of Experts (MoE) models running on memory-constrained Apple Silicon. This enables running models like **Qwen3.5-122B** (69.6 GB) and **Qwen3.5-397B** (209 GB) on a **64 GB Mac** by streaming expert weights from NVMe SSD.
+
+### Benchmark Results (M1 Ultra 64GB, Qwen3.5-122B-A10B-4bit)
+
+| Configuration | tok/s | vs. Original | Notes |
+|---|---|---|---|
+| Original `--stream-experts` | 0.58 | baseline | Sequential pread, 1 NVMe queue |
+| **This PR (top-k=8, full quality)** | **4.95** | **8.5×** | All 8 experts evaluated |
+| **This PR (top-k=6, default)** | **5.20** | **9.0×** | Recommended default |
+| **This PR (top-k=4, speed mode)** | **5.91** | **10.2×** | Best quality/speed tradeoff |
+| **This PR (top-k=2, turbo mode)** | **6.52** | **11.2×** | Still coherent output |
+
+> Memory stable at **~10.6 GB resident**, no swap activity. Tested over 200-token generation runs.
+
+### The Approach: Small Model Helps Large Model
+
+A novel aspect of this architecture is the **dual-model speculative decoding** pattern: a small draft model (e.g. Qwen3.5-9B at 73 tok/s) runs **entirely in RAM** while the large MoE model (e.g. 122B) streams experts from SSD. The draft model generates candidate tokens at high speed, and the main model verifies them in bulk — dramatically reducing the number of SSD-bound generation rounds needed.
+
+> **Performance note:** Combining `--stream-experts` with `--draft-model` requires care. The verify pass sends N+1 tokens simultaneously, each routing to *different* experts — SSD I/O scales with the *union* of all positions' expert selections. At the default `--num-draft-tokens 4` this creates a **5× I/O fan-out** that regresses throughput below solo SSD streaming.
+>
+> **Auto-cap strategy (Issue #72 fix):** SwiftLM automatically caps `--num-draft-tokens` to **1** when both flags are active. With 1 draft token the verify pass covers only 2 positions (2× fan-out). If the draft model's acceptance rate is ≥ 50% — typical for same-family models — the net throughput is still positive despite the 2× I/O overhead. A startup advisory is printed when the cap fires.
+>
+> For maximum throughput: use `--stream-experts` alone (no draft model).
+
+### Optimization Techniques
+
+1. **Cross-Projection Batching**: Collapses ~1,400 per-expert `eval()` calls down to ~48 per token by orchestrating gate/up/down projections together in `SwitchGLU`.
+2. **Concurrent NVMe pread (QD=24)**: Replaces sequential pread with `DispatchQueue.concurrentPerform`, saturating the NVMe controller's queue depth (8 experts × 3 projections = 24 parallel reads).
+3. **AsyncEval Pipeline with Speculative Pread**: Overlaps GPU compute with SSD I/O — uses previous-token routing to speculatively pre-load experts for the next token during the GPU async window (~70% hit rate). Only missed experts (~30%) require on-demand pread after routing sync.
+4. **Persistent Metal Buffers**: Expert weight buffers are allocated once per `SwitchGLU` layer and reused across tokens, eliminating per-token allocation overhead.
+5. **Runtime Top-K Expert Selection**: The `SWIFTLM_TOP_K` environment variable reduces the number of active experts per token at runtime without model recompilation — trading marginal quality for significant speed gains.
+
+### Key Engineering Findings
+
+| Finding | Detail |
+|---|---|
+| **GPU compute is the bottleneck** | At steady state, GPU compute is ~190ms of ~200ms per-token time. The OS page cache serves ~90% of expert reads from RAM. |
+| **Don't cache experts in application memory** | An LRU expert cache *stole* from the OS page cache and regressed performance (4.84 → 4.01 tok/s). Let the kernel manage it. |
+| **MambaCache requires checkpoint rollback** | Unlike attention KV caches (trim = decrement offset), Mamba's recurrent state integrates all history and cannot be partially undone. We implemented `checkpoint()`/`restore()` for speculative decoding on hybrid Attention+Mamba architectures (Qwen3.5). |
+
+### Usage
+
+```bash
+# Standard SSD streaming (recommended, top-k=6):
+SWIFTLM_TOP_K=6 SwiftLM --port 8002 \
+  --model <path>/Qwen3.5-122B-A10B-4bit --stream-experts
+
+# Speed mode (top-k=4):
+SWIFTLM_TOP_K=4 SwiftLM --port 8002 \
+  --model <path>/Qwen3.5-122B-A10B-4bit --stream-experts
+
+# With speculative decoding (in-RAM models only — both models fit in RAM):
+SwiftLM --port 8002 \
+  --model <path>/Qwen3.5-27B-4bit \
+  --draft-model <path>/Qwen3.5-9B-4bit \
+  --num-draft-tokens 4
+
+# With SSD streaming + draft model (auto-cap mode):
+# SwiftLM automatically caps --num-draft-tokens to 1 to minimise the
+# verify-pass I/O fan-out. Net positive if draft acceptance rate ≥ 50%.
+SwiftLM --port 8002 \
+  --model <path>/Qwen3.5-122B-A10B-4bit \
+  --stream-experts \
+  --draft-model <path>/Qwen3.5-9B-4bit
+  # ↑ num-draft-tokens is auto-capped to 1 at startup
+```
+
+---
+
+## 🔮 Speculative Decoding & Multi-Token Prediction (MTP)
+
+SwiftLM supports two forms of Speculative Decoding to accelerate in-RAM inference:
+
+### 1. Traditional Dual-Model Speculative Decoding
+Load a small draft model alongside a large main model. The draft model generates candidate tokens at high speed, and the main model verifies them in bulk.
+*Requires passing both `--model` and `--draft-model`.*
+
+### 2. Multi-Token Prediction (MTP) Native Decoding
+For models trained with native MTP heads (e.g., the `Qwen3` family), SwiftLM automatically leverages the hidden MTP layers to draft future tokens within a single forward pass, completely eliminating the need to load a separate draft model.
+
+**Algorithmic Parity (Leviathan et al.)**
+SwiftLM implements mathematically rigorous **probabilistic rejection sampling** (as defined by Leviathan et al.) in its `MTPTokenIterator`. This ensures exact mathematical output parity with the target model's true distribution, even at non-zero temperatures, properly evaluating $P_{target} / P_{draft}$ and resampling the corrected distribution upon rejection.
+
+### ⚠️ Hardware Limitations & SSD Streaming (Help Wanted!)
+**MTP is strictly a Compute-Bound optimization.**
+We successfully verified algorithmic parity and a **15%+ TPS speedup** on the dense **`Qwen/Qwen3.6-27B`** model, which fits completely in 64GB VRAM.
+
+However, running MTP on massive MoE models (like the **`Qwen3.6-35B-A3B`**) on a 64GB Mac requires `--stream-experts` to fetch MoE weights from the NVMe SSD. Because MTP evaluates multiple draft tokens in parallel, the verify pass forces a massive I/O fan-out, attempting to fetch up to 3x as many unique experts from the SSD simultaneously.
+This saturates the NVMe bandwidth, causing the GPU to stall and completely neutralizing the MTP speedup. **If you are running a 64GB Mac, MTP on 35B+ MoE models will be slower than the baseline.**
+
+*(Community Help Wanted: We are actively looking for optimizations to batch expert pre-fetching during MTP verification to make this viable on 64GB Unified Memory limits!)*
+
+---
+
+## 🔀 Why We Forked Apple MLX
+
+To achieve the extreme memory efficiency and speeds seen in **SSD Expert Streaming** and **Speculative Decoding**, `SwiftLM` relies on custom C++ primitives that bypass standard unified memory limits.
+
+> [!NOTE]
+> We maintain custom forks (`SharpAI/mlx` and `SharpAI/mlx-c`) to support **out-of-core memory-mapped execution**, streaming tensor blocks directly from the SSD (NVMe) to the GPU via custom Metal kernels (`ssd_streamer.mm` and `fence.air`). Official `ml-explore` repositories do not yet support this out-of-the-box.
+
+For a detailed breakdown on repository architecture, upstream synchronization, our specific custom patches, and the specific indications for when we can safely revert to Apple's native upstream, read the full documentation: 
+👉 **[Upstream MLX Synchronization & SSD Streaming Maintenance](.agents/workflows/mlx-upstream-sync.md)**
+
+---
+
+## 💻 Benchmarks & Testing
+
+Run our automated benchmark suites via the interactive script:
+```bash
+./run_benchmark.sh
+```
+
+The script provides an interactive menu to select any model and run one of two automated testing suites:
+
+### Test 1: Automated Context & Memory Profile (TPS & RAM matrix)
+Tests generation speed (TPS) and granular Apple Metal GPU memory allocation across extreme context lengths (e.g., `512, 40000, 100000` tokens).
+- Iterates over 4 configurations: Vanilla, SSD Streaming, TurboQuant, and SSD + TurboQuant.
+- Generates a rich ANSI console visualization with bar charts and a configuration scoreboard.
+- Saves the complete results matrix to `docs/profiling/profiling_results_<hostname>.md`.
+
+### Test 2: Prompt Cache & Sliding Window Regression Test
+Verifies the stability of the engine's KV prompt cache when interleaving long contexts with sliding window attention bounds.
+- Automatically spins up an isolated background inference server instance.
+- Generates a 5,000+ token mock JSON payload.
+- Fires an extreme alternating sequence of 4 concurrent requests (`5537t` → `18t` → `5537t` → `Big Full Cache Hit`).
+- Confirms the memory bounds remain stable without throwing $O(N^2)$ OS memory warnings, $OOM$ exceptions, or `SIGTRAP` errors.
+
+### Throughput & Inference Memory Profile
+Tested by rendering exactly 20 tokens under standard conversational evaluation (`--prefill-size 512`) to capture precise Token Generation (TPS) and Apple Metal memory footprint limits:
+
+| Model | Time To First Token (s) | Generation Speed (tok/s) | Peak GPU Memory (GB) |
+|---|---|---|---|
+| `gemma-4-e2b-it-4bit` | 0.08s | 116.27 tok/s | 1.37 GB |
+| `gemma-4-e4b-it-8bit` | 0.33s | 48.21 tok/s | 7.64 GB |
+| `gemma-4-26b-a4b-it-4bit` | 0.14s | 85.49 tok/s | 13.46 GB |
+| `gemma-4-31b-it-4bit` | 0.55s | 14.82 tok/s | 16.83 GB |
+
+To run the automated suite on your machine for these models, execute:
+```bash
+python3 tests/run_4models_benchmark.py
+```
+
+> **🧠 How it works:** SwiftLM implements **Chunked Prefill** (controlled via `--prefill-size`, defaulting to 512). This is functionally equivalent to `llama.cpp`'s `--batch-size` parameter and mirrors the [`mlx-lm` Python library](https://github.com/ml-explore/mlx/tree/main/mlx_lm)'s reference implementation approach to preventing $O(N^2)$ Unified Memory over-allocation during massive sequence parsing.
+
+> **⚠️ Quantization Disclaimer**: While heavier quantization shrinks the required memory footprint, **4-bit quantization** remains the strict production standard for MoE models. Our metrics indicated that aggressive 2-bit quantization heavily destabilizes JSON grammars—routinely producing broken keys like `\name\` instead of `"name"`—which systematically breaks OpenAI-compatible tool calling.
+
+---
+
+## 📡 API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/health` | GET | Server health + loaded model capabilities |
+| `/v1/models` | GET | List available models |
+| `/v1/chat/completions` | POST | Chat completions (LLM and VLM support, multi-turn, system prompts) |
+
+## 💻 Usage Examples
+
+### Chat Completion (Streaming)
+Drop-in compatible with standard OpenAI HTTP consumers:
+```bash
+curl http://localhost:5413/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemma-4-26b-a4b-it-4bit",
+    "stream": true,
+    "messages": [
+      {"role": "system", "content": "You are Aegis-AI, a local home security agent. Output strictly in JSON format."},
+      {"role": "user", "content": "Clip 1: Delivery person drops package at 14:02. Clip 2: Delivery person walks away down driveway at 14:03. Do these clips represent the same security event? Output a JSON object with a `duplicate` boolean and a `reason` string."}
+    ]
+  }'
+```
+---
+
+### Vision-Language Models (VLM)
+To run a vision model (e.g., `mlx-community/Qwen2-VL-2B-Instruct-4bit`), launch SwiftLM with the `--vision` flag:
+```bash
+./.build/release/SwiftLM --model mlx-community/Qwen2-VL-2B-Instruct-4bit --vision
+```
+
+You can then pass standard OpenAI base64 encoded images directly. SwiftLM handles hardware spatial-mapping natively via Metal:
+```bash
+curl http://localhost:5413/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen2-vl",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {"type": "text", "text": "Describe the contents of this image."},
+          {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."}}
+        ]
+      }
+    ]
+  }'
+```
+---
+
+
+## ⚙️ CLI Options
+
+| Option | Default | Description |
+|---|---|---|
+| `--model` | (required) | HuggingFace model ID or local path |
+| `--port` | `5413` | Port to listen on |
+| `--host` | `127.0.0.1` | Host to bind |
+| `--vision` | `false` | Enable VLM (vision-language model) mode for image inputs |
+| `--audio` | `false` | Enable ALM (audio-language model) mode for audio inputs |
+| `--no-vision` | `false` | Load a vision-capable checkpoint as a text-only LLM, skipping VLM auto-detection. Text-only workloads (coding agents) then get the prompt cache, which is still skipped for most VLM-loaded models (Gemma 4 text-only requests are already cached, so the flag is unnecessary there). Mutually exclusive with `--vision` |
+| `--max-tokens` | `2048` | Max tokens limit per generation |
+| `--prefill-size`| `512`  | Prompt prefill chunk size (micro-batching for long contexts) |
+| `--top-p` | `1.0` | Default top-p nucleus sampling (overridable per-request) |
+| `--top-k` | `50` | Default top-k sampling (0 disables, overridable per-request) |
+| `--min-p` | `0.0` | Default min-p sampling threshold relative to the highest probability token (0 disables) |
+| `--gpu-layers` | `model_default`| Restrict the amount of layers allocated to GPU hardware |
+| `--stream-experts` | `false` | Enable SSD expert streaming for MoE models (10x speedup) |
+| `--turbo-kv` | `false` | Enable TurboQuant 3-bit KV cache compression (activates after 2048 tokens, server-wide) |
+| `--prompt-cache-entries` | `1` | Prompt cache entries kept in memory (LRU; values below 1 are raised to 1 with a warning). More entries let interleaved sessions each keep their prefix, at the cost of one KV copy per entry. A newer prompt that extends a saved one replaces it instead of taking a second slot; for attention-only models the same goes for a saved prompt it differs from only in its last few tokens (a re-rendered generation prompt, an edited last message), except once a sliding-window layer has outgrown its window. Hybrid (recurrent) models replace only on an exact extension. Under macOS memory pressure the cache keeps only its most recent entry (warning) or is emptied (critical), so with the default of 1 only a critical event drops it |
+| `--draft-model` | (none) | Draft model path/ID for speculative decoding. When used with `--stream-experts`, `--num-draft-tokens` is auto-capped to 1 to minimise SSD I/O fan-out (see performance note above). |
+| `--num-draft-tokens` | `4` | Tokens per speculation round. Auto-capped to 1 when combined with `--stream-experts`. |
+| `--dflash` | `false` | Enable DFlash block-diffusion speculative decoding. Requires a compatible DFlash draft model |
+| `--dflash-block-size`| (auto) | Number of tokens per DFlash draft block. Defaults to draft model config |
+| `--max-prompt-tokens` | (none) | Reject prompts longer than this many tokens with an OpenAI-style 400 (`context_length_exceeded`) before prefill, so agent clients compact instead of waiting on a prefill the machine can't hold. Independent of `--ctx-size` |
+| `--no-token-echo` | `false` | Stop echoing generated tokens to stdout as they stream. Request log lines (`srv ...`) are unaffected |
+
+## 🔧 Per-Request API Parameters
+
+In addition to the standard OpenAI fields (`temperature`, `top_p`, `max_tokens`, etc.), SwiftLM accepts the following **SwiftLM-specific** fields on `POST /v1/chat/completions`:
+
+| Field | Type | Description |
+|---|---|---|
+| `kv_bits` | `int` (4 or 8) | Enable **MLX-native quantized KV cache** for this request. Uses `QuantizedKVCache` (standard group quantization) instead of `KVCacheSimple`. Separate from `--turbo-kv`. Reduces KV memory ~2–4× at mild quality cost. |
+| `enable_thinking` | `bool` | Force-enable or disable chain-of-thought thinking blocks for Gemma-4 / Qwen3. |
+| `kv_group_size` | `int` | Group size for `kv_bits` quantization (default: `64`). |
+| `top_k` | `int` | Per-request top-k sampling override (0 = disabled). |
+| `min_p` | `float` | Per-request min-p sampling threshold (0 = disabled). |
+| `repetition_penalty` | `float` | Token repetition penalty (e.g. `1.15`). |
+
+### `kv_bits` vs `--turbo-kv` — What's the difference?
+
+| | `kv_bits` (per-request) | `--turbo-kv` (server flag) |
+|---|---|---|
+| **Scope** | Per-request, sent in JSON body | Server-wide, set at startup |
+| **Algorithm** | MLX-native group quantization (4-bit / 8-bit) | Custom 3-bit PolarQuant + QJL Walsh-Hadamard |
+| **Activation** | From token 0 | After 2048 tokens |
+| **Memory savings** | ~2–4× vs FP16 | ~3.5× vs FP16 |
+| **Use case** | Targeted memory reduction per conversation | Extreme long-context (100K+) compression |
+
+### Example: Enable 4-bit KV cache per request
+```bash
+curl http://localhost:5413/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "gemma-4-26b-a4b-it-4bit",
+    "kv_bits": 4,
+    "messages": [
+      {"role": "user", "content": "Summarize the history of computing in 3 sentences."}
+    ]
+  }'
+```
+
+## 📦 Requirements
+
+- macOS 14.0+
+- Apple Silicon (M1/M2/M3/M4/M5)
+- Xcode Command Line Tools
+- Metal Toolchain (`xcodebuild -downloadComponent MetalToolchain`)
+
+## 📖 The "Aha!" Moment
+
+**The "2+2=4" Aha Moment**: During development, we encountered a severe "silent failure" where the model would successfully load and evaluate all 32 layers at high speed, but generate nothing but infinite whitespace. The model logits showed the correct *shape* but the wrong *magnitudes*. 
+
+The breakthrough arrived when we realized the **embedding scale** was missing. The Gemma architecture requires scaling embedding outputs by `sqrt(hidden_size)`. For a hidden size of 2816, missing this meant every activation in the network was ~53x too small! By adding one single math operation:
+`h = h * MLXArray(Float(config.hiddenSize).squareRoot())`
+
+The model instantly woke up from "whispering" whitespace and successfully responded to `"What is 2+2?"` with a perfect `"2 + 2 equals 4."` — proving that the entire massive structural pipeline from Swift to Metal was working.
+
+## 🙏 Acknowledgments & Credits
+
+[![Awesome MLX](https://img.shields.io/badge/Awesome-MLX-blue?style=flat-square)](https://github.com/raullenchai/awesome-mlx)
+
+`SwiftLM` leverages the powerful foundation of the Apple MLX community and relies heavily on the open-source ecosystem. While the custom C++ implementations, Metal optimizations, and high-performance pipeline architecture were engineered natively for this engine, we owe massive thanks to the following projects and contributors for their indispensable reference materials and underlying protocols:
+
+### Contributors
+
+- **[Eric Lake](https://github.com/ericjlake)** — Engineered the **SSD Expert Streaming 10x rewrite** ([PR #26](https://github.com/SharpAI/SwiftLM/pull/26)), achieving 10× generation speedup on 122B+ MoE models via cross-projection batching, concurrent NVMe pread (QD=24), asyncEval pipeline with speculative pread, and runtime top-k expert selection. Also implemented the **speculative decoding infrastructure** with `DraftModelRef`, dual-model loading, and **MambaCache checkpoint/restore** for hybrid Attention+Mamba architectures.
+
+### Projects & References
+
+- **[mlx-swift](https://github.com/ml-explore/mlx-swift)** — The core Apple MLX wrapper bringing Metal-accelerated operations into the Swift ecosystem.
+- **[mlx-lm](https://github.com/ml-explore/mlx/tree/main/mlx_lm)** — The official Python language models implementation, serving as the core inspiration for our chunked-prefill architecture and attention manipulation logic.
+- **[flash-moe](https://github.com/danveloper/flash-moe)** — Inspired the memory-mapped out-of-core SSD Expert Streaming mechanics that we implemented natively in SwiftLM.
+- **[Hummingbird](https://github.com/hummingbird-project/hummingbird)** — The incredible event-driven Swift HTTP engine powering the OpenAI-compatible REST API.
+- **[TurboQuant Paper](https://arxiv.org/abs/2504.19874)** — *"TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate"* (Zandieh et al., AISTATS 2026). Provided the initial algorithmic framework for the dual-stage PolarQuant + QJL engine.
+- **[TheTom/llama-cpp-turboquant](https://github.com/TheTom/llama-cpp-turboquant/tree/feature/turboquant-kv-cache)** — Served as an invaluable reference architecture for the C and GPU quantization tables, guiding the development of our native `turbo-wht` Walsh-Hadamard kernels and custom Metal wrapper layers.
+- **[TheTom/turboquant_plus](https://github.com/TheTom/turboquant_plus)** — Essential Python validation logic used to certify the correctness of our manually constructed Lloyd-Max codebook generation math.
+- **[amirzandieh/QJL](https://github.com/amirzandieh/QJL)** — The original 1-bit residual correction engine backing the paper, which informed our QJL error recovery in dot-product regimes.
+
+---
+**License**: MIT

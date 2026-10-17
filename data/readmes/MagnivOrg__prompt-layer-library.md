@@ -1,0 +1,355 @@
+<div align="center">
+
+# 🍰 PromptLayer
+
+**Version, test, and monitor every prompt and agent with robust evals, tracing, and regression sets.**
+
+<a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/-Python 3.9+-blue?style=for-the-badge&logo=python&logoColor=white"></a>
+<a href="https://docs.promptlayer.com"><img alt="Docs" src="https://custom-icon-badges.herokuapp.com/badge/docs-PL-green.svg?logo=cake&style=for-the-badge"></a>
+<a href="https://www.loom.com/share/196c42e43acd4a369d75e9a7374a0850"><img alt="Demo with Loom" src="https://img.shields.io/badge/Demo-loom-552586.svg?logo=loom&style=for-the-badge&labelColor=gray"></a>
+
+---
+
+<div align="left">
+
+This library provides convenient access to the PromptLayer API from applications written in python.
+
+## AI coding agents
+
+- Python SDK guide: https://docs.promptlayer.com/sdks/python
+- Curated docs index (`llms.txt`): https://docs.promptlayer.com/llms.txt
+- Full docs corpus (`llms-full.txt`): https://docs.promptlayer.com/llms-full.txt
+
+Install PromptLayer skill files and the Docs MCP server into your coding agents:
+
+```bash
+promptlayer setup
+```
+
+This writes the PromptLayer docs skill and the SDK evals skill (`sdk-eval-builder`) for Cursor and Claude Code, and adds the Docs MCP server (`https://docs.promptlayer.com/mcp`) to their project configs. Useful variants:
+
+```bash
+promptlayer setup skills
+promptlayer setup mcp
+promptlayer setup --agent cursor --agent claude
+promptlayer setup --force
+```
+
+## Installation
+
+```bash
+pip install promptlayer
+```
+
+Optional extras [(learn more)](#integration-modules):
+
+```bash
+pip install "promptlayer[openai-agents]"
+pip install "promptlayer[claude-agents]"
+```
+
+## Quick Start
+
+To follow along, you need a [PromptLayer](https://www.promptlayer.com/) API key. Once logged in, go to Settings to generate a key.
+
+Create a client and fetch a prompt template from PromptLayer:
+
+```python
+from promptlayer import PromptLayer
+
+pl = PromptLayer(api_key="pl_xxxxx")
+
+prompt = pl.templates.get(
+    "support-reply",
+    {
+        "input_variables": {
+            "customer_name": "Ada",
+            "question": "How do I reset my password?",
+        }
+    },
+)
+
+print(prompt["prompt_template"])
+```
+
+Async client:
+
+```python
+import asyncio
+
+from promptlayer import AsyncPromptLayer
+
+
+async def main():
+    pl = AsyncPromptLayer(api_key="pl_xxxxx")
+
+    prompt = await pl.templates.get(
+        "support-reply",
+        {
+            "input_variables": {
+                "customer_name": "Ada",
+                "question": "How do I reset my password?",
+            }
+        },
+    )
+
+    print(prompt["prompt_template"])
+
+
+asyncio.run(main())
+```
+
+Every method has an async version.
+
+You can also use the client as a proxy around supported provider SDKs:
+
+```python
+from promptlayer import PromptLayer
+
+pl = PromptLayer(api_key="pl_xxxxx")
+openai = pl.openai
+
+response = openai.chat.completions.create(
+    model="gpt-4.1-mini",
+    messages=[{"role": "user", "content": "Say hello in one short sentence."}],
+    pl_tags=["proxy-example"],
+)
+```
+
+## Configuration
+
+### Client Options
+
+`PromptLayer(...)` and `AsyncPromptLayer(...)` accept these parameters:
+
+- `api_key: str | None = None`: Your PromptLayer API key. If omitted, the SDK looks for `PROMPTLAYER_API_KEY`.
+- `enable_tracing: bool = False`: Enables OpenTelemetry tracing export to PromptLayer and auto-instruments installed OpenAI, Anthropic, Google GenAI, and AWS Bedrock SDKs when the tracing extra is installed.
+- `base_url: str | None = None`: Overrides the PromptLayer API base URL. If omitted, the SDK uses `PROMPTLAYER_BASE_URL` or the default API URL.
+- `throw_on_error: bool = True`: Controls whether SDK methods raise PromptLayer exceptions or return `None` for many API errors.
+- `cache_ttl_seconds: int = 0`: Enables in-memory prompt-template caching when greater than `0`.
+- `tracer_provider: TracerProvider | None = None`: Uses an application-owned OpenTelemetry SDK tracer provider instead
+  of the default PromptLayer-managed provider.
+- `tracing_providers: Iterable[str] | None = None`: Selects provider SDKs to auto-instrument. Defaults to all supported
+  providers; pass an empty iterable to export spans without provider SDK auto-instrumentation.
+
+### Environment Variables
+
+The SDK relies on the following environment variables:
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `PROMPTLAYER_API_KEY` | Yes, unless passed as `api_key=` | API key used to authenticate requests to PromptLayer. |
+| `PROMPTLAYER_BASE_URL` | No | Overrides the PromptLayer API base URL. Defaults to `https://api.promptlayer.com`. |
+| `PROMPTLAYER_OTLP_TRACES_ENDPOINT` | No | Overrides the OTLP trace endpoint (`/v1/traces`) used when SDK tracing is enabled. |
+| `PROMPTLAYER_TRACEPARENT` | No | Optional trace context passed through the Claude Agents integration. |
+
+## Client Resources
+
+The main resources surfaced by `PromptLayer` and `AsyncPromptLayer` are:
+
+| Resource | Description |
+| --- | --- |
+| `client.templates` | Prompt template retrieval, listing, publishing, and cache invalidation. |
+| `client.run()` and `client.run_workflow()` | Helpers for running prompts and workflows. |
+| `client.log_request()` | Manual request logging. |
+| `client.track` | Request annotation utilities for metadata, prompt linkage, scores, and groups. |
+| `client.group` | Group creation for organizing related requests. |
+| `client.traceable()` | Decorator for tracing your own functions and sending those spans to PromptLayer when tracing is enabled. |
+| `client.skills` | Skill collection pull, create, publish, and update operations. |
+| `client.tables.sheets.scorecards` | Table scorecard configuration, migration, recalculation, and row-level result retrieval. |
+| `client.openai` and `client.anthropic` | Provider proxies that wrap those SDKs and log requests to PromptLayer. |
+
+Note: When tracing is enabled, spans are exported to PromptLayer using OpenTelemetry.
+
+### GenAI SDK Auto-Instrumentation
+
+Install the tracing extra and the provider SDKs used by your application:
+
+```bash
+pip install "promptlayer[otel-genai-instrumentation]" openai anthropic google-genai boto3
+```
+
+The extra includes the official OpenTelemetry instrumentors for:
+
+| Provider | Instrumented APIs |
+| --- | --- |
+| OpenAI and Azure OpenAI | Chat Completions, structured-output parsing, Embeddings, and Responses; sync, async, and streaming |
+| Anthropic and Anthropic Vertex | Messages create, parse, and stream; sync and async |
+| Google GenAI | Generate Content, streaming Generate Content, Embeddings, and supported Interactions releases; Gemini Developer API and Vertex AI modes |
+| AWS Bedrock | Botocore Bedrock Runtime Converse and InvokeModel APIs, including streaming |
+
+`PromptLayer(enable_tracing=True)` auto-instruments every supported provider SDK
+that is installed:
+
+```python
+from anthropic import Anthropic
+from promptlayer import PromptLayer
+
+promptlayer_client = PromptLayer(api_key="pl_xxxxx", enable_tracing=True)
+anthropic_client = Anthropic()
+
+response = anthropic_client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=256,
+    messages=[{"role": "user", "content": "Say hello."}],
+)
+```
+
+Advanced OpenTelemetry configurations can select instrumentors explicitly.
+The `google` instrumentor supports both Gemini and `google-genai` clients
+created with `vertexai=True`:
+
+```python
+from promptlayer import configure_tracing
+
+tracer_provider = configure_tracing(
+    providers=("openai", "anthropic", "google", "bedrock"),
+)
+```
+
+The `openai.azure` provider alias selects the underlying OpenAI SDK
+instrumentor. The `amazon.bedrock` and `aws.bedrock` aliases select the
+Botocore instrumentor. Because Botocore instrumentation operates at the AWS
+SDK layer, selecting Bedrock also traces other Botocore service calls made by
+the process.
+
+PromptLayer defaults OpenTelemetry message-content capture to `SPAN_ONLY` when
+it enables provider instrumentation. To exclude prompts and responses from
+spans, opt out before configuring tracing:
+
+```bash
+export OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=NO_CONTENT
+```
+
+PromptLayer preserves explicit official OpenTelemetry values: `NO_CONTENT`,
+`SPAN_ONLY`, `EVENT_ONLY`, and `SPAN_AND_EVENT`. Set the value before tracing
+is configured because provider instrumentors read it during initialization.
+Message content can contain sensitive data and is sent to the configured trace
+destination when capture is enabled.
+
+Applications that only use the direct OpenAI SDK can continue to use the
+OpenAI-specific convenience API:
+
+```python
+from openai import OpenAI
+from promptlayer import instrument_openai
+
+tracer_provider = instrument_openai()
+openai_client = OpenAI()
+```
+
+`instrument_openai()` reads the PromptLayer API key and endpoint from the
+environment, is safe to call repeatedly with the same tracer provider, and
+returns the configured provider so short-lived processes can flush it.
+
+All provider instrumentors in this extra require Python 3.10 or newer. The core
+PromptLayer package continues to support Python 3.9 without auto-instrumentation.
+
+## Table Scorecards
+
+New scorecard APIs are preferred for new table scoring workflows. Legacy `/score` endpoints remain supported for existing integrations. If both a legacy score configuration and a scorecard exist on the same sheet, `/score` continues to return legacy score behavior; use the `/scorecard` endpoints through `client.tables.sheets.scorecards` to access scorecard state and results.
+
+Configure a scorecard:
+
+```python
+await client.tables.sheets.scorecards.configure(
+    table_id,
+    sheet_id,
+    {
+        "name": "Quality Scorecard",
+        "evaluated_column_ids": [],
+        "aggregation": {
+            "method": "weighted_mean",
+            "required_step_failure_behavior": "fail",
+            "pass_threshold": 0.8,
+            "warn_threshold": 0.6,
+        },
+        "steps": [],
+    },
+)
+```
+
+Migrate a legacy score safely. `delete_legacy_score` defaults to `False`, so migration does not remove legacy score configuration unless you explicitly request it:
+
+```python
+await client.tables.sheets.scorecards.migrate_legacy_score(
+    table_id,
+    sheet_id,
+    {"delete_legacy_score": False},
+)
+```
+
+Recalculate and fetch the calculation:
+
+```python
+run = await client.tables.sheets.scorecards.recalculate(table_id, sheet_id)
+
+result = await client.tables.sheets.scorecards.get_calculation(
+    table_id,
+    sheet_id,
+    run["calculation_id"],
+)
+```
+
+Fetch row breakdowns:
+
+```python
+rows = await client.tables.sheets.scorecards.list_rows(
+    table_id,
+    sheet_id,
+    {
+        "calculation_id": run["calculation_id"],
+        "verdict": "fail",
+    },
+)
+
+row = await client.tables.sheets.scorecards.get_row(
+    table_id,
+    sheet_id,
+    0,
+    {"calculation_id": run["calculation_id"]},
+)
+```
+
+Migration caveat: custom legacy scoring cannot be automatically converted into scorecard criteria. Review migrated criteria before relying on scorecard results in production.
+
+## Integration Modules
+
+Optional modules that are imported directly rather than accessed through the client:
+
+| Module | Description |
+| --- | --- |
+| `promptlayer.integrations.openai_agents` | Tracing utilities for the [openai-agents SDK](https://github.com/openai/openai-agents-python) that instrument agent runs and export their traces to PromptLayer. |
+| `promptlayer.integrations.claude_agents` | Configuration utilities for the [claude-agent-sdk SDK](https://github.com/anthropics/claude-agent-sdk-python) that load the PromptLayer plugin and required environment settings so Claude agent runs send traces to PromptLayer. |
+
+## Error Handling
+
+The SDK raises `PromptLayerError` as the base exception for SDK failures, with more specific subclasses for common API and validation cases.
+
+| Error type | Description |
+| --- | --- |
+| `PromptLayerValidationError` | Invalid input passed to the SDK before or during a request. |
+| `PromptLayerAPIConnectionError` | The SDK could not connect to PromptLayer. |
+| `PromptLayerAPITimeoutError` | A PromptLayer request or workflow run timed out. |
+| `PromptLayerAuthenticationError` | Authentication failed, usually because the API key is missing or invalid. |
+| `PromptLayerPermissionDeniedError` | The API key does not have permission for the requested operation. |
+| `PromptLayerNotFoundError` | The requested resource, such as a prompt or workflow, was not found. |
+| `PromptLayerBadRequestError` | The request was malformed or used invalid parameters. |
+| `PromptLayerConflictError` | The request conflicts with the current state of a resource. |
+| `PromptLayerUnprocessableEntityError` | The request was well-formed but semantically invalid. |
+| `PromptLayerRateLimitError` | PromptLayer rejected the request because of rate limiting. |
+| `PromptLayerInternalServerError` | PromptLayer returned a 5xx server error. |
+| `PromptLayerAPIStatusError` | Other non-success API responses that do not map to a more specific error type. |
+
+By default, the clients raise these exceptions. If you initialize `PromptLayer` or `AsyncPromptLayer` with `throw_on_error=False`, many resource methods return `None` instead of raising on PromptLayer API errors.
+
+## Caching
+
+When enabled, the SDK caches fetched prompt templates in memory for faster repeat reads, locally re-renders them with new variables, and falls back to stale cache on temporary API failures.
+- Caching is disabled by default and is enabled by setting `cache_ttl_seconds` when creating `PromptLayer` or `AsyncPromptLayer`.
+- The cache applies to prompt templates fetched through `client.templates.get(...)`.
+- Cached entries are stored in memory and keyed by prompt name, version, label, provider, and model.
+- Requests that include `metadata_filters` or `model_parameter_overrides` bypass the cache.
+- Templates that require server-side rendering behavior, such as placeholder messages or tool-variable expansion, are not cached for local rendering.
+- If a cached template is stale and PromptLayer returns a transient error, the SDK can serve the stale cached version as a fallback.
+- You can clear cached entries with `client.invalidate(...)` or `client.templates.invalidate(...)`.

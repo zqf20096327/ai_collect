@@ -1,0 +1,627 @@
+<div align="center">
+  <img src="banner.png" alt="Awesome AGV" width="800" />
+  <h3 align="center">Awesome AGV</h3>
+
+  <p align="center">
+    A rugged, high-quality configuration suite for AI Agents.
+    <br />
+    <a href="#getting-started">Getting Started</a>
+    ·
+    <a href="#usage">View Rules &amp; Skills</a>
+    ·
+    <a href="https://github.com/irahardianto/awesome-agv/issues">Request Feature</a>
+    ·
+    <br />
+    <br />
+  </p>
+</div>
+
+<!-- ABOUT THE PROJECT -->
+## About Awesome AGV
+
+**Awesome AGV** provides a comprehensive set of standards and practices designed to elevate the capabilities of AI coding agents. It provides a suite of strict rules distilled from software engineering best practices that ensure generated code is secure, defensible, and maintainable. It also provides specialized skills that agents load on demand.
+
+Instead of just generating code that works, the rules and skills ensure agents generate code that **survives**.
+
+> **⚠️ Opinionated by design.** Awesome AGV ships with opinionated defaults for specific technology stacks. See [Opinionated Technology Choices](#opinionated-technology-choices) for details and how to customize.
+
+While this configuration is originally designed for **Antigravity**, it is built on standard markdown-based context protocols that are easily portable to other AI coding tools. As a matter of fact, the original form [Technical Constitution](https://github.com/irahardianto/technical-constitution/blob/main/technical-constitution-full.md) was first created for **Gemini CLI**. For example, the principles of the [Rugged Software Constitution](.agents/rules/rugged-software-constitution.md) which is based on [Rugged Software Manifesto](https://ruggedsoftware.org/) are universal and will improve the output of any LLM-based coding assistant.
+
+### Key Features
+
+*   📏 **25 Rules** — covering security, reliability, architecture, and maintainability. Distilled to project-specific decisions only — rules encode *what overrides model defaults*, not what models already know.
+*   🛠️ **68 Skills** — specialized capabilities loaded on demand (including 11 command skills): language idioms, debugging, design, testing, performance, CI/CD, and more.
+*   ⚡ **11 Command Skills** — end-to-end development processes (formerly workflows) from research to ship, plus specialized testing pipelines.
+*   🤖 **21 Agent Personas** — specialized sub-agents for multi-agent orchestration arranged in a 4-tier hierarchy.
+*   🏗️ **Three-Tier Loading System** — always-on mandates + contextual principles + on-demand skills for zero-noise enforcement.
+
+#### Equipped with Long Running Recursive Multi-Agent System That Gets The Work Done!
+
+<div align="center">
+  <img src="rmas-design.png" alt="Awesome AGV" width="800" />
+</div>
+
+> **💡 Everything is modular.** Rules, skills, and agents work independently — you don't need everything to benefit. Use only what you need, modify anything, or build your own. It's a toolkit, not a framework.
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To equip your AI agent with these superpowers, follow these steps.
+
+### Prerequisites
+
+*   An AI Coding Assistant (Antigravity, Roo Code, Cline, etc.)
+*   A project where you want to enforce high standards.
+
+### Installation
+
+**Quick Install (recommended):**
+```sh
+npx awesome-agv
+```
+
+This launches an interactive installer where you choose your installation mode:
+
+| Mode | Description |
+|---|---|
+| 🚀 **Default** | Install everything — the full arsenal (recommended) |
+| 🎯 **Curated** | Pick your languages & frameworks. Core rules and skills always included. |
+| ⚙️ **Advanced** | Full granular control over every component. |
+
+In **Curated** and **Advanced** modes, the installer auto-detects your project's tech stack from files like `go.mod`, `Cargo.toml`, `tsconfig.json`, `pubspec.yaml`, etc. and pre-selects matching stacks.
+
+**CLI Flags:**
+
+| Flag | Description |
+| --- | --- |
+| `--stacks <list>` | Comma-separated stacks to include (**additive** with existing config) |
+| `--all` | Install everything (equivalent to Default mode) |
+| `--force, -f` | Skip the overwrite prompt and ignore the saved `.agvrc` (fresh selection). The existing `.agents/` is still backed up and custom items carried over. |
+| `--help, -h` | Show help |
+
+To install from a local archive instead of GitHub (offline setups, testing a fork), set `AGV_LOCAL_TARBALL=/path/to/archive.tar.gz`. The archive needs the same layout as GitHub's branch download (`awesome-agv-main/.agents/` and `awesome-agv-main/agv.config.json`).
+
+### Examples
+
+```bash
+# Interactive — choose your mode
+npx awesome-agv
+
+# Non-interactive: specific stacks, core always included
+npx awesome-agv --stacks go,python
+
+# Add React to existing installation (additive)
+npx awesome-agv --stacks react
+
+# Full install, no prompts
+npx awesome-agv --all --force
+
+# CI/CD: specific stacks, no prompts
+npx awesome-agv --stacks typescript,vue --force
+```
+
+**Manual Install:**
+
+1.  Clone this repository or copy the `.agents` folder into the root of your project.
+    ```sh
+    cp -r /path/to/awesome-agv/.agents ./your-project-root/
+    ```
+2.  Ensure your AI agent is configured to read from the `.agents` directory (most well-known AI coding assistants adhere to the `.agents` convention by default, no action needed) or manually ingest the `.agents/rules/**` as part of its system prompt.
+
+Manual copies don't get the installer's backups or custom-file carry-over, so prefer `npx awesome-agv` for updates.
+
+### Upgrading from v3.x
+
+v4.0.0 turns the 11 workflows into **command skills** (`.agents/skills/<name>/SKILL.md`), because Antigravity has deprecated workflows and retires them on November 1, 2026. You run them exactly as before: `/workflow-solo`, `/workflow-team`, `/audit`, `/bugfix`, and so on.
+
+```sh
+npx awesome-agv@latest
+```
+
+The installer:
+- backs up your current `.agents/` to `.agv-backup/agents-<timestamp>/` (the 5 most recent are kept);
+- replaces each built-in workflow with the command skill of the same name;
+- carries over your own skills, rules and agents (anything whose name isn't shipped upstream);
+- lists any custom workflows, which stay in the backup for you to convert;
+- adds `.agentwork/` and `.agv-backup/` to `.gitignore`.
+
+Edits you made to *shipped* files are not carried over; re-apply them from the backup. To roll back: `rm -rf .agents && mv .agv-backup/agents-<timestamp> .agents`.
+
+> [!NOTE]
+> You don't need Antigravity's built-in `/migrate-workflows`: the installer *is* the migration. A generic conversion omits the `disable-model-invocation` setting and entry-point guards that stop agents from starting commands on their own. If you already ran it, run `npx awesome-agv@latest` to replace those skills.
+
+Full guide, including how to convert custom workflows: [Upgrading from v3.x](https://irahardianto.github.io/awesome-agv/getting-started#upgrading-from-v3x).
+
+<!-- USAGE -->
+## Usage
+
+Once installed, the rules and skills in this repository become active for your agent.
+
+### Rule Architecture
+
+The setup uses a **three-tier loading system** to minimize noise while maximizing coverage:
+
+| Tier | Type | Trigger | Purpose |
+| --- | --- | --- | --- |
+| **1** | **Mandates** | `always_on` | Non-negotiable constraints loaded in every session (security, logging, code completion, architecture). |
+| **2** | **Principles** | `model_decision` | Contextual guidance activated only when working on relevant areas (e.g., database rules activate only when writing queries). |
+| **3** | **Skills** | `description` match, rule reference, or slash command | Deep expertise loaded on demand — language idioms when writing code in that language, CI/CD when editing pipelines, testability patterns when architectural rules reference them. Command skills run only when you type their slash command. |
+
+Conflicts between rules are resolved by [Rule Priority](.agents/rules/rule-priority.md) — security always wins.
+
+### Skill Loading Design
+
+Skills use one of three loading mechanisms, chosen by type:
+
+| Mechanism | When used | Examples |
+| --- | --- | --- |
+| **`description` match** | Knowledge skills: the agent loads one when its frontmatter `description` fits the task | `ci-cd` when editing pipelines; `debugging-protocol` when stuck on a bug |
+| **Rule reference** | Language idioms and cross-cutting skills that rules require | `code-idioms-and-conventions.md` requires loading `{language}-idioms` before writing code; `architectural-pattern.md` references `testability-patterns`; `logging-and-observability-mandate.md` references `logging-implementation` |
+| **Slash command only** | Command skills (`disable-model-invocation: true`) | `/workflow-solo`, `/audit`, `/bugfix`; never loaded by the agent on its own |
+
+> **Design invariant:** Cross-cutting skills that apply to all languages (testability, logging) are referenced from always-on rules, so they load regardless of language.
+
+### Rule Dependencies
+
+The rules are interconnected to provide comprehensive coverage. You can explore these relationships using the **[Interactive Rule Dependency Graph](https://irahardianto.github.io/awesome-agv/rule_dependency_graph.html)**, or view the static diagram below.
+
+<details>
+<summary>View Dependency Graph (Mermaid)</summary>
+
+```mermaid
+graph TD
+  accessibility_principles["accessibility-principles.md"]
+  api_design_principles["api-design-principles.md"]
+  architectural_pattern["architectural-pattern.md"]
+  code_idioms_and_conventions["code-idioms-and-conventions.md"]
+  code_organization_principles["code-organization-principles.md"]
+  command_execution_principles["command-execution-principles.md"]
+  concurrency_and_threading_principles["concurrency-and-threading-principles.md"]
+  configuration_management_principles["configuration-management-principles.md"]
+  core_design_principles["core-design-principles.md"]
+  data_serialization_and_interchange_principles["data-serialization-and-interchange-principles.md"]
+  database_design_principles["database-design-principles.md"]
+  dependency_management_principles["dependency-management-principles.md"]
+  documentation_principles["documentation-principles.md"]
+  error_handling_principles["error-handling-principles.md"]
+  git_workflow_principles["git-workflow-principles.md"]
+  logging_and_observability_mandate["logging-and-observability-mandate.md"]
+  monitoring_and_alerting_principles["monitoring-and-alerting-principles.md"]
+  performance_optimization_principles["performance-optimization-principles.md"]
+  project_structure["project-structure.md"]
+  resources_and_memory_management_principles["resources-and-memory-management-principles.md"]
+  rugged_software_constitution["rugged-software-constitution.md"]
+  rule_priority["rule-priority.md"]
+  security_mandate["security-mandate.md"]
+  security_principles["security-principles.md"]
+  testing_strategy["testing-strategy.md"]
+  accessibility_principles --> core_design_principles
+  accessibility_principles --> security_principles
+  accessibility_principles --> testing_strategy
+  api_design_principles --> data_serialization_and_interchange_principles
+  api_design_principles --> error_handling_principles
+  api_design_principles --> logging_and_observability_mandate
+  api_design_principles --> security_mandate
+  api_design_principles --> security_principles
+  architectural_pattern --> code_organization_principles
+  architectural_pattern --> core_design_principles
+  architectural_pattern --> database_design_principles
+  architectural_pattern --> project_structure
+  architectural_pattern --> testing_strategy
+  code_idioms_and_conventions --> rugged_software_constitution
+  code_idioms_and_conventions --> core_design_principles
+  code_organization_principles --> architectural_pattern
+  code_organization_principles --> core_design_principles
+  code_organization_principles --> project_structure
+  command_execution_principles --> security_mandate
+  command_execution_principles --> security_principles
+  core_design_principles --> concurrency_and_threading_principles
+  core_design_principles --> performance_optimization_principles
+  concurrency_and_threading_principles --> error_handling_principles
+  concurrency_and_threading_principles --> resources_and_memory_management_principles
+  concurrency_and_threading_principles --> testing_strategy
+  configuration_management_principles --> security_mandate
+  configuration_management_principles --> security_principles
+  core_design_principles --> accessibility_principles
+  core_design_principles --> architectural_pattern
+  core_design_principles --> code_organization_principles
+  core_design_principles --> documentation_principles
+  data_serialization_and_interchange_principles --> api_design_principles
+  data_serialization_and_interchange_principles --> error_handling_principles
+  data_serialization_and_interchange_principles --> security_mandate
+  data_serialization_and_interchange_principles --> security_principles
+  database_design_principles --> error_handling_principles
+  database_design_principles --> performance_optimization_principles
+  database_design_principles --> security_principles
+  dependency_management_principles --> security_mandate
+  dependency_management_principles --> security_principles
+  documentation_principles --> code_organization_principles
+  documentation_principles --> core_design_principles
+  error_handling_principles --> api_design_principles
+  error_handling_principles --> core_design_principles
+  error_handling_principles --> logging_and_observability_mandate
+  error_handling_principles --> security_mandate
+  error_handling_principles --> security_principles
+  error_handling_principles --> testing_strategy
+  git_workflow_principles --> code_idioms_and_conventions
+  git_workflow_principles --> security_mandate
+  git_workflow_principles --> testing_strategy
+  logging_and_observability_mandate --> api_design_principles
+  logging_and_observability_mandate --> error_handling_principles
+  logging_and_observability_mandate --> monitoring_and_alerting_principles
+  monitoring_and_alerting_principles --> error_handling_principles
+  monitoring_and_alerting_principles --> logging_and_observability_mandate
+  monitoring_and_alerting_principles --> resources_and_memory_management_principles
+  performance_optimization_principles --> core_design_principles
+  performance_optimization_principles --> concurrency_and_threading_principles
+  performance_optimization_principles --> resources_and_memory_management_principles
+  project_structure --> architectural_pattern
+  project_structure --> code_organization_principles
+  resources_and_memory_management_principles --> core_design_principles
+  resources_and_memory_management_principles --> concurrency_and_threading_principles
+  resources_and_memory_management_principles --> error_handling_principles
+  rugged_software_constitution --> architectural_pattern
+  rugged_software_constitution --> error_handling_principles
+  rugged_software_constitution --> logging_and_observability_mandate
+  rugged_software_constitution --> security_mandate
+  rule_priority --> architectural_pattern
+  rule_priority --> code_idioms_and_conventions
+  rule_priority --> logging_and_observability_mandate
+  rule_priority --> rugged_software_constitution
+  rule_priority --> security_mandate
+  security_mandate --> security_principles
+  security_principles --> api_design_principles
+  security_principles --> command_execution_principles
+  security_principles --> configuration_management_principles
+  security_principles --> error_handling_principles
+  security_principles --> logging_and_observability_mandate
+  testing_strategy --> architectural_pattern
+  testing_strategy --> error_handling_principles
+  testing_strategy --> project_structure
+```
+
+</details>
+
+### Comprehensive Rule Suite (25)
+
+The rules encode **project-specific decisions that override model defaults** — not general knowledge the model already knows. Every line of a rule answers: *"What would this model get wrong without this instruction?"*
+
+#### 🔒 Always-On Mandates (10)
+
+Loaded in every session — non-negotiable constraints that fire regardless of what you're working on.
+
+| Rule | What it enforces |
+| --- | --- |
+| **[Rugged Software Constitution](.agents/rules/rugged-software-constitution.md)** | Hostile-environment posture: refuse insecure patterns even if asked, proactively add validation, fail securely |
+| **[Security Mandate](.agents/rules/security-mandate.md)** | Deny by default, trust no input, fail closed — security always wins over convenience |
+| **[Rule Priority](.agents/rules/rule-priority.md)** | Conflict resolution order: Security → Rugged → Completion/Logging → Testability → Idioms → YAGNI |
+| **[Logging & Observability Mandate](.agents/rules/logging-and-observability-mandate.md)** | Every operation entry point must log start/success/failure with correlationId — no exceptions |
+| **[Architectural Pattern](.agents/rules/architectural-pattern.md)** | I/O isolation, pure business logic, dependency inversion — testability-first design |
+| **[Code Idioms & Conventions](.agents/rules/code-idioms-and-conventions.md)** | Language-to-skill routing table + completion workflow: generate → validate → remediate → verify → deliver |
+| **[Code Organization Principles](.agents/rules/code-organization-principles.md)** | Feature-based vertical slices, public API boundaries, no circular dependencies |
+| **[Core Design Principles](.agents/rules/core-design-principles.md)** | Maintainability > UX; Composition > inheritance; Rule of Three for DRY; profile before parallelizing |
+| **[Project Structure](.agents/rules/project-structure.md)** | Single source of truth for directory layout — organize by feature, not by layer |
+| **[Documentation Principles](.agents/rules/documentation-principles.md)** | Code shows WHAT; comments explain WHY; function docs for API contracts |
+
+#### 🎯 Contextual Principles (15)
+
+Activated by the model only when relevant — zero overhead when not applicable.
+
+*   **[Security Principles](.agents/rules/security-principles.md)**: Auth, authorization, input validation, cryptographic operations
+*   **[Error Handling Principles](.agents/rules/error-handling-principles.md)**: Error types, recovery strategies, resource cleanup
+*   **[API Design Principles](.agents/rules/api-design-principles.md)**: REST/HTTP endpoints, handlers, response formatting
+*   **[Database Design Principles](.agents/rules/database-design-principles.md)**: Schemas, migrations, queries, transaction boundaries
+*   **[Testing Strategy](.agents/rules/testing-strategy.md)**: Pyramid ratios, naming, co-location, test doubles
+*   **[Concurrency & Threading Principles](.agents/rules/concurrency-and-threading-principles.md)**: Race prevention, deadlock avoidance, message passing
+*   **[Performance Optimization Principles](.agents/rules/performance-optimization-principles.md)**: Profile-first, bottleneck identification
+*   **[Configuration Management Principles](.agents/rules/configuration-management-principles.md)**: Environment variables, secrets, settings hierarchy
+*   **[Monitoring & Alerting Principles](.agents/rules/monitoring-and-alerting-principles.md)**: Health checks, metrics, SLIs/SLOs
+*   **[Resource Management Principles](.agents/rules/resources-and-memory-management-principles.md)**: Files, connections, locks — always clean up
+*   **[Data Serialization Principles](.agents/rules/data-serialization-and-interchange-principles.md)**: JSON, Protobuf, validation at boundaries
+*   **[Dependency Management Principles](.agents/rules/dependency-management-principles.md)**: Packages, pinning, license compliance
+*   **[Command Execution Principles](.agents/rules/command-execution-principles.md)**: Shell commands, injection prevention, non-interactive flags
+*   **[Accessibility Principles](.agents/rules/accessibility-principles.md)**: WCAG 2.1 AA, semantic HTML, keyboard navigation
+*   **[Git Workflow Principles](.agents/rules/git-workflow-principles.md)**: Conventional commits, branch naming, PR hygiene
+
+### Specialized Skills (68)
+
+Skills are deep expertise modules loaded on demand — agents only pay the token cost when the skill is relevant.
+
+#### 🔧 Core Engineering Skills
+*   **[Debugging Protocol](.agents/skills/debugging-protocol/SKILL.md)**: Systematic hypothesis-driven approach to solving errors
+*   **[Sequential Thinking](.agents/skills/sequential-thinking/SKILL.md)**: Dynamic, reflective problem-solving through iterative thought chains, adapted from [Sequential Thinking MCP Server](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking)
+*   **[Code Review](.agents/skills/code-review/SKILL.md)**: Structured code review protocol against the full rule set
+*   **[Guardrails](.agents/skills/guardrails/SKILL.md)**: Pre-flight checklist and post-implementation self-review
+*   **[ADR](.agents/skills/adr/SKILL.md)**: Architecture Decision Records — document significant decisions with context and trade-offs
+*   **[Performance Optimization](.agents/skills/perf-optimization/SKILL.md)**: Profile-driven optimization (pprof, Lighthouse, bundle analysis)
+*   **[Refactoring Patterns](.agents/skills/refactoring-patterns/SKILL.md)**: Code smell taxonomy, safe transformation techniques, behavior preservation
+*   **[Research Methodology](.agents/skills/research-methodology/SKILL.md)**: Structured research protocol for technologies and patterns
+*   **[Git Commit Integrity](.agents/skills/git-commit-integrity/SKILL.md)**: Independent per-commit build/lint/test verification, pre-commit hook isolation, and safe diff splitting
+
+
+#### 🏛️ Architecture & Infrastructure Skills
+*   **[Structured Spec](.agents/skills/structured-spec/SKILL.md)**: Machine-parseable specification standard (PRD, SDD, TSD, BDD, ADR, Plan) with requirement-to-contract-to-test traceability and multi-agent slicing
+*   **[Testability Patterns](.agents/skills/testability-patterns/SKILL.md)**: I/O isolation, pure logic, dependency direction — code examples across Go, TypeScript, Python, Rust, Dart. *Loaded via reference from `architectural-pattern.md`.*
+*   **[Logging Implementation](.agents/skills/logging-implementation/SKILL.md)**: Structured logging patterns, log levels, per-language libraries (Go slog, pino, structlog), PII scrubbing. *Loaded via reference from `logging-and-observability-mandate.md`.*
+*   **[CI/CD](.agents/skills/ci-cd/SKILL.md)**: Pipeline design, multi-stage Docker builds, image scanning, SBOM attestation, environment promotion (Level 0–2)
+*   **[CI/CD GitOps & Kubernetes](.agents/skills/ci-cd/references/gitops-kubernetes.md)**: ArgoCD, Kubernetes deployment patterns — bundled with `ci-cd`
+*   **[Feature Flags](.agents/skills/feature-flags/SKILL.md)**: Release flags, kill switches, experiment flags, lifecycle rules — PRD-gated, loaded only when required
+
+#### ⚡ Command Skills (11)
+User-invoked entry points via slash commands, configured with `disable-model-invocation: true`:
+*   **Feature & Team:** [workflow-solo](.agents/skills/workflow-solo/SKILL.md) (`/workflow-solo`), [workflow-team](.agents/skills/workflow-team/SKILL.md) (`/workflow-team`)
+*   **Quality & Maintenance:** [audit](.agents/skills/audit/SKILL.md) (`/audit` — references in `audit/references/`), [security-audit](.agents/skills/security-audit/SKILL.md) (`/security-audit`), [perf-optimize](.agents/skills/perf-optimize/SKILL.md) (`/perf-optimize`), [bugfix](.agents/skills/bugfix/SKILL.md) (`/bugfix`), [refactor](.agents/skills/refactor/SKILL.md) (`/refactor`)
+*   **Testing:** [test-unit](.agents/skills/test-unit/SKILL.md) (`/test-unit`), [test-integration](.agents/skills/test-integration/SKILL.md) (`/test-integration`), [test-e2e](.agents/skills/test-e2e/SKILL.md) (`/test-e2e`), [test-scenarios](.agents/skills/test-scenarios/SKILL.md) (`/test-scenarios`)
+
+#### 🧪 Testing Skills
+*   **[Testing Strategy](.agents/skills/testing-strategy/SKILL.md)**: Test doubles strategy, integration test infrastructure (Testcontainers, Firebase emulator), naming conventions, test organization patterns
+*   **[Mobile Testing](.agents/skills/mobile-testing/SKILL.md)**: Mobile E2E testing patterns — Flutter integration_test, Patrol, Maestro, golden testing, device matrix, and test data management
+
+#### 🎨 Design & UI Skills
+*   **[Frontend Design](.agents/skills/frontend-design/SKILL.md)**: Production-grade frontend interfaces, bold aesthetics, typography, motion
+*   **[Mobile Design](.agents/skills/mobile-design/SKILL.md)**: Platform-native mobile interfaces for Flutter and React Native
+
+#### 🔀 Multi-Agent Orchestration Skills
+*   **[Parallel Dispatch](.agents/skills/parallel-dispatch/SKILL.md)**: MECE task decomposition, scope sizing, file ownership enforcement, DAG-based execution, and safe merge protocol for intra-domain parallel dispatch.
+*   **[Agent Protocols](.agents/skills/agent-protocols/SKILL.md)**: Shared behavioral protocols for all agents: recursive nesting, pre-implementation restatement, agent definition cascade, parallel dispatch format, and completion reporting with reply-to address routing.
+
+#### 🌐 Language & Framework Idioms (27)
+
+Language-specific patterns, tooling, project layout, and quality commands. The `code-idioms-and-conventions` rule requires the agent to load the matching idiom skill before writing code in that language; the installer pre-selects stacks it detects from files like `go.mod`.
+
+**Core stacks (with bundled project structure references):**
+
+| Skill | Ecosystem | Typical files |
+|---|---|---|
+| [Go Idioms](.agents/skills/go-idioms/SKILL.md) + [layout](.agents/skills/go-idioms/references/project-structure.md) | Go stdlib, error wrapping, table-driven tests, gofumpt | `**/*.go`, `**/go.mod` |
+| [TypeScript Idioms](.agents/skills/typescript-idioms/SKILL.md) + [layout](.agents/skills/typescript-idioms/references/project-structure.md) | Strict mode, type narrowing, Zod, vitest | `**/*.ts`, `**/*.tsx` |
+| [Vue Idioms](.agents/skills/vue-idioms/SKILL.md) + [layout](.agents/skills/vue-idioms/references/project-structure.md) | Vue 3 Composition API, Pinia (Setup Store), composables | `**/*.vue`, `**/store/**/*.ts`, `**/*.store.ts` |
+| [Flutter Idioms](.agents/skills/flutter-idioms/SKILL.md) + [layout](.agents/skills/flutter-idioms/references/project-structure.md) | Riverpod 3, freezed, go_router, const widgets | `**/*.dart`, `**/pubspec.yaml`, `**/analysis_options.yaml` |
+| [Rust Idioms](.agents/skills/rust-idioms/SKILL.md) + [layout](.agents/skills/rust-idioms/references/project-structure.md) | Ownership, tokio, thiserror/anyhow, clippy pedantic | `**/*.rs`, `**/Cargo.toml` |
+| [Python Idioms](.agents/skills/python-idioms/SKILL.md) + [layout](.agents/skills/python-idioms/references/project-structure.md) | Type hints, Protocols, ruff, mypy strict, pytest | `**/*.py`, `**/pyproject.toml` |
+
+**Community language skills:**
+
+| Skill | Ecosystem |
+|---|---|
+| [Angular](.agents/skills/angular-idioms/SKILL.md) + [layout](.agents/skills/angular-idioms/references/project-structure.md) | Angular components, signals, DI, RxJS |
+| [Axum](.agents/skills/axum-idioms/SKILL.md) | Axum HTTP routing, extractors, Tower middleware |
+| [C++](.agents/skills/cpp-idioms/SKILL.md) | Modern C++ (RAII, smart pointers, CMake) |
+| [C#](.agents/skills/csharp-idioms/SKILL.md) | .NET, async/await, LINQ, records |
+| [Django](.agents/skills/django-idioms/SKILL.md) | Django ORM, views, middleware |
+| [.NET](.agents/skills/dotnet-idioms/SKILL.md) | ASP.NET Core, Entity Framework |
+| [Elixir](.agents/skills/elixir-idioms/SKILL.md) | OTP, GenServer, supervision trees |
+| [Hono](.agents/skills/hono-idioms/SKILL.md) + [layout](.agents/skills/hono-idioms/references/project-structure.md) | Hono routing, middleware, Zod validation, RPC |
+| [Java](.agents/skills/java-idioms/SKILL.md) | Streams, records, sealed classes |
+| [JavaScript](.agents/skills/javascript-idioms/SKILL.md) | ES2024+, async patterns, ESM |
+| [Kotlin](.agents/skills/kotlin-idioms/SKILL.md) | Coroutines, sealed classes, Android |
+| [Laravel](.agents/skills/laravel-idioms/SKILL.md) | Eloquent, middleware, queues |
+| [Next.js](.agents/skills/nextjs-idioms/SKILL.md) + [layout](.agents/skills/nextjs-idioms/references/project-structure.md) | App Router, RSC, ISR |
+| [PHP](.agents/skills/php-idioms/SKILL.md) | PHP 8+, type declarations, Composer |
+| [Rails](.agents/skills/rails-idioms/SKILL.md) | ActiveRecord, conventions, RSpec |
+| [React](.agents/skills/react-idioms/SKILL.md) + [layout](.agents/skills/react-idioms/references/project-structure.md) | Hooks, Suspense, Server Components |
+| [Ruby](.agents/skills/ruby-idioms/SKILL.md) | Blocks, modules, metaprogramming |
+| [Spring Boot](.agents/skills/spring-boot-idioms/SKILL.md) | Spring DI, JPA, WebFlux |
+| [SQL](.agents/skills/sql-idioms/SKILL.md) | Query optimization, indexes, migrations |
+| [Swift](.agents/skills/swift-idioms/SKILL.md) | SwiftUI, Combine, async/await |
+
+**Database-specific skills:**
+
+| Skill | Coverage |
+|---|---|
+| [PostgreSQL Idioms](.agents/skills/postgres-idioms/SKILL.md) | Query performance & indexing, connection pooling, RLS & security, schema design, concurrency & locking, data access patterns, monitoring, JSONB & full-text search |
+
+#### 🏢 Domain Skills
+*   **[API Documentation](.agents/skills/api-documentation/SKILL.md)**: OpenAPI 3.1 specs, request/response examples, versioning
+*   **[Browser Automation](.agents/skills/browser-automation/SKILL.md)**: Playwright MCP-first automation for E2E testing, UI review, and Playwright MCP interactive development
+*   **[Chaos Testing](.agents/skills/chaos-testing/SKILL.md)**: Controlled failure injection and resilience verification
+*   **[CLI Development](.agents/skills/cli-development/SKILL.md)**: CLI tool design, argument parsing, and distribution
+*   **[Data Engineering](.agents/skills/data-engineering/SKILL.md)**: ETL/ELT patterns, data quality, and orchestration
+*   **[Embedded Systems](.agents/skills/embedded-systems/SKILL.md)**: Real-time patterns, RTOS, and hardware abstraction
+*   **[Incident Response](.agents/skills/incident-response/SKILL.md)**: Severity classification, triage, diagnosis, and blameless postmortem
+*   **[ML Engineering](.agents/skills/ml-engineering/SKILL.md)**: ML pipelines, feature engineering, model serving, and MLOps
+*   **[Payment Integration](.agents/skills/payment-integration/SKILL.md)**: PCI DSS compliance, tokenization, and webhook reliability
+*   **[Supply Chain Security](.agents/skills/supply-chain-security/SKILL.md)**: SBOM generation, CVE scanning, and license compliance
+
+### Agent Personas (21)
+
+Agent personas are specialized sub-agents designed for multi-agent orchestration. The system uses a 4-layer pipeline architecture with an overseer/conductor command structure. Each agent has an exclusive domain, clear boundaries, and never crosses into another agent's territory — enforcing MECE at the architecture level.
+
+#### Layers
+
+| Layer | Agents | Purpose |
+|---|---|---|
+| **L0 Supervisor** | `overseer` | Pipeline supervisor: spawns conductor, monitors progress, dispatches red team, owns cleanup |
+| **L1 Orchestration** | `conductor` | Build orchestrator: tier assessment, scope decomposition, dispatches builders and reviewers |
+| **Build** | `tech-lead`, `backend-engineer`, `frontend-engineer`, `mobile-engineer`, `database-expert`, `devops-engineer`, `test-automation-engineer`, `performance-engineer`, `refactoring-specialist` | Implementation — tech-lead coordinates multi-domain scope cards, specialists handle single-domain tasks |
+| **Review** | `reviewer` | Independent quality gate: integrity enforcement, code quality, spec compliance — sole PASS/FAIL authority |
+| **Red Team** | `red-team-lead`, `delivery-validator`, `integration-prober` | Adversarial validation: smoke testing, environment bootstrap, service connectivity probing |
+| **Research** | `scout` | Codebase exploration, pattern discovery, technology research |
+| **Design** | `architect` + optional `ux-craftsman`, `database-expert`, `security-engineer` | System design, ADRs, API contracts |
+| **Support** | `technical-writer`, `incident-responder` | Documentation and incident response |
+
+All code-writing agents are hardened with **always-on mandates** (`security-mandate`, `rugged-software-constitution`, `code-idioms-and-conventions`, `logging-and-observability-mandate`) plus the `guardrails` skill for pre-flight and post-implementation safety checks.
+
+See the [workflow-team](.agents/skills/workflow-team/SKILL.md) command skill for the full dispatch protocol, including adaptive tier routing, recursive parallel dispatch with MECE file ownership, and DAG-based execution ordering.
+
+### Command Skills (11)
+
+Command skills (formerly workflows) are opinionated, end-to-end processes that chain rules and skills into structured development cycles. You start one with its slash command. Each sets `disable-model-invocation: true` and opens with an entry-point guard, so agents and subagents never start one on their own. Full details: [Command Skills Reference](https://irahardianto.github.io/awesome-agv/workflows).
+
+#### 🏭 Feature Pipeline — Single Agent (`/workflow-solo`)
+
+A lean, single-agent pipeline with adaptive complexity routing. The agent assesses task scope, risk, and knowledge to route into one of three tracks:
+
+| Track | When | Pipeline |
+|-------|------|----------|
+| **Light** | All dimensions Low (1–3 files, no breaking changes) | IMPLEMENT → VERIFY → COMMIT |
+| **Standard** | Any dimension Medium/High | RESEARCH → IMPLEMENT → VERIFY → COMMIT |
+| **Thorough** | Multiple dimensions High | RESEARCH → IMPLEMENT → VERIFY (full) → COMMIT |
+
+Each phase references existing rules and skills rather than restating them. Subagent spawning is allowed but not prescribed.
+
+#### 🤖 Multi-Agent Orchestration (`/workflow-team`)
+
+For work spanning more than 10 files or 3+ modules, or carrying security or data risk. Your agent becomes an `@overseer` supervisor that spawns a `@conductor` for build orchestration. The conductor routes the task to a tier using three signals (files, scope, risk):
+
+| Tier | When | Pipeline |
+|------|------|----------|
+| **Tier 1** | ≤5 files, single module, no auth/migration/API changes | Conductor → Builder (self-review + tests) |
+| **Tier 2** | 6+ files or cross-module, internal API | Conductor → Tech-Leads/Builders → Reviewer → Red Team |
+| **Tier 3** | Security-critical, public API, or data migration | Tier 2 + enhanced security focus (Red Team with `@security-engineer`) |
+
+The overseer, not the conductor, spawns the Red Team, so validation runs against your original requirements without development context. Includes system prompt templates for all agent roles, MECE file ownership for parallel execution, and resilience protocols (watchdog timers, conductor succession, cleanup fallback).
+
+#### 🧪 Testing Command Skills
+
+Specialized command skills for retroactive testing improvements on existing codebases:
+
+| Command Skill | Pipeline | Purpose |
+|---------------|----------|---------|
+| [`/test-unit`](.agents/skills/test-unit/SKILL.md) | ANALYZE → PRIORITIZE → REFACTOR → TEST → VERIFY | Coverage-gap-first unit test improvement — analyze gaps, prioritize by business risk and git churn, refactor for testability if needed |
+| [`/test-integration`](.agents/skills/test-integration/SKILL.md) | AUDIT → INFRASTRUCTURE → TEST → VERIFY | Adapter audit — scan for I/O boundaries, set up Testcontainers/mocks, write contract-compliance tests |
+| [`/test-e2e`](.agents/skills/test-e2e/SKILL.md) | PLAN → SETUP → AUTHOR → EXECUTE → REPORT | Platform-adaptive E2E — web (Playwright) + mobile (Flutter/Patrol/Maestro), journey-based with evidence capture |
+| [`/test-scenarios`](.agents/skills/test-scenarios/SKILL.md) | INPUT → INVENTORY → ANALYZE → DERIVE → EXPAND → ORGANIZE → OUTPUT → HUMAN REVIEW | Hybrid structured derivation + mutation-informed expansion — generates prioritized test scenarios that feed into the three testing command skills above |
+
+#### 🔧 Specialized Command Skills
+
+| Command Skill                                   | When to Use                                          |
+| ----------------------------------------------- | ---------------------------------------------------- |
+| [`/bugfix`](.agents/skills/bugfix/SKILL.md)     | Bug fixes — from hotfixes to complex debugging sessions |
+| [`/refactor`](.agents/skills/refactor/SKILL.md) | Safely restructure code while preserving behavior    |
+| [`/audit`](.agents/skills/audit/SKILL.md)       | Code review and quality inspection (no new features) |
+| [`/security-audit`](.agents/skills/security-audit/SKILL.md) | Structured security review using parallel subagents |
+| [`/perf-optimize`](.agents/skills/perf-optimize/SKILL.md)   | Profile-driven performance optimization              |
+
+<!-- DIRECTORY STRUCTURE -->
+## Directory Structure
+
+```
+.agents/
+├── agents/            # 21 agent personas (multi-agent orchestration)
+│   ├── overseer.md              # L0 Pipeline Supervisor
+│   ├── conductor.md             # L1 Build Orchestrator
+│   ├── tech-lead.md             # Scope card owner + builder dispatcher
+│   ├── reviewer.md              # Independent quality gate (PASS/FAIL)
+│   ├── red-team-lead.md         # Adversarial validation orchestrator
+│   ├── architect.md
+│   ├── backend-engineer.md
+│   └── ...            # 14 more specialized agents
+├── rules/             # 25 rules: 10 always-on mandates + 15 contextual principles
+│   │                  # Each rule = project-specific decisions only (not model knowledge)
+│   ├── rugged-software-constitution.md   # always_on: hostile-environment posture
+│   ├── security-mandate.md               # always_on: deny by default
+│   ├── logging-and-observability-mandate.md  # always_on: all ops must log
+│   ├── architectural-pattern.md          # always_on: I/O isolation, testability
+│   ├── rule-priority.md                  # always_on: conflict resolution
+│   └── ...            # 5 more always-on + 15 contextual principles
+└── skills/            # 68 skills: 57 knowledge skills + 11 command skills
+    ├── audit/                   # Command skill: code review (/audit) — includes references/
+    ├── bugfix/                  # Command skill: bug fixes (/bugfix)
+    ├── perf-optimize/           # Command skill: performance optimization (/perf-optimize)
+    ├── refactor/                # Command skill: code restructuring (/refactor)
+    ├── security-audit/          # Command skill: security review (/security-audit)
+    ├── test-e2e/                # Command skill: E2E mobile & web testing (/test-e2e)
+    ├── test-integration/        # Command skill: integration testing (/test-integration)
+    ├── test-scenarios/          # Command skill: scenario generator (/test-scenarios)
+    ├── test-unit/               # Command skill: unit test coverage (/test-unit)
+    ├── workflow-solo/           # Command skill: single-agent pipeline (/workflow-solo)
+    ├── workflow-team/           # Command skill: multi-agent orchestration (/workflow-team)
+    ├── go-idioms/               # Go — includes references/project-structure.md
+    ├── typescript-idioms/       # TypeScript
+    ├── vue-idioms/              # Vue 3 + Pinia
+    ├── flutter-idioms/          # Flutter + Riverpod
+    ├── rust-idioms/             # Rust
+    ├── python-idioms/           # Python
+    ├── testability-patterns/    # reference-loaded from architectural-pattern.md
+    ├── logging-implementation/  # reference-loaded from logging-and-observability-mandate.md
+    ├── testing-strategy/        # test doubles, naming, infrastructure patterns
+    ├── mobile-testing/          # Flutter integration_test, Patrol, Maestro, golden testing
+    │   └── references/          # flutter.md, maestro.md — framework-specific details
+    ├── ci-cd/                   # Pipelines, Dockerfiles, deployment promotion
+    ├── feature-flags/           # Feature flag lifecycle (PRD-gated)
+    ├── debugging-protocol/      # Core engineering (reference-loaded)
+    ├── code-review/
+    ├── guardrails/
+    ├── postgres-idioms/         # PostgreSQL best practices — query, indexing, RLS, connection mgmt
+    ├── parallel-dispatch/       # Multi-agent orchestration — consolidated safety invariants
+    ├── angular-idioms/          # Community language skills (18 ecosystems)
+    ├── react-idioms/
+    ├── java-idioms/
+    ├── incident-response/       # Domain skills
+    └── ...
+```
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [x] Include more specialized skills to aid development process (68 skills shipped, including 11 command skills).
+- [x] Ship 11 command skills (formerly workflows) for structured feature delivery.
+- [x] Add language-specific idiom skills (Go, TypeScript, Vue, Flutter, Rust, Python + 18 community language skills).
+- [x] Create a CLI tool for easier installation (`npx awesome-agv`).
+- [x] Add multi-agent orchestration with 21 specialized agent personas in a 4-tier RMAS hierarchy.
+- [x] Distill rules to decisions-only: strip generic knowledge, keep project-specific overrides (25 rules, -71% from peak).
+- [x] Migrate language idioms from rules to on-demand skills — only load when relevant to the task.
+- [x] Selective CLI installer — 3-tier modes (Default/Curated/Advanced) with auto-detection and manifest-driven extraction.
+- [ ] Add automated validation scripts to check if an agent is following the constitution.
+- [x] Publish comprehensive documentation site (GitHub Pages).
+
+## Opinionated Technology Choices
+
+Awesome AGV ships with **opinionated defaults** for specific technology stacks. Each stack has a dedicated idiom skill that the agent loads before writing code in that language, providing patterns, tooling, project layout, and quality commands.
+
+| Stack            | Default Choice                                      | Idiom Skill                                                       |
+| ---------------- | --------------------------------------------------- | ----------------------------------------------------------------- |
+| **Backend**      | Go — vanilla stdlib, minimal deps                   | [go-idioms](.agents/skills/go-idioms/SKILL.md)                   |
+| **Frontend**     | TypeScript + Vue 3 — Composition API, Pinia, Vitest | [typescript-idioms](.agents/skills/typescript-idioms/SKILL.md) + [vue-idioms](.agents/skills/vue-idioms/SKILL.md) |
+| **Mobile**       | Flutter + Riverpod 3 — freezed models, go_router    | [flutter-idioms](.agents/skills/flutter-idioms/SKILL.md)         |
+| **Systems**      | Rust — tokio, thiserror/anyhow, clippy pedantic     | [rust-idioms](.agents/skills/rust-idioms/SKILL.md)               |
+| **Scripting/AI** | Python — ruff, mypy strict, pytest, Pydantic        | [python-idioms](.agents/skills/python-idioms/SKILL.md)           |
+
+**Using a different framework?** The idiom skills are modular — swap or edit them to match your stack. Community language skills are available for Angular, React, Next.js, Hono, Axum, Spring Boot, Django, Laravel, Rails, and more. See the [Adapting guide](https://irahardianto.github.io/awesome-agv/adapting) for which files to change.
+
+## Project Adaptation Guide
+
+This setup supports different project structures:
+
+| Project Type            | Adaptation                                                       |
+| ----------------------- | ---------------------------------------------------------------- |
+| **Monorepo** (default)  | Use as-is                                                        |
+| **Single backend**      | Remove frontend idiom skills, keep backend idiom skill           |
+| **Single frontend**     | Remove backend idiom skills, keep frontend idiom skills          |
+| **Microservices**       | Adapt `project-structure.md` per service, add service mesh rules |
+| **Mobile (Flutter/RN)** | Use flutter-idioms or react-idioms skill                        |
+
+**To adapt:** Edit `project-structure.md` and the relevant idiom skill's `references/project-structure.md` to match your project layout.
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Run the checks that CI enforces ([`validate.yml`](.github/workflows/validate.yml)):
+    ```sh
+    bash scripts/validate-rule-refs.sh   # @-references in rules resolve
+    bash scripts/validate-skills.sh      # skill frontmatter, manifest parity, command-skill flags
+    node --check cli/bin/awesome-agv.js
+    bash scripts/smoke-test-cli.sh       # end-to-end installer scenarios
+    ```
+    Adding or renaming a skill? Register it in `agv.config.json` and keep `cli/agv.config.json` byte-identical.
+5.  Push to the Branch (`git push origin feature/AmazingFeature`)
+6.  Open a Pull Request
+
+Significant design decisions are recorded as ADRs in [`docs/decisions/`](docs/decisions/), e.g. [0001: Migrate workflows to command skills](docs/decisions/0001-migrate-workflows-to-skills.md).
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Built with ❤️ for the Developer Community
+</p>

@@ -1,0 +1,151 @@
+# Crush Monitor
+
+**Paste a chat with your crush. See the signals you missed.**
+
+English · [简体中文](README.zh.md)
+
+[![Use it in your browser](https://img.shields.io/badge/Use_it_online-nothing_to_install-e0728a?style=for-the-badge)](https://reverie0123.github.io/crush-monitor-universal/) [![Crush Monitor on Product Hunt](https://img.shields.io/badge/Product_Hunt-Crush_Monitor-DA552F?style=for-the-badge&logo=producthunt&logoColor=white)](https://www.producthunt.com/products/crush-monitor)
+
+Nothing to install · Bring your own model key · Chats stay in your browser, not on a server
+
+![The built-in sample chat analyzed with DeepSeek](docs/screenshot-en.png)
+
+Paste a two-person text chat from WeChat, WhatsApp, QQ or iMessage, and every message is read in context:
+
+- **Emotion and intent** for each of their messages, with the reason behind each call
+- **Relationship trend:** a weekly affection curve, with the turning points marked
+- **Key moments:** invitations, care, confessions and refusals on one timeline
+- **Your replies, graded** from SSS to D, with two better ways to say them
+
+**[Open it in your browser](https://reverie0123.github.io/crush-monitor-universal/)**: it starts on a sample chat already analyzed by a real model, so you can click around. To analyze your own chats, paste your API key in the settings; it stays in your browser, and requests go straight from the page to the model service. On a phone, open it in the browser and choose **Add to Home Screen**: it installs like an app. Prefer a file you keep? **[Download crush-monitor.html](https://reverie0123.github.io/crush-monitor-universal/crush-monitor.html)**: the whole app in one HTML file, double-click to open, nothing else to fetch. Or [run it locally](#run-locally) with the server: same app, same code.
+
+**Where your chat goes:** it's saved in your browser. Only the text needed for analysis is sent, to the model service you set up (DeepSeek, any OpenAI-compatible API, or the original Jev), after phone numbers, emails, ID and card numbers and words you choose are masked. A typical chat costs a few cents on your own key.
+
+It's a second opinion, not mind reading. AI doesn't know your relationship or what happens outside the chat, and an honest conversation still beats any score.
+
+## All features
+
+- **WeChat-style conversation view:** analysis sits beneath each message.
+- **Emotions and intentions:** the top three probabilities from 12 emotion and 36 intention categories (including academic discussion).
+- **Affection score and reply grades:** a conversation-level score, SSS–D grades for your replies, and suggested next steps.
+- **Reasons you can read:** every label and score comes with a one-line, context-based explanation from the model, plus an overall reading.
+- **Relationship trend:** a weekly affection curve with turning points marked.
+- **Key moments:** invitations, care, confessions, refusals and similar events in one timeline; click to jump to the message.
+- **Reply suggestions:** ask for two better ways to phrase any of your own replies.
+- **Report export:** download a one-page HTML report.
+- **Chat list and backups:** starting a new chat keeps the current one in a list; any chat exports to JSON (text and analysis) and imports back later or on another computer.
+- **Timing and quotes:** reply gaps, late-night chats and WeChat quoted replies are understood; images, stickers, recalls and pats are shown as context only.
+- **Ten relationship types:** from "just met" to "cold war" and "exes", each with its own reading guidance.
+- **Two model choices:** the original Jev (via OpenRouter, Vercel or TypeSafe), or DeepSeek / OpenAI (the default); keys and prices are kept separately for each.
+- **Your own key, cost shown:** runs locally with your own API credits and shows the estimated spend.
+- **Privacy masking:** phone numbers, emails, ID and card numbers, and words you choose are replaced with placeholders before sending.
+- **Analysis levels:** "Quick" reads only the overall score and trend (usually a few cents), "Standard" adds emotions and intentions for each of their messages, "Full" also grades your replies; you can also analyze just the last 7 or 30 days.
+- **Spending under control:** after importing you see the estimated cost and start manually; set a per-run limit that pauses the analysis; spent / estimated and time left are shown while it runs.
+- **Correct a judgment:** if a line was read wrong, write what actually happened and the model re-reads that line with your note; later re-runs keep it.
+- **Search and filters:** search the chat by keyword, or jump between "my low-scoring replies", "their negative emotions" and more.
+- **English or Chinese interface:** switch with the **EN / 中** button at the top right (or in Chat Settings); it applies instantly and is remembered. The first visit follows your browser's language.
+
+In English mode everything is in English, including what the model writes: its reasoning, overall reading and weekly summaries. Reply suggestions are always written in the same language as your original message, so English chats get English rewrites. The sample chat is in English too. Results already analyzed keep the language they were written in; after switching, the status bar offers to re-run them in the new language.
+
+## Under the hood
+
+Not a prompt wrapper. The same analysis code runs on the local server and, in the online version, in the browser itself. Each question gets a structured answer (a written reason, then a probability distribution) that a rules layer turns into labels and scores. Requests go out in parallel batches with configurable concurrency and per-minute limits; malformed replies are retried, or split and asked again; prompts are laid out so providers can reuse their prefix cache. Plus: three kinds of model service (DeepSeek, any OpenAI-compatible API, Jev), a local reply cache, cost estimates and spending limits, privacy masking before anything is sent, 93 unit tests and 14 browser tests. Details below and in `server/llm.ts`.
+
+## Model
+
+This version calls an OpenAI-compatible Chat Completions API (DeepSeek by default). `server/llm.ts` asks the model to write a reason and then a probability distribution for each question, and converts that into the same choices, scores and confidences the original used, so the rules layer is largely unchanged. General chat models are not calibrated the way Jev is, so results may be less precise than the original.
+
+- [Get a DeepSeek API key](https://platform.deepseek.com/api_keys)
+- OpenAI or other compatible services work too: change the address and model in the settings page.
+
+**You can still use the original Jev model:** in the settings page, switch to **Jev (original model)**, pick a platform ([OpenRouter](https://openrouter.ai/settings/keys), Vercel AI Gateway or TypeSafe) and paste that platform's key. Jev returns calibrated probabilities but no written reasons. Choose **Jev only** (no reply suggestions) or **Jev + DeepSeek / OpenAI** (Jev analyzes, the chat model writes reply suggestions). Jev reads at most 500 messages / 12,000 characters per request; longer chats are sent in batches automatically, and the status bar shows which messages are being analyzed. Each service keeps its own key, so you can switch back and forth.
+
+## Run locally
+
+1. Install [Node.js](https://nodejs.org/) 22.12 or newer.
+2. [Download the ZIP](https://github.com/Reverie0123/crush-monitor-universal/archive/refs/heads/main.zip) and unzip it.
+3. Start it. The first run (and the first run after an update) installs what it needs, then opens the page in your browser:
+   - **Windows:** double-click `启动.bat`.
+   - **Mac:** double-click `启动.command`. If macOS says the developer can't be verified, right-click it and choose **Open**.
+   - **Linux:** run `./start.sh` in the project folder.
+4. Click the settings icon at the bottom left, paste your API key under **Model & API** ([get a DeepSeek key](https://platform.deepseek.com/api_keys)), then **Save & test connection**.
+
+Prefer the terminal? In the project folder:
+
+```sh
+npm ci
+npm run setup
+npm run build
+npm start
+```
+
+Then open [http://127.0.0.1:3178/](http://127.0.0.1:3178/). Leave the terminal running.
+
+## Usage
+
+1. Paste a conversation, or click **Import file** to pick a `.txt` export. Export-tool summary headers are skipped automatically.
+2. Select your own name, check the estimated cost at the bottom, and click **Start Analysis**. Relationship type and background are in **Chat Settings**.
+3. Click a label for details and the model's reasons. The three buttons at the top right are trend, key moments and report export.
+4. Import more of the same conversation later: overlaps are merged and only new messages are analyzed.
+
+### Supported text formats
+
+| Source                | What to paste                                                                                                  |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| WeChat                | Desktop multi-message copy (name, date/time, body on separate lines), or export-tool "name time" + body format |
+| QQ                    | `Name: 09-17 19:26:53`, followed by the body on the next line; dates with a year also work                     |
+| WhatsApp              | [Export a chat](https://faq.whatsapp.com/1180414079177245/), open the `.txt` file and copy its contents        |
+| iMessage / other apps | Format each message as `Name: body`                                                                            |
+
+```text
+[9/17/26, 7:26:53 PM] Alex: Dinner tonight?
+17/09/2026, 19:27 - Me: Sounds good
+```
+
+Dates like `9/17/26` and `17/09/2026` are read in whichever order the chat uses, decided once for the whole chat. If a copied iMessage (or other) chat has only the text with no sender, add `Alex:` / `Me:` first; the app doesn't guess who said what.
+
+Only two-person text conversations are supported—not images, audio, ZIP/HTML exports or chat databases. Placeholders such as `[Image]` or `<Media omitted>` are sent as context but not scored. WeChat recalls and nudges ("pats") are shown centered as system notices.
+
+## Notes
+
+- The affection score combines six weighted dimensions. An explicit refusal that still applies limits the score. **It is not the probability that someone likes you.**
+- With DeepSeek / OpenAI, each model request holds up to 2,000 messages / 60,000 characters and 9 requests run at once. The overview reads the most recent ~1,950 messages; per-line analysis sees the previous 150 and next 20. With Jev, the original limits apply: 500 messages / 12,000 characters, previous 80 messages, 2 requests at once. The page says so when the overview can't read the whole chat. Total history is limited only by browser storage.
+- Costs are shown in US dollars when you first open the English interface (yuan in Chinese); switch under **Model & API → Prices**, and prices and the limit you've entered are converted at 1 USD = 7.2 CNY. The default prices are DeepSeek's. After a few runs you can type in your actual bill to calibrate the estimates. Your provider's bill is what counts.
+- Jev writes no reasons; reply suggestions need **Jev + DeepSeek / OpenAI** mode. DeepSeek / OpenAI and Jev each keep their own prices and bill calibration; Jev estimates are approximate.
+- After switching models, lines already analyzed keep their results; new lines and the overview use the new model. Model settings can't be saved while an analysis is running.
+- Model replies are cached in `.cache/` so re-analyzing the same content is free; you can clear or disable this in settings. The cache contains chat text—never commit it.
+- Chats and results stay in this browser's local database. Text needed for analysis (after masking) is sent to your configured model service, billed to your account.
+- **Online version:** the settings, your key and the reply cache are kept in the browser too (localStorage and IndexedDB), and requests go from the page straight to the model service. For Jev, choose OpenRouter or Vercel; TypeSafe's own endpoint does not accept browser requests.
+- Never commit `.env`, `.cache/` or private conversations.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) (in Chinese; releases from v2.4.0 end with an English summary). Current version v2.10.0: the whole app as one HTML file you can download.
+
+## Development
+
+React + TypeScript + Vite + Express, calling models through an OpenAI-compatible Chat Completions API or Jev's native API.
+
+```sh
+npm run dev        # http://127.0.0.1:5178/
+npm test           # local tests; no model calls
+npm run test:e2e   # UI tests in Edge with local stand-ins for DeepSeek and Jev; free
+npm run check:live # real model check with the model chosen in .env; uses your API credits
+npm run build:web  # the online version: a static build, deployed to GitHub Pages on every push to main
+npm run build:single # the same app in one HTML file (dist-single/index.html)
+npm run build:demo # the same page with analysis switched off (demo only)
+npx tsx scripts/make-demo.ts http://127.0.0.1:3178  # redo the demo's sample analysis with a real model (a few cents)
+npm run release    # tag and publish the version in package.json (needs a matching CHANGELOG section)
+```
+
+Interface text lives in `src/locales/zh.ts` and `src/locales/en.ts`. The English file's type is derived from the Chinese one, so a missing or extra key fails the build.
+
+## Credits
+
+This is an adaptation of [Crush Monitor](https://github.com/FerryCorleone/crush-monitor) by [**FerryCorleone**](https://github.com/FerryCorleone), published with his permission. The original uses TypeSafe's Jev model. This version keeps full support for Jev (via OpenRouter, Vercel or TypeSafe), adds DeepSeek / OpenAI-compatible APIs (DeepSeek is the default), and adds the features above. It keeps the original MIT license and copyright notice.
+
+If it made you laugh, or rethink a reply, a ⭐ helps other people find it.
+
+## License
+
+[MIT](LICENSE). Copyright of the original project belongs to its author. Not affiliated with WeChat, Tencent, TypeSafe, DeepSeek, OpenAI, OpenRouter, Vercel or any messaging platform mentioned here.

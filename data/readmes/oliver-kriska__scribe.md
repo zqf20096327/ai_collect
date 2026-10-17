@@ -1,0 +1,1160 @@
+# scribe
+
+`scribe` is a single-binary CLI that creates and maintains a personal, LLM-written knowledge base. It continuously extracts reusable knowledge from your git repos, coding-agent sessions indexed by [`ccrider`](https://github.com/neilberkman/ccrider) (Claude Code, Codex CLI, GitHub Copilot CLI, OpenCode, Pi, Antigravity, and Amp when imported by ccrider), links you iMessage to yourself as bookmarks (your own number is the world's most portable read-it-later list), and local files, then compiles it into a curated wiki that [`qmd`](https://github.com/tobi/qmd) indexes for semantic search. Every LLM step resolves through one top-level `llm:` provider block: Anthropic's Claude by default, or a 100% local [Ollama](https://ollama.com) server (qwen3 / gemma4 / gemma3, $0 API cost) — flipping the whole pipeline to free/offline is one line of yaml.
+
+**Not a second brain.** scribe writes a personal *context corpus* — durable LLM memory that survives session boundaries and crosses projects. You almost never read the KB directly; Claude Code and Codex do, every session. The human is at the end of the pipeline, consuming an answer, not navigating a graph. The corpus is plain markdown in git, so it outlives the pipeline that wrote it — if scribe disappears tomorrow, the KB is still yours.
+
+**Not a RAG pipeline. Not a Karpathy-style LLM wiki.** scribe keeps raw sources verbatim under `raw/` AND compiles a structural wiki on top — both layers are indexed, both are searchable. Dense sources fan out into multiple entity-first wiki pages via a two-pass absorb (not one summary per source). LLM-generated retrieval-context paragraphs get spliced into every article so embedding models catch the implicit entities that aren't literally named in the text. The whole pipeline can run fully local on Ollama (qwen3 / gemma4 / gemma3, $0 API cost).
+
+Your KB is a private git repo you own. `scribe init` scaffolds it from embedded templates; you pick the KB name, domains, owner context, and capture handles. After the first run you edit `scribe.yaml` freely — everything that used to be hardcoded lives there. Then `scribe cron install` drops a set of macOS LaunchAgents (Linux: paste-ready crontab lines) and the KB starts growing on its own every time you commit code, use Claude Code, or text yourself a link.
+
+---
+
+## Why bother
+
+**1. Claude Code, Codex CLI *and* Amp become *context-aware* across sessions.** `scribe init` writes a block into `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md` **and `~/.config/amp/AGENTS.md`**, parameterized with the KB name you picked (e.g. `mykb`, `acme-notes`, or whatever you chose during init). That block tells the agent to consult your KB via [qmd](https://github.com/tobi/qmd) — using the collection name that matches your KB — before answering architectural questions, recommending a library, or reproducing a pattern. Mention a project name in any of those sessions and the agent queries the KB first, pulling prior decisions, rejected tools, past solutions, and the project's own learnings log. No more re-explaining the same context every session; no more the agent suggesting the library you already evaluated and rejected six weeks ago. (Use one agent or all three — the drop-file contribution path is shared, so knowledge captured from a Codex or Amp session is searchable from a Claude session and vice versa.)
+
+Excerpt from the block `scribe init` writes (`{{.KBName}}` gets replaced with your KB name, `{{.OwnerName}}` with yours):
+
+> **How to search:** For natural-language semantic retrieval, prefer the qmd MCP `query` tool. Its fully qualified name depends on how qmd was installed (common names include `mcp__plugin_qmd_qmd__query` and `mcp__qmd__query`), so discover the available qmd query tool instead of assuming one fixed name or inferring absence from an initial tool summary. […]
+>
+> Use Bash `qmd search "<keywords>"` for exact-term, no-model retrieval. If no qmd MCP query tool is available and semantic retrieval is necessary, fall back to `qmd query "<natural language question>"` via Bash. All qmd commands work from any directory because collections use absolute paths, so **never `cd` into {{.KBDir}} first**.
+>
+> **When to search proactively — don't wait for {{.OwnerName}} to ask.** The KB is only valuable if it's consulted before decisions, not after.
+> - Before recommending a library, tool, or framework — query `"<name> evaluation verdict"`. Don't suggest something already rejected.
+> - Before proposing an architectural choice — query `"<problem> decision reasoning"`. Cite the prior decision instead of reinventing it.
+> - When {{.OwnerName}} references past work ("have I done this before", "didn't we decide on X", "which tool did I use for X") — these are direct instructions to search. Don't answer from memory; search.
+
+That single prompt turns your KB into working memory for every agent session. Without it, an LLM-written KB is just a write-only archive. The full block (including the drop-file protocol for contributing from other projects) is in [`cmd/scribe/templates/claude-md-kb.md`](cmd/scribe/templates/claude-md-kb.md); the Codex variant (same MCP-first order; its shell `qmd query` fallback runs outside the sandbox, which can't load qmd's local models) is [`cmd/scribe/templates/codex-agents-md.md`](cmd/scribe/templates/codex-agents-md.md); the [Amp variant](cmd/scribe/templates/amp-agents-md.md) adds one warning the others don't need — Amp threads live server-side and reach ccrider only through its opt-in importer, so an Amp session can't count on being mined and drop files carry the load. Skip any of the three with `scribe init --no-claude-md` / `--no-codex-md` / `--no-amp-md`.
+
+Only the **user-level** files are scribe-managed. Amp also reads `~/.config/AGENTS.md` and any `AGENTS.md` in your project tree; scribe deliberately writes neither, so the block can't leak into a repo or fight with a generic config you keep for other tools.
+
+**2. It runs itself.** Set it up once, then go back to your regular work. Cron handles the rest:
+
+- Every hour: auto-commit the KB.
+- Every 2 hours: scan git repos for new decisions, patterns, learnings; extract them via `claude -p`.
+- 3×/day (03:00, 12:00, 18:00): mine coding-agent sessions via ccrider's FTS5 index — plus direct Codex CLI rollouts when `codex.mine` is enabled — scored by keyword density so boilerplate sessions cost nothing.
+- Every 30 min: drain queued URLs into `raw/articles/`.
+- Every 4 hours: pull bookmark-links you texted yourself.
+- Daily 06:30: retry previously-unfetched link stubs (`capture-refetch`).
+- Daily 07:30: health report — `scribe doctor --write-attention` writes `NEEDS-ATTENTION.md` in the KB root while something is failing, and removes it once nothing is.
+- Daily 12:30: structural lint pass over the KB.
+- Sat 01:00: weekly frontmatter auto-repair (`lint-fix`).
+- Sat 01:30: conflict-resolution LLM pass over contradictions (`lint-resolve`).
+- Sat 01:45: identity-clustering pass — finds alias clusters across people/tools (`lint-identities`).
+- Sat 01:55: auto-apply high-confidence alias clusters (`apply-identities`).
+- Sun 02:00: weekly Dream cycle — a 4-phase structured consolidation.
+- Daily 03:10: hot-domain mini-dream — auto-selects the most-touched domain since the last dream, self-gates when there's nothing to do.
+- Continuous (`KeepAlive`): fsnotify watcher on the ccrider DB for near-real-time session extraction (`scribe watch`).
+
+Nothing demands your attention. You keep working; the KB grows. After two weeks of ordinary Mac use and no manual bookkeeping, the maintainer's personal KB looked like this (Obsidian graph view, 884 files, 45 folders, every node a wikilink in the auto-generated graph):
+
+<p align="center">
+  <img src="docs/images/kb-graph-after-2-weeks.jpg" alt="Obsidian graph view of a scribe-managed KB after 2 weeks of ordinary use" width="600" />
+  <br/>
+  <em>scriptorium KB after ~2 weeks of normal work. Zero manual note-taking.</em>
+</p>
+
+**3. Knowledge compounds across projects.** This is the killer feature for anyone juggling more than one codebase. Research, decisions, rejected tools, solved bugs, and reusable patterns live in one KB — not siloed per-project. When you hit a problem in project B that you already solved in project A six weeks ago, Claude Code surfaces the old solution automatically via the qmd query path above; manual work is `qmd query "<natural-language question>"` from any terminal in any directory.
+
+Concrete examples from two weeks of the maintainer's normal use:
+
+- Evaluated a Go cron library for project A → two weeks later started another Go CLI in project B; Claude pulled the prior evaluation and skipped re-researching the alternatives.
+- Hit an Oban worker idempotency bug in a Phoenix project → wrote the fix into `wiki/patterns/idempotent-worker-skeleton.md` → three days later, different Phoenix project, same pattern surfaced without asking.
+- Tagged an iMessage bookmark about FTS5 MATCH syntax (not parameterizable) → six weeks later, SQL-injection lint fired on a different project; the KB had the exact answer and the workaround.
+
+Without a cross-project KB, each project re-learns the same lessons. With one, the second, third, and fourth time you hit a recurring problem are all fast. The drop-file protocol (see `scribe.yaml` docs) means knowledge generated *inside* any project — `.claude/scribe/YYYY-MM-DD-*.md` — gets absorbed into the central KB on the next cron tick. Write once, find everywhere.
+
+**4. You own the substrate.** It's a git repo of plain markdown files. Push it to your own GitHub, Gitea, or Forgejo. Open it in Obsidian, VS Code, `vim`, or `mdbook`. Grep it with `ripgrep`. No vendor lock-in, no cloud account, no subscription — if scribe disappears tomorrow, you still have the KB.
+
+---
+
+## What you get after a week
+
+After about a week of normal work on existing projects, the KB has grown itself into something like this. **The directory shape is real (it matches scribe's `wikiDirs` constant); the filenames below are illustrative — yours will be whatever your actual work produces:**
+
+```
+my-kb/
+├── scribe.yaml                    # your config, edit freely
+├── wiki/
+│   ├── _index.md                  # auto-generated, entity index
+│   ├── _hot.md                    # 500-word rolling context Claude reads on every session
+│   ├── _backlinks.json            # reverse-link graph, O(1) lookup
+│   ├── decisions/
+│   │   ├── chose-oban-over-quantum.md
+│   │   └── dropping-circuit-breaker-middleware.md
+│   ├── patterns/
+│   │   ├── idempotent-worker-skeleton.md
+│   │   └── phoenix-scope-based-auth.md
+│   ├── learnings/
+│   │   ├── why-my-liveview-reconnect-loops.md
+│   │   └── fts5-match-cant-be-parameterized.md
+│   ├── tools/
+│   │   ├── oban.md                # verdict: use
+│   │   └── quantum.md              # verdict: skip, with reason
+│   ├── research/
+│   │   └── 2026-04-auth-library-comparison.md
+│   └── projects/
+│       └── my-app/
+│           ├── overview.md
+│           ├── learnings.md       # rolling, append-only
+│           └── decisions-log.md
+├── raw/articles/                  # verbatim sources (URLs, tweets, imessage clips)
+└── output/runs/2026-04-*.jsonl    # per-invocation telemetry for `scribe doctor`
+```
+
+Every file has YAML frontmatter (`type:`, `domain:`, `confidence:`, `tags:`, `related:`) so you can filter and traverse programmatically. Every article links to every other article via `[[wikilinks]]`, and `scribe link` auto-injects *See Also* sections into orphans based on shared tags. `qmd query "<natural language question>"` returns semantic hits with snippets — from inside the KB, from any terminal, no `cd` required.
+
+One concrete loop: you work on `my-app`, hit a tricky bug in your LiveView, and a coding agent helps you fix it. Thirty minutes later `scribe sync --sessions` mines that session via ccrider's FTS5 index, extracts the root cause + fix + tradeoff, writes it into `wiki/learnings/`, cross-links it to `wiki/patterns/phoenix-scope-based-auth.md`, auto-commits + pushes. Two weeks later you hit a similar bug on a different project; `qmd query` surfaces the old learning before you re-debug it.
+
+---
+
+## Install
+
+### Homebrew (macOS, Linux/Linuxbrew)
+
+```sh
+brew tap oliver-kriska/scribe
+brew install oliver-kriska/scribe/scribe
+```
+
+### Shell installer
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/oliver-kriska/scribe/main/install.sh | bash
+```
+
+Pin a specific release:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/oliver-kriska/scribe/main/install.sh | bash -s -- --version v0.5.1
+```
+
+The installer writes to `$HOME/.local/bin/scribe` by default; pass `--prefix` to change it.
+
+### From source
+
+Requires Go ≥ 1.26 and a C toolchain (for `go-sqlite3` with FTS5 support):
+
+```sh
+git clone https://github.com/oliver-kriska/scribe.git
+cd scribe
+make install    # builds with -tags sqlite_fts5 to ./bin/scribe, then deploys to ~/.local/bin
+```
+
+`make build` alone compiles to the repo-local `./bin/scribe` and never touches `~/.local/bin` — only `make install` replaces the binary cron executes. On macOS, `make install` automatically Developer-ID-signs the binary when a **Developer ID Application** identity is available in the login keychain. Rebuilds signed by the same team keep their Full Disk Access grant; without that identity, the install remains unsigned and needs a fresh `scribe fda` after replacement.
+
+---
+
+## Runtime dependencies
+
+`scribe doctor` will tell you which are missing.
+
+| Tool          | Required | Used for                             | Install                                         |
+| ------------- | -------- | ------------------------------------ | ----------------------------------------------- |
+| `claude`      | yes      | session extraction + absorb          | `curl -fsSL https://claude.ai/install.sh \| bash` |
+| `ccrider`     | yes      | session database for `scribe triage` | `brew install --cask neilberkman/tap/ccrider` |
+| `qmd`         | yes      | semantic search over the KB          | `npm install -g @tobilu/qmd`                    |
+| `sqlite3`     | yes      | chat.db + ccrider reads              | `brew install sqlite` / `apt install sqlite3`   |
+| `git`         | yes      | KB auto-commit + cron sync           | system package                                  |
+| `trafilatura` | no       | URL → markdown (fallback: Jina)      | `pipx install trafilatura`                      |
+| `jq`, `fzf`   | no       | manual triage / preview              | `brew install jq fzf` / apt                     |
+
+> Installing scribe via Homebrew (`brew install oliver-kriska/scribe/scribe`)
+> also pulls `git` and `sqlite` automatically. `ccrider` (a cask, which a
+> formula cannot depend on), `claude`, `qmd`, and the optionals still need
+> their own installs.
+
+---
+
+## Quick start — personal KB
+
+If you want Claude Code or Codex to do the setup, give it the public
+**[setup runbook](https://getscribe.dev/setup.md)**. It includes a copyable
+prompt, personal/Ollama/hosted/team recipes, safety rules, and an explicit
+verification checklist. `scribe skill install` is useful after bootstrap, but
+it is not a replacement for installing dependencies, choosing a setup profile,
+running `init --bind`, approving sources, and verifying cron/configuration
+(plus Ollama health when selected).
+
+```sh
+scribe init --path ~/my-kb --bind
+cd ~/my-kb
+scribe skill install
+scribe sync --discover
+scribe projects review
+scribe sync --dry-run --estimate
+scribe cron install
+scribe doctor
+```
+
+`--bind` makes this KB the machine default and writes the scribe handshake into
+`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and `~/.config/amp/AGENTS.md`.
+Without it, init may
+deliberately leave those machine-global files untouched when another KB is
+already configured. The discover/review pair is the source-consent gate; the
+dry-run estimate does not write or call an LLM. Add a private git remote when
+you want backup/sync:
+
+```sh
+git remote add origin git@github.com:you/my-kb.git
+git push -u origin main
+```
+
+`scribe init` will prompt for:
+
+- **Owner name** — used in the CLAUDE.md block Claude Code reads every session.
+- **Owner context** — one paragraph: who you are, what you work on, how you think.
+- **Domains** — comma-separated list for the `domain:` frontmatter field. `personal` and `general` are always added.
+- **iMessage self-chat handle** — phone number or email you iMessage yourself at (optional; leave empty to disable capture).
+
+Everything gets written into `scribe.yaml` at the KB root. Re-run `scribe init --check` any time to re-validate against dependencies and templates without prompts or writes.
+
+On macOS, if you gave a self-chat handle, `scribe init` finishes by offering to walk you through Full Disk Access for the scribe binary (needed by `scribe capture`). You can skip and run `scribe fda` later — see [Full Disk Access](#full-disk-access-for-scribe-capture) below.
+
+### Non-interactive
+
+All prompts take matching flags:
+
+```sh
+scribe init \
+  --path ~/my-kb \
+  --bind \
+  --owner-name "Alice" \
+  --owner-context "Platform engineer. Main projects: weblog, infra." \
+  --domains weblog,infra \
+  --handle "+15551234567" \
+  --yes
+```
+
+### Register the KB with qmd
+
+scribe reindexes qmd but does not create the collection. Register the KB once, named to match `kb_name` (the agent handshake queries that collection):
+
+```sh
+qmd collection add ~/my-kb --name my-kb
+```
+
+Then keep scribe's scratch out of search. `output/` holds drop-file staging and absorb chunks, often tens of thousands of near-duplicates of real articles. qmd only takes ignore patterns from its config, so add an `ignore` list under the collection in `~/.config/qmd/index.yml` and run `qmd update`:
+
+```yaml
+collections:
+  my-kb:
+    path: /Users/you/my-kb
+    pattern: "**/*.md"
+    ignore: ["output/**"]
+```
+
+`scribe doctor` warns when no collection covers the KB, when `output/` is indexed, and when the index trails the newest markdown commit by more than two days.
+
+---
+
+## Cron
+
+### macOS — LaunchAgents
+
+```sh
+scribe cron install     # writes ~/Library/LaunchAgents/com.scribe.*.plist
+scribe cron status      # shows loaded/present/missing for each job
+scribe cron uninstall   # removes agents
+```
+
+macOS cron runs under `launchd` without a login Aqua session, so it can't reach the login keychain — which breaks `claude -p`. `scribe cron install` installs the jobs as user LaunchAgents in the `gui/<uid>` domain instead, which do have keychain access.
+
+The agents are **KB-agnostic**: each one runs `scribe each`, which iterates every KB in the `kbs:` registry (`~/.config/scribe/config.yaml`) and runs the job in each, with per-KB failure isolation — one machine-level agent set serves every KB, so installing from a second KB no longer clobbers the first's schedule. To pace an individual KB without per-KB plist schedules, give its `scribe.yaml` an `each.cadence` block: `scribe each` skips a job in that KB whenever its last run (`output/runs/*.jsonl` — one that fired, whether it finished clean or degraded) is younger than the configured interval (e.g. `"sync --sessions": 6h`, `dream: 7d`).
+
+**Upgrades update the agents for you.** When a new scribe version runs its first scheduled job, it rewrites any plist the new version changed (a new job, a new schedule) and reloads it. That holds however the binary got there: `brew upgrade`, `make install` or the install script. It never reloads a job that is running at that moment, including itself; those are picked up by the next job that fires. Plists you edited by hand are never touched (`scribe cron install --force` adopts them back). If `scribe cron install` would now resolve a different binary than the one running the job, nothing is rewritten, and the job log says to run `scribe cron install` yourself.
+
+#### What PATH scheduled jobs see
+
+Each agent runs `/bin/zsh -lc`: a login shell, not an interactive one. It starts from launchd's `/usr/bin:/bin:/usr/sbin:/sbin`, adds what `/etc/paths`, `/etc/paths.d` and `~/.zprofile` add, and never reads `~/.zshrc`. Anything your `~/.zshrc` or a version manager puts on PATH is invisible to cron. To add a directory, put it in `~/.zprofile` and spell it with `$HOME`: zsh leaves `~` unexpanded inside double quotes, so `export PATH="$PATH:~/.local/bin"` adds a directory literally named `~` (doctor flags it). `scribe doctor` resolves each dependency against that PATH, not the one in your terminal, and flags anything only your terminal can reach.
+
+qmd gets special handling because it is usually an npm or bun global under a version manager. scribe looks for it on PATH, then under nvm, fnm, volta, bun, asdf and mise, then in `~/.local/bin`, `/opt/homebrew/bin` and `/usr/local/bin`, and makes node or bun resolvable for its launcher. `scribe doctor` runs `qmd --version` under cron's environment to prove it works. If your install lives somewhere else, set an absolute path in `scribe.local.yaml`:
+
+```yaml
+qmd_path: /path/to/bin/qmd
+```
+
+`qmd_path` names a binary scribe executes, so it is covered by `scribe config trust`. In a team KB it is ignored in the shared `scribe.yaml` and only honored from `scribe.local.yaml`.
+
+#### Full Disk Access for `scribe capture`
+
+macOS won't let any process read `~/Library/Messages/chat.db` without Full Disk Access. Apple disallows programs from granting themselves FDA, so the toggle itself is unavoidable — but everything else is automated:
+
+```sh
+scribe fda
+```
+
+That command:
+
+1. Detects every scribe binary on disk (`~/.local/bin/scribe`, the mise-managed copy, etc.) and verifies each through launchd—the same parent context scheduled capture uses. An FDA-granted Terminal or coding agent therefore cannot mask a missing grant on the binary itself.
+2. Opens **System Settings → Privacy & Security → Full Disk Access** directly via the `x-apple.systempreferences:` URL.
+3. Prints the full path to each missing binary — paste it into the file picker (Cmd-Shift-G), Enter, then toggle the checkbox.
+4. Polls every 3 seconds for up to 2 minutes; flips a `✓` next to each binary the moment its grant lands.
+5. Reminds you to reload LaunchAgents (`scribe cron uninstall && scribe cron install`) so running jobs pick up the grant.
+
+`scribe fda --verify` is the scriptable form: exit 0 if the current binary has FDA, non-zero otherwise. `scribe init` prompts once at the end of a fresh bootstrap; `scribe doctor` surfaces ungranted state in its **Recent run errors** section with a direct `run: scribe fda` fix hint.
+
+Official macOS release binaries are Developer ID signed and notarized. The
+stable signing identity preserves FDA when a signed binary is replaced at the
+same registered path. This includes shell-installer updates to
+`~/.local/bin/scribe` when the installer downloads a signed release archive;
+its source-build fallback may be unsigned. Homebrew additionally moves the raw
+executable to a new versioned Cellar path, which TCC records separately; after
+`brew upgrade scribe`, run `scribe fda` to verify the new path and re-grant it
+if needed.
+
+Manual fallback if you ever need it: System Settings → Privacy & Security → Full Disk Access → **+** → add the paths `scribe fda` lists.
+
+### Linux — manual crontab
+
+On Linux, `scribe cron install` prints crontab(5) lines you paste into
+`crontab -e`. Abbreviated example output (the command prints the complete block
+with the machine's real `PATH` and scribe binary):
+
+```
+# ---- scribe ----
+SHELL=/bin/bash
+PATH=/home/alice/.local/bin:/usr/bin:/bin:...
+
+# Hourly KB auto-commit
+7 */1 * * * /home/alice/.local/bin/scribe each -- commit
+
+# Project extraction every 2h
+23 */2 * * * /home/alice/.local/bin/scribe each -- sync --max 2
+
+# Session mining at 3:00, 12:00, 18:00
+0 12 * * * /home/alice/.local/bin/scribe each -- sync --sessions --sessions-max 3 --skip-large
+0 18 * * * /home/alice/.local/bin/scribe each -- sync --sessions --sessions-max 3 --skip-large
+0 3 * * * /home/alice/.local/bin/scribe each -- sync --sessions --sessions-max 3 --skip-large
+
+# Drain queued URLs into raw/articles/ every 30min
+*/30 * * * * /home/alice/.local/bin/scribe each -- ingest drain
+
+# Weekly Dream cycle (Sun 2am)
+0 2 * * 0 /home/alice/.local/bin/scribe each -- dream
+# ---- end scribe ----
+```
+
+The generated jobs use `scribe each` so one machine-level crontab serves every
+KB in `scribe kb list`. After saving the block, verify its presence and review
+the machine registry directly:
+
+```sh
+crontab -l
+scribe cron status
+scribe kb list
+```
+
+`scribe cron status` reads the user crontab on Linux, so it confirms the block
+actually landed rather than just that scribe printed it.
+
+The `scribe watch` job (fsnotify watcher for ccrider's SQLite DB) is not cron-friendly — run it under systemd-user, supervisord, or a persistent tmux/screen session. `scribe cron install` on Linux names the jobs that fall into this category so you know what still needs a supervisor.
+
+`scribe doctor` works the same on either OS: it reads `output/runs/*.jsonl` for freshness and recent errors, so you can verify scheduled jobs are firing regardless of how they're scheduled.
+
+Three consecutive error or degraded runs of the same command produce a **FAIL**, with the observed streak duration and latest error. Successful runs reset the streak; skipped runs neither increment nor reset it. Session sync and hot dream are tracked separately from their default modes. Streaks look back at most 30 days, so counts are observed lower bounds, not lifetime totals. Recovered errors remain warnings within `--error-window` (default 24h, maximum 720h); unresolved streaks remain visible throughout the 30-day scan.
+
+Plain `scribe doctor` remains read-only. `scribe doctor --write-attention` explicitly writes fail-level checks and remediation hints to `NEEDS-ATTENTION.md` in the KB root, removing the generated report when no FAIL checks remain. It refuses to replace a user-owned file and cannot be combined with `--section`. The report is a file-based signal, not a desktop notification; it does not detect successful runs that repeatedly make no progress.
+
+The default schedule includes this report at **07:30 local time** for every registered KB. On macOS an upgrade adds the job for you: the first scheduled job the new version runs installs the missing LaunchAgent (see [macOS — LaunchAgents](#macos--launchagents)). On Linux, rerun `scribe cron install` and add the new line to your crontab. Until the job is scheduled, invoke `scribe doctor --write-attention` manually.
+
+The same section also watches the *input* side. `scribe doctor --section freshness` compares ccrider's newest indexed session per coding agent and warns when one agent goes quiet while the others keep flowing — the shape of an importer that broke rather than a machine that was idle. It can't know whether you simply stopped using that agent, so the row says both; it only fires while another provider was indexed in the last 48h, ignores agents with fewer than 5 sessions, and stops nagging after 90 days (that's an abandoned tool, not a broken one).
+
+---
+
+## Configuration
+
+### `scribe.yaml` (KB root)
+
+Primary config file. Written by `scribe init`, edit freely. Highlights:
+
+```yaml
+owner_name: "..."
+owner_context: |
+  ...one paragraph Claude sees every session...
+
+# Domains the validator accepts. 'personal' and 'general' are always accepted.
+domains:
+  - work
+  - oss
+
+claude_projects_dir: ~/.claude/projects
+codex_sessions_dir: ~/.codex/sessions   # optional — Codex CLI rollouts; `sync --discover` walks these alongside Claude
+ccrider_db: ~/.config/ccrider/sessions.db
+# qmd_path: /path/to/bin/qmd   # optional — only if doctor says cron can't find qmd; see "What PATH scheduled jobs see"
+
+default_model: sonnet # claude model used for extraction/dream/absorb
+
+# Codex CLI session mining (opt-in). Project discovery from
+# codex_sessions_dir above needs no extra config; this block additionally
+# distills the Codex transcripts themselves into the KB — the same
+# triage→envelope→wiki path ccrider sessions get, run inside
+# `scribe sync --sessions`. A no-op without codex_sessions_dir. The LLM
+# provider/model/prompt are inherited from session_mine: (Codex mining is
+# ccrider mining with the transcript source swapped).
+codex:
+  mine: true            # default false — set true to turn the pass on
+  sessions_max: 3       # cap mined Codex sessions per sync run
+  lookback_hours: 168   # bound the rollout scan (7d); log is the real dedup
+  min_score: 2          # scoreText threshold a transcript must clear
+
+capture:
+  # Use the list form (`self_chat_handles`) if you message yourself from both a
+  # phone and an Apple-ID email — iMessage stores those as separate chats and
+  # the singular form only reads one of them. The legacy singular still works.
+  self_chat_handles:
+    - "+15551234567"
+    - "you@example.com"
+
+# Keyword categories for `scribe triage`. Tune to your stack.
+triage:
+  keywords:
+    decision: "decided OR chose OR tradeoff OR alternative"
+    code_pattern: "GenServer OR LiveView OR Ecto OR ..."
+    # ... architecture, research, learning, evaluation, deep_work
+  weights:
+    decision: 3
+    code_pattern: 1
+    # ... matching weights for each category
+```
+
+### Pull integrations (Pinboard)
+
+`scribe pull` fetches bookmarks from external accounts into the ingest queue,
+where the same drain path as `ingest url` fetches → contextualizes → absorbs
+them. Pinboard is the first adapter; the framework is generic, so more can slot
+in later. Adapters only produce URLs — no page content is fetched by `pull`
+itself, so it's deterministic and fast (no LLM).
+
+**1. Get your token.** Grab it from <https://pinboard.in/settings/password> (it's
+`username:HEXTOKEN`, and grants full read+write, so treat it like a password).
+The token is a **secret** — it lives in `~/.config/scribe/config.yaml`
+(`integration_tokens.pinboard`) or the `SCRIBE_PINBOARD_TOKEN` env var, **never**
+the committed `scribe.yaml`:
+
+```yaml
+# ~/.config/scribe/config.yaml (per-machine, gitignored)
+integration_tokens:
+  pinboard: "username:HEXTOKEN"
+```
+
+Sanity-check it (`posts/update` is the cheapest, side-effect-free call):
+
+```sh
+curl -s "https://api.pinboard.in/v1/posts/update?format=json&auth_token=$SCRIBE_PINBOARD_TOKEN"
+# → {"update_time":"2026-07-01T..."}  means auth works
+```
+
+**2. Enable it** in `scribe.yaml` (non-secret knobs only):
+
+```yaml
+integrations:
+  pinboard:
+    enabled: true
+    scope: recent+unread    # recent+unread | unread | all  (by read-state/recency)
+    tags: []                # tag filter (case-insensitive); empty = all
+    tags_mode: any          # any = bookmark carries >=1 listed tag (default)
+                            # all = must carry EVERY listed tag (Pinboard-style)
+    public_only: false      # true = skip private bookmarks; default ingests all
+    skip_domains: []        # substring filter, same as capture.skip_domains
+```
+
+- **`scope`** picks the set by read-state/recency: `recent+unread` (default —
+  recent bookmarks plus anything flagged to-read), `unread` (only to-read), or
+  `all` (whole archive).
+- **`tags`** is an independent tag filter; empty ingests everything the scope
+  returned. It composes with scope — `scope: all` + `tags: [kb]` means "every
+  bookmark I ever tagged `kb`".
+- **`tags_mode`** picks how multiple tags combine. The default `any` is an
+  ingest gate: `tags: [kb, elixir]` keeps bookmarks carrying `kb` **or**
+  `elixir` — the right shape when the list is "all my KB-worthy markers". Set
+  `all` to require **every** listed tag (`elixir` **and** `concurrency`),
+  which matches how Pinboard's own `/t:elixir/t:concurrency/` URL filtering
+  narrows. Note this deliberately differs from Pinboard's site default —
+  stacking tags there narrows, while an ingest filter usually widens.
+- **`public_only`** — an authenticated pull sees your **private** bookmarks too,
+  and by default they're ingested. Set `public_only: true` (or pass
+  `--public-only` for one run) to skip private (non-shared) bookmarks — worth it
+  if this KB might ever be shared or `scribe promote`d, so private links don't
+  ride along.
+
+**3. Run it:**
+
+```sh
+scribe pull --list                    # integrations + status (configured? last pull?)
+scribe pull pinboard -n               # dry-run: show what WOULD be queued, write nothing
+scribe pull pinboard                  # pull the configured scope + tags
+scribe pull pinboard --tag kb --tag elixir   # override the tag filter for this run
+scribe pull pinboard --all-history --max 200 # paced full backfill; re-run until it reports 0 new
+```
+
+Queued URLs land in `output/inbox/` and are fetched → contextualized → absorbed
+by the existing `ingest drain` (every 30 min) — or run `scribe ingest drain` to
+process them now. A cheap `posts/update` probe short-circuits runs when nothing
+changed, so the cron job (`scribe pull`, hourly) is kind to Pinboard's rate
+limits. In a **team** KB, integrations are hard-off from the repo config like
+capture — re-enable per-person in `scribe.local.yaml`.
+
+### Local-mode — 100% Ollama (free, offline)
+
+As of 0.2.14, **every LLM-driven subcommand can run end-to-end against a local [Ollama](https://ollama.com) server** with zero Anthropic calls. `dream`, `assess`, `deep`, `session-mine`, `relations migrate`, all four absorb passes, and `contextualize` resolve their backend through a single top-level `llm:` block. The Anthropic path stays the default; flipping the whole pipeline to free/offline is one line of yaml.
+
+**One-time setup:**
+
+```sh
+brew install --cask ollama-app
+# macOS: the app registers a launchd service, so `ollama serve` is already running.
+```
+
+Use the **cask**, not the `ollama` formula. The Homebrew formula is now built
+MLX-only (it depends on `mlx-c`) and no longer ships the GGUF/llama-server
+backend scribe's local pipeline needs, so a formula install leaves the LLM
+subcommands unable to run the recommended models.
+
+**Flip the whole pipeline to local** — edit `scribe.yaml`:
+
+```yaml
+llm:
+  provider: ollama
+  model: gemma3:12b              # cross-op default; per-op blocks override
+  ollama_url: http://localhost:11434
+  num_ctx: 16384                 # safe floor for envelope-mode ops
+```
+
+That's it. Every per-op block (`dream`, `assess`, `deep_ingest`, `session_mine`, `relations`, `absorb.pass1`, `absorb.pass2`, `absorb.single_pass`, `absorb.facts`, `absorb.contextualize`) inherits `provider` + `model` + `ollama_url` + `num_ctx` from `llm:` when its own fields are empty. Set any per-op `provider:`/`model:` to override for that op only (typical: pin a bigger model on `absorb.pass2`, keep the small fast model everywhere else).
+
+**Auto-flip:** scribe forces the right *mode* on each op when `llm.provider: ollama` so the `claude -p` paths can't silently no-op. You'll see config log lines like:
+
+```
+config: dream.provider="ollama" forces mode=orchestrator (was "monolithic")
+config: assess.provider="ollama" forces mode=envelope (was "tools")
+config: session_mine.provider="ollama" forces mode=envelope (was "tools")
+config: absorb.pass2_provider="ollama" forces pass2_mode=json (was "tools")
+```
+
+**Pre-flight check:**
+
+```sh
+scribe doctor --section localmode
+```
+
+Validates: Ollama reachable; `llm.model` pulled; `absorb.pass2_model` pulled; `absorb.atomic_facts` on (recommended under local pass-2); `sync.daily_anthropic_output_token_ceiling` configured.
+
+**What runs where on a typical 32–64 GB Mac:**
+
+| Op                            | Default model       | num_ctx | Notes                                    |
+| ----------------------------- | ------------------- | ------- | ---------------------------------------- |
+| `absorb.pass1`, `facts`       | `gemma3:4b`         | 8192    | Cheap, high-throughput per-chunk pass    |
+| `contextualize`               | `qwen3:30b-a3b`    | 16384   | Quality-critical; `gemma4` is the lighter fallback if RAM-constrained |
+| `absorb.pass2`                | `qwen3:30b-a3b`    | 16384   | Highest-quality wiki writes. On Apple Silicon MoE is ~4× faster than dense `gemma3:27b` at same quality |
+| `dream`, `assess`, `deep`     | inherits `llm.model`| 16384–32768 | Envelope orchestrators                |
+| `session-mine`                | inherits `llm.model`| 16384   | Transcript inlined, capped at 24K chars  |
+
+On the next `scribe sync` (or any subcommand) scribe will:
+
+1. Probe `http://localhost:11434/api/tags` to confirm Ollama is up.
+2. Check if the chosen model is already pulled.
+3. If not, call `/api/pull` in streaming mode and wait for completion (one-time download).
+4. Run generation via `/api/generate` with the resolved `num_ctx`.
+
+No manual `ollama pull` needed — though `ollama pull gemma3:12b && ollama pull gemma3:27b` ahead of time avoids a cold-start delay on the first sync.
+
+**Recommended models (June 2026):**
+
+The table below is empirically benchmarked — every model was tested on the same two hard cases (an inverted-ratio extraction and a fabricated-date hallucination) through scribe's real contextualize pipeline. "Passes both" means it produced correct output on both; "fails" means it reproduced a defect. Pick based on your RAM budget and quality needs.
+
+| Model         | Size   | Speed | When to pick                                     |
+| ------------- | ------ | ----- | ------------------------------------------------ |
+| `qwen3:30b-a3b-instruct-2507` | ~19 GB | ~15–18s/doc | **Best quality + speed.** MoE (~3B active) → 30B-class quality at small-model speed. Richest entity coverage, best retrieval signal. Ideal for `contextualize` and `absorb.pass2`. Passes both. |
+| `gemma4` (12B dense) | 9.6 GB | ~25–27s/doc | **Best lighter fallback.** Passes both, good entity coverage, 256K context. Half the RAM of qwen3. Use when RAM is tight or as a drop-in upgrade from gemma3:12b. |
+| `gemma3:12b`  | 8.1 GB | ~21–25s/doc | Legacy fallback. Passes both but superseded by gemma4 (better benchmarks, same RAM class). |
+| `gemma3:4b`   | 3.3 GB | ~9–17s/doc | **Fast classifier.** Good for `absorb.pass1` (entity-list extraction) and `facts`. **Avoid for contextualize** — reproduced both benchmark defects even under the fixed pipeline. |
+| `qwen3:4b`    | ~2.5 GB | — | Richer prose than gemma3:4b, slightly more verbose. |
+| `phi4-mini:3.8b` | ~2.5 GB | — | Reasoning-focused, less natural writing output. |
+
+All are free and work with scribe's auto-pull. Pick with `model: <tag>` in scribe.yaml. llama.cpp's `llama-server` exposes the same `/api/generate` shape, so `ollama_url: http://localhost:8080` also works if you prefer raw llama.cpp over Ollama.
+
+> **Apple Silicon tip.** LLM decode is memory-bandwidth-bound, so dense 24–32B models are slow on non-Max chips (≈10 tok/s for a 27–31B on an M4 Pro). Mixture-of-Experts models like `qwen3:30b-a3b-instruct` activate only ~3B params per token, reaching ≈40 tok/s on Ollama (≈90 tok/s via MLX) at similar quality — the better high-quality pick when you don't have an M-series Max/Ultra. Dense `gemma4` (12B) hits ~25s/doc on an M4 Pro — a good middle ground when 19 GB for the MoE model is too much.
+
+> **Note.** Local-mode covers every LLM-driven subcommand as of 0.2.14 — `dream`, `assess`, `deep`, `session-mine` (including Codex session mining, which inherits the `session_mine:` backend), `relations migrate`, and the four absorb passes. `contextualize` was first (pre-0.2.11); Phase 4A added `facts_provider: ollama`; Phase 4B added `pass2_mode: json` + `pass2_provider: ollama` (0.2.11); Phase 4C/4D/4E (0.2.14) ported the four remaining `claude -p` orchestrators onto bounded JSON-envelope subtasks, and a top-level `llm:` block now wires it together so flipping the whole pipeline is one line of yaml.
+
+### Hosted-mode — OpenAI-compatible providers (cheap, no local GPU)
+
+The middle ground between free/local Ollama and Anthropic. The local path
+assumes a machine that can hold a quantized 12B–30B model in memory; a typical
+laptop can't load `qwen3:30b-a3b` at all. A hosted provider removes that
+hardware floor while keeping scribe's "bring your own model" story — you still
+pin `qwen3-30b-a3b`, it just runs on someone else's GPU. Because the workload is
+~89% **input** tokens (absorb re-reads large article context), the bill is
+trivial: **~$2–6/month** for a busy KB, most likely ~$3–4 blended.
+
+Any provider that speaks OpenAI-compatible `/v1/chat/completions` works through
+one backend. Built-in provider names carry their endpoint + key env var:
+
+| `provider:`     | Endpoint (built-in)                  | API key env (default) |
+| --------------- | ------------------------------------ | --------------------- |
+| `together`      | `https://api.together.xyz/v1`        | `TOGETHER_API_KEY`    |
+| `groq`          | `https://api.groq.com/openai/v1`     | `GROQ_API_KEY`        |
+| `fireworks`     | `https://api.fireworks.ai/inference/v1` | `FIREWORKS_API_KEY` |
+| `huggingface`   | `https://router.huggingface.co/v1`   | `HF_TOKEN`            |
+| `openai-compat` | _set `llm.base_url` yourself_        | _set `llm.api_key_env`_ |
+
+**Move the whole pipeline to the cloud** (one top-level block — every op
+inherits it, exactly like `provider: ollama`). This idles the local GPU
+entirely:
+
+```yaml
+# scribe.yaml — top-level llm block routes ALL ops
+llm:
+  provider: together
+  model: MiniMaxAI/MiniMax-M3  # the provider's exact model slug, NOT a Claude alias
+  # base_url:                 # only for provider: openai-compat
+  # api_key_env: TOGETHER_API_KEY  # per-provider default; SCRIBE_LLM_API_KEY is a generic fallback
+  pricing:                    # optional — lets `scribe cost` report dollars
+    "together/MiniMaxAI/MiniMax-M3": { input: 0.30, output: 1.20 }
+
+sync:
+  daily_output_token_ceiling: 2000000   # REQUIRED backstop for any paid provider (see below)
+```
+
+Use the **exact model id from the provider's catalog** (e.g. Together lists
+`MiniMaxAI/MiniMax-M3`, `zai-org/GLM-5.2`, `deepseek-ai/DeepSeek-V4-Pro`, …) —
+the local ollama tag (`qwen3:30b-a3b`) won't resolve. Any chat model the
+provider hosts works; pick by price/quality. **Watch for non-serverless
+models:** a slug can appear in the catalog yet require a paid dedicated
+endpoint — a plain chat call then returns `model_not_available`. Verify the
+model is *serverless* before pinning it (a one-off `curl` to
+`/v1/chat/completions` is the fastest check).
+
+**Hosted-model benchmark (2026-07).** Each model ran scribe's real absorb
+envelope (`prompts/absorb-ollama.md`) in non-streaming `json_object` mode — a
+20-call reliability burst plus a richness probe, on the same source. "Graph
+output" = how well it populates the wiki's `tags:`/`related:` wikilink surface,
+which drives retrieval. Prices are per 1M tokens; **verify current serverless
+availability before pinning — these slugs churn fast.**
+
+| Model | $/1M (in / out) | Reliability (20 calls) | Latency p50 | Graph output | When to pick |
+| ----- | --------------- | ---------------------- | ----------- | ------------ | ------------ |
+| `MiniMaxAI/MiniMax-M3` | $0.30 / $1.20 | 100% valid JSON+schema, 0% fence/leak/trunc | ~8s | **Richest** — populates `related:[]` links, more tags/sections | **Best quality/$. Recommended.** 1M ctx, GA serverless. |
+| `google/gemini-3.1-flash-lite` (via `openai-compat`) | $0.25 / $1.50 | 100% valid, 0% failure modes | **~2s** | Thin — left `related:[]` empty 8/8 | Fastest + cheapest/call if you don't need dense wiki links. |
+| `google/gemma-4-31B-it` | $0.39 / $0.97 | 100% valid | ~35s | Good | Quality is fine but slow + verbose. |
+| `zai-org/GLM-5.2` | $1.40 / $4.40 | 100% valid | ~5s | Good | Solid, ~4× the price for no quality edge here. |
+| `deepseek-ai/DeepSeek-V4-Pro` | $1.74 / $3.48 | 100% valid | ~11s | Good | Solid, pricey. |
+| `openai/gpt-oss-120b` | $0.15 / $0.60 | 100% valid | ~40s | Over-split (3 pages for 1 topic) | Cheapest sticker, but slow and fragments topics. |
+
+All six produced valid, schema-clean envelopes — reliability was a wash at
+100%. The real spread is **latency**, **cost**, and **how richly each populates
+the wiki graph**. For a cron pipeline (latency-insensitive) that leans on
+wikilink traversal, `MiniMaxAI/MiniMax-M3` is the quality-per-dollar pick; a
+Google key + `provider: openai-compat` pointing at Gemini's OpenAI endpoint is
+the faster/cheaper alternative if terse output is fine.
+
+Provide the key once in the **user config** (`~/.config/scribe/config.yaml`,
+per-machine, never in the KB) so interactive runs *and* cron pick it up with no
+shell setup:
+
+```yaml
+# ~/.config/scribe/config.yaml
+llm_api_key: tok-xxxxxxxx
+```
+
+…or export an env var for a one-off run (`export TOGETHER_API_KEY=…`), which
+overrides the file. Then:
+
+```sh
+scribe doctor --section localmode   # warns if the ceiling is unset
+scribe sync
+```
+
+**Hybrid (keep cheap passes local, offload only the heavy ones):** leave
+`llm.provider: ollama` and set just the per-op blocks that pin the GPU —
+`absorb.pass2_provider`, `absorb.contextualize.provider` — to the hosted
+provider. Per-op `provider`/`model` always win over the top-level block.
+
+> **Privacy — opt-in by design.** A hosted provider sends your KB content
+> (notes, decisions, source context) to a third party on every call. Local and
+> Anthropic stay the defaults; nothing routes to a paid provider without the
+> explicit `provider:` above. The key lives in an env var or the per-machine
+> user config, never in a KB's `scribe.yaml` — and in **team KBs** the whole
+> LLM routing surface (`provider`, `model`, `base_url`, `api_key_env`, plus
+> every per-op override) is trust-locked, so a pushed config can't silently
+> redirect a teammate's KB to a hosted provider or an attacker's endpoint
+> (a *named* provider like `together` carries a built-in URL, so locking only
+> `base_url` would leave the `provider:` name itself as an open redirect).
+
+> **Runaway backstop.** A paid provider reintroduces real bill risk a free
+> local model doesn't — a single looping pass can emit millions of output
+> tokens. `sync.daily_output_token_ceiling` halts that across **every metered
+> provider** (anthropic + hosted); local Ollama is exempt. Set it before
+> pointing at a paid endpoint. That key caps one KB; if you run several KBs on
+> one machine they share one API key and bill, so also set a machine-wide
+> `daily_output_token_ceiling` in `~/.config/scribe/config.yaml` — it sums
+> today's metered tokens across **every registered KB**, and whichever ceiling
+> (per-KB or machine) is hit first aborts the call. `scribe cost` rolls up tokens (and dollars, when
+> `pricing` is set) per `provider/model`. By default it aggregates **every
+> registered KB** — hosted providers bill per API key, and one key usually
+> serves all your KBs, so the combined total matches the provider dashboard.
+> Scope to one KB with `scribe cost --kb <name>` (or `-C`, or run inside a KB).
+> It also prints **By provider** and **By KB** rollups so you can see spend per
+> backend (anthropic / hosted / local) at a glance.
+
+### `~/.config/scribe/config.yaml` (user)
+
+Written by `scribe init`. Points scribe at your KB so you can run commands from any directory, and is also where a hosted-provider **API key** lives — this file is per-machine and never part of a KB repo, so the key can't be committed to a shared KB:
+
+```yaml
+kb_dir: /home/alice/my-kb
+
+# Hosted-provider key (alternative to exporting an env var — survives
+# reboots and is picked up by the cron LaunchAgent with no shell setup).
+llm_api_key: tok-xxxxxxxx          # single key, covers whichever provider llm.provider names
+# llm_api_keys:                    # OR per-provider, if you route ops to different providers
+#   together: tok-aaaa
+#   groq:     gsk_bbbb
+
+# Pull-adapter API tokens (Pinboard, …). Same rule as the LLM key: lives here,
+# never in a KB's scribe.yaml, so it can't be committed to a shared KB.
+# integration_tokens:
+#   pinboard: "username:HEXTOKEN"  # from pinboard.in/settings/password
+```
+
+Resolution order is **env var → this file**: a one-off `export GROQ_API_KEY=…` still wins, but with the key in this file nothing needs exporting (this is what makes cron work without touching `~/.zshenv`). `chmod 600` it. The key never goes in a KB's `scribe.yaml`.
+
+### Environment variables
+
+| Variable                   | Purpose                                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `SCRIBE_KB`                | Override KB root for one command                                                                                          |
+| `SCRIBE_SELF_CHAT_ID`      | Override `capture.self_chat_handle` (accepts comma-separated values for accounts with phone + Apple-ID email)             |
+| `SCRIBE_PINBOARD_TOKEN`    | Pinboard API token (`username:HEXTOKEN`) for `scribe pull pinboard`; overrides `integration_tokens.pinboard`             |
+| `SCRIBE_SKIP_REINDEX`      | Skip the final `qmd` reindex (useful in tests / CI)                                                                       |
+| `SCRIBE_PROJECT_ROOTS`     | Colon-separated list of parent dirs treated as top-level project roots (default: `Projects:projects:src:code:repos:work`) |
+| `SCRIBE_PASS2_MODE`        | Override `absorb.pass2_mode` (`tools` or `json`) for one run without editing scribe.yaml                                  |
+| `SCRIBE_PASS2_PROVIDER`    | Override `absorb.pass2_provider` (`anthropic` or `ollama`) for one run                                                    |
+| `SCRIBE_PASS2_MODEL`       | Override `absorb.pass2_model` for one run                                                                                  |
+| `SCRIBE_BYPASS_BUDGET`     | Bypass `sync.daily_output_token_ceiling` for one invocation (cron-safe ceiling otherwise aborts and exits 0)              |
+| `SCRIBE_DOCTOR_SKIP_OLLAMA`| Skip the Ollama `/api/tags` probe in `scribe doctor --section localmode` (offline CI)                                     |
+| `TOGETHER_API_KEY` etc.    | Hosted-provider API key, per provider (`TOGETHER_API_KEY`, `GROQ_API_KEY`, `FIREWORKS_API_KEY`, `HF_TOKEN`)               |
+| `SCRIBE_LLM_API_KEY`       | Generic hosted-provider key fallback when the per-provider env var (or `llm.api_key_env`) is unset                        |
+
+---
+
+## Claude Desktop
+
+`scribe init` wires up Claude Code and Codex CLI automatically (the handshake block in [Why bother #1](#why-bother)). The **Claude Desktop app** doesn't read those files, but you can give it the same KB access by registering `qmd`'s MCP server and adding a short instruction block. After that, any Desktop chat can search your KB.
+
+### 1. Register the qmd MCP server
+
+Edit Claude Desktop's config file:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add an entry under `mcpServers` — name it after your KB:
+
+```json
+{
+  "mcpServers": {
+    "mykb": {
+      "command": "/absolute/path/to/qmd",
+      "args": ["mcp"],
+      "env": {
+        "PATH": "/dir/containing/qmd:/dir/containing/node:/usr/bin:/bin"
+      }
+    }
+  }
+}
+```
+
+- **`command`** — the absolute path to your `qmd` binary (`which qmd` / `command -v qmd`). MCP servers launched by the app don't inherit your shell PATH, so a bare `qmd` won't resolve.
+- **`args: ["mcp"]`** — starts qmd's stdio MCP server against the default index (where your KB lives). That's all most setups need.
+- **`env.PATH`** — qmd shells out to its embedding-model runner, so give it a PATH that includes qmd's own directory **and** `node`. Find both with:
+
+  ```sh
+  dirname "$(command -v qmd)"     # qmd's bin dir
+  dirname "$(command -v node)"    # node's bin dir
+  ```
+
+  Join them with the system dirs, e.g. `"<qmd-bin>:<node-bin>:/usr/bin:/bin"`. If you manage Node with a version switcher (nvm, mise, asdf, fnm, volta), `node` lives under that tool's versioned install dir — run `dirname "$(command -v node)"` in the **same shell where `qmd` works** so you capture the active version's path, not a stale one. (`which qmd` failing in a fresh shell usually means that switcher hasn't initialized — open the shell you normally use first.)
+
+> **Index ≠ collection — don't pin the wrong one.** In qmd an *index* is a database file; a *collection* is a named folder indexed inside it. Your KB is a **collection** living inside the **default index** (named `index`). It's tempting to add `--index mykb` to scope to your KB — **don't**: that points qmd at a *different, empty* index and you'll get zero results. Scoping to a collection happens in the prompt (step 2), not here. Only use `--index <name>` if you deliberately created a separate index.
+
+Restart Claude Desktop. A new chat's tools menu should list your KB server exposing `query`, `search`, `get`, `multi_get`, and `status`.
+
+### 2. Tell Claude when to use it
+
+Open **Settings → Profile → "Instructions for Claude"** (the personal-preferences box) and paste a block like this — replace `mykb` with your KB / collection name:
+
+```
+## mykb — my knowledge base
+
+The mykb MCP tools search my personal knowledge base. Always scope searches to
+collections: ["mykb"].
+
+Search it proactively — don't wait for me to ask:
+- Before recommending a library/tool/framework — I've already graded most;
+  don't suggest something I rejected.
+- Before proposing an architecture — cite the prior decision, don't reinvent.
+- When I say "have I done this", "what do I know about X", "didn't we decide on
+  X", or "how did I solve this".
+- When an error message looks recognizable — query the error text.
+
+How to search:
+- query with natural language; combine a lex sub-query (exact terms) and a vec
+  sub-query (meaning). Always pass intent.
+- get / multi_get to read full docs from the result paths.
+- If nothing relevant turns up, tell me the KB doesn't cover it yet.
+```
+
+The `collections: ["mykb"]` line is the prompt-level equivalent of the CLI's `qmd search "..." -c mykb`. With a single collection it's a no-op — but it keeps Desktop pinned to your KB the day you add a second collection to the same index. (For a hard, can't-leak guarantee instead of a prompt instruction, put the other collection in a *separate* index and the two never see each other.)
+
+This is for the Claude Desktop **app** only — Claude Code and Codex CLI already get a richer handshake from `scribe init`.
+
+---
+
+## Command reference
+
+```sh
+scribe init --path ~/my-kb --bind  # bootstrap a default KB and wire the agent handshake
+scribe init --path ~/my-kb --bind --allow '~/work' --disallow '~/personal'  # portable discovery filters
+scribe init --bind --team -p ~/team-kb --allow '~/work'      # team owner: scaffold a shared KB
+scribe sync         # discover → extract → absorb → reindex
+scribe projects     # list discovered projects with status
+scribe projects review       # interactively approve/ignore pending projects
+scribe projects approve --all # approve everything pending
+scribe projects add <path> [--local] [--domain d]  # enroll a repo by hand (no session history needed); --local = this machine only
+scribe projects add --from-sources  # bulk-enroll every sources.include-listed repo (globs expand)
+scribe config diff  # team KBs: show sensitive scribe.yaml keys changed since last trusted
+scribe config trust # team KBs: approve the current sensitive keys
+scribe config update # append commented docs for options added since your scribe.yaml was scaffolded
+scribe sync --sessions       # mine all ccrider providers + direct Codex rollouts (when codex.mine is on)
+scribe sync --dry-run --estimate  # token estimate for pending work (no writes or LLM calls)
+scribe sync --max-absorb N   # one-shot override of absorb.max_per_run from scribe.yaml
+scribe triage       # score unprocessed sessions by knowledge density
+scribe capture      # pull links you iMessaged to yourself as bookmarks (macOS only; needs Full Disk Access)
+scribe ingest url <url> --absorb   # queue-less ingest + contextualize + absorb
+scribe absorb <file>         # absorb a local file (md/txt/html) end-to-end
+scribe drop --title "..." --type solution   # author a validated drop file in the CURRENT project (what agents use via the scribe-kb skill)
+scribe contextualize --scope raw|wiki|all   # insert retrieval-context paragraphs
+scribe status       # one-shot KB scoreboard (raw/wiki/backlog) — splits held-by-policy from genuinely-pending
+scribe projects {list,approve,ignore,review}  # approve/ignore discovered projects before they enter the pipeline
+scribe dream        # weekly memory consolidation (4-phase)
+scribe dream --hot          # daily mini consolidation of the busiest domain (auto-gates)
+scribe lint         # frontmatter + size + orphan checks, incl. future or updated-before-created dates (grouped by class; closes with a "To fix, run:" footer; -v per-file, -q errors-only)
+scribe lint --contradictions # LLM pass for factual disagreements across articles
+scribe link         # link orphan articles to contextual hosts via See Also sections
+scribe watch        # long-running fsnotify watcher on ccrider DB (near-real-time session extraction)
+scribe assess <project>      # one-shot parallel deep assessment of a project (5 tracks + consolidation)
+scribe cost         # summarize LLM calls (tokens, wallclock, USD) — aggregates all registered KBs; scope with --kb
+scribe sections {build,list,get}            # H1/H2/H3 section sidecars for wiki articles (Phase 5A)
+scribe tier {compute,list,set,write}        # index_tier hint (stub|brief|standard|deep|reference) (Phase 5B)
+scribe relations {get,set,rm,graph,check,migrate,migrate-revert}   # typed edges between articles (Phase 6A)
+scribe contradictions {build,list,show,resolve}                    # contradiction ledger (Phase 6B)
+scribe stale {build,list,show}                                      # staleness ledger (date + source signals) (Phase 6C)
+scribe view {<name>,--list}                 # declarative views over wiki frontmatter (Phase 7B)
+scribe skill {install,list}                 # embedded agent skills: scribe-kb + scribe-kb-tidy + scribe-cli; install --agent claude,codex,opencode,pi,all (Phase 7A)
+scribe install-tools         # bootstrap optional tools (uv + marker-pdf) for full PDF/DOCX/PPTX/XLSX/EPUB ingestion
+scribe doctor       # deps + config + cron + freshness + errors + localmode + vault + stale + contradictions
+scribe fda          # macOS Full Disk Access probe + interactive grant flow
+scribe promote --to <kb> <article>  # copy an article into another KB with provenance (personal → team)
+scribe kb {add,list,remove}  # machine-level KB registry the scheduler iterates
+scribe each -- <subcommand>  # run a subcommand in every registered KB (cron uses this)
+scribe cron {install,status,uninstall}
+```
+
+Run `scribe <cmd> --help` for the full flag set of each. A handful of internal plumbing commands (`backlinks`, `index`, `orphans`, `validate`, `hook`, `hot`, `write`, `debug`, `sessions`, `commit`, `scan`, `deep`) are also available — they're invoked by `scribe sync` and `scribe dream` under the hood, but can be run standalone for debugging.
+
+---
+
+## One KB, several machines
+
+A desktop and a laptop, both yours, both syncing into the same KB. This is a
+*multi-writer* setup even though there is only one of you, and it runs on the
+same machinery as a team KB — the switch is `team: true` in `scribe.yaml`.
+
+The deciding question is never how many people, only **how many machines write
+to one KB**. Two of your own machines need exactly what a five-person team
+needs. [Topologies](https://getscribe.dev/topologies.md) is the reference for
+every arrangement, what each one coordinates, and what it does not.
+
+The flag name is a misnomer here, and skipping it is the most common way to
+corrupt a second-machine setup. Three things are gated behind it, and none of
+them fail loudly when missing:
+
+| Gated on `team: true` | Without it |
+|---|---|
+| `scripts/projects.json` is gitignored | It's committed, but holds machine-local absolute paths, extracted SHAs, and approval decisions — each `sync --discover` rewrites it with the other machine's view |
+| The `scripts/dream-lease.json` claim | Both run the weekly dream cycle at once — `lock_dir` is machine-local and cannot see across machines |
+| Config trust lock | A pushed change to sensitive keys applies on every machine silently |
+| Secret-scan commit gate | Credential-shaped values commit straight into shared history |
+
+Extraction dedup is **not** gated — `scripts/extraction-ledger.json` works the
+same on a solo KB.
+
+Start a new KB with `scribe init --team` and this is already done. To convert a
+personal KB you have been using solo:
+
+```sh
+cd ~/your-kb
+# 1. add `team: true` to scribe.yaml
+# 2. stop sharing the per-machine manifest
+git rm --cached scripts/projects.json      # the file stays on disk
+printf 'scripts/projects.json\n' >> .gitignore
+# 3. re-record the now-enforcing trust snapshot
+scribe config trust
+git commit -am "chore: go multi-writer" && git push
+```
+
+A clone with no `scripts/projects.json` starts with an empty manifest and
+rebuilds it from `scribe sync --discover`, so nothing is lost.
+
+**Turning the flag on disables iMessage capture and pull integrations from the
+repo config.** That is deliberate — they are personal sources, and a pushed
+`enabled: true` must not switch them on for every machine reading the repo. Move
+both blocks verbatim into the gitignored `scribe.local.yaml` of the one machine
+that should run them. Pick exactly one: Messages is iCloud-synced, so capturing
+on two Macs double-ingests every URL and makes them fight over
+`scripts/imessage-state.json`.
+
+Full step-by-step, including onboarding the second machine and which scheduled
+jobs to throttle there, is in the
+[setup runbook](https://getscribe.dev/setup.md#one-kb-on-several-machines).
+
+---
+
+## Shared team KBs
+
+scribe is single-user by design, but a small team (10–20 devs working on the same
+group of repos) can pool knowledge through a plain shared git repo — no server, no
+accounts, no new security surface. Each member runs their own scribe against their
+own sessions and repos; git is the merge layer.
+
+### The recipe
+
+The complete prompt-compatible owner/member runbook is also available at
+**<https://getscribe.dev/setup.md>**. The important split is: one owner
+bootstraps with `--team`; every other member clones that exact repository and
+runs `init --bind --yes` inside it. Teammates do not each create a new team KB.
+
+1. **One member bootstraps the team KB** and pushes it to a private remote:
+
+   ```sh
+   scribe init \
+     --path ~/team-kb \
+     --bind \
+     --kb-name teamkb \
+     --team \
+     --allow '~/work'
+   cd ~/team-kb
+   scribe skill install
+   git add scribe.yaml .claude/skills .agents/skills
+   git commit -m "chore: add scribe agent skills"
+   git remote add origin git@github.com:yourorg/team-kb.git
+   git push -u origin main
+   ```
+
+   `--team` gitignores the per-machine manifest (see below) and prints these
+   setup steps. The quotes around `'~/work'` prevent the shell from replacing
+   `~` with the owner's absolute home path before it is committed. Scribe then
+   expands `~` separately on every member's machine. If checkout layouts differ,
+   add `sources.allowed_remotes: [github.com/yourorg]` to `scribe.yaml` before
+   the commit; origin identity is a stronger team boundary than a path alone.
+
+2. **Everyone else clones and onboards their machine**:
+
+   If a member already has a personal KB and wants to keep it as the default
+   agent handshake, use the [second-KB profile](https://getscribe.dev/setup.md)
+   instead of `--bind`. Making the team KB the default is safe either way:
+   rebinding preserves the previous default as an explicit registry entry, so
+   the personal KB stays in the machine-level schedule (`scribe kb list`).
+
+   ```sh
+   git clone git@github.com:yourorg/team-kb.git ~/team-kb
+   cd ~/team-kb
+   git config user.name "Alice Example"
+   git config user.email "alice@example.com"
+
+   scribe init --bind --yes
+   scribe config diff
+   scribe config trust
+   scribe skill install --check
+   scribe sync --discover
+   scribe projects review
+   scribe sync --dry-run --estimate
+   scribe cron install
+   scribe doctor
+   ```
+
+   Do **not** pass `--path`, `--team`, `--kb-name`, `--allow`, or `--provider`
+   on member machines: those choices are already committed by the owner. The
+   member's `init --bind --yes` checks the existing clone and installs that
+   machine's default + Claude/Codex/Amp handshake. `config trust` explicitly accepts
+   the cloned sensitive config. Discovery rebuilds the gitignored machine-local
+   manifest, and nothing is extracted until that member approves projects.
+
+3. **Shared versus per-member state**:
+
+   - **Same for everyone:** the private git remote and committed `scribe.yaml`
+     (`team`, KB name, domains, provider policy, shared source/remote filters,
+     secret gate). Change it once through git; each member reviews sensitive
+     drift with `scribe config diff` / `scribe config trust`.
+   - **Different on every machine:** `scripts/projects.json`, git identity,
+     credentials, capture handles, subscriptions, personal stop words, and extra
+     source exclusions. Put local KB overrides in gitignored
+     `scribe.local.yaml`; put hosted-provider keys and personal stop words in
+     `~/.config/scribe/config.yaml`.
+
+   The pieces below explain why multi-writer operation works:
+
+   - `scripts/projects.json` is **gitignored** because it holds machine-local
+     absolute paths, git SHAs, and approval decisions. Sharing it breaks when two
+     members clone the same repo at different paths; per-machine manifests make
+     approval and extraction state private while articles stay shared.
+   - **Config trust** (`team: true` in scribe.yaml, written by `--team`): the
+     repo's scribe.yaml is writable by every member and auto-pulled before each
+     sync, so its *sensitive* keys — source filters, ingestion dirs, capture,
+     the credential gate, and the entire LLM routing surface (`provider`,
+     `model`, `base_url`, `api_key_env`, `ollama_url`, plus every per-op
+     override) — are locked to a per-machine snapshot trusted at first sync.
+     When a pushed change alters them, your scribe keeps running on the values
+     you trusted and warns (`scribe doctor`, sync log); you review with
+     `scribe config diff` and accept with `scribe config trust`. Pushing
+     `team: false` can't unlock the layer — enforcement is anchored in
+     `~/.config/scribe/trust.json`, outside the repo. (KBs trusted before the
+     routing lock shipped keep working unchanged; the next `scribe sync`
+     silently records the current provider/model as trusted.)
+   - **`scribe.local.yaml`** (gitignored, same schema) holds per-user overrides
+     that always win over the repo config. iMessage capture **never** runs from
+     the shared scribe.yaml in team mode — it's off until a member enables it
+     here, locally, themselves.
+   - **`contributor:` frontmatter** is stamped automatically on every new article
+     from each member's git identity (`git config user.name`, overridable via
+     `contributor:` in `~/.config/scribe/config.yaml`) — provenance without git
+     archaeology.
+   - **Pull-before-sync** (`sync.always_pull_before_sync`, default on) rebases on
+     teammates' commits before every run, and a pull that brings new articles
+     triggers a qmd reindex even when the local run extracted nothing.
+   - **Extraction ledger** (`scripts/extraction-ledger.json`, committed): every
+     extraction records the repo's normalized remote URL and HEAD SHA. When a
+     teammate already extracted the revision you're about to process, your sync
+     skips it and fast-forwards its local marker — two members tracking the same
+     repo don't both burn LLM calls producing duplicate articles. Repos without
+     an `origin` remote don't participate (no shared identity).
+   - **`sources.allowed_remotes`** filters discovery by git identity instead of
+     filesystem path: when set, only repos whose `origin` remote falls under a
+     listed org/host (e.g. `github.com/myorg`) enroll, and repos without an
+     origin remote are rejected outright. Members keep checkouts wherever they
+     like; personal repos can't slip into the team manifest. Like the other
+     `sources` keys, it's trust-locked — a pushed change to it warns instead of
+     applying.
+   - **Secret-scan gate**: before any team-mode commit, staged articles are
+     scanned for credential-shaped values (AWS/GitHub/Slack/Stripe/OpenAI/
+     Anthropic key formats, PEM headers, JWTs, passwords in URLs — gitleaks-style
+     rules with entropy confirmation). A file with a hit is **held back** from
+     the commit and logged loudly (`SECRET HELD: file:line [rule]` — never the
+     value itself); everything clean still commits, so cron keeps flowing. Mark
+     deliberate placeholders with `scribe:allow` on the line, exempt paths via
+     `secret_scan.allow_paths`, or opt into the noisier generic
+     `key = "value"` rule with `secret_scan.generic: true`. Solo KBs can
+     switch the same gate on with `secret_scan.enable: true`. The `secret_scan`
+     block is trust-locked like `sources` — a pushed change weakening it warns
+     instead of applying. `scribe doctor` also scans the whole KB on disk, so
+     leaks that predate the gate surface too.
+   - **Stop-words gate**: your own words on top of the credential scanner, and
+     active for solo KBs too. Matched **whole-word and case-insensitively** by
+     default (`Falcon` hits "the Falcon project" but not "falconry"); wrap an
+     entry in `/slashes/` for a regex. Two modes — `hold:` holds the whole
+     article back from the commit (like `SECRET HELD`, never silently dropped),
+     for client names / NDA codenames / anything that must not enter the KB;
+     `mask:` redacts every occurrence in place and lets the sanitized article
+     commit, when the doc is worth keeping minus one noun. `scribe:allow` on a
+     line exempts it. The list lives in **two halves that union**: a shared
+     `stop_words` block in `scribe.yaml` (team policy) and a personal one in
+     `~/.config/scribe/config.yaml` — keep words you don't want to name to the
+     whole team in the personal half, which never leaves your machine. Unlike
+     `secret_scan` it is deliberately **not** trust-locked: the shared list
+     evolves constantly and the personal half is the sovereign guarantee.
+   - **Push conflicts** retry once through `git pull --rebase`; scribe never
+     force-pushes. KB history is append-only.
+
+### Quality control
+
+forest's worry — "easier to get dirty or bad patterns" — is handled by machinery
+that already runs per-KB: the `confidence:` rubric is scored at extraction time,
+`authority:` ranks canonical decisions over opinions when articles disagree, and
+the weekly `scribe dream` cycle detects and resolves contradictions across the
+whole KB. The `contributor:` field gives dream a provenance signal when weighing
+competing claims.
+
+### Caveats (honest ones)
+
+- **Dream coordination is automatic** in team mode: a committed lease file
+  (`scripts/dream-lease.json`) lets one machine claim the weekly cycle; the
+  others see the active claim after their pull and skip. Expired leases are
+  stealable. Best-effort — with the remote unreachable, two machines may dream
+  once concurrently, which only costs duplicate consolidation churn.
+- **One machine-level schedule serves every registered KB.** The macOS
+  LaunchAgents and generated Linux crontab lines run `scribe each` across
+  `scribe kb list`. Register secondary KBs explicitly with `scribe kb add`; on
+  macOS, `scribe cron install` also registers the current KB while installing
+  or refreshing the one KB-agnostic agent set. Use
+  `each.cadence` in an individual KB's `scribe.yaml` to pace it differently.
+  The global Claude/Codex/Amp handshake still points at one default KB at a time;
+  the [setup runbook](https://getscribe.dev/setup.md#a-second-kb-on-one-machine)
+  shows how to keep a personal default while registering a team KB.
+- **Only `dream` and extraction are coordinated across machines.** The lease
+  covers the weekly cycle and the ledger covers repo extraction, but the
+  maintenance jobs — `lint --fix`, `lint --duplicates`, `lint --resolve`,
+  `lint --identities`, `lint --apply-identities` — mutate shared KB state with
+  neither, and `scribe cron install` gives every machine the same schedule, so
+  they fire together. `scribe sync` also drains the committed
+  `ingest.inbox_path` on every machine with no dedup. Let one machine own
+  maintenance and throttle those jobs elsewhere with `each.cadence` in the
+  secondary machine's gitignored `scribe.local.yaml`; the
+  [setup runbook](https://getscribe.dev/setup.md#one-kb-on-several-machines)
+  has the block to paste.
+- **Concurrent edits to the same article can conflict** like any git repo. The
+  append-heavy article layout keeps this rare; resolve by hand and re-run sync.
+- **Session transcripts never leave the machine.** Only the distilled wiki
+  articles are committed — but review what extraction writes before you wire a
+  team remote, and keep anything sensitive behind `sources.exclude` (in your
+  `scribe.local.yaml`, so a teammate's push can't loosen it).
+
+---
+
+## How scribe differs from other tools
+
+Since Karpathy's LLM-wiki gist in April 2026, a handful of open-source takes have appeared. Scribe lives in the same neighborhood but optimizes for different tradeoffs. A quick honest map.
+
+> **Snapshot: 2026-04-21.** The tools listed below are moving targets — feature sets, stars, and design decisions change month-to-month. The comparison reflects what their public source looked like on this date, verified by reading the code rather than the README. If you're reading this months later, check each repo for recent changes before making a decision.
+
+| Tool                             | Session mining                   | Cron-driven             | Density pre-filter    | Two-pass absorb | Multi-project | Local-mode option  |
+| -------------------------------- | -------------------------------- | ----------------------- | --------------------- | --------------- | ------------- | ------------------ |
+| **scribe**                       | ✅ ccrider FTS5 + Codex rollouts  | ✅ LaunchAgents / cron   | ✅ FTS5 triage         | ✅ fan-out       | ✅             | ✅ Ollama / llama.cpp |
+| `coleam00/claude-memory-compiler` | ✅ every session, no filter       | ❌ opportunistic         | ❌ (see issue #3: $115 in 20 min) | ❌             | ❌             | ❌                  |
+| `AgriciDaniel/claude-obsidian`   | ❌ read-time only                 | ❌                       | n/a                   | ❌              | read-only     | ❌                  |
+| `nvk/llm-wiki`                   | ❌                                | ❌ one-shot `/wiki:assess` | n/a                  | ❌              | ❌             | ❌                  |
+| `basicmachines-co/basic-memory`  | ❌ (open issue #669 since 2026-03) | ❌ cron suggested        | n/a                   | ❌              | ✅ via projects | ❌                  |
+| LangChain / LlamaIndex RAG       | ❌                                | n/a (indexing only)     | n/a                   | ❌ chunks only   | ✅             | varies             |
+| Obsidian / Notion / Reflect      | ❌ manual                         | ❌                       | n/a                   | ❌              | ✅ manual      | n/a                |
+
+### Where scribe's niche is
+
+- **Against RAG stacks (LlamaIndex, LangChain, classic embedding pipelines).** RAG stores chunks and retrieves at query time — there's no curation layer, no named entity pages, no decision log. Scribe keeps raw sources AND compiles a structural wiki on top. The wiki is the product; qmd embedding is the index into it.
+- **Against manual note-taking (Obsidian, Notion).** Those expect you to do the writing. Scribe watches your git commits, coding-agent sessions, and self-sent URLs, then writes the notes. You review and curate, the LLM does the data-entry.
+- **Against `claude-memory-compiler`.** Memory-compiler runs an LLM call on *every* Claude Code session with ≥1 turn. A single Max-20x user burned $115 in 20 minutes on issue #3. Scribe's `scribe triage` scores sessions with weighted FTS5 keyword matching *before* calling Claude, so boilerplate sessions never cost anything. `sync --max` caps project-extraction work; the rate-limit bail-out hands cleanly to the next cron run instead of blocking.
+- **Against `claude-obsidian` and `nvk/llm-wiki`.** Those are read-time research companions — plugin skills and slash commands, no binary, no cron. Great for interactive investigations, not for background absorption of weeks of work. Scribe runs as a scheduled daemon and produces the KB whether or not you open a terminal that day.
+- **Against `basic-memory`.** Basic-memory has the best graph model of the bunch (inline `[decision]` observations, auto-generated relations). What it doesn't do is ingest Claude Code session transcripts (open feature request since March 2026) or iMessage self-chat URLs, and its Dream-analog skills aren't scheduled. Scribe covers those; if you want the richer graph DSL, basic-memory is the reference.
+
+### What scribe is *not* trying to be
+
+- Not a drop-in replacement for agent runtime memory (mem0, Letta, Zep, Cognee, Supermemory). Those live in-process behind an agent; scribe is a file-tree on disk you can grep.
+- Not a SaaS product. No server to host, no account, no sync tier. The KB is a git repo you own — push it to your own GitHub/Gitea/Forgejo, or keep it purely local.
+- Not opinionated about your editor. Scribe writes plain markdown with frontmatter. Obsidian, VS Code, or `vim` all render it fine; Obsidian users get wikilinks for free.
+
+---
+
+## License
+
+MIT.

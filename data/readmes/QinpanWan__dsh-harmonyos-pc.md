@@ -1,0 +1,1080 @@
+**简体中文** | [English](README.en.md)
+
+# dsh-harmonyos-pc
+
+<p align="center"><img src="repo-cover-teal.png" alt="dsh-harmonyos-pc 封面" width="100%"></p>
+
+<p align="center">
+  <img alt="HarmonyOS" src="https://img.shields.io/badge/HarmonyOS-Adapt-blue">
+  <img alt="DeepSeek Harness" src="https://img.shields.io/badge/DeepSeek_Harness-dsh-41b0ff">
+  <img alt="Cache Hit" src="https://img.shields.io/badge/Cache_Hit-98%25-orange">
+  <img alt="Node.js 22 / 24 / 26（不锁版本）" src="https://img.shields.io/badge/Node.js-22%E2%80%9326-black">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-green">
+</p>
+
+让 [DeepSeek Harness](https://github.com/deepseek-ai/dsh)（dsh）在 **HarmonyOS / 鸿蒙** 设备上完整跑起来的全套适配方案。
+
+<p align="center">
+  <img src="repo-cover-aurora.png" alt="dsh-harmonyos-pc 特色总览：缓存命中 93.8%~98%、对话成本省 30 倍、纯 JS 零依赖、MIT" width="85%">
+</p>
+
+<p align="center">
+  <a href="repo-cover.png"><img src="repo-cover.png" alt="dsh-harmonyos-pc 封面（navy）" width="85%"></a>
+</p>
+
+> 鸿蒙端几乎没人做这件事——原生 ELF/.node 模块、node-pty、Koffi 在这类设备上都加载不了。本仓库把「安装、打补丁、缓存优化、插件安装、自更新」一整套工程沉淀成可复刻的开源方案。
+
+> **项目交流 QQ 群：930088487** —— 鸿蒙 dsh 适配、缓存优化、插件开发，欢迎加入交流。
+>
+> **新手教程**（在线版）：[点此打开 dsh-harmonyos-pc 新手安装教程](https://docs.google.com/document/d/1f3l-Q2Di6DmPy4xydYr4lUYIxmoOA014D63XNBTPSys/edit)
+
+> **群介绍**：让 DeepSeek Harness（dsh）在 HarmonyOS / 鸿蒙 设备上完整跑起来的全套适配方案。鸿蒙端几乎没人做这件事——原生 ELF/.node 模块、node-pty、Koffi 在这类设备上都加载不了。本仓库把「安装、打补丁、缓存优化、插件安装、自更新」一整套工程沉淀成可复刻的开源方案：
+>
+> - **八套「鸿蒙对话模式」Agent 预设**：把 DeepSeek 前缀缓存命中率拉到最高，同时保留任务交付能力——`harmony-chat`（极简）/ `harmony-chat-pro`（缓存极致）/ `harmony-chat-promax`（六边形交付最强）/ `harmony-chat-ops`（常驻后台任务管家）/ `harmony-chat-rampagemax`（狂暴质量）/ `harmony-kb`（知识库专家）/ `harmony-deveco`（DevEco 全链路开发大师）/ `harmony-chat-monash`（Monash 学生版）
+> - **六边形 ProMax**（2026-08-18 升级）：缓存命中 / 省 token / 交付能力 / 测试验证 / 集成闭环 / 共存防御六条硬规则同场，把「写完代码」与「系统跑起来」之间的鸿沟写成机械清单，交付纪律对标并反超主流通用 Agent
+> - **狂暴 Max**（2026-08-18 新增）：不省 token 只讲质量与交付的极限模式——运行上下文 + 网页抓取全开，预检穷尽扫描，集成闭环与双重验证写死为铁律。慎用：高 token 消耗，可能清空账户额度
+> - **启动补丁** `harmony.patch.yml`（web）+ `harmony-headless.patch.yml`（headless）：禁用依赖原生二进制的插件行，让 dsh 不再启动即崩
+> - **node_modules 补丁脚本**：绕开鸿蒙文件系统的致命限制（`chmod 600` 被拒、不支持硬链接、存储拒绝硬链接/挂载点打不开只读句柄）+ 恢复对话框权限预设（`dsh-permission-presets` 改读 fs 沙箱，read-only/workspace-write/danger-full-access 下拉可用）+ 修好读图（attachment-local `link`→`copy`）与视觉识别（`dsh-visual-plugin` 回退到主视觉模型）
+> - **省 token 优化实测**：11 道基准 A/B 验证 `reasoningEffort: high` 为帕累托最优（全对 + 步数最少 + 成本几乎不变），promax 委派组挂 Pro 模型路由兜底复杂子任务
+> - **五套预设跑分（2026-08-18）**：经静态 persona 填充（前缀越过 128-token 块边界），静态前缀预设缓存命中率 52.9%–89.9% → **93.8%–98.0%**（promax 96.7%、ops 97.9%、rampagemax 98.0%），连开运行上下文的 harmony-chat 也拉到 93.8%——用数据印证「保缓存先保前缀稳定」（详见下方「性能实测」）
+> - **工具链**：GitHub 插件一键安装器、dsh 自更新器 + 设置页
+> - **全局防注入 `dsh-prompt-antivirus`**（2026-08-31 新增）：扫描工具参数 / 工具结果 / 进入模型前的消息，隔离或拦截提示注入与「上下文病毒」，每会话注入金丝雀守卫，危险工具走人工审批——profile 层挂载，对全部预设与子代理全局生效
+
+- **八套「鸿蒙对话模式」Agent 预设**：把 DeepSeek 前缀缓存命中率拉到最高，同时保留任务交付能力——`harmony-chat`（极简）/ `harmony-chat-pro`（缓存极致）/ `harmony-chat-promax`（六边形交付最强）/ `harmony-chat-ops`（常驻后台任务管家）/ `harmony-chat-rampagemax`（狂暴质量）/ `harmony-kb`（知识库专家）/ `harmony-deveco`（DevEco 全链路开发大师）/ `harmony-chat-monash`（Monash 学生版）
+- **六边形 ProMax**（2026-08-18 升级）：缓存命中 / 省 token / 交付能力 / 测试验证 / 集成闭环 / 共存防御六条硬规则同场，把「写完代码」与「系统跑起来」之间的鸿沟写成机械清单，交付纪律对标并反超主流通用 Agent
+- **狂暴 Max**（2026-08-18 新增）：不省 token 只讲质量与交付的极限模式——运行上下文 + 网页抓取全开，预检穷尽扫描，集成闭环与双重验证写死为铁律。慎用：高 token 消耗，可能清空账户额度
+- **知识库专家 `harmony-kb`**（2026-08-19 新增）：把工作区当知识库——分层检索问答 / 深度研究（Pro 委派提炼）/ 文档整理 / 思维脑图（可导入万兴脑图）/ 笔记生成，并按指令把总结推送进鸿蒙侧载版 Obsidian（`[[双链]]` 只挂已有笔记）。注意：频繁委派 Pro + 多工具调用，CPU 负载高，风扇转得较狠
+- **鸿蒙开发大师 `harmony-deveco`**（2026-08-20 新增）：DevEco 全链路开发 Agent——通过 dev_* 工具驱动 hvigor/ohpm/hdc，打通「写 ArkTS → 编译 → 装真机 → 启动」完整闭环（含签名打包指引）；`dev_code` 把深子任务委托给本机 DevEco Code 代理（OpenCode web，127.0.0.1:4096）。麒麟 X90 软硬件协同功耗纪律：串行委托、4 核不拉满。
+- **启动补丁** `harmony.patch.yml`（web）+ `harmony-headless.patch.yml`（headless）：禁用依赖原生二进制的插件行，让 dsh 不再启动即崩
+- **node_modules 补丁脚本**：绕开鸿蒙文件系统的致命限制（`chmod 600` 被拒、不支持硬链接、存储拒绝硬链接/挂载点打不开只读句柄）+ 恢复对话框权限预设（`dsh-permission-presets` 改读 fs 沙箱，read-only/workspace-write/danger-full-access 下拉可用）+ 修好读图（attachment-local `link`→`copy`）与视觉识别（`dsh-visual-plugin` 回退到主视觉模型）
+- **省 token 优化实测**：11 道基准 A/B 验证 `reasoningEffort: high` 为帕累托最优（全对 + 步数最少 + 成本几乎不变），promax 委派组挂 Pro 模型路由兜底复杂子任务
+- **五套预设跑分（2026-08-18）**：经静态 persona 填充（前缀越过 128-token 块边界），静态前缀预设缓存命中率 52.9%–89.9% → **93.8%–98.0%**（promax 96.7%、ops 97.9%、rampagemax 98.0%），连开运行上下文的 harmony-chat 也拉到 93.8%——用数据印证「保缓存先保前缀稳定」（详见下方「性能实测」）
+- **工具链**：GitHub 插件一键安装器、dsh 自更新器 + 设置页
+- **全局防注入 `dsh-prompt-antivirus`**（2026-08-31 新增）：扫描工具参数 / 工具结果 / 进入模型前的消息，隔离或拦截提示注入与「上下文病毒」（`[CRON TASK]` / `[SCHEDULE REMINDER]` / 网页检索 / 文件内容里夹带的恶意指令），每会话注入金丝雀守卫，危险工具命中高危时走人工审批；`block` / `quarantine` / `monitor` 三模式 + 本地审计，profile 层挂载对全部预设与子代理全局生效，纯 JS 零依赖
+
+---
+
+## 为什么需要这套方案
+
+| 鸿蒙设备的限制 | 后果 | 本仓库的解法 |
+|---|---|---|
+| 无法加载原生 ELF / `.node` 模块 | `node-pty`(subprocess)、`Koffi`(sandbox/fs-local) 启动即崩 | `harmony.patch.yml` 禁用这些插件行 |
+| 文件系统强制组权限位，`chmod 600` 被拒 | 凭据文件权限检查永远炸，配不了 API key | 补丁 `dsh-credentials-local`：`assertOwnerOnly` 直接 `return` |
+| 文件系统不支持硬链接 | session 持久化 `link()` 发布日志报 `EPERM` | 补丁 `dsh-session-persistence-jsonl`：`link` 改 `rename` |
+| 鸿蒙无 bash shell（沙箱原生依赖被禁） | 对话框没有权限预设下拉（read-only/workspace-write/danger-full-access） | 补丁 `dsh-permission-presets`：`sandboxMode` 改读 fs 沙箱（纯 JS，一直在运行） |
+| 鸿蒙存储拒绝硬链接 / 部分挂载点打不开只读句柄 | 读图（read_image / 附件）`link()` 报 `EPERM`、目录 `fsync` 报错，图片存不下来 → 模型看不到图 | 补丁 `dsh-attachment-local`：`link` 失败改 `copy` 发布（EEXIST 竞态走完整性校验）；`syncDirectory` 对 EPERM/EACCES/ENOTSUP 挂载点跳过 fsync |
+| 鸿蒙存储拒绝硬链接 | 工作区新文件写入（`createIfAbsent`）`link()` 报 `EPERM`，新文件写不进去 | 补丁 `dsh-fs-local`：先确认目标不存在，再改按 `rename` 发布，保住 create-if-absent 语义 |
+| `dsh-visual-plugin`（第三方）面板默认未配置视觉端点 | `vision model is not configured`，或自定义 prompt 时视觉模型返回空文本被硬抛 | 补丁 `dsh-visual-plugin`：端点为空时回退到主 DeepSeek 视觉模型（`llm-deepseek` + `DEEPSEEK_API_KEY`）；空 content 重试一次并降级为明确提示 |
+| `git ls-remote` 被 isogit 垫片拦截 | GitHub 源插件装不了 | `scripts/dsh-hm-install.mjs` 安装器（fetch 源码 → 构建 → 软链） |
+
+---
+
+## 安全声明
+
+本仓库的全部内容都是纯文本 / 纯 JS 的配置与脚本，**不删除、不加密、不外传你的数据，不注册系统服务、不要求 root 权限**，可放心使用：
+
+- **纯 JS / 纯文本**：预设是 YAML 配置文件，补丁是 YAML 覆盖层，插件是零依赖的纯 JS（只用 `node:fs/promises`），脚本是 Node/Shell 文本。不含可执行二进制、原生 `.node`/ELF 模块、内核改动或驱动。
+- **不碰系统级东西**：不注册 `systemd` / 开机自启 / 系统计划任务，不改系统路径，不要求 root。所有写入都发生在 dsh 安装目录与 `~/.dsh` 用户配置目录内。
+- **不动你的数据**：预设只改 dsh 的「对话模式」配置；插件只做目录列举与文件读取；补丁只开关 dsh 自己的插件行。不会删除、覆盖、加密或外传你的文件。
+- **网络行为最小**：只在启动 dsh 时加载配置、在你主动发起对话/检查更新时访问 DeepSeek 与 GitHub 官方接口。无遥测、无埋点、无数据上报。
+- **完全可审阅**：全仓库仅 20 余个文本文件，任何一行都可打开检查。
+- **防注入插件只做本地扫描**：`dsh-prompt-antivirus` 只在本机对工具参数 / 工具结果 / 会话消息做正则扫描，审计日志写到本地 `~/.dsh/task-board/prompt-antivirus-audit.jsonl`；不联网、不读取未进入会话的磁盘文件、不上传任何内容。
+- **可逆卸载**：删除 `~/.dsh/.agent-presets/` 下用到的预设目录（如 `harmony-chat-ops/`、`harmony-kb/`、`harmony-deveco/`）、`~/dsh-test/node_modules/@deepseek-ai/dsh-tool-list/` 与 `@deepseek-ai/dsh-deveco-bridge/` 及 profile 层对应软链，重启 dsh 即完全还原。
+
+---
+
+## 快速开始
+
+### 1. 安装 dsh
+
+```bash
+cd ~/dsh-test && npm install @deepseek-ai/dsh
+```
+
+> 安装位置可用 `DSH_DIR` 环境变量覆盖；下文默认 `~/dsh-test`。
+
+### 2. 部署预设（对话模式）
+
+把预设目录拷进 dsh 的用户预设目录：
+
+```bash
+mkdir -p ~/.dsh/.agent-presets
+cp -r presets/* ~/.dsh/.agent-presets/
+```
+
+然后在 `~/.dsh/settings.yaml` 里把默认对话模式设为其中一个：
+
+```yaml
+agent-presets:
+  default: harmony-chat-promax
+```
+
+八套模式在 dsh 设置面板「对话模式」下拉里可随时自由切换（切换只影响新建会话）。详见 [docs/CACHE-OPTIMIZATION.md](docs/CACHE-OPTIMIZATION.md) 了解它们为什么快。
+
+| 模式 | persona | 缓存策略 | 工具集 |
+|---|---|---|---|
+| `harmony-chat`（基础） | 常规 | 开运行上下文（前缀易变） | 单 Agent |
+| `harmony-chat-pro`（缓存极致） | `complete:true` 唯一提示段 | 前缀零变化，命中率极限 | 单 Agent，计划纪律内建 |
+| `harmony-chat-promax`（六边形交付最强） | `complete:false` | 关闭运行上下文，长稳定前缀 | + 子代理 / 工作流 / Ralph 委派组 + 六条交付硬规则 |
+| `harmony-chat-ops`（任务管家） | 常驻后台任务管家 | 关闭运行上下文，前缀稳定 | + 定时任务（cron_create/list/set_enabled/delete + schedule_create/list/delete）+ 目录枚举（list_dir） |
+| `harmony-chat-rampagemax`（狂暴 Max） | 不省 token 只讲质量与交付 | 开运行上下文（前缀易变）+ 网页抓取全开 | + 委派组（全 Pro）+ 预检穷尽 / 双重验证 / 复盘铁律 |
+| `harmony-chat-rampagemax`（狂暴Max，慎用） | 不省 token 只讲质量与交付 | **打开**运行上下文，前缀动态、命中率低 | 全部 promax 能力 + 网页 fetch 全开 + 双重验证/交叉互证 + 委派全量 Pro + 预检穷尽扫描 |
+| `harmony-kb`（知识库专家） | 工作区即知识库：分层检索 / 深度研究 / 文档整理 / 脑图 / 笔记 | 关闭运行上下文，前缀稳定 | + 目录枚举（list_dir）+ Obsidian 双链笔记推送 |
+| `harmony-deveco`（开发大师） | 鸿蒙 DevEco 全链路开发（写 ArkTS → 编译 → 装真机 → 启动） | 关闭运行上下文，前缀稳定 | + dev_toolchain/environment/build/install_deps/list_devices/deploy/test + dev_code（委托本机 DevEco Code 代理）+ API 26/23 双工具链自动探测 + 麒麟 X90 功耗纪律 |
+| `harmony-chat-monash`（Monash 学生版） | Monash 全校区学生助手：文献解读 / 论文查重 / 作业辅助 + 学生服务与墨尔本交通知识库 | 关闭运行上下文，长稳定前缀（同 ProMax） | 同 promax 全工具集（fs / 检索 / 委派 / 工作流） |
+
+### 2.4 六边形 ProMax：鸿蒙上交付能力的天花板
+
+`harmony-chat-promax` 不在「缓存命中」与「交付能力」之间做取舍，而是六条硬规则同场——每一条都对应一次真实踩坑后的沉淀：
+
+| # | 维度 | 规则 | 对抗的失败模式 |
+|---|---|---|---|
+| 1 | **缓存命中** | `includeRuntimeContext:false`，系统提示全静态、前缀零变化 | 前缀随会话动态变，DeepSeek 缓存命中率掉到谷底（未命中输入贵约 **30 倍**） |
+| 2 | **省 token** | 静态前缀 + 任务分级：轻任务直接完成不写计划，重任务才走完整闭环 | 把「简单问答」也铺成计划/多轮往返，输出白烧 |
+| 3 | **交付能力** | 完整提示段全保留（计划策略 / 工具指引 / 委派组），只关运行上下文 | 为保缓存砍成瘦壳，重任务交付不了 |
+| 4 | **测试验证** | 「声称完成前必须跑验证命令拿到真实输出，拿不出证据等于未完成」 | 写完代码就宣称完成，语法/回归全裸奔 |
+| 5 | **集成闭环** | 交付 = 文件写完 + 依赖就位（node_modules 软链）+ 重启服务 + 核对 boot 加载 + 实测生效 | 「文件正确」≠「系统能跑起来」，差的那几步没人做 |
+| 6 | **共存防御** | 动手前先扫冲突（namespace / wiring.id / system-prompt 槽位 / 设置页 order / 工具名），复用同构已上线参照作模板 | 新插件互相踩，改共享资源不列影响面 |
+
+六条全部落在 `agent.cordis.yml` 的 persona 静态文本里，不注入任何动态内容——**规则本身不破坏第 1 条缓存命中**。
+
+#### 与其他 Agent 的对比
+
+| 能力 | 六边形 ProMax | 主流通用 Agent（Claude Code / Codex CLI / Cursor 等） |
+|---|---|---|
+| 缓存命中率 | 静态前缀保缓存，命中率极限 | 运行上下文随会话动态变化，前缀易碎，未命中价高 |
+| token 成本 | 命中输入 ≈ 1/30 价，轻任务零铺张 | 每次请求动态注入，缓存收益大打折扣 |
+| 平台感知 | 知道鸿蒙/dsh 特有条件：无原生 ELF、`chmod 600` 被拒、不支持硬链接、isogit 垫片、原生插件启动即崩 | 按 Linux/服务器假设建模，在鸿蒙上第一步就崩或受限 |
+| 集成闭环 | **软链 → 重启 → boot 核对 → 实测**写死成机械清单 | 写完代码 + 测试过就停，不知道 dsh 特有步骤 |
+| 验证纪律 | 「改完有证据」写入 persona，验证命令与输出记录在案 | 靠模型自觉，无强制，易「应该好了」式空口断言 |
+
+**为什么能秒杀通用 Agent：** 通用 Agent 的「完成」标准是「代码写完 + 测试过」，而 dsh 插件交付的完成标准是「系统能跑起来」。差的正是那一整段**平台特有收尾**——node_modules 软链要建在 `~/.dsh` 树内、重启要带 `--patch harmony.patch.yml`、boot entries 要核对加载、功能要实测。通用 Agent 不知道这些步骤，它把「写完」当终点；ProMax 把这套机械清单写进 persona，把「收尾」也当成不可跳过的交付环节。
+
+**这套规则从哪里来：** 不是设计出来的，是从插件开发实测里逐条长出来的。用 ProMax 写明日方舟干员角色插件（dsh-arknights-persona）时暴露的问题——代码零语法错误、API 全对（9/10），但 node_modules 软链没建、没重启、没核对 boot、没实测（闭环仅 6/10）——每条都变成上面的一格规则。这正是「交付最强」的含义：**代码交付率 9/10，系统跑通率 6/10，差在收尾纪律不在智能。**
+
+### 2.5 安装 ops / kb 模式依赖（仅 `harmony-chat-ops` 与 `harmony-kb` 需要）
+
+ops 与 kb 两个预设都引用了一个 dsh 之外的**自定义插件** `@deepseek-ai/dsh-tool-list`（目录枚举，dsh fs 服务没有 readdir）。它不在 dsh 基础安装里，需手动放两份（源码 + profile 层软链，缺一不可）：
+
+```bash
+# ① 源码进 dsh 基础 node_modules（预设按裸包名解析到此层）
+cp -r plugins/@deepseek-ai/dsh-tool-list ~/dsh-test/node_modules/@deepseek-ai/
+# ② 软链进 profile 层依赖树（web profile 的 node_modules 向上走到 profiles/node_modules）
+ln -s ~/dsh-test/node_modules/@deepseek-ai/dsh-tool-list ~/.dsh/profiles/node_modules/@deepseek-ai/
+```
+
+> 定时调度工具 `schedule_create/list/delete` 随 dsh 基础安装自带（`@deepseek-ai/dsh-schedule` 是 dsh 直接依赖），`harmony.patch.yml` 已用 `insert` 挂载，无需额外安装。
+
+### 2.6 鸿蒙知识库专家（harmony-kb）：工作区即知识库 + Obsidian 双链
+
+`harmony-kb` 把 dsh 的工作区直接当知识库用，基于 ops 的 `list_dir` 目录枚举能力，五类玩法：
+
+1. **分层检索问答**：先查 `笔记/kb-index.md` 命中候选 → 只精读命中文件的相关段落作答；索引缺失时自动枚举目录生成。
+2. **深度研究**：发「研究<主题>」走网页检索 + 委派 Pro 子代理提炼，产出 `研究/YYYY-MM-DD-<主题>.md`。
+3. **文档整理**：对工作区文档批量去重、归档、出清单。
+4. **思维脑图**：默认输出 Markdown 树状大纲，说「导入万兴脑图」时另生成 `.mm` 文件到 `笔记/`。
+5. **Obsidian 双链笔记**：按指令（如「总结这段并推送到 Obsidian」）把总结写成 md 落到 Obsidian vault（主目录 `obsidian/` 下含 `.obsidian` 的目录，本机如 `~/obsidian/Monash University/`），用 `[[文件名]]` 双链只挂 `kb-index.md` 里已有的笔记——Obsidian 侧载版自动显示，反链与图谱自动生成。
+
+> ⚠ **注意**：本模式频繁委派 Pro 子代理 + 多工具调用，CPU 负载较高，运行中电脑风扇会明显变响，建议空闲时段使用。
+
+### 2.7 安装鸿蒙开发大师依赖（`harmony-deveco` 需要）
+
+`harmony-deveco` 的 dev_* 工具由 dsh 之外的**自定义插件** `@deepseek-ai/dsh-deveco-bridge`（hvigor/ohpm/hdc 驱动 + dev_code 委托，纯 JS，node:child_process，无原生依赖）提供。它不在 dsh 基础安装里，需手动放两份（源码 + profile 层软链，缺一不可，同 2.5 的 dsh-tool-list）：
+
+```bash
+# ① 源码进 dsh 基础 node_modules（预设按裸包名解析到此层）
+cp -r plugins/@deepseek-ai/dsh-deveco-bridge ~/dsh-test/node_modules/@deepseek-ai/
+# ② 软链进 profile 层依赖树
+ln -s ~/dsh-test/node_modules/@deepseek-ai/dsh-deveco-bridge ~/.dsh/profiles/node_modules/@deepseek-ai/
+```
+
+预设已内建 `- id: deveco-bridge` 挂载行，dev_* 工具随 `harmony-deveco` 预设自动可用；若想在其他预设里也用上 dev_*，在 profile 补丁 `cordis.patch.yml` 加一段 insert：
+
+```yaml
+- insert:
+    - id: deveco-bridge
+      name: '@deepseek-ai/dsh-deveco-bridge'
+```
+
+> **工具路径**：插件默认到 `$HOME/deveco/deveco_tools/` 找 node/hvigor/sdk/ohpm（DevEco Studio 默认安装位置）；自定义安装用 `DEVECO_TOOLS_HOME` 整体指路，或 `DEVECO_NODE_HOME` / `DEVECO_HVIGOR_HOME` / `DEVECO_SDK_HOME` / `DEVECO_OHPM_BIN` / `DEVECO_HDC_BIN` 逐项覆盖。
+>
+> **双工具链自动探测（API 26）**：本机有两套**互斥**的 DevEco 工具链——`api23` = `~/deveco/deveco_tools`（hvigor 6.23.15 + HarmonyOS 6.1.0(23)，版本号必须写 `"x.y.z(N)"`）与 `api26` = `~/deveco/suite/tools-api26`（hvigor 6.26.4 + HarmonyOS 26.0.0，版本号必须写裸 `"26.0.0"`）。`dev_build` / `dev_test` / `dev_install_deps` 会读工程 `build-profile.json5` 的 `compileSdkVersion`/`targetSdkVersion` 自动选工具链；API ≥ 26 的工程还会先把 Studio 那种 `"26.0.0(26)"` 写法改写成 hvigor 6.26.4 唯一认的 `"26.0.0"`（备份 `build-profile.json5.bak-api26`，`keepConfig:true` 可关掉）。新增第 8 个工具 **`dev_toolchain`**：`action=status` 只读探测（两套工具链 + 工程声明 + 该用哪套），`use-api26` 切到 API 26 配置，`restore` 退回切换前的 API 23 配置。工具链路径可用 `DEVECO_API26_ROOT` / `DEVECO_API23_ROOT` 覆盖；`DEVECO_TOOLCHAIN=api26` 可把默认工具链从 api23 换成 api26。
+>
+> **DevEco Studio 侧**：Studio 6.1.5.408 内置 SDK 只有 API 23，且 `DEVECO_SDK_HOME` 由 IDE 注入（工程 `local.properties` 对 `runtimeOS=HarmonyOS` 无效），所以 API 26 工程在 GUI 里同步/构建必然报 00303168 / 00306042。GUI 里要编 API 26 就装本仓库之外的 `~/deveco/suite/studio-api26-plugin`（**API26Build** 工具窗，走同一条命令行工具链，可探测/切换配置/构建），命令行继续用 `dev_build` 或 `sh ~/bin/hm-build.sh <工程>`。
+>
+> **`dev_code` 委托**：把自包含深子任务交给本机 DevEco Code 代理（OpenCode web，127.0.0.1:4096）跑独立 agent 循环。用前需先启动 DevEco Code 并配好 DeepSeek（`~/.deveco/deveco.jsonc`），地址可用 `DEVECO_WEB_BASE` 覆盖。每次委托约 13K 输入 token、串行执行，只对深子任务用（功耗纪律见预设人设）。
+
+### 2.8 安装全局防注入（可选但推荐）
+
+仓库内置 `plugins/dsh-prompt-antivirus/`（原理移植自 `openclaw-prompt-antivirus`，按 dsh 钩子面接线）：
+
+| 防线 | dsh 钩子 | 行为 |
+| --- | --- | --- |
+| 工具参数扫描（直接注入） | `tools/pre-execute` | 高危 → 拒绝；高危 + 危险工具（`send_email` / `apply_patch` / `delete_*` 等）→ 人工审批 |
+| 工具结果扫描（间接注入） | `tools/post-execute` | `block` 转 isError / `quarantine` 替换命中片段 |
+| 进入模型前的消息扫描 | `agent/pre-step` | 高危消息进入前隔离；每会话注入一次金丝雀守卫 |
+| 出站消毒 / 金丝雀检测 | `llm/stream` | 金丝雀命中 → block 模式中断输出；出站注入片段 → 替换 |
+
+安装（幂等，重复执行安全；装完重启 dsh 生效）：
+
+```bash
+cd ~/dsh-harmonyos-pc && node scripts/dsh-prompt-antivirus-install.mjs
+sh scripts/dsh-web.sh
+```
+
+已内置 `dsh-hm-update.mjs` 自动部署：以后 `node scripts/dsh-hm-update.mjs` 更新时会自动把 `plugins/` 下的 profile 级插件同步到 web + headless profile。模式可在插件源码 `lib/index.js` 的 `DEFAULT_CONFIG` 调整（`quarantine` 默认 / `block` / `monitor`），`_antivirus_scan` / `_antivirus_status` 两个诊断工具随会话可用。
+
+### 3. 启动 dsh（带鸿蒙补丁）
+
+```bash
+sh scripts/dsh-web.sh
+# 等价手启动：
+# cd ~/dsh-test && node --expose-internals node_modules/@deepseek-ai/dsh/lib/bin.js \
+#   --profile web --patch <本仓库>/harmony.patch.yml
+```
+
+启动后浏览器访问 `http://127.0.0.1:3080`。
+
+> **必须 `--expose-internals`**，否则 `cordis-plugin-hmr` 报错；必须带 `--patch harmony.patch.yml`，否则原生插件崩溃。`dsh-web.sh` 默认自动定位仓库内的补丁文件，也可用 `PATCH_YML` 覆盖。
+
+### 3.5 headless 模式（无人值守/基准测试）
+
+headless 树比 web 多出 bash/pwsh/fs-search 等原生依赖插件行，需要第二个补丁：
+
+```bash
+cd ~/dsh-test && node --expose-internals node_modules/@deepseek-ai/dsh/lib/bin.js \
+  --profile headless --patch <本仓库>/harmony-headless.patch.yml "任务描述"
+```
+
+> ⚠ `fs-sandbox` 是纯 JS 的 fs 服务提供方，**不能禁**（`tool-fs` 靠它）。headless 补丁只禁原生依赖插件行。
+
+### 3.6 一键更新（推荐）
+
+我们每次迭代后会推送到 GitHub。想要同步到最新版，在仓库目录跑一行即可（自动处理官方 dsh 升级 + 预设/插件/补丁同步，最后自动重启服务）：
+
+```bash
+sh scripts/dsh-hm-update.sh          # 一键更新并重启
+sh scripts/dsh-hm-update.sh check    # 只看状态不更新
+```
+
+它做的事：
+1. **官方 dsh**：`npm view @deepseek-ai/dsh` 比对已装版本，有新版本就升级并重打鸿蒙 node_modules 补丁
+2. **本仓库**：以 `github.com/QinpanWan/dsh-harmonyos-pc` main 分支的 commit SHA 判定版本（写入 `~/.dsh/.dsh-harmonyos.version`），有更新就从 codeload 下载 tarball，同步 `presets/`、`plugins/`、`scripts/`、`harmony*.patch.yml` 到本机仓库副本，并重新部署预设与 `plugins/@deepseek-ai/` 下的全部插件（如 `dsh-tool-list`、`dsh-deveco-bridge`）
+3. **重启** dsh web，新预设即时生效
+
+更新会先把旧预设备份到 `~/.dsh/.dsh-harmonyos-backup/`，**不动** `~/.dsh/settings.yaml`、凭据与你的个性化配置。
+
+### 3.7 关机重启后：恢复启动
+
+鸿蒙没有 `systemd` / `cron` / `XDG autostart` 开机自启服务。重启后按下面任一方式把 dsh 拉起来：
+
+**① 仓库脚本（推荐，幂等探活 3080）**
+
+```bash
+sh scripts/dsh-web.sh        # 已在跑则跳过；未跑则拉起并等健康检查
+```
+
+等价手启动（不依赖脚本）：
+
+```bash
+cd ~/dsh-test && node --expose-internals node_modules/@deepseek-ai/dsh/lib/bin.js \
+  --profile web --patch <本仓库>/harmony.patch.yml
+```
+
+启动后浏览器访问 `http://127.0.0.1:3080`。
+
+**② headless（无人值守/基准测试）**
+
+```bash
+cd ~/dsh-test && node --expose-internals node_modules/@deepseek-ai/dsh/lib/bin.js \
+  --profile headless --patch <本仓库>/harmony-headless.patch.yml "任务描述"
+```
+
+**③ 开机自动恢复（可选）**：鸿蒙设置里把「终端」App 设为开机自启，再在 shell 启动配置（如 `~/.zshrc`）加一段探活钩子，每次打开终端自动拉起服务：
+
+```bash
+for _svc in dsh-web; do sh "$HOME/bin/$_svc.sh" >/dev/null 2>&1 & done
+```
+
+`dsh-web.sh` 幂等：已在跑就跳过，未跑才拉起，重启系统后无需手动干预。原理见下文「限制」一节。
+
+### 4. 打 node_modules 补丁（升级/重装后需重打）
+
+```bash
+node scripts/dsh-update.mjs patch
+```
+
+按内容锚点幂等重打九个补丁（新版本改代码也能识别），不打这九处：
+- 配不了模型 API key（凭据 660 权限检查）
+- 发消息 `EPERM link`（session 持久化）
+- 对话框没有权限预设下拉（permission-presets 需改读 fs 沙箱的 `sandboxMode`）
+- 读图存不下来（attachment-local：`link` 失败改 `copy` 发布 + 挂载点 fsync 容错）
+- 工作区新文件写入 `EPERM link`（dsh-fs-local：`createIfAbsent` 时 link 失败改按 `rename` 发布）
+- 视觉识别报「模型未配置」/自定义 prompt 返回空文本（dsh-visual-plugin 回退到主视觉模型 + 空 content 重试降级）
+- 裸插件名从 `dsh-test` 解析不到（cordis-plugin-loader 需补 `v0` legacy 内部 loader 识别，鸿蒙 node v22.7.0 无 `getOrCreateModuleJob`/`getModuleJobForImport`）
+- `dsh-settings` 缺 `installSettingsSection`/`settingsNamespace` 旧导出（恢复导出并委托给 `SettingsProvider.installSection`，兼容沿用旧 API 的社区插件）
+- 浏览器/收藏夹裸地址 `127.0.0.1:3080` 永远 401「authentication required」（dsh-client-connection 回环地址免 token 自动签发 30 天 cookie，旧 token URL 也兜底换新）
+
+---
+
+## 性能实测：五套预设「六边形」跑分（2026-08-18）
+
+跑分引擎 = **六边形能力雷达**（数学/代码/逻辑/事实/规划/自我修正 6 轴 × 2 题 = 12 道全自动判分，走 opencode-go API 免费 cost:0）+ **性能表**（DeepSeek 直连 API 同前缀连发 4 次测第 4 次稳态缓存命中率，前缀缓存按 128-token 块计费）+ **交付质量表**（3 道流程题按交付步骤标记命中打分，测 persona 交付纪律贯彻度）。
+
+### 六边形能力雷达
+
+| 预设 | 数学 | 代码 | 逻辑 | 事实 | 规划 | 自我修正 | 综合 |
+|---|---|---|---|---|---|---|---|
+| `harmony-chat` | 100 | 100 | 100 | 100 | 100 | 100 | **100** |
+| `harmony-chat-pro` | 100 | 100 | 100 | 100 | 100 | 100 | **100** |
+| `harmony-chat-promax` | 100 | 100 | 100 | 100 | 100 | 100 | **100** |
+| `harmony-chat-ops` | 100 | 100 | 100 | 100 | 100 | 100 | **100** |
+| `harmony-chat-rampagemax` | 100 | 100 | 100 | 100 | 100 | 100 | **100** |
+
+能力地板一致且满分——五套共享同一模型，跑分比拼的是**性能与交付纪律**，不是能力。
+
+### 性能表（before → after：给 persona 填充静态指令越过 128-token 块边界后）
+
+| 预设 | 前缀 token | 缓存命中率 | 输出效率（中位 tok/正确题） | 平均耗时 |
+|---|---|---|---|---|
+| `harmony-chat` | 273 | 52.9% → **93.8%** | 70 | 130s |
+| `harmony-chat-pro` | 406 | 71.3% → **94.6%** | 73 | 98s |
+| `harmony-chat-promax` | 794 | 87.2% → **96.7%** | 104 | **71s** |
+| `harmony-chat-ops` | 523 | 97.9% → 97.9% | 155 | 99s |
+| `harmony-chat-rampagemax` | 914 | 89.9% → **98.0%** | 125 | 142s |
+
+### 交付质量（交付规范贯彻度）
+
+| 预设 | 集成闭环 W1 | 验证先于完成 W2 | 复盘收尾 W3 | 综合 |
+|---|---|---|---|---|
+| `harmony-chat` | 75 | 75 | 67 | **72** |
+| `harmony-chat-pro` | 25 | 50 | 67 | **47** |
+| `harmony-chat-promax` | **100** | **100** | 67 | **89** |
+| `harmony-chat-ops` | 25 | 50 | 33 | **36** |
+| `harmony-chat-rampagemax` | **100** | 75 | **100** | **92** |
+
+**结论**
+
+- **ProMax = 六边形战士**：能力六轴全满分，性能拉满——缓存 96.7% 进第一梯队、输出效率 104 tok（全功能预设最省）、平均耗时 71s 全场最快，交付规范 89 仅次于狂暴。**性能与交付纪律兼得**。
+- **狂暴 Max = 交付质量天花板**：交付规范 **92 全场最高**，集成闭环 100 + 复盘收尾 100（唯一满分）——验证/复盘/闭环贯彻最彻底；缓存 98.0% 全场最高，但效率 125 tok、耗时 142s 最长，「不省 token 只讲质量」的设计本意。
+- **极简 harmony-chat 最省输出**：效率 70 tok 全场最低，但无交付纪律条款，交付 72；pro 效率 73 次省，交付纪律弱（47）。
+- **缓存优化立竿见影**：填充静态 persona 指令使前缀越过 128-token 块边界（余数 ≤15），命中率从 52.9-89.9% 拉到 93.8-98.0%——缓存命中输入比未命中便宜约 **30 倍**，前缀稳定性是最大杠杆。
+- 运行上下文预设（harmony-chat / rampagemax）真实会话前缀随快照变化，此处为理想静态基线，实际命中率略低。
+
+原始数据 `bench/result.json`、报告 `bench/result.md`，跑分脚本 `bench/bench.mjs` 可复现。
+
+---
+
+## 鸿蒙桌面客户端（ArkTS UI，`client/`）
+
+把 dsh 做成**鸿蒙电脑（2in1）桌面客户端**：基于 HarmonyOS NEXT ArkTS/ArkUI 声明式开发范式编写，严格参照华为开发者文档（Stage 模型、@Entry/@Component/@State/@Link/@ObjectLink、List/ForEach、bindSheet、@kit.NetworkKit、@kit.ArkData）。
+
+### 界面
+
+- 左侧栏：品牌区（**单幅** `IconBrandFull`，鲸鱼与字标出自同一张矢量，不再叠两遍）、新建会话、会话列表（运行指示、选中高亮）、连接状态 + 设置入口
+- 聊天主区：顶部栏（工作区 › 会话标题 / 连接指示）、消息列表（用户气泡、助手富文本、代码块、工具卡片、流式光标），以及**全列唯一**的输入卡（hero 空会话 = 鲸鱼 + 标题 + 预览徽章 + 卡；有消息 = 正文 + 同一张卡停靠在底部）
+- 输入卡工具排（**同一排四枚**）：`+` 圆 → **工作区权限胶囊** → **工作区胶囊** → **对话模式胶囊**；右侧**模型胶囊**是真菜单（候选打 ✓ + 末行「模型与 API Key…」/「模型与连接设置…」直接进设置）。工作区/对话模式按主人要求从 hero 行搬到这里与工作区权限并排（上游把它们挂在输入卡**上方**）
+- 三枚选择器的数据源：**工作区权限** = `permissionPresets/catalog`（走 `/permission <preset>` 写入，完全权限/Auto review 先过风险确认）、**工作区** = 会话 `cwd` 候选 +「选择文件夹…」、**对话模式** = 独立模式取内置 `rawfile/presets.json`、dsh 服务模式取 `agentPresets/list`（首个回合后锁定）
+- 设置面板（bindSheet 半模态）：连接模式（**独立模式 / dsh 服务模式**）、独立模式的 API Key + 接口地址、dsh 服务地址（默认 `http://127.0.0.1:3080`）、服务端模型 Provider，持久化到 preferences
+- 连接双模式：**独立模式**（`direct`，默认——**开箱即用**：对话模式与系统提示随包内置，只填 DeepSeek API Key，不需要任何本地服务）与 **dsh 服务模式**（`dsh`——对接本机/局域网 dsh 实例，需先起 `scripts/dsh-web.sh`）
+- 沉浸光感玻璃主题：半透明玻璃面层 + 细光边 + 品牌蓝渐变（侧栏活动项 / 主按钮 / 助手气泡）
+- 端侧本地 AI（可选）：`module.json5` 已声明 `ohos.permission.USE_AI`，签名与白名单路径见 `docs/LOCAL-AI-USE_AI.md`
+
+### 通信（与 dsh 官方 Web 前端同协议）
+
+| 用途 | 端点 | 说明 |
+|---|---|---|
+| 认证 | `GET /`（回环地址） | 303 + `set-cookie: dsh-auth-*`（30 天）；之后单次 RPC 与 WebSocket 握手都要带这枚 cookie（缺失/过期 → 客户端自动重登一次并落盘复用）。**必须 `maxRedirects: 0` 才拿得到这枚 cookie**：跟随 303 重定向会丢掉 `set-cookie`，于是后续 RPC 全部 401，在用户视角就是「连不上」（本端已修，见更新记录） |
+| 单次 RPC | `POST /api/<ns>/<method>` | body 为 `client-request` 信封（`{type,rpcId,method,payload:{args:{…}}}`），响应 `server-response`；参数名由描述符决定（`session/list` 要 `_request:{}`，`session/create|prompt|…` 要 `request:{…}`，`agentPresets/list`、`permissionPresets/catalog` 无参） |
+| 指令写入 | `POST /api/commands/execute` | 斜杠指令统一入口（如 `/permission <preset>` 切工作区权限），与网页端同一路径 |
+| 会话列表 | `POST /api/session/list` | 每项的 `cwd` 与 `projections.values.{title,permissions.currentValue,agentPreset}` 就是首页三个选择器的数据源 |
+| 模型目录 | `POST /api/session/modelCatalog` | `{default:{provider,model,reasoningEffort}, routableProviders:[…], groups:[{id,name,models:[…]}]}` → 输入卡右侧模型胶囊的候选（`provider/model`） |
+| 模型选择 | `POST /api/session/selectModel` | `{request:{sessionId, provider, model, reasoningEffort}}`；之后 `session/list` 的 `modelSelection.{lastUsed,next}` 投影回填当前模型 |
+| 事件流 | `ws://<host>/api/remote.mux` | WebSocket：`{type:'open',streamId,endpoint:'session/follow',payload:{args:{request:{address:{kind:'session',sessionId},maxMessages:200,assistantStream:true}}}}`；下行 `item` 帧分 `snapshot`（历史 records + 投影）、`event`（durable，事件名与旧 SSE 一致）、`assistant-stream`（`frame.chunk.type` = `text-delta` / `reasoning-delta`） |
+
+流式输出：`@ohos.net.webSocket` 的 `on('message')` 收 `assistant-stream` 增量帧 → `text-delta` 逐字更新消息（`@Observed` + `@ObjectLink` 增量刷新）；断线按指数退避重连并自动重订在跑的会话流（旧版 SSE `/api/events.mux` 与 `agentPreset.list`/`host.describe` 已在 0.1.6 下线）。
+
+### 桌面壳层（菜单栏 / 关于 / 退出确认 / 更新检查）
+
+对齐官方 Electron 桌面端（源码快照见 `desktop-upstream/`）的壳层能力，全部用 ArkTS 原生实现；上游剖析与逐条能力映射见 `docs/DESKTOP-SHELL-UPSTREAM.md` 与 `docs/HARMONY-DESKTOP-PORT.md`：
+
+- **应用菜单栏**：应用 / 编辑 / 视图 / 帮助，结构与顺序来自 `resources/rawfile/desktop-shell.json`（契约），文案为中英双语（与上游 `locale.ts` 逐字对齐）
+- **快捷键**：`Ctrl+W` 关闭（弹确认）、`Ctrl+R` 重连、`F11` 全屏；定义与菜单提示共用一份，不会出现「菜单写着有、实际没绑」
+- **窗口**：几何记忆与恢复（换显示器后自动夹回屏内）、最小 520x600、尺寸变化 400 ms 合并落盘；窗口 API 一律 **px**、落盘一律 **vp**，换算只走 `WindowGeometry.pxFromVp/vpFromPx`
+- **关于面板**：客户端版本 / 适配基线（上游版本）/ 上游提交 / Host 生命周期协议版本 / 契约来源
+- **退出确认**：沿用上游文案，区分「任务会中断」与「定时任务不跑」
+- **更新检查**：读官方同一份 `nightly.yml` feed，10 分钟轮询、失败指数退避封顶 1 小时、±20% 抖动，含 semver（`-rc.N`）比较；**只提示不安装**（详见《限制》）
+- **目录选择**：`DocumentViewPicker` 选文件夹，并发请求合并
+
+### 构建
+
+```bash
+cd client
+ohpm install
+node hvigorw.js assembleHap
+# 产物：client/entry/build/default/outputs/default/entry-default-unsigned.hap
+```
+
+可用 DevEco Studio 打开 `client/` 直接运行/签名/部署到鸿蒙电脑（2in1）。
+
+**预构建产物**：未签名 release HAP 挂在 GitHub Releases（[`v1.0.0-pc`](https://github.com/QinpanWan/dsh-harmonyos-pc/releases/tag/v1.0.0-pc)，即上面那份 `client/dist/` 产物）——**自取 + 自行签名侧载**，包内没有 `META-INF/`，不签装不上。
+
+### 本地装机：未签名 HAP → 真机
+
+未签名 HAP（包内无 `META-INF/`）直接 `hdc install` 会报 **`error: no signature file`**，必须先签名。两种情况：
+
+- **有 DevEco Studio 且已登录华为账号**：打开 `client/` → `File > Project Structure > Signing Configs` 勾「自动签名」→
+  `Run`（或 `Build > Build Hap(s)` 出签名包）→ `hdc install <signed.hap>`。最省事，推荐。
+- **命令行签名（本机实测过的路径）**：SDK 自带 `hap-sign-tool.jar`
+  （`$DEVECO_SDK_HOME/default/openharmony/toolchains/lib/hap-sign-tool.jar`）+ 一份**调试证书**（`.p12` 私钥 + `.cer` 证书 +
+  `.p7b` profile，profile 里的 `debug-info.device-ids` 必须包含目标设备的 UDID，`hdc shell bm get --udid` 可查）：
+
+  ```bash
+  java -jar "$SDK/default/openharmony/toolchains/lib/hap-sign-tool.jar" sign-app \
+    -mode localSign -keyAlias <别名> -signAlg SHA256withECDSA \
+    -appCertFile <证书.cer> -profileFile <profile.p7b> -keystoreFile <私钥.p12> \
+    -keyPwd <口令> -keystorePwd <口令> \
+    -inFile entry-default-unsigned.hap -outFile entry-default-signed.hap
+  hdc install -r entry-default-signed.hap
+  ```
+
+  证书/profile 从哪来：DevEco 自动签名生成后会落到 `~/.ohos/config/`（`*.p12` + `*.p7b`）；本机另有一份历史遗留的
+  调试证书（`~/Download/com.xiaobai.hap_installer/hap_installer/store/`，profile 即 `com_dsh_harmonyos_client.p7b`）。
+  **别人的证书装不上你的设备**（UDID 白名单 + 证书链），请用自己的。
+
+> **本机就是鸿蒙 PC 时可用的捷径**：`hdc list targets` 会直接列出 `127.0.0.1:32905`，`hdc shell "aa start -b com.dsh.harmonyos.client -a EntryAbility"`
+> 直接拉起窗口、`hdc shell "snapshot_display -f /data/local/tmp/s.jpeg"` + `hdc file recv` 直接截图——不需要第二台机器。
+
+---
+
+## 工具链
+
+| 脚本 | 作用 |
+|---|---|
+| `scripts/dsh-web.sh` | dsh Web 服务启动/重启（3080，幂等探活） |
+| `scripts/dsh-update.mjs` | dsh 检查更新：`check` / `patch` / `install` / `rollback`，升级后自动重打补丁 |
+| `scripts/dsh-manual-install.mjs` | 手动直装器：registry 元数据递归解析 + tarball 直装（绕过 npm arborist 解析卡死），`install()`/`rollback()` 自动调用、npm 兜底 |
+| `scripts/dsh-settings-compat.mjs` | 0.2.x `settings` 兼容垫片源码（由 `dsh-update.mjs` 内联进 `dsh-settings`，补回旧命名空间 API） |
+| `scripts/dsh-update-web.sh` | 设置与更新页（3098，内嵌 HTML） |
+| `scripts/dsh-hm-install.mjs` | GitHub 源插件一键安装（绕过 isogit 拦截） |
+| `scripts/dsh-hm-update.sh` | **一键更新**（官方 dsh 升级 + 仓库预设/插件/补丁同步，`check` / 默认 update） |
+| `scripts/node-runtime.sh` | 公共运行时解析（各启动脚本 source 用）：探测本机所有 node，挑「版本最高、且真能跑起来」的那个 |
+| `scripts/dsh-runtime-check.mjs` | 运行时选择回归（24 项，用假 node 把每条分支跑出来） |
+
+**node 版本：不锁。能跑最新的就用最新的（当前最新线 = Node 26.10.0，现役 LTS = 24.21.0）。** 官方 dsh 基线要 node ≥ 22.18（本仓的 `compat-loader` 把它兜到鸿蒙自带的 v22.7），
+而鸿蒙上自带的 hnp node 是 **v24.13**——但同一个 v24 二进制在部分鸿蒙设备/受限通道上会在 V8 初始化阶段**偶发**原生崩
+（code-range 预留 mmap 失败 → `Fatal error in , line 0` / `Check failed: 12 == (*__errno_location())`，没有官方开关可关），
+deveco 自带的 v22.7 反而稳定。所以脚本不再写死路径，而是：
+
+1. 把本机能找到的 node 全列出来（`/data/service/hnp/node.org/node_*/bin/node`、`/data/service/hnp/hmos-clt.org/*/node/bin/node`、`~/deveco/deveco_tools/node/bin/node`、`PATH` 里的、常见目录）——
+   那两批是按版本目录扫的，**hnp / hmos-clt 哪天把 node 升到 26 也自动跟上，不用改脚本**；
+2. 按**版本从高到低**各跑一次 `-e 'process.exit(0)'` 冒烟（崩是偶发的，给 3 次机会）；
+3. 第一个真能起来的就用 —— **本机装到 26 就用 26，退其次 24、最后 22**，两种机器都不用改命令；
+4. 开关（`--expose-internals` / `--experimental-sqlite` / `compat-loader`）按**运行时能力探测**，绝不塞它不认的参数（v24 原生有 `node:sqlite`、原生 zstd，就不再加垫片参数）。
+
+- 只看会选哪个、带什么开关：`sh scripts/dsh-web.sh --print-node`（`dsh-update.sh` / `dsh-hm-update.sh` / `dsh-update-web.sh` 同样支持，只探测、不启动、不动在跑的服务）
+- 显式指定：`NODE_BIN=/path/to/node`（可选 `DSH_NODE_BIN`；最先试，起不来仍会自动兜底）或 `DSH_NODE_CANDIDATES=a:b`（只试这些）
+- 回归：`node scripts/dsh-runtime-check.mjs`
+
+---
+
+## 鸿蒙适配细节
+
+### 安装器做了什么（`dsh-hm-install.mjs`）
+
+market 里点 GitHub 源插件时（`process.platform === 'openharmony'` 分支拦截）：
+1. `fetch` 源码 `tar.gz`，递归扫描带 dsh 清单的插件目录
+2. 有预编译产物直接装；没有则**就地尝试构建**（`--ignore-scripts` 兜底原生 postinstall）
+3. 剥掉缺失的 `dsh.client` 前端产物（防 `MissingClientBundleError` 炸启动），装成仅服务端
+4. 软链进 `~/.dsh/profiles/web` 依赖树，写 manifest，重启生效
+
+> ⚠ **link 插件必须在 `~/.dsh` 树内**：`plugins-src/<name>` 放源码，`package.json` 写 `link:/storage/Users/currentUser/.dsh/profiles/web/plugins-src/<name>`，否则解析不到 `@deepseek-ai/*` 软链。
+
+### 能装的插件范围
+
+只选 **纯 JS / `node:sqlite`** 依赖的插件。原生依赖（koffi/pty/esbuild/WASM 运行时）在鸿蒙跑不了。
+
+---
+
+## 限制
+
+- 无 `systemd` / `cron` / `XDG autostart`，鸿蒙没有开机自启系统服务。自启需在鸿蒙设置里把「终端」App 设为开机自启 + shell 探活钩子拉服务
+- `bash`/终端执行与沙箱已禁用，Agent 无法真正跑 shell 命令，只能通过文件编辑 / 网页检索 / Skills / 计划 / 委派工作
+- 无法切回 `standard` / `code` / `minimal` 官方 preset（它们依赖被禁用的原生能力，会报 `agent-preset-invalid`）
+- 纯 UI 的 client 插件会变成空壳；WASM 运行时依赖只在调用时崩
+- 侧边栏终端**待上游支持**：0.1.6 新增的 host `dsh-api-terminal-controller` + client `ui-sidebar-terminal` 都依赖 `subprocess` 服务（`@deepseek-ai/dsh-subprocess-local`），而该包顶层静态 `import node-pty`（pty 分配）/ `koffi`（FFI execve）——鸿蒙禁 dlopen 非受信 ELF 且无 openharmony-arm64 预编译包，加载即 `Cannot find the native Koffi module`；`harmony.patch.yml` 已显式禁用这几行（宿主与客户端一起）。待上游提供纯 JS / 独立 pty 实现，或鸿蒙放行原生模块后再启用
+- 鸿蒙桌面壳**不做应用内更新安装**：官方桌面端更新包是 Electron 制品（win-x64/mac-arm64），鸿蒙装不了；`client/` 里的更新检查只负责「上游是否已发布新版本」并引导官网下载，不下载不安装
+- 鸿蒙桌面壳**编辑菜单无法注入按键**：上游 Windows 走 `sendEditingKey()` 把 `Ctrl+Z/Ctrl+C…` 当按键打进编辑器；鸿蒙文本组件自管编辑历史，壳拿不到编辑器句柄，菜单保留条目并提示改用系统快捷键
+- 鸿蒙桌面壳**没有托盘**：上游「关闭 = 进托盘、托盘回窗」在鸿蒙映射为「关闭前确认 + 最小化」，因此「隐藏应用 / 隐藏其他 / 显示全部」三个菜单项统一落到最小化
+
+---
+
+## 许可证与致谢
+
+MIT License，见 [LICENSE](LICENSE)。
+
+本项目不包含 dsh 源码，只含独立编写的配置、补丁脚本与文档。dsh 本身由 [DeepSeek](https://github.com/deepseek-ai/dsh) 以 MIT 许可发布，本仓库对其的引用与补丁使用遵循 MIT 条款，特此致谢。
+
+例外：`desktop-upstream/` 是官方桌面端（`apps/desktop` + `apps/desktop-host`）的**源码快照**，同为 MIT（Copyright (c) 2026 DeepSeek），
+仅作离线查阅与移植对照，不参与任何构建；出处与刷新方式见 `desktop-upstream/README.md`。
+
+---
+
+## 更新记录
+
+### 2026-10-09 — 跟进官方 0.2.1-alpha.1 / alpha.2（大重构迁移：settings 垫片重写 + 原生 addon 纯 JS 复刻 + 6 个插件 codec 适配；本机已切到 0.2.1-alpha.2 运行）
+
+- **背景**：官方最新线是 `0.2.1-alpha.1`（2026-10-03）。它把 `dsh-settings` 从 `SettingsProvider` 重写为 `SettingsForms`（configEditor 的 Config schema 自动分区），**删掉**了 `settingsNamespace`/`installSettingsSection`/`settings.register`/`settings.get`；
+  而本机社区插件（market / hiboard-push / 皮肤 / kb / visual / workstation / scholar…）仍走旧 API —— 0.2.x 上直接**模块加载即 TypeError**。上一轮排查后暂守 0.1.6；本轮把迁移做完，`~/dsh-test` 先跑在 `0.2.1-alpha.1`，随后直装推进到 `0.2.1-alpha.2`（补丁按文件形状自适应，见下）。
+- **settings 兼容垫片（本轮核心）**：新增 `scripts/dsh-settings-compat.mjs`，由 `patchSettingsCompat` 内联进 `dsh-settings` 并补回旧导出。它在 0.2.x 的 `SettingsForms` 上挂一套自包含的「旧命名空间存储」（`register/get/section/installSection/describe/update/replace/mutate/write` + `settingsNamespace`/`installSettingsSection`/`deepEqualJson`），与新的 configEditor 表单**并存**：`describe` 合并新旧分区，写方法按 ns 是否属旧命名空间分发；旧数据落 `settings-legacy.json`。
+- **原生 addon 纯 JS 复刻**：`0.2.1` 起 `dsh-app-boot` 用 C++ addon `node-addon-require-builtin` 取 node 内部模块，鸿蒙无 `openharmony-arm64` 预编译件、也无编译器/CMake → `patchRequireBuiltinAddon` 换成 `--expose-internals` 下的纯 JS 复刻（`require('internal/…')`）。
+- **typert codec 适配**：0.2.x 的 `dsh-typert-loader` 要求 invocation codec 形如 `{mode,typeSymbol,create()}`，而 6 个社区插件（cost-meter / knowledge-base / session-groups / doc-quick / peak-valley / workstation）手写清单仍是 0.1.x 的 `{mode,typeSymbol,schema}`（0.1.6 上会 `AggregateError: 6 typert contributor(s) failed to register`）→ `patchTypertCodecCompat` 就地从 `schema` 补 `create()`，不改插件源码。
+- **锚点自适应（alpha.1 / alpha.2 双形状）**：`patchLoopbackAuth` 兼容 0.2.1 把回环登录 303 跳转从 `"location": "/"` 改成 `"./"`；alpha.2 又给 `authorizeIndex`/`isAuthenticated`/`sessionCookie` 加了 `secure` 参数、并把 `requestAuthority` 改名为 `requestAudience(headers, secure)` —— 补丁改为按文件形状判断、自动决定是否补 `secure`（alpha.1 分支插值后与旧补丁逐字节等价，可重打）。
+- **插件侧**：`plugins/dsh-huawei-local-llm` 适配 0.2.x 的 `PiAiAdapter` —— `Config.providers` 由普通对象改成 dict 集合（`get()` 返回整张字典），两种形状都兼容；解析不出 provider 时显式抛错而非静默崩。
+- **自更新器修复（上轮遗留）**：`scripts/dsh-manual-install.mjs` 的 `satisfies`/`pickVersion` 之前只比主版本，把 `^0.1.6` 当「同主版本即满足」→ 误判/误选 0.2.1，跨 0.1↔0.2 的升级/回滚全失效。现按 npm 语义实现 `^0.x`（锁次版本）/`^0.0.x`（锁补丁版本）。另给 `dsh-update.mjs` 加 `DSH_DIR`、给直装器加 `DSH_NODE_MODULES`，便于隔离探针目录干跑。
+- **运行时候选**：`scripts/node-runtime.sh` 候选池补 hmos-clt 自带 node（`/data/service/hnp/hmos-clt.org/*/node/bin/node`）。本机现选 **hmos-clt v24.18.1**（可用）；hnp v24.13 仍 V8 初始化原生崩，deveco v22.7 兜底（v22 回退本轮也实测能起）。
+- **验证**：`sh scripts/dsh-update.sh patch` 19/19 全命中（返回 `false`=已存在）；web `3080` 起、带 cookie `200`（index 38104B）；社区插件逐个 `import` **全绿**（40 项，仅 2 项本就无 `lib/index.js` 入口的 SKIP）；`node scripts/dsh-runtime-check.mjs` **24/24**。启动仅剩 2 条 `pending`（`workspace-changes` 等 `subprocess`、`ui-deliverables` 等 `workspaceChanges`）—— `subprocess` 依赖原生 pty/koffi，鸿蒙本就禁用，与 0.1.6 时代同形，**非回归**（该轮 19/19、`3080`/`200`、`runtime-check 24/24` 在 **0.2.1-alpha.2** 上复测结果一致）。
+- **回滚**：仍可用锁文件回到 0.1.6（`npm ci --ignore-scripts`）；caret 修好后 `dsh-manual-install.mjs` 的降级路径也恢复可用。
+
+### 2026-09-26（补一轮）— node 支持口径对齐「最新线」：Node 26.10.0 / LTS 24.21.0，依旧不锁版本
+
+- **为什么还有这一轮**：上一轮把运行时改成了自适应（能跑最高的就用最高的），但**对外口径**只写到 24（徽章 `Node.js 22–24`、文档写「最新线 v24」）。
+  查 node 官方 dist index：**最新线是 Node 26.10.0**（2026-09-21 发布，Current 线）、**现役 LTS 是 24.21.0**（Krypton，2026-09-07）。
+  本次把仓库对外的 node 口径统一成「**不锁版本：≥22.18 是官方基线下限，上限跟着本机能跑的最高版本走（26 → 24 → 22 依次退）**」。
+- **改动**：README 中英徽章 `Node.js 22–24` → `22–26`；README 中英「工具链」段与新手教程「前置准备」写明最新线 / LTS 的具体版本号与「26 优先」的退让顺序；
+  `scripts/node-runtime.sh` 头注释同步（不再写「当前 = Node 24」）。
+- **顺手收掉最后一处写死的版本**：`scripts/dsh-hm-install.mjs` 里找 npm/hdc 的回退路径还钉着 hnp `node_v24.13.0`，
+  现在改成扫 `/data/service/hnp/node.org/node_*/bin/` 并按**版本从高到低**取 —— hnp 哪天升到 26，这条回退路径不用改代码就跟着走。
+- **回归**：`node scripts/dsh-runtime-check.mjs` **22 → 24 项**（新增「脚本里不再出现写死的 hnp 版本号 `node_v<数字>`」「hm-install 的 hnp 回退路径按版本 glob」）；
+  `desktop-shell-check.mjs` 33/33、`direct-mode-check.mjs` 47/47、`session-live-check.mjs` 58/58、`gen-harmony-ui-assets.mjs --check` 5/5 不变。
+- **没吹的部分（口径说清）**：本机能拿到的 node 只有 hnp v24.13（V8 初始化崩）与 deveco v22.7（稳），`nodejs.org` 的 `linux-arm64` 官方二进制在鸿蒙上**根本执行不了**
+  （`permission denied`，不是同一套 ABI / 加载器）——所以「26 也能用」不是本机跑出来的，而是从脚本行为推出来的：候选按版本降序 + 冒烟挑第一个能起来的 + 开关按能力探测
+  （`--experimental-loader` 在 26 的 man 里仍然存在）。等鸿蒙侧有 node 26 的构建（hnp 或 DevEco 自带），上手即为准。
+
+### 2026-09-26 — 运行时不再锁 node 22：能跑 Node 24 就用 24，起不来才退 22（四个启动脚本统一）
+
+- **问题**：方案此前把 node 路径写死（`dsh-update.sh` / `dsh-hm-update.sh` / `dsh-update-web.sh` / `dsh-hm-update.mjs` 钉的是 hnp `node_v24.13.0`，
+  `dsh-web.sh` 钉的是 deveco v22.7）——机器上正好是「这个版本起不来」时就把用户按在旧版本上，README 徽章也还写着 `Node.js 22+`。
+- **做法**：新增 `scripts/node-runtime.sh` 公共段（把 `dsh-web.sh` 里的探测逻辑抽出来共用）：列候选 → 按版本从高到低做 `-e 'process.exit(0)'` 冒烟（崩是偶发的，给 3 次机会）
+  → 第一个真能起来的即选定；开关（`--expose-internals` / `--experimental-sqlite` / `compat-loader`）按运行时能力探测，不塞它不认的参数。
+  四个启动脚本全部改走公共段，`--print-node` 都能先看会选哪个、带什么开关（只探测、不启动）。
+- **顺手**：`dsh-hm-update.mjs` 的子进程 node 改为 `process.execPath`（跟随当前正在跑的 node，不再写死 hnp 路径）；`dsh-hm-install.mjs` 找 npm/工具时先看当前 node 的 `bin/` 目录。
+- **回归**：`node scripts/dsh-runtime-check.mjs` **12 → 22 项**（新增「四个脚本都不写死路径」「三个更新脚本 `--print-node` 也挑最高可跑版本」「mjs 跟随 `process.execPath`」等）；
+  `desktop-shell-check.mjs` 33/33、`direct-mode-check.mjs` 47/47、`session-live-check.mjs` 58/58、`gen-harmony-ui-assets.mjs --check` 5/5。
+- **本机实测**：鸿蒙自带 hnp `node_v24.13.0` 在 V8 初始化阶段原生崩（`Check failed: 12 == (*__errno_location())`；`--jitless` 能跑但等于关 JIT + 没有 WASM），
+  探测自动选中 deveco v22.7 + `--experimental-sqlite` + compat-loader —— 也就是「24 能用就用 24」这条路上，本机只是那个 24 恰好不能用，命令一个都不用改。
+
+### 2026-09-26 — 鸿蒙桌面端 HAP 上线 Releases：`v1.0.0-pc` 自取，自行侧载
+
+桌面端不再只躺在本地 `client/dist/`。本次把「扒官方 Electron 壳 → 原生 ArkTS 桌面壳」这一整轮适配的源码并入 `main`
+（`client/` 桌面壳与界面重写、`docs/DESKTOP-SHELL-UPSTREAM.md`、`docs/HARMONY-DESKTOP-PORT.md`、
+`scripts/gen-harmony-ui-assets.mjs` / `gen-client-presets.mjs` / `desktop-shell-check.mjs` / `svg-preview.py`、
+`desktop-upstream/` 官方源码快照），同时把随源码出好的未签名 HAP 挂到 **GitHub Releases**：
+
+- **下载**：[Releases › `v1.0.0-pc`](https://github.com/QinpanWan/dsh-harmonyos-pc/releases/tag/v1.0.0-pc) → 资源 **`dsh-pc-1.0.0-unsigned.hap`**（tag 命名沿用平板端的 `v1.0.0-pad` / `v2.0.0-pad`）
+- **体积 / 校验**：**742,569 B**（`ets/modules.abc` **687,544 B**），sha256 `4a982689f659f8c907e4cb7fc81b455d39d649f7e3a44b3408d9566e4f5605e3`——与 `client/dist/` 及 `~/Download/` 的本地副本逐字节一致
+- **未签名，装机得自己签**：`client/build-profile.json5` 的 `signingConfigs` 为空，包内没有 `META-INF/`（无证书、无 profile）。侧载二选一：
+  - DevEco Studio 打开 `client/` → 登录华为账号 → `File > Project Structure > Signing Configs` 勾「自动签名」→ `Run`（或 `Build > Build Hap(s)` 出签名包后 `hdc install <hap>`）
+  - 已有自己的调试证书：`hapsigntool` 签完再 `hdc install <hap>`
+- **开箱即用**：默认**独立模式**，8 套对话模式与系统提示随包内置（`resources/rawfile/presets.json`），只填 DeepSeek API Key，**不需要本机 dsh 服务**；要连本机/局域网实例再切设置里的「dsh 服务模式」
+- **仍未真机验证**：出包时 `hdc list targets` 为空，真机 UI/交互未跑通；四条已知限制（更新只提示不安装、编辑菜单不注入按键、无托盘、`restartAppHost` 提示到终端）见上文《限制》
+
+### 2026-09-26（第七轮）— 独立模式「发消息不在左侧生成会话」真因：切模式带过来的悬挂会话 id
+
+主人报「发送消息之后不生成新会话在左侧 —— 这个问题是独立模式下的」。真机复现（本机即那台鸿蒙 PC，`hdc list targets` = `127.0.0.1:32905`）：
+**先在 dsh 服务模式里点过「新会话」/选过一条空会话，再切回独立模式发消息** —— 正文、思维链、回答都正常流式出来，只有左侧栏一直挂着「还没有会话」。
+
+- **根因：`Index.sendDirect()` 用「`currentSessionId` 是否为空」判断要不要就地建本机会话**。从 dsh 服务模式切回来时
+  `currentSessionId` 还停在服务端会话 id 上（**非空**，但 `directConversations` 里没有这一行），于是 `beginDirectConversation()` 被跳过，
+  侧栏那份投影（`publishDirectSessions()`）一条行都出不来。判据应该问「这条 id 在不在本机会话清单里」：
+  `if (this.findDirectConversation(this.currentSessionId) === null) { this.beginDirectConversation(text); }`。
+- **同一族第二处**：`adoptDirectConversation()`（进独立模式时把当前正文收进清单）原先在 `messages.length === 0` 时直接 `return`，
+  把悬挂 id 原样留在原地 —— 一样会漏建。改成先清掉不属于本机会话的 id（正文也空时连标题一起复位成「新会话」）。
+- **顺带补上模式隔离（第三处）**：切模式的瞬间上一模式的服务端流还开着，回来照样往状态里写 —— `session/list` 全量回包会把侧栏换成
+  服务端那几百条会话、当前会话的 `follow` 快照会把独立模式正文整段覆盖、宿主 `$events` 的 `api-session/added` 会往侧栏插服务端行。
+  `refreshSessions()` 的 then 回包 / `onFollowValue()` / `onHostEvent()` 各加一句 `if (this.mode !== 'dsh')`（dsh 模式行为不变）。
+
+**真机实测（18:12–18:18，以 `uitest dumpLayout` 为准）**：
+
+- **复现（修复前）**：dsh 服务模式点一条空会话（`currentSessionId` 非空、正文空）→ 切回独立模式 → 发「测试乙」→ 回答正常、侧栏仍「还没有会话」。
+- **修好后同一路径**：切回独立模式时标题栏即复位成「新会话」；发「回归乙」→ 侧栏顶部当场出现「回归乙 18:16」，下面留着上一轮「回归甲 18:15」。
+- **回归**：冷启动独立模式发「回归甲」→ 侧栏照常出行（旧行为没被破坏）。
+- **模式隔离**：独立模式下命令行造 dsh 活动（另一路 `$events` 探针同期收到 `api-session/added`）→ 应用侧栏纹丝不动；切回 dsh 服务模式再造一次 → 两行「新会话 18:17」照旧实时冒出来。
+- **回归检查**：`direct-mode-check.mjs` **41 → 47 项**（新增悬挂 id 判据 / 悬挂 id 清理 / 三处模式守卫）；`session-live-check.mjs` 58/58、`desktop-shell-check.mjs` 33/33、`gen-harmony-ui-assets.mjs --check` 5/5（181 令牌 · 94 字形）。
+- **产物**：release 未签名 HAP **769,014 B**（`ets/modules.abc` **713,988 B**），sha256 `af4a1f45b6c8f4bd35e39fbc9dad59bcfabb2d4fc511ca46c9610caef8fba3bd`，`client/dist/` 与 `~/Download/` 各一份；装机仍走 `sh ~/bin/hm-sign-install.sh <unsigned.hap>` + `hdc install -r`。
+- **验证副作用**：为跑「外部活动」用例在 `/storage/Users/currentUser/_AgentScratch` 工作区建过 3 条空会话（`session-33cec94a…` / `session-6115aa17…` / `session-fc525708…`，其中一条曾被改名成「守卫测试-重命名」），归档集合已用 `workspace/unarchiveSession` 原样还原。
+
+### 2026-09-26（第六轮）— 侧栏实时化真机跑通：`$events` 握手缺一个 `supportOriginPort`（403），侧栏行键不重绘
+
+第四轮做的「左侧实时冒出最新会话」在真机上**一次都没生效**。既然上一轮（第五轮）已经确认**本机就是那台鸿蒙 PC**
+（`hdc list targets` = `127.0.0.1:32905`），这一轮就直接对着本机的 dsh 服务（`127.0.0.1:3080`）在设备上排，抓到两个只在真机现形的 bug：
+
+- **① WebSocket 握手的 `Origin` 少一个端口 → 被 dsh 的 Host/Origin 栅栏 403，`$events` 压根没连上**。ArkTS
+  `@ohos.web.webSocket` 建连时的 `Origin` 默认取 `address`（只有 host、无端口），而 dsh 网关按「Origin 的 authority 必须与 Host
+  完全一致（含端口）」校验：`Origin: http://127.0.0.1` vs `Host: 127.0.0.1:3080` 判不等 → **403**，事件流当场断在门口。
+  第四轮那套 `api-session/added` / `removed` / `status` / `activity` 分支因此**从未被喂过数据**，侧栏只剩「等下一次全量
+  `session/list`」这一条路 —— 正是主人说的「左侧没实时刷新出最新会话」。修法（`service/DshApiClient.ets` 的 `openHostEvents()`）：
+  `const options: webSocket.WebSocketRequestOptions = { header: header, supportOriginPort: true }`
+  （API 26 起可用的开关，打开后 `Origin` 才带 `host:port`）。定位靠三个临时探针：
+  `mux-events-probe.mjs` / `mux-origin-probe.mjs` / `ws-probe-server.mjs` —— 先用本地假网关回显握手头，看出 `Origin` 里没有端口，
+  再对真 dsh 复现 403。
+- **② 侧栏行「内容变了、键没变」→ ArkUI 复用旧行不重绘**。`view/Sidebar.ets` 的 `ForEach` 行键原先只有 `sessionId`。
+  第五轮在正文气泡上刚踩过同一个坑（`ForEach` 只按 key 判等），侧栏是同一个病的第二个病例：新会话**能**插进来（数组变了、
+  键也是新的），但「标题刚从 `session/title` 来」「运行圆点刚亮起来」「时间刚前移」「选中态刚换」这四种情况**键没变**，
+  ArkUI 就直接复用旧行 —— 现象是「列表有条目，但标题/时间/圆点不跟着动」。修法：把
+  `sessionId | title | updatedAt | running | 是否当前选中` 全编进行键（一次事件只重建一行，量很小）。
+
+**真机实测（17:49–17:52，以截图与 `uitest dumpLayout` 为准）**：
+
+- **别处新建的会话秒出现**：命令行 `POST /api/session/create`（cwd = `BrewDiary-New`）→ 约 2 秒内侧栏顶部冒出该行，全程没碰应用。
+- **标题/时间实时刷新**：对刚建的会话 `POST /api/session/prompt` → 该行标题变「从1数到3」、时间变 17:50 并置顶，顶部页签名同步。
+- **思维链实时滚动 + 自动跟到底**：同一轮正在跑时，「思考」披露行跟着流式增长，正文自动跟随到底部。
+- **「回到底部」浮标**：`uitest uiInput fling` 把正文上翻 → 右下角出现 34 圆浮标（px `[2451,1575][2516,1640]`）；
+  点它回到底部、浮标消失。
+- **应用自己发消息**：`uitest uiInput inputText` 往输入卡打字 + 点发送 → 用户气泡 + 思考行 + 助手回答
+  （17:52「收到，主人～有事随时吩咐，我在。」），侧栏时间同步到 17:52。
+
+- **回归检查**：`session-live-check.mjs` **50 → 58 项**（新增「握手必须带 `supportOriginPort`」「独立模式本机会话清单」
+  「独立模式发首条就地建会话」「「新会话」把当前这轮收进清单再开空的」「侧栏行键编入标题/时间/运行位/选中态」等）；
+  `desktop-shell-check.mjs` **33/33**、`direct-mode-check.mjs` **32 → 41 项**、`gen-harmony-ui-assets.mjs --check` 5/5（181 令牌 · 94 字形）。
+- **产物**：release 未签名 HAP **768,766 B**（`ets/modules.abc` **713,740 B**；包内可查到 `supportOriginPort` / `$events` /
+  `api-session/added` / `blocksToReasoning` / `回到底部`），sha256
+  `dca83051433c63319f12ac783988bfc872affae6368cd2366849f3f0f57db9fd`（`client/dist/` 与 `~/Download/` 各一份，
+  与 `entry/build/.../entry-default-unsigned.hap` 逐字节一致）。
+- **装机路径（本机即设备）**：`sh ~/bin/hm-sign-install.sh <unsigned.hap>`（用
+  `~/Download/com.xiaobai.hap_installer/hap_installer/store/` 的 `xiaobai.p12` + `xiaobai-debug.cer` +
+  `com_dsh_harmonyos_client.p7b` 本地签名）→ `hdc install -r` →
+  `hdc shell "aa start -b com.dsh.harmonyos.client -a EntryAbility"` → `hdc shell snapshot_display -f …` 直接截图。
+- **仍未验证**：独立模式（直连 `api.deepseek.com`）下的这套实时链路 —— 本轮实测的是 **dsh 服务模式**。
+
+### 2026-09-26（第五轮）— 真机首测（本机就是鸿蒙 PC）：流式正文不刷 + 独立模式思维链整条丢失
+
+主人说「还是没反应，这个思维链滚动不出来」，并提示**这就是装在本机的设备**（`hdc list targets` = `127.0.0.1:32905`，本机
+就是那台 HarmonyOS PC，`aa start` 直接就能拉起客户端、`snapshot_display` 直接就能截图）。于是这一轮第一次把上一轮的改动
+**真的装到设备上跑起来**，又抓到两个只在真机上暴露的 bug：
+
+- **① 流式正文一个增量都不重绘（主人说的「发了没反应」的真身）**：`view/MessageItem.ets` 正文 `ForEach` 的键原先只有
+  `消息id-下标` —— **ArkUI 的 `ForEach` 只按 key 判等，key 不变就把该 item 当成同一个不重绘**。助手气泡是「先建一条空消息、
+  再不停往 `text` 里追加」的模型，键不变 ⇒ 气泡永远停在**空**的状态（`reasoning` 有内容时还能靠上面那行「思考中」看出来活着，
+  所以现象更像「卡住」）。修法：把内容也编进键 ——
+  `blockKey()` = `消息id-下标-t|-c-文本长度`（`isCode` 与文本长度都进键），每个增量换一次键，正文才会跟着刷。
+- **② 独立模式（内置直连）整条思维链丢掉**：独立模式走的是官方 `/chat/completions` 的**流式 SSE**，推理模型
+  （`deepseek-v4-flash` / `*-reasoner` 系）把思维链放在 `choices[0].delta.reasoning_content` 里，而独立模式的解析器只认
+  `delta.content` ⇒ 界面在整个思考阶段**只有一行「思考中」**、一个字都不涨，看起来就是「思维链滚动不出来」（这正是主人第一句
+  话的观感）。修法（`service/DshApiClient.ets`）：把「取一帧里某个字段」抽成 `frameField(frame, field)`，
+  在其上给出 `frameText` / `frameReasoning`（= `delta.content` / `delta.reasoning_content`）、`streamText` / `streamReasoning`、
+  `completionText` / `completionReasoning`；`Index.ets` 的直连回合把 reasoning 增量写进助手消息的 `reasoning`，
+  于是上一轮新做的「思维链披露行」在独立模式下也有内容可显示、可实时滚动。
+- **③ 应用日志改为公共域，真机上抓得到**：`EntryAbility.ets` 的 `DOMAIN` 从 `0x0000` 改成 **`0xD0042`** ——
+  `0x00000–0x0FFFF` 是系统私有域，普通 `hdc shell hilog` 读不到；改到公共域后，真机排障直接
+  `hdc shell hilog -T DshDirect`（独立模式的首块/完成字数与耗时/失败原因）就能看到。这一轮前半段正是吃了这个亏
+  （抓了 12743 行 hilog，一条应用日志都没有）。
+- **真机实测（02:43，截图为准）**：装上带诊断探针的包、独立模式自动跑一条「说一句你好」，界面同时出现
+  ①用户气泡 ②**思维链行**（图标 + 「思考」+ 一行摘要，摘要跟着模型思考的尾巴走）③助手回答「你好！有什么需要帮忙的？」——
+  两个 bug 一起消失。随后**去掉探针重打干净包并重新签名装机**（02:44），装上后应用正常启动（进程在、窗口在）。
+- **回归检查**：`direct-mode-check.mjs` 从 32 项扩到 **41 项** —— 新抠出 `frameField / frameReasoning / streamReasoning /
+  completionField / completionReasoning` 一起跑，并加了 6 条思维链用例（逐帧取 CoT、CoT 帧不污染正文、整条流含残帧、
+  非推理模型为空、keep-alive 不影响、非 SSE 整段 JSON 的 CoT 兜底）。另三项：`desktop-shell-check.mjs` **33/33**、
+  `session-live-check.mjs` **50/50**、`gen-harmony-ui-assets.mjs --check` 5/5（181 令牌 · 94 字形）。
+- **产物**：release 未签名 HAP **763,994 B**（`ets/modules.abc` **708,968 B**；包内可查到 `reasoning_content` /
+  `frameReasoning` / `blocksToReasoning` / `思考中` / `回到底部` / `api-session/added`），sha256
+  `a3369d3371673b769b19cf4e94d4a55cb6272f4500983f2a855a6134b8a00908`，已覆盖 `client/dist/` 与 `~/Download/` 的同名副本；
+  真机上装的就是这一份（用本机调试证书 `hap-sign-tool` 签名后 `hdc install`，见下文《本地装机：未签名 HAP → 真机》）。
+- **仍未真机验证的部分**：这轮只验了独立模式（+ 截图）；`dsh` 服务模式的侧栏实时化 / 跟随滚动虽然逻辑同一套，
+  但没在真机上做「别处新建会话是否秒出现」的对照，留待下一轮。
+
+### 2026-09-26（第四轮）— 侧栏「实时冒出最新会话」+ 思维链实时显示与跟随滚动
+
+主人报「桌面端还是有问题：没有实时显示和滚动思维链，左侧没实时刷新出最新会话」。两处都是真 bug，一个根因一条：
+
+- **侧栏：接上宿主的实时事件流 `$events`**（会话列表的真源）。宿主 `dsh-api-session-controller` 把
+  `session/created|session/disposed|agent/status|session/event` 映成 `ctx.emit('api-session/added'|'removed'|'status'|'activity')`，
+  `dsh-api-remotes` 的 `API_REMOTE_FORWARDED_EVENTS` 白名单再把它们经网关内建逻辑流转发给客户端（官方 web 端
+  `ctx.remote.$on` 走的同一条路）；下行帧是 `{"type":"item","streamId":…,"value":{"type":"ready",…}}`（事件源就绪）与
+  `{"type":"emit","event":"api-session/added","args":[summary]}`（业务）。新代码 `DshApiClient.openHostEvents()` 开一条
+  `$events`（payload 必须是**空** `args: {}`，网关侧会校验），`Index.onHostEvent()` 按事件就地改列表：
+  `added` → `upsertSession()`（新会话、别处建的会话**立即**插到最前）、`removed` → `removeSession()`、
+  `status` → `markSessionRunning()`（侧栏那一行的运行小圆点）、`activity` → `touchSession()`（把该行按 `updatedAt` 提到最前）。
+  旧代码只在 `turn/end` / `session/title` 时刷新列表，**别处新建的会话要等下一次全量才出现** —— 就是主人看到的「左边没实时刷新」。
+- **绝不每条事件重拉全表**：`session/list` 实测 286 行 / ~188KB / ~1s。事件载荷与 `session/list` 的行同源，所以复用同一个
+  `parseSessionSummary()` 就地更新；只有**本地查不到这一行**时才去抖兜底一次全量刷新（200/800ms），
+  外面再加 `sessionRefreshInFlight` 并发闸门（同一时刻只允许一次在飞；飞行中来的挂起，落地后 200ms 补一次）。
+- **思维链（CoT）两个来源都认**：① 实时 `assistant-stream` 帧（`block-start{blockType:'reasoning'|'text'}` /
+  `reasoning-delta{index,text}` / `text-delta` / `block-end` / `usage` / `finish` → `end{outcome.kind:'committed'}`，
+  实测一次回答约 200 帧）；② 落库的 `assistant/message` → `data.message.content[]` 里的 `{"type":"reasoning","text":…}`
+  （切会话 / 重连只拿得到快照，只有这一份）。旧代码 `blocksToText()` **只认 `text` 块** ⇒ 切会话后思维链直接丢；
+  `MessageItem` 又只在「有 reasoning 且没有 text」时显示「思考中」三个字，从不渲染 reasoning 内容。
+  现在新增 `blocksToReasoning()`，`assistant/message` 分支回填 `msg.reasoning`（并接管流式气泡），
+  `applyAssistantFrame` 支持多段 `block-start`（第 2 段起用 `\n\n` 接上；**单条 `block-start` 不会造出空气泡**）。
+- **思维链披露行**（`view/MessageItem.ets` 的 `reasoningRow()`，对齐上游 `ui-chat` 的 `ReasoningRow`）：
+  `IconThinkOutline` + 标题（生成中「思考中」/ 结束后「思考」）+ **一行实时摘要** + 展开/收起 chevron，
+  点标题展开完整思考。摘要的取舍与上游一致：生成中取**最后一行**（跟着模型思考的尾巴走，这就是「实时滚动」的观感），
+  结束取**首行**；去掉 `**` 记号并限长 160。上游的折叠与悬浮钉住这一轮**没有做**（有意简化，代码注释里写了）。
+- **跟随滚动 + 「回到底部」浮标**：`scrollToBottom(force)` 增加**跟随闸门** `followBottom` —— 读者主动上翻之后不再把人拽回底部；
+  发消息 / 切会话用 `force = true` 重新打开跟随。`ChatView` 在 `onDidScroll` 里用 **`Scroller.isAtEnd()`** 回报「是否停在底部」
+  （拿索引比较会被流式正文的高度增长误判成「读者上翻」），非底部时右下角出现 34 圆的「回到底部」浮标
+  （对齐上游同名 `.toBottom`，连 `aria-label` 都照搬成 `accessibilityText('回到底部')`）。
+- **回归检查**：新增 `scripts/session-live-check.mjs`（**50 项**）= 静态契约 + 把 `.ets` 里的**真函数**抠出来
+  在 `node --experimental-strip-types` 里跑 **刚在真 dsh 服务上抓下来的固件**（reasoning-delta / block-start 帧序列、
+  `assistant/message` 的 reasoning 块、`session/list` 摘要行、activity / status 事件）。
+  `desktop-shell-check.mjs` **33/33**、`direct-mode-check.mjs` **32/32**、`gen-harmony-ui-assets.mjs --check` 通过（181 令牌 · 94 字形）。
+- **产物**：release 未签名 HAP **761,969 B**（`ets/modules.abc` **706,944 B**；包内可查到 `$events` / `api-session/added` /
+  `blocksToReasoning` / `思考中` / `回到底部`），sha256 `4d8c1f41796269eaeee58bacea6c8cb3dd008c946d2cc1f7c9433e6f80de34d7`，
+  已覆盖 `client/dist/` 与 `~/Download/` 的同名副本。
+- **仍未真机验证**：出包时 `hdc list targets` 依旧为空，所以这一轮靠「上游源码对照 + 真服务固件回归」而不是设备截图。
+  装机后重点核三件事：别处新建的会话是否**秒**出现在左侧、思考行是否**实时滚动**、正文上翻后是否出现「回到底部」浮标。
+  （**2026-09-26 第五轮已补真机首测**：这一轮的两个 bug 已在设备上实测修好。**第六轮再补服务模式对照**：侧栏实时化原来是
+  `$events` 握手缺 `supportOriginPort` 而根本没连上 —— 修好后已在设备上测通「秒冒出 / 标题时间实时刷新」。）
+
+### 2026-09-26（第三轮）— 独立模式发消息不回复真因：`@ohos.net.http` 只有流式请求才派发 `dataReceive`/`dataEnd`
+
+主人报「桌面端开箱即用的模式发消息不回复，反正没看见智能体有反应，配好密钥也这样」。**不是密钥、不是模型名、
+不是网络**（拿本机真 key 直连官方 API 实测：`/v1/models` 200、`deepseek-v4-flash`/`deepseek-flash`/`deepseek-v4-pro`/
+`deepseek-chat`/`deepseek-reasoner` 全部 200），而是**请求发法选错了 API**：
+
+- **根因（源码实锤，不用猜）**：ArkTS 的 `@ohos.net.http` 只在**流式请求**下派发 `dataReceive` / `dataEnd`。
+  `communication_netstack` 里 `HttpExec::OnWritingMemoryBody` 与 `ProcessResponseBodyAndEmitEvents`
+  都以 `context->IsRequestInStream()` 为前提才 `SetTempData` + 投递 `OnDataReceive`，`ON_DATA_END`
+  更是只在 `AsyncWorkRequestInStreamCallback` 里发出（`http_exec.cpp`，`if (context->IsParseOK() && context->IsExecOK())` 分支）；
+  而 `EnableRequestInStream()` 只被 `http_module.cpp` 的 `requestInStream` 调用。
+  ⇒ 旧代码用 `req.request(...)` 发 SSE：**HTTP 200、`resp.result` 里躺着整段回答，但一个字节都到不了回调**，
+  而且非 200 才报错的判据也不成立 ⇒ 既不显示内容也不报错 = 主人看到的「发出去没反应」。
+- **修法**：`service/DshApiClient.ets` 的 `DeepSeekClient.chat()` 改用 `requestInStream`（promise 回响应码，
+  正文只走事件）；收尾统一成一个 `settle(err, flush)`（`finished` 闸门保证只生效一次）；**非 2xx 用自己攒的原文报错**
+  （流式模式没有 `resp.result`，错误详情只能自己记）；**HTTP 200 却一个数据块都没有 → 明确报「服务端没有返回任何内容」**
+  （把「静默假成功」变成能看见的失败）；用户点「停止」/ 开新回合走 `cancelHook` 按**正常结束**收尾（不再把主动中止
+  报成「请求失败」）；非 SSE 端点（忽略 `stream:true`、整段 JSON 返回）走 `completionText` 兜底；
+  读超时 300s → **600s**（netstack 把它当 curl `CURLOPT_TIMEOUT_MS` = 整条响应总时限，长思考容易顶到）；
+  另加 `DshDirect` 的 hilog（首块到达 / 完成字数与耗时 / 失败原因），下次真机再出问题不用再盲猜。
+- **顺带**：SSE 解析抽成静态方法（`frameBoundary` / `frameText` / `streamText` / `completionText`），
+  既能被收尾复用，也能被脚本直接喂真流固件；`data:` 不带空格也认，一帧多行 `data:` 按 SSE 规范拼接。
+- **防回归**：新增 `scripts/direct-mode-check.mjs`（**32 项**：静态契约 + 把 `.ets` 里**真的**解析函数抠出来
+  （`node --experimental-strip-types` 剥类型直接跑），喂**官方 API 抓下来的真实 SSE 固件**，按 1/2/3/4/5/7/13/64/999
+  字节任意切块（含多字节汉字被劈开）、keep-alive 心跳帧、`[DONE]`、无尾空行的残帧、非 SSE 整段 JSON 兜底）。
+  这个脚本当场抓到我这轮自己写的边界错（`lastIndexOf('\n\n')` 返回 -1 时 `-1 + 2 = 1 > 0`，
+  会把首字符当帧切出去 → 整条流全废）。`scripts/desktop-shell-check.mjs` 同步加 1 项守门 → **33/33**。
+- **出包**：release 未签名 HAP **744,701 B**（`ets/modules.abc` **689,676 B**，包内可查到 `requestInStream` /
+  `frameBoundary` / `DshDirect` 字符串），sha256 `03e5a3622b013d810870ab79012cc69c07033a52ca920a24e4aa6ee7c8528456`，
+  `client/dist/` 与 `~/Download/dsh-harmonyos-client-1.0.0-release-unsigned.hap` 各一份。
+- **仍未真机验证**：`hdc list targets` 依旧为空（无设备），修好的判定依据是「netstack 源码 + 真流固件回归」而不是真机截图；
+  主人装机后若还不动，请把 `hdc shell hilog -T DshDirect` 的内容贴回来，日志里会直接写首块/完成/失败。
+
+### 2026-09-26（第二轮）— 左上角 logo「重影」真因：ArkUI 给每个 `Path` 描两遍边（缺省 `strokeWidth` = 1vp 黑）
+
+主人反馈「左上角 deepseekharness logo **还是**重影、不清晰」。上一轮修的是「同一头鲸鱼画两遍」，这次是**另一个**、
+更底层的原因——品牌几何本来就逐字节来自上游 `BrandWordmark.tsx`，问题出在 ArkUI 的画法：
+`DrawingPainter::DrawPath`（`arkui_ace_engine`）对**每个** `Path` 固定做两遍绘制，`SetPen()` 只在显式
+`strokeWidth(0)` 时才返回 false 跳过一次；不写就当默认值 `STROKE_WIDTH_DEFAULT = 1.0_vp` +
+`GetStrokeValue(Color::BLACK)` ⇒ **先用 brush 填色，再用黑色画笔沿着轮廓再描一圈**。字号越小越致命：
+品牌标只有 30vp 高、"deepseek" 笔画约 2 个 viewBox 单位宽，1vp 黑描边吃掉近一半笔宽 ⇒ 观感就是重影 + 发虚。
+
+- **修法（不是"描边调细"，是关掉第二遍绘制）**：`scripts/gen-harmony-ui-assets.mjs` 给所有填色字形
+  （`emitIcons` 填充分支 + `emitBrand`/`emitBrandFull` 的每个 `Path`）补 `.strokeWidth(0)`；手写的
+  `common/Brand.ets`（`FishMark`）与 `view/InputBar.ets`（发送箭头）同步补上。描边字形本来就有显式
+  `strokeWidth`，不受影响——这也解释了为什么受损的只有品牌字标、HARNESS 徽章里的字、发送箭头和少数实心图标。
+- **防回归**：`scripts/desktop-shell-check.mjs` 新增 3 项（`Icons.ets` 里 `.commands(` 数 == `.strokeWidth(` 数；
+  `Brand.ets`/`InputBar.ets` 每个 `.fill(` 的属性链里必须有 `.strokeWidth`）→ **32/32** 全绿。
+- **自查图**：`scripts/svg-preview.py` 新增 `--scale`（放大看细节）与 `--pen`（复现 ArkUI 的默认黑 pen 第二遍绘制），
+  同一份官方几何渲染两次即见差异 —— `docs/assets/brand-strokeWidth0.png`（现在，干净）vs
+  `docs/assets/brand-arkui-default-pen.png`（修前，笔画外一圈黑 = 重影）。
+- **出包**：release 未签名 HAP **742,569 B**（`ets/modules.abc` **687,544 B**），sha256 `4a982689f659f8c907e4cb7fc81b455d39d649f7e3a44b3408d9566e4f5605e3`，`client/dist/` 与 `~/Download/dsh-harmonyos-client-1.0.0-release-unsigned.hap` 一致；`ark_disasm` 反汇编核对 `strokeWidth(0)` 调用点 **87 处**（85 个填充字形 + `FishMark` + 发送箭头）。真机仍未验证（`hdc list targets` 为空）。
+
+### 2026-09-26 — 鸿蒙桌面端：独立模式开箱即用（内置对话模式）+ 输入行四枚胶囊 + 模型胶囊真菜单 + 品牌重影修复
+
+主人反馈四件事：①「桌面端还是要连本地服务，但连不上」；②「工作区选择与对话模式选择可以放在工作区权限旁边」；③「发送键左边那个对话模式按钮有 bug，点一下直接打开设置」；④「左上角 deepseekharness logo 重影」。逐条落定：
+
+- **连不上的真因 = 登录用 303 拿 cookie 的方式错了**（不是服务没起）。dsh 的 `GET /` 在无 cookie 时回 **303 See Other** + `set-cookie: dsh-auth-*`，带上这枚 cookie 再请求才 200；而 `@ohos.net.http` 默认跟随重定向，跟随后就拿不到那次 `set-cookie` → 后续所有 RPC 401 → 在客户端表现就是「连不上」。修法：`service/DshApiClient.ets` 的 `login()` 加 `maxRedirects: 0`（API 23+；本 SDK **没有** `followRedirects`，实测编译报错），并新增大小写不敏感的 `headerValue()` + `resp.cookies` 兜底。curl 实测链路：`GET /` 303+cookie → 带 cookie `POST /api/session/list` 200 → `ws://…/api/remote.mux` 握手 **101**。
+- **独立模式（`direct`）真·开箱即用**：新增 `scripts/gen-client-presets.mjs`（零依赖、带 `--check`）从仓库 `presets/*/{preset.yml,agent.cordis.yml}` 生成 `rawfile/presets.json`（8 套模式的 id / 中文产品名 / 说明 / persona 系统提示），随 HAP 分发；新增 `common/PresetCatalog.ets` 读取（读不到回落 `Constants.BUILTIN_PRESETS`，绝不阻塞启动）。独立模式下对话模式胶囊列的就是这 8 套内置模式，选中即作为每次请求的 `system` 提示（`{{model}}`/`{{cwd}}` 占位会替换）——**不需要 dsh 服务，也不需要服务端 `agentPresets/list`**。设置面板里独立模式新增「接口地址」（默认 `https://api.deepseek.com/v1`，OpenAI 兼容），API Key + 模型 + 地址三者只存本机；文案统一为「独立模式（内置，开箱即用）」/「dsh 服务模式」。
+- **四枚选择器并排进输入行**（主人点名）：`view/InputBar.ets` 工具排改为 Flex 换行 —— `+` 圆 → **工作区权限** → **工作区** → **对话模式**；原先挂在 hero 卡上方的 `heroWorkspaceRow()`（工作区 + 对话模式两枚）整体删除，`view/ChatView.ets` 相应精简。三枚胶囊保留「不可用不隐藏、只置灰 + 写清原因 + 菜单里留『切换到 dsh 服务模式…』」的既有约定。
+- **修掉「对话模式按钮点一下直接开设置」**：那是模型胶囊（`conversation.input.model` 座位）被误接到 `onOpenModelSettings` 上。现在它是真 `bindMenu(modelMenu())`：候选列表打 ✓ 标当前，选中即切（独立模式改本地并保存；dsh 服务模式走 `session/selectModel` + 刷新会话列表）；设置入口降级成菜单**末行**的「模型与 API Key…」/「模型与连接设置…」。模型候选：独立模式 = 内置模型 id，dsh 服务模式 = `session/modelCatalog` 的 `provider/model`（新增 `DshApiClient.modelCatalog()` / `selectModel()`，并让 `session/list` 的 `modelSelection` 投影回填当前模型，`modelLabel()` 不再拿预设冒充模型）。
+- **左上角 logo 重影 = 同一头鲸鱼画了两遍**：生成器原先取 `includeMark=true` 的 182 宽字标（自带鲸鱼），`view/Sidebar.ets` 品牌排又另画了一个 `FishMark`。修法：`scripts/gen-harmony-ui-assets.mjs` 改为 `parseBrandParts()`，输出两个 @Builder —— `IconBrandWordmark`（viewBox `26 0 156 24`，只有「DeepSeek HARNESS」+ 反色徽章）与 **`IconBrandFull`**（viewBox `0 0 182 24`，鲸鱼 + 字标一体）；侧栏品牌排改用**单幅** `IconBrandFull`，折叠轨道仍只用 `FishMark`（那里本来就只画鲸鱼，不是重影）。隐藏系统装饰栏时品牌排整排不渲染（`hideBrand`），避免和自绘菜单栏打架。**⚠️ 这条只解决"鲸鱼出现两次"；主人装机后仍报"重影不清晰"，真因是 ArkUI 给每个 `Path` 多描了一遍默认黑边 —— 见上一条 2026-09-26（第二轮）。**
+- **出包**：release 未签名 HAP **739,841 B**（`ets/modules.abc` **684,816 B**），sha256 `2aa4ddc73d58dd12b8f9ba7c2ab678931af0a4910b9f135eafb274f1b6159774`，`client/dist/` 与 `~/Download/dsh-harmonyos-client-1.0.0-release-unsigned.hap` 一致。校验：`desktop-shell-check.mjs` 29/29、`gen-harmony-ui-assets.mjs --check` 5/5（令牌 181 · 字形 94）、`gen-client-presets.mjs --check` 通过、ArkTS 零错误（仅剩 1 条已知无害 WARN），并核对包内含 `rawfile/presets.json` 与新增文案。**真机仍未验证**（`hdc list targets` 为空）。
+
+### 2026-09-26 — 首页会话入口修复：工作区选择 / 工作区权限 / 对话模式，输入卡只留一张
+
+主人反馈「首页有两个对话输入口，没有工作区选择按钮，没有工作区权限选择，对话模式也选不了」。四个问题同源：上游的会话入口三件套（工作区胶囊、权限胶囊、对话模式胶囊）**全挂在 hero（空会话）相位**，而鸿蒙端只抄了 hero 的标题，把三个选择器丢了，还在列尾常驻了第二张输入卡。
+
+- **根因**：① `view/ChatView.ets` 的 hero 相位渲染了一张 `InputBar`、列尾又常驻一张 → 空会话时同屏两张；② 旧「工作区行」只是一枚调 `pickWorkspaceDirectory()` 的死按钮，没有任何选择；③ 权限只是被动文本、对话模式也是被动文本（`agentPresets/list` / `permissionPresets/catalog` 根本没接）。
+- **对齐上游**（真源 `ui-conversation/src/client/skeleton/{ConversationContent,InputBar,EmptyHero}.tsx` + `ConversationRoot.module.css`）：全列**唯一**输入卡（`composer(true|false)`，hero 相位 = hero chrome + 工作区行 + 卡，有消息 = 正文 + 同一张卡；全客户端只剩一处 `TextArea`）；`heroWorkspaceRow` = 工作区胶囊（`bindMenu` 列会话 `cwd` +「选择文件夹…」→ `DocumentViewPicker`，标签取目录末段）+ 对话模式胶囊（菜单列 `agentPresets/list` 并剔除 `broken`，首个回合后锁定）。
+- **工作区权限胶囊**（上游 `conversation.input.permission` / `ui-permission-presets` 的 `PermissionSelect`）：输入卡工具排里，权限字形 + 显示名 + chevron，菜单取自 `permissionPresets/catalog`，写入走 `commands/execute` 的 `/permission <preset>`（与网页端同一路径）；`danger-full-access` / `auto` 先弹**风险确认**（自绘 `DesktopPermissionRiskPanel`，逐条沿用上游 `RiskConfirmation` 文案，勾选「我已了解风险」才能启用）。
+- **显示名规则**（`Constants.permissionLabel()`，对应上游 `displayPermissionPreset`）：`read-only`→仅可查看、`workspace-write`→工作区内修改、`danger-full-access`→完全权限、`auto`→`Auto review`（+ `EXP` 上标）；其余部署名按上游 `displayPresetName` 转 Title Case。**机器值只用于菜单比对与写协议**，显示名绝不回写。
+- **协议侧更新**（0.1.6 typert gateway，本机实测）：`/api/events.mux`（SSE）与 `agentPreset.list`/`host.describe` 已下线 → 改为 cookie 登录（`GET /` 回环拿 `dsh-auth-*`，落盘复用 + 401 自动重登一次）+ WebSocket `/api/remote.mux`（`session/follow`：`snapshot` / `event` / `assistant-stream` 三类下行帧，断线指数退避重连并重订在跑的流）+ `agentPresets/list`、`permissionPresets/catalog`、`commands/execute`。
+- **直连模式**：内置 DeepSeek API 下没有工作区/权限概念 —— 权限胶囊置灰并写清原因，工作区/对话模式菜单顶部加一行禁用说明，三个菜单里都放一条可点的「切换到 dsh 服务模式…」（等价于设置里的连接模式切换），入口不隐藏、也不留死路。
+- **出包**：release 未签名 HAP **660,589 B**（`ets/modules.abc` **638,368 B**），`client/dist/` 与 `~/Download/dsh-harmonyos-client-1.0.0-release-unsigned.hap` 各一份。校验：`gen-harmony-ui-assets.mjs --check` 5/5（令牌 181 · 字形 94）、`desktop-shell-check.mjs` 29/29、ArkTS 零错误（仅剩 1 条已知无害 WARN），并核对包内 `ets/modules.abc` 含新增文案。**真机仍未验证**（`hdc list targets` 为空）。
+- 同日更早的两处小 bug（窗口几何 px/vp 混用、「窗口拖不小」；左上角品牌标偏小 + 鲸鱼画两遍）记录在本节下面 2026-09-25 条目末尾。
+
+### 2026-09-25 — 鸿蒙桌面端适配：扒官方 Electron 壳源码 + 原生 ArkTS 桌面壳落地
+
+官方桌面端（`deepseek-ai/deepseek-harness` 的 `apps/desktop`）是 Electron 薄壳，鸿蒙装不了（发布目标只有 mac/win，且 Electron/`koffi`/`node-pty` 在鸿蒙全部加载不了）。本次把它**拆开对照**，再用 ArkTS 把壳层重写一遍：
+
+- **源码归档**：新增 `desktop-upstream/`（`apps/desktop` + `apps/desktop-host`，456 文件 / 6.2 MB，MIT），记录仓库、分支（`master`，不是 `main`）、提交 `477b4f42`、版本 `0.1.7-rc.2`、抓取时间与一键刷新命令；含上游 `LICENSE` 与 `THIRD_PARTY_NOTICES.md`。
+- **架构剖析**：新增 `docs/DESKTOP-SHELL-UPSTREAM.md` —— 进程模型（壳 / 渲染进程 / RunAsNode Host / 内置浏览器视图）、`dsh-app://app/` 协议与 cookie 转发认证、端口 19387 与 `$DSH_HOME/profiles/desktop` 独占、25 条 IPC 面、菜单与右键菜单、`keybindings.json` 设备级偏好、自更新状态机与 10 min/1 h/±20% 调度、崩溃与恢复面，并给出「哪些能移植」的结论。
+- **适配落地**（`client/`，全部为新增文件，未改动既有聊天链路）：
+  - `desktop/DesktopShellContract.ets` + `resources/rawfile/desktop-shell.json`：把上游写死的常量（窗口 1280x820/最小 520x600、更新 600000 ms/3600000 ms/0.2、端口、协议版本、菜单树、快捷键表）变成**单一事实来源**，运行时读取，读失败回落内置默认值并说明原因。
+  - `desktop/WindowGeometry.ets` + `entryability/EntryAbility.ets`：窗口几何记忆与恢复（夹回屏内）、`setWindowLimits` 最小尺寸、400 ms 合并落盘；用 `windowStage.on('windowStageClose')` 拦截关闭 → 页面确认 → `terminateSelf()`，未就绪时不拦截（不会把窗口卡死）。
+  - `view/DesktopMenuBar.ets`：自绘应用菜单栏 + 下拉层（结构取自契约，快捷键提示由 `ShortcutRegistry` 生成，避免「菜单写着 Ctrl+W 其实没绑」）。`Ctrl+W` 关闭确认、`Ctrl+R` 重连、`F11` 全屏走 `keyboardShortcut()`。
+  - `view/DesktopDialogs.ets`：关于面板（客户端版本/适配基线/上游提交/Host 协议版本/契约来源）、退出确认（沿用上游「任务会中断 / 定时任务不跑」两套文案）、更新面板（同一状态机文案 + 技术详情）。
+  - `service/DesktopUpdateService.ets` + `desktop/UpdateFeed.ets` + `desktop/UpdateSchedule.ets`：读**同一份**官方 feed（`dsh-desk/feeds/<target>/nightly.yml`）、自己实现 semver 比较（含 `-rc.N` 预发布规则）、逐条照搬上游调度语义（完成才计周期、手动与自动合并同一次飞行请求、失败指数退避 + 抖动、`dispose` 后不重排）；只做「发现新版本」，安装引导到官网。
+  - `desktop/DesktopDirectoryPicker.ets`：`DocumentViewPicker` 文件夹选择，并发请求合并成一次（对应上游 `WeakMap` 去重）。
+  - `desktop/ShortcutRegistry.ets` + `desktop/DesktopPrefs.ets`：设备级快捷键偏好（默认定义 + 覆盖 + revision 单写者快照）与统一偏好存储。
+- **防漂移**：新增 `scripts/desktop-shell-check.mjs`（零依赖，`node scripts/desktop-shell-check.mjs`），把「契约 ↔ 上游源码快照 ↔ ArkTS 实现（文案字段/标签解析/菜单分发/契约读取/**窗口几何单位**）」对起来，当前 **29/29 通过**；负向测试（故意改坏 `defaultWidth`、或把 `resize()` 的实参换回裸 vp）都能精确指认并 exit 1。
+- **构建**：`sh ~/bin/deveco-api26.sh ~/dsh-harmonyos-pc/client assembleHap` —— **编译通过**（ArkTS 零错误），产出未签名 HAP（真机安装需 DevEco 配签名）。
+- **未签名 HAP 出包**：`client/build-profile.json5` 的 `signingConfigs` 为空数组，hvigor 走到 `SignHap` 只印 `WARN: No signingConfig found for product default` 就跳过 —— 所以产物**天然未签名**（包内无 `META-INF/`、无证书/profile）。清缓存全量 **release** 构建（34 tasks / 15 s）得 `entry-default-unsigned.hap` **284,192 B**（`ets/modules.abc` 271,972 B，含契约 `resources/rawfile/desktop-shell.json` 与 `pack.info`），另存 `client/dist/dsh-harmonyos-client-1.0.0-release-unsigned.hap` 与 `~/Download/` 各一份，sha256 `0ba5bbe388a76d3b09fd5f56e03bf3d1c10e1ff00b183b6e5bdf854c72f0b77e`；debug（不混淆、带 sourcemap）同命令去掉 `-p buildMode=release` 为 660,742 B。
+- **UI 复刻（全部取上游开源实现，不闭门造车）**：新增 `scripts/gen-harmony-ui-assets.mjs` 作为**唯一生成器**（`node scripts/gen-harmony-ui-assets.mjs` 生成、`--check` 校验生成结果与磁盘一致、`--upstream`/`DSH_UPSTREAM` 换源码根），直接把上游客户端的设计真源编成 ArkTS：
+  - `common/Tokens.ets` —— `packages/client/ui-theme/src/styles/design-platform.css` 的 **181 项 `--dsw-*` 令牌**（浅色 `body` / 深色 `body[data-ds-dark-theme]` 两套，生成时递归解析 `var()` 与 `color-mix(in srgb)`）；
+  - `common/Icons.ets` —— `ui-primitives/src/icons/{index,shared-artwork,PermissionIcon}.tsx` 的 **94 个字形**（含权限三枚 `PermissionIcon*`）逐条转成 `Shape` + `Path.commands`（viewPort 缩放 ⇒ 运行时上色、随深浅色切换；不再用只能静态着色的 `Image($r('app.media.*'))`），另含官方鲸鱼 `FISH_LOGO_PATH` 与 `BrandWordmark` 字标（含 HARNESS 反色徽章）；
+  - `common/Theme.ets` —— 尺寸/节奏常量逐条对齐 `ui-theme/base.css`、`apps/desktop/src/windows-layout.ts` 与各组件 `*.module.css`（标题栏 40、菜单 28/内边距 10/圆角 6/起始 x 48（收起 84）、侧栏 280↔56、会话头 76、输入卡圆角 28 上限「列宽+32」、气泡圆角 20 内边距 10/16、会话行 32/工作区行 34、设置面板 800×800 + 188 导航…），不发明新的视觉值；
+  - 视图层重写：自绘 Windows 标题栏（左端 x=12 的开合控制盒 + 收起时 x=48 的新建会话，与上游 `preload-menu.ts` 内联 CSS 同一套几何）、三栏骨架（主列左上 16 圆角）、侧栏（品牌排 40 / 品牌鲸鱼+字标 30 / 新建会话 38 / 会话行 32 / 设置入口 42）、空会话 HeroShell（鲸鱼 34 + 26/32 标题 + 预览徽章）、输入卡与消息气泡、设置面板（外观立方 / 字号 stepper）；应用图标、入口图标与启动图统一改为上游 `apps/desktop/resources/icon-windows.svg`（生成时剥掉 `filter`、把 `linearGradient` 折成实色、把 `transform` 烘焙进坐标 —— ArkUI 的 SVG 解析对这三样都不保证），原来的手绘占位图已删除。
+  - 顺带修掉两个真问题：① 深浅色/字号原先只写进 AppStorage 而**没人订阅**（`Theme.palette()` 直读 AppStorage 不建立依赖）→ 各组件改成 `Theme.palette(this.dark)` 显式吃 `@StorageProp`，页面用 `@State dark`，并由 `EntryAbility.onConfigurationUpdate` → eventHub 驱动「跟随系统」即时生效；② 侧栏品牌排的折叠开关原本是**常亮**的 hover 填充方块，改为默认透明 + 悬停填充，并补回上游各排/菜单项的 hover 反馈。
+  - 重新出包：release 未签名 HAP **595,373 B**，sha256 `a83adf27c72ecec1e96d0221ee857694847da134035c4bdad7d64a6dbe9f963e`（`client/dist/` 与 `~/Download/` 各一份；体积增长来自 181 项令牌 + 94 个字形 + 官方 1024 图标矢量数据）。
+- **顺带修掉的构建阻塞**：`module.json5` 新增 `definePermissions` 显式声明 `ohos.permission.USE_AI`（`system_grant`/`system_basic`）。HarmonyOS 26(API 26) SDK 的预定义权限表里没有 `USE_AI`，`PreBuild` 直接报 `00303221`；声明后构建通过，权限语义与官方定义一致（仍需 `system_basic` APL 签名才会真正授予）。
+- **限制**：鸿蒙端的更新**只发现不安装**、编辑菜单**不注入按键**、**没有托盘**（关闭→确认+最小化）、`restartAppHost` 改为提示到终端重启 —— 四条均已写进上文《限制》章节。
+- **主人反馈的两处小 bug（2026-09-26 修）**：
+  - **「窗口无法缩小」= 窗口几何单位混用**。官方文档（`arkts-apis-window-Window.md` / `arkts-apis-window-i.md`）明确：`resize()`/`resizeAsync()`/`moveWindowTo()` 的参数、`getWindowProperties().windowRect`、`windowSizeChange` 回调的 `Size`、`WindowLimits` 的 min/maxWidth/Height **全部是 px**（只有 API 22/23 的 `SizeInVP`/`RectInVP`/`getWindowLimitsVP` 才是 vp）。原实现把「px 当 vp」的几何值又当 px 传给 API → 每次重启窗口都按 `density` 缩一半、最小尺寸夹住后永久停在 520x600（用户视角 = 拖不小、位置还会往左上角漂）。修法：落盘/解析/夹取一律 vp，调用窗口 API 时统一走 `WindowGeometry.pxFromVp(vp, density)`，`persistGeometry()` 用 `fromPixelRect()` 换算；落盘格式加 `v:2` 版本号，旧格式（px/vp 混用期的脏数据）整条丢弃回默认几何，不再靠猜。同时 `setWindowLimits` 的 min 取「契约最小值 vs 显示器可视区」的较小者、max 取显示器，保证窗口永远留在屏内可拖。
+  - **左上角 logo 偏小 + 一头鲸鱼画两遍**。上游 `SidebarRoot` 给 `sidebar.brand.mark` 的 size 是 24，而官方插件 `ui-brand-official` 用的是 `BrandWordmark includeMark={false}`（viewBox `26 0 156 24`，只有「DeepSeek HARNESS」字标）；生成器原先取了 `includeMark=true` 的 182 宽版本，于是 `FishMark` 与字标自带的鲸鱼**同时出现**。修法：生成器改为先剥 `<defs>`、再剥字标里那组带 `dsh-wordmark-whale-clip` 的鲸鱼，输出 `viewPort {26,0,156,24}`、宽度 `size*156/24`；`Theme.BRAND_MARK_SIZE`/`BRAND_NAME_HEIGHT` 按反馈从上游 24 放大到 **30**（品牌排 40 高留 10 留白，锁排宽 30+8+195+4=237 ≤ 侧栏可用 252，32 就正好贴边故为上限）。
+  - 出包：release 未签名 HAP **598,357 B**（`ets/modules.abc` 576,136 B），sha256 `d1cef772a8bd9e9b15fdb357edb57164fbd06365663cce359b0fc5361556d3d6`（HAP 是 zip、包内文件带 mtime，**同源码两次构建 sha 不同**，只比对体积），`client/dist/` 与 `~/Download/` 各一份。校验：`gen-harmony-ui-assets.mjs --check` 5/5、`desktop-shell-check.mjs` 29/29、ArkTS 仅剩 1 条已知无害 WARN。**真机仍未验证**（`hdc list targets` 为空）。
+
+### 2026-09-16 — 修「历史会话带 reasoning 块 → messages 协议整轮失败」
+
+- **现象**：升级到 0.1.6-alpha.1 后，某些会话每一轮都直接失败，UI 提示「本轮运行失败」，错误文案 `DeepSeek Messages cannot represent user/tool-result content reasoning`（`UNSUPPORTED_CONTENT`）。
+- **根因**：0.1.6 给 `dsh-llm-deepseek` 加了 `protocol: chat-completions | messages` 且**默认 `messages`**（Anthropic 风格、硬校验）；其序列化器只允许 `text`/`image`，遇到别的块类型直接抛错。而本机历史里有一批 user 消息内嵌 `reasoning` 块——来源是 **0.1.3-alpha.2 的 `dsh-subagent`**：当年的 `createSettlementMessage` 把子代理终态输出的全部内容块（含思考）整体搬进了「Background subagent … finished」结算通知，0.1.6 已改成只取 `text`，但旧会话数据还在。升级前走 chat-completions（`flattenText` 只取 text，非 text 静默丢弃），所以从不报错。
+- **修复**（`patchMessagesSkipNonText()`，纳入 `patchAll()` 幂等重打）：把 messages 协议序列化器里 `if (block.type !== "image") return unsupported(...)` 改成 `return []`，**静默跳过非 text/image 块**，语义与 chat-completions 对齐。只影响 user/`tool-result` 内容；assistant 侧分支与 system 消息校验未改。
+- **验证**：补丁前后 A/B 对比同一份带 `reasoning` 块的历史——打前抛 `UNSUPPORTED_CONTENT`，打后正常产出请求体且原文 text 保留；随后重启 dsh web，会话可继续。
+
+### 2026-09-15 — 跟进官方 0.1.6-alpha.1（本机可用性修复；侧边栏终端暂不可用）
+
+官方 `0.1.6-alpha.1` 已在本机 `~/dsh-test` 升级完成（`~/bin/dsh-update.mjs` 幂等重打 13 项补丁）。升级当天 web 起不来、模型调用 404，逐项定位后修复如下：
+
+- **flock 内联 shim（compat-loader）**：0.1.6 把 session 写租约从 `fs-ext` 换成 `@deepseek-ai/node-addon-system/flock`（无 openharmony-arm64 预编译包，`loadBinding` 直接解析失败）。loader 新增 resolve 规则，把该 specifier 换成 no-op shim —— 官方注释写明单进程部署可把 flock 置为立即成功（browser worker 同款语义），本机单进程运行，进程内写占用声明已足够互斥。
+- **`node:util` 兼容层**：0.1.6 的 `dsh-subprocess-local` runner 用了 node ≥23.6 的 `util.getSystemErrorMessage`（v22.7 没有）。loader 新增 `node:util?compat` 包装（`export * from 'node:util'` + errno→libuv 文案表 + 名称兜底）。
+- **配置回归：`llm-deepseek.baseURL`**：0.1.6 起 `baseURL` 显式给出即按原样使用（0.1.3 会按 protocol 补 `/anthropic` 前缀），messages 协议的根是 `https://api.deepseek.com/anthropic`。本机 settings.yaml 原写死 `https://api.deepseek.com` → 每次请求 404（`DeepSeek Messages request failed (404)`）。改为留空走 protocol 默认，切到 chat/completions 时也不会写死错误前缀。
+- **插件回归：`dsh-huawei-local-llm`**：0.1.6 的 `PiAiAdapter` 起读 `profile.modelErrors`，手工构造的 profile 缺该字段 → `session/modelCatalog` 探针抛 `Cannot read properties of undefined (reading 'get')`，provider 落入 failures 列表；补 `modelErrors`/`catalogError`/`reasoning` 三个字段。
+- **`dsh-subagent` 遗留 descriptor v2 身份投影**（`patchLegacySubagentIdentity()`）：0.1.3 起身份投影只认 descriptor version 3，2026-08 开发期会话写的是 version 2 → Web 侧按 subagent 地址打开报 corrupt；补丁只对 identity（mode/label）做 v2 宽容解析，不动续跑/恢复语义。
+- **侧边栏终端暂不可用（官方新功能）**：0.1.6 新增 host `dsh-api-terminal-controller` + client `ui-sidebar-terminal` + `ptc-runtime`，三者都依赖 `subprocess` 服务 = `@deepseek-ai/dsh-subprocess-local`；该包顶层静态 `import node-pty`（pty 分配）与 `koffi`（FFI execve），鸿蒙禁 dlopen 非受信 ELF 且无 openharmony-arm64 预编译包 → 模块加载即 `Cannot find the native Koffi module`。`harmony.patch.yml` 显式禁用这三行（宿主与客户端一起），boot 不再遗留「did not activate」待激活告警。待上游提供纯 JS/独立 pty 实现，或鸿蒙放行原生模块后再启用。
+
+**升级后实测**：boot 无 error（仅剩已知 `@napi-rs/canvas` / UV 提示）；`settings/describe` 19 个命名空间（含 `llm-pi-ai`）；`session/modelCatalog` 7 个 provider 全部 routable 且 `failures: []`；`session/list` 返回 280 条；深历史会话（turn 285）`session/page` 可正常读；新建会话 `session/prompt` → 模型正常回包、`turn/end reason=completed`。
+
+### 2026-09-09 — 修复 0.1.3-alpha.2 升级后「web 无法向会话发消息」（resume 链 4 处回归）
+
+升级后打开/续聊既有会话都会在 resume 中途失败，表现为 web UI 发送消息无效。逐层定位并修复：
+
+- **`patchSessionVerify()` 作用域 bug（致命）**：补丁插入的 `verifyCurrentFile` 回调引用作用域外的 `internals`，任意 v0 会话 resume 即抛 `ReferenceError: internals is not defined`；改为引用模块级 `defaultGenerationRuntime.verify`。
+- **迁移发布硬链接 EPERM（致命）**：v0→v2 世代按需发布用 `fs.link()`，鸿蒙 `/storage` 挂载禁止硬链接（目标缺失也 EPERM）；新增 `patchMigrationPublish()` 幂等补丁，link 失败且确认目标缺失时改 `rename` 原子发布（与 `dsh-fs-local` 既有兜底一致）。
+- **`dsh-pet` 0.2.6 冷启动崩溃**：host 入口顶层 import `@electron/get`/`@electron-internal/extract-zip` 原生绑定，鸿蒙 dlopen 失败且无 musl prebuild → 插件树加载崩溃（watchdog 重启循环）；`harmony.patch.yml` 禁用 `pet` 行（0.2.0 旧版可正常加载，上游纯 JS 化后可再启用）。
+- **agent-presets persona 键位迁移**：0.1.3-alpha.2 的 `dsh-persona` 把配置键 `text` 改为必填 `prefix`；全部 preset（harmony-chat/deveco/liangshen 等）按旧键编写导致 preset mount 失败，统一迁移为 `prefix`。
+
+
+### 2026-09-09 — 客户端沉浸光感/端侧本地 AI + huawei 系插件随仓库分发
+
+- **`plugins/dsh-huawei-devdocs`、`plugins/dsh-huawei-local-llm` 随仓库分发**：源码与运行实例 `plugins-src` 逐字节一致（含 `(_args, value)` 渲染签名修复、守卫消息去 `form:"guard"`、MIT LICENSE 与测试夹具）；`dsh-hm-update.mjs` 自动部署 `plugins/` 下的 profile 级插件，无需单独安装。
+- **鸿蒙客户端接入端侧本地 AI**：`module.json5` 声明 `ohos.permission.USE_AI`（system_basic）并新增权限理由文案；签名与白名单的三种路径见 `docs/LOCAL-AI-USE_AI.md`。
+- **客户端 UI 沉浸光感版**：主题令牌新增玻璃面层/细光边/品牌渐变；设置面板改 `bindSheet` 半模态（MEDIUM/LARGE detents + 毛玻璃 + 拖条），侧栏/聊天/输入/消息同步玻璃化。
+
+### 2026-09-09 — 跟进官方 0.1.3-alpha.2（历史会话迁移兼容 + loader 分帧压缩）
+
+dsh 官方更新至 `0.1.3-alpha.2`（2026-09-08 发布，本机 dsh-test 已升级）。官方把 released-v0 会话冻结为只读校验并新增 v0→v2 世代迁移，对开发期产生的旧日志校验过严，升级后出现「全部会话历史加载失败 / 模型无法加载」：
+
+- **worker.cjs 迁移校验改主线程（`patchSessionVerify()`）+ CJS zstd 孪生 `compat-loader-cjs.cjs`**：官方迁移校验默认起 worker_threads，worker 用 CJS `require` 拉 ESM 包，node v22.7.0 不支持 `require(esm)`；改回主线程 `verifyCurrentGeneration`（同一模块、fzstd 同步解码可用），代价仅是迁移校验不隔离线程。
+- **v0→v1 冻结校验兼容补丁（新增 `patchSessionFormat()`，纳入 patchAll 幂等重打）**：只放行两类历史遗留数据——插件 `source.form:"guard"`（prompt-antivirus / huawei-devdocs 守卫消息，非 released v0 表单）与 `subagent/descriptor` version 2（deepseek-harness 开发期会话）；其余仍按上游封闭清单校验。全量 251 个 v0 会话用官方 format catalog 迁移探测：修复前 107 个拒绝 → 修复后 0 个失败。
+- **compat-loader 压缩分帧**：WASM zstd 对单帧 >4~8MB 输入直接 OOM，历史会话迁移发布会把整段日志一次性压缩，20MB+ 大会话必然 abort；`createZstdCompress` 改按 2MB 分帧压缩后拼接，读取端按帧独立解码，输出语义与单帧等价。
+- **`harmony.patch.yml` 追加禁用 `open-in-app` + `ui-open-in-app`**：web-app bundle 新增 open-in-app(host) 依赖 `dsh-subprocess`/`dsh-native-command` 原生 spawn（鸿蒙不可用）→ host 永远 pending → 插件树整棵加载失败。
+- **插件不再写非标准 `source.form`**：prompt-antivirus / huawei-devdocs 守卫消息去掉 `form:"guard"`（source 仅保留 `kind` + `plugin`），避免新会话继续向日志写入 released 校验不接受的自定义表单。
+
+验证：dsh 重启后 3080 正常、无 OOM；251/251 会话通过官方迁移链读到 v2。
+
+### 2026-09-03 — 跟进官方 0.1.2-rc.1（9 处补丁锚点全命中 + 2 个自更新器兼容修复）
+
+dsh 官方更新至 `0.1.2-rc.1`（2026-09-03 发布），本机 dsh-test 已升级并验证 web 可启动。九个 node_modules 补丁的内容锚点在 rc.1 全部命中，重打后 3080 正常：
+
+- **`ensureCompatDeps()` 弃用 npm、改直装**：0.1.2-rc.1 闭包不再含 `fzstd`/`zstd-codec`（compat-loader 依赖）。此前用 `npm install` 补齐会触发 npm arborist 按 `~/dsh-test/package.json` 里过期的 `^0.1.1-rc.2` 重解析整棵树，把刚装好的 `0.1.2-rc.1` **降级回 `0.1.1-rc.2`** 并冲掉全部补丁（本次实测复现）。改为 registry 直装该两包自身（fetch manifest + tarball + tar 解压），零副作用；并新增 `syncPackageJson()`，升级/回滚后把 dsh 版本固化进 `~/dsh-test/package.json`，防止后续任何 npm 操作再降级。
+- **`dsh-web.sh` 升级为鸿蒙可用版 + 孤儿锁清理**：仓库内 `scripts/dsh-web.sh` 此前仍是 v24 node 旧版（鸿蒙上 V8 code-range 崩 `ENOMEM`），也没有 compat-loader / 插件市场本地镜像 / 正确的补丁定位。现同步为本机可用逻辑：默认用 deveco 自带 node v22 + `--experimental-loader compat-loader.mjs` + `--patch harmony.patch.yml` + 市场 3988 本地镜像，`NODE_BIN/DSH_DIR/PATCH_YML/PORT/LOG` 可用环境变量覆盖。新增 `clear_stale_locks()`：dsh 的 atomic-write 从不回收孤儿锁，SIGKILL/崩溃退出会留下 `~/.dsh/profiles/node_modules.lock`，下次启动即「timed out waiting for the writer lock」（本次实测）；启动前清一次，避免该死锁。
+- 验证：`@deepseek-ai/dsh` 0.1.2-rc.1（闭包 549 包），`node scripts/dsh-update.mjs patch` 全绿（credential/session/permission/attachment/cordisLoader/settingsCompat/loopbackAuth/fsLocal 重打、vision 幂等），3080 带 token 303 正常，codex-bridge / deveco-bridge / cron / peak-valley / evoresearch / cost-meter 均加载。`bridge-browser` 维持禁用（rc.1 `dsh-api-remotes` 仍未恢复 `ApiRemoteSessionNotFound`）。
+
+### 2026-09-01 — 跟进官方 0.1.2-alpha.3（fs-local 补丁 + 自更新器修复）
+
+dsh 官方更新至 `0.1.2-alpha.3`（2026-08-31 发布），本机 dsh-test 已同步升级并验证 web 可启动：
+
+- **`dsh-fs-local` 补丁纳入 `patchAll`（新增 `patchFsLocal()`）**：工作区新文件写入（`createIfAbsent`）在鸿蒙 `/storage` 对 `link()` 报 `EPERM`，且目标不存在也失败；此前该补丁不在自更新器里，每次升级重装都被冲掉、需手工重打。现按其它补丁同样的「内容锚点 + 幂等标记」纳入，升级/重装后自动重打。官方 `dsh-fs-local@0.1.2-alpha.3`（alpha.2→alpha.3 逐字节相同）均未含该兜底，已下载 tarball 比对确认。
+- **修复 `dsh-update.mjs` 的 `isUp()` 误判**：token 认证下根路径无 cookie 返回 303 跳转，`fetch()` 跟随跳转却不跨跳保留 cookie，最终仍 3xx，被误判为「未起来」导致 `install` 报错退出（实际升级已成功、服务在跑）。改为 `redirect:'manual'` 并把 2xx–3xx 都视为 up，`dsh-web.sh` 的 `is_up`（curl 任意响应）继续兜底。
+- 验证：`install` 成功后 `@deepseek-ai/dsh` 版本为 `0.1.2-alpha.3`，`fsLocal=重打`、其余补丁幂等；`node scripts/dsh-update.mjs patch` 全绿；3080 `/` 带 cookie 到 200，`codex-bridge` / `deveco-bridge` / `cron` / `peak-valley` / `cost-meter` / `evoresearch` 均加载。
+
+### 2026-08-31 — 新增 harmony-chat-monash 鸿蒙对话 Monash 学生版预设
+
+第八套「鸿蒙对话模式」预设（order 8），以 `harmony-chat-promax` 为骨架（`includeRuntimeContext:false` 关闭动态运行上下文，系统提示段全静态、DeepSeek 前缀缓存命中率高；工具集与 ProMax 完全相同：fs / 网页检索 / 委派 / 计划 / 工作流，纯 JS 无原生依赖），persona 领域化为 Monash University 学生学习场景：
+
+- **文献解读**：一句话总结与研究问题 → 背景 → 方法 → 结果 → 讨论 → 局限 → 与作业的关联；解释关键术语与统计方法（t 检验、回归、效应量等），可直接引用并给引用格式（默认 APA 7th，法律类 AGLC4）
+- **论文查重与学术诚信**：不替代 Turnitin——引导经 Moodle 上传草稿看 Similarity Report，区分合理引用与需要改写的重复文本并给改写策略；红线：代写、购买论文、未声明使用 AI、自我抄袭均违反 Student Academic Integrity Procedure
+- **作业辅助**：任务动词拆题 + rubric 对照 → 搭论证结构 → 列要点 → 审草稿逐段给改进意见；不代写整篇、不编造参考文献
+- **内置知识库**：Clayton / Caulfield / Docklands（Monash College）三校区学生服务与图书馆、全校服务（Student Academic Success / English Connect / 咨询 03 9905 3020 / Safer Community / eSolutions / Career Connect，入口 moodle.monash.edu · my.monash.edu · WES）；墨尔本交通（免费 Intercampus Shuttle、Huntingdale / Caulfield / Southern Cross 乘车指引、myki concession / ISTP / Monash Commuter Club 折扣，班次以 PTV Journey Planner 为准）
+
+### 2026-08-31 — 全局防注入 dsh-prompt-antivirus（防「上下文病毒」）
+
+把 `openclaw-prompt-antivirus`（提示注入 / mind-virus 运行时防御）的原理移植到 dsh，做成 profile 层全局插件：
+
+- **四道钩子防线**：`tools/pre-execute` 扫工具参数（高危拒绝、危险工具走人工审批）、`tools/post-execute` 扫工具结果（间接注入藏身处，block/quarantine）、`agent/pre-step` 扫进入模型前的消息（`[CRON TASK]` / `[SCHEDULE REMINDER]` / 网页检索 / 文件内容夹带的恶意指令在进入模型前被隔离）+ 每会话一次金丝雀守卫、`llm/stream` 出站消毒与金丝雀命中检测（block 模式中断输出）。
+- **三模式**：`quarantine`（默认，可原地改写的路径替换命中片段）/ `block`（更严格 + 金丝雀中断）/ `monitor`（只审计）。
+- **工具与审计**：`_antivirus_scan` / `_antivirus_status` 随会话可用；审计写 `~/.dsh/task-board/prompt-antivirus-audit.jsonl`（环形 500 条 + 文件上限 2MB，失败静默）。
+- **接入**：`plugins/dsh-prompt-antivirus/` 随仓库分发；`scripts/dsh-prompt-antivirus-install.mjs` 一键装到 web + headless profile（源码 → plugins-src + 软链 + 清单注册，幂等）；`dsh-hm-update.mjs` 自动部署 `plugins/` 下全部 profile 级插件。
+- **验证**：32 项单测 + harness 全绿（签名库全类别/严重级、中文无害文本不误报、三模式决策、pre-step 金丝雀单次注入、stream 金丝雀中断/移除）。
+
+### 2026-08-31 — 跟进官方 0.1.2-alpha.2（3 处鸿蒙补丁）
+
+dsh 官方更新至 `0.1.2-alpha.2`（2026-08-30 发布），本地 dsh-test 已同步升级并验证 web 可启动。alpha.2 重构了插件解析与设置接口，鸿蒙补丁需对应补齐：
+
+- **`cordis-plugin-loader` 内部 ESM loader 识别**：官方 `ModuleLoader.fromInternal()` 只识别 `getOrCreateModuleJob`(v2) / `getModuleJobForImport`(v1) 两种 loader 形状；鸿蒙自带 node v22.7.0 的内部 loader 两个方法都没有，判定 shape 未知 → `loader.internal = undefined` → 裸插件名退化为从 `dsh-test/node_modules` 解析，profile 里另装的社区插件全线 `Cannot find package`，dsh 直接起不来。补 `v0`（有 `import` 即 legacy loader）分类后恢复从 profile 目录解析。
+- **`dsh-settings` 旧导出兼容垫片**：alpha.2 把 `installSettingsSection` / `settingsNamespace` 从 `@deepseek-ai/dsh-settings` 移除，迁入 `SettingsProvider.installSection`。社区插件 `dsh-harmonyos-market` / `dshmarket` / `dsh-visual-plugin` / `dsh-knowledge-base` / `dsh-workstation` / `dsh-hiboard-push` 仍按旧 API 导入 → 重新导出这两个符号并委托给新 `installSection`，插件无需改码即可运行。
+- **`harmony.patch.yml` 禁用 `bridge-browser`**：该浏览器桥依赖的 `@deepseek-ai/dsh-api-remotes` 旧 API（`ApiRemoteSessionNotFound`）被官方整体重设计移除，无法低成本垫片，暂禁浏览器桥；上游适配新 API 后重新启用。
+- 验证：dsh web 在 3080 正常返回 token 认证 303/前端可访问，`codex-bridge` / `deveco-bridge`(6 工具) / `cron` / `peak-valley` / `cost-meter` / `evoresearch` 均加载。
+
+### 2026-08-30 — harmony-chat-ops 内置 cron 定时任务
+
+**`harmony-chat-ops` 常驻后台任务管家升级为完整定时任务**：
+
+- **标准 cron 定时**：新增 `cron_create`（标准 5 段 cron 表达式「分 时 日 月 星期」，支持 `@daily/@weekly/@monthly/@hourly` 快捷方式与 `JAN..DEC`/`SUN..SAT` 名称，日与星期同时受限按任一匹配）+ `cron_next`（创建前校验表达式是否符合用户意图）+ 管理工具 `cron_list` / `cron_set_enabled` / `cron_delete`；时区默认 `Asia/Shanghai`，可传 `time_zone` 覆盖。
+- **`[CRON TASK]` 触发语义**：到期投递的是不可信任务文本（非新指令），agent 空闲时按任务要求执行并归档到 `~/dsh-kb/`；任务绑定创建会话，在线准时触发、离线标记 `overdue`，恢复后只补最新一次、不回放积压。
+- **向后兼容**：旧 `schedule_create / schedule_list / schedule_delete`（after/at/every）仍可用。
+
+### 2026-08-28 — 兼容依赖防剪（fzstd/zstd-codec）+ 仓库更名同步
+
+官方 `0.1.1-rc.2` 重装验证中发现：`scripts/dsh-update.mjs` 用 npm 重装核心包时，会把不在依赖树里的 `fzstd`/`zstd-codec` 剪掉——它们是 `~/dsh-test/compat-loader.mjs`（node v22 鸿蒙运行时 polyfill）的依赖，剪掉后 dsh 启动即崩（`Cannot find module 'fzstd'`）、客户端显示 54 插件 pending。
+
+- **`scripts/dsh-update.mjs` 新增 `ensureCompatDeps()`**：`install` / `rollback` 装完核心包后自动校验，缺失即补齐 `fzstd`、`zstd-codec` 并写入 `~/dsh-test/package.json` 固化，后续官方更新不再踩。仅当本机存在 `compat-loader.mjs` 时生效，其余用户零影响。
+- **仓库更名同步**：`Entity-Him/dsh-harmonyos-pc` → `QinpanWan/dsh-harmonyos-pc`，已更新 `dsh-hm-update.mjs` 的 OWNER、README 与安装教程中的仓库地址（旧地址 GitHub 自动 301 跳转，兼容期仍可用）。
+- 鸿蒙补丁本体（`harmony.patch.yml` / `harmony-headless.patch.yml`）与五个 node_modules 补丁锚点对照 `0.1.1-rc.2` 均无需改动。
+
+### 2026-08-24 — 跟进官方 0.1.1-rc.2（鸿蒙补丁零变化）
+
+dsh 官方更新至 `0.1.1-rc.2`（2026-08-21 发布），本地 dsh-test 已同步升级并验证：
+
+- 升级：`dsh-manual-install.mjs 0.1.1-rc.2`，闭包 472 包（覆盖 3 / 保留基线 408 / 平台跳过 61），依赖树仅新增 `@types/retry`、`@types/node`
+- 五个鸿蒙源码补丁（credentials / session / permission / attachment / vision）锚点全部命中，无需改动
+- `harmony.patch.yml` 照常生效：web 启动正常、3080 HTTP 200，插件全加载（codex-bridge / deveco-bridge 6 工具 / peak-valley / evoresearch / cost-meter）
+- 历史崩溃点复查：`dsh-workflow-worker-thread` 依赖的 `@deepseek-ai/dsh-workflow` 基线完整，无预设挂载错误
+
+### 2026-08-24 — 平板端本地 Agent 方案出炉（dsh-pad v1.0.0）
+
+华为鸿蒙**平板端（tablet / 2in1）** dsh 客户端首个构建（bundle `com.dsh.harmonyos.pad`，Release 资产 `entry-default-unsigned.hap`）：
+
+- **本地 Agent 循环**：`LocalAgent.ets` 设备端完整 agent 循环，不依赖云端调度
+- **工具注册**：`ToolRegistry.ets` 本地工具注册与调度
+- **双通道**：`DeepSeekClient.ets` 直连 DeepSeek + `DshApiClient.ets` 走 dsh 宿主 API，可切换
+- **会话存储**：`SessionStore.ets` 本地持久化
+- 当前为 debug 未签名构建，安装需先开发签名（hap_installer / hdc）
+
+### 2026-08-22 — 修好读图与视觉识别（attachment-local + dsh-visual-plugin 补丁）
+
+本机实测「把图片拖进 DeepSeek Harness → 模型看见并描述」之前断在两级：图片存不下来、视觉端点未配置。
+
+- **`[补丁] dsh-attachment-local`**：鸿蒙存储对 `link()` 报 `EPERM`（Android/HarmonyOS 不支持硬链接），图片附件同一目录内发布失败 → 读图记录 `Unable to persist image attachment`。补丁让 `link` 失败改走 `copyFile(..., COPYFILE_EXCL)` 发布（`EEXIST` 竞态照旧走 sha256 完整性校验）；`syncDirectory` 对无法以只读句柄打开（EPERM/EACCES/ENOTSUP）的挂载点跳过该次 fsync。修好「read_image 能读到并持久化」。
+- **`[补丁] dsh-visual-plugin`**：① 视觉面板未配置时 `resolvedFacts()` 回退到主 DeepSeek 视觉模型——复用 `llm-deepseek`（provider）段的 `baseURL` + `DEEPSEEK_API_KEY` 与 `deepseek-v4-flash-vision-exp`，消除「`vision model is not configured`」；② `describeImage` 对自定义 prompt 时模型返回的空 `content`（PROTOCOL）重试一次，仍空则降级为「模型未返回内容」明确提示而非硬抛。修好「带针对性的 prompt 也能稳定返回视觉描述」。
+- **配套**：`settings.yaml` 在 `llm-deepseek` 后新增 `vision-bridge` 段（url=DeepSeek、model=deepseek-v4-flash-vision-exp、apiKeyEnv=DEEPSEEK_API_KEY），与代码层回退双保险且支持热重载。
+- **`scripts/dsh-update.mjs`**：新增 `patchAttachment()` / `patchVision()`（幂等、内容锚点匹配、带 `HarmonyOS patch` 标记），并入 `patchAll()` 五连校验——升级/重装后自动重打，读图不再丢、视觉不再报未配置。
+
+### 2026-08-20 — 新增鸿蒙开发大师预设（harmony-deveco）+ dev_code 委托 DevEco Code
+
+**第七套对话模式 `harmony-deveco`**（order 7，预设计数六套→七套），把 dsh 变成鸿蒙 DevEco 全链路开发 Agent：
+
+- **dev_* 工具链**：通过 dsh-deveco-bridge 直接驱动 hvigor/ohpm/hdc（纯 JS，node:child_process，无原生依赖），打通「写 ArkTS → 编译 → 装真机 → 启动」完整闭环，含 release 签名打包指引
+- **`dev_code` 委托本机 DevEco Code 代理**：deveco-bridge 新增第 6 个工具 `dev_code`——把自包含深子任务经 HTTP 委托给本机 DevEco Code（OpenCode web，127.0.0.1:4096）跑独立 agent 循环，一次一个（串行，`isConcurrencySafe:false`），model 默认 `deepseek-v4-pro`；task 必须自包含（子代理无本会话记忆）；返回带 cost/tokens 元信息供复盘
+- **麒麟 X90 软硬件协同功耗纪律**：本机 4 核 AArch64 + 32GB，多 agent 并行是最吃功耗的行为——任何时刻最多一个委托型 agent（subagent / dev_code 二选一）在跑，工具按依赖串行推进，把「深度」集中到少数真正需要的步骤（dev_code / pro 子代理），快而不燥
+- **实测闭环**：dsh 重启后 `deveco-bridge` 注册 6 工具（含 dev_code）；dev_code 端到端委托实测 4.2s / 13528 tok / ¥0.0002 返回正确回答；仓库预设与本地 `~/.dsh/.agent-presets/harmony-deveco/` 一致
+
+### 2026-08-20 — 跟进官方 0.1.0-rc.8
+
+dsh 官方更新至 `0.1.0-rc.8`（2026-08-19 发布），本仓库移植版已同步。升级要点：
+
+- **`dsh-update.mjs getLatest()` 修复 dist-tags 探测**：官方 `dist-tags.latest` 停在 rc.7，但 `0.1.0-rc.8` 已发布，导致 `npm view version` 误判「已是最新」。现改为遍历 `versions` 取数值最高版本（`rc.N` 与稳定版均按数字比较），`check` 实测 `installed = latest = 0.1.0-rc.8`。
+- **新增 `scripts/dsh-manual-install.mjs` 手动直装器**：npm arborist 在鸿蒙本机的依赖解析阶段会静默卡死（无输出、CPU 低、拖到超时，3 次实测均复现）。直装器改从 registry 元数据**递归解析完整依赖图 + tarball 直装**，对已装且满足 spec 的包保留基线、optional 依赖按 `os/cpu` 平台门控，实测 470 包闭包零缺口。已接入 `dsh-update.mjs` 的 `install()` / `rollback()`（npm 作兜底）。
+- **rc.8 依赖树变化**：54 个 `@deepseek-ai/dsh-*` 从 `^0.1.0-rc.7` 升到 `^0.1.0-rc.8`（含官方「多轮推理回传 reasoning_content」「SQLite 持久化布局优化」「Agent Teams 目录更名」「构建产物 slot 化」「pwsh 常驻 pty」等改动），并新增 `@deepseek-ai/dsh-tool-pwsh-persistent`。
+- **三个鸿蒙补丁在 rc.8 锚点全部命中**：credentials（chmod 600 跳过）、session（link→rename + `rename` import，官方 SQLite 改动未波及 JSONL 持久化文件）、permission（`ctx.shell.sandboxMode`→`ctx.fs.sandboxMode`）。
+- **实测闭环**：npm 直装 rc.8 → 重打补丁 → 重启 dsh → 3080 HTTP 200 → 插件正常加载（deveco-bridge 5 工具 / evoresearch / dsh-cost-meter）→ 七套鸿蒙预设 `agentPreset.list` 全部 `broken: 无`。
+
+### 2026-08-20 — 鸿蒙桌面客户端（ArkTS UI）+ 鸿蒙底层适配
+
+新增 `client/` 目录：基于 HarmonyOS NEXT ArkTS/ArkUI 声明式开发范式的 dsh 鸿蒙电脑（2in1）桌面客户端，hvigor 构建通过，产物 `client/entry/build/default/outputs/default/entry-default-unsigned.hap`。
+
+**与 dsh 官方 Web 前端同协议对接**（`POST /api/*` RPC 信封 + `GET /api/events.mux` SSE 流式推送），并完成鸿蒙底层适配：
+
+- **SSE 断线自动重连**：`@ohos.net.http` 流式接收，断线指数退避重连（2s→30s）——dsh 服务被 `dsh-update`/`dsh-web.sh` 重启后客户端自动恢复
+- **六套鸿蒙对话模式预设接入**：设置面板可下拉选择 `harmony-chat(-pro/-promax/-ops/-rampagemax)/harmony-kb`（`agentPreset.list`），新建会话自动带上所选预设
+- **服务启动引导**：设置面板内置 `sh ~/bin/dsh-web.sh`（node 全路径 + harmony.patch.yml + 3080）提示
+- **桌面窗口适配**：1200×800 默认尺寸、2in1 形态、深色品牌主题（DeepSeek 蓝）
+
+### 2026-08-19 — 新增鸿蒙知识库专家预设（harmony-kb）+ Obsidian 双链笔记
+
+**第六套对话模式 `harmony-kb`**，把 dsh 工作区当知识库用，预设计数五套→六套：
+
+- **分层检索问答**：先查 `笔记/kb-index.md` 命中候选再精读，索引缺失自动枚举目录生成（依赖 `@deepseek-ai/dsh-tool-list` 的 `list_dir`，安装见上文「2.5」）
+- **深度研究 / 文档整理 / 思维脑图**：网页检索 + 委派 Pro 提炼 → `研究/YYYY-MM-DD-<主题>.md`；脑图可生成 `.mm` 导入万兴脑图
+- **Obsidian 双链笔记**：按指令（如「总结这段并推送到 Obsidian」）把总结推送进鸿蒙侧载版 Obsidian vault（主目录 `obsidian/` 下含 `.obsidian` 的目录），`[[双链]]` 只挂 kb-index 已有笔记，Obsidian 自动生成反链与图谱
+- **注意**：频繁委派 Pro + 多工具调用，CPU 负载高，运行中风扇转得较狠，建议空闲时段使用
+- **实测闭环**：三处预设文件（仓库 / 内部分发 / 本机部署）逐字节一致；dsh 重启后 `agentPreset.list` 显示「鸿蒙知识库专家」broken 0、`agentPreset.read` 与仓库逐字一致（含 Obsidian 指令块）；单文件自解压 install.sh 假环境解出 IDENTICAL。浏览器黄金路径（推送到 Obsidian）待实测确认
+
+### 2026-08-18 — 恢复对话框权限预设（dsh-permission-presets 补丁）
+
+鸿蒙对话框原本没有「直接开放权限」功能——根因是 `dsh-permission-presets` 依赖 bash shell 的 `ctx.shell.sandboxMode`（硬检查），而鸿蒙禁 bash-sandbox 原生依赖导致该插件被 `harmony.patch.yml` 禁用。本仓库解法：
+
+- **`harmony.patch.yml`**：`id: permission` 改为 `disabled: false`（配合下方代码补丁）
+- **node_modules 补丁 `dsh-permission-presets`**：把 5 处 `ctx.shell.sandboxMode` 改为 `ctx.fs.sandboxMode`，inject 依赖 `"shell"` 换 `"fs"`——fs 沙箱（`dsh-fs-sandbox`，纯 JS）一直在运行，`sandboxMode` 读自 `ctx.sandboxPolicy.defaultMode`（默认 workspace-write）。对话框恢复 read-only / workspace-write / danger-full-access 三档下拉，切 danger-full-access 即放开工作区外写权限。
+- **`scripts/dsh-update.mjs`**：新增 `patchPermission()`（幂等、锚点匹配、带 `HarmonyOS patch` 标记），并入 `patchAll()` 三连校验——升级/重装 dsh 后自动重打，下拉不丢。同时补上 session 补丁的 `rename` import（2026-08-18 实测：只换调用不补 import 会 `rename is not defined` 崩溃）。
+- **验证**：`verify-permission-presets.mjs` 独立 cordis 上下文 8/8 通过（fs.sandboxMode 非 undefined、构造不抛、三档齐全、切换写对 session 事件）。
+
+### 2026-08-18 — 跟进官方 0.1.0-rc.7
+
+dsh 官方更新至 `0.1.0-rc.7`（DeepSeek 群聊发布），本仓库移植版已同步。升级要点：
+
+- **`--ignore-scripts` 绕过 koffi 原生构建**：rc.7 依赖树把 koffi 升到 3.1.5，其 install 脚本需 CMake 编译原生二进制——鸿蒙无编译器直接失败。实测 koffi 原生部分只在 win32 路径被 dsh-fs-local 懒加载（鸿蒙永不触发）、node-pty 本机本就不可用、sharp 走预编译、@deepseek-ai 各包均为纯 JS 无 install 脚本，故安装时整体跳过 scripts 安全。已固化进 `scripts/dsh-update.mjs`，后续升级不再踩坑。
+- **DeepSeek 推理档位新增 `low`**：官方适配器现支持 `off/low/high/max`（默认仍 `high`），`medium` 无效。已同步 `docs/CACHE-OPTIMIZATION.md` 实测注记。
+- **升级闭环**：npm install → 重打鸿蒙补丁（credentials/session）→ 重启 dsh → 3080 正常 → 五套预设 `agent.cordis.yml` 经 rc.7 `entryListSchema` 校验全部可加载。
+
+### 2026-08-18 — 跑分重写为「六边形雷达 + 性能表 + 交付质量表」
+
+跑分从 6 题扩到 6 轴 × 2 题 = 12 道全自动判分，并新增交付质量表（3 道流程题按交付步骤标记命中打分）。核心数字：能力六轴五套全满分（同模型能力地板一致）；缓存命中率经静态 persona 填充后 52.9-89.9% → 93.8-98.0%；交付规范 promax 89（性能与纪律兼得）、rampagemax 92 全场最高（复盘收尾唯一满分，但效率/耗时最贵）。脚本 `bench/bench.mjs` 可复现，原始数据 `result.json`、报告 `result.md`。同步 README 简介：预设计数四套→五套（模式表补 `harmony-chat-rampagemax` 行），简介跑分数字更新为填充后 93.8-98.0%。
+
+### 2026-08-18 — 新增狂暴 Max 预设（不省 token 只讲质量）
+
+**第五套对话模式 `harmony-chat-rampagemax`**，与 promax 相反——牺牲缓存换质量，慎用（高 token 消耗）：
+
+- **运行上下文打开**（`includeRuntimeContext:true`），前缀随会话动态变化，缓存命中率低
+- **网页 fetch 全开**（`fetch:true`，搜索超时放宽 30s），可抓取页面全文核验
+- **双重验证 + 关键路径交叉互证**，轻任务无捷径、全部走完整闭环
+- **预检穷尽扫描**：namespace / wiring.id / system-prompt 槽位 / 设置页 order / 工具名逐一核对
+- **委派全量 Pro**：子代理一律路由 deepseek-v4-pro，一次做对
+- **persona 内置慎用警告**：「可能一次清空账户额度，仅攻坚疑难/跨文件重构/交付前终极检验时使用」
+
+**实测闭环**：YAML 解析通过 → 同步运行副本 → dsh 重启 → `agentPreset.list` 显示「鸿蒙狂暴Max 已加载，broken: 无」→ `agentPreset.read` 7409 字符全段含慎用警告/质量第一/双重/穷尽/委派。
+
+### 2026-08-18 — 六边形 ProMax：交付纪律升级
+
+**promax 的 persona 块重写为六条硬规则**（任务分级 / 预检 / 实现 / 集成闭环 / 验证先于完成 / 委派），全部静态文本、不注入动态内容，缓存命中率不受影响。核心是把「集成闭环」与「验证先于完成」写成不可跳过的机械清单：交付 = 文件写完 + node_modules 软链 + 重启 + boot 核对 + 实测生效。
+
+**触发背景**：用 promax 写明日方舟干员角色插件（dsh-arknights-persona）的实测。结果——代码交付 9/10（零语法错误、API 全对、框架地道），但集成闭环仅 6/10（软链未建、未重启、未核对 boot、未实测）。结论：**差在收尾纪律不在智能**，于是把每条缺口变成 persona 里的规则。详见上方「2.4 六边形 ProMax」。
+
+### 2026-08-17 — 新增 ops 常驻任务管家模式 + 定时调度
+
+**新增功能**
+
+- **`harmony-chat-ops` 常驻后台任务管家预设**：鸿蒙设备上的无人值守任务模式，纯 JS、零原生依赖。三类职责——知识整理（读目录 → 提取 → 去重 → 归档 `~/dsh-kb/`）、批量文件处理（重命名/归档/去重 → 清单到 `~/dsh-kb/logs/`）、定时任务（cron_create 标准 cron 表达式 + schedule_create every/at，空闲自动执行并归档）。超出三类的事先询问用户。
+- **`@deepseek-ai/dsh-tool-list` 目录枚举插件**：dsh 的 fs 服务没有 readdir，导致 ops 模式无法发现目录内容。补一个零依赖 `list_dir` 工具（`node:fs/promises`），支持相对路径、文件大小、200 条上限。
+- **`harmony.patch.yml` 挂载 dsh-schedule 定时调度**：为 web 会话根 agent 注册 `schedule_create / schedule_list / schedule_delete`（包随 dsh 基础安装自带），一次性/周期提醒到点自动触发，agent 空闲时自动执行并归档。
+- **委派子代理路由到 Pro**：按 id 整行覆盖 `tool-subagent` 的 `agentOptions` 为 `deepseek-v4-pro`（实测 preset 内的 agentOptions 不生效，需 profile 层覆盖）。主循环 flash 省成本，复杂子任务 Pro 一次做对，省去反复试错往返。
+
+**实测闭环（本机验证）**
+
+- 手动批量：ops 会话枚举 `~/dsh-kb-test/notes/` 3 篇会议纪要 → 读取 → 去重「预算 ok」 → 归档 `~/dsh-kb/会议纪要/*.md`（含来源表）。
+- 定时：`schedule_create after_seconds: 60` 到点自动触发，agent 独立产出 `~/dsh-kb/reports/notes-summary-*.md`；一次性提醒执行后 `schedule_list` 不再出现。
+- 回归：现有 harmony-chat / pro / promax 三套预设加载无错误，web 稳定 UP；测试数据已清理。
+
+**修复**
+
+- 修复了新建会话失败的 bug：预设引用的自定义插件包名需同时存在于 dsh 基础 `node_modules` 与 profile 层 `node_modules` 软链层（host 组合基座向上解析到 `profiles/node_modules`），缺软链会导致 preset mount 失败 → `SessionCreateError`。安装步骤见上文「2.5」。`dsh-tool-list` 已按此双路径就位。
+
+---
+
+## 参与开发 / Contributing
+
+欢迎共同创建！本项目开放协作，开发群成员可直接申请成为协作者，任何开发者也可通过 Fork + PR 参与。
+
+- 贡献指南：[CONTRIBUTING.md](CONTRIBUTING.md)
+- 提交规范：`main` 分支受保护，PR 需 review 后合并
+- 想成为共同创建者：联系群主申请，或在 Discussions 里冒泡

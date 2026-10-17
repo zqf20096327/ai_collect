@@ -1,0 +1,300 @@
+# :penguin: AI Engineering Primer
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=pytorch&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=flat)
+![Hugging Face](https://img.shields.io/badge/Hugging%20Face-F9AB00?style=flat&logo=huggingface&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=flat&logo=google&logoColor=white)
+
+https://github.com/user-attachments/assets/0139b44a-8de7-4850-97fd-6d5a32babe43
+
+**AI Engineering Primer** is an intensive, project-driven course designed to bridge the gap between theoretical Machine Learning, AI Engineering concepts and production-ready AI engineering workflows and models. 
+
+You will start with the absolute fundamentals of ML and AI Engineering, and progress through to building agentic workflows, implementing agentic design patterns, fine-tuning custom Large Language Models (LLMs), optimizing Language Modelling techniques and much more.
+
+- :alarm_clock: Watch Time: 20h49m
+- :arrow_forward: 46 Video Lectures
+- :headphones: Watch Video Lectures: <a href="https://www.youtube.com/playlist?list=PLIYs6sQc6OTo" target="_blank">Youtube</a>
+
+![Course Outline](./media/banner1.png)
+
+## :blossom: Course Outline
+
+* **[Phase 1: Applied GenAI, Agentic Systems & Orchestration](#diamond_shape_with_a_dot_inside-phase-1-applied-genai-agentic-systems--orchestration)**
+
+  * [Module 1: AI Engineering Core Concepts](#golf-module-1-ai-engineering-core-concepts)
+
+  * [Module 2: Agentic AI - Design Patterns](#golf-module-2-agentic-ai---design-patterns)
+
+  * [Module 3: RAG - Retrieval Augmented Generation](#golf-module-3-rag---retrieval-augmented-generation)
+
+  * [Module 4: Projects | Building Agentic AI Workflows from scratch](#golf-module-4-projects--building-agentic-ai-workflows-from-scratch)
+
+  * [[Bonus Module] Building Multi-agent workflow in LangChain & LangGraph - Agentic AI Framework](#golf-bonus-module-building-multi-agent-workflow-in-langchain--langgraph---agentic-ai-framework)
+
+  * [Reading Material & Code-Labs](#pencil-reading-material--code-labs)
+
+
+* **[Phase 2: Pre-Training, Fine-Tuning LLMs and related Concepts](#diamond_shape_with_a_dot_inside-phase-2-pre-training-fine-tuning-llms-and-related-concepts)**
+
+  * [Module 1: LLMs Concepts & Optimization techniques](#golf-module-1-llms-concepts--optimization-techniques)
+
+  * [Module 2: Fine-tuning Language Models](#golf-module-2-fine-tuning-language-models)
+
+  * [Reading Material & Code-Labs](#reading-material--code-labs)
+
+
+* **[Phase 3: Core Deep Learning for LLMs](#diamond_shape_with_a_dot_inside-phase-3-core-deep-learning-for-llms)**
+
+  * [Module 1: Deep Neural Networks - Building a Language Model](#golf-module-1-deep-neural-networks---building-a-language-model)
+
+  * [Reading Material & Code-Labs](#reading-material--code-labs-1)
+
+---
+
+## :diamond_shape_with_a_dot_inside: Phase 1: Applied GenAI, Agentic Systems & Orchestration 
+
+Applied GenAI provides the reasoning, but Agentic Systems give AI the autonomy to use tools and act. By building structured Workflows for reliability and using Orchestration to manage multi-agent collaboration, you will be able to transform passive models into dynamic software that automates complex, end-to-end business operations at scale.
+
+- :chart_with_upwards_trend: Difficulty: Beginner
+- :alarm_clock: Watch Time: 10h31m
+- :arrow_forward: 30 Video Lectures
+- :closed_book: 20 Code Examples
+
+### :golf: Module 1: AI Engineering Core Concepts
+
+This module establishes the foundation for robust AI workflows. It covers key differences between agents and workflows, Tool Calling, Model Context Protocol (MCP), Context Management, Vector Embeddings, Human-in-the-Loop (HITL) interventions, and debugging with LangChain.
+
+:alarm_clock: Watch Time: 5h54m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Agents vs Workflows - AI Agents & AI Workflows are not the same | 32 mins | [Watch](https://youtu.be/jOCbjabknGk) |
+| 2 | Model Context Protocol (MCP) from scratch - Connecting your AI Agents with external server and tools | 23 mins | [Watch](https://youtu.be/lWt55CYtZNo) |
+| 3 | Tool Calling - Make LLMs talk to Database, APIs and Web | 25 mins | [Watch](https://youtu.be/Occy4R56hig) |
+| 4 | Human in the Loop (HITL) - Interrupting your Agentic Workflow for user input | 27 mins | [Watch](https://youtu.be/2Ox8Plu-uKw) |
+| 5 | Optimize your Agentic workflow with Parallel Execution in LangGraph, LangChain | 32 mins | [Watch](https://youtu.be/mMzAbhnOgXQ) |
+| 6 | Vector Embeddings - Introducing Google Gemini Embedding Models | 28 mins | [Watch](https://youtu.be/r1cZWdjKK7A) |
+| 7 | Add Memory to your AI Agents - Context Management in LLMs | 28 mins | [Watch](https://youtu.be/T2L9eC8ij7w) |
+| 8 | Debugging your Agentic Workflows - Threads & Checkpoints in LangChain | 27 mins | [Watch](https://youtu.be/Iu6JB8SuS3U) |
+| 9 | Building a Deep Research Agent - Static Workflow, Dissecting my Static-DRA Research Paper | 39 mins | [Watch](https://youtu.be/n79Ojwk2muw) |
+| 10 | Google Self-Evolution algorithm for Deep Researcher - Agentic Workflow & Parallel Processing | 45 mins | [Watch](https://youtu.be/sI-kEu6G_Tg) |
+| 11 | Agent Builder by OpenAI - Introduction to building Agentic Workflows, No-Code | 27 mins | [Watch](https://youtu.be/_2WllOxJp9o) |
+| 12 | Agent2Agent (A2A) Protocol - Build your first Multi-Agent network | 21 mins | [Watch](https://youtu.be/DUqWKsbqfM4) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | MCP (Model Context Protocol) from scratch | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/mcp) |
+| 2     | Tool Calling - Make LLMs talk to Database, APIs and Web | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/tool-calls) |
+| 3     | Human in the Loop (HITL) - Interrupting your Agentic Workflow for user input | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/human-in-loop) |
+| 4     | Optimize your Agentic workflow with Parallel Execution in LangGraph | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/parallel-execution) |
+| 5     | Vector Embeddings - Introducing Google Gemini Embedding Models | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/vector-embeddings), [Paper](https://arxiv.org/pdf/2503.07891) |
+| 6     | Add Memory to your AI Agents - Context Management in LLMs | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/memory-agent) |
+| 7     | Debugging your Agentic Workflows - Threads & Checkpoints in LangChain | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/debugging-workflow) |
+| 8     | Building a Deep Research Agent - Static Workflow | [Code](https://github.com/SauravP97/Static-Deep-Research), [Paper](https://arxiv.org/abs/2512.03887) |
+| 9     | Google Self-Evolution algorithm for Deep Researcher | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/self-evolution-google), [Paper](https://arxiv.org/pdf/2507.16075) |
+| 10     | Agent2Agent (A2A) Protocol | [Code](https://github.com/SauravP97/llms-from-scratch/tree/main/agent2agent/yt_codelab), [Documentation](https://a2a-protocol.org/latest/topics/what-is-a2a/) |
+
+### :golf: Module 2: Agentic AI - Design Patterns
+
+The module explores essential architectural patterns for complex AI workflows. It covers Prompt Chaining, Routing strategies for task delegation, the Evaluator-Optimizer pattern featuring Human-in-the-Loop (HITL), and the Orchestrator-Worker pattern used to power advanced, autonomous DeepResearch agents.
+
+:alarm_clock: Watch Time: 1h56m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Prompt Chaining Design Pattern | 23 mins | [Watch](https://youtu.be/DL6cGf7ZTlE) |
+| 2 | Routing Design Pattern - Agent summarizing social media profile | 28 mins | [Watch](https://youtu.be/BVbpTtYFVLE) |
+| 3 | Evaluator Optimizer Design Pattern - Human in the Loop | 26 mins | [Watch](https://youtu.be/SknYgMpC-VI) |
+| 4 | Orchestrator Worker Design Pattern - Powering DeepResearch Agents | 39 mins | [Watch](https://youtu.be/ObVNv49S9K4) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Prompt Chaining Design Pattern | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/prompt-chaining-design-pattern) |
+| 2     | Routing Design Pattern | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/routing-design-pattern) |
+| 3     | Evaluator Optimizer Design Pattern | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/evaluator-optimizer-agent), [Agentic RAG Paper](https://arxiv.org/pdf/2501.09136) |
+| 4     | Orchestrator Worker Design Pattern | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/orchestrator-worker-design-pattern) |
+
+### :golf: Module 3: RAG - Retrieval Augmented Generation
+
+The module focuses on enhancing AI workflows with external knowledge. It covers Self-RAG, which enables agents to critique outputs through self-reflection, and Corrective RAG, which integrates web search as a fallback knowledge base to improve accuracy.
+
+:alarm_clock: Watch Time: 1h26m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Self RAG - Making your Agentic workflows critique through Self-Reflection | 39 mins | [Watch](https://youtu.be/H9zMp5wzQjc) |
+| 2 | Corrective RAG - Integrating Web Search as a fallback knowledge base | 47 mins | [Watch](https://youtu.be/vAJqCDaU9Oc) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Self RAG - Making your Agentic workflows critique through Self-Reflection | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/self-rag) [Paper](https://arxiv.org/pdf/2310.11511) |
+| 2     | Corrective RAG - Integrating Web Search as a fallback knowledge base | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/corrective-rag) [Paper](https://arxiv.org/pdf/2401.15884) |
+
+### :golf: Module 4: Projects | Building Agentic AI Workflows from scratch
+
+The module focuses on practical, hands-on application. It guides you through building real-world agentic workflows using LangChain, including a personalized LinkedIn post creator, a referral outreach assistant, a Text-to-SQL database agent, and a Google career recommendation and resume review agent.
+
+:alarm_clock: Watch Time: 2h32m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Building Agentic workflow that creates personalized Linkedin Post | 34 mins | [Watch](https://youtu.be/3knBxkLjDMk) |
+| 2 | Building a Referral Outreach Agentic Workflow in LangChain | 29 mins | [Watch](https://youtu.be/FjUNgQw4HZ8) |
+| 3 | Building a Text to SQL Agent for handling complex database queries in LangChain | 39 mins | [Watch](https://youtu.be/YXDA4kfW_Dg) |
+| 4 | Agent that recommend Roles at Google, reviews Resume and outlines Preparation strategies | 50 mins | [Watch](https://youtu.be/AuOkG3iQFog) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Building Agentic workflow that creates personalized Linkedin Post | [Code](https://github.com/SauravP97/LangPost) |
+| 2     | Building a Referral Outreach Agentic Workflow in LangChain | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/outreach-agent) |
+| 3     | Building a Text to SQL Agent for handling complex database queries in LangChain | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/text-to-sql) |
+| 4     | Agent that recommend Roles at Google, reviews Resume and outlines Preparation strategies | [Code](https://github.com/SauravP97/AI-Engineering-101/tree/main/google-job-search-agent) |
+
+### :golf: [Bonus Module] Building Multi-agent workflow in LangChain & LangGraph - Agentic AI Framework
+
+The module introduces LangChain and LangGraph to build advanced agentic frameworks. It covers defining nodes and edges, managing shared state, setting up vector stores, building document graders, implementing conditional logic, evaluating RAG performance, and visualizing the compiled graph using Mermaid.
+
+- :headphones: Watch Video Lectures: <a href="https://youtube.com/playlist?list=PL3tZ_eA1QJsyJxXnpg69McGc9xdsy3j_Z" target="_blank">Youtube</a>
+- :alarm_clock: Watch Time: 1h6m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Introduction to LangChain & LangGraph - Building Multi-agent workflows | 4 mins | [Watch](https://youtu.be/6GQvCtna5ZI) |
+| 2 | Nodes, Edges and Shared State in LangGraph | 7 mins | [Watch](https://youtu.be/Xgyk7Qtmf8s) |
+| 3 | In-memory Vector Store in LangChain - Building an External Knowledge base in RAG | 11 mins | [Watch](https://youtu.be/-tm08f-u8NA) |
+| 4 | Retrieving documents from the Vector Store in LangGraph - External Knowledge base for RAG | 6 mins | [Watch](https://youtu.be/7d1jlcBrdmc) |
+| 5 | Instantiate an LLM Model in LangChain | 2 mins | [Watch](https://youtu.be/wiuTBs5k5vU?si=eMNvev7hmZV7h1zJ) |
+| 6 | Building a Document grader - Grading the retrieved document from Vector store | 7 mins | [Watch](https://youtu.be/RaiS1L6-wsg) |
+| 7 | Building a Conditional Edge in LangGraph | 3 mins | [Watch](https://youtu.be/2xgMjmNWA7I) |
+| 8 | RAG that generates Answers on Human prompts in LangGraph | 5 mins | [Watch](https://youtu.be/9K-TgiP81CY) |
+| 9 | Evaluating RAG performance in LangGraph - Grading the generated answer | 6 mins | [Watch](https://youtu.be/KTdmqxlTGWY) |
+| 10 | Compiling the workflow in LangGraph - Setting-up the Graph | 8 mins | [Watch](https://youtu.be/8ctyRErJ03Q) |
+| 11 | RAG Framework and LangGraph in action | 4 mins | [Watch](https://youtu.be/WQbmPTrHsS8) |
+| 12 | Visualizing the compiled Graph using Mermaid in LangGraph | 3 mins | [Watch](https://youtu.be/Xn7pPopFK1s) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Adaptive RAG in LangGraph & LangChain | [Code](https://github.com/SauravP97/langraph-adaptive-rag/tree/master) |
+
+---
+
+## :diamond_shape_with_a_dot_inside: Phase 2: Pre-Training, Fine-Tuning LLMs and related Concepts
+
+In this module you will learn about Pre-training, Fine-tuning and related LLM concepts. Pre-training builds a foundational LLM by teaching it language and reasoning across massive datasets. Fine-tuning adapts this base model for specific tasks using curated data. Advanced techniques like parameter-efficient tuning (LoRA) align the model to be safe, accurate, and specialized.
+
+- :chart_with_upwards_trend: Difficulty: Intermediate
+- :alarm_clock: Watch Time: 5h50m
+- :arrow_forward: 11 Video Lectures
+- :closed_book: 10 Code Examples
+
+### :golf: Module 1: LLMs Concepts & Optimization techniques
+
+The module explores advanced LLM optimization strategies. It dives into understanding and implementing Low-Rank Adaptation (LoRA) from scratch using Llama 3, introduces Google FunctionGemma for tool calling, and covers evaluating model performance on the HumanEval coding benchmark.
+
+:alarm_clock: Watch Time: 2h14m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Understanding LoRA from scratch - Dissecting Low-Rank Adaptation of LLMs Research Paper | 27 mins | [Watch](https://youtu.be/BsQFS2Eb4H4) |
+| 2 | Implement LoRA in LLMs from scratch - Modifying Llama 3 architecture | 26 mins | [Watch](https://youtu.be/eNLdQjSLgaw) |
+| 3 | Introduction to Google FunctionGemma 270M model, LLM for Tool Calling | 25 mins | [Watch](https://youtu.be/tZ8n49ufVcI) |
+| 4 | Evaluating LLM on HumanEval coding benchmark - Google Gemini 3.1 Pro | 31 mins | [Watch](https://youtu.be/fmTUXQwTFi8) |
+| 5 | Tokenization - Visualizing Byte-Pair algorithm | 25 mins | [Watch](https://youtu.be/HA1Wqd3VlNE) |
+| 6 | Mixture of Experts (MoE) - Implement from scratch | 31 mins | [Watch](https://youtu.be/5E-RdE6elMo) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Understanding LoRA from scratch | [Paper](https://arxiv.org/pdf/2106.09685) |
+| 2     | Introduction to Google FunctionGemma 270M model | [Model Card HuggingFace](https://huggingface.co/google/functiongemma-270m-it), [Model Overview](https://ai.google.dev/gemma/docs/functiongemma) |
+| 3     | Evaluating LLM on HumanEval coding benchmark | [Code](https://github.com/SauravP97/llms-from-scratch/tree/main/human_eval_bench), [HumanEval Paper](https://arxiv.org/pdf/2107.03374), [HumanEval Dataset](https://huggingface.co/datasets/openai/openai_humaneval) |
+| 4     | Tokenization - Visualizing Byte-Pair algorithm | [Code](https://github.com/SauravP97/hf-tokenizer-visualizer/), [BPE Tokenization Algorithm](https://huggingface.co/learn/llm-course/en/chapter6/5), [Python Package](https://pypi.org/project/hf-tokenizer-visualizer/) |
+| 5     | Mixture of Experts (MoE) | [Code](https://github.com/SauravP97/llms-from-scratch/tree/main/mixture_of_experts), [Paper](https://arxiv.org/pdf/2401.04088) |
+
+
+### :golf: Module 2: Fine-tuning Language Models
+
+The module provides hands-on experience in adapting foundational models. It covers fine-tuning models like GPT-2 and Llama 3.2 for classification and summarization tasks, reproducing TinyStories for storytelling, and building Google's FunctionGemma tool-calling model from scratch.
+
+:alarm_clock: Watch Time: 3h5m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | TinyStories 4M - Reproduce LLM for Storytelling - HuggingFace  | 38 mins | [Watch](https://youtu.be/BV_yhIQ2S-4) |
+| 2 | Fine-tune GPT-2, 125M model for text classification - Pytorch  | 35 mins | [Watch](https://youtu.be/cAIGvVWE-DY) |
+| 3 | Fine-Tune LLM on Text Summarization task from scratch - Pytorch  | 39 mins | [Watch](https://youtu.be/VAIeRTODsak) |
+| 4 | Fine-Tuning Llama 3.2 - 1B model with LoRA from scratch on Text summarization  | 39 mins | [Watch](https://youtu.be/wUkBuKbS_2U) |
+| 5 | Reproducing Google FunctionGemma 270M model, LLM for Tool Calling  | 34 mins | [Watch](https://youtu.be/RoQYu_6bBOg) |
+
+#### :pencil: Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | TinyStories 4M - Reproduce LLM for Storytelling | [Code](https://github.com/SauravP97/tiny-stories-hf), [Paper](https://arxiv.org/abs/2305.07759), [Model Card HuggingFace](https://huggingface.co/SauravP97/tiny-stories-3M) |
+| 2     | Fine-tune GPT-2, 125M model for text classification | [Code](https://github.com/SauravP97/llm-finetune/blob/main/fine-tune-gpt2-spam-classifier.ipynb) |
+| 3     | Fine-Tune LLM on Text Summarization task from scratch | [Model](https://huggingface.co/SauravP97/tiny-stories-19M-instruct), [Code](https://github.com/SauravP97/llm-finetune/blob/main/fine-tune-tiny-stories.ipynb) |
+| 4     | Fine-Tuning Llama 3.2 - 1B model with LoRA from scratch on Text summarization | [Code](https://github.com/SauravP97/llm-finetune/blob/main/fine_tune_llama_1b_summarization.ipynb), [Model](https://huggingface.co/meta-llama/Llama-3.2-1B) |
+| 5     | Reproducing Google FunctionGemma 270M model | [Code](https://github.com/SauravP97/llms-from-scratch/tree/main/function_gemma) |
+---
+
+## :diamond_shape_with_a_dot_inside: Phase 3: Core Deep Learning for LLMs
+
+Core deep learning for LLMs relies on the Transformer architecture. These neural networks use self-attention mechanisms to process tokens simultaneously. In this module you will learn how to build a language model from scratch.  
+
+- :chart_with_upwards_trend: Difficulty: Intermediate
+- :alarm_clock: Watch Time: 2h44m
+- :arrow_forward: 2 Video Lectures
+- :closed_book: 1 Code Examples
+
+### :golf: Module 1: Deep Neural Networks - Building a Language Model
+
+:alarm_clock: Watch Time: 2h44m
+
+| S.No. | Topic       | Duration    | |
+| ---   | ----------- | ----------- | --- |
+| 1 | Building a Character level Language Model from scratch - Deep Neural Network | 1h21m | [Watch](https://youtu.be/QpogQUe77Ro) |
+| 2 | Building a Language Model for Auto-completion and Suggestions - Deep Neural Network | 1h23m | [Watch](https://youtu.be/oDAobJycKCA) |
+
+### Reading Material & Code-Labs
+
+| S.No. | Topic       | Link    |
+| ---   | ----------- | ----------- |
+| 1     | Makemore (inspired by Andrej) - A character level language model | [Code](http://github.com/SauravP97/makemore-mlp-ep2), [Karpathy's Repo](https://github.com/karpathy/makemore) |
+
+## 🌟 Show your support
+Building and maintaining this open-source curriculum takes time and effort. If you find this repository useful for your AI engineering journey:
+*   Star ⭐ this repository to help others find it.
+*   Share it with your network or on social media.
+*   Subscribe to the full video series on [YouTube](https://www.youtube.com/@saurav_prateek_).
+
+## 🤝 How to Contribute
+We welcome community contributions! Whether it's fixing a typo, adding a new code-lab, or updating documentation, feel free to open a Pull Request or start a discussion in the [Issues](https://github.com/SauravP97/ai-engineering-primer/issues) tab.
+
+## 📄 License
+This project is licensed under the **MIT License**.
+
+## 🛠️ Prerequisites
+Before diving into the modules, we recommend having:
+*   Basic understanding of Python programming.
+*   Familiarity with fundamental Machine Learning concepts.
+*   An IDE installed (e.g., VS Code) and basic Git knowledge.
+*   API keys for the respective models used in the code-labs (e.g., OpenAI, Google Gemini).
+
+## 📫 Connect with the Author
+Created by [Saurav Prateek](https://github.com/SauravP97). Feel free to reach out if you have any questions regarding the curriculum!
+
+  - Linkedin: https://www.linkedin.com/in/saurav-prateek-7b2096140/
+  - Github: http://github.com/SauravP97
+  - Portfolio: https://sauravp97.github.io/

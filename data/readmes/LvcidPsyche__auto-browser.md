@@ -1,0 +1,362 @@
+# Auto Browser
+
+[![MCP Toplist](https://mcptoplist.com/badge/glama%2FLvcidPsyche%2Fauto-browser.svg)](https://mcptoplist.com/server/glama%2FLvcidPsyche%2Fauto-browser)
+
+[![CI](https://github.com/LvcidPsyche/auto-browser/actions/workflows/ci.yml/badge.svg)](https://github.com/LvcidPsyche/auto-browser/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/auto-browser-client?label=PyPI)](https://pypi.org/project/auto-browser-client/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![MCP Server](https://img.shields.io/badge/MCP-server-blue)](./README.md)
+[![Local First](https://img.shields.io/badge/local--first-0ea5e9)](./README.md)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LvcidPsyche/auto-browser?quickstart=1)
+
+<a href="https://glama.ai/mcp/servers/LvcidPsyche/auto-browser">
+  <img src="https://glama.ai/mcp/servers/LvcidPsyche/auto-browser/badge" alt="Auto-Browser on Glama: grade A for license, quality, and maintenance" width="420">
+</a>
+
+![Auto Browser demo](docs/assets/demo.gif)
+
+> **Give your AI agent a real browser, with a human in the loop.**
+
+Auto Browser is an MCP-native browser control plane for authorized workflows. It gives MCP clients, LLM agents, and operators a shared Playwright browser with human takeover, reusable auth profiles, approvals, audit trails, and local-first deployment.
+
+Works with:
+
+- Claude Code, Codex (CLI, IDE extension, and app), Google Antigravity, Cursor, and VS Code,
+  connected directly over HTTP
+- Claude Desktop, through the bundled stdio bridge
+- any MCP client that can talk HTTP or stdio
+- direct REST callers when you want curl-first control
+
+## Why Auto Browser
+
+- **MCP-native from day one.** The browser surface is already packaged as an MCP server instead of bolted on after the fact.
+- **Human takeover when the web gets brittle.** noVNC keeps the same live session available when a person needs to step in.
+- **Login once, reuse later.** Save named auth profiles and reopen fresh sessions that are already signed in.
+- **Local-first by default.** Run the full stack on your own box with Docker Compose, or use Codespaces for a quick hosted demo.
+- **Safety rails built in.** Approvals, operator identity, PII scrubbing, Witness receipts, and policy presets are all part of the product surface.
+- **Evidence you can hand to someone else.** Witness receipt chains are Ed25519-signed, and an exported bundle verifies with [`scripts/verify_witness_bundle.py`](./scripts/verify_witness_bundle.py) — which imports nothing from this project, so a recipient need not run or trust this controller to check it.
+- **We audit ourselves in public.** [`docs/audits/2026-08-execution-audit.md`](./docs/audits/2026-08-execution-audit.md) documents an adversarial audit of this repo that found safety controls which reported success while doing nothing, with reproductions, the fixes, and the gates that close the class.
+- **Governed skill induction.** Verified browser traces can become staged skill candidates with provenance that is signed when a mesh identity is configured — and checked on read, not just produced — plus verifier adapters and review-only graduation — agents that prove they can repeat themselves correctly, not just act once.
+
+## Good Fits
+
+- internal dashboards and admin tools
+- operator-assisted QA and browser debugging
+- login-once, reuse-later account workflows
+- brittle sites where a human may need to recover the flow
+- MCP-powered agent workflows that need a real browser, not just HTML fetches
+
+## Not the Goal
+
+- CAPTCHA solving
+- unauthorized scraping or account automation
+- deceptive identity shaping or bypass tooling
+
+## What You Get
+
+| Browser Control | Operator Safety | Deployment and Integration |
+| --- | --- | --- |
+| Playwright-backed sessions with screenshots, DOM summaries, OCR excerpts, tab controls, downloads, and network inspection | approval gates, operator identity headers, audit events, PII scrubbing, Witness receipts, and protection profiles | MCP over HTTP, bundled stdio bridge, REST API, Docker Compose, Codespaces, auth profiles, and optional per-session isolation |
+
+## Quickstart
+
+```bash
+git clone https://github.com/LvcidPsyche/auto-browser.git
+cd auto-browser
+docker compose up --build
+```
+
+That is enough for local development with the default settings.
+
+Optional:
+
+```bash
+cp .env.example .env
+make doctor
+```
+
+Run `make doctor` from a normal terminal with local Docker access and permission to open localhost sockets.
+
+Open:
+
+- API docs: `http://127.0.0.1:8000/docs`
+- Operator dashboard: `http://127.0.0.1:8000/dashboard`, which includes the queue of actions waiting on your approval
+- Visual takeover: `http://127.0.0.1:6080/vnc.html?autoconnect=true&resize=scale`
+
+All published ports bind to `127.0.0.1` by default.
+
+### Prebuilt images
+
+Every release is also published to GHCR, so you can skip the build:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.images.yml up -d
+```
+
+`AUTO_BROWSER_IMAGE_TAG` picks the version: `latest` (the default), a release such as `1.9.1`, or
+`edge` for the current `main`. The images are linux/amd64, and each carries an SBOM and a build
+provenance attestation (`gh attestation verify oci://ghcr.io/lvcidpsyche/auto-browser-controller:latest -R LvcidPsyche/auto-browser`).
+The controller image leaves out the agent CLIs; for `*_AUTH_MODE=cli`, build from source with
+`INSTALL_AGENT_CLIS=true`.
+
+## Try It in Codespaces
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/LvcidPsyche/auto-browser?quickstart=1)
+
+Codespaces provisions the stack automatically. The dashboard and noVNC tabs are usually ready in about 90 seconds.
+
+## First Useful Demo
+
+The highest-signal flow in this repo is:
+
+1. create a session
+2. log in manually if the site needs a human
+3. save the session as a named auth profile
+4. open a new session from that auth profile
+5. continue work without reauthing
+
+Start here:
+
+- [`examples/login-and-save-profile.md`](./examples/login-and-save-profile.md)
+- [`examples/README.md`](./examples/README.md)
+
+Minimal session creation:
+
+```bash
+curl -s http://127.0.0.1:8000/sessions \
+  -X POST \
+  -H 'content-type: application/json' \
+  -d '{"name":"demo","start_url":"https://example.com"}' | jq
+```
+
+Minimal observation:
+
+```bash
+curl -s http://127.0.0.1:8000/sessions/<session-id>/observe | jq
+```
+
+## Recent Changes
+
+**1.9.1**
+
+- **Prebuilt Docker images** on GHCR (thanks @FRFlo): run a release without building it. See [Prebuilt images](#prebuilt-images).
+
+**1.9.0**
+
+- **Operators no longer share sessions.** With named credentials (`API_BEARER_TOKENS`), a session belongs to the operator who created it, as auth profiles already did.
+- **Every setting in `.env` reaches the controller.** Compose used to forward only the keys it listed, so settings like `API_BEARER_TOKENS` and `PII_SCRUB_*` were ignored. Check your `.env` before upgrading.
+- **Governed approvals run**, a page stuck in a script loop can no longer hang the controller, and the Claude and OpenAI providers work on current models.
+- **Security fixes** for approvals, navigation, TOTP autofill, PII scrubbing and witness bundle verification ([GHSA-37hm-f6gf-q7vx](https://github.com/LvcidPsyche/auto-browser/security/advisories/GHSA-37hm-f6gf-q7vx)).
+
+**1.8.1**
+
+- **Sturdier sessions and stores.** Actions that ran are no longer reported as failed when the page navigates right after, an approved action runs at most once, `MAX_SESSIONS` holds under concurrent creates, and sessions, tabs, cron jobs and the JSON stores no longer leak or lose writes.
+- **The stdio MCP bridge survives a controller restart** and reports auth and rate-limit errors instead of hanging. The SDK, bridge and LangChain adapters can send an operator id for controllers with `REQUIRE_OPERATOR_ID=true`.
+- **Faster actions and observations**, fewer browser round trips per observation, and a controller image without the test tooling.
+- **Security fixes** for the noVNC socket, TOTP autofill, auth-profile paths, approvals and witness receipts. `create_session` with `totp_secret` now needs `totp_hosts` or a `start_url`.
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
+
+## MCP Clients
+
+Auto Browser exposes:
+
+- an HTTP MCP endpoint at `http://127.0.0.1:8000/mcp`
+- convenience endpoints at `http://127.0.0.1:8000/mcp/tools` and `http://127.0.0.1:8000/mcp/tools/call`
+- a stdio bridge: `uvx auto-browser-mcp` from PyPI, or [`scripts/mcp_stdio_bridge.py`](./scripts/mcp_stdio_bridge.py) in a repo checkout
+
+Clients that speak MCP over HTTP connect directly. With Claude Code or Codex:
+
+```bash
+claude mcp add --transport http auto-browser http://127.0.0.1:8000/mcp
+codex mcp add auto-browser --url http://127.0.0.1:8000/mcp
+```
+
+Google Antigravity takes the server in its raw MCP config (MCP Servers, then Manage MCP
+Servers, then View raw config), or in `~/.gemini/config/mcp_config.json`. It reads
+`serverUrl`, not `url`:
+
+```json
+{
+  "mcpServers": {
+    "auto-browser": { "serverUrl": "http://127.0.0.1:8000/mcp" }
+  }
+}
+```
+
+Cursor, VS Code, bearer tokens, and pairing Auto Browser with a web-search MCP
+server are covered in [`docs/mcp-clients.md`](./docs/mcp-clients.md).
+
+The default MCP tool profile is `curated`: the 20 tools a browsing agent needs (sessions, observe and screenshot, `execute_action`, page and download reading, tabs, auth profiles, human takeover). Every listed tool costs the model context on every request, so the diagnostics, audit, harness, and admin tools are in the full profile. To expose them, set:
+
+```bash
+MCP_TOOL_PROFILE=full
+```
+
+Raw tool-call example:
+
+```bash
+curl -s http://127.0.0.1:8000/mcp/tools/call \
+  -X POST \
+  -H 'content-type: application/json' \
+  -d '{
+    "name":"browser.create_session",
+    "arguments":{
+      "name":"demo",
+      "start_url":"https://example.com"
+    }
+  }' | jq
+```
+
+Client setup guides:
+
+- [`docs/mcp-clients.md`](./docs/mcp-clients.md)
+- [`examples/claude-desktop-setup.md`](./examples/claude-desktop-setup.md)
+- [`examples/cursor-mcp-setup.md`](./examples/cursor-mcp-setup.md)
+- [`examples/claude_desktop_config.json`](./examples/claude_desktop_config.json)
+
+For resource listing, resource reads, and subscription-style update examples,
+see [`docs/mcp-clients.md#resources-and-subscriptions`](./docs/mcp-clients.md#resources-and-subscriptions).
+
+## Convergence Harness
+
+Auto Browser ships a Stage 0 convergence harness for Agent Skill Induction. It runs a structured task contract, records tamper-checked traces, verifies completion, and writes a staged skill candidate carrying provenance. With a mesh identity configured that provenance is signed, and the registry verifies the signature before serving a candidate — a candidate that fails the check, or that was dropped into the staging directory unsigned, is refused. Candidates induced from a mock run are marked `simulated` so they cannot pass as converged. Generated skills are staged only — promotion stays explicit and reviewed.
+
+The harness tools — convergence runs, run status and traces, drift checks, candidate management, and graduation — are in the `full` MCP tool profile (`MCP_TOOL_PROFILE=full`), or can be invoked directly over REST.
+
+Start with [`docs/convergence-harness.md`](./docs/convergence-harness.md). A deterministic local smoke is:
+
+```bash
+python -m controller.harness.run --contract evals/contracts/example_read.json --mock-final-url https://example.com --mock-final-text "Example Domain"
+```
+
+For MCP clients, set `MCP_TOOL_PROFILE=full` to expose the `harness.*` tools.
+
+## Security and Compliance
+
+For a real private deployment, set at least:
+
+```bash
+APP_ENV=production
+API_BIND_SCOPE=exposed
+API_BEARER_TOKEN=<strong-random-secret>
+REQUIRE_OPERATOR_ID=true
+AUTH_STATE_ENCRYPTION_KEY=<44-char-fernet-key>
+REQUIRE_AUTH_STATE_ENCRYPTION=true
+SHARE_TOKEN_SECRET=<strong-random-secret>
+CONTROLLER_ALLOWED_HOSTS=<controller hostname>
+ALLOWED_HOSTS=<sites the browser may visit>
+REQUEST_RATE_LIMIT_ENABLED=true
+METRICS_ENABLED=true
+STEALTH_ENABLED=false
+```
+
+With `APP_ENV=production` the controller refuses to start while any of these is missing, and the startup log names the missing ones.
+
+By default every session shares one Chromium process and one noVNC desktop (`SESSION_ISOLATION_MODE=shared_browser_node`). Cookies and storage stay separate per session, but a human taking over one session can see the others' windows. When sessions belong to different people, accounts or trust domains, start with `make up-isolation` to give each session its own browser container and takeover surface (`docker_ephemeral`). [`docs/session-isolation-audit.md`](./docs/session-isolation-audit.md) has the details.
+
+`COMPLIANCE_TEMPLATE` can apply a preconfigured posture at startup:
+
+| Preset | Auth Encryption | Operator ID | PII Scrub | Isolation | Max Session Age |
+| --- | --- | --- | --- | --- | --- |
+| `strict` | required | required | all layers | `docker_ephemeral` | 4h |
+| `balanced` | - | required | network + text | shared | 24h |
+
+Both presets require upload approvals and enable Witness receipts. Startup writes the applied policy to `/data/compliance-manifest.json`. The legacy names (`HIPAA`, `SOC2`, `GDPR`, `PCI-DSS`) still work as deprecated aliases and emit a warning at startup.
+
+Example:
+
+```bash
+COMPLIANCE_TEMPLATE=strict docker compose up
+```
+
+For deployment details, hosted Witness notes, CLI auth modes, and reverse-SSH guidance, see:
+
+- [`docs/deployment.md`](./docs/deployment.md)
+- [`docs/production-hardening.md`](./docs/production-hardening.md)
+
+## Architecture at a Glance
+
+```mermaid
+flowchart LR
+    User[Human operator] -->|watch / takeover| noVNC[noVNC]
+    LLM[Any model: OpenAI / Claude / Gemini / OpenRouter / Grok / DeepSeek / MiniMax / local] -->|shared tools| Controller[Controller API]
+    Controller -->|Playwright protocol| Browser[Browser node]
+    noVNC --> Browser
+    Browser --> Artifacts[(screenshots / traces / auth state)]
+    Controller --> Artifacts
+    Controller --> Policy[Allowlist + approval gates]
+```
+
+### Model providers
+
+First-class adapters for **OpenAI**, **Claude**, and **Gemini** (API or CLI). Beyond those,
+a single generic **OpenAI-compatible** adapter drives any model reachable over an OpenAI
+`/chat/completions` endpoint — set an API key to enable it:
+
+| Provider | Reaches |
+|----------|---------|
+| `openrouter` | one key → ~every frontier model (Claude, GPT, Gemini, Grok, DeepSeek, Llama, Mistral, Qwen, …) |
+| `xai` | Grok |
+| `deepseek` | DeepSeek (text-only; driven from the DOM/accessibility outline) |
+| `minimax` | MiniMax |
+| `openai_compatible` | any custom base URL — self-hosted Ollama / vLLM / LM Studio, Azure OpenAI, Together, Groq, Fireworks, … |
+
+Vision (screenshots) is used for every provider except text-only ones. See `.env.example` for
+the `*_API_KEY` / `*_BASE_URL` / `*_MODEL` settings.
+
+Core components:
+
+- `browser-node/` runs Chromium, Xvfb, x11vnc, and noVNC
+- `controller/` exposes the FastAPI controller, MCP transport, policy rails, and orchestration endpoints
+- `data/` holds runtime artifacts, auth state, approvals, audit logs, and optional CLI caches
+- `scripts/` contains local helpers for doctor, smoke tests, bridges, and release checks
+
+## Repo Guide
+
+| Path | What It Contains |
+| --- | --- |
+| [`controller/`](./controller/) | controller API, MCP transport, tests, and packaging |
+| [`browser-node/`](./browser-node/) | browser runtime and Playwright connection layer |
+| [`examples/`](./examples/) | copy-paste flows and MCP client setup |
+| [`integrations/langchain/`](./integrations/langchain/README.md) | LangChain, LangGraph, and CrewAI adapters |
+| [`docs/`](./docs/) | architecture, deployment, hardening, and launch docs |
+| [`scripts/`](./scripts/) | doctor, smoke harnesses, stdio bridge, and auth helpers |
+| [`ops/`](./ops/) | supporting service templates and operational assets |
+
+## Common Commands
+
+| Command | Purpose |
+| --- | --- |
+| `make help` | list available repo commands |
+| `make lint` | run Ruff checks across the whole repo |
+| `make test` | run controller tests in Docker |
+| `make test-local` | run controller tests on host Python 3.11+ |
+| `make eval` | run deterministic provider/profile eval scoring |
+| `make doctor` | run the local readiness smoke |
+| `make release-audit` | run the fuller release-validation pass |
+| `make smoke-isolation` | verify per-session Docker isolation |
+| `make smoke-reverse-ssh` | verify reverse-SSH remote access |
+
+## Documentation Map
+
+| If You Want To... | Start Here |
+| --- | --- |
+| understand the system shape | [`docs/architecture.md`](./docs/architecture.md) |
+| connect Claude, Codex, Antigravity, Cursor, or VS Code | [`docs/mcp-clients.md`](./docs/mcp-clients.md) |
+| run the curl-first examples | [`examples/README.md`](./examples/README.md) |
+| deploy on a trusted host | [`docs/deployment.md`](./docs/deployment.md) |
+| review production constraints | [`docs/production-hardening.md`](./docs/production-hardening.md) |
+| run the convergence harness | [`docs/convergence-harness.md`](./docs/convergence-harness.md) |
+| inspect release history | [`CHANGELOG.md`](./CHANGELOG.md) |
+| see where the project is headed | [`ROADMAP.md`](./ROADMAP.md) |
+
+## Contributing
+
+If you want to help, start with:
+
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+- [`docs/good-first-issues.md`](./docs/good-first-issues.md)
+- [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md)
+
+If Auto Browser is useful, a star helps other people find it. Sponsorship and tip options live in [`TIPS.md`](./TIPS.md).

@@ -1,0 +1,433 @@
+<!-- mcp-name: io.github.emergent-wisdom/semahash -->
+<!-- deploy-trigger: 2026-04-11 -->
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/emergent-wisdom/sema/main/docs/images/sema_banner.png" alt="Sema — When the hash is the word" width="800">
+</p>
+
+# Sema: When the Hash Is the Word
+
+**Content-addressed semantics for multi-agent coordination.**
+
+[![PyPI](https://img.shields.io/pypi/v/semahash.svg)](https://pypi.org/project/semahash/)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-blue)](https://registry.modelcontextprotocol.io/servers/io.github.emergent-wisdom/semahash)
+[![Paper](https://img.shields.io/badge/Paper-PDF-red)](https://github.com/emergent-wisdom/sema/blob/main/paper/sema.pdf)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19462702.svg)](https://doi.org/10.5281/zenodo.19462702)
+[![Code: MIT](https://img.shields.io/badge/Code-MIT-green)](https://github.com/emergent-wisdom/sema/blob/main/LICENSE)
+[![Content: CC BY 4.0](https://img.shields.io/badge/Content-CC%20BY%204.0-lightgrey)](https://github.com/emergent-wisdom/sema/blob/main/LICENSE-CONTENT)
+
+Sema is a content-addressed reference system for reasoning and communication. Participants encode and hash information under an agreed representation, then reuse the content address as a verifiable reference, optionally paired with a human-readable handle. Matching full references establishes identity of the resolved hashed content; semantic equivalence, correctness, and enforcement remain separate questions.
+
+**Web:** [semahash.org](https://semahash.org) · **Discord:** [Join](https://discord.gg/hRhVqAuDYQ)
+
+## Install
+
+### MCP Server (recommended)
+
+Add to any MCP client (Claude Code, Cursor, VS Code, Windsurf, Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "sema": {
+      "command": "uvx",
+      "args": ["--from", "semahash[mcp]", "sema", "mcp"]
+    }
+  }
+}
+```
+
+Or via Claude Code CLI:
+
+```bash
+claude mcp add sema -- uvx --from "semahash[mcp]" sema mcp
+```
+
+This uses [uv](https://docs.astral.sh/uv/) to download, install, and run sema
+in an isolated environment on first invocation, then caches it for subsequent
+calls.
+
+### Claude Code plugin (MCP server + skill)
+
+Sema also ships as a Claude Code plugin — MCP server plus a skill that teaches the agent the search/resolve/mint/handshake workflow:
+
+```bash
+# One-time: add the Emergent Wisdom marketplace
+claude plugin marketplace add emergent-wisdom/marketplace
+
+# Install the plugin
+claude plugin install sema
+```
+
+This gives you the MCP server **and** the `sema-usage` skill (auto-loaded), which teaches when to search vs mint, how to embed handles in text, and how to verify meaning at boundaries. The skill is a Claude Code convenience — the MCP server works with any client.
+
+For local development:
+
+```bash
+claude --plugin-dir /path/to/sema
+```
+
+### Permanent install (pip)
+
+```bash
+pip install "semahash[mcp]"
+```
+
+For CLI-only use (no MCP server):
+
+```bash
+pip install semahash
+```
+
+## Quick Start
+
+### Use with AI Agents (MCP)
+
+Already covered above via the JSON config or `pip install` path. For development against this repo:
+
+```bash
+git clone https://github.com/emergent-wisdom/sema.git
+pip install -e "./sema[mcp]"
+```
+
+Your agent now has access to `sema_search`, `sema_lookup`, `sema_handshake`, and 9 more tools. Any MCP-compatible client works — Sema exposes a standard stdio server.
+
+**Verify it works** — ask your agent: *"Search sema for coordination patterns and handshake on StateLock"*
+
+Sema exposes a standard MCP stdio server — any MCP-compatible client works, including [OpenClaw](https://openclaw.ai/) (`openclaw mcp set sema '{"command":"uvx","args":["--from","semahash[mcp]","sema","mcp"]}'`).
+
+### Use via CLI
+
+```bash
+# Search the vocabulary
+sema search "coordination"
+
+# Look up a specific pattern
+sema resolve StateLock
+
+# Print a pattern's full definition
+sema show StateLock
+
+# Browse the graph structure
+sema skeleton
+
+# Watch the active vocabulary in the local view (binds to 127.0.0.1 by default)
+sema serve --open
+```
+
+### Bring Your Own Vocabulary
+
+Build a private registry from scratch — no PR or maintainer in the loop:
+
+```bash
+sema init ./mylib.db
+sema use ./mylib.db
+sema apply --add path/to/MyPattern.json
+sema search "..."
+```
+
+Subsequent `sema` commands (including `sema mcp`) read from your private
+registry. (`SEMA_DB_PATH`, if set, overrides `sema use`.) See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the canonical
+contribution path and [docs/specification/versioning.md](docs/specification/versioning.md) for the
+refinement and supersession policy.
+
+Package a project database as a verified, standalone library release:
+
+```bash
+sema package ./mylib.db \
+  --name mylib \
+  --version 1.0.0 \
+  --output-dir dist/mylib-1.0.0 \
+  --github-repo acme/sema-mylib
+```
+
+Publish the generated `library.json` and versioned ZIP as assets on the
+corresponding published GitHub Release. Consumers install the Release asset URL
+for `library.json`—not the repository URL or a branch:
+
+```bash
+sema install https://github.com/acme/sema-mylib/releases/latest/download/library.json
+sema use mylib
+sema list
+sema root
+```
+
+It installs one verified snapshot at a time rather than merging vocabularies;
+the bundled vocabulary remains the offline default. Use `sema update mylib` to
+follow the installed library's recorded release pointer. See
+[Publishing and Installing Vocabulary Libraries](docs/guides/libraries.md) for
+the complete DeFi authoring, dependency-closure, packaging, GitHub Release, and
+update workflow.
+
+Libraries published on [semahash.org](https://semahash.org) can be found and
+installed by name, without an account:
+
+```bash
+sema registry search defi
+sema install mylib
+```
+
+To list a release there so other people and agents can find it, log in once
+and publish from the command line:
+
+```bash
+sema login        # approve the short code in your browser, once
+sema registry import https://github.com/acme/sema-mylib/releases/latest/download/library.json
+```
+
+An agent can log in with a key that you create on your semahash.org profile
+page instead: it pipes the key to `sema login --key -` or calls the
+`sema_library_login` MCP tool.
+
+The login follows the OAuth 2.0 device authorization flow, so it also works
+from an agent or a machine without a browser. To use another deployment, run
+`sema login --registry https://registry.example`. A successful login remembers
+that registry for subsequent commands. `--registry` and `SEMA_REGISTRY_URL`
+override the remembered choice; `https://semahash.org` is the first-use default.
+
+### Use in Python
+
+```python
+from sema.core.registry import RegistryManager
+
+registry = RegistryManager()
+pattern = registry.get_pattern("StateLock")
+
+# Look up the canonical reference
+print(pattern["sema_ref"])  # StateLock#c9c2
+
+# Verify an inline reference before relying on it
+assert pattern["sema_ref"] == "StateLock#c9c2"
+```
+
+### Try the Protocol (No API Keys Needed)
+
+```bash
+python experiments/demos/local_handshake.py
+```
+
+See the handshake in action: matching hashes PROCEED, mismatched hashes HALT,
+and unknown patterns HALT. Cooperative mode accepts short prefixes for drift
+detection; strict mode requires the full hash. Takes 2 seconds.
+
+## How It Works
+
+```
+word = hash(canonical(definition))
+```
+
+Take any concept (a coordination protocol, a reasoning pattern, a trust mechanism), express it in canonical form, hash it. That hash IS the word. Change one byte in the definition, get a different word.
+
+```
+Cooperative: sema_handshake("StateLock#c9c2")
+             -> PROCEED with assurance="prefix", or HALT
+
+Strict:      sema_handshake("StateLock", "<full 64-char hash>", strict=true)
+             -> PROCEED with assurance="full_hash", or HALT
+```
+
+This is the **Anti-Postel principle**: strict mode proceeds only on full-hash
+identity; cooperative mode uses compact prefixes as a non-adversarial drift
+signal. Mismatches fail closed in both modes.
+
+## The Vocabulary
+
+The bundled vocabulary spans 4 layers:
+
+- **Physics** — Immutable substrate (locks, entropy, causality)
+- **Mind** — Hybrid cognition (reasoning, inference, strategy)
+- **Society** — Multi-agent coordination (economics, governance, protocols)
+- **Infrastructure** — Operational constraints (data structures, verification)
+
+Each pattern is a content-addressed behavioral definition. Concrete cards may
+add machine-verifiable contracts, invariants, failure modes, parameters, and
+typed dependencies where those fields are identity-defining.
+
+## MCP Tools
+
+When running as an MCP server (`sema mcp`), these tools are available:
+
+| Tool | Description |
+|------|-------------|
+| `sema_search` | Search patterns by name, description, or meaning |
+| `sema_lookup` | Get a pattern by its reference (e.g., `StateLock#c9c2`) |
+| `sema_resolve` | Get a pattern with dependencies expanded |
+| `sema_handshake` | Fail-closed semantic verification between agents |
+| `sema_mint` | Create a new pattern (validate, hash, add to vocabulary) |
+| `sema_propose_context` | Compute a context digest for a multi-agent definition set (drift detection) |
+| `sema_verify_context` | Verify a context proposal from another agent |
+| `sema_tree` | Browse vocabulary by layer and category |
+| `sema_validate` | Validate a pattern JSON for correctness |
+| `sema_stats` | Vocabulary statistics |
+| `sema_graph_skeleton` | Ultra-minimal graph overview (~150 tokens) |
+| `sema_reset_session` | Clear session cache so searches return full results again |
+| `sema_library_search` | Find libraries published on semahash.org |
+| `sema_library_install` | Verify and install a library by name or `library.json` URL |
+| `sema_library_login` | Store a semahash.org key that the user gives the agent |
+| `sema_library_publish` | Publish a GitHub release on semahash.org, after the user agrees |
+
+## Local View
+
+```bash
+pip install "semahash[api]"
+sema serve --open
+# Opens http://localhost:3000
+```
+
+The local view shows the vocabulary selected with `sema use`, the same one a
+connected agent writes to. It follows later switches, and its 3D graph grows
+while the agent mints: new patterns light up and appear in a live list. The
+pattern browser has card, list, and JSON views. Development stays on your
+computer; [semahash.org](https://semahash.org) hosts finished libraries, and a
+writable vocabulary's page lists the optional steps to publish one there.
+
+## Experiments
+
+The `experiments/` directory contains reproducible evaluations of Sema's
+claims and implementation boundaries.
+
+### Delta reconstruction
+
+The public `v0.3.0` to `v0.4.0` reconstruction experiment checks whether the
+current graph and hash-cascade algorithm can rebuild a target vocabulary from
+an earlier release. It compares both aggregate roots, semantic pattern content,
+the logical dependency graph, unhashed metadata, and the complete normalized
+read model rather than treating root equality as complete release equality.
+It also demonstrates the safe reconstruction path: integrate the delta into a
+complete staged card snapshot, compile a fresh database, verify the result, and
+only then activate it.
+
+```bash
+.venv/bin/python experiments/delta_reconstruction/reproduce.py
+```
+
+The experiment and its expected results are documented in
+[`experiments/delta_reconstruction/README.md`](experiments/delta_reconstruction/README.md).
+Small synthetic versions of its addition, removal, rename, cascade, metadata,
+and failure cases run in the regular test suite.
+
+### Multi-agent design challenge
+
+The controlled multi-agent design challenge compares three conditions:
+
+| Condition | Sema | Turns | Outcome |
+|-----------|------|-------|---------|
+| A: Natural language only | No | 4 | Design rejected |
+| B: Sema vocabulary | Yes | 11 | SAD Engine approved |
+| C: Sema + protocol | Yes | 25 | SAD Engine with exhaustive vetting |
+
+Agents with Sema patterns produced physics-grounded designs that survived adversarial scrutiny. Agents without Sema produced shallow designs that failed safety review.
+
+To reproduce:
+
+```bash
+cd experiments/sema_design_challenge
+export GOOGLE_API_KEY=your_key
+./reproduce.sh
+```
+
+See [`experiments/sema_design_challenge/README.md`](experiments/sema_design_challenge/README.md) for details.
+
+## Key Properties
+
+- **Zero semantic collisions** across the full vocabulary
+- **16.9x average token compression** via content-addressed stubs
+- **Fail-closed architecture** — mismatches halt, never fail silently
+- **Mean embedding similarity of 0.21** — high structural distinctness
+
+### Formal-verification pilot
+
+Sema's handshake decision kernel and canonicalization type tags have a small
+Lean 4 proof suite. The handshake supports cooperative prefix matching for
+ordinary drift detection and strict full-hash verification for proof-grade
+identity; the proofs state each guarantee separately. The encoding proof
+establishes pre-hash domain separation, while Python conformance tests connect
+the models to production. See
+[`verification/README.md`](verification/README.md) for the proven theorems,
+trusted-computing-base assumptions, and explicit limits of the claim.
+
+## Using with understanding-graph
+
+Sema gives your agents shared *semantic* memory — a vocabulary of cognitive patterns with content-addressed identity. [Understanding Graph](https://github.com/emergent-wisdom/understanding-graph) gives them shared *episodic* memory — the actual thinking trail behind a decision. They compose:
+
+```bash
+claude mcp add sema -- uvx --from "semahash[mcp]" sema mcp
+claude mcp add ug   -- npx -y understanding-graph mcp
+```
+
+With both installed, an agent can:
+
+1. Anchor an understanding-graph decision node in a sema pattern hash (e.g. `StateLock#c9c2`) so the meaning of the primitive can never drift.
+2. Use `graph_semantic_search` to find all past graph nodes that reference a given sema pattern — hash-stable history, not keyword matching.
+3. Call `sema_handshake` *before* writing a decision that depends on a shared concept; if it returns `HALT`, the agent writes a `tension` node instead and stops, preventing silent divergence.
+
+Full walkthrough: [docs/guides/understanding-graph.md](docs/guides/understanding-graph.md)
+
+## Repository Structure
+
+```
+sema/
+├── src/sema/              Core library (hashing, validation, MCP server, API)
+├── data/                  Vocabulary pattern cards + taxonomy databases
+├── docs/                  Documentation (philosophy, schema spec, CLI reference)
+├── paper/                 Academic paper (sema.tex)
+├── web/                   Web frontend (React + Three.js graph visualization)
+├── experiments/
+│   ├── orchestrator/      Multi-agent engine (bundled for experiment reproduction)
+│   ├── delta_reconstruction/  Historical release reconstruction validation
+│   ├── sema_design_challenge/  Main experiment (3 conditions, 5 runs, full traces)
+│   └── demos/             Standalone demos (local handshake, Babel Test)
+└── pyproject.toml         Package config (extras: [mcp], [api], [full])
+```
+
+## Contributing
+
+Want to add patterns, improve existing ones, or host the frontend locally? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Citing
+
+```bibtex
+@misc{westerberg2026sema,
+  title        = {Sema: When the Hash Is the Word},
+  author       = {Westerberg, Henrik},
+  year         = {2026},
+  month        = apr,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.19462702},
+  url          = {https://doi.org/10.5281/zenodo.19462702}
+}
+```
+
+See [`CITATION.cff`](CITATION.cff) for the machine-readable version (GitHub
+renders a "Cite this repository" button from it).
+
+## Safety
+
+Sema ships no executable code — it's a library of pattern *definitions* (handles, mechanisms, invariants, dependency graphs). The MCP server hands patterns to clients as data; it does not execute the behaviors they describe.
+
+**Intended use: reasoning and reference.** Patterns are thinking tools — named concepts agents can search, resolve, and handshake on to reason about coordination, risk, and procedure. See [`docs/manuals/vocabulary-design.md`](docs/manuals/vocabulary-design.md) for the intent behind each pattern and the design choices.
+
+**Running patterns as executable recipes is untested.** Many patterns describe procedures an agent could step through; patterns in a `Dynamics` category do not, because they describe how a system behaves and are applied to interpret a case rather than executed. Executing a procedure is still a research phase — the mechanism text has not been validated end-to-end, and we make no claims about safety when a pattern is executed rather than referenced. If you go this route, run the agent's execution step in a sandboxed environment. Patterns with known risks carry a `caution` field in their metadata; absence of that flag means the pattern has not been classified as risky, not that it has been certified safe.
+
+The long-term goal is cryptographically enforced safety constraints on agent-to-agent communication — an active research direction.
+
+## License
+
+Sema is dual-licensed:
+
+- **Code** (everything in `src/`, `web/`, `experiments/`, `scripts/`, and the
+  package config) — [MIT](LICENSE). Self-host it, fork it, build commercial
+  products on top of it.
+- **Content** (the pattern vocabulary in `data/`, the documentation in `docs/`,
+  the academic paper in `paper/`, and the prose displayed on
+  [semahash.org](https://semahash.org)) —
+  [CC BY 4.0](LICENSE-CONTENT). Reuse the patterns and prose anywhere, for any
+  purpose including commercial. Suggested attribution when sharing the
+  vocabulary:
+
+  > Vocabulary from [Sema](https://github.com/emergent-wisdom/sema), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+For academic citation, see [`CITATION.cff`](CITATION.cff). GitHub renders this
+as a "Cite this repository" button on the project page that generates APA and
+BibTeX automatically.

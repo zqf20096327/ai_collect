@@ -1,0 +1,210 @@
+CogAlg
+======
+
+This is a draft algorithm for primarily bottom-up hierarchical clustering, from pixels to eternity. My objective function is projected model-to-environment correspondence, increased through open-ended exploration (vs. zero-bounded and implicitly supervised loss minimization in current ML).
+Main process is [agg_recursion](https://github.com/boris-kz/CogAlg/blob/master/frame_2D_alg/agg_recursion.py), is designed for consistency with my definition of intelligence: the ability to predict from prior or proximate input. Any prediction is interactive projection of known patterns, so it must start with pattern discovery (AKA unsupervised learning: an obfuscating negation-first term). This perspective is not novel, pattern recognition is a core of any IQ test, and a main focus of ML. But in statistical ML, including neuromorphic or artificial Neural Nets, primary clusters / patterns are fully fuzzy (fully connected). All nodes share the same or uniformly kernelized receptive field, without segmentation. Thus generalization is a side effect of top-down stochastic fitting, not an explicit objective.
+
+My process starts with lateral cross-comparison of original inputs, followed by summing them into match-defined clusters. It is initially proximity-constrained [connectivity-based clustering](https://en.wikipedia.org/wiki/Cluster_analysis#Connectivity-based_clustering_(hierarchical_clustering)), vs. stochastic vertical fitting in NN. This cross-comp and clustering should be recursively hierarchical, forming patterns of patterns and so on. Primary connectivity is in space-time, but feedback can re-order input along all sufficiently predictive derived dimensions (eigenvectors). This is similar to [spectral clustering](https://en.wikipedia.org/wiki/Spectral_clustering), but still connectivity-based, in a new frame of reference.
+Higher clustering orders are increasingly centroid-based, but still sparse, segmenting the model and enabling scalability via selective local processing. There is no direct parameter training, the feedback only adjusts hyperparameters. I never randomize anything, to me it's a mark of the beast.
+
+Connectivity likely represents local interactions, which may form both similarity clusters and their high-variance boundaries. Such boundaries reflect stability (resilience to external impact) of the core similarity cluster. The most basic example is image contours, which are initially more informative than the flat areas they demarcate. The contour represent separability of the core cluster, beyond which cross-similarity is not likely to continue. Next-level cross-comp should be between new higher-composition and higher-derivation cluster + contour representations, adding another layer of composition and derivatives. This "complemented" clustering is inherently discontinuous and complex, requiring selection at each processing stage.
+
+Each agglomeration level goes through three stages: 
+- generative cross-comp, forming match and miss, with incremental comparison range and/or incremental derivation,
+- compressive clustering, by node connectivity or link correlation, initially pair-wise then optionally group-wise in centroid clusters,
+- downward feedback to scale filters, input coordinates, and potentially code-modification weights, according to cluster projection and cross-projection.
+The first two stages are broadly similar to self-attention and feed-forward in transformers, but with dual hierarchy of derivatives and nodes. 
+Such nesting allows for semantically differentiated local processing and sparse message-passing, which can be far more efficient and interpretable.
+
+Clustering is among the oldest methods in ML, but I think my criteria are uniquely consistent for scaling in the complexity of discoverable patterns:
+- Links represent both similarity and difference of connected nodes.
+- Similarity is defined as relative input compression: Jaccard similarity, not a dot product. 
+- Difference is intrinsically negative: it blocks projection of co-derived similarity, borrowing its value.
+- Projected similarity is an explicit cognitive objective function, which can be used to optimize the process automatically. 
+- Lateral projection selects the input for cross-comparison at the edge of predictability, where additional evidence has the highest expected value.
+- Comparison parameterizes clusters for higher-order cross-comp, incremental in range, derivation, and composition.
+- Clustering cycle proceeds through incrementally sparse and fuzzy expansion stages, from connectivity to centroid based.
+
+I frame all learning in terms of comparison and clustering, including statistical ML and neural nets. To begin with, 
+- Hebbian-family learning is local weight adjustment by input-output coincidence (binary-valued version of direct similarity for spiking activations). It's unstable by itself, so Oja's rule adds normalization to track the principal direction of inputs. Finally, competitive Hebbian variants implement online centroid tracking: inference and update are interleaved on a stream. Same logic as in centroid clustering but without batch fitting — the centroids never settle.
+- Deep Learning adjusts the weights by backprop of decomposed error: inverse similarity to the target layer. Basic ANN: [multi-layer perceptron](https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53) or [KAN](https://towardsdatascience.com/kolmogorov-arnold-networks-kan-e317b1b4d075), performs lossy stochastic chain-rule curve fitting. As with Hebbian learning, it's a prototype-based clustering: hidden-layer nodes learn to represent a fuzzy cluster of their input features. But the prototype is the whole target layer vs. single local activation, and fitting is distributed over multiple layers. All nodes share the same "receptive field", but with different weights, similar to fully-fuzzy multi-layer version of [Fuzzy C-means](https://www.geeksforgeeks.org/machine-learning/ml-fuzzy-clustering/).
+
+Modern ANNs combine vertical training with lateral cross-correlation, across an input vector. CNN filters tend to converge on edge-detection in initial layers. Edge detection means computing lateral gradient, by weighted pixel cross-comparison within kernels. Graph NNs embed lateral edges, representing similarity or/and difference between nodes, also produced by their cross-comparison. Popular [transformers](https://www.quantamagazine.org/researchers-glimpse-how-ai-gets-so-good-at-language-processing-20220414/) can be seen as a [variation of Graph NN](https://towardsdatascience.com/transformers-are-graph-neural-networks-bca9f75412aa). Their first step is self-attention: computing dot product between Q and K vectors within context window. This is a form of cross-comparison because dot product serves as a measure of similarity. This "synthetic" measure scales with component similarity, but it discards signed pair-wise differences. Which are essential for directional projection of raw similarity.
+
+So basic operation in trained CNN and self-attention is what I call cross-comparison, however indirect, but the former selects for variance and the latter for similarity. I think the difference is due to relative rarity of each in respective target data: mostly low gradients in raw images and sparse similarities in compressed text. This rarity or surprise determines information content of the input. But almost all text ultimately describes generalized images and objects therein, so there should be a gradual transition between the two. My cross-comp computes both similarity and variance, for differential correlation clustering.
+Subsequent "reasoning" is analogous to connectivity-based clustering: each valid inference is an edge.
+My sequence is reversed: initial connectivity clustering seeds incrementally more complex centroid formation. This seeding obviates all forms of randomization.
+
+GNN, transformers, and Hinton's [Capsule Networks](https://medium.com/ai%C2%B3-theory-practice-business/understanding-hintons-capsule-networks-part-i-intuition-b4b559d1159b) all have positional embeddings, as I use explicit coordinates. But they are still trained through destructive backprop: randomized summation first, output-to-template comparison last. This primary summation degrades resolution of learning process, exponentially with the number of layers. Hence, a ridiculous number of backprop cycles is needed to fit hidden layers into generalized representations of the input. Most practitioners agree that this process is not very smart, the noise-worship alone is the definition of stupidity. I think it's just a low-hanging fruit for terminally lazy evolution, and slightly more principled human coders. And it's easy to parallelize, which is crucial for glacially slow and RAM-less cell-based biology. Top-down fitting doesn't belong in intrinsic unsupervised learning, it's a vestige of supervision in what they call "self-supervised" learning. Which prioritizes fast inference vs. efficient learning. Great for short-term survival, not for continual progress. 
+
+This scheme is self-contained, there is no preprocessing (though some inductive bias on lower levels), and all operations are derived from the above principles. Such conceptual integrity provides the confidence to invest in highly complex design, without hand-to-mouth trial and error that dominates ML.
+This is an open project: [WIKI](https://github.com/boris-kz/CogAlg/wiki), we need help with design and implementation. I pay for contributions or monthly if there is a track record, see [CONTRIBUTING](https://github.com/boris-kz/CogAlg/blob/master/CONTRIBUTING.md). This content is published under Creative Commons Attribution 4.0 International License.
+Below I elaborate on the process and comparisons to ANN and BNN, but this is probably enough to decide if you want to get into the code.
+
+### Outline
+
+Initial clustering levels, positional resolution (macro) lags value resolution (micro) by one quantization order:
+
+| Input                          | Comparison | Positional Resolution                        | Output                         | Conventionally known as            |
+|-----------------------------------------|------------|----------------------------------------------|-----------------------------------------|------------------------------------|
+| _unary_ intensity                         | AND        | _none,_ all in same coords                            | pixels of intensity                          | digitization                       |
+| _integer_ pixels                          | SUB        | _binary:_ direction of comparison                            | blobs of gradient                       | edge detection, flood fill |
+| _float:_ average blob params                     | DIV: compare blob params        | _integer:_ distance between blob centers                          | graphs of blobs              | connectivity-based clustering      |
+| _complex:_ normalized graph params | LOG: compare graph params        | _float:_ distance between graph centers | hierarchical graphs | agglomerative clustering   |
+
+And so on, higher levels should be added recursively. Such process is very complex and deeply structured, I see no way how it could evolve naturally. Since the code is supposed to be recursive, testing before it is complete is almost useless. Which is probably why no one seems to work on such methods. But once the design is done, there is no need for interminable glacial and opaque training, my feedback only adjusts hyperparameters.
+
+To reiterate, pattern is a cluster of transitively matching elements, where match is compression achieved by replacing elements with their derivatives, see “Comparison” section below. More commonly, pattern is supposed to be a recurring set or order of elements, but to me this is a second-order pattern. If the elements co-vary: they don't match but their derivatives do, then the derivatives become elements of a higher-derivation pattern. 
+
+Consistent process must start with cross-comp of adjacent atomic inputs: sensory data at the limit of resolution, such as pixels of video or equivalents in other modalities. Symbolic data is not a separate modality, just a generalized and encoded sensory data. These symbols must be decoded to discover meaningful patterns, which gets exponentially more difficult with the level of encoding. Thus, it's far easier to implement starting with raw sensory input: [whole-system diagram](https://github.com/boris-kz/CogAlg/blob/master/frame_2D_alg/Illustrations/Whole-system%20hierarchy.png)).
+
+This is a very low-level process, which seems like quite a jump from the generalities above. But it really isn’t, internally consistent pattern discovery must be strictly bottom-up, in the complexity of both inputs and operations. And there is no ambiguity at the bottom: initial predictive value that defines patterns is a match from cross-comparison among their elements, starting with pixels. I think my process is uniquely consistent with these definitions, let me know if you see any discrepancy.
+
+Some notes:
+- There should be a unique set of operations added per level, hence a singular in “cognitive algorithm”.
+- Core design must be done theoretically: generality requires large upfront investment in process complexity, which makes it a huge overkill for any specific task. That’s one reason why such schemes are not explored.
+- Many readers note disconnect between abstractions in this outline, and the amount of detail in current code. That’s because we are in space-time continuum: search must follow proximity in each dimension, which requires specific processing. It’s not specific to vision, the process is roughly the same for all raw modalities. 
+- Another complaint is that I don't use mathematical notation, but it doesn't have the flexibility to express a deeply conditional process. Math is not separable from logic here.
+- Most people who aspire to work on AGI think in terms behavior and robotics. I think this is far too coarse to make progress, the most significant mechanisms are on the level of perception. Feedforward (perception) must drive feedback (action), not the other way around.
+- Other distractions are supervision and reinforcement. These are optional task-specific add-ons, core cognitive process is unsupervised pattern discovery, and main problem here is scalability in complexity.
+
+#### Comparison (more in part 2 below)
+
+Basic comparison is inverse arithmetic operation between single-variable comparands, of incremental power: Boolean, subtraction, division, etc. Each order of comparison forms miss or loss: XOR, difference, ratio, etc., and match or similarity, which can be defined directly or as inverse deviation of miss. Direct match is compression of represented magnitude by replacing larger input with corresponding miss between the inputs: Boolean AND, the smaller input in comp by subtraction, integer part of ratio in comp by division, etc.
+
+These direct similarity measures work if input intensity represents some stable physical property, which anti-correlates with variation. This is the case in tactile but not in visual input: brightness doesn’t correlate with inertia or invariance, dark objects are just as stable as bright ones. Thus, initial match in vision should be defined indirectly, as inverse deviation of variation in intensity. 1D variation is difference, ratio, etc., while multi-D comparison has to combine them into Euclidean distance and gradient, as in common edge detectors.
+
+Cross-comparison among patterns forms match and miss per parameter, as well as dimensions and distances: external match and miss (these are separate parameters: total value = precision of what * precision of where). Comparison is limited by max. distance between patterns. Overall hierarchy has incremental dimensionality: search levels ( param levels ( pattern levels)).., and pattern comparison is selectively incremental per such level. This is hard to explain in NL, please see the code, starting with [line_Ps](https://github.com/boris-kz/CogAlg/blob/master/line_1D_alg/line_Ps.py) and [line_PPs](https://github.com/boris-kz/CogAlg/blob/master/line_1D_alg/line_PPs.py).
+  
+Resulting matches and misses are summed into lateral match and miss per pattern. Proximate input patterns with above-average match to their nearest neighbors are clustered into higher-level patterns. This adds two pattern levels: of composition and derivation, per level of search. Conditional cross-comp over incremental range and derivation, among the same inputs, may also add sub-levels in selected newly formed patterns. On a pixel level, incremental range is using larger kernels, and incremental derivation starts with using Laplacian. 
+
+#### Feedback (more in part 3 below)
+
+Higher-level feedback will adjust filters, starting with average match, then ave per parameter derived by deeper cross-comp. More precisely, these should be co-averages: values coincident with an average value of combined higher-level param. There are also positional or external filters, starting with pixel size and kernel size, which determine external dimensions of the input. Quantization (bit, integer, float..) of internal and external filters corresponds to the order of comparison. The filters are similar to hyperparameters in Neural Nets, with the same values across a level. The equivalent to weight matrix are links (edges) between nodes of a graph, but they are lateral vs. implicitly vertical when formed via backprop or [Hebbian learning](https://data-flair.training/blogs/learning-rules-in-neural-network/#:~:text=The%20Hebbian%20rule%20was%20the,of%20nodes%20of%20a%20network.&text=For%20neurons%20operating%20in%20the,weight%20between%20them%20should%20decrease.) in NNs.
+
+In a broader frame of reference, the above-mentioned external filters will define source locations for selective input to higher-level patterns. This is similar to human attention and ultimately decision-making. These locations can be projected vs. actually observed, generating input for imagination and hypothetical reasoning.
+
+#### Hierarchy
+
+There is a single global hierarchy: feedforward inputs and feedback filters pass through the same levels of search and composition. Each higher level is a nested hierarchy, with depth proportional to elevation, but sub-hierarchies are unfolded sequentially. That’s why I don’t have many diagrams: they are good at showing relations in 2D, but I have a simple 1D sequence of levels. Nested sub-hierarchies are generated by the process itself, depending on elevation in a higher-order hierarchy. That means I can’t show them in a generic diagram. 
+
+Brain-inspired schemes have separate sensory and motor hierarchies, in mine they combined into one. The equivalent of motor patterns in my scheme are positional filter patterns, which ultimately move the sensor. The first level is co-located sensors: targets of input filters, and more coarse actuators: targets of positional filters. I can think of two reasons they are separated in the brain: neurons and axons are unidirectional, and training process has to take the whole hierarchy off-line. Neither constraint applies to my scheme.
+
+Final algorithm will consist of first-level operations + recursive increment in operations per level. The latter is a meta-algorithm that extends working level-algorithm, to handle derivatives added to current inputs. So, the levels are: 1st level: G(x), 2nd level: F(G)(x), 3rd level: F(F(G))(x).., where F() is the recursive code increment. Resulting hierarchy is a pipeline: patterns are outputted to the next level, forming a new level if there is none. As long as there are novel inputs, higher levels will discover longer-range spatio-temporal and then conceptual patterns. 
+
+
+### 1: Why not use Artificial or Neuromorphic NNs
+
+All unsupervised learning is some form of pattern discovery, where patterns are clusters of similar elements. There are two fundamentally different ways to cluster inputs: centroid-based and connectivity-based. I believe all [statistical learning](https://en.wikipedia.org/wiki/Statistical_learning_theory), including Neural Nets, is best understood as distributed [centroid-based clustering](https://en.wikipedia.org/wiki/Cluster_analysis#Centroid-based_clustering). Centroid is whatever the model fits to, not necessarily a single value. Template line in linear regression can be considered a one-dimensional centroid, with the whole training set as a multi-dimensional centroid.
+
+That usually means training [CNN](https://en.wikipedia.org/wiki/Convolutional_neural_network) or Transformer to perform some sort of edge-detection or cross-correlation (same as my cross-comparison but the former terms lose meaning on higher levels of search). But CNN operations are initially random, while my process is designed for cross-comp from the start. This is why it can be refined by my feedback, updating the filters, which is far more subtle and selective than weight training by backprop. So, I have several problems with basic process in ANN:
+
+- Vertical learning (via feedback of error) takes tens of thousands of cycles to form accurate representations. That's because summation per layer degrades positional input resolution. With each added layer, the output that ultimately drives learning contains exponentially smaller fraction of original information. My cross-comp and clustering is far more complex per level, but the output contains all information of the input. Lossy selection is only done on the next level, after evaluation per pattern (vs. before evaluation in statistical methods). 
+
+- Both initial weights and sampling that feeds [SGD](https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31) (Stochastic Gradient Descent) are randomized. Also driven by random variation are [RBMs](https://en.wikipedia.org/wiki/Restricted_Boltzmann_machine), [GANs](https://en.wikipedia.org/wiki/Generative_adversarial_network), [VAEs](https://golden.com/wiki/Variational_autoencoder), etc. But randomization is antithetical to intelligence, it's only useful in statistical methods because they merge inputs with weights irreversibly. Thus, any non-random initialization and variation will introduce bias. All input modification in my scheme is via hyper-parameters, stored separately and then used to normalize (remove bias) inputs for comparison to inputs formed with different-value hyper-parameters. 
+
+- SGD minimizes error (top-layer miss), which is quantitatively different from maximizing match: compression. And that error is w.r.t. some specific template, while my match is summed over all past input / experience. The “error” here is plural: lateral misses (differences, ratios, etc.), computed by cross-comparison within a level. All inputs represent environment and have positive value. But then they are packed (compressed) into patterns, which have different range and precision, thus different relative value per relatively fixed record cost.
+
+- Representation in ANN is fully distributed, similar to the brain. But the brain has no alternative: there is no substrate for local memory or program in neurons. Computers have RAM, so parallelization is a simple speed vs. efficiency trade-off, useful only for complex semantically isolated nodes. Such nodes are patterns, encapsulating a set of co-derived “what” and “where” parameters. This is similar to neural ensemble, but parameters that are compared together should be localized in memory, not distributed across a network.
+
+More basic neural learning mechanism is Hebbian, though it is rarely used in ML. Conventional spiking version is that weight is increased if the synapse often receives a spike just before the node fires, else the weight is decreased. But input and output don't have to be binary, the same logic can be applied to scalar values: the weight is increased / decreased in proportion to some measure of similarity between its input and following output of the node. That output is normalized sum of all inputs, or their centroid.
+
+Such learning is local, within each node. But it's still a product of vertical comparison: centroid is a higher order of composition than individual inputs. This comparison across composition drives all statistical learning, but it destroys positional information at each layer. Compared to autoencoders (main backprop-driven unsupervised learning technique), Hebbian learning lacks the decoding stage, as does the proposed algorithm. Decoding decomposes hidden layers, to equalize composition orders of output and compared template.
+
+Inspiration by the brain kept ANN research going for decades before they became useful. Their “neurons” are mere stick figures, but that’s not a problem, most of neuron’s complexity is due to constraints of biology. The problem is that core mechanism in ANN, weighted summation, may also be a no-longer needed compensation for such constraints: neural memory requires dedicated connections. That makes representation and cross-comparison of individual inputs very expensive, so they are summed. But we now have dirt-cheap RAM.
+
+Other biological constraints are very slow neurons, and the imperative of fast reaction for survival in the wild. Both favor fast though crude summation, at the cost of glacial training. Reaction speed became less important: modern society is quite secure, while continuous learning is far more important because of accelerating progress. Summation also reduces noise, which is very important for neurons that often fire at random, to initiate and maintain latent connections. But that’s irrelevant for electronic circuits.
+
+I see no way evolution could produce proposed algorithm, it is extremely limited in complexity that can be added before it is pruned by natural selection. And that selection is for reproduction, while intelligence is distantly instrumental. The brain evolved to guide the body, with neurons originating as instinctive stimulus-to-response converters. Hence, both SGD and Hebbian learning is fitting, driven by feedback of action-triggering weighted input sum. Pattern discovery is their instrumental upshot, not an original purpose.
+
+Uri Hasson, Samuel Nastase, Ariel Goldstein reach a similar conclusion in “[Direct fit to nature: an evolutionary perspective on biological and artificial neural networks](https://www.cell.com/neuron/fulltext/S0896-6273(19)31044-X)”: “We argue that neural computation is grounded in brute-force direct fitting, which relies on over-parameterized optimization algorithms to increase predictive power (generalization) without explicitly modeling the underlying generative structure of the world. Although ANNs are indeed highly simplified models of BNNs, they belong to the same family of over-parameterized, direct-fit models, producing solutions that are mistakenly interpreted in terms of elegant design principles but in fact reflect the interdigitation of ‘‘mindless’’ optimization processes and the structure of the world.”
+
+
+### 2: Atomic comparison: quantifying match and miss between variables (which define patterns)
+
+
+First, we need to quantify predictive value. Algorithmic information theory defines it as compressibility of representation, which is perfectly fine. But compression is currently computed only for sequences of inputs, while I think a logical start is analog input digitization: a rock bottom of organic compression hierarchy. The next level is cross-comparison among resulting pixels, commonly known as edge detection, and higher levels will cross-compare resulting patterns. Partial match computed by comparison is a measure of compression.
+
+Partial match between two variables is a complementary of miss, in corresponding power of comparison: 
+- Boolean match is AND and miss is XOR (two zero inputs form zero match and zero miss), 
+- comparison by subtraction increases match to a smaller comparand and reduces miss to a difference,
+- comparison by division increases match to min * integer part of ratio and reduces miss to a fractional part
+(direct match works for tactile input. but reflected-light in vision requires inverse definition of initial match)
+
+In other words, match is a compression of larger comparand’s magnitude by replacing it with miss. Which means that match = smaller input: a common subset of both inputs, = sum of AND between their uncompressed (unary code) representations. Ultimate criterion is recorded magnitude, rather than bits of memory it occupies, because the former represents physical impact that we want to predict. The volume of memory used to record that magnitude depends on prior compression, which is not an objective parameter. 
+
+Given incremental complexity, initial inputs should have binary resolution and implicit shared coordinate (being a macro-parameter, resolution of coordinate lags that of an input). Compression of bit inputs by AND is well known as digitization: substitution of two lower 1 bits with one higher 1 bit. Resolution of coordinate (input summation span) is adjusted by feedback to form integers that are large enough to produce above-average match.
+
+Next-order compression can be achieved by comparison between consecutive integers, distinguished by binary (before | after) coordinate. Basic comparison is inverse arithmetic operation of incremental power: AND, subtraction, division, logarithm, and so on. Additive match is achieved by comparison of a higher power than that which produced comparands: comparison by AND will not further compress integers previously digitized by AND.
+
+Rather, initial comparison between integers is by subtraction, resulting difference is miss, and smaller input is absolute match. Compression of represented magnitude is by replacing i1, i2 with their derivatives: match (min) and miss (difference). If we sum each pair, inputs: 5 + 7 -> 12, derivatives: match = 5 + miss = 2 -> 7. Compression by replacing = match: 12 - 7 -> 5. Difference is smaller than XOR (non-zero complementary of AND) because XOR may include opposite-sign (opposite-direction) bit pairs 0, 1 and 1, 0, which are cancelled-out by subtraction.
+
+Comparison by division forms ratio, which is a magnitude-compressed difference. This compression is explicit in long division: match is accumulated over iterative subtraction of smaller comparand from remaining difference. In other words, this is also a comparison by subtraction, but between different orders of derivation. Resulting match is smaller comparand * integer part of ratio, and miss is final reminder or fractional part of ratio.
+
+A ratio can be further compressed by converting to a radix | logarithm, and so on. But computational costs may grow even faster. Thus, power of comparison should increase only for inputs sufficiently compressed by lower power: AND for bit inputs, SUB for integer inputs, DIV for pattern inputs, etc. Actual compression depends on input and on resolution of its coordinate: input | derivative summation span. We can’t control the input, so average match is adjusted via coordinate resolution.
+
+But the costs of operations and incidental sign, fraction, irrational fraction, etc. may grow even faster. To justify the costs, the power of comparison should only increase in patterns with above-average projected match borrowed by the miss from prior order of comparison: AND for bit inputs, SUB for integer inputs, DIV for pattern inputs, etc. Inclusion into such patterns is by relative match: match - ave: past match that co-occurs with average higher-level match.
+
+Match value should be weighted by the correlation between input intensity and its stability: mass / energy / hardness of an observed object. Initial input, such as reflected light, is likely to be incidental: such correlation is very low. Since match is the magnitude of smaller input, its weight should also be low if not zero. In this case projected match consists mainly of its inverse component: match cancellation by co-derived miss, see below. 
+
+The above discussion is on match from current comparison, but we really want to know projected match to future or distant inputs. That means the value of match needs to be projected by co-derived miss. In comparison by subtraction, projected match = min (i1, i2) * weight (fractional) - difference (i1, i2) / 2 (divide by 2 because the difference only reduces projected input, thus min( input, projected input), in the direction in which it is negative. It doesn’t affect min in the direction where projected input is increasing). 
+
+
+#### quantifying lossy compression
+
+
+There is a general agreement that compression is a measure of similarity, but no one seems to apply it from the bottom up, the bottom being single scalars. Also, any significant compression must be lossy. This is currently evaluated by perceived similarity of reconstructed input to the original input, as well as compression rate. Which is very coarse and subjective. Compression in my level of search is lossless, represented by match on all levels of pattern. All derived representations are redundant, so it’s really an expansion vs. compression overall.  
+
+The lossy part comes after evaluation of resulting patterns on the next level of search. Top level of patterns is cross-compared by default, evaluation is per lower level: of incremental derivation and detail in each pattern. Loss is when low-relative-match buffered inputs or alternative derivatives are not cross-compared. Such loss is quantified as the quantity of representations in these lower levels, not some subjective quality. 
+
+Compression also depends on resolution of coordinate (input summation span), and of input magnitude. Projected match can be kept above system’s average by adjusting corresponding resolution filters: most significant bits and least significant bits of both coordinate and magnitude.
+
+
+### 3: Feedback: maximizing novelty vs. generality
+ 
+
+General cognitive system must have a common input selection criterion: fitness value on all levels of generalization. This value can be novelty or generality: miss or match to expectations. We can’t select for both, they exhaust all possibilities. Novelty can’t be primary: it would select for noise and filter out patterns, defined by cross-similarity. But match (confirmation) can be maximized by staring at a wall: locking into predictable environments. While natural curiosity actively skips such locations, reducing expected match.
+
+My solution is selecting for expected match within a level of generalization (composition or clustering), comparing proximate nodes. But vertical feedback between levels should select for novelty, forcing lower levels to skip predictable input spans. Higher-scope downward selection is reversed from lower-scope upward selection: criterion sign flips with the direction of propagation. Such skipping increases generality of whole system: higher levels get novel patterns that extend their predictive power more than mere confirmations.
+
+Vertical evaluation computes deviations, to form positive or negative higher-level patterns. This is relative to higher-level averages of past inputs. Due to their scope, averages should be projected over feedback delay: average += average difference * (delay / average span) /2. Average per input variable may also be a feedback, representing redundancy to higher level, which also depends on higher-level match rate: rM = match / input. If rM > average per cost of processing: additive match = input match - input-to-average match * rM.
+
+So novelty is selected by subtracting higher-level projection from corresponding input parameter. Higher-order selection is positional: skipping predictable input spans. Which is formally a *coordinate* filter: next coordinate of inputs with expected above-average *additive* predictive value. Thus, next input location is selected by (proximity - predictability): vertical attention is on the edge of predictable. It doesn't extend much beyond that edge because the cost of exploration increases with distance, however defined.
+
+ 
+#### imagination, planning, action
+
+
+Imagination is never truly original, it's just an interactive projection of known patterns. As explained above, patterns send feedback to filter lower-level sources. This feedback is to future sources, where the patterns are projected to continue or re-occur. Stronger upstream patterns and correspondingly higher filters reduce resolution of or totally skip predictable input spans. But when multiple originally distant patterns are projected into the same location, their feedback cancels out in proportion to their relative difference.
+
+Thus combined filter is cancelled-out for mutually exclusive co-projected patterns: filter = max_pattern_feedback - alt_pattern_feedback * match_rate. By default, match_rate used here is average (match / max_comparand). But it has average error: average abs(match_rate - average_match_rate). To improve filter accuracy, we can derive actual match rate by cross-comparing co-projected patterns. I think imagination is just that: search across co-projected patterns, before accessing their external target sources. 
+
+A search is defined by next input location: contiguous coordinate span. In feedback, span of target = span of source input pattern: narrower than span of source output pattern. Search across co-projected patterns is performed on a conceptually lower level, but patterns themselves belong to higher level. Hence, search will be within intersection of co-projected patterns, vs. whole patterns. Intersection is a location within each of the patterns, and cross-comparison will be among pattern elements in that location.  
+
+Combined filter is then pre-valuated: projected value of positive patterns is compared to the cost of evaluating all inputs, both within a target location. If prevalue is negative: projected inputs are not worth evaluating, their location is skipped, and “imagination” moves to the next nearest one. Filter search continues until prevalue turns positive (with above-average novelty) and the sensor is moved that location. This sensor movement, along with adjustment of its threshold, is the most basic form of motor feedback, AKA action.
+
+Cognitive component of action is planning: a form of imagination where projected patterns include those that represent the system itself. Feedback of such self-patterns eventually reaches the bottom of representational hierarchy: sensors and actuators, adjusting their sensitivity | intensity and coordinates. This adjustment is action. Such environmental interface is a part of any cognitive system, although actuators are optional.
+
+
+### 4: Implementation
+
+
+Any prediction has two components: what and where. We must have both: value of prediction = precision of what * precision of where. That “where” is currently neglected: statistical ML methods represent coordinates much more coarsely than the inputs. Hence, precision of where (spans of and distances between patterns) is degraded, and so is predictive value of combined representations. That's not the case here because my initial patterns: multi-dimensional blobs, are contiguous. Higher-order patterns are graphs, with "where" represented by links between their nodes.
+
+Core algorithm is 1D: time only. Our space-time is 4D, and average match is presumably equal over all dimensions. That means patterns defined in fewer dimensions will be only slices of actual input, fundamentally limited and biased by the angle of scanning / slicing. Hence, initial pixel comparison should also be over 4D at once, or at least over 3D for video and 2D for still images. This full-D-cycle level of search is a universe-specific extension of core algorithm. The dimensions should be discoverable by the core algorithm, but coding it in should be much faster.
+
+Subsequent cycles will compare full-D-terminated input patterns over increasing distance in each dimension, forming discontinuous patterns of incremental composition and range. “Dimension” here defines external sequence and distance among inputs. This is different from conventional clustering, which treats both external and internal parameters as dimensions. 
+
+This repo has three versions of 1st D-cycle: [1D line alg](https://github.com/boris-kz/CogAlg/tree/master/line_1D_alg), [2D frame alg](https://github.com/boris-kz/CogAlg/tree/master/frame_2D_alg), and [3D video alg](https://github.com/boris-kz/CogAlg/tree/master/video_3D_alg), but only 2D version is worth looking at.
+There are three dimensionality nodes: 
+- P: lateral 1D pattern (class CP): a slice across an edge in the direction of gradient, in slice_edge module
+- PP: vertical 2D pattern, defined as a contiguous segment of Ps matching along the edge in comp_slice module (tracing and vectorizing edges).
+- G: graph (class CG) of PPs or lower graphs in agg_recursion. This should also be a generic node on all higher levels, so internal encoding is quite complex.
+Corresponding node comparison functions are comp_P() in comp_slice and comp_N() in agg_recursion.
+ 
+[Agg_recursion](https://github.com/boris-kz/CogAlg/blob/master/frame_2D_alg/agg_recursion.py) is a prototype for final indefinitely scalable algorithm.  
+Initial testing could be on recognition of labeled images, but video or stereo video should be much better. We will then add colors, maybe audio and text. 
+For more detailed account of current development see [WIKI](https://github.com/boris-kz/CogAlg/wiki).
+Suggestions and collaboration are most welcome, see [CONTRIBUTING](https://github.com/boris-kz/CogAlg/blob/master/CONTRIBUTING.md).
+
+

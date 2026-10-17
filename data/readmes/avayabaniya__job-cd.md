@@ -1,0 +1,147 @@
+# Job-CD 🚀
+
+**An Automated Outreach Engine for Job Applications.**
+
+`job-cd` is a specialized automation tool focused on the most critical phase of the job search: **personalized email outreach to hiring managers and recruiters**. It treats your career search like a modern software pipeline: taking a job URL as "source code," processing it through various "build steps" (extraction, contact discovery, email drafting), and finally "deploying" (sending) hyper-personalized outreach.
+
+---
+
+## 🚀 Quick Start
+
+### 1. Installation
+
+#### Prerequisites
+- **Python 3.12+**
+- **Antigravity CLI:** Used by default for AI tasks. *(Can be swapped for any AI tool or LLM, like Gemini CLI).*
+- **Apollo.io API Key:** Default for contact discovery. *(Can be swapped for other lead discovery services).*
+- **SMTP Credentials:** For email dispatch. *(Works with any SMTP-compatible provider).*
+
+#### Setup
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/job-cd.git
+cd job-cd
+
+# Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install the package
+pip install -e .
+```
+
+### 2. Configuration & Setup
+
+Before running the pipeline, you need to initialize your global configuration:
+
+```bash
+jobcd init
+```
+
+This will create an appropriate configuration directory (e.g., `~/.config/jobcd` on Linux/macOS) and initialize your `.env` and `profiles.json` files.
+
+### 3. Basic Usage
+
+Automate your outreach in three simple steps:
+
+```bash
+# 1. Build a Deployment (Extract info & find recruiter's emails)
+jobcd build "https://www.linkedin.com/jobs/view/123456789/"
+
+# 2. Preview Drafts (Review AI-generated emails)
+jobcd preview
+
+# 3. Dispatch (Send emails)
+jobcd dispatch
+```
+
+--- 
+
+## ✨ Features
+
+- **Modular & Extensible:** Built on an "Interface-First" architecture. Every component—from the lead finder to the AI model—is a pluggable strategy.
+- **AI-Driven Extraction:** Automatically identifies company context and role requirements from unstructured text using Gemini.
+- **Intelligent Discovery:** Locates specific recruitment and engineering contacts at target companies via Apollo.io.
+- **Hyper-Personalized Content:** Generates tailored, high-conversion cold emails based on your profile and the specific job requirements.
+- **Profile Management:** Define your "Persona" (experience, target roles, current title) in a local cache for consistent tailoring.
+- **Audit & History:** Comprehensive tracking of every application, contact, and email status in a local SQLite database.
+
+---
+
+## ⚙️ Configuration
+
+`job-cd` stores its data and configuration in a global directory determined by your operating system (e.g., `~/Library/Application Support/jobcd` on macOS).
+
+### 1. Environment Variables
+The `jobcd init` command creates a `.env` file in your global config directory. You can view or edit it using `jobcd config`:
+
+```bash
+# View configuration
+jobcd config
+
+# Open in default editor
+jobcd config --edit
+```
+
+```env
+GOOGLE_API_KEY=your_gemini_key
+APOLLO_API_KEY=your_apollo_key
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your_email@gmail.com
+SMTP_PASSWORD=your_app_password
+```
+
+### 2. Personalization (Profiles)
+`job-cd` uses your profile to tailor outreach. A default profile is created in `.cache/profiles.json` within your global config directory. You can view or edit your profiles using `jobcd profile`:
+
+```bash
+# View all profiles
+jobcd profile
+
+# View a specific profile
+jobcd profile default
+
+# Open profiles.json in default editor
+jobcd profile --edit
+```
+
+```json
+{
+  "default": {
+    "first_name": "Ted",
+    "last_name": "Lasso",
+    "email": "ted.lasso@afcrichmond.com",
+    "current_role": "Head Coach",
+    "years_of_experience": 20,
+    "target_contact_titles": ["Owner", "Director of Football"],
+    "resume_text": "# TED LASSO\nHead Coach | AFC Richmond\n\n- Expert in team building and 'Believe' philosophy."
+  }
+}
+```
+
+---
+
+## 🔌 Default Providers & Extensibility
+
+`job-cd` is provider-agnostic. You can swap any component by implementing its interface.
+
+| Component | Default Provider | Purpose |
+| :--- | :--- | :--- |
+| **Intake** | `SimpleWebIntake` | Fetches raw data from job URLs. |
+| **Extraction** | `AntigravityCliExtractor` | Parses job text into structured data. |
+| **Discovery** | `ApolloFinder` | Finds relevant recruiter/manager emails. |
+| **Composition** | `AntigravityCliEmailComposer` | Drafts the personalized email body. |
+| **Dispatch** | `SmtpEmailSender` | Sends the final emails to recipients. |
+
+---
+
+## 📚 Documentation
+
+- **[Architecture Overview](docs/ARCHITECTURE.md)**: System design and pipeline engine.
+- **[Service Providers](docs/PROVIDERS.md)**: Third-party integrations.
+- **[Contributing Guide](CONTRIBUTING.md)**: How to extend the system.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

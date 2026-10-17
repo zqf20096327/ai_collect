@@ -1,0 +1,378 @@
+# LLMProxy
+
+Security gateway for Large Language Models. Routes requests across 24 providers with automatic fallback, cost-aware smart routing, and a 6-layer defense pipeline. Drop-in replacement for the OpenAI API.
+
+![Python](https://img.shields.io/badge/python-3.12%2B-blue?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-1755%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-72%25-yellowgreen)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
+[![CI](https://github.com/fabriziosalmi/llmproxy/actions/workflows/ci.yml/badge.svg)](https://github.com/fabriziosalmi/llmproxy/actions/workflows/ci.yml)
+
+---
+
+## Why LLMProxy
+
+- **One endpoint, 24 providers** -- Send OpenAI-compatible requests and let the proxy handle translation, failover, and cost optimization across 23 dedicated providers (OpenAI, Anthropic, Google, Azure, Ollama, Groq, Together, Mistral, DeepSeek, xAI, Perplexity, Fireworks, OpenRouter, SambaNova, Cohere, Hugging Face, Cloudflare Workers AI, Cerebras AI, Nebius AI, Hyperbolic AI, Novita AI, Lambda Labs, and AI/ML API) plus a generic OpenAI-compatible adapter.
+- **Security by default** -- Byte-level ASGI firewall, injection scoring, PII masking, cross-session threat intelligence, immutable audit ledger, HMAC response signing. Fail-closed auth middleware denies all admin paths unless explicitly whitelisted.
+- **Cost control** -- Per-model pricing for 30+ models, daily budget limits with automatic downgrade across fallback chains (Predictive FinOps Routing with HTTP 402 rejection), per-session spend tracking, cost-efficiency analytics.
+- **Extensible** -- 18 marketplace plugins (budget guard, A/B routing, schema enforcement, canary detection, ...) with a Redis-backed distributed ring pipeline. Write your own in Python or WASM.
+
+---
+
+## Quick Start
+
+### 30 seconds with Docker (no clone, no install)
+
+```bash
+docker run --rm -p 8090:8090 \
+  -e LLM_PROXY_API_KEYS=sk-proxy-test \
+  ghcr.io/fabriziosalmi/llmproxy:latest
+```
+
+Open `http://localhost:8090/ui`, sign in with the key you just passed, and the first-run wizard walks you through adding a provider (OpenAI, Anthropic, Ollama, etc.). The proxy boots in **onboarding mode** with zero endpoints — inference returns 503 until you add one.
+
+`LLM_PROXY_API_KEYS` is required, not decorative: the shipped configuration authenticates every route, so without it the proxy refuses to start rather than coming up open. Until 1.34.0 it *was* decorative — the image shipped `server.auth.enabled: false`, so this exact command served the registry, the raw configuration and the model list to anyone who could reach the port. For local work where you want none of that, `-e LLM_PROXY_DEV_MODE=1` turns auth off and says so in the log.
+
+Drop-in OpenAI replacement, once an endpoint is configured:
+
+```bash
+curl http://localhost:8090/v1/chat/completions \
+  -H "Authorization: Bearer sk-proxy-test" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "gpt-4o", "messages": [{"role": "user", "content": "Hello"}]}'
+```
+
+**For persistent state** (budget tracking, audit log, registered endpoints) across container restarts, mount a volume and pin the version:
+
+```bash
+docker run -d --name llmproxy -p 8090:8090 \
+  -e LLM_PROXY_API_KEYS=sk-proxy-test \
+  -e LLM_PROXY_ADMIN_KEYS=sk-admin-test \
+  -e OPENAI_API_KEY=$OPENAI_API_KEY \
+  -v llmproxy-data:/app/data \
+  ghcr.io/fabriziosalmi/llmproxy:1.35.0
+```
+
+Each release publishes `:latest`, the full semver (`:X.Y.Z`), the minor (`:X.Y`), plus a per-commit short SHA tag for reproducible deploys. Pin the newest release rather than copying the number above — it ages, and this example pinned `1.32.0` for two releases, which meant anyone following it literally deployed the version *before* the control-plane key tier, the salt relocation and the Redis timeouts landed.
+
+`LLM_PROXY_ADMIN_KEYS` is what separates the two tiers. With it set, `sk-proxy-test` reaches `/v1/*` and gets 401 on `/api/v1/*` and `/admin/*`; without it, every inference key can apply configuration, install plugins and purge the audit log.
+
+### Or, build from source
+
+```bash
+git clone https://github.com/fabriziosalmi/llmproxy && cd llmproxy
+./install.sh                        # Interactive — checks Python/Docker, creates .env, starts the proxy
+```
+
+The installer detects your platform, verifies prerequisites, generates a proxy auth key, and boots the service via Docker Compose v2 (preferred) or a local Python 3.12+ virtualenv. Use `./install.sh --docker`, `./install.sh --local`, or `./install.sh --check` for non-interactive flows. Choose this path if you want to modify plugins, contribute, or run without an internet connection to GHCR.
+
+### Prerequisites
+
+- **Docker path**: Docker Engine + **Docker Compose v2 plugin** (`docker compose`). The legacy `docker-compose` v1 (Debian/Ubuntu apt) is NOT supported — it's incompatible with modern urllib3. On Debian/Ubuntu: `sudo apt install docker-compose-plugin`.
+- **Local path**: Python 3.12+ (Ubuntu 22.04 only ships 3.10 — install from the [deadsnakes PPA](https://launchpad.net/~deadsnakes/+archive/ubuntu/ppa) or use the Docker path).
+
+### Local / self-hosted OpenAI-compatible endpoints via `.env`
+
+Declare LM Studio, vLLM, TGI, Ollama, or any OpenAI-compatible endpoint directly in `.env` — no YAML editing required:
+
+```bash
+LLM_PROXY_ENDPOINT_LMSTUDIO_URL=http://192.168.1.50:1234/v1
+LLM_PROXY_ENDPOINT_LMSTUDIO_MODELS=llama-3.3-70b,qwen-2.5-coder-32b
+# LLM_PROXY_ENDPOINT_LMSTUDIO_KEY=  # leave blank for no-auth local servers
+```
+
+### Disabling the WAF (dev / integration tests)
+
+The byte-level ASGI firewall is on by default. Disable via env or config when fronting the proxy with another WAF or debugging a false positive:
+
+```bash
+LLM_PROXY_FIREWALL_ENABLED=0        # in .env, or
+# config.yaml:
+#   security:
+#     firewall:
+#       enabled: false
+```
+
+The admin UI reflects the live WAF state and the reason it's off. The switch is env/config-only by design — a one-click UI toggle would make L1 injection defense trivially removable.
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/fabriziosalmi/llmproxy)
+
+---
+
+## Architecture
+
+```
+Client Request
+  |
+  +-- RateLimitMiddleware         Token bucket per IP/key (O(1) LRU, 50k max)
+  +-- ByteLevelFirewall           180 signatures, 8 encoding layers, iterative chain decoding
+  +-- CORSMiddleware
+  +-- Global Auth (fail-closed)   Deny-all for /api/v1/*, /admin/*, /metrics
+  +-- SecurityShield              Injection scoring, PII masking, trajectory analysis
+  |     +-- ThreatLedger          Cross-session IP + key aggregation
+  |     +-- SemanticAnalyzer      156 patterns, 20+ languages, leetspeak normalization
+  |
+  +-- Ring 1: INGRESS             Auth, Zero-Trust, rate limiting
+  +-- Ring 2: PRE-FLIGHT          PII masking, budget guard, cache, complexity scoring
+  +-- Ring 3: ROUTING             Model selection, load balancing, A/B routing
+  +-- Upstream Provider           Automatic format translation + fallback chain
+  +-- Ring 4: POST-FLIGHT         Response sanitization, quality gate, schema enforcement
+  +-- Ring 5: BACKGROUND          Telemetry, export, shadow traffic
+  |
+Client Response
+```
+
+### Providers
+
+OpenAI, Anthropic, Google (Gemini), Azure OpenAI, Ollama, Groq, Together, Mistral, DeepSeek, xAI (Grok), Perplexity, Fireworks, OpenRouter, SambaNova. Each with a dedicated adapter that handles request/response format translation, streaming, and error mapping.
+
+### Smart Routing
+
+Endpoints are scored using an EMA-weighted formula: `score = (success^2 / latency) * cost_factor^w`. The proxy automatically routes to the best-scoring endpoint, with configurable fallback chains (e.g., GPT-4o fails -> Claude Sonnet -> Gemini Pro). When the daily budget is exhausted, requests are automatically skipped over the primary endpoint and downgraded via these fallback chains (Predictive FinOps Routing with HTTP 402 rejection).
+
+---
+
+## Security
+
+| Layer                     | What it does                                                                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **ASGI Firewall**         | 180 injection signatures (164 banned + 16 ROT13) across 8 encoding layers (URL, Unicode, Base64, hex, ROT13) with iterative chain decoding. Loaded from `data/signatures.yaml` (hot-reloadable). |
+| **SecurityShield**        | Threat scoring (16 regex patterns, threshold 0.7), multi-turn trajectory detection, cross-session ThreatLedger.                                                                                  |
+| **Semantic Analyzer**     | 156-pattern trigram Jaccard corpus across 20+ languages. Leetspeak normalization, Cyrillic/Greek confusable mapping. Bounded executor with 5s timeout.                                           |
+| **PII Detection**         | Dual-mode: Presidio NLP (11 entity types) or regex fallback (email, phone, SSN, credit card, IBAN, IP, API keys). Vault-based mask/demask roundtrip.                                             |
+| **Response Sanitization** | Entropy guard, steganography detection (bidi overrides, zero-width chars, homoglyphs), prompt leak detection.                                                                                    |
+| **Audit Ledger**          | SHA256 hash-chained audit log with tamper detection. GDPR compliance: right to erasure, DSAR export, configurable retention.                                                                     |
+
+Auth: API keys, OIDC/JWT (Google, Microsoft, Apple), mTLS, Tailscale Zero-Trust. RBAC with four roles (admin, operator, user, viewer).
+
+HMAC-SHA256 response signing proves the response was not modified after leaving the proxy.
+
+See [SECURITY.md](SECURITY.md) for the full security architecture and vulnerability disclosure policy.
+
+### OWASP LLM Top 10 coverage
+
+A curated adversarial corpus runs as a regression test on every build. Current per-category pass rate against `tests/corpus/owasp_llm_top10.yaml`:
+
+| Category                      |  Coverage | Notes                                                                                                                                                                             |
+| ----------------------------- | --------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| LLM01 — Prompt Injection      | **100 %** | All 27 corpus variants caught: direct, base64/hex/zero-width-encoded, leetspeak, role-play, suffix-injection, **multilingual (it/de/fr/es/pt/zh/ru)**, jailbreak-framing, refusal-suppression, tool-call injection |
+| LLM02 — Sensitive Info (PII)  | **100 %** | Email · SSN · Visa · Amex · IBAN · phones · API keys                                                                                                                              |
+| LLM07 — System Prompt Leakage | **100 %** | Direct + indirect + continuation + translation + meta-instruction + persona-rebase                                                                                                |
+| Benign false-positive rate    |   **6 %** | 18 controls incl. roleplay/fiction/multilingual benigns; only meta-discussion of attacks ("explain how prompt injection works") trips, on purpose                                 |
+
+LLM03/04/06/08/09/10 are **out-of-scope for the proxy itself** (build-time, training-time, caller-side, model-side) — documented as N/A in the report.
+
+Full per-entry results + known gaps + reproduction steps: [docs/OWASP_LLM_COVERAGE.md](docs/OWASP_LLM_COVERAGE.md). Re-generate with `pytest tests/test_owasp_corpus.py`.
+
+The corpus deliberately includes the AI-judgment-bypass path: deterministic checks only. The `ai_analyze_threat` gray-zone escalation (when configured) catches a fraction of the listed gaps in real deployments, but it depends on an upstream model being available — so it doesn't ship in the regression number.
+
+---
+
+## Performance
+
+Single-process throughput on Apple Silicon (M-series, dev mode, no upstream call — proxy stack only):
+
+| Endpoint                           |     Req/s | p50 latency | p99 latency | Conditions            | Traverses            |
+| ---------------------------------- | --------: | ----------: | ----------: | --------------------- | -------------------- |
+| `/api/v1/registry` (light DB read) | **1,158** |       81 ms |      188 ms | wrk · 4t · 100c · 30s | full middleware chain |
+| `/health` (cold path, no upstream) |     1,313 |        7 ms |       28 ms | wrk · 2t · 10c · 20s  | dispatch only        |
+| `/health` (saturated)              |     1,176 |       82 ms |      149 ms | wrk · 4t · 100c · 30s | dispatch only        |
+
+`/api/v1/registry` is the representative figure: it traverses the ASGI firewall, the auth middleware, route dispatch and JSON serialization. `/health` is listed as the floor — it is in the auth middleware's public allowlist and in the rate limiter's `exempt_paths`, so those two rows skip both checks, and the gap between them and the registry row is roughly what auth plus rate limiting costs.
+
+None of these measure a real LLM call, which is dominated by upstream provider latency.
+
+Honest read: ~1.2k req/s on a single process is a **moderate-load** number, and single-process is currently the supported shape — scale vertically, not out.
+
+**Do not run more than one instance yet.** The daily spend total is held in process memory and persisted by *overwriting* a single key rather than incrementing it, so each replica enforces the full `daily_limit` against its own counter and overwrites the other's total: the fleet can spend a multiple of the configured budget. Per-session injection-trajectory scoring is also per-process, so a session split across instances is scored independently and the multi-turn detector weakens. Nothing detects a second instance — the failure is silent, and arrives as a provider invoice. This is why `replicaCount` is pinned to `1` in [`charts/llmproxy/values.yaml`](charts/llmproxy/values.yaml), where the mechanism is spelled out, and why autoscaling defaults to off.
+
+Multiple uvicorn workers would not help either, for the same reason: each forked worker carries its own budget counter. There is deliberately no `workers` setting in the entrypoint.
+
+Rate limiting and circuit breaking *are* shareable across processes today, via Redis Lua scripts. Horizontal scaling becomes available once the budget and session state move to that same Redis.
+
+Reproduce: `python main.py` then `wrk -t4 -c100 -d30s --latency http://localhost:8090/health`.
+
+---
+
+## API
+
+LLMProxy exposes an OpenAI-compatible API on port 8090.
+
+### Inference
+
+| Endpoint               | Method | Description                                                |
+| ---------------------- | ------ | ---------------------------------------------------------- |
+| `/v1/chat/completions` | `POST` | Chat completion (streaming + non-streaming). 24 providers. |
+| `/v1/completions`      | `POST` | Legacy text completion.                                    |
+| `/v1/embeddings`       | `POST` | Embeddings (OpenAI, Google, Ollama, Azure).                |
+| `/v1/models`           | `GET`  | Model discovery (aggregated from all providers).           |
+| `/health`              | `GET`  | Liveness probe.                                            |
+| `/metrics`             | `GET`  | Prometheus metrics.                                        |
+
+### Administration
+
+| Endpoint                                | Method | Description                                  |
+| --------------------------------------- | ------ | -------------------------------------------- |
+| `/api/v1/registry`                      | `GET`  | Endpoint pool state and model lists.         |
+| `/api/v1/registry/{id}/probe`           | `POST` | Probe an endpoint with `GET /v1/models`.     |
+| `/api/v1/registry/{id}/toggle`          | `POST` | Enable/disable an endpoint.                  |
+| `/api/v1/proxy/toggle`                  | `POST` | Enable/disable the proxy.                    |
+| `/api/v1/panic`                         | `POST` | Emergency kill switch.                       |
+| `/api/v1/features`                      | `GET`  | Security guard feature flags.                |
+| `/api/v1/features/toggle`               | `POST` | Toggle a guard.                              |
+| `/api/v1/analytics/spend`               | `GET`  | Spend breakdown by model/provider/key/date.  |
+| `/api/v1/audit`                         | `GET`  | Audit log query with filters.                |
+| `/api/v1/audit/verify`                  | `GET`  | Verify audit chain integrity.                |
+| `/api/v1/security/corpus`               | `GET`  | Active semantic injection corpus statistics. |
+| `/api/v1/export/files/{filename}`       | `GET`  | Download a generated export file.            |
+| `/api/v1/plugins`                       | `GET`  | List installed plugins.                      |
+| `/api/v1/plugins/install`               | `POST` | Install a plugin (AST-scanned, hot-swapped). |
+| `/api/v1/gdpr/erase/{subject}`          | `POST` | Right to erasure (Article 17).               |
+| `/api/v1/gdpr/export/{subject}`         | `GET`  | Data subject access request (Article 15).    |
+
+Full API reference in the [docs](docs/).
+
+---
+
+## Plugins
+
+Ring-based pipeline with 18 marketplace plugins and 9 built-in defaults (plus a backward-compatibility shim).
+
+| Plugin                | Ring        | Description                                          |
+| --------------------- | ----------- | ---------------------------------------------------- |
+| Smart Budget Guard    | Pre-Flight  | Per-session/team budget with SQLite persistence.     |
+| Agentic Loop Breaker  | Pre-Flight  | Detects AI agents stuck in retry loops.              |
+| Model Downgrader      | Pre-Flight  | Auto-downgrades expensive models for simple prompts. |
+| Context Window Guard  | Pre-Flight  | Blocks requests exceeding model context limit.       |
+| Topic Blocklist       | Pre-Flight  | Keyword/regex topic filtering.                       |
+| Tool Guard            | Pre-Flight  | Strips restricted tools from agentic requests.       |
+| A/B Model Router      | Routing     | Routes traffic percentage to variant model.          |
+| Tenant QoS Router     | Routing     | Routes by tenant tier (free/basic/premium).          |
+| Response Quality Gate | Post-Flight | Detects empty, refused, or truncated responses.      |
+| Canary Detector       | Post-Flight | Detects system prompt leakage.                       |
+| Schema Enforcer       | Post-Flight | Validates JSON responses against schema.             |
+| Shadow Traffic        | Background  | Dark-launch to shadow model for comparison.          |
+
+Write your own:
+
+```python
+from core.plugin_sdk import BasePlugin, PluginResponse, PluginHook
+
+class MyPlugin(BasePlugin):
+    name = "my_plugin"
+    hook = PluginHook.PRE_FLIGHT
+    version = "1.0.0"
+
+    async def execute(self, ctx):
+        return PluginResponse.passthrough()
+```
+
+WASM plugins (Rust/Go/C) are supported via Extism for untrusted code execution. See [plugins/](plugins/) for the full development guide.
+
+---
+
+## Configuration
+
+```yaml
+server:
+  host: 0.0.0.0
+  port: 8090
+  auth: { enabled: true, api_keys_env: "LLM_PROXY_API_KEYS" }
+
+endpoints:
+  openai:
+    provider: "openai"
+    base_url: "https://api.openai.com/v1"
+    api_key_env: "OPENAI_API_KEY"
+    models: ["gpt-4o", "gpt-4o-mini"]
+  anthropic:
+    provider: "anthropic"
+    base_url: "https://api.anthropic.com/v1"
+    api_key_env: "ANTHROPIC_API_KEY"
+    models: ["claude-sonnet-4-20250514"]
+
+fallback_chains:
+  "gpt-4o":
+    - { provider: anthropic, model: "claude-sonnet-4-20250514" }
+    - { provider: google, model: "gemini-2.5-pro" }
+
+budget:
+  daily_limit: 50.0
+  fallback_to_local_on_limit: true
+
+rate_limiting:
+  enabled: true
+  requests_per_minute: 60
+```
+
+All secrets are loaded from environment variables (Infisical SDK supported). See [config.yaml](config.yaml) for the full reference.
+
+---
+
+## Frontend
+
+Real-time Security Operations Center UI at `/ui`.
+
+| View      | What it shows                                                                     |
+| --------- | --------------------------------------------------------------------------------- |
+| Threats   | KPI cards, threat timeline chart, ring latency (P50/P95/P99), live SSE event feed |
+| Guards    | Master proxy toggle, per-guard enable/disable with descriptions                   |
+| Plugins   | Pipeline grid with per-plugin stats, install/uninstall/hot-swap                   |
+| Models    | Aggregated model registry with search/filter                                      |
+| Analytics | Spend breakdown by model and provider                                             |
+| Security  | Audit chain verification, GDPR controls, semantic corpus stats and deep-link filters |
+| Endpoints | Registry table with circuit breaker state, model probe, priority, toggle/delete   |
+| Live Logs | xterm.js terminal with WebGL rendering, quick filters, and JSON search            |
+| Settings  | Identity, RBAC matrix, webhooks, SLO health, data export download/copy            |
+
+Keyboard shortcuts: `Cmd+K` (command palette), `F` (cinema mode). URL hash routing (`#/guards`, `#/logs`, ...).
+
+---
+
+## Observability
+
+- **Prometheus** -- 10 metrics (requests, errors, latency percentiles, TTFT, tokens, cost, budget, circuit state, injection blocks, auth failures). Pre-built Grafana dashboard and alert rules in `monitoring/`.
+- **OpenTelemetry** -- Distributed tracing via OTLP. Graceful degradation when not installed.
+- **Sentry** -- Exception tracking with PII filtering and sampling.
+- **Webhooks** -- Slack, Teams, Discord, Generic (JSON). HMAC-SHA256 signed. SSRF-protected.
+- **SIEM export** -- Security events as **ECS** JSON (Splunk HEC / Datadog / Elastic) and **CEF** (ArcSight / syslog), injection-safe escaping. See [docs/security/siem-export.md](docs/security/siem-export.md).
+- **Dataset Export** -- Async JSONL with PII scrubbing, gzip rotation, optional Parquet conversion.
+
+---
+
+## Testing
+
+```bash
+make test       # full suite, ~25s
+make bench      # 22 performance benchmarks
+make lint       # ruff
+make typecheck  # mypy
+```
+
+The suite spans 50+ modules: unit, HTTP integration, pipeline E2E, property-based fuzz (Hypothesis), 31 mathematical invariant proofs, concurrency stress tests, and performance benchmarks. The count and coverage are in the badges at the top of this file, which CI updates — this paragraph used to carry its own copy of the number and drifted two releases behind them.
+
+The invariant suite proves correctness properties (Jaccard axioms, normalize idempotence, token conservation, budget accounting, adapter determinism) and blocks merge on violation.
+
+---
+
+## Production Checklist
+
+| Setting  | Default       | Production                                                      |
+| -------- | ------------- | --------------------------------------------------------------- |
+| TLS      | Disabled      | Enable or use a reverse proxy (Traefik, Caddy, nginx)           |
+| CORS     | `["*"]`       | Restrict to your frontend origin(s)                             |
+| Auth     | Enabled       | Keep enabled, rotate API keys                                   |
+| API keys | Placeholder   | Replace with strong keys                                        |
+| Presidio | Not installed | `pip install presidio-analyzer presidio-anonymizer` for NLP PII |
+| tiktoken | Not installed | `pip install tiktoken` for accurate token counting              |
+
+The proxy logs warnings at startup when TLS is disabled or CORS is unrestricted.
+
+For hardened deployments, pair with [secure-proxy-manager](https://github.com/fabriziosalmi/secure-proxy-manager) for network-level egress filtering (domain whitelisting, direct IP blocking, IMDS protection).
+
+---
+
+## CI/CD
+
+GitHub Actions runs 8 jobs on every push: lint (ruff), type check (mypy), dependency audit (pip-audit), supply chain scan (`.pth` malware + blocked packages), syntax check, test suite with coverage gate (65%), mathematical invariants, and Docker image size check.

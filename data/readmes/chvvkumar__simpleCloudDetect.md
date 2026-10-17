@@ -1,0 +1,564 @@
+<div align="center">
+
+## ☁️ SimpleCloudDetect
+
+
+A Machine Learning-based cloud detection system for AllSky cameras with MQTT and ASCOM Alpaca SafetyMonitor integration.
+
+[![Main Build](https://img.shields.io/github/actions/workflow/status/chvvkumar/simpleCloudDetect/build-and-release.yml?branch=main&label=main&logo=github)](https://github.com/chvvkumar/simpleCloudDetect/actions/workflows/build-and-release.yml) [![Dev Build](https://img.shields.io/github/actions/workflow/status/chvvkumar/simpleCloudDetect/build-and-release.yml?branch=dev&label=dev&logo=github)](https://github.com/chvvkumar/simpleCloudDetect/actions/workflows/build-and-release.yml?query=branch%3Adev)
+
+[![Docker Image Size (latest)](https://img.shields.io/docker/image-size/chvvkumar/simpleclouddetect/latest?style=flat&logo=docker&logoSize=auto)](https://hub.docker.com/r/chvvkumar/simpleclouddetect) [![Docker Pulls](https://img.shields.io/docker/pulls/chvvkumar/simpleclouddetect?style=flat&logo=docker&label=Pulls)](https://hub.docker.com/r/chvvkumar/simpleclouddetect) 
+
+
+[![Python](https://img.shields.io/badge/Python-3.9+-blue?style=flat&logo=python&logoColor=white)](https://www.python.org/) [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange?style=flat&logo=tensorflow)](https://www.tensorflow.org/) [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Compatible-blue?style=flat&logo=home-assistant)](https://www.home-assistant.io/) [![ASCOM](https://img.shields.io/badge/ASCOM-Alpaca-green?style=flat)](https://ascom-standards.org/)
+</div>
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Screenshots](#screenshots)
+- [Docker Installation](#docker-installation)
+  - [Environment Variables](#environment-variables)
+  - [Docker Run Examples](#docker-run-examples)
+  - [Docker Compose Examples](#docker-compose-examples)
+- [Home Assistant Integration](#home-assistant-integration)
+- [ASCOM Alpaca SafetyMonitor](#ascom-alpaca-safetymonitor)
+- [External REST API](#external-rest-api)
+- [Training Your Own Model](#training-your-own-model)
+- [Recent Changes](#recent-changes)
+- [Documentation](#documentation)
+
+---
+
+## Features
+
+- **ML Cloud Classification** - Detects Clear, Wisps, Mostly Cloudy, Overcast, Rain, and Snow conditions
+- **Home Assistant Integration** - MQTT Discovery for automatic setup or legacy manual configuration
+- **ASCOM Alpaca SafetyMonitor** - Compatible with N.I.N.A., SGP, TheSkyX, and other astronomy software
+- **External REST API** - Flexible JSON API for dashboards, monitoring systems, and custom integrations
+- **Docker Support** - Easy deployment with both services running simultaneously
+- **Flexible Image Sources** - Supports URL-based and local file images
+- **Custom Models** - Bring your own trained model and labels
+- **Confidence Scores** - Includes detection confidence and timing metrics
+
+---
+
+## Quick Start
+
+**Docker (Recommended):**
+
+1. Prepare the configuration directory:
+```shell
+mkdir -p /path/to/config
+sudo chown 1000:1000 /path/to/config
+```
+
+2. Run the container:
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v /path/to/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/labels.txt:/app/labels.txt \
+  -e IMAGE_URL="http://your-allsky-camera/image.jpg" \
+  -e MQTT_BROKER="192.168.1.250" \
+  -e MQTT_DISCOVERY_MODE="homeassistant" \
+  -e DETECT_INTERVAL="60" \
+  -e VERIFY_SSL="false" \
+  -e DEVICE_ID="clouddetect_001" \
+  chvvkumar/simpleclouddetect:latest
+```
+
+> **Important:** The model files (`keras_model.h5` and `labels.txt`) must have read+write permissions for the container user. To ensure proper permissions:
+> 
+> ```shell
+> # Set appropriate permissions (Linux/macOS)
+> chmod 666 /path/to/keras_model.h5
+> chmod 666 /path/to/labels.txt
+> 
+> # Or set ownership to your user and make group-writable
+> chown $USER:$USER /path/to/keras_model.h5 /path/to/labels.txt
+> chmod 664 /path/to/keras_model.h5 /path/to/labels.txt
+> ```
+
+That's it! Your device will automatically appear in Home Assistant under **Settings → Devices & Services → MQTT**.
+
+---
+
+## Screenshots
+
+### Cloud Detection Examples
+
+| Condition | Example |
+|-----------|---------|
+| **Clear Skies** | ![Clear](/images/HA2.png) |
+| **Majority Clouds** | ![Mostly Cloudy](/images/Mostly%20Cloudy.png) |
+| **Wisps of Clouds** | ![Wisps](/images/wisps.png) |
+| **Overcast** | ![Overcast](/images/Overcast.png) |
+
+### ASCOM Alpaca Settings Interface
+
+| View | Screenshot |
+|------|------------|
+| **Settings Collapsed** | ![Settings Collapsed](/images/Settings_Collapsed.png) |
+| **Settings Expanded** | ![Settings Expanded](/images/Settings_Expanded.png) |
+
+---
+
+## Docker Installation
+
+### Pull the Image
+
+```shell
+docker pull chvvkumar/simpleclouddetect:latest
+```
+
+### Environment Variables
+
+#### Required Variables
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `IMAGE_URL` | URL or file path to AllSky camera image | `http://allskypi.lan/image.jpg` |
+| `MQTT_BROKER` | MQTT broker address | `192.168.1.250` |
+
+#### Cloud Detection Settings
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MQTT_PORT` | `1883` | MQTT broker port |
+| `MQTT_USERNAME` | - | MQTT authentication username (optional) |
+| `MQTT_PASSWORD` | - | MQTT authentication password (optional) |
+| `DETECT_INTERVAL` | `60` | Detection interval in seconds |
+| `VERIFY_SSL` | `false` | Set to `true` to enable SSL certificate verification for HTTPS `IMAGE_URL`s. Defaults to `false` for convenience with self-signed certificates. |
+
+#### MQTT Publishing Modes
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MQTT_DISCOVERY_MODE` | `legacy` | Mode: `legacy` or `homeassistant` |
+
+**Legacy Mode** (manual YAML configuration):
+- `MQTT_TOPIC` - Topic for publishing (e.g., `Astro/SimpleCloudDetect`)
+
+**Home Assistant Discovery Mode** (automatic setup):
+- `DEVICE_ID` - Unique device identifier (e.g., `clouddetect_001`)
+- `DEVICE_NAME` - Custom device name (default: `Cloud Detector`)
+- `MQTT_DISCOVERY_PREFIX` - HA discovery prefix (default: `homeassistant`)
+
+#### ASCOM Alpaca Settings (Optional)
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ALPACA_PORT` | `11111` | HTTP API port |
+| `ALPACA_DEVICE_NUMBER` | `0` | Device number |
+| `ALPACA_UPDATE_INTERVAL` | `30` | Update interval in seconds |
+| `MAX_IMAGE_AGE_SEC` | `600` | Report unsafe if the source image is unchanged for this many seconds. `0` disables the check. Applies only until `alpaca_config.json` exists; afterwards use the setup page or the JSON key `max_image_age_sec` |
+
+> **Note:** For detailed Alpaca configuration, see **[ALPACA_README.md](ALPACA_README.md)**
+
+### Persistent Configuration
+
+To ensure your settings (device name, thresholds, etc.) are saved across container restarts, mount the `/config` directory:
+
+```shell
+-v /path/to/config:/config
+```
+
+The application will save `alpaca_config.json` in this directory. If a config file exists, it will take precedence for environment variables for the settings it contains.
+
+**Setting Proper Permissions:**
+
+The config directory must be writable by the container user. To ensure proper permissions:
+
+```shell
+# Create the config directory
+mkdir -p /path/to/config
+
+# Set appropriate permissions (Linux/macOS)
+chmod 777 /path/to/config
+
+# Or set ownership to a specific user (uses current user's UID, recommended for better security)
+sudo chown $(id -u):$(id -g) /path/to/config
+chmod 755 /path/to/config
+```
+
+> **Note:** The container runs as user ID 1000 by default. If you encounter permission errors like `[Errno 13] Permission denied: '/config/alpaca_config.json'`, verify that the config directory is writable by the container user.
+
+### Raspberry Pi Support
+
+**Multi-architecture support:** The Docker images are built for both AMD64 (x86_64) and ARM64 (Raspberry Pi 4/5). Docker will automatically pull the correct image for your platform.
+
+For Raspberry Pi, use the same docker commands. The ARM64 build uses full TensorFlow instead of tensorflow-cpu for compatibility.
+
+> **Note:** First run on Raspberry Pi may take longer as it downloads the ARM64 image (~500MB).
+
+### Docker Run Examples
+
+#### Home Assistant Discovery Mode (Recommended)
+
+**With URL-based image:**
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v /path/to/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/labels.txt:/app/labels.txt \
+  -e IMAGE_URL="http://allskypi5.lan/current/resized/image.jpg" \
+  -e MQTT_BROKER="192.168.1.250" \
+  -e MQTT_PORT="1883" \
+  -e MQTT_DISCOVERY_MODE="homeassistant" \
+  -e DEVICE_ID="clouddetect_001" \
+  -e DEVICE_NAME="AllSky Cloud Detector" \
+  -e MQTT_USERNAME="your_username" \
+  -e MQTT_PASSWORD="your_password" \
+  -e DETECT_INTERVAL="60" \
+  -e VERIFY_SSL="false" \
+  chvvkumar/simpleclouddetect:latest
+```
+
+**With local file:**
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v $HOME/path/to/image.jpg:/tmp/image.jpg \
+  -v /path/to/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/labels.txt:/app/labels.txt \
+  -e IMAGE_URL="file:///tmp/image.jpg" \
+  -e MQTT_BROKER="192.168.1.250" \
+  -e MQTT_DISCOVERY_MODE="homeassistant" \
+  -e DETECT_INTERVAL="60" \
+  -e DEVICE_ID="clouddetect_001" \
+  chvvkumar/simpleclouddetect:latest
+```
+
+#### Legacy Mode
+
+**With URL-based image:**
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v /path/to/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/labels.txt:/app/labels.txt \
+  -e IMAGE_URL="http://allskypi5.lan/current/resized/image.jpg" \
+  -e MQTT_BROKER="192.168.1.250" \
+  -e MQTT_TOPIC="Astro/SimpleCloudDetect" \
+  -e DETECT_INTERVAL="60" \
+  -e MQTT_USERNAME="your_username" \
+  -e MQTT_PASSWORD="your_password" \
+  -e VERIFY_SSL="false" \
+  chvvkumar/simpleclouddetect:latest
+```
+
+#### Custom Model Support
+
+To use your own trained model and labels:
+
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v /path/to/your/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/your/labels.txt:/app/labels.txt \
+  -e IMAGE_URL="http://allskypi5.lan/image.jpg" \
+  -e MQTT_BROKER="192.168.1.250" \
+  -e DETECT_INTERVAL="60" \
+  -e MQTT_DISCOVERY_MODE="homeassistant" \
+  -e DEVICE_ID="clouddetect_001" \
+  -e VERIFY_SSL="false" \
+  chvvkumar/simpleclouddetect:latest
+```
+
+### Docker Compose Examples
+
+#### Home Assistant Discovery Mode
+
+```yaml
+services:
+  simpleclouddetect:
+    container_name: simple-cloud-detect
+    image: chvvkumar/simpleclouddetect:latest
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - IMAGE_URL=http://localhost/current/resized/image.jpg
+      - MQTT_BROKER=192.168.1.250
+      - MQTT_PORT=1883
+      - MQTT_DISCOVERY_MODE=homeassistant
+      - DEVICE_ID=clouddetect001
+      - DEVICE_NAME=AllSkyPi5 Cloud Detector
+      - MQTT_USERNAME=
+      - MQTT_PASSWORD=
+      - DETECT_INTERVAL=60
+      - VERIFY_SSL=false
+      - ALPACA_PORT=11111
+      - ALPACA_UPDATE_INTERVAL=30
+    volumes:
+      - /path/to/config:/config
+      - /home/pi/git/simpleCloudDetect/keras_model.h5:/app/keras_model.h5
+      - /home/pi/git/simpleCloudDetect/labels.txt:/app/labels.txt
+```
+
+#### Legacy Mode
+
+```yaml
+services:
+  simpleclouddetect:
+    container_name: simple-cloud-detect
+    image: chvvkumar/simpleclouddetect:latest
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - IMAGE_URL=http://allskypi5.lan/current/resized/image.jpg
+      - MQTT_BROKER=192.168.1.250
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=Astro/SimpleCloudDetect
+      - MQTT_USERNAME=your_username
+      - MQTT_PASSWORD=your_password
+      - DETECT_INTERVAL=60
+      - VERIFY_SSL=false
+    volumes:
+      - /path/to/config:/config
+      - /home/pi/git/simpleCloudDetect/keras_model.h5:/app/keras_model.h5
+      - /home/pi/git/simpleCloudDetect/labels.txt:/app/labels.txt
+```
+
+#### With Local Image File
+
+```yaml
+services:
+  simpleclouddetect:
+    container_name: simple-cloud-detect
+    image: chvvkumar/simpleclouddetect:latest
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - IMAGE_URL=file:///tmp/image.jpg
+      - MQTT_BROKER=192.168.1.250
+      - MQTT_DISCOVERY_MODE=homeassistant
+      - DEVICE_ID=clouddetect_001
+    volumes:
+      - /path/to/config:/config
+      - /path/to/image.jpg:/tmp/image.jpg
+      - /home/pi/git/simpleCloudDetect/keras_model.h5:/app/keras_model.h5
+      - /home/pi/git/simpleCloudDetect/labels.txt:/app/labels.txt
+```
+---
+
+## Home Assistant Integration
+
+### Option 1: MQTT Discovery (Recommended - Zero Configuration)
+
+When using `MQTT_DISCOVERY_MODE=homeassistant`, your device automatically appears in Home Assistant with **no YAML configuration needed**.
+
+**What You Get:**
+- Single device with your custom name
+- Three sensors:
+  - **Cloud Status** - Current sky condition
+  - **Confidence** - Detection confidence (%)
+  - **Detection Time** - Processing time (seconds)
+- One binary sensor:
+  - **Safe** (`binary_sensor.<device_name>_safe`) - `ON` when the monitor reports safe, `OFF` when unsafe or when data is stale (see [Stale Data Fail-Safes](#stale-data-fail-safes))
+- Availability tracking (online/offline status). The three sensors also go `unavailable` while data is stale
+- Proper device grouping in HA UI
+
+**Setup Steps:**
+1. Start container with HA discovery mode (see examples above)
+2. In Home Assistant: **Settings → Devices & Services → MQTT**
+3. Your cloud detector appears automatically under "MQTT Devices"
+
+![Home Assistant MQTT Integration](/images/HA_MQTT.jpg)
+
+> **Tip:** Use unique `DEVICE_ID` values if you have multiple AllSky cameras
+
+### Option 2: Legacy Mode (Manual Configuration)
+
+For custom setups or backward compatibility, configure sensors manually in `configuration.yaml`:
+
+```yaml
+mqtt:
+  sensor:
+    - name: "Cloud Status"
+      unique_id: cloud_status_sensor_001
+      icon: mdi:clouds
+      state_topic: "Astro/SimpleCloudDetect"
+      value_template: "{{ value_json.class_name }}"
+
+    - name: "Cloud Status Confidence"
+      unique_id: cloud_confidence_sensor_001
+      icon: mdi:percent
+      state_topic: "Astro/SimpleCloudDetect"
+      value_template: "{{ value_json.confidence_score }}"
+      unit_of_measurement: "%"
+
+    - name: "Cloud Detection Time"
+      unique_id: cloud_detection_time_001
+      icon: mdi:timer
+      state_topic: "Astro/SimpleCloudDetect"
+      value_template: "{{ value_json['Detection Time (Seconds)'] }}"
+      unit_of_measurement: "s"
+```
+
+The Alpaca server also adds `is_safe` (`true`/`false`) to this payload. It is sent only on successful detection cycles, so treat a missing update for more than 3 minutes as unsafe.
+
+---
+
+## ASCOM Alpaca SafetyMonitor
+
+The container includes an ASCOM Alpaca SafetyMonitor service (Interface Version 3) for astronomy automation software.
+
+### Quick Setup
+
+1. **Start Container** with Alpaca environment variables (included in examples above)
+2. **Access Setup Page**: `http://<your-server-ip>:11111/setup/v1/safetymonitor/0/setup`
+3. **Configure Device**: Set name, location, and unsafe conditions
+4. **Add to Software**: Configure in N.I.N.A., SGP, TheSkyX, etc.
+
+### Stale Data Fail-Safes
+
+`IsSafe` reports `False` when the input data can no longer be trusted:
+
+1. **Unchanged image**: each detection hashes the raw image bytes. If the hash does not change for longer than `max_image_age_sec` (default 600), the monitor commits unsafe immediately. The Unsafe Wait Time does not apply. Recovery requires a changed image followed by the normal Safe Wait Time. Set to `0` to disable, for example when the camera serves a static test image.
+2. **Failed detections**: if no detection has succeeded within `max(180, 3 x ALPACA_UPDATE_INTERVAL)` seconds, for example because the image URL returns errors or times out, `IsSafe` reports `False` and the stable state is committed to unsafe. After detections succeed again, the normal Safe Wait Time applies before `IsSafe` returns `True`. This limit is not configurable.
+
+The Safety History on the setup page records these events with the condition `Stale Image` or `Detection Stale`.
+
+Configuration:
+
+- Setup page: Timing Configuration, "Stale Image Limit (seconds)".
+- JSON: key `max_image_age_sec` in `alpaca_config.json`.
+- Environment: `MAX_IMAGE_AGE_SEC` applies only until `alpaca_config.json` exists. Startup writes the full configuration to that file, and the file takes precedence afterwards. Once the file exists, use the setup page or edit the JSON key.
+
+Notes:
+
+- Set the limit higher than the camera's longest gap between frames plus `ALPACA_UPDATE_INTERVAL`. A lower value forces unsafe between normal image updates.
+- A camera that stops writing images, for example with daytime capture disabled, reads unsafe once the limit elapses. Raise the limit or set it to `0` if that is not the intended behaviour.
+- After a restart, the monitor does not report safe until the image has changed at least once since boot. With `max_image_age_sec` set to `0`, this startup requirement is also disabled.
+- If a detector does not supply an image hash (for example a model backend that lacks hash support), the image check is disabled and a warning is logged at startup. The detection failure check still applies.
+
+Both checks apply to the ASCOM `IsSafe` value, the dashboard, and the external REST API.
+
+Home Assistant behaviour while data is stale:
+
+- The Cloud Status, Confidence, and Detection Time sensors become `unavailable`. They use a second availability topic that reports `offline` when either check trips and `online` on the next successful detection.
+- The `Safe` binary sensor stays available and reads `OFF`. It follows `IsSafe` each cycle and reads `ON` only when the monitor reports safe.
+- Legacy MQTT mode publishes `is_safe` in the JSON payload only on successful detection cycles, so a consumer receives nothing while detections fail and must treat a missing update for more than 3 minutes as unsafe.
+
+
+### Supported Software
+
+- N.I.N.A. (Nighttime Imaging 'N' Astronomy)
+- Any ASCOM Alpaca-compatible application
+
+![N.I.N.A. Integration](/images/NINA.jpg)
+
+> **Full Documentation**: See **[docs/ALPACA_README.md](docs/ALPACA_README.md)** for detailed configuration, API reference, and troubleshooting.
+
+---
+
+## External REST API
+
+SimpleCloudDetect provides a separate REST API designed for external integrations like dashboards, monitoring systems, and custom scripts.
+
+### Quick Example
+
+**Get Current Status:**
+```bash
+curl http://localhost:11111/api/ext/v1/status
+```
+
+**Response:**
+```json
+{
+  "is_safe": true,
+  "safety_status": "Safe",
+  "detection": {
+    "class_name": "Clear",
+    "confidence_score": 0.9823,
+    "timestamp": "2026-02-04T15:30:45.123456"
+  }
+}
+```
+
+### Available Endpoints
+
+- **`/api/ext/v1/system`** - System information and uptime
+- **`/api/ext/v1/status`** - Current safety status and detection
+- **`/api/ext/v1/config`** - Configuration settings
+- **`/api/ext/v1/clients`** - Connected ASCOM clients
+- **`/api/ext/v1/history`** - Safety state transition history
+- **`/api/ext/v1/image`** - Latest detection image (JPEG)
+
+### Use Cases
+
+- Build custom monitoring dashboards
+- Integrate with non-MQTT home automation systems
+- Create analytics and reporting scripts
+- Monitor device health and client connections
+
+> **Full Documentation**: See **[docs/EXTERNAL_API.md](docs/EXTERNAL_API.md)** for complete API reference, examples, and integration guides.
+
+---
+
+## Training Your Own Model
+
+While an example model is included, **training your own model with your camera's images is highly recommended** for better accuracy.
+
+### Using Google's Teachable Machine
+
+1. **Go to**: https://teachablemachine.withgoogle.com
+2. **Create a New Image Project**
+3. **Add Classes**: Clear, Wisps, Mostly Cloudy, Overcast, Rain, Snow
+4. **Upload Training Images** from your AllSky camera for each class
+5. **Train Model**
+6. **Export Model**: Select "TensorFlow" → "Keras" format
+7. **Download** both `keras_model.h5` and `labels.txt`
+
+### Training Steps (Visual Guide)
+
+![Step 1](/images/1.png)
+![Step 2](/images/2.png)
+![Step 3](/images/3.png)
+![Step 4](/images/4.png)
+
+### Using Your Custom Model
+
+**For Docker:**
+```shell
+docker run -d --name simple-cloud-detect --network=host \
+  -v /path/to/config:/config \
+  -v /path/to/your/keras_model.h5:/app/keras_model.h5 \
+  -v /path/to/your/labels.txt:/app/labels.txt \
+  # ...other environment variables...
+  chvvkumar/simpleclouddetect:latest
+```
+
+> **Note:** Docker containers automatically convert the model on startup.
+
+---
+
+## Recent Changes
+
+- **2025-12-30**: Add `VERIFY_SSL` environment variable to disable SSL certificate verification for HTTPS `IMAGE_URL`s. Defaults to `false`.
+- **2024-01-30**: Add multi-arch support with support for ARM (Raspberry Pi)
+- **2024-01-30**: Add Home Assistant MQTT Discovery support for automatic device/entity creation
+- **2024-01-30**: Add ASCOM Alpaca SafetyMonitor implementation
+- **2024-01-09**: Add MQTT authentication support and improved logging
+- **2024-12-16**: Add custom model and labels file support via bind mounts
+- **2024-11-19**: Add local image file support
+- **2024-10-26**: Initial release
+
+---
+
+## Documentation
+
+- **[Main Documentation](readme.md)** - This file
+- **[System Architecture](architecture.md)** - A detailed look at the components and data flow
+- **[ASCOM Alpaca SafetyMonitor Guide](docs/ALPACA_README.md)** - Standard ASCOM API implementation details
+- **[External REST API Guide](docs/EXTERNAL_API.md)** - Custom REST API for dashboards and integrations
+
+---
+
+## Support
+
+For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/chvvkumar/simpleCloudDetect).

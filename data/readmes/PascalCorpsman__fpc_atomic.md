@@ -1,0 +1,115 @@
+# FPC Atomic
+
+Author   : Uwe Schächterle (Corpsman)  
+Homepage : https://www.Corpsman.de  
+Source   : https://github.com/PascalCorpsman/fpc_atomic  
+Wiki     : https://en.wikipedia.org/wiki/Atomic_Bomberman
+
+## Description
+FPC Atomic is a complete reimplementation of the original Atomic Bomberman game (from 1997). This repository hosts only the source code, as the graphics and sounds are copyrighted by Interplay Productions. To play the game, you need to extract the original graphics from the game disc and provide them as requested by the game.
+
+
+## Preview:
+
+![](https://www.myabandonware.com/media/screenshots/a/atomic-bomberman-ik0/atomic-bomberman_10.png)
+
+
+## What needs to be done to play the game?
+The steps shown here are only needed to be done once (for installation).
+
+![](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/PascalCorpsman/fpc_atomic/main/documentation/installation.plantuml)
+
+1. get the Atomic Bomberman CD-content (buy the game it is worth it!) and store it on your harddrive  
+   1.1 if you want all animations download and merge the expansion pack <del>from [here](https://www.oocities.org/timessquare/tower/4056/ani.html) or use this [direct download link](https://www.oocities.org/timessquare/tower/4056/download/ani.zip)</del> link is broken use [new link](https://www.geocities.ws/mheid.geo/download/ani.zip)  
+   1.2 extract the content of ani.zip into the CD-Content "/DATA/ANI" subfolder
+2. download the atomic_launcher from the latest release [here](https://github.com/PascalCorpsman/fpc_atomic/releases/latest) and store it on your harddisc<br>
+![](documentation/asset_download_preview.png)<br>
+   2.1 Linux users will need to 
+   >
+   > chmod +x atomic_launcher
+   >
+3. run the "atomic_launcher", click "check for updates" and then "Download and update files"<br>
+   3.1 Linux users may need to run the following commands:
+   >
+   > sudo aptitude install libssl-dev
+   >
+4. click "run cd data extractor"<br>
+   4.1 Click "set atomic cd root folder"<br>
+   4.2 Click "start extraction"  
+5. read the [manual](MANUAL.md)<br>
+   5.5 if you are a Linux user run the "Linux_sound_install_script.sh"
+6. start the game by executing "atomic_launcher" and enjoy
+
+## How do i get updates ?
+By using the launcher you can click the "check for update" feature to check wether there are updates available. If so, the launcher automatically asks you to download the updates.
+
+## Differences to the original
+
+- Implementation in TCP (instead of slow IPX)
+- Custom AI implementation
+- Single player mode is not present
+- Not all sounds are used
+- Joypad support via SDL2
+- Missing online manual; use the [manual](MANUAL.md) provided in this repository instead (best UX if you have a .md viewer and can use the MANUAL.md that is shipped with the game after the CD-Content extraction).
+- Pro gamers may discover additional differences due to guessing of the original functionality.
+- The Carry Bomb feature is not yet implemented, atm the blue glove can only throw the bombs.
+
+## Manual
+See the [manual](MANUAL.md) for detailed information.
+
+## FAQ
+Q: The game tells me "Info : Not yet implemented."?<br>
+A: The game was never intended to be fully reimplemented. Only the network features are functional, so only "Start Network," "Join Network," "Options," and "Exit Bomberman" will work.
+
+Q: I am running Linux and get the error "Could not detect X-Terminal program. Press OK to ignore and risk data corruption. Press Abort to kill the program." when trying to start a network game.<br>
+A: This error occurs because the game cannot detect a "bash" shell on your Linux system. Try starting the server manually (see the [server control commands](MANUAL.md#server-control-commands) section in the manual), and then connect to the manually started server.
+
+Q: I got "Error: could not find: DATA/ANI/xplode18.ani" warning during CD-Data Extraction<br>
+A: This means, that you did not add the additional .ani file from step1, see [issue14](https://github.com/PascalCorpsman/fpc_atomic/issues/14) for more details or ignore and enjoy the game with a little less dead animations.
+
+Q: I get a error message like this during startup: ![](documentation/OpenGL_Error.png)<br>
+A: This usually means that you are running your machine with multiple graphiccards and selected the wrong one to play the game. Since FPC_Atomic ver. 0.13002 the game uses shader to render, this means that you need to switch your graphics card to "3D-mode".
+
+Q: FPC_Atomic does not start on Kubuntu 24.04: "Unable to init the device, Error code :3"<br>
+A: This means the bass driver ist not installed correctly, see [issue16](https://github.com/PascalCorpsman/fpc_atomic/issues/16) for resolution
+
+## License
+See the license.md file located at [license.md](license.md) for details about the license.
+
+## What needs to be done to compile the code ?
+
+1. Install Lazarus IDE from https://www.lazarus-ide.org/
+2. Download dglopengl.pas from https://github.com/saschawillems/dglopengl and store it in the "units" folder
+3. Download bass.pas from https://www.un4seen.com/ and store it in the "units" folder
+   - Linux users: copy libbass.so to "/usr/lib/" or run "Linux_sound_install_script.sh"
+   - Windows users: copy bass.dll from the bin folder into the repository root folder
+4. Download synapse from http://www.ararat.cz/synapse/doku.php/download and store it in a new subfolder "synapse"
+5. Install the following packages into the Lazarus IDE:
+    - 'Lnet' from https://github.com/almindor/L-Net or the fixed version from https://github.com/PascalCorpsman/lnet
+    - 'LazOpenGLContext' (from the list of available packages inside the IDE)
+6. Download SDL2-Header from https://github.com/PascalCorpsman/SDL2-for-Pascal and store the content its "units" folder in a new subfolder "sdl2_for_pascal"
+7. Add the paths from 4. and 6. as searchpaths for all .lpi files (at least client, launcher and server) (in the IDE project -> settings -> compilersettings -> paths). Ignore the not resolvable searchpaths.
+
+!! Attention !!
+
+All *.lpi files are configured to create their compilation results into the root folder of the repository. If you do compile the code by your own, do not use the version from the bin folder anymore.
+
+## What needs to be done to implement a own AI ?
+
+The AI that is delivered with this repository is more a try than a real AI, and to be correct in words it's a agent not a real AI (it does not learn nor uses neural nets). If you want to write your own version you have two options:
+
+- Implement a new AI with Free Pascal using this [template](https://github.com/PascalCorpsman/fpc_atomic/tree/main/ai_empty)
+- Implement a new AI using the C [template](https://github.com/PascalCorpsman/fpc_atomic/tree/main/ai_c) (or use the C-interface to port it to your most favourite programing language)
+
+Read the manual section [Console commands](MANUAL.md#console-commands) to load and unload your ai without the need to restart the application.
+
+## External known sites which link to this repository
+- https://osgameclones.com/atomic-bomberman/
+- https://www.myabandonware.com/game/atomic-bomberman-bat
+
+## Contributors
+Idea : Interplay Productions  
+Implementation : Uwe Schächterle  
+Graphics : Interplay Productions  
+Leveldesign : Interplay Productions  
+Testing : Uwe Schächterle

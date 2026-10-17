@@ -1,0 +1,476 @@
+# TaskForge Platform
+
+**Auditable Agent Orchestration for [OpenClaw](https://github.com/openclaw/openclaw)**
+
+Built on [OpenClaw](https://github.com/openclaw/openclaw) · orchestrated by **Temporal** · sandboxed with [Docker](https://www.docker.com)/[gVisor](https://gvisor.dev)
+
+> **Disclaimer:** This project is not affiliated with or endorsed by the OpenClaw project.
+> TaskForge is an independent orchestration layer that wraps the OpenClaw agent runtime.
+
+---
+
+<p align="center">
+  <img src="assets/images/workflow-screenshot.png" alt="TaskForge DAG workflow graph" width="75%">
+  <br><em>The DAG editor — parallel steps, conditional edges and the closed-loop approval gate at a glance.</em>
+</p>
+
+<p align="center">
+  <img src="assets/images/workflow-execution.gif" alt="TaskForge workflow executing live" width="75%">
+  <br><em>Watch a workflow execute: steps run, live LLM-turn counters tick per node, and human approvals pause/resume the flow.</em>
+</p>
+
+## What It Does
+
+TaskForge runs AI agents in sandboxed Docker containers with **capability-based security**.
+Agents start with minimal permissions and must request new capabilities (packages, network access,
+tools) through a human-in-the-loop approval process. Every approval triggers a container image
+rebuild, and every LLM interaction is logged for audit.
+
+![TaskForge Main Dashboard](docs/images/task-forge-main-dashboard.png)
+
+**Key features:**
+
+- **🛡️ gVisor sandbox isolation** — each agent runs in a container secured by [gVisor](https://gvisor.dev) (`runsc`), providing a user-space kernel that intercepts syscalls and delivers VM-level isolation at container speed. No privileged mode required.
+- **Capability gating** — agents start with a base image; new packages require explicit human approval
+- **Image rebuilds** — approved capabilities are baked into a new Docker image (immutable infrastructure)
+- **Multi-provider LLM routing** — Ollama, Gemini, Anthropic, and OpenAI via a unified OpenAI-compatible proxy
+- **Full audit trail** — every LLM call logged with request/response, token counts, and provider info
+- **Temporal workflows** — durable execution that survives crashes, with pause/resume for approvals
+- **Deployment support** — agents can produce deployable applications served on ports 9100-9120
+- **📦 SBOM generation** — automatic Software Bill of Materials generation via [Trivy](https://trivy.dev) for every agent image build, with SPDX and CycloneDX output, package search, version diff, and vulnerability scanning
+- **�️ Supply-chain governance** — per-image-type package allowlists (`config/supply-chain.yaml`) gate every capability request. Denied packages are stripped before build and the agent receives actionable feedback so it can adapt. Includes Debian↔Alpine alias translation and hot-reload without restart
+- **🤖 Multi-image agent diversity** — four base image types (OpenClaw, NanoBot, PicoClaw, ZeroClaw) with native adapters, from full-featured Debian+Python+Node to ultra-minimal Alpine shell-only
+- **🎭 Agent Profiles** — pre-defined combinations of a base image (“body”) and an LLM (“brain”), selectable from the Open WebUI model dropdown. CRUD API + YAML registry
+- **💬 OpenAI-Compatible API Gateway** — `POST /v1/chat/completions` with SSE streaming, so any OpenAI-compatible client (Open WebUI, LibreChat, Chainlit, curl) can drive tasks through a standard chat interface
+- **🔄 Real-time turn-by-turn streaming** — see every tool call (⚡📝📖✏️🌐) as the agent works, plus capability approval lifecycle updates, deployment status, and clickable links to Temporal UI and the dashboard
+- **🌐 Open WebUI integration** — pre-wired chat UI at port 3001; create an account and start chatting
+- **🧩 Reusable skill library** — Skill Studio skills with code-like instructions (RAG Query, Answer Synthesis, Platform LLM Chat, …) that agents follow deterministically instead of rediscovering APIs
+- **🌊 Examples & showcases** — see the [Docling RAG example](examples/docling-rag/README.md) driving an external RAG service end-to-end (PDF ingest → hybrid search → approved report)
+
+### 💬 From Chat to Deployed App — in One Prompt
+
+TaskForge ships with [Open WebUI](https://github.com/open-webui/open-webui) pre-wired to the API Gateway.
+Type a prompt, and the agent builds, tests, and deploys a full application — streamed turn-by-turn in real time.
+
+![Open WebUI → TaskForge Integration](docs/images/0.6.0/webUI%20integration.png)
+
+> **Example:** *"Build a Bitcoin portfolio tracker with live price charts"* — the agent scaffolds a Flask app,
+> installs dependencies (via capability approval), fetches live BTC data, and deploys it on a local port.
+> The result is a running application you can open in your browser:
+
+![Example: BTC Portfolio Tracker — deployed locally by an agent](docs/images/0.6.0/app-example-local-deployment-btc-profile-view.png)
+
+All of this happens through a familiar chat interface — no dashboard clicks, no YAML, no manual deploys.
+
+
+## 🛡️ Security: Agent Sandbox Modes
+
+> **⚠️ Running AI-generated code without proper sandboxing is dangerous.**
+> A compromised agent in a privileged Docker container can escape to the host.
+> TaskForge supports **gVisor** to eliminate this risk.
+
+[gVisor](https://gvisor.dev) (`runsc`) is a user-space application kernel developed by Google.
+It intercepts container syscalls and services them in an isolated sandbox, delivering
+**VM-level isolation at container speed** — no nested hypervisor, no privileged mode,
+no heavy boot times.
+
+### Sandbox modes
+
+| Mode | Runtime | `privileged` | Security | When to use |
+|------|---------|-------------|----------|-------------|
+| **`gvisor`** | `runsc` | `false` | ✅ Strong | **Production & shared hosts** |
+| `insecure-dind` | runc (DinD) | `true` | ⚠️ Weak | Local development only |
+| `dedicated-vm` | *(future)* | — | 🔒 Strongest | Firecracker microVMs |
+
+### Enabling gVisor
+
+```bash
+# 1. Install gVisor on the host (one-time)
+#    Full guide: docs/GVISOR_SETUP.md
+sudo apt-get install -y runsc
+sudo runsc install
+sudo systemctl restart docker
+
+# 2. Set the sandbox mode in your .env
+AGENT_SANDBOX_MODE=gvisor
+
+# 3. Restart
+make up
+```
+
+The platform provides **three layers of warnings** when running in insecure mode:
+1. `make up` prints a red terminal banner with a 3-second pause.
+2. The Temporal Worker logs a `WARNING` at startup.
+3. `.env.example` documents the risk in comments.
+
+👉 See [docs/GVISOR_SETUP.md](docs/GVISOR_SETUP.md) for the full installation walkthrough,
+WSL2-specific notes, daemonless image builders (Kaniko / Buildah), and multi-agent
+data-exchange best practices.
+
+---
+## Quick Start
+
+### Prerequisites
+
+- **Docker 24+** with Docker Compose v1 (`docker-compose`, used by the Makefile) — or Docker Compose v2 with `docker-compose` aliased to `docker compose`.
+- **16GB+ RAM** recommended (base agent image build uses ~1.8GB)
+- At least one LLM provider configured (Ollama local, or a cloud API key)
+
+### 1. Clone and configure
+
+```bash
+git clone <repo-url>
+cd openclaw-contained
+cp .env.example .env
+```
+
+Edit `.env` with at least one LLM provider:
+
+```bash
+# Local Ollama (default — no key needed if Ollama is running on host)
+OLLAMA_URL=http://host.docker.internal:11434
+
+# Or cloud providers (set one or more)
+GEMINI_API_KEY=your-key-here
+ANTHROPIC_API_KEY=your-key-here
+OPENAI_API_KEY=your-key-here
+```
+
+### 2. Start the platform
+
+```bash
+make up
+```
+
+This starts the full platform — **15 services**: control plane, API gateway, frontend,
+Open WebUI, Temporal (server + UI + worker + its Postgres), app Postgres + Redis,
+image-builder, internal registry, Docker-in-Docker sandbox, and Zep memory. On first
+boot, the **image-builder** will automatically build
+and push the base agent image (`openclaw-agent:openclaw`) to the internal registry. This takes
+several minutes on the first run (~2.3GB image).
+
+### 3. Verify everything is running
+
+```bash
+make health
+```
+
+### 4. Access the UI
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **Open WebUI** | http://localhost:3001 | 💬 Chat interface — talk to TaskForge like ChatGPT |
+| **Frontend** | http://localhost:3000 | Dashboard, tasks, approvals, LLM config |
+| **API Gateway** | http://localhost:8080 | OpenAI-compatible API (`/v1/chat/completions`) |
+| **Control Plane API** | http://localhost:8000 | REST API (FastAPI auto-docs at `/docs`) |
+| **Temporal UI** | http://localhost:8088 | Workflow inspector |
+
+### 5. Chat with TaskForge (Open WebUI)
+
+Open http://localhost:3001 and create a local account. Select a model from the
+dropdown (e.g. `gemini-2.5-flash` or `taskforge-iterator`) and start chatting.
+TaskForge will create tasks, stream agent progress in real-time, surface
+capability approval links, and deliver results — all through a familiar chat UI.
+
+You can also use **any OpenAI-compatible client** (LibreChat, Chainlit, curl):
+
+```bash
+curl -N http://localhost:8080/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-2.5-flash",
+    "stream": true,
+    "messages": [{"role": "user", "content": "Build a Flask hello-world app"}]
+  }'
+```
+
+### 6. Create and run a task (Dashboard)
+
+> 💡 **Prefer the chat?** You can skip the dashboard entirely — just type your task in
+> Open WebUI (step 5) and the agent handles everything. The dashboard is great for
+> monitoring, approvals, and audit.
+
+![Task Dashboard](docs/images/task-forge-task-dashboard.png)
+
+Via the Frontend at http://localhost:3000/tasks, or via API:
+
+```bash
+# Create a task
+curl -X POST http://localhost:8000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Analyze data",
+    "description": "Process the CSV file and generate a summary report",
+    "llm_model": "gemini-2.5-flash"
+  }'
+
+# Start it (replace {task_id} with the returned ID)
+curl -X POST http://localhost:8000/api/tasks/{task_id}/start
+```
+
+![Create Task](docs/images/Create-task-dashboard.png)
+
+The agent will execute inside a sandboxed container. If it needs additional packages,
+a capability request will appear in the **Approvals** tab at http://localhost:3000/approvals.
+
+![Capability Request Example](docs/images/capability-request-example.png)
+
+---
+
+## Architecture
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full system design, including:
+- 13-service Docker Compose topology
+- 4 base image types with native adapters
+- Supply-chain governance (per-image-type allowlists)
+- Agent Profiles registry
+- Data flow diagrams
+- Database schema
+- Temporal workflow details
+- Security model
+
+### Temporal Workflow Backend
+
+Every task is a durable Temporal workflow — surviving crashes, restarts, and long-running
+capability approval cycles. The Temporal UI at `:8088` gives full visibility into workflow state.
+
+![Temporal Workflow Backend](docs/images/0.6.0/temporal_backend.png)
+
+### Capability Approval & Image Rebuild
+
+When an agent requests a new capability, the workflow pauses for human review.
+On approval, the image builder creates a new Docker image with the approved packages and the agent resumes.
+
+![Rebuild Agent Image on Approval](docs/images/rebuild-agent-execution-docker-on-approval-with-new-capabilities.png)
+
+### Execution Traceability
+
+Every LLM interaction, tool call, and agent step is logged with full detail —
+whether the task was started from the dashboard or from a chat message in Open WebUI.
+
+![Task Execution Traceability](docs/images/task-execution-tracebility.png)
+
+![Audit Logs — Turn-by-Turn Detail](docs/images/0.6.0/TaskForge-audit-logs.png)
+
+![Audit Logs — Continued](docs/images/0.6.0/TaskForge-audit-logs-page2.png)
+
+### Software Bill of Materials (SBOM)
+
+Every agent image build automatically generates an SBOM in both **SPDX JSON** and **CycloneDX JSON** formats using [Trivy](https://trivy.dev). SBOMs are stored in PostgreSQL and exposed through the control plane API.
+
+**Capabilities:**
+
+- **Automatic generation** — Trivy scans every newly built agent image and produces both SPDX and CycloneDX SBOMs
+- **Package inventory** — full list of all packages (pip, apt, npm, Go) with versions and licenses
+- **Version diff** — compare packages between image versions to see what was added, removed, or changed
+- **Cross-task search** — find which tasks use a specific package/version (useful for CVE triage)
+- **Vulnerability scanning** — on-demand Trivy vulnerability scan for any agent image
+- **Frontend tab** — "📦 Software Inventory" tab on the task detail page with filtering, sorting, and raw SBOM download
+
+**API Endpoints:**
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/api/sbom` | POST | Ingest SBOM (called by image-builder after build) |
+| `/api/tasks/{id}/sbom` | GET | Latest SBOM for a task (filterable by version/format) |
+| `/api/tasks/{id}/sbom/all` | GET | List all SBOM versions |
+| `/api/tasks/{id}/sbom/diff` | GET | Package diff between two image versions |
+| `/api/sbom/search` | GET | Search packages across all tasks |
+
+### Services at a Glance
+
+| Service | Port | Description |
+|---------|------|-------------|
+| **control-plane** | 8000 | FastAPI — tasks, policies, capabilities, LLM proxy |
+| **image-builder** | 8002 | Builds agent Docker images, supply-chain validation, auto-bootstraps base images, generates SBOMs via Trivy |
+| **temporal-worker** | *(internal)* | Executes Temporal workflows (3 workflows, 15 activities) |
+| **frontend** | 3000 | Next.js 14 dashboard |
+| **postgres** | 5432 | Primary database (PostgreSQL 15) |
+| **temporal** | *(internal)* | Temporal workflow engine |
+| **temporal-postgres** | *(internal)* | Temporal's own database |
+| **temporal-ui** | 8088 | Temporal workflow inspector |
+| **docker-dind** | 9100-9120 | Docker-in-Docker for agent and deployment containers |
+| **registry** | *(internal)* | Docker Registry v2 for built agent images |
+| **api-gateway** | 8080 | OpenAI-compatible chat completions gateway (SSE streaming) |
+| **open-webui** | 3001 | Chat UI wired to the API Gateway |
+| **redis** | *(internal)* | Session store for API Gateway |
+
+### Deliverables
+
+Agents produce deliverables — either as standalone files or as running applications deployed on ports 9100–9120.
+
+![Deliverable — Single File](docs/images/deliverable-in-form-of-single-delivery.png)
+
+![Deliverable — Running Application](docs/images/deliverable-in-form-of-running-application.png)
+
+### LLM Providers
+
+TaskForge includes a built-in LLM router that agents call via an OpenAI-compatible endpoint.
+Configure providers via the UI at http://localhost:3000/llm-providers or via environment variables:
+
+| Provider | Models | Config |
+|----------|--------|--------|
+| **Ollama** | Any local model (gemma3, qwen3, llama3, mistral, etc.) | `OLLAMA_URL` |
+| **Gemini** | `gemini-2.5-flash`, `gemini-2.5-pro`, etc. | `GEMINI_API_KEY` |
+| **Anthropic** | `claude-sonnet-4-20250514`, etc. | `ANTHROPIC_API_KEY` |
+| **OpenAI** | `gpt-4o`, `o3`, `o4-mini`, etc. | `OPENAI_API_KEY` |
+
+---
+
+## Examples & Showcases
+
+Self-contained, project-scoped showcases live under [`examples/`](examples/README.md).
+Each brings up its own infrastructure on the platform network and imports its DAG
+templates, skills and seed data under a project namespace, without touching core
+files:
+
+- **[Docling RAG](examples/docling-rag/README.md)** — TaskForge drives an *external*
+  RAG service end-to-end: a PDF served by `sample-docs` is ingested and indexed by
+  Docling RAG (SQLite + local Ollama `bge-m3`), hybrid-searched, and turned into an
+  approved report through a closed-loop approval gate. Ships an editable
+  [architecture & workflow diagram](examples/docling-rag/taskforge-docling-rag-integration.xml)
+  (draw.io, two pages: system architecture + swimlane RAG workflow).
+- **[Banking Architecture](examples/banking-architecture/README.md)** — agents query
+  a mock bank API/database and produce an approved account/transaction report.
+
+```bash
+make examples                    # list all examples
+make example-up NAME=docling-rag # start infra + import DAG templates/skills/seed
+make example-down NAME=docling-rag
+```
+
+---
+
+## Makefile Commands
+
+```
+make up              Start all services (first run builds base image)
+make down            Stop and remove all containers
+make build           Build all service images
+make restart         Restart all services
+make logs            Follow logs from all services
+make logs-service    Follow logs from one service (SERVICE=control-plane)
+make health          Check health of all services
+make ps              Show running services
+make clean           Stop everything and remove volumes
+make backup          Backup database and workspaces
+make scale-workers   Scale temporal workers (WORKERS=5)
+```
+
+---
+
+## Development
+
+### Project Structure
+
+```
+services/
+├── control-plane/      # FastAPI API server (tasks, policies, LLM router)
+├── image-builder/      # Docker image builder + supply-chain validation + SBOM
+├── temporal-worker/    # Temporal workflows & activities
+├── api-gateway/        # OpenAI-compatible gateway + agent profiles
+└── agent-executor/     # Code that runs INSIDE agent containers
+
+frontend/               # Next.js 14 dashboard (6 routes)
+agent-images/
+  profiles.yaml         # Agent Profiles registry (body + brain combos)
+  base/                 # 4 base image Dockerfiles + native adapters
+  picoclaw/             # Shell-only adapter (bash/curl/jq)
+config/
+  supply-chain.yaml     # Per-image-type package allowlists
+openclaw/               # OpenClaw CLI (mounted into agents)
+workspaces/             # Per-task workspace directories
+```
+
+### Running a Service Locally
+
+```bash
+cd services/control-plane
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+### Database
+
+PostgreSQL 15 with 10 tables. Schema is auto-created by SQLAlchemy on startup.
+Connection: `postgresql://openclaw:openclaw_pass@localhost:5432/openclaw`
+
+---
+
+## Troubleshooting
+
+### First boot takes a long time
+
+The image-builder automatically builds the base agent image (~1.8GB) on first startup.
+Watch progress with:
+
+```bash
+docker-compose logs -f image-builder
+```
+
+### ContainerConfig error on rebuild
+
+Docker Compose v1 can hit a `KeyError: 'ContainerConfig'` when recreating containers.
+Workaround:
+
+```bash
+docker rm -f openclaw-frontend
+docker-compose up -d --no-deps frontend
+```
+
+### Services won't start
+
+```bash
+docker-compose logs          # check all logs
+docker-compose ps            # check container states
+make health                  # quick health check
+```
+
+### Agent container fails
+
+```bash
+# Check temporal worker logs for agent execution details
+docker-compose logs temporal-worker
+
+# Check DinD for container state
+docker exec openclaw-docker-dind docker ps -a
+```
+
+---
+
+## Environment Variables
+
+| Variable | Default | Required | Purpose |
+|----------|---------|----------|---------|
+| `AGENT_SANDBOX_MODE` | `insecure-dind` | **Yes (prod)** | Agent container isolation: `gvisor` or `insecure-dind` |
+| `POSTGRES_PASSWORD` | `openclaw_pass` | No | PostgreSQL password |
+| `JWT_SECRET` | `change-me-in-production` | No | JWT signing secret |
+| `OLLAMA_URL` | `http://host.docker.internal:11434` | No | Ollama endpoint URL |
+| `GEMINI_API_KEY` | — | No | Google Gemini API key |
+| `ANTHROPIC_API_KEY` | — | No | Anthropic Claude API key |
+| `OPENAI_API_KEY` | — | No | OpenAI API key |
+| `API_URL` | `http://localhost:8000` | No | Frontend → API URL |
+| `DEFAULT_LLM_MODEL` | `gemini-2.0-flash-exp` | No | Default LLM for API Gateway tasks |
+| `TEMPORAL_UI_URL` | `http://localhost:8088` | No | Temporal UI base URL (for workflow links in streaming) |
+| `WEBUI_SECRET_KEY` | `change-me-open-webui-secret` | No | Open WebUI session secret |
+
+At least one LLM provider must be configured for agents to function.
+
+---
+
+## Author
+
+**Roman Pawel Klis, Dr. sc. ETH Zurich**
+[LinkedIn](https://www.linkedin.com/in/roman-pawel-klis-3811994/)
+
+Senior Data Scientist (Corporate Engineering) and AI Program Leader operating at a Senior Manager level. With 12+ years of experience delivering secure, enterprise-scale AI solutions in manufacturing and R&D. Expert in Agentic AI, Generative AI, and complex data architectures under strict governance (FDA-preparatory, ISO). Recognized for strategic leadership and mentorship — most recently demonstrated by guiding the 1st Prize winning team at the NASA Space Apps Challenge 2025 (Zurich).
+
+💬 *If you'd like to discuss how TaskForge could be used in your organization — feel free to [reach out on LinkedIn](https://www.linkedin.com/in/roman-pawel-klis-3811994/).*
+
+---
+
+## License
+
+Copyright © 2025-2026 Roman Pawel Klis.
+
+See [LICENSE](LICENSE) for details.

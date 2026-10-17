@@ -1,0 +1,131 @@
+# Awesome On-Device AI Systems [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+
+A curated list of **efficient on-device AI systems**, including practical inference engines, benchmarks, and state-of-the-art research papers for mobile and edge devices.
+
+This repository bridges the gap between **Systems Research** (academic papers) and **Practical Deployment** (engineering frameworks), focusing on optimizing ML models (e.g., LLM/VLMs, ViTs, etc.) on resource-constrained hardware.
+
+<!-- ############################################################################# -->
+
+## 📂 Table of Contents
+
+- 🚀 Inference Engines
+  - [General ML Workloads](#general-ml-workloads)
+  - [LLM & GenAI Specialized](#llm--genai-specialized)
+  - [Vendor-Specific SDKs (NPU/DSP)](#vendor-specific-sdks-npudsp)
+
+<!-- - [📊 Performance Benchmark](#-performance-benchmark) -->
+
+- 📝 Research Papers
+  - [LLM Inference on Mobile SoCs](#llm-inference-on-mobile-socs)
+  - [Mobile Processor Characterization & Optimization](#mobile-processor-characterization--optimization)
+  - [Compiler-based ML Optimization](#compiler-based-ml-optimization)
+  - [Attention Acceleration](#attention-acceleration)
+  - [Quantization/Sparsity](#quantizationsparsity)
+  - [Application-centric On-device AI Systems](#application-centric-on-device-ai-systems)
+  - [Multi-DNN / Heterogeneous Runtime Scheduling](#multi-dnn--heterogeneous-runtime-scheduling)
+  - [On-device Training, Model Adaptation](#on-device-training-model-adaptation)
+  - [Profilers](#profilers)
+  
+<!-- ############################################################################# -->
+
+## 🚀 Inference Engines
+
+Frameworks and runtimes designed for deploying models on edge devices.
+
+### General ML Workloads
+* [LiteRT (formerly TensorFlow Lite)](https://ai.google.dev/edge/litert) - Google's framework for on-device inference.
+* [ExecuTorch](https://github.com/pytorch/executorch) - PyTorch’s end-to-end solution for enabling on-device AI.
+* [ONNX Runtime](https://onnxruntime.ai/) - Cross-platform inference engine for ONNX models.
+* [MNN](https://github.com/alibaba/MNN) - Lightweight deep learning framework by Alibaba.
+* [NCNN](https://github.com/Tencent/ncnn) - High-performance NN inference framework by Tencent.
+
+### Vendor-Specific SDKs
+* [Qualcomm QNN](https://www.qualcomm.com/developer/software/qualcomm-ai-engine-direct-sdk) - Qualcomm AI Stack for Snapdragon NPUs/DSPs.
+* [Apple Core ML](https://developer.apple.com/documentation/coreml) - Framework to integrate ML models into iOS/macOS apps.
+* [NVIDIA TensorRT](https://developer.nvidia.com/tensorrt) - SDK for high-performance deep learning inference on NVIDIA GPUs (including Jetson).
+* [Intel OpenVINO](https://github.com/openvinotoolkit/openvino) - Toolkit for optimizing and deploying AI inference on Intel hardware (CPU/GPU/NPU).
+* [MediaTek NeuroPilot](https://neuropilot.mediatek.com/) - AI ecosystem and SDK for MediaTek NPUs.
+
+### Task-specific SDKs
+* [llama.cpp](https://github.com/ggerganov/llama.cpp) - LLM inference in C/C++ with minimal dependencies.
+* [MLC LLM](https://github.com/mlc-ai/mlc-llm) - Universal solution for deploying LLMs on any hardware (based on TVM).
+* [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM) - NVIDIA GPU-optimized LLM inference library, relevant for Jetson-class edge devices.
+* [mllm](https://github.com/UbiquitousLearning/mllm) - A fast and lightweight LLM inference engine for mobile and edge devices.
+* [MLX LM](https://github.com/ml-explore/mlx-lm) - LLM inference and fine-tuning toolkit built on MLX for Apple silicon.
+* [FluidAudio](https://github.com/FluidInference/FluidAudio) - Local audio AI SDK for Apple platforms with ASR, speaker diarization, VAD, and TTS optimized for Apple Neural Engine.
+* [RunAnywhere](https://github.com/RunanywhereAI/runanywhere-sdks) - Open-source SDK for running LLMs and multimodal models on-device across iOS, Android, and cross-platform apps.
+* [Off Grid](https://github.com/alichherawalla/off-grid-mobile-ai) - Open-source iOS/Android app running LLMs (Llama, Qwen, Gemma, Phi, DeepSeek) entirely on-device via llama.cpp. Includes voice (whisper.cpp), vision, on-device image generation, and tool calling.
+
+<!-- ############################################################################# -->
+
+## 📝 Research Papers
+
+Note: Some of the works are designed for inference acceleration on cloud/server infrastructure, which has much higher computational resources, but I also include them here if they can be potentially generalized to on-device inference use cases.
+
+#### LLM Inference on Mobile SoCs
+- [OSDI 2026] [Inference in the Shadows: Taming Memory Bandwidth Contention in Mobile LLM Inference with Sereno](https://www.usenix.org/system/files/osdi26-xin.pdf)
+- [EuroSys 2026] [Scaling LLM Test-Time Compute with Mobile NPU on Smartphones](https://arxiv.org/pdf/2509.23324v1)
+- [SOSP 2025] [Characterizing Mobile SoC for Accelerating Heterogeneous LLM Inference](https://arxiv.org/abs/2501.14794)
+- [ASPLOS 2025] [Neuralink: Fast on-Device LLM Inference with Neuron Co-Activation Linking](https://dl.acm.org/doi/10.1145/3676642.3736114)
+- [ASPLOS 2025] [Fast On-device LLM Inference with NPUs](https://arxiv.org/abs/2407.05858)
+- [arXiv 2024] [PowerInfer-2: Fast Large Language Model Inference on a Smartphone](https://arxiv.org/abs/2406.06282)
+
+<!-- #### On-device AI Accelerators: Performance Characterization & Optimization -->
+<!-- #### Compiler-based ML Optimization -->
+#### Hardware- and Compiler-aware On-device Inference
+- [OSDI 2026] [Unleash All Cores: Scalable Asymmetry-aware DNN Inference on Mobile CPUs](https://www.usenix.org/system/files/osdi26-sang.pdf)
+- [EuroSys 2026] [viNPU: Optimizing Vision Transformer Inference on Mobile NPUs](https://dl.acm.org/doi/10.1145/3767295.3803619)
+- [ASPLOS 2026] [FlashMem: Supporting Modern DNN Workloads on Mobile with GPU Memory Hierarchy Optimizations](https://arxiv.org/abs/2602.15379)
+- [ICS 2025] [TMModel: Modeling Texture Memory and Mobile GPU Performance to Accelerate DNN Computations](https://doi.org/10.1145/3721145.3725774)
+- [ASPLOS 2024] [SmartMem: Layout Transformation Elimination and Adaptation for Efficient DNN Execution on Mobile](https://dl.acm.org/doi/pdf/10.1145/3620666.3651384)
+- [ASPLOS 2024] [SoD<sup>2</sup>: Statically Optimizing Dynamic Deep Neural Network Execution](https://dl.acm.org/doi/pdf/10.1145/3617232.3624869)
+- [MICRO 2023] [Improving Data Reuse in NPU On-chip Memory with Interleaved Gradient Order for DNN Training](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10411391)
+- [MICRO 2022] [GCD<sup>2</sup>: A Globally Optimizing Compiler for Mapping DNNs to Mobile DSPs](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9923837)
+- [PLDI 2021] [DNNFusion: Accelerating Deep Neural Networks Execution with Advanced Operator Fusion](https://dl.acm.org/doi/pdf/10.1145/3453483.3454083)
+
+#### Attention Acceleration
+- [MLSys 2026] [IntAttention: A Fully Integer Attention Pipeline for Efficient Edge Inference](https://arxiv.org/abs/2511.21513)
+- [MobiSys 2026] [ShadowNPU: System and Algorithm Co-design for NPU-Centric On-Device LLM Inference](https://arxiv.org/abs/2508.16703)
+- [MLSys 2025] [MAS-Attention: Memory-Aware Stream Processing for Attention Acceleration on Resource-Constrained Edge Devices](https://arxiv.org/pdf/2411.17720)
+- [MLSys 2025] [TurboAttention: Efficient attention approximation for High Throughputs LLMs](https://arxiv.org/pdf/2412.08585)
+- [ASPLOS 2023] [FLAT: An Optimized Dataflow for Mitigating Attention Bottlenecks](https://dl.acm.org/doi/10.1145/3575693.3575747)
+- [NeurIPS 2022] [FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness](https://arxiv.org/pdf/2205.14135)
+
+#### Quantization/Sparsity
+- [ASPLOS 2026] [oFFN: Outlier and Neuron-aware Structured FFN for Fast yet Accurate LLM Inference](https://dl.acm.org/doi/pdf/10.1145/3779212.3790194)
+- [MLSys 2024] [AWQ: Activation-aware Weight Quantization for On-Device LLM Compression and Acceleration](https://arxiv.org/pdf/2306.00978)
+- [ISCA 2023] [OliVe: Accelerating Large Language Models via Hardware-friendly Outlier-Victim Pair Quantization](https://arxiv.org/abs/2304.07493)
+
+#### Application-centric On-device AI Systems
+- [MobiSys 2025] [ARIA: Optimizing Vision Foundation Model Inference on Heterogeneous Mobile Processors for Augmented Reality](https://dl.acm.org/doi/10.1145/3711875.3729161)
+- [MobiCom 2024] [Panopticus: Omnidirectional 3D Object Detection on Resource-constrained Edge Devices](https://arxiv.org/pdf/2410.01270)
+- [MobiCom 2024] [Perceptual-Centric Image Super-Resolution using Heterogeneous Processors on Mobile Devices](https://dl.acm.org/doi/10.1145/3636534.3690698)
+- [IPSN 2023] [PointSplit: Towards On-device 3D Object Detection with Heterogeneous Low-power Accelerators](https://dl.acm.org/doi/pdf/10.1145/3583120.3587045)
+- [MobiSys 2023] [OmniLive: Super-Resolution Enhanced 360° Video Live Streaming for Mobile Devices](https://dl.acm.org/doi/pdf/10.1145/3581791.3596851)
+- [MobiCom 2022] [NeuLens: Spatial-based Dynamic Acceleration of Convolutional Neural Networks on Edge](https://dl.acm.org/doi/pdf/10.1145/3495243.3560528)
+- [MobiCom 2021] [Flexible high-resolution object detection on edge devices with tunable latency](https://dl.acm.org/doi/abs/10.1145/3447993.3483274)
+
+#### Multi-DNN / Heterogeneous Runtime Scheduling
+- [PPoPP 2024] [Shared Memory-contention-aware Concurrent DNN Execution for Diversely Heterogeneous SoCs](https://dl.acm.org/doi/pdf/10.1145/3627535.3638502)
+- [RTSS 2024] [FLEX: Adaptive Task Batch Scheduling with Elastic Fusion in Multi-Modal Multi-View Machine Perception](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10844787)
+- [MobiSys 2024] [Pantheon: Preemptible Multi-DNN Inference on Mobile Edge GPUs](https://dl.acm.org/doi/pdf/10.1145/3643832.3661878)
+- [Sensys 2023] [Miriam: Exploiting Elastic Kernels for Real-time Multi-DNN Inference on Edge GPU](https://dl.acm.org/doi/10.1145/3625687.3625789)
+- [ATC 2023] [Decentralized Application-Level Adaptive Scheduling for Multi-Instance DNNs on Open Mobile Devices](https://www.usenix.org/system/files/atc23-sung.pdf)
+- [MobiSys 2022] [Band: Coordinated Multi-DNN Inference on Heterogeneous Mobile Processors](https://dl.acm.org/doi/pdf/10.1145/3498361.3538948)
+- [MobiSys 2022] [CoDL: efficient CPU-GPU co-execution for deep learning inference on mobile devices](https://dl.acm.org/doi/pdf/10.1145/3498361.3538932)
+
+#### On-device Training, Model Adaptation
+- [ASPLOS 2025] [Nazar: Monitoring and Adapting ML Models on Mobile Devices](https://dl.acm.org/doi/pdf/10.1145/3669940.3707246)
+- [SenSys 2024] [AdaShadow: Responsive Test-time Model Adaptation in Non-stationary Mobile Environments](https://arxiv.org/pdf/2410.08256)
+- [SenSys 2023] [EdgeFM: Leveraging Foundation Model for Open-set Learning on the Edge](https://dl.acm.org/doi/10.1145/3625687.3625793)
+- [MobiCom 2023] [Cost-effective On-device Continual Learning over Memory Hierarchy with Miro](https://dl.acm.org/doi/pdf/10.1145/3570361.3613297)
+- [MobiCom 2023] [AdaptiveNet: Post-deployment Neural Architecture Adaptation for Diverse Edge Environments](https://dl.acm.org/doi/pdf/10.1145/3570361.3592529)
+- [MobiSys 2023] [ElasticTrainer: Speeding Up On-Device Training with Runtime Elastic Tensor Selection](https://dl.acm.org/doi/pdf/10.1145/3581791.3596852)
+- [SenSys 2023] [On-NAS: On-Device Neural Architecture Search on Memory-Constrained Intelligent Embedded Systems](https://dl.acm.org/doi/10.1145/3625687.3625814)
+- [MobiCom 2022] [Mandheling: mixed-precision on-device DNN training with DSP offloading](https://dl.acm.org/doi/abs/10.1145/3495243.3560545)
+- [MobiSys 2022] [Memory-efficient DNN training on mobile devices](https://dl.acm.org/doi/abs/10.1145/3498361.3539765)
+
+#### Profilers
+- [MobiCom 2024] [MELTing point: Mobile Evaluation of Language Transformers](https://arxiv.org/abs/2403.12844) [[code]](https://github.com/brave-experiments/MELT-public)
+- [SenSys 2023] [nnPerf: Demystifying DNN Runtime Inference Latency on Mobile Platforms](https://dl.acm.org/doi/10.1145/3625687.3625797)
+- [MobiSys 2021] [nn-Meter: towards accurate latency prediction of deep-learning model inference on diverse edge devices](https://dl.acm.org/doi/10.1145/3458864.3467882)

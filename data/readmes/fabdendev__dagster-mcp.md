@@ -1,0 +1,413 @@
+# Dagster MCP
+
+[![PyPI version](https://img.shields.io/pypi/v/dagster-mcp)](https://pypi.org/project/dagster-mcp/)
+[![Downloads](https://static.pepy.tech/badge/dagster-mcp/month)](https://pepy.tech/project/dagster-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://github.com/fabdendev/dagster-mcp/actions/workflows/tests.yml/badge.svg)](https://github.com/fabdendev/dagster-mcp/actions/workflows/tests.yml)
+
+An [MCP](https://modelcontextprotocol.io/) server that gives AI agents full visibility and control over your [Dagster](https://dagster.io/) instance — like an SRE for your data pipelines.
+
+Works with any MCP client: [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Claude Desktop](https://claude.ai), [Cursor](https://cursor.sh), and more.
+
+Dagster officially develops and supports their own Dagster Plus MCP server. See the documentation [here](https://docs.dagster.io/guides/labs/dagster-mcp).
+
+## Why this exists
+
+Data pipelines break at 3 AM. Schedules silently stop firing. Assets go stale. Instead of waking up to a dashboard full of red, give your AI agent the tools to **monitor, diagnose, and fix** your Dagster instance autonomously.
+
+```
+Agent: Checking instance health...
+       get_instance_status() -> healthy: false, daemon "SCHEDULER" unhealthy
+
+Agent: Scheduler daemon is down. Let me check recent failures...
+       get_runs(statuses=["FAILURE"], limit=5) -> 3 failed runs in the last hour
+
+Agent: Diagnosing the most recent failure...
+       get_run_failure_summary("run_abc123") ->
+         failed_steps: ["transform_orders"]
+         root_cause: "NullPointerError: column 'price' is null"
+         suggestions: ["Single step failed — consider re-running from failure"]
+
+Agent: Re-launching the failed job...
+       launch_job("etl_pipeline", "my_project") -> run_id: "run_def456", status: STARTED
+
+Agent: One sensor keeps firing on bad data. Checking its ticks...
+       get_tick_history("orders_sensor", "SENSOR") -> 12 consecutive FAILURE ticks
+
+Agent: Stopping it until the upstream fix lands...
+       stop_sensor("orders_sensor") -> status: STOPPED
+```
+
+## What it does
+
+27 tools across 6 categories, designed for autonomous DataOps workflows:
+
+| Category | Tools | What an agent can do |
+|----------|-------|---------------------|
+| **Runs** | `get_runs` `get_run_status` `get_run_logs` `get_run_stats` `get_run_failure_summary` | Find failures, diagnose root causes, inspect logs and step timing |
+| **Assets** | `search_assets` `resolve_asset_selection` `get_asset_details` `get_recent_materializations` `get_asset_health` | Discover assets, preview lineage selections, check freshness, detect stale data |
+| **Jobs** | `list_jobs` | Inventory jobs across code locations, with optional repository/location filters |
+| **Schedules & Sensors** | `list_schedules` `list_sensors` `get_tick_history` | Detect silent failures, missed ticks, sensor errors |
+| **Instance** | `get_instance_status` `list_code_locations` `list_backfills` | Global health check, daemon status, code location errors |
+| **Actions** | `materialize_assets` `backfill_assets` `launch_job` `launch_job_with_partitions` `terminate_run` `start_schedule` `stop_schedule` `start_sensor` `stop_sensor` `reload_code_location` | Materialize concrete assets with config, backfill partitions, launch jobs, stop stuck runs, start or stop schedules and sensors, reload after deploy |
+
+> Actions are opt-in: set `DAGSTER_READ_ONLY=false` to enable write operations.
+
+## Quick start
+
+### Prerequisites
+
+- Python 3.12+
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+- A running [Dagster](https://dagster.io/) instance (self-hosted or Cloud)
+
+### Install
+
+The package is published on [PyPI](https://pypi.org/project/dagster-mcp/).
+
+**Option A — run directly with uvx (no install needed):**
+
+```bash
+uvx dagster-mcp
+```
+
+**Option B — install with pip:**
+
+```bash
+pip install dagster-mcp
+```
+
+**Option C — clone and run:**
+
+```bash
+git clone https://github.com/fabdendev/dagster-mcp.git
+cd dagster-mcp
+uv sync
+```
+
+### Configure
+
+#### Single environment
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DAGSTER_URL` | Base URL of your Dagster instance | `http://localhost:3000` |
+| `DAGSTER_API_TOKEN` | Dagster Cloud API token (leave empty for self-hosted) | _(empty)_ |
+| `DAGSTER_EXTRA_HEADERS` | JSON object of additional request headers sent to Dagster GraphQL | _(empty)_ |
+| `DAGSTER_READ_ONLY` | When `true`, only read tools are exposed (no launch/terminate/reload, no schedule or sensor start/stop) | `true` |
+
+**Self-hosted:**
+
+```bash
+export DAGSTER_URL=http://localhost:3000
+```
+
+**Dagster Cloud:**
+
+```bash
+export DAGSTER_URL=https://myorg.dagster.cloud/prod
+export DAGSTER_API_TOKEN=your-dagster-cloud-user-token
+```
+
+**Custom auth / proxy headers:**
+
+```bash
+export DAGSTER_EXTRA_HEADERS='{"Authorization":"Bearer your-token","X-My-Header":"value"}'
+```
+
+#### Multiple environments
+
+Use `DAGSTER_ENVS` to configure several Dagster instances in one server. Every tool then accepts an optional `env` parameter so the LLM can target the right instance.
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DAGSTER_ENVS` | JSON object mapping env names to `{url, token?, extra_headers?}` configs | _(empty)_ |
+| `DAGSTER_DEFAULT_ENV` | Env name to use when `env` is not passed to a tool | _(empty)_ |
+
+```bash
+export DAGSTER_ENVS='{
+  "prod": {"url": "https://myorg.dagster.cloud/prod", "token": "prod-token"},
+  "staging": {"url": "https://myorg.dagster.cloud/staging", "token": "stg-token"},
+  "dev": {"url": "http://localhost:3000"}
+}'
+export DAGSTER_DEFAULT_ENV=prod
+```
+
+When `DAGSTER_ENVS` is set, `DAGSTER_URL` / `DAGSTER_API_TOKEN` / `DAGSTER_EXTRA_HEADERS` are ignored. If only one env is defined, it is used automatically even without `DAGSTER_DEFAULT_ENV`.
+
+### Add to your MCP client
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+Add to `~/.claude/settings.json`:
+
+**Single env:**
+
+```json
+{
+  "mcpServers": {
+    "dagster": {
+      "command": "uvx",
+      "args": ["dagster-mcp"],
+      "env": {
+        "DAGSTER_URL": "http://localhost:3000"
+      }
+    }
+  }
+}
+```
+
+**Multiple envs:**
+
+```json
+{
+  "mcpServers": {
+    "dagster": {
+      "command": "uvx",
+      "args": ["dagster-mcp"],
+      "env": {
+        "DAGSTER_ENVS": "{\"prod\":{\"url\":\"https://myorg.dagster.cloud/prod\",\"token\":\"prod-token\"},\"dev\":{\"url\":\"http://localhost:3000\"}}",
+        "DAGSTER_DEFAULT_ENV": "prod"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Claude Desktop</strong></summary>
+
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "dagster": {
+      "command": "uvx",
+      "args": ["dagster-mcp"],
+      "env": {
+        "DAGSTER_URL": "http://localhost:3000"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>From a local clone</strong></summary>
+
+```json
+{
+  "mcpServers": {
+    "dagster": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/dagster-mcp", "dagster-mcp"],
+      "env": {
+        "DAGSTER_URL": "http://localhost:3000"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+## Tool reference
+
+### Runs
+
+| Tool | Description |
+|------|-------------|
+| `get_runs` | List recent runs, filter by job name and/or status |
+| `get_run_status` | Get status, config, tags, and run lineage (re-execution chain via rootRunId/parentRunId) |
+| `get_run_logs` | Get structured log events with pagination and optional level filtering (`ERROR`, `WARNING`, `INFO`); EngineEvent events include `metadataEntries` |
+| `get_run_stats` | Get per-step execution stats: timing, materializations, expectation results |
+| `get_run_failure_summary` | **Consolidated failure diagnosis** — failed steps, root cause error, step durations, and suggestions in one call |
+
+### Assets
+
+| Tool | Description |
+|------|-------------|
+| `search_assets` | Discover assets by key prefix or group name |
+| `resolve_asset_selection` | Resolve key/group/tag/kind/owner predicates, wildcards, boolean logic, roots/sinks, and lineage traversal into concrete asset keys without launching anything |
+| `get_asset_details` | Get description, upstream/downstream dependencies, partitions, latest materialization |
+| `get_recent_materializations` | Get materialization history with metadata for an asset |
+| `get_asset_health` | **Consolidated health view** — staleness, freshness policy, last run status (works with single asset or entire group) |
+
+#### Two-step asset workflow
+
+Start by resolving and reviewing a selection expression:
+
+```text
+resolve_asset_selection(
+  asset_selection="group:analytics and (kind:dbt or key:*benchmark)"
+)
+
+→ {
+    "asset_keys": [
+      "warehouse/analytics/orders",
+      "warehouse/analytics/reranker_benchmark"
+    ],
+    "assets": [...]
+  }
+```
+
+For concrete, unpartitioned assets, pass the returned keys to
+`materialize_assets` with any required launch config and tags:
+
+```text
+materialize_assets(
+  asset_keys=[
+    "warehouse/analytics/orders",
+    "warehouse/analytics/reranker_benchmark"
+  ],
+  run_config={"ops": {"benchmark": {"config": {"limit": 1000}}}},
+  tags={"triggered_by": "agent"}
+)
+```
+
+For partitioned assets, pass the same resolved keys to `backfill_assets`
+instead:
+
+```text
+backfill_assets(
+  asset_keys=["warehouse/analytics/daily_orders"],
+  partition_start="2026-07-01",
+  partition_end="2026-07-07",
+  run_config={"resources": {"warehouse": {"config": {"pool": "benchmark"}}}}
+)
+```
+
+`resolve_asset_selection` is available in both read-only and read-write modes.
+It returns external, observable, non-executable, and partitioned matches so the
+caller can inspect the complete result. The write tools re-fetch current asset
+definitions before execution. `resolve_asset_selection` and `materialize_assets`
+require Dagster 1.9+.
+
+### Jobs, Schedules & Sensors
+
+| Tool | Description |
+|------|-------------|
+| `list_jobs` | List jobs across code locations, optionally filtered by exact `repository_name` and/or `location_name` (use to find names for `launch_job`) |
+| `list_schedules` | List schedules with status (RUNNING/STOPPED), cron, target job, next tick |
+| `list_sensors` | List sensors with status and target jobs |
+| `get_tick_history` | Tick-by-tick history for a schedule or sensor — **essential for detecting silent failures**. Accepts optional `repository_name` / `location_name` to disambiguate a name shared by several code locations |
+
+`list_jobs` filters are independent and use AND semantics when combined. For
+example, `list_jobs(repository_name="example_repository")` finds that repository
+across locations, while
+`list_jobs(repository_name="example_repository", location_name="example_location")`
+targets one repository and code-location pair. Calls with only one filter use a
+lightweight repository-discovery request followed by one batched job request —
+it isn't free: that's a second round-trip against Dagster, traded for a
+smaller payload when only a subset of repositories matches. Request counts
+per call: 1 for no filters, 1 for both filters, 2 for exactly one filter.
+
+If a code location relevant to the filter failed to load or is still loading,
+`list_jobs` raises a `RuntimeError` naming the location instead of silently
+returning an empty result — an empty filtered result means no match among
+code locations Dagster could actually load. A non-empty filtered result can
+still be incomplete: if some repositories matched, `list_jobs` returns them
+rather than raising, even when another code location could not be searched.
+This check rides along in the same requests above (`workspaceOrError`, which
+`list_code_locations` already queries), so it adds no extra round-trip. The
+unfiltered call
+(`list_jobs()` with no filters) is unchanged: it omits this check and keeps
+returning whatever is loaded, since an agent won't misread a long inventory
+listing as "nothing exists" the way it would misread an empty filtered
+result — use `list_code_locations` or `get_instance_status` to check load
+health directly.
+
+### Instance & Code Locations
+
+| Tool | Description |
+|------|-------------|
+| `get_instance_status` | **Start here** — global health: daemon status, queued run count, code location errors |
+| `list_code_locations` | List all code locations and their load status |
+| `list_backfills` | List recent backfills with status and partition progress |
+
+### Write Operations
+
+| Tool | Description |
+|------|-------------|
+| `materialize_assets` | Launch concrete, unpartitioned asset keys with run config and tags; infers one compatible repository/job, includes compatible checks, and expands required non-subsettable multi-asset neighbors. On a failed launch it returns the preflight context plus `error` and `message` rather than raising, and omits `launched_asset_keys` |
+| `backfill_assets` | Launch a partition backfill by **asset selection** with optional run config; respects each asset's `BackfillPolicy` server-side |
+| `launch_job` | Launch a named job; `asset_keys` remains supported for compatibility and is sent through GraphQL `assetSelection`, but the two-step asset workflow is preferred |
+| `launch_job_with_partitions` | Launch a partitioned job for one or more partition keys; creates a backfill (supports `from_failure` to retry only failed steps) |
+| `start_schedule` | Start (enable) a schedule so it launches runs on its cron |
+| `stop_schedule` | Stop (disable) a schedule — persists across restarts; does not terminate in-flight runs |
+| `start_sensor` | Start (enable) a sensor so it resumes evaluating |
+| `stop_sensor` | Stop (disable) a sensor — the fix for a runaway or erroring sensor found via `get_tick_history` |
+
+> Schedule/sensor names are unique only within a repository. If the same name exists in several code locations, the start/stop tools refuse to act and list the candidates; pass `repository_name` / `location_name` to disambiguate. Successful calls echo the resolved `repository` and `location`.
+| `terminate_run` | Stop a stuck or runaway run |
+| `reload_code_location` | Reload a code location after deploy |
+
+> Write tools require `DAGSTER_READ_ONLY=false` (default is `true`).
+
+## How it differs from Dagster's official AI tooling
+
+Dagster builds and supports its own AI tooling. If you are a **Dagster+ customer**, start with theirs — it is first-party, needs no local runtime, and reaches Dagster+ platform objects (alerting, Issues, Insights) that this project cannot. This project exists mainly for people running **open-source / self-hosted Dagster**, which the official server's documented setup does not cover.
+
+Everything in the "official" column comes from Dagster's own docs at <https://docs.dagster.io/guides/labs/dagster-mcp> (retrieved 2026-07-30), or from Dagster directly in [#21](https://github.com/fabdendev/dagster-mcp/pull/21). Dagster's docs nowhere state that open-source or self-hosted Dagster is unsupported; what they document is a Dagster-hosted URL, a required `Dagster-Cloud-Organization` header, and a Dagster+ user token. Their capability matrix is a snapshot of today and Dagster expects to keep adding to it, so treat the gaps below as current rather than permanent.
+
+| | **dagster-mcp** (this project) | **[Dagster+ MCP server](https://docs.dagster.io/guides/labs/dagster-mcp)** (official) | **[`dagster-expert` skill](https://docs.dagster.io/getting-started/ai-tools)** (official) |
+|---|---|---|---|
+| **What it is** | MCP server you run yourself (Python, MIT) | Dagster-hosted remote MCP endpoint at `https://mcp.agent.dagster.cloud/mcp` | An Agent Skill — markdown instructions loaded by your coding agent, not an MCP server |
+| **When you use it** | Operations time, against a live instance | Operations time, against a Dagster+ deployment | Development time, against your local codebase |
+| **Works with self-hosted / OSS Dagster** | Yes — points at any Dagster webserver (`DAGSTER_URL`, default `http://localhost:3000`; `/graphql` is appended). No token required | Not per the documented setup: the only URL given is Dagster-hosted, and connecting requires a `Dagster-Cloud-Organization` header plus a Dagster+ user token | Yes — Apache-2.0 markdown files you copy locally |
+| **Works with Dagster+** | Yes — sends a `Dagster-Cloud-Api-Token` header; extra headers via `DAGSTER_EXTRA_HEADERS` | Yes — this is its only documented target | n/a |
+| **Setup** | Local process launched by your MCP client (Python 3.12+, e.g. `uvx dagster-mcp`), configured with env vars | No local runtime: `claude mcp add --transport http dagster-plus https://mcp.agent.dagster.cloud/mcp --header "Dagster-Cloud-Organization: …" --header "Authorization: Bearer …"` | Copy the skill files into your agent |
+| **Maturity** | v0.8.0 on PyPI (pre-1.0), MIT, single maintainer with occasional outside contributions, "AS IS, WITHOUT WARRANTY OF ANY KIND", no SLA | Labelled by Dagster as Preview: *"under active development, and not considered ready for production use… the APIs may change"*, and published under `/guides/labs/` | Current, no preview label |
+| **Runs** | View, launch, terminate, per-step stats, log retrieval, consolidated failure summary | View ✅, Create/Launch ✅, Delete/Terminate ✅, Insights metrics ✅, Update ❌ (Dagster's matrix); run logs View ✅ | n/a |
+| **Assets** | View, search, health, resolve selection syntax, and **materialize specific assets** (`resolve_asset_selection` → `materialize_assets`, with run config and partition ranges) | View ✅ and Insights metrics ✅; Create/Launch, Update and Delete marked ❌ — i.e. no asset-level materialization tool, though launching a run is supported | n/a |
+| **Schedules & sensors** | List, tick history, start/stop | Not supported today — confirmed by Dagster, who expect to add it | n/a |
+| **Backfills & partitions** | List backfills, launch partitioned jobs, backfill assets over a partition range | Not listed in Dagster's capability matrix | n/a |
+| **Code locations & instance health** | List/reload code locations, instance status, daemon heartbeats, queued-run counts | Deployments View ✅ and Insights ✅; code locations and daemon health not listed (Dagster+ manages the daemon) | n/a |
+| **Alerting, Insights, Dagster+ Issues** | Not supported — no alerting, cost/Insights metrics, or Issues equivalent | Alert policies and Dagster+ Issues: View / Create / Update / Delete all ✅. Insights metrics ✅ on Runs, Assets and Deployments. All three are documented Dagster+ features (Issues is in limited early access) | n/a |
+| **Multiple instances** | Yes — `DAGSTER_ENVS` maps names to arbitrary URLs and tokens, with a per-tool `env` argument; you can mix OSS and Dagster+ | Deployments within one Dagster+ organization, selected per tool call | n/a |
+| **Write safety** | 17 read tools always registered; the 10 write tools are registered only when `DAGSTER_READ_ONLY=false` (default `true`), so clients cannot even see them otherwise. This is a convenience guardrail, **not** a security boundary: it is a process-level env var read at import, and the API token you configure keeps whatever rights it has | Enforced server-side by Dagster+ token permissions. The docs default to a personal user token; a [service user](https://docs.dagster.io/deployment/dagster-plus/authentication-and-access-control/rbac/users#service-users) is offered as the alternative for scoped, non-human auth (service users are a Dagster+ Pro feature) | n/a |
+| **Support** | Best-effort, community, GitHub issues; no SECURITY.md or documented disclosure process | First-party vendor | First-party vendor |
+
+**Use the official Dagster+ MCP server if** you are on Dagster+ and want alerting, Issues or Insights/cost analysis from an agent, want no local runtime, or need vendor support and a supplier your procurement process will accept.
+
+**Use this project if** you run open-source or self-hosted Dagster, or you need asset-level materialization, schedule/sensor control, backfills, or code-location and daemon operations from an agent.
+
+For Dagster+ users the two are complementary rather than competing — nothing stops you running both. This project is not affiliated with or endorsed by Dagster Labs.
+
+## Compatibility
+
+The monitoring and existing action tools are tested with Dagster 1.6+.
+`resolve_asset_selection` and `materialize_assets` require Dagster 1.9+ and
+verify the required GraphQL capabilities before querying or launching. The
+`RunsFilter` field name (`jobName` vs `pipelineName`) is auto-detected via schema
+introspection. Configured asset backfills also feature-detect
+`LaunchBackfillParams.runConfigData` and return a clear compatibility error when
+an older schema does not expose it. Schedule and sensor start/stop work on
+Dagster 1.6+: the stop mutations are sent with the `originId`/`selectorId`
+argument pair sourced from `InstigationState.id`/`selectorId`, which modern
+Dagster re-parses as a compound id and older versions accept directly, so no
+version branch is needed. The mutations select error messages via the
+`... on Error` interface fragment rather than per-type fragments, because
+`ScheduleNotFoundError` only joined `ScheduleMutationResult` in Dagster 1.9 and
+spreading it on 1.6-1.8 would fail document validation.
+
+## Development
+
+```bash
+uv sync --extra dev
+uv run ruff check dagster_mcp/    # lint
+uv run pytest                     # run the test suite
+uv run python -m dagster_mcp      # start server locally
+```
+
+## License
+
+MIT
+

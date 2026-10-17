@@ -1,0 +1,196 @@
+# 🐀 LabRat
+
+> Find the cheese in your maze.
+
+**LabRat is a terminal-native AI data agent — and the start of "Claude Code for data scientists."** Connect to your warehouse, ask a question in plain English, and watch the agent explore your schema, write dialect-correct SQL in real time, and surface the answer — all without leaving your terminal.
+
+> [!NOTE]
+> **Status: feature-complete v0 alpha.** 1,849 tests passing, end-to-end against DuckDB. **#6 on the public [DataAgentBench](https://ucbepic.github.io/DataAgentBench/) leaderboard at 0.8018 stratified Pass@1** (first Claude Opus 5 entry, [PR #84](https://github.com/ucbepic/DataAgentBench/pull/84), accepted 2026-08-06) — and still the **#2 untuned-prompt entry at 74.2%** (GPT‑5.6 Luna Max, PR #72) — plus **80%** on dbt Labs' [ADE-bench](https://github.com/dbt-labs/ade-bench). See [Benchmark records](#benchmark-records).
+
+<!-- TODO: replace with a real screenshot or recorded demo -->
+<!-- ![LabRat demo](docs/demo.gif) -->
+
+---
+
+## Where this is going
+
+The DuckDB demo and the benchmark scores are proof-of-life for the reasoning engine. The product they serve is bigger: **an agent _and_ a TUI that capture end-to-end data workflows the way Claude Code captures coding workflows.** Three ideas drive the design.
+
+**The Rat, the Maze, and the Cheese.** The vocabulary is the product, the way Claude Code has its own.
+- **The Rat** is the agent kernel — the reasoning loop, tools, providers, and warehouse adapters. It finds the cheese.
+- **The Cheese** is the deliverable — an answer that carries its own SQL and reasoning, reviewable like a colleague's work, saveable and shareable.
+- **The Rat Maze** is an *optional, additive* knowledge layer the colony builds over time: metric definitions, naming, known gotchas, and reusable analysis recipes distilled from real usage. A mapped maze means the next rat — or the next teammate — never cold-starts. ([Anthropic's own data team](https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude) measured <21% accuracy without this kind of reference layer, >95% with it.)
+
+**A Lego-modular, embeddable core.** Everything is a self-contained library that composes. The **Rat Core** (agent loop + tools + adapters + providers) is harness-agnostic — it runs in LabRat's TUI *or* embedded in your own harness via the [MCP server](#architecture). The TUI and the Rat Maze are optional layers that snap on top; the bare-bones product (Core + TUI) must be excellent on its own, with zero knowledge layer required.
+
+**Bottoms-up, like Figma.** An individual data scientist adopts the Core + TUI on their laptop against their own warehouse — no procurement, no platform commitment. Teams adopt the shared Rat Maze later, once the value is already proven.
+
+The three pillars, in order: **(1) find the cheese reliably → (2) spread the cheese → (3) map the maze.** Pillar 1 is what the benchmarks measure and it's largely built; Pillars 2 and 3 are the road ahead (see [Roadmap](#roadmap)).
+
+## What makes LabRat different
+
+- **The SQL editor is the agent's whiteboard.** Watch SQL stream into the editor character-by-character in your warehouse's dialect as the agent thinks. Edit it. Run it. The agent learns from your edits.
+- **Learns from you.** Per [Meta's research](https://medium.com/@AnalyticsAtMeta/inside-metas-home-grown-ai-analytics-agent-4ea6779acfb3), 88% of data scientists' queries hit tables they've used before. LabRat captures your query history, infers your domain, and applies your past corrections automatically. Day-30 LabRat is meaningfully better than day-1 LabRat.
+- **Grounded before it guesses.** A one-call `profile_dataset` reads the real schema, row counts, and sample values before planning; `link_schema` narrows wide schemas to the relevant tables; `verify_join` mechanically probes a join's match-rate and fan-out *before* the agent trusts it. An opt-in LLM-as-judge verifier gates the final answer.
+- **Audit-ready by default.** Every interaction is event-sourced and logged. Pin findings and export polished HTML reports with full provenance — query, results, chart, timestamps, lineage.
+- **Safe by default.** Read-only roles enforced at connection. Mutations and multi-statement injection refused (sqlglot AST-checked). Queries gated by EXPLAIN-estimated cost. Spend tracked per session. Destructive mistakes are physically impossible.
+- **Embeddable, not walled.** The Rat Core mounts over MCP into Claude Code, Codex, Cursor, OpenCode, or any MCP host — fully open (AGPL-3.0), with swappable LLM backends. You ride the tools you already use instead of adopting a new app.
+- **Benchmarked, and honest about it.** Real public scores, with the methodology and a self-disclosed contamination story documented in full ([below](#benchmark-records)).
+
+## Benchmark records
+
+LabRat is measured on the two most serious public **agentic** data benchmarks — both execution-based (real databases, real validators, no LLM judges).
+
+### DataAgentBench — UC Berkeley EPIC ([leaderboard](https://ucbepic.github.io/DataAgentBench/))
+
+Natural-language query answering across 12 datasets / 54 queries / 4 database systems (DuckDB, SQLite, PostgreSQL, MongoDB), many requiring cross-database joins. **LabRat holds four rows on the public leaderboard, led by #6 at a stratified Pass@1 of 0.8018** ([PR #84](https://github.com/ucbepic/DataAgentBench/pull/84), Claude Opus 5 + the full grounding stack + four published benchmark-informed rule packs, *Tuned prompt* mark). Among **untuned** entries LabRat is **#2 at 74.2%** ([PR #72](https://github.com/ucbepic/DataAgentBench/pull/72), GPT‑5.6 Luna Max, 0.15pp behind the untuned leader). Our grounding is general-purpose: the same stack, measured per backbone, with the asymmetries published.
+
+![LabRat #6 on the DataAgentBench leaderboard, 0.8018](docs/images/dab-leaderboard-2026-08-06.png)
+
+**Update 2026-08-06 — ACCEPTED at #6, our first Claude Opus 5 entry:** [PR #84](https://github.com/ucbepic/DataAgentBench/pull/84) landed at **0.8018 stratified Pass@1** (board footnote: 2 of 270 trials were infrastructure timeouts counted as non-passes; excluding them gives 0.8102). Opus 5 + the same grounding stack + four benchmark-informed rule packs, contamination-gated and fully published in the PR — hence the *Tuned prompt* mark. First LabRat submission with a fully clean per-trial taint audit (270/270 verdicts), verified from the 268-trace bundle attached in review.
+
+| Run | Scope | Score | What it measures |
+|-----|-------|-------|------------------|
+| tool-layer | 5 datasets · 17 queries | **48.5% → 54.0%** | raw-Claude floor → *with* LabRat's tool layer (**+5.5pp** measured lift) |
+| Sonnet entry (#18) | 12 datasets · 54 queries | **60.9%** | Claude Sonnet 4.6 + Cartographer + levers + hints |
+| Luna entry (#9) | 12 datasets · 54 queries | **74.2%** | GPT‑5.6 (Luna, max reasoning) + Cartographer + levers + hints + the Context Ledger — **#2 among untuned-prompt entries** |
+| **current best (#6)** | 12 datasets · 54 queries | **0.8018** | **Claude Opus 5 + the full stack + four published benchmark-informed rule packs** (*Tuned prompt* mark) |
+
+**The entries together are the point: the grounding layer is provider-aware.** The same [Cartographer](#roadmap) pre-pass that lifts Sonnet +8pp *regresses* GPT‑5.x when used alone — but interacts positively inside the full stack (each claim ablated; the per-backbone asymmetries are published, and defaults are conditioned on them). Every submission is **integrity-first**: no shell or filesystem tools in the agent's registry (no path to answer keys by construction), every trial traced and auditable, per-trial contamination verdicts, opening prompts disclosed per query, and `Hints: Yes` declared — the 74.2% Luna package additionally rebuilds **byte-identically** from its source runs (10,591 tool calls independently audited), and the #6 Opus run is the first with a fully clean taint audit across all 270 verdicts. Full story: **[docs/dab-progress-report.md](docs/dab-progress-report.md)** (the whole campaign history, Sonnet → Luna → Opus) and **[docs/dab-solultra-ablation.md](docs/dab-solultra-ablation.md)** (the GPT‑5.6 ablations).
+
+### ADE-bench — dbt Labs ([repo](https://github.com/dbt-labs/ade-bench))
+
+Analytics-engineering tasks in Docker-sandboxed dbt+DuckDB projects. **80% overall (48/60).**
+
+| Tier | Tasks | Score |
+|------|-------|-------|
+| Easy | 15 | **100%** (15/15) |
+| Medium | 30 | **80%** (24/30) |
+| Hard | 15 | **60%** (9/15) |
+| **Overall** | **60** | **80% (48/60)** |
+
+On the 39 tasks shared with Altimate Code's published DuckDB results: **LabRat 82% (32/39) vs. Altimate 77% (30/39)**, same model, same best-of-3 methodology. Full write-up and remaining-failure analysis: **[docs/ade-bench-progress-report.md](docs/ade-bench-progress-report.md)**.
+
+## Status — what's built
+
+LabRat is feature-complete for v0 alpha.
+
+| Layer | Status | Details |
+|---|---|---|
+| 7 warehouse adapters | ✅ | DuckDB, Postgres, Snowflake, BigQuery, Redshift, Trino, MySQL |
+| 4 LLM providers | ✅ | Anthropic API · Claude Code CLI (Mac OAuth, Max plan) · OpenAI-compatible · GPT‑5.5/5.6 via ChatGPT subscription (Codex Responses API — personal/dev path) |
+| Agent tool loop | ✅ | 22 tools: `profile_dataset` grounding, `link_schema` / `verify_join`, schema exploration, SQL execution, safety gates (mutation + statement-stacking refusal), multi-DB routing, `attach_database` (cross-DB JOINs), `load_file` (CSV/TSV/JSON/Parquet), `load_mongo_collection`, `search_reference_docs` / `search_trails` (Scent + Trail retrieval), `workflow` (9-step data-analysis SOP), per-row `llm_extract`/`llm_classify`, `run_program` pipelines, `dispatch_subagent`, opt-in LLM-as-judge verifier, configurable turn/tool-call caps |
+| MCP server | ✅ | `python -m labrat.mcp.server` mounts the tool registry over MCP stdio — drop into Claude Code, Codex, Cursor, OpenCode, or any MCP host |
+| Query history | ✅ | always-on, PII-redacted JSONL per profile |
+| Personal context engine | ✅ | table relevance scoring (frequency × recency), LLM-generated descriptions |
+| dbt catalog integration | ✅ | manifest.json + schema.yml + catalog.json + lineage |
+| MCP catalog integration | ✅ | generic async client for any MCP-compatible catalog |
+| Self-healing memory | ✅ | edit-derived + chat-correction memories, retrieval |
+| Custom validations | ✅ | natural-language rules, warn/block severity |
+| Benchmark harness | ✅ | unified suite protocol; ADE-bench + DataAgentBench integrations |
+| 3-pane TUI | ✅ | chat + SQL whiteboard + schema browser |
+| Charts · HTML export · Audit log | ✅ | unicode + image-protocol charts; provenance-rich HTML findings; JSONL event sourcing |
+
+**Test coverage:** 1,849 tests (LLM-gated tests skipped without `ANTHROPIC_API_KEY` / `LABRAT_RUN_LLM_TESTS`).
+
+## Architecture
+
+LabRat is built as composable layers — the kernel works without the layers above it.
+
+- **Rat Core** (`src/labrat/agent/`, `src/labrat/db/`) — `AgentLoop` drives tool-use round-trips against a `ToolRegistry` and a swappable `ModelProvider`. Tools subclass a common `Tool[InputT]` base with Pydantic-validated inputs. Warehouse adapters share a `Connection` ABC and return Polars DataFrames. `run_agent_task()` turns a one-shot prompt into a result in-process.
+- **MCP server** (`src/labrat/mcp/`) — exposes the same tool registry over MCP stdio, so the Core runs inside any MCP host. This is the embeddable seam: the DataAgentBench `claude-mcp` driver is living proof of LabRat's tools running inside a third-party harness today.
+- **TUI** (`src/labrat/screens/`, `src/labrat/widgets/`) — Textual 3-pane layout: chat, a streaming SQL editor (the agent's whiteboard), and a schema browser.
+- **Knowledge subsystems** (`memory/`, `validations/`, `context_engine/`, `catalog/`, `history/`, `audit/`) — the seeds of the Rat Maze: self-healing memory, NL validations, personal table-relevance scoring, dbt/MCP catalog loaders, query history, event sourcing.
+
+Contributor-facing detail lives in [CLAUDE.md](CLAUDE.md); architectural decisions in [decisions.md](decisions.md).
+
+## Install
+
+```bash
+# Coming soon
+uv tool install labrat
+```
+
+Until then, build from source (requires Python 3.12+):
+
+```bash
+git clone https://github.com/esagduyu/labrat
+cd labrat
+uv sync
+uv run labrat
+```
+
+## Quickstart
+
+```bash
+labrat
+```
+
+On first run, an onboarding wizard walks you through picking a dialect, entering credentials (stored encrypted in the OS keyring), testing the connection, and optionally linking a dbt project or data catalog. Then ask a question:
+
+```
+> show me Q4 revenue by region
+```
+
+LabRat explores your schema, samples data, consults your history and memories, streams dialect-correct SQL into the editor, runs it behind safety gates, renders the results, and offers to chart or pin the finding. Press `?` for the in-app keyboard reference.
+
+**Supported warehouses:** DuckDB, PostgreSQL, Snowflake, BigQuery, Redshift, Trino/Presto, MySQL. New adapters are straightforward via the `Connection` base class — PRs welcome.
+
+**Supported providers:** Anthropic API · Claude Code CLI (Mac OAuth / Max plan) · OpenAI-compatible (Azure, LiteLLM, vLLM, Together, Fireworks, Ollama) · GPT‑5.5/5.6 via ChatGPT subscription. Configure per profile; default model `claude-sonnet-4-6`.
+
+## Roadmap
+
+v0 alpha is feature-complete. The path forward follows the three pillars.
+
+**What this phase taught us — the lever is grounding, not the model.** A GPT‑5.5 experiment ([write-up](docs/dab-progress-report.md)) found GPT‑5.5 ≈ Sonnet (not a free win) and the opt-in verifier gave **no measured accuracy benefit** on DAB. Meanwhile the failures we root-caused were **ungrounded data handling** (e.g. a query that fails only because a `Date` column is dirty mixed-format text) — fixable for *any* model by a one-line reference-doc note. That, plus Anthropic's [21%→95% result](https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude) and Altimate's leaderboard-topping AutoContext, points the roadmap squarely at the knowledge/grounding layer. **The grounding layer is now shipped.** The Cartographer pre-pass (Scent #26a/#26b) and benchmark-safe prompt levers are built and ablated: Cartographer alone **+8pp on Sonnet** (21%→29% on the tuning subset); levers **+8pp marginal** on top; stacked **21%→38%** (+17pp). The mechanism is provider-agnostic and proven — GPT‑5.x consults `search_reference_docs` from the traces — but the effect is provider-dependent: +8pp on Sonnet, regression when used alone on GPT‑5.x yet a positive interaction inside the full stack (ablated both ways). That per-backbone measurement is what carried the Luna entry (74.2%, the #2 untuned row) — and, with four benchmark-informed rule packs layered on top of the same stack, the current #6 Opus 5 entry at 0.8018.
+
+**Pillar 1 — find the cheese reliably (within-task reasoning).** Shipped: grounding profiler, schema-linking, mechanically-verified joins, the opt-in verifier, benchmark-safe prompt levers (force-query, SQL self-repair via `error_category`/`hint`, push-aggregation-into-SQL — ablated at **+8pp marginal** on the tuning subset), and a `workflow` tool encoding a 9-step data-analysis SOP.
+
+**Pillar 2 — spread the cheese (the workflow product).** The **Cheese** share artifact: every answer carries its SQL + reasoning, saveable and exportable as a reviewable unit; a provenance footer on every result; notebook (marimo) integration. This is the Figma-style adoption wedge — what makes LabRat a *workflow tool*, not a one-shot. *(Update 2026-07-10: the provenance-stamped Cheese artifact and the per-answer provenance footer have shipped; marimo integration is still ahead.)*
+
+**Pillar 3 — map the Rat Maze (the knowledge moat — the priority).** The **Scent** layer and **Cartographer** are now shipped. `search_reference_docs` (#26a) gives the agent section-level lexical retrieval over reference docs. The **Cartographer** (#26b) is a deterministic, GT-firewalled first-contact pre-pass (`cartograph_prepass`) that explores a warehouse and writes Scent docs — table grain, columns, `verify_join`-confirmed joins, observed dimension values; structure is deterministic, an optional LLM "semantics" pass is flagged for a human to own. Wired into DAB via `--agent-cartograph` flag. The Cartographer is our brand; "AutoContext" is Altimate's (Altimate's AutoContext PR #53 set the precedent on the leaderboard at ~+8pp). Remaining Pillar 3 work: correction-harvesting loop, reusable analysis recipes, and the first-connect TUI path as a second Cartographer caller. *(Update 2026-07-10: all three have shipped — the correction-harvesting loop and first-connect Cartographer are live in the TUI, and reusable recipes landed as **Trail** (intent-retrieved analysis SOPs); **Map** (per-domain bundles of Scent + Trails + suggested prompts) completes the maze's knowledge ladder: **Scent → Trail → Map**.)*
+
+**Foundations:** extract `labrat-core` as an installable embeddable package; testcontainers integration tests for the live warehouse adapters; v1 GA after a week of dogfooding.
+
+## Why "LabRat"?
+
+We started flirting with [ratatui](https://github.com/ratatui/ratatui) and Rust. We landed on Python + [Textual](https://textual.textualize.io/) because the agent is the point of the product and Python's iteration speed on prompts and tools dominates. The name stuck. The rat got a lab coat.
+
+## License
+
+AGPL-3.0. Use, modify, and redistribute LabRat for any purpose, including commercial. If you distribute a modified version or run it as a service, you must release your modifications under the same license. Want LabRat under a more permissive license for proprietary use? Get in touch.
+
+## Development
+
+```bash
+uv run pytest                        # full test suite (1,849 tests)
+uv run ruff check . && uv run ruff format --check . && uv run pyright   # lint + types
+
+# Evals (see CLAUDE.md for the full matrix)
+uv run python scripts/eval_duckdb.py                          # schema/SQL eval, no API key needed
+uv run python scripts/eval_dab.py --driver claude-mcp --n-trials 5   # DataAgentBench (LabRat tools via MCP)
+cd ~/repos/ade-bench && uv run ade run helixops_saas001 --db duckdb --project-type dbt --agent labrat_local --no-diffs
+
+# Run the standalone agent on any prompt / any provider
+uv run python scripts/run_task.py --prompt "How many rows in orders?" \
+    --connections '{"main":{"db_type":"duckdb","db_path":"/path.duckdb"}}' --provider anthropic
+
+# Mount the Rat Core over MCP in any host (or use a saved profile: LABRAT_MCP_PROFILES=myprofile)
+LABRAT_MCP_CONNECTIONS='{"main":{"db_type":"duckdb","db_path":"/path.duckdb"}}' \
+    uv run python -m labrat.mcp.server
+
+# Generate a ready-to-paste host config (claude-code | codex | generic) — see docs/labrat-tools.md
+uv run python -m labrat.mcp.print_config --host claude-code --profiles myprofile
+```
+
+## Acknowledgments
+
+LabRat stands on shoulders: [Textual](https://textual.textualize.io/) (mouse-native async TUIs in Python), [Harlequin](https://harlequin.sh/) (a terminal SQL editor that feels professional), [DuckDB](https://duckdb.org/), [SQLGlot](https://sqlglot.com/), [Polars](https://pola.rs/), and [uv](https://docs.astral.sh/uv/). The [dbt Labs ADE-bench](https://github.com/dbt-labs/ade-bench) and [UC Berkeley EPIC DataAgentBench](https://ucbepic.github.io/DataAgentBench/) teams build the kind of execution-based benchmarks that actually mean something. [Meta's Analytics team](https://medium.com/@AnalyticsAtMeta) and [Anthropic's self-service-analytics writeup](https://claude.com/blog/how-anthropic-enables-self-service-data-analytics-with-claude) are the architectural foundation for the Rat Maze. And the folks at [SignalPilot](https://signalpilot.ai/), [Databao](https://databao.app/), and Altimate Code set a high bar in adjacent categories — we watch their work closely.
+
+## Contributing
+
+Issues, discussions, and PRs welcome. The simplest contribution: use LabRat, hit a wall, and open an issue describing what broke.
+
+---
+
+*A small rat in a big maze. Finding cheese, one query at a time.*

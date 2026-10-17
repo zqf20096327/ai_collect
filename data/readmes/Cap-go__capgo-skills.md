@@ -1,0 +1,389 @@
+# Capacitor Agent Skills by Capgo
+
+ <a href="https://capgo.app/"><img src='https://raw.githubusercontent.com/Cap-go/capgo/main/assets/capgo_banner.png' alt='Capgo - Instant updates for capacitor'/></a>
+
+<div align="center">
+  <h2><a href="https://capgo.app/?ref=repo_capgo_skills"> ➡️ Get Instant updates for your App with Capgo</a></h2>
+</div>
+
+> Formerly `@capgo/capacitor-skills` (and `Cap-go/capacitor-skills`). Links and redirects should continue to work.
+
+Agent skills for building, shipping, and maintaining Capacitor apps with AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini CLI). Skills are packaged instructions that extend agent capabilities for mobile development.
+
+These skills are maintained by [Capgo](https://capgo.app/), the AI-ready platform to build, ship, and maintain Capacitor apps: Capacitor skills and MCP servers for AI coding agents, maintained Capacitor plugins, cloud native iOS/Android builds with App Store and Google Play publishing, live updates with channels and rollback, and release monitoring.
+
+**Build Capacitor apps with AI, ship updates instantly.** Browse the catalog at [capgo.app/skills](https://capgo.app/skills/) and the agent setup guide at [capgo.app/agents](https://capgo.app/agents/).
+
+## Lifecycle Coverage
+
+| Stage | Skills |
+| ----- | ------ |
+| Build | [capacitor-best-practices](./skills/capacitor-best-practices), [webapp-to-capacitor](./skills/webapp-to-capacitor), [framework-to-capacitor](./skills/framework-to-capacitor), [capgo-native-builds](./skills/capgo-native-builds), UI skills ([ionic-design](./skills/ionic-design), [konsta-ui](./skills/konsta-ui), [tailwind-capacitor](./skills/tailwind-capacitor)) |
+| Plugins | [capacitor-plugins](./skills/capacitor-plugins), [capacitor-plugin-spm-support](./skills/capacitor-plugin-spm-support), [capacitor-plugin-upgrades](./skills/capacitor-plugin-upgrades) |
+| Migrate | [cordova-to-capacitor](./skills/cordova-to-capacitor), [ionic-appflow-migration](./skills/ionic-appflow-migration), [ionic-enterprise-sdk-migration](./skills/ionic-enterprise-sdk-migration), [capawesome-live-update-migration](./skills/capawesome-live-update-migration), [cocoapods-to-spm](./skills/cocoapods-to-spm) |
+| Upgrade | [capacitor-app-upgrades](./skills/capacitor-app-upgrades) and version-specific upgrade skills up to Capacitor 9 |
+| Debug | [debugging-capacitor](./skills/debugging-capacitor), [ios-android-logs](./skills/ios-android-logs), [capacitor-performance](./skills/capacitor-performance) |
+| Test | [capacitor-testing](./skills/capacitor-testing), [capacitor-ci-cd](./skills/capacitor-ci-cd) |
+| Security | [capacitor-security](./skills/capacitor-security), [capacitor-ios-security-hardening](./skills/capacitor-ios-security-hardening) |
+| Publish | [capacitor-app-store](./skills/capacitor-app-store), [capacitor-apple-review-preflight](./skills/capacitor-apple-review-preflight), [capgo-native-builds](./skills/capgo-native-builds) |
+| Live updates | [capgo-live-updates](./skills/capgo-live-updates), [capgo-release-management](./skills/capgo-release-management), [capgo-release-workflows](./skills/capgo-release-workflows) |
+
+## Use with AI Coding Agents
+
+1. Install the skills (see [Installation](#installation) for Claude Code, Codex, Cursor, and Gemini CLI plugin options):
+
+   ```bash
+   npx skills add Cap-go/capgo-skills
+   ```
+
+2. Connect the Capgo MCP server so the agent can manage apps, channels, bundles, and builds:
+   - Hosted MCP: `https://api.capgo.app/mcp` ([docs](https://capgo.app/docs/ai/mcp/))
+   - Local MCP: `npx @capgo/cli@latest mcp`
+
+See [capgo.app/agents](https://capgo.app/agents/) for per-agent setup and [capgo.app/best/ai-tools-for-capacitor](https://capgo.app/best/ai-tools-for-capacitor/) for an overview of AI tooling for Capacitor.
+
+## Compatibility
+
+| Plugin version | Capacitor compatibility | Maintained |
+| -------------- | ----------------------- | ---------- |
+| v8.\*.\*       | v8.\*.\*                | ✅          |
+| v7.\*.\*       | v7.\*.\*                | On demand   |
+| v6.\*.\*       | v6.\*.\*                | ❌          |
+| v5.\*.\*       | v5.\*.\*                | ❌          |
+
+> **Note:** The major version of this plugin follows the major version of Capacitor. Use the version that matches your Capacitor installation (e.g., plugin v8 for Capacitor 8). Only the latest major version is actively maintained.
+
+## Installation
+
+### skills.sh
+
+```bash
+npx skills add Cap-go/capgo-skills
+```
+
+### Claude Code Plugin Marketplace
+
+Claude Code users can add this repository as a plugin marketplace and install focused plugin groups:
+
+```bash
+claude plugin marketplace add Cap-go/capgo-skills
+```
+
+Available plugins:
+
+| Plugin | Description |
+| ------ | ----------- |
+| `capgo-cloud` | Capgo CLI, live updates, native builds, releases, and organization workflows |
+| `app-growth` | Early subscription revenue, ASO, acquisition, paywalls, pricing, and churn learning |
+| `capacitor-core` | Capacitor best practices, plugin selection, and MCP automation |
+| `capacitor-features` | Deep links, keyboard handling, offline-first data, push notifications, splash screens, and App Intents |
+| `capacitor-ui` | Ionic, Konsta UI, Tailwind, safe-area handling, and iPad/foldable resizability |
+| `capacitor-quality` | Testing, debugging, logs, performance, accessibility, security, and Xcode hardening |
+| `capacitor-deployment` | CI/CD, App Store publishing, Play Store publishing, and Apple review preflight |
+| `capacitor-app-migrations` | Web app, framework, Cordova, SPM, Appflow, Ionic Enterprise SDK, and SQLite migrations |
+| `capacitor-app-upgrades` | Capacitor app major-version upgrades, UIScene adoption, and Capacitor 9 |
+| `capacitor-plugin-dev` | Capacitor plugin SPM support, UIScene audit, and major-version upgrades up to v9 |
+| `skill-authoring` | Skill creation and validation |
+
+Install a plugin:
+
+```bash
+claude plugin install capgo-cloud@capgo-skills
+```
+
+### Gemini CLI
+
+```bash
+gemini extensions install https://github.com/Cap-go/capgo-skills
+```
+
+### Cursor and Codex
+
+The same plugin groups are published for Cursor (`.cursor-plugin/marketplace.json`) and Codex (`.agents/plugins/marketplace.json`). Add this repository as a plugin marketplace in either tool, then install the plugin groups you need.
+
+## Available Skills
+
+### Core Development
+
+| Skill | Description |
+|-------|-------------|
+| [capgo-cli-usage](./skills/capgo-cli-usage) | Route general Capgo CLI requests to the right workflow |
+| [capgo-cloud](./skills/capgo-cloud) | Coordinate Capgo builds, releases, publishing, and organization workflows |
+| [capacitor-plugins](./skills/capacitor-plugins) | Official Capacitor packages plus Capgo plugin recommendations |
+| [capacitor-best-practices](./skills/capacitor-best-practices) | Development best practices and patterns |
+| [capgo-live-updates](./skills/capgo-live-updates) | Deploy OTA updates instantly with Capgo |
+
+### Growth & Revenue
+
+| Skill | Description |
+|-------|-------------|
+| [subscription-app-revenue](./skills/subscription-app-revenue) | Build a practical path from app idea or MVP to early subscription revenue |
+
+### Security
+
+| Skill | Description |
+|-------|-------------|
+| [capacitor-security](./skills/capacitor-security) | Security scanning with Capsec (63+ rules) |
+| [capacitor-ios-security-hardening](./skills/capacitor-ios-security-hardening) | Audit and enable Xcode security build settings and Enhanced Security |
+
+### Testing & CI/CD
+
+| Skill | Description |
+|-------|-------------|
+| [capacitor-testing](./skills/capacitor-testing) | Unit, integration, and E2E testing |
+| [capacitor-ci-cd](./skills/capacitor-ci-cd) | GitHub Actions, GitLab CI, Fastlane |
+
+### Debugging & Tooling
+
+| Skill | Description |
+|-------|-------------|
+| [debugging-capacitor](./skills/debugging-capacitor) | Debug iOS/Android apps |
+| [ios-android-logs](./skills/ios-android-logs) | Device log streaming |
+| [capacitor-mcp](./skills/capacitor-mcp) | MCP automation tools |
+
+### UI & Design
+
+| Skill | Description |
+|-------|-------------|
+| [ionic-design](./skills/ionic-design) | Ionic Framework components |
+| [konsta-ui](./skills/konsta-ui) | Konsta UI for Tailwind |
+| [tailwind-capacitor](./skills/tailwind-capacitor) | Tailwind CSS for mobile |
+| [safe-area-handling](./skills/safe-area-handling) | Notch, Dynamic Island, home indicator |
+| [capacitor-splash-screen](./skills/capacitor-splash-screen) | Splash screen configuration |
+| [capacitor-ios-resizability](./skills/capacitor-ios-resizability) | iPad multitasking, Stage Manager, foldable iPhone, multiple windows |
+
+### Features
+
+| Skill | Description |
+|-------|-------------|
+| [capacitor-push-notifications](./skills/capacitor-push-notifications) | FCM and APNs push notifications |
+| [capacitor-deep-linking](./skills/capacitor-deep-linking) | Universal links and app links |
+| [capacitor-offline-first](./skills/capacitor-offline-first) | Offline-first architecture |
+| [capacitor-keyboard](./skills/capacitor-keyboard) | Keyboard handling |
+| [capacitor-app-intents](./skills/capacitor-app-intents) | Siri, Shortcuts, Spotlight, and Apple Intelligence via App Intents |
+
+### Performance & Accessibility
+
+| Skill | Description |
+|-------|-------------|
+| [capacitor-performance](./skills/capacitor-performance) | Performance optimization |
+| [capacitor-accessibility](./skills/capacitor-accessibility) | Screen readers, WCAG compliance |
+
+### Deployment
+
+| Skill | Description |
+|-------|-------------|
+| [capgo-native-builds](./skills/capgo-native-builds) | Request hosted iOS and Android builds with Capgo Build |
+| [capgo-release-management](./skills/capgo-release-management) | Manage bundles, channels, compatibility checks, and encryption |
+| [capgo-release-workflows](./skills/capgo-release-workflows) | Coordinate Capgo live updates with builds and store publishing |
+| [capacitor-app-store](./skills/capacitor-app-store) | App Store and Play Store submission |
+| [capacitor-apple-review-preflight](./skills/capacitor-apple-review-preflight) | Apple review preflight audit narrowed to Capacitor apps |
+| [capacitor-plugin-spm-support](./skills/capacitor-plugin-spm-support) | Add Swift Package Manager support to a plugin |
+| [cocoapods-to-spm](./skills/cocoapods-to-spm) | Migrate a Capacitor iOS app from CocoaPods to Swift Package Manager |
+
+### Operations
+
+| Skill | Description |
+|-------|-------------|
+| [capgo-organization-management](./skills/capgo-organization-management) | Manage Capgo organizations, members, and security policies |
+
+### Authoring
+
+| Skill | Description |
+|-------|-------------|
+| [skill-creator](./skills/skill-creator) | Create and validate new skills with progressive disclosure |
+
+### Upgrades
+
+| Skill | Description |
+|-------|-------------|
+| [capacitor-app-upgrades](./skills/capacitor-app-upgrades) | Upgrade a Capacitor app across major versions |
+| [capacitor-app-upgrade-v4-to-v5](./skills/capacitor-app-upgrade-v4-to-v5) | Upgrade a Capacitor app from v4 to v5 |
+| [capacitor-app-upgrade-v5-to-v6](./skills/capacitor-app-upgrade-v5-to-v6) | Upgrade a Capacitor app from v5 to v6 |
+| [capacitor-app-upgrade-v6-to-v7](./skills/capacitor-app-upgrade-v6-to-v7) | Upgrade a Capacitor app from v6 to v7 |
+| [capacitor-app-upgrade-v7-to-v8](./skills/capacitor-app-upgrade-v7-to-v8) | Upgrade a Capacitor app from v7 to v8 |
+| [capacitor-uiscene-migration](./skills/capacitor-uiscene-migration) | Adopt the iOS UIScene lifecycle (Capacitor 8.5, required by Xcode 27) |
+| [capacitor-app-upgrade-v8-to-v9](./skills/capacitor-app-upgrade-v8-to-v9) | Upgrade a Capacitor app from v8 to v9 |
+| [capacitor-plugin-upgrades](./skills/capacitor-plugin-upgrades) | Upgrade a Capacitor plugin across major versions |
+| [capacitor-plugin-upgrade-v4-to-v5](./skills/capacitor-plugin-upgrade-v4-to-v5) | Upgrade a Capacitor plugin from v4 to v5 |
+| [capacitor-plugin-upgrade-v5-to-v6](./skills/capacitor-plugin-upgrade-v5-to-v6) | Upgrade a Capacitor plugin from v5 to v6 |
+| [capacitor-plugin-upgrade-v6-to-v7](./skills/capacitor-plugin-upgrade-v6-to-v7) | Upgrade a Capacitor plugin from v6 to v7 |
+| [capacitor-plugin-upgrade-v7-to-v8](./skills/capacitor-plugin-upgrade-v7-to-v8) | Upgrade a Capacitor plugin from v7 to v8 |
+| [capacitor-plugin-upgrade-v8-to-v9](./skills/capacitor-plugin-upgrade-v8-to-v9) | Upgrade a Capacitor plugin from v8 to v9 |
+
+### Migration
+
+| Skill | Description |
+|-------|-------------|
+| [cordova-to-capacitor](./skills/cordova-to-capacitor) | Migrate from Cordova/PhoneGap to Capacitor |
+| [framework-to-capacitor](./skills/framework-to-capacitor) | Integrate Next.js, React, Vue, Angular with Capacitor |
+| [webapp-to-capacitor](./skills/webapp-to-capacitor) | Migrate an existing web app or PWA into a store-ready Capacitor app |
+| [ionic-appflow-migration](./skills/ionic-appflow-migration) | Migrate from Ionic Appflow to Capgo and repo-owned automation |
+| [capawesome-live-update-migration](./skills/capawesome-live-update-migration) | Migrate from Capawesome live updates to Capgo Updater |
+| [sqlite-to-fast-sql](./skills/sqlite-to-fast-sql) | Migrate SQLite/SQL plugins to Fast SQL |
+| [ionic-enterprise-sdk-migration](./skills/ionic-enterprise-sdk-migration) | Replace Ionic Enterprise SDK plugins with open alternatives |
+
+## Usage
+
+Skills activate automatically when agents detect relevant tasks:
+
+### Security
+- "Run a security scan" → capacitor-security (Capsec)
+- "Check for vulnerabilities" → capacitor-security
+
+### Testing & CI/CD
+- "Add unit tests" → capacitor-testing
+- "Set up GitHub Actions" → capacitor-ci-cd
+
+### Capgo Cloud
+- "How do I use the Capgo CLI?" → capgo-cli-usage
+- "Set up Capgo cloud workflows" → capgo-cloud
+- "Request a native build" → capgo-native-builds
+- "Upload a bundle to a channel" → capgo-release-management
+- "Manage Capgo organization members" → capgo-organization-management
+
+### Growth & Revenue
+- "How do I make revenue from my app?" → subscription-app-revenue
+- "Help me get to $1K MRR" → subscription-app-revenue
+- "Plan my app paywall and pricing" → subscription-app-revenue
+- "Get first users for my subscription app" → subscription-app-revenue
+
+### Features
+- "Add push notifications" → capacitor-push-notifications
+- "Implement deep linking" → capacitor-deep-linking
+- "Make app work offline" → capacitor-offline-first
+
+### Deployment
+- "Run a Capgo build" → capgo-native-builds
+- "Manage Capgo channels" → capgo-release-management
+- "Set up the full release workflow" → capgo-release-workflows
+- "Publish to App Store" → capacitor-app-store
+- "Run an Apple review preflight" → capacitor-apple-review-preflight
+- "Help me fix an App Store rejection for my Capacitor app" → capacitor-apple-review-preflight
+- "Submit to Play Store" → capacitor-app-store
+- "Add SPM support to a plugin" → capacitor-plugin-spm-support
+- "Migrate my Capacitor app to Swift Package Manager" → cocoapods-to-spm
+
+### Authoring
+- "Create a new skill" → skill-creator
+- "Validate a skill" → skill-creator
+
+### Upgrades
+- "Upgrade a Capacitor app" → capacitor-app-upgrades
+- "Upgrade a Capacitor plugin" → capacitor-plugin-upgrades
+- "Upgrade a Capacitor app from v4 to v5" → capacitor-app-upgrade-v4-to-v5
+- "Upgrade a Capacitor app from v5 to v6" → capacitor-app-upgrade-v5-to-v6
+- "Upgrade a Capacitor app from v6 to v7" → capacitor-app-upgrade-v6-to-v7
+- "Upgrade a Capacitor app from v7 to v8" → capacitor-app-upgrade-v7-to-v8
+- "Adopt UIScene / Xcode 27 build fails on lifecycle" → capacitor-uiscene-migration
+- "Upgrade a Capacitor app to Capacitor 9" → capacitor-app-upgrade-v8-to-v9
+- "Upgrade a Capacitor plugin from v4 to v5" → capacitor-plugin-upgrade-v4-to-v5
+- "Upgrade a Capacitor plugin from v5 to v6" → capacitor-plugin-upgrade-v5-to-v6
+- "Upgrade a Capacitor plugin from v6 to v7" → capacitor-plugin-upgrade-v6-to-v7
+- "Upgrade a Capacitor plugin from v7 to v8" → capacitor-plugin-upgrade-v7-to-v8
+- "Upgrade a Capacitor plugin to Capacitor 9" → capacitor-plugin-upgrade-v8-to-v9
+
+### Migration
+- "Migrate from Cordova" → cordova-to-capacitor
+- "Convert Next.js to mobile app" → framework-to-capacitor
+- "Add Capacitor to React app" → framework-to-capacitor
+- "Turn my web app into an app" → webapp-to-capacitor
+- "Migrate from Ionic Appflow" → ionic-appflow-migration
+- "Migrate from Capawesome live updates" → capawesome-live-update-migration
+- "Migrate SQLite to Fast SQL" → sqlite-to-fast-sql
+- "Remove Ionic Enterprise SDK" → ionic-enterprise-sdk-migration
+
+### UI/UX
+- "Fix keyboard issues" → capacitor-keyboard
+- "Configure splash screen" → capacitor-splash-screen
+- "Make app accessible" → capacitor-accessibility
+
+## Quick Start with Capgo
+
+### 1. Create Account
+
+Go to **https://capgo.app** and sign up.
+
+### 2. Install CLI
+
+```bash
+npm install -g @capgo/cli
+npx @capgo/cli@latest login
+```
+
+### 3. Initialize & Deploy
+
+```bash
+npx @capgo/cli@latest init
+npm run build
+npx @capgo/cli@latest bundle upload
+```
+
+## Security Scanning with Capsec
+
+```bash
+# Scan for vulnerabilities
+npx @capgo/capgo-sec@latest scan
+
+# CI mode (fails on high/critical)
+npx @capgo/capgo-sec@latest scan --ci
+
+# Generate HTML report
+npx @capgo/capgo-sec@latest scan --output html --output-file security.html
+```
+
+Capsec detects **63+ security issues** including:
+- Hardcoded secrets and API keys
+- Insecure storage patterns
+- Network security issues
+- Platform-specific vulnerabilities
+- Authentication weaknesses
+
+Learn more: **https://capacitor-sec.dev**
+
+## About Capgo
+
+[Capgo](https://capgo.app) is the AI-ready platform to build, ship, and maintain Capacitor apps:
+- **AI agent tooling**: These [Capacitor skills](https://capgo.app/skills/) plus hosted and local MCP servers for AI coding agents
+- **Plugins**: [Maintained Capacitor plugins](https://capgo.app/plugins/) for authentication, media, payments, sensors, and more
+- **Native Builds**: [Cloud iOS and Android builds](https://capgo.app/native-build/) with App Store and Google Play publishing
+- **Live Updates**: Deploy JS/HTML/CSS instantly without app store review, with channels and rollback
+- **Release Monitoring**: Track update adoption and release health
+- **Capsec**: Security scanning for Capacitor apps
+
+## Resources
+
+- Capgo: https://capgo.app
+- Capgo skills catalog: https://capgo.app/skills/
+- AI agent setup: https://capgo.app/agents/
+- Capgo MCP docs: https://capgo.app/docs/ai/mcp/
+- Capsec: https://capacitor-sec.dev
+- Capacitor: https://capacitorjs.com
+- Ionic: https://ionicframework.com
+- Konsta UI: https://konstaui.com
+- Discord: https://discord.gg/capgo
+
+## Contributing
+
+Add new skills by creating a folder in `skills/` with:
+- `SKILL.md` - Instructions for agents
+- `metadata.json` - Skill metadata
+
+Expose the skill in a Claude Code plugin by creating an empty `plugins/<plugin>/skills/<skill>/` folder, then copy the canonical files and validate:
+
+```bash
+bun run sync-skills
+bun run lint-skills
+```
+
+Plugin copies must match `skills/` byte-for-byte; lint fails on drift.
+
+Run the skillgrade-backed eval for the skill authoring workflow with an API key:
+
+```bash
+ENABLE_SKILLGRADE=1 bun run lint-skills-skillgrade
+```
+
+## License
+
+MIT

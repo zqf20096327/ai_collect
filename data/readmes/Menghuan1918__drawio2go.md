@@ -1,0 +1,280 @@
+<img width="250px" src="public/icon/logo.svg" align="left"/>
+
+# DrawIO2Go
+
+<strong>AI-Powered, Human-AI Collaboration</strong>
+
+![Electron](https://img.shields.io/badge/Electron-38.x-47848F?logo=electron&logoColor=white)
+![Nextjs](https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Windows](https://img.shields.io/badge/-Windows-blue?logo=windows&logoColor=white)
+![MacOS](https://img.shields.io/badge/-macOS-black?&logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/-Linux-yellow?logo=linux&logoColor=white)
+
+<p align="center">
+  <a href="./README_zh-CN.md">简体中文</a> | English </a><br><br>
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMenghuan1918%2Fdrawio2go"><img src="https://vercel.com/button" alt="Deploy with Vercel"/>
+</p>
+ 
+---
+
+A modern DrawIO editor application dedicated to building better **human-AI collaborative** modeling tools with AI assistance. User-centered, enhancing human-machine efficiency, exploring how to best complement each other with AI. Provides out-of-the-box applications (Windows/Linux/Mac OS) or deployment as a web page.
+
+https://github.com/user-attachments/assets/40fe5c3b-0f37-4fbf-b6ac-60b8734f2d14
+
+<div align="center">
+<table width="100%">
+    <tr>
+    <td width="33.33%" valign="top" align="center">
+      <h3><em>NEW:</em> Canvas Enhancement</h3>
+      <p>After inserting images, it will automatically check if connection lines overlap with elements, avoiding AI connection errors</p>
+      <img src="https://github.com/user-attachments/assets/82cb7777-7cdf-4a94-85bf-9da02cb42496" width="90%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3><em>NEW:</em> LLM Enhancement</h3>
+      <p>Specify drawing style/colors and even add DrawIO element knowledge*</p>
+      <img src="https://github.com/user-attachments/assets/892dddb5-6975-4565-b3f1-027691a2c0c9" width="65%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3><em>NEW:</em> Custom DrawIO Canvas</h3>
+      <p>Fully customize DrawIO canvas, modify default appearance theme / switch to self-hosted URL</p>
+      <img src="https://github.com/user-attachments/assets/04d56aee-6b3c-4365-bf11-57f59bb8fc2b" alt="MCP" />
+      <br />
+    </td>
+  </tr>
+  <tr>
+    <td width="33.33%" valign="top" align="center">
+      <h3>Version Management</h3>
+      <p>Manually create versions / AI automatically creates versions</p>
+      <img src="https://github.com/user-attachments/assets/59d8c33a-af5c-4433-ae94-99827509e632" alt="Version Control" width="60%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>AI-Powered Modification</h3>
+      <p>XPath-based precise deletion, modification, and query tool, effective and token-saving**</p>
+      <img src="https://github.com/user-attachments/assets/db4c17b7-49f9-407d-a046-227092e70708" alt="Demo" width="60%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>MCP Service</h3>
+      <p>Start an MCP service with <b>canvas content version management</b> to connect with other applications</p>
+      <img src="https://github.com/user-attachments/assets/ad6c9e0c-8f71-4776-8522-73ebf89bf813" alt="MCP" />
+      <br />
+    </td>
+  </tr>
+  <tr>
+    <td width="33.33%" valign="top" align="center">
+      <h3>Multi-Page Editing</h3>
+      <p>Supports multi-page drawio editing, let AI only edit the parts you want to modify</p>
+      <img src="https://github.com/user-attachments/assets/b999be6b-b41e-4f73-8059-7cd26dafdd8b" alt="pages" width="90%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>Version Comparison</h3>
+      <p>Easily compare / rollback differences between different modified versions</p>
+      <img src="https://github.com/user-attachments/assets/149b0247-f6ae-48bd-a8e3-70dce2a3622e" alt="Comparison Page" width="100%" />
+      <br />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>Canvas Context</h3>
+      <p>No longer need to describe "the few xxx on the far right", simply drag-select with the mouse, the conversation will automatically parse canvas elements into context***</p>
+      <img src="https://github.com/user-attachments/assets/07ec5631-21bc-4a11-853a-62058061c49f" alt="Context" width="100%" />
+      <br />
+      <br />
+    </td>
+  </tr>
+</table>
+</div>
+<sub>* Support specifying default theme/colors/knowledge and adding custom knowledge in settings</sub>
+<br />
+<sub>** Currently LLM API supports Openai/Deepseek/Anthropic/Gemini formats</sub>
+<br />
+<sub>*** Limited by Web API restrictions, mouse selection perception is not available on the web. But Web still has basic compressed canvas content context injection functionality</sub>
+<br />
+<br />
+
+Here are some actual demos and their prompts:
+
+<div align="center">
+<table width="100%">
+    <tr>
+    <td width="33.33%" valign="top" align="center">
+      <h3>DeepSeek-Chat Modern Style*</h3>
+      <p>Draw a detailed standard Agent flowchart, including MCP/Multi-Agent concepts, in English</p>
+      <img src="https://github.com/user-attachments/assets/55b7b986-67ab-4562-8602-ddb5b2b95c44" width="80%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>DeepSeek-Chat Academic Style*</h3>
+      <p>Draw a detailed standard Agent flowchart, including MCP/Multi-Agent concepts, in English</p>
+      <img src="https://github.com/user-attachments/assets/6aa336af-e7b8-40ed-9bc0-9249555d2a0f" width="65%" />
+      <br />
+    </td>
+    <td width="33.33%" valign="top" align="center">
+      <h3>DeepSeek-Chat Minimalist Style*</h3>
+      <p>Draw a detailed standard Agent flowchart, including MCP/Multi-Agent concepts, in English</p>
+      <img src="https://github.com/user-attachments/assets/999de929-5582-4173-a5fe-f1f50ff643b1"  width="80%"/>
+      <br />
+    </td>
+  </tr>
+</table>
+</div>
+<sub>* Using official API, default color configuration, deepseek-chat v3.2, non-thinking, temperature 0.3</sub>
+<br />
+<br />
+
+<div align="center">
+<table width="100%">
+  <tr>
+    <td width="50%" valign="top" align="center">
+      <h3>U-net Architecture Diagram</h3>
+      <p><b>glm-4.6</b> - Draw a U-net network</p>
+      <img src="https://github.com/user-attachments/assets/5fae95e9-573c-4ced-8841-7b27dd8cc97b" alt="unet" width="100%" />
+      <br />
+      <br />
+    </td>
+    <td width="50%" valign="top" align="center">
+      <h3>Image to DrawIO</h3>
+      <p><b>claude-sonnet-4.5</b> - Pass in an image generated by gemini-3-pro-image and ask it to replicate</p>
+      <img src="https://github.com/user-attachments/assets/1b5be219-0dc6-48c8-abdc-f0a2946bf148" alt="image" width="100%" />
+      <br />
+    </td>
+  </tr>
+    <tr>
+    <td width="50%" valign="top" align="center">
+      <h3>UML Architecture Diagram</h3>
+      <p><b>glm-4.7</b> - Draw a classic front-end and back-end web application UML architecture diagram</p>
+      <img src="https://github.com/user-attachments/assets/738ef6a9-a703-49d8-b26e-5438130106d1" alt="UML" width="100%" />
+      <br />
+      <br />
+    </td>
+    <td width="50%" valign="top" align="center">
+      <h3>Pure Element Drawing</h3>
+      <p><b>gemini-3-pro-preview</b> - Draw a laptop</p>
+      <img src="https://github.com/user-attachments/assets/f330468b-c52a-416a-9198-4e2e9b22539c" alt="Demo" width="80%" />
+      <br />
+      <br />
+    </td>
+  </tr>
+</table>
+</div>
+
+## Quick Start
+
+### Using Electron APP
+
+Go to [Releases](https://github.com/Menghuan1918/drawio2go/releases) to download and install the latest version
+
+### Deploy as Web Application
+
+Requirements:
+
+- Node.js 22.x or higher
+- npm
+
+Then run the following commands
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/drawio2go.git
+cd drawio2go
+
+# Install dependencies
+npm install
+```
+
+**Web Mode (Browser):**
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser
+
+> [!IMPORTANT]
+> Please note that multi-user web deployment is not yet adapted (although theoretically there should be no issues, it has not been tested)
+
+## Known Issues
+
+- [x] In web version, conversations may not be cancellable
+- [x] Some specific errors from drawio tools cannot be captured currently
+- [x] Conversation saving currently has some issues, may cause historical conversation loading exceptions
+- [x] Some UI display issues exist
+
+## Upcoming Features
+
+- [x] Support for passing selected elements from canvas to AI in Electron
+- [x] Multi-page drawio support
+- [ ] Full image/file conversation support
+- [x] Support for custom DrawIO widget URL
+- [x] Direct export to png/svg
+- [x] Add more LLM API support
+- [ ] Support for exporting projects to files
+- [ ] Vision render review
+- [ ] Support headless mode
+
+## Project Structure
+
+```
+drawio2go/
+├── app/                    # Next.js App Router
+│   ├── components/         # React components
+│   │   ├── chat/          # AI chat module
+│   │   ├── settings/      # Settings panels
+│   │   ├── version/       # Version management
+│   │   └── toast/         # Notification system
+│   ├── lib/               # Utilities & services
+│   │   └── storage/       # Unified storage layer
+│   ├── hooks/             # React hooks
+│   ├── i18n/              # Internationalization
+│   ├── api/               # API routes
+│   └── styles/            # CSS modules
+├── electron/              # Electron main process
+└── server.js              # Next.js custom HTTP server
+```
+
+## Development Guide
+
+### Common Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run lint         # Run ESLint + TypeScript check + complexity check
+npm run test         # Run tests
+npm run format       # Format code with Prettier
+```
+
+### Production Build
+
+```bash
+# Build Next.js application
+npm run build
+
+# Build Electron installer (outputs to dist/)
+npm run electron:build
+```
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines before submitting a PR.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License
+
+## Acknowledgments
+
+- [next-ai-draw-io](https://github.com/DayuanJiang/next-ai-draw-io) - Inspiration source, excellent DrawIO AI generation implementation
+- [DrawIO](https://www.drawio.com/) - Diagram editing engine
+- [HeroUI](https://heroui.com/) - UI component library
+- [Vercel AI SDK](https://sdk.vercel.ai/) - AI integration framework

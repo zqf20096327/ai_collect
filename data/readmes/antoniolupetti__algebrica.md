@@ -1,0 +1,79 @@
+<div align="center">
+<img src="https://raw.githubusercontent.com/antoniolupetti/algebrica/main/github-assets/algebrica-logo-u.png" width="70" alt="Github Readme Algebrica"/>
+
+<p>A Mathematical Knowledge Base</p>
+</div>
+<p align="center">
+  <a href="https://algebrica.org">Home</a>
+  ·
+  <a href="https://algebrica.org/about">About</a>
+  ·
+  <a href="https://algebrica.org/editorial-process">Editorial Process</a>
+  ·
+  <a href="https://algebrica.org/founding-supporters">Support</a>
+</p>
+
+<img src="https://raw.githubusercontent.com/antoniolupetti/algebrica/main/github-assets/algebrica-screenshot-1.png" width="100%" alt="Algebrica Screenshot" />
+
+## Introduction
+
+[Algebrica](https://algebrica.org) is a free, ad-free, university-level mathematics knowledge base. This repository hosts the source content of the entries published on the site, released progressively in Markdown format and reusable under a non-commercial license.
+
+The repository progressively includes:
+
+- the original source files of the entries written for Algebrica in Markdown and LaTeX format;
+- fully editable SVG illustrations, including both vector structures and text elements, which can be modified directly through the source code;
+- a semantic JSON layer containing definitions, properties, lemmas, theorems, and other formal mathematical structures associated with the entries, designed to be portable, reusable, and openly accessible;
+- Markdown-based flowcharts describing the main logical and procedural steps behind common mathematical processes and problem-solving methods.
+
+
+## Current Priorities
+
+> [!IMPORTANT]
+> I started writing Algebrica as a personal project in October 2023.
+> Over time, the website gained visibility, became viral on X, and continued to grow steadily. As of September 2026, Algebrica contains approximately 300 entries covering a wide range of mathematical topics.
+ > Building Algebrica is a long-term effort. Every entry is written, reviewed, and refined by hand, a process that requires considerable time, precision, and attention to detail.
+> Before expanding further, however, the project's relevance led me to shift my focus. Since March 2026, I have been systematically revising, correcting, and extending existing entries to improve their accuracy, consistency, and overall quality.
+
+The current status of Algebrica is summarized below.
+
+- [x] Finalize the underlying infrastructure that supports content publishing, versioning, search, and community contributions
+- [x] Migrate all mathematical entries to Markdown and make them openly available through the GitHub repository
+- [x] Convert existing graphics to editable SVG format and continue expanding the visual library with new illustrations
+- [ ] Continue the progressive expansion of the knowledge base with additional mathematical topics and references
+- [ ] Complete the ontological model that defines relationships between mathematical concepts
+- [ ] Build an interactive semantic graph to enable concept exploration, knowledge discovery, and future interoperability with external knowledge systems
+## About the content
+
+Each entry on Algebrica is written from scratch, drawing on a broad range of sources: university textbooks, lecture notes, and reference works in mathematics. The selection, structure, and presentation of the material are shaped by an engineering background.
+
+Where sources differ in notation or emphasis, they are compared and reconciled, then reorganised into a single coherent flow that follows a deliberate, logical progression. The resulting content is original: each entry is an independent exposition, built from the ground up to be accurate while remaining clear for the intended reader.
+
+The editorial aim is to reduce without distorting. University sources are often dense by necessity, and part of the work is finding ways to make them more direct without sacrificing precision.
+
+## Editorial process
+
+Transparency is one of the principles Algebrica is built on, so I want to be open about the tools I use. English is not my native language, and I rely on [Grammarly](https://www.grammarly.com/) (no affiliation) for proofreading and stylistic refinement. The mathematical content is entirely my own. Grammarly helps me express it more naturally for an international audience.
+
+More recently, I have started using _Codex_ and _Claude Cowork_ (no affiliation) to improve internal linking between entries, fix sentences that sound too Italian, reorganize sentence structure, and keep the style consistent by replacing colloquial turns of phrase with more precise ones. I also use it to look for inaccuracies or mistakes, which I then verify individually. With hundreds of pages published, this is work I can no longer do page by page manually, and AI saves me a great deal of time while keeping content quality consistent. It works as a small support team that lightens the load, but the underlying writing is my own.
+
+_Any help in making the texts sound more natural in English, while preserving the formal accuracy they would have in Italian, is absolutely welcome!_
+
+## Repository structure
+
+In the Algebrica GitHub repository, I’m progressively releasing not only all the entries in Markdown format, but also all the diagrams and illustrations as open and fully editable SVG files to improve the accessibility and reusability of the content.
+
+The SVG images can be freely modified, reused, and adapted for educational purposes, making the graphical structure of the entries fully inspectable and portable alongside the text itself.
+
+[Example page](https://github.com/antoniolupetti/algebrica/blob/main/integrals/definite-integrals.md)
+
+## License
+
+Content is released under [Creative Commons Attribution-NonCommercial 4.0 (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/). It can be reused for non-commercial purposes, with attribution.
+
+## Links
+
+👋🏻 Hi! I'm [Antonio Lupetti](https://facebook.com/antoniolupetti), an engineer based in Rome, Italy.
+
+- Website: [algebrica.org](https://algebrica.org)
+- X: [@antoniolupetti](https://x.com/antoniolupetti)

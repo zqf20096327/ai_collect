@@ -1,0 +1,549 @@
+# Transcribe Critic
+
+Automated pipeline for producing accurate speech transcripts from video URLs. Downloads media, transcribes with multiple ASR models, and merges all available sources — ASR transcripts, YouTube captions, and optional external transcripts — into a single "critical text" using LLM-based adjudication.
+
+The approach applies principles from [textual criticism](https://en.wikipedia.org/wiki/Textual_criticism): multiple independent "witnesses" to the same speech are aligned, compared, and merged by an LLM that judges each difference on its merits, without knowing which source produced which reading. This builds on earlier work applying similar techniques to OCR ([Ringger & Lund, 2014](https://scholarsarchive.byu.edu/facpub/1647/); [Lund et al., 2013](https://www.researchgate.net/publication/220861175_Error_Correction_with_In-Domain_Training_Across_Multiple_OCR_System_Outputs)), replacing trained classifiers with an LLM as the eclectic editor.
+
+## How is this different from WhisperX?
+
+[WhisperX](https://github.com/m-bain/whisperX) improves a single Whisper run with voice-activity-detection (VAD) chunking, word-level timestamps, and speaker diarization — but the transcript still comes from one model pass. Transcribe Critic takes a different approach: it runs multiple ASR models (Whisper, Parakeet, Qwen3-ASR), pulls in YouTube captions and external human-edited transcripts, and treats them all as independent witnesses. An LLM then adjudicates every disagreement blindly, without knowing which source produced which reading. The result is a merged "critical text" that is more accurate than any single source. If you just need fast, well-segmented Whisper output, WhisperX is the right tool; if you want the most accurate transcript possible from multiple sources, this is.
+
+## Features
+
+- **Critical text merging**: Combines 2–3+ transcript sources into the most accurate version using blind, anonymous presentation to an LLM — no source receives preferential treatment
+- **wdiff-based alignment**: Uses longest common subsequence alignment (via `wdiff`) to keep chunks properly aligned across sources of different lengths, replacing naive proportional slicing
+- **Multi-model ASR ensembling**: Optionally runs multiple ASR models from diverse architectures and resolves disagreements via LLM with anonymous A/B/C labels (e.g., `--models distil-large-v3,parakeet,qwen3-asr`)
+- **Anti-hallucination**: Whisper runs use `condition_on_previous_text=False` and other flags to prevent cascading hallucination; residual repetition loops are automatically detected and collapsed
+- **External transcript support**: Merges in human-edited transcripts (e.g., from publisher websites) as an additional source
+- **Structured transcript preservation**: When external transcripts have speaker labels and timestamps, the merged output preserves that structure
+- **Slide extraction and analysis**: Automatic scene detection for presentation slides, with optional vision API descriptions
+- **Make-style DAG pipeline**: Each stage checks whether its outputs are newer than its inputs, skipping unnecessary work — `--steps` allows re-running specific stages in isolation
+- **Checkpoint resumption**: Long operations save checkpoints and resume after interruption — merge chunks, diarization segmentation, and embedding extraction all checkpoint independently
+- **Cost estimation**: Shows estimated API costs before running (`--dry-run` for estimation only)
+- **Local-first LLM**: Uses Ollama by default for free, local operation — no API key needed. Each pipeline stage (merge, slides, summary) can independently use a different LLM backend
+- **Speaker diarization**: On by default — identifies who is speaking using pyannote.audio, with automatic or manual speaker naming — LLM speaker identification uses video metadata (title, description) for correct name spellings
+- **Transcript summarization**: Generates a structured summary (overview, key topics, exact notable quotes, speaker identifications) with model attribution — independently configurable LLM backend, can use a different model than the adjudication LLM
+- **Timestamped logging**: All pipeline output prefixed with `[HH:MM:SS]` wall-clock timestamps for log correlation during long runs
+- **ASR-only mode**: `--no-llm` to skip all LLM features and run ASR transcription only
+
+## Installation
+
+```bash
+pip install transcribe-critic
+```
+
+### System Dependencies
+
+```bash
+# Required tools
+brew install ffmpeg wdiff    # macOS
+# apt install ffmpeg wdiff   # Ubuntu/Debian
+
+# Install Ollama for local LLM (used by default for merging/ensembling)
+brew install ollama          # macOS
+# curl -fsSL https://ollama.com/install.sh | sh  # Linux
+
+# Pull a model (one-time)
+ollama pull qwen2.5:14b
+```
+
+### From Source
+
+```bash
+git clone https://github.com/ringger/transcribe-critic.git
+cd transcribe-critic
+pip install -e .          # editable install
+pip install -e .[dev]     # with test dependencies
+pip install -e .[diarize] # with speaker diarization
+pip install -e .[asr]     # with non-Whisper ASR backends (Granite, Parakeet, Qwen3)
+```
+
+## Quick Start
+
+```bash
+# Basic: ASR transcription + local LLM merge (free, uses Ollama)
+transcribe-critic "https://youtube.com/watch?v=..."
+
+# With an external human-edited transcript for three-way merge
+transcribe-critic "https://youtube.com/watch?v=..." \
+    --external-transcript "https://example.com/transcript"
+
+# Use Anthropic Claude API instead of local Ollama (higher quality, costs money)
+transcribe-critic "https://youtube.com/watch?v=..." --api
+
+# ASR only — no LLM merging at all
+transcribe-critic "https://youtube.com/watch?v=..." --no-llm
+```
+
+## Usage Examples
+
+### Podcast
+
+```bash
+# Podcast episode — audio only, no video or captions
+transcribe-critic --podcast "https://www.iheart.com/podcast/.../episode/..."
+transcribe-critic --podcast "https://podcasts.apple.com/us/podcast/..."
+```
+
+### Speaker Diarization
+
+Diarization is on by default. It requires `pyannote.audio` and a HuggingFace token:
+
+```bash
+pip install transcribe-critic[diarize]
+export HF_TOKEN="hf_..."  # HuggingFace token with pyannote model access
+
+# Auto-detect speaker names from introductions
+transcribe-critic --num-speakers 2 --podcast "https://..."
+
+# Manual speaker names (in order of first appearance)
+transcribe-critic --speaker-names "Ross Douthat,Dario Amodei" --podcast "https://..."
+
+# Disable diarization
+transcribe-critic --no-diarize "https://..."
+```
+
+### Basic Usage
+
+```bash
+# YouTube talk or interview (slides off by default)
+transcribe-critic "https://youtube.com/watch?v=..."
+
+# With external transcript for higher accuracy
+transcribe-critic "https://youtube.com/watch?v=..." \
+    --external-transcript "https://example.com/transcript"
+```
+
+### Presentation with Slides
+
+```bash
+# Extract slides and interleave with transcript
+transcribe-critic "https://youtube.com/watch?v=..." --slides
+
+# Also describe slide content with vision API (uses main LLM backend)
+transcribe-critic "https://youtube.com/watch?v=..." --slides --analyze-slides
+
+# Use Claude API for slide analysis even when main LLM is local
+transcribe-critic "https://youtube.com/watch?v=..." --slides --analyze-slides --slides-api
+```
+
+### Custom Options
+
+```bash
+# Custom output directory
+transcribe-critic "https://youtube.com/watch?v=..." -o ./my_transcript
+
+# Ensemble multiple models for cross-checking (default: parakeet only)
+transcribe-critic "https://youtube.com/watch?v=..." --models distil-large-v3,parakeet,qwen3-asr
+
+# Use a single model
+transcribe-critic "https://youtube.com/watch?v=..." --models parakeet
+
+# Migrate legacy whisper_* files in existing output directories
+transcribe-critic-migrate ./transcripts --recursive --dry-run
+
+# Use a different local model
+transcribe-critic "https://youtube.com/watch?v=..." --local-model llama3.3
+
+# Adjust slide detection sensitivity (0.0–1.0, lower = more slides)
+transcribe-critic "https://youtube.com/watch?v=..." --scene-threshold 0.15
+
+# Force re-processing (ignore existing files)
+transcribe-critic "https://youtube.com/watch?v=..." --force
+
+# Re-run only the Whisper ensemble step (uses existing Whisper outputs)
+transcribe-critic "https://youtube.com/watch?v=..." --steps ensemble -o ./my_transcript
+
+# Re-run only the merge step (uses existing Whisper outputs)
+transcribe-critic "https://youtube.com/watch?v=..." --steps merge -o ./my_transcript
+
+# Re-run transcription and merge only
+transcribe-critic "https://youtube.com/watch?v=..." --steps transcribe,merge -o ./my_transcript
+
+# Verbose output
+transcribe-critic "https://youtube.com/watch?v=..." -v
+```
+
+### Summarization
+
+Summarization runs by default after markdown generation, producing a `summary.md` with model attribution at the top (`*Summary generated by model-name*`). It uses the diarized transcript when available (for speaker-aware summaries), falling back to the merged or Whisper transcript. The summary includes an overview, key topics (8–15 bullets), exact notable quotes, and speaker identifications.
+
+```bash
+# Default: summarize with the same LLM as adjudication (local Ollama)
+transcribe-critic "https://youtube.com/watch?v=..."
+
+# Use a different model for summaries (e.g., Opus for summaries, Sonnet for adjudication)
+transcribe-critic "https://youtube.com/watch?v=..." --api \
+    --summary-model claude-opus-4-20250514
+
+# Use Claude API for summaries even when adjudication uses local Ollama
+transcribe-critic "https://youtube.com/watch?v=..." \
+    --summary-api --summary-model claude-sonnet-4-6
+
+# Re-run just the summarization step
+transcribe-critic "https://youtube.com/watch?v=..." --steps summarize -o ./my_transcript
+
+# Disable summarization
+transcribe-critic "https://youtube.com/watch?v=..." --no-summarize
+```
+
+### Per-Stage LLM Configuration
+
+Each LLM-dependent pipeline stage (merging/ensembling, slide analysis, summarization) can use a different LLM backend. By default all stages inherit the main `--api`/`--local-model` setting. Use per-stage flags to override individually:
+
+```bash
+# Local Ollama for merging, Claude API for slides and summaries
+transcribe-critic "https://youtube.com/watch?v=..." --slides --analyze-slides \
+    --slides-api --summary-api
+
+# Claude API for everything, with a different model per stage.
+# Sonnet is plenty for transcript work (Opus is overkill); use a cheaper
+# model for the simpler summary pass if you want to save cost.
+transcribe-critic "https://youtube.com/watch?v=..." --api \
+    --merge-model claude-sonnet-4-6 \
+    --summary-model claude-haiku-4-5
+
+# Each stage can also have its own API key
+transcribe-critic "https://youtube.com/watch?v=..." \
+    --merge-api --merge-api-key sk-merge-key \
+    --slides-api --slides-api-key sk-slides-key \
+    --summary-api --summary-api-key sk-summary-key
+```
+
+| Stage | `--*-api` | `--*-model` | `--*-api-key` |
+|-------|-----------|-------------|---------------|
+| Merge/ensemble | `--merge-api` | `--merge-model` | `--merge-api-key` |
+| Slide analysis | `--slides-api` | `--slides-model` | `--slides-api-key` |
+| Summarization | `--summary-api` | `--summary-model` | `--summary-api-key` |
+
+## Output Files
+
+```
+output_dir/
+├── metadata.json                 # Source URL, title, duration, etc.
+├── audio.mp3                     # Downloaded audio
+├── audio.wav                     # Converted for diarization (default; skipped with --no-diarize)
+├── video.mp4                     # Downloaded video (if slides enabled)
+├── captions.en.vtt               # YouTube captions (if available)
+├── asr_distil-large-v3.txt        # Whisper distil-large-v3 transcript
+├── asr_distil-large-v3.json       # Whisper distil-large-v3 with timestamps
+├── asr_parakeet.txt               # Parakeet transcript
+├── asr_parakeet.json              # Parakeet with timestamps
+├── asr_qwen3-asr.txt              # Qwen3-ASR transcript
+├── asr_qwen3-asr.json             # Qwen3-ASR with timestamps
+├── asr_merged.txt                 # Merged from multiple ASR models via adjudication
+├── diarization.json              # Speaker segments (default; skipped with --no-diarize)
+├── diarization_segmentation.npy  # Cached segmentation (default; skipped with --no-diarize)
+├── diarization_embeddings.npy    # Cached embeddings (default; skipped with --no-diarize)
+├── diarized.txt                  # Speaker-labeled transcript (default; skipped with --no-diarize)
+├── transcript_merged.txt         # Critical text (merged from all sources)
+├── summary.md                    # Transcript summary (structured Markdown)
+├── analysis.md                   # Source survival analysis
+├── transcript.md                 # Final markdown output
+├── merge_chunks/                 # Per-chunk checkpoints (resumable)
+│   ├── .version
+│   ├── chunk_000.json
+│   └── ...
+├── slide_timestamps.json         # Slide timing data
+├── slides_transcript.json        # (if --analyze-slides)
+└── slides/                       # (if slides enabled)
+    ├── slide_0001.png
+    └── ...
+```
+
+## Pipeline Stages
+
+Optional stages are skipped based on flags. Stage numbers are fixed regardless of which stages run.
+
+| Stage | Step name | Tool | Optional |
+|-------|-----------|------|----------|
+| [1] Download media | `download` | yt-dlp | No |
+| [2] Transcribe audio | `transcribe` | mlx-whisper, parakeet-mlx, mlx-audio | No |
+| [2b] ASR ensemble | `ensemble` | LLM + wdiff | Yes (on by default with 2+ models; default: 3 Whisper models) |
+| [2c] Speaker diarization | `diarize` | pyannote.audio | Yes (on by default; `--no-diarize` to skip) |
+| [3] Extract slides | `slides` | ffmpeg | Yes (off by default; `--slides` to enable) |
+| [4] Analyze slides with vision | `slides` | LLM + vision | Yes (`--analyze-slides`) |
+| [4b] Merge transcript sources | `merge` | LLM + wdiff | Yes (on by default; `--no-merge` to skip) |
+| [5] Generate markdown | `markdown` | Python | No |
+| [5b] Summarize transcript | `summarize` | LLM | Yes (on by default; `--no-summarize` to skip) |
+| [6] Source survival analysis | `analysis` | wdiff | No |
+
+Use `--steps <step1>,<step2>,...` to run only specific stages. Existing outputs from skipped stages are loaded automatically. This is useful for re-running just the ensemble, merge, or summarize after fixing a bug, without re-downloading or re-transcribing.
+
+## How It Works
+
+### Critical Text Merging
+
+The core idea — inspired by textual criticism — is to treat multiple transcripts as independent witnesses to the same speech and adjudicate their differences. Given 2–3+ sources:
+
+1. **Align** all sources against an anchor text using `wdiff` (longest common subsequence), producing word-position maps that keep chunks synchronized even when sources differ in length
+2. **Chunk** the aligned sources into ~500-word segments
+3. **Present** each chunk to Claude with **anonymous labels** (Source 1, Source 2, Source 3) — source names are never revealed, preventing provenance bias
+4. **Adjudicate** — Claude chooses the best reading at each point of disagreement, preferring proper nouns, grammatical correctness, and contextual fit
+5. **Reassemble** the merged chunks, restoring speaker labels and timestamps from the structured source (if available)
+
+When an external transcript has structure (speaker labels, timestamps), the merge preserves that skeleton while improving the text content from all sources.
+
+Unlike a traditional critical edition, the pipeline does not produce an apparatus of variants, construct a stemma of source relationships, or preserve editorial rationale for each decision. The goal is a single best-reading transcript, not a scholarly edition.
+
+### Source Survival Analysis
+
+After merging, `wdiff -s` compares each source against the merged output, showing how much each source contributed to the final text. Here is an actual survival analysis from a 3-hour podcast episode transcribed with Whisper (small + medium, merged via adjudication), YouTube auto-captions, and a human-edited external transcript:
+
+```
+Source                       Words   Common  Output Coverage  Retention
+------------------------- -------- -------- --------------- ----------
+Whisper (merged)            28,277   27,441             90%        97%
+YouTube captions            30,668   28,741             94%        94%
+External transcript         33,122   30,245             99%        91%
+Merged output               30,524
+```
+
+- **Output Coverage**: what percentage of the merged output's words appear in this source (how much of the final text did this source "cover"?)
+- **Retention**: what percentage of this source's words survived into the merged output
+
+No single source matches the merged output — the merged text draws from all three. The external transcript has the highest coverage (99% of merged words present), but the merge still corrects ~1% of its content using the other sources. Whisper contributes readings not found in either captions or the external transcript, and vice versa.
+
+Here are specific corrections the merge made by adjudicating across sources:
+
+| Whisper | YouTube captions | External transcript | Merged (correct) |
+|---------|-----------------|--------------------|--------------------|
+| "Cloud Opus" | — | "Claude Opus" | **Claude Opus** (product name) |
+| "Ross Douthend" | "ross douthat" | "Ross Douthat" | **Ross Douthat** (person name) |
+| "GPT 5.3 codecs" | — | "GPT-5.3 Codex" | **GPT 5.3 Codex** (model name, not audio codec) |
+| "is source code" | — | "its source code" | **its source code** (grammar) |
+
+Each source alone gets some things right and others wrong. Whisper hallucinates proper nouns ("Cloud" for "Claude", "Douthend" for "Douthat"). YouTube captions lack capitalization and punctuation but sometimes have correct spellings. The external transcript has the best proper nouns but may paraphrase or omit filler words. The merge selects the best reading at each disagreement, producing a transcript more accurate than any individual source.
+
+### How Audio Quality Affects the Merge
+
+Audio quality dramatically affects how much value the multi-source pipeline adds. Here are source survival stats from two runs — a studio-recorded YouTube video vs. a lecture hall recording of a mathematics talk:
+
+| Video | Audio | Whisper Coverage | Whisper Retention | YouTube Coverage | YouTube Retention |
+|-------|-------|-----------------|-------------------|-----------------|-------------------|
+| Financial commentary (studio) | Clean, single mic | 98% | 97% | 99% | 97% |
+| Math lecture (lecture hall) | Room acoustics, accent | 98% | 96% | 96% | 79% |
+
+On clean studio audio, all sources largely agree — the pipeline validates more than it corrects. On difficult audio (room acoustics, accented speaker, dense technical vocabulary), the sources diverge significantly and the merge step earns its keep.
+
+#### Whisper Ensemble Corrections
+
+When multiple Whisper models transcribe the same audio, each stumbles differently on unfamiliar terms. The ensemble adjudicator selects the best reading:
+
+**Proper nouns** — individual models mangle names that at least one other model gets right:
+
+| What was said | small | medium | distil-large-v3 | Merged |
+|---------------|-------|--------|-----------------|--------|
+| "Cauchy" | Cauchy | Cauchy | Kaoshi | **Cauchy** |
+| "Erdos" | Erdisch | Urdish | Erdush | **Erdos** |
+| "Boris Alexeev" | as Alexi | as well as Alexi | Boris Alexiev | **Boris Alexeev** |
+
+**Mathematical terminology** — the LLM adjudicator's domain knowledge helps select the correct technical term:
+
+| What was said | small | medium | distil-large-v3 | Merged |
+|---------------|-------|--------|-----------------|--------|
+| "arithmetic progressions" | arithmetic corrections | arithmetic progressions | algorithmic progressions | **arithmetic progressions** |
+| "p-adic valuations" | five-out evaluations | five adiabatic valuations | phybatic valuations | **p-adic valuations** |
+| "monotonic sequence" | monitoring sequence | monitoring sequence | monitor sequence | **monotonic sequence** |
+
+**Search engine name** — all Whisper models failed; YouTube captions provided the correct reading:
+
+| What was said | Whisper (all 3 models) | YouTube captions | Merged |
+|---------------|----------------------|-----------------|--------|
+| "AltaVista" | Out of Easter / Auto-Easter | AltaVista | **AltaVista** |
+
+#### LLM Backend Comparison
+
+The choice of LLM backend for adjudication matters. The same source material was merged twice — once with a local 14B-parameter model (Qwen 2.5:14b via Ollama), once with Claude Sonnet via API:
+
+| | Local (Qwen 2.5:14b) | Claude API (Sonnet) |
+|---|---|---|
+| **Whisper retention** | 80% | 96% |
+| **YouTube retention** | 67% | 79% |
+| **Merged word count** | 4,331 | 4,786 |
+| **LLM leakage** | 2 instances | None |
+
+The local model dropped significantly more content during merging and twice inserted its own commentary into the transcript — meta-remarks about its merge process that were not part of the original speech. Claude Sonnet retained more source material and followed the "output only the speaker's words" instruction cleanly.
+
+However, stronger models can also overcorrect. In one case, all three Whisper models correctly heard the speaker say "Nano Banana" (a Google image generation model). The local model preserved it. Claude Sonnet, apparently judging this an unlikely name, replaced it with "Claude" — a plausible but incorrect substitution:
+
+| What was said | Whisper (all 3 models) | Local merge | Claude API merge |
+|---------------|----------------------|-------------|-----------------|
+| "Nano Banana" (Google model) | Nano Banana | **Nano Banana** (correct) | Claude (wrong) |
+
+The lesson: stronger LLMs are better adjudicators overall, but they are also more willing to override unanimous source agreement when their priors suggest a "more likely" reading. Unfamiliar but correct proper nouns are the primary risk. See [docs/transcript-sources.md](docs/transcript-sources.md) for more on source quality characteristics.
+
+### Multi-Model ASR Merging
+
+When using multiple ASR models (e.g., `--models distil-large-v3,parakeet,qwen3-asr`):
+
+1. Runs each model independently (Whisper with anti-hallucination flags; non-Whisper via their native libraries)
+2. Uses `wdiff` to identify specific word-level differences between each non-base model and the base (highest-ranked model by quality)
+3. For 3+ models, merges pairwise diffs at the same positions into unified diffs with per-model readings
+4. Clusters nearby differences and presents each cluster to an LLM with anonymous labels (A/B or A/B/C) and surrounding context — model names are never revealed
+5. The LLM picks a letter for each disagreement — constrained to choose between actual transcriptions, preventing hallucinated text
+6. Chosen readings are surgically applied to the base transcript, leaving uncontested regions untouched
+
+This targeted diff resolution avoids the problems of full-text rewriting (chunk-boundary duplication, errors in uncontested regions, wasted tokens). The implementation runs model-vs-model adjudication first to produce a single merged witness (`asr_merged.txt`), which then enters the multi-source merge alongside captions and external transcripts.
+
+Mixing architecturally diverse models (e.g., Whisper encoder-decoder + Granite conformer+LLM + Parakeet FastConformer-TDT) provides better ensemble diversity than combining multiple Whisper sizes alone.
+
+### Speaker Diarization
+
+By default, the pipeline identifies who is speaking at each point in the audio by combining two independent signals:
+
+1. **pyannote.audio** runs a neural segmentation model over the audio in sliding ~5-second windows, producing frame-level speaker activity probabilities. A global clustering step stitches local predictions across the full recording into consistent speaker labels (SPEAKER_00, SPEAKER_01, etc.). The model handles overlapping speech natively and operates purely on the audio signal — no linguistic content is used.
+
+2. **Whisper word timestamps** (`--word-timestamps True`) provide per-word `{start, end}` timing from the transcription model.
+
+The pipeline links these by **midpoint matching**: for each word, it finds which speaker segment overlaps the word's temporal midpoint. Each transcript segment is then assigned the majority speaker of its constituent words. The result is a structured transcript in bracketed format (`[H:MM:SS] Speaker: text`) that feeds directly into the existing merge pipeline as a structural skeleton.
+
+**Speaker identification** maps generic labels to real names via three methods (in priority order):
+- `--speaker-names "Alice,Bob"` — manual mapping by order of first appearance
+- LLM-based detection — reads the first ~500 words and infers names from introductions, using video metadata (title, description, channel) for correct spellings (e.g., corrects Whisper's "Douthit" to "Douthat" when the video description contains the correct name)
+- `--no-llm` — keeps generic SPEAKER_00/SPEAKER_01 labels
+
+**Diarization checkpointing** breaks the expensive pyannote pipeline into 6 independently cached steps. Segmentation (the neural model pass, ~50% of runtime) and embedding extraction (the other slow step) both save to `.npy` files. Embeddings checkpoint every 10 batches to a partial file, enabling resume mid-extraction. If any step's output is newer than the audio file, it is skipped on re-run.
+
+### Make-Style Staleness Checks
+
+Every stage checks `is_up_to_date(output, *inputs)` — if the output file is newer than all input files, the stage is skipped. This means you can re-run the pipeline after changing options and only the affected stages will execute.
+
+## Cost Estimation
+
+```
+==================================================
+ESTIMATED API COSTS
+==================================================
+  Source merging: 3 sources × 59 chunks = $1.03
+  Whisper ensemble: 3 models × 98 clusters = $0.72
+
+  TOTAL: $1.95 (estimate)
+==================================================
+```
+
+### Typical Costs
+
+| Feature | 20-min speech | 3-hour podcast |
+|---------|--------------|----------------|
+| Whisper ensemble | $0.05–$0.15 | $0.50–$1.00 |
+| Source merging (2 sources) | $0.10–$0.30 | $0.50–$1.00 |
+| Source merging (3 sources) | $0.15–$0.40 | $1.00–$2.00 |
+| Summarization | $0.01–$0.05 | $0.05–$0.15 |
+| Slide analysis | $0.50–$2.00 | N/A |
+| Local Ollama (default) | **Free** | **Free** |
+| `--no-llm` | **Free** | **Free** |
+
+## Utility Scripts
+
+The `tools/` directory contains standalone scripts for extracting transcripts from external sources:
+
+- **`extract_nyt_html.py`** — Extracts transcript text from a saved NYT interview HTML page, recovering speaker labels from `<strong>` (bold) formatting. Usage: `python3 tools/extract_nyt_html.py input.html output.txt`
+- **`clean_pdftotext.py`** — Cleans `pdftotext -layout` output of a browser-printed NYT article: strips page headers/footers, promo blocks, boilerplate, normalizes quotes, and joins hard line breaks. Usage: `pdftotext -layout input.pdf raw.txt && python3 tools/clean_pdftotext.py raw.txt cleaned.txt`
+
+These are useful for preparing `--external-transcript` files from paywalled publisher transcripts.
+
+## Background
+
+This tool is inspired by [textual criticism](https://en.wikipedia.org/wiki/Textual_criticism) — the scholarly discipline of comparing multiple manuscript witnesses to reconstruct an authoritative text — applying its core principles (independent witnesses, alignment, adjudication) to speech transcription.
+
+The approach has roots in earlier work applying noisy-channel models and multi-source correction to speech and OCR:
+
+- **Ringger & Allen (1996)** — [Error Correction via a Post-Processor for Continuous Speech Recognition](https://www.researchgate.net/publication/2321329_Error_Correction_Via_A_Post-Processor_For_Continuous_Speech_Recognition) (ICASSP). Introduced SpeechPP, a noisy-channel post-processor that corrects ASR output using language and channel models with Viterbi beam search, developed as part of the [TRAINS/TRIPS](https://www.cs.rochester.edu/research/trains/) spoken dialogue systems at the University of Rochester. Extended with a fertility channel model in [Ringger & Allen, ICSLP 1996](https://scholarsarchive.byu.edu/facpub/1288/).
+- **Ringger & Lund (2014)** — [How Well Does Multiple OCR Error Correction Generalize?](https://scholarsarchive.byu.edu/facpub/1647/) Demonstrated that aligning and merging outputs from multiple OCR engines significantly reduces word error rates.
+- **Lund et al. (2013)** — [Error Correction with In-Domain Training Across Multiple OCR System Outputs](https://www.researchgate.net/publication/220861175_Error_Correction_with_In-Domain_Training_Across_Multiple_OCR_System_Outputs). Used A* alignment and trained classifiers (CRFs, MaxEnt) to choose the best reading from multiple OCR witnesses — a 52% relative decrease in word error rate.
+
+The OCR work used A* alignment because page layout provides natural line boundaries, making alignment a series of short, bounded search problems. Speech has no such boundaries — different ASR systems segment a continuous audio stream arbitrarily — so this tool uses `wdiff` (LCS-based global alignment) instead. It also replaces the trained classifiers with an LLM, which brings world knowledge and contextual reasoning without requiring task-specific training data. The blind/anonymous presentation of sources is borrowed from peer review and prevents the LLM from developing source-level biases.
+
+Related work in speech:
+- **ROVER** ([Fiscus, 1997](https://ieeexplore.ieee.org/document/659110/)) — Statistical voting across multiple ASR outputs via word transition networks
+- **Ensemble Methods for ASR** ([Lehmann](https://github.com/cassandra-lehmann/ensemble_methods_ASR_transcripts)) — Random Forest classifier for selecting words from multiple ASR systems
+
+## Troubleshooting
+
+### "No Whisper implementation found"
+
+`pip install transcribe-critic` automatically installs the right Whisper for your platform (mlx-whisper on Apple Silicon, openai-whisper elsewhere). If you installed from source and see this error:
+
+```bash
+pip install mlx-whisper    # Apple Silicon
+pip install openai-whisper # Other platforms
+```
+
+### "Model 'granite-speech' requires mlx-audio"
+
+Non-Whisper ASR backends are optional extras. Install what you need:
+
+```bash
+pip install 'transcribe-critic[asr]'       # All backends (parakeet-mlx + mlx-audio)
+pip install 'transcribe-critic[parakeet]'   # Parakeet only
+pip install 'transcribe-critic[mlx-audio]'  # Granite + Qwen3-ASR only
+```
+
+These are Apple Silicon only (ARM64 macOS).
+
+### YouTube download fails with `HTTP Error 403: Forbidden`
+
+Almost always a stale `yt-dlp`. YouTube changes its extraction surface every few
+weeks, and an out-of-date `yt-dlp` fails on audio while still succeeding on
+metadata and captions — so the pipeline can report the title correctly and then
+die on the download:
+
+```bash
+pip install -U yt-dlp
+```
+
+The dependency floor is bumped when a release is known to break, but yt-dlp goes
+stale faster than this package releases. The pipeline warns at startup once your
+installed version is more than 60 days old; take that warning seriously before
+debugging anything else.
+
+A separate warning about "No supported JavaScript runtime" may also appear. It is
+non-fatal — YouTube downloads work without it. Install `deno` only if you hit
+missing-format errors that a `yt-dlp` upgrade does not resolve.
+
+### wdiff not found
+
+Required for alignment-based merging:
+
+```bash
+brew install wdiff  # macOS
+apt install wdiff   # Ubuntu/Debian
+```
+
+### Diarization fails on short audio clips
+
+pyannote's audio decoder can produce sample-count mismatches with MP3 files, especially short clips. The pipeline automatically converts MP3 to WAV before diarization, so this should be handled transparently. If you still encounter issues, you can manually provide a WAV file:
+
+```bash
+ffmpeg -i output_dir/audio.mp3 -ar 16000 -ac 1 output_dir/audio.wav
+```
+
+The pipeline will use an existing `audio.wav` over `audio.mp3` for diarization.
+
+### API timeouts
+
+The tool retries on timeouts (120s per attempt, up to 5 retries with exponential backoff). Long merges save per-chunk checkpoints, so interrupted runs resume from the last completed chunk.
+
+### ffmpeg scene detection captures too few/many slides
+
+```bash
+transcribe-critic "..." --scene-threshold 0.05  # More slides
+transcribe-critic "..." --scene-threshold 0.20  # Fewer slides
+```
+
+## License
+
+MIT
+
+## Acknowledgments
+
+- [OpenAI Whisper](https://github.com/openai/whisper) — Speech recognition
+- [Distil-Whisper](https://github.com/huggingface/distil-whisper) — Distilled large-v3 model (faster, fewer hallucinations)
+- [MLX Whisper](https://github.com/ml-explore/mlx-examples) — Apple Silicon optimization
+- [parakeet-mlx](https://github.com/senstella/parakeet-mlx) — NVIDIA Parakeet on Apple Silicon
+- [mlx-audio](https://github.com/Blaizzy/mlx-audio) — Multi-model ASR on Apple Silicon (Granite, Qwen3-ASR)
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) — Media downloading
+- [Anthropic Claude](https://www.anthropic.com/) — LLM-based adjudication and vision analysis
+- [pyannote.audio](https://github.com/pyannote/pyannote-audio) — Speaker diarization
+- [wdiff](https://www.gnu.org/software/wdiff/) — Word-level diff for alignment and comparison

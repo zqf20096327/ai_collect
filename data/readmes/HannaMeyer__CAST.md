@@ -1,0 +1,85 @@
+# CAST: Caret Applications for Spatio-Temporal models  <img src="man/figures/logo.png" align="right" alt="" width="150" />
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/HannaMeyer/CAST/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/HannaMeyer/CAST/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/HannaMeyer/CAST/graph/badge.svg)](https://app.codecov.io/gh/HannaMeyer/CAST)
+[![CRAN status](https://www.r-pkg.org/badges/version/CAST)](https://cran.r-project.org/package=CAST)
+[![CRAN RStudio mirror downloads total](http://cranlogs.r-pkg.org/badges/grand-total/CAST)](https://cran.r-project.org/package=CAST)
+[![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/CAST)](https://cran.r-project.org/package=CAST)
+
+<!-- badges: end -->
+
+Supporting functionality to run 'caret' with spatial or spatial-temporal data. 'caret' is a frequently used package for model training and prediction using machine learning. CAST includes functions to improve spatial or spatial-temporal modelling tasks using 'caret'. To decrease spatial overfitting and to improve model performances, the package implements a forward feature selection that selects suitable predictor variables in view to their contribution to spatial or spatio-temporal model performance. CAST further includes functionality to estimate the (spatial) area of applicability of prediction models.
+
+Note: The developer version of CAST can be found on https://github.com/HannaMeyer/CAST. 
+The CRAN Version can be found on	https://CRAN.R-project.org/package=CAST
+
+<a ><img src="man/figures/CAST_workflow.png" align="right" height="138" /></a>
+*The figure shows a very simple workflow for a spatial prediction mapping workflow, indicating which function in CAST can be used in the different steps to support the spatial prediction.*
+
+
+
+## Package Website
+https://hannameyer.github.io/CAST/
+
+
+
+## Tutorials
+
+* [Book chapter:  The CAST Package for Training and Assessment of Spatial Prediction Models](https://doi.org/10.1007/978-3-031-99665-8_11). [Preprint](https://arxiv.org/abs/2404.06978)
+
+* [Introduction to CAST](https://hannameyer.github.io/CAST/articles/cast01-CAST-intro.html)
+
+* [Visualization of nearest neighbor distance distributions](https://hannameyer.github.io/CAST/articles/cast02-plotgeodist.html)
+
+* [Nearest neighbor distance matching Cross-validation in CAST](https://hannameyer.github.io/CAST/articles/cast03-CV.html)
+
+* [Area of applicability of spatial prediction models](https://hannameyer.github.io/CAST/articles/cast04-AOA-tutorial.html)
+
+* [Improve computation time of CAST methods](https://hannameyer.github.io/CAST/articles/cast05-parallel.html)
+
+
+* The talk from the OpenGeoHub summer school 2019 on spatial validation and variable selection:
+https://www.youtube.com/watch?v=mkHlmYEzsVQ.
+
+* Tutorial (https://youtu.be/EyP04zLe9qo) and Lecture (https://youtu.be/OoNH6Nl-X2s) recording from OpenGeoHub summer school 2020 on the area of applicability. As well as talk at the OpenGeoHub summer school 2021: https://av.tib.eu/media/54879. 
+
+* Talk and tutorial from the OpenGeoHub 2022 summer school on Machine learning-based maps of the environment - challenges of extrapolation and overfitting, including discussions on the area of applicability and the nearest neighbor distance matching cross-validation (https://doi.org/10.5446/59412).
+
+## Scientific documentation of the methods
+
+* Meyer, H., Ludwig, M., Milà, C., Linnenbrink, J., Schumacher, F. (2026). The CAST Package for Training and Assessment of Spatial Prediction Models. In: Rocchini, D. (eds) R Coding for Ecology. Use R!. Springer, Cham. https://doi.org/10.1007/978-3-031-99665-8_11. Preprint: https://doi.org/10.48550/arXiv.2404.06978.
+
+### Spatial cross-validation
+* Milà, C., Mateu, J., Pebesma, E., Meyer, H. (2022): Nearest Neighbour Distance Matching Leave-One-Out Cross-Validation for map validation. Methods in Ecology and Evolution 13, 1304– 1316. https://doi.org/10.1111/2041-210X.13851.
+
+* Linnenbrink, J., Milà, C., Ludwig, M., Meyer, H. (2024): kNNDM CV: k-fold Nearest Neighbour Distance Matching Cross-Validation for map accuracy estimation. Geosci. Model Dev., 17, 5897–5912. https://doi.org/10.5194/gmd-17-5897-2024.
+
+* Meyer, H., Reudenbach, C., Hengl, T., Katurji, M., Nauss, T. (2018): Improving performance of spatio-temporal machine learning models using forward feature selection and target-oriented validation. Environmental Modelling & Software, 101, 1-9. https://doi.org/10.1016/j.envsoft.2017.12.001.
+
+### Spatial variable selection
+* Meyer, H., Reudenbach, C., Hengl, T., Katurji, M., Nauss, T. (2018): Improving performance of spatio-temporal machine learning models using forward feature selection and target-oriented validation. Environmental Modelling & Software, 101, 1-9. https://doi.org/10.1016/j.envsoft.2017.12.001.
+
+* Meyer, H., Reudenbach, C., Wöllauer, S., Nauss, T. (2019): Importance of spatial predictor variable selection in machine learning applications - Moving from data reproduction to spatial prediction. Ecological Modelling. 411. https://doi.org/10.1016/j.ecolmodel.2019.108815.
+
+### Area of applicability
+* Meyer, H., Pebesma, E. (2021). Predicting into unknown space? Estimating the area of applicability of spatial prediction models. Methods in Ecology and Evolution, 12, 1620–1633. https://doi.org/10.1111/2041-210X.13650.
+
+* Schumacher, F., Knoth, C., Ludwig, M., Meyer, H. (2025): Estimation of local training data point densities to support the assessment of spatial prediction uncertainty. Geosci. Model Dev., 18, 10185–10202. https://doi.org/10.5194/gmd-18-10185-2025.
+
+### Applications and use cases
+* Meyer, H., Pebesma, E. (2022): Machine learning-based global maps of ecological variables and the challenge of assessing them. Nature Communications, 13. https://www.nature.com/articles/s41467-022-29838-9.
+
+* Ludwig, M., Moreno-Martinez, A., Hoelzel, N., Pebesma, E., Meyer, H. (2023): Assessing and improving the transferability of current global spatial prediction models. Global Ecology and Biogeography, 32, 356–368. https://doi.org/10.1111/geb.13635.
+
+* Milà, C., Ludwig, M., Pebesma, E., Tonne, C., and Meyer, H. (2024): Random forests with spatial proxies for environmental modelling: opportunities and pitfalls. Geosci. Model Dev., 17, 6007–6033. https://doi.org/10.5194/gmd-17-6007-2024.
+
+## FAQ: Why is there a horse in the logo?
+You might be wondering why a spatial modeling package is represented by a horse! Although the horse in the logo looks suspiciously like the maintainer's horse, that's purely coincidental!
+
+The real reason for the horse is the famous "Clever Hans" effect. Hans was a horse who became famous for his ability to do math, but it turned out he wasn't actually calculating; instead, he was simply reading the subtle body language of his owner. He hadn't learned any mathematical skills, as it was much easier to provide the correct answer (and probably earn cookies) by reading these cues.
+
+In spatial data science, we face a similar challenge: models often take “shortcuts” by learning patterns in the data that allow them to reproduce the right answer without understanding the underlying process. In these cases, the model fails to learn the scientifically meaningful relationships required for a reliable and transferable model.
+
+CAST is designed to help you detect this. It allows you to test for the spatial transferability of your model (via prediction domain adaptive validation) and ensures your model has learned the right relationships (via spatial variable selection), hence stopping it from being a "Clever Hans" and ensuring that your predictor variables are truly contributing to the spatial model's performance.

@@ -1,0 +1,291 @@
+# bpf-bench
+
+> **Artifact evaluation (ATC 2026):** evaluator instructions for the accepted
+> paper *BPF-Ext: Safely Extending the eBPF Compilation Pipeline with Native
+> Operations* live in
+> [`docs/atc26-artifact-evaluation.md`](docs/atc26-artifact-evaluation.md).
+> Start with this GitHub guide; [Zenodo](https://doi.org/10.5281/zenodo.22907396)
+> holds the immutable archival backup.
+
+## BPF-Ext / Kinsn artifact (ATC '26)
+
+The paper *BPF-Ext: Safely Extending the eBPF Compilation Pipeline with Native
+Operations* (ACM ATC '26) points here. Where its parts live:
+
+| Paper part | Location |
+| --- | --- |
+| BPF-Ext kernel support (verifier lowering and restore, x86-64 and arm64 JIT) | `vendor/linux-framework`: [`eunomia-bpf/linux`](https://github.com/eunomia-bpf/linux), branch `kinsn-only` |
+| Kinsn operations | [`kinsn/module/`](kinsn/module/) (x86-64 and arm64 kernel modules) |
+| Compile-time recognizer and bytecode optimizer | [`llvm-backend/llvm`](https://github.com/eunomia-bpf/bpf-kinsn-llvm), [`bpfopt/`](bpfopt/) |
+| Lean 4 proofs that each operation's native code matches its proof sequence | [`kinsn/lean/`](kinsn/lean/README.md) |
+| Microbenchmarks (12 derived from production programs, 15 synthetic, plus 2 baselines) | [`micro/programs/`](micro/programs/) |
+| Paper data, figures and number regeneration (no VM) | [`kinsn/paper/atc26/`](kinsn/paper/atc26/README.md) |
+| Evaluation guide: setup, checks, and the paper's results with their data and commands | [`docs/atc26-artifact-evaluation.md`](docs/atc26-artifact-evaluation.md) |
+
+```bash
+git clone https://github.com/eunomia-bpf/bpf-benchmark.git
+cd bpf-benchmark
+git submodule update --init --recursive -- \
+    vendor/linux-framework llvm-backend/llvm vendor/libbpf vendor/llvmbpf \
+    vendor/repos/bcc vendor/repos/bpftrace vendor/repos/cilium \
+    vendor/repos/cilium-ebpf vendor/repos/katran \
+    vendor/repos/opentelemetry-ebpf-profiler vendor/repos/tetragon \
+    vendor/repos/tracee
+
+(cd kinsn/lean && lake exe cache get && lake build)   # the paper's proofs
+make -C kinsn/paper/atc26                             # the paper's numbers and figures
+```
+
+Do not run a bare `git submodule update --init --recursive`: four submodules
+(`docs/paper`, `docs/kprog-simulator-in-ebpf`, `docs/speculative-optimization`,
+`vendor/academic-writing-skills`) are private author repositories that fail to
+fetch without access, and no documented command needs them. See
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for every submodule.
+
+The upstream kernel RFC described in [`kinsn/README.md`](kinsn/README.md) is a
+later redesign and is not the kernel code of this artifact.
+
+Auto-research framework and benchmark for agentic OS kernel extension
+optimization.
+
+`bpf-bench` frames eBPF optimization as a closed-loop search problem for LLM
+agents. Agents choose optimization actions, the framework executes those actions
+against real applications and workloads in isolated Docker/KVM/AWS environments,
+and each iteration returns verifier, JIT, workload, and performance feedback for
+the next decision.
+
+This repository is the execution substrate and artifact workspace for the
+`bpf-bench` paper draft in
+[`docs/ebpf27-bpfoptbench/`](docs/ebpf27-bpfoptbench/). It also provides the
+artifact and evaluation harness for Kinsn (short for *kernel operation*) and its paper,
+*BPF-Ext: Safely Extending the eBPF Compilation Pipeline with Native Operations*
+(ACM ATC '26; see the section above).
+The current `bpf-bench` instantiation covers six production eBPF applications,
+146 comparable BPF program measurements, and 42 microbenchmark tasks, with
+correctness and integrity checks designed to prevent reward hacking.
+
+## Branch Discipline
+
+This experimental repository develops directly on `master`. Do not create or
+switch to task branches; completed work should land on `origin/master`.
+
+## What It Benchmarks
+
+eBPF optimization is difficult because the useful action depends on verifier
+constraints, kernel version, architecture, runtime state, workload behavior, and
+application semantics. A pass that improves one program can regress another, and
+static rewrite counts do not reliably predict speedup.
+
+`bpf-bench` evaluates whether agents can make better optimization decisions
+under the real oracle:
+
+- verifier acceptance and rejection logs
+- JIT output size and emitted-code changes
+- application lifecycle success or failure
+- workload correctness and raw workload metrics
+- per-program BPF run counters before and after optimization
+- cross-iteration history for adaptive exploration
+
+The benchmark action space spans multiple layers:
+
+- source-level application/eBPF changes
+- LLVM and BPF bytecode transformations
+- post-load bytecode policy selection through `bpfopt`
+- kernel JIT and Kinsn-backed native-operation choices
+- suite-wide, per-app, and per-program policy selection
+
+`bpfopt` and Kinsn-backed native operations are action backends in this
+repository, but the `bpf-bench` contribution is broader: a benchmark and
+auto-research framework for agentic eBPF optimization under real verifier, JIT,
+application, and workload feedback.
+
+## Benchmark Corpus
+
+The production corpus uses real application loaders. The framework does not
+replace upstream binaries with simplified loaders and does not load `.bpf.o`
+files directly for corpus apps.
+
+Supported corpus applications:
+
+- `bcc/set`
+- `otelcol-ebpf-profiler/profiling`
+- `cilium/agent`
+- `tetragon/observer`
+- `katran`
+- `tracee/monitor`
+
+Microbenchmarks isolate pure-bytecode execution, helpers, maps, packet parsing,
+branch behavior, and architecture-sensitive lowering under
+`BPF_PROG_TEST_RUN`.
+
+## Research Projects
+
+| Project | Code | Current design | Current results | Build and run |
+| --- | --- | --- | --- | --- |
+| **kprog**: native whole-program execution | [`kprog/`](kprog/README.md) (loader, linker, simulator, Lean) | [design](kprog/docs/design.md) | [evaluation](kprog/docs/evaluation.md) | [project guide](kprog/docs/README.md) |
+| **kinsn**: verified inline kfuncs | [`kinsn/`](kinsn/README.md) (modules, proofs, selector) | [design](kinsn/docs/design.md) | [evaluation](kinsn/docs/evaluation.md) | [project guide](kinsn/docs/README.md) |
+| **Speculative ReJIT** | [`bpfopt/`](bpfopt/), [`runner/`](runner/) | [design](rejit/docs/design.md) | [evaluation](rejit/docs/evaluation.md) | [project guide](rejit/README.md) |
+| **Shared framework** | [`corpus/`](corpus/), [`micro/`](micro/), [`bpfperf/`](bpfperf/), [`analysis/`](analysis/) | [design](docs/shared/design.md) | [results guide](docs/shared/evaluation.md) | [Make targets](#running-benchmarks) |
+
+Historical plans and dated reports are grouped in the [archive](docs/archive/README.md).
+The [moved-path table](docs/MOVED.md) maps every renamed file for external references.
+
+## Repository Layout
+
+```text
+bpf-benchmark/
+├── docs/ebpf27-bpfoptbench/  # bpf-bench paper draft, figures, and analyses
+├── runner/                   # Make-backed suites, executors, images, libs
+├── corpus/                   # Production app corpus, workloads, results
+├── micro/                    # Microbenchmark programs, configs, results
+├── bpfopt/                   # Bytecode optimizer, loader, target probing tools
+├── kinsn/                    # Inline-kfunc modules, Lean proofs, and docs
+├── kprog/                   # kprog simulator, native loader/linker, Lean proofs
+├── rejit/                    # ReJIT docs; code in bpfopt/ and runner/
+├── analysis/                 # Post-hoc analysis utilities
+├── tests/                    # Selftests and negative tests
+├── docs/                     # Design notes, reports, and paper material
+└── vendor/                   # Vendored kernel, libbpf, llvmbpf, app deps
+```
+
+`native-sim` is a temporary symlink to `kprog` for agents and running scripts
+that still use the former path. New commands and references use `kprog/`.
+
+The current designs and historical notes are linked in the project table above.
+Runtime image layering and host/runtime boundaries are documented in
+[`runner/containers/README.md`](runner/containers/README.md).
+
+## Prerequisites
+
+- Python 3 with PyYAML: `pip install pyyaml`
+- `docker` for runner image builds and runtime containers
+- `sudo -n` for privileged kernel eBPF runtime setup
+- `vng` (virtme-ng) for the default local x86 KVM target
+- AWS credentials only when using `PLATFORM=aws`
+
+## Quick Start
+
+```bash
+# Public submodules only; see "BPF-Ext / Kinsn artifact" above.
+git submodule update --init --recursive -- \
+    vendor/linux-framework llvm-backend/llvm vendor/libbpf vendor/llvmbpf \
+    vendor/repos/bcc vendor/repos/bpftrace vendor/repos/cilium \
+    vendor/repos/cilium-ebpf vendor/repos/katran \
+    vendor/repos/opentelemetry-ebpf-profiler vendor/repos/tetragon \
+    vendor/repos/tracee
+
+# Static validation and tests through the supported Makefile entrypoint.
+make check
+
+# Local x86 KVM micro benchmark suite.
+make micro
+```
+
+## Running Benchmarks
+
+The root `Makefile` is the only supported benchmark entrypoint. Run suites with
+`make <target>` so build dependencies, runtime images, KVM/AWS dispatch, and
+artifact paths stay consistent.
+
+```bash
+make micro                           # local x86 KVM micro suite
+make micro BENCH="simple bitcount"
+make micro SAMPLES=1 WARMUPS=0 INNER_REPEAT=10
+
+make corpus                          # local x86 KVM corpus, all supported apps
+make corpus SAMPLES=3
+
+make selftest                        # kernel selftests
+make negative-test                   # negative tests
+make test                            # full test suite
+make all                             # test + micro + corpus
+make terminate                       # terminate managed remote instances
+
+PLATFORM=aws ARCH=x86 make test
+PLATFORM=aws ARCH=arm64 make test
+PLATFORM=aws ARCH=arm64 make micro
+PLATFORM=aws ARCH=arm64 make corpus
+```
+
+Supported suite targets are `selftest`, `negative-test`, `test`, `micro`,
+`corpus`, `all`, and `terminate`. `PLATFORM=kvm` with `ARCH=x86` is the local
+default. AWS runs use `PLATFORM=aws` with `ARCH=x86` or `ARCH=arm64`.
+
+### Corpus App Selection
+
+Targeted corpus runs use the app names in
+[`corpus/config/macro_apps.yaml`](corpus/config/macro_apps.yaml). Keep targeted
+experiments routed through the root `Makefile` so app startup, workload setup,
+runtime image selection, and artifact paths stay consistent.
+
+```bash
+# Full production corpus.
+make corpus
+```
+
+### Pass Selection
+
+The default pass policy lives in
+[`corpus/config/benchmark_config.yaml`](corpus/config/benchmark_config.yaml).
+Targeted pass experiments should still go through the root `Makefile`; use the
+suite environment knobs defined there rather than invoking optimizer binaries
+directly.
+
+```bash
+make corpus SAMPLES=3
+```
+
+Pass families currently include:
+
+- Kinsn-backed native-operation passes: `kinsn`, `rotate`, `cond_select`,
+  `ccmp`, `extract`, `endian_fusion`, `bulk_memory`, `prefetch`
+- bytecode rewriting passes: `noop`, `wide_mem`, `map_inline`, `const_prop`,
+  `dce`, `bounds_check_merge`, `skb_load_bytes_spec`
+- profile-guided opt-in pass: `branch_flip`
+
+`branch_flip` requires real per-site PMU profile input and is not part of the
+default runner policy.
+
+### Workdir Retention
+
+Workdir tarballs are discarded by default. Enable retention to inspect raw
+verifier logs and per-pass bytecode for programs that hit real optimization
+failures:
+
+```bash
+KEEP_WORKDIRS=1 make corpus
+```
+
+Tarballs are written under
+`corpus/results/<run_dir>/details/failure-artifacts/<prog_id>.tar.gz`.
+
+## Result Contract
+
+The benchmark framework writes raw measurements only. `result.json` preserves
+per-program baseline and post-optimization kernel counters such as
+`run_cnt_delta`, `run_time_ns_delta`, `id`, `name`, `type`, `bytes_jited`, and
+`bytes_xlated`, plus workload stdout/stderr, lifecycle events, app status, and
+error strings.
+
+Raw app-side workload fields may also be preserved under each phase's workload
+payload. Aggregation, ratios, averages, geomeans, confidence intervals, success
+scores, and markdown performance rollups belong in external analysis scripts,
+not in the benchmark runner.
+
+Results are written to:
+
+- `micro/results/`
+- `corpus/results/`
+- `docs/archive/` for historical reports, not raw JSON results
+
+Executor logs and transient staging state live under `.cache/`; those
+directories are not benchmark result roots.
+
+## Agent Integrity Model
+
+Paper experiments treat agents as untrusted optimizers. Agents should interact
+with the benchmark through `make` targets, not by editing workloads, shortening
+durations, filtering failed programs, bypassing application loaders, or
+fabricating result files. The framework records raw artifacts so external
+analysis can decide whether an action is accepted, correct, faster, noisy, or
+invalid.

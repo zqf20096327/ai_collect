@@ -1,0 +1,96 @@
+# ComfyUI-TensorRT-Reforge
+A modernized, robust, and highly extensible TensorRT engine exporter and loader for ComfyUI.
+
+[日本語はこちら](https://qiita.com/zaochuan5854/items/f7b625bb9df5f4742b61)
+
+## 💖 Acknowledgements & Origins
+This project is a direct evolution of the original [ComfyUI_TensorRT](https://github.com/comfyanonymous/ComfyUI_TensorRT). We want to express our deepest gratitude to the original authors and contributors. Their groundbreaking work laid the foundation for running lightning-fast TensorRT models within ComfyUI. 
+
+**ComfyUI-TensorRT-Reforge** builds upon their incredible legacy. We have restructured the codebase to support modern PyTorch features and future-proofed the internal architecture, ensuring seamless support for next-generation diffusion models.
+
+## ✨ Why "Reforge"? (Key Improvements)
+The generative AI landscape moves incredibly fast, bringing new and structurally complex models every month. We "reforged" the original codebase to ensure high reliability and broad compatibility across different model families:
+
+* **Next-Gen "Anima" Architecture Support**: Fully optimized for the latest **Anima** model architecture. Reforge handles its unique structural requirements during the export process, ensuring you can run this cutting-edge model with full TensorRT acceleration.
+* **Dynamic LoRA Support via Refit (Experimental)**: Unlike traditional TensorRT implementations that require a full engine rebuild for each LoRA, Reforge utilizes NVIDIA's **Refit** technology. This allows for near-instant weight swapping, enabling you to use LoRAs with TensorRT speed without the agonizing wait.
+* **Dynamo-Powered ONNX Exporting**: We utilize PyTorch's Dynamo (`dynamo=True`) alongside traditional tracing. This ensures significantly higher success rates when exporting mathematically complex architectures that previously failed in older versions.
+* **Dynamic Opset Management**: Automatically adjusts ONNX Opsets (e.g., 18 vs 25) based on the specific model's requirements—essential for supporting advanced features in models like Anima and Flux.
+
+## 🚀 Supported Models
+Current architecture routing officially supports:
+* **Anima (New!)**
+* Flux
+* SD3 / SD3.5
+* SDXL
+* SD 1.5
+* AuraFlow
+* SVD (Stable Video Diffusion)
+
+## 📦 Installation
+
+**Requirement: This node requires a CUDA 12.x environment, with CUDA 12.8 being highly recommended for optimal performance and stability. If you are using CUDA 11, please update your drivers and toolkit. Additionally, CUDA 13.x is not currently supported at this time.**
+
+1. Clone this repository into your `ComfyUI/custom_nodes` directory:
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/zaochuan5854/ComfyUI-TensorRT-Reforge.git
+   ```
+2. Install the necessary Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## 🧠 Technical Deep Dive: Why is it so fast?
+
+### The Power of TensorRT
+TensorRT optimizes your model specifically for your NVIDIA GPU hardware through:
+* **Kernel Fusion**: Combines multiple operations (like ReLU and Convolution) into a single GPU step to reduce memory overhead.
+* **Optimal Path Selection**: Automatically selects the fastest mathematical algorithms for your specific architecture (e.g., Ada Lovelace, Ampere).
+
+### "Refit" Mechanism: The LoRA Game Changer
+The biggest hurdle for TensorRT in Stable Diffusion was its "static" nature. Typically, changing a weight meant rebuilding the entire engine (3-10 minutes). 
+
+**Reforge** solves this by:
+1.  **Marking Weight Buffers**: During the export process, we mark the model's weights as "refittable."
+2.  **Weight Injection**: When you apply a LoRA, Reforge calculates the weight deltas ($W + \Delta W$) and injects them directly into the pre-optimized engine structure.
+3.  **Result**: You get the "Formula 1" speed of TensorRT with the flexibility of LoRA switching in seconds, not minutes.
+
+## 🛠 Detailed Usage
+
+### 1. Exporting (The "Exporter" Node)
+* **Important Note on Dynamic VRAM (Windows)**: In Windows environments, ONNX Export cannot run while Dynamic VRAM is enabled because memory management conflicts with PyTorch FX graph decomposition. You must start ComfyUI with the `--disable-dynamic-vram` command line argument to export models successfully. *(Note: Depending on your ComfyUI version, this argument might not be recognized. If ComfyUI fails to start due to an unrecognized argument error, you can safely omit it.)*
+* **Profiles**: Select base model and define your target resolution (Width/Height) and Batch Size.
+     * *Note: TensorRT is highly optimized for specific shapes. Fixing the resolution provides the maximum speed boost.*
+* **LoRA Compatibility**: You **must** enable the LoRA option during export if you intend to use them later. This generates a unique `.bundle` file containing the necessary metadata for Refit.
+
+### 2. Loading & Latent Setup
+* Use the **TensorRT Loader Reforge** node to load the generated engine.
+* **CRITICAL**: Your input Latent size (Width/Height) and Batch Size must match the parameters defined during the Export step. Discrepancies will result in a runtime error.
+
+#### Workflow Image
+![ss](readme_images/workflow_anima.png)
+
+## 🤝 Contributing & Community
+
+### 📢 Help Us Reforge!
+If you have tested a specific environment, please let us know in the Issues/Discussions using this format.
+
+To easily collect your package versions, you can run the following command in your terminal:
+```bash
+python -c "import importlib.metadata; pkgs=['coloredlogs','flatbuffers','numpy','packaging','protobuf','sympy','onnx','onnxruntime-gpu','onnxscript','tensorrt-cu12','tensorrt-cu12-libs','tensorrt-cu12-bindings']; [print(f'{p}: {importlib.metadata.version(p)}') for p in pkgs if __import__('contextlib').suppress(importlib.metadata.PackageNotFoundError) or importlib.metadata.distribution(p)]"
+```
+*(Note: You can copy and paste the command above, or refer to the specific versions manually.)*
+
+- **GPU**: (e.g., RTX 4090)
+- **CUDA Version**: (e.g., 12.8)
+- **Package Versions**: (Paste the output of the command above)
+- **Result**: (Success / Specific Error Message)
+
+### 🗣️ Join the Discussion
+We are actively discussing compatibility with the upcoming CUDA 13.x and next-gen model support. Check out our Compatibility Discussion Thread to share your insights!
+
+### 👨‍💻 Developer's Note
+"Reforge" aims for maximum performance, which often means living on the bleeding edge. While I primarily test on CUDA 12.8, I'm eager to make this project robust for CUDA 13.0 and beyond with your help.
+
+---
+*Built with ❤️ for the ComfyUI community.*

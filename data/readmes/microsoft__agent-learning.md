@@ -1,0 +1,323 @@
+# agent-learning
+
+Helping agents make better decisions with measurable feedback.
+
+`agent-learning` is a lightweight decision layer for an existing agent. One
+TaskPolicy owns each recurring agent-task decision and its small, explicit set
+of executable alternatives. Low-authority policies learn which option works;
+full-authority policies resolve current evidence with Bayesian decision theory,
+hard constraints, robust utility, and information gain.
+
+The foundation model stays frozen. There are no GPU training jobs and no
+hidden prompt rewrites. The agent makes an explicit choice, records the
+user-visible outcome, scores the evidence, and applies a small CPU update to
+the next decision.
+
+<p align="center">
+   <img src="images/agent-decision-making.svg" alt="Animated agentic decision loop: choose, execute, score, improve, then become autonomous through explicit user acceptance or proportional statistical evidence" width="960" style="max-width:100%; height:auto;" />
+</p>
+
+## The decision loop
+
+1. **Frame a reusable decision.** Define a stable decision context and at
+   least two actions the agent can actually execute. A TaskPolicy owns the
+   probability distribution for that `(agent_id, task_id)` pair.
+
+2. **Choose and execute.** `task-policy-decide` follows the authority persisted
+   on that same TaskPolicy. `low` selects from learned softmax evidence; `full`
+   resolves a structured DecisionFrame and requests more evidence or an
+   accept/reject tie-break when no unique robust winner exists.
+
+3. **Observe and score.** A completed episode preserves the decision context,
+   selected action, output, result summary, latency, and independently
+   supported correctness evidence. Local scorers measure intent resolution,
+   task adherence, and task completion and shape them into one reward.
+
+4. **Improve the next decision.** For `low`, REINFORCE-with-baseline nudges a
+   few policy logits and persists a new snapshot. For `full`, completed episodes
+   are scored and audited but not passed to REINFORCE because the reasoned
+   choice was not sampled from the softmax behavior policy.
+
+5. **Earn or grant autonomy.** `task-policy-decide` stops routine confirmation
+   when the recommended action passes every evidence gate or the user explicitly
+   accepts an action for that task policy. Explicit acceptance is durable, pins
+   the accepted action, and disables repeat feedback prompts until a later
+   rejection. Statistical thresholds and drift audits still scale with the
+   persisted complexity profile. Autonomous actions record observable outcomes.
+
+Everything runs in the existing Python process. Scoring is local by default;
+configured Azure AI evaluators remain available as an opt-in. Stores can be
+in-memory, local JSON files, or Azure Cosmos DB.
+
+## What counts as a decision
+
+A TaskPolicy is appropriate only when all of these are true:
+
+- The agent must choose among at least two explicit executable alternatives.
+- The alternatives are stable enough to reuse on future requests.
+- The choice can affect quality, correctness, latency, cost, safety, or
+  completion.
+- An observable outcome can later score whether the choice was useful.
+
+Good examples include choosing a retrieval strategy, model, tool, workflow,
+Azure workload, or escalation path for a concrete use case. Factual questions,
+ordinary chat, summaries, reporting, and the learning automation itself are not
+decision policies. Repetition without an executed outcome is not feedback.
+
+Before every eligible execution, the decision response includes the selected
+and currently recommended actions, policy version and probability, correctness
+rate, mean reward, metric scores, and recent result summaries. This makes the
+learned evidence useful during execution instead of producing a policy that is
+never consumed.
+
+The response also contains an `autonomy` block. Agents must follow
+`execute_without_confirmation`, `request_user_feedback`, and
+`outcome_recording` rather than inventing their own confidence threshold.
+`autonomy.complexity` explains the declared profile, derived action-space
+points, risk floors, tier, and resolved proportional criteria.
+`authorization_basis` distinguishes explicit `user_acceptance` from
+`statistical_evidence`.
+
+## Install
+
+### Windows CLI
+
+For a Python-independent installation, download the Windows ZIP or installer from the
+[latest GitHub release](https://github.com/microsoft/agent-learning/releases/latest).
+The installer can add its installation directory to your user `PATH`, so
+`agent-learn` works from PowerShell or Command Prompt without Python or `pip`.
+
+```powershell
+agent-learn.exe --help
+```
+
+### Linux CLI
+
+For Debian/Ubuntu, RHEL-compatible distributions, containers, and CI runners,
+download the standalone Linux archive from the
+[latest GitHub release](https://github.com/microsoft/agent-learning/releases/latest)
+or install it with the automation script:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/microsoft/agent-learning/main/scripts/install-linux.sh -o /tmp/install-linux.sh
+bash /tmp/install-linux.sh --version 0.10.0 --install-dir /usr/local/bin
+```
+
+The Linux installation guide covers Debian/Ubuntu, RHEL-compatible, and
+container-first deployment examples in [docs/linux-installation.md](docs/linux-installation.md).
+
+### Python SDK
+
+Released versions are published to PyPI:
+<https://pypi.org/project/agent-learning/>.
+
+```shell
+pip install agent-learning
+```
+
+### Development with uv
+
+**PyPI (any OS):** Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+with `pip`:
+
+```shell
+pip install uv
+```
+
+Create a virtual environment and install the project runtime and development
+dependencies declared in `pyproject.toml`:
+
+```shell
+uv sync --extra dev
+```
+
+Commit `uv.lock` to keep dependency versions reproducible. After changing
+dependencies, update and verify the lock file:
+
+```shell
+uv lock
+uv lock --check
+```
+
+Run validation inside the managed environment with `uv run`:
+
+```shell
+uv run pytest
+uv run ruff check .
+```
+
+### PySpark
+
+Install the optional Spark integration with the development dependencies:
+
+```shell
+uv sync --extra dev --extra spark
+```
+
+Provide episodes as JSON, so arbitrary nested metadata remains intact across
+schemas and worker processes:
+
+```python
+import json
+
+from agent_learning import Episode, score_episode_dataframe
+
+episode = Episode(
+    agent_id="spark-agent",
+    user_input="Answer the task",
+    assistant_output="Task completed",
+)
+episodes = spark.createDataFrame(
+    [(json.dumps(episode.to_dict()),)],
+    ["episode_json"],
+)
+scored = score_episode_dataframe(episodes)
+```
+•	See the [Microsoft Fabric notebook](examples/fabric/pyspark_episode_scoring.ipynb) for metric analysis and optional Lakehouse persistence.
+
+
+
+## Quickstart: improve one recurring decision
+
+Use one durable store across CLI processes:
+
+```powershell
+$env:AGENT_LEARNING_STORE_BACKEND = "local"
+$env:AGENT_LEARNING_LOCAL_STORE_DIR = Join-Path $env:LOCALAPPDATA "agent-learning\store"
+```
+
+Define actions the agent can really execute in `actions.json`:
+
+```json
+[
+   {
+      "id": "use_text_search",
+      "description": "Search for exact symbols and terms",
+      "parameters": {"strategy": "text"}
+   },
+   {
+      "id": "use_semantic_search",
+      "description": "Search the repository by meaning",
+      "parameters": {"strategy": "semantic"}
+   }
+]
+```
+
+Declare intent and decision complexity in `complexity.json`:
+
+```json
+{
+   "intent_ambiguity": "medium",
+   "context_variability": "variable",
+   "outcome_observability": "direct",
+   "decision_impact": "medium",
+   "reversibility": "costly",
+   "requires_human_approval": false,
+   "rationale": "Repository search is bounded and directly observable."
+}
+```
+
+Initialize the decision once, then ask the active policy what to execute:
+
+```powershell
+agent-learn task-policy-init `
+   --agent-id code-reviewer `
+   --task-id choose-repository-search `
+   --decision-context "Choose a repository search strategy for a coding task" `
+   --actions .\actions.json `
+   --complexity-profile .\complexity.json `
+   --decision-authority low
+
+agent-learn task-policy-decide `
+   --agent-id code-reviewer `
+   --task-id choose-repository-search
+```
+
+Execute the returned `selected_action`, preserve its policy fields, and record
+the independently observed outcome in `episode.json`. Then close the loop:
+
+```powershell
+agent-learn task-episode-register `
+   --agent-id code-reviewer `
+   --task-id choose-repository-search `
+   --episode .\episode.json `
+   --require-decision-policy
+
+agent-learn score --agent-id code-reviewer --task-id choose-repository-search
+agent-learn train --agent-id code-reviewer --task-id choose-repository-search --decision-only
+agent-learn task-policy-decide --agent-id code-reviewer --task-id choose-repository-search
+```
+
+The final decision consumes the updated probabilities and feedback from prior
+executions. Training defaults to a minimum of five completed episodes. See the
+[decision-making guide](docs/decision-making.md) for the episode schema,
+evidence rules, math, and deployment patterns.
+
+## Functional Testing
+
+A good way to see the SDK in action is to run the
+interactive capture scenario first, followed by the offline batch update:
+
+```powershell
+python tests/functional_cli_interactive.py
+python tests/functional_cli_batch.py
+```
+
+## Visualizing autonomy
+
+The animated SVG above shows the full five-stage loop. The retained
+[learning-loop SVG](images/agent-learning-loop.svg) keeps the compact
+TaskPolicy → Score → Learner view and places explicit acceptance and statistical
+evidence routes on its return path.
+
+Render the decision animation with Manim:
+
+```powershell
+.\animiations\run_animation.ps1 `
+   -Script decision_making_animation.py `
+   -Scene AgentDecisionMaking `
+   -Quality h `
+   -Preview
+```
+
+## Usage
+
+The `agent-learn` CLI provides the decision lifecycle and inspection
+operations:
+
+```text
+agent-learn list
+agent-learn --version
+agent-learn tasks-list <agent_id> [--decision-only]
+agent-learn task-episodes-count <agent_id> [--task-id <task_id>] [--include-incomplete] [--start-date <date>] [--end-date <date>]
+agent-learn task-episodes-list <agent_id> [--task-id <task_id>] [--limit <1-500>] [--include-incomplete] [--start-date <date>] [--end-date <date>]
+agent-learn task-policy-init --agent-id <agent_id> --task-id <task_id> --decision-context <context> --actions ./actions.json [--complexity-profile ./complexity.json] [--decision-authority <low|full>]
+agent-learn task-policy-complexity-set --agent-id <agent_id> --task-id <task_id> --profile ./complexity.json
+agent-learn task-policy-authority-set --agent-id <agent_id> --task-id <task_id> --authority <low|full>
+agent-learn task-policy-decide --agent-id <agent_id> --task-id <task_id> [--decision-frame ./frame.json] [--history-limit <1-500>] [--greedy] [--seed <integer>]
+agent-learn task-policy-adjudicate --agent-id <agent_id> --task-id <task_id> --decision-result ./result.json --disposition <accept|reject>
+agent-learn task-episode-register --agent-id <agent_id> --task-id <task_id> --episode ./episode.json [--require-decision-policy]
+agent-learn score --agent-id <agent_id> [--task-id <task_id>] [--limit <1-500>]
+agent-learn train --agent-id <agent_id> [--task-id <task_id>] [--decision-only] [--limit <1-500>] [--min-episodes <1-500>] [--start-date <date>] [--end-date <date>] [--skip-scoring]
+agent-learn task-policy --agent-id <agent_id> --task-id <task_id>
+```
+
+## Documentation
+
+- [Audit and replay](docs/audit-replay.md): reconstruct a recorded native
+   update, inspect episode contributions, and run the offline operator demo.
+- [Agentic decision making](docs/decision-making.md): concepts, evidence,
+   workflow, math, and deployment.
+- [Complexity-proportional autonomy](docs/autonomy-complexity.md): declared
+   complexity dimensions, tier calculation, risk floors, and scaled gates.
+- [Scout decision integration](docs/scout-agent-learn-skill.md): apply reasoned
+   or learned delegated decisions during execution.
+- [Scout decision maintenance](docs/scout-automation-agent-learning.md): train
+   low-authority policies and audit full-authority policies.
+- [The math, explained simply](docs/math-explained-simply.md) and
+   [mathematical reference](docs/math.md): softmax, rewards, baselines, and
+   REINFORCE.
+- [Tiered scoring design](docs/design.md): local and Azure-backed outcome
+   scoring.
+- [Cost model and break-even analysis](docs/cost-model.md): configurable
+   evaluator, compute, storage, and rollout costs with reproducible examples.

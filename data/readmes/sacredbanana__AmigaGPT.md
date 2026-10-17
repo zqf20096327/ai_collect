@@ -1,0 +1,527 @@
+# AmigaGPT
+
+AmigaGPT is a versatile multi-provider AI client for AmigaOS 3.x, 4.1 and MorphOS. This powerful tool brings the capabilities of leading AI providers — OpenAI, Google Gemini, SpaceXAI Grok, Anthropic Claude, and custom LLM servers — to your Amiga system, enabling text generation, question answering, and creative exploration. AmigaGPT can also generate stunning images and includes support for speech output, making it easier than ever to interact with AI on your Amiga. Designed to integrate seamlessly with your system, AmigaGPT delivers modern AI technology while embracing the timeless Amiga experience.
+
+<img width="953" alt="Screenshot 2023-06-15 at 10 26 38 pm" src="https://github.com/sacredbanana/AmigaGPT/assets/6903516/ca5e0db3-4e37-4ea9-a6ac-9fff2d5c195a">
+
+## Features
+
+- ### State-of-the-art language and image models
+
+**AmigaGPT** supports multiple AI providers for chat: **OpenAI** (o1, o3, o4, GPT-5, GPT-4o, GPT-4 and GPT-3.5), **Google Gemini**, **SpaceXAI Grok**, **Anthropic Claude**, and custom LLM servers compatible with the OpenAI API. Switch between providers and models from the Chat Provider Settings.
+
+- ### AI Image Generation
+
+**AmigaGPT** can generate images from a prompt using **OpenAI** (DALL-E 2, DALL-E 3, GPT-Image-1), **Google Gemini**, and **SpaceXAI Grok**. You can view and save the images right inside the app, with a choice of output format (PNG or JPEG). Reference images can be attached to the prompt so the model edits, restyles or combines pictures you already have, and any generated picture can be fed straight back in with a single **Edit...** click.
+
+- ### Seamless integration with AmigaOS and MorphOS
+
+**AmigaGPT** takes full advantage of the MUI framework to provide a smooth, native user experience that is responsive and easy to use.
+
+- ### UI customisation
+
+You can customise the look and feel of the application, including the ability to choose the fonts, colours and a choice of opening in the Workbench screen or a custom screen.
+
+- ### Speech capability
+
+**AmigaGPT** supports multiple speech providers, configurable from **Speech Provider Settings**. For cloud-based voices, it supports **OpenAI TTS** (high quality 16-bit voices), **SpaceXAI Grok TTS**, **ElevenLabs**, and **OpenVox** (requires AHI). For offline synthesis, AmigaOS 3 can use the Amiga's built-in `narrator.device` (**v34** and **v37**) with `translator.library`, and AmigaOS 4.1 supports `flite.device`. The **Speech** tab generates reusable WAV files from the active speech profile without playing them automatically; the waveform's play/pause, stop and rewind symbols play the saved WAV or raw PCM locally (converting little-endian PCM to big endian when needed), and the timeline can be clicked to jump. Speech also runs in the background from Chat replies or ARexx. While a request is running, **Send**, **Create** and **Generate** change to **Stop** and abort that request. While a Chat reply is being read aloud, **Send** stays on **Stop** and interrupts playback.
+
+- ### Code Interpreter
+
+**AmigaGPT** can let the AI write and run Python in a provider-hosted sandbox for calculations, data analysis, and generated files. Enable it in **Chat Provider Settings** for OpenAI, Google Gemini, SpaceXAI Grok, Anthropic Claude, and custom profiles that use the Responses, Messages, or Gemini generateContent endpoints. It is hidden for custom chat/completions servers that do not offer a hosted interpreter. You can also use the `CI=CODEINTERPRETER` flag in the ARexx `SENDMESSAGE` command.
+
+- ### Shell Tool
+
+**AmigaGPT** can let the AI execute AmigaDOS commands directly on your Amiga. Enable it in **Chat Provider Settings** and ask the AI to list files, create directories, show file contents, and more. All commands require your approval before execution for security.
+
+- ### Web Search
+
+**AmigaGPT** can instruct the AI to search the web for up-to-date information. Enable or disable it in **Chat Provider Settings**, or use the `W=WEBSEARCH` flag in the ARexx `SENDMESSAGE` command.
+
+- ### ARexx integration
+
+**AmigaGPT** includes ARexx support, allowing you to control the application programmatically from external scripts or other applications. You can send prompts, generate images, and utilize speech synthesis through simple ARexx commands.
+
+## System Requirements
+
+Ensure you have the necessary system requirements:
+
+- An OCS/ECS/AGA **Amiga** or a PowerPC machine capable of running MorphOS
+- **AmigaOS 3.1** or higher, **AmigaOS 4.1** or **MorphOS**
+- Motorola 68020 or higher CPU or PowerPC for AmigaOS 4/MorphOS
+- 8MB Fast RAM minimum, 16MB or higher recommended
+- Internet access using a TCP/IP stack such as **Roadshow** (<http://roadshow.apc-tcp.de/index-en.php>)
+- For AmigaOS 3 & 4: **AmiSSL 5.27** or higher (<https://aminet.net/package/util/libs/AmiSSL-v5-OS3>) for OS3 and (<https://aminet.net/package/util/libs/AmiSSL-v5-OS4>) for OS4
+- **MUI 3** minimum but **MUI 5** recommended for all features. MUI 5:(<https://github.com/amiga-mui/muidev/releases>) or MUI 3.9: (<https://github.com/amiga-mui/muidev/releases/download/MUI-3.9-2015R1/MUI-3.9-2015R1-os3.lha>)
+- **render.library 32** or higher (<https://aminet.net/package/dev/misc/renderlib68k>)
+- **guigfx.library 20.0** or higher (<https://aminet.net/dev/misc/guigfxlib.lha>) (FPU) or (<https://aminet.net/dev/misc/guigfxlib_nofpu.lha>)
+- **codesets.library 6.22** or higher (<http://aminet.net/package/util/libs/codesets-6.22>)
+- **MCC_Guigfx** MUI custom class for displaying images (<http://aminet.net/package/dev/mui/MCC_Guigfx>)
+- **MCC_NList** MUI custom class for lists (<http://aminet.net/package/dev/mui/MCC_NList-0.128>)
+- **MCC_TextEditor 15.56** or higher (<https://aminet.net/dev/mui/MCC_TextEditor-15.56.lha>)
+- **MCC_ActionTextEditor** and **MCC_AudioPlayer**, shipped with AmigaGPT and installed into the system MUI class drawer. They can also be built from their own repos if you want them for other programs.
+- **A PNG datatype** Any will do, but here is one (<https://aminet.net/util/dtype/vPNGdt.lha>)
+- An API key for your chosen AI provider (**OpenAI**, **Google Gemini**, **SpaceXAI**, or **Anthropic**), or a locally-hosted OpenAI-compatible LLM server
+- _Optional_: **AmigaOS 3 only**: A copy of the **Workbench 1.x** disk to install `narrator.device` **v34** and a copy of the **Workbench 2.0** disk to install `narrator.device` **v37**
+- _Optional_: **AmigaOS 3 only**: **`translator.library` v42** or higher, needed by both versions of `narrator.device` (<http://aminet.net/util/libs/translator42.lha>). Only v42 is required; the v43 patch is optional
+- _Optional_: **AmigaOS 4 only**: **Flite device** (<http://aminet.net/package/mus/misc/flite_device>)
+- _Optional_: For OpenAI, SpaceXAI Grok, ElevenLabs or OpenVox voices, **_AHI_** needs to be installed
+  (<http://aminet.net/package/driver/audio/ahiusr_4.18>)
+- _Optional_: For **ElevenLabs** TTS, an ElevenLabs account and API key
+
+## Installation
+
+- For AmigaOS 3 & 4, Install AmiSSL and a TCP/IP stack if not already done so
+- Download and install MUI. Version 5 recommended, version 3 minimum. Reboot.
+- Download and install codesets.library, render.library, MCC_Guigfx, MCC_NList and MCC_TextEditor. The AmigaGPT installer also copies ActionTextEditor.mcc and AudioPlayer.mcc into the MUI class drawer.
+- Download the latest release of **AmigaGPT**
+- Extract the `amigagpt.lha` archive to a temporary location
+- Run the provided installer
+
+## _Optional steps to enable speech functionality_
+
+AmigaGPT supports reading the output aloud. How AmigaGPT does this depends on your chosen speech provider. Cloud-based voices (OpenAI TTS, SpaceXAI Grok TTS, ElevenLabs, OpenVox) work on every supported OS and require AHI. Offline synthesis uses OS-native devices.
+
+### Installing AHI for cloud-based voices
+
+If your OS does not come with AHI installed, you can get it from
+<https://aminet.net/package/driver/audio/ahiusr_4.18>
+
+### AmigaOS 3
+
+**AmigaGPT** supports reading the output aloud. This requires a file called `narrator.device` which cannot be included with **AmigaGPT** because it is still under copyright. Therefore, you must copy this file legally from your Workbench disks so that **AmigaGPT** will be able to synthesise speech. There are 2 versions of `narrator.device` supported, **v34** and **v37**.
+
+**v34** is the original version that came with Workbench 1.x. **v37** was an updated version included with Workbench 2.0.x. It has more features and sounds more natural, however it does sound quite different which is why **AmigaGPT** supports you installing both versions and your choice of version to be used can be selected in the **Speech** menu in the app.
+
+Regardless of which version of `narrator.device` you choose to install (or both), **AmigaGPT** requires the free third party `translator.library` **v42** or higher. This works with both versions of `narrator.device`.
+
+### Installing `translator.library`
+
+**v42** is all AmigaGPT requires, and it is available as a standalone install:
+
+- Download <http://aminet.net/util/libs/translator42.lha> and extract the archive to any convenient location on your Amiga such as `RAM:`
+- Navigate to that directory and double click the `Install` program
+- Run the installer using all the default settings
+- Reboot your Amiga - It will not work until the system is restarted
+
+#### Optional: patching to **v43**
+
+**v43** is a later revision with improved pronunciation. AmigaGPT does not need it - earlier documentation said it was required, but that is no longer the case - and speech works fine on v42. If you want it anyway, install v42 as above and then apply the patch:
+
+- Download <http://aminet.net/util/libs/Tran43pch.lha> and extract it to a location of your choice
+- Navigate to that directory and double click the `Install` program
+- Run the installer using all the default settings
+- Reboot your Amiga
+
+### Installing `narrator.device` **v34**
+
+- Insert your Workbench 1.x disk and copy `df0:devs/narrator.device` to `AMIGAGPT:devs/speech/34`
+
+### Installing `narrator.device` **v37**
+
+- Insert your Workbench 2.0.x (you cannot use 2.1 because the speech libraries were removed after version 2.0.4) disk and copy `df0:devs/narrator.device` to `AMIGAGPT:devs/speech/37`
+
+### AmigaOS 4
+
+- AmigaGPT for AmigaOS 4 uses the Flite device to provide speech synthesis. Download it from <http://aminet.net/package/mus/misc/flite_device>.
+- Extract the archive and run the installer
+
+### MorphOS
+
+MorphOS has no offline speech system. Use one of the cloud voices (OpenAI, SpaceXAI, ElevenLabs or OpenVox) with AHI installed.
+
+## Launching **AmigaGPT**
+
+- Launch the application by double-clicking the AmigaGPT icon
+- You may also launch the app in the command line but before you do, run the command `STACK 32768` to give the program 32kb of stack since the default stack size for apps launched from the shell is 4kb and this is not enough for **AmigaGPT** and will cause random crashes due to stack overflow. This is not required when you launch the app by double clicking the icon since the stack size is saved in the icon
+
+## Usage
+
+When launching for the first time you will need to enter your AI provider's API key before you can start chatting. Open **Chat Provider Settings** from the **Chat** menu to select your provider and enter your key. For OpenAI, navigate to <https://platform.openai.com/account/api-keys> to generate an API key.
+
+There are 3 main modes of operation: Chat, Image and Speech. You can switch between them via the tabs in the top left corner. While a chat, image or speech request is running, the **Send**, **Create** or **Generate** button in that mode changes to **Stop**; pressing it aborts the request and restores that mode to the state it had before the request.
+
+### Chat
+
+When the app has opened, you are presented with a text input box. You can type any prompt into this box and press "**Send**" to see the AI's response. The generated text appears in the box above the input. You can choose to have this text read aloud using the "**Speech**" menu option; configure the speech provider and voice in "**Speech Provider Settings**" from the **Speech** menu. To enable or disable web search or the code interpreter, open **Chat Provider Settings** from the **Chat** menu. To choose the chat model and provider, use the same window.
+
+Use **Attach files...** to select one or more files to send with the next message, or pass them with the `A=ATTACH` argument on the ARexx `SENDMESSAGE` command. The selected files are shown beside the chat controls and can be removed with **Clear** before sending. OpenAI, SpaceXAI Grok, Anthropic Claude and Google Gemini upload the file first and then reference it, so the chat request stays small on classic Amiga TCP stacks. Other providers receive images and documents in their native multimodal request format. The type of each file is determined by looking inside it with libmagic -- the same code the Unix `file` command uses -- rather than from its name, so extensionless Amiga files such as `User-Startup` are sent as plain text and a file with a misleading name is sent as what it actually is. This uses the `magic.mgc` database that the installer copies into the AmigaGPT drawer by default, with `C:` offered as an alternative so one copy can be shared with the `file` package from Aminet; AmigaGPT checks `PROGDIR:magic.mgc` first, then `AMIGAGPT:magic.mgc`, then `C:magic.mgc`, and falls back to guessing from the file extension if none of them is present. ZIP archives are sent as `application/zip`. On OpenAI they are placed in the Code Interpreter container (enable **Code Interpreter** so the model can unpack them); on Anthropic Claude they are uploaded to the code-execution container the same way. To keep memory use practical on classic Amigas, each file is limited to 8 MB and all files in one request are limited to 16 MB.
+
+When an LLM response includes downloadable files, they are listed beneath the assistant message and **Save received files...** becomes available. Choose a destination drawer and AmigaGPT will save every returned file there without overwriting an existing file; numeric suffixes are added when necessary. From ARexx, `SENDMESSAGE` downloads them to `D=DESTINATION` if you give a drawer, or to the current directory if you omit it. Provider and model support for particular input types and returned files varies.
+
+To the left of the chat box is a conversation list which you can use to go to another saved conversation. New conversations can be created with the "**New chat**" button and conversations can be removed with the "**Delete chat**" button.
+
+You can also chat to AmigaGPT within the Shell as long as either AmigaGPT or the AmigaGPTD daemon are running. Just type `askgpt` into the shell and it will ask you what you want to ask. Or just ask right away with the command `askgpt What is the capital of Australia?`.
+
+```
+askgpt [GUI] [NEWCHAT] [PROFILE=name] question
+```
+
+- `GUI` opens a small window for the question and the answer instead of printing to the Shell. This needs RxMUI and `rmh.library`; without them AskGPT falls back to a simple requester
+- `NEWCHAT` clears the conversation history first, so the question is not answered in the context of whatever came before
+- `PROFILE=name` (or `PR=name`) uses a particular chat profile instead of the active one
+
+Because the daemon keeps its history between calls, successive `askgpt` commands continue the same conversation until you use `NEWCHAT` or reboot.
+
+### Image Generation
+
+To generate images, open "**Image Provider Settings**" from the "**Image**" menu to choose your provider (**OpenAI**, **Google Gemini**, or **SpaceXAI Grok**) and model, then type your prompt in the text box and hit the "**Create Image**" button. You can also select the output format (PNG or JPEG) from the Image Provider Settings. When the image has been downloaded to your Amiga, you are then able to open it to your desired scale, or save a copy to a new location. Note that AmigaGPT will automatically save all generated images until you delete them.
+
+Use **Attach images...** to send one or more reference images with the prompt, so the model can edit, restyle or combine pictures you already have instead of working from the description alone. The attached pictures are listed beside the prompt and can be removed with **Clear**; **New Image** clears them too. Only image files can be attached, and the same limits as chat attachments apply -- 8 MB per file and 16 MB per request. Reference images turn the request into an image edit: OpenAI-compatible providers receive them as a multipart form on `/images/edits` (the `gpt-image-*` models accept several, DALL-E 2 one), SpaceXAI receives them as data URIs on the same endpoint, and Google Gemini receives them inline in the same `generateContent` request it uses for text-to-image. The pictures are streamed to the server straight from disk where the provider allows it, so a large reference image does not have to fit in memory alongside the request.
+
+When a picture comes back, **Edit...** starts a fresh prompt with that picture already attached as a reference, so "make the sky darker" is one click away from a result you just generated. The preview stays on screen while you type the new prompt, and creating the image adds a new entry to the list rather than replacing the one you started from.
+
+### Speech
+
+The **Speech** tab generates spoken audio with the active speech profile and saves it under `AMIGAGPT:speech/` instead of playing it automatically. Type a phrase, optionally attach files, and press **Generate**. Each phrase is listed on the left, titled with the first 32 characters of the text. Selecting a phrase shows the speech profile that produced it (name, system, voice, model and related settings) and an interactive waveform with a frequency timeline. Play/pause (left), stop and rewind on the waveform play the already-saved WAV or raw PCM through AHI; they do not contact a speech provider again. Click any point on the waveform to jump there. **Regenerate** replaces the selected phrase's file. **Save Speech Copy** writes a copy somewhere else on your Amiga.
+
+**Generate text with AI** sends the current text and any attached files through the active chat profile and replaces the editor contents with the returned text. It then unchecks **Speak contents of files**; you can tick that box again if you still want attached files spoken together with the rewritten text. The checkbox is greyed out until files are attached, and is checked automatically when the first file is added.
+
+### Chat and Image Provider Settings
+
+AmigaGPT supports multiple AI providers. Open "**Chat Provider Settings**" from the "**Chat**" menu or "**Image Provider Settings**" from the "**Image**" menu.
+
+The provider list includes built-in entries for **OpenAI**, **Google Gemini**, **SpaceXAI Grok** and **Anthropic Claude** (chat only); these cannot be removed. For built-in providers you can set the API key and choose the model; host, port and other connection settings are fixed. Known models are shown for each built-in; for OpenAI you can also use "Fetch Models" to refresh the list. You can add custom provider profiles (e.g. LM Studio or Ollama) with **New**, which creates a blank profile you have full control over, or copy an existing one with **Duplicate**. **Test** sends a small request using the settings currently on screen and reports PASS or FAIL together with the raw server response. Custom profile names cannot match built-in provider names.
+
+When you switch to another profile without saving, AmigaGPT will ask whether to save your changes (Yes, No or Cancel).
+
+### Speech Provider Settings
+
+Open "**Speech Provider Settings...**" from the "**Speech**" menu. This is where the speech system is chosen and configured; in earlier versions of AmigaGPT this was done from the **Speech** menu itself.
+
+Like the chat and image windows it has a **Profiles** list with **New**, **Duplicate** and **Delete**, a **Profile Name** field, and a **Test** button that speaks a sample using the settings currently on screen. The **Speech system** cycle chooses between:
+
+| Speech system | Platform | Needs |
+| --- | --- | --- |
+| Workbench 1.x v34 | AmigaOS 3 | `narrator.device` v34 + `translator.library` v42+ |
+| Workbench 2.0 v37 | AmigaOS 3 | `narrator.device` v37 + `translator.library` v42+ |
+| Flite | AmigaOS 4 | `flite.device` |
+| OpenAI | any | AHI + OpenAI API key |
+| SpaceXAI | any | AHI + SpaceXAI API key |
+| ElevenLabs | any | AHI + ElevenLabs API key |
+| OpenVox | any | AHI + an OpenVox server (defaults to `127.0.0.1:8666`) |
+
+MorphOS has no offline speech system, so use one of the cloud voices.
+
+Depending on the selected system the window shows:
+
+- **Connection settings** (cloud systems) - Host, Port, Encryption, Authorization and API Endpoint URL
+- **Workbench narrator.device** (v34/v37) - **Accent** (default `american.accent`), **Rate (wpm)** (default 150), **Pitch (Hz)** (default 110), **Mode** (Natural/Robotic) and **Sex** (Male/Female). v34 and v37 each keep their own copy of these.
+- **Flite Voice** - `kal`, `kal16`, `awb`, `rms` or `slt`
+- **OpenAI** - API key, **Model** (`tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`) with **Fetch Models**, **Voice** (alloy, ash, ballad, coral, echo, fable, onyx, nova, sage, shimmer, verse) and **OpenAI Voice Instructions**
+- **SpaceXAI** - API key, **Voice** (ara, eve, leo, rex, sal) and **Auto-insert speech tags into LLM replies**
+- **ElevenLabs** - API key, **Model** (Eleven v3, Eleven Multilingual v2, Eleven Flash v2.5, Eleven Turbo v2.5) with **Fetch Models**, and **Voice** with **Search** and **Get All Voices**
+- **OpenVox** - models and voices are fetched from your own server
+
+If a profile needs something that is not installed, AmigaGPT warns you which component is missing.
+
+### General
+
+The "**Project**" menu includes an "**About**" option, which displays information about the program.
+
+In the "**Edit**" menu, you'll find basic text editing commands: **Cut** (Right-Amiga + X), **Copy** (+ C), **Paste** (+ V), **Clear** (+ L) and **Select all** (+ A). They act on whichever text field has the keyboard focus and are greyed out when neither the chat input nor the image prompt is active.
+
+The "**Project**" menu also includes a **Print** option (Right-Amiga + P) to print the current conversation.
+
+The "**Help**" menu has **Open Documentation...**, which opens `AMIGAGPT:AmigaGPT.guide` - the full AmigaGuide manual, including a troubleshooting section and a complete menu reference.
+
+The "**View**" menu allows you to change the appearance of the app, including toggling **Fixed Width Fonts** and setting the **User** and **Assistant text alignment**. **MUI Settings...** opens the full MUI preferences for AmigaGPT, and **Clear MUI Settings** resets fonts, colours, screen and window positions back to their defaults.
+
+AmigaGPT can run on its own screen or in Workbench. To configure this, open the **MUI Settings** menu item from the **View** menu and configure it in the **Screen** or **System** menu in the **MUI Settings** panel.
+
+If you open in a new screen you have the ability to create a screen for the app to open in. **AmigaGPT** supports anything from 320x200 all the way up to 4k resolution if using a video card for RTG. Bear in mind text will appear very tiny in resolutions above 1080p so you may want to increase the font size settings from the MUI settings in the View menu when the app opens.
+
+The "**Connection**" menu allows you to connect via a proxy server. It supports both HTTP and HTTPS proxy servers but if you use an unencrypted HTTP proxy server you can improve the performance of AmigaGPT by removing the need for the encryption of the OpenAI traffic to be done on the system running AmigaGPT. For an easy proxy server you can run on your local network you can try out <https://mitmproxy.org>
+
+### ARexx Support
+
+**AmigaGPT** now includes ARexx support, allowing you to control the application from external ARexx scripts or other applications. This powerful feature enables seamless integration with your Amiga workflow and automation of repetitive tasks.
+
+Note: MorphOS does not yet have a complete ARexx implementation. You must install the 68k version of ARexx on MorphOS to be able to use ARexx with AmigaGPT.
+
+AmigaGPT also comes with a companion daemon app called AmigaGPTD. You may run this in the shell. The daemon will respond to the same ARexx commands as the main app so you do not need to launch the main AmigaGPT app.
+
+The daemon maintains conversation history in T: so it remembers context across multiple ARexx calls until the next reboot. This allows for follow-up questions and multi-turn conversations. Use the `NEWCHAT` ARexx command to clear the conversation history and start fresh.
+
+Please note: AmigaGPT and AmigaGPTD listen on 2 different ARexx ports so adjust your scripts accordingly. AmigaGPT listens on **AMIGAGPT** and AmigaGPTD listens on **AMIGAGPTD**.
+
+The following ARexx commands are available:
+
+#### SENDMESSAGE
+
+Sends a message using the selected chat profile and returns the response.
+
+```
+SENDMESSAGE PR=PROFILE/K,M=MODEL/K,S=SYSTEM/K,SF=SYSTEMFILE/K,H=HOST/K,PO=PORT/N,S=SSL/S,K=APIKEY/K,U=USEPROXY/S,PH=PROXYHOST/K,PP=PROXYPORT/N,PS=PROXYUSESSSL/S,PA=PROXYREQUIRESAUTH/S,PU=PROXYUSERNAME/K,PP=PROXYPASSWORD/K,W=WEBSEARCH/S,CI=CODEINTERPRETER/S,A=ATTACH/K,D=DESTINATION/K,P=PROMPT/F
+```
+
+Note: a few short aliases are shared by two arguments in the same template (`S` for both `SYSTEM` and `SSL`, `PP` for both `PROXYPORT` and `PROXYPASSWORD`), and the `?` help output prints `P=PORT` where the command expects `PO=PORT`. Spell `SYSTEM`, `SSL`, `PORT`, `PROXYPORT` and `PROXYPASSWORD` out in full and there is no ambiguity.
+
+- `PR=PROFILE` - Optional, the chat profile to use. This can be a built-in profile such as OpenAI, Google Gemini, SpaceXAI Grok or Anthropic Claude, or a saved custom chat profile name. Use `LISTPROFILES` to see available profiles. If omitted, the active chat profile from AmigaGPT config is used
+- `M=MODEL` - Optional, the chat model to use. Use `LISTMODELS PR=<profile>` to inspect the models for a profile. If omitted, the selected profile's model is used
+- `S=SYSTEM` - Optional, system message to include
+- `SF=SYSTEMFILE` - Optional, file containing the system message to include. If both `SF` and `S` are provided, the effective system message is the file contents concatenated with `S`.
+- `H=HOST` - Optional, connect to this server instead of the profile's host
+- `PORT` - Optional, the port to connect to
+- `SSL` - Optional, use an encrypted connection
+- `K=APIKEY` - Optional, API key override. If omitted, the selected profile's API key is used
+- `U=USEPROXY` - Optional, route this request through a proxy server
+- `PH=PROXYHOST` - Optional, the proxy server address
+- `PROXYPORT` - Optional, the proxy server port
+- `PS=PROXYUSESSSL` - Optional, the proxy connection is encrypted
+- `PA=PROXYREQUIRESAUTH` - Optional, the proxy requires authentication
+- `PU=PROXYUSERNAME` - Optional, the proxy username
+- `PROXYPASSWORD` - Optional, the proxy password
+- `W=WEBSEARCH` - Optional, enable web search. If omitted, the selected profile's setting is used. If provided, it forces web search on even when the selected profile has it disabled
+- `CI=CODEINTERPRETER` - Optional, enable the hosted code interpreter. If omitted, the selected profile's setting is used. If provided, it forces the code interpreter on even when the selected profile has it disabled
+- `A=ATTACH` - Optional, one file to send with the prompt, or several paths separated by commas. The files are typed the same way as **Attach files...** in the GUI. Either `ATTACH` or `PROMPT` must be provided
+- `D=DESTINATION` - Optional, a drawer to save files the model returns. If omitted, they are saved in the current directory. Existing names are not overwritten; a number is added when necessary. When files are saved, `RESULT` is the reply text followed by a `FILES:` line and one path per line
+- `P=PROMPT` - Optional if `ATTACH` is provided, otherwise required. The prompt or question to send
+
+#### CREATEIMAGE
+
+Generates an image using the specified model.
+
+```
+CREATEIMAGE PR=PROFILE/K,M=MODEL/K,S=SIZE/K,K=APIKEY/K,A=ATTACH/K,D=DESTINATION/K,P=PROMPT/F
+```
+
+- `PR=PROFILE` - Optional, the image profile to use. This can be a built-in profile such as OpenAI, Google Gemini or SpaceXAI Grok, or a saved custom image profile name. Use `LISTPROFILES` to see available profiles. If omitted, the active image profile from AmigaGPT config is used
+- `M=MODEL` - Optional, the image model to use. Use `LISTMODELS PR=<profile>` to inspect the models for a profile. If omitted, the selected profile's model is used
+- `S=SIZE` - Optional, image size (use LISTIMAGESIZES to see available sizes). Default is 1024x1024. Note: some providers may ignore unsupported parameters (e.g. SpaceXAI currently does not support `size`) - see [SpaceXAI Image Generations](https://docs.x.ai/docs/guides/image-generations) and [Gemini OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai)
+- `K=APIKEY` - Optional, API key override. If omitted, the selected profile's API key is used
+- `A=ATTACH` - Optional, one or more comma-separated paths to reference images the provider should edit from instead of generating the picture from the prompt alone. Only image files are accepted, and the same 8 MB per file and 16 MB per request limits as chat attachments apply. How many the provider accepts varies: OpenAI's `gpt-image-*` models take several, DALL-E 2 one, and SpaceXAI up to three
+- `D=DESTINATION` - Optional, the path where the image will be saved. Default is the creation of a temporary file. The destination will be the returned string from this function
+- `P=PROMPT` - Required, description of the image to generate
+
+#### SPEAKTEXT
+
+Uses text-to-speech to speak the specified text.
+
+```
+SPEAKTEXT PR=PROFILE/K,M=MODEL/K,V=VOICE/K,I=INSTRUCTIONS/K,K=APIKEY/K,O=OUTPUT/K,F=FORMAT/K,P=PROMPT/F
+```
+
+- `PR=PROFILE` - Optional, the speech profile to use. This can be a built-in speech system name or a saved custom speech profile name. Use `LISTPROFILES` to see available profiles. If omitted, the active speech profile from AmigaGPT config is used
+- `M=MODEL` - Optional, the OpenAI voice model to use. Use `LISTMODELS PR=<profile>` to inspect the models for a speech profile. If omitted, the selected speech profile's model is used
+- `V=VOICE` - Optional voice override (use `LISTVOICES` to see available voices). For OpenAI speech profiles, this selects the OpenAI voice. For Workbench speech profiles, `male`, `female`, `male robot`, and `female robot` override the profile's narrator sex/mode. If omitted, the selected speech profile's voice settings are used
+- `I=INSTRUCTIONS` - Optional, OpenAI voice instructions override
+- `K=APIKEY` - Optional, API key override. If omitted, the selected speech profile's API key is used
+- `O=OUTPUT` - Optional, file to write audio data to instead of playing it. When this is given, the text is synthesised silently and the audio is not played
+- `F=FORMAT` - Optional, format of the output file. Use `LISTAUDIOFORMATS` to see the supported values (`wav` and `pcm`). Default is WAV. Ignored if OUTPUT is not provided
+- `P=PROMPT` - Required, the text to speak
+
+#### NEWCHAT
+
+Clears the daemon's conversation history and starts a new chat. This is useful when you want to start a fresh conversation without context from previous messages.
+
+```
+NEWCHAT
+```
+
+This command takes no parameters and returns "Conversation history cleared" on success.
+
+#### List Commands
+
+#### LISTMODELS
+
+Fetches the models available from the server for a profile. If `PR` is omitted, it fetches model sections for the active chat, image and speech profiles.
+
+```
+LISTMODELS PR=PROFILE/K
+```
+
+- `PR=PROFILE` - Optional, the profile to inspect. The same name can match chat, image and speech profiles, and `LISTMODELS` will include a section for each matching subsystem. Built-in aliases such as `ChatGPT`, `Gemini`, `Grok` and `Claude` are also accepted
+- `LISTMODELS` queries the profile's configured server where possible, so the results reflect what that server currently exposes rather than only AmigaGPT's built-in known model lists
+
+#### LISTAUDIOFORMATS
+
+Lists all available audio formats for saving audio files
+
+```
+LISTAUDIOFORMATS
+```
+
+#### LISTPROFILES
+
+Lists all available chat, image and speech profiles.
+
+```
+LISTPROFILES
+```
+
+#### LISTIMAGESIZES
+
+Lists all available image sizes
+
+```
+LISTIMAGESIZES
+```
+
+#### LISTVOICES
+
+Lists the available TTS voices for a speech profile. If `PR` is omitted, it uses the active speech profile from AmigaGPT config.
+
+```
+LISTVOICES PR=PROFILE/K
+```
+
+- `PR=PROFILE` - Optional, the speech profile to inspect. If the resolved profile uses ElevenLabs, `LISTVOICES` fetches the available voices from ElevenLabs. For Workbench speech profiles, it returns `male`, `female`, `male robot`, and `female robot`
+
+#### Help (?)
+
+Displays a list of available commands
+
+```
+?
+```
+
+#### Example ARexx Script
+
+```rexx
+/* Simple ARexx script for AmigaGPT */
+OPTIONS RESULTS
+ADDRESS 'AMIGAGPT'
+
+/* Send a message to GPT and get a response */
+'SENDMESSAGE P=What is the capital of France?'
+SAY RESULT
+
+/* Generate an image */
+'CREATEIMAGE P=A beautiful Amiga computer on a desk'
+SAY 'Image saved to:' RESULT
+
+/* Edit a picture you already have */
+'CREATEIMAGE A=Work:Pictures/amiga.png P=Make the sky a stormy purple'
+SAY 'Edited image saved to:' RESULT
+
+/* Speak some text */
+'SPEAKTEXT P=Hello from ARexx!'
+
+EXIT
+```
+
+#### Bundled ARexx scripts
+
+AmigaGPT installs a set of example scripts into `AMIGAGPT:rexx`:
+
+| Script | What it does |
+| --- | --- |
+| `askgpt.rexx` | The Shell front end. Argument parsing, an optional RxMUI interface, profile selection and `NEWCHAT` |
+| `help.rexx` | Prints the command set, the profiles, the models for the active profiles and the voices for the active speech profile |
+| `joke.rexx` | Asks for a joke and shows it in an RxMUI window, falling back to a plain requester |
+| `say.rexx` | Asks you what to say and speaks it |
+| `say_os_version.rexx` | Runs `Version` and speaks the result - shows how to feed an AmigaDOS command into AmigaGPT |
+| `amiga_image.rexx` | Generates a picture and opens it in MultiView |
+| `textedit_translate_no.rexx` | Translates the selected text in TextEdit and puts the translation back |
+| `show_received_file.rexx` | Asks the hosted code interpreter for a file, saves it with `D=DESTINATION`, and opens it in MultiView |
+
+The **ARexx** menu allows you to import and run ARexx scripts. Also, selecting **Arexx Shell** will open a shell and put all ARexx scripts in trace mode so you can run the scripts line by line for debugging purposes. Select **Arexx Shell** once again to turn off trace mode and close the shell.
+
+## Files and Drawers
+
+Everything AmigaGPT keeps lives under the `AMIGAGPT:` assign, which the installer adds to `S:User-Startup`, or to `SYS:Prefs/Presets/AmiKit/KIT/KIT-Startup` when you are running AmiKit.
+
+| Path | Contents |
+| --- | --- |
+| `AMIGAGPT:AmigaGPT` | The application |
+| `AMIGAGPT:AmigaGPTD` | The daemon |
+| `C:askgpt` | The Shell command, if you installed it |
+| `AMIGAGPT:config.json` | All settings, profiles and API keys (plain text) |
+| `AMIGAGPT:config.bak` | The previous configuration |
+| `AMIGAGPT:chat-history.json` | Every conversation |
+| `AMIGAGPT:image-history.json` | Every generated image |
+| `AMIGAGPT:images/` | The generated image files |
+| `AMIGAGPT:AmigaGPT.guide` | This documentation, opened by the **Help** menu |
+| `AMIGAGPT:magic.mgc` | The file type database (may also be in `PROGDIR:` or `C:`) |
+| `AMIGAGPT:rexx/` | The bundled ARexx scripts |
+| `AMIGAGPT:devs/speech/34/` | Where `narrator.device` v34 goes |
+| `AMIGAGPT:devs/speech/37/` | Where `narrator.device` v37 goes |
+| `LOCALE:Catalogs/<language>/AmigaGPT.catalog` | The translations |
+| `T:AmigaGPTD_history.json` | The daemon conversation, until the next reboot |
+
+If a history file is ever found to be corrupt, AmigaGPT renames it with a `.bak` extension - or copies it to `RAM:` if it cannot - tells you what happened, and carries on with an empty history rather than refusing to start.
+
+## Language
+
+AmigaGPT follows the language set in your system Locale preferences. English is built into the program; the other 22 languages are installed as catalogs into `LOCALE:Catalogs`:
+
+Bosnian, Croatian, Czech, Danish, Dutch, English (British), Finnish, French, German, Greek, Hungarian, Italian, Norwegian, Polish, Portuguese, Russian, Serbian, Slovak, Slovenian, Spanish, Swedish and Turkish.
+
+The installer preselects your system language. If no catalog is installed for the current language, AmigaGPT falls back to English. The interface language is separate from the language the AI answers in - to change the latter, put an instruction such as "Always answer in Italian" into the **Chat System** field of the chat profile.
+
+## Models
+
+**AmigaGPT** supports models from multiple providers. For the latest model information, refer to each provider's documentation:
+
+- **OpenAI**: <https://platform.openai.com/docs/models>
+- **Google Gemini**: <https://ai.google.dev/gemini-api/docs/models>
+- **SpaceXAI Grok**: <https://docs.x.ai/docs/models>
+- **Anthropic Claude**: <https://docs.anthropic.com/en/docs/about-claude/models>
+
+You can also use the **Fetch Models** button in Chat Provider Settings to retrieve the current model list directly from the server.
+
+## Developing
+
+You can either compile the code natively or with the Docker container.
+
+### Native
+
+#### Building the AmigaOS 3 app
+
+If you would like to build this project from source you will need Bebbo's **amiga-gcc** toolchain here <https://github.com/bebbo/amiga-gcc>
+
+Once installed, get the required other SDK's (AmiSSL, Translator, json-c) from <https://github.com/sacredbanana/AmigaSDK-gcc> and put these in your Amiga dev environment created in the above step.
+
+#### Building the AmigaOS 4 app
+
+Get this toolchain set up <https://github.com/sba1/adtools>
+
+Once installed, get the required other SDK's (AmiSSL, Translator, json-c) from <https://github.com/sacredbanana/AmigaSDK-gcc> and put these in your Amiga dev environment created in the above step.
+
+### Docker
+
+You may use pre-prepared Docker images that are able to compile both the AmigaOS 3 and AmigaOS 4 versions of the app.
+
+Just install Docker on your machine and run the `build_os3.sh`, `build_os4.sh` or `build_morphos.sh` scripts depending on which version of the app you want to build. If you want to perform a clean build, you can set the environment variable `CLEAN=1` for example you can run `CLEAN=1 ./build_os3.sh`.
+
+The build app will be saved to the `/out` directory.
+
+## License
+
+**AmigaGPT** is licensed under the MIT License.
+
+## Contributing
+
+We welcome contributions to **AmigaGPT**! If you have a bug to report, a feature to suggest, or a change you'd like to make to the code, please open a new issue or submit a pull request.
+
+## Contributors
+
+### Code
+
+- **Cameron Armstrong (sacredbanana/Nightfox)** <https://github.com/sacredbanana/>
+
+### Art
+
+- **Mauricio Sandoval** - Icon design
+
+### Translations
+
+- **Mauricio Sandoval** - Spanish
+- **Tobias Baeumer** - German
+
+## Special Thanks
+
+- **Bebbo** for creating the Amiga GCC toolchain <https://github.com/bebbo>
+- **OpenAI** for making this all possible <https://openai.com>
+- **EAB** and everyone in it for answering my questions <https://eab.abime.net/>
+- **Ján Zahurančík** for all the thorough testing, bundling AmigaGPT into AmiKit, creating KIT, and for all the moral support <https://www.amikit.amiga.sk>
+- **CoffinOS** for bundling AmigaGPT into CoffinOS <https://getcoffin.net>
+- **Amiga Future Magazine** for reviewing AmigaGPT and publishing several of its updates in the News from Aminet section <https://www.amigafuture.de/>
+- **WhatIFF? Magazine** for reviewing AmigaGPT and interviewing me in issue 14 <https://www.whatiff.info>
+- **Dan Wood** for reviewing AmigaGPT on his YouTube channel <https://www.youtube.com/watch?v=-OA28r8Up5U>
+- **Proteque-CBN** for reviewing AmigaGPT on his YouTube channel <https://www.youtube.com/watch?v=t3q8HQ6wrnw>
+- **AmigaBill** for covering AmigaGPT in the Amiga News section on his Twitch streams and allowing me to join his stream to promote it <https://www.twitch.tv/amigabill>
+- **Les Docs** for making a video review and giving a tutorial on how to add support for the French accent <https://www.youtube.com/watch?v=BV5Fq1PresE>
+- **amiga-news.de** for covering AmigaGPT news <http://amiga-news.de>
+- **Obligement** for covering AmigaGPT for the french Amiga community and interviewing me <http://obligement.free.fr/articles/itwcameronarmstrong.php>

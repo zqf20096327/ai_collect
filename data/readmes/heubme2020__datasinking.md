@@ -1,0 +1,216 @@
+# DataSinking
+
+<!-- mcp-name: io.github.heubme2020/datasinking -->
+
+[![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
+[![MCP server](https://img.shields.io/badge/MCP-server-blue)](https://github.com/heubme2020/datasinking#mcp-server)
+
+**Full-text financial reports across the US and Asia, as clean Markdown.**
+
+[DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
+and quarterly — from **the US, the UK, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
+and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
+exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
+filing, saving tokens. Every figure is traceable to its source disclosure and
+block. Reports are sourced from official disclosure platforms and parsed into structured Markdown
+with YAML frontmatter, preserved headings, paragraphs and tables.
+
+---
+
+## MCP server
+
+Ship DataSinking to any AI agent (Claude / Cursor / Codex / Devin Desktop / n8n) as an
+[MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
+list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
+
+### Hosted — nothing to install
+
+One URL, no package, no Python, no local server. Most clients take this shape:
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "type": "http",
+      "url": "https://api.datasink.ing/mcp",
+      "headers": { "Authorization": "Bearer YOUR_KEY" }
+    }
+  }
+}
+```
+
+Claude Code, in one line:
+
+```bash
+claude mcp add --transport http datasinking https://api.datasink.ing/mcp \
+  --header "Authorization: Bearer YOUR_KEY"
+```
+
+A client that can't set a header can put the key in the URL instead —
+`https://api.datasink.ing/mcp?apikey=YOUR_KEY` — but only do that when you must: a key in a URL
+ends up in logs and screen shares, and no client can redact it.
+
+Two clients don't fit the shape above: Codex's config is TOML, and Devin Desktop's remote field is
+`serverUrl`, not `url`. Per-client files: [`docs/mcp/`](docs/mcp/).
+
+### Local — run it yourself
+
+If you'd rather keep everything on your own machine, there are two identical builds — pick
+whichever runtime you already have:
+
+**Node 18+ (no Python needed):**
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "command": "npx",
+      "args": ["-y", "datasinking-mcp"],
+      "env": { "DATASINK_API_KEY": "YOUR_KEY" }
+    }
+  }
+}
+```
+
+**Python 3.8+:**
+
+```bash
+pip install "datasinking[mcp]"
+datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.ing)
+```
+
+Then use `command: datasinking-mcp` in your client.
+
+Both run the same six tools with the same schemas — `npm/` and `datasinking/mcp_server.py` are
+kept in lockstep by [`check_mcp_parity.py`](check_mcp_parity.py).
+
+Full per-client setup: [`mcp-server.md`](mcp-server.md) (overview) ·
+[`docs/mcp/`](docs/mcp/) (one guide per client).
+
+The hosted endpoint is **POST-only and stateless** — `GET /mcp` returns 405, and no session id is
+issued. Most clients read MCP config at launch, so restart one after changing its config.
+
+![DataSinking MCP in Claude](docs/images/mcp-demo.png)
+
+## What this repo is
+
+Examples, research and tutorials showing how to work with financial report data, including reproducing the presentation styles found in financial-report research papers.
+
+```
+datasinking/
+├── examples/     # Example scripts: pull data from the API and analyze it
+├── research/     # Research notes / blog posts (reproducing paper-style presentation)
+├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
+├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
+├── docs/mcp/     # Per-client MCP setup — Claude Code, Desktop, Cursor, Codex, WorkBuddy, Devin…
+├── mcp-server.md # MCP server overview — endpoint, per-client table, tools, troubleshooting
+├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
+├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
+└── README.md
+```
+
+Per-client MCP guides — one file each, with the exact config path, both scopes, verification and the
+errors that client actually produces:
+
+| Client | Guide |
+|---|---|
+| Claude Code | [`docs/mcp/claude-code.md`](docs/mcp/claude-code.md) |
+| Claude Desktop | [`docs/mcp/claude-desktop.md`](docs/mcp/claude-desktop.md) |
+| OpenAI Codex CLI | [`docs/mcp/codex.md`](docs/mcp/codex.md) |
+| WorkBuddy / CodeBuddy | [`docs/mcp/workbuddy.md`](docs/mcp/workbuddy.md) |
+| Doubao Work / 豆包工作 | [`docs/mcp/doubao.md`](docs/mcp/doubao.md) |
+| Cursor | [`docs/mcp/cursor.md`](docs/mcp/cursor.md) |
+| DeepSeek Harness (`dsh`) | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
+| Devin Desktop | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
+| OpenCode | [`docs/mcp/opencode.md`](docs/mcp/opencode.md) |
+| Qoder | [`docs/mcp/qoder.md`](docs/mcp/qoder.md) |
+| Reasonix | [`docs/mcp/reasonix.md`](docs/mcp/reasonix.md) |
+
+## Quick start
+
+1. Get an API key at [datasink.ing](https://datasink.ing)
+2. One line (FMP-style `?apikey=`):
+
+```bash
+curl "https://api.datasink.ing/documents?symbol=600519.SS&with_content=1&apikey=YOUR_KEY"
+```
+
+Or in Python:
+
+```bash
+pip install datasinking
+```
+
+```python
+from datasinking import DataSinking
+
+ds = DataSinking("YOUR_KEY")
+for r in ds.get_stock_reports("600519.SS", limit=3):
+    print(r["report_period"], r["title"], len(r["content"]), "chars")
+```
+
+All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md).
+
+## Ask an LLM (no code)
+
+Don't want to write code? Point any LLM at [datasink.ing](https://datasink.ing),
+give it your API key, and ask in plain language. See
+[`llm-examples.md`](llm-examples.md) for eight end-to-end examples — explore
+coverage, list a company's reports, and extract a figure with correct units.
+
+## Examples (`examples/`)
+
+| File | What it does |
+|---|---|
+| `01_quickstart.py` | The 5 core functions: list exchanges / stocks / reports / fetch a report / fetch a stock's reports |
+| `02_download_company.py` | Download a company's full reports to local Markdown files |
+| `03_download_exchange.py` | Download an entire exchange's reports (all stocks) to local Markdown files |
+| `rag_ingest.py` | Slice reports into RAG chunks (on the `<!-- ds:block:N -->` anchors, with `source` traceability) and ingest into a vector store |
+
+Every example pulls from the live API and runs as-is.
+
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Quotas count **documents, not requests**, over a rolling 7-day window: a free key gets 3 req/s and 8,191 documents per 7 days, inside a pool of 524,287 per 7 days shared by all free users and website visitors. A whole exchange will therefore take well over a week on a free key — a **paid (yearly)** key (31 req/s, 524,287 documents per 7 days) is strongly recommended.
+
+## Research (`research/`)
+
+`research/` hosts research notes and blog posts, each based on DataSinking data with the source cited. You can reproduce charts and presentations found in financial-report research papers, e.g.:
+
+- Long-term revenue / profit trends
+- Industry comparison and distribution
+- Time series of financial metrics
+
+Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
+
+## Data overview
+
+| | |
+|---|---|
+| Coverage | US (NYSE / NASDAQ / CBOE) · China (SSE / SZSE / BSE) · Japan (TSE) · Korea (KOSPI / KOSDAQ / KONEX) · Taiwan (TWSE / TPEx) |
+| Document types | annual / semiannual / q1 / q3 / amendment |
+| Update frequency | Daily — US/Korea/Japan via official SEC EDGAR / DART / EDINET APIs (new filings within ~24h of publication) |
+| Format | Full-text Markdown (with YAML frontmatter) |
+| API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access |
+| Symbols | FMP style: `AAPL` / `600519.SS` / `7203.T` / `005930.KS` |
+| Auth | `?apikey=` query parameter (FMP style) |
+
+## Data source
+
+Reports are sourced from the official regulatory disclosure platform of each market and converted in-house to clean Markdown:
+
+| Market | Source | Platform |
+|---|---|---|
+| US (bare ticker, e.g. `AAPL`) | SEC EDGAR | US Securities and Exchange Commission — sec.gov/edgar |
+| China A-shares (`.SS` `.SZ` `.BJ`) | 巨潮资讯网 cninfo | CSRC-designated disclosure platform |
+| Korea (`.KS` `.KQ` `.KN`) | DART | Financial Supervisory Service — opendart.fss.or.kr |
+| Japan (`.T`) | EDINET | Financial Services Agency — disclosure2.edinet-fsa.go.jp |
+| Taiwan (`.TW` `.TWO`) | 公開資訊觀測站 MOPS | Taiwan Stock Exchange — mops.twse.com.tw |
+
+Every document also carries a `source` field in the API response, so the attribution travels with the data. **Please keep it when you redistribute.**
+
+## Affiliate
+
+Earn **$7 every purchase** for every customer you refer — recurring, PayPal, $31 minimum withdrawal: [datasink.ing/affiliate](https://datasink.ing/affiliate)
+
+## License
+
+[MIT](LICENSE)

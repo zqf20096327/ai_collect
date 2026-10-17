@@ -1,0 +1,226 @@
+<div align="center">
+
+# ⚡ AMPERE
+
+**Peer into your AI's glass brain.**
+
+[![Maven Central](https://img.shields.io/maven-central/v/link.socket/ampere-core)](https://central.sonatype.com/artifact/link.socket/ampere-core)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build](https://github.com/socket-link/ampere/actions/workflows/ci.yml/badge.svg)](https://github.com/socket-link/ampere/actions/workflows/ci.yml)
+
+</div>
+
+Ampere is a Kotlin Multiplatform framework where every agent decision emits a structured, queryable event — providing real-time cognition observability around AI actions that is built into the core of the architecture, rather than being bolted-on after the fact.
+
+When Ampere runs multiple agents in parallel, this open architecture allows each agent to observe, coordinate, and react to the reasoning of others as it forms — making multi-agent coordination reactive rather than scripted.
+
+---
+
+## Quick Start
+
+> **Prerequisites:** Java 21+ (run `java -version` to check)
+
+### Run agents from the command line (`ampere-cli`)
+
+#### Build CLI
+```bash
+# <!--- Option 1: Installation from source --->
+#
+# 1. Clone the project
+git clone https://github.com/socket-link/ampere.git
+cd ampere
+
+# 2. Configure LLM provider API keys in `local.properties`
+cp ampere-cli/local.properties.example ampere-cli/local.properties
+nano ampere-cli/local.properties
+
+# 3. Build the CLI
+./gradlew :ampere-cli:installDist
+
+# 4. Add `ampere` to your PATH for easy access from your project
+export PATH="$PATH:$(pwd)/ampere-cli/build/install/ampere-jvm/bin"
+
+
+# <!--- Option 2: Install prebuilt binaries --->
+#
+# Coming soon!
+```
+
+#### Configure Project
+```bash
+# 1. Copy the example `ampere.yaml` config into your <project> directory
+cp ampere/ampere.example.yaml <project>/ampere.yaml
+
+# 2. Make any necessary adjustments to the default agent configuration
+nano <project>/ampere.yaml
+```
+
+**[All Configuration Options →](ampere-cli/README.md#configuration)**
+
+
+#### Start Ampere
+
+```bash
+# Runs Ampere with a goal — this launches the TUI, and agents begin to communicate
+cd <project>
+ampere --goal "Add comprehensive documentation with interactive examples"
+```
+
+The dashboard then displays all agent cognition in real time: perception, recall, optimization, planning, execution, and coordination.
+
+To change focus between panes in the CLI, press
+- `d` for runtime overview
+- `e` for event stream
+- `m` for agent memory
+
+Press  `?` for more options.
+
+**[Full Usage Guide →](ampere-cli/README.md)**
+
+### Embed in your Kotlin project (`ampere-core`)
+
+<details>
+<summary><strong>Dependency Setup</strong></summary>
+
+Add to your project:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("link.socket:ampere-core:0.15.0")
+}
+```
+
+</details>
+<details>
+<summary><strong>Library Usage</strong></summary>
+
+> **`AgentTeam` is deprecated and runs nothing (AMPR-399).** The DSL below declares a team
+> and emits UI markers about it; no agent is constructed, no model is called, nothing is
+> scheduled. It is kept compiling for consumers already on it. The hosted run that does
+> charge PERCEIVE → … → LEARN for a goal arrives as `RunHost` (AMPR-393); until then, run
+> agents through the CLI (`ampere --goal "…"`, `ampere --issues`).
+
+```kotlin
+val team = AgentTeam.create {
+    // Configure your AI provider
+    config(
+        AnthropicConfig(
+            apiKey = System.getenv("ANTHROPIC_API_KEY"),
+            model = Claude.Sonnet5,
+        ),
+    )
+
+    // Add agents with personality traits
+    agent(ProductManager) { personality { directness = 0.8 } }
+    agent(Engineer) { personality { creativity = 0.7 } }
+    agent(QATester)
+}
+
+// Declare a goal. No work starts: this emits GoalSet, one AgentInitialized per member,
+// and one Planned placeholder — all view-layer markers, none of them on the event bus.
+team.pursue("Build a user authentication system")
+
+team.events.collect { event -> println(event) }
+```
+
+What *is* wired today is the event bus: build an instance with `Ampere.fromEnvironment(...)`
+and observe `ampere.events.observe()` while the CLI or `AmpereRuntime` runs the agents.
+
+`apiKey` is optional. When you provide it, Ampere uses that runtime credential directly. When you omit it, provider clients fall back to the generated `KotlinConfig` values sourced from `local.properties` at build time.
+</details>
+
+---
+
+## Why Ampere?
+
+Most agent frameworks bolt on observability after the fact — attaching tools like LangSmith or Langfuse to reconstruct behavior from traces.
+
+Ampere inverts this. Every cognitive phase emits structured events as a natural consequence of its architecture. This isn't just for debugging — it's what enables agents to coordinate. When Agent B can observe Agent A's reasoning as it forms, coordination becomes reactive rather than scripted.
+
+| Post-hoc Observability                    | Ampere Observability                     |
+|-------------------------------------------|------------------------------------------|
+| Reconstruct behavior from traces          | Decisions are observable as they form    |
+| Observe from outside the agent            | Cognition emits structured events        |
+| Uncertainty hidden in token probabilities | Uncertainty surfaces and escalates       |
+| Memory is an implementation detail        | Memory operations are first-class events |
+
+When agent confidence for a plan drops below a configurable threshold, agents are able to **escalate to a human**, surfacing exactly what they're uncertain about.
+
+This allows you to steer the agent toward an informed decision in real-time, rather than needing to debug opaque failures after the fact.
+
+## Coordination Primitives
+
+| Concept       | Observable Surface         | Purpose                              |
+|---------------|----------------------------|--------------------------------------|
+| **Tickets**   | Goals and their lifecycle  | Track work from creation to close    |
+| **Tasks**     | Discrete execution steps   | Trace every action an agent performs |
+| **Plans**     | Structured decision logic  | Inspect reasoning before execution   |
+| **Meetings**  | Inter-agent coordination   | Audit how agents negotiate and align |
+| **Outcomes**  | Execution results          | Query historical performance         |
+| **Knowledge** | Accumulated understanding  | Search what agents have learned      |
+
+**[Core Concepts Guide →](docs/CORE_CONCEPTS.md)**
+
+## The PROPEL Cognitive Loop
+
+During each timestep of the environment simulation, each agent executes its own independent cognitive cycle:
+
+```
+1. Perceive  ──▶  2. Recall  ──▶  3. Observe
+
+       ▲                               │
+       │                               ▼
+
+    6. Learn  ◀──  5. Execute  ◀──  4. Plan
+```
+
+| # | Phase          | Operation                           | Emitted Events                         |
+|---|----------------|-------------------------------------|----------------------------------------|
+| 1 | **(P)erceive** | Ingest signals from the environment | `SignalReceived`, `PerceptionFormed`   |
+| 2 | **(R)ecall**   | Query relevant memory and context   | `MemoryQueried`, `ContextAssembled`    |
+| 3 | **(O)bserve**  | Read current state and detect drift | `StateObserved`, `DriftDetected`       |
+| 4 | **(P)lan**     | Select and structure actions        | `PlanCreated`, `TasksDecomposed`       |
+| 5 | **(E)xecute**  | Carry out the plan                  | `ActionTaken`, `ResultObserved`        |
+| 6 | **(L)earn**    | Extract knowledge, re-enter cycle   | `OutcomeEvaluated`, `KnowledgeStored`  |
+
+Every phase transition is emitted as an event, ensuring every action inside an agent can be audited and traced.
+
+**[Full Cognitive Lifecycle →](docs/AGENT_LIFECYCLE.md)**
+
+## Full Documentation
+
+| Guide                                      | Description                         |
+|--------------------------------------------|-------------------------------------|
+| [CLI Reference](ampere-cli/README.md)      | Command-line tools                  |
+| [Core Concepts](docs/CORE_CONCEPTS.md)     | The observable cognition primitives |
+| [Concept Cells](docs/concepts/_index.md)   | Per-primitive invariants and rationale |
+| [Agent Lifecycle](docs/AGENT_LIFECYCLE.md) | The PROPEL loop in detail           |
+| [Architecture](docs/ARCS.md)               | System architecture overview        |
+| [Eval Suite](ampere-eval/README.md)        | Measuring AMPERE with AMPERE: traces, meters, and the regression gate |
+| [Contributing](CONTRIBUTING.md)            | How to contribute to the project    |
+
+---
+
+## Developer setup
+
+After cloning the repo, install the optional pre-push hook that warns when a
+push touches files listed under a [concept cell](docs/concepts/_index.md)'s
+`tracked_sources` without updating the concept file:
+
+```bash
+./scripts/install-hooks.sh
+```
+
+The hook calls `scripts/validate-concepts.sh` and is informational only — it
+never blocks a push. Re-running the installer is idempotent. To suppress a
+warning when your change confirms an existing concept, include the trailer
+`Concept-Verified: <ConceptName>` in your commit message.
+
+---
+
+## License
+
+Apache 2.0 — see [LICENSE.txt](LICENSE.txt) for more details.
+
+Copyright 2026 Miley Chandonnet, Stedfast Softworks LLC

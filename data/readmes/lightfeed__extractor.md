@@ -1,0 +1,780 @@
+<h1 align="center">
+  <img src="https://www.lightfeed.ai/static/site/logo.svg" width="32" height="32" alt="Lightfeed Logo"/>
+  Lightfeed Extractor
+</h1>
+
+<p align="center">
+  <strong>Robust Web Data Extractor Using LLMs</strong>
+</p>
+
+<div align="center">
+  <a href="https://www.npmjs.com/package/@lightfeed/extractor">
+    <img src="https://img.shields.io/npm/v/@lightfeed/extractor?logo=npm" alt="npm" /></a>
+  <a href="https://github.com/lightfeed/extractor/actions/workflows/test.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/lightfeed/extractor/test.yml?branch=main"
+          alt="Test status (main branch)"></a>
+  <a href="https://github.com/lightfeed/extractor/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/lightfeed/extractor" alt="License" /></a>
+        <a href="https://www.linkedin.com/company/lightfeed-ai">
+    <img src="https://img.shields.io/badge/Follow%20on%20LinkedIn-0A66C2?logo=linkedin&logoColor=white" alt="Follow on LinkedIn" /></a>
+</div>
+
+## Overview
+Lightfeed Extractor is a Typescript library built for robust web data extraction using LLMs. Use natural language prompts to extract structured data from HTML, markdown, or plain text. Get complete, accurate results with great token efficiency — critical for production data pipelines.
+
+### Features
+
+- 🧹 [**LLM-ready Markdown**](#html-to-markdown-conversion) - Convert HTML to LLM-ready markdown, with options to extract only main content and clean URLs by removing tracking parameters.
+
+- ⚡️ [**LLM Extraction**](#llm-extraction-function) - Use LLMs in JSON mode to extract structured data according to input Zod schema. Token usage limit and tracking included.
+
+- 🛠️ [**JSON Recovery**](#json-recovery) - Sanitize and recover failed JSON output. This makes complex schema extraction much more robust, especially with deeply nested objects and arrays.
+
+- 🔗 [**URL Validation**](#url-validation) - Handle relative URLs, remove invalid ones, and repair markdown-escaped links.
+
+- 🤖 [**Works with Playwright**](#using-with-playwright) - Use Playwright to load pages, then extract structured data from the HTML content.
+
+- 🧭 [**AI Browser Navigation**](#using-with-browser-agent) - Pair with [@lightfeed/browser-agent](https://github.com/lightfeed/browser-agent) to navigate pages using natural language commands before extracting structured data.
+
+> [!TIP]  
+> Building retail competitor intelligence at scale? Go to [lightfeed.ai](https://lightfeed.ai) - our full platform for tracking competitor pricing, sales, promotions, and SEO.
+
+## Installation
+
+Install the extractor along with `@langchain/core` and your chosen LLM provider:
+
+```bash
+npm install @lightfeed/extractor @langchain/core
+```
+
+Then add your LLM provider (we use LangChain for interoperability):
+
+```bash
+npm install @langchain/openai         # OpenAI
+npm install @langchain/google-genai   # Google Gemini
+npm install @langchain/anthropic      # Anthropic
+npm install @langchain/ollama         # Ollama (local models)
+```
+
+> [!IMPORTANT]
+> `@langchain/core` is a required peer dependency shared by this library and all `@langchain/*` providers. Always install it explicitly to avoid version conflicts.
+
+## Usage
+
+### E-commerce Product Extraction
+
+This example demonstrates extracting structured product data from an e-commerce website using Playwright to load the page and the extractor to pull structured data.
+
+```typescript
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { chromium } from "playwright";
+import { extract, ContentFormat } from "@lightfeed/extractor";
+import { z } from "zod";
+
+// Define schema for product catalog extraction
+const productCatalogSchema = z.object({
+  products: z
+    .array(
+      z.object({
+        name: z.string().describe("Product name or title"),
+        brand: z.string().optional().describe("Brand name"),
+        price: z.number().describe("Current price"),
+        originalPrice: z
+          .number()
+          .optional()
+          .describe("Original price if on sale"),
+        rating: z.number().optional().describe("Product rating out of 5"),
+        reviewCount: z.number().optional().describe("Number of reviews"),
+        productUrl: z.string().url().describe("Link to product detail page"),
+        imageUrl: z.string().url().optional().describe("Product image URL"),
+      })
+    )
+    .describe("List of bread and bakery products"),
+});
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+
+const pageUrl = "https://www.walmart.ca/en/browse/grocery/bread-bakery/10019_6000194327359";
+await page.goto(pageUrl);
+
+try {
+  await page.waitForLoadState("networkidle", { timeout: 10000 });
+} catch {
+  console.log("Network idle timeout, continuing...");
+}
+
+const html = await page.content();
+await browser.close();
+
+// Extract structured product data
+const result = await extract({
+  llm: new ChatGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+    model: "gemini-2.5-flash",
+    temperature: 0,
+  }),
+  content: html,
+  format: ContentFormat.HTML,
+  sourceUrl: pageUrl,
+  schema: productCatalogSchema,
+  htmlExtractionOptions: {
+    extractMainHtml: true,
+    includeImages: true,
+    cleanUrls: true
+  }
+});
+
+console.log("Found products:", result.data.products.length);
+console.log(JSON.stringify(result.data, null, 2));
+
+/* Expected output:
+{
+  "products": [
+    {
+      "name": "Dempster's® Signature The Classic Burger Buns, Pack of 8; 568 g",
+      "brand": "Dempster's",
+      "price": 3.98,
+      "originalPrice": 4.57,
+      "rating": 4.7376,
+      "reviewCount": 141,
+      "productUrl": "https://www.walmart.ca/en/ip/dempsters-signature-the-classic-burger-buns/6000188080451?classType=REGULAR&athbdg=L1300",
+      "imageUrl": "https://i5.walmartimages.ca/images/Enlarge/725/979/6000196725979.jpg?odnHeight=580&odnWidth=580&odnBg=FFFFFF"
+    },
+    ... (more products)
+  ]
+}
+*/
+```
+
+> [!TIP]
+> Run `npm run test:browser` to execute this example, or view the complete code in [testBrowserExtraction.ts](src/dev/testBrowserExtraction.ts).
+
+### Using with Browser Agent
+
+For pages that require interaction before extraction — searching, clicking through pagination, dismissing popups, etc. — you can pair this library with [@lightfeed/browser-agent](https://github.com/lightfeed/browser-agent). The browser agent uses AI to navigate pages via natural language commands, and this library extracts structured data from the result.
+
+Install both packages:
+
+```bash
+npm install @lightfeed/extractor @lightfeed/browser-agent
+```
+
+Then use the browser agent to navigate and the extractor to pull structured data:
+
+```typescript
+import { BrowserAgent } from "@lightfeed/browser-agent";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { extract, ContentFormat } from "@lightfeed/extractor";
+import { z } from "zod";
+
+const schema = z.object({
+  products: z.array(
+    z.object({
+      name: z.string(),
+      price: z.number(),
+      rating: z.number().optional(),
+      productUrl: z.string().url(),
+    })
+  ),
+});
+
+// 1. Use browser agent to navigate with AI
+const agent = new BrowserAgent({ browserProvider: "Local" });
+const page = await agent.newPage();
+await page.goto("https://amazon.com");
+await page.ai("Search for 'organic coffee' and go to the second page of results");
+
+// 2. Extract structured data from the resulting page
+const html = await page.content();
+const result = await extract({
+  llm: new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash",
+    apiKey: process.env.GOOGLE_API_KEY,
+    temperature: 0,
+  }),
+  content: html,
+  format: ContentFormat.HTML,
+  sourceUrl: page.url(),
+  schema,
+  prompt: "Extract all product listings from the search results",
+  htmlExtractionOptions: {
+    extractMainHtml: true,
+    includeImages: true,
+    cleanUrls: true,
+  },
+});
+
+console.log(result.data.products);
+await agent.close();
+```
+
+See the [browser-agent docs](https://github.com/lightfeed/browser-agent) for more configuration options.
+
+
+### Extracting from Markdown or Plain Text
+
+You can also extract structured data directly from HTML, Markdown or text string. Pass any [LangChain chat model](https://js.langchain.com/docs/integrations/chat/):
+
+```typescript
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { extract, ContentFormat } from "@lightfeed/extractor";
+
+const result = await extract({
+  llm: new ChatGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+    model: "gemini-2.5-flash",
+    temperature: 0,
+  }),
+  content: markdownContent,
+  format: ContentFormat.MARKDOWN,
+  schema: mySchema,
+});
+```
+
+### Custom Extraction Prompts
+
+You can provide a custom prompt to guide the extraction process:
+
+```typescript
+const result = await extract({
+  llm: myLLM,
+  content: htmlContent,
+  format: ContentFormat.HTML,
+  schema: mySchema,
+  sourceUrl: "https://example.com/products",
+  prompt: "Extract ONLY products that are on sale or have special discounts. Include their original prices, discounted prices, and product URL.",
+});
+```
+
+If no prompt is provided, a default extraction prompt will be used.
+
+### Extraction Context
+
+You can use the `extractionContext` option to provide contextual information that enhances the extraction process. This context works alongside the content to enable more accurate and comprehensive data extraction. Common use cases include:
+
+- Enriching partial data objects with missing information from the content
+- Providing metadata like website URLs, user locations, timestamps for context-aware extraction
+- Including domain-specific knowledge or constraints
+- Merging data from multiple sources
+
+The LLM will consider both the content and the extraction context when performing extraction:
+
+```typescript
+// Example: Using extraction context with website metadata and geolocation
+const extractionContext = {
+  websiteUrl: "https://acme.com/products/smart-security-camera",
+  country: "Canada",
+  city: "Vancouver"
+};
+
+const schema = z.object({
+  title: z.string(),
+  price: z.number(),
+  storeName: z.string().describe("Store name in title case from website URL or context"),
+  inStock: z.boolean().optional(),
+  location: z.string().optional().describe("Location in the format of City, Country")
+});
+
+const result = await extract({
+  llm: myLLM,
+  content: htmlContent,
+  format: ContentFormat.HTML,
+  schema: schema,
+  sourceUrl: "https://acme.com/products/smart-security-camera",
+  extractionContext: extractionContext,
+});
+
+// The LLM will use the context to extract store name (acme) and consider the location
+console.log(result.data);
+// {
+//   title: "Smart Security Camera",
+//   price: 74.50,
+//   storeName: "Acme",
+//   inStock: true,
+//   location: "Vancouver, Canada"
+// }
+```
+
+### Using Any LLM via LangChain
+
+Pass **any LangChain chat model** via the `llm` option. Use OpenAI, Google Gemini, Anthropic, Mistral, Ollama, Azure OpenAI, AWS Bedrock, or any [LangChain-supported provider](https://js.langchain.com/docs/integrations/chat/):
+
+```typescript
+// OpenAI
+import { ChatOpenAI } from "@langchain/openai";
+const llm = new ChatOpenAI({ modelName: "gpt-4.1-mini", apiKey: process.env.OPENAI_API_KEY });
+
+// Google Gemini
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+const llm = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash", apiKey: process.env.GOOGLE_API_KEY });
+
+// Anthropic
+import { ChatAnthropic } from "@langchain/anthropic";
+const llm = new ChatAnthropic({ model: "claude-sonnet-4-20250514", apiKey: process.env.ANTHROPIC_API_KEY });
+
+// Ollama (local)
+import { ChatOllama } from "@langchain/ollama";
+const llm = new ChatOllama({ model: "llama3" });
+```
+
+### Managing Token Limits
+
+Use `maxInputTokens` to truncate content when it exceeds the model's context window:
+
+```typescript
+const result = await extract({
+  llm: new ChatOpenAI({ modelName: "gpt-4.1-mini", apiKey: "..." }),
+  content: markdownContent,
+  format: ContentFormat.MARKDOWN,
+  schema,
+  maxInputTokens: 128000, // Roughly 128K tokens (4 chars/token)
+});
+```
+
+> [!WARNING]
+> For OpenAI models, optional schema is not supported. Use `.nullable()` instead of `.optional()`.
+
+### Extracting from Main HTML
+
+For blog posts or articles with lots of navigation elements, headers, and footers, you can use the `extractMainHtml` option to focus on just the main content:
+
+```typescript
+const result = await extract({
+  llm: myLLM,
+  content: htmlContent,
+  format: ContentFormat.HTML,
+  schema: mySchema,
+  htmlExtractionOptions: {
+    extractMainHtml: true // Uses heuristics to remove navigation, headers, footers, etc.
+  },
+  sourceUrl,
+});
+```
+
+> [!NOTE]
+> The `extractMainHtml` option only applies to HTML format. It uses heuristics to identify and extract what appears to be the main content area (like article or main tags). It's recommended to keep this option off (false) when extracting details about a single item (like detail page for a product) as it might remove important contextual elements.
+
+### Extracting Images from HTML
+
+By default, images are excluded from the HTML extraction process to simplify the output. If you need to extract image URLs or references, you can enable the `includeImages` option:
+
+```typescript
+// Define a schema that includes product images
+const productListSchema = z.object({
+  products: z.array(
+    z.object({
+      name: z.string(),
+      price: z.number(),
+      description: z.string().optional(),
+      // Include an array of images for each product
+      image: z.object({
+        url: z.string().url(),
+        alt: z.string().optional(),
+      }).optional(),
+    })
+  ),
+});
+
+const result = await extract({
+  llm: myLLM,
+  content: htmlContent,
+  format: ContentFormat.HTML,
+  schema: mySchema,
+  htmlExtractionOptions: {
+    includeImages: true // Includes images in the generated markdown
+  },
+  sourceUrl: sourceUrl,
+});
+```
+
+### URL Cleaning
+
+The library can clean URLs to remove tracking parameters and unnecessary components, producing cleaner and more readable links. This is particularly useful for e-commerce sites that add extensive tracking parameters:
+
+```typescript
+const result = await extract({
+  llm: myLLM,
+  content: htmlContent,
+  format: ContentFormat.HTML,
+  schema: mySchema,
+  htmlExtractionOptions: {
+    cleanUrls: true // Enable URL cleaning to remove tracking parameters
+  },
+  sourceUrl: "https://amazon.ca/s?k=vitamins",
+});
+// Amazon URLs like "https://www.amazon.com/Product/dp/B123/ref=sr_1_47?dib=abc"
+// become "https://www.amazon.com/Product/dp/B123"
+```
+
+> [!NOTE]
+> Currently, URL cleaning supports Amazon product URLs (amazon.com, amazon.ca) by removing `/ref=` parameters and everything after. The feature is designed to be extensible for other e-commerce platforms in the future.
+
+## LLM Extraction Function
+
+### LLM Configuration
+
+Pass a [LangChain chat model](https://js.langchain.com/docs/integrations/chat/) instance via the `llm` option. Install the LangChain integration for your provider (e.g. `@langchain/openai`, `@langchain/google-genai`, `@langchain/anthropic`) and configure API keys on the model instance.
+
+### `extract<T>(options: ExtractorOptions<T>): Promise<ExtractorResult<T>>`
+
+Main function to extract structured data from content.
+
+#### Options
+
+| Option | Type | Description | Default |
+|--------|------|-------------|---------|
+| `llm` | `BaseChatModel` | A [LangChain chat model](https://js.langchain.com/docs/integrations/chat/) instance (ChatOpenAI, ChatGoogleGenerativeAI, ChatAnthropic, etc.) | Required |
+| `content` | `string` | HTML, markdown, or plain text content to extract from | Required |
+| `format` | `ContentFormat` | Content format (HTML, MARKDOWN, or TXT) | Required |
+| `schema` | `z.ZodTypeAny` | Zod schema defining the structure to extract | Required |
+| `prompt` | `string` | Custom prompt to guide the extraction process | Internal default prompt |
+| `htmlExtractionOptions` | `HTMLExtractionOptions` | HTML-specific options for content extraction [see below](#htmlextractionoptions) | `{}` |
+| `sourceUrl` | `string` | URL of the HTML content, required when format is HTML to properly handle relative URLs | Required for HTML format |
+| `maxInputTokens` | `number` | Maximum number of input tokens to send to the LLM. Uses a rough conversion of 4 characters per token. When specified, content will be truncated if the total prompt size exceeds this limit. | `undefined` |
+| `extractionContext` | `Record<string, any>` | Extraction context that provides additional information for the extraction process. Can include partial data objects to enrich, metadata like URLs/locations, or any contextual information relevant to the extraction task. | `undefined` |
+
+#### htmlExtractionOptions
+
+| Option | Type | Description | Default |
+|--------|------|-------------|---------|
+| `extractMainHtml` | `boolean` | When enabled for HTML content, attempts to extract the main content area, removing navigation bars, headers, footers, sidebars etc. using heuristics. Should be kept off when extracting details about a single item. | `false` |
+| `includeImages` | `boolean` | When enabled, images in the HTML will be included in the markdown output. Enable this when you need to extract image URLs or related content. | `false` |
+| `cleanUrls` | `boolean` | When enabled, removes tracking parameters and unnecessary URL components to produce cleaner links. Currently supports cleaning Amazon product URLs by removing `/ref=` parameters and everything after. This helps produce more readable URLs in the markdown output. | `false` |
+| `annotateNumberClasses` | `boolean` | When enabled, appends the CSS class name of number-bearing elements next to the number in the markdown (e.g. `22,99 {price-box__price__amount}`). Plain markdown discards the semantic meaning encoded in class names; this preserves whether a number is a price, rating, review count, etc. Only the outermost element whose text is purely a number is annotated, so nested integer/decimal parts don't add noise. | `false` |
+
+#### Return Value
+
+The function returns a Promise that resolves to an `ExtractorResult<T>` object:
+
+```typescript
+interface ExtractorResult<T> {
+  data: T;             // Extracted structured data
+  processedContent: string;    // Processed content that was sent to the LLM. Markdown if the input was HTM (after conversion)
+  usage: {             // Token usage statistics
+    inputTokens?: number;
+    outputTokens?: number;
+  };
+}
+```
+
+## Using with Playwright
+
+Use [Playwright](https://playwright.dev/) to load web pages, then pass the HTML content to the extractor. Install Playwright separately:
+
+```bash
+npm install playwright
+```
+
+```typescript
+import { chromium } from "playwright";
+import { extract, ContentFormat } from "@lightfeed/extractor";
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+await page.goto("https://example.com/products");
+
+const html = await page.content();
+await browser.close();
+
+const result = await extract({
+  llm: myLLM,
+  content: html,
+  format: ContentFormat.HTML,
+  sourceUrl: "https://example.com/products",
+  schema: mySchema,
+});
+```
+
+## HTML to Markdown Conversion
+
+The `convertHtmlToMarkdown` utility function allows you to convert HTML content to markdown without performing extraction.
+
+**Function signature:**
+```typescript
+convertHtmlToMarkdown(html: string, options?: HTMLExtractionOptions, sourceUrl?: string): string
+```
+
+### Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `html` | `string` | HTML content to convert to markdown | Required |
+| `options` | `HTMLExtractionOptions` | See [HTML Extraction Options](#html-extraction-options) | `undefined` |
+| `sourceUrl` | `string` | URL of the HTML content, used to properly convert relative URLs to absolute URLs | `undefined` |
+
+### Return Value
+
+The function returns a string containing the markdown conversion of the HTML content.
+
+### Example
+
+```typescript
+import { convertHtmlToMarkdown, HTMLExtractionOptions } from "@lightfeed/extractor";
+
+// Basic conversion
+const markdown = convertHtmlToMarkdown("<h1>Hello World</h1><p>This is a test</p>");
+console.log(markdown);
+// Output: "Hello World\n===========\n\nThis is a test"
+
+// With options to extract main content, include images, and clean URLs
+const options: HTMLExtractionOptions = {
+  extractMainHtml: true,
+  includeImages: true,
+  cleanUrls: true // Clean URLs by removing tracking parameters
+};
+
+// With source URL to handle relative links
+const markdownWithOptions = convertHtmlToMarkdown(
+  `<html>
+    <body>
+      <header>Header</header>
+      <div>
+        <img src="/images/logo.png" alt="Logo">
+        <a href="/about">About</a>
+        <a href="https://www.amazon.com/product/dp/B123/ref=sr_1_1">Amazon Product</a>
+      </div>
+    </body>
+    <footer>Footer content</footer>
+  </html>`,
+  options,
+  "https://example.com"
+);
+console.log(markdownWithOptions);
+// Output: "![Logo](https://example.com/images/logo.png)[About](https://example.com/about)[Amazon Product](https://www.amazon.com/product/dp/B123)"
+```
+
+## JSON Recovery
+
+The `safeSanitizedParser` utility function helps sanitize and recover partial data from LLM outputs that may not perfectly conform to your schema.
+
+**Function signature:**
+```typescript
+safeSanitizedParser<T>(schema: ZodTypeAny, rawObject: unknown): z.infer<T> | null
+```
+
+```typescript
+import { safeSanitizedParser } from "@lightfeed/extractor";
+import { z } from "zod";
+
+// Define a product catalog schema
+const productSchema = z.object({
+  products: z.array(
+    z.object({
+      id: z.number(),
+      name: z.string(), // Required field
+      price: z.number().optional(), // Optional number
+      inStock: z.boolean().optional(),
+      category: z.string().optional(),
+    })
+  ),
+  storeInfo: z.object({
+    name: z.string(),
+    location: z.string().optional(),
+    rating: z.number().optional(),
+  })
+});
+
+// Example LLM output with realistic validation issues
+const rawLLMOutput = {
+  products: [
+    {
+      id: 1,
+      name: "Laptop",
+      price: 999,
+      inStock: true,
+    }, // Valid product
+    {
+      id: 2,
+      name: "Headphones",
+      price: "N/A", // Non-convertible string for optional number
+      inStock: true,
+      category: "Audio",
+    },
+    {
+      id: 3,
+      // Missing required "name" field
+      price: 45.99,
+      inStock: false
+    },
+    {
+      id: 4,
+      name: "Keyboard",
+      price: 59.99,
+      inStock: true
+    } // Valid product
+  ],
+  storeInfo: {
+    name: "TechStore",
+    location: "123 Main St",
+    rating: "N/A" // Invalid: rating is not a number
+  }
+};
+
+// Sanitize the data to recover what's valid
+const sanitizedData = safeSanitizedParser(productSchema, rawLLMOutput);
+
+// Result:
+// {
+//   products: [
+//     {
+//       id: 1,
+//       name: "Laptop",
+//       price: 999,
+//       inStock: true,
+//     },
+//     {
+//       id: 2,
+//       name: "Headphones",
+//       inStock: true,
+//       category: "Audio",
+//     },
+//     {
+//       id: 4,
+//       name: "Keyboard",
+//       price: 59.99,
+//       inStock: true,
+//     }
+//   ],
+//   storeInfo: {
+//     name: "TechStore",
+//     location: "123 Main St",
+//   }
+// }
+```
+
+This utility is especially useful when:
+- LLMs return non-convertible data for optional fields (like "N/A" for numbers)
+- Some objects in arrays are missing required fields
+- Objects contain invalid values that don't match constraints
+- You want to recover as much valid data as possible while safely removing problematic parts
+
+## URL Validation
+
+The library provides robust URL validation and handling through Zod's `z.string().url()` validator:
+
+```typescript
+const schema = z.object({
+  title: z.string(),
+  link: z.string().url(),      // Full URL validation works!
+  sources: z.array(z.string().url())  // Also works with arrays of URLs
+});
+
+const result = await extract({
+  llm: myLLM,
+  content: markdownContent,
+  format: ContentFormat.MARKDOWN,
+  schema,
+  // ... other options
+});
+```
+
+### How URL Validation Works
+
+Our URL validation system provides several key benefits:
+
+1. **Validation**: Uses Zod's built-in `url()` validator to ensure URLs are properly formatted
+2. **Special Character Handling**: Automatically fixes URLs with escaped special characters in markdown (e.g., `https://example.com/meeting-\(2023\)` becomes `https://example.com/meeting-(2023)`)
+3. **Relative URL Resolution**: Converts relative URLs to absolute URLs when `sourceUrl` is provided
+4. **Invalid URL Handling**: Skips invalid URLs rather than failing the entire extraction using our `safeSanitizedParser`
+
+This approach ensures reliable URL extraction while maintaining the full power of Zod's schema validation.
+
+## Development
+
+### Setup
+
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Create a `.env` file in the root directory with your API keys (see `.env.example`)
+
+### Scripts
+
+- `npm run build` - Build the library
+- `npm run clean` - Remove build artifacts
+- `npm run test` - Run all tests (requires API keys for integration tests)
+- `npm run dev` - Run the example file
+
+### Running Local Tests
+
+You can test the library with real API calls and sample HTML files:
+
+```bash
+# Run all local tests with both providers
+npm run test:local
+
+# Run specific test type with both providers
+npm run test:local -- blog
+npm run test:local -- product
+
+# Run tests with a specific provider
+npm run test:local -- blog openai   # Test blog extraction with OpenAI
+npm run test:local -- product gemini  # Test product extraction with Google Gemini
+```
+
+### Testing
+
+The library includes both unit tests and integration tests:
+
+- **Unit tests**: Test individual components without making API calls
+- **Integration tests**: Test full extraction pipeline with real API calls
+
+Integration tests require valid API keys to be provided in your `.env` file or environment variables. Tests will fail if required API keys are not available.
+
+Each integration test runs with both Google Gemini and OpenAI to ensure compatibility across providers.
+
+#### HTML to Markdown Integration Tests
+
+This project includes comprehensive integration tests for the HTML to Markdown converter using real-world HTML samples. The tests validate three conversion types:
+
+1. Basic conversion (no images)
+2. Main content extraction (no images)
+3. Conversion with images included
+
+These tests use a Git submodule with HTML files and groundtruth markdown files. The submodule is not downloaded by default to keep the repository lightweight. To run these tests:
+
+```bash
+# First time: Initialize and download the test data submodule
+npm run test:html2md:update
+
+# Run the HTML to Markdown integration tests
+npm run test:html2md
+
+# Update test data if new test files are available
+npm run test:html2md:sync
+```
+
+The test suite automatically discovers all available test files and creates test cases for each conversion type that has a corresponding groundtruth file.
+
+#### Running Specific Tests
+
+You can run individual tests by using the `-t` flag with a pattern that matches the test description:
+
+```bash
+# Run a specific test by exact description
+npm run test -- -t "should extract blog post data using Google Gemini default model"
+
+# Run all tests that include a specific keyword
+npm run test -- -t "blog post"
+
+# Run all tests for a specific provider
+npm run test -- -t "OpenAI"
+
+# Run all unit tests for a specific utility
+npm run test -- -t "safeSanitizedParser"
+
+# Run specific HTML to Markdown tests
+npm run test -- -t "should convert forum/tech-0 to markdown"
+```
+
+The `-t` flag uses pattern matching, so you can be as specific or general as needed to select the tests you want to run.
+
+## Support
+
+If you need direct assistance with your implementation:
+- Email us at support@lightfeed.ai
+- Open an issue in this repository
+
+## License
+
+Apache 2.0

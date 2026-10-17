@@ -1,0 +1,533 @@
+# adversarial-review · 三方对抗式代码评审
+
+**中文** · [English](README.en.md)
+
+> 给 AI 编程 agent 的代码评审 skill：把"再仔细看一遍"换成**结构化的对抗关系**——敌意审查 → 独立审计 → 中立裁定。
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Agent Skill](https://img.shields.io/badge/Agent%20Skill-SKILL.md-blue.svg)](skills/adversarial-review/SKILL.md)
+[![skills.sh](https://img.shields.io/badge/skills.sh-adversarial--review-0b7285.svg)](https://www.skills.sh/revolutionla/adversarial-review)
+[![SkillHub curated](https://img.shields.io/badge/SkillHub-builtin--skill-2f6fed.svg)](https://github.com/iflytek/skillhub/tree/main/builtin-skills/skills/adversarial-review)
+[![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%7C%20DeepSeek%20Harness%20%7C%20Cursor%20%7C%20Codex-green.svg)](#兼容性)
+
+**安装**：`npx skills add RevolutionLA/adversarial-review`（详见 [安装](#安装)）
+
+---
+
+## 先说最有说服力的一件事
+
+**这个 skill 抓到过它自己作者的错——不是一次，是每一轮版本发布前都抓一次。而且最狠的一次，是它顺手把"作者引以为豪的自检门禁"也被证明是摆设。**
+
+| 我犯的错 | 谁抓到的 |
+|---|---|
+| 在整改文档里写"已修复"，但**那个文件根本没改** | 第三方复核（用 git blob 哈希证伪） |
+| 修一个 bug 时**引入了新 bug**，而且**提交时自带测试是红的** | 中立裁定（在隔离副本里跑测试发现） |
+| 声称"新规则已落实到三个模板"，**实际只进了一个**；自验脚本对着旧安装副本报"🎉 验证通过" | v2.1.0 发布前自评审：第三方 + 中立裁定（**25 条缺陷，两轮闭环**） |
+
+第二行的错是「**为了修 A 而引入 B**」——**正是这个 skill 开篇第一条要抓的缺陷，而它发生在一个专门抓这类缺陷的工具上**。第三行更彻底：v2.1.0 发布前用 skill 自己跑完整三方评审，第三方**裸跑验证脚本拿到 exit 0 的"通过"**——证明我们文档里写的"永远绿的检查等于没有检查"，我自己也在犯。修复方式不是道歉，是新增一道**会红的门禁**（`check-docs.mjs`）：它上线当晚就抓到作者自己的文档行数漂移。
+
+> **这个 skill 不保证你不犯错。它保证的是：错误会被暴露出来，而不是被掩盖。**
+>
+> 上面三个错都是我写的，全部由这个流程自己抓出，每条处置都有可复查的证据链（`docs/review/` 四份报告，本地保留）。
+>
+> **30 秒看懂它怎么工作**：读一份带完整证据链的[真实评审样例](skills/adversarial-review/examples/sample-review.md)（v2.0 时的产出，按现行规则机检会判红，原因写在里面），或看一份符合现行规则的[合规样例](skills/adversarial-review/examples/sample-review-v2.2.md)。
+
+### 眼见为实：门禁**能**失败，这四段是刚跑出来的真实输出
+
+不是示意图，不是"我们很注重质量"这类话。检查有没有价值，唯一的标准是它**能不能变红**。
+
+> 下面四段都是在**临时副本**里跑的（`cp -r` 一份再改），别在自己的工作区里注入缺陷。命令与输出**逐字粘贴**，唯一的删减写在命令里（`grep` 的过滤条件），不在剪贴板里——所以每段都能原样重跑。
+
+**① 把那个"修 A 引入 B"的确切缺陷重新塞回去 → 门禁 exit 1，提交进不去**
+
+```bash
+# 复现：重新注入 v2.0.1 的语义反转（折叠分支的条件改成语义互换的字面分支）
+sed -i 's/if (blockStyle === "folded")/if (blockStyle === "literal")/' scripts/validate-skill.mjs
+bash .githooks/pre-commit 2>&1 | grep -vE "^  ✅|^$|^--- 一、"; echo "exit=${PIPESTATUS[0]}"
+```
+
+```text
+[pre-commit] 运行门禁检查...
+validate-skill.mjs 回归测试
+--- 二、块标量语义（内容断言，锁住折叠 vs 字面） ---
+  ✗ 折叠块结果应以空格连接，不含换行符
+      折叠块不应含 \n，实际: "line one here\nline two here"
+  ✗ 字面块结果应保留换行符
+      字面块应含 \n，实际: "line one here line two here"
+  ✗ 折叠块里的空行是段落分隔，应折成一个换行（评审 R5）
+      空行应折成恰好一个 \n（段落分隔），实际: "line one here\n\nline two here"
+  ✗ 折叠块里的连续空行按 YAML 语义累积（段落分隔不被吞）
+      两个空行应累积成两个 \n，实际: "line one here\n\n\nline two here"
+  ✗ 字面块里的 # 开头行是内容，不得当注释丢弃（评审 R5）
+      # 行被丢弃或错位，实际: "heading # not a comment tail"
+  ✗ 字面块里的空行必须原样保留（评审 R5）
+      字面块应保留空行，实际: "heading\ntail"
+  ✗ 块标量之后紧跟另一个块标量，状态不应残留
+      description 应是折叠块（不含 \n），实际 "folded one\nfolded two"
+--- 三、长度上限校验（蓝军 B1 的核心危害） ---
+--- 四、必须报错的情形（修复不能放松检出） ---
+--- 五、不能误伤的正常写法 ---
+结果: 17 通过, 7 失败
+[pre-commit] ✗ 回归测试未通过 —— 禁止提交（这正是本项目两次事故的根因）
+exit=1
+```
+
+> 省略写在**命令里**，不写在剪贴板里：`grep -vE "^  ✅|^$|^--- 一、"` 过滤掉通过的用例、空行与第一节标题，所以第一节只剩它下面的 ✗ 行（第三节起是空节——它下面的用例全被滤掉了）。上一版的这一段是手删的，删掉的 2 行 ✗ 属于同一个缺陷类，评审 T5 抓到后才换成现在这条可原样重跑的命令。
+
+**② 代码一个字不动，只把文档里的一个数字改歪 → 第五道门禁（`check-docs.mjs`）变红**
+
+```bash
+# 复现：把 README 的"正文 173 行"改成"正文 180 行"（SKILL.md 完全没动）
+sed -i 's/正文 173 行/正文 180 行/' README.md
+node scripts/check-docs.mjs 2>&1 | grep -E "^check-docs:|^  ✗"; echo "exit=${PIPESTATUS[0]}"
+```
+
+```text
+check-docs: SKILL.md 实测 总 182 行 / frontmatter 9 行 / 正文 173 行；设计要点表 13 条；维度 19 项；门禁 6 道；用例 校验器 24 / 机检器 29；突变 26 条；版本 2.5.1
+  ✗ README.md:463 主张 SKILL.md 正文行数 = 180（原文"正文 180 行"） —— 实测 正文行数为 173
+check-docs: 1 处文档主张与实况不符
+exit=1
+```
+
+第一段就是 `check-docs.mjs` 上线当晚抓到的那类问题（**作者写的数字过期了，其余门禁全绿**）。它当时是真的让我提交失败了一次。v2.3 起它对账的不只是行数：维度条数、门禁道数、"第 N 道门禁"点名的脚本对不对、两套回归测试的用例数、突变注入条数、`SKILL.md` 与 CHANGELOG 的版本号、以及下面「安装」一节里安装命令锚的 tag——**改一处忘一处，就提交不了**。
+
+**③ 报告机检器：历史样例判红，v2.3 新增的合规样例判绿**
+
+```bash
+# 机检蓝军总表：声称实测的高危，必须在自己那一节的展开段落里贴出复现命令与真实输出
+node skills/adversarial-review/scripts/check-report.mjs \
+  skills/adversarial-review/examples/sample-review.md
+node skills/adversarial-review/scripts/check-report.mjs \
+  skills/adversarial-review/examples/sample-review-v2.2.md
+```
+
+```text
+check-report: skills/adversarial-review/examples/sample-review.md
+  ✗ B1：声称实测，但自己的展开段落里没有「复现命令」 —— 只在总表里写"实测"两个字不构成证据
+  ✗ B2：声称实测，但自己的展开段落里没有「复现命令」 —— 只在总表里写"实测"两个字不构成证据
+check-report: 2 处不符合「未经实测不得定高危」约束（高危须逐条取证）
+exit=1
+check-report: skills/adversarial-review/examples/sample-review-v2.2.md
+check-report: 4 条缺陷（第 29 行的总表），3 条声称实测（其中高危 2 条），逐条取证通过（全文有效「复现命令」2 处）
+exit=0
+```
+
+旧样例产于 v2.2 规则之前，所以它**理应当红**——机检器不给历史面子，也不给作者面子；它的回归测试（`scripts/test-check-report.mjs`，29 用例 = 8 绿 + 20 红 + 1 用法错误）防止它退化成"什么都判红"。
+**v2.3 把取证方式改成"逐条就近"**：此前它只数全文出现了几次「复现命令」四个字，外部评审证明**往正文任意一处写进这四个字，就能放行任意多条编造的高危**。
+**v2.4 又往前走了一步：从"验有没有"到"验像不像"**——第二轮评审发现 `- **复现命令**：\`见附录\`` 照样能盖章（判据只看"有两个反引号包着 ≥3 个字符"），而取证窗口 `end + 9` 允许把一条公共脚本塞进紧随其后的附录里给全部高危共用；命令必须落在**本小节内**，且内容要"像一条命令"。
+**v2.5 发现"像"这个字本身就是漏洞**：第三轮评审把同一个攻击翻译成英文——`` - **复现命令**：`see appendix` ``——机检器照常盖章，贴一段源码或一行 `npm ERR!` 日志也一样；而真命令 `make`、`pytest` 反被判红。**形状判据挡住的只是中文占位词**。现在的判据是词法的：首 token 必须是可执行程序名（`node`、`make`、`pytest`…）或带路径的脚本（`./install.sh`），后面还得跟得上参数或管道；报错日志与源码片段先被剔除。下面第 ④ 段是这两轮绕过的现场复现。
+
+**④ 两份"零命令"报告：中文占位词上一版就挡住了，英文占位词是这一版才挡住的**
+
+```bash
+# 第 1 步：造两份构造——标签写了，行内代码是占位词。第二份只是把占位词换成英文
+mkdir -p docs/review && cat > docs/review/bypass-cn.md <<'MD'
+# 蓝军报告
+
+## 缺陷总表
+
+| 编号 | 级别 | 定级依据 | 一句话 | 维度 | 位置（文件:行号） |
+|---|---|---|---|---|---|
+| B1 | 🔴 | 实测 | 会导致崩溃 | 正确性 | src/a.js:12 |
+
+### B1 · 🔴 会导致崩溃
+
+- **复现命令**：`见附录`
+
+## 附录
+
+（略）
+MD
+sed 's/`见附录`/`see appendix`/' docs/review/bypass-cn.md > docs/review/bypass-en.md
+
+# 第 2 步：把 v2.4 那台机检器从 tag 里取出来，和新版跑同样两份文件
+git show v2.4.0:skills/adversarial-review/scripts/check-report.mjs > /tmp/cr-2.4.mjs
+for f in cn en; do
+  node /tmp/cr-2.4.mjs docs/review/bypass-$f.md >/dev/null 2>&1; e1=$?
+  node skills/adversarial-review/scripts/check-report.mjs docs/review/bypass-$f.md >/dev/null 2>&1; e2=$?
+  echo "占位词（$f）: v2.4 exit=$e1 / v2.5 exit=$e2"
+done
+node /tmp/cr-2.4.mjs docs/review/bypass-en.md   # 上一版对英文占位词的放行原话
+```
+
+```text
+占位词（cn）: v2.4 exit=1 / v2.5 exit=1
+占位词（en）: v2.4 exit=0 / v2.5 exit=1
+check-report: docs/review/bypass-en.md
+check-report: 1 条缺陷（第 5 行的总表），1 条声称实测（其中高危 1 条），逐条取证通过（全文有效「复现命令」1 处）
+```
+
+> 这段演示是本轮评审的产物，而且它记录的是**我们自己那一版的洞**：v2.4 的判据号称"验像不像"，实际只挡住了中文占位词——`见附录` 被非 ASCII 检查拦下，`see appendix` 因为"是纯 ASCII 且有两个词"被当成了一条命令。**换一种自然语言就绕过一层防御**，这说明"形状"根本不是个可靠判据，词法（可执行程序名 / 带路径的脚本）才是。上一版的失败现场连同它的 tag 一起留在仓库里，任何人都能重跑确认 v2.4 确实放行过英文占位词。构造文件写在 `docs/review/`（该目录被 gitignore，不随包发布）。
+
+> 上面输出的行号（`README.md:463`）会随文档增删而变——**行号引用会腐烂**这件事本身就是本 skill 的第 17 维度（文档一致性）反复抓到的缺陷，所以我们把它显式标出来，而不是假装它是常量。这四段输出在本次改完文档后**又各自重跑了一遍**才贴上来，不是手改的数字。
+
+---
+
+## 它解决什么问题
+
+单人或单 AI 写代码，最大的风险不是"不会写"，而是：
+
+1. **用未验证的乐观假设说服自己推迟修复** —— "这个兜底应该够了吧"
+2. **测试提供假安全感** —— 测试全绿，但功能其实早坏了
+3. **为了修 A 而引入 B** —— 新写的修复代码本身没被独立审视
+
+这三个问题**靠"再仔细看一遍"解决不了**。因为它们不是注意力问题，是**立场问题**：写代码的人和审代码的人是同一个，就一定会为自己辩护。
+
+这个 skill 的做法是**强制把立场拆开**：
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   蓝军      │ ──▶ │   第三方    │ ──▶ │  中立裁定   │
+│  敌意审查   │     │  独立审计   │     │  逐条裁定   │
+├─────────────┤     ├─────────────┤     ├─────────────┤
+│ 假设会出事  │     │ 不信双方文档│     │ 不信双方结论│
+│ 然后去证明  │     │ 只读源代码  │     │ 自己重新读码│
+│ 必须给证据链│     │ 专找新缺陷  │     │ 可采纳/驳回 │
+└─────────────┘     └─────────────┘     └─────────────┘
+     定义"修什么"      验证"修没修对"      裁定"谁说得对"
+```
+
+**关键不是"多找两个 AI 看看"，而是顺序与互不信任。**
+
+---
+
+## 三个角色
+
+| 角色 | 立场 | 硬性约束 |
+|---|---|---|
+| **蓝军** | 敌意审查——假设代码会出事，去**证明** | 每条结论必须附证据链（`文件:行号` / 实测命令 / 上游源码）；禁止"建议加强鲁棒性"这类空话 |
+| **第三方** | 独立审计——**不信任任何一方文档**，直接读代码 | 必须逐条复核"声称修了的是否真修了"、**专找修改引入的新缺陷**、并**稽核蓝军漏审了哪些维度** |
+| **中立裁定** | 对双方结论**逐条采纳 / 驳回 / 改级** | 必须由**与蓝军不同的 agent** 担任；还要**审查两方共有的前提** |
+
+**为什么裁定方不能是蓝军**：裁定对象是"第三方对蓝军意见的复核"。让蓝军自己裁定，它同时是**当事人**和**法官**——会系统性驳回针对自己的批评。**当事人不能当法官。**
+
+### 一个比方：公诉人、鉴定机构、合议庭
+
+第三方和裁定看起来"都是中立人物"，区别在这里：**两个中立的角色里，一个还要出去取证，另一个只在屋里判决。**
+
+| 角色 | 法庭对应 | 有没有立场 | 会不会自己重新查 | 产出 |
+|---|---|---|---|---|
+| 蓝军 | 公诉人 | 有（有罪推定） | 会，只为坐实指控 | 指控清单 |
+| **第三方** | **独立鉴定机构** | 无 | **会，重新勘验现场** | 又一份意见书（它本身也是被复核的对象） |
+| **中立裁定** | **合议庭** | 无 | **不会，只看卷宗** | 判决书 = 合并执行清单 |
+
+- **鉴定机构为什么必要**：公诉人的勘查会漏，被告的自辩不可信。鉴定机构重新勘验一遍，结论既能推翻公诉人的定性（"这处不是原来砸的，是抢修时自己震裂的" = **修改引入的新缺陷**），也能指出公诉人根本没查的维度（"现场还有第三组脚印" = **蓝军漏审的维度**）。注意它**不是第二辩护人**——律师是有立场的，它没有立场，但它有增量产出。
+- **合议庭为什么必要**：**鉴定报告本身是一份证据，不是结论。** 合议庭不再出外勤，只判断两份卷宗谁站得住，以及"公诉人和鉴定机构是不是都引用了同一份伪造台账"——即**两方共有的前提**，同模型互搏最大的盲区。
+- **一句话检验谁越界**：鉴定机构不写判决，合议庭不出外勤。
+
+> 这个比方有美化成分：真实法庭有完整的辩护对抗（无罪推定、疑点利益归被告），本 skill **有意不设辩护方**——开发方的申辩被并进了裁定环节的驳回理由，以及"蓝军每条指控须附证据链"的约束里。所以它更接近**职权主义**（三方都在找真相），而不是**当事人主义**（双方对抗、法官消极）。
+
+---
+
+## 收录与分发
+
+| 渠道 | 状态 | 说明 |
+|---|---|---|
+| `npx skills add RevolutionLA/adversarial-review`（skills.sh） | ✅ 可用 | 装的是本仓库 `main` |
+| [iflytek/skillhub](https://github.com/iflytek/skillhub) 内置精选包 | ✅ 已收录（PR [#909](https://github.com/iflytek/skillhub/pull/909)，merge `52b8401`，2026-10-15T16:46Z） | `builtin-skills/catalog.json` 钉 `0d007a2` + `path: skills/adversarial-review`，声明版本 2.5.1、MIT |
+| skillhub 的不可变 CDN 产物 + runtime manifest 条目 | ⏳ **未完成**，按维护方在合并前的原话"stay with maintainers and remain tracked as open items" | 现在对外说"已随 skillhub 运行时分发"是**不实**的 |
+
+策展副本与本仓库那份**只有一个文件不同**（`SKILL.md`），差异逐条列在该包内的 `NOTICE.md`：`version` 从 `metadata.version` 提到顶层、`compatibility` 补上"机检步骤需要 Node.js"、去掉写作用的 `references/skill-spec.md` 及其指针、去掉三个安装脚本（精选包统一走 skillhub 自己的安装路径）。其余 6 个共有文件是**按 git blob sha 逐个相等**，不是"看起来一样"：
+
+```bash
+# 1) 共有文件逐 blob 对比：应全部相等，只有 SKILL.md 因策展改写而不同
+gh api "repos/RevolutionLA/adversarial-review/git/trees/0d007a2?recursive=1"   --jq '.tree[]|select(.path|startswith("skills/adversarial-review/"))|"\(.path[25:]) \(.sha)"'
+gh api "repos/iflytek/skillhub/git/trees/main:builtin-skills/skills/adversarial-review?recursive=1"   --jq '.tree[]|select(.type=="blob")|"\(.path) \(.sha)"'
+
+# 2) 钉住的 commit 是不是就是 v2.5.1 那份内容（两条 sha 应相同）
+gh api "repos/RevolutionLA/adversarial-review/git/trees/0d007a2?recursive=1" --jq '.tree[]|select(.path=="skills/adversarial-review/SKILL.md").sha'
+gh api "repos/RevolutionLA/adversarial-review/git/trees/v2.5.1?recursive=1"  --jq '.tree[]|select(.path=="skills/adversarial-review/SKILL.md").sha'
+```
+
+2026-10-17 本机实跑：第 2 组两条均为 `d0688f26cd2e369ce3e2c16eed662f6008159c3b`（`0d007a2` 是 tag 之后仅改 README 的一笔，所以 skill 内容与 v2.5.1 同一份）；第 1 组 6 个共有文件全等，`SKILL.md` 在 skillhub 侧是 `270d7343e8c772e646b2a57edf55ad431e56592e`。**本仓库发新版后要提 sync PR** 更新那份精选副本与 `catalog.json` 的 pin——这一步目前没有自动化，靠人记得。
+
+---
+
+## 安装
+
+### 方式一：npx（推荐）
+
+```bash
+# 装到 Claude Code
+npx skills add RevolutionLA/adversarial-review -a claude-code
+
+# 一次装到多个 agent
+npx skills add RevolutionLA/adversarial-review -a claude-code -a cursor -a opencode
+```
+
+列表页：<https://www.skills.sh/revolutionla/adversarial-review>。在 skills.sh 上按关键词搜 `adversarial review` **搜不到我们**——那个索引按安装量硬截断前 200 条（2026-10-15 复测：200 条里入榜最低 4 次安装，命中 `adversarial-review` 的已有 62 条，而我们 1 次安装排在截断线之外；9-27 首次量的是 3 次 / 57 条），所以请用上面的直链，或 `skills find adversarial --owner revolutionla`。
+
+### 方式二：手动复制
+
+```bash
+git clone https://github.com/RevolutionLA/adversarial-review.git
+
+# 注意：skill 位于仓库的 skills/<name>/ 子目录下
+mkdir -p ~/.claude/skills
+cp -r adversarial-review/skills/adversarial-review ~/.claude/skills/
+```
+
+<details>
+<summary>Windows (PowerShell)</summary>
+
+```powershell
+git clone https://github.com/RevolutionLA/adversarial-review.git
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills" | Out-Null
+Copy-Item -Recurse -Force ".\adversarial-review\skills\adversarial-review" "$env:USERPROFILE\.claude\skills\"
+```
+</details>
+
+### 方式三：一行安装脚本
+
+脚本锚定在**已评审的发布版本**上（`v2.5.1`），不指向 `main`——一行流装的是"你看不见的当下最新"，而 `main` 上任何一次未评审的提交都会顺着管道进你的 skill 目录。
+
+**先看再跑**（两步，30 秒）：
+
+```bash
+# 第 1 步：先把脚本读一遍（它会写到哪个目录、动了你已有的安装怎么办，全在里头）
+curl -fsSL https://raw.githubusercontent.com/RevolutionLA/adversarial-review/v2.5.1/skills/adversarial-review/scripts/install.sh | less
+```
+
+```bash
+# 第 2 步：确认无误后再执行
+curl -fsSL https://raw.githubusercontent.com/RevolutionLA/adversarial-review/v2.5.1/skills/adversarial-review/scripts/install.sh | bash
+```
+
+<details>
+<summary>Windows (PowerShell)</summary>
+
+```powershell
+# 第 1 步：先看
+irm https://raw.githubusercontent.com/RevolutionLA/adversarial-review/v2.5.1/skills/adversarial-review/scripts/install.ps1 | more
+# 第 2 步：再跑
+irm https://raw.githubusercontent.com/RevolutionLA/adversarial-review/v2.5.1/skills/adversarial-review/scripts/install.ps1 | iex
+```
+</details>
+
+> 这个版本号不是手写的：`check-docs.mjs` 会把上面两条 URL 里的 `v2.5.1` 与 CHANGELOG 最新版本号对账，改一处忘另一处就提交不了。
+
+> 已有安装时，脚本会把旧副本**备份到 skills 目录之外的 `skill-backups/`** 再覆盖——你本地的自定义修改不会丢，备份也不会滞留成"抢路由的幽灵 skill"。备份只保留最近 3 份。
+
+### 验证安装
+
+```bash
+bash skills/adversarial-review/scripts/verify-install.sh
+# 或指定路径
+bash skills/adversarial-review/scripts/verify-install.sh ~/.claude/skills/adversarial-review
+```
+
+> 裸跑时它会核对**所有安装根**的版本一致性：宿主根是自动发现的（`$HOME` 下一层点目录，如 `~/.claude`、`~/.codex`、`~/.qoder`），不依赖手写的宿主清单——v2.5 就是因为清单漏了 Codex 的根，对着陈旧副本打印过一句"全部安装根版本一致"。发现漂移即退出码 1，并指名是哪个根。（本机实测：`bash skills/adversarial-review/scripts/verify-install.sh` 输出 `核对安装根: 3 个`。）
+
+> ⚠️ 校验器（`validate-skill.mjs`）位于**仓库**的 `scripts/`，不随 skill 安装。因此从安装副本运行时，脚本会明确告诉你"**规范校验未执行，不能视为完整验证**"并返回退出码 2——**它不会给你一个空的"通过"**。
+
+---
+
+## 用法
+
+安装后**不需要记命令**，用自然语言触发即可：
+
+| 你说 | 效果 |
+|---|---|
+| "跑一次蓝军评审" | 启动标准档三方流程 |
+| "帮我挑刺，这版要发布了" | 启动重档，多路并行交叉验证 |
+| "第三方复核一下" | 单独执行第 2 步 |
+| "adversarial review this module" | 英文同样触发 |
+| "cross-check my changes" | 同上 |
+
+档位：
+
+| 档位 | 配置 | 相对成本 | 适用 |
+|---|---|---|---|
+| **轻档** | 1 个蓝军（聚焦选定维度）| ~1x | 小改动、时间紧 |
+| **标准档**（默认）| 蓝军 → 第三方 → 中立裁定，共 3 轮 | ~3x | 一般功能版本 |
+| **重档** | 标准档 + 多路并行交叉验证 | ~5-8x | 发布前、重大重构、涉及上游兼容 |
+
+---
+
+## 覆盖哪些质量维度
+
+三角色只解决"**怎么审**"，不解决"**审哪里**"。所以附带一张 **19 维度清单**（[`review-dimensions.md`](skills/adversarial-review/references/review-dimensions.md)），按改动类型选取本次必审范围：
+
+| 类别 | 维度 |
+|---|---|
+| **需求与设计** | 需求一致性 · 架构与设计 |
+| **代码正确性** | 正确性 · 错误处理 · 并发与竞态 |
+| **质量属性** | 性能 · 安全 · 隐私与数据 · 可观测性 |
+| **验证** | 测试有效性 |
+| **演进与共存** | 兼容性 · 依赖与供应链 · 资源与生命周期 · 数据迁移与状态演进 |
+| **工程与交付** | 配置与密钥 · 发布工程 · 文档一致性 · 可访问性与国际化 · 许可证合规 |
+
+**按改动类型选，不要全审**——修 bug 就重点审「正确性 / 错误处理 / 测试（必须有回归用例）/ 兼容性」；19 项全塞进一次审查只会让报告又长又浅。
+
+这张表**接进了流程**，不只写在文档里：
+
+- 第 0 步要求**选定维度**
+- 第 1 步要求蓝军**逐维度表态**（哪怕"未发现问题"，禁止整项跳过）
+- 第 2 步要求第三方**稽核蓝军的覆盖度**——否则蓝军的盲区会变成整个流程的盲区
+- 第 3 步要求裁定方**审查两方共有的前提**——这是同模型互搏最大的盲区
+
+---
+
+## 产出长什么样
+
+跑完后在 `docs/review/` 得到四份可追溯的报告——**不是一句"看起来没问题"，而是带行号和复现命令的攻防记录**：
+
+```
+docs/review/
+├─ BLUE-TEAM-REVIEW-<version>.md    # 蓝军：缺陷总表 + 逐条证据链 + 维度覆盖声明 + 未验证项
+├─ RESPONSE-<version>.md            # 开发团队：逐条采纳/部分/推迟/驳回
+├─ THIRD-PARTY-REVIEW-<version>.md  # 第三方：整改验证表 + 新缺陷(T项) + 覆盖度稽核
+└─ ADJUDICATION-<version>.md        # 中立裁定：最终裁定 + 共同前提审查 + 合并执行清单
+```
+
+教学样例两份：[`examples/sample-review.md`](skills/adversarial-review/examples/sample-review.md)（真实产出，规则之前）与 [`examples/sample-review-v2.2.md`](skills/adversarial-review/examples/sample-review-v2.2.md)（符合现行规则、能过机检器）。
+
+> **注意**：评审记录默认**不入库**（见 `.gitignore` 中的 `/docs/review/`）。它们包含未修复问题的细节与内部实现信息，适合留在本地。若你的项目想把它作为质量流程展示，删掉那行并正常提交即可。
+
+---
+
+## 为什么它长得像一套司法程序
+
+不是修辞。代码评审和法律执行面对的是**同一个问题**：如何让一个有立场的人承认自己错了。所以角色分工必然趋同——但也恰恰有**三处必须不同**，说清这三处比写"我们很严谨"有用。
+
+趋同的部分：
+
+| 司法程序 | 本项目对应 | 为什么少不了 |
+|---|---|---|
+| 公诉人举证 | 蓝军每条结论必须附证据链 | 没有举证责任的指控等于噪音 |
+| 重新鉴定 / 二次勘验现场 | 第三方不信双方文档、重读代码、**原样重跑复现命令** | 初次勘查会漏，当事人自辩不可信 |
+| 合议庭判决 | 中立裁定逐条采纳 / 驳回 / 改级 | **鉴定报告是一份证据，不是结论** |
+| 二审 / 再审 | 下一轮第三方专查"修 A 引入 B" | 一审判决本身可能就是错的 |
+| **强制执行机关** | **`.githooks/pre-commit` 门禁** | 判了不改，本来是可以零代价的 |
+
+必须不同的三处（类比在这里失效，而不是我们偷懒）：
+
+1. **不设辩护方**。人类司法那套质证、交叉询问、非法证据排除，是**在事实无法重演的条件下**逼近真相的机器——昨天的现场烧掉了，只能靠双方对抗着拼。代码随时可以再跑一遍，所以"质证"这个环节被**实测**直接取代了。作者的位置由 `RESPONSE-<version>.md`（逐条采纳 / 推迟 / 驳回）承担，那是**被告人自辩**，不是专职辩方。让同一个模型扮演辩方只会得到两样东西：表演性辩护，以及一个**共同前提固化器**（同源同模型，辩方会和控方错在同一处）。
+2. **不需要分权制衡**。侦查与起诉分家，是为了约束**强制力**——掌握搜查权的人不能同时决定起诉谁。蓝军一行代码都改不了，也拦不住发布，它只能写意见。**没有强制力，就不需要搜查令。**
+3. **证据规则反而更硬**。法律讲"排除合理怀疑"；这里有一条能机械检查的对应物：**未经实测不得定高危**——只有推理链的结论最高只能定 🟡，🔴/🟠 必须贴出可原样重跑的命令与实际输出。理由不是洁癖，是**激励**：不与定级绑定时，模型会让自己的结论显得重要到"声称跑过"。所以第三方负责逐条重跑，跑不出来就判「证据不成立」并降级；这条规则还配了一台机检器兜底（见下一节的第六道门禁 `test-check-report.mjs`）。
+
+> 一句话：**这套流程里的每个角色，都对应"某一方会骗人"这一件事**。蓝军防作者骗人，第三方防蓝军骗人，裁定防双方一起骗人，门禁防所有人假装看见了。
+
+---
+
+## 这个仓库自己是怎么被验证的
+
+开发过程中跑了三轮自评审，抓出的真实问题：
+
+| 轮次 | 抓到了什么 |
+|---|---|
+| **v1.1** | 第 3 步原本让蓝军自己裁定第三方意见——**当事人当法官**，与自己的核心规则冲突 |
+| **v2.0 蓝军** | 校验器把 `description: >` 读成 1 个字符**却报"通过"**；SKILL.md **零处引用**配套文件；仓库结构不符合 skills.sh 要求**所以不会被索引**；CI 的链接检查**永远不可能失败** |
+| **v2.0 第三方** | 整改文档里的"已修复"声明**是假的**（blob 哈希证伪）；CI 有个步骤**名实不符**；新增测试有 5 个突变逃逸 |
+| **v2.0.2 中立裁定** | **修 bug 引入了新 bug**——`>` 与 `|` 解析语义被对调，而该提交**自带测试是红的却照常提交了**；安装验证脚本**向用户报假的"通过"** |
+| **v2.1.0 两轮完整闭环** | 蓝军 11 条（"已落实三个模板"不实、安装副本停留 v2.0、备份抢路由……）→ 第三方 14 条证明**第一轮整改只算部分落地**、`verify-install` 裸跑对旧副本报"🎉 通过"、**四道门禁对这批缺陷全部零覆盖** → 裁定方改判 2 条降级、驳回 1 条建议，并当场实施第五道门禁 |
+| **v2.2.0 外部评审（15 条）** | 评审方用一份**按我们自己的规则写成、机检器却放行**的报告证明：v2.2 那台"必须贴复现命令"的机检器只在全局**数关键字出现次数**，正文里出现一次「复现命令」四个字 = 任意多条编造高危 `exit 0`。**计数型校验都能被凑字数满足。** 其余 14 条包括 CI 少了第六道门禁、折叠块空行语义与注释不符、`curl \| bash` 指向可变的 `main` |
+| **v2.4.0 外部评审第二轮（6 条）** | 评审方把上一轮我们的整改**逐条复核**（14 条落地、1 条部分），然后用两份**零命令**报告证明"逐条就近"只做到了一半：`- **复现命令**：\`见附录\`` 让 🔴 `exit 0`（判据只验"有没有反引号"），取证窗口 `end + 9` 让一条放进附录的公共脚本喂给全部高危。**"存在某段代码块"这类判据和计数型判据一样能被占位词喂饱。** 另 4 条：模板 2 没写机检器认的格式、"第 N 道门禁"点名判据可被长句免疫、首屏演示输出被手删一节却无省略标记、编号含正则元字符时崩栈。第七节的归因最扎心：**18 条突变全绿与这两个洞共存**——靶子清单没列出"证据边界"这一类形状 |
+| **v2.4.0 外部评审第三轮（6 条）** | 同一招换个语言就复活：`` - **复现命令**：`see appendix` `` 让 🔴 `exit 0`，贴一段源码或一行 `npm ERR!` 日志也一样（U1/U6）；而真命令 `make`、`pytest` 反被判红（U2）。**形状判据挡住的其实只是中文占位词——占位词是语义问题，能收敛的只有词法。** 最难看的是 U3：评审方把 `commandish` 改成 `return true`，20 用例与「21 抓住 / 0 逃逸」一个都不掉——**"判据强度"这一类形状，三轮里第一次有人列进靶子清单** |
+
+### 由此引入的质量设施
+
+- **`.githooks/pre-commit` 门禁（六道）** —— 回归测试 + 突变测试 + 规范校验 + 链接检查 + 文档主张守护 + 报告机检器测试，任一失败即拒绝提交。已用破坏性测试验证它真能拦住。（启用：`git config core.hooksPath .githooks`）
+- **文档主张守护**（`scripts/check-docs.mjs`，v2.1 新增，v2.3 扩容）—— 从 CHANGELOG/README 提取"SKILL.md 多少行""设计要点几条""门禁几道""回归测试几个用例""install 一行流钉在哪个 tag"这类**数字主张**，与实测比对，不符即红。**它上线第一次实战就抓到作者自己的行数漂移**（175→177 未同步）。围栏代码块内逐字引用的工具输出**不**算主张（否则本 README 无法演示它自己怎么变红），但正文照扫，且有一条兜底：正文里至少要有两组行数主张被提取到，提取覆盖度掉了同样报错。v2.3 起它自己带一段**抽取器自检**（合成语料喂给抽取函数，要求该抓的必须抓到），因为"跳过规则"本身也会被人改坏；v2.4 起这段自检还包含"第 N 道门禁点名稽核"的三条语料（错点必须逐名抓到、对点不得误报）与五条演示段数语料，v2.5 起段数主张认阿拉伯数字（`这 4 段` 与 `这四段` 同样对账），而**核对不了的序数主张（句内没有脚本名的"第 N 道门禁"）会在结尾自曝**，不再静默通过——`check-docs.mjs` 自己没有外部测试套件，这段自检是它唯一的"能失败"证据。`scripts/test-validate-skill.mjs` 有 24 个用例、`scripts/test-check-report.mjs` 有 29 个用例，这两处的数字也由它守住。
+- **报告机检器**（`skills/adversarial-review/scripts/check-report.mjs`，v2.2 新增、v2.3 改逐条就近、v2.4 改判据形状、v2.5 改词法判据，**随 skill 一起安装**）—— 机检蓝军总表：🔴/🟠 的「定级依据」必须是实测、每条声称实测的高危须在**自己小节内**配「复现命令」+ 一条真命令（可执行程序名 + 参数，或 `./x.sh` 这类带路径的脚本）、位置列不许为空。**为什么非要有它**：`必须实证` 四个字是散文约束，模型想让结论显得够重要时会直接声称"我跑过了"；只有把定级和实测绑定、再让第三方原样重跑，编造才会变成**可发现的缺陷**。它的回归测试（`scripts/test-check-report.mjs`，29 用例 = 8 绿 + 20 红 + 1 用法错误，每个用例既断言退出码也断言报错文本）构成第六道门禁。
+- **突变测试**（`scripts/test-mutations.mjs`）—— 自动往代码里注入 26 个缺陷（校验器 12 + 报告机检器 14），验证两套测试**能不能抓住**。最近一次实跑：**25 抓住 / 0 逃逸 / 1 等价突变 / 0 无效突变**；突变只作用于临时副本，不碰工作区文件。
+  - **为什么需要它**：测试全绿 ≠ 测试有效。本项目的回归测试曾漏掉 5 个突变，其中"删掉长度上限校验"会让一个**1235 字符的非法 description 被判通过**。v2.3 起被突变的对象还包括**报告机检器自己**——一个只会放过合规报告的机检器，和没有机检器一样危险。**但"0 逃逸"只证明已列举的形状都被抓**：第三轮评审把 `commandish` 整个改成 `return true`，当时的 22 条靶子与 20 用例一个都不掉——因为那批靶子的形状全是"会不会退回旧实现"，没有"新判据本身够不够强"。v2.5 的 P11–P14 就是这一类形状（把判据放宽一档），规则写在 `CONTRIBUTING.md`。
+- **装机自检的回归测试**（`scripts/test-verify-install.sh`，6 用例，v2.5.1 新增）—— 被测对象是随包发布的 `verify-install.sh` 自己：清单内两根漂移须红、**清单里根本没写过的宿主目录**下的陈旧副本须红、核对的根数须如实打印、未安装时的排查清单须包含自动发现那条路径、显式指定路径时不得宣称"多根已核对"。它接在 pre-commit 的 shell 语法步之后、CI 同步接入（与 `.ps1` 语法检查同级，不计入那六道 node 门禁）。动因是自曝 T11：v2.5.0 发布后，这台"防止装机验证骗人"的脚本对本机的 `~/.codex` 陈旧副本打印过一句"全部安装根版本一致"——**U3 那句归因第一次落在我们自己身上**，而且是我们自己在发布流程里撞见的。
+- **Agent Skills 规范校验器**（`scripts/validate-skill.mjs`）—— 零依赖，可作为通用工具用于你自己的 skill。
+
+---
+
+## 能力边界（重要，请如实理解）
+
+> ⚠️ **子代理与主代理通常是同一模型，这不是真正独立的第三方。**
+> 这个 skill 的价值来自**角色约束 + 强制证据**，而非"另一个 AI 的观点"。
+
+- ✅ **能有效抓出**：代码级错误、逻辑漏洞、测试造假、自相矛盾、遗漏分支、**声明与实现不符**
+- ❌ **抓不出**：**双方共有的知识盲区**（例如对某个上游行为的一致误解）
+
+**推论**：若某个结论依赖外部系统行为，必须**实测验证**，而不是两个 agent 互相点头。
+
+**报告机检器自己也有天花板**，三条写清楚，免得它被当成"通过认证"：
+
+- 它验的是**词法**（首 token 是不是可执行程序名、后面跟没跟参数），不是"这条命令真的跑过"。`node fake.js --evidence` 形状完全合法，照样盖章。
+- 它验的是"小节里贴了命令"，**验不了那段输出是跑出来的还是手打的**。把输出真伪压到"第三方可重跑"这一环，是本闭环里唯一真正起作用的机制——所以第三方必须真的重跑，而不是只读报告。
+- 白名单也是**人工枚举**：不认识的裸任务名会被错杀（`just test`、`uvx ruff check src/` 现在判红）。认不出的名字只要带一个 flag 或路径参数（`xtask --release`）就放行，报错文案会把这条要求原样写明白。**错杀是主动选的代价**，它已被钉成一条用例，谁扩白名单就得同步改这段文字。
+
+- 它的突变靶子清单（P1–P14）是**人工枚举**的形状集合，"0 逃逸"只证明列过的形状都被抓。第三轮评审正是用"把判据整个改成 `return true`"证明了这一点，所以 v2.5 补了 4 条**削弱型**靶子，并把"新判据必须配削弱靶子"写进了 `CONTRIBUTING.md`。
+
+汇报时不要说"经独立第三方验证无误"，要说"**经同模型不同角色的对抗审查**"。
+
+> **换个模型是不是更好？** 有些方案用不同厂商的模型互审（Claude 审 Codex 的产出）。那能覆盖知识盲区，是另一条路线。本 skill 选择**同模型 + 立场分离 + 强制证据**，优势是**零额外配置、任何宿主可用**，且对"逻辑一致性、声明与实现不符、自我矛盾"这类缺陷同样有效——本项目抓到的几个真实缺陷都属于这一类。
+
+---
+
+## 常见错误用法
+
+- ❌ **用 `subagent_fork` 起蓝军** → 继承你的思路，只会附和
+- ❌ **让蓝军自己裁定第三方意见** → 当事人当法官
+- ❌ **让同一个 agent 既审又改又复核** → 它会为自己的结论辩护
+- ❌ **把三方报告当成"通过认证"** → 同模型互搏抓不出共同盲区；关键结论必须实测
+- ❌ **第三方只验"修了没"** → 丢掉"找新缺陷"和"稽核覆盖度"两项价值
+- ❌ **把 19 个维度一次全塞进去** → 报告又长又浅。按改动类型选
+- ❌ **改了代码不补可运行的回归用例** → 同样的问题会再次出现
+- ❌ **"配置了 CI"就当"CI 跑过了"** → 检查必须**真的能失败**，永远绿的检查等于没有检查
+- ❌ **报告写得很漂亮但代码没动** → 别把流程做成表演
+
+---
+
+## 兼容性
+
+| 宿主 | 状态 |
+|---|---|
+| Claude Code | ✅ 完整支持（原生 `subagent`） |
+| DeepSeek Harness | ✅ 完整支持（`subagent` / `send_message`） |
+| Cursor / Codex / 其他 | ⚠️ 需支持派发独立子代理 |
+| 无子代理能力的宿主 | ⚠️ 降级为单 agent 串行扮演三角色——**独立性显著削弱**，报告必须如实声明 |
+
+---
+
+## 仓库结构
+
+主文件 `SKILL.md`（182 行，其中 frontmatter 之后的正文 173 行）——这两个数字不是手写的，`check-docs.mjs` 会实测对账，写错就提交不了。
+
+```
+adversarial-review/
+├── README.md / README.en.md
+├── CONTRIBUTING.md                    ← 判据强度元规则（改判据必须同时提交什么）
+├── skills/
+│   └── adversarial-review/          ← skill 本体（skills.sh 规范结构）
+│       ├── SKILL.md                 ← 主文件
+│       ├── references/
+│       │   ├── review-dimensions.md ← 维度清单
+│       │   ├── prompt-templates.md  ← 三角色提示词模板
+│       │   ├── quickstart.md
+│       │   └── skill-spec.md        ← SKILL.md 规范速查
+│       ├── examples/                ← 一份合规样例 + 一份规则之前的历史样例
+│       └── scripts/                 ← 安装、验证与报告机检脚本（随 skill 安装）
+├── scripts/                         ← 仓库级工具（不随 skill 安装）
+│   ├── validate-skill.mjs           ← Agent Skills 规范校验器
+│   ├── test-validate-skill.mjs      ← 校验器回归测试
+│   ├── test-check-report.mjs        ← 报告机检器的回归测试
+│   ├── test-verify-install.sh       ← 装机自检脚本的回归测试
+│   ├── test-mutations.mjs           ← 突变测试（给校验器与机检器分别下毒）
+│   ├── check-docs.mjs               ← 文档数字主张守护
+│   └── check-links.mjs              ← markdown 链接检查
+└── .githooks/pre-commit             ← 提交门禁
+```
+
+改任何判据或数字主张前先看 [CONTRIBUTING.md](CONTRIBUTING.md)：它写着"新增一个判断像不像 X 的函数，必须同时提交反例、正例与削弱型突变靶子"——这条规则是三轮评审撞同一个坑之后写下来的。
+
+> 结构树里刻意**不写用例数**：代码块内的数字这条守护看不见，写在这儿就成了没人守的孤儿主张。用例数只出现在上文「由此引入的质量设施」里那两处**带脚本文件名**的句子上——带文件名才能被 `check-docs.mjs` 就近认账。
+
+---
+
+## 相关项目
+
+- [ascend-assistant](https://github.com/RevolutionLA/ascend-assistant) —— 昇腾服务器助手 Agent Skill
+- [dsh-dream-skin](https://github.com/RevolutionLA/dsh-dream-skin) —— DeepSeek Harness 换肤插件
+
+---
+
+## License
+
+[MIT](LICENSE) © RevolutionLA

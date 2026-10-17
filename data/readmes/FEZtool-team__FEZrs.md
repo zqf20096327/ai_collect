@@ -1,0 +1,120 @@
+# **FEZrs**     
+
+[![DOI](https://zenodo.org/badge/710286874.svg)](https://doi.org/10.5281/zenodo.14938038) [![Tests](https://github.com/FEZtool-team/FEZrs/actions/workflows/FEZrs_Tests.yml/badge.svg?branch=main)](https://github.com/FEZtool-team/FEZrs/actions/workflows/FEZrs_Tests.yml) [![Documentation](https://img.shields.io/website?url=https%3A%2F%2Ffeztool-team.github.io%2FFEZdocs%2Flibraries%2Ffezrs%2F&label=docs)](https://feztool-team.github.io/FEZdocs/libraries/fezrs/) [![Downloads/month](https://static.pepy.tech/badge/fezrs/month)](https://pepy.tech/project/fezrs) [![PyPI version](https://img.shields.io/pypi/v/fezrs.svg)](https://pypi.org/project/fezrs/)
+[![Conda Version](https://img.shields.io/conda/vn/FEZtool/fezrs?label=Anaconda&color=orange&logo=anaconda)](https://anaconda.org/FEZtool/fezrs) ![License](https://img.shields.io/pypi/l/FEZrs) [![PyPI Downloads](https://static.pepy.tech/badge/fezrs)](https://pepy.tech/projects/fezrs) ![GitHub last commit](https://img.shields.io/github/last-commit/FEZtool-team/fezrs) [![Platform](https://img.shields.io/conda/pn/feztool/fezrs?color=blue&label=Platform&style=flat)](https://anaconda.org/feztool/fezrs) ![GitHub stars](https://img.shields.io/github/stars/FEZtool-team/FEZrs?style=social)
+
+FEZrs is a Python library developed by [FEZtool](https://github.com/FEZtool-team) for geospatial multispectral image processing and spectral analysis in remote sensing. It provides tools for image processing, feature extraction, spectral analysis, and analysis of geospatial raster data.
+
+## **Features** 
+
+✅ Apply various image filtering techniques (Gaussian, Laplacian, Sobel, Median, Mean)  
+✅ Contrast enhancement and edge detection  
+✅ Support for geospatial raster data (TIFF)  
+✅ Spectral analysis and calculation of remote sensing indices  
+✅ Tools for image classification, clustering, and feature extraction  
+✅ Designed for multispectral remote sensing and satellite imagery analysis  
+✅ Easy integration with Python-based web applications such as FastAPI
+
+## Documentation
+
+Full documentation, API references, tutorials, and examples are available here:
+https://feztool-team.github.io/FEZdocs/libraries/fezrs/
+
+## **📦 Installation**
+
+You can install **FEZrs** using your preferred Python package manager:
+
+### Using `pip` (PyPI)
+
+```bash
+pip install fezrs
+```
+
+### Using `conda` (Anaconda)
+
+```bash
+conda install -c FEZtool fezrs
+```
+
+### Using `mamba` (optional, faster conda alternative)
+
+```bash
+mamba install FEZtool::fezrs
+```
+
+> **Note:** The `mamba` command requires [Mamba](https://github.com/mamba-org/mamba) to be installed. If it's not installed, use the `conda` command instead.
+
+## **Usage**
+
+Example of applying a Gaussian filter to an image:
+
+```python
+from fezrs import GaussianCalculator
+
+gaussian = GaussianCalculator(
+    tif_path="path/to/your/image_band.tif",
+)
+
+gaussian.execute(output_path="./your/export/path")
+```
+
+## **Modules**
+
+- `KMeansCalculator`
+- `GaussianCalculator`
+- `LaplacianCalculator`
+- `MeanCalculator`
+- `MedianCalculator`
+- `SobelCalculator`
+- `GLCMCalculator`
+- `HSVCalculator`
+- `IRHSVCalculator`
+- `AdaptiveCalculator`
+- `AdaptiveRGBCalculator`
+- `EqualizeCalculator`
+- `EqualizeRGBCalculator`
+- `FloatCalculator`
+- `GammaCalculator`
+- `GammaRGBCalculator`
+- `LogAdjustCalculator`
+- `OriginalCalculator`
+- `OriginalRGBCalculator`
+- `SigmoidAdjustCalculator`
+- `PCACalculator`
+- `AFRICalculator`
+- `BICalculator`
+- `NDVICalculator`
+- `NDWICalculator`
+- `SAVICalculator`
+- `UICalculator`
+- `SpectralProfileCalculator`
+- `MosaicCalculator`
+- `SVMCalculator`
+- `Landsat8Calculator`
+- `GeoeyeCalculator`
+- `BurnCalculator`
+- `IndicesCalculator`
+- `MagDirCalculator`
+- `SubDivCalculator`
+- `TimeCalculator`
+
+## **Contributing**
+ 
+We welcome contributions! To contribute:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-name`)
+3. Commit your changes (`git commit -m "Add new feature"`)
+4. Push to your branch (`git push origin feature-name`)
+5. Open a Pull Request
+
+## **Acknowledgment**
+
+Special thanks to **Chakad Cafe** for the coffee that kept us fueled during development! ☕
+
+## **License**
+
+This project is licensed under the [**Apache-2.0 license**.](https://github.com/FEZtool-team/FEZrs/blob/main/LICENSE)
+
+
+

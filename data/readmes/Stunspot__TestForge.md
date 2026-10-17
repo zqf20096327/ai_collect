@@ -1,0 +1,119 @@
+![TestForge verification workbench: evidence is forged, measured, and challenged before release](assets/testforge-readme-hero.png)
+
+# TestForge
+
+TestForge is a free Collaborative Dynamics Augment that gives inexpensive local coding Agents a verification discipline they do not reliably improvise on their own. It attacks an explicitly submitted, frozen release candidate with risk-ranked evidence instead of turning ordinary implementation into a comforting—and endless—pile of green checkmarks.
+
+The bundled Augment testbed generalizes the same discipline beyond code. Every capability you build can carry behavioral evals, run isolated trials, expose the exact failed dimensions, guide reengineering, seal the evidence, promote a reviewed passing baseline, and detect regression later. TestForge makes “I should check this” an operative capability and “it worked before” a durable record.
+
+**[Open the tailored project site →](https://stunspot.github.io/TestForge/)**
+
+This is not one-shot benchmarking. **TestForge is a quality ratchet for Agent competence:** failures drive reengineering, reviewed success becomes the new baseline, and regression gates resist backward motion. One way, upwards.
+
+The operating loop is: **build → test → diagnose → reengineer → rerun → review → promote → regression-check**.
+
+## Built with Codex and GPT-5.6 during OpenAI Build Week
+
+TestForge was conceived and built during the July 13-21, 2026 submission period. Stun supplied the product intention, approved capability map, promptcraft system, evaluation philosophy, and release judgment. Codex with GPT-5.6 Sol turned that design into the complete Augment, repaired defects found during execution, packaged it, and then helped use TestForge to build the behavioral testbed included here.
+
+The primary Codex build task completed roughly 35 minutes of active construction. The result is not a prompt folder wearing a fake moustache: it is an installable two-SKILL verification system with deterministic tools, schemas, examples, evals, independent review, host adapters, CI, and an evidence-recording testbed. Its practical wager is simple: externalized method and memory can buy more competent work from cheaper cognition.
+
+Read the [Build Week collaboration and architecture record](BUILD-WEEK.md), or take the [five-minute fictional judge path](JUDGE-QUICKSTART.md).
+
+It includes two Agent SKILLs:
+
+- `$software-verification` reconstructs impact, ranks failure risk, designs meaningful oracles, creates stack-compatible tests, interprets execution evidence and issues a traceable release assessment.
+- `$verification-reviewer` independently attacks the evidence chain for catastrophic omissions, weak tests, unsupported claims and verdicts that outrun the proof.
+
+This repository also includes the CD Augment evaluation testbed used to run isolated behavioral cases, keep answer keys away from the evaluated model, record criterion-level judgments, preserve hard gates outside the average and promote reviewed regression baselines.
+
+## What you can do with it
+
+- Give a limited local coding Agent a reusable risk model, oracle discipline, evidence vocabulary, and skeptical second pass.
+- Hand an Agent a frozen candidate and bounded readiness claim and get one risk-driven verification verdict.
+- Generate tests that try to expose consequential failure rather than merely exercise edited lines.
+- Distinguish product defects, test defects, environment failures, flaky behavior and insufficient evidence.
+- Produce `READY`, `READY_WITH_RESIDUAL_RISK`, `NOT_READY`, `INSUFFICIENT_EVIDENCE` or `BLOCKED_BY_ENVIRONMENT` with a reproducible evidence trail.
+- Challenge that conclusion with a separate skeptical reviewer.
+- Run and track behavioral evals for other Augments with Codex or local Ollama models.
+- Preserve reviewed baselines so future builds can compare behavior instead of relying on remembered impressions.
+
+TestForge is advisory verification machinery. It does not prove defect freedom, certify compliance, grant production access, authorize release, or turn model confidence into evidence.
+
+## Repository map
+
+- [`docs/`](docs/) - the tailored GitHub Pages site, generated hero artwork, and site-source boundary.
+- [`testforge/`](testforge/) - the complete portable TestForge Augment v2.0.1.
+- [`testforge/docs/QUICK-START.md`](testforge/docs/QUICK-START.md) - install and first-use guide.
+- [`RELEASE-NOTES-v2.0.0.md`](RELEASE-NOTES-v2.0.0.md) - metered-verification safeguards and exact evidence boundary.
+- [`ARCHIVE-CUSTODY.md`](ARCHIVE-CUSTODY.md) - canonical Augment, plugin, standalone-skill, Claude, GitHub, and backup custody.
+- [`PLUGIN-DIRECTORY-SUBMISSION-v1.1.4.md`](PLUGIN-DIRECTORY-SUBMISSION-v1.1.4.md) - exact OpenAI draft listing, portal-specific upload custody, reviewer cases, and owner-only submission gate.
+- [`testforge/docs/SALES-DEMO.md`](testforge/docs/SALES-DEMO.md) - a compact proof-of-value scenario.
+- [`tools/augment-evals/`](tools/augment-evals/) - isolated Augment behavioral evaluation harness.
+- [`tools/augment-evals/README.md`](tools/augment-evals/README.md) - testbed setup, run, review, seal, promote and regression workflow.
+
+## Quick start: install the Codex plugin
+
+```text
+codex plugin marketplace add Stunspot/TestForge
+codex plugin add testforge@cd-testforge
+```
+
+Start a new Codex task, then invoke `$software-verification` or `$verification-reviewer`. The plugin bundles the two self-contained TestForge v2.0.1 skills so their doctrine, tools, examples, and status vocabulary stay aligned. The separate Augment behavioral-evaluation harness remains in this repository rather than the skills-only plugin. Its marketplace namespace is product-specific, so TestForge can coexist with other Collaborative Dynamics plugin repositories.
+
+Version2.0.1 carries the [accepted2.0.0 repair](verification/estate-public-repair-20261010/ACCEPTANCE.md) under a distinct update identity; see [current release notes](RELEASE-NOTES-v2.0.1.md). [Download the complete current ZIP](https://github.com/Stunspot/TestForge/releases/download/v2.0.1/TestForge-v2.0.1.zip).
+
+## Quick start: use the standalone Agent SKILLs
+
+Download the current release and open `testforge-v2.0.1/docs/QUICK-START.md`. The ZIP carries the complete plugin under `testforge-v2.0.1/codex/testforge/`; expose both complete directories under its `skills/` through your Agent host's skill mechanism. In a repository checkout the equivalent maintained directories are `testforge/skills/`. Host-specific notes are included for [Codex](testforge/adapters/codex.md), [Claude Code](testforge/adapters/claude-code.md), [GitHub](testforge/adapters/github.md), [local shell](testforge/adapters/local-shell.md) and [copy-paste chat](testforge/adapters/copy-paste-chat.md).
+
+The current v2.0.1 release kit preserves the complete Augment, Codex plugin source, and both Claude skill archives with static package receipts. The maintained repository separately exposes current Claude upload archives. The latest retained OpenAI skills-only portal packet is v1.1.4; it is built and repository-tested, but this repository does not claim it was uploaded, scanned by the current portal, approved, published, or made discoverable. See [archive custody](ARCHIVE-CUSTODY.md) for exact object identities and boundaries.
+
+Then start with:
+
+```text
+$software-verification Verify this completed frozen candidate for release. Reconstruct what could break, run only decision-changing authorized checks, and give me one evidence-backed assessment.
+```
+
+After the evidence package exists, use a fresh context when practical:
+
+```text
+$verification-reviewer Challenge this verification package and tell me whether its release status is actually supported.
+```
+
+Python 3.10+ is needed only for deterministic tools. The TestForge package itself has no mandatory third-party Python dependency.
+
+## Quick start: run Augment behavioral evals
+
+From the repository root:
+
+```powershell
+py -m pip install -r tools\augment-evals\requirements.txt
+py tools\augment-evals\augment_eval.py validate testforge
+```
+
+Then choose a supplied adapter or create one using the documented adapter contract. Local Ollama and signed-in Codex CLI examples are included. Raw runs remain local under `evaluation-results/`; reviewed compact baselines can be promoted into Git-tracked records.
+
+## Bootstrap a repository with the line-ending gate
+
+Run the bootstrap before the repository's first real commit:
+
+```text
+python -B tools/bootstrap_repository.py PATH_TO_REPOSITORY --action-revision REVIEWED_TESTFORGE_COMMIT_SHA --apply
+```
+
+The operation writes the canonical `.gitattributes`, `.editorconfig`, and pinned `line-ending-policy` workflow. It is idempotent and refuses to overwrite a differing repository contract. Account-level repository creation and reconciliation automation should call this operation rather than copying the policy templates.
+
+## Trust and evidence
+
+The release contains synthetic planted-defect examples, deterministic package tooling, canonical eval cases and reviewed local baselines. Read the exact exercised and unexercised boundaries in [`testforge/docs/LIMITATIONS.md`](testforge/docs/LIMITATIONS.md), [`testforge/SECURITY.md`](testforge/SECURITY.md) and the testbed README.
+
+Do not send secrets or unnecessary proprietary code in an issue. Active security testing, destructive operations, production access, dependency installation, production-code changes, CI changes and external publication remain explicitly authorized human decisions.
+
+## License
+
+TestForge uses a split license: MIT for Python software and machine-readable schemas, and CC BY-ND 4.0 for the authored Augment materials. You may redistribute the authentic, unmodified branded Augment, including inside a larger commercial product. See [`LICENSE.md`](LICENSE.md), [`ATTRIBUTION.md`](ATTRIBUTION.md) and [`TRADEMARKS.md`](TRADEMARKS.md).
+
+## Publisher
+
+TestForge is a Collaborative Dynamics Augment. Issues and contributions are welcome under the boundaries in [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md).

@@ -1,0 +1,177 @@
+# 🔍 CRISP-T (Sense-making from Text and Numbers!)
+
+[![Release](https://img.shields.io/github/v/release/dermatologist/crisp-t)](https://img.shields.io/github/v/release/dermatologist/crisp-t)
+[![Build status](https://img.shields.io/github/actions/workflow/status/dermatologist/crisp-t/pytest.yml?branch=develop)](https://github.com/dermatologist/crisp-t/actions/workflows/pytest.yml?query=branch%3Adevelop)
+[![codecov](https://codecov.io/gh/dermatologist/crisp-t/branch/develop/graph/badge.svg)](https://codecov.io/gh/dermatologist/crisp-t)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/dermatologist/crisp-t)](https://img.shields.io/github/commit-activity/m/dermatologist/crisp-t)
+[![License](https://img.shields.io/github/license/dermatologist/crisp-t)](https://img.shields.io/github/license/dermatologist/crisp-t)
+[![Downloads](https://img.shields.io/pypi/dm/crisp-t)](https://pypi.org/project/crisp-t)
+[![Wiki](https://img.shields.io/badge/CRISP-wiki-demo)](https://github.com/dermatologist/crisp-t/wiki)
+[![Documentation](https://badgen.net/badge/icon/documentation?icon=libraries&label)](https://dermatologist.github.io/crisp-t/)
+
+<!-- CRISP reference -->
+> ✨ Have you been co-creating reality with adaptive AI vibes?
+
+**TL;DR** CRISP-T is a qualitative research method and a toolkit to perform mixed data (text + numeric) analytics for computational triangulation and sense-making. More importantly, CRISP brings **["vibe analytics"](https://sloanreview.mit.edu/article/vibe-analytics-vibe-codings-new-cousin-unlocks-insights/)** **["SKILLS"](/.agents/skills/crisp-cli/SKILL.md)** for mixed data with an AI agent, adopting an [adaptive epistomology](https://www.mdpi.com/2075-4698/15/7/205).
+
+✨ [Download this or a similar dataset](https://www.kaggle.com/datasets/schmoyote/coffee-reviews-dataset?select=simplified_coffee.csv), clone this repo, and try a prompt like 👇 in your [vibe analytics platform](https://antigravity.google/).
+
+
+> Import the csv file from ./downloads folder using the crisp-cli skill with “review” as the text column. Do a comprehensive analysis, integrating both its numeric and textual features, and show the key patterns, relationships, and insights that emerge.
+
+* **MCP SERVER** will give more agentic power to your vibe analytics experience (See below).
+* **Interpretivist approach**: CRISP-T enforces the **agentic researcher** to adopt an interpretivist approach, rather than a data-science one.
+
+## 🤖 New Vibe analytics UI using GitHub Copilot SDK!
+* scroll 👇 for details
+* [What’s Brewing in the Repo ☕](https://github.com/dermatologist/crisp-t/wiki/What%E2%80%99s-Brewing:-Agent-Harness)
+
+## 👩 Human Workflow
+👉 **[CLI Cheatsheet](docs/cheatsheet.md)** | **[Demo & Examples](docs/DEMO.md)** | **[Documentation](https://dermatologist.github.io/crisp-t/)**
+
+<p align="center">
+  <img src="https://github.com/dermatologist/crisp-t/blob/develop/notes/crisp-logo.jpg" />
+</p>
+
+Give us a star ⭐️ if you find this useful!
+
+## 📖 Introduction
+
+**Qualitative research** focuses on collecting and analyzing textual data to explore complex phenomena. While qualitative and quantitative data are often used together, there is **no standard method for combining them.**
+
+**CRISP-T** integrates **textual data** (interview transcripts, field notes) and **numeric data** (surveys, demographics) into a unified corpus. It allows researchers to:
+- Perform **INDUCTIVE analysis** (finding patterns).
+- **Triangulate findings** by linking text topics to numeric trends.
+- Use **Semantic Search** to find relevant literature or code documents.
+- Leverage **GenAI** through our MCP server for agentic analysis.
+
+### Key Features
+*   ✅ **No Python knowledge required** - Full CLI support.
+*   ✅ **Interpretivist approach** - Designed for sense-making, not just data science.
+*   ✅ **GenAI Ready** - Augments LLMs with agentic tools.
+*   ✅ **Open Source** - GPL-3.0 License.
+
+### The CRISP tools may also be useful for:
+* ⭕ Automated interview **coding dictionary** generation.
+* ⭕ Semantically filtering journal articles for **literature review**.
+* ⭕ Generating **visualizations** for qualitative (e.g. word cloud) and quantitative (e.g. [TDABM](https://github.com/dermatologist/crisp-t/wiki/Topological-Data-Analysis)) data.
+* ⭕ Many other ….
+
+### CRISP is ❌ **NOT** for:
+* ❌  Multimodal prediction. [Use this instead!](https://github.com/dermatologist/kedro-multimodal)
+* ❌  [Sequential mixed methods research,](https://us.sagepub.com/sites/default/files/upm-assets/106361_book_item_106361.pdf) where qualitative and quantitative data are collected and analyzed in separate phases.
+* ❌  Convergent parallel mixed method designs where qualitative and quantitative data are collected simultaneously but analyzed separately.
+---
+
+## 💻 Installation
+
+```bash
+pip install crisp-t
+```
+
+**Recommended (for Machine Learning features):**
+```bash
+pip install crisp-t[ml]
+```
+
+**Optional (for XGBoost):**
+```bash
+pip install crisp-t[xg]
+# Mac users: brew install libomp
+```
+
+**Optional (for Web UI with Copilot SDK):**
+```bash
+pip install crisp-t[ml,copilot]
+# Also requires GitHub Copilot CLI: https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli
+```
+
+---
+
+## 🚀 Usage
+
+CRISP-T provides three main CLI tools. **See the [CLI Cheatsheet](docs/cheatsheet.md) for a full list of commands.**
+
+### 1. `crisp` (Analysis)
+The main tool for data import and analysis.
+
+*   **Import Data:** `crisp --source ./data --out ./corpus`
+*   **Analyze Text:** `crisp --inp ./corpus --topics --sentiment`
+*   **Analyze Numbers:** `crisp --inp ./corpus --kmeans --regression`
+
+### 2. `crispviz` (Visualization)
+Generates charts and graphs from your analysis.
+
+*   **Word Cloud:** `crispviz --inp ./corpus --wordcloud --out ./viz`
+*   **Interactive Topics:** `crispviz --inp ./corpus --ldavis --out ./viz`
+
+### 3. `crispt` (Corpus Toolkit)
+Manages corpus structure and detailed queries.
+
+*   **Semantic Search:** `crispt --inp ./corpus --semantic "query" --num 5`
+*   **Metadata:** `crispt --inp ./corpus --meta "project=phase1"`
+
+### 4. `crisp-ui` (Web UI - NEW!)
+Browser-based interface powered by GitHub Copilot SDK.
+
+*   **[Install the Copilot CLI](https://github.com/features/copilot/cli)**
+*   **Start Web Server:** `crisp-ui`
+*   **Custom Port:** `crisp-ui --port 8080`
+*   **Open browser to:** `http://127.0.0.1:5000`
+
+<p align="center">
+  <img src="https://github.com/dermatologist/crisp-t/blob/develop/notes/crisp-webui.jpg" />
+</p>
+
+**📖 See [Web UI Documentation](docs/ui.md) for detailed instructions.**
+
+👉 **[View the Step-by-Step Demo](docs/DEMO.md)**
+
+---
+
+## 🤖 MCP Server (Agentic AI)
+
+CRISP-T includes a **Model Context Protocol (MCP)** server, allowing AI agents (like Claude Desktop) to interact directly with your data. If you have opened this repository in [VSCODE](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) or [AntiGravity](https://antigravity.google/), you can start the MCP server using the [configuration file](/.vscode/mcp.json) provided. This [configuration file](/.vscode/mcp.json) provides the necessary details for configuring other AI coding platforms, such as [Claude Desktop](https://claude.ai/desktop) to connect to the CRISP-T MCP server as well.
+
+---
+
+## 🤖 Skills (Agentic AI)
+
+CRISP-T also provides **[Skills](/.claude/skills/crisp-cli/SKILL.md)** for use with Claude Desktop, [AntiGravity](https://antigravity.google/), VSCODE and other AI coding platforms.
+
+---
+
+## 🤖 Web UI using GitHub Copilot SDK (Agentic AI)
+
+See usage #4 above.
+
+---
+
+## 💬 Teams & Slack Integration (WIP)
+
+CRISP-T can be used directly from **Microsoft Teams** and **Slack** via a bot built with the [Chat SDK](https://www.npmjs.com/package/chat) (`@chat-adapter/teams` + `@chat-adapter/slack`).
+
+**📖 Full setup guide: [docs/integration.md](docs/integration.md)**
+
+---
+
+### Data model
+
+[![crisp-t](https://github.com/dermatologist/crisp-t/blob/develop/notes/arch.drawio.svg)](https://github.com/dermatologist/crisp-t/blob/develop/notes/arch.drawio.svg)
+
+---
+
+## 📚 Documentation & References
+
+*   **[CLI Cheatsheet](docs/cheatsheet.md)**
+*   **[Demo / Tutorial](docs/DEMO.md)**
+*   [Full Documentation](https://dermatologist.github.io/crisp-t/)
+*   [Mettler et al. (2025)](https://aisel.aisnet.org/cais/vol56/iss1/14/) - Methodological Reflection
+
+## 🤝 Contribution & Contact
+
+*   **License:** GPL-3.0
+*   **Author:** [Bell Eapen](https://nuchange.ca) ([UIS](https://www.uis.edu/directory/bell-punneliparambil-eapen))| [Contact](https://nuchange.ca/contact)
+*   **Social:** [![Twitter Follow](https://img.shields.io/twitter/follow/beapen?style=social)](https://twitter.com/beapen)
+
+First presented at [ICIS 2025](https://aisel.aisnet.org/treos_icis2025/25/).

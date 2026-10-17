@@ -1,0 +1,289 @@
+<p align="center">
+  <img src="images/agent-arcade-banner-v3.webp" alt="Agent Arcade" />
+</p>
+
+# 🕹️ Agent Arcade 
+
+A retro arcade game collection that runs as a transparent overlay on your desktop built with [GitHub Copilot CLI](https://github.com/github/copilot-cli). Play while waiting for your AI agents (Copilot CLI, Claude Code, Codex, etc.) to finish thinking and doing their work. Built with Tauri + Phaser + TypeScript.
+
+🔗 Website: [https://danwahlin.github.io/agent-arcade](https://danwahlin.github.io/agent-arcade)
+
+<p align="center">
+  <img src="docs/images/agent-arcade-aliens.gif" alt="Alien Onslaught" width="600" /><br/>
+  <em>👾 Alien Onslaught</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/agent-arcade-rocks.gif" alt="Cosmic Rocks" width="600" /><br/>
+  <em>☄️ Cosmic Rocks</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/agent-arcade-galaxy.gif" alt="Galaxy Blaster" width="600" /><br/>
+  <em>🚀 Galaxy Blaster</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/agent-arcade-ninja.gif" alt="Ninja Runner" width="600" /><br/>
+  <em>🥷 Ninja Runner</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/agent-arcade-guardian.gif" alt="Planet Guardian" width="600" /><br/>
+  <em>🛡️ Planet Guardian</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/agent-arcade-surface.gif" alt="Surface Defense" width="600" /><br/>
+  <em>🎯 Surface Defense</em>
+</p>
+
+## 🎮 Games
+
+| Game | Description |
+|------|-------------|
+| 👾 **Alien Onslaught** | Space Invaders-style arcade action with marching aliens, shields, and mystery ships |
+| ☄️ **Cosmic Rocks** | Asteroids-style vector shooter with thrust physics and splitting asteroids |
+| 🚀 **Galaxy Blaster** | Galaga-style space shooter with formation enemies, attack patterns, and dual-shot power-up |
+| 🥷 **Ninja Runner** | Classic platformer with double jumps, power-ups, warp pipes, and enemies |
+| 🛡️ **Planet Guardian** | Defender-style side-scrolling shooter — rescue humanoids, battle 6 enemy types, and protect the planet |
+| 🎯 **Surface Defense** | Missile-defense strategy with six cities, three interceptor batteries, chain-reaction airbursts, smart warheads, bombers, and hostile satellites |
+
+## Copilot CLI Canvas
+
+This repo includes a Copilot CLI project canvas extension at `.github/extensions/arcade-canvas`. When the repo is opened in Copilot CLI, agents can open the `arcade-canvas` canvas as a side-panel arcade while they work.
+
+The canvas serves the built Phaser frontend from `.github/extensions/arcade-canvas/game`, bundles its game assets in `.github/extensions/arcade-canvas/assets`, and exposes agent-callable actions to list games, select a game, or restart the current game. Rebuild the committed canvas bundle after frontend or asset changes with:
+
+```bash
+npm run build:canvas
+```
+
+Copilot provides the extension SDK automatically, so the project extension does not need a local dependency install. Its generated package stays below the 8 MiB repository-trust limit.
+
+## How This Was Made
+
+Idea ➡ Working prototype over a weekend! I put in a lot of work after the initial prototype of course, but was able to accomplish a lot by starting with a planning document that outlined the overall idea. 
+
+I used [GitHub Copilot CLI](https://github.com/features/copilot/cli/) (there's a [free course on it here](https://github.com/github/copilot-cli-for-beginners)), and it helped me quickly scaffold the initial Tauri + Phaser + TypeScript project structure. From there I worked with copilot to plan the game mechanics and overall structure. I told it the overall goals and it iteratively built out the game mechanics, integrated the sprite assets, and added the overlay functionality. Still an experimental project, but making good progress.
+
+Blog post about the creation process used with Copilot CLI: [https://blog.codewithdan.com/building-agent-arcade-with-github-copilot-cli/](https://blog.codewithdan.com/building-agent-arcade-with-github-copilot-cli/)
+
+## Installing Agent Arcade
+
+Visit the [releases page](https://github.com/DanWahlin/agent-arcade/releases) and download the installer for your OS. Note that the app is not code-signed, so you may need to bypass security warnings on your OS when installing or running it for the first time. All of the code used in the app installation package is here in the repo - feel free to scan it.
+
+### 🤖 Install this using the Copilot CLI
+
+If you have [GitHub Copilot CLI](https://github.com/features/copilot/cli/) installed, you can install Agent Arcade with a single prompt. Just paste the following into Copilot CLI and it will download and install it:
+
+```
+copilot --allow-all -p "Install the latest version of this app for me https://github.com/DanWahlin/agent-arcade/releases"
+```
+
+> **Note:** The app is not code-signed, so after installing you'll still need to manually run the commands shown below for your operating system.
+
+### 🍎 macOS
+
+1. Go to the [releases page](https://github.com/DanWahlin/agent-arcade/releases) and expand the **Assets** list to find the `.dmg` file
+2. Download the `.dmg` file and open it
+3. Drag **Agent Arcade** to your Applications folder
+4. **Important:** The app is not code-signed, so macOS will block it on first launch. Open Terminal and run:
+   ```
+   sudo xattr -rd com.apple.quarantine /Applications/Agent\ Arcade.app
+   ```
+5. Open Agent Arcade from your Applications folder
+
+### 🪟 Windows
+
+Go to the [releases page](https://github.com/DanWahlin/agent-arcade/releases), expand the **Assets** list, and download the `.msi` installer. Run the installer to complete setup.
+
+> **Note:** The app is not code-signed, so Windows may flag it:
+> 1. If your browser warns about the download, select **"Keep"**
+> 2. When you see "Windows protected your PC", click **"More info"**
+> 3. Then click **"Run anyway"**
+
+### 🐧 Linux
+
+**Omarchy / Arch Linux:** Agent Arcade is in the [Omarchy Package Repository](https://github.com/omacom/omarchy-pkgs), so on Omarchy it installs like any other package and updates with `omarchy update`:
+
+```
+omarchy pkg add agent-arcade-bin
+```
+
+On other Arch-based distros, build the package from the PKGBUILD in this repo:
+
+```
+git clone https://github.com/DanWahlin/agent-arcade
+cd agent-arcade/packaging/omarchy/agent-arcade-bin
+makepkg -si
+```
+
+**Other distros:** Go to the [releases page](https://github.com/DanWahlin/agent-arcade/releases), expand the **Assets** list, and download the `.AppImage` (universal) or `.deb` (Debian/Ubuntu) package.
+
+> **Note:** For the AppImage, make it executable first:
+> ```
+> chmod +x Agent.Arcade_*.AppImage
+> ./Agent.Arcade_*.AppImage
+> ```
+
+> **No sound?** Game audio plays through GStreamer. The AppImage and `.deb` bring the needed plugins with them, but if you build from source or use another packaging, install your distro's GStreamer "good", "bad" and "libav" plugin packages (Arch: `sudo pacman -S gst-plugins-good gst-plugins-bad gst-libav`). The game runs silently without them.
+
+## Running Locally
+
+> **Prerequisites:** [Node.js](https://nodejs.org), the [Rust toolchain](https://rustup.rs/), and the [Tauri v2 prerequisites](https://v2.tauri.app/start/prerequisites/) for your platform.
+
+1. Install Rust:
+
+   **macOS/Linux**:
+   
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   source "$HOME/.cargo/env"
+   ```
+
+   **Windows**:
+
+   ```bash
+   winget install Rustlang.Rustup
+   ```
+   Restart your terminal after the installation completes.
+
+2. Install the Tauri CLI:
+   ```bash
+   # Remove any existing version (v1 or otherwise)
+   cargo uninstall tauri-cli
+
+    # Install Tauri CLI v2
+   cargo install tauri-cli --version "^2"
+   ```
+
+3. Clone the repo:
+   ```bash
+   git clone https://github.com/DanWahlin/agent-arcade.git
+   cd agent-arcade
+   ```
+
+4. Install dependencies and start the app:
+   ```bash
+   npm install
+   npm start
+   ```
+
+On Linux, Agent Arcade leaves 40 pixels available for a top desktop panel. Set `AGENT_ARCADE_TOP_INSET` before starting the app to use a different inset, such as `AGENT_ARCADE_TOP_INSET=0 npm start`.
+
+## Controls
+
+### 👾 Alien Onslaught
+
+| Key | Action |
+|-----|--------|
+| <kbd>←</kbd> <kbd>→</kbd> | Move |
+| <kbd>Space</kbd> | Fire |
+
+### ☄️ Cosmic Rocks
+
+| Key | Action |
+|-----|--------|
+| <kbd>←</kbd> <kbd>→</kbd> | Rotate |
+| <kbd>↑</kbd> | Thrust |
+| <kbd>Space</kbd> | Fire |
+
+### 🚀 Galaxy Blaster
+
+| Key | Action |
+|-----|--------|
+| <kbd>←</kbd> <kbd>→</kbd> | Move |
+| <kbd>Space</kbd> | Fire |
+
+### 🥷 Ninja Runner
+
+| Key | Action |
+|-----|--------|
+| <kbd>←</kbd> <kbd>→</kbd> | Move |
+| <kbd>Space</kbd> / <kbd>↑</kbd> | Jump (press twice for double jump) |
+| <kbd>Shift</kbd> | Run |
+| <kbd>F</kbd> / <kbd>Z</kbd> | Fire (when powered up) |
+| <kbd>↓</kbd> | Enter warp/golden pipes |
+
+You can go back up to two screen widths behind the furthest camera position. Older terrain is removed to keep memory use stable during long runs. Respawning uses terrain inside the retained area.
+
+### 🛡️ Planet Guardian
+
+| Key | Action |
+|-----|--------|
+| <kbd>←</kbd> <kbd>→</kbd> | Thrust / Reverse |
+| <kbd>↑</kbd> <kbd>↓</kbd> | Move Up / Down |
+| <kbd>Space</kbd> | Fire Laser (hold) |
+| <kbd>Z</kbd> | Smart Bomb |
+
+### 🎯 Surface Defense
+
+| Key | Action |
+|-----|--------|
+| Mouse / <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> | Move targeting cursor |
+| Click / <kbd>Space</kbd> | Fire the nearest available battery |
+| <kbd>A</kbd> / <kbd>S</kbd> / <kbd>D</kbd> | Fire the left / center / right battery |
+
+### General
+
+| Key | Action |
+|-----|--------|
+| <kbd>Esc</kbd> | Pause |
+| <kbd>Ctrl</kbd>+<kbd>Esc</kbd> | Resume (or click ▶ RESUME) |
+| <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd> | Toggle visibility (all platforms) |
+| <kbd>⌘Q</kbd> (Mac) / <kbd>Ctrl+Q</kbd> (Win/Linux) | Quit |
+
+## Building Installers
+
+```bash
+npm run dist:mac    # macOS (.dmg + .zip)
+npm run dist:win    # Windows (.exe)
+npm run dist:linux  # Linux (.AppImage + .deb)
+```
+
+Or push a version tag to trigger the CI/CD pipeline:
+
+```bash
+npm run release 0.5.0   # bumps version, generates changelog, tags, and pushes
+```
+
+## Credits
+
+Initially inspired by [Aman's post on X](https://x.com/Amank1412/status/2044489263799275722) about the [Desktop Mario project](https://github.com/bxf1001g/desktop_mario/releases) as well as [Anthony Shaw](https://github.com/tonybaloney) and his [VS Code Pets](https://marketplace.visualstudio.com/items?itemName=tonybaloney.vscode-pets) project.
+
+Thanks to [John Papa](https://github.com/johnpapa) for his Alien Onslaught game PR.
+
+Sprite assets: [Simple Platformer 16](https://juhosprite.itch.io/simple-platformer-16) by JuhoSprite
+
+Space shooter assets: [Space Shooter Redux](https://opengameart.org/content/space-shooter-redux) by Kenney.nl
+
+Galaga-style game mechanics: [WesleyEdwards/galaga](https://github.com/WesleyEdwards/galaga) by Wesley Edwards
+
+Asteroids-style game mechanics: [phaser3-typescript](https://github.com/digitsensitive/phaser3-typescript) by digitsensitive
+
+Defender-style game mechanics and sound effects: [OpenDefender](https://github.com/mkinney/Opendefender) by mkinney
+
+Missile-defense gameplay reference: [Basic Missile Command HTML and JavaScript Game](https://gist.github.com/straker/afc4e2a30b6df772a5f9f6ef01751d41) by straker (CC0 1.0)
+
+Surface Defense sound design uses original synthesized WAV files generated by `scripts/generate-surface-defense-audio.mjs`. Event roles were informed by [chadpaulson/missile-command](https://github.com/chadpaulson/missile-command); its GPL/classic-game audio files are not redistributed.
+
+Retro game sound effects: ["Retro game sound effects"](https://opengameart.org/content/retro-game-sound-effects) by Vircon32 (Carra), published at OpenGameArt under license [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
+## Contributing
+
+Contributions are welcome! If you have [GitHub Copilot CLI](https://github.com/features/copilot/cli/) installed, you can use it to contribute:
+
+```
+copilot "Add a new game called Pixel Pong with paddle controls and scoring"
+```
+
+To contribute manually:
+
+1. Fork the repo and create a feature branch
+2. Install dependencies: `npm install`
+3. Make your changes and build: `npm run build:frontend`
+4. Run the test suite: `npm test`
+5. Open a pull request against `main`
+
+See [AGENTS.md](AGENTS.md) for the full contributor guide — including repo structure, key patterns, and how to add a new game.

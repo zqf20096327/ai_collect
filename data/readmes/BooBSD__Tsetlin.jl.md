@@ -1,0 +1,183 @@
+# Tsetlin Machine: Fresh Thinking in ML
+
+
+> *Speed is the most important feature.*
+
+*Fred Wilson*
+
+This repository provides an alternative [Fuzzy-Pattern Tsetlin Machine](https://github.com/BooBSD/FuzzyPatternTM) implementation with zero external dependencies and blazingly fast performance.
+MNIST training for 1,000 epochs finishes in just **5 seconds on a CPU**. It achieves **38 million** MNIST predictions per second at 98% accuracy, with **4.8 GB/s** throughput on a desktop CPU. It also demonstrates the first **text generation** example based on a Tsetlin Machine.
+
+
+## Key Features
+
+  - Up to **15× faster training** and **41× faster inference** compared to the original FPTM implementation, achieved through the use of bitwise operations, SIMD instructions, and a specialized memory layout.
+  - Binary classifier.
+  - Multi-class classifier.
+  - Single-threaded and multi-threaded training and inference.
+  - Specialized **BitSet index** over literals to improve performance on very large, sparse binary vector inputs.
+  - Model compilation to reduce memory usage and increase inference speed.
+  - Save and load trained models for production deployment or continued training with modified hyperparameters.
+  - Automatic selection of `UInt8` or `UInt16` Tsetlin Automata based on the number of TA states.
+  - Automatic switching between binary and multi-class classification depending on the dataset.
+  - Built-in benchmarking tool.
+  - Built-in explainability tools.
+
+## Quick Start
+
+> *Talk is cheap, show me the ~~code~~ some examples.*
+
+Below is an example of character-level **text generation** in the style of Shakespeare.
+
+First, install the [Julia language](https://julialang.org) by running the following command and following the installation instructions:
+
+```shell
+curl -fsSL https://install.julialang.org | sh
+```
+
+In the **first terminal window**, run the following command to train the model over multiple epochs:
+
+```shell
+julia -O3 -t auto examples/TEXT/train.jl
+```
+
+In the **second terminal window**, run the following command after each training epoch to observe how the quality of the generated text evolves from one epoch to the next:
+
+```shell
+julia -O3 examples/TEXT/sample.jl
+```
+
+After **400+** epochs, you should see output similar to the following:
+
+```text
+ROMEO:
+The father's death,
+And then I shall be so;
+For I have done that was a queen,
+That I may be so, my lord.
+
+JULIET:
+I would have should be so, for the prince,
+And then I shall be so;
+For the princely father with the princess,
+And then I shall be the virtue of your soul,
+Which your son,--
+
+ESCALUS:
+What, what should be particular me to death.
+
+BUCKINGHAM:
+God save the queen's proclaim'd:
+Come, come, the Duke of York.
+
+KING EDWARD IV:
+So do I do not know the prince,
+And then I shall be so, and such a part.
+
+KING RICHARD III:
+Shall I be some confess the state,
+Which way the sun the prince's dead;
+And then I will be so.
+```
+
+## How To Use
+
+Here is a quick *"Hello, World!"* example of a typical use case with the Tsetlin Machine.
+
+Importing the necessary functions and the MNIST dataset:
+
+```julia
+using MLDatasets: MNIST
+using .Tsetlin: TMClassifier, InputBatch, train!, predict, accuracy, save, load, unzip, booleanize, compile, benchmark
+
+x_train, y_train = unzip([MNIST(:train)...])
+x_test, y_test = unzip([MNIST(:test)...])
+```
+
+Booleanizing input data (2 bits per pixel):
+
+```julia
+THRESHOLDS = (0, 0.5)
+input_size = length(first(x_train)) * length(THRESHOLDS)
+
+x_train = InputBatch([booleanize(x, THRESHOLDS...) for x in x_train])
+x_test = InputBatch([booleanize(x, THRESHOLDS...) for x in x_test])
+```
+
+### Hyperparameters
+This implementation introduces some differences compared to the *Vanilla Tsetlin Machine*:
+
+  - `L` — limits the number of included literals in a clause.
+  - `LF` — new hyperparameter that sets the number of literal misses allowed per clause.
+
+```julia
+CLAUSES = 20   # Number of clauses per class
+T       = 20   # Voting threshold
+S       = 200  # Specificity
+L       = 150  # Maximum literals per clause
+LF      = 75   # Allowed failed literals per clause
+
+EPOCHS  = 1000 # Number of training epochs
+```
+
+Train the model over 1000 epochs and save the compiled model to disk:
+
+```julia
+tm = TMClassifier(input_size, y_train, CLAUSES, T, S, L, LF, states_num=256, include_limit=240)
+train!(tm, x_train, y_train, x_test, y_test, EPOCHS, shuffle=true, index=false)
+save(compile(tm), "/tmp/tm_last.tm")
+```
+
+Loading the compiled model and evaluating accuracy:
+
+```julia
+tm = load("/tmp/tm_last.tm")
+accuracy(predict(tm, x_test), y_test) |> println
+```
+
+Benchmarking the compiled model:
+
+```julia
+benchmark(tm, x_test, y_test, 1000 * 4, warmup=true, index=false)
+```
+
+## MNIST Performance Benchmark
+
+38 million MNIST predictions per second on a CPU.
+
+<img width="560" height="345" alt="38 million MNIST predictions per second on a CPU using the latest FPTM library Tsetlin.jl" src="https://github.com/user-attachments/assets/106c6b58-4fcd-4827-90a1-d3ff5b81c9cc" />
+
+## Explainability Tools
+
+To explain a specific input vector or generate a heat map of the distributed literal representation on the MNIST dataset, run the following command:
+
+```shell
+julia -O3 -t auto examples/MNIST/explain.jl
+```
+
+<img width="2000" height="820" alt="Fuzzy-Pattern Tsetlin Machine MNIST included literal distributed representation heat map" src="https://github.com/user-attachments/assets/e5809cf9-3c57-4626-830c-ac8bcc1f4361" />
+
+## More Examples
+
+This repository includes examples for *MNIST*, *Fashion-MNIST*, *CIFAR-10*, *CIFAR-100*, *AmazonSales*, *IMDb* sentiment analysis, *Noisy Parity Problem*, and *Shakespeare* character-level **text generation**.
+
+Instructions on how to run the examples can be found [here](https://github.com/BooBSD/Tsetlin.jl/tree/main/examples).
+
+## Citation
+
+If you use the Fuzzy-Pattern Tsetlin Machine in a scientific publication, please cite the following paper: [arXiv:2508.08350](https://arxiv.org/abs/2508.08350)
+
+#### BibTeX:
+```
+@article{hnilov2025fptm,
+    title={Fuzzy-Pattern Tsetlin Machine}, 
+    author={Artem Hnilov},
+    journal={arXiv preprint arXiv.2508.08350},
+    year={2025},
+    eprint={2508.08350},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG},
+    url={https://arxiv.org/abs/2508.08350},
+    doi = {10.48550/arXiv.2508.08350},
+}
+```

@@ -1,0 +1,359 @@
+# doc2mark
+
+[![PyPI version](https://img.shields.io/pypi/v/doc2mark.svg)](https://pypi.org/project/doc2mark/)
+[![Python](https://img.shields.io/pypi/pyversions/doc2mark.svg)](https://pypi.org/project/doc2mark/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Turn documents into clean, RAG-ready Markdown, in one line.**
+
+```python
+from doc2mark import load
+
+print(load("report.pdf").content)
+```
+
+doc2mark converts PDFs, Word, Excel and PowerPoint files, images, HTML, e-mail and more into
+Markdown that stays faithful to the source: **merged table cells survive, page furniture is
+thinned without losing text, multi-column pages are read in order, and scanned pages are read
+by a vision LLM into a structured schema** (or by local Tesseract). It is built for what comes
+*after* conversion: feeding clean, structured text to an LLM or a retrieval pipeline.
+
+Its highlight is an **optional quality judge** for the ambiguous cases: deterministic rules
+decide the clear ones and keep the text when the evidence is weak, and
+[TypeSafe's Jev](https://docs.typesafe.ai) can be asked about the cases they leave open (is this
+text layer gibberish? is this repeated line page chrome? is this OCR answer only a refusal?). The
+judge is off by default and doc2mark works fully without it:
+[see the highlight below](#highlight-the-optional-jev-quality-judge).
+
+Documentation: <https://luisleo526.github.io/doc2mark/>
+
+---
+
+## Highlight: the optional Jev quality judge
+
+doc2mark's rules are deterministic, and when the evidence is weak they keep the text. For the
+cases the rules leave open you can add an **optional** judge (off by default),
+[TypeSafe's Jev](https://docs.typesafe.ai) (a yes/no model), which is asked only about those
+cases. It makes three decisions:
+
+- **Is this PDF page's text layer legible?** A layer can be valid Unicode and still be nonsense
+  (shifted letters, glyph IDs read as characters), which no character rule sees. A page the judge
+  rates illegible is OCR'd from its render instead of being indexed as gibberish (OCR must be on).
+- **Is this repeated header/footer line page chrome?** A line the rules kept on several pages is
+  thinned, normally to its first copy; titles, per-page labels and real content are meant to stay,
+  and the judge never removes a line's last copy. On the held-out TEST set it took out 62
+  repeated copies, none of a line that needed them, and left 2 chrome copies in.
+- **Is this OCR answer only a refusal or an error?** (LLM OCR providers.) Such an answer is
+  re-read or dropped instead of being indexed as page text.
+
+Accuracy of each decision on the labelled sets in `tests/data/judge`, rules alone → rules +
+judge:
+
+| Decision | TEST | EXTERNAL |
+|----------|:---:|:---:|
+| Text layer legible? | 67.4 % → 100 % (46 items) | 68.8 % → 100 % (16 items) |
+| Repeated line is page chrome? | 50.0 % → 95.2 % (42) | 66.7 % → 100 % (3 asked of 20) |
+| OCR answer is a refusal or error? | 76.7 % → 97.8 % (90) | 62.5 % → 83.3 % (24) |
+
+TEST is held out from calibration; EXTERNAL (60 items) was written by a reviewer and never used
+for calibration. **The sets are small: read the numbers as a direction, not a guarantee.** The
+judge is not always right: on EXTERNAL it kept 4 of 9 refusals (3 of them flagged as suspected),
+on TEST it called one real answer (a search page's "no results") no content, and a false "chrome"
+verdict would thin a content line to one copy (none did on TEST). Of the 20 EXTERNAL
+repeated-line items only 3 reach the judge; the rules decide the other 17 (a running header's
+first copy).
+
+Measured for PR #22 and re-measured on 2026-09-30 at `becb74b` with a fresh verdict cache
+(`eval/docs_audit/run_judge_eval.sh`, [results](eval/docs_audit/results/judge_eval.md)); all six
+cells were the same.
+
+On a real 30-page Traditional-Chinese company deck (private, so never committed and not
+re-measured since PR #22), the brand line printed beside every slide title went from 29 copies to
+1, and all garbled variants of its page texts were caught (3 of 6 without the judge).
+
+Cost and latency: Jev is priced per input token ($0.042 per million, output free), and on the
+labelled sets a question averaged $0.000019 to $0.000029. Measured on a Linux host on
+2026-09-30: a request takes about 210 ms (p50), and a generated 12-page text report took 13
+questions and $0.00029 and added 1.2 s. Verdicts are cached on disk, so converting the same
+document again sends nothing.
+
+The judge is **off by default** and doc2mark works fully without it. **With it on, text from your
+documents is sent to a third party** (TypeSafe): page text, judged header/footer lines and short
+OCR answers (details below). Do not enable it for documents your agreement with TypeSafe does not
+cover. To turn it on:
+
+```bash
+pip install "doc2mark[typesafe]"          # also part of doc2mark[all]
+export TYPESAFE_API_KEY=...
+doc2mark report.pdf --ocr tesseract --ocr-images --judge typesafe -o report.md   # Python: judge="typesafe"
+```
+
+Without the extra or the key, doc2mark logs one warning and the output is the same as without a
+judge.
+
+### Judge details: Python, fallbacks, privacy
+
+From Python:
+
+```python
+from doc2mark import UnifiedDocumentLoader
+
+loader = UnifiedDocumentLoader(ocr_provider="tesseract", judge="typesafe")  # or DOC2MARK_JUDGE=typesafe
+result = loader.load("report.pdf", ocr_images=True)
+print(result.metadata.extra.get("judge"))     # questions asked, cached, failed, tokens, cost
+```
+
+A question the service cannot answer (network error, timeout, rate limit, invalid answer) is
+decided by the rules, and a conversion never fails because of the judge. English is the model's
+primary language; CJK is handled with lower accuracy.
+
+What is sent, in more detail: with the judge on, document text goes to a third party (TypeSafe,
+`api.typesafe.ai`; `TYPESAFE_BASE_URL` overrides it): up to 1,500 characters of each judged PDF
+page (with OCR on, nearly every text page), the judged header/footer lines and OCR answers of up
+to 600 characters. Per TypeSafe's documentation Jev is not trained on customer requests or
+responses and a Data Processing Agreement applies, but zero data retention is offered only to
+enterprise customers ([TypeSafe legal](https://docs.typesafe.ai/legal)). The SDK's wire log, which
+contains document text, stays off unless you ask for it (`TYPESAFE_LOG_LEVEL=debug`); the API key
+is never logged. Do not enable the judge for documents your agreement with TypeSafe does not
+cover. Cost, latency, privacy and the full evaluation:
+[Judge](https://luisleo526.github.io/doc2mark/judge.html).
+
+## Why doc2mark
+
+- **Jev quality judge (optional).** Deterministic rules decide the clear cases; an optional judge,
+  [TypeSafe's Jev](https://docs.typesafe.ai), is asked about the ones they leave open. Off by
+  default; with it on, document text is sent to TypeSafe.
+  ([Highlight](#highlight-the-optional-jev-quality-judge))
+- **Complex tables survive.** Merged cells (`rowspan`/`colspan`) from Word, PowerPoint, Excel and
+  ruled PDF tables are kept as a small HTML table inside the Markdown; other tables are ordinary
+  Markdown tables (PowerPoint tables are always HTML). A line break inside a cell is `<br>`. ([Tables](#tables))
+- **Verbatim first.** Text is kept unless there is strong evidence to change it. Bare page numbers
+  are dropped; a running header or footer keeps its first copy instead of vanishing; hyphenated
+  words keep their hyphen unless the document spells them without one elsewhere.
+- **OCR only where it is needed.** With OCR on, each PDF page is routed on its own signals:
+  scanned pages, garbled text layers and vector-outlined text are OCR'd from a render, pages with
+  a good text layer keep it, and pictures are sent to OCR only when they carry something to read.
+- **Structured OCR, not a text dump.** LLM OCR returns an `OCRPage` with a hard wall between the
+  verbatim transcription (text, tables, fields) and the model's interpretation (document type,
+  summary, entities, figures). Answers that are only a refusal ("I can't help with that") are
+  recognised and not indexed as page text, and model output is escaped before it reaches your
+  Markdown.
+- **Bring your own model.** OpenAI (or any OpenAI-compatible endpoint via `base_url`), Google
+  Gemini on Vertex AI, or local Tesseract.
+- **No ML stack to host.** Text, tables and structure are parsed locally and deterministically;
+  a hosted vision model is called only when you turn OCR on, and the optional judge's hosted model
+  only when you turn that on.
+- **RAG out of the box.** Section-aware chunking with page spans and heading paths, in characters
+  or tokens, and per-document reports (`metadata.extra`) of what was OCR'd, refused or left out.
+
+## Install
+
+```bash
+pip install doc2mark                # PDF, Office, images, HTML, e-mail... no OCR
+pip install "doc2mark[ocr]"         # + OpenAI and Tesseract OCR providers
+pip install "doc2mark[all]"         # every optional feature
+```
+
+Python 3.10+. Other extras: `vertex_ai` (Gemini), `typesafe` (the optional
+[Jev quality judge](#highlight-the-optional-jev-quality-judge)), `tokenizers` (token-sized chunks), `redis`
+(shared OCR cache), `heif` (HEIC/HEIF images), `mime`.
+Tesseract OCR needs the `tesseract` program and its language data; legacy `.doc`/`.xls`/`.ppt`/
+`.rtf` files need LibreOffice. See [Installation](https://luisleo526.github.io/doc2mark/installation.html).
+
+## Quick start
+
+```python
+from doc2mark import UnifiedDocumentLoader
+
+loader = UnifiedDocumentLoader()          # OCR is only used when you ask for it
+result = loader.load("report.pdf")
+
+print(result.content)                     # Markdown
+print(result.metadata.page_count)         # 2
+chunks = result.get_chunks()              # section-aware chunks for RAG
+print(chunks[0].section_title, chunks[0].page_start, chunks[0].page_end)
+```
+
+Scanned documents and pictures, with a local or a hosted OCR provider:
+
+```python
+from doc2mark import UnifiedDocumentLoader
+
+loader = UnifiedDocumentLoader(ocr_provider="tesseract")   # or "openai", "vertex_ai"
+result = loader.load("scan.pdf", ocr_images=True)
+print(result.content)
+print(result.metadata.extra["ocr_routing"])   # which route the document and its pages took
+```
+
+From the command line:
+
+```bash
+doc2mark report.pdf -o report.md
+doc2mark scan.pdf --ocr tesseract --ocr-images -o scan.md
+doc2mark documents/ -r --pattern "*.pdf" -o converted/
+```
+
+## Supported formats
+
+| Category | Extensions |
+|----------|-----------|
+| PDF | `.pdf` (text layer, scans, mixed) |
+| Office | `.docx`, `.xlsx`, `.pptx` |
+| Legacy Office (via LibreOffice) | `.doc`, `.xls`, `.ppt`, `.pps`, `.rtf` |
+| Images | `.png`, `.jpg`, `.jpeg`, `.webp`, `.tif`, `.tiff`, `.bmp`, `.gif`, `.heic`/`.heif` (with `doc2mark[heif]`), `.avif` (Pillow with AVIF support) |
+| Text and data | `.txt`, `.csv`, `.tsv`, `.json`, `.jsonl` |
+| Markup | `.html`, `.htm`, `.xml`, `.md`, `.markdown` |
+| E-mail | `.eml` |
+
+The format comes from the file extension. Details per format: [Formats](https://luisleo526.github.io/doc2mark/formats.html).
+
+## Tables
+
+Native Markdown cannot express a merged cell, so converters that emit only pipe tables lose
+`rowspan`/`colspan`: a group header spanning three columns collapses and the grid misaligns.
+doc2mark reads the merges from the source (Word `gridSpan`/`vMerge`, PowerPoint cell spans,
+Excel merged ranges, the drawn cell boxes of a PDF table) and writes such tables as HTML inside
+the Markdown. The start of `sample_documents/complex-tables/complex_table_test.docx` as doc2mark
+writes it:
+
+```html
+<table>
+<tr>
+<th colspan="3">Company Overview</th>
+<th>Q1</th>
+<th>Q2</th>
+<th>Q3</th>
+<th>Q4</th>
+</tr>
+<tr>
+<td rowspan="2">Division</td>
+<td>Region</td>
+<td>Product</td>
+<td colspan="2">First Half</td>
+<td colspan="2">Second Half</td>
+</tr>
+...
+```
+
+Choose the rendering that fits your consumer:
+
+```python
+from doc2mark import UnifiedDocumentLoader
+
+loader = UnifiedDocumentLoader(table_style="minimal_html")     # HTML with rowspan/colspan (default)
+# loader = UnifiedDocumentLoader(table_style="markdown_grid")  # Markdown grid + merge annotations
+# loader = UnifiedDocumentLoader(table_style="styled_html")    # HTML with inline styles
+print(loader.load("sample_documents/complex-tables/complex_table_test.docx").content)
+```
+
+OCR'd tables come from the model as HTML and are cleaned to a table-only allowlist
+(`colspan`/`rowspan`/`scope`, `<br>` in cells) with bounded spans before they are emitted.
+More: [Tables](https://luisleo526.github.io/doc2mark/tables.html).
+
+## How it compares: merged cells
+
+The same table with 8 column merges and 2 row merges, authored as DOCX, PDF, PPTX and XLSX
+(`sample_documents/complex-tables/`), plus an untagged real-world spec sheet
+(`sample_documents/test-table.pdf`), converted with each tool's default Markdown output and with
+Docling's HTML export. Each cell counts the `colspan` / `rowspan` attributes (value > 1) in the
+output.
+
+| Document | doc2mark (default Markdown) | markitdown | Docling `export_to_markdown` | Docling `export_to_html` |
+|----------|:---:|:---:|:---:|:---:|
+| `complex_table_test.docx` | 8 / 2 | 0 / 0 | 0 / 0 | 8 / 2 |
+| `complex_table_test.pdf`  | 8 / 2 | 0 / 0 | 0 / 0 | 6 / 0 |
+| `complex_table_test.pptx` | 8 / 2 | 0 / 0 | 0 / 0 | 8 / 2 |
+| `complex_table_test.xlsx` | 8 / 2 | 0 / 0 | 0 / 0 | 9 / 2 |
+| `test-table.pdf` (untagged) | 48 / 0 (see below) | 0 / 0 | 0 / 0 | 8 / 0 |
+
+Measured 2026-09-30 on Linux/aarch64 (CPU) with doc2mark `becb74b`, markitdown 0.1.8 and
+Docling 2.131.0, by [`eval/docs_audit/merged_cells.py`](eval/docs_audit/merged_cells.py); the
+outputs are discussed in [`eval/docs_audit/results/merged_cells.md`](eval/docs_audit/results/merged_cells.md).
+
+- **markitdown** writes pipe tables: merged cells become blank cells.
+- **Docling** keeps spans in its HTML export (and its document model), not in its Markdown
+  export. In this run its HTML moved the PDF's last row out of the table and gave that table no
+  row spans; its XLSX count includes the sheet title as a one-cell table.
+- **doc2mark** puts the spans in the Markdown it returns by default. On the untagged
+  `test-table.pdf` (4 columns and 28 merged cells on the page) the raw count overstates it:
+  doc2mark splits the grid into 7 columns, so it recovers 26 of the 28 merges as single cells and
+  adds 22 spans that only bridge the extra columns (18) or pad empty cells (4); cell values stay
+  whole. Docling's HTML recovers 8 of the 28 and splits some values across cells.
+
+markitdown is the lightest option when merged cells do not matter. Docling runs local
+layout and table-structure models (TableFormer) and suits fully offline pipelines that can host
+them. doc2mark gives merged-cell tables in plain Markdown output without a model stack, and
+hands scans and pictures to the OCR provider you choose.
+
+
+## OCR
+
+```python
+from doc2mark import OCR
+
+ocr = OCR("openai")                          # OPENAI_API_KEY; OCR("vertex_ai"), OCR("tesseract")
+result = ocr.read_one(open("receipt.png", "rb").read(), task="receipt")
+
+page = result.document                       # OCRPage
+print(page.raw.text)                         # verbatim transcription
+print([(f.label, f.value) for f in page.raw.fields])
+print(page.interpretation.document_type if page.interpretation else None)
+print(result.text)                           # the page as safe Markdown
+```
+
+- **Providers:** `openai` (default model `gpt-5.4-mini`; `base_url` for any OpenAI-compatible
+  endpoint that supports JSON-schema output), `vertex_ai`/`gemini` (default
+  `gemini-3.1-flash-lite-preview`, Application Default Credentials), `tesseract` (local,
+  transcription only; language codes such as `eng`, `deu`, `chi_tra`, `eng+chi_tra`).
+- **Tasks** steer what the model extracts: `auto` (default), `table`, `document`, `form`,
+  `receipt`, `handwriting`, `code`. `detail="raw"` skips the interpretation;
+  `structured=False` returns free-form Markdown.
+- **In documents** the loader decides what to OCR page by page and reports it in
+  `metadata.extra` (`ocr_routing`, `ocr_images`, `ocr_issues`), and token usage of LLM providers
+  in `metadata.extra["token_usage"]`.
+- **Caching:** an in-memory or Redis cache of OCR answers (`ocr_cache=`), and an on-disk cache of
+  converted documents (`cache_dir=`).
+
+More: [OCR](https://luisleo526.github.io/doc2mark/ocr.html),
+[when pages are OCR'd](https://luisleo526.github.io/doc2mark/ocr_policy.html),
+[caching](https://luisleo526.github.io/doc2mark/caching.html).
+
+## Documentation
+
+- [Quickstart](https://luisleo526.github.io/doc2mark/quickstart.html) and a
+  [minimal RAG pipeline](https://luisleo526.github.io/doc2mark/rag.html)
+- User guide: [loading and batches](https://luisleo526.github.io/doc2mark/loading.html),
+  [the result model](https://luisleo526.github.io/doc2mark/output.html),
+  [PDF text structure](https://luisleo526.github.io/doc2mark/pdf.html),
+  [chunking](https://luisleo526.github.io/doc2mark/chunking.html),
+  [the optional quality judge](https://luisleo526.github.io/doc2mark/judge.html),
+  [CLI](https://luisleo526.github.io/doc2mark/cli.html),
+  [troubleshooting](https://luisleo526.github.io/doc2mark/troubleshooting.html)
+- [API reference](https://luisleo526.github.io/doc2mark/api/index.html)
+
+Build the docs locally with `pip install -e ".[docs]"` and
+`python -m sphinx -b html -W --keep-going docs docs/_build/html`.
+
+## Development
+
+```bash
+pip install -e ".[all,dev]"
+python -m pytest -m "not integration and not requires_api_key and not e2e"   # unit tests, as CI runs them
+scripts/run_e2e_docker.sh -q -n 8        # CLI end-to-end suite in Docker (Tesseract + LibreOffice)
+```
+
+See [Development](https://luisleo526.github.io/doc2mark/development.html) for the E2E harness and
+its `D2M_E2E_*` settings. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT -- see `LICENSE`.
+
+## Acknowledgements
+
+[markitdown](https://github.com/microsoft/markitdown) (Microsoft) pioneered the lightweight
+"everything to Markdown for LLMs" workflow, and [Docling](https://github.com/docling-project/docling)
+(IBM) set the bar for self-hosted, ML-driven table-structure recovery with TableFormer. doc2mark
+targets a different point in the design space: merged-cell fidelity and LLM-interpreted
+structured OCR without a local model stack. The comparison above is meant to help you pick the
+right tool.

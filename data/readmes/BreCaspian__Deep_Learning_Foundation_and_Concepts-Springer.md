@@ -1,0 +1,213 @@
+<h1 align="center">
+Deep Learning: Foundations and Concepts
+</h1>
+
+
+
+<p align="center">
+  <a href="README_EN.md">English</a>
+</p>
+
+本仓库包含《深度学习：基础与概念》(Deep Learning: Foundations and Concepts) 一书的补充资源、练习材料和解决方案。该书由 Christopher M. Bishop 和 Hugh Bishop 编著，由 Springer 于 2023 年出版。<br><br>
+
+🎉<a href="https://item.xhsd.com/items/110000104741140">《深度学习：基础与概念》中文版已由人民邮电出版社出版</a>
+&nbsp;&nbsp;&nbsp;
+2025 年 5 月 1 日
+&nbsp;&nbsp;&nbsp;
+ISBN：978-7-115-66370-2<br>
+
+🎉<a href="https://item.xhsd.com/items/110000104906380">《深度学习习题详解》已由人民邮电出版社出版</a>
+&nbsp;&nbsp;&nbsp;
+2026 年 8 月 1 日
+&nbsp;&nbsp;&nbsp;
+ISBN：978-7-115-69867-4
+
+<p align="center">
+  <img src="Book/Book_PNG/Christopher%20M.%20Bishop,%20Hugh%20Bishop%20-%20Deep%20Learning_%20Foundations%20and%20Concepts-Springer%20(2024)_332.png"
+       alt="DLFC 内页示意 332"
+       width="225"
+       height="320" />
+  <img src="Book/Book_PNG/Christopher%20M.%20Bishop,%20Hugh%20Bishop%20-%20Deep%20Learning_%20Foundations%20and%20Concepts-Springer%20(2024)_00.png"
+       alt="DLFC 封面 00"
+       width="225"
+       height="320" />
+  <img src="Book/Book_PNG/Christopher%20M.%20Bishop,%20Hugh%20Bishop%20-%20Deep%20Learning_%20Foundations%20and%20Concepts-Springer%20(2024)_612.png"
+       alt="DLFC 内页示意 612"
+       width="225"
+       height="320" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/67f7a031-f360-424c-9ee1-ad05024d96b2"
+       alt="深度学习习题详解 前言"
+       width="225"
+       height="320" />
+  <img src="https://github.com/user-attachments/assets/6b7b5abf-5aab-4bd0-810c-65f678a48b90"
+       alt="深度学习习题详解 封面"
+       width="225"
+       height="320" />
+  <img src="https://github.com/user-attachments/assets/33856aaa-bea2-487d-a900-cf5073cbb2c4"
+       alt="深度学习习题详解 第28页"
+       width="225"
+       height="320" />
+</p>
+
+---
+
+
+## 🗂️ 仓库结构
+
+仓库按以下方式组织：
+
+- **Book/** - 书籍相关材料
+  - **Book_PDF/** - 书籍的PDF版本
+  - **Book_PNG/** - 书籍的PNG版本
+
+- **Code/** - 代码示例和练习笔记本
+  - 包含涵盖手写数字识别、PyTorch入门、神经网络实现（包括UNet架构）等主题的Jupyter笔记本
+
+- **Data/** - 练习用数据集
+  - **MNIST/** - 用于手写数字识别的MNIST数据集
+
+- **Figure/** - 书中的所有图表和插图
+
+- **Solutions/** - 书籍练习的相关数学推导解答 ⭐已更新完成所有练习题解答⭐
+  - 包含概率论、标准分布、单层网络、Transformer、变分自编码器等主题的PDF文件
+
+## 📚 关于本书
+
+《深度学习：基础与概念》是一本全面的教材，涵盖了深度学习的理论基础和实际应用。该书由Christopher M. Bishop（微软技术院士，微软研究AI4Science主任，剑桥达尔文学院院士，皇家工程院院士，皇家学会院士）和Hugh Bishop（伦敦Wayve公司应用科学家，专注于端到端深度学习自动驾驶技术）合著。
+
+### 🌟 主要特点
+
+- 全面覆盖从基础概念到高级架构的内容
+- 通过文字、图表、数学公式和伪代码提供清晰解释
+- 包含自成体系的概率论介绍
+- 深入探讨现代架构（MLP、CNN、RNN、Transformer、GNN）
+- 涵盖注意力机制、GAN、VAE、迁移学习和对比学习
+- 应用于计算机视觉、自然语言处理、语音识别、蛋白质结构预测和医学诊断
+- 特别因其对Transformer和大型语言模型的清晰解释而受到赞誉
+
+### 🎯 目标读者
+
+- 机器学习初学者和有经验的从业者
+- 学术研究人员和学生（本科或研究生水平）
+- 对深度学习理论感兴趣的自学者
+- 希望为未来研究或专业化打下坚实基础的专业人士
+
+## 📖 推荐预备知识
+
+- 线性代数基础（矩阵运算、特征值）
+- 概率论基础（贝叶斯理论、条件概率）
+- 基础微积分（梯度、偏导数）
+
+## 🛠️ 如何使用本仓库
+
+1. 从`Code/`目录中的练习笔记本开始，获取实践经验
+2. 在自己尝试练习后，参考`Solutions/`目录中的数学推导解答
+3. 使用`Data/`目录中的数据集进行实际实现
+4. 查阅`Figure/`目录中的图表，获取直观解释
+
+## 📑 引用方式
+
+如果您在研究或项目中使用这些材料，请引用原书：
+
+```
+@book{Bishop:DeepLearning24,
+  author    = {Christopher M. Bishop and Hugh Bishop},
+  title     = {Deep Learning: Foundations and Concepts},
+  year      = {2024},
+  publisher = {Springer}
+}
+```
+
+## 🔗 额外资源
+
+- [书籍官方网站](https://www.bishopbook.com/)
+- [Springer链接](https://link.springer.com/book/10.1007/978-3-031-45468-4)
+- [微软研究院出版物](https://www.microsoft.com/en-us/research/publication/deep-learning-foundations-and-concepts/)
+
+## 📜 许可信息
+
+本仓库仅供教育学习目的使用。请尊重原始材料的版权。所有内容均按照学术和研究目的的合理使用原则共享。 
+
+> [!IMPORTANT]
+> 《Deep Learning: Foundations and Concepts》**后十章全部习题解答**
+> 系本人基于原书内容独立完成的**原创性智力成果**，
+> 依法受《中华人民共和国著作权法》保护，
+> 其**著作权归本人所有**。
+>
+> 该等习题解答之**出版权及相关出版使用权**
+> 已依据合法协议完成授权，
+> **现由 [人民邮电出版社](https://www.ptpress.com.cn/) 依法行使**，
+> 并将以正式出版物形式公开发行。
+>
+> 该书之**原著作权**
+> **归属于作者，并由 Springer Nature 负责出版与授权**。
+> 本人不对原书正文、结构或原始内容主张任何版权。
+> 书籍官方信息参见：
+> [https://www.bishopbook.com/](https://www.bishopbook.com/)
+>
+> 除上述已授权出版的习题解答内容外，
+> 本仓库中其余由本人独立完成的原创性整理材料，
+> 在不与原书版权及出版社已获授权内容发生冲突的前提下，
+> **采用
+> [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/)**
+> 许可协议进行授权。
+>
+> 具体版权归属与授权范围，
+> 以如下法律文件为准：
+> [Copyright & License](https://github.com/BreCaspian/Deep_Learning_Foundation_and_Concepts-Springer/blob/main/Solutions/License%26Copyright/Copyright.pdf)
+
+> [!NOTE]
+> **关于《深度学习习题详解》的出版说明**
+>
+> 除《Deep Learning: Foundations and Concepts》原作者已提供的习题解答外，本人基于原书习题独立完成并整理了其余习题的**全部详细解答、数学推导及相关说明**，上述内容构成本人独立创作的原创性智力成果
+>
+> 本人就上述原创习题解答依法享有的相关著作权权益，以及相应的**出版权、出版使用权等可授权权利，均已依据正式法律文件及出版协议授权给人民邮电出版社**。相关授权范围及权利归属以正式签署的法律文件和出版协议为准
+>
+> 上述成果现已整理出版为 **《深度学习习题详解》**，由 **人民邮电出版社** 于 **2026 年 8 月 1 日正式出版发行**，ISBN：**978-7-115-69867-4**
+>
+> 本声明仅针对本人独立创作的习题解答、数学推导及相关原创内容；《Deep Learning: Foundations and Concepts》原书正文、习题题目、图表及其他原始内容的著作权仍归原作者及相应权利人所有
+
+
+---
+
+
+<h2 align="center">后言</h2>
+
+<p>
+尽管本人最终并未以本书作者身份署名，但在相关习题解答、数学推导、内容整理与完善过程中，我投入了相当多的时间与精力，希望能把这件事尽量做到完美。整本书除了原作者的解答以外，我几乎完成了剩余所有习题的详细解答
+</p>
+
+<p>
+我仍然希望，这些或许并不起眼的工作，能够为读者提供一些可供参考、讨论与进一步思考的思路。若其中的推导、解释或整理能够帮助读者更好地理解相关内容，并促使更多人去验证、质疑、推导和形成自己的认识，那么这些工作的意义便不止于给出答案，也算起到了一点抛砖引玉的作用
+</p>
+
+<p>
+对我个人而言，这也是一次持续学习和深入研究的过程。一路走来，得失有之，那些真正能够长久留下来的，或许仍是一个人对某件事情最初的热爱，以及愿意为这份热爱持续投入的时间与心力
+</p>
+
+<p>
+很多事情的价值在于做这件事情本身是否值得，是否让人愿意投入，是否能够给他人带来哪怕一点真实的帮助
+</p>
+
+<p>
+若这些微薄的工作最终能够为读者、学习者以及相关领域带来一点启发，哪怕只是帮助某个人多想明白一个公式、多理解一个概念、多产生一个新的问题，那么于我而言，也已经足够
+</p>
+
+<p>
+愿以后仍能保持好奇，保持热爱，也愿自己始终记得，为什么出发。
+</p>
+
+
+<p>
+多少风雨飘摇路，若问此心何所系，但凭一念守吾真。
+</p>
+  
+<br>
+
+
+<p align="right">
+二〇二六年九月二十五日·丙午年八月十五·中秋<br>
+</p>

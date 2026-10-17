@@ -1,0 +1,104 @@
+<div align="center">
+
+<a href="https://www.producthunt.com/products/meridian-16?embed=true&utm_source=badge-top-post-badge&utm_medium=badge&utm_campaign=badge-meridian-19" target="_blank" rel="noopener noreferrer"><img alt="Meridian - Don't let your work go unnoticed. Get promoted! | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=1222691&theme=light&period=daily&t=1787037236493"></a>
+
+<br>
+<br>
+
+<img src="docs/images/banner.png" alt="Meridian - Stop letting your work go unnoticed." width="420" />
+
+<br>
+<br>
+
+<a href="https://meridiona.com/dev?ref=github-readme#download">
+  <img src="docs/images/download-button.png" alt="Download Meridian" width="280" />
+</a>
+
+</div>
+
+## Watch how it works
+
+See how Meridian turns a day of screen activity into a timeline, a daily summary, and updated tickets, without anything typed in by hand.
+
+https://github.com/user-attachments/assets/5cc26036-3842-4748-85c8-097a8b71f20d
+
+## Meridian automatically reconstructs your day
+
+Meridian rebuilds your day from what actually happened on screen, so you can scrub back through it like a recording instead of trying to remember.
+
+<p align="center">
+  <a href="docs/images/meridian-reconstruction.gif">
+    <img src="docs/images/meridian-reconstruction.gif" alt="Meridian reconstructing a day from screen activity" width="900" />
+  </a>
+</p>
+
+## Your Day, Summarised
+
+At the end of the day, Meridian tells you what you actually got done, what pulled you off plan, and hands you a standup already written and ready to paste into Jira.
+
+<p align="center">
+  <img src="docs/images/daily-summary.png" alt="Meridian's end-of-day summary, with completed tasks, an unexpected fix, and a ready-to-paste standup" width="900" />
+</p>
+
+## Your Worklog Updates, Drafted for You
+
+Meridian writes your worklog update and gets it ready to post. You just review it and hit send.
+
+<p align="center">
+  <img src="docs/images/worklog-draft.gif" alt="Meridian drafting a worklog update and ticket, waiting for approval before posting to Jira" width="560" />
+</p>
+
+## Questions Meridian Already Answers
+
+| You ask | What Meridian does |
+|---|---|
+| "What did I actually do on this ticket?" | Drafts the update from what you actually did, ready to post. |
+| "What was I even working on three months ago today?" | Saves every day as it happens, so you can pull any of them back up. |
+| "What did I get done yesterday?" | Writes your standup overnight from what you actually did. |
+| "Why did this take five days when we estimated two?" | Logs what actually happened, so you can see exactly where the estimate went wrong. |
+| "Where does my time actually go?" | Tracks where every hour actually went, so you're looking at data, not a guess. |
+
+## Privacy
+
+Your activity stays in one encrypted database on your machine. Analysis runs through whichever AI provider you connect, and only what a summary needs is sent to it. Diagnostics are opt-out and stripped of anything identifying before they ever leave your device.
+
+## System Requirements
+
+| | |
+|---|---|
+| **Platform** | macOS (Apple Silicon only, Intel is not supported) or Windows 10/11 |
+| **CPU** | 5 to 10% average, running quietly in the background |
+| **Memory** | 0.5 to 3 GB |
+| **Storage** | About 20 GB a month, older capture is pruned automatically after 30 days |
+| **Database** | Encrypted at rest |
+
+## Build from Source
+
+**Requirements:** macOS (Apple Silicon or Intel) or Windows 10/11, [Rust 1.93.1](https://www.rust-lang.org/tools/install) (pinned via `rust-toolchain.toml`, installs automatically), Node 20+, and [bun](https://bun.sh).
+
+```bash
+git clone https://github.com/Meridiona/meridian
+cd meridian
+cp .env.example .env
+bash install-dev.sh          # builds all dependencies
+bash scripts/setup-hooks.sh  # install git hooks, run this before your first commit
+bash dev-start.sh            # starts the daemon and the tray in watch mode
+```
+
+`dev-start.sh` opens two terminal windows, the Rust daemon and the Tauri tray, both of which rebuild automatically when you save a file. Capture runs in-process inside the tray, so nothing else needs to be installed or registered separately.
+
+Full setup details, including how to reset onboarding, re-download the embedder, and the exact checks CI runs before a pull request, are in **[CONTRIBUTING.md](CONTRIBUTING.md)**. The current branch, CI, cache, RC, and stable-promotion architecture is documented in **[docs/ci-cd.md](docs/ci-cd.md)**.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines, maintainers, and how to submit PRs.
+
+Thanks to all contributors:
+
+<a href="https://github.com/Meridiona/meridian/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Meridiona/meridian" />
+</a>
+
+## License
+
+Meridian is source-available under the [PolyForm Strict License 1.0.0](LICENSE). You may read the code and use it for personal and other noncommercial purposes. You may not modify or redistribute it, and commercial use (including use inside a company) is not permitted without a separate license from Meridiona. Versions released before this change remain available under the MIT License.

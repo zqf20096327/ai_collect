@@ -1,0 +1,212 @@
+# Strom Research
+
+Research your family's history with an AI agent. `strom` turns an AI agent —
+Claude Code, OpenAI Codex, Google Antigravity, OpenCode or xAI's Grok — into a careful
+genealogical researcher: the agent searches parish registers and archives, you
+decide, and only what a record proves goes into your family tree. The result is
+a GEDCOM file for the [Strom app](https://stromapp.info) or any other program.
+
+Everything stays on your computer: the research is a folder with its full
+history, and nothing leaves it except the requests to the archives and your
+conversation with the agent you chose.
+
+## Quick Start
+
+### With an AI agent you already use
+
+Send it this sentence:
+
+> I'd like to research my family history with your help. Please install and
+> start strom as described at https://github.com/ACiDekCZ/strom-research
+
+The agent asks your permission, installs strom, asks where to keep the research
+and in which language to talk, and opens the conversation for the research.
+
+### One line in a terminal
+
+No Node needed: the installer brings the official Node from nodejs.org (the
+newest release of the Node 24 LTS line) and strom's code (plain JavaScript you
+can read), checks both against their checksums, puts `strom` on your PATH and starts a short setup in your language.
+Nothing needs admin rights.
+
+- **Windows** (PowerShell):
+  `irm https://raw.githubusercontent.com/ACiDekCZ/strom-research/main/install/install.ps1 | iex`
+- **macOS, Linux**:
+  `curl -fsSL https://raw.githubusercontent.com/ACiDekCZ/strom-research/main/install/install.sh | sh`
+
+With Node 22.18 or newer: `npm install -g strom-research`.
+
+The setup asks a few things — language, where to keep the research, which
+agent (it finds the installed ones and offers Claude if there is none), the
+model, whether the agent should also write stories of your ancestors, what the
+agent may do without asking, a shortcut on the desktop — and gets git if it is
+missing. Then the first conversation begins: tell the agent whom you are
+looking for and what you know.
+
+Next time: run `strom`, or double-click the "Strom research" shortcut.
+
+Updates: strom looks for a new version at most once a day and says so;
+`strom update` installs it (checked like the installer does), and with it the
+newest security release of its Node line. Installed with
+npm: `npm install -g strom-research@latest`. What is new in each version:
+[CHANGELOG.md](CHANGELOG.md) ([čeština](CHANGELOG.cs.md), [Deutsch](CHANGELOG.de.md));
+`strom --version` and `strom update` link to it in the research language.
+
+## Features
+
+**Research as a conversation**
+- The agent explains, asks and proposes; you decide whom to research and what next
+- Beginners talk to the agent in its desktop app (Claude, ChatGPT/Codex,
+  OpenCode), experienced users in the terminal — strom opens it in the right
+  folder, set up as you chose
+- Or let the agent work on its own through the task queue (`strom run`) and
+  read the result — or on and on (`strom run --loop`) while a condition of
+  yours allows it: a gate plugin, e.g. `claude-usage 10` (your Claude
+  subscription's daily ration, 10 points in hand), or one of your own (`strom gate list`)
+- Hear what it finds as it finds it: a hook plugin of yours is told of every
+  save — a person added, a session closed — and can send it to your phone
+  (`strom hook on <name>`, the interface in `plugins/hooks/README.md`)
+- Several agents can work on one family tree side by side, each on its own task
+
+**Evidence first**
+- Every fact cites its record (folio, entry, the words of the register);
+  facts without one stay leads
+- Sources, record sets, archives, searches (also the negative ones),
+  hypotheses and decisions — all recorded
+- Proposes the next tasks itself: who still lacks proven parents and which
+  books would name them
+- Checks the tree for contradictions (ages, dates, duplicates) before every commit
+- Every change is a commit; the agent never edits the data directly
+
+**Archives**
+- Downloaders ("connectors") for online archives: the agent builds one itself
+  when the research needs an archive strom does not know yet, and tells you
+- A polite limiter for every request (the archive's own pace, slower when it
+  answers slowly, back-off; no limits made up), images
+  checked before they are kept; your own login to a paid portal stays with you
+- A standard, versioned plugin interface — see
+  [assets/plugins/connectors/README.md](assets/plugins/connectors/README.md)
+
+**Results**
+- GEDCOM for the Strom app (witnesses, stories, sources per page) and a strict
+  standard GEDCOM for any other program
+- Stories of your ancestors, written from the facts, for the family book
+  (on by default, you may say no)
+- The Strom app can open the research directly and follow it live while the
+  agent works
+- Each register entry cut out of its scan next to its words, in the file for
+  the Strom app (`excerpts.*` settings)
+- Ask the agent about anyone in the tree — with or without the app
+- Or look through it yourself, in strom's menu: the research at a glance
+  (`strom stats`), what is new (`strom recent`), what the agent does next
+  (`strom plan`), one person's life with its
+  records (`strom person card`), the ancestors as a tree (`strom pedigree`)
+- Hand the research to a relative in one small ZIP file (`strom pack`): the
+  family tree with its history, the images its records stand on and the
+  connectors — the pages only searched through the archive gives again. They
+  double-click the launcher inside (Windows, macOS, Linux): it installs strom
+  where it is missing, puts the research in place and takes it over
+  (`strom unpack`)
+- Take a family tree off the computer (`strom trees remove`): a backup offered
+  first, its name typed to confirm, then into the system's trash with the
+  images no other tree uses — never deleted for good
+
+**Safe by design**
+- What the agent may do alone is your choice: ask, auto (default) or full
+- Consents are yours: strom asks in a window of the system that the agent can
+  neither see nor click
+- `strom doctor` checks everything strom needs and fixes it with your yes;
+  `strom uninstall` removes strom again (your research stays)
+
+**Everywhere**
+- Windows, macOS and Linux; strom brings its own official Node, needs no admin
+  rights, and everything it runs is readable JavaScript
+- English, Czech and German in the program; the research itself in any
+  language and script
+
+## What you need
+
+- A computer with Windows 10/11 (64-bit), macOS or Linux
+- An AI agent with an account at its maker — usually a subscription (for
+  example Claude Pro). Choose its best model: the research reads old
+  handwriting and weighs the records.
+- git — strom gets it for you if it is missing
+
+## For AI agents
+
+The instructions for an agent sent here by its user:
+[install/AGENTS.md](install/AGENTS.md). Once installed, `strom` (no
+arguments) says where things stand and what to do next, `strom guide`
+explains the work, `strom commands --json` lists every command.
+
+## Build from Source
+
+```bash
+git clone https://github.com/ACiDekCZ/strom-research.git
+cd strom-research
+npm install
+node src/cli.ts --help                # run from sources (Node 22.18+)
+npm test                              # node --test
+npm run typecheck
+npm run build                         # dist/ for npm
+npm run release                       # release/: strom-app.tar.gz, SHASUMS256.txt, VERSION, NODE_VERSION, installers
+```
+
+Zero runtime dependencies: TypeScript on Node's built-ins, and git.
+
+## A second strom beside the first
+
+For testers and developers: another version of strom, e.g. to try one, next to
+the one you use — with its own command, program folder, settings and research
+folder, so the two never share data.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ACiDekCZ/strom-research/main/install/install.sh | \
+  STROM_ISOLATED=1 STROM_INSTALL_DIR="$HOME/strom-try" STROM_CONFIG_DIR="$HOME/.config/strom-try" \
+  STROM_COMMAND=strom-try sh
+```
+
+Windows (PowerShell):
+`$env:STROM_ISOLATED='1'; $env:STROM_INSTALL_DIR="$env:LOCALAPPDATA\Programs\Strom-try"; $env:STROM_CONFIG_DIR="$env:APPDATA\strom-try"; $env:STROM_COMMAND='strom-try'; irm https://raw.githubusercontent.com/ACiDekCZ/strom-research/main/install/install.ps1 | iex`
+
+- `STROM_ISOLATED=1` with `STROM_INSTALL_DIR` and `STROM_CONFIG_DIR`: the
+  program and its settings live in those folders only; it teaches no agent,
+  puts no shortcut on the desktop and leaves your `strom` alone.
+- `STROM_COMMAND=strom-<letters and digits>` (optional): the command it starts
+  with, next to `strom` (macOS, Linux: `~/.local/bin`; Windows: a `bin` folder
+  of its own on your PATH). It never overwrites a command it did not write. Its
+  research folder is suggested as `Documents/Strom <name>` (`Strom try`), and
+  links from the Strom app can reach it as `strom-research-<name>://` (on your
+  yes, as with the first). Without a command it is started by its full path and
+  takes no links.
+- To remove it: `strom-try uninstall` — its command, its links, its PATH entry
+  and its program folder go; its settings and research stay (delete them by
+  hand when not needed), and so does the first strom with everything of it.
+
+## License
+
+Copyright © 2026 Milan Víšek.
+
+Authors: Milan Víšek and Claude (Anthropic)
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+details.
+
+You should have received a copy of the GNU Affero General Public License along
+with this program (see [LICENSE](LICENSE)). If not, see
+<https://www.gnu.org/licenses/>.
+
+The connector SDK and template that `strom connector new` copies into a user's
+connector (`assets/plugins/connectors/sdk.ts`, `template.ts`) are under the MIT
+license, as stated in their headers, so a connector may be licensed as its
+author wishes; the rest of strom is under the GNU AGPL 3.0 or later.
+
+"Strom" is the name of the original project ([stromapp.info](https://stromapp.info));
+please give a modified version a name of its own.

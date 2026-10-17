@@ -1,0 +1,231 @@
+<div align="center">
+
+# agent-skills
+
+> **Maintenance mode.** This project is stable and receives security fixes. New features aren't planned, but issues and pull requests are still welcome.
+
+Production-tested agent skills. Drop-in markdown files that teach a coding agent a specific workflow — Claude Code, Codex, Cursor, or OpenCode.
+
+[![GitHub stars](https://img.shields.io/github/stars/conorbronsdon/agent-skills?style=social)](https://github.com/conorbronsdon/agent-skills/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Podcast](https://img.shields.io/badge/Podcast-Chain_of_Thought-purple?style=flat-square)](https://chainofthought.show/?utm_source=github&utm_medium=referral&utm_campaign=repo-readme&utm_content=agent-skills)
+[![X](https://img.shields.io/badge/X-@ConorBronsdon-black?style=flat-square&logo=x)](https://x.com/ConorBronsdon)
+
+<img src="docs/demo.gif" alt="A representative /code-review session: the orchestrator sizes the PR as high-stakes, spawns adversarial and operational subagents in parallel alongside Copilot, then triages the findings" width="800">
+
+</div>
+
+---
+
+
+These are patterns I built for my own daily work and generalized for anyone to use. They work with Claude Code out of the box, install into Codex, Cursor, and OpenCode with one flag (see [Other agents](#other-agents)), and follow the [agentskills.io](https://agentskills.io) standard where applicable. The through-line is trust infrastructure for agents — mostly its proportionate-review leg: review scaled to what a mistake would cost, from a quick drift check after parallel sessions to a full adversarial multi-agent pass before a high-stakes merge.
+
+## At a Glance
+
+| Skill | Commands | What it solves |
+|-------|----------|---------------|
+| [Session Management](session-management/) | `/start`, `/end`, `/update`, `/today` | Claude Code has no memory between sessions — this adds it |
+| [Code Review](code-review/) | `/code-review` | Single-pass reviews miss architectural P0s — this orchestrates Copilot + parallel subagents |
+| [Eval Integrity](eval-integrity/) | `/eval-integrity` | Benchmark numbers get dismissed in review — this audits an eval repo across 7 credibility dimensions |
+| [Reconcile](reconcile/) | `/reconcile` | Parallel sessions cause state drift — this detects it |
+| [SSOT Check](ssot-check/) | `/ssot-check` | Facts hand-copied across docs drift — this tracks the canonical value and audits every copy |
+| [Recover](recover/) | `/recover` | Crashed sessions leave orphaned worktrees — this cleans them |
+| [Skill Creator](skill-creator/) | `/skill-creator` | Skill generators rot and skip invocation/context decisions — this scaffolds against the live spec |
+| [Guest Circuit](guest-circuit/) | `/guest-circuit` | Pitching a podcast guest blind re-asks what three other shows asked — this maps their circuit and finds the unclaimed angle |
+| [Angel Diligence](angel-diligence/) | `/angel-diligence` | Startup diligence is ad hoc and easy to hallucinate; this produces a cited deal memo with a verdict scaffold, not a recommendation |
+| [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) ↗ | `/clean-ai-writing` | AI writing has tells — 74 pattern categories across vocabulary, structure, rhythm |
+| [grokkable-output](https://github.com/conorbronsdon/grokkable-output) ↗ | `"what did you find?"` | Agent reports bury the verdict under headers and arrow chains — this puts the answer in sentence one, with detail layered so you can stop reading anywhere |
+| [demo-gif-skill](https://github.com/conorbronsdon/demo-gif-skill) ↗ | `"add a demo gif"` | Demo GIFs rot the moment a tool's output changes — this scripts a reproducible one (vhs/Playwright) into any README |
+| [repo-audit](https://github.com/conorbronsdon/repo-audit) ↗ | `"audit this repo"` | A README claims something is blocked; nothing blocks it — this finds the mechanism behind every claim and grades it Enforced, Advisory, or Guidance |
+| [agent-memory-kit](https://github.com/conorbronsdon/agent-memory-kit) ↗ | `/dream rot`, `/dream lint` | Agent memory accumulates and never forgets — this adds the curation pass that catches rot and contradictions before the agent is confidently wrong |
+| [agent-workspace](https://github.com/conorbronsdon/agent-workspace) ↗ | Same commands, packaged | Standalone package of Session Management, Reconcile, and Recover above, with a configurable state layout (`workspace.yaml`) |
+| [agent-skill-builder](https://github.com/conorbronsdon/agent-skill-builder) ↗ | Same command, hardened | Standalone home of Skill Creator above — adds a machine-checkable validator and weekly spec-drift CI |
+| [eunuch-mode](https://github.com/conorbronsdon/eunuch-mode) ↗ | `/eunuch-mode` | A deliberately silly palace-adviser persona: courtly flattery, candid counsel, and an explicit exit |
+
+Rows marked ↗ live in their own repo. Everything else installs from this one. An ↗ row that repackages a skill listed above runs those same commands, so no command is listed twice.
+
+## Quick Start
+
+A skill is a markdown file. Installing one is copying a directory into wherever your agent reads skills from.
+
+```bash
+# 1. Copy a skill directory into your project
+mkdir -p your-project/.claude/skills
+cp -r ssot-check your-project/.claude/skills/ssot-check
+
+# 2. Use it
+# Type /ssot-check in your agent
+```
+
+That's the whole installation: the directory name becomes the command, supporting files (`patterns/`, `examples/`) ride along, and edits hot-reload within a session. Install to `~/.claude/skills/` instead to make a skill available across all your projects.
+
+Or use the bundled installer, which also handles updates and drift checks against your installed copies:
+
+```bash
+./install.sh install ssot-check ~/my-project     # copy in
+./install.sh diff    ssot-check ~/my-project     # what changed upstream since you installed?
+./install.sh update  ssot-check ~/my-project     # refresh
+TARGET_SCOPE=user ./install.sh install reconcile # install to the user-level skills dir
+```
+
+### Other agents
+
+Every skill here is plain markdown with no Claude-specific syntax, so it runs anywhere that reads a skill file as a procedure. The installer knows where each agent looks:
+
+```bash
+./install.sh agents                                    # show the target directories
+AGENT=codex ./install.sh install ssot-check ~/my-project
+```
+
+| `AGENT=` | Project directory | User directory |
+|---|---|---|
+| `claude` (default) | `.claude/skills` | `~/.claude/skills` |
+| `codex` | `.agents/skills` | `~/.codex/skills` |
+| `cursor` | `.cursor/skills` | `~/.cursor/skills` |
+| `opencode` | `.opencode/skills` | `~/.opencode/skills` |
+| `generic` | `.agents/skills` | `~/.agents/skills` |
+
+Omitting `AGENT` behaves exactly as before. An unrecognised value exits `1` without writing anything, rather than quietly falling back to Claude.
+
+Two caveats worth stating plainly: skills that shell out to `gh` need the GitHub CLI whatever the agent, and `/`-prefixed invocation is a Claude Code convention — other agents may want "use the ssot-check skill" instead.
+
+Two variations:
+
+- **Multi-command skills** (session-management bundles `/start`, `/end`, `/update`, `/today`): create one thin `.claude/skills/<command>/SKILL.md` per command that says `Load and follow .claude/skills/session-management/SKILL.md, section "/start — Begin Session"` — or use `.claude/commands/` stub files, which still work but are the legacy form.
+- **Older setups**: if you already route through `.claude/commands/`, everything here still works that way; the stubs support the same frontmatter.
+
+See each skill's README for skill-specific setup details.
+
+## Skills
+
+### [Session Management](session-management/)
+
+A system of four commands (`/start`, `/end`, `/update`, `/today`) that give Claude Code memory across conversations. Maintains state files so every session picks up where the last one left off.
+
+- **`/start`** — Load project state, check what changed, get a briefing
+- **`/end`** — Auto-extract session summary, update state, propose auto-memory updates, check for uncommitted work
+- **`/update`** — Mid-session checkpoint (quick save)
+- **`/today`** — Morning heartbeat: staleness check, deadlines, memory curation
+
+Includes setup guide with the required file structure and minimal starter templates. These four, plus Reconcile and Recover, have graduated into [agent-workspace](https://github.com/conorbronsdon/agent-workspace) — take that one if you want the configurable state layout, this one if you want the four commands with no config.
+
+### [Code Review](code-review/)
+
+Multi-agent orchestrator for code-PR review. Spawns Copilot plus parallel subagents (adversarial, operational, reference-comparison) sized to PR risk, with stale-finding triage and a hard 2-round iteration cap. Built because line-level review consistently misses architectural failures (Vercel `maxDuration`, persistent-replay vectors, missing retry budgets) that only surface when a reviewer is asked the right operational question.
+
+Use for: high-stakes PRs touching auth, payment, crypto, deploy configs, or external SDK integrations. Skip for typos and trivial changes.
+
+### [Eval Integrity](eval-integrity/)
+
+Credibility audit for LLM evaluation and benchmark repos. Greps the target repo for evidence across seven integrity dimensions (pre-registration, contamination, holdout hygiene, judge validity, statistical honesty, reproducibility, leaderboard exclusions), spawns one auditor subagent per dimension in parallel, and emits a scored report: PRESENT / PARTIAL / ABSENT with `file:line` evidence and a concrete fix for every gap. Each gap is tagged INVALIDATING (a reviewer can throw out the published number) or HARDENING. Read-only — it reports and offers fixes, never edits the benchmark or re-runs an eval. The checks were extracted from hardening a real agent benchmark for external grant review.
+
+Use before submitting a benchmark to a grant, conference, or public leaderboard, or whenever someone says "I don't trust those numbers." The graduated version at [eval-integrity](https://github.com/conorbronsdon/eval-integrity) splits the seven dimensions into 36 scoreable sub-checks, adds a JSON result schema for CI trend-tracking, and ships three fixture benchmarks.
+
+### [Reconcile](reconcile/)
+
+Tripwire check for multi-session drift. Scans recent commits, state files, and cross-references for inconsistencies caused by parallel Claude Code sessions.
+
+Use after merging worktree branches, after crashes, or whenever something feels off.
+
+### [SSOT Check](ssot-check/)
+
+Drift auditor for facts that are canonical in one file but hand-copied into others (episode counts, prices, subscriber numbers, versions). Discover mode scans the repo for drift-prone values and proposes a `.ssot.yaml` manifest mapping each fact to its canonical file and known copies, with regex capture groups so values can be extracted and compared. Check mode reads the manifest, verifies every copy against the canonical value, and reports IN SYNC / DRIFTED / CANONICAL MOVED / UNVERIFIED with `file:line` evidence and proposed diffs. Never auto-applies fixes. Reads cross-repo copies (a landing page in a sibling clone) without writing to those repos, and ends with a one-line summary built for a pre-commit habit.
+
+Use before commits that touch docs, after updating any canonical number, or on any repo with a "grep for other files with this number" rule that people forget to follow. A separate, tool-backed take on the same problem lives at [ssot-check](https://github.com/conorbronsdon/ssot-check): a deterministic stdlib CLI with a pre-commit hook and a GitHub Action. The two have diverged and neither tracks the other — pick the CLI when you want reproducible, CI-enforceable checks, and this skill when you want the model to do the curation and interpretation.
+
+### [Recover](recover/)
+
+Scan for orphaned worktrees and stale branches left behind by crashed or abandoned sessions. Read-only by default — reports findings and waits for your approval before any cleanup.
+
+### [Skill Creator](skill-creator/)
+
+Meta-skill: describe what you want a skill to do in plain language, and it generates a ready-to-ship skill — including the design decisions most generators skip: invocation control (`disable-model-invocation` for user-only workflows, `user-invocable: false` for background knowledge), arguments (`argument-hint`, `$ARGUMENTS`), and description budget (triggers in the description, detail in the body, since every model-invocable description loads into every session). Ships with a dated snapshot of the frontmatter spec; the canonical, hardened version — with a machine-checkable validator and weekly spec-drift CI — lives at [agent-skill-builder](https://github.com/conorbronsdon/agent-skill-builder), and this copy tracks it.
+
+### [Guest Circuit](guest-circuit/)
+
+Podcast-appearance research for guest booking. Give it a prospective guest's name plus one anchor fact, and it maps their podcast circuit: every show they've appeared on, how recently, what they covered, and what angle is still unclaimed for your show. Uses [podcastindex-mcp](https://github.com/conorbronsdon/podcastindex-mcp) (`search_by_person`) as the canonical source when configured, degrading to web search when not. Every appearance is verified by a fetched page; nothing comes from model memory.
+
+Abbreviated example output:
+
+```markdown
+# Circuit Report: Jane Doe (CTO, Acme) — 2026-06-11
+
+## Appearance Timeline
+| Date       | Show            | Episode                      | Audience signal |
+|------------|-----------------|------------------------------|-----------------|
+| 2026-05-02 | Infra Weekly    | "Scaling Acme's eval stack"  | 410 eps, indie  |
+| 2026-03-18 | The Stack Pod   | "Jane Doe on agent testing"  | 38K YT views    |
+| 2026-01-09 | DevTools Radio  | "From monolith to agents"    | network show    |
+
+## Stump Speech (do not re-ask)
+- The Acme founding story and the monolith rewrite (told on all 3 shows)
+
+## Unclaimed Angles
+- Her March post on eval dataset rot — no show has touched it
+
+## Receptiveness Signal
+3 appearances in 5 months: actively podcast-receptive, cold outreach viable.
+
+## Suggested Pitch Angle
+[one specific paragraph built on the unclaimed angle]
+```
+
+Use before outreach, not for interview prep of an already-booked guest.
+
+### [Angel Diligence](angel-diligence/)
+
+Pre-investment research for angel checks. Give it a company name (plus optional deck notes, founder names, round details) and it runs parallel web research under strict citation rules, then writes a nine-section deal memo that separates verified facts from company claims. Two gates run before any research: a conflict-of-interest check against your employer, and a deal-structure question (direct, SPV, or secondary) that changes how the numbers read. The memo ends in a verdict scaffold, never an invest/pass recommendation — the human decides.
+
+## How to Use
+
+Installation is covered in [Quick Start](#quick-start): copy the whole skill directory (not just SKILL.md — several skills carry `patterns/` and `examples/` files they reference) into `.claude/skills/`, and the directory name becomes the command. For all skills at once:
+
+```bash
+mkdir -p your-project/.claude/skills
+for d in session-management code-review eval-integrity reconcile ssot-check recover skill-creator guest-circuit angel-diligence; do
+  cp -r "$d" your-project/.claude/skills/"$d"
+done
+```
+
+### Works with other AI tools
+
+These skills follow the [agentskills.io](https://agentskills.io) format, which Cursor, OpenHands, and 40+ other Agent Skills-compatible tools support. Check each tool's docs for how to load skills.
+
+## Related
+
+Skills that graduated out of this repo into their own:
+
+- **[agent-workspace](https://github.com/conorbronsdon/agent-workspace)** — Session management, reconcile, and recover as one package with a configurable state layout
+- **[agent-skill-builder](https://github.com/conorbronsdon/agent-skill-builder)** — Standalone home of the skill-creator here: adds a machine-checkable validator and weekly spec-drift CI
+- **[eval-integrity](https://github.com/conorbronsdon/eval-integrity)** — The benchmark audit as 36 scoreable sub-checks, with a JSON result schema and fixtures
+- **[ssot-check](https://github.com/conorbronsdon/ssot-check)** — The drift auditor as a deterministic CLI, pre-commit hook, and GitHub Action
+
+Skills built standalone:
+
+- **[repo-audit](https://github.com/conorbronsdon/repo-audit)** — Check a repo's claims against its own code, or get it ready to open-source
+- **[agent-memory-kit](https://github.com/conorbronsdon/agent-memory-kit)** — Capture, recall, and a read-only curator that finds rot in agent memory
+- **[avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)** — Catch and fix AI writing patterns (74 pattern categories)
+- **[demo-gif-skill](https://github.com/conorbronsdon/demo-gif-skill)** — Add a reproducible demo GIF to any repo's README
+
+Elsewhere:
+
+- **[AI Tools for Creators](https://github.com/conorbronsdon/ai-tools-for-creators)** — Collection of skills, MCP servers, and workflow tools
+- **[AI Learning Resources](https://github.com/conorbronsdon/ai-learning-resources)** — Curated learning path from "what is AI?" to building with Claude Code
+
+## Contributing
+
+Found a bug or have an improvement? Open an issue or PR. If you've built a skill that others would find useful, I'm happy to consider adding it.
+
+## About
+
+Built by [Conor Bronsdon](https://github.com/conorbronsdon). These skills were developed through daily use while running [Chain of Thought](https://chainofthought.show/?utm_source=github&utm_medium=referral&utm_campaign=repo-readme&utm_content=agent-skills), a podcast about AI infrastructure and developer tools.
+
+---
+
+## Disclaimer
+
+*This is an independent personal project, not affiliated with, sponsored by, or endorsed by any company. All views expressed are my own.*
+
+## License
+
+MIT — see [LICENSE](LICENSE).

@@ -1,0 +1,830 @@
+# Agon AI
+
+<p align="center">
+  <img src="assets/agon-hero.svg" alt="Agon — Any AI can join. They compete. You ship." width="820">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node.js >= 22">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT">
+  <img src="https://img.shields.io/badge/TypeScript-ESM-blue" alt="TypeScript ESM">
+  <img src="https://img.shields.io/badge/rating-Glicko--2-red" alt="Glicko-2 rated">
+</p>
+
+**The multi-AI orchestration CLI — engines compete to build, collaborate to think.**
+
+Agon AI puts the world's best AI engines on your software engineering problems two ways. They **compete** on implementation: the same task runs in isolated git worktrees, the best solution wins and is applied automatically. They **collaborate** on judgment: brainstorm panels feeding a synthesis, council roundtables with assigned roles and a chair, tribunal debates, and multi-engine review consensus — pooling model strengths instead of betting on one. Glicko-2 ratings continuously track each model's performance over time, so routing keeps getting sharper.
+
+```bash
+npm install -g @kernlang/agon
+```
+
+---
+
+## Table of Contents
+
+- [What is Agon?](#what-is-agon)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Core Modes](#core-modes)
+- [Interactive REPL](#interactive-repl)
+- [Rooms](#rooms)
+- [Using Agon from Other CLIs](#using-agon-from-other-clis)
+- [Engines](#engines)
+- [Ratings](#ratings)
+- [Cesar Routing](#cesar-routing)
+- [Configuration](#configuration)
+- [Architecture](#architecture)
+- [License](#license)
+
+---
+
+## What is Agon?
+
+<p align="center">
+  <img src="assets/agon-splash.png" alt="The Agon REPL on launch — AGON banner, version, engine roster, and example prompts mapped to modes." width="820">
+</p>
+<p align="center"><sub>The <code>agon</code> REPL on launch — your roster, and plain prompts routed to the right mode.</sub></p>
+
+Agon AI fundamentally changes how developers interact with AI coding assistants. Instead of relying on a single model and hoping for the best, Agon introduces **competitive orchestration**. You describe the task once, and Agon dispatches it to multiple models simultaneously. They race to implement the solution, and you review and apply the best outcome. 
+
+Under the hood, Agon uses a sophisticated **worktree isolation model**. When a competition begins, Agon creates temporary, hidden git worktrees for each participating engine. This ensures that engines can modify files, run tests, and iterate without stepping on each other's toes or cluttering your main working directory. Only the winning implementation is merged back into your active branch.
+
+Routing these tasks efficiently is **Cesar**, Agon's intelligent orchestration brain. Cesar monitors every interaction, success, and failure, updating an internal **Glicko-2 rating system** for each engine. Over time, Cesar learns which engines excel at specific task classes—like writing tests, refactoring React components, or optimizing database queries—and automatically routes future tasks to the highest-rated engine for that specific domain.
+
+Agon isn't just about competition; it's a unified platform for AI collaboration. Whether you need engines to debate a controversial architectural decision, brainstorm solutions with weighted token allocations based on confidence, or simply execute a robust pipeline loop, Agon provides the ultimate terminal-native interface for multi-agent workflows.
+
+## Requirements
+
+- Node.js >= 22
+- A Git repository
+- At least one supported AI CLI installed globally (e.g., Claude Code, Codex, Antigravity) or an API key for API-based engines
+- **Optional:** Python 3.10+ to unlock the semantic features that run as Python sidecars — semantic history search (`agon history --query`), tree-sitter syntax validation in forge fitness, brainstorm paraphrase dedup, and the task classifier. Agon still runs without Python; these features fall back to substring/regex paths.
+
+## Installation
+
+### Install from npm (recommended)
+
+```bash
+npm install -g @kernlang/agon
+```
+
+That's it — one command, no clone, no build. It pulls the engine substrate
+(`@kernlang/agon-engines`) and the semantic sidecars (`@kernlang/agon-dedup`)
+in automatically. Then run `agon` in any git repository to start the
+interactive REPL.
+
+```bash
+# (Optional) Install the Python deps to unlock the semantic features
+# (semantic history search, tree-sitter fitness, dedup, task classifier).
+# The .py sidecars ship with the package; this just installs their libs.
+python3 -m pip install --user fastembed numpy tree-sitter tree-sitter-python tree-sitter-typescript tree-sitter-javascript tree-sitter-json
+```
+
+### Install from source (contributors)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/KERNlang/agon.git
+cd agon
+
+# 2. Install dependencies (pulls @kernlang/agon-engines + the Python sidecars)
+npm install
+
+# 3. Build and install the global CLI
+npm run install:cli
+
+# 4. (Optional) Install Python sidecars for semantic features
+python3 -m pip install --user -r packages/dedup/requirements.txt
+```
+
+Once installed, run `agon` in any git repository to start the interactive REPL. Run `agon doctor` to verify every engine, the worktree path, and the Python sidecars resolve.
+
+## Core Modes
+
+Agon features multiple operational modes to suit different development challenges.
+
+### Which mode should I use?
+
+Pick by the **shape** of the problem, not the topic:
+
+| You need… | Use | Why |
+|-----------|-----|-----|
+| Ideas / options / "what am I missing?" | **brainstorm** | Cheap and fast — engines bid confidence and surface approaches and gaps. |
+| One refined output from many opinions | **synthesis** | Engines draft, improve each other's drafts over swap rounds, and a judge picks the best evolved result. |
+| A decision with real tradeoffs settled | **tribunal** | Structured debate (adversarial / steelman / socratic / red-team / synthesis / postmortem) that argues the sides. |
+| The whole panel on a high-stakes call | **council** | A roundtable — every engine takes a distinct role (Contrarian = top critic, Red-Team, …); a top-rated chair returns ONE verdict with a confidence + kill-switch. |
+| Open exploration, no decision yet | **campfire** | Relaxed multi-engine discussion — no scoring, no winner. |
+| A problem decomposed before you act | **think** | Sequential thinking — linear or reflexion (forced self-critique), optional branches; surfaces open questions + a `goal` handoff. |
+| Your own decision pressure-tested | **nero** | Adversarial self-challenge — the top-rated *critic* (by tribunal rating, not the best builder) attacks it and returns a verdict. |
+| A library/repo/spec/fact looked up with sources | **research** | Keyless, web-grounded, *cited* research — Agon discovers sources (npm/GitHub/MDN/IETF/Stack Overflow/Wikipedia, **no API key**), an engine drafts a grounded answer, and Agon **verifies every citation**. |
+| Your **own browser** driven to research / check a page | **chrome** | Drive your real browser (navigate / read / screenshot / click) from the REPL, the CLI, or Cesar — reuses a running agon the side panel is on, else embeds a transient bridge. Needs the Agon browser extension. |
+| Code built competitively against a test | **forge** | Engines race on the same task in isolated worktrees; the best test-passing patch is applied. |
+| The **first** passing solution, fast | **speculate** | N engines race; the first to pass the test wins and is applied immediately. |
+| A routine build with one engine | **pipeline** | Single-engine build → review → fix loop; no competition overhead. |
+| A whole open-ended thing built unattended | **conquer** | Cesar drives a builder CLI (codex/claude/agy) through the build, convening nero/tribunal/council on forks, and stops at a human merge gate. The open-ended sibling to **goal**. |
+| Hidden AI-watermark channels found / stripped | **sanitize** | Deterministic forensics — zero-width chars, bidi controls, tag stego, homoglyphs, whitespace payloads, and PNG/JPEG/SVG provenance metadata. No AI, fully verifiable. |
+| AI-written text rewritten to read human | **naturalize** | Deterministic sanitize → a **non-author** engine rewrites (writer ≠ rewriter) → mandatory re-scan → word-diff report, with a `--min-change` honesty threshold. |
+| Existing code checked for bugs | **review** | Multi-engine review folded into one confidence-tiered consensus. |
+| To know whether your **tests** would catch a bug | **mutate** | Mutation testing — Agon breaks the code on purpose and re-runs your suite; every mutant that SURVIVES is a test that would not have noticed. Advisory, never a gate. |
+| A task done end-to-end autonomously | **agent** | One engine (Cesar-routed) runs a multi-turn tool loop to do the work. |
+| A whole queue driven to "done" unattended | **goal** | Per task: build → witness → gate → review + judge → commit, for hours. |
+| A big, multi-layered task | **team-\*** | 2v2 / 3v3 variants of forge / tribunal / brainstorm — engines collaborate per side. |
+
+**Rule of thumb**
+
+- Need ideas → `brainstorm`
+- Need a decision debate → `tribunal`
+- Need one refined output (plan, spec, PR description, architecture note, acceptance criteria, migration plan) → `synthesis`
+- Need code checked → `review`
+- Need to know whether your tests are real → `mutate`
+- Need code built competitively → `forge`
+- Need the first green solution fast → `speculate`
+- Need a task queue executed → `goal`
+- Need to think a problem through before acting → `think`
+- Need your own decision attacked before you commit → `nero`
+- Need a library/repo/spec/fact looked up with trustworthy, verified sources → `research`
+- Need your own browser driven to research or check a page design → `chrome`
+- Need the whole panel on a high-stakes, hard-to-reverse call → `council`
+- Need a whole open-ended thing built unattended, away from the desk → `conquer`
+
+**forge vs. speculate vs. synthesis** — all three run multiple engines, but they pick the winner differently:
+- **forge** *scores* every candidate against the test and applies the best.
+- **speculate** takes the *first* candidate that passes — fastest path to any correct answer.
+- **synthesis** has engines *improve each other's* drafts and a judge picks the evolved winner — use it when there's no clean pass/fail test (plans, specs, prose, architecture).
+
+### Forge
+Competitive code generation. Engines race on the exact same task in isolated git worktrees. The winner's changes are applied automatically to your main branch.
+
+```bash
+/forge "Implement a Redis caching layer for the user service"
+```
+
+With synthesis enabled (`forgeEnableSynthesis`), a configurable **synthesizer** engine then refines the winner using the other engines' critiques into a best-of-all result — **Cesar** in the interactive REPL, the **judge** under `agon goal`, or any named engine elsewhere.
+
+### Synthesis
+Competitive cross-pollination. Engines draft independently, then improve each other's drafts in swap rounds before a judge picks the best evolved result.
+
+```bash
+/synthesis "Evolve this design doc into a concrete implementation plan" --swaps 2 --timeout 90
+agon synthesis "Evolve this design doc into a concrete implementation plan" --swaps 2 --timeout 90
+```
+
+### Think
+Native sequential thinking. One engine decomposes a problem into structured, numbered thoughts before any code is written — the scaffold forces it off the laziest answer. Opt-in and composable: it surfaces open questions and emits a refined spec you can hand straight to `agon goal`.
+
+```bash
+agon think "Should the rate limiter use a token bucket or a sliding window?"
+agon think "Rework auth to JWT" --strategy reflexion             # force a self-critique + revision each step
+agon think "Design the cache layer" --strategy tot --branches 5  # score 5 branches, keep the winner, prune the rest
+agon think "Pick a storage engine" --strategy hypothesis         # competing hypotheses, eliminate the losers
+agon think "..." --critic codex                                  # a SECOND engine adversarially attacks the chain
+agon think "..." --json                                          # emit the ThinkResult (handoff artifact), pipe-friendly
+agon goal "Close the gaps" --think --queue .gaps/ --gate "npm test"  # decompose + surface unknowns before the run
+```
+
+- **Strategies** (the method is a swappable `ThinkChain` state machine):
+  - `linear` — classic sequential thinking.
+  - `reflexion` — each step is force-followed by a critique then a revision (anti-laziness).
+  - `tot` — tree-of-thoughts: branches self-score, the best is kept and the losers are pruned.
+  - `graph` — graph-of-thoughts: branch, then merge the strongest ideas into one decision.
+  - `hypothesis` — state competing hypotheses, seek discriminating evidence, eliminate the losers.
+- **Steps & branches** — `--steps N` (1–20) caps the chain; `--branches N` (1–8) explores alternative paths tagged with a branch id (with scores under `tot`).
+- **Adversarial critic** — `--critic <engine>` has a second engine attack the finished chain (the cross-engine check the single-model original can't do).
+- **Tool-grounding** — thoughts that cite repo files which don't exist are flagged (`--no-ground` to disable), so a plan never hands `goal` phantom paths.
+- **Machine-validated** — a `reflexion` chain that never actually critiques+revises is rejected by the `ThinkChain` machine.
+- **Composes into other modes** — `agon goal --think` runs a decompose pass on the intent first (surfacing sub-problems + open questions, feeding a refined spec) so a long autonomous run never starts half-understood. Cesar reasons step-by-step before acting when `cesarThinkFirst` is enabled (`agon config set cesarThinkFirst true`).
+
+### Nero
+Adversarial self-challenge — Agon's answer to a devil's-advocate / evil-twin pass, but with a *real* second model instead of your own reasoning mirrored. Feed it a decision and its reasoning; a structurally adversarial critic attacks it with concrete failure scenarios (INVERSION / PRE-MORTEM / SECOND-ORDER), reports its own confidence the original is correct, and ends with a verdict: **FLAWED / PROCEED WITH CAUTION / SOUND**.
+
+```bash
+agon nero "Cache auth tokens in Redis with a 5-min TTL" --reasoning "Redis is shared across workers and fast"
+agon nero "Ship the migration tonight" --confidence 80          # Nero reports its own % so you can compare
+agon nero "Switch to event sourcing" --focus "replay + schema evolution"   # steer the critique
+agon nero "..." --engine codex                                  # force a specific critic (skips rating selection)
+agon nero "..." --json                                          # emit the NeroResult, pipe-friendly
+```
+
+- **The critic is the top-rated *adversary*, not the top-rated builder.** Selection cascades **critique → tribunal → global → random**: it prefers the dedicated `critique` discipline (a judged Glicko rating fed by adversarial/red-team tribunals and councils — see [Ratings](#ratings)), falls back to the `tribunal` rating, then global, then a random active engine when nothing has competed yet. `agon leaderboard --mode critique` shows the standings.
+- **Never grades its own homework** — the author being challenged is excluded from the candidate pool, so in-session Cesar challenges are answered by a *different* engine whenever one is available.
+- **For external CLIs too** — `agon nero` (and `agon call nero "<decision>" --jsonl`) is the mode Codex / Antigravity / Claude should reach for instead of an internal self-critique; it gives them a genuinely different model as the adversary.
+
+### Research
+Keyless, web-grounded, **cited** research. The Agon edge here isn't engine competition — it's that *discovery and verification happen in Agon, around the model, with no API key*: Agon classifies the question and pulls sources from first-party endpoints that need no key (**npm registry, GitHub repo search, MDN, IETF/RFC datatracker, Stack Overflow, Wikipedia**), WebFetches them (SSRF-guarded), an engine drafts an answer grounded **only** in that content with inline `[n]` citations, and Agon then **re-fetches and verifies every citation**, flagging any that are dead, redirected to another host, or whose page doesn't mention the cited terms. The model can hallucinate a URL — it can't make Agon's fetch of that URL succeed.
+
+```bash
+agon research "how does the p-retry npm package back off?"
+agon research "the WHATWG URL parsing spec" --count 8           # more sources
+agon research "RFC 7231 cacheability rules" --engine codex       # force the drafting engine
+agon research "what is a Merkle tree?" --json                    # emit the ResearchResult, pipe-friendly
+```
+
+- **No API key, no setup.** It never signs up for Brave/Tavily/Exa or runs a search-engine container — it talks to keyless first-party JSON APIs. A truly-general web query that has no keyless lane is reported honestly rather than answered ungrounded.
+- **Citations are verified, not trusted.** Every cited URL is re-fetched; dead/redirected/mismatched ones are surfaced so you know which lines to trust.
+- **For external CLIs too** — `agon call research "<question>" --jsonl` lets Codex / Antigravity / Claude get web-grounded, citation-checked answers without their own search key.
+
+### Chrome
+Drive your **own browser** from Agon — to research live pages or check a design without leaving the flow. Where `research` reads keyless source APIs, `chrome` drives the *real* browser you're logged into: it navigates, reads the rendered page, screenshots it, and (with approval) clicks and types. The agentic ReAct brain runs the turn through a loopback bridge the **Agon browser extension's side panel** attaches to — the panel lends the page tools and executes them in your Chrome.
+
+```bash
+/chrome open news.ycombinator.com and summarize the top 3 posts   # in the agon REPL
+/chrome check the pricing page design — is the hero cluttered?
+agon chrome "open the staging dashboard and tell me if the chart overflows"   # from the CLI
+agon chrome "..." --auto-approve            # act on the page without prompting (unattended)
+agon call chrome "<task>" [--auto-approve]  # machine bridge for external CLIs (Codex/Antigravity)
+```
+
+- **Reuse-or-embed, no separate terminal.** `chrome` reuses a running agon (`agon serve` or the REPL) the side panel is already attached to; if nothing's running it embeds a transient in-process bridge just for the turn and writes the 0600 connection file the panel auto-connects through. The REPL `/chrome` hosts the bridge itself, so the panel auto-connects to your live agon.
+- **Your approval is the backstop.** Read-only page tools (navigate / read / screenshot) run without prompting; page-changing actions (click / type) prompt with Agon's own Y/N gate (the REPL permission UI, or a terminal prompt from the CLI). `--auto-approve` allows them unattended — required for a non-interactive caller (`agon call chrome`) to act on the page. Page content is treated as untrusted: the approval gate is the prompt-injection backstop.
+- **Never Cesar.** The browser turn runs on the agentic brain, never your live Cesar session (no split-brain); its result is fed back to Cesar so the conversation builds on what the browser found. In the REPL it's also recorded for `Ctrl+R` / `agon last`.
+- **Requires the Agon browser extension** with its side panel open + attached. With no panel attached, the brain answers in text only (and says so).
+
+### Brainstorm
+Engines bid their confidence level on how they would tackle a complex problem. Engines with higher confidence bids are allocated more tokens and priority.
+
+```bash
+/brainstorm "How should we handle database migrations with zero downtime?"
+```
+
+### Tribunal
+Engines debate a proposed solution, argue its flaws, and attempt to reach consensus. Available modes include: adversarial, socratic, red-team, steelman, synthesis, and postmortem. The execution protocol can be parallel, chained, or hybrid; `auto` selects the mode-specific default.
+
+```bash
+/tribunal --mode red-team --protocol hybrid "Review the new authentication middleware for security flaws"
+```
+
+### Council
+A roundtable of **all** your active engines — Agon's stronger answer to the viral "LLM Council" pattern. Where that runs one model wearing different hats, council seats *genuinely different models*, each in a distinct role, and chairs the panel with the top-rated engine.
+
+```bash
+agon council "Should we adopt event sourcing for the ledger?"
+agon council "Rewrite the scheduler in Rust?" --engines claude,codex,agy   # constrain the panel
+agon council "..." --roles "Contrarian,Red-Team,First-Principles"          # override the roles
+agon council "..." --chairman claude                                       # force the chair
+agon council "..." --json                                                  # emit the CouncilResult, pipe-friendly
+```
+
+- **Four moves, not a free-for-all.** (0) the chair frames a **decision brief** — options, stakes, reversibility, known evidence, what would change the answer — so every advisor argues the same thing; (1) each advisor responds **in role**; (2) an **O(N) directed peer critique** — each advisor sharpens exactly one peer (biggest blind spot, most fragile assumption, best rival option), cheaper and sharper than an N² blind round; (3) the chair returns **ONE verdict** with a confidence, the strongest counterargument, one next step, and a **kill-switch** (the evidence that would reverse it) — and must cite which critiques it accepted or rejected, so dissent can't be quietly laundered away.
+- **Glicko-informed seating.** The **Contrarian** seat goes to the top-rated *critic* (the same `critique → tribunal → global` cascade Nero uses — the best builder is rarely the best critic); the **chair** is the top-rated engine overall. Roles fill in priority order: Contrarian, First-Principles, Red-Team, Outsider, Expansionist.
+- **Scales to your roster.** N engines → N−1 advisors + 1 chair. With exactly 2 engines both are advisors and the configured Cesar engine chairs (with a loud "thin panel" warning). Below 2 it refuses. A single engine failing degrades the run with a warning rather than aborting it.
+- **For external CLIs too** — `agon council` and `agon call council "<decision>" --jsonl` give Codex / Antigravity / Claude the full heterogeneous panel for a high-stakes call.
+
+**council vs. tribunal** — tribunal is a 2-side structured *debate* (adversarial / steelman / …); council is a *roundtable* with named roles, a decision brief, directed critique, and a single accountable chairman verdict. Reach for council when the decision is high-stakes or hard to reverse and you want the whole panel, not just two sides.
+
+### Campfire
+A relaxed, open-ended discussion mode where engines can collaborate without competitive scoring or tight token constraints.
+
+```bash
+/campfire "Let's discuss the pros and cons of migrating to GraphQL"
+```
+
+### Pipeline
+A focused, single-engine build-review-fix loop ideal for deterministic tasks where competition isn't strictly necessary.
+
+```bash
+/pipeline "Fix all ESLint errors in the src/components directory"
+```
+
+### Review
+Performs an automated, multi-engine code review of your uncommitted changes, branches, or commits — then folds every engine's findings into one **confidence-tiered consensus** instead of dumping several noisy reviews side by side. Each finding carries a 0–1 confidence, and a two-signal rule decides what truly blocks: one *blocking* finding at ≥0.85, **or** two engines flagging the same issue at ≥0.70 (a nit never blocks, even at 0.99). Findings are grouped **verified / needs-check / speculative / nit**; engine timeouts and parse-failures land in their own lane (never a phantom blocker); and medium-confidence findings can go to a **judge** for a second opinion.
+
+```bash
+/review HEAD~1..HEAD
+agon review commit:HEAD                         # all active engines in parallel
+agon review commit:HEAD --engine claude        # explicit single-reviewer fast path
+agon review commit:HEAD --engines claude,codex # explicit subset
+agon review branch:feat-x --base main        # feat-x's commits vs main, regardless of checkout
+agon review range:main...feat-x              # fully explicit two-ref scope
+```
+
+Diff scope is deliberate, never implicit: `--base <ref>` pins the base for `uncommitted`/`branch:` targets, and `range:BASE...TARGET` names both ends. One convenience: reviewing the branch you are currently **on** (where "branch vs itself" would be an empty diff) auto-bases against the repository's default branch — labelled `(auto-base)` in the run header so the scope is never silent. A failed reviewer seat (timeout / hard error) is auto-retried once at half the wall clock before it's reported — and every failure is named in the run summary, never silently folded into a smaller panel. The same retry + loud `panel degraded:` banner applies to brainstorm, tribunal, and council seats.
+
+Standard Review deliberately uses the full active panel even when the legacy `reviewDefaultEngine` preference is configured. Narrowing requires `--engine` or `--engines`. Explicit subsets are strict: an unknown, unavailable, or removed engine aborts the request instead of silently changing the committee.
+
+#### Role-lens review
+
+`/review role` (REPL) and `agon review --roles` (CLI) run the **same** parallel panel, but each engine reviews through a focused lens — `security`, `correctness`, `dryness`, `performance` — plus an `overall` generalist backstop so coverage is never partitioned away. Roles narrow each reviewer's *attention* only: the diff, repo grounding, machine findings block, consensus merge, and results pager are byte-identical to a standard review, and a reviewer who spots a blocking issue outside its role must still flag it.
+
+```bash
+/review role                                    # REPL: deal the default role roster
+/review role security,correctness uncommitted   # REPL: explicit roles, zipped per engine
+agon review --roles auto --risk auto            # CLI: roles composed with risk routing
+agon review --roles security,overall -e claude,codex
+agon call review uncommitted --roles auto       # external-CLI bridge (Claude Code, Codex, CI)
+```
+
+With `--roles auto` the fixed roster is dealt onto the selected panel in order and every extra engine lands on `overall`; an explicit comma list is zipped engine-by-engine (unknown role ids fall back to `overall`). Roles compose with `--risk`/`--primary-engine` routing — they change what each seat looks *at*, never how many seats there are.
+
+### Mutate
+Mutation testing as a **test-strength oracle**. Review asks *"is this code wrong?"* — `mutate` asks the question a review panel cannot: *"would my tests **notice** if it were?"* Agon copies your work into a disposable git worktree, breaks the target lines one mutant at a time, and re-runs your suite for each. Every mutant that **survives** is wrong code your tests called green.
+
+```bash
+agon mutate                                        # changed lines vs the auto-resolved base — mechanical, zero engine spend
+agon mutate src/pricing.ts --test "npm test"       # one file, explicit suite
+agon mutate src/pricing.ts --semantic              # opt in to the AI panel (real engine spend)
+agon mutate src/auth.ts --lens security            # steer that panel at one bug family (--lens implies --semantic)
+agon mutate --diff branch:main --max-mutants 20    # a branch's changes, capped
+agon mutate --json src/add.ts                      # machine surface: the MutationReport, nothing else
+agon review --mutate uncommitted                   # advisory mutation section appended to a normal review
+agon review --mutate --mutate-test "npx vitest run" --mutate-build "npm run build"   # point the advisory pass at the right suite
+agon review --mutate --mutate-lens security        # the advisory pass, focused (implies --mutate-semantic)
+```
+
+**Two kinds of mutant, one pool.** *Mechanical* mutants are the calibrated operator set Agon's `goal` controller already uses (arithmetic, equality, logic, boolean, relational swaps) — **this is the default, and it costs nothing: no engine is dispatched and no source leaves your machine.** *Semantic* mutants are the agon-differentiated layer: every roster engine reads your target lines and proposes a **realistic bug it thinks your tests would miss**, with a one-line rationale. **`--semantic` opts into that panel**, because it sends your changed source to every engine on it and spends 1–2 dispatches each (a seat that times out, errors or returns nothing is retried once). The run header says the cost out loud before it is spent (`semantic panel: 3 engine(s), 1-2 dispatches each`) and the actual dispatch count after (`semantic panel spend: 4 engine call(s)`). `--mechanical-only` is the explicit spelling of the default.
+
+**`--lens` — point the panel at the bugs you actually fear.** A free-text focus that IMPLIES `--semantic` (a lens can only steer engine-proposed bugs; mechanical operators cannot be focused, so `--lens` with `--mechanical-only` is refused rather than silently ignored). Anything that is not a preset is used verbatim — `--lens "off-by-one in the paginator"` is a valid lens. The five documented presets:
+
+| Preset | Asks the panel to propose first |
+| --- | --- |
+| `security` | auth bypass, missing permission or ownership checks, token/session misuse, removed input validation |
+| `privacy` | returning or logging more user data than needed, PII leaks, missing redaction |
+| `perf` | N+1 queries, missing cache or index use, unbounded loops, missing pagination or limits |
+| `ratelimit` | skipped or loosened throttles, missing quota checks, retry storms |
+| `concurrency` | lost locks, races, non-atomic read-modify-write |
+
+The lens steers, it never fences: an engine that sees a stronger bug outside the focus is still asked for it. The run header prints the expansion (`lens: security — auth bypass, …`), and every survivor the panel proposed under it is labelled `semantic/<engine> lens:<focus>` so the report says what it was pointed at.
+
+- **Survivors are the output.** Each one prints as `before → after` with its file, line, class and origin. A survivor is not a bug report — it is an *assertion* you are missing.
+- **Advisory, never a gate.** The exit code reflects whether the RUN worked, never how weak the suite is. Mutation score is noisy by design (relational swaps are deliberately equivalence-prone), so Agon never blocks on it.
+- **Honest accounting.** A mutant that hangs counts as *killed* (a hang is a detection). A mutant that does not typecheck is *invalid* and excluded from the score. Mutants dropped for budget are reported as **not run**, never quietly as kills. Comment-only lines earn no mutants at all — a swap inside a doc comment is equivalent by construction and could only ever survive as noise.
+- **The sandbox is checked first.** The unmutated suite must pass in the worktree before a single mutant runs — otherwise "100% killed" would just mean the sandbox was broken.
+- **Prebuilt `dist`? Pass `--build`.** If your tests run against compiled output rather than the mutated source, every mutant survives. `--build "<cmd>"` rebuilds before the baseline and each mutant; Agon also warns loudly when a run shows that exact signature.
+- **Your tree is never touched.** All mutation happens in a temporary worktree hydrated from `HEAD` + your uncommitted diff + your untracked files, removed when the run ends. Every mutant path is checked against the real (symlink-resolved) worktree before a byte is written; a mutant that would escape, or whose source line has drifted, is graded *invalid* rather than applied.
+- **`--semantic` executes engine-written code.** A semantic mutant is a single line an engine wrote, applied inside the sandbox and then run by *your* test command — the worktree is filesystem isolation, not a security boundary. The default mechanical pool keeps every mutant inside the calibrated operator set.
+- **`--test`, `--build`, `--typecheck` (and `--mutate-test`/`--mutate-build`) run through your shell.** They carry exactly the trust you already give an npm script: whatever you pass is executed verbatim in the sandbox, so pass commands you would run yourself.
+- **The semantic panel is read-only, and runs from the sandbox.** Engines are dispatched with tools disabled, with the disposable worktree as their working directory — never your checkout — and the prompt fences your source as *data, not instructions*. An engine whose definition hands its CLI a blanket write/auto-approve flag (`--dangerously-skip-permissions`, `--yes`, …) is skipped for this panel with a note, because that seat cannot be forced read-only.
+
+**Monorepos / prebuilt packages.** A test that imports your package *by name* (`import { x } from '@you/pkg'`) does not load your source — it loads whatever `package.json` `exports`/`main` points at, i.e. `dist`. Mutating `src` then changes nothing the suite ever executes, and you get a mutation score of **0% with every mutant surviving**. That signature is almost always this, not a weak suite. Agon defends on both sides: the sandbox's `node_modules` links workspace packages to the *sandbox's own* sources (never back to your checkout), and the mutated package's git-ignored build output is cleared so a stale bundle cannot answer for the mutation. So pass the build:
+
+```bash
+agon mutate packages/pricing/src/rules.ts \
+  --test  "npx vitest run tests/unit/rules.test.ts" \
+  --build "npm run build -w packages/pricing"
+```
+
+Without `--build` the run does not lie: the sandbox baseline fails and the error names the cleared output and tells you to pass a build command. Tests that import the package by relative *source* path need no `--build` at all.
+
+**Inside `agon review`.** `--mutate` appends the same pass as an advisory section — mechanical-only by default, exactly like the standalone command; `--mutate-semantic` opts into the panel. Its artifacts land in `<run-dir>/mutation/`, never beside the review's own per-engine files. `--mutate-lens <focus>` is the same lens (and implies `--mutate-semantic`); `--mutate-test "<cmd>"` and `--mutate-build "<cmd>"` are the same overrides as the standalone command — reach for them when the discovered gate is not the suite that covers the diff, or when the suite runs against a prebuilt `dist`.
+
+Also available as interactive `/mutate` in the REPL (same flags, same defaults, including `--lens`), and as `agon call mutate <path> --test "<cmd>" --build "<cmd>" [--lens security]` for external CLIs (`--semantic` opts into the panel there too).
+
+Cesar will also *offer* it: a turn that reports the tests pass — or a question like "are these tests real?" — earns one dim in-flow line suggesting `/mutate`, or `/mutate --semantic --lens security|privacy|ratelimit` when the files that turn wrote look like auth/session/token, quota or user-data work. It is a suggestion, never a run: you type the command. Turn it off with `agon config set cesarMutateReflex false`.
+
+### Agent
+An autonomous agent loop that can operate solo or in shadow mode, automatically routed to the best engine by Cesar based on task requirements.
+
+```bash
+/agent "Investigate the memory leak in the worker process and fix it"
+```
+
+### Speculate
+Parallel speculation where N engines attempt to solve a problem in isolated worktrees, and the first successful, test-passing winner is immediately applied.
+
+```bash
+/speculate --engines 3 "Write a script to backfill the missing user avatars"
+```
+
+### Team Competitions
+Team-based variants of core modes (e.g., 2v2 or 3v3). Includes Team Forge, Team Tribunal, and Team Brainstorm for complex, multi-layered tasks.
+
+```bash
+/team-forge "Rewrite the frontend to use Tailwind CSS"
+```
+
+### Goal
+Autonomous, long-running orchestration. You hand Agon a finite, checkable task queue (e.g. a directory of gap specs) plus a green **gate** command, and it drives the whole queue to completion unattended — for hours. The value isn't "every engine succeeds"; it's the **gated competitive loop**: only clean, passing, test-witnessed patches ever land, even if half the panel times out or gets superseded.
+
+**How it works — the per-task loop.** For each task, on a dedicated `goal/<id>` branch (never `main`):
+
+1. **Worktree** — a fresh throwaway worktree is checked out at the base commit. *All engine activity — implement and review — runs inside this worktree; the repo you launched Agon from is never touched.* Any failure discards the worktree wholesale (atomic rollback).
+2. **Implement** — forge races the engine roster in parallel. When you don't pin `--engines`, Cesar routes the roster per task (a single engine for a trivial gap, the full panel for a real feature) and escalates ambiguous/expensive tasks to the judge.
+3. **Pick the winner** — *test-aware* selection: a passing patch that adds a test beats a higher-scoring one that doesn't (so the witness always has something to witness).
+4. **Witness** — the new test must **fail on the base commit and pass on the new one** — no no-op tests.
+5. **Mutation-witness** — canonical mutants on the changed lines must die, defeating tautological "encode the answer" tests (the highest-EV way to cheat a gate).
+6. **Gate** — the frozen green oracle (your `--gate`) runs once from the worktree. It's snapshotted at start so a task can't weaken it.
+7. **Review** — **all** review engines grade the diff in parallel; their findings are folded by a confidence-tiered **consensus** (verified / needs-check / speculative / nit) under a two-signal block rule. A **judge** adjudicates only the medium-confidence "needs-check" set. Flaky or empty engines land in a separate **failures lane** — they can't impersonate a blocker.
+8. **Fix** — a verified blocker triggers one bounded fix pass, then re-gate + re-review.
+9. **Commit** — only now does **one commit per task** land on the goal branch (CAS-safe). A task that can't pass **parks** with the reason and a saved gate log, and the run moves on.
+
+The run is **journaled and resumable** (`--resume`), checkpoints cleanly on Ctrl-C, **meters real spend** (implement + the whole review panel + judge), and **never auto-pushes** by default — you review the commits and open the PR.
+
+```bash
+agon goal "Close the backlog gaps" \
+  --queue .agon-gaps/ \
+  --gate "npm run build && npm run typecheck && npm test" \
+  --branch goal/close-gaps \
+  --require-tests --max-attempts 3 \
+  --max-hours 8 --budget 5 --push
+```
+
+**Flags / guardrails for a long run:**
+
+| Flag | Purpose | Default |
+| --- | --- | --- |
+| `--queue` | Task source: a directory (one task/file) or a `.jsonl` of `{id,source,dependsOn,verify}` | required |
+| `--gate` | Green-oracle command — the authoritative pass/fail, frozen at start | required |
+| `--branch` | Goal branch (`goal/<id>`) — **never `main`** | `goal/<id>` |
+| `--engines` | Implementer roster; **authoritative** when set (no routing/narrowing) | all active |
+| `--review-engines` / `--judge` | The review panel and the adjudicator | all / config→Cesar→first |
+| `--require-tests` | Reject a source change with no test | on |
+| `--oracle-gate` | Oracle red-team (`off`\|`warn`\|`strict`): just before each task is forged, the panel tries to GAME that task's `verify`; `strict` stops the run at the offending task when a gameable verify is found — never only at launch (probed per task, per launch) | `warn` |
+| `--max-attempts` | Attempts per task before park | `3` |
+| `--max-hours` / `--budget` | Wall-clock and/or USD ceiling — either, both, or neither | off (`0`) |
+| `--push` / `--pr` | Push the goal branch per task / open a PR via `gh` at the end (never `main`). With `--push`, the run ends with an engine-written PR title/body and a **prefilled GitHub PR link** — click it and the form is already filled (no `gh`/token needed) | off |
+| `--resume` / `--status` / `--dry-run` | Resume from journal / print a run's digest / plan only | — |
+
+Read a run's digest from any session with `agon goal --status --id close-gaps`. Reachable from external CLIs via `agon call goal "<intent>" --queue <dir> --gate "<cmd>"`.
+
+**Designing the gate — it _is_ the spec.** The forge only optimizes to make your `--gate` (and each task's `verify`) pass, so that command is the actual specification. Make it **discriminating**: it must FAIL a plausibly-wrong implementation, not merely pass the intended one (use distinct/edge inputs — `atan2(3,4)`, not `atan2(0,1)`). Before a long run, red-team your own oracle with `agon nero "<the gate I wrote>" --reasoning "is this gameable?"` — if a wrong impl can slip through, add a killer case first. A non-discriminating gate lets buggy-but-passing code land green and dead-loops the run.
+
+Or **automate the red-team** — this is **on by default** (`--oracle-gate=warn`; `off` opts out, `strict` stops the run when a gameable verify is found — probed per task, per launch, so a strict stop can land mid-run). Just before a task is forged, the review panel tries to make *that* task's `verify` pass with a *cheating* impl (hardcode, ignore inputs). If any engine succeeds, the verify is gameable — `warn` reports it and continues, `strict` stops so you strengthen it first. A probe that *errors* is not a pass: it is journaled as `oracle-gate-error`, the task stays unprobed and the next pick retries it (capped at two attempts per task per launch, after which the task is forged unprobed and loudly said so). The probe runs **once per task per launch** and is deliberately never cached across launches: the panel is stochastic, so a single clean pass must not disable the gate forever, and a `verify` whose dependencies only unblock mid-run is probed the moment its task becomes runnable. It's the discriminating-oracle discipline built into the tool, so it no longer depends on remembering to dogfood it.
+
+### Conquer
+
+Supervised-autonomous **build** of an open-ended task. Where `agon goal` optimizes code to pass a discriminating oracle (great for narrow, verifiable tasks), **conquer** targets the open-ended work you _can't_ pre-oracle — "build me a whole tool." Cesar drives a pluggable builder CLI (codex / claude / agy) in agent mode, turn by turn, while you're away from the desk.
+
+```bash
+agon conquer "Build a CSV-import tool with quoted-field handling" --gate "npm run build && npm test"
+agon conquer "..." --builder codex -e claude,agy   # pick the builder + the advisor panel
+agon conquer "..." --max-turns 60 --max-hours 4     # bound the run
+agon conquer "..." --push                           # on success, commit + push its isolated branch
+```
+
+- **Cesar consults on forks.** When the builder hits a genuine fork it emits `CONQUER_ASK: <question>`; Cesar classifies it and convenes the _cheapest sufficient_ panel — `nero` (quick), `tribunal` (a choice), `brainstorm` (open), `council` (high-stakes) — then feeds back a compact verdict. A normal agent loop re-prompts itself with the same blind spots; conquer brings the whole heterogeneous panel to bear.
+- **A layered done-oracle, not a self-claim.** On `CONQUER_DONE: <claim>` the cheap deterministic layers run first — the `--gate` command (L0), a diff acceptance-drift check that blocks weakened/rewritten existing tests (L1), and an empty-claim guard (L2). Only when those pass does the **evidence-based falsifier** run (L4/L5): a _tool-enabled_ critic clones the working tree into a throwaway sandbox, reads the real code and runs commands to hunt a counterexample, then Cesar **mechanically re-runs** that counterexample in the sandbox and blocks "done" _only_ when it actually reproduces a failure — never on a bare opinion or confidence score. The adversary's findings are surfaced to your merge gate whether or not they blocked. A red gate, a weakened/tampered test, or a _verified_ counterexample blocks "done."
+- **Runs in an isolated worktree.** conquer creates a persistent `conquer/*` branch and worktree from `HEAD`, so the builder never edits your source checkout and uncommitted source changes are not silently included. The final summary prints both locations and the cleanup command.
+- **Stops at a human merge gate.** conquer never auto-merges to main. By default it leaves the isolated branch and worktree for you to review; `--push` commits + pushes that branch, then prints an **engine-written PR title/body** (from the real branch diff) and a **prefilled GitHub PR link** (`…/compare/…?quick_pull=1&title=…&body=…`) — click it, the form is already filled, review + merge. No `gh` CLI or token needed. `--push` additionally **refuses protected branches** (`main`/`master` by default; override with `protectedPushBranches` in config) — if the worktree HEAD somehow resolves to one, the work stays committed locally for a human push. The done-oracle is irreducible for open-ended work, so the human merge gate is load-bearing — it holds the original product intent no automated layer can reconstruct.
+
+Also available as interactive `/conquer` in the REPL (with full CLI flag parity: `--max-turns`, `--gate-timeout`, `--max-hours`, `--timeout`) and `agon call conquer` for external CLIs.
+
+### Sanitize & Naturalize (watermark removal)
+
+Deterministic AI-watermark forensics plus an engine-backed "make it natural" rewrite — with an honesty contract: Agon removes what it can *prove* is gone and reports the rest, never claims "undetectable".
+
+```bash
+# Phase 1 — deterministic scan/clean, no AI involved
+agon sanitize draft.md --detect          # report-only forensic scan, exits 1 on findings
+agon sanitize draft.md -o clean.md       # strip zero-width chars, bidi controls, tag stego, homoglyphs, whitespace payloads
+agon sanitize image.png --metadata       # scan PNG/JPEG/SVG for signed provenance (C2PA/JUMBF, XMP, Exif)
+agon sanitize image.png --metadata --strip-metadata --in-place
+
+# Phase 2 — full naturalization pipeline
+agon naturalize draft.md --author claude -o natural.md
+agon naturalize draft.md --engine minimax --min-change 30
+```
+
+**How naturalize works:** deterministic sanitize → ONE engine rewrites the text into natural human prose → mandatory re-scan → word-diff report.
+
+- **Writer ≠ rewriter, enforced.** With `--author claude` the rewriter is forced to be a different engine (a watermark keyed to one model's style is best broken by another). Without it, the first active engine is used.
+- **Proof, not promises.** The re-scan demonstrates character-level channels are gone. Keyed *statistical* watermarks (word-choice distributions, Anthropic-style lexical marks) are always honestly reported as **not assessable** — never claimed removed.
+- **`--min-change N`** requires at least N% lexical change vs. the original; naturalize retries with a stronger brief, then **refuses to emit** a rewrite that stayed too close — the honest proxy for statistical-mark destruction.
+
+Also available as interactive `/sanitize` and `/naturalize` in the REPL.
+
+
+## Interactive REPL
+
+Launching `agon` starts a powerful terminal REPL equipped with native scrollback, command history, and a file rail. 
+
+Available commands include: `/forge`, `/synthesis`, `/brainstorm`, `/tribunal`, `/campfire`, `/pipeline`, `/review`, `/mutate`, `/agent`, `/speculate`, `/team-forge`, `/status`, `/leaderboard`, `/history`, `/config`, `/plan`, `/mode`, `/permissions`, `/models`, `/engines`, `/doctor`, `/help`, and `/exit`.
+
+### Permission modes
+
+Agon uses a Claude-Code-style permission mode, cycled with **Shift+Tab** (or `/mode`) and always visible in the footer:
+
+| Mode | Behavior |
+|---|---|
+| `ask` | Prompts before file edits and mutating commands. Read-only tools and commands run freely. |
+| `auto-edit` | Workspace file edits are auto-approved; Bash mutations still prompt, and so do sensitive files (`.env*`, credentials, `.pem`/`.key`/`id_rsa`, `.git/hooks/`, `.husky/`) — one poisoned hook is arbitrary code execution on the next commit. (Default — migrated from the legacy `smart` mode.) |
+| `auto` (AUTO) | Full workspace autonomy, Claude Code `bypassPermissions` parity: plain `git push`, publishing, deployments and mutating `curl`s run without a prompt, and a prompt that merely *mentions* auth/session/database no longer triggers an approval. Two seatbelts remain: the **destructive class** (force push, remote branch deletion, `git reset --hard`, `git clean -f`, `rm -rf`, `dropdb` / `drop database`, `migrate reset`, `--force` on a db CLI — tune with `cesarDestructiveActionPattern`) and **workspace escapes** (writes outside the workspace ask instead of failing). Deny rules always win. |
+
+Permission prompts offer **Yes / Yes for this session / Always / No / Never**. *Always* persists a scoped rule such as `Bash(git push:*)` into `permissions.allow` (never a bare verb); *Never* persists a deny rule. Inspect and edit rules with `/permissions`, `/permissions add allow|deny <rule>`, and `/permissions remove <rule>`. Delegated engine runs (forge, tribunal, agent teams) execute at least at `auto-edit` so multi-engine dispatches don't queue dozens of file-edit prompts — their Bash mutations still prompt once per pattern.
+
+### Self-verifying turns
+
+When Cesar finishes a turn that edited files, Agon doesn't take "done" on faith. If the permission posture already allows the project's verification gate (the `test`/`typecheck` script from `package.json`, or a `fitness:` line in your project brief), **the harness runs the gate itself**: a green run confirms the claim; a red run feeds the real exit code and output tail straight back to Cesar as a continuation so it fixes actual failures — up to `cesarGateAutoRunLimit` runs per turn (default 3), each re-run gated on fresh edits since the last one. A turn that still ends with a red gate is flagged loudly rather than presented as done.
+
+Note the posture semantics: a gate command classified read-only (like plain `npm test`) auto-runs in **every** mode, because the resolver lets read-only commands run freely — the same command Cesar could already execute unprompted. Mutating gate commands (compound `&&` gates, scripts the classifier can't clear) auto-run only in `auto` mode or under a covering allow rule; gates with output redirection are additionally refused outside `auto`. Everything else falls back to the previous behavior: a one-time nudge asking Cesar to verify. Tune with `cesarGateAutoRun` (on by default), `cesarGateAutoRunLimit`, `cesarGateTimeoutSec`, and `cesarGateOutputTailChars`.
+
+#### Cesar self-inspection tools
+
+Beyond the gate, Cesar has three built-in tools for verifying its *own* surface and dispatch reliability — so "does the UI actually render what I claimed?" and "which engine keeps failing me?" are answerable in-turn instead of taken on faith:
+
+- **RenderProbe** — renders a registered Ink component (`StatusBar`, `TodoList`, `ChromeBar`, …) off-screen at a given width/height and returns the final frame as text. Pure in-process render; no side effects.
+- **TuiProbe** — boots a real `agon` instance inside a pseudo-terminal (via `pyte` screen-state emulation, so the result is the **final composed grid**, not a stream of ANSI artifacts), optionally sends one safelisted input (`/help`, `/status`, `/todos`, `/plans`, `/checkpoints`), and returns the rendered screen. Fully isolated: throwaway `AGON_HOME`, temp cwd, single-line control-character-rejecting input filter. Requires `python3` with `pyte` installed.
+- **EngineReliability** — a per-engine reliability digest with two honestly separated sections: Cesar's **own-turn** tool outcomes, and the **delegated dispatch ledger** (`~/.agon/runs/delegate-tool-ledger.jsonl`), which records every delegate dispatch per engine × backend (`api-loop`, `cli-print`, `companion`) with native-vs-heuristic provenance — a dispatch that *failed* is recorded as `dispatchFailed`, never blurred into "unknown".
+
+**Example Session:**
+```text
+$ agon
+Agon > /leaderboard
+1. Claude        (Glicko: 1650)
+2. Codex         (Glicko: 1590)
+3. Antigravity   (Glicko: 1540)
+
+Agon > /forge "Extract the routing logic into a separate module"
+[Cesar] Routing to Claude and Codex based on Glicko.
+[Forge] Initializing isolated worktrees...
+[Forge] Engines are racing...
+[Forge] Claude completed in 45s.
+[Forge] Codex completed in 52s.
+[Forge] Winner: Claude. Applying patch...
+Agon > 
+```
+
+## Rooms
+
+Rooms let multiple live CLIs — you, other Codex/Claude/agy sessions, even Agon's own engines — talk in **one shared, persistent transcript**. Unlike a one-shot orchestration run, a room stays open: anyone can join, post, and read the history. It's how independent agents coordinate, hand off work, or ask each other for help in the same repo.
+
+The transcript *is* the protocol — an append-only NDJSON ledger under `~/.agon/rooms/<room>/` — so any CLI (or a plain shell script) can participate.
+
+```bash
+# In one terminal — join and follow the room live
+agon room join design --as claude --engine claude
+agon room tail design
+
+# In another terminal — another agent posts
+agon room post design --as codex --engine codex -m "file-first is the right MVP @claude"
+
+# Anytime
+agon room read design   # full transcript (--since <seq> for new-only)
+agon room who design    # who's present + unread/mention counts + the lock table
+agon room leave design --as claude   # clear your presence
+agon room list          # all rooms
+```
+
+Messages are human-mediated by default (you post when prompted), `@callsign` mentions are parsed, and presence tracks who's around. `agon room post design "quick reply"` also works — `-m` is optional when the message is positional. Add `--json` to `read`/`tail` (JSON lines) or `who` (one JSON object) for scripts and monitors.
+
+**Never work a stale board.** Every member has a **read cursor**: `agon room read design --unread --as codex` returns only what you haven't seen and advances your cursor (add `--peek` to look without advancing). `room who` shows each member's unread/mention counts, so "is anyone behind?" is one command. Agents should run an `--unread` read at the start of every turn — via CLI or MCP `RoomRead(callsign, unreadOnly, markRead)`.
+
+**Resource locks.** Claim a file/branch/task so two agents never collide, with a TTL so a forgotten lock can't go stale forever:
+
+```bash
+agon room lock design -r packages/core --as codex --ttl 30   # claim for 30 min
+agon room release design -r packages/core --as codex          # done — free it
+agon room lock design -r packages/core --as claude --steal    # take over an EXPIRED lock (audited, @mentions the stale holder)
+```
+
+Locks are ordinary ledger events (`lock`/`release`/`lock-steal`), so the lock table in `room who` can never disagree with the transcript; posting while you hold an expired lock warns you to release it.
+
+**Autonomous mode.** An agent can watch a room and reply on its own turn until a stop condition:
+
+```bash
+agon room auto design --as claude --engine claude --until-human   # respond until a human jumps in
+```
+
+It's **safe by design**: mention-only by default (add `--open-floor` to respond to anything), a one-poster-at-a-time **turn lease**, hard caps (`--max-turns`, default 3; `--max-minutes`, default 10), and a **ping-pong halt** that stops two auto-agents from looping. Use `--dry-run` to exercise the loop without spending tokens.
+
+MCP-capable engines can also use the [room tools](#using-agon-from-other-clis) (`RoomJoin`/`RoomPost`/`RoomRead`/`RoomLock`/`RoomRelease`/…) instead of the CLI.
+
+## Using Agon from Other CLIs
+
+Agon can also be called from other AI CLIs such as Claude Code, Codex, and Antigravity.
+
+### One-step setup
+
+Run this **once** to wire Agon into every AI CLI on your machine:
+
+```bash
+agon install-agent-prompts
+```
+
+It drops the native lightweight integration for each detected CLI:
+
+| CLI | Installed files | Invoke |
+| --- | --- | --- |
+| Codex | `~/.codex/skills/agon/SKILL.md` and `~/.codex/skills/agon/agents/openai.yaml` | `$agon` in a new Codex session |
+| Antigravity (agy) | `~/.antigravitycli/commands/agon.toml` | `/agon` |
+| Claude Code | `~/.claude/commands/agon.md` | `/agon` |
+
+Each prompt or skill teaches the engine to call Agon from its own shell. No MCP, no always-on tokens: nothing runs until you invoke it. Target specific CLIs with `--cli codex,agy,claude`, preview with `--dry`, or refresh an existing integration with `--force`.
+
+After that, in Claude Code or Antigravity:
+
+```
+/agon evolve this design doc into a concrete implementation plan
+```
+
+In Codex, start a new session so skills reload, then use:
+
+```
+$agon evolve this design doc into a concrete implementation plan
+```
+
+The engine runs `agon agent-guide` to learn the modes, then picks the right one — forge, synthesis, brainstorm, tribunal, campfire, review, or goal.
+
+### Or call Agon directly
+
+Any CLI that can run a shell command can call Agon straight away — no setup needed:
+
+```bash
+agon synthesis "Evolve this design doc into a concrete implementation plan" --swaps 2 --timeout 90
+agon call tribunal "Should we ship this architecture?" --team --tribunalMode red-team
+agon call brainstorm "How should we design the plugin API?" --team
+agon call review
+agon call forge "Implement the cache layer" --test "npm test" --team
+agon call synthesis "Evolve this design doc into a concrete implementation plan" --swaps 2 --timeout 90
+```
+
+`agon call` streams the underlying Agon workflow into the caller's terminal, so the calling CLI can show live progress and the other engines' output. Use `--jsonl` when the caller wants machine-readable lifecycle events:
+
+```bash
+agon call tribunal "Debate the migration plan" --team --jsonl
+```
+
+### MCP (heavier alternative)
+
+For MCP-capable clients, Agon also ships a stdio MCP server. It currently runs **from a source checkout** (the MCP server isn't bundled with the npm install yet) — point the command at your clone:
+
+```bash
+claude mcp add -s user agon -- node /path/to/Agon-AI/plugins/agon-orchestrator/scripts/agon-mcp.js
+codex mcp add agon -- node /path/to/Agon-AI/plugins/agon-orchestrator/scripts/agon-mcp.js
+```
+
+After that, clients can call Agon tools such as Tribunal, Brainstorm, Forge, Campfire, Pipeline, and Review directly — plus the **room** tools (`RoomJoin`, `RoomPost`, `RoomRead`, `RoomWho`, `RoomLeave`, `RoomList`), so an MCP engine can join a [room](#rooms) and chat without shelling out. (MCP is request/response, so poll `RoomRead --since <seq>` to follow a room.)
+
+## Engines
+
+Agon doesn't ship its own model — it **orchestrates the AI coding CLIs you already have**. The more engines you install and authenticate, the more competitors forge can race, the broader the review panel, and the better Cesar can route. To "get the most out of it," set up several.
+
+### 1. Install the engine CLIs
+
+Each engine is a separate CLI you install once. Built-ins (in `engines/*.json`):
+
+| Engine | Install | Auth |
+| --- | --- | --- |
+| **Claude** (Anthropic) | `npm install -g @anthropic-ai/claude-code` | `claude` then `/login` (subscription) or `ANTHROPIC_API_KEY` |
+| **Codex** (OpenAI) | `npm install -g @openai/codex` | `codex` then sign in, or `OPENAI_API_KEY` |
+| **Antigravity** (Google) | `curl -fsSL https://antigravity.google/cli/install.sh \| bash` | `agy` then sign in, or `GOOGLE_API_KEY` |
+| **Kimi Code** | `curl -fsSL https://code.kimi.com/kimi-code/install.sh \| bash` | `kimi` then `/login` |
+| **OpenCode** | `curl -fsSL https://opencode.ai/install \| bash` | `opencode auth login` (provider keys) |
+| **Aider** | `pip install aider-chat` | provider API key |
+| **Ollama** (local) | [ollama.com/download](https://ollama.com/download) | none (runs locally) |
+| **OpenRouter** | `npm install -g openrouter-cli` | `OPENROUTER_API_KEY` |
+| **Mistral** / **Qwen** | `pip install mistral-cli` / `qwen-cli` | provider API key |
+
+Subscription/CLI-authed engines (Claude, Codex, Antigravity, Kimi Code, OpenCode) bill through their own login — no API key needed in your environment. The rest read an API key from the env var shown above.
+
+### 2. Verify what Agon can see
+
+`agon doctor` is the source of truth — it probes each engine's binary, auth, and capabilities:
+
+```bash
+agon doctor engines     # which engines are installed + reachable (binary/key/login)
+agon doctor review      # smoke-test that each engine returns parseable review output
+agon doctor harness     # Cesar routing: selected engine + tool reliability
+```
+
+Anything that shows `ok` is available to forge, review, and goal. Engines that fail are simply skipped (and quarantined in the review failures lane), so a missing CLI never breaks a run.
+
+### 3. (Optional) Add API-based engines
+
+Beyond the built-in CLIs, you can register any OpenAI- or Anthropic-compatible API endpoint — including provider "coding plans" — by dropping a JSON file in `~/.agon/engines/`. No code, no rebuild; Agon loads it on next launch.
+
+```jsonc
+// ~/.agon/engines/my-coding-plan.json
+{
+  "schemaVersion": 3,
+  "id": "my-coding-plan",
+  "displayName": "My Coding Plan",
+  "isLocal": false,
+  "tier": "user",
+  "timeout": 180,
+  "exec":   { "args": [] },
+  "review": { "args": [] },
+  "api": {
+    "baseUrl": "https://api.example.com/v1",
+    "apiKeyEnv": "MY_PLAN_API_KEY",   // read from this env var
+    "model": "the-model-id",
+    "maxTokens": 16384,
+    "format": "anthropic"             // "anthropic" or "openai"
+  }
+}
+```
+
+Set the key (`export MY_PLAN_API_KEY=…`), then confirm with `agon doctor engines`. Built-in definitions live in the repo's `engines/` directory; your own go in `~/.agon/engines/` and override built-ins of the same id. Toggle availability and per-engine default models from there or via config (`engineModels`).
+
+## Ratings
+
+Every engine carries Glicko-2 ratings, in a global pool, per discipline (`forge`, `brainstorm`, `tribunal`, `critique`) and per task class. They are stored in `~/.agon/ratings.json` and shown by `agon leaderboard [--mode <discipline>]`.
+
+**What feeds each discipline**
+
+| Discipline | Score |
+|---|---|
+| `forge` | fitness pass/fail and score of each engine's patch |
+| `brainstorm` | structural quality score of each draft |
+| `tribunal` | judged ballots of every tribunal, plus the chair's ranking of every council |
+| `critique` | the same judged scores, from adversarial and red-team tribunals and from councils |
+
+Answer length never scores. Tribunal and council ratings come from **blind judged ballots**:
+- **Tribunal, 3 or more responding positions.** Every responder that may judge (see below) ranks the others. The positions are shuffled per ballot into anonymous labels `P1..Pk`, and engine ids and display names are scrubbed.
+- **Tribunal, exactly 2 positions.** One impartial judge is drawn at random from the run's own roster: the `-e` list, or the default roster before the four-seat cap. A non-participant is only drawn if it is also active. An engine that shares a `derivedFrom` lineage with a participant is never the judge. An explicit two-engine `-e a,b` run therefore has no impartial judge and is not rated, and the debate never goes to an engine you did not select.
+- **Who may judge.** A ballot quotes untrusted participant text, so a judge must be unable to run tools or write. Only an engine without a CLI binary may judge: it always runs on the API backend, and a judge call sends it no tools. An engine whose exec args grant blanket write or auto-approve may not judge either. A CLI engine (claude, codex, agy, …) is still ranked; it just casts no ballot. If nobody is left to judge, the run is not rated.
+- **Ballot hygiene.** Each ballot wraps the question and every position between `BEGIN`/`END` lines that carry a random per-ballot nonce, and tells the judge that the fenced text is data, never instructions. `RANK:`-like lines and fence-like lines are removed from the quoted text. The positions on one ballot are capped at `ratingBallotMaxChars` characters in all, counted after that scrub: short positions stay whole, and the long ones share the rest. A judge call carries only the ballot, never the project context (repo metadata, instructions, diff excerpt) that API dispatches otherwise add.
+- **Council, 3 or more advisors.** The chair ends its verdict with a `RANK:` line over the role labels, which is mapped back to the seats. `RANK:`-like lines are removed from the advisor text the chair is shown. The chair is never rated, and a failover acting chair's own seat is left out. The `RANK:` line is removed from the verdict you see.
+- **Scoring.** Only a judge's last `RANK:` line counts, and it must name every label once, using `>` (better than) or `=` (tie). A position scores the mean number of positions ranked strictly below it across its valid ballots. It needs at least `ratingMinBallots` valid ballots, capped at the number of ballots that listed it. Equal scores are a tie, and a tie is not rated.
+- **Excluded seats.** A seat that failed a round, or a council seat whose critique target failed, is not ranked last. It is simply not rated.
+
+`ratingJudging` controls the judged ballots:
+- `off`: no ballots and no tribunal or critique rating.
+- `shadow` (the default): the ballots run and are recorded, but no rating is written.
+- `on`: the judged scores are written.
+- Any other value (a typo, a wrong case) is treated as `off`, with a warning.
+
+In `shadow` and `on`, every tribunal and council run writes `ballots.json` to its run directory (judge, label map, raw `RANK:` line, validity and reason, and the labels a cap `truncated`). A tribunal's file also lists the `ineligibleJudges` with the reason each was turned down, and a `note` when nothing could be judged: `too-few-positions`, `no-impartial-judge` or `no-text-only-judge`. Each run also prints one dim `ballots: <valid>/<dispatched> valid, <timedOut> timed out` line. Judging never changes a run's summary, verdict or panel health. Each judge call is bounded by `ratingJudgeTimeoutSec`.
+
+**Picking engines by rating**
+
+The critic (Nero, the council Contrarian, the conquer falsifier), the council chair and the research drafter rank engines by the confidence floor `mu − 2·phi`. Two things widen phi when ranking:
+- **Time.** A rating that has not been updated loses confidence linearly, reaching maximum uncertainty after `ratingStaleHorizonDays`.
+- **Model change.** Every dispatch reports the model identity of the backend it actually ran on: the configured model for a CLI engine with a model block, `cli:<version>` for one without, and `api:<model>` for the API fallback. An engine whose current identity differs from its stored one ranks at maximum uncertainty.
+
+A rating write confirms a changed identity once it has been seen in `ratingIdentityConfirmRuns` consecutive writes. The confirmation reopens that engine's rating in every scope (maximum phi, W/L reset, mu kept) and records the old identity in `engineMeta.versions`.
+
+`neroExplorationRate` and `chairExplorationRate` occasionally hand the critic or chair seat to a lower-ranked engine, so the leader is still challenged and rated.
+
+**New model versions.** When a new model version gets its own engine id, declare its lineage in the engine JSON, for example `"derivedFrom": "opus-4.7"`. On its first competition, the new engine inherits the predecessor's rating instead of starting at 1500:
+- **Inflated uncertainty**, so a better model converges fast.
+- **A low-side clamp.** A below-average predecessor is inherited at full strength with no uncertainty bonus, so you can't shed a bad rating by version-bumping.
+- **A min-games gate.** A near-empty predecessor rating is too noisy to inherit, so the successor starts fresh.
+
+**Maintenance.**
+- `agon ratings reset --modes critique,tribunal [--engines a,b]` previews the per-discipline entries it would reset to the default rating. `--apply` first writes `ratings.json.bak-<timestamp>`, then resets them. The global, other-discipline, task-class and engine-metadata ratings are untouched.
+- `agon ratings purge-unknown` removes the ratings of engine ids that are not real engines.
+
+| Config key | Default | Effect |
+|---|---|---|
+| `ratingJudging` | `shadow` | `off` / `shadow` / `on` for the judged tribunal and council ratings |
+| `ratingMinBallots` | `2` | valid ballots a position needs, capped at the ballots that listed it |
+| `ratingJudgeTimeoutSec` | `180` | wall clock per judge call |
+| `ratingBallotMaxChars` | `60000` | position characters one ballot may carry, shared fairly across its positions |
+| `ratingIdentityConfirmRuns` | `2` | consecutive rating writes that confirm a model change |
+| `ratingStaleHorizonDays` | `90` | days until an un-updated rating reaches maximum uncertainty (`0` disables) |
+| `neroExplorationRate` / `chairExplorationRate` | `0.2` | chance the critic or chair seat goes to a lower-ranked engine |
+
+## Cesar Routing
+
+**Cesar** is Agon's built-in orchestration layer. By default, you don't need to choose which engine to use; Cesar automatically routes your prompts to the best-performing engine based on historical Glicko-2 ratings tailored to specific task classes.
+
+If you want manual control, you can easily override Cesar's routing:
+
+```bash
+# Override for a single command
+/forge --engine claude "Update the README"
+
+# Manually switch the active engine for the session
+/cesar agy
+```
+
+### Delegation reflex
+
+When a prompt is explicitly list-shaped (three or more numbered/bulleted items) with no sequential-dependency, shared-artifact, or small-task markers, Cesar receives a structural note that the work may decompose into parallel subtasks — it can then offer an agent team (worktree-isolated, running under the delegated permission floor). Detection is veto-first and advisory-only: nothing ever spawns without your confirmation, and prose or ordered work never triggers it. Disable with `cesarDelegationReflex false`.
+
+### Experience precedent
+
+Cesar learns from its own history beyond ratings: when your prompt resembles past runs, the matching episodes are injected into the turn as **advisory precedent** — `"fix the CSV parser crash" — mode=forge → codex, succeeded, 4m`. It's framed as evidence, never authority: nothing is shown unless at least `cesarExperienceMinEpisodes` (default 3) past runs clear the similarity gate, matching is purely lexical (no model or sidecar on the hot path), and any failure injects nothing. Disable with `cesarExperience false`; tune with `cesarExperienceMinSimilarity`, `cesarExperienceTopK`, and `cesarExperienceWindow`. Episodes accumulate from run telemetry as you use agon — older records without an intent summary are simply skipped.
+
+## Configuration
+
+Global configuration — engine selection, model preferences, and telemetry settings — is managed with `agon config` and stored in `~/.agon/config.json`. Project instructions live in your repository's standard `AGENTS.md` (with `CLAUDE.md` as a read-only fallback). Agon-specific extras — the `fitness:` gate line and saved project memory — go in `.agon/project.md`; when both files exist, both are injected.
+
+### Engine isolation
+
+Dispatched engines run **workspace-pure** by default. They still see the repository's own project context — `AGENTS.md` / `CLAUDE.md` and `.mcp.json` in the working directory — but not your *personal* layer: global `~/.claude/CLAUDE.md`, Claude Code plugins and hooks, and user-level MCP servers are stripped (each engine gets a clean config dir seeded with only its auth file, so dispatch stays logged in). That keeps a forge race or review panel fair — every engine competes on the same project context instead of one of them borrowing your private toolchain — and keeps your hooks from firing inside a worker.
+
+Opt out for a single run with `--impure` (or `--isolation inherit`); make it permanent with `agon config set engineIsolation inherit`. `--pure` forces isolation back on. If an engine's clean config dir isn't authenticated yet, agon falls back to `inherit` for that dispatch rather than breaking the run, and prints the one-time login hint.
+
+### Commit attribution & PR text
+
+Every commit agon itself creates (`conquer --push`, each `goal` task commit, the REPL's `/commit`) ends with a Claude-Code-style attribution block:
+
+```
+⚔️ Forged by [Agon](https://github.com/KERNlang/agon)
+
+Co-Authored-By: agon (KERN) <292465531+KERN-Agon@users.noreply.github.com>
+```
+
+PR bodies agon writes end with the same line rendered with the **real AGON logo** — the [KERN-Agon](https://github.com/KERN-Agon) account's avatar (`github.com/KERN-Agon.png`), since PR bodies render markdown while commit messages are plain text. Upload the AGON wordmark as that account's profile picture once and it powers both the contributor avatar and the PR footer.
+
+- **One opt-out switch:** set `commitCoAuthor` to `""` (machine-wide in `~/.agon/config.json` or per-project in `.agon.json`) to disable the whole block — banner and trailer, commits and PR bodies. Mirrors Claude Code's `includeCoAuthoredBy`.
+- **Contributor-graph credit:** the default email is the [KERN-Agon](https://github.com/KERN-Agon) GitHub account's noreply address, so GitHub renders agon as a real co-author avatar on every commit it builds. To credit a different account, set `commitCoAuthor` to that bot's `<id>+<login>@users.noreply.github.com`.
+- **PR text:** after a `--push`, one engine call turns the branch's actual diff + commits into a clean PR title/body (Summary / Changes / Verification), printed in the terminal and baked into a prefilled GitHub compare link — clicking it opens the new-PR form already filled in. If the engine call misses, agon falls back to its templated digest; the push itself never depends on it.
+
+## Architecture
+
+Agon is a plain TypeScript monorepo (ESM, Node >= 22):
+
+- `packages/core` — types, config, Glicko-2 + Team Elo scoring, Cesar routing, session state
+- `packages/cli` — the interactive REPL, Ink surfaces, command handlers
+- `packages/forge` — competitive worktree orchestration, fitness, M-of-N quorum finalize
+- `packages/adapter-cli` — CLI engine integrations
+- `packages/dedup` — Python sidecars for semantic features (history search via fastembed/MiniLM, tree-sitter syntax validation, task classifier, brainstorm paraphrase dedup). Bridged via JSON over stdin/stdout — Python is used where it is strictly better than a TS/JS port.
+- `packages/mcp` — exposes Agon's orchestration modes as MCP tools so other CLIs (Claude Code, Codex, Antigravity) can drive Agon
+
+The entire project is ESM, uses strict TypeScript, and is thoroughly tested with Vitest.
+
+## License
+
+This project is licensed under the MIT License.

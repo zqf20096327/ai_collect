@@ -1,0 +1,697 @@
+# Remembrances-MCP
+
+Remembrances-MCP is a Go-based MCP server that provides long-term memory capabilities to AI agents. It supports multiple memory layers (key-value, vector/RAG, graph database) using SurrealDB, and can manage knowledge bases via Markdown files.
+
+## Features
+
+- MCP server for AI agent memory
+- SurrealDB support (embedded or external)
+- Knowledge base management with Markdown files
+- **Embedding generation via:**
+  - **GGUF models (local, privacy-first, GPU accelerated)** ⭐ NEW
+  - Ollama (local server)
+  - OpenAI API (remote)
+- Multiple transport options: stdio (default), MCP Streamable HTTP, and HTTP JSON API
+
+## ⚠️ End of support for the legacy line (RM-10)
+
+The supported line from v1 is this OSS core plus the Alchemai Mem commercial
+layer. The pre-principal line loses support on a schedule, and this section is
+the notice.
+
+**What is deprecated**
+
+| Deprecated | Replacement | Stops working |
+|---|---|---|
+| `user_id` string parameters as the ownership signal (`save_fact(user_id, ...)`, `get_stats(user_id)`, every `userID` argument of the storage API) | the principal in `context.Context` (`pkg/principal`), installed by the transport from the authenticated request | v1, 15 December 2026 |
+| Running with no principal at all (the `require_principal=false` default) | `--require-principal` / `GOMEM_REQUIRE_PRINCIPAL=true`, which is the default from v1 | v1, 15 December 2026 |
+| SurrealDB 2.x embedded datastores and the pre-v13 schema | SurrealDB 3.x with schema version 14 | v1, 15 December 2026 |
+| The `--sse` transport | `--mcp-http` (MCP Streamable HTTP) | already an alias, removed in v1 |
+
+**What replaces them.** Every storage call resolves its identity from the
+principal in the context: the org, the readable scopes and the write scope. The
+`userID` parameters are still accepted and are ignored whenever a principal is
+present, which is what "demoted to legacy" means. Where the principal comes
+from:
+
+- **stdio** (Remembrances as the local memory of one agent): the process
+  installs the local principal itself, so nothing changes for a local user and
+  `--require-principal` is safe to turn on today;
+- **HTTP module routes**: the module authentication layer produces an
+  `AuthInfo`, and the transport turns its tenancy claims into the principal. A
+  module that resolves grants itself (Alchemai Mem) installs the principal
+  directly and is never overridden;
+- **MCP Streamable HTTP**: an auth-providing module supplies a resolver. Until
+  one is loaded those calls carry no principal, so `--require-principal` will
+  refuse them rather than let them borrow an identity. That is the one
+  configuration where turning the switch on today changes behaviour.
+
+**Migration.** Move the datastore first, then the callers:
+
+```bash
+remembrances-mcp migrate-v3        # SurrealDB 2.x to 3.x datastore
+remembrances-mcp --db-path ...     # applies migrations up to schema version 14,
+                                   # which backfills legacy rows into org:legacy
+                                   # and one personal scope per existing user_id
+remembrances-mcp --require-principal ...   # verify, then keep it on
+```
+
+The v13 backfill maps each legacy `user_id` onto real records
+(`org:legacy`, `app_user:legacy_<slug>`, `mem_scope:legacy_personal_<slug>`), so
+data written before the upgrade stays reachable to the same caller afterwards.
+
+## 🚀 GGUF Embeddings (NEW)
+
+Remembrances-MCP now supports loading local GGUF embedding models directly! This provides:
+
+- **🔒 Privacy**: All embeddings generated locally, no data sent externally
+- **⚡ Performance**: Direct model inference without network latency
+- **💰 Cost**: No API costs for embedding generation
+- **🎯 Flexibility**: Support for quantized models (Q4_K_M, Q8_0, etc.)
+- **🖥️ GPU Acceleration**: Metal (macOS), CUDA (NVIDIA), ROCm (AMD)
+
+### Quick Start with GGUF
+
+```bash
+# 1. Build the project (compiles llama.cpp automatically)
+make build
+
+# 2. Download a GGUF model
+# Example: nomic-embed-text-v1.5 (768 dimensions)
+wget https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/main/nomic-embed-text-v1.5.Q4_K_M.gguf
+
+# 3. Run with GGUF model (using wrapper script)
+./run-remembrances.sh \
+  --gguf-model-path ./nomic-embed-text-v1.5.Q4_K_M.gguf \
+  --gguf-threads 8 \
+  --gguf-gpu-layers 32
+  
+# Alternative: Set LD_LIBRARY_PATH manually
+export LD_LIBRARY_PATH=~/www/MCP/Remembrances/go-llama.cpp/build/bin:$LD_LIBRARY_PATH
+./build/remembrances-mcp \
+  --gguf-model-path ./nomic-embed-text-v1.5.Q4_K_M.gguf \
+  --gguf-threads 8 \
+  --gguf-gpu-layers 32
+```
+
+**📖 Full Documentation**: See [docs/GGUF_EMBEDDINGS.md](docs/GGUF_EMBEDDINGS.md) for detailed instructions, performance tips, and troubleshooting.
+
+## 🔍 Code Indexing System (NEW)
+
+Remembrances-MCP includes a powerful **Code Indexing System** that uses Tree-sitter for multi-language AST parsing with semantic embeddings. This allows AI agents to:
+
+- **Index codebases** across 14+ languages (Go, TypeScript, JavaScript, Python, Rust, Java, C/C++, PHP, Ruby, Swift, Kotlin, and more)
+- **Search semantically** for code symbols using natural language queries
+- **Navigate code** by finding definitions, references, and call hierarchies
+- **Manipulate code** by renaming symbols across entire codebases
+
+### Quick Start
+
+```bash
+# 1. Index a project
+# Use the MCP tool: code_index_project
+{
+  "project_name": "my-project",
+  "root_path": "/path/to/project",
+  "languages": ["go", "typescript"]
+}
+
+# 2. Search for code
+# Use: code_semantic_search
+{
+  "project_name": "my-project",
+  "query": "function that handles user authentication"
+}
+
+# 3. Find symbol definitions
+# Use: code_find_symbol
+{
+  "project_name": "my-project",
+  "name": "UserService"
+}
+```
+
+### Available Tools
+
+| Category | Tools |
+|----------|-------|
+| **Indexing** | `code_index_project`, `code_index_status`, `code_list_projects`, `code_delete_project`, `code_reindex_file`, `code_get_project_stats`, `code_get_file_symbols` |
+| **Search** | `code_semantic_search`, `code_find_symbol`, `code_find_references`, `code_find_implementations`, `code_get_call_hierarchy`, `code_hybrid_search` |
+| **Manipulation** | `code_rename_symbol`, `code_get_symbol_body`, `code_replace_symbol_body`, `code_insert_symbol` |
+
+### Supported Languages
+
+Go, TypeScript, JavaScript, TSX, Python, Rust, Java, Kotlin, Swift, C, C++, Objective-C, PHP, Ruby, C#, Scala, Bash, YAML
+
+**📖 Full Documentation**: 
+- [docs/CODE_INDEXING.md](docs/CODE_INDEXING.md) - User Guide
+- [docs/CODE_INDEXING_API.md](docs/CODE_INDEXING_API.md) - API Reference
+- [docs/TREE_SITTER_LANGUAGES.md](docs/TREE_SITTER_LANGUAGES.md) - Language Support
+
+## 💡 Tool Help System (how_to_use)
+
+Remembrances-MCP includes an intelligent help system that provides on-demand documentation while minimizing initial context token consumption.
+
+### Usage
+
+```bash
+# Get complete overview of all tools
+how_to_use()
+
+# Get documentation for a tool group
+how_to_use("memory")    # Memory tools (facts, vectors, graph)
+how_to_use("kb")        # Knowledge base tools
+how_to_use("code")      # Code indexing tools
+
+# Get documentation for a specific tool
+how_to_use("remembrance_save_fact")
+how_to_use("kb_add_document")
+how_to_use("search_code")
+```
+
+### Benefits
+
+- **~85% reduction** in initial context token consumption
+- **On-demand documentation** - load only what you need
+- **Comprehensive help** - full arguments, examples, and related tools
+
+**📖 Full Documentation**: See [docs/TOOL_HELP_SYSTEM.md](docs/TOOL_HELP_SYSTEM.md)
+
+## Usage
+
+Run the server with CLI flags or environment variables:
+
+```bash
+go run ./cmd/remembrances-mcp/main.go [flags]
+```
+
+### Configuration File
+
+The server can be configured using a YAML configuration file. If `--config` is not specified, the server will automatically look for a configuration file in the following standard locations:
+
+- **Linux**: `~/.config/remembrances/config.yaml`
+- **macOS**: `~/Library/Application Support/remembrances/config.yaml`
+
+If no configuration file is found, the server will use environment variables and default values.
+
+### CLI Flags
+
+- `--config`: Path to YAML configuration file (optional, see above for automatic location)
+- `--mcp-http` (default: false): Enable MCP Streamable HTTP transport (recommended)
+- `--mcp-http-addr` (default: 3000): Port or address to bind MCP Streamable HTTP transport (e.g. `3000` or `127.0.0.1:3000`). Can also be set via `GOMEM_MCP_HTTP_ADDR`.
+- `--mcp-http-endpoint` (default: /mcp): HTTP path for MCP Streamable HTTP endpoint. Can also be set via `GOMEM_MCP_HTTP_ENDPOINT`.
+- `--sse` (default: false): **DEPRECATED** (obsolete). Kept for backwards compatibility and mapped to Streamable HTTP.
+- `--sse-addr` (default: :3000): **DEPRECATED**. Kept for backwards compatibility.
+- `--http` (default: false): Enable HTTP JSON API transport
+- `--http-addr` (default: :8080): Address to bind HTTP transport (host:port). Can also be set via `GOMEM_HTTP_ADDR`.
+- `--rest-api-serve`: Enable REST API server
+- `--knowledge-base`: Path to knowledge base directory
+- `--db-path`: Path to embedded SurrealDB database (default: ./remembrances.db)
+- `--surrealdb-url`: URL for remote SurrealDB instance
+- `--surrealdb-user`: SurrealDB username (default: root)
+- `--surrealdb-pass`: SurrealDB password (default: root)
+- `--surrealdb-namespace`: SurrealDB namespace (default: test)
+- `--surrealdb-database`: SurrealDB database (default: test)
+- `--gguf-model-path`: Path to GGUF model file for local embeddings (NEW)
+- `--gguf-threads`: Number of threads for GGUF model (0 = auto-detect) (NEW)
+- `--gguf-gpu-layers`: Number of GPU layers for GGUF model (0 = CPU only) (NEW)
+- `--ollama-url`: Ollama server URL (default: http://localhost:11434)
+- `--ollama-model`: Ollama model for embeddings
+- `--openai-key`: OpenAI API key
+- `--openai-url`: OpenAI base URL (default: https://api.openai.com/v1)
+- `--openai-model`: OpenAI model for embeddings (default: text-embedding-3-large)
+
+- `--surrealdb-start-cmd`: Optional command to start an external SurrealDB instance when an initial connection cannot be established. Can also be set via `GOMEM_SURREALDB_START_CMD`.
+
+### Environment Variables
+
+All flags can be set via environment variables prefixed with `GOMEM_` and dashes replaced by underscores. For example:
+
+- `GOMEM_MCP_HTTP`
+- `GOMEM_MCP_HTTP_ADDR` (e.g. `3000` or `0.0.0.0:3000`)
+- `GOMEM_MCP_HTTP_ENDPOINT` (e.g. `/mcp`)
+- `GOMEM_SSE` (**DEPRECATED**)
+- `GOMEM_SSE_ADDR` (**DEPRECATED**)
+- `GOMEM_HTTP`
+- `GOMEM_HTTP_ADDR` (e.g. `:8080` or `0.0.0.0:8080`)
+- `GOMEM_REST_API_SERVE`
+- `GOMEM_KNOWLEDGE_BASE`
+- `GOMEM_DB_PATH`
+- `GOMEM_SURREALDB_URL`
+- `GOMEM_SURREALDB_USER`
+- `GOMEM_SURREALDB_PASS`
+- `GOMEM_SURREALDB_NAMESPACE`
+- `GOMEM_SURREALDB_DATABASE`
+- `GOMEM_GGUF_MODEL_PATH`
+- `GOMEM_GGUF_THREADS`
+- `GOMEM_GGUF_GPU_LAYERS`
+- `GOMEM_OLLAMA_URL`
+- `GOMEM_OLLAMA_MODEL`
+- `GOMEM_OPENAI_KEY`
+- `GOMEM_OPENAI_URL`
+- `GOMEM_OPENAI_MODEL`
+- `GOMEM_CODE_GGUF_MODEL_PATH` - GGUF model for code embeddings
+- `GOMEM_CODE_OLLAMA_MODEL` - Ollama model for code embeddings
+- `GOMEM_CODE_OPENAI_MODEL` - OpenAI model for code embeddings
+
+Additionally, there is an optional environment variable/flag to help auto-start a local SurrealDB when the server cannot connect at startup:
+
+- `GOMEM_SURREALDB_START_CMD` / `--surrealdb-start-cmd`
+
+### Code-Specific Embedding Models (Optional)
+
+For code indexing, you can use specialized code embedding models that are optimized for source code semantics. If not configured, the default embedder is used for code indexing as well.
+
+**Recommended Code Embedding Models:**
+
+| Provider | Model | Notes |
+|----------|-------|-------|
+| GGUF | `coderankembed.Q4_K_M.gguf` | CodeRankEmbed - optimized for code |
+| Ollama | `jina/jina-embeddings-v2-base-code` | Jina Code Embeddings |
+| OpenAI | `text-embedding-3-large` | Also works well for code |
+
+**Configuration:**
+
+```bash
+# Use CodeRankEmbed for code, nomic-embed-text for general text
+export GOMEM_GGUF_MODEL_PATH="/path/to/nomic-embed-text-v1.5.Q4_K_M.gguf"
+export GOMEM_CODE_GGUF_MODEL_PATH="/path/to/coderankembed.Q4_K_M.gguf"
+
+# Or via CLI flags
+remembrances-mcp --gguf-model-path /path/to/nomic.gguf --code-gguf-model-path /path/to/coderank.gguf
+```
+
+### YAML Configuration
+
+You can also configure the server using a YAML file. Use the `--config` flag to specify the path to the YAML configuration file.
+
+The YAML file should contain the configuration options using the same keys as the CLI flags (with dashes replaced by underscores if needed, but matching the `mapstructure` tags). CLI flags and environment variables override YAML settings.
+
+Example YAML configuration file (`config.yaml`):
+
+```yaml
+# Enable MCP Streamable HTTP transport
+mcp-http: true
+mcp-http-addr: "3000"
+mcp-http-endpoint: "/mcp"
+
+# Database configuration
+db-path: "./mydata.db"
+
+# Embedder configuration
+ollama-model: "llama2"
+
+# Logging
+log: "./server.log"
+```
+
+Example usage:
+
+```bash
+go run ./cmd/remembrances-mcp/main.go --config config.yaml
+```
+
+A sample configuration file with all options and default values is provided in `config.sample.yaml`.
+
+Example usage (start command provided via env):
+
+```bash
+export GOMEM_SURREALDB_START_CMD="surreal start --user root --pass root surrealkv:///path/to/surreal_data"
+go run ./cmd/remembrances-mcp/main.go --knowledge-base ./kb
+
+# Start MCP Streamable HTTP transport on a custom address via CLI flag
+go run ./cmd/remembrances-mcp/main.go --mcp-http --mcp-http-addr="3000"
+
+# Or via environment variables
+GOMEM_MCP_HTTP=true GOMEM_MCP_HTTP_ADDR="3000" go run ./cmd/remembrances-mcp/main.go --mcp-http
+
+# Start HTTP JSON API transport
+go run ./cmd/remembrances-mcp/main.go --http --http-addr="8080"
+
+# Or via environment variable
+GOMEM_HTTP=true GOMEM_HTTP_ADDR="8080" go run ./cmd/remembrances-mcp/main.go
+
+# Run BOTH transports simultaneously (MCP on 3000, HTTP API on 8080)
+go run ./cmd/remembrances-mcp/main.go --mcp-http --mcp-http-addr="3000" --http --http-addr="8080"
+```
+
+### Transport Options
+
+The server supports these transport modes (can run multiple simultaneously):
+
+1. **stdio (default)**: Standard input/output for MCP protocol communication
+2. **MCP Streamable HTTP**: Recommended network transport for MCP tools (endpoint: `/mcp`)
+3. **HTTP JSON API**: REST-style API for direct access and module HTTP endpoints
+
+> **Note**: MCP Streamable HTTP and HTTP JSON API can run **simultaneously** on different ports, allowing you to serve both MCP clients and custom web applications (like the commercial Web UI module) at the same time.
+
+> **Legacy**: SSE transport is deprecated/obsolete and is mapped to Streamable HTTP.
+
+#### Simultaneous Transport Example
+
+Running both MCP Streamable HTTP (port 3000) and HTTP JSON API (port 8080):
+
+```yaml
+# config.yaml
+mcp-http: true
+mcp-http-addr: "3000"
+mcp-http-endpoint: "/mcp"
+
+http: true
+http-addr: "8080"
+```
+
+This configuration enables:
+- **Port 3000**: MCP protocol for tool calls via `/mcp` endpoint
+- **Port 8080**: HTTP JSON API + module endpoints (e.g., `/admin` for Web UI)
+
+#### HTTP Transport Endpoints
+
+When using `--http`, the server exposes these endpoints:
+
+- `GET /health` - Health check endpoint
+- Module-specific endpoints (e.g., `/admin/*` for commercial webui module)
+
+The JSON API serves no tool endpoints. `GET /mcp/tools` and
+`POST /mcp/tools/call` existed as placeholders that never reached the tool
+registry and were removed; tools are called over the MCP Streamable HTTP
+endpoint (`--mcp-http`), which is the authenticated surface.
+
+Example HTTP usage:
+
+```bash
+curl http://localhost:8080/health
+```
+
+Behavior: when the program starts it will attempt to connect to SurrealDB. If the connection fails and a start command was provided, the program will spawn the provided command (using `/bin/sh -c "<cmd>"`), stream its stdout/stderr to the running process, and poll the database connection for up to 30 seconds with exponential backoff. If the database becomes available the server continues startup. If starting the command fails or the database remains unreachable after the timeout, the program logs a descriptive error and exits.
+
+## Requirements
+
+- Go 1.20+
+- SurrealDB (embedded or external)
+- Ollama (optional, for local embeddings)
+- OpenAI API key (optional, for cloud embeddings)
+
+## Build
+
+```bash
+go mod tidy
+go build -o remembrances-mcp ./cmd/remembrances-mcp
+```
+
+## Example
+
+```bash
+GOMEM_OPENAI_KEY=sk-xxx \
+GOMEM_DB_PATH=./data.db \
+go run ./cmd/remembrances-mcp/main.go --knowledge-base ./kb --rest-api-serve
+```
+
+## License
+
+See [LICENSE.txt](LICENSE.txt).
+
+## Tasks
+
+### build
+
+Build the project
+
+```bash
+go mod tidy
+go build -o dist/remembrances-mcp ./cmd/remembrances-mcp
+#try to copy to project root if error, remove the binary in the project root first
+cp dist/remembrances-mcp ./remembrances-mcp || (rm -f ./remembrances-mcp && cp dist/remembrances-mcp ./remembrances-mcp)
+```
+
+### build-commercial
+
+Build the project **including commercial modules**
+
+```bash
+make build-commercial
+```
+
+### build-and-copy
+
+Build the project and copy the binary to path
+
+interactive: true
+
+```bash
+# Build CUDA libraries first (portable for Intel/AMD compatibility)
+make PORTABLE=1 build-libs-cuda-portable
+# Copy libraries to build/ so the binary can find them during compilation
+cp ./build/libs/cuda-portable/*.so ./build/
+# Build binary using the libraries
+make BUILD_TYPE=cuda build-binary-only
+# Copy libraries and binary to ~/bin
+rm -f ~/bin/remembrances-mcp-beta
+rm -f ~/bin/*.so
+cp ./build/*.so ~/bin/
+cp ./build/remembrances-mcp ~/bin/remembrances-mcp-beta
+rm -f *.log
+```
+
+### build-and-copy-embedded
+
+Build the project and copy the binary to path
+
+interactive: true
+
+```bash
+cp ./build/libs/cuda/*.so ./build/
+make build-embedded-cuda
+rm -f ~/bin/remembrances-mcp-beta
+rm -f ~/bin/*.so
+cp ./build/remembrances-mcp ~/bin/remembrances-mcp-beta
+rm -f *.log
+```
+
+### build-embedded-commercial
+
+Build the embedded (purego) binary **including commercial modules**
+
+```bash
+make build-embedded-commercial
+```
+
+### changelog
+
+Generate a changelog for the repo.
+
+```
+convco changelog > CHANGELOG.md
+git add CHANGELOG.md
+git commit -m "Update changelog"
+git push
+```
+
+
+### dist
+
+Create distribution packages without overwriting CUDA portable libraries. The key change is to **build libraries first** and then package the already-built variant. On Linux, `dist-all` and `dist-embedded-all` now also include the **OpenVINO** variant automatically when an SDK is detected in `OPENVINO_DIR`, `~/intel/openvino_sdk/openvino/cmake`, or `/opt/intel/openvino/runtime/cmake`.
+
+```bash
+echo "Cleaning previous dist-variants..."
+rm -rf dist-variants/*
+
+echo "Building Linux distribution variants with libs..."
+echo "-----------------------------------"
+
+echo "Building CUDA optimized for current CPU"
+make dist-variant VARIANT=cuda
+
+echo "Building CUDA portable (AVX2-compatible for Intel/AMD)"
+make dist-variant VARIANT=cuda-portable
+
+echo "Building CPU-only"
+make dist-variant VARIANT=cpu
+
+echo "Building OpenVINO (Intel GPU / NPU / CPU)"
+export OPENVINO_DIR="${OPENVINO_DIR:-$HOME/intel/openvino_sdk/openvino/cmake}"
+if [ -f "$OPENVINO_DIR/OpenVINOConfig.cmake" ]; then
+    make dist-openvino
+    make dist-embedded-openvino
+else
+    echo "Skipping OpenVINO dist - OpenVINOConfig.cmake not found in $OPENVINO_DIR"
+fi
+
+echo "Building embedded libraries variants for CUDA"
+make dist-embedded-variant EMBEDDED_VARIANT=cuda
+
+echo "Building embedded CUDA portable libraries..."
+make dist-embedded-variant EMBEDDED_VARIANT=cuda-portable
+
+echo "Skipping ad-hoc Windows build in this script"
+# NOTE: The direct `GOOS=windows ... go build` shortcut is currently not a
+# supported packaging path here.
+#
+# Why it fails today:
+#   - the code indexing stack pulls in Tree-sitter packages that require a
+#     proper CGO-enabled Windows toolchain
+#   - the embedded/purego loaders in the current source tree still use
+#     dlopen-style symbols that are not wired for this Windows shortcut
+#
+# For Windows artifacts, use a native Windows runner / host with the dedicated
+# release flow (`.goreleaser.yml`, `./scripts/release-cross.sh`) instead of this
+# inline command block.
+
+echo "-----------------------------------"
+echo "Checking if memote osx is available..."
+# if ssh connection with mac-mini-de-digio is available, build macos metal version
+if ssh -o BatchMode=yes -o ConnectTimeout=5 mac-mini-de-digio 'echo 2>&1' && [ $? -eq 0 ]; then
+    echo "Building macOS Metal variant on remote host..."
+    ./scripts/build-osx-remote.sh
+    ./scripts/copy-osx-build.sh
+else
+    echo "Skipping macOS Metal build - remote host not available."
+fi 
+
+# (Optional) Docker images remain the same
+make docker-prepare-cpu && make docker-build-cpu && make docker-push-cpu
+```
+
+> Quick automatic packaging:
+>
+>```bash
+>make dist-all
+>make dist-embedded-all
+>```
+
+### dist-core
+
+Create **both** external-libs and embedded-libs distributions (core modules only). On Linux this includes OpenVINO automatically when the SDK is detected.
+
+```bash
+make dist-core
+```
+
+### dist-commercial
+
+Create **both** external-libs and embedded-libs distributions (with commercial modules). On Linux this includes OpenVINO automatically when the SDK is detected.
+
+```bash
+make dist-commercial
+```
+
+### dist-openvino
+
+Package the external-libs OpenVINO variant explicitly.
+
+```bash
+make dist-openvino OPENVINO_DIR=~/intel/openvino_sdk/openvino/cmake
+```
+
+### dist-embedded-variant
+
+Package a single embedded (purego) variant
+
+```bash
+make dist-embedded-variant EMBEDDED_VARIANT=cpu
+make dist-embedded-variant EMBEDDED_VARIANT=openvino OPENVINO_DIR=~/intel/openvino_sdk/openvino/cmake
+```
+
+### dist-embedded-openvino
+
+Package the embedded OpenVINO variant explicitly.
+
+```bash
+make dist-embedded-openvino OPENVINO_DIR=~/intel/openvino_sdk/openvino/cmake
+```
+
+### dist-embedded-all
+
+Package all embedded variants for the current platform. On Linux this includes OpenVINO automatically when the SDK is detected.
+
+```bash
+make dist-embedded-all
+```
+
+### dist-osx-all
+
+macOS all-in-one: build+zip **external + embedded** (arm64 metal)
+
+```bash
+make dist-osx-all
+```
+
+### build-osx
+
+Build for macOS (arm64 metal)
+
+interactive: true
+
+```zsh
+echo "Building macOS Metal binary..."
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH
+make BUILD_TYPE=metal build-binary-only
+echo "Zipping macOS Metal binary..."
+rm -f dist/remembrances-mcp-darwin-aarch64.zip
+cp config.sample*.yaml build/
+cd build
+zip -9 ../dist/remembrances-mcp-darwin-aarch64.zip remembrances-mcp *.dylib config.sample*.yaml
+```
+
+### build-osx-commercial
+
+Build for macOS (arm64 metal) **including commercial modules**
+
+```zsh
+echo "Building macOS Metal binary (commercial)..."
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH
+make MODULE_TAGS=commercial BUILD_TYPE=metal build-binary-only
+echo "Zipping macOS Metal binary..."
+rm -f dist/remembrances-mcp-darwin-aarch64-commercial.zip
+cp config.sample*.yaml build/
+cd build
+zip -9 ../dist/remembrances-mcp-darwin-aarch64-commercial.zip remembrances-mcp *.dylib config.sample*.yaml
+```
+
+### build-osx-embedded
+
+Build for macOS (arm64 metal)
+
+interactive: true
+
+```zsh
+echo "Building macOS Metal embedded libraries binary..."
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH
+make EMBEDDED_VARIANT=metal build-embedded
+echo "Zipping macOS Metal embedded binary..."
+rm -f dist/remembrances-mcp-darwin-aarch64-embedded.zip
+cp config.sample*.yaml build/
+cd build
+zip -9 ../dist/remembrances-mcp-darwin-aarch64-embedded.zip remembrances-mcp config.sample*.yaml
+```
+
+### build-osx-embedded-commercial
+
+Build for macOS (arm64 metal) **embedded libs + commercial modules**
+
+```zsh
+echo "Building macOS Metal embedded libraries binary (commercial)..."
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH
+make MODULE_TAGS=commercial EMBEDDED_VARIANT=metal build-embedded
+echo "Zipping macOS Metal embedded binary..."
+rm -f dist/remembrances-mcp-darwin-aarch64-embedded-commercial.zip
+cp config.sample*.yaml build/
+cd build
+zip -9 ../dist/remembrances-mcp-darwin-aarch64-embedded-commercial.zip remembrances-mcp config.sample*.yaml
+```
+
+### build-libs-osx
+
+Build libs for macOS (arm64 metal)
+
+interactive: true
+
+```zsh
+echo "Building macOS Metal libraries..."
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$PATH
+make build-libs-metal
+cp build/libs/metal/*.dylib build/
+echo "Building SurrealDB embedded for macOS..."
+make build-surrealdb-darwin-arm64
+cp build/libs/surrealdb-aarch64-apple-darwin/*.dylib build/
+```

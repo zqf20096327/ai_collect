@@ -1,0 +1,607 @@
+# cerber 🐕
+
+[![npm](https://img.shields.io/npm/v/%40fullstackhouse%2Fcerber)](https://www.npmjs.com/package/@fullstackhouse/cerber)
+[![CI](https://github.com/fullstackhouse/cerber/actions/workflows/ci.yml/badge.svg)](https://github.com/fullstackhouse/cerber/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
+
+**AI code-review cockpit.** Claude reviews your pull requests into local
+artifacts — a summary, a chaptered walkthrough of the changes, draft inline
+comments, and a verdict with a confidence score. You read it in a local web
+cockpit, keep or rewrite or drop each comment, then press Send when you agree
+with it.
+
+**Nothing reaches GitHub until you explicitly say so.** Reviewing is 100% local
+and read-only; three things can write, each one a click you make — the Send
+button, opt-in daemon auto-send you turn on yourself, and handing a review to
+somebody else. A review only ever goes out under your own account because you
+decided it should: Send posts the one you vouched for, and a handoff posts the
+draft only if you ticked the box to send it along, always as a comment.
+
+That gate is the whole point, and the reason this is not another review bot:
+
+> Reviewing pull requests with an AI model creates a specific danger: a system
+> that can both draft opinions and hold GitHub credentials will eventually post
+> one without a human deciding it should.
+
+Named after Cerberus, the gatekeeper: cerber guards what gets merged.
+
+Why it exists, and the four things I tried first:
+[AI drafts the review. I decide what gets sent.](https://www.fullstack.house/blog/cerber?utm_source=github&utm_medium=readme)
+
+**The whole loop in seventeen seconds** — five PRs already drafted when you sit
+down, the one that isn't an approval, straight to its blocker, arguing with the
+reviewer until it rewrites its own finding, dropping the comment you disagree
+with, and sending what's left as your review:
+
+![The cockpit: an inbox of five drafted reviews; opening the one with a blocker; jumping to the finding through the walkthrough rail; asking the reviewer whether the bug is real and watching it revise its own comment; dropping a second comment; then sending the review to GitHub.](docs/demo.gif)
+
+**A drafted review, as you read it** — verdict and confidence beside the PR
+title, the walkthrough rail on the left, a summary written for someone who has
+not read the diff:
+
+![A review opened in the cockpit: the verdict pill by the PR title, a walkthrough rail listing chapters and their comments on the left, and a summary written in sections — problem first, then the fix, then details.](docs/walkthrough.png)
+
+**And the queue they arrive in** — `cerber serve` polls GitHub for PRs awaiting
+your review and drafts one for each, so they are written by the time you get
+there:
+
+![The queue: three drafted reviews, each with a verdict and confidence in its row; under the cursor, a strip quotes the selected review's own reasoning so it can be judged without opening it.](docs/queue.png)
+
+*Every screenshot in this README is cerber reviewing cerber's own pull
+requests.*
+
+## Quick start
+
+Requires Node 20+, an authenticated [`gh`](https://cli.github.com/), `git`, and
+a logged-in [`claude`](https://claude.com/claude-code) CLI. No API keys, no
+config, no database. The cockpit wants a browser from 2024 on (Chrome/Edge 123,
+Safari 17.5, Firefox 120).
+
+**Claude Code is a hard requirement, and a paid one.** Cerber drafts reviews by
+running `claude` as you: it rides your existing Claude Code login and draws on
+that plan's usage limits, so you need a Claude subscription that includes Claude
+Code. There is no `ANTHROPIC_API_KEY` path — not as a fallback, not at all.
+GitHub only; no GitLab or Bitbucket. Notifications are macOS and Linux.
+
+Run `cerber doctor` first — it checks all three tools and tells you which one to
+fix, instead of letting a missing login turn into an empty cockpit later.
+
+```bash
+# Open the cockpit — this is the whole product
+npx @fullstackhouse/cerber serve        # → http://127.0.0.1:4820
+
+# Or review one PR from the terminal (writes a local artifact to ~/.cerber,
+# nothing else)
+npx @fullstackhouse/cerber review https://github.com/owner/repo/pull/123
+
+# Review several
+npx @fullstackhouse/cerber review owner/repo#123 owner/repo#124
+npx @fullstackhouse/cerber review 123 124 --repo owner/repo
+
+# See what's in the queue
+npx @fullstackhouse/cerber list
+```
+
+`serve` does the whole loop by default: discover → draft → wait for you.
+Sending stays a human click. Tame it with `--no-auto-review` (list awaiting
+PRs, review on click) or `--no-poll` (no GitHub polling at all) — or flip those
+switches in the cockpit's Settings, which persist in `~/.cerber/config.json`
+and apply on the next poll.
+
+## Contents
+
+- [What a review looks like](#what-a-review-looks-like) — what Claude writes and how you walk it
+- [The inbox](#the-inbox) — what the queue shows, what settles a row, the notifications
+- [Handing a review to somebody else](#handing-a-review-to-somebody-else)
+- [It reviews the code, not just the diff](#it-reviews-the-code-not-just-the-diff)
+- [Trusted PRs: reviews that can run things](#trusted-prs-reviews-that-can-run-things)
+- [When the PR moves under you](#when-the-pr-moves-under-you)
+- [Arguing with the review before you send it](#arguing-with-the-review-before-you-send-it)
+- [Every row remembers what happened to it](#every-row-remembers-what-happened-to-it)
+- [Status](#status) · [Running on a VPS](#running-on-a-vps) · [How it works](#how-it-works) · [Development](#development)
+
+## What a review looks like
+
+Each review is a plain JSON artifact in `~/.cerber/reviews/` (override with
+`CERBER_HOME`) containing:
+
+- **Summary** — what the PR actually does and why, written top-down
+- **Chapters** — the changed files grouped into a logical walkthrough, each
+  with a title, an explanation, and its slice of the diff
+- **Draft comments** — inline, anchored to file/line, only things worth a
+  human's time. Findings are graded **blocker / minor / nit** — the words mean
+  what they mean everywhere, and only a blocker stands between the PR and
+  approval; a question or note carries no grade at all
+- **Verdict** — approve / comment / request changes, with a 0–100 confidence
+  score and reasoning that names the worst finding still standing
+- **Run metadata** — model, whether it read the source or only the diff, and
+  the token spend as an API-rate equivalent
+
+The cockpit (`cerber serve`) renders the queue and the per-PR walkthrough with
+diffs, light or dark after your system (Settings can pin either, per browser). Draft comments sit inline in the diff, anchored to the line they're
+about, each waiting for you to keep, rewrite, or drop it:
+
+![A chapter of the walkthrough: the diff with a draft comment card anchored under the line it discusses, explaining the finding in plain words.](docs/comment.png)
+
+Any line of the diff is one click away from being talked about: hover it and a
+`+` appears in the gutter, the way it does on GitHub. What opens is one box
+with two exits — write the comment yourself, or ask the reviewer about that
+line and get the answer in the conversation below. A line the PR removes can be
+asked about too; a comment on one posts on the file, since GitHub only takes
+inline comments on the new side of a diff.
+
+A markdown file the PR **adds** opens as the document it is, not as a thousand
+rows of `+ ## Heading` — because reviewing a new spec means reading it, and
+every line being an addition means the diff's markers say nothing. It is still
+the review: the draft comments sit in the document under the paragraph they
+point at, and any paragraph takes a comment or a question where it stands. A
+markdown file the PR only *edits* stays a diff — there the change is the point
+— with "read as a document" in its header when you want the prose instead.
+
+Artifacts are plain JSON you can `cat`, edit, or pipe into anything.
+
+The queue is meant to be walked, not clicked through: `j`/`k` move the cursor
+and the strip under the table explains whatever it lands on — the verdict's own
+reasoning, what the run read, how it sits against the auto-send bar — so most
+rows can be judged without opening them. `↵` opens one, `r` drafts (or
+re-drafts) it. Inside a review, `[` and `]` walk to the previous/next PR still
+awaiting you, `n` steps through the chapters, and `s` sends.
+
+## The inbox
+
+The queue only lists what still wants you: anything you have settled moves to
+the filed tabs right of the thin rule in the filter row — reviews you sent,
+ones you marked reviewed or skipped, merged and closed PRs — each tab appearing
+only while it holds something. PRs in archived repos are never picked up at
+all, since the repo is read-only and a review could never be sent.
+
+### Settled means you settled it
+
+Settling a review is your decision, not GitHub's: skip a PR, or mark one
+reviewed without sending, and GitHub still holds its review request open,
+because nothing in that decision reaches it. (The one decision that does reach
+it is [handing the review to somebody else](#handing-a-review-to-somebody-else),
+which moves the request rather than leaving it behind.) Those rows stay marked where they
+sit, counted on the tab they went into, and named in place of the empty
+inbox — cerber never tells you nothing awaits you while its own poll says
+otherwise. It is a report, not a nag: what you decided here stands, and the
+mark clears itself the moment GitHub hears from you.
+
+### Except when you reviewed it on GitHub
+
+There is one thing you never have to settle by hand. Review a PR the ordinary
+way — GitHub's own review button, cerber not involved — and the review request
+clears, but nothing here hears about it: the draft cerber wrote for that PR
+goes on sitting in the inbox as work still waiting on you, days after the PR
+went back to its author. So the poll asks the other question too. When GitHub
+has stopped requesting your review *and* already holds one of yours, the draft
+is filed under settled, tagged `reviewed on GitHub` with the date it was
+submitted. Nothing else happens to it — it was never sent, and it is still
+yours to open, re-review or send. The one draft this leaves alone is one you
+asked for *after* that review: a second opinion you went and requested is not
+a row the queue forgot to close.
+
+### Whose move is it
+
+An open request doesn't mean the ball is yours, though. You may have argued the
+whole thing out in the PR conversation and never pressed GitHub's review
+button, which leaves the request open with nothing blocked on you. So cerber
+reads the conversation and says whose move it is: `you haven't replied` (they
+are waiting), `waiting on them` (you had the last word), or `they replied last`
+(it is back with you). Bots don't count as an answer, or a chatty CI would put
+every PR back on you. If the conversation can't be read it says `unanswered on
+GitHub` and claims nothing further — guessing "you never replied" at someone
+who did is the one mistake worth designing against.
+
+### It taps you on the shoulder
+
+When a PR is ready for you, you get a desktop notification naming it, folded
+into one popup when several land at once. Ready means *there is something to
+read*: cerber drafts the review itself, so the tap waits for the draft and says
+what it found — "widgets#7 draft ready · requests changes · 2 blockers" — rather
+than walking you back to a row that says "no run yet". A PR nobody is going to
+draft (auto-review off, or a run that failed) is announced as it arrives, since
+that is all the news there will be — and if a retry drafts it after all, that is
+new news and you are told. Nothing else is: a PR whose draft you have been told
+about stays quiet however its next re-review ends. The tap comes from the poll, so it reaches
+you with the cockpit closed, in another Space, or after a browser restart —
+`cerber serve` is the only thing that has to be running. It goes to whatever
+this machine already has (Notification Centre on macOS, `notify-send` on Linux)
+and stays quiet where there is neither. Off with `daemon.notify` in
+`~/.cerber/config.json`, or the checkbox in Settings.
+
+**On macOS, clicking it opens that review** in the cockpit. It takes a small app
+cerber builds once under `~/.cerber` — the first tap asks you to allow
+notifications from "Cerber" — because a notification can only open the app that
+posted it, and one posted the usual way belongs to Script Editor, which is
+where the click would otherwise land. A `notify-send` tap on Linux announces
+the PR but has no click to give.
+
+The cockpit has a bell of its own, which does the same from the page. But it is
+a page notification — it needs a tab that is open, alive and permitted, which is
+exactly what you don't have on the afternoons this feature is for. So it stands
+down while the machine's own tap is on, rather than making one PR two popups,
+and the bell in the top bar says so. Untick the machine one and this browser
+takes over: click the bell, grant the permission, and click it again to stop.
+The switch and the record of what has been announced are per-browser — the
+permission they gate is the browser's, so a second browser starts its own
+record — and it stays quiet while you're looking straight at cerber.
+
+A cockpit served from somewhere else (`cerber serve -H 0.0.0.0 --token` on a
+VPS) keeps its bell either way: the machine's tap would land on the VPS, where
+nobody is looking.
+
+The tab itself says it too, without asking anyone: while the inbox holds
+anything, the favicon wears a red dot, and it goes away when the last review is
+dealt with. No permission, no switch — just the paw with a mark on it, so a
+glance at the tab strip answers "is there anything for me?".
+
+## Handing a review to somebody else
+
+Some reviews are not yours. Wrong part of the stack, wrong week, somebody else
+wrote half of it — and the honest answer is a name, not a skip. **Hand off** is
+in the send panel next to *mark reviewed* and *skip*. It opens with the people
+who can take it already listed — whoever this repo assigns work to, with anyone
+you have handed to before at the top — so in the ordinary case you pick a name
+rather than typing one. Then:
+
+- they are added as a requested reviewer and you are taken off,
+- a short note goes on the PR saying so — prefilled with their name so they get
+  the notification, editable, and clearable if you would rather say nothing,
+- the drafted review goes up with it, if you tick the box for it (below),
+- the row is filed under settled here, tagged `handed to @them` — or under
+  sent, if you sent the review with it.
+
+That is the whole of it, and it is the one thing on the queue that genuinely
+*finishes* a review request instead of just filing it: a skip leaves GitHub
+asking you forever, and this does not. If they run cerber too, their next poll
+picks the PR up and drafts a review for them — nothing has to be sent anywhere
+for that to work.
+
+**You can send the draft with it.** Tick *also post the review* and what Claude
+found goes up at the same time — the same body and the same inline comments the
+Send button would post, so the next reviewer and the author start from something
+rather than nothing.
+
+It posts as a **comment**, never an approval or a change request. You are handing
+the judgement over, so making it on the way out would be odd. The findings keep
+their grades, so a blocker still reads as a blocker — what that means for the
+merge is now the next reviewer's call.
+
+That box starts unticked, and it is the one thing here that isn't on by default.
+You can hand off a PR you never opened, where the draft is whatever the overnight
+poll wrote, and publishing that under your name is the thing the Send button
+exists to prevent. Ticking it shows you the body first. Leave it alone and the
+draft just stays here, openable and still sendable.
+
+If GitHub refuses the swap — they are not a collaborator, or you cannot request
+reviews on that repo — nothing happens at all: no note on the PR, no change
+here. And if it moves them on but cannot take you off, the row says that too,
+rather than claiming you are done with it.
+
+The list is a convenience, not a gate: it is GitHub's assignable-users list, not
+its rule for who may review, so you can always type a login it doesn't mention —
+and on a repo cerber can't read that list for, the box says so and still works.
+
+Handing to a team isn't supported — a room being asked is not somebody taking it.
+
+## It reviews the code, not just the diff
+
+Cerber checks the PR's head out locally and lets the review read it. That
+matters because a reviewer holding only a diff hedges over things it could have
+just looked up — *"I can't see the enclosing function, so this could be
+wrong"* — and burns its confidence score on missing context instead of on real
+uncertainty. With the source there, it opens the enclosing function, follows
+callers of a changed signature, checks whether a helper already exists, and
+sees whether a test covers the new path.
+
+On one real PR, same commit, the difference was: a speculative "this *looks
+like* it sits after an early return" became a concrete finding; a permission
+check the diff showed as a tidy gate turned out to hide a value the API
+response still ships; confidence went 72% → 82%. It burned 3.3× the tokens and
+took three minutes instead of one.
+
+Cerber rides your `claude` login, so a review isn't billed per run: on a Claude
+subscription it draws on your usage limits. The `≈$` figures in the CLI and
+cockpit are what those tokens would cost at API token rates — read them as
+"how much of the plan did this eat", not as an invoice.
+
+If you want the old behaviour — faster, lighter, blind past the changed lines:
+
+```bash
+cerber review owner/repo#123 --no-source
+cerber serve --no-source
+```
+
+The cockpit labels every review "read the full source" or "read the diff only",
+and offers a one-click **Re-review with full source** on the diff-only ones.
+
+Details worth knowing:
+
+- The checkout is a shallow (`--depth=1`) fetch of `refs/pull/N/head` from the
+  base repo, so fork PRs work with no extra remotes. Auth rides `gh`'s
+  credential helper, set on that clone only — your git config is untouched.
+- If git or `gh` can't produce a checkout, the run says so and reviews the diff
+  alone. A missing checkout never fails a review.
+- The run is read-only unless you have trusted the PR (see below): `Read`,
+  `Grep` and `Glob` are the only tools it gets. Without a checkout it gets none,
+  and runs in an empty directory, so it can never read whatever project cerber
+  happens to be started from and mistake it for the PR.
+- PR content is untrusted, and `claude -p` skips the workspace-trust prompt, so
+  cerber does the distrusting itself: a `.claude/settings.json` or `.mcp.json`
+  in the checkout is renamed aside (still readable, no longer loaded), hooks
+  and non-cerber MCP servers are off, and the prompt tells the reviewer that
+  instructions found in files are material to review, not directions to follow.
+  What a hostile PR can still do is skew the review text — it cannot run
+  anything, write anything, or reach the network. Read the verdict, don't
+  rubber-stamp it. (All of this applies to PRs you have *not* trusted; a
+  trusted one is deliberately given the run of the place.)
+- Checkouts live in `~/.cerber/src/<owner>__<repo>__<n>` and are reused by later
+  re-reviews. A big monorepo is a few hundred MB per PR, so the cache keeps only
+  the 8 most recently reviewed and evicts the rest as it goes — never one a
+  review is currently reading. `cerber prune` reclaims the space now;
+  `cerber prune --all` takes the ones for reviews still awaiting you too.
+
+## Trusted PRs: reviews that can run things
+
+Reading beats guessing, but running beats reading. A review that ran the test
+covering the change reports what happened; one that only read it guesses. So
+for PRs you already trust — a teammate's, or anything in your own repos —
+cerber can let the review run commands in the checkout: the test suite, a
+typecheck, `git log`/`git blame`, a build.
+
+Trust is about the *people*, and only about people — cerber has no way to
+trust a repository, because anyone can open a PR against one:
+
+```bash
+cerber trust @fullstackhouse/*      # anyone in the org
+cerber trust @fullstackhouse/devs   # anyone on that GitHub team
+cerber trust @teammate              # one person, by login
+cerber trust                        # show who is trusted today
+```
+
+Membership is resolved against GitHub when the review runs (your `gh` login
+needs `read:org`), and a lookup that fails counts as "not a member" — a check
+cerber could not complete never reads as trust. Writing a repo instead of a
+person is rejected, in the CLI, the cockpit, and on config load:
+
+```
+$ cerber trust acme/widgets
+"acme/widgets" is not a trust rule. Trust is about people, not repositories —
+anyone can open a PR against a repo you own, so trusting the repo would trust
+them too. Use @acme/* for everyone in that org, @acme/team for one team, or
+@login for a person.
+```
+
+Rules live in `~/.cerber/config.json`, and the cockpit has a **settings**
+screen that reads and writes the same file — each rule shown with what it
+actually grants. A `!` rule denies and beats every grant, so `@fullstackhouse/*`
+plus `!@fullstackhouse/contractors` does what it looks like. `--trust` and
+`--no-trust` override the config for one run; `cerber trust <pattern> --delete`
+removes a rule.
+
+A trusted review gets `Bash`, `WebFetch` and `WebSearch` on top of reading, and
+the repo's own `.claude` config applies — it behaves as if you had checked the
+branch out and opened it yourself. The cockpit labels it "ran the code" so you
+know which kind you are reading.
+
+It is handed no GitHub credentials, and that part is *enforced* rather than
+requested. `GH_CONFIG_DIR` points at a fresh empty directory, `GH_TOKEN` and
+`GITHUB_TOKEN` are blanked, the fetch credential rides the fetch command
+instead of being stored in the checkout, git's global and system config are
+switched off so a keychain helper cannot stand in, and the ssh route is closed
+too — no agent, no `~/.ssh/config`, no default identity — since otherwise a run
+could point the remote at `git@github.com` and ride your keys. Measured from
+inside a checkout: `git push` over https and over ssh, and `gh pr comment`, all
+fail to authenticate, while `git log` still works.
+
+**It is not a sandbox, and you should not read it as one.** A trusted run has
+`Bash` and your filesystem: it can write files in the checkout, and a
+determined one could read a key straight out of `~/.ssh` and use it itself.
+What cerber guarantees is that it *hands* the run nothing. The rest is what
+trusting a person means — which is why trust is spelled `@org/team`, and why
+the default is a review that cannot run anything at all.
+
+**What you are accepting.** A trusted review executes code from that PR on your
+machine — the branch's scripts, its dependencies, its test suite. That is the
+same exposure as checking the branch out and running the tests yourself, which
+is what you would otherwise do; it is not the same as reading a diff. Trust
+orgs and people, not the whole of GitHub. And note that `cerber serve` reviews
+unattended by default: with trust rules set, it will run matching PRs' code
+with nobody watching. It warns at startup, the cockpit shows a ⚡ badge while
+it's the case, and `--no-trust` (or `--no-auto-review`) turns it off.
+
+## When the PR moves under you
+
+A review is written against one commit, but authors keep pushing. Opening a
+review checks the PR's head and pulls the review forward: comments follow their
+code to its new line numbers, and any whose code is gone are flagged and post
+in the review body instead of inline — GitHub rejects an entire review over one
+comment on a line that is no longer in the diff. Sends carry the reviewed
+commit's SHA, so inline comments land where they were written.
+
+The AI's summary and verdict still describe the commit that was reviewed. To
+get its opinion of the new code, hit **Re-review at the new head** in the
+cockpit (or `cerber review <pr> --force`).
+
+> ⚠️ **A re-review replaces the whole draft — including comments you wrote or
+> rewrote, and a send body you wrote yourself.** They are dropped when the run
+> starts and they do not come back, on success or on failure. This is a
+> decision, not a bug ([`docs/lifecycle.md`](docs/lifecycle.md)): the run owns
+> the draft. If you have written comments you want to keep, send the review or
+> copy them out first. Your *decisions* do survive — a `reviewed` or `skipped`
+> you set and the chat transcript are kept, and a send is kept as a record of
+> what went to GitHub (see the next section).
+
+### Re-reviewing one you already sent
+
+Sending freezes the draft — it is the record of what GitHub has, so nothing
+can edit it afterwards. What you can do is replace it. The same **Re-review at
+head** button works on a sent review, and on a PR whose author has pushed
+since it is the only thing that does: the review you sent answers a commit
+that is gone, and cerber will not rewrite a review that is already public.
+
+The run drafts against the current head and hands you an ordinary unsent
+review again — editable, arguable, sendable. What you sent is kept beside it:
+a note above the draft says what you posted and when, with a link, and the
+line over the Send button says the next click would be review 2. **Nothing on
+GitHub changes** — a second review sits beside the first; cerber never edits
+or withdraws what it posted.
+
+The poll does this on its own, too, for a sent review whose PR moved on and
+whose author has asked you for another look. The two things that can reach
+GitHub without you both stand down on a row like that: auto-send will not
+approve a PR you have already reviewed yourself, and a handoff stops offering
+to carry the draft — it is a new draft, but sending it would still be your
+second review on that PR.
+
+## Arguing with the review before you send it
+
+A draft you disagree with used to leave two options: rewrite it by hand, or
+re-review and hope. Neither lets you say *what was wrong*. So every review has
+a conversation attached — **Talk to the reviewer**, at the bottom of the
+walkthrough.
+
+Ask it why it said something, and it answers. Tell it the summary is restating
+the author's claims rather than what it verified, and it rewrites the summary.
+The reviewer revises the draft as it answers: there is no accept step, because
+you already asked for the change. What it changed shows up in the transcript
+(*"✎ rewrote the summary"*, *"✎ dropped the comment on line 250"*).
+
+![Talking to the reviewer: pushed back on a nit, it re-checks the code, corrects the push-back's own claim, drops the comment anyway — and the revision is noted right in the transcript.](docs/chat.png)
+
+That conversation is real: pushed back on a nit, the reviewer re-checked the
+code, corrected the push-back's own claim about the rename's size — and still
+dropped the comment, because a nit hanging off a PR with two real findings
+just dilutes them. The rail counts *2 keeping · 1 dropped*, and nothing about
+the exchange went anywhere near GitHub.
+
+- **It is the same reviewer.** A turn resumes the Claude session the review ran
+  in, so it still holds everything it read. Asking "did you actually check
+  that?" gets an answer from the run that did or didn't — not from a fresh
+  agent re-deriving an opinion from the diff.
+- **It reads the code to answer you.** The checkout cache is small, so by the
+  time you argue with a review its source is usually evicted; a turn re-clones
+  it. If it can't, the turn still runs and the reviewer is told it is working
+  blind rather than left to describe files from memory.
+- **It can say no.** The prompt tells it not to fold under push-back. If you
+  are wrong about something it checked, it says so and changes nothing.
+- **The wait is not a held request.** Re-reading the code takes minutes, so a
+  turn runs detached the way a re-review does: your question appears in the
+  transcript straight away and the cockpit polls for the answer. Reload, close
+  the tab, or sit behind a proxy that times connections out at 60s — the answer
+  still lands on the review, and a turn that fails says so against the question
+  that caused it.
+- **You can watch it work.** Those minutes aren't a spinner: the run narrates
+  itself under your question — *thinking…*, *reading src/core/refresh.ts*,
+  *searching for carryOverComments in src*, *not allowed to use Bash* — so you
+  can tell a turn that is checking your claim from one that is about to answer
+  from memory. `cerber review` and the daemon log print the same lines.
+- **Your words are yours.** Comments you wrote or edited are off limits: it
+  will tell you one of them needs changing rather than rewriting it. Say so
+  explicitly and it will.
+- **Point at things.** *discuss* on any comment, chapter, or the summary drops
+  a reference into your next message. From the diff's own gutter, *ask the
+  reviewer* points at one line and sends the question there and then — the
+  line comes along quoted, so it answers about that line rather than counting
+  rows.
+- **Reset** puts the review back the way the AI first wrote it and keeps the
+  conversation — you lose the edits, not the reasoning.
+
+Nothing in the conversation reaches GitHub. Send still builds its payload from
+the summary, comments and verdict alone, and is still one deliberate click. A
+review that has already been sent can't be argued with: that artifact is the
+record of what GitHub has — re-review it first, and the new draft is open to
+the conversation like any other.
+
+## Every row remembers what happened to it
+
+A review keeps one "last updated" time, which means every write erases the
+answer to *when did I skip this, and did they ask again afterwards?* So each
+one also keeps a history: the status changes with their timestamps, every push
+it saw, each run and what it cost, sends, refreshes — and which part of cerber
+did it, whether that was you in the cockpit, the CLI, an AI run or the poll.
+
+The poll's silences are in there too. When it looks at a row and deliberately
+leaves it alone — you settled it, so a new push does not reopen it; or GitHub
+still lists you as a requested reviewer even though its own search has stopped
+saying so — it writes that down instead of passing without a trace. That is
+usually the answer when a PR is not where you expected it to be.
+
+It's at the foot of every review in the cockpit, and:
+
+```bash
+cerber history owner/repo#123
+```
+
+Nothing about GitHub's own timeline is copied here — GitHub keeps that, and
+`gh` can be asked for it again. This is cerber's side of the story.
+
+## Status
+
+Early, but whole: everything described above has shipped — reviewing,
+editing and the gated Send, inbox discovery with parallel runs, confidence
+calibration (`cerber stats`), shadow-mode and opt-in auto-send, re-anchoring
+onto new commits, source-backed and trusted runs, the reviewer chat, and a
+per-review history of everything that touched it (`cerber history`).
+`cerber export` writes a review out as markdown if you want it elsewhere.
+
+## Running on a VPS
+
+```bash
+cerber serve --host 0.0.0.0 --token "$(openssl rand -hex 16)" \
+  --repo you/repo-a --repo you/repo-b --interval 10
+```
+
+The server polls GitHub, reviews anything new (skipping PRs whose artifact
+already matches the head SHA), and the cockpit is always warm — open it any
+minute and see pending/ready/sent reviews. Auth: `?token=…` once in the
+browser (sets a cookie) or `Authorization: Bearer …`. Binding a non-localhost
+host without a token is refused. By default the daemon never sends reviews — Send stays a human click.
+
+**Auto-send** (opt-in): add `--auto-send --auto-send-threshold 90` and the
+daemon will submit APPROVE verdicts at/above the threshold as you. It never
+auto-sends COMMENT or REQUEST_CHANGES. Before enabling, run the default
+shadow mode for a while: every would-send decision lands in
+`~/.cerber/autosend.ndjson`, and `cerber stats` shows how often the AI's
+verdicts and comments survive your review — enable auto-send when its 90%
+actually means 90%.
+
+## How it works
+
+[**docs/lifecycle.md**](docs/lifecycle.md) is the reference behind everything
+above: the seven statuses and what sets each, which tab a PR lands in and why,
+when the poll files or archives a row on its own, when a re-review happens and
+what it will not overwrite, and what gets written to disk at each step.
+
+[**SPEC.md**](SPEC.md) is the full service specification — the artifact
+schema, every lifecycle and filing rule, the runner's tool policy and
+credential hygiene, the send path — written precisely enough to reimplement
+cerber from. lifecycle.md is the operator's view of the product; SPEC.md is
+the engineer's.
+
+## Development
+
+```bash
+pnpm install
+pnpm dev review <pr>     # run the CLI from source
+pnpm dev serve           # API on :4820
+pnpm --dir . typecheck && pnpm test
+pnpm build               # dist/ (CLI+server) + web/dist (cockpit)
+```
+
+Web cockpit dev with hot reload: `pnpm dev serve` in one terminal,
+`npx vite --config web/vite.config.ts` in another (proxies `/api`).
+
+## Contributing and security
+
+Patches welcome — [`CONTRIBUTING.md`](./CONTRIBUTING.md) has the gate
+(`pnpm typecheck && pnpm test`) and the one rule that is not negotiable.
+
+Cerber holds your GitHub credentials and, on a trusted PR, runs that PR's code.
+[`SECURITY.md`](./SECURITY.md) says exactly what that means, what is stripped
+from a trusted run, and where to report a vulnerability privately.
+
+## License
+
+MIT © [Full Stack House](https://fullstack.house)

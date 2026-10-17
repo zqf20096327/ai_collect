@@ -1,0 +1,1524 @@
+# StrataWP SEO
+
+<p align="center">
+  <a href="https://github.com/JonImmsWordpressDev/stratawp-seo/releases/latest/download/stratawp-seo.zip">
+    <img alt="Download the plugin (latest release)" src="https://img.shields.io/badge/⬇%20Download%20the%20plugin-Install%20on%20WordPress-10b981?style=for-the-badge&labelColor=059669" />
+  </a>
+</p>
+
+<p align="center">
+  <sub>One-click download of the latest production-ready zip. Always points to the most recent release —
+  rebuilt automatically on every push.</sub>
+</p>
+
+<p align="center">
+  <a href="https://github.com/JonImmsWordpressDev/stratawp-seo/releases">All releases</a> ·
+  <a href="#installation">Install instructions</a> ·
+  <a href="#how-to-guide-page-by-page">How-to guide</a>
+</p>
+
+---
+
+**AI-powered SEO that knows your WordPress site — and knows how AI search works.** Generate site-aware blog posts, run your technical SEO (sitemaps, redirects, schema `@graph`, audits, a full site crawler), get *cited* by AI answer engines (AEO scoring, llms.txt, AI citation tracking, AI referral analytics), and let the automation layer watch your budget, your decaying posts, and your topic pipeline while you sleep.
+
+[![Version](https://img.shields.io/badge/version-4.32.0-blue.svg)]()
+[![PHP](https://img.shields.io/badge/PHP-8.0%2B-purple.svg)]()
+[![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-blue.svg)]()
+[![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/jonimmswordpressdev)
+
+---
+
+## Table of Contents
+
+- [What This Plugin Does](#what-this-plugin-does)
+- [Feature Tour](#feature-tour)
+  - [The AI Content Engine](#the-ai-content-engine)
+  - [The AI Visibility & AEO Layer](#the-ai-visibility--aeo-layer)
+  - [The Technical SEO Suite](#the-technical-seo-suite)
+  - [The Automation & Insight Layer](#the-automation--insight-layer)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [How-To Guide: Page by Page](#how-to-guide-page-by-page)
+- [Configuration Guide](#configuration-guide)
+- [Admin Pages](#admin-pages)
+- [WP-CLI Commands](#wp-cli-commands)
+- [REST API](#rest-api)
+- [Developer Reference (Hooks)](#developer-reference)
+- [Architecture](#architecture)
+- [How Each Subsystem Works](#how-each-subsystem-works)
+- [Privacy & Data](#privacy--data)
+- [FAQ](#frequently-asked-questions)
+- [Changelog](#changelog)
+- [License](#license)
+
+---
+
+## What This Plugin Does
+
+StrataWP SEO is four products in one plugin:
+
+1. **An AI content engine** — site-aware blog posts (Anthropic, OpenAI, Google, xAI) with internal linking, FAQ schema, key takeaways, TOC, featured/in-content images, reusable voice profiles, content scoring, and a review-first Auto-Optimize loop for the posts you've already published.
+2. **An AI visibility & AEO layer** — the differentiator. Every post is scored on 4 AI-citeability dimensions (including a live question-coverage checklist), robots.txt access and a dynamic `llms.txt` are managed for 15 known AI crawlers, and three analytics surfaces close the loop: which AI bots crawl you, which AI assistants send you human visitors, and whether ChatGPT, Claude, Gemini, and Grok actually *cite* you — all joined into one crawl → visit → citation funnel.
+3. **A complete technical SEO suite** — XML sitemaps, redirect manager, breadcrumbs, a unified schema.org `@graph` with author E-E-A-T entities, per-post meta editor, search appearance templates, archive SEO, a 10-module audit, a politeness-capped site crawler with one-click fixes, keyword cannibalization detection, verified search-bot analytics with spoof detection, Local SEO, Image SEO, and one-click migration from Yoast / Rank Math.
+4. **An automation & insight layer** — the Autopilot Guardian keeps AI spend under a monthly budget cap and retries transient failures, the white-label email digest reports to you (or your clients), the content decay watchdog flags posts losing clicks and queues reviewed AI refreshes, the data-driven Topic Autopilot proposes what to write next from your own Search Console data, and Machine Access exposes 13 governed abilities to AI agents via the WP Abilities API and REST.
+
+It's designed to **replace** Yoast/RankMath/AIOSEO if you want to, or **coexist** with them (schema and meta output auto-disable when those plugins are detected).
+
+---
+
+## Feature Tour
+
+### The AI Content Engine
+
+![Generate Content](screenshots/swps-generate.png)
+
+#### AI Content Generation
+- **Multi-provider AI** — Anthropic (Claude), OpenAI (GPT), Google (Gemini), xAI (Grok); model lists are discovered live from each provider's API and refreshed daily, with dynamic labels (Most powerful, Cheapest, Costs most, Best value) and a dismissible new-model alert
+- **Site-aware generation** — analyzes existing posts, categories, and internal links before writing
+- **Custom content brief** ★ v4.30 — describe exactly what to write, include, emphasize and avoid; an optional "Help me write my brief" helper (audience, goal, key points, tone, facts, things to avoid, CTA) and an "Improve my brief" review step, all applied within the existing SEO structure
+- **Pages, per-run images and source material** ★ v4.31 — generate service, landing, about and location pages with a parent picker; toggle the featured image and set 0-4 in-content images per run; paste URLs and notes as source material the AI grounds facts in and cites; tone selector moved onto the main form
+- **Know before you spend** — a live "What happens when you generate" summary shows the model, where the result lands (post or page, and its status), the word range for the selected template, featured and in-content image choices, tone and language before you click **Generate Post** / **Generate Page**, **Preview** (no save), **Bulk Generate** (posts only) or **Analyze My Site**
+- **8 post templates, 5 page templates**: posts get Auto, Informational, Listicle, How-To Guide, Comparison, Case Study, News Analysis and Tutorial; pages get Auto, Service page, Landing page, About / Team and Location / area page
+- **Voice profiles** — reusable writing personas (tone, formality 1-10, sentence length, vocabulary, person, avoid/preferred phrases, sample text)
+- **FAQ, Key Takeaways, TOC** — generated with `FAQPage` / `ItemList` schema and an auto-linked table of contents
+- **Quality gates built in** — duplicate detection, content scoring with an optional draft-hold floor, rate limiting, and per-provider/model token + USD cost tracking (new models auto-priced via family heuristics)
+
+#### Featured & In-Content Images
+- **4 image providers** — Unsplash, Pexels, Pixabay (free stock), Gemini (AI-generated; image model auto-discovered)
+- **Auto featured image** plus **0-4 in-content images** with derived alt text and configurable max width
+- **Settings are the defaults** ★ v4.31: Generate Content's Featured image checkbox and In-content images count start from these settings, and can be turned on/off or changed per run without touching Settings. Posts from Bulk Generate, cron and autopilot always follow Settings
+- **Background image jobs** — each image runs as its own background job (Action Scheduler, WP-Cron fallback), so scheduled posts get their images reliably; failures appear in Recent Activity
+
+#### Automated Publishing
+- **Flexible scheduling** — daily through monthly cadences, with a topic queue and a visual content calendar
+- **Bulk generation** — up to 5 posts in one click; long-running work runs through the background processor
+- **Proposed topics on the calendar** — Topic Autopilot proposals arrive as a distinct "proposed" status with approve/dismiss controls (see [the automation layer](#the-automation--insight-layer))
+
+#### AI Auto-Optimize
+- **Re-score all published posts** in chunks with live progress; posts below your threshold (default 75) queue up
+- **AI proposals with diff review** — concrete find/replace edits, optional new meta title/description/focus keyword, and a projected score; check/uncheck each edit before applying
+- **One-click apply** with automatic re-score, plus per-row dismiss
+
+#### Editor sidebar ★ v4.32
+- **Live analysis**: a block editor sidebar replaces the SEO and AEO metaboxes. It analyses as you type, with SEO checks and readability grouped into problems, improvements and good
+- **Related keywords**: a focus keyword plus up to four related keywords
+- **Search preview**: see the result on desktop and mobile
+- **AI visibility panel**: the AI visibility score, the questions an answer engine would ask, schema found in the content and AI citation status for the post
+- **Fix buttons with diff and Undo**: deterministic fixes (keyword slug for drafts, trimming a long title or description) apply instantly; AI fixes (keyword in the title, description, introduction or conclusion, and "Add an answer" for missing AI visibility questions) show a before and after diff and write nothing until you press Apply. Every fix goes through the editor, so Undo reverses it. AI fixes respect the monthly AI budget and are cost tracked
+- **Before and after snapshots**: when a post with applied fixes is next saved while published, the plugin stores a snapshot of its score and search numbers so later releases can show before and after results
+- **Rollout**: new installs use the sidebar by default. Existing sites keep the classic metaboxes until they choose "Turn it on" in the notice shown in the block editor. "Use the classic editor panel instead" in the sidebar's Advanced panel switches back
+- **Build**: the compiled sidebar is built with @wordpress/scripts; sources are in `src/editor` and the compiled files are in `admin/editor`
+
+### The AI Visibility & AEO Layer
+
+This is the part Yoast doesn't have: a full pipeline for getting your content **cited by AI answer engines** — and proof of whether it's working.
+
+![AEO Optimize](screenshots/swps-aeo-optimize.png)
+
+#### AEO Optimize
+- **AEO Score with 4 dimensions** — Extractability, Markup, Authority, and a live **Coverage** dimension: one AI call builds a query fan-out checklist (the 5-10 sub-questions an answer engine would decompose your topic into, marked answered / partial / missing, cached by content hash)
+- **Bulk AEO Optimize page** — chunked re-scan, threshold filter, per-row AI proposal with diff review, apply with snapshot/undo
+- **Live editor panel** — Gutenberg sidebar + classic metabox with the score, sub-scores, your per-post crawl→visit funnel, unanswered searcher questions, and lost-citation context
+- **Dynamic schema generation** — HowTo, Recipe, Product, Review, FAQPage JSON-LD, validated before output; defers to Yoast / RankMath / AIOSEO
+- **Question demand mining** — a weekly GSC cron finds real question queries your pages get impressions for but don't answer, feeds Q&A inserts into AEO proposals, and queues uncovered questions as topic suggestions
+
+#### AI Crawler Access & llms.txt
+- **AI bot allowlist** — robots.txt `Allow`/`Disallow` rules for 15 known AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended, CCBot, Bytespider, …)
+- **Dynamic llms.txt** at `/llms.txt`, built from your posts/pages/categories with one-line summaries — plus an in-admin editor for both `/llms.txt` (Auto/Custom) and `/robots.txt` (Auto/Append/Replace)
+- **IndexNow integration** — auto-generated verification key served at `/{key}.txt`; auto-submit on the post/term lifecycle with a 60-second debounce, per-post "Submit now" and bulk "Resubmit all", a dedicated panel on the Sitemaps screen, and a recent-activity log (auto-paused on non-production; Google does not participate in IndexNow)
+
+#### AI Bot Analytics, AI Referrals & the Visibility Funnel
+- **AI Bot Analytics** — server-side hit tracking for the 15 AI crawlers: per-bot dashboards, top crawled pages, recent bot 404s, and an AEO gap report sortable by AEO score (high-quality-but-uncrawled posts first)
+- **AI referral attribution** — human visits from ChatGPT, Perplexity, Claude, Gemini, Copilot, Grok, DeepSeek, Meta AI, and You.com are classified at capture; the AI Referrals analytics section shows engine trends, landing posts, and engagement vs organic
+- **Crawl → visit funnel** — AI-bot crawl data joined to AI referral visits per post, with crawl-recency and AI-visit columns on the AEO queue and a dashboard funnel tile (posts crawled → posts receiving AI visits over 30 days, with stage conversion rates)
+
+#### AI Citation Tracker
+- **Search-grounded citation checks** — asks ChatGPT, Claude, Gemini, and Grok your tracked prompts (bring your own keys) and records whether your site is cited in the answer
+- **Per-engine state badges** (cited / lost / never / mixed), **share-of-voice bars vs competitors**, and a **cited-domains breakdown** showing who *is* getting cited
+- **Seed prompts from your keywords or GSC queries**, a monthly call cap (default 200) so spend stays bounded, a dashboard tile, and lost-citation context surfaced in the AEO editor panel and proposals
+
+### The Technical SEO Suite
+
+![Site Crawl](screenshots/swps-site-crawl.png)
+
+#### Technical SEO Audit
+- **10 audit modules** — Canonical URLs, XML Sitemap, Open Graph, Twitter Cards, Robots.txt, Meta Robots, Image SEO, Page Speed Hints, Schema Validation (live-page JSON-LD checks), and Site Crawl results
+- **Auto-fix** for canonical/OG/Twitter/sitemap issues, scheduled runs, dashboard health score, CSV export
+
+#### Site Crawler
+- **Politeness-capped self-crawl** — page caps (default 500 internal / 200 external link checks) and a configurable delay, run in chunks from the admin, with an optional weekly re-crawl
+- **8 issue types** — broken links, redirect chains, redirect loops, canonical mismatches, missing H1, duplicate H1s, mixed content, and noindexed URLs still in the sitemap
+- **One-click fixes** — create a redirect, exclude from sitemap, or ignore an external host, right from the issue row
+
+#### Keyword Cannibalization Detector
+- **GSC-driven findings** — surfaces queries where multiple posts split impressions and clicks, with a winner/loser per finding and an estimated impact
+- **Three resolutions** — **Consolidate** (creates an undoable 301 to the winner), **Differentiate** (re-target the loser), or **Canonicalize** — plus dismiss
+- Dashboard tile with the open-findings count
+
+#### Schema / Structured Data
+- **Unified `@graph`** — Organization, WebSite, WebPage, Article, BreadcrumbList, Person, and ProfilePage emitted as one interlinked JSON-LD block with stable `@id`s
+- **Author E-E-A-T entities** — per-user profile fields (job title, credentials, sameAs links) feed Person schema and a ProfilePage on author archives
+- **Schema validation audit module** — samples live pages and checks required fields, orphaned `@id` references, and date consistency
+- **FAQPage + ItemList** from generated content, **LocalBusiness** via Local SEO, **HowTo/Recipe/Product/Review** via AEO
+- **Conflict detection** — defers automatically when Yoast / RankMath / AIOSEO is active
+
+#### Verified Crawler Analytics & Crawl Budget
+- **Search-bot tracking** — Googlebot, Googlebot-Image, bingbot, Applebot, YandexBot, and DuckDuckBot tracked alongside the AI bots (search bots are analytics-only and never written to robots.txt or llms.txt)
+- **Spoof detection** — every search-bot hit is verified against the engines' published CIDR ranges (refreshed by cron) with a reverse-DNS fallback; verdicts: verified / spoofed / unverifiable
+- **Daily reconciliation notices** when spoofing spikes, and an opt-in, **fail-open 403 enforcement** for verified-spoofed bots (unverifiable hits always pass through — Googlebot can never be blocked by a stale IP list)
+- **Crawl budget report** — Analytics-page breakdown of crawl activity by post type (30d) so you can see where bots spend their time
+
+#### Sitemaps, Redirects & the Meta Layer
+- **Full sitemap system** — `/sitemap_index.xml` with post type / taxonomy / author sub-sitemaps, image entries, per-sitemap exclusion toggles, auto-submitting IndexNow panel
+- **Redirect manager** — 301/302/307/410 with exact + regex matching, 404 monitoring with one-click redirect creation, auto-redirect on slug change
+- **Internal links engine** — keyword and AI engines with an accept/skip review UI
+- **SEO meta editor** — per-post title/description/canonical/robots/OG/Twitter with live SERP preview, SEO checklist, and an AI Generate button
+- **Search appearance templates**, per-term taxonomy meta, frontend breadcrumbs with schema, RSS before/after content, wp_head cleanup
+
+#### Local SEO & Image SEO
+- **Local SEO** — LocalBusiness JSON-LD with 30+ business types, NAP, opening hours, geo coordinates, area served, Google Place ID, and a live schema preview
+- **Image SEO** — auto-alt on upload (free heuristic or AI mode), device-prefix filename sanitization, lazy-loading enforcement, and a bulk fix tool for the existing library
+
+#### Research & Off-Site
+- **Keywords** — AI keyword suggestions, GSC rank tracking, striking-distance opportunities (positions 8-20)
+- **Competitor watch** — up to 10 sites with daily diffs of new posts, schema types, and title/H1 changes, plus content velocity
+- **Backlinks** — manual/CSV tracker (GSC "Top linking sites" exports auto-detected) with daily live/lost/broken verification — no paid index required
+- **Analytics** — cookie-free on-site tracking (views, time, scroll depth, bounce) + GSC OAuth in one dashboard
+
+#### Migration Tool
+- **One-click import from Yoast SEO (incl. Premium) and Rank Math (incl. Pro)** — per-post meta, global settings, and redirects, with a dry-run preview, skip/overwrite conflict policy, and one-click undo
+
+### The Automation & Insight Layer
+
+![Dashboard](screenshots/stratawp-seo.png)
+
+#### Autopilot Guardian
+- **Monthly AI budget cap** (USD) with an 80% warning notice and a hard stop at the cap
+- **Transient-error retry** with exponential backoff — a single failed generation no longer abandons the rest of a scheduled batch
+- **Failed-topic auto-requeue** (max 3 attempts per topic) and a dashboard autopilot tile showing enabled state, last-run health, and spend vs cap
+
+#### White-Label Email Digest
+- **Daily / weekly / monthly** report of generations, failures, keyword movers, backlinks, competitors, AI-bot trends, and AI spend — led by a needs-attention triage section
+- **Agency branding** (logo, accent color, footer text), multiple recipients, a test-send button, and an optional AI executive summary
+
+#### Content Decay Watchdog & Refresh Queue
+- **Weekly GSC scan** compares rolling 28-day windows per post and flags decays past your threshold (default 20% click decline) with a heuristic cause — position drop, demand drop, CTR drop, or staleness
+- **Metric + AEO-score history with sparklines**, a minimum-impressions floor, per-post cooldowns, and a one-email summary alert when top posts decay
+- **Refresh Queue** ranked by traffic at risk, with one-click AI refresh proposals that always go through the reviewed AEO apply/undo flow
+
+#### Data-Driven Topic Autopilot
+- **Weekly scout** mines GSC question queries, striking-distance keywords, and orphan pages into ranked, deduplicated topic proposals — each with a plain-English rationale
+- **Approve or dismiss on the Content Calendar** (proposals are a distinct "proposed" status), or enable **auto-promote** to queue the top proposal automatically
+
+#### Machine Access (WP Abilities API)
+- **13 governed abilities** — queue topics, generate posts, run audits, AEO scan/propose/apply/undo, add/delete redirects, and read stats — registered with the WP Abilities API (WordPress 6.9+) and exposed via REST (`/swps/v1/abilities`)
+- **Write abilities are off by default** — every ability has its own toggle, and every call (allowed or denied) lands in an activity log
+- **Standard WordPress auth** — application passwords work out of the box for external agents
+
+#### 5-Minute Onboarding
+- **Setup Wizard** — migrate from Yoast/Rank Math, validate your AI key with a live test call, AI-suggest your site description, run the first audit, and generate a preview post
+- **Dashboard setup checklist** that persists until every step is done (dismissible)
+
+#### Admin Shell & Developer Features
+- **Branded admin shell** — top bar with breadcrumb, search, help, and a per-user dark/light theme toggle; Emerald & Teal design system
+- **50+ filters and actions**, WP-CLI commands, REST API, encrypted secret storage (authenticated AES-256-GCM), a Debug page for failed AI responses, and an opt-in clean uninstall (your data survives delete + reinstall by default)
+
+---
+
+## Installation
+
+### From WordPress Admin
+1. Download the plugin ZIP file
+2. Go to **Plugins → Add New → Upload Plugin**
+3. Upload the ZIP and click **Install Now**
+4. Click **Activate**
+
+### Manual Installation
+1. Upload the `stratawp-seo` folder to `/wp-content/plugins/`
+2. Activate through the **Plugins** menu
+
+### Requirements
+- WordPress 6.0 or higher
+- PHP 8.0 or higher
+- An API key from at least one AI provider (Anthropic, OpenAI, Google, or xAI)
+
+---
+
+## Quick Start
+
+![Setup Wizard](screenshots/swps-onboarding.png)
+
+The fastest route is the **Setup Wizard** (`StrataWP SEO → Setup Wizard`) — it launches on first activation and takes about five minutes:
+
+1. **Migrate** — if Yoast or Rank Math data is detected, import it (or skip)
+2. **API key** — pick an AI provider, paste your key, and validate it with a live test call
+3. **Site info** — describe your site and audience, or let the AI suggest a description for you
+4. **First audit** — run the 10-module technical SEO audit
+5. **Preview post** — generate a sample post so you can judge the output before enabling anything automatic
+
+A setup checklist stays on the dashboard until every step is complete (dismiss it any time).
+
+Prefer to do it by hand? The manual route:
+
+1. **Add your API key** — **StrataWP SEO → Settings**, enter your AI provider API key (Anthropic recommended)
+2. **Describe your site** — fill in **Site Niche** and **Site Description** so the AI understands your audience
+3. **Set your preferences** — **Tone of Voice**, word count range, **Post Status: Draft** (recommended)
+4. **(Optional) Allow AI crawlers** — the **AI Crawlers** section is enabled by default; visit `/llms.txt` to see your generated index
+5. **Generate your first post** — **StrataWP SEO → Generate Content**, enter a topic, click **Generate**
+6. **Review & publish** — edit the generated draft in WordPress, then publish
+
+---
+
+## How-To Guide: Page by Page
+
+Every admin page in the plugin, what it does, and exactly how to use it. Pages are listed in the order they appear in the StrataWP admin sidebar.
+
+### Dashboard (`StrataWP SEO`)
+
+![StrataWP SEO dashboard](screenshots/stratawp-seo.png)
+
+The landing page. Shows site health score, recent generations, AI cost (30d), post views, top GSC queries, top issues, the **Auto-Optimize queue preview**, the **Competitor watch widget**, and the newer tiles: **Autopilot status** (enabled state, last-run health, budget spend vs cap), the **AI visibility funnel** (posts crawled → posts receiving AI visits, 30d), **AI citations** (share of voice), and **Keyword cannibalization** (open findings). Until onboarding is finished, a **setup checklist** sits at the top. Each tile links to its source page — click "Manage →" on Competitor watch to jump straight to managing tracked sites.
+
+**How to use it:** load it daily as a temperature check. The welcome line summarizes site health, fixable issues, and 30-day AI spend in one sentence. The KPI tiles use the brand emerald gradient for the four primary numbers. The modules grid at the bottom lets you toggle features on/off — turn off Sitemaps if you're using Yoast/RankMath's sitemap, for example.
+
+### Setup Wizard (`StrataWP SEO → Setup Wizard`) ★ v4.13
+
+![Setup Wizard](screenshots/swps-onboarding.png)
+
+Guided 5-step first-run flow: detect + migrate Yoast/Rank Math data, validate your AI API key with a live test call, describe your site (with an AI-suggest button), run the first audit, and generate a preview post.
+
+**How to use it:** it opens automatically after activation; you can re-run it any time from the sidebar. Each step can be completed or skipped — progress is tracked per step, and the dashboard shows a setup checklist until all five are done (or you dismiss it). The preview post is created as a draft so nothing goes live.
+
+### Settings (`StrataWP SEO → Settings`)
+
+![Settings](screenshots/swps-settings.png)
+
+The control panel — split into 7 tabs:
+
+- **AI & Content:** AI provider + API keys, model (auto-discovered daily since v4.9.0), site niche/description, writing preferences (tone, voice profile, style notes, target keywords), content settings (post status, word count, FAQ/TOC/Key Takeaways, internal links), featured & in-content images
+- **Schedule:** auto-publishing frequency, day of week, time, posts per run, the **monthly AI budget cap** (Autopilot Guardian), and **Topic Autopilot** (weekly scout + auto-promote)
+- **SEO:** audit auto-fixes + schedule, schema/structured data, SEO meta editor, head cleanup, RSS feed header/footer
+- **AI Crawlers:** allowlist of 15 known bots, llms.txt toggle, **Crawler Verification** (proxy header, spoofed-crawler 403 enforcement), and **AI Citations** (check frequency, monthly call cap, engines)
+- **Analytics:** on-site tracking, retention, exclude admins, GSC OAuth client ID/secret (stored encrypted), keyword sync frequency, the **Email Digest** (frequency, recipients, branding, AI summary, test-send), and the **Content Decay Watchdog** (threshold, minimum impressions, email alert)
+- **AEO:** score threshold, coverage scoring (1 AI call/post), dynamic schema types, post types to score, dimension weights
+- **Advanced:** default template, rate-limit cooldown, duplicate detection, cost tracking, minimum content score
+
+### Generate Content (`StrataWP SEO → Generate Content`)
+
+![Generate Content](screenshots/swps-generate.png)
+
+The main AI content generator. It writes blog posts or pages ★ v4.31.
+
+![Generate a page](screenshots/swps-generate-page.png)
+
+1. Pick **Blog post** or **Page** ★ v4.31 in the "What are you creating?" toggle. The rest of the form adapts to your choice.
+2. Describe it in **What would you like to write about?** ★ v4.30: the topic, who it's for, what to include, tone, real business facts, anything to avoid, and the call to action. Multiline is fine. It's optional, and a blank brief runs the classic topic-or-auto-pick flow.
+3. Optionally expand **Help me write my brief** for structured prompts:
+   - Target audience
+   - Content goal
+   - Key points or sections
+   - Facts or business details
+   - Things to avoid
+   - Desired call to action
+
+   Anything you fill in is added to the brief.
+4. Optionally click **Improve my brief** — one extra AI request rewrites the brief for clarity, keeps your intent and facts, never invents details (it inserts `[placeholders]` instead), and shows the proposal for review. Nothing changes until you click **Use this version**; it never writes the article.
+5. Optionally paste **Source material (optional)** ★ v4.31: up to 5 URLs and/or your own notes. See [Source material](#source-material) below for the fetch rules and limits.
+6. Optionally fill in **Title or topic (optional)**. With a brief, leaving it blank lets the AI derive the title from the brief.
+7. Pick a **Template**, a **Tone of voice**, and either a **Parent page** or a **Bulk Count**:
+   - **Template**: 8 options for posts, 5 for pages. The list swaps automatically with the content type. See [Pages vs posts](#pages-vs-posts).
+   - **Tone of voice** ★ v4.31: sits next to Template now, not inside the brief helper. Blank keeps your Settings default.
+   - **Parent page** ★ v4.31: pages only. "None (top level)" or any published/draft page.
+   - **Bulk Count**: posts only, hidden when Page is selected. Generates up to 5 posts, each on its own AI-chosen topic, ignoring the brief.
+8. Set **Images** ★ v4.31: a Featured image checkbox and an In-content images count (0-4) for this run only. See [Images per run](#images-per-run).
+
+   ![Template, tone, parent and images filled in](screenshots/swps-generate-page-options.png)
+9. Check **"What happens when you generate"**. It mirrors your live choices: where it lands, length, images, tone.
+10. Click **Preview** (no save), **Generate Post** / **Generate Page**, **Bulk Generate** (posts only), or **Analyze My Site**.
+
+    ![Live summary and generate buttons](screenshots/swps-generate-page-summary.png)
+
+The brief steers subject, angle, examples, requested sections, tone and CTA. Precedence is fixed: the response format and app rules first, then the required SEO structure and your generation settings, then the brief, source material and helper fields, then default writing preferences. Briefs are capped at 4,000 characters (1,000 per helper field), HTML is stripped, and the prompt forbids invented facts, statistics, testimonials, pricing or URLs not supplied in the brief or source material.
+
+**Tip:** if generation takes >2 min, the post is being processed in the background. Check the Calendar to see status.
+
+#### Pages vs posts
+
+| | Posts | Pages |
+|---|---|---|
+| Templates | 8: Auto, Informational, Listicle, How-To, Comparison, Case Study, News Analysis, Tutorial | 5: Auto, Service page, Landing page, About / Team, Location / area page |
+| Word range | From Settings (default 1,200-2,000) | Per template, 500-900 (About) up to 800-1,400 (Service, Location) |
+| FAQ | Follows the Settings FAQ toggle | Only Service and Location templates request one |
+| TOC / Key Takeaways | Follow their Settings toggles | Never included |
+| Category / tags | Category (fixed or AI-decided) plus tags | None |
+| Parent page | N/A | Optional; "None (top level)" by default |
+| Bulk Generate | Yes, up to 5 per click | Not available |
+| Cron / autopilot | Yes | Not available |
+
+#### Source material
+
+Paste up to 5 URLs (one per line) and/or your own notes, up to 12,000 characters in total. Generating or previewing fetches each URL in turn through WordPress' safe HTTP API:
+
+- 8-second timeout per URL, 25-second budget for the whole batch
+- Private and local addresses are rejected, including on redirects
+- Each response is capped at 1.5 MB and reduced to readable text (the article, main or body content, with scripts and navigation stripped)
+- Extracted text is trimmed to 6,000 characters per source, 20,000 for the combined block
+- Successful fetches are cached for an hour, failures for five minutes, so a quick retry doesn't refetch everything
+
+The AI is told to base its facts on this material, paraphrase rather than copy, cite each source URL as an external link, and never invent facts the material doesn't contain. Fetch failures are non-fatal: generation proceeds with whatever was fetched, or with the notes alone, and the result panel lists a **Sources** row reporting which URLs were fetched and which failed.
+
+![Result panel after a page generation, with the Sources row](screenshots/swps-generate-result.png)
+
+#### Images per run
+
+The Featured image checkbox and In-content images count (0-4) default from your Settings but apply to that run only; changing them here never changes Settings. If your configured image provider needs an API key and none is set, both controls are disabled with a link to add one. Posts created by Bulk Generate, cron, or autopilot always follow Settings.
+
+### Voice Profiles (`StrataWP SEO → Voice Profiles`)
+
+![Voice Profiles](screenshots/swps-voice-profiles.png)
+
+Reusable writing personas. Each profile sets tone, formality (1-10), preferred sentence length, vocabulary level, point of view, avoid/preferred phrases, and a sample text the AI emulates.
+
+**How to use it:**
+1. **Add new** → name it (e.g., "Friendly authority", "Conversational developer")
+2. Paste a **sample paragraph** that matches the tone you want
+3. Mark it **Default** if it should apply to every Generate without picking explicitly
+4. In Generate Content, the dropdown lets you override per-post
+
+### SEO Audit (`StrataWP SEO → SEO Audit`)
+
+![SEO Audit](screenshots/swps-seo-audit.png)
+
+10-module technical SEO check. Each module reports pass/warn/critical with auto-fix where possible.
+
+**How to use it:**
+1. Click **Run audit now** — takes 2-10 seconds
+2. Each module card shows status; click **Auto-fix** on any module that has it (canonical, OG, Twitter, sitemap)
+3. **CSV export** for client reporting
+
+Schedule daily/weekly/monthly runs from **Settings → SEO tab**. The dashboard widget shows the latest health score.
+
+### Site Crawl (`StrataWP SEO → Site Crawl`) ★ v4.19
+
+![Site Crawl](screenshots/swps-site-crawl.png)
+
+Crawls your own site the way a search engine would and queues fixable issues.
+
+**How to use it:**
+1. Check the **settings card** — internal page cap (default 500), external link-check cap (default 200), politeness delay, and the **weekly re-crawl** toggle
+2. Click **Start crawl** — runs in AJAX chunks with live progress; you can leave the tab open while it works
+3. Review the **issues table** — 8 issue types: broken links, redirect chains, redirect loops, canonical mismatches, missing H1, duplicate H1s, mixed content (http assets on https pages), and noindexed URLs still in the sitemap
+4. Use the **one-click fixes** on each row: **Create redirect** (broken internal links), **Exclude from sitemap** (noindexed pages), or **Ignore host** (external false positives)
+5. The latest run also appears as a read-only **Site Crawl** module inside the SEO Audit, so crawl health counts toward your site score
+
+### Site Audit (`StrataWP SEO → Site Audit`) ★ v4.27
+
+![Site Audit dashboard](screenshots/swps-site-audit.png)
+
+A crawl-based audit of your rendered site — ~25 checks (missing/duplicate titles and descriptions, viewport/doctype/charset/lang, bot-challenge detection, unminified assets, word count, hreflang, orphan pages, mixed content, internal nofollow links, missing image alt text, noindexed-but-sitemapped pages, and more) rolled up into a 0-100 health score, with error/warning/notice triage and crawl-over-crawl trends.
+
+**How to use it:**
+1. Click **Run audit now** — the crawler covers every public URL, including term archives and pagination, and audits noindexed pages for head integrity
+2. Each issue group shows its severity, affected page count, and a **How to fix** note; every affected row records which post, term, or author archive it belongs to
+
+#### Fix-It: fix issues without leaving the dashboard
+
+![Fix-It review](screenshots/swps-fixit-review.png)
+
+Fixable issue groups get a one-click path from "found" to "fixed," right on the audit dashboard:
+
+3. **AI-drafted fixes** — for missing, duplicate, too-long, and too-short meta titles and descriptions, click **✨ Fix with AI**. It drafts replacements for the whole group in chunks (you'll see a live "Drafting… (n)" count), then opens a **review table** listing each page's **current** value next to the **proposed** one, with a checkbox per row (all checked by default)
+4. Uncheck anything you don't want, then click **Apply selected** to write the accepted drafts — or **Dismiss all** to discard the batch without applying it
+5. **Mechanical fixes** — mixed-content URLs, internal nofollow links, missing image alt text, and noindexed-but-sitemapped pages don't need review; click **Fix now** on the group and it applies to every fixable row in the group immediately
+6. Every applied fix snapshots the previous value first: fixed rows show a ✓ marker with an **Undo** button that restores the previous value, so nothing is destructive
+7. Once a group has fixes applied, the dashboard shows a **projected health score** for the next crawl; click **Run audit now** again to re-crawl and confirm the real score
+8. Rows with no linked post or term (e.g. a category archive issue with nothing to edit) are called out as not auto-fixable — fix those by hand using the issue's **How to fix** note
+
+### Search Appearance (`StrataWP SEO → Search Appearance`)
+
+![Search Appearance](screenshots/swps-search-appearance.png)
+
+Controls how titles and descriptions appear in search results.
+
+**How to use it:**
+1. Set **separator** (`|`, `–`, `·`, etc.)
+2. Edit per-content-type templates with variables: `%title%`, `%sitename%`, `%sep%`, `%category%`, `%author%`, `%date%`, etc.
+3. Per-post overrides are still available in the post editor's **SEO Meta Editor** metabox
+
+### Redirects (`StrataWP SEO → Redirects`)
+
+![Redirects](screenshots/swps-redirects.png)
+
+Manages 301/302/307/410 redirects and 404 monitoring.
+
+**How to use it:**
+1. **Add a redirect:** From URL → To URL → pick status code → Save
+2. **Regex tab** for pattern-based redirects (`^/old/(.*)$ → /new/$1`)
+3. **404 Log tab:** every unhandled 404 shows up here; click **Create redirect** to fix it in one click
+4. **Auto-redirect on slug change:** enabled by default — when you change a post's slug, a redirect from the old slug is created automatically
+
+### Migrate (`StrataWP SEO → Migrate`) ★ v4.4
+
+![Migration tool](screenshots/swps-migration.png)
+
+One-click import from Yoast SEO or Rank Math. Lives at `admin.php?page=swps-migration`.
+
+**How to use it:**
+1. The page auto-detects installed sources and shows how many posts have SEO data for each (if neither plugin left data behind, it says there is nothing to migrate).
+2. Pick the **Source**, then tick what to migrate: **per-post SEO meta** (titles, descriptions, focus keyword, canonical, breadcrumb title, social overrides), **global settings** (title separator, title templates, archive noindex flags), and **redirects** (Yoast Premium / Rank Math Pro — 301/302/307/410, regex sources kept as regex).
+3. Choose the **conflict policy** — *Skip* (keep existing StrataWP values, default) or *Overwrite* (a backup of overwritten values is kept).
+4. Click **Preview** for a dry run (posts scanned, fields/settings/redirects that would be written), then **Run migration**.
+5. **Undo last migration** restores overwritten values; imported redirects are deleted on undo.
+
+### Debug (`StrataWP SEO → Debug`)
+
+![Debug page](screenshots/swps-debug.png)
+
+Shows the **last failed AI response** captured by the JSON parser (the page title is "Debug — Last AI Failure"). If a generation errored, this is the first place to look.
+
+**How to use it:** the page shows the most recent failure automatically — Time, Error, and response Length, plus the full **Raw response** in a read-only textarea. If nothing has failed recently you'll see "No recent failures." Click **Clear** to discard the stored failure once you've diagnosed it.
+
+### Content Calendar (`StrataWP SEO → Content Calendar`)
+
+![Content Calendar](screenshots/swps-calendar.png)
+
+Visual month-view of every scheduled and generated post. Color-coded by status (draft, scheduled, published). Click any cell to see the post detail or jump to the editor.
+
+**How to use it:** click any date to open the **topic form** (Topic/Headline, Scheduled Date, Content Template, Notes) — entries become the auto-publish queue. Add 10-20 topics with target dates, set **Settings → Schedule** to Daily/Weekly/etc., and the cron generates posts automatically, marking each queue entry as used. You can also manage the queue with `wp swps queue list|add|remove|clear` or the REST `/queue` endpoints. Drag-and-drop is not supported (yet) — to reschedule, edit the post and change its date.
+
+**Proposed topics (Topic Autopilot) ★ v4.19:** when the weekly scout is enabled (Settings → Schedule → Topic Autopilot), data-backed topic proposals appear on the calendar in their own "proposed" color with the rationale that produced them (an unanswered GSC question, a striking-distance keyword, or an orphan page). Click a proposal to **Approve** it (it becomes a normal queued topic) or **Dismiss** it. With **auto-promote** enabled, the top proposal each week is queued automatically.
+
+### Analytics (`StrataWP SEO → Analytics`)
+
+![Analytics](screenshots/swps-analytics.png)
+
+Cookie-free on-site analytics + GSC dashboard.
+
+**How to use it:**
+1. **Date range filter** at the top: 7 / 30 / 90 days
+2. **Top stats:** Pageviews, Unique visitors, Avg time, Bounce rate
+3. **Charts:** Pageviews over time, top posts, top referrers
+4. **GSC tab:** clicks, impressions, CTR, position (requires OAuth setup — see below)
+5. **AI Crawlers section:** total bot hits with delta, per-bot breakdown, top crawled pages, AEO gap report, recent bot 404s. Search bots (Googlebot, bingbot, Applebot, YandexBot, DuckDuckBot) are tracked here too, each hit verified against published IP ranges — spoofed hits are flagged, and daily reconciliation notices appear when spoofing spikes
+6. **AI Referrals section ★ v4.14:** human visits arriving from ChatGPT, Perplexity, Claude, Gemini, Copilot and others — engine trend chart, top landing posts, and engagement vs organic comparison
+7. **Crawl Budget by Post Type (30d) ★ v4.19:** where verified search bots actually spend their crawl budget, broken down by post type, so you can spot over-crawled archives and under-crawled money pages
+
+**Connecting Google Search Console:**
+1. **Settings → Analytics tab:** paste GSC OAuth client ID + secret (redirect URI shown in the field description)
+2. **Analytics page:** click **Connect Search Console** in the page header → sign into Google → confirm scope → you land back on Settings with a connected notice
+3. Back on the Analytics page, a notice lists your verified GSC properties — pick one from the dropdown and click **Save**
+4. Data syncs on the configured Keyword Sync Frequency and surfaces in Dashboard, Analytics, and Keywords
+
+### Keywords (`StrataWP SEO → Keywords`)
+
+![Keywords and AI Citations](screenshots/swps-keywords.png)
+
+Keyword research + rank tracking.
+
+**How to use it:**
+1. **Generate keywords:** enter a seed topic, AI suggests 10-50 related keywords
+2. **Track keywords:** add to the watchlist — GSC syncs daily and shows position trends
+3. **Striking distance:** the "8-20" tab surfaces ranking opportunities — keywords you're already on page 2 for that could be pushed to page 1 with light optimization
+4. **AI Citations card ★ v4.16:** track whether ChatGPT, Claude, Gemini, and Grok cite your site. Add prompts manually or **seed from your tracked keywords / GSC queries**, pick the engines to check (Settings → AI Crawlers → AI Citations; bring your own keys), and click **Run checks**. Each prompt shows per-engine state badges (cited / lost / never / mixed), a share-of-voice bar vs competitor domains, and a cited-domains breakdown. Checks are search-grounded and counted against a monthly call cap (default 200) so spend stays bounded
+
+### Keyword Cannibalization (`StrataWP SEO → Keyword Cannibalization`) ★ v4.19
+
+![Keyword Cannibalization](screenshots/swps-cannibalization.png)
+
+Finds queries where two or more of your posts split impressions and clicks in Google Search Console — usually a sign they're competing against each other.
+
+**How to use it:**
+1. Findings are produced by a weekly GSC scan (you can also trigger a scan from the page). Each finding shows the query, the **winner** (strongest post), the **losers**, and an estimated traffic impact based on an expected CTR-by-position curve
+2. Pick a resolution per finding:
+   - **Consolidate** — creates a 301 redirect from the loser to the winner via the Redirect Manager. **Undoable** — the redirect is tracked and can be reverted in one click
+   - **Differentiate** — keep both posts but re-target the loser at a different keyword (links you into the editing flow)
+   - **Canonicalize** — point the loser's canonical URL at the winner without redirecting
+3. **Dismiss** findings you've judged intentional. Already-consolidated findings can't be double-consolidated
+4. The dashboard tile shows the open-findings count
+
+### Sitemaps (`StrataWP SEO → Sitemaps`)
+
+![Sitemaps](screenshots/swps-sitemaps.png)
+
+Configures `/sitemap_index.xml` and sub-sitemaps.
+
+**How to use it:**
+1. **Settings tab:** toggle individual post types/taxonomies in/out of the sitemap, set per-type priority and changefreq
+2. **IndexNow panel:** enable IndexNow, generate the verification key (served at `/{key}.txt`), and pick which post types auto-submit on publish/update. The **Resubmit All URLs** button re-queues every indexable URL for submission to Bing, Yandex, Seznam, and Naver (Bing's feed powers ChatGPT search; Google does not participate). Submissions are automatically paused on non-production environments.
+3. **View raw:** click "View sitemap" to see the live XML
+
+### Internal Links (`StrataWP SEO → Internal Links`)
+
+![Internal Links](screenshots/swps-internal-links.png)
+
+Suggests internal links from existing posts to other relevant posts on your site. Two engines:
+
+- **Keyword engine:** finds anchor opportunities by keyword match
+- **AI engine:** uses your AI provider for semantic suggestions
+
+**How to use it:**
+1. Pick a target post
+2. Click **Find suggestions** — engine returns candidate anchors with confidence scores
+3. Accept or skip each one — accepted links are inserted into the post body
+
+### Auto-Optimize (`StrataWP SEO → Auto-Optimize`) ★ v4.1
+
+![Auto-Optimize](screenshots/swps-auto-optimize.png)
+
+Finds underperforming published posts, generates AI proposals to fix them, and applies the edits with one click. Manual review queue — every edit is reviewed before it touches your content.
+
+**How to use it:**
+1. Click **Re-scan all posts** — scores all published posts/pages in batches of 10 (live progress bar). Posts below the threshold (default 75) appear in the queue.
+2. For each row, click **Generate proposal** — AI returns 2-6 concrete `find/replace` edits, plus optional new meta title/description and focus keyword, plus a projected score
+3. Click **Review** on a proposal — see the diff (red = old, green = new), check/uncheck individual edits, click **Apply selected edits**
+4. Re-score happens automatically after apply — you'll see the new score
+
+**Threshold tuning:** raise the threshold (e.g. 85) to surface more posts, lower it (e.g. 50) to focus only on the worst.
+
+**Dismissing:** the trash icon hides a post from the queue permanently (snapshot history is kept).
+
+### AEO Optimize (`StrataWP SEO → AEO Optimize`) ★ v4.6
+
+![AEO Optimize](screenshots/swps-aeo-optimize.png)
+
+Scores posts on 4 AI-citeability dimensions — Extractability, Markup, Authority, Coverage — and fixes weak ones with AI proposals. Lives at `admin.php?page=swps-aeo-optimize`.
+
+**How to use it:**
+1. Click **Re-scan all posts** — scores the configured post types in AJAX batches with a live progress bar. The tiles update with Scored / Below threshold / Avg score / Weakest dimension, and the queue persists across visits (scored posts reload from post meta).
+2. Use the **Threshold** (50-95, default 70) and **Post type** filters to focus the queue on the worst offenders.
+3. For each row, click **Generate proposal** — the AI returns concrete content edits plus optional JSON-LD (HowTo, Recipe, Product, Review, FAQPage).
+4. Click **Review** — a modal shows the diff; apply with one click. **Undo** restores the pre-apply snapshot; dismiss hides a row from the queue.
+5. The same AEO score appears live in the post editor (Gutenberg sidebar panel + classic metabox).
+
+**Cost note:** the Coverage dimension uses one AI call per post (~$0.001-$0.003) — toggle it in **Settings → AEO**. Dynamic schema output defers automatically when Yoast / RankMath / AIOSEO is active.
+
+**What's new in the queue and editor panel:** the Coverage dimension now produces a **sub-question checklist** (the fan-out questions an answer engine would ask, marked answered / partial / missing); the editor panel also lists **unanswered searcher questions** mined from GSC (real question queries your page gets impressions for but doesn't answer) and feeds them into Q&A proposal inserts; queue rows carry **crawl recency and AI-visit columns** so you can prioritize posts AI engines already look at; and **lost citations** from the citation tracker appear as context on affected posts.
+
+### Refresh Queue (`StrataWP SEO → Refresh Queue`) ★ v4.18
+
+![Refresh Queue](screenshots/swps-refresh-queue.png)
+
+The content decay watchdog's work queue: posts losing search clicks, ranked by traffic at risk.
+
+**How to use it:**
+1. A weekly scan compares each post's rolling 28-day GSC window to the previous one. Posts declining past your threshold (default 20%, with a 200-impression floor — both in **Settings → Analytics**) are flagged with a heuristic cause: position drop, demand drop, CTR drop, or staleness
+2. Each row shows **clicks and AEO-score sparklines** so you can see the shape of the decline
+3. Click **Generate refresh proposal** — the AI proposes content updates targeted at the decay cause, reviewed in the same diff modal as AEO Optimize (apply with snapshot, undo any time)
+4. **Dismiss** rows you don't want refreshed; dismissals have a cooldown so the same post doesn't instantly re-flag
+5. Optional **email alert** (Settings → Analytics) sends a one-email summary when top posts decay
+
+### Competitors (`StrataWP SEO → Competitors`) ★ v4.1
+
+![Competitors](screenshots/swps-competitors.png)
+
+Tracks competitor sites for content velocity, schema diff, title/H1 changes.
+
+**How to use it:**
+1. Click **Add competitor** → paste the URL → optional label → Save
+2. Click **Scan now** on the row — fetches their RSS (auto-discovered or common-path), homepage, and falls back to sitemap.xml if no feed
+3. Daily WP-cron auto-rescans every tracked site
+4. **+N new** pill on a row indicates new posts since last scan (click to expand the list)
+5. **Schema:** chips show their JSON-LD types; new types are highlighted with a `+ NEW` indicator
+6. **Title/H1 changed** pills appear when their homepage `<title>` or `<h1>` flipped between scans
+7. Source pill (RSS / SITEMAP) shows which data source the scan succeeded with
+
+**Limit:** 10 competitors. **Storage:** last 12 snapshots per competitor (~12 days of daily history). **Out of scope:** keyword-gap analysis (needs paid backlink API).
+
+### Local SEO (`StrataWP SEO → Local SEO`) ★ v4.2
+
+![Local SEO](screenshots/swps-local-seo.png)
+
+LocalBusiness JSON-LD output for brick-and-mortar and service-area sites. Lives at `admin.php?page=swps-local-seo`.
+
+**How to use it:**
+1. Tick **Enable Local SEO schema output** at the top of the page. Schema only emits when this is on AND a business name + city are filled.
+2. Pick the most specific **Business type** that matches your business — Restaurant, Plumber, Dentist, Hotel, etc. (defaults to generic LocalBusiness). The picker covers 30+ schema.org sub-types.
+3. Fill **Business identity**: name, phone, email, price range (`$`/`$$`/`$$$`/`$$$$` or a range like `$10-30`).
+4. Fill **Address** fields: street, city, state/region, postal code, country (two-letter ISO preferred — `US`, `GB`, `AU`).
+5. **Map & geo (optional but recommended for ranking):** open Google Maps, right-click your location, click the lat/lng to copy, paste into the Latitude/Longitude fields. Optionally paste your **Google Place ID** to emit a `hasMap` link.
+6. **Opening hours:** for each day, set Open and Close in 24-hour format (`09:00`, `17:30`), or tick **Closed** for off-days. Days without hours are omitted from the schema.
+7. **Area served** (service-area businesses): paste one city/region per line, up to 25.
+8. Click **Save**. A **Schema preview** card renders at the bottom showing the exact JSON-LD that will be injected into your homepage `<head>`.
+9. Verify the live output with Google's [Rich Results Test](https://search.google.com/test/rich-results) once the homepage is published.
+
+**Coexistence:** if Yoast / RankMath / AIOSEO are active, StrataWP defers all schema output to them — turn this off and use their LocalBusiness panel instead.
+
+### Image SEO (`StrataWP SEO → Image SEO`) ★ v4.2
+
+![Image SEO](screenshots/swps-image-seo.png)
+
+Auto-fills missing alt text, sanitizes filenames on upload, and enforces lazy-loading. Lives at `admin.php?page=swps-image-seo`.
+
+**How to use it:**
+1. Open the page — the **stats tiles** at the top show total library size, count missing alt text, % covered, and current auto-alt mode.
+2. **Bulk fix existing library:** click the **Fix missing alt text** button to write alt for every image that doesn't have any. Runs in 20-image batches via AJAX so you can leave the tab open while it works. Uses the auto-alt mode you have selected below.
+3. **Auto-alt on upload** card:
+   - Tick **Generate alt text automatically when an image is uploaded** to enable.
+   - Pick **Heuristic** (free, instant — derives alt from filename + parent post title) or **AI** (sends filename + post context to your configured AI provider for a one-line description; falls back to heuristic on error or quota).
+4. **Filename sanitization** card: tick to clean filenames on upload — `IMG_4523 Vacation.JPG` becomes `vacation.jpg`. Strips device prefixes (`IMG_`, `DSC_`, `DSCN`, `Screenshot`, etc.).
+5. **Lazy loading** card: tick to add `loading="lazy" decoding="async"` to any post-content `<img>` still missing those attributes. Improves Core Web Vitals.
+6. Click **Save Image SEO settings**.
+
+**Tips:** AI mode costs a fraction of a cent per image (one short call to your configured provider). For most sites, Heuristic mode is plenty good — it's especially strong when your filenames already have meaningful slugs (e.g. `seo-checklist-2026.jpg`).
+
+### Backlinks (`StrataWP SEO → Backlinks`) ★ v4.2
+
+![Backlinks](screenshots/swps-backlinks.png)
+
+Tracks pages that link to your site, with daily health monitoring. Lives at `admin.php?page=swps-backlinks`. No paid backlink index required.
+
+**How to seed your initial list:**
+- **Option A — manual:** use the **Add backlink** form. Paste the source URL (the page linking to you), optionally the target URL on your site and the anchor text, then click **Add & verify**. The page is fetched immediately so you see Live/Lost/Broken right away.
+- **Option B — CSV import (recommended):**
+  1. Go to Google Search Console → **Links** → **Top linking sites** → click the export button → save as CSV.
+  2. In the **Bulk import** card, paste the CSV (or just one URL per line) into the textarea.
+  3. Click **Import**. Existing source URLs are skipped automatically. The page reloads with the new rows pending verification.
+  4. Click **Verify all** in the page header to fetch every imported row in 25-row AJAX batches.
+
+**How rows get classified:**
+- **Live** (green) — page loaded and contains at least one `<a href="...">` whose href hostname matches yours
+- **Lost** (amber) — page loaded fine but no link to your site is on it any more
+- **Broken** (red) — page returned an HTTP error (4xx/5xx) or timed out; the HTTP code shows in the pill
+
+**Daily routine:**
+- A WP-cron job (`swps_backlinks_daily_verify`) re-checks every backlink once per day with 250ms politeness delays between requests
+- Anchor text + first/last-seen dates update automatically when a link is found
+- Use the **Lost** count as a link-reclamation list — those are sites that used to link to you and now don't
+
+**Per-row controls:** ⟳ re-verifies one row immediately; ✕ deletes it (history is gone — use Export CSV first if you want a backup).
+
+**Export:** the **Export CSV** button in the page header downloads everything (source, target, anchor, status, http code, first seen, last seen, last checked) — useful for offline analysis or migrating to another tool.
+
+**What this is NOT:** this does not *discover* new backlinks (no paid web index). It tracks the list you give it. To discover new ones, paste the GSC export periodically — that's GSC's view of who links to you.
+
+### Crawlers & Files (`StrataWP SEO → Crawlers & Files`) ★ v4.2
+
+![Crawlers and Files](screenshots/swps-crawl-files.png)
+
+Edits the dynamic `/llms.txt` and `/robots.txt` files served by your site. Lives at `admin.php?page=swps-crawl-files`.
+
+**How to use the /llms.txt editor:**
+1. Pick a **mode**:
+   - **Auto** — serve the StrataWP-generated default (built from your most recent 100 posts, top-level pages, and busiest 20 categories with one-line summaries). This is the recommended default.
+   - **Custom** — serve the markdown you paste below, verbatim.
+2. The page shows two textareas side-by-side: **Your llms.txt** (editable) on the left and **Auto preview** (read-only) on the right.
+3. Click **↑ Copy auto-generated content into the editor** to start from the auto version, then tweak.
+4. Save — visit `/llms.txt` or click **View /llms.txt** in the page header to confirm.
+
+**How to use the /robots.txt editor:**
+1. If a physical `robots.txt` exists in your site root, you'll see a warning — that file always overrides the WordPress dynamic version. Delete it to use the editor.
+2. Pick a **mode**:
+   - **Auto** — what WordPress would normally serve, plus the AI-bot Allow/Disallow rules StrataWP adds.
+   - **Append** — Auto + your extra rules (good for adding `Disallow: /private/` or extra `Sitemap:` entries).
+   - **Replace** — serve only your content (full manual control — be careful, since this skips the AI-bot rules).
+3. Edit your version on the left; auto preview is on the right; "copy auto into editor" works the same way.
+4. Save — visit `/robots.txt` or click **View /robots.txt** to confirm.
+
+**Tip:** Append mode is the safest middle ground for most sites — keeps the StrataWP-managed AI bot allowlist intact while letting you add custom rules.
+
+### Machine Access (`StrataWP SEO → Machine Access`) ★ v4.19
+
+![Machine Access](screenshots/swps-machine-access.png)
+
+Governs what AI agents and external tools may do on your site through the plugin's 13 abilities — registered with the WP Abilities API on WordPress 6.9+ and always available over REST.
+
+**How to use it:**
+1. Each ability has its own toggle. **Read abilities** (audit results, bot stats, keyword positions, decay queue) are on by default; **write abilities** (queue topics, generate posts, run audits, AEO apply, redirects) are **off by default** — enable only what your agent needs
+2. Point your agent at the REST endpoints: `GET /wp-json/swps/v1/abilities` for discovery (names, descriptions, input/output schemas, enabled state) and `POST /wp-json/swps/v1/abilities/{name}/run` to execute. Authenticate with a WordPress **application password**
+3. The **activity log** on the page records every call — who, which ability, and the outcome (including denied calls), so you can audit what an agent actually did
+4. Disabled or invalid calls fail cleanly with a structured error; inputs are validated against each ability's schema before anything runs
+
+---
+
+## Configuration Guide
+
+All settings live under **StrataWP SEO → Settings**, split into 7 tabs: **AI & Content**, **Schedule**, **SEO**, **AI Crawlers**, **Analytics**, **AEO**, and **Advanced**. The subsections below follow the tab and section order of the actual page.
+
+Two features keep their settings on their own pages: **Machine Access** (per-ability toggles + activity log, `StrataWP SEO → Machine Access`) and the **Site Crawler** (page caps, politeness delay, weekly re-crawl — a settings card on the Site Crawl page).
+
+### AI Provider (AI & Content tab)
+
+| Setting | Description |
+|---|---|
+| **AI Provider** | Anthropic (Claude), OpenAI (GPT), Google (Gemini), or xAI (Grok) |
+| **API Key** | Per-provider; only the active provider's key is required |
+| **AI Model** | Auto-updates when you switch providers |
+
+**AI Model** — the dropdown is populated dynamically. Since v4.8.0/v4.9.0, models are auto-discovered daily from each configured provider's API (Anthropic, OpenAI, Google, xAI) and refreshed live; newly released models appear automatically with a dismissible new-model alert. Labels such as *Most powerful*, *Cheapest*, *Costs most*, and *Best value* are computed from live data, Google's list is filtered to text-generation models, and newly discovered models are priced automatically for cost tracking via family heuristics.
+
+The plugin handles model-specific quirks automatically — for example, Claude 4.6+ models do not support assistant prefill, so the JSON-coercion prefill is disabled for those.
+
+### Site Details (AI & Content tab)
+
+| Setting | Description |
+|---|---|
+| **Site Niche** | Your industry or topic area |
+| **Site Description** | Detailed description of your site, audience, and unique value proposition |
+
+### Writing Preferences (AI & Content tab)
+
+| Setting | Description |
+|---|---|
+| **Tone of Voice** | Professional, Conversational, Friendly, Authoritative, Casual, Formal, Witty. This is the default; Generate Content's Tone of voice selector ★ v4.31 can override it for a single run |
+| **Voice Profile** | Reusable persona (manage under StrataWP SEO → Voice Profiles); overrides tone/style |
+| **Custom Style Notes** | Free-text instructions ("Use short paragraphs, avoid jargon") |
+| **Target Keywords** | Comma-separated keywords woven into generated content + used by the keyword link engine |
+
+### Content Settings (AI & Content tab)
+
+| Setting | Description |
+|---|---|
+| **Post Status** | Draft (recommended), Pending Review, or Published |
+| **Post Author** | WordPress user assigned as author |
+| **Default Category** | Fixed category, or AI-decided |
+| **Word Count** | Min (300-5000) and max (500-8000) targets |
+| **Internal Links** | Min and max number of links to existing posts |
+| **FAQ Section** | Generate FAQ with `FAQPage` schema for rich snippets |
+| **Table of Contents** | Linked TOC at the top of each post |
+| **Key Takeaways** | Bullet-point summary with optional `ItemList` schema |
+
+### Featured Images (AI & Content tab)
+
+| Setting | Description |
+|---|---|
+| **Auto Featured Images** | Fetch a relevant image per post |
+| **Image Provider** | Unsplash, Pexels, Pixabay (free stock), or Gemini (AI-generated) |
+| **In-Content Images** | Insert contextual images within the post body |
+| **Images Per Post** | Number of in-content images (1-4) |
+| **Image Max Width** | Maximum width in pixels (600-2400) |
+
+These are the defaults. Generate Content's Featured image checkbox and In-content images count ★ v4.31 start from these settings but can be changed per run without touching Settings; posts created by Bulk Generate, cron, or autopilot always follow the settings above.
+
+### Auto-Publishing Schedule (Schedule tab)
+
+| Setting | Description |
+|---|---|
+| **Enable** | Turn on scheduled generation |
+| **Frequency** | Daily, twice weekly, three times weekly, weekly, biweekly, monthly |
+| **Day of Week** | Starting day for the schedule |
+| **Time** | Time of day to run |
+| **Posts Per Run** | 1-5 posts per scheduled run |
+| **Monthly AI budget (USD)** | Autopilot Guardian cap on AI spend per calendar month (0 = unlimited). A dismissible warning shows at 80%; at the cap, generation pauses until the month rolls over |
+
+### Topic Autopilot (Schedule tab)
+
+| Setting | Description |
+|---|---|
+| **Enable Topic Scout** | Weekly scan of Search Console questions, striking-distance keywords, and orphan pages that produces ranked topic proposals on the Content Calendar (on by default) |
+| **Auto-promote top proposal** | Automatically queue the highest-ranked proposal each week instead of waiting for manual approval (off by default) |
+
+### SEO Audit (SEO tab)
+
+| Setting | Description |
+|---|---|
+| **Auto Canonical Tags** | Add canonical tags where missing |
+| **Auto OG/Twitter Tags** | Output OG and Twitter Card meta |
+| **Sitemap Generation** | Generate XML sitemap (auto-disabled if another sitemap plugin is active) |
+| **Audit Schedule** | Daily, weekly, monthly |
+
+### Schema / Structured Data (SEO tab)
+
+| Setting | Description |
+|---|---|
+| **Enable Schema Markup** | Output JSON-LD (auto-disabled when Yoast/RankMath/AIOSEO active) |
+| **Article Type** | Article, BlogPosting, or NewsArticle |
+| **Sitelinks Searchbox** | Add `SearchAction` for Google sitelinks |
+| **Site Represents** | Organization or Person |
+| **Name** | Defaults to site name |
+| **Logo URL** | Min 112x112px |
+| **Social Profiles** | One URL per line — populates `sameAs` |
+
+### SEO Meta Editor (SEO tab)
+
+| Setting | Description |
+|---|---|
+| **Meta Editor Enabled** | Enable/disable the metabox on post edit screens |
+| **Meta Editor Post Types** | Comma-separated post types (default `post,page`) |
+| **Auto-Generate Meta** | Auto-generate meta title/description on publish |
+
+### Head Cleanup (SEO tab)
+
+| Setting | Description |
+|---|---|
+| **Remove WP Generator Tag** | Strip the WordPress version meta tag |
+| **Remove RSD/EditURI Link** | Strip the Really Simple Discovery link |
+| **Remove Windows Live Writer Link** | Strip the WLW manifest link |
+| **Remove Shortlink** | Strip the `rel=shortlink` header link |
+| **Remove REST API Link** | Strip the `api.w.org` discovery link |
+| **Remove oEmbed Discovery** | Strip oEmbed discovery links |
+| **Remove Emoji Scripts & Styles** | Drop the emoji detection script + styles |
+
+### RSS Feed (SEO tab)
+
+| Setting | Description |
+|---|---|
+| **Content Before Post in RSS** | HTML/text injected before each post in feeds |
+| **Content After Post in RSS** | HTML/text injected after each post (e.g. attribution link to deter scrapers) |
+
+### AI Crawlers (AI Crawlers tab)
+
+| Setting | Description |
+|---|---|
+| **Allowed AI Bots** | Multi-checkbox of 15 known crawlers. Allowed bots get an explicit `Allow: /` rule in robots.txt; unchecked known bots get `Disallow: /` |
+| **Generate llms.txt** | Serve a dynamic `llms.txt` at `/llms.txt` (overrides Yoast/other plugin output) |
+
+### Crawler Verification (AI Crawlers tab)
+
+| Setting | Description |
+|---|---|
+| **Proxy header** | How to read the client IP: None (REMOTE_ADDR), Cloudflare (CF-Connecting-IP), or X-Forwarded-For (first IP). Set only behind a trusted reverse proxy — the wrong setting allows IP spoofing |
+| **Enforcement bots** | Which search bots may receive a 403 when verified-spoofed (default: none) |
+| **Block Spoofed Crawlers** | Master toggle (off by default) for 403 enforcement at `template_redirect`. Fail-open: unverifiable hits always pass through, so a stale IP list can never block the real Googlebot |
+
+### AI Citations (AI Crawlers tab)
+
+| Setting | Description |
+|---|---|
+| **Check Frequency** | How often the cron runs your tracked prompts against the enabled engines |
+| **Monthly Call Cap** | Hard ceiling on citation-check API calls per month (default 200) |
+| **Engines** | Which of ChatGPT, Claude, Gemini, and Grok to query (bring your own key per engine; defaults to your configured text provider) |
+
+### Analytics (Analytics tab)
+
+| Setting | Description |
+|---|---|
+| **Enable On-Site Tracking** | Cookie-free pageview/engagement tracking |
+| **Data Retention** | 30, 90, 180, or 365 days |
+| **Exclude Admins** | Don't track logged-in admins |
+| **Google OAuth Client ID/Secret** | For Search Console (secret stored encrypted) |
+| **Keyword Sync Frequency** | How often tracked keyword positions sync from Google Search Console (daily / weekly / monthly; default weekly) |
+
+### Email Digest (Analytics tab)
+
+| Setting | Description |
+|---|---|
+| **Enable Digest** | Turn the white-label report email on |
+| **Frequency** | Daily, weekly (default), or monthly |
+| **Recipients** | One email per line (defaults to the admin email) |
+| **Logo URL / Accent Color / Footer Text** | White-label branding for agency reports |
+| **AI Executive Summary** | Prepend a short AI-written summary (one AI call per digest) |
+
+A **Send test digest** link in the section header emails the current report to you immediately.
+
+### Content Decay Watchdog (Analytics tab)
+
+| Setting | Description |
+|---|---|
+| **Click decline threshold** | Percentage drop between rolling 28-day GSC windows that flags a post (default 20%) |
+| **Minimum impressions (prior window)** | Ignore posts below this impression floor to avoid noise (default 200) |
+| **Decay alert email** | One-email summary when top posts decay (on by default) |
+
+### AEO Optimize (AEO tab)
+
+| Setting | Description |
+|---|---|
+| **Score threshold** | 50-95 (default 70) — posts scoring below appear in the AEO Optimize queue |
+| **Coverage scoring** | Enable the Coverage dimension — one AI call per scored post builds the query fan-out sub-question checklist (about $0.001-$0.003 each, cached by content hash) |
+| **Dynamic schema types** | Which JSON-LD types the renderer emits: HowTo, Recipe, Product, Review, FAQPage. Defers automatically when Yoast / RankMath / AIOSEO is active |
+| **Post types to score** | AEO scoring only runs on the selected post types (default `post`, `page`) |
+| **Dimension weights** | Relative weights for Extractability / Markup / Authority / Coverage (defaults 0.30 / 0.30 / 0.20 / 0.20) |
+
+### Advanced Settings (Advanced tab)
+
+| Setting | Description |
+|---|---|
+| **Default Template** | Default content format |
+| **Rate Limit** | Cooldown in seconds between generations |
+| **Duplicate Detection** | Block posts too similar to existing content |
+| **Cost Tracking** | Track tokens + estimated USD per generation |
+| **Min Content Score** | Posts scoring below are forced to draft (0 disables) |
+| **Remove Data on Uninstall** | Off by default: deleting the plugin keeps your settings, tables, topics, and analytics so a reinstall picks up where you left off. Enable for a full wipe on uninstall |
+
+---
+
+## Admin Pages
+
+| Page | Path | Purpose |
+|---|---|---|
+| Dashboard | `stratawp-seo` | Landing page: health score, KPI tiles, AEO health, modules grid |
+| Setup Wizard | `swps-onboarding` | Guided 5-step first-run setup |
+| Settings | `swps-settings` | All plugin configuration |
+| Generate Content | `swps-generate` | One-off post generation UI |
+| Voice Profiles | `swps-voice-profiles` | Manage reusable personas |
+| SEO Audit | `swps-seo-audit` | 10-module audit results + auto-fix |
+| Site Audit | `swps-site-audit` | Crawl-based check suite (~25 checks) + health score + Fix-It engine (AI-drafted and mechanical one-click fixes) |
+| Site Crawl | `swps-site-crawl` | Politeness-capped self-crawl with issue queue + one-click fixes |
+| Search Appearance | `swps-search-appearance` | Title/description templates |
+| Redirects | `swps-redirects` | Redirect manager + 404 log |
+| Migrate | `swps-migration` | Import settings + per-post meta + redirects from Yoast / Rank Math |
+| Debug | `swps-debug` | Last failed AI response viewer |
+| Content Calendar | `swps-calendar` | Visual content calendar + topic queue form |
+| Analytics | `swps-analytics` | Unified dashboard |
+| Keywords | `swps-keywords` | Keyword research + GSC tracking + AI citations card |
+| Keyword Cannibalization | `swps-cannibalization` | GSC split-query findings: consolidate / differentiate / canonicalize |
+| Sitemaps | `swps-sitemaps` | Sitemap status + IndexNow ping |
+| Internal Links | `swps-internal-links` | Link suggestions admin |
+| Auto-Optimize | `swps-auto-optimize` | Re-score + AI proposals for low-scoring posts |
+| AEO Optimize | `swps-aeo-optimize` | AI-citeability scoring (4 dimensions) + AI proposals with diff review/undo |
+| Refresh Queue | `swps-refresh-queue` | Decayed posts ranked by traffic at risk + reviewed AI refresh |
+| Competitors | `swps-competitors` | Competitor site tracker (RSS/sitemap diff) |
+| Local SEO | `swps-local-seo` | LocalBusiness JSON-LD: NAP, hours, geo, area served |
+| Image SEO | `swps-image-seo` | Auto-alt, filename sanitization, lazy-load, bulk fix |
+| Backlinks | `swps-backlinks` | Manual + CSV-import backlink tracker with daily verify |
+| Crawlers & Files | `swps-crawl-files` | Edit `/llms.txt` and `/robots.txt` (auto/custom modes) |
+| Machine Access | `swps-machine-access` | Ability toggles + activity log (WP Abilities API / REST) |
+
+Topics are managed on the Content Calendar page, via `wp swps queue`, or the REST `/queue` endpoints — the topic post type has no admin screen of its own.
+
+---
+
+## WP-CLI Commands
+
+```bash
+# Generate a post
+wp swps generate                                    # AI-chosen topic
+wp swps generate "WordPress security best practices"
+wp swps generate "How to speed up WordPress" --template=how-to
+
+# Analyze site
+wp swps analyze                  # JSON
+wp swps analyze --format=table
+
+# Plugin status (version, provider, model, schedule, costs, queue size)
+wp swps status
+
+# Manage topic queue
+wp swps queue list
+wp swps queue add "Topic title"
+wp swps queue add "Topic" --date="2026-04-01 09:00:00" --template=listicle
+wp swps queue remove 123
+wp swps queue clear
+
+# AI bot analytics (v4.5)
+wp swps bot-stats                 # last 30 days, table
+wp swps bot-stats --days=7
+wp swps bot-stats --bot=gptbot    # filter top pages by bot key
+wp swps bot-stats --format=json
+
+# Re-run the QAPage → FAQPage schema migration (v4.9.1) —
+# runs automatically once after update; use this if it was skipped
+# or you restored an old database
+wp swps migrate-qapage
+```
+
+Available templates: `auto`, `listicle`, `how-to`, `comparison`, `case-study`, `news`, `tutorial`
+
+---
+
+## REST API
+
+All endpoints under `/wp-json/swps/v1/`:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/generate` | Generate a post or page (`content_type` post\|page, `parent_id`, `topic`, `template`, optional `brief` + guidance fields ★ v4.30, `featured_image`, `content_images`, `sources` ★ v4.31) |
+| `GET` | `/status` | Plugin status |
+| `GET` | `/queue` | List topic queue |
+| `POST` | `/queue` | Add a topic (title, date, template, notes) |
+| `DELETE` | `/queue/{id}` | Remove a queued topic |
+| `GET` | `/score/{id}` | Get a post's or page's content score |
+| `POST` | `/score/{id}` | Re-score a post or page ★ v4.31 |
+| `GET` | `/voice-profiles` | List voice profiles |
+| `POST` | `/voice-profiles` | Create voice profile |
+| `PUT` | `/voice-profiles/{id}` | Update voice profile |
+| `DELETE` | `/voice-profiles/{id}` | Delete voice profile |
+| `GET` | `/audit` | Latest audit results |
+| `POST` | `/audit` | Run a fresh audit |
+| `POST` | `/audit/fix/{module_id}` | Auto-fix one audit module |
+| `POST` | `/user-prefs/theme` | Save dark/light theme preference |
+| `GET` | `/bot-analytics/summary` | AI bot hit totals (v4.5) |
+| `GET` | `/bot-analytics/top-pages` | Top bot-crawled pages |
+| `GET` | `/bot-analytics/gaps` | AEO gap report (posts no AI bot fetched) |
+| `POST` | `/modules/{slug}/toggle` | Enable/disable a module |
+| `POST` | `/aeo/scan-batch` | Score a batch of posts (v4.6) |
+| `GET` | `/aeo/score/{id}` | AEO score + sub-scores for a post |
+| `POST` | `/aeo/proposal/{id}` | Generate an AEO proposal |
+| `POST` | `/aeo/apply/{id}` | Apply a proposal |
+| `POST` | `/aeo/undo/{id}` | Undo an applied proposal |
+| `POST` | `/aeo/dismiss/{id}` | Dismiss a post from the queue |
+| `GET` | `/abilities` | Discover all 13 abilities: name, description, input/output schema, write flag, enabled state (v4.19) |
+| `POST` | `/abilities/{name}/run` | Execute an ability — write abilities must be enabled on the Machine Access page first |
+
+All endpoints require the `manage_options` capability except `POST /user-prefs/theme`, which only requires a logged-in user. Cookie-authenticated requests need the `X-WP-Nonce` header. For external agents, the abilities endpoints work with standard WordPress **application passwords**; every abilities call — allowed or denied — is recorded in the Machine Access activity log.
+
+---
+
+## Developer Reference
+
+StrataWP SEO provides 50+ filters and actions, all using the `swps_` prefix (generation-pipeline hooks route through `SWPS_Hooks`; subsystem hooks are applied in their own classes).
+
+### Filters
+
+#### Content Generation
+
+**`swps_system_prompt`** — Modify the system prompt sent to the AI.
+
+```php
+add_filter( 'swps_system_prompt', function( string $prompt, string $tone, string $style ): string {
+    $prompt .= "\nAlways include a call-to-action at the end.";
+    return $prompt;
+}, 10, 3 );
+```
+
+**`swps_user_prompt`** — Modify the user prompt sent to the AI. ★ v4.31 For pages the prompt carries page-specific requirements (no TOC/takeaways, FAQ only for templates that request one, evergreen phrasing); when source material was supplied it also contains a fenced `SOURCE MATERIAL` block with the fetched text and citation instructions.
+
+```php
+add_filter( 'swps_user_prompt', function( string $prompt, string $topic, string $site_context ): string {
+    return $prompt;
+}, 10, 3 );
+```
+
+**`swps_ai_response`** — Modify the parsed AI response before post creation.
+
+**`swps_post_data`** — Modify WordPress post data before insertion. ★ v4.31 For a page generation this array carries `post_type => 'page'` and a `post_parent` key instead of `post_category`.
+
+#### llms.txt
+
+**`swps_llms_txt_content`** — Modify the full llms.txt body before output.
+
+```php
+add_filter( 'swps_llms_txt_content', function( string $content ): string {
+    return $content . "\n## Custom Section\n- ...\n";
+} );
+```
+
+**`swps_llms_txt_post_limit`** — Number of posts included (default 100).
+
+#### Voice Profiles
+
+**`swps_voice_compile`** — Modify the compiled voice-profile prompt block.
+
+#### Images
+
+**`swps_image_query`** — Modify the image search query.
+
+**`swps_content_images_queries`** — Modify in-content image search queries.
+
+**`swps_image_selection`** — Modify selected image data before insertion.
+
+#### Schema
+
+**`swps_schema_article`** — Modify Article JSON-LD before output. Since the unified `@graph` (v4.19), the schema filters receive a standalone-shaped copy (with `@context`); the returned data becomes the node body inside the single `@graph` block.
+
+```php
+add_filter( 'swps_schema_article', function( array $schema, int $post_id ): array {
+    $schema['author']['sameAs'] = 'https://twitter.com/yourhandle';
+    return $schema;
+}, 10, 2 );
+```
+
+**`swps_schema_breadcrumb`** — Modify BreadcrumbList JSON-LD.
+
+**`swps_schema_organization`** — Modify Organization/Person JSON-LD.
+
+**`swps_faq_schema`** — Modify FAQ JSON-LD.
+
+**`swps_takeaways_schema`** — Modify Key Takeaways ItemList JSON-LD.
+
+#### SEO Audit
+
+**`swps_audit_modules`** — Add or remove audit modules.
+
+```php
+add_filter( 'swps_audit_modules', function( array $modules ): array {
+    $modules['my_custom_check'] = new My_Custom_Audit_Module();
+    return $modules;
+} );
+```
+
+**`swps_audit_result`** — Modify an individual module's audit result.
+
+#### Analytics
+
+**`swps_analytics_track`** — Filter tracking data before storage. Return empty array to block.
+
+**`swps_analytics_exclude`** — Filter whether to exclude a page from tracking.
+
+**`swps_gsc_data`** — Filter Google Search Console API response data.
+
+#### SEO Meta Editor
+
+**`swps_meta_title`** — Filter the meta title output for a post.
+
+**`swps_meta_description`** — Filter the meta description output for a post.
+
+**`swps_meta_robots`** — Filter the robots meta directives for a post.
+
+**`swps_seo_checklist`** — Filter or add SEO checklist items in the metabox.
+
+#### Keywords
+
+**`swps_keyword_suggestions`** — Filter AI-generated keyword suggestions.
+
+#### Content Scoring
+
+**`swps_score_weights`** — Adjust content scoring weights.
+
+#### AEO
+
+**`swps_aeo_subscores`** — Modify the 4 dimension sub-scores before weighting.
+
+**`swps_aeo_score`** — Modify the final weighted AEO score for a post.
+
+**`swps_aeo_proposal`** — Modify the AI optimization proposal before it is stored.
+
+**`swps_aeo_schema_json`** — Modify generated AEO JSON-LD before storage/output.
+
+**`swps_authoritative_domains`** — Modify the authoritative-domain allowlist used by the Authority scorer.
+
+#### AI Bot Analytics
+
+**`swps_ai_bots_known`** — Add or remove known AI bots (shared by the robots.txt allowlist and bot analytics).
+
+**`swps_bot_analytics_capture`** — Return false to veto recording a bot hit.
+
+**`swps_bot_analytics_normalize_uri`** — Customize URI bucketing before storage.
+
+#### Local SEO
+
+**`swps_local_seo_emit`** — Short-circuit LocalBusiness JSON-LD output.
+
+**`swps_local_seo_schema`** — Modify the LocalBusiness schema array before output.
+
+#### Admin Shell
+
+**`swps_admin_shell_nav`** — Modify the admin-shell nav/breadcrumb item map.
+
+#### AI Referrals
+
+**`swps_ai_referral_sources`** — Modify the referrer-host → engine map used to classify AI referral visits (add or remove AI assistant domains).
+
+#### AI Citations
+
+**`swps_citation_our_domains`** — Modify the list of domains counted as "your site" when parsing citation results.
+
+**`swps_citation_prompts_cap`** — Modify the maximum number of tracked citation prompts.
+
+#### Crawler Verification & Crawl Budget
+
+**`swps_crawler_ip_sources`** — Modify the published IP-range source URLs fetched per search bot for CIDR verification.
+
+**`swps_crawl_budget_sitemap_post_types`** — Modify the post types included in the crawl-budget report.
+
+#### Site Crawler
+
+**`swps_crawl_delay_us`** — Modify the politeness delay in microseconds between crawl requests (default 500000 = 0.5s).
+
+#### Keyword Cannibalization
+
+**`swps_cannibal_ctr_curve`** — Modify the expected CTR-by-position curve used to estimate cannibalization impact.
+
+**`swps_cannibal_expected_ctr`** — Modify the computed expected CTR for a specific finding.
+
+### Actions
+
+**`swps_before_generate`** — Fires before content generation starts.
+
+**`swps_after_generate`** — Fires after successful generation.
+
+**`swps_post_created`** — Fires after the WordPress post is inserted. ★ v4.31 When a per-run image plan was supplied it is already saved to the `_swps_image_plan` post meta by this point, so a callback here sees the same plan the background image jobs will read.
+
+```php
+add_action( 'swps_post_created', function( int $post_id, array $ai_result, array $post_data ): void {
+    // Add custom meta, trigger workflows
+}, 10, 3 );
+```
+
+**`swps_generation_failed`** — Fires when generation fails.
+
+**`swps_score_complete`** — Fires after content scoring completes.
+
+**`swps_image_inserted`** — Fires after an in-content image is inserted.
+
+**`swps_audit_complete`** — Fires after a full audit run completes.
+
+```php
+add_action( 'swps_audit_complete', function( array $results, int $overall_score ): void {
+    if ( $overall_score < 50 ) {
+        wp_mail( get_option( 'admin_email' ), 'SEO Score Alert', 'Score dropped to ' . $overall_score );
+    }
+}, 10, 2 );
+```
+
+**`swps_bot_analytics_hit`** — Fires once per captured AI-bot hit (after the row is written).
+
+**`swps_modules_register`** — Register or modify entries in the modules registry (dashboard grid / feature toggles).
+
+---
+
+## Architecture
+
+### File Map
+
+```
+stratawp-seo/
+├── stratawp-seo.php              Plugin bootstrap, autoloader, main StrataWP_SEO singleton
+├── uninstall.php                 Cron/cache cleanup on delete; full data wipe when opted in
+├── readme.txt                    WordPress.org plugin readme
+├── README.md                     This file
+│
+├── includes/                     Core PHP classes (one class per file, swps_ prefix)
+│   ├── class-abilities-rest.php       REST discovery + execution endpoints for abilities (/swps/v1/abilities)
+│   ├── class-abilities-settings.php   Machine Access admin page: per-ability toggles + activity log
+│   ├── class-abilities.php            Abilities registry: validate → execute → log pipeline; WP Abilities API bridge
+│   ├── class-admin-shell.php          Branded admin shell: top bar (logo, breadcrumb, search, theme toggle, help)
+│   ├── class-aeo-editor-panel.php     Live AEO score panel in the post editor (classic metabox; Gutenberg sidebar via aeo-editor-panel.js)
+│   ├── class-aeo-optimizer.php        AEO Optimize admin page + 6 AJAX handlers (scan/score/propose/apply/undo/dismiss)
+│   ├── class-aeo-schema-generator.php AI-driven dynamic JSON-LD for HowTo, Recipe, Product, Review, FAQPage
+│   ├── class-aeo-schema-migrator.php  Converts legacy QAPage JSON-LD post meta to FAQPage (issue #44)
+│   ├── class-aeo-scorer.php           AEO orchestrator: weights 4 sub-scorers into one score, persists to post meta
+│   ├── class-ai-bots.php              robots.txt allowlist + dynamic llms.txt
+│   ├── class-ai-provider.php          Abstract base + JSON parser with 5-stage repair; search-grounded citation methods
+│   ├── class-ai-referrals-report.php  AI Referrals analytics queries (engine trends, landing posts, engagement)
+│   ├── class-ai-referrals.php         Classifies human visits from AI assistants (ChatGPT, Perplexity, Claude, …)
+│   ├── class-analytics-dashboard.php  Admin dashboard rendering + Chart.js data
+│   ├── class-analytics-tracker.php    Cookie-free pageview/engagement tracker
+│   ├── class-analyzer.php             Site analysis: posts, categories, link graph
+│   ├── class-api.php                  Internal API helpers
+│   ├── class-audit-module.php         Abstract base for audit modules
+│   ├── class-author-profile.php       Author E-E-A-T profile fields (job title, credentials, sameAs) on user profiles
+│   ├── class-auto-optimize.php        Scans underperforming posts, proposes AI edits, applies on approval
+│   ├── class-autopilot-guardian.php   Monthly AI budget cap, transient-error retry/backoff, topic requeue
+│   ├── class-background-processor.php Queue + cron for long-running tasks
+│   ├── class-backlinks.php            Manual + CSV-import backlink tracker with daily live/lost/broken verification
+│   ├── class-bot-analytics-tracker.php Server-side AI crawler hit tracking (raw + daily rollup tables)
+│   ├── class-breadcrumbs.php          Frontend breadcrumb output + schema
+│   ├── class-cache-manager.php        Transient + object-cache abstraction
+│   ├── class-calendar.php             Visual calendar for topic queue + proposed-topic approve/dismiss
+│   ├── class-cannibalization-admin.php Cannibalization page: consolidate (undoable 301) / differentiate / canonicalize
+│   ├── class-cannibalization.php      GSC split-impression detection core + weekly scan
+│   ├── class-citation-admin.php       Citations card on Keywords + settings section (frequency, cap, engines)
+│   ├── class-citation-prompts.php     Tracked prompt list, seed candidates, enabled engines, our-domains config
+│   ├── class-citation-store.php       Citation results storage + share-of-voice / cited-domains queries
+│   ├── class-citation-tracker.php     Search-grounded citation checks across engines with monthly call caps
+│   ├── class-cli.php                  WP-CLI command registration
+│   ├── class-competitors.php          Competitor watch: daily RSS/sitemap scans, homepage title/H1/schema diffs
+│   ├── class-content-scorer.php       Quality scoring for generated content
+│   ├── class-cost-tracker.php         Per-provider/model token + USD tracking
+│   ├── class-crawl-budget-report.php  Crawl-budget-by-post-type queries + daily reconciliation
+│   ├── class-crawl-files.php          Crawlers & Files page: edit /llms.txt (auto/custom) and /robots.txt (auto/append/replace)
+│   ├── class-crawl-issues.php         Site-crawl issue storage (status, resolution, ignore lists)
+│   ├── class-crawler-enforcement.php  Opt-in fail-open 403 for verified-spoofed crawlers (template_redirect)
+│   ├── class-crawler-verification.php CIDR + rDNS search-bot verification; cron-refreshed published IP ranges
+│   ├── class-cron.php                 Scheduled auto-publish runner
+│   ├── class-dashboard.php            Dashboard landing page: KPI tiles, recent activity, modules grid
+│   ├── class-decay-watchdog.php       Weekly 28-day-window GSC decay scan with cause heuristics + email alert
+│   ├── class-digest-settings.php      Email digest settings section + test-send
+│   ├── class-digest.php               White-label digest: failure tracking, data assembly, send pipeline
+│   ├── class-duplicate-checker.php    Title/content similarity detection
+│   ├── class-encryption.php           AES-256-GCM secret storage (transparent legacy-CBC upgrade)
+│   ├── class-generator.php            The main AI content generation pipeline
+│   ├── class-github-updater.php       One-click plugin updates from GitHub Releases (stratawp-seo.zip asset)
+│   ├── class-head-cleanup.php         wp_head tag removal (generator, RSD, oEmbed, etc.)
+│   ├── class-hooks.php                Generation-pipeline filter/action hub (swps_* prefix)
+│   ├── class-image-inserter.php       In-content image placement engine
+│   ├── class-image-plan.php           Per-run image choice (0-4 in-content, featured on/off), stored on the post as `_swps_image_plan`
+│   ├── class-image-provider.php       Abstract base for image providers
+│   ├── class-image-seo.php            Auto-alt (heuristic/AI), filename sanitization, lazy-loading, bulk media fix
+│   ├── class-images.php               Image utility helpers
+│   ├── class-internal-links-admin.php Admin UI for link suggestions
+│   ├── class-internal-links.php       Internal linking orchestrator
+│   ├── class-keyword-tracker.php      GSC sync + striking distance detection
+│   ├── class-keywords-page.php        Keyword research admin page
+│   ├── class-link-ai-engine.php       AI-powered internal link suggestions
+│   ├── class-link-keyword-engine.php  Keyword-anchor link suggestions
+│   ├── class-local-seo.php            LocalBusiness JSON-LD: NAP, opening hours, geo, area served
+│   ├── class-meta-editor.php          Per-post SEO metabox + frontend output
+│   ├── class-metric-history.php       Per-post clicks/impressions/AEO-score history store (sparkline data)
+│   ├── class-migration.php            Import settings + post meta + redirects from Yoast / Rank Math
+│   ├── class-model-catalog.php        Pure-PHP model heuristics: provider, power rank, default pricing, superlative labels
+│   ├── class-model-cron.php           Daily swps_refresh_models cron that refreshes discovered models
+│   ├── class-model-discovery.php      Merges curated model lists with live provider-API discovery; never auto-switches
+│   ├── class-modules.php              Modules registry: feature toggles + dashboard-grid source of truth
+│   ├── class-onboarding.php           Setup Wizard (5 steps) + dashboard setup checklist
+│   ├── class-post-list-seo.php        Posts list table SEO column + bulk edits
+│   ├── class-provider-factory.php     Resolves the active AI/image provider class
+│   ├── class-question-coverage.php    GSC question mining: unanswered searcher questions per post
+│   ├── class-rate-limiter.php         Cooldown between generations
+│   ├── class-redirect-admin.php       Redirect manager admin UI
+│   ├── class-redirect-manager.php     Redirect matching, 404 logging, slug-change auto-redirect
+│   ├── class-refresh-queue-admin.php  Refresh Queue page: decayed posts, sparklines, reviewed AI refresh
+│   ├── class-rest-api.php             REST endpoints (/wp-json/swps/v1/...)
+│   ├── class-rss-optimizer.php        RSS feed before/after content injection
+│   ├── class-schema-graph.php         Unified @graph builder: accumulates nodes, emits one interlinked JSON-LD block
+│   ├── class-schema-validator.php     JSON-LD extraction + field-presence / orphan-ref / date-consistency checks
+│   ├── class-schema.php               JSON-LD node builders (Article, Breadcrumb, WebSite, Org/Person, FAQ, ItemList)
+│   ├── class-search-appearance.php    Title/description template engine
+│   ├── class-search-console.php       GSC OAuth + API client
+│   ├── class-seo-audit.php            Audit orchestrator + dashboard widget
+│   ├── class-settings.php             All settings registration + admin pages
+│   ├── class-site-crawl-admin.php     Site Crawl page: chunked crawl runner + one-click fixes
+│   ├── class-site-crawler.php         Politeness-capped crawler: parsing, link extraction, 8 issue detectors
+│   ├── class-sitemap-admin.php        Sitemap admin page + IndexNow ping AJAX
+│   ├── class-sitemap-manager.php      Sitemap generation + IndexNow batch submission
+│   ├── class-source-material.php      Parses/fetches/extracts owner-supplied URLs + notes into a fenced prompt block
+│   ├── class-taxonomy-meta.php        Per-term archive meta
+│   ├── class-templates.php            Content template definitions (listicle, how-to, etc.)
+│   ├── class-topic-queue.php          Topic queue custom post type + helpers
+│   ├── class-topic-scout-cron.php     Weekly scout cron + Topic Autopilot settings (enable, auto-promote)
+│   ├── class-topic-scout.php          Signal ranking (GSC questions, striking distance, orphans) → proposals
+│   ├── class-user-prefs.php           Per-user preferences storage (admin theme, UI state)
+│   ├── class-visibility-funnel.php    AEO × crawl × visit joins; funnel stage rates for dashboard/queue
+│   ├── class-voice-profile.php        Voice profile CPT + system prompt injection
+│   ├── trait-ability-defs.php         Definitions of the 13 abilities (schemas, write flags, callbacks)
+│   ├── trait-digest-send.php          Digest email template rendering + send
+│   │
+│   ├── aeo/                      4 AEO sub-scorers
+│   │   ├── class-authority-scorer.php      Byline, freshness, authoritative outbound links
+│   │   ├── class-coverage-scorer.php       LLM-judged topic completeness + entity clarity
+│   │   ├── class-extractability-scorer.php Self-contained paragraphs, declarative ratio, structure
+│   │   └── class-markup-scorer.php         Q&A pairing + schema-type alignment (infer_schema_type())
+│   │
+│   ├── audit/                    10 audit modules (extend SWPS_Audit_Module)
+│   │   ├── class-canonical-module.php
+│   │   ├── class-image-seo-module.php
+│   │   ├── class-meta-robots-module.php
+│   │   ├── class-opengraph-module.php
+│   │   ├── class-pagespeed-module.php
+│   │   ├── class-robots-module.php
+│   │   ├── class-schema-audit-module.php
+│   │   ├── class-site-crawl-module.php
+│   │   ├── class-sitemap-module.php
+│   │   └── class-twitter-module.php
+│   │
+│   ├── data/                     JSON manifests
+│   │   ├── aeo-schema-fields.json          Required/recommended fields per schema type
+│   │   └── authoritative-domains.json      Allowlist for the Authority scorer
+│   │
+│   └── providers/                AI + image provider implementations
+│       ├── ai/
+│       │   ├── class-anthropic-provider.php
+│       │   ├── class-google-provider.php
+│       │   ├── class-openai-provider.php
+│       │   └── class-xai-provider.php
+│       └── images/
+│           ├── class-gemini-provider.php
+│           ├── class-pexels-provider.php
+│           ├── class-pixabay-provider.php
+│           └── class-unsplash-provider.php
+│
+├── templates/                    Admin page view files (PHP templates)
+│   ├── aeo-page.php
+│   ├── analytics-page.php
+│   ├── audit-page.php
+│   ├── auto-optimize-page.php
+│   ├── backlinks-page.php
+│   ├── calendar-page.php
+│   ├── competitors-page.php
+│   ├── cannibalization-finding.php
+│   ├── crawl-files-page.php
+│   ├── dashboard-page.php
+│   ├── email/                    Digest email template
+│   ├── generate-page.php
+│   ├── image-seo-page.php
+│   ├── internal-links-page.php
+│   ├── keywords-page.php
+│   ├── local-seo-page.php
+│   ├── meta-editor-metabox.php
+│   ├── migration-page.php
+│   ├── onboarding-page.php
+│   ├── redirects-page.php
+│   ├── refresh-queue-page.php
+│   ├── search-appearance-page.php
+│   ├── settings-page.php
+│   ├── site-crawl-page.php
+│   ├── sitemaps-page.php
+│   ├── voice-profile-edit.php
+│   ├── voice-profiles-page.php
+│   └── partials/
+│       └── page-header.php       Shared page header (also used by the inline Debug page)
+│
+├── admin/
+│   ├── css/                      Design system (tokens.css, components.css, admin-ui.css, templates.css) + per-page CSS (admin.css, aeo.css, calendar.css, pages/*.css)
+│   └── js/                       Per-page JS (admin.js + admin-ui.js shared; aeo-optimizer.js, dashboard.js, backlinks.js, etc.)
+│
+├── docs/                         Internal docs and notes
+└── screenshots/                  WP plugin screenshots
+```
+
+### Boot Sequence
+
+1. **`stratawp-seo.php`** loads — `require_once` chains pull in every `includes/` class (deliberate dependency order: base classes → providers → factory → consumers).
+2. **`StrataWP_SEO::instance()`** — singleton runs `__construct()` which:
+   - Initializes foundation subsystems (cache, duplicate checker, rate limiter, cost tracker, voice profiles, content scorer, AEO scorers, model catalog)
+   - Resolves the active AI and image providers via `SWPS_Provider_Factory`
+   - Instantiates ~50 service classes and stores them as public properties (e.g., `$this->generator`, `$this->settings`, `$this->aeo_optimizer`)
+   - Hooks into `init`, `admin_menu`, `admin_init`, `wp_enqueue_scripts`, `admin_enqueue_scripts`, `wp_ajax_*`, `rest_api_init`, etc.
+3. **CLI commands** registered if `WP_CLI` is defined.
+4. **First request** — providers stay lazy (only instantiated when `chat()` / `chat_json()` is called).
+
+### Provider Pattern
+
+Both AI and image subsystems use the same pattern:
+
+```
+SWPS_AI_Provider (abstract)
+    ├── SWPS_Anthropic_Provider
+    ├── SWPS_OpenAI_Provider
+    ├── SWPS_Google_Provider
+    └── SWPS_XAI_Provider
+
+SWPS_Image_Provider (abstract)
+    ├── SWPS_Unsplash_Provider
+    ├── SWPS_Pexels_Provider
+    ├── SWPS_Pixabay_Provider
+    └── SWPS_Gemini_Provider
+```
+
+`SWPS_Provider_Factory::create_ai_provider()` reads the `swps_ai_provider` option and returns the right concrete class. Each provider:
+
+- Defines `get_slug()`, `get_name()`, `get_api_key_url()`, `get_available_models()`
+- Implements `chat()` (raw text) and inherits `chat_json()` (5-stage JSON parser with quote repair, control-char sanitization, BOM/fence stripping, Unicode separator removal, brace trimming)
+- Reports `last_usage` (input/output tokens) and `last_stop_reason` for cost tracking and truncation detection
+- Model lists are no longer static: `SWPS_Model_Discovery` merges each provider's curated list with models discovered daily from the provider's API (`SWPS_Model_Cron` schedules the `swps_refresh_models` event), and `SWPS_AI_Provider` validates the selected model through `SWPS_Model_Discovery::validate_selection()` at generation time. `SWPS_Model_Catalog` (pure PHP) supplies power ranking, default pricing, and the dynamic superlative labels (Most powerful, Cheapest, Costs most, Best value)
+
+### The Hooks Hub
+
+`SWPS_Hooks` (in `class-hooks.php`) is the central entry point for the content-generation `swps_*` hooks (system/user prompt, AI response, post data, images, scoring). The generation pipeline calls `SWPS_Hooks::filter_system_prompt()`, `filter_user_prompt()`, `filter_ai_response()`, `filter_post_data()`, etc. — and any plugin or theme can hook in. Newer subsystems (AEO, Bot Analytics, Local SEO, llms.txt) apply their `swps_*` filters directly in their own classes — see the [Developer Reference](#developer-reference) for the full list.
+
+---
+
+## How Each Subsystem Works
+
+### Content Generation Pipeline
+
+`SWPS_Generator::generate_post( $topic, $template, $brief, $options )` walks through:
+
+1. **Rate limit** — block if cooldown active (`SWPS_Rate_Limiter`)
+2. **Duplicate check** — refuse if a published post is too similar (`SWPS_Duplicate_Checker`)
+3. **Site analysis** — fetch existing posts, categories, internal link candidates (`SWPS_Analyzer`)
+4. **Source material fetch** ★ v4.31: when URLs or notes were supplied, `SWPS_Source_Material` fetches, extracts and caps them into a fenced prompt block before the AI call
+5. **Prompt build**: the system prompt (with voice profile injection, or the page-specific prompt when `content_type => page`) plus a user prompt with site context, template instructions, target keywords, internal link list, the brief, and the source material block. A page request also adds page-only requirements: no TOC or key takeaways, the template's word range, FAQ only when that template calls for one
+6. **AI call** — `SWPS_AI_Provider::chat_json()` with 16,384 max tokens and a strict JSON schema requirement
+7. **JSON parse** — 5-stage repair pipeline (see `parse_json_response()` in `class-ai-provider.php`). Failures save the raw response to a transient and surface a Debug admin page.
+8. **Post insert**: `wp_insert_post()` with full schema metadata. A page gets `post_parent` and no category or tags
+9. **Image plan meta** ★ v4.31: when a per-run featured/in-content image choice was supplied, it's saved to the `_swps_image_plan` post meta before the hooks below fire
+10. **Hooks fire**: `swps_post_created` runs content scoring (`SWPS_Content_Scorer`; below `min_content_score` forces a draft) and schedules the background image jobs, which read `_swps_image_plan` when present and otherwise fall back to Settings. `swps_after_generate` fires last
+
+### AI Crawler Allowlist (`SWPS_AI_Bots`)
+
+- Hooks `robots_txt` filter at priority 100, appends a `# AI crawlers — managed by StrataWP SEO` block with `Allow: /` per allowed bot and `Disallow: /` for known bots the user has unchecked.
+- Default behavior (no option saved): all 15 known bots are allowed.
+- Option name: `swps_ai_bots_allowed` (array of bot keys from `SWPS_AI_Bots::KNOWN_BOTS`).
+
+### llms.txt Generator (`SWPS_AI_Bots::maybe_serve_llms_txt`)
+
+- Hooks `init` at priority 1 (before Yoast or any other plugin can serve `/llms.txt`).
+- Returns `text/markdown` content with `X-Robots-Tag: noindex`.
+- Body composition:
+  - `# {site_name}` + `> {site_description}` (uses your plugin's Site Description field, falls back to WP tagline)
+  - `Site:` and `Sitemap:` lines — the sitemap URL comes from `SWPS_Sitemap_Manager::get_sitemap_url()`, the same single source of truth used by robots.txt (defers to Yoast/Rank Math/AIOSEO sitemap locations when one of those plugins handles sitemaps)
+  - `## Posts` — 100 most recent published posts
+  - `## Pages` — top-level published pages (excluding home)
+  - `## Categories` — 20 most-used categories
+- Per-entry summary uses (in order): plugin meta description → Yoast meta → RankMath meta → post excerpt → trimmed first paragraph (~200 chars at sentence boundary).
+- Filterable via `swps_llms_txt_content` and `swps_llms_txt_post_limit`.
+
+### Sitemap Manager (`SWPS_Sitemap_Manager`)
+
+- Generates `/sitemap_index.xml` and per-type sub-sitemaps (`{post_type}-sitemap.xml`, `{taxonomy}-sitemap.xml`, `author-sitemap.xml`).
+- Each sub-sitemap respects the `swps_sitemap_exclude_{key}` option.
+- `urls_per_page` setting controls split point (default 1000, max 50000).
+- Image sitemap entries built from post attachments.
+- **IndexNow integration** — handled by `SWPS_IndexNow`: auto-submits a URL to `api.indexnow.org` on post/term publish, update, or delete (60-second debounce), plus per-post and b

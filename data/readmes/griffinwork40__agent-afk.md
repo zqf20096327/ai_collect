@@ -1,0 +1,285 @@
+# Agent AFK
+
+**Start a task and walk away.** AFK builds the feature, verifies its own work, and texts you when it's done. You come back to a receipt of every step, every decision, and what's waiting on you.
+
+Open source. Runs locally. Works with any model provider, including local models. Your keys, your machine, your rules.
+
+[![npm version](https://img.shields.io/npm/v/agent-afk.svg)](https://www.npmjs.com/package/agent-afk)
+[![CI](https://github.com/griffinwork40/agent-afk/actions/workflows/ci.yml/badge.svg)](https://github.com/griffinwork40/agent-afk/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/node/v/agent-afk.svg)](https://nodejs.org/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/griffinwork40/agent-afk?style=social)](https://github.com/griffinwork40/agent-afk/stargazers)
+[![Awesome Harness Engineering](https://img.shields.io/badge/awesome-harness--engineering-fc60a8?logo=awesomelists&logoColor=white)](https://github.com/walkinglabs/awesome-harness-engineering#coding-agent-harnesses)
+
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/4a84f6e4-2494-4065-a01f-54a1c557f7f3" width="820" autoplay loop muted playsinline>
+    Your browser does not support the video tag.
+  </video>
+</p>
+
+> ⭐ **Like the idea of an agent you can walk away from? [Star the repo](https://github.com/griffinwork40/agent-afk/stargazers)** -- it's the fastest way to help other people find it.
+
+## Quick Start
+
+```bash
+npm install -g agent-afk    # Node 22.22.2–22.x, 24.15–24.x, or 26+ (23.x and 25.x excluded)
+afk login                   # authenticate (auto-detects Claude Code / Codex creds)
+afk doctor                  # verify everything works
+afk chat "hello"             # first real conversation
+
+# Preview a behaviour change before applying it
+afk whatif --append "Always ask a clarifying question before using tools." --verify
+```
+
+That's it. You're in.
+
+**Using pnpm?** `pnpm add -g agent-afk` works, but pnpm 10 and later block build scripts by default and skips `postinstall` (with an easy-to-miss warning — see [#2199](https://github.com/griffinwork40/agent-afk/issues/2199)). Run `pnpm approve-builds -g` after install to approve the hook, or use `npm install -g agent-afk` instead. If an `afk daemon` is already running and pnpm skipped the hook, restart it manually with `afk service restart daemon` — on macOS the hook restarts the daemon automatically when it runs, but on Linux you must always run this command after an upgrade even when the hook ran. If you have a manually-started Telegram bot, also run `afk telegram restart`.
+
+**Try without installing:** `npx agent-afk chat "hello"` runs a one-shot turn with zero global install.
+
+**Already using Claude Code or Codex?** `afk login` will detect your existing credentials automatically. Run `afk migrate` to import your plugins, skills, and MCP servers too -- it live-reads the source tool's dirs, so anything you install there keeps showing up in AFK with no re-run.
+
+Codex imports use `CODEX_HOME` when set (otherwise `~/.codex`) and also discover shared skills in `~/.agents/skills`. Native `.codex-plugin/plugin.json` manifests are recognized alongside Claude-format manifests; explicit `[plugins."name@marketplace"]` enable/disable settings apply at runtime. Without an installed-plugin registry, discovery selects one cached directory per marketplace/plugin using descending numeric-aware directory order. This is a filesystem fallback, not a guarantee of the version selected by Codex. Codex-hosted app connectors and TOML MCP server loading are not imported.
+
+> 📖 **Full documentation at [docs.agentafk.com](https://docs.agentafk.com)** -- quickstart, configuration, model setup, surfaces, skills, and SDK reference.
+
+## What you can do with it
+
+- **Chat from your terminal** — `afk chat "..."` for one-shot, `afk` for a REPL with full tool access (Bash, file ops, web fetch, grep/glob, subagents).
+- **Hand long work off to a daemon** — `afk daemon` runs headless. Pair it with `send_telegram` and you get pings on your phone when work lands in a terminal state.
+- **Read the trace** — every run writes an append-only record of what the agent did. `afk trace show` prints it back as a human-readable receipt — tool calls, gate decisions, subagent lifecycles, cost — so you can audit a run without reaching for `jq`.
+- **Message Claude from Telegram** — `afk telegram setup` walks you through bot token + allowlist. After that you have a private chat surface backed by the same session manager as the REPL.
+- **Built-in orchestrators** — `/mint`, `/diagnose`, `/spec`, `/research`, `/ship`, `/review` dispatch subagent waves. `/mint` takes a feature idea and runs spec → research → plan → parallelize → build → verify → ship. `/diagnose` forks parallel root-cause hypotheses for failing tests and bugs.
+- **Cross-session memory** — Claude remembers preferences, decisions, and procedures across runs. See [Memory](#memory) below.
+- **Background subagent jobs** — dispatch a subagent with `mode:'background'`; results auto-deliver into the model's context when they finish. `/bgsub` lists running and completed jobs, `/bgsub:join <id>` replays a result manually.
+
+## What only afk does
+
+**`afk whatif` behavioural impact predictor.** Before changing a prompt, model, skill, or memory rule, predict how the agent's behaviour will shift without touching your real config. Run `afk whatif --append "Always ask a clarifying question before using tools." --verify` and the engine diffs the system prompts, predicts labelled behaviour shifts, then optionally verifies empirically by running sandboxed episodes and measuring rates. No real writes happen during the run. Source: `src/whatif/`, `docs/whatif.md`.
+
+**Jev calibrated judgment.** Jev is an external cross-family judge you configure as an MCP server in `~/.afk/config/mcp.json`. When present, `afk whatif --judge auto` selects Jev to grade verification episodes; it returns calibrated probabilities and removes Anthropic self-preference bias in verdicts. Falls back to Claude when Jev is not configured. Use `--judge claude` to keep all episode data within Anthropic. Source: `src/whatif/judge/jev-connect.ts`, `docs/whatif.md`.
+
+## What it has done
+
+**Constructed SW(29,16), the last open symmetric weighing matrix case for weight 16 listed by Rosin (arXiv:2505.23881).** Given a research campaign goal, agent-afk agents picked the target, designed a prescribed-automorphism SAT search, found a symmetric 29x29 weighing matrix in 5620 seconds of solver time, checked it with independent exact checkers on two machines, and ran a kill lane that could not refute it. The standard databases list no symmetric W(29,16). Check it yourself in under a second: [`docs/results/sw-29-16`](docs/results/sw-29-16/README.md).
+
+**Constructed SW(27,16), a symmetric weighing matrix the standard archives do not list.** Given a research campaign goal, agent-afk agents picked the target, designed a prescribed-automorphism SAT search, found a symmetric 27x27 weighing matrix in 1903 seconds of solver time, checked it with independent exact checkers on two machines, and ran a kill lane that could not refute it. The standard databases list no symmetric W(27,16). Check it yourself in under a second: [`docs/results/sw-27-16`](docs/results/sw-27-16/README.md).
+
+**Constructed SW(25,16), a math case a 2025 paper listed as open.** Given a one-sentence goal ("settle one published open question"), agent-afk agents picked the target, designed a structured SAT search, found a symmetric 25x25 weighing matrix in 760 seconds of solver time, checked it with independent exact checkers and a prior-work search, and wrote up a short proof. The author of the paper that listed the case as open confirmed it passes his verifier. Check it yourself in under a second: [`docs/results/sw-25-16`](docs/results/sw-25-16/README.md).
+
+## How it compares
+
+| | Claude Code | Agent AFK |
+|---|---|---|
+| Harness | Closed binary | Apache-2.0, editable |
+| The loop | You configure *around* it | You edit *the loop* |
+| Behavior | Mostly fixed | Prompts, gates, routing, skills are code |
+| Result | A great default agent | An agent system you own |
+
+The model isn't the product -- the loop is. Agent AFK hands you the loop as code: prompts, gates, routing, skills, traces, providers, terminal states. Edit any of them.
+
+## Four surfaces, one session manager
+| Command | Surface |
+|---|---|
+| `afk chat "..."` | One-shot (fire & forget) turn — pipe-friendly, scripts well |
+| `afk` (alias of `afk interactive`) | REPL with slash commands, streaming, plan mode, image paste |
+| `afk daemon` | Long-running headless agent, cron-friendly. For persistence across reboot and crash, use `/service-setup` (launchd on macOS, systemd `--user` on Linux) instead of running in a bare tmux pane. |
+| `afk telegram start` | Telegram bot — same tools, same memory, on your phone |
+
+## Configuration
+
+`agent-afk` keeps all of its state under **`~/.afk/`** — sessions, plugins, memory, logs, settings. Nothing is shared with `~/.claude/`. You can delete `~/.claude` entirely and `afk` still runs.
+
+**Local-first, no phone-home.** There is no analytics or remote telemetry — Agent AFK never sends your prompts, code, or usage anywhere except directly to the model provider you configure. What telemetry exists is local JSONL under `~/.afk/` that you can read or delete.
+
+Optional, in order of usefulness:
+
+```bash
+# Pick a model — opus | sonnet | haiku | fable (Anthropic) or codex (OpenAI)
+AFK_MODEL=sonnet
+
+# Enable the Telegram bot + send_telegram tool
+TELEGRAM_BOT_TOKEN=1234567890:ABC...
+AFK_TELEGRAM_ALLOWED_CHAT_IDS=12345678
+
+# Optional per-session cost cap (unset = no limit)
+# AFK_MAX_BUDGET_USD=5.00
+```
+
+**Project-scoped system prompt.** Drop an `AFK.md` at your project root and `afk` appends it to its built-in framework prompt whenever you run from that directory — your instructions layer on top of the base, they don't replace it. No frontmatter needed.
+
+**Check what resolved.** `afk config` dumps the live configuration. `afk doctor` validates keys, paths, and provider connectivity.
+
+## Memory
+
+Claude remembers things across sessions — preferences, decisions, conventions, and reusable procedures — without any manual setup. Memory is local-only and stored under `~/.afk/state/memory/`.
+
+**Two storage tiers:**
+
+- **Hot memory** (`~/.afk/state/memory/HOT.md`) — a small markdown file (≤ ~1,500 tokens) injected into every future session's system prompt automatically. Use it for the facts you want Claude to always carry: your name, working style, standing instructions. Capped at 5,250 characters; overflow is truncated with a sentinel comment.
+- **Fact archive** (`~/.afk/state/memory/memory.db`) — an unbounded SQLite store, full-text-searchable via FTS5. Facts are queried on demand with the `memory_search` tool; they don't bloat every prompt.
+
+**Fact categories** (set when writing to the archive):
+
+| Category | What to put here |
+|---|---|
+| `preference` | Working style, formatting, tool choices |
+| `convention` | Naming rules, file layout, team norms |
+| `decision` | Architecture choices and the reasoning behind them |
+| `learning` | Bugs found, lessons from past runs |
+
+**Tools available inside a session:**
+
+- `memory_search` — full-text search across facts and procedures (supports FTS5: `AND`, `OR`, `NOT`, `"exact phrase"`, `prefix*`).
+- `memory_update` — write or supersede a fact in the archive (`target: "fact"`) or overwrite hot memory (`target: "hot"`).
+- `procedure_write` — save a reusable step-by-step workflow as a named markdown file under `~/.afk/state/memory/procedures/`. Procedures are searchable via `memory_search`.
+
+Hot memory is injected at session start; `memory_search` is called explicitly during a run. The session-end hook logs each completed top-level session to the archive automatically — subagent sessions are excluded.
+
+All four surfaces (REPL, chat, daemon, Telegram) share the same store — memory written in one surface is available everywhere.
+
+## Models
+
+Default is `sonnet`. Override per-call with `--model`:
+
+```bash
+afk chat "explain this stack trace" --model opus_1m
+afk --model sonnet_1m
+afk chat "refactor this" --model gpt-5.5
+```
+
+| Model | Best for |
+|---|---|
+| `fable` | Most capable — Claude Fable 5 (Mythos-class), hardest reasoning + long-horizon agentic work (1M context) |
+| `opus` | Complex reasoning, multi-step planning, long contexts |
+| `sonnet` | Day-to-day default — balanced speed and capability |
+| `haiku` | Fast, cheap, meh... |
+
+**Model slots** — rebind any capability tier to any model:
+
+| Slot | Default | Notes |
+|---|---|---|
+| `local` | *(empty — you configure)* | Point at Ollama, LM Studio, or any OpenAI-compatible shim via `AFK_MODEL_LOCAL` + `AFK_MODEL_LOCAL_BASE_URL` |
+| `small` | `claude-haiku-5-5` | Cheapest/fastest Anthropic tier |
+| `medium` | `claude-sonnet-4-6` | General-use default |
+| `large` | `claude-opus-5` | Most capable |
+
+The `haiku`/`sonnet`/`opus`/`fable` handles are **fixed identities**, not tier
+aliases: they always resolve to their Claude model even after you rebind a tier
+(so rebinding `medium` to an OpenAI model won't hijack `sonnet`). See
+[`docs/model-slots.md`](docs/model-slots.md) for the full configuration reference.
+
+MCP servers (tool-providing plugins over stdio/HTTP) — see [`docs/mcp.md`](docs/mcp.md) for config, transports, OAuth, and security notes.
+
+## Useful commands
+
+```bash
+afk status               # connection, model, bypass-mode state
+afk doctor               # environment self-check
+afk config               # dump resolved config
+afk plugin list          # installed plugins under ~/.afk/plugins/
+afk completion zsh       # shell completion (also: bash, fish)
+afk --help               # full command tree
+```
+
+Aliases: `afk c` → `chat`, `afk i` → `interactive`, `afk s` → `status`.
+
+### Queue management
+
+`afk queue` manages the pull-trigger daemon's task queue — tasks are persisted as JSON files and consumed one-by-one by `afk daemon --trigger pull`.
+
+```bash
+afk queue add "/forge-friction --auto" --notify-on failure
+                         # enqueue a command; daemon picks it up on next poll
+afk queue list           # print all pending tasks (id, enqueued time, command)
+afk queue remove <id>    # drop a single pending task by id
+afk queue clear          # remove all pending tasks (prompts for confirmation)
+afk queue clear --yes    # clear without prompting (CI / non-interactive)
+```
+
+### Self-improvement pipeline
+
+`afk improve` is a zero-LLM, deterministic pipeline that mines `~/.afk/state/witness/` session traces for ranked failure patterns, without making any model calls.
+
+```bash
+# Scan traces for failure patterns (dry-run; add --write to persist cards)
+afk improve scan [--since 7d] [--write] [--only <detector,...>]
+
+# Inspect failure cards
+afk improve cards list [--pattern <name>] [--severity <level>] [--status open|deferred|resolved]
+afk improve cards show <slug>
+afk improve cards triage <slug> --note "..." [--status resolved]
+
+# Draft a template-mode improvement proposal for a card (no LLM)
+afk improve propose <slug> [--no-write]
+
+# Generate a replay-mode eval-case from a failure card
+afk improve eval-gen <cardSlug> [--evidence-row <i>] [--no-write]
+
+# Run the deterministic guardrail contract for an eval-case
+afk improve eval-run <evalCaseIdOrCardSlug> [--no-write]
+```
+
+Available detectors (run `afk improve scan --help` for thresholds): `repeated-tool-use`, `subagent-block`, `closure-anomaly`, `tool-failure-density`.
+
+### Speculative branch farm
+
+`afk farm` spawns N isolated git worktrees, runs an agent on each in parallel, scores the results (tests + lint + LoC delta), and prints a ranked summary.
+
+```bash
+afk farm "add retry logic to the queue consumer" --branches 3
+afk farm "<task>" -n 5 --model sonnet --fail-fast
+afk farm "<task>" -n 3 --no-score    # skip post-run scoring
+afk farm "<task>" -n 3 --labels "approach-a,approach-b,approach-c"
+afk farm "<task>" -n 3 --no-memory --no-digest  # skip memory write + Telegram
+```
+
+Each branch gets a dedicated worktree under `~/.afk/state/farm/`. A commit-count escape check confirms each agent did real work. On completion, the winner (branch that passes tests and makes the smallest net change) is surfaced; the rest are left for manual cherry-pick or deletion.
+
+## A note on permissions
+
+`afk` does not prompt before each tool call — there is no per-tool approval flow. Claude runs bash, reads and writes files, fetches URLs, and calls MCP servers without asking each time. This is intentional — `afk` is built for unattended work, where a permission prompt with no human in front of it is just a wedged session.
+
+**New installs default to bypass mode.** `afk chat` and `afk interactive` start in `permissionMode: "bypassPermissions"` when `afk.config.json` sets none — the agent reads and writes **anywhere** with no path-approval prompt. This is the equivalent of Claude Code's `--dangerously-skip-permissions`, on by default; use `afk` only on a machine and account you trust. Bypass does not change `ask_question` — that is the model choosing to ask you something, a separate axis.
+
+**To re-enable path containment**, set the mode back any of these ways:
+
+- Persistently: `afk config set permissionMode default` (or `plan`), or `"permissionMode": "default"` in `afk.config.json`. It stays that way until you change it again.
+- For one session: `/bypass off` in the REPL (the status line clears `⚡ bypass`).
+
+With containment on (`default`), a file tool (read/write/edit/list/glob/grep) targeting a path *outside* the session's working directory triggers a **path-approval** prompt; pre-authorize paths with `/allow-dir <path>` (or answer "persist" at the prompt to remember them across sessions). Toggle bypass live anytime with `/bypass`. `afk daemon` always runs in bypass (no human to prompt); **Telegram** sessions stay contained (`default`) and rely on hook-based enforcement.
+
+## Troubleshooting
+
+**`invalid x-api-key` / `ANTHROPIC_API_KEY not found`** — run `afk login` to authenticate interactively, or set the key manually: `export ANTHROPIC_API_KEY=sk-ant-...` (or add it to `~/.afk/config/afk.env`). Run `afk doctor` to confirm.
+
+**`Cannot send message: session is closed`** — the session timed out or was closed. Start a new one (`afk i` or a fresh `afk chat`).
+
+**`Maximum turns exceeded`** — safety rail tripped. Bump it with `--max-turns 50` or higher.
+
+**Hit the budget cap** — raise `AFK_MAX_BUDGET_USD` or unset it for the session.
+
+**Telegram bot won't start** — `afk telegram status` then `afk telegram logs`. Most common cause: missing `AFK_TELEGRAM_ALLOWED_CHAT_IDS` after token setup.
+
+## Changelog
+
+Recent releases at [`CHANGELOG.md`](CHANGELOG.md), also viewable in-REPL via `/changelog`.
+
+## Follow Along
+
+Building this in public at **[The Goblin Files](https://griffinlong.substack.com)** -- field notes from running an autonomous coding agent at full tilt.
+
+## License
+
+Agent AFK is **open source**, licensed under **[Apache-2.0](LICENSE)** (SPDX: `Apache-2.0`).
+Use it, modify it, fork it, embed it in commercial or closed-source products -- the
+standard Apache conditions apply (keep the license and [`NOTICE`](NOTICE), note
+significant changes, and don't use the "Agent AFK" name or marks to imply
+endorsement). No copyleft, no CLA. Every feature ships in the open-source repo --
+there are no paid unlocks.
+
+Paid plans are monthly support from the maintainer (setup, custom skills, tuning),
+not feature gates. See [`LICENSING.md`](LICENSING.md).
+
+Contributions are accepted under the [DCO](https://developercertificate.org/)
+(`git commit -s`). "Agent AFK" is a trademark of Griffin Long. (c) Griffin Long.

@@ -1,0 +1,68 @@
+# Image Classification & Image Captioning with LiteRT
+
+
+This is a fully functional Android application built with Kotlin and Jetpack Compose that showcases how to integrate LiteRT for on-device image classification and image captioning. It also demonstrates how to use MediaPipe for on-device large language model (LLM) integration, enabling natural language processing directly on the device.
+
+You can read more about this repository in the blog post [Exploring On-Device AI for Android: Image Classification, Captioning & LLM Integration][blog-post]
+
+The project follows modern Android development best practices and serves as a practical reference for developers interested in integrating LiteRT and MediaPipe into their own apps.
+
+<p>
+    <img src="Screenshot_20250528_141803.png" width="203" height="454">
+    <img src="Screenshot_20250528_135943.png" width="203" height="454">
+    <img src="Screenshot_20250528_140520.png" width="203" height="454">
+    <img src="Screenshot_20250528_141940.png" width="203" height="454">
+</p>
+<div align="center">
+    
+</div>
+
+<table>
+<tr>
+<td width="67%" valign="top">
+
+## Features
+* Image Classification
+* Image Captioning
+* LLM Inference
+
+### Libraries
+
+* [LiteRT][litert]
+* [LLM Inference][genai]
+* [Jetpack Core][core]
+* [MVVM architectural pattern][mvvm]
+* [Dependency injection with Hilt][hilt]
+* [Jetpack Compose UI][compose]
+* [Retrofit][retrofit] for REST API communication
+* [Moshi][moshi] for parsing JSON into Kotlin classes
+* [Coil][coil] for image loading
+
+</td>
+<td width="33%" align="center">
+
+<img src="on-device-ai.gif" width="271" height="605">
+
+</td>
+</tr>
+</table>
+
+[litert]: https://github.com/google-ai-edge/LiteRT
+
+[genai]: https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference/android
+
+[core]: https://developer.android.com/jetpack/androidx/releases/core
+
+[mvvm]: https://developer.android.com/topic/libraries/architecture/viewmodel
+
+[hilt]: https://developer.android.com/training/dependency-injection/hilt-android
+
+[compose]: https://developer.android.com/jetpack/compose
+
+[retrofit]: http://square.github.io/retrofit
+
+[moshi]: https://github.com/square/moshi
+
+[coil]: https://coil-kt.github.io/coil/compose
+
+[blog-post]: https://medium.com/proandroiddev/exploring-on-device-ai-for-android-image-classification-captioning-llm-integration-23080f965e65

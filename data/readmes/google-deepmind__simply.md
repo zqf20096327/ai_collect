@@ -1,0 +1,196 @@
+<!-- mdlint off(LINE_OVER_80) -->
+# Simply: Minimal Code for End-to-End Frontier LLM Research
+
+*Simply* is a minimal and scalable research codebase in JAX, designed as an environment where both humans and AI agents can rapidly iterate on frontier LLM research.
+
+- *Quick to [fork and hack](#getting-started)* for fast iteration. We aim at minimizing the time to implement new ideas (e.g., optimizer, training loss, RL algorithms, etc) by humans and AI agents.
+- *Minimal abstractions and dependencies* for a simple and self-contained codebase. Learn [Jax](https://jax.readthedocs.io/en/latest/index.html), and you are ready to read and hack the code.
+- *An environment for automated AI research* An AI agent, which can itself be powered by an LLM served with *Simply*, can read the code, propose new ideas, run experiments, and iterate autonomously or under the guidance of human researchers. See [automated AI research with agents](#automated-ai-research-with-agents) for simple examples. 
+- *Agent harnesses for long horizon automated research* Besides the [minimal agent](simply/agent/) example, we recently added one fully featured agent harness named [Amplio](amplio/README.md) designed for long horizon runs suited for automated research with *Simply*.
+- That's it, *simply* [get started](#getting-started) now :)
+
+## Getting started
+### Example commands
+
+#### Local test for debug
+```shell
+pip install ".[tfds]" && python setup/setup_assets.py --vocabs-only  # one-off: Qwen3 tokenizer + TFDS
+EXP=simply_local_test_1; rm -rf /tmp/${EXP}; python -m simply.main --experiment_config lm_test --experiment_dir /tmp/${EXP} --alsologtostderr
+```
+Or if you want to debug by printing arrays like normal python code, you can disable `jit` and `use_scan` using the command below.
+
+```shell
+export JAX_DISABLE_JIT=True; EXP=simply_local_test_1; rm -rf /tmp/${EXP}; python -m simply.main --experiment_config lm_no_scan_test --experiment_dir /tmp/${EXP} --alsologtostderr
+```
+
+`lm_smoke_test` trains the same tiny model on synthetic data, so it needs neither the tokenizer nor a dataset download:
+
+```shell
+python -m simply.main --experiment_config lm_smoke_test --experiment_dir /tmp/smoke --alsologtostderr
+```
+
+#### Running on Google Cloud TPUs
+See the [GCloud Quickstart](gcloud_quickstart.md) to run your first experiment on a Cloud TPU, or the [full GCloud guide](docs/gcloud.md) for multi-host training, preemption handling, and monitoring.
+
+#### Running on GKE with XPK
+Google Kubernetes Engine (GKE) is supported. See [GKE quick start](gcloud_quickstart.md#optional-running-on-gke-with-xpk) to run your first experiment on GKE, and [GKE section in the full GCloud guide](docs/gcloud.md#running-on-gke-with-xpk) for details.
+
+#### Evaluation and serving
+See the [eval and serving guide](docs/eval_and_serving.md) for decode-based evaluation (`simply/eval/`) and the gRPC serving stack (`simply/serving/`).
+
+#### Model zoo
+[`simply/zoo/`](simply/zoo/) holds self-contained model plugins that register themselves on import, each with its own README: [GLM-5](simply/zoo/glm5/README.md), [Kimi K3](simply/zoo/kimi_k3/README.md) and [Qwen3.8](simply/zoo/qwen3p8/README.md). They need the `zoo` extra (`pip install ".[zoo]"`), and run through the same entry points, e.g.
+
+```shell
+python -m simply.zoo.glm5.main --experiment_config glm5p2 --experiment_dir /tmp/glm5 --alsologtostderr
+```
+
+#### Automated AI research with agents
+
+You can use agents like [Google Antigravity](https://antigravity.google/), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), or [Gemini CLI](https://github.com/google-gemini/gemini-cli) to run automated research experiments. For example, paste the following prompt into your agent from the repo root to have it design and benchmark new optimizers on a toy setting:
+
+```
+You are an AI research agent.
+Design and benchmark new optimizers for training a small transformer.
+Read simply/utils/optimizers.py to understand the interface.
+First, run the Adam baseline using the lm_test config and record the final loss.
+In multiple research iterations, propose novel optimizers, tune their hyperparameters, and run experiments to compare with the baseline.
+In each iteration, you can propose and run 3 experiments, wait for results and then start the next iteration based on the results of finished experiments. Keep running new iterations until you have finished 15 experiments or proposed 10 new optimizers.
+Write a report to /tmp/optimizer_report.md.
+```
+
+See the [full guide](docs/automated_ai_research_example.md) for more interesting examples including RL algorithm search for post-training. Have fun playing around with different prompts and interacting with the agent for longer research.
+
+Simply also includes a built-in agent harness (`simply/agent/`) with Bash tool and context management for autonomous long-running research tasks. Quick test:
+
+```bash
+pip install ".[agent]"
+python -m simply.agent.main \
+    --task_file=simply/agent/example_tasks/code_stats.md \
+    --env="Local:." \
+    --llm="LiteLLM:vertex_ai/gemini-2.5-pro"
+```
+
+See the [agent README](simply/agent/README.md) for setup and configuration details.
+
+#### Benchmarking a research agent
+
+[`tasks/research_bench/`](tasks/research_bench/README.md) is a suite of
+11 scored research tasks — pretraining under a FLOP cap, optimizer design, RL
+post-training on math and tool use, porting a published architecture from a
+spec, and test-time decoding — each with a fixed evaluation, a Cloud TPU
+launcher for the required multi-seed run, and a validator that turns the result
+into a normalized score.
+
+#### Long-horizon automated research with the Amplio harness
+
+[**Amplio**](amplio/README.md), vendored under [`amplio/`](amplio/), is a fully featured Go agent harness for long-horizon runs: generic tools (shell, file edit, sub-agent spawn, inter-agent messaging), DB-first persistence so a run resumes after a crash, and a web UI.
+
+```bash
+cd amplio && make build   # needs Go (see amplio/go.mod) and Node.js 22+
+./amplio serve            # prints a URL with an access token
+```
+
+`amplio serve` reads `system_llm_hq` / `system_llm_fast` from `<data-dir>/config.toml`; see the [Amplio README](amplio/README.md) for configuration, LLM providers, and headless runs.
+
+## Dependencies
+
+The main dependencies are:
+[Jax](https://jax.readthedocs.io/en/latest/index.html) for model and training.
+[Orbax](https://orbax.readthedocs.io/en/latest/) for checkpoint management.
+[Grain](https://github.com/google/grain) for data pipeline.
+
+Install dependencies:
+
+```bash
+# JAX installation is environment-specific. See https://docs.jax.dev/en/latest/installation.html
+# CPU:
+pip install -U jax
+# GPU:
+pip install -U "jax[cuda13]"
+# TPU:
+pip install -U "jax[tpu]"
+
+# Install simply and its dependencies:
+pip install .
+# With optional dependencies:
+pip install ".[tfds]"       # for TensorFlow Datasets
+pip install ".[math-eval]"  # for simply/utils/math_eval.py
+pip install ".[zoo]"        # for the simply/zoo/ model plugins
+pip install ".[dev,agent]"  # for testing (pytest; the agent tests need litellm)
+```
+
+### Serving protos
+
+The serving stack (`simply/serving/`) talks gRPC, and its Python stubs are
+generated from `simply/serving/*.proto` rather than checked in. Generate them
+once after install:
+
+```bash
+pip install ".[serving]"
+python setup/gen_protos.py
+```
+
+## Setup Model Checkpoints and Datasets
+
+Download datasets and model checkpoints in format supported by Simply from HuggingFace:
+
+```bash
+# Install huggingface_hub
+pip install ".[assets]"
+
+# Download both models and datasets (~10 GB)
+python setup/setup_assets.py
+
+# Or download only models/datasets/vocabs (the tokenizers are ~100 MB)
+python setup/setup_assets.py --models-only
+python setup/setup_assets.py --datasets-only
+python setup/setup_assets.py --vocabs-only
+```
+
+This will download models to `~/.cache/simply/models/`, datasets to `~/.cache/simply/datasets/` and tokenizers to `~/.cache/simply/vocabs/`. You can customize locations with `--models-dir`, `--datasets-dir` and `--vocabs-dir` flags, or set environment variables `SIMPLY_MODELS`, `SIMPLY_DATASETS` and `SIMPLY_VOCABS`. (Currently we only included a few datasets and models for testing, and will add more soon.)
+
+### Quick setup with uv
+
+[uv](https://docs.astral.sh/uv/) provides a fast way to set up the environment and download assets in one go:
+
+```bash
+# Install dependencies
+uv sync
+
+# Download both models and datasets
+uv run python setup/setup_assets.py
+
+# Or download only models/datasets
+uv run python setup/setup_assets.py --models-only
+uv run python setup/setup_assets.py --datasets-only
+```
+
+## Citation
+
+If you find *Simply* helpful, please cite the following BibTeX:
+
+```
+@misc{Liang2025Simply,
+  author       = {Chen Liang and Da Huang and Chengrun Yang and Xiaomeng Yang and Andrew Li and Xinchen Yan and {Simply Contributors}},
+  title        = {{Simply: an experiment to accelerate and automate AI research}},
+  year         = {2025},
+  howpublished = {GitHub repository},
+  url          = {https://github.com/google-deepmind/simply}
+}
+```
+
+Contributors list:
+[Chiyuan Zhang](https://github.com/pluskid), [Robert Dyro](https://github.com/rdyro), Alex Zhai, [Xingjian Zhang](https://github.com/xingjian-zhang), [Jiaxi Tang](https://github.com/graytowne), [Lizhang Chen](https://github.com/L-z-Chen), [Ran Tian](https://github.com/tianran)
+
+## License
+
+Copyright 2025 Google LLC
+
+All software is licensed under the Apache License, Version 2.0 (Apache 2.0); you may not use this file except in compliance with the Apache 2.0 license. You may obtain a copy of the Apache 2.0 license at: https://www.apache.org/licenses/LICENSE-2.0
+
+All other materials are licensed under the Creative Commons Attribution 4.0 International License (CC-BY). You may obtain a copy of the CC-BY license at: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Unless required by applicable law or agreed to in writing, all software and materials distributed here under the Apache 2.0 or CC-BY licenses are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the licenses for the specific language governing permissions and limitations under those licenses.
+
+This is not an official Google product.

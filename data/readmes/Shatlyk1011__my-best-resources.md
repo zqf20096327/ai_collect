@@ -1,0 +1,94 @@
+# The Best Resources for Web Developers and Designers (Opinionated)
+
+A list of awesome resources to make a developer's life easier.
+
+Check out my [YouTube video](https://youtu.be/nmrzwQNWyZc) where I showcase the resources listed here in action.
+### List of Resources
+
+- [Design Inspiration](#design-inspiration)
+- [Catalog of Ready-Made Components](#catalog-of-ready-made-components)
+- [Stock Images & Icons](#stock-images--icons)
+- [Video Editing](#video-editing)
+- [Artificial Intelligence for Various Use Cases](#artificial-intelligence-for-various-use-cases)
+- [Other Useful Sources (100% Helpful)](#other-useful-sources)
+
+## Design Inspiration
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                                                       |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [Minimal Gallery](https://minimal.gallery/)                         | Websites with minimalist design and convenient filtering.                                         |
+| [Unsection](https://www.unsection.com/)                             | Over 1000 web pages categorized by sections with convenient filtering.                            |
+| [Supahero](https://www.supahero.io/)                                | Supahero offers the best `Hero` sections for web pages.                                           |
+| [Stack Sorted](https://stacksorted.com/)                            | A collection of the best web designs, sorted by elements.                                         |
+| [Awwwards](https://www.awwwards.com/)                               | A place where the best websites in the world are evaluated and collected.                         |
+| [SaaSpo](https://saaspo.com/)                                       | Page or section SaaS web design inspirations.                                                     |
+| [Bento Grid](https://bentogrids.com/)                               | Curated collection of bento designs for your inspiration.                                         |
+| [Growth Design](https://growth.design/case-studies)                 | Product Psychology Case Studies from Big Tech, Showcased with Comics.                             |
+| [MDX](https://mdx.so/projects)                                      | 3D Web Design Inspiration Catalogue                                                               |
+| [Codrops](https://tympanus.net/codrops/webzibition/)                | Freshly hand-picked websites for your inspiration.                                                |
+| [Inspo.page](https://www.inspo.page/)                               | The website inspiration library curated at the component level                                    |
+| [Laws of UX](https://lawsofux.com)                                  | Collection of best practices that designers can consider when building user interfaces (UX)       |
+
+## Catalog of Ready-Made Components
+
+> Components with open-source code.
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                                                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------|
+| [Emerald UI](https://www.emerald-ui.com/docs)                       | Modern UI components to install - built with GSAP and Framer (self-promo).                                                              |
+| [Built At Light](https://www.builtatlightspeed.com/)                | A marketplace with links to free websites, components, and UI kits with convenient filtering (includes both paid and free templates).   |
+| [Codrops](https://tympanus.net/codrops/demos)                       | One of the best open-source components. Most are written in `HTML, CSS, JS`.                                                            |
+| [Aceternity UI](https://ui.aceternity.com/)                         | Top-notch additions for ready-made web pages. Technologies: `Tailwind, Motion, React`.                                                  |
+| [Edil Ozi](https://www.edil-ozi.pro/)                               | Open-source library with ready-made components for `React` applications. Stack: `Tailwind, Motion, GSAP`.                               |
+| [Shad CN](https://ui.shadcn.com/)                                   | Open-source component library for creating your own library. All components can be customized to your design. Stack: `Tailwind, React`. |
+| [Motion Primitives](https://motion-primitives.com/)                 | Some of the best animated components using `Motion, Tailwind`.                                                                          |
+| [UI Verse](https://uiverse.io/)                                     | A large number of ready-made UI components, updated daily. Stack: `HTML, CSS/Tailwind`.                                                 |
+| [Olivier Larose](https://blog.olivierlarose.com/tutorials)          | A motion design specialist who teaches and shares high-quality content. Stack: `GSAP, Motion, React`.                                   |
+| [21st dev](http://21st.dev)                                         | High-quality visuals in an open-source library for React developers.                                                                    |
+| [React Bitz](https://reactbits.dev)                                 | Collection of animated, interactive & customizable React components. Stack: `Gsap, Motion, React, Tailwind`                             |
+| [Origin Kit](https://www.originkit.dev/)                            | Free Unusual Animated components for modern websites                                                                                    |
+
+
+
+## Stock Images & Icons
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Lummi AI](https://www.lummi.ai/)                                   | AI-generated images and illustrations.                                  |
+| [Unsplash](https://unsplash.com/)                                   | Professional photos.                                                    |
+| [Pexels](https://www.pexels.com/)                                   | Free stock photos shared by professionals.                              |
+| [theSVG](https://thesvg.org/)                                       | Colored Icons of popular brands                                         |
+
+
+### **Don’t forget to compress images using [Squoosh](https://squoosh.app/) or similar services to optimize image size.**
+
+## Video Editing
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                                                     |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [Animos App](https://animos.app)                                    | Export Animated video fragments with ready to use templates.                                    |
+| [Jitter Video](https://jitter.video/)                               | Ready-made video templates that can be customized and integrated into web applications.         |
+
+
+## Artificial Intelligence for Various Use Cases
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Ideogram](https://ideogram.ai/)                                    | Image generator with a free tier.                                       |
+| [Leonardo AI](https://app.leonardo.ai/)                             | Image generator with a free tier (refreshes daily).                     |
+| [Easy With AI](https://easywithai.com/)                             | A collection of AI tools for various use cases.                         |
+| [Magic Patterns](https://www.magicpatterns.com)                     | Amazing AI tool for creating ready to use components (5 credits per/m)  |
+| [Antigravity IDE](https://antigravity.google/)                      | Personal favorite AI IDE                                                |
+| [Cloudflare Models](https://developers.cloudflare.com/ai/models/)   | Add AI to your app in minutes, without the cost or complexity (PAYGO)   |
+
+## Other Useful Sources
+
+| Source Link &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Description                                                                                     |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [Wappalyzer](http://wappalyzer.com/)                                | A site to view technologies used on other websites (Web Scraping).                              |
+| [Squoosh](https://squoosh.app/)                                     | An image compression service from Google Chrome Labs.                                           |
+| [CSS to Tailwind](https://transform.tools/css-to-tailwind)          | Convert your CSS code into Tailwind in seconds (works both side)                                |
+| [Relume](https://www.relume.io)                                     | Wireframe & layout structure generator. Boosts your design in start!                            |
+
+
+This resource will be updated in the future with the best tools, so drop a ⭐️ to keep track!

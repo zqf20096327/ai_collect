@@ -1,0 +1,158 @@
+# UltraCompress
+
+> UltraCompress is retired. Its public materials preserve historical research; new API access and paid pilots are no longer offered. Historical results below apply to their recorded versions and evaluation conditions.
+
+Near-lossless 5-bit transformer compression (~1% perplexity vs the bf16 reference; lossy), with reproducible, cryptographically verifiable reconstruction.
+
+[![PyPI](https://img.shields.io/badge/pypi-0.6.27-blue.svg)](https://pypi.org/project/ultracompress/)
+[![License](https://img.shields.io/badge/license-BUSL--1.1-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Patent](https://img.shields.io/badge/patent-pending-orange.svg)](./PATENT_NOTICE.md)
+
+> **Public CLI v0.6.27:** `uc verify` checks basic pack structure and computes fingerprints; it does not reconstruct weights or automatically compare against a trusted reference. Without an API key, `uc try` prints a recorded reference response, not a live inference result. `uc catalog` preserves the historical catalog.
+
+Hermes-3-Llama-3.1-405B compressed at 5 bpw, near-lossless: **1.0066x PPL ratio** vs streaming bf16 teacher (5.0692 / 5.0358, n=50, seq_len=1024, FineWeb-edu held-out tail, seed=42). A 405B-class transformer compressed end-to-end on a single 32 GB consumer GPU.
+
+UltraCompress takes a transformer at fp16/bf16 and produces a 5-bit pack with **reproducible, cryptographically verifiable reconstruction** — a deterministic decode to the SHA-256-pinned validated artifact (a near-lossless, ~1% PPL reconstruction of the bf16 source, not a bit-identical copy of it). That is the honest contract we care about: an auditor can re-derive the validated quantized artifact from the pack and verify it byte-for-byte against the published SHA-256 manifest, as described by the historical research records; the public CLI does not perform that reconstruction. The codec is patent-pending.
+
+It exists because the bf16-equivalent quality bar matters in places where "good enough on MMLU" isn't enough — defense, FDA-regulated healthcare, SR 11-7 model validation, internal red-team eval at frontier labs. And as a side-effect of the streaming compression path, it lets us put a 405B-parameter model through a single 32 GB consumer GPU without renting an H100 cluster.
+
+This repository preserves the research and CLI documentation. It is not an offer of a current compression service.
+
+---
+
+## Recorded CLI demo
+
+```bash
+pip install ultracompress
+uc try sipsa-qwen3-0.6b
+```
+
+Without an API key, this prints a recorded reference response. It is not a live inference request. Historical versions may print old signup or POC links; those offers are no longer current.
+
+```bash
+uc catalog
+```
+
+Lists the 22 PPL-verified architectures (17 dense + 4 MoE + 1 SSM with comparator-note caveat) plus 1 ViT cosine-verified (DINOv2-Large) — across 4 architecture classes — with their published PPL ratios and historical tier labels (free / request / POC). Those labels do not describe current offers.
+
+## The public CLI (what `pip install` gives you)
+
+```
+uc try [model]         print a recorded reference response when no key is set
+uc catalog             list the historical compressed-model catalog + tiers
+uc verify <pack_dir>   basic pack structure + computed SHA-256 fingerprints
+uc info                what this package is + links/contact
+uc version             print version
+```
+
+Without an API key, `uc try` prints a recorded reference response. A keyed network-call path remains in the historical source; its presence is not a current API offer or an availability guarantee.
+
+`uc verify` checks a readable manifest, layer-file presence, the declared layer count when supplied as an integer, and nonempty layer files. Unless `--skip-hash` is used, it computes SHA-256 digests and a combined pack fingerprint. It does not reconstruct weights, measure model quality or compare with a trusted expected fingerprint. Compare a computed fingerprint with a trusted published reference separately.
+
+The default output displays a selection of hashes; `--full` displays all computed hashes. Both modes hash all selected pack files. `--skip-hash` skips fingerprint generation.
+
+```bash
+hf download SipsaLabs/qwen3-1.7b-base-uc-v3-bpw5 --local-dir ./pack
+uc verify ./pack
+```
+
+Expected result category: basic pack-structure checks and, unless skipped, a computed fingerprint. This is not a reconstruction proof or a comparison with a trusted expected hash.
+
+The historical CLI's success text may say "download integrity verified"; computing a fingerprint alone does not establish that comparison. `uc audit` produces a structural/hash receipt, not a reconstruction test. See [the receipt schema](docs/reference/audit-receipt-schema.md).
+
+---
+
+## What's verified (with JSON receipts)
+
+**22 architectures independently PPL-verified end-to-end** (0.6B → 405B, 17 dense + 4 MoE + 1 SSM) against each model's own bf16 baseline on the FineWeb-edu held-out tail at seq_len=1024, seed=42 — plus **1 Vision Transformer cosine-verified** (DINOv2-Large, 304M, ViT-L/14), bringing the catalog to **23 architectures across 4 classes**. 21 are transformer (17 dense + 4 MoE); the 22nd PPL-verified row is Mamba-2.8B (state-space model) at **1.00593× canonical PPL**, with an explicit comparator-note caveat in the registry: our canonical transformer pipeline (RoPE / attention masks / KV-cache semantics) is architecture-incompatible with SSMs, so the Mamba record uses an SSM-compatible comparator that matches what's in the HF pack. The 23rd (DINOv2-Large) uses CLS-token cosine similarity instead of PPL (encoder-only ViT has no autoregressive likelihood). TinyLlama-1.1B (1.003×) and Llama-3.1-70B (1.009×) graduated to PPL-verified in v0.6.23. DeepSeek-32B and other queued packs remain SHA-256-verified pending canonical re-eval before formal registry entry. Every published number traces to a published result JSON. A small set of packs is publicly downloadable; the table records historical research availability, not a current service offer.
+
+| Model | Params | Class | PPL ratio | HF artifact | Status |
+|---|---|---|---|---|---|
+| Hermes-3-Llama-3.1-405B | 405B | 405B-class near-lossless on a single 32 GB consumer GPU | **1.0066** | [`SipsaLabs/hermes-3-llama-3.1-405b-uc-v3-bpw5`](https://huggingface.co/SipsaLabs/hermes-3-llama-3.1-405b-uc-v3-bpw5) | live |
+| Mistral-7B-v0.3 | 7.2B | sub-0.6% drift | **1.00548** | [`SipsaLabs/mistral-7b-v0.3-uc-v3-bpw5`](https://huggingface.co/SipsaLabs/mistral-7b-v0.3-uc-v3-bpw5) | live |
+| Qwen3-1.7B-Base | 1.7B | sub-0.5% drift | **1.00401** | `SipsaLabs/qwen3-1.7b-base-uc-v3-bpw5` | live |
+| Qwen3-14B | 14.0B | sub-0.5% drift | **1.00403** | `SipsaLabs/qwen3-14b-uc-v3-bpw5` | live |
+| Qwen3-8B | 8.0B | sub-0.5% drift | **1.00440** | `SipsaLabs/qwen3-8b-uc-v3-bpw5` | live |
+| Mixtral-8x7B-v0.1 (MoE) | 47B (13B active) | sub-0.5% drift | **1.00368** | `SipsaLabs/mixtral-8x7b-v0.1-uc-v3-bpw5` | live |
+| Phi-3-mini-4k-instruct | 3.8B | sub-0.3% drift (seq_len=128, not apples-to-apples) | **1.00262** | `SipsaLabs/phi-3-mini-4k-instruct-uc-v3-bpw5` | live |
+
+Hermes-3-405B is the headline. The 1.0066x ratio is `5.0692 / 5.0358` — both halves measured under the same per-layer streaming reconstruction comparator (n=50, seq_len=1024, FineWeb-edu held-out tail, seed=42). The bf16 teacher took 7.7 hours on cuda:1; the 5-bpw pack took 14.3 hours. The Mistral-7B 1.00548× row is the tightest dense 7B-class near-lossless 5-bit ratio we currently publish.
+
+- **SSM result**: Mamba-2.8B compressed with reproducible, SHA-256-verifiable reconstruction — first public near-lossless 5-bit canonical-PPL result on a state-space model that we know of, at **1.00593× canonical ratio**. Counted as the 22nd PPL-verified architecture with an explicit comparator-note caveat in the registry: our canonical transformer pipeline (RoPE / attention masks / KV-cache semantics that don't apply to SSMs) is architecture-incompatible, so the Mamba record uses an SSM-compatible comparator that matches what's in the HF pack. The comparator is documented in the registry.
+- **HuggingFace**: a small public verification set under [`huggingface.co/SipsaLabs`](https://huggingface.co/SipsaLabs); historical catalog and artifacts.
+- **PyPI**: [pypi.org/project/ultracompress](https://pypi.org/project/ultracompress/).
+
+---
+
+## What doesn't work yet
+
+Things people sometimes assume work because the rest of it does. They don't, and we'd rather you know:
+
+- **Long-context evaluation past seq_len=1024.** Every PPL number above is at seq_len=1024 on the FineWeb-edu held-out tail. We have not yet run controlled evals at 4K/8K/32K context.
+- **State-space models past the current SSM pack.** Mamba-2.8B ships + SHA-256-verified + canonical PPL claimed at **1.00593×** (with comparator-note caveat documented in registry; our canonical transformer pipeline is architecture-incompatible with SSMs). We tried two tighter paths on top — both made it worse.
+- **Qwen3-32B PPL ratio.** Stale or suspect baseline PPL number we won't republish. Apples-to-apples re-eval is queued.
+- **Below 1.0040× on Qwen3-1.7B-Base.** This is our tightest dense floor; we tried 5 different paths to break it. Three were within noise; two were catastrophic regressions. 1.0040× stands as the empirical floor at the current configuration.
+
+---
+
+## Why this isn't AWQ / GPTQ / EXL3
+
+Every other 4–5 bit compression library targets a quality threshold ("sub-1% PPL on WikiText"). UltraCompress targets a **reproducible, cryptographically verifiable reconstruction contract**: the published pack decodes deterministically to the SHA-256-pinned validated artifact (a near-lossless, ~1% PPL reconstruction of the bf16 reference), verifiable byte-for-byte against its manifest. Codec internals are patent-pending and deliberately not described here.
+
+This matters when "the model picks a slightly-wrong variable name" is a regulatory finding rather than a cosmetic complaint. Defense / aerospace reproducible, verifiable deployment is a compliance requirement. FDA-regulated healthcare AI requires model equivalence between dev and deploy. SR 11-7 (Federal Reserve model validation) requires reproducible audit recovery.
+
+For pure-throughput inference on a fixed prompt distribution that matches your AWQ calibration set, with no downstream fine-tuning, AWQ at 4 bpw on vLLM is an alternative discussed in the historical research.
+
+As of mid-2026 we are not aware of another published library targeting a reproducible, cryptographically verifiable reconstruction contract (as opposed to a PPL-threshold) for 5-bit transformer compression on the public HuggingFace Hub. If you find one, tell us — we'd rather benchmark against it than claim a gap that isn't there.
+
+---
+
+## Honest negative results
+
+Most projects hide their failures. We catalogue them at the same level of detail as the wins.
+
+- **An initialization shortcut we tried** — made PPL 0.07 pp WORSE on Mamba and was discarded. Method specifics withheld (patent-pending).
+- **A multi-pass variant we hypothesized would help** — produced a catastrophic 13.7× regression vs. the single-pass baseline. CLOSED.
+- **Importing an AWQ-style pre-scaling step** — produced a catastrophic +13% regression and was ruled out. CLOSED.
+- **Pushing the training schedule past the current configuration** — gained nothing (within noise). The floor stands.
+- **"Base models compress tighter than instruct" hypothesis** — refuted 2/3 of architectures. Dropped.
+
+These are historical research findings; no new design-partner engagement is offered here.
+
+---
+
+
+## Historical project and licensing
+
+The historical compression methods are patent-pending; details are in [`PATENT_NOTICE.md`](./PATENT_NOTICE.md). The CLI source is BUSL-1.1 with an Additional Use Grant — free for companies under $1M ARR, research, and individuals, auto-converting to Apache 2.0 four years post-release. If you're building a derivative product whose core value depends on the underlying invention, email `founder@sipsalabs.com`.
+
+- **GitHub Sponsors** — [github.com/sponsors/sipsalabs](https://github.com/sponsors/sipsalabs).
+- **Press / commentary** — `press@sipsalabs.com`.
+
+---
+
+## License
+
+- Released under **BUSL-1.1 with an Additional Use Grant** (free for companies under $1M ARR, research, and individuals; auto-converts to Apache 2.0 four years post-release). See [`LICENSE`](./LICENSE).
+- The license grant does **not** extend to the patent-pending compression methodology that produces the artifacts. See [`PATENT_NOTICE.md`](./PATENT_NOTICE.md).
+- Pre-compressed model artifacts on HuggingFace carry the upstream teacher model's license plus this project's patent terms.
+
+## Citation
+
+```bibtex
+@software{sipsa_ultracompress_2026,
+  author = {{Sipsa Labs, Inc.}},
+  title  = {UltraCompress: Near-Lossless 5-bit Transformer Compression},
+  year   = {2026},
+  url    = {https://github.com/sipsalabs/ultracompress}
+}
+```
+
+## Contact
+
+- General: `founder@sipsalabs.com`
+- Security: `security@sipsalabs.com`
+- Press: `press@sipsalabs.com`
+- HuggingFace: [`huggingface.co/SipsaLabs`](https://huggingface.co/SipsaLabs)
+- PyPI: [`pypi.org/project/ultracompress`](https://pypi.org/project/ultracompress/)

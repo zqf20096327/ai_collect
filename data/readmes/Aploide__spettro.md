@@ -1,0 +1,158 @@
+<img src="Logo.png" alt="Spettro logo" width="360" />
+
+[![Go 1.26+](https://img.shields.io/badge/Go-1.26%2B-00ADD8?logo=go)](https://go.dev/)
+[![UI Bubble Tea](https://img.shields.io/badge/UI-Bubble%20Tea-ff69b4)](https://github.com/charmbracelet/bubbletea)
+[![Providers](https://img.shields.io/badge/LLM-OpenAI%20Compatible%20%7C%20Anthropic-6f42c1)](#provider-setup)
+[![Status](https://img.shields.io/badge/status-stable-brightgreen)](#)
+[![License](https://img.shields.io/badge/License-GPL--3.0-green)](LICENSE)
+
+Spettro is a terminal-first multi-agent coding assistant written in Go.
+
+# Quick install
+
+macOS and Linux:
+
+```bash
+curl -sSfL https://raw.githubusercontent.com/aploide/spettro/main/install.sh | sh
+```
+
+Installs to `~/.local/bin` by default (no `sudo` needed); set `INSTALL_DIR` to override. Self-updates (`/update` in the TUI, or the built-in update check) write in place to that same directory, so they never need `sudo` either.
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 | iex
+```
+
+Installs to `%LOCALAPPDATA%\Programs\spettro` and adds it to your user `PATH` — no elevation, so `/update` works in place too. See [`docs/windows.md`](docs/windows.md) for what differs on Windows.
+
+The piped form above takes no arguments. To pass `-InstallDir` (install elsewhere), `-Version` (pin a release) or `-NoPathUpdate` (leave `PATH` alone), download the script and run it:
+
+```powershell
+irm https://raw.githubusercontent.com/aploide/spettro/main/install.ps1 -OutFile install.ps1
+.\install.ps1 -InstallDir D:\tools\spettro -Version v1.2.3 -NoPathUpdate
+```
+
+It uses a configurable agent manifest (`spettro.agents.toml` + `agents/*.md` prompts), parallel sub-agent spawning via native tool calls and an `agent` tool, plus specialized orchestrator/worker roles (plan, coding, ask, explore, code, git, test, review, docs).
+
+## Highlights
+
+- Configurable multi-agent system via `spettro.agents.toml` and `agents/*.md`
+- Parallel native tool-call spawning of sub-agents
+- Permission policies: `ask-first`, `restricted`, `yolo`
+- Live tool traces in planning/coding runs
+- [Built-in tools](docs/tools.md) — one tool per job (`bash`, `file-edit`, `grep`, `glob`, `todo-write`, ...); retired duplicate names keep working as hidden aliases
+- [Dark, light and auto themes](docs/theme.md) — `/theme`, terminal-background detection, `SPETTRO_THEME`
+- Fantasy-backed provider routing for OpenAI, Anthropic, and OpenAI-compatible text calls
+- Multi-provider model support via `models.dev` catalog + OpenAI-compatible endpoints
+- Normalized [thinking/reasoning levels](docs/thinking.md) across providers (`/thinking off|low|medium|high|x-high|max`)
+- [Workflows](docs/workflows.md) — write `ultracode` (or turn on `/ultra`) and the agent orchestrates sub-agents with a script it writes for the task: phases planned at runtime, fan-out, verification loops, checkpoints where it reads interim results before going on, size tiers, `+500k` token budgets, resumable runs
+- [Interactive PTY sessions](docs/pty.md) — the agent drives REPLs, debuggers, and ssh through a real terminal
+- Conversation persistence and resume per project
+- Project trust prompt before first use in a folder
+
+## Build and run
+
+Requirements:
+
+- Go `1.26.1+`
+
+```bash
+git clone https://github.com/aploide/spettro
+cd spettro
+make build
+./bin/spettro
+```
+
+Alternative:
+
+```bash
+go run ./cmd/spettro
+```
+
+## First-time setup
+
+At first launch:
+
+1. Confirm folder trust.
+2. Run `/connect` to add an API key (or local endpoint).
+3. Run `/models` to select provider/model.
+4. Start with `plan` (default agent) and switch with `Shift+Tab`.
+
+## Common commands
+
+Spettro commands are entered with a leading `/`.
+
+- `/help` show help text
+- `/exit`, `/quit` quit Spettro
+- `/mode`, `/next` cycle active agent/mode
+- `/theme` opens the colour [theme](docs/theme.md) picker (preview dark / light / auto and apply); `/theme <dark|light|auto>` sets one directly. `auto` detects the terminal background (default). `SPETTRO_THEME` picks the palette at startup
+- `/connect` connect provider or local endpoint
+- `/models [provider:model] [api_key]` open selector or set directly
+- `/permission <ask-first|restricted|yolo>` set execution policy
+- `/permissions [ask-first|restricted|yolo]` show/set permission policy
+- `/permissions debug <on|off>` toggle permission diagnostics
+- `/budget <n|0>` set request token budget (`0` = unlimited)
+- `/thinking <off|low|medium|high|x-high|max>` set the reasoning level (Anthropic thinking budget, OpenAI-style `reasoning_effort`; hidden for non-reasoning models, auto-falls back if a level is rejected)
+- `/ultra [on|off]` toggle ultra, saved to your config — ultracode: substantive tasks run as dynamic workflows (suspended under `ask-first`; write `ultracode` in a message for a single turn)
+- `/workflows [list|show|run|size|where]` list, show, or run saved workflow templates, or set the workflow size tier (write `ultracode` in a message to hand the agent the workflow tool for that turn)
+- `/plan [prompt]` switch to plan mode or run plan prompt
+- `/approve` execute pending approved plan through coding agent
+- `/tasks [list|add|done|set|show]` manage session tasks
+- `/mcp <list|read|auth>` manage MCP resources and auth tokens
+- `/skills` list Agent Skills; `/<skill-name> [args]` or `$skill-name` runs one; `/skill <install|info|uninstall|enable|disable|where|reload>` manages them (Claude Code / Codex `SKILL.md` format, their folders are read too)
+- `/hooks` show effective runtime hooks
+- `/compact [focus]` summarize conversation history
+- `/compact auto <status|on|off>` configure auto-compact
+- `/compact policy` show compact thresholds/counters
+- `/clear` auto-save and clear current conversation
+- `/resume` load a previous saved conversation
+- `/init` analyze the repo and create/update `SPETTRO.md`
+- `/remote [:port]` expose a loopback HTTP/SSE control plane (see [`docs/remote.md`](docs/remote.md))
+- `/remote local [:port]` expose the control plane to LAN devices on `0.0.0.0` (see [`docs/remote.md`](docs/remote.md))
+- `/telegram setup <token>` configure a Telegram bot relay so you can drive Spettro from a chat (see [`docs/telegram.md`](docs/telegram.md)). Alias: `/tg`.
+- `/<custom> [args]` run your own saved prompts from `~/.spettro/commands/` or `.spettro/commands/` (see [`docs/custom-commands.md`](docs/custom-commands.md))
+
+For full commands and keybindings, see [`docs/commands.md`](docs/commands.md).
+
+## Editor integration (ACP)
+
+`spettro --acp` runs Spettro as an [Agent Client Protocol](https://agentclientprotocol.com)
+agent over stdio, so ACP-capable editors like Zed can drive it from their
+native agent panel — with streamed reasoning, tool call reporting, mode
+switching, and permission prompts. See [`docs/acp.md`](docs/acp.md).
+
+## Project docs
+
+- [Session Lifecycle](docs/session.md) — auto-save, resume, compact, clear
+- [Goal Mode](docs/goal.md) — autonomous `/goal` runs
+- [Runtime Hooks](docs/hooks.md) — custom bash middleware
+- [Clipboard and Attachments](docs/clipboard.md) — image paste, file attach
+- [First-Launch Onboarding](docs/onboarding.md)
+- [Spettro Subscription](docs/subscription.md) — login, plans, credits
+- [Agent Manifest](AGENTS.md)
+- [Agent Prompts](agents/README.md)
+- [Agent Skills](docs/skills.md)
+- [Getting started and workflow](docs/getting-started.md)
+- [Commands and keybindings](docs/commands.md)
+- [Custom slash commands](docs/custom-commands.md) — save reusable prompts as your own `/commands`
+- [Configuration and storage](docs/configuration.md)
+- [OS sandboxing](docs/sandbox.md)
+- [Windows notes](docs/windows.md) — install, shell, sandbox and PTY differences
+- [Architecture overview](docs/architecture.md)
+- [Remote control plane](docs/remote.md)
+- [Agent Client Protocol (editor integration)](docs/acp.md)
+- [Telegram relay](docs/telegram.md)
+- [Themes (dark, light, auto)](docs/theme.md)
+- [Extended thinking levels](docs/thinking.md)
+- [Workflows](docs/workflows.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Documentation Index](docs/README.md)
+
+## Development
+
+```bash
+make test
+make build
+make build-all
+```

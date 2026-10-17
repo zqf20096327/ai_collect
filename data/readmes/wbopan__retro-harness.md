@@ -1,0 +1,222 @@
+# Evolving Agents in the Dark
+
+**Retrospective Harness Optimization (RHO) via Self-Preference**
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2606.05922"><img src="https://img.shields.io/badge/arXiv-2606.05922-b31b1b.svg?style=for-the-badge" alt="arXiv"></a>
+  <a href="https://paper-rho.wenbo.io"><img src="https://img.shields.io/badge/Project-Page-2F4F6F.svg?style=for-the-badge" alt="Project page"></a>
+  <a href="https://www.wenbo.io/blog/rho-dynamic-workflow/"><img src="https://img.shields.io/badge/Blog-Post-4A6B8A.svg?style=for-the-badge" alt="Blog post"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue.svg?style=for-the-badge" alt="Python 3.11+">
+</p>
+
+<p align="center">
+  <img src="site/static/fig2-pipeline.png" width="100%" alt="The RHO pipeline">
+</p>
+
+> **TL;DR** — AI agents rely on a *harness* of skills, tools, and workflows to solve complex tasks.
+> **RHO** improves that harness **without any ground-truth labels or validation set** — it learns purely
+> from the agent's own past trajectories. A single retrospective pass lifts SWE-Bench Pro pass rate
+> from **59% → 78%**.
+>
+> Read the story behind RHO and dynamic workflows in the [blog post](https://www.wenbo.io/blog/rho-dynamic-workflow/) ([中文版](https://www.wenbo.io/blog/zh/rho-dynamic-workflow/)).
+
+---
+
+## ⚡ Run it on your own projects
+
+| Agent | One line to try | |
+| :-- | :-- | :-- |
+| <img src="https://cdn.simpleicons.org/claude" width="18" alt="Claude"> &nbsp;**Claude Code** | Paste as a prompt:<br>`Run the workflow at https://raw.githubusercontent.com/wbopan/retro-harness/main/.claude/workflows/retrospection.js on this project` | **Dynamic workflow, plug-and-play on the project you're in. Recommended.** |
+| <img src="https://avatars.githubusercontent.com/u/14957082?s=36" width="18" alt="OpenAI"> &nbsp;**Codex CLI** | `curl -fsSLO https://raw.githubusercontent.com/wbopan/retro-harness/main/codex/retrospection.py && python3 retrospection.py` | Stdlib-only orchestrator over `codex exec` — the same cycle on your `AGENTS.md` + skills. |
+| <img src="https://cdn.simpleicons.org/gnubash" width="18" alt="CLI"> &nbsp;**This repo** | `git clone https://github.com/wbopan/retro-harness && cd retro-harness && uv sync && uv run rho evolve --dataset locomo:data/locomo10.json --rounds 1` | Used to reproduce our results, for research purposes. |
+
+Both one-liners mine the sessions you have **already accumulated** in that project, diagnose recurring
+failures, and evolve the agent's persistent harness (`CLAUDE.md` / auto-memory / scripts, or
+`AGENTS.md` / skills) — applying an update only when the agent's own pairwise self-preference favors
+it. Details: [Retrospection on Claude Code](#retrospection-try-rho-on-your-own-claude-code-projects)
+· [`codex/retrospection.py`](codex/retrospection.py).
+
+## What is RHO?
+
+Most harness-optimization methods (prompt optimization, skill/tool synthesis, agent search) iterate
+against a *labeled validation set*. In real deployments such labels are expensive or impossible to
+collect — but a deployed agent continuously produces a rich stream of **unlabeled trajectories**.
+
+RHO turns those trajectories into harness improvements with **no external grading**, in three stages:
+
+1. **Coreset Selection** — pick a small, difficulty-diverse subset of past tasks with a determinantal
+   point process (DPP).
+2. **Group Rollout** — re-solve each coreset task *G* times in parallel, then extract two
+   label-free diagnostic signals: **self-validation** (within a trajectory) and **self-consistency**
+   (across parallel trajectories).
+3. **Harness Proposal** — sample *N* candidate harness edits and keep the one whose rollouts are most
+   preferred by the agent's own **pairwise self-preference**.
+
+<p align="center">
+  <img src="site/static/fig1-rho-comparison.png" width="55%" alt="Validation-based vs retrospective optimization">
+</p>
+
+## Results
+
+Held-out pass rate after a single optimization round (Codex + GPT-5.5), versus feedback-free baselines
+that operate under the same agent-call budget:
+
+| Method | Harness surface | SWE-Bench Pro | Terminal-Bench 2 | GAIA-2 |
+| :-- | :-- | :--: | :--: | :--: |
+| Vanilla Codex | — | 0.59 | 0.71 | 0.29 |
+| Dynamic Cheatsheet | Skills | 0.62&nbsp;(+0.03) | 0.73&nbsp;(+0.02) | 0.30&nbsp;(+0.01) |
+| ReasoningBank | Memory | 0.61&nbsp;(+0.02) | 0.73&nbsp;(+0.02) | 0.28&nbsp;(−0.01) |
+| Sleep-time Compute | Memory | 0.64&nbsp;(+0.05) | 0.73&nbsp;(+0.02) | 0.32&nbsp;(+0.03) |
+| **RHO (ours)** | **Skills + Tools** | **0.78&nbsp;(+0.19)** | **0.76&nbsp;(+0.05)** | **0.37&nbsp;(+0.08)** |
+
+RHO also surpasses **Meta-Harness**, a *validation-feedback* optimizer, at a matched single-round budget
+(0.78 vs 0.62 on SWE-Bench Pro) — without ever touching ground-truth labels.
+
+## Install
+
+The project uses [`uv`](https://docs.astral.sh/uv/).
+
+```bash
+git clone https://github.com/wbopan/retro-harness.git
+cd retro-harness
+uv sync                       # core dependencies
+uv sync --extra swebench-pro  # + a dataset extra you want to run
+```
+
+RHO drives the [Codex CLI](https://github.com/openai/codex) as its base agent. Point it at a model
+backend by copying a config from [`configs/`](configs/) (e.g. `configs/codex.chatgpt-default.toml`)
+and passing it via `--codex-config`.
+
+## Quickstart
+
+```bash
+# Run one retrospective optimization round on a dataset's trajectory split,
+# then grade the winning harness on the held-out split.
+uv run rho evolve \
+  --dataset locomo:data/locomo10.json \
+  --rounds 1 \
+  --codex-config configs/codex.chatgpt-default.toml
+
+# Solve a single task with a given harness
+uv run rho solve --dataset <ds> --task <id> --harness <dir> --run-dir runs/demo
+
+# Browse runs (prompts, completions, trajectories, harness diffs) in a web UI
+uv run rho ui
+```
+
+Every run persists prompts, completions, trajectories, diagnoses, candidate harnesses, harness diffs,
+configs, scores, and held-out reports under `runs/<timestamp>-<dataset>/`. See the full command
+reference in [`docs/cli-help.md`](docs/cli-help.md).
+
+## Repository layout
+
+```
+src/rho/
+├── loop.py            # the RHO evolution loop (select → rollout → propose)
+├── protocols.py       # typing.Protocol interfaces (Dataset, Harness, Task, TrajectoryStore, …)
+├── selection/         # coreset selection (DPP, coverage, difficulty)
+├── strategies/        # harness-proposal strategies + feedback-free baselines
+├── orchestrators/     # solve / group-rollout orchestration
+├── datasets/          # SWE-Bench Pro, Terminal-Bench 2, GAIA-2, LOCOMO loaders
+├── reasoningbank/     # ReasoningBank baseline
+├── meta_harness/      # Meta-Harness (validation-feedback) baseline
+└── stores/            # trajectory + harness stores
+configs/               # Codex CLI backend configs
+scripts/               # figure-building & analysis scripts
+webui/                 # run-browser frontend
+tests/                 # hermetic + real-agent end-to-end tests
+.claude/workflows/
+└── retrospection.js   # RHO as a Claude Code dynamic workflow (see below)
+codex/
+└── retrospection.py   # RHO over `codex exec` for Codex CLI users (stdlib-only)
+```
+
+Implementations are decoupled behind `typing.Protocol` so components (selectors, strategies, datasets,
+agents) can be swapped for ablations.
+
+## Retrospection: try RHO on your own Claude Code projects
+
+[`.claude/workflows/retrospection.js`](.claude/workflows/retrospection.js) packages the paper's method
+as a single [Claude Code dynamic workflow](https://code.claude.com/docs/en/workflows) that evolves the
+harness Claude Code natively exposes — your project's `CLAUDE.md`, its auto-memory directory, and
+helper scripts — using only the session transcripts you have already accumulated. No labels, no
+validation set, no benchmark: the trajectories are your own past sessions.
+
+One run is one retrospection cycle (≈40 agents, well under the 1,000-agent cap):
+
+1. **Bootstrap** — locate the project's transcripts (`~/.claude/projects/<slug>/*.jsonl`, including
+   worktree sessions) and snapshot the current harness *h₀*.
+2. **Digest** — parallel agents summarize past sessions into difficulty scores + task fingerprints
+   (the paper's LLM judge).
+3. **Coreset** — plain-JS greedy MAP on the paper's DPP kernel `L = diag(r)·S·diag(r)` (Jaccard
+   fingerprint kernel, same `θ` trade-off). Similar sessions are grouped so the diagnoser can recover
+   **self-consistency** across them; singletons fall back to validation-only diagnosis.
+4. **Diagnose** — **self-validation** + cross-session **self-consistency**, producing severity-weighted,
+   task-agnostic improvement directions.
+5. **Optimize** — *N* independent candidate harnesses, staged outside the working tree.
+6. **Probe & select** — replayable past tasks are re-attempted under each candidate in isolated
+   worktrees; **pairwise self-preference** scores the fresh trajectory against the original session.
+   The winner is applied only if its mean score is positive, with a full backup first.
+
+Usage — copy the file into a project's `.claude/workflows/` (or `~/.claude/workflows/` for all
+projects), then in Claude Code:
+
+```
+/retrospection
+```
+
+or target another project / override knobs via args:
+
+```js
+{ projectDir: "/path/to/project",  // default: current project
+  model: "opus",                   // default: session model
+  k: 8,                            // coreset size (paper: 10)
+  n: 2,                            // candidate harnesses (paper: 3)
+  probes: 4,                       // self-preference probe tasks
+  maxSessions: 36, theta: 0.7,     // DPP difficulty/diversity trade-off
+  apply: true }                    // false = stage the winner, don't touch live files
+```
+
+Every cycle persists its artifacts (digests, diagnoses, candidates, probe trajectories, scores,
+`report.md`, and a `backup/` of the pre-apply harness) under `~/.claude/rho-runs/<timestamp>-<project>/`.
+Re-running the command later is the next evolution round — the harness keeps learning from whatever
+real sessions you accumulate in between.
+
+### Codex CLI variant
+
+[`codex/retrospection.py`](codex/retrospection.py) runs the same cycle for [Codex CLI](https://github.com/openai/codex)
+users — a single stdlib-only Python file orchestrating parallel `codex exec` subprocesses. The mapping
+differs only in what the native harness is:
+
+- **Trajectories** come from Codex's rollout store (`~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl`),
+  filtered to the target project via each rollout's `session_meta.cwd`.
+- **Harness** = `AGENTS.md` (kept lean — Codex caps combined project docs at 32 KB) +
+  `.agents/skills/*/SKILL.md` (Codex's persistent knowledge units, the analog of auto-memory) +
+  helper scripts.
+- **Structured stages** (digest / diagnose / score) use `codex exec --output-schema`; probes run in
+  git worktrees with the candidate harness materialized inside, so Codex loads it natively.
+- All orchestration calls run `--ephemeral` (they never enter the session store, so a later cycle
+  can't mine its own machinery) with the experimental memories feature disabled.
+
+```bash
+python3 codex/retrospection.py --dry-run            # list the sessions it would mine
+python3 codex/retrospection.py                      # one cycle on the current project
+python3 codex/retrospection.py --project ~/my/app \
+    --model gpt-5.5 --n 2 --probes 4 --no-apply     # stage the winner without touching live files
+```
+
+## Citation
+
+```bibtex
+@article{pan2026rho,
+  title   = {Evolving Agents in the Dark: Retrospective Harness Optimization via Self-Preference},
+  author  = {Pan, Wenbo and Liu, Shujie and Lin, Chin-Yew and Zeng, Jingying and Tang, Xianfeng and Zhou, Xiangyang and Lu, Yan and Jia, Xiaohua},
+  journal = {arXiv preprint arXiv:2606.05922},
+  year    = {2026}
+}
+```
+
+## License
+
+Released under the [MIT License](LICENSE).

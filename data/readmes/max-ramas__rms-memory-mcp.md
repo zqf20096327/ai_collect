@@ -1,0 +1,512 @@
+<div align="center">
+
+# 🧠 RMS Memory MCP
+
+**Version:** `1.3.0` (2026-10-13) · companion GUI `1.3.0` (unified numbering)
+
+**Persistent, local-first memory for your AI coding agents.**
+
+Stop re-explaining your architecture to Cursor, Zed, and Claude Code and other IDEs every single session.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust](https://img.shields.io/badge/Rust-1.96.1-orange?logo=rust)](https://www.rust-lang.org/)
+[![Crates.io](https://img.shields.io/crates/v/rms-memory-mcp)](https://crates.io/crates/rms-memory-mcp)
+[![Release](https://img.shields.io/github/v/release/max-ramas/rms-memory-mcp?color=blue)](https://github.com/max-ramas/rms-memory-mcp/releases)
+![Downloads](https://img.shields.io/github/downloads/max-ramas/rms-memory-mcp/total)
+![Build](https://github.com/max-ramas/rms-memory-mcp/actions/workflows/release.yml/badge.svg) 
+[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)]()
+[![MCP](https://img.shields.io/badge/protocol-MCP-blueviolet)](https://modelcontextprotocol.io)
+
+[Features](#-key-features) • [Download](https://github.com/max-ramas/rms-memory-mcp/releases/latest) • [Install](#-installation) • [Quick Start](#-quick-start) • [CLI](#-cli-commands) • [MCP Tools](#-mcp-tools-exposed) • [Architecture](#-architecture-highlights)
+
+</div>
+
+---
+
+<div align="center">
+  <a href="https://ko-fi.com/M7I020HKXX" target="_blank" rel="noopener noreferrer">
+    <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="ko-fi">
+  </a>
+</div>
+
+---
+
+## The Problem
+
+You're developing a single project but switching between different agents — Cursor, Zed, Claude Code, OpenCode, etc. Every one of them loses context of architectural decisions, system requirements, and user preferences the moment you close the tab. You end up re-explaining the same things over and over, or copy-pasting a stale `CLAUDE.md` between tools.
+
+**RMS Memory MCP** bridges this gap: a single, isolated, centralized Markdown vault — perfectly structured for LLM consumption — that any MCP-compatible IDE can read from and write to.
+
+### 🖥️ Prefer a GUI over raw Markdown?
+
+**[RMS Memory GUI](./GUI-README.md)** turns your vault into a visual workspace — full graph editor, per-project Git & GitHub sync, one-click Doctor repair, and an AI-assisted Wiki generator (bring your own key). One-time desktop app, works on top of everything below. The MCP server stays 100% free and standalone either way.
+
+## ✨ Key Features
+
+| | |
+|---|---|
+| 🗂️ **Global Centralized Vaults** | Project context lives outside your repo — zero `.mcp` file pollution. |
+| 🔍 **Hybrid Retrieval (LanceDB)** | Embedded Vector Search + Tantivy Full-Text Search for zero-fail context hits. |
+| 🌐 **Multilingual Semantic Parsing** | `fastembed-rs` + `multilingual-e5-small` by default — native Russian & English understanding. Since 1.3.0 `rms-memory embedding use` switches to another bundled model or a local Ollama model (each keeps its own index), and `rms-memory embedding eval` measures hit@k / MRR on your own vault. |
+| 🌳 **AST Markdown Chunker** | `pulldown-cmark`-based chunking keeps code blocks and lists bound to their parent heading. |
+| 🧩 **Semantic Code Memory** | Optional Tree-sitter indexing for Rust, Go, JS/JSX, TS/TSX, Python, C/C++, Java, Ruby, Swift, C#, PHP, Kotlin, SQL, HTML, CSS, and Vue `<script>` blocks; stable segment identities and repeated preambles preserve context when large implementations split. Opt-in `watch` mode reindexes **only dirty paths** (with full-walk fallback). |
+| 🕸️ **Knowledge Graph (v1.2.0)** | Durable Markdown/code relationships via MCP `rms_graph` (neighbors, path, snapshot, mutations) and optional search `include_graph_neighbors`. Companion GUI still owns the visual GraphView. |
+| 🧹 **Safe Project Lifecycle** | Unregistering preserves vault/index data; permanent GUI deletion requires the exact project key, is confined to the master vault, and never touches source code. |
+| 🔀 **Federated Corpus Search** | Search `vault`, `code`, or `all`; mixed results use Reciprocal Rank Fusion rather than incompatible raw vector distances. |
+| 🎯 **Bounded Recall (v1.0.7)** | `rms_search` returns an inject/abstain envelope with `max_chars`, optional `min_score`, fail-closed errors, and `retrieval_mode` (`hybrid` or short-query `fts_prefer`). |
+| ♻️ **Knowledge Lifecycle** | Frontmatter `status` / `supersedes` / temporal `valid_*` gate Lance recall; soft supersede via `rms_write`; Doctor freshness lint (check 7 of 8); `rms-memory prune` archives aged superseded notes (dry-run default). |
+| 📓 **Obsidian vaults (v1.3.0)** | `rms-memory projects attach-obsidian <PATH>` indexes an existing Obsidian vault in place, strictly read-only (RMS Memory never creates, edits or deletes files in it); `rms-memory import --obsidian <DIR>` copies one into a project vault instead. `[[wikilinks]]`, aliases, headings and embeds resolve the way Obsidian does in the graph, index and doctor. |
+| 🌍 **Local HTTP transport (v1.3.0)** | `rms-memory serve --http` serves MCP Streamable HTTP on `127.0.0.1:7337/mcp` with a bearer token from `~/.rms-memory/http-token`, loopback Host/Origin checks and per-session state — for clients that cannot spawn a stdio process. See [SECURITY.md](SECURITY.md#local-http-transport). |
+| 🔐 **Credential refusal (v1.3.0)** | `rms_write` and checkpoint tools refuse text containing well-known token formats (AWS `AKIA…`, GitHub `ghp_…`/`github_pat_…`, OpenAI/Anthropic `sk-…`, Slack, Stripe live, Google, npm, GitLab) or a PEM private key, naming the kind and line but never the value. Doctor check 8 reports such notes already in the vault (report only). Not a guarantee — see [SECURITY.md](SECURITY.md#credential-refusal-limits). |
+| ⬆️ **Update notices (v1.3.0)** | `doctor` checks GitHub for a newer release at most once a day (`RMS_MEMORY_NO_UPDATE_CHECK=1` disables it) and warns when the running MCP server binary was replaced on disk; MCP `initialize` repeats the cached notice without network access. Upgrade with the tool that installed it (brew, cargo, package, archive). |
+| 🔄 **Session Continuity (v1.0.7)** | Vault-backed checkpoints (`rms_checkpoint_save/done/load/query`), `rms_overview` project orientation (since 1.3.0 with index lag and git branch / changed files), MCP resources `rms://<project>/…` and prompts (`session_start`, `save_progress`, `record_decision`), `rms_hygiene` consolidation report, `rms_system_instructions` self-bootstrap, editor-agnostic `rms-memory hook` CLI, installer L3 thin adapters, and `pinned` notes that bypass temporal/`min_confidence` recall gates. |
+| 🧭 **Multi-project MCP routing (v1.0.8+)** | Explicit `project` always rebinds the active vault; empty Cursor `roots/list` falls back to process cwd; injected rules require `project: "<key>"` on every memory tool call; `rms-memory inject-rules [--all]` refreshes keys. |
+| 🔗 **Cross-project federated search (v1.0.9)** | Pass `projects: [key, …]` to `rms_search` / `rms_code_search` for read-only RRF federation. Vault/all across multiple projects requires `cross_project_vault=true` on every listed key (hard fail otherwise). |
+| 🧊 **Concurrent bind cache (v1.0.9)** | Up to 4 warm Store+watcher pairs (LRU); multi-root IDE sessions stop thrashing open/close. |
+| 🧱 **Cargo workspace (v1.0.9+)** | `rms-memory-{core,index,vault,cli}` path crates under `crates/`; public umbrella `rms-memory-mcp` keeps stable module paths for the GUI. `cli` hosts cycle-free `gc`/`prune` (1.1.1). See [docs/crate-split.md](./docs/crate-split.md). |
+| 📦 **Unified Releases** | Public assets use `rms_memory_mcp_<version>_<target>.*` / `rms_memory_gui_<version>_*` on the **same** `vX.Y.Z` tag (MCP + GUI share numbering). Unversioned names are no longer published. |
+| 🪶 **Small idle footprint (v1.3.0)** | Each `serve` process loads the embedding model only when it needs to embed and releases it after 5 idle minutes (`RMS_MEMORY_MODEL_IDLE_SECS`), so many IDEs with an idle server cost about 50 MB each instead of a model copy each. |
+| ⚙️ **Dynamic Auto-Installer** | `rms-memory install` scans your system and wires itself into every supported IDE. |
+| 📜 **Rules-as-Code Patching** | Non-destructive AST patching of `.cursorrules`, `.zed/assistant.md`, etc. Opt-in by default. |
+| 🧪 **Durable Vault Writes** | `rms_write` creates rolling `.bak` backups and atomically replaces `create`/`replace` targets after fsync, so interrupted writes never expose a truncated Markdown file. Optional `dry_run` previews create/update/noop without touching disk or the index (fingerprint ignores volatile audit stamps). |
+| 📜 **File git history (v1.1.2)** | Derived `code_path` file→commit cache (`rms_file_history` / `rms-memory file-history`); agents should not shell `git log`. Optional search `include_file_history` attaches the last 3 commits per **code** hit (not with federated `projects`). |
+| 📚 **Canonical Wiki Isolation** | Generated `<vault>/wiki/**` stay Git-synchronized but are excluded from indexes/search/watchers/graph/packs; MCP write and canonical DocumentService also reject wiki paths (wiki-safe writers only). |
+| 🛡️ **Ten-Point Resiliency** | GC, background sync, write-guard snapshots, macOS sandbox bypass, `llms.txt` export, path traversal + injection protection, zombie prevention, graceful shutdown. |
+| 🔒 **Security Hardened** | Panic-free database layer, symlink traversal blocked, JSON-RPC error responses, request size limits. See [SECURITY.md](./SECURITY.md) and [NOTICE](./NOTICE). |
+| 🧠 **Audit Metadata** | Every record auto-receives `last_modified_by`, `timestamp`, `confidence`, `source` — agents can filter by reliability. |
+| 🔀 **Multi-Scope** | `--scope` flag supports arbitrary identifiers beyond filesystem paths (thread IDs, lead IDs, etc.). |
+| 🖥️ **Optional Companion GUI** | Paid Tauri desktop app: visual Markdown/graph editor, Git & Vault sync, Doctor dashboard, AI-assisted organizer/Wiki (BYOK), and cross-tool spend tracking — layered on top of the same vault, never required. See [GUI-README.md](./GUI-README.md). |
+
+## 📦 Installation
+
+### Option 1: Homebrew (macOS Apple Silicon & Linux)
+
+```bash
+brew tap max-ramas/tap
+brew install rms-memory-mcp
+```
+
+Installs a prebuilt binary — no Rust toolchain required. The formula updates
+automatically with every release.
+
+> **Not covered by Homebrew:** macOS Intel (dropped as of v1.0.1) and
+> Windows (Homebrew doesn't run there — use Option 2 or the `.zip` below).
+
+### Option 2: GitHub release binary
+
+Prebuilt binaries for `aarch64-apple-darwin` (Apple Silicon), `x86_64-unknown-linux-gnu`,
+`aarch64-unknown-linux-gnu`, and `x86_64-pc-windows-msvc` are published on every
+[release](https://github.com/max-ramas/rms-memory-mcp/releases), along with
+`.deb`/`.rpm` packages for Linux. One-line installers auto-detect your architecture:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/max-ramas/rms-memory-mcp/master/scripts/install.sh | bash
+```
+
+```powershell
+irm https://raw.githubusercontent.com/max-ramas/rms-memory-mcp/master/scripts/install.ps1 | iex
+```
+
+### Option 3: Build from Source
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/max-ramas/rms-memory-mcp.git
+cd rms-memory-mcp
+
+# 2. Build the optimized release binary
+cargo build --release
+
+# 3. Add the binary to your global PATH
+cp target/release/rms-memory ~/.cargo/bin/
+```
+
+### crates.io (`cargo install`)
+
+As of **1.1.0+**, tag push publishes **only** the umbrella crate `rms-memory-mcp`
+to crates.io. Internal workspace members (`rms-memory-core` / `index` / `vault` /
+`cli`) stay `publish = false` (path deps for local builds and the companion GUI).
+Release packaging flattens those crates into a staging tree via
+`scripts/flatten-for-crates-io.py` before `cargo publish` (as of **1.1.1** the
+staging tree also inlines `rms-memory-cli`) — see
+[docs/crate-split.md](./docs/crate-split.md).
+
+```bash
+cargo install rms-memory-mcp
+# Prefer Homebrew or a GitHub release binary if you want a pinned installer.
+```
+
+### Optional RMS Memory GUI installers
+
+The companion **RMS Memory GUI** is a paid, optional Tauri desktop control plane:
+a visual Markdown/graph editor, per-project and Vault-wide Git/GitHub sync, a
+Doctor dashboard with one-click repair, an AI-assisted organizer and Wiki
+generator (bring your own key, proposal-only), and cross-tool spend tracking.
+The MCP server remains fully standalone: it does not require the GUI, an AI provider,
+or a GUI license to index, search, sync or serve MCP clients.
+
+See [GUI-README.md](./GUI-README.md) for the full feature breakdown, supported
+platforms, installer verification and release-distribution policy.
+
+GUI source is private, but desktop installers are published as binary assets
+on this repository's [GitHub Releases](https://github.com/max-ramas/rms-memory-mcp/releases)
+under the matching `v<version>` tag. Until Apple/Windows signing certificates
+exist, macOS builds may be unsigned — see [GUI-README.md](./GUI-README.md) for
+Gatekeeper notes. The private GUI workflow transfers only the completed
+`.dmg`, `.msi`/`.exe`, `.AppImage`, `.deb`, and `.rpm` installer files (plus
+`SHA256SUMS.txt` when present). With updater signing enabled, the GUI pipeline
+mirrors signed `latest.json`, companion `.sig` files, and macOS `*.app.tar.gz`
+onto this public release (URLs rewritten to `rms-memory-mcp`; in-app Install
+reads `…/releases/latest/download/latest.json`). It never mirrors GUI source,
+build logs, credentials, or private GUI release archives.
+The same publication flow runs for a `v*` GUI tag and for a manually dispatched,
+version-validated GUI release.
+
+## 🚀 Quick Start
+
+The fastest way to get every IDE on your machine connected:
+
+```bash
+rms-memory install
+```
+
+This scans `~/.config/` and `~/Library/Application Support/` and hooks `rms-memory` directly into **Cursor**, **Zed**, **Claude Code**, **OpenCode**, and others — no manual JSON editing.
+
+### Generated Wiki namespace
+
+The optional desktop GUI writes human-readable Wiki pages to `<vault>/wiki/`. RMS Memory MCP remains AI-free and treats this directory as generated output rather than canonical memory. A shared case-insensitive path policy (`src/path_policy.rs`, also reused by the GUI) excludes the entire namespace from Markdown/code indexing, vector and full-text retrieval, watchers, the durable graph and Wiki context packs. **Write isolation** matches that policy: `rms_write` requires `.md` and rejects `wiki/**`; canonical `DocumentService` list/read/write APIs exclude or reject wiki; Wiki page mutations use wiki-safe methods that skip memory audit-frontmatter injection. Linked-document `link:` resolution always re-checks that the canonical target stays inside the vault. Full or incremental sync removes legacy Wiki-derived records by path without deleting the files, and `doctor` reports the isolation state explicitly.
+
+For virtual projects without a filesystem path (threads, leads, etc.), use `--scope`:
+
+```bash
+rms-memory --scope "thread:abc-123" serve
+```
+
+### Use multiple isolated scopes
+
+A scope is an isolation boundary for a vault and its index. Without `--scope`, RMS Memory uses the canonical current working directory; an explicit filesystem path addresses that same kind of project vault. Any other non-empty identifier creates an isolated virtual vault:
+
+```bash
+rms-memory serve                                      # current project scope
+rms-memory --scope "/home/user/my-project" serve     # explicit project scope
+rms-memory --scope "thread:abc-123" serve             # virtual thread scope
+rms-memory --scope "product:acme" serve                # virtual product scope
+```
+
+For project knowledge plus per-thread history, query each scope explicitly and merge the results in the caller. RMS Memory intentionally does not mix scopes implicitly. Scope IDs may not be empty or exceed 512 characters; absolute and `./`/`../` values are resolved as paths, while all other values are opaque identifiers.
+
+When using `min_confidence`, start with an unfiltered search. Use `0.3–0.5` for broad refinement and reserve `0.7+` for verified canonical facts; records without a confidence value remain visible.
+
+### Configure your vault
+
+The simplest way to configure the server is to run the interactive setup wizard. You don't need to memorize any CLI flags — just run:
+
+```bash
+rms-memory config
+```
+
+*(Alternatively, set the vault root directly with `rms-memory config --vault-path ~/MyVaults/`, then run `rms-memory init` in each repository you want to register.)*
+
+Register a repository explicitly from its root before connecting IDE agents:
+
+```bash
+cd /path/to/project
+rms-memory init
+```
+
+This creates the project mapping in `~/.rms-memory/registry.toml` and provisions its isolated, structured vault. Routine MCP discovery is read-only and fail-closed: it never creates a project from `/`, never falls back to a shared global vault, and never guesses between multiple registered projects.
+
+```text
+~/MyVaults/
+  └── <ProjectKey>/
+      ├── rules/
+      ├── decisions/
+      ├── architecture/
+      ├── artifacts/
+      ├── docs/
+      └── api/
+```
+
+### Optional semantic code memory
+
+Markdown memory remains the default corpus. Semantic source indexing is separate, supports all bundled language adapters, and never changes source files:
+
+```bash
+rms-memory reindex --code  # build/update only derived code memory
+rms-memory reindex --all   # refresh Markdown vault + code memory
+```
+
+Registered projects support `code_index_mode = "off" | "manual" | "watch"`; the default is `off`. Set it from the project root with `rms-memory config --code-index-mode watch` (or add `--scope <project-path>`). `watch` is explicitly opt-in, coalesces supported source saves for three seconds, and **reindexes only the dirty paths** (`try_index_code_paths`) with a full-walk fallback when the index is cold, the dirty set is empty/oversized (>200), or the watcher channel overflows. Concurrent IDE processes share a completion marker so an unchanged workspace stays idle. Code search results include their source language.
+
+Perf smoke for large fixtures: `./scripts/bench_large_vault.sh [notes] [code_files]`.
+
+Language selection is project-scoped and defaults to every bundled adapter:
+
+```bash
+rms-memory config --code-languages auto
+rms-memory config --code-languages go,typescript,tsx,vue
+```
+
+Supported names are `rust`, `go`, `javascript`, `jsx`, `typescript`, `tsx`, `python`, `c`, `cpp`, `java`, `ruby`, `swift`, `vue`, `csharp`, `php`, `kotlin`, `sql`, `html`, and `css`. Generated paths (`node_modules`, `.next`, `.nuxt`, `target`, `vendor`, and `coverage`) are always excluded. Ambiguous `.h` files are indexed as C exactly once; use `.hpp`, `.hh`, or `.hxx` for C++ headers. Vue indexes only inline JavaScript/TypeScript `<script>` contents and maps results back to the `.vue` host file; templates, styles, `script setup` macros, and external `src` scripts remain outside v1.0.5 semantic extraction.
+HTML files contribute inline JavaScript `<script>` blocks (mapped back to the `.html` file) and elements with an `id`; CSS files contribute rule sets by selector and `@keyframes`. SQL files contribute `CREATE TABLE / VIEW / TYPE / FUNCTION / PROCEDURE / TRIGGER` statements.
+
+### Use an existing Obsidian vault
+
+```bash
+rms-memory projects attach-obsidian ~/Obsidian/Notes --key notes   # in place, read-only
+rms-memory import --obsidian ~/Obsidian/Notes --dry-run             # or copy into this project's vault
+```
+
+An attached vault is indexed and searchable (pass `project: "notes"`), but RMS Memory never creates, edits, moves or deletes files in it: `rms_write`, checkpoints, prune and hooks refuse, and `projects remove` only drops the registration. The index lives under `~/.rms-memory/dbs/` like any other. Obsidian links (`[[Note]]`, `[[Note|label]]`, `[[Note#Heading]]`, `![[image.png]]`, frontmatter `aliases`) resolve in the graph, the index and doctor.
+
+### Embedding model and retrieval eval
+
+The default model is `multilingual-e5-small` (384 dimensions, downloaded once). To compare it with others on your own notes and switch:
+
+```bash
+rms-memory embedding list
+rms-memory embedding eval --models multilingual-e5-small,bge-m3 --show-misses
+rms-memory embedding use bge-m3              # or: ollama:nomic-embed-text (local Ollama)
+```
+
+`eval` turns each note's first heading into a query (or reads `--queries file.jsonl` with `{"query": "...", "expect": ["path.md"]}` lines) and reports hit@1, hit@k and MRR for embeddings alone and for hybrid search. Each model keeps its own index under the project's `dbs/` folder, so switching back reuses the old one. After `use`, restart running MCP servers (IDE, GUI); the next sync builds the new index. Ollama URLs must be loopback (`http://127.0.0.1:11434` by default).
+
+## 🛠 CLI Commands
+
+| Command | Description |
+|---|---|
+| `rms-memory serve [--http] [--port 7337]` | Starts the JSON-RPC stdio server (auto-triggered by your IDE). `--http` serves MCP Streamable HTTP on `127.0.0.1` instead, with a bearer token. |
+| `rms-memory init` | Registers a project into the global registry. `--dry-run` supported. `--full` forces creation of all IDE rule templates. |
+| `rms-memory inject-rules [--all]` | Re-injects managed IDE rule blocks with the concrete registry `project` key (existing files only, unless `--full`). Use after template updates. Fail-closed: a single unregistered path is refused rather than injected with a guessed key — run `init` there first, or use `--all` to refresh every registered project. |
+| `rms-memory import` | Scans for existing docs (`README.md`, `docs/`, `ADR/`) and imports them — interactively or via `--auto-import`. `--obsidian <DIR> [--into obsidian] [--dry-run]` copies an Obsidian vault (notes, attachments, folders) into the project vault without touching the source or overwriting files. |
+| `rms-memory install` | Hooks the server into supported IDEs. `--dry-run` supported. |
+| `rms-memory uninstall` | Removes the server from all discovered IDE configurations. |
+| `rms-memory doctor` | Runs 8-point vault health diagnostics (the 8th reports credentials stored in notes, never changing them) and prints update / restart notices. `--repair-frontmatter` safely repairs duplicate, missing, and known attached frontmatter IDs with backups; arbitrary invalid YAML is reported but never rewritten automatically. |
+| `rms-memory config` | Without flags: prints global + current-project settings, then offers interactive global editing. Any flag runs non-interactively. Global: `--vault-path`, `--auto-add`, `--inject-rules`, `--auto-import skip\|link\|import_organize\|import`, `--max-backups N`. Project (cwd or `--scope <path>`): `--code-index-mode off\|manual\|watch`, `--code-languages auto\|<comma-list>`, `--include <globs>`, `--exclude <globs>`, `--cross-project-vault true\|false`. |
+| `rms-memory reindex [--vault\|--code\|--all]` | Refreshes Markdown memory (default), derived semantic code memory, or both. |
+| `rms-memory sync` | Incremental LanceDB delete-then-insert sync (also runs automatically during `serve`). |
+| `rms-memory gc` | Prunes orphaned LanceDB indices belonging to deleted vaults. |
+| `rms-memory prune [--older-than-days N] [--apply]` | Archives superseded notes older than N days (default 30) under `artifacts/pruned/YYYY-MM-DD/`. Dry-run by default; never deletes. Distinct from `gc` (orphan DBs) and from supersession (lifecycle marking). |
+| `rms-memory file-history catch-up\|reindex\|query` | Derived `code_path` git file→commit cache (Lance). `reindex` requires `--project`. Prefer MCP `rms_file_history` for agents. |
+| `rms-memory features` | Live GUI/AI status banner + capability catalog (`GUI`/`AI` tags; soft yellow when GUI absent, gray when installed). Informational only — MCP core is never paywalled. |
+| `rms-memory graph status\|ensure\|neighbors\|path\|snapshot\|export-dot\|…` | Durable knowledge graph (same actions as MCP `rms_graph`). Mutations require `--project`. |
+| `rms-memory log` | Tails the telemetry log (`~/.rms-memory/rms.log`; moved to `rms.log.1` when a process starts and it exceeds 20 MB). |
+| `rms-memory export-llms` | Compiles the current vault into a single `llms.txt` payload. |
+| `rms-memory projects list` | Lists registered project keys and their code/vault paths. |
+| `rms-memory projects locate --project <key>` | Resolves one registered project key. |
+| `rms-memory projects resolve-key --path <dir>` | Looks up the registry key for a code path (including post-migrate redirects). |
+| `rms-memory projects migrate --project <key> --to <new-path>` | Moves/renames a registered project after the repo folder changed. Plans key rename, vault/db moves, and `link:` repairs; supports `--dry-run`, `--no-repair-links`, `--strict-git`. Prefer this over recreating `.git` or re-running `init`. |
+| `rms-memory projects remove <key>` | Removes an erroneous project registration while preserving its vault files. |
+| `rms-memory projects attach-obsidian <PATH> [--key KEY]` | Registers an existing Obsidian vault in place, read-only: indexed and searchable, never modified. The read-only flag is kept in `~/.rms-memory` (`registry.toml` and `read-only-vaults`); if that directory is deleted or recreated, attach the vault again. |
+| `rms-memory embedding list\|use <id>\|eval` | Lists the bundled embedding models, switches the model (`ollama:<model>` for a local Ollama), or scores retrieval quality (hit@1, hit@k, MRR) on the project's vault, for embeddings alone and hybrid search. Restart MCP servers after `use`; the next sync builds the model's index. |
+| `rms-memory hook --event <e>` | Editor-agnostic continuity hook (`session_start`, `pre_compact`, `session_stop`); JSON on stdout. `--project <key>` or unique cwd resolution (fail-closed); `--apply` creates/updates or closes a checkpoint. |
+| **All commands** | Accept `--scope <id>` to target arbitrary isolated vaults (threads, leads, etc.). |
+
+## 🔌 MCP Tools Exposed
+
+Tool descriptions are written to be **action-oriented**, so agents use the vault proactively without being asked.
+
+<table>
+<tr><th>Tool</th><th>Purpose</th><th>Input</th></tr>
+<tr>
+<td><code>rms-memory_rms_search</code></td>
+<td>Searches Markdown memory by default. Set <code>corpus</code> to <code>code</code> or <code>all</code>; <code>all</code> uses Reciprocal Rank Fusion. Pass <code>projects: [key, …]</code> for read-only cross-project federation (when both <code>project</code> and <code>projects</code> are set, <code>projects</code> wins); vault/all with <code>len&gt;1</code> requires <code>cross_project_vault=true</code> on every listed key (hard fail — no silent degrade). Returns an inject/abstain decision envelope (<code>decision</code>, <code>reason</code>, <code>injected_ids</code>, optional <code>retrieval_mode</code>). Optional <code>include_file_history</code> / <code>include_graph_neighbors</code> enrich hits (not with federated <code>projects</code>). Agents are instructed to call this <em>first</em>.</td>
+<td><code>{ query, project?, projects?, corpus: vault|code|all, limit, include_content, min_confidence, max_chars?, min_score?, include_file_history?, include_graph_neighbors? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_code_search</code></td>
+<td>Convenience endpoint for the derived semantic code index. Results include file, symbol, kind, line range, and segment index. Same optional <code>projects: […]</code> federation as <code>rms_search</code> (code-only; does not change the active bind). Optional <code>include_graph_neighbors</code>.</td>
+<td><code>{ query, project?, projects?, limit, include_content, include_file_history?, include_graph_neighbors? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_read</code></td>
+<td>Reads the full contents of a document found via <code>rms_search</code>.</td>
+<td><code>{ path, project? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_write</code></td>
+<td>Persists new decisions, constraints, or rules. Agents are prompted to call this <em>proactively</em> after solving a tricky bug or learning a preference. Auto-injects audit metadata. Optional soft supersede of a prior note. Optional <code>dry_run</code> previews create/update/noop without disk or index side effects. Content or <code>source</code> containing a known token format or private key is refused (kind + line, never the value).</td>
+<td><code>{ path, project?, content, mode: replace|append|create, confidence, source, status?, supersedes?, dry_run? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_file_history</code></td>
+<td>Derived <code>code_path</code> git file→commit history (no shell). Lazy catch-up; <code>action=reindex</code> requires explicit <code>project</code> (after force-push). Prefer over <code>git log</code>. Search may set <code>include_file_history</code> for the last 3 commits on code hits (not with <code>projects</code> federation).</td>
+<td><code>{ path?, project?, limit?, include_message?, action?: query|catch_up|reindex }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_graph</code></td>
+<td>Durable knowledge graph for agents: status/ensure/neighbors/path/snapshot/semantic/export_dot; create_edge and suppress/restore overrides (mutations require explicit <code>project</code>). Refreshed on sync and immediately after <code>rms_write</code> (write response includes <code>graph_refresh</code>). Visual GraphView remains GUI-only. Also available as CLI <code>rms-memory graph</code>.</td>
+<td><code>{ action?, project?, node?, path?, from?, to?, source?, target?, relation?, edge_key?, override_action?, force?, limit?, max_depth?, … }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_doctor</code></td>
+<td>Eight-point vault health report (structure, IDs, links, LanceDB, wiki isolation, registry, freshness, stored credentials) plus <code>notices</code> for a newer release or a replaced server binary. <code>repair_frontmatter</code> requires explicit <code>project</code>.</td>
+<td><code>{ project?, repair_frontmatter? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_reindex</code></td>
+<td>Full vault/code/all index rebuild. Requires explicit <code>project</code>.</td>
+<td><code>{ project, corpus?: vault\|code\|all }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_sync</code></td>
+<td>Incremental vault index sync (prefer over reindex for routine catch-up).</td>
+<td><code>{ project? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_projects</code></td>
+<td>Lists registered project keys even when the MCP client did not supply workspace roots.</td>
+<td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_overview</code></td>
+<td>Structured orientation for exactly one project: counts by folder/status, recent notes, active checkpoints, coverage metadata, index lag (modified/new/removed files) and the code repository's git state (branch, HEAD, ahead/behind, changed file names — never diff contents). Fail-closed scoping; never aggregates across projects. Returns <code>structuredContent</code> + JSON text.</td>
+<td><code>{ project?, recent_limit? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_checkpoint_save</code> / <code>done</code> / <code>load</code> / <code>query</code></td>
+<td>Session continuity on plain Markdown (<code>artifacts/checkpoints/</code>): save goal/pending/links before context compaction, list or load active checkpoints on resume, close with a summary — closing writes a durable session note under <code>artifacts/sessions/</code> and drops the checkpoint out of default recall. <code>goal</code>/<code>pending</code>/<code>summary</code> get the same credential refusal as <code>rms_write</code>.</td>
+<td><code>{ name, project?, goal?, pending?, links?, summary?, status? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_system_instructions</code></td>
+<td>Returns the canonical memory-usage protocol (search-first, persist, continuity) so agents can self-bootstrap without injected rule files.</td>
+<td><code>{ project? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_wiki_pack</code></td>
+<td>Builds a deterministic Wiki context pack from vault/code sources (manifest-driven). Writes under <code>wiki/.generation/</code>; does not call cloud LLMs.</td>
+<td><code>{ project?, manifest? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_prune</code></td>
+<td>Archives aged <code>status: superseded</code> notes under <code>artifacts/pruned/YYYY-MM-DD/</code> with a JSONL manifest. Safe by default: <code>apply</code> is false (dry-run). Never deletes. Skips pinned, wiki, trash, and prior prune batches. Distinct from <code>gc</code> and from supersession marking.</td>
+<td><code>{ project?, older_than_days?, apply? }</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_hygiene</code></td>
+<td>Read-only consolidation report: near-duplicate notes (embedding similarity confirmed by shared word 3-grams), identical notes, checkpoints untouched for 14+ days, session notes older than 90 days. The agent merges with <code>rms_write</code> + <code>supersedes</code> and closes checkpoints with <code>rms_checkpoint_done</code>.</td>
+<td><code>{ project?, min_similarity? }</code></td>
+</tr>
+</table>
+
+MCP **resources** (1.3.0): `rms://<project>/overview`, `rms://<project>/instructions`, `rms://<project>/checkpoint/<name>` and `rms://<project>/note/<path>` are read-only views for clients that attach context by URI. MCP **prompts**: `session_start`, `save_progress` (`name`) and `record_decision` (`topic`).
+
+The server resolves an explicit scope or legacy `rootUri`, then negotiates MCP `roots/list`. If a client exposes neither (or opens several registered roots), pass the short registry key in `project`; injected agent rules contain the correct key for that repository. `rms_projects` lists valid keys without requiring a bound workspace. An explicit `project` on any tool call always wins and rebinds the active vault — one long-lived MCP process can serve every registered project. Without `project`, ambiguity stays fail-closed (no silent pick-first).
+
+To remove an accidental registration without deleting its Markdown vault:
+
+```bash
+rms-memory projects remove <key>
+```
+
+If the repository folder was **moved or renamed**, do **not** recreate `.git` or
+re-run `init` from scratch. Plan and apply a migrate instead:
+
+```bash
+rms-memory projects migrate --project <key> --to /new/path/to/repo --dry-run
+rms-memory projects migrate --project <key> --to /new/path/to/repo
+rms-memory projects resolve-key --path /new/path/to/repo
+```
+
+The CLI command `projects remove` is intentionally non-destructive. The companion GUI exposes a
+separate **Delete project and data** action for permanent cleanup of the
+registration, Markdown vault, and derived index. It requires typing the exact
+project key and accepts only a dedicated child of the configured master vault;
+the repository source path is explicitly excluded from deletion.
+
+## 🏗 Architecture Highlights
+
+<details>
+<summary><b>Cargo workspace (v1.0.9+ / 1.1.1)</b></summary>
+
+Implementation lives in path-only crates under `crates/` (`rms-memory-core`, `rms-memory-index`, `rms-memory-vault`, `rms-memory-cli` for cycle-free `gc`/`prune`). The published product remains the root umbrella `rms-memory-mcp` (binary + MCP server + tools + rules injector + `serve`), which re-exports every former `rms_memory_mcp::<module>` path so the companion GUI keeps stable imports. Heavy deps (`lancedb`, `ort`, `fastembed`, tree-sitter) concentrate in `rms-memory-index`. Details: [docs/crate-split.md](./docs/crate-split.md).
+</details>
+
+<details>
+<summary><b>Unified Configuration & Knowledge Isolation</b></summary>
+
+A central `~/.rms-memory/registry.toml` routes every project to an isolated vault, computed from a hash of the project path. No `.mcp` files, no per-repo config — global MCP entries (e.g. Zed's `settings.json`) can target any workspace automatically.
+</details>
+
+<details>
+<summary><b>Safe Project Lifecycle</b></summary>
+
+The transport-neutral `ProjectService` is the single implementation used by
+the CLI and companion GUI. Registry mutation remains revisioned through
+`ConfigManager`; deletion validates canonical paths before unregistering and
+returns structured warnings if filesystem cleanup cannot be completed.
+</details>
+
+<details>
+<summary><b>Linked Documents (zero-copy import)</b></summary>
+
+Instead of duplicating existing docs into the vault, `rms-memory import` can create lightweight **Link Files** — Markdown stubs with a `link: <path>` frontmatter property. Reads/writes are transparently redirected to the source file, while the vector index still respects the vault's directory structure.
+</details>
+
+<details>
+<summary><b>Hybrid Search (LanceDB + Tantivy)</b></summary>
+
+Embedded LanceDB (`~/.rms-memory/dbs/`) combines vector similarity with full-text search, so a query never comes back empty just because the exact keywords didn't match.
+</details>
+
+<details>
+<summary><b>Separate Markdown and Code Corpora</b></summary>
+
+Human-authored Markdown and derived Rust code live in separate tables. Code chunks carry stable symbol identities, line ranges, and preambles; unchanged chunks reuse their vectors. `corpus=all` fuses independently ranked result sets with Reciprocal Rank Fusion, avoiding any assumption that distances from the two corpora are comparable.
+</details>
+
+<details>
+<summary><b>Graph-ready Knowledge Core</b></summary>
+
+Graph nodes and edges are deliberately independent of retrieval chunk boundaries. Markdown links, Rust imports, trait implementations, and lexical call hints can be reconciled as derived relationships; user-created edges and suppress/restore overrides persist across reindexing. Current Rust call edges are syntax-level hints, not a compiler-accurate call graph.
+</details>
+
+<details>
+<summary><b>AST-Aware Chunking</b></summary>
+
+`pulldown-cmark` parses the Markdown AST directly. Chunks are built by walking up to the parent heading, with a strict 1500-character boundary and ~200-character overlapping window for oversized code blocks — no mid-sentence truncation.
+</details>
+
+<details>
+<summary><b>Ten-Point Production Resiliency</b></summary>
+
+1. Path traversal + filter injection prevention
+2. Zombie process prevention (watcher shutdown on EOF + `std::process::exit(0)`)
+3. Graceful shutdown (`SIGINT`/`Ctrl+C` handler)
+4. macOS sandbox bypass for `fastembed` model downloads
+5. `rms-memory gc` — orphaned vector store pruning
+6. PID-aware per-project writer lock and read-only background synchronization across IDE processes
+7. Markdown watcher plus an explicitly opt-in, 3s-debounced code watcher with **path-scoped** reindex and shared-generation suppression
+8. Write-guard snapshotting with rolling `.bak` backups (default: 5)
+9. Isolated telemetry logging (`~/.rms-memory/rms.log`)
+10. `llms.txt` export for flat, decoupled LLM ingestion
+</details>
+
+<details>
+<summary><b>Validated v1.0.5 Multi-IDE Behavior</b></summary>
+
+Live MCP requests have been verified for `rms_search(corpus=vault|code|all)` and `rms_code_search`. On this repository, `reindex --code` indexed 43 Rust files into 298 semantic items and 438 segments with all vectors reused on an unchanged run. An isolated five-server watcher run coalesced rapid saves into one shared completion-marker update; a later real-project stress gate completed concurrent GeoMail, License Server, RMS Monitoring, and GeoTax Site indexing, then seven MCP servers (after four IDE restarts) stayed at 0.0% CPU with no background reindex.
+</details>
+
+## 🧩 Supported IDEs
+
+| IDE | Auto-Install | Rules Injection |
+|---|:---:|:---:|
+| Cursor | ✅ | `.cursorrules` |
+| Zed | ✅ | `.zed/assistant.md` |
+| Claude Code | ✅ | `.claude/CLAUDE.md` |
+| OpenCode | ✅ | — |
+| Codex | ✅ | — |
+| VS Code | ✅ | — |
+| Antigravity | ✅ | — |
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+<sub>Built by <a href="https://ramzaeff.com">Maksim Ramzaev</a> · <a href="https://rms-ds.com">RMS Digital Services</a></sub>
+</div>

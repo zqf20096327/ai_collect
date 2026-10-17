@@ -1,0 +1,290 @@
+<div align="center">
+
+# 📊 dsh-observe
+- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-observe` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-observe)
+[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-observe?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-observe?ref=badge)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-observe/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-observe)
+
+**OpenTelemetry and Langfuse observability exporter for DeepSeek Harness.**
+
+*Turn session events into OTLP traces and Langfuse observations — sanitized, buffered, off by default.*
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-observe.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-observe/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-observe/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-observe?label=version)](https://github.com/PerryLink/dsh-observe/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-observe)](https://www.npmjs.com/package/dsh-observe)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-observe)](https://www.npmjs.com/package/dsh-observe)
+
+[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
+</div>
+
+---
+
+**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+
+
+## What is dsh-observe?
+
+OpenTelemetry and Langfuse observability exporter for DeepSeek Harness.
+
+Turn session events into OTLP traces and Langfuse observations — sanitized, buffered, off by default.
+
+![Terminal demo of dsh-observe: dsh-observe — opt in, point OTLP at your collector](https://raw.githubusercontent.com/PerryLink/dsh-observe/main/docs/assets/dsh-observe-demo.png)
+
+![Animated terminal demo of dsh-observe](https://raw.githubusercontent.com/PerryLink/dsh-observe/main/docs/assets/dsh-observe-demo.gif)
+
+*The same run, animated.*
+
+## Compatibility
+
+| Surface | Status |
+|---|---|
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (adapted 2026-10-04): session format V4 represents a tool result as a first-class `role: 'tool'` message carrying top-level `toolCallId` + `content` + optional `isError` — the V3 `tool-result` content block is gone from the host's `ContentBlockMap`, and this plugin reads only the V4 shape (a pre-upgrade V3 log still projects through a read-only compatibility path). Session format V3's other traits carry over: the assistant stream is embedded in `assistant/message` / `assistant/attempt`, and the system prompt is surface node 0 (`system/message`); the plugin consumes only the live event stream and never reads session log files. The peer range `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0` keeps every published line installable (full local gate chain; the compat workflow covers the profile install smoke). |
+| Node | `^22.19.0 \|\| >=24.0.0` |
+| Backends | OpenTelemetry OTLP/HTTP (traces + metrics, JSON encoding) and Langfuse (LLM observability) — either or both |
+| Model | Model-agnostic: it exports the session/event stream; no model calls are made |
+
+## What you get
+
+`dsh-observe` turns the harness's `session/event` stream into standard observability protocols:
+
+- **Spans** — turn, step, tool-call (duration, status, retry derivation), and LLM generation spans, linked into per-turn traces with deterministic ids.
+- **Metrics** — per-provider/model token counters, USD cost counters (configurable pricing table), and the optional context-pressure gauge from `ctx.tokenMeter`.
+- **Sanitized capture** — prompt and completion bodies are redacted (structural key names + built-in secret patterns + your patterns) and truncated before anything is queued or sent.
+- **Reliability** — async batching (size- and timer-triggered), a bounded durable offline buffer (storage-domain) with oldest-first eviction, and deterministic exponential-backoff retries; undeliverable batches survive restarts.
+- **Runtime kill switch** — the optional Typert remote (`observe/status`, `observe/setEnabled`) lets a settings page stop and resume exporting without unmounting.
+- **Off by default** — `enabled: true` plus at least one backend is an explicit opt-in; nothing is captured or exported otherwise.
+
+```text
+session/event stream
+   │ collector (turn/step/tool/llm spans, metrics)
+   │ sanitize (keys, secrets, budgets)
+   ├──▶ pipeline "otlp"  ── queue ── flush ──▶ OTLP /v1/traces + /v1/metrics
+   │         └─ retry/backoff ─┐
+   ├──▶ pipeline "langfuse" ── queue ── flush ──▶ Langfuse ingestion
+   │         └─ retry/backoff ─┤
+   └────────── durable spool (offline buffer, bounded) ◀┘
+```
+
+## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-observe
+```
+
+```sh
+# 1. install the bundle into your profile
+dsh plugin --profile web add github:PerryLink/dsh-observe
+
+# or from npm (published releases)
+dsh plugin --profile web add dsh-observe
+
+# 2. configure a backend in your profile patch (cordis.yml) and restart
+dsh --profile web
+```
+
+Minimal OTLP configuration (the row ships commented out in `cordis.patch.yml`):
+
+```yaml
+- insert:
+    - id: dsh-observe
+      name: dsh-observe
+      config:
+        enabled: true
+        otlp:
+          endpoint: http://localhost:4318
+```
+
+Then verify the row mounts:
+
+```sh
+dsh --profile web --dump-config | grep -A2 'id: dsh-observe'
+```
+
+## Install & uninstall
+
+- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-observe` — the `prepare` script builds with production dependencies only.
+- **npm channel** (published releases): `dsh plugin --profile web add dsh-observe`.
+- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-observe-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-observe` (or remove the row from the profile patch).
+
+> If pnpm reports `ERR_PNPM_IGNORED_BUILDS` for this package (esbuild's harmless platform-binary validation), add `allowBuilds: { esbuild: true }` to your `pnpm-workspace.yaml` — the `dsh` CLI prints the exact snippet.
+
+## Configuration
+
+All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id-targeted override replaces the whole row — restate every key you need. `cordis.patch.yml` documents each key inline.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `enabled` | `false` | Master switch; `true` plus at least one backend is the explicit opt-in |
+| `otlp` | `null` | OTLP backend config, or `null` to disable it |
+| `otlp.endpoint` | *(required)* | OTLP base URL; `/v1/traces` and `/v1/metrics` are appended |
+| `otlp.serviceName` | `deepseek-harness` | `service.name` resource attribute |
+| `otlp.serviceVersion` | *(none)* | `service.version` resource attribute |
+| `otlp.headers` | `{}` | Extra headers merged into every export request |
+| `otlp.timeoutMs` | `10000` | Per-request timeout |
+| `langfuse` | `null` | Langfuse backend config, or `null` to disable it |
+| `langfuse.baseUrl` | `https://cloud.langfuse.com` | Langfuse base URL |
+| `langfuse.publicKey` | *(required)* | Project public key |
+| `langfuse.secretKey` | *(required)* | Project secret key |
+| `langfuse.release` | *(none)* | Release tag stamped onto traces |
+| `langfuse.traceName` | `session {session} turn {turn}` | Trace-name template; `{session}`/`{turn}` interpolate per trace |
+| `langfuse.tags` | `[]` | Static tags stamped onto every trace |
+| `langfuse.timeoutMs` | `10000` | Per-request timeout |
+| `capture.turns` | `true` | Turn lifecycle spans |
+| `capture.steps` | `true` | Step lifecycle spans |
+| `capture.tools` | `true` | Tool-call spans with sanitized arguments/results |
+| `capture.llm` | `true` | LLM generation spans |
+| `llm.prompt` | `true` | Capture the sanitized request prompt (`false` = sizes only) |
+| `llm.completion` | `true` | Capture the sanitized completion (`false` = sizes only) |
+| `metadata.sessionId` | `true` | Session id attribute |
+| `metadata.cwd` | `false` | Session working directory (a local path — off by default) |
+| `metadata.agentPreset` | `true` | Agent preset id attribute |
+| `metadata.model` | `true` | Provider/model attributes |
+| `metrics.tokens` | `true` | Per-provider/model token counters |
+| `metrics.cost` | `true` | USD cost counters (need `pricing` rules to match) |
+| `metrics.contextTokens` | `true` | Context-pressure gauge (needs `ctx.tokenMeter`) |
+| `pricing` | `[]` | Pricing table, first match wins: `{ provider?, model, inputPerToken, outputPerToken, cacheReadPerToken?, cacheWritePerToken? }` |
+| `sanitize.enabled` | `true` | Redaction master switch (`false` disables redaction, never truncation) |
+| `sanitize.redactKeys` | `[]` | Extra key-name substrings (key/token/secret/password/authorization/credential/apiKey are always included) |
+| `sanitize.redactPatterns` | `[]` | Extra secret regular expressions |
+| `sanitize.truncatePromptChars` | `4000` | Prompt character budget |
+| `sanitize.truncateCompletionChars` | `4000` | Completion character budget |
+| `sanitize.truncateToolInputChars` | `2000` | Tool argument character budget |
+| `sanitize.truncateToolOutputChars` | `2000` | Tool result character budget |
+| `sanitize.truncateAttributeChars` | `512` | Span attribute string budget |
+| `batch.maxRecords` | `256` | Flush once the queue holds this many records |
+| `batch.flushIntervalMs` | `5000` | Timer flush interval |
+| `batch.maxQueueRecords` | `2000` | In-memory queue bound; excess spills to the buffer |
+| `batch.maxBufferRecords` | `10000` | Durable offline buffer bound; oldest records drop first |
+| `batch.bufferRetryIntervalMs` | `30000` | Offline buffer retry interval |
+| `retry.maxAttempts` | `5` | Attempts per batch, including the first try |
+| `retry.baseDelayMs` | `1000` | First backoff delay |
+| `retry.factor` | `2` | Backoff multiplier per consecutive failure |
+| `retry.maxDelayMs` | `60000` | Backoff ceiling |
+| `remote.enabled` | `false` | Mount the `observe` Typert remote (kill switch) |
+
+## Tools & surfaces
+
+This plugin registers **no model tools** — it is a background exporter. Its surfaces:
+
+- **Consumes** `session/event` (span/metric collection), `session/flush` (best-effort export kick — the durability checkpoint never waits on a remote backend), and `session/disposed`.
+- **Optional remote service** `observe` — `observe/status` returns the kill-switch state, configured backends, queue depths, and buffer occupancy; `observe/setEnabled` stops and resumes exporting at runtime.
+
+## Permissions & data
+
+- **Permissions**: `network:outbound` to the endpoints you configure, `session:read` for the event stream, `storage:write` for the offline buffer; no native code, no filesystem access.
+- **Data**: everything sent is derived from the session log and sanitized (redaction + truncation) before it is queued, buffered, or transmitted. The offline buffer stores only sanitized records, re-validated when read back.
+- **Credentials**: Langfuse public/secret keys travel only to the configured Langfuse endpoint; OTLP headers only to the configured OTLP endpoint. The plugin stores no credentials itself — keep them in credential references or environment-injected values.
+
+## Security boundaries
+
+- **Off by default** — nothing is captured or exported unless you opt in explicitly.
+- **Sanitize before send** — structural key redaction, built-in secret patterns (API keys, GitHub tokens, AWS keys, bearer credentials, private keys), your patterns, and character budgets all apply before any record leaves memory.
+- **Durable boundary re-validation** — records read back from storage are checked again before a sink can see them.
+- **Failure loud, failure contained** — export failures warn, count, retry, and finally spool; a failing session handler is caught and logged so observability can never break the harness hot path.
+- **Model-visible ⟺ logged** — prompt/completion exports project only the session surface (whose node 0 is the system prompt) and the logged header (call config and tools); the exporter invents no content.
+
+## Known limitations
+
+- **npm 0.1.7-rc.2** — the plugin is developed and tested against `@deepseek-ai/dsh@0.1.7-rc.2` (devDeps and CI's primary ruler); the peer range `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0` keeps every published line installable, and the second ruler (`typecheck:ci`) plus the compat workflow cover the older baselines.
+- **Audit events are not persisted** — the exporter's own `observe/*` records are audit-only: on the current host line the session append gate admits surface events, so no `observe/*` event is written to the session log, and the plugin does not fake one with an unmarked append (that would make sessions unreadable). Treat `/observe` status output and the OTLP/Langfuse backends as the audit surface.
+- **Metrics bypass the retry/spool path** — OTLP metrics are aggregated cumulatively, so a lost flush self-heals on the next one (by design, not a bug).
+- **No sampling** — every enabled span family is exported; set `capture.*` switches and `batch.maxBufferRecords` for high-volume sessions.
+
+## Development
+
+```sh
+pnpm install        # node ^22.19 || >=24
+pnpm run typecheck  # tsc: src + tests against the 0.1.7-rc.2 devDeps (no tsconfig paths)
+pnpm run typecheck:ci  # tsc against the published line (no paths)
+pnpm run check:ruler-live  # canary: must fail to compile, proving the ruler is live
+pnpm test           # vitest: 126 tests, 18 suites (real Context/Session/storage seam)
+pnpm run test:coverage  # coverage gate (90/80/90/90)
+pnpm run build      # tsdown bundle + tsc declarations (lib/)
+pnpm run verify:self-contained  # dependency specs resolve from the registry
+pnpm run verify:artifacts       # built ESM face + bundle patch present
+node scripts/check-readme-sync.mjs  # five-language README sync gate
+pnpm pack           # the published tarball
+```
+
+## Topics
+
+`dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `observability`, `opentelemetry`, `otlp`, `langfuse`, `tracing`
+
+## Contributors
+
+- [@PerryLink](https://github.com/PerryLink) — creator and maintainer: collector, pipelines, spool, OTLP/Langfuse sinks, sanitization, and the five-language docs.
+
+## PerryLink DSH Plugin Family
+
+This project is one of the **34 actively maintained** DeepSeek Harness plugins from [PerryLink](https://github.com/PerryLink) — the roster is **42**, of which **5** are frozen and **3** retired; every one keeps its row below, with the reason in the Status column. If this one helps you, the others likely will too:
+
+| Plugin | One-liner | Status |
+|---|---|---|
+| **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | 🧊 FROZEN — see the repo README |
+| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | 🧊 FROZEN — see the repo README |
+| **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
+| **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
+| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
+| **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
+| **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
+| **[dsh-industry-research](https://github.com/PerryLink/dsh-industry-research)** | Industry research orchestration that seals its deliverables through this plugin's `ctx.researchReport.assemble` | |
+| **[dsh-laya](https://github.com/PerryLink/dsh-laya)** | Laya typed decisions (`noul`/`choice`/`score`) as a first-class Cordis service and model-visible tools | |
+| **[dsh-library](https://github.com/PerryLink/dsh-library)** | Local document knowledge base for DeepSeek Harness. | |
+| **[dsh-local-ai](https://github.com/PerryLink/dsh-local-ai)** | Local-model (Ollama) integration for DeepSeek Harness. | |
+| **[dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions)** | LSP diagnostics, formatting, completion, code actions and rename over language servers | |
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII masking middleware: anonymize at the model boundary, restore at the display layer | |
+| **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors | |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | |
+| **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
+| **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
+| **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
+| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
+| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill | |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | One-package, one-corridor-index plugin upgrade skill: routes a repository to the matching closed corridor card | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | 🚫 RETIRED — corridors carried by `dsh-plugin-upgrade` |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | 🧊 FROZEN — see the repo README |
+| **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
+| **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
+| **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
+| **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
+| **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
+| **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
+| **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
+
+### Install from the DSH Desktop Market
+
+All PerryLink plugins are browsable in the built-in DSH Desktop Market: **Market → Sources → add source → paste** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ select it**. Installation still goes through the Market's npm-identity verification and your confirmation.
+
+## License
+
+[Apache License 2.0](LICENSE) © 2026 dsh-observe contributors

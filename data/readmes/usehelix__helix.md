@@ -1,0 +1,364 @@
+# Helix
+
+[![npm](https://img.shields.io/npm/v/@helix-agent/core?color=cb3837)](https://www.npmjs.com/package/@helix-agent/core)
+[![downloads](https://img.shields.io/npm/dw/@helix-agent/core?color=blue)](https://www.npmjs.com/package/@helix-agent/core)
+[![tests](https://img.shields.io/badge/tests-553%2B-brightgreen)](#)
+[![stars](https://img.shields.io/github/stars/adrianhihi/helix?style=flat&color=yellow)](https://github.com/adrianhihi/helix/stargazers)
+[![license](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/helix-agent-sdk?color=3776AB)](https://pypi.org/project/helix-agent-sdk/)
+
+**Self-healing runtime for autonomous agents. Fix once, immune forever.**
+
+**Agent payment intelligence** — predict costs, optimize execution, fix failures. Powered by [VialOS Runtime](https://github.com/adrianhihi/vialos-runtime).
+
+Your agent's API call failed. Helix diagnosed it, fixed it, and remembered. Next time — instant fix, zero cost. Think of stackoverflow + crowdstrike for agents.
+
+```typescript
+// Before: hope for the best
+await agent.sendPayment(invoice);
+
+// After: self-healing in one line
+const safePay = wrap(agent.sendPayment.bind(agent), { mode: 'auto' });
+await safePay(invoice);
+```
+
+---
+**If this helped, please ⭐ — it helps us reach more developers.**
+## How It Works
+
+Helix wraps your function. When it fails, a 6-stage pipeline kicks in:
+
+```
+Error occurs → Perceive → Construct → Evaluate → Commit → Verify → Gene
+                  │           │           │          │         │       │
+            What broke?   Find fixes   Score them  Execute  Worked?  Remember
+```
+
+The fix is stored in the **Gene Map** — a SQLite knowledge base scored by reinforcement learning. Next time the same error hits any agent, it's fixed in under 1ms. No diagnosis, no LLM call, no cost.
+
+## Benchmarks
+
+- **1,083 Base Mainnet transactions** (12hr A/B test) — Helix: 99.9% vs blind retry: 81.9%
+- **5 frontier LLMs** (GPT-4o-mini, GPT-4o, Claude Opus 4.6, GPT-5.4-mini, GPT-5.4) tested on bare `execution reverted` — all failed. PCEC: 100%.
+- **Gene Map warm**: 2,140ms → 1.1ms, $0.49 → $0.00 per repair
+- Full eval harness: [experiments/](./experiments)
+
+## Quick Start
+
+```bash
+npm install @helix-agent/core
+```
+
+```typescript
+import { wrap } from '@helix-agent/core';
+
+// Wrap any async function — payments, API calls, anything
+const safeCall = wrap(myFunction, { mode: 'auto' });
+const result = await safeCall(args);
+
+// Errors are automatically:
+//   1. Diagnosed (what type of error?)
+//   2. Fixed (modify params, retry with backoff, refresh token...)
+//   3. Remembered (next time → instant fix)
+```
+
+## Demo
+
+![Helix Demo](assets/demo.gif)
+<img width="463" height="854" alt="image" src="https://github.com/user-attachments/assets/28824439-b819-4e83-85c7-4906b31e5560" />
+
+Three modes, three risk levels:
+
+| Mode | Behavior | Risk |
+|------|----------|------|
+| `observe` | Diagnose only, never touch your call | Zero |
+| `auto` | Diagnose + fix params + retry | Low — only changes how, never what |
+| `full` | Auto + fund movement strategies | Medium |
+
+## Powered by VialOS Runtime
+
+Helix is the first vertical product of **[VialOS](https://github.com/adrianhihi/vialos-runtime)** — an AI agent operating system. The VialOS Runtime provides the PCEC engine, Gene Map, and all learning modules. Helix adds payment-specific adapters on top.
+
+```
+@vial/core              Generic self-healing engine
+  ├── PCEC Engine        6-stage repair pipeline
+  ├── Gene Map           SQLite knowledge base + RL scoring
+  ├── Self-Refine        Iterative failure refinement
+  ├── Meta-Learning      3 similar fixes → pattern → 4th is instant
+  ├── Safety Verifier    7 pre-execution constraints
+  ├── Self-Play          Autonomous error discovery
+  ├── Federated Learning Privacy-preserving distributed RL
+  └── Prompt Optimizer   LLM classification auto-improves
+
+@helix-agent/core        Payment vertical (powered by Vial)
+  ├── Coinbase           17 error patterns (CDP, ERC-4337, x402)
+  ├── Tempo              13 error patterns (MPP, session, DEX)
+  ├── Privy              7 error patterns (embedded wallet)
+  └── Generic            3 error patterns (HTTP)
+
+@vial/adapter-api        API vertical (powered by Vial)
+  ├── Rate limits        429, throttle
+  ├── Server errors      500, 502, 503, 504
+  ├── Timeouts           ETIMEDOUT, socket, gateway
+  ├── Connection         ECONNREFUSED, ECONNRESET, DNS
+  ├── Auth               401, 403, expired token
+  └── Client             400, 413, 422, parse errors
+```
+
+**Build your own adapter** — implement the `PlatformAdapter` interface for any domain:
+
+```typescript
+import { wrap } from '@vial/core';
+import type { PlatformAdapter } from '@vial/core';
+
+const myAdapter: PlatformAdapter = {
+  name: 'my-service',
+  perceive(error) {
+    if (error.message.includes('rate limit'))
+      return { code: 'rate-limited', category: 'throttle', strategy: 'backoff_retry' };
+    return null;
+  },
+  getPatterns() { return [/* ... */]; },
+};
+
+const safeCall = wrap(myFunction, { adapter: myAdapter, mode: 'auto' });
+```
+
+## VialOS Beta Features
+
+Helix runs on the VialOS Runtime. Enable VialOS integration with `--beta`:
+
+```bash
+npx @helix-agent/core serve --port 7842 --mode observe --beta
+```
+
+This activates:
+- `GET /vial/status` — VialOS runtime information (13 modules, 5 adapters)
+- VialOS metadata in `GET /health` response
+- "Powered by VialOS Runtime" dashboard badge
+
+Without `--beta`, Helix behaves identically to the stable release.
+
+## What Makes This Different
+
+| | Sentry/Datadog | Simple retry | Helix |
+|--|----------------|-------------|-------|
+| Detects errors | ✅ | ❌ | ✅ |
+| Fixes errors | ❌ | ⚠️ blind retry | ✅ smart fix |
+| Learns from fixes | ❌ | ❌ | ✅ Gene Map |
+| Cross-agent learning | ❌ | ❌ | ✅ Federated |
+| Safety constraints | N/A | ❌ | ✅ 7 checks |
+
+Sentry tells you something broke. **Helix fixes it.**
+
+## Installation
+
+**TypeScript/JavaScript:**
+```bash
+npm install @helix-agent/core
+```
+
+**Python:**
+```bash
+pip install helix-agent-sdk
+```
+
+**Docker:**
+```bash
+docker run -d -p 7842:7842 adrianhihi/helix-server
+```
+
+**REST API:**
+```bash
+curl -X POST http://localhost:7842/repair \
+  -H 'Content-Type: application/json' \
+  -d '{"error": "nonce too low", "platform": "coinbase"}'
+```
+
+## CLI
+
+```bash
+# ⚠️ Use @helix-agent/core — "npx helix" installs a WRONG third-party package
+npx @helix-agent/core serve --port 7842          # Start server + dashboard
+npx @helix-agent/core scan ./src                 # Scan codebase for error patterns
+npx @helix-agent/core simulate "nonce too low"   # Dry-run diagnosis
+npx @helix-agent/core self-play 10               # Autonomous error discovery
+npx @helix-agent/core dream                      # Memory consolidation
+npx @helix-agent/core discover                   # Find adapter gaps
+```
+
+## Architecture
+
+Helix includes 15 learning and safety modules, all integrated into the core PCEC pipeline:
+
+**Learning** — Gene Map (RL), Meta-Learning (few-shot), Causal Graph (prediction), Negative Knowledge (anti-patterns), Adaptive Weights (auto-tuning), Self-Play (exploration), Federated Learning (distributed), Gene Dream (memory consolidation), Prompt Optimizer (LLM self-improvement), Auto Strategy Generation (creates new fixes via LLM)
+
+**Safety** — 7 pre-execution constraints (never modifies recipient or calldata), 4-layer adversarial defense (reputation, verification, anomaly detection, auto-rollback), cost ceilings, strategy allowlists
+
+**Execution** — `refresh_nonce`, `speed_up` (gas × 1.3), `reduce_request` (value ÷ 2), `backoff_retry` (1s → 2s → 4s → 8s → 16s cap), `renew_session` (callback), `split_transaction`, `remove_and_resubmit`
+
+## Self-Evolution
+
+Helix doesn't just fix errors — it gets better over time:
+
+```
+Level 1: Data Evolution
+  Every fix improves Q-values → better strategy selection
+
+Level 2: Strategy Evolution  
+  Meta-Learning spots patterns across fixes
+  Self-Play discovers errors before users hit them
+  Gene Dream consolidates knowledge during idle time
+
+Level 3: Architecture Evolution
+  Auto Strategy Generation invents new fix methods via LLM
+  Adaptive Weights auto-tunes scoring per error category
+  Auto Adapter Discovery detects when new platforms need support
+```
+
+## Stats
+
+```
+553+ tests across 59 files
+Schema v12 (auto-migrating)
+61 error patterns (40 payment + 21 API)
+21 API error patterns
+7 safety constraints
+12 repair strategies
+```
+
+## Roadmap
+
+### ✅ Phase 1 — Local procedural memory
+- [x] **PCEC Engine** — 6-stage self-healing pipeline
+- [x] **Gene Map** — SQLite + Q-value reinforcement learning
+- [x] **Platform Adapters** — Coinbase, Tempo, Privy, Generic HTTP
+- [x] **Self-Evolution** — Meta-Learning, Self-Play, Gene Dream
+- [x] **Safety** — 7 constraints, adversarial defense, cost ceilings
+- [x] **CI/CD Integration** — `npx @helix-agent/core scan` for GitHub Actions
+- [x] **Vial Framework** — Generic core extracted (`@vial/core`)
+- [x] **API Adapter** — Second vertical proving generic architecture
+- [x] **Self-Refine** — Iterative failure reflection (paper: Self-Refine)
+- [x] **Prompt Optimizer** — LLM classification auto-improves (paper: DSPy)
+- [x] **VialOS Beta** — `--beta` flag for VialOS Runtime integration
+- [x] **agentfolded** — One-command Vial skill deployment across Claude Code, Cursor, Codex CLI (published to ClawHub as vial-self-healing v0.6.3)
+- [x] **n8n Community Node** — n8n-nodes-vialos, MIT, npm v0.1.0, 8 error patterns
+
+### 🔄 Phase 2 — Cross-domain validation
+- [x] **Web2 microservices** — 91% autonomous resolution across 4 production-scale services, zero LLM calls
+- [x] **On-chain agents** — 99.9% vs 81.9% blind retry, 1,083 Base Mainnet transactions
+- [ ] **@vial-agent/gene-map** — Standalone package: same Gene Map substrate, any execution shape
+
+### 📅 Phase 3 — Team-level procedural memory
+- [ ] **Gene Registry Cloud** — Shared execution knowledge across agents and teams
+- [ ] **Budget Predictor** — Predict task cost from Gene Map history before execution
+- [ ] **CI/CD adapter** — Third vertical: deploy failures, flaky tests
+
+### 🔭 Phase 4 — Emergent knowledge
+- [ ] **Auto-generated runbooks** — Operational patterns that emerge from execution data
+- [ ] **Proactive suggestions** — Anticipate failures before they happen
+- [ ] **arXiv paper** — "Vial: Procedural Memory Infrastructure for Production AI Agents"
+
+## Research
+
+Helix implements ideas from these papers:
+
+| Paper | What We Took | Module |
+|-------|-------------|--------|
+| [Reflexion](https://arxiv.org/abs/2303.11366) | Verbal reinforcement from failures | Negative Knowledge |
+| [ExpeL](https://arxiv.org/abs/2308.10144) | Experience-conditioned strategy selection | Conditional Genes |
+| [Voyager](https://arxiv.org/abs/2305.16291) | Skill library that grows over time | Auto Strategy Gen |
+| [Self-Refine](https://arxiv.org/abs/2303.17651) | Iterative refinement with self-feedback | Self-Refine loop |
+| [DSPy](https://arxiv.org/abs/2310.03714) | Self-improving LLM pipelines | Prompt Optimizer |
+| [Mem0](https://arxiv.org/abs/2504.19413) | Scalable long-term memory | Gene Dream |
+
+## Contributing
+
+Contributions welcome. The easiest way to contribute is to write a new `PlatformAdapter` for a domain you care about.
+
+```bash
+git clone https://github.com/adrianhihi/helix
+cd helix
+npm install
+npm run build
+npm run test   # 553+ tests should pass
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=adrianhihi%2Fhelix&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=adrianhihi/helix&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=adrianhihi/helix&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=adrianhihi/helix&type=date&legend=top-left" />
+ </picture>
+</a>
+
+## FAQ
+
+### What is Helix?
+
+Helix is a **self-healing runtime for autonomous agents** — fix once, immune forever. It provides agent payment intelligence: predict costs, optimize execution, fix failures. Powered by [VialOS Runtime](https://github.com/adrianhihi/vialos-runtime).
+
+### How does the 6-stage pipeline work?
+
+| Stage | Action | Description |
+|-------|--------|-------------|
+| Perceive | What broke? | Error diagnosis |
+| Construct | Find fixes | Generate solutions |
+| Evaluate | Score them | Rank solutions |
+| Commit | Execute | Apply fix |
+| Verify | Worked? | Validate success |
+| Gene | Remember | Store in Gene Map |
+
+### What is the Gene Map?
+
+A SQLite knowledge base scored by reinforcement learning. When the same error hits again, it's fixed in under 1ms — no diagnosis, no LLM call, no cost.
+
+### How do I use Helix?
+
+```typescript
+import { wrap } from '@helix-agent/core';
+
+const safeCall = wrap(myFunction, { mode: 'auto' });
+const result = await safeCall(args);
+```
+
+### What are the benchmarks?
+
+| Benchmark | Result |
+|-----------|--------|
+| 1,083 Base Mainnet transactions (12hr A/B test) | Helix: 99.9% vs blind retry: 81.9% |
+| 5 frontier LLMs on `execution reverted` | All failed, PCEC: 100% |
+| Gene Map warm repair | 2,140ms → 1.1ms, $0.49 → $0.00 |
+
+### How do I install?
+
+```bash
+npm install @helix-agent/core
+# or
+pip install helix-agent-sdk
+```
+
+### Where can I find more info?
+
+- [npm: @helix-agent/core](https://www.npmjs.com/package/@helix-agent/core)
+- [PyPI: helix-agent-sdk](https://www.pypi.org/project/helix-agent-sdk/)
+- [Docker: adrianhihi/helix-server](https://hub.docker.com/r/adrianhihi/helix-server)
+
+### What license applies?
+
+MIT License.
+
+## License
+
+MIT
+
+## Links
+
+- [npm: @helix-agent/core](https://www.npmjs.com/package/@helix-agent/core)
+- [PyPI: helix-agent-sdk](https://pypi.org/project/helix-agent-sdk/)
+- [Docker: adrianhihi/helix-server](https://hub.docker.com/r/adrianhihi/helix-server)
+- [awesome-mpp](https://github.com/mbeato/awesome-mpp) — Listed in the MPP ecosystem registry

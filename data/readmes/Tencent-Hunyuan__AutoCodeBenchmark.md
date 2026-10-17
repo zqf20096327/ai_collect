@@ -1,0 +1,231 @@
+
+<div align="center">
+
+# AutoCodeBench: Large Language Models are Automatic Code Benchmark Generators
+
+**Hunyuan Team, Tencent**
+
+</div>
+
+
+<p align="center">
+    <a href="https://arxiv.org/abs/2508.09101">📖 Paper</a> •
+    <a href="https://autocodebench.github.io/">🏠 Home Page</a> •
+    <a href="https://huggingface.co/datasets/tencent/AutoCodeBenchmark">💻 Data </a> •
+    <a href="https://autocodebench.github.io/leaderboard.html">🏆 Leaderboard</a> •
+    <a href="#citation">📜 Citation</a>
+</p>
+
+
+## 📰 News
+
+- **2025.12.04** 🚀 - We released ***AutoCodeBench-V2***, built on the original dataset and iteratively refined through top proprietary models and a sandbox to produce 1,000 higher-quality problems! The **leaderboard and evaluation tutorial** are available in [AutoCodeBench-V2](./AutoCodeBench-V2/)!
+- **2025.12.04** 📚 - We released ***AutoCodeInstruct***, a large-scale multilingual dataset equipped with golden answers distilled from DeepSeek-V3-0324, and filtered using Qwen2.5-Coder-7B/32B-Instruct to create two versions suitable for RL and SFT training! The dataset is available at [autocodeinstruct_v3answer_qwen32b.jsonl](https://huggingface.co/datasets/tencent/AutoCodeBenchmark/blob/main/autocodeinstruct_v3answer_qwen32b.jsonl) and [autocodeinstruct_v3answer_qwen7b.jsonl](https://huggingface.co/datasets/tencent/AutoCodeBenchmark/blob/main/autocodeinstruct_v3answer_qwen7b.jsonl). Experimental results can be found in the AutoCodeInstruct section below.
+- **2025.08.15** 🎉 - We released AutoCodeGen, AutoCodeBench series, and Multi-lingual Sandbox!
+- **2025.08.13** 📄 - We published our [arXiv paper](https://arxiv.org/abs/2411.02906)!
+
+
+
+## Contents
+
+- [Introduction](#introduction)
+- [Data Resources](#data-resources)
+- [AutoCodeGen](#autocodegen)
+- [AutoCodeBench](#autocodebench)
+- [AutoCodeInstruct](#autocodeinstruct)
+- [Experimental Results](#experimental-results)
+- [Quick Evaluation](#evaluation)
+- [Citation](#citation)
+- [License](#license)
+
+---
+
+## Introduction
+
+**AutoCodeGen**: An innovative automated workflow leveraging LLM-Sandbox Interaction, where *LLMs dynamically generate test inputs and obtain corresponding test outputs through the sandbox environment*, enabling the creation of high-quality, scalable code generation datasets.
+
+**AutoCodeBench Series**: 
+- **ACB-Full**: A comprehensive, large-scale code generation benchmark comprising 3,920 carefully curated problems, featuring balanced distribution across 20 programming languages. This benchmark is characterized by its high difficulty levels, practical relevance, and linguistic diversity.
+- **ACB-Lite**: Derived from extensive evaluation of over 40 models on ACL-Full, this refined subset contains 1,586 problems that demonstrate consistent solvability, having been successfully addressed by at least two different models.
+- **ACB-Complete**: Constructed from 1,000 selected problems from ACB-Lite, this benchmark employs 3-shot prompting to create a completion-style code generation assessment framework specifically designed to evaluate the performance capabilities of base models.
+
+
+**AutoCodeInstruct**: A training dataset derived from the same pipeline as AutoCodeBench, consisting of problems with DeepSeek-V3-0324 pass rates between 0.4-0.8, covering 20 programming languages. We further filtered out problems with pass rates above 0.6 using Qwen2.5-Coder-7B/32B-Instruct models, creating two customized versions.
+
+
+
+**MultiLanguageSandbox**: A robust, secure, and high-performance multi-language code execution sandbox service that provides comprehensive support for compilation and execution across more than 30 programming languages.
+
+
+
+
+## Data Resources
+
+<div align="center">
+
+| **Dataset** |  **Download** |
+| :------------: | :------------: |
+| AutoCodeBench-Full  | [🤗 HuggingFace](https://huggingface.co/datasets/tencent/AutoCodeBenchmark/blob/main/autocodebench.jsonl)   |
+| AutoCodeBench-Lite  | [🤗 HuggingFace](https://huggingface.co/datasets/tencent/AutoCodeBenchmark/blob/main/autocodebench_lite.jsonl)    |
+| AutoCodeBench-Complete  | [🤗 HuggingFace](https://huggingface.co/datasets/tencent/AutoCodeBenchmark/blob/main/autocodebench_completion_3shot.jsonl)    |
+
+</div>
+
+
+
+
+## AutoCodeGen
+<div align="center">
+  <img src="figures/autocodegen.png" width="85%">
+</div>
+
+## AutoCodeBench
+<div align="center">
+  <img src="figures/bench_comp.png" width="85%">
+</div>
+
+Previous benchmarks mainly focused on Python, with multilingual benchmarks like Fullstackbench and McEval suffering from imbalanced language and category distributions, and overly simple difficulty. In contrast, AutoCodeBench is a high-difficulty multilingual benchmark with balanced language and category distributions to better assess models' multilingual capabilities.
+
+<div align="center">
+  <img src="figures/distribution_comp.png" width="85%">
+</div>
+
+
+<div align="center">
+  <img src="figures/acb.png" width="85%">
+</div>
+
+Field Descriptions:
+- question: The programming problem.
+- canonical_solution: The code solution.
+- demo_test_func: Public test function containing a few basic test cases.
+- full_test_func: Private test function containing a large number of comprehensive test cases.
+- language: The programming language used.
+- difficulty: easy/medium/hard
+
+
+
+
+
+## AutoCodeInstruct
+
+Results of two-stage GRPO and SFT with AutoCodeInstruct.
+
+<div align="center">
+  <img src="figures/aci.png" width="85%">
+</div>
+
+
+
+
+
+## Leaderboard
+
+<div align="center">
+  <img src="figures/leaderboard_acb-lite.png" width="85%">
+</div>
+
+
+
+## Experimental Results
+
+<div align="center">
+  <img src="figures/exp_acb.png" width="85%">
+</div>
+<div align="center">
+  <img src="figures/exp_acb-lite.png" width="85%">
+</div>
+<div align="center">
+  <img src="figures/exp_acb-comp.png" width="85%">
+</div>
+
+
+## Evaluation
+
+### 1. Prepare a file `model_output.jsonl`
+You can use your model to perform inference based on the "question" field in the `autocodebench.jsonl` file and the system prompt, and save the model's output in the "output" field.
+
+An example of using VLLM==0.8.5 for infernece can be found in the folder `Inference`.
+
+> **System Prompt**: `You are an expert programmer. Your task is to provide a code solution within a single Markdown code block for the given programming problem. Do not include any direct execution commands, test cases, or usage examples within the code block.`
+
+> **ACB-Complete Evaluation**: For the evaluation of Autocodebench_completion_3shot.jsonl, we used the following prompt: `system_prompt + "\n\n" + question + "\n\n[Code Solution]\n"`
+
+
+### 2. Pull the sandbox image
+```bash
+docker pull hunyuansandbox/multi-language-sandbox:v1
+```
+
+### 3. Start the sandbox service
+```bash
+cd MultiLanguageSandbox
+```
+```bash
+docker run -d \
+  --name sandbox-service \
+  -p 8080:8080 \
+  --cap-add=NET_ADMIN \
+  hunyuansandbox/multi-language-sandbox:v1
+```
+
+### 4. Verify the service
+```bash
+# Check container status
+docker ps | grep sandbox
+```
+```bash
+# Test service health status. If the response contains `"exec_outcome": "PASSED"` in the JSON, it indicates the service is running normally.
+curl -X POST http://localhost:8080/submit \
+  -H "Content-Type: application/json" \
+  -d '{"src_uid": "test-001", "lang": "python", "source_code": "print(\"Hello World\")"}'
+```
+
+```bash
+# Verify canonical_solution, expected result pass@1=100%
+python3 call_sandbox.py \
+  --input_file AutoCodeBench/autocodebench.jsonl \
+  --output autocodebench.exec.jsonl \
+  --server_ip localhost \
+  --server_port 8080 \
+  --concurrency 32 \
+  --solution_key canonical_solution
+```
+
+
+### 5. Calculate pass@1
+```python
+python3 call_sandbox.py \
+  --input_file model_output.jsonl \
+  --output model_output.exec.jsonl \
+  --server_ip localhost \
+  --server_port 8080 \
+  --concurrency 32 \
+  --solution_key output
+```
+
+
+## Citation
+
+If you find our project helpful, please cite:
+
+```bibtex
+@misc{chou2025autocodebenchlargelanguagemodels,
+      title={AutoCodeBench: Large Language Models are Automatic Code Benchmark Generators}, 
+      author={Jason Chou and Ao Liu and Yuchi Deng and Zhiying Zeng and Tao Zhang and Haotian Zhu and Jianwei Cai and Yue Mao and Chenchen Zhang and Lingyun Tan and Ziyan Xu and Bohui Zhai and Hengyi Liu and Speed Zhu and Wiggin Zhou and Fengzong Lian},
+      year={2025},
+      eprint={2508.09101},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2508.09101}, 
+}
+```
+
+
+
+
+## License
+
+This repository is licensed under the terms of the [LICENSE](LICENSE) file.
+
+

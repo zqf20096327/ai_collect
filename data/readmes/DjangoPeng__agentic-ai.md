@@ -1,0 +1,257 @@
+# 🦞 Agentic AI Architect
+
+> OpenClaw 生产部署、Agent 开发与 Claude Code 深度实战的完整知识库
+
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-GitHub%20353K%E2%AD%90-blue)](https://github.com/openclaw/openclaw) [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## 这个仓库是什么
+
+一套经过生产验证的 OpenClaw + Claude Code 实战知识库：涵盖生产部署、IM 接入、模型配置、安全加固，以及一系列可落地的 AI Agent 业务流项目（小红书发布 / 财务票据 / 智能早报 / CRM / 量化投研 / 密钥巡检自愈 / 安全审计治理）。
+
+无论你是：
+
+- **想把 OpenClaw 跑起来的开发者** — 一键部署脚本，30 分钟从零到能用
+- **想让 Agent 接入微信/企微/飞书的用户** — 逐步指南，扫码即用
+- **想在团队中落地 AI Agent 的技术负责人** — 生产级配置、安全架构、成本控制
+- **想系统学习 AI 业务流架构的学员** — 配套课程《AI 业务流架构师》全部教辅资料
+
+都可以直接使用。
+
+## 快速导航
+
+| 我想…… | 去这里 |
+| --- | --- |
+| 在云服务器上部署 OpenClaw | [openclaw-infra/](openclaw-infra) |
+| 让 Agent 接入微信 | [openclaw-im/wechat-clawbot.md](openclaw-im/wechat-clawbot.md) |
+| 让 Agent 接入企业微信 | [openclaw-im/wecom-bot.md](openclaw-im/wecom-bot.md) |
+| 让 Agent 接入飞书 | [openclaw-im/feishu-openclaw.md](openclaw-im/feishu-openclaw.md) |
+| 查看完整的 openclaw.json 配置模板 | [openclaw.json.example](openclaw.json.example) |
+| 配置火山引擎 Coding Plan（国产模型包月） | [openclaw-models/volcengine-coding-plan.md](openclaw-models/volcengine-coding-plan.md) |
+| 配置 Hotai 代理（海外旗舰模型） | [openclaw-models/hotai-api.md](openclaw-models/hotai-api.md) |
+| 排查部署问题 | [openclaw-infra/checklists/troubleshooting.md](openclaw-infra/checklists/troubleshooting.md) |
+| 安全加固检查 | [openclaw-infra/checklists/security-checklist.md](openclaw-infra/checklists/security-checklist.md) |
+| 给 Agent 铸造灵魂（SOUL.md 设计） | [openclaw-soul/](openclaw-soul) |
+| 配置心跳巡检与定时任务 | [openclaw-heartbeat/](openclaw-heartbeat) |
+| 开发自定义 Skill（SKILL.md 编写） | [openclaw-skills/](openclaw-skills) |
+| 云端部署小红书自动发布 Agent | [xhs-auto-publisher/](xhs-auto-publisher) |
+| 全自动财务填报与票据识别 Agent | [financial-automation/](financial-automation) |
+| 多平台智能早报管家（信号分诊 + 三关口编辑） | [morning-newspaper/](morning-newspaper) |
+| CRM 会议资产沉淀（四段式架构 + 历史强值保护） | [CRM-Assistant/](CRM-Assistant) |
+| 在终端用 Claude Code 做多文件协同与代码级重构 | [claude-code/](claude-code) |
+| 从零构建 AI 量化投研系统（年报解析 → 研判 → 出图 → HTML 报告） | [ai-quant-cli/](ai-quant-cli) |
+| 让 OpenClaw 经 ACP 调度 Claude Code 巡检 GitHub 密钥泄露 | [github-secret-auditor/](github-secret-auditor) |
+| 让 OpenClaw 用 Claude Code 给自己做上线前安全审计与生产治理 | [security-guardian/](security-guardian) |
+
+## 目录结构
+
+```
+.
+├── openclaw.json.example            # OpenClaw 完整配置模板（脱敏）
+├── openclaw-infra/                   # 基础设施：部署、守护进程、安全穿透
+│   ├── README.md                     #   OpenClaw 部署指南
+│   ├── configs/
+│   │   ├── .env.example              #   环境变量模板（6 种 API 提供商）
+│   │   └── openclaw.service          #   systemd 服务文件
+│   ├── scripts/
+│   │   ├── setup-openclaw.sh         #   一键部署脚本（交互式）
+│   │   └── commands-cheatsheet.sh    #   运维命令速查卡
+│   └── checklists/
+│       ├── security-checklist.md     #   安全配置检查清单
+│       └── troubleshooting.md        #   常见问题排错指南（9 个场景）
+│
+├── openclaw-im/                      # IM 渠道接入
+│   ├── wechat-clawbot.md             #   微信 ClawBot 接入指南
+│   ├── wecom-bot.md                  #   企业微信长连接机器人接入指南
+│   └── feishu-openclaw.md            #   飞书原生深度集成指南
+│
+├── openclaw-models/                  # 模型配置与成本控制
+│   ├── volcengine-coding-plan.md     #   火山引擎 Coding Plan 购买与配置
+│   └── hotai-api.md                  #   Hotai2API 海外模型代理接入
+│
+├── openclaw-soul/                    # 人格工程：SOUL.md 与 AGENTS.md 设计模板
+│   ├── README.md                     #   SOUL.md 四层建造法 + AGENTS.md 权限矩阵指南
+│   ├── lesson05-lab.md               #   第5节实验手册（可直接跟着操作）
+│   ├── templates/
+│   │   ├── SOUL.md.example           #   通用模板（带注释的四层结构）
+│   │   └── AGENTS.md.example         #   通用模板（权限矩阵 + 记忆管理）
+│   └── examples/
+│       ├── dev-assistant/            #   研发助手完整配置（课程实战版）
+│       ├── biz-assistant/            #   业务管家完整配置
+│       └── devops-agent/             #   DevOps 运维场景（社区案例）
+│
+├── openclaw-heartbeat/                # 心跳引擎：Heartbeat + Cron 自动化
+│   ├── README.md                     #   Cron vs Heartbeat 选型 + 四条黄金法则
+│   ├── lesson06-lab.md               #   第6节实验手册（可直接跟着操作）
+│   ├── templates/
+│   │   └── HEARTBEAT.md.example      #   通用模板（带注释的四步法骨架）
+│   └── examples/
+│       ├── morning-briefing-heartbeat.md  #  多轮资讯日报巡检配置
+│       └── memory-guardian-heartbeat.md   #  记忆守护巡检配置（含资讯巡检）
+│
+├── openclaw-skills/                  # 技能开发：SKILL.md 规范与自定义 Skill 编写
+│   ├── README.md                     #   SKILL.md 规范指南（结构、字段、开发规范）
+│   ├── lesson09-lab.md               #   第9节实验手册（可直接跟着操作）
+│   ├── templates/
+│   │   └── SKILL.md.example          #   通用模板（带注释的 Frontmatter + Body 骨架）
+│   └── examples/
+│       └── crypto-monitor/
+│           └── SKILL.md              #   加密货币行情巡检 Skill（课程实战版）
+│
+├── ai-quant-cli/                     # 第18节：从空目录造 AI 量化投研系统（解析 → 研判 → 出图 → HTML 报告）
+├── github-secret-auditor/            # 第19节：OpenClaw 经 ACP 调度 Claude Code 巡检 GitHub 密钥泄露（夜间代码自愈）
+├── security-guardian/                # 第20节：企业级数字员工安全审计与生产治理（OpenClaw 自审计控制台 + Claude Code）
+├── claude-code/                      # 第16-17节：Claude Code 深度实战（多文件协同 + 终端级重构）
+├── xhs-auto-publisher/               # 第12节：云端小红书图文自动发布 Agent（Playwright + 龙虾通知）
+├── financial-automation/             # 第13节：全自动财务填报与票据识别 Agent（OCR + 飞书 Bitable）
+├── morning-newspaper/               # 第14节：多平台智能早报管家（信号分诊 + 三关口 LLM 编辑 + 飞书推送）
+└── CRM-Assistant/                   # 第15节：CRM 会议资产沉淀（四段式架构 + 历史强值保护 + 飞书两表）
+```
+
+### 📂 [openclaw-infra/](openclaw-infra) — 基础设施
+
+| 文件 | 说明 |
+| --- | --- |
+| [README.md](openclaw-infra/README.md) | 完整部署指南：一键部署、手动部署、Tailscale 穿透、Gateway 认证 |
+| [configs/.env.example](openclaw-infra/configs/.env.example) | 环境变量模板（6 种 API 提供商） |
+| [configs/openclaw.service](openclaw-infra/configs/openclaw.service) | systemd 服务文件 |
+| [scripts/setup-openclaw.sh](openclaw-infra/scripts/setup-openclaw.sh) | 一键部署脚本（交互式） |
+| [scripts/commands-cheatsheet.sh](openclaw-infra/scripts/commands-cheatsheet.sh) | 运维命令速查卡 |
+| [checklists/security-checklist.md](openclaw-infra/checklists/security-checklist.md) | 安全配置检查清单 |
+| [checklists/troubleshooting.md](openclaw-infra/checklists/troubleshooting.md) | 常见问题排错指南（9 个场景） |
+
+### 📂 [openclaw-im/](openclaw-im) — IM 渠道接入
+
+| 文件 | 说明 |
+| --- | --- |
+| [wechat-clawbot.md](openclaw-im/wechat-clawbot.md) | 微信 ClawBot 接入：官方插件，一条命令 + 扫码 |
+| [wecom-bot.md](openclaw-im/wecom-bot.md) | 企业微信长连接机器人：免公网 IP，支持群聊 + 文档 MCP |
+| [feishu-openclaw.md](openclaw-im/feishu-openclaw.md) | 飞书原生深度集成 |
+
+### 📂 [openclaw-models/](openclaw-models) — 模型配置与成本控制
+
+| 文件 | 说明 |
+| --- | --- |
+| [hotai-api.md](openclaw-models/hotai-api.md) | Hotai2API：国内直连海外旗舰模型（GPT-5.4 / Claude Opus 4.6） |
+| [volcengine-coding-plan.md](openclaw-models/volcengine-coding-plan.md) | 火山引擎 Coding Plan：国产模型包月，含 Embedding 配置 |
+
+### 📂 [openclaw-soul/](openclaw-soul) — 人格工程
+
+| 文件 | 说明 |
+| --- | --- |
+| [README.md](openclaw-soul/README.md) | SOUL.md 四层建造法 + AGENTS.md 权限矩阵设计指南 |
+| [templates/SOUL.md.example](openclaw-soul/templates/SOUL.md.example) | 通用模板：带注释的四层结构（Identity → Style → Rules → Boundaries） |
+| [templates/AGENTS.md.example](openclaw-soul/templates/AGENTS.md.example) | 通用模板：三级权限矩阵 + 记忆管理 + 群聊准则 + 错误处理 |
+| [examples/dev-assistant/](openclaw-soul/examples/dev-assistant) | 研发助手完整配置（课程实战版，含 SOUL.md + AGENTS.md） |
+| [examples/biz-assistant/](openclaw-soul/examples/biz-assistant) | 业务管家完整配置 |
+| [examples/devops-agent/](openclaw-soul/examples/devops-agent) | DevOps 运维场景（社区案例赏析） |
+
+### 📂 [openclaw-heartbeat/](openclaw-heartbeat) — 心跳与定时任务
+
+| 文件 | 说明 |
+| --- | --- |
+| [README.md](openclaw-heartbeat/README.md) | Cron vs Heartbeat 选型指南 + HEARTBEAT.md 四条黄金法则 |
+| [lesson06-lab.md](openclaw-heartbeat/lesson06-lab.md) | 第6节实验手册：Cron + Heartbeat 组合实战 |
+| [templates/HEARTBEAT.md.example](openclaw-heartbeat/templates/HEARTBEAT.md.example) | 通用模板：带注释的四步法骨架（条件→判断→动作→静默） |
+| [examples/morning-briefing-heartbeat.md](openclaw-heartbeat/examples/morning-briefing-heartbeat.md) | 多轮资讯日报巡检配置（配合两个 Cron 任务使用） |
+| [examples/memory-guardian-heartbeat.md](openclaw-heartbeat/examples/memory-guardian-heartbeat.md) | 记忆守护巡检配置（含资讯巡检 + 记忆归档检查） |
+
+### 📂 [openclaw-skills/](openclaw-skills) — 自定义 Skill 开发
+
+| 文件 | 说明 |
+| --- | --- |
+| [README.md](openclaw-skills/README.md) | SKILL.md 规范指南：文件结构、关键字段、开发规范、Cron 集成 |
+| [lesson09-lab.md](openclaw-skills/lesson09-lab.md) | 第9节实验手册：CoinGecko 注册 → 环境变量 → 创建 Skill → 手动测试 → Cron 定时 |
+| [templates/SKILL.md.example](openclaw-skills/templates/SKILL.md.example) | 通用模板：带注释的 Frontmatter + Markdown Body 骨架（复制即用） |
+| [examples/crypto-monitor/SKILL.md](openclaw-skills/examples/crypto-monitor/SKILL.md) | 加密货币行情巡检 Skill 完整配置（课程实战版，含异常处理 + Cron） |
+
+### 📂 [CRM-Assistant/](CRM-Assistant) — CRM 会议资产沉淀
+
+| 文件 | 说明 |
+| --- | --- |
+| [README.md](CRM-Assistant/README.md) | 四段式架构（接入→理解→判断→沉淀）+ 快速开始 + 飞书写表指南 |
+| [lesson15-lab.md](CRM-Assistant/lesson15-lab.md) | 第15节实验手册：建表 → 部署 → 配置 → 本地验证 → 模拟写表 → 真实落表 → Skill 注册 |
+| [scripts/crm_assistant.py](CRM-Assistant/scripts/crm_assistant.py) | Python CLI 主入口，覆盖接入/理解/判断/沉淀完整链路 |
+| [references/llm_prompt_template.md](CRM-Assistant/references/llm_prompt_template.md) | Prompt 模板：每个字段的判断标准、证据口径、边界条件 |
+| [references/llm_output_schema.md](CRM-Assistant/references/llm_output_schema.md) | Schema 约束：输出 JSON 结构、字段名、枚举值 |
+| [skills/crm-assistant/SKILL.md](CRM-Assistant/skills/crm-assistant/SKILL.md) | OpenClaw Skill 入口契约 |
+
+## 部署架构
+
+```
+┌─────────────────────────────────────────────┐
+│  你的笔记本 / 手机                            │
+│  (安装 Tailscale 客户端)                      │
+└──────────────┬──────────────────────────────┘
+               │ WireGuard 加密隧道
+               │ (零公网 IP，Shodan 不可见)
+┌──────────────▼──────────────────────────────┐
+│  你的云服务器（¥99/年）                        │
+│  ┌────────────────────────────────────────┐  │
+│  │ Tailscale Serve (HTTPS, 仅 tailnet)   │  │
+│  │         ↓                              │  │
+│  │ OpenClaw Gateway (127.0.0.1:18789)    │  │
+│  │         ↑                              │  │
+│  │ systemd 守护进程 (崩溃自动重启)         │  │
+│  └────────────────────────────────────────┘  │
+│  数据主权：SOUL.md / 记忆 / 会话 全在你的磁盘  │
+└─────────────────────────────────────────────┘
+```
+
+**核心安全设计：**
+
+- 零公网 IP — 服务器不暴露任何端口，对 Shodan / Censys 完全不可见
+- WireGuard 端到端加密 — 所有流量经 Tailscale 加密隧道
+- Gateway Token 认证 — 即使进入 tailnet，仍需令牌才能操作
+- 127.0.0.1 绑定 — Gateway 只监听本机回环地址，外部无法直连
+
+> 完整部署步骤见 [openclaw-infra/README.md](openclaw-infra/README.md)
+
+## 安全要点
+
+> ⚠️ 部署完成后，务必对照 [security-checklist.md](openclaw-infra/checklists/security-checklist.md) 逐项检查
+
+- 2026 年初 **13.5 万个** OpenClaw 实例因端口暴露被攻击（SecurityScorecard 报告）
+- **永远不要**将 `.env` 提交到 Git
+- **永远不要**将端口绑定到 `0.0.0.0`
+- **永远不要**在安全组中开放 18789 端口
+
+## 支持的 API 提供商
+
+本项目通过 OpenAI 兼容格式接入大模型，配置 `OPENAI_API_KEY` + `OPENAI_BASE_URL` 即可。
+
+| 提供商 | Base URL | 推荐场景 |
+| --- | --- | --- |
+| DeepSeek | `https://api.deepseek.com/v1` | 性价比最高 |
+| 豆包 | `https://ark.cn-beijing.volces.com/api/v3` | 火山引擎生态 |
+| 通义千问 | `https://dashscope.aliyuncs.com/compatible-mode/v1` | 阿里云生态 |
+| Kimi | `https://api.moonshot.cn/v1` | 长上下文场景 |
+| OpenAI | `https://api.openai.com/v1` | 海外服务器 |
+| 硅基流动 | `https://api.siliconflow.cn/v1` | 多模型聚合 |
+
+> 详细的模型配置指南见 [openclaw-models/](openclaw-models) 目录。
+
+## 配套课程
+
+本仓库同时作为课程《**AI 业务流架构师：从 OpenClaw 到 Claude Code 深度实战**》的配套教辅资料。课程由彭靖田主讲，共 20 章。
+
+## 关于作者
+
+**彭靖田** — 连续创业者
+
+- 浙江大学竺可桢学院毕业，加州大学访问学者
+- 谷歌 AI 开发者专家（GDE），谷歌出海创业加速器导师
+- TensorFlow Contributor · Kubeflow Maintainer
+- 畅销书《深入理解 TensorFlow》作者
+- 极客时间 AI 课程累计培训超 10 万学员
+
+## 参与贡献
+
+欢迎提交 Issue 和 PR！如果你有新的部署场景、排错经验或配置优化，欢迎贡献。
+
+## License
+
+MIT License. 详见 [LICENSE](LICENSE)。
+
+---
+
+**⭐ 如果这个仓库对你有帮助，请给一个 Star！**

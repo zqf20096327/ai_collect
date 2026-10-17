@@ -1,0 +1,171 @@
+# langchain-ai/terraform
+
+Terraform modules for deploying **LangSmith Self-Hosted** on AWS, Azure, GCP, and OpenShift.
+
+LangSmith is LangChain's observability, evaluation, and prompt-engineering platform. This repository packages the cloud foundation (network / cluster / database / cache / object storage / secrets / DNS) and the Helm deployment of the LangSmith application as reusable, production-ready Terraform.
+
+## Who this is for
+
+Enterprise customers running LangSmith in their own cloud account or OpenShift cluster. If you are evaluating Self-Hosted or standing up a production deployment, start here.
+
+For LangSmith fundamentals and architecture, see the [Self-Hosted documentation](https://docs.langchain.com/langsmith/deploy-self-hosted-full-platform).
+
+## Pick your cloud
+
+| Provider | Guide | Cluster | Status |
+|---|---|---|---|
+| AWS | [`modules/aws/`](modules/aws/README.md) | EKS | GA |
+| Azure | [`modules/azure/`](modules/azure/README.md) | AKS | GA |
+| GCP | [`modules/gcp/`](modules/gcp/README.md) | GKE | GA |
+| OpenShift | [`modules/ocp/`](modules/ocp/README.md) | OCP / ROSA | Preview |
+
+The AWS, Azure, and GCP directories are self-contained deployments with a `Makefile`, an `infra/` Terraform layout, Helm values, and provider-specific operator scripts. The OpenShift preview follows its own layout. See [`modules/README.md`](modules/README.md) for the differences between providers.
+
+For LangSmith **Bring Your Own Cloud (BYOC)**, see [`modules/byoc/`](modules/byoc/README.md) for the customer-side IAM role and AWS VPC reference modules.
+
+## What you get
+
+- **Two-pass deploy.** `infra/` provisions the cloud foundation; the Helm scripts install the LangSmith chart.
+- **Provider-specific secret handling.** AWS application secrets flow from SSM Parameter Store through [External Secrets Operator](https://external-secrets.io/); Azure application secrets flow from Key Vault through `infra/scripts/create-k8s-secrets.sh`; GCP application secrets flow from Secret Manager into generated Helm values. Terraform also creates Kubernetes Secrets containing infrastructure credentials on all three clouds, so those values remain in Terraform state — protect the state backend. See the [secret flow and state table](modules/README.md#secret-flow-and-state).
+- **Sizing profiles:** `minimum`, `dev`, `production`, and `production-large` — selected with a single variable. Setting `sizing_profile = "default"` skips the sizing overlay; the provider's base values and other overrides still apply.
+- **Enterprise feature toggles:**
+  - LangGraph Platform / Deployments
+  - Agent Builder
+  - Insights (ClickHouse-backed analytics)
+  - Polly (AI evaluation & monitoring)
+- **Optional hardening (AWS today):** AWS Network Firewall (FQDN egress), WAFv2, CloudTrail, private EKS API endpoint with SSM bastion.
+- **Ingress flexibility:** cloud-native load balancers by default, or Envoy Gateway (Gateway API) for multi-namespace dataplane deployments.
+
+## Deployment tiers
+
+| Tier | Postgres | Redis | ClickHouse | Use case |
+|---|---|---|---|---|
+| **Dev / POC** | In-cluster | In-cluster | In-cluster | Demos, evaluations |
+| **Production** | Cloud-managed (RDS / Cloud SQL / Azure DB) | Cloud-managed | [LangChain Managed ClickHouse](https://docs.langchain.com/langsmith/langsmith-managed-clickhouse) | Scalable, persistent |
+
+> Blob storage (S3 / GCS / Azure Blob) is always required — trace payloads must not live in ClickHouse. See [self-host blob storage](https://docs.langchain.com/langsmith/self-host-blob-storage).
+>
+> In-cluster ClickHouse is for dev / POC only. Production deployments should use [LangChain Managed ClickHouse](https://docs.langchain.com/langsmith/langsmith-managed-clickhouse).
+
+## Getting started
+
+1. **Check out the latest release tag, not `main`** — see [Versioning and releases](#versioning-and-releases) for the one-line command. `main` is the development branch and may move under you.
+2. Pick the provider folder above and read its `README.md`.
+3. Install the prerequisites it lists (Terraform ≥ 1.11.0, `kubectl`, `helm`, and your cloud CLI).
+4. Run the interactive wizard (`make quickstart` on AWS, Azure, or GCP).
+5. `make apply` → `make deploy`.
+
+A typical first deployment takes 20–30 minutes end-to-end.
+
+## Versioning and releases
+
+This repository is released as **global tags** `vMAJOR.MINOR.PATCH`. Always deploy from a tag — never from a branch.
+
+- **`MAJOR.MINOR` is the supported LangSmith Helm chart line.** The deploy scripts pin the chart to that line (for example `~0.17.0`, meaning the latest `0.17.x`), so a deployment never silently jumps across a breaking minor (e.g. to `0.18`). You always get the newest patch within the line.
+- **`PATCH` is the module revision.** It increments on any change to this repository, regardless of provider, and is **not** the chart version — `v0.17.4` does not mean chart `0.17.4`.
+
+Check out the latest tag on the line (don't hardcode a patch — `git checkout` needs a real tag, and ranges like `v0.17.x` are not valid):
+
+```bash
+git fetch --tags
+git checkout "$(git tag -l 'v0.17.*' --sort=-v:refname | head -1)"
+```
+
+If you would rather download than clone, every release has a source archive — one URL per release, covering all providers:
+
+```bash
+TAG=v0.17.0     # latest v0.17.* — see GitHub Releases below
+curl -sL "https://github.com/langchain-ai/terraform/archive/refs/tags/${TAG}.zip" -o "${TAG}.zip"
+unzip "${TAG}.zip"     # extracts terraform-0.17.0/
+```
+
+GitHub generates these archives on request, so don't pin a checksum of one; clone and check out the tag if you need bit-for-bit reproducibility.
+
+What this means for you:
+
+- Pin to a tag for reproducible infrastructure; re-run the command above to move to a newer patch within the line as fixes land.
+- Moving to a new chart line is an explicit switch to the matching tag series (`git tag -l 'v0.18.*'`).
+- **Staying on the previous line is supported.** `0.16` is maintained on the `release/0.16` branch and still receives `v0.16.*` tags, so you can take fixes without moving to `0.17`. See [Maintenance branches](#maintenance-branches).
+- Browse all releases in [GitHub Releases](https://github.com/langchain-ai/terraform/releases).
+- Advanced override: set the `CHART_VERSION` environment variable to pin an exact chart patch.
+
+### The 0.17 chart line
+
+These modules carry the chart 0.17 values schema. It keeps the 0.16 layout
+(`engineInsightsAgent`, the top-level `insights` / `polly` blocks, and no
+`backend.agentBootstrap`) and moves sandboxes off the removed JuiceFS CSI driver onto
+JuiceFS mounts owned by `sandbox-host`. Chart 0.16 has no keys for those mounts, and
+chart 0.18 has not been validated against these values. Each `deploy.sh` therefore
+refuses anything outside the 0.17 line rather than deploying a half-configured release,
+and `CHART_VERSION` can only narrow the pin to a 0.17 patch:
+
+```bash
+cd modules/aws && make apply && make init-values && CHART_VERSION="0.17.0" make deploy
+```
+
+Read [MIGRATION-0.16-to-0.17.md](MIGRATION-0.16-to-0.17.md) before upgrading an existing
+install. An install still on chart 0.15 also needs
+[MIGRATION-0.15-to-0.16.md](MIGRATION-0.15-to-0.16.md), because those schema changes
+carry over to 0.17.
+
+### Maintenance branches
+
+The current chart line is developed on `main`. When the pinned line moves, the outgoing
+line moves to a `release/<line>` branch and keeps releasing from there — the release
+workflow scopes its patch lookup to the line it finds pinned, so both branches cut tags on
+their own series without colliding.
+
+| Chart line | Releases from | Tag series | Status |
+| --- | --- | --- | --- |
+| 0.17 | `main` | `v0.17.*` | current |
+| 0.16 | `release/0.16` | `v0.16.*` | maintenance |
+| 0.15 | `release/0.15` | `v0.15.*` | maintenance |
+
+Deploying or upgrading within a maintenance line works exactly as before — check out its
+latest tag, not the branch:
+
+```bash
+git fetch --tags
+git checkout "$(git tag -l 'v0.16.*' --sort=-v:refname | head -1)"
+```
+
+Report an issue against the line you are running. Fixes land on `main` first and are
+backported to a maintenance branch where they apply cleanly; values-schema changes tied to
+the newer chart are not backported, because the older chart ignores the affected keys rather
+than rejecting them and would deploy a half-configured release.
+
+Only `release/<line>` releases. The next line is staged on a `cutover/<line>` branch, which
+releases nothing until it merges to `main` — keeping the two prefixes distinct is what stops
+a line still under test from cutting tags.
+
+The per-release history is published in [GitHub Releases](https://github.com/langchain-ai/terraform/releases).
+
+> Tags are immutable. Use `pre-terraform-migration` only for the legacy pre-`0.15` state (see [History](#history)).
+
+## Documentation
+
+- [LangSmith Self-Hosted overview](https://docs.langchain.com/langsmith/deploy-self-hosted-full-platform)
+- [Kubernetes deployment reference](https://docs.langchain.com/langsmith/kubernetes)
+- [LangChain Managed ClickHouse](https://docs.langchain.com/langsmith/langsmith-managed-clickhouse)
+- [Self-host blob storage](https://docs.langchain.com/langsmith/self-host-blob-storage)
+- [Scaling guidance](https://docs.langchain.com/langsmith/self-host-scale)
+- [Self-Hosted changelog](https://docs.langchain.com/langsmith/self-hosted-changelog)
+- Per-provider architecture and troubleshooting: `modules/<provider>/ARCHITECTURE.md` and `TROUBLESHOOTING.md`
+
+## Support
+
+- **Enterprise customers:** start at [enterprise-hub.langchain.com](https://enterprise-hub.langchain.com/) — the front door for onboarding, education, professional services, and support.
+- **Customers with a LangChain support agreement:** open a ticket through your usual support channel.
+- **General questions:** contact your LangChain account team.
+- **Bugs and feature requests for these modules:** open an issue on this repository.
+
+## History
+
+This repository was reseeded from the LangChain Professional Services internal repo. The pre-migration state (the parallel module set previously under `modules/`) is preserved at:
+
+- Tag: `pre-terraform-migration`
+- Branch: `archive/pre-terraform-migration`
+
+## License
+
+Apache 2.0 — see [LICENSE](./LICENSE).

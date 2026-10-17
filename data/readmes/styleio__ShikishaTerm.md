@@ -1,0 +1,453 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/styleio/ShikishaTerm/main/assets/banner.png" alt="SHIKISHA-TERM — Conduct all your AIs from one window" width="820">
+</p>
+
+<p align="center">
+  <b>Run many AI agents at once and let them @mention each other for help — on your PC, in the cloud, or from your phone.</b><br>
+  For Windows, from the Microsoft Store or as a portable zip. Uses the AI subscriptions you already have.
+</p>
+
+<p align="center">
+  <sub><b>Works with</b> Claude Code · Codex · Gemini CLI · Aider · OpenAI · Anthropic · DeepSeek · Mistral · OpenRouter · Ollama · LM Studio — or any shell over SSH</sub>
+</p>
+
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9PB8XQVM87Z0?launch=true&mode=full">
+    <img alt="Get it from Microsoft" src="https://get.microsoft.com/images/en-us%20dark.svg" height="56">
+  </a>
+</p>
+
+
+<p align="center">
+  <a href="https://github.com/styleio/ShikishaTerm/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/styleio/ShikishaTerm?style=social"></a>
+  <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://github.com/styleio/ShikishaTerm/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/styleio/ShikishaTerm?include_prereleases"></a>
+  <a href="https://github.com/styleio/ShikishaTerm/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/styleio/ShikishaTerm/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="README.ja.md"><img alt="日本語" src="https://img.shields.io/badge/README-日本語-red.svg"></a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/styleio/ShikishaTerm/main/assets/demo.gif" alt="SHIKISHA-TERM in action — one AI @mentions another for a review loop, four AIs side by side, a cloud agent on a MicroVM, and an answer from a phone" width="820">
+</p>
+
+<p align="center">
+  <sub>⭐ If this is useful, a <b>star</b> helps other people find it.</sub>
+</p>
+
+---
+
+> **@mention one agent from another, like in a chat app.**
+> “Build this feature, ask @codex to review it, and loop until there is nothing left to fix.”
+> That one line starts the write-and-review loop. No more being the copy-paste courier.
+
+> **Check on your AI from your phone — and tell it to carry on.**
+> Scan a QR code and you can see what every tab is doing and send instructions,
+> from the train, from a café, from bed.
+
+## Why
+
+Running one terminal AI is easy. Running **four** is not.
+
+You end up with a window per agent, no idea which one is waiting for you, and a lot of
+copy-pasting between them. SHIKISHA-TERM puts them in one window and knows the difference
+between *working*, *finished* and *waiting for a human*. Agents hand work to each other with an
+`@` mention and read the answer back. They can run on your PC or on a cloud MicroVM, and you can
+steer them from your phone.
+
+It talks to whatever runs in a terminal, so it is not tied to one vendor: Claude Code,
+Codex CLI, Gemini CLI, DeepSeek, Ollama, Aider, or a plain shell over SSH.
+
+**Most AI terminals run a single agent. This one runs several — on your PC or in the cloud.**
+
+For example:
+
+- **“Ask @codex to review it, and loop until it is clean”** — one line, and two agents go back and forth.
+- **Four agents on four branches**, each in a worktree of its own, all in one window.
+- An agent in **YOLO mode on a cloud MicroVM**, sealed off from your PC.
+- An AI that opens your dev server in the **built-in browser** and debugs it on its own.
+- Kick off a long job and **check on it from your phone** on the way home — and tell it to carry on.
+
+## Install
+
+**From the Microsoft Store** — [get it here](https://apps.microsoft.com/detail/9PB8XQVM87Z0). Microsoft signs the Store copy, so
+there is no security warning to click past, and updates arrive on their own.
+
+**Or take the portable copy**, if you would rather nothing were installed:
+
+1. Download `SHIKISHA-TERM.zip` from [Releases](https://github.com/styleio/ShikishaTerm/releases/latest)
+2. Unzip it anywhere — a USB stick and a synced folder both work
+3. Run `SHIKISHA-TERM.exe`
+
+It opens a window of its own. Nothing needs to be running it — no terminal to set up, no
+font or colour scheme to get right first.
+
+Nothing is written outside that folder. There is no installer and no runtime to install.
+
+> It uses **your existing AI subscriptions** through their CLIs. No API keys are stored,
+> and none are needed.
+
+### On a server (Linux)
+
+**There is no window on Linux.** What runs there is the part that does the work — it opens
+the terminals, watches what each agent is doing, runs your automation — and you reach it
+from a browser or a phone. Put it on a VPS or a cloud VM and the agents keep going when
+your laptop is shut.
+
+**Debian / Ubuntu**
+
+```sh
+curl -fsSL https://pkg.shikisha-term.com/shikisha-archive-key.asc \
+  | sudo tee /etc/apt/keyrings/shikisha.asc >/dev/null
+echo "deb [signed-by=/etc/apt/keyrings/shikisha.asc] https://pkg.shikisha-term.com/apt stable main" \
+  | sudo tee /etc/apt/sources.list.d/shikisha.list
+sudo apt update && sudo apt install shikisha
+```
+
+**Fedora / RHEL / openSUSE**
+
+```sh
+sudo rpm --import https://pkg.shikisha-term.com/shikisha-archive-key.asc
+sudo tee /etc/yum.repos.d/shikisha.repo <<'REPO'
+[shikisha]
+name=SHIKISHA-TERM
+baseurl=https://pkg.shikisha-term.com/rpm
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://pkg.shikisha-term.com/shikisha-archive-key.asc
+REPO
+sudo dnf install shikisha
+```
+
+**Anything else** — one static binary, into your own home folder, asking for nothing:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/styleio/ShikishaTerm/main/packaging/linux/install.sh | sh
+```
+
+Installing does not start anything. When you want it running:
+
+```sh
+systemctl --user enable --now shikisha
+loginctl enable-linger "$USER"   # keep it running after you log out
+```
+
+It prints the address to open the board at. Everything is signed with
+[one key](https://pkg.shikisha-term.com/shikisha-archive-key.asc), and every route above
+checks it before installing.
+
+### About the Windows warning
+
+**The Store copy is signed by Microsoft and shows no warning.** This section is about the
+zip only.
+
+The zip carries no code-signing certificate, so the first run of an unzipped copy shows
+**"Windows protected your PC"** ([code signing policy](SIGNING.md)). Click
+**More info → Run anyway** to continue.
+
+**You can help make that warning go away.** Removing it means a certificate, and
+[SignPath Foundation](https://signpath.org/) issues them to open source projects for free —
+but for a program like this one they ask for *"a certain verifiable reputation"* before
+putting their own name behind it. For a project on GitHub the most legible form that
+reputation takes is stars. So if this is useful to you,
+**[star the repository](https://github.com/styleio/ShikishaTerm)** — it takes a second, and it is the thing most likely to
+get a signed build into the hands of whoever downloads the zip after you.
+
+If you would rather check the download first — and being wary of an unsigned executable
+from the internet is the right instinct:
+
+- Every release is built by [GitHub Actions](.github/workflows/release.yml) from this
+  source, not on anyone's laptop. The build log for your download is public
+- A `SHIKISHA-TERM.zip.sha256` is published next to the zip:
+
+  ```powershell
+  Get-FileHash SHIKISHA-TERM.zip -Algorithm SHA256
+  ```
+
+## Quick start
+
+The first run opens **Getting set up**. Pick your main AI from the ones installed on this PC and
+check GitHub CLI; an AI you do not have yet opens its install page right there.
+
+Then the screen points you to **add a project**: pick a folder or clone from a Git URL (onto a
+MicroVM or an SSH server too). Press where it points next, and the AI starts in that folder —
+no JSON editing required.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/styleio/ShikishaTerm/main/assets/setup.png" alt="Getting set up — choose your main AI from the ones installed on this PC" width="880">
+</p>
+
+To open just the settings (also the way back in if a broken config stops the app from
+starting), double-click **`Settings.cmd`**.
+
+## What it does
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/styleio/ShikishaTerm/main/assets/desktop.png" alt="SHIKISHA-TERM desktop — a mission-control dashboard of several AI agents, each showing whether it is working, waiting or done" width="880">
+</p>
+
+### 1. @mention: agents that ask each other
+
+- **Call one with `@`, like in chat** — type `@` in the input bar to list this desk's tabs; a pick
+  becomes a chip. The agent in front hands the work over, reads the answer and carries on
+- **Review loops** — “ask @codex to review it, and loop until there is nothing left to fix” runs
+  the back-and-forth. The app counts the rounds, up to the limit under Settings > “Limits on
+  handing work”
+- **Terminals and pages too** — run a command in a named terminal, or give a named web page a goal
+  in plain words. Only the tabs a person named with `@` can be driven
+- **Nobody waits on a long job** — its answer comes back to the tab that asked when it is done
+
+### 2. Run many at once
+
+- **Tabs with real status** — every tab shows whether it is working, done, or waiting for
+  you, detected from the screen itself rather than from any vendor API
+- **Split panes** — split as many ways as you like: agents side by side, or an agent next to
+  the browser it is driving
+- **Worktrees** — a folder of its own for every branch, so several branches move at once
+- **Pick up where you left off** — close the app and resume the conversation (Claude Code, Codex)
+- **Notifications** — Slack / Discord / Telegram, this PC, or your phone when a job finishes
+
+### 3. Cloud agents (MicroVM)
+
+- **A machine of its own** — clone the project onto a cloud MicroVM (E2B) and run the agents
+  there. Whatever they do never reaches your PC, which makes it the place for YOLO mode
+- **Set up once** — every worktree is a copy of the project's machine, so what you installed
+  and signed in to is already there
+- **Pauses when idle** — it keeps everything and picks up where it stopped when its URL or a
+  webhook is called
+- **The token stays outside** — the git server's token is added on the way out, so no agent
+  inside can read it
+- **Previews by URL** — open what the machine serves by URL, unlisted or private
+
+### 4. Built in
+
+- **Browser** — open pages inside the app and let an AI drive and check them. A dev server's
+  port opens in a browser tab too
+- **Git panel** — stage part of a diff, let an AI write the commit message, and let an AI tab
+  work through a conflict
+- **SFTP** — this PC on the left, the server on the right; send and fetch files
+- **A real terminal** — SSH, Docker, WSL, jump hosts, key files, port forwarding, session
+  logs, legacy encodings, IME input and mouse support
+
+### 5. Answer from your phone
+
+- Scan a QR code to see every tab and send instructions. Everything you can do at the PC, you
+  can do from the phone (see below)
+
+### Also
+
+- **Desks** — swap the whole tab layout per project, like virtual desktops. Export one
+  to a single file, automation scripts included, and hand it to another machine or person
+- **Automation** — "when this finishes, hand the result to the review tab", "answer this
+  confirmation automatically". Written in Lua, or described in plain language and written
+  for you by an AI you already have installed
+- **Runaway protection** — a limit on how many times agents may hand work to each other,
+  an emergency stop, and per-tab input locks
+
+## Use it from your phone
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/styleio/ShikishaTerm/main/assets/phone.png" alt="SHIKISHA-TERM on a phone — a live dashboard of several AI agents, each showing whether it is working, waiting or done" width="340">
+</p>
+
+Turn on "Use from your phone" in the settings and a QR code appears. Scan it and you get a
+small web page listing every tab, its status, and a box to send instructions. `Ctrl+B 0`
+then `i` shows the same code on the board.
+
+Under the code sit the only two things worth acting on. **📋 copies the link** — token and
+all — to the clipboard, for a phone that cannot photograph the screen it is on, and the
+**badge beside it says which network that link leads to**: green for Tailscale (your own
+devices, anywhere), amber for the LAN (everyone on that Wi-Fi or office network). The link itself is
+never printed: with its token it is the key to the machine, and without one it opens
+nothing.
+
+**Know where it is reachable from** — this feature lets a phone run commands on your machine:
+
+- It listens on **a Tailscale address or a LAN address**, and connecting needs the link
+  with its token
+- With **[Tailscale](https://tailscale.com/)** (free) only devices in your own Tailscale
+  network can reach it, encrypted, from anywhere. This is the safest way and the one to prefer
+- While Tailscale is not connected it listens on the **LAN address** (the same Wi-Fi or office
+  network), and switches to Tailscale by itself once it connects; a phone that is watching is
+  sent to the new address, which it reaches only if it is on Tailscale too. Anyone on the same network
+  who knows the URL and the token could use it — do not turn it on for shared or public Wi-Fi
+- A LAN address is **reachable from the internet as well** when something forwards to it —
+  a router's port forwarding, a cloud machine's public IP, a firewall rule that lets it in.
+  This program sets up no forwarding itself
+- Binding to a public address (`remote.allow_public`) never happens unless you write it in
+  the config file yourself
+
+See [SECURITY.md](SECURITY.md) for the full threat model.
+
+## Keys
+
+The prefix is `Ctrl+B`, tmux-style. `Ctrl+B ?` opens the help.
+
+| Key | Action |
+|---|---|
+| `Ctrl+B q` | Quit |
+| `Ctrl+B 0`–`9` | Switch tab (0 = INDEX) |
+| `Ctrl+B w` / `W` | Desk list / next |
+| `Ctrl+B %` / `"` | Split the view beside / below (`<` `>` resize) |
+| `Ctrl+B o` / arrows | Move between panes |
+| `Ctrl+B X` | Close this pane (the tab keeps running) |
+| `Ctrl+B =` | Put every divider back to even halves |
+| `Ctrl+B l` | Toggle input lock |
+| `Ctrl+B r` / `R` | Restart the tab, carrying its conversation over / starting a new one. **On a tab you have not spoken to yet, it picks up the conversation from the last run of the app** |
+| `Ctrl+B [` | Copy mode (`c` copies the latest response). `/` searches the history, `n` / `N` step through the matches |
+| `Ctrl+B a` / `x` | Automation on/off / emergency stop |
+| `Ctrl+B 0` → `i` | Show the QR code for phone access |
+| `Ctrl+B 0` → `k` | Set or change the master password (encrypts `secrets.json`) |
+
+An `on_notify` automation hook catches every terminal notification (bell/OSC, even over ssh),
+so you can forward it to your phone or route it — see docs/AUTOMATION.md.
+
+`browser_snapshot` captures a browser page as a PNG (see it under Settings → Snapshots) — a
+rally can keep a visual record of what it did.
+
+`Ctrl+B :` opens a command palette — one box to find and run anything: a tab, a setting,
+the Vault, any key action, your own quick actions.
+
+The board's "Find" searches both the live output of every open tab and every conversation the AI CLIs have recorded, by
+what was said in them, and reopening one adds a tab that resumes it in its folder.
+
+The board's SESSIONS table shows a COST column — processor and memory per agent, summed
+over everything it started — so you can see which of several running agents is heavy without
+leaving the terminal.
+
+A browser login can be saved once (`browser_state_save`) and reloaded by a later rally
+(`browser_state_load`), so a rally does not start by logging in. It saves our own browser
+profile's cookies, httpOnly and all; it does not crack Chrome's or Firefox's stores.
+
+Each tab says where it is, under its name: the branch, its pull request, and any ports it
+is listening on. Pull request numbers use the GitHub sign-in already on this PC (`gh auth
+login`, or `GITHUB_TOKEN`); without one the rest still shows.
+
+Every key can be moved, including the prefix — the settings list each action with the
+key it answers to now, and the help screen (`Ctrl+B ?`) shows what you actually have
+rather than what shipped.
+
+Colours are chosen in the settings, by name. The list is every scheme this PC already
+has — whatever Windows Terminal is carrying, plus any scheme file you drop into
+`config/themes`, in the format colour schemes are published in. Pick a light one and the
+whole window follows, not only the terminal.
+
+The mouse works too: wheel to scroll, **Ctrl+wheel to change the terminal's size**, drag to
+copy, right click to paste, click a tab name to switch. Once the window is divided, each pane's caption carries ▥ and ▤ to divide it
+again and ✕ to close that view, and the divider between panes can be dragged to rebalance
+them — double-click it for even halves. The tab bar on the left works the same way: drag its
+right edge to set its width, double-click for the width it ships with, and drag it shut to
+put it away and give the whole window to the terminal. `Ctrl+B s` does that too, and brings
+it back the width it was.
+
+## Automation
+
+An automation is a few lines of Lua dropped into a folder, named after the moment it should
+run:
+
+```lua
+-- on_done.lua — hand the finished work to the review tab, and stop after 5 rounds
+if tab.chain_depth == 0 then return end          -- a human started this; do nothing
+
+local rounds = shikisha.get_var("rounds") or 0
+if tab.output:match("LGTM") or rounds >= 5 then
+  shikisha.notify("slack", "Review finished (" .. rounds .. " rounds)")
+  return
+end
+shikisha.set_var("rounds", rounds + 1)
+shikisha.send_to_tab("reviewer", "Please fix these points:\n" .. tab.output)
+```
+
+An agent can also say what it is doing — `shikisha.set_status("build", "running tests")`
+puts that under its name in the tab bar, beside the state dot that is read off its screen.
+One is what we could tell; the other is what it chose to say.
+
+Automations run in a sandbox: **no file access and no network by default**, and
+notifications can only go to targets you registered.
+
+The same commands can be called **from outside the app**, over a named pipe, by anything
+this app started — so a CLI sitting in a tab can split a pane, drive the browser, or hand
+work to another tab without a human at the keyboard. Same names as in Lua, nothing new to
+learn. See section 7 of the reference.
+
+Full reference: **[docs/AUTOMATION.md](docs/AUTOMATION.md)** — also reachable from the
+settings screen.
+
+## Folder layout
+
+```
+SHIKISHA-TERM.exe   the app
+Settings.cmd           opens only the settings screen
+config.json            general settings + the list of desks
+secrets.json           notification targets and tokens (encryptable, never share)
+desks/            desk definitions (shareable per project)
+profiles/              per-AI status detection rules
+scripts/               automation scripts
+logs/                  session and automation logs
+lang/                  interface languages (en.json is the base)
+docs/AUTOMATION.md     how to write automations
+```
+
+Copy `config.example.json` and the other `*.example.json` files to get started.
+
+## Language
+
+The interface follows your Windows language and falls back to English. You can also set it
+in the settings screen or with `"language"` in `config.json`.
+
+| Language | Status |
+|---|---|
+| English | ✅ base |
+| 日本語 | ✅ complete |
+| *your language* | [contributions welcome](docs/TRANSLATING.md) |
+
+Copy `lang/en.json` to `lang/<code>.json` and translate the values — that is the whole
+process. Keys you leave out fall back to English, so a partial translation still works.
+See [docs/TRANSLATING.md](docs/TRANSLATING.md).
+
+## Where it fits
+
+It is deliberately narrow, and honest about it:
+
+- **Windows only** today. It is built on ConPTY; other platforms are not supported yet —
+  [★ star the repo](https://github.com/styleio/ShikishaTerm) to hear if that changes
+- **It drives CLIs, it does not replace them.** Your AI subscriptions, logins and settings
+  stay exactly as they are
+- **It is a terminal, not an IDE.** It manages sessions and moves text between them
+
+## Contributing
+
+Translations, profiles for AI CLIs it does not know yet, bug reports — all welcome.
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), and please keep to the
+[Code of Conduct](CODE_OF_CONDUCT.md). Questions or ideas? Open a
+[Discussion](https://github.com/styleio/ShikishaTerm/discussions).
+
+## Building
+
+```
+cargo build --release
+```
+
+Rust (MSVC toolchain) is required. The result is a single executable with no runtime
+dependencies.
+
+## Documentation
+
+- [Automation reference](docs/AUTOMATION.md) — events, variables, commands, examples
+- [Translating](docs/TRANSLATING.md) — how to add a language
+- [Design notes](DESIGN.md) — terminology, architecture, and the safety model ([日本語](DESIGN.ja.md))
+- [Security](SECURITY.md) — threat model and how to report an issue
+- [Code signing policy](SIGNING.md) — how release binaries are built and signed
+
+## Support
+
+If SHIKISHA-TERM saves you time, you can support its development on
+[Ko-fi](https://ko-fi.com/styleio). Thank you.
+
+## License
+
+[MIT](LICENSE)
+
+The program is built from open source components, and the terms of every one
+of them are reproduced in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt),
+which is inside the download as well as here.

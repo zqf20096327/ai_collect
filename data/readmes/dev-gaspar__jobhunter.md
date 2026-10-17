@@ -1,0 +1,285 @@
+# JobHunter AI
+
+[![CI](https://github.com/dev-gaspar/jobhunter/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-gaspar/jobhunter/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
+Herramienta CLI que automatiza la busqueda de empleo en LinkedIn. Escanea publicaciones, identifica ofertas relevantes, genera CVs personalizados con IA, y envia emails de aplicacion a reclutadores.
+
+Funciona para cualquier sector: tecnologia, marketing, ventas, diseno, administracion, salud, educacion, etc.
+
+## App de escritorio (Windows)
+
+Para usuarios no tecnicos: descarga el instalador, abrelo y sigue el onboarding
+grafico (clave de Gemini, tu CV en PDF, Gmail y LinkedIn). Sin dependencias —
+no necesitas Python, Git ni terminal.
+
+**[Descargar JobHunterSetup-x64.exe](https://github.com/dev-gaspar/jobhunter/releases/latest/download/JobHunterSetup-x64.exe)**
+
+> La primera vez Windows puede mostrar el aviso de SmartScreen (instalador sin
+> firma): pulsa "Mas informacion" y luego "Ejecutar de todas formas".
+
+La app y el CLI comparten datos en `~/.jobhunter` (config, historial y sesion
+de LinkedIn): puedes usar ambos. La app se actualiza sola avisando cuando hay
+una nueva version en GitHub Releases.
+
+## Instalacion rapida (CLI)
+
+**macOS / Linux:**
+
+```bash
+curl -sSL https://raw.githubusercontent.com/dev-gaspar/jobhunter/main/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/dev-gaspar/jobhunter/main/install.ps1 | iex
+```
+
+Esto instala el comando `jobhunter` globalmente en tu terminal.
+
+## Comandos
+
+```
+jobhunter setup                          Configuracion inicial (incluye login)
+jobhunter login                          Re-login si la sesion expira
+jobhunter --test email@test.com          Prueba (envia a tu correo)
+jobhunter run                            Buscar y enviar a reclutadores
+jobhunter run --dry                      Pipeline completo sin enviar emails
+jobhunter optimize                       Optimizar queries de busqueda con IA
+jobhunter optimize "..."                 Optimizar con feedback especifico
+jobhunter apply [link|"texto"]           Aplicar a una publicacion puntual
+jobhunter apply                          Modo pegar texto (termina con '.')
+jobhunter dashboard                      Dashboard local de historial y metricas
+jobhunter sync                           Conciliar respuestas y rebotes (Gmail IMAP)
+jobhunter network                        Conectar con reclutadores ya contactados
+jobhunter history                        Historial de aplicaciones enviadas
+jobhunter blacklist                      Ver empresas bloqueadas
+jobhunter blacklist add "Empresa"        Bloquear empresa
+jobhunter blacklist remove "Empresa"     Desbloquear empresa
+jobhunter status                         Ver configuracion y estadisticas
+jobhunter update                         Actualizar a la ultima version
+jobhunter help                           Ver ayuda completa
+```
+
+## Opciones
+
+### Filtro de tiempo
+
+```
+jobhunter --test email@test.com --time 24h      Ultimas 24 horas (por defecto)
+jobhunter --test email@test.com --time week      Esta semana
+jobhunter run --time month                       Este mes
+```
+
+### Seleccion de ofertas
+
+Por defecto, despues del analisis se muestra una tabla con las ofertas encontradas y puedes elegir a cuales aplicar:
+
+```
+Aplicar a: 1,3,5      Solo esas ofertas
+Aplicar a: all         Todas las ofertas
+Aplicar a: q           Cancelar
+```
+
+### Exportar ofertas
+
+Despues del analisis, exporta las ofertas filtradas a CSV o JSON:
+
+```
+jobhunter run --export csv ofertas.csv
+jobhunter run --export json ~/ofertas.json
+jobhunter --test mi@email.com --export csv resultado.csv
+```
+
+La ruta es obligatoria. Compatible con el resto del flujo — exportar no cancela el envio.
+
+### Aplicar automaticamente
+
+Para saltar la seleccion y enviar a todas automaticamente:
+
+```
+jobhunter run --auto
+jobhunter --test mi@email.com --auto
+```
+
+### Dry-run (generar sin enviar)
+
+Ejecuta el pipeline completo (scraping, analisis, generacion de CV y email) pero **no envia ningun email** y **no guarda aplicaciones** en el historial. Los CVs se guardan en `output/cvs/` como siempre.
+
+```
+jobhunter run --dry
+jobhunter run --dry --time week
+jobhunter --test mi@email.com --dry
+```
+
+### Preview antes de enviar
+
+Sin `--auto` y sin `--dry`, despues de generar cada CV y email se muestra un **preview** en terminal (destinatario, asunto, cuerpo, nombre del PDF). Puedes enviar, saltar, editar el asunto, o activar envio automatico del resto.
+
+Con `--auto` se mantiene el comportamiento anterior (sin preview).
+
+### Historial de aplicaciones
+
+Consulta las aplicaciones enviadas con filtros:
+
+```
+jobhunter history                        Ultimas 10 aplicaciones
+jobhunter history --last 20              Ultimas 20
+jobhunter history --company "Tech"       Filtrar por empresa
+jobhunter history --since 2026-03-01     Desde fecha
+jobhunter history --all                  Todas
+```
+
+### Optimizar queries de busqueda
+
+Un agente de IA analiza tu perfil, queries actuales, e historial de ejecuciones para generar mejores terminos de busqueda:
+
+```
+jobhunter optimize
+```
+
+Tambien puedes darle feedback especifico sobre problemas que tienes:
+
+```
+jobhunter optimize "no encuentro ofertas remotas en LATAM"
+jobhunter optimize "mis queries son muy genericas, necesito mas ofertas de AI/ML"
+jobhunter optimize "solo me salen ofertas en espanol, quiero mas en ingles"
+```
+
+El agente muestra un diff de queries actuales vs propuestas y pide confirmacion antes de guardar.
+
+### Modelos de Gemini
+
+Durante `jobhunter setup` puedes elegir el modelo de IA:
+
+| Modelo | Descripcion |
+|--------|-------------|
+| `gemini-2.5-flash` | Rapido y eficiente (por defecto) |
+| `gemini-2.5-flash-lite` | Mas ligero, menor consumo de API |
+| `gemini-2.5-pro` | Mayor calidad, mas lento |
+| `gemini-3-flash-preview` | Ultima generacion, rapido |
+| `gemini-3.1-pro-preview` | Ultima generacion, alta calidad |
+
+### Salario en la tabla
+
+Si la terminal tiene >= 130 columnas, la tabla de ofertas muestra una columna "Salario" con el dato extraido por el agente filtrador (cuando el post lo menciona).
+
+### Blacklist de empresas
+
+Bloquea empresas para que sus ofertas se filtren automaticamente:
+
+```
+jobhunter blacklist                      Ver lista
+jobhunter blacklist add "Empresa X"      Bloquear
+jobhunter blacklist remove "Empresa X"   Desbloquear
+```
+
+Se guarda en `knowledge.json` bajo `rejected_companies`.
+
+### Filtrado de duplicados
+
+- Dentro del mismo batch: deduplicacion por titulo + empresa normalizado
+- Contra historial: no envia el mismo cargo a la misma empresa si ya se envio en los ultimos 30 dias
+- Diferentes cargos a la misma empresa si se permiten
+
+## Como funciona (alto nivel)
+
+1. **Setup**: Wizard interactivo de 7 pasos con barra de porcentaje y pantalla limpia por paso. Configuras API key + modelo, Gmail, CV, links, preferencias (idiomas, modalidad, plantilla), tipo de empleo, y login de LinkedIn. Puedes volver al paso anterior escribiendo `<`.
+2. **Busqueda**: El sistema busca publicaciones en LinkedIn con tus terminos, expande el texto de cada post, y extrae emails de reclutadores
+4. **Analisis**: Un agente de IA analiza cada publicacion para determinar si es una oferta real y relevante para tu perfil
+5. **Seleccion**: Se muestra una tabla con las ofertas encontradas y puedes elegir a cuales aplicar (o usar `--auto` para todas)
+6. **CV personalizado**: Otro agente de IA genera un CV en PDF adaptado a cada oferta especifica, reescribiendo tu experiencia y habilidades para que encajen con lo que piden
+7. **Email personalizado**: Un tercer agente escribe un email de aplicacion corto, directo, y humano
+8. **Envio**: Se envia el email con el CV adjunto al reclutador via Gmail SMTP
+
+## Como esta hecho (bajo nivel)
+
+### Arquitectura
+
+El sistema es un script Python (`job.py`) que orquesta 4 componentes:
+
+```
+job.py
+ ├── Playwright (scraping de LinkedIn)
+ ├── Gemini API (4 agentes de IA, modelo configurable)
+ ├── src/cv_templates/ (4 plantillas de CV)
+ ├── ReportLab (generacion de PDFs)
+ └── SMTP (envio de emails)
+```
+
+### Scraping con Playwright
+
+- Usa Playwright con **sesiones persistentes** en `.session/`. Inicias sesion una vez y queda guardada.
+- Ejecuta Chrome real del sistema (no Chromium) para evitar bloqueos de Google Auth.
+- Busca en `/search/results/content/` con parametros `datePosted` y `sortBy` para filtrar por fecha.
+- Hace scroll para cargar posts y ejecuta `button[data-testid="expandable-text-button"].click()` via JavaScript para expandir el texto completo de cada publicacion.
+- Extrae el contenido de cada post individualmente usando `span[data-testid="expandable-text-box"]`.
+- Extrae emails con regex directamente del texto expandido.
+
+### Sistema Multi-Agente (Gemini)
+
+Cuatro agentes especializados, cada uno con su propio system prompt:
+
+**Agente 1 - Filtrador**: Recibe el texto de un post y determina si es una oferta real, si es relevante para el perfil del usuario, y extrae toda la informacion estructurada (titulo, empresa, requisitos, email, salario, ubicacion). Descarta ofertas que requieren idiomas que el usuario no maneja al nivel necesario.
+
+**Agente 2 - CV Writer**: Toma el perfil del usuario y la oferta, y genera un CV completamente personalizado. Reescribe el resumen profesional, reordena skills, y reescribe cada bullet de experiencia para que conecte con lo que la oferta pide. No inventa habilidades, idiomas ni logros que no esten en el perfil real.
+
+**Agente 3 - Email Writer**: Genera un email de aplicacion corto (max 100 palabras), en espanol neutro, texto plano, sin frases de plantilla, con 1-2 logros concretos con numeros. Recibe los datos del CV generado para mantener coherencia entre email y CV adjunto.
+
+**Agente 4 - Optimizer**: Analiza el perfil del usuario, queries actuales, historial de ejecuciones (tasa de conversion), y feedback opcional del usuario para generar queries de busqueda optimizadas. Usa terminos que reclutadores realmente usan en LinkedIn.
+
+Los cuatro agentes usan el modelo de Gemini seleccionado durante el setup via HTTP POST directo (sin SDK). Cada llamada tiene reintentos con backoff exponencial para manejar rate limits (429).
+
+### Generacion de PDFs
+
+`src/cv_builder.py` delega a plantillas en `src/cv_templates/`. Hay 4 disponibles:
+
+| Plantilla | Estilo |
+|-----------|--------|
+| `modern` | Helvetica, acentos azul oscuro (default) |
+| `minimal` | Header centrado, espacioso, elegante |
+| `classic` | Times serif, secciones en rojo oscuro |
+| `compact` | Denso, skills en 2 columnas, mas contenido por pagina |
+
+- Secciones: resumen, habilidades, experiencia, proyectos, educacion, idiomas
+- Normalizacion ATS: limpia smart quotes, em-dashes, zero-width chars y otros caracteres que los ATS parsean mal
+- Se selecciona la plantilla durante `jobhunter setup`
+
+### Envio de emails
+
+- Gmail SMTP con TLS en puerto 587
+- App Password de Google (no la contrasena normal)
+- CV adjunto como PDF
+- Reintentos en caso de fallo de conexion
+
+### Almacenamiento
+
+- `config.json`: Configuracion del usuario (API keys, modelo, perfil, queries de busqueda)
+- `knowledge.json`: Historial de ejecuciones y aplicaciones enviadas
+- `.session/`: Datos de sesion persistente de Playwright/Chrome
+- `output/cvs/`: CVs generados en PDF
+- `output/logs/`: Logs JSON de cada ejecucion
+
+### Dependencias
+
+- Python 3.10+
+- playwright (scraping)
+- requests (API de Gemini)
+- reportlab (PDFs)
+- rich (interfaz CLI)
+
+Se instalan automaticamente la primera vez que ejecutas `jobhunter`.
+
+## Landing page
+
+Desplegada automaticamente en GitHub Pages: [https://dev-gaspar.github.io/jobhunter/](https://dev-gaspar.github.io/jobhunter/)
+
+## Contribuir
+
+Las contribuciones son bienvenidas. Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para el flujo de ramas, convenciones de codigo, tests y CI. Resumen: abre features en ramas desde `dev`, PR a `dev`, y solo `dev` se mergea a `main` con CI verde.
+
+## Licencia
+
+MIT - ver [LICENSE](./LICENSE).

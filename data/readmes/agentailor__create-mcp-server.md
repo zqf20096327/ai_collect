@@ -1,0 +1,166 @@
+# @agentailor/create-mcp-server
+
+[![npm version](https://img.shields.io/npm/v/@agentailor/create-mcp-server.svg)](https://www.npmjs.com/package/@agentailor/create-mcp-server)
+[![Test](https://github.com/agentailor/create-mcp-server/actions/workflows/test.yml/badge.svg)](https://github.com/agentailor/create-mcp-server/actions/workflows/test.yml)
+[![npm downloads](https://img.shields.io/npm/dt/@agentailor/create-mcp-server.svg)](https://www.npmjs.com/package/@agentailor/create-mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/node/v/@agentailor/create-mcp-server.svg)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/agentailor/create-mcp-server/pulls)
+
+Scaffold production-ready MCP servers in seconds.
+
+## Quick Start
+
+**Interactive mode** (guided prompts):
+
+```bash
+npx @agentailor/create-mcp-server
+```
+
+**CLI mode** (all options via arguments):
+
+```bash
+npx @agentailor/create-mcp-server --name=my-server
+```
+
+## CLI Options
+
+| Option | Short | Default | Description |
+|--------|-------|---------|-------------|
+| `--name` | `-n` | — | Project name (required in CLI mode) |
+| `--package-manager` | `-p` | `npm` | Package manager: npm, pnpm, yarn |
+| `--framework` | `-f` | `sdk` | Accepted for compatibility; `sdk` is the only framework |
+| `--stdio` | — | `false` | Use stdio transport (for local clients) |
+| `--template` | `-t` | — | **Deprecated**, no effect; prints a warning and will be removed in a future release |
+| `--oauth` | — | `false` | Enable OAuth (HTTP only, incompatible with --stdio) |
+| `--no-git` | — | `false` | Skip git initialization |
+| `--no-skills` | — | `false` | Skip adding the tool-design skill |
+| `--help` | `-h` | — | Show help |
+| `--version` | `-V` | — | Show version |
+
+**Examples:**
+
+```bash
+# Minimal - uses all defaults (HTTP streamable)
+npx @agentailor/create-mcp-server --name=my-server
+
+# stdio server (for local clients)
+npx @agentailor/create-mcp-server --name=my-server --stdio
+
+# Full HTTP options
+npx @agentailor/create-mcp-server \
+  --name=my-auth-server \
+  --package-manager=pnpm \
+  --oauth
+
+# Short flags
+npx @agentailor/create-mcp-server -n my-server -p yarn --stdio
+```
+
+## Features
+
+- **MCP SDK v2** — projects serve protocol revision `2026-07-28` and still accept 2025-era clients
+- **Two transport types** — HTTP (streamable) or stdio (for local clients)
+- **Stateless by design** — the SDK handler builds a fresh server per request, so HTTP servers scale without sticky sessions
+- **Optional OAuth** — OIDC-compliant authentication (HTTP only) ([setup guide](docs/oauth-setup.md))
+- **Package manager choice** — npm, pnpm, or yarn
+- **TypeScript ready** — ready to customize
+- **Docker ready** — production Dockerfile included (HTTP transport)
+- **MCP Inspector** — built-in debugging with `npm run inspect`
+
+## Official MCP SDK
+
+Projects are generated against the [MCP TypeScript SDK v2](https://ts.sdk.modelcontextprotocol.io/v2/) — the split `@modelcontextprotocol/server`, `@modelcontextprotocol/express`, and `@modelcontextprotocol/node` packages, rather than the v1 `@modelcontextprotocol/sdk` monolith.
+
+HTTP servers are built on `createMcpHandler`, which runs the server factory once per request. They serve protocol revision `2026-07-28` and also accept 2025-era clients. stdio servers use `serveStdio`, which negotiates the era per connection.
+
+> **FastMCP was removed in 0.10.0.** It never moved to SDK v2, so FastMCP projects stayed on the 2025-era protocol and shipped without tests. To scaffold one anyway, pin the last release that supports it: `npx @agentailor/create-mcp-server@0.9 --framework=fastmcp`.
+
+## Transport Types
+
+| Feature | HTTP (Streamable HTTP) | stdio |
+|---------|------------------------|-------|
+| Use case | Remote access, cloud deployment | Local clients (Claude Desktop) |
+| Protocol | HTTP | stdin/stdout |
+| OAuth support | ✓ | — |
+| Docker deployment | ✓ | — |
+| Port configuration | ✓ | — |
+
+**HTTP**: Deploy as an HTTP server accessible remotely.
+
+**stdio**: Run as a local process. Communicates over stdin/stdout. Ideal for local clients. No HTTP server, no port, no Dockerfile generated.
+
+## Server Modes (HTTP only)
+
+SDK v2 serves every HTTP request through a single per-request idiom: `createMcpHandler` builds a fresh `McpServer` for each call, and 2025-era clients are served through the same path. The `stateless`/`stateful` distinction that v1 required no longer changes the generated project.
+
+`--template` is deprecated: both values produce the same output and the CLI prints a warning when it is passed. It will be removed in a future release, so drop it from scripts. If you need session-based serving with SSE resumability, the SDK still offers `NodeStreamableHTTPServerTransport` — see the [SDK v2 sessions guide](https://ts.sdk.modelcontextprotocol.io/v2/serving/sessions-state-scaling.html).
+
+## Generated Project
+
+```
+my-mcp-server/
+├── src/
+│   ├── server.ts             # Creates the server, registers the primitives
+│   ├── tools.ts              # Tool definitions
+│   ├── prompts.ts            # Prompt definitions
+│   ├── resources.ts          # Resource definitions
+│   ├── notes-store.ts        # Example data layer (no MCP imports)
+│   ├── notes-store.test.ts   # Store unit tests
+│   ├── server.test.ts        # Tests driven through a real MCP client
+│   ├── index.ts              # Express app and transport setup
+│   └── auth.ts               # OAuth middleware (if enabled)
+├── Dockerfile        # Production-ready Docker build
+├── package.json
+├── tsconfig.json
+├── .gitignore
+├── .env.example
+├── AGENTS.md         # Working notes for humans and coding agents
+└── README.md
+```
+
+Projects come with a worked example — a small notes server — and a test suite
+that runs green immediately, so there is a working pattern to copy when you add
+your own tools.
+
+Projects also get Agentailor's [tool-design](https://github.com/agentailor/skills)
+skill at `.agents/skills/`, so a coding agent working in the project has the
+guidance on hand. It is bundled with the CLI, so this needs no network and adds
+nothing to scaffolding time. Pass `--no-skills` to skip it, and run
+`npx skills update -p -y` inside the project if you want a newer version.
+
+Every project also gets an `AGENTS.md` covering the things that are easy to get
+wrong: how to write a tool an agent can use, how to organize tools as they grow,
+and the transport-specific traps (state is per-request over HTTP; stdout belongs
+to the protocol over stdio).
+
+**Scripts:**
+- `npm run dev` — build and start the server
+- `npm test` — run the test suite
+- `npm run inspect` — open MCP Inspector (update URL in `package.json` if needed)
+
+## Learning Resources
+
+| Guide | Description |
+|-------|-------------|
+| [Create Your First MCP Server in 5 Minutes](https://blog.agentailor.com/posts/create-your-first-mcp-server-in-5-minutes?utm_source=github&utm_medium=readme&utm_campaign=create-mcp-server) | Build your first production-ready MCP server. A complete beginner guide to scaffolding a Fetch MCP server with TypeScript. |
+| [Securing MCP Servers with Keycloak](https://blog.agentailor.com/posts/oauth-for-mcp-servers-practical-guide-keycloak?utm_source=github&utm_medium=readme&utm_campaign=create-mcp-server) | Learn how to secure your MCP servers with OAuth authentication using Keycloak. |
+| [OAuth for MCP Clients (Next.js + LangGraph.js)](https://blog.agentailor.com/posts/mcp-client-oauth-nextjs-langgraph?utm_source=github&utm_medium=readme&utm_campaign=create-mcp-server) | Implement OAuth authentication in your MCP client using Next.js and the MCP SDK. |
+
+## Need help building MCP servers or agent infrastructure?
+
+I help teams design and ship production-ready AI agent systems (MCP, LangGraph, RAG, memory, performance).
+
+If you’re building something serious on top of this:
+
+→ [DM me on LinkedIn](https://www.linkedin.com/in/ali-ibrahim-junior/)
+
+Happy to jump on a short call.
+
+## What is MCP?
+
+The [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) is an open protocol that enables AI assistants to interact with external tools, data sources, and services.
+
+## Built by Agentailor
+
+Built by [Agentailor](https://agentailor.com/?utm_source=github&utm_medium=readme&utm_campaign=create-mcp-server) — your launchpad for production-ready MCP servers and scalable AI agents. We provide the tools, templates, and expertise to ship AI-powered applications faster.

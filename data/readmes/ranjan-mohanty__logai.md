@@ -1,0 +1,568 @@
+# 🤖 LogAI
+
+[![CI](https://github.com/ranjan-mohanty/logai/workflows/CI/badge.svg)](https://github.com/ranjan-mohanty/logai/actions)
+[![Release](https://github.com/ranjan-mohanty/logai/workflows/Release/badge.svg)](https://github.com/ranjan-mohanty/logai/actions/workflows/release.yml)
+[![codecov](https://codecov.io/gh/ranjan-mohanty/logai/branch/main/graph/badge.svg)](https://codecov.io/gh/ranjan-mohanty/logai)
+[![Crates.io](https://img.shields.io/crates/v/logai.svg)](https://crates.io/crates/logai)
+[![Downloads](https://img.shields.io/crates/d/logai.svg)](https://crates.io/crates/logai)
+[![GitHub Release](https://img.shields.io/github/v/release/ranjan-mohanty/logai)](https://github.com/ranjan-mohanty/logai/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Rust Version](https://img.shields.io/badge/rust-1.70%2B-blue.svg)](https://www.rust-lang.org)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey.svg)](https://github.com/ranjan-mohanty/logai/releases/latest)
+
+**AI-powered log analysis** - Parse, group, and understand your logs with AI.
+
+LogAI analyzes your application logs, groups similar errors, and uses AI to
+explain what went wrong and how to fix it.
+
+## What is LogAI?
+
+LogAI is a CLI tool that analyzes application logs, groups similar errors, and
+provides intelligent suggestions for fixing issues. Stop manually searching
+through massive log files and let LogAI do the detective work.
+
+## Features
+
+### 🔍 **Log Analysis & Parsing**
+
+✅ **Multiple log formats** - JSON, plain text, Apache, Nginx, Syslog  
+✅ **Auto-detect log format** - Automatically identifies format from content  
+✅ **Smart error grouping** - Pattern-based clustering with dynamic value
+normalization  
+✅ **Multiline log support** - Stack traces, JSON objects, and continuation
+lines  
+✅ **Metadata extraction** - File paths, line numbers, function names, request
+IDs  
+✅ **Parallel processing** - Multi-threaded parsing for large files  
+✅ **Streaming support** - Process logs from stdin or pipes
+
+### 🤖 **AI-Powered Intelligence**
+
+✅ **Multiple AI providers** - OpenAI, Claude, Gemini, Ollama, AWS Bedrock  
+✅ **Parallel AI analysis** - Process multiple errors concurrently (5x faster)  
+✅ **Automatic retry** - Exponential backoff for transient failures  
+✅ **Response caching** - Reduce API costs with intelligent caching  
+✅ **Solution suggestions** - Code examples and fix recommendations  
+✅ **Configurable concurrency** - Control API request rate (1-20 concurrent)  
+✅ **Progress tracking** - Real-time analysis progress with ETA
+
+### 📊 **Output & Reporting**
+
+✅ **Beautiful terminal output** - Color-coded, formatted results  
+✅ **HTML reports** - Interactive web reports with charts and filtering  
+✅ **JSON output** - Machine-readable format for automation  
+✅ **Statistics mode** - Detailed metrics and analysis summaries  
+✅ **Flexible formatting** - Customizable output templates  
+✅ **Error frequency tracking** - Time-based occurrence patterns
+
+### ⚙️ **Configuration & Integration**
+
+✅ **Configuration file** - TOML-based settings with profiles  
+✅ **MCP (Model Context Protocol)** - Connect external tools and data sources  
+✅ **Environment variables** - Flexible configuration options  
+✅ **CLI argument validation** - Comprehensive input validation  
+✅ **Cross-platform support** - Linux, macOS, Windows  
+✅ **CI/CD friendly** - Exit codes and automation support
+
+### 🛠️ **Developer Experience**
+
+✅ **Comprehensive testing** - 166+ unit tests with high coverage  
+✅ **Clean command** - Manage generated reports and logs  
+✅ **Verbose logging** - Debug mode for troubleshooting  
+✅ **Error handling** - Graceful degradation and informative errors  
+✅ **Performance optimization** - Memory-efficient processing  
+✅ **Documentation** - Extensive guides and examples
+
+## Coming Soon
+
+### 🚀 **Enhanced Analysis**
+
+🚧 **Anomaly detection** - Identify unusual patterns and outliers  
+🚧 **Trend analysis** - Historical pattern recognition  
+🚧 **Custom log formats** - User-defined parsing rules  
+🚧 **Log correlation** - Cross-service error tracking  
+🚧 **Performance metrics** - Response time and throughput analysis
+
+### 🔧 **Built-in MCP Tools**
+
+🚧 **search_docs** - Search documentation and knowledge bases  
+🚧 **check_metrics** - Query monitoring systems (Prometheus, DataDog)  
+🚧 **search_code** - Search codebases for related issues  
+🚧 **query_logs** - Search log aggregation systems (ELK, Splunk)  
+🚧 **check_status** - Query service health endpoints
+
+### 📈 **Advanced Features**
+
+🚧 **Watch mode** - Real-time log monitoring and analysis  
+🚧 **Dashboard mode** - Live updating web interface  
+🚧 **Alert integration** - Slack, PagerDuty, webhook notifications  
+🚧 **Log shipping** - Direct integration with log collectors  
+🚧 **Machine learning** - Custom model training for specific domains
+
+### 🌐 **Enterprise Features**
+
+🚧 **Team collaboration** - Shared analysis and annotations  
+🚧 **Role-based access** - User permissions and audit logs  
+🚧 **API server mode** - REST API for programmatic access  
+🚧 **Database storage** - Persistent analysis history  
+🚧 **SSO integration** - Enterprise authentication support
+
+## Quick Start
+
+## Installation
+
+### Quick Install (macOS/Linux)
+
+```bash
+curl -sSL https://raw.githubusercontent.com/ranjan-mohanty/logai/main/scripts/install.sh | bash
+```
+
+### Homebrew (macOS/Linux)
+
+```bash
+brew install https://raw.githubusercontent.com/ranjan-mohanty/logai/main/scripts/homebrew/logai.rb
+```
+
+### Cargo (All platforms)
+
+```bash
+cargo install logai
+```
+
+### Pre-built Binaries
+
+Download from
+[GitHub Releases](https://github.com/ranjan-mohanty/logai/releases/latest):
+
+- macOS (Intel & Apple Silicon)
+- Linux (x86_64 & ARM64)
+  - Standard: `logai-linux-x86_64.tar.gz` (Ubuntu 22.04+, RHEL 9+, AL2023)
+  - Musl: `logai-linux-x86_64-musl.tar.gz` (Amazon Linux 2, Ubuntu 20.04+,
+    CentOS 7+, any Linux)
+- Windows (x86_64)
+
+**Amazon Linux 2:**
+
+```bash
+wget https://github.com/ranjan-mohanty/logai/releases/latest/download/logai-linux-x86_64-musl.tar.gz
+tar -xzf logai-linux-x86_64-musl.tar.gz
+sudo mv logai /usr/local/bin/
+```
+
+### From Source
+
+```bash
+git clone https://github.com/ranjan-mohanty/logai.git
+cd logai
+cargo install --path .
+```
+
+## Usage
+
+Analyze a log file:
+
+```bash
+logai investigate app.log
+```
+
+Analyze multiple files:
+
+```bash
+logai investigate app.log error.log
+```
+
+Pipe logs from stdin:
+
+```bash
+tail -f app.log | logai investigate -
+cat error.log | logai investigate -
+```
+
+Limit output:
+
+```bash
+logai investigate app.log --limit 10
+```
+
+JSON output:
+
+```bash
+logai investigate app.log --format json
+```
+
+Interactive HTML report:
+
+```bash
+logai investigate app.log --format html > report.html
+# With AI analysis
+logai investigate app.log --ai bedrock --format html > report.html
+```
+
+Enable verbose/debug logging:
+
+```bash
+logai --verbose investigate app.log
+# or
+logai -v investigate app.log --ai bedrock
+```
+
+## AI-Powered Analysis
+
+Analyze with OpenAI:
+
+```bash
+export OPENAI_API_KEY=sk-...
+logai investigate app.log --ai openai
+logai investigate app.log --ai openai --model gpt-4
+```
+
+Analyze with Claude:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+logai investigate app.log --ai claude
+logai investigate app.log --ai claude --model claude-3-5-sonnet-20241022
+```
+
+Analyze with Gemini:
+
+```bash
+export GEMINI_API_KEY=...
+logai investigate app.log --ai gemini
+logai investigate app.log --ai gemini --model gemini-1.5-pro
+```
+
+Analyze with Ollama (local, free):
+
+```bash
+# Make sure Ollama is running: ollama serve
+logai investigate app.log --ai ollama
+logai investigate app.log --ai ollama --model llama3.2
+```
+
+Analyze with AWS Bedrock:
+
+```bash
+# With region flag (recommended)
+logai investigate app.log --ai bedrock --region us-east-1
+
+# With specific model
+logai investigate app.log --ai bedrock --region us-east-1 --model anthropic.claude-3-haiku-20240307-v1:0
+
+# Or set region via environment variable
+export AWS_REGION=us-east-1
+logai investigate app.log --ai bedrock
+```
+
+Disable caching (force fresh analysis):
+
+```bash
+logai investigate app.log --ai openai --no-cache
+```
+
+### Parallel Analysis
+
+LogAI processes error groups in parallel for faster analysis. Control
+concurrency:
+
+```bash
+# Default: 5 concurrent requests
+logai investigate app.log --ai ollama
+
+# High concurrency (faster, more resources)
+logai investigate app.log --ai ollama --concurrency 15
+
+# Low concurrency (slower, less resources)
+logai investigate app.log --ai ollama --concurrency 2
+
+# Sequential processing
+logai investigate app.log --ai ollama --concurrency 1
+```
+
+**Performance comparison** (100 error groups):
+
+- Sequential (concurrency=1): ~25 minutes
+- Default (concurrency=5): ~5 minutes
+- High (concurrency=15): ~2 minutes
+
+### Configuration File
+
+Create `~/.logai/config.toml` to set defaults:
+
+```toml
+# AI Settings
+[ai]
+provider = "ollama"  # Default AI provider
+
+# Analysis settings
+[analysis]
+max_concurrency = 5        # Concurrent AI requests (1-20)
+enable_retry = true        # Retry failed requests
+max_retries = 3            # Maximum retry attempts
+initial_backoff_ms = 1000  # Initial retry delay
+max_backoff_ms = 30000     # Maximum retry delay
+enable_cache = true        # Cache AI responses
+truncate_length = 2000     # Max message length
+
+# Provider configurations
+[providers.ollama]
+enabled = true
+model = "llama3.2"
+host = "http://localhost:11434"
+
+[providers.openai]
+enabled = false
+# api_key = "sk-..."  # Or use OPENAI_API_KEY env var
+# model = "gpt-4"
+```
+
+**Configuration examples:**
+
+High-performance (self-hosted Ollama):
+
+```toml
+[analysis]
+max_concurrency = 15
+max_retries = 2
+initial_backoff_ms = 500
+```
+
+Conservative (API rate limits):
+
+```toml
+[analysis]
+max_concurrency = 2
+max_retries = 5
+initial_backoff_ms = 2000
+max_backoff_ms = 60000
+```
+
+Fast-fail (development):
+
+```toml
+[analysis]
+max_concurrency = 10
+enable_retry = false
+```
+
+## MCP Integration (Advanced)
+
+LogAI supports [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
+to connect external tools and data sources during analysis.
+
+Create `~/.logai/mcp.toml`:
+
+```toml
+default_timeout = 30
+
+[[servers]]
+name = "filesystem"
+enabled = true
+
+[servers.connection]
+type = "Stdio"
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"]
+```
+
+Use with MCP tools:
+
+```bash
+logai investigate app.log --ai ollama --mcp-config ~/.logai/mcp.toml
+```
+
+Disable MCP:
+
+```bash
+logai investigate app.log --ai ollama --no-mcp
+```
+
+See [MCP Integration Guide](docs/MCP_INTEGRATION.md) for more details.
+
+## Example Output
+
+```text
+🤖 LogAI Analysis Report
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 Summary
+   Errors found: 3 unique patterns (9 occurrences)
+   Time range: 2025-11-17 10:30:00 - 2025-11-17 10:35:00
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 Critical: Connection failed to database (3 occurrences)
+   First seen: 5 minutes ago | Last seen: 4 minutes ago
+
+   📋 Example:
+   Connection failed to database
+   📍 Location: db.rs:42
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 Critical: Timeout waiting for response from <DYNAMIC> (3 occurrences)
+   First seen: 1 minute ago | Last seen: 30 seconds ago
+
+   📋 Example:
+   Timeout waiting for response from api.example.com
+```
+
+## Supported Log Formats
+
+- **JSON logs** - Structured logs with fields like `level`, `message`,
+  `timestamp`
+- **Plain text logs** - Traditional text logs with timestamps and severity
+  levels
+- **Apache logs** - Apache HTTP server access and error logs (Common and
+  Combined formats)
+- **Nginx logs** - Nginx web server access and error logs
+- **Syslog** - System logs in RFC3164 and RFC5424 formats
+- **Auto-detection** - Automatically detects format from log content
+
+## Development
+
+Build:
+
+```bash
+cargo build
+```
+
+Run tests:
+
+```bash
+cargo test
+```
+
+Run with sample logs:
+
+```bash
+cargo run -- investigate tests/fixtures/sample.log
+```
+
+## Supported AI Providers
+
+| Provider    | Models                   | Cost | Speed  | Setup            |
+| ----------- | ------------------------ | ---- | ------ | ---------------- |
+| **OpenAI**  | GPT-4, GPT-4o-mini       | Paid | Fast   | API key required |
+| **Claude**  | Claude 3.5 Sonnet/Haiku  | Paid | Fast   | API key required |
+| **Gemini**  | Gemini 1.5 Flash/Pro     | Paid | Fast   | API key required |
+| **Bedrock** | Claude, Llama, Titan     | Paid | Fast   | AWS credentials  |
+| **Ollama**  | Llama 3.2, Mistral, etc. | Free | Medium | Local install    |
+
+## How It Works
+
+1. **Parse** - Automatically detects log format (JSON, plain text)
+2. **Group** - Clusters similar errors by normalizing dynamic values
+3. **Deduplicate** - Shows unique patterns with occurrence counts
+4. **Analyze** - Uses AI to explain errors and suggest fixes (optional)
+   - Processes multiple error groups in parallel (configurable concurrency)
+   - Automatic retry with exponential backoff for transient failures
+   - Real-time progress tracking with throughput and ETA
+5. **Cache** - Stores AI responses locally to reduce costs
+
+## Roadmap
+
+### ✅ **Completed (v0.1.x)**
+
+- [x] Core parsing and grouping with smart pattern recognition
+- [x] Multi-format support (JSON, plain text, Apache, Nginx, Syslog)
+- [x] AI integration (OpenAI, Claude, Gemini, Ollama, AWS Bedrock)
+- [x] Parallel processing and concurrent AI analysis
+- [x] Response caching and retry mechanisms
+- [x] HTML and JSON output formats
+- [x] MCP (Model Context Protocol) integration
+- [x] Comprehensive configuration system
+- [x] Cross-platform support and CI/CD compatibility
+
+### 🚧 **In Progress (v0.2.x)**
+
+- [ ] Built-in MCP tools (search_docs, check_metrics, search_code)
+- [ ] Enhanced error correlation and pattern analysis
+- [ ] Performance optimizations for large log files
+- [ ] Advanced filtering and search capabilities
+
+### 🎯 **Planned (v0.3.x)**
+
+- [ ] Watch mode for real-time log monitoring
+- [ ] Dashboard web interface with live updates
+- [ ] Anomaly detection using statistical analysis
+- [ ] Custom log format definitions
+- [ ] Alert and notification integrations
+
+### 🌟 **Future (v1.0+)**
+
+- [ ] Machine learning for domain-specific analysis
+- [ ] Enterprise features (SSO, RBAC, audit logs)
+- [ ] API server mode for programmatic access
+- [ ] Team collaboration and shared analysis
+- [ ] Advanced visualization and reporting
+
+## Documentation
+
+### Getting Started
+
+- **[Quick Start Guide](docs/QUICK_START.md)** - Get up and running in 5 minutes
+- **[Usage Guide](docs/USAGE.md)** - Comprehensive usage examples
+- **[Examples](examples/)** - Sample logs and real-world scenarios
+- **[FAQ](docs/FAQ.md)** - Frequently asked questions
+
+### For Developers
+
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
+- **[API Documentation](docs/API.md)** - Using LogAI as a library
+- **[Development Guide](docs/DEVELOPMENT.md)** - Setting up development
+  environment
+- **[Contributing](CONTRIBUTING.md)** - How to contribute to the project
+
+### Operations
+
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment strategies
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Security Policy](SECURITY.md)** - Security best practices and reporting
+
+### Reference
+
+- **[Compatibility](docs/COMPATIBILITY.md)** - Supported log formats
+- **[Changelog](CHANGELOG.md)** - Version history
+- **[MCP Integration](docs/MCP_INTEGRATION.md)** - Model Context Protocol guide
+
+### Community
+
+- **[Contributors](CONTRIBUTORS.md)** - Recognition for contributors
+- **[Maintainers](MAINTAINERS.md)** - Project maintainers and governance
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
+and [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Future Plans
+
+See [GitHub Issues](https://github.com/ranjan-mohanty/logai/issues) for planned
+features and known issues.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## Author
+
+Built with ❤️ by [Ranjan Mohanty](https://github.com/ranjan-mohanty)
+
+## Acknowledgments
+
+- Inspired by the need for better log debugging tools
+- Thanks to all AI providers for making this possible
+- Built with Rust 🦀
+
+## Star History
+
+If you find LogAI useful, please consider giving it a star ⭐
+
+## Support
+
+- 🐛
+  [Report a bug](https://github.com/ranjan-mohanty/logai/issues/new?labels=bug)
+- 💡
+  [Request a feature](https://github.com/ranjan-mohanty/logai/issues/new?labels=enhancement)
+- 💬 [Start a discussion](https://github.com/ranjan-mohanty/logai/discussions)

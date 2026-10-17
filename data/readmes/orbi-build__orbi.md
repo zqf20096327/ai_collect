@@ -1,0 +1,109 @@
+English | [简体中文](README.zh-CN.md)
+
+# Orbi
+
+**Label a GitHub Issue. Get back a reviewed, merged PR. Release when you decide.**
+
+[Try Orbi Cloud — 3 merged deliveries free](https://orbi.build/?ref=gh-readme) · no server, no credit card required
+
+[![Watch the 95-second film](https://img.youtube.com/vi/zvPnE2whb08/maxresdefault.jpg)](https://youtu.be/zvPnE2whb08)
+
+**See one real loop:** [Issue #1367](https://github.com/orbi-build/orbi/issues/1367) → [PR #1370](https://github.com/orbi-build/orbi/pull/1370) → [Release v0.5.47](https://github.com/orbi-build/orbi/releases/tag/v0.5.47)
+
+Orbi is an open-source **software dark factory**: a software delivery system for GitHub. You define the goal and acceptance criteria in an Issue and label it `ai-ready`; Orbi implements it in an isolated worktree, runs tests, opens a PR, and takes it through independent review, fixes, and merge. When you request a release, Orbi runs the release gates and publishes the tag and release notes. GitHub Issues are the only state store—no database, queue, or daemon.
+
+**Ledger:** [merged PRs](https://github.com/orbi-build/orbi/pulls?q=is:merged) · [closed Issues](https://github.com/orbi-build/orbi/issues?q=is:closed) · [tagged releases](https://github.com/orbi-build/orbi/releases) — the repository is the record.
+
+Website <https://orbi.build> ｜ Documentation <https://docs.orbi.build/> ｜ [Discussions](https://github.com/orbi-build/orbi/discussions) ｜ Docker [GHCR](https://ghcr.io/orbi-build/orbi) · [Docker Hub](https://hub.docker.com/r/orbibuild/orbi)
+
+**Prefer to run it yourself?** Follow the Quick start below. Cloud founding members get 50% off forever with the code `FOUNDING50` at checkout (6 places).
+## Quick start
+
+```bash
+git clone https://github.com/orbi-build/orbi.git && cd orbi
+uv tool install --force --reinstall --editable --python python3 .  # compatible system Python (>= 3.14, e.g. Fedora 43 / current Arch); older (e.g. Ubuntu 24.04's 3.12): --python 3.14 so uv provisions it
+```
+
+Want just the CLI? It's on PyPI as [`orbi-cli`](https://pypi.org/project/orbi-cli/) (requires Python ≥ 3.14; the command stays `orbi`): `uv tool install orbi-cli` (older system Python: add `--python 3.14` so uv provisions one) or `pip install orbi-cli` in a Python ≥ 3.14 environment; verify with `orbi --version` → `orbi <version>`, uninstall with `uv tool uninstall orbi-cli`. To run Orbi itself, use the one-line installer at the top of [Getting started](docs/getting-started.mdx) — it creates the editable install Orbi's deployment drives.
+
+### Ready check (before setup)
+
+- `uv`: `uv --version`; Pi and its provider: `pi --version`, then `pi --print "reply with the single word: ok"`
+- GitHub CLI ≥ 2.94 ([official repository](https://github.com/cli/cli/blob/trunk/docs/install_linux.md) — Ubuntu 24.04's package 2.45.0 is too old): run `gh auth login` once, then verify `gh auth status`
+- Linux — systemd user session: `systemctl --user status`
+- macOS — launchd GUI session: `launchctl print gui/$(id -u)` (not yet verified on real hardware; reports welcome)
+
+Choose the mode in [Getting started](docs/getting-started.mdx): bootstrap uses this checkout as `repo_dir`; [External single-repo mode](docs/getting-started.mdx#external-single-repo-mode-deploy_home) uses it as `deploy_home` and a foreign repository as `repo_dir`.
+
+```bash
+cp src/orbi/example_config.toml orbi.toml
+orbi setup --config orbi.toml  # 4. run one-time setup (checks prior gh auth, labels, scheduler units (systemd/launchd), and checkout; idempotent)
+PYTHONPATH=src python3 -m orbi.runner --config orbi.toml  # 5. manually run one tick (for initial verification; the timer schedules normal runs)
+orbi doctor --config orbi.toml  # 6. verify deployment health
+```
+
+## The loop, in 35 seconds
+
+Another real delivery, recorded from the live GitHub pages — including the review that rejected the first attempt:
+
+<video src="https://github.com/user-attachments/assets/1f0d3a62-5fc9-44ae-bf68-b312a6a55f85" controls muted></video>
+
+1. **An issue** — a bug, labelled `ai-ready`
+2. **It writes the code** — PR #1023, on a recorded base SHA
+3. **The review says no** — one Major finding, naming `src/orbi/release.py:2377` and the fix
+4. **It fixes itself** — more commits, until the checks go green
+5. **It merges** — 9 commits, +427/−43, only after the review passed
+6. **A tagged release** — v0.5.17, with the Issue and PR in the notes
+
+## Why Orbi
+
+- **GitHub Issues are the task pool**: the `ai-ready` label dispatches work, and the delivery record (comments, PRs, and CI) is complete by default, with no second task system;
+- **Fully automated**: a user scheduler timer (systemd on Linux, launchd on macOS) triggers a tick every 5 minutes. Normal operation needs no status command, polling, or supervision;
+- **Independent review + merge gates**: after a PR opens, an independent review session reviews it and fixes findings in the same session. Only the reviewed head can merge, and AI never merges or pushes protected branches;
+- **Fail fast**: command errors fail immediately and leave the evidence in the logs. The Issue is marked `ai-blocked` for a human decision, with no silent fallback;
+- **Observable end to end**: every journal log and GitHub progress comment carries the same `run_id`, so the complete timeline can be reconstructed with one grep.
+
+## What it does
+
+```text
+GitHub Issue (ai-ready)
+  → Claim: create a feature branch + isolated worktree (from the frozen origin/main SHA)
+  → Pi development: plan → implement → test → verify
+  → Commit delivery (the Agent stops at the commit)
+  → Runner closeout: sync the latest base, push, and create a PR (body includes Fixes #N)
+  → Independent review (fixes in the same session) → merge gate → merge
+```
+
+- Each task gets its own run: the branch, worktree, logs, and PR are all associated with the same `run_id`; retries create a new run and preserve the old evidence unchanged;
+- Failures are classified clearly: recoverable failures return to the same PR for continued fixes, while unrecoverable failures mark the Issue `ai-blocked` for a human;
+- Supports `orbi add` for dispatching work, `status` for viewing the queue, `session` for following the Pi session, `install-units` for idempotently installing the scheduler units (systemd on Linux, launchd on macOS), and `doctor` for read-only diagnostics.
+
+## Documentation
+
+| Topic | Entry point |
+|---|---|
+| Documentation home | <https://docs.orbi.build/> |
+| Getting started (prerequisites, configuration, first run, smoke test) | [Getting started](docs/getting-started.mdx) |
+| One-time setup (labels, units, transport migration) | [One-time setup](docs/setup.mdx) |
+| Workflow (state chain, labels, P0, Epic, Release) | [Workflow](docs/workflow.mdx) |
+| Operations (timer, journal, unit drift, recovery) | [Operations](docs/operations.mdx) |
+| Public contracts (interface inventory, status and progress formats) | [Public contracts](docs/public-contracts.mdx) |
+| Testing, coverage gates, and remote CI | [Testing](docs/testing.mdx) |
+| Contributing (Issue granularity, KISS/LEAN, PR flow) | [Contributing](docs/contributing.mdx) |
+| Chinese documentation | [docs/zh/](docs/zh/) |
+
+## Development and contribution
+
+See the development contract in [AGENTS.md](AGENTS.md), and [Contributing](docs/contributing.mdx) for dispatching Issues, reporting bugs, and submitting PRs. Runtime code lives in the `src/orbi/` package (Issue #168 src layout; the editable finder maps the whole package, so new modules need no reinstall). The checkout root has no `orbi.py` (it would shadow the installed package); the compatibility entry point is `python3 -m orbi.cli`, not the formal usage path.
+
+## License
+
+Orbi is **open source under the [GNU AGPL-3.0](LICENSE)**, with the **[Sustainable Use License](docs/licenses/sustainable-use-license.md)** (v1.0) as an alternative. Pick either license.
+
+In practice:
+
+- **Run Orbi on your own repositories for free forever**—personal or internal company use, at any scale, under either license. Modify it, self-host it, run it across a thousand repositories; no authorization needed.
+- **You may share it**—free of charge for non-commercial purposes under the SUL; under AGPL-3.0, offering a modified Orbi as a network service means publishing your changes.
+- **Commercial authorization is needed only to sell Orbi itself**—hosting it as a service for customers or embedding it in a paid product (SUL); AGPL-3.0 has no such restriction.
+
+Unsure which side your use falls on? Ask in [Discussions](https://github.com/orbi-build/orbi/discussions).

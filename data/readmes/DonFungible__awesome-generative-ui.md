@@ -1,0 +1,131 @@
+# Awesome Generative UI [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+
+This repo is a list of resources for building with and learning about generative UI. I curated it based on my experience building generative UI as a full-stack developer. I actively maintain this repository and keep its links up to date.
+
+Generative UI is a new AI interaction modality in which models generate structured user interfaces rather than text alone. By producing dynamic, interactive UI components, AI systems can present information in a format that is more intuitive, actionable, and context-aware. For example, instead of responding with a text list of nearby restaurants, a model could render a restaurant discovery interface complete with images, map integration, ratings, and reservation widgets, enabling users to explore and act directly within the generated experience.
+
+There are three distinct flavors of generative UI:
+1. Controlled/Static: select UI from a catalog of pre-built components
+2. Declarative: generate the layout or schema, made up of pre-built components
+3. Open-ended: generates unique and dynamic UI on-the-fly
+<img width="1614" height="974" alt="HI0u2OsbMAAPV5V" src="https://github.com/user-attachments/assets/092a40a3-284d-43f6-80bc-ce4ff740134e" />
+<p align="center">
+  <em>
+    Three flavors of generative UI. Image taken from
+    <a href="https://x.com/Saboo_Shubham_/status/2062220865643982875">Shubham Saboo (@Saboo_Shubham_)</a>.
+  </em>
+</p>
+
+## Contents
+
+- [Implementation](#implementation)
+  - [Specifications & Protocols](#specifications--protocols)
+  - [Tools](#tools-sorted-alphabetically)
+  - [Skills](#skills)
+- [Learning](#learning)
+  - [Papers](#papers-sorted-by-most-recent)
+  - [Videos](#videos-sorted-by-most-recent)
+  - [Articles & Posts](#articles--posts-sorted-by-most-recent)
+- [Apps](#apps)
+
+## Implementation
+### Specifications & Protocols
+
+- [A2UI](https://github.com/google/A2UI) - An open-source project that includes a format optimized for representing updatable, agent-generated UIs and an initial set of renderers, allowing agents to generate or populate rich user interfaces.
+- [AGUI](https://github.com/ag-ui-protocol/ag-ui) - AG-UI is an open, lightweight, event-based protocol that standardizes how AI agents connect to user-facing applications.
+- [MCP Apps](https://modelcontextprotocol.io/extensions/apps/overview) - MCP Apps is a standard for letting an MCP server return an interactive UI alongside a tool result.
+
+### Tools (sorted alphabetically) 
+
+- [AI SDK](https://github.com/vercel/ai) - A TypeScript toolkit for building AI-powered applications. Developed by Vercel.
+- [assistant-ui](https://github.com/assistant-ui/assistant-ui) - TypeScript and React primitives for building AI chat interfaces with generative UI.
+- [CopilotKit](http://copilotkit.ai/) - An SDK for building agents and generative UIs. Developed by the creators of AG-UI.
+- [json-render](https://github.com/vercel-labs/json-render) - A generative UI framework that enables UIs to be described as structured JSON rather than frontend code. Developed by Vercel.
+- [MCP-UI](https://github.com/MCP-UI-Org/mcp-ui) - An SDK that implements the MCP Apps standard for UI over MCP.
+- [OpenUI](https://github.com/thesysdev/openui) - An open standard for generative UI built on OpenUI Lang, a streaming-first language with runtimes for React, Vue, Svelte, and Angular. Developed by Thesys.
+- [Tambo](https://github.com/tambo-ai/tambo) - A generative UI SDK for React.
+- [Thesys](https://www.thesys.dev/) - A generative UI API for AI-native applications.
+- [Vendo](https://github.com/runvendo/vendo) - An SDK to enable user-driven customization of webapps.
+
+### Skills
+- [Pick UI](https://github.com/emilkowalski/skills/blob/main/skills/pick-ui-library/SKILL.md) - A skill for deciding which UI library to use. Developed by [Emil Kowalski](https://x.com/emilkowalski).
+- - 
+
+## Learning
+### Papers (sorted by most recent)
+- [TeleGen: Improving LLM-Based Web Application Generation via Runtime Telemetry, Luo et al.](https://arxiv.org/pdf/2610.04981) (Oct 4 2026)
+- [VoCa: Designing Speech-Canvas Interaction for Voice-Based Conversational Agents, Ge et al.](https://arxiv.org/pdf/2610.04706) (Oct 3 2026)
+- [WebUIProof: Benchmarking WebUI Code Generators with UI-Agent Execution Harness, Tsai et al.](https://arxiv.org/pdf/2610.02617) (Oct 2 2026)
+- [Automating the Application of HCI Principles: Skills for On-Demand UI Construction, the Human-AI Space to Think, and the Future of HCI, Conklin et al.](https://arxiv.org/pdf/2610.02369) (Oct 1 2026)
+- [The Future of Visualization Dashboards in the Age of Generative AI, Dhanoa et al.](https://arxiv.org/pdf/2609.35170) (Sep 28 2026)
+- [AUV-Bench: Aesthetic Understanding and Generation Evaluation for User Interfaces, Deng et al.](https://arxiv.org/pdf/2609.34854) (Sep 28 2026)
+- [Does AI Save Time on Product Design? A Randomized Controlled Experiment of AI Prompt-to-Design Workflows, Stewart et al.](https://arxiv.org/pdf/2609.26725) (Sep 22 2026)
+- [Elicitive User Interfaces: Designing How Users Shape Generative Interfaces, Kim et al.](https://arxiv.org/pdf/2609.23642) (Sep 20 2026)
+- [GUIDE: Designer-in-the-loop Authoring of Conformant Generative User Interfaces, Lee et al.](https://arxiv.org/pdf/2609.21285) (Sep 18 2026)
+- [Harnessing Generative UI for Education: Tailored Learning Interactives, Kovshov et al.](https://arxiv.org/pdf/2609.20738) (Sep 17 2026)
+- [Enabling Creative Exploration for Vibe Design Agents, Zhang et al.](https://arxiv.org/pdf/2609.15078) (Sep 14 2026)
+- [The Interface of Theseus: The Rise of Just-In-Time Interfaces, Michael S. Bernstein](https://arxiv.org/pdf/2609.06770) (Sep 6 2026)
+- [Toward Frontier-Quality Declarative UI Generation at Small-Model Cost, Yang et al.](https://arxiv.org/pdf/2609.04184) (Sep 3 2026)
+- [Solaris: Towards Interfaces That Are Generated, Not Coded, Alaluf et al.](https://arxiv.org/pdf/2609.00776) (Sep 1 2026)
+- [EvoGenUI-Bench: Evaluating LLMs as Multi-Turn Generative UI Assistants, Peng et al.](https://arxiv.org/pdf/2608.29387) (Aug 29 2026)
+- [Maru: Information Architecture as a Shared Language for Generating Aligned and Persistent User Interfaces, Kim et al.](https://arxiv.org/pdf/2608.25565) (Aug 26 2026)
+- [SchemaGUI: A Schema-Driven Benchmark for Controllable GUI Generation Evaluation, Dong et al.](https://arxiv.org/pdf/2608.22390) (Aug 23 2026)
+- [Beyond Static Charts: Can Language and Vision Language Models Generate Interactive Data Visualization Interfaces?, Rahman et al.](https://arxiv.org/pdf/2609.26208) (Aug 11 2026)
+- [One Tool, One Taste? How Vibe Coding Trades Collective Diversity for Individual Creativity, Boussioux et al.](https://arxiv.org/pdf/2609.38183) (Aug 5 2026)
+- [LEGOUI: Designing with UI-DSL Bricks to Balance Transparency and Controllability, Zhou et al.](https://arxiv.org/pdf/2608.04293) (Aug 4 2026)
+- [Beyond a Single Judge: The Evidence-Grounded, Social-Weighted Persona Panel for Generative UI Evaluation, Wu et al.](https://arxiv.org/pdf/2607.28439) (Jul 30 2026)
+- [Design Theater: Evaluating the Gap Between User-Facing Design Reasoning and Implementation in Generative UI Tools, Imteyaz et al.](https://arxiv.org/pdf/2607.22928) (Jul 24 2026)
+- [TaskArtisan: Designing Composable Generative Widgets for LLM-Assisted Analysis, Chen and Pavel](https://arxiv.org/pdf/2607.17394) (Jul 19 2026)
+- [AI Prototyper: A Figma Plugin for Decomposition-Based GUI Prototyping with LLMs, Salangsingha et al.](https://arxiv.org/pdf/2607.14830) (Jul 16 2026)
+- [UI2App: Benchmarking Visual Interaction Inference in Executable Web Application Generation, Chen et al.](https://arxiv.org/pdf/2607.06306) (Jul 7 2026)
+- [The Missing Layer: Why EdTech Needs Design-Time Generative UI, Not Just Runtime Personalization, Neshaei et al.](https://arxiv.org/pdf/2606.15902) (Jun 14 2026)
+- [Rethinking the UI of GenUI: A Tale of Two Designs, Chen et al.](https://arxiv.org/pdf/2606.13843) (Jun 11 2026)
+- [Macaron-A2UI: A Model for Generative UI in Personal Agents, Kong et al.](https://arxiv.org/pdf/2605.24830) (May 24 2026)
+- [Efficient Personalization of Generative User Interfaces, Peng at al.](https://arxiv.org/pdf/2604.09876) (Apr 10 2026)
+- [Generative UI: LLMs are Effective UI Generators, Leviathan et al.](https://arxiv.org/pdf/2604.09577) (Feb 24 2026)
+- [The Keyhole Effect: Why Chat Interfaces Fail at Data Analysis, Mohan Reddy](https://arxiv.org/pdf/2602.00947) (Feb 1 2026)
+- [Gradual Generation of User Interfaces as a Design Method for Malleable Software, Min et al.](https://arxiv.org/pdf/2601.17975) (Jan 25 2026)
+- [Meridian: A Design Framework for Malleable Overview-Detail Interfaces, Min and Xia](https://dl.acm.org/doi/epdf/10.1145/3746059.3747654) (Sep 27 2025)
+- [Towards a Working Definition of Designing Generative User Interfaces](https://arxiv.org/pdf/2505.15049) (May 21 2025)
+- [Against Generative UI, Okopnyi et al.](https://dl.acm.org/doi/epdf/10.1145/3686169.3686184) (Oct 21 2024)
+- [pix2code: Generating Code from a Graphical User Interface Screenshot, Tony Beltramelli](https://arxiv.org/pdf/1705.07962) (May 22 2017)
+### Videos (sorted by most recent)
+
+- [Generative UI for any agent, anywhere: A2UI, AG-UI, MCP Apps, and more, Google Cloud Next 2026 Talk](https://www.youtube.com/watch?v=UsMDkEsR-ok) (Jun 25 2026)
+- [Beyond Components: Designing Generative UI for MCP Apps, AI Engineer 2026 Ruben Casas with Postman](https://www.youtube.com/watch?v=hCMrEfPG2Yg) (Jun 3 2026)
+- [MCP UI: Extending the frontier — Liad Yosef and Ido Salomon, MCP Apps](https://www.youtube.com/watch?v=o-zkvb0iFDQ) (May 6 2026)
+- [Generative UI Spectrum - The Three Flavors, Tyler Slaton (CopilotKit)](https://www.youtube.com/watch?v=y4lln0yGMSE) (Apr 27 2026)
+- [Generative UI: Specs, Patterns, and the Protocols Behind Them (MCP Apps, A2UI, AG-UI), CopilotKit](https://www.youtube.com/watch?v=Z4aSGCs_O5A) (Jan 30 2026)
+- [How to implement generative UI without losing control - Chromatic with Michael Magan, Co-creator of Tambo](https://www.youtube.com/watch?v=5DIM5uHMMjI) (Jan 29 2026)
+- [Gemini 3 and Gen UI in Google Search](https://www.youtube.com/watch?v=AqyclkRBSe4) (Dec 18 2025)
+- [Generative user interfaces, Mike Ryan with Hashbrown](https://www.youtube.com/watch?v=ekQ7t6_MvOQ) (Jul 17 2025)
+- [Real-Time UI Generation: Building Dynamic Web Experiences with GenUI, Adam Lucek](https://www.youtube.com/watch?v=zCGzM0JxvRg) (May 5 2025)
+- [Build a Generative UI App in LangGraph](https://www.youtube.com/watch?v=sCqN01R8nIQ) (Mar 13 2025)
+- [Stanford Seminar - Generative, Malleable, and Personal User Interfaces -- Haijun Xia, UC San Diego](https://www.youtube.com/watch?v=MbWgRuM-7X8) (Feb 25 2025)
+- [Building Generative UI with Next.js](https://www.youtube.com/watch?v=cIzsQBbZNxk) (Nov 3 2023)
+
+### Articles & Posts (sorted by most recent)
+- [Workday is using TypeSafe's Jev to build user interfaces on the fly, The New Stack](https://thenewstack.io/workday-is-using-typesafes-jev-to-build-user-interfaces-on-the-fly/) (Oct 13 2026)
+- [Generative UI Runs on Your Design System, The Gradient](https://thegradient.com/thinking/generative-ui-design-system) (Oct 12 2026)
+- [GPT-6 and Intelligent UI for everyone, OpenAI](https://openai.com/index/gpt-6-for-everyone/) (Oct 7 2026)
+- [The future of practice: Enabling teachers to create learning interactives with generative UI, Google Research](https://research.google/blog/the-future-of-practice-enabling-teachers-to-create-learning-interactives-with-generative-ui/) (Sep 17 2026)
+- [2030-shaped Software, Posthog](https://x.com/posthog/status/2079610793138823512) (Jul 22 2026)
+- [Generative UI is the New Frontend](https://x.com/Saboo_Shubham_/status/2062220865643982875) (Jun 4 2026)
+- [Generative UI: A rich, custom, visual interactive user experience for any prompt, Google Research](https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/) (Nov 18 2025)
+- [Malleable Software, Geoffrey Litt](https://www.inkandswitch.com/essay/malleable-software/) (Jun 2025)
+- [Generative UI and Outcome-Oriented Design, Kate Moran & Sarah Gibbons (NN/g)](https://www.nngroup.com/articles/generative-ui/) (Mar 2024)
+- [Introducing AI SDK 3.0 with Generative UI, Vercel](https://vercel.com/blog/ai-sdk-3-generative-ui) (Mar 2024)
+
+## Apps
+These are apps/websites/demonstrations whose main feature or value proposition revolves around generative UI.
+- [Monogram](https://www.monogram.ai/) - A general purpose AI app that focuses on visual interfaces.
+- [Posthog AI](https://posthog.com/ai) - Posthog's AI chat can generate dynamic interfaces
+- 
+
+## Contributing
+
+Contributions welcome! Please read the [contribution guidelines](contributing.md) before opening a pull request.
+
+## License
+
+[CC0 1.0](license)

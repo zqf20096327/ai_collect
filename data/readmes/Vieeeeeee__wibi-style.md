@@ -1,0 +1,133 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand-logo-dark.png">
+  <img src="assets/brand-logo.png" alt="WIBI skill" width="380">
+</picture>
+
+<h3>Turn everyday photos into art, with AI.</h3>
+
+<p><sub>Pick a style, send a photo, get a finished artwork. No prompt engineering, no parameter tuning.</sub></p>
+
+<p>
+<a href="https://github.com/Vieeeeeee/wibi-style/actions/workflows/ci.yml"><img src="https://github.com/Vieeeeeee/wibi-style/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Tooling%3A%20MIT%20%7C%20Visual%20content%3A%20Non--commercial-blue.svg" alt="License: Tooling: MIT | Visual content: Non-commercial"></a>
+<a href="https://openai.com"><img src="https://img.shields.io/badge/Built%20for-OpenAI%20Codex-10a38f.svg" alt="Built for OpenAI Codex"></a>
+<a href="#all-styles"><img src="https://img.shields.io/badge/Styles-41%20Ready--to--Use-6f42c1.svg" alt="41 Styles"></a>
+</p>
+
+<p>
+<b>41</b> individually installable visual style Skills ·
+<a href="https://style.abdc.online"><b>Try online</b></a> ·
+<a href="#community">Community</a> ·
+<a href="#license-and-attribution">License</a>
+</p>
+
+<p>
+Created and maintained by <code>@威比 Hunter Wei.</code> (same handle on Douyin &amp; Xiaohongshu)<br>
+<b>English</b> · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
+</div>
+
+---
+
+> **For AI Agents**: This repository provides modular, production-ready visual style Skills for OpenAI Codex. The user selects a style, supplies a photo, and receives a completed design artifact.
+>
+> - **Available Skills**: See the [All styles](#all-styles) directory below, organized by subject with style names, invocation slugs, and photo recommendations.
+> - **How to install**: Provide `https://github.com/Vieeeeeee/wibi-style/tree/main/skills/<call-name>` and have the user run or install that URL in Codex. Each style resides in an isolated directory; only the selected Skill is downloaded.
+> - **How to use**: In a new task, submit `Use $call-name on this photo`. The Skill introduces itself with an interactive welcome card on its first turn.
+
+## Style overview
+
+> Click any thumbnail to jump to that Skill's dedicated directory. You can also preview them interactively at [Wibi Style Lab](https://style.abdc.online).
+
+|   |   |   |   |   |
+| :---: | :---: | :---: | :---: | :---: |
+| <a href="skills/electric-blue-halftone-poster/"><img src="assets/thumbs/electric-blue-halftone-poster.jpg" width="140" alt="Electric Blue Halftone Poster"></a><br><a href="skills/electric-blue-halftone-poster/">Electric Blue Halftone Poster</a> | <a href="skills/alt-manga-avatar/"><img src="assets/thumbs/alt-manga-avatar.jpg" width="140" alt="Bold Line Manga Avatar"></a><br><a href="skills/alt-manga-avatar/">Bold Line Manga Avatar</a> | <a href="skills/art-print-poster/"><img src="assets/thumbs/art-print-poster.jpg" width="140" alt="Crayon Sketch Avatar"></a><br><a href="skills/art-print-poster/">Crayon Sketch Avatar</a> | <a href="skills/dark-red-black-cel-shaded/"><img src="assets/thumbs/dark-red-black-cel-shaded.jpg" width="140" alt="Dark Red &amp; Black Cel Shade"></a><br><a href="skills/dark-red-black-cel-shaded/">Dark Red &amp; Black Cel Shade</a> | <a href="skills/iridescent-long-exposure/"><img src="assets/thumbs/iridescent-long-exposure.jpg" width="140" alt="Iridescent Long Exposure"></a><br><a href="skills/iridescent-long-exposure/">Iridescent Long Exposure</a> |
+| <a href="skills/blue-retro-print/"><img src="assets/thumbs/blue-retro-print.jpg" width="140" alt="Blue Retro Print"></a><br><a href="skills/blue-retro-print/">Blue Retro Print</a> | <a href="skills/underground-audition/"><img src="assets/thumbs/underground-audition.jpg" width="140" alt="Underground Audition Skill"></a><br><a href="skills/underground-audition/">Underground Audition Skill</a> | <a href="skills/diamond-kid-head-card/"><img src="assets/thumbs/diamond-kid-head-card.jpg" width="140" alt="Diamond Grin Kid Portrait"></a><br><a href="skills/diamond-kid-head-card/">Diamond Grin Kid Portrait</a> | <a href="skills/kid-head-card/"><img src="assets/thumbs/kid-head-card.jpg" width="140" alt="Childhood Head Card"></a><br><a href="skills/kid-head-card/">Childhood Head Card</a> | <a href="skills/fisheye-city-cover/"><img src="assets/thumbs/fisheye-city-cover.jpg" width="140" alt="Fisheye City Poster"></a><br><a href="skills/fisheye-city-cover/">Fisheye City Poster</a> |
+| <a href="skills/niulai-movie-poster/"><img src="assets/thumbs/niulai-movie-poster.jpg" width="140" alt="Niu Lai Movie Poster"></a><br><a href="skills/niulai-movie-poster/">Niu Lai Movie Poster</a> | <a href="skills/marker-child-doodle/"><img src="assets/thumbs/marker-child-doodle.jpg" width="140" alt="Marker-Pen Child Doodle"></a><br><a href="skills/marker-child-doodle/">Marker-Pen Child Doodle</a> | <a href="skills/quirky-pop-doodle-sticker/"><img src="assets/thumbs/quirky-pop-doodle-sticker.jpg" width="140" alt="Quirky Pop Doodle Sticker"></a><br><a href="skills/quirky-pop-doodle-sticker/">Quirky Pop Doodle Sticker</a> | <a href="skills/photo-perler-charm/"><img src="assets/thumbs/photo-perler-charm.jpg" width="140" alt="Photo Perler Charm"></a><br><a href="skills/photo-perler-charm/">Photo Perler Charm</a> | <a href="skills/pixel-stretch/"><img src="assets/thumbs/pixel-stretch.jpg" width="140" alt="Pixel Slice Stretch"></a><br><a href="skills/pixel-stretch/">Pixel Slice Stretch</a> |
+| <a href="skills/glitch-pixel-collage/"><img src="assets/thumbs/glitch-pixel-collage.jpg" width="140" alt="Glitch Pixel Collage"></a><br><a href="skills/glitch-pixel-collage/">Glitch Pixel Collage</a> | <a href="skills/clear-sky-urban-cel/"><img src="assets/thumbs/clear-sky-urban-cel.jpg" width="140" alt="Clear Sky Urban Cel"></a><br><a href="skills/clear-sky-urban-cel/">Clear Sky Urban Cel</a> | <a href="skills/retro-table-print/"><img src="assets/thumbs/retro-table-print.jpg" width="140" alt="Retro Table Magazine"></a><br><a href="skills/retro-table-print/">Retro Table Magazine</a> | <a href="skills/wibi-frame/"><img src="assets/thumbs/wibi-frame.jpg" width="140" alt="Framed Comic Panel"></a><br><a href="skills/wibi-frame/">Framed Comic Panel</a> | <a href="skills/textile-toy-portrait/"><img src="assets/thumbs/textile-toy-portrait.jpg" width="140" alt="Textile Toy Portrait"></a><br><a href="skills/textile-toy-portrait/">Textile Toy Portrait</a> |
+| <a href="skills/cold-blue-glitch-anime/"><img src="assets/thumbs/cold-blue-glitch-anime.jpg" width="140" alt="Cold Blue Glitch Anime"></a><br><a href="skills/cold-blue-glitch-anime/">Cold Blue Glitch Anime</a> | <a href="skills/crayon-flat-naive/"><img src="assets/thumbs/crayon-flat-naive.jpg?v=833e7cf" width="140" alt="Crayon Flat Naive"></a><br><a href="skills/crayon-flat-naive/">Crayon Flat Naive</a> | <a href="skills/office-animals/"><img src="assets/thumbs/office-animals.jpg" width="140" alt="Office Animals"></a><br><a href="skills/office-animals/">Office Animals</a> | <a href="skills/home-journal/"><img src="assets/thumbs/home-journal.jpg" width="140" alt="Vintage Home Journal"></a><br><a href="skills/home-journal/">Vintage Home Journal</a> | <a href="skills/serpent-line-ink/"><img src="assets/thumbs/serpent-line-ink.jpg" width="140" alt="Serpent Line Ink"></a><br><a href="skills/serpent-line-ink/">Serpent Line Ink</a> |
+| <a href="skills/warm-paper-crayon-street/"><img src="assets/thumbs/warm-paper-crayon-street.jpg" width="140" alt="Warm Paper Crayon Street"></a><br><a href="skills/warm-paper-crayon-street/">Warm Paper Crayon Street</a> | <a href="skills/minimal-pet-doodle/"><img src="assets/thumbs/minimal-pet-doodle.jpg" width="140" alt="Minimal Pet Line Art"></a><br><a href="skills/minimal-pet-doodle/">Minimal Pet Line Art</a> | <a href="skills/museum-impression-oil/"><img src="assets/thumbs/museum-impression-oil.jpg" width="140" alt="Museum Impression Oil"></a><br><a href="skills/museum-impression-oil/">Museum Impression Oil</a> | <a href="skills/urban-mecha-cel/"><img src="assets/thumbs/urban-mecha-cel.jpg" width="140" alt="Urban Mecha Cel"></a><br><a href="skills/urban-mecha-cel/">Urban Mecha Cel</a> | <a href="skills/primary-hardlight-city/"><img src="assets/thumbs/primary-hardlight-city.jpg" width="140" alt="Primary Hardlight City"></a><br><a href="skills/primary-hardlight-city/">Primary Hardlight City</a> |
+| <a href="skills/personalized-print-ticket/"><img src="assets/thumbs/personalized-print-ticket.jpg" width="140" alt="Personalized Print Ticket"></a><br><a href="skills/personalized-print-ticket/">Personalized Print Ticket</a> | <a href="skills/paper-flat-vignette/"><img src="assets/thumbs/paper-flat-vignette.jpg" width="140" alt="Paper Flat Vignette"></a><br><a href="skills/paper-flat-vignette/">Paper Flat Vignette</a> | <a href="skills/lofi-print-anime/"><img src="assets/thumbs/lofi-print-anime.jpg" width="140" alt="Lo-Fi Print Anime"></a><br><a href="skills/lofi-print-anime/">Lo-Fi Print Anime</a> | <a href="skills/retro-flat-anime-head/"><img src="assets/thumbs/retro-flat-anime-head.jpg" width="140" alt="复古扁平动画头"></a><br><a href="skills/retro-flat-anime-head/">复古扁平动画头</a> | <a href="skills/red-blue-fashion-manga/"><img src="assets/thumbs/red-blue-fashion-manga.jpg" width="140" alt="Red & Blue Fashion Manga"></a><br><a href="skills/red-blue-fashion-manga/">Red & Blue Fashion Manga</a> |
+| <a href="skills/cream-paper-doodle/"><img src="assets/thumbs/cream-paper-doodle.jpg" width="140" alt="Cream Paper Doodle"></a><br><a href="skills/cream-paper-doodle/">Cream Paper Doodle</a> | <a href="skills/bold-line-fashion/"><img src="assets/thumbs/bold-line-fashion.jpg" width="140" alt="Bold Line Fashion"></a><br><a href="skills/bold-line-fashion/">Bold Line Fashion</a> | <a href="skills/orange-navy-fashion/"><img src="assets/thumbs/orange-navy-fashion.jpg" width="140" alt="Orange & Navy Fashion Manga"></a><br><a href="skills/orange-navy-fashion/">Orange & Navy Fashion Manga</a> | <a href="skills/warm-naive-comic/"><img src="assets/thumbs/warm-naive-comic.jpg" width="140" alt="Warm Naive Comic"></a><br><a href="skills/warm-naive-comic/">Warm Naive Comic</a> | <a href="skills/mini-selfie/"><img src="assets/thumbs/mini-selfie.jpg" width="140" alt="Mini Selfie"></a><br><a href="skills/mini-selfie/">Mini Selfie</a> |
+| <a href="skills/cream-home-sketch/"><img src="assets/thumbs/cream-home-sketch.jpg" width="140" alt="奶油纸复古家居速写"></a><br><a href="skills/cream-home-sketch/">奶油纸复古家居速写</a> |  |  |  |  |
+
+## All styles
+
+41 styles right now — find yours by the photo you have. Click a name for its detail page; the call name is both the last part of the install URL and the `$` command you use.
+
+| Subject | Your photo | Styles (click the name for details · code is the call name) |
+| --- | --- | --- |
+| **Portraits & selfies** | Selfies, avatars, close-up people shots | <a href="skills/electric-blue-halftone-poster/"><b>Electric Blue Halftone Poster</b></a> <code>electric-blue-halftone-poster</code><br><sub>Single-person portraits or pet close-ups</sub><br><a href="skills/alt-manga-avatar/"><b>Bold Line Manga Avatar</b></a> <code>alt-manga-avatar</code><br><sub>Front-facing or three-quarter selfies</sub><br><a href="skills/art-print-poster/"><b>Crayon Sketch Avatar</b></a> <code>art-print-poster</code><br><sub>Selfies with clear features and a memorable expression</sub><br><a href="skills/dark-red-black-cel-shaded/"><b>Dark Red &amp; Black Cel Shade</b></a> <code>dark-red-black-cel-shaded</code><br><sub>Portraits that suit dramatic red-and-black lighting</sub><br><a href="skills/iridescent-long-exposure/"><b>Iridescent Long Exposure</b></a> <code>iridescent-long-exposure</code><br><sub>Close-ups where you want a hazy, dreamlike mood</sub><br><a href="skills/blue-retro-print/"><b>Blue Retro Print</b></a> <code>blue-retro-print</code><br><sub>Portraits with clear outlines and expression</sub><br><a href="skills/underground-audition/"><b>Underground Audition Skill</b></a> <code>underground-audition</code><br><sub>Single-person half-body or close-up photos for a cool direct-flash turn-card sequence</sub><br><a href="skills/textile-toy-portrait/"><b>Textile Toy Portrait</b></a> <code>textile-toy-portrait</code><br><sub>Clear solo portraits with readable hair, expression, accessories, or hand interaction</sub><br><a href="skills/cold-blue-glitch-anime/"><b>Cold Blue Glitch Anime</b></a> <code>cold-blue-glitch-anime</code><br><sub>Portraits, selfies, street snapshots, or nightlife photos with expressive poses</sub><br><a href="skills/crayon-flat-naive/"><b>Crayon Flat Naive</b></a> <code>crayon-flat-naive</code><br><sub>Portraits, half-body, full-body, or seated photos where clothing and pose are clear</sub><br><a href="skills/serpent-line-ink/"><b>Serpent Line Ink (beta)</b></a> <code>serpent-line-ink</code><br><sub>Single-person head-and-shoulders, close-up, or half-body portraits — selfies or mirror selfies both work</sub><br><a href="skills/warm-paper-crayon-street/"><b>Warm Paper Crayon Street</b></a> <code>warm-paper-crayon-street</code><br><sub>Street snaps, full-body or half-body portraits; half-body shots keep their crop</sub><br><a href="skills/retro-flat-anime-head/"><b>复古扁平动画头</b></a> <code>retro-flat-anime-head</code><br><sub>Clear solo portraits, front or three-quarter view, with readable hair and expression</sub><br><a href="skills/cream-paper-doodle/"><b>Cream Paper Doodle</b></a> <code>cream-paper-doodle</code><br><sub>Expressive portraits, everyday gestures, and people with pets on warm ivory paper</sub><br><a href="skills/mini-selfie/"><b>Mini Selfie</b></a> <code>mini-selfie</code><br><sub>Clear adult solo selfies into overhead giant-head miniatures on broad, simple paving (beta)</sub> |
+| **Portraits · lo-fi avatars** | Close-up solo portraits and selfies | <a href="skills/lofi-print-anime/"><b>Lo-Fi Print Anime</b></a> <code>lofi-print-anime</code><br><sub>Close-ups with readable expression, hair, glasses, or hats</sub> |
+| **Kids & childhood** | A child's face, or your own childhood look | <a href="skills/diamond-kid-head-card/"><b>Diamond Grin Kid Portrait</b></a> <code>diamond-kid-head-card</code><br><sub>Single-child photos where face, hair, or hat is recognizable</sub><br><a href="skills/kid-head-card/"><b>Childhood Head Card</b></a> <code>kid-head-card</code><br><sub>Old childhood photos; modern selfies are aged back to 5–8</sub> |
+| **Group shots & posters** | Group photos, street shots, travel photos | <a href="skills/fisheye-city-cover/"><b>Fisheye City Poster (beta)</b></a> <code>fisheye-city-cover</code><br><sub>Into a Y2K heavy-fisheye city cover</sub><br><a href="skills/niulai-movie-poster/"><b>Niu Lai Movie Poster</b></a> <code>niulai-movie-poster</code><br><sub>Landscape solo, duo or trio photos into a low-budget old-animation cow-head Chinese film poster</sub> |
+| **Pets** | One cat or dog with a clear pose, gaze, and body outline | <a href="skills/minimal-pet-doodle/"><b>Minimal Pet Line Art</b></a> <code>minimal-pet-doodle</code><br><sub>Turns a memorable gesture into a few black lines, one fur-color smudge, and expansive paper space</sub> |
+| **Anything goes** | People, pets, products, objects — all fine | <a href="skills/marker-child-doodle/"><b>Marker-Pen Child Doodle</b></a> <code>marker-child-doodle</code><br><sub>Real photos with clear people, pets, and props; half-body crops stay half-body</sub><br><a href="skills/quirky-pop-doodle-sticker/"><b>Quirky Pop Doodle Sticker</b></a> <code>quirky-pop-doodle-sticker</code><br><sub>Clear subject with a memorable pose — people, pets, products, props</sub><br><a href="skills/photo-perler-charm/"><b>Photo Perler Charm</b></a> <code>photo-perler-charm</code><br><sub>People, pets, bouquets, food, and objects with clean silhouettes</sub><br><a href="skills/pixel-stretch/"><b>Pixel Slice Stretch</b></a> <code>pixel-stretch</code><br><sub>People, still life, or anything with a clear subject</sub><br><a href="skills/glitch-pixel-collage/"><b>Glitch Pixel Collage</b></a> <code>glitch-pixel-collage</code><br><sub>People, still life, or photos with distinct color layers</sub><br><a href="skills/office-animals/"><b>Office Animals</b></a> <code>office-animals</code><br><sub>Specify an animal and office scene to generate a Y2K absurd work poster</sub><br><a href="skills/personalized-print-ticket/"><b>Personalized Print Ticket</b></a> <code>personalized-print-ticket</code><br><sub>People, travel, streets, architecture, food, and everyday photos with custom bilingual copy in one of four print-ticket styles</sub> |
+| **Scenes & food** | Streets, architecture, the dinner table, countryside, and coastlines | <a href="skills/clear-sky-urban-cel/"><b>Clear Sky Urban Cel</b></a> <code>clear-sky-urban-cel</code><br><sub>City streets, architecture, travel documentary, transit</sub><br><a href="skills/primary-hardlight-city/"><b>Primary Hardlight City</b></a> <code>primary-hardlight-city</code><br><sub>City streets, architecture, public transit, travel documentary, and people in urban environments</sub><br><a href="skills/retro-table-print/"><b>Retro Table Magazine</b></a> <code>retro-table-print</code><br><sub>Table photos where dishes and vessels are readable</sub><br><a href="skills/museum-impression-oil/"><b>Museum Impression Oil</b></a> <code>museum-impression-oil</code><br><sub>Landscape photos of streets, villages, roads, hills, riverbanks, and coastlines</sub><br><a href="skills/paper-flat-vignette/"><b>Paper Flat Vignette</b></a> <code>paper-flat-vignette</code><br><sub>Street snaps, cafe, bookstore, travel, and everyday portraits composed as centered flat-paper vignettes</sub> |
+| **Home & interiors** | Corners of your home — living room, bedroom, shelves, coffee bar | <a href="skills/home-journal/"><b>Vintage Home Journal</b></a> <code>home-journal</code><br><sub>Any casual corner of your home — living room, bedroom, coffee bar, bookshelf</sub><br><a href="skills/cream-home-sketch/"><b>奶油纸复古家居速写</b></a> <code>cream-home-sketch</code><br><sub>Home corners, plants, tea sets and Japanese rooms on cream paper (beta)</sub> |
+| **Advanced · multi-step** | When you want to crop the best part first | <a href="skills/wibi-frame/"><b>Framed Comic Panel</b></a> <code>wibi-frame</code><br><sub>Photos with clear eye contact, expression, gesture, or object relationships — crop first, then generate</sub> |
+| **Portraits · expressive moments** | Single-person photos with a memorable expression or gesture | <a href="skills/urban-mecha-cel/"><b>Urban Mecha Cel</b></a> <code>urban-mecha-cel</code><br><sub>Clear selfies, casual snapshots, and outtakes turned into rough red-on-white manga drawings</sub><br><a href="skills/red-blue-fashion-manga/"><b>Red & Blue Fashion Manga</b></a> <code>red-blue-fashion-manga</code><br><sub>Solo outfit shots and street portraits; square manga poster with photo-inspired lettering</sub><br><a href="skills/bold-line-fashion/"><b>Bold Line Fashion</b></a> <code>bold-line-fashion</code><br><sub>Outfit portraits and seated street photos into black-contour fashion characters (beta)</sub><br><a href="skills/orange-navy-fashion/"><b>Orange & Navy Fashion Manga</b></a> <code>orange-navy-fashion</code><br><sub>Solo outfit, half-body and close-up photos into orange-background navy-line fashion characters (beta)</sub><br><a href="skills/warm-naive-comic/"><b>Warm Naive Comic</b></a> <code>warm-naive-comic</code><br><sub>Expressive portraits, everyday gestures and people with pets on white paper (beta)</sub> |
+<!-- style-catalog-end: the release script inserts new styles just above this line; move them into the right subject group afterwards. -->
+
+> `Wibi Style ·` is a display prefix only. English Skill names, GitHub URLs, and `$call-names` never carry it.
+
+## Install and use
+
+### 1. Send the install command in Codex
+
+Swap the call name in the URL for the style you picked (Electric Blue Halftone Poster shown here):
+
+```text
+Please install this Skill:
+https://github.com/Vieeeeeee/wibi-style/tree/main/skills/electric-blue-halftone-poster
+```
+
+The installer downloads only that one Skill. Nothing else to do — the first time you call it, it introduces itself and tells you what's next.
+
+### 2. Start a new task, upload a photo, and call it
+
+```text
+Use $electric-blue-halftone-poster on this photo
+```
+
+For any other style, swap `$electric-blue-halftone-poster` for its call name from the table above.
+
+## What's included and how updates work
+
+Every style ships its own `SKILL.md`, runtime rules, prompt, version manifest, and whatever reference material or support files that style needs. Nothing is shared or mixed between styles.
+
+The first time you call a style in a new task, it checks whether that one style has a new version — nothing else. It only tells you when a newer version exists; it never overwrites your local files, and it uploads no photos and no usage data.
+
+## Community
+
+<div align="center">
+
+### 威比 😌 AIGC 学习群
+
+A group for AI visual techniques, Skill usage questions, and new style previews
+
+<p>The group has reached 200 members, so direct QR code scanning is no longer available. Please add WeChat <code>Wibi2077</code> with the note 「进群」 to be invited.</p>
+
+</div>
+
+> Heads up: this is a **WeChat group and the conversation is in Chinese**. It needs the WeChat app, so it may not be practical outside mainland China. If you can't join, [open an issue](https://github.com/Vieeeeeee/wibi-style/issues) instead — that works from anywhere.
+
+Skills that support the group entry read the root [`community.json`](community.json) on demand. This lookup uploads no photos and no usage data.
+
+## License and attribution
+
+When you share generated results publicly, please credit:
+
+```text
+Visual Skill by @威比 Hunter Wei.
+```
+
+This repository follows **Component-Specific Licensing** (see [`LICENSE`](LICENSE)):
+
+- **Code and Tooling (MIT License)**: All automation scripts, test suites, manifest schemas, and CI workflows are freely available under the permissive MIT License.
+- **Original Visual Skills & Prompts (Personal Non-Commercial License)**: Original Skill logic, prompts, styling directives, and composition guides are licensed for **personal, non-commercial use only**. Commercial use, resale, paid redistribution, or commercial SaaS integration requires prior written permission from the author.
+
+Each Skill's `SOURCES.md` states exactly which rights the package does and does not hold. Third-party reference assets are bundled solely for visual-style guidance; rights remain with their respective rights holders.

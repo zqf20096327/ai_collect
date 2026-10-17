@@ -1,0 +1,294 @@
+<div align="center">
+
+# 🛡️ dsh-defend
+- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-defend` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-defend)
+[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-defend?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-defend?ref=badge)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-defend/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-defend)
+
+**Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness.**
+
+*Rules decide the known. Interception decides the rest — and everything is audited.*
+
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
+[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-defend.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
+[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-defend/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-defend/actions)
+[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-defend?label=version)](https://github.com/PerryLink/dsh-defend/releases)
+[![npm version](https://img.shields.io/npm/v/dsh-defend)](https://www.npmjs.com/package/dsh-defend)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-defend)](https://www.npmjs.com/package/dsh-defend)
+
+[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
+</div>
+
+---
+
+**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
+
+<!-- star-cta -->
+## ⭐ 如果它帮到了你
+
+这个插件是 [DSH 插件家族](https://github.com/PerryLink)的一员（40+ 个，全部 Apache-2.0）。如果你在用，**给个 star** —— 它不会解锁任何功能，但会让下一个人在搜索里更容易找到它。
+
+*English:* part of a 40+ plugin family for DeepSeek Harness. If it is useful, **a star helps the next person find it** — nothing is gated behind it.
+
+
+## What is dsh-defend?
+
+Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness.
+
+Rules decide the known. Interception decides the rest — and everything is audited.
+
+![Terminal demo of dsh-defend: dsh-defend — install, then /defend and the red-team benchmark](https://raw.githubusercontent.com/PerryLink/dsh-defend/main/docs/assets/dsh-defend-demo.png)
+
+![Animated terminal demo of dsh-defend](https://raw.githubusercontent.com/PerryLink/dsh-defend/main/docs/assets/dsh-defend-demo.gif)
+
+*The same run, animated.*
+
+## Maintenance status: 🧊 FROZEN
+
+> **Frozen on 2026-10-05. No new features.** This package still works, and it is not retired — but it no longer receives feature work. Only a genuine breakage will be fixed.
+
+Maintainers treat this capability as one where **better-adopted alternatives now exist**, so effort has moved elsewhere. The comparison below was measured on 2026-10-05 and is recorded so nobody has to redo it.
+
+| | package | weekly downloads |
+|---|---|---|
+| **this package** | `dsh-defend` | 937 |
+| better-adopted alternative | [`cc-safety-net`](https://github.com/kenryu42/cc-safety-net) | **13,087** |
+
+**Why the alternative leads.** `cc-safety-net` provides blocks destructive commands and secret-file access as a coding-agent CLI hook.
+
+**Compatibility.** declares no dsh peers, so the compatibility guard never blocks it.
+
+**What this package still does that the alternatives do not.** this package's differentiators are the Aho-Corasick pattern engine ported from the prompt-injection / jailbreak / secret-leaker asset sets, three-way allow/ask/block interception on user messages, tool arguments AND tool results, and sanitized defend/* session audit events. The rival above is narrower (destructive commands and secret files) but is adopted an order of magnitude more widely.
+
+👉 **For new work, prefer dsh-defend is still the broader detector; cc-safety-net is the far better-adopted alternative for the destructive-command gate specifically.** Existing installs keep working unchanged; nothing is being removed.
+
+*Full evidence, including the host-version compatibility matrix: `dsh-plugin-supersession-review-20261005.md`.*
+
+## Comparison
+
+![Measured comparison chart for dsh-defend](https://raw.githubusercontent.com/PerryLink/dsh-defend/main/docs/assets/dsh-defend-evidence.png)
+
+105 samples (75 positive / 30 negative) · from benchmark/RESULTS.md in this repo
+
+## Compatibility
+
+| Surface | Status |
+|---|---|
+| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1` (verified 2026-09-25; peer ranges `>=0.1.2-rc.1 <0.2.0 \|\| >=0.1.5-alpha.1 <0.2.0 \|\| >=0.1.6-0 <0.2.0 \|\| >=0.1.7-0 <0.2.0`). On this line `Session.append`'s third argument exists only for surface-eligible event types and is a `SurfaceIntent`, so the non-surface `defend/detection` type still cannot stamp the `ignorable` marker: session-log audit stays fail-closed-disabled and `/defend` renders that state explicitly. Session format V4 has no `tool-result` content block — this plugin never produced one, and its two content walkers keep a **read-only** fallback for the retired V3 wrapper so sessions written before the upgrade still scan. Verified 2026-09-25 (dual typecheck rulers + full test suite + build + self-contained/artifacts gates + pack; exactly one copy of the host type graph). |
+| Node | `^22.19.0 \|\| >=24.0.0` |
+| Platforms | All (pure host; no native code, no network) |
+| Model | Any (detection runs before content reaches the model) |
+
+## What you get
+
+`dsh-defend` puts two independent layers in front of the agent:
+
+1. **Destructive-delete guard** — the executable form of the 8·14/8·16 postmortem lesson. On `tools/pre-execute`, recursively deleting shell commands are refused unless **every** target is an explicit absolute path inside the session workspace and outside the protected prefixes (home config, `.dsh`/`.claude`, system directories). Dry-run markers (`-WhatIf`, `--dry-run`, `git clean -n`) pass, because they are exactly the check the lesson demands.
+2. **Detection layer** — ported from four upstream assets (all Apache-2.0, see THIRD_PARTY_NOTICES.md): 25 Prompt-Injection-Payloads rules, 25 Jailbreak-Detector patterns through a pure-TypeScript Aho-Corasick automaton, 12 secret grammars from Secret-Key-Leaker-Detect plus the issuers' public references, and the Prompt-Attack-Dataset kept verbatim as the regression benchmark.
+
+Three interception points, one decision model each:
+
+| Point | Scanned | Decision |
+|---|---|---|
+| `agent/pre-step` | inbound user messages | allow → `next()`; ask → approval; block → reject the step |
+| `tools/pre-execute` | tool arguments | allow → `next()`; ask → approval; block → deny |
+| `tools/post-execute` | tool results | allow → `next()`; ask → approval; block → corrective feedback |
+
+Defaults: `ask` for every family, `block` for **critical** secrets (the upstream interrupt-on-sight semantics). No approval answerer = fail closed. Every pass-through calls `next()` — downstream policy plugins are never short-circuited.
+
+```text
+inbound message ── agent/pre-step ── scan ── clean → next()/enter
+tool arguments ── tools/pre-execute ── scan ── allow → next()
+tool results   ── tools/post-execute ── scan ── block → feedback
+                                  │
+                                  └─ defend/detection audit (rule id, family,
+                                     severity, decision — never matched text)
+```
+
+## Quick start
+
+```sh
+dsh plugin --profile web add github:PerryLink/dsh-defend
+```
+
+```sh
+# 1. install the bundle into your profile
+dsh plugin --profile web add github:PerryLink/dsh-defend
+
+# or from npm (published releases)
+dsh plugin --profile web add dsh-defend
+
+# 2. restart and verify the row
+dsh --profile web --dump-config | grep -A3 'id: dsh-defend'
+```
+
+## Install & uninstall
+
+- **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-defend` — the `prepare` script builds with production dependencies only.
+- **npm channel** (published releases): `dsh plugin --profile web add dsh-defend`.
+- **tarball channel**: `pnpm pack` in this repo, then `dsh plugin --profile web add ./dsh-defend-<version>.tgz`.
+- **uninstall**: `dsh plugin --profile web remove dsh-defend` (or remove the row from the profile patch).
+
+## Configuration
+
+All tunables are Schemastery `Config` fields (changeable from cordis.yml). An id-targeted override replaces the whole row — restate every key you need. `cordis.patch.yml` documents each key inline.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | Master switch for both layers |
+| `action` | `deny` | Destructive-delete guard action (`deny` / `ask`) |
+| `toolNames` | `['bash','persistent-bash','terminal-bash']` | Tool names whose command arguments the guard reviews |
+| `detection.enabled` | `true` | Detection-layer switch |
+| `detection.maxScanChars` | `10000` | Scan cap per interception (head only) |
+| `detection.normalizeUnicode` | `true` | NFKC-normalize text before scanning (blocks lookalike-Unicode bypass) |
+| `detection.secretMinEntropy` | `3.0` | Minimum Shannon entropy (bits/char) to admit a secret regex hit; `0` disables |
+| `detection.injectionAction` | `ask` | Injection family: `allow` / `ask` / `block` |
+| `detection.jailbreakAction` | `ask` | Jailbreak family: `allow` / `ask` / `block` |
+| `detection.secretAction` | `ask` | Secret family: `allow` / `ask` / `block` |
+| `detection.secretBlockCritical` | `true` | Critical secrets always block regardless of `secretAction` |
+| `detection.audit` | `true` | Write `defend/detection` session audit events |
+| `detection.allowUnmarkedAudit` | `false` | Keep writing session audit on hosts whose `Session.append` predates the `ignorable` marker (every released line so far, the `0.2.x` prereleases included) or that fail-closed on unknown event types (host `0.1.2-rc.1`+), accepting the unresumable-session hazard |
+| `detection.maxReportEntries` | `200` | In-memory report ring-buffer cap |
+| `registerCommand` | `true` | Register the `/defend` command |
+| `registerTool` | `true` | Register the `defend_report` tool |
+
+## Tools & surfaces
+
+| Surface | Kind | Notes |
+|---|---|---|
+| `defend_report` | tool | Totals (recorded/blocked/asked), per-family counts, and the 20 most recent matches — never matched text |
+| `/defend` | command | The same summary as text |
+| `agent/pre-step` | listener | Inbound message scanning (enter/reject) |
+| `tools/pre-execute` | listener | Tool-argument scanning (deny/ask) + the destructive-delete guard |
+| `tools/post-execute` | listener | Tool-result scanning (block feedback) |
+
+## Permissions & data
+
+- **Permissions**: ask decisions ride the official approval seam; nothing is re-implemented or bypassed. The plugin declares `session:append` and `network:none` in its workshop manifest.
+- **Data**: nothing is stored on disk; the report ring buffer is in-memory and bounded. No network requests, no subprocesses.
+- **Session log**: `defend/detection` events carry rule id, family, category, severity, secret type, decision, and scan facts — matched text never reaches the log, and secret matches are type-only by construction.
+
+## Security boundaries
+
+- **Detection, not enforcement.** The guard and the detection layer only produce deny/ask/block decisions on official seams; the sandbox and approval systems remain the enforcement authorities.
+- **Fail closed.** Missing approval answerer, missing session, or a missing services surface degrades to the strictest decision — never to silent pass-through.
+- **No content leaves the process.** Scanning is local; audit events are sanitized; secrets are never logged, displayed, or reported.
+- **Bounded work.** Scan caps, one match per rule, and ring-buffer bounds keep hostile inputs from consuming unbounded resources.
+
+## Known limitations
+
+- **Detection gaps.** The rule library catches the ported vocabularies and their tolerant variants; novel phrasing, lookalike-Unicode encodings (NFKC normalization is tracked as future work), and multi-step attacks can evade it. The benchmark pins the measured floor (27/28 on the upstream dataset) so regressions are visible.
+- **No model-level verdicts.** `dsh-defend` is deterministic; it never calls a model and cannot judge novel intent.
+- **Message rejection is silent.** `agent/pre-step` reject carries no reason to the model (the seam has no reason field); the audit event records the rule facts.
+- **Session audit and the `ignorable` marker.** Audit appends request the envelope's `ignorable: true` marker so any harness build can load the log. Every released harness line so far (`0.1.0-rc.1`–`0.1.0-rc.8`, `0.1.1-rc.1`–`0.1.1-rc.2`, and the `0.2` corridor — re-verified 2026-10-04 against the published `0.2.1-alpha.1`, whose `append(type, data, ...opts)` reads only `sourceEventSeqs`/`surfaceOp` out of the options bag and builds the envelope as `{ type, seq, time, data }`) silently drops it — the event lands unmarked and makes the session unresumable on stricter builds; host `0.1.2-rc.1` retains the envelope field for stored-log read compatibility only, but `Session.append` still cannot stamp it and the read path rejects unmarked unknown event types (`defend/detection` is not registered), so writing there also makes the session unloadable. dsh-defend therefore decides BEFORE the first append (peer-version pre-check; unresolvable versions fail closed) and disables session-log audit with a one-time warning; the `0.2.x` **prereleases** are classified unmarked up front for exactly that reason, while a stable `0.2.x` still falls back to the append probe. Set `detection.allowUnmarkedAudit: true` to opt back in. See [issue #2](https://github.com/PerryLink/dsh-defend/issues/2).
+
+## Development
+
+```sh
+pnpm install        # node ^22.19 || >=24
+pnpm run typecheck  # tsc: src + tests against the local harness checkout
+pnpm run typecheck:ci  # tsc against the published 0.1.7-rc.2 types (no paths)
+pnpm test           # vitest: 97 tests, 9 suites (detection benchmark incl.)
+pnpm run build      # tsdown bundle + tsc declarations (lib/)
+pnpm run verify:self-contained  # dependency specs resolve from the registry
+pnpm run verify:artifacts       # built ESM face + shipped files present
+pnpm pack           # the published tarball
+```
+
+### Benchmark
+
+The red-team benchmark (per-category P/R/F1 over 105 samples, plus the 27/28 fixture floor) is published in [`benchmark/RESULTS.md`](benchmark/RESULTS.md); regenerate it with `node --experimental-strip-types benchmark/run.mjs` (zero new dependencies, no build step).
+
+## Interoperability with other DSH plugins
+
+Verified against **DSH `0.2.0-rc.2`** (the runtime this README ships for) and the high-star plugin set surveyed on 2026-10-05.
+
+This plugin **does not interfere** with other plugins, including the widely installed high-star ones:
+
+- **No tool-name collision.** Every tool is namespaced; no bare name owned by a shipped tool or another plugin is registered.
+- **No service-key collision.** It provides no service key at all, so it cannot collide on one.
+- **No slot collision.** It registers no client slot key, so it cannot contend for a `shadows-shipped-ui` seat.
+- **No HTTP route collision.** It registers no `webServer` prefix.
+- **No patch-layer collision.** The bundle patch only `insert`s its own row; it never overrides a built-in row's `config`.
+- **No global mutation.** It does not patch prototypes, rewrite `process.env`, or replace the global fetch dispatcher.
+
+**Shared event listeners are non-interfering by construction.** It observes the ordering-sensitive events `agent/pre-step`, `tools/post-execute`, `tools/pre-execute` with `ctx.on()` — Cordis's broadcast registration, where every listener runs and none can starve another. **Every listener here delegates through `next()`**, so the chain is never short-circuited, and a mutation is applied to the value `next()` produced rather than returned in its place:
+  - `agent/pre-step` — also used by `dsh-routing-suite` (7000★, 7 listeners), `modlens` (4122★), `dsh-purge` (3317★), `dsh-agent-teams` (1923★), `dsh-context` (1849★).
+  - `tools/post-execute` — also used by `cc-safety-net` (1576★).
+  - `tools/pre-execute` — also used by `cc-safety-net` (1576★).
+
+Static evidence: `dsh-plugin-doctor` K10–K13 report `pass` for every check on this repository.
+
+## Topics
+
+`dsh`, `dsh-plugin`, `deepseek-harness`, `deepseek`, `cordis`, `security`, `prompt-injection`, `jailbreak`, `secret-scanning`, `ai-safety`
+
+## Contributors
+
+- [@PerryLink](https://github.com/PerryLink) — creator and maintainer: destructive-delete guard, the four-asset detection port, interception wiring, audit surface, and the five-language docs.
+- [@cuohua](https://github.com/cuohua) — the precise report on `defend/detection` events landing unmarked and making sessions unresumable on stricter builds ([#2](https://github.com/PerryLink/dsh-defend/issues/2)); the runtime host-capability detection and the `ignorable`-marker discipline derive directly from that analysis.
+
+## PerryLink DSH Plugin Family
+
+This project is one of the **34 actively maintained** DeepSeek Harness plugins from [PerryLink](https://github.com/PerryLink) — the roster is **42**, of which **5** are frozen and **3** retired; every one keeps its row below, with the reason in the Status column. If this one helps you, the others likely will too:
+
+| Plugin | One-liner | Status |
+|---|---|---|
+| **[dsh-auto-review](https://github.com/PerryLink/dsh-auto-review)** | Second-model auto-review on the approval chain, fail-closed by default | |
+| **[dsh-autotier](https://github.com/PerryLink/dsh-autotier)** | Automatic strong/cheap model-tier routing with deterministic risk guards and a `/tier` command | |
+| **[dsh-background-agents](https://github.com/PerryLink/dsh-background-agents)** | Durable background child agents with a Web UI sidebar, messaging and interrupt | 🚫 **RETIRED** — see the note above |
+| **[dsh-budget](https://github.com/PerryLink/dsh-budget)** | Cost governance for DeepSeek Harness: budgets, carbon, and latency in one panel. | 🧊 FROZEN — see the repo README |
+| **[dsh-catalog](https://github.com/PerryLink/dsh-catalog)** | DSH Desktop Market standard catalog source for the PerryLink family | |
+| **[dsh-cert-mcp](https://github.com/PerryLink/dsh-cert-mcp)** | Read-only MCP server exposing the certification registry: grades, snapshots and five-dimension evidence | |
+| **[dsh-checkpoint-rewind](https://github.com/PerryLink/dsh-checkpoint-rewind)** | Claude Code /rewind-equivalent: snapshots, session forks, one-shot restore | |
+| **[dsh-claude-move](https://github.com/PerryLink/dsh-claude-move)** | Migrate Claude Code sessions, memory, skills and CLAUDE.md into DSH | 🧊 FROZEN — see the repo README |
+| **[dsh-click](https://github.com/PerryLink/dsh-click)** | Cross-platform native desktop control for DeepSeek Harness — Windows first. | |
+| **[dsh-composer-history](https://github.com/PerryLink/dsh-composer-history)** | Terminal-style input history for the web composer: arrows, Ctrl+R search | |
+| **[dsh-data-quality](https://github.com/PerryLink/dsh-data-quality)** | Dataset quality checks and citation cross-checks (the optional numeric bridge consumed here) | |
+| **[dsh-defend](https://github.com/PerryLink/dsh-defend)** | Prompt-injection, jailbreak, and secret-leak defense for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-doublecheck](https://github.com/PerryLink/dsh-doublecheck)** | Engineering-discipline guard: requirements grill, test gates, adversary review | |
+| **[dsh-draw](https://github.com/PerryLink/dsh-draw)** | Unified static-image generation routing for DeepSeek Harness. | 🧊 FROZEN — see the repo README |
+| **[dsh-fast](https://github.com/PerryLink/dsh-fast)** | Read-only performance diagnostics for DeepSeek Harness. | |
+| **[dsh-fund-research](https://github.com/PerryLink/dsh-fund-research)** | Deterministic research reports for Chinese public mutual funds | |
+| **[dsh-github](https://github.com/PerryLink/dsh-github)** | GitHub PR/issues integration for DSH, every write gated by approval | |
+| **[dsh-industry-research](https://github.com/PerryLink/dsh-industry-research)** | Industry research orchestration that seals its deliverables through this plugin's `ctx.researchReport.assemble` | |
+| **[dsh-laya](https://github.com/PerryLink/dsh-laya)** | Laya typed decisions (`noul`/`choice`/`score`) as a first-class Cordis service and model-visible tools | |
+| **[dsh-library](https://github.com/PerryLink/dsh-library)** | Local document knowledge base for DeepSeek Harness. | |
+| **[dsh-local-ai](https://github.com/PerryLink/dsh-local-ai)** | Local-model (Ollama) integration for DeepSeek Harness. | |
+| **[dsh-lsp-actions](https://github.com/PerryLink/dsh-lsp-actions)** | LSP diagnostics, formatting, completion, code actions and rename over language servers | |
+| **[dsh-mask](https://github.com/PerryLink/dsh-mask)** | PII masking middleware: anonymize at the model boundary, restore at the display layer | |
+| **[dsh-mcp-panel](https://github.com/PerryLink/dsh-mcp-panel)** | Read-only MCP runtime panel: /mcp command + Settings tab with status, tools and errors | |
+| **[dsh-memento](https://github.com/PerryLink/dsh-memento)** | Approval-gated cross-session memory: ctx.memory seam + SQLite + memory tool | |
+| **[dsh-observe](https://github.com/PerryLink/dsh-observe)** | OpenTelemetry and Langfuse observability exporter for DeepSeek Harness. | |
+| **[dsh-output-styles](https://github.com/PerryLink/dsh-output-styles)** | Claude Code outputStyles-equivalent runtime style switching | |
+| **[dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules)** | Claude Code-style declarative allow/deny/ask permission rules with audit | |
+| **[dsh-plugin-certification](https://github.com/PerryLink/dsh-plugin-certification)** | Community certification registry with repro-checkable grades and badges | |
+| **[dsh-plugin-doctor](https://github.com/PerryLink/dsh-plugin-doctor)** | Zero-dependency static + sandbox smoke detector for DSH plugins | |
+| **[dsh-plugin-guide](https://github.com/PerryLink/dsh-plugin-guide)** | Plugin-development knowledge base as an on-demand agent skill | |
+| **[dsh-plugin-kit](https://github.com/PerryLink/dsh-plugin-kit)** | Shared zero-runtime-dependency toolkit for the PerryLink DSH plugins | |
+| **[dsh-plugin-upgrade](https://github.com/PerryLink/dsh-plugin-upgrade)** | One-package, one-corridor-index plugin upgrade skill: routes a repository to the matching closed corridor card | |
+| **[dsh-plugin-upgrade-015](https://github.com/PerryLink/dsh-plugin-upgrade-015)** | Merged `0.1.3-alpha.1` → `0.1.5-rc.1` upgrade corridor card plus a zero-dependency seam scanner | 🚫 RETIRED — corridors carried by `dsh-plugin-upgrade` |
+| **[dsh-reach](https://github.com/PerryLink/dsh-reach)** | Multi-channel approval/question bridge: WeChat/Telegram/Feishu, session console | 🧊 FROZEN — see the repo README |
+| **[dsh-research-report](https://github.com/PerryLink/dsh-research-report)** | Verifiable research-report engine: content-addressed evidence ledger and sealed versions | |
+| **[dsh-score](https://github.com/PerryLink/dsh-score)** | Multi-dimensional quality scoring for DeepSeek Harness plugins. | |
+| **[dsh-session-pin](https://github.com/PerryLink/dsh-session-pin)** | Pin sessions in the Web sidebar with durable ordering | 🚫 **RETIRED** — see the note above |
+| **[dsh-session-sync](https://github.com/PerryLink/dsh-session-sync)** | Cross-device session sync for DeepSeek Harness — a dedicated git mirror of your session store. | |
+| **[dsh-skill-pack-security](https://github.com/PerryLink/dsh-skill-pack-security)** | Security-audit skill pack: secret scan, dependency and supply-chain review | |
+| **[dsh-talk](https://github.com/PerryLink/dsh-talk)** | Voice-first session loop for DeepSeek Harness: talk to it, hear it answer. | |
+| **[dsh-team-rooms](https://github.com/PerryLink/dsh-team-rooms)** | Cross-session team rooms: shared message bus, task board and timeline | 🚫 **RETIRED** — see the note above |
+| **[dsh-test-drive](https://github.com/PerryLink/dsh-test-drive)** | Isolated install-and-smoke test drives for DeepSeek Harness plugins. | |
+| **[dsh-ticktick](https://github.com/PerryLink/dsh-ticktick)** | TickTick/Dida365 task bridge: session-header panel + 11 tools | |
+| **[dsh-translate](https://github.com/PerryLink/dsh-translate)** | Vendor parameter translation and deterministic JSON repair for DeepSeek Harness. | |
+
+### Install from the DSH Desktop Market
+
+All PerryLink plugins are browsable in the built-in DSH Desktop Market: **Market → Sources → add source → paste** `https://perrylink-dsh-catalog.perrylink.workers.dev/catalog-source.json` **→ select it**. Installation still goes through the Market's npm-identity verification and your confirmation.
+
+## License
+
+[Apache License 2.0](LICENSE) © 2026 dsh-defend contributors

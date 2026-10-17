@@ -1,0 +1,304 @@
+# Codg
+
+<p align="left">
+    <a href="https://github.com/vcaesar/codg/releases"><img src="https://img.shields.io/github/release/vcaesar/codg" alt="Latest Release"></a>
+    <a href="https://github.com/vcaesar/codg/actions"><img src="https://github.com/vcaesar/codg/actions/workflows/go.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://pkg.go.dev/github.com/vcaesar/codg?tab=doc"><img src="https://pkg.go.dev/badge/github.com/vcaesar/codg?status.svg" alt="GoDoc"></a>
+    <a href="https://discord.gg/Dy5QZRbaND"><img src="https://img.shields.io/discord/1484658282777018551.svg?logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Join the Discord chat at https://discord.gg/Dy5QZRbaND"></a>
+</p>
+
+The next easy code and work AI agents harness system, auto and asynchronous, concurrency and high performance, Efficiently and High accuracy.
+
+**English** | [繁體中文](./lang/README.zht.md) | [简体中文](./lang/README.zh.md) | [日本語](./lang/README.ja.md) | [한국어](./lang/README.ko.md) | [Français](./lang/README.fr.md) | [Deutsch](./lang/README.de.md) | [Español](./lang/README.es.md) | [Português](./lang/README.pt.md) | [Русский](./lang/README.ru.md) | [العربية](./lang/README.ar.md)
+
+<p align="center">
+<a href="https://atomai.cc" rel="nofollow">
+<img width="800" alt="Codg Demo" src="https://github.com/vcaesar/codg/raw/main/demo/26-04.png" />
+<img width="800" alt="Codg Demo" src="https://github.com/vcaesar/codg/raw/main/demo/26-04-1.png" />
+</a>
+</p>
+
+## Installation
+
+Mac and Linux:
+
+```bash
+# Homebrew
+brew install vcaesar/tap/codg
+
+# Brew install desktop
+brew install --cask vcaesar/tap/codg-desktop
+
+# NPM
+# npm install -g @vcaesar/codg
+```
+
+Windows (PowerShell):
+
+```powershell
+# Winget
+# winget install vcaesar.codg
+
+# YOLO (native PowerShell installer)
+irm https://raw.githubusercontent.com/vcaesar/codg/main/demo/boot.ps1 | iex
+```
+
+All (macOS, Linux, or Windows via Git Bash / MSYS2 / Cygwin / WSL):
+
+```bash
+# YOLO
+curl -fsSL https://raw.githubusercontent.com/vcaesar/codg/main/demo/boot.sh | bash
+```
+
+Or click [Releases](https://github.com/vcaesar/codg/releases) directly to download and run it.
+
+Go to your project directory, run `codg`, use "/init" to init the projects.
+Use "/yolo" to toggle the auto and ask mode, and you can set permissions by codg.toml.
+
+## Features
+
+- Auto and asynchronous, concurrency and high performance agents system, low memory and cpu, lessest tokens use (saved 70% to 90%+)
+- Multi models providers (60-100+ API and Pro providers, Custom URL API) and local models via by openai-compat or claude-compat,
+- Support Openrouter, OpenCode, Ollama, Nvidia and others free models, use it by "/connect" "/models" or "codg auth"
+- Asynchronous and model rules for the multi agents
+- Compression input-output, context and prompts to save the tokens, cache and rules to reduce the cost
+- Any terminal and OS support, also web terminal support
+- Easy use: The TUI in everywhere like GUI and Easy, Desktop and Web in the BETA
+- Click or "/xxx" to switch sessions, Click to everywhere in TUI
+- Clcik "Modified Files" or "/diff" and "/diff git" to view the diff files in TUI same the vscode
+- Autocomplete the English letters and short sentences
+- More easy Agents, Skills and MCP system, custom Agents and Skills support
+- Agent teams support, multi main agents
+- Channel and features support like OpenClaw
+- Full Web UI and remote TUI support, and desktop app support, vscode/zed Extensions support
+- Claude Code and Codex Plugin support
+- Full computer, mobile and browser use, agents play everything
+- Full Voice support, online and local engine support (whisper.cpp, funasr and qwen3-asr), "/run install" to install local engine
+
+Some beta features need wait for the test and fix bugs then release it.
+
+## Providers
+
+Atom, Anthropic Pro, Anthropic API, OpenAI Pro, OpenAI API, Gemini Pro, Gemini API, xAI Pro, xAI API, Muse Code, Muse API,OpenRouter, Copilot, Antigravity, Cursor, Kiro, Azure, Bedrock, Vertex AI, Nvidia, HuggingFace, Vercel, Ollama Cloud, Cloudflare Workers and AI gateway, GitHub, Poe, Meta, Groq, IO.net, OpenCode Zen, OpenCode Go, Devin.ai (Windsurf), Cerebras, Perplexity...
+
+China: Z.ai, Zhipu, Zhipu Coding, Kimi, Kimi Coding, DeepSeek, MiniMax, MiniMax China, Alibaba Qwen, Alibaba Coding, Alibaba Coding CN, MiMo, Qiniu Cloud, Tencent Coding, Volcengine, Setupfun...
+
+And you can use the opencode models.dev and free models, and the others free models: Nvidia and OpenRouter free models, or use the local models and custom providers...
+
+## Benchmark
+
+### RAM usage
+
+| Tool                   | 1 active session | 10 active sessions | Extra PSS per added session |
+| ---------------------- | ---------------- | ------------------ | --------------------------- |
+| **Codg**               | 65 MB            | 165 MB             | ~10 MB                      |
+| **Codex CLI**          | 140.0 MB         | 334.8 MB           | ~21.6 MB                    |
+| **Cursor Agent**       | 214.9 MB         | 1632.4 MB          | ~157.5 MB                   |
+| **GitHub Copilot CLI** | 333.3 MB         | 1756.5 MB          | ~158.1 MB                   |
+| **OpenCode**           | 371.5 MB         | 3237.2 MB          | ~318.4 MB                   |
+| **Claude Code**        | 386.6 MB         | 2300.6 MB          | ~212.7 MB                   |
+
+### Terminal-bench
+
+### SWE
+
+## Reporting Bugs:
+
+Open a [Github Issues](https://github.com/vcaesar/codg/issues)
+
+## How we use your data:
+
+Currently no any data and telemetry is collected here, and 100% local model supported, use the API you can see they providers' policies.
+
+For TUI usage, see the [TUI commands documentation](./docs/cli.md), and type `/help` inside the TUI to view key bindings and other help.
+
+# CLI Commands
+
+Use: codg -h
+
+```bash
+codg auth/login               # Authenticate (Atom, OpenAI, GitHub...)
+codg web                      # Start web UI on port 4096
+codg desktop                  # Launch the desktop app (Wails)
+codg claw                     # Start messaging agent (Telegram/Discord/Slack)
+codg gateway --private-only   # Start secured gateway
+codg models claude            # List models matching "claude"
+codg runm start Qwen/Qwen3-8B-GGUF   # Start a local model
+codg runm download user/model # Download a GGUF model
+codg plugin install repo/name # Install a plugin
+codg plugin list              # List installed plugins
+codg install repo/name        # Shorthand for plugin install
+codg mcp add myserver cmd     # Add an MCP server
+codg mcp list                 # List configured MCP servers
+codg skill url add <url>      # Add a skill source URL
+codg themes set catppuccin    # Switch theme
+# codg logs -f                # Tail application logs
+codg toml                     # show the all config
+codg stats/s                  # Show usage statistics
+codg dirs                     # Print data/config directory paths
+codg projects                 # List tracked project directories
+codg lite 2                   # Set lite mode level (0-4)
+codg merge origin main        # Safe git merge with v1/ backup
+codg migrate                  # Migrate config from .claude/.opencode
+codg vm build                 # Build on remote VM
+codg vm run -- make test      # Execute command on VM
+codg sandbox run -- ./test.sh # Run in sandbox
+codg sandbox status           # Check sandbox availability
+codg used                          # Show usage limits and API stats for all providers
+codg update                   # Update codg version
+codg updatep                  # Update provider definitions
+```
+
+## Claude-Code/Codex plugin
+
+```shell
+# Codg
+codg plugin marketplace add earthtojake/text-to-cad
+codg plugin add cad@text-to-cad
+```
+
+## Usage Examples
+
+### Non-Interactive (`codg run`)
+
+```bash
+# Pipe input from another command.
+cat errors.log | codg run "What's causing these errors?"
+# Verbose mode (debug output to stderr).
+codg run -v "Debug this function"
+```
+
+### Web UI
+
+```bash
+# Start the web UI on default port 4096.
+codg web
+# Custom port.
+codg web -p 8080
+
+# API-only mode (no frontend, no browser).
+codg web 0, codg api
+```
+
+### Plugin Management
+
+```bash
+# Install a plugin from a Git repository.
+codg install github.com/user/codg-xxx-auth
+```
+
+### Custom Agents and Skills:
+
+Copy xx_agent.md (.codg/agents/templates) or SKILL.md (.codg/skills) to the directory
+
+# Configuration System
+
+Create a `codg.toml` in your project root (or `~/.codg/config/codg.toml`
+for global settings):
+
+```toml
+# codg.toml — Minimal project config.
+[options]
+lite_mode = 2          # 0 = all agents, 2 = default lean set, 4 = single agent
+locale    = "en"       # UI language: en, zh-CN, ja
+ctx_resize = true
+token_save = 2
+
+[options.tui]
+theme     = "catppuccin"
+dark_mode = true
+compact_mode = false
+
+[tools.grep]
+backends = ["rg", "sg", "csearch", "ngram", "regex"]
+```
+
+### Provider Setup
+
+```toml
+# Use an API key (supports $ENV_VAR expansion).
+[providers.anthropic]
+api_key = "$ANTHROPIC_API_KEY"
+
+# Use OAuth (set via `codg auth`).
+[providers.openai]
+oauth = true
+
+# Custom / self-hosted provider.
+[providers.local]
+name     = "My Local LLM"
+type     = "openai-compat"
+base_url = "http://localhost:8080/v1"
+api_key  = "not-needed"
+```
+
+### Agent Customization
+
+```toml
+# Shorthand: assign a model type.
+agents.coder = "large"
+agents.task  = "small"
+
+# Full form: fine-tune an agent.
+[agents.advisor]
+model           = "large"
+temperature     = 0.3
+thinking_budget = 32000
+```
+
+### MCP Servers
+
+```toml
+# HTTP MCP server.
+[mcp.websearch]
+type = "http"
+url  = "https://mcp.exa.ai/mcp?tools=web_search_exa"
+```
+
+### Skills
+
+```toml
+# Auto load and download in TUI or codg skill
+[option]
+skill_urls = ["https://github.com/user/skills"]
+```
+
+### Local Models (llama.cpp)
+
+```toml
+[llama]
+port     = 8090
+host     = "127.0.0.1"
+ctx_size = 32000
+gpu      = "auto"          # auto, cuda, off
+```
+
+### Messaging Channels
+
+```toml
+[channels.telegram]
+enabled     = true
+token       = "$TELEGRAM_BOT_TOKEN"
+allowed_ids = ["123456789"]
+
+[channels.discord]
+enabled  = true
+token    = "$DISCORD_BOT_TOKEN"
+```
+
+### Permissions
+
+```toml
+[permissions]
+allowed_tools = ["bash", "edit", "view", "glob", "grep"]
+[tools.bash]
+allowed_cmds = ["git"]
+[tools.file_access]
+allowed_dirs = ["**x"] # all directories
+
+# Yolo (Full), allow the all files and cmds
+[tools.bash.full]
+allowed_cmds = ["**x"]
+[tools.file_access.full]
+allowed_dirs = ["**x"]
+```

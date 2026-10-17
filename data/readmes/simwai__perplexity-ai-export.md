@@ -1,0 +1,206 @@
+<p align="center">
+  <img src="docs/header.svg" width="100%" alt="Perplexity History Export Header" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-4c1d95?style=flat&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/TypeScript-5b21b6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Ollama-6d28d9?style=flat&logo=ollama&logoColor=white" alt="Ollama" />
+  <img src="https://img.shields.io/badge/Playwright-7c3aed?style=flat&logo=playwright&logoColor=white" alt="Playwright" />
+  <img src="https://img.shields.io/badge/Vitest-8b5cf6?style=flat&logo=vitest&logoColor=white" alt="Vitest" />
+</p>
+
+---
+
+<!-- toc -->
+
+- [Introduction](#introduction)
+- [Key Features](#key-features)
+- [System Requirements](#system-requirements)
+- [Environment Setup Guide](#environment-setup-guide)
+  * [1. Install Node.js (The Engine)](#1-install-nodejs-the-engine)
+  * [2. Install AI Provider (Optional - For AI Intelligence)](#2-install-ai-provider-optional---for-ai-intelligence)
+  * [3. Download and Prepare the Project](#3-download-and-prepare-the-project)
+- [Configuration](#configuration)
+  * [Key Environment Variables](#key-environment-variables)
+- [Usage Guide](#usage-guide)
+  * [Operational Directives](#operational-directives)
+- [RAG Capabilities](#rag-capabilities)
+- [Architecture & Deep Dive](#architecture--deep-dive)
+  * [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Benchmarking](#benchmarking)
+
+<!-- tocstop -->
+
+---
+
+## Introduction
+
+This tool is designed to externalize your Perplexity.ai conversation history into organized, semantically searchable Markdown files. It facilitates the emergence of a personal knowledge base powered by local AI, bridging the gap between ephemeral inquiry and structured knowledge.
+
+## Key Features
+
+- **Parallelized Extraction**: Leverages Playwright to extract multiple conversation threads simultaneously for high-velocity data retrieval.
+- **Architectural Resilience**: Automatically restores browser contexts and retries operations, ensuring continuity amidst environmental instability.
+- **Advanced RAG (Retrieval-Augmented Generation)**: Engage in a cognitive dialogue with your history. The system employs intent analysis to synthesize broad summaries or pinpoint specific technical insights.
+- **HyDE (Hypothetical Document Embeddings)**: An optional retrieval enhancement that generates a hypothetical answer to improve semantic matching. Highly configurable (off, fusion, or supplement modes) via environment variables to balance precision and recall.
+- **Cross-Encoder Reranking**: After initial retrieval, a local ONNX cross-encoder (`ms-marco-MiniLM-L-6-v2`) rescores the top candidates by jointly reasoning over query and passage, surfacing the most relevant results before synthesis.
+- **Semantic Vector Search**: Move beyond keyword matching. Locate information based on conceptual depth and semantic relevance.
+- **Persistent State Tracking**: Frequent checkpoints allow the system to resume progress after any interruption.
+- **Interactive Synthesis (REPL)**: A streamlined command-line interface for human-system synergy.
+- **Smart Content Hashing**: The scraper now computes a SHA-256 hash of thread content. Subsequent runs will skip unchanged threads, significantly reducing execution time and API overhead while ensuring your local history stays up to date when new messages are added.
+
+## System Requirements
+
+- **Operating System**: Developed and tested on **Windows**. Linux and macOS are currently untested.
+- **Shell**: **PowerShell 7.6** is highly recommended for running this project.
+- **WSL (Windows Subsystem for Linux)**: Must be pre-installed. The system utilizes `bash -c` for certain internal operations and setup commands.
+- **Ripgrep**: Platform-specific `rg` binaries are bundled. However, if you encounter issues where search results do not appear, please try installing [ripgrep](https://github.com/BurntSushi/ripgrep) manually on your system as a troubleshooting step.
+
+## Environment Setup Guide
+
+If you are new to development or don't have the necessary tools installed, follow these steps to set up your environment.
+
+### 1. Install Node.js (The Engine)
+
+We recommend using a version manager to install Node.js. This allows you to easily switch versions and avoids permission issues.
+
+- **Windows**:
+  1. Download and run the latest installer from [nvm-windows](https://github.com/coreybutler/nvm-windows/releases).
+  2. Open a new PowerShell (v7.6 recommended) and run:
+     ```powershell
+     nvm install 20
+     nvm use 20
+     ```
+- **macOS / Linux**:
+  1. Install `nvm` by following the instructions at [nvm.sh](https://nvm.sh).
+  2. Run:
+     ```bash
+     nvm install 20
+     nvm use 20
+     ```
+
+### 2. Install AI Provider (Optional - For AI Intelligence)
+
+An AI provider is **optional**. It is only required if you want to use the Semantic Search or RAG (Retrieval-Augmented Generation) features. Basic extraction and keyword search work without it. You can use local Ollama or any OpenAI-compatible API (OpenAI, OpenRouter, DeepSeek, etc.).
+
+- **Ollama (Local)**:
+  1. Download and install from [ollama.ai](https://ollama.ai).
+  2. Pull required models:
+     ```powershell
+     ollama pull nomic-embed-text
+     ollama pull deepseek-r1
+     ```
+
+- **External API (OpenAI-compatible)**:
+  1. Obtain an API key from your provider (e.g., [OpenRouter](https://openrouter.ai), [OpenAI](https://platform.openai.com)).
+  2. Configure `AI_PROVIDER`, `AI_API_KEY`, and `AI_BASE_URL` in your `.env` file.
+
+### 3. Download and Prepare the Project
+
+If you don't have the `git` command installed, you can simply download this project as a ZIP file from GitHub and extract it.
+
+Once extracted, open your terminal in the project folder and run:
+
+```powershell
+pnpm install
+pnpm exec playwright install chromium
+```
+
+## Configuration
+
+Establish your environment by duplicating the template:
+
+```powershell
+bash -c "cp .env.example .env"
+```
+
+### Key Environment Variables
+
+- **HEADLESS**: Set to `false` in your `.env` file. **Note:** Headless mode (`true`) is currently non-functional due to Cloudflare Turnstile protection on Perplexity.ai. Using headful mode allows you to complete any challenges manually if they appear.
+- **AI_PROVIDER**: "ollama" or "openai-compatible".
+- **AI_API_KEY**: Required for external providers.
+- **AI_BASE_URL**: Base URL for external providers (e.g., https://openrouter.ai/api/v1).
+- **AI_MODEL**: Cognitive model for RAG synthesis (e.g., deepseek-r1). The system defaults to `llama3.1` internally if this is not specified.
+- **AI_EMBED_MODEL**: Model for generating vector representations (e.g., nomic-embed-text).
+- **EXPORT_STRATEGIES**: A comma-separated list of enabled export formats (default: `markdown`).
+- **ENABLE_VECTOR_SEARCH**: Set to `true` to activate semantic and RAG layers.
+
+## Usage Guide
+
+Launch the system:
+
+```powershell
+# Start the development environment
+pnpm run dev
+```
+
+### Operational Directives
+
+- **Start scraper (Library)**: Initiates extraction. Authenticate manually if required.
+  - **Note**: Due to the complexity of Perplexity's API and potential network fluctuations, it may be necessary to **run the scraper multiple times** to ensure all conversations are fully gathered. The system uses checkpoints to resume where it left off.
+- **Search conversations**: Interface with your history using various modes:
+  - **Auto**: Heuristic selection between semantic and exact search.
+  - **Semantic**: Fuzzy matching via high-dimensional vector space.
+  - **RAG**: Direct inquiry, such as "What did I learn about emergent intelligence?"
+  - **Exact**: Rapid string matching via ripgrep (bundled).
+- **Chat with history**: Engage in a continuous, multi-turn dialogue with your knowledge base. The assistant maintains context and cites sources from your history.
+- **Build vector index**: Processes Markdown exports into a local vector store.
+- **Reset all data**: Purges checkpoints, authentication data, and the vector index.
+
+## RAG Capabilities
+
+The RAG modality is engineered for various levels of cognitive inquiry:
+
+- **Broad Synthesis**: "Summarize all threads regarding distributed systems."
+- **Granular Retrieval**: "Locate the specific TypeScript pattern I used for the worker pool."
+- **Cross-Thread Integration**: "How has my conceptual understanding of React hooks shifted?"
+
+The pipeline runs enhancement stages automatically:
+
+1. **HyDE**: Depending on the `HYDE_MODE` (default: `supplement`), the system may generate a hypothetical answer passage to bridge the lexical gap between questions and historical content. In `supplement` mode, it only activates if initial semantic searches yield weak results.
+2. **Expanded pool**: Precise mode retrieves 50 candidates (up from 35), exhaustive mode retrieves 80.
+3. **Cross-encoder reranking**: A local ONNX model (`Xenova/ms-marco-MiniLM-L-6-v2`) jointly scores each (query, passage) pair and reorders before synthesis. Includes a permissive threshold (-5.0) with top-20 fallback to guarantee candidates. Activates automatically after `pnpm install`. First run downloads ~85MB model, cached thereafter.
+4. **Granular fact extraction**: MapReduce extracts atomic facts with source-level deduplication, loose-relevance filtering, and robust JSON parsing (per-entry error handling).
+5. **Cited synthesis**: Final answer cites sources by title (e.g., `[which big python projects use pdm...]`) and `History Sources Explored` shows each fact with a preview.
+
+## Architecture & Deep Dive
+
+For a detailed look at our RAG implementation, hybrid search strategy, and theoretical foundations, please refer to:
+
+👉 **[ARCH.md](./docs/ARCH.md)**
+
+### Project Structure
+
+- **src/ai/**: AI interaction and advanced RAG orchestration layers.
+- **src/scraper/**: Playwright-based extraction logic and parallel worker pool management.
+- **src/search/**: Vector storage (Vectra) and ripgrep search implementation.
+- **src/repl/**: Interactive CLI components.
+- **src/utils/**: Shared utility functions for data chunking, logging, and API diagnostics.
+
+👉 **[DEBUGGING.md](./docs/DEBUGGING.md)**
+
+## Testing
+
+We prioritize a "Testing Trophy" architecture, emphasizing integration tests.
+
+```powershell
+# Execute unit-level verifications
+pnpm run test:unit
+
+# Execute integration-level verifications
+pnpm run test:integration
+```
+
+## Benchmarking
+
+Measure RAG pipeline latency and validate the full retrieval stack against your actual export data.
+
+```powershell
+pnpm run benchmark
+```
+
+Requires a built vector index and a running AI provider instance. The benchmark runs a set of predefined queries end-to-end through the full pipeline (HyDE → hybrid search → cross-encoder reranking → MapReduce → synthesis) and reports per-query latency and success rate. Edit `BENCHMARK_QUERIES` in `src/benchmark.ts` to tailor queries to your history.
+
+👉 **[BENCHMARKS.md](./docs/BENCHMARKS.md)**: Full details on each benchmark, why the metrics were chosen, how to interpret results, and how to write effective custom queries.

@@ -1,0 +1,231 @@
+<div align="center">
+
+<a href="https://amey-thakur.github.io/AI-SKILLS/"><img src="docs/favicon.svg" alt="AI-SKILLS logo" width="88"></a>
+
+# AI Skills
+
+**Plug-and-play skills and prompts for every AI coding agent.**
+
+Claude Code · Claude Desktop · Cursor · OpenAI Codex · Gemini CLI ·
+GitHub Copilot · Windsurf · Antigravity · Cline · Zed · Aider · any agent that reads a file
+
+[Website](https://amey-thakur.github.io/AI-SKILLS/) ·
+[Prompt Studio](https://amey-thakur.github.io/AI-SKILLS/prompt-studio.html) ·
+[Install](INSTALL.md) · [Skills](skills/) · [Prompts](prompts/) ·
+[Ecosystem](ECOSYSTEM.md) · [Contributing](CONTRIBUTING.md)
+
+[![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
+[![CI](https://github.com/Amey-Thakur/AI-SKILLS/actions/workflows/ci.yml/badge.svg)](https://github.com/Amey-Thakur/AI-SKILLS/actions/workflows/ci.yml)
+[![Skills](https://img.shields.io/badge/dynamic/json?label=Skills&query=%24.count.skills&url=https%3A%2F%2Famey-thakur.github.io%2FAI-SKILLS%2Findex.json&color=97620c)](skills/)
+[![Prompts](https://img.shields.io/badge/dynamic/json?label=Prompts&query=%24.count.prompts&url=https%3A%2F%2Famey-thakur.github.io%2FAI-SKILLS%2Findex.json&color=97620c)](prompts/)
+[![Author](https://img.shields.io/badge/Author-Amey_Thakur-0969DA)](https://github.com/Amey-Thakur)
+
+</div>
+
+<br>
+
+> [!TIP]
+> **Autonomous by design.** Point any agent at this repo and it selects the
+> right skill or prompt for each task on its own: it reads [`AGENTS.md`](AGENTS.md)
+> (and [`CLAUDE.md`](CLAUDE.md) in Claude Code), then picks from
+> [`index.json`](index.json) by each entry's `use_when` trigger. You install
+> once; you never have to name a skill.
+
+## What this is
+
+One place that finds every skill. Two halves make that true:
+
+- **The library**: original skills and prompts, written for this repository,
+  every one complete and tested. Below.
+- **[The ecosystem index](ECOSYSTEM.md)**: every major skill collection on
+  GitHub, indexed with per-skill links for the official ones. 8,000+ skills
+  reachable through [`ecosystem.json`](ecosystem.json), one fetch away.
+
+The idea behind the library: a tested method beats improvisation. Hand an
+agent the way a strong engineer reviews code, and its review improves in one
+step. Hand a person a prompt built on what actually works, and the answer
+improves on the first try.
+
+- **[`skills/`](skills/)** are working methods an agent loads and follows:
+  reviewing code, debugging, writing a postmortem, designing an API. One
+  folder per skill, one `SKILL.md` inside, in the format Claude agents load
+  natively and every other tool can read.
+- **[`prompts/`](prompts/)** are complete prompts with named `{variables}`,
+  the model settings to run them, and one honest line on what each does well.
+  Build your own in the browser with the
+  [Prompt Studio](https://amey-thakur.github.io/AI-SKILLS/prompt-studio.html).
+  Where settings mention temperature: that is the model's freedom to
+  improvise, 0 exact and repeatable, 1 creative. No temperature control in
+  your tool? Skip it; the prompt works at the default.
+  In Claude Code every prompt installs as a slash command: `/summarize`,
+  `/tldr`, `/explain`, `/plan`, `/brainstorm`, `/critique`, `/improve`,
+  `/outline`, `/steps`, `/pros-cons`, plus `/goal`, `/autoresearch`, and
+  `/reflect` (the generated [`commands/`](commands/) folder). Cursor and
+  Antigravity read the same prompts as slash commands too;
+  [INSTALL.md](INSTALL.md) has the one-line copy step per tool.
+
+Each entry is plain markdown with a short header. That is the design, not a
+limitation: a method an agent can read is one you can read, edit, version, and
+carry to your next tool. No runtime, no framework, no format that expires when
+a product does.
+
+<br>
+
+## Quick start
+
+**Claude Code** adds the whole library from one command, organized as one
+installable plugin per category:
+
+```
+/plugin marketplace add Amey-Thakur/AI-SKILLS
+```
+
+**Any other tool** reads plain markdown. The one-liners:
+
+| Tool | One line |
+|---|---|
+| Claude Desktop, claude.ai | Upload a skill folder in Settings, Capabilities, Skills |
+| Codex, Gemini CLI, Cursor, Copilot, Windsurf, Antigravity, Zed, Aider | Reference a skill from your `AGENTS.md` |
+| Cline | `curl -s <raw>/skills/code-quality/code-review/SKILL.md > .clinerules/code-review.md` |
+| Any API | Fetch the raw file; the body is your system prompt |
+
+`<raw>` above is
+`https://raw.githubusercontent.com/Amey-Thakur/AI-SKILLS/main`. Full per-tool
+instructions, including scoped Cursor `.mdc` rules and Copilot instruction
+files, are in **[INSTALL.md](INSTALL.md)**.
+
+**For agents:** the whole catalog is machine-readable at
+[`index.json`](index.json) (each entry with a description and a raw URL),
+mirrored in [`llms.txt`](llms.txt), with usage rules in [`AGENTS.md`](AGENTS.md).
+Fetch the index, pick by description, pull only what the task needs.
+
+<br>
+
+## What's inside
+
+One row per category; every entry, with its one-line description, is in
+**[CATALOG.md](CATALOG.md)**.
+
+<!-- library:start -->
+| Category | Skills | For example |
+|---|---|---|
+| [accessibility](CATALOG.md#accessibility-8) | 8 | accessibility-review, accessible-forms, alt-text-writing |
+| [ai-coding-tools](CATALOG.md#ai-coding-tools-12) | 12 | agent-code-review, agent-context-setup, agent-cost-control |
+| [ai-memory-rag](CATALOG.md#ai-memory-rag-12) | 12 | chunking-strategies, citation-grounding, context-compression |
+| [api-integration](CATALOG.md#api-integration-12) | 12 | api-credential-rotation, data-mapping, integration-migration |
+| [apis](CATALOG.md#apis-9) | 9 | api-change-management, api-client-design, api-deprecation |
+| [architecture](CATALOG.md#architecture-13) | 13 | api-gateway-pattern, architecture-decision-records, architecture-diagrams |
+| [backend](CATALOG.md#backend-14) | 14 | api-error-responses, api-versioning, background-jobs |
+| [big-tech-processes](CATALOG.md#big-tech-processes-28) | 28 | architecture-review-board, bar-raiser-interviewing, canary-analysis |
+| [big-tech-roles](CATALOG.md#big-tech-roles-30) | 30 | accessibility-specialist-role, backend-engineer-role, cloud-architect-role |
+| [business-fundamentals](CATALOG.md#business-fundamentals-12) | 12 | business-model-design, capital-allocation, cash-flow-management |
+| [business-growth](CATALOG.md#business-growth-8) | 8 | churn-analysis, community-building, developer-marketing |
+| [career-communication](CATALOG.md#career-communication-10) | 10 | async-communication, conference-talks, engineering-resume |
+| [cloud](CATALOG.md#cloud-12) | 12 | autoscaling-policies, cloud-cost-optimization, cloud-disaster-recovery |
+| [code-quality](CATALOG.md#code-quality-38) | 38 | api-surface-minimalism, assertion-density, boolean-parameters |
+| [computer-engineering](CATALOG.md#computer-engineering-12) | 12 | algorithmic-complexity, binary-data-representation, compilers-and-toolchains |
+| [css-styling](CATALOG.md#css-styling-10) | 10 | css-animations, css-architecture, css-cascade |
+| [customer-support](CATALOG.md#customer-support-12) | 12 | community-support, customer-feedback-loop, difficult-customer-conversations |
+| [data-engineering](CATALOG.md#data-engineering-12) | 12 | batch-vs-streaming, change-data-capture, data-lineage |
+| [data-privacy](CATALOG.md#data-privacy-11) | 11 | consent-management, cookie-compliance, cross-border-transfers |
+| [data-science](CATALOG.md#data-science-18) | 18 | cohort-analysis, correlation-causation, data-cleaning |
+| [databases](CATALOG.md#databases-12) | 12 | backup-restore, database-migrations, database-normalization |
+| [debugging](CATALOG.md#debugging-32) | 32 | alerting-design, binary-search-debugging, browser-devtools |
+| [deep-learning](CATALOG.md#deep-learning-12) | 12 | attention-mechanism, backpropagation, batch-size-effects |
+| [deliverables](CATALOG.md#deliverables-12) | 12 | dashboard-building, documentation-site, form-design |
+| [devops](CATALOG.md#devops-14) | 14 | artifact-versioning, blue-green-deployments, capacity-planning |
+| [distributed-systems](CATALOG.md#distributed-systems-12) | 12 | backpressure, clock-skew, consensus-basics |
+| [documentation](CATALOG.md#documentation-10) | 10 | api-reference-docs, changelog-writing, code-documentation |
+| [email](CATALOG.md#email-8) | 8 | clear-emails, difficult-emails, email-etiquette |
+| [embedded-iot](CATALOG.md#embedded-iot-8) | 8 | embedded-debugging, embedded-memory-constraints, firmware-ota-updates |
+| [frontend](CATALOG.md#frontend-10) | 10 | design-systems, error-boundaries-ui, form-handling |
+| [game-development](CATALOG.md#game-development-8) | 8 | entity-component-system, game-asset-pipeline, game-input-handling |
+| [git-collaboration](CATALOG.md#git-collaboration-10) | 10 | branch-strategy, code-owners, commit-messages |
+| [github-platform](CATALOG.md#github-platform-12) | 12 | actions-security, branch-protection, dependency-scanning-setup |
+| [gpu-ai-infrastructure](CATALOG.md#gpu-ai-infrastructure-20) | 20 | ai-datacenter-networking, checkpointing-large-training, cuda-kernel-basics |
+| [i18n-localization](CATALOG.md#i18n-localization-12) | 12 | character-encoding, currency-localization, locale-aware-sorting |
+| [javascript-typescript](CATALOG.md#javascript-typescript-14) | 14 | js-async-patterns, js-error-handling, js-event-loop |
+| [jvm-dotnet](CATALOG.md#jvm-dotnet-10) | 10 | csharp-linq, dotnet-async, dotnet-dependency-injection |
+| [learning-and-teaching](CATALOG.md#learning-and-teaching-12) | 12 | chess-improvement, curriculum-sequencing, deliberate-practice |
+| [llm-engineering](CATALOG.md#llm-engineering-22) | 22 | agent-memory, agentic-loops, coding-agent-workflow |
+| [machine-learning](CATALOG.md#machine-learning-12) | 12 | cross-validation, drift-monitoring, experiment-tracking |
+| [marketing](CATALOG.md#marketing-12) | 12 | community-led-growth, competitive-messaging, content-marketing-strategy |
+| [mcp](CATALOG.md#mcp-12) | 12 | mcp-authentication, mcp-client-integration, mcp-context-budgeting |
+| [media-processing](CATALOG.md#media-processing-11) | 11 | audio-processing, document-parsing, format-selection |
+| [mobile](CATALOG.md#mobile-10) | 10 | app-store-readiness, deep-linking, mobile-input-ux |
+| [multi-agent-teams](CATALOG.md#multi-agent-teams-73) | 73 | agent-accountability-loop, agent-analytics-desk, agent-arch-board |
+| [networking](CATALOG.md#networking-4) | 4 | dns-fundamentals, load-balancing, tls-and-certificates |
+| [notifications-messaging](CATALOG.md#notifications-messaging-12) | 12 | delivery-tracking, digest-design, email-deliverability |
+| [open-source](CATALOG.md#open-source-12) | 12 | code-of-conduct-enforcement, contributor-onboarding, documentation-for-adoption |
+| [payments-billing](CATALOG.md#payments-billing-12) | 12 | failed-payment-recovery, invoicing-and-receipts, payment-idempotency |
+| [performance](CATALOG.md#performance-28) | 28 | algorithmic-optimization, async-io-patterns, batching-and-debouncing |
+| [platform-engineering](CATALOG.md#platform-engineering-12) | 12 | build-system-design, developer-productivity-metrics, environment-provisioning |
+| [product-management](CATALOG.md#product-management-10) | 10 | ab-test-design, customer-interviews, feature-sunsetting |
+| [project-management](CATALOG.md#project-management-11) | 11 | cross-team-coordination, milestone-planning, project-closure |
+| [prompt-writing](CATALOG.md#prompt-writing-12) | 12 | chain-of-thought-prompting, context-placement, few-shot-examples |
+| [python](CATALOG.md#python-14) | 14 | pytest-mastery, python-asyncio, python-cli-tools |
+| [realtime-collaboration](CATALOG.md#realtime-collaboration-12) | 12 | collaborative-editing-models, comments-and-annotations, conflict-resolution-ux |
+| [reliability](CATALOG.md#reliability-12) | 12 | capacity-forecasting, chaos-engineering, disaster-recovery-testing |
+| [research](CATALOG.md#research-15) | 15 | autonomous-research, decision-journals, deep-research |
+| [scripting-automation](CATALOG.md#scripting-automation-10) | 10 | automation-guardrails, bash-robustness, cli-ux-design |
+| [search-relevance](CATALOG.md#search-relevance-12) | 12 | autocomplete-design, faceted-search, full-text-search-design |
+| [security](CATALOG.md#security-44) | 44 | api-security, audit-logging, authn-design |
+| [spreadsheets](CATALOG.md#spreadsheets-12) | 12 | conditional-formatting, data-validation-rules, excel-formulas |
+| [sql](CATALOG.md#sql-12) | 12 | common-table-expressions, deduplication-queries, null-semantics |
+| [systems-languages](CATALOG.md#systems-languages-10) | 10 | c-memory-safety, cpp-raii, ffi-boundaries |
+| [testing](CATALOG.md#testing-41) | 41 | api-testing, approval-testing, assertion-libraries |
+| [ui-ux](CATALOG.md#ui-ux-10) | 10 | empty-and-error-states, information-architecture, interaction-design |
+| [writing](CATALOG.md#writing-10) | 10 | audience-adaptation, clear-writing, concise-writing |
+| [prompts](CATALOG.md#prompts-250) | 250 | ab-test-plan, ad-copy, add-code-comments |
+<!-- library:end -->
+
+<br>
+
+## Principles
+
+1. **Portable.** Plain markdown + minimal YAML. If a tool dies, the content
+   survives.
+2. **Honest.** Each entry says what it is for and where it does not apply.
+   Nothing here claims to replace judgment.
+3. **Complete.** An entry ships when it is usable end to end, not before.
+4. **Small.** One method per skill, one job per prompt. Composition beats
+   bloat.
+
+<br>
+
+## FAQ
+
+**Why not just prompt harder?** "Review this well" leaves the agent to guess
+what good means. A skill hands it the priorities, the verification steps, and
+the reporting format a strong engineer would use. The output changes on the
+next run.
+
+**Does this work with my tool?** If the tool reads a markdown file, yes. The
+per-tool steps in [INSTALL.md](INSTALL.md) are conveniences, not requirements.
+
+**How is this different from a curated list?** It is both halves. The library
+is the things themselves: every entry here, complete, in one format. The
+[ecosystem index](ECOSYSTEM.md) is the list: every major collection elsewhere,
+linked and machine-readable. One fetch covers both.
+
+**Can I use these commercially?** Yes, under MIT. Attribution is appreciated
+and never required.
+
+<br>
+
+## Contributing
+
+New skills and prompts are welcome when they clear the bar in
+[CONTRIBUTING.md](CONTRIBUTING.md): complete, self-contained, honest,
+distinct, portable. By taking part you agree to the
+[Code of Conduct](CODE_OF_CONDUCT.md). Found something that could cause harm?
+Follow the [security policy](SECURITY.md), not a public issue.
+
+## License and author
+
+Released under the [MIT License](LICENSE). Use these skills and prompts
+commercially or privately; attribution is appreciated and never required.
+
+Built by [Amey Thakur](https://github.com/Amey-Thakur), who also builds
+[NotebookLab](https://github.com/Amey-Thakur/NotebookLab), the offline-first AI
+knowledge workspace these methods grew out of.

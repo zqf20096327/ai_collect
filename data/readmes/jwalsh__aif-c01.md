@@ -1,0 +1,1525 @@
+#+TITLE: AWS Certified AI Practitioner (AIF-C01) Exam Preparation
+#+AUTHOR: Jason Walsh
+#+EMAIL: j@wal.sh
+#+PROPERTY: AIF_C01_BUCKET aif-c01-jwalsh
+
+* Introduction
+
+This project provides comprehensive study materials, code examples, and a robust development environment for preparing for the AWS Certified AI Practitioner (AIF-C01) exam, announced in [[https://aws.amazon.com/blogs/training-and-certification/august-2024-new-offerings/][August 2024]]. While the primary focus is on the AIF-C01 exam, the project also lays groundwork for the AWS Certified Machine Learning Engineer – Associate (MLA-C01) certification.
+
+Key features of this project:
+- Structured learning paths covering all AIF-C01 exam domains
+- Secondary information supporting MLA-C01 / ME1-C01 
+- Hands-on code examples using AWS AI/ML services
+- Local development environment with LocalStack for AWS service simulation
+- Integration of Python and Clojure for a comprehensive learning experience
+- Emphasis on best practices in AI/ML development and responsible AI
+
+Whether you're an executive looking to understand AI/ML capabilities in AWS or a practitioner aiming for certification, this project provides the resources you need to succeed.
+
+[[file:resources/test-image-640x.png]]
+
+* Project Workflow
+** Development Flow
+#+begin_src mermaid :file workflow-core.png
+graph TD
+    A[Start] --> B[direnv allow]
+    B --> C[nix-shell]
+    C --> D{Development Path}
+    D -->|Python| E[poetry shell]
+    D -->|Clojure| F[lein repl/clj]
+    D -->|Emacs| G[emacs]
+    E --> H[Development]
+    F --> H
+    G --> H
+    H --> I[End]
+#+end_src
+
+*** Core Steps
+**** Environment Setup
+- Enable direnv
+- Enter nix-shell
+- Choose development path
+
+**** Development Paths
+- Python Development
+  - Poetry Shell
+  - AI/ML Libraries
+  - AWS Integration
+- Clojure Development
+  - REPL Session
+  - AWS Integration
+  - Emacs + CIDER
+
+** Architecture
+#+begin_src mermaid :file architecture-core.png
+graph TD
+    A[System] --> B[Nix Shell]
+    B --> C[direnv]
+    B --> D[Core Tools]
+    
+    D --> E[Python Stack]
+    E --> E1[poetry]
+    E --> E2[AI/ML libs]
+    
+    D --> F[Clojure Stack]
+    F --> F1[leiningen]
+    F --> F2[REPL]
+    
+    D --> G[AWS Tools]
+    G --> G1[aws-cli]
+    G --> G2[localstack]
+    
+    C --> I[Environments]
+    I --> I1[local]
+    I --> I2[aws]
+#+end_src
+
+*** Core Components
+**** Development Tools
+***** Python Environment
+- Poetry for dependencies
+- Virtual environment
+- AI/ML libraries
+
+***** Clojure Environment
+- Leiningen
+- REPL-driven development
+- Core libraries
+
+**** AWS Integration
+***** Local Development
+#+begin_src shell
+# Start LocalStack services
+localstack start
+#+end_src
+
+***** Cloud Development
+#+begin_src shell
+# Test AWS access
+aws sts get-caller-identity
+#+end_src
+* Setup
+
+1. Clone this repository
+2. Run the setup script:
+
+#+BEGIN_SRC shell
+make setup
+#+END_SRC
+
+3. Install project dependencies:
+
+#+BEGIN_SRC shell
+make deps
+#+END_SRC
+
+4. Initialize the project:
+
+#+BEGIN_SRC shell
+make init
+#+END_SRC
+
+5. Choose your profile:
+
+   For LocalStack:
+#+BEGIN_SRC shell
+make switch-profile-lcl
+make localstack-up
+#+END_SRC
+
+   For AWS Dev:
+#+BEGIN_SRC shell
+make switch-profile-dev
+#+END_SRC
+
+* Usage
+
+To start exploring the concepts:
+
+1. Start the REPL:
+
+#+BEGIN_SRC shell
+make run
+#+END_SRC
+
+2. In the REPL, you can require and use the namespaces for each domain:
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d0-setup.environment :as d0])
+(d0/check-environment)
+#+END_SRC
+
+* Example Usage for Each Domain
+
+
+** Domain 0: Environment Setup and Connection Checks
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d0-setup.environment :as d0])
+(d0/check-aws-credentials)
+#+END_SRC
+
+** Domain 1: Fundamentals of AI and ML
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d1-fundamentals.basics :as d1])
+(d1/explain-ai-term :ml)
+(d1/list-ml-types)
+#+END_SRC
+
+** Domain 2: Fundamentals of Generative AI
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d2-generative-ai.concepts :as d2])
+(d2/explain-gen-ai-concept :prompt-engineering)
+(d2/list-gen-ai-use-cases)
+#+END_SRC
+
+** Domain 3: Applications of Foundation Models
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d3-foundation-models.applications :as d3])
+(d3/describe-rag)
+(d3/list-model-selection-criteria)
+#+END_SRC
+
+** Domain 4: Guidelines for Responsible AI
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d4-responsible-ai.practices :as d4])
+(d4/list-responsible-ai-features)
+(d4/describe-bias-effects)
+#+END_SRC
+
+** Domain 5: Security, Compliance, and Governance for AI Solutions
+
+#+BEGIN_SRC clojure :results output
+(require '[aif-c01.d5-security-compliance.governance :as d5])
+(d5/list-aws-security-services)
+(d5/describe-data-governance-strategies)
+#+END_SRC
+
+* Development
+:PROPERTIES:
+:CUSTOM_ID: development-commands
+:END:
+
+This project uses a Makefile to manage common development tasks. To see all available commands and their descriptions, run:
+
+#+BEGIN_SRC shell
+make help
+#+END_SRC
+
+This will display a list of commands with inline descriptions, making it easy to understand and use the project's development workflow.
+
+** LocalStack Usage
+:PROPERTIES:
+:CUSTOM_ID: localstack-usage
+:END:
+
+This project supports LocalStack for local development and testing. To use LocalStack:
+
+1. Ensure Docker is installed and running on your system.
+2. Switch to the LocalStack profile: =make switch-profile-lcl=
+3. Start LocalStack: =make localstack-up=
+4. Run the REPL: =make run=
+5. When finished, stop LocalStack: =make localstack-down=
+
+** Python Integration
+:PROPERTIES:
+:CUSTOM_ID: python-integration
+:END:
+
+This project uses Poetry for Python dependency management. The AWS CLI and other Python dependencies are installed within the project's virtual environment. To use Python or the AWS CLI:
+
+1. Activate the Poetry shell: =poetry shell=
+2. Run Python scripts or AWS CLI commands as needed
+
+Example of using boto3 to interact with AWS services:
+
+#+BEGIN_SRC python :results output
+import boto3
+
+def list_s3_buckets():
+    s3 = boto3.client('s3')
+    response = s3.list_buckets()
+    return [bucket['Name'] for bucket in response['Buckets']]
+
+print(list_s3_buckets())
+#+END_SRC
+
+** Troubleshooting
+:PROPERTIES:
+:CUSTOM_ID: troubleshooting
+:END:
+
+If you encounter issues:
+
+1. Ensure your AWS credentials are correctly set up in =~/.aws/credentials= or environment variables.
+2. For LocalStack issues, check that Docker is running and ports are not conflicting.
+3. If REPL startup fails, try running =make deps= to ensure all dependencies are fetched.
+4. For Python-related issues, ensure you're in the Poetry shell (=poetry shell=) before running commands.
+
+* AWS Services Covered
+
+This project includes examples and study materials for the following AWS services relevant to the AIF-C01 exam.
+
+Each service is explored in the context of AI/ML workflows and best practices.
+
+** Amazon S3 (static)
+Create a bucket and upload a file:
+
+#+BEGIN_SRC shell
+aws s3 mb s3://aif-c01
+aws s3 cp resources/test-image.png s3://aif-c01
+#+END_SRC
+
+List contents of the bucket:
+
+#+BEGIN_SRC shell
+aws s3 ls s3://aif-c01
+#+END_SRC
+
+#+RESULTS:
+| 2024-09-04 | 09:01:29 |   18539 | 1f948c3f-b232-45bb-b78f-c5050ec94155.mp3 |
+| 2024-09-04 | 09:06:39 |   18539 | test-audio.mp3                           |
+| 2024-09-04 | 08:57:32 | 1870744 | test-image.png                           |
+
+For more S3 examples, refer to the [[file:/opt/homebrew/share/awscli/examples/s3/][S3 AWS CLI Examples]].
+
+** Amazon S3 (dynamic)
+
+#+NAME: aif-c01-bucket
+#+BEGIN_SRC elisp :results value
+(format "aif-c01-%s" (downcase (or (getenv "USER") (user-login-name))))
+#+END_SRC
+
+#+RESULTS: aif-c01-bucket
+: aif-c01-jasonwalsh
+
+Create a bucket and enable versioning:
+
+#+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
+aws s3 mb s3://$BUCKET
+aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Status=Enabled
+#+END_SRC
+
+#+RESULTS:
+: make_bucket: aif-c01-jasonwalsh
+
+Upload PDF files to the papers/ prefix:
+
+#+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
+aws s3 sync resources/papers s3://$BUCKET/papers/ --exclude "*" --include "*.pdf"
+#+END_SRC
+
+#+RESULTS:
+
+List contents of the papers/ prefix:
+
+#+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
+aws s3 ls s3://$BUCKET/papers/
+#+END_SRC
+
+#+RESULTS:
+|        PRE | resources/ |         |                           |
+| 2024-09-04 |   19:28:18 | 2215244 | 1706.03762.pdf            |
+| 2024-09-04 |   19:28:18 | 1834683 | 2303.18223-LLM-survey.pdf |
+| 2024-09-04 |   19:28:18 |  734098 | 2310.04562.pdf            |
+| 2024-09-04 |   19:28:18 |  552884 | 2310.07064.pdf            |
+
+Upload a new version of a file and list versions:
+
+#+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
+# Create a markdown file with the content
+cat << EOF > example.md
+# Example Document
+
+This is a new version of the document with updated content.
+
+## Details
+- Filename: 2310.07064.pdf
+- Bucket: $BUCKET
+- Path: papers/2310.07064.pdf
+
+## Content
+New content
+EOF
+
+# Convert markdown to PDF
+pandoc example.md -o 2310.07064.pdf
+
+# Upload the PDF to S3
+aws s3 cp 2310.07064.pdf s3://$BUCKET/papers/
+
+#+END_SRC
+
+#+RESULTS:
+: Completed 53.9 KiB/53.9 KiB (81.3 KiB/s) with 1 file(s) remainingupload: ./2310.07064.pdf to s3://aif-c01-jasonwalsh/papers/2310.07064.pdf
+
+#+BEGIN_SRC shell :var BUCKET=aif-c01-bucket
+  aws s3api list-object-versions \
+      --bucket "$BUCKET" \
+      --prefix "papers/" \
+      --query 'Versions[*].[Key, VersionId, LastModified, Size, ETag, StorageClass, IsLatest]' \
+      --output json | jq -r '.[] | @tsv'
+
+#+END_SRC
+
+#+RESULTS:
+| papers/1706.03762.pdf                             | sgcRB7K2ikXnWS99TGBZaQuqhI7fDAI_ | 2024-09-04T23:28:18+00:00 | 2215244 | 17e362e7e5ba6ffb6248c4a2e923e63e | STANDARD | true  |
+| papers/2303.18223-LLM-survey.pdf                  | VrKZby_scHQQ9N6ktNAEfvDKT4OkE8hp | 2024-09-04T23:28:18+00:00 | 1834683 | 35b9d129038f08c331eea9299aadd382 | STANDARD | true  |
+| papers/2310.04562.pdf                             | ECAOSCbn88qHKptvz0OLkbpMr8rcxOEn | 2024-09-04T23:28:18+00:00 |  734098 | f2e2f551636e6b805d25f9928b056135 | STANDARD | true  |
+| papers/2310.07064.pdf                             | xhTn96WWUZfiAwzUksu3ndTAjHKmYXu_ | 2024-09-04T23:39:33+00:00 |   55194 | a6c4669a4478b600960d3fd44f3be5a1 | STANDARD | true  |
+| papers/2310.07064.pdf                             | bJ3N8GQoB9NB9oMTFqYoKD.K_eSQ4_I1 | 2024-09-04T23:32:48+00:00 |      12 | b0a88747e0fb531bc80d8f108d9412a0 | STANDARD | false |
+| papers/2310.07064.pdf                             | PxEPB7TjtHmzp2hYpTpmt7hcv2yK7BG0 | 2024-09-04T23:28:18+00:00 |  552884 | 86d5eaf379cf4efd39d33ac3adaa3828 | STANDARD | false |
+| papers/2310.07064.pdf                             | null                             | 2024-09-04T23:25:17+00:00 |      12 | b0a88747e0fb531bc80d8f108d9412a0 | STANDARD | false |
+| papers/resources/papers/1706.03762.pdf            | null                             | 2024-09-04T23:25:14+00:00 | 2215244 | 17e362e7e5ba6ffb6248c4a2e923e63e | STANDARD | true  |
+| papers/resources/papers/2303.18223-LLM-survey.pdf | null                             | 2024-09-04T23:25:14+00:00 | 1834683 | 35b9d129038f08c331eea9299aadd382 | STANDARD | true  |
+| papers/resources/papers/2310.04562.pdf            | null                             | 2024-09-04T23:25:14+00:00 |  734098 | f2e2f551636e6b805d25f9928b056135 | STANDARD | true  |
+| papers/resources/papers/2310.07064.pdf            | null                             | 2024-09-04T23:25:14+00:00 |  552884 | 86d5eaf379cf4efd39d33ac3adaa3828 | STANDARD | true  |
+
+** Amazon Bedrock
+*** Getting Started
+**** Overview
+- Amazon Bedrock is a fully managed service that provides access to foundation models (FMs) from leading AI companies.
+- It offers a single API to work with various FMs for different use cases.
+
+**** Examples
+To list available foundation models:
+#+BEGIN_SRC shell
+aws bedrock list-foundation-models | jq -r '.modelSummaries[]|.modelId' | head
+#+END_SRC
+
+**** Providers
+- Amazon
+- AI21 Labs
+- Anthropic
+- Cohere
+- Meta
+- Stability AI
+
+*** Foundation Models
+**** Base Models
+To describe a specific base model:
+#+BEGIN_SRC shell
+aws bedrock get-foundation-model --model-id anthropic.claude-v2
+#+END_SRC
+
+#+RESULTS:
+
+**** Custom Models
+Custom models are not directly supported in Bedrock. Users typically fine-tune base models for specific use cases.
+
+**** Imported Models
+Bedrock doesn't support direct model importing. It focuses on providing access to pre-trained models from various providers.
+
+*** Playgrounds
+**** Chat
+Bedrock provides a chat interface for interactive model testing, but this is primarily accessed through the AWS Console.
+
+**** Text
+For text generation using CLI:
+#+BEGIN_SRC shell
+aws bedrock invoke-model --model-id anthropic.claude-v2 --body '{"prompt": "Tell me a joke", "max_tokens_to_sample": 100}'
+#+END_SRC
+
+**** Image
+For image generation (example with Stable Diffusion):
+#+BEGIN_SRC shell
+aws bedrock invoke-model --model-id stability.stable-diffusion-xl-v0 --body '{"text_prompts":[{"text":"A serene landscape with mountains and a lake"}]}'
+#+END_SRC
+
+*** Builder Tools
+**** Prompt Management
+Prompt management is typically done through the AWS Console. CLI operations for this feature are limited.
+
+*** Safeguards
+**** Guardrails
+Guardrails are configured in the AWS Console. They help ensure responsible AI use.
+
+**** Watermark Detection
+Watermark detection helps identify AI-generated content. This feature is accessed through the AWS Console.
+
+*** Inference
+**** Provisioned Throughput
+To create a provisioned throughput configuration:
+#+BEGIN_SRC shell
+aws bedrock create-provisioned-model-throughput --model-id anthropic.claude-v2 --throughput-capacity 1
+#+END_SRC
+
+**** Batch Inference
+Batch inference jobs can be created using the AWS SDK or through integrations with services like AWS Batch.
+
+*** Assessment
+**** Model Evaluation
+Model evaluation is typically performed using custom scripts or through the AWS Console. There are no direct CLI commands for this in Bedrock.
+
+*** Bedrock Configurations
+**** Model Access
+To request access to a model:
+#+BEGIN_SRC shell
+aws bedrock create-model-access --model-id anthropic.claude-v2
+#+END_SRC
+
+**** Settings
+Bedrock settings are primarily managed through the AWS Console. CLI operations for general settings are limited.
+
+**** Note
+Some features like Bedrock Studio, Knowledge bases, Agents, Prompt flows, and Cross-region inference are marked as Preview or New. These features may have limited CLI support and are best accessed through the AWS Console.
+
+** Amazon Q Business
+List applications:
+
+#+BEGIN_SRC shell
+aws qbusiness list-applications | jq .applications
+#+END_SRC
+
+#+RESULTS:
+: []
+
+** Amazon Comprehend
+Detect sentiment in text:
+
+#+BEGIN_SRC shell
+aws comprehend detect-sentiment --text "I love using AWS services" --language-code en | jq -r .Sentiment
+#+END_SRC
+
+For more Comprehend examples, see the [[file:/opt/homebrew/share/awscli/examples/comprehend/][Comprehend AWS CLI Examples]].
+
+** Amazon Translate
+Translate text:
+
+#+BEGIN_SRC shell
+aws translate translate-text --text "Hello, world" --source-language-code en --target-language-code es | jq -r '.TranslatedText'
+#+END_SRC
+
+For more Translate examples, check the [[file:/opt/homebrew/share/awscli/examples/translate/][Translate AWS CLI Examples]].
+
+** Amazon Transcribe
+List transcription jobs:
+
+#+BEGIN_SRC shell
+aws transcribe list-transcription-jobs | jq -r '.TranscriptionJobSummaries[]|.TranscriptionJobName'
+#+END_SRC
+
+#+RESULTS:
+| AIFC03TranscriptionJob8221 |
+| AIFC03TranscriptionJob     |
+
+Start a new transcription job:
+
+#+BEGIN_SRC shell
+aws transcribe start-transcription-job --transcription-job-name "AIFC03TranscriptionJob$((RANDOM % 9000 + 1000))" --language-code en-US --media-format mp3 --media '{"MediaFileUri": "s3://aif-c01/test-audio.mp3"}' | jq
+#+END_SRC
+
+For more Transcribe examples, refer to the [[file:/opt/homebrew/share/awscli/examples/transcribe/][Transcribe AWS CLI Examples]].
+
+** Amazon Polly
+Start a speech synthesis task:
+
+#+BEGIN_SRC shell
+aws polly start-speech-synthesis-task --output-format mp3 --output-s3-bucket-name aif-c01 --text "Hello, welcome to AWS AI services" --voice-id Joanna
+#+END_SRC
+
+List speech synthesis tasks and check the output in S3:
+
+#+BEGIN_SRC shell
+aws polly list-speech-synthesis-tasks | jq .SynthesisTasks
+#+END_SRC
+
+For more Polly examples, see the [[file:/opt/homebrew/share/awscli/examples/polly/][Polly AWS CLI Examples]].
+
+** Amazon Rekognition
+Detect labels in an image:
+
+#+BEGIN_SRC shell
+aws rekognition detect-labels \
+    --image '{"S3Object":{"Bucket":"aif-c01","Name":"test-image.png"}}' \
+    --max-labels 10 \
+    --region us-east-1 \
+    --output json | jq -r '.Labels[]|.Name'
+#+END_SRC
+
+#+BEGIN_SRC shell
+aws rekognition create-collection --collection-id mla-collection-01 | jq -r 'keys[]'
+#+END_SRC
+
+#+RESULTS:
+| CollectionArn    |
+| FaceModelVersion |
+| StatusCode       |
+
+
+For more Rekognition examples, check the [[file:/opt/homebrew/share/awscli/examples/rekognition/][Rekognition AWS CLI Examples]].
+
+** Amazon Kendra
+List Kendra indices:
+
+#+BEGIN_SRC shell
+aws kendra list-indices | jq .IndexConfigurationSummaryItems
+#+END_SRC
+
+For more Kendra examples, see the [[file:/opt/homebrew/share/awscli/examples/kendra/][Kendra AWS CLI Examples]].
+
+** Amazon SageMaker
+*** List Resources
+**** List notebook instances
+#+BEGIN_SRC shell
+aws sagemaker list-notebook-instances | jq -r '.NotebookInstances[] | select(.NotebookInstanceName | test("aif|mla|iacs")) | .NotebookInstanceName'
+#+END_SRC
+
+#+RESULTS:
+: iacs-jwalsh
+
+**** List training jobs
+#+BEGIN_SRC shell
+  aws sagemaker list-training-jobs | jq -r '.TrainingJobSummaries[] | .TrainingJobName'
+#+END_SRC
+
+#+RESULTS:
+| DEMO-imageclassification-2019-04-25-12-15-01 |
+| DEMO-imageclassification-2019-04-24-20-15-24 |
+
+**** List models
+#+BEGIN_SRC shell
+  aws sagemaker list-models | jq -r '.Models[]'
+#+END_SRC
+
+**** List endpoints
+#+BEGIN_SRC shell
+  aws sagemaker list-endpoints | jq -r '.Endpoints'
+#+END_SRC
+
+#+RESULTS:
+: []
+
+**** List SageMaker pipelines
+#+BEGIN_SRC shell
+aws sagemaker list-pipelines | jq .PipelineSummaries
+#+END_SRC
+
+*** Create and Manage Resources
+**** Create required roles
+#+BEGIN_SRC json :tangle trust-policy-sagemaker.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sagemaker.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+#+END_SRC
+
+**** Create IAM role and attach policy
+#+BEGIN_SRC shell
+aws iam create-role --role-name mla-sagemaker-role --assume-role-policy-document file://trust-policy-sagemaker.json
+aws iam attach-role-policy --role-name mla-sagemaker-role --policy-arn arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+#+END_SRC
+
+**** Create a model
+#+BEGIN_SRC shell
+aws sagemaker create-model --model-name <model-name> --primary-container file://container-config.json --execution-role-arn <role-arn>
+#+END_SRC
+
+**** Create an endpoint configuration
+#+BEGIN_SRC shell
+aws sagemaker create-endpoint-config --endpoint-config-name <config-name> --production-variants file://production-variant.json
+#+END_SRC
+
+**** Create an endpoint
+#+BEGIN_SRC shell
+aws sagemaker create-endpoint --endpoint-name <endpoint-name> --endpoint-config-name <config-name>
+#+END_SRC
+
+*** Describe and Monitor
+**** Describe a specific endpoint
+#+BEGIN_SRC shell
+  aws sagemaker describe-endpoint --endpoint-name <endpoint-name>
+#+END_SRC
+
+**** Describe training job (includes logs)
+#+BEGIN_SRC shell
+  aws sagemaker describe-training-job --training-job-name <job-name>
+#+END_SRC
+
+**** Get CloudWatch logs for a training job
+#+BEGIN_SRC shell
+  aws logs get-log-events --log-group-name /aws/sagemaker/TrainingJobs --log-stream-name <training-job-name>/algo-1-<timestamp>
+#+END_SRC
+
+*** Batch Transform
+**** Create a batch transform job
+#+BEGIN_SRC shell
+aws sagemaker create-transform-job --transform-job-name <job-name> --model-name <model-name> --transform-input file://transform-input.json --transform-output file://transform-output.json --transform-resources file://transform-resources.json
+#+END_SRC
+
+**** Check batch transform job status
+#+BEGIN_SRC shell
+aws sagemaker describe-transform-job --transform-job-name <job-name>
+#+END_SRC
+
+*** Hyperparameter Tuning
+**** Create a hyperparameter tuning job
+#+BEGIN_SRC shell
+aws sagemaker create-hyper-parameter-tuning-job --hyper-parameter-tuning-job-name <job-name> --hyper-parameter-tuning-job-config file://tuning-job-config.json --training-job-definition file://training-job-definition.json
+#+END_SRC
+
+**** List hyperparameter tuning jobs
+#+BEGIN_SRC shell
+aws sagemaker list-hyper-parameter-tuning-jobs
+#+END_SRC
+
+*** SageMaker Pipeline
+**** Create a pipeline
+#+BEGIN_SRC shell
+aws sagemaker create-pipeline --pipeline-name <pipeline-name> --pipeline-definition file://pipeline-definition.json --role-arn <role-arn>
+#+END_SRC
+
+**** List pipeline executions
+#+BEGIN_SRC shell
+aws sagemaker list-pipeline-executions --pipeline-name <pipeline-name>
+#+END_SRC
+
+*** Cleanup
+**** Delete an endpoint
+#+BEGIN_SRC shell
+aws sagemaker delete-endpoint --endpoint-name <endpoint-name>
+#+END_SRC
+
+*** Additional Resources
+For more SageMaker examples, refer to the [[file:/opt/homebrew/share/awscli/examples/sagemaker/][SageMaker AWS CLI Examples]].
+
+#+BEGIN_COMMENT
+Remember to replace placeholders (e.g., <endpoint-name>, <role-arn>) with actual values and create the necessary JSON configuration files (e.g., container-config.json, production-variant.json) before running these commands.
+#+END_COMMENT
+
+** AWS Lambda
+List Lambda functions:
+
+#+BEGIN_SRC shell
+aws lambda list-functions | jq -r '.Functions[]|.FunctionName'
+#+END_SRC
+
+List Lambda functions with certification prefixes in the name: 
+
+#+BEGIN_SRC shell
+aws lambda list-functions | jq '.Functions[] | select(.FunctionName | test("mla|aif"))'
+#+END_SRC
+
+#+RESULTS:
+
+For more Lambda examples, check the [[file:/opt/homebrew/share/awscli/examples/lambda/][Lambda AWS CLI Examples]].
+
+** Amazon CloudWatch
+List metrics for SageMaker:
+
+#+BEGIN_SRC shell
+aws cloudwatch list-metrics --namespace "AWS/SageMaker" | jq .Metrics
+#+END_SRC
+
+#+RESULTS:
+: []
+
+For more CloudWatch examples, see the [[file:/opt/homebrew/share/awscli/examples/cloudwatch/][CloudWatch AWS CLI Examples]].
+
+** Amazon Kinesis
+List Kinesis streams:
+
+#+BEGIN_SRC shell
+aws kinesis list-streams | jq .StreamNames
+#+END_SRC
+
+#+RESULTS:
+: []
+
+For more Kinesis examples, refer to the [[file:/opt/homebrew/share/awscli/examples/kinesis/][Kinesis AWS CLI Examples]].
+
+** AWS Glue
+List Glue databases:
+
+#+BEGIN_SRC shell
+aws glue get-databases | jq .DatabaseList
+#+END_SRC
+
+#+RESULTS:
+: []
+
+Create required roles:
+
+#+begin_src json :tangle trust-policy-glue.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "glue.amazonaws.com" 
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+#+end_src
+
+#+begin_src shell
+cat trust-policy-glue.json | jq -r 'keys[]'
+#+end_src
+
+#+RESULTS:
+| Statement |
+| Version   |
+
+# Create IAM role and attach:
+
+#+begin_src shell
+aws iam create-role --role-name AWSGlueServiceRole --assume-role-policy-document file://trust-policy-glue.json | jq -r 'keys[]'
+#+end_src
+
+#+RESULTS:
+: Role
+
+#+begin_src shell
+aws iam attach-role-policy --role-name AWSGlueServiceRole --policy-arn arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole | jq -r 'keys[]'
+#+end_src
+
+#+begin_src shell :results output :exports none
+aws iam get-role --role-name AWSGlueServiceRole | jq -r '.Role.Arn' | tee /tmp/role_arn_glue.txt
+#+end_src
+
+#+RESULTS:
+: arn:aws:iam::123456789012:role/AWSGlueServiceRole
+
+
+#+begin_src emacs-lisp 
+(setq role_arn (org-babel-eval "sh" "cat /tmp/role_arn_glue.txt"))
+(message "role_arn value: %s" role_arn)
+#+end_src
+
+#+RESULTS:
+: role_arn value: arn:aws:iam::123456789012:role/AWSGlueServiceRole
+
+#+begin_src shell
+echo "$role_arn" 
+#+end_src
+
+#+RESULTS:
+
+#+begin_src python :tangle glue-script.py
+#+begin_src python :tangle glue-script.py
+from awsglue.context import GlueContext
+from awsglue.job import Job
+
+## @params: [JOB_NAME]
+args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+## @type: DataSource
+## @args: [database = "default", table_name = "legislators", transformation_ctx = "datasource0"]
+## @return: datasource0
+## @inputs: []
+datasource0 = glueContext.create_dynamic_frame.from_catalog(database = "default", table_name = "legislators", transformation_ctx = "datasource0")
+
+## @type: ApplyMapping
+## @args: [mapping = [("leg_id", "long", "leg_id", "long"), ("full_name", "string", "full_name", "string"), ("first_name", "string", "first_name", "string"), ("last_name", "string", "last_name", "string"), ("gender", "string", "gender", "string"), ("type", "string", "type", "string"), ("state", "string", "state", "string"), ("party", "string", "party", "string")], transformation_ctx = "applymapping1"]
+## @return: applymapping1
+## @inputs: [frame = datasource0]
+applymapping1 = ApplyMapping.apply(frame = datasource0, mappings = [("leg_id", "long", "leg_id", "long"), ("full_name", "string", "full_name", "string"), ("first_name", "string", "first_name", "string"), ("last_name", "string", "last_name", "string"), ("gender", "string", "gender", "string"), ("type", "string", "type", "string"), ("state", "string", "state", "string"), ("party", "string", "party", "string")], transformation_ctx = "applymapping1")
+
+## @type: DataSink
+## @args: [connection_type = "s3", connection_options = {"path": "s3://aif-c01-jasonwalsh/legislators_data"}, format = "parquet", transformation_ctx = "datasink2"]
+## @return: datasink2
+## @inputs: [frame = applymapping1]
+datasink2 = glueContext.write_dynamic_frame.from_options(frame = applymapping1, connection_type = "s3", connection_options = {"path": "s3://aif-c01-jasonwalsh/legislators_data"}, format = "parquet", transformation_ctx = "datasink2")
+
+job.commit()
+#+end_src  
+#+end_src
+
+#+begin_src shell
+  aws s3 cp glue-script.py s3://aif-c01-jasonwalsh/scripts/glue-script.py
+#+end_src
+
+#+RESULTS:
+: Completed 2.0 KiB/2.0 KiB (2.5 KiB/s) with 1 file(s) remainingupload: ./glue-script.py to s3://aif-c01-jasonwalsh/scripts/glue-script.py
+
+# AWS Glue Job creation
+
+#+begin_src shell
+  aws glue create-job \
+    --name mla-job \
+    --role arn:aws:iam::123456789012:role/AWSGlueServiceRole \
+    --command Name=glueetl,ScriptLocation=s3://aif-c01-jasonwalsh/scripts/glue-script.py \
+    --output text
+#+END_SRC
+
+#+RESULTS:
+: mla-job
+
+For more Glue examples, check the [[file:/opt/homebrew/share/awscli/examples/glue/][Glue AWS CLI Examples]].
+
+** Amazon DynamoDB
+List DynamoDB tables:
+
+#+BEGIN_SRC shell
+  aws dynamodb list-tables | jq -r '.TableNames[] | select(. | test("mla|aif"))'
+#+END_SRC
+
+#+RESULTS:
+| mla-test    |
+| mla-test-01 |
+
+#+BEGIN_SRC shell
+aws dynamodb create-table --table-name mla-test-01 --attribute-definitions AttributeName=Id,AttributeType=S --key-schema AttributeName=Id,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 | jq -r 'keys[]'
+#+END_SRC
+
+#+RESULTS:
+: TableDescription
+
+
+For more DynamoDB examples, see the [[file:/opt/homebrew/share/awscli/examples/dynamodb/][DynamoDB AWS CLI Examples]].
+
+** Amazon Forecast
+List Forecast datasets:
+
+#+BEGIN_SRC shell
+  aws forecast list-datasets | jq .Datasets
+#+END_SRC
+
+#+RESULTS:
+: []
+
+** Amazon Lex
+List Lex bots:
+
+#+BEGIN_SRC shell
+  aws lexv2-models list-bots | jq .botSummaries
+#+END_SRC
+
+#+RESULTS:
+: []
+
+** Amazon Personalize
+List Personalize datasets:
+
+#+BEGIN_SRC shell
+  aws personalize list-datasets | jq .datasets
+#+END_SRC
+
+#+RESULTS:
+: []
+
+** Amazon Textract
+Analyze a document (replace `YOUR_BUCKET_NAME` and `YOUR_DOCUMENT_NAME` with actual values):
+
+#+BEGIN_SRC shell
+aws textract analyze-document --document '{"S3Object":{"Bucket":"YOUR_BUCKET_NAME","Name":"YOUR_DOCUMENT_NAME"}}' --feature-types "TABLES" "FORMS"
+#+END_SRC
+
+** Amazon Comprehend Medical
+Detect entities in medical text:
+
+#+BEGIN_SRC shell
+aws comprehendmedical detect-entities --text "The patient was prescribed 500mg of acetaminophen for fever."
+#+END_SRC
+
+** AWS Security Services for AI/ML
+List IAM roles with "SageMaker" in the name:
+
+#+BEGIN_SRC shell
+aws iam list-roles | jq '.Roles[] | select(.RoleName | contains("SageMaker"))'
+#+END_SRC
+
+Describe EC2 instances with GPU (useful for ML workloads):
+
+#+BEGIN_SRC shell
+aws ec2 describe-instances --filters "Name=instance-type,Values=p*,g*" | jq .Reservations[].Instances[]
+#+END_SRC
+
+** IAM (Identity and Access Management)
+
+*** List IAM users
+#+BEGIN_SRC shell
+aws iam list-users
+#+END_SRC
+
+*** Create a new IAM user
+#+BEGIN_SRC shell
+aws iam create-user --user-name newuser
+#+END_SRC
+
+*** Attach a policy to a user
+#+BEGIN_SRC shell
+aws iam attach-user-policy --user-name newuser --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+#+END_SRC
+
+** Amazon Macie
+
+*** List Macie sessions
+#+BEGIN_SRC shell
+aws macie2 list-sessions
+#+END_SRC
+
+*** Create a custom data identifier
+#+BEGIN_SRC shell
+aws macie2 create-custom-data-identifier --name "Custom-PII" --regex "(\d{3}-\d{2}-\d{4})" --description "Identifies Social Security Numbers"
+#+END_SRC
+
+** Amazon Inspector
+
+*** List Inspector assessment targets
+#+BEGIN_SRC shell
+aws inspector list-assessment-targets
+#+END_SRC
+
+*** Create an assessment target
+#+BEGIN_SRC shell
+aws inspector create-assessment-target --assessment-target-name "MyTarget" --resource-group-arn arn:aws:inspector:us-west-2:123456789012:resourcegroup/0-AB6DMKnv
+#+END_SRC
+
+** AWS CloudTrail
+
+*** List trails
+#+BEGIN_SRC shell
+aws cloudtrail list-trails
+#+END_SRC
+
+*** Create a trail
+#+BEGIN_SRC shell
+aws cloudtrail create-trail --name my-trail --s3-bucket-name my-bucket
+#+END_SRC
+
+** AWS Artifact
+
+*** List agreement offers
+#+BEGIN_SRC shell
+aws artifact list-agreement-offers
+#+END_SRC
+
+*** Get an agreement
+#+BEGIN_SRC shell
+aws artifact get-agreement --agreement-type "ENTERPRISE" --agreement-id "agreement-id"
+#+END_SRC
+
+** AWS Audit Manager
+
+*** List assessments
+#+BEGIN_SRC shell
+aws auditmanager list-assessments
+#+END_SRC
+
+*** Create an assessment
+#+BEGIN_SRC shell
+aws auditmanager create-assessment --name "MyAssessment" --assessment-reports-destination "S3" --scope "AWS_ACCOUNT" --aws-account "123456789012"
+#+END_SRC
+
+** AWS Trusted Advisor
+
+*** List Trusted Advisor checks
+#+BEGIN_SRC shell
+aws support describe-trusted-advisor-checks --language en
+#+END_SRC
+
+*** Get results of a specific check
+#+BEGIN_SRC shell
+aws support describe-trusted-advisor-check-result --check-id checkId
+#+END_SRC
+
+** VPC (Virtual Private Cloud)
+
+*** List VPCs
+#+BEGIN_SRC shell
+aws ec2 describe-vpcs
+#+END_SRC
+
+*** Create a VPC
+#+BEGIN_SRC shell
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+#+END_SRC
+
+*** Create a subnet
+#+BEGIN_SRC shell
+aws ec2 create-subnet --vpc-id vpc-1234567890abcdef0 --cidr-block 10.0.1.0/24
+#+END_SRC
+
+#+BEGIN_COMMENT
+Remember to replace placeholder values (e.g., newuser, my-bucket, agreement-id, 123456789012, checkId, vpc-1234567890abcdef0) with actual values relevant to your AWS environment. Always be cautious when executing commands that create or modify resources to avoid unintended changes or costs.
+#+END_COMMENT
+
+** Amazon EKS
+*** Prerequisites
+**** Install and configure AWS CLI
+#+BEGIN_SRC shell
+aws --version
+aws configure
+#+END_SRC
+
+**** Install kubectl
+#+BEGIN_SRC shell
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+#+END_SRC
+
+**** Install eksctl
+#+BEGIN_SRC shell
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+#+END_SRC
+
+*** Create and Manage EKS Cluster
+**** Create EKS cluster
+#+BEGIN_SRC shell
+eksctl create cluster --name my-cluster --region us-west-2 --nodegroup-name standard-workers --node-type t3.medium --nodes 3 --nodes-min 1 --nodes-max 4
+#+END_SRC
+
+**** Get cluster information
+#+BEGIN_SRC shell
+eksctl get cluster --name my-cluster --region us-west-2
+#+END_SRC
+
+**** Update kubeconfig
+#+BEGIN_SRC shell
+aws eks update-kubeconfig --name my-cluster --region us-west-2
+#+END_SRC
+
+*** Manage Node Groups
+**** List node groups
+#+BEGIN_SRC shell
+eksctl get nodegroup --cluster my-cluster --region us-west-2
+#+END_SRC
+
+**** Scale node group
+#+BEGIN_SRC shell
+eksctl scale nodegroup --cluster my-cluster --name standard-workers --nodes 5 --region us-west-2
+#+END_SRC
+
+*** Deploy and Manage Applications
+**** Deploy a sample application
+#+BEGIN_SRC shell
+kubectl create deployment nginx --image=nginx
+kubectl get deployments
+#+END_SRC
+
+**** Expose the deployment
+#+BEGIN_SRC shell
+kubectl expose deployment nginx --port=80 --type=LoadBalancer
+kubectl get services
+#+END_SRC
+
+*** Monitor and Troubleshoot
+**** Get cluster health
+#+BEGIN_SRC shell
+eksctl utils describe-stacks --cluster my-cluster --region us-west-2
+#+END_SRC
+
+**** View cluster logs
+#+BEGIN_SRC shell
+eksctl utils write-kubeconfig --cluster my-cluster --region us-west-2
+kubectl logs deployment/nginx
+#+END_SRC
+
+*** Clean Up
+**** Delete the sample application
+#+BEGIN_SRC shell
+kubectl delete deployment nginx
+kubectl delete service nginx
+#+END_SRC
+
+**** Delete the EKS cluster
+#+BEGIN_SRC shell
+eksctl delete cluster --name my-cluster --region us-west-2
+#+END_SRC
+
+*** Additional Resources
+For more detailed information and advanced configurations, refer to the following resources:
+- [[https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html][Get started with Amazon EKS – eksctl]]
+- [[https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html][Get started with Amazon EKS – AWS Management Console and AWS CLI]]
+- [[https://aws.amazon.com/getting-started/hands-on/eks-cluster-setup/][EKS Cluster Setup on AWS Community]]
+
+#+BEGIN_COMMENT
+Remember to replace placeholders (e.g., my-cluster, us-west-2) with your actual cluster name and preferred region. Always be cautious when deleting resources to avoid unintended data loss.
+#+END_COMMENT
+
+** AWS Step Functions
+
+*** List state machines
+#+BEGIN_SRC shell
+aws stepfunctions list-state-machines | jq -r '.stateMachines[]|.name'
+#+END_SRC
+
+#+RESULTS:
+: jwalsh-ml-states
+
+*** Create a state machine
+#+BEGIN_SRC shell
+aws stepfunctions create-state-machine \
+    --name "MyStateMachine" \
+    --definition '{"Comment":"A Hello World example of the Amazon States Language using a Pass state","StartAt":"HelloWorld","States":{"HelloWorld":{"Type":"Pass","Result":"Hello World!","End":true}}}' \
+    --role-arn arn:aws:iam::123456789012:role/service-role/StepFunctions-MyStateMachine-role-0123456789
+#+END_SRC
+
+*** Start execution of a state machine
+#+BEGIN_SRC shell
+aws stepfunctions start-execution \
+    --state-machine-arn arn:aws:states:us-west-2:123456789012:stateMachine:MyStateMachine \
+    --input '{"key1": "value1", "key2": "value2"}'
+#+END_SRC
+
+** Amazon Athena
+
+*** List workgroups
+#+BEGIN_SRC shell
+aws athena list-work-groups | jq '.WorkGroups[]|.Name'
+#+END_SRC
+
+#+RESULTS:
+: primary
+
+*** Create a workgroup
+#+BEGIN_SRC shell
+aws athena create-work-group \
+    --name "MyWorkGroup" \
+    --configuration '{"ResultConfiguration":{"OutputLocation":"s3://my-athena-results/"}}'
+#+END_SRC
+
+*** Run a query
+#+BEGIN_SRC shell
+aws athena start-query-execution \
+    --query-string "SELECT * FROM my_database.my_table LIMIT 10" \
+    --query-execution-context Database=my_database \
+    --result-configuration OutputLocation=s3://my-athena-results/
+#+END_SRC
+
+*** Get query results
+#+BEGIN_SRC shell
+aws athena get-query-results --query-execution-id QueryExecutionId
+#+END_SRC
+
+** Amazon QuickSight
+
+*** List users
+#+BEGIN_SRC shell
+aws quicksight list-users --aws-account-id 123456789012 --namespace default
+#+END_SRC
+
+#+RESULTS:
+
+*** Create a dataset
+#+BEGIN_SRC shell
+aws quicksight create-data-set \
+    --aws-account-id 123456789012 \
+    --data-set-id MyDataSet \
+    --name "My Data Set" \
+    --physical-table-map file://physical-table-map.json \
+    --logical-table-map file://logical-table-map.json \
+    --import-mode SPICE
+#+END_SRC
+
+*** Create an analysis
+#+BEGIN_SRC shell
+aws quicksight create-analysis \
+    --aws-account-id 123456789012 \
+    --analysis-id MyAnalysis \
+    --name "My Analysis" \
+    --source-entity file://source-entity.json
+#+END_SRC
+
+** Amazon Neptune
+
+*** List Neptune clusters
+#+BEGIN_SRC shell
+aws neptune describe-db-clusters | jq .DBClusters
+#+END_SRC
+
+#+RESULTS:
+: []
+
+*** Create a Neptune cluster
+#+BEGIN_SRC shell
+aws neptune create-db-cluster \
+    --db-cluster-identifier my-neptune-cluster \
+    --engine neptune \
+    --vpc-security-group-ids sg-1234567890abcdef0 \
+    --db-subnet-group-name my-db-subnet-group
+#+END_SRC
+
+*** Create a Neptune instance
+#+BEGIN_SRC shell
+aws neptune create-db-instance \
+    --db-instance-identifier my-neptune-instance \
+    --db-instance-class db.r5.large \
+    --engine neptune \
+    --db-cluster-identifier my-neptune-cluster
+#+END_SRC
+
+*** Run a Gremlin query (using curl)
+#+BEGIN_SRC shell
+curl -X POST \
+     -H 'Content-Type: application/json' \
+     https://your-neptune-endpoint:8182/gremlin \
+     -d '{"gremlin": "g.V().limit(1)"}'
+#+END_SRC
+
+#+BEGIN_COMMENT
+Remember to replace placeholder values (e.g., 123456789012, arn:aws:iam::123456789012:role/service-role/StepFunctions-MyStateMachine-role-0123456789, QueryExecutionId, sg-1234567890abcdef0, your-neptune-endpoint) with actual values relevant to your AWS environment. Always be cautious when executing commands that create or modify resources to avoid unintended changes or costs.
+#+END_COMMENT
+
+** AWS Data Exchange
+
+*** List data sets
+#+BEGIN_SRC shell
+aws dataexchange list-data-sets | jq .DataSets
+#+END_SRC
+
+*** Create a data set
+#+BEGIN_SRC shell
+aws dataexchange create-data-set \
+    --asset-type "S3_SNAPSHOT" \
+    --description "My sample data set" \
+    --name "My Data Set"
+#+END_SRC
+
+*** Create a revision
+#+BEGIN_SRC shell
+aws dataexchange create-revision \
+    --data-set-id "data-set-id" \
+    --comment "Initial revision"
+#+END_SRC
+
+** Amazon Neptune (Additional Examples)
+
+*** Load data into Neptune
+#+BEGIN_SRC shell
+aws neptune-db load-from-s3 \
+    --source s3://bucket-name/object-key-name \
+    --format csv \
+    --region us-west-2 \
+    --endpoint https://your-cluster-endpoint:8182
+#+END_SRC
+
+*** Run a SPARQL query (using curl)
+#+BEGIN_SRC shell
+curl -X POST \
+     -H 'Content-Type: application/x-www-form-urlencoded' \
+     https://your-neptune-endpoint:8182/sparql \
+     -d 'query=SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 10'
+#+END_SRC
+
+** AWS DeepLens
+
+*** List DeepLens projects
+#+BEGIN_SRC shell
+aws deeplens list-projects
+#+END_SRC
+
+#+RESULTS:
+
+*** Create a DeepLens project
+#+BEGIN_SRC shell
+aws deeplens create-project \
+    --project-name "MyProject" \
+    --project-description "My DeepLens project"
+#+END_SRC
+
+** Amazon CodeGuru
+
+*** Create a CodeGuru Reviewer association
+#+BEGIN_SRC shell
+aws codeguru-reviewer associate-repository \
+    --repository CodeCommit={Name=my-repo}
+#+END_SRC
+
+*** List CodeGuru Profiler profiling groups
+#+BEGIN_SRC shell
+aws codeguruprofiler list-profiling-groups
+#+END_SRC
+
+** AWS IoT Greengrass
+
+*** List Greengrass groups
+#+BEGIN_SRC shell
+aws greengrass list-groups
+#+END_SRC
+
+*** Create a Greengrass group
+#+BEGIN_SRC shell
+aws greengrass create-group --name "MyGreengrassGroup"
+#+END_SRC
+
+*** Create a Greengrass core definition
+#+BEGIN_SRC shell
+aws greengrass create-core-definition --name "MyCoreDefinition"
+#+END_SRC
+
+** Amazon Forecast (Expanded)
+
+*** Create a dataset group
+#+BEGIN_SRC shell
+aws forecast create-dataset-group \
+    --dataset-group-name my-dataset-group \
+    --domain CUSTOM \
+    --dataset-arns arn:aws:forecast:us-west-2:123456789012:dataset/my-dataset
+#+END_SRC
+
+*** Create a predictor
+#+BEGIN_SRC shell
+aws forecast create-predictor \
+    --predictor-name my-predictor \
+    --algorithm-arn arn:aws:forecast:::algorithm/ARIMA \
+    --forecast-horizon 10 \
+    --input-data-config '{"DatasetGroupArn":"arn:aws:forecast:us-west-2:123456789012:dataset-group/my-dataset-group"}' \
+    --featurization-config '{"ForecastFrequency": "D"}'
+#+END_SRC
+
+*** Create a forecast
+#+BEGIN_SRC shell
+aws forecast create-forecast \
+    --forecast-name my-forecast \
+    --predictor-arn arn:aws:forecast:us-west-2:123456789012:predictor/my-predictor
+#+END_SRC
+
+** Amazon Personalize (Expanded)
+
+*** Create a dataset group
+#+BEGIN_SRC shell
+aws personalize create-dataset-group --name my-dataset-group
+#+END_SRC
+
+*** Create a solution
+#+BEGIN_SRC shell
+aws personalize create-solution \
+    --name my-solution \
+    --dataset-group-arn arn:aws:personalize:us-west-2:123456789012:dataset-group/my-dataset-group \
+    --recipe-arn arn:aws:personalize:::recipe/aws-user-personalization
+#+END_SRC
+
+*** Create a campaign
+#+BEGIN_SRC shell
+aws personalize create-campaign \
+    --name my-campaign \
+    --solution-version-arn arn:aws:personalize:us-west-2:123456789012:solution/my-solution/1 \
+    --min-provisioned-tps 1
+#+END_SRC
+
+*** Get recommendations
+#+BEGIN_SRC shell
+aws personalize-runtime get-recommendations \
+    --campaign-arn arn:aws:personalize:us-west-2:123456789012:campaign/my-campaign \
+    --user-id user123
+#+END_SRC
+
+** AWS Lake Formation
+
+*** List data lake settings
+#+BEGIN_SRC shell
+aws lakeformation list-data-lake-settings
+#+END_SRC
+
+*** Grant permissions
+#+BEGIN_SRC shell
+aws lakeformation grant-permissions \
+    --principal DataLakePrincipalIdentifier=arn:aws:iam::123456789012:user/data-analyst \
+    --resource '{"Table":{"DatabaseName":"my_database","Name":"my_table"}}' \
+    --permissions SELECT
+#+END_SRC
+
+*** Register a new location
+#+BEGIN_SRC shell
+aws lakeformation register-resource \
+    --resource-arn arn:aws:s3:::my-bucket \
+    --use-service-linked-role
+#+END_SRC
+
+** Amazon Managed Streaming for Apache Kafka (MSK)
+
+*** List MSK clusters
+#+BEGIN_SRC shell
+aws kafka list-clusters
+#+END_SRC
+
+*** Create an MSK cluster
+#+BEGIN_SRC shell
+aws kafka create-cluster \
+    --cluster-name MyMSKCluster \
+    --kafka-version 2.6.2 \
+    --number-of-broker-nodes 3 \
+    --broker-node-group-info file://broker-node-group-info.json \
+    --encryption-info file://encryption-info.json
+#+END_SRC
+
+*** Describe a cluster
+#+BEGIN_SRC shell
+aws kafka describe-cluster --cluster-arn ClusterArn
+#+END_SRC
+
+#+BEGIN_COMMENT
+Remember to replace placeholder values (e.g., 123456789012, your-neptune-endpoint, ClusterArn) with actual values relevant to your AWS environment. Always be cautious when executing commands that create or modify resources to avoid unintended changes or costs. Some commands may require additional setup or file preparation not shown here.
+#+END_COMMENT
+
+* Responsible AI
+
+A key focus of this project is on responsible AI practices. We cover:
+
+- Ethical considerations in AI/ML development
+- Bias detection and mitigation strategies
+- Fairness and inclusivity in AI systems
+- Robustness and safety measures
+- Compliance and governance in AI projects
+
+* Study Resources
+
+In addition to code examples, this project includes:
+
+- Curated lists of AWS documentation and whitepapers
+- Links to relevant AWS training materials
+- Practice questions for each exam domain
+- Glossary of key AI/ML terms in the context of AWS
+
+
+* Workshops
+
+** TODO Best practices for prompt engineering with Meta Llama 3 for Text-to-SQL use cases
+
+https://aws.amazon.com/blogs/machine-learning/best-practices-for-prompt-engineering-with-meta-llama-3-for-text-to-sql-use-cases/
+
+
+** TODO Using Amazon Bedrock Agents to interactively generate infrastructure as code
+
+https://aws.amazon.com/blogs/machine-learning/using-agents-for-amazon-bedrock-to-interactively-generate-infrastructure-as-code/
+
+
+** TODO Evaluating prompts at scale with Prompt Management and Prompt Flows for Amazon Bedrock
+
+https://aws.amazon.com/blogs/machine-learning/evaluating-prompts-at-scale-with-prompt-management-and-prompt-flows-for-amazon-bedrock/
+
+** TODO Build an ecommerce product recommendation chatbot with Amazon Bedrock Agents
+
+https://aws.amazon.com/blogs/machine-learning/build-an-ecommerce-product-recommendation-chatbot-with-amazon-bedrock-agents/
+
+** TODO [#A] Secure RAG applications using prompt engineering on Amazon Bedrock
+
+https://aws.amazon.com/blogs/machine-learning/secure-rag-applications-using-prompt-engineering-on-amazon-bedrock/
+
+* License
+:PROPERTIES:
+:CUSTOM_ID: license
+:END:
+
+This project is licensed under the MIT License - see the [[file:LICENSE][LICENSE]] file for details.
+
+* Disclaimer
+
+This project is not affiliated with or endorsed by Amazon Web Services. All AWS service names and trademarks are property of Amazon.com, Inc. or its affiliates.

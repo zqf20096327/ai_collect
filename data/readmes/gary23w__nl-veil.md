@@ -1,0 +1,1443 @@
+![the-veil](web/public/veil.png)
+
+# the veil
+
+**An AI coding team that remembers your project.**
+
+the Veil (nl-veil) is an open-source desktop app for building software with AI. Give it a task,
+let specialist agents share the work, and carry project memory
+into your next session. Use the built-in model, Ollama, or an OpenAI-compatible endpoint.
+
+**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/latest)** ·
+**[Get it from the Microsoft Store](https://apps.microsoft.com/detail/9MVQ78SK0CW6)** (Windows) ·
+**[Screenshot walkthrough: setup & build with Cloudflare AI](https://gary23w.github.io/nl-veil/demos/)** ·
+[Installation and requirements](#install) · [Try your first task](#try-your-first-task) · [Email info](mailto:garystimpson03@gmail.com)
+
+Windows · macOS · Linux · [MIT app code and AGPL security runtime](#license). Local inference needs no provider account or API key;
+hosted providers have their own data handling and costs. The built-in model requires a separate
+download, and coding tools require Python on `PATH` (some checks also use Node).
+
+### Stable release: v1.1.21
+
+v1.1.21 builds on v1.1.16; v1.1.17 and v1.1.18 were withdrawn before publication. If you
+installed either, download and run the [v1.1.21 bundle](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21).
+In chat, `NL_TOOL_MAP=1` enables the tool tree; Gary's 4tope is enabled by default. Taters use
+both on their own.
+
+### New in v1.1.21
+
+A veil started while another one already holds its port (another install, or a veil that is still
+quitting) no longer opens onto "server down". It waits a few seconds for the port, then takes the
+next free one and its window follows it. Cloudflare's login says plainly when it cannot finish on
+the new port. Settings › Models has a **Use Cloudflare Workers AI (default)** box: logging in with
+Cloudflare turns it on, and the page then shows just the model and the login. On Windows, the
+[Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) installs with no
+SmartScreen prompt. [Release notes](docs/release/RELEASE-v1.1.21.md).
+
+### New in v1.1.20
+
+Tater-tots are **Taters** now, and they run the v1.1.16 algorithms in the cloud: past 48 tools
+the belt is a map they walk with `open_tools`, a long step is folded by Gary's 4tope instead of
+cut, and each model's quirks are learned and healed as they show up. A runtime edit can always be
+reverted, and a newer veil's runtime reaches a running account as a revision of its own. Agent
+Garrett connects through its managed dashboard. On hosted reasoning models the effort dial learns
+per model and a starved survey ends planning, and one data directory is served by one veil at a
+time. [Release notes](docs/release/RELEASE-v1.1.20.md).
+
+### Garrett dashboard connections
+
+Connect Agent Garrett from **Settings → Agent Garrett**. Open its dashboard to sign in, choose a plan and deploy, then paste your generated API key or copied MCP configuration. NL-Veil verifies authenticated MCP access and discovers the tools automatically. Your key is encrypted on the local server; cloud agents, memory, billing and updates stay in Garrett. Existing legacy connections are retained until you replace them. [Setup guide](docs/docs-src/guide/security-tools.md).
+
+### New in v1.1.16
+
+**Gary's 4tope** carries a long chat forward by graph instead of by summary. When a turn has to
+compact, the engine reads its working log as a dependency graph, keeps the chain of results the
+current step rests on, and writes the continuation from the turn's own text: the step's last words,
+the files on disk, the calls that failed, and what the work depends on. No model call, no
+paraphrase. The **tool tree** (`NL_TOOL_MAP=1`) turns the belt into a map the model walks seven
+branches at a time, so a small model can use a belt of hundreds of tools. Long chats with Agent
+Garrett compact far less: its belt is 60% smaller and the spend ceiling now scales with it.
+[Release results](docs/release/RELEASE-v1.1.16.md) ·
+[how Gary's 4tope works](https://gary23w.github.io/nl-veil/#doc=worker/chat/net) ·
+[the tool tree](https://gary23w.github.io/nl-veil/#doc=worker/chat/belt).
+
+### New in v1.1.12
+
+Agent Garrett's full **166-tool security catalogue** is available to chats, swarms and tater-tots
+through typed MCP tools. Settings deploys the edge Worker, private Worker, Cloudflare Container and
+R2 storage into your account, then shows progress while the runtime builds. Enable each feature
+separately. Desktop margins, field spacing and past-run card borders are repaired, and Settings
+keeps scrolling with its scrollbar hidden.
+
+Live cloud command execution, shell-session listing and indicator extraction were verified through
+NL-Veil. [Release results](docs/release/RELEASE-v1.1.12.md) ·
+[Security setup and personal defense guide](docs/docs-src/guide/security-tools.md).
+
+### New in v1.1.10
+
+Tater-tot deployment now reconnects a missing or unreachable cached runtime before creating a tot,
+checks its public route, and reports Cloudflare's error when setup fails. Past-run cards have clearer
+spacing and status lines, the activity controls have their own header, and **Remove run** clears an
+entry from history while keeping its files. [Release notes](docs/release/RELEASE-v1.1.10.md).
+
+### New in v1.1.9
+
+Each tater-tot deployment has its own console and run history. Redeploying the same name starts a
+fresh console, while deleted and failed deployments remain under **Past runs** with their events and
+failure details. **Deploy again** opens the form with the previous request. [Release notes](docs/release/RELEASE-v1.1.9.md).
+
+### New in v1.1.8
+
+Tater-tots can read, edit and deploy their shared Worker runtime, including their prompts, tools and
+stop rules. Browser tasks can work through CAPTCHA challenges and continue. Runtime uploads are
+applied by your running, Cloudflare-connected veil; cloud work continues on the last deployed version
+while it is offline.
+
+Admin credentials are checked against durable storage before the listener or Tunnel starts. Legacy
+default passwords are replaced, an explicitly configured admin password is applied to existing
+accounts, and startup stops if a required change cannot be verified. [Release notes](docs/release/RELEASE-v1.1.8.md).
+
+### New in v1.1.7
+
+**Tater-tots**: the veil's goal loop running in your own Cloudflare account, with nobody in it and your computer
+off. Deploy one from the desktop's Taters tab or `veil --tater deploy "<goal>"`; the first is always named Gary.
+[How tater-tots work](#tater-tots---goal-loops-that-run-without-you-in-your-own-account) ·
+[release notes](docs/release/RELEASE-v1.1.7.md).
+
+### New in v1.1.4
+
+A calmer desktop for longer tasks: visible preparation and planning updates, steadier
+bottom-follow while replies stream, and settings grouped into General, Models,
+Connection, Data, and Updates. New chats offer editable starter prompts. Code blocks
+wrap long lines and keep copying faithful to the original text.
+
+This release also fixes an HTTP completion race that could report a false timeout.
+Read the [release notes](docs/release/RELEASE-v1.1.4.md) and
+[desktop guide](docs/DESK-UI.md).
+
+### Try your first task
+
+After [installing](#install), select a model and use a small project you can safely edit. Start with
+one concrete change:
+
+> Find one missing input-validation test in this project. Explain the expected behavior, add the
+> test, make the smallest fix if needed, and run the relevant tests. Report the files changed and
+> the actual test result. Remember the project's test command for our next session.
+
+Review the diff and test output. Then start a new conversation on the same project and ask:
+*"What test command did we use, and what did we change last time?"* This gives you a specific way
+to evaluate both the coding workflow and memory on your own code.
+
+**Trying it for the first time?** [Tell us what worked or where you got stuck](https://github.com/gary23w/nl-veil/issues/new).
+Include your OS, app version, model/provider, and expected versus actual behavior. Remove private
+code and credentials from anything you share.
+
+<sub>NEURON-LOOPS · NL-VEIL — **an agentic coding desktop app that runs a whole team of AI agents on your machine, and remembers.** One binary, many minds, one shared memory. Browse the annotated source of every module at [the docs site](https://gary23w.github.io/nl-veil/).</sub>
+
+<p>
+  <a href="https://github.com/gary23w/nl-veil/actions/workflows/release.yml"><img alt="build" src="https://github.com/gary23w/nl-veil/actions/workflows/release.yml/badge.svg"></a>
+  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.21-A8241B"></a>
+  <img alt="zig" src="https://img.shields.io/badge/zig-0.16-F7A41D?logo=zig&logoColor=white">
+  <a href="https://huggingface.co/gary23w/the-veil-12b"><img alt="built-in model" src="https://img.shields.io/badge/built--in%20model-the--veil--12b-6E4A27?logo=huggingface&logoColor=white"></a>
+  <a href="https://huggingface.co/gary23w/gary-neuron-emergent"><img alt="memory cortex" src="https://img.shields.io/badge/cortex-gary--neuron--emergent-6E4A27?logo=huggingface&logoColor=white"></a>
+  <a href="https://github.com/gary23w/neuron-db"><img alt="memory" src="https://img.shields.io/badge/memory-neuron--db-31405C"></a>
+  <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-31405C"></a>
+  <a href="https://github.com/gary23w/nl-veil/stargazers"><img alt="stars" src="https://img.shields.io/github/stars/gary23w/nl-veil?style=social"></a>
+</p>
+
+### What this actually is
+
+**Desktop release updates:** official bundles check GitHub at startup. Use **Settings → Updates → App updates →
+Update & restart** to install a verified release without Git. See [updates, recovery and Cloudflare
+connectivity](docs/UPDATES.md) for first-install requirements and Windows/macOS network troubleshooting.
+
+**A desktop app for agentic coding, called the Veil.** You download one file, run it, and a native
+window opens: a three-pane workspace where you give an AI a goal and watch it do the work. Your
+conversations down the left, the work itself in the middle — the chat, or the files it is writing, or
+live token and latency metrics — and on the right what the agents are doing and what the thing
+remembers. Drag the dividers to whatever widths suit you (they persist), collapse a side you don't
+need, branch a side question into its own tab without losing the build. Seven tabs across the top:
+**Dashboard, Chat, Tasks, Swarm, Taters, Hub, Settings.** It is the place you work, not a sidebar bolted onto
+something else.
+
+**The difference is what's behind the window.** Ask most tools for a feature and one assistant writes
+it. Ask the Veil and it can **split the job across a swarm** — a handful of specialist agents, each
+owning real files, building and critiquing in parallel against one shared workdir with its own
+version control, reconciled back into a single answer. You talk to one voice; a team is doing the
+work behind it.
+
+**And it remembers.** Not chat history — a memory engine that accumulates what it learns about your
+code and your preferences, keeps a playbook of fixes it has *verified* by running commands on this
+machine, and carries all of it into the next session. The same problem stops getting re-solved.
+
+**Local inference, with optional cloud connections.** One Zig binary carries the whole thing: the desktop app,
+the server behind it, a web UI, the inference engine, the memory engine, and the `veil` command line.
+Nothing to install first — no Docker, no cloud account, no database service, no API key — it will
+**[download a 12B model](https://huggingface.co/gary23w/the-veil-12b) and run it itself**, offline, on
+your GPU. One honest dependency: the agent's **tool belt shells out to Python** (`list_dir`, `run_tests`,
+`web_search`, `deep_crawl`, and its own executor `run_python`) and to Node for a JavaScript syntax check,
+so without `python` on `PATH` the agent can chat but cannot do much work — it tells you exactly which
+tool wanted what. Point it at Ollama or any OpenAI-compatible endpoint instead whenever you'd rather. Your
+local conversations, keys and memory are stored in a folder next to the binary. Hosted model calls,
+web tools, and optional Cloudflare backups send the data needed for those features to the services
+you connect.
+
+> ⭐ **If the veil is useful to you, [star it on GitHub](https://github.com/gary23w/nl-veil).** It's a
+> solo project — a star genuinely helps it reach the next person who'd get something out of it.
+
+**What's in it now**
+
+| | |
+|---|---|
+| [**Log in with Cloudflare**](#log-in-with-cloudflare) | one click: your account's live Workers AI models, an automatic R2 backup of your chats, and an agent that can deploy to your own account |
+| [**The built-in model**](#the-built-in-model--nothing-to-install) | `the-veil-12b` served in-process from a downloaded GGUF — no external runtime, no key, works offline |
+| [**The chat brain in the server**](#the-chat-brain-runs-in-the-server) | one agentic turn loop, server-side; the web app, the desktop and `veil chat` are thin clients of it |
+| [**A chat without end**](#a-long-conversation-keeps-its-past) | every summary fold banks its facts in an append-only ledger, and memory is settled around every round of a turn as an advisory overlay that never enters the transcript |
+| [**The model trio**](#three-models-one-turn--the-model-trio) | every LLM call is labelled and routed — coding / thinking / prompting — so a cheap model can carry the bulk |
+| [**Your own browser**](#it-can-use-your-browser) | drive the Chrome/Edge you're already signed into, through a tiny extension — or a private throwaway profile |
+| [**The tool belt**](#the-tool-belt) | ~58 tools: files, shell, tests, web, deep crawl, memory, images/OCR, MCP servers, tool authoring |
+| [**Memory that compounds**](#how-it-works) | [neuron-db](https://github.com/gary23w/neuron-db) behind every recall, with `--lineage` so re-casts get better |
+| [**Built-in RAG**](#what-you-can-do) | mirror the [nl-rag](https://github.com/gary23w/nl-rag) corpus to disk and research with the network off |
+| [**It learns**](#it-learns) | a playbook of fixes verified by real exit codes, a smoke gate, and a judge that reads the trace |
+| [**Themes & plugins**](#make-it-your-own--themes--plugins) | Lua, hot-reloaded, across web + desktop + CLI ([PLUGINS.md](PLUGINS.md)) |
+| [**Scheduled tasks**](#scheduled-tasks) · [**the desktop**](#the-desktop--veil-desk) · [**the fleet hub**](#the-fleet-hub--many-swarms-one-console) | cron-ish runs that are real conversations, a native dashboard, one console over every swarm |
+
+Browse the annotated source of every module at **[the docs site](https://gary23w.github.io/nl-veil/)**
+(`docs/`) — an interactive architecture map and ~100 generated source documents, in the same design
+system the desktop app compiles in.
+
+## Log in with Cloudflare
+
+**Frontier-scale reasoning models, through your own Cloudflare account.** Cloudflare describes
+[Kimi K2.6](https://developers.cloudflare.com/workers-ai/models/kimi-k2.6/) as a frontier-scale model
+with reasoning, multi-turn tool calling and a 262K-token context window. The Veil's
+[real build walkthrough](https://gary23w.github.io/nl-veil/demos/) used this model to build and refine
+a customer-support workspace.
+
+The [Workers Paid plan starts at $5 USD/month](https://developers.cloudflare.com/changelog/post/2026-07-28-models-require-workers-paid/)
+and includes 10,000 Neurons per day. Usage beyond that allowance is billed at the model's rates:
+the $5 plan is not unlimited AI usage. The Veil is MIT-licensed with no Veil subscription required;
+you pay your chosen provider directly. Local models remain an option.
+
+**One button, and the veil gains a cloud.** Click *Log in with Cloudflare* — in the web app's Settings,
+under the chat composer, on the Dashboard, or in the desktop's Settings — approve the consent screen in
+your browser, and you are connected. No token to paste, nothing to configure.
+
+It is **your** account, not ours. The veil is open source and every copy ships the same public client id,
+the way `wrangler` and `gh` do; the token that comes back is minted for *your* Cloudflare account and
+lands in *your* local server's sealed vault. It never reaches the maintainer, and there is no nl-veil
+server in the middle — Cloudflare redirects the browser to `localhost`, which is the machine already in
+front of you.
+
+### What you get
+
+| | |
+|---|---|
+| **Workers AI, live-synced** | Your account's real model catalogue is fetched from Cloudflare and replaces the Workers AI group in every model picker. The repo ships exactly one model id as a bootstrap default — the list you pick from is always your account's, never a stale copy in a file. |
+| **Chat on the free tier** | Workers AI has a free daily allowance (10,000 neurons/day as of 2026) — **no paid plan and no card for the base tier**. Logging in points chat at it automatically; one click in Settings puts you back on local or BYOK. |
+| **R2 chat backup** | The first login provisions an `nl-veil` bucket in your account and mirrors your conversations and durable memories into it, incrementally, in the background. Your data stays local too — this is a copy, not a move. R2 is 10 GB free with no egress fees, but must be **activated once** on your Cloudflare dashboard; until then the card says so in Cloudflare's own words. |
+| **An agent that can deploy** | With the build scopes granted, the assistant can write a Worker and ship it to a live `workers.dev` URL, read and write R2, query D1, and reach the rest of the API — from the web app, the desktop, `veil chat` and scheduled tasks, on the admin account; see [the `cf_` tool belt](#the-cf_-tool-belt). |
+| **Everywhere a turn runs** | Chat, swarm casts and scheduled tasks all resolve the same login, so a task that fires at 3am uses it too. |
+
+### What it asks for, and what you can refuse
+
+The consent screen asks for **four required** permissions — the minimum to know which account you are and
+to run inference:
+
+```
+Workers AI Read + Write      run models, list your catalogue
+Account Settings Read        resolve your account id
+User Details Read            your name / email, to show "signed in as ..."
+```
+
+Everything else is **optional and declinable right on the consent screen** — Workers Scripts, R2, D1, KV,
+Pages, Queues, Vectorize, Routes, Tail, Observability. Decline them and you still log in and chat; a tool
+that later needs one simply refuses with Cloudflare's own explanation. Grant them and the agent can build.
+
+**DNS, zone and Access scopes are requested — optional and declinable like the rest.** The tunnel needs them
+to put this veil on a hostname you own: `argotunnel`, `dns.read`/`dns.write`, `zone.read`, and
+`zone-access.read`/`zone-access.write` with `access-org.read`. Decline them and everything except a custom
+domain still works — the default tunnel is a random `trycloudflare.com` address that needs none of them
+(tick **use my domain** without them and the switch says so and asks you to log in again). Grant them and you are granting real DNS write on your zones, which is what putting a name on a
+tunnel requires; the consent screen names each one.
+
+**Never requested at all:** billing and payment, WAF and security-rule configuration, or the ability to add
+members to your account.
+
+Disconnect any time — Settings → **Disconnect**. That forgets the credential locally; the R2 bucket and
+everything in it stay in your Cloudflare account, because they were always yours.
+
+### The `cf_` tool belt
+
+When — and only when — a turn holds Cloudflare credentials, six tools join the assistant's belt. A user
+who never connected is never even shown them. The belt belongs to the admin account: a normal account's
+turns run [sandboxed](#everyone-else-is-sandboxed), and deploying code or writing to a cloud account is
+outside that sandbox, so a non-admin who connects Cloudflare still chats on its Workers AI but is not shown
+the belt.
+
+**They work from every surface: the web app, scheduled tasks, the desktop app and `veil chat`.** A `cf_`
+call always runs in the server, the one process that holds your token. The desktop and `veil chat` run
+their other tools on your machine, so the one file a call touches crosses over instead: the file a deploy
+or an upload sends is fetched from your workdir first, and a download is written back into it and read
+back to confirm it arrived. If your file cannot be fetched, nothing is sent to Cloudflare; the server's
+older copy is never sent in its place. When the desktop shares the server's data folder (one machine, the
+usual install), nothing is copied at all. A client on another disk (`veil chat` in its own folder, or a
+desktop on another machine) can carry text files up to 512 KB that way. A larger or binary file is
+refused before an upload, and after a download the result says it did not reach your machine.
+
+| tool | what it does |
+|---|---|
+| `cf_deploy_worker` | Ship an ES-module Worker from the workspace and get back a live `https://<name>.<you>.workers.dev` URL |
+| `cf_r2_list` | List your buckets, or the objects inside one |
+| `cf_r2_put` / `cf_r2_get` | Move files between the workspace and R2 |
+| `cf_d1_query` | Run SQL against a D1 (serverless SQLite) database |
+| `cf_api` | Any other v4 endpoint — Pages, KV, Queues, Vectorize, routes, logs. Write `{account_id}` in the path and it is filled in |
+
+Try it in one sentence: *"write a Worker that returns the current time as JSON and deploy it."*
+
+Credentials are resolved **once per turn** and handed to the tools; blank means the family is neither
+advertised nor callable, so swarm minds and the client-side tool executor structurally cannot reach your
+cloud, and the token never rides a tool call out to the desktop or `veil chat`. File arguments are jailed
+to the workspace, and `cf_api` refuses any path that would send your token anywhere other than
+`api.cloudflare.com`.
+
+### Public URL - the tunnel switch
+
+Once you are logged in with Cloudflare, Settings gains a **Public URL (Cloudflare Tunnel)** row with a
+switch and a box. Flip the switch and the veil is reachable at a Cloudflare URL. By default that address is
+**confidential**: a random, unlisted `trycloudflare.com` hostname that changes on every start and puts nothing
+on any domain you own - the veil is a personal harness, and a URL nobody can guess or look up is the right
+default for one. The switch finds or fetches Cloudflare's official `cloudflared` connector and runs it against
+this server; the URL lands in the box (Copy / Open), the desk shows the same row, and the switch position
+survives a restart. On a headless box, `NL_TUNNEL=1` (or `veil --tunnel`) turns it on at boot and the URL is
+printed in the log once it is published.
+
+The URL appears once Cloudflare's own resolver has published it, usually within ten seconds of the
+connector registering, or after a 90-second budget flagged as not yet published. That short wait is deliberate: a lookup made before the name exists leaves it
+unresolvable on that network for half an hour (the domain's negative-cache TTL), so nothing on your machine,
+not even the status poll, gets to ask first.
+
+Tick **use my domain** and it becomes a named tunnel **through your own account** instead: created on the
+account, pointed at this server, given the hostname you typed on one of your domains (or `veil.<your first
+domain>`), and put behind a **Cloudflare Access** policy that admits only your own email when your account has
+a Zero Trust organization. That address is permanent and public in the DNS sense, which is exactly why it is a
+choice and not the default. Type a different hostname later and the tunnel moves with it: the old name's DNS
+record and Access app come off your account, and the new name gets its own.
+
+What keeps that safe to do:
+
+- **owner only** - the switch is admin-only, and it exposes the whole server, so no ordinary user can open one.
+- **registration stays closed** - the tunnel refuses to start while open registration is on, and the server
+  refuses registration on any request that arrived through a tunnel or proxy, whatever the flag says.
+- **no "localhost trust" for tunneled traffic** - the connector delivers the internet to this server from
+  127.0.0.1, so every decision that used to mean "this caller is on the machine" also requires the request not
+  to carry the headers a tunnel adds, and the login guard rate-limits on the visitor's real address.
+- **the tunnel token stays sealed** - it lives in the vault and reaches `cloudflared` through its environment,
+  never on a command line or in a file.
+- **Access when possible** - with a Zero Trust organization on the account, Cloudflare's own login page stands
+  in front of the veil's; without one, the veil's rate-limited login is the gate, and the status line says
+  which of the two you have. A confidential `trycloudflare.com` address never has Access, and never claims it.
+- **off means off** - the connector is stopped and reaped, and closing the desktop app stops it too (the switch
+  stays where you left it, so the tunnel comes back at the next start); `{"on":false,"delete":true}` on the API
+  also removes the tunnel, its DNS record and its Access app from your account.
+
+The login asks for the tunnel, DNS, zone and Access scopes as *optional* permissions. A login that predates
+them simply lacks them; the switch then says so and asks you to log in with Cloudflare again.
+
+### Tater-tots - goal loops that run without you, in your own account
+
+A **tater-tot** (a *tot*, short for Tiny Overview Technician) is the veil's goal loop with no human in it and no machine of yours
+under it. Once you are logged in with Cloudflare, the desk's **Taters** tab (or `veil --tater deploy "<goal>"`)
+uploads one small Worker, `veil-tots`, into *your* account and creates a tater-tot in it. From then on the tater-tot
+works on its own: it wakes on a timer, picks the single best next improvement toward its goal, does it with
+its tools, has a judge measure whether it helped from the tool results alone (against the iterations
+before it: an attempt that failed and left things as they were is *same*, and only something that got worse is
+*regressed*), records the iteration, and
+sets its next wake-up. Your computer can be off. Its model calls go through the account's own AI binding,
+so they never cross the public internet and need no API key.
+
+- **24 per account by default, more if your setup carries them.** The first is always named **Gary**; you
+  name the others. Raise the limit with the -/+ beside the count in the tab, or `veil --tater limit N` (up to
+  1000). How many an account really carries is its Cloudflare plan's to say: each tater-tot is a Durable
+  Object that wakes every few seconds and calls the account's AI, so a free plan's daily allowance runs out
+  long before a paid one's.
+- **It never waits for anyone.** A message you send lands in its inbox and the next iteration reads it as a
+  directive. `/goal <text>`, `/goal stop`, `/queue <goal>`, `/charter <text>`, `/pause` and `/resume` work in
+  the tab's command line and through `veil --tater tell <name> "..."`.
+- **A goal that ends is not the end.** Achieved, out of budget, or three iterations with no improvement: the
+  tater-tot takes the next queued goal, or proposes one itself from its charter, or rests and looks again later.
+  `/pause` is what holds it still.
+- **It improves itself.** An iteration that did not move the goal becomes a lesson - one rule the tater-tot writes
+  for its future self - and its lessons ride every later prompt; the least useful one is dropped when the
+  list is full. After two flat iterations it grows by one mind, and after an easy win it shrinks, inside the
+  size you allow (the tab's Grow / Shrink buttons move that ceiling). A lesson that says the same thing in other
+  words is not kept twice, and a step that repeats an earlier iteration is asked once more for a changed method.
+- **Its belt is a map, and its memory of a step is a net.** Past 48 tools (Agent Garrett's catalogue) the belt is
+  the tool tree from v1.1.16: the built-in tools stay listed, the rest is walked with one verb, `open_tools`, or
+  opened by calling a tool by name; the step's own words open the right group first, and what a step led the
+  tater-tot to call is learned for the next (`/belt auto|map|flat`). When a step's rounds outgrow the model's
+  window they are laid out as Gary's 4tope instead of cut oldest-first - the results the step rests on stay
+  verbatim, the failures ride as RULED OUT - and the same net is carried into the next iteration.
+- **It heals itself, per model.** A model that answers only with three times the room is asked for it first;
+  one that answers nothing three times in a day hands the day to the fallback model and is tried again tomorrow;
+  a context-length error halves the window for that model; a missing model routes to the fallback. A runtime
+  edit that fails to deploy reaches the next iteration as a directive, and `runtime_revert` restores the last
+  deployed source. A newer veil's runtime reaches the tater-tots as a revision of their own - only over a
+  runtime the veil itself wrote, never over an edit of theirs - so an upgrade is read back and reverted like
+  any other revision.
+- **Tater-tots work together.** They share one scratchpad, which you can read and write too, and can message each
+  other. A tater-tot can also cast its own small swarm: several minds side by side, one task each.
+- **Its tool belt.** A tater-tot works with real tools, in the cloud:
+  - *files* - its own workspace (`write_file`, `read_file`, `edit_file`, `append_file`, `list_files`,
+    `delete_file`), kept across iterations and mirrored to your machine;
+  - *the web* - `web_search` (a keyless chain: public SearXNG instances, DuckDuckGo, Bing, reference
+    lookups, and - when those refuse a datacenter address - the same search through the real browser), `web_fetch`, and `http_request` for any method, headers and body; private and internal addresses
+    are refused, on redirects too;
+  - *a real browser* - Cloudflare's browser, driven over the DevTools protocol. `browser_open` and
+    `browser_read` give the page as its text plus a **numbered list of what can be clicked or typed into**, and
+    `browser_click`, `browser_type` and `browser_select` act on an element by its number with real mouse and
+    key input (so forms and sign-up pages built on modern frameworks respond); `browser_key`, `browser_scroll`,
+    `browser_back`, `browser_wait` and `browser_eval` do the rest. The page stays open between iterations. When
+    a page presents a CAPTCHA or other bot check, the tater-tot can use its browser tools to solve it and continue.
+    Search keeps a challenge page open and returns its controls so the tot can work through it;
+  - *Python* - `run_python` runs a script beside the tater-tot's files and keeps what it writes. A Worker's Python
+    has no sockets, no processes and no pip, so the runner supplies what a script expects: `import requests`
+    and `urllib` work on the Worker's own fetch, a missing import is installed from PyPI by itself (pure-Python
+    packages; `pip install` and `pip_install` do the same) and stays installed, and anything that needs a
+    process or native code is refused in words the tater-tot can act on. Packages with native code cannot be
+    fetched by a running script, so the upload asks Cloudflare for a set of them by name (numpy, regex,
+    pandas, matplotlib, pillow); if Cloudflare refuses the set, or the Python does not start with it, a
+    smaller set goes up, down to the plain Python. Every iteration the tater-tot is told what its Python has and
+    what it cannot have, so it plans around the gaps instead of finding them one failed step at a time;
+    `save_skill` keeps a script as a tool of the tater-tot's own and `run_skill` runs it
+    again, so a tater-tot builds its own tools;
+  - *a mind* - the tater-tot's facts live in **neuron-db**, the veil's own memory engine compiled to WebAssembly
+    and uploaded with the runtime: `remember` keeps a fact and `recall` finds it by meaning. The same engine
+    keeps **stances** - `feel` records how the tater-tot has come to regard a topic, a tool or a site from working
+    on it - and a **mood** the engine sets from how its measured iterations have been going. Both are shown to
+    the tater-tot every iteration and steer what it tries next. This is an affect model that shapes behaviour, not
+    a claim that anything is felt. `plan_set` / `plan_done` keep a plan it sees every iteration;
+  - *each other and you* - the scratchpad, `tell`, an inner `swarm`, `goal_queue`, `say`.
+
+  Tots also control their actual shared Worker source through `runtime_read`, `runtime_edit` and
+  `runtime_deploy`. They can rewrite prompts, tools, algorithms and stop rules without a proposal or approval
+  gate. The owner's running veil uploads the requested revision through the existing Cloudflare login on its
+  next minute's sync; this does not require the local-machine execution checkbox. `runtime_read` reports the
+  deployment result and any Cloudflare compiler error. Self-edits are kept across server restarts and ordinary
+  deployments; an edit affects every tot in the account. When the owner's veil is offline, deployment waits
+  for it to return.
+
+  Python runs in a second small Worker (`veil-tots-py`), the browser is Cloudflare's Browser Rendering and
+  neuron-db is two more modules of the upload; each is added when your account takes it, and the tab says
+  which a tater-tot has and why not otherwise.
+- **Search that answers.** Keyless search engines often refuse a cloud address, and their pages show a bot
+  check to a cloud browser. Give the tater-tots a search API key and `web_search` asks it first:
+  `veil --tater key brave <key>` (or `google` + `google_cx`). The key is stored as a secret on your Worker.
+- **It stands guard, with or without a model.** Name what a tater-tot watches - a page and the words it must show,
+  a status it must answer, its content pinned; a DNS name's answers - and it looks every heartbeat *before* the
+  model is asked, with no model at all, so the watch goes on when the model is dead, rate-limited or withdrawn.
+  A change is a **tripwire**: an event, a scratchpad entry every tater-tot reads, a directive in its inbox, and a
+  post to your webhook (`veil --tater key alert <Discord or Slack webhook URL>`).
+  `veil --tater guard Gary add https://example.com/health --text "ok" --every 60`, or `/guard ...` in the tab.
+- **Every event is chained.** Each event's hash covers the one before it, so the `events.jsonl` on your machine
+  is tamper-evident on its own: `veil --tater verify <run>` recomputes the chain and names the first row that was
+  altered or dropped. Who knew what, when, held outside anyone's lab.
+- **A DEFEND posture and a leash.** `/posture defend` freezes the runtime, reports bot checks instead of working
+  through them, names the tater-tot in every request it makes and holds it to read-only verification;
+  `/leash 3600` holds the goal loop whenever your veil has not been heard from for an hour (the guard goes on)
+  and releases it the moment it is back. A tater-tot never runs on with nobody's veil alive.
+- **Agent Garrett, the full security toolkit.** [The agent](https://github.com/gary23w/garrettstimpson.ca/tree/main/agent) contributes 166 tools: 94 existing security tools and 72 Gary tools. **Settings → Models → Deploy security tools** provisions its edge MCP Worker, private execution Worker, dedicated Cloudflare Container and R2 storage in your Cloudflare account. The first cloud build needs no local Docker or separate Linux host; the button shows an animated loading bar during preparation. Existing Cloudflare logins need to reconnect once for Containers permissions.
+  Enable **Agent Garrett: on** beside the chat's auto-loop, or check **Agent Garrett** in the swarm or tater-tot deploy form. Each opted-in feature receives individual `security_<name>` tools with typed arguments; `garrett_tools` and `garrett` remain compatibility wrappers. Chat calls keep the MCP bearer on the server. The cloud filesystem is separate from your local machine, which NL-Veil supplies through its local harness when requested. [Setup, personal defense and lab workflows](docs/docs-src/guide/security-tools.md).
+
+- **A console you can read.** Each event is one line saying what happened; a row that went wrong is red.
+  Click a row to open its full text under it, click again to close it, and *errors* shows only what failed.
+- **Your machine, only if you say so.** The deploy form has one box, unchecked by default: *let it use THIS
+  machine*. Checked, the tater-tot may queue jobs for the veil on your computer - the full local tool set, run
+  unattended as an ordinary chat conversation named `tot_<name>_...` you can open afterwards - and gets the
+  results back. Nothing listens at home for this: your veil asks the tater-tot for jobs while it is running. The
+  box is decided once, at deployment; it cannot be granted later.
+- **It has a budget, and you set it.** Each tater-tot has a pace - one iteration every N seconds, from 5 seconds up -
+  and a number of model calls a day, or **no limit**; with a limit, it rests when the day's calls are spent
+  until the next UTC day. Workers AI usage is billed to your account by Cloudflare like any other, so an
+  unlimited tater-tot at a 5-second pace spends as fast as its model answers.
+- **A model that only reasons does not stall it.** A reply with no visible answer is asked again with more
+  room, and then answered by a model that does not reason, with a line in the console saying so.
+- **You pick its model from your account.** The deploy form's MODEL list is your login's live Workers AI
+  catalogue. A goal or charter may be as long as that model can carry - about a tenth of its context window,
+  between 800 and 4000 characters - and the form counts as you type.
+- **Every deployment is a run of its own, like a chat.** The tab lists the live tater-tots and, under them,
+  **past runs**: a tater-tot you deleted (the server syncs its last events before it goes) and a deployment that
+  failed (kept with what was asked and why it failed - the tab opens it when a deploy fails). Deploy the same
+  name again and it is a new run with a new console; the old one stays under past runs, read from its folder,
+  with *Deploy again* to start the form from what it asked. *Remove run* removes an entry from history while
+  preserving its folder; remove that folder's `.hidden` marker to restore the entry.
+- **Every run has a folder on your machine.** Each deployment of a tater-tot is mirrored, once a minute, into
+  `<data>/u<id>/_tots/<name>-<deployed>/`: `events.log` (one readable line per event - tail it),
+  `events.jsonl`, `status.json` and `notes/` (the tater-tot's own notes, one file each). The shared scratchpad is
+  `_tots/scratchpad.md`. **Open folder** in the tab opens it; a deleted tater-tot keeps its folder.
+- **The scratchpad can be cleared** for the next set of tater-tots (two clicks in the tab, or
+  `veil --tater pad --clear`); a copy of what it held is kept beside it as `scratchpad-<when>.md`.
+- **Deleting the last tater-tot removes the Worker.** The `veil-tots` Worker exists for its tater-tots: while any remain
+  it stays, and when the last one is deleted it is removed from your account. A newer veil replaces the
+  Worker's code in place, and the tater-tots keep their memory.
+- **Hots are tater-tots now.** v1.1.7 called them hots. The first time a newer veil runs while you are logged in
+  to the same Cloudflare account, it moves them: each hot is created again as a tater-tot with the same name,
+  goal, settings, owner's-machine grant and files; the shared scratchpad comes along; and only then is the
+  old `veil-hots` Worker removed, so nothing keeps running under the old name. What a hot had learned
+  (lessons, facts, stances) stays behind, and its first event as a tater-tot says so. Its local folders move from
+  `_hots` to `_tots`.
+
+#### Seen working
+
+[![TATER-TOTS vs DOTS - the trailer](docs/video/tots-release.png)](https://gary23w.github.io/nl-veil/video/tots-release.mp4)
+
+The trailer (2:20, sound on) is above; the numbers below are not from a trailer. They are three runs on a real
+Cloudflare account, each a tater-tot named Gary given the one-word goal `test` at a 5-second pace - the hard
+kind of goal, where nothing says what done looks like - copied from the folders the veil mirrors to the owner's
+machine:
+
+| run | model | iterations | improved | what it left in its folder |
+|---|---|---|---|---|
+| 1 | `llama-3.3-70b-instruct-fp8-fast` | 18 | 1 | 3 files |
+| 2 | `llama-3.3-70b-instruct-fp8-fast` | 49 | 21 | 24 files - TF-IDF, Jaccard, Spearman and co-occurrence reports, an HTML comparison page; 12 lessons; mood "confident" |
+| 3 | `kimi-k2.7-code` | 13 | 3, the last at **6/6** | a checklist of what `test` means, `test_runner.py`, `test_results.json`: 3 of 3 pass |
+
+Run 3 is the first on the runtime that writes down what a vague goal means before working on it. From its
+`events.log`, trimmed to the lines that tell the story:
+
+```
+19:48:52  r1   pick     Write a `test_goal_checklist.md` file that defines concrete, tool-verifiable items ...
+19:49:40       lesson   Never stop at a checklist; always create and run the minimal test artifact, then
+                        verify it passes before reporting progress.
+19:51:23  r3   verdict  improved [5/6]: py_compile OK; test_results.json has "status":"pass" and
+                        "tests_run":3; required files exist.
+20:01:45       lesson   If os.getcwd() differs from the workspace shown by list_files, enumerate /tmp and
+                        /workspace subdirectories to find where the files actually exist ...
+20:14:22  r11  verdict  improved [6/6]: run_python verified py_compile OK, exit code 0, stdout "TEST OK" /
+                        "PASS: 3", stderr empty, and test_results.json with status "pass" and tests_run 3 ...
+```
+
+The same run showed what to fix next, and both are fixed: its model sometimes answered in its own native
+tool-call markup instead of the JSON protocol (the runtime now reads that markup as the calls it meant, and a
+step written in it as plain words), and a script saw only the files it named, which is what that 20:01 lesson
+was working around (a script that names none now gets the whole workspace beside it, by plain names).
+
+The desktop's console shows one line per event, a failed one in red; click a row to open its full text,
+and *errors* keeps only what failed. `veil --tater` lists them, `veil --tater watch Gary` follows one, `veil --tater rm <name>` deletes one, and
+`veil --tater teardown --yes` removes the Worker and everything the tater-tots stored. The upload needs the optional
+Workers scope the login already asks for; a login that declined it gets Cloudflare's refusal in plain words.
+
+### Running your own OAuth client (optional)
+
+The shipped client id works out of the box. You only need your own if you are forking the veil or want a
+different scope set. Register one at **Manage Account → OAuth clients → Create client**: response type
+*Code*; grant types *Authorization Code* **and** *Refresh Token* (without the second, `offline_access` is
+refused and logins die at the first token expiry); token auth *None (PKCE)*; redirect
+`http://localhost:8787/api/v1/oauth/cloudflare/callback`. Then:
+
+```sh
+NL_CF_OAUTH_CLIENT_ID=<your-public-client-id>   # overrides the compiled-in default
+NL_CF_OAUTH_SCOPES="..."                        # must match what your client declares
+# optional, sane defaults shown:
+NL_CF_OAUTH_REDIRECT=http://localhost:8787/api/v1/oauth/cloudflare/callback
+NL_CF_OAUTH_AUTH_URL=https://dash.cloudflare.com/oauth2/auth
+NL_CF_OAUTH_TOKEN_URL=https://dash.cloudflare.com/oauth2/token
+```
+
+A warning worth the ink: **scope ids are Cloudflare's internal permission-group slugs, not hyphenated
+dashboard labels.** "Workers AI" is `ai.*`, "Workers" is `workers-scripts.*`, and "Pages" is `page.*` —
+*singular*. One wrong id rejects the whole authorize request, so look them up in the catalogue
+(`GET /client/v4/oauth/scopes`, or Cloudflare's mirror in `cloudflare/mcp`) rather than deriving them.
+
+### The HTTP surface
+
+```
+POST /api/v1/oauth/cloudflare/start      mint the consent URL (PKCE + CSRF state)
+GET  /api/v1/oauth/cloudflare/callback   the browser lands here; the token is sealed server-side
+GET  /api/v1/oauth/cloudflare/status     connected? as whom? (never returns the token)
+GET  /api/v1/oauth/cloudflare/models     your account's live Workers AI catalogue
+POST /api/v1/oauth/cloudflare/logout     forget the credential
+GET  /api/v1/oauth/cloudflare/r2         backup status: bucket, files, bytes, last sync
+POST /api/v1/oauth/cloudflare/r2/sync    run a backup pass now
+POST /api/v1/oauth/cloudflare/r2/auto    turn the automatic backup on or off
+GET  /api/v1/tots                        your tots: the roster and the deployment status
+POST /api/v1/tots                        deploy one (uploads the runtime when the account lacks it)
+POST /api/v1/tots/:name/command          a command or a message for one tot
+POST /api/v1/tots/:name/config           its settings: model, pace, size, daily calls, charter, paused
+GET  /api/v1/tots/:name/events           its event tail
+GET  /api/v1/tots/pad   (and POST)       the scratchpad the tots share
+POST /api/v1/tots/pad/clear              empty it (a local copy is kept)
+POST /api/v1/tots/keys                   give the tater-tots a search key (brave, google, google_cx)
+POST /api/v1/tots/limit                  how many this account may run ({"max": N}, 1 to 1000; 24 by default)
+GET  /api/v1/tots/runs                    every run kept on this machine: live, ended, failed (newest first)
+GET  /api/v1/tots/runs/:run/events       one run's events, read from its folder (?after=N)
+DELETE /api/v1/tots/runs/:run            remove a history entry; its files are preserved
+DELETE /api/v1/tots/:name                delete one (the last one takes the Worker with it);
+                                         DELETE /api/v1/tots removes them all
+```
+
+The token is stored per user, auto-refreshed, and **never returned to any client** — the UIs only ever
+see the connection status and your profile.
+
+## One server, three faces
+
+The mental model, because everything else follows from it: **the server process is the whole system.**
+It holds the accounts, the memory, the model keys, and it is the only thing that executes tools. The
+web app, the desktop window, and the CLI are all just clients of the same `/api/v1` surface — none of
+them holds state the others can't see.
+
+```
+                    ┌──────────────────────────────────────────────┐
+   a browser,  ───►  │  veil  (ONE process, ONE binary)              │
+   any device        │                                              │
+                     │   http :8787   ──►  route table (main.zig)   │
+   the desk    ───►  │                       │                      │
+   window            │                       ▼                      │
+                     │                  /api/v1/*                   │
+   `veil <verb>` ──► │       accounts · memory · sealed keys ·      │
+                     │       swarms · scheduled tasks · TOOLS       │
+                     │                       │                      │
+                     └───────────────────────┼──────────────────────┘
+                                             ▼
+                                   this machine's disk,
+                                   shell, network, models
+```
+
+**(a) The web app.** `web/public/{index.html,app.js,styles.css,models.json}` — no bundler, no build
+step, no framework. `index.html` is a single `<div id="app"></div>`; the entire UI renders from
+`app.js`. The four files are embedded into the binary at compile time (`build.zig:76-79`) and served
+by `staticIndex` / `staticJs` / `staticCss` / `staticModels` (`src/main.zig`, the route table). Tabs:
+**Dashboard, Chat, Tasks, Swarms, Admin** (admins only), **Settings**.
+
+**(b) The desktop window.** `desk/*.zig`, compiled **into the same binary** via `-Dapp` (default true,
+`build.zig:121`). In app mode the GUI runs on the main thread and the HTTP server on a background
+thread (`src/main.zig`, "APP MODE") — one process, no child to spawn, no second executable in the
+bundle.
+raylib is a *lazy* dependency, so `-Dapp=false` never fetches it at all.
+
+**(c) The CLI.** `src/cli.zig` dispatches every verb over HTTP to the running server
+(`src/cli/{chat,hub}.zig` for the two big ones). There is no second control plane and no argv secrets.
+
+### Why that shape matters to you
+
+- **Your phone gets the same app as your desktop**, and nothing is installed on the phone. It's a URL.
+- **The tools run on the host machine, not in the browser.** A browser can't execute a shell command,
+  so the server does it — `web/public/app.js` deliberately omits the `tool_client` flag for exactly
+  this reason (see the comment in `sendTurn`), and the turn's tools run server-side through
+  `POST /api/v1/chat/tool`. When you ask the veil in a browser to write a file, the file lands on the
+  machine running `veil`.
+- **Accounts are isolated on disk.** Each user's data lives under `{data}/u{uid}/…`, and non-admin
+  accounts run a restricted tool surface (`src/worker/chat/tools.zig`, `toolSafe` / `chatTool`). See
+  [everyone else is sandboxed](#everyone-else-is-sandboxed).
+- **One provider key can serve everyone**, or everyone can bring their own. That choice is yours and
+  it has a real cost — see [the shared provider key](#the-shared-provider-key).
+
+## Install
+
+**Download it and run it — no toolchain, nothing to build.** Grab your platform's bundle from the
+**[latest release](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21)**, unzip, and run `veil`:
+
+| You're on | Download | Then run |
+|---|---|---|
+| **Windows** | `veil-…-windows-x86_64.zip` | `veil.exe` |
+| **macOS** (Apple Silicon) | `veil-…-macos-arm64.zip` | `./veil` |
+| **macOS** (Intel) | `veil-…-macos-x86_64.zip` | `./veil` |
+| **Linux** | `veil-…-linux-x86_64.zip` | `./veil` |
+
+That single action starts the local server **and** opens the desktop app.
+
+> **Take the `veil-…` bundle for your OS — not "Source code (zip)".** GitHub attaches a source archive
+> to every release automatically: it's the raw repo, building it needs the Zig compiler, and the
+> `install.ps1` inside is a *developer* script. The `veil-server-…` assets are the **headless** server
+> for remote boxes — no desktop app.
+
+> **The downloads are unsigned.** On Windows, the [Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) is signed by
+> Microsoft and installs with no prompt. The zip from GitHub shows *"Windows protected your PC"* →
+> **More info → Run anyway**. macOS says the developer can't be verified → **right-click → Open** (or
+> `xattr -dr com.apple.quarantine <folder>`). Signing certificates are still on the list.
+
+<details><summary><b>Build from source instead</b> — contributors (needs Zig 0.16+)</summary>
+
+These installers **clone the repo and build it**, so they need [Zig 0.16+](https://ziglang.org) on
+`PATH`. This is the contributor path, *not* the quick start.
+
+**macOS / Linux**
+```sh
+curl -fsSL https://raw.githubusercontent.com/gary23w/nl-veil/main/scripts/install.sh | sh
+```
+
+**Windows** (PowerShell)
+```powershell
+iwr -useb https://raw.githubusercontent.com/gary23w/nl-veil/main/scripts/install.ps1 | iex
+```
+
+or by hand:
+```sh
+git clone https://github.com/gary23w/nl-veil && cd nl-veil
+zig build run
+```
+The `veil` binary (Zig) and the neuron-db memory engine (Rust) are built for you on first run — each
+with a prompt before it downloads anything. Point `--neuron-bin` / `--bin` at existing binaries to
+skip the builds.
+</details>
+
+## Start it
+
+`veil` **is** the launcher and the control plane. Run it with no subcommand to start the app; add a
+verb to drive the running server over its API.
+
+```sh
+veil                 # THE ONE-CLICK DEFAULT: starts the server AND opens the desktop app
+veil --server-only   # server alone, no desktop (headless boxes, services, containers)
+```
+
+Closing the desktop window shuts the whole thing down — server and everything it spawned — so there's
+no stray process left listening. On Windows a double-click opens no console window; run it from a
+terminal and your terminal is left alone.
+
+> **It listens on every network interface by default.** `NL_BIND` is unset → the server binds
+> `0.0.0.0`, which means anyone who can reach this machine on port 8787 can open the login page
+> (`src/main.zig:475-487`). That is the point — a phone on the sofa should be able to open it — but
+> it is worth knowing before you leave it running on a café wifi. `NL_BIND=127.0.0.1` pins it to this
+> machine only. See [the walkthrough](#walkthrough-run-it-add-people-put-it-on-your-network).
+
+**About models:** you don't have to bring one — download the built-in `the-veil-12b` in the app (or
+`veil model pull`) and it serves itself, [see below](#the-built-in-model--nothing-to-install). To use
+something else, point the endpoint with `NL_LLM_BASE_URL` / `NL_LLM_MODEL` / `NL_LLM_KEY` (a local
+Ollama is the fallback default), or just pick a model in the web UI / the desktop. The server
+**always** mints an admin key
+at `data/.desktop_key`; the CLI and the desktop read it automatically, so same-machine commands never
+prompt for auth. It is a file readable only by your OS user — opening the port to the LAN does not
+make a local file more reachable. **Any `veil <verb>` auto-starts the server if it isn't already up.**
+
+**Where your stuff lives:** a `data/` folder **next to the `veil` binary** — conversations, memory,
+swarm workdirs, logs, all of it. Nothing is written to a system temp dir and nothing leaves the
+machine. Move the folder and you move the whole install; back it up and you've backed up everything.
+(From a source checkout it resolves to the repo's own `data/`, so dev and release never share state.)
+
+## The built-in model — nothing to install
+
+Most local-AI setups start with a second program: install a runtime, pull a model, keep it running,
+point the app at it. **veil skips that.** The inference engine is compiled into the binary, and the
+server serves **[the-veil-12b](https://huggingface.co/gary23w/the-veil-12b)** itself from a GGUF on
+disk. There is no runtime to install, no port to keep alive, no key to paste.
+
+The weights are the only thing not in the download (a model is bigger than an app), so the first run
+offers to fetch them:
+
+```sh
+veil model status              # weights + engine + any download in flight
+veil model pull                # download the published weights — resumable, sha256-verified
+veil model import [--path F]   # copy a GGUF you already have (no --path: find your local runtime's copy)
+veil model check               # is a newer release published? (compares shas; `pull` installs it)
+veil model cancel              # stop the running pull — the partial resumes next time
+veil model rm                  # remove the serving weights
+```
+
+In the desktop there's a panel for the same thing: a **download** button, a live progress bar, and
+one click to make it the active model. A finished download **hot-swaps** into the running server —
+no restart. An install manifest beside the weights records what is installed and how it arrived, so
+`check` can tell "you have the current build" apart from "you have something you imported".
+
+- **It runs on your GPU when you have one.** The Vulkan backend is compiled in and the loader is
+  opened at run time, so a machine with no GPU falls back to CPU cleanly rather than failing to
+  start. (`-Dvulkan=false` cuts ~50 MB of embedded shaders from the binary; macOS builds are CPU-only
+  until a Metal tier exists — Apple silicon's unified memory carries it.)
+- **The engine endpoint is not an open local port.** It is loopback-only and every request carries a
+  bearer minted fresh at boot, so other processes on the machine can't quietly use your model the way
+  they can with a conventional runtime.
+- **It is one provider among the others.** Pick `builtin` in Settings, or keep Ollama, or a hosted
+  endpoint, or a different model per role — see [the model trio](#three-models-one-turn--the-model-trio).
+- **You can leave it out.** `zig build -Dbuiltin=false` never even fetches the inference sources; the
+  builtin provider then simply reports itself unavailable and everything else works as before.
+
+> **The engine is tuned for small local models, not just big hosted ones.** A model at or below ~24B
+> (or with a ≤15k window) gets a **compact tool belt** and a tighter doctrine — fewer verbs to rule
+> out per call, no delegation concepts, honest "I can't read that" answers instead of fumbled
+> fetches. Capability isn't removed: the full tool schema still dispatches if the model calls it.
+> For local Gemma-4 the engine also renders the prompt itself rather than going through the runtime's
+> template — verified byte-for-byte against the model's own chat template, which measured 27/30 on
+> the harness drills against 18/30 through the runtime's renderer (`src/worker/gemma4.zig`).
+
+### The belt manifest — why a smaller belt scores higher
+
+A tool array is JSON, and on the compact tier it is still ~3 KB of nested schema sitting far behind
+the conversation. Asked whether it has a browser, a 12B does not re-read that JSON — it answers from
+impression. Observed live (`c6a751a54`): the model ran `list_dir` hunting for its browser tools *in
+the filesystem*, read the empty directory as proof, and denied a browser it was holding.
+
+So the compact tier appends one generated line naming the belt it was actually handed
+(`beltManifest`, `src/worker/chat/engine.zig`) — every tool by exact name, plus a **WON'T, NOT CAN'T**
+rule that separates declining by judgment from claiming a capability is absent. It is derived from
+the final belt string after grants and plugin schemas merge, so it can never drift from what the
+provider sees, and it is turn-stable so prompt-prefix caching still holds.
+
+Measured on `the-veil-12b` over 110 held-out drills across five sets:
+
+| serving configuration | score | invented tool names |
+|---|---|---|
+| 20-tool belt, full doctrine, no manifest | 92/111 — 82.9% | 6 |
+| **17-tool compact belt + manifest + date stamp** | **97/110 — 88.2%** | **2** |
+
+The trimmed belt and the shorter doctrine contribute alongside the manifest, so the 5.3-point gain
+belongs to the combination. What points at the manifest specifically is the invented-name column —
+naming the belt in prose removes the model's reason to guess — and the same comparison on a later
+checkpoint moved invented names from 11 to 1. The counter-intuitive part is worth stating plainly:
+**the smaller belt scored higher.** Fewer tools, described in words, beat more tools described only
+in schema.
+
+The manifest is deliberately **compact-tier only**. Frontier models read a 49-tool array without
+help, and the line costs tokens on every turn; extending it upward would need its own measurement on
+a large model rather than an assumption borrowed from a 12B.
+
+## Walkthrough: run it, add people, put it on your network
+
+Written for someone who is not a developer. **If you only want it on your own machine, stop after
+step 5** — the rest is about letting other people in.
+
+### 1. Download and unblock it
+
+Grab the bundle for your OS from the [latest release](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21)
+and unzip it somewhere you'll find again. Builds are unsigned, so:
+
+- **Windows** shows *"Windows protected your PC"* → **More info** → **Run anyway**. The
+  [Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) is signed by Microsoft and installs without it.
+- **macOS** says the developer can't be verified → **right-click the `veil` file → Open** → **Open**.
+  (Or `xattr -dr com.apple.quarantine <folder>` in Terminal.)
+
+### 2. Run it
+
+Double-click `veil.exe` (Windows) or run `./veil` (macOS/Linux). The desktop window opens and the
+server comes up behind it.
+
+**One rough edge, stated plainly:** on Windows, double-clicking from Explorer relaunches `veil`
+without a console window (`src/main.zig`, `detachOwnConsole`) — which is what you want for an app, but it means
+**the startup banner is invisible**, and the banner is where the network URL and the admin password
+notice get printed. There is no log file to read it out of afterwards, and the desktop window does not
+display the URL either.
+
+So if you care about the banner, **start it from a terminal instead** — when a shell owns the console,
+`veil` leaves it alone and prints normally:
+
+```powershell
+# Windows PowerShell, from the folder you unzipped into
+.\veil.exe
+```
+```sh
+# macOS / Linux
+./veil
+```
+
+### 3. Find the URL
+
+On startup the server prints one complete URL per address this machine answers on
+(`src/main.zig:861-889`, using `src/config/lan.zig`):
+
+```
+neuron-loops 1.1.21 on http://localhost:8787
+    open from another machine (phone, laptop) at:
+      http://192.168.1.42:8787
+```
+
+If you missed the banner, ask the OS for the address instead — `ipconfig` (Windows), `ifconfig` or
+`ip addr` (macOS/Linux) — and use `http://<that-address>:8787`.
+
+The port is **8787** unless you set `NL_PORT` (`src/main.zig:409-413`). It is the one place the port is
+resolved, so the CLI and the server always agree.
+
+### 4. Log in as the admin
+
+The first run creates an admin account. When you do not choose a password, it **generates** one on
+both network and loopback binds — and writes it to a file, because a banner you
+never saw is not a delivery mechanism:
+
+```
+data/admin-password.txt
+```
+
+That file sits next to the binary, beside the data it protects. The password is **stable across
+restarts** while it matches the admin account; a stale file cannot restore a superseded password
+(`src/main.zig`, `readAdminPassword` / `writeAdminPassword`).
+
+- Default email: **`admin@neuron-loops.local`** (change it with `NL_ADMIN_EMAIL`).
+- To pin your own password instead of using the generated one, set `NL_ADMIN_PASSWORD` before starting.
+  Do that and no file is written — the password is the one you chose.
+
+Older installs that still use the published `changeme` password are rotated to a generated one at
+startup, before the server listens. A custom existing password remains in force when no generated
+file or `NL_ADMIN_PASSWORD` is present.
+
+### 5. Pick a default model for the instance
+
+Open the web app (or the desktop) and go to **Admin → Default model**. Pick from the same catalog the
+Settings tab uses; it applies immediately, to everyone who hasn't chosen their own, with no restart.
+It persists to `data/server-config.json`.
+
+`NL_DEFAULT_MODEL` / `NL_DEFAULT_BASE_URL` **seed** this on a fresh install for unattended setups —
+but once an admin sets it in the UI, the stored value wins, so a stale launch script can't undo it on
+the next restart (`src/config/server_config.zig`).
+
+**Without a default model, a brand-new account cannot chat until it configures one itself.**
+
+---
+
+*Everything below is about other people using it. If it's just you, you're done.*
+
+---
+
+### 6. The shared provider key
+
+**Admin → provider key** (`POST /api/v1/admin/keys`). It is stored sealed in the same vault as
+everyone else's keys, under a reserved uid 0 that no real account can hold
+(`src/worker/chat/service.zig:31`, `:89-100`).
+
+The trade is worth stating outright, because it is a billing decision:
+
+- **Without it**, every new account has to bring its own API key in Settings before it can chat at all.
+- **With it**, nobody needs a key — and **every user's turns spend your credit.** A user's own key
+  always wins if they have one, so setting this never silently switches a paying account onto your
+  bill. But everyone else is on it.
+
+For a family or a LAN of people you know, that's exactly right. For anything wider, think about it
+first, and size `NL_MAX_TURNS` to the rate limit of the key you just handed everyone.
+
+### 7. Create accounts
+
+**Admin → + New user** (`POST /api/v1/admin/users`). Enter an email and a password of **8–200
+characters**, then hand the password over out of band — the server never shows it again. Account
+creation is audited (who was let in, by whom, when).
+
+Self-signup is **off by default**. `NL_OPEN_REGISTRATION=1` opens it, which is the wrong posture for a
+box on a LAN and the right one if you're running something more public.
+
+### 8. Other people connect
+
+They type `http://<your-ip>:8787` into any browser — phone, tablet, laptop, whatever's on the same
+network. Nothing is installed on their device. They get the same web app you do, minus the Admin tab.
+
+### 9. The firewall (this is the step that fails)
+
+**If step 8 does nothing — a spinner, a timeout, "can't reach this page" — it is almost certainly the
+firewall, and the app will not tell you.** There is no firewall detection anywhere in the codebase, so
+a blocked port looks identical to a wrong IP address from inside the browser.
+
+- **Windows.** The first time `veil` binds a port, Windows Defender Firewall pops up *"Allow this app
+  to communicate on these networks."* Tick **Private networks** and allow it. If you dismissed that
+  prompt — or clicked Cancel — Windows silently remembers the block. Fix it in **Windows Security →
+  Firewall & network protection → Allow an app through firewall → Change settings**: find `veil` in
+  the list and tick **Private**. If it isn't listed at all, **Allow another app…** and browse to
+  `veil.exe`.
+- **macOS.** You may get *"Do you want the application to accept incoming network connections?"* —
+  say **Allow**. Otherwise check **System Settings → Network → Firewall → Options**.
+- **Linux.** Usually nothing blocks it, but if you run a firewall you'll need to open the port
+  (`sudo ufw allow 8787/tcp` on ufw-based systems).
+
+Two things to check before you blame the firewall: both machines are on the **same** network (guest
+wifi is often isolated from the main one), and you used the LAN address from the banner, not
+`localhost` — `localhost` on their phone means their phone.
+
+### 10. Locking it back down
+
+```sh
+NL_BIND=127.0.0.1 veil       # this machine only; nothing on the network can reach it
+```
+
+`localhost` works too. Anything else — or leaving it unset — binds every interface.
+
+### Before you put this on a network
+
+Two limits you should know about before you hand out passwords.
+
+**Traffic is plain `http://`.** There is no HTTPS in the server today. Logins, passwords, chat
+contents, and API responses cross your LAN unencrypted, readable by anything else on that network. On
+a home or office network you control, that is a normal trade. On shared or public wifi it is not.
+
+**Tools run on the host machine.** Non-admin accounts are sandboxed: their turns get the conversation's
+own workspace, research, and the full hive-memory surface — but no code execution, no host commands,
+no engine self-modification, no tool authoring, no browser or MCP drive, and no casting swarms or
+scheduling runs. What that means: **a normal user cannot run commands on your machine.** What it does
+*not* mean: their work is still stored on your disk, still spends whatever provider key is in play,
+and the **admin** account keeps the complete surface — so anyone who gets the admin password gets a
+shell on the host, in effect.
+
+**About exposing this to the open internet:** it's a different risk class from a home LAN, and this
+document isn't going to hand you a port-forwarding recipe as if it weren't. Plain-http logins over the
+public internet mean credentials in the clear; unsigned self-signup plus a shared provider key means
+your billing is the attack surface. If you genuinely need remote access, put it behind something that
+terminates TLS and authenticates first (a VPN or a reverse proxy you already trust) rather than
+forwarding 8787 at the router.
+
+## The `veil` command line
+
+Every subcommand is a thin client over the running server's `/api/v1/*` — no second control plane, no
+argv secrets, no Python. The verbs:
+
+```
+veil                          start the app: server + desktop (--server-only for headless)
+
+SWARMS
+  --swarm "<goal>" [flags]     cast a swarm and WATCH it: every mind's step on the right, one chat line
+                               into the whole swarm on the left; runs to completion on its own, with as
+                               many minds as the goal needs (--minds N to choose)
+      --minutes N  --model M  --provider P  --lineage <id>  --once  --background (no terminal view)
+  cast "<goal>" [flags]        deploy a swarm to work a goal
+      --minutes N  --minds N  --model M  --provider P  --base-url U  --key K
+      --style S  --name N  --continuous  --offline  --follow
+      --lineage <id>           persist this swarm's memory under <id> so re-casts COMPOUND
+  deploy "<goal>" [flags]      alias for `cast --continuous` (a sustained hive)
+  list | ls | ps               list your swarms
+  stop <id>                    ask a swarm to stop
+  rm <id>                      stop and remove a swarm
+  events <id> [--follow]       stream a swarm's event log  (aliases: logs, watch)
+  lineage [ls]                 lineages: what each has learned + how many proposals await review
+  lineage show <id>            the end-of-run judge's and habit miner's quarantined proposals
+  lineage accept|reject <id> <n>  promote proposal n into the live memory, or reject it for good
+
+CHAT (the server-side veil brain)
+  chat [conv]                  interactive REPL; a line typed mid-turn steers the running turn
+  goal "<what to achieve>"     a GOAL LOOP: pick the next best improvement, do it, measure it, repeat;
+      [--budget N] [--forever] [--check "<cmd>"] [--conv id]   ends when achieved, spent, or nothing improves
+                               in any chat: /goal <text>   /goal   /goal stop   /goal resume
+
+TATER-TOTS (autonomous goal loops that run in YOUR Cloudflare account)
+  --tater                         the roster (24 by default - see limit); the first is always named Gary
+  --tater deploy "<goal>" [flags] --name N --charter "..." --model @cf/... --pace SECONDS --size MINDS
+                                  --calls PER_DAY|unlimited --budget N --forever   (--pace from 5)
+                                  --local  lets it queue jobs for the veil on THIS machine (deployment only)
+  --tater tell <name> "<text>"    /goal <text>, /goal stop, /queue <goal>, /pause, /resume, or a message
+  --tater watch <name>            follow its events
+  --tater set <name> [flags]      --model --pace --size --calls --charter --pause --resume
+  --tater pad ["<text>"|--clear]  the scratchpad the tater-tots share (--clear empties it)
+  --tater key brave <key>         a search key for their web_search (google, google_cx; --remove)
+  --tater limit [N]               how many this account may run: 24 by default, 1 to 1000
+                                  (your Cloudflare plan decides how many it really carries)
+  --tater rm <name>               delete one     --tater teardown --yes   remove them all + the runtime
+
+BUILT-IN MODEL (the-veil-12b, served in-process — no external runtime)
+  model status                 weights + engine + any download in flight
+  model pull                   download the published weights (resumable, sha-verified)
+  model import [--path FILE]   copy a GGUF you already have into the store
+  model check                  is a newer release published? (`pull` installs it)
+  model cancel                 cancel the running pull (the partial resumes later)
+  model rm                     remove the serving weights
+
+KNOWLEDGE (the local pack corpus — built-in RAG)
+  rag status                   is a local knowledge mirror active, and where from
+  rag sync --from <clone>      copy an nl-rag checkout into the app's data dir for offline RAG
+      --tier atlas|facts|full  manifest only | +INDEX+distilled facts (default) | +every page
+      --dest <dir>             sync somewhere else (e.g. vendor/nl-rag pre-build)
+      --include-auto           also copy machine-grown packs (off-topic risk; off by default)
+  rag ingest <file>            absorb a local book/doc/notes into the hive as recallable facts
+      --scope S --name L --cap N --db <hive.sqlite>
+
+SCHEDULED TASKS (admin-gated)
+  sched list
+  sched add --name N --prompt "..." [--kind once|every|daily] [--every MIN] [--at HH:MM]
+  sched run <id>               run a task now
+  sched rm <id>                delete a task
+
+FLEET
+  hub                          roster: fleet summary + every swarm's state
+  hub all "<text>"             broadcast a directive to every swarm
+  hub goal "<text>"            set a new goal on every swarm
+  hub stopall                  stop every swarm
+
+EXTENSIONS (themes + plugins — see PLUGINS.md)
+  themes                       list every theme (built-in + user)
+  themes <id>                  print one theme's full palette
+  plugins                      list loaded plugins, their tools + state
+  plugins reload               admin: rescan <data>/plugins + <data>/themes, hot-swap
+
+MISC
+  doctor [--runtime]           server + token health; --runtime folds the runtime ledgers in
+                               (learned tool behavior, schedule fail-streaks, per-model usage)
+                               and works with the server down
+  desktop | desk               open the app window (like a bare `veil`, but detached)
+  exec-tool <tool> [args]      run one hive tool directly, in this process
+  local-host                   the per-machine daemon that owns stateful local resources
+                               (browser sessions) — started for you on demand
+  sync-manifest / sync-read    the file-sync side of a delegated turn
+  version | help
+```
+
+Cast in one line and watch it work:
+
+```sh
+veil cast "Build a CLI todo app in Python with tests" --follow
+veil deploy "Keep researching fusion power and brief me each pass" --style discourse
+veil cast "add a search box to my landing page" --offline
+```
+
+## Make it your own — themes & plugins
+
+veil is extensible without a rebuild. Drop a Lua file into your data directory and it works across the
+whole product — web, desktop, and CLI:
+
+- **Themes** (`<data>/themes/*.lua`) re-skin everything. The shipped `dark`, `light`, and `matrix` themes
+  are seeded there on first run; copy one, change the `id` and a few of the 16 colors, and it appears in
+  every client's theme picker. `mono_ui = true` renders the whole UI in the code font (that's how `matrix`
+  gets its terminal look).
+- **Plugins** (`<data>/plugins/<name>/plugin.lua`) add tools the AI can call, **policy** hooks that gate
+  what runs, and **prompt** hooks that shape every turn — all in a locked-down Lua sandbox. You can also
+  bridge an external MCP server so its tools become veil tools.
+
+The complete, copy-paste authoring guide — the `veil.*` API, the hook reference, the sandbox model, and
+templates for both — is in **[PLUGINS.md](PLUGINS.md)**.
+
+```sh
+veil themes            # every theme, built-in and yours
+veil plugins           # loaded plugins, their tools and state
+veil plugins reload    # admin: pick up changes with no restart
+```
+
+## The chat brain runs in the server
+
+The agentic chat loop — planning, tool-calling, streaming, steering, and memory — runs **server-side**
+in [`src/worker/chat/engine.zig`](https://gary23w.github.io/nl-veil/#doc=worker/chat/engine). Clients
+(`veil chat`, the desk, the browser) are thin: they speak three REST calls per conversation.
+
+```
+POST   /api/v1/chat/convs/:id/messages          # send a message → runs one server-side turn
+GET    /api/v1/chat/convs/:id/events?from=<n>    # stream the turn's event frames from a byte cursor
+POST   /api/v1/chat/convs/:id/control            # {"op":"steer","text":...}  or  {"op":"stop"}
+```
+
+One turn runs per conversation. While it's working, a line you type becomes a **steer** the running
+turn folds in without restarting; `stop` ends it. The turn writes its progress into the conversation's
+own store (`messages.jsonl` + `events.jsonl`), which is exactly what the event stream serves — so every
+client sees the same turn, live. The desktop **prefers this backend and falls back** to a bundled local
+engine if it's disabled (`VEIL_CHAT_BACKEND=0`) or unreachable. `veil chat` opens a terminal REPL over
+the same three calls:
+
+```
+$ veil chat
+veil chat — conversation cli7f3a1c
+  type a message; while the veil is working, a line STEERS the running turn.
+  /stop  interrupt the current turn   /new  fresh conversation   /quit  leave
+
+> what are you working on?
+```
+
+What the model sees each turn is governed, not accreted: every context block (memory, tool digests,
+corrections, plugin hooks…) bids into a [prompt workspace](https://gary23w.github.io/nl-veil/#doc=worker/chat/workspace)
+with a fixed render order, per-channel byte budgets, and a **provenance receipt** on every admitted
+block — and each turn's admit/drop record lands in `workspace.jsonl`, so "why did it say that" has a
+queryable answer. Recalled memory arrives **scored** (numbers, not vibes), a fact that contradicts a
+stored sibling arrives marked `[CONTESTED]` with both sides shown, and a sentinel-gated second model
+audits doubtful memory before the answering model reads it — annotations only, nothing is silently
+deleted.
+
+### A long conversation keeps its past
+
+Every fold of the rolling summary also appends the concrete facts it established — decisions, names,
+paths, values — to an append-only `digest.jsonl` beside the transcript, and each turn projects that
+ledger back for the live question with no model call: the newest lines, then the ones closest to what is
+being asked. The summary, the facts block and the verbatim window are all sized to the window and capacity
+of the model that reads them and the model that writes the folds, so a 32k model keeps the history it had,
+a large model with a 128k window replays 64 KB verbatim, and a small local summarizer is never handed a
+fold it cannot hold
+([context](https://gary23w.github.io/nl-veil/#doc=worker/chat/context)).
+
+**A long turn carries itself forward by graph, not by summary.** When a turn crosses its spend ceiling,
+[Gary's 4tope](https://gary23w.github.io/nl-veil/#doc=worker/chat/net) reads the turn's working log as a
+dependency graph: each result hangs off the step that asked for it, a step depends on the results it
+reused, and a later read or write of the same file supersedes the earlier one. The longest path back from
+the current step is the chain the work rests on; it is never pruned. The continuation is laid out along the
+shortest-path tree from that step, under a byte budget, in the turn's own words: NEXT, ON DISK, RULED OUT,
+ESTABLISHED. No model writes it, so nothing is paraphrased away, and a failure a later success replaced is
+not carried as current. Tool findings reach neuron-db at every step, so the carry is a layout of what is
+already remembered. `NL_HANDOFF=model` restores the model-written state. Before any of that, old tool
+results are stubbed before anything is summarized, and the working span grows with the model's window.
+
+Inside a turn, a [recall overlay](https://gary23w.github.io/nl-veil/#doc=worker/chat/overlay) keeps a small
+working field of the conversation's memory, your durable notes and the file ledger, grows it with every
+finding the moment it exists, and settles it around what the model is doing right now before **every**
+round of the turn's tool loop (the auxiliary verdict, compaction and planning calls go without it). It
+reaches the model as one advisory block that is removed the instant the model answers — never
+written to the transcript, a summary or the store. A line shown three times and never used is set aside for
+the next four calls; a line the model does use is strengthened in the store at the end of the turn.
+`NL_MEM_OVERLAY=0` turns it off, `NL_MEM_OVERLAY_BYTES` sizes the block (900 by default).
+
+When the veil keeps or drops a durable memory about you (`REMEMBER:` / `FORGET:`), the turn records that
+under its reply and announces it on the event stream, so the desktop's Memory tab refreshes on the spot
+and the change is never mistaken for a step still to do.
+
+**A provider failure costs a wait, not the turn.** In a chat turn, any failed call to a hosted endpoint is
+retried up to ten times in a row — 5 s growing to 60 s apart, about five minutes in all — counted per
+provider, with the Cloudflare token re-resolved before each try. Each wait shows as a status line, and
+**Stop** ends it at once. Local endpoints and the swarm's workers keep the short ladder for transient
+errors only.
+
+## The tool belt
+
+A turn is only as useful as what it can actually touch. The engine ships **~58 tools**, all executed
+by the server on the host machine (never in your browser), all logged as event frames you can watch
+live:
+
+| group | tools |
+|---|---|
+| **Files & code** | `read_file` `write_file` `edit_file` `delete_file` `list_dir` `stage_file` `stage_delivery` |
+| **Run things** | `host_command` `run_tests` `run_python` `host_status` `host_explore` `stop_process` `poll` `probe` |
+| **Web & research** | `web_search` `web_fetch` `read_url` `fetch_json` `deep_crawl` `read_doc` `osint_scan` |
+| **Your browser** | `browser_navigate` `browser_read` `browser_click` `browser_click_at` `browser_type` `browser_type_text` `browser_key` `browser_scroll` `browser_eval` `browser_console` `browser_network` `browser_close` |
+| **Screen & images** | `pixel_capture` `pixel_ingest` `pixel_search` — screenshots and attached images become searchable text + regions, so a model that can't see gets the picture anyway |
+| **Memory** | `observe` `recall` `recall_hive` `absorb` `journal` `share` `save_skill` `note_stance` |
+| **Coordination** | `send_message` `ask_veil` `add_task` `complete_task` `propose_plan_change` |
+| **Other AI apps** | `mcp_discover` `mcp_call` — find the MCP servers already configured on this machine (Claude Desktop, Cursor, VS Code) plus local AI runtimes, and call their tools as if they were veil's |
+| **Self-improvement** | `make_tool` (author a new tool at run time) `set_directive` (write its own playbook) `propose_change` / `simulate_change` / `patch_system` (governed, trial-gated) |
+| **Secrets** | `get_credential` — the broker hands over a named credential; the value never enters the transcript |
+
+Two of these deserve a note. **`poll` replaces blind sleeping**: a bounded watch loop that samples a
+file, URL, port, process, command, or swarm until it's done or the budget expires, so a long wait is
+a chain of bounded polls instead of one guess. And **`stop_process`** exists because a turn that can
+start a server must be able to end one — a Stop from you now reaches a blocking tool instead of
+waiting for it to finish.
+
+**The tool tree** (`NL_TOOL_MAP=1`, opt-in) advertises the belt as a map instead of a list. The model
+walks it with one verb, `open_tools`: at most seven branches at a time, each with one line saying what it
+is for, and reaching a group opens its tools by name. The engine opens the likeliest group from the
+request before the first call, a tool the model already knows opens its own branch in the round it is
+called, and a model that wanders for four rounds is handed a search of the whole map. Agent Garrett's
+catalogue, plugins and other MCP servers attach as branches of their own, and the map learns which words
+lead to which tools. Shrinking what is advertised never shrinks what is callable
+([the tool tree](https://gary23w.github.io/nl-veil/#doc=worker/chat/belt)).
+
+Non-admin accounts run a **restricted subset** (workspace files, research, and the whole memory
+surface — but no shell, no browser, no MCP, no tool authoring, no casting). See
+[everyone else is sandboxed](#everyone-else-is-sandboxed).
+
+## It can use your browser
+
+Research that hits a login wall is research that stops. So the veil can drive **the browser you are
+already signed into** — your profile, your cookies, your sessions, and you sitting right there to
+answer a verification prompt — through a deliberately tiny **Chrome/Edge extension** in
+[`extension/`](extension/).
+
+- **Load it once.** `chrome://extensions` → *Developer mode* → **Load unpacked** → pick `extension/`.
+  It finds the local server itself, pairs over loopback only, and remembers the pairing across a
+  server restart.
+- **The extension holds no automation logic.** It relays debugger commands and posts back replies —
+  that's all. Every snapshot, click heuristic and page model lives in the server, so the app can get
+  smarter without you ever reinstalling the extension. Input arrives as *real* browser events, not
+  the synthetic kind a content script is limited to.
+- **Pairing is loopback-only.** A remote attacker can't pair because the request has to originate on
+  the machine; the relay's blast radius is the tab it drives. The token is never logged.
+- **Or don't use your browser at all.** With no extension the driver launches its own throwaway
+  profile, logged out of everything — the private option, still there and still the default for
+  unattended casts.
+- **Reads describe what happened.** A click reports its effect, and form fields are read back and
+  confirmed, so the agent stops re-reading the page to guess whether anything landed.
+- **A page read is projected, never truncated.** Ordinary tool results get clipped head-and-tail, but a
+  page state is a *ref table* — byte-offset elision deletes elements the model then cannot see, and
+  nothing distinguishes a dropped ref from an absent one. Measured on a live 18,317-character read: from
+  the clipped payload the model named a confidently **wrong** ref for the search box, one it would then
+  have typed into. The projection keeps every interactive ref and drops the JSON boilerplate repeated
+  once per element — 59% smaller and lossless in refs, so it is not a size/quality trade.
+- **It is told what the page cannot tell it.** Navigating invalidates every ref, and typing into a
+  `button` or `a` activates it instead of entering text; both are now stated in the tool descriptions.
+  Elements the extractor has no label for are marked `(unlabelled)`, duplicates `(dup N)` — on one real
+  compose page, 17 of 175 elements carried no label and eleven separate ones all read "More".
+
+> **A note on the tool descriptions, because it cost a week.** A *browser logic bomb* is an instruction
+> that is internally consistent and locally reasonable, and from which a correct model derives that the
+> task is impossible. `browser_navigate` said "a login-walled dashboard — reach for this"; `browser_type`
+> said "never type credentials". Valid conclusion: *I cannot get in.* The model then defended it by
+> denying it had a browser at all, reciting its own tool list back as proof of absence. Three fixes lost
+> that argument before anyone checked the premise, and deserved to — on the belt as written, the model
+> was right. The browser is the user's own and already signed in; that was simply never stated. **Tool
+> descriptions are not documentation. They are the model's model of reality, and a wall written into one
+> is indistinguishable, from the inside, from a wall in the world.**
+
+Browser access is an admin capability. `NL_BROWSER_DRIVER=1` extends it to sandboxed accounts —
+worth a deliberate decision, since the browser inherits this machine's network position and your
+profile's logins.
+
+## Three models, one turn — the model trio
+
+A turn is not one kind of work. It streams a reply and calls tools; it decides what *done* means; it
+writes itself a one-line instruction for the next step, over and over. Those want different models, so
+every LLM call the engine makes is labelled and routed to one of three **roles**:
+
+- **coding** — the agentic step: the reply that streams onto your screen and every tool call inside it
+  (`chat`).
+- **thinking** — planning and transcript housekeeping: the task breakdown and the acceptance bar
+  (`plan`), the post-hoc critique (`reflect`), compaction and the rolling summary (`compact`, `ctxsum`),
+  plus `summary` and the scheduled-run `lesson`.
+- **prompting** — the short, frequent calls that write the *next instruction* rather than answer
+  anything: the auto-loop drive step (`loop`), web-search query rewrites (`searchq`), stuck recovery
+  (`stuck`).
+
+**One model for everything is the default and is fully supported.** A role counts as set only when it
+has both a model id and a base URL; anything else is blank, and a blank role falls back to coding
+(`ModelTrio.pick` in `src/worker/chat/engine.zig`). Leave thinking and prompting empty and the engine
+behaves exactly as it did before roles existed. The routing is guarded by a source audit
+(`src/worker/chat/trio_routing_test.zig`) that fails `zig build test` if a label ever reaches the wrong role.
+
+Set it in **Settings → Models** (web), **Settings** (desktop), or **Admin → Default model** to publish a
+trio to everyone who hasn't chosen their own — per role, so an account that picked only a coding model
+still picks up the host's thinking and prompting. For `veil chat` it's environment: `NL_LLM_*` for
+coding, `NL_LLM_THINK_*` and `NL_LLM_PROMPT_*` for the other two.
+
+The one thing worth knowing before you choose: **thinking is not uniformly the expensive-model role.**
+Measured over real request bodies, `plan` averages about **1 KB** per call and carries all of the
+judgment, while `compact` and `ctxsum` are **tens of KB** per turn and are mechanical compression. Both
+run on the thinking model, so that single setting pays for a rare high-stakes call and a bulky low-stakes
+one at the same time. Prompting is the easy call — small outputs, no judgment, high volume — so it is
+the one to make cheap.
+
+Full routing table, the per-call measurements behind that advice, the cost split, and the limitations are
+on the docs page: **[the model trio](https://gary23w.github.io/nl-veil/#doc=guide/models)**.
+
+## Scheduled tasks
+
+A scheduled task runs **strictly through chat**: when it comes due, the server mints a fresh
+conversation named `scheduled_*` and fires **one ordinary chat turn** at it — so a run persists, streams
+its events, shows up in the conversation list, and can be continued by hand afterwards. Manage them with
+`veil sched` (admin-gated):
+
+Because every run gets a *new* conversation, a run that was cut short used to leave nothing the next one
+could read, and a task that kept hitting the spend ceiling restarted from zero every time. Since
+`v1.0.1-beta-6` the engine banks what a cut run established as a **resume anchor** against the task
+itself rather than against the transcript, so the next run reads it back and picks up from the step it
+names. A run that finishes cleanly clears its own anchor, so this is invisible until something is
+actually left unfinished.
+
+```sh
+veil sched add --name nightly --prompt "summarize today's repo changes" --kind daily --at 22:00
+veil sched add --name watch   --prompt "check the build and report" --kind every --every 30
+veil sched list
+veil sched run <id>          # fire it now → prints the conversation it created
+veil sched rm <id>
+```
+
+Kinds are `once` (fires at a set time), `every` (`--every MIN`), and `daily` (`--at HH:MM`, on your
+local wall clock). An overdue task — server was down, laptop asleep — runs **once** on wake and
+reschedules from now; it never backfills a run per missed interval.
+
+## Workers AI as your provider
+
+Cloudflare Workers AI is a normal provider in the model catalogue, and the OAuth login above is the easy
+way in — see **[Log in with Cloudflare](#log-in-with-cloudflare)** for the whole integration: the live
+model sync, the R2 chat backup, the `cf_` deploy tools, and the scopes.
+
+The manual route still works if you would rather not connect an account: pick **Cloudflare Workers AI**
+in Settings, paste your **account id** and a **Workers AI API token**, and it behaves like any other BYOK
+provider. A server operator can also set `NL_CF_ACCOUNT_ID` + `NL_WORKERS_AI_TOKEN` to give every user on
+that instance a shared Workers AI backbone with no login at all.
+
+## The desktop — veil-desk
+
+`veil-desk` is a native desktop dashboard (Zig + raylib, one window, no browser) that talks to the
+local server. It's where most people actually live: a **chat pane** with the Veil, a **swarm board**
+that shows every running hive round-by-round, and a **build console**.
+
+- **Talk and it acts.** The chat pane is a **thin client over the server-side brain**: your message
+  runs one server turn, the answer streams back, and you can steer or stop it live. Ask it to *build*
+  something and the turn casts a hive, watches it, and folds the deliverables back into the
+  conversation — with an **auto-loop** tier (armed from the desk, driven server-side) that keeps a long
+  build moving without you re-prompting each round.
+**Goal mode: `/goal <what to achieve>`.** The auto-loop with a goal it keeps. Type it in any chat - the desktop,
+the web app, `veil chat` - or run `veil goal "<text>"`. Each iteration **picks** the best improvement not yet
+tried, **does** it, and **measures** it: a judge reads the step's real tool results, never the assistant's claim,
+and answers improved / same / regressed; when a count was printed (tests passed, checks green) the comparison is
+the engine's own arithmetic. Every iteration is logged, so the next pick sees what was tried and what it changed.
+The loop ends on its own when the goal is **achieved**, when its **budget** is spent (`--budget N`, 25 by
+default), or on a **plateau**: three iterations in a row that improved nothing. `/goal` shows where it stands;
+`/goal stop`, `/goal resume`, `/goal budget N` and `/goal check <command>` tune it; `--forever` removes the
+finish line. The AFK tier below is now exactly that - a forever goal - so it keeps its promise and gains the
+log and the measurement.
+
+- **AFK: run until you stop it.** A second tier for leaving the machine. It never asks whether the goal
+  is complete (a session you opted into running indefinitely has no end state to ask about), the
+  **prompting model writes each re-drive** from what the transcript shows was just built rather than
+  reposting a canned sentence, it stays anchored to your original goal instead of to the loop's own
+  re-arm text, and it re-grounds itself if a drive step comes back empty twice running. A transient
+  provider error no longer ends a run you were promised only you could end, and the steering column
+  stays reachable for the whole turn. The ordinary auto-loop tier is unchanged — its stop conditions
+  *are* the tier.
+- **You see everything.** Live per-round fitness, the files each mind is writing, the tool calls, the
+  shared-memory writes — swarm work is transparent, not a spinner.
+- **Sub-chats.** Branch a side thread off any conversation (up to five, one level deep) as tabs
+  across the top. The family shares one workspace, so a side question doesn't lose the build.
+- **Attach an image.** Drop a screenshot or a picture into a message and it is turned into text and
+  searchable regions server-side — so the model reads what's in it whether or not it has vision.
+- **Manage the built-in model from the window.** A panel shows the weights, a download button, a live
+  progress bar, and one click to serve it.
+- **It sits in the tray — and closing the window doesn't kill the server.** A system-tray icon and
+  native toasts on Windows; it lights up the moment the server has something to show. The desk and the
+  server are *one process*, so the titlebar **X hides the window** and leaves everything running — the
+  turn in flight, the chat workers, the web UI on `:8787`. Only **File → Quit** or **tray → Quit** ends
+  the process. While hidden the loop skips input, layout and drawing entirely and idles at 5 Hz, so a
+  parked desk costs nothing. *(Windows only, and only when a live tray icon actually exists to bring the
+  window back — Linux and macOS keep the old quit-on-close behaviour rather than hiding a window behind
+  an icon that isn't there.)*
+
+The desktop is compiled **into** `veil`, so the released binary is the whole app — double-click and
+you're in, server and window together. Same from source:
+
+```sh
+zig build run                 # server + desktop, exactly like the release binary
+zig build -Dapp=false         # server-only build: no GUI compiled in, no raylib/GL to link
+```
+
+`-Dapp=false` is what headless hosts and CI boxes want — the GUI is left out of the compilation
+entirely rather than merely unused. To keep the GUI compiled in but not opened for a given run, pass
+`--server-only` at runtime. (There is a `zig build desk` step that produces a standalone `veil-desk`
+binary; it is a **development** convenience, not something the release ships or the server spawns.)
+
+## It learns
+
+The engine keeps a **playbook**: fixes it discovered by actually running commands on *this* machine.
+When a command fails and a later command in the same arc succeeds, that verified fail→fix transition
+is captured — *never* from the model's self-report, only from real exit codes — and recalled into
+future prompts, gated so only a lesson genuinely relevant to the current failure surfaces. The same
+fix stops being re-derived every session.
+
+That's one thread of a broader self-improvement loop, all built on verified traces rather than the
+model's own claims:
+
+- **A progress checkpoint**, rebuilt every round from the run's own tool records — what completed,
+  what's blocked, what's still pending — injected back into each mind's prompt with zero model calls.
+- **A background review pass** that reads the round's real tool trace out-of-band and mints
+  trace-grounded lessons and skills into the live hive.
+- **A smoke gate** that boots the deliverable and probes it, because passing tests are not a working
+  app — and a **judge** that grades the arc's ground-truth trace, not its self-narrative.
+- **Strengthen-only plasticity**: outcome feedback can reinforce a memory that keeps working, but it
+  can never *mint* one from a reward alone — so a finished goal can't be resurrected by its own signal.
+- **Lessons are graded on whether they helped.** At the moment a failure resolves into a verified fix,
+  the lesson that was recalled *for that failure* is reinforced — so one that keeps preceding fixes
+  surfaces first and one that never does simply fades. It runs before the fresh mint, crediting prior
+  knowledge rather than the fix just written, and it is engine-driven, so a mind cannot inflate its own.
+- **Recurring successes become candidate procedure.** The engine counts repeated successful tool
+  *sequences* per mind — zero extra model calls, folded from records it already keeps — and proposes the
+  frequent ones into a quarantine. Nothing auto-registers, auto-runs, or reaches a prompt; promotion is
+  a reviewed step like every other proposal.
+- **Review closes the loop across casts.** Under a lineage, the end-of-run judge's lessons and skills and
+  the mined habits wait in the lineage's quarantine until someone decides: `veil lineage show <id>`, then
+  `veil lineage accept|reject <id> <n>`, or keep/drop on the card in the desktop's Memory pane. An accepted
+  proposal goes into the live memory the next cast of that lineage recalls; a rejected one is remembered so
+  the judge and the miner do not propose it again. The same habit no longer comes back every run as a new line.
+- **What a lineage keeps is the task, not just the process.** The judge also proposes **facts**: requirements a
+  tool output actually stated (a checker's rule, a function's real signature), which a later cast reads whole
+  as *proven task facts*. Measured first: with lessons alone, a lineage stored "read the file first" and never
+  the two house rules its checker printed on every run. A proposal that restates one already known, or pastes
+  tool JSON, is dropped before review. The desktop's **Swarm → Lineages** view shows each lineage's memory,
+  what awaits review, and its casts over time (round score, rounds, tokens), from the `history.jsonl` every
+  cast now appends to.
+- **A round that breaks one check while fixing another is visible.** The score is an aggregate, so that
+  round used to read as "no change" to every loop watching it. The best-known-good build's failure set
+  is now the champion and each later round the challenger, so a new break is reported even when the
+  aggregate is flat or rising.
+- **Self-edits are verified after the write, not just before it.** Every gate around `patch_system` ran
+  *before* the edit landed, so a change that left the source un-parseable stood until the next human
+  build. A post-write `zig ast-check` (or the shared syntax gate for other languages) now reverts a bad
+  write in place from a pre-image and reports it blocked. Authored tools are compiled the same way
+  before they can enter the registry, instead of failing at their first call many rounds later.
+
+The engine stays a fixed floor. What it learns lives in memory, never in an `if` branch.
+
+## Your AI's sub-agent — cast a hive from another assistant
+
+The hive is also a **side agent for whatever AI you already talk to**. Any assistant that can run a
+shell command can hand off a research question or a side-build, keep working, and pull the progress and
+deliverables from the swarm's event stream instead of grinding through it in its own conte
